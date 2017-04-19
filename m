@@ -1,23 +1,28 @@
-Received: from mail.kernel.org ([198.145.29.136])
+Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0ede-00008a-Ba
- for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 01:42:36 +0000
-Date: Tue, 18 Apr 2017 18:42:09 -0700
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-To: Eric Biggers <ebiggers3@gmail.com>
-Cc: Gwendal Grignou <gwendal@chromium.org>, hashimoto@chromium.org,
- ebiggers@google.com, linux-f2fs-devel@lists.sourceforge.net,
- linux-fscrypt@vger.kernel.org, linux-mtd@lists.infradead.org,
- tytso@mit.edu, linux-ext4@vger.kernel.org, kinaba@chromium.org
-Subject: Re: [f2fs-dev] [PATCH] fscrypt: use 32 bytes of encrypted filename
-Message-ID: <20170419014209.GB12215@jaegeuk.local>
-References: <20170418210642.6039-1-gwendal@chromium.org>
- <20170418230136.GA96152@gmail.com>
- <20170419001005.GA143911@gmail.com>
+ id 1d0fpn-00006R-Qr
+ for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 02:59:14 +0000
+Received: by mail-pf0-x244.google.com with SMTP id c198so1681334pfc.0
+ for <linux-mtd@lists.infradead.org>; Tue, 18 Apr 2017 19:58:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170419001005.GA143911@gmail.com>
+In-Reply-To: <47e7cefa-b4b8-4557-0e95-f43c7431c4de@gmail.com>
+References: <20170418142127.23301-1-andrew.smirnov@gmail.com>
+ <20170418142127.23301-3-andrew.smirnov@gmail.com>
+ <47e7cefa-b4b8-4557-0e95-f43c7431c4de@gmail.com>
+From: Andrey Smirnov <andrew.smirnov@gmail.com>
+Date: Tue, 18 Apr 2017 19:58:49 -0700
+Message-ID: <CAHQ1cqETHoXeuiz7BUmMjoy9U4Koy65V=guppCt7bensKSPk8w@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] mtd: dataflash: Make use of "extened device
+ information"
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Chris Healy <cphealy@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,176 +32,190 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Eric,
+On Tue, Apr 18, 2017 at 11:31 AM, Marek Vasut <marek.vasut@gmail.com> wrote:
+> On 04/18/2017 04:21 PM, Andrey Smirnov wrote:
+>> In anticipation of supporting chips that need it, extend the size of
+>> struct flash_info's 'jedec_id' field to make room 2 byte of extended
+>> device information as well as add code to fetch this data during
+>> jedec_probe().
+>>
+>> Cc: cphealy@gmail.com
+>> Cc: David Woodhouse <dwmw2@infradead.org>
+>> Cc: Brian Norris <computersforpeace@gmail.com>
+>> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+>> Cc: Marek Vasut <marek.vasut@gmail.com>
+>> Cc: Richard Weinberger <richard@nod.at>
+>> Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
+>> ---
+>>
+>> Changes since [v1]:
+>>
+>>       - Formatting
+>>
+>> [v1] http://lkml.kernel.org/r/20170411161722.11164-1-andrew.smirnov@gmail.com
+>>
+>>
+>>  drivers/mtd/devices/mtd_dataflash.c | 113 +++++++++++++++++++++---------------
+>>  1 file changed, 65 insertions(+), 48 deletions(-)
+>>
+>> diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
+>> index 5b7a8c3..5d694a4 100644
+>> --- a/drivers/mtd/devices/mtd_dataflash.c
+>> +++ b/drivers/mtd/devices/mtd_dataflash.c
+>> @@ -690,7 +690,7 @@ struct flash_info {
+>>       /* JEDEC id has a high byte of zero plus three data bytes:
+>>        * the manufacturer id, then a two byte device id.
+>>        */
+>> -     u32             jedec_id;
+>> +     u64             jedec_id;
+>>
+>>       /* The size listed here is what works with OP_ERASE_PAGE. */
+>>       unsigned        nr_pages;
+>> @@ -713,63 +713,34 @@ static struct flash_info dataflash_data[] = {
+>>        * These newer chips also support 128-byte security registers (with
+>>        * 64 bytes one-time-programmable) and software write-protection.
+>>        */
+>> -     { "AT45DB011B",  0x1f2200, 512, 264, 9, SUP_POW2PS},
+>> -     { "at45db011d",  0x1f2200, 512, 256, 8, SUP_POW2PS | IS_POW2PS},
+>> +     { "AT45DB011B",  0x1f22000000, 512, 264, 9, SUP_POW2PS},
+>> +     { "at45db011d",  0x1f22000000, 512, 256, 8, SUP_POW2PS | IS_POW2PS},
+>>
+>> -     { "AT45DB021B",  0x1f2300, 1024, 264, 9, SUP_POW2PS},
+>> -     { "at45db021d",  0x1f2300, 1024, 256, 8, SUP_POW2PS | IS_POW2PS},
+>> +     { "AT45DB021B",  0x1f23000000, 1024, 264, 9, SUP_POW2PS},
+>> +     { "at45db021d",  0x1f23000000, 1024, 256, 8, SUP_POW2PS | IS_POW2PS},
+>>
+>> -     { "AT45DB041x",  0x1f2400, 2048, 264, 9, SUP_POW2PS},
+>> -     { "at45db041d",  0x1f2400, 2048, 256, 8, SUP_POW2PS | IS_POW2PS},
+>> +     { "AT45DB041x",  0x1f24000000, 2048, 264, 9, SUP_POW2PS},
+>> +     { "at45db041d",  0x1f24000000, 2048, 256, 8, SUP_POW2PS | IS_POW2PS},
+>>
+>> -     { "AT45DB081B",  0x1f2500, 4096, 264, 9, SUP_POW2PS},
+>> -     { "at45db081d",  0x1f2500, 4096, 256, 8, SUP_POW2PS | IS_POW2PS},
+>> +     { "AT45DB081B",  0x1f25000000, 4096, 264, 9, SUP_POW2PS},
+>> +     { "at45db081d",  0x1f25000000, 4096, 256, 8, SUP_POW2PS | IS_POW2PS},
+>>
+>> -     { "AT45DB161x",  0x1f2600, 4096, 528, 10, SUP_POW2PS},
+>> -     { "at45db161d",  0x1f2600, 4096, 512, 9, SUP_POW2PS | IS_POW2PS},
+>> +     { "AT45DB161x",  0x1f26000000, 4096, 528, 10, SUP_POW2PS},
+>> +     { "at45db161d",  0x1f26000000, 4096, 512, 9, SUP_POW2PS | IS_POW2PS},
+>>
+>> -     { "AT45DB321x",  0x1f2700, 8192, 528, 10, 0},           /* rev C */
+>> +     { "AT45DB321x",  0x1f27000000, 8192, 528, 10, 0},       /* rev C */
+>>
+>> -     { "AT45DB321x",  0x1f2701, 8192, 528, 10, SUP_POW2PS},
+>> -     { "at45db321d",  0x1f2701, 8192, 512, 9, SUP_POW2PS | IS_POW2PS},
+>> +     { "AT45DB321x",  0x1f27010000, 8192, 528, 10, SUP_POW2PS},
+>> +     { "at45db321d",  0x1f27010000, 8192, 512, 9, SUP_POW2PS | IS_POW2PS},
+>>
+>> -     { "AT45DB642x",  0x1f2800, 8192, 1056, 11, SUP_POW2PS},
+>> -     { "at45db642d",  0x1f2800, 8192, 1024, 10, SUP_POW2PS | IS_POW2PS},
+>> +     { "AT45DB642x",  0x1f28000000, 8192, 1056, 11, SUP_POW2PS},
+>> +     { "at45db642d",  0x1f28000000, 8192, 1024, 10, SUP_POW2PS | IS_POW2PS},
+>>  };
+>>
+>> -static struct flash_info *jedec_probe(struct spi_device *spi)
+>> +static struct flash_info *jedec_lookup(struct spi_device *spi, u64 jedec)
+>>  {
+>> -     int ret, i;
+>> -     u8 code = OP_READ_ID;
+>> -     u8 id[3];
+>> -     u32 jedec;
+>> +     int status, i;
+>>       struct flash_info *info;
+>> -     int status;
+>> -
+>> -     /*
+>> -      * JEDEC also defines an optional "extended device information"
+>> -      * string for after vendor-specific data, after the three bytes
+>> -      * we use here.  Supporting some chips might require using it.
+>> -      *
+>> -      * If the vendor ID isn't Atmel's (0x1f), assume this call failed.
+>> -      * That's not an error; only rev C and newer chips handle it, and
+>> -      * only Atmel sells these chips.
+>> -      */
+>> -     ret = spi_write_then_read(spi, &code, 1, id, 3);
+>> -     if (ret < 0) {
+>> -             pr_debug("%s: error %d reading JEDEC ID\n",
+>> -                     dev_name(&spi->dev), ret);
+>> -             return ERR_PTR(ret);
+>> -     }
+>> -
+>> -     if (id[0] != CFI_MFR_ATMEL)
+>> -             return NULL;
+>> -
+>> -     jedec = id[0];
+>> -     jedec = jedec << 8;
+>> -     jedec |= id[1];
+>> -     jedec = jedec << 8;
+>> -     jedec |= id[2];
+>
+> Hm, the diff again screwed this up, oh well ...
+>
+>>       for (i = 0, info = dataflash_data;
+>>                       i < ARRAY_SIZE(dataflash_data);
+>> @@ -799,12 +770,58 @@ static struct flash_info *jedec_probe(struct spi_device *spi)
+>>               }
+>>       }
+>>
+>> +     return NULL;
+>> +}
+>> +
+>> +static struct flash_info *jedec_probe(struct spi_device *spi)
+>> +{
+>> +     int ret;
+>> +     u8 code = OP_READ_ID;
+>> +     u8 id[8] = {0};
+>> +     const unsigned int id_size = 5;
+>> +     const unsigned int first_byte = sizeof(id) - id_size;
+>> +     const u64 eid_mask = GENMASK_ULL(63, 16);
+>> +     u64 jedec;
+>> +     struct flash_info *info;
+>> +
+>> +     /*
+>> +      * JEDEC also defines an optional "extended device information"
+>> +      * string for after vendor-specific data, after the three bytes
+>> +      * we use here.  Supporting some chips might require using it.
+>> +      *
+>> +      * If the vendor ID isn't Atmel's (0x1f), assume this call failed.
+>> +      * That's not an error; only rev C and newer chips handle it, and
+>> +      * only Atmel sells these chips.
+>> +      */
+>> +     ret = spi_write_then_read(spi, &code, 1, &id[first_byte], id_size);
+>> +     if (ret < 0) {
+>> +             pr_debug("%s: error %d reading JEDEC ID\n",
+>> +                     dev_name(&spi->dev), ret);
+>
+> I think you can turn this into:
+>
+> dev_err(&spi->dev, "error %d reading JEDEC ID\n", ret);
 
-On 04/18, Eric Biggers wrote:
-> On Tue, Apr 18, 2017 at 04:01:36PM -0700, Eric Biggers wrote:
-> > 
-> > Strangely, f2fs and ubifs do not use the bytes from the filename at all when
-> > trying to find a specific directory entry in this case.  So this patch doesn't
-> > really affect them.  This seems unreliable; perhaps we should introduce a
-> > function like "fscrypt_name_matches()" which all the filesystems could call?
-> > Can any of the f2fs and ubifs developers explain why they don't look at any
-> > bytes from the filename?
-> > 
+OK, will do it in a separate patch, since this is original code.
 
-The fscrypt_setup_filename sets fname->hash in the bigname case, but doesn't
-give fname->disk_name. If it's not such the bigname case, we check its name
-since fname->hash is zero.
+>
+>> +             return ERR_PTR(ret);
+>> +     }
+>> +
+>> +     if (id[first_byte] != CFI_MFR_ATMEL)
+>> +             return NULL;
+>> +
+>> +     jedec = be64_to_cpup((__be64 *)id);
+>> +
+>> +     info = jedec_lookup(spi, jedec);
+>> +     if (info)
+>> +             return info;
+>> +
+>> +     /* Clear extended id bits and try to find a match again */
+>> +     jedec &= eid_mask;
+>
+> Wouldn't that be jedec &= ~eid_mask; (with a tilde) if you want to clear
+> them ?
 
-> Just to give some ideas, here's an untested patch which does this and also
-> updates F2FS to start checking the filename.  UBIFS seemed more difficult so I
-> didn't touch it yet.
-> 
-> Of course, this would need to be split into a few different patches if we
-> actually wanted to go with it.
-> 
-> ---
-
-...
-
-> diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-> index 8d5c62b07b28..07b80d78a9f6 100644
-> --- a/fs/f2fs/dir.c
-> +++ b/fs/f2fs/dir.c
-> @@ -111,8 +111,6 @@ struct f2fs_dir_entry *find_target_dentry(struct fscrypt_name *fname,
->  	struct f2fs_dir_entry *de;
->  	unsigned long bit_pos = 0;
->  	int max_len = 0;
-> -	struct fscrypt_str de_name = FSTR_INIT(NULL, 0);
-> -	struct fscrypt_str *name = &fname->disk_name;
->  
->  	if (max_slots)
->  		*max_slots = 0;
-> @@ -130,17 +128,10 @@ struct f2fs_dir_entry *find_target_dentry(struct fscrypt_name *fname,
->  			continue;
->  		}
->  
-> -		/* encrypted case */
-> -		de_name.name = d->filename[bit_pos];
-> -		de_name.len = le16_to_cpu(de->name_len);
-> -
-> -		/* show encrypted name */
-> -		if (fname->hash) {
-> -			if (de->hash_code == cpu_to_le32(fname->hash))
-> -				goto found;
-> -		} else if (de_name.len == name->len &&
-> -			de->hash_code == namehash &&
-> -			!memcmp(de_name.name, name->name, name->len))
-> +		if ((fname->hash == 0 ||
-> +		     fname->hash == le32_to_cpu(de->hash_code)) &&
-> +		    fscrypt_name_matches(fname, d->filename[bit_pos],
-> +					 le16_to_cpu(de->name_len)))
-
-BTW, this slips checking namehash?
+eid_mask is generated as bits 63 to 16 with GENMASK_ULL, so bits 15 to
+0 should already be zeroed out. I can rename it to eid_mask_inverted
+so it's less confusing.
 
 Thanks,
-
->  			goto found;
->  
->  		if (max_slots && max_len > *max_slots)
-> diff --git a/include/linux/fscrypt_notsupp.h b/include/linux/fscrypt_notsupp.h
-> index 3511ca798804..4034976bea93 100644
-> --- a/include/linux/fscrypt_notsupp.h
-> +++ b/include/linux/fscrypt_notsupp.h
-> @@ -147,6 +147,24 @@ static inline int fscrypt_fname_usr_to_disk(struct inode *inode,
->  	return -EOPNOTSUPP;
->  }
->  
-> +static inline bool fscrypt_match_dirent(const struct qstr *usr_fname,
-> +					const struct fscrypt_str *disk_name,
-> +					const struct fscrypt_str *crypto_buf,
-> +					const char *de_name, u32 de_name_len)
-> +{
-> +	/* Encryption support disabled; use standard comparison. */
-> +	if (de_name_len != disk_name->len)
-> +		return false;
-> +	return !memcmp(de_name, disk_name->name, disk_name->len);
-> +}
-> +
-> +static inline bool fscrypt_name_matches(const struct fscrypt_name *fname,
-> +					const char *de_name, u32 de_name_len)
-> +{
-> +	return fscrypt_match_dirent(fname->usr_fname, &fname->disk_name,
-> +				    &fname->crypto_buf, de_name, de_name_len);
-> +}
-> +
->  /* bio.c */
->  static inline void fscrypt_decrypt_bio_pages(struct fscrypt_ctx *ctx,
->  					     struct bio *bio)
-> diff --git a/include/linux/fscrypt_supp.h b/include/linux/fscrypt_supp.h
-> index a140f47e9b27..e3c9aa7209a1 100644
-> --- a/include/linux/fscrypt_supp.h
-> +++ b/include/linux/fscrypt_supp.h
-> @@ -57,6 +57,63 @@ extern int fscrypt_fname_disk_to_usr(struct inode *, u32, u32,
->  extern int fscrypt_fname_usr_to_disk(struct inode *, const struct qstr *,
->  			struct fscrypt_str *);
->  
-> +/*
-> + * Number of bytes of ciphertext from the end of the filename which the
-> + * filesystem includes when encoding long encrypted filenames for presentation
-> + * to userspace without the key.
-> + */
-> +#define FS_FNAME_CRYPTO_DIGEST_SIZE	(2 * FS_CRYPTO_BLOCK_SIZE)
-> +
-> +/**
-> + * fscrypt_match_dirent() - does the directory entry match the name being looked up?
-> + *
-> + * This is like fscrypt_name_matches(), but for filesystems which don't use the
-> + * fscrypt_name structure.  (We probably should make all filesystems do the same
-> + * thing...)
-> + */
-> +static inline bool fscrypt_match_dirent(const struct qstr *usr_fname,
-> +					const struct fscrypt_str *disk_name,
-> +					const struct fscrypt_str *crypto_buf,
-> +					const char *de_name, u32 de_name_len)
-> +{
-> +	if (unlikely(!disk_name->name)) {
-> +		if (WARN_ON_ONCE(usr_fname->name[0] != '_'))
-> +			return false;
-> +		if (de_name_len < FS_FNAME_CRYPTO_DIGEST_SIZE)
-> +			return false;
-> +		return !memcmp(de_name + de_name_len - FS_FNAME_CRYPTO_DIGEST_SIZE,
-> +			       crypto_buf->name + 8,
-> +			       FS_FNAME_CRYPTO_DIGEST_SIZE);
-> +	}
-> +
-> +	if (de_name_len != disk_name->len)
-> +		return false;
-> +	return !memcmp(de_name, disk_name->name, disk_name->len);
-> +}
-> +
-> +/**
-> + * fscrypt_name_matches() - does the directory entry match the name being looked up?
-> + * @fname: the name being looked up
-> + * @de_name: the name from the directory entry
-> + * @de_name_len: the length of @de_name in bytes
-> + *
-> + * Normally @fname->disk_name will be set, and in that case we simply compare
-> + * that to the directory entry.  The only exception is that if we don't have the
-> + * key for an encrypted directory and a filename in it is very long, then the
-> + * filename presented to userspace will only have the last
-> + * FS_FNAME_CRYPTO_DIGEST_SIZE bytes of ciphertext encoded in it, so we can only
-> + * compare that portion.  Note that despite this limit, due to the use of
-> + * CBC-CTS encryption there should not be any collisions.
-> + *
-> + * Return: true if the name matches, otherwise false.
-> + */
-> +static inline bool fscrypt_name_matches(const struct fscrypt_name *fname,
-> +					const char *de_name, u32 de_name_len)
-> +{
-> +	return fscrypt_match_dirent(fname->usr_fname, &fname->disk_name,
-> +				    &fname->crypto_buf, de_name, de_name_len);
-> +}
-> +
->  /* bio.c */
->  extern void fscrypt_decrypt_bio_pages(struct fscrypt_ctx *, struct bio *);
->  extern void fscrypt_pullback_bio_page(struct page **, bool);
-> 
-> ------------------------------------------------------------------------------
-> Check out the vibrant tech community on one of the world's most
-> engaging tech sites, Slashdot.org! http://sdm.link/slashdot
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+Andrey Smirnov
