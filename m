@@ -1,24 +1,27 @@
-Received: from mail.kernel.org ([198.145.29.136])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d0wTY-00026K-EY
- for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 20:45:22 +0000
-Date: Wed, 19 Apr 2017 13:44:48 -0700
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-To: Eric Biggers <ebiggers3@gmail.com>
-Cc: Gwendal Grignou <gwendal@chromium.org>, hashimoto@chromium.org,
- ebiggers@google.com, linux-f2fs-devel@lists.sourceforge.net,
- linux-fscrypt@vger.kernel.org, linux-mtd@lists.infradead.org,
- tytso@mit.edu, linux-ext4@vger.kernel.org, kinaba@chromium.org
-Subject: Re: [f2fs-dev] [PATCH] fscrypt: use 32 bytes of encrypted filename
-Message-ID: <20170419204448.GA1021@jaegeuk.local>
-References: <20170418210642.6039-1-gwendal@chromium.org>
- <20170418230136.GA96152@gmail.com>
- <20170419001005.GA143911@gmail.com>
- <20170419014209.GB12215@jaegeuk.local> <20170419040138.GA563@zzz>
+Received: from 18.mo3.mail-out.ovh.net ([87.98.172.162])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d0wYD-0001mR-CG
+ for linux-mtd@lists.infradead.org; Wed, 19 Apr 2017 20:50:13 +0000
+Received: from player771.ha.ovh.net (b9.ovh.net [213.186.33.59])
+ by mo3.mail-out.ovh.net (Postfix) with ESMTP id 04AEBC96C6
+ for <linux-mtd@lists.infradead.org>; Wed, 19 Apr 2017 22:49:47 +0200 (CEST)
+Subject: Re: [PATCH v7 1/4] mtd: spi-nor: introduce SPI 1-2-2 and SPI 1-4-4
+ protocols
+To: Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
+References: <cover.1492554665.git.cyrille.pitchen@atmel.com>
+ <7cd2bdacb871b25ac90d01a475fd65497793b52d.1492554665.git.cyrille.pitchen@atmel.com>
+ <21ef8390-f079-85eb-76cc-0fd62338fb01@gmail.com>
+ <776985e2-3954-81ab-0b81-1a2e1a26d826@wedev4u.fr>
+Cc: boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org, richard@nod.at
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <2e3d611d-7967-f261-a5d9-633be776666e@wedev4u.fr>
+Date: Wed, 19 Apr 2017 22:49:39 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170419040138.GA563@zzz>
+In-Reply-To: <776985e2-3954-81ab-0b81-1a2e1a26d826@wedev4u.fr>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,123 +31,213 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/18, Eric Biggers wrote:
-> On Tue, Apr 18, 2017 at 06:42:09PM -0700, Jaegeuk Kim wrote:
-> > Hi Eric,
-> > 
-> > On 04/18, Eric Biggers wrote:
-> > > On Tue, Apr 18, 2017 at 04:01:36PM -0700, Eric Biggers wrote:
-> > > > 
-> > > > Strangely, f2fs and ubifs do not use the bytes from the filename at all when
-> > > > trying to find a specific directory entry in this case.  So this patch doesn't
-> > > > really affect them.  This seems unreliable; perhaps we should introduce a
-> > > > function like "fscrypt_name_matches()" which all the filesystems could call?
-> > > > Can any of the f2fs and ubifs developers explain why they don't look at any
-> > > > bytes from the filename?
-> > > > 
-> > 
-> > The fscrypt_setup_filename sets fname->hash in the bigname case, but doesn't
-> > give fname->disk_name. If it's not such the bigname case, we check its name
-> > since fname->hash is zero.
-> > 
+Hi Marek,
+
+can we close the review on patch 1 and 3, please?
+I would like to merge into the spi-nor tree then prepare the PR to brian
+for v4.12.
+
+Best regards,
+
+Cyrille
+
+Le 19/04/2017 à 22:12, Cyrille Pitchen a écrit :
+> Le 19/04/2017 à 01:02, Marek Vasut a écrit :
+>> On 04/19/2017 12:51 AM, Cyrille Pitchen wrote:
+>>> This patch changes the prototype of spi_nor_scan(): its 3rd parameter
+>>> is replaced by a 'struct spi_nor_hwcaps' pointer, which tells the spi-nor
+>>> framework about the actual hardware capabilities supported by the SPI
+>>> controller and its driver.
+>>>
+>>> Besides, this patch also introduces a new 'struct spi_nor_flash_parameter'
+>>> telling the spi-nor framework about the hardware capabilities supported by
+>>> the SPI flash memory and the associated settings required to use those
+>>> hardware caps.
+>>>
+>>> Then, to improve the readability of spi_nor_scan(), the discovery of the
+>>> memory settings and the memory initialization are now split into two
+>>> dedicated functions.
+>>>
+>>> 1 - spi_nor_init_params()
+>>>
+>>> The spi_nor_init_params() function is responsible for initializing the
+>>> 'struct spi_nor_flash_parameter'. Currently this structure is filled with
+>>> legacy values but further patches will allow to override some parameter
+>>> values dynamically, for instance by reading the JESD216 Serial Flash
+>>> Discoverable Parameter (SFDP) tables from the SPI memory.
+>>> The spi_nor_init_params() function only deals with the hardware
+>>> capabilities of the SPI flash memory: especially it doesn't care about
+>>> the hardware capabilities supported by the SPI controller.
+>>>
+>>> 2 - spi_nor_setup()
+>>>
+>>> The second function is called once the 'struct spi_nor_flash_parameter'
+>>> has been initialized by spi_nor_init_params().
+>>> With both 'struct spi_nor_flash_parameter' and 'struct spi_nor_hwcaps',
+>>> the new argument of spi_nor_scan(), spi_nor_setup() computes the best
+>>> match between hardware caps supported by both the (Q)SPI memory and
+>>> controller hence selecting the relevant settings for (Fast) Read and Page
+>>> Program operations.
+>>>
+>>> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+>>
+>> [...]
+>>
+>>> --- a/include/linux/mtd/spi-nor.h
+>>> +++ b/include/linux/mtd/spi-nor.h
+>>> @@ -119,13 +119,57 @@
+>>>  /* Configuration Register bits. */
+>>>  #define CR_QUAD_EN_SPAN		BIT(1)	/* Spansion Quad I/O */
+>>>  
+>>> -enum read_mode {
+>>> -	SPI_NOR_NORMAL = 0,
+>>> -	SPI_NOR_FAST,
+>>> -	SPI_NOR_DUAL,
+>>> -	SPI_NOR_QUAD,
+>>> +/* Supported SPI protocols */
+>>> +#define SNOR_PROTO_INST_MASK	GENMASK(23, 16)
+>>> +#define SNOR_PROTO_INST_SHIFT	16
+>>> +#define SNOR_PROTO_INST(_nbits)	\
+>>> +	((((u32)(_nbits)) << SNOR_PROTO_INST_SHIFT) & SNOR_PROTO_INST_MASK)
+>>
+>> Is the u32 cast needed ?
+>>
+>>> +#define SNOR_PROTO_ADDR_MASK	GENMASK(15, 8)
+>>> +#define SNOR_PROTO_ADDR_SHIFT	8
+>>> +#define SNOR_PROTO_ADDR(_nbits)	\
+>>> +	((((u32)(_nbits)) << SNOR_PROTO_ADDR_SHIFT) & SNOR_PROTO_ADDR_MASK)
+>>> +
+>>> +#define SNOR_PROTO_DATA_MASK	GENMASK(7, 0)
+>>> +#define SNOR_PROTO_DATA_SHIFT	0
+>>> +#define SNOR_PROTO_DATA(_nbits)	\
+>>> +	((((u32)(_nbits)) << SNOR_PROTO_DATA_SHIFT) & SNOR_PROTO_DATA_MASK)
+>>
+>> [...]
+>>
+>>> +static inline u8 spi_nor_get_protocol_inst_nbits(enum spi_nor_protocol proto)
+>>> +{
+>>> +	return ((u32)(proto & SNOR_PROTO_INST_MASK)) >> SNOR_PROTO_INST_SHIFT;
+>>
+>> DTTO, is the cast needed ?
+>>
 > 
-> Yes, that's what it does now.  The question is, in the "bigname" case why
-> doesn't f2fs check the 16 bytes of ciphertext in fname->crypto_buf too?  f2fs
-> doesn't even use 'minor_hash'; it can't possibly be the case that there are
-> never any collisions of a 32-bit hash in a directory, can it?
+> # Short answer:
 > 
-> I actually tested it, and it definitely happens if you put a lot of files in an
-> encrypted directory on f2fs.  An example with 100000 files:
+> not necessary in this very particular case but always a good practice.
 > 
-> # seq -f "edir/abcdefghijklmnopqrstuvwxyz012345%.0f" 100000 | xargs touch
-> # find edir -type f | xargs stat -c %i | sort | uniq | wc -l
-> 100000
-> # sync
-> # echo 3 > /proc/sys/vm/drop_caches
-> # keyctl new_session
-> # find edir -type f | xargs stat -c %i | sort | uniq | wc -l
-> 99999
 > 
-> So when I tried accessing the encrypted directory without the key, two dentries
-> showed the same inode, due to a hash collision.
-
-Thank you for sharing more details. I could reproduce this issue and reach out
-to what you mentioned. In order to resolve this, I wrote a patch for f2fs first
-to act like ext4 for easy backports. Then, I expect a global fscrypt function
-is easily able to clean them up.
-
-Thanks,
-
->From 63ca24a64fb1625dac9740a2183fd8966388e185 Mon Sep 17 00:00:00 2001
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-Date: Wed, 19 Apr 2017 10:49:21 -0700
-Subject: [PATCH] f2fs: check entire encrypted bigname when finding a dentry
-
-If user has no key under an encrypted dir, fscrypt gives digested dentries.
-Previously, when looking up a dentry, f2fs only checks its hash value with
-first 4 bytes of the digested dentry, which didn't handle hash collisions fully.
-This patch enhances to check entire dentry bytes likewise ext4.
-
-Eric reported how to reproduce this issue by:
-
- # seq -f "edir/abcdefghijklmnopqrstuvwxyz012345%.0f" 100000 | xargs touch
- # find edir -type f | xargs stat -c %i | sort | uniq | wc -l
-100000
- # sync
- # echo 3 > /proc/sys/vm/drop_caches
- # keyctl new_session
- # find edir -type f | xargs stat -c %i | sort | uniq | wc -l
-99999
-
-Cc: <stable@vger.kernel.org>
-Reported-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
- fs/f2fs/dir.c | 28 +++++++++++++++++++---------
- 1 file changed, 19 insertions(+), 9 deletions(-)
-
-diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-index c143dffcae6e..007c3b4adc85 100644
---- a/fs/f2fs/dir.c
-+++ b/fs/f2fs/dir.c
-@@ -130,19 +130,29 @@ struct f2fs_dir_entry *find_target_dentry(struct fscrypt_name *fname,
- 			continue;
- 		}
- 
--		/* encrypted case */
-+		if (de->hash_code != namehash)
-+			goto not_match;
-+
- 		de_name.name = d->filename[bit_pos];
- 		de_name.len = le16_to_cpu(de->name_len);
- 
--		/* show encrypted name */
--		if (fname->hash) {
--			if (de->hash_code == cpu_to_le32(fname->hash))
--				goto found;
--		} else if (de_name.len == name->len &&
--			de->hash_code == namehash &&
--			!memcmp(de_name.name, name->name, name->len))
-+#ifdef CONFIG_F2FS_FS_ENCRYPTION
-+		if (unlikely(!name->name)) {
-+			if (fname->usr_fname->name[0] == '_') {
-+				if (de_name.len >= 16 &&
-+					!memcmp(de_name.name + de_name.len - 16,
-+						fname->crypto_buf.name + 8, 16))
-+					goto found;
-+				goto not_match;
-+			}
-+			name->name = fname->crypto_buf.name;
-+			name->len = fname->crypto_buf.len;
-+		}
-+#endif
-+		if (de_name.len == name->len &&
-+				!memcmp(de_name.name, name->name, name->len))
- 			goto found;
--
-+not_match:
- 		if (max_slots && max_len > *max_slots)
- 			*max_slots = max_len;
- 		max_len = 0;
--- 
-2.11.0
+> 
+> # Comprehensive comparison with macro definitions:
+> 
+> This cast is as needed as adding parentheses around the parameters
+> inside the definition of some function-like macro. Most of the time, you
+> can perfectly live without them but in some specific usages unexpected
+> patterns of behavior occur then you struggle debugging to fix the issue:
+> 
+> #define MULT(a, b)	(a * b) /* instead of ((a) * (b)) */
+> 
+> int a;
+> 
+> a = MULT(2, 3); /* OK */
+> a = MULT(2 * 4, 8); /* OK */
+> a = MULT(2 + 4, 8); /* What result do you expect ? */
+> 
+> 
+> So it's always a good habit to cast into some unsigned integer type when
+> working with bitmasks/bitfields as it's always a good habit to add
+> parentheses around macro parameters: it's safer and it avoids falling
+> into some nasty traps!
+> 
+> Please have a look at the definitions of GENMASK() and BIT() macros in
+> include/linux/bitops.h: they are defined using unsigned integers and
+> there are technical reasons behind that.
+> 
+> 
+> 
+> # Technical explanation:
+> 
+> First thing to care about: the enum
+> 
+> An enum is guaranteed to be represented by an integer, but the actual
+> type (and its signedness) is implementation-dependent.
+> 
+> Second thing to know: the >> operator
+> 
+> The >> operator is perfectly defined when applied on an unsigned integer
+> whereas its output depends on the implementation with a signed integer
+> operand.
+> In practice, in most cases, the >> on signed integer performs an
+> arithmetic right shift and not a logical right shift as most people expect.
+> 
+> signed int v1 = 0x80000000;
+> 
+> (v1 >>  1) == 0xC0000000
+> (v1 >> 31) == 0xFFFFFFFF
+> 
+> 
+> unsigned int v2 = 0x80000000U;
+> 
+> (v2 >>  1) == 0x40000000U
+> (v2 >> 31) == 0x00000001U
+> 
+> 
+> Then, if you define some bitmask/bitfield including the 31st bit:
+> 
+> #define FIELD_SHIFT	30
+> #define FIELD_MASK	GENMASK(31, 30)
+> #define FIELD_VAL0	(0x0U << FIELD_SHIFT)
+> #define FIELD_VAL1	(0x1U << FIELD_SHIFT)
+> #define FIELD_VAL2	(0x2U << FIELD_SHIFT)
+> #define FIELD_VAL3	(0x3U << FIELD_SHIFT)
+> 
+> 
+> enum spi_nor_protocol {
+> 	PROTO0 = [...],
+> 
+> 	PROTO42 = FIELD_VAL2 | [...],
+> };
+> 
+> enum spi_nor_protocol proto = PROTO42
+> u8 val;
+> 
+> val = (proto & FIELD_MASK) >> FIELD_SHIFT;
+> if (val == 0x2U) {
+> 	/*
+> 	 * We may not reach this point as expected because val
+> 	 * may be equal to 0xFEU depending on the implementation.
+> 	 */
+> }
+> 
+> 
+> Best regards,
+> 
+> Cyrille
+> 
+> 
+>>> +}
+>>> +
+>>> +static inline u8 spi_nor_get_protocol_addr_nbits(enum spi_nor_protocol proto)
+>>> +{
+>>> +	return ((u32)(proto & SNOR_PROTO_ADDR_MASK)) >> SNOR_PROTO_ADDR_SHIFT;
+>>> +}
+>>> +
+>>> +static inline u8 spi_nor_get_protocol_data_nbits(enum spi_nor_protocol proto)
+>>> +{
+>>> +	return ((u32)(proto & SNOR_PROTO_DATA_MASK)) >> SNOR_PROTO_DATA_SHIFT;
+>>> +}
+>>> +
+>>> +static inline u8 spi_nor_get_protocol_width(enum spi_nor_protocol proto)
+>>> +{
+>>> +	return spi_nor_get_protocol_data_nbits(proto);
+>>> +}
+>>
+>> [...]
+>>
+>> Looks good otherwise.
+>>
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
