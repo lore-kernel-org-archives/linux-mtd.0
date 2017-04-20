@@ -1,29 +1,27 @@
-Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d1Cb4-0007uU-2s
- for linux-mtd@lists.infradead.org; Thu, 20 Apr 2017 13:58:14 +0000
-Received: by mail-lf0-x243.google.com with SMTP id 88so5910397lfr.0
- for <linux-mtd@lists.infradead.org>; Thu, 20 Apr 2017 06:57:49 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
+ id 1d1CbJ-0007wg-Bz
+ for linux-mtd@lists.infradead.org; Thu, 20 Apr 2017 13:58:32 +0000
+Received: by mail-wm0-x243.google.com with SMTP id o81so10993160wmb.0
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Apr 2017 06:58:05 -0700 (PDT)
+Subject: Re: [PATCH 4/4] mtd: spi-nor: aspeed: use command mode for reads
+To: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
+ linux-mtd@lists.infradead.org
+References: <1492689397-4704-1-git-send-email-clg@kaod.org>
+ <1492689397-4704-5-git-send-email-clg@kaod.org>
+ <b28c97cc-1daf-c1dd-4a86-4f8bf6c46b2b@gmail.com>
+ <66e385ec-6688-9ce7-1250-ec840201147e@kaod.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Frank Rowand <frowand.list@gmail.com>,
- Linus Walleij <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH RESEND 4/4] mtd: ofpart: add of_match_table with
- "fixed-partitions"
-Date: Thu, 20 Apr 2017 15:57:31 +0200
-Message-Id: <20170420135731.13272-5-zajec5@gmail.com>
-In-Reply-To: <20170420135731.13272-1-zajec5@gmail.com>
-References: <20170420135431.12585-1-zajec5@gmail.com>
- <20170420135731.13272-1-zajec5@gmail.com>
+ David Woodhouse <dwmw2@infradead.org>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <9c60f3f9-3f74-930d-07f9-9cb7cb8ba8f4@gmail.com>
+Date: Thu, 20 Apr 2017 15:58:02 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <66e385ec-6688-9ce7-1250-ec840201147e@kaod.org>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -34,41 +32,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+On 04/20/2017 03:53 PM, Cédric Le Goater wrote:
+> On 04/20/2017 03:31 PM, Marek Vasut wrote:
+>> On 04/20/2017 01:56 PM, Cédric Le Goater wrote:
+>>> When reading flash contents, try to use the "command mode" if the AHB
+>>> window configured for the flash module is big enough. Else, just fall
+>>> back to the "user mode" to perform the read.
+>>>
+>>> Signed-off-by: Cédric Le Goater <clg@kaod.org>
+>>> ---
+>>>
+>>>  Changes since initial version :
+>>>
+>>>  - rebased on current patchset which removed DMA support
+>>>
+>>>  drivers/mtd/spi-nor/aspeed-smc.c | 27 ++++++++++++++++++++++++++-
+>>>  1 file changed, 26 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
+>>> index 60c020482946..43015aec4557 100644
+>>> --- a/drivers/mtd/spi-nor/aspeed-smc.c
+>>> +++ b/drivers/mtd/spi-nor/aspeed-smc.c
+>>> @@ -394,6 +394,31 @@ static ssize_t aspeed_smc_read_user(struct spi_nor *nor, loff_t from,
+>>>  
+>>>  	aspeed_smc_read_from_ahb(read_buf, chip->ahb_base, len);
+>>>  	aspeed_smc_stop_user(nor);
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +static ssize_t aspeed_smc_read(struct spi_nor *nor, loff_t from, size_t len,
+>>> +			       u_char *read_buf)
+>>> +{
+>>> +	struct aspeed_smc_chip *chip = nor->priv;
+>>> +
+>>> +	/*
+>>> +	 * The AHB window configured for the chip is too small for the
+>>> +	 * read offset. Use the "User mode" of the controller to
+>>> +	 * perform the read.
+>>> +	 */
+>>> +	if (from >= chip->ahb_window_size) {
+>>> +		aspeed_smc_read_user(nor, from, len, read_buf);
+>>> +		goto out;
+>>
+>> What about turning this into dumb if () {} else {} and dropping the goto ?
+> 
+> yes, well, this is because I have other patches adding DMAs :
+> 
+> 	https://github.com/legoater/linux/commit/6880924dc2cf7a47c446a708df528b72d9bf9134#diff-e466368d609006970aab53a7b840221fR575
+> 
+> but as of today, the benefits in speed are to be proven and the current 
+> implementation does not support vmalloc'ed buffers. So I can drop the 
+> goto without too much regrets (if you insist :)
 
-This allows using this parser with any flash driver that takes care of
-setting of_node (using mtd_set_of_node helper) correctly. Up to now
-support for "fixed-partitions" DT compatibility string was working only
-with flash drivers that were specifying "ofpart" (manually or by letting
-mtd use the default set of parsers).
+Nah, if you have further plans with this code, I don't mind either way.
 
-This matches existing bindings documentation.
-
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
- drivers/mtd/ofpart.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-index 2861c7079d7b..fb6f3df40e94 100644
---- a/drivers/mtd/ofpart.c
-+++ b/drivers/mtd/ofpart.c
-@@ -140,9 +140,16 @@ static int parse_ofpart_partitions(struct mtd_info *master,
- 	return ret;
- }
- 
-+static const struct of_device_id parse_ofpart_match_table[] = {
-+	{ .compatible = "fixed-partitions" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, parse_ofpart_match_table);
-+
- static struct mtd_part_parser ofpart_parser = {
- 	.parse_fn = parse_ofpart_partitions,
- 	.name = "ofpart",
-+	.of_match_table = parse_ofpart_match_table,
- };
- 
- static int parse_ofoldpart_partitions(struct mtd_info *master,
 -- 
-2.11.0
+Best regards,
+Marek Vasut
