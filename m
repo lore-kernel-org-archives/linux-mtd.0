@@ -1,27 +1,29 @@
-Received: from mail-io0-x22e.google.com ([2607:f8b0:4001:c06::22e])
+Received: from mail-io0-x244.google.com ([2607:f8b0:4001:c06::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d1GYP-0002vO-UR
- for linux-mtd@lists.infradead.org; Thu, 20 Apr 2017 18:11:43 +0000
-Received: by mail-io0-x22e.google.com with SMTP id o22so88354590iod.3
- for <linux-mtd@lists.infradead.org>; Thu, 20 Apr 2017 11:11:21 -0700 (PDT)
-Date: Thu, 20 Apr 2017 12:11:16 -0600
-From: Jens Axboe <axboe@kernel.dk>
-To: Jan Kara <jack@suse.cz>
-Cc: linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
- Petr Vandrovec <petr@vandrovec.name>, linux-nilfs@vger.kernel.org,
- cluster-devel@redhat.com, osd-dev@open-osd.org,
- codalist@coda.cs.cmu.edu, linux-afs@lists.infradead.org,
- ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
- ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
- v9fs-developer@lists.sourceforge.net, lustre-devel@lists.lustre.org
-Subject: Re: [PATCH 0/25 v3] fs: Convert all embedded bdis into separate ones
-Message-ID: <20170420181115.GA22378@kernel.dk>
-References: <20170412102449.16901-1-jack@suse.cz>
+ id 1d1KYh-0007tv-SE
+ for linux-mtd@lists.infradead.org; Thu, 20 Apr 2017 22:28:17 +0000
+Received: by mail-io0-x244.google.com with SMTP id h41so21677284ioi.1
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Apr 2017 15:27:54 -0700 (PDT)
+Date: Thu, 20 Apr 2017 15:27:50 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH] mtd: physmap_of: use OF helpers for reading strings
+Message-ID: <20170420222750.GH20555@google.com>
+References: <20170330155853.30349-1-zajec5@gmail.com>
+ <20170331100239.37a14f37@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20170412102449.16901-1-jack@suse.cz>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20170331100239.37a14f37@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,28 +33,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Apr 12 2017, Jan Kara wrote:
-> Hello,
+On Fri, Mar 31, 2017 at 10:02:39AM +0200, Boris Brezillon wrote:
+> On Thu, 30 Mar 2017 17:58:53 +0200
+> Rafał Miłecki <zajec5@gmail.com> wrote:
 > 
-> this is the third revision of the patch series which converts all embedded
-> occurences of struct backing_dev_info to use standalone dynamically allocated
-> structures. This makes bdi handling unified across all bdi users and generally
-> removes some boilerplate code from filesystems setting up their own bdi. It
-> also allows us to remove some code from generic bdi implementation.
+> > From: Rafał Miłecki <rafal@milecki.pl>
+> > 
+> > OF core code provides helpers for counting strings and reading them so
+> > use them instead of doing this manually. This simplifies the code a bit.
+> > 
+> > Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 > 
-> The patches were only compile-tested for most filesystems (I've tested
-> mounting only for NFS & btrfs) so fs maintainers please have a look whether
-> the changes look sound to you.
-> 
-> This series is based on top of bdi fixes that were merged into linux-block
-> git tree into for-next branch. I have pushed out the result as a branch to
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git bdi
-> 
-> Since all patches got reviewed by Christoph, can you please pick them up Jens?
-> Thanks!
+> Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Yep, picked up for 4.12. Thanks Jan!
-
--- 
-Jens Axboe
+Applied as a cleanup, while we figure out the future of this binding.
+With luck we can deprecate it (but not remove it, of course) and use
+something better in the generic code.
