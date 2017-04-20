@@ -1,25 +1,27 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+Received: from mail-io0-x22e.google.com ([2607:f8b0:4001:c06::22e])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d1Ft2-00013n-Rw
- for linux-mtd@lists.infradead.org; Thu, 20 Apr 2017 17:28:58 +0000
-Received: by mail-wm0-x241.google.com with SMTP id o81so12100145wmb.0
- for <linux-mtd@lists.infradead.org>; Thu, 20 Apr 2017 10:28:36 -0700 (PDT)
-Subject: Re: [PATCH v4 6/6] mtd: dataflash: Add flash_info for AT45DB641E
-To: Andrey Smirnov <andrew.smirnov@gmail.com>, linux-mtd@lists.infradead.org
-References: <20170420162952.5181-1-andrew.smirnov@gmail.com>
- <20170420162952.5181-6-andrew.smirnov@gmail.com>
-Cc: cphealy@gmail.com, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-kernel@vger.kernel.org
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <a1a00d99-ea79-3420-0afb-b2728459c2cf@gmail.com>
-Date: Thu, 20 Apr 2017 19:28:05 +0200
+ id 1d1GYP-0002vO-UR
+ for linux-mtd@lists.infradead.org; Thu, 20 Apr 2017 18:11:43 +0000
+Received: by mail-io0-x22e.google.com with SMTP id o22so88354590iod.3
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Apr 2017 11:11:21 -0700 (PDT)
+Date: Thu, 20 Apr 2017 12:11:16 -0600
+From: Jens Axboe <axboe@kernel.dk>
+To: Jan Kara <jack@suse.cz>
+Cc: linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+ Petr Vandrovec <petr@vandrovec.name>, linux-nilfs@vger.kernel.org,
+ cluster-devel@redhat.com, osd-dev@open-osd.org,
+ codalist@coda.cs.cmu.edu, linux-afs@lists.infradead.org,
+ ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+ ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ v9fs-developer@lists.sourceforge.net, lustre-devel@lists.lustre.org
+Subject: Re: [PATCH 0/25 v3] fs: Convert all embedded bdis into separate ones
+Message-ID: <20170420181115.GA22378@kernel.dk>
+References: <20170412102449.16901-1-jack@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20170420162952.5181-6-andrew.smirnov@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170412102449.16901-1-jack@suse.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,50 +31,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/20/2017 06:29 PM, Andrey Smirnov wrote:
-> Cc: cphealy@gmail.com
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Cc: Marek Vasut <marek.vasut@gmail.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
+On Wed, Apr 12 2017, Jan Kara wrote:
+> Hello,
+> 
+> this is the third revision of the patch series which converts all embedded
+> occurences of struct backing_dev_info to use standalone dynamically allocated
+> structures. This makes bdi handling unified across all bdi users and generally
+> removes some boilerplate code from filesystems setting up their own bdi. It
+> also allows us to remove some code from generic bdi implementation.
+> 
+> The patches were only compile-tested for most filesystems (I've tested
+> mounting only for NFS & btrfs) so fs maintainers please have a look whether
+> the changes look sound to you.
+> 
+> This series is based on top of bdi fixes that were merged into linux-block
+> git tree into for-next branch. I have pushed out the result as a branch to
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git bdi
+> 
+> Since all patches got reviewed by Christoph, can you please pick them up Jens?
+> Thanks!
 
-Acked-by: Marek Vasut <marek.vasut@gmail.com>
-
-> ---
-> 
-> Changes since [v3]:
-> 
-> 	- Update the patch ot use SUP_EXTID
-> 
-> No changes between v3 to v1.
-> 
-> [v3] http://lkml.kernel.org/r/20170419152305.17226-6-andrew.smirnov@gmail.com
-> 
-> 
->  drivers/mtd/devices/mtd_dataflash.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-> index 9342cc47..7e6cdfe 100644
-> --- a/drivers/mtd/devices/mtd_dataflash.c
-> +++ b/drivers/mtd/devices/mtd_dataflash.c
-> @@ -736,6 +736,9 @@ static struct flash_info dataflash_data[] = {
->  
->  	{ "AT45DB642x",  0x1f2800, 8192, 1056, 11, SUP_POW2PS},
->  	{ "at45db642d",  0x1f2800, 8192, 1024, 10, SUP_POW2PS | IS_POW2PS},
-> +
-> +	{ "AT45DB641E",  0x1f28000100, 32768, 264, 9, SUP_EXTID | SUP_POW2PS},
-> +	{ "at45db641e",  0x1f28000100, 32768, 256, 8, SUP_EXTID | SUP_POW2PS | IS_POW2PS},
->  };
->  
->  static struct flash_info *jedec_lookup(struct spi_device *spi,
-> 
-
+Yep, picked up for 4.12. Thanks Jan!
 
 -- 
-Best regards,
-Marek Vasut
+Jens Axboe
