@@ -1,24 +1,26 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1d1B0T-0003tf-J5
- for linux-mtd@lists.infradead.org; Thu, 20 Apr 2017 12:16:20 +0000
-Date: Thu, 20 Apr 2017 14:15:53 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Pavel Machek <pavel@ucw.cz>
-Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
- marek.vasut@gmail.com, cyrille.pitchen@atmel.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- mark.marshall@omicronenergy.com, b44839@freescale.com,
- prabhakar@freescale.com
-Subject: Re: fsl_ifc_nand: are blank pages protected by ECC?
-Message-ID: <20170420141553.1012a79a@bbrezillon>
-In-Reply-To: <20170420114057.GA4705@amd>
-References: <20170419121332.GA26979@amd> <20170419231804.5a04ed69@bbrezillon>
- <20170419221507.GA24914@amd> <20170420002748.5c76c9b9@bbrezillon>
- <20170420114057.GA4705@amd>
+Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d1CBd-0002H8-Ja
+ for linux-mtd@lists.infradead.org; Thu, 20 Apr 2017 13:31:55 +0000
+Received: by mail-wr0-x244.google.com with SMTP id 6so3193880wra.1
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Apr 2017 06:31:32 -0700 (PDT)
+Subject: Re: [PATCH 4/4] mtd: spi-nor: aspeed: use command mode for reads
+To: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
+ linux-mtd@lists.infradead.org
+References: <1492689397-4704-1-git-send-email-clg@kaod.org>
+ <1492689397-4704-5-git-send-email-clg@kaod.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <b28c97cc-1daf-c1dd-4a86-4f8bf6c46b2b@gmail.com>
+Date: Thu, 20 Apr 2017 15:31:30 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1492689397-4704-5-git-send-email-clg@kaod.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,45 +30,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 20 Apr 2017 13:40:57 +0200
-Pavel Machek <pavel@ucw.cz> wrote:
-
-> Hi!
+On 04/20/2017 01:56 PM, Cédric Le Goater wrote:
+> When reading flash contents, try to use the "command mode" if the AHB
+> window configured for the flash module is big enough. Else, just fall
+> back to the "user mode" to perform the read.
 > 
-> > > Would it make sense to only do hweight if *bitmap != ~0ULL ? Would it
-> > > make sense to only check for bitflips > bitflips_threshold each 128
-> > > bytes or something like that?  
-> > 
-> > I didn't go as far as you did and simply assumed hweight32/64() were
-> > already optimized. Feel free to propose extra improvements.  
+> Signed-off-by: Cédric Le Goater <clg@kaod.org>
+> ---
 > 
-> I'd propose this one (only compile tested, sorry, not sure how to test
-> this one). If we see ~0UL, there's no need for hweight, and no need to
-> check number of bitflips. So this should be net win.
-
-Looks good to me. Can you send a patch with a real commit message?
-
-Thanks,
-
-Boris
-
+>  Changes since initial version :
 > 
-> Signed-off-by: Pavel Machek <pavel@denx.de>
+>  - rebased on current patchset which removed DMA support
 > 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index b0524f8..96c27ec 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -1357,7 +1357,10 @@ static int nand_check_erased_buf(void *buf, int len, int bitflips_threshold)
+>  drivers/mtd/spi-nor/aspeed-smc.c | 27 ++++++++++++++++++++++++++-
+>  1 file changed, 26 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
+> index 60c020482946..43015aec4557 100644
+> --- a/drivers/mtd/spi-nor/aspeed-smc.c
+> +++ b/drivers/mtd/spi-nor/aspeed-smc.c
+> @@ -394,6 +394,31 @@ static ssize_t aspeed_smc_read_user(struct spi_nor *nor, loff_t from,
 >  
->  	for (; len >= sizeof(long);
->  	     len -= sizeof(long), bitmap += sizeof(long)) {
-> -		weight = hweight_long(*((unsigned long *)bitmap));
-> +		unsigned long d = *((unsigned long *)bitmap);
-> +		if (d == ~0UL)
-> +			continue;
-> +		weight = hweight_long(d);
->  		bitflips += BITS_PER_LONG - weight;
->  		if (unlikely(bitflips > bitflips_threshold))
->  			return -EBADMSG;
+>  	aspeed_smc_read_from_ahb(read_buf, chip->ahb_base, len);
+>  	aspeed_smc_stop_user(nor);
+> +	return 0;
+> +}
+> +
+> +static ssize_t aspeed_smc_read(struct spi_nor *nor, loff_t from, size_t len,
+> +			       u_char *read_buf)
+> +{
+> +	struct aspeed_smc_chip *chip = nor->priv;
+> +
+> +	/*
+> +	 * The AHB window configured for the chip is too small for the
+> +	 * read offset. Use the "User mode" of the controller to
+> +	 * perform the read.
+> +	 */
+> +	if (from >= chip->ahb_window_size) {
+> +		aspeed_smc_read_user(nor, from, len, read_buf);
+> +		goto out;
+
+What about turning this into dumb if () {} else {} and dropping the goto ?
+
+> +	}
+> +
+> +	/*
+> +	 * Use the "Command mode" to do a direct read from the AHB
+> +	 * window configured for the chip. This should be the default.
+> +	 */
+> +	memcpy_fromio(read_buf, chip->ahb_base + from, len);
+> +
+> +out:
+>  	return len;
+>  }
+>  
+> @@ -817,7 +842,7 @@ static int aspeed_smc_setup_flash(struct aspeed_smc_controller *controller,
+>  		nor->dev = dev;
+>  		nor->priv = chip;
+>  		spi_nor_set_flash_node(nor, child);
+> -		nor->read = aspeed_smc_read_user;
+> +		nor->read = aspeed_smc_read;
+>  		nor->write = aspeed_smc_write_user;
+>  		nor->read_reg = aspeed_smc_read_reg;
+>  		nor->write_reg = aspeed_smc_write_reg;
 > 
+
+
+-- 
+Best regards,
+Marek Vasut
