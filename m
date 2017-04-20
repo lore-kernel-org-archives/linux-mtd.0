@@ -1,25 +1,23 @@
-Received: from mail-oi0-f66.google.com ([209.85.218.66])
+Received: from mail-oi0-x241.google.com ([2607:f8b0:4003:c06::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d1EEI-0002uk-1G
- for linux-mtd@lists.infradead.org; Thu, 20 Apr 2017 15:42:49 +0000
-Received: by mail-oi0-f66.google.com with SMTP id m34so1814479oik.2
- for <linux-mtd@lists.infradead.org>; Thu, 20 Apr 2017 08:42:25 -0700 (PDT)
-Date: Thu, 20 Apr 2017 10:42:22 -0500
-From: Rob Herring <robh@kernel.org>
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: ralf@linux-mips.org, linux-mips@linux-mips.org,
- linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
- devicetree@vger.kernel.org, martin.blumenstingl@googlemail.com,
- john@phrozen.org, linux-spi@vger.kernel.org, hauke.mehrtens@intel.com
-Subject: Re: [PATCH 12/13] Documentation: DT: MIPS: lantiq: Add docs for the
- RCU bindings
-Message-ID: <20170420154222.wr6njt4kpfmkibh6@rob-hp-laptop>
-References: <20170417192942.32219-1-hauke@hauke-m.de>
- <20170417192942.32219-13-hauke@hauke-m.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170417192942.32219-13-hauke@hauke-m.de>
+ id 1d1EyT-0000A8-5Q
+ for linux-mtd@lists.infradead.org; Thu, 20 Apr 2017 16:30:31 +0000
+Received: by mail-oi0-x241.google.com with SMTP id a189so11317667oib.0
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Apr 2017 09:30:09 -0700 (PDT)
+From: Andrey Smirnov <andrew.smirnov@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: Andrey Smirnov <andrew.smirnov@gmail.com>, cphealy@gmail.com,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 2/6] mtd: dataflash: Improve coding style in jedec_probe()
+Date: Thu, 20 Apr 2017 09:29:48 -0700
+Message-Id: <20170420162952.5181-2-andrew.smirnov@gmail.com>
+In-Reply-To: <20170420162952.5181-1-andrew.smirnov@gmail.com>
+References: <20170420162952.5181-1-andrew.smirnov@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,120 +27,113 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Apr 17, 2017 at 09:29:41PM +0200, Hauke Mehrtens wrote:
-> From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> 
-> This adds the initial documentation for the RCU module (a MFD device
-> which provides USB PHYs, reset controllers and more).
+Change the following:
 
-This should come before the other patches.
+   - Replace indentation between type and name of local variable from
+     tabs to spaces
 
-> 
-> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
-> ---
->  .../devicetree/bindings/mips/lantiq/rcu.txt        | 82 ++++++++++++++++++++++
->  1 file changed, 82 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mips/lantiq/rcu.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/mips/lantiq/rcu.txt b/Documentation/devicetree/bindings/mips/lantiq/rcu.txt
-> new file mode 100644
-> index 000000000000..9e5b1e7493e4
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mips/lantiq/rcu.txt
-> @@ -0,0 +1,82 @@
-> +Lantiq XWAY SoC RCU binding
-> +===========================
-> +
-> +This binding describes the RCU (reset controller unit) multifunction device,
-> +where each sub-device has it's own set of registers.
-> +
-> +
-> +-------------------------------------------------------------------------------
-> +Required properties:
-> +- compatible	: The first and second values must be: "simple-mfd", "syscon"
-> +- reg		: The address and length of the system control registers
-> +
-> +
-> +-------------------------------------------------------------------------------
-> +Example of the RCU bindings on a xRX200 SoC:
-> +	rcu0: rcu@203000 {
-> +		compatible = "simple-mfd", "syscon";
+   - Replace magic number 0x1F with CFI_MFR_ATMEL macro
 
-Needs an SoC specific compatible string here.
+   - Replace variable 'tmp' with 'ret' and 'i' where appropriate
 
-> +		reg = <0x203000 0x100>;
-> +		big-endian;
-> +
-> +		gphy0: rcu_gphy@0 {
-> +			compatible = "lantiq,xrx200a2x-rcu-gphy";
-> +			lantiq,rcu-syscon = <&rcu0 0x20>;
+   - Reformat multi-line comments and add newlines where appropriate
 
-So these are already child nodes. You can get rid of this and use 
-reg/ranges instead.
+No functional change intended.
 
-> +			resets = <&rcu_reset0 31>;
-> +			reset-names = "gphy";
-> +			lantiq,gphy-mode = <GPHY_MODE_GE>;
-> +			clocks = <&pmu0 XRX200_PMU_GATE_GPHY>;
-> +			clock-names = "gphy";
-> +		};
-> +
-> +		gphy1: rcu_gphy@1 {
-> +			compatible = "lantiq,xrx200a2x-rcu-gphy";
-> +			lantiq,rcu-syscon = <&rcu0 0x68>;
-> +			resets = <&rcu_reset0 29>;
-> +			reset-names = "gphy";
-> +			lantiq,gphy-mode = <GPHY_MODE_FE>;
-> +			clocks = <&pmu0 XRX200_PMU_GATE_GPHY>;
-> +			clock-names = "gphy";
-> +		};
-> +
-> +		rcu_reset0: rcu_reset@0 {
-> +			compatible = "lantiq,rcu-reset";
-> +			lantiq,rcu-syscon = <&rcu0 0x10 0x14>;
-> +			#reset-cells = <1>;
-> +			reset-request = <31>, <29>, <21>, <19>, <16>, <12>;
-> +			reset-status  = <30>, <28>, <16>, <25>, <5>,  <24>;
-> +		};
-> +
-> +		rcu_reset1: rcu_reset@1 {
-> +			compatible = "lantiq,rcu-reset";
-> +			lantiq,rcu-syscon = <&rcu0 0x48 0x24>;
-> +			#reset-cells = <1>;
-> +		};
-> +
-> +		usb_phys0: rcu-usb2-phy@0 {
-> +			compatible = "lantiq,xrx200-rcu-usb2-phy";
-> +
-> +			lantiq,rcu-syscon = <&rcu0 0x18 0x38>;
-> +			resets = <&rcu_reset1 4>, <&rcu_reset0 4>;
-> +			reset-names = "phy", "ctrl";
-> +			#phy-cells = <0>;
-> +		};
-> +
-> +		usb_phys1: rcu-usb2-phy@1 {
-> +			compatible = "lantiq,xrx200-rcu-usb2-phy";
-> +
-> +			lantiq,rcu-syscon = <&rcu0 0x34 0x3C>;
-> +			resets = <&rcu_reset1 5>, <&rcu_reset0 4>;
-> +			reset-names = "phy", "ctrl";
-> +			#phy-cells = <0>;
-> +		};
-> +
-> +		reboot {
-> +			compatible = "syscon-reboot";
-> +			regmap = <&rcu0>;
-> +			offset = <0x10>;
-> +			mask = <0x40000000>;
-> +		};
-> +
-> +		/* more sub-device nodes (USB PHY, etc.) */
-> +	};
-> +
-> -- 
-> 2.11.0
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe devicetree" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Cc: cphealy@gmail.com
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: linux-kernel@vger.kernel.org
+Acked-by: Marek Vasut <marek.vasut@gmail.com>
+Signed-off-by: Andrey Smirnov <andrew.smirnov@gmail.com>
+---
+
+No changes since [v3]
+
+Changes since [v2]:
+
+	- Re-worded commit message
+
+	- Collected Acked-by from Marek
+
+Not present in v1
+
+[v2] http://lkml.kernel.org/r/20170418142127.23301-2-andrew.smirnov@gmail.com
+[v3] http://lkml.kernel.org/r/20170419152305.17226-2-andrew.smirnov@gmail.com
+
+ drivers/mtd/devices/mtd_dataflash.c | 31 +++++++++++++++++--------------
+ 1 file changed, 17 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
+index a566231..5b7a8c3 100644
+--- a/drivers/mtd/devices/mtd_dataflash.c
++++ b/drivers/mtd/devices/mtd_dataflash.c
+@@ -82,6 +82,7 @@
+ #define OP_WRITE_SECURITY_REVC	0x9A
+ #define OP_WRITE_SECURITY	0x9B	/* revision D */
+ 
++#define CFI_MFR_ATMEL		0x1F
+ 
+ struct dataflash {
+ 	u8			command[4];
+@@ -738,14 +739,15 @@ static struct flash_info dataflash_data[] = {
+ 
+ static struct flash_info *jedec_probe(struct spi_device *spi)
+ {
+-	int			tmp;
+-	u8			code = OP_READ_ID;
+-	u8			id[3];
+-	u32			jedec;
+-	struct flash_info	*info;
++	int ret, i;
++	u8 code = OP_READ_ID;
++	u8 id[3];
++	u32 jedec;
++	struct flash_info *info;
+ 	int status;
+ 
+-	/* JEDEC also defines an optional "extended device information"
++	/*
++	 * JEDEC also defines an optional "extended device information"
+ 	 * string for after vendor-specific data, after the three bytes
+ 	 * we use here.  Supporting some chips might require using it.
+ 	 *
+@@ -753,13 +755,14 @@ static struct flash_info *jedec_probe(struct spi_device *spi)
+ 	 * That's not an error; only rev C and newer chips handle it, and
+ 	 * only Atmel sells these chips.
+ 	 */
+-	tmp = spi_write_then_read(spi, &code, 1, id, 3);
+-	if (tmp < 0) {
++	ret = spi_write_then_read(spi, &code, 1, id, 3);
++	if (ret < 0) {
+ 		pr_debug("%s: error %d reading JEDEC ID\n",
+-			dev_name(&spi->dev), tmp);
+-		return ERR_PTR(tmp);
++			dev_name(&spi->dev), ret);
++		return ERR_PTR(ret);
+ 	}
+-	if (id[0] != 0x1f)
++
++	if (id[0] != CFI_MFR_ATMEL)
+ 		return NULL;
+ 
+ 	jedec = id[0];
+@@ -768,9 +771,9 @@ static struct flash_info *jedec_probe(struct spi_device *spi)
+ 	jedec = jedec << 8;
+ 	jedec |= id[2];
+ 
+-	for (tmp = 0, info = dataflash_data;
+-			tmp < ARRAY_SIZE(dataflash_data);
+-			tmp++, info++) {
++	for (i = 0, info = dataflash_data;
++			i < ARRAY_SIZE(dataflash_data);
++			i++, info++) {
+ 		if (info->jedec_id == jedec) {
+ 			pr_debug("%s: OTP, sector protect%s\n",
+ 				dev_name(&spi->dev),
+-- 
+2.9.3
