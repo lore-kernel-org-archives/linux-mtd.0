@@ -1,10 +1,10 @@
-Received: from 12.mo4.mail-out.ovh.net ([178.33.104.253])
+Received: from 6.mo4.mail-out.ovh.net ([188.165.36.253])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d1Ai8-0003jO-7A
- for linux-mtd@lists.infradead.org; Thu, 20 Apr 2017 11:57:22 +0000
+ id 1d1AiD-0003k9-Gp
+ for linux-mtd@lists.infradead.org; Thu, 20 Apr 2017 11:57:27 +0000
 Received: from player159.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo4.mail-out.ovh.net (Postfix) with ESMTP id 0D9845F61E
- for <linux-mtd@lists.infradead.org>; Thu, 20 Apr 2017 13:56:55 +0200 (CEST)
+ by mo4.mail-out.ovh.net (Postfix) with ESMTP id 4F5575F7FA
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Apr 2017 13:57:03 +0200 (CEST)
 From: =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
 To: linux-mtd@lists.infradead.org
 Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
@@ -14,10 +14,11 @@ Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>,
  =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
-Subject: [PATCH 0/4] mtd: spi-nor: aspeed: add dual read and command mode
- support
-Date: Thu, 20 Apr 2017 13:56:33 +0200
-Message-Id: <1492689397-4704-1-git-send-email-clg@kaod.org>
+Subject: [PATCH 1/4] mtd: spi-nor: aspeed: remove dummies from keep mask
+Date: Thu, 20 Apr 2017 13:56:34 +0200
+Message-Id: <1492689397-4704-2-git-send-email-clg@kaod.org>
+In-Reply-To: <1492689397-4704-1-git-send-email-clg@kaod.org>
+References: <1492689397-4704-1-git-send-email-clg@kaod.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -30,28 +31,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+There is no need to keep the dummy bytes in the control register if
+the command mode is not kept also. This could lead to an inconsistent
+setting : normal read mode (command 0x3) and dummy bytes. It is to be
+noted that the HW allows such a configuration.
 
-Here is a short series adding support for Dual read and for the
-controller mode "Command". The later is to perform direct memory
-access of the flash contents on the AHB Bus. A prereq to use this mode
-is to configure the segment registers of the controller which define
-the mapping window of the chips on the AHB bus.
+Signed-off-by: Cédric Le Goater <clg@kaod.org>
+---
+ drivers/mtd/spi-nor/aspeed-smc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Thanks,
-
-C.
-
-Cédric Le Goater (3):
-  mtd: spi-nor: aspeed: remove dummies from keep mask
-  mtd: spi-nor: aspeed: configure chip window on AHB bus
-  mtd: spi-nor: aspeed: use command mode for reads
-
-Robert Lippert (1):
-  mtd: spi-nor: aspeed: add support for SPI dual IO read mode
-
- drivers/mtd/spi-nor/aspeed-smc.c | 205 ++++++++++++++++++++++++++++++++++++---
- 1 file changed, 194 insertions(+), 11 deletions(-)
-
+diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
+index 56051d30f000..2940f2098420 100644
+--- a/drivers/mtd/spi-nor/aspeed-smc.c
++++ b/drivers/mtd/spi-nor/aspeed-smc.c
+@@ -180,8 +180,7 @@ struct aspeed_smc_controller {
+ 
+ #define CONTROL_KEEP_MASK						\
+ 	(CONTROL_AAF_MODE | CONTROL_CE_INACTIVE_MASK | CONTROL_CLK_DIV4 | \
+-	 CONTROL_IO_DUMMY_MASK | CONTROL_CLOCK_FREQ_SEL_MASK |		\
+-	 CONTROL_LSB_FIRST | CONTROL_CLOCK_MODE_3)
++	 CONTROL_CLOCK_FREQ_SEL_MASK | CONTROL_LSB_FIRST | CONTROL_CLOCK_MODE_3)
+ 
+ /*
+  * The Segment Register uses a 8MB unit to encode the start address
 -- 
 2.7.4
