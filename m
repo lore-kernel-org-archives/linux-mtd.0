@@ -1,24 +1,22 @@
-Received: from mail-wm0-x232.google.com ([2a00:1450:400c:c09::232])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d1CBp-0002J5-OA
- for linux-mtd@lists.infradead.org; Thu, 20 Apr 2017 13:32:08 +0000
-Received: by mail-wm0-x232.google.com with SMTP id r190so48428922wme.1
- for <linux-mtd@lists.infradead.org>; Thu, 20 Apr 2017 06:31:45 -0700 (PDT)
-Subject: Re: [PATCH 3/4] mtd: spi-nor: aspeed: configure chip window on AHB bus
-To: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
- linux-mtd@lists.infradead.org
+ id 1d1CDq-00040z-Jd
+ for linux-mtd@lists.infradead.org; Thu, 20 Apr 2017 13:34:12 +0000
+Subject: Re: [PATCH 4/4] mtd: spi-nor: aspeed: use command mode for reads
+To: Marek Vasut <marek.vasut@gmail.com>, =?UTF-8?Q?C=c3=a9dric_Le_Goater?=
+ <clg@kaod.org>, linux-mtd@lists.infradead.org
 References: <1492689397-4704-1-git-send-email-clg@kaod.org>
- <1492689397-4704-4-git-send-email-clg@kaod.org>
-Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
+ <1492689397-4704-5-git-send-email-clg@kaod.org>
+ <b28c97cc-1daf-c1dd-4a86-4f8bf6c46b2b@gmail.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <1ef778ad-30e1-d80a-aaf9-e987c9e23fed@gmail.com>
-Date: Thu, 20 Apr 2017 15:30:41 +0200
+ David Woodhouse <dwmw2@infradead.org>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <45f74960-2b75-8e6c-b2d4-5bf036222a9d@nod.at>
+Date: Thu, 20 Apr 2017 15:33:42 +0200
 MIME-Version: 1.0
-In-Reply-To: <1492689397-4704-4-git-send-email-clg@kaod.org>
+In-Reply-To: <b28c97cc-1daf-c1dd-4a86-4f8bf6c46b2b@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,25 +28,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/20/2017 01:56 PM, Cédric Le Goater wrote:
-> The segment registers of the SMC controller provide a way to configure
-> the mapping windows of the chips on the AHB bus. The settings are
-> required to be correct when the controller operates in Command mode,
-> which is the case for DMAs and the LPC mapping.
+Am 20.04.2017 um 15:31 schrieb Marek Vasut:
+> On 04/20/2017 01:56 PM, Cédric Le Goater wrote:
+>> When reading flash contents, try to use the "command mode" if the AHB
+>> window configured for the flash module is big enough. Else, just fall
+>> back to the "user mode" to perform the read.
+>>
+>> Signed-off-by: Cédric Le Goater <clg@kaod.org>
+>> ---
+>>
+>>  Changes since initial version :
+>>
+>>  - rebased on current patchset which removed DMA support
+>>
+>>  drivers/mtd/spi-nor/aspeed-smc.c | 27 ++++++++++++++++++++++++++-
+>>  1 file changed, 26 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
+>> index 60c020482946..43015aec4557 100644
+>> --- a/drivers/mtd/spi-nor/aspeed-smc.c
+>> +++ b/drivers/mtd/spi-nor/aspeed-smc.c
+>> @@ -394,6 +394,31 @@ static ssize_t aspeed_smc_read_user(struct spi_nor *nor, loff_t from,
+>>  
+>>  	aspeed_smc_read_from_ahb(read_buf, chip->ahb_base, len);
+>>  	aspeed_smc_stop_user(nor);
+>> +	return 0;
+>> +}
+>> +
+>> +static ssize_t aspeed_smc_read(struct spi_nor *nor, loff_t from, size_t len,
+>> +			       u_char *read_buf)
+>> +{
+>> +	struct aspeed_smc_chip *chip = nor->priv;
+>> +
+>> +	/*
+>> +	 * The AHB window configured for the chip is too small for the
+>> +	 * read offset. Use the "User mode" of the controller to
+>> +	 * perform the read.
+>> +	 */
+>> +	if (from >= chip->ahb_window_size) {
+>> +		aspeed_smc_read_user(nor, from, len, read_buf);
+>> +		goto out;
 > 
-> This tries to set the segment registers of each chip depending on the
-> size of the flash device and depending on the previous segment
-> settings, in order to have a contiguous window across multiple chips.
-> 
-> Unfortunately, the AST2500 SPI controller has a bug and it is not
-> possible to configure a full 128MB window for a chip of the same
-> size. The window size needs to be restricted to 120MB. This issue only
-> applies to CE0.
-> 
-> Signed-off-by: Cédric Le Goater <clg@kaod.org>
+> What about turning this into dumb if () {} else {} and dropping the goto ?
 
-Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
+This is a matter of taste...
 
--- 
-Best regards,
-Marek Vasut
+Thanks,
+//richard
