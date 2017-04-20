@@ -1,29 +1,24 @@
 Received: from mail-io0-x244.google.com ([2607:f8b0:4001:c06::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d1KYh-0007tv-SE
- for linux-mtd@lists.infradead.org; Thu, 20 Apr 2017 22:28:17 +0000
-Received: by mail-io0-x244.google.com with SMTP id h41so21677284ioi.1
- for <linux-mtd@lists.infradead.org>; Thu, 20 Apr 2017 15:27:54 -0700 (PDT)
-Date: Thu, 20 Apr 2017 15:27:50 -0700
+ id 1d1Kh3-0002yT-Dp
+ for linux-mtd@lists.infradead.org; Thu, 20 Apr 2017 22:36:55 +0000
+Received: by mail-io0-x244.google.com with SMTP id d203so21806390iof.2
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Apr 2017 15:36:33 -0700 (PDT)
+Date: Thu, 20 Apr 2017 15:36:29 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH] mtd: physmap_of: use OF helpers for reading strings
-Message-ID: <20170420222750.GH20555@google.com>
-References: <20170330155853.30349-1-zajec5@gmail.com>
- <20170331100239.37a14f37@bbrezillon>
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Cc: ralf@linux-mips.org, linux-mips@linux-mips.org,
+ linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+ martin.blumenstingl@googlemail.com, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, john@phrozen.org, hauke.mehrtens@intel.com
+Subject: Re: [PATCH 02/13] mtd: lantiq-flash: drop check of boot select
+Message-ID: <20170420223629.GI20555@google.com>
+References: <20170417192942.32219-1-hauke@hauke-m.de>
+ <20170417192942.32219-3-hauke@hauke-m.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20170331100239.37a14f37@bbrezillon>
+In-Reply-To: <20170417192942.32219-3-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,19 +28,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Mar 31, 2017 at 10:02:39AM +0200, Boris Brezillon wrote:
-> On Thu, 30 Mar 2017 17:58:53 +0200
-> Rafał Miłecki <zajec5@gmail.com> wrote:
+On Mon, Apr 17, 2017 at 09:29:31PM +0200, Hauke Mehrtens wrote:
+> Do not check which flash type the SoC was booted from before
+> using this driver. Assume that the device tree is correct and use this
+> driver when it was added to device tree. This also removes a build
+> dependency to the SoC code.
 > 
-> > From: Rafał Miłecki <rafal@milecki.pl>
-> > 
-> > OF core code provides helpers for counting strings and reading them so
-> > use them instead of doing this manually. This simplifies the code a bit.
-> > 
-> > Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-> 
-> Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
 
-Applied as a cleanup, while we figure out the future of this binding.
-With luck we can deprecate it (but not remove it, of course) and use
-something better in the generic code.
+Presuming you get the platform details right (i.e., device tree), I'm
+happy with this. It's not really this driver's job to check your boot
+strappings.
+
+Acked-by: Brian Norris <computersforpeace@gmail.com>
