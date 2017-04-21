@@ -7,9 +7,11 @@ Cc: robh+dt@kernel.org, mark.rutland@arm.com, shawnguo@kernel.org,
  LW@KARO-electronics.de, linux-mtd@lists.infradead.org,
  devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>
-Subject: [PATCH 0/5] mtd: nand: gpmi: add i.MX 7 support
-Date: Thu, 20 Apr 2017 18:07:50 -0700
-Message-Id: <20170421010755.18025-1-stefan@agner.ch>
+Subject: [PATCH 2/5] mtd: nand: gpmi: add i.MX 7 SoC support
+Date: Thu, 20 Apr 2017 18:07:52 -0700
+Message-Id: <20170421010755.18025-3-stefan@agner.ch>
+In-Reply-To: <20170421010755.18025-1-stefan@agner.ch>
+References: <20170421010755.18025-1-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,30 +21,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patchset adds support for i.MX 7 SoC for the GPMI NAND controller.
-There have been similar patchsets already:
-https://lkml.org/lkml/2016/2/23/912
+Add support for i.MX 7 SoC. The i.MX 7 has a slightly different
+clock architecture requiring only two clocks to be referenced.
+The IP is slightly different compared to i.MX 6SoloX, but currently
+none of this differences are in use so there is no detection needed
+and the driver can reuse IS_MX6SX.
 
-However, this patchset does not make use of any of the new features.
-The current feature set seems to work fine, I successfully run the MTD
-tests on a Colibri iMX7.
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
---
-Stefan
-
-Stefan Agner (5):
-  mtd: nand: gpmi: unify clock handling
-  mtd: nand: gpmi: add i.MX 7 SoC support
-  mtd: gpmi: document current clock requirements
-  ARM: dts: imx7: add GPMI NAND
-  ARM: dts: imx7-colibri: add NAND support
-
- .../devicetree/bindings/mtd/gpmi-nand.txt          | 14 +++++-
- arch/arm/boot/dts/imx7-colibri.dtsi                |  9 ++++
- arch/arm/boot/dts/imx7s.dtsi                       | 31 ++++++++++++
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c             | 56 +++++++++++++---------
- drivers/mtd/nand/gpmi-nand/gpmi-nand.h             |  2 +
- 5 files changed, 88 insertions(+), 24 deletions(-)
-
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index c8bbf5da2ab8..4a45d37ddc80 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -127,6 +127,18 @@ static const struct gpmi_devdata gpmi_devdata_imx6sx = {
+ 	.clks_count = ARRAY_SIZE(gpmi_clks_for_mx6),
+ };
+ 
++static const char * const gpmi_clks_for_mx7d[] = {
++	"gpmi_io", "gpmi_bch_apb",
++};
++
++static const struct gpmi_devdata gpmi_devdata_imx7d = {
++	.type = IS_MX6SX,
++	.bch_max_ecc_strength = 62,
++	.max_chain_delay = 12,
++	.clks = gpmi_clks_for_mx7d,
++	.clks_count = ARRAY_SIZE(gpmi_clks_for_mx7d),
++};
++
+ static irqreturn_t bch_irq(int irq, void *cookie)
+ {
+ 	struct gpmi_nand_data *this = cookie;
+@@ -2071,6 +2083,9 @@ static const struct of_device_id gpmi_nand_id_table[] = {
+ 	}, {
+ 		.compatible = "fsl,imx6sx-gpmi-nand",
+ 		.data = &gpmi_devdata_imx6sx,
++	}, {
++		.compatible = "fsl,imx7d-gpmi-nand",
++		.data = &gpmi_devdata_imx7d,
+ 	}, {}
+ };
+ MODULE_DEVICE_TABLE(of, gpmi_nand_id_table);
 -- 
 2.12.2
