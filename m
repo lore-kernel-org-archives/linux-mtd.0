@@ -1,23 +1,24 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1d1YwQ-0007Hq-CJ
- for linux-mtd@lists.infradead.org; Fri, 21 Apr 2017 13:49:44 +0000
-Date: Fri, 21 Apr 2017 15:49:03 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Pavel Machek <pavel@ucw.cz>
-Cc: Dipen.Dudhat@freescale.com, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com,
- cyrille.pitchen@atmel.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, mark.marshall@omicronenergy.com,
- b44839@freescale.com, prabhakar@freescale.com
-Subject: Re: fsl_ifc_nand: are blank pages protected by ECC?
-Message-ID: <20170421154903.2782cd06@bbrezillon>
-In-Reply-To: <20170421133721.GA15332@amd>
-References: <20170419121332.GA26979@amd> <20170419231804.5a04ed69@bbrezillon>
- <20170421100813.GA4332@amd> <20170421133721.GA15332@amd>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+Date: Fri, 21 Apr 2017 09:19:56 -0700
+From: Stefan Agner <stefan@agner.ch>
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, richard@nod.at,
+ cyrille.pitchen@atmel.com, robh+dt@kernel.org, mark.rutland@arm.com,
+ shawnguo@kernel.org, kernel@pengutronix.de, han.xu@nxp.com,
+ fabio.estevam@freescale.com, LW@karo-electronics.de,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/5] mtd: nand: gpmi: add i.MX 7 SoC support
+In-Reply-To: <8377dadc-043f-5932-cb13-3367db38a6dd@gmail.com>
+References: <20170421010755.18025-1-stefan@agner.ch>
+ <20170421010755.18025-3-stefan@agner.ch>
+ <af3fe671-c5fb-d3cf-c891-e6b7c973baa1@gmail.com>
+ <5cf26d2b020392c875464c7504a9fb5b@agner.ch>
+ <8377dadc-043f-5932-cb13-3367db38a6dd@gmail.com>
+Message-ID: <494a7bc044457240a302d92b3a50b8e5@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,167 +28,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 21 Apr 2017 15:37:21 +0200
-Pavel Machek <pavel@ucw.cz> wrote:
-
-> Hi!
+On 2017-04-21 06:08, Marek Vasut wrote:
+> On 04/21/2017 05:15 AM, Stefan Agner wrote:
+>> On 2017-04-20 19:03, Marek Vasut wrote:
+>>> On 04/21/2017 03:07 AM, Stefan Agner wrote:
+>>>> Add support for i.MX 7 SoC. The i.MX 7 has a slightly different
+>>>> clock architecture requiring only two clocks to be referenced.
+>>>> The IP is slightly different compared to i.MX 6SoloX, but currently
+>>>> none of this differences are in use so there is no detection needed
+>>>> and the driver can reuse IS_MX6SX.
+>>>>
+>>>> Signed-off-by: Stefan Agner <stefan@agner.ch>
+>>>> ---
+>>>>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 15 +++++++++++++++
+>>>>  1 file changed, 15 insertions(+)
+>>>>
+>>>> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+>>>> index c8bbf5da2ab8..4a45d37ddc80 100644
+>>>> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+>>>> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+>>>> @@ -127,6 +127,18 @@ static const struct gpmi_devdata gpmi_devdata_imx6sx = {
+>>>>  	.clks_count = ARRAY_SIZE(gpmi_clks_for_mx6),
+>>>>  };
+>>>>
+>>>> +static const char * const gpmi_clks_for_mx7d[] = {
+>>>> +	"gpmi_io", "gpmi_bch_apb",
+>>>> +};
+>>>> +
+>>>> +static const struct gpmi_devdata gpmi_devdata_imx7d = {
+>>>> +	.type = IS_MX6SX,
+>>>
+>>> Would it make sense to use IS_MX7 here already to prevent future surprises ?
+>>>
+>>
+>> Yeah I was thinking we can do it once we have an actual reason to
+>> distinguish.
 > 
-> > (Added driver author to the cc list, maybe he can help).  
+> So what are the differences anyway ?
 > 
-> > > > UBIFS complains:
-> > > > 
-> > > > UBIFS error (pid 931): ubifs_scan: corrupt empty space at LEB 282:252630
-> > > > UBIFS error (pid 931): ubifs_scanned_corruption: corruption at LEB 282:252630
-> > > > UBIFS error (pid 931): ubifs_scanned_corruption: first 1322 bytes from LEB 282:252630
-> > > > UBIFS error (pid 931): ubifs_scan: LEB 282 scanning failed  
-> ...
-> > > > is_blank() checks for all 0xff's, so single-bit 0xfe in the data will
-> > > > result in_blank() == 0 and uncorrectable error being signaled.
-> > > > 
-> > > > Should the driver be modified somehow?  
-> > > 
-> > > Yep, nand_check_erased_ecc_chunk() [1] is here to help you check this
-> > > case, unfortunately, it's not directly applicable here, because this  
+
+I did not check the details, but Han's patchset (link in cover letter)
+mentions:
+"add the HW bitflip detection and correction for i.MX6QP and i.MX7D."...
+
+>> But then, adding the type would only require 2-3 lines of change if I
+>> add it to the GPMI_IS_MX6 macro...
 > 
-> Maybe I figured it out. Unfortunately, it is only compile tested. Does
-> it look approximately right?
+> Then at least add a comment because using type = IMX6SX right under
+> gpmi_data_mx7d can trigger some head-scratching. And put my R-B on V2.
 
-Yep that's definitely better. Just one thing missing (see below),
-otherwise it looks good.
+FWIW, I mentioned it in the commit message.
 
-> 
-> Thanks,
-> 								Pavel
-> 
-> --- a/drivers/mtd/nand/fsl_ifc_nand.c
-> +++ b/drivers/mtd/nand/fsl_ifc_nand.c
-> @@ -171,32 +171,6 @@ static void set_addr(struct mtd_info *mtd, int column, int page_addr, int oob)
->  		ifc_nand_ctrl->index += mtd->writesize;
->  }
->  
-> -static int is_blank(struct mtd_info *mtd, unsigned int bufnum)
-> -{
-> -	struct nand_chip *chip = mtd_to_nand(mtd);
-> -	struct fsl_ifc_mtd *priv = nand_get_controller_data(chip);
-> -	u8 __iomem *addr = priv->vbase + bufnum * (mtd->writesize * 2);
-> -	u32 __iomem *mainarea = (u32 __iomem *)addr;
-> -	u8 __iomem *oob = addr + mtd->writesize;
-> -	struct mtd_oob_region oobregion = { };
-> -	int i, section = 0;
-> -
-> -	i = nand_check_erased_buf(&mainarea[i], mtd->writesize, 0);
-> -	if (i)
-> -		return 0;
-> -
-> -	mtd_ooblayout_ecc(mtd, section++, &oobregion);
-> -	while (oobregion.length) {
-> -		i = nand_check_erased_buf(&oob[oobregion.offset], oobregion.length, 0);
-> -		if (i)
-> -			return 0;
-> -
-> -		mtd_ooblayout_ecc(mtd, section++, &oobregion);
-> -	}
-> -
-> -	return 1;
-> -}
-> -
->  /* returns nonzero if entire page is blank */
->  static int check_read_ecc(struct mtd_info *mtd, struct fsl_ifc_ctrl *ctrl,
->  			  u32 *eccstat, unsigned int bufnum)
-> @@ -272,16 +246,14 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
->  			if (errors == 15) {
->  				/*
->  				 * Uncorrectable error.
-> -				 * OK only if the whole page is blank.
-> +				 * We'll check for blank pages later.
->  				 *
->  				 * We disable ECCER reporting due to...
->  				 * erratum IFC-A002770 -- so report it now if we
->  				 * see an uncorrectable error in ECCSTAT.
->  				 */
-> -				if (!is_blank(mtd, bufnum))
-> -					ctrl->nand_stat |=
-> -						IFC_NAND_EVTER_STAT_ECCER;
-> -				break;
-> +				ctrl->nand_stat |= IFC_NAND_EVTER_STAT_ECCER;
-> +				printk("NAND flash read: error but continuing.\n");
->  			}
->  
->  			mtd->ecc_stats.corrected += errors;
-> @@ -676,6 +648,40 @@ static int fsl_ifc_wait(struct mtd_info *mtd, struct nand_chip *chip)
->  	return nand_fsr | NAND_STATUS_WP;
->  }
->  
-> +/*
-> + * The controller does not check for bitflips in erased pages,
-> + * therefore software must check instead.
-> + */
-> +static int check_erased_page(struct nand_chip *chip, u8 *buf)
-> +{
-> +	struct mtd_info *mtd = nand_to_mtd(chip);
-> +	u8 *ecc = chip->oob_poi;
-> +	const int ecc_size = chip->ecc.bytes;
-> +	const int pkt_size = chip->ecc.size;
-> +	int i, res, bitflips = 0;
-> +	struct mtd_oob_region oobregion = { };
-> +	
-> +	mtd_ooblayout_ecc(mtd, 0, &oobregion);
-> +	ecc += oobregion.offset;
-> +
-> +	for (i = 0; i < chip->ecc.steps; ++i) {
-> +		res = nand_check_erased_ecc_chunk(buf, pkt_size, ecc, ecc_size,
-> +						  NULL, 0,
-> +						  chip->ecc.strength);
-> +		if (res < 0)
-> +			mtd->ecc_stats.failed++;
+I think rather then adding a comment it is cleaner to just add IS_IMX7D
+and add it to the GPMI_IS_MX6 macro. That does not need a comment since
+it implicitly says we have a i.MX 7 but treat it like i.MX 6 and it is a
+rather small change. Does that sound acceptable?
 
-		else
-			mtd->ecc_stats.corrected += res;
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -132,7 +132,7 @@ static const char * const gpmi_clks_for_mx7d[] = {
+ };
 
+ static const struct gpmi_devdata gpmi_devdata_imx7d = {
+-       .type = IS_MX6SX,
++       .type = IS_MX7D,
+        .bch_max_ecc_strength = 62,
+        .max_chain_delay = 12,
+        .clks = gpmi_clks_for_mx7d,
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+index 2e584e18d980..f2cc13abc896 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+@@ -123,7 +123,8 @@ enum gpmi_type {
+        IS_MX23,
+        IS_MX28,
+        IS_MX6Q,
+-       IS_MX6SX
++       IS_MX6SX,
++       IS_MX7D,
+ };
 
-> +
-> +		bitflips = max(res, bitflips);
-> +		buf += pkt_size;
-> +		ecc += ecc_size;
-> +	}
-> +
-> +	mtd_ooblayout_ecc(mtd, 1, &oobregion);
-> +	BUG_ON(oobregion.length);
+ struct gpmi_devdata {
+@@ -307,6 +308,8 @@ void gpmi_copy_bits(u8 *dst, size_t dst_bit_off,
+ #define GPMI_IS_MX28(x)                ((x)->devdata->type == IS_MX28)
+ #define GPMI_IS_MX6Q(x)                ((x)->devdata->type == IS_MX6Q)
+ #define GPMI_IS_MX6SX(x)       ((x)->devdata->type == IS_MX6SX)
++#define GPMI_IS_MX7D(x)                ((x)->devdata->type == IS_MX7D)
 
-Probably something you should check at registration time only.
+-#define GPMI_IS_MX6(x)         (GPMI_IS_MX6Q(x) || GPMI_IS_MX6SX(x))
++#define GPMI_IS_MX6(x)         (GPMI_IS_MX6Q(x) || GPMI_IS_MX6SX(x) ||
+\
++                                GPMI_IS_MX7D(x))
+ #endif
 
-> +
-> +	return bitflips;
-> +}
-> +
->  static int fsl_ifc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->  			     uint8_t *buf, int oob_required, int page)
->  {
-> @@ -687,11 +693,23 @@ static int fsl_ifc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->  	if (oob_required)
->  		fsl_ifc_read_buf(mtd, chip->oob_poi, mtd->oobsize);
->  
-> -	if (ctrl->nand_stat & IFC_NAND_EVTER_STAT_ECCER)
-> -		dev_err(priv->dev, "NAND Flash ECC Uncorrectable Error\n");
-> -
->  	if (ctrl->nand_stat != IFC_NAND_EVTER_STAT_OPC)
->  		mtd->ecc_stats.failed++;
-> +	
-> +	if (ctrl->nand_stat & IFC_NAND_EVTER_STAT_ECCER) {
-> +		int res;
-> +
-> +		if (!oob_required)
-> +			fsl_ifc_read_buf(mtd, chip->oob_poi, mtd->oobsize);
-> +
-> +		printk("NAND flash: have error (%d)\n", nctrl->max_bitflips);
-> +		res = check_erased_page(chip, buf);
-> +		printk("NAND flash: but erased page says %d\n", res);
-> +
-> +		dev_err(priv->dev, "NAND Flash ECC Uncorrectable Error or erased page\n");
-> +		return res;
-> +	}
-> +
->  
->  	return nctrl->max_bitflips;
->  }
-> 
+--
+Stefan
