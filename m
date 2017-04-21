@@ -1,25 +1,28 @@
-Subject: Re: [PATCH 2/5] mtd: nand: gpmi: add i.MX 7 SoC support
-To: Stefan Agner <stefan@agner.ch>
-References: <20170421010755.18025-1-stefan@agner.ch>
- <20170421010755.18025-3-stefan@agner.ch>
- <af3fe671-c5fb-d3cf-c891-e6b7c973baa1@gmail.com>
- <5cf26d2b020392c875464c7504a9fb5b@agner.ch>
- <8377dadc-043f-5932-cb13-3367db38a6dd@gmail.com>
- <494a7bc044457240a302d92b3a50b8e5@agner.ch>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, richard@nod.at,
- cyrille.pitchen@atmel.com, robh+dt@kernel.org, mark.rutland@arm.com,
- shawnguo@kernel.org, kernel@pengutronix.de, han.xu@nxp.com,
- fabio.estevam@freescale.com, LW@karo-electronics.de,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <57336d7e-7b48-8855-9e87-3eb370facd05@gmail.com>
-Date: Fri, 21 Apr 2017 19:22:05 +0200
+Received: from mail-io0-f176.google.com ([209.85.223.176])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d1cH7-000854-Ln
+ for linux-mtd@lists.infradead.org; Fri, 21 Apr 2017 17:23:24 +0000
+Received: by mail-io0-f176.google.com with SMTP id p80so8712555iop.3
+ for <linux-mtd@lists.infradead.org>; Fri, 21 Apr 2017 10:22:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <494a7bc044457240a302d92b3a50b8e5@agner.ch>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Sender: gwendal@google.com
+In-Reply-To: <20170421074402.GA7459@zzz>
+References: <20170418210642.6039-1-gwendal@chromium.org>
+ <20170418230136.GA96152@gmail.com>
+ <20170419001005.GA143911@gmail.com> <20170419014209.GB12215@jaegeuk.local>
+ <20170419040138.GA563@zzz> <20170419204448.GA1021@jaegeuk.local>
+ <20170421074402.GA7459@zzz>
+From: Gwendal Grignou <gwendal@chromium.org>
+Date: Fri, 21 Apr 2017 10:21:16 -0700
+Message-ID: <CAMHSBOWCf4gy9ApNvuyYMWUr-UAZscTArS=x3aAD4ohSgMq3_g@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH] fscrypt: use 32 bytes of encrypted filename
+To: Eric Biggers <ebiggers3@gmail.com>
+Cc: Jaegeuk Kim <jaegeuk@kernel.org>, Ryo Hashimoto <hashimoto@chromium.org>,
+ Eric Biggers <ebiggers@google.com>, linux-f2fs-devel@lists.sourceforge.net,
+ linux-fscrypt@vger.kernel.org, linux-mtd@lists.infradead.org,
+ "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+ Kazuhiro Inaba <kinaba@chromium.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,114 +32,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/21/2017 06:19 PM, Stefan Agner wrote:
-> On 2017-04-21 06:08, Marek Vasut wrote:
->> On 04/21/2017 05:15 AM, Stefan Agner wrote:
->>> On 2017-04-20 19:03, Marek Vasut wrote:
->>>> On 04/21/2017 03:07 AM, Stefan Agner wrote:
->>>>> Add support for i.MX 7 SoC. The i.MX 7 has a slightly different
->>>>> clock architecture requiring only two clocks to be referenced.
->>>>> The IP is slightly different compared to i.MX 6SoloX, but currently
->>>>> none of this differences are in use so there is no detection needed
->>>>> and the driver can reuse IS_MX6SX.
->>>>>
->>>>> Signed-off-by: Stefan Agner <stefan@agner.ch>
->>>>> ---
->>>>>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 15 +++++++++++++++
->>>>>  1 file changed, 15 insertions(+)
->>>>>
->>>>> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
->>>>> index c8bbf5da2ab8..4a45d37ddc80 100644
->>>>> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
->>>>> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
->>>>> @@ -127,6 +127,18 @@ static const struct gpmi_devdata gpmi_devdata_imx6sx = {
->>>>>  	.clks_count = ARRAY_SIZE(gpmi_clks_for_mx6),
->>>>>  };
->>>>>
->>>>> +static const char * const gpmi_clks_for_mx7d[] = {
->>>>> +	"gpmi_io", "gpmi_bch_apb",
->>>>> +};
->>>>> +
->>>>> +static const struct gpmi_devdata gpmi_devdata_imx7d = {
->>>>> +	.type = IS_MX6SX,
->>>>
->>>> Would it make sense to use IS_MX7 here already to prevent future surprises ?
->>>>
->>>
->>> Yeah I was thinking we can do it once we have an actual reason to
->>> distinguish.
->>
->> So what are the differences anyway ?
->>
-> 
-> I did not check the details, but Han's patchset (link in cover letter)
-> mentions:
-> "add the HW bitflip detection and correction for i.MX6QP and i.MX7D."...
+>
+> In any case, I guess that unless there are other ideas we can do these patches:
+>
+> 1.) f2fs patch to start checking the name, as above
+> 2.) patch to start encoding last 32 bytes of the name (or second-to-last CTS
+>     block, I haven't decided yet) rather than last 16 bytes, changing
+>     fs/crypto/, fs/ext4/, and fs/f2fs/
 
-Oh, interesting.
+Using second-to-last CTS block is CTS-CBC specific. If we use another
+method to encode filename (I am thinking of HEH,
+http://www.mail-archive.com/linux-crypto@vger.kernel.org/msg21826.html)
+that may not work anymore.
+We don't have to use the last 32 bytes: using for instance the last 24
+should be good enough, the escape rate will be 1/2^64 instead 1/2^128.
 
->>> But then, adding the type would only require 2-3 lines of change if I
->>> add it to the GPMI_IS_MX6 macro...
->>
->> Then at least add a comment because using type = IMX6SX right under
->> gpmi_data_mx7d can trigger some head-scratching. And put my R-B on V2.
-> 
-> FWIW, I mentioned it in the commit message.
-> 
-> I think rather then adding a comment it is cleaner to just add IS_IMX7D
-> and add it to the GPMI_IS_MX6 macro. That does not need a comment since
-> it implicitly says we have a i.MX 7 but treat it like i.MX 6 and it is a
-> rather small change. Does that sound acceptable?
+Gwendal.
 
-Sure, that's even better, thanks.
-
-btw isn't there some single-core mx7 (mx7s ?) , maybe we should just go
-with mx7 (without the d suffix). I dunno if it has GPMI NAND though, so
-maybe mx7d is the right thing to do here ...
-
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -132,7 +132,7 @@ static const char * const gpmi_clks_for_mx7d[] = {
->  };
-> 
->  static const struct gpmi_devdata gpmi_devdata_imx7d = {
-> -       .type = IS_MX6SX,
-> +       .type = IS_MX7D,
->         .bch_max_ecc_strength = 62,
->         .max_chain_delay = 12,
->         .clks = gpmi_clks_for_mx7d,
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-> b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-> index 2e584e18d980..f2cc13abc896 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-> @@ -123,7 +123,8 @@ enum gpmi_type {
->         IS_MX23,
->         IS_MX28,
->         IS_MX6Q,
-> -       IS_MX6SX
-> +       IS_MX6SX,
-> +       IS_MX7D,
->  };
-> 
->  struct gpmi_devdata {
-> @@ -307,6 +308,8 @@ void gpmi_copy_bits(u8 *dst, size_t dst_bit_off,
->  #define GPMI_IS_MX28(x)                ((x)->devdata->type == IS_MX28)
->  #define GPMI_IS_MX6Q(x)                ((x)->devdata->type == IS_MX6Q)
->  #define GPMI_IS_MX6SX(x)       ((x)->devdata->type == IS_MX6SX)
-> +#define GPMI_IS_MX7D(x)                ((x)->devdata->type == IS_MX7D)
-> 
-> -#define GPMI_IS_MX6(x)         (GPMI_IS_MX6Q(x) || GPMI_IS_MX6SX(x))
-> +#define GPMI_IS_MX6(x)         (GPMI_IS_MX6Q(x) || GPMI_IS_MX6SX(x) ||
-> \
-> +                                GPMI_IS_MX7D(x))
->  #endif
-> 
-> --
-> Stefan
-> 
-
-
--- 
-Best regards,
-Marek Vasut
+> 3.) cleanup patches to introduce helper function and switch ext4 and f2fs to it
+>
+> (1) and (2) will be backported.
+>
+> UBIFS can be changed to use the helper function later if needed.  It's not as
+> important for it to be backported there since UBIFS does the "double hashing",
+> and UBIFS encryption was just added in 4.10 anyway.
+>
+> I can try to put together the full series when I have time.  It probably would
+> make sense for it to go through the fscrypt tree, given the dependencies.
+>
+> Eric
