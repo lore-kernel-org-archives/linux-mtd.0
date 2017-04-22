@@ -1,9 +1,9 @@
-Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
+Received: from mail-wr0-x241.google.com ([2a00:1450:400c:c0c::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d1t5j-0007bi-2v
- for linux-mtd@lists.infradead.org; Sat, 22 Apr 2017 11:20:41 +0000
-Received: by mail-wr0-x244.google.com with SMTP id w50so10451723wrc.0
- for <linux-mtd@lists.infradead.org>; Sat, 22 Apr 2017 04:20:20 -0700 (PDT)
+ id 1d1t5k-0007ba-0M
+ for linux-mtd@lists.infradead.org; Sat, 22 Apr 2017 11:20:42 +0000
+Received: by mail-wr0-x241.google.com with SMTP id w50so10451690wrc.0
+ for <linux-mtd@lists.infradead.org>; Sat, 22 Apr 2017 04:20:19 -0700 (PDT)
 From: Andrea Adami <andrea.adami@gmail.com>
 To: linux-mtd@lists.infradead.org
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -14,10 +14,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
  Robert Jarzmik <robert.jarzmik@free.fr>,
  Linus Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] mtd: nand: tmio_nand.c: prefer sharpslpart MTD
- partition parser
-Date: Sat, 22 Apr 2017 13:20:13 +0200
-Message-Id: <1492860013-20848-4-git-send-email-andrea.adami@gmail.com>
+Subject: [PATCH v2 2/3] mtd: nand: sharpsl.c: prefer sharpslpart MTD partition
+ parser
+Date: Sat, 22 Apr 2017 13:20:12 +0200
+Message-Id: <1492860013-20848-3-git-send-email-andrea.adami@gmail.com>
 In-Reply-To: <1492860013-20848-1-git-send-email-andrea.adami@gmail.com>
 References: <1492860013-20848-1-git-send-email-andrea.adami@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,34 +29,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is the specific parser for Sharp SL Series (Zaurus)
+This is the specific parser for Sharp SL Series (Zaurus).
 
 Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
 ---
- drivers/mtd/nand/tmio_nand.c | 4 +++-
+ drivers/mtd/nand/sharpsl.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
-index fc5e773..f3612ac 100644
---- a/drivers/mtd/nand/tmio_nand.c
-+++ b/drivers/mtd/nand/tmio_nand.c
-@@ -357,6 +357,8 @@ static void tmio_hw_stop(struct platform_device *dev, struct tmio_nand *tmio)
- 		cell->disable(dev);
- }
- 
+diff --git a/drivers/mtd/nand/sharpsl.c b/drivers/mtd/nand/sharpsl.c
+index 064ca17..2d1ba0e 100644
+--- a/drivers/mtd/nand/sharpsl.c
++++ b/drivers/mtd/nand/sharpsl.c
+@@ -108,6 +108,8 @@ static int sharpsl_nand_calculate_ecc(struct mtd_info *mtd, const u_char * dat,
+ /*
+  * Main initialization routine
+  */
 +static const char * const probes[] = { "sharpslpart", NULL };
 +
- static int tmio_probe(struct platform_device *dev)
+ static int sharpsl_nand_probe(struct platform_device *pdev)
  {
- 	struct tmio_nand_data *data = dev_get_platdata(&dev->dev);
-@@ -440,7 +442,7 @@ static int tmio_probe(struct platform_device *dev)
- 		goto err_irq;
- 
+ 	struct nand_chip *this;
+@@ -183,7 +185,7 @@ static int sharpsl_nand_probe(struct platform_device *pdev)
  	/* Register the partitions */
--	retval = mtd_device_parse_register(mtd, NULL, NULL,
-+	retval = mtd_device_parse_register(mtd, probes, NULL,
- 					   data ? data->partition : NULL,
- 					   data ? data->num_partitions : 0);
- 	if (!retval)
+ 	mtd->name = "sharpsl-nand";
+ 
+-	err = mtd_device_parse_register(mtd, NULL, NULL,
++	err = mtd_device_parse_register(mtd, probes, NULL,
+ 					data->partitions, data->nr_partitions);
+ 	if (err)
+ 		goto err_add;
 -- 
 2.7.4
