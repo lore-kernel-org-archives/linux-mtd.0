@@ -1,9 +1,9 @@
 Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d1t5j-0007bO-1J
- for linux-mtd@lists.infradead.org; Sat, 22 Apr 2017 11:20:40 +0000
-Received: by mail-wr0-x244.google.com with SMTP id w50so10451628wrc.0
- for <linux-mtd@lists.infradead.org>; Sat, 22 Apr 2017 04:20:17 -0700 (PDT)
+ id 1d1t5j-0007bi-2v
+ for linux-mtd@lists.infradead.org; Sat, 22 Apr 2017 11:20:41 +0000
+Received: by mail-wr0-x244.google.com with SMTP id w50so10451723wrc.0
+ for <linux-mtd@lists.infradead.org>; Sat, 22 Apr 2017 04:20:20 -0700 (PDT)
 From: Andrea Adami <andrea.adami@gmail.com>
 To: linux-mtd@lists.infradead.org
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -14,9 +14,12 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
  Robert Jarzmik <robert.jarzmik@free.fr>,
  Linus Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/3] mtd: sharpslpart partition parser
-Date: Sat, 22 Apr 2017 13:20:10 +0200
-Message-Id: <1492860013-20848-1-git-send-email-andrea.adami@gmail.com>
+Subject: [PATCH v2 3/3] mtd: nand: tmio_nand.c: prefer sharpslpart MTD
+ partition parser
+Date: Sat, 22 Apr 2017 13:20:13 +0200
+Message-Id: <1492860013-20848-4-git-send-email-andrea.adami@gmail.com>
+In-Reply-To: <1492860013-20848-1-git-send-email-andrea.adami@gmail.com>
+References: <1492860013-20848-1-git-send-email-andrea.adami@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,35 +29,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patchset introduces a simple partition parser for the Sharp SL
-Series PXA handhelds. More details in the commit text.
+This is the specific parser for Sharp SL Series (Zaurus)
 
-I have set in cc the ARM PXA maintainers because this is the MTD part of
-a planned wider patchset cleaning the Zaurus board files.
+Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
+---
+ drivers/mtd/nand/tmio_nand.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Changelog:
-v1 initial import of 2.4 sources [1]
-v2 refactor applying many suggested fixes [2]
-
-[1] https://github.com/LinuxPDA/Sharp_FTL_2.4.20
-[2] https://github.com/LinuxPDA/linux/commits/sharpslpart_v2
-
-Andrea Adami (3):
-  mtd: sharpsl: add sharpslpart MTD partition parser
-  mtd: nand: sharpsl.c: prefer sharpslpart MTD partition parser
-  mtd: nand: tmio_nand.c: prefer sharpslpart MTD partition parser
-
- drivers/mtd/Kconfig          |   8 ++
- drivers/mtd/Makefile         |   2 +
- drivers/mtd/nand/sharpsl.c   |   4 +-
- drivers/mtd/nand/tmio_nand.c |   4 +-
- drivers/mtd/sharpsl_ftl.c    | 219 +++++++++++++++++++++++++++++++++++++++++++
- drivers/mtd/sharpsl_ftl.h    |  34 +++++++
- drivers/mtd/sharpslpart.c    | 132 ++++++++++++++++++++++++++
- 7 files changed, 401 insertions(+), 2 deletions(-)
- create mode 100644 drivers/mtd/sharpsl_ftl.c
- create mode 100644 drivers/mtd/sharpsl_ftl.h
- create mode 100644 drivers/mtd/sharpslpart.c
-
+diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
+index fc5e773..f3612ac 100644
+--- a/drivers/mtd/nand/tmio_nand.c
++++ b/drivers/mtd/nand/tmio_nand.c
+@@ -357,6 +357,8 @@ static void tmio_hw_stop(struct platform_device *dev, struct tmio_nand *tmio)
+ 		cell->disable(dev);
+ }
+ 
++static const char * const probes[] = { "sharpslpart", NULL };
++
+ static int tmio_probe(struct platform_device *dev)
+ {
+ 	struct tmio_nand_data *data = dev_get_platdata(&dev->dev);
+@@ -440,7 +442,7 @@ static int tmio_probe(struct platform_device *dev)
+ 		goto err_irq;
+ 
+ 	/* Register the partitions */
+-	retval = mtd_device_parse_register(mtd, NULL, NULL,
++	retval = mtd_device_parse_register(mtd, probes, NULL,
+ 					   data ? data->partition : NULL,
+ 					   data ? data->num_partitions : 0);
+ 	if (!retval)
 -- 
 2.7.4
