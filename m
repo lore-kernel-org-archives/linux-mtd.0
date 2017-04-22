@@ -1,28 +1,17 @@
-Received: from mail-io0-x241.google.com ([2607:f8b0:4001:c06::241])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d1eCf-0005nk-C0
- for linux-mtd@lists.infradead.org; Fri, 21 Apr 2017 19:26:51 +0000
-Received: by mail-io0-x241.google.com with SMTP id k87so33522588ioi.0
- for <linux-mtd@lists.infradead.org>; Fri, 21 Apr 2017 12:26:28 -0700 (PDT)
-Date: Fri, 21 Apr 2017 12:26:25 -0700
-From: Eric Biggers <ebiggers3@gmail.com>
-To: Jaegeuk Kim <jaegeuk@kernel.org>
-Cc: Gwendal Grignou <gwendal@chromium.org>, hashimoto@chromium.org,
- ebiggers@google.com, linux-f2fs-devel@lists.sourceforge.net,
- linux-fscrypt@vger.kernel.org, linux-mtd@lists.infradead.org,
- tytso@mit.edu, linux-ext4@vger.kernel.org, kinaba@chromium.org
-Subject: Re: [f2fs-dev] [PATCH] fscrypt: use 32 bytes of encrypted filename
-Message-ID: <20170421192625.GD12755@gmail.com>
-References: <20170418210642.6039-1-gwendal@chromium.org>
- <20170418230136.GA96152@gmail.com>
- <20170419001005.GA143911@gmail.com>
- <20170419014209.GB12215@jaegeuk.local> <20170419040138.GA563@zzz>
- <20170419204448.GA1021@jaegeuk.local> <20170421074402.GA7459@zzz>
- <20170421173503.GA1228@jaegeuk.local>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170421173503.GA1228@jaegeuk.local>
+From: Stefan Agner <stefan@agner.ch>
+To: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
+ cyrille.pitchen@atmel.com
+Cc: robh+dt@kernel.org, mark.rutland@arm.com, shawnguo@kernel.org,
+ kernel@pengutronix.de, han.xu@nxp.com, fabio.estevam@freescale.com,
+ LW@KARO-electronics.de, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>
+Subject: [PATCH v2 1/5] mtd: nand: gpmi: unify clock handling
+Date: Fri, 21 Apr 2017 18:23:34 -0700
+Message-Id: <20170422012338.4635-2-stefan@agner.ch>
+In-Reply-To: <20170422012338.4635-1-stefan@agner.ch>
+References: <20170422012338.4635-1-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,43 +21,119 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jaegeuk,
+Add device specific list of clocks required, and handle all clocks
+in a single for loop. This avoids further code duplication when
+adding i.MX 7 support.
 
-On Fri, Apr 21, 2017 at 10:35:03AM -0700, Jaegeuk Kim wrote:
-> 
-> > In any case, I guess that unless there are other ideas we can do these patches:
-> > 
-> > 1.) f2fs patch to start checking the name, as above
-> > 2.) patch to start encoding last 32 bytes of the name (or second-to-last CTS
-> >     block, I haven't decided yet) rather than last 16 bytes, changing
-> >     fs/crypto/, fs/ext4/, and fs/f2fs/
-> > 3.) cleanup patches to introduce helper function and switch ext4 and f2fs to it
-> 
-> IMO, it'd better to do 3.) followed by 2.), since 2.) already needs to change
-> fs/crypto which does not give much backporting effort.
-> 
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 41 +++++++++++++++-------------------
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h |  2 ++
+ 2 files changed, 20 insertions(+), 23 deletions(-)
 
-That would be ideal, but unfortunately the main users of filesystem encryption
-are using old kernel versions which don't have fs/crypto/, usually 4.4 at
-latest.  So it would be nice for it to be easier to backport the "use different
-bytes from the encrypted filename" change to 4.4-stable, as I've been doing for
-some of the other filesystem encryption fixes.  And people do need it, it seems,
-as it causes real problems like undeletable files; Gwendal is even already
-trying to merge a fix into some Chrome OS kernel.
-
-> 
-> I found one issue in my patch and modified it in f2fs tree [1]. Given next merge
-> window probable starting next week, let me upstream this modified one first
-> through f2fs. Then, you can see it in 4.12-rc1 two weeks later, so fscrypt
-> patches can be easily integrated after then. If you have any concern, I'm also
-> okay to push this patch through fscrypt. Let me know.
-> 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git/commit/?h=dev-test&id=1585cfbbb269be6a112e0629a52123c0f9eaf4fa
-> 
-
-I think the series through fscrypt makes more sense, though if I don't have it
-ready soon please go ahead and take the f2fs portion through the f2fs tree.
-
-Thanks!
-
-- Eric
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index d52139635b67..c8bbf5da2ab8 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -82,6 +82,10 @@ static int gpmi_ooblayout_free(struct mtd_info *mtd, int section,
+ 	return 0;
+ }
+ 
++static const char * const gpmi_clks_for_mx2x[] = {
++	"gpmi_io",
++};
++
+ static const struct mtd_ooblayout_ops gpmi_ooblayout_ops = {
+ 	.ecc = gpmi_ooblayout_ecc,
+ 	.free = gpmi_ooblayout_free,
+@@ -91,24 +95,36 @@ static const struct gpmi_devdata gpmi_devdata_imx23 = {
+ 	.type = IS_MX23,
+ 	.bch_max_ecc_strength = 20,
+ 	.max_chain_delay = 16,
++	.clks = gpmi_clks_for_mx2x,
++	.clks_count = ARRAY_SIZE(gpmi_clks_for_mx2x),
+ };
+ 
+ static const struct gpmi_devdata gpmi_devdata_imx28 = {
+ 	.type = IS_MX28,
+ 	.bch_max_ecc_strength = 20,
+ 	.max_chain_delay = 16,
++	.clks = gpmi_clks_for_mx2x,
++	.clks_count = ARRAY_SIZE(gpmi_clks_for_mx2x),
++};
++
++static const char * const gpmi_clks_for_mx6[] = {
++	"gpmi_io", "gpmi_apb", "gpmi_bch", "gpmi_bch_apb", "per1_bch",
+ };
+ 
+ static const struct gpmi_devdata gpmi_devdata_imx6q = {
+ 	.type = IS_MX6Q,
+ 	.bch_max_ecc_strength = 40,
+ 	.max_chain_delay = 12,
++	.clks = gpmi_clks_for_mx6,
++	.clks_count = ARRAY_SIZE(gpmi_clks_for_mx6),
+ };
+ 
+ static const struct gpmi_devdata gpmi_devdata_imx6sx = {
+ 	.type = IS_MX6SX,
+ 	.bch_max_ecc_strength = 62,
+ 	.max_chain_delay = 12,
++	.clks = gpmi_clks_for_mx6,
++	.clks_count = ARRAY_SIZE(gpmi_clks_for_mx6),
+ };
+ 
+ static irqreturn_t bch_irq(int irq, void *cookie)
+@@ -599,35 +615,14 @@ static int acquire_dma_channels(struct gpmi_nand_data *this)
+ 	return -EINVAL;
+ }
+ 
+-static char *extra_clks_for_mx6q[GPMI_CLK_MAX] = {
+-	"gpmi_apb", "gpmi_bch", "gpmi_bch_apb", "per1_bch",
+-};
+-
+ static int gpmi_get_clks(struct gpmi_nand_data *this)
+ {
+ 	struct resources *r = &this->resources;
+-	char **extra_clks = NULL;
+ 	struct clk *clk;
+ 	int err, i;
+ 
+-	/* The main clock is stored in the first. */
+-	r->clock[0] = devm_clk_get(this->dev, "gpmi_io");
+-	if (IS_ERR(r->clock[0])) {
+-		err = PTR_ERR(r->clock[0]);
+-		goto err_clock;
+-	}
+-
+-	/* Get extra clocks */
+-	if (GPMI_IS_MX6(this))
+-		extra_clks = extra_clks_for_mx6q;
+-	if (!extra_clks)
+-		return 0;
+-
+-	for (i = 1; i < GPMI_CLK_MAX; i++) {
+-		if (extra_clks[i - 1] == NULL)
+-			break;
+-
+-		clk = devm_clk_get(this->dev, extra_clks[i - 1]);
++	for (i = 0; i < this->devdata->clks_count; i++) {
++		clk = devm_clk_get(this->dev, this->devdata->clks[i]);
+ 		if (IS_ERR(clk)) {
+ 			err = PTR_ERR(clk);
+ 			goto err_clock;
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+index 4e49a1f5fa27..8879c4eff25e 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+@@ -130,6 +130,8 @@ struct gpmi_devdata {
+ 	enum gpmi_type type;
+ 	int bch_max_ecc_strength;
+ 	int max_chain_delay; /* See the async EDO mode */
++	const char * const *clks;
++	const int clks_count;
+ };
+ 
+ struct gpmi_nand_data {
+-- 
+2.12.2
