@@ -1,17 +1,22 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from bh-25.webhostbox.net ([208.91.199.152])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d2JJc-00085S-OT
- for linux-mtd@lists.infradead.org; Sun, 23 Apr 2017 15:20:47 +0000
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Subject: [GIT PULL] UBI/UBIFS fixes for 4.11
-Message-ID: <7417b6e7-5a06-c96d-bb5a-d62b45c5dad3@nod.at>
-Date: Sun, 23 Apr 2017 17:20:16 +0200
+ id 1d2JlJ-0001T7-BT
+ for linux-mtd@lists.infradead.org; Sun, 23 Apr 2017 15:49:23 +0000
+Date: Sun, 23 Apr 2017 08:48:12 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Cc: ralf@linux-mips.org, linux-mips@linux-mips.org,
+ linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
+ devicetree@vger.kernel.org, martin.blumenstingl@googlemail.com,
+ john@phrozen.org, linux-spi@vger.kernel.org, hauke.mehrtens@intel.com
+Subject: Re: [04/13] watchdog: lantiq: access boot cause register through
+ regmap
+Message-ID: <20170423154812.GA20428@roeck-us.net>
+References: <20170417192942.32219-5-hauke@hauke-m.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170417192942.32219-5-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,44 +26,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Linus,
+On Mon, Apr 17, 2017 at 09:29:33PM +0200, Hauke Mehrtens wrote:
+> This patch avoids accessing the function ltq_reset_cause() and directly
+> accesses the register given over the syscon interface. The syscon
+> interface will be implemented for the xway SoCs for the falcon SoCs the
+> ltq_reset_cause() function never worked, because a wrong offset was used.
+> 
+> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
 
-The following changes since commit 89970a04d70c6c9e5e4492fd4096c0b5630a478c:
+Acked-by: Guenter Roeck <linux@reck-us.net>
 
-  Merge branch 'for-rc' of git://git.kernel.org/pub/scm/linux/kernel/git/rzhang/linux (2017-03-29 19:59:49 -0700)
-
-are available in the git repository at:
-
-  git://git.infradead.org/linux-ubifs.git tags/upstream-4.11-rc7
-
-for you to fetch changes up to 32fe905c17f001c0eee13c59afddd0bf2eed509c:
-
-  ubifs: Fix O_TMPFILE corner case in ubifs_link() (2017-04-18 23:18:02 +0200)
-
-----------------------------------------------------------------
-This pull request contains fixes for issues in both UBI and UBIFS:
-- More O_TMPFILE fallout
-- RENAME_WHITEOUT regression due to a mis-merge
-- Memory leak in ubifs_mknod()
-- Power-cut problem in UBI's update volume feature
-
-----------------------------------------------------------------
-Felix Fietkau (1):
-      ubifs: Fix RENAME_WHITEOUT support
-
-Hyunchul Lee (3):
-      ubifs: Remove filename from debug messages in ubifs_readdir
-      ubifs: Fix debug messages for an invalid filename in ubifs_dump_node
-      ubifs: Fix debug messages for an invalid filename in ubifs_dump_inode
-
-Richard Weinberger (2):
-      ubifs: Fix memory leak in error path in ubifs_mknod
-      ubifs: Fix O_TMPFILE corner case in ubifs_link()
-
-Sebastian Siewior (1):
-      ubi/upd: Always flush after prepared for an update
-
- drivers/mtd/ubi/upd.c |  8 ++++----
- fs/ubifs/debug.c      | 10 +++++++---
- fs/ubifs/dir.c        | 18 ++++++++++++------
- 3 files changed, 23 insertions(+), 13 deletions(-)
+> ---
+>  drivers/watchdog/lantiq_wdt.c | 47 +++++++++++++++++++++++++++++++++++++++----
+>  1 file changed, 43 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/watchdog/lantiq_wdt.c b/drivers/watchdog/lantiq_wdt.c
+> index e0823677d8c1..0e349ad03fdf 100644
+> --- a/drivers/watchdog/lantiq_wdt.c
+> +++ b/drivers/watchdog/lantiq_wdt.c
+> @@ -17,9 +17,14 @@
+>  #include <linux/uaccess.h>
+>  #include <linux/clk.h>
+>  #include <linux/io.h>
+> +#include <linux/regmap.h>
+> +#include <linux/mfd/syscon.h>
+>  
+>  #include <lantiq_soc.h>
+>  
+> +#define LTQ_RST_CAUSE_WDT_XRX		BIT(31)
+> +#define LTQ_RST_CAUSE_WDT_FALCON	0x02
+> +
+>  /*
+>   * Section 3.4 of the datasheet
+>   * The password sequence protects the WDT control register from unintended
+> @@ -186,6 +191,40 @@ static struct miscdevice ltq_wdt_miscdev = {
+>  	.fops	= &ltq_wdt_fops,
+>  };
+>  
+> +static void ltq_set_wdt_bootstatus(struct platform_device *pdev)
+> +{
+> +	struct device_node *np = pdev->dev.of_node;
+> +	struct regmap *rcu_regmap;
+> +	u32 status_reg_offset;
+> +	u32 val;
+> +	int err;
+> +
+> +	rcu_regmap = syscon_regmap_lookup_by_phandle(np,
+> +						     "lantiq,rcu-syscon");
+> +	if (IS_ERR_OR_NULL(rcu_regmap))
+> +		return;
+> +
+> +	err = of_property_read_u32_index(np, "lantiq,rcu-syscon", 1,
+> +					 &status_reg_offset);
+> +	if (err) {
+> +		dev_err(&pdev->dev, "Failed to get RCU reg offset\n");
+> +		return;
+> +	}
+> +
+> +	err = regmap_read(rcu_regmap, status_reg_offset, &val);
+> +	if (err)
+> +		return;
+> +
+> +	/* find out if the watchdog caused the last reboot */
+> +	if (of_device_is_compatible(np, "lantiq,wdt-xrx100")) {
+> +		if (val & LTQ_RST_CAUSE_WDT_XRX)
+> +			ltq_wdt_bootstatus = WDIOF_CARDRESET;
+> +	} else if  (of_device_is_compatible(np, "lantiq,wdt-falcon")) {
+> +		if ((val & 0x7) == LTQ_RST_CAUSE_WDT_FALCON)
+> +			ltq_wdt_bootstatus = WDIOF_CARDRESET;
+> +	}
+> +}
+> +
+>  static int
+>  ltq_wdt_probe(struct platform_device *pdev)
+>  {
+> @@ -205,9 +244,7 @@ ltq_wdt_probe(struct platform_device *pdev)
+>  	ltq_io_region_clk_rate = clk_get_rate(clk);
+>  	clk_put(clk);
+>  
+> -	/* find out if the watchdog caused the last reboot */
+> -	if (ltq_reset_cause() == LTQ_RST_CAUSE_WDTRST)
+> -		ltq_wdt_bootstatus = WDIOF_CARDRESET;
+> +	ltq_set_wdt_bootstatus(pdev);
+>  
+>  	dev_info(&pdev->dev, "Init done\n");
+>  	return misc_register(&ltq_wdt_miscdev);
+> @@ -222,7 +259,9 @@ ltq_wdt_remove(struct platform_device *pdev)
+>  }
+>  
+>  static const struct of_device_id ltq_wdt_match[] = {
+> -	{ .compatible = "lantiq,wdt" },
+> +	{ .compatible = "lantiq,wdt"},
+> +	{ .compatible = "lantiq,wdt-xrx100"},
+> +	{ .compatible = "lantiq,wdt-falcon"},
+>  	{},
+>  };
+>  MODULE_DEVICE_TABLE(of, ltq_wdt_match);
