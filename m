@@ -1,29 +1,15 @@
-Received: from mail-oi0-x22a.google.com ([2607:f8b0:4003:c06::22a])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d2lOE-0006MW-UU
- for linux-mtd@lists.infradead.org; Mon, 24 Apr 2017 21:19:24 +0000
-Received: by mail-oi0-x22a.google.com with SMTP id y11so118557607oie.0
- for <linux-mtd@lists.infradead.org>; Mon, 24 Apr 2017 14:19:01 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <f415bfef-12d9-6444-9e94-9ae3e3363cfb@nod.at>
-References: <20170418210642.6039-1-gwendal@chromium.org>
- <20170418230136.GA96152@gmail.com>
- <CAFLxGvwtFQW=NL3NrNHx-vWR3wSUtewnBRy1XzMqRNTV8f5vwQ@mail.gmail.com>
- <20170419171633.GB89688@gmail.com>
- <f415bfef-12d9-6444-9e94-9ae3e3363cfb@nod.at>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Mon, 24 Apr 2017 23:19:00 +0200
-Message-ID: <CAFLxGvwuiZ+5zPnQJ6bXKhWHs5jPA=0c5+3Vq5EZn_AsrgzeGg@mail.gmail.com>
-Subject: Re: [PATCH] fscrypt: use 32 bytes of encrypted filename
-To: Richard Weinberger <richard@nod.at>
-Cc: Eric Biggers <ebiggers3@gmail.com>, Gwendal Grignou <gwendal@chromium.org>,
- Ryo Hashimoto <hashimoto@chromium.org>, Eric Biggers <ebiggers@google.com>,
- linux-f2fs-devel@lists.sourceforge.net, linux-fscrypt@vger.kernel.org,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "Theodore Ts'o" <tytso@mit.edu>,
- linux-ext4@vger.kernel.org, Kazuhiro Inaba <kinaba@chromium.org>,
- David Gstir <david@sigma-star.at>
-Content-Type: text/plain; charset=UTF-8
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1d2laa-0003i9-Af
+ for linux-mtd@lists.infradead.org; Mon, 24 Apr 2017 21:32:10 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+ david@sigma-star.at, Richard Weinberger <richard@nod.at>,
+ stable@vger.kernel.org
+Subject: [PATCH] ubifs: Correctly handle 0 value hashes in ubifs_lookup()
+Date: Mon, 24 Apr 2017 23:31:38 +0200
+Message-Id: <1493069498-19505-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,33 +19,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Eric,
+Use fname_name(&nm) == NULL to detect whether a double hash
+lookup should be performed instead of checking for nm.hash
+being non-zero. zero is a valid hash value.
 
-On Wed, Apr 19, 2017 at 7:21 PM, Richard Weinberger <richard@nod.at> wrote:
->> Well, like I said to Jaegeuk for F2FS, that's what the code does, but _why_?
->> Like F2FS, it's probably not the case that the hash is sufficient to reliably
->> identify a directory entry.  Granted, UBIFS does it a lot better than F2FS since
->> UBIFS uses two 32-bit hashes rather than just one, but it seems the second hash
->> may be neither necessary nor sufficient to identify a specific directory entry,
->> and it should be looking at the bytes of ciphertext from the filename instead,
->> like what ext4 does.  (Provided that is fixed to account for how CTS mode
->> encryption works.)
->
-> Let me dig into this, maybe I made a boo boo.
-> The idea was looking up by the filename hash and resolving
-> possible collisions using the secondary hash.
+Fixes: f4f61d2cc6d8 ("ubifs: Implement encrypted filenames")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ fs/ubifs/dir.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-In ubifs_lookup() we handle two cases:
-1. lookup of a bigname, both fscrypt_name->hash and ->minor_hash are valid.
-    ->hash is r5(diskname) and ->minor_hash is the secondary hash, AKA cookie.
-   UBIFS fed this hashes in ubifs_readdir() to fscrypt.
-2. lookup of a non-bigname, in this case we compute r5(diskname) and
-use the diskname
-    itself for lookups.
-
-So, in case 1 we avoid collisions by using a 64bit key and in case 2 by using
-the 32bit key plus a linear search and memcmp() of diskname.
-
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index b777bddaa1dd..ff77a0aa2f2b 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -249,9 +249,8 @@ static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
+ 		goto out_fname;
+ 	}
+ 
+-	if (nm.hash) {
++	if (fname_name(&nm) == NULL) {
+ 		ubifs_assert(fname_len(&nm) == 0);
+-		ubifs_assert(fname_name(&nm) == NULL);
+ 		dent_key_init_hash(c, &key, dir->i_ino, nm.hash);
+ 		err = ubifs_tnc_lookup_dh(c, &key, dent, nm.minor_hash);
+ 	} else {
 -- 
-Thanks,
-//richard
+2.7.3
