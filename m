@@ -1,24 +1,20 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d2gD9-000682-JD
- for linux-mtd@lists.infradead.org; Mon, 24 Apr 2017 15:47:37 +0000
-Subject: Re: [PATCH v2 3/3] fs: ubifs: set s_uuid in super block
-To: Oleksij Rempel <ore@pengutronix.de>, Christoph Hellwig <hch@infradead.org>
-References: <20170411095055.26328-1-o.rempel@pengutronix.de>
- <20170411095055.26328-4-o.rempel@pengutronix.de>
- <5d7d0f21-d87f-0835-c2f6-b6c9e07f73a8@nod.at>
- <20170412054828.GA20561@infradead.org>
- <20170412071551.i36yj3lzilgtntdy@pengutronix.de>
-Cc: dedekind1@gmail.com, adrian.hunter@intel.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, Steffen Trumtrar <s.trumtrar@pengutronix.de>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <803a8cc8-d2d1-dddf-2e07-621b1484218a@nod.at>
-Date: Mon, 24 Apr 2017 17:47:05 +0200
-MIME-Version: 1.0
-In-Reply-To: <20170412071551.i36yj3lzilgtntdy@pengutronix.de>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+ id 1d2hNS-0004gG-Dd
+ for linux-mtd@lists.infradead.org; Mon, 24 Apr 2017 17:02:24 +0000
+Received: by mail-pg0-x241.google.com with SMTP id 63so5630196pgh.0
+ for <linux-mtd@lists.infradead.org>; Mon, 24 Apr 2017 10:01:57 -0700 (PDT)
+From: Eric Biggers <ebiggers3@gmail.com>
+To: linux-fscrypt@vger.kernel.org
+Cc: "Theodore Y . Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
+ linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Gwendal Grignou <gwendal@chromium.org>,
+ hashimoto@chromium.org, kinaba@chromium.org,
+ Eric Biggers <ebiggers@google.com>
+Subject: [PATCH 0/6] fscrypt: fixes for presentation of long encrypted
+ filenames
+Date: Mon, 24 Apr 2017 10:00:07 -0700
+Message-Id: <20170424170013.85175-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,32 +24,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Oleksij,
+From: Eric Biggers <ebiggers@google.com>
 
-Am 12.04.2017 um 09:15 schrieb Oleksij Rempel:
-> On Tue, Apr 11, 2017 at 10:48:28PM -0700, Christoph Hellwig wrote:
->> On Tue, Apr 11, 2017 at 10:43:26PM +0200, Richard Weinberger wrote:
->>> Artem, do you remember why UBIFS didn't set s_uuid in first place?
->>
->> It's an extremely odd field - only a hand full of file systems set it
->> (e.g. XFS doesn't, although according to Mimi IMA supports XFS), and
->> it's never even used outside of the IMA/EVM code.
->>
->> We really need a feature flag that this field is valid that IMA can
->> check before adding more support for it.
-> 
-> It seems to be used by mm/cleancache.c
-> void __cleancache_init_shared_fs()
-> 
-> but this affects only ocfs2.
-> 
-> So, if some flag should be implemented, who should do it? :)
+This series fixes the bugs that have been identified with how filesystems handle
+presenting long encrypted filenames without the key.
 
-I'll not do it for you. ;)
+Patch 1 is Jaegeuk's fix to make f2fs start checking the ciphertext portion of
+the digested names.  I made one change to this patch which is that to determine
+whether we should use the hash from the fscrypt_name structure rather than
+compute the hash, we should check for 'disk_name.name' being NULL rather than
+'hash' being nonzero, since 0 is a valid hash value.
 
-> If me, what flag should be created?
+Patch 2 fixes the bug found on Chrome OS where the wrong part of the ciphertext
+was included in the digested names, causing collisions and undeletable files.
 
-A super block flag that denotes that s_uuid is valid.
+Patches 3-6 clean things up to be less insane and confusing, e.g. by introducing
+a shared function for name matching and a struct to represent a digested name.
 
-Thanks,
-//richard
+Patches 1-2 will need to be backported and I think they should be merged into
+4.12 through the fscrypt tree.  The other patches are nice to have but it's not
+a big deal if they need to wait for next cycle.
+
+This patch series leaves out UBIFS; it can be changed to use the common matching
+function once available, if desired.
+
+Eric Biggers (5):
+  fscrypt: avoid collisions when presenting long encrypted filenames
+  fscrypt: introduce helper function for filename matching
+  ext4: switch to using fscrypt_match_name()
+  f2fs: switch to using fscrypt_match_name()
+  ext4: clean up ext4_match() and callers
+
+Jaegeuk Kim (1):
+  f2fs: check entire encrypted bigname when finding a dentry
+
+ fs/crypto/fname.c               |  90 +++++++++++++++++++++++++++--------
+ fs/crypto/fscrypt_private.h     |   2 -
+ fs/ext4/namei.c                 | 103 ++++++++++++----------------------------
+ fs/f2fs/dir.c                   |  25 ++--------
+ fs/f2fs/f2fs.h                  |   3 +-
+ fs/f2fs/hash.c                  |   7 ++-
+ fs/f2fs/inline.c                |   4 +-
+ include/linux/fscrypt_notsupp.h |   9 ++++
+ include/linux/fscrypt_supp.h    |  78 ++++++++++++++++++++++++++++++
+ 9 files changed, 202 insertions(+), 119 deletions(-)
+
+-- 
+2.12.2.816.g2cccc81164-goog
