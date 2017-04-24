@@ -1,20 +1,19 @@
 Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d2hNe-0004hh-TD
- for linux-mtd@lists.infradead.org; Mon, 24 Apr 2017 17:02:41 +0000
-Received: by mail-pg0-x244.google.com with SMTP id 34so5614714pgx.3
- for <linux-mtd@lists.infradead.org>; Mon, 24 Apr 2017 10:02:13 -0700 (PDT)
+ id 1d2hNj-0004ig-Rs
+ for linux-mtd@lists.infradead.org; Mon, 24 Apr 2017 17:02:45 +0000
+Received: by mail-pg0-x244.google.com with SMTP id 34so5615343pgx.3
+ for <linux-mtd@lists.infradead.org>; Mon, 24 Apr 2017 10:02:18 -0700 (PDT)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org
 Cc: "Theodore Y . Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
  linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  linux-mtd@lists.infradead.org, Gwendal Grignou <gwendal@chromium.org>,
  hashimoto@chromium.org, kinaba@chromium.org,
- Eric Biggers <ebiggers@google.com>, stable@vger.kernel.org
-Subject: [PATCH 2/6] fscrypt: avoid collisions when presenting long encrypted
- filenames
-Date: Mon, 24 Apr 2017 10:00:09 -0700
-Message-Id: <20170424170013.85175-3-ebiggers3@gmail.com>
+ Eric Biggers <ebiggers@google.com>
+Subject: [PATCH 6/6] ext4: clean up ext4_match() and callers
+Date: Mon, 24 Apr 2017 10:00:13 -0700
+Message-Id: <20170424170013.85175-7-ebiggers3@gmail.com>
 In-Reply-To: <20170424170013.85175-1-ebiggers3@gmail.com>
 References: <20170424170013.85175-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,111 +27,155 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Eric Biggers <ebiggers@google.com>
 
-When accessing an encrypted directory without the key, userspace must
-operate on filenames derived from the ciphertext names, which contain
-arbitrary bytes.  Since we must support filenames as long as NAME_MAX,
-we can't always just base64-encode the ciphertext, since that may make
-it too long.  Currently, this is solved by presenting long names in an
-abbreviated form containing any needed filesystem-specific hashes (e.g.
-to identify a directory block), then the last 16 bytes of ciphertext.
-This needs to be sufficient to identify the actual name on lookup.
+When ext4 encryption was originally merged, we were encrypting the
+user-specified filename in ext4_match(), introducing a lot of additional
+complexity into ext4_match() and its callers.  This has since been
+changed to encrypt the filename earlier, so we can remove the gunk
+that's no longer needed.  This more or less reverts ext4_search_dir()
+and ext4_find_dest_de() to the way they were in the v4.0 kernel.
 
-However, there is a bug.  It seems to have been assumed that due to the
-use of a CBC (ciphertext block chaining)-based encryption mode, the last
-16 bytes (i.e. the AES block size) of ciphertext would depend on the
-full plaintext, preventing collisions.  However, we actually use CBC
-with ciphertext stealing (CTS), which handles the last two blocks
-specially, causing them to appear "flipped".  Thus, it's actually the
-second-to-last block which depends on the full plaintext.
-
-This caused long filenames that differ only near the end of their
-plaintexts to, when observed without the key, point to the wrong inode
-and be undeletable.  For example, with ext4:
-
-    # echo pass | e4crypt add_key -p 16 edir/
-    # seq -f "edir/abcdefghijklmnopqrstuvwxyz012345%.0f" 100000 | xargs touch
-    # find edir/ -type f | xargs stat -c %i | sort | uniq | wc -l
-    100000
-    # sync
-    # echo 3 > /proc/sys/vm/drop_caches
-    # keyctl new_session
-    # find edir/ -type f | xargs stat -c %i | sort | uniq | wc -l
-    2004
-    # rm -rf edir/
-    rm: cannot remove 'edir/_A7nNFi3rhkEQlJ6P,hdzluhODKOeWx5V': Structure needs cleaning
-    ...
-
-To fix this, when presenting long encrypted filenames, encode the
-second-to-last block of ciphertext rather than the last 16 bytes.
-
-Although it would be nice to solve this without depending on a specific
-encryption mode, that would mean doing a cryptographic hash like SHA-256
-which would be much less efficient.  This way is sufficient for now, and
-it's still compatible with encryption modes like HEH which are strong
-pseudorandom permutations.  Also, changing the presented names is still
-allowed at any time because they are only provided to allow applications
-to do things like delete encrypted directories.  They're not designed to
-be used to persistently identify files --- which would be hard to do
-anyway, given that they're encrypted after all.
-
-For ease of backports, this patch only makes the minimal fix to both
-ext4 and f2fs.  It leaves ubifs as-is, since ubifs doesn't compare the
-ciphertext block yet.  Follow-on patches will clean things up properly
-and make the filesystems use a shared helper function.
-
-Fixes: 5de0b4d0cd15 ("ext4 crypto: simplify and speed up filename encryption")
-Reported-by: Gwendal Grignou <gwendal@chromium.org>
-Cc: stable@vger.kernel.org
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/fname.c | 2 +-
- fs/ext4/namei.c   | 4 ++--
- fs/f2fs/dir.c     | 4 ++--
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ fs/ext4/namei.c | 81 ++++++++++++++++++---------------------------------------
+ 1 file changed, 25 insertions(+), 56 deletions(-)
 
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index 13052b85c393..932881f27f2f 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -300,7 +300,7 @@ int fscrypt_fname_disk_to_usr(struct inode *inode,
- 	} else {
- 		memset(buf, 0, 8);
- 	}
--	memcpy(buf + 8, iname->name + iname->len - 16, 16);
-+	memcpy(buf + 8, iname->name + ((iname->len - 17) & ~15), 16);
- 	oname->name[0] = '_';
- 	oname->len = 1 + digest_encode(buf, 24, oname->name + 1);
- 	return 0;
 diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 6ad612c576fc..e6301b6933fc 100644
+index 6ecc3ae87a79..b6b8d073fdc4 100644
 --- a/fs/ext4/namei.c
 +++ b/fs/ext4/namei.c
-@@ -1255,9 +1255,9 @@ static inline int ext4_match(struct ext4_filename *fname,
- 	if (unlikely(!name)) {
- 		if (fname->usr_fname->name[0] == '_') {
- 			int ret;
--			if (de->name_len < 16)
-+			if (de->name_len <= 32)
- 				return 0;
--			ret = memcmp(de->name + de->name_len - 16,
-+			ret = memcmp(de->name + ((de->name_len - 17) & ~15),
- 				     fname->crypto_buf.name + 8, 16);
- 			return (ret == 0) ? 1 : 0;
+@@ -1237,18 +1237,17 @@ static void dx_insert_block(struct dx_frame *frame, u32 hash, ext4_lblk_t block)
+ }
+ 
+ /*
+- * NOTE! unlike strncmp, ext4_match returns 1 for success, 0 for failure.
++ * Test whether a directory entry matches the filename being searched for.
+  *
+- * `len <= EXT4_NAME_LEN' is guaranteed by caller.
+- * `de != NULL' is guaranteed by caller.
++ * Return: %true if the directory entry matches, otherwise %false.
+  */
+-static inline int ext4_match(struct ext4_filename *fname,
+-			     struct ext4_dir_entry_2 *de)
++static inline bool ext4_match(const struct ext4_filename *fname,
++			      const struct ext4_dir_entry_2 *de)
+ {
+ 	struct fscrypt_name f;
+ 
+ 	if (!de->inode)
+-		return 0;
++		return false;
+ 
+ 	f.usr_fname = fname->usr_fname;
+ 	f.disk_name = fname->disk_name;
+@@ -1269,48 +1268,31 @@ int ext4_search_dir(struct buffer_head *bh, char *search_buf, int buf_size,
+ 	struct ext4_dir_entry_2 * de;
+ 	char * dlimit;
+ 	int de_len;
+-	int res;
+ 
+ 	de = (struct ext4_dir_entry_2 *)search_buf;
+ 	dlimit = search_buf + buf_size;
+ 	while ((char *) de < dlimit) {
+ 		/* this code is executed quadratically often */
+ 		/* do minimal checking `by hand' */
+-		if ((char *) de + de->name_len <= dlimit) {
+-			res = ext4_match(fname, de);
+-			if (res < 0) {
+-				res = -1;
+-				goto return_result;
+-			}
+-			if (res > 0) {
+-				/* found a match - just to be sure, do
+-				 * a full check */
+-				if (ext4_check_dir_entry(dir, NULL, de, bh,
+-						bh->b_data,
+-						 bh->b_size, offset)) {
+-					res = -1;
+-					goto return_result;
+-				}
+-				*res_dir = de;
+-				res = 1;
+-				goto return_result;
+-			}
+-
++		if ((char *) de + de->name_len <= dlimit &&
++		    ext4_match(fname, de)) {
++			/* found a match - just to be sure, do
++			 * a full check */
++			if (ext4_check_dir_entry(dir, NULL, de, bh, bh->b_data,
++						 bh->b_size, offset))
++				return -1;
++			*res_dir = de;
++			return 1;
  		}
-diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-index 374e4b8f9b70..5df3596a667a 100644
---- a/fs/f2fs/dir.c
-+++ b/fs/f2fs/dir.c
-@@ -139,8 +139,8 @@ struct f2fs_dir_entry *find_target_dentry(struct fscrypt_name *fname,
- #ifdef CONFIG_F2FS_FS_ENCRYPTION
- 		if (unlikely(!name->name)) {
- 			if (fname->usr_fname->name[0] == '_') {
--				if (de_name.len >= 16 &&
--					!memcmp(de_name.name + de_name.len - 16,
-+				if (de_name.len > 32 &&
-+					!memcmp(de_name.name + ((de_name.len - 17) & ~15),
- 						fname->crypto_buf.name + 8, 16))
- 					goto found;
- 				goto not_match;
+ 		/* prevent looping on a bad block */
+ 		de_len = ext4_rec_len_from_disk(de->rec_len,
+ 						dir->i_sb->s_blocksize);
+-		if (de_len <= 0) {
+-			res = -1;
+-			goto return_result;
+-		}
++		if (de_len <= 0)
++			return -1;
+ 		offset += de_len;
+ 		de = (struct ext4_dir_entry_2 *) ((char *) de + de_len);
+ 	}
+-
+-	res = 0;
+-return_result:
+-	return res;
++	return 0;
+ }
+ 
+ static int is_dx_internal_node(struct inode *dir, ext4_lblk_t block,
+@@ -1821,24 +1803,15 @@ int ext4_find_dest_de(struct inode *dir, struct inode *inode,
+ 	int nlen, rlen;
+ 	unsigned int offset = 0;
+ 	char *top;
+-	int res;
+ 
+ 	de = (struct ext4_dir_entry_2 *)buf;
+ 	top = buf + buf_size - reclen;
+ 	while ((char *) de <= top) {
+ 		if (ext4_check_dir_entry(dir, NULL, de, bh,
+-					 buf, buf_size, offset)) {
+-			res = -EFSCORRUPTED;
+-			goto return_result;
+-		}
+-		/* Provide crypto context and crypto buffer to ext4 match */
+-		res = ext4_match(fname, de);
+-		if (res < 0)
+-			goto return_result;
+-		if (res > 0) {
+-			res = -EEXIST;
+-			goto return_result;
+-		}
++					 buf, buf_size, offset))
++			return -EFSCORRUPTED;
++		if (ext4_match(fname, de))
++			return -EEXIST;
+ 		nlen = EXT4_DIR_REC_LEN(de->name_len);
+ 		rlen = ext4_rec_len_from_disk(de->rec_len, buf_size);
+ 		if ((de->inode ? rlen - nlen : rlen) >= reclen)
+@@ -1846,15 +1819,11 @@ int ext4_find_dest_de(struct inode *dir, struct inode *inode,
+ 		de = (struct ext4_dir_entry_2 *)((char *)de + rlen);
+ 		offset += rlen;
+ 	}
+-
+ 	if ((char *) de > top)
+-		res = -ENOSPC;
+-	else {
+-		*dest_de = de;
+-		res = 0;
+-	}
+-return_result:
+-	return res;
++		return -ENOSPC;
++
++	*dest_de = de;
++	return 0;
+ }
+ 
+ int ext4_insert_dentry(struct inode *dir,
 -- 
 2.12.2.816.g2cccc81164-goog
