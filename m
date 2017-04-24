@@ -1,19 +1,18 @@
-Received: from mail-vk0-x242.google.com ([2607:f8b0:400c:c05::242])
+Received: from mail-vk0-x243.google.com ([2607:f8b0:400c:c05::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d2fvl-00063I-CO
- for linux-mtd@lists.infradead.org; Mon, 24 Apr 2017 15:29:38 +0000
-Received: by mail-vk0-x242.google.com with SMTP id j127so5947911vkh.0
- for <linux-mtd@lists.infradead.org>; Mon, 24 Apr 2017 08:29:16 -0700 (PDT)
+ id 1d2fxo-0007jI-Oq
+ for linux-mtd@lists.infradead.org; Mon, 24 Apr 2017 15:31:46 +0000
+Received: by mail-vk0-x243.google.com with SMTP id q78so5941080vke.3
+ for <linux-mtd@lists.infradead.org>; Mon, 24 Apr 2017 08:31:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20170424124120.31613-2-zajec5@gmail.com>
+In-Reply-To: <20170424124120.31613-4-zajec5@gmail.com>
 References: <20170420135731.13272-2-zajec5@gmail.com>
  <20170424124120.31613-1-zajec5@gmail.com>
- <20170424124120.31613-2-zajec5@gmail.com>
+ <20170424124120.31613-4-zajec5@gmail.com>
 From: Jonas Gorski <jonas.gorski@gmail.com>
-Date: Mon, 24 Apr 2017 17:28:54 +0200
-Message-ID: <CAOiHx=mHvuWM8Ww1+GD621c1AgAU0BNoGG-=1BgRxEVnTj8wLQ@mail.gmail.com>
-Subject: Re: [PATCH V2 1/4] dt-bindings: mtd: make partitions doc a bit more
- generic
+Date: Mon, 24 Apr 2017 17:31:03 +0200
+Message-ID: <CAOiHx=njT+y6VqTbqRFQZ4rJNW6A8XsngTe2WRp=qND9c3ySpA@mail.gmail.com>
+Subject: Re: [PATCH V2 3/4] mtd: partitions: add of_match_table parser matching
 To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -43,63 +42,94 @@ On 24 April 2017 at 14:41, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote=
 :
 > From: Brian Norris <computersforpeace@gmail.com>
 >
-> Currently the only documented partitioning is "fixed-partitions" but
-> there are more methods in use that we may want to support in the future.
-> Mention them and make it clear Fixed Partitions are just a single case.
+> Partition parsers can now provide an of_match_table to enable
+> flash<-->parser matching via device tree.
+>
+> This support is currently limited to built-in parsers as it uses
+> request_module() and friends. This should be sufficient for most cases
+> though as compiling parsers as modules isn't a common choice.
 >
 > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 > Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+> Acked-by: Brian Norris <computersforpeac@gmail.com>
 > ---
-> This is based on Brian's patch:
-> [RFC PATCH 3/7] doc: dt: mtd: partition: add on-flash format binding
+> This is based on Brian's patches:
+> [RFC PATCH 4/7] mtd: add of_match_mtd_parser() and of_mtd_match_mtd_parse=
+r() helpers
+> [RFC PATCH 6/7] RFC: mtd: partitions: enable of_match_table matching
 >
-> V1: Dropped "Section B: On-Flash Partition Tables" with Google's FMAP as =
-this
->     patchset doesn't add that new parser.
-> V2: Add "We currently only document a binding for fixed layouts." part
+> V1: Put helpers in mtdpart.c instead of drivers/of/of_mtd.c
+>     Merge helpers into a single of_mtd_match_mtd_parser
 > ---
->  .../devicetree/bindings/mtd/partition.txt          | 30 ++++++++++++++++=
-+-----
->  1 file changed, 24 insertions(+), 6 deletions(-)
+>  drivers/mtd/mtdpart.c          | 47 ++++++++++++++++++++++++++++++++++++=
+++++++
+>  include/linux/mtd/partitions.h |  1 +
+>  2 files changed, 48 insertions(+)
 >
-> diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Docume=
-ntation/devicetree/bindings/mtd/partition.txt
-> index 81a224da63be..b5de311b967a 100644
-> --- a/Documentation/devicetree/bindings/mtd/partition.txt
-> +++ b/Documentation/devicetree/bindings/mtd/partition.txt
-> @@ -1,29 +1,47 @@
-> -Representing flash partitions in devicetree
-> +Flash partitions in device tree
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
+> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+> index 73c52f1a2e4c..d0cb1a892ed2 100644
+> --- a/drivers/mtd/mtdpart.c
+> +++ b/drivers/mtd/mtdpart.c
+> @@ -861,6 +861,41 @@ static int mtd_part_do_parse(struct mtd_part_parser =
+*parser,
+>         return ret;
+>  }
 >
-> -Partitions can be represented by sub-nodes of an mtd device. This can be=
- used
-> +Flash devices can be partitioned into one or more functional ranges (e.g=
-. "boot
-> +code", "nvram", "kernel").
+> +static bool of_mtd_match_mtd_parser(struct mtd_info *mtd,
+> +                                   struct mtd_part_parser *parser)
+> +{
+> +       struct device_node *np;
+> +       bool ret;
 > +
-> +Different devices may be partitioned in a different ways. Some may use a=
- fixed
-> +flash layout set at production time. Some may use on-flash table that de=
-scribes
-> +the geometry and naming/purpose of each functional region. It is also po=
-ssible
-> +to see these methods mixed.
+> +       np =3D mtd_get_of_node(mtd);
+> +       np =3D of_get_child_by_name(np, "partitions");
 > +
-> +To assist system software in locating partitions, we provide a binding t=
-o
-> +describe which method is used for a given flash.
+> +       ret =3D !!of_match_node(parser->of_match_table, np);
+> +
+> +       of_node_put(np);
+> +
+> +       return ret;
+> +}
+> +
+> +static struct mtd_part_parser *mtd_part_get_parser_by_of(struct mtd_info=
+ *mtd)
+> +{
+> +       struct mtd_part_parser *p, *ret =3D NULL;
+> +
+> +       spin_lock(&part_parser_lock);
+> +
+> +       list_for_each_entry(p, &part_parsers, list) {
+> +               if (of_mtd_match_mtd_parser(mtd, p) &&
+> +                               try_module_get(p->owner)) {
+> +                       ret =3D p;
+> +                       break;
+> +               }
+> +       }
 
-Since patch 3 adds specifying methods through the compatible of the
-partitions subnode, maybe we should document that here? Something
-along
 
-"To assist system software in locating partitions, we allow describing
-which method is used for a given flash device. To describe the method
-there should be a subnode of the flash device that is named
-'partitions'. It must have a 'compatible' property, which is used to
-identify the method to use."
+Hm, maybe iterate over the compatibles, so parsers matching the most
+specific compatible get precedence in case there is more than one
+compatible? Currently it will match the first one that matches any
+compatible, and registration order of parsers can change that. I'm
+thinking of parsers that partially rely on fixed, unprobable layouts,
+so can use "fixed-partitions" as a fallback compatible.
+
+E.g. having something like this
+
+partitions {
+        compatible =3D "sample,custom-layout", "fixed-partitions";
+
+        bootloader@0 { ...  };
+
+        firmware@10000 { .... }; /* will be split by the parser */
+
+        extra@780000 { .... }; /* partition the on-flash format can't speci=
+fy */
+};
+
+Where you will still be able to write an image raw to the image
+partition even if the "custom-layout"-parser isn't present/enabled,
+but if it is present, it should always be used.
 
 
 Regards
