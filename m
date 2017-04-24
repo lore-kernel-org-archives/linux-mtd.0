@@ -1,19 +1,25 @@
-Received: from mail-io0-x229.google.com ([2607:f8b0:4001:c06::229])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d2Nj9-0005z4-V7
- for linux-mtd@lists.infradead.org; Sun, 23 Apr 2017 20:03:25 +0000
-Received: by mail-io0-x229.google.com with SMTP id r16so158925206ioi.2
- for <linux-mtd@lists.infradead.org>; Sun, 23 Apr 2017 13:03:02 -0700 (PDT)
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1d2YBa-0004b2-3G
+ for linux-mtd@lists.infradead.org; Mon, 24 Apr 2017 07:13:28 +0000
+Date: Mon, 24 Apr 2017 09:12:59 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Pavel Machek <pavel@ucw.cz>
+Cc: richard@nod.at, mark.marshall@omicronenergy.com,
+ linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, Dipen.Dudhat@freescale.com,
+ cyrille.pitchen@atmel.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org, prabhakar@freescale.com, b44839@freescale.com
+Subject: Re: tango_nand: is logic right in error cases? (was Re:
+ fsl_ifc_nand: are blank pages protected by ECC?)
+Message-ID: <20170424091259.3f091129@bbrezillon>
+In-Reply-To: <20170423095845.GA8692@amd>
+References: <20170419121332.GA26979@amd> <20170419231804.5a04ed69@bbrezillon>
+ <20170421100813.GA4332@amd> <20170421133721.GA15332@amd>
+ <20170421154903.2782cd06@bbrezillon> <20170423095845.GA8692@amd>
 MIME-Version: 1.0
-In-Reply-To: <CAM===sQfUTUSBbby2goJDNj7MJShbtoFain-U0+AeKiH330BwQ@mail.gmail.com>
-References: <CAM===sQfUTUSBbby2goJDNj7MJShbtoFain-U0+AeKiH330BwQ@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Sun, 23 Apr 2017 22:03:01 +0200
-Message-ID: <CAFLxGvwCU6eMv6ajkFM4ok1vMdc9p0c4gnR1cDio5tkmRe2JjA@mail.gmail.com>
-Subject: Re: UBIFS support of NFS
-To: Leon Pollak <leon.pollak@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,21 +29,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Apr 23, 2017 at 3:44 PM, Leon Pollak <leon.pollak@gmail.com> wrote:
-> Hello, all.
->
-> The UBIFS FAQ states that UBIFS does not support NFS exporting and
-> refers to the mail exchange from 2008 which discusses this.
->
-> Is it (UBIFS does not support NFS export) true today, in 2017?
+On Sun, 23 Apr 2017 11:58:45 +0200
+Pavel Machek <pavel@ucw.cz> wrote:
 
-More or less. I've working on it:
-https://lkml.org/lkml/2016/12/1/711
+> Hi!
+> 
+> > > Maybe I figured it out. Unfortunately, it is only compile tested. Does
+> > > it look approximately right?  
+> > 
+> > Yep that's definitely better. Just one thing missing (see below),
+> > otherwise it looks good.  
+> 
+> I'm copying from tango_nand, therefore I had to check tango_nand, too.
+> 
+> static int check_erased_page(struct nand_chip *chip, u8 *buf)
+> {
+> ...
+>                 res = nand_check_erased_ecc_chunk(buf, pkt_size, ecc, ecc_size,
+>                                                   meta, meta_len,
+>                                                   chip->ecc.strength);
+>                 if (res < 0)
+>                         mtd->ecc_stats.failed++;
+>                 else
+>                         mtd->ecc_stats.corrected += res;
+> 
+>                 bitflips = max(res, bitflips);
+> ...
+>         return bitflips;
+> }
+> 
+> static int tango_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+>                            u8 *buf, int oob_required, int page)
+> {
+> ...
+>         res = decode_error_report(nfc);
+>         if (res < 0) {
+>                 chip->ecc.read_oob_raw(mtd, chip, page);
+>                 res = check_erased_page(chip, buf);
+>         }
+> 
+>         return res;
+> }
+> 
+> 
+> So nand_check_erased_ecc_chunk() returns < 0 (failed ECC), but then we
+> perform max() with bitflips (lets say 1, correctable ECC) and return
+> 1? tango_read_page then returns 1 (correctable ECC) forgetting about
+> failed ECC...?
 
-Hint: Testers are welcome.
+Yep, that's expected, see what's done in the core to detect
+uncorrectable errors and return EBADMSG when appropriate [1].
 
-Maybe it will be part of v4.13.
-
--- 
-Thanks,
-//richard
+[1]http://lxr.free-electrons.com/source/drivers/mtd/nand/nand_base.c#L2033
