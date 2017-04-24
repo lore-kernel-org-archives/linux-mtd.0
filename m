@@ -1,33 +1,29 @@
-Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
+Received: from mail-oi0-x22a.google.com ([2607:f8b0:4003:c06::22a])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d2kzt-0005zq-GN
- for linux-mtd@lists.infradead.org; Mon, 24 Apr 2017 20:54:15 +0000
-Received: by mail-lf0-x244.google.com with SMTP id x72so18071063lfb.1
- for <linux-mtd@lists.infradead.org>; Mon, 24 Apr 2017 13:53:52 -0700 (PDT)
-Subject: Re: [PATCH V2 3/4] mtd: partitions: add of_match_table parser matching
-To: Jonas Gorski <jonas.gorski@gmail.com>, Rob Herring <robh+dt@kernel.org>
-References: <20170420135731.13272-2-zajec5@gmail.com>
- <20170424124120.31613-1-zajec5@gmail.com>
- <20170424124120.31613-4-zajec5@gmail.com>
- <CAOiHx=njT+y6VqTbqRFQZ4rJNW6A8XsngTe2WRp=qND9c3ySpA@mail.gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Mark Rutland <mark.rutland@arm.com>, Frank Rowand <frowand.list@gmail.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Message-ID: <931e8f81-dd42-d0f9-1589-c61927252204@gmail.com>
-Date: Mon, 24 Apr 2017 22:53:49 +0200
+ id 1d2lOE-0006MW-UU
+ for linux-mtd@lists.infradead.org; Mon, 24 Apr 2017 21:19:24 +0000
+Received: by mail-oi0-x22a.google.com with SMTP id y11so118557607oie.0
+ for <linux-mtd@lists.infradead.org>; Mon, 24 Apr 2017 14:19:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAOiHx=njT+y6VqTbqRFQZ4rJNW6A8XsngTe2WRp=qND9c3ySpA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <f415bfef-12d9-6444-9e94-9ae3e3363cfb@nod.at>
+References: <20170418210642.6039-1-gwendal@chromium.org>
+ <20170418230136.GA96152@gmail.com>
+ <CAFLxGvwtFQW=NL3NrNHx-vWR3wSUtewnBRy1XzMqRNTV8f5vwQ@mail.gmail.com>
+ <20170419171633.GB89688@gmail.com>
+ <f415bfef-12d9-6444-9e94-9ae3e3363cfb@nod.at>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Mon, 24 Apr 2017 23:19:00 +0200
+Message-ID: <CAFLxGvwuiZ+5zPnQJ6bXKhWHs5jPA=0c5+3Vq5EZn_AsrgzeGg@mail.gmail.com>
+Subject: Re: [PATCH] fscrypt: use 32 bytes of encrypted filename
+To: Richard Weinberger <richard@nod.at>
+Cc: Eric Biggers <ebiggers3@gmail.com>, Gwendal Grignou <gwendal@chromium.org>,
+ Ryo Hashimoto <hashimoto@chromium.org>, Eric Biggers <ebiggers@google.com>,
+ linux-f2fs-devel@lists.sourceforge.net, linux-fscrypt@vger.kernel.org,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "Theodore Ts'o" <tytso@mit.edu>,
+ linux-ext4@vger.kernel.org, Kazuhiro Inaba <kinaba@chromium.org>,
+ David Gstir <david@sigma-star.at>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,147 +33,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/24/2017 05:31 PM, Jonas Gorski wrote:
-> On 24 April 2017 at 14:41, Rafał Miłecki <zajec5@gmail.com> wrote:
->> From: Brian Norris <computersforpeace@gmail.com>
->>
->> Partition parsers can now provide an of_match_table to enable
->> flash<-->parser matching via device tree.
->>
->> This support is currently limited to built-in parsers as it uses
->> request_module() and friends. This should be sufficient for most cases
->> though as compiling parsers as modules isn't a common choice.
->>
->> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
->> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
->> Acked-by: Brian Norris <computersforpeac@gmail.com>
->> ---
->> This is based on Brian's patches:
->> [RFC PATCH 4/7] mtd: add of_match_mtd_parser() and of_mtd_match_mtd_parser() helpers
->> [RFC PATCH 6/7] RFC: mtd: partitions: enable of_match_table matching
->>
->> V1: Put helpers in mtdpart.c instead of drivers/of/of_mtd.c
->>     Merge helpers into a single of_mtd_match_mtd_parser
->> ---
->>  drivers/mtd/mtdpart.c          | 47 ++++++++++++++++++++++++++++++++++++++++++
->>  include/linux/mtd/partitions.h |  1 +
->>  2 files changed, 48 insertions(+)
->>
->> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
->> index 73c52f1a2e4c..d0cb1a892ed2 100644
->> --- a/drivers/mtd/mtdpart.c
->> +++ b/drivers/mtd/mtdpart.c
->> @@ -861,6 +861,41 @@ static int mtd_part_do_parse(struct mtd_part_parser *parser,
->>         return ret;
->>  }
->>
->> +static bool of_mtd_match_mtd_parser(struct mtd_info *mtd,
->> +                                   struct mtd_part_parser *parser)
->> +{
->> +       struct device_node *np;
->> +       bool ret;
->> +
->> +       np = mtd_get_of_node(mtd);
->> +       np = of_get_child_by_name(np, "partitions");
->> +
->> +       ret = !!of_match_node(parser->of_match_table, np);
->> +
->> +       of_node_put(np);
->> +
->> +       return ret;
->> +}
->> +
->> +static struct mtd_part_parser *mtd_part_get_parser_by_of(struct mtd_info *mtd)
->> +{
->> +       struct mtd_part_parser *p, *ret = NULL;
->> +
->> +       spin_lock(&part_parser_lock);
->> +
->> +       list_for_each_entry(p, &part_parsers, list) {
->> +               if (of_mtd_match_mtd_parser(mtd, p) &&
->> +                               try_module_get(p->owner)) {
->> +                       ret = p;
->> +                       break;
->> +               }
->> +       }
+Eric,
+
+On Wed, Apr 19, 2017 at 7:21 PM, Richard Weinberger <richard@nod.at> wrote:
+>> Well, like I said to Jaegeuk for F2FS, that's what the code does, but _why_?
+>> Like F2FS, it's probably not the case that the hash is sufficient to reliably
+>> identify a directory entry.  Granted, UBIFS does it a lot better than F2FS since
+>> UBIFS uses two 32-bit hashes rather than just one, but it seems the second hash
+>> may be neither necessary nor sufficient to identify a specific directory entry,
+>> and it should be looking at the bytes of ciphertext from the filename instead,
+>> like what ext4 does.  (Provided that is fixed to account for how CTS mode
+>> encryption works.)
 >
->
-> Hm, maybe iterate over the compatibles, so parsers matching the most
-> specific compatible get precedence in case there is more than one
-> compatible? Currently it will match the first one that matches any
-> compatible, and registration order of parsers can change that. I'm
-> thinking of parsers that partially rely on fixed, unprobable layouts,
-> so can use "fixed-partitions" as a fallback compatible.
->
-> E.g. having something like this
->
-> partitions {
->         compatible = "sample,custom-layout", "fixed-partitions";
->
->         bootloader@0 { ...  };
->
->         firmware@10000 { .... }; /* will be split by the parser */
->
->         extra@780000 { .... }; /* partition the on-flash format can't specify */
-> };
->
-> Where you will still be able to write an image raw to the image
-> partition even if the "custom-layout"-parser isn't present/enabled,
-> but if it is present, it should always be used.
+> Let me dig into this, maybe I made a boo boo.
+> The idea was looking up by the filename hash and resolving
+> possible collisions using the secondary hash.
 
-I see the point, but I'm afraid we're lacking some DT helper for this. See
-below for the function I wrote (and I'm not proud of) - compile tested only.
+In ubifs_lookup() we handle two cases:
+1. lookup of a bigname, both fscrypt_name->hash and ->minor_hash are valid.
+    ->hash is r5(diskname) and ->minor_hash is the secondary hash, AKA cookie.
+   UBIFS fed this hashes in ubifs_readdir() to fscrypt.
+2. lookup of a non-bigname, in this case we compute r5(diskname) and
+use the diskname
+    itself for lookups.
 
-I think we would need a new helper similar to the of_match_node:
-1) Taking const struct of_device_id *matches
-2) Taking const struct device_node *node
-but returning a score of the best match.
+So, in case 1 we avoid collisions by using a 64bit key and in case 2 by using
+the 32bit key plus a linear search and memcmp() of diskname.
 
-DT guys: any comment on this? Rob?
-
-Would this be acceptable to:
-1) Take this patch as is as Linux current doesn't support other bindings
-2) Work on DT helper + mtd modification in a separated patchset?
-
-static struct mtd_part_parser *mtd_part_get_parser_by_of(struct mtd_info *mtd)
-{
-	struct mtd_part_parser *p, *ret = NULL;
-	struct device_node *np;
-	struct property *prop;
-	const char *cp;
-
-	np = mtd_get_of_node(mtd);
-	np = of_get_child_by_name(np, "partitions");
-	if (!np)
-		return NULL;
-
-	spin_lock(&part_parser_lock);
-
-	of_property_for_each_string(np, "compatible", prop, cp) {
-		list_for_each_entry(p, &part_parsers, list) {
-			const struct of_device_id *matches;
-
-			for (matches = p->of_match_table;
-			     matches->name[0] || matches->type[0] || matches->compatible[0];
-			     matches++) {
-				if (!of_compat_cmp(cp, matches->compatible, strlen(matches->compatible)) &&
-				    try_module_get(p->owner)) {
-					ret = p;
-					break;
-				}
-			}
-
-			if (ret)
-				break;
-		}
-
-		if (ret)
-			break;
-	}
-
-	spin_unlock(&part_parser_lock);
-
-	of_node_put(np);
-
-	return ret;
-}
+-- 
+Thanks,
+//richard
