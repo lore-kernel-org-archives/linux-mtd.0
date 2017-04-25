@@ -1,28 +1,23 @@
-Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
+Received: from mail-pf0-x235.google.com ([2607:f8b0:400e:c00::235])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d34YD-00045W-Ex
- for linux-mtd@lists.infradead.org; Tue, 25 Apr 2017 17:46:59 +0000
-Received: by mail-pg0-x241.google.com with SMTP id 63so12744907pgh.0
- for <linux-mtd@lists.infradead.org>; Tue, 25 Apr 2017 10:46:36 -0700 (PDT)
-Date: Tue, 25 Apr 2017 10:46:32 -0700
-From: Eric Biggers <ebiggers3@gmail.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Cc: linux-fscrypt@vger.kernel.org, Ryo Hashimoto <hashimoto@chromium.org>,
- Gwendal Grignou <gwendal@chromium.org>,
- "Theodore Y . Ts'o" <tytso@mit.edu>, Eric Biggers <ebiggers@google.com>,
- linux-f2fs-devel@lists.sourceforge.net,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Jaegeuk Kim <jaegeuk@kernel.org>, linux-ext4@vger.kernel.org,
- Kazuhiro Inaba <kinaba@chromium.org>, David Gstir <david@sigma-star.at>
-Subject: Re: [PATCH 5/6] f2fs: switch to using fscrypt_match_name()
-Message-ID: <20170425174632.GA41477@gmail.com>
-References: <20170424170013.85175-1-ebiggers3@gmail.com>
- <20170424170013.85175-6-ebiggers3@gmail.com>
- <CAFLxGvxdanXJhzioJmgvr3mzSkS=Bxfh1bbtAn1L+t6CoSaHcA@mail.gmail.com>
+ id 1d34g7-0007CO-0f
+ for linux-mtd@lists.infradead.org; Tue, 25 Apr 2017 17:55:09 +0000
+Received: by mail-pf0-x235.google.com with SMTP id 194so30059315pfv.3
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Apr 2017 10:54:46 -0700 (PDT)
+Date: Tue, 25 Apr 2017 10:54:42 -0700
+From: Eric Biggers <ebiggers@google.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-fscrypt@vger.kernel.org, david@sigma-star.at,
+ David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Subject: Re: [PATCH] ubifs: Return -ENOKEY from rename if encryption keys are
+ missing
+Message-ID: <20170425175442.GB41477@google.com>
+References: <1493070381-20075-1-git-send-email-richard@nod.at>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFLxGvxdanXJhzioJmgvr3mzSkS=Bxfh1bbtAn1L+t6CoSaHcA@mail.gmail.com>
+In-Reply-To: <1493070381-20075-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,50 +27,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
+Hi David and Richard,
 
-On Tue, Apr 25, 2017 at 03:37:56PM +0200, Richard Weinberger wrote:
-> Eric, Jaegeuk,
+On Mon, Apr 24, 2017 at 11:46:21PM +0200, Richard Weinberger wrote:
+> From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 > 
+> If either source or destination directory is encrypted and the
+> encryption key is unknown, make sure we return -ENOKEY instead
+> of -EPERM, similar to how this case is handled in ext4.
 > 
-> On Mon, Apr 24, 2017 at 7:00 PM, Eric Biggers <ebiggers3@gmail.com> wrote:
-> > From: Eric Biggers <ebiggers@google.com>
-> >
-> > Switch f2fs directory searches to use the fscrypt_match_name() helper
-> > function.  There should be no functional change.
+> Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 > 
-> > -#ifdef CONFIG_F2FS_FS_ENCRYPTION
-> > -               if (unlikely(!name->name)) {
-> > -                       if (fname->usr_fname->name[0] == '_') {
-> > -                               if (de_name.len > 32 &&
-> > -                                       !memcmp(de_name.name + ((de_name.len - 17) & ~15),
-> > -                                               fname->crypto_buf.name + 8, 16))
-> > -                                       goto found;
-> > -                               goto not_match;
-> > -                       }
-> > -                       name->name = fname->crypto_buf.name;
-> > -                       name->len = fname->crypto_buf.len;
-> > -               }
-> 
-> Sorry if this is a stupid question, but why do you have to compare hashes _and_
-> the last few bytes of the bigname?
-> A lookup via bigname gives you two 32bits hash values, and there I'd assume that
-> this is sufficient for a collisions free lookup. Especially since an
-> resumed readdir()
-> with a 64bits cookie has to work too on your filesystem.
-> 
+> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+> index ff77a0aa2f2b..c342f23581d2 100644
+> --- a/fs/ubifs/dir.c
+> +++ b/fs/ubifs/dir.c
+> @@ -1340,6 +1340,12 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
+>  	if (unlink)
+>  		ubifs_assert(inode_is_locked(new_inode));
+>  
+> +	if ((ubifs_crypt_is_encrypted(old_dir) &&
+> +	     !fscrypt_has_encryption_key(old_dir)) ||
+> +	    (ubifs_crypt_is_encrypted(new_dir) &&
+> +	     !fscrypt_has_encryption_key(new_dir)))
+> +		return -ENOKEY;
+> +
+>  	if (old_dir != new_dir) {
+>  		if (ubifs_crypt_is_encrypted(new_dir) &&
+>  		    !fscrypt_has_permitted_context(new_dir, old_inode))
+> @@ -1564,6 +1570,12 @@ static int ubifs_xrename(struct inode *old_dir, struct dentry *old_dentry,
+>  
+>  	ubifs_assert(fst_inode && snd_inode);
+>  
+> +	if ((ubifs_crypt_is_encrypted(old_dir) &&
+> +	     !fscrypt_has_encryption_key(old_dir)) ||
+> +	    (ubifs_crypt_is_encrypted(new_dir) &&
+> +	     !fscrypt_has_encryption_key(new_dir)))
+> +		return -ENOKEY;
+> +
+>  	if ((ubifs_crypt_is_encrypted(old_dir) ||
+>  	    ubifs_crypt_is_encrypted(new_dir)) &&
+>  	    (old_dir != new_dir) &&
+> -- 
 
-Well, the problem is that hashes may not be sufficient to uniquely identify a
-name in all cases.  f2fs uses only a 32-bit hash so it's trivial to create
-collisions on it, as I demonstrated.  Even collisions of two 32-bit hashes, as
-used by ext4 and ubifs, are possible.  And ext4 currently doesn't even compare
-the hashes during directory searches, beyond using them to find the correct
-directory block, since the hashes aren't stored in the directory entries.
-
-Could this mean that telldir()/seekdir() is unreliable too, probably.  But for
-lookups of the "digested" names we aren't limited to just the 64-bit readdir
-position, so we can avoid duplicating the bug.  Also, collisions in the digested
-names are very problematic since they result in undeletable files, rather than
-just poor performance and broken telldir()/seekdir().
+Did you test that this change actually does anything?  Unlike ext4 and f2fs,
+ubifs calls fscrypt_setup_filename() from its rename methods rather than through
+a helper function ${FS}_find_entry().  Therefore it's able to pass in lookup=0,
+which means that the key is required.  So it should already be failing with
+ENOKEY.  You can verify this by running xfstests generic/419.
 
 - Eric
