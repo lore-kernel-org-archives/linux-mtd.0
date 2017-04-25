@@ -1,28 +1,27 @@
-Received: from mail-bl2nam02on0048.outbound.protection.outlook.com
- ([104.47.38.48] helo=NAM02-BL2-obe.outbound.protection.outlook.com)
+Received: from mail-oi0-x232.google.com ([2607:f8b0:4003:c06::232])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d2ycT-0004ru-9Q
- for linux-mtd@lists.infradead.org; Tue, 25 Apr 2017 11:26:59 +0000
-Date: Tue, 25 Apr 2017 13:26:23 +0200
-From: Jan Glauber <jan.glauber@caviumnetworks.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: Re: [RFC PATCH 2/2] nand: cavium: Nand flash controller for Cavium
- ARM64 SOCs
-Message-ID: <20170425112623.GA25764@hc>
-References: <20170327160524.29019-1-jglauber@cavium.com>
- <20170327160524.29019-3-jglauber@cavium.com>
- <20170329112932.267b3059@bbrezillon>
- <20170329100256.GA3819@hardcore>
- <20170329155933.7494c243@bbrezillon>
+ id 1d30fa-0004EK-9L
+ for linux-mtd@lists.infradead.org; Tue, 25 Apr 2017 13:38:20 +0000
+Received: by mail-oi0-x232.google.com with SMTP id y11so139280711oie.0
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Apr 2017 06:37:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170329155933.7494c243@bbrezillon>
+In-Reply-To: <20170424170013.85175-6-ebiggers3@gmail.com>
+References: <20170424170013.85175-1-ebiggers3@gmail.com>
+ <20170424170013.85175-6-ebiggers3@gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Tue, 25 Apr 2017 15:37:56 +0200
+Message-ID: <CAFLxGvxdanXJhzioJmgvr3mzSkS=Bxfh1bbtAn1L+t6CoSaHcA@mail.gmail.com>
+Subject: Re: [PATCH 5/6] f2fs: switch to using fscrypt_match_name()
+To: Eric Biggers <ebiggers3@gmail.com>
+Cc: linux-fscrypt@vger.kernel.org, Ryo Hashimoto <hashimoto@chromium.org>,
+ Gwendal Grignou <gwendal@chromium.org>, "Theodore Y . Ts'o" <tytso@mit.edu>,
+ Eric Biggers <ebiggers@google.com>,
+ linux-f2fs-devel@lists.sourceforge.net,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Jaegeuk Kim <jaegeuk@kernel.org>,
+ linux-ext4@vger.kernel.org, Kazuhiro Inaba <kinaba@chromium.org>,
+ David Gstir <david@sigma-star.at>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,138 +31,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 29, 2017 at 03:59:33PM +0200, Boris Brezillon wrote:
-> On Wed, 29 Mar 2017 12:02:56 +0200
-> Jan Glauber <jan.glauber@caviumnetworks.com> wrote:
-> 
-> > > > +static void cvm_nand_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
-> > > > +{
-> > > > +	struct nand_chip *nand = mtd_to_nand(mtd);
-> > > > +	struct cvm_nfc *tn = to_cvm_nfc(nand->controller);
-> > > > +
-> > > > +	memcpy(tn->buf.dmabuf + tn->buf.data_len, buf, len);
-> > > > +	tn->buf.data_len += len;
-> > > > +}  
-> > > 
-> > > It seems that cvm_nand_read/write_byte/buf() are returning data that
-> > > have already been retrieved (problably during the ->cmdfunc() phase).  
-> > 
-> > Yes.
-> > 
-> > > That's not how it's supposed to work. The core is expecting the data
-> > > transfer to be done when ->read/write_buf() is called. Doing that in  
-> > > ->cmdfunc() is risky, because when you're there you have no clue about  
-> > > how much bytes the core expect.  
-> > 
-> > It seems to work fine, I've never seen the core trying to do more bytes in
-> > the read/write_buf() then requested in ->cmdfunc().
-> 
-> We already had problems in the past: when the core evolves to handle
-> new NAND chips it might decide to read a bit more data than it used to
-> be, and assuming that your driver will always take the right decision
-> based on the information passed to ->cmdfunc() is a bit risky.
-> 
-> I still have the plan to provide a better interface allowing drivers to
-> execute the whole operation sequence (cmd+addr+data cycles), but it's
-> not there yet (see [1] for more details).
-> If you're okay to volunteer, I can help you with design this new hook
-> which should probably make your life easier for the rest of the driver
-> code (and also help me improve existing drivers ;-)).
+Eric, Jaegeuk,
 
-Hi Boris,
 
-sorry for the long delay. In the meantime I've looked at your slides and
-I can agree with many points. I'd like to go that way and hopefully I
-can help with my limited understanding of the nand layer.
+On Mon, Apr 24, 2017 at 7:00 PM, Eric Biggers <ebiggers3@gmail.com> wrote:
+> From: Eric Biggers <ebiggers@google.com>
+>
+> Switch f2fs directory searches to use the fscrypt_match_name() helper
+> function.  There should be no functional change.
 
-How far are you with the new interface, can you share some code?
+> -#ifdef CONFIG_F2FS_FS_ENCRYPTION
+> -               if (unlikely(!name->name)) {
+> -                       if (fname->usr_fname->name[0] == '_') {
+> -                               if (de_name.len > 32 &&
+> -                                       !memcmp(de_name.name + ((de_name.len - 17) & ~15),
+> -                                               fname->crypto_buf.name + 8, 16))
+> -                                       goto found;
+> -                               goto not_match;
+> -                       }
+> -                       name->name = fname->crypto_buf.name;
+> -                       name->len = fname->crypto_buf.len;
+> -               }
 
-Regards,
-Jan
+Sorry if this is a stupid question, but why do you have to compare hashes _and_
+the last few bytes of the bigname?
+A lookup via bigname gives you two 32bits hash values, and there I'd assume that
+this is sufficient for a collisions free lookup. Especially since an
+resumed readdir()
+with a 64bits cookie has to work too on your filesystem.
 
-> Otherwise, you should try to implement ->cmd_ctrl() and try to transfer
-> data on the bus only when ->read/write_buf() are called (sometime it's
-> not possible).
-> 
-> 
-> > >   
-> > > > +
-> > > > +static void cvm_nand_cmdfunc(struct mtd_info *mtd, unsigned int command,
-> > > > +				  int column, int page_addr)  
-> > > 
-> > > Did you try implementing ->cmd_ctrl() instead of ->cmdfunc(). Your
-> > > controller seems to be highly configurable and, at first glance, I think
-> > > you can simplify the driver by implementing ->cmd_ctrl() and relying on
-> > > the default ->cmdfunc() implementation.
-> > >   
-> > 
-> > I've looked at the sunxi_nand driver but ->cmd_ctrl() is very different
-> > from ->cmdfunc() and the later looks like a better match for our controller.
-> > 
-> > The Cavium controller needs to write the commands (NAND_CMD_READ0, etc.)
-> > into its pseudo instructions (see ndf_queue_cmd_cle()).
-> > So how can I do this low-level stuff with ->cmd_ctrl()?
-> 
-> I'd say that it's actually matching pretty well what is passed to
-> ->cmd_ctrl().
-> For each call to ->cmd_ctrl() you have the information about the type
-> of access that is made on the bus:
-> - if the NAND_CLE flag is set in ctrl (the 3rd argument) you have a CLE
->   cycle
-> - if NAND_ALE is set in ctrl you have an ALE cycle
-> - if NAND_CMD_NONE is passed in cmd (2nd argument), you should issue
->   the whole operation
-> 
-> You can update your cavium command each time NAND_CLE or NAND_ALE is
-> passed (update the command information after each call), and then issue
-> the command when NAND_CMD_NONE is passed.
-> The only missing part in ->cmd_ctrl() are the data transfer cycles
-> which are handled in ->read/write_buf().
-> 
-> > 
-> > For instance for reading data I have ndf_page_read() that is used for
-> > both NAND_CMD_READ0 and NAND_CMD_READOOB. Without hacking into ->cmdfunc(),
-> > how would I differentiate between the two commands in read_buf()?
-> 
-> Do you have to? Can't you just issue a command that is solely doing
-> data transfer cycles without the CMD and ADDR ones?
-> 
-> [...]
-> > > > +union ndf_cmd {
-> > > > +	u64 val[2];
-> > > > +	union {
-> > > > +		struct ndf_nop_cmd		nop;
-> > > > +		struct ndf_wait_cmd		wait;
-> > > > +		struct ndf_bus_cmd		bus_acq_rel;
-> > > > +		struct ndf_chip_cmd		chip_en_dis;
-> > > > +		struct ndf_cle_cmd		cle_cmd;
-> > > > +		struct ndf_rd_cmd		rd_cmd;
-> > > > +		struct ndf_wr_cmd		wr_cmd;
-> > > > +		struct ndf_set_tm_par_cmd	set_tm_par;
-> > > > +		struct ndf_ale_cmd		ale_cmd;
-> > > > +		struct ndf_wait_status_cmd	wait_status;
-> > > > +	} u;
-> > > > +};  
-> > > 
-> > > I need some time to process all these information, but your controller
-> > > seems to be a complex/highly-configurable beast. That's really
-> > > interesting :-).
-> > > I'll come up with more comments/question after reviewing more carefully
-> > > the command creation logic.  
-> > 
-> > Great. I'm afraid out controller is quite different from existing
-> > hardware, at least I didn't find a driver that does things simalar (like
-> > the command building and queueing).
-> 
-> Hm, not so different actually, except you seem to have fine grained
-> control on the sequencing, which is a really good thing because your
-> driver can evolve with new NAND chip requirements.
-> 
-> > 
-> > I'm happy to help with any more information you need about our hardware.
-> 
-> Thanks,
-> 
-> Boris
-> 
-> [1]http://free-electrons.com/pub/conferences/2016/elc/brezillon-nand-framework/brezillon-nand-framework.pdf
+-- 
+Thanks,
+//richard
