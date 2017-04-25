@@ -1,39 +1,28 @@
-Received: from mail.kernel.org ([198.145.29.136])
+Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d33qc-0005zE-Mw
- for linux-mtd@lists.infradead.org; Tue, 25 Apr 2017 17:01:56 +0000
-Received: from mail.kernel.org (localhost [127.0.0.1])
- by mail.kernel.org (Postfix) with ESMTP id B741C201F2
- for <linux-mtd@lists.infradead.org>; Tue, 25 Apr 2017 17:01:29 +0000 (UTC)
-Received: from mail-yw0-f171.google.com (mail-yw0-f171.google.com
- [209.85.161.171])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 42802201C8
- for <linux-mtd@lists.infradead.org>; Tue, 25 Apr 2017 17:01:27 +0000 (UTC)
-Received: by mail-yw0-f171.google.com with SMTP id 203so95945008ywe.0
- for <linux-mtd@lists.infradead.org>; Tue, 25 Apr 2017 10:01:27 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <a9519140-a804-9888-3223-9a1446e25c52@hauke-m.de>
-References: <20170417192942.32219-1-hauke@hauke-m.de>
- <20170417192942.32219-9-hauke@hauke-m.de>
- <20170420145405.7s3iapxggr5575d2@rob-hp-laptop>
- <a9519140-a804-9888-3223-9a1446e25c52@hauke-m.de>
-From: Rob Herring <robh@kernel.org>
-Date: Tue, 25 Apr 2017 12:01:05 -0500
-Message-ID: <CAL_JsqJmeu6JNVK3aSCCE-q2Y9CAWHRFJF8SZo6QSBWV1+DO9A@mail.gmail.com>
-Subject: Re: [PATCH 08/13] reset: Add a reset controller driver for the Lantiq
- XWAY based SoCs
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Linux-MIPS <linux-mips@linux-mips.org>,
+ id 1d34YD-00045W-Ex
+ for linux-mtd@lists.infradead.org; Tue, 25 Apr 2017 17:46:59 +0000
+Received: by mail-pg0-x241.google.com with SMTP id 63so12744907pgh.0
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Apr 2017 10:46:36 -0700 (PDT)
+Date: Tue, 25 Apr 2017 10:46:32 -0700
+From: Eric Biggers <ebiggers3@gmail.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: linux-fscrypt@vger.kernel.org, Ryo Hashimoto <hashimoto@chromium.org>,
+ Gwendal Grignou <gwendal@chromium.org>,
+ "Theodore Y . Ts'o" <tytso@mit.edu>, Eric Biggers <ebiggers@google.com>,
+ linux-f2fs-devel@lists.sourceforge.net,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- LINUX-WATCHDOG <linux-watchdog@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- John Crispin <john@phrozen.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- hauke.mehrtens@intel.com
-Content-Type: text/plain; charset=UTF-8
+ Jaegeuk Kim <jaegeuk@kernel.org>, linux-ext4@vger.kernel.org,
+ Kazuhiro Inaba <kinaba@chromium.org>, David Gstir <david@sigma-star.at>
+Subject: Re: [PATCH 5/6] f2fs: switch to using fscrypt_match_name()
+Message-ID: <20170425174632.GA41477@gmail.com>
+References: <20170424170013.85175-1-ebiggers3@gmail.com>
+ <20170424170013.85175-6-ebiggers3@gmail.com>
+ <CAFLxGvxdanXJhzioJmgvr3mzSkS=Bxfh1bbtAn1L+t6CoSaHcA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFLxGvxdanXJhzioJmgvr3mzSkS=Bxfh1bbtAn1L+t6CoSaHcA@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -43,81 +32,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 25, 2017 at 2:00 AM, Hauke Mehrtens <hauke@hauke-m.de> wrote:
->
->
-> On 04/20/2017 04:54 PM, Rob Herring wrote:
->> On Mon, Apr 17, 2017 at 09:29:37PM +0200, Hauke Mehrtens wrote:
->>> From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
->>>
->>> The reset controllers (on xRX200 and newer SoCs have two of them) are
->>> provided by the RCU module. This was initially implemented as a simple
->>> reset controller. However, the RCU module provides more functionality
->>> (ethernet GPHYs, USB PHY, etc.), which makes it a MFD device.
->>> The old reset controller driver implementation from
->>> arch/mips/lantiq/xway/reset.c did not honor this fact.
->>>
->>> For some devices the request and the status bits are different.
->>>
->>> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
->>> ---
->>>  .../devicetree/bindings/reset/lantiq,rcu-reset.txt |  43 ++++
->>>  arch/mips/lantiq/xway/reset.c                      |  68 ------
->>>  drivers/reset/Kconfig                              |   6 +
->>>  drivers/reset/Makefile                             |   1 +
->>>  drivers/reset/reset-lantiq-rcu.c                   | 231 +++++++++++++++++++++
->>>  5 files changed, 281 insertions(+), 68 deletions(-)
->>>  create mode 100644 Documentation/devicetree/bindings/reset/lantiq,rcu-reset.txt
->>>  create mode 100644 drivers/reset/reset-lantiq-rcu.c
->>>
->>> diff --git a/Documentation/devicetree/bindings/reset/lantiq,rcu-reset.txt b/Documentation/devicetree/bindings/reset/lantiq,rcu-reset.txt
->>> new file mode 100644
->>> index 000000000000..7f097d16bbb7
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/reset/lantiq,rcu-reset.txt
->>> @@ -0,0 +1,43 @@
->>> +Lantiq XWAY SoC RCU reset controller binding
->>> +============================================
->>> +
->>> +This binding describes a reset-controller found on the RCU module on Lantiq
->>> +XWAY SoCs.
->>> +
->>> +
->>> +-------------------------------------------------------------------------------
->>> +Required properties (controller (parent) node):
->>> +- compatible                : Should be "lantiq,rcu-reset"
->>> +- lantiq,rcu-syscon : A phandle to the RCU syscon, the reset register
->>> +                      offset and the status register offset.
->>> +- #reset-cells              : Specifies the number of cells needed to encode the
->>> +                      reset line, should be 1.
->>> +
->>> +Optional properties:
->>> +- reset-status              : The request status bit. For some bits the request bit
->>> +                      and the status bit are different. This is depending
->>> +                      on the SoC. If the reset-status bit does not match
->>> +                      the reset-request bit, put the reset number into the
->>> +                      reset-request property and the status bit at the same
->>> +                      index into the reset-status property. If no
->>> +                      reset-request bit is given here, the driver assume
->>> +                      status and request bit are the same.
->>> +- reset-request             : The reset request bit, to map it to the reset-status
->>> +                      bit.
->>
->> These should either be implied by SoC specific compatible or be made
->> part of the reset cells. In the latter case, you still need the SoC
->> specific compatible.
->
-> Currently the reset framework only supports a single reset cell to my
-> knowledge, but I haven't looked into the details, I could extend it to
-> make it support two.
+Hi Richard,
 
-I thought we had cases already, but maybe I'm thinking of something
-else. In any case, driver limitations shouldn't define binding design.
+On Tue, Apr 25, 2017 at 03:37:56PM +0200, Richard Weinberger wrote:
+> Eric, Jaegeuk,
+> 
+> 
+> On Mon, Apr 24, 2017 at 7:00 PM, Eric Biggers <ebiggers3@gmail.com> wrote:
+> > From: Eric Biggers <ebiggers@google.com>
+> >
+> > Switch f2fs directory searches to use the fscrypt_match_name() helper
+> > function.  There should be no functional change.
+> 
+> > -#ifdef CONFIG_F2FS_FS_ENCRYPTION
+> > -               if (unlikely(!name->name)) {
+> > -                       if (fname->usr_fname->name[0] == '_') {
+> > -                               if (de_name.len > 32 &&
+> > -                                       !memcmp(de_name.name + ((de_name.len - 17) & ~15),
+> > -                                               fname->crypto_buf.name + 8, 16))
+> > -                                       goto found;
+> > -                               goto not_match;
+> > -                       }
+> > -                       name->name = fname->crypto_buf.name;
+> > -                       name->len = fname->crypto_buf.len;
+> > -               }
+> 
+> Sorry if this is a stupid question, but why do you have to compare hashes _and_
+> the last few bytes of the bigname?
+> A lookup via bigname gives you two 32bits hash values, and there I'd assume that
+> this is sufficient for a collisions free lookup. Especially since an
+> resumed readdir()
+> with a 64bits cookie has to work too on your filesystem.
+> 
 
-> The SoC which needs this has two reset control register sets and the
-> bits are specific for each register set. Would a specific compatible
-> string for each register set ok?
+Well, the problem is that hashes may not be sufficient to uniquely identify a
+name in all cases.  f2fs uses only a 32-bit hash so it's trivial to create
+collisions on it, as I demonstrated.  Even collisions of two 32-bit hashes, as
+used by ext4 and ubifs, are possible.  And ext4 currently doesn't even compare
+the hashes during directory searches, beyond using them to find the correct
+directory block, since the hashes aren't stored in the directory entries.
 
-Yes. You should have that.
+Could this mean that telldir()/seekdir() is unreliable too, probably.  But for
+lookups of the "digested" names we aren't limited to just the 64-bit readdir
+position, so we can avoid duplicating the bug.  Also, collisions in the digested
+names are very problematic since they result in undeletable files, rather than
+just poor performance and broken telldir()/seekdir().
 
-Rob
+- Eric
