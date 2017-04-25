@@ -1,24 +1,30 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+Received: from mail-it0-x244.google.com ([2607:f8b0:4001:c0b::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d372i-0007SB-JK
- for linux-mtd@lists.infradead.org; Tue, 25 Apr 2017 20:26:39 +0000
-Received: by mail-wm0-x243.google.com with SMTP id z129so28158977wmb.1
- for <linux-mtd@lists.infradead.org>; Tue, 25 Apr 2017 13:26:16 -0700 (PDT)
-Subject: Re: [PATCH v8 3/4] mtd: spi-nor: introduce Double Transfer Rate (DTR)
- SPI protocols
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
-References: <cover.1493149757.git.cyrille.pitchen@wedev4u.fr>
- <44562d5d511d8fef8c21ea7e10f32cf727b147b8.1493149757.git.cyrille.pitchen@wedev4u.fr>
-Cc: computersforpeace@gmail.com, dwmw2@infradead.org,
- boris.brezillon@free-electrons.com, richard@nod.at,
- linux-kernel@vger.kernel.org, Cyrille Pitchen <cyrille.pitchen@atmel.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <aaabe07a-fd00-8156-7082-3200238a0d60@gmail.com>
-Date: Tue, 25 Apr 2017 22:26:06 +0200
+ id 1d37Xp-0002os-Mw
+ for linux-mtd@lists.infradead.org; Tue, 25 Apr 2017 20:58:47 +0000
+Received: by mail-it0-x244.google.com with SMTP id c26so15222194itd.1
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Apr 2017 13:58:25 -0700 (PDT)
+Date: Tue, 25 Apr 2017 13:58:21 -0700
+From: Eric Biggers <ebiggers3@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-fscrypt@vger.kernel.org, Ryo Hashimoto <hashimoto@chromium.org>,
+ Gwendal Grignou <gwendal@chromium.org>,
+ "Theodore Y . Ts'o" <tytso@mit.edu>, Eric Biggers <ebiggers@google.com>,
+ linux-f2fs-devel@lists.sourceforge.net,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Jaegeuk Kim <jaegeuk@kernel.org>, linux-ext4@vger.kernel.org,
+ Kazuhiro Inaba <kinaba@chromium.org>, David Gstir <david@sigma-star.at>
+Subject: Re: [PATCH 5/6] f2fs: switch to using fscrypt_match_name()
+Message-ID: <20170425205821.GB133970@gmail.com>
+References: <20170424170013.85175-1-ebiggers3@gmail.com>
+ <20170424170013.85175-6-ebiggers3@gmail.com>
+ <CAFLxGvxdanXJhzioJmgvr3mzSkS=Bxfh1bbtAn1L+t6CoSaHcA@mail.gmail.com>
+ <20170425174632.GA41477@gmail.com>
+ <7b3931c1-dfc5-6e30-d950-204c4a9f480c@nod.at>
 MIME-Version: 1.0
-In-Reply-To: <44562d5d511d8fef8c21ea7e10f32cf727b147b8.1493149757.git.cyrille.pitchen@wedev4u.fr>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7b3931c1-dfc5-6e30-d950-204c4a9f480c@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,20 +34,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/25/2017 10:08 PM, Cyrille Pitchen wrote:
-> From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+On Tue, Apr 25, 2017 at 09:22:16PM +0200, Richard Weinberger wrote:
+> Eric,
 > 
-> This patch introduces support to Double Transfer Rate (DTR) SPI protocols.
-> DTR is used only for Fast Read operations.
+> Am 25.04.2017 um 19:46 schrieb Eric Biggers:
+> >> Sorry if this is a stupid question, but why do you have to compare hashes _and_
+> >> the last few bytes of the bigname?
+> >> A lookup via bigname gives you two 32bits hash values, and there I'd assume that
+> >> this is sufficient for a collisions free lookup. Especially since an
+> >> resumed readdir()
+> >> with a 64bits cookie has to work too on your filesystem.
+> >>
+> > 
+> > Well, the problem is that hashes may not be sufficient to uniquely identify a
+> > name in all cases.  f2fs uses only a 32-bit hash so it's trivial to create
+> > collisions on it, as I demonstrated.  Even collisions of two 32-bit hashes, as
+> > used by ext4 and ubifs, are possible.  And ext4 currently doesn't even compare
+> > the hashes during directory searches, beyond using them to find the correct
+> > directory block, since the hashes aren't stored in the directory entries.
 > 
-> According to manufacturer datasheets, whatever the number of I/O lines
-> used during instruction (x) and address/mode/dummy (y) clock cycles, DTR
-> is used only during data (z) clock cycles of SPI x-y-z protocols.
-> 
-> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+> I agree that finding a collision in a 32bits hash is easy, but for 64bits it
+> is *much* harder.
 
-Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
+That's true for accidental collisions, but malicious users might create
+intentional collisions.  In the case of UBIFS it looks like the first 32 bits of
+the cookie depend solely only on the filename via key_r5_hash(), while the
+second 32 bits is random.  So I imagine a collision in the full 64 bits could be
+generated by precomputing on average about 65536 filenames which collide in
+key_r5_hash(), then creating them all in the same directory.
 
--- 
-Best regards,
-Marek Vasut
+Eric
