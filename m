@@ -1,27 +1,23 @@
-Date: Tue, 25 Apr 2017 08:53:04 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Nicolas Ferre <nicolas.ferre@atmel.com>, Alexandre Belloni
- <alexandre.belloni@free-electrons.com>, Haavard Skinnemoen
- <hskinnemoen@gmail.com>, Hans-Christian Egtvedt <egtvedt@samfundet.no>,
- linux-kernel@vger.kernel.org, Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu
- <rainyfeeling@outlook.com>, David Woodhouse <dwmw2@infradead.org>, Marek
- Vasut <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-arm-kernel@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian
- Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala
- <galak@codeaurora.org>, devicetree@vger.kernel.org, Masahiro Yamada
- <yamada.masahiro@socionext.com>, Andy Shevchenko
- <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v3 1/3] mtd: nand: Cleanup/rework the atmel_nand driver
-Message-ID: <20170425085304.139d894b@bbrezillon>
-In-Reply-To: <20170425010930.GA120971@google.com>
-References: <1489651362-17077-1-git-send-email-boris.brezillon@free-electrons.com>
- <1489651362-17077-2-git-send-email-boris.brezillon@free-electrons.com>
- <20170425010930.GA120971@google.com>
+Received: from hauke-m.de ([5.39.93.123] helo=mail.hauke-m.de)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d2uOz-0003VK-Pp
+ for linux-mtd@lists.infradead.org; Tue, 25 Apr 2017 06:56:47 +0000
+Subject: Re: [PATCH 06/13] MIPS: lantiq: Convert the xbar driver to a
+ platform_driver
+To: Rob Herring <robh@kernel.org>
+References: <20170417192942.32219-1-hauke@hauke-m.de>
+ <20170417192942.32219-7-hauke@hauke-m.de>
+ <20170420144848.hwvtrhnwxcsxyv7x@rob-hp-laptop>
+Cc: ralf@linux-mips.org, linux-mips@linux-mips.org,
+ linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
+ devicetree@vger.kernel.org, martin.blumenstingl@googlemail.com,
+ john@phrozen.org, linux-spi@vger.kernel.org, hauke.mehrtens@intel.com
+From: Hauke Mehrtens <hauke@hauke-m.de>
+Message-ID: <8742e3b3-4dc2-bc74-f607-00d96f74512c@hauke-m.de>
+Date: Tue, 25 Apr 2017 08:56:17 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20170420144848.hwvtrhnwxcsxyv7x@rob-hp-laptop>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,34 +28,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 24 Apr 2017 18:09:30 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
 
-> On Thu, Mar 16, 2017 at 09:02:40AM +0100, Boris Brezillon wrote:
+
+On 04/20/2017 04:48 PM, Rob Herring wrote:
+> On Mon, Apr 17, 2017 at 09:29:35PM +0200, Hauke Mehrtens wrote:
+>> From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+>>
+>> This allows using the xbar driver on ARX300 based SoCs which require the
+>> same xbar setup as the xRX200 chipsets because the xbar driver
+>> initialization is not guarded by an xRX200 specific
+>> of_machine_is_compatible condition anymore. Additionally the new driver
+>> takes a syscon phandle to configure the XBAR endianness bits in RCU
+>> (before this was done in arch/mips/lantiq/xway/reset.c and also
+>> guarded by an xRX200 specific if-statement).
+>>
+>> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+>> ---
+>>  .../devicetree/bindings/mips/lantiq/xbar.txt       |  22 +++++
+>>  MAINTAINERS                                        |   1 +
+>>  arch/mips/lantiq/xway/reset.c                      |   4 -
+>>  arch/mips/lantiq/xway/sysctrl.c                    |  41 ---------
+>>  drivers/soc/Makefile                               |   1 +
+>>  drivers/soc/lantiq/Makefile                        |   1 +
+>>  drivers/soc/lantiq/xbar.c                          | 100 +++++++++++++++++++++
+>>  7 files changed, 125 insertions(+), 45 deletions(-)
+>>  create mode 100644 Documentation/devicetree/bindings/mips/lantiq/xbar.txt
+>>  create mode 100644 drivers/soc/lantiq/Makefile
+>>  create mode 100644 drivers/soc/lantiq/xbar.c
+>>
+>> diff --git a/Documentation/devicetree/bindings/mips/lantiq/xbar.txt b/Documentation/devicetree/bindings/mips/lantiq/xbar.txt
+>> new file mode 100644
+>> index 000000000000..86e53ff3b0d5
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/mips/lantiq/xbar.txt
+>> @@ -0,0 +1,22 @@
+>> +Lantiq XWAY SoC XBAR binding
+>> +============================
+>> +
+>> +
+>> +-------------------------------------------------------------------------------
+>> +Required properties:
+>> +- compatible	: Should be "lantiq,xbar-xway"
 > 
-> > diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/atmel/nand-controller.c
-> > new file mode 100644
-> > index 000000000000..f71b9e5d7d9d
-> > --- /dev/null
-> > +++ b/drivers/mtd/nand/atmel/nand-controller.c
-> > @@ -0,0 +1,2198 @@  
-> [...]
-> 
-> > +static int
-> > +atmel_hsmc_nand_controller_legacy_init(struct atmel_hsmc_nand_controller *nc)
-> > +{
-> > +	struct regmap_config regmap_conf = {
-> > +		.reg_bits = 32,
-> > +		.val_bits = 32,
-> > +		.reg_stride = 4,
-> > +		.val_bits = 32,  
-> 
-> You assigned val_bits twice. Is that just a harmless mistake, or did you
-> mean to set something else?
+> This compatible is already in use so it is fine, but you should also 
+> have per SoC compatible strings.
 
-Nope, I didn't mean to set another field to 32. I'll just apply the fix
-you provided.
+I will add a new SoC specific one.
+What does per SoC device tree mean? Does it mean for the same silicon,
+for the same silicon revision, for the same fusing of a silicon or for
+the same marketing name?
 
-Thanks,
+I would like to make it per silicon or per silicon revision for the IP
+cores which I know are different.
 
-Boris
+Hauke
