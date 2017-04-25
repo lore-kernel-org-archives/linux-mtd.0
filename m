@@ -1,26 +1,38 @@
-Received: from mail-oi0-x232.google.com ([2607:f8b0:4003:c06::232])
+Received: from mail.kernel.org ([198.145.29.136])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d30fa-0004EK-9L
- for linux-mtd@lists.infradead.org; Tue, 25 Apr 2017 13:38:20 +0000
-Received: by mail-oi0-x232.google.com with SMTP id y11so139280711oie.0
- for <linux-mtd@lists.infradead.org>; Tue, 25 Apr 2017 06:37:57 -0700 (PDT)
+ id 1d33nX-0003TO-76
+ for linux-mtd@lists.infradead.org; Tue, 25 Apr 2017 16:58:45 +0000
+Received: from mail.kernel.org (localhost [127.0.0.1])
+ by mail.kernel.org (Postfix) with ESMTP id 69C4A20212
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Apr 2017 16:58:21 +0000 (UTC)
+Received: from mail-yw0-f177.google.com (mail-yw0-f177.google.com
+ [209.85.161.177])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id CD680201EF
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Apr 2017 16:58:19 +0000 (UTC)
+Received: by mail-yw0-f177.google.com with SMTP id k11so52047025ywb.1
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Apr 2017 09:58:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20170424170013.85175-6-ebiggers3@gmail.com>
-References: <20170424170013.85175-1-ebiggers3@gmail.com>
- <20170424170013.85175-6-ebiggers3@gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Tue, 25 Apr 2017 15:37:56 +0200
-Message-ID: <CAFLxGvxdanXJhzioJmgvr3mzSkS=Bxfh1bbtAn1L+t6CoSaHcA@mail.gmail.com>
-Subject: Re: [PATCH 5/6] f2fs: switch to using fscrypt_match_name()
-To: Eric Biggers <ebiggers3@gmail.com>
-Cc: linux-fscrypt@vger.kernel.org, Ryo Hashimoto <hashimoto@chromium.org>,
- Gwendal Grignou <gwendal@chromium.org>, "Theodore Y . Ts'o" <tytso@mit.edu>,
- Eric Biggers <ebiggers@google.com>,
- linux-f2fs-devel@lists.sourceforge.net,
+In-Reply-To: <8742e3b3-4dc2-bc74-f607-00d96f74512c@hauke-m.de>
+References: <20170417192942.32219-1-hauke@hauke-m.de>
+ <20170417192942.32219-7-hauke@hauke-m.de>
+ <20170420144848.hwvtrhnwxcsxyv7x@rob-hp-laptop>
+ <8742e3b3-4dc2-bc74-f607-00d96f74512c@hauke-m.de>
+From: Rob Herring <robh@kernel.org>
+Date: Tue, 25 Apr 2017 11:57:58 -0500
+Message-ID: <CAL_JsqLdtyc_w5CWW9YTN6+xnYVQemSbVEmjJbhH8kP_8a-wkA@mail.gmail.com>
+Subject: Re: [PATCH 06/13] MIPS: lantiq: Convert the xbar driver to a
+ platform_driver
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Linux-MIPS <linux-mips@linux-mips.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Jaegeuk Kim <jaegeuk@kernel.org>,
- linux-ext4@vger.kernel.org, Kazuhiro Inaba <kinaba@chromium.org>,
- David Gstir <david@sigma-star.at>
+ LINUX-WATCHDOG <linux-watchdog@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ John Crispin <john@phrozen.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ hauke.mehrtens@intel.com
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,35 +43,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Eric, Jaegeuk,
-
-
-On Mon, Apr 24, 2017 at 7:00 PM, Eric Biggers <ebiggers3@gmail.com> wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Tue, Apr 25, 2017 at 1:56 AM, Hauke Mehrtens <hauke@hauke-m.de> wrote:
 >
-> Switch f2fs directory searches to use the fscrypt_match_name() helper
-> function.  There should be no functional change.
+>
+> On 04/20/2017 04:48 PM, Rob Herring wrote:
+>> On Mon, Apr 17, 2017 at 09:29:35PM +0200, Hauke Mehrtens wrote:
+>>> From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+>>>
+>>> This allows using the xbar driver on ARX300 based SoCs which require the
+>>> same xbar setup as the xRX200 chipsets because the xbar driver
+>>> initialization is not guarded by an xRX200 specific
+>>> of_machine_is_compatible condition anymore. Additionally the new driver
+>>> takes a syscon phandle to configure the XBAR endianness bits in RCU
+>>> (before this was done in arch/mips/lantiq/xway/reset.c and also
+>>> guarded by an xRX200 specific if-statement).
+>>>
+>>> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+>>> ---
+>>>  .../devicetree/bindings/mips/lantiq/xbar.txt       |  22 +++++
+>>>  MAINTAINERS                                        |   1 +
+>>>  arch/mips/lantiq/xway/reset.c                      |   4 -
+>>>  arch/mips/lantiq/xway/sysctrl.c                    |  41 ---------
+>>>  drivers/soc/Makefile                               |   1 +
+>>>  drivers/soc/lantiq/Makefile                        |   1 +
+>>>  drivers/soc/lantiq/xbar.c                          | 100 +++++++++++++++++++++
+>>>  7 files changed, 125 insertions(+), 45 deletions(-)
+>>>  create mode 100644 Documentation/devicetree/bindings/mips/lantiq/xbar.txt
+>>>  create mode 100644 drivers/soc/lantiq/Makefile
+>>>  create mode 100644 drivers/soc/lantiq/xbar.c
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/mips/lantiq/xbar.txt b/Documentation/devicetree/bindings/mips/lantiq/xbar.txt
+>>> new file mode 100644
+>>> index 000000000000..86e53ff3b0d5
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/mips/lantiq/xbar.txt
+>>> @@ -0,0 +1,22 @@
+>>> +Lantiq XWAY SoC XBAR binding
+>>> +============================
+>>> +
+>>> +
+>>> +-------------------------------------------------------------------------------
+>>> +Required properties:
+>>> +- compatible        : Should be "lantiq,xbar-xway"
+>>
+>> This compatible is already in use so it is fine, but you should also
+>> have per SoC compatible strings.
+>
+> I will add a new SoC specific one.
+> What does per SoC device tree mean? Does it mean for the same silicon,
+> for the same silicon revision, for the same fusing of a silicon or for
+> the same marketing name?
 
-> -#ifdef CONFIG_F2FS_FS_ENCRYPTION
-> -               if (unlikely(!name->name)) {
-> -                       if (fname->usr_fname->name[0] == '_') {
-> -                               if (de_name.len > 32 &&
-> -                                       !memcmp(de_name.name + ((de_name.len - 17) & ~15),
-> -                                               fname->crypto_buf.name + 8, 16))
-> -                                       goto found;
-> -                               goto not_match;
-> -                       }
-> -                       name->name = fname->crypto_buf.name;
-> -                       name->len = fname->crypto_buf.len;
-> -               }
+Depends how specific you need to some extent. For fusing, packaging,
+metal fixes, speed grading, etc. probably use the same compatible.
+Different design and dies from the start, then they should have
+different compatibles.
 
-Sorry if this is a stupid question, but why do you have to compare hashes _and_
-the last few bytes of the bigname?
-A lookup via bigname gives you two 32bits hash values, and there I'd assume that
-this is sufficient for a collisions free lookup. Especially since an
-resumed readdir()
-with a 64bits cookie has to work too on your filesystem.
+> I would like to make it per silicon or per silicon revision for the IP
+> cores which I know are different.
 
--- 
-Thanks,
-//richard
+Being "the same IP" doesn't really matter. The errata can be different
+and often there is no visibility into what h/w designers may have
+changed. On some IP you can rely on revision/feature registers though
+forgetting to rev revision registers is not uncommon. You need to have
+sufficient information that you can work-around a problem in the
+future without requiring a new dtb.
+
+Rob
