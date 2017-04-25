@@ -1,23 +1,24 @@
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+Received: from hauke-m.de ([5.39.93.123] helo=mail.hauke-m.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d2pAh-0006VA-Qa
- for linux-mtd@lists.infradead.org; Tue, 25 Apr 2017 01:21:41 +0000
-Received: by mail-pf0-x241.google.com with SMTP id c198so7068770pfc.0
- for <linux-mtd@lists.infradead.org>; Mon, 24 Apr 2017 18:21:19 -0700 (PDT)
-Date: Mon, 24 Apr 2017 18:21:16 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Marek Vasut <marex@denx.de>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Subject: Re: [PULL v2] mtd: nand: changes for 4.12
-Message-ID: <20170425012116.GB120971@google.com>
-References: <20170415092058.1c514a40@bbrezillon>
+ id 1d2uKd-0000Bs-I9
+ for linux-mtd@lists.infradead.org; Tue, 25 Apr 2017 06:52:18 +0000
+Subject: Re: [PATCH 11/13] phy: Add an USB PHY driver for the Lantiq SoCs
+ using the RCU module
+To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+References: <20170417192942.32219-1-hauke@hauke-m.de>
+ <20170417192942.32219-12-hauke@hauke-m.de>
+ <CAFBinCAB=vaDpzCoMFX8w9j0R04i6Zr4mbjDtteKsQ_LkKAaLg@mail.gmail.com>
+Cc: ralf@linux-mips.org, linux-mips@linux-mips.org,
+ linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
+ devicetree@vger.kernel.org, john@phrozen.org, linux-spi@vger.kernel.org,
+ hauke.mehrtens@intel.com
+From: Hauke Mehrtens <hauke@hauke-m.de>
+Message-ID: <b1d3a133-932c-a427-4b32-f3fad676b4a4@hauke-m.de>
+Date: Tue, 25 Apr 2017 08:51:20 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170415092058.1c514a40@bbrezillon>
+In-Reply-To: <CAFBinCAB=vaDpzCoMFX8w9j0R04i6Zr4mbjDtteKsQ_LkKAaLg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,104 +28,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Apr 15, 2017 at 09:20:58AM +0200, Boris Brezillon wrote:
-> Hi Brian,
+
+
+On 04/17/2017 11:23 PM, Martin Blumenstingl wrote:
+> On Mon, Apr 17, 2017 at 9:29 PM, Hauke Mehrtens <hauke@hauke-m.de> wrote:
+>> From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+>>
+>> This driver starts the DWC2 core(s) built into the XWAY SoCs and provides
+>> the PHY interfaces for each core. The phy instances can be passed to the
+>> dwc2 driver, which already supports the generic phy interface.
+>>
+>> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+> you should probably send this patch to the PHY maintainer as well
+> (Kishon Vijay Abraham I <kishon@ti.com>)
 > 
-> No changes from my v1 except the fix in the new Atmel NAND controller
-> driver (bug reported by Alexandre).
+>> ---
+>>  .../bindings/phy/phy-lantiq-rcu-usb2.txt           |  59 ++++
+>>  arch/mips/lantiq/xway/reset.c                      |  43 ---
+>>  arch/mips/lantiq/xway/sysctrl.c                    |  24 +-
+>>  drivers/phy/Kconfig                                |   8 +
+>>  drivers/phy/Makefile                               |   1 +
+>>  drivers/phy/phy-lantiq-rcu-usb2.c                  | 325 +++++++++++++++++++++
+>>  6 files changed, 405 insertions(+), 55 deletions(-)
+>>  create mode 100644 Documentation/devicetree/bindings/phy/phy-lantiq-rcu-usb2.txt
+>>  create mode 100644 drivers/phy/phy-lantiq-rcu-usb2.c
+>>
+>> diff --git a/Documentation/devicetree/bindings/phy/phy-lantiq-rcu-usb2.txt b/Documentation/devicetree/bindings/phy/phy-lantiq-rcu-usb2.txt
+>> new file mode 100644
+>> index 000000000000..0ec9f790b6e0
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/phy/phy-lantiq-rcu-usb2.txt
+>> @@ -0,0 +1,59 @@
+>> +Lantiq XWAY SoC RCU USB 1.1/2.0 PHY binding
+>> +===========================================
+>> +
+>> +This binding describes the USB PHY hardware provided by the RCU module on the
+>> +Lantiq XWAY SoCs.
+>> +
+>> +
+>> +-------------------------------------------------------------------------------
+>> +Required properties (controller (parent) node):
+>> +- compatible           : Should be one of
+>> +                               "lantiq,ase-rcu-usb2-phy"
+>> +                               "lantiq,danube-rcu-usb2-phy"
+>> +                               "lantiq,xrx100-rcu-usb2-phy"
+>> +                               "lantiq,xrx200-rcu-usb2-phy"
+>> +                               "lantiq,xrx300-rcu-usb2-phy"
+>> +- lantiq,rcu-syscon    : A phandle to the RCU module and the offsets to the
+>> +                         USB PHY configuration and USB MAC registers.
+>> +- address-cells                : should be 1
+>> +- size-cells           : should be 0
+>> +- phy-cells            : from the generic PHY bindings, must be 1
+>> +
+>> +Optional properties (controller (parent) node):
+>> +- vbus-gpio            : References a GPIO which enables VBUS all given USB
+>> +                         ports.
+> the PHY framework already handles this if you wrap the GPIO in a
+> "regulator-fixed" node, see [0] how to define a fixed regulator with a
+> GPIO (the regulator in this example has two states: off = 0V and on =
+> 5V, probably exactly what you need) and [1] how to pass it to the PHY
+> (phy-core.c handles this already, no driver specific code needed)
+
+Thanksy, I will change the code and use a regulator.
+
+......
+
+>> diff --git a/arch/mips/lantiq/xway/reset.c b/arch/mips/lantiq/xway/reset.c
+>> index 3f30fb81a50f..5aec1f54275b 100644
+>> --- a/arch/mips/lantiq/xway/reset.c
+>> +++ b/arch/mips/lantiq/xway/reset.c
+> could these arch/mips/lantiq/xway/reset.c changes to into PATCH #3 as well?
+
+I do not get this.
+
+......
+
+> [0] https://github.com/torvalds/linux/blob/2fbbc4bf69f293df317559a267f4120f290b8fc4/arch/arm64/boot/dts/amlogic/meson-gxbb-vega-s95.dtsi#L67
+> [1] https://github.com/torvalds/linux/blob/2fbbc4bf69f293df317559a267f4120f290b8fc4/arch/arm64/boot/dts/amlogic/meson-gxbb-vega-s95.dtsi#L133
 > 
-> As you can see, the PR is pretty big compared to 4.11, and it's mainly
-> due to the Denali driver rework/cleanup (which I'd like to thank
-> Masahiro for), the addition of the per-vendor initialization
-> infrastructure and the complete rewrite of the Atmel driver.
-> 
-> The rest of the commits are just simple fixes/improvements to existing
-> drivers or to the core.
-> 
-> Let me know if you see any problem.
-
-I've gotten partway through your PR, and fortunately Linus blessed me
-with another week too :)
-
-Can you run some of your new stuff through sparse, and maybe coccinelle
-(I think 'make coccicheck' would suffice). I see a lot of complaints,
-some just from migrated/refactored code, but some new. Feel free to fix
-any of these on top, of course. I'll continue to review the current PR.
-
-A starter diff is appended, though it has been only compile tested.
-
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/nand/atmel/nand-controller.c | 5 ++---
- drivers/mtd/nand/atmel/pmecc.c           | 8 ++++----
- 2 files changed, 6 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/atmel/nand-controller.c
-index d5be88f258fc..3b2446896147 100644
---- a/drivers/mtd/nand/atmel/nand-controller.c
-+++ b/drivers/mtd/nand/atmel/nand-controller.c
-@@ -1744,7 +1744,6 @@ atmel_hsmc_nand_controller_legacy_init(struct atmel_hsmc_nand_controller *nc)
- 		.reg_bits = 32,
- 		.val_bits = 32,
- 		.reg_stride = 4,
--		.val_bits = 32,
- 	};
- 
- 	struct device *dev = nc->base.dev;
-@@ -1979,7 +1978,7 @@ static int atmel_hsmc_nand_controller_probe(struct platform_device *pdev,
- 	return ret;
- }
- 
--const struct atmel_nand_controller_ops atmel_hsmc_nc_ops = {
-+static const struct atmel_nand_controller_ops atmel_hsmc_nc_ops = {
- 	.probe = atmel_hsmc_nand_controller_probe,
- 	.remove = atmel_hsmc_nand_controller_remove,
- 	.ecc_init = atmel_hsmc_nand_ecc_init,
-@@ -2038,7 +2037,7 @@ atmel_smc_nand_controller_remove(struct atmel_nand_controller *nc)
- 	return 0;
- }
- 
--const struct atmel_nand_controller_ops atmel_smc_nc_ops = {
-+static const struct atmel_nand_controller_ops atmel_smc_nc_ops = {
- 	.probe = atmel_smc_nand_controller_probe,
- 	.remove = atmel_smc_nand_controller_remove,
- 	.ecc_init = atmel_nand_ecc_init,
-diff --git a/drivers/mtd/nand/atmel/pmecc.c b/drivers/mtd/nand/atmel/pmecc.c
-index 1528aa4713a3..55a8ee5306ea 100644
---- a/drivers/mtd/nand/atmel/pmecc.c
-+++ b/drivers/mtd/nand/atmel/pmecc.c
-@@ -371,7 +371,7 @@ atmel_pmecc_create_user(struct atmel_pmecc *pmecc,
- 
- 	user->pmecc = pmecc;
- 
--	user->partial_syn = (u16 *)PTR_ALIGN(user + 1, sizeof(u16));
-+	user->partial_syn = (s16 *)PTR_ALIGN(user + 1, sizeof(u16));
- 	user->si = user->partial_syn + ((2 * req->ecc.strength) + 1);
- 	user->lmu = user->si + ((2 * req->ecc.strength) + 1);
- 	user->smu = user->lmu + (req->ecc.strength + 1);
-@@ -896,20 +896,20 @@ static struct atmel_pmecc *atmel_pmecc_get_by_node(struct device *userdev,
- 
- static const int atmel_pmecc_strengths[] = { 2, 4, 8, 12, 24, 32 };
- 
--struct atmel_pmecc_caps at91sam9g45_caps = {
-+static struct atmel_pmecc_caps at91sam9g45_caps = {
- 	.strengths = atmel_pmecc_strengths,
- 	.nstrengths = 5,
- 	.el_offset = 0x8c,
- };
- 
--struct atmel_pmecc_caps sama5d4_caps = {
-+static struct atmel_pmecc_caps sama5d4_caps = {
- 	.strengths = atmel_pmecc_strengths,
- 	.nstrengths = 5,
- 	.el_offset = 0x8c,
- 	.correct_erased_chunks = true,
- };
- 
--struct atmel_pmecc_caps sama5d2_caps = {
-+static struct atmel_pmecc_caps sama5d2_caps = {
- 	.strengths = atmel_pmecc_strengths,
- 	.nstrengths = 6,
- 	.el_offset = 0xac,
--- 
-2.13.0.rc0.306.g87b477812d-goog
