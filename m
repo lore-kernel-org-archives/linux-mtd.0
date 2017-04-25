@@ -1,23 +1,30 @@
-Received: from mail.kernel.org ([198.145.29.136])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d2oA2-0007nb-F8
- for linux-mtd@lists.infradead.org; Tue, 25 Apr 2017 00:16:55 +0000
-Date: Mon, 24 Apr 2017 17:16:31 -0700
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-To: Eric Biggers <ebiggers3@gmail.com>
-Cc: linux-fscrypt@vger.kernel.org, "Theodore Y . Ts'o" <tytso@mit.edu>,
- linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
- linux-mtd@lists.infradead.org,
- Gwendal Grignou <gwendal@chromium.org>, hashimoto@chromium.org,
- kinaba@chromium.org, Eric Biggers <ebiggers@google.com>
-Subject: Re: [PATCH 5/6] f2fs: switch to using fscrypt_match_name()
-Message-ID: <20170425001631.GB4983@jaegeuk.local>
-References: <20170424170013.85175-1-ebiggers3@gmail.com>
- <20170424170013.85175-6-ebiggers3@gmail.com>
+Date: Mon, 24 Apr 2017 18:09:30 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Haavard Skinnemoen <hskinnemoen@gmail.com>,
+ Hans-Christian Egtvedt <egtvedt@samfundet.no>,
+ linux-kernel@vger.kernel.org, Wenyou Yang <wenyou.yang@atmel.com>,
+ Josh Wu <rainyfeeling@outlook.com>, David Woodhouse <dwmw2@infradead.org>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-arm-kernel@lists.infradead.org,
+ Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v3 1/3] mtd: nand: Cleanup/rework the atmel_nand driver
+Message-ID: <20170425010930.GA120971@google.com>
+References: <1489651362-17077-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1489651362-17077-2-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20170424170013.85175-6-ebiggers3@gmail.com>
+In-Reply-To: <1489651362-17077-2-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,66 +34,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/24, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> Switch f2fs directory searches to use the fscrypt_match_name() helper
-> function.  There should be no functional change.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+On Thu, Mar 16, 2017 at 09:02:40AM +0100, Boris Brezillon wrote:
 
-Acked-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/atmel/nand-controller.c
+> new file mode 100644
+> index 000000000000..f71b9e5d7d9d
+> --- /dev/null
+> +++ b/drivers/mtd/nand/atmel/nand-controller.c
+> @@ -0,0 +1,2198 @@
+[...]
 
-> ---
->  fs/f2fs/dir.c | 28 ++++------------------------
->  1 file changed, 4 insertions(+), 24 deletions(-)
-> 
-> diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-> index 5df3596a667a..c7ed25fb3003 100644
-> --- a/fs/f2fs/dir.c
-> +++ b/fs/f2fs/dir.c
-> @@ -111,8 +111,6 @@ struct f2fs_dir_entry *find_target_dentry(struct fscrypt_name *fname,
->  	struct f2fs_dir_entry *de;
->  	unsigned long bit_pos = 0;
->  	int max_len = 0;
-> -	struct fscrypt_str de_name = FSTR_INIT(NULL, 0);
-> -	struct fscrypt_str *name = &fname->disk_name;
->  
->  	if (max_slots)
->  		*max_slots = 0;
-> @@ -130,29 +128,11 @@ struct f2fs_dir_entry *find_target_dentry(struct fscrypt_name *fname,
->  			continue;
->  		}
->  
-> -		if (de->hash_code != namehash)
-> -			goto not_match;
-> -
-> -		de_name.name = d->filename[bit_pos];
-> -		de_name.len = le16_to_cpu(de->name_len);
-> -
-> -#ifdef CONFIG_F2FS_FS_ENCRYPTION
-> -		if (unlikely(!name->name)) {
-> -			if (fname->usr_fname->name[0] == '_') {
-> -				if (de_name.len > 32 &&
-> -					!memcmp(de_name.name + ((de_name.len - 17) & ~15),
-> -						fname->crypto_buf.name + 8, 16))
-> -					goto found;
-> -				goto not_match;
-> -			}
-> -			name->name = fname->crypto_buf.name;
-> -			name->len = fname->crypto_buf.len;
-> -		}
-> -#endif
-> -		if (de_name.len == name->len &&
-> -				!memcmp(de_name.name, name->name, name->len))
-> +		if (de->hash_code == namehash &&
-> +		    fscrypt_match_name(fname, d->filename[bit_pos],
-> +				       le16_to_cpu(de->name_len)))
->  			goto found;
-> -not_match:
-> +
->  		if (max_slots && max_len > *max_slots)
->  			*max_slots = max_len;
->  		max_len = 0;
-> -- 
-> 2.12.2.816.g2cccc81164-goog
+> +static int
+> +atmel_hsmc_nand_controller_legacy_init(struct atmel_hsmc_nand_controller *nc)
+> +{
+> +	struct regmap_config regmap_conf = {
+> +		.reg_bits = 32,
+> +		.val_bits = 32,
+> +		.reg_stride = 4,
+> +		.val_bits = 32,
+
+You assigned val_bits twice. Is that just a harmless mistake, or did you
+mean to set something else?
+
+(sparse and other tools complain about this)
+
+> +	};
+
+
+Brian
