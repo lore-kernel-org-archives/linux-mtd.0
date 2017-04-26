@@ -1,22 +1,25 @@
-Received: from 15.mo3.mail-out.ovh.net ([87.98.150.177])
+Received: from mail-io0-x244.google.com ([2607:f8b0:4001:c06::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d3VDl-0002TJ-S9
- for linux-mtd@lists.infradead.org; Wed, 26 Apr 2017 22:15:39 +0000
-Received: from player771.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo3.mail-out.ovh.net (Postfix) with ESMTP id 2A28ECBB55
- for <linux-mtd@lists.infradead.org>; Thu, 27 Apr 2017 00:15:14 +0200 (CEST)
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Linux MTD Development List <linux-mtd@lists.infradead.org>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Subject: [PULL] mtd: spi-nor: changes for 4.12
-Message-ID: <963d5dab-f6a5-daea-4e12-8b5fd0f5d1e6@wedev4u.fr>
-Date: Thu, 27 Apr 2017 00:15:08 +0200
+ id 1d3VnZ-0006Sv-Rf
+ for linux-mtd@lists.infradead.org; Wed, 26 Apr 2017 22:52:39 +0000
+Received: by mail-io0-x244.google.com with SMTP id k87so2084160ioi.0
+ for <linux-mtd@lists.infradead.org>; Wed, 26 Apr 2017 15:52:16 -0700 (PDT)
+Date: Wed, 26 Apr 2017 15:52:12 -0700
+From: Eric Biggers <ebiggers3@gmail.com>
+To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Cc: Eric Biggers <ebiggers@google.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-fscrypt@vger.kernel.org, david@sigma-star.at
+Subject: Re: [PATCH] ubifs: Return -ENOKEY from rename if encryption keys are
+ missing
+Message-ID: <20170426225212.GB104929@gmail.com>
+References: <1493070381-20075-1-git-send-email-richard@nod.at>
+ <20170425175442.GB41477@google.com>
+ <1f759fee-337f-903a-0eb0-5b364cd35e6f@sigma-star.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1f759fee-337f-903a-0eb0-5b364cd35e6f@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,77 +29,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+Hi David,
 
-this is the spi-nor PR for 4.12. Just few bug fixes in some (Q)SPI controller
-drivers and support to new memory parts.
-Only one new driver for the STM32 QSPI controller.
+On Wed, Apr 26, 2017 at 01:48:10PM +0200, David Oberhollenzer wrote:
+> On 04/25/2017 07:54 PM, Eric Biggers wrote:
+> > Did you test that this change actually does anything?  Unlike ext4 and f2fs,
+> > ubifs calls fscrypt_setup_filename() from its rename methods rather than through
+> > a helper function ${FS}_find_entry().  Therefore it's able to pass in lookup=0,
+> > which means that the key is required.  So it should already be failing with
+> > ENOKEY.  You can verify this by running xfstests generic/419.
+> 
+> Actually, running xfstests was how this cropped up in the first place.
+> 
+> The UBIFS rename and xrename functions allready call
+> fscrypt_setup_filename with lookup=0, however there are other tests
+> before that call and moving them around causes generic/419 to fail
+> at a different place where EPERM was expected.
+> 
+> Therefore I concluded that the safest way to fix this might be to
+> simply copy the way the checks are handled in ext4.
+> 
+> With recent xfstests + UBIFS support patch, after applying this patch,
+> generic/419 passes.
 
-I didn't include any of my patches upgrading the spi-nor framework
-since they didn't spend enough time in linux-next.
+Are you sure?  I just tried rebasing my ubifs support patches for xfstests and
+xfstests-bld onto the latest xfstests and xfstests-bld respectively, then
+building a new kvm-xfstests appliance and the latest kernel from Linus's tree.
+These are the failures I see with ubifs in the "encrypt" group:
 
-Best regards,
+$ kvm-xfstests -c ubifs -g encrypt
+ [15:39:00] - output mismatch (see /results/ubifs/results-default/generic/397.out.bad)
+    --- tests/generic/397.out	2017-04-26 14:37:27.000000000 -0700
+    +++ /results/ubifs/results-default/generic/397.out.bad	2017-04-26 15:39:00.807418574 -0700
+    @@ -10,4 +10,12 @@
+     mkdir: cannot create directory 'SCRATCH_MNT/edir/0123456789abcdef': Required key not available
+     ln: failed to create symbolic link 'SCRATCH_MNT/edir/newlink': Required key not available
+     ln: failed to create symbolic link 'SCRATCH_MNT/edir/0123456789abcdef': Required key not available
+    -stat: cannot stat 'SCRATCH_MNT/edir': No such file or directory
+    +rm: cannot remove '/vdc/edir': Directory not empty
+    +  File: 'SCRATCH_MNT/edir'
+    +  Size: 632       	Blocks: 0          IO Block: 4096   directory
+    ...
+    (Run 'diff -u tests/generic/397.out /results/ubifs/results-default/generic/397.out.bad'  to see the entire diff)
+...
+ [15:39:03] - output mismatch (see /results/ubifs/results-default/generic/398.out.bad)
+    --- tests/generic/398.out	2017-04-26 14:37:24.000000000 -0700
+    +++ /results/ubifs/results-default/generic/398.out.bad	2017-04-26 15:39:03.114085240 -0700
+    @@ -42,4 +42,4 @@
+     Required key not available
+     
+     *** Exchange encrypted <=> unencrypted without key ***
+    -Required key not available
+    +Operation not permitted
+    ...
+    (Run 'diff -u tests/generic/398.out /results/ubifs/results-default/generic/398.out.bad'  to see the entire diff)
 
-Cyrille
 
-The following changes since commit c1ae3cfa0e89fa1a7ecc4c99031f5e9ae99d9201:
+generic/397 is failing (I don't know why), and generic/398 is failing.  But
+generic/419 is *not* failing.
 
-  Linux 4.11-rc1 (2017-03-05 12:59:56 -0800)
+What's happening with generic/398 is that it's trying cross-rename to exchange
+an unencrypted file with an encrypted one.  The tests expects ENOKEY, but there
+are actually two separate reasons why this operation is expected to fail:
 
-are available in the git repository at:
+(1) It's trying to link a file into an encrypted directory with the directory's
+    key being available (ENOKEY)
+(2) It's trying to place an unencrypted file into an encrypted directory, which
+    violates the policy that all files in an encrypted directory have the same
+    encryption policy (EPERM)
 
-  git://github.com/spi-nor/linux.git tags/spi-nor/for-4.12
+Personally I think that maybe the generic/398 test should just be updated to
+accept either error code, given that there are two valid reasons for the
+operation to fail.
 
-for you to fetch changes up to d3848f3a4c2168c45d80ab0f826517bac22e81cf:
-
-  mtd: mtk-nor: set controller's address width according to nor flash (2017-04-16 19:16:27 +0200)
-
-----------------------------------------------------------------
-This pull request contains the following notable changes:
-- fixes in the hisi SPI controller driver.
-- fixes in the intel SPI controller driver.
-- fixes in the Mediatek SPI controller driver.
-- fixes to some SPI flash memories not supported the Chip Erase command.
-- add support to some new memory parts (Winbond, Macronix, Micron, ESMT).
-- add new driver for the STM32 QSPI controller.
-
-----------------------------------------------------------------
-Alexander Kurz (2):
-      drivers mtd: spi-nor: add Winbond W25Q20 variants
-      drivers mtd: spi-nor: add Macronix MX25Ux033E and MX25Ux035 variants
-
-Alexey Khoroshilov (1):
-      mtd: spi-nor: hisi: do not ignore clk_prepare_enable() failure
-
-Guochun Mao (1):
-      mtd: mtk-nor: set controller's address width according to nor flash
-
-L. D. Pinney (1):
-      mtd: spi-nor: Add support for ESMT F25L32QA and F25L64QA
-
-Ludovic Barre (1):
-      mtd: spi-nor: add driver for STM32 quad spi flash controller
-
-Mathias Kresin (1):
-      mtd: spi-nor: enable stateless 4b op codes for mx25u25635f
-
-Nicholas Mc Guire (2):
-      mtd: spi-nor: intel: use true/false for boolean
-      mtd: spi-nor: intel: use ERR_CAST in return statement
-
-Nobuhiro Iwamatsu (1):
-      mtd: spi-nor: Add support for N25Q256A11
-
-mar.krzeminski (2):
-      mtd: spi-nor: Fix whole chip erasing for stacked chips.
-      mtd: spi-nor: Disable chip erase for Micron n25q00.
-
- drivers/mtd/spi-nor/Kconfig         |   7 ++
- drivers/mtd/spi-nor/Makefile        |   1 +
- drivers/mtd/spi-nor/hisi-sfc.c      |   5 +-
- drivers/mtd/spi-nor/intel-spi.c     |   4 +-
- drivers/mtd/spi-nor/mtk-quadspi.c   |  27 +++++++
- drivers/mtd/spi-nor/spi-nor.c       |  18 ++++-
- drivers/mtd/spi-nor/stm32-quadspi.c | 694 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 7 files changed, 750 insertions(+), 6 deletions(-)
- create mode 100644 drivers/mtd/spi-nor/stm32-quadspi.c
+- Eric
