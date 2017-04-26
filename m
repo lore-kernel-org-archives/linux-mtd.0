@@ -1,16 +1,22 @@
-Received: from [167.98.27.226] (helo=rainbowdash.ducie.codethink.co.uk)
+Received: from 15.mo3.mail-out.ovh.net ([87.98.150.177])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d3Rg1-0001jj-Mn
- for linux-mtd@lists.infradead.org; Wed, 26 Apr 2017 18:28:35 +0000
-From: Ben Dooks <ben.dooks@codethink.co.uk>
-To: linux-kernel@lists.codethink.co.uk, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Cc: Ben Dooks <ben.dooks@codethink.co.uk>
-Subject: [PATCH 1/1] mtd: mtdblock: avoid __might_sleep warnings in mtd_erase
-Date: Wed, 26 Apr 2017 18:46:09 +0100
-Message-Id: <20170426174609.29433-2-ben.dooks@codethink.co.uk>
-In-Reply-To: <20170426174609.29433-1-ben.dooks@codethink.co.uk>
-References: <20170426174609.29433-1-ben.dooks@codethink.co.uk>
+ id 1d3VDl-0002TJ-S9
+ for linux-mtd@lists.infradead.org; Wed, 26 Apr 2017 22:15:39 +0000
+Received: from player771.ha.ovh.net (b9.ovh.net [213.186.33.59])
+ by mo3.mail-out.ovh.net (Postfix) with ESMTP id 2A28ECBB55
+ for <linux-mtd@lists.infradead.org>; Thu, 27 Apr 2017 00:15:14 +0200 (CEST)
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Linux MTD Development List <linux-mtd@lists.infradead.org>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Subject: [PULL] mtd: spi-nor: changes for 4.12
+Message-ID: <963d5dab-f6a5-daea-4e12-8b5fd0f5d1e6@wedev4u.fr>
+Date: Thu, 27 Apr 2017 00:15:08 +0200
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,96 +26,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The mtd_erase() call can hit code that will trigger warnings
-from __might_sleep(), such as the do_erase_oneblock() function
-on the cfi_cmdset_0002.c file.
+Hi Brian,
 
-This is due to some of the erase functions doing the work in the
-thread they are called in, which means that the erase_write()
-should only go into TASK_INTERRUPTIBLE once the mtd_erase call
-has returned.
+this is the spi-nor PR for 4.12. Just few bug fixes in some (Q)SPI controller
+drivers and support to new memory parts.
+Only one new driver for the STM32 QSPI controller.
 
-Note, this still does not check if the erase->state is not set
-to an error.
+I didn't include any of my patches upgrading the spi-nor framework
+since they didn't spend enough time in linux-next.
 
-This should stop the following warning being produced:
+Best regards,
 
-] WARNING: CPU: 0 PID: 23 at kernel/sched/core.c:7588 __might_sleep+0x84/0x9c()
-] do not call blocking ops when !TASK_RUNNING; state=1 set at [<8029c724>] erase_write+0x0/0x178
-] Modules linked in:
-] CPU: 0 PID: 23 Comm: kworker/0:1 Tainted: G        W       4.4.62-dev-ic-9Feb2017-47164-g95b1e7c09ff3 #855
-] Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
-] Workqueue: mtdblock9 mtd_blktrans_work
-] [<8001eddc>] (unwind_backtrace) from [<8001b2fc>] (show_stack+0x10/0x14)
-] [<8001b2fc>] (show_stack) from [<80213948>] (dump_stack+0x80/0x9c)
-] [<80213948>] (dump_stack) from [<800287d8>] (warn_slowpath_common+0x80/0xac)
-] [<800287d8>] (warn_slowpath_common) from [<80028830>] (warn_slowpath_fmt+0x2c/0x3c)
-] [<80028830>] (warn_slowpath_fmt) from [<800448ec>] (__might_sleep+0x84/0x9c)
-] [<800448ec>] (__might_sleep) from [<8047a714>] (mutex_lock+0x18/0x3c)
-] [<8047a714>] (mutex_lock) from [<802a22dc>] (do_erase_oneblock+0x64/0x3b8)
-] [<802a22dc>] (do_erase_oneblock) from [<8029d628>] (cfi_varsize_frob+0x144/0x1dc)
-] [<8029d628>] (cfi_varsize_frob) from [<8029e930>] (cfi_amdstd_erase_varsize+0x28/0x50)
-] [<8029e930>] (cfi_amdstd_erase_varsize) from [<80299370>] (part_erase+0x2c/0x74)
-] [<80299370>] (part_erase) from [<8029c7e0>] (erase_write+0xbc/0x178)
-] [<8029c7e0>] (erase_write) from [<8029c8c4>] (write_cached_data+0x28/0x3c)
-] [<8029c8c4>] (write_cached_data) from [<8029cc70>] (mtdblock_writesect+0x178/0x1bc)
-] [<8029cc70>] (mtdblock_writesect) from [<8029bf68>] (mtd_blktrans_work+0x2ec/0x360)
-] [<8029bf68>] (mtd_blktrans_work) from [<8003b314>] (process_one_work+0x19c/0x310)
-] [<8003b314>] (process_one_work) from [<8003c174>] (worker_thread+0x2e8/0x3d4)
-] [<8003c174>] (worker_thread) from [<800403d0>] (kthread+0xe4/0xf8)
-] [<800403d0>] (kthread) from [<80017478>] (ret_from_fork+0x14/0x3c)
-] ---[ end trace ca8c94fad04126d2 ]---
+Cyrille
 
-[ben.hutchings@codethink.co.uk: suggest use of wait_woken()]
-Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
----
- drivers/mtd/mtdblock.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+The following changes since commit c1ae3cfa0e89fa1a7ecc4c99031f5e9ae99d9201:
 
-diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
-index bb4c14f83c75..4b1cd464f919 100644
---- a/drivers/mtd/mtdblock.c
-+++ b/drivers/mtd/mtdblock.c
-@@ -68,6 +68,7 @@ static int erase_write (struct mtd_info *mtd, unsigned long pos,
- 	DECLARE_WAITQUEUE(wait, current);
- 	wait_queue_head_t wait_q;
- 	size_t retlen;
-+	long timeout = 1;
- 	int ret;
- 
- 	/*
-@@ -81,12 +82,10 @@ static int erase_write (struct mtd_info *mtd, unsigned long pos,
- 	erase.len = len;
- 	erase.priv = (u_long)&wait_q;
- 
--	set_current_state(TASK_INTERRUPTIBLE);
- 	add_wait_queue(&wait_q, &wait);
- 
- 	ret = mtd_erase(mtd, &erase);
- 	if (ret) {
--		set_current_state(TASK_RUNNING);
- 		remove_wait_queue(&wait_q, &wait);
- 		printk (KERN_WARNING "mtdblock: erase of region [0x%lx, 0x%x] "
- 				     "on \"%s\" failed\n",
-@@ -94,8 +93,18 @@ static int erase_write (struct mtd_info *mtd, unsigned long pos,
- 		return ret;
- 	}
- 
--	schedule();  /* Wait for erase to finish. */
-+	if (erase->state != MTD_ERASE_DONE &&
-+	    erase->state != MTD_ERASE_FAILED)
-+		timeout = wait_woken(&wait, TASK_INTERRUPTIBLE,
-+				     MAX_SCHEDULE_TIMEOUT);
-+
- 	remove_wait_queue(&wait_q, &wait);
-+	if (timeout == 0) {
-+		printk (KERN_WARNING "mtdblock: erase of region [0x%lx, 0x%x] "
-+				     "on \"%s\" failed\n",
-+			pos, len, mtd->name);
-+		return -ETIMEDOUT;
-+	}
- 
- 	/*
- 	 * Next, write the data to flash.
--- 
-2.11.0
+  Linux 4.11-rc1 (2017-03-05 12:59:56 -0800)
+
+are available in the git repository at:
+
+  git://github.com/spi-nor/linux.git tags/spi-nor/for-4.12
+
+for you to fetch changes up to d3848f3a4c2168c45d80ab0f826517bac22e81cf:
+
+  mtd: mtk-nor: set controller's address width according to nor flash (2017-04-16 19:16:27 +0200)
+
+----------------------------------------------------------------
+This pull request contains the following notable changes:
+- fixes in the hisi SPI controller driver.
+- fixes in the intel SPI controller driver.
+- fixes in the Mediatek SPI controller driver.
+- fixes to some SPI flash memories not supported the Chip Erase command.
+- add support to some new memory parts (Winbond, Macronix, Micron, ESMT).
+- add new driver for the STM32 QSPI controller.
+
+----------------------------------------------------------------
+Alexander Kurz (2):
+      drivers mtd: spi-nor: add Winbond W25Q20 variants
+      drivers mtd: spi-nor: add Macronix MX25Ux033E and MX25Ux035 variants
+
+Alexey Khoroshilov (1):
+      mtd: spi-nor: hisi: do not ignore clk_prepare_enable() failure
+
+Guochun Mao (1):
+      mtd: mtk-nor: set controller's address width according to nor flash
+
+L. D. Pinney (1):
+      mtd: spi-nor: Add support for ESMT F25L32QA and F25L64QA
+
+Ludovic Barre (1):
+      mtd: spi-nor: add driver for STM32 quad spi flash controller
+
+Mathias Kresin (1):
+      mtd: spi-nor: enable stateless 4b op codes for mx25u25635f
+
+Nicholas Mc Guire (2):
+      mtd: spi-nor: intel: use true/false for boolean
+      mtd: spi-nor: intel: use ERR_CAST in return statement
+
+Nobuhiro Iwamatsu (1):
+      mtd: spi-nor: Add support for N25Q256A11
+
+mar.krzeminski (2):
+      mtd: spi-nor: Fix whole chip erasing for stacked chips.
+      mtd: spi-nor: Disable chip erase for Micron n25q00.
+
+ drivers/mtd/spi-nor/Kconfig         |   7 ++
+ drivers/mtd/spi-nor/Makefile        |   1 +
+ drivers/mtd/spi-nor/hisi-sfc.c      |   5 +-
+ drivers/mtd/spi-nor/intel-spi.c     |   4 +-
+ drivers/mtd/spi-nor/mtk-quadspi.c   |  27 +++++++
+ drivers/mtd/spi-nor/spi-nor.c       |  18 ++++-
+ drivers/mtd/spi-nor/stm32-quadspi.c | 694 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 7 files changed, 750 insertions(+), 6 deletions(-)
+ create mode 100644 drivers/mtd/spi-nor/stm32-quadspi.c
