@@ -1,26 +1,15 @@
-Received: from 8.mo179.mail-out.ovh.net ([46.105.75.26])
+Received: from mail.aswsp.com ([193.34.35.150])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d38Ja-00051k-Ld
- for linux-mtd@lists.infradead.org; Tue, 25 Apr 2017 21:48:08 +0000
-Received: from player690.ha.ovh.net (b6.ovh.net [213.186.33.56])
- by mo179.mail-out.ovh.net (Postfix) with ESMTP id 425C637A1C
- for <linux-mtd@lists.infradead.org>; Tue, 25 Apr 2017 23:47:41 +0200 (CEST)
-Subject: Re: [PATCH v8 1/4] mtd: spi-nor: introduce SPI 1-2-2 and SPI 1-4-4
- protocols
-To: Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
-References: <cover.1493149757.git.cyrille.pitchen@wedev4u.fr>
- <cc10c875139d7235fbc4dc8c14ae419e71b9c649.1493149757.git.cyrille.pitchen@wedev4u.fr>
- <681ffcab-6911-0d50-94a8-1dd94e87063b@gmail.com>
-Cc: boris.brezillon@free-electrons.com, richard@nod.at,
- linux-kernel@vger.kernel.org, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- computersforpeace@gmail.com, dwmw2@infradead.org
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <87642216-4f3e-8620-0710-12345608963a@wedev4u.fr>
-Date: Tue, 25 Apr 2017 23:47:31 +0200
+ id 1d3Her-000570-0v
+ for linux-mtd@lists.infradead.org; Wed, 26 Apr 2017 07:46:43 +0000
+From: Jimmy Perchet <jimmy.perchet@parrot.com>
+Subject: Mount empty UBI volume attached via fastmap may not work
+To: <linux-mtd@lists.infradead.org>, <richard@nod.at>
+Message-ID: <d3e236cf-fb7b-af59-b4ed-0eb59739da23@parrot.com>
+Date: Wed, 26 Apr 2017 09:46:11 +0200
 MIME-Version: 1.0
-In-Reply-To: <681ffcab-6911-0d50-94a8-1dd94e87063b@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,57 +19,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 25/04/2017 à 22:25, Marek Vasut a écrit :
-> On 04/25/2017 10:08 PM, Cyrille Pitchen wrote:
->> From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
->>
->> This patch changes the prototype of spi_nor_scan(): its 3rd parameter
->> is replaced by a 'struct spi_nor_hwcaps' pointer, which tells the spi-nor
->> framework about the actual hardware capabilities supported by the SPI
->> controller and its driver.
->>
->> Besides, this patch also introduces a new 'struct spi_nor_flash_parameter'
->> telling the spi-nor framework about the hardware capabilities supported by
->> the SPI flash memory and the associated settings required to use those
->> hardware caps.
->>
->> Then, to improve the readability of spi_nor_scan(), the discovery of the
->> memory settings and the memory initialization are now split into two
->> dedicated functions.
->>
->> 1 - spi_nor_init_params()
->>
->> The spi_nor_init_params() function is responsible for initializing the
->> 'struct spi_nor_flash_parameter'. Currently this structure is filled with
->> legacy values but further patches will allow to override some parameter
->> values dynamically, for instance by reading the JESD216 Serial Flash
->> Discoverable Parameter (SFDP) tables from the SPI memory.
->> The spi_nor_init_params() function only deals with the hardware
->> capabilities of the SPI flash memory: especially it doesn't care about
->> the hardware capabilities supported by the SPI controller.
->>
->> 2 - spi_nor_setup()
->>
->> The second function is called once the 'struct spi_nor_flash_parameter'
->> has been initialized by spi_nor_init_params().
->> With both 'struct spi_nor_flash_parameter' and 'struct spi_nor_hwcaps',
->> the new argument of spi_nor_scan(), spi_nor_setup() computes the best
->> match between hardware caps supported by both the (Q)SPI memory and
->> controller hence selecting the relevant settings for (Fast) Read and Page
->> Program operations.
->>
->> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-> 
-> Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
-> 
-> [...]
-> 
+Hello,
 
-whole series applied to the 'next' branch of the github/spi-nor tree.
+I ran into a problem I'd like to share. If Fastmap is used and if an
+unclean shutdown happens after a volume has been truncated, the
+subsequent mounts will fail, even though the status is 'OK'.
+In this case, UBIFS does not seem to see the volume as empty
+and fails with the following log :
 
+UBIFS error (ubi0:0 pid 9258): ubifs_read_node [ubifs]: bad node type 
+(255 but expected 6)
+UBIFS error (ubi0:0 pid 9258): ubifs_read_node [ubifs]: bad node at LEB 
+0:0, LEB mapping status 1
+Not a node, first 24 bytes:
+00000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 
+ff ff ff ........................
+CPU: 0 PID: 9258 Comm: mount Tainted: G           OE 4.9.0-2-amd64 #1 
+Debian 4.9.13-1
+Hardware name: Hewlett-Packard HP Compaq 8200 Elite SFF PC/1495, BIOS 
+J01 v02.06 06/09/2011
+  0000000000000000 ffffffff9d928594 0000000000000000 ffff8abc0e07c000
+  ffffffffc0d18686 ffff8abc85800300 ffffffff9d7dd937 ffff8abbba252000
+  ffff8abc0e07c000 ffff8abb53b5c4c0 ffff8abc0e07c008 0000000000000000
+Call Trace:
+  [<ffffffff9d928594>] ? dump_stack+0x5c/0x78
+  [<ffffffffc0d18686>] ? ubifs_read_node+0x256/0x2e0 [ubifs]
+  [<ffffffff9d7dd937>] ? cache_grow_end+0xa7/0xc0
+  [<ffffffffc0d15492>] ? ubifs_read_sb_node+0x52/0x70 [ubifs]
+  [<ffffffffc0d15b5e>] ? ubifs_read_superblock+0x66e/0xe50 [ubifs]
+  [<ffffffffc0d13ffb>] ? ubifs_mount+0xb2b/0x1d10 [ubifs]
+  [<ffffffff9d7a32ee>] ? pcpu_alloc+0x38e/0x660
+  [<ffffffff9d805fd6>] ? mount_fs+0x36/0x150
+  [<ffffffff9d822f62>] ? vfs_kern_mount+0x62/0x100
+  [<ffffffff9d82564f>] ? do_mount+0x1cf/0xc80
+  [<ffffffff9d804001>] ? __fput+0x131/0x1e0
+  [<ffffffff9d79dcea>] ? memdup_user+0x4a/0x70
+  [<ffffffff9d82642e>] ? SyS_mount+0x7e/0xd0
+  [<ffffffff9d603b1c>] ? do_syscall_64+0x7c/0xf0
+  [<ffffffff9dbfaf6f>] ? entry_SYSCALL64_slow_path+0x25/0x25
 
-Thanks for your reviews!
+This can be reproduced with nandsim on kernel 4.9.
 
-Best regards,
+I think the main explanation is close to the one in this patch :
+http://www.spinics.net/lists/stable/msg130317.html
+" When attaching via Fastmap [...] UBI can learn the LEB still as
+mapped and accessing it returns only 0xFF bytes."
 
-Cyrille
+Is my assumption correct ?
+
+Maybe user space should not rely on "auto-create" feature and
+always use mkfs.ubifs and update with an empty image ?
+
+Best Regards
+Jimmy Perchet
