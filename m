@@ -1,20 +1,19 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1d3LQx-0001w2-MR
- for linux-mtd@lists.infradead.org; Wed, 26 Apr 2017 11:48:37 +0000
-Subject: Re: [PATCH] ubifs: Return -ENOKEY from rename if encryption keys are
- missing
-To: Eric Biggers <ebiggers@google.com>, Richard Weinberger <richard@nod.at>
-References: <1493070381-20075-1-git-send-email-richard@nod.at>
- <20170425175442.GB41477@google.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-fscrypt@vger.kernel.org, david@sigma-star.at
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Message-ID: <1f759fee-337f-903a-0eb0-5b364cd35e6f@sigma-star.at>
-Date: Wed, 26 Apr 2017 13:48:10 +0200
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d3NJ7-00020D-Gs
+ for linux-mtd@lists.infradead.org; Wed, 26 Apr 2017 13:48:40 +0000
+Subject: Re: Mount empty UBI volume attached via fastmap may not work
+To: Jimmy Perchet <jimmy.perchet@parrot.com>, linux-mtd@lists.infradead.org
+References: <d3e236cf-fb7b-af59-b4ed-0eb59739da23@parrot.com>
+ <dfee4baa-c293-a77d-ad7e-baa86db2ef2c@nod.at>
+ <02273dee-9f1d-5ec1-328f-8a2f8b16ff79@nod.at>
+ <1648d3ba-1a2c-d048-e30d-47128bfa6267@parrot.com>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <6d452782-adec-4cb1-2848-00224226c89a@nod.at>
+Date: Wed, 26 Apr 2017 15:48:10 +0200
 MIME-Version: 1.0
-In-Reply-To: <20170425175442.GB41477@google.com>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <1648d3ba-1a2c-d048-e30d-47128bfa6267@parrot.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,25 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/25/2017 07:54 PM, Eric Biggers wrote:
-> Did you test that this change actually does anything?  Unlike ext4 and f2fs,
-> ubifs calls fscrypt_setup_filename() from its rename methods rather than through
-> a helper function ${FS}_find_entry().  Therefore it's able to pass in lookup=0,
-> which means that the key is required.  So it should already be failing with
-> ENOKEY.  You can verify this by running xfstests generic/419.
+Jimmy,
 
-Actually, running xfstests was how this cropped up in the first place.
+Am 26.04.2017 um 13:39 schrieb Jimmy Perchet:
+>> I'm slow today. I think now I got your problem scenario.
+>> You erase all blocks of a volume, face a power-cut before all blocks
+>> got erased and then UBIFS fails upon mount since it thinks everything
+>> is fine.
+> Almost; the power-cut occurs after the update operation :
+> 
+> $umount data/
+> 
+> $ubiupdatevol -t /dev/ubi0_0
 
-The UBIFS rename and xrename functions allready call
-fscrypt_setup_filename with lookup=0, however there are other tests
-before that call and moving them around causes generic/419 to fail
-at a different place where EPERM was expected.
+Ah...
 
-Therefore I concluded that the safest way to fix this might be to
-simply copy the way the checks are handled in ext4.
+> $cat /sys/class/ubi/ubi0_0/corrupted
+> 0
+> 
+> /*==Power-cut==*/
+> 
+> $mount -t ubifs /dev/ubi0_0 data/
+> 
+> UBIFS fails to create the default file-system. My guess is that,
+> as Fastmap is used, some LEB may be seen as mapped, and
+> this not handled by UBIFS emptiness test.
 
-With recent xfstests + UBIFS support patch, after applying this patch,
-generic/419 passes.
+Yes, this guess might be correct.
+Let me think about a better way to handle this.
 
-
-David
+Thanks,
+//richard
