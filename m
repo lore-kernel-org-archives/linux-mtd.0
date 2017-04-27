@@ -1,20 +1,28 @@
-Received: from mail-wm0-x230.google.com ([2a00:1450:400c:c09::230])
+Received: from 15.mo5.mail-out.ovh.net ([178.33.107.29])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d3jEf-0001vS-Ul
- for linux-mtd@lists.infradead.org; Thu, 27 Apr 2017 13:13:31 +0000
-Received: by mail-wm0-x230.google.com with SMTP id m123so18042032wma.0
- for <linux-mtd@lists.infradead.org>; Thu, 27 Apr 2017 06:13:09 -0700 (PDT)
+ id 1d3kTb-0003hM-Gw
+ for linux-mtd@lists.infradead.org; Thu, 27 Apr 2017 14:33:02 +0000
+Received: from player760.ha.ovh.net (b6.ovh.net [213.186.33.56])
+ by mo5.mail-out.ovh.net (Postfix) with ESMTP id D7156EA1B0
+ for <linux-mtd@lists.infradead.org>; Thu, 27 Apr 2017 16:32:34 +0200 (CEST)
+Subject: Re: [PATCH] mtd: spi-nor: stm32: remove broken MODULE_ALIAS
+To: Ludovic BARRE <ludovic.barre@st.com>, Arnd Bergmann <arnd@arndb.de>,
+ Marek Vasut <marek.vasut@gmail.com>
+References: <20170427111001.2587551-1-arnd@arndb.de>
+ <dc7d8b5e-0f0e-1593-4c6b-0c93a828818c@st.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Alexandre Torgue <alexandre.torgue@st.com>,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <48e14a7d-d105-3773-626f-04446a19254d@wedev4u.fr>
+Date: Thu, 27 Apr 2017 16:32:20 +0200
 MIME-Version: 1.0
-In-Reply-To: <20170427150416.2c6bba07@jawa>
-References: <20170427122502.285d16ba@jawa>
- <alpine.DEB.2.11.1704271246210.6882@lnxricardw1>
- <20170427150416.2c6bba07@jawa>
-From: Andrea Adami <andrea.adami@gmail.com>
-Date: Thu, 27 Apr 2017 15:13:07 +0200
-Message-ID: <CAAQYJAuFJcA1mOo-AFHGxrsQOjb7EBVOqHLC0h4jCv_-RLEeFg@mail.gmail.com>
-Subject: Re: Problem with NAND memory data retention
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <dc7d8b5e-0f0e-1593-4c6b-0c93a828818c@st.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,108 +32,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 27, 2017 at 3:04 PM, Lukasz Majewski <lukma@denx.de> wrote:
+Le 27/04/2017 à 14:17, Ludovic BARRE a écrit :
+> thanks a lot Arnd
 >
-> Hi Ricard,
->
-> >
-> > On Thu, 27 Apr 2017, Lukasz Majewski wrote:
-> >
-> > > I'd like to ask you for sharing your experience with NAND Flash
-> > > devices
-> > > - which may be older that their data retention time.
-> > >
-> > > I've a problem with Flash NAND memory (Samsung 128Mx8).
-> > >
-> > > In the data sheet [1] the manufacturer claims that it has 10 years
-> > > for data retention. The device equipped with it is a bit older than
-> > > 10 years.
-> > >
-> > >
-> > > How one can diagnose that data retention time for NAND Flash has
-> > > been exceeded?
-> > >
-> > > Is that:
-> > >
-> > > - The number of bit flip errors on a RW page so large that ECC
-> > > cannot fix it?
-> > >
-> > > - Or are whole RW pages erased (0xFF)/corrupted/cleared (0x00)?
-> > >
-> > > - Or any other evidence?
-> > >
-> > > Thanks in advance for your help.
-> >
-> > I think the interpretation is that the manufacturer guarantees that
-> > under the circumstances specified (temperature, supply voltage, erase
-> > cycles etc) that the data will be retained for at least ten years,
-> > beyond that it's just not specified. It doesn't mean that something
-> > catastrophic will happen after ten years, i.e. ten years is not a
-> > hard limit beyond which things start going haywire.
->
-> Thanks for your explanation.
->
-> >
-> > I can't say I have experience with old NAND flashes loosing their
-> > data, but technically I would expect that what happens is that
-> > eventually the charge leaks away from the bit cells, causing bit
-> > flips, quite simply, so it's the same mechanism that requires the
-> > flash to be 'scrubbed' periodically to check if the data needs to be
-> > rewritten.
-> >
-> > I.e. it's the first case in your list, the number of bit flips
-> > increases.
->
-> Unfortunately with my device I do experience the second scenario.
->
-> I do observe pages read as zeros.
+
+Indeed, thanks Arnd!
+
+Since commit ("mtd: spi-nor: add driver for STM32 quad spi flash
+controller") was included with the spi-nor PR for 4.12 I've sent
+yesterday to Brian, I will check with him to know how he wants us to
+proceed:
+
+- If Brian has not started yet to review the PR and if he agrees on
+that, I can rework a little bit the history in github/spi-nor to squash
+Arnd's patch into Ludovic's one.
+Ludovic's patch is already in linux-next but not yet in any release
+candiate.
+
+- or I can send an new PR keeping the fixup patch aside.
+
+Best regards,
+
+Cyrille
 
 
-Hello,
-
-I think I have seen the same issue: one defective device did not
-respond to CFI QRY.
-
-http://lists.infradead.org/pipermail/linux-mtd/2014-May/053872.html
-
-These devices were sold in 2002-2003 so they are now >15yrs old and I
-have two of them working flawlessy.
-
-Regards
-Andrea
-
->
->
-> For example in the middle of a file - page sized (2K) data is read as
-> zero. And this file is RO (no modification). And such zero read is
-> persistent - happens all the time. The only way is to replace the whole
-> file (erase it and write again).
->
-> We use yaffs file system.
->
-> And such errors pop up in random places.
->
-> >
-> > The fewer erase cycles that a given flash block has seen, the less
-> > wear there has been on the insulation, and the better the retention
-> > would be. The ten year spec is under the worst case condition of the
-> > maximum number of erase cycles having been performed on the flash.
-> >
-> > /Ricard
->
->
->
->
-> Best regards,
->
-> Lukasz Majewski
->
-> --
->
-> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-> Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
->
+> Oops, I've not tested in Module :-(.
+> Just tested in built-in, and used bind/unbind and device tree overlays.
+> 
+> BR
+> Ludo
+> On 04/27/2017 01:09 PM, Arnd Bergmann wrote:
+>> The MODULE_ALIAS statement refers to a macro that has never been defined
+>> in this driver, causing a build error:
+>>
+>> drivers/mtd/spi-nor/stm32-quadspi.c:694:150: error: expected ',' or
+>> ';' before 'DRIVER_NAME'
+>>
+>> Unless there is a specific alias we need other then the driver name,
+>> we don't need an alias here and can simply remove the line to fix the
+>> build.
+>>
+>> Fixes: dc5e400611c5 ("mtd: spi-nor: add driver for STM32 quad spi
+>> flash controller")
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>> ---
+>>   drivers/mtd/spi-nor/stm32-quadspi.c | 1 -
+>>   1 file changed, 1 deletion(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/stm32-quadspi.c
+>> b/drivers/mtd/spi-nor/stm32-quadspi.c
+>> index 90d9152ddf98..1056e7408d2a 100644
+>> --- a/drivers/mtd/spi-nor/stm32-quadspi.c
+>> +++ b/drivers/mtd/spi-nor/stm32-quadspi.c
+>> @@ -691,7 +691,6 @@ static struct platform_driver stm32_qspi_driver = {
+>>   };
+>>   module_platform_driver(stm32_qspi_driver);
+>>   -MODULE_ALIAS("platform:" DRIVER_NAME);
+>>   MODULE_AUTHOR("Ludovic Barre <ludovic.barre@st.com>");
+>>   MODULE_DESCRIPTION("STMicroelectronics STM32 quad spi driver");
+>>   MODULE_LICENSE("GPL v2");
+> 
+> 
 > ______________________________________________________
 > Linux MTD discussion mailing list
 > http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
