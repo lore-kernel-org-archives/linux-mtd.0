@@ -1,25 +1,26 @@
-Received: from 19.mo5.mail-out.ovh.net ([46.105.35.78])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d3kde-0006u9-9h
- for linux-mtd@lists.infradead.org; Thu, 27 Apr 2017 14:43:24 +0000
-Received: from player760.ha.ovh.net (b6.ovh.net [213.186.33.56])
- by mo5.mail-out.ovh.net (Postfix) with ESMTP id DBC05E9F77
- for <linux-mtd@lists.infradead.org>; Thu, 27 Apr 2017 16:42:59 +0200 (CEST)
-Subject: Re: [PULL] mtd: spi-nor: changes for 4.12
-To: Brian Norris <computersforpeace@gmail.com>
-References: <963d5dab-f6a5-daea-4e12-8b5fd0f5d1e6@wedev4u.fr>
-Cc: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>,
- Linux MTD Development List <linux-mtd@lists.infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Ludovic Barre <ludovic.Barre@st.com>, Arnd Bergmann <arnd@arndb.de>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <13610ad7-6362-1342-9d96-76a491f279af@wedev4u.fr>
-Date: Thu, 27 Apr 2017 16:42:50 +0200
+Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+ by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d3nUk-0008Fg-2m
+ for linux-mtd@lists.infradead.org; Thu, 27 Apr 2017 17:46:25 +0000
+Received: by mail-pf0-x241.google.com with SMTP id a188so12413358pfa.2
+ for <linux-mtd@lists.infradead.org>; Thu, 27 Apr 2017 10:46:01 -0700 (PDT)
+Date: Thu, 27 Apr 2017 10:45:57 -0700
+From: Eric Biggers <ebiggers3@gmail.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: linux-fscrypt@vger.kernel.org, "Theodore Y . Ts'o" <tytso@mit.edu>,
+ Eric Biggers <ebiggers@google.com>, linux-f2fs-devel@lists.sourceforge.net,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ Jaegeuk Kim <jaegeuk@kernel.org>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: fscrypt: update mailing list, patchwork,
+ and git
+Message-ID: <20170427174557.GB8130@gmail.com>
+References: <20170426234300.54741-1-ebiggers3@gmail.com>
+ <CAFLxGvzEr94f90QzQFucc3bCrv56fyVtd4ryQ062ot5FUovqFQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <963d5dab-f6a5-daea-4e12-8b5fd0f5d1e6@wedev4u.fr>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFLxGvzEr94f90QzQFucc3bCrv56fyVtd4ryQ062ot5FUovqFQ@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,108 +30,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ Ludovic and Arnd
+On Thu, Apr 27, 2017 at 09:37:18AM +0200, Richard Weinberger wrote:
+> > +FSCRYPT: FILE SYSTEM LEVEL ENCRYPTION SUPPORT
+> >  M:     Theodore Y. Ts'o <tytso@mit.edu>
+> >  M:     Jaegeuk Kim <jaegeuk@kernel.org>
+> 
+> IMHO we should also add such an entry, to match reality:
+> 
+> R:      Eric Biggers <ebiggers@google.com>
+> 
 
-Hi Brian,
+Well, we could, but IMO it's a little pointless since there's now a dedicated
+mailing list, so there's no need to Cc me separately from the list.  I think
+explicitly listing reviewer(s) is more useful for subsystems that don't have a
+dedicated mailing list.
 
-A little patch was sent by Arnd to fix some module compilation issue up.
-https://patchwork.ozlabs.org/patch/755980/
-
-As said, in this other thread, I can either
-
-1 -  squash Arnd patch into Ludovic's one in the 'next' branch of
-github/spi-nor, create a new tag and send you a new PR.
-
-or
-
-2 - keep Arnd patch as is and send you a new PR: still starting from
-4.11-rc1 or from the current for-4.12 tag?
-
-Let me know the solution you prefer :)
-Sorry for this additional delay!
-
-Best regards,
-
-Cyrille
-
-
-Le 27/04/2017 à 00:15, Cyrille Pitchen a écrit :
-> Hi Brian,
-> 
-> this is the spi-nor PR for 4.12. Just few bug fixes in some (Q)SPI controller
-> drivers and support to new memory parts.
-> Only one new driver for the STM32 QSPI controller.
-> 
-> I didn't include any of my patches upgrading the spi-nor framework
-> since they didn't spend enough time in linux-next.
-> 
-> Best regards,
-> 
-> Cyrille
-> 
-> The following changes since commit c1ae3cfa0e89fa1a7ecc4c99031f5e9ae99d9201:
-> 
->   Linux 4.11-rc1 (2017-03-05 12:59:56 -0800)
-> 
-> are available in the git repository at:
-> 
->   git://github.com/spi-nor/linux.git tags/spi-nor/for-4.12
-> 
-> for you to fetch changes up to d3848f3a4c2168c45d80ab0f826517bac22e81cf:
-> 
->   mtd: mtk-nor: set controller's address width according to nor flash (2017-04-16 19:16:27 +0200)
-> 
-> ----------------------------------------------------------------
-> This pull request contains the following notable changes:
-> - fixes in the hisi SPI controller driver.
-> - fixes in the intel SPI controller driver.
-> - fixes in the Mediatek SPI controller driver.
-> - fixes to some SPI flash memories not supported the Chip Erase command.
-> - add support to some new memory parts (Winbond, Macronix, Micron, ESMT).
-> - add new driver for the STM32 QSPI controller.
-> 
-> ----------------------------------------------------------------
-> Alexander Kurz (2):
->       drivers mtd: spi-nor: add Winbond W25Q20 variants
->       drivers mtd: spi-nor: add Macronix MX25Ux033E and MX25Ux035 variants
-> 
-> Alexey Khoroshilov (1):
->       mtd: spi-nor: hisi: do not ignore clk_prepare_enable() failure
-> 
-> Guochun Mao (1):
->       mtd: mtk-nor: set controller's address width according to nor flash
-> 
-> L. D. Pinney (1):
->       mtd: spi-nor: Add support for ESMT F25L32QA and F25L64QA
-> 
-> Ludovic Barre (1):
->       mtd: spi-nor: add driver for STM32 quad spi flash controller
-> 
-> Mathias Kresin (1):
->       mtd: spi-nor: enable stateless 4b op codes for mx25u25635f
-> 
-> Nicholas Mc Guire (2):
->       mtd: spi-nor: intel: use true/false for boolean
->       mtd: spi-nor: intel: use ERR_CAST in return statement
-> 
-> Nobuhiro Iwamatsu (1):
->       mtd: spi-nor: Add support for N25Q256A11
-> 
-> mar.krzeminski (2):
->       mtd: spi-nor: Fix whole chip erasing for stacked chips.
->       mtd: spi-nor: Disable chip erase for Micron n25q00.
-> 
->  drivers/mtd/spi-nor/Kconfig         |   7 ++
->  drivers/mtd/spi-nor/Makefile        |   1 +
->  drivers/mtd/spi-nor/hisi-sfc.c      |   5 +-
->  drivers/mtd/spi-nor/intel-spi.c     |   4 +-
->  drivers/mtd/spi-nor/mtk-quadspi.c   |  27 +++++++
->  drivers/mtd/spi-nor/spi-nor.c       |  18 ++++-
->  drivers/mtd/spi-nor/stm32-quadspi.c | 694 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  7 files changed, 750 insertions(+), 6 deletions(-)
->  create mode 100644 drivers/mtd/spi-nor/stm32-quadspi.c
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+Eric
