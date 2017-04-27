@@ -1,27 +1,26 @@
-Received: from 18.mo5.mail-out.ovh.net ([178.33.45.10])
+Received: from mail-oi0-x22b.google.com ([2607:f8b0:4003:c06::22b])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d3kha-0003L8-2w
- for linux-mtd@lists.infradead.org; Thu, 27 Apr 2017 14:47:28 +0000
-Received: from player760.ha.ovh.net (b6.ovh.net [213.186.33.56])
- by mo5.mail-out.ovh.net (Postfix) with ESMTP id B0006EA4D6
- for <linux-mtd@lists.infradead.org>; Thu, 27 Apr 2017 16:47:02 +0200 (CEST)
-Subject: Re: [PATCH] mtd: spi-nor: stm32: remove broken MODULE_ALIAS
-To: Arnd Bergmann <arnd@arndb.de>, Marek Vasut <marek.vasut@gmail.com>
-References: <20170427111001.2587551-1-arnd@arndb.de>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Alexandre Torgue <alexandre.torgue@st.com>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Ludovic Barre <ludovic.barre@st.com>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <9fb1b928-33d5-dfb1-6699-86b27d87e15e@wedev4u.fr>
-Date: Thu, 27 Apr 2017 16:46:50 +0200
+ id 1d3km9-0005pA-K8
+ for linux-mtd@lists.infradead.org; Thu, 27 Apr 2017 14:52:11 +0000
+Received: by mail-oi0-x22b.google.com with SMTP id j201so40351011oih.2
+ for <linux-mtd@lists.infradead.org>; Thu, 27 Apr 2017 07:51:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20170427111001.2587551-1-arnd@arndb.de>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+Sender: arndbergmann@gmail.com
+In-Reply-To: <13610ad7-6362-1342-9d96-76a491f279af@wedev4u.fr>
+References: <963d5dab-f6a5-daea-4e12-8b5fd0f5d1e6@wedev4u.fr>
+ <13610ad7-6362-1342-9d96-76a491f279af@wedev4u.fr>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Thu, 27 Apr 2017 16:51:46 +0200
+Message-ID: <CAK8P3a3Y7ErtAc84S+AoCydgOonikCn1Q30JN441rhmdEa7f_g@mail.gmail.com>
+Subject: Re: [PULL] mtd: spi-nor: changes for 4.12
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>,
+ Linux MTD Development List <linux-mtd@lists.infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Ludovic Barre <ludovic.Barre@st.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,37 +30,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 27/04/2017 à 13:09, Arnd Bergmann a écrit :
-> The MODULE_ALIAS statement refers to a macro that has never been defined
-> in this driver, causing a build error:
-> 
-> drivers/mtd/spi-nor/stm32-quadspi.c:694:150: error: expected ',' or ';' before 'DRIVER_NAME'
-> 
-> Unless there is a specific alias we need other then the driver name,
-> we don't need an alias here and can simply remove the line to fix the
-> build.
-> 
-> Fixes: dc5e400611c5 ("mtd: spi-nor: add driver for STM32 quad spi flash controller")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Thu, Apr 27, 2017 at 4:42 PM, Cyrille Pitchen
+<cyrille.pitchen@wedev4u.fr> wrote:
+> + Ludovic and Arnd
+>
+> Hi Brian,
+>
+> A little patch was sent by Arnd to fix some module compilation issue up.
+> https://patchwork.ozlabs.org/patch/755980/
+>
+> As said, in this other thread, I can either
+>
+> 1 -  squash Arnd patch into Ludovic's one in the 'next' branch of
+> github/spi-nor, create a new tag and send you a new PR.
+>
+> or
+>
+> 2 - keep Arnd patch as is and send you a new PR: still starting from
+> 4.11-rc1 or from the current for-4.12 tag?
+>
+> Let me know the solution you prefer :)
+> Sorry for this additional delay!
 
-Acked-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+I don't care much either way, folding the fix probably makes a nicer
+git history.
 
-Thanks!
-
-> ---
->  drivers/mtd/spi-nor/stm32-quadspi.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/stm32-quadspi.c b/drivers/mtd/spi-nor/stm32-quadspi.c
-> index 90d9152ddf98..1056e7408d2a 100644
-> --- a/drivers/mtd/spi-nor/stm32-quadspi.c
-> +++ b/drivers/mtd/spi-nor/stm32-quadspi.c
-> @@ -691,7 +691,6 @@ static struct platform_driver stm32_qspi_driver = {
->  };
->  module_platform_driver(stm32_qspi_driver);
->  
-> -MODULE_ALIAS("platform:" DRIVER_NAME);
->  MODULE_AUTHOR("Ludovic Barre <ludovic.barre@st.com>");
->  MODULE_DESCRIPTION("STMicroelectronics STM32 quad spi driver");
->  MODULE_LICENSE("GPL v2");
-> 
+       Arnd
