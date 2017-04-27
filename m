@@ -1,24 +1,23 @@
-Received: from mail-oi0-x243.google.com ([2607:f8b0:4003:c06::243])
+Received: from imap0.codethink.co.uk ([185.43.218.159])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d3dzh-0007EX-Kd
- for linux-mtd@lists.infradead.org; Thu, 27 Apr 2017 07:37:43 +0000
-Received: by mail-oi0-x243.google.com with SMTP id y11so5516410oie.1
- for <linux-mtd@lists.infradead.org>; Thu, 27 Apr 2017 00:37:19 -0700 (PDT)
+ id 1d3emY-0002T3-T4
+ for linux-mtd@lists.infradead.org; Thu, 27 Apr 2017 08:28:14 +0000
+Subject: Re: [Linux-kernel] [PATCH 1/1] mtd: mtdblock: avoid __might_sleep
+ warnings in mtd_erase
+To: Ben Hutchings <ben.hutchings@codethink.co.uk>
+References: <20170426174609.29433-1-ben.dooks@codethink.co.uk>
+ <20170426174609.29433-2-ben.dooks@codethink.co.uk>
+ <1493230734.10415.140.camel@codethink.co.uk>
+Cc: linux-kernel@lists.codethink.co.uk, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org
+From: Ben Dooks <ben.dooks@codethink.co.uk>
+Message-ID: <c5a6e8e4-7e16-6d28-7948-8d2c186cca03@codethink.co.uk>
+Date: Thu, 27 Apr 2017 09:27:41 +0100
 MIME-Version: 1.0
-In-Reply-To: <20170426234300.54741-1-ebiggers3@gmail.com>
-References: <20170426234300.54741-1-ebiggers3@gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Thu, 27 Apr 2017 09:37:18 +0200
-Message-ID: <CAFLxGvzEr94f90QzQFucc3bCrv56fyVtd4ryQ062ot5FUovqFQ@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: fscrypt: update mailing list, patchwork,
- and git
-To: Eric Biggers <ebiggers3@gmail.com>
-Cc: linux-fscrypt@vger.kernel.org, "Theodore Y . Ts'o" <tytso@mit.edu>,
- Eric Biggers <ebiggers@google.com>, linux-f2fs-devel@lists.sourceforge.net,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>,
- linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <1493230734.10415.140.camel@codethink.co.uk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,37 +27,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Eric,
+On 26/04/17 19:18, Ben Hutchings wrote:
+> On Wed, 2017-04-26 at 18:46 +0100, Ben Dooks wrote:
+>> The mtd_erase() call can hit code that will trigger warnings
+>> from __might_sleep(), such as the do_erase_oneblock() function
+>> on the cfi_cmdset_0002.c file.
+>>
+>> This is due to some of the erase functions doing the work in the
+>> thread they are called in, which means that the erase_write()
+>> should only go into TASK_INTERRUPTIBLE once the mtd_erase call
+>> has returned.
+> [...]
+>> diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
+>> index bb4c14f83c75..4b1cd464f919 100644
+>> --- a/drivers/mtd/mtdblock.c
+>> +++ b/drivers/mtd/mtdblock.c
+>> @@ -68,6 +68,7 @@ static int erase_write (struct mtd_info *mtd, unsigned long pos,
+>>  	DECLARE_WAITQUEUE(wait, current);
+>>  	wait_queue_head_t wait_q;
+>>  	size_t retlen;
+>> +	long timeout = 1;
+>>  	int ret;
+>>
+>>  	/*
+>> @@ -81,12 +82,10 @@ static int erase_write (struct mtd_info *mtd, unsigned long pos,
+>>  	erase.len = len;
+>>  	erase.priv = (u_long)&wait_q;
+>>
+>> -	set_current_state(TASK_INTERRUPTIBLE);
+>>  	add_wait_queue(&wait_q, &wait);
+>>
+>>  	ret = mtd_erase(mtd, &erase);
+>>  	if (ret) {
+>> -		set_current_state(TASK_RUNNING);
+>>  		remove_wait_queue(&wait_q, &wait);
+>>  		printk (KERN_WARNING "mtdblock: erase of region [0x%lx, 0x%x] "
+>>  				     "on \"%s\" failed\n",
+>> @@ -94,8 +93,18 @@ static int erase_write (struct mtd_info *mtd, unsigned long pos,
+>>  		return ret;
+>>  	}
+>>
+>> -	schedule();  /* Wait for erase to finish. */
+>> +	if (erase->state != MTD_ERASE_DONE &&
+>> +	    erase->state != MTD_ERASE_FAILED)
+>> +		timeout = wait_woken(&wait, TASK_INTERRUPTIBLE,
+>> +				     MAX_SCHEDULE_TIMEOUT);
+>
+> If mtd_erase() returns 0 then the wait queue either has been woken or
+> will be woken.  Since we're already on the wait queue, it's safe to wait
+> unconditionally.
+>
+> I think that making the wait conditional results in a race condition
+> that could result in returning too early.
+>
+> Also there seems to be another existing problem here: if this is
+> interrupted and we return early then the driver can use-after-free the
+> wait queue and erase structure.  mtdchar waits uninterruptibly for
+> exactly this reason.
+>
+> We really ought to have an always-synchronous wrapper for mtd_erase(),
+> because this seems to be hard to get right...
+>
+> Ben.
 
-On Thu, Apr 27, 2017 at 1:43 AM, Eric Biggers <ebiggers3@gmail.com> wrote:
-> From: Eric Biggers <ebiggers@google.com>
->
-> Now that there has been a dedicated mailing list, patchwork project, and
-> git repository set up for filesystem encryption, update the MAINTAINERS
-> file accordingly.
->
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->  MAINTAINERS | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 38d3e4ed7208..22b509fb1c5e 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -5365,10 +5365,12 @@ F:      Documentation/filesystems/caching/
->  F:     fs/fscache/
->  F:     include/linux/fscache*.h
->
-> -FS-CRYPTO: FILE SYSTEM LEVEL ENCRYPTION SUPPORT
-> +FSCRYPT: FILE SYSTEM LEVEL ENCRYPTION SUPPORT
->  M:     Theodore Y. Ts'o <tytso@mit.edu>
->  M:     Jaegeuk Kim <jaegeuk@kernel.org>
-
-IMHO we should also add such an entry, to match reality:
-
-R:      Eric Biggers <ebiggers@google.com>
+Ok, so add something like mtd_erase_sync() which uses mtd_erase and then
+waits for the completion and then use it for both mtdblock and mtdchar?
 
 -- 
-Thanks,
-//richard
+Ben Dooks				http://www.codethink.co.uk/
+Senior Engineer				Codethink - Providing Genius
