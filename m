@@ -1,18 +1,24 @@
-Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
+Received: from mail-oi0-x243.google.com ([2607:f8b0:4003:c06::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d3WbM-0000Tx-1z
- for linux-mtd@lists.infradead.org; Wed, 26 Apr 2017 23:44:05 +0000
-Received: by mail-pf0-x244.google.com with SMTP id a188so3683581pfa.2
- for <linux-mtd@lists.infradead.org>; Wed, 26 Apr 2017 16:43:41 -0700 (PDT)
-From: Eric Biggers <ebiggers3@gmail.com>
-To: linux-fscrypt@vger.kernel.org
-Cc: "Theodore Y . Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
- linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
- Eric Biggers <ebiggers@google.com>
-Subject: [PATCH] MAINTAINERS: fscrypt: update mailing list, patchwork, and git
-Date: Wed, 26 Apr 2017 16:43:00 -0700
-Message-Id: <20170426234300.54741-1-ebiggers3@gmail.com>
+ id 1d3dzh-0007EX-Kd
+ for linux-mtd@lists.infradead.org; Thu, 27 Apr 2017 07:37:43 +0000
+Received: by mail-oi0-x243.google.com with SMTP id y11so5516410oie.1
+ for <linux-mtd@lists.infradead.org>; Thu, 27 Apr 2017 00:37:19 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20170426234300.54741-1-ebiggers3@gmail.com>
+References: <20170426234300.54741-1-ebiggers3@gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Thu, 27 Apr 2017 09:37:18 +0200
+Message-ID: <CAFLxGvzEr94f90QzQFucc3bCrv56fyVtd4ryQ062ot5FUovqFQ@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: fscrypt: update mailing list, patchwork,
+ and git
+To: Eric Biggers <ebiggers3@gmail.com>
+Cc: linux-fscrypt@vger.kernel.org, "Theodore Y . Ts'o" <tytso@mit.edu>,
+ Eric Biggers <ebiggers@google.com>, linux-f2fs-devel@lists.sourceforge.net,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>,
+ linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,35 +28,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Eric Biggers <ebiggers@google.com>
+Eric,
 
-Now that there has been a dedicated mailing list, patchwork project, and
-git repository set up for filesystem encryption, update the MAINTAINERS
-file accordingly.
+On Thu, Apr 27, 2017 at 1:43 AM, Eric Biggers <ebiggers3@gmail.com> wrote:
+> From: Eric Biggers <ebiggers@google.com>
+>
+> Now that there has been a dedicated mailing list, patchwork project, and
+> git repository set up for filesystem encryption, update the MAINTAINERS
+> file accordingly.
+>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  MAINTAINERS | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 38d3e4ed7208..22b509fb1c5e 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -5365,10 +5365,12 @@ F:      Documentation/filesystems/caching/
+>  F:     fs/fscache/
+>  F:     include/linux/fscache*.h
+>
+> -FS-CRYPTO: FILE SYSTEM LEVEL ENCRYPTION SUPPORT
+> +FSCRYPT: FILE SYSTEM LEVEL ENCRYPTION SUPPORT
+>  M:     Theodore Y. Ts'o <tytso@mit.edu>
+>  M:     Jaegeuk Kim <jaegeuk@kernel.org>
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- MAINTAINERS | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+IMHO we should also add such an entry, to match reality:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 38d3e4ed7208..22b509fb1c5e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5365,10 +5365,12 @@ F:	Documentation/filesystems/caching/
- F:	fs/fscache/
- F:	include/linux/fscache*.h
- 
--FS-CRYPTO: FILE SYSTEM LEVEL ENCRYPTION SUPPORT
-+FSCRYPT: FILE SYSTEM LEVEL ENCRYPTION SUPPORT
- M:	Theodore Y. Ts'o <tytso@mit.edu>
- M:	Jaegeuk Kim <jaegeuk@kernel.org>
--L:	linux-fsdevel@vger.kernel.org
-+L:	linux-fscrypt@vger.kernel.org
-+Q:	https://patchwork.kernel.org/project/linux-fscrypt/list/
-+T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tytso/fscrypt.git
- S:	Supported
- F:	fs/crypto/
- F:	include/linux/fscrypt*.h
+R:      Eric Biggers <ebiggers@google.com>
+
 -- 
-2.13.0.rc0.306.g87b477812d-goog
+Thanks,
+//richard
