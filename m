@@ -1,26 +1,28 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mail-io0-x244.google.com ([2607:f8b0:4001:c06::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d3rVo-0005MM-KX
- for linux-mtd@lists.infradead.org; Thu, 27 Apr 2017 22:03:46 +0000
-Subject: Re: [PATCH v2 3/3] fs: ubifs: set s_uuid in super block
-To: Oleksij Rempel <ore@pengutronix.de>
-References: <20170411095055.26328-1-o.rempel@pengutronix.de>
- <20170411095055.26328-4-o.rempel@pengutronix.de>
- <5d7d0f21-d87f-0835-c2f6-b6c9e07f73a8@nod.at>
- <20170412054828.GA20561@infradead.org>
- <20170412071551.i36yj3lzilgtntdy@pengutronix.de>
- <803a8cc8-d2d1-dddf-2e07-621b1484218a@nod.at>
-Cc: Christoph Hellwig <hch@infradead.org>, dedekind1@gmail.com,
- adrian.hunter@intel.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- Steffen Trumtrar <s.trumtrar@pengutronix.de>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <dd90ac49-574b-54b9-902a-ba5948134ba8@nod.at>
-Date: Fri, 28 Apr 2017 00:03:18 +0200
+ id 1d3ylA-0003oV-Nw
+ for linux-mtd@lists.infradead.org; Fri, 28 Apr 2017 05:48:06 +0000
+Received: by mail-io0-x244.google.com with SMTP id d203so8776934iof.2
+ for <linux-mtd@lists.infradead.org>; Thu, 27 Apr 2017 22:47:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <803a8cc8-d2d1-dddf-2e07-621b1484218a@nod.at>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20170427174557.GB8130@gmail.com>
+References: <20170426234300.54741-1-ebiggers3@gmail.com>
+ <CAFLxGvzEr94f90QzQFucc3bCrv56fyVtd4ryQ062ot5FUovqFQ@mail.gmail.com>
+ <20170427174557.GB8130@gmail.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Fri, 28 Apr 2017 08:47:41 +0300
+Message-ID: <CAOQ4uxgzVOqNXX1DBG8gtYf+81Crkwwi5_kQK=zCVcjiHK7+fg@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: fscrypt: update mailing list, patchwork,
+ and git
+To: Eric Biggers <ebiggers3@gmail.com>
+Cc: Richard Weinberger <richard.weinberger@gmail.com>,
+ linux-fscrypt@vger.kernel.org,
+ "Theodore Y . Ts'o" <tytso@mit.edu>, Eric Biggers <ebiggers@google.com>,
+ linux-f2fs-devel@lists.sourceforge.net,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>,
+ Ext4 <linux-ext4@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,12 +32,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 24.04.2017 um 17:47 schrieb Richard Weinberger:
->> So, if some flag should be implemented, who should do it? :)
-> 
-> I'll not do it for you. ;)
+On Thu, Apr 27, 2017 at 8:45 PM, Eric Biggers <ebiggers3@gmail.com> wrote:
+> On Thu, Apr 27, 2017 at 09:37:18AM +0200, Richard Weinberger wrote:
+>> > +FSCRYPT: FILE SYSTEM LEVEL ENCRYPTION SUPPORT
+>> >  M:     Theodore Y. Ts'o <tytso@mit.edu>
+>> >  M:     Jaegeuk Kim <jaegeuk@kernel.org>
+>>
+>> IMHO we should also add such an entry, to match reality:
+>>
+>> R:      Eric Biggers <ebiggers@google.com>
+>>
+>
+> Well, we could, but IMO it's a little pointless since there's now a dedicated
+> mailing list, so there's no need to Cc me separately from the list.  I think
+> explicitly listing reviewer(s) is more useful for subsystems that don't have a
+> dedicated mailing list.
+>
 
-Please also see http://marc.info/?l=linux-fsdevel&m=149327990608749&w=2
-
-Thanks,
-//richard
+Does the fscrypt mailing list allow posting for non-subscribers?
+It is often a nuisance for a passing by developer to subscribe to a mailing list
+just to report a bug or CC a relevant patch.
