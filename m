@@ -1,21 +1,29 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-io0-x241.google.com ([2607:f8b0:4001:c06::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d41Ow-00049x-SI
- for linux-mtd@lists.infradead.org; Fri, 28 Apr 2017 08:37:21 +0000
-Date: Fri, 28 Apr 2017 10:36:52 +0200
-From: Lukasz Majewski <lukma@denx.de>
-To: Andrea Adami <andrea.adami@gmail.com>
-Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>, linux-mtd@lists.infradead.org
-Subject: Re: Problem with NAND memory data retention
-Message-ID: <20170428103652.62990916@jawa>
-In-Reply-To: <CAAQYJAtBGn_-8z-1NQbVYPiVm6W3zquibLK9jutWWKGn0RBWuQ@mail.gmail.com>
-References: <20170427122502.285d16ba@jawa>
- <alpine.DEB.2.11.1704271246210.6882@lnxricardw1>
- <20170427150416.2c6bba07@jawa>
- <CAAQYJAtBGn_-8z-1NQbVYPiVm6W3zquibLK9jutWWKGn0RBWuQ@mail.gmail.com>
+ id 1d41ef-0001qV-K1
+ for linux-mtd@lists.infradead.org; Fri, 28 Apr 2017 08:53:35 +0000
+Received: by mail-io0-x241.google.com with SMTP id x86so9600688ioe.3
+ for <linux-mtd@lists.infradead.org>; Fri, 28 Apr 2017 01:53:13 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <dd90ac49-574b-54b9-902a-ba5948134ba8@nod.at>
+References: <20170411095055.26328-1-o.rempel@pengutronix.de>
+ <20170411095055.26328-4-o.rempel@pengutronix.de>
+ <5d7d0f21-d87f-0835-c2f6-b6c9e07f73a8@nod.at>
+ <20170412054828.GA20561@infradead.org>
+ <20170412071551.i36yj3lzilgtntdy@pengutronix.de>
+ <803a8cc8-d2d1-dddf-2e07-621b1484218a@nod.at>
+ <dd90ac49-574b-54b9-902a-ba5948134ba8@nod.at>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Fri, 28 Apr 2017 11:53:12 +0300
+Message-ID: <CAOQ4uxhOTkJX2cFrt7VFO4ymsWyZ9JgxNTHss-DTDsP8J39Lpg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] fs: ubifs: set s_uuid in super block
+To: Richard Weinberger <richard@nod.at>
+Cc: Oleksij Rempel <ore@pengutronix.de>, Christoph Hellwig <hch@infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Adrian Hunter <adrian.hunter@intel.com>,
+ linux-mtd@lists.infradead.org, linux-kernel <linux-kernel@vger.kernel.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ Steffen Trumtrar <s.trumtrar@pengutronix.de>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,148 +33,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Andrea,
+On Fri, Apr 28, 2017 at 1:03 AM, Richard Weinberger <richard@nod.at> wrote:
+> Am 24.04.2017 um 17:47 schrieb Richard Weinberger:
+>>> So, if some flag should be implemented, who should do it? :)
+>>
+>> I'll not do it for you. ;)
+>
+> Please also see http://marc.info/?l=linux-fsdevel&m=149327990608749&w=2
+>
 
-Thanks for your response!
+Perhaps you meant this:
+https://marc.info/?l=linux-fsdevel&m=149328358909709&w=2
 
-> On Thu, Apr 27, 2017 at 3:04 PM, Lukasz Majewski <lukma@denx.de>
-> wrote:
->=20
-> > Hi Ricard,
-> >
-> > >
-> > > On Thu, 27 Apr 2017, Lukasz Majewski wrote:
-> > >
-> > > > I'd like to ask you for sharing your experience with NAND Flash
-> > > > devices
-> > > > - which may be older that their data retention time.
-> > > >
-> > > > I've a problem with Flash NAND memory (Samsung 128Mx8).
-> > > >
-> > > > In the data sheet [1] the manufacturer claims that it has 10
-> > > > years for data retention. The device equipped with it is a bit
-> > > > older than 10 years.
-> > > >
-> > > >
-> > > > How one can diagnose that data retention time for NAND Flash has
-> > > > been exceeded?
-> > > >
-> > > > Is that:
-> > > >
-> > > > - The number of bit flip errors on a RW page so large that ECC
-> > > > cannot fix it?
-> > > >
-> > > > - Or are whole RW pages erased (0xFF)/corrupted/cleared (0x00)?
-> > > >
-> > > > - Or any other evidence?
-> > > >
-> > > > Thanks in advance for your help.
-> > >
-> > > I think the interpretation is that the manufacturer guarantees
-> > > that under the circumstances specified (temperature, supply
-> > > voltage, erase cycles etc) that the data will be retained for at
-> > > least ten years, beyond that it's just not specified. It doesn't
-> > > mean that something catastrophic will happen after ten years,
-> > > i.e. ten years is not a hard limit beyond which things start
-> > > going haywire.
-> >
-> > Thanks for your explanation.
-> >
-> > >
-> > > I can't say I have experience with old NAND flashes loosing their
-> > > data, but technically I would expect that what happens is that
-> > > eventually the charge leaks away from the bit cells, causing bit
-> > > flips, quite simply, so it's the same mechanism that requires the
-> > > flash to be 'scrubbed' periodically to check if the data needs to
-> > > be rewritten.
-> > >
-> > > I.e. it's the first case in your list, the number of bit flips
-> > > increases.
-> >
-> > Unfortunately with my device I do experience the second scenario.
-> >
-> > I do observe pages read as zeros.
-> >
->=20
-> Hello,
->=20
-> I think I have seen the same issue: one defective device did not
-> respond to CFI QRY.
->=20
-> http://lists.infradead.org/pipermail/linux-mtd/2014-May/053872.html
+There does not seem to be much objections to adding the flag,
+so hopefully, we can merge it for v.12 and filesystems and consumers
+will pick it up whenever.
 
-I do not have (yet) the CFI commands dump, but in my case Erase->
-Reflash sequence causes the file content to be correct.
-
-IMHO, If the Flash memory controller itself is broken, then
-"re-flashing" would not help.
-
-Maybe - in my case the NAND flash driver (2.6 kernel) causes the issue
-(with zero filled page showing up in the middle of a YAFFS file) by some
-write done at mistakingly calculated address?
-
-Any ideas/hints are more than welcome :-)
-
-Best regards,
-=C5=81ukasz Majewski
-
->=20
-> These devices were sold in 2002-2003 so they are now >15yrs old and I
-> have two of them working flawlessy.
->=20
-> Regards
-> Andrea
->=20
->=20
->=20
->=20
-> >
-> > For example in the middle of a file - page sized (2K) data is read
-> > as zero. And this file is RO (no modification). And such zero read
-> > is persistent - happens all the time. The only way is to replace
-> > the whole file (erase it and write again).
-> >
-> > We use yaffs file system.
-> >
-> > And such errors pop up in random places.
-> >
-> > >
-> > > The fewer erase cycles that a given flash block has seen, the less
-> > > wear there has been on the insulation, and the better the
-> > > retention would be. The ten year spec is under the worst case
-> > > condition of the maximum number of erase cycles having been
-> > > performed on the flash.
-> > >
-> > > /Ricard
-> >
-> >
-> >
-> >
-> > Best regards,
-> >
-> > Lukasz Majewski
-> >
-> > --
-> >
-> > DENX Software Engineering GmbH,      Managing Director: Wolfgang
-> > Denk HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell,
-> > Germany Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email:
-> > wd@denx.de
-> >
-> > ______________________________________________________
-> > Linux MTD discussion mailing list
-> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> >
-
-
-
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
+Amir.
