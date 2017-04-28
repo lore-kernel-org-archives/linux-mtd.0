@@ -1,17 +1,21 @@
-Received: from mail-io0-x243.google.com ([2607:f8b0:4001:c06::243])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d44zR-0006k2-Gi
- for linux-mtd@lists.infradead.org; Fri, 28 Apr 2017 12:27:15 +0000
-Received: by mail-io0-x243.google.com with SMTP id x86so10732558ioe.3
- for <linux-mtd@lists.infradead.org>; Fri, 28 Apr 2017 05:26:52 -0700 (PDT)
+Received: from aserp1040.oracle.com ([141.146.126.69])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d45c9-0002NY-H7
+ for linux-mtd@lists.infradead.org; Fri, 28 Apr 2017 13:07:15 +0000
+Date: Fri, 28 Apr 2017 16:06:15 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Huang Shijie <b32955@freescale.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ kernel-janitors@vger.kernel.org
+Subject: [PATCH] mtd: spi-nor: Potential oops on error path in quad_enable()
+Message-ID: <20170428130614.w4cmbwvprgzv7sky@mwanda>
 MIME-Version: 1.0
-Sender: kumarvivaan1@gmail.com
-From: "Mr. David Owain" <mrdavidowain@gmail.com>
-Date: Fri, 28 Apr 2017 14:26:51 +0200
-Message-ID: <CAEt6T7OeHQzmecN=wMNvi4ndGG_cnWZgva8S+cOG=xi=jZbmGg@mail.gmail.com>
-Subject: From: Mr.David Owain
-To: undisclosed-recipients:;
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,27 +25,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Good Day,
+Before commit cff959958832 ("mtd: spi-nor: introduce SPI 1-2-2 and SPI
+1-4-4 protocols") then we treated 1 as -EINVAL in the caller but after
+that commit we changed to propagate the return.  My static checker
+complains that it's eventually passed to an ERR_PTR() and later
+dereferenced, but I'm not totally certain if that's true.  Regardless,
+returning 1 is wrong.
 
-Please accept my apologies for writing you a surprise letter.I am
-Mr.David Owain, account Manager with an investment bank here in
-Burkina Faso.I have a very important business I want to discuss with
-you.There is a draft account opened in my firm by a long-time client
-of our bank.I have the opportunity of transferring the left over fund
-(15.8 Million UsDollars)Fiftheen Million Eight Hundred Thousand United
-States of American Dollars of one of my Bank clients who died at the
-collapsing of the world trade center at the United States on September
-11th 2001.
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-I want to invest this funds and introduce you to our bank for this
-deal.All I require is your honest co-operation and I guarantee you
-that this will be executed under a legitimate arrangement that will
-protect us from any breach of the law.I agree that 40% of this money
-will be for you as my foreign partner,50% for me while 10% is for
-establishing of foundation for the less privilleges in your country.If
-you are really interested in my proposal further details of the
-Transfer will be forwarded unto you as soon as I receive your
-willingness mail for a successful transfer.
-
-Yours Sincerely,
-Mr.David Owain.
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 060a59e716be..a05db3371ebb 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1390,7 +1390,7 @@ static int macronix_quad_enable(struct spi_nor *nor)
+ 	write_sr(nor, val | SR_QUAD_EN_MX);
+ 
+ 	if (spi_nor_wait_till_ready(nor))
+-		return 1;
++		return -EINVAL;
+ 
+ 	ret = read_sr(nor);
+ 	if (!(ret > 0 && (ret & SR_QUAD_EN_MX))) {
