@@ -1,7 +1,7 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1d4OLW-0002Eh-Fb
- for linux-mtd@lists.infradead.org; Sat, 29 Apr 2017 09:07:21 +0000
+ id 1d4OLW-0002Er-Fc
+ for linux-mtd@lists.infradead.org; Sat, 29 Apr 2017 09:07:22 +0000
 From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
@@ -13,9 +13,11 @@ To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
  Kumar Gala <galak@codeaurora.org>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Subject: [PATCH v2 0/5] mtd: nand: add support for on-die ECC
-Date: Sat, 29 Apr 2017 11:06:41 +0200
-Message-Id: <1493456806-18898-1-git-send-email-thomas.petazzoni@free-electrons.com>
+Subject: [PATCH v2 3/5] mtd: nand: export nand_{read,write}_page_raw()
+Date: Sat, 29 Apr 2017 11:06:44 +0200
+Message-Id: <1493456806-18898-4-git-send-email-thomas.petazzoni@free-electrons.com>
+In-Reply-To: <1493456806-18898-1-git-send-email-thomas.petazzoni@free-electrons.com>
+References: <1493456806-18898-1-git-send-email-thomas.petazzoni@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,78 +27,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+The nand_read_page_raw() and nand_write_page_raw() functions might be
+re-used by vendor-specific implementations of the read_page/write_page
+functions. Instead of having vendor-specific code duplicate this code,
+it is much better to export those functions and allow them to be
+re-used.
 
-This patch series adds support for on-die ECC, i.e ECC performed by
-the NAND chip itself, as opposed to having the ECC calculated by the
-NAND controller or in software.
+Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Reviewed-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/nand/nand_base.c | 10 ++++++----
+ include/linux/mtd/nand.h     |  8 ++++++++
+ 2 files changed, 14 insertions(+), 4 deletions(-)
 
-It is useful in situations where the NAND chip has an ECC requirement
-that is not met by the ECC capabilities of the NAND controller.
-
-Patch 1 adjusts the NAND generic DT binding to add "on-die" as an
-nand-ecc-mode.
-
-Patch 2 adds the core support for on-die ECC, which is really simple
-and minimal: all the work is really done in the vendor-specific NAND
-code.
-
-Patch 3 and 4 adds the on-die ECC implementation for Micron NANDs.
-
-Patch 5 allows the FSMC NAND driver to use on-die ECC.
-
-This series was tested on a SPEAr600 platform, with a Micron
-MT29F1G08ABADAWP NAND. The mtd_nandbiterrs.ko test is passing
-successfully, which shows that the on-die ECC is correcting bitflips
-as expected.
-
-This series is based on the current nand-next branch, as it depends on
-the rework from Boris of the vendor-specific NAND code.
-
-Many thanks to Boris from providing lots of useful feedback and
-discussion during the development of this patch series.
-
-Changes since v1:
-
- - Rebased on the latest nand/next branch.
-
- - Reworked the mechanism to detect if the Micron NAND suppors on-die
-   ECC. We realized that the READ_ID command only indicates if on-die
-   ECC is currently enabled or not, not whether it is supported by the
-   NAND. After discussion with Bean Huo from Micron we came up with a
-   logic to determine if the NAND has on-die ECC support, which PATCH
-   4/5 implements.
-
-   Note that we intentionally only support cases that we could
-   test. Therefore, we error out if the NAND has an on-die ECC that
-   cannot be disabled, and we error out if the NAND uses a 8 bits per
-   512 bytes on-die ECC, since it requires a slightly different
-   handling than the 4 bits per 512 bytes on-die ECC our NAND is
-   using.
-
- - Added Acked-by from Rob Herring on PATCH 1/5 (DT binding)
-
- - Added Acked-by from Richard Weinberger on all patches, except PATCH
-   4/5 since it was significantly changed.
-
-Best regards,
-
-Thomas
-
-
-Thomas Petazzoni (5):
-  dt-bindings: mtd: document new "on-die" nand-ecc-mode
-  mtd: nand: add core support for on-die ECC
-  mtd: nand: export nand_{read,write}_page_raw()
-  mtd: nand: add support for Micron on-die ECC
-  mtd: nand: fsmc_nand: handle on-die ECC case
-
- Documentation/devicetree/bindings/mtd/nand.txt |   2 +-
- drivers/mtd/nand/fsmc_nand.c                   |   3 +
- drivers/mtd/nand/nand_base.c                   |  23 ++-
- drivers/mtd/nand/nand_micron.c                 | 215 +++++++++++++++++++++++++
- include/linux/mtd/nand.h                       |  11 ++
- 5 files changed, 249 insertions(+), 5 deletions(-)
-
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index b639e88..3282738 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1456,14 +1456,15 @@ EXPORT_SYMBOL(nand_check_erased_ecc_chunk);
+  *
+  * Not for syndrome calculating ECC controllers, which use a special oob layout.
+  */
+-static int nand_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+-			      uint8_t *buf, int oob_required, int page)
++int nand_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
++		       uint8_t *buf, int oob_required, int page)
+ {
+ 	chip->read_buf(mtd, buf, mtd->writesize);
+ 	if (oob_required)
+ 		chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
+ 	return 0;
+ }
++EXPORT_SYMBOL(nand_read_page_raw);
+ 
+ /**
+  * nand_read_page_raw_syndrome - [INTERN] read raw page data without ecc
+@@ -2401,8 +2402,8 @@ static int nand_read_oob(struct mtd_info *mtd, loff_t from,
+  *
+  * Not for syndrome calculating ECC controllers, which use a special oob layout.
+  */
+-static int nand_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+-			       const uint8_t *buf, int oob_required, int page)
++int nand_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
++			const uint8_t *buf, int oob_required, int page)
+ {
+ 	chip->write_buf(mtd, buf, mtd->writesize);
+ 	if (oob_required)
+@@ -2410,6 +2411,7 @@ static int nand_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL(nand_write_page_raw);
+ 
+ /**
+  * nand_write_page_raw_syndrome - [INTERN] raw page write function
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 6035220..7a01d2e 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -1259,6 +1259,14 @@ int nand_read_oob_std(struct mtd_info *mtd, struct nand_chip *chip, int page);
+ int nand_read_oob_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+ 			   int page);
+ 
++/* Default read_page_raw implementation */
++int nand_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
++		       uint8_t *buf, int oob_required, int page);
++
++/* Default write_page_raw implementation */
++int nand_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
++			const uint8_t *buf, int oob_required, int page);
++
+ /* Reset and initialize a NAND device */
+ int nand_reset(struct nand_chip *chip, int chipnr);
+ 
 -- 
 2.7.4
