@@ -1,23 +1,22 @@
-Received: from pegase1.c-s.fr ([93.17.236.30])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d5QfQ-0006AA-8s
- for linux-mtd@lists.infradead.org; Tue, 02 May 2017 05:48:10 +0000
-Subject: Re: [PATCH] mtd: nand: gpio: make nCE GPIO optional
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1d5S2j-0002JH-1H
+ for linux-mtd@lists.infradead.org; Tue, 02 May 2017 07:16:18 +0000
+Date: Tue, 2 May 2017 09:15:53 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Brian Norris <computersforpeace@gmail.com>
-References: <20170210140110.87903682E7@localhost.localdomain>
- <20170501214627.GB140640@google.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-From: Christophe LEROY <christophe.leroy@c-s.fr>
-Message-ID: <e35093cc-f5f0-f561-10cb-40d5a141e819@c-s.fr>
-Date: Tue, 2 May 2017 07:47:40 +0200
+Cc: <linux-mtd@lists.infradead.org>, Richard Weinberger <richard@nod.at>,
+ Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>
+Subject: Re: [PATCH] mtd: nand: don't make vendor-specific code un-set their
+ data pointer
+Message-ID: <20170502091553.7d666a50@bbrezillon>
+In-Reply-To: <20170502000455.13240-2-computersforpeace@gmail.com>
+References: <20170502000455.13240-1-computersforpeace@gmail.com>
+ <20170502000455.13240-2-computersforpeace@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20170501214627.GB140640@google.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,41 +26,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon,  1 May 2017 17:04:51 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
 
+> It makes sense to do this in nand_base.
+> 
+> (Alternatively: we don't really need to do this at all.)
 
-Le 01/05/2017 à 23:46, Brian Norris a écrit :
-> On Fri, Feb 10, 2017 at 03:01:10PM +0100, Christophe Leroy wrote:
->> On some hardware, the nCE signal is wired to the ChipSelect associated
->> to bus address of the NAND, so it is automatically driven during the
->> memory access and it is not managed by a GPIO.
->>
->> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
->
-> Not really a problem with this patch exactly, but FYI you're only making
-> this optional for the non-DT case. For device tree, this is kinda hard
-> to do, since the current binding suggests we retrieve the GPIOs based on
-> index position, not by name. So if you leave one off...I guess we well
-> just be off-by-1 on the indeces until we hit a non-optional one...which
-> I guess is "CLE".
->
-> If we wanted this to work for DT, we'd need to extend this driver (and
-> binding doc) to support requesting GPIOs by name.
->
+Actually, I was just trying to handle a potential 'double-free' error
+nicely (see the 'if (hynix) return;' statement at the beginning of
+hynix_nand_cleanup(), but I'm not sure this was a good idea.
 
-It works for me with devicetree.
+Let's drop this assignment.
 
-I have the following definition in my DT:
-
-		nand@1,0 {
-			compatible = "gpio-control-nand";
-			reg = <1 0x0 0x01>;
-			#address-cells = <1>;
-			#size-cells = <1>;
-			gpios = <&qe_pio_c 24 1 	// RDY
-				 0			// nCE
-				 &qe_pio_c 26 1		// ALE
-				 &qe_pio_c 25 1		// CLE
-				 0>;			// nwp
-		};
-
-Christophe
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ---
+> Compile tested only
+> 
+>  drivers/mtd/nand/nand_base.c  | 11 +++++++++--
+>  drivers/mtd/nand/nand_hynix.c |  1 -
+>  2 files changed, 9 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index ed49a1d634b0..2adcc8cdedf1 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -3910,11 +3910,16 @@ static void nand_manufacturer_detect(struct nand_chip *chip)
+>   */
+>  static int nand_manufacturer_init(struct nand_chip *chip)
+>  {
+> +	int ret;
+> +
+>  	if (!chip->manufacturer.desc || !chip->manufacturer.desc->ops ||
+>  	    !chip->manufacturer.desc->ops->init)
+>  		return 0;
+>  
+> -	return chip->manufacturer.desc->ops->init(chip);
+> +	ret = chip->manufacturer.desc->ops->init(chip);
+> +	if (ret)
+> +		nand_set_manufacturer_data(chip, NULL);
+> +	return ret;
+>  }
+>  
+>  /*
+> @@ -3927,8 +3932,10 @@ static void nand_manufacturer_cleanup(struct nand_chip *chip)
+>  {
+>  	/* Release manufacturer private data */
+>  	if (chip->manufacturer.desc && chip->manufacturer.desc->ops &&
+> -	    chip->manufacturer.desc->ops->cleanup)
+> +	    chip->manufacturer.desc->ops->cleanup) {
+>  		chip->manufacturer.desc->ops->cleanup(chip);
+> +		nand_set_manufacturer_data(chip, NULL);
+> +	}
+>  }
+>  
+>  /*
+> diff --git a/drivers/mtd/nand/nand_hynix.c b/drivers/mtd/nand/nand_hynix.c
+> index b12dc7325378..54d99f90aa9f 100644
+> --- a/drivers/mtd/nand/nand_hynix.c
+> +++ b/drivers/mtd/nand/nand_hynix.c
+> @@ -598,7 +598,6 @@ static void hynix_nand_cleanup(struct nand_chip *chip)
+>  
+>  	kfree(hynix->read_retry);
+>  	kfree(hynix);
+> -	nand_set_manufacturer_data(chip, NULL);
+>  }
+>  
+>  static int hynix_nand_init(struct nand_chip *chip)
