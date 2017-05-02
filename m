@@ -1,18 +1,19 @@
-Received: from mail-qt0-x22e.google.com ([2607:f8b0:400d:c0d::22e])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d5bwS-0005dr-K5
- for linux-mtd@lists.infradead.org; Tue, 02 May 2017 17:50:30 +0000
-Received: by mail-qt0-x22e.google.com with SMTP id m36so118474899qtb.0
- for <linux-mtd@lists.infradead.org>; Tue, 02 May 2017 10:50:08 -0700 (PDT)
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: linux-mtd@lists.infradead.org
-Cc: boris.brezillon@free-electrons.com, richard@nod.at,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Subject: [PATCH 2/2] mtd: nand: Add Mediatek machine dependency
-Date: Tue,  2 May 2017 14:48:43 -0300
-Message-Id: <20170502174843.6877-3-ezequiel@vanguardiasur.com.ar>
-In-Reply-To: <20170502174843.6877-1-ezequiel@vanguardiasur.com.ar>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1d5cn8-0000NN-So
+ for linux-mtd@lists.infradead.org; Tue, 02 May 2017 18:44:56 +0000
+Date: Tue, 2 May 2017 20:44:33 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: linux-mtd@lists.infradead.org, richard@nod.at
+Subject: Re: [PATCH 1/2] mtd: nand: Add Hisilicon machine dependency
+Message-ID: <20170502204433.7aebb5ca@bbrezillon>
+In-Reply-To: <20170502174843.6877-2-ezequiel@vanguardiasur.com.ar>
 References: <20170502174843.6877-1-ezequiel@vanguardiasur.com.ar>
+ <20170502174843.6877-2-ezequiel@vanguardiasur.com.ar>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Mediatek NAND driver is only needed for a specific
-platform, so avoid cluttering the configuration.
+On Tue,  2 May 2017 14:48:42 -0300
+Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
 
-Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
----
- drivers/mtd/nand/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+> The Hisilicon NAND driver is only needed for a specific
+> platform, so avoid cluttering the configuration.
+>=20
+> Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+> ---
+>  drivers/mtd/nand/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index c3029528063b..04f4a556bc93 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -542,6 +542,7 @@ config MTD_NAND_SUNXI
+> =20
+>  config MTD_NAND_HISI504
+>  	tristate "Support for NAND controller on Hisilicon SoC Hip04"
+> +	depends on ARCH_HISI
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 04f4a556bc93..67e82a64330e 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -556,6 +556,7 @@ config MTD_NAND_QCOM
- 
- config MTD_NAND_MTK
- 	tristate "Support for NAND controller on MTK SoCs"
-+	depends on ARCH_MEDIATEK
- 	depends on HAS_DMA
- 	help
- 	  Enables support for NAND controller on MTK SoCs.
--- 
-2.12.2
+			     ||=C2=A0COMPILE_TEST
+
+so that we can still compile test the driver easily.
+
+Same goes for patch 2.
+
+>  	depends on HAS_DMA
+>  	help
+>  	  Enables support for NAND controller on Hisilicon SoC Hip04.
