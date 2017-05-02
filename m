@@ -1,22 +1,23 @@
-Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
+Received: from mail-pg0-x233.google.com ([2607:f8b0:400e:c05::233])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d5LJp-0001uH-2B
- for linux-mtd@lists.infradead.org; Tue, 02 May 2017 00:05:32 +0000
-Received: by mail-pg0-x243.google.com with SMTP id v1so18196147pgv.3
- for <linux-mtd@lists.infradead.org>; Mon, 01 May 2017 17:05:09 -0700 (PDT)
-From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Simon Baatz <gmbnomis@gmail.com>
-Subject: [PATCH] mtd: nand: orion: don't complain for probe deferral
-Date: Mon,  1 May 2017 17:04:54 -0700
-Message-Id: <20170502000455.13240-5-computersforpeace@gmail.com>
+ id 1d5LaE-0000NF-0U
+ for linux-mtd@lists.infradead.org; Tue, 02 May 2017 00:22:27 +0000
+Received: by mail-pg0-x233.google.com with SMTP id o3so46608882pgn.2
+ for <linux-mtd@lists.infradead.org>; Mon, 01 May 2017 17:22:04 -0700 (PDT)
+MIME-Version: 1.0
 In-Reply-To: <20170502000455.13240-1-computersforpeace@gmail.com>
 References: <20170502000455.13240-1-computersforpeace@gmail.com>
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date: Mon, 1 May 2017 21:22:03 -0300
+Message-ID: <CAAEAJfAvSGz5-B2rLTzr-W-Hmv_m9NSZz_fx9Q-bY_kRc8yaLQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: don't leak buffers when ->scan_bbt() fails
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +27,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Recent patches to this driver changed the error handling for missing
-clocks. Now we'll print an error if the clock causes us to defer
-probing. Let's not do that.
+On 1 May 2017 at 21:04, Brian Norris <computersforpeace@gmail.com> wrote:
+> This bug seems to have been here forever, although we came close to
+> fixing all of them in [1]!
+>
+> [1] 11eaf6df1cce ("mtd: nand: Remove BUG() abuse in nand_scan_tail")
+>
 
-Cc: Simon Baatz <gmbnomis@gmail.com>
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
-Compile tested only
+Well, we came even closer. See [1] for a patch that fixes this by cleaning
+BBT init and release.
 
- drivers/mtd/nand/orion_nand.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Back then Boris suggested on IRC to wait for Peter Pan's BBT, which would
+address this too.
 
-diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
-index f8e463a97b9e..e2bfb37f11df 100644
---- a/drivers/mtd/nand/orion_nand.c
-+++ b/drivers/mtd/nand/orion_nand.c
-@@ -161,7 +161,8 @@ static int __init orion_nand_probe(struct platform_device *pdev)
- 		if (ret == -ENOENT) {
- 			info->clk = NULL;
- 		} else {
--			dev_err(&pdev->dev, "failed to get clock!\n");
-+			if (ret != -EPROBE_DEFER)
-+				dev_err(&pdev->dev, "failed to get clock!\n");
- 			return ret;
- 		}
- 	}
--- 
-2.13.0.rc1.294.g07d810a77f-goog
+It's interesting to note that: (1) the patch never got any formal feedback,
+despite it was a fix; and (2) Peter Pan's work is still under development.
+
+Guess I should have pressed the upstream buttons harder :-)
+
+[1] http://lists.infradead.org/pipermail/linux-mtd/2016-April/066834.html,
+[2] http://lists.infradead.org/pipermail/linux-mtd/2016-April/066835.html
+--=20
+Ezequiel Garc=C3=ADa, VanguardiaSur
+www.vanguardiasur.com.ar
