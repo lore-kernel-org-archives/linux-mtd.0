@@ -1,16 +1,18 @@
-Received: from mail-qt0-x22d.google.com ([2607:f8b0:400d:c0d::22d])
+Received: from mail-qt0-x236.google.com ([2607:f8b0:400d:c0d::236])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d5bwP-0004mT-4J
- for linux-mtd@lists.infradead.org; Tue, 02 May 2017 17:50:26 +0000
-Received: by mail-qt0-x22d.google.com with SMTP id m36so118472937qtb.0
- for <linux-mtd@lists.infradead.org>; Tue, 02 May 2017 10:50:03 -0700 (PDT)
+ id 1d5bwQ-0005PP-Kz
+ for linux-mtd@lists.infradead.org; Tue, 02 May 2017 17:50:28 +0000
+Received: by mail-qt0-x236.google.com with SMTP id m36so118473946qtb.0
+ for <linux-mtd@lists.infradead.org>; Tue, 02 May 2017 10:50:05 -0700 (PDT)
 From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 To: linux-mtd@lists.infradead.org
 Cc: boris.brezillon@free-electrons.com, richard@nod.at,
  Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Subject: [PATCH 0/2] Add NAND driver mach dependency constraint
-Date: Tue,  2 May 2017 14:48:41 -0300
-Message-Id: <20170502174843.6877-1-ezequiel@vanguardiasur.com.ar>
+Subject: [PATCH 1/2] mtd: nand: Add Hisilicon machine dependency
+Date: Tue,  2 May 2017 14:48:42 -0300
+Message-Id: <20170502174843.6877-2-ezequiel@vanguardiasur.com.ar>
+In-Reply-To: <20170502174843.6877-1-ezequiel@vanguardiasur.com.ar>
+References: <20170502174843.6877-1-ezequiel@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,15 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Just two tiny and silly patches I came across while doing
-other things and testing with tiny_defconfig.
+The Hisilicon NAND driver is only needed for a specific
+platform, so avoid cluttering the configuration.
 
-Ezequiel Garcia (2):
-  mtd: nand: Add Hisilicon machine dependency
-  mtd: nand: Add Mediatek machine dependency
+Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+---
+ drivers/mtd/nand/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
- drivers/mtd/nand/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
-
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index c3029528063b..04f4a556bc93 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -542,6 +542,7 @@ config MTD_NAND_SUNXI
+ 
+ config MTD_NAND_HISI504
+ 	tristate "Support for NAND controller on Hisilicon SoC Hip04"
++	depends on ARCH_HISI
+ 	depends on HAS_DMA
+ 	help
+ 	  Enables support for NAND controller on Hisilicon SoC Hip04.
 -- 
 2.12.2
