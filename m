@@ -1,21 +1,28 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1d5TkO-0005vh-9E
- for linux-mtd@lists.infradead.org; Tue, 02 May 2017 09:05:29 +0000
-Date: Tue, 2 May 2017 11:04:56 +0200
+Date: Tue, 2 May 2017 11:17:58 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, Icenowy Zheng
- <icenowy@aosc.xyz>, Valdis.Kletnieks@vt.edu, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 05/15] mtd: nand: add manufacturer specific
- initialization/detection steps
-Message-ID: <20170502110456.2b545823@bbrezillon>
-In-Reply-To: <20170501210246.GA140640@google.com>
-References: <1483448495-31607-1-git-send-email-boris.brezillon@free-electrons.com>
- <1483448495-31607-6-git-send-email-boris.brezillon@free-electrons.com>
- <20170501210246.GA140640@google.com>
+To: Han Xu <xhnjupt@gmail.com>
+Cc: Stefan Agner <stefan@agner.ch>, Marek Vasut <marek.vasut@gmail.com>,
+ mark.rutland@arm.com, Fabio Estevam <fabio.estevam@freescale.com>,
+ devicetree@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Sascha
+ Hauer <kernel@pengutronix.de>, Han Xu <han.xu@nxp.com>, Shawn Guo
+ <shawnguo@kernel.org>, Cyrille Pitchen <cyrille.pitchen@atmel.com>, Brian
+ Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org,
+ LW@karo-electronics.de
+Subject: Re: [PATCH 2/5] mtd: nand: gpmi: add i.MX 7 SoC support
+Message-ID: <20170502111758.53e9a959@bbrezillon>
+In-Reply-To: <CA+EcR20FCPSec+ihTMA=SGwogd7p5tsnECCp3CR-Nv6fUciK4g@mail.gmail.com>
+References: <20170421010755.18025-1-stefan@agner.ch>
+ <20170421010755.18025-3-stefan@agner.ch>
+ <af3fe671-c5fb-d3cf-c891-e6b7c973baa1@gmail.com>
+ <5cf26d2b020392c875464c7504a9fb5b@agner.ch>
+ <8377dadc-043f-5932-cb13-3367db38a6dd@gmail.com>
+ <494a7bc044457240a302d92b3a50b8e5@agner.ch>
+ <57336d7e-7b48-8855-9e87-3eb370facd05@gmail.com>
+ <a9cdc47795433e7b152dcdd123f9bd63@agner.ch>
+ <CA+EcR20FCPSec+ihTMA=SGwogd7p5tsnECCp3CR-Nv6fUciK4g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,44 +35,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 1 May 2017 14:02:46 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
+Hi Han,
 
-> Hi,
-> 
-> On Tue, Jan 03, 2017 at 02:01:25PM +0100, Boris Brezillon wrote:
-> > A lot of NANDs are implementing generic features in a non-generic way,
-> > or are providing advanced auto-detection logic where the NAND ID bytes
-> > meaning changes with the NAND generation.
-> > 
-> > Providing this vendor specific initialization step will allow us to get
-> > rid of the full ids in the nand_ids table or all the vendor specific
-> > cases added over the time in the generic NAND ID decoding logic.
-> > 
-> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > ---
-> >  drivers/mtd/nand/nand_base.c | 67 +++++++++++++++++++++++++++++++++++---------
-> >  include/linux/mtd/nand.h     | 35 +++++++++++++++++++++++
-> >  2 files changed, 89 insertions(+), 13 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> > index efb3ade568d8..8f80faa57984 100644
-> > --- a/drivers/mtd/nand/nand_base.c
-> > +++ b/drivers/mtd/nand/nand_base.c  
-> 
-> ...
-> 
-> > @@ -4163,6 +4196,10 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
-> >  	if (mtd->writesize > 512 && chip->cmdfunc == nand_command)
-> >  		chip->cmdfunc = nand_command_lp;
-> >  
-> > +	ret = nand_manufacturer_init(chip);
-> > +	if (ret)
-> > +		return ret;
-> > +  
-> 
-> AFAICT, you're leaking anything that should be cleaned up in the
-> ->cleanup() hook, for any error case after this. Not absolutely critical  
-> to fix immediately, but I'd expect we should fix this in the 4.12 cycle.
+On Fri, 21 Apr 2017 13:29:16 -0500
+Han Xu <xhnjupt@gmail.com> wrote:
 
-Yep, already acked the patch. Thanks for the fix.
+> >>  
+> >>>>> But then, adding the type would only require 2-3 lines of change if I
+> >>>>> add it to the GPMI_IS_MX6 macro...  
+> >>>>
+> >>>> Then at least add a comment because using type = IMX6SX right under
+> >>>> gpmi_data_mx7d can trigger some head-scratching. And put my R-B on V2.  
+> >>>
+> >>> FWIW, I mentioned it in the commit message.
+> >>>
+> >>> I think rather then adding a comment it is cleaner to just add IS_IMX7D
+> >>> and add it to the GPMI_IS_MX6 macro. That does not need a comment since
+> >>> it implicitly says we have a i.MX 7 but treat it like i.MX 6 and it is a
+> >>> rather small change. Does that sound acceptable?  
+> >>
+> >> Sure, that's even better, thanks.
+> >>
+> >> btw isn't there some single-core mx7 (mx7s ?) , maybe we should just go
+> >> with mx7 (without the d suffix). I dunno if it has GPMI NAND though, so
+> >> maybe mx7d is the right thing to do here ...
+> >>  
+> >
+> > There is a Solo version yes, and it has GPMI NAND too. However, almost
+> > all i.MX 7 IPs have been named imx7d by NXP for some reason (including
+> > compatible strings, see grep -r -e imx7 Documentation/), so I thought I
+> > stay consistent here...  
+> 
+> Hi Guys,
+> 
+> Yes, there should be a i.MX7 Solo version with one core fused out. IMO, can
+> we use QUIRK to distinguish them rather than SoC name. I know I also sent
+> some patch set with SoC Name but I prefer to use QUIRK now.
+
+Not sure what this means. Are you okay with Stefan's v2?
+
+Regards,
+
+Boris
