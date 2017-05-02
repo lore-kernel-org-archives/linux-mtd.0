@@ -1,15 +1,17 @@
-Received: from mail.base45.de ([2001:67c:2050:310::a:2])
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d5UPe-0000Sj-Ig
- for linux-mtd@lists.infradead.org; Tue, 02 May 2017 09:48:08 +0000
-From: Alexander Couzens <lynxis@fe80.eu>
-To: linux-mtd@lists.infradead.org
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, Alexander Couzens <lynxis@fe80.eu>
-Subject: [PATCH] mtd: nand: davinci: set ECC algorithm explicitly for HW based
- ECC
-Date: Tue,  2 May 2017 11:47:36 +0200
-Message-Id: <20170502094736.9671-1-lynxis@fe80.eu>
+ id 1d5USw-0003DN-BA
+ for linux-mtd@lists.infradead.org; Tue, 02 May 2017 09:51:31 +0000
+Received: by mail-wm0-x243.google.com with SMTP id y10so2926316wmh.0
+ for <linux-mtd@lists.infradead.org>; Tue, 02 May 2017 02:51:09 -0700 (PDT)
+MIME-Version: 1.0
+From: chrysophoron kit <chrysophoronkit@gmail.com>
+Date: Tue, 2 May 2017 11:51:07 +0200
+Message-ID: <CAJo3e9cU50D7GDBYSCYRVYo+RrwvP+JvAZh9qQ=bcFgKjeYu7Q@mail.gmail.com>
+Subject: [MTD] how to retrieve all patches related MTD bitflip_threshold from
+ one old version to new one
+To: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,29 +21,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Alexander Couzens <lynxis@fe80.eu>
----
- drivers/mtd/nand/davinci_nand.c | 3 +++
- 1 file changed, 3 insertions(+)
+Hello every MTD export
 
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index 27fa8b87cd5f..f658948ec7e3 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -760,11 +760,14 @@ static int nand_davinci_probe(struct platform_device *pdev)
- 			info->chip.ecc.hwctl = nand_davinci_hwctl_4bit;
- 			info->chip.ecc.bytes = 10;
- 			info->chip.ecc.options = NAND_ECC_GENERIC_ERASED_CHECK;
-+			info->chip.ecc.algo = NAND_ECC_BCH;
- 		} else {
-+			/* 1bit ecc hamming */
- 			info->chip.ecc.calculate = nand_davinci_calculate_1bit;
- 			info->chip.ecc.correct = nand_davinci_correct_1bit;
- 			info->chip.ecc.hwctl = nand_davinci_hwctl_1bit;
- 			info->chip.ecc.bytes = 3;
-+			info->chip.ecc.algo = NAND_ECC_HAMMING;
- 		}
- 		info->chip.ecc.size = 512;
- 		info->chip.ecc.strength = pdata->ecc_bits;
--- 
-2.12.2
+who knows how to retrieve all patches related MTD be applied from one
+old version kernel
+to new one? for example, we are now using 2.6.39, but we don't want to
+update kernel
+vertion to v4.x, we only want to update and install all MTD patches
+related MTD bitflip_threshold.
+becase we now continue using our old drivers based on 2.6.39, but
+found one issue is related to
+ECC bitflip_threshold, which 2.6.39 doesn't involve it. It is
+impossible now to let company update
+kernel version.
+who can tell me how to retrieve all patches related bitflip_threshold,
+and doesn't update kernel verson.
+Thanks very much in advance.
