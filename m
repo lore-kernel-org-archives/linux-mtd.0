@@ -1,18 +1,18 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1d5Sfy-00062N-Ny
- for linux-mtd@lists.infradead.org; Tue, 02 May 2017 07:56:52 +0000
-Date: Tue, 2 May 2017 09:56:18 +0200
+ by merlin.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1d5Sgm-0004aJ-LT
+ for linux-mtd@lists.infradead.org; Tue, 02 May 2017 07:57:42 +0000
+Date: Tue, 2 May 2017 09:57:06 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Brian Norris <computersforpeace@gmail.com>
 Cc: <linux-mtd@lists.infradead.org>, Richard Weinberger <richard@nod.at>,
  Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Simon Baatz <gmbnomis@gmail.com>
-Subject: Re: [PATCH] mtd: nand: orion: don't complain for probe deferral
-Message-ID: <20170502095618.2be1e0d8@bbrezillon>
-In-Reply-To: <20170502000455.13240-5-computersforpeace@gmail.com>
+ <cyrille.pitchen@wedev4u.fr>, Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH] mtd: nand: samsung: warn about un-parseable ECC info
+Message-ID: <20170502095706.44f037d4@bbrezillon>
+In-Reply-To: <20170502000455.13240-6-computersforpeace@gmail.com>
 References: <20170502000455.13240-1-computersforpeace@gmail.com>
- <20170502000455.13240-5-computersforpeace@gmail.com>
+ <20170502000455.13240-6-computersforpeace@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,14 +25,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon,  1 May 2017 17:04:54 -0700
+On Mon,  1 May 2017 17:04:55 -0700
 Brian Norris <computersforpeace@gmail.com> wrote:
 
-> Recent patches to this driver changed the error handling for missing
-> clocks. Now we'll print an error if the clock causes us to defer
-> probing. Let's not do that.
+> We don't handle cases larger than 7. We probably shouldn't pretend we
+> know the ECC step size in this case, and it's probably also good to
+> WARN() like we do in many other similar cases.
 > 
-> Cc: Simon Baatz <gmbnomis@gmail.com>
+> Cc: Hans de Goede <hdegoede@redhat.com>
+> Fixes: 8fc82d456e40 ("mtd: nand: samsung: Retrieve ECC requirements from extended ID")
 > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
 Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
@@ -40,20 +41,20 @@ Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 > ---
 > Compile tested only
 > 
->  drivers/mtd/nand/orion_nand.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  drivers/mtd/nand/nand_samsung.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
-> index f8e463a97b9e..e2bfb37f11df 100644
-> --- a/drivers/mtd/nand/orion_nand.c
-> +++ b/drivers/mtd/nand/orion_nand.c
-> @@ -161,7 +161,8 @@ static int __init orion_nand_probe(struct platform_device *pdev)
->  		if (ret == -ENOENT) {
->  			info->clk = NULL;
->  		} else {
-> -			dev_err(&pdev->dev, "failed to get clock!\n");
-> +			if (ret != -EPROBE_DEFER)
-> +				dev_err(&pdev->dev, "failed to get clock!\n");
->  			return ret;
+> diff --git a/drivers/mtd/nand/nand_samsung.c b/drivers/mtd/nand/nand_samsung.c
+> index 9cfc4035a420..1e0755997762 100644
+> --- a/drivers/mtd/nand/nand_samsung.c
+> +++ b/drivers/mtd/nand/nand_samsung.c
+> @@ -84,6 +84,9 @@ static void samsung_nand_decode_id(struct nand_chip *chip)
+>  			case 7:
+>  				chip->ecc_strength_ds = 60;
+>  				break;
+> +			default:
+> +				WARN(1, "Could not decode ECC info");
+> +				chip->ecc_step_ds = 0;
+>  			}
 >  		}
->  	}
+>  	} else {
