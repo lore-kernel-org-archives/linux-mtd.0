@@ -1,15 +1,15 @@
 Received: from mail.base45.de ([2001:67c:2050:310::a:2])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d5Swc-0005Ki-5O
+ id 1d5Swc-0005LA-4S
  for linux-mtd@lists.infradead.org; Tue, 02 May 2017 08:14:04 +0000
 From: Alexander Couzens <lynxis@fe80.eu>
 To: linux-mtd@lists.infradead.org
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>, Alexander Couzens <lynxis@fe80.eu>
-Subject: [PATCH 2/3][v2] nand_base: use nand_ooblayout_lp_hamming_ops for 1bit
- hamming as default
-Date: Tue,  2 May 2017 10:13:22 +0200
-Message-Id: <20170502081323.3138-3-lynxis@fe80.eu>
+Subject: [PATCH 3/3][v3] mtd: nand: davinci: set ECC algorithm explicitly for
+ HW based ECC
+Date: Tue,  2 May 2017 10:13:23 +0200
+Message-Id: <20170502081323.3138-4-lynxis@fe80.eu>
 In-Reply-To: <20170502081323.3138-1-lynxis@fe80.eu>
 References: <20170313074641.28b383e7@bbrezillon>
  <20170502081323.3138-1-lynxis@fe80.eu>
@@ -24,31 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-commit 41b207a70d3a ("mtd: nand: implement the default mtd_ooblayout_ops")
-uses a different ooblayout for platforms which doesn't set the
-layout by itself. Use for 1bit hamming the old layout.
+Required to set the ooblayout based on the algorithm.
 
 Signed-off-by: Alexander Couzens <lynxis@fe80.eu>
 ---
- drivers/mtd/nand/nand_base.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/davinci_nand.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index daf3df157885..6a9e99377181 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -4724,7 +4724,11 @@ int nand_scan_tail(struct mtd_info *mtd)
- 			break;
- 		case 64:
- 		case 128:
--			mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
-+			if (ecc->algo == NAND_ECC_HAMMING && ecc->strength == 1)
-+				mtd_set_ooblayout(mtd,
-+						&nand_ooblayout_lp_hamming_ops);
-+			else
-+				mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
- 			break;
- 		default:
- 			WARN(1, "No oob scheme defined for oobsize %d\n",
+diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+index 27fa8b87cd5f..9e5167496ce1 100644
+--- a/drivers/mtd/nand/davinci_nand.c
++++ b/drivers/mtd/nand/davinci_nand.c
+@@ -760,11 +760,13 @@ static int nand_davinci_probe(struct platform_device *pdev)
+ 			info->chip.ecc.hwctl = nand_davinci_hwctl_4bit;
+ 			info->chip.ecc.bytes = 10;
+ 			info->chip.ecc.options = NAND_ECC_GENERIC_ERASED_CHECK;
+-		} else {
++			info->chip.ecc.algo = NAND_ECC_BCH;
++		} else { /* 1bit ecc hamming */
+ 			info->chip.ecc.calculate = nand_davinci_calculate_1bit;
+ 			info->chip.ecc.correct = nand_davinci_correct_1bit;
+ 			info->chip.ecc.hwctl = nand_davinci_hwctl_1bit;
+ 			info->chip.ecc.bytes = 3;
++			info->chip.ecc.algo = NAND_ECC_HAMMING;
+ 		}
+ 		info->chip.ecc.size = 512;
+ 		info->chip.ecc.strength = pdata->ecc_bits;
 -- 
 2.12.2
