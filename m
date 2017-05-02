@@ -1,17 +1,19 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d5USw-0003DN-BA
- for linux-mtd@lists.infradead.org; Tue, 02 May 2017 09:51:31 +0000
-Received: by mail-wm0-x243.google.com with SMTP id y10so2926316wmh.0
- for <linux-mtd@lists.infradead.org>; Tue, 02 May 2017 02:51:09 -0700 (PDT)
-MIME-Version: 1.0
-From: chrysophoron kit <chrysophoronkit@gmail.com>
-Date: Tue, 2 May 2017 11:51:07 +0200
-Message-ID: <CAJo3e9cU50D7GDBYSCYRVYo+RrwvP+JvAZh9qQ=bcFgKjeYu7Q@mail.gmail.com>
-Subject: [MTD] how to retrieve all patches related MTD bitflip_threshold from
- one old version to new one
-To: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset=UTF-8
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1d5V3o-0004aI-My
+ for linux-mtd@lists.infradead.org; Tue, 02 May 2017 10:29:38 +0000
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Harvey Hunt <harveyhuntnexus@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: [PATCH] mtd: nand: jz4780: Use mtd_set_ooblayout() to set the
+ ooblayout
+Date: Tue,  2 May 2017 12:29:13 +0200
+Message-Id: <1493720953-8471-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,19 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello every MTD export
+The mtd_set_ooblayout() accesor has been added to hide internals of
+mtd_info and ease future refactoring. Call mtd_set_ooblayout() instead of
+directly accessing mtd->ooblayout.
 
-who knows how to retrieve all patches related MTD be applied from one
-old version kernel
-to new one? for example, we are now using 2.6.39, but we don't want to
-update kernel
-vertion to v4.x, we only want to update and install all MTD patches
-related MTD bitflip_threshold.
-becase we now continue using our old drivers based on 2.6.39, but
-found one issue is related to
-ECC bitflip_threshold, which 2.6.39 doesn't involve it. It is
-impossible now to let company update
-kernel version.
-who can tell me how to retrieve all patches related bitflip_threshold,
-and doesn't update kernel verson.
-Thanks very much in advance.
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/nand/jz4780_nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/jz4780_nand.c b/drivers/mtd/nand/jz4780_nand.c
+index a39bb70175ee..8bc835f71b26 100644
+--- a/drivers/mtd/nand/jz4780_nand.c
++++ b/drivers/mtd/nand/jz4780_nand.c
+@@ -205,7 +205,7 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
+ 		return -EINVAL;
+ 	}
+ 
+-	mtd->ooblayout = &nand_ooblayout_lp_ops;
++	mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
+ 
+ 	return 0;
+ }
+-- 
+2.7.4
