@@ -1,23 +1,20 @@
-Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
+Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d5LGw-0000C6-Lk
- for linux-mtd@lists.infradead.org; Tue, 02 May 2017 00:02:32 +0000
-Received: by mail-pg0-x243.google.com with SMTP id s62so6545639pgc.0
- for <linux-mtd@lists.infradead.org>; Mon, 01 May 2017 17:02:08 -0700 (PDT)
-Date: Mon, 1 May 2017 17:02:05 -0700
+ id 1d5LJm-0001OV-4m
+ for linux-mtd@lists.infradead.org; Tue, 02 May 2017 00:05:27 +0000
+Received: by mail-pf0-x243.google.com with SMTP id g23so29729071pfj.1
+ for <linux-mtd@lists.infradead.org>; Mon, 01 May 2017 17:05:05 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Richard Weinberger <richard@nod.at>, Marek Vasut <marex@denx.de>,
+To: <linux-mtd@lists.infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PULL v3] mtd: nand: changes for 4.12
-Message-ID: <20170502000205.GA12811@google.com>
-References: <20170430103024.49ad3ebc@bbrezillon>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170430103024.49ad3ebc@bbrezillon>
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Subject: [PATCH] mtd: nand: don't leak buffers when ->scan_bbt() fails
+Date: Mon,  1 May 2017 17:04:50 -0700
+Message-Id: <20170502000455.13240-1-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,50 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+This bug seems to have been here forever, although we came close to
+fixing all of them in [1]!
 
-On Sun, Apr 30, 2017 at 10:30:24AM +0200, Boris Brezillon wrote:
-> Hi Brian,
-> 
-> Here is a v3 fixing the things you pointed in v2.
+[1] 11eaf6df1cce ("mtd: nand: Remove BUG() abuse in nand_scan_tail")
 
-Great, thanks.
+Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+The goto isn't *really* necessary, but I thought it'd be more consistent.
 
-> As you can see, the PR is pretty big compared to 4.11, and it's mainly
-> due to the Denali driver rework/cleanup (which I'd like to thank
-> Masahiro for), the addition of the per-vendor initialization
-> infrastructure and the complete rewrite of the Atmel driver.
-> 
-> The rest of the commits are just simple fixes/improvements to existing
-> drivers or to the core.
-> 
-> Let me know if you find new problems in this version.
-> 
-> Thanks,
-> 
-> Boris
-> 
-> Changes since v2:
-> - Address coccicheck complaints in the new atmel driver (reported by
->   Brian Norris)
-> 
-> Changes since v1:
-> - Fix a bug in the new Atmel NAND driver (reported by Alexandre
->   Belloni)
-> 
-> The following changes since commit c1ae3cfa0e89fa1a7ecc4c99031f5e9ae99d9201:
-> 
->   Linux 4.11-rc1 (2017-03-05 12:59:56 -0800)
-> 
-> are available in the git repository at:
-> 
->   git@github.com:linux-nand/linux.git tags/nand/for-4.12
+Compile tested only
 
-Pulled. There are a few small-ish problems (some commented, some not
-yet). I plan to send some fixup patches for review soon.
+ drivers/mtd/nand/nand_base.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-> for you to fetch changes up to 9d2ee0a60b8bd9bef2a0082c533736d6a7b39873:
-> 
->   mtd: nand: brcmnand: Check flash #WP pin status before nand erase/program (2017-04-25 14:18:42 +0200)
-
-Brian
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 978242b1213f..e4919f9dece4 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -4794,7 +4794,11 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		return 0;
+ 
+ 	/* Build bad block table */
+-	return chip->scan_bbt(mtd);
++	ret = chip->scan_bbt(mtd);
++	if (ret)
++		goto err_free;
++	return 0;
++
+ err_free:
+ 	if (nbuf) {
+ 		kfree(nbuf->databuf);
+-- 
+2.13.0.rc1.294.g07d810a77f-goog
