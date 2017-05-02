@@ -1,24 +1,28 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1d5WnR-0001K5-GB
- for linux-mtd@lists.infradead.org; Tue, 02 May 2017 12:20:51 +0000
-Date: Tue, 2 May 2017 14:20:16 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-Cc: Pavel Machek <pavel@ucw.cz>, linux-mtd <linux-mtd@lists.infradead.org>,
- Thibaud Cornic <thibaud_cornic@sigmadesigns.com>, Mason <slash.tmp@free.fr>
-Subject: Re: [PATCH] tango_nand.c: fix ecc.stats_corrected in empty flash case
-Message-ID: <20170502142016.024416d2@bbrezillon>
-In-Reply-To: <dfdc3280-8de9-e215-6bc2-9863c7afd9c7@sigmadesigns.com>
-References: <20170419121332.GA26979@amd> <20170419231804.5a04ed69@bbrezillon>
- <20170421100813.GA4332@amd> <20170421133721.GA15332@amd>
- <20170421154903.2782cd06@bbrezillon> <20170422104033.GA14508@amd>
- <53204f36-9662-e8a0-c431-09fb68276ab6@sigmadesigns.com>
- <20170502114228.299fc862@bbrezillon>
- <dfdc3280-8de9-e215-6bc2-9863c7afd9c7@sigmadesigns.com>
+Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d5aSw-0007Wz-Uo
+ for linux-mtd@lists.infradead.org; Tue, 02 May 2017 16:16:02 +0000
+Received: by mail-pg0-x243.google.com with SMTP id i63so3743131pgd.2
+ for <linux-mtd@lists.infradead.org>; Tue, 02 May 2017 09:15:34 -0700 (PDT)
+Date: Tue, 2 May 2017 09:15:30 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Christophe LEROY <christophe.leroy@c-s.fr>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: nand: gpio: make nCE GPIO optional
+Message-ID: <20170502161530.GA26931@google.com>
+References: <20170210140110.87903682E7@localhost.localdomain>
+ <20170501214627.GB140640@google.com>
+ <e35093cc-f5f0-f561-10cb-40d5a141e819@c-s.fr>
+ <20170502110334.33f1a3b8@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20170502110334.33f1a3b8@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,155 +32,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2 May 2017 13:52:30 +0200
-Marc Gonzalez <marc_gonzalez@sigmadesigns.com> wrote:
+Hi Christophe, Boris,
 
-> On 02/05/2017 11:42, Boris Brezillon wrote:
+On Tue, May 02, 2017 at 11:03:34AM +0200, Boris Brezillon wrote:
+> On Tue, 2 May 2017 07:47:40 +0200
+> Christophe LEROY <christophe.leroy@c-s.fr> wrote:
 > 
-> > Hi Marc,
+> > Le 01/05/2017 à 23:46, Brian Norris a écrit :
+> > > On Fri, Feb 10, 2017 at 03:01:10PM +0100, Christophe Leroy wrote:  
+> > >> On some hardware, the nCE signal is wired to the ChipSelect associated
+> > >> to bus address of the NAND, so it is automatically driven during the
+> > >> memory access and it is not managed by a GPIO.
+> > >>
+> > >> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>  
+> > >
+> > > Not really a problem with this patch exactly, but FYI you're only making
+> > > this optional for the non-DT case. For device tree, this is kinda hard
+> > > to do, since the current binding suggests we retrieve the GPIOs based on
+> > > index position, not by name. So if you leave one off...I guess we well
+> > > just be off-by-1 on the indeces until we hit a non-optional one...which
+> > > I guess is "CLE".
+> > >
+> > > If we wanted this to work for DT, we'd need to extend this driver (and
+> > > binding doc) to support requesting GPIOs by name.
+> > >  
 > > 
-> > On Mon, 24 Apr 2017 10:58:47 +0200
-> > Marc Gonzalez <marc_gonzalez@sigmadesigns.com> wrote:
-> >   
-> >> [ Trimming CC list ]
-> >>
-> >> On 22/04/2017 12:40, Pavel Machek wrote:
-> >>  
-> >>> Fix ecc.stats_corrected in empty flash case.
-> >>>
-> >>> Signed-off-by: Pavel Machek <pavel@denx.de>
-> >>>
-> >>> ---
-> >>>
-> >>> This was suggested by Boris Brezillon in another context. Not tested;
-> >>> I don't have the hardware.
-> >>>
-> >>> diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/tango_nand.c
-> >>> index 4a5e948..db4bff4 100644
-> >>> --- a/drivers/mtd/nand/tango_nand.c
-> >>> +++ b/drivers/mtd/nand/tango_nand.c
-> >>> @@ -193,6 +193,8 @@ static int check_erased_page(struct nand_chip *chip, u8 *buf)
-> >>>  						  chip->ecc.strength);
-> >>>  		if (res < 0)
-> >>>  			mtd->ecc_stats.failed++;
-> >>> +		else
-> >>> +			mtd->ecc_stats.corrected += res;
-> >>>  
-> >>>  		bitflips = max(res, bitflips);
-> >>>  		buf += pkt_size;
-> >>>     
-> >>
-> >> Hello Pavel,
-> >>
-> >> You may have noticed that ecc_stats.corrected is not updated in
-> >> decode_error_report() which is the main code path, i.e. the path
-> >> that will succeed 99.99% of the time (HW read).
-> >>
-> >> It turns out that the HW does not report the number of errors
-> >> corrected in a page... Instead it reports two values:
-> >> 1) U = number of errors corrected in the first packet/step
-> >> 2) V = max number of errors corrected in other packets/steps
-> >>
-> >> Thus, it is not possible to determine the actual number of errors
-> >> corrected in a page (unless V is 0). Otherwise, we just have an
-> >> interval; let n be the number of packets/steps:
-> >>
-> >> U + V <= corrected errors count <= U + (n-1)*V
-> >>
-> >> In my opinion, it is better to provide no information than to
-> >> provide incorrect information. Therefore, I did not update
-> >> ecc_stats.corrected in decode_error_report().  
+> > It works for me with devicetree.
 > > 
-> > Hm, not sure I agree with that. The situation is far from ideal, but
-> > some userspace tools query the number of corrected bits before and
-> > after doing a read operation to report the number of bitflips that
-> > have been correcte. Letting users think there were no bitflips at all is
-> > not a good thing IMO.  
-> 
-> I (still) find the API of ecc->read_page somewhat confusing ;-)
-> Let me try to work through the assumptions, as I remember.
-> 
-> 1) If the driver was not able to read the page,
-> then we return an error code < 0
-> 
-> 2) If the driver was able to read the page, and there were
-> no bitflips, then we return 0
-> 
-> 3) If the driver was able to read the page, and there were
-> less than 'strength' bitflips in each step, then we return
-> the *max* of all bitflips across all steps
-> 
-> 4) If the driver was able to read the page, but there was
-> at least one step with too many bitflips, then we are
-> expected to increment mtd->ecc_stats.failed, and return
-> the max of all bitflips across successful steps
-
-Yep, you got it right.
-
-> 
-> AFAICT, the NAND framework does not use or update ecc_stats.corrected?
-
-Nope, but this information is exposed to userspace, and some tools
-(like nanddump) use it to calculate the number of bitflips found in a
-page. It's definitely not reliable, because someone could have read
-different portion of the MTD device in parallel, thus invalidating the
-stats initially retrieved by nanddump, but it works as long as no-one
-accesses the MTD device while nandump is used.
-
-> What about the MTD layer?
-
-Not sure what you mean by the MTD layer? The MTD layer itself does not
-use this information, but it exposes it to its users, so MTD users
-might use this information.
-
-> 
-> 
-> >> One could argue that updating ecc_stats.corrected in
-> >> check_erased_page() sets the correct value, since the error
-> >> counts are computed in software for each step. But updating
-> >> the value here is IMO pointless if we can't do it in the main
-> >> code path.  
+> > I have the following definition in my DT:
 > > 
-> > Well, it's not pointless if you want to inform the user that some
-> > bitflips were present on the NAND. Yes, the numbers you report
-> > won't be accurate in your case, but at least the user can tell when
-> > bitflips were discovered.  
+> > 		nand@1,0 {
+> > 			compatible = "gpio-control-nand";
+> > 			reg = <1 0x0 0x01>;
+> > 			#address-cells = <1>;
+> > 			#size-cells = <1>;
+> > 			gpios = <&qe_pio_c 24 1 	// RDY
+> > 				 0			// nCE
+> > 				 &qe_pio_c 26 1		// ALE
+> > 				 &qe_pio_c 25 1		// CLE
+> > 				 0>;			// nwp  
+> > 		};
+> > 
 > 
-> I do report some bitflips value: it's the return value from
-> ecc->read_page -- which is the max bitflips per step. But perhaps
-> that value is not available to user-space?
+> Yep, it's perfectly fine to have 'empty' gpio entries (entries with
+> phandle set to 0/NULL), we're using this trick in the atmel_nand
+> driver as well.
 
-It's indeed not exposed to userspace. It's only used by the MTD core to
-decide when to return -EUCLEAN (see here [1]).
+I wasn't aware. In that case, you need to change the binding doc to
+note that nCE is optional now.
 
-> In other words,
-> the NAND and MTD layers do not forward it to user-space, as this
-> is left as a responsibility of individual drivers?
-
-I don't know the exact reason, but I guess no one needed it so far.
-IOW, everyone was happy with the existing corrected/failed stats.
-
-> 
-> > Note that ideally, we should have per-page (or per-block) max-bitflips
-> > information (where max-bitflips is the number returned by
-> > ecc->read_page()), because counting the total number of corrected bits
-> > is certainly not helping when it comes to checking how reliable a NAND
-> > page/eraseblock is.  
-> 
-> That would be quite large an array for a 1 TB NAND chip?
-
-The page/eraseblock size tend to grow with total chip size, but I
-agree, keeping max-bitflips on a per-page basis has a
-non-negligible cost.
-
-Anyway, I think we went too far. I was just arguing that never updating
-stats->corrected just because you don't know the exact number of
-bitflips is not necessarily a better idea than updating corrected with
-a potentially invalid number of bitflips. At least the 2nd approach
-shows that bitflips were present on the media.
-
-Regards,
-
-Boris
-
-[1]http://lxr.free-electrons.com/source/drivers/mtd/mtdcore.c#L1043
+Brian
