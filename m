@@ -1,21 +1,29 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1d5S3l-0002wp-CS
- for linux-mtd@lists.infradead.org; Tue, 02 May 2017 07:17:23 +0000
-Date: Tue, 2 May 2017 09:17:00 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: <linux-mtd@lists.infradead.org>, Richard Weinberger <richard@nod.at>,
- Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Ezequiel Garcia
- <ezequiel@vanguardiasur.com.ar>
-Subject: Re: [PATCH] mtd: nand: don't leak buffers when ->scan_bbt() fails
-Message-ID: <20170502091700.3798404a@bbrezillon>
-In-Reply-To: <20170502000455.13240-1-computersforpeace@gmail.com>
-References: <20170502000455.13240-1-computersforpeace@gmail.com>
+Received: from mail-io0-x244.google.com ([2607:f8b0:4001:c06::244])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d5S6L-0003Qg-MQ
+ for linux-mtd@lists.infradead.org; Tue, 02 May 2017 07:20:07 +0000
+Received: by mail-io0-x244.google.com with SMTP id h41so27233613ioi.1
+ for <linux-mtd@lists.infradead.org>; Tue, 02 May 2017 00:19:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <dd90ac49-574b-54b9-902a-ba5948134ba8@nod.at>
+References: <20170411095055.26328-1-o.rempel@pengutronix.de>
+ <20170411095055.26328-4-o.rempel@pengutronix.de>
+ <5d7d0f21-d87f-0835-c2f6-b6c9e07f73a8@nod.at>
+ <20170412054828.GA20561@infradead.org>
+ <20170412071551.i36yj3lzilgtntdy@pengutronix.de>
+ <803a8cc8-d2d1-dddf-2e07-621b1484218a@nod.at>
+ <dd90ac49-574b-54b9-902a-ba5948134ba8@nod.at>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Tue, 2 May 2017 10:19:39 +0300
+Message-ID: <CAOQ4uxjqsm2h6N9qdOO2BxwOnnkY1KQCmDa6Ba8xPC0JGCVUiw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] fs: ubifs: set s_uuid in super block
+To: Richard Weinberger <richard@nod.at>
+Cc: Oleksij Rempel <ore@pengutronix.de>, Christoph Hellwig <hch@infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Adrian Hunter <adrian.hunter@intel.com>,
+ linux-mtd@lists.infradead.org, linux-kernel <linux-kernel@vger.kernel.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ Steffen Trumtrar <s.trumtrar@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,41 +33,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon,  1 May 2017 17:04:50 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
+On Fri, Apr 28, 2017 at 1:03 AM, Richard Weinberger <richard@nod.at> wrote:
+> Am 24.04.2017 um 17:47 schrieb Richard Weinberger:
+>>> So, if some flag should be implemented, who should do it? :)
+>>
+>> I'll not do it for you. ;)
+>
+> Please also see http://marc.info/?l=linux-fsdevel&m=149327990608749&w=2
+>
 
-> This bug seems to have been here forever, although we came close to
-> fixing all of them in [1]!
-> 
-> [1] 11eaf6df1cce ("mtd: nand: Remove BUG() abuse in nand_scan_tail")
-> 
-> Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Richard,
 
-Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Considering the facts that:
+1. I proposed the said flag and Al didn't think it was needed [1]
+2. ext4 already sets s_uuid without any flag for a long time now
+3. A similar patch was queued for v4.12 to set s_uuid for xfs without any flag
 
-> ---
-> The goto isn't *really* necessary, but I thought it'd be more consistent.
-> 
-> Compile tested only
-> 
->  drivers/mtd/nand/nand_base.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 978242b1213f..e4919f9dece4 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -4794,7 +4794,11 @@ int nand_scan_tail(struct mtd_info *mtd)
->  		return 0;
->  
->  	/* Build bad block table */
-> -	return chip->scan_bbt(mtd);
-> +	ret = chip->scan_bbt(mtd);
-> +	if (ret)
-> +		goto err_free;
-> +	return 0;
-> +
->  err_free:
->  	if (nbuf) {
->  		kfree(nbuf->databuf);
+I think it would be right to take Oleksij's patch as is.
+
+FYI, my current work on 'constant inode numbers for overlayfs' requires that
+underlying filesystem had set a non-zero s_uuid. Not sure if that matters for
+ubifs+overlayfs users.
+
+Amir.
+
+[1] https://marc.info/?l=linux-unionfs&m=149352864527985&w=2
