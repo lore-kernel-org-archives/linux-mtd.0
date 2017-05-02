@@ -1,21 +1,32 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1d5V5O-00069u-Kr
- for linux-mtd@lists.infradead.org; Tue, 02 May 2017 10:31:16 +0000
-Date: Tue, 2 May 2017 12:30:53 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Alexander Couzens <lynxis@fe80.eu>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH 3/3][v3] mtd: nand: davinci: set ECC algorithm
- explicitly for HW based ECC
-Message-ID: <20170502123053.6437e04b@bbrezillon>
-In-Reply-To: <20170502110045.29cb9121@bbrezillon>
-References: <20170313074641.28b383e7@bbrezillon>
- <20170502081323.3138-1-lynxis@fe80.eu>
- <20170502081323.3138-4-lynxis@fe80.eu>
- <20170502110045.29cb9121@bbrezillon>
+Subject: Re: [PATCH 2/5] mtd: nand: gpmi: add i.MX 7 SoC support
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Han Xu <xhnjupt@gmail.com>
+References: <20170421010755.18025-1-stefan@agner.ch>
+ <20170421010755.18025-3-stefan@agner.ch>
+ <af3fe671-c5fb-d3cf-c891-e6b7c973baa1@gmail.com>
+ <5cf26d2b020392c875464c7504a9fb5b@agner.ch>
+ <8377dadc-043f-5932-cb13-3367db38a6dd@gmail.com>
+ <494a7bc044457240a302d92b3a50b8e5@agner.ch>
+ <57336d7e-7b48-8855-9e87-3eb370facd05@gmail.com>
+ <a9cdc47795433e7b152dcdd123f9bd63@agner.ch>
+ <CA+EcR20FCPSec+ihTMA=SGwogd7p5tsnECCp3CR-Nv6fUciK4g@mail.gmail.com>
+ <20170502111758.53e9a959@bbrezillon>
+Cc: Stefan Agner <stefan@agner.ch>, mark.rutland@arm.com,
+ Fabio Estevam <fabio.estevam@freescale.com>, devicetree@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ robh+dt@kernel.org,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Sascha Hauer <kernel@pengutronix.de>, Han Xu <han.xu@nxp.com>,
+ Shawn Guo <shawnguo@kernel.org>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org,
+ LW@karo-electronics.de
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <d0162bbe-c2de-73d1-0d37-9bdd68ceb94b@gmail.com>
+Date: Tue, 2 May 2017 13:18:21 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20170502111758.53e9a959@bbrezillon>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,48 +37,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2 May 2017 11:00:45 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+On 05/02/2017 11:17 AM, Boris Brezillon wrote:
+> Hi Han,
+> 
+> On Fri, 21 Apr 2017 13:29:16 -0500
+> Han Xu <xhnjupt@gmail.com> wrote:
+> 
+>>>>  
+>>>>>>> But then, adding the type would only require 2-3 lines of change if I
+>>>>>>> add it to the GPMI_IS_MX6 macro...  
+>>>>>>
+>>>>>> Then at least add a comment because using type = IMX6SX right under
+>>>>>> gpmi_data_mx7d can trigger some head-scratching. And put my R-B on V2.  
+>>>>>
+>>>>> FWIW, I mentioned it in the commit message.
+>>>>>
+>>>>> I think rather then adding a comment it is cleaner to just add IS_IMX7D
+>>>>> and add it to the GPMI_IS_MX6 macro. That does not need a comment since
+>>>>> it implicitly says we have a i.MX 7 but treat it like i.MX 6 and it is a
+>>>>> rather small change. Does that sound acceptable?  
+>>>>
+>>>> Sure, that's even better, thanks.
+>>>>
+>>>> btw isn't there some single-core mx7 (mx7s ?) , maybe we should just go
+>>>> with mx7 (without the d suffix). I dunno if it has GPMI NAND though, so
+>>>> maybe mx7d is the right thing to do here ...
+>>>>  
+>>>
+>>> There is a Solo version yes, and it has GPMI NAND too. However, almost
+>>> all i.MX 7 IPs have been named imx7d by NXP for some reason (including
+>>> compatible strings, see grep -r -e imx7 Documentation/), so I thought I
+>>> stay consistent here...  
 
-> On Tue,  2 May 2017 10:13:23 +0200
-> Alexander Couzens <lynxis@fe80.eu> wrote:
-> 
-> > Required to set the ooblayout based on the algorithm.  
-> 
-> Not strictly required if you take my comment into account (see my
-> reply to patch 2). This being said, it's always to have this kind of
-> information, I'll just have to check if it doesn't conflict with
-> Masahiro's patches.
+I missed the DT bit, sorry. the DT bindings say:
+  - compatible : should be "fsl,<chip>-gpmi-nand"
+so if FSL invented their own buggy bindings, they need to get them
+through Rob :) IMO for MX7, this should be "imx7-gpmi-nand" , unless
+there's some incentive to discern the solo/dual chips and/or there
+is a future imx7 coming up with different GPMI NAND block version.
 
-Never mind, I'm just mixing up davinci and denali :-).
+>> Hi Guys,
+>>
+>> Yes, there should be a i.MX7 Solo version with one core fused out. IMO, can
+>> we use QUIRK to distinguish them rather than SoC name. I know I also sent
+>> some patch set with SoC Name but I prefer to use QUIRK now.
+> 
+> Not sure what this means. Are you okay with Stefan's v2?
 
-> 
-> > 
-> > Signed-off-by: Alexander Couzens <lynxis@fe80.eu>
-> > ---
-> >  drivers/mtd/nand/davinci_nand.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-> > index 27fa8b87cd5f..9e5167496ce1 100644
-> > --- a/drivers/mtd/nand/davinci_nand.c
-> > +++ b/drivers/mtd/nand/davinci_nand.c
-> > @@ -760,11 +760,13 @@ static int nand_davinci_probe(struct platform_device *pdev)
-> >  			info->chip.ecc.hwctl = nand_davinci_hwctl_4bit;
-> >  			info->chip.ecc.bytes = 10;
-> >  			info->chip.ecc.options = NAND_ECC_GENERIC_ERASED_CHECK;
-> > -		} else {
-> > +			info->chip.ecc.algo = NAND_ECC_BCH;
-> > +		} else { /* 1bit ecc hamming */  
-> 
-> Please put this comment on the next line.
-> 
-> >  			info->chip.ecc.calculate = nand_davinci_calculate_1bit;
-> >  			info->chip.ecc.correct = nand_davinci_correct_1bit;
-> >  			info->chip.ecc.hwctl = nand_davinci_hwctl_1bit;
-> >  			info->chip.ecc.bytes = 3;
-> > +			info->chip.ecc.algo = NAND_ECC_HAMMING;
-> >  		}
-> >  		info->chip.ecc.size = 512;
-> >  		info->chip.ecc.strength = pdata->ecc_bits;  
-> 
+IMO the GPMI controller in solo and dual should be the same, so there's
+no need to have quirks for it.
+
+-- 
+Best regards,
+Marek Vasut
