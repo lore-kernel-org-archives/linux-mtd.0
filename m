@@ -1,27 +1,20 @@
-Received: from 2.mo68.mail-out.ovh.net ([46.105.52.162])
+Received: from 9.mo68.mail-out.ovh.net ([46.105.78.111])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d61Dc-0006YC-LW
- for linux-mtd@lists.infradead.org; Wed, 03 May 2017 20:49:54 +0000
+ id 1d61HH-0008LO-Rs
+ for linux-mtd@lists.infradead.org; Wed, 03 May 2017 20:53:41 +0000
 Received: from player789.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo68.mail-out.ovh.net (Postfix) with ESMTP id 694E84F7FE
- for <linux-mtd@lists.infradead.org>; Wed,  3 May 2017 22:49:18 +0200 (CEST)
-Subject: Re: [PATCH v4 1/2] dt-bindings: Document the STM32 QSPI bindings
-To: Brian Norris <computersforpeace@gmail.com>
-References: <1492103757-22375-1-git-send-email-ludovic.Barre@st.com>
- <1492103757-22375-2-git-send-email-ludovic.Barre@st.com>
- <b62272c9-027c-9c9b-42f0-1056d88aac7c@wedev4u.fr>
- <20170502010947.GC18576@google.com>
-Cc: devicetree@vger.kernel.org, Alexandre Torgue <alexandre.torgue@st.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- David Woodhouse <dwmw2@infradead.org>, Ludovic Barre <ludovic.Barre@st.com>
+ by mo68.mail-out.ovh.net (Postfix) with ESMTP id 840DD3FEE3
+ for <linux-mtd@lists.infradead.org>; Wed,  3 May 2017 22:53:16 +0200 (CEST)
+Subject: Re: [PATCH] mtd: spi-nor: stm32-quadspi: allow building with
+ COMPILE_TEST
+To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+References: <20170502011300.137397-1-computersforpeace@gmail.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>, Ludovic Barre <ludovic.barre@st.com>
 From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <b1046217-5bfd-0fcb-9196-eb5ff34b58f5@wedev4u.fr>
-Date: Wed, 3 May 2017 22:49:02 +0200
+Message-ID: <a238bf76-828a-5df2-fba7-ebe93939b4a4@wedev4u.fr>
+Date: Wed, 3 May 2017 22:53:12 +0200
 MIME-Version: 1.0
-In-Reply-To: <20170502010947.GC18576@google.com>
+In-Reply-To: <20170502011300.137397-1-computersforpeace@gmail.com>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,22 +26,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 02/05/2017 à 03:09, Brian Norris a écrit :
-> On Sun, Apr 16, 2017 at 06:53:06PM +0200, Cyrille Pitchen wrote:
->> Hi all,
->>
->> Rob, is this version ok for you? If so, I can take it into the
->> github/spi-nor tree.
-> 
-> I see this was missing from your pull request. Rob has since acked,
-> so...
-> 
-> Applied to l2-mtd.git
->
+Hi Brian,
 
-Indeed, thanks!
+Le 02/05/2017 à 03:13, Brian Norris a écrit :
+> Cc: Ludovic Barre <ludovic.barre@st.com>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Acked-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+
+Do you want me to take it into the github/spi-nor tree or do you want to
+take it directly in the l2-mtd.git tree for 4.12 ?
+
+Best regards,
+
+Cyrille
+
+> ---
+>  drivers/mtd/spi-nor/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+> index bfdfb1e72b38..293c8a4d1e49 100644
+> --- a/drivers/mtd/spi-nor/Kconfig
+> +++ b/drivers/mtd/spi-nor/Kconfig
+> @@ -108,7 +108,7 @@ config SPI_INTEL_SPI_PLATFORM
+>  
+>  config SPI_STM32_QUADSPI
+>  	tristate "STM32 Quad SPI controller"
+> -	depends on ARCH_STM32
+> +	depends on ARCH_STM32 || COMPILE_TEST
+>  	help
+>  	  This enables support for the STM32 Quad SPI controller.
+>  	  We only connect the NOR to this controller.
 > 
