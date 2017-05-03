@@ -1,26 +1,27 @@
-Received: from mail-wr0-x243.google.com ([2a00:1450:400c:c0c::243])
+Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d5y8o-0007u9-DF
- for linux-mtd@lists.infradead.org; Wed, 03 May 2017 17:32:44 +0000
-Received: by mail-wr0-x243.google.com with SMTP id w50so23924067wrc.0
- for <linux-mtd@lists.infradead.org>; Wed, 03 May 2017 10:32:21 -0700 (PDT)
-Subject: Re: [PATCH] mtd: nand: jz4780: Use mtd_set_ooblayout() to set the
- ooblayout
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-References: <1493720953-8471-1-git-send-email-boris.brezillon@free-electrons.com>
-From: Harvey Hunt <harveyhuntnexus@gmail.com>
-Message-ID: <082cd6f0-ec59-2f81-526c-91886077092f@gmail.com>
-Date: Wed, 3 May 2017 18:32:47 +0100
+ id 1d60Tl-0003Dn-9Y
+ for linux-mtd@lists.infradead.org; Wed, 03 May 2017 20:02:31 +0000
+Date: Wed, 3 May 2017 22:02:07 +0200
+From: Pavel Machek <pavel@ucw.cz>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Thibaud Cornic <thibaud_cornic@sigmadesigns.com>, Mason <slash.tmp@free.fr>
+Subject: Re: [PATCH] tango_nand.c: fix ecc.stats_corrected in empty flash case
+Message-ID: <20170503200207.GB17315@amd>
+References: <20170419121332.GA26979@amd> <20170419231804.5a04ed69@bbrezillon>
+ <20170421100813.GA4332@amd> <20170421133721.GA15332@amd>
+ <20170421154903.2782cd06@bbrezillon> <20170422104033.GA14508@amd>
+ <53204f36-9662-e8a0-c431-09fb68276ab6@sigmadesigns.com>
+ <20170502114228.299fc862@bbrezillon>
+ <dfdc3280-8de9-e215-6bc2-9863c7afd9c7@sigmadesigns.com>
+ <20170502142016.024416d2@bbrezillon>
 MIME-Version: 1.0
-In-Reply-To: <1493720953-8471-1-git-send-email-boris.brezillon@free-electrons.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="XOIedfhf+7KOe/yw"
+Content-Disposition: inline
+In-Reply-To: <20170502142016.024416d2@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,37 +31,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
 
-On 05/02/2017 11:29 AM, Boris Brezillon wrote:
-> The mtd_set_ooblayout() accesor has been added to hide internals of
-> mtd_info and ease future refactoring. Call mtd_set_ooblayout() instead of
-> directly accessing mtd->ooblayout.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> ---
->   drivers/mtd/nand/jz4780_nand.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/jz4780_nand.c b/drivers/mtd/nand/jz4780_nand.c
-> index a39bb70175ee..8bc835f71b26 100644
-> --- a/drivers/mtd/nand/jz4780_nand.c
-> +++ b/drivers/mtd/nand/jz4780_nand.c
-> @@ -205,7 +205,7 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
->   		return -EINVAL;
->   	}
->   
-> -	mtd->ooblayout = &nand_ooblayout_lp_ops;
-> +	mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
->   
->   	return 0;
->   }
-> 
+--XOIedfhf+7KOe/yw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Looks good to me.
+Hi!
 
-Acked-by: Harvey Hunt <harveyhuntnexus@gmail.com>
+> Anyway, I think we went too far. I was just arguing that never updating
+> stats->corrected just because you don't know the exact number of
+> bitflips is not necessarily a better idea than updating corrected with
+> a potentially invalid number of bitflips. At least the 2nd approach
+> shows that bitflips were present on the media.
 
-Thanks,
+I have to agree here. Indication of "we have errors" is important.
 
-Harvey
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--XOIedfhf+7KOe/yw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlkKNz8ACgkQMOfwapXb+vLwlQCggP3N0YVWRJJma8gEIp1V7fRj
+r9UAnRZwOsOYSwPSVDghs8txEBuwuYtY
+=Jthl
+-----END PGP SIGNATURE-----
+
+--XOIedfhf+7KOe/yw--
