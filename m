@@ -1,23 +1,26 @@
-Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
+Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d5jXy-0007oY-5g
- for linux-mtd@lists.infradead.org; Wed, 03 May 2017 01:57:43 +0000
-Received: by mail-pf0-x242.google.com with SMTP id g23so1924939pfj.1
- for <linux-mtd@lists.infradead.org>; Tue, 02 May 2017 18:57:20 -0700 (PDT)
-Date: Tue, 2 May 2017 18:57:17 -0700
+ id 1d5jYx-00086K-7D
+ for linux-mtd@lists.infradead.org; Wed, 03 May 2017 01:58:44 +0000
+Received: by mail-pg0-x242.google.com with SMTP id s62so13958517pgc.0
+ for <linux-mtd@lists.infradead.org>; Tue, 02 May 2017 18:58:22 -0700 (PDT)
+Date: Tue, 2 May 2017 18:58:19 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Alexander Couzens <lynxis@fe80.eu>, linux-mtd@lists.infradead.org,
- Richard Weinberger <richard@nod.at>, Stable <stable@vger.kernel.org>
-Subject: Re: [PATCH][v3] mtd: nand: add ooblayout for old hamming layout
-Message-ID: <20170503015717.GA70297@google.com>
-References: <20170502081323.3138-1-lynxis@fe80.eu>
- <20170502101900.5066-1-lynxis@fe80.eu>
- <20170502140300.33ac055d@bbrezillon>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Neil Armstrong <narmstrong@baylibre.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, linux-oxnas@lists.tuxfamily.org,
+ kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] mtd: oxnas_nand: Allocating more than necessary in probe()
+Message-ID: <20170503015819.GA32111@google.com>
+References: <20170425091949.uindhaxmbtsksqc7@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20170502140300.33ac055d@bbrezillon>
+In-Reply-To: <20170425091949.uindhaxmbtsksqc7@mwanda>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +30,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, May 02, 2017 at 02:03:00PM +0200, Boris Brezillon wrote:
-> +Brian
+On Tue, Apr 25, 2017 at 12:19:49PM +0300, Dan Carpenter wrote:
+> We only need to allocate sizeof(struct oxnas_nand_ctrl) which is 192
+> bytes and not sizeof(struct nand_chip) which is a much larger 3056
+> bytes.
 > 
-> On Tue,  2 May 2017 12:19:00 +0200
-> Alexander Couzens <lynxis@fe80.eu> wrote:
-> 
-> > The old 1-bit hamming layout requires ECC data to be placed at a
-> > fixed offset, and not necessarily at the end of the OOB area.
-> > Add this old layout back in order to fix legacy setups.
-> > 
-> > Fixes: 41b207a70d3a ("mtd: nand: implement the default mtd_ooblayout_ops")
-> > CC: Stable <stable@vger.kernel.org>
-> > Signed-off-by: Alexander Couzens <lynxis@fe80.eu>
-> 
-> Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> 
-> Brian, maybe you can consider taking this patch directly in
-> l2-mtd/master before preparing your PR to Linus (if you're happy with
-> the patch of course). Otherwise, I'll take it into my tree and send a
-> fixes PR after 4.12-rc1 is out.
+> Fixes: 668592492409 ("mtd: nand: Add OX820 NAND Support")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Applied to l2-mtd.git/master.
+Applied to l2-mtd.git
