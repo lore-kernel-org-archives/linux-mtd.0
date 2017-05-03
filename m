@@ -1,16 +1,17 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1d5o6B-00081O-HH
- for linux-mtd@lists.infradead.org; Wed, 03 May 2017 06:49:21 +0000
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>,
+From: Nicholas Mc Guire <der.herr@hofr.at>
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: Ludovic Barre <ludovic.barre@st.com>, Marek Vasut <marek.vasut@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH] MAINTAINERS: Update NAND subsystem git repositories
-Date: Wed,  3 May 2017 08:48:55 +0200
-Message-Id: <1493794135-23074-1-git-send-email-boris.brezillon@free-electrons.com>
+ Richard Weinberger <richard@nod.at>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@st.com>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Nicholas Mc Guire <der.herr@hofr.at>
+Subject: [RFC PATCH] mtd: spi-nor: handle signal case as failure
+Date: Wed,  3 May 2017 11:53:09 +0200
+Message-Id: <1493805189-25327-1-git-send-email-der.herr@hofr.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,27 +21,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-NAND branches are now hosted on MTD repos, nand/next is on l2-mtd and
-nand/fixes will be on linux-mtd.
+ The problem is that stm32_qspi_wait_cmd() will indicate success in case of
+ being interrupted. The if condition is incomplete here as
+ wait_for_copletion_interruptible_timeout can return -ERESTARTSYS but this
+ is not handled by if(!wait_for_completion_interruptible_timeout()).
+ While somewhat unlikely it probably would be hard to figure out what went
+ wrong if the signal case does occur.
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Fixes: commit 0d43d7ab277a ("mtd: spi-nor: add driver for STM32 quad spi flash controller")
+Signed-off-by: Nicholas Mc Guire <der.herr@hofr.at>
 ---
- MAINTAINERS | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Problem found by experimental coccinelle script
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9a84d0022d57..4aa9ca992ad4 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8605,7 +8605,8 @@ R:	Richard Weinberger <richard@nod.at>
- L:	linux-mtd@lists.infradead.org
- W:	http://www.linux-mtd.infradead.org/
- Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
--T:	git git://github.com/linux-nand/linux.git
-+T:	git git://git.infradead.org/linux-mtd.git
-+T:	git git://git.infradead.org/l2-mtd.git
- S:	Maintained
- F:	drivers/mtd/nand/
- F:	include/linux/mtd/nand*.h
+Its not clear if its sufficient to simply treat this case as failure or
+if it might need some debug output to allow differentiation of signal
+and timeout case. 
+
+Patch was compile tested with: stm32_defconfig +CONFIG_MTD=y, CONFIG_MTD_SPI_NOR=y,
+CONFIG_SPI_STM32_QUADSPI=m
+
+Patch is against v4.11-rc8 (localversion-next is next-20170503)
+
+ drivers/mtd/spi-nor/stm32-quadspi.c  | 10 ++++++++--
+ 1 files changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/stm32-quadspi.c b/drivers/mtd/spi-nor/stm32-quadspi.c
+index 1056e74..27147ad 100644
+--- a/drivers/mtd/spi-nor/stm32-quadspi.c
++++ b/drivers/mtd/spi-nor/stm32-quadspi.c
+@@ -159,6 +159,7 @@ static int stm32_qspi_wait_cmd(struct stm32_qspi *qspi)
+ {
+ 	u32 cr;
+ 	int err = 0;
++	long timeout = 0;
+ 
+ 	if (readl_relaxed(qspi->io_base + QUADSPI_SR) & SR_TCF)
+ 		return 0;
+@@ -167,8 +168,13 @@ static int stm32_qspi_wait_cmd(struct stm32_qspi *qspi)
+ 	cr = readl_relaxed(qspi->io_base + QUADSPI_CR);
+ 	writel_relaxed(cr | CR_TCIE, qspi->io_base + QUADSPI_CR);
+ 
+-	if (!wait_for_completion_interruptible_timeout(&qspi->cmd_completion,
+-						       msecs_to_jiffies(1000)))
++	timeout = wait_for_completion_interruptible_timeout(
++				&qspi->cmd_completion, msecs_to_jiffies(1000));
++
++	/* since the calling side only cares about success of failure
++	 * returning -ETIMEDOUT even when interrupted should be ok here
++	 */
++	if (timeout == 0 || timeout == -ERESTARTSYS)
+ 		err = -ETIMEDOUT;
+ 
+ 	writel_relaxed(cr, qspi->io_base + QUADSPI_CR);
 -- 
-2.7.4
+2.1.4
