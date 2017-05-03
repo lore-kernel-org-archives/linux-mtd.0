@@ -1,19 +1,20 @@
-Received: from pegase1.c-s.fr ([93.17.236.30])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d5tFc-0004Fm-W9
- for linux-mtd@lists.infradead.org; Wed, 03 May 2017 12:19:28 +0000
-From: Christophe Leroy <christophe.leroy@c-s.fr>
-Subject: [PATCH] mtd: nand: gpio: update binding
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org
-Message-Id: <20170503121824.DD82C67889@pc13941vm.idsi0.si.c-s.fr>
-Date: Wed,  3 May 2017 14:18:24 +0200 (CEST)
+Date: Wed, 3 May 2017 21:25:15 +0800
+From: Shawn Guo <shawnguo@kernel.org>
+To: Stefan Agner <stefan@agner.ch>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
+ richard@nod.at, cyrille.pitchen@atmel.com, robh+dt@kernel.org,
+ mark.rutland@arm.com, kernel@pengutronix.de, han.xu@nxp.com,
+ fabio.estevam@freescale.com, LW@KARO-electronics.de,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/5] mtd: nand: gpmi: add i.MX 7 support
+Message-ID: <20170503132513.GE24392@dragon>
+References: <20170422012338.4635-1-stefan@agner.ch>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170422012338.4635-1-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,36 +24,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch updates the binding documentation in accordance with
-commit 44dd182861f99 ("mtd: nand: gpio: make nCE GPIO optional")
+On Fri, Apr 21, 2017 at 06:23:33PM -0700, Stefan Agner wrote:
+> This patchset adds support for i.MX 7 SoC for the GPMI NAND controller.
+> There have been similar patchsets already:
+> https://lkml.org/lkml/2016/2/23/912
+> 
+> However, this patchset does not make use of any of the new features.
+> The current feature set seems to work fine, I successfully run the MTD
+> tests on a Colibri iMX7.
+> 
+> --
+> Stefan
+> 
+> Changes since v1:
+> - Make clks_count const
+> - Introduce IS_IMX7D for i.MX 7 SoC's and make it part of GPMI_IS_MX6
+> 
+> Stefan Agner (5):
+>   mtd: nand: gpmi: unify clock handling
+>   mtd: nand: gpmi: add i.MX 7 SoC support
+>   mtd: gpmi: document current clock requirements
+>   ARM: dts: imx7: add GPMI NAND
+>   ARM: dts: imx7-colibri: add NAND support
 
-Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
-Reported-by: Brian Norris <computersforpeace@gmail.com>
----
- Documentation/devicetree/bindings/mtd/gpio-control-nand.txt | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The dts patches look good to me.  I will pick them up once the driver
+changes are accepted.
 
-diff --git a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-index af8915b41ccf..486a17d533d7 100644
---- a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-@@ -12,7 +12,7 @@ Required properties:
- - #address-cells, #size-cells : Must be present if the device has sub-nodes
-   representing partitions.
- - gpios : Specifies the GPIO pins to control the NAND device.  The order of
--  GPIO references is:  RDY, nCE, ALE, CLE, and an optional nWP.
-+  GPIO references is:  RDY, nCE, ALE, CLE, and nWP. nCE and nWP are optional.
- 
- Optional properties:
- - bank-width : Width (in bytes) of the device.  If not present, the width
-@@ -36,7 +36,7 @@ gpio-nand@1,0 {
- 	#address-cells = <1>;
- 	#size-cells = <1>;
- 	gpios = <&banka 1 0>,	/* RDY */
--		<&banka 2 0>, 	/* nCE */
-+		<0>, 		/* nCE */
- 		<&banka 3 0>, 	/* ALE */
- 		<&banka 4 0>, 	/* CLE */
- 		<0>;		/* nWP */
--- 
-2.12.0
+Shawn
+
+> 
+>  .../devicetree/bindings/mtd/gpmi-nand.txt          | 14 +++++-
+>  arch/arm/boot/dts/imx7-colibri.dtsi                |  9 ++++
+>  arch/arm/boot/dts/imx7s.dtsi                       | 31 ++++++++++++
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c             | 56 +++++++++++++---------
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.h             |  9 +++-
+>  5 files changed, 93 insertions(+), 26 deletions(-)
+> 
+> -- 
+> 2.12.2
+> 
