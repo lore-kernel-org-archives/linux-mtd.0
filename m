@@ -1,17 +1,19 @@
-From: Nicholas Mc Guire <der.herr@hofr.at>
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: Ludovic Barre <ludovic.barre@st.com>, Marek Vasut <marek.vasut@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
+Received: from pegase1.c-s.fr ([93.17.236.30])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d5tFc-0004Fm-W9
+ for linux-mtd@lists.infradead.org; Wed, 03 May 2017 12:19:28 +0000
+From: Christophe Leroy <christophe.leroy@c-s.fr>
+Subject: [PATCH] mtd: nand: gpio: update binding
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@st.com>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, Nicholas Mc Guire <der.herr@hofr.at>
-Subject: [RFC PATCH] mtd: spi-nor: handle signal case as failure
-Date: Wed,  3 May 2017 11:53:09 +0200
-Message-Id: <1493805189-25327-1-git-send-email-der.herr@hofr.at>
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+Message-Id: <20170503121824.DD82C67889@pc13941vm.idsi0.si.c-s.fr>
+Date: Wed,  3 May 2017 14:18:24 +0200 (CEST)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,57 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
- The problem is that stm32_qspi_wait_cmd() will indicate success in case of
- being interrupted. The if condition is incomplete here as
- wait_for_copletion_interruptible_timeout can return -ERESTARTSYS but this
- is not handled by if(!wait_for_completion_interruptible_timeout()).
- While somewhat unlikely it probably would be hard to figure out what went
- wrong if the signal case does occur.
+This patch updates the binding documentation in accordance with
+commit 44dd182861f99 ("mtd: nand: gpio: make nCE GPIO optional")
 
-Fixes: commit 0d43d7ab277a ("mtd: spi-nor: add driver for STM32 quad spi flash controller")
-Signed-off-by: Nicholas Mc Guire <der.herr@hofr.at>
+Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+Reported-by: Brian Norris <computersforpeace@gmail.com>
 ---
-Problem found by experimental coccinelle script
+ Documentation/devicetree/bindings/mtd/gpio-control-nand.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Its not clear if its sufficient to simply treat this case as failure or
-if it might need some debug output to allow differentiation of signal
-and timeout case. 
-
-Patch was compile tested with: stm32_defconfig +CONFIG_MTD=y, CONFIG_MTD_SPI_NOR=y,
-CONFIG_SPI_STM32_QUADSPI=m
-
-Patch is against v4.11-rc8 (localversion-next is next-20170503)
-
- drivers/mtd/spi-nor/stm32-quadspi.c  | 10 ++++++++--
- 1 files changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/stm32-quadspi.c b/drivers/mtd/spi-nor/stm32-quadspi.c
-index 1056e74..27147ad 100644
---- a/drivers/mtd/spi-nor/stm32-quadspi.c
-+++ b/drivers/mtd/spi-nor/stm32-quadspi.c
-@@ -159,6 +159,7 @@ static int stm32_qspi_wait_cmd(struct stm32_qspi *qspi)
- {
- 	u32 cr;
- 	int err = 0;
-+	long timeout = 0;
+diff --git a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
+index af8915b41ccf..486a17d533d7 100644
+--- a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
+@@ -12,7 +12,7 @@ Required properties:
+ - #address-cells, #size-cells : Must be present if the device has sub-nodes
+   representing partitions.
+ - gpios : Specifies the GPIO pins to control the NAND device.  The order of
+-  GPIO references is:  RDY, nCE, ALE, CLE, and an optional nWP.
++  GPIO references is:  RDY, nCE, ALE, CLE, and nWP. nCE and nWP are optional.
  
- 	if (readl_relaxed(qspi->io_base + QUADSPI_SR) & SR_TCF)
- 		return 0;
-@@ -167,8 +168,13 @@ static int stm32_qspi_wait_cmd(struct stm32_qspi *qspi)
- 	cr = readl_relaxed(qspi->io_base + QUADSPI_CR);
- 	writel_relaxed(cr | CR_TCIE, qspi->io_base + QUADSPI_CR);
- 
--	if (!wait_for_completion_interruptible_timeout(&qspi->cmd_completion,
--						       msecs_to_jiffies(1000)))
-+	timeout = wait_for_completion_interruptible_timeout(
-+				&qspi->cmd_completion, msecs_to_jiffies(1000));
-+
-+	/* since the calling side only cares about success of failure
-+	 * returning -ETIMEDOUT even when interrupted should be ok here
-+	 */
-+	if (timeout == 0 || timeout == -ERESTARTSYS)
- 		err = -ETIMEDOUT;
- 
- 	writel_relaxed(cr, qspi->io_base + QUADSPI_CR);
+ Optional properties:
+ - bank-width : Width (in bytes) of the device.  If not present, the width
+@@ -36,7 +36,7 @@ gpio-nand@1,0 {
+ 	#address-cells = <1>;
+ 	#size-cells = <1>;
+ 	gpios = <&banka 1 0>,	/* RDY */
+-		<&banka 2 0>, 	/* nCE */
++		<0>, 		/* nCE */
+ 		<&banka 3 0>, 	/* ALE */
+ 		<&banka 4 0>, 	/* CLE */
+ 		<0>;		/* nWP */
 -- 
-2.1.4
+2.12.0
