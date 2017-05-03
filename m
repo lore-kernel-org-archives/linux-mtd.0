@@ -1,20 +1,26 @@
-Date: Wed, 3 May 2017 21:25:15 +0800
-From: Shawn Guo <shawnguo@kernel.org>
-To: Stefan Agner <stefan@agner.ch>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
- richard@nod.at, cyrille.pitchen@atmel.com, robh+dt@kernel.org,
- mark.rutland@arm.com, kernel@pengutronix.de, han.xu@nxp.com,
- fabio.estevam@freescale.com, LW@KARO-electronics.de,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/5] mtd: nand: gpmi: add i.MX 7 support
-Message-ID: <20170503132513.GE24392@dragon>
-References: <20170422012338.4635-1-stefan@agner.ch>
+Received: from mail-wr0-x243.google.com ([2a00:1450:400c:c0c::243])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d5y8o-0007u9-DF
+ for linux-mtd@lists.infradead.org; Wed, 03 May 2017 17:32:44 +0000
+Received: by mail-wr0-x243.google.com with SMTP id w50so23924067wrc.0
+ for <linux-mtd@lists.infradead.org>; Wed, 03 May 2017 10:32:21 -0700 (PDT)
+Subject: Re: [PATCH] mtd: nand: jz4780: Use mtd_set_ooblayout() to set the
+ ooblayout
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+References: <1493720953-8471-1-git-send-email-boris.brezillon@free-electrons.com>
+From: Harvey Hunt <harveyhuntnexus@gmail.com>
+Message-ID: <082cd6f0-ec59-2f81-526c-91886077092f@gmail.com>
+Date: Wed, 3 May 2017 18:32:47 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170422012338.4635-1-stefan@agner.ch>
+In-Reply-To: <1493720953-8471-1-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,42 +30,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Apr 21, 2017 at 06:23:33PM -0700, Stefan Agner wrote:
-> This patchset adds support for i.MX 7 SoC for the GPMI NAND controller.
-> There have been similar patchsets already:
-> https://lkml.org/lkml/2016/2/23/912
-> 
-> However, this patchset does not make use of any of the new features.
-> The current feature set seems to work fine, I successfully run the MTD
-> tests on a Colibri iMX7.
-> 
-> --
-> Stefan
-> 
-> Changes since v1:
-> - Make clks_count const
-> - Introduce IS_IMX7D for i.MX 7 SoC's and make it part of GPMI_IS_MX6
-> 
-> Stefan Agner (5):
->   mtd: nand: gpmi: unify clock handling
->   mtd: nand: gpmi: add i.MX 7 SoC support
->   mtd: gpmi: document current clock requirements
->   ARM: dts: imx7: add GPMI NAND
->   ARM: dts: imx7-colibri: add NAND support
+Hi Boris,
 
-The dts patches look good to me.  I will pick them up once the driver
-changes are accepted.
+On 05/02/2017 11:29 AM, Boris Brezillon wrote:
+> The mtd_set_ooblayout() accesor has been added to hide internals of
+> mtd_info and ease future refactoring. Call mtd_set_ooblayout() instead of
+> directly accessing mtd->ooblayout.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>   drivers/mtd/nand/jz4780_nand.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/jz4780_nand.c b/drivers/mtd/nand/jz4780_nand.c
+> index a39bb70175ee..8bc835f71b26 100644
+> --- a/drivers/mtd/nand/jz4780_nand.c
+> +++ b/drivers/mtd/nand/jz4780_nand.c
+> @@ -205,7 +205,7 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
+>   		return -EINVAL;
+>   	}
+>   
+> -	mtd->ooblayout = &nand_ooblayout_lp_ops;
+> +	mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
+>   
+>   	return 0;
+>   }
+> 
 
-Shawn
+Looks good to me.
 
-> 
->  .../devicetree/bindings/mtd/gpmi-nand.txt          | 14 +++++-
->  arch/arm/boot/dts/imx7-colibri.dtsi                |  9 ++++
->  arch/arm/boot/dts/imx7s.dtsi                       | 31 ++++++++++++
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c             | 56 +++++++++++++---------
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.h             |  9 +++-
->  5 files changed, 93 insertions(+), 26 deletions(-)
-> 
-> -- 
-> 2.12.2
-> 
+Acked-by: Harvey Hunt <harveyhuntnexus@gmail.com>
+
+Thanks,
+
+Harvey
