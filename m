@@ -1,21 +1,24 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mail-pg0-x22e.google.com ([2607:f8b0:400e:c05::22e])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d62kC-0004mq-AH
- for linux-mtd@lists.infradead.org; Wed, 03 May 2017 22:27:38 +0000
-Subject: Re: [PATCH] MAINTAINERS: Update NAND subsystem git repositories
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-References: <1493794135-23074-1-git-send-email-boris.brezillon@free-electrons.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <d476bb32-617e-3937-902b-9b94989763cb@nod.at>
-Date: Thu, 4 May 2017 00:27:05 +0200
+ id 1d65KK-0000XM-1M
+ for linux-mtd@lists.infradead.org; Thu, 04 May 2017 01:13:06 +0000
+Received: by mail-pg0-x22e.google.com with SMTP id o3so3179534pgn.2
+ for <linux-mtd@lists.infradead.org>; Wed, 03 May 2017 18:12:43 -0700 (PDT)
+Date: Wed, 3 May 2017 18:12:39 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org, Marek Vasut <marek.vasut@gmail.com>,
+ Ludovic Barre <ludovic.barre@st.com>
+Subject: Re: [PATCH] mtd: spi-nor: stm32-quadspi: allow building with
+ COMPILE_TEST
+Message-ID: <20170504011239.GB70297@google.com>
+References: <20170502011300.137397-1-computersforpeace@gmail.com>
+ <a238bf76-828a-5df2-fba7-ebe93939b4a4@wedev4u.fr>
 MIME-Version: 1.0
-In-Reply-To: <1493794135-23074-1-git-send-email-boris.brezillon@free-electrons.com>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a238bf76-828a-5df2-fba7-ebe93939b4a4@wedev4u.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +28,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 03.05.2017 um 08:48 schrieb Boris Brezillon:
-> NAND branches are now hosted on MTD repos, nand/next is on l2-mtd and
-> nand/fixes will be on linux-mtd.
+On Wed, May 03, 2017 at 10:53:12PM +0200, Cyrille Pitchen wrote:
+> Hi Brian,
 > 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> ---
->  MAINTAINERS | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> Le 02/05/2017 à 03:13, Brian Norris a écrit :
+> > Cc: Ludovic Barre <ludovic.barre@st.com>
+> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 9a84d0022d57..4aa9ca992ad4 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -8605,7 +8605,8 @@ R:	Richard Weinberger <richard@nod.at>
->  L:	linux-mtd@lists.infradead.org
->  W:	http://www.linux-mtd.infradead.org/
->  Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
-> -T:	git git://github.com/linux-nand/linux.git
-> +T:	git git://git.infradead.org/linux-mtd.git
-> +T:	git git://git.infradead.org/l2-mtd.git
+> Acked-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+> 
+> Do you want me to take it into the github/spi-nor tree or do you want to
+> take it directly in the l2-mtd.git tree for 4.12 ?
 
-This is great! :-)
+Did you already? Stephen Rothwell is already reporting build failures.
 
-Thanks,
-//richard
+It's certainly no rush for 4.12. Take it in your tree if you haven't
+already, and add #include <linux/sizes.h> while you're at it (the cause
+of the build failure).
+
+Brian
