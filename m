@@ -1,25 +1,18 @@
-Received: from aserp1040.oracle.com ([141.146.126.69])
+Received: from mail-cys01nam02on0064.outbound.protection.outlook.com
+ ([104.47.37.64] helo=NAM02-CY1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d6AXS-0003cx-9g
- for linux-mtd@lists.infradead.org; Thu, 04 May 2017 06:46:59 +0000
-Date: Thu, 4 May 2017 09:45:17 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: Huang Shijie <b32955@freescale.com>, Marek Vasut <marek.vasut@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] mtd: spi-nor: Potential oops on error path in
- quad_enable()
-Message-ID: <20170504064517.vemoe3k4z6e3rbwn@mwanda>
-References: <20170428130614.w4cmbwvprgzv7sky@mwanda>
- <82655033-06b0-a310-07b4-1c8fa2591da2@wedev4u.fr>
+ id 1d6B4d-0000gl-CK
+ for linux-mtd@lists.infradead.org; Thu, 04 May 2017 07:21:17 +0000
+From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+To: <linux-mtd@lists.infradead.org>
+CC: <dedekind1@gmail.com>, <oss@buserror.net>, Prabhakar Kushwaha
+ <prabhakar.kushwaha@nxp.com>
+Subject: [PATCH] driver: mtd: update struct map_info's swap as per map
+ requirement.
+Date: Thu, 4 May 2017 12:50:37 +0530
+Message-ID: <1493882437-4541-1-git-send-email-prabhakar.kushwaha@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <82655033-06b0-a310-07b4-1c8fa2591da2@wedev4u.fr>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,12 +22,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 03, 2017 at 11:40:09PM +0200, Cyrille Pitchen wrote:
-> However, I think we could return the return code of
-> spi_nor_wait_till_ready() instead, like already done in
-> spansion_quad_enable().
+It is not necessary for all device's maps to be CFI_HOST_ENDIAN. Maps device
+can be Bigendian or little endian.
 
-Ah, yes, of course.  I will resend.
+Currently it is being taken care using CONFIG_MTD_CFI_LE_BYTE_SWAP or
+CONFIG_MTD_CFI_BE_BYTE_SWAP i.e. compile time.
 
-regards,
-dan carpenter
+Now update struct map_info's swap field based on device characteristics
+defined in device tree.
+
+Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+---
+ drivers/mtd/maps/physmap_of.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+index 14e8909..f39607d 100644
+--- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -20,6 +20,7 @@
+ #include <linux/mtd/map.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/mtd/concat.h>
++#include <linux/mtd/cfi_endian.h>
+ #include <linux/of.h>
+ #include <linux/of_address.h>
+ #include <linux/of_platform.h>
+@@ -243,6 +244,9 @@ static int of_flash_probe(struct platform_device *dev)
+ 		info->list[i].map.bankwidth = be32_to_cpup(width);
+ 		info->list[i].map.device_node = dp;
+ 
++		if (of_property_read_bool(dp->parent, "big-endian"))
++			info->list[i].map.swap = CFI_BIG_ENDIAN;
++
+ 		err = of_flash_probe_gemini(dev, dp, &info->list[i].map);
+ 		if (err)
+ 			return err;
+-- 
+2.7.4
