@@ -1,22 +1,22 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1d6HQp-0007f4-AL
- for linux-mtd@lists.infradead.org; Thu, 04 May 2017 14:08:39 +0000
-Date: Thu, 4 May 2017 16:08:13 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Colin King <colin.king@canonical.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
- kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: make nand_ooblayout_lp_hamming_ops static
-Message-ID: <20170504160813.23bad4f9@bbrezillon>
-In-Reply-To: <20170504121100.2709-1-colin.king@canonical.com>
-References: <20170504121100.2709-1-colin.king@canonical.com>
+Received: from imap.thunk.org ([2600:3c02::f03c:91ff:fe96:be03])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d6IAQ-000117-LW
+ for linux-mtd@lists.infradead.org; Thu, 04 May 2017 14:55:44 +0000
+Date: Thu, 4 May 2017 10:55:16 -0400
+From: Theodore Ts'o <tytso@mit.edu>
+To: Eric Biggers <ebiggers3@gmail.com>
+Cc: linux-fscrypt@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+ linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+ linux-mtd@lists.infradead.org,
+ Gwendal Grignou <gwendal@chromium.org>, hashimoto@chromium.org,
+ kinaba@chromium.org, Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH] fscrypt: correct collision claim for digested names
+Message-ID: <20170504145516.7vwyb3f44iz7njly@thunk.org>
+References: <20170501184332.37532-1-ebiggers3@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170501184332.37532-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,35 +26,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu,  4 May 2017 13:11:00 +0100
-Colin King <colin.king@canonical.com> wrote:
-
-> From: Colin Ian King <colin.king@canonical.com>
+On Mon, May 01, 2017 at 11:43:32AM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> nand_ooblayout_lp_hamming_ops can be made static as it does not need to be
-> in global scope.
+> As I noted on the mailing list, it's easier than I originally thought to
+> create intentional collisions in the digested names.  Unfortunately it's
+> not too easy to solve this, so for now just fix the comment to not lie.
 > 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Applied, thanks.
 
-Brian, feel free to apply this patch directly if you want, otherwise,
-I'll queue it for 4.13.
-
-> ---
->  drivers/mtd/nand/nand_base.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index d474378ed810..d3a735012b81 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -202,7 +202,7 @@ static int nand_ooblayout_free_lp_hamming(struct mtd_info *mtd, int section,
->  	return 0;
->  }
->  
-> -const struct mtd_ooblayout_ops nand_ooblayout_lp_hamming_ops = {
-> +static const struct mtd_ooblayout_ops nand_ooblayout_lp_hamming_ops = {
->  	.ecc = nand_ooblayout_ecc_lp_hamming,
->  	.free = nand_ooblayout_free_lp_hamming,
->  };
+					- Ted
