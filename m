@@ -1,21 +1,31 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1d6KYY-0001j0-CE
- for linux-mtd@lists.infradead.org; Thu, 04 May 2017 17:28:48 +0000
-Date: Thu, 4 May 2017 19:28:14 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
- Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] MAINTAINERS: Update NAND subsystem git repositories
-Message-ID: <20170504192814.78798af4@bbrezillon>
-In-Reply-To: <20170504165116.GA50116@google.com>
-References: <1493794135-23074-1-git-send-email-boris.brezillon@free-electrons.com>
- <20170504165116.GA50116@google.com>
+From: Han Xu <han.xu@nxp.com>
+To: Stefan Agner <stefan@agner.ch>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "boris.brezillon@free-electrons.com"
+ <boris.brezillon@free-electrons.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
+ "cyrille.pitchen@atmel.com" <cyrille.pitchen@atmel.com>
+CC: "robh+dt@kernel.org" <robh+dt@kernel.org>, "mark.rutland@arm.com"
+ <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "kernel@pengutronix.de" <kernel@pengutronix.de>,
+ "fabio.estevam@freescale.com" <fabio.estevam@freescale.com>,
+ "LW@KARO-electronics.de" <LW@KARO-electronics.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/5] ARM: dts: imx7: add GPMI NAND
+Date: Thu, 4 May 2017 19:13:16 +0000
+Message-ID: <c66ca9c8-2a9f-8938-7a70-7f9dfe763457@nxp.com>
+References: <20170422012338.4635-1-stefan@agner.ch>
+ <20170422012338.4635-5-stefan@agner.ch>
+In-Reply-To: <20170422012338.4635-5-stefan@agner.ch>
+Content-Language: en-US
+Content-Type: text/plain; charset="Windows-1252"
+Content-ID: <4865F377CEBB87448E2D391CA8CA02FE@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,47 +35,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 4 May 2017 09:51:16 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
 
-> On Wed, May 03, 2017 at 08:48:55AM +0200, Boris Brezillon wrote:
-> > NAND branches are now hosted on MTD repos, nand/next is on l2-mtd and
-> > nand/fixes will be on linux-mtd.
-> > 
-> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > ---
-> >  MAINTAINERS | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 9a84d0022d57..4aa9ca992ad4 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -8605,7 +8605,8 @@ R:	Richard Weinberger <richard@nod.at>
-> >  L:	linux-mtd@lists.infradead.org
-> >  W:	http://www.linux-mtd.infradead.org/
-> >  Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
-> > -T:	git git://github.com/linux-nand/linux.git
-> > +T:	git git://git.infradead.org/linux-mtd.git
-> > +T:	git git://git.infradead.org/l2-mtd.git  
-> 
-> Do you want to include the branch names there?
 
-Yep, we could do that. Do you plan to take the patch in your tree? If
-you do, can you fix that when applying?
+On 04/21/2017 08:23 PM, Stefan Agner wrote:
+> Add i.MX 7 GPMI NAND module.
+>
+> Signed-off-by: Stefan Agner <stefan@agner.ch>
+> ---
+>   arch/arm/boot/dts/imx7s.dtsi | 31 +++++++++++++++++++++++++++++++
+>   1 file changed, 31 insertions(+)
+>
+> diff --git a/arch/arm/boot/dts/imx7s.dtsi b/arch/arm/boot/dts/imx7s.dtsi
+> index 843eb379e1ea..9645257638d4 100644
+> --- a/arch/arm/boot/dts/imx7s.dtsi
+> +++ b/arch/arm/boot/dts/imx7s.dtsi
+> @@ -995,5 +995,36 @@
+>   				status =3D "disabled";
+>   			};
+>   		};
+> +
+> +		dma_apbh: dma-apbh@33000000 {
+> +			compatible =3D "fsl,imx7d-dma-apbh", "fsl,imx28-dma-apbh";
+> +			reg =3D <0x33000000 0x2000>;
+> +			interrupts =3D <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-names =3D "gpmi0", "gpmi1", "gpmi2", "gpmi3";
+> +			#dma-cells =3D <1>;
+> +			dma-channels =3D <4>;
+> +			clocks =3D <&clks IMX7D_NAND_USDHC_BUS_ROOT_CLK>,
+> +				<&clks IMX7D_NAND_ROOT_CLK>;
+> +			clock-names =3D "dma_apbh_bch", "dma_apbh_io";
+> +		};
+Do you need some patches to enable all clks for APBH DMA? Refer to=20
+https://patchwork.ozlabs.org/patch/551967/
 
-Thanks,
-
-Boris
-
-> I suppose we could do the
-> same for the main MTD entry too...
-> 
-> Brian
-> 
-> >  S:	Maintained
-> >  F:	drivers/mtd/nand/
-> >  F:	include/linux/mtd/nand*.h
-> > -- 
-> > 2.7.4
-> >   
+> +
+> +		gpmi: gpmi-nand@33002000{
+> +			compatible =3D "fsl,imx7d-gpmi-nand";
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <1>;
+> +			reg =3D <0x33002000 0x2000>, <0x33004000 0x4000>;
+> +			reg-names =3D "gpmi-nand", "bch";
+> +			interrupts =3D <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-names =3D "bch";
+> +			clocks =3D <&clks IMX7D_NAND_ROOT_CLK>,
+> +				<&clks IMX7D_NAND_USDHC_BUS_ROOT_CLK>;
+> +			clock-names =3D "gpmi_io", "gpmi_bch_apb";
+> +			dmas =3D <&dma_apbh 0>;
+> +			dma-names =3D "rx-tx";
+> +			status =3D "disabled";
+> +		};
+>   	};
+>   };
