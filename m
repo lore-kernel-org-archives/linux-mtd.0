@@ -1,7 +1,7 @@
 Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d6NSj-0001x9-4w
- for linux-mtd@lists.infradead.org; Thu, 04 May 2017 20:34:59 +0000
+ id 1d6NSj-0001x8-51
+ for linux-mtd@lists.infradead.org; Thu, 04 May 2017 20:35:00 +0000
 From: Julia Lawall <Julia.Lawall@lip6.fr>
 To: David Woodhouse <dwmw2@infradead.org>
 Cc: keescook@chromium.org, kernel-janitors@vger.kernel.org,
@@ -10,9 +10,9 @@ Cc: keescook@chromium.org, kernel-janitors@vger.kernel.org,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/9] mtd: physmap_of: Drop unnecessary static
-Date: Thu,  4 May 2017 22:10:47 +0200
-Message-Id: <1493928654-18768-3-git-send-email-Julia.Lawall@lip6.fr>
+Subject: [PATCH 1/9] mtd: cfi_cmdset_0020: Drop unnecessary static
+Date: Thu,  4 May 2017 22:10:46 +0200
+Message-Id: <1493928654-18768-2-git-send-email-Julia.Lawall@lip6.fr>
 In-Reply-To: <1493928654-18768-1-git-send-email-Julia.Lawall@lip6.fr>
 References: <1493928654-18768-1-git-send-email-Julia.Lawall@lip6.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -61,28 +61,28 @@ command.
 
 before:
    text    data     bss     dec     hex filename
-    835      80       8     923     39b drivers/mtd/maps/physmap_of_gemini.o
+  16671      48      16   16735    415f drivers/mtd/chips/cfi_cmdset_0020.o
 
 after:
    text    data     bss     dec     hex filename
-    823      80       0     903     387 drivers/mtd/maps/physmap_of_gemini.o
+  16639      48       8   16695    4137 drivers/mtd/chips/cfi_cmdset_0020.o
 
 Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
 ---
- drivers/mtd/maps/physmap_of_gemini.c |    2 +-
+ drivers/mtd/chips/cfi_cmdset_0020.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/maps/physmap_of_gemini.c b/drivers/mtd/maps/physmap_of_gemini.c
-index 9d371cd..05b286b 100644
---- a/drivers/mtd/maps/physmap_of_gemini.c
-+++ b/drivers/mtd/maps/physmap_of_gemini.c
-@@ -59,7 +59,7 @@ int of_flash_probe_gemini(struct platform_device *pdev,
- 			  struct device_node *np,
- 			  struct map_info *map)
- {
--	static struct regmap *rmap;
-+	struct regmap *rmap;
- 	struct device *dev = &pdev->dev;
- 	u32 val;
- 	int ret;
+diff --git a/drivers/mtd/chips/cfi_cmdset_0020.c b/drivers/mtd/chips/cfi_cmdset_0020.c
+index 94d3eb4..7d34296 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0020.c
++++ b/drivers/mtd/chips/cfi_cmdset_0020.c
+@@ -666,7 +666,7 @@ static int cfi_staa_write_buffers (struct mtd_info *mtd, loff_t to,
+ 	size_t	 totlen = 0, thislen;
+ 	int	 ret = 0;
+ 	size_t	 buflen = 0;
+-	static char *buffer;
++	char *buffer;
+ 
+ 	if (!ECCBUF_SIZE) {
+ 		/* We should fall back to a general writev implementation.
