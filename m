@@ -1,18 +1,21 @@
-Received: from mail-cys01nam02on0064.outbound.protection.outlook.com
- ([104.47.37.64] helo=NAM02-CY1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d6B4d-0000gl-CK
- for linux-mtd@lists.infradead.org; Thu, 04 May 2017 07:21:17 +0000
-From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-To: <linux-mtd@lists.infradead.org>
-CC: <dedekind1@gmail.com>, <oss@buserror.net>, Prabhakar Kushwaha
- <prabhakar.kushwaha@nxp.com>
-Subject: [PATCH] driver: mtd: update struct map_info's swap as per map
- requirement.
-Date: Thu, 4 May 2017 12:50:37 +0530
-Message-ID: <1493882437-4541-1-git-send-email-prabhakar.kushwaha@nxp.com>
+Subject: Re: [RFC PATCH] mtd: spi-nor: handle signal case as failure
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Nicholas Mc Guire
+ <der.herr@hofr.at>
+References: <1493805189-25327-1-git-send-email-der.herr@hofr.at>
+ <b3de06f6-9fcd-4b58-60f2-14c55d83898d@wedev4u.fr>
+CC: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Boris
+ Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre
+ Torgue <alexandre.torgue@st.com>, <linux-mtd@lists.infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+From: Ludovic BARRE <ludovic.barre@st.com>
+Message-ID: <845ce78f-f3b0-35c0-8e3d-580ce4e1f63a@st.com>
+Date: Thu, 4 May 2017 09:40:11 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <b3de06f6-9fcd-4b58-60f2-14c55d83898d@wedev4u.fr>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +25,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It is not necessary for all device's maps to be CFI_HOST_ENDIAN. Maps device
-can be Bigendian or little endian.
+On 05/03/2017 11:23 PM, Cyrille Pitchen wrote:
+> Hi all,
+>
+> Le 03/05/2017 à 11:53, Nicholas Mc Guire a écrit :
+>>   The problem is that stm32_qspi_wait_cmd() will indicate success in case of
+>>   being interrupted. The if condition is incomplete here as
+>>   wait_for_copletion_interruptible_timeout can return -ERESTARTSYS but this
+>>   is not handled by if(!wait_for_completion_interruptible_timeout()).
+>>   While somewhat unlikely it probably would be hard to figure out what went
+>>   wrong if the signal case does occur.
+>>
+>> Fixes: commit 0d43d7ab277a ("mtd: spi-nor: add driver for STM32 quad spi flash controller")
+>> Signed-off-by: Nicholas Mc Guire <der.herr@hofr.at>
+>> ---
+>> Problem found by experimental coccinelle script
+>>
+>> Its not clear if its sufficient to simply treat this case as failure or
+>> if it might need some debug output to allow differentiation of signal
+>> and timeout case.
+>>
+>> Patch was compile tested with: stm32_defconfig +CONFIG_MTD=y, CONFIG_MTD_SPI_NOR=y,
+>> CONFIG_SPI_STM32_QUADSPI=m
+>>
+>> Patch is against v4.11-rc8 (localversion-next is next-20170503)
+>>
+>>   drivers/mtd/spi-nor/stm32-quadspi.c  | 10 ++++++++--
+>>   1 files changed, 10 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/stm32-quadspi.c b/drivers/mtd/spi-nor/stm32-quadspi.c
+>> index 1056e74..27147ad 100644
+>> --- a/drivers/mtd/spi-nor/stm32-quadspi.c
+>> +++ b/drivers/mtd/spi-nor/stm32-quadspi.c
+>> @@ -159,6 +159,7 @@ static int stm32_qspi_wait_cmd(struct stm32_qspi *qspi)
+>>   {
+>>   	u32 cr;
+>>   	int err = 0;
+>> +	long timeout = 0;
+>>   
+>>   	if (readl_relaxed(qspi->io_base + QUADSPI_SR) & SR_TCF)
+>>   		return 0;
+>> @@ -167,8 +168,13 @@ static int stm32_qspi_wait_cmd(struct stm32_qspi *qspi)
+>>   	cr = readl_relaxed(qspi->io_base + QUADSPI_CR);
+>>   	writel_relaxed(cr | CR_TCIE, qspi->io_base + QUADSPI_CR);
+>>   
+>> -	if (!wait_for_completion_interruptible_timeout(&qspi->cmd_completion,
+>> -						       msecs_to_jiffies(1000)))
+> Ludovic, can we just use wait_for_completion_timeout() instead?
+exactly, I would use _interruptible extension to allow "user" to
+abort a long transfer (without wait the end of command transfert).
+But it's not crucial for stm32_qspi, this could be replace by
+wait_for_completion_timeout.
+sorry to disturb the "mtd pull" :-(
 
-Currently it is being taken care using CONFIG_MTD_CFI_LE_BYTE_SWAP or
-CONFIG_MTD_CFI_BE_BYTE_SWAP i.e. compile time.
-
-Now update struct map_info's swap field based on device characteristics
-defined in device tree.
-
-Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
----
- drivers/mtd/maps/physmap_of.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-index 14e8909..f39607d 100644
---- a/drivers/mtd/maps/physmap_of.c
-+++ b/drivers/mtd/maps/physmap_of.c
-@@ -20,6 +20,7 @@
- #include <linux/mtd/map.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/concat.h>
-+#include <linux/mtd/cfi_endian.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/of_platform.h>
-@@ -243,6 +244,9 @@ static int of_flash_probe(struct platform_device *dev)
- 		info->list[i].map.bankwidth = be32_to_cpup(width);
- 		info->list[i].map.device_node = dp;
- 
-+		if (of_property_read_bool(dp->parent, "big-endian"))
-+			info->list[i].map.swap = CFI_BIG_ENDIAN;
-+
- 		err = of_flash_probe_gemini(dev, dp, &info->list[i].map);
- 		if (err)
- 			return err;
--- 
-2.7.4
+Best regards,
+Ludo
+> I think so but you surely know better than me :)
+> Do you plan to receive signal? maybe to abort the current SPI flash command?
+>
+> Best regards,
+>
+> Cyrille
+>
+>> +	timeout = wait_for_completion_interruptible_timeout(
+>> +				&qspi->cmd_completion, msecs_to_jiffies(1000));
+>> +
+>> +	/* since the calling side only cares about success of failure
+>> +	 * returning -ETIMEDOUT even when interrupted should be ok here
+>> +	 */
+>> +	if (timeout == 0 || timeout == -ERESTARTSYS)
+>>   		err = -ETIMEDOUT;
+>>   
+>>   	writel_relaxed(cr, qspi->io_base + QUADSPI_CR);
+>>
