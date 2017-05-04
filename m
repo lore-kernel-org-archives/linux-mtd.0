@@ -1,21 +1,24 @@
-Subject: Re: [RFC PATCH] mtd: spi-nor: handle signal case as failure
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Nicholas Mc Guire
- <der.herr@hofr.at>
-References: <1493805189-25327-1-git-send-email-der.herr@hofr.at>
- <b3de06f6-9fcd-4b58-60f2-14c55d83898d@wedev4u.fr>
-CC: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Boris
- Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre
- Torgue <alexandre.torgue@st.com>, <linux-mtd@lists.infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-From: Ludovic BARRE <ludovic.barre@st.com>
-Message-ID: <845ce78f-f3b0-35c0-8e3d-580ce4e1f63a@st.com>
-Date: Thu, 4 May 2017 09:40:11 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1d6CLb-000683-Id
+ for linux-mtd@lists.infradead.org; Thu, 04 May 2017 08:42:53 +0000
+Date: Thu, 4 May 2017 10:42:16 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Pavel Machek <pavel@ucw.cz>
+Cc: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>, Thibaud Cornic
+ <thibaud_cornic@sigmadesigns.com>, linux-mtd
+ <linux-mtd@lists.infradead.org>, Mason <slash.tmp@free.fr>
+Subject: Re: [PATCH] tango_nand.c: fix ecc.stats_corrected in empty flash case
+Message-ID: <20170504104216.0969423f@bbrezillon>
+In-Reply-To: <20170503200427.GC17315@amd>
+References: <20170419121332.GA26979@amd> <20170419231804.5a04ed69@bbrezillon>
+ <20170421100813.GA4332@amd> <20170421133721.GA15332@amd>
+ <20170421154903.2782cd06@bbrezillon> <20170422104033.GA14508@amd>
+ <53204f36-9662-e8a0-c431-09fb68276ab6@sigmadesigns.com>
+ <20170503200427.GC17315@amd>
 MIME-Version: 1.0
-In-Reply-To: <b3de06f6-9fcd-4b58-60f2-14c55d83898d@wedev4u.fr>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,76 +28,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 05/03/2017 11:23 PM, Cyrille Pitchen wrote:
-> Hi all,
->
-> Le 03/05/2017 à 11:53, Nicholas Mc Guire a écrit :
->>   The problem is that stm32_qspi_wait_cmd() will indicate success in case of
->>   being interrupted. The if condition is incomplete here as
->>   wait_for_copletion_interruptible_timeout can return -ERESTARTSYS but this
->>   is not handled by if(!wait_for_completion_interruptible_timeout()).
->>   While somewhat unlikely it probably would be hard to figure out what went
->>   wrong if the signal case does occur.
->>
->> Fixes: commit 0d43d7ab277a ("mtd: spi-nor: add driver for STM32 quad spi flash controller")
->> Signed-off-by: Nicholas Mc Guire <der.herr@hofr.at>
->> ---
->> Problem found by experimental coccinelle script
->>
->> Its not clear if its sufficient to simply treat this case as failure or
->> if it might need some debug output to allow differentiation of signal
->> and timeout case.
->>
->> Patch was compile tested with: stm32_defconfig +CONFIG_MTD=y, CONFIG_MTD_SPI_NOR=y,
->> CONFIG_SPI_STM32_QUADSPI=m
->>
->> Patch is against v4.11-rc8 (localversion-next is next-20170503)
->>
->>   drivers/mtd/spi-nor/stm32-quadspi.c  | 10 ++++++++--
->>   1 files changed, 10 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/mtd/spi-nor/stm32-quadspi.c b/drivers/mtd/spi-nor/stm32-quadspi.c
->> index 1056e74..27147ad 100644
->> --- a/drivers/mtd/spi-nor/stm32-quadspi.c
->> +++ b/drivers/mtd/spi-nor/stm32-quadspi.c
->> @@ -159,6 +159,7 @@ static int stm32_qspi_wait_cmd(struct stm32_qspi *qspi)
->>   {
->>   	u32 cr;
->>   	int err = 0;
->> +	long timeout = 0;
->>   
->>   	if (readl_relaxed(qspi->io_base + QUADSPI_SR) & SR_TCF)
->>   		return 0;
->> @@ -167,8 +168,13 @@ static int stm32_qspi_wait_cmd(struct stm32_qspi *qspi)
->>   	cr = readl_relaxed(qspi->io_base + QUADSPI_CR);
->>   	writel_relaxed(cr | CR_TCIE, qspi->io_base + QUADSPI_CR);
->>   
->> -	if (!wait_for_completion_interruptible_timeout(&qspi->cmd_completion,
->> -						       msecs_to_jiffies(1000)))
-> Ludovic, can we just use wait_for_completion_timeout() instead?
-exactly, I would use _interruptible extension to allow "user" to
-abort a long transfer (without wait the end of command transfert).
-But it's not crucial for stm32_qspi, this could be replace by
-wait_for_completion_timeout.
-sorry to disturb the "mtd pull" :-(
+On Wed, 3 May 2017 22:04:27 +0200
+Pavel Machek <pavel@ucw.cz> wrote:
 
-Best regards,
-Ludo
-> I think so but you surely know better than me :)
-> Do you plan to receive signal? maybe to abort the current SPI flash command?
->
-> Best regards,
->
-> Cyrille
->
->> +	timeout = wait_for_completion_interruptible_timeout(
->> +				&qspi->cmd_completion, msecs_to_jiffies(1000));
->> +
->> +	/* since the calling side only cares about success of failure
->> +	 * returning -ETIMEDOUT even when interrupted should be ok here
->> +	 */
->> +	if (timeout == 0 || timeout == -ERESTARTSYS)
->>   		err = -ETIMEDOUT;
->>   
->>   	writel_relaxed(cr, qspi->io_base + QUADSPI_CR);
->>
+> Hi!
+> On Mon 2017-04-24 10:58:47, Marc Gonzalez wrote:
+> > [ Trimming CC list ]
+> > 
+> > On 22/04/2017 12:40, Pavel Machek wrote:
+> >   
+> > > Fix ecc.stats_corrected in empty flash case.
+> > > 
+> > > Signed-off-by: Pavel Machek <pavel@denx.de>
+> > > 
+> > > ---
+> > > 
+> > > This was suggested by Boris Brezillon in another context. Not tested;
+> > > I don't have the hardware.
+> > > 
+> > > diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/tango_nand.c
+> > > index 4a5e948..db4bff4 100644
+> > > --- a/drivers/mtd/nand/tango_nand.c
+> > > +++ b/drivers/mtd/nand/tango_nand.c
+> > > @@ -193,6 +193,8 @@ static int check_erased_page(struct nand_chip *chip, u8 *buf)
+> > >  						  chip->ecc.strength);
+> > >  		if (res < 0)
+> > >  			mtd->ecc_stats.failed++;
+> > > +		else
+> > > +			mtd->ecc_stats.corrected += res;
+> > >  
+> > >  		bitflips = max(res, bitflips);
+> > >  		buf += pkt_size;
+> > >   
+> > 
+> > Hello Pavel,
+> > 
+> > You may have noticed that ecc_stats.corrected is not updated in
+> > decode_error_report() which is the main code path, i.e. the path
+> > that will succeed 99.99% of the time (HW read).
+> > 
+> > It turns out that the HW does not report the number of errors
+> > corrected in a page... Instead it reports two values:
+> > 1) U = number of errors corrected in the first packet/step
+> > 2) V = max number of errors corrected in other packets/steps
+> > 
+> > Thus, it is not possible to determine the actual number of errors
+> > corrected in a page (unless V is 0). Otherwise, we just have an
+> > interval; let n be the number of packets/steps:
+> > 
+> > U + V <= corrected errors count <= U + (n-1)*V
+> > 
+> > In my opinion, it is better to provide no information than to
+> > provide incorrect information. Therefore, I did not update
+> > ecc_stats.corrected in decode_error_report().  
+> 
+> Well... Having corrected ECC errors is pretty rare, right?
+
+Depends on the NAND chip. On modern SLC NAND chips requiring
+ECC of 8bits/512bytes are likely to have frequent bitflips.
+
+> So one
+> solution would be to re-compute ECCs in software if we see U or V >
+> 0...
+
+Hm, not sure it's worth the trouble for statistics that are anyway
+rarely used, and when they are, are only used has a metric to determine
+how worn the NAND is.
+
+I'd prefer to see a better user-space interface returning the
+max_bitflips information when someone reads from an MTD device (see [1])
+rather than trying to fix drivers to return the exact number of
+corrected bitflips (which might be impossible for some of them anyway).
+
+[1]http://lists.infradead.org/pipermail/linux-mtd/2016-April/067187.html
