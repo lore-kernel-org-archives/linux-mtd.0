@@ -1,25 +1,31 @@
-Date: Fri, 5 May 2017 09:49:39 +0000
-From: Nicholas Mc Guire <der.herr@hofr.at>
-To: Ludovic BARRE <ludovic.barre@st.com>
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@st.com>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] mtd: spi-nor: handle signal case as failure
-Message-ID: <20170505094939.GB13297@osadl.at>
-References: <1493805189-25327-1-git-send-email-der.herr@hofr.at>
- <b3de06f6-9fcd-4b58-60f2-14c55d83898d@wedev4u.fr>
- <845ce78f-f3b0-35c0-8e3d-580ce4e1f63a@st.com>
+Received: from mail-out.m-online.net ([212.18.0.9])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d6d4P-0005Aw-MD
+ for linux-mtd@lists.infradead.org; Fri, 05 May 2017 13:15:00 +0000
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+ by mail-out.m-online.net (Postfix) with ESMTP id 3wKC6D6HLgz1r6N8
+ for <linux-mtd@lists.infradead.org>; Fri,  5 May 2017 15:14:28 +0200 (CEST)
+Received: from localhost (dynscan01.mnet-online.de [192.168.6.70])
+ by mail.m-online.net (Postfix) with ESMTP id 3wKC6D60VQz3j37m
+ for <linux-mtd@lists.infradead.org>; Fri,  5 May 2017 15:14:28 +0200 (CEST)
+Received: from mail.mnet-online.de ([192.168.8.182])
+ by localhost (dynscan01.mail.m-online.net [192.168.6.70]) (amavisd-new,
+ port 10024)
+ with ESMTP id XHQT9lIOzQOV for <linux-mtd@lists.infradead.org>;
+ Fri,  5 May 2017 15:14:27 +0200 (CEST)
+Received: from jawa (89-77-92-62.dynamic.chello.pl [89.77.92.62])
+ (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail.mnet-online.de (Postfix) with ESMTPSA
+ for <linux-mtd@lists.infradead.org>; Fri,  5 May 2017 15:14:27 +0200 (CEST)
+Date: Fri, 5 May 2017 15:14:25 +0200
+From: Lukasz Majewski <lukma@denx.de>
+To: linux-mtd@lists.infradead.org
+Subject: SW ECC - double bit flip detection on old NAND devices
+Message-ID: <20170505151425.4350ea69@jawa>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <845ce78f-f3b0-35c0-8e3d-580ce4e1f63a@st.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,61 +35,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 04, 2017 at 09:40:11AM +0200, Ludovic BARRE wrote:
-> On 05/03/2017 11:23 PM, Cyrille Pitchen wrote:
-> >Hi all,
-> >
-> >Le 03/05/2017 à 11:53, Nicholas Mc Guire a écrit :
-> >>  The problem is that stm32_qspi_wait_cmd() will indicate success in case of
-> >>  being interrupted. The if condition is incomplete here as
-> >>  wait_for_copletion_interruptible_timeout can return -ERESTARTSYS but this
-> >>  is not handled by if(!wait_for_completion_interruptible_timeout()).
-> >>  While somewhat unlikely it probably would be hard to figure out what went
-> >>  wrong if the signal case does occur.
-> >>
-> >>Fixes: commit 0d43d7ab277a ("mtd: spi-nor: add driver for STM32 quad spi flash controller")
-> >>Signed-off-by: Nicholas Mc Guire <der.herr@hofr.at>
-> >>---
-> >>Problem found by experimental coccinelle script
-> >>
-> >>Its not clear if its sufficient to simply treat this case as failure or
-> >>if it might need some debug output to allow differentiation of signal
-> >>and timeout case.
-> >>
-> >>Patch was compile tested with: stm32_defconfig +CONFIG_MTD=y, CONFIG_MTD_SPI_NOR=y,
-> >>CONFIG_SPI_STM32_QUADSPI=m
-> >>
-> >>Patch is against v4.11-rc8 (localversion-next is next-20170503)
-> >>
-> >>  drivers/mtd/spi-nor/stm32-quadspi.c  | 10 ++++++++--
-> >>  1 files changed, 10 insertions(+), 2 deletions(-)
-> >>
-> >>diff --git a/drivers/mtd/spi-nor/stm32-quadspi.c b/drivers/mtd/spi-nor/stm32-quadspi.c
-> >>index 1056e74..27147ad 100644
-> >>--- a/drivers/mtd/spi-nor/stm32-quadspi.c
-> >>+++ b/drivers/mtd/spi-nor/stm32-quadspi.c
-> >>@@ -159,6 +159,7 @@ static int stm32_qspi_wait_cmd(struct stm32_qspi *qspi)
-> >>  {
-> >>  	u32 cr;
-> >>  	int err = 0;
-> >>+	long timeout = 0;
-> >>  	if (readl_relaxed(qspi->io_base + QUADSPI_SR) & SR_TCF)
-> >>  		return 0;
-> >>@@ -167,8 +168,13 @@ static int stm32_qspi_wait_cmd(struct stm32_qspi *qspi)
-> >>  	cr = readl_relaxed(qspi->io_base + QUADSPI_CR);
-> >>  	writel_relaxed(cr | CR_TCIE, qspi->io_base + QUADSPI_CR);
-> >>-	if (!wait_for_completion_interruptible_timeout(&qspi->cmd_completion,
-> >>-						       msecs_to_jiffies(1000)))
-> >Ludovic, can we just use wait_for_completion_timeout() instead?
-> exactly, I would use _interruptible extension to allow "user" to
-> abort a long transfer (without wait the end of command transfert).
-> But it's not crucial for stm32_qspi, this could be replace by
-> wait_for_completion_timeout.
-> sorry to disturb the "mtd pull" :-(
->
-ok - so would you take care of this then - I guess it makes more
-sense for the patch to come from someone that understand the context
-than from someone that just pinpionted an inconsistency in API use.
+Dear All,
 
-thx!
-hofrat 
+I've a problem with pretty old Flash NAND memory (Samsung 128Mx8) [1]
+
+It doesn't support On-Chip ECC - one needs to calculate ECC manually.
+
+The Yaffs2 FS (for this version) uses "1bit correction
+ECC" (yaffs_ecc.c). It calculates ECC for 256 bytes -> we have got 22
+bits for ECC (rounded up to 3 bytes).
+
+For 2048 bytes page we do have 8 such ECC blocks -> 24 ECC bytes in
+total in OOB.
+
+This code (as noted in yaffs_ecc.* header) is able to correct one
+single bit flip.
+
+I've also looked into Linux kernel code for SW ECC calculation:
+
+http://elixir.free-electrons.com/linux/latest/source/drivers/mtd/nand/nand_ecc.c#L523
+
+And here it is also explicitly said that we can correct one bit in such
+chunk.
+
+Please correct me if I'm wrong but when we have two bit-flips in such
+256 bytes chunk, the ECC will be still correct and such obviously
+broken page will not be "retired".
+
+What one can do to prevent such situation? 
+
+My idea, if the above holds, would be to implement better ECC scheme as
+proposed in "Error Correction Code (ECC) in Micron" doc [2].
+
+Maybe somebody knows better/simpler solution?
+
+
+Side note: newer NANDs support On-Chip ECC with algorithms allowing
+correction of up to 4 bits in 512B chunks of data.
+
+
+[1] -
+http://www.sst-ic.com/File/Seriea/PDF/100923163334f47b2ce6-13b7-43d0-9b8c-ec1c75ca2c6f.pdf
+[2] -
+https://www.micron.com/~/media/documents/products/technical-note/nand-flash/tn2963_ecc_in_slc_nand.pdf
+
+Best regards,
+
+Lukasz Majewski
+
+--
+
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
