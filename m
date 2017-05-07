@@ -1,34 +1,19 @@
-Received: from mail-io0-f194.google.com ([209.85.223.194])
+Received: from mail-oi0-x235.google.com ([2607:f8b0:4003:c06::235])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d6jMI-00057Z-PP
- for linux-mtd@lists.infradead.org; Fri, 05 May 2017 19:57:48 +0000
-Received: by mail-io0-f194.google.com with SMTP id v34so3739113iov.2
- for <linux-mtd@lists.infradead.org>; Fri, 05 May 2017 12:57:26 -0700 (PDT)
-Date: Fri, 5 May 2017 14:57:24 -0500
-From: Rob Herring <robh@kernel.org>
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Alexandre Courbot <gnurou@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
- Ralf Baechle <ralf@linux-mips.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Maarten ter Huurne <maarten@treewalker.org>,
- Lars-Peter Clausen <lars@metafoo.de>,
- Paul Burton <paul.burton@imgtec.com>, james.hogan@imgtec.com,
- linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mips@linux-mips.org,
- linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-pwm@vger.kernel.org, linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH v5 02/14] dt/bindings: Document gpio-ingenic
-Message-ID: <20170505195724.mph4uov3vd52hscm@rob-hp-laptop>
-References: <20170402204244.14216-2-paul@crapouillou.net>
- <20170428200824.10906-1-paul@crapouillou.net>
- <20170428200824.10906-3-paul@crapouillou.net>
+ id 1d7Mcl-0005mp-Cv
+ for linux-mtd@lists.infradead.org; Sun, 07 May 2017 13:53:25 +0000
+Received: by mail-oi0-x235.google.com with SMTP id h4so27154715oib.3
+ for <linux-mtd@lists.infradead.org>; Sun, 07 May 2017 06:53:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170428200824.10906-3-paul@crapouillou.net>
+In-Reply-To: <20170505151425.4350ea69@jawa>
+References: <20170505151425.4350ea69@jawa>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Sun, 7 May 2017 15:53:01 +0200
+Message-ID: <CAFLxGvzQ-OMhskGZ8V3EbG4GTR-6bLboZmNifoQ_3=VBstpM9g@mail.gmail.com>
+Subject: Re: SW ECC - double bit flip detection on old NAND devices
+To: Lukasz Majewski <lukma@denx.de>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,20 +23,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Apr 28, 2017 at 10:08:12PM +0200, Paul Cercueil wrote:
-> This commit adds documentation for the devicetree bindings of the
-> gpio-ingenic driver, which handles GPIOs of the Ingenic SoCs
-> currently supported by the Linux kernel.
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  .../devicetree/bindings/gpio/ingenic,gpio.txt      | 46 ++++++++++++++++++++++
->  1 file changed, 46 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/gpio/ingenic,gpio.txt
-> 
->  v2: New patch
->  v3: No changes
->  v4: Update for the v4 version of the gpio-ingenic driver
->  v5: Remove gpio-bank-... compatible strings, and add 'reg' property
+Lukasz,
 
-Acked-by: Rob Herring <robh@kernel.org>
+On Fri, May 5, 2017 at 3:14 PM, Lukasz Majewski <lukma@denx.de> wrote:
+> Dear All,
+>
+> I've a problem with pretty old Flash NAND memory (Samsung 128Mx8) [1]
+>
+> It doesn't support On-Chip ECC - one needs to calculate ECC manually.
+>
+> The Yaffs2 FS (for this version) uses "1bit correction
+> ECC" (yaffs_ecc.c). It calculates ECC for 256 bytes -> we have got 22
+> bits for ECC (rounded up to 3 bytes).
+>
+> For 2048 bytes page we do have 8 such ECC blocks -> 24 ECC bytes in
+> total in OOB.
+>
+> This code (as noted in yaffs_ecc.* header) is able to correct one
+> single bit flip.
+>
+> I've also looked into Linux kernel code for SW ECC calculation:
+>
+> http://elixir.free-electrons.com/linux/latest/source/drivers/mtd/nand/nand_ecc.c#L523
+
+This is for ecc->algo == NAND_ECC_HAMMING.
+
+> And here it is also explicitly said that we can correct one bit in such
+> chunk.
+>
+> Please correct me if I'm wrong but when we have two bit-flips in such
+> 256 bytes chunk, the ECC will be still correct and such obviously
+> broken page will not be "retired".
+>
+> What one can do to prevent such situation?
+>
+> My idea, if the above holds, would be to implement better ECC scheme as
+> proposed in "Error Correction Code (ECC) in Micron" doc [2].
+>
+> Maybe somebody knows better/simpler solution?
+
+I'd suggest to use BCH instead of Hamming.
+Please see NAND_ECC_BCH.
+
+-- 
+Thanks,
+//richard
