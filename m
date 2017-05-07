@@ -1,19 +1,23 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d7SjL-00033F-9B
- for linux-mtd@lists.infradead.org; Sun, 07 May 2017 20:24:37 +0000
-Date: Sun, 7 May 2017 22:24:04 +0200
-From: Lukasz Majewski <lukma@denx.de>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: SW ECC - double bit flip detection on old NAND devices
-Message-ID: <20170507222404.241e7281@jawa>
-In-Reply-To: <CAFLxGvzQ-OMhskGZ8V3EbG4GTR-6bLboZmNifoQ_3=VBstpM9g@mail.gmail.com>
-References: <20170505151425.4350ea69@jawa>
- <CAFLxGvzQ-OMhskGZ8V3EbG4GTR-6bLboZmNifoQ_3=VBstpM9g@mail.gmail.com>
+ id 1d7Syt-0002Az-8z
+ for linux-mtd@lists.infradead.org; Sun, 07 May 2017 20:40:41 +0000
+Date: Sun, 7 May 2017 22:40:07 +0200
+From: Pavel Machek <pavel@ucw.cz>
+To: Tejun Heo <tj@kernel.org>
+Cc: Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
+ linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-ide@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+ boris.brezillon@free-electrons.com, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org
+Subject: Re: Race to power off harming SATA SSDs
+Message-ID: <20170507204007.GA25628@atrey.karlin.mff.cuni.cz>
+References: <20170410232118.GA4816@khazad-dum.debian.net>
+ <20170410235206.GA28603@wtj.duckdns.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170410235206.GA28603@wtj.duckdns.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,84 +27,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
+Hi!
 
-Thanks for your support.
-
-> Lukasz,
+> > However, *IN PRACTICE*, SATA STANDBY IMMEDIATE command completion
+> > [often?] only indicates that the device is now switching to the target
+> > power management state, not that it has reached the target state.  Any
+> > further device status inquires would return that it is in STANDBY mode,
+> > even if it is still entering that state.
+> > 
+> > The kernel then continues the shutdown path while the SSD is still
+> > preparing itself to be powered off, and it becomes a race.  When the
+> > kernel + firmware wins, platform power is cut before the SSD has
+> > finished (i.e. the SSD is subject to an unclean power-off).
 > 
-> On Fri, May 5, 2017 at 3:14 PM, Lukasz Majewski <lukma@denx.de> wrote:
-> > Dear All,
-> >
-> > I've a problem with pretty old Flash NAND memory (Samsung 128Mx8)
-> > [1]
-> >
-> > It doesn't support On-Chip ECC - one needs to calculate ECC
-> > manually.
-> >
-> > The Yaffs2 FS (for this version) uses "1bit correction
-> > ECC" (yaffs_ecc.c). It calculates ECC for 256 bytes -> we have got
-> > 22 bits for ECC (rounded up to 3 bytes).
-> >
-> > For 2048 bytes page we do have 8 such ECC blocks -> 24 ECC bytes in
-> > total in OOB.
-> >
-> > This code (as noted in yaffs_ecc.* header) is able to correct one
-> > single bit flip.
-> >
-> > I've also looked into Linux kernel code for SW ECC calculation:
-> >
-> > http://elixir.free-electrons.com/linux/latest/source/drivers/mtd/nand/nand_ecc.c#L523
+> At that point, the device is fully flushed and in terms of data
+> integrity should be fine with losing power at any point anyway.
+
+Actually, no, that is not how it works.
+
+"Fully flushed" is one thing, surviving power loss is
+different. Explanation below.
+
+> > NOTE: unclean SSD power-offs are dangerous and may brick the device in
+> > the worst case, or otherwise harm it (reduce longevity, damage flash
+> > blocks).  It is also not impossible to get data corruption.
 > 
-> This is for ecc->algo == NAND_ECC_HAMMING.
+> I get that the incrementing counters might not be pretty but I'm a bit
+> skeptical about this being an actual issue.  Because if that were
+> true, the device would be bricking itself from any sort of power
+> losses be that an actual power loss, battery rundown or hard power off
+> after crash.
 
-In my current 2.6.27 kernel it is called:
+And that's exactly what users see. If you do enough power fails on a
+SSD, you usually brick it, some die sooner than others. There was some
+test results published, some are here
+http://lkcl.net/reports/ssd_analysis.html, I believe I seen some
+others too.
 
-NAND_ECC_SOFT -> But this is the same.
+It is very hard for a NAND to work reliably in face of power
+failures. In fact, not even Linux MTD + UBIFS works well in that
+regards. See
+http://www.linux-mtd.infradead.org/faq/ubi.html. (Unfortunately, its
+down now?!). If we can't get it right, do you believe SSD manufactures
+do?
 
-the 
+[Issue is, if you powerdown during erase, you get "weakly erased"
+page, which will contain expected 0xff's, but you'll get bitflips
+there quickly. Similar issue exists for writes. It is solveable in
+software, just hard and slow... and we don't do it.]
+									
+									Pavel
 
-ecc.correct = nand_correct_data()
-
-, which has following statement in the function description:
-
- *
- * Detect and correct a 1 bit error for 256 byte block
- */
-
-So now it is clear that two+ bit flips happening in the 256 B chunk
-cannot be detected.
-
-> 
-> > And here it is also explicitly said that we can correct one bit in
-> > such chunk.
-> >
-> > Please correct me if I'm wrong but when we have two bit-flips in
-> > such 256 bytes chunk, the ECC will be still correct and such
-> > obviously broken page will not be "retired".
-> >
-> > What one can do to prevent such situation?
-> >
-> > My idea, if the above holds, would be to implement better ECC
-> > scheme as proposed in "Error Correction Code (ECC) in Micron" doc
-> > [2].
-> >
-> > Maybe somebody knows better/simpler solution?
-> 
-> I'd suggest to use BCH instead of Hamming.
-> Please see NAND_ECC_BCH.
-
-Thanks for your tip. I will try to backport this feature ...
-
-> 
-
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
+-- 
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
