@@ -1,37 +1,23 @@
-Received: from conssluserg-04.nifty.com ([210.131.2.83])
+Received: from twosheds.infradead.org ([2001:8b0:10b:1:21d:7dff:fe04:dbe2])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d7ZYM-0005qv-Jx
- for linux-mtd@lists.infradead.org; Mon, 08 May 2017 03:41:45 +0000
-Received: from mail-yw0-f170.google.com (mail-yw0-f170.google.com
- [209.85.161.170]) (authenticated)
- by conssluserg-04.nifty.com with ESMTP id v483emuA007744
- for <linux-mtd@lists.infradead.org>; Mon, 8 May 2017 12:40:48 +0900
-Received: by mail-yw0-f170.google.com with SMTP id 203so23810030ywe.0
- for <linux-mtd@lists.infradead.org>; Sun, 07 May 2017 20:40:48 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20170428183250.4c43e107@bbrezillon>
-References: <1492585618-13655-1-git-send-email-yamada.masahiro@socionext.com>
- <1492585618-13655-2-git-send-email-yamada.masahiro@socionext.com>
- <20170428183250.4c43e107@bbrezillon>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Mon, 8 May 2017 12:40:47 +0900
-Message-ID: <CAK7LNAQZyMoKJjzPjr12TE9s=G8GJbHGgfequtLE4h+meJT03w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mtd: nand: add generic helpers to check, match,
- maximize ECC settings
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Dinh Nguyen <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
- Graham Moore <grmoore@opensource.altera.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Chuanxiao Dong <chuanxiao.dong@intel.com>,
- Jassi Brar <jaswinder.singh@linaro.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Content-Type: text/plain; charset=UTF-8
+ id 1d7cze-0001gs-KR
+ for linux-mtd@lists.infradead.org; Mon, 08 May 2017 07:22:06 +0000
+Message-ID: <1494228094.6528.14.camel@infradead.org>
+Subject: Re: Race to power off harming SATA SSDs
+From: David Woodhouse <dwmw2@infradead.org>
+To: Pavel Machek <pavel@ucw.cz>, Tejun Heo <tj@kernel.org>
+Cc: Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
+ linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-ide@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+ boris.brezillon@free-electrons.com, linux-mtd@lists.infradead.org
+In-Reply-To: <20170507204007.GA25628@atrey.karlin.mff.cuni.cz>
+References: <20170410232118.GA4816@khazad-dum.debian.net>
+ <20170410235206.GA28603@wtj.duckdns.org>
+ <20170507204007.GA25628@atrey.karlin.mff.cuni.cz>
+Content-Type: multipart/signed; micalg="sha-256";
+ protocol="application/x-pkcs7-signature"; boundary="=-fVZRLoxOMkwA6Oz2UYSn"
+Date: Mon, 08 May 2017 08:21:34 +0100
+Mime-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,297 +27,143 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
 
+--=-fVZRLoxOMkwA6Oz2UYSn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-2017-04-29 1:32 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
-
->> +     for (setting = caps->ecc_settings; setting->step; setting++) {
->> +             /* If chip->ecc.size is already set, respect it. */
->> +             if (chip->ecc.size && setting->step != chip->ecc.size)
->> +                     continue;
->> +
->> +             /* If chip->ecc.strength is already set, respect it. */
->> +             if (chip->ecc.strength &&
->> +                 setting->strength != chip->ecc.strength)
->> +                     continue;
+On Sun, 2017-05-07 at 22:40 +0200, Pavel Machek wrote:
+> > > NOTE: unclean SSD power-offs are dangerous and may brick the device i=
+n
+> > > the worst case, or otherwise harm it (reduce longevity, damage flash
+> > > blocks).=C2=A0=C2=A0It is also not impossible to get data corruption.
 >
-> Hm, I don't get it. If chip->ecc.strength and chip->ecc.size are
-> explicitly set, you should just call nand_check_ecc_caps() and skip
-> nand_try_to_match_ecc_req(). Why would you call
-> nand_try_to_match_ecc_req() in this case?
-
-
-I want to call this function if
-ecc.size is specified but ecc.strength is not
-(or vice versa).
-
-
-If both ecc.size and ecc.strength are already specified,
-you are right, no need to call this function.
-This function can check the sanity of the specified
-combination of (step, strength), but this is the same
-as what nand_check_ecc_caps() does.
-
-
-
-
->> +
->> +             /*
->> +              * If the controller's step size is smaller than the chip's
->> +              * requirement, comparison of the strength is not simple.
->> +              */
+> > I get that the incrementing counters might not be pretty but I'm a bit
+> > skeptical about this being an actual issue.=C2=A0=C2=A0Because if that =
+were
+> > true, the device would be bricking itself from any sort of power
+> > losses be that an actual power loss, battery rundown or hard power off
+> > after crash.
 >
-> There's one thing we can easily do in this case: try to apply the
-> same strength but on the smaller step size. If it fits the OOB area, we
-> have a valid match, if it doesn't, then we can fallback to ECC
-> maximization in case no valid settings were found after iterating over
-> ECC settings.
->
-> How about:
->
->                 if (setting->step < req_step &&
->                     setting->strength < req_strength)
->                         continue;
+> And that's exactly what users see. If you do enough power fails on a
+> SSD, you usually brick it, some die sooner than others. There was some
+> test results published, some are here
+> http://lkcl.net/reports/ssd_analysis.html, I believe I seen some
+> others too.
+>=20
+> It is very hard for a NAND to work reliably in face of power
+> failures. In fact, not even Linux MTD + UBIFS works well in that
+> regards. See
+> http://www.linux-mtd.infradead.org/faq/ubi.html. (Unfortunately, its
+> down now?!). If we can't get it right, do you believe SSD manufactures
+> do?
+>=20
+> [Issue is, if you powerdown during erase, you get "weakly erased"
+> page, which will contain expected 0xff's, but you'll get bitflips
+> there quickly. Similar issue exists for writes. It is solveable in
+> software, just hard and slow... and we don't do it.]
 
-Make sense.  I will do this.
+It's not that hard. We certainly do it in JFFS2. I was fairly sure that
+it was also part of the design considerations for UBI =E2=80=94 it really o=
+ught
+to be right there too. I'm less sure about UBIFS but I would have
+expected it to be OK.
 
+SSDs however are often crap; power fail those at your peril. And of
+course there's nothing you can do when they do fail, whereas we accept
+patches for things which are implemented in Linux.
+--=-fVZRLoxOMkwA6Oz2UYSn
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
 
-
->> +             if (setting->step < req_step)
->> +                     continue;
->
-> You should probably check that setting->step < mtd->writesize.
->
->> +
->> +             steps = mtd->writesize / setting->step;
->
-> Not sure it will ever happen to have a step which is not a multiple of
-> ->writesize, but it's probably safer to do DIV_ROUND_UP(), or simply
-> skip the ECC setting entry if mtd->writesize % setting->step != 0.
-
-OK.
-
-mtd->writesize % setting->step != 0
-will guarantee
-setting->step <= mtd->writesize
-
-
-
-
-
->> +
->> +             ecc_bytes = caps->calc_ecc_bytes(setting);
->> +             if (WARN_ON_ONCE(ecc_bytes < 0))
->> +                     continue;
->> +             ecc_bytes_total = ecc_bytes * steps;
->> +
->> +             if (ecc_bytes_total > caps->avail_oobsize ||
->> +                 setting->strength * steps < req_corr)
->> +                     continue;
->> +
->> +             /*
->> +              * We assume the best is to meet the chip's requrement
->> +              * with the least number of ECC bytes.
->> +              */
->
-> If ecc_settings entries were in ascending order (lowest step-size and
-> strength first), you could bail out as soon as you find a suitable
-> config, because following settings would necessarily take more bits.
-
-If we want to achieve this,
-step-size must be descending order,
-while strength must be ascending order.
-
-This is a bit confusing (and I have no idea
-how to statically check if every driver follows this order).
-
-
-
->> +             /*
->> +              * If the number of correctable bits is the same,
->> +              * bigger ecc_step has more reliability.
->> +              */
->> +             if (corr > best_corr ||
->> +                 (corr == best_corr && setting->step > best_setting->step)) {
->> +                     best_corr = corr;
->> +                     best_setting = setting;
->> +                     best_ecc_bytes = ecc_bytes;
->> +             }
->
-> Same comment as earlier: you could probably skip a few entries by
-> enforcing ordering in the ecc_settings array.
-
-
-Assuming that step-size is descending order and strength is ascending order,
-it may be possible by iterating backward.
-
-But, I think the array should be terminated by zero or NULL.
-How to find the last entry we want to start iterating from?
-
-Assuming the array size is small, is this worthwhile?
-
-
-
->> +     }
->> +
->> +     if (!best_setting)
->> +             return -ENOTSUPP;
->> +
->> +     chip->ecc.size = best_setting->step;
->> +     chip->ecc.strength = best_setting->strength;
->> +     chip->ecc.bytes = best_ecc_bytes;
->> +
->> +     return 0;
->> +}
->> +EXPORT_SYMBOL_GPL(nand_try_to_maximize_ecc);
->> +
->>  /*
->>   * Check if the chip configuration meet the datasheet requirements.
->>
->> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
->> index 2ae781e..394128f 100644
->> --- a/include/linux/mtd/nand.h
->> +++ b/include/linux/mtd/nand.h
->> @@ -486,6 +486,28 @@ static inline void nand_hw_control_init(struct nand_hw_control *nfc)
->>  }
->>
->>  /**
->> + * struct nand_ecc_setting - information of ECC step supported by ECC engine
->> + * @step: data bytes per ECC step
->> + * @bytes: ECC bytes per step
->> + */
->> +struct nand_ecc_setting {
->> +     int step;
->> +     int strength;
->> +};
->
-> I think I already mentioned that I'd prefer to have the step and
-> strength info separated in 2 different objects so that we can easily
-> re-use the strength definitions for all step-size supported by the
-> engine (ECC engines usually provide the same set of strengths for all
-> supported step-size).
->
-> struct nand_ecc_step_size_caps {
->         int step_size;
->         int *strengths;
-> };
->
-> struct nand_ecc_engine_caps {
->         const struct nand_ecc_step_size_caps *step_sizes;
->         /* ... */
-> };
->
-> static int my_strengths[] = { 8, 16, 24, 0 };
-> static const struct nand_ecc_step_size_caps my_step_sizes[] = {
->         { 512, my_strengths },
->         { 1024, my_strengths },
->         /* sentinel */
-> };
->
-> static const struct nand_ecc_engine_caps my_ecc_caps = {
->         .step_sizes = my_step_sizes,
->         /* ... */
-> };
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCDzUw
+ggSvMIIDl6ADAgECAhEA4CPLFRKDU4mtYW56VGdrITANBgkqhkiG9w0BAQsFADBvMQswCQYDVQQG
+EwJTRTEUMBIGA1UEChMLQWRkVHJ1c3QgQUIxJjAkBgNVBAsTHUFkZFRydXN0IEV4dGVybmFsIFRU
+UCBOZXR3b3JrMSIwIAYDVQQDExlBZGRUcnVzdCBFeHRlcm5hbCBDQSBSb290MB4XDTE0MTIyMjAw
+MDAwMFoXDTIwMDUzMDEwNDgzOFowgZsxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1h
+bmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMUEw
+PwYDVQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBF
+bWFpbCBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAImxDdp6UxlOcFIdvFamBia3
+uEngludRq/HwWhNJFaO0jBtgvHpRQqd5jKQi3xdhTpHVdiMKFNNKAn+2HQmAbqUEPdm6uxb+oYep
+LkNSQxZ8rzJQyKZPWukI2M+TJZx7iOgwZOak+FaA/SokFDMXmaxE5WmLo0YGS8Iz1OlAnwawsayT
+QLm1CJM6nCpToxDbPSBhPFUDjtlOdiUCISn6o3xxdk/u4V+B6ftUgNvDezVSt4TeIj0sMC0xf1m9
+UjewM2ktQ+v61qXxl3dnUYzZ7ifrvKUHOHaMpKk4/9+M9QOsSb7K93OZOg8yq5yVOhM9DkY6V3Rh
+UL7GQD/L5OKfoiECAwEAAaOCARcwggETMB8GA1UdIwQYMBaAFK29mHo0tCb3+sQmVO8DveAky1Qa
+MB0GA1UdDgQWBBSSYWuC4aKgqk/sZ/HCo/e0gADB7DAOBgNVHQ8BAf8EBAMCAYYwEgYDVR0TAQH/
+BAgwBgEB/wIBADAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwEQYDVR0gBAowCDAGBgRV
+HSAAMEQGA1UdHwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwudXNlcnRydXN0LmNvbS9BZGRUcnVzdEV4
+dGVybmFsQ0FSb290LmNybDA1BggrBgEFBQcBAQQpMCcwJQYIKwYBBQUHMAGGGWh0dHA6Ly9vY3Nw
+LnVzZXJ0cnVzdC5jb20wDQYJKoZIhvcNAQELBQADggEBABsqbqxVwTqriMXY7c1V86prYSvACRAj
+mQ/FZmpvsfW0tXdeDwJhAN99Bf4Ss6SAgAD8+x1banICCkG8BbrBWNUmwurVTYT7/oKYz1gb4yJj
+nFL4uwU2q31Ypd6rO2Pl2tVz7+zg+3vio//wQiOcyraNTT7kSxgDsqgt1Ni7QkuQaYUQ26Y3NOh7
+4AEQpZzKOsefT4g0bopl0BqKu6ncyso20fT8wmQpNa/WsadxEdIDQ7GPPprsnjJT9HaSyoY0B7ks
+yuYcStiZDcGG4pCS+1pCaiMhEOllx/XVu37qjIUgAmLq0ToHLFnFmTPyOInltukWeh95FPZKEBom
++nyK+5swggU9MIIEJaADAgECAhBqC1BYlVMtBFBN4igR/howMA0GCSqGSIb3DQEBCwUAMIGbMQsw
+CQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3Jk
+MRowGAYDVQQKExFDT01PRE8gQ0EgTGltaXRlZDFBMD8GA1UEAxM4Q09NT0RPIFNIQS0yNTYgQ2xp
+ZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTYxMjIwMDAwMDAwWhcN
+MTcxMjIwMjM1OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjAN
+BgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwbTrFaiGdvN2pThnR9q+4eaXB2wQZQNqhter5ZrJ
+pPO47e87bZ+f1tmYoh6+rB90G/XN24NErPRfvU4zVzNT9pCtCzSSVnBlZQBpaEYMKhcXo5PGKNsm
+An8BoGwNXjlxwbBNRaNO+ky0wNCaMNd1JLxEuvqg9J7rrcpHhWmnpXD5IKa8gv9GyVAJgOpiBOts
+p91sShc2kHvWJ5waPEWPCHDH9J+twGGKqKIIU7fdbURLUgUL1wlDSAHf/lgIAVCSj2H2HpoGqHpy
+HgOAClX9iRSLNa0Znj8HTaqfOwxXevsz1KkLFY+Ahm426GIEqdfkK2iT6Hhgc7tjNO3f8i5ALQID
+AQABo4IB8TCCAe0wHwYDVR0jBBgwFoAUkmFrguGioKpP7GfxwqP3tIAAwewwHQYDVR0OBBYEFILE
+dmHLtK6oxmFJZvBhTQhvqrS0MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMCAGA1UdJQQZ
+MBcGCCsGAQUFBwMEBgsrBgEEAbIxAQMFAjARBglghkgBhvhCAQEEBAMCBSAwRgYDVR0gBD8wPTA7
+BgwrBgEEAbIxAQIBAQEwKzApBggrBgEFBQcCARYdaHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9D
+UFMwXQYDVR0fBFYwVDBSoFCgToZMaHR0cDovL2NybC5jb21vZG9jYS5jb20vQ09NT0RPU0hBMjU2
+Q2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNybDCBkAYIKwYBBQUHAQEEgYMw
+gYAwWAYIKwYBBQUHMAKGTGh0dHA6Ly9jcnQuY29tb2RvY2EuY29tL0NPTU9ET1NIQTI1NkNsaWVu
+dEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYIKwYBBQUHMAGGGGh0dHA6Ly9v
+Y3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZyYWRlYWQub3JnMA0GCSqGSIb3
+DQEBCwUAA4IBAQA+AfvNhFwtapF5Lzjapgul3zYuEnMfR538Ya1vhP8wuOkcoJeT2gEFXzVO2WUu
+eWM0g0/DumnRB53htV/Qq/+vsL0i6a2+iOO7kHi5O7bZkgbdNv0t2lzonDUHi6LTa7NUj+tv+j6y
+hW+iNquC3ACP1dIZH8gJmicHblW63qRgp6wxhn315MLBeavi3uiSag2eeKFePiTIwJjN2UYq6kWg
+PL5G/Ycf9x/xN1XBTfJiURc0FsXhrA98VMWnt52C5Lo4txhGjzTI+IZg40b3YDs6E7mTYb5KKmbc
+QZA9priOFDdj1z5W9BdWhU6I/D0P9y8Z4Tr6+ZscMUVD0RqWy2LeMIIFPTCCBCWgAwIBAgIQagtQ
+WJVTLQRQTeIoEf4aMDANBgkqhkiG9w0BAQsFADCBmzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdy
+ZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExp
+bWl0ZWQxQTA/BgNVBAMTOENPTU9ETyBTSEEtMjU2IENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQg
+U2VjdXJlIEVtYWlsIENBMB4XDTE2MTIyMDAwMDAwMFoXDTE3MTIyMDIzNTk1OVowJDEiMCAGCSqG
+SIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
+ggEBAMG06xWohnbzdqU4Z0favuHmlwdsEGUDaobXq+WayaTzuO3vO22fn9bZmKIevqwfdBv1zduD
+RKz0X71OM1czU/aQrQs0klZwZWUAaWhGDCoXF6OTxijbJgJ/AaBsDV45ccGwTUWjTvpMtMDQmjDX
+dSS8RLr6oPSe663KR4Vpp6Vw+SCmvIL/RslQCYDqYgTrbKfdbEoXNpB71iecGjxFjwhwx/SfrcBh
+iqiiCFO33W1ES1IFC9cJQ0gB3/5YCAFQko9h9h6aBqh6ch4DgApV/YkUizWtGZ4/B02qnzsMV3r7
+M9SpCxWPgIZuNuhiBKnX5Ctok+h4YHO7YzTt3/IuQC0CAwEAAaOCAfEwggHtMB8GA1UdIwQYMBaA
+FJJha4LhoqCqT+xn8cKj97SAAMHsMB0GA1UdDgQWBBSCxHZhy7SuqMZhSWbwYU0Ib6q0tDAOBgNV
+HQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAgBgNVHSUEGTAXBggrBgEFBQcDBAYLKwYBBAGyMQED
+BQIwEQYJYIZIAYb4QgEBBAQDAgUgMEYGA1UdIAQ/MD0wOwYMKwYBBAGyMQECAQEBMCswKQYIKwYB
+BQUHAgEWHWh0dHBzOi8vc2VjdXJlLmNvbW9kby5uZXQvQ1BTMF0GA1UdHwRWMFQwUqBQoE6GTGh0
+dHA6Ly9jcmwuY29tb2RvY2EuY29tL0NPTU9ET1NIQTI1NkNsaWVudEF1dGhlbnRpY2F0aW9uYW5k
+U2VjdXJlRW1haWxDQS5jcmwwgZAGCCsGAQUFBwEBBIGDMIGAMFgGCCsGAQUFBzAChkxodHRwOi8v
+Y3J0LmNvbW9kb2NhLmNvbS9DT01PRE9TSEEyNTZDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3Vy
+ZUVtYWlsQ0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0R
+BBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAPgH7zYRcLWqReS84
+2qYLpd82LhJzH0ed/GGtb4T/MLjpHKCXk9oBBV81TtllLnljNINPw7pp0Qed4bVf0Kv/r7C9Iumt
+vojju5B4uTu22ZIG3Tb9Ldpc6Jw1B4ui02uzVI/rb/o+soVvojargtwAj9XSGR/ICZonB25Vut6k
+YKesMYZ99eTCwXmr4t7okmoNnnihXj4kyMCYzdlGKupFoDy+Rv2HH/cf8TdVwU3yYlEXNBbF4awP
+fFTFp7edguS6OLcYRo80yPiGYONG92A7OhO5k2G+Sipm3EGQPaa4jhQ3Y9c+VvQXVoVOiPw9D/cv
+GeE6+vmbHDFFQ9Ealsti3jGCA9MwggPPAgEBMIGwMIGbMQswCQYDVQQGEwJHQjEbMBkGA1UECBMS
+R3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRowGAYDVQQKExFDT01PRE8gQ0Eg
+TGltaXRlZDFBMD8GA1UEAxM4Q09NT0RPIFNIQS0yNTYgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFu
+ZCBTZWN1cmUgRW1haWwgQ0ECEGoLUFiVUy0EUE3iKBH+GjAwDQYJYIZIAWUDBAIBBQCgggHzMBgG
+CSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTE3MDUwODA3MjEzNFowLwYJ
+KoZIhvcNAQkEMSIEIPLv4GBamFu+XNz6V+qZJWrs14urssaUb79gdIx35Y6eMIHBBgkrBgEEAYI3
+EAQxgbMwgbAwgZsxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAO
+BgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMUEwPwYDVQQDEzhDT01P
+RE8gU0hBLTI1NiBDbGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIQagtQ
+WJVTLQRQTeIoEf4aMDCBwwYLKoZIhvcNAQkQAgsxgbOggbAwgZsxCzAJBgNVBAYTAkdCMRswGQYD
+VQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9E
+TyBDQSBMaW1pdGVkMUEwPwYDVQQDEzhDT01PRE8gU0hBLTI1NiBDbGllbnQgQXV0aGVudGljYXRp
+b24gYW5kIFNlY3VyZSBFbWFpbCBDQQIQagtQWJVTLQRQTeIoEf4aMDANBgkqhkiG9w0BAQEFAASC
+AQA/NbdpluDclCcAhCrMuPtTCPyRq4L7+dliDycYGCYIeC+BWGfBlnttKO5IEydzpOtneTs8CBMB
+ggFeGrFGVoKA0cuZME3g32nhMGFjAPV1Cq0hlkv1oxO1f7YqnS8w2Wq5LtfM8Rz9u+08tbWTOObE
+qUzdv+swBkPolpoCYSHGgz2IzKDhmv+hZAHITm5Xz+t3RN2JRhDika6scqXn06nESAY8OQW54AN7
+GB/P9cycmQYTwvxKA4rx5mArd99JolXRkItNO/VGrxz15QZ7SUgREWuw/ySe2DKm0kkpn+I1ndfl
+oedxPkw9jJJQ2MQnIxHN5zDTXSAbxg79PTJbKzPfAAAAAAAA
 
 
-At first, I implemented as you suggested, but I did not like the taste
-of the code.
-
-I want each compatible string has only one associated data array
-as you see in 2/2.
-
-
-If we follow the separate structure approach, each compatible
-has a chain of caps arrays.
-
-
-One more thing, the loop nest will become deeper,
-for the outer loop with ecc-step,
-and inter loop with strength.
-
-
-Just in case, I copy-pasted the compatible array I wrote first.
-
-
-static const int denali_socfpga_ecc_strengths[] = {8, 15, 0};
-static const struct nand_ecc_step_caps denali_socfpga_ecc_step_caps[] = {
-        { .step_size = 512, .strengths = denali_socfpga_ecc_strengths, },
-        {},
-};
-
-static const struct denali_dt_data denali_socfpga_data = {
-        .caps = DENALI_CAP_HW_ECC_FIXUP,
-        .ecc_step_caps = denali_socfpga_ecc_step_caps,
-};
-
-static const int denali_uniphier_v5a_strengths[] = {8, 16, 24, 0};
-static const struct nand_ecc_step_caps denali_uniphier_v5a_ecc_step_caps[] = {
-        { .step_size = 1024, .strengths = denali_uniphier_v5a_strengths, },
-        {},
-};
-
-static const struct denali_dt_data denali_uniphier_v5a_data = {
-        .caps = DENALI_CAP_HW_ECC_FIXUP |
-                DENALI_CAP_DMA_64BIT,
-        .ecc_step_caps = denali_uniphier_v5a_ecc_step_caps,
-};
-
-static const int denali_uniphier_v5b_strengths[] = {8, 16, 0};
-static const struct nand_ecc_step_caps denali_uniphier_v5b_ecc_step_caps[] = {
-        { .step_size = 1024, .strengths = denali_uniphier_v5b_strengths, },
-        {},
-};
-
-static const struct denali_dt_data denali_uniphier_v5b_data = {
-        .revision = 0x0501,
-        .caps = DENALI_CAP_HW_ECC_FIXUP |
-                DENALI_CAP_DMA_64BIT,
-        .ecc_step_caps = denali_uniphier_v5b_ecc_step_caps,
-};
-
-static const struct of_device_id denali_nand_dt_ids[] = {
-        {
-                .compatible = "altr,socfpga-denali-nand",
-                .data = &denali_socfpga_data,
-        },
-        {
-                .compatible = "socionext,uniphier-denali-nand-v5a",
-                .data = &denali_uniphier_v5a_data,
-        },
-        {
-                .compatible = "socionext,uniphier-denali-nand-v5b",
-                .data = &denali_uniphier_v5b_data,
-        },
-        { /* sentinel */ }
-};
-
-
-
->
->> +
->> +/**
->> + * struct nand_ecc_engine_caps - capability of ECC engine
->> + * @ecc_settings: array of (step, strength) supported by this ECC engine
->> + * @calc_ecc_bytes: driver's hook to calculate ECC bytes per step
->> + * @avail_oobsize: OOB size that the ECC engine can use for ECC correction
->> + */
->> +struct nand_ecc_engine_caps {
->> +     const struct nand_ecc_setting *ecc_settings;
->> +     int (*calc_ecc_bytes)(const struct nand_ecc_setting *ecc_setting);
->> +     int avail_oobsize;
->
-> avail_oobsize should be passed as an argument to the different helpers
-> you define above, because it's completely dependent on the NAND chip,
-> which means you would have change it dynamically, which in turn
-> prevents you from defining this object as 'static const' in your driver.
-
-
-Make sense.
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+--=-fVZRLoxOMkwA6Oz2UYSn--
