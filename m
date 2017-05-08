@@ -1,19 +1,22 @@
-Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193])
+Received: from mail-yw0-x244.google.com ([2607:f8b0:4002:c05::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d7llF-0003t4-Sc
- for linux-mtd@lists.infradead.org; Mon, 08 May 2017 16:43:52 +0000
-Date: Mon, 8 May 2017 18:43:22 +0200
-From: Pavel Machek <pavel@ucw.cz>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Hans de Goede <hdegoede@redhat.com>,
+ id 1d7mgx-0002yw-CB
+ for linux-mtd@lists.infradead.org; Mon, 08 May 2017 17:43:28 +0000
+Received: by mail-yw0-x244.google.com with SMTP id j9so5616575ywj.3
+ for <linux-mtd@lists.infradead.org>; Mon, 08 May 2017 10:43:06 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Mon, 8 May 2017 13:43:03 -0400
+From: Tejun Heo <tj@kernel.org>
+To: Pavel Machek <pavel@ucw.cz>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>, Hans de Goede <hdegoede@redhat.com>,
  Ricard Wanderlof <ricard.wanderlof@axis.com>,
- Tejun Heo <tj@kernel.org>, linux-scsi@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org,
- linux-mtd@lists.infradead.org, Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+ linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-ide@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Henrique de Moraes Holschuh <hmh@hmh.eng.br>
 Subject: Re: Race to power off harming SATA SSDs
-Message-ID: <20170508164322.GA9781@amd>
-References: <20170507204007.GA25628@atrey.karlin.mff.cuni.cz>
- <1494228094.6528.14.camel@infradead.org>
+Message-ID: <20170508174303.GA12079@htj.duckdns.org>
+References: <1494228094.6528.14.camel@infradead.org>
  <alpine.DEB.2.11.1705080930150.6882@lnxricardw1>
  <1494231215.6528.22.camel@infradead.org>
  <alpine.DEB.2.11.1705081034420.6882@lnxricardw1>
@@ -21,12 +24,11 @@ References: <20170507204007.GA25628@atrey.karlin.mff.cuni.cz>
  <alpine.DEB.2.11.1705081059580.6882@lnxricardw1>
  <7ee84982-cfad-94d7-4e22-4edbeb852b32@redhat.com>
  <1494238390.6528.42.camel@infradead.org>
- <20170508135005.0b9b200b@bbrezillon>
+ <20170508135005.0b9b200b@bbrezillon> <20170508164322.GA9781@amd>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="EeQfGwPcQSOJBaQU"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20170508135005.0b9b200b@bbrezillon>
+In-Reply-To: <20170508164322.GA9781@amd>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,55 +38,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello,
 
---EeQfGwPcQSOJBaQU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, May 08, 2017 at 06:43:22PM +0200, Pavel Machek wrote:
+> What I was trying to point out was that storage people try to treat
+> SSDs as HDDs... and SSDs are very different. Harddrives mostly survive
+> powerfails (with emergency parking), while it is very, very difficult
+> to make SSD survive random powerfail, and we have to make sure we
+> always powerdown SSDs "cleanly".
 
-On Mon 2017-05-08 13:50:05, Boris Brezillon wrote:
-> On Mon, 08 May 2017 11:13:10 +0100
-> David Woodhouse <dwmw2@infradead.org> wrote:
->=20
-> > On Mon, 2017-05-08 at 11:09 +0200, Hans de Goede wrote:
-> > > You're forgetting that the SSD itself (this thread is about SSDs) als=
-o has
-> > > a major software component which is doing housekeeping all the time, =
-so even
-> > > if the main CPU gets reset the SSD's controller may still happily be =
-erasing
-> > > blocks. =20
-> >=20
-> > We're not really talking about SSDs at all any more; we're talking
-> > about real flash with real maintainable software.
->=20
-> It's probably a good sign that this new discussion should take place in
-> a different thread :-).
+We do.
 
-Well, you are right.. and I'm responsible.
+The issue raised is that some SSDs still increment the unexpected
+power loss count even after clean shutdown sequence and that the
+kernel should wait for some secs before powering off.
 
-What I was trying to point out was that storage people try to treat
-SSDs as HDDs... and SSDs are very different. Harddrives mostly survive
-powerfails (with emergency parking), while it is very, very difficult
-to make SSD survive random powerfail, and we have to make sure we
-always powerdown SSDs "cleanly".
+We can do that for select devices but I want something more than "this
+SMART counter is getting incremented" before doing that.
 
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
+Thanks.
 
---EeQfGwPcQSOJBaQU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlkQoCkACgkQMOfwapXb+vKUxACgvaFGVpYm4SwEgpV8cRSEY3kt
-NLYAniGZ+Jky3DyZZkKKuDQmD//Q3VYN
-=RNt1
------END PGP SIGNATURE-----
-
---EeQfGwPcQSOJBaQU--
+-- 
+tejun
