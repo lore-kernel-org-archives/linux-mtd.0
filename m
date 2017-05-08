@@ -1,25 +1,35 @@
-Received: from mail-pg0-x230.google.com ([2607:f8b0:400e:c05::230])
+Received: from [64.223.223.3] (helo=DEKAEXCHANGE13.deka.local)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d7mms-0005qV-J6
- for linux-mtd@lists.infradead.org; Mon, 08 May 2017 17:49:36 +0000
-Received: by mail-pg0-x230.google.com with SMTP id u187so30603980pgb.0
- for <linux-mtd@lists.infradead.org>; Mon, 08 May 2017 10:49:13 -0700 (PDT)
-Date: Mon, 8 May 2017 10:49:10 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Richard Weinberger <richard@nod.at>, Marek Vasut <marex@denx.de>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PULL v3] mtd: nand: changes for 4.12
-Message-ID: <20170508174910.GA22122@google.com>
-References: <20170430103024.49ad3ebc@bbrezillon>
- <20170502000205.GA12811@google.com>
- <20170502095909.7694bee0@bbrezillon>
+ id 1d7nfC-0001mJ-Uy
+ for linux-mtd@lists.infradead.org; Mon, 08 May 2017 18:45:44 +0000
+From: Atlant Schmidt <aschmidt@dekaresearch.com>
+To: Pavel Machek <pavel@ucw.cz>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>
+CC: Ricard Wanderlof <ricard.wanderlof@axis.com>, "linux-scsi@vger.kernel.org"
+ <linux-scsi@vger.kernel.org>, "linux-ide@vger.kernel.org"
+ <linux-ide@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Henrique de
+ Moraes Holschuh" <hmh@hmh.eng.br>, Tejun Heo <tj@kernel.org>, David Woodhouse
+ <dwmw2@infradead.org>
+Subject: RE: Race to power off harming SATA SSDs
+Date: Mon, 8 May 2017 18:29:53 +0000
+Message-ID: <ec4494d0b0d348c7a2e90242b67fa5a4@DEKAEXCHANGE13.deka.local>
+References: <20170507204007.GA25628@atrey.karlin.mff.cuni.cz>
+ <1494228094.6528.14.camel@infradead.org>
+ <alpine.DEB.2.11.1705080930150.6882@lnxricardw1>
+ <1494231215.6528.22.camel@infradead.org>
+ <alpine.DEB.2.11.1705081034420.6882@lnxricardw1>
+ <1494233673.6528.28.camel@infradead.org>
+ <alpine.DEB.2.11.1705081059580.6882@lnxricardw1>
+ <7ee84982-cfad-94d7-4e22-4edbeb852b32@redhat.com>
+ <1494238390.6528.42.camel@infradead.org> <20170508135005.0b9b200b@bbrezillon>
+ <20170508164322.GA9781@amd>
+In-Reply-To: <20170508164322.GA9781@amd>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170502095909.7694bee0@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,15 +39,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, May 02, 2017 at 09:59:09AM +0200, Boris Brezillon wrote:
-> On Mon, 1 May 2017 17:02:05 -0700
-> > Pulled. There are a few small-ish problems (some commented, some not
-> > yet). I plan to send some fixup patches for review soon.
-> 
-> Just acked all of them. Feel free to apply them directly in
-> l2-mtd/master.
+> Well, you are right.. and I'm responsible.
+>
+> What I was trying to point out was that storage people try to treat SSDs =
+as HDDs...
+> and SSDs are very different. Harddrives mostly survive powerfails (with e=
+mergency
+> parking), while it is very, very difficult to make SSD survive random pow=
+erfail,
+> and we have to make sure we always powerdown SSDs "cleanly".
 
-I'll go back over them and apply what looks important, but I'm not sure
-all were necessarily 4.12 material. I'll let you know.
+  It all depends on the class of SSD that we're discussing.
+  "Enterprise class" SSDs will often use either ultracapacitors
+  or batteries to allow them to successfully complete all of
+  the necessary operations upon a power cut.
 
-Brian
+This e-mail and the information, including any attachments it contains, are=
+ intended to be a confidential communication only to the person or entity t=
+o whom it is addressed and may contain information that is privileged. If t=
+he reader of this message is not the intended recipient, you are hereby not=
+ified that any dissemination, distribution or copying of this communication=
+ is strictly prohibited. If you have received this communication in error, =
+please immediately notify the sender and destroy the original message. Than=
+k you. Please consider the environment before printing this email.
