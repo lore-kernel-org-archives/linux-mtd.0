@@ -1,34 +1,33 @@
-Received: from mail-yw0-x235.google.com ([2607:f8b0:4002:c05::235])
+Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d7nxS-0008AP-RB
- for linux-mtd@lists.infradead.org; Mon, 08 May 2017 19:04:36 +0000
-Received: by mail-yw0-x235.google.com with SMTP id b68so34246637ywe.3
- for <linux-mtd@lists.infradead.org>; Mon, 08 May 2017 12:04:14 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Mon, 8 May 2017 15:04:11 -0400
-From: Tejun Heo <tj@kernel.org>
-To: Pavel Machek <pavel@ucw.cz>
+ id 1d7qKS-0002hG-E2
+ for linux-mtd@lists.infradead.org; Mon, 08 May 2017 21:36:30 +0000
+Date: Mon, 8 May 2017 23:36:05 +0200
+From: Pavel Machek <pavel@ucw.cz>
+To: David Woodhouse <dwmw2@infradead.org>
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, Hans de Goede <hdegoede@redhat.com>,
+ Hans de Goede <hdegoede@redhat.com>,
  Ricard Wanderlof <ricard.wanderlof@axis.com>,
- linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-ide@vger.kernel.org, linux-mtd@lists.infradead.org,
- Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+ Tejun Heo <tj@kernel.org>, linux-scsi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Henrique de Moraes Holschuh <hmh@hmh.eng.br>
 Subject: Re: Race to power off harming SATA SSDs
-Message-ID: <20170508190411.GB12079@htj.duckdns.org>
-References: <1494231215.6528.22.camel@infradead.org>
+Message-ID: <20170508213605.GA12687@amd>
+References: <1494228094.6528.14.camel@infradead.org>
+ <alpine.DEB.2.11.1705080930150.6882@lnxricardw1>
+ <1494231215.6528.22.camel@infradead.org>
  <alpine.DEB.2.11.1705081034420.6882@lnxricardw1>
  <1494233673.6528.28.camel@infradead.org>
  <alpine.DEB.2.11.1705081059580.6882@lnxricardw1>
  <7ee84982-cfad-94d7-4e22-4edbeb852b32@redhat.com>
  <1494238390.6528.42.camel@infradead.org>
- <20170508135005.0b9b200b@bbrezillon> <20170508164322.GA9781@amd>
- <20170508174303.GA12079@htj.duckdns.org>
- <20170508185615.GA16268@amd>
+ <20170508135005.0b9b200b@bbrezillon>
+ <1494258011.5407.18.camel@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20170508185615.GA16268@amd>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1494258011.5407.18.camel@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,30 +37,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
-
-On Mon, May 08, 2017 at 08:56:15PM +0200, Pavel Machek wrote:
-> Well... the SMART counter tells us that the device was not shut down
-> correctly. Do we have reason to believe that it is _not_ telling us
-> truth? It is more than one device.
-
-It also finished power off command successfully.
-
-> SSDs die when you power them without warning:
-> http://lkcl.net/reports/ssd_analysis.html
+On Mon 2017-05-08 16:40:11, David Woodhouse wrote:
+> On Mon, 2017-05-08 at 13:50 +0200, Boris Brezillon wrote:
+> > On Mon, 08 May 2017 11:13:10 +0100
+> > David Woodhouse <dwmw2@infradead.org> wrote:
+> > 
+> > > 
+> > > On Mon, 2017-05-08 at 11:09 +0200, Hans de Goede wrote:
+> > > > 
+> > > > You're forgetting that the SSD itself (this thread is about SSDs) also has
+> > > > a major software component which is doing housekeeping all the time, so even
+> > > > if the main CPU gets reset the SSD's controller may still happily be erasing
+> > > > blocks.  
+> > > We're not really talking about SSDs at all any more; we're talking
+> > > about real flash with real maintainable software.
+> >
+> > It's probably a good sign that this new discussion should take place in
+> > a different thread :-).
 > 
-> What kind of data would you like to see? "I have been using linux and
-> my SSD died"? We have had such reports. "I have killed 10 SSDs in a
-> week then I added one second delay, and this SSD survived 6 months"?
+> Well, maybe. But it was a silly thread in the first place. SATA SSDs
+> aren't *expected* to be reliable.
 
-Repeating shutdown cycles and showing that the device actually is in
-trouble would be great.  It doesn't have to reach full-on device
-failure.  Showing some sign of corruption would be enough - increase
-in CRC failure counts, bad block counts (a lot of devices report
-remaining reserve or lifetime in one way or the other) and so on.
-Right now, it might as well be just the SMART counter being funky.
+Citation needed?
 
-Thanks.
+I'm pretty sure SATA SSDs are expected to be reliable, up to maximum
+amount of gigabytes written (specified by manufacturer), as long as
+you don't cut power without warning.
 
+									Pavel
 -- 
-tejun
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
