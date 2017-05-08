@@ -1,9 +1,9 @@
-Received: from mout.web.de ([212.227.17.12])
+Received: from mout.web.de ([217.72.192.78])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d7kH6-0003Si-D3
- for linux-mtd@lists.infradead.org; Mon, 08 May 2017 15:08:38 +0000
-Subject: [PATCH 1/3] mtdswap: Reduce function calls for sequence output in
- mtdswap_show()
+ id 1d7kI3-0003sY-R7
+ for linux-mtd@lists.infradead.org; Mon, 08 May 2017 15:09:37 +0000
+Subject: [PATCH 2/3] mtdswap: Improve two size determinations in
+ mtdswap_add_mtd()
 From: SF Markus Elfring <elfring@users.sourceforge.net>
 To: linux-mtd@lists.infradead.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -13,8 +13,8 @@ To: linux-mtd@lists.infradead.org,
  Richard Weinberger <richard@nod.at>
 Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
 References: <82e905b5-3958-be81-b0ee-d0a2805154df@users.sourceforge.net>
-Message-ID: <a46e0d93-8708-2f1d-2e16-980216415681@users.sourceforge.net>
-Date: Mon, 8 May 2017 17:08:04 +0200
+Message-ID: <cfc8598b-9552-9321-9fad-497415c1b0ee@users.sourceforge.net>
+Date: Mon, 8 May 2017 17:09:04 +0200
 MIME-Version: 1.0
 In-Reply-To: <82e905b5-3958-be81-b0ee-d0a2805154df@users.sourceforge.net>
 Content-Type: text/plain; charset=utf-8
@@ -30,43 +30,34 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Mon, 8 May 2017 16:02:34 +0200
+Date: Mon, 8 May 2017 16:18:49 +0200
 
-Two line breaks were put into a sequence by separate function calls.
-Print the same data together with adjusted seq_printf() calls instead.
-
-This issue was detected by using the Coccinelle software.
+Replace the specification of two data structures by pointer dereferences
+as the parameter for the operator "sizeof" to make the corresponding size
+determination a bit safer according to the Linux coding style convention.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- drivers/mtd/mtdswap.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ drivers/mtd/mtdswap.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
-index f12879a3d4ff..0805f45c5139 100644
+index 0805f45c5139..f73fb0909b0c 100644
 --- a/drivers/mtd/mtdswap.c
 +++ b/drivers/mtd/mtdswap.c
-@@ -1283,19 +1283,14 @@ static int mtdswap_show(struct seq_file *s, void *data)
- 			"erased %u times\n",
- 			cwp, d->pages_per_eblk - cwp, cwecount);
+@@ -1485,11 +1485,11 @@ static void mtdswap_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
+ 		"%u spare, %u bad blocks\n",
+ 		MTDSWAP_PREFIX, part, swap_size / 1024, spare_cnt, bad_blocks);
  
--	seq_printf(s, "total erasures: %lu\n", sum);
--
--	seq_puts(s, "\n");
--
-+	seq_printf(s, "total erasures: %lu\n\n", sum);
- 	seq_printf(s, "mtdswap_readsect count: %llu\n", d->sect_read_count);
- 	seq_printf(s, "mtdswap_writesect count: %llu\n", d->sect_write_count);
- 	seq_printf(s, "mtdswap_discard count: %llu\n", d->discard_count);
- 	seq_printf(s, "mtd read count: %llu\n", d->mtd_read_count);
- 	seq_printf(s, "mtd write count: %llu\n", d->mtd_write_count);
- 	seq_printf(s, "discarded pages count: %llu\n", d->discard_page_count);
--
--	seq_puts(s, "\n");
--	seq_printf(s, "total pages: %u\n", pages);
-+	seq_printf(s, "\ntotal pages: %u\n", pages);
- 	seq_printf(s, "pages mapped: %u\n", mapped);
+-	d = kzalloc(sizeof(struct mtdswap_dev), GFP_KERNEL);
++	d = kzalloc(sizeof(*d), GFP_KERNEL);
+ 	if (!d)
+ 		return;
  
- 	return 0;
+-	mbd_dev = kzalloc(sizeof(struct mtd_blktrans_dev), GFP_KERNEL);
++	mbd_dev = kzalloc(sizeof(*mbd_dev), GFP_KERNEL);
+ 	if (!mbd_dev) {
+ 		kfree(d);
+ 		return;
 -- 
 2.12.2
