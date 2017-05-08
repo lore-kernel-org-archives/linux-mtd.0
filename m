@@ -1,9 +1,9 @@
-Received: from mout.web.de ([217.72.192.78])
+Received: from mout.web.de ([212.227.17.11])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d7kI3-0003sY-R7
- for linux-mtd@lists.infradead.org; Mon, 08 May 2017 15:09:37 +0000
-Subject: [PATCH 2/3] mtdswap: Improve two size determinations in
- mtdswap_add_mtd()
+ id 1d7kIu-0004ti-Qt
+ for linux-mtd@lists.infradead.org; Mon, 08 May 2017 15:10:30 +0000
+Subject: [PATCH 3/3] mtdswap: Improve a size determination in
+ mtdswap_erase_block()
 From: SF Markus Elfring <elfring@users.sourceforge.net>
 To: linux-mtd@lists.infradead.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -13,8 +13,8 @@ To: linux-mtd@lists.infradead.org,
  Richard Weinberger <richard@nod.at>
 Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
 References: <82e905b5-3958-be81-b0ee-d0a2805154df@users.sourceforge.net>
-Message-ID: <cfc8598b-9552-9321-9fad-497415c1b0ee@users.sourceforge.net>
-Date: Mon, 8 May 2017 17:09:04 +0200
+Message-ID: <0afe37eb-71fe-2a40-7ed5-24b910906671@users.sourceforge.net>
+Date: Mon, 8 May 2017 17:10:03 +0200
 MIME-Version: 1.0
 In-Reply-To: <82e905b5-3958-be81-b0ee-d0a2805154df@users.sourceforge.net>
 Content-Type: text/plain; charset=utf-8
@@ -30,34 +30,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Mon, 8 May 2017 16:18:49 +0200
+Date: Mon, 8 May 2017 16:51:30 +0200
 
-Replace the specification of two data structures by pointer dereferences
-as the parameter for the operator "sizeof" to make the corresponding size
-determination a bit safer according to the Linux coding style convention.
+Replace the specification of a data structure by a name for
+a local variable as the parameter for the operator "sizeof" to make
+the corresponding size determination a bit safer.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- drivers/mtd/mtdswap.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/mtdswap.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
-index 0805f45c5139..f73fb0909b0c 100644
+index f73fb0909b0c..c748515f8533 100644
 --- a/drivers/mtd/mtdswap.c
 +++ b/drivers/mtd/mtdswap.c
-@@ -1485,11 +1485,11 @@ static void mtdswap_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- 		"%u spare, %u bad blocks\n",
- 		MTDSWAP_PREFIX, part, swap_size / 1024, spare_cnt, bad_blocks);
+@@ -559,8 +559,7 @@ static int mtdswap_erase_block(struct mtdswap_dev *d, struct swap_eb *eb)
  
--	d = kzalloc(sizeof(struct mtdswap_dev), GFP_KERNEL);
-+	d = kzalloc(sizeof(*d), GFP_KERNEL);
- 	if (!d)
- 		return;
- 
--	mbd_dev = kzalloc(sizeof(struct mtd_blktrans_dev), GFP_KERNEL);
-+	mbd_dev = kzalloc(sizeof(*mbd_dev), GFP_KERNEL);
- 	if (!mbd_dev) {
- 		kfree(d);
- 		return;
+ retry:
+ 	init_waitqueue_head(&wq);
+-	memset(&erase, 0, sizeof(struct erase_info));
+-
++	memset(&erase, 0, sizeof(erase));
+ 	erase.mtd	= mtd;
+ 	erase.callback	= mtdswap_erase_callback;
+ 	erase.addr	= mtdswap_eb_offset(d, eb);
 -- 
 2.12.2
