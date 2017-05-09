@@ -1,29 +1,37 @@
-Received: from bes.se.axis.com ([195.60.68.10])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1d7zre-0002V3-5f
- for linux-mtd@lists.infradead.org; Tue, 09 May 2017 07:47:24 +0000
-Date: Tue, 9 May 2017 09:46:57 +0200
-From: Jesper Nilsson <jesper.nilsson@axis.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: Jesper Nilsson <jespern@axis.com>, Marek Vasut <marek.vasut@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH] UBI: Make MTD_UBI_FASTMAP non-experimental
-Message-ID: <20170509074657.GY10068@axis.com>
-References: <20170329153836.GB29118@axis.com>
- <434195d8-d638-240d-8d63-50d033ea453a@nod.at>
- <3f8d0417-5e7d-b7c8-ba83-9a87e774f97f@gmail.com>
- <20170330173944.GJ29118@axis.com>
- <a85d3308-e9c9-b292-b2ad-0005a55d2e6d@nod.at>
- <20170403111735.GV29118@axis.com>
+Received: from mail-oi0-x242.google.com ([2607:f8b0:4003:c06::242])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d7zv8-0005FE-HI
+ for linux-mtd@lists.infradead.org; Tue, 09 May 2017 07:51:00 +0000
+Received: by mail-oi0-x242.google.com with SMTP id m17so13323384oik.2
+ for <linux-mtd@lists.infradead.org>; Tue, 09 May 2017 00:50:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170403111735.GV29118@axis.com>
+In-Reply-To: <6b72fc59-ca01-f4ee-106f-abb9b6490d32@nod.at>
+References: <20170411095055.26328-1-o.rempel@pengutronix.de>
+ <20170411095055.26328-4-o.rempel@pengutronix.de>
+ <5d7d0f21-d87f-0835-c2f6-b6c9e07f73a8@nod.at>
+ <20170412054828.GA20561@infradead.org>
+ <20170412071551.i36yj3lzilgtntdy@pengutronix.de>
+ <803a8cc8-d2d1-dddf-2e07-621b1484218a@nod.at>
+ <dd90ac49-574b-54b9-902a-ba5948134ba8@nod.at>
+ <CAOQ4uxjqsm2h6N9qdOO2BxwOnnkY1KQCmDa6Ba8xPC0JGCVUiw@mail.gmail.com>
+ <b7d49751-8345-b5c4-1b6d-761e91ddd89e@nod.at>
+ <3fa90f95-c522-ad9f-3f4c-8c45a6cd93c1@pengutronix.de>
+ <CAOQ4uxiEGJLSGS5rK8V8GRNvf9aWqbVG5odu2=nv73xTOmvfNQ@mail.gmail.com>
+ <e258d0f2-6117-8ca3-0ed7-a8f6498ad9d4@pengutronix.de>
+ <f4b9118e-dcff-32d0-2861-d520f75ea250@nod.at>
+ <CAOQ4uxgn59hxAOgRD87VdVPv2srtcLjoFCVVrkAnezEN0_ZFxg@mail.gmail.com>
+ <6b72fc59-ca01-f4ee-106f-abb9b6490d32@nod.at>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Tue, 9 May 2017 10:50:36 +0300
+Message-ID: <CAOQ4uxjoxYiJoPicoJemRX5YgxWgLGSwanZqKSa++p7TdHh8Rg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] fs: ubifs: set s_uuid in super block
+To: Richard Weinberger <richard@nod.at>
+Cc: Oleksij Rempel <ore@pengutronix.de>, Christoph Hellwig <hch@infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Adrian Hunter <adrian.hunter@intel.com>,
+ linux-mtd@lists.infradead.org, linux-kernel <linux-kernel@vger.kernel.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ Steffen Trumtrar <s.trumtrar@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,74 +41,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
+On Tue, May 9, 2017 at 10:35 AM, Richard Weinberger <richard@nod.at> wrote:
+> Amir,
+>
+> Am 09.05.2017 um 09:08 schrieb Amir Goldstein:
+>>> Then we can queue this patch for 4.13.
+>>> Please resend and make sure it addresses everything what was also
+>>> suggested for the xfs s_uuid patch.
+>>>
+>>
+>> Just to be clear, the xfs s_uuid patch is just a memcpy,
+>> no different from Oleksij's patch.
 
-I'm still worried about this failure case, do we really
-believe that the flash could fail in such a way that the
-fastmap is corrupted in an undetectable way?
-
-If we do detect corruption we should be no worse off
-than earlier since we should ignore the fastmap, IIRC.
-
-Could you please elaborate on the problem you were
-thinking about?
-
-Right now I'm hesitant to use fastmap in any production code,
-even if it works with my current hardware, since there is no
-guarantee that the flash chips won't get replaced with a
-second source option down the line...
-
-/Jesper
+See upstream commit
+8f720d9 xfs: publish UUID in struct super_block
 
 
-On Mon, Apr 03, 2017 at 01:17:36PM +0200, Jesper Nilsson wrote:
-> Hi Richard,
-> 
-> On Thu, Mar 30, 2017 at 11:29:15PM +0200, Richard Weinberger wrote:
-> > Jesper,
-> > 
-> > Am 30.03.2017 um 19:39 schrieb Jesper Nilsson:
-> > >> So we should document this with a big fat warning and set fastmap to
-> > >> default=n ?
-> > > 
-> > > Does this sound reasonable?
-> > > 
-> > > Note that this feature makes UBI less robust, since Fastmap does not scan
-> > > the full flash, which might lead to problems on misbehaving NAND chips.
-> > > Only enable this if the speedup in attach is really important and
-> > 
-> > I'm not a native English speaker, but shouldn't this be
-> > "...if speedup of the attach time is important ..."
-> > 
-> > > you can be sure that the NAND works as expected.
-> > 
-> > Looks fine!
-> 
-> As you saw I resent the patch with this formulation added.
-> 
-> However, after thinking about it (and with input from some coworkers),
-> could we pinpoint the failure case a bit more here?
-> 
-> What is the exact problem behaviour on NAND chips that we're
-> worried about, and in which case will UBI be less robust if
-> we don't scan the full flash?
-> 
-> My first reaction was that this was a natural conclusion,
-> but if the NAND flash is failing, we should either be in the
-> case that the FASTMAP is corrupted or that the original data
-> is corrupted. Both should be found by current implementation.
-> Or am I missing additional failure cases here?
-> 
-> I getting a bit worried about using the feature at all,
-> even if it seems to work right now...
-> 
-> > Thanks,
-> > //richard
-> 
-> /^JN - Jesper Nilsson
-> -- 
->                Jesper Nilsson -- jesper.nilsson@axis.com
+>
+> Wasn't there a huge discussion about LE/BE/uniqueness and more details
+> on UUID that hurt my brain.
+>
 
-/^JN - Jesper Nilsson
--- 
-               Jesper Nilsson -- jesper.nilsson@axis.com
+LE/BE discussions are more about which variants of uuid helpers should be
+created, among other things, for consumers of s_uuid to check that s_uuid
+was filled by fs.
+Converting s_uuid type to uuid_t or whatever is for the far future.
+
+uniqueness of s_uuid does not exist with current filesystems,
+so no reason whatsoever to act differently with ubifs.
+Fixing uniqueness of s_uuid (if at all is needed) is a future VFS task.
+
+Bottom line, for Oleksij's original patch:
+
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+
+If it's not too late for 4.12 that could be nice, because then
+ubifs+overlayfs would gain a new feature (constant inode numbers)
