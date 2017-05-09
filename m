@@ -1,28 +1,14 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mailrelay107.isp.belgacom.be ([195.238.20.134])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d80ts-0008Vb-5r
- for linux-mtd@lists.infradead.org; Tue, 09 May 2017 08:53:46 +0000
-Subject: Re: [RFC][PATCH] UBI: Make MTD_UBI_FASTMAP non-experimental
-To: Jesper Nilsson <jesper.nilsson@axis.com>
-References: <20170329153836.GB29118@axis.com>
- <434195d8-d638-240d-8d63-50d033ea453a@nod.at>
- <3f8d0417-5e7d-b7c8-ba83-9a87e774f97f@gmail.com>
- <20170330173944.GJ29118@axis.com>
- <a85d3308-e9c9-b292-b2ad-0005a55d2e6d@nod.at>
- <20170403111735.GV29118@axis.com> <20170509074657.GY10068@axis.com>
-Cc: Jesper Nilsson <jespern@axis.com>, Marek Vasut <marek.vasut@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <41df86d7-a9a3-cada-8f41-3afde22b2e5f@nod.at>
-Date: Tue, 9 May 2017 10:53:16 +0200
-MIME-Version: 1.0
-In-Reply-To: <20170509074657.GY10068@axis.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+ id 1d8BmK-0004Uw-4k
+ for linux-mtd@lists.infradead.org; Tue, 09 May 2017 20:30:42 +0000
+From: Fabian Frederick <fabf@skynet.be>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, fabf@skynet.be
+Subject: [PATCH linux-next] jffs2: reduce stack usage in
+ jffs2_build_xattr_subsystem()
+Date: Tue,  9 May 2017 22:30:03 +0200
+Message-Id: <20170509203003.11986-1-fabf@skynet.be>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,54 +18,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jesper,
+Use kcalloc() for allocation/flush of 128 pointers table to
+reduce stack usage.
 
-Am 09.05.2017 um 09:46 schrieb Jesper Nilsson:
-> Hi Richard,
-> 
-> I'm still worried about this failure case, do we really
-> believe that the flash could fail in such a way that the
-> fastmap is corrupted in an undetectable way?
-> 
-> If we do detect corruption we should be no worse off
-> than earlier since we should ignore the fastmap, IIRC.
+Function now returns -ENOMEM or 0 on success.
 
-In a perfect world, yes.
+stackusage
+Before:
+./fs/jffs2/xattr.c:775  jffs2_build_xattr_subsystem     1208
+dynamic,bounded
 
-> Could you please elaborate on the problem you were
-> thinking about?
+After:
+./fs/jffs2/xattr.c:775  jffs2_build_xattr_subsystem     192
+dynamic,bounded
 
-e.g.
-commit 74f2c6e9a47cf4e508198c8594626cc82906a13d
-Author: Richard Weinberger <richard@nod.at>
-Date:   Tue Jun 14 10:12:17 2016 +0200
+Also update definition when CONFIG_JFFS2_FS_XATTR is not enabled
 
-    ubi: Be more paranoid while seaching for the most recent Fastmap
+Tested with an MTD mount point and some user set/getfattr.
 
-    Since PEB erasure is asynchornous it can happen that there is
-    more than one Fastmap on the MTD. This is fine because the attach logic
-    will pick the Fastmap data structure with the highest sequence number.
+Signed-off-by: Fabian Frederick <fabf@skynet.be>
+---
+ fs/jffs2/build.c |  5 ++++-
+ fs/jffs2/xattr.c | 14 ++++++++++----
+ fs/jffs2/xattr.h |  4 ++--
+ 3 files changed, 16 insertions(+), 7 deletions(-)
 
-    On a not so well configured MTD stack spurious ECC errors are common.
-    Causes can be different, bad hardware, wrong operating modes, etc...
-    If the most current Fastmap renders bad due to ECC errors UBI might
-    pick an older Fastmap to attach from.
-    While this can only happen on an anyway broken setup it will show
-    completely different sympthoms and makes finding the root cause much
-    more difficult.
-    So, be debug friendly and fall back to scanning mode of we're facing
-    an ECC error while scanning for Fastmap.
-
-    Cc: <stable@vger.kernel.org>
-    Signed-off-by: Richard Weinberger <richard@nod.at>
-
-> Right now I'm hesitant to use fastmap in any production code,
-> even if it works with my current hardware, since there is no
-> guarantee that the flash chips won't get replaced with a
-> second source option down the line...
-
-Fastmap is an aggressive optimization and makes finding issues much
-harder.
-
-Thanks,
-//richard
+diff --git a/fs/jffs2/build.c b/fs/jffs2/build.c
+index b288c8a..f88e0bf 100644
+--- a/fs/jffs2/build.c
++++ b/fs/jffs2/build.c
+@@ -211,7 +211,10 @@ static int jffs2_build_filesystem(struct jffs2_sb_info *c)
+ 		ic->scan_dents = NULL;
+ 		cond_resched();
+ 	}
+-	jffs2_build_xattr_subsystem(c);
++	ret = jffs2_build_xattr_subsystem(c);
++	if (ret)
++		goto exit;
++
+ 	c->flags &= ~JFFS2_SB_FLAG_BUILDING;
+ 
+ 	dbg_fsbuild("FS build complete\n");
+diff --git a/fs/jffs2/xattr.c b/fs/jffs2/xattr.c
+index da3e185..95c0496 100644
+--- a/fs/jffs2/xattr.c
++++ b/fs/jffs2/xattr.c
+@@ -772,10 +772,10 @@ void jffs2_clear_xattr_subsystem(struct jffs2_sb_info *c)
+ }
+ 
+ #define XREF_TMPHASH_SIZE	(128)
+-void jffs2_build_xattr_subsystem(struct jffs2_sb_info *c)
++int jffs2_build_xattr_subsystem(struct jffs2_sb_info *c)
+ {
+ 	struct jffs2_xattr_ref *ref, *_ref;
+-	struct jffs2_xattr_ref *xref_tmphash[XREF_TMPHASH_SIZE];
++	struct jffs2_xattr_ref **xref_tmphash;
+ 	struct jffs2_xattr_datum *xd, *_xd;
+ 	struct jffs2_inode_cache *ic;
+ 	struct jffs2_raw_node_ref *raw;
+@@ -784,9 +784,13 @@ void jffs2_build_xattr_subsystem(struct jffs2_sb_info *c)
+ 
+ 	BUG_ON(!(c->flags & JFFS2_SB_FLAG_BUILDING));
+ 
++
++	xref_tmphash = kcalloc(XREF_TMPHASH_SIZE,
++			       sizeof(struct jffs2_xattr_ref *), GFP_KERNEL);
++	if (!xref_tmphash)
++		return -ENOMEM;
++
+ 	/* Phase.1 : Merge same xref */
+-	for (i=0; i < XREF_TMPHASH_SIZE; i++)
+-		xref_tmphash[i] = NULL;
+ 	for (ref=c->xref_temp; ref; ref=_ref) {
+ 		struct jffs2_xattr_ref *tmp;
+ 
+@@ -884,6 +888,8 @@ void jffs2_build_xattr_subsystem(struct jffs2_sb_info *c)
+ 		     "%u of xref (%u dead, %u orphan) found.\n",
+ 		     xdatum_count, xdatum_unchecked_count, xdatum_orphan_count,
+ 		     xref_count, xref_dead_count, xref_orphan_count);
++	kfree(xref_tmphash);
++	return 0;
+ }
+ 
+ struct jffs2_xattr_datum *jffs2_setup_xattr_datum(struct jffs2_sb_info *c,
+diff --git a/fs/jffs2/xattr.h b/fs/jffs2/xattr.h
+index 720007b..1b5030a 100644
+--- a/fs/jffs2/xattr.h
++++ b/fs/jffs2/xattr.h
+@@ -71,7 +71,7 @@ static inline int is_xattr_ref_dead(struct jffs2_xattr_ref *ref)
+ #ifdef CONFIG_JFFS2_FS_XATTR
+ 
+ extern void jffs2_init_xattr_subsystem(struct jffs2_sb_info *c);
+-extern void jffs2_build_xattr_subsystem(struct jffs2_sb_info *c);
++extern int jffs2_build_xattr_subsystem(struct jffs2_sb_info *c);
+ extern void jffs2_clear_xattr_subsystem(struct jffs2_sb_info *c);
+ 
+ extern struct jffs2_xattr_datum *jffs2_setup_xattr_datum(struct jffs2_sb_info *c,
+@@ -103,7 +103,7 @@ extern ssize_t jffs2_listxattr(struct dentry *, char *, size_t);
+ #else
+ 
+ #define jffs2_init_xattr_subsystem(c)
+-#define jffs2_build_xattr_subsystem(c)
++#define jffs2_build_xattr_subsystem(c)		(0)
+ #define jffs2_clear_xattr_subsystem(c)
+ 
+ #define jffs2_xattr_do_crccheck_inode(c, ic)
+-- 
+2.9.3
