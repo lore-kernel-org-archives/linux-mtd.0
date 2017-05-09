@@ -1,37 +1,28 @@
-Received: from mail-oi0-x242.google.com ([2607:f8b0:4003:c06::242])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d7zv8-0005FE-HI
- for linux-mtd@lists.infradead.org; Tue, 09 May 2017 07:51:00 +0000
-Received: by mail-oi0-x242.google.com with SMTP id m17so13323384oik.2
- for <linux-mtd@lists.infradead.org>; Tue, 09 May 2017 00:50:37 -0700 (PDT)
+ id 1d80ts-0008Vb-5r
+ for linux-mtd@lists.infradead.org; Tue, 09 May 2017 08:53:46 +0000
+Subject: Re: [RFC][PATCH] UBI: Make MTD_UBI_FASTMAP non-experimental
+To: Jesper Nilsson <jesper.nilsson@axis.com>
+References: <20170329153836.GB29118@axis.com>
+ <434195d8-d638-240d-8d63-50d033ea453a@nod.at>
+ <3f8d0417-5e7d-b7c8-ba83-9a87e774f97f@gmail.com>
+ <20170330173944.GJ29118@axis.com>
+ <a85d3308-e9c9-b292-b2ad-0005a55d2e6d@nod.at>
+ <20170403111735.GV29118@axis.com> <20170509074657.GY10068@axis.com>
+Cc: Jesper Nilsson <jespern@axis.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <41df86d7-a9a3-cada-8f41-3afde22b2e5f@nod.at>
+Date: Tue, 9 May 2017 10:53:16 +0200
 MIME-Version: 1.0
-In-Reply-To: <6b72fc59-ca01-f4ee-106f-abb9b6490d32@nod.at>
-References: <20170411095055.26328-1-o.rempel@pengutronix.de>
- <20170411095055.26328-4-o.rempel@pengutronix.de>
- <5d7d0f21-d87f-0835-c2f6-b6c9e07f73a8@nod.at>
- <20170412054828.GA20561@infradead.org>
- <20170412071551.i36yj3lzilgtntdy@pengutronix.de>
- <803a8cc8-d2d1-dddf-2e07-621b1484218a@nod.at>
- <dd90ac49-574b-54b9-902a-ba5948134ba8@nod.at>
- <CAOQ4uxjqsm2h6N9qdOO2BxwOnnkY1KQCmDa6Ba8xPC0JGCVUiw@mail.gmail.com>
- <b7d49751-8345-b5c4-1b6d-761e91ddd89e@nod.at>
- <3fa90f95-c522-ad9f-3f4c-8c45a6cd93c1@pengutronix.de>
- <CAOQ4uxiEGJLSGS5rK8V8GRNvf9aWqbVG5odu2=nv73xTOmvfNQ@mail.gmail.com>
- <e258d0f2-6117-8ca3-0ed7-a8f6498ad9d4@pengutronix.de>
- <f4b9118e-dcff-32d0-2861-d520f75ea250@nod.at>
- <CAOQ4uxgn59hxAOgRD87VdVPv2srtcLjoFCVVrkAnezEN0_ZFxg@mail.gmail.com>
- <6b72fc59-ca01-f4ee-106f-abb9b6490d32@nod.at>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 9 May 2017 10:50:36 +0300
-Message-ID: <CAOQ4uxjoxYiJoPicoJemRX5YgxWgLGSwanZqKSa++p7TdHh8Rg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] fs: ubifs: set s_uuid in super block
-To: Richard Weinberger <richard@nod.at>
-Cc: Oleksij Rempel <ore@pengutronix.de>, Christoph Hellwig <hch@infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>, Adrian Hunter <adrian.hunter@intel.com>,
- linux-mtd@lists.infradead.org, linux-kernel <linux-kernel@vger.kernel.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- Steffen Trumtrar <s.trumtrar@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20170509074657.GY10068@axis.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,39 +32,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, May 9, 2017 at 10:35 AM, Richard Weinberger <richard@nod.at> wrote:
-> Amir,
->
-> Am 09.05.2017 um 09:08 schrieb Amir Goldstein:
->>> Then we can queue this patch for 4.13.
->>> Please resend and make sure it addresses everything what was also
->>> suggested for the xfs s_uuid patch.
->>>
->>
->> Just to be clear, the xfs s_uuid patch is just a memcpy,
->> no different from Oleksij's patch.
+Jesper,
 
-See upstream commit
-8f720d9 xfs: publish UUID in struct super_block
+Am 09.05.2017 um 09:46 schrieb Jesper Nilsson:
+> Hi Richard,
+> 
+> I'm still worried about this failure case, do we really
+> believe that the flash could fail in such a way that the
+> fastmap is corrupted in an undetectable way?
+> 
+> If we do detect corruption we should be no worse off
+> than earlier since we should ignore the fastmap, IIRC.
 
+In a perfect world, yes.
 
->
-> Wasn't there a huge discussion about LE/BE/uniqueness and more details
-> on UUID that hurt my brain.
->
+> Could you please elaborate on the problem you were
+> thinking about?
 
-LE/BE discussions are more about which variants of uuid helpers should be
-created, among other things, for consumers of s_uuid to check that s_uuid
-was filled by fs.
-Converting s_uuid type to uuid_t or whatever is for the far future.
+e.g.
+commit 74f2c6e9a47cf4e508198c8594626cc82906a13d
+Author: Richard Weinberger <richard@nod.at>
+Date:   Tue Jun 14 10:12:17 2016 +0200
 
-uniqueness of s_uuid does not exist with current filesystems,
-so no reason whatsoever to act differently with ubifs.
-Fixing uniqueness of s_uuid (if at all is needed) is a future VFS task.
+    ubi: Be more paranoid while seaching for the most recent Fastmap
 
-Bottom line, for Oleksij's original patch:
+    Since PEB erasure is asynchornous it can happen that there is
+    more than one Fastmap on the MTD. This is fine because the attach logic
+    will pick the Fastmap data structure with the highest sequence number.
 
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+    On a not so well configured MTD stack spurious ECC errors are common.
+    Causes can be different, bad hardware, wrong operating modes, etc...
+    If the most current Fastmap renders bad due to ECC errors UBI might
+    pick an older Fastmap to attach from.
+    While this can only happen on an anyway broken setup it will show
+    completely different sympthoms and makes finding the root cause much
+    more difficult.
+    So, be debug friendly and fall back to scanning mode of we're facing
+    an ECC error while scanning for Fastmap.
 
-If it's not too late for 4.12 that could be nice, because then
-ubifs+overlayfs would gain a new feature (constant inode numbers)
+    Cc: <stable@vger.kernel.org>
+    Signed-off-by: Richard Weinberger <richard@nod.at>
+
+> Right now I'm hesitant to use fastmap in any production code,
+> even if it works with my current hardware, since there is no
+> guarantee that the flash chips won't get replaced with a
+> second source option down the line...
+
+Fastmap is an aggressive optimization and makes finding issues much
+harder.
+
+Thanks,
+//richard
