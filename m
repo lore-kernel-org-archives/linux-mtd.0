@@ -1,9 +1,9 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d7zgM-0005Tw-Mw
- for linux-mtd@lists.infradead.org; Tue, 09 May 2017 07:35:45 +0000
+ id 1d7zgY-0005V9-C6
+ for linux-mtd@lists.infradead.org; Tue, 09 May 2017 07:35:55 +0000
 Subject: Re: [PATCH v2 3/3] fs: ubifs: set s_uuid in super block
-To: Amir Goldstein <amir73il@gmail.com>, Richard Weinberger <richard@nod.at>
+To: Amir Goldstein <amir73il@gmail.com>
 References: <20170411095055.26328-1-o.rempel@pengutronix.de>
  <20170411095055.26328-4-o.rempel@pengutronix.de>
  <5d7d0f21-d87f-0835-c2f6-b6c9e07f73a8@nod.at>
@@ -18,18 +18,18 @@ References: <20170411095055.26328-1-o.rempel@pengutronix.de>
  <e258d0f2-6117-8ca3-0ed7-a8f6498ad9d4@pengutronix.de>
  <f4b9118e-dcff-32d0-2861-d520f75ea250@nod.at>
  <CAOQ4uxgn59hxAOgRD87VdVPv2srtcLjoFCVVrkAnezEN0_ZFxg@mail.gmail.com>
-Cc: Christoph Hellwig <hch@infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
+Cc: Oleksij Rempel <ore@pengutronix.de>, Christoph Hellwig
+ <hch@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>,
  Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
  linux-kernel <linux-kernel@vger.kernel.org>,
  linux-fsdevel <linux-fsdevel@vger.kernel.org>,
  Steffen Trumtrar <s.trumtrar@pengutronix.de>
-From: Oleksij Rempel <ore@pengutronix.de>
-Message-ID: <19f9dd7a-71a6-cf06-9272-bf4b8c74d2bd@pengutronix.de>
-Date: Tue, 9 May 2017 09:35:11 +0200
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <6b72fc59-ca01-f4ee-106f-abb9b6490d32@nod.at>
+Date: Tue, 9 May 2017 09:35:21 +0200
 MIME-Version: 1.0
 In-Reply-To: <CAOQ4uxgn59hxAOgRD87VdVPv2srtcLjoFCVVrkAnezEN0_ZFxg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -40,42 +40,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Amir,
 
-
-On 05/09/2017 09:08 AM, Amir Goldstein wrote:
-> On Tue, May 9, 2017 at 10:01 AM, Richard Weinberger <richard@nod.at> wrote:
->>
->> Oleksij,
->>
->> Am 09.05.2017 um 07:52 schrieb Oleksij Rempel:
->>>>
->>>>         If VFS maintainers are fine with that, I'll take it.
->>>>         From UBIFS' POV it does not matter much. :-)
->>>>
->>>>
->>>>     Ping to VFS maintainers?
->>>>
->>>>
->>>> What ping? Al made it clear that a flag is not needed.
->>>> BTW, xfs s_uuid patch was merged to master.
->>>
->>>
->>> I'm talking about ubifs patch.
->
-> Me too.
-
-:) ok
-
->>
+Am 09.05.2017 um 09:08 schrieb Amir Goldstein:
 >> Then we can queue this patch for 4.13.
 >> Please resend and make sure it addresses everything what was also
 >> suggested for the xfs s_uuid patch.
 >>
->
+> 
 > Just to be clear, the xfs s_uuid patch is just a memcpy,
 > no different from Oleksij's patch.
 
-So, should i change something?
+Wasn't there a huge discussion about LE/BE/uniqueness and more details
+on UUID that hurt my brain.
 
-here is the patch:
-https://patchwork.kernel.org/patch/9674817/
+Thanks,
+//richard
