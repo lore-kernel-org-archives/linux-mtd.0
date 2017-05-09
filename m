@@ -1,33 +1,31 @@
-Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193])
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d7qKS-0002hG-E2
- for linux-mtd@lists.infradead.org; Mon, 08 May 2017 21:36:30 +0000
-Date: Mon, 8 May 2017 23:36:05 +0200
-From: Pavel Machek <pavel@ucw.cz>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Hans de Goede <hdegoede@redhat.com>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>,
- Tejun Heo <tj@kernel.org>, linux-scsi@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org,
- linux-mtd@lists.infradead.org, Henrique de Moraes Holschuh <hmh@hmh.eng.br>
-Subject: Re: Race to power off harming SATA SSDs
-Message-ID: <20170508213605.GA12687@amd>
-References: <1494228094.6528.14.camel@infradead.org>
- <alpine.DEB.2.11.1705080930150.6882@lnxricardw1>
- <1494231215.6528.22.camel@infradead.org>
- <alpine.DEB.2.11.1705081034420.6882@lnxricardw1>
- <1494233673.6528.28.camel@infradead.org>
- <alpine.DEB.2.11.1705081059580.6882@lnxricardw1>
- <7ee84982-cfad-94d7-4e22-4edbeb852b32@redhat.com>
- <1494238390.6528.42.camel@infradead.org>
- <20170508135005.0b9b200b@bbrezillon>
- <1494258011.5407.18.camel@infradead.org>
+ id 1d7wX8-0003Yr-Lf
+ for linux-mtd@lists.infradead.org; Tue, 09 May 2017 04:14:00 +0000
+Subject: Re: [PATCH v2 3/3] fs: ubifs: set s_uuid in super block
+To: Richard Weinberger <richard@nod.at>, Amir Goldstein <amir73il@gmail.com>
+References: <20170411095055.26328-1-o.rempel@pengutronix.de>
+ <20170411095055.26328-4-o.rempel@pengutronix.de>
+ <5d7d0f21-d87f-0835-c2f6-b6c9e07f73a8@nod.at>
+ <20170412054828.GA20561@infradead.org>
+ <20170412071551.i36yj3lzilgtntdy@pengutronix.de>
+ <803a8cc8-d2d1-dddf-2e07-621b1484218a@nod.at>
+ <dd90ac49-574b-54b9-902a-ba5948134ba8@nod.at>
+ <CAOQ4uxjqsm2h6N9qdOO2BxwOnnkY1KQCmDa6Ba8xPC0JGCVUiw@mail.gmail.com>
+ <b7d49751-8345-b5c4-1b6d-761e91ddd89e@nod.at>
+Cc: Christoph Hellwig <hch@infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ Steffen Trumtrar <s.trumtrar@pengutronix.de>
+From: Oleksij Rempel <ore@pengutronix.de>
+Message-ID: <3fa90f95-c522-ad9f-3f4c-8c45a6cd93c1@pengutronix.de>
+Date: Tue, 9 May 2017 06:13:26 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1494258011.5407.18.camel@infradead.org>
+In-Reply-To: <b7d49751-8345-b5c4-1b6d-761e91ddd89e@nod.at>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,34 +35,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon 2017-05-08 16:40:11, David Woodhouse wrote:
-> On Mon, 2017-05-08 at 13:50 +0200, Boris Brezillon wrote:
-> > On Mon, 08 May 2017 11:13:10 +0100
-> > David Woodhouse <dwmw2@infradead.org> wrote:
-> > 
-> > > 
-> > > On Mon, 2017-05-08 at 11:09 +0200, Hans de Goede wrote:
-> > > > 
-> > > > You're forgetting that the SSD itself (this thread is about SSDs) also has
-> > > > a major software component which is doing housekeeping all the time, so even
-> > > > if the main CPU gets reset the SSD's controller may still happily be erasing
-> > > > blocks.  
-> > > We're not really talking about SSDs at all any more; we're talking
-> > > about real flash with real maintainable software.
-> >
-> > It's probably a good sign that this new discussion should take place in
-> > a different thread :-).
-> 
-> Well, maybe. But it was a silly thread in the first place. SATA SSDs
-> aren't *expected* to be reliable.
 
-Citation needed?
 
-I'm pretty sure SATA SSDs are expected to be reliable, up to maximum
-amount of gigabytes written (specified by manufacturer), as long as
-you don't cut power without warning.
+On 05/02/2017 09:37 AM, Richard Weinberger wrote:
+> Amir,
+>
+> Am 02.05.2017 um 09:19 schrieb Amir Goldstein:
+>> On Fri, Apr 28, 2017 at 1:03 AM, Richard Weinberger <richard@nod.at> wrote:
+>>> Am 24.04.2017 um 17:47 schrieb Richard Weinberger:
+>>>>> So, if some flag should be implemented, who should do it? :)
+>>>>
+>>>> I'll not do it for you. ;)
+>>>
+>>> Please also see http://marc.info/?l=linux-fsdevel&m=149327990608749&w=2
+>>>
+>>
+>> Richard,
+>>
+>> Considering the facts that:
+>> 1. I proposed the said flag and Al didn't think it was needed [1]
+>> 2. ext4 already sets s_uuid without any flag for a long time now
+>> 3. A similar patch was queued for v4.12 to set s_uuid for xfs without any flag
+>>
+>> I think it would be right to take Oleksij's patch as is.
+>>
+>> FYI, my current work on 'constant inode numbers for overlayfs' requires that
+>> underlying filesystem had set a non-zero s_uuid. Not sure if that matters for
+>> ubifs+overlayfs users.
+>
+> If VFS maintainers are fine with that, I'll take it.
+> From UBIFS' POV it does not matter much. :-)
 
-									Pavel
--- 
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
+Ping to VFS maintainers?
