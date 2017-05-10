@@ -1,22 +1,24 @@
-Received: from 6.mo7.mail-out.ovh.net ([188.165.39.218])
+Received: from 16.mo7.mail-out.ovh.net ([46.105.72.216])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d8OG5-0002PO-Na
- for linux-mtd@lists.infradead.org; Wed, 10 May 2017 09:50:15 +0000
+ id 1d8OSz-0001OM-CP
+ for linux-mtd@lists.infradead.org; Wed, 10 May 2017 10:03:35 +0000
 Received: from player788.ha.ovh.net (b6.ovh.net [213.186.33.56])
- by mo7.mail-out.ovh.net (Postfix) with ESMTP id 88A6C4CF52
- for <linux-mtd@lists.infradead.org>; Wed, 10 May 2017 11:49:41 +0200 (CEST)
-Subject: Re: [PATCH] mtd: spi-nor: stm32-quadspi: fix compiler errors with
- COMPILE_TEST
-To: marek.vasut@gmail.com, linux-mtd@lists.infradead.org
-References: <861b57d26929934bfc99e8db691a483ee1e2cada.1493926168.git.cyrille.pitchen@wedev4u.fr>
-Cc: computersforpeace@gmail.com, dwmw2@infradead.org,
- boris.brezillon@free-electrons.com, richard@nod.at,
- linux-kernel@vger.kernel.org, Ludovic Barre <ludovic.barre@st.com>
+ by mo7.mail-out.ovh.net (Postfix) with ESMTP id 429384FA25
+ for <linux-mtd@lists.infradead.org>; Wed, 10 May 2017 12:03:09 +0200 (CEST)
+Subject: Re: [PATCH v2] mtd: spi-nor: Potential oops on error path in
+ quad_enable()
+To: Dan Carpenter <dan.carpenter@oracle.com>
+References: <20170505053356.vcgboleyqigluhc3@mwanda>
+Cc: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ kernel-janitors@vger.kernel.org
 From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <b52d41fa-32e6-e4b0-f04c-32f0c2757c4c@wedev4u.fr>
-Date: Wed, 10 May 2017 11:49:31 +0200
+Message-ID: <1bc9d422-734b-8520-8e25-510ce9253f6f@wedev4u.fr>
+Date: Wed, 10 May 2017 12:03:01 +0200
 MIME-Version: 1.0
-In-Reply-To: <861b57d26929934bfc99e8db691a483ee1e2cada.1493926168.git.cyrille.pitchen@wedev4u.fr>
+In-Reply-To: <20170505053356.vcgboleyqigluhc3@mwanda>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,49 +30,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 04/05/2017 à 21:39, Cyrille Pitchen a écrit :
-> This patch fixes some compiler errors:
-> - change format strings to use %zx for size_t
-> - add missing #include <linux/sizes.h>
+Le 05/05/2017 à 07:33, Dan Carpenter a écrit :
+> Before commit cff959958832 ("mtd: spi-nor: introduce SPI 1-2-2 and SPI
+> 1-4-4 protocols") then we treated 1 as -EINVAL in the caller but after
+> that commit we changed to propagate the return.  My static checker
+> complains that it's eventually passed to an ERR_PTR() and later
+> dereferenced, but I'm not totally certain if that's true.  Regardless,
+> returning 1 is wrong.
 > 
-> Cc: Ludovic Barre <ludovic.barre@st.com>
-> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Applied to the github/spi-nor tree
+Applied to the github/spi-nor tree.
 
-
+Thanks!
 > ---
->  drivers/mtd/spi-nor/stm32-quadspi.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+> v2: Propogate the error code from spi_nor_wait_till_ready() instead of
+>     just returning -EINVAL
 > 
-> diff --git a/drivers/mtd/spi-nor/stm32-quadspi.c b/drivers/mtd/spi-nor/stm32-quadspi.c
-> index 1056e7408d2a..86c0931543c5 100644
-> --- a/drivers/mtd/spi-nor/stm32-quadspi.c
-> +++ b/drivers/mtd/spi-nor/stm32-quadspi.c
-> @@ -19,6 +19,7 @@
->  #include <linux/of_device.h>
->  #include <linux/platform_device.h>
->  #include <linux/reset.h>
-> +#include <linux/sizes.h>
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 060a59e716be..eef55b597ec7 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1389,8 +1389,9 @@ static int macronix_quad_enable(struct spi_nor *nor)
 >  
->  #define QUADSPI_CR		0x00
->  #define CR_EN			BIT(0)
-> @@ -375,7 +376,7 @@ static ssize_t stm32_qspi_read(struct spi_nor *nor, loff_t from, size_t len,
->  	struct stm32_qspi_cmd cmd;
->  	int err;
+>  	write_sr(nor, val | SR_QUAD_EN_MX);
 >  
-> -	dev_dbg(qspi->dev, "read(%#.2x): buf:%p from:%#.8x len:%#x\n",
-> +	dev_dbg(qspi->dev, "read(%#.2x): buf:%p from:%#.8x len:%#zx\n",
->  		nor->read_opcode, buf, (u32)from, len);
+> -	if (spi_nor_wait_till_ready(nor))
+> -		return 1;
+> +	ret = spi_nor_wait_till_ready(nor);
+> +	if (ret)
+> +		return ret;
 >  
->  	memset(&cmd, 0, sizeof(cmd));
-> @@ -402,7 +403,7 @@ static ssize_t stm32_qspi_write(struct spi_nor *nor, loff_t to, size_t len,
->  	struct stm32_qspi_cmd cmd;
->  	int err;
->  
-> -	dev_dbg(dev, "write(%#.2x): buf:%p to:%#.8x len:%#x\n",
-> +	dev_dbg(dev, "write(%#.2x): buf:%p to:%#.8x len:%#zx\n",
->  		nor->program_opcode, buf, (u32)to, len);
->  
->  	memset(&cmd, 0, sizeof(cmd));
+>  	ret = read_sr(nor);
+>  	if (!(ret > 0 && (ret & SR_QUAD_EN_MX))) {
 > 
