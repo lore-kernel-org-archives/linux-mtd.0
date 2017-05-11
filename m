@@ -1,19 +1,19 @@
-Received: from mail-io0-x22c.google.com ([2607:f8b0:4001:c06::22c])
+Received: from mail-io0-x22d.google.com ([2607:f8b0:4001:c06::22d])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d8lw6-0000oE-01
- for linux-mtd@lists.infradead.org; Thu, 11 May 2017 11:07:11 +0000
-Received: by mail-io0-x22c.google.com with SMTP id k91so18899925ioi.1
- for <linux-mtd@lists.infradead.org>; Thu, 11 May 2017 04:06:49 -0700 (PDT)
+ id 1d8ly9-0001Nk-57
+ for linux-mtd@lists.infradead.org; Thu, 11 May 2017 11:09:18 +0000
+Received: by mail-io0-x22d.google.com with SMTP id f102so18871396ioi.2
+ for <linux-mtd@lists.infradead.org>; Thu, 11 May 2017 04:08:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3a779fca-5a56-44e5-2acf-12b8abdaf906@crapouillou.net>
+In-Reply-To: <20170428200824.10906-6-paul@crapouillou.net>
 References: <20170402204244.14216-2-paul@crapouillou.net>
  <20170428200824.10906-1-paul@crapouillou.net>
- <20170428200824.10906-5-paul@crapouillou.net>
- <3a779fca-5a56-44e5-2acf-12b8abdaf906@crapouillou.net>
+ <20170428200824.10906-6-paul@crapouillou.net>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 11 May 2017 13:06:47 +0200
-Message-ID: <CACRpkdb+uQpdOfCFTKaMvp=nUxksA0=FWCDbY+JbB_=jDDcXfA@mail.gmail.com>
-Subject: Re: [PATCH v5 04/14] GPIO: Add gpio-ingenic driver
+Date: Thu, 11 May 2017 13:08:55 +0200
+Message-ID: <CACRpkdaYRmB=i-=k4vfFYL6wHVrpNo1w11xnLGbu+6YPPmT8vA@mail.gmail.com>
+Subject: Re: [PATCH v5 05/14] MIPS: ingenic: Enable pinctrl for all ingenic
+ SoCs
 To: Paul Cercueil <paul@crapouillou.net>
 Cc: Alexandre Courbot <gnurou@gmail.com>, Rob Herring <robh+dt@kernel.org>,
  Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>,
@@ -41,16 +41,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, May 8, 2017 at 12:05 AM, Paul Cercueil <paul@crapouillou.net> wrote:
+On Fri, Apr 28, 2017 at 10:08 PM, Paul Cercueil <paul@crapouillou.net> wrote:
 
-> It looks like the gpio_get_value() is broken on jz4740.
+> There is a pinctrl driver for each of the Ingenic SoCs supported by the
+> upstream Linux kernel. In order to switch away from the old GPIO
+> platform code, we now enable the pinctrl drivers by default for the
+> Ingenic SoCs.
 >
-> I'll send a v6.
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  arch/mips/Kconfig | 1 +
 
-OK I don't apply this series then, waiting for v6.
+So please tell me your desired merge strategy for these bits. I can
+provide an immutable branch for pinctrl if you want to pull the deps in
+or we can just merge this orthogonally in the MIPS tree and let things
+smoothen together in the merge window.
 
-The series looks good so as soon you think it is finished
-I can apply it I think.
+This goes for everything outside of pinctrl/gpio.
+
+If I should merge patches for other subsystems I need ACKs from
+the maintainers of MIPS etc.
 
 Yours,
 Linus Walleij
