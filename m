@@ -1,31 +1,27 @@
-Subject: Re: [PATCH v2 2/2] arm: dts: mt2701: add nor flash node
-To: Guochun Mao <guochun.mao@mediatek.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- John Crispin <john@phrozen.org>,
- "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d8cm2-0008RG-P3
+ for linux-mtd@lists.infradead.org; Thu, 11 May 2017 01:20:12 +0000
+Received: by mail-pg0-x244.google.com with SMTP id i63so1474560pgd.2
+ for <linux-mtd@lists.infradead.org>; Wed, 10 May 2017 18:19:50 -0700 (PDT)
+Date: Wed, 10 May 2017 18:19:46 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Rob Herring <robh@kernel.org>
+Cc: Christophe Leroy <christophe.leroy@c-s.fr>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Marek Vasut <marek.vasut@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-References: <1485315515-29942-1-git-send-email-guochun.mao@mediatek.com>
- <1485315515-29942-3-git-send-email-guochun.mao@mediatek.com>
- <1486267249.10417.9.camel@mhfsdcap03> <20170206084544.24878633@bbrezillon>
- <77e0e3b0-2fe4-b32b-9099-11ce9811ba15@gmail.com>
- <1487044733.19037.0.camel@mhfsdcap03>
-From: Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <1a788098-1cf8-5fec-e847-5c14189f8586@gmail.com>
-Date: Wed, 10 May 2017 12:49:39 +0200
+ Mark Rutland <mark.rutland@arm.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH] mtd: nand: gpio: update binding
+Message-ID: <20170511011946.GC70297@google.com>
+References: <20170503121824.DD82C67889@pc13941vm.idsi0.si.c-s.fr>
+ <20170508162655.hibk4khq5bsrcpsg@rob-hp-laptop>
 MIME-Version: 1.0
-In-Reply-To: <1487044733.19037.0.camel@mhfsdcap03>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170508162655.hibk4khq5bsrcpsg@rob-hp-laptop>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,53 +31,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-On 14/02/17 04:58, Guochun Mao wrote:
-> On Sun, 2017-02-12 at 07:35 +0800, Matthias Brugger wrote:
->>
->> On 02/06/2017 08:45 AM, Boris Brezillon wrote:
->>> Hi Guochun,
->>>
->>> On Sun, 5 Feb 2017 12:00:49 +0800
->>> Guochun Mao <guochun.mao@mediatek.com> wrote:
->>>
->>>
->>>>>
->>>>> +   nor_flash: spi@11014000 {
->>>>> +           compatible = "mediatek,mt2701-nor",
->>>>> +                        "mediatek,mt8173-nor";
->>>>> +           reg = <0 0x11014000 0 0xe0>;
->>>>> +           clocks = <&pericfg CLK_PERI_FLASH>,
->>>>> +                    <&topckgen CLK_TOP_FLASH_SEL>;
->>>>> +           clock-names = "spi", "sf";
->>>>> +           #address-cells = <1>;
->>>>> +           #size-cells = <0>;
->>>>> +           status = "disabled";
->>>>> +   };
->>>>> +
->>>>>      mmsys: syscon@14000000 {
->>>>>              compatible = "mediatek,mt2701-mmsys", "syscon";
->>>>>              reg = <0 0x14000000 0 0x1000>;
->>>>
->>>> Hi,
->>>> mtk-quadspi.txt had been updated as suggested.
->>>> Is there suggestion about this patch?
->>>
->>> It should probably go through the Mediatek tree. Matthias, any opinion?
->>>
->>
->> Yes, I will take this one through mine tree.
->>
->> Thanks,
->> Matthias
+On Mon, May 08, 2017 at 11:26:55AM -0500, Rob Herring wrote:
+> On Wed, May 03, 2017 at 02:18:24PM +0200, Christophe Leroy wrote:
+> > This patch updates the binding documentation in accordance with
+> > commit 44dd182861f99 ("mtd: nand: gpio: make nCE GPIO optional")
+> > 
+> > Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+> > Reported-by: Brian Norris <computersforpeace@gmail.com>
+> > ---
+> >  Documentation/devicetree/bindings/mtd/gpio-control-nand.txt | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> Thanks,
-> Guochun
-> 
-> 
+> Acked-by: Rob Herring <robh@kernel.org>
 
-Queued now for v4.12-next/dts32
-Sorry for the delay.
-
-Matthias
+Applied to l2-mtd.git
