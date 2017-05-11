@@ -1,28 +1,25 @@
-Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
+Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d8ssj-0001HM-9F
- for linux-mtd@lists.infradead.org; Thu, 11 May 2017 18:32:11 +0000
-Received: by mail-pf0-x243.google.com with SMTP id n23so3039714pfb.3
- for <linux-mtd@lists.infradead.org>; Thu, 11 May 2017 11:31:46 -0700 (PDT)
-Date: Thu, 11 May 2017 11:31:42 -0700
+ id 1d8swi-0002vU-5k
+ for linux-mtd@lists.infradead.org; Thu, 11 May 2017 18:36:17 +0000
+Received: by mail-pg0-x244.google.com with SMTP id i63so4507093pgd.2
+ for <linux-mtd@lists.infradead.org>; Thu, 11 May 2017 11:35:55 -0700 (PDT)
+Date: Thu, 11 May 2017 11:35:52 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH V4 2/2] mtd: extract TRX parser out of bcm47xxpart into a
- separated module
-Message-ID: <20170511183142.GH70297@google.com>
-References: <20170227130633.4020-1-zajec5@gmail.com>
- <20170330123527.30181-1-zajec5@gmail.com>
- <20170330123527.30181-2-zajec5@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Colin King <colin.king@canonical.com>, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: nand: make nand_ooblayout_lp_hamming_ops static
+Message-ID: <20170511183552.GI70297@google.com>
+References: <20170504121100.2709-1-colin.king@canonical.com>
+ <20170504160813.23bad4f9@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20170330123527.30181-2-zajec5@gmail.com>
+In-Reply-To: <20170504160813.23bad4f9@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,348 +29,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On Thu, Mar 30, 2017 at 02:35:27PM +0200, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
+On Thu, May 04, 2017 at 04:08:13PM +0200, Boris Brezillon wrote:
+> On Thu,  4 May 2017 13:11:00 +0100
+> Colin King <colin.king@canonical.com> wrote:
 > 
-> This makes TRX parsing code reusable with other platforms and parsers.
+> > From: Colin Ian King <colin.king@canonical.com>
+> > 
+> > nand_ooblayout_lp_hamming_ops can be made static as it does not need to be
+> > in global scope.
+> > 
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > 
-> Please note this patch doesn't really change anything in the existing
-> code, just moves it. There is still some place for improvement (e.g.
-> working on non-hacky method of checking rootfs format) but it's not
-> really a subject of this change.
+> Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 > 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-> ---
-> V2: A totally rebased & refreshed version.
-> ---
->  drivers/mtd/Kconfig              |   4 ++
->  drivers/mtd/Makefile             |   1 +
->  drivers/mtd/bcm47xxpart.c        |  97 +------------------------------
->  drivers/mtd/parsers/Kconfig      |   8 +++
->  drivers/mtd/parsers/Makefile     |   1 +
->  drivers/mtd/parsers/parser_trx.c | 119 +++++++++++++++++++++++++++++++++++++++
->  6 files changed, 136 insertions(+), 94 deletions(-)
->  create mode 100644 drivers/mtd/parsers/Kconfig
->  create mode 100644 drivers/mtd/parsers/Makefile
->  create mode 100644 drivers/mtd/parsers/parser_trx.c
-> 
-> diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-> index e83a279f1217..5a2d71729b9a 100644
-> --- a/drivers/mtd/Kconfig
-> +++ b/drivers/mtd/Kconfig
-> @@ -155,6 +155,10 @@ config MTD_BCM47XX_PARTS
->  	  This provides partitions parser for devices based on BCM47xx
->  	  boards.
->  
-> +menu "Partition parsers"
-> +source "drivers/mtd/parsers/Kconfig"
-> +endmenu
+> Brian, feel free to apply this patch directly if you want, otherwise,
+> I'll queue it for 4.13.
 
-Is "parsers" a better name than "partitions"? I proposed moving
-everything to "partitions" previously.
-
-> +
->  comment "User Modules And Translation Layers"
->  
->  #
-> diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
-> index 99bb9a1f6e16..151d60df303a 100644
-> --- a/drivers/mtd/Makefile
-> +++ b/drivers/mtd/Makefile
-> @@ -13,6 +13,7 @@ obj-$(CONFIG_MTD_AFS_PARTS)	+= afs.o
->  obj-$(CONFIG_MTD_AR7_PARTS)	+= ar7part.o
->  obj-$(CONFIG_MTD_BCM63XX_PARTS)	+= bcm63xxpart.o
->  obj-$(CONFIG_MTD_BCM47XX_PARTS)	+= bcm47xxpart.o
-> +obj-y				+= parsers/
->  
->  # 'Users' - code which presents functionality to userspace.
->  obj-$(CONFIG_MTD_BLKDEVS)	+= mtd_blkdevs.o
-> diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
-> index d10fa6c8f074..66ce72fd1426 100644
-> --- a/drivers/mtd/bcm47xxpart.c
-> +++ b/drivers/mtd/bcm47xxpart.c
-> @@ -43,7 +43,6 @@
->  #define ML_MAGIC2			0x26594131
->  #define TRX_MAGIC			0x30524448
->  #define SHSQ_MAGIC			0x71736873	/* shsq (weird ZTE H218N endianness) */
-> -#define UBI_EC_MAGIC			0x23494255	/* UBI# */
->  
->  struct trx_header {
->  	uint32_t magic;
-> @@ -62,89 +61,6 @@ static void bcm47xxpart_add_part(struct mtd_partition *part, const char *name,
->  	part->mask_flags = mask_flags;
->  }
->  
-> -static const char *bcm47xxpart_trx_data_part_name(struct mtd_info *master,
-> -						  size_t offset)
-> -{
-> -	uint32_t buf;
-> -	size_t bytes_read;
-> -	int err;
-> -
-> -	err  = mtd_read(master, offset, sizeof(buf), &bytes_read,
-> -			(uint8_t *)&buf);
-> -	if (err && !mtd_is_bitflip(err)) {
-> -		pr_err("mtd_read error while parsing (offset: 0x%X): %d\n",
-> -			offset, err);
-> -		goto out_default;
-> -	}
-> -
-> -	if (buf == UBI_EC_MAGIC)
-> -		return "ubi";
-> -
-> -out_default:
-> -	return "rootfs";
-> -}
-> -
-> -static int bcm47xxpart_parse_trx(struct mtd_info *master,
-> -				 struct mtd_partition *trx,
-> -				 struct mtd_partition *parts,
-> -				 size_t parts_len)
-> -{
-> -	struct trx_header header;
-> -	size_t bytes_read;
-> -	int curr_part = 0;
-> -	int i, err;
-> -
-> -	if (parts_len < 3) {
-> -		pr_warn("No enough space to add TRX partitions!\n");
-> -		return -ENOMEM;
-> -	}
-> -
-> -	err = mtd_read(master, trx->offset, sizeof(header), &bytes_read,
-> -		       (uint8_t *)&header);
-> -	if (err && !mtd_is_bitflip(err)) {
-> -		pr_err("mtd_read error while reading TRX header: %d\n", err);
-> -		return err;
-> -	}
-> -
-> -	i = 0;
-> -
-> -	/* We have LZMA loader if offset[2] points to sth */
-> -	if (header.offset[2]) {
-> -		bcm47xxpart_add_part(&parts[curr_part++], "loader",
-> -				     trx->offset + header.offset[i], 0);
-> -		i++;
-> -	}
-> -
-> -	if (header.offset[i]) {
-> -		bcm47xxpart_add_part(&parts[curr_part++], "linux",
-> -				     trx->offset + header.offset[i], 0);
-> -		i++;
-> -	}
-> -
-> -	if (header.offset[i]) {
-> -		size_t offset = trx->offset + header.offset[i];
-> -		const char *name = bcm47xxpart_trx_data_part_name(master,
-> -								  offset);
-> -
-> -		bcm47xxpart_add_part(&parts[curr_part++], name, offset, 0);
-> -		i++;
-> -	}
-> -
-> -	/*
-> -	 * Assume that every partition ends at the beginning of the one it is
-> -	 * followed by.
-> -	 */
-> -	for (i = 0; i < curr_part; i++) {
-> -		u64 next_part_offset = (i < curr_part - 1) ?
-> -					parts[i + 1].offset :
-> -					trx->offset + trx->size;
-> -
-> -		parts[i].size = next_part_offset - parts[i].offset;
-> -	}
-> -
-> -	return curr_part;
-> -}
-> -
->  /**
->   * bcm47xxpart_bootpartition - gets index of TRX partition used by bootloader
->   *
-> @@ -362,17 +278,10 @@ static int bcm47xxpart_parse(struct mtd_info *master,
->  	for (i = 0; i < trx_num; i++) {
->  		struct mtd_partition *trx = &parts[trx_parts[i]];
->  
-> -		if (i == bcm47xxpart_bootpartition()) {
-> -			int num_parts;
-> -
-> -			num_parts = bcm47xxpart_parse_trx(master, trx,
-> -							  parts + curr_part,
-> -							  BCM47XXPART_MAX_PARTS - curr_part);
-> -			if (num_parts > 0)
-> -				curr_part += num_parts;
-> -		} else {
-> +		if (i == bcm47xxpart_bootpartition())
-> +			trx->format = "trx";
-> +		else
->  			trx->name = "failsafe";
-> -		}
->  	}
->  
->  	*pparts = parts;
-> diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
-> new file mode 100644
-> index 000000000000..ebb697a52698
-> --- /dev/null
-> +++ b/drivers/mtd/parsers/Kconfig
-> @@ -0,0 +1,8 @@
-> +config MTD_PARSER_TRX
-> +	tristate "Parser for TRX format partitions"
-> +	depends on MTD && (BCM47XX || ARCH_BCM_5301X)
-> +	help
-> +	  TRX is a firmware format used by Broadcom on their devices. It
-> +	  may contain up to 3/4 partitions (depending on the version).
-> +	  This driver will parse TRX header and report at least two partitions:
-> +	  kernel and rootfs.
-> diff --git a/drivers/mtd/parsers/Makefile b/drivers/mtd/parsers/Makefile
-> new file mode 100644
-> index 000000000000..4d9024e0be3b
-> --- /dev/null
-> +++ b/drivers/mtd/parsers/Makefile
-> @@ -0,0 +1 @@
-> +obj-$(CONFIG_MTD_PARSER_TRX)		+= parser_trx.o
-> diff --git a/drivers/mtd/parsers/parser_trx.c b/drivers/mtd/parsers/parser_trx.c
-> new file mode 100644
-> index 000000000000..f35e28148808
-> --- /dev/null
-> +++ b/drivers/mtd/parsers/parser_trx.c
-> @@ -0,0 +1,119 @@
-> +/*
-> + * Parser for TRX format partitions
-> + *
-> + * Copyright (C) 2012 - 2017 Rafał Miłecki <rafal@milecki.pl>
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + *
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/slab.h>
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/mtd/partitions.h>
-> +
-> +#define TRX_PARSER_MAX_PARTS		4
-> +
-> +/* Magics */
-> +#define UBI_EC_MAGIC			0x23494255	/* UBI# */
-> +
-> +struct trx_header {
-> +	uint32_t magic;
-> +	uint32_t length;
-> +	uint32_t crc32;
-> +	uint16_t flags;
-> +	uint16_t version;
-> +	uint32_t offset[3];
-> +} __packed;
-> +
-> +static const char *parser_trx_data_part_name(struct mtd_info *master,
-> +					     size_t offset)
-> +{
-> +	uint32_t buf;
-> +	size_t bytes_read;
-> +	int err;
-> +
-> +	err  = mtd_read(master, offset, sizeof(buf), &bytes_read,
-> +			(uint8_t *)&buf);
-> +	if (err && !mtd_is_bitflip(err)) {
-> +		pr_err("mtd_read error while parsing (offset: 0x%X): %d\n",
-> +			offset, err);
-> +		goto out_default;
-> +	}
-> +
-> +	if (buf == UBI_EC_MAGIC)
-> +		return "ubi";
-> +
-> +out_default:
-> +	return "rootfs";
-> +}
-> +
-> +static int parser_trx_parse(struct mtd_info *mtd,
-> +			    const struct mtd_partition **pparts,
-> +			    struct mtd_part_parser_data *data)
-
-So, this function doesn't do any validation that this is *actually* a
-TRX partition? I think it needs to do *some* level of validation if it's
-going to be an independent parser driver like this. See my comments on
-your other patch.
-
-(I also can't say that I understand the parent bcm47xxpart format/parser
-very well; it really looks like a collection of hacks, so maybe
-validation is impossible...)
-
-> +{
-> +	struct mtd_partition *parts;
-> +	struct mtd_partition *part;
-> +	struct trx_header trx;
-> +	size_t bytes_read;
-> +	uint8_t curr_part = 0, i = 0;
-> +	int err;
-> +
-> +	parts = kzalloc(sizeof(struct mtd_partition) * TRX_PARSER_MAX_PARTS,
-> +			GFP_KERNEL);
-> +	if (!parts)
-> +		return -ENOMEM;
-> +
-> +	err = mtd_read(mtd, 0, sizeof(trx), &bytes_read, (uint8_t *)&trx);
-> +	if (err) {
-> +		pr_err("MTD reading error: %d\n", err);
-> +		return err;
-
-You're leaking 'parts' here. (smatch noticed this.)
-
-> +	}
-> +
-> +	/* We have LZMA loader if offset[2] points to sth */
-
-Not that this is new, but I have no idea what "sth" is.
-
-> +	if (trx.offset[2]) {
-> +		part = &parts[curr_part++];
-> +		part->name = "loader";
-> +		part->offset = trx.offset[i];
-> +		i++;
-> +	}
-> +
-> +	if (trx.offset[i]) {
-> +		part = &parts[curr_part++];
-> +		part->name = "linux";
-> +		part->offset = trx.offset[i];
-> +		i++;
-> +	}
-> +
-> +	if (trx.offset[i]) {
-> +		part = &parts[curr_part++];
-> +		part->name = parser_trx_data_part_name(mtd, trx.offset[i]);
-> +		part->offset = trx.offset[i];
-> +		i++;
-> +	}
-> +
-> +	/*
-> +	 * Assume that every partition ends at the beginning of the one it is
-> +	 * followed by.
-> +	 */
-> +	for (i = 0; i < curr_part; i++) {
-> +		u64 next_part_offset = (i < curr_part - 1) ?
-> +				       parts[i + 1].offset : mtd->size;
-> +
-> +		parts[i].size = next_part_offset - parts[i].offset;
-> +	}
-> +
-> +	*pparts = parts;
-> +	return i;
-> +};
-> +
-> +static struct mtd_part_parser mtd_parser_trx = {
-> +	.parse_fn = parser_trx_parse,
-> +	.name = "trx",
-> +};
-> +module_mtd_part_parser(mtd_parser_trx);
-> +
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_DESCRIPTION("Parser for TRX format partitions");
-
-Brian
+Eh, queue it for 4.13, or in a fixes branch if you want.
