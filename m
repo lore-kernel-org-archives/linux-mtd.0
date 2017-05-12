@@ -1,16 +1,18 @@
-Received: from mail-qt0-x243.google.com ([2607:f8b0:400d:c0d::243])
+Received: from mail-qk0-x242.google.com ([2607:f8b0:400d:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d93JQ-0008Kq-T0
- for linux-mtd@lists.infradead.org; Fri, 12 May 2017 05:40:26 +0000
-Received: by mail-qt0-x243.google.com with SMTP id a46so5589341qte.0
- for <linux-mtd@lists.infradead.org>; Thu, 11 May 2017 22:40:03 -0700 (PDT)
+ id 1d93Vq-0004hk-BA
+ for linux-mtd@lists.infradead.org; Fri, 12 May 2017 05:53:16 +0000
+Received: by mail-qk0-x242.google.com with SMTP id o85so6584084qkh.0
+ for <linux-mtd@lists.infradead.org>; Thu, 11 May 2017 22:52:53 -0700 (PDT)
 From: "Mario J. Rugiero" <mrugiero@gmail.com>
 To: linux-mtd@lists.infradead.org
 Cc: "Mario J. Rugiero" <mrugiero@gmail.com>
-Subject: [PATCH] mtd: nand: add option to erase NAND blocks even if detected
- as bad.
-Date: Fri, 12 May 2017 02:39:57 -0300
-Message-Id: <20170512053957.10426-1-mrugiero@gmail.com>
+Subject: [PATCH v2] mtd: nand: add option to erase NAND blocks even if
+ detected as bad.
+Date: Fri, 12 May 2017 02:52:46 -0300
+Message-Id: <20170512055246.10936-1-mrugiero@gmail.com>
+In-Reply-To: <20170512053957.10426-1-mrugiero@gmail.com>
+References: <20170512053957.10426-1-mrugiero@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,13 +37,16 @@ Example usage: recovering NAND chips on sunxi devices, as explained
 here: http://linux-sunxi.org/Mainline_NAND_Howto#Known_issues
 
 Signed-off-by: Mario J. Rugiero <mrugiero@gmail.com>
+
+v2: Fix a typo in the build option description.
+
 ---
  drivers/mtd/nand/Kconfig     | 9 +++++++++
  drivers/mtd/nand/nand_base.c | 2 ++
  2 files changed, 11 insertions(+)
 
 diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index c3029528063b..e5b29fab4a60 100644
+index c3029528063b..e0a32a34b6bf 100644
 --- a/drivers/mtd/nand/Kconfig
 +++ b/drivers/mtd/nand/Kconfig
 @@ -36,6 +36,15 @@ config MTD_NAND_ECC_BCH
@@ -49,7 +54,7 @@ index c3029528063b..e5b29fab4a60 100644
  	  of error correction.
  
 +config MTD_NAND_ERASE_BADBLOCKS
-+	bool "Enable erasing of bad blocks (DANGEROUS)]"
++	bool "Enable erasing of bad blocks (DANGEROUS)"
 +	default n
 +	help
 +	  This enables support for attempting to erase bad blocks.
