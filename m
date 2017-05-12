@@ -1,24 +1,21 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1d961w-0005Jx-Fz
- for linux-mtd@lists.infradead.org; Fri, 12 May 2017 08:34:34 +0000
-Received: by mail-wm0-x244.google.com with SMTP id y10so12277607wmh.0
- for <linux-mtd@lists.infradead.org>; Fri, 12 May 2017 01:34:12 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20170512102407.217b805a@bbrezillon>
-References: <20170512053957.10426-1-mrugiero@gmail.com>
- <CAFLxGvyTvqY69AeoSrKWNjea-8u5YxKEBOznpUj9g==_UDnLew@mail.gmail.com>
- <CAKKQwLTGFY+bfFCoPNtvpFK-w-3SnNc_G2xDd_xip3iiwVDM4A@mail.gmail.com>
- <20170512102407.217b805a@bbrezillon>
-From: Mario Rugiero <mrugiero@gmail.com>
-Date: Fri, 12 May 2017 05:34:10 -0300
-Message-ID: <CAKKQwLTVpsu8j50BkqkgBwk9A3rPfrYDUTYDXbAn_OiA-tUd7g@mail.gmail.com>
-Subject: Re: [PATCH] mtd: nand: add option to erase NAND blocks even if
- detected as bad.
+Message-ID: <1494578040.15376.38.camel@mhfsdcap03>
+Subject: Re: [PATCH v2 2/3] mtd: nand: mediatek: add support for different
+ MTK NAND FLASH Controller IP
+From: xiaolei li <xiaolei.li@mediatek.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Richard Weinberger <richard.weinberger@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+CC: <computersforpeace@gmail.com>, <matthias.bgg@gmail.com>,
+ <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, <robh+dt@kernel.org>,
+ <rogercc.lin@mediatek.com>, <yt.shen@mediatek.com>,
+ <srv_heupstream@mediatek.com>
+Date: Fri, 12 May 2017 16:34:00 +0800
+In-Reply-To: <20170512084401.62e6ad36@bbrezillon>
+References: <1494563603-37716-1-git-send-email-xiaolei.li@mediatek.com>
+ <1494563603-37716-3-git-send-email-xiaolei.li@mediatek.com>
+ <20170512084401.62e6ad36@bbrezillon>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,62 +25,606 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2017-05-12 5:24 GMT-03:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
-> On Fri, 12 May 2017 05:16:08 -0300
-> Mario Rugiero <mrugiero@gmail.com> wrote:
->
->> 2017-05-12 5:12 GMT-03:00 Richard Weinberger <richard.weinberger@gmail.com>:
->> > Mario,
->> >
->> > On Fri, May 12, 2017 at 7:39 AM, Mario J. Rugiero <mrugiero@gmail.com> wrote:
->> >> Some chips used under a custom vendor driver can get their blocks
->> >> incorrectly detected as bad blocks, out of incompatibilities
->> >> between such drivers and MTD drivers.
->> >> When there are too many misdetected bad blocks, the device becomes
->> >> unusable because a bad block table can't be allocated, aside from
->> >> all the legitimately good blocks which become unusable under these
->> >> conditions.
->> >> This adds a build option to workaround the issue by enabling the
->> >> user to free up space regardless of what the driver thinks about
->> >> the blocks.
->> >
->> > Hmm, this sounds like a gross hack.
->> It is, but I see no other solution. The NAND chips were used in an
->> incompatible way by a hack-n-slash driver made by allwinner, and
->> trying to load them with a proper MTD driver fails miserably if this
->> is not done.
->> If anyone can propose a better solution I'll more than happily implement it.
->> I'm open to suggestions, and of course I'm open to rejection of my
->> patches if needed.
->
-> u-boot provides the nand.scrub command, which does exactly what you're
-> looking for. And no, I don't think it's a good idea to allow erasing
-> bad blocks, at least not by default.
->
-> If we really want to support this feature in linux, this should be
-> explicitly enabled through debugfs.
-If I do this, does it stand a chance at getting upstream?
-If so, I'll have it done soon.
-Note however that the build option is disabled by default. I get that
-there should also be one runtime option, disabled by default, exposed
-through debugfs. Does that sound right?
->
->> >
->> >> Example usage: recovering NAND chips on sunxi devices, as explained
->> >> here: http://linux-sunxi.org/Mainline_NAND_Howto#Known_issues
->> >
->> > What this wiki suggests is not wise.
->> > How can you know which blocks are really bad and which not?
->> You don't, at least not without an even grosser hack implementing read
->> support for their incompatible format.
->> Would that be better? I might attempt it if desired.
->
-> No, please don't do that, at least not in the kernel. If you really
-> want to parse the old format, you should develop a tool that reads NAND
-> pages in raw mode, stores the list of bad blocks somewhere and then
-> re-use this list to select which blocks should be forcibly erased.
->
-> Not sure it's worth the pain :-).
-It's worth the pain to me. I'm dealing with a bit rotten 3.4 based
-pile of cr*p on production because of this. Whatever I have to do to
-get those machines running the mainline kernel is worth it.
+On Fri, 2017-05-12 at 08:44 +0200, Boris Brezillon wrote:
+> On Fri, 12 May 2017 12:33:22 +0800
+> Xiaolei Li <xiaolei.li@mediatek.com> wrote:
+> 
+> > ECC strength and spare size supported may be different among MTK NAND
+> > FLASH Controller IPs.
+> > 
+> > This patch contains changes as following:
+> > (1) add new enum mtk_nfc_spare_format to list all spare format.
+> > (2) add new struct mtk_nfc_devdata to support different spare format and
+> >     size.
+> > (3) add new struct mtk_ecc_devdata to support different max ecc strength.
+> > (4) malloc ecc->eccdata buffer according to max ecc strength of this IP.
+> > 
+> > Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
+> > ---
+> >  drivers/mtd/nand/mtk_ecc.c  |  67 ++++++++++++++------
+> >  drivers/mtd/nand/mtk_ecc.h  |   2 +-
+> >  drivers/mtd/nand/mtk_nand.c | 148 ++++++++++++++++++++++++++++++--------------
+> >  3 files changed, 150 insertions(+), 67 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/mtk_ecc.c b/drivers/mtd/nand/mtk_ecc.c
+> > index dbf2562..94d0791 100644
+> > --- a/drivers/mtd/nand/mtk_ecc.c
+> > +++ b/drivers/mtd/nand/mtk_ecc.c
+> > @@ -66,7 +66,6 @@
+> >  #define		DEC_CNFG_CORRECT	(0x3 << 12)
+> >  #define ECC_DECIDLE		(0x10C)
+> >  #define ECC_DECENUM0		(0x114)
+> > -#define		ERR_MASK		(0x3f)
+> >  #define ECC_DECDONE		(0x124)
+> >  #define ECC_DECIRQ_EN		(0x200)
+> >  #define ECC_DECIRQ_STA		(0x204)
+> > @@ -78,8 +77,14 @@
+> >  #define ECC_IRQ_REG(op)		((op) == ECC_ENCODE ? \
+> >  					ECC_ENCIRQ_EN : ECC_DECIRQ_EN)
+> >  
+> > +struct mtk_ecc_devdata {
+> 
+> I usually prefer a _caps suffix (instead of _devdata) for this kind of
+> per-IP capability variations, but that's not a strong requirement.
+> 
+'_caps' is OK for me. will change to mtk_ecc_devdata to mtk_ecc_caps
+next version.
+
+Also will change mtk_nfc_devdata later.
+
+> > +	u32 err_mask;
+> > +	u8 max_ecc_strength;
+> > +};
+> > +
+> >  struct mtk_ecc {
+> >  	struct device *dev;
+> > +	const struct mtk_ecc_devdata *devdata;
+> >  	void __iomem *regs;
+> >  	struct clk *clk;
+> >  
+> > @@ -87,7 +92,7 @@ struct mtk_ecc {
+> >  	struct mutex lock;
+> >  	u32 sectors;
+> >  
+> > -	u8 eccdata[112];
+> > +	u8 *eccdata;
+> >  };
+> >  
+> >  static inline void mtk_ecc_wait_idle(struct mtk_ecc *ecc,
+> > @@ -247,8 +252,8 @@ void mtk_ecc_get_stats(struct mtk_ecc *ecc, struct mtk_ecc_stats *stats,
+> >  		offset = (i >> 2) << 2;
+> >  		err = readl(ecc->regs + ECC_DECENUM0 + offset);
+> >  		err = err >> ((i % 4) * 8);
+> > -		err &= ERR_MASK;
+> > -		if (err == ERR_MASK) {
+> > +		err &= ecc->devdata->err_mask;
+> > +		if (err == ecc->devdata->err_mask) {
+> >  			/* uncorrectable errors */
+> >  			stats->failed++;
+> >  			continue;
+> > @@ -409,37 +414,68 @@ int mtk_ecc_encode(struct mtk_ecc *ecc, struct mtk_ecc_config *config,
+> >  }
+> >  EXPORT_SYMBOL(mtk_ecc_encode);
+> >  
+> > -void mtk_ecc_adjust_strength(u32 *p)
+> > +void mtk_ecc_adjust_strength(struct mtk_ecc *ecc, u32 *p)
+> >  {
+> > -	u32 ecc[] = {4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 28, 32, 36,
+> > -			40, 44, 48, 52, 56, 60};
+> > +	u32 ecc_level[] = {4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 28, 32, 36,
+> > +				40, 44, 48, 52, 56, 60};
+> 
+> Can we rename this variable strength or ecc_strength. It should also
+> probably be a static const. Also, if some variation do not support the
+> whole set of strengths, it would be safer to have the strengths array
+> (and its size) directly stored in mtd_ecc_devdata.
+OK.
+
+> 
+> >  	int i;
+> >  
+> > -	for (i = 0; i < ARRAY_SIZE(ecc); i++) {
+> > -		if (*p <= ecc[i]) {
+> > +	if (*p >= ecc->devdata->max_ecc_strength) {
+> > +		*p = ecc->devdata->max_ecc_strength;
+> > +		return;
+> > +	}
+> > +
+> > +	for (i = 0; i < ARRAY_SIZE(ecc_level); i++) {
+> > +		if (*p <= ecc_level[i]) {
+> >  			if (!i)
+> > -				*p = ecc[i];
+> > -			else if (*p != ecc[i])
+> > -				*p = ecc[i - 1];
+> > +				*p = ecc_level[i];
+> > +			else if (*p != ecc_level[i])
+> > +				*p = ecc_level[i - 1];
+> 
+> I know I initially reviewed and merge this driver, but I really don't
+> understand why we decide to take a weaker ECC if the strength does not
+> exactly match what was requested. It should be the opposite: take a
+> stronger ECC config, unless ECC bytes do not fit in the OOB area.
+I got what you mean.
+
+The reason why take a weaker ECC is that our ECC HW just supports fixed
+ecc strength it provides, like the register define bellow:
+
+Register NFIECC_ENCCNFG bit[0:4] stands for ecc strength supported. 
+5'd0:means the NFIECC is capable of correct 4 bits in one block size.
+5'd1:means the NFIECC is capable of correct 6 bits in one block size.
+5'd2:means the NFIECC is capable of correct 8 bits in one block size.
+5'd3:means the NFIECC is capable of correct 10 bits in one block size.
+5'd4:means the NFIECC is capable of correct 12 bits in one block size.
+5'd5:means the NFIECC is capable of correct 14 bits in one block size.
+5'd6:means the NFIECC is capable of correct 16 bits in one block size.
+5'd7:means the NFIECC is capable of correct 18 bits in one block size.
+5'd8:means the NFIECC is capable of correct 20 bits in one block size.
+5'd9:means the NFIECC is capable of correct 22 bits in one block size.
+5'd10:means the NFIECC is capable of correct 24 bits in one block size.
+5'd11:means the NFIECC is capable of correct 28 bits in one block size.
+5'd12:means the NFIECC is capable of correct 32 bits in one block size.
+5'd13:means the NFIECC is capable of correct 36 bits in one block size.
+5'd14:means the NFIECC is capable of correct 40 bits in one block size.
+5'd15:means the NFIECC is capable of correct 44 bits in one block size.
+5'd16:means the NFIECC is capable of correct 48 bits in one block size.
+5'd17:means the NFIECC is capable of correct 52 bits in one block size.
+5'd18:means the NFIECC is capable of correct 56 bits in one block size.
+5'd19:means the NFIECC is capable of correct 60 bits in one block size.
+5'd20:means the NFIECC is capable of correct 68 bits in one block size.
+5'd21:means the NFIECC is capable of correct 72 bits in one block size.
+5'd22:means the NFIECC is capable of correct 80 bits in one block size.
+
+Actually, we have tried to enhance ECC strength in function
+mtk_nfc_ecc_init of file mtk_nand.c if OOB is enough to store ecc
+strength spec required.
+So, if OOB is enough, ecc strength here is already stronger than spec
+required.
+
+> 
+> >  			return;
+> >  		}
+> >  	}
+> >  
+> > -	*p = ecc[ARRAY_SIZE(ecc) - 1];
+> > +	*p = ecc_level[ARRAY_SIZE(ecc_level) - 1];
+> >  }
+> >  EXPORT_SYMBOL(mtk_ecc_adjust_strength);
+> >  
+> > +static const struct mtk_ecc_devdata mtk_ecc_devdata_mt2701 = {
+> > +	.err_mask = 0x3f,
+> > +	.max_ecc_strength = 60,
+> > +};
+> > +
+> > +static const struct of_device_id mtk_ecc_dt_match[] = {
+> > +	{
+> > +		.compatible = "mediatek,mt2701-ecc",
+> > +		.data = &mtk_ecc_devdata_mt2701,
+> > +	},
+> > +	{},
+> > +};
+> > +
+> >  static int mtk_ecc_probe(struct platform_device *pdev)
+> >  {
+> >  	struct device *dev = &pdev->dev;
+> >  	struct mtk_ecc *ecc;
+> >  	struct resource *res;
+> > +	const struct of_device_id *of_ecc_id = NULL;
+> > +	u32 temp;
+> 
+> Please rename max_eccdata_size, or something more precise than temp.
+> temp is acceptable when the variable is used several times to calculate
+> various things. That's not the case here.
+OK.
+
+> 
+> >  	int irq, ret;
+> >  
+> >  	ecc = devm_kzalloc(dev, sizeof(*ecc), GFP_KERNEL);
+> >  	if (!ecc)
+> >  		return -ENOMEM;
+> >  
+> > +	of_ecc_id = of_match_device(mtk_ecc_dt_match, &pdev->dev);
+> > +	if (!of_ecc_id)
+> > +		return -ENODEV;
+> 
+> Blank line please.
+
+OK.
+> 
+> > +	ecc->devdata = (struct mtk_ecc_devdata *)of_ecc_id->data;
+> 
+> The cast is unneeded.
+> 
+OK.
+
+> > +
+> > +	temp = (ecc->devdata->max_ecc_strength * ECC_PARITY_BITS + 7) >> 3;
+> > +	temp = round_up(temp, 4);
+> > +	ecc->eccdata = devm_kzalloc(dev, temp, GFP_KERNEL);
+> > +	if (!ecc->eccdata)
+> > +		return -ENOMEM;
+> > +
+> >  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> >  	ecc->regs = devm_ioremap_resource(dev, res);
+> >  	if (IS_ERR(ecc->regs)) {
+> > @@ -508,11 +544,6 @@ static int mtk_ecc_resume(struct device *dev)
+> >  static SIMPLE_DEV_PM_OPS(mtk_ecc_pm_ops, mtk_ecc_suspend, mtk_ecc_resume);
+> >  #endif
+> >  
+> > -static const struct of_device_id mtk_ecc_dt_match[] = {
+> > -	{ .compatible = "mediatek,mt2701-ecc" },
+> > -	{},
+> > -};
+> > -
+> >  MODULE_DEVICE_TABLE(of, mtk_ecc_dt_match);
+> >  
+> >  static struct platform_driver mtk_ecc_driver = {
+> > diff --git a/drivers/mtd/nand/mtk_ecc.h b/drivers/mtd/nand/mtk_ecc.h
+> > index cbeba5c..d245c14 100644
+> > --- a/drivers/mtd/nand/mtk_ecc.h
+> > +++ b/drivers/mtd/nand/mtk_ecc.h
+> > @@ -42,7 +42,7 @@ struct mtk_ecc_config {
+> >  int mtk_ecc_wait_done(struct mtk_ecc *, enum mtk_ecc_operation);
+> >  int mtk_ecc_enable(struct mtk_ecc *, struct mtk_ecc_config *);
+> >  void mtk_ecc_disable(struct mtk_ecc *);
+> > -void mtk_ecc_adjust_strength(u32 *);
+> > +void mtk_ecc_adjust_strength(struct mtk_ecc *ecc, u32 *p);
+> >  
+> >  struct mtk_ecc *of_mtk_ecc_get(struct device_node *);
+> >  void mtk_ecc_release(struct mtk_ecc *);
+> > diff --git a/drivers/mtd/nand/mtk_nand.c b/drivers/mtd/nand/mtk_nand.c
+> > index 6c517c6..1a64ea2 100644
+> > --- a/drivers/mtd/nand/mtk_nand.c
+> > +++ b/drivers/mtd/nand/mtk_nand.c
+> > @@ -24,6 +24,7 @@
+> >  #include <linux/module.h>
+> >  #include <linux/iopoll.h>
+> >  #include <linux/of.h>
+> > +#include <linux/of_device.h>
+> >  #include "mtk_ecc.h"
+> >  
+> >  /* NAND controller register definition */
+> > @@ -38,23 +39,6 @@
+> >  #define NFI_PAGEFMT		(0x04)
+> >  #define		PAGEFMT_FDM_ECC_SHIFT	(12)
+> >  #define		PAGEFMT_FDM_SHIFT	(8)
+> > -#define		PAGEFMT_SPARE_16	(0)
+> > -#define		PAGEFMT_SPARE_26	(1)
+> > -#define		PAGEFMT_SPARE_27	(2)
+> > -#define		PAGEFMT_SPARE_28	(3)
+> > -#define		PAGEFMT_SPARE_32	(4)
+> > -#define		PAGEFMT_SPARE_36	(5)
+> > -#define		PAGEFMT_SPARE_40	(6)
+> > -#define		PAGEFMT_SPARE_44	(7)
+> > -#define		PAGEFMT_SPARE_48	(8)
+> > -#define		PAGEFMT_SPARE_49	(9)
+> > -#define		PAGEFMT_SPARE_50	(0xa)
+> > -#define		PAGEFMT_SPARE_51	(0xb)
+> > -#define		PAGEFMT_SPARE_52	(0xc)
+> > -#define		PAGEFMT_SPARE_62	(0xd)
+> > -#define		PAGEFMT_SPARE_63	(0xe)
+> > -#define		PAGEFMT_SPARE_64	(0xf)
+> > -#define		PAGEFMT_SPARE_SHIFT	(4)
+> >  #define		PAGEFMT_SEC_SEL_512	BIT(2)
+> >  #define		PAGEFMT_512_2K		(0)
+> >  #define		PAGEFMT_2K_4K		(1)
+> > @@ -116,6 +100,11 @@
+> >  #define MTK_MAX_SECTOR		(16)
+> >  #define MTK_NAND_MAX_NSELS	(2)
+> >  
+> > +struct mtk_nfc_devdata {
+> > +	const u32 *spare_format;
+> > +	const u8 *spare_size;
+> > +};
+> > +
+> >  struct mtk_nfc_bad_mark_ctl {
+> >  	void (*bm_swap)(struct mtd_info *, u8 *buf, int raw);
+> >  	u32 sec;
+> > @@ -155,6 +144,7 @@ struct mtk_nfc {
+> >  	struct mtk_ecc *ecc;
+> >  
+> >  	struct device *dev;
+> > +	struct mtk_nfc_devdata *devdata;
+> >  	void __iomem *regs;
+> >  
+> >  	struct completion done;
+> > @@ -163,6 +153,53 @@ struct mtk_nfc {
+> >  	u8 *buffer;
+> >  };
+> >  
+> > +/* NFC Page Format Control Register Spare Size Field Definition */
+> > +enum mtk_nfc_spare_format {
+> > +	PAGEFMT_SPARE_16,
+> > +	PAGEFMT_SPARE_26,
+> > +	PAGEFMT_SPARE_27,
+> > +	PAGEFMT_SPARE_28,
+> > +	PAGEFMT_SPARE_32,
+> > +	PAGEFMT_SPARE_36,
+> > +	PAGEFMT_SPARE_40,
+> > +	PAGEFMT_SPARE_44,
+> > +	PAGEFMT_SPARE_48,
+> > +	PAGEFMT_SPARE_49,
+> > +	PAGEFMT_SPARE_50,
+> > +	PAGEFMT_SPARE_51,
+> > +	PAGEFMT_SPARE_52,
+> > +	PAGEFMT_SPARE_62,
+> > +	PAGEFMT_SPARE_63,
+> > +	PAGEFMT_SPARE_64,
+> > +};
+> > +
+> > +static const u32 mtk_nfc_spare_format_mt2701[] = {
+> > +	[PAGEFMT_SPARE_16]	= (0 << 4),
+> > +	[PAGEFMT_SPARE_26]	= (1 << 4),
+> > +	[PAGEFMT_SPARE_27]	= (2 << 4),
+> > +	[PAGEFMT_SPARE_28]	= (3 << 4),
+> > +	[PAGEFMT_SPARE_32]	= (4 << 4),
+> > +	[PAGEFMT_SPARE_36]	= (5 << 4),
+> > +	[PAGEFMT_SPARE_40]	= (6 << 4),
+> > +	[PAGEFMT_SPARE_44]	= (7 << 4),
+> > +	[PAGEFMT_SPARE_48]	= (8 << 4),
+> > +	[PAGEFMT_SPARE_49]	= (9 << 4),
+> > +	[PAGEFMT_SPARE_50]	= (10 << 4),
+> > +	[PAGEFMT_SPARE_51]	= (11 << 4),
+> > +	[PAGEFMT_SPARE_52]	= (12 << 4),
+> > +	[PAGEFMT_SPARE_62]	= (13 << 4),
+> > +	[PAGEFMT_SPARE_63]	= (14 << 4),
+> > +	[PAGEFMT_SPARE_64]	= (15 << 4),
+> > +};
+> > +
+> > +/*
+> > + * supported spare size of each IP
+> > + * 255 is used as ending flag
+> > + */
+> > +static const u8 spare_size_mt2701[] = {
+> > +	16, 26, 27, 28, 32, 36, 40, 44,	48, 49, 50, 51, 52, 62, 63, 64, 255
+> > +};
+> 
+> I guess 255 (or 0xff) is a sentinel. That's probably easier to store
+> the array size along with the spare_size array in mtk_nfc_devdata.
+> 
+OK. Will add array size in mtk_nfc_devdata next version.
+
+> > +
+> >  static inline struct mtk_nfc_nand_chip *to_mtk_nand(struct nand_chip *nand)
+> >  {
+> >  	return container_of(nand, struct mtk_nfc_nand_chip, nand);
+> > @@ -308,6 +345,7 @@ static int mtk_nfc_hw_runtime_config(struct mtd_info *mtd)
+> >  	struct nand_chip *chip = mtd_to_nand(mtd);
+> >  	struct mtk_nfc_nand_chip *mtk_nand = to_mtk_nand(chip);
+> >  	struct mtk_nfc *nfc = nand_get_controller_data(chip);
+> > +	const u32 *sparefmt = nfc->devdata->spare_format;
+> >  	u32 fmt, spare;
+> >  
+> >  	if (!mtd->writesize)
+> > @@ -354,52 +392,52 @@ static int mtk_nfc_hw_runtime_config(struct mtd_info *mtd)
+> >  
+> >  	switch (spare) {
+> >  	case 16:
+> > -		fmt |= (PAGEFMT_SPARE_16 << PAGEFMT_SPARE_SHIFT);
+> > +		fmt |= sparefmt[PAGEFMT_SPARE_16];
+> >  		break;
+> >  	case 26:
+> > -		fmt |= (PAGEFMT_SPARE_26 << PAGEFMT_SPARE_SHIFT);
+> > +		fmt |= sparefmt[PAGEFMT_SPARE_26];
+> >  		break;
+> >  	case 27:
+> > -		fmt |= (PAGEFMT_SPARE_27 << PAGEFMT_SPARE_SHIFT);
+> > +		fmt |= sparefmt[PAGEFMT_SPARE_27];
+> >  		break;
+> >  	case 28:
+> > -		fmt |= (PAGEFMT_SPARE_28 << PAGEFMT_SPARE_SHIFT);
+> > +		fmt |= sparefmt[PAGEFMT_SPARE_28];
+> >  		break;
+> >  	case 32:
+> > -		fmt |= (PAGEFMT_SPARE_32 << PAGEFMT_SPARE_SHIFT);
+> > +		fmt |= sparefmt[PAGEFMT_SPARE_32];
+> >  		break;
+> >  	case 36:
+> > -		fmt |= (PAGEFMT_SPARE_36 << PAGEFMT_SPARE_SHIFT);
+> > +		fmt |= sparefmt[PAGEFMT_SPARE_36];
+> >  		break;
+> >  	case 40:
+> > -		fmt |= (PAGEFMT_SPARE_40 << PAGEFMT_SPARE_SHIFT);
+> > +		fmt |= sparefmt[PAGEFMT_SPARE_40];
+> >  		break;
+> >  	case 44:
+> > -		fmt |= (PAGEFMT_SPARE_44 << PAGEFMT_SPARE_SHIFT);
+> > +		fmt |= sparefmt[PAGEFMT_SPARE_44];
+> >  		break;
+> >  	case 48:
+> > -		fmt |= (PAGEFMT_SPARE_48 << PAGEFMT_SPARE_SHIFT);
+> > +		fmt |= sparefmt[PAGEFMT_SPARE_48];
+> >  		break;
+> >  	case 49:
+> > -		fmt |= (PAGEFMT_SPARE_49 << PAGEFMT_SPARE_SHIFT);
+> > +		fmt |= sparefmt[PAGEFMT_SPARE_49];
+> >  		break;
+> >  	case 50:
+> > -		fmt |= (PAGEFMT_SPARE_50 << PAGEFMT_SPARE_SHIFT);
+> > +		fmt |= sparefmt[PAGEFMT_SPARE_50];
+> >  		break;
+> >  	case 51:
+> > -		fmt |= (PAGEFMT_SPARE_51 << PAGEFMT_SPARE_SHIFT);
+> > +		fmt |= sparefmt[PAGEFMT_SPARE_51];
+> >  		break;
+> >  	case 52:
+> > -		fmt |= (PAGEFMT_SPARE_52 << PAGEFMT_SPARE_SHIFT);
+> > +		fmt |= sparefmt[PAGEFMT_SPARE_52];
+> >  		break;
+> >  	case 62:
+> > -		fmt |= (PAGEFMT_SPARE_62 << PAGEFMT_SPARE_SHIFT);
+> > +		fmt |= sparefmt[PAGEFMT_SPARE_62];
+> >  		break;
+> >  	case 63:
+> > -		fmt |= (PAGEFMT_SPARE_63 << PAGEFMT_SPARE_SHIFT);
+> > +		fmt |= sparefmt[PAGEFMT_SPARE_63];
+> >  		break;
+> >  	case 64:
+> > -		fmt |= (PAGEFMT_SPARE_64 << PAGEFMT_SPARE_SHIFT);
+> > +		fmt |= sparefmt[PAGEFMT_SPARE_64];
+> >  		break;
+> 
+> Could probably be turned into a for loop:
+> 
+> 	for (i = 0; i < nfc->devdata->num_spare_format; i++) {
+> 		if (nfc->devdata->spare_size[i] == spare)
+> 			break;
+> 	}
+> 
+> 	if (i == nfc->devdata->num_spare_format) {
+> 		dev_err()
+> 		return -EINVAL;
+> 	}
+> 
+> 	fmt |= sparefmt[i];
+> 
+
+OK.
+
+> >  	default:
+> >  		dev_err(nfc->dev, "invalid spare per sector %d\n", spare);
+> > @@ -408,7 +446,7 @@ static int mtk_nfc_hw_runtime_config(struct mtd_info *mtd)
+> >  
+> >  	fmt |= mtk_nand->fdm.reg_size << PAGEFMT_FDM_SHIFT;
+> >  	fmt |= mtk_nand->fdm.ecc_size << PAGEFMT_FDM_ECC_SHIFT;
+> > -	nfi_writew(nfc, fmt, NFI_PAGEFMT);
+> > +	nfi_writel(nfc, fmt, NFI_PAGEFMT);
+> 
+> Is this still compatible with the old IP? Maybe this should go in a
+> separate patch. 
+> 
+Yes. NFI_PAGEFMT is always 4Byte length.
+
+I will move this change in a separate patch next version.
+
+> >  
+> >  	nfc->ecc_cfg.strength = chip->ecc.strength;
+> >  	nfc->ecc_cfg.len = chip->ecc.size + mtk_nand->fdm.ecc_size;
+> > @@ -1009,7 +1047,7 @@ static inline void mtk_nfc_hw_init(struct mtk_nfc *nfc)
+> >  	 * 0  : poll the status of the busy/ready signal after [7:4]*16 cycles.
+> >  	 */
+> >  	nfi_writew(nfc, 0xf1, NFI_CNRNB);
+> > -	nfi_writew(nfc, PAGEFMT_8K_16K, NFI_PAGEFMT);
+> > +	nfi_writel(nfc, PAGEFMT_8K_16K, NFI_PAGEFMT);
+> >  
+> >  	mtk_nfc_hw_reset(nfc);
+> >  
+> > @@ -1134,8 +1172,8 @@ static void mtk_nfc_set_bad_mark_ctl(struct mtk_nfc_bad_mark_ctl *bm_ctl,
+> >  static void mtk_nfc_set_spare_per_sector(u32 *sps, struct mtd_info *mtd)
+> >  {
+> >  	struct nand_chip *nand = mtd_to_nand(mtd);
+> > -	u32 spare[] = {16, 26, 27, 28, 32, 36, 40, 44,
+> > -			48, 49, 50, 51, 52, 62, 63, 64};
+> > +	struct mtk_nfc *nfc = nand_get_controller_data(nand);
+> > +	const u8 *spare = nfc->devdata->spare_size;
+> >  	u32 eccsteps, i;
+> >  
+> >  	eccsteps = mtd->writesize / nand->ecc.size;
+> > @@ -1144,7 +1182,7 @@ static void mtk_nfc_set_spare_per_sector(u32 *sps, struct mtd_info *mtd)
+> >  	if (nand->ecc.size == 1024)
+> >  		*sps >>= 1;
+> >  
+> > -	for (i = 0; i < ARRAY_SIZE(spare); i++) {
+> > +	for (i = 0; ; i++) {
+> 
+> With the array size in devdata you could check that i is less than
+> num_spare_format.
+> BTW, I don't see any check on the sentinel val.
+> 
+OK.
+> >  		if (*sps <= spare[i]) {
+> >  			if (!i)
+> >  				*sps = spare[i];
+> > @@ -1154,9 +1192,6 @@ static void mtk_nfc_set_spare_per_sector(u32 *sps, struct mtd_info *mtd)
+> >  		}
+> >  	}
+> >  
+> > -	if (i >= ARRAY_SIZE(spare))
+> > -		*sps = spare[ARRAY_SIZE(spare) - 1];
+> > -
+> >  	if (nand->ecc.size == 1024)
+> >  		*sps <<= 1;
+> >  }
+> > @@ -1164,6 +1199,7 @@ static void mtk_nfc_set_spare_per_sector(u32 *sps, struct mtd_info *mtd)
+> >  static int mtk_nfc_ecc_init(struct device *dev, struct mtd_info *mtd)
+> >  {
+> >  	struct nand_chip *nand = mtd_to_nand(mtd);
+> > +	struct mtk_nfc *nfc = nand_get_controller_data(nand);
+> >  	u32 spare;
+> >  	int free;
+> >  
+> > @@ -1214,7 +1250,7 @@ static int mtk_nfc_ecc_init(struct device *dev, struct mtd_info *mtd)
+> >  		}
+> >  	}
+> >  
+> > -	mtk_ecc_adjust_strength(&nand->ecc.strength);
+> > +	mtk_ecc_adjust_strength(nfc->ecc, &nand->ecc.strength);
+> >  
+> >  	dev_info(dev, "eccsize %d eccstrength %d\n",
+> >  		 nand->ecc.size, nand->ecc.strength);
+> > @@ -1354,12 +1390,27 @@ static int mtk_nfc_nand_chips_init(struct device *dev, struct mtk_nfc *nfc)
+> >  	return 0;
+> >  }
+> >  
+> > +static const struct mtk_nfc_devdata mtk_nfc_devdata_mt2701 = {
+> > +	.spare_format = mtk_nfc_spare_format_mt2701,
+> > +	.spare_size = spare_size_mt2701,
+> > +};
+> > +
+> > +static const struct of_device_id mtk_nfc_id_table[] = {
+> > +	{
+> > +		.compatible = "mediatek,mt2701-nfc",
+> > +		.data = &mtk_nfc_devdata_mt2701,
+> > +	},
+> > +	{}
+> > +};
+> > +MODULE_DEVICE_TABLE(of, mtk_nfc_id_table);
+> > +
+> >  static int mtk_nfc_probe(struct platform_device *pdev)
+> >  {
+> >  	struct device *dev = &pdev->dev;
+> >  	struct device_node *np = dev->of_node;
+> >  	struct mtk_nfc *nfc;
+> >  	struct resource *res;
+> > +	const struct of_device_id *of_nfc_id = NULL;
+> >  	int ret, irq;
+> >  
+> >  	nfc = devm_kzalloc(dev, sizeof(*nfc), GFP_KERNEL);
+> > @@ -1423,6 +1474,13 @@ static int mtk_nfc_probe(struct platform_device *pdev)
+> >  		goto clk_disable;
+> >  	}
+> >  
+> > +	of_nfc_id = of_match_device(mtk_nfc_id_table, &pdev->dev);
+> > +	if (!of_nfc_id) {
+> > +		ret = -ENODEV;
+> > +		goto clk_disable;
+> > +	}
+> 
+> Blank line.
+> 
+OK.
+
+> > +	nfc->devdata = (struct mtk_nfc_devdata *)of_nfc_id->data;
+> 
+> Cast unneeded.
+> 
+OK.
+
+> > +
+> >  	platform_set_drvdata(pdev, nfc);
+> >  
+> >  	ret = mtk_nfc_nand_chips_init(dev, nfc);
+> > @@ -1503,12 +1561,6 @@ static int mtk_nfc_resume(struct device *dev)
+> >  static SIMPLE_DEV_PM_OPS(mtk_nfc_pm_ops, mtk_nfc_suspend, mtk_nfc_resume);
+> >  #endif
+> >  
+> > -static const struct of_device_id mtk_nfc_id_table[] = {
+> > -	{ .compatible = "mediatek,mt2701-nfc" },
+> > -	{}
+> > -};
+> > -MODULE_DEVICE_TABLE(of, mtk_nfc_id_table);
+> > -
+> >  static struct platform_driver mtk_nfc_driver = {
+> >  	.probe  = mtk_nfc_probe,
+> >  	.remove = mtk_nfc_remove,
+> 
