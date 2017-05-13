@@ -1,33 +1,17 @@
-Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
- ([52.27.115.49] helo=osg.samsung.com)
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1d9UxO-0001Sn-9B
- for linux-mtd@lists.infradead.org; Sat, 13 May 2017 11:11:32 +0000
-From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
- Mauro Carvalho Chehab <mchehab@infradead.org>,
- linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Jani Nikula <jani.nikula@intel.com>,
- Yoshinori Sato <ysato@users.sourceforge.jp>,
- Markus Heiser <markus.heiser@darmarit.de>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- "Herton R. Krzesinski" <herton@redhat.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- linux-sh@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
- David Woodhouse <dwmw2@infradead.org>, Rich Felker <dalias@libc.org>,
- Silvio Fricke <silvio.fricke@gmail.com>,
- sayli karnik <karniksayli1995@gmail.com>,
- linux-security-module@vger.kernel.org
-Subject: [PATCH 0/5] Convert more books to ReST
-Date: Sat, 13 May 2017 08:10:53 -0300
-Message-Id: <cover.1494672881.git.mchehab@s-opensource.com>
-Sender: Mauro Carvalho Chehab <mchehab@smtp.s-opensource.com>
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1d9VPp-0002og-L9
+ for linux-mtd@lists.infradead.org; Sat, 13 May 2017 11:41:00 +0000
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From: Richard Weinberger <richard@nod.at>
+Subject: [GIT PULL] UBI/UBIFS updates for 4.12-rc1
+Message-ID: <a5efc5a5-4970-260c-db6a-505e2647c784@nod.at>
+Date: Sat, 13 May 2017 13:40:30 +0200
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,71 +21,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch series convert the following books to ReST:
-	- librs
-	- mtdnand
-	- sh
+Linus,
 
-And it is based on my previous series of conversion patches.
+The following changes since commit a351e9b9fc24e982ec2f0e76379a49826036da12:
 
-After this series, there will be just one DocBook pending conversion:
-	- lsm (Linux Security Modules)
+  Linux 4.11 (2017-04-30 19:47:48 -0700)
 
-This book is very outdated: no changes since the Kernel moved 
-to git, in 2005 (except for a minor editorial fix in 2008).
+are available in the git repository at:
 
-I took a look on the described API: it doesn't seem to be describing
-the current security implementation.
+  git://git.infradead.org/linux-ubifs.git tags/upstream-4.12-rc1
 
-The best here is if someone that works with LSM to convert it to
-ReST with:
-	$ Documentation/sphinx/tmplcvt Documentation/DocBook/lsm.tmpl lsm.rst
+for you to fetch changes up to 7bccd12d27b7e358823feb5429731b8ee698b173:
 
-And fix the document to produce something that reflects the current
-implementation. If nobody is interested, then maybe we could just
-drop it.
+  ubi: Add debugfs file for tracking PEB state (2017-05-08 20:49:02 +0200)
 
--
+----------------------------------------------------------------
+This pull request contains updates for both UBI and UBIFS:
+- New config option CONFIG_UBIFS_FS_SECURITY
+- Minor improvements
+- Random fixes
 
-This patch series is based on my past 00/36 patch series, applied on
-the top of docs tree (next branch).
+----------------------------------------------------------------
+Andy Shevchenko (2):
+      ubi: Fix section mismatch
+      ubi: Make mtd parameter readable
 
-The full patch series is on this tree is at:
+Ben Shelton (1):
+      ubi: Add debugfs file for tracking PEB state
 
-   https://git.linuxtv.org//mchehab/experimental.git/log/?h=docbook
+Colin Ian King (1):
+      ubifs: Fix cut and paste error on sb type comparisons
 
-And the HTML output at:
+Hyunchul Lee (1):
+      ubifs: Add CONFIG_UBIFS_FS_SECURITY to disable/enable security labels
 
-  http://www.infradead.org/~mchehab/kernel_docs/
-  https://mchehab.fedorapeople.org/kernel_docs/ 
+Rabin Vincent (1):
+      ubi: fastmap: Fix slab corruption
 
-Mauro Carvalho Chehab (5):
-  docs-rst: convert librs book to ReST
-  docs-rst: convert mtdnand book to ReST
-  mtdnand.rst: Fix some typos and group the "::" with previous line
-  mtd: adjust kernel-docs to avoid Sphinx/kerneldoc warnings
-  docs-rst: convert sh book to ReST
+Rock Lee (1):
+      ubifs: Fix a typo in comment of ioctl2ubifs & ubifs2ioctl
 
- Documentation/DocBook/Makefile       |    5 +-
- Documentation/DocBook/librs.tmpl     |  289 --------
- Documentation/DocBook/mtdnand.tmpl   | 1291 ----------------------------------
- Documentation/DocBook/sh.tmpl        |  105 ---
- Documentation/conf.py                |    2 +
- Documentation/core-api/index.rst     |    1 +
- Documentation/core-api/librs.rst     |  212 ++++++
- Documentation/driver-api/index.rst   |    1 +
- Documentation/driver-api/mtdnand.rst | 1007 ++++++++++++++++++++++++++
- Documentation/index.rst              |   11 +
- Documentation/sh/index.rst           |   59 ++
- drivers/mtd/nand/nand_base.c         |    7 +-
- include/linux/mtd/nand.h             |    2 +-
- 13 files changed, 1300 insertions(+), 1692 deletions(-)
- delete mode 100644 Documentation/DocBook/librs.tmpl
- delete mode 100644 Documentation/DocBook/mtdnand.tmpl
- delete mode 100644 Documentation/DocBook/sh.tmpl
- create mode 100644 Documentation/core-api/librs.rst
- create mode 100644 Documentation/driver-api/mtdnand.rst
- create mode 100644 Documentation/sh/index.rst
+Stefan Agner (1):
+      ubifs: Remove unnecessary assignment
 
--- 
-2.9.3
+ drivers/mtd/ubi/build.c   |  10 ++--
+ drivers/mtd/ubi/debug.c   | 126 +++++++++++++++++++++++++++++++++++++++++++++-
+ drivers/mtd/ubi/fastmap.c |  33 ++++++++++--
+ fs/ubifs/Kconfig          |  13 +++++
+ fs/ubifs/debug.c          |   4 +-
+ fs/ubifs/ioctl.c          |   6 +--
+ fs/ubifs/recovery.c       |   1 -
+ fs/ubifs/ubifs.h          |  14 +++++-
+ fs/ubifs/xattr.c          |   6 +++
+ 9 files changed, 195 insertions(+), 18 deletions(-)
