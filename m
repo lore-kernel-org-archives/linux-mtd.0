@@ -1,16 +1,17 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dALm4-0003Dv-Eq
- for linux-mtd@lists.infradead.org; Mon, 15 May 2017 19:35:22 +0000
-Date: Mon, 15 May 2017 21:34:59 +0200
+Date: Mon, 15 May 2017 21:36:13 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Alexander Couzens <lynxis@fe80.eu>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH] mtd: nand: davinci: set ECC algorithm explicitly for HW
- based ECC
-Message-ID: <20170515213459.360e7582@bbrezillon>
-In-Reply-To: <20170502094736.9671-1-lynxis@fe80.eu>
-References: <20170502094736.9671-1-lynxis@fe80.eu>
+To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger
+ <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@atmel.com>, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Viresh Kumar
+ <vireshk@kernel.org>, Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
+ linux-arm-kernel@lists.infradead.org, Linus Walleij
+ <linus.walleij@linaro.org>
+Subject: Re: [PATCH v2 0/3] mtd: nand: fsmc: support SDR timing configuration
+Message-ID: <20170515213613.47bfa595@bbrezillon>
+In-Reply-To: <1493455956-18362-1-git-send-email-thomas.petazzoni@free-electrons.com>
+References: <1493455956-18362-1-git-send-email-thomas.petazzoni@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -23,33 +24,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue,  2 May 2017 11:47:36 +0200
-Alexander Couzens <lynxis@fe80.eu> wrote:
+On Sat, 29 Apr 2017 10:52:33 +0200
+Thomas Petazzoni <thomas.petazzoni@free-electrons.com> wrote:
 
-> Signed-off-by: Alexander Couzens <lynxis@fe80.eu>
-
-Applied to nand/next
-
-> ---
->  drivers/mtd/nand/davinci_nand.c | 3 +++
->  1 file changed, 3 insertions(+)
+> Hello,
 > 
-> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-> index 27fa8b87cd5f..f658948ec7e3 100644
-> --- a/drivers/mtd/nand/davinci_nand.c
-> +++ b/drivers/mtd/nand/davinci_nand.c
-> @@ -760,11 +760,14 @@ static int nand_davinci_probe(struct platform_device *pdev)
->  			info->chip.ecc.hwctl = nand_davinci_hwctl_4bit;
->  			info->chip.ecc.bytes = 10;
->  			info->chip.ecc.options = NAND_ECC_GENERIC_ERASED_CHECK;
-> +			info->chip.ecc.algo = NAND_ECC_BCH;
->  		} else {
-> +			/* 1bit ecc hamming */
->  			info->chip.ecc.calculate = nand_davinci_calculate_1bit;
->  			info->chip.ecc.correct = nand_davinci_correct_1bit;
->  			info->chip.ecc.hwctl = nand_davinci_hwctl_1bit;
->  			info->chip.ecc.bytes = 3;
-> +			info->chip.ecc.algo = NAND_ECC_HAMMING;
->  		}
->  		info->chip.ecc.size = 512;
->  		info->chip.ecc.strength = pdata->ecc_bits;
+> This patch series add support for configuring the FSMC NAND controller
+> timings according to the SDR timings exposed by the NAND chip.
+> 
+> Changes since v1:
+> 
+>  - Dropped all patches from the series that have already been merged
+>    in nand/next.
+> 
+>  - Rework the implementation as suggested by Boris Brezillon, i.e by
+>    implementing ->setup_data_interface() only when we are going to use
+>    the NAND SDR timings. If there is a "timings" DT property, we keep
+>    using the old strategy without ->setup_data_interface().
+> 
+> The patch series is based on the nand/next branch.
+
+Applied to nand/next.
+
+Thanks,
+
+Boris
+
+> 
+> Best regards,
+> 
+> Thomas
+> 
+> Thomas Petazzoni (3):
+>   mtd: nand: fsmc: reduce number of arguments of fsmc_nand_setup()
+>   mtd: nand: fsmc: add support for SDR timings
+>   mtd: nand: fsmc: remove default timings
+> 
+>  drivers/mtd/nand/fsmc_nand.c | 120 +++++++++++++++++++++++++++++++++----------
+>  1 file changed, 94 insertions(+), 26 deletions(-)
+> 
