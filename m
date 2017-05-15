@@ -1,14 +1,23 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dAGrS-0000ln-N4
- for linux-mtd@lists.infradead.org; Mon, 15 May 2017 14:20:36 +0000
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dAHA3-0000vS-HS
+ for linux-mtd@lists.infradead.org; Mon, 15 May 2017 14:39:49 +0000
 From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, adrian.hunter@intel.com, dedekind1@gmail.com,
- Richard Weinberger <richard@nod.at>, stable@vger.kernel.org
-Subject: [PATCH] ubifs: Fix inode leak in xattr code
-Date: Mon, 15 May 2017 16:20:05 +0200
-Message-Id: <1494858005-18439-1-git-send-email-richard@nod.at>
+To: linux-fscrypt@vger.kernel.org
+Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ Eric Biggers <ebiggers@google.com>, Theodore Ts'o <tytso@mit.edu>,
+ Al Viro <viro@zeniv.linux.org.uk>, David Gstir <david@sigma-star.at>,
+ David Oberhollenzer <david.oberhollenzer@sigma-star.at>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>
+Subject: Question on fscrypt_d_revalidate() and fstest generic/429
+Message-ID: <e2d845a3-a863-1506-a0de-576049c84e81@nod.at>
+Date: Mon, 15 May 2017 16:39:23 +0200
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,64 +27,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-UBIFS handles extended attributes just like files, as consequence of
-that, they also have inodes.
-Therefore UBIFS does all the inode machinery also for xattrs. Since new
-inodes have i_nlink of 1, a file or xattr inode will be evicted
-if i_nlink goes down to 0 after an unlink. UBIFS assumes this model also
-for xattrs, which is not correct.
-One can create a file "foo" with xattr "user.test". By reading
-"user.test" an inode will be created, and by deleting "user.test" it
-will get evicted later. The assumption breaks if the file "foo", which
-hosts the xattrs, will be removed. VFS nor UBIFS does not remove each
-xattr via ubifs_xattr_remove(), it just removes the host inode from
-the TNC and all underlying xattr nodes too.
-The inode will stay in the system with i_count=0, i_nlink=1 and
-i_state=I_REFERENCED until UBIFS is umounted.
+Hi!
 
-To solve this problem, set i_nlink for all xattr inodes to 0, such that
-the iput() in the UBIFS xattr code makes the temporary inode vanish
-immediately.
+on UBIFS, fstest generic/429 fails due to -ENFILE because the internal orphan
+list reaches the maximum size.
+When you unlink a file, the inode goes into the orphan list, in UBIFS' evict() function
+it is being removed later. So, only unlinked but used inodes should stay in that list.
 
-Fixes: 1e51764a3c2ac05a ("UBIFS: add new flash file system")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- fs/ubifs/xattr.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+If a directory is encrypted, evict() is not being called although the inode has no
+users anymore.
+It turned out evict() is not being called because fscrypt's fscrypt_d_revalidate()
+function.
+When I omit fscrypt_set_d_op() in UBIFS code, the test works just fine.
 
-diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-index efe00fcb8b75..7d23404d73dc 100644
---- a/fs/ubifs/xattr.c
-+++ b/fs/ubifs/xattr.c
-@@ -173,7 +173,7 @@ static int create_xattr(struct ubifs_info *c, struct inode *host,
- 	mutex_unlock(&host_ui->ui_mutex);
- 
- 	ubifs_release_budget(c, &req);
--	insert_inode_hash(inode);
-+	clear_nlink(inode);
- 	iput(inode);
- 	return 0;
- 
-@@ -272,8 +272,10 @@ static struct inode *iget_xattr(struct ubifs_info *c, ino_t inum)
- 			  (int)PTR_ERR(inode));
- 		return inode;
- 	}
--	if (ubifs_inode(inode)->xattr)
-+	if (ubifs_inode(inode)->xattr) {
-+		clear_nlink(inode);
- 		return inode;
-+	}
- 	ubifs_err(c, "corrupt extended attribute entry");
- 	iput(inode);
- 	return ERR_PTR(-EINVAL);
-@@ -546,7 +548,6 @@ static int ubifs_xattr_remove(struct inode *host, const char *name)
- 	}
- 
- 	ubifs_assert(inode->i_nlink == 1);
--	clear_nlink(inode);
- 	err = remove_xattr(c, host, inode, &nm);
- 	if (err)
- 		set_nlink(inode, 1);
--- 
-2.7.3
+Can it be that fscrypt_d_revalidate() misses the case of i_nlink being 0?
+It seem to treat unlinked inodes as already gone and they stay.
+
+The following change makes the problem go away here:
+
+diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
+index 6d6eca394d4d..d0c19838e513 100644
+--- a/fs/crypto/crypto.c
++++ b/fs/crypto/crypto.c
+@@ -327,6 +327,7 @@ EXPORT_SYMBOL(fscrypt_decrypt_page);
+ static int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags)
+ {
+        struct dentry *dir;
++       struct inode *inode = d_inode(dentry);
+        int dir_has_key, cached_with_key;
+
+        if (flags & LOOKUP_RCU)
+@@ -359,6 +360,10 @@ static int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags)
+                        (!cached_with_key && dir_has_key) ||
+                        (cached_with_key && !dir_has_key))
+                return 0;
++
++       if (!inode || inode->i_nlink == 0)
++               return 0;
++
+        return 1;
+ }
+
+Does this change make sense? TBH, I'm not really an expert in this area and it is also
+not clear to me why you don't see these issue on ext4 or f2fs.
+Maybe UBIFS' limitations kick in much earlier. ;-)
+
+Thanks,
+//richard
