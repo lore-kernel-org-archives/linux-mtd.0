@@ -1,18 +1,18 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dAMvi-0003qO-G1
- for linux-mtd@lists.infradead.org; Mon, 15 May 2017 20:49:24 +0000
-Date: Mon, 15 May 2017 22:48:50 +0200
+ id 1dAMwq-0005jH-KS
+ for linux-mtd@lists.infradead.org; Mon, 15 May 2017 20:50:34 +0000
+Date: Mon, 15 May 2017 22:50:01 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Brian Norris <computersforpeace@gmail.com>
 Cc: <linux-mtd@lists.infradead.org>, Richard Weinberger <richard@nod.at>,
  Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH] mtd: nand: samsung: warn about un-parseable ECC info
-Message-ID: <20170515224850.215a85a6@bbrezillon>
-In-Reply-To: <20170502000455.13240-6-computersforpeace@gmail.com>
+ <cyrille.pitchen@wedev4u.fr>
+Subject: Re: [PATCH] mtd: nand: drop unneeded module.h include
+Message-ID: <20170515225001.1f98424e@bbrezillon>
+In-Reply-To: <20170502000455.13240-3-computersforpeace@gmail.com>
 References: <20170502000455.13240-1-computersforpeace@gmail.com>
- <20170502000455.13240-6-computersforpeace@gmail.com>
+ <20170502000455.13240-3-computersforpeace@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,15 +25,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon,  1 May 2017 17:04:55 -0700
+On Mon,  1 May 2017 17:04:52 -0700
 Brian Norris <computersforpeace@gmail.com> wrote:
 
-> We don't handle cases larger than 7. We probably shouldn't pretend we
-> know the ECC step size in this case, and it's probably also good to
-> WARN() like we do in many other similar cases.
+> nand_ids isn't a separate module anymore and doesn't need this header.
 > 
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Fixes: 8fc82d456e40 ("mtd: nand: samsung: Retrieve ECC requirements from extended ID")
 > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
 Applied to nand/fixes.
@@ -43,22 +39,18 @@ Thanks,
 Boris
 
 > ---
-> Compile tested only
+>  drivers/mtd/nand/nand_ids.c | 1 -
+>  1 file changed, 1 deletion(-)
 > 
->  drivers/mtd/nand/nand_samsung.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/nand_samsung.c b/drivers/mtd/nand/nand_samsung.c
-> index 9cfc4035a420..1e0755997762 100644
-> --- a/drivers/mtd/nand/nand_samsung.c
-> +++ b/drivers/mtd/nand/nand_samsung.c
-> @@ -84,6 +84,9 @@ static void samsung_nand_decode_id(struct nand_chip *chip)
->  			case 7:
->  				chip->ecc_strength_ds = 60;
->  				break;
-> +			default:
-> +				WARN(1, "Could not decode ECC info");
-> +				chip->ecc_step_ds = 0;
->  			}
->  		}
->  	} else {
+> diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+> index 9d5ca0e540b5..92e2cf8e9ff9 100644
+> --- a/drivers/mtd/nand/nand_ids.c
+> +++ b/drivers/mtd/nand/nand_ids.c
+> @@ -6,7 +6,6 @@
+>   * published by the Free Software Foundation.
+>   *
+>   */
+> -#include <linux/module.h>
+>  #include <linux/mtd/nand.h>
+>  #include <linux/sizes.h>
+>  
