@@ -1,20 +1,16 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dABGs-0000tv-DI
- for linux-mtd@lists.infradead.org; Mon, 15 May 2017 08:22:28 +0000
-Date: Mon, 15 May 2017 10:21:58 +0200
+ id 1dABgL-0008JH-Tf
+ for linux-mtd@lists.infradead.org; Mon, 15 May 2017 08:48:47 +0000
+Date: Mon, 15 May 2017 10:48:24 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: "Mario J. Rugiero" <mrugiero@gmail.com>, Richard Weinberger
- <richard@nod.at>, Marek Vasut <marex@denx.de>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v3] mtd: nand: add option to erase NAND blocks even if
- detected as bad.
-Message-ID: <20170515102158.798f83f2@bbrezillon>
-In-Reply-To: <20170512073946.812-1-mrugiero@gmail.com>
-References: <20170512053957.10426-1-mrugiero@gmail.com>
- <20170512073946.812-1-mrugiero@gmail.com>
+To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+Cc: <linux-mtd@lists.infradead.org>, oss@buserror.net, dedekind1@gmail.com
+Subject: Re: [PATCH] driver: mtd: update struct map_info's swap as per map
+ requirement.
+Message-ID: <20170515104824.2ffb5186@bbrezillon>
+In-Reply-To: <1493882437-4541-1-git-send-email-prabhakar.kushwaha@nxp.com>
+References: <1493882437-4541-1-git-send-email-prabhakar.kushwaha@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,104 +23,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+MTD maintainers
+Hi Prabhakar,
 
-Hi Mario,
+On Thu, 4 May 2017 12:50:37 +0530
+Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com> wrote:
 
-Can you please Cc NAND/MTD maintainers next time.
-
-On Fri, 12 May 2017 04:39:46 -0300
-"Mario J. Rugiero" <mrugiero@gmail.com> wrote:
-
-> Some chips used under a custom vendor driver can get their blocks
-> incorrectly detected as bad blocks, out of incompatibilities
-> between such drivers and MTD drivers.
-> When there are too many misdetected bad blocks, the device becomes
-> unusable because a bad block table can't be allocated, aside from
-> all the legitimately good blocks which become unusable under these
-> conditions.
-> This adds a build option to workaround the issue by enabling the
-> user to free up space regardless of what the driver thinks about
-> the blocks. It still warns about it, since that's potentially
-> dangerous.
+> It is not necessary for all device's maps to be CFI_HOST_ENDIAN. Maps device
+> can be Bigendian or little endian.
 > 
-> Example usage: recovering NAND chips on sunxi devices, as explained
-> here: http://linux-sunxi.org/Mainline_NAND_Howto#Known_issues
+> Currently it is being taken care using CONFIG_MTD_CFI_LE_BYTE_SWAP or
+> CONFIG_MTD_CFI_BE_BYTE_SWAP i.e. compile time.
 > 
-> v3: Warn when erasing a bad block, as suggested by Andrea Scian.
-> 
-> v2: Fix a typo in the config description.
+> Now update struct map_info's swap field based on device characteristics
+> defined in device tree.
 
-For your future submissions, please put the changelog after the --- so
-that it's dropped when applying the patch.
+You should update Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+and Cc DT maintainers.
 
 > 
-> Signed-off-by: Mario J. Rugiero <mrugiero@gmail.com>
+> Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
 > ---
-
-Here:
-
-v3: ...
-
-v2: ...
-
->  drivers/mtd/nand/Kconfig     | 9 +++++++++
->  drivers/mtd/nand/nand_base.c | 2 ++
->  2 files changed, 11 insertions(+)
+>  drivers/mtd/maps/physmap_of.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index c3029528063b..e0a32a34b6bf 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -36,6 +36,15 @@ config MTD_NAND_ECC_BCH
->  	  ECC codes. They are used with NAND devices requiring more than 1 bit
->  	  of error correction.
+> diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+> index 14e8909..f39607d 100644
+> --- a/drivers/mtd/maps/physmap_of.c
+> +++ b/drivers/mtd/maps/physmap_of.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/mtd/map.h>
+>  #include <linux/mtd/partitions.h>
+>  #include <linux/mtd/concat.h>
+> +#include <linux/mtd/cfi_endian.h>
+>  #include <linux/of.h>
+>  #include <linux/of_address.h>
+>  #include <linux/of_platform.h>
+> @@ -243,6 +244,9 @@ static int of_flash_probe(struct platform_device *dev)
+>  		info->list[i].map.bankwidth = be32_to_cpup(width);
+>  		info->list[i].map.device_node = dp;
 >  
-> +config MTD_NAND_ERASE_BADBLOCKS
-> +	bool "Enable erasing of bad blocks (DANGEROUS)"
-> +	default n
-> +	help
-> +	  This enables support for attempting to erase bad blocks.
-> +	  It is needed to workaround too many badblocks issue on chips used
-> +	  under custom, incompatible vendor drivers.
-> +	  Say N if unsure.
+> +		if (of_property_read_bool(dp->parent, "big-endian"))
+> +			info->list[i].map.swap = CFI_BIG_ENDIAN;
 > +
->  config MTD_SM_COMMON
->  	tristate
->  	default n
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index d474378ed810..282410813a9c 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -3211,8 +3211,10 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
->  					chip->page_shift, allowbbt)) {
->  			pr_warn("%s: attempt to erase a bad block at page 0x%08x\n",
->  				    __func__, page);
-> +			#ifndef CONFIG_MTD_NAND_ERASE_BADBLOCKS
 
-#ifndef statements should be at the beginning of the line. But anyway,
-I think we all agree that always forcing bad block erasure is a bad
-idea. If we accept to support this feature, this should be done through
-a per-NAND-chip debugfs entry, with fine grained selection of the block
-that we're allowing to be forcibly erased.
+Shouldn't we have
 
-Here is a suggestion:
+		else if (of_property_read_bool(dp->parent,
+					       "little-endian"))
+			info->list[i].map.swap = CFI_LITTE_ENDIAN;
+		else if (of_property_read_bool(dp->parent,
+					       "host-endian"))
+			info->list[i].map.swap = CFI_HOST_ENDIAN;
 
-echo all > /sys/kernel/debug/nand/<nand-chip-name>/erase-bad-blocks
-echo none > /sys/kernel/debug/nand/<nand-chip-name>/erase-bad-blocks
-echo X,Y-Z,... > /sys/kernel/debug/nand/<nand-chip-name>/erase-bad-blocks
+Otherwise, you'll fallback to CFI_DEFAULT_ENDIAN (determined with the
+CONFIG_MTD_CFI_BE/LE_BYTE_SWAP config options) if the endianness is
+not big-endian, which is probably not what you want.
 
-where X is an eraseblock number, and X-Y is a range of eraseblocks.
+You can even make this property a string property:
 
-BTW, maybe we should create and expose a top-level mtd debugfs directory
-to avoid exposing MTD related things at the root of the debugfs FS.
+		if (!of_property_read_string(dp->parent,
+					     "cfi-endianness",
+					     &endianness)) {
+			if (!strcmp("big", endianness))
+				info->list[i].map.swap = CFI_BIG_ENDIAN;
+			else if (!strcmp("little", endianness))
+				info->list[i].map.swap = CFI_LITTLE_ENDIAN;
+			else if (!strcmp("host", endianness))
+				info->list[i].map.swap = CFI_HOST_ENDIAN;
+		}
 
-Something like:
+>  		err = of_flash_probe_gemini(dev, dp, &info->list[i].map);
+>  		if (err)
+>  			return err;
 
-/sys/kernel/debug/mtd/<dev-type>/...
+Regards,
 
-so for the NAND related bits it would be
-
-/sys/kernel/debug/mtd/nand/...
-
-MTD maintainers, any opinion on this?
+Boris
