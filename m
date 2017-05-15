@@ -1,15 +1,20 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dALXu-0005WR-LD
- for linux-mtd@lists.infradead.org; Mon, 15 May 2017 19:20:44 +0000
-Date: Mon, 15 May 2017 21:20:21 +0200
+ id 1dALl8-0002vt-Gt
+ for linux-mtd@lists.infradead.org; Mon, 15 May 2017 19:34:24 +0000
+Date: Mon, 15 May 2017 21:34:00 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc: linux-mtd@lists.infradead.org, richard@nod.at
-Subject: Re: [PATCH v2 0/2] Add NAND driver mach dependency constraint
-Message-ID: <20170515212021.1ed4d0b5@bbrezillon>
-In-Reply-To: <20170502194952.4188-1-ezequiel@vanguardiasur.com.ar>
-References: <20170502194952.4188-1-ezequiel@vanguardiasur.com.ar>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, linux-mtd@lists.infradead.org, Harvey Hunt
+ <harveyhuntnexus@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@atmel.com>
+Subject: Re: [PATCH] mtd: nand: jz4780: Use mtd_set_ooblayout() to set the
+ ooblayout
+Message-ID: <20170515213400.4441fbee@bbrezillon>
+In-Reply-To: <1493720953-8471-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1493720953-8471-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -22,27 +27,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue,  2 May 2017 16:49:50 -0300
-Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
+On Tue,  2 May 2017 12:29:13 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-> Just two tiny and silly patches I came across while doing
-> other things and testing with tiny_defconfig.
+> The mtd_set_ooblayout() accesor has been added to hide internals of
+> mtd_info and ease future refactoring. Call mtd_set_ooblayout() instead of
+> directly accessing mtd->ooblayout.
 > 
-> Changes from v1:
-> 
->   * Add COMPILE_TEST, suggested by Boris.
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
 Applied to nand/next.
 
-Thanks,
-
-Boris
-
+> ---
+>  drivers/mtd/nand/jz4780_nand.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Ezequiel Garcia (2):
->   mtd: nand: Add Hisilicon machine dependency
->   mtd: nand: Add Mediatek machine dependency
-> 
->  drivers/mtd/nand/Kconfig | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+> diff --git a/drivers/mtd/nand/jz4780_nand.c b/drivers/mtd/nand/jz4780_nand.c
+> index a39bb70175ee..8bc835f71b26 100644
+> --- a/drivers/mtd/nand/jz4780_nand.c
+> +++ b/drivers/mtd/nand/jz4780_nand.c
+> @@ -205,7 +205,7 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
+>  		return -EINVAL;
+>  	}
+>  
+> -	mtd->ooblayout = &nand_ooblayout_lp_ops;
+> +	mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
+>  
+>  	return 0;
+>  }
