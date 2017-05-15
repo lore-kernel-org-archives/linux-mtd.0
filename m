@@ -1,7 +1,7 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dAOJn-0002Jv-T7
- for linux-mtd@lists.infradead.org; Mon, 15 May 2017 22:18:22 +0000
+ id 1dAOJx-0002K8-T1
+ for linux-mtd@lists.infradead.org; Mon, 15 May 2017 22:18:34 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
@@ -9,9 +9,9 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH 2/3] mtd: nand: Remove support for block locking/unlocking
-Date: Tue, 16 May 2017 00:17:42 +0200
-Message-Id: <1494886663-20700-3-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH 3/3] mtd: nand: Drop the ->errstat() hook
+Date: Tue, 16 May 2017 00:17:43 +0200
+Message-Id: <1494886663-20700-4-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1494886663-20700-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1494886663-20700-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,231 +23,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Commit 7d70f334ad2b ("mtd: nand: add lock/unlock routines") introduced
-support for the Micron LOCK/UNLOCK commands but no one ever used the
-nand_lock/unlock() functions.
-
-Remove support for these vendor-specific operations from the core. If
-one ever wants to add them back they should be put in nand_micron.c and
-mtd->_lock/_unlock should be directly assigned from there instead of
-exporting the functions.
+TODO: add a real commit message
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/nand/nand_base.c | 172 -------------------------------------------
- include/linux/mtd/nand.h     |  10 ---
- 2 files changed, 182 deletions(-)
+ drivers/mtd/nand/nand_base.c | 16 ----------------
+ include/linux/mtd/nand.h     |  5 -----
+ 2 files changed, 21 deletions(-)
 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 6b98c032ef50..6eba5ba51c90 100644
+index 6eba5ba51c90..8dafd2a54e11 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -1215,178 +1215,6 @@ int nand_reset(struct nand_chip *chip, int chipnr)
- }
+@@ -2577,14 +2577,6 @@ static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	if (nand_standard_page_accessors(&chip->ecc))
+ 		chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
+ 	status = chip->waitfunc(mtd, chip);
+-	/*
+-	 * See if operation failed and additional status checks are
+-	 * available.
+-	 */
+-	if ((status & NAND_STATUS_FAIL) && (chip->errstat))
+-		status = chip->errstat(mtd, chip, FL_WRITING, status,
+-				       page);
+-
+ 	if (status & NAND_STATUS_FAIL)
+ 		return -EIO;
  
- /**
-- * __nand_unlock - [REPLACEABLE] unlocks specified locked blocks
-- * @mtd: mtd info
-- * @ofs: offset to start unlock from
-- * @len: length to unlock
-- * @invert: when = 0, unlock the range of blocks within the lower and
-- *                    upper boundary address
-- *          when = 1, unlock the range of blocks outside the boundaries
-- *                    of the lower and upper boundary address
-- *
-- * Returs unlock status.
-- */
--static int __nand_unlock(struct mtd_info *mtd, loff_t ofs,
--					uint64_t len, int invert)
--{
--	int ret = 0;
--	int status, page;
--	struct nand_chip *chip = mtd_to_nand(mtd);
+@@ -3044,14 +3036,6 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+ 
+ 		status = chip->erase(mtd, page & chip->pagemask);
+ 
+-		/*
+-		 * See if operation failed and additional status checks are
+-		 * available
+-		 */
+-		if ((status & NAND_STATUS_FAIL) && (chip->errstat))
+-			status = chip->errstat(mtd, chip, FL_ERASING,
+-					       status, page);
 -
--	/* Submit address of first page to unlock */
--	page = ofs >> chip->page_shift;
--	chip->cmdfunc(mtd, NAND_CMD_UNLOCK1, -1, page & chip->pagemask);
--
--	/* Submit address of last page to unlock */
--	page = (ofs + len) >> chip->page_shift;
--	chip->cmdfunc(mtd, NAND_CMD_UNLOCK2, -1,
--				(page | invert) & chip->pagemask);
--
--	/* Call wait ready function */
--	status = chip->waitfunc(mtd, chip);
--	/* See if device thinks it succeeded */
--	if (status & NAND_STATUS_FAIL) {
--		pr_debug("%s: error status = 0x%08x\n",
--					__func__, status);
--		ret = -EIO;
--	}
--
--	return ret;
--}
--
--/**
-- * nand_unlock - [REPLACEABLE] unlocks specified locked blocks
-- * @mtd: mtd info
-- * @ofs: offset to start unlock from
-- * @len: length to unlock
-- *
-- * Returns unlock status.
-- */
--int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
--{
--	int ret = 0;
--	int chipnr;
--	struct nand_chip *chip = mtd_to_nand(mtd);
--
--	pr_debug("%s: start = 0x%012llx, len = %llu\n",
--			__func__, (unsigned long long)ofs, len);
--
--	if (check_offs_len(mtd, ofs, len))
--		return -EINVAL;
--
--	/* Align to last block address if size addresses end of the device */
--	if (ofs + len == mtd->size)
--		len -= mtd->erasesize;
--
--	nand_get_device(mtd, FL_UNLOCKING);
--
--	/* Shift to get chip number */
--	chipnr = ofs >> chip->chip_shift;
--
--	/*
--	 * Reset the chip.
--	 * If we want to check the WP through READ STATUS and check the bit 7
--	 * we must reset the chip
--	 * some operation can also clear the bit 7 of status register
--	 * eg. erase/program a locked block
--	 */
--	nand_reset(chip, chipnr);
--
--	chip->select_chip(mtd, chipnr);
--
--	/* Check, if it is write protected */
--	if (nand_check_wp(mtd)) {
--		pr_debug("%s: device is write protected!\n",
--					__func__);
--		ret = -EIO;
--		goto out;
--	}
--
--	ret = __nand_unlock(mtd, ofs, len, 0);
--
--out:
--	chip->select_chip(mtd, -1);
--	nand_release_device(mtd);
--
--	return ret;
--}
--EXPORT_SYMBOL(nand_unlock);
--
--/**
-- * nand_lock - [REPLACEABLE] locks all blocks present in the device
-- * @mtd: mtd info
-- * @ofs: offset to start unlock from
-- * @len: length to unlock
-- *
-- * This feature is not supported in many NAND parts. 'Micron' NAND parts do
-- * have this feature, but it allows only to lock all blocks, not for specified
-- * range for block. Implementing 'lock' feature by making use of 'unlock', for
-- * now.
-- *
-- * Returns lock status.
-- */
--int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
--{
--	int ret = 0;
--	int chipnr, status, page;
--	struct nand_chip *chip = mtd_to_nand(mtd);
--
--	pr_debug("%s: start = 0x%012llx, len = %llu\n",
--			__func__, (unsigned long long)ofs, len);
--
--	if (check_offs_len(mtd, ofs, len))
--		return -EINVAL;
--
--	nand_get_device(mtd, FL_LOCKING);
--
--	/* Shift to get chip number */
--	chipnr = ofs >> chip->chip_shift;
--
--	/*
--	 * Reset the chip.
--	 * If we want to check the WP through READ STATUS and check the bit 7
--	 * we must reset the chip
--	 * some operation can also clear the bit 7 of status register
--	 * eg. erase/program a locked block
--	 */
--	nand_reset(chip, chipnr);
--
--	chip->select_chip(mtd, chipnr);
--
--	/* Check, if it is write protected */
--	if (nand_check_wp(mtd)) {
--		pr_debug("%s: device is write protected!\n",
--					__func__);
--		status = MTD_ERASE_FAILED;
--		ret = -EIO;
--		goto out;
--	}
--
--	/* Submit address of first page to lock */
--	page = ofs >> chip->page_shift;
--	chip->cmdfunc(mtd, NAND_CMD_LOCK, -1, page & chip->pagemask);
--
--	/* Call wait ready function */
--	status = chip->waitfunc(mtd, chip);
--	/* See if device thinks it succeeded */
--	if (status & NAND_STATUS_FAIL) {
--		pr_debug("%s: error status = 0x%08x\n",
--					__func__, status);
--		ret = -EIO;
--		goto out;
--	}
--
--	ret = __nand_unlock(mtd, ofs, len, 0x1);
--
--out:
--	chip->select_chip(mtd, -1);
--	nand_release_device(mtd);
--
--	return ret;
--}
--EXPORT_SYMBOL(nand_lock);
--
--/**
-  * nand_check_erased_buf - check if a buffer contains (almost) only 0xff data
-  * @buf: buffer to test
-  * @len: buffer length
+ 		/* See if block erase succeeded */
+ 		if (status & NAND_STATUS_FAIL) {
+ 			pr_debug("%s: failed erase, page 0x%08x\n",
 diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index f01991649118..9ca3ad20faea 100644
+index 9ca3ad20faea..2dcdd07e7810 100644
 --- a/include/linux/mtd/nand.h
 +++ b/include/linux/mtd/nand.h
-@@ -44,12 +44,6 @@ void nand_release(struct mtd_info *mtd);
- /* Internal helper for board drivers which need to override command function */
- void nand_wait_ready(struct mtd_info *mtd);
+@@ -819,9 +819,6 @@ struct nand_manufacturer_ops {
+  *			structure which is shared among multiple independent
+  *			devices.
+  * @priv:		[OPTIONAL] pointer to private chip data
+- * @errstat:		[OPTIONAL] hardware specific function to perform
+- *			additional error status checks (determine if errors are
+- *			correctable).
+  * @manufacturer:	[INTERN] Contains manufacturer information
+  */
  
--/* locks all blocks present in the device */
--int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
--
--/* unlocks specified locked blocks */
--int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
--
- /* The maximum number of NAND chips in an array */
- #define NAND_MAX_CHIPS		8
- 
-@@ -89,10 +83,6 @@ int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
- #define NAND_CMD_SET_FEATURES	0xef
- #define NAND_CMD_RESET		0xff
- 
--#define NAND_CMD_LOCK		0x2a
--#define NAND_CMD_UNLOCK1	0x23
--#define NAND_CMD_UNLOCK2	0x24
--
- /* Extended commands for large page devices */
- #define NAND_CMD_READSTART	0x30
- #define NAND_CMD_RNDOUTSTART	0xE0
+@@ -845,8 +842,6 @@ struct nand_chip {
+ 	int(*waitfunc)(struct mtd_info *mtd, struct nand_chip *this);
+ 	int (*erase)(struct mtd_info *mtd, int page);
+ 	int (*scan_bbt)(struct mtd_info *mtd);
+-	int (*errstat)(struct mtd_info *mtd, struct nand_chip *this, int state,
+-			int status, int page);
+ 	int (*onfi_set_features)(struct mtd_info *mtd, struct nand_chip *chip,
+ 			int feature_addr, uint8_t *subfeature_para);
+ 	int (*onfi_get_features)(struct mtd_info *mtd, struct nand_chip *chip,
 -- 
 2.7.4
