@@ -1,16 +1,21 @@
-Date: Mon, 15 May 2017 21:38:02 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dALr9-0008JY-5R
+ for linux-mtd@lists.infradead.org; Mon, 15 May 2017 19:40:36 +0000
+Date: Mon, 15 May 2017 21:40:13 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Stefan Agner <stefan@agner.ch>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- richard@nod.at, cyrille.pitchen@atmel.com, robh+dt@kernel.org,
- mark.rutland@arm.com, shawnguo@kernel.org, kernel@pengutronix.de,
- han.xu@nxp.com, fabio.estevam@freescale.com, LW@KARO-electronics.de,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/5] mtd: nand: gpmi: add i.MX 7 support
-Message-ID: <20170515213802.4746dcda@bbrezillon>
-In-Reply-To: <20170422012338.4635-1-stefan@agner.ch>
-References: <20170422012338.4635-1-stefan@agner.ch>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@atmel.com>, Han Xu <han.xu@nxp.com>, Shawn Guo
+ <shawnguo@kernel.org>, Sascha Hauer <kernel@pengutronix.de>, Leonard
+ Crestez <leonard.crestez@nxp.com>, Masahiro Yamada
+ <yamada.masahiro@socionext.com>
+Subject: Re: [PATCH 1/2] mtd: nand: gpmi: Fix gpmi_nand_init() error path
+Message-ID: <20170515214013.580e161a@bbrezillon>
+In-Reply-To: <1491813318-4417-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1491813318-4417-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -23,42 +28,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 21 Apr 2017 18:23:33 -0700
-Stefan Agner <stefan@agner.ch> wrote:
+On Mon, 10 Apr 2017 10:35:17 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-> This patchset adds support for i.MX 7 SoC for the GPMI NAND controller.
-> There have been similar patchsets already:
-> https://lkml.org/lkml/2016/2/23/912
+> The GPMI driver is wrongly assuming that nand_release() can safely be
+> called on an uninitialized/unregistered NAND device.
 > 
-> However, this patchset does not make use of any of the new features.
-> The current feature set seems to work fine, I successfully run the MTD
-> tests on a Colibri iMX7.
+> Add a new err_nand_cleanup label in the error path and only execute if
+> nand_scan_tail() succeeded.
 > 
-> --
-> Stefan
+> Note that we now call nand_cleanup() instead of nand_release()
+> (nand_release() is actually grouping the mtd_device_unregister() and
+> nand_cleanup() in one call) because there's no point in trying to
+> unregister a device that has never been registered.
 > 
-> Changes since v1:
-> - Make clks_count const
-> - Introduce IS_IMX7D for i.MX 7 SoC's and make it part of GPMI_IS_MX6
-> 
-> Stefan Agner (5):
->   mtd: nand: gpmi: unify clock handling
->   mtd: nand: gpmi: add i.MX 7 SoC support
->   mtd: gpmi: document current clock requirements
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Applied patch 1-3 to nand/next.
+Applied both to nand/next.
 
-Thanks,
-
-Boris
-
->   ARM: dts: imx7: add GPMI NAND
->   ARM: dts: imx7-colibri: add NAND support
+> ---
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
 > 
->  .../devicetree/bindings/mtd/gpmi-nand.txt          | 14 +++++-
->  arch/arm/boot/dts/imx7-colibri.dtsi                |  9 ++++
->  arch/arm/boot/dts/imx7s.dtsi                       | 31 ++++++++++++
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c             | 56 +++++++++++++---------
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.h             |  9 +++-
->  5 files changed, 93 insertions(+), 26 deletions(-)
-> 
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index d52139635b67..92279a0d52f1 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -2048,18 +2048,20 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
+>  
+>  	ret = nand_boot_init(this);
+>  	if (ret)
+> -		goto err_out;
+> +		goto err_nand_cleanup;
+>  	ret = chip->scan_bbt(mtd);
+>  	if (ret)
+> -		goto err_out;
+> +		goto err_nand_cleanup;
+>  
+>  	ret = mtd_device_register(mtd, NULL, 0);
+>  	if (ret)
+> -		goto err_out;
+> +		goto err_nand_cleanup;
+>  	return 0;
+>  
+> +err_nand_cleanup:
+> +	nand_cleanup(chip);
+>  err_out:
+> -	gpmi_nand_exit(this);
+> +	gpmi_free_dma_buffer(this);
+>  	return ret;
+>  }
+>  
