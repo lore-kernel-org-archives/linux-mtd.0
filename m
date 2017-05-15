@@ -1,21 +1,22 @@
-Received: from host.buserror.net ([209.198.135.123])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dAJnr-0002pc-Ss
- for linux-mtd@lists.infradead.org; Mon, 15 May 2017 17:29:05 +0000
-Message-ID: <1494869313.29095.5.camel@buserror.net>
-From: Scott Wood <oss@buserror.net>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Prabhakar Kushwaha
- <prabhakar.kushwaha@nxp.com>
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
-Date: Mon, 15 May 2017 12:28:33 -0500
-In-Reply-To: <20170515104824.2ffb5186@bbrezillon>
-References: <1493882437-4541-1-git-send-email-prabhakar.kushwaha@nxp.com>
- <20170515104824.2ffb5186@bbrezillon>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] driver: mtd: update struct map_info's swap as per map
- requirement.
+ id 1dAKG6-0005nh-AL
+ for linux-mtd@lists.infradead.org; Mon, 15 May 2017 17:58:16 +0000
+Subject: Re: [PATCH] ubifs: Fix inode leak in xattr code
+To: dedekind1@gmail.com, linux-mtd@lists.infradead.org
+References: <1494858005-18439-1-git-send-email-richard@nod.at>
+ <1494860034.18055.17.camel@gmail.com>
+ <a5e7b80e-e1db-7b57-3b94-4d8e3a43cc6a@nod.at>
+ <1494864339.18055.20.camel@gmail.com>
+Cc: linux-kernel@vger.kernel.org, adrian.hunter@intel.com,
+ stable@vger.kernel.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <9db191c2-234c-3779-493a-7265409c2d69@nod.at>
+Date: Mon, 15 May 2017 19:57:47 +0200
+MIME-Version: 1.0
+In-Reply-To: <1494864339.18055.20.camel@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,24 +26,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2017-05-15 at 10:48 +0200, Boris Brezillon wrote:
+Artem,
+
+Am 15.05.2017 um 18:05 schrieb Artem Bityutskiy:
+> On Mon, 2017-05-15 at 17:22 +0200, Richard Weinberger wrote:
+>> Alternatively we could add a iget_locked/drop_nlink/iput sequence to
+>> ubifs_tnc_remove_ino(). But that will make unlink() much slower for
+>> files
+>> that contain xattrs.
 > 
-> You can even make this property a string property:
+> At that level we'd need to do it for every xattr, even those that were
+> never be accessed, which would be slow indeed.
 > 
-> 		if (!of_property_read_string(dp->parent,
-> 					     "cfi-endianness",
-> 					     &endianness)) {
-> 			if (!strcmp("big", endianness))
-> 				info->list[i].map.swap = CFI_BIG_ENDIAN;
-> 			else if (!strcmp("little", endianness))
-> 				info->list[i].map.swap = CFI_LITTLE_ENDIAN;
-> 			else if (!strcmp("host", endianness))
-> 				info->list[i].map.swap = CFI_HOST_ENDIAN;
-> 		}
+> But we really only need to check the inode cache: hey, icache, I am
+> dying, and if you have any of my guys (xattrs), I want them to die with
+> me. 
+> 
+> So the question is how to find our guys in the inode cache. I am not
+> sure. Probably be we'd have to have our own list of cached inodes in
+> the host inode, and maintain it.
 
-Boolean endianness properties are the standard elsewhere -- why should CFI be
-different?
+BTW: Do you happen to know how other filesystems cache xattrs?
+If they actually do.
 
-See Documentation/devicetree/bindings/common-properties.txt
-
--Scott
+Thanks,
+//richard
