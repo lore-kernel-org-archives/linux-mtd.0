@@ -1,37 +1,23 @@
-Received: from mail-wm0-x229.google.com ([2a00:1450:400c:c09::229])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dA69p-0007nZ-2R
- for linux-mtd@lists.infradead.org; Mon, 15 May 2017 02:54:50 +0000
-Received: by mail-wm0-x229.google.com with SMTP id d127so60143570wmf.0
- for <linux-mtd@lists.infradead.org>; Sun, 14 May 2017 19:54:27 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <d39d149e-15be-1a7b-e3d5-c9d16cfaaf30@nod.at>
-References: <20170512053957.10426-1-mrugiero@gmail.com>
- <CAFLxGvyTvqY69AeoSrKWNjea-8u5YxKEBOznpUj9g==_UDnLew@mail.gmail.com>
- <CAKKQwLTGFY+bfFCoPNtvpFK-w-3SnNc_G2xDd_xip3iiwVDM4A@mail.gmail.com>
- <20170512102407.217b805a@bbrezillon>
- <CAKKQwLTVpsu8j50BkqkgBwk9A3rPfrYDUTYDXbAn_OiA-tUd7g@mail.gmail.com>
- <20170512104554.5670bb4d@bbrezillon>
- <CAKKQwLQueea6G4B-cng9QdpjtRWyBWHw1Mq9ai3DVp31xswANg@mail.gmail.com>
- <20170512110230.56e6250d@bbrezillon>
- <CAKKQwLT2n==ta=qjZtxZPyqyjBRBLtBKr_uWBjtjy-yjMPVM+A@mail.gmail.com>
- <982c0331-216c-3096-9349-d18e2247ddac@nod.at>
- <CAKKQwLSkv_bVPxYqjUKqasDzZ6PiZdhiksipDbHmgnmVWPYN7Q@mail.gmail.com>
- <20170512113414.213f515b@bbrezillon>
- <CAKKQwLSwL76mBVbr2-w6mh4RS1bzRGuLCx2TwuQ=fnNjdxsZhg@mail.gmail.com>
- <20170512121908.135da352@bbrezillon>
- <CAKKQwLRgBuwifywcsa=zAaUi48YSh7UWkYKf9Gho=p5VhNPHeg@mail.gmail.com>
- <d39d149e-15be-1a7b-e3d5-c9d16cfaaf30@nod.at>
-From: Mario Rugiero <mrugiero@gmail.com>
-Date: Sun, 14 May 2017 23:54:26 -0300
-Message-ID: <CAKKQwLRDOwBzAuaFOkd5yVRXHAkChTTyFTnczMTmcCU_dN_iZw@mail.gmail.com>
-Subject: Re: [PATCH] mtd: nand: add option to erase NAND blocks even if
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dABGs-0000tv-DI
+ for linux-mtd@lists.infradead.org; Mon, 15 May 2017 08:22:28 +0000
+Date: Mon, 15 May 2017 10:21:58 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: "Mario J. Rugiero" <mrugiero@gmail.com>, Richard Weinberger
+ <richard@nod.at>, Marek Vasut <marex@denx.de>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3] mtd: nand: add option to erase NAND blocks even if
  detected as bad.
-To: Richard Weinberger <richard@nod.at>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Richard Weinberger <richard.weinberger@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <20170515102158.798f83f2@bbrezillon>
+In-Reply-To: <20170512073946.812-1-mrugiero@gmail.com>
+References: <20170512053957.10426-1-mrugiero@gmail.com>
+ <20170512073946.812-1-mrugiero@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,39 +27,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sorry for the noise, but I'm resending since my phone is fixated on
-sending HTML mails, so it was rejected from the list:
-After some thought, I believe the proper solution is the one proposed
-by Boris: write a little program which classifies the false positives
-for bad blocks, and erase those blocks forcibly.
-What I'm currently wondering is if the incompatibilities come with
-false negatives too. In such a case, we should be able to provide the
-MTD driver with the information we just gathered, or is it viable to
-just program the BBT we just built?
++MTD maintainers
 
-Regards,
-Mario.
+Hi Mario,
 
-PD (not in the original mail): would mtd-tools the right place to do
-this, or rather sunxi-tools? I think converting from vendor-specific
-layouts to MTD could be a more common problem, so I thought of trying
-and making it generic enough to support several backends.
+Can you please Cc NAND/MTD maintainers next time.
 
-2017-05-13 6:17 GMT-03:00 Richard Weinberger <richard@nod.at>:
-> Mario,
->
-> Am 12.05.2017 um 12:23 schrieb Mario Rugiero:
->>> Actually, most of the development is done already, but we need to
->>> intensively test the implementation and cleanup the code.
->> If you can describe the tests to me, I think I can have them running
->> in at least three devices during next week.
->> I can help with the cleanup, too.
->
-> Well, the critical and most important task is understanding the existing
-> issues, see slides, and find a bulletproof solution that scales.
->
-> If you have questions, don't hesitate to ask. You can also find
-> me and Boris on #mtd.
->
-> Thanks,
-> //richard
+On Fri, 12 May 2017 04:39:46 -0300
+"Mario J. Rugiero" <mrugiero@gmail.com> wrote:
+
+> Some chips used under a custom vendor driver can get their blocks
+> incorrectly detected as bad blocks, out of incompatibilities
+> between such drivers and MTD drivers.
+> When there are too many misdetected bad blocks, the device becomes
+> unusable because a bad block table can't be allocated, aside from
+> all the legitimately good blocks which become unusable under these
+> conditions.
+> This adds a build option to workaround the issue by enabling the
+> user to free up space regardless of what the driver thinks about
+> the blocks. It still warns about it, since that's potentially
+> dangerous.
+> 
+> Example usage: recovering NAND chips on sunxi devices, as explained
+> here: http://linux-sunxi.org/Mainline_NAND_Howto#Known_issues
+> 
+> v3: Warn when erasing a bad block, as suggested by Andrea Scian.
+> 
+> v2: Fix a typo in the config description.
+
+For your future submissions, please put the changelog after the --- so
+that it's dropped when applying the patch.
+
+> 
+> Signed-off-by: Mario J. Rugiero <mrugiero@gmail.com>
+> ---
+
+Here:
+
+v3: ...
+
+v2: ...
+
+>  drivers/mtd/nand/Kconfig     | 9 +++++++++
+>  drivers/mtd/nand/nand_base.c | 2 ++
+>  2 files changed, 11 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index c3029528063b..e0a32a34b6bf 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -36,6 +36,15 @@ config MTD_NAND_ECC_BCH
+>  	  ECC codes. They are used with NAND devices requiring more than 1 bit
+>  	  of error correction.
+>  
+> +config MTD_NAND_ERASE_BADBLOCKS
+> +	bool "Enable erasing of bad blocks (DANGEROUS)"
+> +	default n
+> +	help
+> +	  This enables support for attempting to erase bad blocks.
+> +	  It is needed to workaround too many badblocks issue on chips used
+> +	  under custom, incompatible vendor drivers.
+> +	  Say N if unsure.
+> +
+>  config MTD_SM_COMMON
+>  	tristate
+>  	default n
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index d474378ed810..282410813a9c 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -3211,8 +3211,10 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+>  					chip->page_shift, allowbbt)) {
+>  			pr_warn("%s: attempt to erase a bad block at page 0x%08x\n",
+>  				    __func__, page);
+> +			#ifndef CONFIG_MTD_NAND_ERASE_BADBLOCKS
+
+#ifndef statements should be at the beginning of the line. But anyway,
+I think we all agree that always forcing bad block erasure is a bad
+idea. If we accept to support this feature, this should be done through
+a per-NAND-chip debugfs entry, with fine grained selection of the block
+that we're allowing to be forcibly erased.
+
+Here is a suggestion:
+
+echo all > /sys/kernel/debug/nand/<nand-chip-name>/erase-bad-blocks
+echo none > /sys/kernel/debug/nand/<nand-chip-name>/erase-bad-blocks
+echo X,Y-Z,... > /sys/kernel/debug/nand/<nand-chip-name>/erase-bad-blocks
+
+where X is an eraseblock number, and X-Y is a range of eraseblocks.
+
+BTW, maybe we should create and expose a top-level mtd debugfs directory
+to avoid exposing MTD related things at the root of the debugfs FS.
+
+Something like:
+
+/sys/kernel/debug/mtd/<dev-type>/...
+
+so for the NAND related bits it would be
+
+/sys/kernel/debug/mtd/nand/...
+
+MTD maintainers, any opinion on this?
