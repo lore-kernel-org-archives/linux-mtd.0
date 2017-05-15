@@ -1,28 +1,15 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dAFEA-0008LH-FO
- for linux-mtd@lists.infradead.org; Mon, 15 May 2017 12:35:56 +0000
-Date: Mon, 15 May 2017 14:35:23 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Jan Glauber <jan.glauber@caviumnetworks.com>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@atmel.com>
-Subject: Re: [RFC PATCH 2/2] nand: cavium: Nand flash controller for Cavium
- ARM64 SOCs
-Message-ID: <20170515143523.539feaa9@bbrezillon>
-In-Reply-To: <20170515143337.52c49094@bbrezillon>
-References: <20170327160524.29019-1-jglauber@cavium.com>
- <20170327160524.29019-3-jglauber@cavium.com>
- <20170329112932.267b3059@bbrezillon>
- <20170329100256.GA3819@hardcore>
- <20170329155933.7494c243@bbrezillon> <20170425112623.GA25764@hc>
- <20170430150100.503bfb8f@bbrezillon>
- <20170515143337.52c49094@bbrezillon>
+From: Xiaolei Li <xiaolei.li@mediatek.com>
+To: <boris.brezillon@free-electrons.com>, <computersforpeace@gmail.com>,
+ <matthias.bgg@gmail.com>
+CC: <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, <robh+dt@kernel.org>,
+ <rogercc.lin@mediatek.com>, <yt.shen@mediatek.com>,
+ <srv_heupstream@mediatek.com>, <xiaolei.li@mediatek.com>
+Subject: [PATCH v3 0/4] Mediatek MT2712 NAND FLASH Controller driver
+Date: Mon, 15 May 2017 20:39:35 +0800
+Message-ID: <1494851979-14416-1-git-send-email-xiaolei.li@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,49 +19,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 15 May 2017 14:33:37 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+The following patch-set adds support for Mediatek MT2712 NAND FLASH
+Controller.
 
-> Hi Jan,
-> 
-> On Sun, 30 Apr 2017 15:01:00 +0200
-> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-> 
-> >   
-> > > 
-> > > How far are you with the new interface, can you share some code?    
-> > 
-> > I started to rework the NAND framework a while ago [1], but never had
-> > time to finish it. I think I was too ambitious, so let's try to be
-> > pragmatic this time, and focus on one problem at a time.
-> > 
-> > Your problem here is the separation of the CMD/ADDR cycles (done in  
-> > ->cmdfunc() and/or cmd_ctrl()) and the DATA cycles (done in
-> > ->read/write_buf/byte/word()), which complexifies the driver logic.    
-> > 
-> > What you should look at is defining a proper nand_operation object
-> > (here's my initial definition [2], but you may want/need to remove some
-> > fields or add new ones) and add a new ->exec_op() hook to nand_chip
-> > taking a nand_operation struct (+ a pointer to the nand_chip, of
-> > course).
-> > 
-> > Once you have that, you should patch all accesses from the core to use
-> > the new ->exec_op() interface instead of ->cmdfunc() +  
-> > ->read/write_xx(). Of course, that means providing a compatibility layer    
-> > for all drivers still implementing ->cmdfunc(), which is probably the
-> > trickiest part of the job.
-> > 
-> > You'll have to rework the nand_do_read/write_ops() functions to
-> > prevent the separation of the ->cmdfunc() call (done in
-> > nand_do_read/write_ops() function) from the data transfer (done in
-> > chip->ecc.read/write_page_xxx()).
-> > 
-> > I'll try to come up with an initial/ugly patch to show you the
-> > direction, and I'll let you cleanup/massage the implementation ;-).  
-> 
-> I finally had time to finish the PoC I had in mind [1], unfortunately I
-> didn't have time to provide a reference implementation to show you how
-> it is supposed to work from a driver PoV.
+Changes on v3 relative to:
+--------------------
 
-One more thing, this is completely untested (only compile-tested), so
-you're likely to face bugs when testing it ;-).
+tree    : https://github.com/bbrezillon/linux-0day
+branch  : nand/next
+commit  :
+        'commit 2b12c057cc2837312001f4fc3a4d89498fb6f463
+        Author: Kamal Dasu <kdasu.kdev@gmail.com>
+        Date:   Fri Mar 3 16:16:53 2017 -0500'
+
+Patch v3:
+---------
+- separate patches into 4.
+- rename struct mtk_ecc_devdata and struct mtk_nfc_devdata to struct
+  mtk_ecc_caps and struct mtk_nfc_caps respectively.
+- add variables const u8 *ecc_strength and u8 num_ecc_strength into struct
+  mtk_ecc_caps, and remove u8 max_ecc_strength.
+- rename variabl u32 temp in function mtk_ecc_probe to u32 max_eccdata_size.
+- remove ECC_CNFG_xBIT define, use a for loop to do ecc hw configuration.
+- remove const u32 *spare_format from struct mtk_nfc_caps, and add variables
+  u8 num_spare_size and u8 pageformat_spare_shift.
+- remove PAGEFMT_SPARE_ define, use a for loop to do nfc hw configuration.
+- sort spare size array before setting spare size.
+- fix coding style issue.
+
+Patch v2:
+---------
+- sperate patches into 3.
+- refine DT bindings documentation about NFC and ECC compatible.
+- use ecc->devdata->encode_parity_reg0 and ecc->devdata->err_mask
+  directly, but hide them in define.
+
+Tests:
+------
+
+* ubifs and jffs2 are validated on NAND device MT29F16G08ADBCA
+  by 'dd' command.
+* all drivers/mtd/tests/* pass.
+* speed test:
+  eraseblock write speed is 8318 KiB/s
+  eraseblock read speed is 11374 KiB/s
+  page write speed is 8155 KiB/s
+  page read speed is 11290 KiB/s
+  2 page write speed is 8217 KiB/s
+  2 page read speed is 11354 KiB/s
+  erase speed is 116472 KiB/s
+  2x multi-block erase speed is 352978 KiB/s
+  4x multi-block erase speed is 359750 KiB/s
+  8x multi-block erase speed is 361484 KiB/s
+  16x multi-block erase speed is 364116 KiB/s
+  32x multi-block erase speed is 364116 KiB/s
+  64x multi-block erase speed is 364116 KiB/s
+
+Xiaolei Li (4):
+  mtd: nand: mediatek: update DT bindings
+  mtd: nand: mediatek: refine register NFI_PAGEFMT setting
+  mtd: nand: mediatek: add support for different MTK NAND FLASH
+    Controller IP
+  mtd: nand: mediatek: add support for MT2712 NAND FLASH Controller
+
+ Documentation/devicetree/bindings/mtd/mtk-nand.txt |   5 +-
+ drivers/mtd/nand/mtk_ecc.c                         | 218 ++++++++++-----------
+ drivers/mtd/nand/mtk_ecc.h                         |   2 +-
+ drivers/mtd/nand/mtk_nand.c                        | 193 ++++++++++--------
+ 4 files changed, 219 insertions(+), 199 deletions(-)
+
+--
+1.9.1
