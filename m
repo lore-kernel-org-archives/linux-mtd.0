@@ -1,22 +1,30 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dAOVc-00036q-Kk
- for linux-mtd@lists.infradead.org; Mon, 15 May 2017 22:30:34 +0000
-Date: Tue, 16 May 2017 00:30:01 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@atmel.com>
-Subject: Re: [PATCH] mtd: nand: tango: Fix incorrect use of SEQIN command
-Message-ID: <20170516003001.636a9cac@bbrezillon>
-In-Reply-To: <1494886224-20393-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1494886224-20393-1-git-send-email-boris.brezillon@free-electrons.com>
+Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dAPNb-0007XS-S3
+ for linux-mtd@lists.infradead.org; Mon, 15 May 2017 23:26:21 +0000
+Received: by mail-pf0-x243.google.com with SMTP id n23so16419089pfb.3
+ for <linux-mtd@lists.infradead.org>; Mon, 15 May 2017 16:25:59 -0700 (PDT)
+Date: Mon, 15 May 2017 16:25:56 -0700
+From: Eric Biggers <ebiggers3@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-fscrypt@vger.kernel.org,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ Eric Biggers <ebiggers@google.com>, Theodore Ts'o <tytso@mit.edu>,
+ Al Viro <viro@zeniv.linux.org.uk>, David Gstir <david@sigma-star.at>,
+ David Oberhollenzer <david.oberhollenzer@sigma-star.at>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: Question on fscrypt_d_revalidate() and fstest generic/429
+Message-ID: <20170515232556.GA46783@gmail.com>
+References: <e2d845a3-a863-1506-a0de-576049c84e81@nod.at>
+ <20170515194553.GA20264@gmail.com>
+ <489e1437-990f-3e88-d426-b47b82441009@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <489e1437-990f-3e88-d426-b47b82441009@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,37 +34,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 16 May 2017 00:10:24 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-
-> SEQIN is supposed to be used one wants to start programming a page.
-
-			      ^ when one ...
-
-> What we want here is just changing the column within the page, which is
-> done with the RNDIN command.
+On Mon, May 15, 2017 at 09:51:03PM +0200, Richard Weinberger wrote:
+> > 
+> > The test is repeatedly creating and removing a directory "dir" while lookups are
+> > being done in it.  It seems the problem is that many dentries are being created
+> > for "dir", and they pin many different inodes, all at the same time.  This
+> > actually happens for ext4 too; it just doesn't cause an observable error.
+> > 
+> > I doubt it's the right solution to make fscrypt_d_revalidate() look at
+> > ->i_nlink, since ->d_revalidate() is meant to validate the filename, not the
+> > inode.  I think there is probably a VFS bug that is causing the dentries to not
+> > be freed.
+> 
+> Not sure. Al? :-)
 > 
 
-Forgot the following tags.
+I can reproduce this on an unencrypted directory after updating path_init() in
+fs/namei.c to always clear LOOKUP_RCU, so that all path lookups are done in
+ref-walk mode.  So I think fscrypt_d_revalidate() was only relevant because it
+causes all path lookups to drop out of rcu-walk mode.
 
-Fixes: 6956e2385a16 ("mtd: nand: add tango NAND flash controller support")
-Cc: state@vger.kernel.org
+It seems that what's happening is the "dir" dentries are not being freed because
+each one has a child dentry "file" that is a negative dentry.  The "file" dentry
+would normally be freed by shrink_dcache_parent() called from vfs_rmdir(), but
+due to a race with stat("dir/file") the "file" dentry sometimes has nonzero
+reference count at that time, causing it to remain in the subdirs list.  So we
+end up with a negative dentry "file" with 0 refcount and on the dentry LRU list,
+and its parent the positive dentry "dir" with 1 refcount.  And the test program
+generates thousands of copies of that, with each "dir" referring to a different
+inode, and they get freed only when the shrinker runs.
 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> ---
->  drivers/mtd/nand/tango_nand.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/tango_nand.c
-> index 05b6e1065203..a2150b15d4c1 100644
-> --- a/drivers/mtd/nand/tango_nand.c
-> +++ b/drivers/mtd/nand/tango_nand.c
-> @@ -332,7 +332,7 @@ static void aux_write(struct nand_chip *chip, const u8 **buf, int len, int *pos)
->  
->  	if (!*buf) {
->  		/* skip over "len" bytes */
-> -		chip->cmdfunc(mtd, NAND_CMD_SEQIN, *pos, -1);
-> +		chip->cmdfunc(mtd, NAND_CMD_RNDIN, *pos, -1);
->  	} else {
->  		tango_write_buf(mtd, *buf, len);
->  		*buf += len;
+I'm not sure how to fix it...
+
+Eric
