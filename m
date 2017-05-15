@@ -1,23 +1,20 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mga06.intel.com ([134.134.136.31])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dAHA3-0000vS-HS
- for linux-mtd@lists.infradead.org; Mon, 15 May 2017 14:39:49 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-fscrypt@vger.kernel.org
-Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- Eric Biggers <ebiggers@google.com>, Theodore Ts'o <tytso@mit.edu>,
- Al Viro <viro@zeniv.linux.org.uk>, David Gstir <david@sigma-star.at>,
- David Oberhollenzer <david.oberhollenzer@sigma-star.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>
-Subject: Question on fscrypt_d_revalidate() and fstest generic/429
-Message-ID: <e2d845a3-a863-1506-a0de-576049c84e81@nod.at>
-Date: Mon, 15 May 2017 16:39:23 +0200
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+ id 1dAHO6-000844-Dl
+ for linux-mtd@lists.infradead.org; Mon, 15 May 2017 14:54:19 +0000
+Message-ID: <1494860034.18055.17.camel@gmail.com>
+Subject: Re: [PATCH] ubifs: Fix inode leak in xattr code
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, adrian.hunter@intel.com,
+ stable@vger.kernel.org
+Date: Mon, 15 May 2017 17:53:54 +0300
+In-Reply-To: <1494858005-18439-1-git-send-email-richard@nod.at>
+References: <1494858005-18439-1-git-send-email-richard@nod.at>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,50 +24,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+On Mon, 2017-05-15 at 16:20 +0200, Richard Weinberger wrote:
+> To solve this problem, set i_nlink for all xattr inodes to 0, such
+> that
+> the iput() in the UBIFS xattr code makes the temporary inode vanish
+> immediately.
 
-on UBIFS, fstest generic/429 fails due to -ENFILE because the internal orphan
-list reaches the maximum size.
-When you unlink a file, the inode goes into the orphan list, in UBIFS' evict() function
-it is being removed later. So, only unlinked but used inodes should stay in that list.
-
-If a directory is encrypted, evict() is not being called although the inode has no
-users anymore.
-It turned out evict() is not being called because fscrypt's fscrypt_d_revalidate()
-function.
-When I omit fscrypt_set_d_op() in UBIFS code, the test works just fine.
-
-Can it be that fscrypt_d_revalidate() misses the case of i_nlink being 0?
-It seem to treat unlinked inodes as already gone and they stay.
-
-The following change makes the problem go away here:
-
-diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-index 6d6eca394d4d..d0c19838e513 100644
---- a/fs/crypto/crypto.c
-+++ b/fs/crypto/crypto.c
-@@ -327,6 +327,7 @@ EXPORT_SYMBOL(fscrypt_decrypt_page);
- static int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags)
- {
-        struct dentry *dir;
-+       struct inode *inode = d_inode(dentry);
-        int dir_has_key, cached_with_key;
-
-        if (flags & LOOKUP_RCU)
-@@ -359,6 +360,10 @@ static int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags)
-                        (!cached_with_key && dir_has_key) ||
-                        (cached_with_key && !dir_has_key))
-                return 0;
-+
-+       if (!inode || inode->i_nlink == 0)
-+               return 0;
-+
-        return 1;
- }
-
-Does this change make sense? TBH, I'm not really an expert in this area and it is also
-not clear to me why you don't see these issue on ext4 or f2fs.
-Maybe UBIFS' limitations kick in much earlier. ;-)
-
-Thanks,
-//richard
+What if there is iget right after iput? With this patch, will we need
+to go all the way to the slow media instead of just getting having the
+inode from the inode cache?
