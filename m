@@ -1,24 +1,28 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dALr9-0008JY-5R
- for linux-mtd@lists.infradead.org; Mon, 15 May 2017 19:40:36 +0000
-Date: Mon, 15 May 2017 21:40:13 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@atmel.com>, Han Xu <han.xu@nxp.com>, Shawn Guo
- <shawnguo@kernel.org>, Sascha Hauer <kernel@pengutronix.de>, Leonard
- Crestez <leonard.crestez@nxp.com>, Masahiro Yamada
- <yamada.masahiro@socionext.com>
-Subject: Re: [PATCH 1/2] mtd: nand: gpmi: Fix gpmi_nand_init() error path
-Message-ID: <20170515214013.580e161a@bbrezillon>
-In-Reply-To: <1491813318-4417-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1491813318-4417-1-git-send-email-boris.brezillon@free-electrons.com>
+Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dALwg-00023L-Af
+ for linux-mtd@lists.infradead.org; Mon, 15 May 2017 19:46:21 +0000
+Received: by mail-pf0-x243.google.com with SMTP id f27so6535304pfe.0
+ for <linux-mtd@lists.infradead.org>; Mon, 15 May 2017 12:45:57 -0700 (PDT)
+Date: Mon, 15 May 2017 12:45:53 -0700
+From: Eric Biggers <ebiggers3@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-fscrypt@vger.kernel.org,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ Eric Biggers <ebiggers@google.com>, Theodore Ts'o <tytso@mit.edu>,
+ Al Viro <viro@zeniv.linux.org.uk>, David Gstir <david@sigma-star.at>,
+ David Oberhollenzer <david.oberhollenzer@sigma-star.at>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: Question on fscrypt_d_revalidate() and fstest generic/429
+Message-ID: <20170515194553.GA20264@gmail.com>
+References: <e2d845a3-a863-1506-a0de-576049c84e81@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e2d845a3-a863-1506-a0de-576049c84e81@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,54 +32,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 10 Apr 2017 10:35:17 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+Hi Richard,
 
-> The GPMI driver is wrongly assuming that nand_release() can safely be
-> called on an uninitialized/unregistered NAND device.
+On Mon, May 15, 2017 at 04:39:23PM +0200, Richard Weinberger wrote:
+> Hi!
 > 
-> Add a new err_nand_cleanup label in the error path and only execute if
-> nand_scan_tail() succeeded.
+> on UBIFS, fstest generic/429 fails due to -ENFILE because the internal orphan
+> list reaches the maximum size.
+> When you unlink a file, the inode goes into the orphan list, in UBIFS' evict() function
+> it is being removed later. So, only unlinked but used inodes should stay in that list.
 > 
-> Note that we now call nand_cleanup() instead of nand_release()
-> (nand_release() is actually grouping the mtd_device_unregister() and
-> nand_cleanup() in one call) because there's no point in trying to
-> unregister a device that has never been registered.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> If a directory is encrypted, evict() is not being called although the inode has no
+> users anymore.
+> It turned out evict() is not being called because fscrypt's fscrypt_d_revalidate()
+> function.
+> When I omit fscrypt_set_d_op() in UBIFS code, the test works just fine.
 
-Applied both to nand/next.
+Well, I assume you mean the t_encrypted_d_revalidate portion of the test.
+generic/429 will still fail overall if you remove fscrypt_set_d_op() --- which
+is expected, since it's testing dentry revalidation after all.
 
-> ---
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> index d52139635b67..92279a0d52f1 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -2048,18 +2048,20 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
->  
->  	ret = nand_boot_init(this);
->  	if (ret)
-> -		goto err_out;
-> +		goto err_nand_cleanup;
->  	ret = chip->scan_bbt(mtd);
->  	if (ret)
-> -		goto err_out;
-> +		goto err_nand_cleanup;
->  
->  	ret = mtd_device_register(mtd, NULL, 0);
->  	if (ret)
-> -		goto err_out;
-> +		goto err_nand_cleanup;
->  	return 0;
->  
-> +err_nand_cleanup:
-> +	nand_cleanup(chip);
->  err_out:
-> -	gpmi_nand_exit(this);
-> +	gpmi_free_dma_buffer(this);
->  	return ret;
+> Can it be that fscrypt_d_revalidate() misses the case of i_nlink being 0?
+> It seem to treat unlinked inodes as already gone and they stay.
+> 
+> The following change makes the problem go away here:
+> 
+> diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
+> index 6d6eca394d4d..d0c19838e513 100644
+> --- a/fs/crypto/crypto.c
+> +++ b/fs/crypto/crypto.c
+> @@ -327,6 +327,7 @@ EXPORT_SYMBOL(fscrypt_decrypt_page);
+>  static int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags)
+>  {
+>         struct dentry *dir;
+> +       struct inode *inode = d_inode(dentry);
+>         int dir_has_key, cached_with_key;
+> 
+>         if (flags & LOOKUP_RCU)
+> @@ -359,6 +360,10 @@ static int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags)
+>                         (!cached_with_key && dir_has_key) ||
+>                         (cached_with_key && !dir_has_key))
+>                 return 0;
+> +
+> +       if (!inode || inode->i_nlink == 0)
+> +               return 0;
+> +
+>         return 1;
 >  }
->  
+> 
+> Does this change make sense? TBH, I'm not really an expert in this area and it is also
+> not clear to me why you don't see these issue on ext4 or f2fs.
+> Maybe UBIFS' limitations kick in much earlier. ;-)
+
+The test is repeatedly creating and removing a directory "dir" while lookups are
+being done in it.  It seems the problem is that many dentries are being created
+for "dir", and they pin many different inodes, all at the same time.  This
+actually happens for ext4 too; it just doesn't cause an observable error.
+
+I doubt it's the right solution to make fscrypt_d_revalidate() look at
+->i_nlink, since ->d_revalidate() is meant to validate the filename, not the
+inode.  I think there is probably a VFS bug that is causing the dentries to not
+be freed.
+
+Eric
