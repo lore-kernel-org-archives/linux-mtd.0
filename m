@@ -1,15 +1,18 @@
-Date: Mon, 15 May 2017 22:47:51 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dAMvi-0003qO-G1
+ for linux-mtd@lists.infradead.org; Mon, 15 May 2017 20:49:24 +0000
+Date: Mon, 15 May 2017 22:48:50 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Andres Galacho <andresgalacho@gmail.com>
-Cc: linux-kernel@vger.kernel.org, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com,
- cyrille.pitchen@wedev4u.fr, marc_gonzalez@sigmadesigns.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] mtd: nand: tango: Export OF device ID table as module
- aliases
-Message-ID: <20170515224751.60d34a50@bbrezillon>
-In-Reply-To: <20170501203015.7275-1-andresgalacho@gmail.com>
-References: <20170501203015.7275-1-andresgalacho@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: <linux-mtd@lists.infradead.org>, Richard Weinberger <richard@nod.at>,
+ Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH] mtd: nand: samsung: warn about un-parseable ECC info
+Message-ID: <20170515224850.215a85a6@bbrezillon>
+In-Reply-To: <20170502000455.13240-6-computersforpeace@gmail.com>
+References: <20170502000455.13240-1-computersforpeace@gmail.com>
+ <20170502000455.13240-6-computersforpeace@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -22,16 +25,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon,  1 May 2017 16:30:15 -0400
-Andres Galacho <andresgalacho@gmail.com> wrote:
+On Mon,  1 May 2017 17:04:55 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
 
-> The device table is required to load modules based on
-> modaliases. After adding MODULE_DEVICE_TABLE, below entries
-> for example will be added to module.alias:
-> alias:          of:N*T*Csigma,smp8758-nandC*
-> alias:          of:N*T*Csigma,smp8758-nand
+> We don't handle cases larger than 7. We probably shouldn't pretend we
+> know the ECC step size in this case, and it's probably also good to
+> WARN() like we do in many other similar cases.
 > 
-> Signed-off-by: Andres Galacho <andresgalacho@gmail.com>
+> Cc: Hans de Goede <hdegoede@redhat.com>
+> Fixes: 8fc82d456e40 ("mtd: nand: samsung: Retrieve ECC requirements from extended ID")
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
 Applied to nand/fixes.
 
@@ -40,18 +43,22 @@ Thanks,
 Boris
 
 > ---
->  drivers/mtd/nand/tango_nand.c | 1 +
->  1 file changed, 1 insertion(+)
+> Compile tested only
 > 
-> diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/tango_nand.c
-> index 05b6e1065203..82fea9b4c358 100644
-> --- a/drivers/mtd/nand/tango_nand.c
-> +++ b/drivers/mtd/nand/tango_nand.c
-> @@ -663,6 +663,7 @@ static const struct of_device_id tango_nand_ids[] = {
->  	{ .compatible = "sigma,smp8758-nand" },
->  	{ /* sentinel */ }
->  };
-> +MODULE_DEVICE_TABLE(of, tango_nand_ids);
->  
->  static struct platform_driver tango_nand_driver = {
->  	.probe	= tango_nand_probe,
+>  drivers/mtd/nand/nand_samsung.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/nand_samsung.c b/drivers/mtd/nand/nand_samsung.c
+> index 9cfc4035a420..1e0755997762 100644
+> --- a/drivers/mtd/nand/nand_samsung.c
+> +++ b/drivers/mtd/nand/nand_samsung.c
+> @@ -84,6 +84,9 @@ static void samsung_nand_decode_id(struct nand_chip *chip)
+>  			case 7:
+>  				chip->ecc_strength_ds = 60;
+>  				break;
+> +			default:
+> +				WARN(1, "Could not decode ECC info");
+> +				chip->ecc_step_ds = 0;
+>  			}
+>  		}
+>  	} else {
