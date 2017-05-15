@@ -1,20 +1,16 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dALl8-0002vt-Gt
- for linux-mtd@lists.infradead.org; Mon, 15 May 2017 19:34:24 +0000
-Date: Mon, 15 May 2017 21:34:00 +0200
+ id 1dALm4-0003Dv-Eq
+ for linux-mtd@lists.infradead.org; Mon, 15 May 2017 19:35:22 +0000
+Date: Mon, 15 May 2017 21:34:59 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, linux-mtd@lists.infradead.org, Harvey Hunt
- <harveyhuntnexus@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@atmel.com>
-Subject: Re: [PATCH] mtd: nand: jz4780: Use mtd_set_ooblayout() to set the
- ooblayout
-Message-ID: <20170515213400.4441fbee@bbrezillon>
-In-Reply-To: <1493720953-8471-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1493720953-8471-1-git-send-email-boris.brezillon@free-electrons.com>
+To: Alexander Couzens <lynxis@fe80.eu>
+Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH] mtd: nand: davinci: set ECC algorithm explicitly for HW
+ based ECC
+Message-ID: <20170515213459.360e7582@bbrezillon>
+In-Reply-To: <20170502094736.9671-1-lynxis@fe80.eu>
+References: <20170502094736.9671-1-lynxis@fe80.eu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,31 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue,  2 May 2017 12:29:13 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+On Tue,  2 May 2017 11:47:36 +0200
+Alexander Couzens <lynxis@fe80.eu> wrote:
 
-> The mtd_set_ooblayout() accesor has been added to hide internals of
-> mtd_info and ease future refactoring. Call mtd_set_ooblayout() instead of
-> directly accessing mtd->ooblayout.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Signed-off-by: Alexander Couzens <lynxis@fe80.eu>
 
-Applied to nand/next.
+Applied to nand/next
 
 > ---
->  drivers/mtd/nand/jz4780_nand.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/mtd/nand/davinci_nand.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> diff --git a/drivers/mtd/nand/jz4780_nand.c b/drivers/mtd/nand/jz4780_nand.c
-> index a39bb70175ee..8bc835f71b26 100644
-> --- a/drivers/mtd/nand/jz4780_nand.c
-> +++ b/drivers/mtd/nand/jz4780_nand.c
-> @@ -205,7 +205,7 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
->  		return -EINVAL;
->  	}
->  
-> -	mtd->ooblayout = &nand_ooblayout_lp_ops;
-> +	mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
->  
->  	return 0;
->  }
+> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+> index 27fa8b87cd5f..f658948ec7e3 100644
+> --- a/drivers/mtd/nand/davinci_nand.c
+> +++ b/drivers/mtd/nand/davinci_nand.c
+> @@ -760,11 +760,14 @@ static int nand_davinci_probe(struct platform_device *pdev)
+>  			info->chip.ecc.hwctl = nand_davinci_hwctl_4bit;
+>  			info->chip.ecc.bytes = 10;
+>  			info->chip.ecc.options = NAND_ECC_GENERIC_ERASED_CHECK;
+> +			info->chip.ecc.algo = NAND_ECC_BCH;
+>  		} else {
+> +			/* 1bit ecc hamming */
+>  			info->chip.ecc.calculate = nand_davinci_calculate_1bit;
+>  			info->chip.ecc.correct = nand_davinci_correct_1bit;
+>  			info->chip.ecc.hwctl = nand_davinci_hwctl_1bit;
+>  			info->chip.ecc.bytes = 3;
+> +			info->chip.ecc.algo = NAND_ECC_HAMMING;
+>  		}
+>  		info->chip.ecc.size = 512;
+>  		info->chip.ecc.strength = pdata->ecc_bits;
