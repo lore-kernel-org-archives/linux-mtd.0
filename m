@@ -1,22 +1,18 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dALFZ-0005jR-8u
- for linux-mtd@lists.infradead.org; Mon, 15 May 2017 19:01:47 +0000
-Date: Mon, 15 May 2017 21:01:23 +0200
+ id 1dALXu-0005WR-LD
+ for linux-mtd@lists.infradead.org; Mon, 15 May 2017 19:20:44 +0000
+Date: Mon, 15 May 2017 21:20:21 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Scott Wood <oss@buserror.net>
-Cc: Prabhakar Kushwaha  <prabhakar.kushwaha@nxp.com>,
- linux-mtd@lists.infradead.org, dedekind1@gmail.com
-Subject: Re: [PATCH] driver: mtd: update struct map_info's swap as per map
- requirement.
-Message-ID: <20170515210123.0a9aaeb1@bbrezillon>
-In-Reply-To: <1494869313.29095.5.camel@buserror.net>
-References: <1493882437-4541-1-git-send-email-prabhakar.kushwaha@nxp.com>
- <20170515104824.2ffb5186@bbrezillon>
- <1494869313.29095.5.camel@buserror.net>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: linux-mtd@lists.infradead.org, richard@nod.at
+Subject: Re: [PATCH v2 0/2] Add NAND driver mach dependency constraint
+Message-ID: <20170515212021.1ed4d0b5@bbrezillon>
+In-Reply-To: <20170502194952.4188-1-ezequiel@vanguardiasur.com.ar>
+References: <20170502194952.4188-1-ezequiel@vanguardiasur.com.ar>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 15 May 2017 12:28:33 -0500
-Scott Wood <oss@buserror.net> wrote:
+On Tue,  2 May 2017 16:49:50 -0300
+Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
 
-> On Mon, 2017-05-15 at 10:48 +0200, Boris Brezillon wrote:
-> >=20
-> > You can even make this property a string property:
-> >=20
-> > 		if (!of_property_read_string(dp->parent,
-> > 					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0"cfi-endianness",
-> > 					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0&endianness)) {
-> > 			if (!strcmp("big", endianness))
-> > 				info->list[i].map.swap =3D CFI_BIG_ENDIAN;
-> > 			else if (!strcmp("little", endianness))
-> > 				info->list[i].map.swap =3D CFI_LITTLE_ENDIAN;
-> > 			else if (!strcmp("host", endianness))
-> > 				info->list[i].map.swap =3D CFI_HOST_ENDIAN;
-> > 		} =20
->=20
-> Boolean endianness properties are the standard elsewhere -- why should CF=
-I be
-> different?
->=20
-> See Documentation/devicetree/bindings/common-properties.txt
+> Just two tiny and silly patches I came across while doing
+> other things and testing with tiny_defconfig.
+> 
+> Changes from v1:
+> 
+>   * Add COMPILE_TEST, suggested by Boris.
 
-Forget this suggestion, I didn't know xxx-endian were standard props. My
-first comment still applies though.
+Applied to nand/next.
+
+Thanks,
+
+Boris
+
+> 
+> Ezequiel Garcia (2):
+>   mtd: nand: Add Hisilicon machine dependency
+>   mtd: nand: Add Mediatek machine dependency
+> 
+>  drivers/mtd/nand/Kconfig | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
