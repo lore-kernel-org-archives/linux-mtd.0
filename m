@@ -1,31 +1,17 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dAkwq-0006Gp-EI
- for linux-mtd@lists.infradead.org; Tue, 16 May 2017 22:28:10 +0000
-Subject: Re: Question on fscrypt_d_revalidate() and fstest generic/429
-To: Eric Biggers <ebiggers3@gmail.com>
-References: <e2d845a3-a863-1506-a0de-576049c84e81@nod.at>
- <20170515194553.GA20264@gmail.com>
- <489e1437-990f-3e88-d426-b47b82441009@nod.at>
- <20170515232556.GA46783@gmail.com>
- <fbf20418-0819-b980-7b68-089e0d1c3d18@nod.at>
- <20170516220709.GB113464@gmail.com>
-Cc: linux-fscrypt@vger.kernel.org,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- Eric Biggers <ebiggers@google.com>, Theodore Ts'o <tytso@mit.edu>,
- Al Viro <viro@zeniv.linux.org.uk>, David Gstir <david@sigma-star.at>,
- David Oberhollenzer <david.oberhollenzer@sigma-star.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <76ca65df-8ffb-97b8-50ca-29f22ecf7c34@nod.at>
-Date: Wed, 17 May 2017 00:27:44 +0200
+Received: from lgeamrelo12.lge.com ([156.147.23.52])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dAmO3-0005Ms-Ax
+ for linux-mtd@lists.infradead.org; Wed, 17 May 2017 00:00:21 +0000
+From: Hyunchul Lee <cheol.lee@lge.com>
+To: Richard Weinberger <richard@nod.at>
+CC: Artem Bityutskiy <dedekind1@gmail.com>, <adrian.hunter@intel.com>,
+ <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>, <kernel-team@lge.com>
+Subject: [PATCH 1/2] ubifs: Fix inode data budget in ubifs_mknod
+Date: Wed, 17 May 2017 08:57:18 +0900
+Message-ID: <1494979038-19361-1-git-send-email-cheol.lee@lge.com>
 MIME-Version: 1.0
-In-Reply-To: <20170516220709.GB113464@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,32 +21,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Eric,
+Assign inode data budget to budget request correctly.
 
-Am 17.05.2017 um 00:07 schrieb Eric Biggers:
->>> I can reproduce this on an unencrypted directory after updating path_init() in
->>> fs/namei.c to always clear LOOKUP_RCU, so that all path lookups are done in
->>> ref-walk mode.  So I think fscrypt_d_revalidate() was only relevant because it
->>> causes all path lookups to drop out of rcu-walk mode.
->>
->> On ext4 or UBIFS?
->
-> Both; the inode "leak" isn't filesystem-specific, beyond the fact that UBIFS
-> apparently limits the number of inodes on its orphan list while ext4 does not.
-> (How do I know it happens on ext4 then?  /proc/slabinfo shows that lots of ext4
-> inodes have been allocated, and after an unclean shutdown and remounting, it's
-> reported that 50,000+ orphan inodes were deleted.)
+Signed-off-by: Hyunchul Lee <cheol.lee@lge.com>
+---
+ fs/ubifs/dir.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-UBIFS's orphan list is limited by the size of a LEB (logical erase block).
-With nandsim's default settings such a LEB is rather small and can store only
-2k orphans.
-
-> There are lots of cases in which path lookups switch from rcu-walk mode into
-> ref-walk mode, so the fact that it was being caused by ->d_revalidate() in this
-> specific situation isn't really important, IMO.
-> 
-> I think the actual fix would be something along the lines of making vfs_rmdir()
-> unhash any negative child dentries, so that they get "killed" by dput() later.
-
-Thanks,
-//richard
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index b777bdd..df67236 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -1050,7 +1050,6 @@ static int ubifs_mknod(struct inode *dir, struct dentry *dentry,
+ 	int sz_change;
+ 	int err, devlen = 0;
+ 	struct ubifs_budget_req req = { .new_ino = 1, .new_dent = 1,
+-					.new_ino_d = ALIGN(devlen, 8),
+ 					.dirtied_ino = 1 };
+ 	struct fscrypt_name nm;
+ 
+@@ -1068,6 +1067,7 @@ static int ubifs_mknod(struct inode *dir, struct dentry *dentry,
+ 		devlen = ubifs_encode_dev(dev, rdev);
+ 	}
+ 
++	req.new_ino_d = ALIGN(devlen, 8);
+ 	err = ubifs_budget_space(c, &req);
+ 	if (err) {
+ 		kfree(dev);
+-- 
+1.9.1
