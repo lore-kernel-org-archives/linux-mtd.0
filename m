@@ -1,7 +1,7 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dAbPy-0001Lg-CZ
+ id 1dAbPy-0001MI-CV
  for linux-mtd@lists.infradead.org; Tue, 16 May 2017 12:17:39 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
@@ -13,11 +13,10 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- Herbert Xu <herbert@gondor.apana.org.au>,
- "David S. Miller" <davem@davemloft.net>, linux-crypto@vger.kernel.org
-Subject: [PATCH v2 13/53] docs-rst: add crypto API book to pdf output
-Date: Tue, 16 May 2017 09:16:05 -0300
-Message-Id: <8db0b75f4262edc7bb5d25137c2780d9c3186288.1494935649.git.mchehab@s-opensource.com>
+ Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org
+Subject: [PATCH v2 22/53] fs: eventfd: fix identation on kernel-doc
+Date: Tue, 16 May 2017 09:16:14 -0300
+Message-Id: <f16df9f76582fc306d62a4518e78f2cf3227707f.1494935649.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
 References: <cover.1494935649.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
@@ -32,44 +31,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The crypto API book was added without the bits required to
-generate PDF output. Add them.
+Sphinx require explicit tags in order to use a list of possible
+values, otherwise it produces this error:
+
+	./fs/eventfd.c:219: WARNING: Option list ends without a blank line; unexpected unindent.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/conf.py        |  2 ++
- Documentation/crypto/conf.py | 10 ++++++++++
- 2 files changed, 12 insertions(+)
- create mode 100644 Documentation/crypto/conf.py
+ fs/eventfd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/conf.py b/Documentation/conf.py
-index 15f34d6863a7..ce62723491d4 100644
---- a/Documentation/conf.py
-+++ b/Documentation/conf.py
-@@ -351,6 +351,8 @@ latex_documents = [
-      'The kernel development community', 'manual'),
-     ('core-api/index', 'core-api.tex', 'The kernel core API manual',
-      'The kernel development community', 'manual'),
-+    ('crypto/index', 'crypto-api.tex', 'Linux Kernel Crypto API manual',
-+     'The kernel development community', 'manual'),
-     ('doc-guide/index', 'kernel-doc-guide.tex', 'Linux Kernel Documentation Guide',
-      'The kernel development community', 'manual'),
-     ('driver-api/index', 'driver-api.tex', 'The kernel driver API manual',
-diff --git a/Documentation/crypto/conf.py b/Documentation/crypto/conf.py
-new file mode 100644
-index 000000000000..4335d251ddf3
---- /dev/null
-+++ b/Documentation/crypto/conf.py
-@@ -0,0 +1,10 @@
-+# -*- coding: utf-8; mode: python -*-
-+
-+project = 'Linux Kernel Crypto API'
-+
-+tags.add("subproject")
-+
-+latex_documents = [
-+    ('index', 'crypto-api.tex', 'Linux Kernel Crypto API manual',
-+     'The kernel development community', 'manual'),
-+]
+diff --git a/fs/eventfd.c b/fs/eventfd.c
+index 68b9fffcb2c8..beac8175de19 100644
+--- a/fs/eventfd.c
++++ b/fs/eventfd.c
+@@ -215,8 +215,8 @@ EXPORT_SYMBOL_GPL(eventfd_ctx_remove_wait_queue);
+  *
+  * Returns %0 if successful, or the following error codes:
+  *
+- * -EAGAIN      : The operation would have blocked but @no_wait was non-zero.
+- * -ERESTARTSYS : A signal interrupted the wait operation.
++ *  - -EAGAIN      : The operation would have blocked but @no_wait was non-zero.
++ *  - -ERESTARTSYS : A signal interrupted the wait operation.
+  *
+  * If @no_wait is zero, the function might sleep until the eventfd internal
+  * counter becomes greater than zero.
 -- 
 2.9.3
