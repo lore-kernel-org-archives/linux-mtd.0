@@ -1,28 +1,28 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dAbtq-0003Tq-Mz
- for linux-mtd@lists.infradead.org; Tue, 16 May 2017 12:48:28 +0000
-From: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-To: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-Cc: Linux Doc Mailing List <linux-doc@vger.kernel.org>, Mauro Carvalho
- Chehab <mchehab@infradead.org>, linux-kernel@vger.kernel.org, Jonathan
- Corbet <corbet@lwn.net>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org, Tejun Heo
- <tj@kernel.org>, Mikael Pettersson <mikpelinux@gmail.com>,
- linux-ide@vger.kernel.org
-Subject: Re: [PATCH v2 45/53] ata: update references for libata documentation
-Date: Tue, 16 May 2017 14:47:51 +0200
-Message-id: <2992478.O7ZHJjDqaE@amdc3058>
-In-reply-to: <19285f3c4669c8b0cea8fb6c452c83db9e6386be.1494935649.git.mchehab@s-opensource.com>
-MIME-version: 1.0
-Content-transfer-encoding: 7Bit
-Content-type: text/plain; charset="us-ascii"
+Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
+ ([52.27.115.49] helo=osg.samsung.com)
+ by merlin.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dAbQn-0002i7-Ks
+ for linux-mtd@lists.infradead.org; Tue, 16 May 2017 12:18:26 +0000
+From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
+ Mauro Carvalho Chehab <mchehab@infradead.org>,
+ linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
+ Jason Wessel <jason.wessel@windriver.com>, Jiri Slaby <jslaby@suse.cz>,
+ Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH v2 49/53] lib: update location of kgdb documentation
+Date: Tue, 16 May 2017 09:16:41 -0300
+Message-Id: <08c76a2f432974de34343a1a323cbeab48321c41.1494935649.git.mchehab@s-opensource.com>
+In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
 References: <cover.1494935649.git.mchehab@s-opensource.com>
- <CGME20170516121724epcas5p40afce73e9edb60110f5a188c6c62d04a@epcas5p4.samsung.com>
- <19285f3c4669c8b0cea8fb6c452c83db9e6386be.1494935649.git.mchehab@s-opensource.com>
+In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
+References: <cover.1494935649.git.mchehab@s-opensource.com>
+Sender: Mauro Carvalho Chehab <mchehab@smtp.s-opensource.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,18 +32,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday, May 16, 2017 09:16:37 AM Mauro Carvalho Chehab wrote:
-> The libata documentation is now using ReST. Update references
-> to it to point to the new place.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+The documentation was moved from DocBook directory.
+Update its location.
 
-For PATA parts:
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ lib/Kconfig.kgdb | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Acked-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-
-Best regards,
---
-Bartlomiej Zolnierkiewicz
-Samsung R&D Institute Poland
-Samsung Electronics
+diff --git a/lib/Kconfig.kgdb b/lib/Kconfig.kgdb
+index 533f912638ed..ab4ff0eea776 100644
+--- a/lib/Kconfig.kgdb
++++ b/lib/Kconfig.kgdb
+@@ -13,7 +13,7 @@ menuconfig KGDB
+ 	  CONFIG_FRAME_POINTER to aid in producing more reliable stack
+ 	  backtraces in the external debugger.  Documentation of
+ 	  kernel debugger is available at http://kgdb.sourceforge.net
+-	  as well as in DocBook form in Documentation/DocBook/.  If
++	  as well as in Documentation/dev-tools/kgdb.rst.  If
+ 	  unsure, say N.
+ 
+ if KGDB
+-- 
+2.9.3
