@@ -1,28 +1,27 @@
-Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
- ([52.27.115.49] helo=osg.samsung.com)
- by merlin.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dAbQd-0002hQ-Ks
- for linux-mtd@lists.infradead.org; Tue, 16 May 2017 12:18:19 +0000
-From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
- Mauro Carvalho Chehab <mchehab@infradead.org>,
- linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- Jason Wessel <jason.wessel@windriver.com>,
- kgdb-bugreport@lists.sourceforge.net
-Subject: [PATCH v2 09/53] kgdb.rst: Adjust ReST markups
-Date: Tue, 16 May 2017 09:16:01 -0300
-Message-Id: <821c6df87761af9a56702f1dec61549ee1cf3109.1494935649.git.mchehab@s-opensource.com>
-In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dAcGt-0000D4-1w
+ for linux-mtd@lists.infradead.org; Tue, 16 May 2017 13:12:22 +0000
+Date: Tue, 16 May 2017 15:11:41 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Cc: Linux Doc Mailing List <linux-doc@vger.kernel.org>, Jonathan Corbet
+ <corbet@lwn.net>, Jani Nikula <jani.nikula@intel.com>, Richard Weinberger
+ <richard@nod.at>, "Herton R. Krzesinski" <herton@redhat.com>,
+ linux-kernel@vger.kernel.org, Mauro Carvalho Chehab
+ <mchehab@infradead.org>, Marek Vasut <marek.vasut@gmail.com>, Markus Heiser
+ <markus.heiser@darmarit.de>, linux-mtd@lists.infradead.org, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH v2 37/53] docs-rst: convert mtdnand book to ReST
+Message-ID: <20170516151141.647f89cc@bbrezillon>
+In-Reply-To: <609f212f6a12e005d2395edd7b4192d2b051ae67.1494935649.git.mchehab@s-opensource.com>
 References: <cover.1494935649.git.mchehab@s-opensource.com>
-In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
-References: <cover.1494935649.git.mchehab@s-opensource.com>
-Sender: Mauro Carvalho Chehab <mchehab@smtp.s-opensource.com>
+ <609f212f6a12e005d2395edd7b4192d2b051ae67.1494935649.git.mchehab@s-opensource.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,927 +31,2371 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The automatic conversion didn't work too well for this file.
-It added weird html blocks inside it, and did some weird
-things for literals. Manually fix it, in order to present
-a nice display at html/pdf outputs.
+On Tue, 16 May 2017 09:16:29 -0300
+Mauro Carvalho Chehab <mchehab@s-opensource.com> wrote:
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
----
- Documentation/dev-tools/kgdb.rst | 489 +++++++++++++++++++--------------------
- 1 file changed, 233 insertions(+), 256 deletions(-)
+> Use pandoc to convert documentation to ReST by calling
+> Documentation/sphinx/tmplcvt script.
+> 
+> The tables were manually adjusted to fit into 80 columns.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 
-diff --git a/Documentation/dev-tools/kgdb.rst b/Documentation/dev-tools/kgdb.rst
-index ea01541806c8..75273203a35a 100644
---- a/Documentation/dev-tools/kgdb.rst
-+++ b/Documentation/dev-tools/kgdb.rst
-@@ -51,28 +51,29 @@ Compiling a kernel
- Kernel config options for kgdb
- ------------------------------
- 
--To enable ``CONFIG_KGDB`` you should look under "Kernel hacking" /
--"Kernel debugging" and select "KGDB: kernel debugger".
-+To enable ``CONFIG_KGDB`` you should look under
-+:menuselection:`Kernel hacking --> Kernel debugging` and select
-+:menuselection:`KGDB: kernel debugger`.
- 
- While it is not a hard requirement that you have symbols in your vmlinux
- file, gdb tends not to be very useful without the symbolic data, so you
--will want to turn on ``CONFIG_DEBUG_INFO`` which is called "Compile the
--kernel with debug info" in the config menu.
-+will want to turn on ``CONFIG_DEBUG_INFO`` which is called
-+:menuselection:`Compile the kernel with debug info` in the config menu.
- 
- It is advised, but not required, that you turn on the
--``CONFIG_FRAME_POINTER`` kernel option which is called "Compile the
--kernel with frame pointers" in the config menu. This option inserts code
-+``CONFIG_FRAME_POINTER`` kernel option which is called :menuselection:`Compile
-+the kernel with frame pointers` in the config menu. This option inserts code
- to into the compiled executable which saves the frame information in
- registers or on the stack at different points which allows a debugger
- such as gdb to more accurately construct stack back traces while
- debugging the kernel.
- 
- If the architecture that you are using supports the kernel option
--CONFIG_STRICT_KERNEL_RWX, you should consider turning it off. This
-+``CONFIG_STRICT_KERNEL_RWX``, you should consider turning it off. This
- option will prevent the use of software breakpoints because it marks
- certain regions of the kernel's memory space as read-only. If kgdb
- supports it for the architecture you are using, you can use hardware
--breakpoints if you desire to run with the CONFIG_STRICT_KERNEL_RWX
-+breakpoints if you desire to run with the ``CONFIG_STRICT_KERNEL_RWX``
- option turned on, else you need to turn off this option.
- 
- Next you should choose one of more I/O drivers to interconnect debugging
-@@ -80,17 +81,14 @@ host and debugged target. Early boot debugging requires a KGDB I/O
- driver that supports early debugging and the driver must be built into
- the kernel directly. Kgdb I/O driver configuration takes place via
- kernel or module parameters which you can learn more about in the in the
--section that describes the parameter "kgdboc".
-+section that describes the parameter kgdboc.
- 
--Here is an example set of .config symbols to enable or disable for kgdb:
-+Here is an example set of ``.config`` symbols to enable or disable for kgdb::
- 
---  # CONFIG_STRICT_KERNEL_RWX is not set
--
---  CONFIG_FRAME_POINTER=y
--
---  CONFIG_KGDB=y
--
---  CONFIG_KGDB_SERIAL_CONSOLE=y
-+  # CONFIG_STRICT_KERNEL_RWX is not set
-+  CONFIG_FRAME_POINTER=y
-+  CONFIG_KGDB=y
-+  CONFIG_KGDB_SERIAL_CONSOLE=y
- 
- Kernel config options for kdb
- -----------------------------
-@@ -99,34 +97,29 @@ Kdb is quite a bit more complex than the simple gdbstub sitting on top
- of the kernel's debug core. Kdb must implement a shell, and also adds
- some helper functions in other parts of the kernel, responsible for
- printing out interesting data such as what you would see if you ran
--"lsmod", or "ps". In order to build kdb into the kernel you follow the
-+``lsmod``, or ``ps``. In order to build kdb into the kernel you follow the
- same steps as you would for kgdb.
- 
- The main config option for kdb is ``CONFIG_KGDB_KDB`` which is called
--"KGDB_KDB: include kdb frontend for kgdb" in the config menu. In theory
--you would have already also selected an I/O driver such as the
--CONFIG_KGDB_SERIAL_CONSOLE interface if you plan on using kdb on a
-+:menuselection:`KGDB_KDB: include kdb frontend for kgdb` in the config menu.
-+In theory you would have already also selected an I/O driver such as the
-+``CONFIG_KGDB_SERIAL_CONSOLE`` interface if you plan on using kdb on a
- serial port, when you were configuring kgdb.
- 
- If you want to use a PS/2-style keyboard with kdb, you would select
--CONFIG_KDB_KEYBOARD which is called "KGDB_KDB: keyboard as input
--device" in the config menu. The CONFIG_KDB_KEYBOARD option is not used
--for anything in the gdb interface to kgdb. The CONFIG_KDB_KEYBOARD
-+``CONFIG_KDB_KEYBOARD`` which is called :menuselection:`KGDB_KDB: keyboard as
-+input device` in the config menu. The ``CONFIG_KDB_KEYBOARD`` option is not
-+used for anything in the gdb interface to kgdb. The ``CONFIG_KDB_KEYBOARD``
- option only works with kdb.
- 
--Here is an example set of .config symbols to enable/disable kdb:
--
---  # CONFIG_STRICT_KERNEL_RWX is not set
--
---  CONFIG_FRAME_POINTER=y
--
---  CONFIG_KGDB=y
--
---  CONFIG_KGDB_SERIAL_CONSOLE=y
--
---  CONFIG_KGDB_KDB=y
--
---  CONFIG_KDB_KEYBOARD=y
-+Here is an example set of ``.config`` symbols to enable/disable kdb::
-+
-+  # CONFIG_STRICT_KERNEL_RWX is not set
-+  CONFIG_FRAME_POINTER=y
-+  CONFIG_KGDB=y
-+  CONFIG_KGDB_SERIAL_CONSOLE=y
-+  CONFIG_KGDB_KDB=y
-+  CONFIG_KDB_KEYBOARD=y
- 
- Kernel Debugger Boot Arguments
- ==============================
-@@ -164,7 +157,9 @@ with kdb while allowing the full graphics console applications to run.
- kgdboc arguments
- ~~~~~~~~~~~~~~~~
- 
--Usage: ``kgdboc=[kms][[,]kbd][[,]serial_device][,baud]``
-+Usage::
-+
-+	kgdboc=[kms][[,]kbd][[,]serial_device][,baud]
- 
- The order listed above must be observed if you use any of the optional
- configurations together.
-@@ -186,11 +181,15 @@ Using loadable module or built-in
- 
- 1. As a kernel built-in:
- 
--   Use the kernel boot argument: ``kgdboc=<tty-device>,[baud]``
-+   Use the kernel boot argument::
-+
-+	kgdboc=<tty-device>,[baud]
- 
- 2. As a kernel loadable module:
- 
--   Use the command: ``modprobe kgdboc kgdboc=<tty-device>,[baud]``
-+   Use the command::
-+
-+	modprobe kgdboc kgdboc=<tty-device>,[baud]
- 
-    Here are two examples of how you might format the kgdboc string. The
-    first is for an x86 target using the first serial port. The second
-@@ -206,16 +205,18 @@ Configure kgdboc at runtime with sysfs
- At run time you can enable or disable kgdboc by echoing a parameters
- into the sysfs. Here are two examples:
- 
--1. Enable kgdboc on ttyS0
-+1. Enable kgdboc on ttyS0::
- 
--   ``echo ttyS0 > /sys/module/kgdboc/parameters/kgdboc``
-+	echo ttyS0 > /sys/module/kgdboc/parameters/kgdboc
- 
--2. Disable kgdboc
-+2. Disable kgdboc::
- 
--   ``echo "" > /sys/module/kgdboc/parameters/kgdboc``
-+	echo "" > /sys/module/kgdboc/parameters/kgdboc
- 
--NOTE: You do not need to specify the baud if you are configuring the
--console on tty which is already configured or open.
-+.. note::
-+
-+   You do not need to specify the baud if you are configuring the
-+   console on tty which is already configured or open.
- 
- More examples
- ^^^^^^^^^^^^^
-@@ -224,35 +225,42 @@ You can configure kgdboc to use the keyboard, and/or a serial device
- depending on if you are using kdb and/or kgdb, in one of the following
- scenarios.
- 
--1. kdb and kgdb over only a serial port
-+1. kdb and kgdb over only a serial port::
- 
--   ``kgdboc=<serial_device>[,baud]``
-+	kgdboc=<serial_device>[,baud]
- 
--   Example: ``kgdboc=ttyS0,115200``
-+   Example::
- 
--2. kdb and kgdb with keyboard and a serial port
-+	kgdboc=ttyS0,115200
- 
--   ``kgdboc=kbd,<serial_device>[,baud]``
-+2. kdb and kgdb with keyboard and a serial port::
- 
--   Example: ``kgdboc=kbd,ttyS0,115200``
-+	kgdboc=kbd,<serial_device>[,baud]
- 
--3. kdb with a keyboard
-+   Example::
- 
--   ``kgdboc=kbd``
-+	kgdboc=kbd,ttyS0,115200
- 
--4. kdb with kernel mode setting
-+3. kdb with a keyboard::
- 
--   ``kgdboc=kms,kbd``
-+	kgdboc=kbd
- 
--5. kdb with kernel mode setting and kgdb over a serial port
-+4. kdb with kernel mode setting::
- 
--   ``kgdboc=kms,kbd,ttyS0,115200``
-+	kgdboc=kms,kbd
- 
--NOTE: Kgdboc does not support interrupting the target via the gdb remote
--protocol. You must manually send a sysrq-g unless you have a proxy that
--splits console output to a terminal program. A console proxy has a
--separate TCP port for the debugger and a separate TCP port for the
--"human" console. The proxy can take care of sending the sysrq-g for you.
-+5. kdb with kernel mode setting and kgdb over a serial port::
-+
-+	kgdboc=kms,kbd,ttyS0,115200
-+
-+.. note::
-+
-+   Kgdboc does not support interrupting the target via the gdb remote
-+   protocol. You must manually send a :kbd:`SysRq-G` unless you have a proxy
-+   that splits console output to a terminal program. A console proxy has a
-+   separate TCP port for the debugger and a separate TCP port for the
-+   "human" console. The proxy can take care of sending the :kbd:`SysRq-G`
-+   for you.
- 
- When using kgdboc with no debugger proxy, you can end up connecting the
- debugger at one of two entry points. If an exception occurs after you
-@@ -260,14 +268,14 @@ have loaded kgdboc, a message should print on the console stating it is
- waiting for the debugger. In this case you disconnect your terminal
- program and then connect the debugger in its place. If you want to
- interrupt the target system and forcibly enter a debug session you have
--to issue a Sysrq sequence and then type the letter ``g``. Then you
-+to issue a :kbd:`Sysrq` sequence and then type the letter :kbd:`g`. Then you
- disconnect the terminal session and connect gdb. Your options if you
--don't like this are to hack gdb to send the sysrq-g for you as well as
-+don't like this are to hack gdb to send the :kbd:`SysRq-G` for you as well as
- on the initial connect, or to use a debugger proxy that allows an
- unmodified gdb to do the debugging.
- 
--Kernel parameter: kgdbwait
----------------------------
-+Kernel parameter: ``kgdbwait``
-+------------------------------
- 
- The Kernel command line option ``kgdbwait`` makes kgdb wait for a
- debugger connection during booting of a kernel. You can only use this
-@@ -281,54 +289,64 @@ The kernel will stop and wait as early as the I/O driver and
- architecture allows when you use this option. If you build the kgdb I/O
- driver as a loadable kernel module kgdbwait will not do anything.
- 
--Kernel parameter: kgdbcon
---------------------------
-+Kernel parameter: ``kgdbcon``
-+-----------------------------
- 
--The kgdbcon feature allows you to see printk() messages inside gdb while
--gdb is connected to the kernel. Kdb does not make use of the kgdbcon
-+The ``kgdbcon`` feature allows you to see :c:func:`printk` messages inside gdb
-+while gdb is connected to the kernel. Kdb does not make use of the kgdbcon
- feature.
- 
- Kgdb supports using the gdb serial protocol to send console messages to
- the debugger when the debugger is connected and running. There are two
- ways to activate this feature.
- 
--1. Activate with the kernel command line option:
-+1. Activate with the kernel command line option::
- 
--   ``kgdbcon``
-+	kgdbcon
- 
--2. Use sysfs before configuring an I/O driver
-+2. Use sysfs before configuring an I/O driver::
- 
--   ``echo 1 > /sys/module/kgdb/parameters/kgdb_use_con``
-+	echo 1 > /sys/module/kgdb/parameters/kgdb_use_con
- 
--   NOTE: If you do this after you configure the kgdb I/O driver, the
-+.. note::
-+
-+   If you do this after you configure the kgdb I/O driver, the
-    setting will not take effect until the next point the I/O is
-    reconfigured.
- 
--IMPORTANT NOTE: You cannot use kgdboc + kgdbcon on a tty that is an
--active system console. An example of incorrect usage is
--``console=ttyS0,115200 kgdboc=ttyS0 kgdbcon``
-+.. important::
-+
-+   You cannot use kgdboc + kgdbcon on a tty that is an
-+   active system console. An example of incorrect usage is::
-+
-+	console=ttyS0,115200 kgdboc=ttyS0 kgdbcon
- 
- It is possible to use this option with kgdboc on a tty that is not a
- system console.
- 
--Run time parameter: kgdbreboot
--------------------------------
-+Run time parameter: ``kgdbreboot``
-+----------------------------------
- 
- The kgdbreboot feature allows you to change how the debugger deals with
- the reboot notification. You have 3 choices for the behavior. The
- default behavior is always set to 0.
- 
--1. echo -1 > /sys/module/debug_core/parameters/kgdbreboot
-+.. tabularcolumns:: |p{0.4cm}|p{11.5cm}|p{5.6cm}|
- 
--   Ignore the reboot notification entirely.
-+.. flat-table::
-+  :widths: 1 10 8
- 
--2. echo 0 > /sys/module/debug_core/parameters/kgdbreboot
-+  * - 1
-+    - ``echo -1 > /sys/module/debug_core/parameters/kgdbreboot``
-+    - Ignore the reboot notification entirely.
- 
--   Send the detach message to any attached debugger client.
-+  * - 2
-+    - ``echo 0 > /sys/module/debug_core/parameters/kgdbreboot``
-+    - Send the detach message to any attached debugger client.
- 
--3. echo 1 > /sys/module/debug_core/parameters/kgdbreboot
--
--   Enter the debugger on reboot notify.
-+  * - 3
-+    - ``echo 1 > /sys/module/debug_core/parameters/kgdbreboot``
-+    - Enter the debugger on reboot notify.
- 
- Using kdb
- =========
-@@ -338,66 +356,56 @@ Quick start for kdb on a serial port
- 
- This is a quick example of how to use kdb.
- 
--1. Configure kgdboc at boot using kernel parameters:
-+1. Configure kgdboc at boot using kernel parameters::
- 
--   -  ``console=ttyS0,115200 kgdboc=ttyS0,115200``
-+	console=ttyS0,115200 kgdboc=ttyS0,115200
- 
-    OR
- 
-    Configure kgdboc after the kernel has booted; assuming you are using
--   a serial port console:
-+   a serial port console::
- 
--   -  ``echo ttyS0 > /sys/module/kgdboc/parameters/kgdboc``
-+	echo ttyS0 > /sys/module/kgdboc/parameters/kgdboc
- 
- 2. Enter the kernel debugger manually or by waiting for an oops or
-    fault. There are several ways you can enter the kernel debugger
--   manually; all involve using the sysrq-g, which means you must have
--   enabled CONFIG_MAGIC_SYSRQ=y in your kernel config.
-+   manually; all involve using the :kbd:`SysRq-G`, which means you must have
-+   enabled ``CONFIG_MAGIC_SysRq=y`` in your kernel config.
- 
--   -  When logged in as root or with a super user session you can run:
-+   -  When logged in as root or with a super user session you can run::
- 
--      ``echo g > /proc/sysrq-trigger``
-+	echo g > /proc/sysrq-trigger
- 
-    -  Example using minicom 2.2
- 
--      Press: ``Control-a``
--
--      Press: ``f``
--
--      Press: ``g``
-+      Press: :kbd:`CTRL-A` :kbd:`f` :kbd:`g`
- 
-    -  When you have telneted to a terminal server that supports sending
-       a remote break
- 
--      Press: ``Control-]``
-+      Press: :kbd:`CTRL-]`
- 
--      Type in:\ ``send break``
-+      Type in: ``send break``
- 
--      Press: ``Enter``
-+      Press: :kbd:`Enter` :kbd:`g`
- 
--      Press: ``g``
--
--3. From the kdb prompt you can run the "help" command to see a complete
-+3. From the kdb prompt you can run the ``help`` command to see a complete
-    list of the commands that are available.
- 
-    Some useful commands in kdb include:
- 
--   -  lsmod -- Shows where kernel modules are loaded
--
--   -  ps -- Displays only the active processes
--
--   -  ps A -- Shows all the processes
--
--   -  summary -- Shows kernel version info and memory usage
--
--   -  bt -- Get a backtrace of the current process using dump_stack()
--
--   -  dmesg -- View the kernel syslog buffer
--
--   -  go -- Continue the system
-+   =========== =================================================================
-+   ``lsmod``   Shows where kernel modules are loaded
-+   ``ps``      Displays only the active processes
-+   ``ps A``    Shows all the processes
-+   ``summary`` Shows kernel version info and memory usage
-+   ``bt``      Get a backtrace of the current process using :c:func:`dump_stack`
-+   ``dmesg``   View the kernel syslog buffer
-+   ``go``      Continue the system
-+   =========== =================================================================
- 
- 4. When you are done using kdb you need to consider rebooting the system
--   or using the "go" command to resuming normal kernel execution. If you
-+   or using the ``go`` command to resuming normal kernel execution. If you
-    have paused the kernel for a lengthy period of time, applications
-    that rely on timely networking or anything to do with real wall clock
-    time could be adversely affected, so you should take this into
-@@ -408,50 +416,50 @@ Quick start for kdb using a keyboard connected console
- 
- This is a quick example of how to use kdb with a keyboard.
- 
--1. Configure kgdboc at boot using kernel parameters:
-+1. Configure kgdboc at boot using kernel parameters::
- 
--   -  ``kgdboc=kbd``
-+	kgdboc=kbd
- 
-    OR
- 
--   Configure kgdboc after the kernel has booted:
-+   Configure kgdboc after the kernel has booted::
- 
--   -  ``echo kbd > /sys/module/kgdboc/parameters/kgdboc``
-+	echo kbd > /sys/module/kgdboc/parameters/kgdboc
- 
- 2. Enter the kernel debugger manually or by waiting for an oops or
-    fault. There are several ways you can enter the kernel debugger
--   manually; all involve using the sysrq-g, which means you must have
--   enabled CONFIG_MAGIC_SYSRQ=y in your kernel config.
-+   manually; all involve using the :kbd:`SysRq-G`, which means you must have
-+   enabled ``CONFIG_MAGIC_SysRq=y`` in your kernel config.
- 
--   -  When logged in as root or with a super user session you can run:
-+   -  When logged in as root or with a super user session you can run::
- 
--      ``echo g > /proc/sysrq-trigger``
-+	echo g > /proc/sysrq-trigger
- 
--   -  Example using a laptop keyboard
-+   -  Example using a laptop keyboard:
- 
--      Press and hold down: ``Alt``
-+      Press and hold down: :kbd:`Alt`
- 
--      Press and hold down: ``Fn``
-+      Press and hold down: :kbd:`Fn`
- 
--      Press and release the key with the label: ``SysRq``
-+      Press and release the key with the label: :kbd:`SysRq`
- 
--      Release: ``Fn``
-+      Release: :kbd:`Fn`
- 
--      Press and release: ``g``
-+      Press and release: :kbd:`g`
- 
--      Release: ``Alt``
-+      Release: :kbd:`Alt`
- 
-    -  Example using a PS/2 101-key keyboard
- 
--      Press and hold down: ``Alt``
-+      Press and hold down: :kbd:`Alt`
- 
--      Press and release the key with the label: ``SysRq``
-+      Press and release the key with the label: :kbd:`SysRq`
- 
--      Press and release: ``g``
-+      Press and release: :kbd:`g`
- 
--      Release: ``Alt``
-+      Release: :kbd:`Alt`
- 
--3. Now type in a kdb command such as "help", "dmesg", "bt" or "go" to
-+3. Now type in a kdb command such as ``help``, ``dmesg``, ``bt`` or ``go`` to
-    continue kernel execution.
- 
- Using kgdb / gdb
-@@ -477,61 +485,51 @@ Connecting with gdb to a serial port
- 
- 1. Configure kgdboc
- 
--   Configure kgdboc at boot using kernel parameters:
-+   Configure kgdboc at boot using kernel parameters::
- 
--   -  ``kgdboc=ttyS0,115200``
-+	kgdboc=ttyS0,115200
- 
-    OR
- 
--   Configure kgdboc after the kernel has booted:
-+   Configure kgdboc after the kernel has booted::
- 
--   -  ``echo ttyS0 > /sys/module/kgdboc/parameters/kgdboc``
-+	echo ttyS0 > /sys/module/kgdboc/parameters/kgdboc
- 
- 2. Stop kernel execution (break into the debugger)
- 
-    In order to connect to gdb via kgdboc, the kernel must first be
-    stopped. There are several ways to stop the kernel which include
--   using kgdbwait as a boot argument, via a sysrq-g, or running the
-+   using kgdbwait as a boot argument, via a :kbd:`SysRq-G`, or running the
-    kernel until it takes an exception where it waits for the debugger to
-    attach.
- 
--   -  When logged in as root or with a super user session you can run:
-+   -  When logged in as root or with a super user session you can run::
- 
--      ``echo g > /proc/sysrq-trigger``
-+	echo g > /proc/sysrq-trigger
- 
-    -  Example using minicom 2.2
- 
--      Press: ``Control-a``
--
--      Press: ``f``
--
--      Press: ``g``
-+      Press: :kbd:`CTRL-A` :kbd:`f` :kbd:`g`
- 
-    -  When you have telneted to a terminal server that supports sending
-       a remote break
- 
--      Press: ``Control-]``
-+      Press: :kbd:`CTRL-]`
- 
--      Type in:\ ``send break``
-+      Type in: ``send break``
- 
--      Press: ``Enter``
--
--      Press: ``g``
-+      Press: :kbd:`Enter` :kbd:`g`
- 
- 3. Connect from gdb
- 
--   Example (using a directly connected port):
--
--   ::
-+   Example (using a directly connected port)::
- 
-            % gdb ./vmlinux
-            (gdb) set remotebaud 115200
-            (gdb) target remote /dev/ttyS0
- 
- 
--   Example (kgdb to a terminal server on TCP port 2012):
--
--   ::
-+   Example (kgdb to a terminal server on TCP port 2012)::
- 
-            % gdb ./vmlinux
-            (gdb) target remote 192.168.2.2:2012
-@@ -543,12 +541,13 @@ Connecting with gdb to a serial port
-    If you are having problems connecting or something is going seriously
-    wrong while debugging, it will most often be the case that you want
-    to enable gdb to be verbose about its target communications. You do
--   this prior to issuing the ``target
--       remote`` command by typing in: ``set debug remote 1``
-+   this prior to issuing the ``target remote`` command by typing in::
-+
-+	set debug remote 1
- 
- Remember if you continue in gdb, and need to "break in" again, you need
--to issue an other sysrq-g. It is easy to create a simple entry point by
--putting a breakpoint at ``sys_sync`` and then you can run "sync" from a
-+to issue an other :kbd:`SysRq-G`. It is easy to create a simple entry point by
-+putting a breakpoint at ``sys_sync`` and then you can run ``sync`` from a
- shell or script to break into the debugger.
- 
- kgdb and kdb interoperability
-@@ -565,22 +564,26 @@ Switching from kgdb to kdb
- ~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
- There are two ways to switch from kgdb to kdb: you can use gdb to issue
--a maintenance packet, or you can blindly type the command $3#33.
-+a maintenance packet, or you can blindly type the command ``$3#33``.
- Whenever the kernel debugger stops in kgdb mode it will print the
- message ``KGDB or $3#33 for KDB``. It is important to note that you have
- to type the sequence correctly in one pass. You cannot type a backspace
- or delete because kgdb will interpret that as part of the debug stream.
- 
--1. Change from kgdb to kdb by blindly typing:
-+1. Change from kgdb to kdb by blindly typing::
- 
--   ``$3#33``
-+	$3#33
- 
--2. Change from kgdb to kdb with gdb
-+2. Change from kgdb to kdb with gdb::
- 
--   ``maintenance packet 3``
-+	maintenance packet 3
- 
--   NOTE: Now you must kill gdb. Typically you press control-z and issue
--   the command: kill -9 %
-+   .. note::
-+
-+     Now you must kill gdb. Typically you press :kbd:`CTRL-Z` and issue
-+     the command::
-+
-+	kill -9 %
- 
- Change from kdb to kgdb
- ~~~~~~~~~~~~~~~~~~~~~~~
-@@ -592,9 +595,9 @@ shell looks for the typical first commands that gdb would issue with the
- gdb remote protocol and if it sees one of those commands it
- automatically changes into kgdb mode.
- 
--1. From kdb issue the command:
-+1. From kdb issue the command::
- 
--   ``kgdb``
-+	kgdb
- 
-    Now disconnect your terminal program and connect gdb in its place
- 
-@@ -613,13 +616,7 @@ are things like lsmod, dmesg, ps or possibly some of the memory
- information commands. To see all the kdb commands you can run
- ``monitor help``.
- 
--Example:
--
--.. raw:: html
--
--   <div class="informalexample">
--
--::
-+Example::
- 
-     (gdb) monitor ps
-     1 idle process (state I) and
-@@ -632,30 +629,25 @@ Example:
-     0xc78789c0      944        1  0    0   S  0xc7878bf4  sh
-     (gdb)
- 
--
--.. raw:: html
--
--   </div>
--
- kgdb Test Suite
- ===============
- 
- When kgdb is enabled in the kernel config you can also elect to enable
--the config parameter KGDB_TESTS. Turning this on will enable a special
-+the config parameter ``KGDB_TESTS``. Turning this on will enable a special
- kgdb I/O module which is designed to test the kgdb internal functions.
- 
- The kgdb tests are mainly intended for developers to test the kgdb
- internals as well as a tool for developing a new kgdb architecture
- specific implementation. These tests are not really for end users of the
- Linux kernel. The primary source of documentation would be to look in
--the drivers/misc/kgdbts.c file.
-+the ``drivers/misc/kgdbts.c`` file.
- 
- The kgdb test suite can also be configured at compile time to run the
- core set of tests by setting the kernel config parameter
--KGDB_TESTS_ON_BOOT. This particular option is aimed at automated
-+``KGDB_TESTS_ON_BOOT``. This particular option is aimed at automated
- regression testing and does not require modifying the kernel boot config
- arguments. If this is turned on, the kgdb test suite can be disabled by
--specifying "kgdbts=" as a kernel boot argument.
-+specifying ``kgdbts=`` as a kernel boot argument.
- 
- Kernel Debugger Internals
- =========================
-@@ -667,7 +659,7 @@ The kernel debugger is organized into a number of components:
- 
- 1. The debug core
- 
--   The debug core is found in kernel/debugger/debug_core.c. It
-+   The debug core is found in ``kernel/debugger/debug_core.c``. It
-    contains:
- 
-    -  A generic OS exception handler which includes sync'ing the
-@@ -688,20 +680,20 @@ The kernel debugger is organized into a number of components:
- 
-    -  The structures and callback API for atomic kernel mode setting.
- 
--      NOTE: kgdboc is where the kms callbacks are invoked.
-+      .. note:: kgdboc is where the kms callbacks are invoked.
- 
- 2. kgdb arch-specific implementation
- 
--   This implementation is generally found in arch/\*/kernel/kgdb.c. As
--   an example, arch/x86/kernel/kgdb.c contains the specifics to
-+   This implementation is generally found in ``arch/*/kernel/kgdb.c``. As
-+   an example, ``arch/x86/kernel/kgdb.c`` contains the specifics to
-    implement HW breakpoint as well as the initialization to dynamically
-    register and unregister for the trap handlers on this architecture.
-    The arch-specific portion implements:
- 
-    -  contains an arch-specific trap catcher which invokes
--      kgdb_handle_exception() to start kgdb about doing its work
-+      :c:func:`kgdb_handle_exception` to start kgdb about doing its work
- 
--   -  translation to and from gdb specific packet format to pt_regs
-+   -  translation to and from gdb specific packet format to :c:type:`pt_regs`
- 
-    -  Registration and unregistration of architecture specific trap
-       hooks
-@@ -714,7 +706,7 @@ The kernel debugger is organized into a number of components:
- 
- 3. gdbstub frontend (aka kgdb)
- 
--   The gdbstub is located in kernel/debug/gdbstub.c. It contains:
-+   The gdbstub is located in ``kernel/debug/gdbstub.c``. It contains:
- 
-    -  All the logic to implement the gdb serial protocol
- 
-@@ -733,18 +725,18 @@ The kernel debugger is organized into a number of components:
- 
-    -  A registration API to register additional kdb shell commands.
- 
--      -  A good example of a self-contained kdb module is the "ftdump"
-+      -  A good example of a self-contained kdb module is the ``ftdump``
-          command for dumping the ftrace buffer. See:
--         kernel/trace/trace_kdb.c
-+         ``kernel/trace/trace_kdb.c``
- 
-       -  For an example of how to dynamically register a new kdb command
-          you can build the kdb_hello.ko kernel module from
--         samples/kdb/kdb_hello.c. To build this example you can set
--         CONFIG_SAMPLES=y and CONFIG_SAMPLE_KDB=m in your kernel
--         config. Later run "modprobe kdb_hello" and the next time you
--         enter the kdb shell, you can run the "hello" command.
-+         ``samples/kdb/kdb_hello.c``. To build this example you can set
-+         ``CONFIG_SAMPLES=y`` and ``CONFIG_SAMPLE_KDB=m`` in your kernel
-+         config. Later run ``modprobe kdb_hello`` and the next time you
-+         enter the kdb shell, you can run the ``hello`` command.
- 
--   -  The implementation for kdb_printf() which emits messages directly
-+   -  The implementation for :c:func:`kdb_printf` which emits messages directly
-       to I/O drivers, bypassing the kernel log.
- 
-    -  SW / HW breakpoint management for the kdb shell
-@@ -780,21 +772,24 @@ architecture, and at that point you must create an architecture specific
- kgdb implementation.
- 
- There are a few flags which must be set on every architecture in their
--<asm/kgdb.h> file. These are:
-+``asm/kgdb.h`` file. These are:
- 
---  NUMREGBYTES: The size in bytes of all of the registers, so that we
--   can ensure they will all fit into a packet.
-+-  ``NUMREGBYTES``:
-+     The size in bytes of all of the registers, so that we
-+     can ensure they will all fit into a packet.
- 
---  BUFMAX: The size in bytes of the buffer GDB will read into. This must
--   be larger than NUMREGBYTES.
-+-  ``BUFMAX``:
-+     The size in bytes of the buffer GDB will read into. This must
-+     be larger than NUMREGBYTES.
- 
---  CACHE_FLUSH_IS_SAFE: Set to 1 if it is always safe to call
--   flush_cache_range or flush_icache_range. On some architectures,
--   these functions may not be safe to call on SMP since we keep other
--   CPUs in a holding pattern.
-+-  ``CACHE_FLUSH_IS_SAFE``:
-+     Set to 1 if it is always safe to call
-+     flush_cache_range or flush_icache_range. On some architectures,
-+     these functions may not be safe to call on SMP since we keep other
-+     CPUs in a holding pattern.
- 
- There are also the following functions for the common backend, found in
--kernel/kgdb.c, that must be supplied by the architecture-specific
-+``kernel/kgdb.c``, that must be supplied by the architecture-specific
- backend unless marked as (optional), in which case a default function
- maybe used if the architecture does not need to provide a specific
- implementation.
-@@ -818,9 +813,9 @@ invokes a callback in the serial core which in turn uses the callback in
- the UART driver.
- 
- When using kgdboc with a UART, the UART driver must implement two
--callbacks in the ``struct uart_ops``. Example from drivers/8250.c:
-+callbacks in the :c:type:`struct uart_ops <uart_ops>`.
-+Example from ``drivers/8250.c``::
- 
--::
- 
-     #ifdef CONFIG_CONSOLE_POLL
-         .poll_get_char = serial8250_get_poll_char,
-@@ -838,46 +833,41 @@ consider, because failing here is most likely going to mean pressing the
- reset button.
- 
- kgdboc and keyboards
--~~~~~~~~~~~~~~~~~~~~
-+~~~~~~~~~~~~~~~~~~~~~~~~
- 
- The kgdboc driver contains logic to configure communications with an
- attached keyboard. The keyboard infrastructure is only compiled into the
--kernel when CONFIG_KDB_KEYBOARD=y is set in the kernel configuration.
-+kernel when ``CONFIG_KDB_KEYBOARD=y`` is set in the kernel configuration.
- 
- The core polled keyboard driver driver for PS/2 type keyboards is in
--drivers/char/kdb_keyboard.c. This driver is hooked into the debug core
-+``drivers/char/kdb_keyboard.c``. This driver is hooked into the debug core
- when kgdboc populates the callback in the array called
--``kdb_poll_funcs[]``. The kdb_get_kbd_char() is the top-level
-+:c:type:`kdb_poll_funcs[]`. The :c:func:`kdb_get_kbd_char` is the top-level
- function which polls hardware for single character input.
- 
- kgdboc and kms
--~~~~~~~~~~~~~~
-+~~~~~~~~~~~~~~~~~~
- 
- The kgdboc driver contains logic to request the graphics display to
--switch to a text context when you are using "kgdboc=kms,kbd", provided
-+switch to a text context when you are using ``kgdboc=kms,kbd``, provided
- that you have a video driver which has a frame buffer console and atomic
- kernel mode setting support.
- 
- Every time the kernel debugger is entered it calls
--kgdboc_pre_exp_handler() which in turn calls con_debug_enter() in
--the virtual console layer. On resuming kernel execution, the kernel
--debugger calls kgdboc_post_exp_handler() which in turn calls
--con_debug_leave().
-+:c:func:`kgdboc_pre_exp_handler` which in turn calls :c:func:`con_debug_enter`
-+in the virtual console layer. On resuming kernel execution, the kernel
-+debugger calls :c:func:`kgdboc_post_exp_handler` which in turn calls
-+:c:func:`con_debug_leave`.
- 
- Any video driver that wants to be compatible with the kernel debugger
--and the atomic kms callbacks must implement the mode_set_base_atomic,
--fb_debug_enter and fb_debug_leave operations. For the
--fb_debug_enter and fb_debug_leave the option exists to use the
-+and the atomic kms callbacks must implement the ``mode_set_base_atomic``,
-+``fb_debug_enter`` and ``fb_debug_leave operations``. For the
-+``fb_debug_enter`` and ``fb_debug_leave`` the option exists to use the
- generic drm fb helper functions or implement something custom for the
- hardware. The following example shows the initialization of the
- .mode_set_base_atomic operation in
--drivers/gpu/drm/i915/intel_display.c:
-+drivers/gpu/drm/i915/intel_display.c::
- 
--.. raw:: html
--
--   <div class="informalexample">
--
--::
- 
-     static const struct drm_crtc_helper_funcs intel_helper_funcs = {
-     [...]
-@@ -886,19 +876,10 @@ drivers/gpu/drm/i915/intel_display.c:
-     };
- 
- 
--.. raw:: html
--
--   </div>
--
- Here is an example of how the i915 driver initializes the
- fb_debug_enter and fb_debug_leave functions to use the generic drm
--helpers in drivers/gpu/drm/i915/intel_fb.c:
-+helpers in ``drivers/gpu/drm/i915/intel_fb.c``::
- 
--.. raw:: html
--
--   <div class="informalexample">
--
--::
- 
-     static struct fb_ops intelfb_ops = {
-     [...]
-@@ -908,23 +889,19 @@ helpers in drivers/gpu/drm/i915/intel_fb.c:
-     };
- 
- 
--.. raw:: html
--
--   </div>
--
- Credits
- =======
- 
- The following people have contributed to this document:
- 
--1. Amit Kale\ amitkale@linsyssoft.com
-+1. Amit Kale <amitkale@linsyssoft.com>
- 
--2. Tom Rini\ trini@kernel.crashing.org
-+2. Tom Rini <trini@kernel.crashing.org>
- 
- In March 2008 this document was completely rewritten by:
- 
---  Jason Wessel\ jason.wessel@windriver.com
-+-  Jason Wessel <jason.wessel@windriver.com>
- 
- In Jan 2010 this document was updated to include kdb.
- 
---  Jason Wessel\ jason.wessel@windriver.com
-+-  Jason Wessel <jason.wessel@windriver.com>
--- 
-2.9.3
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
+> ---
+>  Documentation/DocBook/Makefile       |    1 -
+>  Documentation/DocBook/mtdnand.tmpl   | 1291 ----------------------------------
+>  Documentation/driver-api/index.rst   |    1 +
+>  Documentation/driver-api/mtdnand.rst | 1020 +++++++++++++++++++++++++++
+>  4 files changed, 1021 insertions(+), 1292 deletions(-)
+>  delete mode 100644 Documentation/DocBook/mtdnand.tmpl
+>  create mode 100644 Documentation/driver-api/mtdnand.rst
+> 
+> diff --git a/Documentation/DocBook/Makefile b/Documentation/DocBook/Makefile
+> index 0a82f6253682..226e5e9fc801 100644
+> --- a/Documentation/DocBook/Makefile
+> +++ b/Documentation/DocBook/Makefile
+> @@ -8,7 +8,6 @@
+>  
+>  DOCBOOKS := \
+>  	    lsm.xml \
+> -	    mtdnand.xml \
+>  	    sh.xml
+>  
+>  ifeq ($(DOCBOOKS),)
+> diff --git a/Documentation/DocBook/mtdnand.tmpl b/Documentation/DocBook/mtdnand.tmpl
+> deleted file mode 100644
+> index b442921bca54..000000000000
+> --- a/Documentation/DocBook/mtdnand.tmpl
+> +++ /dev/null
+> @@ -1,1291 +0,0 @@
+> -<?xml version="1.0" encoding="UTF-8"?>
+> -<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+> -	"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" []>
+> -
+> -<book id="MTD-NAND-Guide">
+> - <bookinfo>
+> -  <title>MTD NAND Driver Programming Interface</title>
+> -  
+> -  <authorgroup>
+> -   <author>
+> -    <firstname>Thomas</firstname>
+> -    <surname>Gleixner</surname>
+> -    <affiliation>
+> -     <address>
+> -      <email>tglx@linutronix.de</email>
+> -     </address>
+> -    </affiliation>
+> -   </author>
+> -  </authorgroup>
+> -
+> -  <copyright>
+> -   <year>2004</year>
+> -   <holder>Thomas Gleixner</holder>
+> -  </copyright>
+> -
+> -  <legalnotice>
+> -   <para>
+> -     This documentation is free software; you can redistribute
+> -     it and/or modify it under the terms of the GNU General Public
+> -     License version 2 as published by the Free Software Foundation.
+> -   </para>
+> -      
+> -   <para>
+> -     This program is distributed in the hope that it will be
+> -     useful, but WITHOUT ANY WARRANTY; without even the implied
+> -     warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> -     See the GNU General Public License for more details.
+> -   </para>
+> -      
+> -   <para>
+> -     You should have received a copy of the GNU General Public
+> -     License along with this program; if not, write to the Free
+> -     Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+> -     MA 02111-1307 USA
+> -   </para>
+> -      
+> -   <para>
+> -     For more details see the file COPYING in the source
+> -     distribution of Linux.
+> -   </para>
+> -  </legalnotice>
+> - </bookinfo>
+> -
+> -<toc></toc>
+> -
+> -  <chapter id="intro">
+> -      <title>Introduction</title>
+> -  <para>
+> -  	The generic NAND driver supports almost all NAND and AG-AND based
+> -	chips and connects them to the Memory Technology Devices (MTD)
+> -	subsystem of the Linux Kernel.
+> -  </para>
+> -  <para>
+> -  	This documentation is provided for developers who want to implement
+> -	board drivers or filesystem drivers suitable for NAND devices.
+> -  </para>
+> -  </chapter>
+> -  
+> -  <chapter id="bugs">
+> -     <title>Known Bugs And Assumptions</title>
+> -  <para>
+> -	None.	
+> -  </para>
+> -  </chapter>
+> -
+> -  <chapter id="dochints">
+> -     <title>Documentation hints</title>
+> -     <para>
+> -     The function and structure docs are autogenerated. Each function and 
+> -     struct member has a short description which is marked with an [XXX] identifier.
+> -     The following chapters explain the meaning of those identifiers.
+> -     </para>
+> -     <sect1 id="Function_identifiers_XXX">
+> -	<title>Function identifiers [XXX]</title>
+> -     	<para>
+> -	The functions are marked with [XXX] identifiers in the short
+> -	comment. The identifiers explain the usage and scope of the
+> -	functions. Following identifiers are used:
+> -     	</para>
+> -	<itemizedlist>
+> -		<listitem><para>
+> -	  	[MTD Interface]</para><para>
+> -		These functions provide the interface to the MTD kernel API. 
+> -		They are not replaceable and provide functionality
+> -		which is complete hardware independent.
+> -		</para></listitem>
+> -		<listitem><para>
+> -	  	[NAND Interface]</para><para>
+> -		These functions are exported and provide the interface to the NAND kernel API. 
+> -		</para></listitem>
+> -		<listitem><para>
+> -	  	[GENERIC]</para><para>
+> -		Generic functions are not replaceable and provide functionality
+> -		which is complete hardware independent.
+> -		</para></listitem>
+> -		<listitem><para>
+> -	  	[DEFAULT]</para><para>
+> -		Default functions provide hardware related functionality which is suitable
+> -		for most of the implementations. These functions can be replaced by the
+> -		board driver if necessary. Those functions are called via pointers in the
+> -		NAND chip description structure. The board driver can set the functions which
+> -		should be replaced by board dependent functions before calling nand_scan().
+> -		If the function pointer is NULL on entry to nand_scan() then the pointer
+> -		is set to the default function which is suitable for the detected chip type.
+> -		</para></listitem>
+> -	</itemizedlist>
+> -     </sect1>
+> -     <sect1 id="Struct_member_identifiers_XXX">
+> -	<title>Struct member identifiers [XXX]</title>
+> -     	<para>
+> -	The struct members are marked with [XXX] identifiers in the 
+> -	comment. The identifiers explain the usage and scope of the
+> -	members. Following identifiers are used:
+> -     	</para>
+> -	<itemizedlist>
+> -		<listitem><para>
+> -	  	[INTERN]</para><para>
+> -		These members are for NAND driver internal use only and must not be
+> -		modified. Most of these values are calculated from the chip geometry
+> -		information which is evaluated during nand_scan().
+> -		</para></listitem>
+> -		<listitem><para>
+> -	  	[REPLACEABLE]</para><para>
+> -		Replaceable members hold hardware related functions which can be 
+> -		provided by the board driver. The board driver can set the functions which
+> -		should be replaced by board dependent functions before calling nand_scan().
+> -		If the function pointer is NULL on entry to nand_scan() then the pointer
+> -		is set to the default function which is suitable for the detected chip type.
+> -		</para></listitem>
+> -		<listitem><para>
+> -	  	[BOARDSPECIFIC]</para><para>
+> -		Board specific members hold hardware related information which must
+> -		be provided by the board driver. The board driver must set the function
+> -		pointers and datafields before calling nand_scan().
+> -		</para></listitem>
+> -		<listitem><para>
+> -	  	[OPTIONAL]</para><para>
+> -		Optional members can hold information relevant for the board driver. The
+> -		generic NAND driver code does not use this information.
+> -		</para></listitem>
+> -	</itemizedlist>
+> -     </sect1>
+> -  </chapter>   
+> -
+> -  <chapter id="basicboarddriver">
+> -     	<title>Basic board driver</title>
+> -	<para>
+> -		For most boards it will be sufficient to provide just the
+> -		basic functions and fill out some really board dependent
+> -		members in the nand chip description structure.
+> -	</para>
+> -	<sect1 id="Basic_defines">
+> -		<title>Basic defines</title>
+> -		<para>
+> -			At least you have to provide a nand_chip structure
+> -			and a storage for the ioremap'ed chip address.
+> -			You can allocate the nand_chip structure using
+> -			kmalloc or you can allocate it statically.
+> -			The NAND chip structure embeds an mtd structure
+> -			which will be registered to the MTD subsystem.
+> -			You can extract a pointer to the mtd structure
+> -			from a nand_chip pointer using the nand_to_mtd()
+> -			helper.
+> -		</para>
+> -		<para>
+> -			Kmalloc based example
+> -		</para>
+> -		<programlisting>
+> -static struct mtd_info *board_mtd;
+> -static void __iomem *baseaddr;
+> -		</programlisting>
+> -		<para>
+> -			Static example
+> -		</para>
+> -		<programlisting>
+> -static struct nand_chip board_chip;
+> -static void __iomem *baseaddr;
+> -		</programlisting>
+> -	</sect1>
+> -	<sect1 id="Partition_defines">
+> -		<title>Partition defines</title>
+> -		<para>
+> -			If you want to divide your device into partitions, then
+> -			define a partitioning scheme suitable to your board.
+> -		</para>
+> -		<programlisting>
+> -#define NUM_PARTITIONS 2
+> -static struct mtd_partition partition_info[] = {
+> -	{ .name = "Flash partition 1",
+> -	  .offset =  0,
+> -	  .size =    8 * 1024 * 1024 },
+> -	{ .name = "Flash partition 2",
+> -	  .offset =  MTDPART_OFS_NEXT,
+> -	  .size =    MTDPART_SIZ_FULL },
+> -};
+> -		</programlisting>
+> -	</sect1>
+> -	<sect1 id="Hardware_control_functions">
+> -		<title>Hardware control function</title>
+> -		<para>
+> -			The hardware control function provides access to the 
+> -			control pins of the NAND chip(s). 
+> -			The access can be done by GPIO pins or by address lines.
+> -			If you use address lines, make sure that the timing
+> -			requirements are met.
+> -		</para>
+> -		<para>
+> -			<emphasis>GPIO based example</emphasis>
+> -		</para>
+> -		<programlisting>
+> -static void board_hwcontrol(struct mtd_info *mtd, int cmd)
+> -{
+> -	switch(cmd){
+> -		case NAND_CTL_SETCLE: /* Set CLE pin high */ break;
+> -		case NAND_CTL_CLRCLE: /* Set CLE pin low */ break;
+> -		case NAND_CTL_SETALE: /* Set ALE pin high */ break;
+> -		case NAND_CTL_CLRALE: /* Set ALE pin low */ break;
+> -		case NAND_CTL_SETNCE: /* Set nCE pin low */ break;
+> -		case NAND_CTL_CLRNCE: /* Set nCE pin high */ break;
+> -	}
+> -}
+> -		</programlisting>
+> -		<para>
+> -			<emphasis>Address lines based example.</emphasis> It's assumed that the
+> -			nCE pin is driven by a chip select decoder.
+> -		</para>
+> -		<programlisting>
+> -static void board_hwcontrol(struct mtd_info *mtd, int cmd)
+> -{
+> -	struct nand_chip *this = mtd_to_nand(mtd);
+> -	switch(cmd){
+> -		case NAND_CTL_SETCLE: this->IO_ADDR_W |= CLE_ADRR_BIT;  break;
+> -		case NAND_CTL_CLRCLE: this->IO_ADDR_W &amp;= ~CLE_ADRR_BIT; break;
+> -		case NAND_CTL_SETALE: this->IO_ADDR_W |= ALE_ADRR_BIT;  break;
+> -		case NAND_CTL_CLRALE: this->IO_ADDR_W &amp;= ~ALE_ADRR_BIT; break;
+> -	}
+> -}
+> -		</programlisting>
+> -	</sect1>
+> -	<sect1 id="Device_ready_function">
+> -		<title>Device ready function</title>
+> -		<para>
+> -			If the hardware interface has the ready busy pin of the NAND chip connected to a
+> -			GPIO or other accessible I/O pin, this function is used to read back the state of the
+> -			pin. The function has no arguments and should return 0, if the device is busy (R/B pin 
+> -			is low) and 1, if the device is ready (R/B pin is high).
+> -			If the hardware interface does not give access to the ready busy pin, then
+> -			the function must not be defined and the function pointer this->dev_ready is set to NULL.		
+> -		</para>
+> -	</sect1>
+> -	<sect1 id="Init_function">
+> -		<title>Init function</title>
+> -		<para>
+> -			The init function allocates memory and sets up all the board
+> -			specific parameters and function pointers. When everything
+> -			is set up nand_scan() is called. This function tries to
+> -			detect and identify then chip. If a chip is found all the
+> -			internal data fields are initialized accordingly.
+> -			The structure(s) have to be zeroed out first and then filled with the necessary
+> -			information about the device.
+> -		</para>
+> -		<programlisting>
+> -static int __init board_init (void)
+> -{
+> -	struct nand_chip *this;
+> -	int err = 0;
+> -
+> -	/* Allocate memory for MTD device structure and private data */
+> -	this = kzalloc(sizeof(struct nand_chip), GFP_KERNEL);
+> -	if (!this) {
+> -		printk ("Unable to allocate NAND MTD device structure.\n");
+> -		err = -ENOMEM;
+> -		goto out;
+> -	}
+> -
+> -	board_mtd = nand_to_mtd(this);
+> -
+> -	/* map physical address */
+> -	baseaddr = ioremap(CHIP_PHYSICAL_ADDRESS, 1024);
+> -	if (!baseaddr) {
+> -		printk("Ioremap to access NAND chip failed\n");
+> -		err = -EIO;
+> -		goto out_mtd;
+> -	}
+> -
+> -	/* Set address of NAND IO lines */
+> -	this->IO_ADDR_R = baseaddr;
+> -	this->IO_ADDR_W = baseaddr;
+> -	/* Reference hardware control function */
+> -	this->hwcontrol = board_hwcontrol;
+> -	/* Set command delay time, see datasheet for correct value */
+> -	this->chip_delay = CHIP_DEPENDEND_COMMAND_DELAY;
+> -	/* Assign the device ready function, if available */
+> -	this->dev_ready = board_dev_ready;
+> -	this->eccmode = NAND_ECC_SOFT;
+> -
+> -	/* Scan to find existence of the device */
+> -	if (nand_scan (board_mtd, 1)) {
+> -		err = -ENXIO;
+> -		goto out_ior;
+> -	}
+> -	
+> -	add_mtd_partitions(board_mtd, partition_info, NUM_PARTITIONS);
+> -	goto out;
+> -
+> -out_ior:
+> -	iounmap(baseaddr);
+> -out_mtd:
+> -	kfree (this);
+> -out:
+> -	return err;
+> -}
+> -module_init(board_init);
+> -		</programlisting>
+> -	</sect1>
+> -	<sect1 id="Exit_function">
+> -		<title>Exit function</title>
+> -		<para>
+> -			The exit function is only necessary if the driver is
+> -			compiled as a module. It releases all resources which
+> -			are held by the chip driver and unregisters the partitions
+> -			in the MTD layer.
+> -		</para>
+> -		<programlisting>
+> -#ifdef MODULE
+> -static void __exit board_cleanup (void)
+> -{
+> -	/* Release resources, unregister device */
+> -	nand_release (board_mtd);
+> -
+> -	/* unmap physical address */
+> -	iounmap(baseaddr);
+> -	
+> -	/* Free the MTD device structure */
+> -	kfree (mtd_to_nand(board_mtd));
+> -}
+> -module_exit(board_cleanup);
+> -#endif
+> -		</programlisting>
+> -	</sect1>
+> -  </chapter>
+> -
+> -  <chapter id="boarddriversadvanced">
+> -     	<title>Advanced board driver functions</title>
+> -	<para>
+> -		This chapter describes the advanced functionality of the NAND
+> -		driver. For a list of functions which can be overridden by the board
+> -		driver see the documentation of the nand_chip structure.
+> -	</para>
+> -	<sect1 id="Multiple_chip_control">
+> -		<title>Multiple chip control</title>
+> -		<para>
+> -			The nand driver can control chip arrays. Therefore the
+> -			board driver must provide an own select_chip function. This
+> -			function must (de)select the requested chip.
+> -			The function pointer in the nand_chip structure must
+> -			be set before calling nand_scan(). The maxchip parameter
+> -			of nand_scan() defines the maximum number of chips to
+> -			scan for. Make sure that the select_chip function can
+> -			handle the requested number of chips.
+> -		</para>
+> -		<para>
+> -			The nand driver concatenates the chips to one virtual
+> -			chip and provides this virtual chip to the MTD layer.
+> -		</para>
+> -		<para>
+> -			<emphasis>Note: The driver can only handle linear chip arrays
+> -			of equally sized chips. There is no support for
+> -			parallel arrays which extend the buswidth.</emphasis>
+> -		</para>
+> -		<para>
+> -			<emphasis>GPIO based example</emphasis>
+> -		</para>
+> -		<programlisting>
+> -static void board_select_chip (struct mtd_info *mtd, int chip)
+> -{
+> -	/* Deselect all chips, set all nCE pins high */
+> -	GPIO(BOARD_NAND_NCE) |= 0xff;	
+> -	if (chip >= 0)
+> -		GPIO(BOARD_NAND_NCE) &amp;= ~ (1 &lt;&lt; chip);
+> -}
+> -		</programlisting>
+> -		<para>
+> -			<emphasis>Address lines based example.</emphasis>
+> -			Its assumed that the nCE pins are connected to an
+> -			address decoder.
+> -		</para>
+> -		<programlisting>
+> -static void board_select_chip (struct mtd_info *mtd, int chip)
+> -{
+> -	struct nand_chip *this = mtd_to_nand(mtd);
+> -	
+> -	/* Deselect all chips */
+> -	this->IO_ADDR_R &amp;= ~BOARD_NAND_ADDR_MASK;
+> -	this->IO_ADDR_W &amp;= ~BOARD_NAND_ADDR_MASK;
+> -	switch (chip) {
+> -	case 0:
+> -		this->IO_ADDR_R |= BOARD_NAND_ADDR_CHIP0;
+> -		this->IO_ADDR_W |= BOARD_NAND_ADDR_CHIP0;
+> -		break;
+> -	....	
+> -	case n:
+> -		this->IO_ADDR_R |= BOARD_NAND_ADDR_CHIPn;
+> -		this->IO_ADDR_W |= BOARD_NAND_ADDR_CHIPn;
+> -		break;
+> -	}	
+> -}
+> -		</programlisting>
+> -	</sect1>
+> -	<sect1 id="Hardware_ECC_support">
+> -		<title>Hardware ECC support</title>
+> -		<sect2 id="Functions_and_constants">
+> -			<title>Functions and constants</title>
+> -			<para>
+> -				The nand driver supports three different types of
+> -				hardware ECC.
+> -				<itemizedlist>
+> -				<listitem><para>NAND_ECC_HW3_256</para><para>
+> -				Hardware ECC generator providing 3 bytes ECC per
+> -				256 byte.
+> -				</para>	</listitem>
+> -				<listitem><para>NAND_ECC_HW3_512</para><para>
+> -				Hardware ECC generator providing 3 bytes ECC per
+> -				512 byte.
+> -				</para>	</listitem>
+> -				<listitem><para>NAND_ECC_HW6_512</para><para>
+> -				Hardware ECC generator providing 6 bytes ECC per
+> -				512 byte.
+> -				</para>	</listitem>
+> -				<listitem><para>NAND_ECC_HW8_512</para><para>
+> -				Hardware ECC generator providing 6 bytes ECC per
+> -				512 byte.
+> -				</para>	</listitem>
+> -				</itemizedlist>
+> -				If your hardware generator has a different functionality
+> -				add it at the appropriate place in nand_base.c
+> -			</para>
+> -			<para>
+> -				The board driver must provide following functions:
+> -				<itemizedlist>
+> -				<listitem><para>enable_hwecc</para><para>
+> -				This function is called before reading / writing to
+> -				the chip. Reset or initialize the hardware generator
+> -				in this function. The function is called with an
+> -				argument which let you distinguish between read 
+> -				and write operations.
+> -				</para>	</listitem>
+> -				<listitem><para>calculate_ecc</para><para>
+> -				This function is called after read / write from / to
+> -				the chip. Transfer the ECC from the hardware to
+> -				the buffer. If the option NAND_HWECC_SYNDROME is set
+> -				then the function is only called on write. See below.
+> -				</para>	</listitem>
+> -				<listitem><para>correct_data</para><para>
+> -				In case of an ECC error this function is called for
+> -				error detection and correction. Return 1 respectively 2
+> -				in case the error can be corrected. If the error is
+> -				not correctable return -1. If your hardware generator
+> -				matches the default algorithm of the nand_ecc software
+> -				generator then use the correction function provided
+> -				by nand_ecc instead of implementing duplicated code.
+> -				</para>	</listitem>
+> -				</itemizedlist>
+> -			</para>
+> -		</sect2>
+> -		<sect2 id="Hardware_ECC_with_syndrome_calculation">
+> -		<title>Hardware ECC with syndrome calculation</title>
+> -			<para>
+> -				Many hardware ECC implementations provide Reed-Solomon
+> -				codes and calculate an error syndrome on read. The syndrome
+> -				must be converted to a standard Reed-Solomon syndrome
+> -				before calling the error correction code in the generic
+> -				Reed-Solomon library.
+> -			</para>
+> -			<para>
+> -				The ECC bytes must be placed immediately after the data
+> -				bytes in order to make the syndrome generator work. This
+> -				is contrary to the usual layout used by software ECC. The
+> -				separation of data and out of band area is not longer
+> -				possible. The nand driver code handles this layout and
+> -				the remaining free bytes in the oob area are managed by 
+> -				the autoplacement code. Provide a matching oob-layout
+> -				in this case. See rts_from4.c and diskonchip.c for 
+> -				implementation reference. In those cases we must also
+> -				use bad block tables on FLASH, because the ECC layout is
+> -				interfering with the bad block marker positions.
+> -				See bad block table support for details.
+> -			</para>
+> -		</sect2>
+> -	</sect1>
+> -	<sect1 id="Bad_Block_table_support">
+> -		<title>Bad block table support</title>
+> -		<para>
+> -			Most NAND chips mark the bad blocks at a defined
+> -			position in the spare area. Those blocks must 
+> -			not be erased under any circumstances as the bad 
+> -			block information would be lost.
+> -			It is possible to check the bad block mark each
+> -			time when the blocks are accessed by reading the
+> -			spare area of the first page in the block. This
+> -			is time consuming so a bad block table is used.
+> -		</para>
+> -		<para>
+> -			The nand driver supports various types of bad block
+> -			tables.
+> -			<itemizedlist>
+> -			<listitem><para>Per device</para><para>
+> -			The bad block table contains all bad block information
+> -			of the device which can consist of multiple chips.
+> -			</para>	</listitem>
+> -			<listitem><para>Per chip</para><para>
+> -			A bad block table is used per chip and contains the
+> -			bad block information for this particular chip.
+> -			</para>	</listitem>
+> -			<listitem><para>Fixed offset</para><para>
+> -			The bad block table is located at a fixed offset
+> -			in the chip (device). This applies to various
+> -			DiskOnChip devices.
+> -			</para>	</listitem>
+> -			<listitem><para>Automatic placed</para><para>
+> -			The bad block table is automatically placed and
+> -			detected either at the end or at the beginning
+> -			of a chip (device)
+> -			</para>	</listitem>
+> -			<listitem><para>Mirrored tables</para><para>
+> -			The bad block table is mirrored on the chip (device) to
+> -			allow updates of the bad block table without data loss.
+> -			</para>	</listitem>
+> -			</itemizedlist>
+> -		</para>
+> -		<para>	
+> -			nand_scan() calls the function nand_default_bbt(). 
+> -			nand_default_bbt() selects appropriate default
+> -			bad block table descriptors depending on the chip information
+> -			which was retrieved by nand_scan().
+> -		</para>
+> -		<para>
+> -			The standard policy is scanning the device for bad 
+> -			blocks and build a ram based bad block table which
+> -			allows faster access than always checking the
+> -			bad block information on the flash chip itself.
+> -		</para>
+> -		<sect2 id="Flash_based_tables">
+> -			<title>Flash based tables</title>
+> -			<para>
+> -				It may be desired or necessary to keep a bad block table in FLASH.
+> -				For AG-AND chips this is mandatory, as they have no factory marked
+> -				bad blocks. They have factory marked good blocks. The marker pattern
+> -				is erased when the block is erased to be reused. So in case of
+> -				powerloss before writing the pattern back to the chip this block 
+> -				would be lost and added to the bad blocks. Therefore we scan the 
+> -				chip(s) when we detect them the first time for good blocks and 
+> -				store this information in a bad block table before erasing any 
+> -				of the blocks.
+> -			</para>
+> -			<para>
+> -				The blocks in which the tables are stored are protected against
+> -				accidental access by marking them bad in the memory bad block
+> -				table. The bad block table management functions are allowed
+> -				to circumvent this protection.
+> -			</para>
+> -			<para>
+> -				The simplest way to activate the FLASH based bad block table support 
+> -				is to set the option NAND_BBT_USE_FLASH in the bbt_option field of
+> -				the nand chip structure before calling nand_scan(). For AG-AND
+> -				chips is this done by default.
+> -				This activates the default FLASH based bad block table functionality 
+> -				of the NAND driver. The default bad block table options are
+> -				<itemizedlist>
+> -				<listitem><para>Store bad block table per chip</para></listitem>
+> -				<listitem><para>Use 2 bits per block</para></listitem>
+> -				<listitem><para>Automatic placement at the end of the chip</para></listitem>
+> -				<listitem><para>Use mirrored tables with version numbers</para></listitem>
+> -				<listitem><para>Reserve 4 blocks at the end of the chip</para></listitem>
+> -				</itemizedlist>
+> -			</para>
+> -		</sect2>
+> -		<sect2 id="User_defined_tables">
+> -			<title>User defined tables</title>
+> -			<para>
+> -				User defined tables are created by filling out a 
+> -				nand_bbt_descr structure and storing the pointer in the
+> -				nand_chip structure member bbt_td before calling nand_scan(). 
+> -				If a mirror table is necessary a second structure must be
+> -				created and a pointer to this structure must be stored
+> -				in bbt_md inside the nand_chip structure. If the bbt_md 
+> -				member is set to NULL then only the main table is used
+> -				and no scan for the mirrored table is performed.
+> -			</para>
+> -			<para>
+> -				The most important field in the nand_bbt_descr structure
+> -				is the options field. The options define most of the 
+> -				table properties. Use the predefined constants from
+> -				nand.h to define the options.
+> -				<itemizedlist>
+> -				<listitem><para>Number of bits per block</para>
+> -				<para>The supported number of bits is 1, 2, 4, 8.</para></listitem>
+> -				<listitem><para>Table per chip</para>
+> -				<para>Setting the constant NAND_BBT_PERCHIP selects that
+> -				a bad block table is managed for each chip in a chip array.
+> -				If this option is not set then a per device bad block table
+> -				is used.</para></listitem>
+> -				<listitem><para>Table location is absolute</para>
+> -				<para>Use the option constant NAND_BBT_ABSPAGE and
+> -				define the absolute page number where the bad block
+> -				table starts in the field pages. If you have selected bad block
+> -				tables per chip and you have a multi chip array then the start page
+> -				must be given for each chip in the chip array. Note: there is no scan
+> -				for a table ident pattern performed, so the fields 
+> -				pattern, veroffs, offs, len can be left uninitialized</para></listitem>
+> -				<listitem><para>Table location is automatically detected</para>
+> -				<para>The table can either be located in the first or the last good
+> -				blocks of the chip (device). Set NAND_BBT_LASTBLOCK to place
+> -				the bad block table at the end of the chip (device). The
+> -				bad block tables are marked and identified by a pattern which
+> -				is stored in the spare area of the first page in the block which
+> -				holds the bad block table. Store a pointer to the pattern  
+> -				in the pattern field. Further the length of the pattern has to be 
+> -				stored in len and the offset in the spare area must be given
+> -				in the offs member of the nand_bbt_descr structure. For mirrored
+> -				bad block tables different patterns are mandatory.</para></listitem>
+> -				<listitem><para>Table creation</para>
+> -				<para>Set the option NAND_BBT_CREATE to enable the table creation
+> -				if no table can be found during the scan. Usually this is done only 
+> -				once if a new chip is found. </para></listitem>
+> -				<listitem><para>Table write support</para>
+> -				<para>Set the option NAND_BBT_WRITE to enable the table write support.
+> -				This allows the update of the bad block table(s) in case a block has
+> -				to be marked bad due to wear. The MTD interface function block_markbad
+> -				is calling the update function of the bad block table. If the write
+> -				support is enabled then the table is updated on FLASH.</para>
+> -				<para>
+> -				Note: Write support should only be enabled for mirrored tables with
+> -				version control.
+> -				</para></listitem>
+> -				<listitem><para>Table version control</para>
+> -				<para>Set the option NAND_BBT_VERSION to enable the table version control.
+> -				It's highly recommended to enable this for mirrored tables with write
+> -				support. It makes sure that the risk of losing the bad block
+> -				table information is reduced to the loss of the information about the
+> -				one worn out block which should be marked bad. The version is stored in
+> -				4 consecutive bytes in the spare area of the device. The position of
+> -				the version number is defined by the member veroffs in the bad block table
+> -				descriptor.</para></listitem>
+> -				<listitem><para>Save block contents on write</para>
+> -				<para>
+> -				In case that the block which holds the bad block table does contain
+> -				other useful information, set the option NAND_BBT_SAVECONTENT. When
+> -				the bad block table is written then the whole block is read the bad
+> -				block table is updated and the block is erased and everything is 
+> -				written back. If this option is not set only the bad block table
+> -				is written and everything else in the block is ignored and erased.
+> -				</para></listitem>
+> -				<listitem><para>Number of reserved blocks</para>
+> -				<para>
+> -				For automatic placement some blocks must be reserved for
+> -				bad block table storage. The number of reserved blocks is defined 
+> -				in the maxblocks member of the bad block table description structure.
+> -				Reserving 4 blocks for mirrored tables should be a reasonable number. 
+> -				This also limits the number of blocks which are scanned for the bad
+> -				block table ident pattern.
+> -				</para></listitem>
+> -				</itemizedlist>
+> -			</para>
+> -		</sect2>
+> -	</sect1>
+> -	<sect1 id="Spare_area_placement">
+> -		<title>Spare area (auto)placement</title>
+> -		<para>
+> -			The nand driver implements different possibilities for
+> -			placement of filesystem data in the spare area, 
+> -			<itemizedlist>
+> -			<listitem><para>Placement defined by fs driver</para></listitem>
+> -			<listitem><para>Automatic placement</para></listitem>
+> -			</itemizedlist>
+> -			The default placement function is automatic placement. The
+> -			nand driver has built in default placement schemes for the
+> -			various chiptypes. If due to hardware ECC functionality the
+> -			default placement does not fit then the board driver can
+> -			provide a own placement scheme.
+> -		</para>
+> -		<para>
+> -			File system drivers can provide a own placement scheme which
+> -			is used instead of the default placement scheme.
+> -		</para>
+> -		<para>
+> -			Placement schemes are defined by a nand_oobinfo structure
+> -	     		<programlisting>
+> -struct nand_oobinfo {
+> -	int	useecc;
+> -	int	eccbytes;
+> -	int	eccpos[24];
+> -	int	oobfree[8][2];
+> -};
+> -	     		</programlisting>
+> -			<itemizedlist>
+> -			<listitem><para>useecc</para><para>
+> -				The useecc member controls the ecc and placement function. The header
+> -				file include/mtd/mtd-abi.h contains constants to select ecc and
+> -				placement. MTD_NANDECC_OFF switches off the ecc complete. This is
+> -				not recommended and available for testing and diagnosis only.
+> -				MTD_NANDECC_PLACE selects caller defined placement, MTD_NANDECC_AUTOPLACE
+> -				selects automatic placement.
+> -			</para></listitem>
+> -			<listitem><para>eccbytes</para><para>
+> -				The eccbytes member defines the number of ecc bytes per page.
+> -			</para></listitem>
+> -			<listitem><para>eccpos</para><para>
+> -				The eccpos array holds the byte offsets in the spare area where
+> -				the ecc codes are placed.
+> -			</para></listitem>
+> -			<listitem><para>oobfree</para><para>
+> -				The oobfree array defines the areas in the spare area which can be
+> -				used for automatic placement. The information is given in the format
+> -				{offset, size}. offset defines the start of the usable area, size the
+> -				length in bytes. More than one area can be defined. The list is terminated
+> -				by an {0, 0} entry.
+> -			</para></listitem>
+> -			</itemizedlist>
+> -		</para>
+> -		<sect2 id="Placement_defined_by_fs_driver">
+> -			<title>Placement defined by fs driver</title>
+> -			<para>
+> -				The calling function provides a pointer to a nand_oobinfo
+> -				structure which defines the ecc placement. For writes the
+> -				caller must provide a spare area buffer along with the
+> -				data buffer. The spare area buffer size is (number of pages) *
+> -				(size of spare area). For reads the buffer size is
+> -				(number of pages) * ((size of spare area) + (number of ecc
+> -				steps per page) * sizeof (int)). The driver stores the
+> -				result of the ecc check for each tuple in the spare buffer.
+> -				The storage sequence is 
+> -			</para>
+> -			<para>
+> -				&lt;spare data page 0&gt;&lt;ecc result 0&gt;...&lt;ecc result n&gt;
+> -			</para>
+> -			<para>
+> -				...
+> -			</para>
+> -			<para>
+> -				&lt;spare data page n&gt;&lt;ecc result 0&gt;...&lt;ecc result n&gt;
+> -			</para>
+> -			<para>
+> -				This is a legacy mode used by YAFFS1.
+> -			</para>
+> -			<para>
+> -				If the spare area buffer is NULL then only the ECC placement is
+> -				done according to the given scheme in the nand_oobinfo structure.
+> -			</para>
+> -		</sect2>
+> -		<sect2 id="Automatic_placement">
+> -			<title>Automatic placement</title>
+> -			<para>
+> -				Automatic placement uses the built in defaults to place the
+> -				ecc bytes in the spare area. If filesystem data have to be stored /
+> -				read into the spare area then the calling function must provide a
+> -				buffer. The buffer size per page is determined by the oobfree array in
+> -				the nand_oobinfo structure.
+> -			</para>
+> -			<para>
+> -				If the spare area buffer is NULL then only the ECC placement is
+> -				done according to the default builtin scheme.
+> -			</para>
+> -		</sect2>
+> -	</sect1>	
+> -	<sect1 id="Spare_area_autoplacement_default">
+> -		<title>Spare area autoplacement default schemes</title>
+> -		<sect2 id="pagesize_256">
+> -			<title>256 byte pagesize</title>
+> -<informaltable><tgroup cols="3"><tbody>
+> -<row>
+> -<entry>Offset</entry>
+> -<entry>Content</entry>
+> -<entry>Comment</entry>
+> -</row>
+> -<row>
+> -<entry>0x00</entry>
+> -<entry>ECC byte 0</entry>
+> -<entry>Error correction code byte 0</entry>
+> -</row>
+> -<row>
+> -<entry>0x01</entry>
+> -<entry>ECC byte 1</entry>
+> -<entry>Error correction code byte 1</entry>
+> -</row>
+> -<row>
+> -<entry>0x02</entry>
+> -<entry>ECC byte 2</entry>
+> -<entry>Error correction code byte 2</entry>
+> -</row>
+> -<row>
+> -<entry>0x03</entry>
+> -<entry>Autoplace 0</entry>
+> -<entry></entry>
+> -</row>
+> -<row>
+> -<entry>0x04</entry>
+> -<entry>Autoplace 1</entry>
+> -<entry></entry>
+> -</row>
+> -<row>
+> -<entry>0x05</entry>
+> -<entry>Bad block marker</entry>
+> -<entry>If any bit in this byte is zero, then this block is bad.
+> -This applies only to the first page in a block. In the remaining
+> -pages this byte is reserved</entry>
+> -</row>
+> -<row>
+> -<entry>0x06</entry>
+> -<entry>Autoplace 2</entry>
+> -<entry></entry>
+> -</row>
+> -<row>
+> -<entry>0x07</entry>
+> -<entry>Autoplace 3</entry>
+> -<entry></entry>
+> -</row>
+> -</tbody></tgroup></informaltable>
+> -		</sect2>
+> -		<sect2 id="pagesize_512">
+> -			<title>512 byte pagesize</title>
+> -<informaltable><tgroup cols="3"><tbody>
+> -<row>
+> -<entry>Offset</entry>
+> -<entry>Content</entry>
+> -<entry>Comment</entry>
+> -</row>
+> -<row>
+> -<entry>0x00</entry>
+> -<entry>ECC byte 0</entry>
+> -<entry>Error correction code byte 0 of the lower 256 Byte data in
+> -this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x01</entry>
+> -<entry>ECC byte 1</entry>
+> -<entry>Error correction code byte 1 of the lower 256 Bytes of data
+> -in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x02</entry>
+> -<entry>ECC byte 2</entry>
+> -<entry>Error correction code byte 2 of the lower 256 Bytes of data
+> -in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x03</entry>
+> -<entry>ECC byte 3</entry>
+> -<entry>Error correction code byte 0 of the upper 256 Bytes of data
+> -in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x04</entry>
+> -<entry>reserved</entry>
+> -<entry>reserved</entry>
+> -</row>
+> -<row>
+> -<entry>0x05</entry>
+> -<entry>Bad block marker</entry>
+> -<entry>If any bit in this byte is zero, then this block is bad.
+> -This applies only to the first page in a block. In the remaining
+> -pages this byte is reserved</entry>
+> -</row>
+> -<row>
+> -<entry>0x06</entry>
+> -<entry>ECC byte 4</entry>
+> -<entry>Error correction code byte 1 of the upper 256 Bytes of data
+> -in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x07</entry>
+> -<entry>ECC byte 5</entry>
+> -<entry>Error correction code byte 2 of the upper 256 Bytes of data
+> -in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x08 - 0x0F</entry>
+> -<entry>Autoplace 0 - 7</entry>
+> -<entry></entry>
+> -</row>
+> -</tbody></tgroup></informaltable>
+> -		</sect2>
+> -		<sect2 id="pagesize_2048">
+> -			<title>2048 byte pagesize</title>
+> -<informaltable><tgroup cols="3"><tbody>
+> -<row>
+> -<entry>Offset</entry>
+> -<entry>Content</entry>
+> -<entry>Comment</entry>
+> -</row>
+> -<row>
+> -<entry>0x00</entry>
+> -<entry>Bad block marker</entry>
+> -<entry>If any bit in this byte is zero, then this block is bad.
+> -This applies only to the first page in a block. In the remaining
+> -pages this byte is reserved</entry>
+> -</row>
+> -<row>
+> -<entry>0x01</entry>
+> -<entry>Reserved</entry>
+> -<entry>Reserved</entry>
+> -</row>
+> -<row>
+> -<entry>0x02-0x27</entry>
+> -<entry>Autoplace 0 - 37</entry>
+> -<entry></entry>
+> -</row>
+> -<row>
+> -<entry>0x28</entry>
+> -<entry>ECC byte 0</entry>
+> -<entry>Error correction code byte 0 of the first 256 Byte data in
+> -this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x29</entry>
+> -<entry>ECC byte 1</entry>
+> -<entry>Error correction code byte 1 of the first 256 Bytes of data
+> -in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x2A</entry>
+> -<entry>ECC byte 2</entry>
+> -<entry>Error correction code byte 2 of the first 256 Bytes data in
+> -this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x2B</entry>
+> -<entry>ECC byte 3</entry>
+> -<entry>Error correction code byte 0 of the second 256 Bytes of data
+> -in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x2C</entry>
+> -<entry>ECC byte 4</entry>
+> -<entry>Error correction code byte 1 of the second 256 Bytes of data
+> -in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x2D</entry>
+> -<entry>ECC byte 5</entry>
+> -<entry>Error correction code byte 2 of the second 256 Bytes of data
+> -in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x2E</entry>
+> -<entry>ECC byte 6</entry>
+> -<entry>Error correction code byte 0 of the third 256 Bytes of data
+> -in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x2F</entry>
+> -<entry>ECC byte 7</entry>
+> -<entry>Error correction code byte 1 of the third 256 Bytes of data
+> -in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x30</entry>
+> -<entry>ECC byte 8</entry>
+> -<entry>Error correction code byte 2 of the third 256 Bytes of data
+> -in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x31</entry>
+> -<entry>ECC byte 9</entry>
+> -<entry>Error correction code byte 0 of the fourth 256 Bytes of data
+> -in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x32</entry>
+> -<entry>ECC byte 10</entry>
+> -<entry>Error correction code byte 1 of the fourth 256 Bytes of data
+> -in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x33</entry>
+> -<entry>ECC byte 11</entry>
+> -<entry>Error correction code byte 2 of the fourth 256 Bytes of data
+> -in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x34</entry>
+> -<entry>ECC byte 12</entry>
+> -<entry>Error correction code byte 0 of the fifth 256 Bytes of data
+> -in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x35</entry>
+> -<entry>ECC byte 13</entry>
+> -<entry>Error correction code byte 1 of the fifth 256 Bytes of data
+> -in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x36</entry>
+> -<entry>ECC byte 14</entry>
+> -<entry>Error correction code byte 2 of the fifth 256 Bytes of data
+> -in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x37</entry>
+> -<entry>ECC byte 15</entry>
+> -<entry>Error correction code byte 0 of the sixt 256 Bytes of data
+> -in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x38</entry>
+> -<entry>ECC byte 16</entry>
+> -<entry>Error correction code byte 1 of the sixt 256 Bytes of data
+> -in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x39</entry>
+> -<entry>ECC byte 17</entry>
+> -<entry>Error correction code byte 2 of the sixt 256 Bytes of data
+> -in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x3A</entry>
+> -<entry>ECC byte 18</entry>
+> -<entry>Error correction code byte 0 of the seventh 256 Bytes of
+> -data in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x3B</entry>
+> -<entry>ECC byte 19</entry>
+> -<entry>Error correction code byte 1 of the seventh 256 Bytes of
+> -data in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x3C</entry>
+> -<entry>ECC byte 20</entry>
+> -<entry>Error correction code byte 2 of the seventh 256 Bytes of
+> -data in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x3D</entry>
+> -<entry>ECC byte 21</entry>
+> -<entry>Error correction code byte 0 of the eighth 256 Bytes of data
+> -in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x3E</entry>
+> -<entry>ECC byte 22</entry>
+> -<entry>Error correction code byte 1 of the eighth 256 Bytes of data
+> -in this page</entry>
+> -</row>
+> -<row>
+> -<entry>0x3F</entry>
+> -<entry>ECC byte 23</entry>
+> -<entry>Error correction code byte 2 of the eighth 256 Bytes of data
+> -in this page</entry>
+> -</row>
+> -</tbody></tgroup></informaltable>
+> -		</sect2>
+> -     	</sect1>
+> -  </chapter>
+> -
+> -  <chapter id="filesystems">
+> -     	<title>Filesystem support</title>
+> -	<para>
+> -		The NAND driver provides all necessary functions for a
+> -		filesystem via the MTD interface.
+> -	</para>
+> -	<para>
+> -		Filesystems must be aware of the NAND peculiarities and
+> -		restrictions. One major restrictions of NAND Flash is, that you cannot 
+> -		write as often as you want to a page. The consecutive writes to a page, 
+> -		before erasing it again, are restricted to 1-3 writes, depending on the 
+> -		manufacturers specifications. This applies similar to the spare area. 
+> -	</para>
+> -	<para>
+> -		Therefore NAND aware filesystems must either write in page size chunks
+> -		or hold a writebuffer to collect smaller writes until they sum up to 
+> -		pagesize. Available NAND aware filesystems: JFFS2, YAFFS. 		
+> -	</para>
+> -	<para>
+> -		The spare area usage to store filesystem data is controlled by
+> -		the spare area placement functionality which is described in one
+> -		of the earlier chapters.
+> -	</para>
+> -  </chapter>	
+> -  <chapter id="tools">
+> -     	<title>Tools</title>
+> -	<para>
+> -		The MTD project provides a couple of helpful tools to handle NAND Flash.
+> -		<itemizedlist>
+> -		<listitem><para>flasherase, flasheraseall: Erase and format FLASH partitions</para></listitem>
+> -		<listitem><para>nandwrite: write filesystem images to NAND FLASH</para></listitem>
+> -		<listitem><para>nanddump: dump the contents of a NAND FLASH partitions</para></listitem>
+> -		</itemizedlist>
+> -	</para>
+> -	<para>
+> -		These tools are aware of the NAND restrictions. Please use those tools
+> -		instead of complaining about errors which are caused by non NAND aware
+> -		access methods.
+> -	</para>
+> -  </chapter>	
+> -
+> -  <chapter id="defines">
+> -     <title>Constants</title>
+> -     <para>
+> -     This chapter describes the constants which might be relevant for a driver developer.
+> -     </para>
+> -     <sect1 id="Chip_option_constants">
+> -	<title>Chip option constants</title>
+> -     	<sect2 id="Constants_for_chip_id_table">
+> -		<title>Constants for chip id table</title>
+> -     		<para>
+> -		These constants are defined in nand.h. They are ored together to describe
+> -		the chip functionality.
+> -     		<programlisting>
+> -/* Buswitdh is 16 bit */
+> -#define NAND_BUSWIDTH_16	0x00000002
+> -/* Device supports partial programming without padding */
+> -#define NAND_NO_PADDING		0x00000004
+> -/* Chip has cache program function */
+> -#define NAND_CACHEPRG		0x00000008
+> -/* Chip has copy back function */
+> -#define NAND_COPYBACK		0x00000010
+> -/* AND Chip which has 4 banks and a confusing page / block 
+> - * assignment. See Renesas datasheet for further information */
+> -#define NAND_IS_AND		0x00000020
+> -/* Chip has a array of 4 pages which can be read without
+> - * additional ready /busy waits */
+> -#define NAND_4PAGE_ARRAY	0x00000040 
+> -		</programlisting>
+> -     		</para>
+> -     	</sect2>
+> -     	<sect2 id="Constants_for_runtime_options">
+> -		<title>Constants for runtime options</title>
+> -     		<para>
+> -		These constants are defined in nand.h. They are ored together to describe
+> -		the functionality.
+> -     		<programlisting>
+> -/* The hw ecc generator provides a syndrome instead a ecc value on read 
+> - * This can only work if we have the ecc bytes directly behind the 
+> - * data bytes. Applies for DOC and AG-AND Renesas HW Reed Solomon generators */
+> -#define NAND_HWECC_SYNDROME	0x00020000
+> -		</programlisting>
+> -     		</para>
+> -     	</sect2>
+> -     </sect1>	
+> -
+> -     <sect1 id="EEC_selection_constants">
+> -	<title>ECC selection constants</title>
+> -	<para>
+> -	Use these constants to select the ECC algorithm.
+> -  	<programlisting>
+> -/* No ECC. Usage is not recommended ! */
+> -#define NAND_ECC_NONE		0
+> -/* Software ECC 3 byte ECC per 256 Byte data */
+> -#define NAND_ECC_SOFT		1
+> -/* Hardware ECC 3 byte ECC per 256 Byte data */
+> -#define NAND_ECC_HW3_256	2
+> -/* Hardware ECC 3 byte ECC per 512 Byte data */
+> -#define NAND_ECC_HW3_512	3
+> -/* Hardware ECC 6 byte ECC per 512 Byte data */
+> -#define NAND_ECC_HW6_512	4
+> -/* Hardware ECC 6 byte ECC per 512 Byte data */
+> -#define NAND_ECC_HW8_512	6
+> -	</programlisting>
+> -	</para>
+> -     </sect1>	
+> -
+> -     <sect1 id="Hardware_control_related_constants">
+> -	<title>Hardware control related constants</title>
+> -	<para>
+> -	These constants describe the requested hardware access function when
+> -	the boardspecific hardware control function is called
+> -  	<programlisting>
+> -/* Select the chip by setting nCE to low */
+> -#define NAND_CTL_SETNCE 	1
+> -/* Deselect the chip by setting nCE to high */
+> -#define NAND_CTL_CLRNCE		2
+> -/* Select the command latch by setting CLE to high */
+> -#define NAND_CTL_SETCLE		3
+> -/* Deselect the command latch by setting CLE to low */
+> -#define NAND_CTL_CLRCLE		4
+> -/* Select the address latch by setting ALE to high */
+> -#define NAND_CTL_SETALE		5
+> -/* Deselect the address latch by setting ALE to low */
+> -#define NAND_CTL_CLRALE		6
+> -/* Set write protection by setting WP to high. Not used! */
+> -#define NAND_CTL_SETWP		7
+> -/* Clear write protection by setting WP to low. Not used! */
+> -#define NAND_CTL_CLRWP		8
+> -	</programlisting>
+> -	</para>
+> -     </sect1>	
+> -
+> -     <sect1 id="Bad_block_table_constants">
+> -	<title>Bad block table related constants</title>
+> -	<para>
+> -	These constants describe the options used for bad block
+> -	table descriptors.
+> -  	<programlisting>
+> -/* Options for the bad block table descriptors */
+> -
+> -/* The number of bits used per block in the bbt on the device */
+> -#define NAND_BBT_NRBITS_MSK	0x0000000F
+> -#define NAND_BBT_1BIT		0x00000001
+> -#define NAND_BBT_2BIT		0x00000002
+> -#define NAND_BBT_4BIT		0x00000004
+> -#define NAND_BBT_8BIT		0x00000008
+> -/* The bad block table is in the last good block of the device */
+> -#define	NAND_BBT_LASTBLOCK	0x00000010
+> -/* The bbt is at the given page, else we must scan for the bbt */
+> -#define NAND_BBT_ABSPAGE	0x00000020
+> -/* bbt is stored per chip on multichip devices */
+> -#define NAND_BBT_PERCHIP	0x00000080
+> -/* bbt has a version counter at offset veroffs */
+> -#define NAND_BBT_VERSION	0x00000100
+> -/* Create a bbt if none axists */
+> -#define NAND_BBT_CREATE		0x00000200
+> -/* Write bbt if necessary */
+> -#define NAND_BBT_WRITE		0x00001000
+> -/* Read and write back block contents when writing bbt */
+> -#define NAND_BBT_SAVECONTENT	0x00002000
+> -	</programlisting>
+> -	</para>
+> -     </sect1>	
+> -
+> -  </chapter>
+> -  	
+> -  <chapter id="structs">
+> -     <title>Structures</title>
+> -     <para>
+> -     This chapter contains the autogenerated documentation of the structures which are
+> -     used in the NAND driver and might be relevant for a driver developer. Each  
+> -     struct member has a short description which is marked with an [XXX] identifier.
+> -     See the chapter "Documentation hints" for an explanation.
+> -     </para>
+> -!Iinclude/linux/mtd/nand.h
+> -  </chapter>
+> -
+> -  <chapter id="pubfunctions">
+> -     <title>Public Functions Provided</title>
+> -     <para>
+> -     This chapter contains the autogenerated documentation of the NAND kernel API functions
+> -      which are exported. Each function has a short description which is marked with an [XXX] identifier.
+> -     See the chapter "Documentation hints" for an explanation.
+> -     </para>
+> -!Edrivers/mtd/nand/nand_base.c
+> -!Edrivers/mtd/nand/nand_bbt.c
+> -!Edrivers/mtd/nand/nand_ecc.c
+> -  </chapter>
+> -  
+> -  <chapter id="intfunctions">
+> -     <title>Internal Functions Provided</title>
+> -     <para>
+> -     This chapter contains the autogenerated documentation of the NAND driver internal functions.
+> -     Each function has a short description which is marked with an [XXX] identifier.
+> -     See the chapter "Documentation hints" for an explanation.
+> -     The functions marked with [DEFAULT] might be relevant for a board driver developer.
+> -     </para>
+> -!Idrivers/mtd/nand/nand_base.c
+> -!Idrivers/mtd/nand/nand_bbt.c
+> -<!-- No internal functions for kernel-doc:
+> -X!Idrivers/mtd/nand/nand_ecc.c
+> --->  
+> -  </chapter>
+> -
+> -  <chapter id="credits">
+> -     <title>Credits</title>
+> -	<para>
+> -		The following people have contributed to the NAND driver:
+> -		<orderedlist>
+> -			<listitem><para>Steven J. Hill<email>sjhill@realitydiluted.com</email></para></listitem>
+> -			<listitem><para>David Woodhouse<email>dwmw2@infradead.org</email></para></listitem>
+> -			<listitem><para>Thomas Gleixner<email>tglx@linutronix.de</email></para></listitem>
+> -		</orderedlist>
+> -		A lot of users have provided bugfixes, improvements and helping hands for testing.
+> -		Thanks a lot.
+> -	</para>
+> -	<para>
+> -		The following people have contributed to this document:
+> -		<orderedlist>
+> -			<listitem><para>Thomas Gleixner<email>tglx@linutronix.de</email></para></listitem>
+> -		</orderedlist>
+> -	</para>
+> -  </chapter>
+> -</book>
+> diff --git a/Documentation/driver-api/index.rst b/Documentation/driver-api/index.rst
+> index 1f8517db39c7..3cf1acebc4ee 100644
+> --- a/Documentation/driver-api/index.rst
+> +++ b/Documentation/driver-api/index.rst
+> @@ -34,6 +34,7 @@ available subsections can be seen below.
+>     edac
+>     scsi
+>     libata
+> +   mtdnand
+>     miscellaneous
+>     w1
+>     rapidio
+> diff --git a/Documentation/driver-api/mtdnand.rst b/Documentation/driver-api/mtdnand.rst
+> new file mode 100644
+> index 000000000000..8723175f955e
+> --- /dev/null
+> +++ b/Documentation/driver-api/mtdnand.rst
+> @@ -0,0 +1,1020 @@
+> +=====================================
+> +MTD NAND Driver Programming Interface
+> +=====================================
+> +
+> +:Author: Thomas Gleixner
+> +
+> +Introduction
+> +============
+> +
+> +The generic NAND driver supports almost all NAND and AG-AND based chips
+> +and connects them to the Memory Technology Devices (MTD) subsystem of
+> +the Linux Kernel.
+> +
+> +This documentation is provided for developers who want to implement
+> +board drivers or filesystem drivers suitable for NAND devices.
+> +
+> +Known Bugs And Assumptions
+> +==========================
+> +
+> +None.
+> +
+> +Documentation hints
+> +===================
+> +
+> +The function and structure docs are autogenerated. Each function and
+> +struct member has a short description which is marked with an [XXX]
+> +identifier. The following chapters explain the meaning of those
+> +identifiers.
+> +
+> +Function identifiers [XXX]
+> +--------------------------
+> +
+> +The functions are marked with [XXX] identifiers in the short comment.
+> +The identifiers explain the usage and scope of the functions. Following
+> +identifiers are used:
+> +
+> +-  [MTD Interface]
+> +
+> +   These functions provide the interface to the MTD kernel API. They are
+> +   not replaceable and provide functionality which is complete hardware
+> +   independent.
+> +
+> +-  [NAND Interface]
+> +
+> +   These functions are exported and provide the interface to the NAND
+> +   kernel API.
+> +
+> +-  [GENERIC]
+> +
+> +   Generic functions are not replaceable and provide functionality which
+> +   is complete hardware independent.
+> +
+> +-  [DEFAULT]
+> +
+> +   Default functions provide hardware related functionality which is
+> +   suitable for most of the implementations. These functions can be
+> +   replaced by the board driver if necessary. Those functions are called
+> +   via pointers in the NAND chip description structure. The board driver
+> +   can set the functions which should be replaced by board dependent
+> +   functions before calling nand_scan(). If the function pointer is
+> +   NULL on entry to nand_scan() then the pointer is set to the default
+> +   function which is suitable for the detected chip type.
+> +
+> +Struct member identifiers [XXX]
+> +-------------------------------
+> +
+> +The struct members are marked with [XXX] identifiers in the comment. The
+> +identifiers explain the usage and scope of the members. Following
+> +identifiers are used:
+> +
+> +-  [INTERN]
+> +
+> +   These members are for NAND driver internal use only and must not be
+> +   modified. Most of these values are calculated from the chip geometry
+> +   information which is evaluated during nand_scan().
+> +
+> +-  [REPLACEABLE]
+> +
+> +   Replaceable members hold hardware related functions which can be
+> +   provided by the board driver. The board driver can set the functions
+> +   which should be replaced by board dependent functions before calling
+> +   nand_scan(). If the function pointer is NULL on entry to
+> +   nand_scan() then the pointer is set to the default function which is
+> +   suitable for the detected chip type.
+> +
+> +-  [BOARDSPECIFIC]
+> +
+> +   Board specific members hold hardware related information which must
+> +   be provided by the board driver. The board driver must set the
+> +   function pointers and datafields before calling nand_scan().
+> +
+> +-  [OPTIONAL]
+> +
+> +   Optional members can hold information relevant for the board driver.
+> +   The generic NAND driver code does not use this information.
+> +
+> +Basic board driver
+> +==================
+> +
+> +For most boards it will be sufficient to provide just the basic
+> +functions and fill out some really board dependent members in the nand
+> +chip description structure.
+> +
+> +Basic defines
+> +-------------
+> +
+> +At least you have to provide a nand_chip structure and a storage for
+> +the ioremap'ed chip address. You can allocate the nand_chip structure
+> +using kmalloc or you can allocate it statically. The NAND chip structure
+> +embeds an mtd structure which will be registered to the MTD subsystem.
+> +You can extract a pointer to the mtd structure from a nand_chip pointer
+> +using the nand_to_mtd() helper.
+> +
+> +Kmalloc based example
+> +
+> +::
+> +
+> +    static struct mtd_info *board_mtd;
+> +    static void __iomem *baseaddr;
+> +
+> +
+> +Static example
+> +
+> +::
+> +
+> +    static struct nand_chip board_chip;
+> +    static void __iomem *baseaddr;
+> +
+> +
+> +Partition defines
+> +-----------------
+> +
+> +If you want to divide your device into partitions, then define a
+> +partitioning scheme suitable to your board.
+> +
+> +::
+> +
+> +    #define NUM_PARTITIONS 2
+> +    static struct mtd_partition partition_info[] = {
+> +        { .name = "Flash partition 1",
+> +          .offset =  0,
+> +          .size =    8 * 1024 * 1024 },
+> +        { .name = "Flash partition 2",
+> +          .offset =  MTDPART_OFS_NEXT,
+> +          .size =    MTDPART_SIZ_FULL },
+> +    };
+> +
+> +
+> +Hardware control function
+> +-------------------------
+> +
+> +The hardware control function provides access to the control pins of the
+> +NAND chip(s). The access can be done by GPIO pins or by address lines.
+> +If you use address lines, make sure that the timing requirements are
+> +met.
+> +
+> +*GPIO based example*
+> +
+> +::
+> +
+> +    static void board_hwcontrol(struct mtd_info *mtd, int cmd)
+> +    {
+> +        switch(cmd){
+> +            case NAND_CTL_SETCLE: /* Set CLE pin high */ break;
+> +            case NAND_CTL_CLRCLE: /* Set CLE pin low */ break;
+> +            case NAND_CTL_SETALE: /* Set ALE pin high */ break;
+> +            case NAND_CTL_CLRALE: /* Set ALE pin low */ break;
+> +            case NAND_CTL_SETNCE: /* Set nCE pin low */ break;
+> +            case NAND_CTL_CLRNCE: /* Set nCE pin high */ break;
+> +        }
+> +    }
+> +
+> +
+> +*Address lines based example.* It's assumed that the nCE pin is driven
+> +by a chip select decoder.
+> +
+> +::
+> +
+> +    static void board_hwcontrol(struct mtd_info *mtd, int cmd)
+> +    {
+> +        struct nand_chip *this = mtd_to_nand(mtd);
+> +        switch(cmd){
+> +            case NAND_CTL_SETCLE: this->IO_ADDR_W |= CLE_ADRR_BIT;  break;
+> +            case NAND_CTL_CLRCLE: this->IO_ADDR_W &= ~CLE_ADRR_BIT; break;
+> +            case NAND_CTL_SETALE: this->IO_ADDR_W |= ALE_ADRR_BIT;  break;
+> +            case NAND_CTL_CLRALE: this->IO_ADDR_W &= ~ALE_ADRR_BIT; break;
+> +        }
+> +    }
+> +
+> +
+> +Device ready function
+> +---------------------
+> +
+> +If the hardware interface has the ready busy pin of the NAND chip
+> +connected to a GPIO or other accessible I/O pin, this function is used
+> +to read back the state of the pin. The function has no arguments and
+> +should return 0, if the device is busy (R/B pin is low) and 1, if the
+> +device is ready (R/B pin is high). If the hardware interface does not
+> +give access to the ready busy pin, then the function must not be defined
+> +and the function pointer this->dev_ready is set to NULL.
+> +
+> +Init function
+> +-------------
+> +
+> +The init function allocates memory and sets up all the board specific
+> +parameters and function pointers. When everything is set up nand_scan()
+> +is called. This function tries to detect and identify then chip. If a
+> +chip is found all the internal data fields are initialized accordingly.
+> +The structure(s) have to be zeroed out first and then filled with the
+> +necessary information about the device.
+> +
+> +::
+> +
+> +    static int __init board_init (void)
+> +    {
+> +        struct nand_chip *this;
+> +        int err = 0;
+> +
+> +        /* Allocate memory for MTD device structure and private data */
+> +        this = kzalloc(sizeof(struct nand_chip), GFP_KERNEL);
+> +        if (!this) {
+> +            printk ("Unable to allocate NAND MTD device structure.\n");
+> +            err = -ENOMEM;
+> +            goto out;
+> +        }
+> +
+> +        board_mtd = nand_to_mtd(this);
+> +
+> +        /* map physical address */
+> +        baseaddr = ioremap(CHIP_PHYSICAL_ADDRESS, 1024);
+> +        if (!baseaddr) {
+> +            printk("Ioremap to access NAND chip failed\n");
+> +            err = -EIO;
+> +            goto out_mtd;
+> +        }
+> +
+> +        /* Set address of NAND IO lines */
+> +        this->IO_ADDR_R = baseaddr;
+> +        this->IO_ADDR_W = baseaddr;
+> +        /* Reference hardware control function */
+> +        this->hwcontrol = board_hwcontrol;
+> +        /* Set command delay time, see datasheet for correct value */
+> +        this->chip_delay = CHIP_DEPENDEND_COMMAND_DELAY;
+> +        /* Assign the device ready function, if available */
+> +        this->dev_ready = board_dev_ready;
+> +        this->eccmode = NAND_ECC_SOFT;
+> +
+> +        /* Scan to find existence of the device */
+> +        if (nand_scan (board_mtd, 1)) {
+> +            err = -ENXIO;
+> +            goto out_ior;
+> +        }
+> +
+> +        add_mtd_partitions(board_mtd, partition_info, NUM_PARTITIONS);
+> +        goto out;
+> +
+> +    out_ior:
+> +        iounmap(baseaddr);
+> +    out_mtd:
+> +        kfree (this);
+> +    out:
+> +        return err;
+> +    }
+> +    module_init(board_init);
+> +
+> +
+> +Exit function
+> +-------------
+> +
+> +The exit function is only necessary if the driver is compiled as a
+> +module. It releases all resources which are held by the chip driver and
+> +unregisters the partitions in the MTD layer.
+> +
+> +::
+> +
+> +    #ifdef MODULE
+> +    static void __exit board_cleanup (void)
+> +    {
+> +        /* Release resources, unregister device */
+> +        nand_release (board_mtd);
+> +
+> +        /* unmap physical address */
+> +        iounmap(baseaddr);
+> +
+> +        /* Free the MTD device structure */
+> +        kfree (mtd_to_nand(board_mtd));
+> +    }
+> +    module_exit(board_cleanup);
+> +    #endif
+> +
+> +
+> +Advanced board driver functions
+> +===============================
+> +
+> +This chapter describes the advanced functionality of the NAND driver.
+> +For a list of functions which can be overridden by the board driver see
+> +the documentation of the nand_chip structure.
+> +
+> +Multiple chip control
+> +---------------------
+> +
+> +The nand driver can control chip arrays. Therefore the board driver must
+> +provide an own select_chip function. This function must (de)select the
+> +requested chip. The function pointer in the nand_chip structure must be
+> +set before calling nand_scan(). The maxchip parameter of nand_scan()
+> +defines the maximum number of chips to scan for. Make sure that the
+> +select_chip function can handle the requested number of chips.
+> +
+> +The nand driver concatenates the chips to one virtual chip and provides
+> +this virtual chip to the MTD layer.
+> +
+> +*Note: The driver can only handle linear chip arrays of equally sized
+> +chips. There is no support for parallel arrays which extend the
+> +buswidth.*
+> +
+> +*GPIO based example*
+> +
+> +::
+> +
+> +    static void board_select_chip (struct mtd_info *mtd, int chip)
+> +    {
+> +        /* Deselect all chips, set all nCE pins high */
+> +        GPIO(BOARD_NAND_NCE) |= 0xff;
+> +        if (chip >= 0)
+> +            GPIO(BOARD_NAND_NCE) &= ~ (1 << chip);
+> +    }
+> +
+> +
+> +*Address lines based example.* Its assumed that the nCE pins are
+> +connected to an address decoder.
+> +
+> +::
+> +
+> +    static void board_select_chip (struct mtd_info *mtd, int chip)
+> +    {
+> +        struct nand_chip *this = mtd_to_nand(mtd);
+> +
+> +        /* Deselect all chips */
+> +        this->IO_ADDR_R &= ~BOARD_NAND_ADDR_MASK;
+> +        this->IO_ADDR_W &= ~BOARD_NAND_ADDR_MASK;
+> +        switch (chip) {
+> +        case 0:
+> +            this->IO_ADDR_R |= BOARD_NAND_ADDR_CHIP0;
+> +            this->IO_ADDR_W |= BOARD_NAND_ADDR_CHIP0;
+> +            break;
+> +        ....
+> +        case n:
+> +            this->IO_ADDR_R |= BOARD_NAND_ADDR_CHIPn;
+> +            this->IO_ADDR_W |= BOARD_NAND_ADDR_CHIPn;
+> +            break;
+> +        }
+> +    }
+> +
+> +
+> +Hardware ECC support
+> +--------------------
+> +
+> +Functions and constants
+> +~~~~~~~~~~~~~~~~~~~~~~~
+> +
+> +The nand driver supports three different types of hardware ECC.
+> +
+> +-  NAND_ECC_HW3_256
+> +
+> +   Hardware ECC generator providing 3 bytes ECC per 256 byte.
+> +
+> +-  NAND_ECC_HW3_512
+> +
+> +   Hardware ECC generator providing 3 bytes ECC per 512 byte.
+> +
+> +-  NAND_ECC_HW6_512
+> +
+> +   Hardware ECC generator providing 6 bytes ECC per 512 byte.
+> +
+> +-  NAND_ECC_HW8_512
+> +
+> +   Hardware ECC generator providing 6 bytes ECC per 512 byte.
+> +
+> +If your hardware generator has a different functionality add it at the
+> +appropriate place in nand_base.c
+> +
+> +The board driver must provide following functions:
+> +
+> +-  enable_hwecc
+> +
+> +   This function is called before reading / writing to the chip. Reset
+> +   or initialize the hardware generator in this function. The function
+> +   is called with an argument which let you distinguish between read and
+> +   write operations.
+> +
+> +-  calculate_ecc
+> +
+> +   This function is called after read / write from / to the chip.
+> +   Transfer the ECC from the hardware to the buffer. If the option
+> +   NAND_HWECC_SYNDROME is set then the function is only called on
+> +   write. See below.
+> +
+> +-  correct_data
+> +
+> +   In case of an ECC error this function is called for error detection
+> +   and correction. Return 1 respectively 2 in case the error can be
+> +   corrected. If the error is not correctable return -1. If your
+> +   hardware generator matches the default algorithm of the nand_ecc
+> +   software generator then use the correction function provided by
+> +   nand_ecc instead of implementing duplicated code.
+> +
+> +Hardware ECC with syndrome calculation
+> +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> +
+> +Many hardware ECC implementations provide Reed-Solomon codes and
+> +calculate an error syndrome on read. The syndrome must be converted to a
+> +standard Reed-Solomon syndrome before calling the error correction code
+> +in the generic Reed-Solomon library.
+> +
+> +The ECC bytes must be placed immediately after the data bytes in order
+> +to make the syndrome generator work. This is contrary to the usual
+> +layout used by software ECC. The separation of data and out of band area
+> +is not longer possible. The nand driver code handles this layout and the
+> +remaining free bytes in the oob area are managed by the autoplacement
+> +code. Provide a matching oob-layout in this case. See rts_from4.c and
+> +diskonchip.c for implementation reference. In those cases we must also
+> +use bad block tables on FLASH, because the ECC layout is interfering
+> +with the bad block marker positions. See bad block table support for
+> +details.
+> +
+> +Bad block table support
+> +-----------------------
+> +
+> +Most NAND chips mark the bad blocks at a defined position in the spare
+> +area. Those blocks must not be erased under any circumstances as the bad
+> +block information would be lost. It is possible to check the bad block
+> +mark each time when the blocks are accessed by reading the spare area of
+> +the first page in the block. This is time consuming so a bad block table
+> +is used.
+> +
+> +The nand driver supports various types of bad block tables.
+> +
+> +-  Per device
+> +
+> +   The bad block table contains all bad block information of the device
+> +   which can consist of multiple chips.
+> +
+> +-  Per chip
+> +
+> +   A bad block table is used per chip and contains the bad block
+> +   information for this particular chip.
+> +
+> +-  Fixed offset
+> +
+> +   The bad block table is located at a fixed offset in the chip
+> +   (device). This applies to various DiskOnChip devices.
+> +
+> +-  Automatic placed
+> +
+> +   The bad block table is automatically placed and detected either at
+> +   the end or at the beginning of a chip (device)
+> +
+> +-  Mirrored tables
+> +
+> +   The bad block table is mirrored on the chip (device) to allow updates
+> +   of the bad block table without data loss.
+> +
+> +nand_scan() calls the function nand_default_bbt().
+> +nand_default_bbt() selects appropriate default bad block table
+> +descriptors depending on the chip information which was retrieved by
+> +nand_scan().
+> +
+> +The standard policy is scanning the device for bad blocks and build a
+> +ram based bad block table which allows faster access than always
+> +checking the bad block information on the flash chip itself.
+> +
+> +Flash based tables
+> +~~~~~~~~~~~~~~~~~~
+> +
+> +It may be desired or necessary to keep a bad block table in FLASH. For
+> +AG-AND chips this is mandatory, as they have no factory marked bad
+> +blocks. They have factory marked good blocks. The marker pattern is
+> +erased when the block is erased to be reused. So in case of powerloss
+> +before writing the pattern back to the chip this block would be lost and
+> +added to the bad blocks. Therefore we scan the chip(s) when we detect
+> +them the first time for good blocks and store this information in a bad
+> +block table before erasing any of the blocks.
+> +
+> +The blocks in which the tables are stored are protected against
+> +accidental access by marking them bad in the memory bad block table. The
+> +bad block table management functions are allowed to circumvent this
+> +protection.
+> +
+> +The simplest way to activate the FLASH based bad block table support is
+> +to set the option NAND_BBT_USE_FLASH in the bbt_option field of the
+> +nand chip structure before calling nand_scan(). For AG-AND chips is
+> +this done by default. This activates the default FLASH based bad block
+> +table functionality of the NAND driver. The default bad block table
+> +options are
+> +
+> +-  Store bad block table per chip
+> +
+> +-  Use 2 bits per block
+> +
+> +-  Automatic placement at the end of the chip
+> +
+> +-  Use mirrored tables with version numbers
+> +
+> +-  Reserve 4 blocks at the end of the chip
+> +
+> +User defined tables
+> +~~~~~~~~~~~~~~~~~~~
+> +
+> +User defined tables are created by filling out a nand_bbt_descr
+> +structure and storing the pointer in the nand_chip structure member
+> +bbt_td before calling nand_scan(). If a mirror table is necessary a
+> +second structure must be created and a pointer to this structure must be
+> +stored in bbt_md inside the nand_chip structure. If the bbt_md member
+> +is set to NULL then only the main table is used and no scan for the
+> +mirrored table is performed.
+> +
+> +The most important field in the nand_bbt_descr structure is the
+> +options field. The options define most of the table properties. Use the
+> +predefined constants from nand.h to define the options.
+> +
+> +-  Number of bits per block
+> +
+> +   The supported number of bits is 1, 2, 4, 8.
+> +
+> +-  Table per chip
+> +
+> +   Setting the constant NAND_BBT_PERCHIP selects that a bad block
+> +   table is managed for each chip in a chip array. If this option is not
+> +   set then a per device bad block table is used.
+> +
+> +-  Table location is absolute
+> +
+> +   Use the option constant NAND_BBT_ABSPAGE and define the absolute
+> +   page number where the bad block table starts in the field pages. If
+> +   you have selected bad block tables per chip and you have a multi chip
+> +   array then the start page must be given for each chip in the chip
+> +   array. Note: there is no scan for a table ident pattern performed, so
+> +   the fields pattern, veroffs, offs, len can be left uninitialized
+> +
+> +-  Table location is automatically detected
+> +
+> +   The table can either be located in the first or the last good blocks
+> +   of the chip (device). Set NAND_BBT_LASTBLOCK to place the bad block
+> +   table at the end of the chip (device). The bad block tables are
+> +   marked and identified by a pattern which is stored in the spare area
+> +   of the first page in the block which holds the bad block table. Store
+> +   a pointer to the pattern in the pattern field. Further the length of
+> +   the pattern has to be stored in len and the offset in the spare area
+> +   must be given in the offs member of the nand_bbt_descr structure.
+> +   For mirrored bad block tables different patterns are mandatory.
+> +
+> +-  Table creation
+> +
+> +   Set the option NAND_BBT_CREATE to enable the table creation if no
+> +   table can be found during the scan. Usually this is done only once if
+> +   a new chip is found.
+> +
+> +-  Table write support
+> +
+> +   Set the option NAND_BBT_WRITE to enable the table write support.
+> +   This allows the update of the bad block table(s) in case a block has
+> +   to be marked bad due to wear. The MTD interface function
+> +   block_markbad is calling the update function of the bad block table.
+> +   If the write support is enabled then the table is updated on FLASH.
+> +
+> +   Note: Write support should only be enabled for mirrored tables with
+> +   version control.
+> +
+> +-  Table version control
+> +
+> +   Set the option NAND_BBT_VERSION to enable the table version
+> +   control. It's highly recommended to enable this for mirrored tables
+> +   with write support. It makes sure that the risk of losing the bad
+> +   block table information is reduced to the loss of the information
+> +   about the one worn out block which should be marked bad. The version
+> +   is stored in 4 consecutive bytes in the spare area of the device. The
+> +   position of the version number is defined by the member veroffs in
+> +   the bad block table descriptor.
+> +
+> +-  Save block contents on write
+> +
+> +   In case that the block which holds the bad block table does contain
+> +   other useful information, set the option NAND_BBT_SAVECONTENT. When
+> +   the bad block table is written then the whole block is read the bad
+> +   block table is updated and the block is erased and everything is
+> +   written back. If this option is not set only the bad block table is
+> +   written and everything else in the block is ignored and erased.
+> +
+> +-  Number of reserved blocks
+> +
+> +   For automatic placement some blocks must be reserved for bad block
+> +   table storage. The number of reserved blocks is defined in the
+> +   maxblocks member of the bad block table description structure.
+> +   Reserving 4 blocks for mirrored tables should be a reasonable number.
+> +   This also limits the number of blocks which are scanned for the bad
+> +   block table ident pattern.
+> +
+> +Spare area (auto)placement
+> +--------------------------
+> +
+> +The nand driver implements different possibilities for placement of
+> +filesystem data in the spare area,
+> +
+> +-  Placement defined by fs driver
+> +
+> +-  Automatic placement
+> +
+> +The default placement function is automatic placement. The nand driver
+> +has built in default placement schemes for the various chiptypes. If due
+> +to hardware ECC functionality the default placement does not fit then
+> +the board driver can provide a own placement scheme.
+> +
+> +File system drivers can provide a own placement scheme which is used
+> +instead of the default placement scheme.
+> +
+> +Placement schemes are defined by a nand_oobinfo structure
+> +
+> +::
+> +
+> +    struct nand_oobinfo {
+> +        int useecc;
+> +        int eccbytes;
+> +        int eccpos[24];
+> +        int oobfree[8][2];
+> +    };
+> +
+> +
+> +-  useecc
+> +
+> +   The useecc member controls the ecc and placement function. The header
+> +   file include/mtd/mtd-abi.h contains constants to select ecc and
+> +   placement. MTD_NANDECC_OFF switches off the ecc complete. This is
+> +   not recommended and available for testing and diagnosis only.
+> +   MTD_NANDECC_PLACE selects caller defined placement,
+> +   MTD_NANDECC_AUTOPLACE selects automatic placement.
+> +
+> +-  eccbytes
+> +
+> +   The eccbytes member defines the number of ecc bytes per page.
+> +
+> +-  eccpos
+> +
+> +   The eccpos array holds the byte offsets in the spare area where the
+> +   ecc codes are placed.
+> +
+> +-  oobfree
+> +
+> +   The oobfree array defines the areas in the spare area which can be
+> +   used for automatic placement. The information is given in the format
+> +   {offset, size}. offset defines the start of the usable area, size the
+> +   length in bytes. More than one area can be defined. The list is
+> +   terminated by an {0, 0} entry.
+> +
+> +Placement defined by fs driver
+> +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> +
+> +The calling function provides a pointer to a nand_oobinfo structure
+> +which defines the ecc placement. For writes the caller must provide a
+> +spare area buffer along with the data buffer. The spare area buffer size
+> +is (number of pages) \* (size of spare area). For reads the buffer size
+> +is (number of pages) \* ((size of spare area) + (number of ecc steps per
+> +page) \* sizeof (int)). The driver stores the result of the ecc check
+> +for each tuple in the spare buffer. The storage sequence is::
+> +
+> +	<spare data page 0><ecc result 0>...<ecc result n>
+> +
+> +	...
+> +
+> +	<spare data page n><ecc result 0>...<ecc result n>
+> +
+> +This is a legacy mode used by YAFFS1.
+> +
+> +If the spare area buffer is NULL then only the ECC placement is done
+> +according to the given scheme in the nand_oobinfo structure.
+> +
+> +Automatic placement
+> +~~~~~~~~~~~~~~~~~~~
+> +
+> +Automatic placement uses the built in defaults to place the ecc bytes in
+> +the spare area. If filesystem data have to be stored / read into the
+> +spare area then the calling function must provide a buffer. The buffer
+> +size per page is determined by the oobfree array in the nand_oobinfo
+> +structure.
+> +
+> +If the spare area buffer is NULL then only the ECC placement is done
+> +according to the default builtin scheme.
+> +
+> +Spare area autoplacement default schemes
+> +----------------------------------------
+> +
+> +256 byte pagesize
+> +~~~~~~~~~~~~~~~~~
+> +
+> +======== ================== ===================================================
+> +Offset   Content            Comment
+> +======== ================== ===================================================
+> +0x00     ECC byte 0         Error correction code byte 0
+> +0x01     ECC byte 1         Error correction code byte 1
+> +0x02     ECC byte 2         Error correction code byte 2
+> +0x03     Autoplace 0
+> +0x04     Autoplace 1
+> +0x05     Bad block marker   If any bit in this byte is zero, then this
+> +			    block is bad. This applies only to the first
+> +			    page in a block. In the remaining pages this
+> +			    byte is reserved
+> +0x06     Autoplace 2
+> +0x07     Autoplace 3
+> +======== ================== ===================================================
+> +
+> +512 byte pagesize
+> +~~~~~~~~~~~~~~~~~
+> +
+> +
+> +============= ================== ==============================================
+> +Offset        Content            Comment
+> +============= ================== ==============================================
+> +0x00          ECC byte 0         Error correction code byte 0 of the lower
+> +				 256 Byte data in this page
+> +0x01          ECC byte 1         Error correction code byte 1 of the lower
+> +				 256 Bytes of data in this page
+> +0x02          ECC byte 2         Error correction code byte 2 of the lower
+> +				 256 Bytes of data in this page
+> +0x03          ECC byte 3         Error correction code byte 0 of the upper
+> +				 256 Bytes of data in this page
+> +0x04          reserved           reserved
+> +0x05          Bad block marker   If any bit in this byte is zero, then this
+> +				 block is bad. This applies only to the first
+> +				 page in a block. In the remaining pages this
+> +				 byte is reserved
+> +0x06          ECC byte 4         Error correction code byte 1 of the upper
+> +				 256 Bytes of data in this page
+> +0x07          ECC byte 5         Error correction code byte 2 of the upper
+> +				 256 Bytes of data in this page
+> +0x08 - 0x0F   Autoplace 0 - 7
+> +============= ================== ==============================================
+> +
+> +2048 byte pagesize
+> +~~~~~~~~~~~~~~~~~~
+> +
+> +=========== ================== ================================================
+> +Offset      Content            Comment
+> +=========== ================== ================================================
+> +0x00        Bad block marker   If any bit in this byte is zero, then this block
+> +			       is bad. This applies only to the first page in a
+> +			       block. In the remaining pages this byte is
+> +			       reserved
+> +0x01        Reserved           Reserved
+> +0x02-0x27   Autoplace 0 - 37
+> +0x28        ECC byte 0         Error correction code byte 0 of the first
+> +			       256 Byte data in this page
+> +0x29        ECC byte 1         Error correction code byte 1 of the first
+> +			       256 Bytes of data in this page
+> +0x2A        ECC byte 2         Error correction code byte 2 of the first
+> +			       256 Bytes data in this page
+> +0x2B        ECC byte 3         Error correction code byte 0 of the second
+> +			       256 Bytes of data in this page
+> +0x2C        ECC byte 4         Error correction code byte 1 of the second
+> +			       256 Bytes of data in this page
+> +0x2D        ECC byte 5         Error correction code byte 2 of the second
+> +			       256 Bytes of data in this page
+> +0x2E        ECC byte 6         Error correction code byte 0 of the third
+> +			       256 Bytes of data in this page
+> +0x2F        ECC byte 7         Error correction code byte 1 of the third
+> +			       256 Bytes of data in this page
+> +0x30        ECC byte 8         Error correction code byte 2 of the third
+> +			       256 Bytes of data in this page
+> +0x31        ECC byte 9         Error correction code byte 0 of the fourth
+> +			       256 Bytes of data in this page
+> +0x32        ECC byte 10        Error correction code byte 1 of the fourth
+> +			       256 Bytes of data in this page
+> +0x33        ECC byte 11        Error correction code byte 2 of the fourth
+> +			       256 Bytes of data in this page
+> +0x34        ECC byte 12        Error correction code byte 0 of the fifth
+> +			       256 Bytes of data in this page
+> +0x35        ECC byte 13        Error correction code byte 1 of the fifth
+> +			       256 Bytes of data in this page
+> +0x36        ECC byte 14        Error correction code byte 2 of the fifth
+> +			       256 Bytes of data in this page
+> +0x37        ECC byte 15        Error correction code byte 0 of the sixth
+> +			       256 Bytes of data in this page
+> +0x38        ECC byte 16        Error correction code byte 1 of the sixth
+> +			       256 Bytes of data in this page
+> +0x39        ECC byte 17        Error correction code byte 2 of the sixth
+> +			       256 Bytes of data in this page
+> +0x3A        ECC byte 18        Error correction code byte 0 of the seventh
+> +			       256 Bytes of data in this page
+> +0x3B        ECC byte 19        Error correction code byte 1 of the seventh
+> +			       256 Bytes of data in this page
+> +0x3C        ECC byte 20        Error correction code byte 2 of the seventh
+> +			       256 Bytes of data in this page
+> +0x3D        ECC byte 21        Error correction code byte 0 of the eighth
+> +			       256 Bytes of data in this page
+> +0x3E        ECC byte 22        Error correction code byte 1 of the eighth
+> +			       256 Bytes of data in this page
+> +0x3F        ECC byte 23        Error correction code byte 2 of the eighth
+> +			       256 Bytes of data in this page
+> +=========== ================== ================================================
+> +
+> +Filesystem support
+> +==================
+> +
+> +The NAND driver provides all necessary functions for a filesystem via
+> +the MTD interface.
+> +
+> +Filesystems must be aware of the NAND peculiarities and restrictions.
+> +One major restrictions of NAND Flash is, that you cannot write as often
+> +as you want to a page. The consecutive writes to a page, before erasing
+> +it again, are restricted to 1-3 writes, depending on the manufacturers
+> +specifications. This applies similar to the spare area.
+> +
+> +Therefore NAND aware filesystems must either write in page size chunks
+> +or hold a writebuffer to collect smaller writes until they sum up to
+> +pagesize. Available NAND aware filesystems: JFFS2, YAFFS.
+> +
+> +The spare area usage to store filesystem data is controlled by the spare
+> +area placement functionality which is described in one of the earlier
+> +chapters.
+> +
+> +Tools
+> +=====
+> +
+> +The MTD project provides a couple of helpful tools to handle NAND Flash.
+> +
+> +-  flasherase, flasheraseall: Erase and format FLASH partitions
+> +
+> +-  nandwrite: write filesystem images to NAND FLASH
+> +
+> +-  nanddump: dump the contents of a NAND FLASH partitions
+> +
+> +These tools are aware of the NAND restrictions. Please use those tools
+> +instead of complaining about errors which are caused by non NAND aware
+> +access methods.
+> +
+> +Constants
+> +=========
+> +
+> +This chapter describes the constants which might be relevant for a
+> +driver developer.
+> +
+> +Chip option constants
+> +---------------------
+> +
+> +Constants for chip id table
+> +~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> +
+> +These constants are defined in nand.h. They are ored together to
+> +describe the chip functionality.
+> +
+> +::
+> +
+> +    /* Buswitdh is 16 bit */
+> +    #define NAND_BUSWIDTH_16    0x00000002
+> +    /* Device supports partial programming without padding */
+> +    #define NAND_NO_PADDING     0x00000004
+> +    /* Chip has cache program function */
+> +    #define NAND_CACHEPRG       0x00000008
+> +    /* Chip has copy back function */
+> +    #define NAND_COPYBACK       0x00000010
+> +    /* AND Chip which has 4 banks and a confusing page / block
+> +     * assignment. See Renesas datasheet for further information */
+> +    #define NAND_IS_AND     0x00000020
+> +    /* Chip has a array of 4 pages which can be read without
+> +     * additional ready /busy waits */
+> +    #define NAND_4PAGE_ARRAY    0x00000040
+> +
+> +
+> +Constants for runtime options
+> +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> +
+> +These constants are defined in nand.h. They are ored together to
+> +describe the functionality.
+> +
+> +::
+> +
+> +    /* The hw ecc generator provides a syndrome instead a ecc value on read
+> +     * This can only work if we have the ecc bytes directly behind the
+> +     * data bytes. Applies for DOC and AG-AND Renesas HW Reed Solomon generators */
+> +    #define NAND_HWECC_SYNDROME 0x00020000
+> +
+> +
+> +ECC selection constants
+> +-----------------------
+> +
+> +Use these constants to select the ECC algorithm.
+> +
+> +::
+> +
+> +    /* No ECC. Usage is not recommended ! */
+> +    #define NAND_ECC_NONE       0
+> +    /* Software ECC 3 byte ECC per 256 Byte data */
+> +    #define NAND_ECC_SOFT       1
+> +    /* Hardware ECC 3 byte ECC per 256 Byte data */
+> +    #define NAND_ECC_HW3_256    2
+> +    /* Hardware ECC 3 byte ECC per 512 Byte data */
+> +    #define NAND_ECC_HW3_512    3
+> +    /* Hardware ECC 6 byte ECC per 512 Byte data */
+> +    #define NAND_ECC_HW6_512    4
+> +    /* Hardware ECC 6 byte ECC per 512 Byte data */
+> +    #define NAND_ECC_HW8_512    6
+> +
+> +
+> +Hardware control related constants
+> +----------------------------------
+> +
+> +These constants describe the requested hardware access function when the
+> +boardspecific hardware control function is called
+> +
+> +::
+> +
+> +    /* Select the chip by setting nCE to low */
+> +    #define NAND_CTL_SETNCE     1
+> +    /* Deselect the chip by setting nCE to high */
+> +    #define NAND_CTL_CLRNCE     2
+> +    /* Select the command latch by setting CLE to high */
+> +    #define NAND_CTL_SETCLE     3
+> +    /* Deselect the command latch by setting CLE to low */
+> +    #define NAND_CTL_CLRCLE     4
+> +    /* Select the address latch by setting ALE to high */
+> +    #define NAND_CTL_SETALE     5
+> +    /* Deselect the address latch by setting ALE to low */
+> +    #define NAND_CTL_CLRALE     6
+> +    /* Set write protection by setting WP to high. Not used! */
+> +    #define NAND_CTL_SETWP      7
+> +    /* Clear write protection by setting WP to low. Not used! */
+> +    #define NAND_CTL_CLRWP      8
+> +
+> +
+> +Bad block table related constants
+> +---------------------------------
+> +
+> +These constants describe the options used for bad block table
+> +descriptors.
+> +
+> +::
+> +
+> +    /* Options for the bad block table descriptors */
+> +
+> +    /* The number of bits used per block in the bbt on the device */
+> +    #define NAND_BBT_NRBITS_MSK 0x0000000F
+> +    #define NAND_BBT_1BIT       0x00000001
+> +    #define NAND_BBT_2BIT       0x00000002
+> +    #define NAND_BBT_4BIT       0x00000004
+> +    #define NAND_BBT_8BIT       0x00000008
+> +    /* The bad block table is in the last good block of the device */
+> +    #define NAND_BBT_LASTBLOCK  0x00000010
+> +    /* The bbt is at the given page, else we must scan for the bbt */
+> +    #define NAND_BBT_ABSPAGE    0x00000020
+> +    /* bbt is stored per chip on multichip devices */
+> +    #define NAND_BBT_PERCHIP    0x00000080
+> +    /* bbt has a version counter at offset veroffs */
+> +    #define NAND_BBT_VERSION    0x00000100
+> +    /* Create a bbt if none axists */
+> +    #define NAND_BBT_CREATE     0x00000200
+> +    /* Write bbt if necessary */
+> +    #define NAND_BBT_WRITE      0x00001000
+> +    /* Read and write back block contents when writing bbt */
+> +    #define NAND_BBT_SAVECONTENT    0x00002000
+> +
+> +
+> +Structures
+> +==========
+> +
+> +This chapter contains the autogenerated documentation of the structures
+> +which are used in the NAND driver and might be relevant for a driver
+> +developer. Each struct member has a short description which is marked
+> +with an [XXX] identifier. See the chapter "Documentation hints" for an
+> +explanation.
+> +
+> +.. kernel-doc:: include/linux/mtd/nand.h
+> +   :internal:
+> +
+> +Public Functions Provided
+> +=========================
+> +
+> +This chapter contains the autogenerated documentation of the NAND kernel
+> +API functions which are exported. Each function has a short description
+> +which is marked with an [XXX] identifier. See the chapter "Documentation
+> +hints" for an explanation.
+> +
+> +.. kernel-doc:: drivers/mtd/nand/nand_base.c
+> +   :export:
+> +
+> +.. kernel-doc:: drivers/mtd/nand/nand_bbt.c
+> +   :export:
+> +
+> +.. kernel-doc:: drivers/mtd/nand/nand_ecc.c
+> +   :export:
+> +
+> +Internal Functions Provided
+> +===========================
+> +
+> +This chapter contains the autogenerated documentation of the NAND driver
+> +internal functions. Each function has a short description which is
+> +marked with an [XXX] identifier. See the chapter "Documentation hints"
+> +for an explanation. The functions marked with [DEFAULT] might be
+> +relevant for a board driver developer.
+> +
+> +.. kernel-doc:: drivers/mtd/nand/nand_base.c
+> +   :internal:
+> +
+> +.. kernel-doc:: drivers/mtd/nand/nand_bbt.c
+> +   :internal:
+> +
+> +Credits
+> +=======
+> +
+> +The following people have contributed to the NAND driver:
+> +
+> +1. Steven J. Hill\ sjhill@realitydiluted.com
+> +
+> +2. David Woodhouse\ dwmw2@infradead.org
+> +
+> +3. Thomas Gleixner\ tglx@linutronix.de
+> +
+> +A lot of users have provided bugfixes, improvements and helping hands
+> +for testing. Thanks a lot.
+> +
+> +The following people have contributed to this document:
+> +
+> +1. Thomas Gleixner\ tglx@linutronix.de
