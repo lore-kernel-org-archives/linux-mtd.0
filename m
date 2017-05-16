@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dAbQP-0001Ma-04
- for linux-mtd@lists.infradead.org; Tue, 16 May 2017 12:19:02 +0000
+ id 1dAbQT-0001MZ-Fp
+ for linux-mtd@lists.infradead.org; Tue, 16 May 2017 12:19:06 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -14,11 +14,12 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
  Jani Nikula <jani.nikula@intel.com>,
+ Markus Heiser <markus.heiser@darmarit.de>,
  "Herton R. Krzesinski" <herton@redhat.com>,
- Markus Heiser <markus.heiser@darmarit.de>
-Subject: [PATCH v2 31/53] docs-rst: convert z8530book DocBook to ReST
-Date: Tue, 16 May 2017 09:16:23 -0300
-Message-Id: <c7e2154475177a247cd94bf6a8646627a6ae1055.1494935649.git.mchehab@s-opensource.com>
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v2 32/53] docs-rst: convert scsi DocBook to ReST
+Date: Tue, 16 May 2017 09:16:24 -0300
+Message-Id: <6020236568bbe99ef3b0f571315255da5d73a531.1494935649.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
 References: <cover.1494935649.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
@@ -36,683 +37,845 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Use pandoc to convert documentation to ReST by calling
 Documentation/sphinx/tmplcvt script.
 
-Some manual adjustments were required due to some
-conversion error on some literals.
-
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/DocBook/Makefile         |   2 +-
- Documentation/DocBook/z8530book.tmpl   | 371 ---------------------------------
- Documentation/networking/index.rst     |   1 +
- Documentation/networking/z8530book.rst | 257 +++++++++++++++++++++++
- 4 files changed, 259 insertions(+), 372 deletions(-)
- delete mode 100644 Documentation/DocBook/z8530book.tmpl
- create mode 100644 Documentation/networking/z8530book.rst
+ Documentation/DocBook/Makefile         |   1 -
+ Documentation/DocBook/scsi.tmpl        | 409 ---------------------------------
+ Documentation/driver-api/index.rst     |   1 +
+ Documentation/driver-api/scsi.rst      | 344 +++++++++++++++++++++++++++
+ Documentation/networking/z8530book.rst |  15 +-
+ 5 files changed, 352 insertions(+), 418 deletions(-)
+ delete mode 100644 Documentation/DocBook/scsi.tmpl
+ create mode 100644 Documentation/driver-api/scsi.rst
 
 diff --git a/Documentation/DocBook/Makefile b/Documentation/DocBook/Makefile
-index 8a90891c3712..00a61f4ffcff 100644
+index 00a61f4ffcff..3bbda02d6aee 100644
 --- a/Documentation/DocBook/Makefile
 +++ b/Documentation/DocBook/Makefile
-@@ -6,7 +6,7 @@
- # To add a new book the only step required is to add the book to the
- # list of DOCBOOKS.
- 
--DOCBOOKS := z8530book.xml  \
-+DOCBOOKS := \
+@@ -9,7 +9,6 @@
+ DOCBOOKS := \
  	    lsm.xml \
  	    mtdnand.xml librs.xml rapidio.xml \
- 	    scsi.xml \
-diff --git a/Documentation/DocBook/z8530book.tmpl b/Documentation/DocBook/z8530book.tmpl
+-	    scsi.xml \
+ 	    sh.xml w1.xml
+ 
+ ifeq ($(DOCBOOKS),)
+diff --git a/Documentation/DocBook/scsi.tmpl b/Documentation/DocBook/scsi.tmpl
 deleted file mode 100644
-index 6f3883be877e..000000000000
---- a/Documentation/DocBook/z8530book.tmpl
+index 4b9b9b286cea..000000000000
+--- a/Documentation/DocBook/scsi.tmpl
 +++ /dev/null
-@@ -1,371 +0,0 @@
+@@ -1,409 +0,0 @@
 -<?xml version="1.0" encoding="UTF-8"?>
 -<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
 -	"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" []>
 -
--<book id="Z85230Guide">
-- <bookinfo>
--  <title>Z8530 Programming Guide</title>
--  
--  <authorgroup>
--   <author>
--    <firstname>Alan</firstname>
--    <surname>Cox</surname>
--    <affiliation>
--     <address>
--      <email>alan@lxorguk.ukuu.org.uk</email>
--     </address>
--    </affiliation>
--   </author>
--  </authorgroup>
+-<book id="scsimid">
+-  <bookinfo>
+-    <title>SCSI Interfaces Guide</title>
 -
--  <copyright>
--   <year>2000</year>
--   <holder>Alan Cox</holder>
--  </copyright>
+-    <authorgroup>
+-      <author>
+-        <firstname>James</firstname>
+-        <surname>Bottomley</surname>
+-        <affiliation>
+-          <address>
+-            <email>James.Bottomley@hansenpartnership.com</email>
+-          </address>
+-        </affiliation>
+-      </author>
 -
--  <legalnotice>
--   <para>
--     This documentation is free software; you can redistribute
--     it and/or modify it under the terms of the GNU General Public
--     License as published by the Free Software Foundation; either
--     version 2 of the License, or (at your option) any later
--     version.
--   </para>
--      
--   <para>
--     This program is distributed in the hope that it will be
--     useful, but WITHOUT ANY WARRANTY; without even the implied
--     warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
--     See the GNU General Public License for more details.
--   </para>
--      
--   <para>
--     You should have received a copy of the GNU General Public
--     License along with this program; if not, write to the Free
--     Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
--     MA 02111-1307 USA
--   </para>
--      
--   <para>
--     For more details see the file COPYING in the source
--     distribution of Linux.
--   </para>
--  </legalnotice>
-- </bookinfo>
+-      <author>
+-        <firstname>Rob</firstname>
+-        <surname>Landley</surname>
+-        <affiliation>
+-          <address>
+-            <email>rob@landley.net</email>
+-          </address>
+-        </affiliation>
+-      </author>
 -
--<toc></toc>
+-    </authorgroup>
+-
+-    <copyright>
+-      <year>2007</year>
+-      <holder>Linux Foundation</holder>
+-    </copyright>
+-
+-    <legalnotice>
+-      <para>
+-        This documentation is free software; you can redistribute
+-        it and/or modify it under the terms of the GNU General Public
+-        License version 2.
+-      </para>
+-
+-      <para>
+-        This program is distributed in the hope that it will be
+-        useful, but WITHOUT ANY WARRANTY; without even the implied
+-        warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+-        For more details see the file COPYING in the source
+-        distribution of Linux.
+-      </para>
+-    </legalnotice>
+-  </bookinfo>
+-
+-  <toc></toc>
 -
 -  <chapter id="intro">
--      <title>Introduction</title>
--  <para>
--	The Z85x30 family synchronous/asynchronous controller chips are
--	used on a large number of cheap network interface cards. The
--	kernel provides a core interface layer that is designed to make
--	it easy to provide WAN services using this chip.
--  </para>
--  <para>
--	The current driver only support synchronous operation. Merging the
--	asynchronous driver support into this code to allow any Z85x30
--	device to be used as both a tty interface and as a synchronous 
--	controller is a project for Linux post the 2.4 release
--  </para>
--  </chapter>
--  
--  <chapter id="Driver_Modes">
-- 	<title>Driver Modes</title>
--  <para>
--	The Z85230 driver layer can drive Z8530, Z85C30 and Z85230 devices
--	in three different modes. Each mode can be applied to an individual
--	channel on the chip (each chip has two channels).
--  </para>
--  <para>
--	The PIO synchronous mode supports the most common Z8530 wiring. Here
--	the chip is interface to the I/O and interrupt facilities of the
--	host machine but not to the DMA subsystem. When running PIO the
--	Z8530 has extremely tight timing requirements. Doing high speeds,
--	even with a Z85230 will be tricky. Typically you should expect to
--	achieve at best 9600 baud with a Z8C530 and 64Kbits with a Z85230.
--  </para>
--  <para>
--	The DMA mode supports the chip when it is configured to use dual DMA
--	channels on an ISA bus. The better cards tend to support this mode
--	of operation for a single channel. With DMA running the Z85230 tops
--	out when it starts to hit ISA DMA constraints at about 512Kbits. It
--	is worth noting here that many PC machines hang or crash when the
--	chip is driven fast enough to hold the ISA bus solid.
--  </para>
--  <para>
--	Transmit DMA mode uses a single DMA channel. The DMA channel is used
--	for transmission as the transmit FIFO is smaller than the receive
--	FIFO. it gives better performance than pure PIO mode but is nowhere
--	near as ideal as pure DMA mode. 
--  </para>
--  </chapter>
--
--  <chapter id="Using_the_Z85230_driver">
-- 	<title>Using the Z85230 driver</title>
--  <para>
--	The Z85230 driver provides the back end interface to your board. To
--	configure a Z8530 interface you need to detect the board and to 
--	identify its ports and interrupt resources. It is also your problem
--	to verify the resources are available.
--  </para>
--  <para>
--	Having identified the chip you need to fill in a struct z8530_dev,
--	which describes each chip. This object must exist until you finally
--	shutdown the board. Firstly zero the active field. This ensures 
--	nothing goes off without you intending it. The irq field should
--	be set to the interrupt number of the chip. (Each chip has a single
--	interrupt source rather than each channel). You are responsible
--	for allocating the interrupt line. The interrupt handler should be
--	set to <function>z8530_interrupt</function>. The device id should
--	be set to the z8530_dev structure pointer. Whether the interrupt can
--	be shared or not is board dependent, and up to you to initialise.
--  </para>
--  <para>
--	The structure holds two channel structures. 
--	Initialise chanA.ctrlio and chanA.dataio with the address of the
--	control and data ports. You can or this with Z8530_PORT_SLEEP to
--	indicate your interface needs the 5uS delay for chip settling done
--	in software. The PORT_SLEEP option is architecture specific. Other
--	flags may become available on future platforms, eg for MMIO.
--	Initialise the chanA.irqs to &amp;z8530_nop to start the chip up
--	as disabled and discarding interrupt events. This ensures that
--	stray interrupts will be mopped up and not hang the bus. Set
--	chanA.dev to point to the device structure itself. The
--	private and name field you may use as you wish. The private field
--	is unused by the Z85230 layer. The name is used for error reporting
--	and it may thus make sense to make it match the network name.
--  </para>
--  <para>
--	Repeat the same operation with the B channel if your chip has
--	both channels wired to something useful. This isn't always the
--	case. If it is not wired then the I/O values do not matter, but
--	you must initialise chanB.dev.
--  </para>
--  <para>
--	If your board has DMA facilities then initialise the txdma and
--	rxdma fields for the relevant channels. You must also allocate the
--	ISA DMA channels and do any necessary board level initialisation
--	to configure them. The low level driver will do the Z8530 and
--	DMA controller programming but not board specific magic.
--  </para>
--  <para>
--	Having initialised the device you can then call
--	<function>z8530_init</function>. This will probe the chip and 
--	reset it into a known state. An identification sequence is then
--	run to identify the chip type. If the checks fail to pass the
--	function returns a non zero error code. Typically this indicates
--	that the port given is not valid. After this call the
--	type field of the z8530_dev structure is initialised to either
--	Z8530, Z85C30 or Z85230 according to the chip found.
--  </para>
--  <para>
--	Once you have called z8530_init you can also make use of the utility
--	function <function>z8530_describe</function>. This provides a 
--	consistent reporting format for the Z8530 devices, and allows all
--	the drivers to provide consistent reporting.
--  </para>
+-    <title>Introduction</title>
+-    <sect1 id="protocol_vs_bus">
+-      <title>Protocol vs bus</title>
+-      <para>
+-        Once upon a time, the Small Computer Systems Interface defined both
+-        a parallel I/O bus and a data protocol to connect a wide variety of
+-        peripherals (disk drives, tape drives, modems, printers, scanners,
+-        optical drives, test equipment, and medical devices) to a host
+-        computer.
+-      </para>
+-      <para>
+-        Although the old parallel (fast/wide/ultra) SCSI bus has largely
+-        fallen out of use, the SCSI command set is more widely used than ever
+-        to communicate with devices over a number of different busses.
+-      </para>
+-      <para>
+-        The <ulink url='http://www.t10.org/scsi-3.htm'>SCSI protocol</ulink>
+-        is a big-endian peer-to-peer packet based protocol.  SCSI commands
+-        are 6, 10, 12, or 16 bytes long, often followed by an associated data
+-        payload.
+-      </para>
+-      <para>
+-        SCSI commands can be transported over just about any kind of bus, and
+-        are the default protocol for storage devices attached to USB, SATA,
+-        SAS, Fibre Channel, FireWire, and ATAPI devices.  SCSI packets are
+-        also commonly exchanged over Infiniband,
+-        <ulink url='http://i2o.shadowconnect.com/faq.php'>I20</ulink>, TCP/IP
+-        (<ulink url='https://en.wikipedia.org/wiki/ISCSI'>iSCSI</ulink>), even
+-        <ulink url='http://cyberelk.net/tim/parport/parscsi.html'>Parallel
+-        ports</ulink>.
+-      </para>
+-    </sect1>
+-    <sect1 id="subsystem_design">
+-      <title>Design of the Linux SCSI subsystem</title>
+-      <para>
+-        The SCSI subsystem uses a three layer design, with upper, mid, and low
+-        layers.  Every operation involving the SCSI subsystem (such as reading
+-        a sector from a disk) uses one driver at each of the 3 levels: one
+-        upper layer driver, one lower layer driver, and the SCSI midlayer.
+-      </para>
+-      <para>
+-        The SCSI upper layer provides the interface between userspace and the
+-        kernel, in the form of block and char device nodes for I/O and
+-        ioctl().  The SCSI lower layer contains drivers for specific hardware
+-        devices.
+-      </para>
+-      <para>
+-        In between is the SCSI mid-layer, analogous to a network routing
+-        layer such as the IPv4 stack.  The SCSI mid-layer routes a packet
+-        based data protocol between the upper layer's /dev nodes and the
+-        corresponding devices in the lower layer.  It manages command queues,
+-        provides error handling and power management functions, and responds
+-        to ioctl() requests.
+-      </para>
+-    </sect1>
 -  </chapter>
 -
--  <chapter id="Attaching_Network_Interfaces">
-- 	<title>Attaching Network Interfaces</title>
--  <para>
--	If you wish to use the network interface facilities of the driver,
--	then you need to attach a network device to each channel that is
--	present and in use. In addition to use the generic HDLC
--	you need to follow some additional plumbing rules. They may seem 
--	complex but a look at the example hostess_sv11 driver should
--	reassure you.
--  </para>
--  <para>
--	The network device used for each channel should be pointed to by
--	the netdevice field of each channel. The hdlc-&gt; priv field of the
--	network device points to your private data - you will need to be
--	able to find your private data from this.
--  </para>
--  <para>
--	The way most drivers approach this particular problem is to
--	create a structure holding the Z8530 device definition and
--	put that into the private field of the network device. The
--	network device fields of the channels then point back to the
--	network devices.
--  </para>
--  <para>
--	If you wish to use the generic HDLC then you need to register
--	the HDLC device.
--  </para>
--  <para>
--	Before you register your network device you will also need to
--	provide suitable handlers for most of the network device callbacks. 
--	See the network device documentation for more details on this.
--  </para>
--  </chapter>
--
--  <chapter id="Configuring_And_Activating_The_Port">
-- 	<title>Configuring And Activating The Port</title>
--  <para>
--	The Z85230 driver provides helper functions and tables to load the
--	port registers on the Z8530 chips. When programming the register
--	settings for a channel be aware that the documentation recommends
--	initialisation orders. Strange things happen when these are not
--	followed. 
--  </para>
--  <para>
--	<function>z8530_channel_load</function> takes an array of
--	pairs of initialisation values in an array of u8 type. The first
--	value is the Z8530 register number. Add 16 to indicate the alternate
--	register bank on the later chips. The array is terminated by a 255.
--  </para>
--  <para>
--	The driver provides a pair of public tables. The
--	z8530_hdlc_kilostream table is for the UK 'Kilostream' service and
--	also happens to cover most other end host configurations. The
--	z8530_hdlc_kilostream_85230 table is the same configuration using
--	the enhancements of the 85230 chip. The configuration loaded is
--	standard NRZ encoded synchronous data with HDLC bitstuffing. All
--	of the timing is taken from the other end of the link.
--  </para>
--  <para>
--	When writing your own tables be aware that the driver internally
--	tracks register values. It may need to reload values. You should
--	therefore be sure to set registers 1-7, 9-11, 14 and 15 in all
--	configurations. Where the register settings depend on DMA selection
--	the driver will update the bits itself when you open or close.
--	Loading a new table with the interface open is not recommended.
--  </para>
--  <para>
--	There are three standard configurations supported by the core
--	code. In PIO mode the interface is programmed up to use
--	interrupt driven PIO. This places high demands on the host processor
--	to avoid latency. The driver is written to take account of latency
--	issues but it cannot avoid latencies caused by other drivers,
--	notably IDE in PIO mode. Because the drivers allocate buffers you
--	must also prevent MTU changes while the port is open.
--  </para>
--  <para>
--	Once the port is open it will call the rx_function of each channel
--	whenever a completed packet arrived. This is invoked from
--	interrupt context and passes you the channel and a network	
--	buffer (struct sk_buff) holding the data. The data includes
--	the CRC bytes so most users will want to trim the last two
--	bytes before processing the data. This function is very timing
--	critical. When you wish to simply discard data the support
--	code provides the function <function>z8530_null_rx</function>
--	to discard the data.
--  </para>
--  <para>
--	To active PIO mode sending and receiving the <function>
--	z8530_sync_open</function> is called. This expects to be passed
--	the network device and the channel. Typically this is called from
--	your network device open callback. On a failure a non zero error
--	status is returned. The <function>z8530_sync_close</function> 
--	function shuts down a PIO channel. This must be done before the 
--	channel is opened again	and before the driver shuts down 
--	and unloads.
--  </para>
--  <para>
--	The ideal mode of operation is dual channel DMA mode. Here the
--	kernel driver will configure the board for DMA in both directions.
--	The driver also handles ISA DMA issues such as controller
--	programming and the memory range limit for you. This mode is
--	activated by calling the <function>z8530_sync_dma_open</function>
--	function. On failure a non zero error value is returned.
--	Once this mode is activated it can be shut down by calling the
--	<function>z8530_sync_dma_close</function>. You must call the close
--	function matching the open mode you used.
--  </para>
--  <para>
--	The final supported mode uses a single DMA channel to drive the
--	transmit side. As the Z85C30 has a larger FIFO on the receive
--	channel	this tends to increase the maximum speed a little. 
--	This is activated by calling the <function>z8530_sync_txdma_open
--	</function>. This returns a non zero error code on failure. The
--	<function>z8530_sync_txdma_close</function> function closes down
--	the Z8530 interface from this mode.
--  </para>
--  </chapter>
--
--  <chapter id="Network_Layer_Functions">
-- 	<title>Network Layer Functions</title>
--  <para>
--	The Z8530 layer provides functions to queue packets for
--	transmission. The driver internally buffers the frame currently
--	being transmitted and one further frame (in order to keep back
--	to back transmission running). Any further buffering is up to
--	the caller.
--  </para>
--  <para>
--	The function <function>z8530_queue_xmit</function> takes a network
--	buffer in sk_buff format and queues it for transmission. The
--	caller must provide the entire packet with the exception of the
--	bitstuffing and CRC. This is normally done by the caller via
--	the generic HDLC interface layer. It returns 0 if the buffer has been
--	queued and non zero values for queue full. If the function accepts
--	the buffer it becomes property of the Z8530 layer and the caller
--	should not free it.
--  </para>
--  <para>
--	The function <function>z8530_get_stats</function> returns a pointer
--	to an internally maintained per interface statistics block. This
--	provides most of the interface code needed to implement the network
--	layer get_stats callback.
--  </para>
--  </chapter>
--
--  <chapter id="Porting_The_Z8530_Driver">
--     <title>Porting The Z8530 Driver</title>
--  <para>
--	The Z8530 driver is written to be portable. In DMA mode it makes
--	assumptions about the use of ISA DMA. These are probably warranted
--	in most cases as the Z85230 in particular was designed to glue to PC
--	type machines. The PIO mode makes no real assumptions.
--  </para>
--  <para>
--	Should you need to retarget the Z8530 driver to another architecture
--	the only code that should need changing are the port I/O functions.
--	At the moment these assume PC I/O port accesses. This may not be
--	appropriate for all platforms. Replacing 
--	<function>z8530_read_port</function> and <function>z8530_write_port
--	</function> is intended to be all that is required to port this
--	driver layer.
--  </para>
--  </chapter>
--
--  <chapter id="bugs">
--     <title>Known Bugs And Assumptions</title>
--  <para>
--  <variablelist>
--    <varlistentry><term>Interrupt Locking</term>
--    <listitem>
+-  <chapter id="upper_layer">
+-    <title>SCSI upper layer</title>
 -    <para>
--	The locking in the driver is done via the global cli/sti lock. This
--	makes for relatively poor SMP performance. Switching this to use a
--	per device spin lock would probably materially improve performance.
+-      The upper layer supports the user-kernel interface by providing
+-      device nodes.
 -    </para>
--    </listitem></varlistentry>
--
--    <varlistentry><term>Occasional Failures</term>
--    <listitem>
--    <para>
--	We have reports of occasional failures when run for very long
--	periods of time and the driver starts to receive junk frames. At
--	the moment the cause of this is not clear.
--    </para>
--    </listitem></varlistentry>
--  </variablelist>
--	
--  </para>
+-    <sect1 id="sd">
+-      <title>sd (SCSI Disk)</title>
+-      <para>sd (sd_mod.o)</para>
+-<!-- !Idrivers/scsi/sd.c -->
+-    </sect1>
+-    <sect1 id="sr">
+-      <title>sr (SCSI CD-ROM)</title>
+-      <para>sr (sr_mod.o)</para>
+-    </sect1>
+-    <sect1 id="st">
+-      <title>st (SCSI Tape)</title>
+-      <para>st (st.o)</para>
+-    </sect1>
+-    <sect1 id="sg">
+-      <title>sg (SCSI Generic)</title>
+-      <para>sg (sg.o)</para>
+-    </sect1>
+-    <sect1 id="ch">
+-      <title>ch (SCSI Media Changer)</title>
+-      <para>ch (ch.c)</para>
+-    </sect1>
 -  </chapter>
 -
--  <chapter id="pubfunctions">
--     <title>Public Functions Provided</title>
--!Edrivers/net/wan/z85230.c
+-  <chapter id="mid_layer">
+-    <title>SCSI mid layer</title>
+-
+-    <sect1 id="midlayer_implementation">
+-      <title>SCSI midlayer implementation</title>
+-      <sect2 id="scsi_device.h">
+-        <title>include/scsi/scsi_device.h</title>
+-        <para>
+-        </para>
+-!Iinclude/scsi/scsi_device.h
+-      </sect2>
+-
+-      <sect2 id="scsi.c">
+-        <title>drivers/scsi/scsi.c</title>
+-        <para>Main file for the SCSI midlayer.</para>
+-!Edrivers/scsi/scsi.c
+-      </sect2>
+-      <sect2 id="scsicam.c">
+-        <title>drivers/scsi/scsicam.c</title>
+-        <para>
+-          <ulink url='http://www.t10.org/ftp/t10/drafts/cam/cam-r12b.pdf'>SCSI
+-          Common Access Method</ulink> support functions, for use with
+-          HDIO_GETGEO, etc.
+-        </para>
+-!Edrivers/scsi/scsicam.c
+-      </sect2>
+-      <sect2 id="scsi_error.c">
+-        <title>drivers/scsi/scsi_error.c</title>
+-        <para>Common SCSI error/timeout handling routines.</para>
+-!Edrivers/scsi/scsi_error.c
+-      </sect2>
+-      <sect2 id="scsi_devinfo.c">
+-        <title>drivers/scsi/scsi_devinfo.c</title>
+-        <para>
+-          Manage scsi_dev_info_list, which tracks blacklisted and whitelisted
+-          devices.
+-        </para>
+-!Idrivers/scsi/scsi_devinfo.c
+-      </sect2>
+-      <sect2 id="scsi_ioctl.c">
+-        <title>drivers/scsi/scsi_ioctl.c</title>
+-        <para>
+-          Handle ioctl() calls for SCSI devices.
+-        </para>
+-!Edrivers/scsi/scsi_ioctl.c
+-      </sect2>
+-      <sect2 id="scsi_lib.c">
+-        <title>drivers/scsi/scsi_lib.c</title>
+-        <para>
+-          SCSI queuing library.
+-        </para>
+-!Edrivers/scsi/scsi_lib.c
+-      </sect2>
+-      <sect2 id="scsi_lib_dma.c">
+-        <title>drivers/scsi/scsi_lib_dma.c</title>
+-        <para>
+-          SCSI library functions depending on DMA
+-          (map and unmap scatter-gather lists).
+-        </para>
+-!Edrivers/scsi/scsi_lib_dma.c
+-      </sect2>
+-      <sect2 id="scsi_module.c">
+-        <title>drivers/scsi/scsi_module.c</title>
+-        <para>
+-          The file drivers/scsi/scsi_module.c contains legacy support for
+-          old-style host templates.  It should never be used by any new driver.
+-        </para>
+-      </sect2>
+-      <sect2 id="scsi_proc.c">
+-        <title>drivers/scsi/scsi_proc.c</title>
+-        <para>
+-          The functions in this file provide an interface between
+-          the PROC file system and the SCSI device drivers
+-          It is mainly used for debugging, statistics and to pass
+-          information directly to the lowlevel driver.
+-
+-          I.E. plumbing to manage /proc/scsi/*
+-        </para>
+-!Idrivers/scsi/scsi_proc.c
+-      </sect2>
+-      <sect2 id="scsi_netlink.c">
+-        <title>drivers/scsi/scsi_netlink.c</title>
+-        <para>
+-          Infrastructure to provide async events from transports to userspace
+-          via netlink, using a single NETLINK_SCSITRANSPORT protocol for all
+-          transports.
+-
+-          See <ulink url='http://marc.info/?l=linux-scsi&amp;m=115507374832500&amp;w=2'>the
+-          original patch submission</ulink> for more details.
+-        </para>
+-!Idrivers/scsi/scsi_netlink.c
+-      </sect2>
+-      <sect2 id="scsi_scan.c">
+-        <title>drivers/scsi/scsi_scan.c</title>
+-        <para>
+-          Scan a host to determine which (if any) devices are attached.
+-
+-          The general scanning/probing algorithm is as follows, exceptions are
+-          made to it depending on device specific flags, compilation options,
+-          and global variable (boot or module load time) settings.
+-
+-          A specific LUN is scanned via an INQUIRY command; if the LUN has a
+-          device attached, a scsi_device is allocated and setup for it.
+-
+-          For every id of every channel on the given host, start by scanning
+-          LUN 0.  Skip hosts that don't respond at all to a scan of LUN 0.
+-          Otherwise, if LUN 0 has a device attached, allocate and setup a
+-          scsi_device for it.  If target is SCSI-3 or up, issue a REPORT LUN,
+-          and scan all of the LUNs returned by the REPORT LUN; else,
+-          sequentially scan LUNs up until some maximum is reached, or a LUN is
+-          seen that cannot have a device attached to it.
+-        </para>
+-!Idrivers/scsi/scsi_scan.c
+-      </sect2>
+-      <sect2 id="scsi_sysctl.c">
+-        <title>drivers/scsi/scsi_sysctl.c</title>
+-        <para>
+-          Set up the sysctl entry: "/dev/scsi/logging_level"
+-          (DEV_SCSI_LOGGING_LEVEL) which sets/returns scsi_logging_level.
+-        </para>
+-      </sect2>
+-      <sect2 id="scsi_sysfs.c">
+-        <title>drivers/scsi/scsi_sysfs.c</title>
+-        <para>
+-          SCSI sysfs interface routines.
+-        </para>
+-!Edrivers/scsi/scsi_sysfs.c
+-      </sect2>
+-      <sect2 id="hosts.c">
+-        <title>drivers/scsi/hosts.c</title>
+-        <para>
+-          mid to lowlevel SCSI driver interface
+-        </para>
+-!Edrivers/scsi/hosts.c
+-      </sect2>
+-      <sect2 id="constants.c">
+-        <title>drivers/scsi/constants.c</title>
+-        <para>
+-          mid to lowlevel SCSI driver interface
+-        </para>
+-!Edrivers/scsi/constants.c
+-      </sect2>
+-    </sect1>
+-
+-    <sect1 id="Transport_classes">
+-      <title>Transport classes</title>
+-      <para>
+-        Transport classes are service libraries for drivers in the SCSI
+-        lower layer, which expose transport attributes in sysfs.
+-      </para>
+-      <sect2 id="Fibre_Channel_transport">
+-        <title>Fibre Channel transport</title>
+-        <para>
+-          The file drivers/scsi/scsi_transport_fc.c defines transport attributes
+-          for Fibre Channel.
+-        </para>
+-!Edrivers/scsi/scsi_transport_fc.c
+-      </sect2>
+-      <sect2 id="iSCSI_transport">
+-        <title>iSCSI transport class</title>
+-        <para>
+-          The file drivers/scsi/scsi_transport_iscsi.c defines transport
+-          attributes for the iSCSI class, which sends SCSI packets over TCP/IP
+-          connections.
+-        </para>
+-!Edrivers/scsi/scsi_transport_iscsi.c
+-      </sect2>
+-      <sect2 id="SAS_transport">
+-        <title>Serial Attached SCSI (SAS) transport class</title>
+-        <para>
+-          The file drivers/scsi/scsi_transport_sas.c defines transport
+-          attributes for Serial Attached SCSI, a variant of SATA aimed at
+-          large high-end systems.
+-        </para>
+-        <para>
+-          The SAS transport class contains common code to deal with SAS HBAs,
+-          an aproximated representation of SAS topologies in the driver model,
+-          and various sysfs attributes to expose these topologies and management
+-          interfaces to userspace.
+-        </para>
+-        <para>
+-          In addition to the basic SCSI core objects this transport class
+-          introduces two additional intermediate objects:  The SAS PHY
+-          as represented by struct sas_phy defines an "outgoing" PHY on
+-          a SAS HBA or Expander, and the SAS remote PHY represented by
+-          struct sas_rphy defines an "incoming" PHY on a SAS Expander or
+-          end device.  Note that this is purely a software concept, the
+-          underlying hardware for a PHY and a remote PHY is the exactly
+-          the same.
+-        </para>
+-        <para>
+-          There is no concept of a SAS port in this code, users can see
+-          what PHYs form a wide port based on the port_identifier attribute,
+-          which is the same for all PHYs in a port.
+-        </para>
+-!Edrivers/scsi/scsi_transport_sas.c
+-      </sect2>
+-      <sect2 id="SATA_transport">
+-        <title>SATA transport class</title>
+-        <para>
+-          The SATA transport is handled by libata, which has its own book of
+-          documentation in this directory.
+-        </para>
+-      </sect2>
+-      <sect2 id="SPI_transport">
+-        <title>Parallel SCSI (SPI) transport class</title>
+-        <para>
+-          The file drivers/scsi/scsi_transport_spi.c defines transport
+-          attributes for traditional (fast/wide/ultra) SCSI busses.
+-        </para>
+-!Edrivers/scsi/scsi_transport_spi.c
+-      </sect2>
+-      <sect2 id="SRP_transport">
+-        <title>SCSI RDMA (SRP) transport class</title>
+-        <para>
+-          The file drivers/scsi/scsi_transport_srp.c defines transport
+-          attributes for SCSI over Remote Direct Memory Access.
+-        </para>
+-!Edrivers/scsi/scsi_transport_srp.c
+-      </sect2>
+-    </sect1>
+-
 -  </chapter>
 -
--  <chapter id="intfunctions">
--     <title>Internal Functions</title>
--!Idrivers/net/wan/z85230.c
+-  <chapter id="lower_layer">
+-    <title>SCSI lower layer</title>
+-    <sect1 id="hba_drivers">
+-      <title>Host Bus Adapter transport types</title>
+-      <para>
+-        Many modern device controllers use the SCSI command set as a protocol to
+-        communicate with their devices through many different types of physical
+-        connections.
+-      </para>
+-      <para>
+-        In SCSI language a bus capable of carrying SCSI commands is
+-        called a "transport", and a controller connecting to such a bus is
+-        called a "host bus adapter" (HBA).
+-      </para>
+-      <sect2 id="scsi_debug.c">
+-        <title>Debug transport</title>
+-        <para>
+-          The file drivers/scsi/scsi_debug.c simulates a host adapter with a
+-          variable number of disks (or disk like devices) attached, sharing a
+-          common amount of RAM.  Does a lot of checking to make sure that we are
+-          not getting blocks mixed up, and panics the kernel if anything out of
+-          the ordinary is seen.
+-        </para>
+-        <para>
+-          To be more realistic, the simulated devices have the transport
+-          attributes of SAS disks.
+-        </para>
+-        <para>
+-          For documentation see
+-          <ulink url='http://sg.danny.cz/sg/sdebug26.html'>http://sg.danny.cz/sg/sdebug26.html</ulink>
+-        </para>
+-<!-- !Edrivers/scsi/scsi_debug.c -->
+-      </sect2>
+-      <sect2 id="todo">
+-        <title>todo</title>
+-        <para>Parallel (fast/wide/ultra) SCSI, USB, SATA,
+-        SAS, Fibre Channel, FireWire, ATAPI devices, Infiniband,
+-        I20, iSCSI, Parallel ports, netlink...
+-        </para>
+-      </sect2>
+-    </sect1>
 -  </chapter>
--
 -</book>
-diff --git a/Documentation/networking/index.rst b/Documentation/networking/index.rst
-index ff652ff279e8..b5bd87e01f52 100644
---- a/Documentation/networking/index.rst
-+++ b/Documentation/networking/index.rst
-@@ -7,6 +7,7 @@ Contents:
-    :maxdepth: 2
- 
-    kapi
-+   z8530book
- 
- .. only::  subproject
- 
-diff --git a/Documentation/networking/z8530book.rst b/Documentation/networking/z8530book.rst
+diff --git a/Documentation/driver-api/index.rst b/Documentation/driver-api/index.rst
+index a9687731810e..9589b06e374e 100644
+--- a/Documentation/driver-api/index.rst
++++ b/Documentation/driver-api/index.rst
+@@ -32,6 +32,7 @@ available subsections can be seen below.
+    i2c
+    hsi
+    edac
++   scsi
+    libata
+    miscellaneous
+    s390-drivers
+diff --git a/Documentation/driver-api/scsi.rst b/Documentation/driver-api/scsi.rst
 new file mode 100644
-index 000000000000..31032ee36081
+index 000000000000..859fb672319f
 --- /dev/null
-+++ b/Documentation/networking/z8530book.rst
-@@ -0,0 +1,257 @@
-+=======================
-+Z8530 Programming Guide
-+=======================
++++ b/Documentation/driver-api/scsi.rst
+@@ -0,0 +1,344 @@
++=====================
++SCSI Interfaces Guide
++=====================
 +
-+:Author: Alan Cox
++:Author: James Bottomley
++:Author: Rob Landley
 +
 +Introduction
 +============
 +
-+The Z85x30 family synchronous/asynchronous controller chips are used on
-+a large number of cheap network interface cards. The kernel provides a
-+core interface layer that is designed to make it easy to provide WAN
-+services using this chip.
++Protocol vs bus
++---------------
 +
-+The current driver only support synchronous operation. Merging the
-+asynchronous driver support into this code to allow any Z85x30 device to
-+be used as both a tty interface and as a synchronous controller is a
-+project for Linux post the 2.4 release
++Once upon a time, the Small Computer Systems Interface defined both a
++parallel I/O bus and a data protocol to connect a wide variety of
++peripherals (disk drives, tape drives, modems, printers, scanners,
++optical drives, test equipment, and medical devices) to a host computer.
 +
-+Driver Modes
-+============
++Although the old parallel (fast/wide/ultra) SCSI bus has largely fallen
++out of use, the SCSI command set is more widely used than ever to
++communicate with devices over a number of different busses.
 +
-+The Z85230 driver layer can drive Z8530, Z85C30 and Z85230 devices in
-+three different modes. Each mode can be applied to an individual channel
-+on the chip (each chip has two channels).
++The `SCSI protocol <http://www.t10.org/scsi-3.htm>`__ is a big-endian
++peer-to-peer packet based protocol. SCSI commands are 6, 10, 12, or 16
++bytes long, often followed by an associated data payload.
 +
-+The PIO synchronous mode supports the most common Z8530 wiring. Here the
-+chip is interface to the I/O and interrupt facilities of the host
-+machine but not to the DMA subsystem. When running PIO the Z8530 has
-+extremely tight timing requirements. Doing high speeds, even with a
-+Z85230 will be tricky. Typically you should expect to achieve at best
-+9600 baud with a Z8C530 and 64Kbits with a Z85230.
++SCSI commands can be transported over just about any kind of bus, and
++are the default protocol for storage devices attached to USB, SATA, SAS,
++Fibre Channel, FireWire, and ATAPI devices. SCSI packets are also
++commonly exchanged over Infiniband,
++`I20 <http://i2o.shadowconnect.com/faq.php>`__, TCP/IP
++(`iSCSI <https://en.wikipedia.org/wiki/ISCSI>`__), even `Parallel
++ports <http://cyberelk.net/tim/parport/parscsi.html>`__.
 +
-+The DMA mode supports the chip when it is configured to use dual DMA
-+channels on an ISA bus. The better cards tend to support this mode of
-+operation for a single channel. With DMA running the Z85230 tops out
-+when it starts to hit ISA DMA constraints at about 512Kbits. It is worth
-+noting here that many PC machines hang or crash when the chip is driven
-+fast enough to hold the ISA bus solid.
++Design of the Linux SCSI subsystem
++----------------------------------
 +
-+Transmit DMA mode uses a single DMA channel. The DMA channel is used for
-+transmission as the transmit FIFO is smaller than the receive FIFO. it
-+gives better performance than pure PIO mode but is nowhere near as ideal
-+as pure DMA mode.
++The SCSI subsystem uses a three layer design, with upper, mid, and low
++layers. Every operation involving the SCSI subsystem (such as reading a
++sector from a disk) uses one driver at each of the 3 levels: one upper
++layer driver, one lower layer driver, and the SCSI midlayer.
 +
-+Using the Z85230 driver
-+=======================
++The SCSI upper layer provides the interface between userspace and the
++kernel, in the form of block and char device nodes for I/O and ioctl().
++The SCSI lower layer contains drivers for specific hardware devices.
 +
-+The Z85230 driver provides the back end interface to your board. To
-+configure a Z8530 interface you need to detect the board and to identify
-+its ports and interrupt resources. It is also your problem to verify the
-+resources are available.
++In between is the SCSI mid-layer, analogous to a network routing layer
++such as the IPv4 stack. The SCSI mid-layer routes a packet based data
++protocol between the upper layer's /dev nodes and the corresponding
++devices in the lower layer. It manages command queues, provides error
++handling and power management functions, and responds to ioctl()
++requests.
 +
-+Having identified the chip you need to fill in a struct z8530_dev,
-+which describes each chip. This object must exist until you finally
-+shutdown the board. Firstly zero the active field. This ensures nothing
-+goes off without you intending it. The irq field should be set to the
-+interrupt number of the chip. (Each chip has a single interrupt source
-+rather than each channel). You are responsible for allocating the
-+interrupt line. The interrupt handler should be set to
-+:c:func:`z8530_interrupt()`. The device id should be set to the
-+z8530_dev structure pointer. Whether the interrupt can be shared or not
-+is board dependent, and up to you to initialise.
++SCSI upper layer
++================
 +
-+The structure holds two channel structures. Initialise chanA.ctrlio and
-+chanA.dataio with the address of the control and data ports. You can or
-+this with Z8530_PORT_SLEEP to indicate your interface needs the 5uS
-+delay for chip settling done in software. The PORT_SLEEP option is
-+architecture specific. Other flags may become available on future
-+platforms, eg for MMIO. Initialise the chanA.irqs to &z8530_nop to
-+start the chip up as disabled and discarding interrupt events. This
-+ensures that stray interrupts will be mopped up and not hang the bus.
-+Set chanA.dev to point to the device structure itself. The private and
-+name field you may use as you wish. The private field is unused by the
-+Z85230 layer. The name is used for error reporting and it may thus make
-+sense to make it match the network name.
++The upper layer supports the user-kernel interface by providing device
++nodes.
 +
-+Repeat the same operation with the B channel if your chip has both
-+channels wired to something useful. This isn't always the case. If it is
-+not wired then the I/O values do not matter, but you must initialise
-+chanB.dev.
++sd (SCSI Disk)
++--------------
 +
-+If your board has DMA facilities then initialise the txdma and rxdma
-+fields for the relevant channels. You must also allocate the ISA DMA
-+channels and do any necessary board level initialisation to configure
-+them. The low level driver will do the Z8530 and DMA controller
-+programming but not board specific magic.
++sd (sd_mod.o)
 +
-+Having initialised the device you can then call
-+:c:func:`z8530_init()`. This will probe the chip and reset it into
-+a known state. An identification sequence is then run to identify the
-+chip type. If the checks fail to pass the function returns a non zero
-+error code. Typically this indicates that the port given is not valid.
-+After this call the type field of the z8530_dev structure is
-+initialised to either Z8530, Z85C30 or Z85230 according to the chip
-+found.
++sr (SCSI CD-ROM)
++----------------
 +
-+Once you have called z8530_init you can also make use of the utility
-+function :c:func:`z8530_describe()`. This provides a consistent
-+reporting format for the Z8530 devices, and allows all the drivers to
-+provide consistent reporting.
++sr (sr_mod.o)
 +
-+Attaching Network Interfaces
-+============================
++st (SCSI Tape)
++--------------
 +
-+If you wish to use the network interface facilities of the driver, then
-+you need to attach a network device to each channel that is present and
-+in use. In addition to use the generic HDLC you need to follow some
-+additional plumbing rules. They may seem complex but a look at the
-+example hostess_sv11 driver should reassure you.
++st (st.o)
 +
-+The network device used for each channel should be pointed to by the
-+netdevice field of each channel. The hdlc-> priv field of the network
-+device points to your private data - you will need to be able to find
-+your private data from this.
++sg (SCSI Generic)
++-----------------
 +
-+The way most drivers approach this particular problem is to create a
-+structure holding the Z8530 device definition and put that into the
-+private field of the network device. The network device fields of the
-+channels then point back to the network devices.
++sg (sg.o)
 +
-+If you wish to use the generic HDLC then you need to register the HDLC
-+device.
++ch (SCSI Media Changer)
++-----------------------
 +
-+Before you register your network device you will also need to provide
-+suitable handlers for most of the network device callbacks. See the
-+network device documentation for more details on this.
++ch (ch.c)
 +
-+Configuring And Activating The Port
-+===================================
++SCSI mid layer
++==============
 +
-+The Z85230 driver provides helper functions and tables to load the port
-+registers on the Z8530 chips. When programming the register settings for
-+a channel be aware that the documentation recommends initialisation
-+orders. Strange things happen when these are not followed.
++SCSI midlayer implementation
++----------------------------
 +
-+:c:func:`z8530_channel_load()` takes an array of pairs of
-+initialisation values in an array of u8 type. The first value is the
-+Z8530 register number. Add 16 to indicate the alternate register bank on
-+the later chips. The array is terminated by a 255.
++include/scsi/scsi_device.h
++~~~~~~~~~~~~~~~~~~~~~~~~~~~
 +
-+The driver provides a pair of public tables. The z8530_hdlc_kilostream
-+table is for the UK 'Kilostream' service and also happens to cover most
-+other end host configurations. The z8530_hdlc_kilostream_85230 table
-+is the same configuration using the enhancements of the 85230 chip. The
-+configuration loaded is standard NRZ encoded synchronous data with HDLC
-+bitstuffing. All of the timing is taken from the other end of the link.
++.. kernel-doc:: include/scsi/scsi_device.h
++   :internal:
 +
-+When writing your own tables be aware that the driver internally tracks
-+register values. It may need to reload values. You should therefore be
-+sure to set registers 1-7, 9-11, 14 and 15 in all configurations. Where
-+the register settings depend on DMA selection the driver will update the
-+bits itself when you open or close. Loading a new table with the
-+interface open is not recommended.
++drivers/scsi/scsi.c
++~~~~~~~~~~~~~~~~~~~
 +
-+There are three standard configurations supported by the core code. In
-+PIO mode the interface is programmed up to use interrupt driven PIO.
-+This places high demands on the host processor to avoid latency. The
-+driver is written to take account of latency issues but it cannot avoid
-+latencies caused by other drivers, notably IDE in PIO mode. Because the
-+drivers allocate buffers you must also prevent MTU changes while the
-+port is open.
++Main file for the SCSI midlayer.
 +
-+Once the port is open it will call the rx_function of each channel
-+whenever a completed packet arrived. This is invoked from interrupt
-+context and passes you the channel and a network buffer (struct
-+sk_buff) holding the data. The data includes the CRC bytes so most
-+users will want to trim the last two bytes before processing the data.
-+This function is very timing critical. When you wish to simply discard
-+data the support code provides the function
-+:c:func:`z8530_null_rx()` to discard the data.
-+
-+To active PIO mode sending and receiving the ``
-+    z8530_sync_open`` is called. This expects to be passed the network
-+device and the channel. Typically this is called from your network
-+device open callback. On a failure a non zero error status is returned.
-+The :c:func:`z8530_sync_close()` function shuts down a PIO
-+channel. This must be done before the channel is opened again and before
-+the driver shuts down and unloads.
-+
-+The ideal mode of operation is dual channel DMA mode. Here the kernel
-+driver will configure the board for DMA in both directions. The driver
-+also handles ISA DMA issues such as controller programming and the
-+memory range limit for you. This mode is activated by calling the
-+:c:func:`z8530_sync_dma_open()` function. On failure a non zero
-+error value is returned. Once this mode is activated it can be shut down
-+by calling the :c:func:`z8530_sync_dma_close()`. You must call
-+the close function matching the open mode you used.
-+
-+The final supported mode uses a single DMA channel to drive the transmit
-+side. As the Z85C30 has a larger FIFO on the receive channel this tends
-+to increase the maximum speed a little. This is activated by calling the
-+``z8530_sync_txdma_open
-+    ``. This returns a non zero error code on failure. The
-+:c:func:`z8530_sync_txdma_close()` function closes down the Z8530
-+interface from this mode.
-+
-+Network Layer Functions
-+=======================
-+
-+The Z8530 layer provides functions to queue packets for transmission.
-+The driver internally buffers the frame currently being transmitted and
-+one further frame (in order to keep back to back transmission running).
-+Any further buffering is up to the caller.
-+
-+The function :c:func:`z8530_queue_xmit()` takes a network buffer
-+in sk_buff format and queues it for transmission. The caller must
-+provide the entire packet with the exception of the bitstuffing and CRC.
-+This is normally done by the caller via the generic HDLC interface
-+layer. It returns 0 if the buffer has been queued and non zero values
-+for queue full. If the function accepts the buffer it becomes property
-+of the Z8530 layer and the caller should not free it.
-+
-+The function :c:func:`z8530_get_stats()` returns a pointer to an
-+internally maintained per interface statistics block. This provides most
-+of the interface code needed to implement the network layer get_stats
-+callback.
-+
-+Porting The Z8530 Driver
-+========================
-+
-+The Z8530 driver is written to be portable. In DMA mode it makes
-+assumptions about the use of ISA DMA. These are probably warranted in
-+most cases as the Z85230 in particular was designed to glue to PC type
-+machines. The PIO mode makes no real assumptions.
-+
-+Should you need to retarget the Z8530 driver to another architecture the
-+only code that should need changing are the port I/O functions. At the
-+moment these assume PC I/O port accesses. This may not be appropriate
-+for all platforms. Replacing :c:func:`z8530_read_port()` and
-+``z8530_write_port
-+    `` is intended to be all that is required to port this driver layer.
-+
-+Known Bugs And Assumptions
-+==========================
-+
-+Interrupt Locking
-+    The locking in the driver is done via the global cli/sti lock. This
-+    makes for relatively poor SMP performance. Switching this to use a
-+    per device spin lock would probably materially improve performance.
-+
-+Occasional Failures
-+    We have reports of occasional failures when run for very long
-+    periods of time and the driver starts to receive junk frames. At the
-+    moment the cause of this is not clear.
-+
-+Public Functions Provided
-+=========================
-+
-+.. kernel-doc:: drivers/net/wan/z85230.c
++.. kernel-doc:: drivers/scsi/scsi.c
 +   :export:
 +
-+Internal Functions
-+==================
++drivers/scsi/scsicam.c
++~~~~~~~~~~~~~~~~~~~~~~
 +
-+.. kernel-doc:: drivers/net/wan/z85230.c
++`SCSI Common Access
++Method <http://www.t10.org/ftp/t10/drafts/cam/cam-r12b.pdf>`__ support
++functions, for use with HDIO_GETGEO, etc.
++
++.. kernel-doc:: drivers/scsi/scsicam.c
++   :export:
++
++drivers/scsi/scsi_error.c
++~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Common SCSI error/timeout handling routines.
++
++.. kernel-doc:: drivers/scsi/scsi_error.c
++   :export:
++
++drivers/scsi/scsi_devinfo.c
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Manage scsi_dev_info_list, which tracks blacklisted and whitelisted
++devices.
++
++.. kernel-doc:: drivers/scsi/scsi_devinfo.c
 +   :internal:
++
++drivers/scsi/scsi_ioctl.c
++~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Handle ioctl() calls for SCSI devices.
++
++.. kernel-doc:: drivers/scsi/scsi_ioctl.c
++   :export:
++
++drivers/scsi/scsi_lib.c
++~~~~~~~~~~~~~~~~~~~~~~~~
++
++SCSI queuing library.
++
++.. kernel-doc:: drivers/scsi/scsi_lib.c
++   :export:
++
++drivers/scsi/scsi_lib_dma.c
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++SCSI library functions depending on DMA (map and unmap scatter-gather
++lists).
++
++.. kernel-doc:: drivers/scsi/scsi_lib_dma.c
++   :export:
++
++drivers/scsi/scsi_module.c
++~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++The file drivers/scsi/scsi_module.c contains legacy support for
++old-style host templates. It should never be used by any new driver.
++
++drivers/scsi/scsi_proc.c
++~~~~~~~~~~~~~~~~~~~~~~~~~
++
++The functions in this file provide an interface between the PROC file
++system and the SCSI device drivers It is mainly used for debugging,
++statistics and to pass information directly to the lowlevel driver. I.E.
++plumbing to manage /proc/scsi/\*
++
++.. kernel-doc:: drivers/scsi/scsi_proc.c
++   :internal:
++
++drivers/scsi/scsi_netlink.c
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Infrastructure to provide async events from transports to userspace via
++netlink, using a single NETLINK_SCSITRANSPORT protocol for all
++transports. See `the original patch
++submission <http://marc.info/?l=linux-scsi&m=115507374832500&w=2>`__ for
++more details.
++
++.. kernel-doc:: drivers/scsi/scsi_netlink.c
++   :internal:
++
++drivers/scsi/scsi_scan.c
++~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Scan a host to determine which (if any) devices are attached. The
++general scanning/probing algorithm is as follows, exceptions are made to
++it depending on device specific flags, compilation options, and global
++variable (boot or module load time) settings. A specific LUN is scanned
++via an INQUIRY command; if the LUN has a device attached, a scsi_device
++is allocated and setup for it. For every id of every channel on the
++given host, start by scanning LUN 0. Skip hosts that don't respond at
++all to a scan of LUN 0. Otherwise, if LUN 0 has a device attached,
++allocate and setup a scsi_device for it. If target is SCSI-3 or up,
++issue a REPORT LUN, and scan all of the LUNs returned by the REPORT LUN;
++else, sequentially scan LUNs up until some maximum is reached, or a LUN
++is seen that cannot have a device attached to it.
++
++.. kernel-doc:: drivers/scsi/scsi_scan.c
++   :internal:
++
++drivers/scsi/scsi_sysctl.c
++~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Set up the sysctl entry: "/dev/scsi/logging_level"
++(DEV_SCSI_LOGGING_LEVEL) which sets/returns scsi_logging_level.
++
++drivers/scsi/scsi_sysfs.c
++~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++SCSI sysfs interface routines.
++
++.. kernel-doc:: drivers/scsi/scsi_sysfs.c
++   :export:
++
++drivers/scsi/hosts.c
++~~~~~~~~~~~~~~~~~~~~
++
++mid to lowlevel SCSI driver interface
++
++.. kernel-doc:: drivers/scsi/hosts.c
++   :export:
++
++drivers/scsi/constants.c
++~~~~~~~~~~~~~~~~~~~~~~~~
++
++mid to lowlevel SCSI driver interface
++
++.. kernel-doc:: drivers/scsi/constants.c
++   :export:
++
++Transport classes
++-----------------
++
++Transport classes are service libraries for drivers in the SCSI lower
++layer, which expose transport attributes in sysfs.
++
++Fibre Channel transport
++~~~~~~~~~~~~~~~~~~~~~~~
++
++The file drivers/scsi/scsi_transport_fc.c defines transport attributes
++for Fibre Channel.
++
++.. kernel-doc:: drivers/scsi/scsi_transport_fc.c
++   :export:
++
++iSCSI transport class
++~~~~~~~~~~~~~~~~~~~~~
++
++The file drivers/scsi/scsi_transport_iscsi.c defines transport
++attributes for the iSCSI class, which sends SCSI packets over TCP/IP
++connections.
++
++.. kernel-doc:: drivers/scsi/scsi_transport_iscsi.c
++   :export:
++
++Serial Attached SCSI (SAS) transport class
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++The file drivers/scsi/scsi_transport_sas.c defines transport
++attributes for Serial Attached SCSI, a variant of SATA aimed at large
++high-end systems.
++
++The SAS transport class contains common code to deal with SAS HBAs, an
++aproximated representation of SAS topologies in the driver model, and
++various sysfs attributes to expose these topologies and management
++interfaces to userspace.
++
++In addition to the basic SCSI core objects this transport class
++introduces two additional intermediate objects: The SAS PHY as
++represented by struct sas_phy defines an "outgoing" PHY on a SAS HBA or
++Expander, and the SAS remote PHY represented by struct sas_rphy defines
++an "incoming" PHY on a SAS Expander or end device. Note that this is
++purely a software concept, the underlying hardware for a PHY and a
++remote PHY is the exactly the same.
++
++There is no concept of a SAS port in this code, users can see what PHYs
++form a wide port based on the port_identifier attribute, which is the
++same for all PHYs in a port.
++
++.. kernel-doc:: drivers/scsi/scsi_transport_sas.c
++   :export:
++
++SATA transport class
++~~~~~~~~~~~~~~~~~~~~
++
++The SATA transport is handled by libata, which has its own book of
++documentation in this directory.
++
++Parallel SCSI (SPI) transport class
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++The file drivers/scsi/scsi_transport_spi.c defines transport
++attributes for traditional (fast/wide/ultra) SCSI busses.
++
++.. kernel-doc:: drivers/scsi/scsi_transport_spi.c
++   :export:
++
++SCSI RDMA (SRP) transport class
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++The file drivers/scsi/scsi_transport_srp.c defines transport
++attributes for SCSI over Remote Direct Memory Access.
++
++.. kernel-doc:: drivers/scsi/scsi_transport_srp.c
++   :export:
++
++SCSI lower layer
++================
++
++Host Bus Adapter transport types
++--------------------------------
++
++Many modern device controllers use the SCSI command set as a protocol to
++communicate with their devices through many different types of physical
++connections.
++
++In SCSI language a bus capable of carrying SCSI commands is called a
++"transport", and a controller connecting to such a bus is called a "host
++bus adapter" (HBA).
++
++Debug transport
++~~~~~~~~~~~~~~~
++
++The file drivers/scsi/scsi_debug.c simulates a host adapter with a
++variable number of disks (or disk like devices) attached, sharing a
++common amount of RAM. Does a lot of checking to make sure that we are
++not getting blocks mixed up, and panics the kernel if anything out of
++the ordinary is seen.
++
++To be more realistic, the simulated devices have the transport
++attributes of SAS disks.
++
++For documentation see http://sg.danny.cz/sg/sdebug26.html
++
++todo
++~~~~
++
++Parallel (fast/wide/ultra) SCSI, USB, SATA, SAS, Fibre Channel,
++FireWire, ATAPI devices, Infiniband, I20, iSCSI, Parallel ports,
++netlink...
+diff --git a/Documentation/networking/z8530book.rst b/Documentation/networking/z8530book.rst
+index 31032ee36081..fea2c40e7973 100644
+--- a/Documentation/networking/z8530book.rst
++++ b/Documentation/networking/z8530book.rst
+@@ -170,10 +170,10 @@ This function is very timing critical. When you wish to simply discard
+ data the support code provides the function
+ :c:func:`z8530_null_rx()` to discard the data.
+ 
+-To active PIO mode sending and receiving the ``
+-    z8530_sync_open`` is called. This expects to be passed the network
+-device and the channel. Typically this is called from your network
+-device open callback. On a failure a non zero error status is returned.
++To active PIO mode sending and receiving the ``z8530_sync_open`` is called.
++This expects to be passed the network device and the channel. Typically
++this is called from your network device open callback. On a failure a
++non zero error status is returned.
+ The :c:func:`z8530_sync_close()` function shuts down a PIO
+ channel. This must be done before the channel is opened again and before
+ the driver shuts down and unloads.
+@@ -190,8 +190,7 @@ the close function matching the open mode you used.
+ The final supported mode uses a single DMA channel to drive the transmit
+ side. As the Z85C30 has a larger FIFO on the receive channel this tends
+ to increase the maximum speed a little. This is activated by calling the
+-``z8530_sync_txdma_open
+-    ``. This returns a non zero error code on failure. The
++``z8530_sync_txdma_open``. This returns a non zero error code on failure. The
+ :c:func:`z8530_sync_txdma_close()` function closes down the Z8530
+ interface from this mode.
+ 
+@@ -228,8 +227,8 @@ Should you need to retarget the Z8530 driver to another architecture the
+ only code that should need changing are the port I/O functions. At the
+ moment these assume PC I/O port accesses. This may not be appropriate
+ for all platforms. Replacing :c:func:`z8530_read_port()` and
+-``z8530_write_port
+-    `` is intended to be all that is required to port this driver layer.
++``z8530_write_port`` is intended to be all that is required to port
++this driver layer.
+ 
+ Known Bugs And Assumptions
+ ==========================
 -- 
 2.9.3
