@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
- by merlin.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dAbQV-0002gu-8F
- for linux-mtd@lists.infradead.org; Tue, 16 May 2017 12:18:11 +0000
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dAbQH-0001Lk-TA
+ for linux-mtd@lists.infradead.org; Tue, 16 May 2017 12:18:19 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -12,16 +12,10 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- Jani Nikula <jani.nikula@intel.com>,
- "Herton R. Krzesinski" <herton@redhat.com>,
- Markus Heiser <markus.heiser@darmarit.de>,
- Silvio Fricke <silvio.fricke@gmail.com>,
- sayli karnik <karniksayli1995@gmail.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH v2 36/53] docs-rst: convert librs book to ReST
-Date: Tue, 16 May 2017 09:16:28 -0300
-Message-Id: <8aba78483226a9904e1e1790853a25f5a08abbd0.1494935649.git.mchehab@s-opensource.com>
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH v2 02/53] kernel-hacking: update document
+Date: Tue, 16 May 2017 09:15:54 -0300
+Message-Id: <dca1e58e3f1c82a840abaafb9328f84ae69a9926.1494935649.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
 References: <cover.1494935649.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
@@ -36,556 +30,440 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use pandoc to convert documentation to ReST by calling
-Documentation/sphinx/tmplcvt script.
+This document is fairly updated. Yet, some stuff moved to
+other kernel headers. So, update to point to the right
+places.
+
+While here, adjust some minor ReST markups.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/DocBook/Makefile   |   2 +-
- Documentation/DocBook/librs.tmpl | 289 ---------------------------------------
- Documentation/core-api/index.rst |   1 +
- Documentation/core-api/librs.rst | 212 ++++++++++++++++++++++++++++
- 4 files changed, 214 insertions(+), 290 deletions(-)
- delete mode 100644 Documentation/DocBook/librs.tmpl
- create mode 100644 Documentation/core-api/librs.rst
+ Documentation/kernel-hacking/hacking.rst | 179 +++++++++++++++++--------------
+ 1 file changed, 98 insertions(+), 81 deletions(-)
 
-diff --git a/Documentation/DocBook/Makefile b/Documentation/DocBook/Makefile
-index baedb14f3b40..0a82f6253682 100644
---- a/Documentation/DocBook/Makefile
-+++ b/Documentation/DocBook/Makefile
-@@ -8,7 +8,7 @@
+diff --git a/Documentation/kernel-hacking/hacking.rst b/Documentation/kernel-hacking/hacking.rst
+index 75597e627791..1a456b60a7cf 100644
+--- a/Documentation/kernel-hacking/hacking.rst
++++ b/Documentation/kernel-hacking/hacking.rst
+@@ -56,7 +56,7 @@ interrupts. You can sleep, by calling :c:func:`schedule()`.
  
- DOCBOOKS := \
- 	    lsm.xml \
--	    mtdnand.xml librs.xml \
-+	    mtdnand.xml \
- 	    sh.xml
+ In user context, the ``current`` pointer (indicating the task we are
+ currently executing) is valid, and :c:func:`in_interrupt()`
+-(``include/linux/interrupt.h``) is false.
++(``include/linux/preempt.h``) is false.
  
- ifeq ($(DOCBOOKS),)
-diff --git a/Documentation/DocBook/librs.tmpl b/Documentation/DocBook/librs.tmpl
-deleted file mode 100644
-index 94f21361e0ed..000000000000
---- a/Documentation/DocBook/librs.tmpl
-+++ /dev/null
-@@ -1,289 +0,0 @@
--<?xml version="1.0" encoding="UTF-8"?>
--<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
--	"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" []>
--
--<book id="Reed-Solomon-Library-Guide">
-- <bookinfo>
--  <title>Reed-Solomon Library Programming Interface</title>
--  
--  <authorgroup>
--   <author>
--    <firstname>Thomas</firstname>
--    <surname>Gleixner</surname>
--    <affiliation>
--     <address>
--      <email>tglx@linutronix.de</email>
--     </address>
--    </affiliation>
--   </author>
--  </authorgroup>
--
--  <copyright>
--   <year>2004</year>
--   <holder>Thomas Gleixner</holder>
--  </copyright>
--
--  <legalnotice>
--   <para>
--     This documentation is free software; you can redistribute
--     it and/or modify it under the terms of the GNU General Public
--     License version 2 as published by the Free Software Foundation.
--   </para>
--      
--   <para>
--     This program is distributed in the hope that it will be
--     useful, but WITHOUT ANY WARRANTY; without even the implied
--     warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
--     See the GNU General Public License for more details.
--   </para>
--      
--   <para>
--     You should have received a copy of the GNU General Public
--     License along with this program; if not, write to the Free
--     Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
--     MA 02111-1307 USA
--   </para>
--      
--   <para>
--     For more details see the file COPYING in the source
--     distribution of Linux.
--   </para>
--  </legalnotice>
-- </bookinfo>
--
--<toc></toc>
--
--  <chapter id="intro">
--      <title>Introduction</title>
--  <para>
--  	The generic Reed-Solomon Library provides encoding, decoding
--	and error correction functions.
--  </para>
--  <para>
--  	Reed-Solomon codes are used in communication and storage
--	applications to ensure data integrity. 
--  </para>
--  <para>
--  	This documentation is provided for developers who want to utilize
--	the functions provided by the library.
--  </para>
--  </chapter>
--  
--  <chapter id="bugs">
--     <title>Known Bugs And Assumptions</title>
--  <para>
--	None.	
--  </para>
--  </chapter>
--
--  <chapter id="usage">
--     	<title>Usage</title>
--	<para>
--		This chapter provides examples of how to use the library.
--	</para>
--	<sect1>
--		<title>Initializing</title>
--		<para>
--			The init function init_rs returns a pointer to an
--			rs decoder structure, which holds the necessary
--			information for encoding, decoding and error correction
--			with the given polynomial. It either uses an existing
--			matching decoder or creates a new one. On creation all
--			the lookup tables for fast en/decoding are created.
--			The function may take a while, so make sure not to 
--			call it in critical code paths.
--		</para>
--		<programlisting>
--/* the Reed Solomon control structure */
--static struct rs_control *rs_decoder;
--
--/* Symbolsize is 10 (bits)
-- * Primitive polynomial is x^10+x^3+1
-- * first consecutive root is 0
-- * primitive element to generate roots = 1
-- * generator polynomial degree (number of roots) = 6
-- */
--rs_decoder = init_rs (10, 0x409, 0, 1, 6);
--		</programlisting>
--	</sect1>
--	<sect1>
--		<title>Encoding</title>
--		<para>
--			The encoder calculates the Reed-Solomon code over
--			the given data length and stores the result in 
--			the parity buffer. Note that the parity buffer must
--			be initialized before calling the encoder.
--		</para>
--		<para>
--			The expanded data can be inverted on the fly by
--			providing a non-zero inversion mask. The expanded data is
--			XOR'ed with the mask. This is used e.g. for FLASH
--			ECC, where the all 0xFF is inverted to an all 0x00.
--			The Reed-Solomon code for all 0x00 is all 0x00. The
--			code is inverted before storing to FLASH so it is 0xFF
--			too. This prevents that reading from an erased FLASH
--			results in ECC errors.
--		</para>
--		<para>
--			The databytes are expanded to the given symbol size
--			on the fly. There is no support for encoding continuous
--			bitstreams with a symbol size != 8 at the moment. If
--			it is necessary it should be not a big deal to implement
--			such functionality.
--		</para>
--		<programlisting>
--/* Parity buffer. Size = number of roots */
--uint16_t par[6];
--/* Initialize the parity buffer */
--memset(par, 0, sizeof(par));
--/* Encode 512 byte in data8. Store parity in buffer par */
--encode_rs8 (rs_decoder, data8, 512, par, 0);
--		</programlisting>
--	</sect1>
--	<sect1>
--		<title>Decoding</title>
--		<para>
--			The decoder calculates the syndrome over
--			the given data length and the received parity symbols
--			and corrects errors in the data.
--		</para>
--		<para>
--			If a syndrome is available from a hardware decoder
--			then the syndrome calculation is skipped.
--		</para>
--		<para>
--			The correction of the data buffer can be suppressed
--			by providing a correction pattern buffer and an error
--			location buffer to the decoder. The decoder stores the
--			calculated error location and the correction bitmask
--			in the given buffers. This is useful for hardware
--			decoders which use a weird bit ordering scheme.
--		</para>
--		<para>
--			The databytes are expanded to the given symbol size
--			on the fly. There is no support for decoding continuous
--			bitstreams with a symbolsize != 8 at the moment. If
--			it is necessary it should be not a big deal to implement
--			such functionality.
--		</para>
--		
--		<sect2>
--		<title>
--			Decoding with syndrome calculation, direct data correction
--		</title>
--		<programlisting>
--/* Parity buffer. Size = number of roots */
--uint16_t par[6];
--uint8_t  data[512];
--int numerr;
--/* Receive data */
--.....
--/* Receive parity */
--.....
--/* Decode 512 byte in data8.*/
--numerr = decode_rs8 (rs_decoder, data8, par, 512, NULL, 0, NULL, 0, NULL);
--		</programlisting>
--		</sect2>
--
--		<sect2>
--		<title>
--			Decoding with syndrome given by hardware decoder, direct data correction
--		</title>
--		<programlisting>
--/* Parity buffer. Size = number of roots */
--uint16_t par[6], syn[6];
--uint8_t  data[512];
--int numerr;
--/* Receive data */
--.....
--/* Receive parity */
--.....
--/* Get syndrome from hardware decoder */
--.....
--/* Decode 512 byte in data8.*/
--numerr = decode_rs8 (rs_decoder, data8, par, 512, syn, 0, NULL, 0, NULL);
--		</programlisting>
--		</sect2>
--
--		<sect2>
--		<title>
--			Decoding with syndrome given by hardware decoder, no direct data correction.
--		</title>
--		<para>
--			Note: It's not necessary to give data and received parity to the decoder.
--		</para>
--		<programlisting>
--/* Parity buffer. Size = number of roots */
--uint16_t par[6], syn[6], corr[8];
--uint8_t  data[512];
--int numerr, errpos[8];
--/* Receive data */
--.....
--/* Receive parity */
--.....
--/* Get syndrome from hardware decoder */
--.....
--/* Decode 512 byte in data8.*/
--numerr = decode_rs8 (rs_decoder, NULL, NULL, 512, syn, 0, errpos, 0, corr);
--for (i = 0; i &lt; numerr; i++) {
--	do_error_correction_in_your_buffer(errpos[i], corr[i]);
--}
--		</programlisting>
--		</sect2>
--	</sect1>
--	<sect1>
--		<title>Cleanup</title>
--		<para>
--			The function free_rs frees the allocated resources,
--			if the caller is the last user of the decoder.
--		</para>
--		<programlisting>
--/* Release resources */
--free_rs(rs_decoder);
--		</programlisting>
--	</sect1>
--
--  </chapter>
--	
--  <chapter id="structs">
--     <title>Structures</title>
--     <para>
--     This chapter contains the autogenerated documentation of the structures which are
--     used in the Reed-Solomon Library and are relevant for a developer.
--     </para>
--!Iinclude/linux/rslib.h
--  </chapter>
--
--  <chapter id="pubfunctions">
--     <title>Public Functions Provided</title>
--     <para>
--     This chapter contains the autogenerated documentation of the Reed-Solomon functions
--     which are exported.
--     </para>
--!Elib/reed_solomon/reed_solomon.c
--  </chapter>
--  
--  <chapter id="credits">
--     <title>Credits</title>
--	<para>
--		The library code for encoding and decoding was written by Phil Karn.
--	</para>
--	<programlisting>
--		Copyright 2002, Phil Karn, KA9Q
-- 		May be used under the terms of the GNU General Public License (GPL)
--	</programlisting>
--	<para>
--		The wrapper functions and interfaces are written by Thomas Gleixner.
--	</para>
--	<para>
--		Many users have provided bugfixes, improvements and helping hands for testing.
--		Thanks a lot.
--	</para>
--	<para>
--		The following people have contributed to this document:
--	</para>
--	<para>
--		Thomas Gleixner<email>tglx@linutronix.de</email>
--	</para>
--  </chapter>
--</book>
-diff --git a/Documentation/core-api/index.rst b/Documentation/core-api/index.rst
-index 62abd36bfffb..0606be3a3111 100644
---- a/Documentation/core-api/index.rst
-+++ b/Documentation/core-api/index.rst
-@@ -19,6 +19,7 @@ Core utilities
-    workqueue
-    genericirq
-    flexible-arrays
-+   librs
+ .. warning::
  
- Interfaces for kernel debugging
- ===============================
-diff --git a/Documentation/core-api/librs.rst b/Documentation/core-api/librs.rst
-new file mode 100644
-index 000000000000..6010f5bc5bf9
---- /dev/null
-+++ b/Documentation/core-api/librs.rst
-@@ -0,0 +1,212 @@
-+==========================================
-+Reed-Solomon Library Programming Interface
-+==========================================
+@@ -114,12 +114,12 @@ time, although different tasklets can run simultaneously.
+     Kuznetsov had at the time.
+ 
+ You can tell you are in a softirq (or tasklet) using the
+-:c:func:`in_softirq()` macro (``include/linux/interrupt.h``).
++:c:func:`in_softirq()` macro (``include/linux/preempt.h``).
+ 
+ .. warning::
+ 
+-    Beware that this will return a false positive if a bh lock (see
+-    below) is held.
++    Beware that this will return a false positive if a
++    :ref:`botton half lock <local_bh_disable>` is held.
+ 
+ Some Basic Rules
+ ================
+@@ -154,9 +154,7 @@ The Linux kernel is portable
+ ioctls: Not writing a new system call
+ =====================================
+ 
+-A system call generally looks like this
+-
+-::
++A system call generally looks like this::
+ 
+     asmlinkage long sys_mycall(int arg)
+     {
+@@ -175,7 +173,9 @@ If all your routine does is read or write some parameter, consider
+ implementing a :c:func:`sysfs()` interface instead.
+ 
+ Inside the ioctl you're in user context to a process. When a error
+-occurs you return a negated errno (see ``include/linux/errno.h``),
++occurs you return a negated errno (see
++``include/uapi/asm-generic/errno-base.h``,
++``include/uapi/asm-generic/errno.h`` and ``include/linux/errno.h``),
+ otherwise you return 0.
+ 
+ After you slept you should check if a signal occurred: the Unix/Linux
+@@ -195,9 +195,7 @@ some data structure.
+ If you're doing longer computations: first think userspace. If you
+ **really** want to do it in kernel you should regularly check if you need
+ to give up the CPU (remember there is cooperative multitasking per CPU).
+-Idiom:
+-
+-::
++Idiom::
+ 
+     cond_resched(); /* Will sleep */
+ 
+@@ -231,26 +229,24 @@ Really.
+ Common Routines
+ ===============
+ 
+-:c:func:`printk()` ``include/linux/kernel.h``
+----------------------------------------------
++:c:func:`printk()`
++------------------
 +
-+:Author: Thomas Gleixner
++Defined in ``include/linux/printk.h``
+ 
+ :c:func:`printk()` feeds kernel messages to the console, dmesg, and
+ the syslog daemon. It is useful for debugging and reporting errors, and
+ can be used inside interrupt context, but use with caution: a machine
+ which has its console flooded with printk messages is unusable. It uses
+ a format string mostly compatible with ANSI C printf, and C string
+-concatenation to give it a first "priority" argument:
+-
+-::
++concatenation to give it a first "priority" argument::
+ 
+     printk(KERN_INFO "i = %u\n", i);
+ 
+ 
+-See ``include/linux/kernel.h``; for other ``KERN_`` values; these are
++See ``include/linux/kern_levels.h``; for other ``KERN_`` values; these are
+ interpreted by syslog as the level. Special case: for printing an IP
+-address use
+-
+-::
++address use::
+ 
+     __be32 ipaddress;
+     printk(KERN_INFO "my ip: %pI4\n", &ipaddress);
+@@ -270,8 +266,10 @@ overruns. Make sure that will be enough.
+     on top of its printf function: "Printf should not be used for
+     chit-chat". You should follow that advice.
+ 
+-:c:func:`copy_[to/from]_user()` / :c:func:`get_user()` / :c:func:`put_user()` ``include/linux/uaccess.h``
+----------------------------------------------------------------------------------------------------------
++:c:func:`copy_to_user()` / :c:func:`copy_from_user()` / :c:func:`get_user()` / :c:func:`put_user()`
++---------------------------------------------------------------------------------------------------
 +
-+Introduction
-+============
++Defined in ``include/linux/uaccess.h`` / ``asm/uaccess.h``
+ 
+ **[SLEEPS]**
+ 
+@@ -297,8 +295,10 @@ The functions may sleep implicitly. This should never be called outside
+ user context (it makes no sense), with interrupts disabled, or a
+ spinlock held.
+ 
+-:c:func:`kmalloc()`/:c:func:`kfree()` ``include/linux/slab.h``
+---------------------------------------------------------------
++:c:func:`kmalloc()`/:c:func:`kfree()`
++-------------------------------------
 +
-+The generic Reed-Solomon Library provides encoding, decoding and error
-+correction functions.
++Defined in ``include/linux/slab.h``
+ 
+ **[MAY SLEEP: SEE BELOW]**
+ 
+@@ -324,9 +324,9 @@ message, then maybe you called a sleeping allocation function from
+ interrupt context without ``GFP_ATOMIC``. You should really fix that.
+ Run, don't walk.
+ 
+-If you are allocating at least ``PAGE_SIZE`` (``include/asm/page.h``)
+-bytes, consider using :c:func:`__get_free_pages()`
+-(``include/linux/mm.h``). It takes an order argument (0 for page sized,
++If you are allocating at least ``PAGE_SIZE`` (``asm/page.h`` or
++``asm/page_types.h``) bytes, consider using :c:func:`__get_free_pages()`
++(``include/linux/gfp.h``). It takes an order argument (0 for page sized,
+ 1 for double page, 2 for four pages etc.) and the same memory priority
+ flag word as above.
+ 
+@@ -344,24 +344,30 @@ routine.
+ Before inventing your own cache of often-used objects consider using a
+ slab cache in ``include/linux/slab.h``
+ 
+-:c:func:`current()` ``include/asm/current.h``
+----------------------------------------------
++:c:func:`current()`
++-------------------
 +
-+Reed-Solomon codes are used in communication and storage applications to
-+ensure data integrity.
++Defined in ``include/asm/current.h``
+ 
+ This global variable (really a macro) contains a pointer to the current
+ task structure, so is only valid in user context. For example, when a
+ process makes a system call, this will point to the task structure of
+ the calling process. It is **not NULL** in interrupt context.
+ 
+-:c:func:`mdelay()`/:c:func:`udelay()` ``include/asm/delay.h`` ``include/linux/delay.h``
+----------------------------------------------------------------------------------------
++:c:func:`mdelay()`/:c:func:`udelay()`
++-------------------------------------
 +
-+This documentation is provided for developers who want to utilize the
-+functions provided by the library.
++Defined in ``include/asm/delay.h`` / ``include/linux/delay.h``
+ 
+ The :c:func:`udelay()` and :c:func:`ndelay()` functions can be
+ used for small pauses. Do not use large values with them as you risk
+ overflow - the helper function :c:func:`mdelay()` is useful here, or
+ consider :c:func:`msleep()`.
+ 
+-:c:func:`cpu_to_be32()`/:c:func:`be32_to_cpu()`/:c:func:`cpu_to_le32()`/:c:func:`le32_to_cpu()` ``include/asm/byteorder.h``
+----------------------------------------------------------------------------------------------------------------------------
++:c:func:`cpu_to_be32()`/:c:func:`be32_to_cpu()`/:c:func:`cpu_to_le32()`/:c:func:`le32_to_cpu()`
++-----------------------------------------------------------------------------------------------
 +
-+Known Bugs And Assumptions
-+==========================
++Defined in ``include/asm/byteorder.h``
+ 
+ The :c:func:`cpu_to_be32()` family (where the "32" can be replaced
+ by 64 or 16, and the "be" can be replaced by "le") are the general way
+@@ -375,8 +381,10 @@ to the given type, and return the converted value. The other variation
+ is the "in-situ" family, such as :c:func:`cpu_to_be32s()`, which
+ convert value referred to by the pointer, and return void.
+ 
+-:c:func:`local_irq_save()`/:c:func:`local_irq_restore()` ``include/linux/irqflags.h``
+--------------------------------------------------------------------------------------
++:c:func:`local_irq_save()`/:c:func:`local_irq_restore()`
++--------------------------------------------------------
 +
-+None.
++Defined in ``include/linux/irqflags.h``
+ 
+ These routines disable hard interrupts on the local CPU, and restore
+ them. They are reentrant; saving the previous state in their one
+@@ -384,16 +392,23 @@ them. They are reentrant; saving the previous state in their one
+ enabled, you can simply use :c:func:`local_irq_disable()` and
+ :c:func:`local_irq_enable()`.
+ 
+-:c:func:`local_bh_disable()`/:c:func:`local_bh_enable()` ``include/linux/interrupt.h``
+---------------------------------------------------------------------------------------
++.. _local_bh_disable:
 +
-+Usage
-+=====
++:c:func:`local_bh_disable()`/:c:func:`local_bh_enable()`
++--------------------------------------------------------
 +
-+This chapter provides examples of how to use the library.
++Defined in ``include/linux/bottom_half.h``
 +
-+Initializing
-+------------
+ 
+ These routines disable soft interrupts on the local CPU, and restore
+ them. They are reentrant; if soft interrupts were disabled before, they
+ will still be disabled after this pair of functions has been called.
+ They prevent softirqs and tasklets from running on the current CPU.
+ 
+-:c:func:`smp_processor_id()`() ``include/asm/smp.h``
+-----------------------------------------------------
++:c:func:`smp_processor_id()`
++----------------------------
 +
-+The init function init_rs returns a pointer to an rs decoder structure,
-+which holds the necessary information for encoding, decoding and error
-+correction with the given polynomial. It either uses an existing
-+matching decoder or creates a new one. On creation all the lookup tables
-+for fast en/decoding are created. The function may take a while, so make
-+sure not to call it in critical code paths.
++Defined in ``include/linux/smp.h``
+ 
+ :c:func:`get_cpu()` disables preemption (so you won't suddenly get
+ moved to another CPU) and returns the current processor number, between
+@@ -405,8 +420,10 @@ If you know you cannot be preempted by another task (ie. you are in
+ interrupt context, or have preemption disabled) you can use
+ smp_processor_id().
+ 
+-``__init``/``__exit``/``__initdata`` ``include/linux/init.h``
+--------------------------------------------------------------
++``__init``/``__exit``/``__initdata``
++------------------------------------
 +
-+::
++Defined in  ``include/linux/init.h``
+ 
+ After boot, the kernel frees up a special section; functions marked with
+ ``__init`` and data structures marked with ``__initdata`` are dropped
+@@ -415,10 +432,13 @@ initialization. ``__exit`` is used to declare a function which is only
+ required on exit: the function will be dropped if this file is not
+ compiled as a module. See the header file for use. Note that it makes no
+ sense for a function marked with ``__init`` to be exported to modules
+-with :c:func:`EXPORT_SYMBOL()` - this will break.
++with :c:func:`EXPORT_SYMBOL()` or :c:func:`EXPORT_SYMBOL_GPL()`- this
++will break.
+ 
+-:c:func:`__initcall()`/:c:func:`module_init()` ``include/linux/init.h``
+------------------------------------------------------------------------
++:c:func:`__initcall()`/:c:func:`module_init()`
++----------------------------------------------
 +
-+    /* the Reed Solomon control structure */
-+    static struct rs_control *rs_decoder;
-+
-+    /* Symbolsize is 10 (bits)
-+     * Primitive polynomial is x^10+x^3+1
-+     * first consecutive root is 0
-+     * primitive element to generate roots = 1
-+     * generator polynomial degree (number of roots) = 6
-+     */
-+    rs_decoder = init_rs (10, 0x409, 0, 1, 6);
-+
-+
-+Encoding
-+--------
-+
-+The encoder calculates the Reed-Solomon code over the given data length
-+and stores the result in the parity buffer. Note that the parity buffer
-+must be initialized before calling the encoder.
-+
-+The expanded data can be inverted on the fly by providing a non-zero
-+inversion mask. The expanded data is XOR'ed with the mask. This is used
-+e.g. for FLASH ECC, where the all 0xFF is inverted to an all 0x00. The
-+Reed-Solomon code for all 0x00 is all 0x00. The code is inverted before
-+storing to FLASH so it is 0xFF too. This prevents that reading from an
-+erased FLASH results in ECC errors.
-+
-+The databytes are expanded to the given symbol size on the fly. There is
-+no support for encoding continuous bitstreams with a symbol size != 8 at
-+the moment. If it is necessary it should be not a big deal to implement
-+such functionality.
-+
-+::
-+
-+    /* Parity buffer. Size = number of roots */
-+    uint16_t par[6];
-+    /* Initialize the parity buffer */
-+    memset(par, 0, sizeof(par));
-+    /* Encode 512 byte in data8. Store parity in buffer par */
-+    encode_rs8 (rs_decoder, data8, 512, par, 0);
-+
-+
-+Decoding
-+--------
-+
-+The decoder calculates the syndrome over the given data length and the
-+received parity symbols and corrects errors in the data.
-+
-+If a syndrome is available from a hardware decoder then the syndrome
-+calculation is skipped.
-+
-+The correction of the data buffer can be suppressed by providing a
-+correction pattern buffer and an error location buffer to the decoder.
-+The decoder stores the calculated error location and the correction
-+bitmask in the given buffers. This is useful for hardware decoders which
-+use a weird bit ordering scheme.
-+
-+The databytes are expanded to the given symbol size on the fly. There is
-+no support for decoding continuous bitstreams with a symbolsize != 8 at
-+the moment. If it is necessary it should be not a big deal to implement
-+such functionality.
-+
-+Decoding with syndrome calculation, direct data correction
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+::
-+
-+    /* Parity buffer. Size = number of roots */
-+    uint16_t par[6];
-+    uint8_t  data[512];
-+    int numerr;
-+    /* Receive data */
-+    .....
-+    /* Receive parity */
-+    .....
-+    /* Decode 512 byte in data8.*/
-+    numerr = decode_rs8 (rs_decoder, data8, par, 512, NULL, 0, NULL, 0, NULL);
-+
-+
-+Decoding with syndrome given by hardware decoder, direct data correction
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+::
-+
-+    /* Parity buffer. Size = number of roots */
-+    uint16_t par[6], syn[6];
-+    uint8_t  data[512];
-+    int numerr;
-+    /* Receive data */
-+    .....
-+    /* Receive parity */
-+    .....
-+    /* Get syndrome from hardware decoder */
-+    .....
-+    /* Decode 512 byte in data8.*/
-+    numerr = decode_rs8 (rs_decoder, data8, par, 512, syn, 0, NULL, 0, NULL);
-+
-+
-+Decoding with syndrome given by hardware decoder, no direct data correction.
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+Note: It's not necessary to give data and received parity to the
-+decoder.
-+
-+::
-+
-+    /* Parity buffer. Size = number of roots */
-+    uint16_t par[6], syn[6], corr[8];
-+    uint8_t  data[512];
-+    int numerr, errpos[8];
-+    /* Receive data */
-+    .....
-+    /* Receive parity */
-+    .....
-+    /* Get syndrome from hardware decoder */
-+    .....
-+    /* Decode 512 byte in data8.*/
-+    numerr = decode_rs8 (rs_decoder, NULL, NULL, 512, syn, 0, errpos, 0, corr);
-+    for (i = 0; i < numerr; i++) {
-+        do_error_correction_in_your_buffer(errpos[i], corr[i]);
-+    }
-+
-+
-+Cleanup
-+-------
-+
-+The function free_rs frees the allocated resources, if the caller is
-+the last user of the decoder.
-+
-+::
-+
-+    /* Release resources */
-+    free_rs(rs_decoder);
-+
-+
-+Structures
-+==========
-+
-+This chapter contains the autogenerated documentation of the structures
-+which are used in the Reed-Solomon Library and are relevant for a
-+developer.
-+
-+.. kernel-doc:: include/linux/rslib.h
-+   :internal:
-+
-+Public Functions Provided
-+=========================
-+
-+This chapter contains the autogenerated documentation of the
-+Reed-Solomon functions which are exported.
-+
-+.. kernel-doc:: lib/reed_solomon/reed_solomon.c
-+   :export:
-+
-+Credits
-+=======
-+
-+The library code for encoding and decoding was written by Phil Karn.
-+
-+::
-+
-+            Copyright 2002, Phil Karn, KA9Q
-+            May be used under the terms of the GNU General Public License (GPL)
++Defined in  ``include/linux/init.h`` / ``include/linux/module.h``
+ 
+ Many parts of the kernel are well served as a module
+ (dynamically-loadable parts of the kernel). Using the
+@@ -438,8 +458,11 @@ to fail (unfortunately, this has no effect if the module is compiled
+ into the kernel). This function is called in user context with
+ interrupts enabled, so it can sleep.
+ 
+-:c:func:`module_exit()` ``include/linux/init.h``
+-------------------------------------------------
++:c:func:`module_exit()`
++-----------------------
 +
 +
-+The wrapper functions and interfaces are written by Thomas Gleixner.
++Defined in  ``include/linux/module.h``
+ 
+ This macro defines the function to be called at module removal time (or
+ never, in the case of the file compiled into the kernel). It will only
+@@ -450,8 +473,10 @@ it returns.
+ Note that this macro is optional: if it is not present, your module will
+ not be removable (except for 'rmmod -f').
+ 
+-:c:func:`try_module_get()`/:c:func:`module_put()` ``include/linux/module.h``
+-----------------------------------------------------------------------------
++:c:func:`try_module_get()`/:c:func:`module_put()`
++-------------------------------------------------
 +
-+Many users have provided bugfixes, improvements and helping hands for
-+testing. Thanks a lot.
++Defined in ``include/linux/module.h``
+ 
+ These manipulate the module usage count, to protect against removal (a
+ module also can't be removed if another module uses one of its exported
+@@ -472,8 +497,8 @@ Wait Queues ``include/linux/wait.h``
+ 
+ A wait queue is used to wait for someone to wake you up when a certain
+ condition is true. They must be used carefully to ensure there is no
+-race condition. You declare a ``wait_queue_head_t``, and then processes
+-which want to wait for that condition declare a ``wait_queue_t``
++race condition. You declare a :c:type:`wait_queue_head_t`, and then processes
++which want to wait for that condition declare a :c:type:`wait_queue_t`
+ referring to themselves, and place that in the queue.
+ 
+ Declaring
+@@ -490,15 +515,15 @@ Queuing
+ Placing yourself in the waitqueue is fairly complex, because you must
+ put yourself in the queue before checking the condition. There is a
+ macro to do this: :c:func:`wait_event_interruptible()`
+-``include/linux/wait.h`` The first argument is the wait queue head, and
++(``include/linux/wait.h``) The first argument is the wait queue head, and
+ the second is an expression which is evaluated; the macro returns 0 when
+-this expression is true, or -ERESTARTSYS if a signal is received. The
++this expression is true, or ``-ERESTARTSYS`` if a signal is received. The
+ :c:func:`wait_event()` version ignores signals.
+ 
+ Waking Up Queued Tasks
+ ----------------------
+ 
+-Call :c:func:`wake_up()` ``include/linux/wait.h``;, which will wake
++Call :c:func:`wake_up()` (``include/linux/wait.h``);, which will wake
+ up every process in the queue. The exception is if one has
+ ``TASK_EXCLUSIVE`` set, in which case the remainder of the queue will
+ not be woken. There are other variants of this basic function available
+@@ -508,9 +533,9 @@ Atomic Operations
+ =================
+ 
+ Certain operations are guaranteed atomic on all platforms. The first
+-class of operations work on ``atomic_t`` ``include/asm/atomic.h``; this
+-contains a signed integer (at least 32 bits long), and you must use
+-these functions to manipulate or read atomic_t variables.
++class of operations work on :c:type:`atomic_t` (``include/asm/atomic.h``);
++this contains a signed integer (at least 32 bits long), and you must use
++these functions to manipulate or read :c:type:`atomic_t` variables.
+ :c:func:`atomic_read()` and :c:func:`atomic_set()` get and set
+ the counter, :c:func:`atomic_add()`, :c:func:`atomic_sub()`,
+ :c:func:`atomic_inc()`, :c:func:`atomic_dec()`, and
+@@ -534,7 +559,7 @@ true if the bit was previously set; these are particularly useful for
+ atomically setting flags.
+ 
+ It is possible to call these operations with bit indices greater than
+-BITS_PER_LONG. The resulting behavior is strange on big-endian
++``BITS_PER_LONG``. The resulting behavior is strange on big-endian
+ platforms though so it is a good idea not to do this.
+ 
+ Symbols
+@@ -546,14 +571,18 @@ be used anywhere in the kernel). However, for modules, a special
+ exported symbol table is kept which limits the entry points to the
+ kernel proper. Modules can also export symbols.
+ 
+-:c:func:`EXPORT_SYMBOL()` ``include/linux/export.h``
+-----------------------------------------------------
++:c:func:`EXPORT_SYMBOL()`
++-------------------------
 +
-+The following people have contributed to this document:
++Defined in ``include/linux/export.h``
+ 
+ This is the classic method of exporting a symbol: dynamically loaded
+ modules will be able to use the symbol as normal.
+ 
+-:c:func:`EXPORT_SYMBOL_GPL()` ``include/linux/export.h``
+---------------------------------------------------------
++:c:func:`EXPORT_SYMBOL_GPL()`
++-----------------------------
 +
-+Thomas Gleixner\ tglx@linutronix.de
++Defined in ``include/linux/export.h``
+ 
+ Similar to :c:func:`EXPORT_SYMBOL()` except that the symbols
+ exported by :c:func:`EXPORT_SYMBOL_GPL()` can only be seen by
+@@ -579,11 +608,11 @@ Return Conventions
+ ------------------
+ 
+ For code called in user context, it's very common to defy C convention,
+-and return 0 for success, and a negative error number (eg. -EFAULT) for
++and return 0 for success, and a negative error number (eg. ``-EFAULT``) for
+ failure. This can be unintuitive at first, but it's fairly widespread in
+ the kernel.
+ 
+-Using :c:func:`ERR_PTR()` ``include/linux/err.h``; to encode a
++Using :c:func:`ERR_PTR()` (``include/linux/err.h``) to encode a
+ negative error number into a pointer, and :c:func:`IS_ERR()` and
+ :c:func:`PTR_ERR()` to get it back out again: avoids a separate
+ pointer parameter for the error number. Icky, but in a good way.
+@@ -603,9 +632,7 @@ Initializing structure members
+ ------------------------------
+ 
+ The preferred method of initializing structures is to use designated
+-initialisers, as defined by ISO C99, eg:
+-
+-::
++initialisers, as defined by ISO C99, eg::
+ 
+     static struct block_device_operations opt_fops = {
+             .open               = opt_open,
+@@ -716,18 +743,14 @@ Kernel Cantrips
+ 
+ Some favorites from browsing the source. Feel free to add to this list.
+ 
+-``arch/x86/include/asm/delay.h:``
+-
+-::
++``arch/x86/include/asm/delay.h``::
+ 
+     #define ndelay(n) (__builtin_constant_p(n) ? \
+             ((n) > 20000 ? __bad_ndelay() : __const_udelay((n) * 5ul)) : \
+             __ndelay(n))
+ 
+ 
+-``include/linux/fs.h``:
+-
+-::
++``include/linux/fs.h``::
+ 
+     /*
+      * Kernel pointers have redundant information, so we can use a
+@@ -741,9 +764,7 @@ Some favorites from browsing the source. Feel free to add to this list.
+      #define PTR_ERR(ptr)    ((long)(ptr))
+      #define IS_ERR(ptr)     ((unsigned long)(ptr) > (unsigned long)(-1000))
+ 
+-``arch/x86/include/asm/uaccess_32.h:``
+-
+-::
++``arch/x86/include/asm/uaccess_32.h:``::
+ 
+     #define copy_to_user(to,from,n)                         \
+             (__builtin_constant_p(n) ?                      \
+@@ -751,9 +772,7 @@ Some favorites from browsing the source. Feel free to add to this list.
+              __generic_copy_to_user((to),(from),(n)))
+ 
+ 
+-``arch/sparc/kernel/head.S:``
+-
+-::
++``arch/sparc/kernel/head.S:``::
+ 
+     /*
+      * Sun people can't spell worth damn. "compatability" indeed.
+@@ -772,9 +791,7 @@ Some favorites from browsing the source. Feel free to add to this list.
+             .asciz "compatible"
+ 
+ 
+-``arch/sparc/lib/checksum.S:``
+-
+-::
++``arch/sparc/lib/checksum.S:``::
+ 
+             /* Sun, you just can't beat me, you just can't.  Stop trying,
+              * give up.  I'm serious, I am going to kick the living shit
 -- 
 2.9.3
