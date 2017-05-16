@@ -1,22 +1,14 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dAkpd-00020G-Si
- for linux-mtd@lists.infradead.org; Tue, 16 May 2017 22:20:48 +0000
-Subject: Re: [PATCH] ubifs: Fix inode leak in xattr code
-To: dedekind1@gmail.com, linux-mtd@lists.infradead.org
-References: <1494858005-18439-1-git-send-email-richard@nod.at>
- <1494860034.18055.17.camel@gmail.com>
- <a5e7b80e-e1db-7b57-3b94-4d8e3a43cc6a@nod.at>
- <1494864339.18055.20.camel@gmail.com>
-Cc: linux-kernel@vger.kernel.org, adrian.hunter@intel.com,
- stable@vger.kernel.org
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dAkpr-0002Kg-RG
+ for linux-mtd@lists.infradead.org; Tue, 16 May 2017 22:21:05 +0000
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <588e1a84-08d1-8c10-d698-ffb7ee87b0ad@nod.at>
-Date: Wed, 17 May 2017 00:20:14 +0200
-MIME-Version: 1.0
-In-Reply-To: <1494864339.18055.20.camel@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+To: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, adrian.hunter@intel.com, dedekind1@gmail.com,
+ Richard Weinberger <richard@nod.at>
+Subject: [PATCH 1/2] ubifs: Unexport ubifs_inode_slab
+Date: Wed, 17 May 2017 00:20:26 +0200
+Message-Id: <1494973227-17271-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,24 +18,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem,
+This SLAB is only being used in super.c, there is no need to expose
+it into the global namespace.
 
-Am 15.05.2017 um 18:05 schrieb Artem Bityutskiy:
-> On Mon, 2017-05-15 at 17:22 +0200, Richard Weinberger wrote:
->> Alternatively we could add a iget_locked/drop_nlink/iput sequence to
->> ubifs_tnc_remove_ino(). But that will make unlink() much slower for
->> files
->> that contain xattrs.
-> 
-> At that level we'd need to do it for every xattr, even those that were
-> never be accessed, which would be slow indeed.
-> 
-> But we really only need to check the inode cache: hey, icache, I am
-> dying, and if you have any of my guys (xattrs), I want them to die with
-> me. 
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ fs/ubifs/super.c | 2 +-
+ fs/ubifs/ubifs.h | 1 -
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-That turned out to be much easier than expected.
-Patch ahead!
-
-Thanks,
-//richard
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index b73811bd7676..bbc87693f500 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -45,7 +45,7 @@
+ #define UBIFS_KMALLOC_OK (128*1024)
+ 
+ /* Slab cache for UBIFS inodes */
+-struct kmem_cache *ubifs_inode_slab;
++static struct kmem_cache *ubifs_inode_slab;
+ 
+ /* UBIFS TNC shrinker description */
+ static struct shrinker ubifs_shrinker_info = {
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 4d57e488038e..c2797d999caa 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -1453,7 +1453,6 @@ struct ubifs_info {
+ extern struct list_head ubifs_infos;
+ extern spinlock_t ubifs_infos_lock;
+ extern atomic_long_t ubifs_clean_zn_cnt;
+-extern struct kmem_cache *ubifs_inode_slab;
+ extern const struct super_operations ubifs_super_operations;
+ extern const struct address_space_operations ubifs_file_address_operations;
+ extern const struct file_operations ubifs_file_operations;
+-- 
+2.7.3
