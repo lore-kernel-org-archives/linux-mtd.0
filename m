@@ -1,7 +1,7 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dAbYA-00043Q-Ib
+ id 1dAbYA-00043P-Ic
  for linux-mtd@lists.infradead.org; Tue, 16 May 2017 12:26:04 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
@@ -12,11 +12,15 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH v2 11/53] docs-rst: conf.py: sort LaTeX documents in
- alphabetical order
-Date: Tue, 16 May 2017 09:16:03 -0300
-Message-Id: <c2b563d8a3185667c44c2ec17243cf714d1db52f.1494935649.git.mchehab@s-opensource.com>
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
+ Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
+ Michael Reed <mdr@sgi.com>,
+ "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ linux-ia64@vger.kernel.org, linux-scsi@vger.kernel.org
+Subject: [PATCH v2 46/53] ia64, scsi: update references for the device-io book
+Date: Tue, 16 May 2017 09:16:38 -0300
+Message-Id: <2a76213072c8d6ac4364455e236d52b7d36601ca.1494935649.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
 References: <cover.1494935649.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
@@ -31,53 +35,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As we add more documents, it makes more sense to sort the
-entries there in alphabetical order, as it makes easier to
-check if something is not there.
+The book is now at Documentation/driver-api/device-io.rst.
+Update such references.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/conf.py | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ arch/ia64/include/asm/io.h | 2 +-
+ arch/ia64/sn/kernel/iomv.c | 2 +-
+ drivers/scsi/qla1280.c     | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/conf.py b/Documentation/conf.py
-index 1774357150a3..1bad6a4d6348 100644
---- a/Documentation/conf.py
-+++ b/Documentation/conf.py
-@@ -345,27 +345,28 @@ if major == 1 and minor > 3:
- # Grouping the document tree into LaTeX files. List of tuples
- # (source start file, target name, title,
- #  author, documentclass [howto, manual, or own class]).
-+# Sorted in alphabetical order
- latex_documents = [
--    ('doc-guide/index', 'kernel-doc-guide.tex', 'Linux Kernel Documentation Guide',
--     'The kernel development community', 'manual'),
-     ('admin-guide/index', 'linux-user.tex', 'Linux Kernel User Documentation',
-      'The kernel development community', 'manual'),
-     ('core-api/index', 'core-api.tex', 'The kernel core API manual',
-      'The kernel development community', 'manual'),
-+    ('doc-guide/index', 'kernel-doc-guide.tex', 'Linux Kernel Documentation Guide',
-+     'The kernel development community', 'manual'),
-     ('driver-api/index', 'driver-api.tex', 'The kernel driver API manual',
-      'The kernel development community', 'manual'),
-+    ('gpu/index', 'gpu.tex', 'Linux GPU Driver Developer\'s Guide',
-+     'The kernel development community', 'manual'),
-     ('input/index', 'linux-input.tex', 'The Linux input driver subsystem',
-      'The kernel development community', 'manual'),
-     ('kernel-documentation', 'kernel-documentation.tex', 'The Linux Kernel Documentation',
-      'The kernel development community', 'manual'),
-     ('kernel-hacking/index', 'kernel-hacking.tex', 'Kernel Hacking Guides',
-      'The kernel development community', 'manual'),
--    ('process/index', 'development-process.tex', 'Linux Kernel Development Documentation',
--     'The kernel development community', 'manual'),
--    ('gpu/index', 'gpu.tex', 'Linux GPU Driver Developer\'s Guide',
--     'The kernel development community', 'manual'),
-     ('media/index', 'media.tex', 'Linux Media Subsystem Documentation',
-      'The kernel development community', 'manual'),
-+    ('process/index', 'development-process.tex', 'Linux Kernel Development Documentation',
-+     'The kernel development community', 'manual'),
-     ('security/index', 'security.tex', 'The kernel security subsystem manual',
-      'The kernel development community', 'manual'),
- ]
+diff --git a/arch/ia64/include/asm/io.h b/arch/ia64/include/asm/io.h
+index 5de673ac9cb1..a2540e21f919 100644
+--- a/arch/ia64/include/asm/io.h
++++ b/arch/ia64/include/asm/io.h
+@@ -117,7 +117,7 @@ extern int valid_mmap_phys_addr_range (unsigned long pfn, size_t count);
+  * following the barrier will arrive after all previous writes.  For most
+  * ia64 platforms, this is a simple 'mf.a' instruction.
+  *
+- * See Documentation/DocBook/deviceiobook.tmpl for more information.
++ * See Documentation/driver-api/device-io.rst for more information.
+  */
+ static inline void ___ia64_mmiowb(void)
+ {
+diff --git a/arch/ia64/sn/kernel/iomv.c b/arch/ia64/sn/kernel/iomv.c
+index c77ebdf98119..2b22a71663c1 100644
+--- a/arch/ia64/sn/kernel/iomv.c
++++ b/arch/ia64/sn/kernel/iomv.c
+@@ -63,7 +63,7 @@ EXPORT_SYMBOL(sn_io_addr);
+ /**
+  * __sn_mmiowb - I/O space memory barrier
+  *
+- * See arch/ia64/include/asm/io.h and Documentation/DocBook/deviceiobook.tmpl
++ * See arch/ia64/include/asm/io.h and Documentation/driver-api/device-io.rst
+  * for details.
+  *
+  * On SN2, we wait for the PIO_WRITE_STATUS SHub register to clear.
+diff --git a/drivers/scsi/qla1280.c b/drivers/scsi/qla1280.c
+index 634254a52301..8a29fb09db14 100644
+--- a/drivers/scsi/qla1280.c
++++ b/drivers/scsi/qla1280.c
+@@ -3390,7 +3390,7 @@ qla1280_isp_cmd(struct scsi_qla_host *ha)
+ 	 *    On PCI bus, order reverses and write of 6 posts, then index 5,
+ 	 *       causing chip to issue full queue of stale commands
+ 	 * The mmiowb() prevents future writes from crossing the barrier.
+-	 * See Documentation/DocBook/deviceiobook.tmpl for more information.
++	 * See Documentation/driver-api/device-io.rst for more information.
+ 	 */
+ 	WRT_REG_WORD(&reg->mailbox4, ha->req_ring_index);
+ 	mmiowb();
 -- 
 2.9.3
