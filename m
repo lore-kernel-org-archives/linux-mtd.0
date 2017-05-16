@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by casper.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dAbQZ-0008O8-OG
- for linux-mtd@lists.infradead.org; Tue, 16 May 2017 12:18:18 +0000
+ id 1dAbQW-0008M2-8C
+ for linux-mtd@lists.infradead.org; Tue, 16 May 2017 12:18:16 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -14,14 +14,12 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
  Jani Nikula <jani.nikula@intel.com>,
- Markus Heiser <markus.heiser@darmarit.de>,
  "Herton R. Krzesinski" <herton@redhat.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Markus Heiser <markus.heiser@darmarit.de>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH v2 24/53] docs-rst: convert libata book to ReST
-Date: Tue, 16 May 2017 09:16:16 -0300
-Message-Id: <0ec88413f0a04b31149c6850e6938b4b0f33a748.1494935649.git.mchehab@s-opensource.com>
+Subject: [PATCH v2 37/53] docs-rst: convert mtdnand book to ReST
+Date: Tue, 16 May 2017 09:16:29 -0300
+Message-Id: <609f212f6a12e005d2395edd7b4192d2b051ae67.1494935649.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
 References: <cover.1494935649.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
@@ -39,2704 +37,2364 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Use pandoc to convert documentation to ReST by calling
 Documentation/sphinx/tmplcvt script.
 
+The tables were manually adjusted to fit into 80 columns.
+
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/DocBook/Makefile      |    2 +-
- Documentation/DocBook/libata.tmpl   | 1625 -----------------------------------
- Documentation/driver-api/index.rst  |    1 +
- Documentation/driver-api/libata.rst | 1027 ++++++++++++++++++++++
- 4 files changed, 1029 insertions(+), 1626 deletions(-)
- delete mode 100644 Documentation/DocBook/libata.tmpl
- create mode 100644 Documentation/driver-api/libata.rst
+ Documentation/DocBook/Makefile       |    1 -
+ Documentation/DocBook/mtdnand.tmpl   | 1291 ----------------------------------
+ Documentation/driver-api/index.rst   |    1 +
+ Documentation/driver-api/mtdnand.rst | 1020 +++++++++++++++++++++++++++
+ 4 files changed, 1021 insertions(+), 1292 deletions(-)
+ delete mode 100644 Documentation/DocBook/mtdnand.tmpl
+ create mode 100644 Documentation/driver-api/mtdnand.rst
 
 diff --git a/Documentation/DocBook/Makefile b/Documentation/DocBook/Makefile
-index 2f767e30b59e..abe71345160b 100644
+index 0a82f6253682..226e5e9fc801 100644
 --- a/Documentation/DocBook/Makefile
 +++ b/Documentation/DocBook/Makefile
-@@ -9,7 +9,7 @@
- DOCBOOKS := z8530book.xml  \
- 	    networking.xml \
- 	    lsm.xml \
--	    libata.xml mtdnand.xml librs.xml rapidio.xml \
-+	    mtdnand.xml librs.xml rapidio.xml \
- 	    s390-drivers.xml scsi.xml \
- 	    sh.xml w1.xml
+@@ -8,7 +8,6 @@
  
-diff --git a/Documentation/DocBook/libata.tmpl b/Documentation/DocBook/libata.tmpl
+ DOCBOOKS := \
+ 	    lsm.xml \
+-	    mtdnand.xml \
+ 	    sh.xml
+ 
+ ifeq ($(DOCBOOKS),)
+diff --git a/Documentation/DocBook/mtdnand.tmpl b/Documentation/DocBook/mtdnand.tmpl
 deleted file mode 100644
-index 0320910b866d..000000000000
---- a/Documentation/DocBook/libata.tmpl
+index b442921bca54..000000000000
+--- a/Documentation/DocBook/mtdnand.tmpl
 +++ /dev/null
-@@ -1,1625 +0,0 @@
+@@ -1,1291 +0,0 @@
 -<?xml version="1.0" encoding="UTF-8"?>
 -<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
 -	"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" []>
 -
--<book id="libataDevGuide">
+-<book id="MTD-NAND-Guide">
 - <bookinfo>
--  <title>libATA Developer's Guide</title>
+-  <title>MTD NAND Driver Programming Interface</title>
 -  
 -  <authorgroup>
 -   <author>
--    <firstname>Jeff</firstname>
--    <surname>Garzik</surname>
+-    <firstname>Thomas</firstname>
+-    <surname>Gleixner</surname>
+-    <affiliation>
+-     <address>
+-      <email>tglx@linutronix.de</email>
+-     </address>
+-    </affiliation>
 -   </author>
 -  </authorgroup>
 -
 -  <copyright>
--   <year>2003-2006</year>
--   <holder>Jeff Garzik</holder>
+-   <year>2004</year>
+-   <holder>Thomas Gleixner</holder>
 -  </copyright>
 -
 -  <legalnotice>
 -   <para>
--   The contents of this file are subject to the Open
--   Software License version 1.1 that can be found at
--   <ulink url="http://fedoraproject.org/wiki/Licensing:OSL1.1">http://fedoraproject.org/wiki/Licensing:OSL1.1</ulink>
--   and is included herein by reference.
+-     This documentation is free software; you can redistribute
+-     it and/or modify it under the terms of the GNU General Public
+-     License version 2 as published by the Free Software Foundation.
 -   </para>
--
+-      
 -   <para>
--   Alternatively, the contents of this file may be used under the terms
--   of the GNU General Public License version 2 (the "GPL") as distributed
--   in the kernel source COPYING file, in which case the provisions of
--   the GPL are applicable instead of the above.  If you wish to allow
--   the use of your version of this file only under the terms of the
--   GPL and not to allow others to use your version of this file under
--   the OSL, indicate your decision by deleting the provisions above and
--   replace them with the notice and other provisions required by the GPL.
--   If you do not delete the provisions above, a recipient may use your
--   version of this file under either the OSL or the GPL.
+-     This program is distributed in the hope that it will be
+-     useful, but WITHOUT ANY WARRANTY; without even the implied
+-     warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+-     See the GNU General Public License for more details.
 -   </para>
--
+-      
+-   <para>
+-     You should have received a copy of the GNU General Public
+-     License along with this program; if not, write to the Free
+-     Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+-     MA 02111-1307 USA
+-   </para>
+-      
+-   <para>
+-     For more details see the file COPYING in the source
+-     distribution of Linux.
+-   </para>
 -  </legalnotice>
 - </bookinfo>
 -
 -<toc></toc>
 -
--  <chapter id="libataIntroduction">
--     <title>Introduction</title>
+-  <chapter id="intro">
+-      <title>Introduction</title>
 -  <para>
--  libATA is a library used inside the Linux kernel to support ATA host
--  controllers and devices.  libATA provides an ATA driver API, class
--  transports for ATA and ATAPI devices, and SCSI&lt;-&gt;ATA translation
--  for ATA devices according to the T10 SAT specification.
+-  	The generic NAND driver supports almost all NAND and AG-AND based
+-	chips and connects them to the Memory Technology Devices (MTD)
+-	subsystem of the Linux Kernel.
 -  </para>
 -  <para>
--  This Guide documents the libATA driver API, library functions, library
--  internals, and a couple sample ATA low-level drivers.
+-  	This documentation is provided for developers who want to implement
+-	board drivers or filesystem drivers suitable for NAND devices.
+-  </para>
+-  </chapter>
+-  
+-  <chapter id="bugs">
+-     <title>Known Bugs And Assumptions</title>
+-  <para>
+-	None.	
 -  </para>
 -  </chapter>
 -
--  <chapter id="libataDriverApi">
--     <title>libata Driver API</title>
+-  <chapter id="dochints">
+-     <title>Documentation hints</title>
 -     <para>
--     struct ata_port_operations is defined for every low-level libata
--     hardware driver, and it controls how the low-level driver
--     interfaces with the ATA and SCSI layers.
+-     The function and structure docs are autogenerated. Each function and 
+-     struct member has a short description which is marked with an [XXX] identifier.
+-     The following chapters explain the meaning of those identifiers.
 -     </para>
--     <para>
--     FIS-based drivers will hook into the system with ->qc_prep() and
--     ->qc_issue() high-level hooks.  Hardware which behaves in a manner
--     similar to PCI IDE hardware may utilize several generic helpers,
--     defining at a bare minimum the bus I/O addresses of the ATA shadow
--     register blocks.
--     </para>
--     <sect1>
--        <title>struct ata_port_operations</title>
--
--	<sect2><title>Disable ATA port</title>
--	<programlisting>
--void (*port_disable) (struct ata_port *);
--	</programlisting>
--
--	<para>
--	Called from ata_bus_probe() error path, as well as when
--	unregistering from the SCSI module (rmmod, hot unplug).
--	This function should do whatever needs to be done to take the
--	port out of use.  In most cases, ata_port_disable() can be used
--	as this hook.
--	</para>
--	<para>
--	Called from ata_bus_probe() on a failed probe.
--	Called from ata_scsi_release().
--	</para>
--
--	</sect2>
--
--	<sect2><title>Post-IDENTIFY device configuration</title>
--	<programlisting>
--void (*dev_config) (struct ata_port *, struct ata_device *);
--	</programlisting>
--
--	<para>
--	Called after IDENTIFY [PACKET] DEVICE is issued to each device
--	found.  Typically used to apply device-specific fixups prior to
--	issue of SET FEATURES - XFER MODE, and prior to operation.
--	</para>
--	<para>
--	This entry may be specified as NULL in ata_port_operations.
--	</para>
--
--	</sect2>
--
--	<sect2><title>Set PIO/DMA mode</title>
--	<programlisting>
--void (*set_piomode) (struct ata_port *, struct ata_device *);
--void (*set_dmamode) (struct ata_port *, struct ata_device *);
--void (*post_set_mode) (struct ata_port *);
--unsigned int (*mode_filter) (struct ata_port *, struct ata_device *, unsigned int);
--	</programlisting>
--
--	<para>
--	Hooks called prior to the issue of SET FEATURES - XFER MODE
--	command.  The optional ->mode_filter() hook is called when libata
--	has built a mask of the possible modes. This is passed to the 
--	->mode_filter() function which should return a mask of valid modes
--	after filtering those unsuitable due to hardware limits. It is not
--	valid to use this interface to add modes.
--	</para>
--	<para>
--	dev->pio_mode and dev->dma_mode are guaranteed to be valid when
--	->set_piomode() and when ->set_dmamode() is called. The timings for
--	any other drive sharing the cable will also be valid at this point.
--	That is the library records the decisions for the modes of each
--	drive on a channel before it attempts to set any of them.
--	</para>
--	<para>
--	->post_set_mode() is
--	called unconditionally, after the SET FEATURES - XFER MODE
--	command completes successfully.
--	</para>
--
--	<para>
--	->set_piomode() is always called (if present), but
--	->set_dma_mode() is only called if DMA is possible.
--	</para>
--
--	</sect2>
--
--	<sect2><title>Taskfile read/write</title>
--	<programlisting>
--void (*sff_tf_load) (struct ata_port *ap, struct ata_taskfile *tf);
--void (*sff_tf_read) (struct ata_port *ap, struct ata_taskfile *tf);
--	</programlisting>
--
--	<para>
--	->tf_load() is called to load the given taskfile into hardware
--	registers / DMA buffers.  ->tf_read() is called to read the
--	hardware registers / DMA buffers, to obtain the current set of
--	taskfile register values.
--	Most drivers for taskfile-based hardware (PIO or MMIO) use
--	ata_sff_tf_load() and ata_sff_tf_read() for these hooks.
--	</para>
--
--	</sect2>
--
--	<sect2><title>PIO data read/write</title>
--	<programlisting>
--void (*sff_data_xfer) (struct ata_device *, unsigned char *, unsigned int, int);
--	</programlisting>
--
--	<para>
--All bmdma-style drivers must implement this hook.  This is the low-level
--operation that actually copies the data bytes during a PIO data
--transfer.
--Typically the driver will choose one of ata_sff_data_xfer_noirq(),
--ata_sff_data_xfer(), or ata_sff_data_xfer32().
--	</para>
--
--	</sect2>
--
--	<sect2><title>ATA command execute</title>
--	<programlisting>
--void (*sff_exec_command)(struct ata_port *ap, struct ata_taskfile *tf);
--	</programlisting>
--
--	<para>
--	causes an ATA command, previously loaded with
--	->tf_load(), to be initiated in hardware.
--	Most drivers for taskfile-based hardware use ata_sff_exec_command()
--	for this hook.
--	</para>
--
--	</sect2>
--
--	<sect2><title>Per-cmd ATAPI DMA capabilities filter</title>
--	<programlisting>
--int (*check_atapi_dma) (struct ata_queued_cmd *qc);
--	</programlisting>
--
--	<para>
--Allow low-level driver to filter ATA PACKET commands, returning a status
--indicating whether or not it is OK to use DMA for the supplied PACKET
--command.
--	</para>
--	<para>
--	This hook may be specified as NULL, in which case libata will
--	assume that atapi dma can be supported.
--	</para>
--
--	</sect2>
--
--	<sect2><title>Read specific ATA shadow registers</title>
--	<programlisting>
--u8   (*sff_check_status)(struct ata_port *ap);
--u8   (*sff_check_altstatus)(struct ata_port *ap);
--	</programlisting>
--
--	<para>
--	Reads the Status/AltStatus ATA shadow register from
--	hardware.  On some hardware, reading the Status register has
--	the side effect of clearing the interrupt condition.
--	Most drivers for taskfile-based hardware use
--	ata_sff_check_status() for this hook.
--	</para>
--
--	</sect2>
--
--	<sect2><title>Write specific ATA shadow register</title>
--	<programlisting>
--void (*sff_set_devctl)(struct ata_port *ap, u8 ctl);
--	</programlisting>
--
--	<para>
--	Write the device control ATA shadow register to the hardware.
--	Most drivers don't need to define this.
--	</para>
--
--	</sect2>
--
--	<sect2><title>Select ATA device on bus</title>
--	<programlisting>
--void (*sff_dev_select)(struct ata_port *ap, unsigned int device);
--	</programlisting>
--
--	<para>
--	Issues the low-level hardware command(s) that causes one of N
--	hardware devices to be considered 'selected' (active and
--	available for use) on the ATA bus.  This generally has no
--	meaning on FIS-based devices.
--	</para>
--	<para>
--	Most drivers for taskfile-based hardware use
--	ata_sff_dev_select() for this hook.
--	</para>
--
--	</sect2>
--
--	<sect2><title>Private tuning method</title>
--	<programlisting>
--void (*set_mode) (struct ata_port *ap);
--	</programlisting>
--
--	<para>
--	By default libata performs drive and controller tuning in
--	accordance with the ATA timing rules and also applies blacklists
--	and cable limits. Some controllers need special handling and have
--	custom tuning rules, typically raid controllers that use ATA
--	commands but do not actually do drive timing.
--	</para>
--
--	<warning>
--	<para>
--	This hook should not be used to replace the standard controller
--	tuning logic when a controller has quirks. Replacing the default
--	tuning logic in that case would bypass handling for drive and
--	bridge quirks that may be important to data reliability. If a
--	controller needs to filter the mode selection it should use the
--	mode_filter hook instead.
--	</para>
--	</warning>
--
--	</sect2>
--
--	<sect2><title>Control PCI IDE BMDMA engine</title>
--	<programlisting>
--void (*bmdma_setup) (struct ata_queued_cmd *qc);
--void (*bmdma_start) (struct ata_queued_cmd *qc);
--void (*bmdma_stop) (struct ata_port *ap);
--u8   (*bmdma_status) (struct ata_port *ap);
--	</programlisting>
--
--	<para>
--When setting up an IDE BMDMA transaction, these hooks arm
--(->bmdma_setup), fire (->bmdma_start), and halt (->bmdma_stop)
--the hardware's DMA engine.  ->bmdma_status is used to read the standard
--PCI IDE DMA Status register.
--	</para>
--
--	<para>
--These hooks are typically either no-ops, or simply not implemented, in
--FIS-based drivers.
--	</para>
--	<para>
--Most legacy IDE drivers use ata_bmdma_setup() for the bmdma_setup()
--hook.  ata_bmdma_setup() will write the pointer to the PRD table to
--the IDE PRD Table Address register, enable DMA in the DMA Command
--register, and call exec_command() to begin the transfer.
--	</para>
--	<para>
--Most legacy IDE drivers use ata_bmdma_start() for the bmdma_start()
--hook.  ata_bmdma_start() will write the ATA_DMA_START flag to the DMA
--Command register.
--	</para>
--	<para>
--Many legacy IDE drivers use ata_bmdma_stop() for the bmdma_stop()
--hook.  ata_bmdma_stop() clears the ATA_DMA_START flag in the DMA
--command register.
--	</para>
--	<para>
--Many legacy IDE drivers use ata_bmdma_status() as the bmdma_status() hook.
--	</para>
--
--	</sect2>
--
--	<sect2><title>High-level taskfile hooks</title>
--	<programlisting>
--void (*qc_prep) (struct ata_queued_cmd *qc);
--int (*qc_issue) (struct ata_queued_cmd *qc);
--	</programlisting>
--
--	<para>
--	Higher-level hooks, these two hooks can potentially supercede
--	several of the above taskfile/DMA engine hooks.  ->qc_prep is
--	called after the buffers have been DMA-mapped, and is typically
--	used to populate the hardware's DMA scatter-gather table.
--	Most drivers use the standard ata_qc_prep() helper function, but
--	more advanced drivers roll their own.
--	</para>
--	<para>
--	->qc_issue is used to make a command active, once the hardware
--	and S/G tables have been prepared.  IDE BMDMA drivers use the
--	helper function ata_qc_issue_prot() for taskfile protocol-based
--	dispatch.  More advanced drivers implement their own ->qc_issue.
--	</para>
--	<para>
--	ata_qc_issue_prot() calls ->tf_load(), ->bmdma_setup(), and
--	->bmdma_start() as necessary to initiate a transfer.
--	</para>
--
--	</sect2>
--
--	<sect2><title>Exception and probe handling (EH)</title>
--	<programlisting>
--void (*eng_timeout) (struct ata_port *ap);
--void (*phy_reset) (struct ata_port *ap);
--	</programlisting>
--
--	<para>
--Deprecated.  Use ->error_handler() instead.
--	</para>
--
--	<programlisting>
--void (*freeze) (struct ata_port *ap);
--void (*thaw) (struct ata_port *ap);
--	</programlisting>
--
--	<para>
--ata_port_freeze() is called when HSM violations or some other
--condition disrupts normal operation of the port.  A frozen port
--is not allowed to perform any operation until the port is
--thawed, which usually follows a successful reset.
--	</para>
--
--	<para>
--The optional ->freeze() callback can be used for freezing the port
--hardware-wise (e.g. mask interrupt and stop DMA engine).  If a
--port cannot be frozen hardware-wise, the interrupt handler
--must ack and clear interrupts unconditionally while the port
--is frozen.
--	</para>
--	<para>
--The optional ->thaw() callback is called to perform the opposite of ->freeze():
--prepare the port for normal operation once again.  Unmask interrupts,
--start DMA engine, etc.
--	</para>
--
--	<programlisting>
--void (*error_handler) (struct ata_port *ap);
--	</programlisting>
--
--	<para>
--->error_handler() is a driver's hook into probe, hotplug, and recovery
--and other exceptional conditions.  The primary responsibility of an
--implementation is to call ata_do_eh() or ata_bmdma_drive_eh() with a set
--of EH hooks as arguments:
--	</para>
--
--	<para>
--'prereset' hook (may be NULL) is called during an EH reset, before any other actions
--are taken.
--	</para>
--
--	<para>
--'postreset' hook (may be NULL) is called after the EH reset is performed.  Based on
--existing conditions, severity of the problem, and hardware capabilities,
--	</para>
--
--	<para>
--Either 'softreset' (may be NULL) or 'hardreset' (may be NULL) will be
--called to perform the low-level EH reset.
--	</para>
--
--	<programlisting>
--void (*post_internal_cmd) (struct ata_queued_cmd *qc);
--	</programlisting>
--
--	<para>
--Perform any hardware-specific actions necessary to finish processing
--after executing a probe-time or EH-time command via ata_exec_internal().
--	</para>
--
--	</sect2>
--
--	<sect2><title>Hardware interrupt handling</title>
--	<programlisting>
--irqreturn_t (*irq_handler)(int, void *, struct pt_regs *);
--void (*irq_clear) (struct ata_port *);
--	</programlisting>
--
--	<para>
--	->irq_handler is the interrupt handling routine registered with
--	the system, by libata.  ->irq_clear is called during probe just
--	before the interrupt handler is registered, to be sure hardware
--	is quiet.
--	</para>
--	<para>
--	The second argument, dev_instance, should be cast to a pointer
--	to struct ata_host_set.
--	</para>
--	<para>
--	Most legacy IDE drivers use ata_sff_interrupt() for the
--	irq_handler hook, which scans all ports in the host_set,
--	determines which queued command was active (if any), and calls
--	ata_sff_host_intr(ap,qc).
--	</para>
--	<para>
--	Most legacy IDE drivers use ata_sff_irq_clear() for the
--	irq_clear() hook, which simply clears the interrupt and error
--	flags in the DMA status register.
--	</para>
--
--	</sect2>
--
--	<sect2><title>SATA phy read/write</title>
--	<programlisting>
--int (*scr_read) (struct ata_port *ap, unsigned int sc_reg,
--		 u32 *val);
--int (*scr_write) (struct ata_port *ap, unsigned int sc_reg,
--                   u32 val);
--	</programlisting>
--
--	<para>
--	Read and write standard SATA phy registers.  Currently only used
--	if ->phy_reset hook called the sata_phy_reset() helper function.
--	sc_reg is one of SCR_STATUS, SCR_CONTROL, SCR_ERROR, or SCR_ACTIVE.
--	</para>
--
--	</sect2>
--
--	<sect2><title>Init and shutdown</title>
--	<programlisting>
--int (*port_start) (struct ata_port *ap);
--void (*port_stop) (struct ata_port *ap);
--void (*host_stop) (struct ata_host_set *host_set);
--	</programlisting>
--
--	<para>
--	->port_start() is called just after the data structures for each
--	port are initialized.  Typically this is used to alloc per-port
--	DMA buffers / tables / rings, enable DMA engines, and similar
--	tasks.  Some drivers also use this entry point as a chance to
--	allocate driver-private memory for ap->private_data.
--	</para>
--	<para>
--	Many drivers use ata_port_start() as this hook or call
--	it from their own port_start() hooks.  ata_port_start()
--	allocates space for a legacy IDE PRD table and returns.
--	</para>
--	<para>
--	->port_stop() is called after ->host_stop().  Its sole function
--	is to release DMA/memory resources, now that they are no longer
--	actively being used.  Many drivers also free driver-private
--	data from port at this time.
--	</para>
--	<para>
--	->host_stop() is called after all ->port_stop() calls
--have completed.  The hook must finalize hardware shutdown, release DMA
--and other resources, etc.
--	This hook may be specified as NULL, in which case it is not called.
--	</para>
--
--	</sect2>
--
+-     <sect1 id="Function_identifiers_XXX">
+-	<title>Function identifiers [XXX]</title>
+-     	<para>
+-	The functions are marked with [XXX] identifiers in the short
+-	comment. The identifiers explain the usage and scope of the
+-	functions. Following identifiers are used:
+-     	</para>
+-	<itemizedlist>
+-		<listitem><para>
+-	  	[MTD Interface]</para><para>
+-		These functions provide the interface to the MTD kernel API. 
+-		They are not replaceable and provide functionality
+-		which is complete hardware independent.
+-		</para></listitem>
+-		<listitem><para>
+-	  	[NAND Interface]</para><para>
+-		These functions are exported and provide the interface to the NAND kernel API. 
+-		</para></listitem>
+-		<listitem><para>
+-	  	[GENERIC]</para><para>
+-		Generic functions are not replaceable and provide functionality
+-		which is complete hardware independent.
+-		</para></listitem>
+-		<listitem><para>
+-	  	[DEFAULT]</para><para>
+-		Default functions provide hardware related functionality which is suitable
+-		for most of the implementations. These functions can be replaced by the
+-		board driver if necessary. Those functions are called via pointers in the
+-		NAND chip description structure. The board driver can set the functions which
+-		should be replaced by board dependent functions before calling nand_scan().
+-		If the function pointer is NULL on entry to nand_scan() then the pointer
+-		is set to the default function which is suitable for the detected chip type.
+-		</para></listitem>
+-	</itemizedlist>
 -     </sect1>
--  </chapter>
--
--  <chapter id="libataEH">
--        <title>Error handling</title>
--
--	<para>
--	This chapter describes how errors are handled under libata.
--	Readers are advised to read SCSI EH
--	(Documentation/scsi/scsi_eh.txt) and ATA exceptions doc first.
--	</para>
--
--	<sect1><title>Origins of commands</title>
--	<para>
--	In libata, a command is represented with struct ata_queued_cmd
--	or qc.  qc's are preallocated during port initialization and
--	repetitively used for command executions.  Currently only one
--	qc is allocated per port but yet-to-be-merged NCQ branch
--	allocates one for each tag and maps each qc to NCQ tag 1-to-1.
--	</para>
--	<para>
--	libata commands can originate from two sources - libata itself
--	and SCSI midlayer.  libata internal commands are used for
--	initialization and error handling.  All normal blk requests
--	and commands for SCSI emulation are passed as SCSI commands
--	through queuecommand callback of SCSI host template.
--	</para>
--	</sect1>
--
--	<sect1><title>How commands are issued</title>
--
--	<variablelist>
--
--	<varlistentry><term>Internal commands</term>
--	<listitem>
--	<para>
--	First, qc is allocated and initialized using
--	ata_qc_new_init().  Although ata_qc_new_init() doesn't
--	implement any wait or retry mechanism when qc is not
--	available, internal commands are currently issued only during
--	initialization and error recovery, so no other command is
--	active and allocation is guaranteed to succeed.
--	</para>
--	<para>
--	Once allocated qc's taskfile is initialized for the command to
--	be executed.  qc currently has two mechanisms to notify
--	completion.  One is via qc->complete_fn() callback and the
--	other is completion qc->waiting.  qc->complete_fn() callback
--	is the asynchronous path used by normal SCSI translated
--	commands and qc->waiting is the synchronous (issuer sleeps in
--	process context) path used by internal commands.
--	</para>
--	<para>
--	Once initialization is complete, host_set lock is acquired
--	and the qc is issued.
--	</para>
--	</listitem>
--	</varlistentry>
--
--	<varlistentry><term>SCSI commands</term>
--	<listitem>
--	<para>
--	All libata drivers use ata_scsi_queuecmd() as
--	hostt->queuecommand callback.  scmds can either be simulated
--	or translated.  No qc is involved in processing a simulated
--	scmd.  The result is computed right away and the scmd is
--	completed.
--	</para>
--	<para>
--	For a translated scmd, ata_qc_new_init() is invoked to
--	allocate a qc and the scmd is translated into the qc.  SCSI
--	midlayer's completion notification function pointer is stored
--	into qc->scsidone.
--	</para>
--	<para>
--	qc->complete_fn() callback is used for completion
--	notification.  ATA commands use ata_scsi_qc_complete() while
--	ATAPI commands use atapi_qc_complete().  Both functions end up
--	calling qc->scsidone to notify upper layer when the qc is
--	finished.  After translation is completed, the qc is issued
--	with ata_qc_issue().
--	</para>
--	<para>
--	Note that SCSI midlayer invokes hostt->queuecommand while
--	holding host_set lock, so all above occur while holding
--	host_set lock.
--	</para>
--	</listitem>
--	</varlistentry>
--
--	</variablelist>
--	</sect1>
--
--	<sect1><title>How commands are processed</title>
--	<para>
--	Depending on which protocol and which controller are used,
--	commands are processed differently.  For the purpose of
--	discussion, a controller which uses taskfile interface and all
--	standard callbacks is assumed.
--	</para>
--	<para>
--	Currently 6 ATA command protocols are used.  They can be
--	sorted into the following four categories according to how
--	they are processed.
--	</para>
--
--	<variablelist>
--	   <varlistentry><term>ATA NO DATA or DMA</term>
--	   <listitem>
--	   <para>
--	   ATA_PROT_NODATA and ATA_PROT_DMA fall into this category.
--	   These types of commands don't require any software
--	   intervention once issued.  Device will raise interrupt on
--	   completion.
--	   </para>
--	   </listitem>
--	   </varlistentry>
--
--	   <varlistentry><term>ATA PIO</term>
--	   <listitem>
--	   <para>
--	   ATA_PROT_PIO is in this category.  libata currently
--	   implements PIO with polling.  ATA_NIEN bit is set to turn
--	   off interrupt and pio_task on ata_wq performs polling and
--	   IO.
--	   </para>
--	   </listitem>
--	   </varlistentry>
--
--	   <varlistentry><term>ATAPI NODATA or DMA</term>
--	   <listitem>
--	   <para>
--	   ATA_PROT_ATAPI_NODATA and ATA_PROT_ATAPI_DMA are in this
--	   category.  packet_task is used to poll BSY bit after
--	   issuing PACKET command.  Once BSY is turned off by the
--	   device, packet_task transfers CDB and hands off processing
--	   to interrupt handler.
--	   </para>
--	   </listitem>
--	   </varlistentry>
--
--	   <varlistentry><term>ATAPI PIO</term>
--	   <listitem>
--	   <para>
--	   ATA_PROT_ATAPI is in this category.  ATA_NIEN bit is set
--	   and, as in ATAPI NODATA or DMA, packet_task submits cdb.
--	   However, after submitting cdb, further processing (data
--	   transfer) is handed off to pio_task.
--	   </para>
--	   </listitem>
--	   </varlistentry>
--	</variablelist>
--        </sect1>
--
--	<sect1><title>How commands are completed</title>
--	<para>
--	Once issued, all qc's are either completed with
--	ata_qc_complete() or time out.  For commands which are handled
--	by interrupts, ata_host_intr() invokes ata_qc_complete(), and,
--	for PIO tasks, pio_task invokes ata_qc_complete().  In error
--	cases, packet_task may also complete commands.
--	</para>
--	<para>
--	ata_qc_complete() does the following.
--	</para>
--
--	<orderedlist>
--
--	<listitem>
--	<para>
--	DMA memory is unmapped.
--	</para>
--	</listitem>
--
--	<listitem>
--	<para>
--	ATA_QCFLAG_ACTIVE is cleared from qc->flags.
--	</para>
--	</listitem>
--
--	<listitem>
--	<para>
--	qc->complete_fn() callback is invoked.  If the return value of
--	the callback is not zero.  Completion is short circuited and
--	ata_qc_complete() returns.
--	</para>
--	</listitem>
--
--	<listitem>
--	<para>
--	__ata_qc_complete() is called, which does
--	   <orderedlist>
--
--	   <listitem>
--	   <para>
--	   qc->flags is cleared to zero.
--	   </para>
--	   </listitem>
--
--	   <listitem>
--	   <para>
--	   ap->active_tag and qc->tag are poisoned.
--	   </para>
--	   </listitem>
--
--	   <listitem>
--	   <para>
--	   qc->waiting is cleared &amp; completed (in that order).
--	   </para>
--	   </listitem>
--
--	   <listitem>
--	   <para>
--	   qc is deallocated by clearing appropriate bit in ap->qactive.
--	   </para>
--	   </listitem>
--
--	   </orderedlist>
--	</para>
--	</listitem>
--
--	</orderedlist>
--
--	<para>
--	So, it basically notifies upper layer and deallocates qc.  One
--	exception is short-circuit path in #3 which is used by
--	atapi_qc_complete().
--	</para>
--	<para>
--	For all non-ATAPI commands, whether it fails or not, almost
--	the same code path is taken and very little error handling
--	takes place.  A qc is completed with success status if it
--	succeeded, with failed status otherwise.
--	</para>
--	<para>
--	However, failed ATAPI commands require more handling as
--	REQUEST SENSE is needed to acquire sense data.  If an ATAPI
--	command fails, ata_qc_complete() is invoked with error status,
--	which in turn invokes atapi_qc_complete() via
--	qc->complete_fn() callback.
--	</para>
--	<para>
--	This makes atapi_qc_complete() set scmd->result to
--	SAM_STAT_CHECK_CONDITION, complete the scmd and return 1.  As
--	the sense data is empty but scmd->result is CHECK CONDITION,
--	SCSI midlayer will invoke EH for the scmd, and returning 1
--	makes ata_qc_complete() to return without deallocating the qc.
--	This leads us to ata_scsi_error() with partially completed qc.
--	</para>
--
--	</sect1>
--
--	<sect1><title>ata_scsi_error()</title>
--	<para>
--	ata_scsi_error() is the current transportt->eh_strategy_handler()
--	for libata.  As discussed above, this will be entered in two
--	cases - timeout and ATAPI error completion.  This function
--	calls low level libata driver's eng_timeout() callback, the
--	standard callback for which is ata_eng_timeout().  It checks
--	if a qc is active and calls ata_qc_timeout() on the qc if so.
--	Actual error handling occurs in ata_qc_timeout().
--	</para>
--	<para>
--	If EH is invoked for timeout, ata_qc_timeout() stops BMDMA and
--	completes the qc.  Note that as we're currently in EH, we
--	cannot call scsi_done.  As described in SCSI EH doc, a
--	recovered scmd should be either retried with
--	scsi_queue_insert() or finished with scsi_finish_command().
--	Here, we override qc->scsidone with scsi_finish_command() and
--	calls ata_qc_complete().
--	</para>
--	<para>
--	If EH is invoked due to a failed ATAPI qc, the qc here is
--	completed but not deallocated.  The purpose of this
--	half-completion is to use the qc as place holder to make EH
--	code reach this place.  This is a bit hackish, but it works.
--	</para>
--	<para>
--	Once control reaches here, the qc is deallocated by invoking
--	__ata_qc_complete() explicitly.  Then, internal qc for REQUEST
--	SENSE is issued.  Once sense data is acquired, scmd is
--	finished by directly invoking scsi_finish_command() on the
--	scmd.  Note that as we already have completed and deallocated
--	the qc which was associated with the scmd, we don't need
--	to/cannot call ata_qc_complete() again.
--	</para>
--
--	</sect1>
--
--	<sect1><title>Problems with the current EH</title>
--
+-     <sect1 id="Struct_member_identifiers_XXX">
+-	<title>Struct member identifiers [XXX]</title>
+-     	<para>
+-	The struct members are marked with [XXX] identifiers in the 
+-	comment. The identifiers explain the usage and scope of the
+-	members. Following identifiers are used:
+-     	</para>
 -	<itemizedlist>
--
--	<listitem>
--	<para>
--	Error representation is too crude.  Currently any and all
--	error conditions are represented with ATA STATUS and ERROR
--	registers.  Errors which aren't ATA device errors are treated
--	as ATA device errors by setting ATA_ERR bit.  Better error
--	descriptor which can properly represent ATA and other
--	errors/exceptions is needed.
--	</para>
--	</listitem>
--
--	<listitem>
--	<para>
--	When handling timeouts, no action is taken to make device
--	forget about the timed out command and ready for new commands.
--	</para>
--	</listitem>
--
--	<listitem>
--	<para>
--	EH handling via ata_scsi_error() is not properly protected
--	from usual command processing.  On EH entrance, the device is
--	not in quiescent state.  Timed out commands may succeed or
--	fail any time.  pio_task and atapi_task may still be running.
--	</para>
--	</listitem>
--
--	<listitem>
--	<para>
--	Too weak error recovery.  Devices / controllers causing HSM
--	mismatch errors and other errors quite often require reset to
--	return to known state.  Also, advanced error handling is
--	necessary to support features like NCQ and hotplug.
--	</para>
--	</listitem>
--
--	<listitem>
--	<para>
--	ATA errors are directly handled in the interrupt handler and
--	PIO errors in pio_task.  This is problematic for advanced
--	error handling for the following reasons.
--	</para>
--	<para>
--	First, advanced error handling often requires context and
--	internal qc execution.
--	</para>
--	<para>
--	Second, even a simple failure (say, CRC error) needs
--	information gathering and could trigger complex error handling
--	(say, resetting &amp; reconfiguring).  Having multiple code
--	paths to gather information, enter EH and trigger actions
--	makes life painful.
--	</para>
--	<para>
--	Third, scattered EH code makes implementing low level drivers
--	difficult.  Low level drivers override libata callbacks.  If
--	EH is scattered over several places, each affected callbacks
--	should perform its part of error handling.  This can be error
--	prone and painful.
--	</para>
--	</listitem>
--
+-		<listitem><para>
+-	  	[INTERN]</para><para>
+-		These members are for NAND driver internal use only and must not be
+-		modified. Most of these values are calculated from the chip geometry
+-		information which is evaluated during nand_scan().
+-		</para></listitem>
+-		<listitem><para>
+-	  	[REPLACEABLE]</para><para>
+-		Replaceable members hold hardware related functions which can be 
+-		provided by the board driver. The board driver can set the functions which
+-		should be replaced by board dependent functions before calling nand_scan().
+-		If the function pointer is NULL on entry to nand_scan() then the pointer
+-		is set to the default function which is suitable for the detected chip type.
+-		</para></listitem>
+-		<listitem><para>
+-	  	[BOARDSPECIFIC]</para><para>
+-		Board specific members hold hardware related information which must
+-		be provided by the board driver. The board driver must set the function
+-		pointers and datafields before calling nand_scan().
+-		</para></listitem>
+-		<listitem><para>
+-	  	[OPTIONAL]</para><para>
+-		Optional members can hold information relevant for the board driver. The
+-		generic NAND driver code does not use this information.
+-		</para></listitem>
 -	</itemizedlist>
+-     </sect1>
+-  </chapter>   
+-
+-  <chapter id="basicboarddriver">
+-     	<title>Basic board driver</title>
+-	<para>
+-		For most boards it will be sufficient to provide just the
+-		basic functions and fill out some really board dependent
+-		members in the nand chip description structure.
+-	</para>
+-	<sect1 id="Basic_defines">
+-		<title>Basic defines</title>
+-		<para>
+-			At least you have to provide a nand_chip structure
+-			and a storage for the ioremap'ed chip address.
+-			You can allocate the nand_chip structure using
+-			kmalloc or you can allocate it statically.
+-			The NAND chip structure embeds an mtd structure
+-			which will be registered to the MTD subsystem.
+-			You can extract a pointer to the mtd structure
+-			from a nand_chip pointer using the nand_to_mtd()
+-			helper.
+-		</para>
+-		<para>
+-			Kmalloc based example
+-		</para>
+-		<programlisting>
+-static struct mtd_info *board_mtd;
+-static void __iomem *baseaddr;
+-		</programlisting>
+-		<para>
+-			Static example
+-		</para>
+-		<programlisting>
+-static struct nand_chip board_chip;
+-static void __iomem *baseaddr;
+-		</programlisting>
+-	</sect1>
+-	<sect1 id="Partition_defines">
+-		<title>Partition defines</title>
+-		<para>
+-			If you want to divide your device into partitions, then
+-			define a partitioning scheme suitable to your board.
+-		</para>
+-		<programlisting>
+-#define NUM_PARTITIONS 2
+-static struct mtd_partition partition_info[] = {
+-	{ .name = "Flash partition 1",
+-	  .offset =  0,
+-	  .size =    8 * 1024 * 1024 },
+-	{ .name = "Flash partition 2",
+-	  .offset =  MTDPART_OFS_NEXT,
+-	  .size =    MTDPART_SIZ_FULL },
+-};
+-		</programlisting>
+-	</sect1>
+-	<sect1 id="Hardware_control_functions">
+-		<title>Hardware control function</title>
+-		<para>
+-			The hardware control function provides access to the 
+-			control pins of the NAND chip(s). 
+-			The access can be done by GPIO pins or by address lines.
+-			If you use address lines, make sure that the timing
+-			requirements are met.
+-		</para>
+-		<para>
+-			<emphasis>GPIO based example</emphasis>
+-		</para>
+-		<programlisting>
+-static void board_hwcontrol(struct mtd_info *mtd, int cmd)
+-{
+-	switch(cmd){
+-		case NAND_CTL_SETCLE: /* Set CLE pin high */ break;
+-		case NAND_CTL_CLRCLE: /* Set CLE pin low */ break;
+-		case NAND_CTL_SETALE: /* Set ALE pin high */ break;
+-		case NAND_CTL_CLRALE: /* Set ALE pin low */ break;
+-		case NAND_CTL_SETNCE: /* Set nCE pin low */ break;
+-		case NAND_CTL_CLRNCE: /* Set nCE pin high */ break;
+-	}
+-}
+-		</programlisting>
+-		<para>
+-			<emphasis>Address lines based example.</emphasis> It's assumed that the
+-			nCE pin is driven by a chip select decoder.
+-		</para>
+-		<programlisting>
+-static void board_hwcontrol(struct mtd_info *mtd, int cmd)
+-{
+-	struct nand_chip *this = mtd_to_nand(mtd);
+-	switch(cmd){
+-		case NAND_CTL_SETCLE: this->IO_ADDR_W |= CLE_ADRR_BIT;  break;
+-		case NAND_CTL_CLRCLE: this->IO_ADDR_W &amp;= ~CLE_ADRR_BIT; break;
+-		case NAND_CTL_SETALE: this->IO_ADDR_W |= ALE_ADRR_BIT;  break;
+-		case NAND_CTL_CLRALE: this->IO_ADDR_W &amp;= ~ALE_ADRR_BIT; break;
+-	}
+-}
+-		</programlisting>
+-	</sect1>
+-	<sect1 id="Device_ready_function">
+-		<title>Device ready function</title>
+-		<para>
+-			If the hardware interface has the ready busy pin of the NAND chip connected to a
+-			GPIO or other accessible I/O pin, this function is used to read back the state of the
+-			pin. The function has no arguments and should return 0, if the device is busy (R/B pin 
+-			is low) and 1, if the device is ready (R/B pin is high).
+-			If the hardware interface does not give access to the ready busy pin, then
+-			the function must not be defined and the function pointer this->dev_ready is set to NULL.		
+-		</para>
+-	</sect1>
+-	<sect1 id="Init_function">
+-		<title>Init function</title>
+-		<para>
+-			The init function allocates memory and sets up all the board
+-			specific parameters and function pointers. When everything
+-			is set up nand_scan() is called. This function tries to
+-			detect and identify then chip. If a chip is found all the
+-			internal data fields are initialized accordingly.
+-			The structure(s) have to be zeroed out first and then filled with the necessary
+-			information about the device.
+-		</para>
+-		<programlisting>
+-static int __init board_init (void)
+-{
+-	struct nand_chip *this;
+-	int err = 0;
+-
+-	/* Allocate memory for MTD device structure and private data */
+-	this = kzalloc(sizeof(struct nand_chip), GFP_KERNEL);
+-	if (!this) {
+-		printk ("Unable to allocate NAND MTD device structure.\n");
+-		err = -ENOMEM;
+-		goto out;
+-	}
+-
+-	board_mtd = nand_to_mtd(this);
+-
+-	/* map physical address */
+-	baseaddr = ioremap(CHIP_PHYSICAL_ADDRESS, 1024);
+-	if (!baseaddr) {
+-		printk("Ioremap to access NAND chip failed\n");
+-		err = -EIO;
+-		goto out_mtd;
+-	}
+-
+-	/* Set address of NAND IO lines */
+-	this->IO_ADDR_R = baseaddr;
+-	this->IO_ADDR_W = baseaddr;
+-	/* Reference hardware control function */
+-	this->hwcontrol = board_hwcontrol;
+-	/* Set command delay time, see datasheet for correct value */
+-	this->chip_delay = CHIP_DEPENDEND_COMMAND_DELAY;
+-	/* Assign the device ready function, if available */
+-	this->dev_ready = board_dev_ready;
+-	this->eccmode = NAND_ECC_SOFT;
+-
+-	/* Scan to find existence of the device */
+-	if (nand_scan (board_mtd, 1)) {
+-		err = -ENXIO;
+-		goto out_ior;
+-	}
+-	
+-	add_mtd_partitions(board_mtd, partition_info, NUM_PARTITIONS);
+-	goto out;
+-
+-out_ior:
+-	iounmap(baseaddr);
+-out_mtd:
+-	kfree (this);
+-out:
+-	return err;
+-}
+-module_init(board_init);
+-		</programlisting>
+-	</sect1>
+-	<sect1 id="Exit_function">
+-		<title>Exit function</title>
+-		<para>
+-			The exit function is only necessary if the driver is
+-			compiled as a module. It releases all resources which
+-			are held by the chip driver and unregisters the partitions
+-			in the MTD layer.
+-		</para>
+-		<programlisting>
+-#ifdef MODULE
+-static void __exit board_cleanup (void)
+-{
+-	/* Release resources, unregister device */
+-	nand_release (board_mtd);
+-
+-	/* unmap physical address */
+-	iounmap(baseaddr);
+-	
+-	/* Free the MTD device structure */
+-	kfree (mtd_to_nand(board_mtd));
+-}
+-module_exit(board_cleanup);
+-#endif
+-		</programlisting>
 -	</sect1>
 -  </chapter>
 -
--  <chapter id="libataExt">
--     <title>libata Library</title>
--!Edrivers/ata/libata-core.c
+-  <chapter id="boarddriversadvanced">
+-     	<title>Advanced board driver functions</title>
+-	<para>
+-		This chapter describes the advanced functionality of the NAND
+-		driver. For a list of functions which can be overridden by the board
+-		driver see the documentation of the nand_chip structure.
+-	</para>
+-	<sect1 id="Multiple_chip_control">
+-		<title>Multiple chip control</title>
+-		<para>
+-			The nand driver can control chip arrays. Therefore the
+-			board driver must provide an own select_chip function. This
+-			function must (de)select the requested chip.
+-			The function pointer in the nand_chip structure must
+-			be set before calling nand_scan(). The maxchip parameter
+-			of nand_scan() defines the maximum number of chips to
+-			scan for. Make sure that the select_chip function can
+-			handle the requested number of chips.
+-		</para>
+-		<para>
+-			The nand driver concatenates the chips to one virtual
+-			chip and provides this virtual chip to the MTD layer.
+-		</para>
+-		<para>
+-			<emphasis>Note: The driver can only handle linear chip arrays
+-			of equally sized chips. There is no support for
+-			parallel arrays which extend the buswidth.</emphasis>
+-		</para>
+-		<para>
+-			<emphasis>GPIO based example</emphasis>
+-		</para>
+-		<programlisting>
+-static void board_select_chip (struct mtd_info *mtd, int chip)
+-{
+-	/* Deselect all chips, set all nCE pins high */
+-	GPIO(BOARD_NAND_NCE) |= 0xff;	
+-	if (chip >= 0)
+-		GPIO(BOARD_NAND_NCE) &amp;= ~ (1 &lt;&lt; chip);
+-}
+-		</programlisting>
+-		<para>
+-			<emphasis>Address lines based example.</emphasis>
+-			Its assumed that the nCE pins are connected to an
+-			address decoder.
+-		</para>
+-		<programlisting>
+-static void board_select_chip (struct mtd_info *mtd, int chip)
+-{
+-	struct nand_chip *this = mtd_to_nand(mtd);
+-	
+-	/* Deselect all chips */
+-	this->IO_ADDR_R &amp;= ~BOARD_NAND_ADDR_MASK;
+-	this->IO_ADDR_W &amp;= ~BOARD_NAND_ADDR_MASK;
+-	switch (chip) {
+-	case 0:
+-		this->IO_ADDR_R |= BOARD_NAND_ADDR_CHIP0;
+-		this->IO_ADDR_W |= BOARD_NAND_ADDR_CHIP0;
+-		break;
+-	....	
+-	case n:
+-		this->IO_ADDR_R |= BOARD_NAND_ADDR_CHIPn;
+-		this->IO_ADDR_W |= BOARD_NAND_ADDR_CHIPn;
+-		break;
+-	}	
+-}
+-		</programlisting>
+-	</sect1>
+-	<sect1 id="Hardware_ECC_support">
+-		<title>Hardware ECC support</title>
+-		<sect2 id="Functions_and_constants">
+-			<title>Functions and constants</title>
+-			<para>
+-				The nand driver supports three different types of
+-				hardware ECC.
+-				<itemizedlist>
+-				<listitem><para>NAND_ECC_HW3_256</para><para>
+-				Hardware ECC generator providing 3 bytes ECC per
+-				256 byte.
+-				</para>	</listitem>
+-				<listitem><para>NAND_ECC_HW3_512</para><para>
+-				Hardware ECC generator providing 3 bytes ECC per
+-				512 byte.
+-				</para>	</listitem>
+-				<listitem><para>NAND_ECC_HW6_512</para><para>
+-				Hardware ECC generator providing 6 bytes ECC per
+-				512 byte.
+-				</para>	</listitem>
+-				<listitem><para>NAND_ECC_HW8_512</para><para>
+-				Hardware ECC generator providing 6 bytes ECC per
+-				512 byte.
+-				</para>	</listitem>
+-				</itemizedlist>
+-				If your hardware generator has a different functionality
+-				add it at the appropriate place in nand_base.c
+-			</para>
+-			<para>
+-				The board driver must provide following functions:
+-				<itemizedlist>
+-				<listitem><para>enable_hwecc</para><para>
+-				This function is called before reading / writing to
+-				the chip. Reset or initialize the hardware generator
+-				in this function. The function is called with an
+-				argument which let you distinguish between read 
+-				and write operations.
+-				</para>	</listitem>
+-				<listitem><para>calculate_ecc</para><para>
+-				This function is called after read / write from / to
+-				the chip. Transfer the ECC from the hardware to
+-				the buffer. If the option NAND_HWECC_SYNDROME is set
+-				then the function is only called on write. See below.
+-				</para>	</listitem>
+-				<listitem><para>correct_data</para><para>
+-				In case of an ECC error this function is called for
+-				error detection and correction. Return 1 respectively 2
+-				in case the error can be corrected. If the error is
+-				not correctable return -1. If your hardware generator
+-				matches the default algorithm of the nand_ecc software
+-				generator then use the correction function provided
+-				by nand_ecc instead of implementing duplicated code.
+-				</para>	</listitem>
+-				</itemizedlist>
+-			</para>
+-		</sect2>
+-		<sect2 id="Hardware_ECC_with_syndrome_calculation">
+-		<title>Hardware ECC with syndrome calculation</title>
+-			<para>
+-				Many hardware ECC implementations provide Reed-Solomon
+-				codes and calculate an error syndrome on read. The syndrome
+-				must be converted to a standard Reed-Solomon syndrome
+-				before calling the error correction code in the generic
+-				Reed-Solomon library.
+-			</para>
+-			<para>
+-				The ECC bytes must be placed immediately after the data
+-				bytes in order to make the syndrome generator work. This
+-				is contrary to the usual layout used by software ECC. The
+-				separation of data and out of band area is not longer
+-				possible. The nand driver code handles this layout and
+-				the remaining free bytes in the oob area are managed by 
+-				the autoplacement code. Provide a matching oob-layout
+-				in this case. See rts_from4.c and diskonchip.c for 
+-				implementation reference. In those cases we must also
+-				use bad block tables on FLASH, because the ECC layout is
+-				interfering with the bad block marker positions.
+-				See bad block table support for details.
+-			</para>
+-		</sect2>
+-	</sect1>
+-	<sect1 id="Bad_Block_table_support">
+-		<title>Bad block table support</title>
+-		<para>
+-			Most NAND chips mark the bad blocks at a defined
+-			position in the spare area. Those blocks must 
+-			not be erased under any circumstances as the bad 
+-			block information would be lost.
+-			It is possible to check the bad block mark each
+-			time when the blocks are accessed by reading the
+-			spare area of the first page in the block. This
+-			is time consuming so a bad block table is used.
+-		</para>
+-		<para>
+-			The nand driver supports various types of bad block
+-			tables.
+-			<itemizedlist>
+-			<listitem><para>Per device</para><para>
+-			The bad block table contains all bad block information
+-			of the device which can consist of multiple chips.
+-			</para>	</listitem>
+-			<listitem><para>Per chip</para><para>
+-			A bad block table is used per chip and contains the
+-			bad block information for this particular chip.
+-			</para>	</listitem>
+-			<listitem><para>Fixed offset</para><para>
+-			The bad block table is located at a fixed offset
+-			in the chip (device). This applies to various
+-			DiskOnChip devices.
+-			</para>	</listitem>
+-			<listitem><para>Automatic placed</para><para>
+-			The bad block table is automatically placed and
+-			detected either at the end or at the beginning
+-			of a chip (device)
+-			</para>	</listitem>
+-			<listitem><para>Mirrored tables</para><para>
+-			The bad block table is mirrored on the chip (device) to
+-			allow updates of the bad block table without data loss.
+-			</para>	</listitem>
+-			</itemizedlist>
+-		</para>
+-		<para>	
+-			nand_scan() calls the function nand_default_bbt(). 
+-			nand_default_bbt() selects appropriate default
+-			bad block table descriptors depending on the chip information
+-			which was retrieved by nand_scan().
+-		</para>
+-		<para>
+-			The standard policy is scanning the device for bad 
+-			blocks and build a ram based bad block table which
+-			allows faster access than always checking the
+-			bad block information on the flash chip itself.
+-		</para>
+-		<sect2 id="Flash_based_tables">
+-			<title>Flash based tables</title>
+-			<para>
+-				It may be desired or necessary to keep a bad block table in FLASH.
+-				For AG-AND chips this is mandatory, as they have no factory marked
+-				bad blocks. They have factory marked good blocks. The marker pattern
+-				is erased when the block is erased to be reused. So in case of
+-				powerloss before writing the pattern back to the chip this block 
+-				would be lost and added to the bad blocks. Therefore we scan the 
+-				chip(s) when we detect them the first time for good blocks and 
+-				store this information in a bad block table before erasing any 
+-				of the blocks.
+-			</para>
+-			<para>
+-				The blocks in which the tables are stored are protected against
+-				accidental access by marking them bad in the memory bad block
+-				table. The bad block table management functions are allowed
+-				to circumvent this protection.
+-			</para>
+-			<para>
+-				The simplest way to activate the FLASH based bad block table support 
+-				is to set the option NAND_BBT_USE_FLASH in the bbt_option field of
+-				the nand chip structure before calling nand_scan(). For AG-AND
+-				chips is this done by default.
+-				This activates the default FLASH based bad block table functionality 
+-				of the NAND driver. The default bad block table options are
+-				<itemizedlist>
+-				<listitem><para>Store bad block table per chip</para></listitem>
+-				<listitem><para>Use 2 bits per block</para></listitem>
+-				<listitem><para>Automatic placement at the end of the chip</para></listitem>
+-				<listitem><para>Use mirrored tables with version numbers</para></listitem>
+-				<listitem><para>Reserve 4 blocks at the end of the chip</para></listitem>
+-				</itemizedlist>
+-			</para>
+-		</sect2>
+-		<sect2 id="User_defined_tables">
+-			<title>User defined tables</title>
+-			<para>
+-				User defined tables are created by filling out a 
+-				nand_bbt_descr structure and storing the pointer in the
+-				nand_chip structure member bbt_td before calling nand_scan(). 
+-				If a mirror table is necessary a second structure must be
+-				created and a pointer to this structure must be stored
+-				in bbt_md inside the nand_chip structure. If the bbt_md 
+-				member is set to NULL then only the main table is used
+-				and no scan for the mirrored table is performed.
+-			</para>
+-			<para>
+-				The most important field in the nand_bbt_descr structure
+-				is the options field. The options define most of the 
+-				table properties. Use the predefined constants from
+-				nand.h to define the options.
+-				<itemizedlist>
+-				<listitem><para>Number of bits per block</para>
+-				<para>The supported number of bits is 1, 2, 4, 8.</para></listitem>
+-				<listitem><para>Table per chip</para>
+-				<para>Setting the constant NAND_BBT_PERCHIP selects that
+-				a bad block table is managed for each chip in a chip array.
+-				If this option is not set then a per device bad block table
+-				is used.</para></listitem>
+-				<listitem><para>Table location is absolute</para>
+-				<para>Use the option constant NAND_BBT_ABSPAGE and
+-				define the absolute page number where the bad block
+-				table starts in the field pages. If you have selected bad block
+-				tables per chip and you have a multi chip array then the start page
+-				must be given for each chip in the chip array. Note: there is no scan
+-				for a table ident pattern performed, so the fields 
+-				pattern, veroffs, offs, len can be left uninitialized</para></listitem>
+-				<listitem><para>Table location is automatically detected</para>
+-				<para>The table can either be located in the first or the last good
+-				blocks of the chip (device). Set NAND_BBT_LASTBLOCK to place
+-				the bad block table at the end of the chip (device). The
+-				bad block tables are marked and identified by a pattern which
+-				is stored in the spare area of the first page in the block which
+-				holds the bad block table. Store a pointer to the pattern  
+-				in the pattern field. Further the length of the pattern has to be 
+-				stored in len and the offset in the spare area must be given
+-				in the offs member of the nand_bbt_descr structure. For mirrored
+-				bad block tables different patterns are mandatory.</para></listitem>
+-				<listitem><para>Table creation</para>
+-				<para>Set the option NAND_BBT_CREATE to enable the table creation
+-				if no table can be found during the scan. Usually this is done only 
+-				once if a new chip is found. </para></listitem>
+-				<listitem><para>Table write support</para>
+-				<para>Set the option NAND_BBT_WRITE to enable the table write support.
+-				This allows the update of the bad block table(s) in case a block has
+-				to be marked bad due to wear. The MTD interface function block_markbad
+-				is calling the update function of the bad block table. If the write
+-				support is enabled then the table is updated on FLASH.</para>
+-				<para>
+-				Note: Write support should only be enabled for mirrored tables with
+-				version control.
+-				</para></listitem>
+-				<listitem><para>Table version control</para>
+-				<para>Set the option NAND_BBT_VERSION to enable the table version control.
+-				It's highly recommended to enable this for mirrored tables with write
+-				support. It makes sure that the risk of losing the bad block
+-				table information is reduced to the loss of the information about the
+-				one worn out block which should be marked bad. The version is stored in
+-				4 consecutive bytes in the spare area of the device. The position of
+-				the version number is defined by the member veroffs in the bad block table
+-				descriptor.</para></listitem>
+-				<listitem><para>Save block contents on write</para>
+-				<para>
+-				In case that the block which holds the bad block table does contain
+-				other useful information, set the option NAND_BBT_SAVECONTENT. When
+-				the bad block table is written then the whole block is read the bad
+-				block table is updated and the block is erased and everything is 
+-				written back. If this option is not set only the bad block table
+-				is written and everything else in the block is ignored and erased.
+-				</para></listitem>
+-				<listitem><para>Number of reserved blocks</para>
+-				<para>
+-				For automatic placement some blocks must be reserved for
+-				bad block table storage. The number of reserved blocks is defined 
+-				in the maxblocks member of the bad block table description structure.
+-				Reserving 4 blocks for mirrored tables should be a reasonable number. 
+-				This also limits the number of blocks which are scanned for the bad
+-				block table ident pattern.
+-				</para></listitem>
+-				</itemizedlist>
+-			</para>
+-		</sect2>
+-	</sect1>
+-	<sect1 id="Spare_area_placement">
+-		<title>Spare area (auto)placement</title>
+-		<para>
+-			The nand driver implements different possibilities for
+-			placement of filesystem data in the spare area, 
+-			<itemizedlist>
+-			<listitem><para>Placement defined by fs driver</para></listitem>
+-			<listitem><para>Automatic placement</para></listitem>
+-			</itemizedlist>
+-			The default placement function is automatic placement. The
+-			nand driver has built in default placement schemes for the
+-			various chiptypes. If due to hardware ECC functionality the
+-			default placement does not fit then the board driver can
+-			provide a own placement scheme.
+-		</para>
+-		<para>
+-			File system drivers can provide a own placement scheme which
+-			is used instead of the default placement scheme.
+-		</para>
+-		<para>
+-			Placement schemes are defined by a nand_oobinfo structure
+-	     		<programlisting>
+-struct nand_oobinfo {
+-	int	useecc;
+-	int	eccbytes;
+-	int	eccpos[24];
+-	int	oobfree[8][2];
+-};
+-	     		</programlisting>
+-			<itemizedlist>
+-			<listitem><para>useecc</para><para>
+-				The useecc member controls the ecc and placement function. The header
+-				file include/mtd/mtd-abi.h contains constants to select ecc and
+-				placement. MTD_NANDECC_OFF switches off the ecc complete. This is
+-				not recommended and available for testing and diagnosis only.
+-				MTD_NANDECC_PLACE selects caller defined placement, MTD_NANDECC_AUTOPLACE
+-				selects automatic placement.
+-			</para></listitem>
+-			<listitem><para>eccbytes</para><para>
+-				The eccbytes member defines the number of ecc bytes per page.
+-			</para></listitem>
+-			<listitem><para>eccpos</para><para>
+-				The eccpos array holds the byte offsets in the spare area where
+-				the ecc codes are placed.
+-			</para></listitem>
+-			<listitem><para>oobfree</para><para>
+-				The oobfree array defines the areas in the spare area which can be
+-				used for automatic placement. The information is given in the format
+-				{offset, size}. offset defines the start of the usable area, size the
+-				length in bytes. More than one area can be defined. The list is terminated
+-				by an {0, 0} entry.
+-			</para></listitem>
+-			</itemizedlist>
+-		</para>
+-		<sect2 id="Placement_defined_by_fs_driver">
+-			<title>Placement defined by fs driver</title>
+-			<para>
+-				The calling function provides a pointer to a nand_oobinfo
+-				structure which defines the ecc placement. For writes the
+-				caller must provide a spare area buffer along with the
+-				data buffer. The spare area buffer size is (number of pages) *
+-				(size of spare area). For reads the buffer size is
+-				(number of pages) * ((size of spare area) + (number of ecc
+-				steps per page) * sizeof (int)). The driver stores the
+-				result of the ecc check for each tuple in the spare buffer.
+-				The storage sequence is 
+-			</para>
+-			<para>
+-				&lt;spare data page 0&gt;&lt;ecc result 0&gt;...&lt;ecc result n&gt;
+-			</para>
+-			<para>
+-				...
+-			</para>
+-			<para>
+-				&lt;spare data page n&gt;&lt;ecc result 0&gt;...&lt;ecc result n&gt;
+-			</para>
+-			<para>
+-				This is a legacy mode used by YAFFS1.
+-			</para>
+-			<para>
+-				If the spare area buffer is NULL then only the ECC placement is
+-				done according to the given scheme in the nand_oobinfo structure.
+-			</para>
+-		</sect2>
+-		<sect2 id="Automatic_placement">
+-			<title>Automatic placement</title>
+-			<para>
+-				Automatic placement uses the built in defaults to place the
+-				ecc bytes in the spare area. If filesystem data have to be stored /
+-				read into the spare area then the calling function must provide a
+-				buffer. The buffer size per page is determined by the oobfree array in
+-				the nand_oobinfo structure.
+-			</para>
+-			<para>
+-				If the spare area buffer is NULL then only the ECC placement is
+-				done according to the default builtin scheme.
+-			</para>
+-		</sect2>
+-	</sect1>	
+-	<sect1 id="Spare_area_autoplacement_default">
+-		<title>Spare area autoplacement default schemes</title>
+-		<sect2 id="pagesize_256">
+-			<title>256 byte pagesize</title>
+-<informaltable><tgroup cols="3"><tbody>
+-<row>
+-<entry>Offset</entry>
+-<entry>Content</entry>
+-<entry>Comment</entry>
+-</row>
+-<row>
+-<entry>0x00</entry>
+-<entry>ECC byte 0</entry>
+-<entry>Error correction code byte 0</entry>
+-</row>
+-<row>
+-<entry>0x01</entry>
+-<entry>ECC byte 1</entry>
+-<entry>Error correction code byte 1</entry>
+-</row>
+-<row>
+-<entry>0x02</entry>
+-<entry>ECC byte 2</entry>
+-<entry>Error correction code byte 2</entry>
+-</row>
+-<row>
+-<entry>0x03</entry>
+-<entry>Autoplace 0</entry>
+-<entry></entry>
+-</row>
+-<row>
+-<entry>0x04</entry>
+-<entry>Autoplace 1</entry>
+-<entry></entry>
+-</row>
+-<row>
+-<entry>0x05</entry>
+-<entry>Bad block marker</entry>
+-<entry>If any bit in this byte is zero, then this block is bad.
+-This applies only to the first page in a block. In the remaining
+-pages this byte is reserved</entry>
+-</row>
+-<row>
+-<entry>0x06</entry>
+-<entry>Autoplace 2</entry>
+-<entry></entry>
+-</row>
+-<row>
+-<entry>0x07</entry>
+-<entry>Autoplace 3</entry>
+-<entry></entry>
+-</row>
+-</tbody></tgroup></informaltable>
+-		</sect2>
+-		<sect2 id="pagesize_512">
+-			<title>512 byte pagesize</title>
+-<informaltable><tgroup cols="3"><tbody>
+-<row>
+-<entry>Offset</entry>
+-<entry>Content</entry>
+-<entry>Comment</entry>
+-</row>
+-<row>
+-<entry>0x00</entry>
+-<entry>ECC byte 0</entry>
+-<entry>Error correction code byte 0 of the lower 256 Byte data in
+-this page</entry>
+-</row>
+-<row>
+-<entry>0x01</entry>
+-<entry>ECC byte 1</entry>
+-<entry>Error correction code byte 1 of the lower 256 Bytes of data
+-in this page</entry>
+-</row>
+-<row>
+-<entry>0x02</entry>
+-<entry>ECC byte 2</entry>
+-<entry>Error correction code byte 2 of the lower 256 Bytes of data
+-in this page</entry>
+-</row>
+-<row>
+-<entry>0x03</entry>
+-<entry>ECC byte 3</entry>
+-<entry>Error correction code byte 0 of the upper 256 Bytes of data
+-in this page</entry>
+-</row>
+-<row>
+-<entry>0x04</entry>
+-<entry>reserved</entry>
+-<entry>reserved</entry>
+-</row>
+-<row>
+-<entry>0x05</entry>
+-<entry>Bad block marker</entry>
+-<entry>If any bit in this byte is zero, then this block is bad.
+-This applies only to the first page in a block. In the remaining
+-pages this byte is reserved</entry>
+-</row>
+-<row>
+-<entry>0x06</entry>
+-<entry>ECC byte 4</entry>
+-<entry>Error correction code byte 1 of the upper 256 Bytes of data
+-in this page</entry>
+-</row>
+-<row>
+-<entry>0x07</entry>
+-<entry>ECC byte 5</entry>
+-<entry>Error correction code byte 2 of the upper 256 Bytes of data
+-in this page</entry>
+-</row>
+-<row>
+-<entry>0x08 - 0x0F</entry>
+-<entry>Autoplace 0 - 7</entry>
+-<entry></entry>
+-</row>
+-</tbody></tgroup></informaltable>
+-		</sect2>
+-		<sect2 id="pagesize_2048">
+-			<title>2048 byte pagesize</title>
+-<informaltable><tgroup cols="3"><tbody>
+-<row>
+-<entry>Offset</entry>
+-<entry>Content</entry>
+-<entry>Comment</entry>
+-</row>
+-<row>
+-<entry>0x00</entry>
+-<entry>Bad block marker</entry>
+-<entry>If any bit in this byte is zero, then this block is bad.
+-This applies only to the first page in a block. In the remaining
+-pages this byte is reserved</entry>
+-</row>
+-<row>
+-<entry>0x01</entry>
+-<entry>Reserved</entry>
+-<entry>Reserved</entry>
+-</row>
+-<row>
+-<entry>0x02-0x27</entry>
+-<entry>Autoplace 0 - 37</entry>
+-<entry></entry>
+-</row>
+-<row>
+-<entry>0x28</entry>
+-<entry>ECC byte 0</entry>
+-<entry>Error correction code byte 0 of the first 256 Byte data in
+-this page</entry>
+-</row>
+-<row>
+-<entry>0x29</entry>
+-<entry>ECC byte 1</entry>
+-<entry>Error correction code byte 1 of the first 256 Bytes of data
+-in this page</entry>
+-</row>
+-<row>
+-<entry>0x2A</entry>
+-<entry>ECC byte 2</entry>
+-<entry>Error correction code byte 2 of the first 256 Bytes data in
+-this page</entry>
+-</row>
+-<row>
+-<entry>0x2B</entry>
+-<entry>ECC byte 3</entry>
+-<entry>Error correction code byte 0 of the second 256 Bytes of data
+-in this page</entry>
+-</row>
+-<row>
+-<entry>0x2C</entry>
+-<entry>ECC byte 4</entry>
+-<entry>Error correction code byte 1 of the second 256 Bytes of data
+-in this page</entry>
+-</row>
+-<row>
+-<entry>0x2D</entry>
+-<entry>ECC byte 5</entry>
+-<entry>Error correction code byte 2 of the second 256 Bytes of data
+-in this page</entry>
+-</row>
+-<row>
+-<entry>0x2E</entry>
+-<entry>ECC byte 6</entry>
+-<entry>Error correction code byte 0 of the third 256 Bytes of data
+-in this page</entry>
+-</row>
+-<row>
+-<entry>0x2F</entry>
+-<entry>ECC byte 7</entry>
+-<entry>Error correction code byte 1 of the third 256 Bytes of data
+-in this page</entry>
+-</row>
+-<row>
+-<entry>0x30</entry>
+-<entry>ECC byte 8</entry>
+-<entry>Error correction code byte 2 of the third 256 Bytes of data
+-in this page</entry>
+-</row>
+-<row>
+-<entry>0x31</entry>
+-<entry>ECC byte 9</entry>
+-<entry>Error correction code byte 0 of the fourth 256 Bytes of data
+-in this page</entry>
+-</row>
+-<row>
+-<entry>0x32</entry>
+-<entry>ECC byte 10</entry>
+-<entry>Error correction code byte 1 of the fourth 256 Bytes of data
+-in this page</entry>
+-</row>
+-<row>
+-<entry>0x33</entry>
+-<entry>ECC byte 11</entry>
+-<entry>Error correction code byte 2 of the fourth 256 Bytes of data
+-in this page</entry>
+-</row>
+-<row>
+-<entry>0x34</entry>
+-<entry>ECC byte 12</entry>
+-<entry>Error correction code byte 0 of the fifth 256 Bytes of data
+-in this page</entry>
+-</row>
+-<row>
+-<entry>0x35</entry>
+-<entry>ECC byte 13</entry>
+-<entry>Error correction code byte 1 of the fifth 256 Bytes of data
+-in this page</entry>
+-</row>
+-<row>
+-<entry>0x36</entry>
+-<entry>ECC byte 14</entry>
+-<entry>Error correction code byte 2 of the fifth 256 Bytes of data
+-in this page</entry>
+-</row>
+-<row>
+-<entry>0x37</entry>
+-<entry>ECC byte 15</entry>
+-<entry>Error correction code byte 0 of the sixt 256 Bytes of data
+-in this page</entry>
+-</row>
+-<row>
+-<entry>0x38</entry>
+-<entry>ECC byte 16</entry>
+-<entry>Error correction code byte 1 of the sixt 256 Bytes of data
+-in this page</entry>
+-</row>
+-<row>
+-<entry>0x39</entry>
+-<entry>ECC byte 17</entry>
+-<entry>Error correction code byte 2 of the sixt 256 Bytes of data
+-in this page</entry>
+-</row>
+-<row>
+-<entry>0x3A</entry>
+-<entry>ECC byte 18</entry>
+-<entry>Error correction code byte 0 of the seventh 256 Bytes of
+-data in this page</entry>
+-</row>
+-<row>
+-<entry>0x3B</entry>
+-<entry>ECC byte 19</entry>
+-<entry>Error correction code byte 1 of the seventh 256 Bytes of
+-data in this page</entry>
+-</row>
+-<row>
+-<entry>0x3C</entry>
+-<entry>ECC byte 20</entry>
+-<entry>Error correction code byte 2 of the seventh 256 Bytes of
+-data in this page</entry>
+-</row>
+-<row>
+-<entry>0x3D</entry>
+-<entry>ECC byte 21</entry>
+-<entry>Error correction code byte 0 of the eighth 256 Bytes of data
+-in this page</entry>
+-</row>
+-<row>
+-<entry>0x3E</entry>
+-<entry>ECC byte 22</entry>
+-<entry>Error correction code byte 1 of the eighth 256 Bytes of data
+-in this page</entry>
+-</row>
+-<row>
+-<entry>0x3F</entry>
+-<entry>ECC byte 23</entry>
+-<entry>Error correction code byte 2 of the eighth 256 Bytes of data
+-in this page</entry>
+-</row>
+-</tbody></tgroup></informaltable>
+-		</sect2>
+-     	</sect1>
 -  </chapter>
 -
--  <chapter id="libataInt">
--     <title>libata Core Internals</title>
--!Idrivers/ata/libata-core.c
--  </chapter>
+-  <chapter id="filesystems">
+-     	<title>Filesystem support</title>
+-	<para>
+-		The NAND driver provides all necessary functions for a
+-		filesystem via the MTD interface.
+-	</para>
+-	<para>
+-		Filesystems must be aware of the NAND peculiarities and
+-		restrictions. One major restrictions of NAND Flash is, that you cannot 
+-		write as often as you want to a page. The consecutive writes to a page, 
+-		before erasing it again, are restricted to 1-3 writes, depending on the 
+-		manufacturers specifications. This applies similar to the spare area. 
+-	</para>
+-	<para>
+-		Therefore NAND aware filesystems must either write in page size chunks
+-		or hold a writebuffer to collect smaller writes until they sum up to 
+-		pagesize. Available NAND aware filesystems: JFFS2, YAFFS. 		
+-	</para>
+-	<para>
+-		The spare area usage to store filesystem data is controlled by
+-		the spare area placement functionality which is described in one
+-		of the earlier chapters.
+-	</para>
+-  </chapter>	
+-  <chapter id="tools">
+-     	<title>Tools</title>
+-	<para>
+-		The MTD project provides a couple of helpful tools to handle NAND Flash.
+-		<itemizedlist>
+-		<listitem><para>flasherase, flasheraseall: Erase and format FLASH partitions</para></listitem>
+-		<listitem><para>nandwrite: write filesystem images to NAND FLASH</para></listitem>
+-		<listitem><para>nanddump: dump the contents of a NAND FLASH partitions</para></listitem>
+-		</itemizedlist>
+-	</para>
+-	<para>
+-		These tools are aware of the NAND restrictions. Please use those tools
+-		instead of complaining about errors which are caused by non NAND aware
+-		access methods.
+-	</para>
+-  </chapter>	
 -
--  <chapter id="libataScsiInt">
--     <title>libata SCSI translation/emulation</title>
--!Edrivers/ata/libata-scsi.c
--!Idrivers/ata/libata-scsi.c
--  </chapter>
--
--  <chapter id="ataExceptions">
--     <title>ATA errors and exceptions</title>
--
--  <para>
--  This chapter tries to identify what error/exception conditions exist
--  for ATA/ATAPI devices and describe how they should be handled in
--  implementation-neutral way.
--  </para>
--
--  <para>
--  The term 'error' is used to describe conditions where either an
--  explicit error condition is reported from device or a command has
--  timed out.
--  </para>
--
--  <para>
--  The term 'exception' is either used to describe exceptional
--  conditions which are not errors (say, power or hotplug events), or
--  to describe both errors and non-error exceptional conditions.  Where
--  explicit distinction between error and exception is necessary, the
--  term 'non-error exception' is used.
--  </para>
--
--  <sect1 id="excat">
--     <title>Exception categories</title>
+-  <chapter id="defines">
+-     <title>Constants</title>
 -     <para>
--     Exceptions are described primarily with respect to legacy
--     taskfile + bus master IDE interface.  If a controller provides
--     other better mechanism for error reporting, mapping those into
--     categories described below shouldn't be difficult.
+-     This chapter describes the constants which might be relevant for a driver developer.
 -     </para>
+-     <sect1 id="Chip_option_constants">
+-	<title>Chip option constants</title>
+-     	<sect2 id="Constants_for_chip_id_table">
+-		<title>Constants for chip id table</title>
+-     		<para>
+-		These constants are defined in nand.h. They are ored together to describe
+-		the chip functionality.
+-     		<programlisting>
+-/* Buswitdh is 16 bit */
+-#define NAND_BUSWIDTH_16	0x00000002
+-/* Device supports partial programming without padding */
+-#define NAND_NO_PADDING		0x00000004
+-/* Chip has cache program function */
+-#define NAND_CACHEPRG		0x00000008
+-/* Chip has copy back function */
+-#define NAND_COPYBACK		0x00000010
+-/* AND Chip which has 4 banks and a confusing page / block 
+- * assignment. See Renesas datasheet for further information */
+-#define NAND_IS_AND		0x00000020
+-/* Chip has a array of 4 pages which can be read without
+- * additional ready /busy waits */
+-#define NAND_4PAGE_ARRAY	0x00000040 
+-		</programlisting>
+-     		</para>
+-     	</sect2>
+-     	<sect2 id="Constants_for_runtime_options">
+-		<title>Constants for runtime options</title>
+-     		<para>
+-		These constants are defined in nand.h. They are ored together to describe
+-		the functionality.
+-     		<programlisting>
+-/* The hw ecc generator provides a syndrome instead a ecc value on read 
+- * This can only work if we have the ecc bytes directly behind the 
+- * data bytes. Applies for DOC and AG-AND Renesas HW Reed Solomon generators */
+-#define NAND_HWECC_SYNDROME	0x00020000
+-		</programlisting>
+-     		</para>
+-     	</sect2>
+-     </sect1>	
 -
+-     <sect1 id="EEC_selection_constants">
+-	<title>ECC selection constants</title>
+-	<para>
+-	Use these constants to select the ECC algorithm.
+-  	<programlisting>
+-/* No ECC. Usage is not recommended ! */
+-#define NAND_ECC_NONE		0
+-/* Software ECC 3 byte ECC per 256 Byte data */
+-#define NAND_ECC_SOFT		1
+-/* Hardware ECC 3 byte ECC per 256 Byte data */
+-#define NAND_ECC_HW3_256	2
+-/* Hardware ECC 3 byte ECC per 512 Byte data */
+-#define NAND_ECC_HW3_512	3
+-/* Hardware ECC 6 byte ECC per 512 Byte data */
+-#define NAND_ECC_HW6_512	4
+-/* Hardware ECC 6 byte ECC per 512 Byte data */
+-#define NAND_ECC_HW8_512	6
+-	</programlisting>
+-	</para>
+-     </sect1>	
+-
+-     <sect1 id="Hardware_control_related_constants">
+-	<title>Hardware control related constants</title>
+-	<para>
+-	These constants describe the requested hardware access function when
+-	the boardspecific hardware control function is called
+-  	<programlisting>
+-/* Select the chip by setting nCE to low */
+-#define NAND_CTL_SETNCE 	1
+-/* Deselect the chip by setting nCE to high */
+-#define NAND_CTL_CLRNCE		2
+-/* Select the command latch by setting CLE to high */
+-#define NAND_CTL_SETCLE		3
+-/* Deselect the command latch by setting CLE to low */
+-#define NAND_CTL_CLRCLE		4
+-/* Select the address latch by setting ALE to high */
+-#define NAND_CTL_SETALE		5
+-/* Deselect the address latch by setting ALE to low */
+-#define NAND_CTL_CLRALE		6
+-/* Set write protection by setting WP to high. Not used! */
+-#define NAND_CTL_SETWP		7
+-/* Clear write protection by setting WP to low. Not used! */
+-#define NAND_CTL_CLRWP		8
+-	</programlisting>
+-	</para>
+-     </sect1>	
+-
+-     <sect1 id="Bad_block_table_constants">
+-	<title>Bad block table related constants</title>
+-	<para>
+-	These constants describe the options used for bad block
+-	table descriptors.
+-  	<programlisting>
+-/* Options for the bad block table descriptors */
+-
+-/* The number of bits used per block in the bbt on the device */
+-#define NAND_BBT_NRBITS_MSK	0x0000000F
+-#define NAND_BBT_1BIT		0x00000001
+-#define NAND_BBT_2BIT		0x00000002
+-#define NAND_BBT_4BIT		0x00000004
+-#define NAND_BBT_8BIT		0x00000008
+-/* The bad block table is in the last good block of the device */
+-#define	NAND_BBT_LASTBLOCK	0x00000010
+-/* The bbt is at the given page, else we must scan for the bbt */
+-#define NAND_BBT_ABSPAGE	0x00000020
+-/* bbt is stored per chip on multichip devices */
+-#define NAND_BBT_PERCHIP	0x00000080
+-/* bbt has a version counter at offset veroffs */
+-#define NAND_BBT_VERSION	0x00000100
+-/* Create a bbt if none axists */
+-#define NAND_BBT_CREATE		0x00000200
+-/* Write bbt if necessary */
+-#define NAND_BBT_WRITE		0x00001000
+-/* Read and write back block contents when writing bbt */
+-#define NAND_BBT_SAVECONTENT	0x00002000
+-	</programlisting>
+-	</para>
+-     </sect1>	
+-
+-  </chapter>
+-  	
+-  <chapter id="structs">
+-     <title>Structures</title>
 -     <para>
--     In the following sections, two recovery actions - reset and
--     reconfiguring transport - are mentioned.  These are described
--     further in <xref linkend="exrec"/>.
+-     This chapter contains the autogenerated documentation of the structures which are
+-     used in the NAND driver and might be relevant for a driver developer. Each  
+-     struct member has a short description which is marked with an [XXX] identifier.
+-     See the chapter "Documentation hints" for an explanation.
 -     </para>
--
--     <sect2 id="excatHSMviolation">
--        <title>HSM violation</title>
--        <para>
--        This error is indicated when STATUS value doesn't match HSM
--        requirement during issuing or execution any ATA/ATAPI command.
--        </para>
--
--	<itemizedlist>
--	<title>Examples</title>
--
--        <listitem>
--	<para>
--	ATA_STATUS doesn't contain !BSY &amp;&amp; DRDY &amp;&amp; !DRQ while trying
--	to issue a command.
--        </para>
--	</listitem>
--
--        <listitem>
--	<para>
--	!BSY &amp;&amp; !DRQ during PIO data transfer.
--        </para>
--	</listitem>
--
--        <listitem>
--	<para>
--	DRQ on command completion.
--        </para>
--	</listitem>
--
--        <listitem>
--	<para>
--	!BSY &amp;&amp; ERR after CDB transfer starts but before the
--        last byte of CDB is transferred.  ATA/ATAPI standard states
--        that &quot;The device shall not terminate the PACKET command
--        with an error before the last byte of the command packet has
--        been written&quot; in the error outputs description of PACKET
--        command and the state diagram doesn't include such
--        transitions.
--	</para>
--	</listitem>
--
--	</itemizedlist>
--
--	<para>
--	In these cases, HSM is violated and not much information
--	regarding the error can be acquired from STATUS or ERROR
--	register.  IOW, this error can be anything - driver bug,
--	faulty device, controller and/or cable.
--	</para>
--
--	<para>
--	As HSM is violated, reset is necessary to restore known state.
--	Reconfiguring transport for lower speed might be helpful too
--	as transmission errors sometimes cause this kind of errors.
--	</para>
--     </sect2>
--     
--     <sect2 id="excatDevErr">
--        <title>ATA/ATAPI device error (non-NCQ / non-CHECK CONDITION)</title>
--
--	<para>
--	These are errors detected and reported by ATA/ATAPI devices
--	indicating device problems.  For this type of errors, STATUS
--	and ERROR register values are valid and describe error
--	condition.  Note that some of ATA bus errors are detected by
--	ATA/ATAPI devices and reported using the same mechanism as
--	device errors.  Those cases are described later in this
--	section.
--	</para>
--
--	<para>
--	For ATA commands, this type of errors are indicated by !BSY
--	&amp;&amp; ERR during command execution and on completion.
--	</para>
--
--	<para>For ATAPI commands,</para>
--
--	<itemizedlist>
--
--	<listitem>
--	<para>
--	!BSY &amp;&amp; ERR &amp;&amp; ABRT right after issuing PACKET
--	indicates that PACKET command is not supported and falls in
--	this category.
--	</para>
--	</listitem>
--
--	<listitem>
--	<para>
--	!BSY &amp;&amp; ERR(==CHK) &amp;&amp; !ABRT after the last
--	byte of CDB is transferred indicates CHECK CONDITION and
--	doesn't fall in this category.
--	</para>
--	</listitem>
--
--	<listitem>
--	<para>
--	!BSY &amp;&amp; ERR(==CHK) &amp;&amp; ABRT after the last byte
--        of CDB is transferred *probably* indicates CHECK CONDITION and
--        doesn't fall in this category.
--	</para>
--	</listitem>
--
--	</itemizedlist>
--
--	<para>
--	Of errors detected as above, the following are not ATA/ATAPI
--	device errors but ATA bus errors and should be handled
--	according to <xref linkend="excatATAbusErr"/>.
--	</para>
--
--	<variablelist>
--
--	   <varlistentry>
--	   <term>CRC error during data transfer</term>
--	   <listitem>
--	   <para>
--	   This is indicated by ICRC bit in the ERROR register and
--	   means that corruption occurred during data transfer.  Up to
--	   ATA/ATAPI-7, the standard specifies that this bit is only
--	   applicable to UDMA transfers but ATA/ATAPI-8 draft revision
--	   1f says that the bit may be applicable to multiword DMA and
--	   PIO.
--	   </para>
--	   </listitem>
--	   </varlistentry>
--
--	   <varlistentry>
--	   <term>ABRT error during data transfer or on completion</term>
--	   <listitem>
--	   <para>
--	   Up to ATA/ATAPI-7, the standard specifies that ABRT could be
--	   set on ICRC errors and on cases where a device is not able
--	   to complete a command.  Combined with the fact that MWDMA
--	   and PIO transfer errors aren't allowed to use ICRC bit up to
--	   ATA/ATAPI-7, it seems to imply that ABRT bit alone could
--	   indicate transfer errors.
--	   </para>
--	   <para>
--	   However, ATA/ATAPI-8 draft revision 1f removes the part
--	   that ICRC errors can turn on ABRT.  So, this is kind of
--	   gray area.  Some heuristics are needed here.
--	   </para>
--	   </listitem>
--	   </varlistentry>
--
--	</variablelist>
--
--	<para>
--	ATA/ATAPI device errors can be further categorized as follows.
--	</para>
--
--	<variablelist>
--
--	   <varlistentry>
--	   <term>Media errors</term>
--	   <listitem>
--	   <para>
--	   This is indicated by UNC bit in the ERROR register.  ATA
--	   devices reports UNC error only after certain number of
--	   retries cannot recover the data, so there's nothing much
--	   else to do other than notifying upper layer.
--	   </para>
--	   <para>
--	   READ and WRITE commands report CHS or LBA of the first
--	   failed sector but ATA/ATAPI standard specifies that the
--	   amount of transferred data on error completion is
--	   indeterminate, so we cannot assume that sectors preceding
--	   the failed sector have been transferred and thus cannot
--	   complete those sectors successfully as SCSI does.
--	   </para>
--	   </listitem>
--	   </varlistentry>
--
--	   <varlistentry>
--	   <term>Media changed / media change requested error</term>
--	   <listitem>
--	   <para>
--	   &lt;&lt;TODO: fill here&gt;&gt;
--	   </para>
--	   </listitem>
--	   </varlistentry>
--
--	   <varlistentry><term>Address error</term>
--	   <listitem>
--	   <para>
--	   This is indicated by IDNF bit in the ERROR register.
--	   Report to upper layer.
--	   </para>
--	   </listitem>
--	   </varlistentry>
--
--	   <varlistentry><term>Other errors</term>
--	   <listitem>
--	   <para>
--	   This can be invalid command or parameter indicated by ABRT
--	   ERROR bit or some other error condition.  Note that ABRT
--	   bit can indicate a lot of things including ICRC and Address
--	   errors.  Heuristics needed.
--	   </para>
--	   </listitem>
--	   </varlistentry>
--
--	</variablelist>
--
--	<para>
--	Depending on commands, not all STATUS/ERROR bits are
--	applicable.  These non-applicable bits are marked with
--	&quot;na&quot; in the output descriptions but up to ATA/ATAPI-7
--	no definition of &quot;na&quot; can be found.  However,
--	ATA/ATAPI-8 draft revision 1f describes &quot;N/A&quot; as
--	follows.
--	</para>
--
--	<blockquote>
--	<variablelist>
--	   <varlistentry><term>3.2.3.3a N/A</term>
--	   <listitem>
--	   <para>
--	   A keyword the indicates a field has no defined value in
--	   this standard and should not be checked by the host or
--	   device. N/A fields should be cleared to zero.
--	   </para>
--	   </listitem>
--	   </varlistentry>
--	</variablelist>
--	</blockquote>
--
--	<para>
--	So, it seems reasonable to assume that &quot;na&quot; bits are
--	cleared to zero by devices and thus need no explicit masking.
--	</para>
--
--     </sect2>
--
--     <sect2 id="excatATAPIcc">
--        <title>ATAPI device CHECK CONDITION</title>
--
--	<para>
--	ATAPI device CHECK CONDITION error is indicated by set CHK bit
--	(ERR bit) in the STATUS register after the last byte of CDB is
--	transferred for a PACKET command.  For this kind of errors,
--	sense data should be acquired to gather information regarding
--	the errors.  REQUEST SENSE packet command should be used to
--	acquire sense data.
--	</para>
--
--	<para>
--	Once sense data is acquired, this type of errors can be
--	handled similarly to other SCSI errors.  Note that sense data
--	may indicate ATA bus error (e.g. Sense Key 04h HARDWARE ERROR
--	&amp;&amp; ASC/ASCQ 47h/00h SCSI PARITY ERROR).  In such
--	cases, the error should be considered as an ATA bus error and
--	handled according to <xref linkend="excatATAbusErr"/>.
--	</para>
--
--     </sect2>
--
--     <sect2 id="excatNCQerr">
--        <title>ATA device error (NCQ)</title>
--
--	<para>
--	NCQ command error is indicated by cleared BSY and set ERR bit
--	during NCQ command phase (one or more NCQ commands
--	outstanding).  Although STATUS and ERROR registers will
--	contain valid values describing the error, READ LOG EXT is
--	required to clear the error condition, determine which command
--	has failed and acquire more information.
--	</para>
--
--	<para>
--	READ LOG EXT Log Page 10h reports which tag has failed and
--	taskfile register values describing the error.  With this
--	information the failed command can be handled as a normal ATA
--	command error as in <xref linkend="excatDevErr"/> and all
--	other in-flight commands must be retried.  Note that this
--	retry should not be counted - it's likely that commands
--	retried this way would have completed normally if it were not
--	for the failed command.
--	</para>
--
--	<para>
--	Note that ATA bus errors can be reported as ATA device NCQ
--	errors.  This should be handled as described in <xref
--	linkend="excatATAbusErr"/>.
--	</para>
--
--	<para>
--	If READ LOG EXT Log Page 10h fails or reports NQ, we're
--	thoroughly screwed.  This condition should be treated
--	according to <xref linkend="excatHSMviolation"/>.
--	</para>
--
--     </sect2>
--
--     <sect2 id="excatATAbusErr">
--        <title>ATA bus error</title>
--
--	<para>
--	ATA bus error means that data corruption occurred during
--	transmission over ATA bus (SATA or PATA).  This type of errors
--	can be indicated by
--	</para>
--
--	<itemizedlist>
--
--	<listitem>
--	<para>
--	ICRC or ABRT error as described in <xref linkend="excatDevErr"/>.
--	</para>
--	</listitem>
--
--	<listitem>
--	<para>
--	Controller-specific error completion with error information
--	indicating transmission error.
--	</para>
--	</listitem>
--
--	<listitem>
--	<para>
--	On some controllers, command timeout.  In this case, there may
--	be a mechanism to determine that the timeout is due to
--	transmission error.
--	</para>
--	</listitem>
--
--	<listitem>
--	<para>
--	Unknown/random errors, timeouts and all sorts of weirdities.
--	</para>
--	</listitem>
--
--	</itemizedlist>
--
--	<para>
--	As described above, transmission errors can cause wide variety
--	of symptoms ranging from device ICRC error to random device
--	lockup, and, for many cases, there is no way to tell if an
--	error condition is due to transmission error or not;
--	therefore, it's necessary to employ some kind of heuristic
--	when dealing with errors and timeouts.  For example,
--	encountering repetitive ABRT errors for known supported
--	command is likely to indicate ATA bus error.
--	</para>
--
--	<para>
--	Once it's determined that ATA bus errors have possibly
--	occurred, lowering ATA bus transmission speed is one of
--	actions which may alleviate the problem.  See <xref
--	linkend="exrecReconf"/> for more information.
--	</para>
--
--     </sect2>
--
--     <sect2 id="excatPCIbusErr">
--        <title>PCI bus error</title>
--
--	<para>
--	Data corruption or other failures during transmission over PCI
--	(or other system bus).  For standard BMDMA, this is indicated
--	by Error bit in the BMDMA Status register.  This type of
--	errors must be logged as it indicates something is very wrong
--	with the system.  Resetting host controller is recommended.
--	</para>
--
--     </sect2>
--
--     <sect2 id="excatLateCompletion">
--        <title>Late completion</title>
--
--	<para>
--	This occurs when timeout occurs and the timeout handler finds
--	out that the timed out command has completed successfully or
--	with error.  This is usually caused by lost interrupts.  This
--	type of errors must be logged.  Resetting host controller is
--	recommended.
--	</para>
--
--     </sect2>
--
--     <sect2 id="excatUnknown">
--        <title>Unknown error (timeout)</title>
--
--	<para>
--	This is when timeout occurs and the command is still
--	processing or the host and device are in unknown state.  When
--	this occurs, HSM could be in any valid or invalid state.  To
--	bring the device to known state and make it forget about the
--	timed out command, resetting is necessary.  The timed out
--	command may be retried.
--	</para>
--
--	<para>
--	Timeouts can also be caused by transmission errors.  Refer to
--	<xref linkend="excatATAbusErr"/> for more details.
--	</para>
--
--     </sect2>
--
--     <sect2 id="excatHoplugPM">
--        <title>Hotplug and power management exceptions</title>
--
--	<para>
--	&lt;&lt;TODO: fill here&gt;&gt;
--	</para>
--
--     </sect2>
--
--  </sect1>
--
--  <sect1 id="exrec">
--     <title>EH recovery actions</title>
--
+-!Iinclude/linux/mtd/nand.h
+-  </chapter>
+-
+-  <chapter id="pubfunctions">
+-     <title>Public Functions Provided</title>
 -     <para>
--     This section discusses several important recovery actions.
+-     This chapter contains the autogenerated documentation of the NAND kernel API functions
+-      which are exported. Each function has a short description which is marked with an [XXX] identifier.
+-     See the chapter "Documentation hints" for an explanation.
 -     </para>
--
--     <sect2 id="exrecClr">
--        <title>Clearing error condition</title>
--
--	<para>
--	Many controllers require its error registers to be cleared by
--	error handler.  Different controllers may have different
--	requirements.
--	</para>
--
--	<para>
--	For SATA, it's strongly recommended to clear at least SError
--	register during error handling.
--	</para>
--     </sect2>
--
--     <sect2 id="exrecRst">
--        <title>Reset</title>
--
--	<para>
--	During EH, resetting is necessary in the following cases.
--	</para>
--
--	<itemizedlist>
--
--	<listitem>
--	<para>
--	HSM is in unknown or invalid state
--	</para>
--	</listitem>
--
--	<listitem>
--	<para>
--	HBA is in unknown or invalid state
--	</para>
--	</listitem>
--
--	<listitem>
--	<para>
--	EH needs to make HBA/device forget about in-flight commands
--	</para>
--	</listitem>
--
--	<listitem>
--	<para>
--	HBA/device behaves weirdly
--	</para>
--	</listitem>
--
--	</itemizedlist>
--
--	<para>
--	Resetting during EH might be a good idea regardless of error
--	condition to improve EH robustness.  Whether to reset both or
--	either one of HBA and device depends on situation but the
--	following scheme is recommended.
--	</para>
--
--	<itemizedlist>
--
--	<listitem>
--	<para>
--	When it's known that HBA is in ready state but ATA/ATAPI
--	device is in unknown state, reset only device.
--	</para>
--	</listitem>
--
--	<listitem>
--	<para>
--	If HBA is in unknown state, reset both HBA and device.
--	</para>
--	</listitem>
--
--	</itemizedlist>
--
--	<para>
--	HBA resetting is implementation specific.  For a controller
--	complying to taskfile/BMDMA PCI IDE, stopping active DMA
--	transaction may be sufficient iff BMDMA state is the only HBA
--	context.  But even mostly taskfile/BMDMA PCI IDE complying
--	controllers may have implementation specific requirements and
--	mechanism to reset themselves.  This must be addressed by
--	specific drivers.
--	</para>
--
--	<para>
--	OTOH, ATA/ATAPI standard describes in detail ways to reset
--	ATA/ATAPI devices.
--	</para>
--
--	<variablelist>
--
--	   <varlistentry><term>PATA hardware reset</term>
--	   <listitem>
--	   <para>
--	   This is hardware initiated device reset signalled with
--	   asserted PATA RESET- signal.  There is no standard way to
--	   initiate hardware reset from software although some
--	   hardware provides registers that allow driver to directly
--	   tweak the RESET- signal.
--	   </para>
--	   </listitem>
--	   </varlistentry>
--
--	   <varlistentry><term>Software reset</term>
--	   <listitem>
--	   <para>
--	   This is achieved by turning CONTROL SRST bit on for at
--	   least 5us.  Both PATA and SATA support it but, in case of
--	   SATA, this may require controller-specific support as the
--	   second Register FIS to clear SRST should be transmitted
--	   while BSY bit is still set.  Note that on PATA, this resets
--	   both master and slave devices on a channel.
--	   </para>
--	   </listitem>
--	   </varlistentry>
--
--	   <varlistentry><term>EXECUTE DEVICE DIAGNOSTIC command</term>
--	   <listitem>
--	   <para>
--	   Although ATA/ATAPI standard doesn't describe exactly, EDD
--	   implies some level of resetting, possibly similar level
--	   with software reset.  Host-side EDD protocol can be handled
--	   with normal command processing and most SATA controllers
--	   should be able to handle EDD's just like other commands.
--	   As in software reset, EDD affects both devices on a PATA
--	   bus.
--	   </para>
--	   <para>
--	   Although EDD does reset devices, this doesn't suit error
--	   handling as EDD cannot be issued while BSY is set and it's
--	   unclear how it will act when device is in unknown/weird
--	   state.
--	   </para>
--	   </listitem>
--	   </varlistentry>
--
--	   <varlistentry><term>ATAPI DEVICE RESET command</term>
--	   <listitem>
--	   <para>
--	   This is very similar to software reset except that reset
--	   can be restricted to the selected device without affecting
--	   the other device sharing the cable.
--	   </para>
--	   </listitem>
--	   </varlistentry>
--
--	   <varlistentry><term>SATA phy reset</term>
--	   <listitem>
--	   <para>
--	   This is the preferred way of resetting a SATA device.  In
--	   effect, it's identical to PATA hardware reset.  Note that
--	   this can be done with the standard SCR Control register.
--	   As such, it's usually easier to implement than software
--	   reset.
--	   </para>
--	   </listitem>
--	   </varlistentry>
--
--	</variablelist>
--
--	<para>
--	One more thing to consider when resetting devices is that
--	resetting clears certain configuration parameters and they
--	need to be set to their previous or newly adjusted values
--	after reset.
--	</para>
--
--	<para>
--	Parameters affected are.
--	</para>
--
--	<itemizedlist>
--
--	<listitem>
--	<para>
--	CHS set up with INITIALIZE DEVICE PARAMETERS (seldom used)
--	</para>
--	</listitem>
--
--	<listitem>
--	<para>
--	Parameters set with SET FEATURES including transfer mode setting
--	</para>
--	</listitem>
--
--	<listitem>
--	<para>
--	Block count set with SET MULTIPLE MODE
--	</para>
--	</listitem>
--
--	<listitem>
--	<para>
--	Other parameters (SET MAX, MEDIA LOCK...)
--	</para>
--	</listitem>
--
--	</itemizedlist>
--
--	<para>
--	ATA/ATAPI standard specifies that some parameters must be
--	maintained across hardware or software reset, but doesn't
--	strictly specify all of them.  Always reconfiguring needed
--	parameters after reset is required for robustness.  Note that
--	this also applies when resuming from deep sleep (power-off).
--	</para>
--
--	<para>
--	Also, ATA/ATAPI standard requires that IDENTIFY DEVICE /
--	IDENTIFY PACKET DEVICE is issued after any configuration
--	parameter is updated or a hardware reset and the result used
--	for further operation.  OS driver is required to implement
--	revalidation mechanism to support this.
--	</para>
--
--     </sect2>
--
--     <sect2 id="exrecReconf">
--        <title>Reconfigure transport</title>
--
--	<para>
--	For both PATA and SATA, a lot of corners are cut for cheap
--	connectors, cables or controllers and it's quite common to see
--	high transmission error rate.  This can be mitigated by
--	lowering transmission speed.
--	</para>
--
--	<para>
--	The following is a possible scheme Jeff Garzik suggested.
--	</para>
--
--	<blockquote>
--	<para>
--	If more than $N (3?) transmission errors happen in 15 minutes,
--	</para>	
--	<itemizedlist>
--	<listitem>
--	<para>
--	if SATA, decrease SATA PHY speed.  if speed cannot be decreased,
--	</para>
--	</listitem>
--	<listitem>
--	<para>
--	decrease UDMA xfer speed.  if at UDMA0, switch to PIO4,
--	</para>
--	</listitem>
--	<listitem>
--	<para>
--	decrease PIO xfer speed.  if at PIO3, complain, but continue
--	</para>
--	</listitem>
--	</itemizedlist>
--	</blockquote>
--
--     </sect2>
--
--  </sect1>
--
+-!Edrivers/mtd/nand/nand_base.c
+-!Edrivers/mtd/nand/nand_bbt.c
+-!Edrivers/mtd/nand/nand_ecc.c
+-  </chapter>
+-  
+-  <chapter id="intfunctions">
+-     <title>Internal Functions Provided</title>
+-     <para>
+-     This chapter contains the autogenerated documentation of the NAND driver internal functions.
+-     Each function has a short description which is marked with an [XXX] identifier.
+-     See the chapter "Documentation hints" for an explanation.
+-     The functions marked with [DEFAULT] might be relevant for a board driver developer.
+-     </para>
+-!Idrivers/mtd/nand/nand_base.c
+-!Idrivers/mtd/nand/nand_bbt.c
+-<!-- No internal functions for kernel-doc:
+-X!Idrivers/mtd/nand/nand_ecc.c
+--->
 -  </chapter>
 -
--  <chapter id="PiixInt">
--     <title>ata_piix Internals</title>
--!Idrivers/ata/ata_piix.c
+-  <chapter id="credits">
+-     <title>Credits</title>
+-	<para>
+-		The following people have contributed to the NAND driver:
+-		<orderedlist>
+-			<listitem><para>Steven J. Hill<email>sjhill@realitydiluted.com</email></para></listitem>
+-			<listitem><para>David Woodhouse<email>dwmw2@infradead.org</email></para></listitem>
+-			<listitem><para>Thomas Gleixner<email>tglx@linutronix.de</email></para></listitem>
+-		</orderedlist>
+-		A lot of users have provided bugfixes, improvements and helping hands for testing.
+-		Thanks a lot.
+-	</para>
+-	<para>
+-		The following people have contributed to this document:
+-		<orderedlist>
+-			<listitem><para>Thomas Gleixner<email>tglx@linutronix.de</email></para></listitem>
+-		</orderedlist>
+-	</para>
 -  </chapter>
--
--  <chapter id="SILInt">
--     <title>sata_sil Internals</title>
--!Idrivers/ata/sata_sil.c
--  </chapter>
--
--  <chapter id="libataThanks">
--     <title>Thanks</title>
--  <para>
--  The bulk of the ATA knowledge comes thanks to long conversations with
--  Andre Hedrick (www.linux-ide.org), and long hours pondering the ATA
--  and SCSI specifications.
--  </para>
--  <para>
--  Thanks to Alan Cox for pointing out similarities 
--  between SATA and SCSI, and in general for motivation to hack on
--  libata.
--  </para>
--  <para>
--  libata's device detection
--  method, ata_pio_devchk, and in general all the early probing was
--  based on extensive study of Hale Landis's probe/reset code in his
--  ATADRVR driver (www.ata-atapi.com).
--  </para>
--  </chapter>
--
 -</book>
 diff --git a/Documentation/driver-api/index.rst b/Documentation/driver-api/index.rst
-index 8058a87c1c74..c3c50b1bb96c 100644
+index 1f8517db39c7..3cf1acebc4ee 100644
 --- a/Documentation/driver-api/index.rst
 +++ b/Documentation/driver-api/index.rst
-@@ -32,6 +32,7 @@ available subsections can be seen below.
-    i2c
-    hsi
+@@ -34,6 +34,7 @@ available subsections can be seen below.
     edac
-+   libata
+    scsi
+    libata
++   mtdnand
     miscellaneous
-    vme
-    80211/index
-diff --git a/Documentation/driver-api/libata.rst b/Documentation/driver-api/libata.rst
+    w1
+    rapidio
+diff --git a/Documentation/driver-api/mtdnand.rst b/Documentation/driver-api/mtdnand.rst
 new file mode 100644
-index 000000000000..774bf238ff79
+index 000000000000..8723175f955e
 --- /dev/null
-+++ b/Documentation/driver-api/libata.rst
-@@ -0,0 +1,1027 @@
-+========================
-+libATA Developer's Guide
-+========================
++++ b/Documentation/driver-api/mtdnand.rst
+@@ -0,0 +1,1020 @@
++=====================================
++MTD NAND Driver Programming Interface
++=====================================
 +
-+:Author: Jeff Garzik
++:Author: Thomas Gleixner
 +
 +Introduction
 +============
 +
-+libATA is a library used inside the Linux kernel to support ATA host
-+controllers and devices. libATA provides an ATA driver API, class
-+transports for ATA and ATAPI devices, and SCSI<->ATA translation for ATA
-+devices according to the T10 SAT specification.
++The generic NAND driver supports almost all NAND and AG-AND based chips
++and connects them to the Memory Technology Devices (MTD) subsystem of
++the Linux Kernel.
 +
-+This Guide documents the libATA driver API, library functions, library
-+internals, and a couple sample ATA low-level drivers.
++This documentation is provided for developers who want to implement
++board drivers or filesystem drivers suitable for NAND devices.
 +
-+libata Driver API
-+=================
++Known Bugs And Assumptions
++==========================
 +
-+struct ata_port_operations is defined for every low-level libata
-+hardware driver, and it controls how the low-level driver interfaces
-+with the ATA and SCSI layers.
++None.
 +
-+FIS-based drivers will hook into the system with ->qc_prep() and
-+->qc_issue() high-level hooks. Hardware which behaves in a manner
-+similar to PCI IDE hardware may utilize several generic helpers,
-+defining at a bare minimum the bus I/O addresses of the ATA shadow
-+register blocks.
++Documentation hints
++===================
 +
-+struct ata_port_operations
-+----------------------------
++The function and structure docs are autogenerated. Each function and
++struct member has a short description which is marked with an [XXX]
++identifier. The following chapters explain the meaning of those
++identifiers.
 +
-+Disable ATA port
-+~~~~~~~~~~~~~~~~
-+
-+::
-+
-+    void (*port_disable) (struct ata_port *);
-+
-+
-+Called from ata_bus_probe() error path, as well as when unregistering
-+from the SCSI module (rmmod, hot unplug). This function should do
-+whatever needs to be done to take the port out of use. In most cases,
-+ata_port_disable() can be used as this hook.
-+
-+Called from ata_bus_probe() on a failed probe. Called from
-+ata_scsi_release().
-+
-+Post-IDENTIFY device configuration
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+::
-+
-+    void (*dev_config) (struct ata_port *, struct ata_device *);
-+
-+
-+Called after IDENTIFY [PACKET] DEVICE is issued to each device found.
-+Typically used to apply device-specific fixups prior to issue of SET
-+FEATURES - XFER MODE, and prior to operation.
-+
-+This entry may be specified as NULL in ata_port_operations.
-+
-+Set PIO/DMA mode
-+~~~~~~~~~~~~~~~~
-+
-+::
-+
-+    void (*set_piomode) (struct ata_port *, struct ata_device *);
-+    void (*set_dmamode) (struct ata_port *, struct ata_device *);
-+    void (*post_set_mode) (struct ata_port *);
-+    unsigned int (*mode_filter) (struct ata_port *, struct ata_device *, unsigned int);
-+
-+
-+Hooks called prior to the issue of SET FEATURES - XFER MODE command. The
-+optional ->mode_filter() hook is called when libata has built a mask of
-+the possible modes. This is passed to the ->mode_filter() function
-+which should return a mask of valid modes after filtering those
-+unsuitable due to hardware limits. It is not valid to use this interface
-+to add modes.
-+
-+dev->pio_mode and dev->dma_mode are guaranteed to be valid when
-+->set_piomode() and when ->set_dmamode() is called. The timings for
-+any other drive sharing the cable will also be valid at this point. That
-+is the library records the decisions for the modes of each drive on a
-+channel before it attempts to set any of them.
-+
-+->post_set_mode() is called unconditionally, after the SET FEATURES -
-+XFER MODE command completes successfully.
-+
-+->set_piomode() is always called (if present), but ->set_dma_mode()
-+is only called if DMA is possible.
-+
-+Taskfile read/write
-+~~~~~~~~~~~~~~~~~~~
-+
-+::
-+
-+    void (*sff_tf_load) (struct ata_port *ap, struct ata_taskfile *tf);
-+    void (*sff_tf_read) (struct ata_port *ap, struct ata_taskfile *tf);
-+
-+
-+->tf_load() is called to load the given taskfile into hardware
-+registers / DMA buffers. ->tf_read() is called to read the hardware
-+registers / DMA buffers, to obtain the current set of taskfile register
-+values. Most drivers for taskfile-based hardware (PIO or MMIO) use
-+ata_sff_tf_load() and ata_sff_tf_read() for these hooks.
-+
-+PIO data read/write
-+~~~~~~~~~~~~~~~~~~~
-+
-+::
-+
-+    void (*sff_data_xfer) (struct ata_device *, unsigned char *, unsigned int, int);
-+
-+
-+All bmdma-style drivers must implement this hook. This is the low-level
-+operation that actually copies the data bytes during a PIO data
-+transfer. Typically the driver will choose one of
-+ata_sff_data_xfer_noirq(), ata_sff_data_xfer(), or
-+ata_sff_data_xfer32().
-+
-+ATA command execute
-+~~~~~~~~~~~~~~~~~~~
-+
-+::
-+
-+    void (*sff_exec_command)(struct ata_port *ap, struct ata_taskfile *tf);
-+
-+
-+causes an ATA command, previously loaded with ->tf_load(), to be
-+initiated in hardware. Most drivers for taskfile-based hardware use
-+ata_sff_exec_command() for this hook.
-+
-+Per-cmd ATAPI DMA capabilities filter
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+::
-+
-+    int (*check_atapi_dma) (struct ata_queued_cmd *qc);
-+
-+
-+Allow low-level driver to filter ATA PACKET commands, returning a status
-+indicating whether or not it is OK to use DMA for the supplied PACKET
-+command.
-+
-+This hook may be specified as NULL, in which case libata will assume
-+that atapi dma can be supported.
-+
-+Read specific ATA shadow registers
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+::
-+
-+    u8   (*sff_check_status)(struct ata_port *ap);
-+    u8   (*sff_check_altstatus)(struct ata_port *ap);
-+
-+
-+Reads the Status/AltStatus ATA shadow register from hardware. On some
-+hardware, reading the Status register has the side effect of clearing
-+the interrupt condition. Most drivers for taskfile-based hardware use
-+ata_sff_check_status() for this hook.
-+
-+Write specific ATA shadow register
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+::
-+
-+    void (*sff_set_devctl)(struct ata_port *ap, u8 ctl);
-+
-+
-+Write the device control ATA shadow register to the hardware. Most
-+drivers don't need to define this.
-+
-+Select ATA device on bus
-+~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+::
-+
-+    void (*sff_dev_select)(struct ata_port *ap, unsigned int device);
-+
-+
-+Issues the low-level hardware command(s) that causes one of N hardware
-+devices to be considered 'selected' (active and available for use) on
-+the ATA bus. This generally has no meaning on FIS-based devices.
-+
-+Most drivers for taskfile-based hardware use ata_sff_dev_select() for
-+this hook.
-+
-+Private tuning method
-+~~~~~~~~~~~~~~~~~~~~~
-+
-+::
-+
-+    void (*set_mode) (struct ata_port *ap);
-+
-+
-+By default libata performs drive and controller tuning in accordance
-+with the ATA timing rules and also applies blacklists and cable limits.
-+Some controllers need special handling and have custom tuning rules,
-+typically raid controllers that use ATA commands but do not actually do
-+drive timing.
-+
-+    **Warning**
-+
-+    This hook should not be used to replace the standard controller
-+    tuning logic when a controller has quirks. Replacing the default
-+    tuning logic in that case would bypass handling for drive and bridge
-+    quirks that may be important to data reliability. If a controller
-+    needs to filter the mode selection it should use the mode_filter
-+    hook instead.
-+
-+Control PCI IDE BMDMA engine
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+::
-+
-+    void (*bmdma_setup) (struct ata_queued_cmd *qc);
-+    void (*bmdma_start) (struct ata_queued_cmd *qc);
-+    void (*bmdma_stop) (struct ata_port *ap);
-+    u8   (*bmdma_status) (struct ata_port *ap);
-+
-+
-+When setting up an IDE BMDMA transaction, these hooks arm
-+(->bmdma_setup), fire (->bmdma_start), and halt (->bmdma_stop) the
-+hardware's DMA engine. ->bmdma_status is used to read the standard PCI
-+IDE DMA Status register.
-+
-+These hooks are typically either no-ops, or simply not implemented, in
-+FIS-based drivers.
-+
-+Most legacy IDE drivers use ata_bmdma_setup() for the bmdma_setup()
-+hook. ata_bmdma_setup() will write the pointer to the PRD table to the
-+IDE PRD Table Address register, enable DMA in the DMA Command register,
-+and call exec_command() to begin the transfer.
-+
-+Most legacy IDE drivers use ata_bmdma_start() for the bmdma_start()
-+hook. ata_bmdma_start() will write the ATA_DMA_START flag to the DMA
-+Command register.
-+
-+Many legacy IDE drivers use ata_bmdma_stop() for the bmdma_stop()
-+hook. ata_bmdma_stop() clears the ATA_DMA_START flag in the DMA
-+command register.
-+
-+Many legacy IDE drivers use ata_bmdma_status() as the bmdma_status()
-+hook.
-+
-+High-level taskfile hooks
-+~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+::
-+
-+    void (*qc_prep) (struct ata_queued_cmd *qc);
-+    int (*qc_issue) (struct ata_queued_cmd *qc);
-+
-+
-+Higher-level hooks, these two hooks can potentially supercede several of
-+the above taskfile/DMA engine hooks. ->qc_prep is called after the
-+buffers have been DMA-mapped, and is typically used to populate the
-+hardware's DMA scatter-gather table. Most drivers use the standard
-+ata_qc_prep() helper function, but more advanced drivers roll their
-+own.
-+
-+->qc_issue is used to make a command active, once the hardware and S/G
-+tables have been prepared. IDE BMDMA drivers use the helper function
-+ata_qc_issue_prot() for taskfile protocol-based dispatch. More
-+advanced drivers implement their own ->qc_issue.
-+
-+ata_qc_issue_prot() calls ->tf_load(), ->bmdma_setup(), and
-+->bmdma_start() as necessary to initiate a transfer.
-+
-+Exception and probe handling (EH)
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+::
-+
-+    void (*eng_timeout) (struct ata_port *ap);
-+    void (*phy_reset) (struct ata_port *ap);
-+
-+
-+Deprecated. Use ->error_handler() instead.
-+
-+::
-+
-+    void (*freeze) (struct ata_port *ap);
-+    void (*thaw) (struct ata_port *ap);
-+
-+
-+ata_port_freeze() is called when HSM violations or some other
-+condition disrupts normal operation of the port. A frozen port is not
-+allowed to perform any operation until the port is thawed, which usually
-+follows a successful reset.
-+
-+The optional ->freeze() callback can be used for freezing the port
-+hardware-wise (e.g. mask interrupt and stop DMA engine). If a port
-+cannot be frozen hardware-wise, the interrupt handler must ack and clear
-+interrupts unconditionally while the port is frozen.
-+
-+The optional ->thaw() callback is called to perform the opposite of
-+->freeze(): prepare the port for normal operation once again. Unmask
-+interrupts, start DMA engine, etc.
-+
-+::
-+
-+    void (*error_handler) (struct ata_port *ap);
-+
-+
-+->error_handler() is a driver's hook into probe, hotplug, and recovery
-+and other exceptional conditions. The primary responsibility of an
-+implementation is to call ata_do_eh() or ata_bmdma_drive_eh() with
-+a set of EH hooks as arguments:
-+
-+'prereset' hook (may be NULL) is called during an EH reset, before any
-+other actions are taken.
-+
-+'postreset' hook (may be NULL) is called after the EH reset is
-+performed. Based on existing conditions, severity of the problem, and
-+hardware capabilities,
-+
-+Either 'softreset' (may be NULL) or 'hardreset' (may be NULL) will be
-+called to perform the low-level EH reset.
-+
-+::
-+
-+    void (*post_internal_cmd) (struct ata_queued_cmd *qc);
-+
-+
-+Perform any hardware-specific actions necessary to finish processing
-+after executing a probe-time or EH-time command via
-+ata_exec_internal().
-+
-+Hardware interrupt handling
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+::
-+
-+    irqreturn_t (*irq_handler)(int, void *, struct pt_regs *);
-+    void (*irq_clear) (struct ata_port *);
-+
-+
-+->irq_handler is the interrupt handling routine registered with the
-+system, by libata. ->irq_clear is called during probe just before the
-+interrupt handler is registered, to be sure hardware is quiet.
-+
-+The second argument, dev_instance, should be cast to a pointer to
-+struct ata_host_set.
-+
-+Most legacy IDE drivers use ata_sff_interrupt() for the irq_handler
-+hook, which scans all ports in the host_set, determines which queued
-+command was active (if any), and calls ata_sff_host_intr(ap,qc).
-+
-+Most legacy IDE drivers use ata_sff_irq_clear() for the irq_clear()
-+hook, which simply clears the interrupt and error flags in the DMA
-+status register.
-+
-+SATA phy read/write
-+~~~~~~~~~~~~~~~~~~~
-+
-+::
-+
-+    int (*scr_read) (struct ata_port *ap, unsigned int sc_reg,
-+             u32 *val);
-+    int (*scr_write) (struct ata_port *ap, unsigned int sc_reg,
-+                       u32 val);
-+
-+
-+Read and write standard SATA phy registers. Currently only used if
-+->phy_reset hook called the sata_phy_reset() helper function. sc_reg
-+is one of SCR_STATUS, SCR_CONTROL, SCR_ERROR, or SCR_ACTIVE.
-+
-+Init and shutdown
-+~~~~~~~~~~~~~~~~~
-+
-+::
-+
-+    int (*port_start) (struct ata_port *ap);
-+    void (*port_stop) (struct ata_port *ap);
-+    void (*host_stop) (struct ata_host_set *host_set);
-+
-+
-+->port_start() is called just after the data structures for each port
-+are initialized. Typically this is used to alloc per-port DMA buffers /
-+tables / rings, enable DMA engines, and similar tasks. Some drivers also
-+use this entry point as a chance to allocate driver-private memory for
-+ap->private_data.
-+
-+Many drivers use ata_port_start() as this hook or call it from their
-+own port_start() hooks. ata_port_start() allocates space for a legacy
-+IDE PRD table and returns.
-+
-+->port_stop() is called after ->host_stop(). Its sole function is to
-+release DMA/memory resources, now that they are no longer actively being
-+used. Many drivers also free driver-private data from port at this time.
-+
-+->host_stop() is called after all ->port_stop() calls have completed.
-+The hook must finalize hardware shutdown, release DMA and other
-+resources, etc. This hook may be specified as NULL, in which case it is
-+not called.
-+
-+Error handling
-+==============
-+
-+This chapter describes how errors are handled under libata. Readers are
-+advised to read SCSI EH (Documentation/scsi/scsi_eh.txt) and ATA
-+exceptions doc first.
-+
-+Origins of commands
-+-------------------
-+
-+In libata, a command is represented with struct ata_queued_cmd or qc.
-+qc's are preallocated during port initialization and repetitively used
-+for command executions. Currently only one qc is allocated per port but
-+yet-to-be-merged NCQ branch allocates one for each tag and maps each qc
-+to NCQ tag 1-to-1.
-+
-+libata commands can originate from two sources - libata itself and SCSI
-+midlayer. libata internal commands are used for initialization and error
-+handling. All normal blk requests and commands for SCSI emulation are
-+passed as SCSI commands through queuecommand callback of SCSI host
-+template.
-+
-+How commands are issued
-+-----------------------
-+
-+Internal commands
-+    First, qc is allocated and initialized using ata_qc_new_init().
-+    Although ata_qc_new_init() doesn't implement any wait or retry
-+    mechanism when qc is not available, internal commands are currently
-+    issued only during initialization and error recovery, so no other
-+    command is active and allocation is guaranteed to succeed.
-+
-+    Once allocated qc's taskfile is initialized for the command to be
-+    executed. qc currently has two mechanisms to notify completion. One
-+    is via qc->complete_fn() callback and the other is completion
-+    qc->waiting. qc->complete_fn() callback is the asynchronous path
-+    used by normal SCSI translated commands and qc->waiting is the
-+    synchronous (issuer sleeps in process context) path used by internal
-+    commands.
-+
-+    Once initialization is complete, host_set lock is acquired and the
-+    qc is issued.
-+
-+SCSI commands
-+    All libata drivers use ata_scsi_queuecmd() as hostt->queuecommand
-+    callback. scmds can either be simulated or translated. No qc is
-+    involved in processing a simulated scmd. The result is computed
-+    right away and the scmd is completed.
-+
-+    For a translated scmd, ata_qc_new_init() is invoked to allocate a
-+    qc and the scmd is translated into the qc. SCSI midlayer's
-+    completion notification function pointer is stored into
-+    qc->scsidone.
-+
-+    qc->complete_fn() callback is used for completion notification. ATA
-+    commands use ata_scsi_qc_complete() while ATAPI commands use
-+    atapi_qc_complete(). Both functions end up calling qc->scsidone to
-+    notify upper layer when the qc is finished. After translation is
-+    completed, the qc is issued with ata_qc_issue().
-+
-+    Note that SCSI midlayer invokes hostt->queuecommand while holding
-+    host_set lock, so all above occur while holding host_set lock.
-+
-+How commands are processed
++Function identifiers [XXX]
 +--------------------------
 +
-+Depending on which protocol and which controller are used, commands are
-+processed differently. For the purpose of discussion, a controller which
-+uses taskfile interface and all standard callbacks is assumed.
++The functions are marked with [XXX] identifiers in the short comment.
++The identifiers explain the usage and scope of the functions. Following
++identifiers are used:
 +
-+Currently 6 ATA command protocols are used. They can be sorted into the
-+following four categories according to how they are processed.
++-  [MTD Interface]
 +
-+ATA NO DATA or DMA
-+    ATA_PROT_NODATA and ATA_PROT_DMA fall into this category. These
-+    types of commands don't require any software intervention once
-+    issued. Device will raise interrupt on completion.
++   These functions provide the interface to the MTD kernel API. They are
++   not replaceable and provide functionality which is complete hardware
++   independent.
 +
-+ATA PIO
-+    ATA_PROT_PIO is in this category. libata currently implements PIO
-+    with polling. ATA_NIEN bit is set to turn off interrupt and
-+    pio_task on ata_wq performs polling and IO.
++-  [NAND Interface]
 +
-+ATAPI NODATA or DMA
-+    ATA_PROT_ATAPI_NODATA and ATA_PROT_ATAPI_DMA are in this
-+    category. packet_task is used to poll BSY bit after issuing PACKET
-+    command. Once BSY is turned off by the device, packet_task
-+    transfers CDB and hands off processing to interrupt handler.
++   These functions are exported and provide the interface to the NAND
++   kernel API.
 +
-+ATAPI PIO
-+    ATA_PROT_ATAPI is in this category. ATA_NIEN bit is set and, as
-+    in ATAPI NODATA or DMA, packet_task submits cdb. However, after
-+    submitting cdb, further processing (data transfer) is handed off to
-+    pio_task.
++-  [GENERIC]
 +
-+How commands are completed
-+--------------------------
++   Generic functions are not replaceable and provide functionality which
++   is complete hardware independent.
 +
-+Once issued, all qc's are either completed with ata_qc_complete() or
-+time out. For commands which are handled by interrupts,
-+ata_host_intr() invokes ata_qc_complete(), and, for PIO tasks,
-+pio_task invokes ata_qc_complete(). In error cases, packet_task may
-+also complete commands.
++-  [DEFAULT]
 +
-+ata_qc_complete() does the following.
++   Default functions provide hardware related functionality which is
++   suitable for most of the implementations. These functions can be
++   replaced by the board driver if necessary. Those functions are called
++   via pointers in the NAND chip description structure. The board driver
++   can set the functions which should be replaced by board dependent
++   functions before calling nand_scan(). If the function pointer is
++   NULL on entry to nand_scan() then the pointer is set to the default
++   function which is suitable for the detected chip type.
 +
-+1. DMA memory is unmapped.
++Struct member identifiers [XXX]
++-------------------------------
 +
-+2. ATA_QCFLAG_ACTIVE is cleared from qc->flags.
++The struct members are marked with [XXX] identifiers in the comment. The
++identifiers explain the usage and scope of the members. Following
++identifiers are used:
 +
-+3. qc->complete_fn() callback is invoked. If the return value of the
-+   callback is not zero. Completion is short circuited and
-+   ata_qc_complete() returns.
++-  [INTERN]
 +
-+4. __ata_qc_complete() is called, which does
++   These members are for NAND driver internal use only and must not be
++   modified. Most of these values are calculated from the chip geometry
++   information which is evaluated during nand_scan().
 +
-+   1. qc->flags is cleared to zero.
++-  [REPLACEABLE]
 +
-+   2. ap->active_tag and qc->tag are poisoned.
++   Replaceable members hold hardware related functions which can be
++   provided by the board driver. The board driver can set the functions
++   which should be replaced by board dependent functions before calling
++   nand_scan(). If the function pointer is NULL on entry to
++   nand_scan() then the pointer is set to the default function which is
++   suitable for the detected chip type.
 +
-+   3. qc->waiting is cleared & completed (in that order).
++-  [BOARDSPECIFIC]
 +
-+   4. qc is deallocated by clearing appropriate bit in ap->qactive.
++   Board specific members hold hardware related information which must
++   be provided by the board driver. The board driver must set the
++   function pointers and datafields before calling nand_scan().
 +
-+So, it basically notifies upper layer and deallocates qc. One exception
-+is short-circuit path in #3 which is used by atapi_qc_complete().
++-  [OPTIONAL]
 +
-+For all non-ATAPI commands, whether it fails or not, almost the same
-+code path is taken and very little error handling takes place. A qc is
-+completed with success status if it succeeded, with failed status
-+otherwise.
++   Optional members can hold information relevant for the board driver.
++   The generic NAND driver code does not use this information.
 +
-+However, failed ATAPI commands require more handling as REQUEST SENSE is
-+needed to acquire sense data. If an ATAPI command fails,
-+ata_qc_complete() is invoked with error status, which in turn invokes
-+atapi_qc_complete() via qc->complete_fn() callback.
++Basic board driver
++==================
 +
-+This makes atapi_qc_complete() set scmd->result to
-+SAM_STAT_CHECK_CONDITION, complete the scmd and return 1. As the
-+sense data is empty but scmd->result is CHECK CONDITION, SCSI midlayer
-+will invoke EH for the scmd, and returning 1 makes ata_qc_complete()
-+to return without deallocating the qc. This leads us to
-+ata_scsi_error() with partially completed qc.
++For most boards it will be sufficient to provide just the basic
++functions and fill out some really board dependent members in the nand
++chip description structure.
 +
-+ata_scsi_error()
-+------------------
++Basic defines
++-------------
 +
-+ata_scsi_error() is the current transportt->eh_strategy_handler()
-+for libata. As discussed above, this will be entered in two cases -
-+timeout and ATAPI error completion. This function calls low level libata
-+driver's eng_timeout() callback, the standard callback for which is
-+ata_eng_timeout(). It checks if a qc is active and calls
-+ata_qc_timeout() on the qc if so. Actual error handling occurs in
-+ata_qc_timeout().
++At least you have to provide a nand_chip structure and a storage for
++the ioremap'ed chip address. You can allocate the nand_chip structure
++using kmalloc or you can allocate it statically. The NAND chip structure
++embeds an mtd structure which will be registered to the MTD subsystem.
++You can extract a pointer to the mtd structure from a nand_chip pointer
++using the nand_to_mtd() helper.
 +
-+If EH is invoked for timeout, ata_qc_timeout() stops BMDMA and
-+completes the qc. Note that as we're currently in EH, we cannot call
-+scsi_done. As described in SCSI EH doc, a recovered scmd should be
-+either retried with scsi_queue_insert() or finished with
-+scsi_finish_command(). Here, we override qc->scsidone with
-+scsi_finish_command() and calls ata_qc_complete().
++Kmalloc based example
 +
-+If EH is invoked due to a failed ATAPI qc, the qc here is completed but
-+not deallocated. The purpose of this half-completion is to use the qc as
-+place holder to make EH code reach this place. This is a bit hackish,
-+but it works.
++::
 +
-+Once control reaches here, the qc is deallocated by invoking
-+__ata_qc_complete() explicitly. Then, internal qc for REQUEST SENSE
-+is issued. Once sense data is acquired, scmd is finished by directly
-+invoking scsi_finish_command() on the scmd. Note that as we already
-+have completed and deallocated the qc which was associated with the
-+scmd, we don't need to/cannot call ata_qc_complete() again.
++    static struct mtd_info *board_mtd;
++    static void __iomem *baseaddr;
 +
-+Problems with the current EH
-+----------------------------
 +
-+-  Error representation is too crude. Currently any and all error
-+   conditions are represented with ATA STATUS and ERROR registers.
-+   Errors which aren't ATA device errors are treated as ATA device
-+   errors by setting ATA_ERR bit. Better error descriptor which can
-+   properly represent ATA and other errors/exceptions is needed.
++Static example
 +
-+-  When handling timeouts, no action is taken to make device forget
-+   about the timed out command and ready for new commands.
++::
 +
-+-  EH handling via ata_scsi_error() is not properly protected from
-+   usual command processing. On EH entrance, the device is not in
-+   quiescent state. Timed out commands may succeed or fail any time.
-+   pio_task and atapi_task may still be running.
++    static struct nand_chip board_chip;
++    static void __iomem *baseaddr;
 +
-+-  Too weak error recovery. Devices / controllers causing HSM mismatch
-+   errors and other errors quite often require reset to return to known
-+   state. Also, advanced error handling is necessary to support features
-+   like NCQ and hotplug.
 +
-+-  ATA errors are directly handled in the interrupt handler and PIO
-+   errors in pio_task. This is problematic for advanced error handling
-+   for the following reasons.
++Partition defines
++-----------------
 +
-+   First, advanced error handling often requires context and internal qc
-+   execution.
++If you want to divide your device into partitions, then define a
++partitioning scheme suitable to your board.
 +
-+   Second, even a simple failure (say, CRC error) needs information
-+   gathering and could trigger complex error handling (say, resetting &
-+   reconfiguring). Having multiple code paths to gather information,
-+   enter EH and trigger actions makes life painful.
++::
 +
-+   Third, scattered EH code makes implementing low level drivers
-+   difficult. Low level drivers override libata callbacks. If EH is
-+   scattered over several places, each affected callbacks should perform
-+   its part of error handling. This can be error prone and painful.
++    #define NUM_PARTITIONS 2
++    static struct mtd_partition partition_info[] = {
++        { .name = "Flash partition 1",
++          .offset =  0,
++          .size =    8 * 1024 * 1024 },
++        { .name = "Flash partition 2",
++          .offset =  MTDPART_OFS_NEXT,
++          .size =    MTDPART_SIZ_FULL },
++    };
 +
-+libata Library
-+==============
 +
-+.. kernel-doc:: drivers/ata/libata-core.c
-+   :export:
++Hardware control function
++-------------------------
 +
-+libata Core Internals
-+=====================
++The hardware control function provides access to the control pins of the
++NAND chip(s). The access can be done by GPIO pins or by address lines.
++If you use address lines, make sure that the timing requirements are
++met.
 +
-+.. kernel-doc:: drivers/ata/libata-core.c
-+   :internal:
++*GPIO based example*
 +
-+libata SCSI translation/emulation
-+=================================
++::
 +
-+.. kernel-doc:: drivers/ata/libata-scsi.c
-+   :export:
++    static void board_hwcontrol(struct mtd_info *mtd, int cmd)
++    {
++        switch(cmd){
++            case NAND_CTL_SETCLE: /* Set CLE pin high */ break;
++            case NAND_CTL_CLRCLE: /* Set CLE pin low */ break;
++            case NAND_CTL_SETALE: /* Set ALE pin high */ break;
++            case NAND_CTL_CLRALE: /* Set ALE pin low */ break;
++            case NAND_CTL_SETNCE: /* Set nCE pin low */ break;
++            case NAND_CTL_CLRNCE: /* Set nCE pin high */ break;
++        }
++    }
 +
-+.. kernel-doc:: drivers/ata/libata-scsi.c
-+   :internal:
 +
-+ATA errors and exceptions
-+=========================
++*Address lines based example.* It's assumed that the nCE pin is driven
++by a chip select decoder.
 +
-+This chapter tries to identify what error/exception conditions exist for
-+ATA/ATAPI devices and describe how they should be handled in
-+implementation-neutral way.
++::
 +
-+The term 'error' is used to describe conditions where either an explicit
-+error condition is reported from device or a command has timed out.
++    static void board_hwcontrol(struct mtd_info *mtd, int cmd)
++    {
++        struct nand_chip *this = mtd_to_nand(mtd);
++        switch(cmd){
++            case NAND_CTL_SETCLE: this->IO_ADDR_W |= CLE_ADRR_BIT;  break;
++            case NAND_CTL_CLRCLE: this->IO_ADDR_W &= ~CLE_ADRR_BIT; break;
++            case NAND_CTL_SETALE: this->IO_ADDR_W |= ALE_ADRR_BIT;  break;
++            case NAND_CTL_CLRALE: this->IO_ADDR_W &= ~ALE_ADRR_BIT; break;
++        }
++    }
 +
-+The term 'exception' is either used to describe exceptional conditions
-+which are not errors (say, power or hotplug events), or to describe both
-+errors and non-error exceptional conditions. Where explicit distinction
-+between error and exception is necessary, the term 'non-error exception'
-+is used.
 +
-+Exception categories
++Device ready function
++---------------------
++
++If the hardware interface has the ready busy pin of the NAND chip
++connected to a GPIO or other accessible I/O pin, this function is used
++to read back the state of the pin. The function has no arguments and
++should return 0, if the device is busy (R/B pin is low) and 1, if the
++device is ready (R/B pin is high). If the hardware interface does not
++give access to the ready busy pin, then the function must not be defined
++and the function pointer this->dev_ready is set to NULL.
++
++Init function
++-------------
++
++The init function allocates memory and sets up all the board specific
++parameters and function pointers. When everything is set up nand_scan()
++is called. This function tries to detect and identify then chip. If a
++chip is found all the internal data fields are initialized accordingly.
++The structure(s) have to be zeroed out first and then filled with the
++necessary information about the device.
++
++::
++
++    static int __init board_init (void)
++    {
++        struct nand_chip *this;
++        int err = 0;
++
++        /* Allocate memory for MTD device structure and private data */
++        this = kzalloc(sizeof(struct nand_chip), GFP_KERNEL);
++        if (!this) {
++            printk ("Unable to allocate NAND MTD device structure.\n");
++            err = -ENOMEM;
++            goto out;
++        }
++
++        board_mtd = nand_to_mtd(this);
++
++        /* map physical address */
++        baseaddr = ioremap(CHIP_PHYSICAL_ADDRESS, 1024);
++        if (!baseaddr) {
++            printk("Ioremap to access NAND chip failed\n");
++            err = -EIO;
++            goto out_mtd;
++        }
++
++        /* Set address of NAND IO lines */
++        this->IO_ADDR_R = baseaddr;
++        this->IO_ADDR_W = baseaddr;
++        /* Reference hardware control function */
++        this->hwcontrol = board_hwcontrol;
++        /* Set command delay time, see datasheet for correct value */
++        this->chip_delay = CHIP_DEPENDEND_COMMAND_DELAY;
++        /* Assign the device ready function, if available */
++        this->dev_ready = board_dev_ready;
++        this->eccmode = NAND_ECC_SOFT;
++
++        /* Scan to find existence of the device */
++        if (nand_scan (board_mtd, 1)) {
++            err = -ENXIO;
++            goto out_ior;
++        }
++
++        add_mtd_partitions(board_mtd, partition_info, NUM_PARTITIONS);
++        goto out;
++
++    out_ior:
++        iounmap(baseaddr);
++    out_mtd:
++        kfree (this);
++    out:
++        return err;
++    }
++    module_init(board_init);
++
++
++Exit function
++-------------
++
++The exit function is only necessary if the driver is compiled as a
++module. It releases all resources which are held by the chip driver and
++unregisters the partitions in the MTD layer.
++
++::
++
++    #ifdef MODULE
++    static void __exit board_cleanup (void)
++    {
++        /* Release resources, unregister device */
++        nand_release (board_mtd);
++
++        /* unmap physical address */
++        iounmap(baseaddr);
++
++        /* Free the MTD device structure */
++        kfree (mtd_to_nand(board_mtd));
++    }
++    module_exit(board_cleanup);
++    #endif
++
++
++Advanced board driver functions
++===============================
++
++This chapter describes the advanced functionality of the NAND driver.
++For a list of functions which can be overridden by the board driver see
++the documentation of the nand_chip structure.
++
++Multiple chip control
++---------------------
++
++The nand driver can control chip arrays. Therefore the board driver must
++provide an own select_chip function. This function must (de)select the
++requested chip. The function pointer in the nand_chip structure must be
++set before calling nand_scan(). The maxchip parameter of nand_scan()
++defines the maximum number of chips to scan for. Make sure that the
++select_chip function can handle the requested number of chips.
++
++The nand driver concatenates the chips to one virtual chip and provides
++this virtual chip to the MTD layer.
++
++*Note: The driver can only handle linear chip arrays of equally sized
++chips. There is no support for parallel arrays which extend the
++buswidth.*
++
++*GPIO based example*
++
++::
++
++    static void board_select_chip (struct mtd_info *mtd, int chip)
++    {
++        /* Deselect all chips, set all nCE pins high */
++        GPIO(BOARD_NAND_NCE) |= 0xff;
++        if (chip >= 0)
++            GPIO(BOARD_NAND_NCE) &= ~ (1 << chip);
++    }
++
++
++*Address lines based example.* Its assumed that the nCE pins are
++connected to an address decoder.
++
++::
++
++    static void board_select_chip (struct mtd_info *mtd, int chip)
++    {
++        struct nand_chip *this = mtd_to_nand(mtd);
++
++        /* Deselect all chips */
++        this->IO_ADDR_R &= ~BOARD_NAND_ADDR_MASK;
++        this->IO_ADDR_W &= ~BOARD_NAND_ADDR_MASK;
++        switch (chip) {
++        case 0:
++            this->IO_ADDR_R |= BOARD_NAND_ADDR_CHIP0;
++            this->IO_ADDR_W |= BOARD_NAND_ADDR_CHIP0;
++            break;
++        ....
++        case n:
++            this->IO_ADDR_R |= BOARD_NAND_ADDR_CHIPn;
++            this->IO_ADDR_W |= BOARD_NAND_ADDR_CHIPn;
++            break;
++        }
++    }
++
++
++Hardware ECC support
 +--------------------
 +
-+Exceptions are described primarily with respect to legacy taskfile + bus
-+master IDE interface. If a controller provides other better mechanism
-+for error reporting, mapping those into categories described below
-+shouldn't be difficult.
-+
-+In the following sections, two recovery actions - reset and
-+reconfiguring transport - are mentioned. These are described further in
-+`EH recovery actions <#exrec>`__.
-+
-+HSM violation
-+~~~~~~~~~~~~~
-+
-+This error is indicated when STATUS value doesn't match HSM requirement
-+during issuing or execution any ATA/ATAPI command.
-+
-+-  ATA_STATUS doesn't contain !BSY && DRDY && !DRQ while trying to
-+   issue a command.
-+
-+-  !BSY && !DRQ during PIO data transfer.
-+
-+-  DRQ on command completion.
-+
-+-  !BSY && ERR after CDB transfer starts but before the last byte of CDB
-+   is transferred. ATA/ATAPI standard states that "The device shall not
-+   terminate the PACKET command with an error before the last byte of
-+   the command packet has been written" in the error outputs description
-+   of PACKET command and the state diagram doesn't include such
-+   transitions.
-+
-+In these cases, HSM is violated and not much information regarding the
-+error can be acquired from STATUS or ERROR register. IOW, this error can
-+be anything - driver bug, faulty device, controller and/or cable.
-+
-+As HSM is violated, reset is necessary to restore known state.
-+Reconfiguring transport for lower speed might be helpful too as
-+transmission errors sometimes cause this kind of errors.
-+
-+ATA/ATAPI device error (non-NCQ / non-CHECK CONDITION)
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+These are errors detected and reported by ATA/ATAPI devices indicating
-+device problems. For this type of errors, STATUS and ERROR register
-+values are valid and describe error condition. Note that some of ATA bus
-+errors are detected by ATA/ATAPI devices and reported using the same
-+mechanism as device errors. Those cases are described later in this
-+section.
-+
-+For ATA commands, this type of errors are indicated by !BSY && ERR
-+during command execution and on completion.
-+
-+For ATAPI commands,
-+
-+-  !BSY && ERR && ABRT right after issuing PACKET indicates that PACKET
-+   command is not supported and falls in this category.
-+
-+-  !BSY && ERR(==CHK) && !ABRT after the last byte of CDB is transferred
-+   indicates CHECK CONDITION and doesn't fall in this category.
-+
-+-  !BSY && ERR(==CHK) && ABRT after the last byte of CDB is transferred
-+   \*probably\* indicates CHECK CONDITION and doesn't fall in this
-+   category.
-+
-+Of errors detected as above, the following are not ATA/ATAPI device
-+errors but ATA bus errors and should be handled according to
-+`ATA bus error <#excatATAbusErr>`__.
-+
-+CRC error during data transfer
-+    This is indicated by ICRC bit in the ERROR register and means that
-+    corruption occurred during data transfer. Up to ATA/ATAPI-7, the
-+    standard specifies that this bit is only applicable to UDMA
-+    transfers but ATA/ATAPI-8 draft revision 1f says that the bit may be
-+    applicable to multiword DMA and PIO.
-+
-+ABRT error during data transfer or on completion
-+    Up to ATA/ATAPI-7, the standard specifies that ABRT could be set on
-+    ICRC errors and on cases where a device is not able to complete a
-+    command. Combined with the fact that MWDMA and PIO transfer errors
-+    aren't allowed to use ICRC bit up to ATA/ATAPI-7, it seems to imply
-+    that ABRT bit alone could indicate transfer errors.
-+
-+    However, ATA/ATAPI-8 draft revision 1f removes the part that ICRC
-+    errors can turn on ABRT. So, this is kind of gray area. Some
-+    heuristics are needed here.
-+
-+ATA/ATAPI device errors can be further categorized as follows.
-+
-+Media errors
-+    This is indicated by UNC bit in the ERROR register. ATA devices
-+    reports UNC error only after certain number of retries cannot
-+    recover the data, so there's nothing much else to do other than
-+    notifying upper layer.
-+
-+    READ and WRITE commands report CHS or LBA of the first failed sector
-+    but ATA/ATAPI standard specifies that the amount of transferred data
-+    on error completion is indeterminate, so we cannot assume that
-+    sectors preceding the failed sector have been transferred and thus
-+    cannot complete those sectors successfully as SCSI does.
-+
-+Media changed / media change requested error
-+    <<TODO: fill here>>
-+
-+Address error
-+    This is indicated by IDNF bit in the ERROR register. Report to upper
-+    layer.
-+
-+Other errors
-+    This can be invalid command or parameter indicated by ABRT ERROR bit
-+    or some other error condition. Note that ABRT bit can indicate a lot
-+    of things including ICRC and Address errors. Heuristics needed.
-+
-+Depending on commands, not all STATUS/ERROR bits are applicable. These
-+non-applicable bits are marked with "na" in the output descriptions but
-+up to ATA/ATAPI-7 no definition of "na" can be found. However,
-+ATA/ATAPI-8 draft revision 1f describes "N/A" as follows.
-+
-+    3.2.3.3a N/A
-+        A keyword the indicates a field has no defined value in this
-+        standard and should not be checked by the host or device. N/A
-+        fields should be cleared to zero.
-+
-+So, it seems reasonable to assume that "na" bits are cleared to zero by
-+devices and thus need no explicit masking.
-+
-+ATAPI device CHECK CONDITION
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+ATAPI device CHECK CONDITION error is indicated by set CHK bit (ERR bit)
-+in the STATUS register after the last byte of CDB is transferred for a
-+PACKET command. For this kind of errors, sense data should be acquired
-+to gather information regarding the errors. REQUEST SENSE packet command
-+should be used to acquire sense data.
-+
-+Once sense data is acquired, this type of errors can be handled
-+similarly to other SCSI errors. Note that sense data may indicate ATA
-+bus error (e.g. Sense Key 04h HARDWARE ERROR && ASC/ASCQ 47h/00h SCSI
-+PARITY ERROR). In such cases, the error should be considered as an ATA
-+bus error and handled according to `ATA bus error <#excatATAbusErr>`__.
-+
-+ATA device error (NCQ)
-+~~~~~~~~~~~~~~~~~~~~~~
-+
-+NCQ command error is indicated by cleared BSY and set ERR bit during NCQ
-+command phase (one or more NCQ commands outstanding). Although STATUS
-+and ERROR registers will contain valid values describing the error, READ
-+LOG EXT is required to clear the error condition, determine which
-+command has failed and acquire more information.
-+
-+READ LOG EXT Log Page 10h reports which tag has failed and taskfile
-+register values describing the error. With this information the failed
-+command can be handled as a normal ATA command error as in
-+`ATA/ATAPI device error (non-NCQ / non-CHECK CONDITION) <#excatDevErr>`__
-+and all other in-flight commands must be retried. Note that this retry
-+should not be counted - it's likely that commands retried this way would
-+have completed normally if it were not for the failed command.
-+
-+Note that ATA bus errors can be reported as ATA device NCQ errors. This
-+should be handled as described in `ATA bus error <#excatATAbusErr>`__.
-+
-+If READ LOG EXT Log Page 10h fails or reports NQ, we're thoroughly
-+screwed. This condition should be treated according to
-+`HSM violation <#excatHSMviolation>`__.
-+
-+ATA bus error
-+~~~~~~~~~~~~~
-+
-+ATA bus error means that data corruption occurred during transmission
-+over ATA bus (SATA or PATA). This type of errors can be indicated by
-+
-+-  ICRC or ABRT error as described in
-+   `ATA/ATAPI device error (non-NCQ / non-CHECK CONDITION) <#excatDevErr>`__.
-+
-+-  Controller-specific error completion with error information
-+   indicating transmission error.
-+
-+-  On some controllers, command timeout. In this case, there may be a
-+   mechanism to determine that the timeout is due to transmission error.
-+
-+-  Unknown/random errors, timeouts and all sorts of weirdities.
-+
-+As described above, transmission errors can cause wide variety of
-+symptoms ranging from device ICRC error to random device lockup, and,
-+for many cases, there is no way to tell if an error condition is due to
-+transmission error or not; therefore, it's necessary to employ some kind
-+of heuristic when dealing with errors and timeouts. For example,
-+encountering repetitive ABRT errors for known supported command is
-+likely to indicate ATA bus error.
-+
-+Once it's determined that ATA bus errors have possibly occurred,
-+lowering ATA bus transmission speed is one of actions which may
-+alleviate the problem. See `Reconfigure transport <#exrecReconf>`__ for
-+more information.
-+
-+PCI bus error
-+~~~~~~~~~~~~~
-+
-+Data corruption or other failures during transmission over PCI (or other
-+system bus). For standard BMDMA, this is indicated by Error bit in the
-+BMDMA Status register. This type of errors must be logged as it
-+indicates something is very wrong with the system. Resetting host
-+controller is recommended.
-+
-+Late completion
-+~~~~~~~~~~~~~~~
-+
-+This occurs when timeout occurs and the timeout handler finds out that
-+the timed out command has completed successfully or with error. This is
-+usually caused by lost interrupts. This type of errors must be logged.
-+Resetting host controller is recommended.
-+
-+Unknown error (timeout)
++Functions and constants
 +~~~~~~~~~~~~~~~~~~~~~~~
 +
-+This is when timeout occurs and the command is still processing or the
-+host and device are in unknown state. When this occurs, HSM could be in
-+any valid or invalid state. To bring the device to known state and make
-+it forget about the timed out command, resetting is necessary. The timed
-+out command may be retried.
++The nand driver supports three different types of hardware ECC.
 +
-+Timeouts can also be caused by transmission errors. Refer to
-+`ATA bus error <#excatATAbusErr>`__ for more details.
++-  NAND_ECC_HW3_256
 +
-+Hotplug and power management exceptions
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++   Hardware ECC generator providing 3 bytes ECC per 256 byte.
 +
-+<<TODO: fill here>>
++-  NAND_ECC_HW3_512
 +
-+EH recovery actions
-+-------------------
++   Hardware ECC generator providing 3 bytes ECC per 512 byte.
 +
-+This section discusses several important recovery actions.
++-  NAND_ECC_HW6_512
 +
-+Clearing error condition
-+~~~~~~~~~~~~~~~~~~~~~~~~
++   Hardware ECC generator providing 6 bytes ECC per 512 byte.
 +
-+Many controllers require its error registers to be cleared by error
-+handler. Different controllers may have different requirements.
++-  NAND_ECC_HW8_512
 +
-+For SATA, it's strongly recommended to clear at least SError register
-+during error handling.
++   Hardware ECC generator providing 6 bytes ECC per 512 byte.
 +
-+Reset
-+~~~~~
++If your hardware generator has a different functionality add it at the
++appropriate place in nand_base.c
 +
-+During EH, resetting is necessary in the following cases.
++The board driver must provide following functions:
 +
-+-  HSM is in unknown or invalid state
++-  enable_hwecc
 +
-+-  HBA is in unknown or invalid state
++   This function is called before reading / writing to the chip. Reset
++   or initialize the hardware generator in this function. The function
++   is called with an argument which let you distinguish between read and
++   write operations.
 +
-+-  EH needs to make HBA/device forget about in-flight commands
++-  calculate_ecc
 +
-+-  HBA/device behaves weirdly
++   This function is called after read / write from / to the chip.
++   Transfer the ECC from the hardware to the buffer. If the option
++   NAND_HWECC_SYNDROME is set then the function is only called on
++   write. See below.
 +
-+Resetting during EH might be a good idea regardless of error condition
-+to improve EH robustness. Whether to reset both or either one of HBA and
-+device depends on situation but the following scheme is recommended.
++-  correct_data
 +
-+-  When it's known that HBA is in ready state but ATA/ATAPI device is in
-+   unknown state, reset only device.
++   In case of an ECC error this function is called for error detection
++   and correction. Return 1 respectively 2 in case the error can be
++   corrected. If the error is not correctable return -1. If your
++   hardware generator matches the default algorithm of the nand_ecc
++   software generator then use the correction function provided by
++   nand_ecc instead of implementing duplicated code.
 +
-+-  If HBA is in unknown state, reset both HBA and device.
++Hardware ECC with syndrome calculation
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 +
-+HBA resetting is implementation specific. For a controller complying to
-+taskfile/BMDMA PCI IDE, stopping active DMA transaction may be
-+sufficient iff BMDMA state is the only HBA context. But even mostly
-+taskfile/BMDMA PCI IDE complying controllers may have implementation
-+specific requirements and mechanism to reset themselves. This must be
-+addressed by specific drivers.
++Many hardware ECC implementations provide Reed-Solomon codes and
++calculate an error syndrome on read. The syndrome must be converted to a
++standard Reed-Solomon syndrome before calling the error correction code
++in the generic Reed-Solomon library.
 +
-+OTOH, ATA/ATAPI standard describes in detail ways to reset ATA/ATAPI
-+devices.
++The ECC bytes must be placed immediately after the data bytes in order
++to make the syndrome generator work. This is contrary to the usual
++layout used by software ECC. The separation of data and out of band area
++is not longer possible. The nand driver code handles this layout and the
++remaining free bytes in the oob area are managed by the autoplacement
++code. Provide a matching oob-layout in this case. See rts_from4.c and
++diskonchip.c for implementation reference. In those cases we must also
++use bad block tables on FLASH, because the ECC layout is interfering
++with the bad block marker positions. See bad block table support for
++details.
 +
-+PATA hardware reset
-+    This is hardware initiated device reset signalled with asserted PATA
-+    RESET- signal. There is no standard way to initiate hardware reset
-+    from software although some hardware provides registers that allow
-+    driver to directly tweak the RESET- signal.
++Bad block table support
++-----------------------
 +
-+Software reset
-+    This is achieved by turning CONTROL SRST bit on for at least 5us.
-+    Both PATA and SATA support it but, in case of SATA, this may require
-+    controller-specific support as the second Register FIS to clear SRST
-+    should be transmitted while BSY bit is still set. Note that on PATA,
-+    this resets both master and slave devices on a channel.
++Most NAND chips mark the bad blocks at a defined position in the spare
++area. Those blocks must not be erased under any circumstances as the bad
++block information would be lost. It is possible to check the bad block
++mark each time when the blocks are accessed by reading the spare area of
++the first page in the block. This is time consuming so a bad block table
++is used.
 +
-+EXECUTE DEVICE DIAGNOSTIC command
-+    Although ATA/ATAPI standard doesn't describe exactly, EDD implies
-+    some level of resetting, possibly similar level with software reset.
-+    Host-side EDD protocol can be handled with normal command processing
-+    and most SATA controllers should be able to handle EDD's just like
-+    other commands. As in software reset, EDD affects both devices on a
-+    PATA bus.
++The nand driver supports various types of bad block tables.
 +
-+    Although EDD does reset devices, this doesn't suit error handling as
-+    EDD cannot be issued while BSY is set and it's unclear how it will
-+    act when device is in unknown/weird state.
++-  Per device
 +
-+ATAPI DEVICE RESET command
-+    This is very similar to software reset except that reset can be
-+    restricted to the selected device without affecting the other device
-+    sharing the cable.
++   The bad block table contains all bad block information of the device
++   which can consist of multiple chips.
 +
-+SATA phy reset
-+    This is the preferred way of resetting a SATA device. In effect,
-+    it's identical to PATA hardware reset. Note that this can be done
-+    with the standard SCR Control register. As such, it's usually easier
-+    to implement than software reset.
++-  Per chip
 +
-+One more thing to consider when resetting devices is that resetting
-+clears certain configuration parameters and they need to be set to their
-+previous or newly adjusted values after reset.
++   A bad block table is used per chip and contains the bad block
++   information for this particular chip.
 +
-+Parameters affected are.
++-  Fixed offset
 +
-+-  CHS set up with INITIALIZE DEVICE PARAMETERS (seldom used)
++   The bad block table is located at a fixed offset in the chip
++   (device). This applies to various DiskOnChip devices.
 +
-+-  Parameters set with SET FEATURES including transfer mode setting
++-  Automatic placed
 +
-+-  Block count set with SET MULTIPLE MODE
++   The bad block table is automatically placed and detected either at
++   the end or at the beginning of a chip (device)
 +
-+-  Other parameters (SET MAX, MEDIA LOCK...)
++-  Mirrored tables
 +
-+ATA/ATAPI standard specifies that some parameters must be maintained
-+across hardware or software reset, but doesn't strictly specify all of
-+them. Always reconfiguring needed parameters after reset is required for
-+robustness. Note that this also applies when resuming from deep sleep
-+(power-off).
++   The bad block table is mirrored on the chip (device) to allow updates
++   of the bad block table without data loss.
 +
-+Also, ATA/ATAPI standard requires that IDENTIFY DEVICE / IDENTIFY PACKET
-+DEVICE is issued after any configuration parameter is updated or a
-+hardware reset and the result used for further operation. OS driver is
-+required to implement revalidation mechanism to support this.
++nand_scan() calls the function nand_default_bbt().
++nand_default_bbt() selects appropriate default bad block table
++descriptors depending on the chip information which was retrieved by
++nand_scan().
 +
-+Reconfigure transport
-+~~~~~~~~~~~~~~~~~~~~~
++The standard policy is scanning the device for bad blocks and build a
++ram based bad block table which allows faster access than always
++checking the bad block information on the flash chip itself.
 +
-+For both PATA and SATA, a lot of corners are cut for cheap connectors,
-+cables or controllers and it's quite common to see high transmission
-+error rate. This can be mitigated by lowering transmission speed.
++Flash based tables
++~~~~~~~~~~~~~~~~~~
 +
-+The following is a possible scheme Jeff Garzik suggested.
++It may be desired or necessary to keep a bad block table in FLASH. For
++AG-AND chips this is mandatory, as they have no factory marked bad
++blocks. They have factory marked good blocks. The marker pattern is
++erased when the block is erased to be reused. So in case of powerloss
++before writing the pattern back to the chip this block would be lost and
++added to the bad blocks. Therefore we scan the chip(s) when we detect
++them the first time for good blocks and store this information in a bad
++block table before erasing any of the blocks.
 +
-+    If more than $N (3?) transmission errors happen in 15 minutes,
++The blocks in which the tables are stored are protected against
++accidental access by marking them bad in the memory bad block table. The
++bad block table management functions are allowed to circumvent this
++protection.
 +
-+    -  if SATA, decrease SATA PHY speed. if speed cannot be decreased,
++The simplest way to activate the FLASH based bad block table support is
++to set the option NAND_BBT_USE_FLASH in the bbt_option field of the
++nand chip structure before calling nand_scan(). For AG-AND chips is
++this done by default. This activates the default FLASH based bad block
++table functionality of the NAND driver. The default bad block table
++options are
 +
-+    -  decrease UDMA xfer speed. if at UDMA0, switch to PIO4,
++-  Store bad block table per chip
 +
-+    -  decrease PIO xfer speed. if at PIO3, complain, but continue
++-  Use 2 bits per block
 +
-+ata_piix Internals
-+===================
++-  Automatic placement at the end of the chip
 +
-+.. kernel-doc:: drivers/ata/ata_piix.c
++-  Use mirrored tables with version numbers
++
++-  Reserve 4 blocks at the end of the chip
++
++User defined tables
++~~~~~~~~~~~~~~~~~~~
++
++User defined tables are created by filling out a nand_bbt_descr
++structure and storing the pointer in the nand_chip structure member
++bbt_td before calling nand_scan(). If a mirror table is necessary a
++second structure must be created and a pointer to this structure must be
++stored in bbt_md inside the nand_chip structure. If the bbt_md member
++is set to NULL then only the main table is used and no scan for the
++mirrored table is performed.
++
++The most important field in the nand_bbt_descr structure is the
++options field. The options define most of the table properties. Use the
++predefined constants from nand.h to define the options.
++
++-  Number of bits per block
++
++   The supported number of bits is 1, 2, 4, 8.
++
++-  Table per chip
++
++   Setting the constant NAND_BBT_PERCHIP selects that a bad block
++   table is managed for each chip in a chip array. If this option is not
++   set then a per device bad block table is used.
++
++-  Table location is absolute
++
++   Use the option constant NAND_BBT_ABSPAGE and define the absolute
++   page number where the bad block table starts in the field pages. If
++   you have selected bad block tables per chip and you have a multi chip
++   array then the start page must be given for each chip in the chip
++   array. Note: there is no scan for a table ident pattern performed, so
++   the fields pattern, veroffs, offs, len can be left uninitialized
++
++-  Table location is automatically detected
++
++   The table can either be located in the first or the last good blocks
++   of the chip (device). Set NAND_BBT_LASTBLOCK to place the bad block
++   table at the end of the chip (device). The bad block tables are
++   marked and identified by a pattern which is stored in the spare area
++   of the first page in the block which holds the bad block table. Store
++   a pointer to the pattern in the pattern field. Further the length of
++   the pattern has to be stored in len and the offset in the spare area
++   must be given in the offs member of the nand_bbt_descr structure.
++   For mirrored bad block tables different patterns are mandatory.
++
++-  Table creation
++
++   Set the option NAND_BBT_CREATE to enable the table creation if no
++   table can be found during the scan. Usually this is done only once if
++   a new chip is found.
++
++-  Table write support
++
++   Set the option NAND_BBT_WRITE to enable the table write support.
++   This allows the update of the bad block table(s) in case a block has
++   to be marked bad due to wear. The MTD interface function
++   block_markbad is calling the update function of the bad block table.
++   If the write support is enabled then the table is updated on FLASH.
++
++   Note: Write support should only be enabled for mirrored tables with
++   version control.
++
++-  Table version control
++
++   Set the option NAND_BBT_VERSION to enable the table version
++   control. It's highly recommended to enable this for mirrored tables
++   with write support. It makes sure that the risk of losing the bad
++   block table information is reduced to the loss of the information
++   about the one worn out block which should be marked bad. The version
++   is stored in 4 consecutive bytes in the spare area of the device. The
++   position of the version number is defined by the member veroffs in
++   the bad block table descriptor.
++
++-  Save block contents on write
++
++   In case that the block which holds the bad block table does contain
++   other useful information, set the option NAND_BBT_SAVECONTENT. When
++   the bad block table is written then the whole block is read the bad
++   block table is updated and the block is erased and everything is
++   written back. If this option is not set only the bad block table is
++   written and everything else in the block is ignored and erased.
++
++-  Number of reserved blocks
++
++   For automatic placement some blocks must be reserved for bad block
++   table storage. The number of reserved blocks is defined in the
++   maxblocks member of the bad block table description structure.
++   Reserving 4 blocks for mirrored tables should be a reasonable number.
++   This also limits the number of blocks which are scanned for the bad
++   block table ident pattern.
++
++Spare area (auto)placement
++--------------------------
++
++The nand driver implements different possibilities for placement of
++filesystem data in the spare area,
++
++-  Placement defined by fs driver
++
++-  Automatic placement
++
++The default placement function is automatic placement. The nand driver
++has built in default placement schemes for the various chiptypes. If due
++to hardware ECC functionality the default placement does not fit then
++the board driver can provide a own placement scheme.
++
++File system drivers can provide a own placement scheme which is used
++instead of the default placement scheme.
++
++Placement schemes are defined by a nand_oobinfo structure
++
++::
++
++    struct nand_oobinfo {
++        int useecc;
++        int eccbytes;
++        int eccpos[24];
++        int oobfree[8][2];
++    };
++
++
++-  useecc
++
++   The useecc member controls the ecc and placement function. The header
++   file include/mtd/mtd-abi.h contains constants to select ecc and
++   placement. MTD_NANDECC_OFF switches off the ecc complete. This is
++   not recommended and available for testing and diagnosis only.
++   MTD_NANDECC_PLACE selects caller defined placement,
++   MTD_NANDECC_AUTOPLACE selects automatic placement.
++
++-  eccbytes
++
++   The eccbytes member defines the number of ecc bytes per page.
++
++-  eccpos
++
++   The eccpos array holds the byte offsets in the spare area where the
++   ecc codes are placed.
++
++-  oobfree
++
++   The oobfree array defines the areas in the spare area which can be
++   used for automatic placement. The information is given in the format
++   {offset, size}. offset defines the start of the usable area, size the
++   length in bytes. More than one area can be defined. The list is
++   terminated by an {0, 0} entry.
++
++Placement defined by fs driver
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++The calling function provides a pointer to a nand_oobinfo structure
++which defines the ecc placement. For writes the caller must provide a
++spare area buffer along with the data buffer. The spare area buffer size
++is (number of pages) \* (size of spare area). For reads the buffer size
++is (number of pages) \* ((size of spare area) + (number of ecc steps per
++page) \* sizeof (int)). The driver stores the result of the ecc check
++for each tuple in the spare buffer. The storage sequence is::
++
++	<spare data page 0><ecc result 0>...<ecc result n>
++
++	...
++
++	<spare data page n><ecc result 0>...<ecc result n>
++
++This is a legacy mode used by YAFFS1.
++
++If the spare area buffer is NULL then only the ECC placement is done
++according to the given scheme in the nand_oobinfo structure.
++
++Automatic placement
++~~~~~~~~~~~~~~~~~~~
++
++Automatic placement uses the built in defaults to place the ecc bytes in
++the spare area. If filesystem data have to be stored / read into the
++spare area then the calling function must provide a buffer. The buffer
++size per page is determined by the oobfree array in the nand_oobinfo
++structure.
++
++If the spare area buffer is NULL then only the ECC placement is done
++according to the default builtin scheme.
++
++Spare area autoplacement default schemes
++----------------------------------------
++
++256 byte pagesize
++~~~~~~~~~~~~~~~~~
++
++======== ================== ===================================================
++Offset   Content            Comment
++======== ================== ===================================================
++0x00     ECC byte 0         Error correction code byte 0
++0x01     ECC byte 1         Error correction code byte 1
++0x02     ECC byte 2         Error correction code byte 2
++0x03     Autoplace 0
++0x04     Autoplace 1
++0x05     Bad block marker   If any bit in this byte is zero, then this
++			    block is bad. This applies only to the first
++			    page in a block. In the remaining pages this
++			    byte is reserved
++0x06     Autoplace 2
++0x07     Autoplace 3
++======== ================== ===================================================
++
++512 byte pagesize
++~~~~~~~~~~~~~~~~~
++
++
++============= ================== ==============================================
++Offset        Content            Comment
++============= ================== ==============================================
++0x00          ECC byte 0         Error correction code byte 0 of the lower
++				 256 Byte data in this page
++0x01          ECC byte 1         Error correction code byte 1 of the lower
++				 256 Bytes of data in this page
++0x02          ECC byte 2         Error correction code byte 2 of the lower
++				 256 Bytes of data in this page
++0x03          ECC byte 3         Error correction code byte 0 of the upper
++				 256 Bytes of data in this page
++0x04          reserved           reserved
++0x05          Bad block marker   If any bit in this byte is zero, then this
++				 block is bad. This applies only to the first
++				 page in a block. In the remaining pages this
++				 byte is reserved
++0x06          ECC byte 4         Error correction code byte 1 of the upper
++				 256 Bytes of data in this page
++0x07          ECC byte 5         Error correction code byte 2 of the upper
++				 256 Bytes of data in this page
++0x08 - 0x0F   Autoplace 0 - 7
++============= ================== ==============================================
++
++2048 byte pagesize
++~~~~~~~~~~~~~~~~~~
++
++=========== ================== ================================================
++Offset      Content            Comment
++=========== ================== ================================================
++0x00        Bad block marker   If any bit in this byte is zero, then this block
++			       is bad. This applies only to the first page in a
++			       block. In the remaining pages this byte is
++			       reserved
++0x01        Reserved           Reserved
++0x02-0x27   Autoplace 0 - 37
++0x28        ECC byte 0         Error correction code byte 0 of the first
++			       256 Byte data in this page
++0x29        ECC byte 1         Error correction code byte 1 of the first
++			       256 Bytes of data in this page
++0x2A        ECC byte 2         Error correction code byte 2 of the first
++			       256 Bytes data in this page
++0x2B        ECC byte 3         Error correction code byte 0 of the second
++			       256 Bytes of data in this page
++0x2C        ECC byte 4         Error correction code byte 1 of the second
++			       256 Bytes of data in this page
++0x2D        ECC byte 5         Error correction code byte 2 of the second
++			       256 Bytes of data in this page
++0x2E        ECC byte 6         Error correction code byte 0 of the third
++			       256 Bytes of data in this page
++0x2F        ECC byte 7         Error correction code byte 1 of the third
++			       256 Bytes of data in this page
++0x30        ECC byte 8         Error correction code byte 2 of the third
++			       256 Bytes of data in this page
++0x31        ECC byte 9         Error correction code byte 0 of the fourth
++			       256 Bytes of data in this page
++0x32        ECC byte 10        Error correction code byte 1 of the fourth
++			       256 Bytes of data in this page
++0x33        ECC byte 11        Error correction code byte 2 of the fourth
++			       256 Bytes of data in this page
++0x34        ECC byte 12        Error correction code byte 0 of the fifth
++			       256 Bytes of data in this page
++0x35        ECC byte 13        Error correction code byte 1 of the fifth
++			       256 Bytes of data in this page
++0x36        ECC byte 14        Error correction code byte 2 of the fifth
++			       256 Bytes of data in this page
++0x37        ECC byte 15        Error correction code byte 0 of the sixth
++			       256 Bytes of data in this page
++0x38        ECC byte 16        Error correction code byte 1 of the sixth
++			       256 Bytes of data in this page
++0x39        ECC byte 17        Error correction code byte 2 of the sixth
++			       256 Bytes of data in this page
++0x3A        ECC byte 18        Error correction code byte 0 of the seventh
++			       256 Bytes of data in this page
++0x3B        ECC byte 19        Error correction code byte 1 of the seventh
++			       256 Bytes of data in this page
++0x3C        ECC byte 20        Error correction code byte 2 of the seventh
++			       256 Bytes of data in this page
++0x3D        ECC byte 21        Error correction code byte 0 of the eighth
++			       256 Bytes of data in this page
++0x3E        ECC byte 22        Error correction code byte 1 of the eighth
++			       256 Bytes of data in this page
++0x3F        ECC byte 23        Error correction code byte 2 of the eighth
++			       256 Bytes of data in this page
++=========== ================== ================================================
++
++Filesystem support
++==================
++
++The NAND driver provides all necessary functions for a filesystem via
++the MTD interface.
++
++Filesystems must be aware of the NAND peculiarities and restrictions.
++One major restrictions of NAND Flash is, that you cannot write as often
++as you want to a page. The consecutive writes to a page, before erasing
++it again, are restricted to 1-3 writes, depending on the manufacturers
++specifications. This applies similar to the spare area.
++
++Therefore NAND aware filesystems must either write in page size chunks
++or hold a writebuffer to collect smaller writes until they sum up to
++pagesize. Available NAND aware filesystems: JFFS2, YAFFS.
++
++The spare area usage to store filesystem data is controlled by the spare
++area placement functionality which is described in one of the earlier
++chapters.
++
++Tools
++=====
++
++The MTD project provides a couple of helpful tools to handle NAND Flash.
++
++-  flasherase, flasheraseall: Erase and format FLASH partitions
++
++-  nandwrite: write filesystem images to NAND FLASH
++
++-  nanddump: dump the contents of a NAND FLASH partitions
++
++These tools are aware of the NAND restrictions. Please use those tools
++instead of complaining about errors which are caused by non NAND aware
++access methods.
++
++Constants
++=========
++
++This chapter describes the constants which might be relevant for a
++driver developer.
++
++Chip option constants
++---------------------
++
++Constants for chip id table
++~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++These constants are defined in nand.h. They are ored together to
++describe the chip functionality.
++
++::
++
++    /* Buswitdh is 16 bit */
++    #define NAND_BUSWIDTH_16    0x00000002
++    /* Device supports partial programming without padding */
++    #define NAND_NO_PADDING     0x00000004
++    /* Chip has cache program function */
++    #define NAND_CACHEPRG       0x00000008
++    /* Chip has copy back function */
++    #define NAND_COPYBACK       0x00000010
++    /* AND Chip which has 4 banks and a confusing page / block
++     * assignment. See Renesas datasheet for further information */
++    #define NAND_IS_AND     0x00000020
++    /* Chip has a array of 4 pages which can be read without
++     * additional ready /busy waits */
++    #define NAND_4PAGE_ARRAY    0x00000040
++
++
++Constants for runtime options
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++These constants are defined in nand.h. They are ored together to
++describe the functionality.
++
++::
++
++    /* The hw ecc generator provides a syndrome instead a ecc value on read
++     * This can only work if we have the ecc bytes directly behind the
++     * data bytes. Applies for DOC and AG-AND Renesas HW Reed Solomon generators */
++    #define NAND_HWECC_SYNDROME 0x00020000
++
++
++ECC selection constants
++-----------------------
++
++Use these constants to select the ECC algorithm.
++
++::
++
++    /* No ECC. Usage is not recommended ! */
++    #define NAND_ECC_NONE       0
++    /* Software ECC 3 byte ECC per 256 Byte data */
++    #define NAND_ECC_SOFT       1
++    /* Hardware ECC 3 byte ECC per 256 Byte data */
++    #define NAND_ECC_HW3_256    2
++    /* Hardware ECC 3 byte ECC per 512 Byte data */
++    #define NAND_ECC_HW3_512    3
++    /* Hardware ECC 6 byte ECC per 512 Byte data */
++    #define NAND_ECC_HW6_512    4
++    /* Hardware ECC 6 byte ECC per 512 Byte data */
++    #define NAND_ECC_HW8_512    6
++
++
++Hardware control related constants
++----------------------------------
++
++These constants describe the requested hardware access function when the
++boardspecific hardware control function is called
++
++::
++
++    /* Select the chip by setting nCE to low */
++    #define NAND_CTL_SETNCE     1
++    /* Deselect the chip by setting nCE to high */
++    #define NAND_CTL_CLRNCE     2
++    /* Select the command latch by setting CLE to high */
++    #define NAND_CTL_SETCLE     3
++    /* Deselect the command latch by setting CLE to low */
++    #define NAND_CTL_CLRCLE     4
++    /* Select the address latch by setting ALE to high */
++    #define NAND_CTL_SETALE     5
++    /* Deselect the address latch by setting ALE to low */
++    #define NAND_CTL_CLRALE     6
++    /* Set write protection by setting WP to high. Not used! */
++    #define NAND_CTL_SETWP      7
++    /* Clear write protection by setting WP to low. Not used! */
++    #define NAND_CTL_CLRWP      8
++
++
++Bad block table related constants
++---------------------------------
++
++These constants describe the options used for bad block table
++descriptors.
++
++::
++
++    /* Options for the bad block table descriptors */
++
++    /* The number of bits used per block in the bbt on the device */
++    #define NAND_BBT_NRBITS_MSK 0x0000000F
++    #define NAND_BBT_1BIT       0x00000001
++    #define NAND_BBT_2BIT       0x00000002
++    #define NAND_BBT_4BIT       0x00000004
++    #define NAND_BBT_8BIT       0x00000008
++    /* The bad block table is in the last good block of the device */
++    #define NAND_BBT_LASTBLOCK  0x00000010
++    /* The bbt is at the given page, else we must scan for the bbt */
++    #define NAND_BBT_ABSPAGE    0x00000020
++    /* bbt is stored per chip on multichip devices */
++    #define NAND_BBT_PERCHIP    0x00000080
++    /* bbt has a version counter at offset veroffs */
++    #define NAND_BBT_VERSION    0x00000100
++    /* Create a bbt if none axists */
++    #define NAND_BBT_CREATE     0x00000200
++    /* Write bbt if necessary */
++    #define NAND_BBT_WRITE      0x00001000
++    /* Read and write back block contents when writing bbt */
++    #define NAND_BBT_SAVECONTENT    0x00002000
++
++
++Structures
++==========
++
++This chapter contains the autogenerated documentation of the structures
++which are used in the NAND driver and might be relevant for a driver
++developer. Each struct member has a short description which is marked
++with an [XXX] identifier. See the chapter "Documentation hints" for an
++explanation.
++
++.. kernel-doc:: include/linux/mtd/nand.h
 +   :internal:
 +
-+sata_sil Internals
-+===================
++Public Functions Provided
++=========================
 +
-+.. kernel-doc:: drivers/ata/sata_sil.c
++This chapter contains the autogenerated documentation of the NAND kernel
++API functions which are exported. Each function has a short description
++which is marked with an [XXX] identifier. See the chapter "Documentation
++hints" for an explanation.
++
++.. kernel-doc:: drivers/mtd/nand/nand_base.c
++   :export:
++
++.. kernel-doc:: drivers/mtd/nand/nand_bbt.c
++   :export:
++
++.. kernel-doc:: drivers/mtd/nand/nand_ecc.c
++   :export:
++
++Internal Functions Provided
++===========================
++
++This chapter contains the autogenerated documentation of the NAND driver
++internal functions. Each function has a short description which is
++marked with an [XXX] identifier. See the chapter "Documentation hints"
++for an explanation. The functions marked with [DEFAULT] might be
++relevant for a board driver developer.
++
++.. kernel-doc:: drivers/mtd/nand/nand_base.c
 +   :internal:
 +
-+Thanks
-+======
++.. kernel-doc:: drivers/mtd/nand/nand_bbt.c
++   :internal:
 +
-+The bulk of the ATA knowledge comes thanks to long conversations with
-+Andre Hedrick (www.linux-ide.org), and long hours pondering the ATA and
-+SCSI specifications.
++Credits
++=======
 +
-+Thanks to Alan Cox for pointing out similarities between SATA and SCSI,
-+and in general for motivation to hack on libata.
++The following people have contributed to the NAND driver:
 +
-+libata's device detection method, ata_pio_devchk, and in general all
-+the early probing was based on extensive study of Hale Landis's
-+probe/reset code in his ATADRVR driver (www.ata-atapi.com).
++1. Steven J. Hill\ sjhill@realitydiluted.com
++
++2. David Woodhouse\ dwmw2@infradead.org
++
++3. Thomas Gleixner\ tglx@linutronix.de
++
++A lot of users have provided bugfixes, improvements and helping hands
++for testing. Thanks a lot.
++
++The following people have contributed to this document:
++
++1. Thomas Gleixner\ tglx@linutronix.de
 -- 
 2.9.3
