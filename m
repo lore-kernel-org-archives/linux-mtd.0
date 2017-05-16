@@ -1,7 +1,7 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dAgxR-0003dq-O2
+ id 1dAgxR-0003dn-O0
  for linux-mtd@lists.infradead.org; Tue, 16 May 2017 18:12:32 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
@@ -13,11 +13,11 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- Felipe Balbi <balbi@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org
-Subject: [PATCH v2 51/53] usb: fix the comment with regards to DocBook
-Date: Tue, 16 May 2017 15:11:58 -0300
-Message-Id: <ce4a23cca5f809a588bd53c3289e6b953bb7ccc3.1494935649.git.mchehab@s-opensource.com>
+ Jani Nikula <jani.nikula@intel.com>
+Subject: [PATCH v2 52/53] docs-rst: get rid of Documentation/sphinx/tmplcvt
+ script
+Date: Tue, 16 May 2017 15:11:59 -0300
+Message-Id: <fd74809e73be1192f2455d39932a94dfa6fb0e83.1494935649.git.mchehab@s-opensource.com>
 In-Reply-To: <dca1e58e3f1c82a840abaafb9328f84ae69a9926.1494935649.git.mchehab@s-opensource.com>
 References: <dca1e58e3f1c82a840abaafb9328f84ae69a9926.1494935649.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
@@ -32,32 +32,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The USB gadget documentation is not at DocBook anymore.
-The main file was converted to ReST, and stored at
-Documentation/driver-api/usb/gadget.rst, but there are
-still several plain text files related to gadget under
-Documentation/usb.
-
-So, be generic and just mention documentation
-without specifying where it is.
+As everything was converted to ReST, we don't need this
+script anymore.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- drivers/usb/gadget/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/sphinx/tmplcvt | 28 ----------------------------
+ 1 file changed, 28 deletions(-)
+ delete mode 100755 Documentation/sphinx/tmplcvt
 
-diff --git a/drivers/usb/gadget/Kconfig b/drivers/usb/gadget/Kconfig
-index c164d6b788c3..b3c879b75a39 100644
---- a/drivers/usb/gadget/Kconfig
-+++ b/drivers/usb/gadget/Kconfig
-@@ -41,7 +41,7 @@ menuconfig USB_GADGET
- 	   don't have this kind of hardware (except maybe inside Linux PDAs).
- 
- 	   For more information, see <http://www.linux-usb.org/gadget> and
--	   the kernel DocBook documentation for this API.
-+	   the kernel documentation for this API.
- 
- if USB_GADGET
- 
+diff --git a/Documentation/sphinx/tmplcvt b/Documentation/sphinx/tmplcvt
+deleted file mode 100755
+index 6848f0a26fa5..000000000000
+--- a/Documentation/sphinx/tmplcvt
++++ /dev/null
+@@ -1,28 +0,0 @@
+-#!/bin/bash
+-#
+-# Convert a template file into something like RST
+-#
+-# fix <function>
+-# feed to pandoc
+-# fix \_
+-# title line?
+-#
+-set -eu
+-
+-if [ "$#" != "2" ]; then
+-	echo "$0 <docbook file> <rst file>"
+-	exit
+-fi
+-
+-DIR=$(dirname $0)
+-
+-in=$1
+-rst=$2
+-tmp=$rst.tmp
+-
+-cp $in $tmp
+-sed --in-place -f $DIR/convert_template.sed $tmp
+-pandoc -s -S -f docbook -t rst -o $rst $tmp
+-sed --in-place -f $DIR/post_convert.sed $rst
+-rm $tmp
+-echo "book writen to $rst"
 -- 
 2.9.3
