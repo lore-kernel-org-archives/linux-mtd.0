@@ -1,7 +1,7 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dAbPc-0001IF-1U
+ id 1dAbPc-0001II-0U
  for linux-mtd@lists.infradead.org; Tue, 16 May 2017 12:17:14 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
@@ -13,9 +13,10 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH v2 06/53] locking.rst: add captions to two tables
-Date: Tue, 16 May 2017 09:15:58 -0300
-Message-Id: <475c5ef83d26c399a55b106398e9dcb38e6d888b.1494935649.git.mchehab@s-opensource.com>
+Subject: [PATCH v2 39/53] mtd: adjust kernel-docs to avoid Sphinx/kerneldoc
+ warnings
+Date: Tue, 16 May 2017 09:16:31 -0300
+Message-Id: <b6f6c29454d236e85f2912cb0f9366825ca1b0be.1494935649.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
 References: <cover.1494935649.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
@@ -30,95 +31,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Those tables have a "caption" at the end, but ReST
-actually expects it on a different way.
+./drivers/mtd/nand/nand_bbt.c:1: warning: no structured comments found
+./include/linux/mtd/nand.h:785: ERROR: Unexpected indentation.
+./drivers/mtd/nand/nand_base.c:449: WARNING: Definition list ends without a blank line; unexpected unindent.
+./drivers/mtd/nand/nand_base.c:1161: ERROR: Unexpected indentation.
+./drivers/mtd/nand/nand_base.c:1162: WARNING: Block quote ends without a blank line; unexpected unindent.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/kernel-hacking/locking.rst | 66 ++++++++++++++++----------------
- 1 file changed, 34 insertions(+), 32 deletions(-)
+ Documentation/driver-api/mtdnand.rst | 3 ---
+ drivers/mtd/nand/nand_base.c         | 7 +++++--
+ include/linux/mtd/nand.h             | 2 +-
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/kernel-hacking/locking.rst b/Documentation/kernel-hacking/locking.rst
-index 17774b1f7587..b70c2c4eb147 100644
---- a/Documentation/kernel-hacking/locking.rst
-+++ b/Documentation/kernel-hacking/locking.rst
-@@ -29,43 +29,45 @@ In a normal program, you can increment a counter like so:
+diff --git a/Documentation/driver-api/mtdnand.rst b/Documentation/driver-api/mtdnand.rst
+index 7c19795ebb4a..e9afa586d15e 100644
+--- a/Documentation/driver-api/mtdnand.rst
++++ b/Documentation/driver-api/mtdnand.rst
+@@ -970,9 +970,6 @@ hints" for an explanation.
+ .. kernel-doc:: drivers/mtd/nand/nand_base.c
+    :export:
  
- This is what they would expect to happen:
+-.. kernel-doc:: drivers/mtd/nand/nand_bbt.c
+-   :export:
+-
+ .. kernel-doc:: drivers/mtd/nand/nand_ecc.c
+    :export:
  
--+------------------------------------+------------------------------------+
--| Instance 1                         | Instance 2                         |
--+====================================+====================================+
--| read very_important_count (5)      |                                    |
--+------------------------------------+------------------------------------+
--| add 1 (6)                          |                                    |
--+------------------------------------+------------------------------------+
--| write very_important_count (6)     |                                    |
--+------------------------------------+------------------------------------+
--|                                    | read very_important_count (6)      |
--+------------------------------------+------------------------------------+
--|                                    | add 1 (7)                          |
--+------------------------------------+------------------------------------+
--|                                    | write very_important_count (7)     |
--+------------------------------------+------------------------------------+
- 
--Table: Expected Results
-+.. table:: Expected Results
-+
-+  +------------------------------------+------------------------------------+
-+  | Instance 1                         | Instance 2                         |
-+  +====================================+====================================+
-+  | read very_important_count (5)      |                                    |
-+  +------------------------------------+------------------------------------+
-+  | add 1 (6)                          |                                    |
-+  +------------------------------------+------------------------------------+
-+  | write very_important_count (6)     |                                    |
-+  +------------------------------------+------------------------------------+
-+  |                                    | read very_important_count (6)      |
-+  +------------------------------------+------------------------------------+
-+  |                                    | add 1 (7)                          |
-+  +------------------------------------+------------------------------------+
-+  |                                    | write very_important_count (7)     |
-+  +------------------------------------+------------------------------------+
- 
- This is what might happen:
- 
--+------------------------------------+------------------------------------+
--| Instance 1                         | Instance 2                         |
--+====================================+====================================+
--| read very_important_count (5)      |                                    |
--+------------------------------------+------------------------------------+
--|                                    | read very_important_count (5)      |
--+------------------------------------+------------------------------------+
--| add 1 (6)                          |                                    |
--+------------------------------------+------------------------------------+
--|                                    | add 1 (6)                          |
--+------------------------------------+------------------------------------+
--| write very_important_count (6)     |                                    |
--+------------------------------------+------------------------------------+
--|                                    | write very_important_count (6)     |
--+------------------------------------+------------------------------------+
-+.. table:: Possible Results
-+
-+  +------------------------------------+------------------------------------+
-+  | Instance 1                         | Instance 2                         |
-+  +====================================+====================================+
-+  | read very_important_count (5)      |                                    |
-+  +------------------------------------+------------------------------------+
-+  |                                    | read very_important_count (5)      |
-+  +------------------------------------+------------------------------------+
-+  | add 1 (6)                          |                                    |
-+  +------------------------------------+------------------------------------+
-+  |                                    | add 1 (6)                          |
-+  +------------------------------------+------------------------------------+
-+  | write very_important_count (6)     |                                    |
-+  +------------------------------------+------------------------------------+
-+  |                                    | write very_important_count (6)     |
-+  +------------------------------------+------------------------------------+
- 
--Table: Possible Results
- 
- Race Conditions and Critical Regions
- ------------------------------------
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index b0524f8accb6..c8988c01e0d7 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -442,10 +442,12 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
+  * specify how to write bad block markers to OOB (chip->block_markbad).
+  *
+  * We try operations in the following order:
++ *
+  *  (1) erase the affected block, to allow OOB marker to be written cleanly
+  *  (2) write bad block marker to OOB area of affected block (unless flag
+  *      NAND_BBT_NO_OOB_BBM is present)
+  *  (3) update the BBT
++ *
+  * Note that we retain the first error encountered in (2) or (3), finish the
+  * procedures, and dump the error in the end.
+ */
+@@ -1155,9 +1157,10 @@ int nand_reset(struct nand_chip *chip, int chipnr)
+  * @mtd: mtd info
+  * @ofs: offset to start unlock from
+  * @len: length to unlock
+- * @invert: when = 0, unlock the range of blocks within the lower and
++ * @invert:
++ *        - when = 0, unlock the range of blocks within the lower and
+  *                    upper boundary address
+- *          when = 1, unlock the range of blocks outside the boundaries
++ *        - when = 1, unlock the range of blocks outside the boundaries
+  *                    of the lower and upper boundary address
+  *
+  * Returs unlock status.
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 9591e0fbe5bd..3d5b20379ba3 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -779,7 +779,7 @@ nand_get_sdr_timings(const struct nand_data_interface *conf)
+  *			Minimum amount of bit errors per @ecc_step_ds guaranteed
+  *			to be correctable. If unknown, set to zero.
+  * @ecc_step_ds:	[INTERN] ECC step required by the @ecc_strength_ds,
+- *                      also from the datasheet. It is the recommended ECC step
++ *			also from the datasheet. It is the recommended ECC step
+  *			size, if known; if unknown, set to zero.
+  * @onfi_timing_mode_default: [INTERN] default ONFI timing mode. This field is
+  *			      set to the actually used ONFI mode if the chip is
 -- 
 2.9.3
