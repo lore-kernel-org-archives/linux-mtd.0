@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dAbPc-0001II-0U
- for linux-mtd@lists.infradead.org; Tue, 16 May 2017 12:17:14 +0000
+ id 1dAbPc-0001IG-2e
+ for linux-mtd@lists.infradead.org; Tue, 16 May 2017 12:17:15 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -12,11 +12,13 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH v2 39/53] mtd: adjust kernel-docs to avoid Sphinx/kerneldoc
- warnings
-Date: Tue, 16 May 2017 09:16:31 -0300
-Message-Id: <b6f6c29454d236e85f2912cb0f9366825ca1b0be.1494935649.git.mchehab@s-opensource.com>
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
+ "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.com>,
+ linux-ext4@vger.kernel.org
+Subject: [PATCH v2 23/53] fs: jbd2: escape a string with special chars on a
+ kernel-doc
+Date: Tue, 16 May 2017 09:16:15 -0300
+Message-Id: <df1b560a4a04ac2e7591ffa7aff37899a45bf01a.1494935649.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
 References: <cover.1494935649.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
@@ -31,75 +33,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-./drivers/mtd/nand/nand_bbt.c:1: warning: no structured comments found
-./include/linux/mtd/nand.h:785: ERROR: Unexpected indentation.
-./drivers/mtd/nand/nand_base.c:449: WARNING: Definition list ends without a blank line; unexpected unindent.
-./drivers/mtd/nand/nand_base.c:1161: ERROR: Unexpected indentation.
-./drivers/mtd/nand/nand_base.c:1162: WARNING: Block quote ends without a blank line; unexpected unindent.
+kernel-doc will try to interpret a foo() string, except if
+properly escaped.
 
+Reviewed-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/driver-api/mtdnand.rst | 3 ---
- drivers/mtd/nand/nand_base.c         | 7 +++++--
- include/linux/mtd/nand.h             | 2 +-
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ fs/jbd2/transaction.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/driver-api/mtdnand.rst b/Documentation/driver-api/mtdnand.rst
-index 7c19795ebb4a..e9afa586d15e 100644
---- a/Documentation/driver-api/mtdnand.rst
-+++ b/Documentation/driver-api/mtdnand.rst
-@@ -970,9 +970,6 @@ hints" for an explanation.
- .. kernel-doc:: drivers/mtd/nand/nand_base.c
-    :export:
- 
--.. kernel-doc:: drivers/mtd/nand/nand_bbt.c
--   :export:
--
- .. kernel-doc:: drivers/mtd/nand/nand_ecc.c
-    :export:
- 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index b0524f8accb6..c8988c01e0d7 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -442,10 +442,12 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
-  * specify how to write bad block markers to OOB (chip->block_markbad).
+diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+index fe7f4a373436..38e1dcabbaca 100644
+--- a/fs/jbd2/transaction.c
++++ b/fs/jbd2/transaction.c
+@@ -1066,10 +1066,10 @@ static bool jbd2_write_access_granted(handle_t *handle, struct buffer_head *bh,
+  * @handle: transaction to add buffer modifications to
+  * @bh:     bh to be used for metadata writes
   *
-  * We try operations in the following order:
-+ *
-  *  (1) erase the affected block, to allow OOB marker to be written cleanly
-  *  (2) write bad block marker to OOB area of affected block (unless flag
-  *      NAND_BBT_NO_OOB_BBM is present)
-  *  (3) update the BBT
-+ *
-  * Note that we retain the first error encountered in (2) or (3), finish the
-  * procedures, and dump the error in the end.
- */
-@@ -1155,9 +1157,10 @@ int nand_reset(struct nand_chip *chip, int chipnr)
-  * @mtd: mtd info
-  * @ofs: offset to start unlock from
-  * @len: length to unlock
-- * @invert: when = 0, unlock the range of blocks within the lower and
-+ * @invert:
-+ *        - when = 0, unlock the range of blocks within the lower and
-  *                    upper boundary address
-- *          when = 1, unlock the range of blocks outside the boundaries
-+ *        - when = 1, unlock the range of blocks outside the boundaries
-  *                    of the lower and upper boundary address
+- * Returns an error code or 0 on success.
++ * Returns: error code or 0 on success.
   *
-  * Returs unlock status.
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 9591e0fbe5bd..3d5b20379ba3 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -779,7 +779,7 @@ nand_get_sdr_timings(const struct nand_data_interface *conf)
-  *			Minimum amount of bit errors per @ecc_step_ds guaranteed
-  *			to be correctable. If unknown, set to zero.
-  * @ecc_step_ds:	[INTERN] ECC step required by the @ecc_strength_ds,
-- *                      also from the datasheet. It is the recommended ECC step
-+ *			also from the datasheet. It is the recommended ECC step
-  *			size, if known; if unknown, set to zero.
-  * @onfi_timing_mode_default: [INTERN] default ONFI timing mode. This field is
-  *			      set to the actually used ONFI mode if the chip is
+  * In full data journalling mode the buffer may be of type BJ_AsyncData,
+- * because we're write()ing a buffer which is also part of a shared mapping.
++ * because we're ``write()ing`` a buffer which is also part of a shared mapping.
+  */
+ 
+ int jbd2_journal_get_write_access(handle_t *handle, struct buffer_head *bh)
 -- 
 2.9.3
