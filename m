@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dAbQH-0001Lk-TA
- for linux-mtd@lists.infradead.org; Tue, 16 May 2017 12:18:19 +0000
+ id 1dAbQI-0001MU-3h
+ for linux-mtd@lists.infradead.org; Tue, 16 May 2017 12:18:42 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -13,13 +13,9 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH v2 02/53] kernel-hacking: update document
-Date: Tue, 16 May 2017 09:15:54 -0300
-Message-Id: <dca1e58e3f1c82a840abaafb9328f84ae69a9926.1494935649.git.mchehab@s-opensource.com>
-In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
-References: <cover.1494935649.git.mchehab@s-opensource.com>
-In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
-References: <cover.1494935649.git.mchehab@s-opensource.com>
+Subject: [PATCH v2 00/53] Get rid of Docbook
+Date: Tue, 16 May 2017 09:15:52 -0300
+Message-Id: <cover.1494935649.git.mchehab@s-opensource.com>
 Sender: Mauro Carvalho Chehab <mchehab@smtp.s-opensource.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,440 +26,280 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This document is fairly updated. Yet, some stuff moved to
-other kernel headers. So, update to point to the right
-places.
 
-While here, adjust some minor ReST markups.
+This patch series convert the remaining DocBooks to ReST.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
----
- Documentation/kernel-hacking/hacking.rst | 179 +++++++++++++++++--------------
- 1 file changed, 98 insertions(+), 81 deletions(-)
+The first version was originally
+send as 3 patch series:
 
-diff --git a/Documentation/kernel-hacking/hacking.rst b/Documentation/kernel-hacking/hacking.rst
-index 75597e627791..1a456b60a7cf 100644
---- a/Documentation/kernel-hacking/hacking.rst
-+++ b/Documentation/kernel-hacking/hacking.rst
-@@ -56,7 +56,7 @@ interrupts. You can sleep, by calling :c:func:`schedule()`.
- 
- In user context, the ``current`` pointer (indicating the task we are
- currently executing) is valid, and :c:func:`in_interrupt()`
--(``include/linux/interrupt.h``) is false.
-+(``include/linux/preempt.h``) is false.
- 
- .. warning::
- 
-@@ -114,12 +114,12 @@ time, although different tasklets can run simultaneously.
-     Kuznetsov had at the time.
- 
- You can tell you are in a softirq (or tasklet) using the
--:c:func:`in_softirq()` macro (``include/linux/interrupt.h``).
-+:c:func:`in_softirq()` macro (``include/linux/preempt.h``).
- 
- .. warning::
- 
--    Beware that this will return a false positive if a bh lock (see
--    below) is held.
-+    Beware that this will return a false positive if a
-+    :ref:`botton half lock <local_bh_disable>` is held.
- 
- Some Basic Rules
- ================
-@@ -154,9 +154,7 @@ The Linux kernel is portable
- ioctls: Not writing a new system call
- =====================================
- 
--A system call generally looks like this
--
--::
-+A system call generally looks like this::
- 
-     asmlinkage long sys_mycall(int arg)
-     {
-@@ -175,7 +173,9 @@ If all your routine does is read or write some parameter, consider
- implementing a :c:func:`sysfs()` interface instead.
- 
- Inside the ioctl you're in user context to a process. When a error
--occurs you return a negated errno (see ``include/linux/errno.h``),
-+occurs you return a negated errno (see
-+``include/uapi/asm-generic/errno-base.h``,
-+``include/uapi/asm-generic/errno.h`` and ``include/linux/errno.h``),
- otherwise you return 0.
- 
- After you slept you should check if a signal occurred: the Unix/Linux
-@@ -195,9 +195,7 @@ some data structure.
- If you're doing longer computations: first think userspace. If you
- **really** want to do it in kernel you should regularly check if you need
- to give up the CPU (remember there is cooperative multitasking per CPU).
--Idiom:
--
--::
-+Idiom::
- 
-     cond_resched(); /* Will sleep */
- 
-@@ -231,26 +229,24 @@ Really.
- Common Routines
- ===============
- 
--:c:func:`printk()` ``include/linux/kernel.h``
-----------------------------------------------
-+:c:func:`printk()`
-+------------------
-+
-+Defined in ``include/linux/printk.h``
- 
- :c:func:`printk()` feeds kernel messages to the console, dmesg, and
- the syslog daemon. It is useful for debugging and reporting errors, and
- can be used inside interrupt context, but use with caution: a machine
- which has its console flooded with printk messages is unusable. It uses
- a format string mostly compatible with ANSI C printf, and C string
--concatenation to give it a first "priority" argument:
--
--::
-+concatenation to give it a first "priority" argument::
- 
-     printk(KERN_INFO "i = %u\n", i);
- 
- 
--See ``include/linux/kernel.h``; for other ``KERN_`` values; these are
-+See ``include/linux/kern_levels.h``; for other ``KERN_`` values; these are
- interpreted by syslog as the level. Special case: for printing an IP
--address use
--
--::
-+address use::
- 
-     __be32 ipaddress;
-     printk(KERN_INFO "my ip: %pI4\n", &ipaddress);
-@@ -270,8 +266,10 @@ overruns. Make sure that will be enough.
-     on top of its printf function: "Printf should not be used for
-     chit-chat". You should follow that advice.
- 
--:c:func:`copy_[to/from]_user()` / :c:func:`get_user()` / :c:func:`put_user()` ``include/linux/uaccess.h``
-----------------------------------------------------------------------------------------------------------
-+:c:func:`copy_to_user()` / :c:func:`copy_from_user()` / :c:func:`get_user()` / :c:func:`put_user()`
-+---------------------------------------------------------------------------------------------------
-+
-+Defined in ``include/linux/uaccess.h`` / ``asm/uaccess.h``
- 
- **[SLEEPS]**
- 
-@@ -297,8 +295,10 @@ The functions may sleep implicitly. This should never be called outside
- user context (it makes no sense), with interrupts disabled, or a
- spinlock held.
- 
--:c:func:`kmalloc()`/:c:func:`kfree()` ``include/linux/slab.h``
----------------------------------------------------------------
-+:c:func:`kmalloc()`/:c:func:`kfree()`
-+-------------------------------------
-+
-+Defined in ``include/linux/slab.h``
- 
- **[MAY SLEEP: SEE BELOW]**
- 
-@@ -324,9 +324,9 @@ message, then maybe you called a sleeping allocation function from
- interrupt context without ``GFP_ATOMIC``. You should really fix that.
- Run, don't walk.
- 
--If you are allocating at least ``PAGE_SIZE`` (``include/asm/page.h``)
--bytes, consider using :c:func:`__get_free_pages()`
--(``include/linux/mm.h``). It takes an order argument (0 for page sized,
-+If you are allocating at least ``PAGE_SIZE`` (``asm/page.h`` or
-+``asm/page_types.h``) bytes, consider using :c:func:`__get_free_pages()`
-+(``include/linux/gfp.h``). It takes an order argument (0 for page sized,
- 1 for double page, 2 for four pages etc.) and the same memory priority
- flag word as above.
- 
-@@ -344,24 +344,30 @@ routine.
- Before inventing your own cache of often-used objects consider using a
- slab cache in ``include/linux/slab.h``
- 
--:c:func:`current()` ``include/asm/current.h``
-----------------------------------------------
-+:c:func:`current()`
-+-------------------
-+
-+Defined in ``include/asm/current.h``
- 
- This global variable (really a macro) contains a pointer to the current
- task structure, so is only valid in user context. For example, when a
- process makes a system call, this will point to the task structure of
- the calling process. It is **not NULL** in interrupt context.
- 
--:c:func:`mdelay()`/:c:func:`udelay()` ``include/asm/delay.h`` ``include/linux/delay.h``
-----------------------------------------------------------------------------------------
-+:c:func:`mdelay()`/:c:func:`udelay()`
-+-------------------------------------
-+
-+Defined in ``include/asm/delay.h`` / ``include/linux/delay.h``
- 
- The :c:func:`udelay()` and :c:func:`ndelay()` functions can be
- used for small pauses. Do not use large values with them as you risk
- overflow - the helper function :c:func:`mdelay()` is useful here, or
- consider :c:func:`msleep()`.
- 
--:c:func:`cpu_to_be32()`/:c:func:`be32_to_cpu()`/:c:func:`cpu_to_le32()`/:c:func:`le32_to_cpu()` ``include/asm/byteorder.h``
-----------------------------------------------------------------------------------------------------------------------------
-+:c:func:`cpu_to_be32()`/:c:func:`be32_to_cpu()`/:c:func:`cpu_to_le32()`/:c:func:`le32_to_cpu()`
-+-----------------------------------------------------------------------------------------------
-+
-+Defined in ``include/asm/byteorder.h``
- 
- The :c:func:`cpu_to_be32()` family (where the "32" can be replaced
- by 64 or 16, and the "be" can be replaced by "le") are the general way
-@@ -375,8 +381,10 @@ to the given type, and return the converted value. The other variation
- is the "in-situ" family, such as :c:func:`cpu_to_be32s()`, which
- convert value referred to by the pointer, and return void.
- 
--:c:func:`local_irq_save()`/:c:func:`local_irq_restore()` ``include/linux/irqflags.h``
---------------------------------------------------------------------------------------
-+:c:func:`local_irq_save()`/:c:func:`local_irq_restore()`
-+--------------------------------------------------------
-+
-+Defined in ``include/linux/irqflags.h``
- 
- These routines disable hard interrupts on the local CPU, and restore
- them. They are reentrant; saving the previous state in their one
-@@ -384,16 +392,23 @@ them. They are reentrant; saving the previous state in their one
- enabled, you can simply use :c:func:`local_irq_disable()` and
- :c:func:`local_irq_enable()`.
- 
--:c:func:`local_bh_disable()`/:c:func:`local_bh_enable()` ``include/linux/interrupt.h``
----------------------------------------------------------------------------------------
-+.. _local_bh_disable:
-+
-+:c:func:`local_bh_disable()`/:c:func:`local_bh_enable()`
-+--------------------------------------------------------
-+
-+Defined in ``include/linux/bottom_half.h``
-+
- 
- These routines disable soft interrupts on the local CPU, and restore
- them. They are reentrant; if soft interrupts were disabled before, they
- will still be disabled after this pair of functions has been called.
- They prevent softirqs and tasklets from running on the current CPU.
- 
--:c:func:`smp_processor_id()`() ``include/asm/smp.h``
------------------------------------------------------
-+:c:func:`smp_processor_id()`
-+----------------------------
-+
-+Defined in ``include/linux/smp.h``
- 
- :c:func:`get_cpu()` disables preemption (so you won't suddenly get
- moved to another CPU) and returns the current processor number, between
-@@ -405,8 +420,10 @@ If you know you cannot be preempted by another task (ie. you are in
- interrupt context, or have preemption disabled) you can use
- smp_processor_id().
- 
--``__init``/``__exit``/``__initdata`` ``include/linux/init.h``
---------------------------------------------------------------
-+``__init``/``__exit``/``__initdata``
-+------------------------------------
-+
-+Defined in  ``include/linux/init.h``
- 
- After boot, the kernel frees up a special section; functions marked with
- ``__init`` and data structures marked with ``__initdata`` are dropped
-@@ -415,10 +432,13 @@ initialization. ``__exit`` is used to declare a function which is only
- required on exit: the function will be dropped if this file is not
- compiled as a module. See the header file for use. Note that it makes no
- sense for a function marked with ``__init`` to be exported to modules
--with :c:func:`EXPORT_SYMBOL()` - this will break.
-+with :c:func:`EXPORT_SYMBOL()` or :c:func:`EXPORT_SYMBOL_GPL()`- this
-+will break.
- 
--:c:func:`__initcall()`/:c:func:`module_init()` ``include/linux/init.h``
-------------------------------------------------------------------------
-+:c:func:`__initcall()`/:c:func:`module_init()`
-+----------------------------------------------
-+
-+Defined in  ``include/linux/init.h`` / ``include/linux/module.h``
- 
- Many parts of the kernel are well served as a module
- (dynamically-loadable parts of the kernel). Using the
-@@ -438,8 +458,11 @@ to fail (unfortunately, this has no effect if the module is compiled
- into the kernel). This function is called in user context with
- interrupts enabled, so it can sleep.
- 
--:c:func:`module_exit()` ``include/linux/init.h``
--------------------------------------------------
-+:c:func:`module_exit()`
-+-----------------------
-+
-+
-+Defined in  ``include/linux/module.h``
- 
- This macro defines the function to be called at module removal time (or
- never, in the case of the file compiled into the kernel). It will only
-@@ -450,8 +473,10 @@ it returns.
- Note that this macro is optional: if it is not present, your module will
- not be removable (except for 'rmmod -f').
- 
--:c:func:`try_module_get()`/:c:func:`module_put()` ``include/linux/module.h``
------------------------------------------------------------------------------
-+:c:func:`try_module_get()`/:c:func:`module_put()`
-+-------------------------------------------------
-+
-+Defined in ``include/linux/module.h``
- 
- These manipulate the module usage count, to protect against removal (a
- module also can't be removed if another module uses one of its exported
-@@ -472,8 +497,8 @@ Wait Queues ``include/linux/wait.h``
- 
- A wait queue is used to wait for someone to wake you up when a certain
- condition is true. They must be used carefully to ensure there is no
--race condition. You declare a ``wait_queue_head_t``, and then processes
--which want to wait for that condition declare a ``wait_queue_t``
-+race condition. You declare a :c:type:`wait_queue_head_t`, and then processes
-+which want to wait for that condition declare a :c:type:`wait_queue_t`
- referring to themselves, and place that in the queue.
- 
- Declaring
-@@ -490,15 +515,15 @@ Queuing
- Placing yourself in the waitqueue is fairly complex, because you must
- put yourself in the queue before checking the condition. There is a
- macro to do this: :c:func:`wait_event_interruptible()`
--``include/linux/wait.h`` The first argument is the wait queue head, and
-+(``include/linux/wait.h``) The first argument is the wait queue head, and
- the second is an expression which is evaluated; the macro returns 0 when
--this expression is true, or -ERESTARTSYS if a signal is received. The
-+this expression is true, or ``-ERESTARTSYS`` if a signal is received. The
- :c:func:`wait_event()` version ignores signals.
- 
- Waking Up Queued Tasks
- ----------------------
- 
--Call :c:func:`wake_up()` ``include/linux/wait.h``;, which will wake
-+Call :c:func:`wake_up()` (``include/linux/wait.h``);, which will wake
- up every process in the queue. The exception is if one has
- ``TASK_EXCLUSIVE`` set, in which case the remainder of the queue will
- not be woken. There are other variants of this basic function available
-@@ -508,9 +533,9 @@ Atomic Operations
- =================
- 
- Certain operations are guaranteed atomic on all platforms. The first
--class of operations work on ``atomic_t`` ``include/asm/atomic.h``; this
--contains a signed integer (at least 32 bits long), and you must use
--these functions to manipulate or read atomic_t variables.
-+class of operations work on :c:type:`atomic_t` (``include/asm/atomic.h``);
-+this contains a signed integer (at least 32 bits long), and you must use
-+these functions to manipulate or read :c:type:`atomic_t` variables.
- :c:func:`atomic_read()` and :c:func:`atomic_set()` get and set
- the counter, :c:func:`atomic_add()`, :c:func:`atomic_sub()`,
- :c:func:`atomic_inc()`, :c:func:`atomic_dec()`, and
-@@ -534,7 +559,7 @@ true if the bit was previously set; these are particularly useful for
- atomically setting flags.
- 
- It is possible to call these operations with bit indices greater than
--BITS_PER_LONG. The resulting behavior is strange on big-endian
-+``BITS_PER_LONG``. The resulting behavior is strange on big-endian
- platforms though so it is a good idea not to do this.
- 
- Symbols
-@@ -546,14 +571,18 @@ be used anywhere in the kernel). However, for modules, a special
- exported symbol table is kept which limits the entry points to the
- kernel proper. Modules can also export symbols.
- 
--:c:func:`EXPORT_SYMBOL()` ``include/linux/export.h``
------------------------------------------------------
-+:c:func:`EXPORT_SYMBOL()`
-+-------------------------
-+
-+Defined in ``include/linux/export.h``
- 
- This is the classic method of exporting a symbol: dynamically loaded
- modules will be able to use the symbol as normal.
- 
--:c:func:`EXPORT_SYMBOL_GPL()` ``include/linux/export.h``
----------------------------------------------------------
-+:c:func:`EXPORT_SYMBOL_GPL()`
-+-----------------------------
-+
-+Defined in ``include/linux/export.h``
- 
- Similar to :c:func:`EXPORT_SYMBOL()` except that the symbols
- exported by :c:func:`EXPORT_SYMBOL_GPL()` can only be seen by
-@@ -579,11 +608,11 @@ Return Conventions
- ------------------
- 
- For code called in user context, it's very common to defy C convention,
--and return 0 for success, and a negative error number (eg. -EFAULT) for
-+and return 0 for success, and a negative error number (eg. ``-EFAULT``) for
- failure. This can be unintuitive at first, but it's fairly widespread in
- the kernel.
- 
--Using :c:func:`ERR_PTR()` ``include/linux/err.h``; to encode a
-+Using :c:func:`ERR_PTR()` (``include/linux/err.h``) to encode a
- negative error number into a pointer, and :c:func:`IS_ERR()` and
- :c:func:`PTR_ERR()` to get it back out again: avoids a separate
- pointer parameter for the error number. Icky, but in a good way.
-@@ -603,9 +632,7 @@ Initializing structure members
- ------------------------------
- 
- The preferred method of initializing structures is to use designated
--initialisers, as defined by ISO C99, eg:
--
--::
-+initialisers, as defined by ISO C99, eg::
- 
-     static struct block_device_operations opt_fops = {
-             .open               = opt_open,
-@@ -716,18 +743,14 @@ Kernel Cantrips
- 
- Some favorites from browsing the source. Feel free to add to this list.
- 
--``arch/x86/include/asm/delay.h:``
--
--::
-+``arch/x86/include/asm/delay.h``::
- 
-     #define ndelay(n) (__builtin_constant_p(n) ? \
-             ((n) > 20000 ? __bad_ndelay() : __const_udelay((n) * 5ul)) : \
-             __ndelay(n))
- 
- 
--``include/linux/fs.h``:
--
--::
-+``include/linux/fs.h``::
- 
-     /*
-      * Kernel pointers have redundant information, so we can use a
-@@ -741,9 +764,7 @@ Some favorites from browsing the source. Feel free to add to this list.
-      #define PTR_ERR(ptr)    ((long)(ptr))
-      #define IS_ERR(ptr)     ((unsigned long)(ptr) > (unsigned long)(-1000))
- 
--``arch/x86/include/asm/uaccess_32.h:``
--
--::
-+``arch/x86/include/asm/uaccess_32.h:``::
- 
-     #define copy_to_user(to,from,n)                         \
-             (__builtin_constant_p(n) ?                      \
-@@ -751,9 +772,7 @@ Some favorites from browsing the source. Feel free to add to this list.
-              __generic_copy_to_user((to),(from),(n)))
- 
- 
--``arch/sparc/kernel/head.S:``
--
--::
-+``arch/sparc/kernel/head.S:``::
- 
-     /*
-      * Sun people can't spell worth damn. "compatability" indeed.
-@@ -772,9 +791,7 @@ Some favorites from browsing the source. Feel free to add to this list.
-             .asciz "compatible"
- 
- 
--``arch/sparc/lib/checksum.S:``
--
--::
-+``arch/sparc/lib/checksum.S:``::
- 
-             /* Sun, you just can't beat me, you just can't.  Stop trying,
-              * give up.  I'm serious, I am going to kick the living shit
+   [PATCH 00/36] Convert DocBook documents to ReST
+   [PATCH 0/5] Convert more books to ReST
+   [PATCH 00/13] Get rid of DocBook
+
+The lsm book was added as if it were a text file under 
+Documentation. The plan is to merge it with another file 
+under Documentation/security, after both this series and
+a security Documentation patch series gets merged.
+
+It also adjusts some Sphinx-pedantic errors/warnings on
+some kernel-doc markups.
+
+I also added some patches here to add PDF output for all
+existing ReST books.
+
+I did my best to check if what's there is not too outdated, but
+the best is if the subsystem maintainers could check it.
+
+This patch series is based on docs tree (next branch):
+
+   git://git.lwn.net/linux.git docs-next
+
+The full patch series is on this tree:
+
+   https://git.linuxtv.org//mchehab/experimental.git/log/?h=docbook3
+
+And the HTML output at:
+
+  http://www.infradead.org/~mchehab/kernel_docs/
+  https://mchehab.fedorapeople.org/kernel_docs/  
+
+
+--
+
+v2: 
+  - merged the 3 other patch series into just one
+  - added a patch describing ``literal`` kernel-doc syntax
+  - addressed the points taken during review process
+  - removed two patches that will be merged via subsystem
+    trees:
+	[PATCH 10/13] sound: fix the comments that refers to kernel-doc
+        [PATCH 21/36] fs: locks: Fix some troubles at kernel-doc  comments    
+
+Mauro Carvalho Chehab (53):
+  docs-rst: convert kernel-hacking to ReST
+  kernel-hacking: update document
+  docs-rst: convert kernel-locking to ReST
+  mutex, futex: adjust kernel-doc markups to generate ReST
+  locking.rst: reformat locking table
+  locking.rst: add captions to two tables
+  locking.rst: Update some ReST markups
+  docs-rst: convert kgdb DocBook to ReST
+  kgdb.rst: Adjust ReST markups
+  conf.py: define a color for important markup on PDF output
+  docs-rst: conf.py: sort LaTeX documents in alphabetical order
+  docs-rst: conf.py: remove kernel-documentation from LaTeX
+  docs-rst: add crypto API book to pdf output
+  docs-rst: add dev-tools book to pdf output
+  docs-rst: add sound book to pdf output
+  docs-rst: add userspace API book to pdf output
+  docs-rst: convert filesystems book to ReST
+  docs-rst: filesystems: use c domain references where needed
+  fs: jbd2: make jbd2_journal_start() kernel-doc parseable
+  docs-rst: don't ignore internal functions for jbd2 docs
+  fs: add a blank lines on some kernel-doc comments
+  fs: eventfd: fix identation on kernel-doc
+  fs: jbd2: escape a string with special chars on a kernel-doc
+  docs-rst: convert libata book to ReST
+  libata.rst: add c function and struct cross-references
+  libata: fix identation on a kernel-doc markup
+  docs-rst: convert s390-drivers DocBook to ReST
+  docs-rst: convert networking book to ReST
+  net: skbuff.h: properly escape a macro name on kernel-doc
+  net: fix some identation issues at kernel-doc markups
+  docs-rst: convert z8530book DocBook to ReST
+  docs-rst: convert scsi DocBook to ReST
+  scsi: fix some kernel-doc markups
+  docs-rst: convert w1 book to ReST
+  docs-rst: convert rapidio book to ReST
+  docs-rst: convert librs book to ReST
+  docs-rst: convert mtdnand book to ReST
+  mtdnand.rst: group the "::" with previous line
+  mtd: adjust kernel-docs to avoid Sphinx/kerneldoc warnings
+  docs-rst: convert sh book to ReST
+  docs-rst: convert lsm from DocBook to ReST
+  docs: remove DocBook from the building system
+  docs: update old references for DocBook from the documentation
+  MAINTAINERS: update old references for DocBook directory
+  ata: update references for libata documentation
+  ia64, scsi: update references for the device-io book
+  irq: update genericirq book location
+  fs: update location of filesystems documentation
+  lib: update location of kgdb documentation
+  fs: fix the location of the kernel-api book
+  usb: fix the comment with regards to DocBook
+  docs-rst: get rid of Documentation/sphinx/tmplcvt script
+  kernel-doc: describe the ``literal`` syntax
+
+ Documentation/00-INDEX                     |    6 +-
+ Documentation/DocBook/.gitignore           |   17 -
+ Documentation/DocBook/Makefile             |  282 ----
+ Documentation/DocBook/filesystems.tmpl     |  381 -----
+ Documentation/DocBook/kernel-hacking.tmpl  | 1312 -----------------
+ Documentation/DocBook/kernel-locking.tmpl  | 2151 ----------------------------
+ Documentation/DocBook/kgdb.tmpl            |  918 ------------
+ Documentation/DocBook/libata.tmpl          | 1625 ---------------------
+ Documentation/DocBook/librs.tmpl           |  289 ----
+ Documentation/DocBook/lsm.tmpl             |  265 ----
+ Documentation/DocBook/mtdnand.tmpl         | 1291 -----------------
+ Documentation/DocBook/networking.tmpl      |  111 --
+ Documentation/DocBook/rapidio.tmpl         |  155 --
+ Documentation/DocBook/s390-drivers.tmpl    |  161 ---
+ Documentation/DocBook/scsi.tmpl            |  409 ------
+ Documentation/DocBook/sh.tmpl              |  105 --
+ Documentation/DocBook/stylesheet.xsl       |   11 -
+ Documentation/DocBook/w1.tmpl              |  101 --
+ Documentation/DocBook/z8530book.tmpl       |  371 -----
+ Documentation/Makefile                     |  125 ++
+ Documentation/Makefile.sphinx              |  130 --
+ Documentation/PCI/MSI-HOWTO.txt            |    2 +-
+ Documentation/admin-guide/README.rst       |    6 -
+ Documentation/conf.py                      |   37 +-
+ Documentation/core-api/index.rst           |    1 +
+ Documentation/core-api/librs.rst           |  212 +++
+ Documentation/crypto/conf.py               |   10 +
+ Documentation/dev-tools/index.rst          |    1 +
+ Documentation/dev-tools/kgdb.rst           |  907 ++++++++++++
+ Documentation/doc-guide/docbook.rst        |   90 --
+ Documentation/doc-guide/index.rst          |    1 -
+ Documentation/doc-guide/kernel-doc.rst     |   10 +
+ Documentation/doc-guide/sphinx.rst         |    5 -
+ Documentation/driver-api/index.rst         |    6 +
+ Documentation/driver-api/libata.rst        | 1031 +++++++++++++
+ Documentation/driver-api/mtdnand.rst       | 1007 +++++++++++++
+ Documentation/driver-api/rapidio.rst       |  107 ++
+ Documentation/driver-api/s390-drivers.rst  |  111 ++
+ Documentation/driver-api/scsi.rst          |  344 +++++
+ Documentation/driver-api/w1.rst            |   70 +
+ Documentation/fb/api.txt                   |    4 +-
+ Documentation/filesystems/conf.py          |   10 +
+ Documentation/filesystems/index.rst        |  317 ++++
+ Documentation/gpu/todo.rst                 |    2 +-
+ Documentation/index.rst                    |   14 +
+ Documentation/kernel-doc-nano-HOWTO.txt    |   65 +-
+ Documentation/kernel-hacking/conf.py       |   10 +
+ Documentation/kernel-hacking/hacking.rst   |  811 +++++++++++
+ Documentation/kernel-hacking/index.rst     |    9 +
+ Documentation/kernel-hacking/locking.rst   | 1446 +++++++++++++++++++
+ Documentation/lsm.txt                      |  201 +++
+ Documentation/networking/conf.py           |   10 +
+ Documentation/networking/index.rst         |   18 +
+ Documentation/networking/kapi.rst          |  147 ++
+ Documentation/networking/z8530book.rst     |  256 ++++
+ Documentation/process/changes.rst          |   26 +-
+ Documentation/process/howto.rst            |    8 -
+ Documentation/process/kernel-docs.rst      |   34 +-
+ Documentation/sh/conf.py                   |   10 +
+ Documentation/sh/index.rst                 |   59 +
+ Documentation/sound/conf.py                |   10 +
+ Documentation/sphinx/tmplcvt               |   28 -
+ Documentation/translations/ja_JP/howto.rst |    7 -
+ Documentation/translations/ko_KR/howto.rst |    7 -
+ MAINTAINERS                                |    5 +-
+ Makefile                                   |   11 +-
+ arch/ia64/include/asm/io.h                 |    2 +-
+ arch/ia64/sn/kernel/iomv.c                 |    2 +-
+ drivers/ata/acard-ahci.c                   |    2 +-
+ drivers/ata/ahci.c                         |    2 +-
+ drivers/ata/ahci.h                         |    2 +-
+ drivers/ata/ata_piix.c                     |    2 +-
+ drivers/ata/libahci.c                      |    2 +-
+ drivers/ata/libata-core.c                  |    2 +-
+ drivers/ata/libata-eh.c                    |    2 +-
+ drivers/ata/libata-scsi.c                  |    9 +-
+ drivers/ata/libata-sff.c                   |    2 +-
+ drivers/ata/libata.h                       |    2 +-
+ drivers/ata/pata_pdc2027x.c                |    2 +-
+ drivers/ata/pdc_adma.c                     |    2 +-
+ drivers/ata/sata_nv.c                      |    2 +-
+ drivers/ata/sata_promise.c                 |    2 +-
+ drivers/ata/sata_promise.h                 |    2 +-
+ drivers/ata/sata_qstor.c                   |    2 +-
+ drivers/ata/sata_sil.c                     |    2 +-
+ drivers/ata/sata_sis.c                     |    2 +-
+ drivers/ata/sata_svw.c                     |    2 +-
+ drivers/ata/sata_sx4.c                     |    2 +-
+ drivers/ata/sata_uli.c                     |    2 +-
+ drivers/ata/sata_via.c                     |    2 +-
+ drivers/ata/sata_vsc.c                     |    2 +-
+ drivers/mtd/nand/nand_base.c               |    7 +-
+ drivers/net/phy/phy.c                      |    1 +
+ drivers/scsi/qla1280.c                     |    2 +-
+ drivers/scsi/scsi_scan.c                   |    7 +-
+ drivers/scsi/scsi_transport_fc.c           |   18 +-
+ drivers/scsi/scsicam.c                     |    4 +-
+ drivers/usb/gadget/Kconfig                 |    2 +-
+ fs/debugfs/file.c                          |    2 +-
+ fs/debugfs/inode.c                         |    2 +-
+ fs/eventfd.c                               |    4 +-
+ fs/fs-writeback.c                          |   12 +-
+ fs/jbd2/transaction.c                      |   42 +-
+ fs/mpage.c                                 |    1 +
+ fs/namei.c                                 |    1 +
+ include/linux/ata.h                        |    2 +-
+ include/linux/debugfs.h                    |    2 +-
+ include/linux/libata.h                     |    2 +-
+ include/linux/mtd/nand.h                   |    2 +-
+ include/linux/mutex.h                      |    6 +-
+ include/linux/netdevice.h                  |    9 +-
+ include/linux/skbuff.h                     |    2 +-
+ include/net/sock.h                         |    9 +-
+ kernel/futex.c                             |   40 +-
+ kernel/irq/chip.c                          |    2 +-
+ kernel/irq/handle.c                        |    2 +-
+ kernel/irq/irqdesc.c                       |    2 +-
+ kernel/locking/mutex.c                     |    6 +-
+ lib/Kconfig.debug                          |    2 +-
+ lib/Kconfig.kgdb                           |    2 +-
+ net/core/datagram.c                        |    2 +-
+ net/core/sock.c                            |    7 +-
+ scripts/Makefile                           |    9 +-
+ scripts/check-lc_ctype.c                   |   11 -
+ 124 files changed, 7469 insertions(+), 10511 deletions(-)
+ delete mode 100644 Documentation/DocBook/.gitignore
+ delete mode 100644 Documentation/DocBook/Makefile
+ delete mode 100644 Documentation/DocBook/filesystems.tmpl
+ delete mode 100644 Documentation/DocBook/kernel-hacking.tmpl
+ delete mode 100644 Documentation/DocBook/kernel-locking.tmpl
+ delete mode 100644 Documentation/DocBook/kgdb.tmpl
+ delete mode 100644 Documentation/DocBook/libata.tmpl
+ delete mode 100644 Documentation/DocBook/librs.tmpl
+ delete mode 100644 Documentation/DocBook/lsm.tmpl
+ delete mode 100644 Documentation/DocBook/mtdnand.tmpl
+ delete mode 100644 Documentation/DocBook/networking.tmpl
+ delete mode 100644 Documentation/DocBook/rapidio.tmpl
+ delete mode 100644 Documentation/DocBook/s390-drivers.tmpl
+ delete mode 100644 Documentation/DocBook/scsi.tmpl
+ delete mode 100644 Documentation/DocBook/sh.tmpl
+ delete mode 100644 Documentation/DocBook/stylesheet.xsl
+ delete mode 100644 Documentation/DocBook/w1.tmpl
+ delete mode 100644 Documentation/DocBook/z8530book.tmpl
+ delete mode 100644 Documentation/Makefile.sphinx
+ create mode 100644 Documentation/core-api/librs.rst
+ create mode 100644 Documentation/crypto/conf.py
+ create mode 100644 Documentation/dev-tools/kgdb.rst
+ delete mode 100644 Documentation/doc-guide/docbook.rst
+ create mode 100644 Documentation/driver-api/libata.rst
+ create mode 100644 Documentation/driver-api/mtdnand.rst
+ create mode 100644 Documentation/driver-api/rapidio.rst
+ create mode 100644 Documentation/driver-api/s390-drivers.rst
+ create mode 100644 Documentation/driver-api/scsi.rst
+ create mode 100644 Documentation/driver-api/w1.rst
+ create mode 100644 Documentation/filesystems/conf.py
+ create mode 100644 Documentation/filesystems/index.rst
+ create mode 100644 Documentation/kernel-hacking/conf.py
+ create mode 100644 Documentation/kernel-hacking/hacking.rst
+ create mode 100644 Documentation/kernel-hacking/index.rst
+ create mode 100644 Documentation/kernel-hacking/locking.rst
+ create mode 100644 Documentation/lsm.txt
+ create mode 100644 Documentation/networking/conf.py
+ create mode 100644 Documentation/networking/index.rst
+ create mode 100644 Documentation/networking/kapi.rst
+ create mode 100644 Documentation/networking/z8530book.rst
+ create mode 100644 Documentation/sh/conf.py
+ create mode 100644 Documentation/sh/index.rst
+ create mode 100644 Documentation/sound/conf.py
+ delete mode 100755 Documentation/sphinx/tmplcvt
+ delete mode 100644 scripts/check-lc_ctype.c
+
 -- 
 2.9.3
