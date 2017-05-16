@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by casper.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dAbQW-0008M2-8C
- for linux-mtd@lists.infradead.org; Tue, 16 May 2017 12:18:16 +0000
+ id 1dAbQU-0008Of-JE
+ for linux-mtd@lists.infradead.org; Tue, 16 May 2017 12:18:13 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -14,16 +14,19 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
  Jani Nikula <jani.nikula@intel.com>,
- "Herton R. Krzesinski" <herton@redhat.com>,
  Markus Heiser <markus.heiser@darmarit.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH v2 37/53] docs-rst: convert mtdnand book to ReST
-Date: Tue, 16 May 2017 09:16:29 -0300
-Message-Id: <609f212f6a12e005d2395edd7b4192d2b051ae67.1494935649.git.mchehab@s-opensource.com>
+ "Herton R. Krzesinski" <herton@redhat.com>,
+ Al Viro <viro@zeniv.linux.org.uk>, Silvio Fricke <silvio.fricke@gmail.com>
+Subject: [PATCH v2 01/53] docs-rst: convert kernel-hacking to ReST
+Date: Tue, 16 May 2017 09:15:53 -0300
+Message-Id: <c4fcd7cabb83fcac1e83e17845b1fede5401aa25.1494935649.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
 References: <cover.1494935649.git.mchehab@s-opensource.com>
+MIME-Version: 1.0
 In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
 References: <cover.1494935649.git.mchehab@s-opensource.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: Mauro Carvalho Chehab <mchehab@smtp.s-opensource.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -37,2364 +40,2210 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Use pandoc to convert documentation to ReST by calling
 Documentation/sphinx/tmplcvt script.
 
-The tables were manually adjusted to fit into 80 columns.
+- Manually adjusted to use ..note and ..warning
+- Minor fixes for it to be parsed without errors
+- Use **bold** for emphasis.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/DocBook/Makefile       |    1 -
- Documentation/DocBook/mtdnand.tmpl   | 1291 ----------------------------------
- Documentation/driver-api/index.rst   |    1 +
- Documentation/driver-api/mtdnand.rst | 1020 +++++++++++++++++++++++++++
- 4 files changed, 1021 insertions(+), 1292 deletions(-)
- delete mode 100644 Documentation/DocBook/mtdnand.tmpl
- create mode 100644 Documentation/driver-api/mtdnand.rst
+ Documentation/DocBook/Makefile            |    2 +-
+ Documentation/DocBook/kernel-hacking.tmpl | 1312 -----------------------------
+ Documentation/conf.py                     |    2 +
+ Documentation/index.rst                   |    1 +
+ Documentation/kernel-hacking/conf.py      |   10 +
+ Documentation/kernel-hacking/hacking.rst  |  794 +++++++++++++++++
+ Documentation/kernel-hacking/index.rst    |    8 +
+ 7 files changed, 816 insertions(+), 1313 deletions(-)
+ delete mode 100644 Documentation/DocBook/kernel-hacking.tmpl
+ create mode 100644 Documentation/kernel-hacking/conf.py
+ create mode 100644 Documentation/kernel-hacking/hacking.rst
+ create mode 100644 Documentation/kernel-hacking/index.rst
 
 diff --git a/Documentation/DocBook/Makefile b/Documentation/DocBook/Makefile
-index 0a82f6253682..226e5e9fc801 100644
+index 85916f13d330..7d7482b5ad92 100644
 --- a/Documentation/DocBook/Makefile
 +++ b/Documentation/DocBook/Makefile
-@@ -8,7 +8,6 @@
+@@ -7,7 +7,7 @@
+ # list of DOCBOOKS.
  
- DOCBOOKS := \
- 	    lsm.xml \
--	    mtdnand.xml \
- 	    sh.xml
- 
- ifeq ($(DOCBOOKS),)
-diff --git a/Documentation/DocBook/mtdnand.tmpl b/Documentation/DocBook/mtdnand.tmpl
+ DOCBOOKS := z8530book.xml  \
+-	    kernel-hacking.xml kernel-locking.xml \
++	    kernel-locking.xml \
+ 	    networking.xml \
+ 	    filesystems.xml lsm.xml kgdb.xml \
+ 	    libata.xml mtdnand.xml librs.xml rapidio.xml \
+diff --git a/Documentation/DocBook/kernel-hacking.tmpl b/Documentation/DocBook/kernel-hacking.tmpl
 deleted file mode 100644
-index b442921bca54..000000000000
---- a/Documentation/DocBook/mtdnand.tmpl
+index da5c087462b1..000000000000
+--- a/Documentation/DocBook/kernel-hacking.tmpl
 +++ /dev/null
-@@ -1,1291 +0,0 @@
+@@ -1,1312 +0,0 @@
 -<?xml version="1.0" encoding="UTF-8"?>
 -<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
 -	"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" []>
 -
--<book id="MTD-NAND-Guide">
+-<book id="lk-hacking-guide">
 - <bookinfo>
--  <title>MTD NAND Driver Programming Interface</title>
+-  <title>Unreliable Guide To Hacking The Linux Kernel</title>
 -  
 -  <authorgroup>
 -   <author>
--    <firstname>Thomas</firstname>
--    <surname>Gleixner</surname>
+-    <firstname>Rusty</firstname>
+-    <surname>Russell</surname>
 -    <affiliation>
 -     <address>
--      <email>tglx@linutronix.de</email>
+-      <email>rusty@rustcorp.com.au</email>
 -     </address>
 -    </affiliation>
 -   </author>
 -  </authorgroup>
 -
 -  <copyright>
--   <year>2004</year>
--   <holder>Thomas Gleixner</holder>
+-   <year>2005</year>
+-   <holder>Rusty Russell</holder>
 -  </copyright>
 -
 -  <legalnotice>
 -   <para>
--     This documentation is free software; you can redistribute
--     it and/or modify it under the terms of the GNU General Public
--     License version 2 as published by the Free Software Foundation.
+-    This documentation is free software; you can redistribute
+-    it and/or modify it under the terms of the GNU General Public
+-    License as published by the Free Software Foundation; either
+-    version 2 of the License, or (at your option) any later
+-    version.
 -   </para>
--      
+-   
 -   <para>
--     This program is distributed in the hope that it will be
--     useful, but WITHOUT ANY WARRANTY; without even the implied
--     warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
--     See the GNU General Public License for more details.
+-    This program is distributed in the hope that it will be
+-    useful, but WITHOUT ANY WARRANTY; without even the implied
+-    warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+-    See the GNU General Public License for more details.
 -   </para>
--      
+-   
 -   <para>
--     You should have received a copy of the GNU General Public
--     License along with this program; if not, write to the Free
--     Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
--     MA 02111-1307 USA
+-    You should have received a copy of the GNU General Public
+-    License along with this program; if not, write to the Free
+-    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+-    MA 02111-1307 USA
 -   </para>
--      
+-   
 -   <para>
--     For more details see the file COPYING in the source
--     distribution of Linux.
+-    For more details see the file COPYING in the source
+-    distribution of Linux.
 -   </para>
 -  </legalnotice>
+-
+-  <releaseinfo>
+-   This is the first release of this document as part of the kernel tarball.
+-  </releaseinfo>
+-
 - </bookinfo>
 -
--<toc></toc>
+- <toc></toc>
 -
--  <chapter id="intro">
--      <title>Introduction</title>
+- <chapter id="introduction">
+-  <title>Introduction</title>
 -  <para>
--  	The generic NAND driver supports almost all NAND and AG-AND based
--	chips and connects them to the Memory Technology Devices (MTD)
--	subsystem of the Linux Kernel.
+-   Welcome, gentle reader, to Rusty's Remarkably Unreliable Guide to Linux
+-   Kernel Hacking.  This document describes the common routines and
+-   general requirements for kernel code: its goal is to serve as a
+-   primer for Linux kernel development for experienced C
+-   programmers.  I avoid implementation details: that's what the
+-   code is for, and I ignore whole tracts of useful routines.
 -  </para>
 -  <para>
--  	This documentation is provided for developers who want to implement
--	board drivers or filesystem drivers suitable for NAND devices.
+-   Before you read this, please understand that I never wanted to
+-   write this document, being grossly under-qualified, but I always
+-   wanted to read it, and this was the only way.  I hope it will
+-   grow into a compendium of best practice, common starting points
+-   and random information.
 -  </para>
--  </chapter>
+- </chapter>
+-
+- <chapter id="basic-players">
+-  <title>The Players</title>
+-
+-  <para>
+-   At any time each of the CPUs in a system can be:
+-  </para>
+-
+-  <itemizedlist>
+-   <listitem>
+-    <para>
+-     not associated with any process, serving a hardware interrupt;
+-    </para>
+-   </listitem>
+-
+-   <listitem>
+-    <para>
+-     not associated with any process, serving a softirq or tasklet;
+-    </para>
+-   </listitem>
+-
+-   <listitem>
+-    <para>
+-     running in kernel space, associated with a process (user context);
+-    </para>
+-   </listitem>
+-
+-   <listitem>
+-    <para>
+-     running a process in user space.
+-    </para>
+-   </listitem>
+-  </itemizedlist>
+-
+-  <para>
+-   There is an ordering between these.  The bottom two can preempt
+-   each other, but above that is a strict hierarchy: each can only be
+-   preempted by the ones above it.  For example, while a softirq is
+-   running on a CPU, no other softirq will preempt it, but a hardware
+-   interrupt can.  However, any other CPUs in the system execute
+-   independently.
+-  </para>
+-
+-  <para>
+-   We'll see a number of ways that the user context can block
+-   interrupts, to become truly non-preemptable.
+-  </para>
 -  
--  <chapter id="bugs">
--     <title>Known Bugs And Assumptions</title>
+-  <sect1 id="basics-usercontext">
+-   <title>User Context</title>
+-
+-   <para>
+-    User context is when you are coming in from a system call or other
+-    trap: like userspace, you can be preempted by more important tasks
+-    and by interrupts.  You can sleep, by calling
+-    <function>schedule()</function>.
+-   </para>
+-
+-   <note>
+-    <para>
+-     You are always in user context on module load and unload,
+-     and on operations on the block device layer.
+-    </para>
+-   </note>
+-
+-   <para>
+-    In user context, the <varname>current</varname> pointer (indicating 
+-    the task we are currently executing) is valid, and
+-    <function>in_interrupt()</function>
+-    (<filename>include/linux/interrupt.h</filename>) is <returnvalue>false
+-    </returnvalue>.  
+-   </para>
+-
+-   <caution>
+-    <para>
+-     Beware that if you have preemption or softirqs disabled
+-     (see below), <function>in_interrupt()</function> will return a 
+-     false positive.
+-    </para>
+-   </caution>
+-  </sect1>
+-
+-  <sect1 id="basics-hardirqs">
+-   <title>Hardware Interrupts (Hard IRQs)</title>
+-
+-   <para>
+-    Timer ticks, <hardware>network cards</hardware> and 
+-    <hardware>keyboard</hardware> are examples of real
+-    hardware which produce interrupts at any time.  The kernel runs
+-    interrupt handlers, which services the hardware.  The kernel
+-    guarantees that this handler is never re-entered: if the same
+-    interrupt arrives, it is queued (or dropped).  Because it
+-    disables interrupts, this handler has to be fast: frequently it
+-    simply acknowledges the interrupt, marks a 'software interrupt'
+-    for execution and exits.
+-   </para>
+-
+-   <para>
+-    You can tell you are in a hardware interrupt, because 
+-    <function>in_irq()</function> returns <returnvalue>true</returnvalue>.  
+-   </para>
+-   <caution>
+-    <para>
+-     Beware that this will return a false positive if interrupts are disabled 
+-     (see below).
+-    </para>
+-   </caution>
+-  </sect1>
+-
+-  <sect1 id="basics-softirqs">
+-   <title>Software Interrupt Context: Softirqs and Tasklets</title>
+-
+-   <para>
+-    Whenever a system call is about to return to userspace, or a
+-    hardware interrupt handler exits, any 'software interrupts'
+-    which are marked pending (usually by hardware interrupts) are
+-    run (<filename>kernel/softirq.c</filename>).
+-   </para>
+-
+-   <para>
+-    Much of the real interrupt handling work is done here.  Early in
+-    the transition to <acronym>SMP</acronym>, there were only 'bottom
+-    halves' (BHs), which didn't take advantage of multiple CPUs.  Shortly 
+-    after we switched from wind-up computers made of match-sticks and snot,
+-    we abandoned this limitation and switched to 'softirqs'.
+-   </para>
+-
+-   <para>
+-    <filename class="headerfile">include/linux/interrupt.h</filename> lists the
+-    different softirqs.  A very important softirq is the
+-    timer softirq (<filename
+-    class="headerfile">include/linux/timer.h</filename>): you can
+-    register to have it call functions for you in a given length of
+-    time.
+-   </para>
+-
+-   <para>
+-    Softirqs are often a pain to deal with, since the same softirq
+-    will run simultaneously on more than one CPU.  For this reason,
+-    tasklets (<filename
+-    class="headerfile">include/linux/interrupt.h</filename>) are more
+-    often used: they are dynamically-registrable (meaning you can have
+-    as many as you want), and they also guarantee that any tasklet
+-    will only run on one CPU at any time, although different tasklets
+-    can run simultaneously.
+-   </para>
+-   <caution>
+-    <para>
+-     The name 'tasklet' is misleading: they have nothing to do with 'tasks',
+-     and probably more to do with some bad vodka Alexey Kuznetsov had at the 
+-     time.
+-    </para>
+-   </caution>
+-
+-   <para>
+-    You can tell you are in a softirq (or tasklet)
+-    using the <function>in_softirq()</function> macro 
+-    (<filename class="headerfile">include/linux/interrupt.h</filename>).
+-   </para>
+-   <caution>
+-    <para>
+-     Beware that this will return a false positive if a bh lock (see below)
+-     is held.
+-    </para>
+-   </caution>
+-  </sect1>
+- </chapter>
+-
+- <chapter id="basic-rules">
+-  <title>Some Basic Rules</title>
+-
+-  <variablelist>
+-   <varlistentry>
+-    <term>No memory protection</term>
+-    <listitem>
+-     <para>
+-      If you corrupt memory, whether in user context or
+-      interrupt context, the whole machine will crash.  Are you
+-      sure you can't do what you want in userspace?
+-     </para>
+-    </listitem>
+-   </varlistentry>
+-
+-   <varlistentry>
+-    <term>No floating point or <acronym>MMX</acronym></term>
+-    <listitem>
+-     <para>
+-      The <acronym>FPU</acronym> context is not saved; even in user
+-      context the <acronym>FPU</acronym> state probably won't
+-      correspond with the current process: you would mess with some
+-      user process' <acronym>FPU</acronym> state.  If you really want
+-      to do this, you would have to explicitly save/restore the full
+-      <acronym>FPU</acronym> state (and avoid context switches).  It
+-      is generally a bad idea; use fixed point arithmetic first.
+-     </para>
+-    </listitem>
+-   </varlistentry>
+-
+-   <varlistentry>
+-    <term>A rigid stack limit</term>
+-    <listitem>
+-     <para>
+-      Depending on configuration options the kernel stack is about 3K to 6K for most 32-bit architectures: it's
+-      about 14K on most 64-bit archs, and often shared with interrupts
+-      so you can't use it all.  Avoid deep recursion and huge local
+-      arrays on the stack (allocate them dynamically instead).
+-     </para>
+-    </listitem>
+-   </varlistentry>
+-
+-   <varlistentry>
+-    <term>The Linux kernel is portable</term>
+-    <listitem>
+-     <para>
+-      Let's keep it that way.  Your code should be 64-bit clean,
+-      and endian-independent.  You should also minimize CPU
+-      specific stuff, e.g. inline assembly should be cleanly
+-      encapsulated and minimized to ease porting.  Generally it
+-      should be restricted to the architecture-dependent part of
+-      the kernel tree.
+-     </para>
+-    </listitem>
+-   </varlistentry>
+-  </variablelist>
+- </chapter>
+-
+- <chapter id="ioctls">
+-  <title>ioctls: Not writing a new system call</title>
+-
 -  <para>
--	None.	
+-   A system call generally looks like this
 -  </para>
--  </chapter>
 -
--  <chapter id="dochints">
--     <title>Documentation hints</title>
+-  <programlisting>
+-asmlinkage long sys_mycall(int arg)
+-{
+-        return 0; 
+-}
+-  </programlisting>
+-
+-  <para>
+-   First, in most cases you don't want to create a new system call.
+-   You create a character device and implement an appropriate ioctl
+-   for it.  This is much more flexible than system calls, doesn't have
+-   to be entered in every architecture's
+-   <filename class="headerfile">include/asm/unistd.h</filename> and
+-   <filename>arch/kernel/entry.S</filename> file, and is much more
+-   likely to be accepted by Linus.
+-  </para>
+-
+-  <para>
+-   If all your routine does is read or write some parameter, consider
+-   implementing a <function>sysfs</function> interface instead.
+-  </para>
+-
+-  <para>
+-   Inside the ioctl you're in user context to a process.  When a
+-   error occurs you return a negated errno (see
+-   <filename class="headerfile">include/linux/errno.h</filename>),
+-   otherwise you return <returnvalue>0</returnvalue>.
+-  </para>
+-
+-  <para>
+-   After you slept you should check if a signal occurred: the
+-   Unix/Linux way of handling signals is to temporarily exit the
+-   system call with the <constant>-ERESTARTSYS</constant> error.  The
+-   system call entry code will switch back to user context, process
+-   the signal handler and then your system call will be restarted
+-   (unless the user disabled that).  So you should be prepared to
+-   process the restart, e.g. if you're in the middle of manipulating
+-   some data structure.
+-  </para>
+-
+-  <programlisting>
+-if (signal_pending(current))
+-        return -ERESTARTSYS;
+-  </programlisting>
+-
+-  <para>
+-   If you're doing longer computations: first think userspace. If you
+-   <emphasis>really</emphasis> want to do it in kernel you should
+-   regularly check if you need to give up the CPU (remember there is
+-   cooperative multitasking per CPU).  Idiom:
+-  </para>
+-
+-  <programlisting>
+-cond_resched(); /* Will sleep */ 
+-  </programlisting>
+-
+-  <para>
+-   A short note on interface design: the UNIX system call motto is
+-   "Provide mechanism not policy".
+-  </para>
+- </chapter>
+-
+- <chapter id="deadlock-recipes">
+-  <title>Recipes for Deadlock</title>
+-
+-  <para>
+-   You cannot call any routines which may sleep, unless:
+-  </para>
+-  <itemizedlist>
+-   <listitem>
+-    <para>
+-     You are in user context.
+-    </para>
+-   </listitem>
+-
+-   <listitem>
+-    <para>
+-     You do not own any spinlocks.
+-    </para>
+-   </listitem>
+-
+-   <listitem>
+-    <para>
+-     You have interrupts enabled (actually, Andi Kleen says
+-     that the scheduling code will enable them for you, but
+-     that's probably not what you wanted).
+-    </para>
+-   </listitem>
+-  </itemizedlist>
+-
+-  <para>
+-   Note that some functions may sleep implicitly: common ones are
+-   the user space access functions (*_user) and memory allocation
+-   functions without <symbol>GFP_ATOMIC</symbol>.
+-  </para>
+-
+-  <para>
+-   You should always compile your kernel
+-   <symbol>CONFIG_DEBUG_ATOMIC_SLEEP</symbol> on, and it will warn
+-   you if you break these rules.  If you <emphasis>do</emphasis> break
+-   the rules, you will eventually lock up your box.
+-  </para>
+-
+-  <para>
+-   Really.
+-  </para>
+- </chapter>
+-
+- <chapter id="common-routines">
+-  <title>Common Routines</title>
+-
+-  <sect1 id="routines-printk">
+-   <title>
+-    <function>printk()</function>
+-    <filename class="headerfile">include/linux/kernel.h</filename>
+-   </title>
+-
+-   <para>
+-    <function>printk()</function> feeds kernel messages to the
+-    console, dmesg, and the syslog daemon.  It is useful for debugging
+-    and reporting errors, and can be used inside interrupt context,
+-    but use with caution: a machine which has its console flooded with
+-    printk messages is unusable.  It uses a format string mostly
+-    compatible with ANSI C printf, and C string concatenation to give
+-    it a first "priority" argument:
+-   </para>
+-
+-   <programlisting>
+-printk(KERN_INFO "i = %u\n", i);
+-   </programlisting>
+-
+-   <para>
+-    See <filename class="headerfile">include/linux/kernel.h</filename>;
+-    for other KERN_ values; these are interpreted by syslog as the
+-    level.  Special case: for printing an IP address use
+-   </para>
+-
+-   <programlisting>
+-__be32 ipaddress;
+-printk(KERN_INFO "my ip: %pI4\n", &amp;ipaddress);
+-   </programlisting>
+-
+-   <para>
+-    <function>printk()</function> internally uses a 1K buffer and does
+-    not catch overruns.  Make sure that will be enough.
+-   </para>
+-
+-   <note>
+-    <para>
+-     You will know when you are a real kernel hacker
+-     when you start typoing printf as printk in your user programs :)
+-    </para>
+-   </note>
+-
+-   <!--- From the Lions book reader department --> 
+-
+-   <note>
+-    <para>
+-     Another sidenote: the original Unix Version 6 sources had a
+-     comment on top of its printf function: "Printf should not be
+-     used for chit-chat".  You should follow that advice.
+-    </para>
+-   </note>
+-  </sect1>
+-
+-  <sect1 id="routines-copy">
+-   <title>
+-    <function>copy_[to/from]_user()</function>
+-    /
+-    <function>get_user()</function>
+-    /
+-    <function>put_user()</function>
+-    <filename class="headerfile">include/linux/uaccess.h</filename>
+-   </title>  
+-
+-   <para>
+-    <emphasis>[SLEEPS]</emphasis>
+-   </para>
+-
+-   <para>
+-    <function>put_user()</function> and <function>get_user()</function>
+-    are used to get and put single values (such as an int, char, or
+-    long) from and to userspace.  A pointer into userspace should
+-    never be simply dereferenced: data should be copied using these
+-    routines.  Both return <constant>-EFAULT</constant> or 0.
+-   </para>
+-   <para>
+-    <function>copy_to_user()</function> and
+-    <function>copy_from_user()</function> are more general: they copy
+-    an arbitrary amount of data to and from userspace.
+-    <caution>
 -     <para>
--     The function and structure docs are autogenerated. Each function and 
--     struct member has a short description which is marked with an [XXX] identifier.
--     The following chapters explain the meaning of those identifiers.
+-      Unlike <function>put_user()</function> and
+-      <function>get_user()</function>, they return the amount of
+-      uncopied data (ie. <returnvalue>0</returnvalue> still means
+-      success).
 -     </para>
--     <sect1 id="Function_identifiers_XXX">
--	<title>Function identifiers [XXX]</title>
--     	<para>
--	The functions are marked with [XXX] identifiers in the short
--	comment. The identifiers explain the usage and scope of the
--	functions. Following identifiers are used:
--     	</para>
--	<itemizedlist>
--		<listitem><para>
--	  	[MTD Interface]</para><para>
--		These functions provide the interface to the MTD kernel API. 
--		They are not replaceable and provide functionality
--		which is complete hardware independent.
--		</para></listitem>
--		<listitem><para>
--	  	[NAND Interface]</para><para>
--		These functions are exported and provide the interface to the NAND kernel API. 
--		</para></listitem>
--		<listitem><para>
--	  	[GENERIC]</para><para>
--		Generic functions are not replaceable and provide functionality
--		which is complete hardware independent.
--		</para></listitem>
--		<listitem><para>
--	  	[DEFAULT]</para><para>
--		Default functions provide hardware related functionality which is suitable
--		for most of the implementations. These functions can be replaced by the
--		board driver if necessary. Those functions are called via pointers in the
--		NAND chip description structure. The board driver can set the functions which
--		should be replaced by board dependent functions before calling nand_scan().
--		If the function pointer is NULL on entry to nand_scan() then the pointer
--		is set to the default function which is suitable for the detected chip type.
--		</para></listitem>
--	</itemizedlist>
--     </sect1>
--     <sect1 id="Struct_member_identifiers_XXX">
--	<title>Struct member identifiers [XXX]</title>
--     	<para>
--	The struct members are marked with [XXX] identifiers in the 
--	comment. The identifiers explain the usage and scope of the
--	members. Following identifiers are used:
--     	</para>
--	<itemizedlist>
--		<listitem><para>
--	  	[INTERN]</para><para>
--		These members are for NAND driver internal use only and must not be
--		modified. Most of these values are calculated from the chip geometry
--		information which is evaluated during nand_scan().
--		</para></listitem>
--		<listitem><para>
--	  	[REPLACEABLE]</para><para>
--		Replaceable members hold hardware related functions which can be 
--		provided by the board driver. The board driver can set the functions which
--		should be replaced by board dependent functions before calling nand_scan().
--		If the function pointer is NULL on entry to nand_scan() then the pointer
--		is set to the default function which is suitable for the detected chip type.
--		</para></listitem>
--		<listitem><para>
--	  	[BOARDSPECIFIC]</para><para>
--		Board specific members hold hardware related information which must
--		be provided by the board driver. The board driver must set the function
--		pointers and datafields before calling nand_scan().
--		</para></listitem>
--		<listitem><para>
--	  	[OPTIONAL]</para><para>
--		Optional members can hold information relevant for the board driver. The
--		generic NAND driver code does not use this information.
--		</para></listitem>
--	</itemizedlist>
--     </sect1>
--  </chapter>   
+-    </caution>
+-    [Yes, this moronic interface makes me cringe.  The flamewar comes up every year or so. --RR.]
+-   </para>
+-   <para>
+-    The functions may sleep implicitly. This should never be called
+-    outside user context (it makes no sense), with interrupts
+-    disabled, or a spinlock held.
+-   </para>
+-  </sect1>
 -
--  <chapter id="basicboarddriver">
--     	<title>Basic board driver</title>
--	<para>
--		For most boards it will be sufficient to provide just the
--		basic functions and fill out some really board dependent
--		members in the nand chip description structure.
--	</para>
--	<sect1 id="Basic_defines">
--		<title>Basic defines</title>
--		<para>
--			At least you have to provide a nand_chip structure
--			and a storage for the ioremap'ed chip address.
--			You can allocate the nand_chip structure using
--			kmalloc or you can allocate it statically.
--			The NAND chip structure embeds an mtd structure
--			which will be registered to the MTD subsystem.
--			You can extract a pointer to the mtd structure
--			from a nand_chip pointer using the nand_to_mtd()
--			helper.
--		</para>
--		<para>
--			Kmalloc based example
--		</para>
--		<programlisting>
--static struct mtd_info *board_mtd;
--static void __iomem *baseaddr;
--		</programlisting>
--		<para>
--			Static example
--		</para>
--		<programlisting>
--static struct nand_chip board_chip;
--static void __iomem *baseaddr;
--		</programlisting>
--	</sect1>
--	<sect1 id="Partition_defines">
--		<title>Partition defines</title>
--		<para>
--			If you want to divide your device into partitions, then
--			define a partitioning scheme suitable to your board.
--		</para>
--		<programlisting>
--#define NUM_PARTITIONS 2
--static struct mtd_partition partition_info[] = {
--	{ .name = "Flash partition 1",
--	  .offset =  0,
--	  .size =    8 * 1024 * 1024 },
--	{ .name = "Flash partition 2",
--	  .offset =  MTDPART_OFS_NEXT,
--	  .size =    MTDPART_SIZ_FULL },
--};
--		</programlisting>
--	</sect1>
--	<sect1 id="Hardware_control_functions">
--		<title>Hardware control function</title>
--		<para>
--			The hardware control function provides access to the 
--			control pins of the NAND chip(s). 
--			The access can be done by GPIO pins or by address lines.
--			If you use address lines, make sure that the timing
--			requirements are met.
--		</para>
--		<para>
--			<emphasis>GPIO based example</emphasis>
--		</para>
--		<programlisting>
--static void board_hwcontrol(struct mtd_info *mtd, int cmd)
--{
--	switch(cmd){
--		case NAND_CTL_SETCLE: /* Set CLE pin high */ break;
--		case NAND_CTL_CLRCLE: /* Set CLE pin low */ break;
--		case NAND_CTL_SETALE: /* Set ALE pin high */ break;
--		case NAND_CTL_CLRALE: /* Set ALE pin low */ break;
--		case NAND_CTL_SETNCE: /* Set nCE pin low */ break;
--		case NAND_CTL_CLRNCE: /* Set nCE pin high */ break;
--	}
--}
--		</programlisting>
--		<para>
--			<emphasis>Address lines based example.</emphasis> It's assumed that the
--			nCE pin is driven by a chip select decoder.
--		</para>
--		<programlisting>
--static void board_hwcontrol(struct mtd_info *mtd, int cmd)
--{
--	struct nand_chip *this = mtd_to_nand(mtd);
--	switch(cmd){
--		case NAND_CTL_SETCLE: this->IO_ADDR_W |= CLE_ADRR_BIT;  break;
--		case NAND_CTL_CLRCLE: this->IO_ADDR_W &amp;= ~CLE_ADRR_BIT; break;
--		case NAND_CTL_SETALE: this->IO_ADDR_W |= ALE_ADRR_BIT;  break;
--		case NAND_CTL_CLRALE: this->IO_ADDR_W &amp;= ~ALE_ADRR_BIT; break;
--	}
--}
--		</programlisting>
--	</sect1>
--	<sect1 id="Device_ready_function">
--		<title>Device ready function</title>
--		<para>
--			If the hardware interface has the ready busy pin of the NAND chip connected to a
--			GPIO or other accessible I/O pin, this function is used to read back the state of the
--			pin. The function has no arguments and should return 0, if the device is busy (R/B pin 
--			is low) and 1, if the device is ready (R/B pin is high).
--			If the hardware interface does not give access to the ready busy pin, then
--			the function must not be defined and the function pointer this->dev_ready is set to NULL.		
--		</para>
--	</sect1>
--	<sect1 id="Init_function">
--		<title>Init function</title>
--		<para>
--			The init function allocates memory and sets up all the board
--			specific parameters and function pointers. When everything
--			is set up nand_scan() is called. This function tries to
--			detect and identify then chip. If a chip is found all the
--			internal data fields are initialized accordingly.
--			The structure(s) have to be zeroed out first and then filled with the necessary
--			information about the device.
--		</para>
--		<programlisting>
--static int __init board_init (void)
--{
--	struct nand_chip *this;
--	int err = 0;
+-  <sect1 id="routines-kmalloc">
+-   <title><function>kmalloc()</function>/<function>kfree()</function>
+-    <filename class="headerfile">include/linux/slab.h</filename></title>
 -
--	/* Allocate memory for MTD device structure and private data */
--	this = kzalloc(sizeof(struct nand_chip), GFP_KERNEL);
--	if (!this) {
--		printk ("Unable to allocate NAND MTD device structure.\n");
--		err = -ENOMEM;
--		goto out;
--	}
+-   <para>
+-    <emphasis>[MAY SLEEP: SEE BELOW]</emphasis>
+-   </para>
 -
--	board_mtd = nand_to_mtd(this);
+-   <para>
+-    These routines are used to dynamically request pointer-aligned
+-    chunks of memory, like malloc and free do in userspace, but
+-    <function>kmalloc()</function> takes an extra flag word.
+-    Important values:
+-   </para>
 -
--	/* map physical address */
--	baseaddr = ioremap(CHIP_PHYSICAL_ADDRESS, 1024);
--	if (!baseaddr) {
--		printk("Ioremap to access NAND chip failed\n");
--		err = -EIO;
--		goto out_mtd;
--	}
+-   <variablelist>
+-    <varlistentry>
+-     <term>
+-      <constant>
+-       GFP_KERNEL
+-      </constant>
+-     </term>
+-     <listitem>
+-      <para>
+-       May sleep and swap to free memory. Only allowed in user
+-       context, but is the most reliable way to allocate memory.
+-      </para>
+-     </listitem>
+-    </varlistentry>
+-    
+-    <varlistentry>
+-     <term>
+-      <constant>
+-       GFP_ATOMIC
+-      </constant>
+-     </term>
+-     <listitem>
+-      <para>
+-       Don't sleep. Less reliable than <constant>GFP_KERNEL</constant>,
+-       but may be called from interrupt context. You should
+-       <emphasis>really</emphasis> have a good out-of-memory
+-       error-handling strategy.
+-      </para>
+-     </listitem>
+-    </varlistentry>
+-    
+-    <varlistentry>
+-     <term>
+-      <constant>
+-       GFP_DMA
+-      </constant>
+-     </term>
+-     <listitem>
+-      <para>
+-       Allocate ISA DMA lower than 16MB. If you don't know what that
+-       is you don't need it.  Very unreliable.
+-      </para>
+-     </listitem>
+-    </varlistentry>
+-   </variablelist>
 -
--	/* Set address of NAND IO lines */
--	this->IO_ADDR_R = baseaddr;
--	this->IO_ADDR_W = baseaddr;
--	/* Reference hardware control function */
--	this->hwcontrol = board_hwcontrol;
--	/* Set command delay time, see datasheet for correct value */
--	this->chip_delay = CHIP_DEPENDEND_COMMAND_DELAY;
--	/* Assign the device ready function, if available */
--	this->dev_ready = board_dev_ready;
--	this->eccmode = NAND_ECC_SOFT;
+-   <para>
+-    If you see a <errorname>sleeping function called from invalid
+-    context</errorname> warning message, then maybe you called a
+-    sleeping allocation function from interrupt context without
+-    <constant>GFP_ATOMIC</constant>.  You should really fix that.
+-    Run, don't walk.
+-   </para>
 -
--	/* Scan to find existence of the device */
--	if (nand_scan (board_mtd, 1)) {
--		err = -ENXIO;
--		goto out_ior;
--	}
--	
--	add_mtd_partitions(board_mtd, partition_info, NUM_PARTITIONS);
--	goto out;
+-   <para>
+-    If you are allocating at least <constant>PAGE_SIZE</constant>
+-    (<filename class="headerfile">include/asm/page.h</filename>) bytes,
+-    consider using <function>__get_free_pages()</function>
 -
--out_ior:
--	iounmap(baseaddr);
--out_mtd:
--	kfree (this);
--out:
--	return err;
--}
--module_init(board_init);
--		</programlisting>
--	</sect1>
--	<sect1 id="Exit_function">
--		<title>Exit function</title>
--		<para>
--			The exit function is only necessary if the driver is
--			compiled as a module. It releases all resources which
--			are held by the chip driver and unregisters the partitions
--			in the MTD layer.
--		</para>
--		<programlisting>
--#ifdef MODULE
--static void __exit board_cleanup (void)
--{
--	/* Release resources, unregister device */
--	nand_release (board_mtd);
+-    (<filename class="headerfile">include/linux/mm.h</filename>).  It
+-    takes an order argument (0 for page sized, 1 for double page, 2
+-    for four pages etc.) and the same memory priority flag word as
+-    above.
+-   </para>
 -
--	/* unmap physical address */
--	iounmap(baseaddr);
--	
--	/* Free the MTD device structure */
--	kfree (mtd_to_nand(board_mtd));
--}
--module_exit(board_cleanup);
--#endif
--		</programlisting>
--	</sect1>
--  </chapter>
+-   <para>
+-    If you are allocating more than a page worth of bytes you can use
+-    <function>vmalloc()</function>.  It'll allocate virtual memory in
+-    the kernel map.  This block is not contiguous in physical memory,
+-    but the <acronym>MMU</acronym> makes it look like it is for you
+-    (so it'll only look contiguous to the CPUs, not to external device
+-    drivers).  If you really need large physically contiguous memory
+-    for some weird device, you have a problem: it is poorly supported
+-    in Linux because after some time memory fragmentation in a running
+-    kernel makes it hard.  The best way is to allocate the block early
+-    in the boot process via the <function>alloc_bootmem()</function>
+-    routine.
+-   </para>
 -
--  <chapter id="boarddriversadvanced">
--     	<title>Advanced board driver functions</title>
--	<para>
--		This chapter describes the advanced functionality of the NAND
--		driver. For a list of functions which can be overridden by the board
--		driver see the documentation of the nand_chip structure.
--	</para>
--	<sect1 id="Multiple_chip_control">
--		<title>Multiple chip control</title>
--		<para>
--			The nand driver can control chip arrays. Therefore the
--			board driver must provide an own select_chip function. This
--			function must (de)select the requested chip.
--			The function pointer in the nand_chip structure must
--			be set before calling nand_scan(). The maxchip parameter
--			of nand_scan() defines the maximum number of chips to
--			scan for. Make sure that the select_chip function can
--			handle the requested number of chips.
--		</para>
--		<para>
--			The nand driver concatenates the chips to one virtual
--			chip and provides this virtual chip to the MTD layer.
--		</para>
--		<para>
--			<emphasis>Note: The driver can only handle linear chip arrays
--			of equally sized chips. There is no support for
--			parallel arrays which extend the buswidth.</emphasis>
--		</para>
--		<para>
--			<emphasis>GPIO based example</emphasis>
--		</para>
--		<programlisting>
--static void board_select_chip (struct mtd_info *mtd, int chip)
--{
--	/* Deselect all chips, set all nCE pins high */
--	GPIO(BOARD_NAND_NCE) |= 0xff;	
--	if (chip >= 0)
--		GPIO(BOARD_NAND_NCE) &amp;= ~ (1 &lt;&lt; chip);
--}
--		</programlisting>
--		<para>
--			<emphasis>Address lines based example.</emphasis>
--			Its assumed that the nCE pins are connected to an
--			address decoder.
--		</para>
--		<programlisting>
--static void board_select_chip (struct mtd_info *mtd, int chip)
--{
--	struct nand_chip *this = mtd_to_nand(mtd);
--	
--	/* Deselect all chips */
--	this->IO_ADDR_R &amp;= ~BOARD_NAND_ADDR_MASK;
--	this->IO_ADDR_W &amp;= ~BOARD_NAND_ADDR_MASK;
--	switch (chip) {
--	case 0:
--		this->IO_ADDR_R |= BOARD_NAND_ADDR_CHIP0;
--		this->IO_ADDR_W |= BOARD_NAND_ADDR_CHIP0;
--		break;
--	....	
--	case n:
--		this->IO_ADDR_R |= BOARD_NAND_ADDR_CHIPn;
--		this->IO_ADDR_W |= BOARD_NAND_ADDR_CHIPn;
--		break;
--	}	
--}
--		</programlisting>
--	</sect1>
--	<sect1 id="Hardware_ECC_support">
--		<title>Hardware ECC support</title>
--		<sect2 id="Functions_and_constants">
--			<title>Functions and constants</title>
--			<para>
--				The nand driver supports three different types of
--				hardware ECC.
--				<itemizedlist>
--				<listitem><para>NAND_ECC_HW3_256</para><para>
--				Hardware ECC generator providing 3 bytes ECC per
--				256 byte.
--				</para>	</listitem>
--				<listitem><para>NAND_ECC_HW3_512</para><para>
--				Hardware ECC generator providing 3 bytes ECC per
--				512 byte.
--				</para>	</listitem>
--				<listitem><para>NAND_ECC_HW6_512</para><para>
--				Hardware ECC generator providing 6 bytes ECC per
--				512 byte.
--				</para>	</listitem>
--				<listitem><para>NAND_ECC_HW8_512</para><para>
--				Hardware ECC generator providing 6 bytes ECC per
--				512 byte.
--				</para>	</listitem>
--				</itemizedlist>
--				If your hardware generator has a different functionality
--				add it at the appropriate place in nand_base.c
--			</para>
--			<para>
--				The board driver must provide following functions:
--				<itemizedlist>
--				<listitem><para>enable_hwecc</para><para>
--				This function is called before reading / writing to
--				the chip. Reset or initialize the hardware generator
--				in this function. The function is called with an
--				argument which let you distinguish between read 
--				and write operations.
--				</para>	</listitem>
--				<listitem><para>calculate_ecc</para><para>
--				This function is called after read / write from / to
--				the chip. Transfer the ECC from the hardware to
--				the buffer. If the option NAND_HWECC_SYNDROME is set
--				then the function is only called on write. See below.
--				</para>	</listitem>
--				<listitem><para>correct_data</para><para>
--				In case of an ECC error this function is called for
--				error detection and correction. Return 1 respectively 2
--				in case the error can be corrected. If the error is
--				not correctable return -1. If your hardware generator
--				matches the default algorithm of the nand_ecc software
--				generator then use the correction function provided
--				by nand_ecc instead of implementing duplicated code.
--				</para>	</listitem>
--				</itemizedlist>
--			</para>
--		</sect2>
--		<sect2 id="Hardware_ECC_with_syndrome_calculation">
--		<title>Hardware ECC with syndrome calculation</title>
--			<para>
--				Many hardware ECC implementations provide Reed-Solomon
--				codes and calculate an error syndrome on read. The syndrome
--				must be converted to a standard Reed-Solomon syndrome
--				before calling the error correction code in the generic
--				Reed-Solomon library.
--			</para>
--			<para>
--				The ECC bytes must be placed immediately after the data
--				bytes in order to make the syndrome generator work. This
--				is contrary to the usual layout used by software ECC. The
--				separation of data and out of band area is not longer
--				possible. The nand driver code handles this layout and
--				the remaining free bytes in the oob area are managed by 
--				the autoplacement code. Provide a matching oob-layout
--				in this case. See rts_from4.c and diskonchip.c for 
--				implementation reference. In those cases we must also
--				use bad block tables on FLASH, because the ECC layout is
--				interfering with the bad block marker positions.
--				See bad block table support for details.
--			</para>
--		</sect2>
--	</sect1>
--	<sect1 id="Bad_Block_table_support">
--		<title>Bad block table support</title>
--		<para>
--			Most NAND chips mark the bad blocks at a defined
--			position in the spare area. Those blocks must 
--			not be erased under any circumstances as the bad 
--			block information would be lost.
--			It is possible to check the bad block mark each
--			time when the blocks are accessed by reading the
--			spare area of the first page in the block. This
--			is time consuming so a bad block table is used.
--		</para>
--		<para>
--			The nand driver supports various types of bad block
--			tables.
--			<itemizedlist>
--			<listitem><para>Per device</para><para>
--			The bad block table contains all bad block information
--			of the device which can consist of multiple chips.
--			</para>	</listitem>
--			<listitem><para>Per chip</para><para>
--			A bad block table is used per chip and contains the
--			bad block information for this particular chip.
--			</para>	</listitem>
--			<listitem><para>Fixed offset</para><para>
--			The bad block table is located at a fixed offset
--			in the chip (device). This applies to various
--			DiskOnChip devices.
--			</para>	</listitem>
--			<listitem><para>Automatic placed</para><para>
--			The bad block table is automatically placed and
--			detected either at the end or at the beginning
--			of a chip (device)
--			</para>	</listitem>
--			<listitem><para>Mirrored tables</para><para>
--			The bad block table is mirrored on the chip (device) to
--			allow updates of the bad block table without data loss.
--			</para>	</listitem>
--			</itemizedlist>
--		</para>
--		<para>	
--			nand_scan() calls the function nand_default_bbt(). 
--			nand_default_bbt() selects appropriate default
--			bad block table descriptors depending on the chip information
--			which was retrieved by nand_scan().
--		</para>
--		<para>
--			The standard policy is scanning the device for bad 
--			blocks and build a ram based bad block table which
--			allows faster access than always checking the
--			bad block information on the flash chip itself.
--		</para>
--		<sect2 id="Flash_based_tables">
--			<title>Flash based tables</title>
--			<para>
--				It may be desired or necessary to keep a bad block table in FLASH.
--				For AG-AND chips this is mandatory, as they have no factory marked
--				bad blocks. They have factory marked good blocks. The marker pattern
--				is erased when the block is erased to be reused. So in case of
--				powerloss before writing the pattern back to the chip this block 
--				would be lost and added to the bad blocks. Therefore we scan the 
--				chip(s) when we detect them the first time for good blocks and 
--				store this information in a bad block table before erasing any 
--				of the blocks.
--			</para>
--			<para>
--				The blocks in which the tables are stored are protected against
--				accidental access by marking them bad in the memory bad block
--				table. The bad block table management functions are allowed
--				to circumvent this protection.
--			</para>
--			<para>
--				The simplest way to activate the FLASH based bad block table support 
--				is to set the option NAND_BBT_USE_FLASH in the bbt_option field of
--				the nand chip structure before calling nand_scan(). For AG-AND
--				chips is this done by default.
--				This activates the default FLASH based bad block table functionality 
--				of the NAND driver. The default bad block table options are
--				<itemizedlist>
--				<listitem><para>Store bad block table per chip</para></listitem>
--				<listitem><para>Use 2 bits per block</para></listitem>
--				<listitem><para>Automatic placement at the end of the chip</para></listitem>
--				<listitem><para>Use mirrored tables with version numbers</para></listitem>
--				<listitem><para>Reserve 4 blocks at the end of the chip</para></listitem>
--				</itemizedlist>
--			</para>
--		</sect2>
--		<sect2 id="User_defined_tables">
--			<title>User defined tables</title>
--			<para>
--				User defined tables are created by filling out a 
--				nand_bbt_descr structure and storing the pointer in the
--				nand_chip structure member bbt_td before calling nand_scan(). 
--				If a mirror table is necessary a second structure must be
--				created and a pointer to this structure must be stored
--				in bbt_md inside the nand_chip structure. If the bbt_md 
--				member is set to NULL then only the main table is used
--				and no scan for the mirrored table is performed.
--			</para>
--			<para>
--				The most important field in the nand_bbt_descr structure
--				is the options field. The options define most of the 
--				table properties. Use the predefined constants from
--				nand.h to define the options.
--				<itemizedlist>
--				<listitem><para>Number of bits per block</para>
--				<para>The supported number of bits is 1, 2, 4, 8.</para></listitem>
--				<listitem><para>Table per chip</para>
--				<para>Setting the constant NAND_BBT_PERCHIP selects that
--				a bad block table is managed for each chip in a chip array.
--				If this option is not set then a per device bad block table
--				is used.</para></listitem>
--				<listitem><para>Table location is absolute</para>
--				<para>Use the option constant NAND_BBT_ABSPAGE and
--				define the absolute page number where the bad block
--				table starts in the field pages. If you have selected bad block
--				tables per chip and you have a multi chip array then the start page
--				must be given for each chip in the chip array. Note: there is no scan
--				for a table ident pattern performed, so the fields 
--				pattern, veroffs, offs, len can be left uninitialized</para></listitem>
--				<listitem><para>Table location is automatically detected</para>
--				<para>The table can either be located in the first or the last good
--				blocks of the chip (device). Set NAND_BBT_LASTBLOCK to place
--				the bad block table at the end of the chip (device). The
--				bad block tables are marked and identified by a pattern which
--				is stored in the spare area of the first page in the block which
--				holds the bad block table. Store a pointer to the pattern  
--				in the pattern field. Further the length of the pattern has to be 
--				stored in len and the offset in the spare area must be given
--				in the offs member of the nand_bbt_descr structure. For mirrored
--				bad block tables different patterns are mandatory.</para></listitem>
--				<listitem><para>Table creation</para>
--				<para>Set the option NAND_BBT_CREATE to enable the table creation
--				if no table can be found during the scan. Usually this is done only 
--				once if a new chip is found. </para></listitem>
--				<listitem><para>Table write support</para>
--				<para>Set the option NAND_BBT_WRITE to enable the table write support.
--				This allows the update of the bad block table(s) in case a block has
--				to be marked bad due to wear. The MTD interface function block_markbad
--				is calling the update function of the bad block table. If the write
--				support is enabled then the table is updated on FLASH.</para>
--				<para>
--				Note: Write support should only be enabled for mirrored tables with
--				version control.
--				</para></listitem>
--				<listitem><para>Table version control</para>
--				<para>Set the option NAND_BBT_VERSION to enable the table version control.
--				It's highly recommended to enable this for mirrored tables with write
--				support. It makes sure that the risk of losing the bad block
--				table information is reduced to the loss of the information about the
--				one worn out block which should be marked bad. The version is stored in
--				4 consecutive bytes in the spare area of the device. The position of
--				the version number is defined by the member veroffs in the bad block table
--				descriptor.</para></listitem>
--				<listitem><para>Save block contents on write</para>
--				<para>
--				In case that the block which holds the bad block table does contain
--				other useful information, set the option NAND_BBT_SAVECONTENT. When
--				the bad block table is written then the whole block is read the bad
--				block table is updated and the block is erased and everything is 
--				written back. If this option is not set only the bad block table
--				is written and everything else in the block is ignored and erased.
--				</para></listitem>
--				<listitem><para>Number of reserved blocks</para>
--				<para>
--				For automatic placement some blocks must be reserved for
--				bad block table storage. The number of reserved blocks is defined 
--				in the maxblocks member of the bad block table description structure.
--				Reserving 4 blocks for mirrored tables should be a reasonable number. 
--				This also limits the number of blocks which are scanned for the bad
--				block table ident pattern.
--				</para></listitem>
--				</itemizedlist>
--			</para>
--		</sect2>
--	</sect1>
--	<sect1 id="Spare_area_placement">
--		<title>Spare area (auto)placement</title>
--		<para>
--			The nand driver implements different possibilities for
--			placement of filesystem data in the spare area, 
--			<itemizedlist>
--			<listitem><para>Placement defined by fs driver</para></listitem>
--			<listitem><para>Automatic placement</para></listitem>
--			</itemizedlist>
--			The default placement function is automatic placement. The
--			nand driver has built in default placement schemes for the
--			various chiptypes. If due to hardware ECC functionality the
--			default placement does not fit then the board driver can
--			provide a own placement scheme.
--		</para>
--		<para>
--			File system drivers can provide a own placement scheme which
--			is used instead of the default placement scheme.
--		</para>
--		<para>
--			Placement schemes are defined by a nand_oobinfo structure
--	     		<programlisting>
--struct nand_oobinfo {
--	int	useecc;
--	int	eccbytes;
--	int	eccpos[24];
--	int	oobfree[8][2];
--};
--	     		</programlisting>
--			<itemizedlist>
--			<listitem><para>useecc</para><para>
--				The useecc member controls the ecc and placement function. The header
--				file include/mtd/mtd-abi.h contains constants to select ecc and
--				placement. MTD_NANDECC_OFF switches off the ecc complete. This is
--				not recommended and available for testing and diagnosis only.
--				MTD_NANDECC_PLACE selects caller defined placement, MTD_NANDECC_AUTOPLACE
--				selects automatic placement.
--			</para></listitem>
--			<listitem><para>eccbytes</para><para>
--				The eccbytes member defines the number of ecc bytes per page.
--			</para></listitem>
--			<listitem><para>eccpos</para><para>
--				The eccpos array holds the byte offsets in the spare area where
--				the ecc codes are placed.
--			</para></listitem>
--			<listitem><para>oobfree</para><para>
--				The oobfree array defines the areas in the spare area which can be
--				used for automatic placement. The information is given in the format
--				{offset, size}. offset defines the start of the usable area, size the
--				length in bytes. More than one area can be defined. The list is terminated
--				by an {0, 0} entry.
--			</para></listitem>
--			</itemizedlist>
--		</para>
--		<sect2 id="Placement_defined_by_fs_driver">
--			<title>Placement defined by fs driver</title>
--			<para>
--				The calling function provides a pointer to a nand_oobinfo
--				structure which defines the ecc placement. For writes the
--				caller must provide a spare area buffer along with the
--				data buffer. The spare area buffer size is (number of pages) *
--				(size of spare area). For reads the buffer size is
--				(number of pages) * ((size of spare area) + (number of ecc
--				steps per page) * sizeof (int)). The driver stores the
--				result of the ecc check for each tuple in the spare buffer.
--				The storage sequence is 
--			</para>
--			<para>
--				&lt;spare data page 0&gt;&lt;ecc result 0&gt;...&lt;ecc result n&gt;
--			</para>
--			<para>
--				...
--			</para>
--			<para>
--				&lt;spare data page n&gt;&lt;ecc result 0&gt;...&lt;ecc result n&gt;
--			</para>
--			<para>
--				This is a legacy mode used by YAFFS1.
--			</para>
--			<para>
--				If the spare area buffer is NULL then only the ECC placement is
--				done according to the given scheme in the nand_oobinfo structure.
--			</para>
--		</sect2>
--		<sect2 id="Automatic_placement">
--			<title>Automatic placement</title>
--			<para>
--				Automatic placement uses the built in defaults to place the
--				ecc bytes in the spare area. If filesystem data have to be stored /
--				read into the spare area then the calling function must provide a
--				buffer. The buffer size per page is determined by the oobfree array in
--				the nand_oobinfo structure.
--			</para>
--			<para>
--				If the spare area buffer is NULL then only the ECC placement is
--				done according to the default builtin scheme.
--			</para>
--		</sect2>
--	</sect1>	
--	<sect1 id="Spare_area_autoplacement_default">
--		<title>Spare area autoplacement default schemes</title>
--		<sect2 id="pagesize_256">
--			<title>256 byte pagesize</title>
--<informaltable><tgroup cols="3"><tbody>
--<row>
--<entry>Offset</entry>
--<entry>Content</entry>
--<entry>Comment</entry>
--</row>
--<row>
--<entry>0x00</entry>
--<entry>ECC byte 0</entry>
--<entry>Error correction code byte 0</entry>
--</row>
--<row>
--<entry>0x01</entry>
--<entry>ECC byte 1</entry>
--<entry>Error correction code byte 1</entry>
--</row>
--<row>
--<entry>0x02</entry>
--<entry>ECC byte 2</entry>
--<entry>Error correction code byte 2</entry>
--</row>
--<row>
--<entry>0x03</entry>
--<entry>Autoplace 0</entry>
--<entry></entry>
--</row>
--<row>
--<entry>0x04</entry>
--<entry>Autoplace 1</entry>
--<entry></entry>
--</row>
--<row>
--<entry>0x05</entry>
--<entry>Bad block marker</entry>
--<entry>If any bit in this byte is zero, then this block is bad.
--This applies only to the first page in a block. In the remaining
--pages this byte is reserved</entry>
--</row>
--<row>
--<entry>0x06</entry>
--<entry>Autoplace 2</entry>
--<entry></entry>
--</row>
--<row>
--<entry>0x07</entry>
--<entry>Autoplace 3</entry>
--<entry></entry>
--</row>
--</tbody></tgroup></informaltable>
--		</sect2>
--		<sect2 id="pagesize_512">
--			<title>512 byte pagesize</title>
--<informaltable><tgroup cols="3"><tbody>
--<row>
--<entry>Offset</entry>
--<entry>Content</entry>
--<entry>Comment</entry>
--</row>
--<row>
--<entry>0x00</entry>
--<entry>ECC byte 0</entry>
--<entry>Error correction code byte 0 of the lower 256 Byte data in
--this page</entry>
--</row>
--<row>
--<entry>0x01</entry>
--<entry>ECC byte 1</entry>
--<entry>Error correction code byte 1 of the lower 256 Bytes of data
--in this page</entry>
--</row>
--<row>
--<entry>0x02</entry>
--<entry>ECC byte 2</entry>
--<entry>Error correction code byte 2 of the lower 256 Bytes of data
--in this page</entry>
--</row>
--<row>
--<entry>0x03</entry>
--<entry>ECC byte 3</entry>
--<entry>Error correction code byte 0 of the upper 256 Bytes of data
--in this page</entry>
--</row>
--<row>
--<entry>0x04</entry>
--<entry>reserved</entry>
--<entry>reserved</entry>
--</row>
--<row>
--<entry>0x05</entry>
--<entry>Bad block marker</entry>
--<entry>If any bit in this byte is zero, then this block is bad.
--This applies only to the first page in a block. In the remaining
--pages this byte is reserved</entry>
--</row>
--<row>
--<entry>0x06</entry>
--<entry>ECC byte 4</entry>
--<entry>Error correction code byte 1 of the upper 256 Bytes of data
--in this page</entry>
--</row>
--<row>
--<entry>0x07</entry>
--<entry>ECC byte 5</entry>
--<entry>Error correction code byte 2 of the upper 256 Bytes of data
--in this page</entry>
--</row>
--<row>
--<entry>0x08 - 0x0F</entry>
--<entry>Autoplace 0 - 7</entry>
--<entry></entry>
--</row>
--</tbody></tgroup></informaltable>
--		</sect2>
--		<sect2 id="pagesize_2048">
--			<title>2048 byte pagesize</title>
--<informaltable><tgroup cols="3"><tbody>
--<row>
--<entry>Offset</entry>
--<entry>Content</entry>
--<entry>Comment</entry>
--</row>
--<row>
--<entry>0x00</entry>
--<entry>Bad block marker</entry>
--<entry>If any bit in this byte is zero, then this block is bad.
--This applies only to the first page in a block. In the remaining
--pages this byte is reserved</entry>
--</row>
--<row>
--<entry>0x01</entry>
--<entry>Reserved</entry>
--<entry>Reserved</entry>
--</row>
--<row>
--<entry>0x02-0x27</entry>
--<entry>Autoplace 0 - 37</entry>
--<entry></entry>
--</row>
--<row>
--<entry>0x28</entry>
--<entry>ECC byte 0</entry>
--<entry>Error correction code byte 0 of the first 256 Byte data in
--this page</entry>
--</row>
--<row>
--<entry>0x29</entry>
--<entry>ECC byte 1</entry>
--<entry>Error correction code byte 1 of the first 256 Bytes of data
--in this page</entry>
--</row>
--<row>
--<entry>0x2A</entry>
--<entry>ECC byte 2</entry>
--<entry>Error correction code byte 2 of the first 256 Bytes data in
--this page</entry>
--</row>
--<row>
--<entry>0x2B</entry>
--<entry>ECC byte 3</entry>
--<entry>Error correction code byte 0 of the second 256 Bytes of data
--in this page</entry>
--</row>
--<row>
--<entry>0x2C</entry>
--<entry>ECC byte 4</entry>
--<entry>Error correction code byte 1 of the second 256 Bytes of data
--in this page</entry>
--</row>
--<row>
--<entry>0x2D</entry>
--<entry>ECC byte 5</entry>
--<entry>Error correction code byte 2 of the second 256 Bytes of data
--in this page</entry>
--</row>
--<row>
--<entry>0x2E</entry>
--<entry>ECC byte 6</entry>
--<entry>Error correction code byte 0 of the third 256 Bytes of data
--in this page</entry>
--</row>
--<row>
--<entry>0x2F</entry>
--<entry>ECC byte 7</entry>
--<entry>Error correction code byte 1 of the third 256 Bytes of data
--in this page</entry>
--</row>
--<row>
--<entry>0x30</entry>
--<entry>ECC byte 8</entry>
--<entry>Error correction code byte 2 of the third 256 Bytes of data
--in this page</entry>
--</row>
--<row>
--<entry>0x31</entry>
--<entry>ECC byte 9</entry>
--<entry>Error correction code byte 0 of the fourth 256 Bytes of data
--in this page</entry>
--</row>
--<row>
--<entry>0x32</entry>
--<entry>ECC byte 10</entry>
--<entry>Error correction code byte 1 of the fourth 256 Bytes of data
--in this page</entry>
--</row>
--<row>
--<entry>0x33</entry>
--<entry>ECC byte 11</entry>
--<entry>Error correction code byte 2 of the fourth 256 Bytes of data
--in this page</entry>
--</row>
--<row>
--<entry>0x34</entry>
--<entry>ECC byte 12</entry>
--<entry>Error correction code byte 0 of the fifth 256 Bytes of data
--in this page</entry>
--</row>
--<row>
--<entry>0x35</entry>
--<entry>ECC byte 13</entry>
--<entry>Error correction code byte 1 of the fifth 256 Bytes of data
--in this page</entry>
--</row>
--<row>
--<entry>0x36</entry>
--<entry>ECC byte 14</entry>
--<entry>Error correction code byte 2 of the fifth 256 Bytes of data
--in this page</entry>
--</row>
--<row>
--<entry>0x37</entry>
--<entry>ECC byte 15</entry>
--<entry>Error correction code byte 0 of the sixt 256 Bytes of data
--in this page</entry>
--</row>
--<row>
--<entry>0x38</entry>
--<entry>ECC byte 16</entry>
--<entry>Error correction code byte 1 of the sixt 256 Bytes of data
--in this page</entry>
--</row>
--<row>
--<entry>0x39</entry>
--<entry>ECC byte 17</entry>
--<entry>Error correction code byte 2 of the sixt 256 Bytes of data
--in this page</entry>
--</row>
--<row>
--<entry>0x3A</entry>
--<entry>ECC byte 18</entry>
--<entry>Error correction code byte 0 of the seventh 256 Bytes of
--data in this page</entry>
--</row>
--<row>
--<entry>0x3B</entry>
--<entry>ECC byte 19</entry>
--<entry>Error correction code byte 1 of the seventh 256 Bytes of
--data in this page</entry>
--</row>
--<row>
--<entry>0x3C</entry>
--<entry>ECC byte 20</entry>
--<entry>Error correction code byte 2 of the seventh 256 Bytes of
--data in this page</entry>
--</row>
--<row>
--<entry>0x3D</entry>
--<entry>ECC byte 21</entry>
--<entry>Error correction code byte 0 of the eighth 256 Bytes of data
--in this page</entry>
--</row>
--<row>
--<entry>0x3E</entry>
--<entry>ECC byte 22</entry>
--<entry>Error correction code byte 1 of the eighth 256 Bytes of data
--in this page</entry>
--</row>
--<row>
--<entry>0x3F</entry>
--<entry>ECC byte 23</entry>
--<entry>Error correction code byte 2 of the eighth 256 Bytes of data
--in this page</entry>
--</row>
--</tbody></tgroup></informaltable>
--		</sect2>
--     	</sect1>
--  </chapter>
+-   <para>
+-    Before inventing your own cache of often-used objects consider
+-    using a slab cache in
+-    <filename class="headerfile">include/linux/slab.h</filename>
+-   </para>
+-  </sect1>
 -
--  <chapter id="filesystems">
--     	<title>Filesystem support</title>
--	<para>
--		The NAND driver provides all necessary functions for a
--		filesystem via the MTD interface.
--	</para>
--	<para>
--		Filesystems must be aware of the NAND peculiarities and
--		restrictions. One major restrictions of NAND Flash is, that you cannot 
--		write as often as you want to a page. The consecutive writes to a page, 
--		before erasing it again, are restricted to 1-3 writes, depending on the 
--		manufacturers specifications. This applies similar to the spare area. 
--	</para>
--	<para>
--		Therefore NAND aware filesystems must either write in page size chunks
--		or hold a writebuffer to collect smaller writes until they sum up to 
--		pagesize. Available NAND aware filesystems: JFFS2, YAFFS. 		
--	</para>
--	<para>
--		The spare area usage to store filesystem data is controlled by
--		the spare area placement functionality which is described in one
--		of the earlier chapters.
--	</para>
--  </chapter>	
--  <chapter id="tools">
--     	<title>Tools</title>
--	<para>
--		The MTD project provides a couple of helpful tools to handle NAND Flash.
--		<itemizedlist>
--		<listitem><para>flasherase, flasheraseall: Erase and format FLASH partitions</para></listitem>
--		<listitem><para>nandwrite: write filesystem images to NAND FLASH</para></listitem>
--		<listitem><para>nanddump: dump the contents of a NAND FLASH partitions</para></listitem>
--		</itemizedlist>
--	</para>
--	<para>
--		These tools are aware of the NAND restrictions. Please use those tools
--		instead of complaining about errors which are caused by non NAND aware
--		access methods.
--	</para>
--  </chapter>	
+-  <sect1 id="routines-current">
+-   <title><function>current</function>
+-    <filename class="headerfile">include/asm/current.h</filename></title>
 -
--  <chapter id="defines">
--     <title>Constants</title>
--     <para>
--     This chapter describes the constants which might be relevant for a driver developer.
--     </para>
--     <sect1 id="Chip_option_constants">
--	<title>Chip option constants</title>
--     	<sect2 id="Constants_for_chip_id_table">
--		<title>Constants for chip id table</title>
--     		<para>
--		These constants are defined in nand.h. They are ored together to describe
--		the chip functionality.
--     		<programlisting>
--/* Buswitdh is 16 bit */
--#define NAND_BUSWIDTH_16	0x00000002
--/* Device supports partial programming without padding */
--#define NAND_NO_PADDING		0x00000004
--/* Chip has cache program function */
--#define NAND_CACHEPRG		0x00000008
--/* Chip has copy back function */
--#define NAND_COPYBACK		0x00000010
--/* AND Chip which has 4 banks and a confusing page / block 
-- * assignment. See Renesas datasheet for further information */
--#define NAND_IS_AND		0x00000020
--/* Chip has a array of 4 pages which can be read without
-- * additional ready /busy waits */
--#define NAND_4PAGE_ARRAY	0x00000040 
--		</programlisting>
--     		</para>
--     	</sect2>
--     	<sect2 id="Constants_for_runtime_options">
--		<title>Constants for runtime options</title>
--     		<para>
--		These constants are defined in nand.h. They are ored together to describe
--		the functionality.
--     		<programlisting>
--/* The hw ecc generator provides a syndrome instead a ecc value on read 
-- * This can only work if we have the ecc bytes directly behind the 
-- * data bytes. Applies for DOC and AG-AND Renesas HW Reed Solomon generators */
--#define NAND_HWECC_SYNDROME	0x00020000
--		</programlisting>
--     		</para>
--     	</sect2>
--     </sect1>	
+-   <para>
+-    This global variable (really a macro) contains a pointer to
+-    the current task structure, so is only valid in user context.
+-    For example, when a process makes a system call, this will
+-    point to the task structure of the calling process.  It is
+-    <emphasis>not NULL</emphasis> in interrupt context.
+-   </para>
+-  </sect1>
 -
--     <sect1 id="EEC_selection_constants">
--	<title>ECC selection constants</title>
--	<para>
--	Use these constants to select the ECC algorithm.
--  	<programlisting>
--/* No ECC. Usage is not recommended ! */
--#define NAND_ECC_NONE		0
--/* Software ECC 3 byte ECC per 256 Byte data */
--#define NAND_ECC_SOFT		1
--/* Hardware ECC 3 byte ECC per 256 Byte data */
--#define NAND_ECC_HW3_256	2
--/* Hardware ECC 3 byte ECC per 512 Byte data */
--#define NAND_ECC_HW3_512	3
--/* Hardware ECC 6 byte ECC per 512 Byte data */
--#define NAND_ECC_HW6_512	4
--/* Hardware ECC 6 byte ECC per 512 Byte data */
--#define NAND_ECC_HW8_512	6
--	</programlisting>
--	</para>
--     </sect1>	
+-  <sect1 id="routines-udelay">
+-   <title><function>mdelay()</function>/<function>udelay()</function>
+-     <filename class="headerfile">include/asm/delay.h</filename>
+-     <filename class="headerfile">include/linux/delay.h</filename>
+-   </title>
 -
--     <sect1 id="Hardware_control_related_constants">
--	<title>Hardware control related constants</title>
--	<para>
--	These constants describe the requested hardware access function when
--	the boardspecific hardware control function is called
--  	<programlisting>
--/* Select the chip by setting nCE to low */
--#define NAND_CTL_SETNCE 	1
--/* Deselect the chip by setting nCE to high */
--#define NAND_CTL_CLRNCE		2
--/* Select the command latch by setting CLE to high */
--#define NAND_CTL_SETCLE		3
--/* Deselect the command latch by setting CLE to low */
--#define NAND_CTL_CLRCLE		4
--/* Select the address latch by setting ALE to high */
--#define NAND_CTL_SETALE		5
--/* Deselect the address latch by setting ALE to low */
--#define NAND_CTL_CLRALE		6
--/* Set write protection by setting WP to high. Not used! */
--#define NAND_CTL_SETWP		7
--/* Clear write protection by setting WP to low. Not used! */
--#define NAND_CTL_CLRWP		8
--	</programlisting>
--	</para>
--     </sect1>	
+-   <para>
+-    The <function>udelay()</function> and <function>ndelay()</function> functions can be used for small pauses.
+-    Do not use large values with them as you risk
+-    overflow - the helper function <function>mdelay()</function> is useful
+-    here, or consider <function>msleep()</function>.
+-   </para> 
+-  </sect1>
+- 
+-  <sect1 id="routines-endian">
+-   <title><function>cpu_to_be32()</function>/<function>be32_to_cpu()</function>/<function>cpu_to_le32()</function>/<function>le32_to_cpu()</function>
+-     <filename class="headerfile">include/asm/byteorder.h</filename>
+-   </title>
 -
--     <sect1 id="Bad_block_table_constants">
--	<title>Bad block table related constants</title>
--	<para>
--	These constants describe the options used for bad block
--	table descriptors.
--  	<programlisting>
--/* Options for the bad block table descriptors */
+-   <para>
+-    The <function>cpu_to_be32()</function> family (where the "32" can
+-    be replaced by 64 or 16, and the "be" can be replaced by "le") are
+-    the general way to do endian conversions in the kernel: they
+-    return the converted value.  All variations supply the reverse as
+-    well: <function>be32_to_cpu()</function>, etc.
+-   </para>
 -
--/* The number of bits used per block in the bbt on the device */
--#define NAND_BBT_NRBITS_MSK	0x0000000F
--#define NAND_BBT_1BIT		0x00000001
--#define NAND_BBT_2BIT		0x00000002
--#define NAND_BBT_4BIT		0x00000004
--#define NAND_BBT_8BIT		0x00000008
--/* The bad block table is in the last good block of the device */
--#define	NAND_BBT_LASTBLOCK	0x00000010
--/* The bbt is at the given page, else we must scan for the bbt */
--#define NAND_BBT_ABSPAGE	0x00000020
--/* bbt is stored per chip on multichip devices */
--#define NAND_BBT_PERCHIP	0x00000080
--/* bbt has a version counter at offset veroffs */
--#define NAND_BBT_VERSION	0x00000100
--/* Create a bbt if none axists */
--#define NAND_BBT_CREATE		0x00000200
--/* Write bbt if necessary */
--#define NAND_BBT_WRITE		0x00001000
--/* Read and write back block contents when writing bbt */
--#define NAND_BBT_SAVECONTENT	0x00002000
--	</programlisting>
--	</para>
--     </sect1>	
+-   <para>
+-    There are two major variations of these functions: the pointer
+-    variation, such as <function>cpu_to_be32p()</function>, which take
+-    a pointer to the given type, and return the converted value.  The
+-    other variation is the "in-situ" family, such as
+-    <function>cpu_to_be32s()</function>, which convert value referred
+-    to by the pointer, and return void.
+-   </para> 
+-  </sect1>
 -
--  </chapter>
--  	
--  <chapter id="structs">
--     <title>Structures</title>
--     <para>
--     This chapter contains the autogenerated documentation of the structures which are
--     used in the NAND driver and might be relevant for a driver developer. Each  
--     struct member has a short description which is marked with an [XXX] identifier.
--     See the chapter "Documentation hints" for an explanation.
--     </para>
--!Iinclude/linux/mtd/nand.h
--  </chapter>
+-  <sect1 id="routines-local-irqs">
+-   <title><function>local_irq_save()</function>/<function>local_irq_restore()</function>
+-    <filename class="headerfile">include/linux/irqflags.h</filename>
+-   </title>
 -
--  <chapter id="pubfunctions">
--     <title>Public Functions Provided</title>
--     <para>
--     This chapter contains the autogenerated documentation of the NAND kernel API functions
--      which are exported. Each function has a short description which is marked with an [XXX] identifier.
--     See the chapter "Documentation hints" for an explanation.
--     </para>
--!Edrivers/mtd/nand/nand_base.c
--!Edrivers/mtd/nand/nand_bbt.c
--!Edrivers/mtd/nand/nand_ecc.c
--  </chapter>
+-   <para>
+-    These routines disable hard interrupts on the local CPU, and
+-    restore them.  They are reentrant; saving the previous state in
+-    their one <varname>unsigned long flags</varname> argument.  If you
+-    know that interrupts are enabled, you can simply use
+-    <function>local_irq_disable()</function> and
+-    <function>local_irq_enable()</function>.
+-   </para>
+-  </sect1>
+-
+-  <sect1 id="routines-softirqs">
+-   <title><function>local_bh_disable()</function>/<function>local_bh_enable()</function>
+-    <filename class="headerfile">include/linux/interrupt.h</filename></title>
+-
+-   <para>
+-    These routines disable soft interrupts on the local CPU, and
+-    restore them.  They are reentrant; if soft interrupts were
+-    disabled before, they will still be disabled after this pair
+-    of functions has been called.  They prevent softirqs and tasklets
+-    from running on the current CPU.
+-   </para>
+-  </sect1>
+-
+-  <sect1 id="routines-processorids">
+-   <title><function>smp_processor_id</function>()
+-    <filename class="headerfile">include/asm/smp.h</filename></title>
+-   
+-   <para>
+-    <function>get_cpu()</function> disables preemption (so you won't
+-    suddenly get moved to another CPU) and returns the current
+-    processor number, between 0 and <symbol>NR_CPUS</symbol>.  Note
+-    that the CPU numbers are not necessarily continuous.  You return
+-    it again with <function>put_cpu()</function> when you are done.
+-   </para>
+-   <para>
+-    If you know you cannot be preempted by another task (ie. you are
+-    in interrupt context, or have preemption disabled) you can use
+-    smp_processor_id().
+-   </para>
+-  </sect1>
+-
+-  <sect1 id="routines-init">
+-   <title><type>__init</type>/<type>__exit</type>/<type>__initdata</type>
+-    <filename class="headerfile">include/linux/init.h</filename></title>
+-
+-   <para>
+-    After boot, the kernel frees up a special section; functions
+-    marked with <type>__init</type> and data structures marked with
+-    <type>__initdata</type> are dropped after boot is complete: similarly
+-    modules discard this memory after initialization.  <type>__exit</type>
+-    is used to declare a function which is only required on exit: the
+-    function will be dropped if this file is not compiled as a module.
+-    See the header file for use. Note that it makes no sense for a function
+-    marked with <type>__init</type> to be exported to modules with 
+-    <function>EXPORT_SYMBOL()</function> - this will break.
+-   </para>
+-
+-  </sect1>
+-
+-  <sect1 id="routines-init-again">
+-   <title><function>__initcall()</function>/<function>module_init()</function>
+-    <filename class="headerfile">include/linux/init.h</filename></title>
+-   <para>
+-    Many parts of the kernel are well served as a module
+-    (dynamically-loadable parts of the kernel).  Using the
+-    <function>module_init()</function> and
+-    <function>module_exit()</function> macros it is easy to write code
+-    without #ifdefs which can operate both as a module or built into
+-    the kernel.
+-   </para>
+-
+-   <para>
+-    The <function>module_init()</function> macro defines which
+-    function is to be called at module insertion time (if the file is
+-    compiled as a module), or at boot time: if the file is not
+-    compiled as a module the <function>module_init()</function> macro
+-    becomes equivalent to <function>__initcall()</function>, which
+-    through linker magic ensures that the function is called on boot.
+-   </para>
+-
+-   <para>
+-    The function can return a negative error number to cause
+-    module loading to fail (unfortunately, this has no effect if
+-    the module is compiled into the kernel).  This function is
+-    called in user context with interrupts enabled, so it can sleep.
+-   </para>
+-  </sect1>
 -  
--  <chapter id="intfunctions">
--     <title>Internal Functions Provided</title>
--     <para>
--     This chapter contains the autogenerated documentation of the NAND driver internal functions.
--     Each function has a short description which is marked with an [XXX] identifier.
--     See the chapter "Documentation hints" for an explanation.
--     The functions marked with [DEFAULT] might be relevant for a board driver developer.
--     </para>
--!Idrivers/mtd/nand/nand_base.c
--!Idrivers/mtd/nand/nand_bbt.c
--<!-- No internal functions for kernel-doc:
--X!Idrivers/mtd/nand/nand_ecc.c
---->
--  </chapter>
+-  <sect1 id="routines-moduleexit">
+-   <title> <function>module_exit()</function>
+-    <filename class="headerfile">include/linux/init.h</filename> </title>
 -
--  <chapter id="credits">
--     <title>Credits</title>
--	<para>
--		The following people have contributed to the NAND driver:
--		<orderedlist>
--			<listitem><para>Steven J. Hill<email>sjhill@realitydiluted.com</email></para></listitem>
--			<listitem><para>David Woodhouse<email>dwmw2@infradead.org</email></para></listitem>
--			<listitem><para>Thomas Gleixner<email>tglx@linutronix.de</email></para></listitem>
--		</orderedlist>
--		A lot of users have provided bugfixes, improvements and helping hands for testing.
--		Thanks a lot.
--	</para>
--	<para>
--		The following people have contributed to this document:
--		<orderedlist>
--			<listitem><para>Thomas Gleixner<email>tglx@linutronix.de</email></para></listitem>
--		</orderedlist>
--	</para>
--  </chapter>
+-   <para>
+-    This macro defines the function to be called at module removal
+-    time (or never, in the case of the file compiled into the
+-    kernel).  It will only be called if the module usage count has
+-    reached zero.  This function can also sleep, but cannot fail:
+-    everything must be cleaned up by the time it returns.
+-   </para>
+-
+-   <para>
+-    Note that this macro is optional: if it is not present, your
+-    module will not be removable (except for 'rmmod -f').
+-   </para>
+-  </sect1>
+-
+-  <sect1 id="routines-module-use-counters">
+-   <title> <function>try_module_get()</function>/<function>module_put()</function>
+-    <filename class="headerfile">include/linux/module.h</filename></title>
+-
+-   <para>
+-    These manipulate the module usage count, to protect against
+-    removal (a module also can't be removed if another module uses one
+-    of its exported symbols: see below).  Before calling into module
+-    code, you should call <function>try_module_get()</function> on
+-    that module: if it fails, then the module is being removed and you
+-    should act as if it wasn't there.  Otherwise, you can safely enter
+-    the module, and call <function>module_put()</function> when you're
+-    finished.
+-   </para>
+-
+-   <para>
+-   Most registerable structures have an
+-   <structfield>owner</structfield> field, such as in the
+-   <structname>file_operations</structname> structure. Set this field
+-   to the macro <symbol>THIS_MODULE</symbol>.
+-   </para>
+-  </sect1>
+-
+- <!-- add info on new-style module refcounting here -->
+- </chapter>
+-
+- <chapter id="queues">
+-  <title>Wait Queues
+-   <filename class="headerfile">include/linux/wait.h</filename>
+-  </title>
+-  <para>
+-   <emphasis>[SLEEPS]</emphasis>
+-  </para>
+-
+-  <para>
+-   A wait queue is used to wait for someone to wake you up when a
+-   certain condition is true.  They must be used carefully to ensure
+-   there is no race condition.  You declare a
+-   <type>wait_queue_head_t</type>, and then processes which want to
+-   wait for that condition declare a <type>wait_queue_t</type>
+-   referring to themselves, and place that in the queue.
+-  </para>
+-
+-  <sect1 id="queue-declaring">
+-   <title>Declaring</title>
+-   
+-   <para>
+-    You declare a <type>wait_queue_head_t</type> using the
+-    <function>DECLARE_WAIT_QUEUE_HEAD()</function> macro, or using the
+-    <function>init_waitqueue_head()</function> routine in your
+-    initialization code.
+-   </para>
+-  </sect1>
+-  
+-  <sect1 id="queue-waitqueue">
+-   <title>Queuing</title>
+-   
+-   <para>
+-    Placing yourself in the waitqueue is fairly complex, because you
+-    must put yourself in the queue before checking the condition.
+-    There is a macro to do this:
+-    <function>wait_event_interruptible()</function>
+-
+-    <filename class="headerfile">include/linux/wait.h</filename> The
+-    first argument is the wait queue head, and the second is an
+-    expression which is evaluated; the macro returns
+-    <returnvalue>0</returnvalue> when this expression is true, or
+-    <returnvalue>-ERESTARTSYS</returnvalue> if a signal is received.
+-    The <function>wait_event()</function> version ignores signals.
+-   </para>
+- 
+-  </sect1>
+-
+-  <sect1 id="queue-waking">
+-   <title>Waking Up Queued Tasks</title>
+-   
+-   <para>
+-    Call <function>wake_up()</function>
+-
+-    <filename class="headerfile">include/linux/wait.h</filename>;,
+-    which will wake up every process in the queue.  The exception is
+-    if one has <constant>TASK_EXCLUSIVE</constant> set, in which case
+-    the remainder of the queue will not be woken.  There are other variants
+-    of this basic function available in the same header.
+-   </para>
+-  </sect1>
+- </chapter>
+-
+- <chapter id="atomic-ops">
+-  <title>Atomic Operations</title>
+-
+-  <para>
+-   Certain operations are guaranteed atomic on all platforms.  The
+-   first class of operations work on <type>atomic_t</type>
+-
+-   <filename class="headerfile">include/asm/atomic.h</filename>; this
+-   contains a signed integer (at least 32 bits long), and you must use
+-   these functions to manipulate or read atomic_t variables.
+-   <function>atomic_read()</function> and
+-   <function>atomic_set()</function> get and set the counter,
+-   <function>atomic_add()</function>,
+-   <function>atomic_sub()</function>,
+-   <function>atomic_inc()</function>,
+-   <function>atomic_dec()</function>, and
+-   <function>atomic_dec_and_test()</function> (returns
+-   <returnvalue>true</returnvalue> if it was decremented to zero).
+-  </para>
+-
+-  <para>
+-   Yes.  It returns <returnvalue>true</returnvalue> (i.e. != 0) if the
+-   atomic variable is zero.
+-  </para>
+-
+-  <para>
+-   Note that these functions are slower than normal arithmetic, and
+-   so should not be used unnecessarily.
+-  </para>
+-
+-  <para>
+-   The second class of atomic operations is atomic bit operations on an
+-   <type>unsigned long</type>, defined in
+-
+-   <filename class="headerfile">include/linux/bitops.h</filename>.  These
+-   operations generally take a pointer to the bit pattern, and a bit
+-   number: 0 is the least significant bit.
+-   <function>set_bit()</function>, <function>clear_bit()</function>
+-   and <function>change_bit()</function> set, clear, and flip the
+-   given bit.  <function>test_and_set_bit()</function>,
+-   <function>test_and_clear_bit()</function> and
+-   <function>test_and_change_bit()</function> do the same thing,
+-   except return true if the bit was previously set; these are
+-   particularly useful for atomically setting flags.
+-  </para>
+-  
+-  <para>
+-   It is possible to call these operations with bit indices greater
+-   than BITS_PER_LONG.  The resulting behavior is strange on big-endian
+-   platforms though so it is a good idea not to do this.
+-  </para>
+- </chapter>
+-
+- <chapter id="symbols">
+-  <title>Symbols</title>
+-
+-  <para>
+-   Within the kernel proper, the normal linking rules apply
+-   (ie. unless a symbol is declared to be file scope with the
+-   <type>static</type> keyword, it can be used anywhere in the
+-   kernel).  However, for modules, a special exported symbol table is
+-   kept which limits the entry points to the kernel proper.  Modules
+-   can also export symbols.
+-  </para>
+-
+-  <sect1 id="sym-exportsymbols">
+-   <title><function>EXPORT_SYMBOL()</function>
+-    <filename class="headerfile">include/linux/export.h</filename></title>
+-
+-   <para>
+-    This is the classic method of exporting a symbol: dynamically
+-    loaded modules will be able to use the symbol as normal.
+-   </para>
+-  </sect1>
+-
+-  <sect1 id="sym-exportsymbols-gpl">
+-   <title><function>EXPORT_SYMBOL_GPL()</function>
+-    <filename class="headerfile">include/linux/export.h</filename></title>
+-
+-   <para>
+-    Similar to <function>EXPORT_SYMBOL()</function> except that the
+-    symbols exported by <function>EXPORT_SYMBOL_GPL()</function> can
+-    only be seen by modules with a
+-    <function>MODULE_LICENSE()</function> that specifies a GPL
+-    compatible license.  It implies that the function is considered
+-    an internal implementation issue, and not really an interface.
+-    Some maintainers and developers may however
+-    require EXPORT_SYMBOL_GPL() when adding any new APIs or functionality.
+-   </para>
+-  </sect1>
+- </chapter>
+-
+- <chapter id="conventions">
+-  <title>Routines and Conventions</title>
+-
+-  <sect1 id="conventions-doublelinkedlist">
+-   <title>Double-linked lists
+-    <filename class="headerfile">include/linux/list.h</filename></title>
+-
+-   <para>
+-    There used to be three sets of linked-list routines in the kernel
+-    headers, but this one is the winner.  If you don't have some
+-    particular pressing need for a single list, it's a good choice.
+-   </para>
+-
+-   <para>
+-    In particular, <function>list_for_each_entry</function> is useful.
+-   </para>
+-  </sect1>
+-
+-  <sect1 id="convention-returns">
+-   <title>Return Conventions</title>
+-
+-   <para>
+-    For code called in user context, it's very common to defy C
+-    convention, and return <returnvalue>0</returnvalue> for success,
+-    and a negative error number
+-    (eg. <returnvalue>-EFAULT</returnvalue>) for failure.  This can be
+-    unintuitive at first, but it's fairly widespread in the kernel.
+-   </para>
+-
+-   <para>
+-    Using <function>ERR_PTR()</function>
+-
+-    <filename class="headerfile">include/linux/err.h</filename>; to
+-    encode a negative error number into a pointer, and
+-    <function>IS_ERR()</function> and <function>PTR_ERR()</function>
+-    to get it back out again: avoids a separate pointer parameter for
+-    the error number.  Icky, but in a good way.
+-   </para>
+-  </sect1>
+-
+-  <sect1 id="conventions-borkedcompile">
+-   <title>Breaking Compilation</title>
+-
+-   <para>
+-    Linus and the other developers sometimes change function or
+-    structure names in development kernels; this is not done just to
+-    keep everyone on their toes: it reflects a fundamental change
+-    (eg. can no longer be called with interrupts on, or does extra
+-    checks, or doesn't do checks which were caught before).  Usually
+-    this is accompanied by a fairly complete note to the linux-kernel
+-    mailing list; search the archive.  Simply doing a global replace
+-    on the file usually makes things <emphasis>worse</emphasis>.
+-   </para>
+-  </sect1>
+-
+-  <sect1 id="conventions-initialising">
+-   <title>Initializing structure members</title>
+-
+-   <para>
+-    The preferred method of initializing structures is to use
+-    designated initialisers, as defined by ISO C99, eg:
+-   </para>
+-   <programlisting>
+-static struct block_device_operations opt_fops = {
+-        .open               = opt_open,
+-        .release            = opt_release,
+-        .ioctl              = opt_ioctl,
+-        .check_media_change = opt_media_change,
+-};
+-   </programlisting>
+-   <para>
+-    This makes it easy to grep for, and makes it clear which
+-    structure fields are set.  You should do this because it looks
+-    cool.
+-   </para>
+-  </sect1>
+-
+-  <sect1 id="conventions-gnu-extns">
+-   <title>GNU Extensions</title>
+-
+-   <para>
+-    GNU Extensions are explicitly allowed in the Linux kernel.
+-    Note that some of the more complex ones are not very well
+-    supported, due to lack of general use, but the following are
+-    considered standard (see the GCC info page section "C
+-    Extensions" for more details - Yes, really the info page, the
+-    man page is only a short summary of the stuff in info).
+-   </para>
+-   <itemizedlist>
+-    <listitem>
+-     <para>
+-      Inline functions
+-     </para>
+-    </listitem>
+-    <listitem>
+-     <para>
+-      Statement expressions (ie. the ({ and }) constructs).
+-     </para>
+-    </listitem>
+-    <listitem>
+-     <para>
+-      Declaring attributes of a function / variable / type
+-      (__attribute__)
+-     </para>
+-    </listitem>
+-    <listitem>
+-     <para>
+-      typeof
+-     </para>
+-    </listitem>
+-    <listitem>
+-     <para>
+-      Zero length arrays
+-     </para>
+-    </listitem>
+-    <listitem>
+-     <para>
+-      Macro varargs
+-     </para>
+-    </listitem>
+-    <listitem>
+-     <para>
+-      Arithmetic on void pointers
+-     </para>
+-    </listitem>
+-    <listitem>
+-     <para>
+-      Non-Constant initializers
+-     </para>
+-    </listitem>
+-    <listitem>
+-     <para>
+-      Assembler Instructions (not outside arch/ and include/asm/)
+-     </para>
+-    </listitem>
+-    <listitem>
+-     <para>
+-      Function names as strings (__func__).
+-     </para>
+-    </listitem>
+-    <listitem>
+-     <para>
+-      __builtin_constant_p()
+-     </para>
+-    </listitem>
+-   </itemizedlist>
+-
+-   <para>
+-    Be wary when using long long in the kernel, the code gcc generates for
+-    it is horrible and worse: division and multiplication does not work
+-    on i386 because the GCC runtime functions for it are missing from
+-    the kernel environment.
+-   </para>
+-
+-    <!-- FIXME: add a note about ANSI aliasing cleanness -->
+-  </sect1>
+-
+-  <sect1 id="conventions-cplusplus">
+-   <title>C++</title>
+-   
+-   <para>
+-    Using C++ in the kernel is usually a bad idea, because the
+-    kernel does not provide the necessary runtime environment
+-    and the include files are not tested for it.  It is still
+-    possible, but not recommended.  If you really want to do
+-    this, forget about exceptions at least.
+-   </para>
+-  </sect1>
+-
+-  <sect1 id="conventions-ifdef">
+-   <title>&num;if</title>
+-   
+-   <para>
+-    It is generally considered cleaner to use macros in header files
+-    (or at the top of .c files) to abstract away functions rather than
+-    using `#if' pre-processor statements throughout the source code.
+-   </para>
+-  </sect1>
+- </chapter>
+-
+- <chapter id="submitting">
+-  <title>Putting Your Stuff in the Kernel</title>
+-
+-  <para>
+-   In order to get your stuff into shape for official inclusion, or
+-   even to make a neat patch, there's administrative work to be
+-   done:
+-  </para>
+-  <itemizedlist>
+-   <listitem>
+-    <para>
+-     Figure out whose pond you've been pissing in.  Look at the top of
+-     the source files, inside the <filename>MAINTAINERS</filename>
+-     file, and last of all in the <filename>CREDITS</filename> file.
+-     You should coordinate with this person to make sure you're not
+-     duplicating effort, or trying something that's already been
+-     rejected.
+-    </para>
+-
+-    <para>
+-     Make sure you put your name and EMail address at the top of
+-     any files you create or mangle significantly.  This is the
+-     first place people will look when they find a bug, or when
+-     <emphasis>they</emphasis> want to make a change.
+-    </para>
+-   </listitem>
+-
+-   <listitem>
+-    <para>
+-     Usually you want a configuration option for your kernel hack.
+-     Edit <filename>Kconfig</filename> in the appropriate directory.
+-     The Config language is simple to use by cut and paste, and there's
+-     complete documentation in
+-     <filename>Documentation/kbuild/kconfig-language.txt</filename>.
+-    </para>
+-
+-    <para>
+-     In your description of the option, make sure you address both the
+-     expert user and the user who knows nothing about your feature.  Mention
+-     incompatibilities and issues here.  <emphasis> Definitely
+-     </emphasis> end your description with <quote> if in doubt, say N
+-     </quote> (or, occasionally, `Y'); this is for people who have no
+-     idea what you are talking about.
+-    </para>
+-   </listitem>
+-
+-   <listitem>
+-    <para>
+-     Edit the <filename>Makefile</filename>: the CONFIG variables are
+-     exported here so you can usually just add a "obj-$(CONFIG_xxx) +=
+-     xxx.o" line.  The syntax is documented in
+-     <filename>Documentation/kbuild/makefiles.txt</filename>.
+-    </para>
+-   </listitem>
+-
+-   <listitem>
+-    <para>
+-     Put yourself in <filename>CREDITS</filename> if you've done
+-     something noteworthy, usually beyond a single file (your name
+-     should be at the top of the source files anyway).
+-     <filename>MAINTAINERS</filename> means you want to be consulted
+-     when changes are made to a subsystem, and hear about bugs; it
+-     implies a more-than-passing commitment to some part of the code.
+-    </para>
+-   </listitem>
+-   
+-   <listitem>
+-    <para>
+-     Finally, don't forget to read <filename>Documentation/process/submitting-patches.rst</filename>
+-     and possibly <filename>Documentation/process/submitting-drivers.rst</filename>.
+-    </para>
+-   </listitem>
+-  </itemizedlist>
+- </chapter>
+-
+- <chapter id="cantrips">
+-  <title>Kernel Cantrips</title>
+-
+-  <para>
+-   Some favorites from browsing the source.  Feel free to add to this
+-   list.
+-  </para>
+-
+-  <para>
+-   <filename>arch/x86/include/asm/delay.h:</filename>
+-  </para>
+-  <programlisting>
+-#define ndelay(n) (__builtin_constant_p(n) ? \
+-        ((n) > 20000 ? __bad_ndelay() : __const_udelay((n) * 5ul)) : \
+-        __ndelay(n))
+-  </programlisting>
+-
+-  <para>
+-   <filename>include/linux/fs.h</filename>:
+-  </para>
+-  <programlisting>
+-/*
+- * Kernel pointers have redundant information, so we can use a
+- * scheme where we can return either an error code or a dentry
+- * pointer with the same return value.
+- *
+- * This should be a per-architecture thing, to allow different
+- * error and pointer decisions.
+- */
+- #define ERR_PTR(err)    ((void *)((long)(err)))
+- #define PTR_ERR(ptr)    ((long)(ptr))
+- #define IS_ERR(ptr)     ((unsigned long)(ptr) > (unsigned long)(-1000))
+-</programlisting>
+-
+-  <para>
+-   <filename>arch/x86/include/asm/uaccess_32.h:</filename>
+-  </para>
+-
+-  <programlisting>
+-#define copy_to_user(to,from,n)                         \
+-        (__builtin_constant_p(n) ?                      \
+-         __constant_copy_to_user((to),(from),(n)) :     \
+-         __generic_copy_to_user((to),(from),(n)))
+-  </programlisting>
+-
+-  <para>
+-   <filename>arch/sparc/kernel/head.S:</filename>
+-  </para>
+-
+-  <programlisting>
+-/*
+- * Sun people can't spell worth damn. "compatability" indeed.
+- * At least we *know* we can't spell, and use a spell-checker.
+- */
+-
+-/* Uh, actually Linus it is I who cannot spell. Too much murky
+- * Sparc assembly will do this to ya.
+- */
+-C_LABEL(cputypvar):
+-        .asciz "compatibility"
+-
+-/* Tested on SS-5, SS-10. Probably someone at Sun applied a spell-checker. */
+-        .align 4
+-C_LABEL(cputypvar_sun4m):
+-        .asciz "compatible"
+-  </programlisting>
+-
+-  <para>
+-   <filename>arch/sparc/lib/checksum.S:</filename>
+-  </para>
+-
+-  <programlisting>
+-        /* Sun, you just can't beat me, you just can't.  Stop trying,
+-         * give up.  I'm serious, I am going to kick the living shit
+-         * out of you, game over, lights out.
+-         */
+-  </programlisting>
+- </chapter>
+-
+- <chapter id="credits">
+-  <title>Thanks</title>
+-
+-  <para>
+-   Thanks to Andi Kleen for the idea, answering my questions, fixing
+-   my mistakes, filling content, etc.  Philipp Rumpf for more spelling
+-   and clarity fixes, and some excellent non-obvious points.  Werner
+-   Almesberger for giving me a great summary of
+-   <function>disable_irq()</function>, and Jes Sorensen and Andrea
+-   Arcangeli added caveats. Michael Elizabeth Chastain for checking
+-   and adding to the Configure section. <!-- Rusty insisted on this
+-   bit; I didn't do it! --> Telsa Gwynne for teaching me DocBook. 
+-  </para>
+- </chapter>
 -</book>
-diff --git a/Documentation/driver-api/index.rst b/Documentation/driver-api/index.rst
-index 1f8517db39c7..3cf1acebc4ee 100644
---- a/Documentation/driver-api/index.rst
-+++ b/Documentation/driver-api/index.rst
-@@ -34,6 +34,7 @@ available subsections can be seen below.
-    edac
-    scsi
-    libata
-+   mtdnand
-    miscellaneous
-    w1
-    rapidio
-diff --git a/Documentation/driver-api/mtdnand.rst b/Documentation/driver-api/mtdnand.rst
+-
+diff --git a/Documentation/conf.py b/Documentation/conf.py
+index bacf9d337c89..0ce8001a50b6 100644
+--- a/Documentation/conf.py
++++ b/Documentation/conf.py
+@@ -352,6 +352,8 @@ latex_documents = [
+      'The kernel development community', 'manual'),
+     ('kernel-documentation', 'kernel-documentation.tex', 'The Linux Kernel Documentation',
+      'The kernel development community', 'manual'),
++    ('kernel-hacking/index', 'kernel-hacking.tex', 'Kernel Hacking Guides',
++     'The kernel development community', 'manual'),
+     ('process/index', 'development-process.tex', 'Linux Kernel Development Documentation',
+      'The kernel development community', 'manual'),
+     ('gpu/index', 'gpu.tex', 'Linux GPU Driver Developer\'s Guide',
+diff --git a/Documentation/index.rst b/Documentation/index.rst
+index bc67dbf76eb0..01a24486ea5f 100644
+--- a/Documentation/index.rst
++++ b/Documentation/index.rst
+@@ -51,6 +51,7 @@ merged much easier.
+    process/index
+    dev-tools/index
+    doc-guide/index
++   kernel-hacking/index
+ 
+ Kernel API documentation
+ ------------------------
+diff --git a/Documentation/kernel-hacking/conf.py b/Documentation/kernel-hacking/conf.py
 new file mode 100644
-index 000000000000..8723175f955e
+index 000000000000..3d8acf0f33ad
 --- /dev/null
-+++ b/Documentation/driver-api/mtdnand.rst
-@@ -0,0 +1,1020 @@
-+=====================================
-+MTD NAND Driver Programming Interface
-+=====================================
++++ b/Documentation/kernel-hacking/conf.py
+@@ -0,0 +1,10 @@
++# -*- coding: utf-8; mode: python -*-
 +
-+:Author: Thomas Gleixner
++project = "Kernel Hacking Guides"
++
++tags.add("subproject")
++
++latex_documents = [
++    ('index', 'kernel-hacking.tex', project,
++     'The kernel development community', 'manual'),
++]
+diff --git a/Documentation/kernel-hacking/hacking.rst b/Documentation/kernel-hacking/hacking.rst
+new file mode 100644
+index 000000000000..75597e627791
+--- /dev/null
++++ b/Documentation/kernel-hacking/hacking.rst
+@@ -0,0 +1,794 @@
++============================================
++Unreliable Guide To Hacking The Linux Kernel
++============================================
++
++:Author: Rusty Russell
 +
 +Introduction
 +============
 +
-+The generic NAND driver supports almost all NAND and AG-AND based chips
-+and connects them to the Memory Technology Devices (MTD) subsystem of
-+the Linux Kernel.
++Welcome, gentle reader, to Rusty's Remarkably Unreliable Guide to Linux
++Kernel Hacking. This document describes the common routines and general
++requirements for kernel code: its goal is to serve as a primer for Linux
++kernel development for experienced C programmers. I avoid implementation
++details: that's what the code is for, and I ignore whole tracts of
++useful routines.
 +
-+This documentation is provided for developers who want to implement
-+board drivers or filesystem drivers suitable for NAND devices.
++Before you read this, please understand that I never wanted to write
++this document, being grossly under-qualified, but I always wanted to
++read it, and this was the only way. I hope it will grow into a
++compendium of best practice, common starting points and random
++information.
 +
-+Known Bugs And Assumptions
-+==========================
++The Players
++===========
 +
-+None.
++At any time each of the CPUs in a system can be:
 +
-+Documentation hints
-+===================
++-  not associated with any process, serving a hardware interrupt;
 +
-+The function and structure docs are autogenerated. Each function and
-+struct member has a short description which is marked with an [XXX]
-+identifier. The following chapters explain the meaning of those
-+identifiers.
++-  not associated with any process, serving a softirq or tasklet;
 +
-+Function identifiers [XXX]
-+--------------------------
++-  running in kernel space, associated with a process (user context);
 +
-+The functions are marked with [XXX] identifiers in the short comment.
-+The identifiers explain the usage and scope of the functions. Following
-+identifiers are used:
++-  running a process in user space.
 +
-+-  [MTD Interface]
++There is an ordering between these. The bottom two can preempt each
++other, but above that is a strict hierarchy: each can only be preempted
++by the ones above it. For example, while a softirq is running on a CPU,
++no other softirq will preempt it, but a hardware interrupt can. However,
++any other CPUs in the system execute independently.
 +
-+   These functions provide the interface to the MTD kernel API. They are
-+   not replaceable and provide functionality which is complete hardware
-+   independent.
++We'll see a number of ways that the user context can block interrupts,
++to become truly non-preemptable.
 +
-+-  [NAND Interface]
++User Context
++------------
 +
-+   These functions are exported and provide the interface to the NAND
-+   kernel API.
++User context is when you are coming in from a system call or other trap:
++like userspace, you can be preempted by more important tasks and by
++interrupts. You can sleep, by calling :c:func:`schedule()`.
 +
-+-  [GENERIC]
++.. note::
 +
-+   Generic functions are not replaceable and provide functionality which
-+   is complete hardware independent.
++    You are always in user context on module load and unload, and on
++    operations on the block device layer.
 +
-+-  [DEFAULT]
++In user context, the ``current`` pointer (indicating the task we are
++currently executing) is valid, and :c:func:`in_interrupt()`
++(``include/linux/interrupt.h``) is false.
 +
-+   Default functions provide hardware related functionality which is
-+   suitable for most of the implementations. These functions can be
-+   replaced by the board driver if necessary. Those functions are called
-+   via pointers in the NAND chip description structure. The board driver
-+   can set the functions which should be replaced by board dependent
-+   functions before calling nand_scan(). If the function pointer is
-+   NULL on entry to nand_scan() then the pointer is set to the default
-+   function which is suitable for the detected chip type.
++.. warning::
 +
-+Struct member identifiers [XXX]
++    Beware that if you have preemption or softirqs disabled (see below),
++    :c:func:`in_interrupt()` will return a false positive.
++
++Hardware Interrupts (Hard IRQs)
 +-------------------------------
 +
-+The struct members are marked with [XXX] identifiers in the comment. The
-+identifiers explain the usage and scope of the members. Following
-+identifiers are used:
++Timer ticks, network cards and keyboard are examples of real hardware
++which produce interrupts at any time. The kernel runs interrupt
++handlers, which services the hardware. The kernel guarantees that this
++handler is never re-entered: if the same interrupt arrives, it is queued
++(or dropped). Because it disables interrupts, this handler has to be
++fast: frequently it simply acknowledges the interrupt, marks a 'software
++interrupt' for execution and exits.
 +
-+-  [INTERN]
++You can tell you are in a hardware interrupt, because
++:c:func:`in_irq()` returns true.
 +
-+   These members are for NAND driver internal use only and must not be
-+   modified. Most of these values are calculated from the chip geometry
-+   information which is evaluated during nand_scan().
++.. warning::
 +
-+-  [REPLACEABLE]
++    Beware that this will return a false positive if interrupts are
++    disabled (see below).
 +
-+   Replaceable members hold hardware related functions which can be
-+   provided by the board driver. The board driver can set the functions
-+   which should be replaced by board dependent functions before calling
-+   nand_scan(). If the function pointer is NULL on entry to
-+   nand_scan() then the pointer is set to the default function which is
-+   suitable for the detected chip type.
++Software Interrupt Context: Softirqs and Tasklets
++-------------------------------------------------
 +
-+-  [BOARDSPECIFIC]
++Whenever a system call is about to return to userspace, or a hardware
++interrupt handler exits, any 'software interrupts' which are marked
++pending (usually by hardware interrupts) are run (``kernel/softirq.c``).
 +
-+   Board specific members hold hardware related information which must
-+   be provided by the board driver. The board driver must set the
-+   function pointers and datafields before calling nand_scan().
++Much of the real interrupt handling work is done here. Early in the
++transition to SMP, there were only 'bottom halves' (BHs), which didn't
++take advantage of multiple CPUs. Shortly after we switched from wind-up
++computers made of match-sticks and snot, we abandoned this limitation
++and switched to 'softirqs'.
 +
-+-  [OPTIONAL]
++``include/linux/interrupt.h`` lists the different softirqs. A very
++important softirq is the timer softirq (``include/linux/timer.h``): you
++can register to have it call functions for you in a given length of
++time.
 +
-+   Optional members can hold information relevant for the board driver.
-+   The generic NAND driver code does not use this information.
++Softirqs are often a pain to deal with, since the same softirq will run
++simultaneously on more than one CPU. For this reason, tasklets
++(``include/linux/interrupt.h``) are more often used: they are
++dynamically-registrable (meaning you can have as many as you want), and
++they also guarantee that any tasklet will only run on one CPU at any
++time, although different tasklets can run simultaneously.
 +
-+Basic board driver
-+==================
++.. warning::
 +
-+For most boards it will be sufficient to provide just the basic
-+functions and fill out some really board dependent members in the nand
-+chip description structure.
++    The name 'tasklet' is misleading: they have nothing to do with
++    'tasks', and probably more to do with some bad vodka Alexey
++    Kuznetsov had at the time.
 +
-+Basic defines
-+-------------
++You can tell you are in a softirq (or tasklet) using the
++:c:func:`in_softirq()` macro (``include/linux/interrupt.h``).
 +
-+At least you have to provide a nand_chip structure and a storage for
-+the ioremap'ed chip address. You can allocate the nand_chip structure
-+using kmalloc or you can allocate it statically. The NAND chip structure
-+embeds an mtd structure which will be registered to the MTD subsystem.
-+You can extract a pointer to the mtd structure from a nand_chip pointer
-+using the nand_to_mtd() helper.
++.. warning::
 +
-+Kmalloc based example
++    Beware that this will return a false positive if a bh lock (see
++    below) is held.
 +
-+::
++Some Basic Rules
++================
 +
-+    static struct mtd_info *board_mtd;
-+    static void __iomem *baseaddr;
++No memory protection
++    If you corrupt memory, whether in user context or interrupt context,
++    the whole machine will crash. Are you sure you can't do what you
++    want in userspace?
 +
++No floating point or MMX
++    The FPU context is not saved; even in user context the FPU state
++    probably won't correspond with the current process: you would mess
++    with some user process' FPU state. If you really want to do this,
++    you would have to explicitly save/restore the full FPU state (and
++    avoid context switches). It is generally a bad idea; use fixed point
++    arithmetic first.
 +
-+Static example
++A rigid stack limit
++    Depending on configuration options the kernel stack is about 3K to
++    6K for most 32-bit architectures: it's about 14K on most 64-bit
++    archs, and often shared with interrupts so you can't use it all.
++    Avoid deep recursion and huge local arrays on the stack (allocate
++    them dynamically instead).
 +
-+::
++The Linux kernel is portable
++    Let's keep it that way. Your code should be 64-bit clean, and
++    endian-independent. You should also minimize CPU specific stuff,
++    e.g. inline assembly should be cleanly encapsulated and minimized to
++    ease porting. Generally it should be restricted to the
++    architecture-dependent part of the kernel tree.
 +
-+    static struct nand_chip board_chip;
-+    static void __iomem *baseaddr;
++ioctls: Not writing a new system call
++=====================================
 +
-+
-+Partition defines
-+-----------------
-+
-+If you want to divide your device into partitions, then define a
-+partitioning scheme suitable to your board.
-+
-+::
-+
-+    #define NUM_PARTITIONS 2
-+    static struct mtd_partition partition_info[] = {
-+        { .name = "Flash partition 1",
-+          .offset =  0,
-+          .size =    8 * 1024 * 1024 },
-+        { .name = "Flash partition 2",
-+          .offset =  MTDPART_OFS_NEXT,
-+          .size =    MTDPART_SIZ_FULL },
-+    };
-+
-+
-+Hardware control function
-+-------------------------
-+
-+The hardware control function provides access to the control pins of the
-+NAND chip(s). The access can be done by GPIO pins or by address lines.
-+If you use address lines, make sure that the timing requirements are
-+met.
-+
-+*GPIO based example*
++A system call generally looks like this
 +
 +::
 +
-+    static void board_hwcontrol(struct mtd_info *mtd, int cmd)
++    asmlinkage long sys_mycall(int arg)
 +    {
-+        switch(cmd){
-+            case NAND_CTL_SETCLE: /* Set CLE pin high */ break;
-+            case NAND_CTL_CLRCLE: /* Set CLE pin low */ break;
-+            case NAND_CTL_SETALE: /* Set ALE pin high */ break;
-+            case NAND_CTL_CLRALE: /* Set ALE pin low */ break;
-+            case NAND_CTL_SETNCE: /* Set nCE pin low */ break;
-+            case NAND_CTL_CLRNCE: /* Set nCE pin high */ break;
-+        }
++            return 0;
 +    }
 +
 +
-+*Address lines based example.* It's assumed that the nCE pin is driven
-+by a chip select decoder.
++First, in most cases you don't want to create a new system call. You
++create a character device and implement an appropriate ioctl for it.
++This is much more flexible than system calls, doesn't have to be entered
++in every architecture's ``include/asm/unistd.h`` and
++``arch/kernel/entry.S`` file, and is much more likely to be accepted by
++Linus.
++
++If all your routine does is read or write some parameter, consider
++implementing a :c:func:`sysfs()` interface instead.
++
++Inside the ioctl you're in user context to a process. When a error
++occurs you return a negated errno (see ``include/linux/errno.h``),
++otherwise you return 0.
++
++After you slept you should check if a signal occurred: the Unix/Linux
++way of handling signals is to temporarily exit the system call with the
++``-ERESTARTSYS`` error. The system call entry code will switch back to
++user context, process the signal handler and then your system call will
++be restarted (unless the user disabled that). So you should be prepared
++to process the restart, e.g. if you're in the middle of manipulating
++some data structure.
 +
 +::
 +
-+    static void board_hwcontrol(struct mtd_info *mtd, int cmd)
-+    {
-+        struct nand_chip *this = mtd_to_nand(mtd);
-+        switch(cmd){
-+            case NAND_CTL_SETCLE: this->IO_ADDR_W |= CLE_ADRR_BIT;  break;
-+            case NAND_CTL_CLRCLE: this->IO_ADDR_W &= ~CLE_ADRR_BIT; break;
-+            case NAND_CTL_SETALE: this->IO_ADDR_W |= ALE_ADRR_BIT;  break;
-+            case NAND_CTL_CLRALE: this->IO_ADDR_W &= ~ALE_ADRR_BIT; break;
-+        }
-+    }
++    if (signal_pending(current))
++            return -ERESTARTSYS;
 +
 +
-+Device ready function
-+---------------------
-+
-+If the hardware interface has the ready busy pin of the NAND chip
-+connected to a GPIO or other accessible I/O pin, this function is used
-+to read back the state of the pin. The function has no arguments and
-+should return 0, if the device is busy (R/B pin is low) and 1, if the
-+device is ready (R/B pin is high). If the hardware interface does not
-+give access to the ready busy pin, then the function must not be defined
-+and the function pointer this->dev_ready is set to NULL.
-+
-+Init function
-+-------------
-+
-+The init function allocates memory and sets up all the board specific
-+parameters and function pointers. When everything is set up nand_scan()
-+is called. This function tries to detect and identify then chip. If a
-+chip is found all the internal data fields are initialized accordingly.
-+The structure(s) have to be zeroed out first and then filled with the
-+necessary information about the device.
++If you're doing longer computations: first think userspace. If you
++**really** want to do it in kernel you should regularly check if you need
++to give up the CPU (remember there is cooperative multitasking per CPU).
++Idiom:
 +
 +::
 +
-+    static int __init board_init (void)
-+    {
-+        struct nand_chip *this;
-+        int err = 0;
-+
-+        /* Allocate memory for MTD device structure and private data */
-+        this = kzalloc(sizeof(struct nand_chip), GFP_KERNEL);
-+        if (!this) {
-+            printk ("Unable to allocate NAND MTD device structure.\n");
-+            err = -ENOMEM;
-+            goto out;
-+        }
-+
-+        board_mtd = nand_to_mtd(this);
-+
-+        /* map physical address */
-+        baseaddr = ioremap(CHIP_PHYSICAL_ADDRESS, 1024);
-+        if (!baseaddr) {
-+            printk("Ioremap to access NAND chip failed\n");
-+            err = -EIO;
-+            goto out_mtd;
-+        }
-+
-+        /* Set address of NAND IO lines */
-+        this->IO_ADDR_R = baseaddr;
-+        this->IO_ADDR_W = baseaddr;
-+        /* Reference hardware control function */
-+        this->hwcontrol = board_hwcontrol;
-+        /* Set command delay time, see datasheet for correct value */
-+        this->chip_delay = CHIP_DEPENDEND_COMMAND_DELAY;
-+        /* Assign the device ready function, if available */
-+        this->dev_ready = board_dev_ready;
-+        this->eccmode = NAND_ECC_SOFT;
-+
-+        /* Scan to find existence of the device */
-+        if (nand_scan (board_mtd, 1)) {
-+            err = -ENXIO;
-+            goto out_ior;
-+        }
-+
-+        add_mtd_partitions(board_mtd, partition_info, NUM_PARTITIONS);
-+        goto out;
-+
-+    out_ior:
-+        iounmap(baseaddr);
-+    out_mtd:
-+        kfree (this);
-+    out:
-+        return err;
-+    }
-+    module_init(board_init);
++    cond_resched(); /* Will sleep */
 +
 +
-+Exit function
-+-------------
++A short note on interface design: the UNIX system call motto is "Provide
++mechanism not policy".
 +
-+The exit function is only necessary if the driver is compiled as a
-+module. It releases all resources which are held by the chip driver and
-+unregisters the partitions in the MTD layer.
++Recipes for Deadlock
++====================
++
++You cannot call any routines which may sleep, unless:
++
++-  You are in user context.
++
++-  You do not own any spinlocks.
++
++-  You have interrupts enabled (actually, Andi Kleen says that the
++   scheduling code will enable them for you, but that's probably not
++   what you wanted).
++
++Note that some functions may sleep implicitly: common ones are the user
++space access functions (\*_user) and memory allocation functions
++without ``GFP_ATOMIC``.
++
++You should always compile your kernel ``CONFIG_DEBUG_ATOMIC_SLEEP`` on,
++and it will warn you if you break these rules. If you **do** break the
++rules, you will eventually lock up your box.
++
++Really.
++
++Common Routines
++===============
++
++:c:func:`printk()` ``include/linux/kernel.h``
++---------------------------------------------
++
++:c:func:`printk()` feeds kernel messages to the console, dmesg, and
++the syslog daemon. It is useful for debugging and reporting errors, and
++can be used inside interrupt context, but use with caution: a machine
++which has its console flooded with printk messages is unusable. It uses
++a format string mostly compatible with ANSI C printf, and C string
++concatenation to give it a first "priority" argument:
 +
 +::
 +
-+    #ifdef MODULE
-+    static void __exit board_cleanup (void)
-+    {
-+        /* Release resources, unregister device */
-+        nand_release (board_mtd);
-+
-+        /* unmap physical address */
-+        iounmap(baseaddr);
-+
-+        /* Free the MTD device structure */
-+        kfree (mtd_to_nand(board_mtd));
-+    }
-+    module_exit(board_cleanup);
-+    #endif
++    printk(KERN_INFO "i = %u\n", i);
 +
 +
-+Advanced board driver functions
-+===============================
-+
-+This chapter describes the advanced functionality of the NAND driver.
-+For a list of functions which can be overridden by the board driver see
-+the documentation of the nand_chip structure.
-+
-+Multiple chip control
-+---------------------
-+
-+The nand driver can control chip arrays. Therefore the board driver must
-+provide an own select_chip function. This function must (de)select the
-+requested chip. The function pointer in the nand_chip structure must be
-+set before calling nand_scan(). The maxchip parameter of nand_scan()
-+defines the maximum number of chips to scan for. Make sure that the
-+select_chip function can handle the requested number of chips.
-+
-+The nand driver concatenates the chips to one virtual chip and provides
-+this virtual chip to the MTD layer.
-+
-+*Note: The driver can only handle linear chip arrays of equally sized
-+chips. There is no support for parallel arrays which extend the
-+buswidth.*
-+
-+*GPIO based example*
++See ``include/linux/kernel.h``; for other ``KERN_`` values; these are
++interpreted by syslog as the level. Special case: for printing an IP
++address use
 +
 +::
 +
-+    static void board_select_chip (struct mtd_info *mtd, int chip)
-+    {
-+        /* Deselect all chips, set all nCE pins high */
-+        GPIO(BOARD_NAND_NCE) |= 0xff;
-+        if (chip >= 0)
-+            GPIO(BOARD_NAND_NCE) &= ~ (1 << chip);
-+    }
++    __be32 ipaddress;
++    printk(KERN_INFO "my ip: %pI4\n", &ipaddress);
 +
 +
-+*Address lines based example.* Its assumed that the nCE pins are
-+connected to an address decoder.
++:c:func:`printk()` internally uses a 1K buffer and does not catch
++overruns. Make sure that will be enough.
 +
-+::
++.. note::
 +
-+    static void board_select_chip (struct mtd_info *mtd, int chip)
-+    {
-+        struct nand_chip *this = mtd_to_nand(mtd);
++    You will know when you are a real kernel hacker when you start
++    typoing printf as printk in your user programs :)
 +
-+        /* Deselect all chips */
-+        this->IO_ADDR_R &= ~BOARD_NAND_ADDR_MASK;
-+        this->IO_ADDR_W &= ~BOARD_NAND_ADDR_MASK;
-+        switch (chip) {
-+        case 0:
-+            this->IO_ADDR_R |= BOARD_NAND_ADDR_CHIP0;
-+            this->IO_ADDR_W |= BOARD_NAND_ADDR_CHIP0;
-+            break;
-+        ....
-+        case n:
-+            this->IO_ADDR_R |= BOARD_NAND_ADDR_CHIPn;
-+            this->IO_ADDR_W |= BOARD_NAND_ADDR_CHIPn;
-+            break;
-+        }
-+    }
++.. note::
 +
++    Another sidenote: the original Unix Version 6 sources had a comment
++    on top of its printf function: "Printf should not be used for
++    chit-chat". You should follow that advice.
 +
-+Hardware ECC support
-+--------------------
++:c:func:`copy_[to/from]_user()` / :c:func:`get_user()` / :c:func:`put_user()` ``include/linux/uaccess.h``
++---------------------------------------------------------------------------------------------------------
 +
-+Functions and constants
-+~~~~~~~~~~~~~~~~~~~~~~~
++**[SLEEPS]**
 +
-+The nand driver supports three different types of hardware ECC.
++:c:func:`put_user()` and :c:func:`get_user()` are used to get
++and put single values (such as an int, char, or long) from and to
++userspace. A pointer into userspace should never be simply dereferenced:
++data should be copied using these routines. Both return ``-EFAULT`` or
++0.
 +
-+-  NAND_ECC_HW3_256
++:c:func:`copy_to_user()` and :c:func:`copy_from_user()` are
++more general: they copy an arbitrary amount of data to and from
++userspace.
 +
-+   Hardware ECC generator providing 3 bytes ECC per 256 byte.
++.. warning::
 +
-+-  NAND_ECC_HW3_512
++    Unlike :c:func:`put_user()` and :c:func:`get_user()`, they
++    return the amount of uncopied data (ie. 0 still means success).
 +
-+   Hardware ECC generator providing 3 bytes ECC per 512 byte.
++[Yes, this moronic interface makes me cringe. The flamewar comes up
++every year or so. --RR.]
 +
-+-  NAND_ECC_HW6_512
++The functions may sleep implicitly. This should never be called outside
++user context (it makes no sense), with interrupts disabled, or a
++spinlock held.
 +
-+   Hardware ECC generator providing 6 bytes ECC per 512 byte.
++:c:func:`kmalloc()`/:c:func:`kfree()` ``include/linux/slab.h``
++--------------------------------------------------------------
 +
-+-  NAND_ECC_HW8_512
++**[MAY SLEEP: SEE BELOW]**
 +
-+   Hardware ECC generator providing 6 bytes ECC per 512 byte.
++These routines are used to dynamically request pointer-aligned chunks of
++memory, like malloc and free do in userspace, but
++:c:func:`kmalloc()` takes an extra flag word. Important values:
 +
-+If your hardware generator has a different functionality add it at the
-+appropriate place in nand_base.c
++``GFP_KERNEL``
++    May sleep and swap to free memory. Only allowed in user context, but
++    is the most reliable way to allocate memory.
 +
-+The board driver must provide following functions:
-+
-+-  enable_hwecc
-+
-+   This function is called before reading / writing to the chip. Reset
-+   or initialize the hardware generator in this function. The function
-+   is called with an argument which let you distinguish between read and
-+   write operations.
-+
-+-  calculate_ecc
-+
-+   This function is called after read / write from / to the chip.
-+   Transfer the ECC from the hardware to the buffer. If the option
-+   NAND_HWECC_SYNDROME is set then the function is only called on
-+   write. See below.
-+
-+-  correct_data
-+
-+   In case of an ECC error this function is called for error detection
-+   and correction. Return 1 respectively 2 in case the error can be
-+   corrected. If the error is not correctable return -1. If your
-+   hardware generator matches the default algorithm of the nand_ecc
-+   software generator then use the correction function provided by
-+   nand_ecc instead of implementing duplicated code.
-+
-+Hardware ECC with syndrome calculation
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+Many hardware ECC implementations provide Reed-Solomon codes and
-+calculate an error syndrome on read. The syndrome must be converted to a
-+standard Reed-Solomon syndrome before calling the error correction code
-+in the generic Reed-Solomon library.
-+
-+The ECC bytes must be placed immediately after the data bytes in order
-+to make the syndrome generator work. This is contrary to the usual
-+layout used by software ECC. The separation of data and out of band area
-+is not longer possible. The nand driver code handles this layout and the
-+remaining free bytes in the oob area are managed by the autoplacement
-+code. Provide a matching oob-layout in this case. See rts_from4.c and
-+diskonchip.c for implementation reference. In those cases we must also
-+use bad block tables on FLASH, because the ECC layout is interfering
-+with the bad block marker positions. See bad block table support for
-+details.
-+
-+Bad block table support
-+-----------------------
-+
-+Most NAND chips mark the bad blocks at a defined position in the spare
-+area. Those blocks must not be erased under any circumstances as the bad
-+block information would be lost. It is possible to check the bad block
-+mark each time when the blocks are accessed by reading the spare area of
-+the first page in the block. This is time consuming so a bad block table
-+is used.
-+
-+The nand driver supports various types of bad block tables.
-+
-+-  Per device
-+
-+   The bad block table contains all bad block information of the device
-+   which can consist of multiple chips.
-+
-+-  Per chip
-+
-+   A bad block table is used per chip and contains the bad block
-+   information for this particular chip.
-+
-+-  Fixed offset
-+
-+   The bad block table is located at a fixed offset in the chip
-+   (device). This applies to various DiskOnChip devices.
-+
-+-  Automatic placed
-+
-+   The bad block table is automatically placed and detected either at
-+   the end or at the beginning of a chip (device)
-+
-+-  Mirrored tables
-+
-+   The bad block table is mirrored on the chip (device) to allow updates
-+   of the bad block table without data loss.
-+
-+nand_scan() calls the function nand_default_bbt().
-+nand_default_bbt() selects appropriate default bad block table
-+descriptors depending on the chip information which was retrieved by
-+nand_scan().
-+
-+The standard policy is scanning the device for bad blocks and build a
-+ram based bad block table which allows faster access than always
-+checking the bad block information on the flash chip itself.
-+
-+Flash based tables
-+~~~~~~~~~~~~~~~~~~
-+
-+It may be desired or necessary to keep a bad block table in FLASH. For
-+AG-AND chips this is mandatory, as they have no factory marked bad
-+blocks. They have factory marked good blocks. The marker pattern is
-+erased when the block is erased to be reused. So in case of powerloss
-+before writing the pattern back to the chip this block would be lost and
-+added to the bad blocks. Therefore we scan the chip(s) when we detect
-+them the first time for good blocks and store this information in a bad
-+block table before erasing any of the blocks.
-+
-+The blocks in which the tables are stored are protected against
-+accidental access by marking them bad in the memory bad block table. The
-+bad block table management functions are allowed to circumvent this
-+protection.
-+
-+The simplest way to activate the FLASH based bad block table support is
-+to set the option NAND_BBT_USE_FLASH in the bbt_option field of the
-+nand chip structure before calling nand_scan(). For AG-AND chips is
-+this done by default. This activates the default FLASH based bad block
-+table functionality of the NAND driver. The default bad block table
-+options are
-+
-+-  Store bad block table per chip
-+
-+-  Use 2 bits per block
-+
-+-  Automatic placement at the end of the chip
-+
-+-  Use mirrored tables with version numbers
-+
-+-  Reserve 4 blocks at the end of the chip
-+
-+User defined tables
-+~~~~~~~~~~~~~~~~~~~
-+
-+User defined tables are created by filling out a nand_bbt_descr
-+structure and storing the pointer in the nand_chip structure member
-+bbt_td before calling nand_scan(). If a mirror table is necessary a
-+second structure must be created and a pointer to this structure must be
-+stored in bbt_md inside the nand_chip structure. If the bbt_md member
-+is set to NULL then only the main table is used and no scan for the
-+mirrored table is performed.
-+
-+The most important field in the nand_bbt_descr structure is the
-+options field. The options define most of the table properties. Use the
-+predefined constants from nand.h to define the options.
-+
-+-  Number of bits per block
-+
-+   The supported number of bits is 1, 2, 4, 8.
-+
-+-  Table per chip
-+
-+   Setting the constant NAND_BBT_PERCHIP selects that a bad block
-+   table is managed for each chip in a chip array. If this option is not
-+   set then a per device bad block table is used.
-+
-+-  Table location is absolute
-+
-+   Use the option constant NAND_BBT_ABSPAGE and define the absolute
-+   page number where the bad block table starts in the field pages. If
-+   you have selected bad block tables per chip and you have a multi chip
-+   array then the start page must be given for each chip in the chip
-+   array. Note: there is no scan for a table ident pattern performed, so
-+   the fields pattern, veroffs, offs, len can be left uninitialized
-+
-+-  Table location is automatically detected
-+
-+   The table can either be located in the first or the last good blocks
-+   of the chip (device). Set NAND_BBT_LASTBLOCK to place the bad block
-+   table at the end of the chip (device). The bad block tables are
-+   marked and identified by a pattern which is stored in the spare area
-+   of the first page in the block which holds the bad block table. Store
-+   a pointer to the pattern in the pattern field. Further the length of
-+   the pattern has to be stored in len and the offset in the spare area
-+   must be given in the offs member of the nand_bbt_descr structure.
-+   For mirrored bad block tables different patterns are mandatory.
-+
-+-  Table creation
-+
-+   Set the option NAND_BBT_CREATE to enable the table creation if no
-+   table can be found during the scan. Usually this is done only once if
-+   a new chip is found.
-+
-+-  Table write support
-+
-+   Set the option NAND_BBT_WRITE to enable the table write support.
-+   This allows the update of the bad block table(s) in case a block has
-+   to be marked bad due to wear. The MTD interface function
-+   block_markbad is calling the update function of the bad block table.
-+   If the write support is enabled then the table is updated on FLASH.
-+
-+   Note: Write support should only be enabled for mirrored tables with
-+   version control.
-+
-+-  Table version control
-+
-+   Set the option NAND_BBT_VERSION to enable the table version
-+   control. It's highly recommended to enable this for mirrored tables
-+   with write support. It makes sure that the risk of losing the bad
-+   block table information is reduced to the loss of the information
-+   about the one worn out block which should be marked bad. The version
-+   is stored in 4 consecutive bytes in the spare area of the device. The
-+   position of the version number is defined by the member veroffs in
-+   the bad block table descriptor.
-+
-+-  Save block contents on write
-+
-+   In case that the block which holds the bad block table does contain
-+   other useful information, set the option NAND_BBT_SAVECONTENT. When
-+   the bad block table is written then the whole block is read the bad
-+   block table is updated and the block is erased and everything is
-+   written back. If this option is not set only the bad block table is
-+   written and everything else in the block is ignored and erased.
-+
-+-  Number of reserved blocks
-+
-+   For automatic placement some blocks must be reserved for bad block
-+   table storage. The number of reserved blocks is defined in the
-+   maxblocks member of the bad block table description structure.
-+   Reserving 4 blocks for mirrored tables should be a reasonable number.
-+   This also limits the number of blocks which are scanned for the bad
-+   block table ident pattern.
-+
-+Spare area (auto)placement
-+--------------------------
-+
-+The nand driver implements different possibilities for placement of
-+filesystem data in the spare area,
-+
-+-  Placement defined by fs driver
-+
-+-  Automatic placement
-+
-+The default placement function is automatic placement. The nand driver
-+has built in default placement schemes for the various chiptypes. If due
-+to hardware ECC functionality the default placement does not fit then
-+the board driver can provide a own placement scheme.
-+
-+File system drivers can provide a own placement scheme which is used
-+instead of the default placement scheme.
-+
-+Placement schemes are defined by a nand_oobinfo structure
-+
-+::
-+
-+    struct nand_oobinfo {
-+        int useecc;
-+        int eccbytes;
-+        int eccpos[24];
-+        int oobfree[8][2];
-+    };
-+
-+
-+-  useecc
-+
-+   The useecc member controls the ecc and placement function. The header
-+   file include/mtd/mtd-abi.h contains constants to select ecc and
-+   placement. MTD_NANDECC_OFF switches off the ecc complete. This is
-+   not recommended and available for testing and diagnosis only.
-+   MTD_NANDECC_PLACE selects caller defined placement,
-+   MTD_NANDECC_AUTOPLACE selects automatic placement.
-+
-+-  eccbytes
-+
-+   The eccbytes member defines the number of ecc bytes per page.
-+
-+-  eccpos
-+
-+   The eccpos array holds the byte offsets in the spare area where the
-+   ecc codes are placed.
-+
-+-  oobfree
-+
-+   The oobfree array defines the areas in the spare area which can be
-+   used for automatic placement. The information is given in the format
-+   {offset, size}. offset defines the start of the usable area, size the
-+   length in bytes. More than one area can be defined. The list is
-+   terminated by an {0, 0} entry.
-+
-+Placement defined by fs driver
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+The calling function provides a pointer to a nand_oobinfo structure
-+which defines the ecc placement. For writes the caller must provide a
-+spare area buffer along with the data buffer. The spare area buffer size
-+is (number of pages) \* (size of spare area). For reads the buffer size
-+is (number of pages) \* ((size of spare area) + (number of ecc steps per
-+page) \* sizeof (int)). The driver stores the result of the ecc check
-+for each tuple in the spare buffer. The storage sequence is::
-+
-+	<spare data page 0><ecc result 0>...<ecc result n>
-+
-+	...
-+
-+	<spare data page n><ecc result 0>...<ecc result n>
-+
-+This is a legacy mode used by YAFFS1.
-+
-+If the spare area buffer is NULL then only the ECC placement is done
-+according to the given scheme in the nand_oobinfo structure.
-+
-+Automatic placement
-+~~~~~~~~~~~~~~~~~~~
-+
-+Automatic placement uses the built in defaults to place the ecc bytes in
-+the spare area. If filesystem data have to be stored / read into the
-+spare area then the calling function must provide a buffer. The buffer
-+size per page is determined by the oobfree array in the nand_oobinfo
-+structure.
-+
-+If the spare area buffer is NULL then only the ECC placement is done
-+according to the default builtin scheme.
-+
-+Spare area autoplacement default schemes
-+----------------------------------------
-+
-+256 byte pagesize
-+~~~~~~~~~~~~~~~~~
-+
-+======== ================== ===================================================
-+Offset   Content            Comment
-+======== ================== ===================================================
-+0x00     ECC byte 0         Error correction code byte 0
-+0x01     ECC byte 1         Error correction code byte 1
-+0x02     ECC byte 2         Error correction code byte 2
-+0x03     Autoplace 0
-+0x04     Autoplace 1
-+0x05     Bad block marker   If any bit in this byte is zero, then this
-+			    block is bad. This applies only to the first
-+			    page in a block. In the remaining pages this
-+			    byte is reserved
-+0x06     Autoplace 2
-+0x07     Autoplace 3
-+======== ================== ===================================================
-+
-+512 byte pagesize
-+~~~~~~~~~~~~~~~~~
-+
-+
-+============= ================== ==============================================
-+Offset        Content            Comment
-+============= ================== ==============================================
-+0x00          ECC byte 0         Error correction code byte 0 of the lower
-+				 256 Byte data in this page
-+0x01          ECC byte 1         Error correction code byte 1 of the lower
-+				 256 Bytes of data in this page
-+0x02          ECC byte 2         Error correction code byte 2 of the lower
-+				 256 Bytes of data in this page
-+0x03          ECC byte 3         Error correction code byte 0 of the upper
-+				 256 Bytes of data in this page
-+0x04          reserved           reserved
-+0x05          Bad block marker   If any bit in this byte is zero, then this
-+				 block is bad. This applies only to the first
-+				 page in a block. In the remaining pages this
-+				 byte is reserved
-+0x06          ECC byte 4         Error correction code byte 1 of the upper
-+				 256 Bytes of data in this page
-+0x07          ECC byte 5         Error correction code byte 2 of the upper
-+				 256 Bytes of data in this page
-+0x08 - 0x0F   Autoplace 0 - 7
-+============= ================== ==============================================
-+
-+2048 byte pagesize
-+~~~~~~~~~~~~~~~~~~
-+
-+=========== ================== ================================================
-+Offset      Content            Comment
-+=========== ================== ================================================
-+0x00        Bad block marker   If any bit in this byte is zero, then this block
-+			       is bad. This applies only to the first page in a
-+			       block. In the remaining pages this byte is
-+			       reserved
-+0x01        Reserved           Reserved
-+0x02-0x27   Autoplace 0 - 37
-+0x28        ECC byte 0         Error correction code byte 0 of the first
-+			       256 Byte data in this page
-+0x29        ECC byte 1         Error correction code byte 1 of the first
-+			       256 Bytes of data in this page
-+0x2A        ECC byte 2         Error correction code byte 2 of the first
-+			       256 Bytes data in this page
-+0x2B        ECC byte 3         Error correction code byte 0 of the second
-+			       256 Bytes of data in this page
-+0x2C        ECC byte 4         Error correction code byte 1 of the second
-+			       256 Bytes of data in this page
-+0x2D        ECC byte 5         Error correction code byte 2 of the second
-+			       256 Bytes of data in this page
-+0x2E        ECC byte 6         Error correction code byte 0 of the third
-+			       256 Bytes of data in this page
-+0x2F        ECC byte 7         Error correction code byte 1 of the third
-+			       256 Bytes of data in this page
-+0x30        ECC byte 8         Error correction code byte 2 of the third
-+			       256 Bytes of data in this page
-+0x31        ECC byte 9         Error correction code byte 0 of the fourth
-+			       256 Bytes of data in this page
-+0x32        ECC byte 10        Error correction code byte 1 of the fourth
-+			       256 Bytes of data in this page
-+0x33        ECC byte 11        Error correction code byte 2 of the fourth
-+			       256 Bytes of data in this page
-+0x34        ECC byte 12        Error correction code byte 0 of the fifth
-+			       256 Bytes of data in this page
-+0x35        ECC byte 13        Error correction code byte 1 of the fifth
-+			       256 Bytes of data in this page
-+0x36        ECC byte 14        Error correction code byte 2 of the fifth
-+			       256 Bytes of data in this page
-+0x37        ECC byte 15        Error correction code byte 0 of the sixth
-+			       256 Bytes of data in this page
-+0x38        ECC byte 16        Error correction code byte 1 of the sixth
-+			       256 Bytes of data in this page
-+0x39        ECC byte 17        Error correction code byte 2 of the sixth
-+			       256 Bytes of data in this page
-+0x3A        ECC byte 18        Error correction code byte 0 of the seventh
-+			       256 Bytes of data in this page
-+0x3B        ECC byte 19        Error correction code byte 1 of the seventh
-+			       256 Bytes of data in this page
-+0x3C        ECC byte 20        Error correction code byte 2 of the seventh
-+			       256 Bytes of data in this page
-+0x3D        ECC byte 21        Error correction code byte 0 of the eighth
-+			       256 Bytes of data in this page
-+0x3E        ECC byte 22        Error correction code byte 1 of the eighth
-+			       256 Bytes of data in this page
-+0x3F        ECC byte 23        Error correction code byte 2 of the eighth
-+			       256 Bytes of data in this page
-+=========== ================== ================================================
-+
-+Filesystem support
-+==================
-+
-+The NAND driver provides all necessary functions for a filesystem via
-+the MTD interface.
-+
-+Filesystems must be aware of the NAND peculiarities and restrictions.
-+One major restrictions of NAND Flash is, that you cannot write as often
-+as you want to a page. The consecutive writes to a page, before erasing
-+it again, are restricted to 1-3 writes, depending on the manufacturers
-+specifications. This applies similar to the spare area.
-+
-+Therefore NAND aware filesystems must either write in page size chunks
-+or hold a writebuffer to collect smaller writes until they sum up to
-+pagesize. Available NAND aware filesystems: JFFS2, YAFFS.
-+
-+The spare area usage to store filesystem data is controlled by the spare
-+area placement functionality which is described in one of the earlier
-+chapters.
-+
-+Tools
-+=====
-+
-+The MTD project provides a couple of helpful tools to handle NAND Flash.
-+
-+-  flasherase, flasheraseall: Erase and format FLASH partitions
-+
-+-  nandwrite: write filesystem images to NAND FLASH
-+
-+-  nanddump: dump the contents of a NAND FLASH partitions
-+
-+These tools are aware of the NAND restrictions. Please use those tools
-+instead of complaining about errors which are caused by non NAND aware
-+access methods.
-+
-+Constants
-+=========
-+
-+This chapter describes the constants which might be relevant for a
-+driver developer.
-+
-+Chip option constants
-+---------------------
-+
-+Constants for chip id table
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+These constants are defined in nand.h. They are ored together to
-+describe the chip functionality.
-+
-+::
-+
-+    /* Buswitdh is 16 bit */
-+    #define NAND_BUSWIDTH_16    0x00000002
-+    /* Device supports partial programming without padding */
-+    #define NAND_NO_PADDING     0x00000004
-+    /* Chip has cache program function */
-+    #define NAND_CACHEPRG       0x00000008
-+    /* Chip has copy back function */
-+    #define NAND_COPYBACK       0x00000010
-+    /* AND Chip which has 4 banks and a confusing page / block
-+     * assignment. See Renesas datasheet for further information */
-+    #define NAND_IS_AND     0x00000020
-+    /* Chip has a array of 4 pages which can be read without
-+     * additional ready /busy waits */
-+    #define NAND_4PAGE_ARRAY    0x00000040
-+
-+
-+Constants for runtime options
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+These constants are defined in nand.h. They are ored together to
-+describe the functionality.
-+
-+::
-+
-+    /* The hw ecc generator provides a syndrome instead a ecc value on read
-+     * This can only work if we have the ecc bytes directly behind the
-+     * data bytes. Applies for DOC and AG-AND Renesas HW Reed Solomon generators */
-+    #define NAND_HWECC_SYNDROME 0x00020000
-+
-+
-+ECC selection constants
-+-----------------------
-+
-+Use these constants to select the ECC algorithm.
-+
-+::
-+
-+    /* No ECC. Usage is not recommended ! */
-+    #define NAND_ECC_NONE       0
-+    /* Software ECC 3 byte ECC per 256 Byte data */
-+    #define NAND_ECC_SOFT       1
-+    /* Hardware ECC 3 byte ECC per 256 Byte data */
-+    #define NAND_ECC_HW3_256    2
-+    /* Hardware ECC 3 byte ECC per 512 Byte data */
-+    #define NAND_ECC_HW3_512    3
-+    /* Hardware ECC 6 byte ECC per 512 Byte data */
-+    #define NAND_ECC_HW6_512    4
-+    /* Hardware ECC 6 byte ECC per 512 Byte data */
-+    #define NAND_ECC_HW8_512    6
-+
-+
-+Hardware control related constants
-+----------------------------------
-+
-+These constants describe the requested hardware access function when the
-+boardspecific hardware control function is called
-+
-+::
-+
-+    /* Select the chip by setting nCE to low */
-+    #define NAND_CTL_SETNCE     1
-+    /* Deselect the chip by setting nCE to high */
-+    #define NAND_CTL_CLRNCE     2
-+    /* Select the command latch by setting CLE to high */
-+    #define NAND_CTL_SETCLE     3
-+    /* Deselect the command latch by setting CLE to low */
-+    #define NAND_CTL_CLRCLE     4
-+    /* Select the address latch by setting ALE to high */
-+    #define NAND_CTL_SETALE     5
-+    /* Deselect the address latch by setting ALE to low */
-+    #define NAND_CTL_CLRALE     6
-+    /* Set write protection by setting WP to high. Not used! */
-+    #define NAND_CTL_SETWP      7
-+    /* Clear write protection by setting WP to low. Not used! */
-+    #define NAND_CTL_CLRWP      8
-+
-+
-+Bad block table related constants
-+---------------------------------
-+
-+These constants describe the options used for bad block table
-+descriptors.
-+
-+::
-+
-+    /* Options for the bad block table descriptors */
-+
-+    /* The number of bits used per block in the bbt on the device */
-+    #define NAND_BBT_NRBITS_MSK 0x0000000F
-+    #define NAND_BBT_1BIT       0x00000001
-+    #define NAND_BBT_2BIT       0x00000002
-+    #define NAND_BBT_4BIT       0x00000004
-+    #define NAND_BBT_8BIT       0x00000008
-+    /* The bad block table is in the last good block of the device */
-+    #define NAND_BBT_LASTBLOCK  0x00000010
-+    /* The bbt is at the given page, else we must scan for the bbt */
-+    #define NAND_BBT_ABSPAGE    0x00000020
-+    /* bbt is stored per chip on multichip devices */
-+    #define NAND_BBT_PERCHIP    0x00000080
-+    /* bbt has a version counter at offset veroffs */
-+    #define NAND_BBT_VERSION    0x00000100
-+    /* Create a bbt if none axists */
-+    #define NAND_BBT_CREATE     0x00000200
-+    /* Write bbt if necessary */
-+    #define NAND_BBT_WRITE      0x00001000
-+    /* Read and write back block contents when writing bbt */
-+    #define NAND_BBT_SAVECONTENT    0x00002000
-+
-+
-+Structures
-+==========
-+
-+This chapter contains the autogenerated documentation of the structures
-+which are used in the NAND driver and might be relevant for a driver
-+developer. Each struct member has a short description which is marked
-+with an [XXX] identifier. See the chapter "Documentation hints" for an
-+explanation.
-+
-+.. kernel-doc:: include/linux/mtd/nand.h
-+   :internal:
-+
-+Public Functions Provided
-+=========================
-+
-+This chapter contains the autogenerated documentation of the NAND kernel
-+API functions which are exported. Each function has a short description
-+which is marked with an [XXX] identifier. See the chapter "Documentation
-+hints" for an explanation.
-+
-+.. kernel-doc:: drivers/mtd/nand/nand_base.c
-+   :export:
-+
-+.. kernel-doc:: drivers/mtd/nand/nand_bbt.c
-+   :export:
-+
-+.. kernel-doc:: drivers/mtd/nand/nand_ecc.c
-+   :export:
-+
-+Internal Functions Provided
-+===========================
-+
-+This chapter contains the autogenerated documentation of the NAND driver
-+internal functions. Each function has a short description which is
-+marked with an [XXX] identifier. See the chapter "Documentation hints"
-+for an explanation. The functions marked with [DEFAULT] might be
-+relevant for a board driver developer.
-+
-+.. kernel-doc:: drivers/mtd/nand/nand_base.c
-+   :internal:
-+
-+.. kernel-doc:: drivers/mtd/nand/nand_bbt.c
-+   :internal:
-+
-+Credits
++``GFP_ATOMIC``
++    Don't sleep. Less reliable than ``GFP_KERNEL``, but may be called
++    from interrupt context. You should **really** have a good
++    out-of-memory error-handling strategy.
++
++``GFP_DMA``
++    Allocate ISA DMA lower than 16MB. If you don't know what that is you
++    don't need it. Very unreliable.
++
++If you see a sleeping function called from invalid context warning
++message, then maybe you called a sleeping allocation function from
++interrupt context without ``GFP_ATOMIC``. You should really fix that.
++Run, don't walk.
++
++If you are allocating at least ``PAGE_SIZE`` (``include/asm/page.h``)
++bytes, consider using :c:func:`__get_free_pages()`
++(``include/linux/mm.h``). It takes an order argument (0 for page sized,
++1 for double page, 2 for four pages etc.) and the same memory priority
++flag word as above.
++
++If you are allocating more than a page worth of bytes you can use
++:c:func:`vmalloc()`. It'll allocate virtual memory in the kernel
++map. This block is not contiguous in physical memory, but the MMU makes
++it look like it is for you (so it'll only look contiguous to the CPUs,
++not to external device drivers). If you really need large physically
++contiguous memory for some weird device, you have a problem: it is
++poorly supported in Linux because after some time memory fragmentation
++in a running kernel makes it hard. The best way is to allocate the block
++early in the boot process via the :c:func:`alloc_bootmem()`
++routine.
++
++Before inventing your own cache of often-used objects consider using a
++slab cache in ``include/linux/slab.h``
++
++:c:func:`current()` ``include/asm/current.h``
++---------------------------------------------
++
++This global variable (really a macro) contains a pointer to the current
++task structure, so is only valid in user context. For example, when a
++process makes a system call, this will point to the task structure of
++the calling process. It is **not NULL** in interrupt context.
++
++:c:func:`mdelay()`/:c:func:`udelay()` ``include/asm/delay.h`` ``include/linux/delay.h``
++---------------------------------------------------------------------------------------
++
++The :c:func:`udelay()` and :c:func:`ndelay()` functions can be
++used for small pauses. Do not use large values with them as you risk
++overflow - the helper function :c:func:`mdelay()` is useful here, or
++consider :c:func:`msleep()`.
++
++:c:func:`cpu_to_be32()`/:c:func:`be32_to_cpu()`/:c:func:`cpu_to_le32()`/:c:func:`le32_to_cpu()` ``include/asm/byteorder.h``
++---------------------------------------------------------------------------------------------------------------------------
++
++The :c:func:`cpu_to_be32()` family (where the "32" can be replaced
++by 64 or 16, and the "be" can be replaced by "le") are the general way
++to do endian conversions in the kernel: they return the converted value.
++All variations supply the reverse as well:
++:c:func:`be32_to_cpu()`, etc.
++
++There are two major variations of these functions: the pointer
++variation, such as :c:func:`cpu_to_be32p()`, which take a pointer
++to the given type, and return the converted value. The other variation
++is the "in-situ" family, such as :c:func:`cpu_to_be32s()`, which
++convert value referred to by the pointer, and return void.
++
++:c:func:`local_irq_save()`/:c:func:`local_irq_restore()` ``include/linux/irqflags.h``
++-------------------------------------------------------------------------------------
++
++These routines disable hard interrupts on the local CPU, and restore
++them. They are reentrant; saving the previous state in their one
++``unsigned long flags`` argument. If you know that interrupts are
++enabled, you can simply use :c:func:`local_irq_disable()` and
++:c:func:`local_irq_enable()`.
++
++:c:func:`local_bh_disable()`/:c:func:`local_bh_enable()` ``include/linux/interrupt.h``
++--------------------------------------------------------------------------------------
++
++These routines disable soft interrupts on the local CPU, and restore
++them. They are reentrant; if soft interrupts were disabled before, they
++will still be disabled after this pair of functions has been called.
++They prevent softirqs and tasklets from running on the current CPU.
++
++:c:func:`smp_processor_id()`() ``include/asm/smp.h``
++----------------------------------------------------
++
++:c:func:`get_cpu()` disables preemption (so you won't suddenly get
++moved to another CPU) and returns the current processor number, between
++0 and ``NR_CPUS``. Note that the CPU numbers are not necessarily
++continuous. You return it again with :c:func:`put_cpu()` when you
++are done.
++
++If you know you cannot be preempted by another task (ie. you are in
++interrupt context, or have preemption disabled) you can use
++smp_processor_id().
++
++``__init``/``__exit``/``__initdata`` ``include/linux/init.h``
++-------------------------------------------------------------
++
++After boot, the kernel frees up a special section; functions marked with
++``__init`` and data structures marked with ``__initdata`` are dropped
++after boot is complete: similarly modules discard this memory after
++initialization. ``__exit`` is used to declare a function which is only
++required on exit: the function will be dropped if this file is not
++compiled as a module. See the header file for use. Note that it makes no
++sense for a function marked with ``__init`` to be exported to modules
++with :c:func:`EXPORT_SYMBOL()` - this will break.
++
++:c:func:`__initcall()`/:c:func:`module_init()` ``include/linux/init.h``
++-----------------------------------------------------------------------
++
++Many parts of the kernel are well served as a module
++(dynamically-loadable parts of the kernel). Using the
++:c:func:`module_init()` and :c:func:`module_exit()` macros it
++is easy to write code without #ifdefs which can operate both as a module
++or built into the kernel.
++
++The :c:func:`module_init()` macro defines which function is to be
++called at module insertion time (if the file is compiled as a module),
++or at boot time: if the file is not compiled as a module the
++:c:func:`module_init()` macro becomes equivalent to
++:c:func:`__initcall()`, which through linker magic ensures that
++the function is called on boot.
++
++The function can return a negative error number to cause module loading
++to fail (unfortunately, this has no effect if the module is compiled
++into the kernel). This function is called in user context with
++interrupts enabled, so it can sleep.
++
++:c:func:`module_exit()` ``include/linux/init.h``
++------------------------------------------------
++
++This macro defines the function to be called at module removal time (or
++never, in the case of the file compiled into the kernel). It will only
++be called if the module usage count has reached zero. This function can
++also sleep, but cannot fail: everything must be cleaned up by the time
++it returns.
++
++Note that this macro is optional: if it is not present, your module will
++not be removable (except for 'rmmod -f').
++
++:c:func:`try_module_get()`/:c:func:`module_put()` ``include/linux/module.h``
++----------------------------------------------------------------------------
++
++These manipulate the module usage count, to protect against removal (a
++module also can't be removed if another module uses one of its exported
++symbols: see below). Before calling into module code, you should call
++:c:func:`try_module_get()` on that module: if it fails, then the
++module is being removed and you should act as if it wasn't there.
++Otherwise, you can safely enter the module, and call
++:c:func:`module_put()` when you're finished.
++
++Most registerable structures have an owner field, such as in the
++:c:type:`struct file_operations <file_operations>` structure.
++Set this field to the macro ``THIS_MODULE``.
++
++Wait Queues ``include/linux/wait.h``
++====================================
++
++**[SLEEPS]**
++
++A wait queue is used to wait for someone to wake you up when a certain
++condition is true. They must be used carefully to ensure there is no
++race condition. You declare a ``wait_queue_head_t``, and then processes
++which want to wait for that condition declare a ``wait_queue_t``
++referring to themselves, and place that in the queue.
++
++Declaring
++---------
++
++You declare a ``wait_queue_head_t`` using the
++:c:func:`DECLARE_WAIT_QUEUE_HEAD()` macro, or using the
++:c:func:`init_waitqueue_head()` routine in your initialization
++code.
++
++Queuing
++-------
++
++Placing yourself in the waitqueue is fairly complex, because you must
++put yourself in the queue before checking the condition. There is a
++macro to do this: :c:func:`wait_event_interruptible()`
++``include/linux/wait.h`` The first argument is the wait queue head, and
++the second is an expression which is evaluated; the macro returns 0 when
++this expression is true, or -ERESTARTSYS if a signal is received. The
++:c:func:`wait_event()` version ignores signals.
++
++Waking Up Queued Tasks
++----------------------
++
++Call :c:func:`wake_up()` ``include/linux/wait.h``;, which will wake
++up every process in the queue. The exception is if one has
++``TASK_EXCLUSIVE`` set, in which case the remainder of the queue will
++not be woken. There are other variants of this basic function available
++in the same header.
++
++Atomic Operations
++=================
++
++Certain operations are guaranteed atomic on all platforms. The first
++class of operations work on ``atomic_t`` ``include/asm/atomic.h``; this
++contains a signed integer (at least 32 bits long), and you must use
++these functions to manipulate or read atomic_t variables.
++:c:func:`atomic_read()` and :c:func:`atomic_set()` get and set
++the counter, :c:func:`atomic_add()`, :c:func:`atomic_sub()`,
++:c:func:`atomic_inc()`, :c:func:`atomic_dec()`, and
++:c:func:`atomic_dec_and_test()` (returns true if it was
++decremented to zero).
++
++Yes. It returns true (i.e. != 0) if the atomic variable is zero.
++
++Note that these functions are slower than normal arithmetic, and so
++should not be used unnecessarily.
++
++The second class of atomic operations is atomic bit operations on an
++``unsigned long``, defined in ``include/linux/bitops.h``. These
++operations generally take a pointer to the bit pattern, and a bit
++number: 0 is the least significant bit. :c:func:`set_bit()`,
++:c:func:`clear_bit()` and :c:func:`change_bit()` set, clear,
++and flip the given bit. :c:func:`test_and_set_bit()`,
++:c:func:`test_and_clear_bit()` and
++:c:func:`test_and_change_bit()` do the same thing, except return
++true if the bit was previously set; these are particularly useful for
++atomically setting flags.
++
++It is possible to call these operations with bit indices greater than
++BITS_PER_LONG. The resulting behavior is strange on big-endian
++platforms though so it is a good idea not to do this.
++
++Symbols
 +=======
 +
-+The following people have contributed to the NAND driver:
++Within the kernel proper, the normal linking rules apply (ie. unless a
++symbol is declared to be file scope with the ``static`` keyword, it can
++be used anywhere in the kernel). However, for modules, a special
++exported symbol table is kept which limits the entry points to the
++kernel proper. Modules can also export symbols.
 +
-+1. Steven J. Hill\ sjhill@realitydiluted.com
++:c:func:`EXPORT_SYMBOL()` ``include/linux/export.h``
++----------------------------------------------------
 +
-+2. David Woodhouse\ dwmw2@infradead.org
++This is the classic method of exporting a symbol: dynamically loaded
++modules will be able to use the symbol as normal.
 +
-+3. Thomas Gleixner\ tglx@linutronix.de
++:c:func:`EXPORT_SYMBOL_GPL()` ``include/linux/export.h``
++--------------------------------------------------------
 +
-+A lot of users have provided bugfixes, improvements and helping hands
-+for testing. Thanks a lot.
++Similar to :c:func:`EXPORT_SYMBOL()` except that the symbols
++exported by :c:func:`EXPORT_SYMBOL_GPL()` can only be seen by
++modules with a :c:func:`MODULE_LICENSE()` that specifies a GPL
++compatible license. It implies that the function is considered an
++internal implementation issue, and not really an interface. Some
++maintainers and developers may however require EXPORT_SYMBOL_GPL()
++when adding any new APIs or functionality.
 +
-+The following people have contributed to this document:
++Routines and Conventions
++========================
 +
-+1. Thomas Gleixner\ tglx@linutronix.de
++Double-linked lists ``include/linux/list.h``
++--------------------------------------------
++
++There used to be three sets of linked-list routines in the kernel
++headers, but this one is the winner. If you don't have some particular
++pressing need for a single list, it's a good choice.
++
++In particular, :c:func:`list_for_each_entry()` is useful.
++
++Return Conventions
++------------------
++
++For code called in user context, it's very common to defy C convention,
++and return 0 for success, and a negative error number (eg. -EFAULT) for
++failure. This can be unintuitive at first, but it's fairly widespread in
++the kernel.
++
++Using :c:func:`ERR_PTR()` ``include/linux/err.h``; to encode a
++negative error number into a pointer, and :c:func:`IS_ERR()` and
++:c:func:`PTR_ERR()` to get it back out again: avoids a separate
++pointer parameter for the error number. Icky, but in a good way.
++
++Breaking Compilation
++--------------------
++
++Linus and the other developers sometimes change function or structure
++names in development kernels; this is not done just to keep everyone on
++their toes: it reflects a fundamental change (eg. can no longer be
++called with interrupts on, or does extra checks, or doesn't do checks
++which were caught before). Usually this is accompanied by a fairly
++complete note to the linux-kernel mailing list; search the archive.
++Simply doing a global replace on the file usually makes things **worse**.
++
++Initializing structure members
++------------------------------
++
++The preferred method of initializing structures is to use designated
++initialisers, as defined by ISO C99, eg:
++
++::
++
++    static struct block_device_operations opt_fops = {
++            .open               = opt_open,
++            .release            = opt_release,
++            .ioctl              = opt_ioctl,
++            .check_media_change = opt_media_change,
++    };
++
++
++This makes it easy to grep for, and makes it clear which structure
++fields are set. You should do this because it looks cool.
++
++GNU Extensions
++--------------
++
++GNU Extensions are explicitly allowed in the Linux kernel. Note that
++some of the more complex ones are not very well supported, due to lack
++of general use, but the following are considered standard (see the GCC
++info page section "C Extensions" for more details - Yes, really the info
++page, the man page is only a short summary of the stuff in info).
++
++-  Inline functions
++
++-  Statement expressions (ie. the ({ and }) constructs).
++
++-  Declaring attributes of a function / variable / type
++   (__attribute__)
++
++-  typeof
++
++-  Zero length arrays
++
++-  Macro varargs
++
++-  Arithmetic on void pointers
++
++-  Non-Constant initializers
++
++-  Assembler Instructions (not outside arch/ and include/asm/)
++
++-  Function names as strings (__func__).
++
++-  __builtin_constant_p()
++
++Be wary when using long long in the kernel, the code gcc generates for
++it is horrible and worse: division and multiplication does not work on
++i386 because the GCC runtime functions for it are missing from the
++kernel environment.
++
++C++
++---
++
++Using C++ in the kernel is usually a bad idea, because the kernel does
++not provide the necessary runtime environment and the include files are
++not tested for it. It is still possible, but not recommended. If you
++really want to do this, forget about exceptions at least.
++
++NUMif
++-----
++
++It is generally considered cleaner to use macros in header files (or at
++the top of .c files) to abstract away functions rather than using \`#if'
++pre-processor statements throughout the source code.
++
++Putting Your Stuff in the Kernel
++================================
++
++In order to get your stuff into shape for official inclusion, or even to
++make a neat patch, there's administrative work to be done:
++
++-  Figure out whose pond you've been pissing in. Look at the top of the
++   source files, inside the ``MAINTAINERS`` file, and last of all in the
++   ``CREDITS`` file. You should coordinate with this person to make sure
++   you're not duplicating effort, or trying something that's already
++   been rejected.
++
++   Make sure you put your name and EMail address at the top of any files
++   you create or mangle significantly. This is the first place people
++   will look when they find a bug, or when **they** want to make a change.
++
++-  Usually you want a configuration option for your kernel hack. Edit
++   ``Kconfig`` in the appropriate directory. The Config language is
++   simple to use by cut and paste, and there's complete documentation in
++   ``Documentation/kbuild/kconfig-language.txt``.
++
++   In your description of the option, make sure you address both the
++   expert user and the user who knows nothing about your feature.
++   Mention incompatibilities and issues here. **Definitely** end your
++   description with “if in doubt, say N” (or, occasionally, \`Y'); this
++   is for people who have no idea what you are talking about.
++
++-  Edit the ``Makefile``: the CONFIG variables are exported here so you
++   can usually just add a "obj-$(CONFIG_xxx) += xxx.o" line. The syntax
++   is documented in ``Documentation/kbuild/makefiles.txt``.
++
++-  Put yourself in ``CREDITS`` if you've done something noteworthy,
++   usually beyond a single file (your name should be at the top of the
++   source files anyway). ``MAINTAINERS`` means you want to be consulted
++   when changes are made to a subsystem, and hear about bugs; it implies
++   a more-than-passing commitment to some part of the code.
++
++-  Finally, don't forget to read
++   ``Documentation/process/submitting-patches.rst`` and possibly
++   ``Documentation/process/submitting-drivers.rst``.
++
++Kernel Cantrips
++===============
++
++Some favorites from browsing the source. Feel free to add to this list.
++
++``arch/x86/include/asm/delay.h:``
++
++::
++
++    #define ndelay(n) (__builtin_constant_p(n) ? \
++            ((n) > 20000 ? __bad_ndelay() : __const_udelay((n) * 5ul)) : \
++            __ndelay(n))
++
++
++``include/linux/fs.h``:
++
++::
++
++    /*
++     * Kernel pointers have redundant information, so we can use a
++     * scheme where we can return either an error code or a dentry
++     * pointer with the same return value.
++     *
++     * This should be a per-architecture thing, to allow different
++     * error and pointer decisions.
++     */
++     #define ERR_PTR(err)    ((void *)((long)(err)))
++     #define PTR_ERR(ptr)    ((long)(ptr))
++     #define IS_ERR(ptr)     ((unsigned long)(ptr) > (unsigned long)(-1000))
++
++``arch/x86/include/asm/uaccess_32.h:``
++
++::
++
++    #define copy_to_user(to,from,n)                         \
++            (__builtin_constant_p(n) ?                      \
++             __constant_copy_to_user((to),(from),(n)) :     \
++             __generic_copy_to_user((to),(from),(n)))
++
++
++``arch/sparc/kernel/head.S:``
++
++::
++
++    /*
++     * Sun people can't spell worth damn. "compatability" indeed.
++     * At least we *know* we can't spell, and use a spell-checker.
++     */
++
++    /* Uh, actually Linus it is I who cannot spell. Too much murky
++     * Sparc assembly will do this to ya.
++     */
++    C_LABEL(cputypvar):
++            .asciz "compatibility"
++
++    /* Tested on SS-5, SS-10. Probably someone at Sun applied a spell-checker. */
++            .align 4
++    C_LABEL(cputypvar_sun4m):
++            .asciz "compatible"
++
++
++``arch/sparc/lib/checksum.S:``
++
++::
++
++            /* Sun, you just can't beat me, you just can't.  Stop trying,
++             * give up.  I'm serious, I am going to kick the living shit
++             * out of you, game over, lights out.
++             */
++
++
++Thanks
++======
++
++Thanks to Andi Kleen for the idea, answering my questions, fixing my
++mistakes, filling content, etc. Philipp Rumpf for more spelling and
++clarity fixes, and some excellent non-obvious points. Werner Almesberger
++for giving me a great summary of :c:func:`disable_irq()`, and Jes
++Sorensen and Andrea Arcangeli added caveats. Michael Elizabeth Chastain
++for checking and adding to the Configure section. Telsa Gwynne for
++teaching me DocBook.
+diff --git a/Documentation/kernel-hacking/index.rst b/Documentation/kernel-hacking/index.rst
+new file mode 100644
+index 000000000000..ba208bf03ce9
+--- /dev/null
++++ b/Documentation/kernel-hacking/index.rst
+@@ -0,0 +1,8 @@
++=====================
++Kernel Hacking Guides
++=====================
++
++.. toctree::
++   :maxdepth: 2
++
++   hacking
 -- 
 2.9.3
