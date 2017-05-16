@@ -1,29 +1,26 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dAaZW-0003Xw-CM
- for linux-mtd@lists.infradead.org; Tue, 16 May 2017 11:23:24 +0000
-Subject: Re: Question on fscrypt_d_revalidate() and fstest generic/429
-To: Al Viro <viro@ZenIV.linux.org.uk>
-References: <e2d845a3-a863-1506-a0de-576049c84e81@nod.at>
- <20170515194553.GA20264@gmail.com>
- <489e1437-990f-3e88-d426-b47b82441009@nod.at>
- <20170515235035.GO390@ZenIV.linux.org.uk>
-Cc: Eric Biggers <ebiggers3@gmail.com>, linux-fscrypt@vger.kernel.org,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- Eric Biggers <ebiggers@google.com>, Theodore Ts'o <tytso@mit.edu>,
- David Gstir <david@sigma-star.at>,
- David Oberhollenzer <david.oberhollenzer@sigma-star.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <450be703-3e1a-8b2c-d6e6-03054c6a969b@nod.at>
-Date: Tue, 16 May 2017 13:22:44 +0200
-MIME-Version: 1.0
-In-Reply-To: <20170515235035.GO390@ZenIV.linux.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
+ ([52.27.115.49] helo=osg.samsung.com)
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dAbPc-0001IF-1U
+ for linux-mtd@lists.infradead.org; Tue, 16 May 2017 12:17:14 +0000
+From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
+ Mauro Carvalho Chehab <mchehab@infradead.org>,
+ linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH v2 06/53] locking.rst: add captions to two tables
+Date: Tue, 16 May 2017 09:15:58 -0300
+Message-Id: <475c5ef83d26c399a55b106398e9dcb38e6d888b.1494935649.git.mchehab@s-opensource.com>
+In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
+References: <cover.1494935649.git.mchehab@s-opensource.com>
+In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
+References: <cover.1494935649.git.mchehab@s-opensource.com>
+Sender: Mauro Carvalho Chehab <mchehab@smtp.s-opensource.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,25 +30,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Al,
+Those tables have a "caption" at the end, but ReST
+actually expects it on a different way.
 
-Am 16.05.2017 um 01:50 schrieb Al Viro:
-> On Mon, May 15, 2017 at 09:51:03PM +0200, Richard Weinberger wrote:
-> 
->>> I doubt it's the right solution to make fscrypt_d_revalidate() look at
->>> ->i_nlink, since ->d_revalidate() is meant to validate the filename, not the
->>> inode.  I think there is probably a VFS bug that is causing the dentries to not
->>> be freed.
->>
->> Not sure. Al? :-)
-> 
-> What's to tell VFS that they are garbage?  If your code doesn't do it,
-> VFS has no way to know.  And I certainly agree that using ->d_revalidate()
-> to trigger their unhashing is a bloody odd design; take it up with whoever
-> had come up with it...
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ Documentation/kernel-hacking/locking.rst | 66 ++++++++++++++++----------------
+ 1 file changed, 34 insertions(+), 32 deletions(-)
 
-Not sure whether I understood your answer.
-What is the preferred way to inform VFS that the dentry is no longer valid?
-
-Thanks,
-//richard
+diff --git a/Documentation/kernel-hacking/locking.rst b/Documentation/kernel-hacking/locking.rst
+index 17774b1f7587..b70c2c4eb147 100644
+--- a/Documentation/kernel-hacking/locking.rst
++++ b/Documentation/kernel-hacking/locking.rst
+@@ -29,43 +29,45 @@ In a normal program, you can increment a counter like so:
+ 
+ This is what they would expect to happen:
+ 
+-+------------------------------------+------------------------------------+
+-| Instance 1                         | Instance 2                         |
+-+====================================+====================================+
+-| read very_important_count (5)      |                                    |
+-+------------------------------------+------------------------------------+
+-| add 1 (6)                          |                                    |
+-+------------------------------------+------------------------------------+
+-| write very_important_count (6)     |                                    |
+-+------------------------------------+------------------------------------+
+-|                                    | read very_important_count (6)      |
+-+------------------------------------+------------------------------------+
+-|                                    | add 1 (7)                          |
+-+------------------------------------+------------------------------------+
+-|                                    | write very_important_count (7)     |
+-+------------------------------------+------------------------------------+
+ 
+-Table: Expected Results
++.. table:: Expected Results
++
++  +------------------------------------+------------------------------------+
++  | Instance 1                         | Instance 2                         |
++  +====================================+====================================+
++  | read very_important_count (5)      |                                    |
++  +------------------------------------+------------------------------------+
++  | add 1 (6)                          |                                    |
++  +------------------------------------+------------------------------------+
++  | write very_important_count (6)     |                                    |
++  +------------------------------------+------------------------------------+
++  |                                    | read very_important_count (6)      |
++  +------------------------------------+------------------------------------+
++  |                                    | add 1 (7)                          |
++  +------------------------------------+------------------------------------+
++  |                                    | write very_important_count (7)     |
++  +------------------------------------+------------------------------------+
+ 
+ This is what might happen:
+ 
+-+------------------------------------+------------------------------------+
+-| Instance 1                         | Instance 2                         |
+-+====================================+====================================+
+-| read very_important_count (5)      |                                    |
+-+------------------------------------+------------------------------------+
+-|                                    | read very_important_count (5)      |
+-+------------------------------------+------------------------------------+
+-| add 1 (6)                          |                                    |
+-+------------------------------------+------------------------------------+
+-|                                    | add 1 (6)                          |
+-+------------------------------------+------------------------------------+
+-| write very_important_count (6)     |                                    |
+-+------------------------------------+------------------------------------+
+-|                                    | write very_important_count (6)     |
+-+------------------------------------+------------------------------------+
++.. table:: Possible Results
++
++  +------------------------------------+------------------------------------+
++  | Instance 1                         | Instance 2                         |
++  +====================================+====================================+
++  | read very_important_count (5)      |                                    |
++  +------------------------------------+------------------------------------+
++  |                                    | read very_important_count (5)      |
++  +------------------------------------+------------------------------------+
++  | add 1 (6)                          |                                    |
++  +------------------------------------+------------------------------------+
++  |                                    | add 1 (6)                          |
++  +------------------------------------+------------------------------------+
++  | write very_important_count (6)     |                                    |
++  +------------------------------------+------------------------------------+
++  |                                    | write very_important_count (6)     |
++  +------------------------------------+------------------------------------+
+ 
+-Table: Possible Results
+ 
+ Race Conditions and Critical Regions
+ ------------------------------------
+-- 
+2.9.3
