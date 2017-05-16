@@ -1,29 +1,19 @@
-Received: from zeniv.linux.org.uk ([195.92.253.2])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dAPm6-0007po-1E
- for linux-mtd@lists.infradead.org; Mon, 15 May 2017 23:51:40 +0000
-Date: Tue, 16 May 2017 00:50:36 +0100
-From: Al Viro <viro@ZenIV.linux.org.uk>
-To: Richard Weinberger <richard@nod.at>
-Cc: Eric Biggers <ebiggers3@gmail.com>, linux-fscrypt@vger.kernel.org,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- Eric Biggers <ebiggers@google.com>, Theodore Ts'o <tytso@mit.edu>,
- David Gstir <david@sigma-star.at>,
- David Oberhollenzer <david.oberhollenzer@sigma-star.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: Question on fscrypt_d_revalidate() and fstest generic/429
-Message-ID: <20170515235035.GO390@ZenIV.linux.org.uk>
-References: <e2d845a3-a863-1506-a0de-576049c84e81@nod.at>
- <20170515194553.GA20264@gmail.com>
- <489e1437-990f-3e88-d426-b47b82441009@nod.at>
+Subject: Re: [PATCH v3 1/4] mtd: nand: mediatek: update DT bindings
+To: Xiaolei Li <xiaolei.li@mediatek.com>, boris.brezillon@free-electrons.com,
+ computersforpeace@gmail.com
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, robh+dt@kernel.org,
+ rogercc.lin@mediatek.com, yt.shen@mediatek.com, srv_heupstream@mediatek.com
+References: <1494851979-14416-1-git-send-email-xiaolei.li@mediatek.com>
+ <1494851979-14416-2-git-send-email-xiaolei.li@mediatek.com>
+From: Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <9668a149-7fa9-361b-752d-4ae9db311a07@gmail.com>
+Date: Tue, 16 May 2017 08:20:45 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <489e1437-990f-3e88-d426-b47b82441009@nod.at>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <1494851979-14416-2-git-send-email-xiaolei.li@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,16 +23,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, May 15, 2017 at 09:51:03PM +0200, Richard Weinberger wrote:
 
-> > I doubt it's the right solution to make fscrypt_d_revalidate() look at
-> > ->i_nlink, since ->d_revalidate() is meant to validate the filename, not the
-> > inode.  I think there is probably a VFS bug that is causing the dentries to not
-> > be freed.
+
+On 15/05/17 14:39, Xiaolei Li wrote:
+> Add MT2712 NAND Flash Controller dt bindings documentation.
 > 
-> Not sure. Al? :-)
+> Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
+> ---
+>   Documentation/devicetree/bindings/mtd/mtk-nand.txt | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
 
-What's to tell VFS that they are garbage?  If your code doesn't do it,
-VFS has no way to know.  And I certainly agree that using ->d_revalidate()
-to trigger their unhashing is a bloody odd design; take it up with whoever
-had come up with it...
+Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+
+> diff --git a/Documentation/devicetree/bindings/mtd/mtk-nand.txt b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
+> index 069c192..dbf9e05 100644
+> --- a/Documentation/devicetree/bindings/mtd/mtk-nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
+> @@ -12,7 +12,8 @@ tree nodes.
+>   
+>   The first part of NFC is NAND Controller Interface (NFI) HW.
+>   Required NFI properties:
+> -- compatible:			Should be "mediatek,mtxxxx-nfc".
+> +- compatible:			Should be one of "mediatek,mt2701-nfc",
+> +				"mediatek,mt2712-nfc".
+>   - reg:				Base physical address and size of NFI.
+>   - interrupts:			Interrupts of NFI.
+>   - clocks:			NFI required clocks.
+> @@ -141,7 +142,7 @@ Example:
+>   ==============
+>   
+>   Required BCH properties:
+> -- compatible:	Should be "mediatek,mtxxxx-ecc".
+> +- compatible:	Should be one of "mediatek,mt2701-ecc", "mediatek,mt2712-ecc".
+>   - reg:		Base physical address and size of ECC.
+>   - interrupts:	Interrupts of ECC.
+>   - clocks:	ECC required clocks.
+> 
