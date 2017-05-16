@@ -1,28 +1,32 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dAWHG-0005LV-FJ
- for linux-mtd@lists.infradead.org; Tue, 16 May 2017 06:48:17 +0000
-Subject: Re: Question on fscrypt_d_revalidate() and fstest generic/429
-To: Eric Biggers <ebiggers3@gmail.com>
-References: <e2d845a3-a863-1506-a0de-576049c84e81@nod.at>
- <20170515194553.GA20264@gmail.com>
- <489e1437-990f-3e88-d426-b47b82441009@nod.at>
- <20170515232556.GA46783@gmail.com>
-Cc: linux-fscrypt@vger.kernel.org,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- Eric Biggers <ebiggers@google.com>, Theodore Ts'o <tytso@mit.edu>,
- Al Viro <viro@zeniv.linux.org.uk>, David Gstir <david@sigma-star.at>,
- David Oberhollenzer <david.oberhollenzer@sigma-star.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <fbf20418-0819-b980-7b68-089e0d1c3d18@nod.at>
-Date: Tue, 16 May 2017 08:47:43 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dAWUt-00036l-6F
+ for linux-mtd@lists.infradead.org; Tue, 16 May 2017 07:02:21 +0000
+Date: Tue, 16 May 2017 09:01:56 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Jonathan Corbet <corbet@lwn.net>
+Cc: Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, Takashi Iwai
+ <tiwai@suse.de>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, "Herton
+ R. Krzesinski" <herton@redhat.com>, linux-mtd@lists.infradead.org, Cyrille
+ Pitchen <cyrille.pitchen@atmel.com>, Markus Heiser
+ <markus.heiser@darmarit.de>, Yoshinori Sato <ysato@users.sourceforge.jp>,
+ Richard Weinberger <richard@nod.at>, Linux Doc Mailing List
+ <linux-doc@vger.kernel.org>, Mauro Carvalho Chehab
+ <mchehab@s-opensource.com>, Marek Vasut <marek.vasut@gmail.com>, sayli
+ karnik <karniksayli1995@gmail.com>, Jani Nikula <jani.nikula@intel.com>,
+ Mauro Carvalho Chehab <mchehab@infradead.org>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
+ linux-security-module@vger.kernel.org, Silvio Fricke
+ <silvio.fricke@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 0/5] Convert more books to ReST
+Message-ID: <20170516090156.47d55338@bbrezillon>
+In-Reply-To: <20170515111519.7bbb449b@lwn.net>
+References: <cover.1494672881.git.mchehab@s-opensource.com>
+ <20170515140912.100c9cac@bbrezillon>
+ <20170515111519.7bbb449b@lwn.net>
 MIME-Version: 1.0
-In-Reply-To: <20170515232556.GA46783@gmail.com>
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,30 +37,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Eric,
+Hi Jonathan,
 
-Am 16.05.2017 um 01:25 schrieb Eric Biggers:
-> On Mon, May 15, 2017 at 09:51:03PM +0200, Richard Weinberger wrote:
->>>
->>> The test is repeatedly creating and removing a directory "dir" while lookups are
->>> being done in it.  It seems the problem is that many dentries are being created
->>> for "dir", and they pin many different inodes, all at the same time.  This
->>> actually happens for ext4 too; it just doesn't cause an observable error.
->>>
->>> I doubt it's the right solution to make fscrypt_d_revalidate() look at
->>> ->i_nlink, since ->d_revalidate() is meant to validate the filename, not the
->>> inode.  I think there is probably a VFS bug that is causing the dentries to not
->>> be freed.
->>
->> Not sure. Al? :-)
->>
+On Mon, 15 May 2017 11:15:19 -0600
+Jonathan Corbet <corbet@lwn.net> wrote:
+
+> On Mon, 15 May 2017 14:09:12 +0200
+> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 > 
-> I can reproduce this on an unencrypted directory after updating path_init() in
-> fs/namei.c to always clear LOOKUP_RCU, so that all path lookups are done in
-> ref-walk mode.  So I think fscrypt_d_revalidate() was only relevant because it
-> causes all path lookups to drop out of rcu-walk mode.
+> > >   mtd: adjust kernel-docs to avoid Sphinx/kerneldoc warnings    
+> > 
+> > Not sure how you plan to merge these changes, but if it goes through
+> > a single tree I'll probably need an immutable topic branch, because I
+> > plan to change a few things in nand_base.c nand.h for the next release.  
+> 
+> docs-next doesn't rebase, so there shouldn't be trouble there.  But we
+> could also just separate this patch into two pieces.  I suspect we could
+> live with a couple of warnings for a period during the 4.13 merge window
+> without too much pain...
 
-On ext4 or UBIFS?
+I like this idea. This way I can take the nand_base.c/nand.h changes
+through my tree and let you pick the Doc migration bits.
 
 Thanks,
-//richard
+
+Boris
