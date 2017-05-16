@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dAbQ9-0001Ma-8b
- for linux-mtd@lists.infradead.org; Tue, 16 May 2017 12:18:00 +0000
+ id 1dAbQF-0001MJ-VN
+ for linux-mtd@lists.infradead.org; Tue, 16 May 2017 12:18:06 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -12,11 +12,11 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH v2 10/53] conf.py: define a color for important markup on PDF
- output
-Date: Tue, 16 May 2017 09:16:02 -0300
-Message-Id: <2a054b5156cf3bbca31b5b34170df0b7ed065e12.1494935649.git.mchehab@s-opensource.com>
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
+ Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH v2 47/53] irq: update genericirq book location
+Date: Tue, 16 May 2017 09:16:39 -0300
+Message-Id: <c0c6e0850514c16814c37f64a9a1bcc6c52a19ab.1494935649.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
 References: <cover.1494935649.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
@@ -31,39 +31,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As kdbg.rst uses the ".. important::" annotation, let's define a
-color for PDF output.
+This book got converted from DocBook. Update its references to
+point to the current location.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/conf.py | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ kernel/irq/chip.c    | 2 +-
+ kernel/irq/handle.c  | 2 +-
+ kernel/irq/irqdesc.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/conf.py b/Documentation/conf.py
-index 0ce8001a50b6..1774357150a3 100644
---- a/Documentation/conf.py
-+++ b/Documentation/conf.py
-@@ -281,6 +281,7 @@ latex_elements = {
- 	\\definecolor{NoteColor}{RGB}{204,255,255}
- 	\\definecolor{WarningColor}{RGB}{255,204,204}
- 	\\definecolor{AttentionColor}{RGB}{255,255,204}
-+	\\definecolor{ImportantColor}{RGB}{192,255,204}
- 	\\definecolor{OtherColor}{RGB}{204,204,204}
-         \\newlength{\\mynoticelength}
-         \\makeatletter\\newenvironment{coloredbox}[1]{%
-@@ -301,7 +302,12 @@ latex_elements = {
- 	            \\ifthenelse%
- 	            {\\equal{\\py@noticetype}{attention}}%
- 	            {\\colorbox{AttentionColor}{\\usebox{\\@tempboxa}}}%
--	            {\\colorbox{OtherColor}{\\usebox{\\@tempboxa}}}%
-+		    {%
-+	               \\ifthenelse%
-+	               {\\equal{\\py@noticetype}{important}}%
-+	               {\\colorbox{ImportantColor}{\\usebox{\\@tempboxa}}}%
-+	               {\\colorbox{OtherColor}{\\usebox{\\@tempboxa}}}%
-+		    }%
- 		 }%
- 	      }%
-         }\\makeatother
+diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
+index 686be4b73018..4188a0a7691f 100644
+--- a/kernel/irq/chip.c
++++ b/kernel/irq/chip.c
+@@ -7,7 +7,7 @@
+  * This file contains the core interrupt handling code, for irq-chip
+  * based architectures.
+  *
+- * Detailed information is available in Documentation/DocBook/genericirq
++ * Detailed information is available in Documentation/core-api/genericirq.rst
+  */
+ 
+ #include <linux/irq.h>
+diff --git a/kernel/irq/handle.c b/kernel/irq/handle.c
+index d3f24905852c..bbf9a7174283 100644
+--- a/kernel/irq/handle.c
++++ b/kernel/irq/handle.c
+@@ -6,7 +6,7 @@
+  *
+  * This file contains the core interrupt handling code.
+  *
+- * Detailed information is available in Documentation/DocBook/genericirq
++ * Detailed information is available in Documentation/core-api/genericirq.rst
+  *
+  */
+ 
+diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
+index 00bb0aeea1d0..22e443133987 100644
+--- a/kernel/irq/irqdesc.c
++++ b/kernel/irq/irqdesc.c
+@@ -4,7 +4,7 @@
+  *
+  * This file contains the interrupt descriptor management code
+  *
+- * Detailed information is available in Documentation/DocBook/genericirq
++ * Detailed information is available in Documentation/core-api/genericirq.rst
+  *
+  */
+ #include <linux/irq.h>
 -- 
 2.9.3
