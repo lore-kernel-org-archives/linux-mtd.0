@@ -1,8 +1,8 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dAcHI-0000Ik-6a
- for linux-mtd@lists.infradead.org; Tue, 16 May 2017 13:12:47 +0000
-Date: Tue, 16 May 2017 15:12:08 +0200
+ id 1dAcIW-0000wk-3K
+ for linux-mtd@lists.infradead.org; Tue, 16 May 2017 13:13:59 +0000
+Date: Tue, 16 May 2017 15:13:24 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 Cc: Linux Doc Mailing List <linux-doc@vger.kernel.org>, Jonathan Corbet
@@ -12,11 +12,12 @@ Cc: Linux Doc Mailing List <linux-doc@vger.kernel.org>, Jonathan Corbet
  linux-mtd@lists.infradead.org, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  Brian Norris <computersforpeace@gmail.com>, David Woodhouse
  <dwmw2@infradead.org>
-Subject: Re: [PATCH v2 38/53] mtdnand.rst: group the "::" with previous line
-Message-ID: <20170516151208.0246f874@bbrezillon>
-In-Reply-To: <f341afe2fca77fbb258007dc9addb36784b4f252.1494935649.git.mchehab@s-opensource.com>
+Subject: Re: [PATCH v2 39/53] mtd: adjust kernel-docs to avoid
+ Sphinx/kerneldoc warnings
+Message-ID: <20170516151324.22afa72a@bbrezillon>
+In-Reply-To: <b6f6c29454d236e85f2912cb0f9366825ca1b0be.1494935649.git.mchehab@s-opensource.com>
 References: <cover.1494935649.git.mchehab@s-opensource.com>
- <f341afe2fca77fbb258007dc9addb36784b4f252.1494935649.git.mchehab@s-opensource.com>
+ <b6f6c29454d236e85f2912cb0f9366825ca1b0be.1494935649.git.mchehab@s-opensource.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -29,87 +30,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 16 May 2017 09:16:30 -0300
+On Tue, 16 May 2017 09:16:31 -0300
 Mauro Carvalho Chehab <mchehab@s-opensource.com> wrote:
 
-> Group the :: with the previous paragraph, in order to make it
-> visually better when reading as a text file.
-> 
-> While here, replace:
-> 	ored (with means "Covered or adorned with ore or metal")
-> by:
-> 	OR-ed
-> 
-> To reflect its true meaning.
+> ./drivers/mtd/nand/nand_bbt.c:1: warning: no structured comments found
+> ./include/linux/mtd/nand.h:785: ERROR: Unexpected indentation.
+> ./drivers/mtd/nand/nand_base.c:449: WARNING: Definition list ends without a blank line; unexpected unindent.
+> ./drivers/mtd/nand/nand_base.c:1161: ERROR: Unexpected indentation.
+> ./drivers/mtd/nand/nand_base.c:1162: WARNING: Block quote ends without a blank line; unexpected unindent.
 > 
 > Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 
 Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
 > ---
->  Documentation/driver-api/mtdnand.rst | 24 +++++++-----------------
->  1 file changed, 7 insertions(+), 17 deletions(-)
+>  Documentation/driver-api/mtdnand.rst | 3 ---
+>  drivers/mtd/nand/nand_base.c         | 7 +++++--
+>  include/linux/mtd/nand.h             | 2 +-
+>  3 files changed, 6 insertions(+), 6 deletions(-)
 > 
 > diff --git a/Documentation/driver-api/mtdnand.rst b/Documentation/driver-api/mtdnand.rst
-> index 8723175f955e..7c19795ebb4a 100644
+> index 7c19795ebb4a..e9afa586d15e 100644
 > --- a/Documentation/driver-api/mtdnand.rst
 > +++ b/Documentation/driver-api/mtdnand.rst
-> @@ -843,10 +843,8 @@ Chip option constants
->  Constants for chip id table
->  ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> @@ -970,9 +970,6 @@ hints" for an explanation.
+>  .. kernel-doc:: drivers/mtd/nand/nand_base.c
+>     :export:
 >  
-> -These constants are defined in nand.h. They are ored together to
-> -describe the chip functionality.
+> -.. kernel-doc:: drivers/mtd/nand/nand_bbt.c
+> -   :export:
 > -
-> -::
-> +These constants are defined in nand.h. They are OR-ed together to
-> +describe the chip functionality::
+>  .. kernel-doc:: drivers/mtd/nand/nand_ecc.c
+>     :export:
 >  
->      /* Buswitdh is 16 bit */
->      #define NAND_BUSWIDTH_16    0x00000002
-> @@ -867,10 +865,8 @@ describe the chip functionality.
->  Constants for runtime options
->  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->  
-> -These constants are defined in nand.h. They are ored together to
-> -describe the functionality.
-> -
-> -::
-> +These constants are defined in nand.h. They are OR-ed together to
-> +describe the functionality::
->  
->      /* The hw ecc generator provides a syndrome instead a ecc value on read
->       * This can only work if we have the ecc bytes directly behind the
-> @@ -881,9 +877,7 @@ describe the functionality.
->  ECC selection constants
->  -----------------------
->  
-> -Use these constants to select the ECC algorithm.
-> -
-> -::
-> +Use these constants to select the ECC algorithm::
->  
->      /* No ECC. Usage is not recommended ! */
->      #define NAND_ECC_NONE       0
-> @@ -903,9 +897,7 @@ Hardware control related constants
->  ----------------------------------
->  
->  These constants describe the requested hardware access function when the
-> -boardspecific hardware control function is called
-> -
-> -::
-> +boardspecific hardware control function is called::
->  
->      /* Select the chip by setting nCE to low */
->      #define NAND_CTL_SETNCE     1
-> @@ -929,9 +921,7 @@ Bad block table related constants
->  ---------------------------------
->  
->  These constants describe the options used for bad block table
-> -descriptors.
-> -
-> -::
-> +descriptors::
->  
->      /* Options for the bad block table descriptors */
->  
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index b0524f8accb6..c8988c01e0d7 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -442,10 +442,12 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
+>   * specify how to write bad block markers to OOB (chip->block_markbad).
+>   *
+>   * We try operations in the following order:
+> + *
+>   *  (1) erase the affected block, to allow OOB marker to be written cleanly
+>   *  (2) write bad block marker to OOB area of affected block (unless flag
+>   *      NAND_BBT_NO_OOB_BBM is present)
+>   *  (3) update the BBT
+> + *
+>   * Note that we retain the first error encountered in (2) or (3), finish the
+>   * procedures, and dump the error in the end.
+>  */
+> @@ -1155,9 +1157,10 @@ int nand_reset(struct nand_chip *chip, int chipnr)
+>   * @mtd: mtd info
+>   * @ofs: offset to start unlock from
+>   * @len: length to unlock
+> - * @invert: when = 0, unlock the range of blocks within the lower and
+> + * @invert:
+> + *        - when = 0, unlock the range of blocks within the lower and
+>   *                    upper boundary address
+> - *          when = 1, unlock the range of blocks outside the boundaries
+> + *        - when = 1, unlock the range of blocks outside the boundaries
+>   *                    of the lower and upper boundary address
+>   *
+>   * Returs unlock status.
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 9591e0fbe5bd..3d5b20379ba3 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -779,7 +779,7 @@ nand_get_sdr_timings(const struct nand_data_interface *conf)
+>   *			Minimum amount of bit errors per @ecc_step_ds guaranteed
+>   *			to be correctable. If unknown, set to zero.
+>   * @ecc_step_ds:	[INTERN] ECC step required by the @ecc_strength_ds,
+> - *                      also from the datasheet. It is the recommended ECC step
+> + *			also from the datasheet. It is the recommended ECC step
+>   *			size, if known; if unknown, set to zero.
+>   * @onfi_timing_mode_default: [INTERN] default ONFI timing mode. This field is
+>   *			      set to the actually used ONFI mode if the chip is
