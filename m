@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dAbPy-0001MT-CL
- for linux-mtd@lists.infradead.org; Tue, 16 May 2017 12:17:41 +0000
+ id 1dAbPy-0001Ma-CK
+ for linux-mtd@lists.infradead.org; Tue, 16 May 2017 12:17:45 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -13,10 +13,12 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- Tejun Heo <tj@kernel.org>, linux-ide@vger.kernel.org
-Subject: [PATCH v2 26/53] libata: fix identation on a kernel-doc markup
-Date: Tue, 16 May 2017 09:16:18 -0300
-Message-Id: <83af4e1f80ae178fe7bc4ad2f91de46997d736b6.1494935649.git.mchehab@s-opensource.com>
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Darren Hart <dvhart@infradead.org>
+Subject: [PATCH v2 04/53] mutex,
+ futex: adjust kernel-doc markups to generate ReST
+Date: Tue, 16 May 2017 09:15:56 -0300
+Message-Id: <7b4ff1adb57ad96d8f12a05d8c661a3d8c4d2be1.1494935649.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
 References: <cover.1494935649.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
@@ -31,33 +33,169 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sphinx got confused with the markup identation:
-	./drivers/ata/libata-scsi.c:3402: ERROR: Unexpected indentation.
+There are a few issues on some kernel-doc markups that was
+causing troubles with kernel-doc output on ReST format:
+
+./kernel/futex.c:492: WARNING: Inline emphasis start-string without end-string.
+./kernel/futex.c:1264: WARNING: Block quote ends without a blank line; unexpected unindent.
+./kernel/futex.c:1721: WARNING: Block quote ends without a blank line; unexpected unindent.
+./kernel/futex.c:2338: WARNING: Block quote ends without a blank line; unexpected unindent.
+./kernel/futex.c:2426: WARNING: Block quote ends without a blank line; unexpected unindent.
+./kernel/futex.c:2899: WARNING: Block quote ends without a blank line; unexpected unindent.
+./kernel/futex.c:2972: WARNING: Block quote ends without a blank line; unexpected unindent.
+
+Fix them.
 
 No functional changes.
 
+Acked-by: Darren Hart (VMware) <dvhart@infradead.org>
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- drivers/ata/libata-scsi.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ include/linux/mutex.h  |  6 +++---
+ kernel/futex.c         | 40 ++++++++++++++++++++--------------------
+ kernel/locking/mutex.c |  6 +++---
+ 3 files changed, 26 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/ata/libata-scsi.c b/drivers/ata/libata-scsi.c
-index 49ba9834c715..dcd38d9e9804 100644
---- a/drivers/ata/libata-scsi.c
-+++ b/drivers/ata/libata-scsi.c
-@@ -3398,9 +3398,10 @@ static size_t ata_format_dsm_trim_descr(struct scsi_cmnd *cmd, u32 trmax,
+diff --git a/include/linux/mutex.h b/include/linux/mutex.h
+index 1127fe31645d..ffcba1f337da 100644
+--- a/include/linux/mutex.h
++++ b/include/linux/mutex.h
+@@ -214,9 +214,9 @@ enum mutex_trylock_recursive_enum {
+  * raisins, and once those are gone this will be removed.
   *
-  * Translate a SCSI WRITE SAME command to be either a DSM TRIM command or
-  * an SCT Write Same command.
-- * Based on WRITE SAME has the UNMAP flag
-- *   When set translate to DSM TRIM
-- *   When clear translate to SCT Write Same
-+ * Based on WRITE SAME has the UNMAP flag:
-+ *
-+ *   - When set translate to DSM TRIM
-+ *   - When clear translate to SCT Write Same
+  * Returns:
+- *  MUTEX_TRYLOCK_FAILED    - trylock failed,
+- *  MUTEX_TRYLOCK_SUCCESS   - lock acquired,
+- *  MUTEX_TRYLOCK_RECURSIVE - we already owned the lock.
++ *  - MUTEX_TRYLOCK_FAILED    - trylock failed,
++ *  - MUTEX_TRYLOCK_SUCCESS   - lock acquired,
++ *  - MUTEX_TRYLOCK_RECURSIVE - we already owned the lock.
   */
- static unsigned int ata_scsi_write_same_xlat(struct ata_queued_cmd *qc)
+ static inline /* __deprecated */ __must_check enum mutex_trylock_recursive_enum
+ mutex_trylock_recursive(struct mutex *lock)
+diff --git a/kernel/futex.c b/kernel/futex.c
+index 357348a6cf6b..b8ae87d227da 100644
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -488,7 +488,7 @@ static void drop_futex_key_refs(union futex_key *key)
+  *
+  * Return: a negative error code or 0
+  *
+- * The key words are stored in *key on success.
++ * The key words are stored in @key on success.
+  *
+  * For shared mappings, it's (page->index, file_inode(vma->vm_file),
+  * offset_within_page).  For private mappings, it's (uaddr, current->mm).
+@@ -1259,9 +1259,9 @@ static int lock_pi_update_atomic(u32 __user *uaddr, u32 uval, u32 newval)
+  * @set_waiters:	force setting the FUTEX_WAITERS bit (1) or not (0)
+  *
+  * Return:
+- *  0 - ready to wait;
+- *  1 - acquired the lock;
+- * <0 - error
++ *  -  0 - ready to wait;
++ *  -  1 - acquired the lock;
++ *  - <0 - error
+  *
+  * The hb->lock and futex_key refs shall be held by the caller.
+  */
+@@ -1717,9 +1717,9 @@ void requeue_pi_wake_futex(struct futex_q *q, union futex_key *key,
+  * hb1 and hb2 must be held by the caller.
+  *
+  * Return:
+- *  0 - failed to acquire the lock atomically;
+- * >0 - acquired the lock, return value is vpid of the top_waiter
+- * <0 - error
++ *  -  0 - failed to acquire the lock atomically;
++ *  - >0 - acquired the lock, return value is vpid of the top_waiter
++ *  - <0 - error
+  */
+ static int futex_proxy_trylock_atomic(u32 __user *pifutex,
+ 				 struct futex_hash_bucket *hb1,
+@@ -1785,8 +1785,8 @@ static int futex_proxy_trylock_atomic(u32 __user *pifutex,
+  * uaddr2 atomically on behalf of the top waiter.
+  *
+  * Return:
+- * >=0 - on success, the number of tasks requeued or woken;
+- *  <0 - on error
++ *  - >=0 - on success, the number of tasks requeued or woken;
++ *  -  <0 - on error
+  */
+ static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
+ 			 u32 __user *uaddr2, int nr_wake, int nr_requeue,
+@@ -2142,8 +2142,8 @@ static inline void queue_me(struct futex_q *q, struct futex_hash_bucket *hb)
+  * be paired with exactly one earlier call to queue_me().
+  *
+  * Return:
+- *   1 - if the futex_q was still queued (and we removed unqueued it);
+- *   0 - if the futex_q was already removed by the waking thread
++ *  - 1 - if the futex_q was still queued (and we removed unqueued it);
++ *  - 0 - if the futex_q was already removed by the waking thread
+  */
+ static int unqueue_me(struct futex_q *q)
  {
+@@ -2333,9 +2333,9 @@ static long futex_wait_restart(struct restart_block *restart);
+  * acquire the lock. Must be called with the hb lock held.
+  *
+  * Return:
+- *  1 - success, lock taken;
+- *  0 - success, lock not taken;
+- * <0 - on error (-EFAULT)
++ *  -  1 - success, lock taken;
++ *  -  0 - success, lock not taken;
++ *  - <0 - on error (-EFAULT)
+  */
+ static int fixup_owner(u32 __user *uaddr, struct futex_q *q, int locked)
+ {
+@@ -2422,8 +2422,8 @@ static void futex_wait_queue_me(struct futex_hash_bucket *hb, struct futex_q *q,
+  * with no q.key reference on failure.
+  *
+  * Return:
+- *  0 - uaddr contains val and hb has been locked;
+- * <1 - -EFAULT or -EWOULDBLOCK (uaddr does not contain val) and hb is unlocked
++ *  -  0 - uaddr contains val and hb has been locked;
++ *  - <1 - -EFAULT or -EWOULDBLOCK (uaddr does not contain val) and hb is unlocked
+  */
+ static int futex_wait_setup(u32 __user *uaddr, u32 val, unsigned int flags,
+ 			   struct futex_q *q, struct futex_hash_bucket **hb)
+@@ -2895,8 +2895,8 @@ static int futex_unlock_pi(u32 __user *uaddr, unsigned int flags)
+  * called with the hb lock held.
+  *
+  * Return:
+- *  0 = no early wakeup detected;
+- * <0 = -ETIMEDOUT or -ERESTARTNOINTR
++ *  -  0 = no early wakeup detected;
++ *  - <0 = -ETIMEDOUT or -ERESTARTNOINTR
+  */
+ static inline
+ int handle_early_requeue_pi_wakeup(struct futex_hash_bucket *hb,
+@@ -2968,8 +2968,8 @@ int handle_early_requeue_pi_wakeup(struct futex_hash_bucket *hb,
+  * If 4 or 7, we cleanup and return with -ETIMEDOUT.
+  *
+  * Return:
+- *  0 - On success;
+- * <0 - On error
++ *  -  0 - On success;
++ *  - <0 - On error
+  */
+ static int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags,
+ 				 u32 val, ktime_t *abs_time, u32 bitset,
+diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
+index 198527a62149..858a07590e39 100644
+--- a/kernel/locking/mutex.c
++++ b/kernel/locking/mutex.c
+@@ -227,9 +227,9 @@ static void __sched __mutex_lock_slowpath(struct mutex *lock);
+  * (or statically defined) before it can be locked. memset()-ing
+  * the mutex to 0 is not allowed.
+  *
+- * ( The CONFIG_DEBUG_MUTEXES .config option turns on debugging
+- *   checks that will enforce the restrictions and will also do
+- *   deadlock debugging. )
++ * (The CONFIG_DEBUG_MUTEXES .config option turns on debugging
++ * checks that will enforce the restrictions and will also do
++ * deadlock debugging)
+  *
+  * This function is similar to (but not equivalent to) down().
+  */
 -- 
 2.9.3
