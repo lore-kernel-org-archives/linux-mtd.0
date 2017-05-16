@@ -1,25 +1,19 @@
-Date: Tue, 16 May 2017 10:35:40 -0700
-From: Darren Hart <dvhart@infradead.org>
-To: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-Cc: Linux Doc Mailing List <linux-doc@vger.kernel.org>,
- Mauro Carvalho Chehab <mchehab@infradead.org>,
- linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v2 04/53] mutex, futex: adjust kernel-doc markups to
- generate ReST
-Message-ID: <20170516173540.GA28967@fury>
-References: <cover.1494935649.git.mchehab@s-opensource.com>
- <7b4ff1adb57ad96d8f12a05d8c661a3d8c4d2be1.1494935649.git.mchehab@s-opensource.com>
+Received: from mx0a-00010702.pphosted.com ([148.163.156.75]
+ helo=mx0b-00010702.pphosted.com)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dAgko-0005oj-H0
+ for linux-mtd@lists.infradead.org; Tue, 16 May 2017 17:59:28 +0000
+From: Zach Brown <zach.brown@ni.com>
+To: <dwmw2@infradead.org>
+CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
+ <marek.vasut@gmail.com>, <richard@nod.at>, <cyrille.pitchen@atmel.com>,
+ <dedekind1@gmail.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: [RESEND PATCH v3] UBI: add debugfs file for tracking PEB state
+Date: Tue, 16 May 2017 12:58:08 -0500
+Message-ID: <1494957488-31427-1-git-send-email-zach.brown@ni.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7b4ff1adb57ad96d8f12a05d8c661a3d8c4d2be1.1494935649.git.mchehab@s-opensource.com>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,184 +23,186 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, May 16, 2017 at 09:15:56AM -0300, Mauro Carvalho Chehab wrote:
-> There are a few issues on some kernel-doc markups that was
-> causing troubles with kernel-doc output on ReST format:
-> 
-> ./kernel/futex.c:492: WARNING: Inline emphasis start-string without end-string.
-> ./kernel/futex.c:1264: WARNING: Block quote ends without a blank line; unexpected unindent.
-> ./kernel/futex.c:1721: WARNING: Block quote ends without a blank line; unexpected unindent.
-> ./kernel/futex.c:2338: WARNING: Block quote ends without a blank line; unexpected unindent.
-> ./kernel/futex.c:2426: WARNING: Block quote ends without a blank line; unexpected unindent.
-> ./kernel/futex.c:2899: WARNING: Block quote ends without a blank line; unexpected unindent.
-> ./kernel/futex.c:2972: WARNING: Block quote ends without a blank line; unexpected unindent.
-> 
-> Fix them.
-> 
-> No functional changes.
-> 
-> Acked-by: Darren Hart (VMware) <dvhart@infradead.org>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-> ---
+From: Ben Shelton <ben.shelton@ni.com>
 
+Add a file under debugfs to allow easy access to the erase count for
+each physical erase block on an UBI device.  This is useful when
+debugging data integrity issues with UBIFS on NAND flash devices.
 
-What was the difference from v1? Quick scan didn't reveal anything obvious to
-me... (context left intact in case you want to point it out inline), but just a
-"Changes since v1" below the --- is always appreciated - even it it's "no
-changes, new commit log".
+Signed-off-by: Ben Shelton <ben.shelton@ni.com>
+Signed-off-by: Zach Brown <zach.brown@ni.com>
+---
+v2:
+* If ubi_io_is_bad eraseblk_count_seq_show just returns the err.
+* if ubi->lookuptbl returns null, its no longer treated as an error
+  instead info for that block is not printeded
+* Removed check for UBI_MAX_ERASECOUNTER since it is impossible to hit
+* Removed block state from print, if a block is printed then it is good and
+  if it is not printed, then it is bad.
 
+v3:
+* Remove errant ! symbol from if statement checking if erase count is valid.
 
->  include/linux/mutex.h  |  6 +++---
->  kernel/futex.c         | 40 ++++++++++++++++++++--------------------
->  kernel/locking/mutex.c |  6 +++---
->  3 files changed, 26 insertions(+), 26 deletions(-)
-> 
-> diff --git a/include/linux/mutex.h b/include/linux/mutex.h
-> index 1127fe31645d..ffcba1f337da 100644
-> --- a/include/linux/mutex.h
-> +++ b/include/linux/mutex.h
-> @@ -214,9 +214,9 @@ enum mutex_trylock_recursive_enum {
->   * raisins, and once those are gone this will be removed.
->   *
->   * Returns:
-> - *  MUTEX_TRYLOCK_FAILED    - trylock failed,
-> - *  MUTEX_TRYLOCK_SUCCESS   - lock acquired,
-> - *  MUTEX_TRYLOCK_RECURSIVE - we already owned the lock.
-> + *  - MUTEX_TRYLOCK_FAILED    - trylock failed,
-> + *  - MUTEX_TRYLOCK_SUCCESS   - lock acquired,
-> + *  - MUTEX_TRYLOCK_RECURSIVE - we already owned the lock.
->   */
->  static inline /* __deprecated */ __must_check enum mutex_trylock_recursive_enum
->  mutex_trylock_recursive(struct mutex *lock)
-> diff --git a/kernel/futex.c b/kernel/futex.c
-> index 357348a6cf6b..b8ae87d227da 100644
-> --- a/kernel/futex.c
-> +++ b/kernel/futex.c
-> @@ -488,7 +488,7 @@ static void drop_futex_key_refs(union futex_key *key)
->   *
->   * Return: a negative error code or 0
->   *
-> - * The key words are stored in *key on success.
-> + * The key words are stored in @key on success.
->   *
->   * For shared mappings, it's (page->index, file_inode(vma->vm_file),
->   * offset_within_page).  For private mappings, it's (uaddr, current->mm).
-> @@ -1259,9 +1259,9 @@ static int lock_pi_update_atomic(u32 __user *uaddr, u32 uval, u32 newval)
->   * @set_waiters:	force setting the FUTEX_WAITERS bit (1) or not (0)
->   *
->   * Return:
-> - *  0 - ready to wait;
-> - *  1 - acquired the lock;
-> - * <0 - error
-> + *  -  0 - ready to wait;
-> + *  -  1 - acquired the lock;
-> + *  - <0 - error
->   *
->   * The hb->lock and futex_key refs shall be held by the caller.
->   */
-> @@ -1717,9 +1717,9 @@ void requeue_pi_wake_futex(struct futex_q *q, union futex_key *key,
->   * hb1 and hb2 must be held by the caller.
->   *
->   * Return:
-> - *  0 - failed to acquire the lock atomically;
-> - * >0 - acquired the lock, return value is vpid of the top_waiter
-> - * <0 - error
-> + *  -  0 - failed to acquire the lock atomically;
-> + *  - >0 - acquired the lock, return value is vpid of the top_waiter
-> + *  - <0 - error
->   */
->  static int futex_proxy_trylock_atomic(u32 __user *pifutex,
->  				 struct futex_hash_bucket *hb1,
-> @@ -1785,8 +1785,8 @@ static int futex_proxy_trylock_atomic(u32 __user *pifutex,
->   * uaddr2 atomically on behalf of the top waiter.
->   *
->   * Return:
-> - * >=0 - on success, the number of tasks requeued or woken;
-> - *  <0 - on error
-> + *  - >=0 - on success, the number of tasks requeued or woken;
-> + *  -  <0 - on error
->   */
->  static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
->  			 u32 __user *uaddr2, int nr_wake, int nr_requeue,
-> @@ -2142,8 +2142,8 @@ static inline void queue_me(struct futex_q *q, struct futex_hash_bucket *hb)
->   * be paired with exactly one earlier call to queue_me().
->   *
->   * Return:
-> - *   1 - if the futex_q was still queued (and we removed unqueued it);
-> - *   0 - if the futex_q was already removed by the waking thread
-> + *  - 1 - if the futex_q was still queued (and we removed unqueued it);
-> + *  - 0 - if the futex_q was already removed by the waking thread
->   */
->  static int unqueue_me(struct futex_q *q)
->  {
-> @@ -2333,9 +2333,9 @@ static long futex_wait_restart(struct restart_block *restart);
->   * acquire the lock. Must be called with the hb lock held.
->   *
->   * Return:
-> - *  1 - success, lock taken;
-> - *  0 - success, lock not taken;
-> - * <0 - on error (-EFAULT)
-> + *  -  1 - success, lock taken;
-> + *  -  0 - success, lock not taken;
-> + *  - <0 - on error (-EFAULT)
->   */
->  static int fixup_owner(u32 __user *uaddr, struct futex_q *q, int locked)
->  {
-> @@ -2422,8 +2422,8 @@ static void futex_wait_queue_me(struct futex_hash_bucket *hb, struct futex_q *q,
->   * with no q.key reference on failure.
->   *
->   * Return:
-> - *  0 - uaddr contains val and hb has been locked;
-> - * <1 - -EFAULT or -EWOULDBLOCK (uaddr does not contain val) and hb is unlocked
-> + *  -  0 - uaddr contains val and hb has been locked;
-> + *  - <1 - -EFAULT or -EWOULDBLOCK (uaddr does not contain val) and hb is unlocked
->   */
->  static int futex_wait_setup(u32 __user *uaddr, u32 val, unsigned int flags,
->  			   struct futex_q *q, struct futex_hash_bucket **hb)
-> @@ -2895,8 +2895,8 @@ static int futex_unlock_pi(u32 __user *uaddr, unsigned int flags)
->   * called with the hb lock held.
->   *
->   * Return:
-> - *  0 = no early wakeup detected;
-> - * <0 = -ETIMEDOUT or -ERESTARTNOINTR
-> + *  -  0 = no early wakeup detected;
-> + *  - <0 = -ETIMEDOUT or -ERESTARTNOINTR
->   */
->  static inline
->  int handle_early_requeue_pi_wakeup(struct futex_hash_bucket *hb,
-> @@ -2968,8 +2968,8 @@ int handle_early_requeue_pi_wakeup(struct futex_hash_bucket *hb,
->   * If 4 or 7, we cleanup and return with -ETIMEDOUT.
->   *
->   * Return:
-> - *  0 - On success;
-> - * <0 - On error
-> + *  -  0 - On success;
-> + *  - <0 - On error
->   */
->  static int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags,
->  				 u32 val, ktime_t *abs_time, u32 bitset,
-> diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
-> index 198527a62149..858a07590e39 100644
-> --- a/kernel/locking/mutex.c
-> +++ b/kernel/locking/mutex.c
-> @@ -227,9 +227,9 @@ static void __sched __mutex_lock_slowpath(struct mutex *lock);
->   * (or statically defined) before it can be locked. memset()-ing
->   * the mutex to 0 is not allowed.
->   *
-> - * ( The CONFIG_DEBUG_MUTEXES .config option turns on debugging
-> - *   checks that will enforce the restrictions and will also do
-> - *   deadlock debugging. )
-> + * (The CONFIG_DEBUG_MUTEXES .config option turns on debugging
-> + * checks that will enforce the restrictions and will also do
-> + * deadlock debugging)
->   *
->   * This function is similar to (but not equivalent to) down().
->   */
-> -- 
-> 2.9.3
-> 
-> 
+ drivers/mtd/ubi/debug.c | 126 +++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 125 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
+index f101a49..7bc9629 100644
+--- a/drivers/mtd/ubi/debug.c
++++ b/drivers/mtd/ubi/debug.c
+@@ -22,6 +22,7 @@
+ #include <linux/debugfs.h>
+ #include <linux/uaccess.h>
+ #include <linux/module.h>
++#include <linux/seq_file.h>
+ 
+ 
+ /**
+@@ -386,7 +387,9 @@ static ssize_t dfs_file_write(struct file *file, const char __user *user_buf,
+ 	return count;
+ }
+ 
+-/* File operations for all UBI debugfs files */
++/* File operations for all UBI debugfs files except
++ * detailed_erase_block_info
++ */
+ static const struct file_operations dfs_fops = {
+ 	.read   = dfs_file_read,
+ 	.write  = dfs_file_write,
+@@ -395,6 +398,121 @@ static const struct file_operations dfs_fops = {
+ 	.owner  = THIS_MODULE,
+ };
+ 
++/* As long as the position is less then that total number of erase blocks,
++ * we still have more to print.
++ */
++static void *eraseblk_count_seq_start(struct seq_file *s, loff_t *pos)
++{
++	struct ubi_device *ubi = s->private;
++
++	if (*pos == 0)
++		return SEQ_START_TOKEN;
++
++	if (*pos < ubi->peb_count)
++		return pos;
++
++	return NULL;
++}
++
++/* Since we are using the position as the iterator, we just need to check if we
++ * are done and increment the position.
++ */
++static void *eraseblk_count_seq_next(struct seq_file *s, void *v, loff_t *pos)
++{
++	struct ubi_device *ubi = s->private;
++
++	if (v == SEQ_START_TOKEN)
++		return pos;
++	(*pos)++;
++
++	if (*pos < ubi->peb_count)
++		return pos;
++
++	return NULL;
++}
++
++static void eraseblk_count_seq_stop(struct seq_file *s, void *v)
++{
++}
++
++static int eraseblk_count_seq_show(struct seq_file *s, void *iter)
++{
++	struct ubi_device *ubi = s->private;
++	struct ubi_wl_entry *wl;
++	int *block_number = iter;
++	int erase_count = -1;
++	int err;
++
++	/* If this is the start, print a header */
++	if (iter == SEQ_START_TOKEN) {
++		seq_puts(s,
++			 "physical_block_number\terase_count\tblock_status\tread_status\n");
++		return 0;
++	}
++
++	err = ubi_io_is_bad(ubi, *block_number);
++	if (err)
++		return err;
++
++	spin_lock(&ubi->wl_lock);
++
++	wl = ubi->lookuptbl[*block_number];
++	if (wl)
++		erase_count = wl->ec;
++
++	spin_unlock(&ubi->wl_lock);
++
++	if (erase_count < 0)
++		return 0;
++
++	seq_printf(s, "%-22d\t%-11d\n", *block_number, erase_count);
++
++	return 0;
++}
++
++static const struct seq_operations eraseblk_count_seq_ops = {
++	.start = eraseblk_count_seq_start,
++	.next = eraseblk_count_seq_next,
++	.stop = eraseblk_count_seq_stop,
++	.show = eraseblk_count_seq_show
++};
++
++static int eraseblk_count_open(struct inode *inode, struct file *f)
++{
++	struct seq_file *s;
++	int err;
++
++	err = seq_open(f, &eraseblk_count_seq_ops);
++	if (err)
++		return err;
++
++	s = f->private_data;
++	s->private = ubi_get_device((unsigned long)inode->i_private);
++
++	if (!s->private)
++		return -ENODEV;
++	else
++		return 0;
++}
++
++static int eraseblk_count_release(struct inode *inode, struct file *f)
++{
++	struct seq_file *s = f->private_data;
++	struct ubi_device *ubi = s->private;
++
++	ubi_put_device(ubi);
++
++	return seq_release(inode, f);
++}
++
++static const struct file_operations eraseblk_count_fops = {
++	.owner = THIS_MODULE,
++	.open = eraseblk_count_open,
++	.read = seq_read,
++	.llseek = seq_lseek,
++	.release = eraseblk_count_release,
++};
++
+ /**
+  * ubi_debugfs_init_dev - initialize debugfs for an UBI device.
+  * @ubi: UBI device description object
+@@ -491,6 +609,12 @@ int ubi_debugfs_init_dev(struct ubi_device *ubi)
+ 		goto out_remove;
+ 	d->dfs_power_cut_max = dent;
+ 
++	fname = "detailed_erase_block_info";
++	dent = debugfs_create_file(fname, S_IRUSR, d->dfs_dir, (void *)ubi_num,
++				   &eraseblk_count_fops);
++	if (IS_ERR_OR_NULL(dent))
++		goto out_remove;
++
+ 	return 0;
+ 
+ out_remove:
 -- 
-Darren Hart
-VMware Open Source Technology Center
+2.7.4
