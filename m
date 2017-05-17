@@ -1,18 +1,22 @@
-Received: from lgeamrelo12.lge.com ([156.147.23.52])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dAmOj-0006rF-Sf
- for linux-mtd@lists.infradead.org; Wed, 17 May 2017 00:01:04 +0000
-From: Hyunchul Lee <cheol.lee@lge.com>
+Received: from cnshjsmin03.alcatel-sbell.com.cn ([116.246.26.71])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dAofE-0004kI-AP
+ for linux-mtd@lists.infradead.org; Wed, 17 May 2017 02:26:14 +0000
+From: ZHANG Hui P <Hui.P.Zhang@alcatel-sbell.com.cn>
 To: Richard Weinberger <richard@nod.at>
-CC: Artem Bityutskiy <dedekind1@gmail.com>, <adrian.hunter@intel.com>,
- <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <kernel-team@lge.com>
-Subject: [PATCH 2/2] ubifs: Fix memory leak in RENAME_WHITEOUT error path in
- do_rename
-Date: Wed, 17 May 2017 08:58:02 +0900
-Message-ID: <1494979082-19414-1-git-send-email-cheol.lee@lge.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: RE: a bug detected in ubifs
+Date: Wed, 17 May 2017 02:25:44 +0000
+Message-ID: <889DB31BAC79B0408EC03BEFCB9A55801160443D@cnshjmbx04>
+References: <889DB31BAC79B0408EC03BEFCB9A558011602AF6@cnshjmbx04>
+ <CAFLxGvyVPig6oJpkQia8bSQ7sGtV6VhHA=ZPTur3Kr2YBKJvWg@mail.gmail.com>
+ <889DB31BAC79B0408EC03BEFCB9A558011603BF0@cnshjmbx04>
+ <c6419864-4050-4fdf-33bb-4718f16e46b7@nod.at>
+In-Reply-To: <c6419864-4050-4fdf-33bb-4718f16e46b7@nod.at>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,59 +26,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-in RENAME_WHITEOUT error path, fscrypt_name should be freed.
-
-Signed-off-by: Hyunchul Lee <cheol.lee@lge.com>
----
- fs/ubifs/dir.c | 14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
-
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index df67236..0d5f8e7 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -1385,17 +1385,14 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 
- 		dev = kmalloc(sizeof(union ubifs_dev_desc), GFP_NOFS);
- 		if (!dev) {
--			ubifs_release_budget(c, &req);
--			ubifs_release_budget(c, &ino_req);
--			return -ENOMEM;
-+			err = -ENOMEM;
-+			goto out_release;
- 		}
- 
- 		err = do_tmpfile(old_dir, old_dentry, S_IFCHR | WHITEOUT_MODE, &whiteout);
- 		if (err) {
--			ubifs_release_budget(c, &req);
--			ubifs_release_budget(c, &ino_req);
- 			kfree(dev);
--			return err;
-+			goto out_release;
- 		}
- 
- 		whiteout->i_state |= I_LINKABLE;
-@@ -1483,12 +1480,10 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 
- 		err = ubifs_budget_space(c, &wht_req);
- 		if (err) {
--			ubifs_release_budget(c, &req);
--			ubifs_release_budget(c, &ino_req);
- 			kfree(whiteout_ui->data);
- 			whiteout_ui->data_len = 0;
- 			iput(whiteout);
--			return err;
-+			goto out_release;
- 		}
- 
- 		inc_nlink(whiteout);
-@@ -1543,6 +1538,7 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 		iput(whiteout);
- 	}
- 	unlock_4_inodes(old_dir, new_dir, new_inode, whiteout);
-+out_release:
- 	ubifs_release_budget(c, &ino_req);
- 	ubifs_release_budget(c, &req);
- 	fscrypt_free_filename(&old_nm);
--- 
-1.9.1
+T24gVHVlLCBNYXkgOSwgMjAxNyBhdCA3OjE4IEFNLCBaSEFORyBIdWkgUCA8SHVpLlAuWmhhbmdA
+YWxjYXRlbC1zYmVsbC5jb20uY24+IHdyb3RlOg0KPiAgICAgICAgICBUaGVuIEkgZHVtcCB0aGUg
+bHB0LCBhbmQgY2hlY2tlZCB0aGUgcG5vZGUgYXQgODoyNDc0OSAsIGl0IGlzDQo+DQo+IExFQiA4
+OjI0NzQ5LCBwbm9kZSwgIDA6MTI4NDA4OjEsIDA6MTc2OjAsIDA6MTMwMTYwOjEsIDA6MTI4NDQ4
+OjEgIC8vdGhlIHByaW50IG9yZGVyIGlzIDogICAgICAgIGZvciAoaSA9IDA7IGkgPCBVQklGU19M
+UFRfRkFOT1VUOyBpKyspIHsNCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHByaW50ayhLRVJOX0NPTlQgIiVk
+OiVkOiVkIiwgcG5vZGUubHByb3BzW2ldLmZyZWUsDQo+ICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiBwbm9kZS5scHJv
+cHNbaV0uZGlydHkscG5vZGUubHByb3BzW2ldLmZsYWdzKTsNCj4NCj4gICAgICAgICAgc28gdGhl
+IHByb2JsZW0gaXMgdGhlIGxwcm9wc1syXSwgd2hpY2ggZGlydHkgaXMgMTMwMTYwLCBob3dlcnZl
+ciAsdGhlIGxlYl9zaXplIGlzIDEyOTAyNCwgc28gaXQgaXMgcmV0dXJuZWQgIi1FSU5WQUwiIHdo
+aWxlIGNhbGxpbmcgInZhbGlkYXRlX3Bub2RlIg0KPiAgICAgICAgICBkbyB5b3Ugc2VlIHRoaXMg
+cHJvYmxlbSBiZWZvcmU/IE9yIGNhbiB5b3UgZ2l2ZSBtZSBzb21lIHN1Z2dlc3Rpb24gZm9yIHRo
+ZSBmdXJ0aGVyIGludmVzdGdhdGU/DQoNCkkgaGF2ZSBvbmUgaXNzdWUgb24gbXkgcmFkYXIgd2hp
+Y2ggY291bGQgYmUgcmVsYXRlZCwgYnV0IG5vdCBzdXJlLg0KV2hhdCBrZXJuZWwgdmVyc2lvbiBp
+cyB0aGlzPw0KDQpGcm9tOiBSaWNoYXJkIFdlaW5iZXJnZXIgW21haWx0bzpyaWNoYXJkQG5vZC5h
+dF0gDQpTZW50OiAyMDE35bm0NeaciDEw5pelIDE1OjEzDQpUbzogWkhBTkcgSHVpIFANCkNjOiBs
+aW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZw0KU3ViamVjdDogUmU6IGEgYnVnIGRldGVjdGVk
+IGluIHViaWZzDQoNCkFtIDEwLjA1LjIwMTcgdW0gMDI6MjEgc2NocmllYiBaSEFORyBIdWkgUDoN
+Cj4gSGkgUmljaGFyZDoNCj4gICAgIFRoZSBrZXJuZWwgdmVyc2lvbiBpcyBxdWl0ZSBvbGQ6IDIu
+Ni4zNC44DQoNCldvdy4NClNvLCBmaXJzdCB0aGluZyB3b3VsZCBiZSBiYWNrLXBvcnRpbmcgYWxs
+IFVCSUZTIGZpeGVzIHRvIHRoaXMga2VybmVsLiBNYXliZSBBcnRlbSBmaXhlZCB0aGlzIGEgbG9u
+ZyB0aW1lIGFnby4uLg0KDQpUaGFua3MsDQovL1JpY2hhcmQNCg0KLS0tLS1PcmlnaW5hbCBNZXNz
+YWdlLS0tLS0NCkhpIFJpY2hhcmQ6DQoJRm9yIHRoaXMgYnVnIGlzIG5vdCByZXByb2R1Y2VkICwg
+SSdtIG5vdCBzdXJlIHVwZGF0ZSB0byBsYXRlc3QgdWJpZnMgdmVyc2lvbiBjYW4gZml4IGl0LiBD
+YW4geW91IHRlbGwgbWUgYWJvdXQgdGhlIHJvb3QgY2F1c2Ugb2YgdGhpcyBpc3N1ZT8NCg==
