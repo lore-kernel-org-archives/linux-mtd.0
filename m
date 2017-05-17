@@ -1,16 +1,24 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dAvh8-00063h-QR
- for linux-mtd@lists.infradead.org; Wed, 17 May 2017 09:56:50 +0000
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-To: fstests@vger.kernel.org
-Cc: linux-mtd@lists.infradead.org, richard@nod.at,
- David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Subject: [PATCH 1/2] Add support for UBIFS
-Date: Wed, 17 May 2017 11:55:29 +0200
-Message-Id: <20170517095531.11818-2-david.oberhollenzer@sigma-star.at>
-In-Reply-To: <20170517095531.11818-1-david.oberhollenzer@sigma-star.at>
-References: <20170517095531.11818-1-david.oberhollenzer@sigma-star.at>
+Received: from mail-qt0-x242.google.com ([2607:f8b0:400d:c0d::242])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dAwKA-0005Bx-KD
+ for linux-mtd@lists.infradead.org; Wed, 17 May 2017 10:37:00 +0000
+Received: by mail-qt0-x242.google.com with SMTP id r58so937899qtb.2
+ for <linux-mtd@lists.infradead.org>; Wed, 17 May 2017 03:36:36 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <56b1f2d2-d368-895b-d3fc-0edd729e5863@nod.at>
+References: <1494957488-31427-1-git-send-email-zach.brown@ni.com>
+ <56b1f2d2-d368-895b-d3fc-0edd729e5863@nod.at>
+From: =?UTF-8?Q?Honza_Petrou=C5=A1?= <jpetrous@gmail.com>
+Date: Wed, 17 May 2017 12:36:35 +0200
+Message-ID: <CAJbz7-2D4ZVyWcC+bx5aFMS7FjRWX-_AWyKODt4civz4fJverg@mail.gmail.com>
+Subject: Re: [RESEND PATCH v3] UBI: add debugfs file for tracking PEB state
+To: Richard Weinberger <richard@nod.at>
+Cc: Zach Brown <zach.brown@ni.com>, David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>, dedekind1@gmail.com,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, cyrille.pitchen@atmel.com,
+ Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,194 +28,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch is mostly based on the previous attempts of Eric Biggers
-and Dongsheng Yang at adding UBIFS support to xfstests.
+2017-05-16 20:22 GMT+02:00 Richard Weinberger <richard@nod.at>:
+> Zach,
+>
+> Am 16.05.2017 um 19:58 schrieb Zach Brown:
+>> From: Ben Shelton <ben.shelton@ni.com>
+>>
+>> Add a file under debugfs to allow easy access to the erase count for
+>> each physical erase block on an UBI device.  This is useful when
+>> debugging data integrity issues with UBIFS on NAND flash devices.
+>>
+>> Signed-off-by: Ben Shelton <ben.shelton@ni.com>
+>> Signed-off-by: Zach Brown <zach.brown@ni.com>
+>
+> Hmmm, I thought I applied this to my v4.12 queue, but seems
+> like I didn't. So, it will be part of v4.13.
+> I'm very sorry, please accept my apologies.
 
-In addition to rebasing the previous attempts to recent xfstests,
-most of the encryption tests now also support UBIFS with this patch.
+Yes, you did it - at least my Linus' github repo clone has it already
+= 7bccd12d27b7e358823feb5429731b8ee698b173
 
-Since mkfs.ubifs doesn't support creating encryption-capable filesystems
-yet, _scratch_mkfs_encrypted() is modified to wipe the underlying UBI
-volume. The filesystem is then created when mounting the emtpy volume.
-
-Some tests that require SCRATCH_DEV to be a block device, despite
-not using device-mapper or otherwise doing something block device
-specific have that requirement removed.
-
-Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
----
- check             |  2 ++
- common/config     |  7 +++++++
- common/encrypt    |  3 +++
- common/rc         | 24 ++++++++++++++++++++++++
- tests/generic/076 |  1 -
- tests/generic/409 |  1 -
- tests/generic/410 |  1 -
- tests/generic/411 |  1 -
- 8 files changed, 36 insertions(+), 4 deletions(-)
-
-diff --git a/check b/check
-index 9cef58b4..f8db3cd6 100755
---- a/check
-+++ b/check
-@@ -70,6 +70,7 @@ check options
-     -overlay		test overlay
-     -pvfs2          test PVFS2
-     -tmpfs              test TMPFS
-+    -ubifs              test ubifs
-     -l			line mode diff
-     -udiff		show unified diff (default)
-     -n			show me, do not run tests
-@@ -267,6 +268,7 @@ while [ $# -gt 0 ]; do
- 	-overlay)	FSTYP=overlay; export OVERLAY=true ;;
- 	-pvfs2)		FSTYP=pvfs2 ;;
- 	-tmpfs)		FSTYP=tmpfs ;;
-+	-ubifs)		FSTYP=ubifs ;;
- 
- 	-g)	group=$2 ; shift ;
- 		GROUP_LIST="$GROUP_LIST ${group//,/ }"
-diff --git a/common/config b/common/config
-index 59041a39..6c58e888 100644
---- a/common/config
-+++ b/common/config
-@@ -336,6 +336,9 @@ _mount_opts()
- 		# We need to specify the size at mount, use 1G by default
- 		export MOUNT_OPTIONS="-o size=1G $TMPFS_MOUNT_OPTIONS"
- 		;;
-+	ubifs)
-+		export MOUNT_OPTIONS=$UBIFS_MOUNT_OPTIONS
-+		;;
- 	*)
- 		;;
- 	esac
-@@ -475,6 +478,10 @@ _check_device()
- 		if [ ! -d "$dev" ]; then
- 			_fatal "common/config: $name ($dev) is not a directory for overlay"
- 		fi
-+	elif [ "$FSTYP" == "ubifs" ]; then
-+		if [ ! -c "$dev" ]; then
-+			_fatal "common/config: $name ($dev) is not a character device"
-+		fi
- 	else
- 		_fatal "common/config: $name ($dev) is not a block device or a network filesystem"
- 	fi
-diff --git a/common/encrypt b/common/encrypt
-index 723f1b11..b444c82d 100644
---- a/common/encrypt
-+++ b/common/encrypt
-@@ -71,6 +71,9 @@ _scratch_mkfs_encrypted()
- 	ext4|f2fs)
- 		_scratch_mkfs -O encrypt
- 		;;
-+	ubifs)
-+		ubiupdatevol ${SCRATCH_DEV} -t
-+		;;
- 	*)
- 		_notrun "No encryption support for $FSTYP"
- 		;;
-diff --git a/common/rc b/common/rc
-index 257b1903..6191a0c0 100644
---- a/common/rc
-+++ b/common/rc
-@@ -1556,6 +1556,15 @@ _require_scratch_nocheck()
- 		    _notrun "this test requires a valid \$SCRATCH_MNT and unique $SCRATCH_DEV"
- 		fi
- 		;;
-+	ubifs)
-+		# ubifs needs an UBI volume. This will be a char device, not a block device.
-+		if [ ! -c "$SCRATCH_DEV" ]; then
-+			_notrun "this test requires a valid UBI volume for \$SCRATCH_DEV"
-+		fi
-+		if [ ! -d "$SCRATCH_MNT" ]; then
-+			_notrun "this test requires a valid \$SCRATCH_MNT"
-+		fi
-+		;;
- 	*)
- 		 if [ -z "$SCRATCH_DEV" -o "`_is_block_dev "$SCRATCH_DEV"`" = "" ]
- 		 then
-@@ -1650,6 +1659,15 @@ _require_test()
- 		    _notrun "this test requires a valid \$TEST_DIR and unique $TEST_DEV"
- 		fi
- 		;;
-+	ubifs)
-+		# ubifs needs an UBI volume. This will be a char device, not a block device.
-+		if [ ! -c "$TEST_DEV" ]; then
-+			_notrun "this test requires a valid UBI volume for \$TEST_DEV"
-+		fi
-+		if [ ! -d "$TEST_DIR" ]; then
-+			_notrun "this test requires a valid \$TEST_DIR"
-+		fi
-+		;;
- 	*)
- 		 if [ -z "$TEST_DEV" ] || [ "`_is_block_dev "$TEST_DEV"`" = "" ]
- 		 then
-@@ -2490,6 +2508,9 @@ _check_test_fs()
-     tmpfs)
- 	# no way to check consistency for tmpfs
- 	;;
-+    ubifs)
-+	# there is no fsck program for ubifs yet
-+	;;
-     *)
- 	_check_generic_filesystem $TEST_DEV
- 	;;
-@@ -2539,6 +2560,9 @@ _check_scratch_fs()
-     tmpfs)
- 	# no way to check consistency for tmpfs
- 	;;
-+    ubifs)
-+	# there is no fsck program for ubifs yet
-+	;;
-     *)
- 	_check_generic_filesystem $device
- 	;;
-diff --git a/tests/generic/076 b/tests/generic/076
-index 64e69583..53e56a69 100755
---- a/tests/generic/076
-+++ b/tests/generic/076
-@@ -56,7 +56,6 @@ _supported_fs generic
- _supported_os IRIX Linux
- 
- _require_scratch
--_require_block_device $SCRATCH_DEV
- 
- echo "*** init fs"
- 
-diff --git a/tests/generic/409 b/tests/generic/409
-index 4bfedf73..3be58ba5 100755
---- a/tests/generic/409
-+++ b/tests/generic/409
-@@ -64,7 +64,6 @@ _supported_fs generic
- _supported_os Linux
- _require_test
- _require_scratch
--_require_block_device $SCRATCH_DEV
- 
- fs_stress()
- {
-diff --git a/tests/generic/410 b/tests/generic/410
-index f2e0d1bb..e3a933ce 100755
---- a/tests/generic/410
-+++ b/tests/generic/410
-@@ -72,7 +72,6 @@ _supported_fs generic
- _supported_os Linux
- _require_test
- _require_scratch
--_require_block_device $SCRATCH_DEV
- 
- fs_stress()
- {
-diff --git a/tests/generic/411 b/tests/generic/411
-index 7b2dd33b..08b861c5 100755
---- a/tests/generic/411
-+++ b/tests/generic/411
-@@ -53,7 +53,6 @@ _supported_fs generic
- _supported_os Linux
- _require_test
- _require_scratch
--_require_block_device $SCRATCH_DEV
- 
- fs_stress()
- {
--- 
-2.12.0
+/Honza
