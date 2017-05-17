@@ -1,22 +1,21 @@
-Received: from cnshjsmin03.alcatel-sbell.com.cn ([116.246.26.71])
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dAofE-0004kI-AP
- for linux-mtd@lists.infradead.org; Wed, 17 May 2017 02:26:14 +0000
-From: ZHANG Hui P <Hui.P.Zhang@alcatel-sbell.com.cn>
-To: Richard Weinberger <richard@nod.at>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: RE: a bug detected in ubifs
-Date: Wed, 17 May 2017 02:25:44 +0000
-Message-ID: <889DB31BAC79B0408EC03BEFCB9A55801160443D@cnshjmbx04>
-References: <889DB31BAC79B0408EC03BEFCB9A558011602AF6@cnshjmbx04>
- <CAFLxGvyVPig6oJpkQia8bSQ7sGtV6VhHA=ZPTur3Kr2YBKJvWg@mail.gmail.com>
- <889DB31BAC79B0408EC03BEFCB9A558011603BF0@cnshjmbx04>
- <c6419864-4050-4fdf-33bb-4718f16e46b7@nod.at>
-In-Reply-To: <c6419864-4050-4fdf-33bb-4718f16e46b7@nod.at>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+ id 1dArgl-0003aE-4D
+ for linux-mtd@lists.infradead.org; Wed, 17 May 2017 05:40:01 +0000
+From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+To: dwmw2@infradead.org, computersforpeace@gmail.com, andrew@lunn.ch,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ devicetree@vger.kernel.org
+Subject: [PATCH 4/4] mtd: mchp23k256: Add support for mchp23lcv1024
+Date: Wed, 17 May 2017 17:39:08 +1200
+Message-Id: <20170517053908.26138-5-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <20170517053908.26138-1-chris.packham@alliedtelesis.co.nz>
+References: <20170517053908.26138-1-chris.packham@alliedtelesis.co.nz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,32 +25,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gVHVlLCBNYXkgOSwgMjAxNyBhdCA3OjE4IEFNLCBaSEFORyBIdWkgUCA8SHVpLlAuWmhhbmdA
-YWxjYXRlbC1zYmVsbC5jb20uY24+IHdyb3RlOg0KPiAgICAgICAgICBUaGVuIEkgZHVtcCB0aGUg
-bHB0LCBhbmQgY2hlY2tlZCB0aGUgcG5vZGUgYXQgODoyNDc0OSAsIGl0IGlzDQo+DQo+IExFQiA4
-OjI0NzQ5LCBwbm9kZSwgIDA6MTI4NDA4OjEsIDA6MTc2OjAsIDA6MTMwMTYwOjEsIDA6MTI4NDQ4
-OjEgIC8vdGhlIHByaW50IG9yZGVyIGlzIDogICAgICAgIGZvciAoaSA9IDA7IGkgPCBVQklGU19M
-UFRfRkFOT1VUOyBpKyspIHsNCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHByaW50ayhLRVJOX0NPTlQgIiVk
-OiVkOiVkIiwgcG5vZGUubHByb3BzW2ldLmZyZWUsDQo+ICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiBwbm9kZS5scHJv
-cHNbaV0uZGlydHkscG5vZGUubHByb3BzW2ldLmZsYWdzKTsNCj4NCj4gICAgICAgICAgc28gdGhl
-IHByb2JsZW0gaXMgdGhlIGxwcm9wc1syXSwgd2hpY2ggZGlydHkgaXMgMTMwMTYwLCBob3dlcnZl
-ciAsdGhlIGxlYl9zaXplIGlzIDEyOTAyNCwgc28gaXQgaXMgcmV0dXJuZWQgIi1FSU5WQUwiIHdo
-aWxlIGNhbGxpbmcgInZhbGlkYXRlX3Bub2RlIg0KPiAgICAgICAgICBkbyB5b3Ugc2VlIHRoaXMg
-cHJvYmxlbSBiZWZvcmU/IE9yIGNhbiB5b3UgZ2l2ZSBtZSBzb21lIHN1Z2dlc3Rpb24gZm9yIHRo
-ZSBmdXJ0aGVyIGludmVzdGdhdGU/DQoNCkkgaGF2ZSBvbmUgaXNzdWUgb24gbXkgcmFkYXIgd2hp
-Y2ggY291bGQgYmUgcmVsYXRlZCwgYnV0IG5vdCBzdXJlLg0KV2hhdCBrZXJuZWwgdmVyc2lvbiBp
-cyB0aGlzPw0KDQpGcm9tOiBSaWNoYXJkIFdlaW5iZXJnZXIgW21haWx0bzpyaWNoYXJkQG5vZC5h
-dF0gDQpTZW50OiAyMDE35bm0NeaciDEw5pelIDE1OjEzDQpUbzogWkhBTkcgSHVpIFANCkNjOiBs
-aW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZw0KU3ViamVjdDogUmU6IGEgYnVnIGRldGVjdGVk
-IGluIHViaWZzDQoNCkFtIDEwLjA1LjIwMTcgdW0gMDI6MjEgc2NocmllYiBaSEFORyBIdWkgUDoN
-Cj4gSGkgUmljaGFyZDoNCj4gICAgIFRoZSBrZXJuZWwgdmVyc2lvbiBpcyBxdWl0ZSBvbGQ6IDIu
-Ni4zNC44DQoNCldvdy4NClNvLCBmaXJzdCB0aGluZyB3b3VsZCBiZSBiYWNrLXBvcnRpbmcgYWxs
-IFVCSUZTIGZpeGVzIHRvIHRoaXMga2VybmVsLiBNYXliZSBBcnRlbSBmaXhlZCB0aGlzIGEgbG9u
-ZyB0aW1lIGFnby4uLg0KDQpUaGFua3MsDQovL1JpY2hhcmQNCg0KLS0tLS1PcmlnaW5hbCBNZXNz
-YWdlLS0tLS0NCkhpIFJpY2hhcmQ6DQoJRm9yIHRoaXMgYnVnIGlzIG5vdCByZXByb2R1Y2VkICwg
-SSdtIG5vdCBzdXJlIHVwZGF0ZSB0byBsYXRlc3QgdWJpZnMgdmVyc2lvbiBjYW4gZml4IGl0LiBD
-YW4geW91IHRlbGwgbWUgYWJvdXQgdGhlIHJvb3QgY2F1c2Ugb2YgdGhpcyBpc3N1ZT8NCg==
+The mchp23lcv1024 is software compatible with the mchp23k256, the
+only difference (from a software point of view) is the size. There
+is no way to detect the size so we must be told via a Device Tree.
+
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+---
+ .../bindings/mtd/microchip,mchp23k256.txt           |  2 +-
+ drivers/mtd/devices/mchp23k256.c                    | 21 +++++++++++++++++++--
+ 2 files changed, 20 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt b/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt
+index 25e5ad38b0f0..7328eb92a03c 100644
+--- a/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt
++++ b/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt
+@@ -3,7 +3,7 @@
+ Required properties:
+ - #address-cells, #size-cells : Must be present if the device has sub-nodes
+   representing partitions.
+-- compatible : Must be "microchip,mchp23k256"
++- compatible : Must be one of "microchip,mchp23k256" or "microchip,mchp23lcv1024"
+ - reg : Chip-Select number
+ - spi-max-frequency : Maximum frequency of the SPI bus the chip can operate at
+ 
+diff --git a/drivers/mtd/devices/mchp23k256.c b/drivers/mtd/devices/mchp23k256.c
+index 02c6b9dcbd3e..d1eba587633c 100644
+--- a/drivers/mtd/devices/mchp23k256.c
++++ b/drivers/mtd/devices/mchp23k256.c
+@@ -21,6 +21,8 @@
+ #include <linux/spi/spi.h>
+ #include <linux/of_device.h>
+ 
++enum chips { mchp23k256, mchp23lcv1024 };
++
+ struct mchp23k256_flash {
+ 	struct spi_device	*spi;
+ 	struct mutex		lock;
+@@ -128,6 +130,7 @@ static int mchp23k256_probe(struct spi_device *spi)
+ 	struct mchp23k256_flash *flash;
+ 	struct flash_platform_data *data;
+ 	int err;
++	enum chips chip;
+ 
+ 	flash = devm_kzalloc(&spi->dev, sizeof(*flash), GFP_KERNEL);
+ 	if (!flash)
+@@ -143,15 +146,28 @@ static int mchp23k256_probe(struct spi_device *spi)
+ 
+ 	data = dev_get_platdata(&spi->dev);
+ 
++	if (spi->dev.of_node)
++		chip = (enum chips)of_device_get_match_data(&spi->dev);
++	else
++		chip = mchp23k256;
++
+ 	mtd_set_of_node(&flash->mtd, spi->dev.of_node);
+ 	flash->mtd.dev.parent	= &spi->dev;
+ 	flash->mtd.type		= MTD_RAM;
+ 	flash->mtd.flags	= MTD_CAP_RAM;
+ 	flash->mtd.writesize	= 1;
+-	flash->mtd.size		= SZ_32K;
+ 	flash->mtd._read	= mchp23k256_read;
+ 	flash->mtd._write	= mchp23k256_write;
+ 
++	switch (chip){
++	case mchp23lcv1024:
++		flash->mtd.size		= SZ_128K;
++		break;
++	default:
++		flash->mtd.size		= SZ_32K;
++		break;
++	}
++
+ 	flash->mtd.erasesize = PAGE_SIZE;
+ 	while (flash->mtd.size & (flash->mtd.erasesize - 1))
+ 		flash->mtd.erasesize >>= 1;
+@@ -172,7 +188,8 @@ static int mchp23k256_remove(struct spi_device *spi)
+ }
+ 
+ static const struct of_device_id mchp23k256_of_table[] = {
+-	{ .compatible = "microchip,mchp23k256" },
++	{ .compatible = "microchip,mchp23k256", .data = (void *)mchp23k256 },
++	{ .compatible = "microchip,mchp23lcv1024", .data = (void *)mchp23lcv1024 },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, mchp23k256_of_table);
+-- 
+2.11.0.24.ge6920cf
