@@ -1,19 +1,20 @@
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dArgp-0003aJ-PP
- for linux-mtd@lists.infradead.org; Wed, 17 May 2017 05:40:08 +0000
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
-To: dwmw2@infradead.org, computersforpeace@gmail.com, andrew@lunn.ch,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Subject: [PATCH 2/4] mtd: mchp23k256: switch to mtd_device_register()
-Date: Wed, 17 May 2017 17:39:06 +1200
-Message-Id: <20170517053908.26138-3-chris.packham@alliedtelesis.co.nz>
-In-Reply-To: <20170517053908.26138-1-chris.packham@alliedtelesis.co.nz>
-References: <20170517053908.26138-1-chris.packham@alliedtelesis.co.nz>
+ id 1dAsv4-0006p8-Ke
+ for linux-mtd@lists.infradead.org; Wed, 17 May 2017 06:58:52 +0000
+Subject: Re: [PATCH 1/2] ubifs: Fix inode data budget in ubifs_mknod
+To: Hyunchul Lee <cheol.lee@lge.com>
+References: <1494979038-19361-1-git-send-email-cheol.lee@lge.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, adrian.hunter@intel.com,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, kernel-team@lge.com
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <12b604d9-22e9-f0e5-288a-e478d2ba4e4f@nod.at>
+Date: Wed, 17 May 2017 08:58:23 +0200
+MIME-Version: 1.0
+In-Reply-To: <1494979038-19361-1-git-send-email-cheol.lee@lge.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +24,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use mtd_device_register() instead of mtd_device_parse_register() to
-eliminate two unused parameters.
+Hyunchul,
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
- drivers/mtd/devices/mchp23k256.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Am 17.05.2017 um 01:57 schrieb Hyunchul Lee:
+> Assign inode data budget to budget request correctly.
+> 
+> Signed-off-by: Hyunchul Lee <cheol.lee@lge.com>
+> ---
+>  fs/ubifs/dir.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+> index b777bdd..df67236 100644
+> --- a/fs/ubifs/dir.c
+> +++ b/fs/ubifs/dir.c
+> @@ -1050,7 +1050,6 @@ static int ubifs_mknod(struct inode *dir, struct dentry *dentry,
+>  	int sz_change;
+>  	int err, devlen = 0;
+>  	struct ubifs_budget_req req = { .new_ino = 1, .new_dent = 1,
+> -					.new_ino_d = ALIGN(devlen, 8),
+>  					.dirtied_ino = 1 };
+>  	struct fscrypt_name nm;
+>  
+> @@ -1068,6 +1067,7 @@ static int ubifs_mknod(struct inode *dir, struct dentry *dentry,
+>  		devlen = ubifs_encode_dev(dev, rdev);
+>  	}
+>  
+> +	req.new_ino_d = ALIGN(devlen, 8);
 
-diff --git a/drivers/mtd/devices/mchp23k256.c b/drivers/mtd/devices/mchp23k256.c
-index 9d8306a15833..2542f5b8b63f 100644
---- a/drivers/mtd/devices/mchp23k256.c
-+++ b/drivers/mtd/devices/mchp23k256.c
-@@ -151,9 +151,8 @@ static int mchp23k256_probe(struct spi_device *spi)
- 	flash->mtd._read	= mchp23k256_read;
- 	flash->mtd._write	= mchp23k256_write;
- 
--	err = mtd_device_parse_register(&flash->mtd, NULL, NULL,
--					data ? data->parts : NULL,
--					data ? data->nr_parts : 0);
-+	err = mtd_device_register(&flash->mtd, data ? data->parts : NULL,
-+				  data ? data->nr_parts : 0);
- 	if (err)
- 		return err;
- 
--- 
-2.11.0.24.ge6920cf
+Good find!
+
+Thanks,
+//richard
