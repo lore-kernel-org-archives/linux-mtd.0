@@ -1,25 +1,23 @@
-Received: from mx0b-00010702.pphosted.com ([148.163.158.57])
+Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dB3C4-0002nw-KU
- for linux-mtd@lists.infradead.org; Wed, 17 May 2017 17:57:07 +0000
-Date: Wed, 17 May 2017 12:55:47 -0500
-From: Zach Brown <zach.brown@ni.com>
-To: Honza =?utf-8?Q?Petrou=C5=A1?= <jpetrous@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- dedekind1@gmail.com, linux-kernel@vger.kernel.org,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- cyrille.pitchen@atmel.com, Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [RESEND PATCH v3] UBI: add debugfs file for tracking PEB state
-Message-ID: <20170517175546.GA7493@zach-desktop>
-References: <1494957488-31427-1-git-send-email-zach.brown@ni.com>
- <56b1f2d2-d368-895b-d3fc-0edd729e5863@nod.at>
- <CAJbz7-2D4ZVyWcC+bx5aFMS7FjRWX-_AWyKODt4civz4fJverg@mail.gmail.com>
+ id 1dB3xQ-0001yS-16
+ for linux-mtd@lists.infradead.org; Wed, 17 May 2017 18:46:01 +0000
+Received: by mail-pg0-x243.google.com with SMTP id h64so2845182pge.3
+ for <linux-mtd@lists.infradead.org>; Wed, 17 May 2017 11:45:38 -0700 (PDT)
+Date: Wed, 17 May 2017 11:45:35 -0700
+From: Eric Biggers <ebiggers3@gmail.com>
+To: Eryu Guan <eguan@redhat.com>
+Cc: David Oberhollenzer <david.oberhollenzer@sigma-star.at>,
+ fstests@vger.kernel.org, linux-mtd@lists.infradead.org, richard@nod.at
+Subject: Re: [PATCH 1/2] Add support for UBIFS
+Message-ID: <20170517184535.GB91213@gmail.com>
+References: <20170517095531.11818-1-david.oberhollenzer@sigma-star.at>
+ <20170517095531.11818-2-david.oberhollenzer@sigma-star.at>
+ <20170517115355.GE7250@eguan.usersys.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJbz7-2D4ZVyWcC+bx5aFMS7FjRWX-_AWyKODt4civz4fJverg@mail.gmail.com>
+In-Reply-To: <20170517115355.GE7250@eguan.usersys.redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,27 +27,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 17, 2017 at 12:36:35PM +0200, Honza Petrouš wrote:
-> 2017-05-16 20:22 GMT+02:00 Richard Weinberger <richard@nod.at>:
-> > Zach,
-> >
-> > Am 16.05.2017 um 19:58 schrieb Zach Brown:
-> >> From: Ben Shelton <ben.shelton@ni.com>
-> >>
-> >> Add a file under debugfs to allow easy access to the erase count for
-> >> each physical erase block on an UBI device.  This is useful when
-> >> debugging data integrity issues with UBIFS on NAND flash devices.
-> >>
-> >> Signed-off-by: Ben Shelton <ben.shelton@ni.com>
-> >> Signed-off-by: Zach Brown <zach.brown@ni.com>
-> >
-> > Hmmm, I thought I applied this to my v4.12 queue, but seems
-> > like I didn't. So, it will be part of v4.13.
-> > I'm very sorry, please accept my apologies.
+On Wed, May 17, 2017 at 07:53:55PM +0800, Eryu Guan wrote:
+> On Wed, May 17, 2017 at 11:55:29AM +0200, David Oberhollenzer wrote:
+> > This patch is mostly based on the previous attempts of Eric Biggers
+> > and Dongsheng Yang at adding UBIFS support to xfstests.
+> > 
+> > In addition to rebasing the previous attempts to recent xfstests,
+> > most of the encryption tests now also support UBIFS with this patch.
+> > 
+> > Since mkfs.ubifs doesn't support creating encryption-capable filesystems
+> > yet, _scratch_mkfs_encrypted() is modified to wipe the underlying UBI
+> > volume. The filesystem is then created when mounting the emtpy volume.
+> > 
+> > Some tests that require SCRATCH_DEV to be a block device, despite
+> > not using device-mapper or otherwise doing something block device
+> > specific have that requirement removed.
+> > 
+> > Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 > 
-> Yes, you did it - at least my Linus' github repo clone has it already
-> = 7bccd12d27b7e358823feb5429731b8ee698b173
+> Thanks for the patch! I know only very little about ubifs (from previous
+> reviews to attempts to add ubifs support to fstests), but it's still
+> good to have some words to introduce ubifs briefly in commit log,
+> especially the fact that it uses char device not block device.
 > 
-> /Honza
+> > ---
+> >  check             |  2 ++
+> >  common/config     |  7 +++++++
+> >  common/encrypt    |  3 +++
+> >  common/rc         | 24 ++++++++++++++++++++++++
+> >  tests/generic/076 |  1 -
+> >  tests/generic/409 |  1 -
+> >  tests/generic/410 |  1 -
+> >  tests/generic/411 |  1 -
+> >  8 files changed, 36 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/check b/check
+> > index 9cef58b4..f8db3cd6 100755
+> > --- a/check
+> > +++ b/check
+> > @@ -70,6 +70,7 @@ check options
+> >      -overlay		test overlay
+> >      -pvfs2          test PVFS2
+> >      -tmpfs              test TMPFS
+> > +    -ubifs              test ubifs
+> >      -l			line mode diff
+> >      -udiff		show unified diff (default)
+> >      -n			show me, do not run tests
+> > @@ -267,6 +268,7 @@ while [ $# -gt 0 ]; do
+> >  	-overlay)	FSTYP=overlay; export OVERLAY=true ;;
+> >  	-pvfs2)		FSTYP=pvfs2 ;;
+> >  	-tmpfs)		FSTYP=tmpfs ;;
+> > +	-ubifs)		FSTYP=ubifs ;;
+> 
+> As being pointed out in previous reviews, it'll be great if we can probe
+> ubifs from the char device if possible instead of adding new fs-specific
+> option, just as what we're doing at the end of common/config for other
+> local filesystems. But I'm not sure if blkid works for char device and
+> ubifs (probably not).
+> 
 
-My mistake then. My apologies for the confusion. Thank you for noticing.
+It seems to work fine without the -ubifs option:
+
+# blkid -o value -s TYPE /dev/ubi0_0
+ubifs
+
+# TEST_DEV=/dev/ubi0_0 TEST_DIR=/vdb ./check  generic/001
+FSTYP         -- ubifs
+PLATFORM      -- Linux/x86_64 kvm-xfstests 4.12.0-rc1-xfstests-00083-ga844e08648f0-dirty
+
+generic/001	[  372.213194] run fstests generic/001 at 2017-05-17 11:43:47
+ 8s
+Ran: generic/001
+Passed all 1 tests
+
+- Eric
