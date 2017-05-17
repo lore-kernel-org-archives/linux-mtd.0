@@ -1,19 +1,19 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dB0tZ-0005TE-Bs
- for linux-mtd@lists.infradead.org; Wed, 17 May 2017 15:29:51 +0000
-Date: Wed, 17 May 2017 17:29:11 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, andrew@lunn.ch,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
+ id 1dB1Pz-0005hL-4D
+ for linux-mtd@lists.infradead.org; Wed, 17 May 2017 16:03:21 +0000
+Date: Wed, 17 May 2017 18:02:56 +0200
+From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
  Pitchen <cyrille.pitchen@wedev4u.fr>
-Subject: Re: [PATCH 3/4] mtd: mchp23k256: add partitioning support
-Message-ID: <20170517172911.5f926712@bbrezillon>
-In-Reply-To: <20170517053908.26138-4-chris.packham@alliedtelesis.co.nz>
-References: <20170517053908.26138-1-chris.packham@alliedtelesis.co.nz>
- <20170517053908.26138-4-chris.packham@alliedtelesis.co.nz>
+Subject: Re: [PATCH] mtd: nand: Support 'EXIT GET STATUS' command in
+ nand_command_lp()
+Message-ID: <20170517180256.0b2abafd@free-electrons.com>
+In-Reply-To: <1494952545-5089-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1494952545-5089-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,44 +26,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Chris,
+Hello,
 
-On Wed, 17 May 2017 17:39:07 +1200
-Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:
-
-> Setting the of_node for the mtd device allows the generic mtd code to
-> setup the partitions. Additionally we must specify a non-zero erasesize
-> for the partitions to be writeable.
+On Tue, 16 May 2017 18:35:45 +0200, Boris Brezillon wrote:
+> READ0 is sometimes used to exit GET STATUS mode. When this is the case
+> no address cycles are requested, and we can use this information to
+> detect that READSTART should not be issued after READ0 or that we
+> shouldn't wait for the chip to be ready.
 > 
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> ---
->  drivers/mtd/devices/mchp23k256.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/mtd/devices/mchp23k256.c b/drivers/mtd/devices/mchp23k256.c
-> index 2542f5b8b63f..02c6b9dcbd3e 100644
-> --- a/drivers/mtd/devices/mchp23k256.c
-> +++ b/drivers/mtd/devices/mchp23k256.c
-> @@ -143,6 +143,7 @@ static int mchp23k256_probe(struct spi_device *spi)
->  
->  	data = dev_get_platdata(&spi->dev);
->  
-> +	mtd_set_of_node(&flash->mtd, spi->dev.of_node);
->  	flash->mtd.dev.parent	= &spi->dev;
->  	flash->mtd.type		= MTD_RAM;
->  	flash->mtd.flags	= MTD_CAP_RAM;
-> @@ -151,6 +152,10 @@ static int mchp23k256_probe(struct spi_device *spi)
->  	flash->mtd._read	= mchp23k256_read;
->  	flash->mtd._write	= mchp23k256_write;
->  
-> +	flash->mtd.erasesize = PAGE_SIZE;
-> +	while (flash->mtd.size & (flash->mtd.erasesize - 1))
-> +		flash->mtd.erasesize >>= 1;
-> +
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Can we fix allocate_partition() to properly handle the
-master->erasesize == 0 case instead of doing that?
+Tested-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 
-Thanks,
+On Spear600, which has the FSMC NAND controller, on a platform with a
+Micron SLC NAND with on-die ECC.
 
-Boris
+Tested both mtd_speedtest.ko and mtd_nandbiterrs.ko. The speedtest
+shows a nice read speed improvements.
+
+Before:
+
+mtd_speedtest: eraseblock read speed is 8545 KiB/s
+mtd_speedtest: page read speed is 8428 KiB/s
+mtd_speedtest: 2 page read speed is 8486 KiB/s
+
+After:
+
+mtd_speedtest: eraseblock read speed is 9834 KiB/s
+mtd_speedtest: page read speed is 9682 KiB/s
+mtd_speedtest: 2 page read speed is 9756 KiB/s
+
+The write and erase speeds are unchanged.
+
+Thanks!
+
+Thomas
+-- 
+Thomas Petazzoni, CTO, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
