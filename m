@@ -1,20 +1,21 @@
 Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dAsxo-0000b2-FJ
- for linux-mtd@lists.infradead.org; Wed, 17 May 2017 07:01:44 +0000
-Subject: Re: [PATCH 2/2] ubifs: Fix memory leak in RENAME_WHITEOUT error path
- in do_rename
-To: Hyunchul Lee <cheol.lee@lge.com>
-References: <1494979082-19414-1-git-send-email-cheol.lee@lge.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, adrian.hunter@intel.com,
- linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mtd@lists.infradead.org, kernel-team@lge.com
+ id 1dAt5d-0005Bz-OK
+ for linux-mtd@lists.infradead.org; Wed, 17 May 2017 07:09:52 +0000
+Subject: Re: a bug detected in ubifs
+To: ZHANG Hui P <Hui.P.Zhang@alcatel-sbell.com.cn>
+References: <889DB31BAC79B0408EC03BEFCB9A558011602AF6@cnshjmbx04>
+ <CAFLxGvyVPig6oJpkQia8bSQ7sGtV6VhHA=ZPTur3Kr2YBKJvWg@mail.gmail.com>
+ <889DB31BAC79B0408EC03BEFCB9A558011603BF0@cnshjmbx04>
+ <c6419864-4050-4fdf-33bb-4718f16e46b7@nod.at>
+ <889DB31BAC79B0408EC03BEFCB9A55801160443D@cnshjmbx04>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <a30a5f31-105e-823f-9336-80cf14cc8f9e@nod.at>
-Date: Wed, 17 May 2017 09:01:17 +0200
+Message-ID: <ac5a1ca9-fe6b-c76e-7f39-121b1ae779fb@nod.at>
+Date: Wed, 17 May 2017 09:02:42 +0200
 MIME-Version: 1.0
-In-Reply-To: <1494979082-19414-1-git-send-email-cheol.lee@lge.com>
-Content-Type: text/plain; charset=iso-8859-15
+In-Reply-To: <889DB31BAC79B0408EC03BEFCB9A55801160443D@cnshjmbx04>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,67 +26,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hyunchul,
-
-Am 17.05.2017 um 01:58 schrieb Hyunchul Lee:
-> in RENAME_WHITEOUT error path, fscrypt_name should be freed.
-> 
-> Signed-off-by: Hyunchul Lee <cheol.lee@lge.com>
-> ---
->  fs/ubifs/dir.c | 14 +++++---------
->  1 file changed, 5 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-> index df67236..0d5f8e7 100644
-> --- a/fs/ubifs/dir.c
-> +++ b/fs/ubifs/dir.c
-> @@ -1385,17 +1385,14 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
->  
->  		dev = kmalloc(sizeof(union ubifs_dev_desc), GFP_NOFS);
->  		if (!dev) {
-> -			ubifs_release_budget(c, &req);
-> -			ubifs_release_budget(c, &ino_req);
-> -			return -ENOMEM;
-> +			err = -ENOMEM;
-> +			goto out_release;
->  		}
->  
->  		err = do_tmpfile(old_dir, old_dentry, S_IFCHR | WHITEOUT_MODE, &whiteout);
->  		if (err) {
-> -			ubifs_release_budget(c, &req);
-> -			ubifs_release_budget(c, &ino_req);
->  			kfree(dev);
-> -			return err;
-> +			goto out_release;
->  		}
->  
->  		whiteout->i_state |= I_LINKABLE;
-> @@ -1483,12 +1480,10 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
->  
->  		err = ubifs_budget_space(c, &wht_req);
->  		if (err) {
-> -			ubifs_release_budget(c, &req);
-> -			ubifs_release_budget(c, &ino_req);
->  			kfree(whiteout_ui->data);
->  			whiteout_ui->data_len = 0;
->  			iput(whiteout);
-> -			return err;
-> +			goto out_release;
->  		}
->  
->  		inc_nlink(whiteout);
-> @@ -1543,6 +1538,7 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
->  		iput(whiteout);
->  	}
->  	unlock_4_inodes(old_dir, new_dir, new_inode, whiteout);
-> +out_release:
->  	ubifs_release_budget(c, &ino_req);
->  	ubifs_release_budget(c, &req);
->  	fscrypt_free_filename(&old_nm);
+Am 17.05.2017 um 04:25 schrieb ZHANG Hui P:
+> 	For this bug is not reproduced , I'm not sure update to latest ubifs version can fix it. Can you tell me about the root cause of this issue?
 > 
 
-Good find too. :-)
-This function needs a cleanup, it is much longer than it should be.
+I don't know the root cause, but since your kernel is very old I suspected that it has been fixed already.
+I started working on UBIFS long after this version.
 
 Thanks,
 //richard
