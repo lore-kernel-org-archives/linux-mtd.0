@@ -1,27 +1,17 @@
-Received: from smtp5-g21.free.fr ([2a01:e0c:1:1599::14])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dAx87-0003BF-JZ
- for linux-mtd@lists.infradead.org; Wed, 17 May 2017 11:28:37 +0000
-Subject: Re: [PATCH] nand_base: optimize checking of erased buffers
-To: Pavel Machek <pavel@ucw.cz>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- LKML <linux-kernel@vger.kernel.org>, mark.marshall@omicronenergy.com,
- b44839@freescale.com, prabhakar@freescale.com
-References: <20170419121332.GA26979@amd> <20170419231804.5a04ed69@bbrezillon>
- <20170419221507.GA24914@amd> <20170420002748.5c76c9b9@bbrezillon>
- <20170420114057.GA4705@amd> <20170421105107.GA7259@amd>
-From: Mason <slash.tmp@free.fr>
-Message-ID: <421c46b9-288f-42e9-5b2f-d93af1e8a418@free.fr>
-Date: Wed, 17 May 2017 13:27:43 +0200
-MIME-Version: 1.0
-In-Reply-To: <20170421105107.GA7259@amd>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dAxFz-0007z0-L4
+ for linux-mtd@lists.infradead.org; Wed, 17 May 2017 11:36:45 +0000
+From: David Gstir <david@sigma-star.at>
+To: richard@nod.at,
+	dedekind1@gmail.com,
+	adrian.hunter@intel.com
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-fscrypt@vger.kernel.org, linux-mtd@lists.infradead.org,
+ David Gstir <david@sigma-star.at>, stable@vger.kernel.org
+Subject: [PATCH] ubifs: Don't encrypt special files on creation
+Date: Wed, 17 May 2017 13:36:16 +0200
+Message-Id: <20170517113616.61499-1-david@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,44 +21,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 21/04/2017 12:51, Pavel Machek wrote:
+When a new inode is created, we check if the containing folder has a encryption
+policy set and inherit that. This should however only be done for regular
+files, links and subdirectories. Not for sockes fifos etc.
 
-> If we see ~0UL in flash, there's no need for hweight, and no need to
-> check number of bitflips. So this should be net win.
-> 
-> Signed-off-by: Pavel Machek <pavel@denx.de>
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index b0524f8..96c27ec 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -1357,7 +1357,10 @@ static int nand_check_erased_buf(void *buf, int len, int bitflips_threshold)
->  
->  	for (; len >= sizeof(long);
->  	     len -= sizeof(long), bitmap += sizeof(long)) {
-> -		weight = hweight_long(*((unsigned long *)bitmap));
+Fixes: d475a507457b ("ubifs: Add skeleton for fscrypto")
+Cc: stable@vger.kernel.org
+Signed-off-by: David Gstir <david@sigma-star.at>
+---
+ fs/ubifs/dir.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I hadn't noticed this earlier. There is, obviously, an implicit
-requirement that 'buf' must be 4-byte aligned on 32-bit platforms,
-and 8-byte aligned on 64-bit platforms.
-
-This is not true for my platform, as the ecc pointer is
-chip->oob_poi + 10
-
-I suppose it's not a problem if the platform can handle
-unaligned loads, otherwise it spells trouble.
-
-
-> +		unsigned long d = *((unsigned long *)bitmap);
-> +		if (d == ~0UL)
-> +			continue;
-> +		weight = hweight_long(d);
->  		bitflips += BITS_PER_LONG - weight;
->  		if (unlikely(bitflips > bitflips_threshold))
->  			return -EBADMSG;
-> 
-
-The optimization makes sense in itself, but given that it's on an
-error path (?) I'm not sure it will bring any tangible benefits?
-
-Regards.
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 566079d9b402..c67f6a3a606c 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -143,6 +143,7 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
+ 	case S_IFBLK:
+ 	case S_IFCHR:
+ 		inode->i_op  = &ubifs_file_inode_operations;
++		encrypted = false;
+ 		break;
+ 	default:
+ 		BUG();
+-- 
+2.12.0
