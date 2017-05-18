@@ -1,32 +1,22 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBFZj-0006Cz-N4
- for linux-mtd@lists.infradead.org; Thu, 18 May 2017 07:10:21 +0000
-Date: Thu, 18 May 2017 09:09:57 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>, Artem
- Bityutskiy <artem.bityutskiy@linux.intel.com>, Dinh Nguyen
- <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Graham Moore
- <grmoore@opensource.altera.com>, David Woodhouse <dwmw2@infradead.org>,
- Masami Hiramatsu <mhiramat@kernel.org>, Chuanxiao Dong
- <chuanxiao.dong@intel.com>, Jassi Brar <jaswinder.singh@linaro.org>, Linux
- Kernel Mailing List <linux-kernel@vger.kernel.org>, Brian Norris
- <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
- Pitchen <cyrille.pitchen@atmel.com>
-Subject: Re: [PATCH 1/2] mtd: nand: add generic helpers to check, match,
- maximize ECC settings
-Message-ID: <20170518090957.227954c1@bbrezillon>
-In-Reply-To: <CAK7LNAQzPcM6T+3yG8=ezd0vRetW-vcibHWYSw5yJC5TorPKVQ@mail.gmail.com>
-References: <1492585618-13655-1-git-send-email-yamada.masahiro@socionext.com>
- <1492585618-13655-2-git-send-email-yamada.masahiro@socionext.com>
- <20170428183250.4c43e107@bbrezillon>
- <CAK7LNAQZyMoKJjzPjr12TE9s=G8GJbHGgfequtLE4h+meJT03w@mail.gmail.com>
- <20170515135433.2edda630@bbrezillon>
- <CAK7LNAQzPcM6T+3yG8=ezd0vRetW-vcibHWYSw5yJC5TorPKVQ@mail.gmail.com>
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by merlin.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dBH2i-0003pf-32
+ for linux-mtd@lists.infradead.org; Thu, 18 May 2017 08:44:21 +0000
+Subject: Re: [PATCH 1/2] Add support for UBIFS
+To: Eric Biggers <ebiggers3@gmail.com>, Eryu Guan <eguan@redhat.com>
+Cc: fstests@vger.kernel.org, linux-mtd@lists.infradead.org, richard@nod.at
+References: <20170517095531.11818-1-david.oberhollenzer@sigma-star.at>
+ <20170517095531.11818-2-david.oberhollenzer@sigma-star.at>
+ <20170517115355.GE7250@eguan.usersys.redhat.com>
+ <20170517184535.GB91213@gmail.com>
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Message-ID: <7fb3a661-98b5-cb7e-3994-722ae7be0832@sigma-star.at>
+Date: Thu, 18 May 2017 10:41:27 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20170517184535.GB91213@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,78 +26,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 18 May 2017 15:27:11 +0900
-Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+On 05/17/2017 01:53 PM, Eryu Guan wrote:
+> On Wed, May 17, 2017 at 11:55:29AM +0200, David Oberhollenzer wrote:
+>>  	-g)	group=$2 ; shift ;
+>>  		GROUP_LIST="$GROUP_LIST ${group//,/ }"
+>> diff --git a/common/config b/common/config
+>> index 59041a39..6c58e888 100644
+>> --- a/common/config
+>> +++ b/common/config
+>> @@ -336,6 +336,9 @@ _mount_opts()
+>>  		# We need to specify the size at mount, use 1G by default
+>>  		export MOUNT_OPTIONS="-o size=1G $TMPFS_MOUNT_OPTIONS"
+>>  		;;
+>> +	ubifs)
+>> +		export MOUNT_OPTIONS=$UBIFS_MOUNT_OPTIONS
+>> +		;;
+>>  	*)
+>>  		;;
+>>  	esac
+>> @@ -475,6 +478,10 @@ _check_device()
+>>  		if [ ! -d "$dev" ]; then
+>>  			_fatal "common/config: $name ($dev) is not a directory for overlay"
+>>  		fi
+>> +	elif [ "$FSTYP" == "ubifs" ]; then
+>> +		if [ ! -c "$dev" ]; then
+>> +			_fatal "common/config: $name ($dev) is not a character device"
+>> +		fi
+>>  	else
+>>  		_fatal "common/config: $name ($dev) is not a block device or a network filesystem"
+> 
+> This error message should be updated too. And turning this if-elif-fi
+> block to a case switch on $FSTYP seems cleaner.
+> 
+> And you need to setup MKFS_UBIFS_PROG and all other needed tools in
+> common/config too, and check if the tools are available in common/rc and
+> abort if the required tools are not met. e.g.
+> 
+> [ "$MKFS_EXT4_PROG" = "" ] && _fatal "mkfs.ext4 not found"
+> 
 
-> Hi Boris,
-> 
-> 
-> 
-> 2017-05-15 20:54 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
-> > Hi Masahiro,
-> >
-> > Sorry for the late reply.
-> >
-> > On Mon, 8 May 2017 12:40:47 +0900
-> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
-> >  
-> >> Hi Boris,
-> >>
-> >>
-> >> 2017-04-29 1:32 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
-> >>  
-> >> >> +     for (setting = caps->ecc_settings; setting->step; setting++) {
-> >> >> +             /* If chip->ecc.size is already set, respect it. */
-> >> >> +             if (chip->ecc.size && setting->step != chip->ecc.size)
-> >> >> +                     continue;
-> >> >> +
-> >> >> +             /* If chip->ecc.strength is already set, respect it. */
-> >> >> +             if (chip->ecc.strength &&
-> >> >> +                 setting->strength != chip->ecc.strength)
-> >> >> +                     continue;  
-> >> >
-> >> > Hm, I don't get it. If chip->ecc.strength and chip->ecc.size are
-> >> > explicitly set, you should just call nand_check_ecc_caps() and skip
-> >> > nand_try_to_match_ecc_req(). Why would you call
-> >> > nand_try_to_match_ecc_req() in this case?  
-> >>
-> >>
-> >> I want to call this function if
-> >> ecc.size is specified but ecc.strength is not
-> >> (or vice versa).  
-> >
-> > That's not a valid combination. I accepted the case where
-> > nand-ecc-step-size is not defined in the DT just because sometime you
-> > only have one possible setting which is imposed by the controller. In
-> > this case ecc.size should be explicitly set by the driver not left to 0.
-> >  
-> >>
-> >>
-> >> If both ecc.size and ecc.strength are already specified,
-> >> you are right, no need to call this function.
-> >> This function can check the sanity of the specified
-> >> combination of (step, strength), but this is the same
-> >> as what nand_check_ecc_caps() does.  
-> 
-> 
-> I am working on the next version because I really need to
-> merge all of my Denali controller patches for my SoCs.
+mkfs.ubifs itself isn't needed as empty ubi volumes are formated when
+mounting them with UBIFS.
 
-Okay.
+I think it would make sense to add a check for ubiupdatevol to
+_require_scratch_encryption (used in _scratch_mkfs_encrypted to
+whipe an existing volume).
 
-> 
-> 
-> One question about this part.
-> 
-> 
->        /* If chip->ecc.size is already set, respect it. */
->        if (chip->ecc.size && step_size != chip->ecc.size)
->                continue;
-> 
-> Does this make sense for nand_try_to_maximize_ecc()?
-> 
-> (In other words, can nand-ecc-maximize stand together with nand-ecc-step-size?)
 
-It could make sense if one wants to maximize the strength for a
-specific step-size, but most of the time the user will let the driver
-choose the best step-size+strength pair.
+On 05/17/2017 08:45 PM, Eric Biggers wrote:
+> On Wed, May 17, 2017 at 07:53:55PM +0800, Eryu Guan wrote:
+>> As being pointed out in previous reviews, it'll be great if we can probe
+>> ubifs from the char device if possible instead of adding new fs-specific
+>> option, just as what we're doing at the end of common/config for other
+>> local filesystems. But I'm not sure if blkid works for char device and
+>> ubifs (probably not).
+>>
+> 
+> It seems to work fine without the -ubifs option:
+> 
+> # blkid -o value -s TYPE /dev/ubi0_0
+> ubifs
+
+I can't really reproduce this on my end. Neither on my Debian test VM,
+nor on the OpenSUSE system that I'm working on right now. I get no
+output from blkid, neither before nor after mounting the ubi volume.
+
+To be fair, the Debian version (and thus its blkid version) is rather
+old (blkid 1.0.0 (12-Feb-2003)), but the one on OpenSUSE seems to be
+fairly recent:
+
+$ blkid -v
+blkid from util-linux 2.28  (libblkid 2.28., 12-Apr-2016)
+
+
+Would it make sense to patch the check in common/config instead,
+to default to ubifs if FSTYP is not set and the target is a
+character device? Or simply require on FSTYP to be set in the
+config file?
+
+
+Thanks,
+
+David
