@@ -1,27 +1,26 @@
-Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193])
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dB5AQ-0003RT-PH
- for linux-mtd@lists.infradead.org; Wed, 17 May 2017 20:03:34 +0000
-Date: Wed, 17 May 2017 22:03:05 +0200
-From: Pavel Machek <pavel@ucw.cz>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
- marek.vasut@gmail.com, cyrille.pitchen@atmel.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- mark.marshall@omicronenergy.com, b44839@freescale.com,
- prabhakar@freescale.com
-Subject: [PATCH] mtd: nand: fsl_ifc: fix handing of bit flips in erased pages
-Message-ID: <20170517200305.GA12537@amd>
-References: <20170419121332.GA26979@amd> <20170419231804.5a04ed69@bbrezillon>
- <20170419221507.GA24914@amd> <20170420002748.5c76c9b9@bbrezillon>
- <20170420114057.GA4705@amd> <20170421105107.GA7259@amd>
- <20170517122224.GB583@amd> <20170517143211.205ff5de@bbrezillon>
- <20170517130059.GA3437@amd> <20170517152548.6d52c41b@bbrezillon>
+ id 1dBDBD-0002xG-TS
+ for linux-mtd@lists.infradead.org; Thu, 18 May 2017 04:36:54 +0000
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "andrew@lunn.ch" <andrew@lunn.ch>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC: Boris Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Rob Herring <robh+dt@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>
+Subject: Re: [PATCH 4/4] mtd: mchp23k256: Add support for mchp23lcv1024
+Date: Thu, 18 May 2017 04:36:00 +0000
+Message-ID: <54db7f06847c4026a91a7ae2cb72a790@svr-chch-ex1.atlnz.lc>
+References: <20170517053908.26138-1-chris.packham@alliedtelesis.co.nz>
+ <20170517053908.26138-5-chris.packham@alliedtelesis.co.nz>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="/9DWx/yDrRhgMJTb"
-Content-Disposition: inline
-In-Reply-To: <20170517152548.6d52c41b@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,159 +30,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---/9DWx/yDrRhgMJTb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-If we see unrecoverable ECC error, we need to count number of bitflips
-=66rom all-ones and report correctable/uncorrectable according to
-that. Otherwise we report ECC failed on erased flash with single bit error.
-
-Signed-off-by: Pavel Machek <pavel@denx.de>
-
-diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nan=
-d.c
-index d1570f5..1c66696 100644
---- a/drivers/mtd/nand/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/fsl_ifc_nand.c
-@@ -171,34 +171,6 @@ static void set_addr(struct mtd_info *mtd, int column,=
- int page_addr, int oob)
- 		ifc_nand_ctrl->index +=3D mtd->writesize;
- }
-=20
--static int is_blank(struct mtd_info *mtd, unsigned int bufnum)
--{
--	struct nand_chip *chip =3D mtd_to_nand(mtd);
--	struct fsl_ifc_mtd *priv =3D nand_get_controller_data(chip);
--	u8 __iomem *addr =3D priv->vbase + bufnum * (mtd->writesize * 2);
--	u32 __iomem *mainarea =3D (u32 __iomem *)addr;
--	u8 __iomem *oob =3D addr + mtd->writesize;
--	struct mtd_oob_region oobregion =3D { };
--	int i, section =3D 0;
--
--	for (i =3D 0; i < mtd->writesize / 4; i++) {
--		if (__raw_readl(&mainarea[i]) !=3D 0xffffffff)
--			return 0;
--	}
--
--	mtd_ooblayout_ecc(mtd, section++, &oobregion);
--	while (oobregion.length) {
--		for (i =3D 0; i < oobregion.length; i++) {
--			if (__raw_readb(&oob[oobregion.offset + i]) !=3D 0xff)
--				return 0;
--		}
--
--		mtd_ooblayout_ecc(mtd, section++, &oobregion);
--	}
--
--	return 1;
--}
--
- /* returns nonzero if entire page is blank */
- static int check_read_ecc(struct mtd_info *mtd, struct fsl_ifc_ctrl *ctrl,
- 			  u32 *eccstat, unsigned int bufnum)
-@@ -274,16 +246,13 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
- 			if (errors =3D=3D 15) {
- 				/*
- 				 * Uncorrectable error.
--				 * OK only if the whole page is blank.
-+				 * We'll check for blank pages later.
- 				 *
- 				 * We disable ECCER reporting due to...
- 				 * erratum IFC-A002770 -- so report it now if we
- 				 * see an uncorrectable error in ECCSTAT.
- 				 */
--				if (!is_blank(mtd, bufnum))
--					ctrl->nand_stat |=3D
--						IFC_NAND_EVTER_STAT_ECCER;
--				break;
-+				ctrl->nand_stat |=3D IFC_NAND_EVTER_STAT_ECCER;
- 			}
-=20
- 			mtd->ecc_stats.corrected +=3D errors;
-@@ -678,6 +648,39 @@ static int fsl_ifc_wait(struct mtd_info *mtd, struct n=
-and_chip *chip)
- 	return nand_fsr | NAND_STATUS_WP;
- }
-=20
-+/*
-+ * The controller does not check for bitflips in erased pages,
-+ * therefore software must check instead.
-+ */
-+static int check_erased_page(struct nand_chip *chip, u8 *buf)
-+{
-+	struct mtd_info *mtd =3D nand_to_mtd(chip);
-+	u8 *ecc =3D chip->oob_poi;
-+	const int ecc_size =3D chip->ecc.bytes;
-+	const int pkt_size =3D chip->ecc.size;
-+	int i, res, bitflips =3D 0;
-+	struct mtd_oob_region oobregion;
-+
-+	mtd_ooblayout_ecc(mtd, 0, &oobregion);
-+	ecc +=3D oobregion.offset;
-+
-+	for (i =3D 0; i < chip->ecc.steps; ++i) {
-+		res =3D nand_check_erased_ecc_chunk(buf, pkt_size, ecc, ecc_size,
-+						  NULL, 0,
-+						  chip->ecc.strength);
-+		if (res < 0)
-+			mtd->ecc_stats.failed++;
-+		else
-+			mtd->ecc_stats.corrected +=3D res;
-+
-+		bitflips =3D max(res, bitflips);
-+		buf +=3D pkt_size;
-+		ecc +=3D ecc_size;
-+	}
-+
-+	return bitflips;
-+}
-+
- static int fsl_ifc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 			     uint8_t *buf, int oob_required, int page)
- {
-@@ -689,11 +695,18 @@ static int fsl_ifc_read_page(struct mtd_info *mtd, st=
-ruct nand_chip *chip,
- 	if (oob_required)
- 		fsl_ifc_read_buf(mtd, chip->oob_poi, mtd->oobsize);
-=20
--	if (ctrl->nand_stat & IFC_NAND_EVTER_STAT_ECCER)
--		dev_err(priv->dev, "NAND Flash ECC Uncorrectable Error\n");
--
- 	if (ctrl->nand_stat !=3D IFC_NAND_EVTER_STAT_OPC)
- 		mtd->ecc_stats.failed++;
-+
-+	if (ctrl->nand_stat & IFC_NAND_EVTER_STAT_ECCER) {
-+		int res;
-+
-+		if (!oob_required)
-+			fsl_ifc_read_buf(mtd, chip->oob_poi, mtd->oobsize);
-+
-+		res =3D check_erased_page(chip, buf);
-+		return res;
-+	}
-=20
- 	return nctrl->max_bitflips;
- }
-
-
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---/9DWx/yDrRhgMJTb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlkcrHkACgkQMOfwapXb+vIMggCgq4FhVjBCQpnXvRZPXlkQa4xE
-yEgAoJuFGegVCLxQkfcfO/dVL7NEC8V/
-=daF6
------END PGP SIGNATURE-----
-
---/9DWx/yDrRhgMJTb--
+On 17/05/17 17:39, Chris Packham wrote:=0A=
+> The mchp23lcv1024 is software compatible with the mchp23k256, the=0A=
+> only difference (from a software point of view) is the size. There=0A=
+> is no way to detect the size so we must be told via a Device Tree.=0A=
+=0A=
+=0A=
+I've just noticed that another difference between the 2 chips is 16-bit =0A=
+vs 24-bit addressing. So that will also need to be handled.=0A=
+=0A=
+=0A=
+> =0A=
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>=0A=
+> ---=0A=
+>   .../bindings/mtd/microchip,mchp23k256.txt           |  2 +-=0A=
+>   drivers/mtd/devices/mchp23k256.c                    | 21 ++++++++++++++=
++++++--=0A=
+>   2 files changed, 20 insertions(+), 3 deletions(-)=0A=
+> =0A=
+> diff --git a/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.t=
+xt b/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt=0A=
+> index 25e5ad38b0f0..7328eb92a03c 100644=0A=
+> --- a/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt=0A=
+> +++ b/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt=0A=
+> @@ -3,7 +3,7 @@=0A=
+>   Required properties:=0A=
+>   - #address-cells, #size-cells : Must be present if the device has sub-n=
+odes=0A=
+>     representing partitions.=0A=
+> -- compatible : Must be "microchip,mchp23k256"=0A=
+> +- compatible : Must be one of "microchip,mchp23k256" or "microchip,mchp2=
+3lcv1024"=0A=
+>   - reg : Chip-Select number=0A=
+>   - spi-max-frequency : Maximum frequency of the SPI bus the chip can ope=
+rate at=0A=
+>   =0A=
+> diff --git a/drivers/mtd/devices/mchp23k256.c b/drivers/mtd/devices/mchp2=
+3k256.c=0A=
+> index 02c6b9dcbd3e..d1eba587633c 100644=0A=
+> --- a/drivers/mtd/devices/mchp23k256.c=0A=
+> +++ b/drivers/mtd/devices/mchp23k256.c=0A=
+> @@ -21,6 +21,8 @@=0A=
+>   #include <linux/spi/spi.h>=0A=
+>   #include <linux/of_device.h>=0A=
+>   =0A=
+> +enum chips { mchp23k256, mchp23lcv1024 };=0A=
+> +=0A=
+>   struct mchp23k256_flash {=0A=
+>   	struct spi_device	*spi;=0A=
+>   	struct mutex		lock;=0A=
+> @@ -128,6 +130,7 @@ static int mchp23k256_probe(struct spi_device *spi)=
+=0A=
+>   	struct mchp23k256_flash *flash;=0A=
+>   	struct flash_platform_data *data;=0A=
+>   	int err;=0A=
+> +	enum chips chip;=0A=
+>   =0A=
+>   	flash =3D devm_kzalloc(&spi->dev, sizeof(*flash), GFP_KERNEL);=0A=
+>   	if (!flash)=0A=
+> @@ -143,15 +146,28 @@ static int mchp23k256_probe(struct spi_device *spi)=
+=0A=
+>   =0A=
+>   	data =3D dev_get_platdata(&spi->dev);=0A=
+>   =0A=
+> +	if (spi->dev.of_node)=0A=
+> +		chip =3D (enum chips)of_device_get_match_data(&spi->dev);=0A=
+> +	else=0A=
+> +		chip =3D mchp23k256;=0A=
+> +=0A=
+>   	mtd_set_of_node(&flash->mtd, spi->dev.of_node);=0A=
+>   	flash->mtd.dev.parent	=3D &spi->dev;=0A=
+>   	flash->mtd.type		=3D MTD_RAM;=0A=
+>   	flash->mtd.flags	=3D MTD_CAP_RAM;=0A=
+>   	flash->mtd.writesize	=3D 1;=0A=
+> -	flash->mtd.size		=3D SZ_32K;=0A=
+>   	flash->mtd._read	=3D mchp23k256_read;=0A=
+>   	flash->mtd._write	=3D mchp23k256_write;=0A=
+>   =0A=
+> +	switch (chip){=0A=
+> +	case mchp23lcv1024:=0A=
+> +		flash->mtd.size		=3D SZ_128K;=0A=
+> +		break;=0A=
+> +	default:=0A=
+> +		flash->mtd.size		=3D SZ_32K;=0A=
+> +		break;=0A=
+> +	}=0A=
+> +=0A=
+>   	flash->mtd.erasesize =3D PAGE_SIZE;=0A=
+>   	while (flash->mtd.size & (flash->mtd.erasesize - 1))=0A=
+>   		flash->mtd.erasesize >>=3D 1;=0A=
+> @@ -172,7 +188,8 @@ static int mchp23k256_remove(struct spi_device *spi)=
+=0A=
+>   }=0A=
+>   =0A=
+>   static const struct of_device_id mchp23k256_of_table[] =3D {=0A=
+> -	{ .compatible =3D "microchip,mchp23k256" },=0A=
+> +	{ .compatible =3D "microchip,mchp23k256", .data =3D (void *)mchp23k256 =
+},=0A=
+> +	{ .compatible =3D "microchip,mchp23lcv1024", .data =3D (void *)mchp23lc=
+v1024 },=0A=
+>   	{}=0A=
+>   };=0A=
+>   MODULE_DEVICE_TABLE(of, mchp23k256_of_table);=0A=
+> =0A=
+=0A=
