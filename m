@@ -1,26 +1,24 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dBNaZ-00063O-FV
- for linux-mtd@lists.infradead.org; Thu, 18 May 2017 15:43:45 +0000
-Subject: Re: [PATCH] mkfs.ubifs: Add support for symlinks in device table
-To: David Engraf <david.engraf@sysgo.com>
-References: <20170518133854.20744-1-david.engraf@sysgo.com>
- <CAFLxGvyeA5tJ+pGfiav7t3-c7omvByT1+yEy62-f3bJUrxMeHw@mail.gmail.com>
- <09400658-229c-b985-75d4-7df184e4be47@sysgo.com>
- <d41978aa-9583-6a27-d992-77a49962daed@nod.at>
- <678b2b7a-4f2e-5bfe-1f10-61de599a59bb@sysgo.com>
- <652cc3d4-10a2-d476-c4b1-63eff6aa2ea7@nod.at>
- <dc1e73ec-537b-8e23-6dab-0ce4c2e371a7@sysgo.com>
- <97e661e2-0648-e148-280b-8ff6cc9cbe09@nod.at>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Oberhollenzer <goliath@sigma-star.at>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <9e19f6f3-e825-72b4-cf5e-fea2c12a5c7e@nod.at>
-Date: Thu, 18 May 2017 17:43:20 +0200
+Received: from ms.lwn.net ([45.79.88.28])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dBPC5-0000JR-3Z
+ for linux-mtd@lists.infradead.org; Thu, 18 May 2017 17:26:34 +0000
+Date: Thu, 18 May 2017 11:26:08 -0600
+From: Jonathan Corbet <corbet@lwn.net>
+To: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Cc: Linux Doc Mailing List <linux-doc@vger.kernel.org>, Mauro Carvalho
+ Chehab <mchehab@infradead.org>, linux-kernel@vger.kernel.org, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 00/53] Get rid of Docbook
+Message-ID: <20170518112608.4f355068@lwn.net>
+In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
+References: <cover.1494935649.git.mchehab@s-opensource.com>
 MIME-Version: 1.0
-In-Reply-To: <97e661e2-0648-e148-280b-8ff6cc9cbe09@nod.at>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,30 +28,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 18.05.2017 um 17:27 schrieb Richard Weinberger:
-> i.e.
-> rw@captainhero:/mnt/dir> id
-> uid=1000(rw) gid=100(users) groups=100(users)
-> rw@captainhero:/mnt/dir> ls -la
-> total 0
-> drwxr-xr-x 2 rw   root 240 May 18 17:23 .
-> drwxr-xr-x 3 root root 224 May 18 17:22 ..
-> lrwxrwxrwx 1 root root  11 May 18 17:23 s -> /etc/shadow
-> rw@captainhero:/mnt/dir> rm s
-> rw@captainhero:/mnt/dir> ls -la
-> total 0
-> drwxr-xr-x 2 rw   root 176 May 18 17:24 .
-> drwxr-xr-x 3 root root 224 May 18 17:22 ..
-> rw@captainhero:/mnt/dir>
-> 
-> Although, user rw is not root, it can delete "s" which is owned by root
-> because rw has write permission on /mnt/dir.
+On Tue, 16 May 2017 09:15:52 -0300
+Mauro Carvalho Chehab <mchehab@s-opensource.com> wrote:
 
-BTW: My example is misleading. Same applies to regular files.
-Permissions and ownership of symlinks just don't apply.
+> This patch series convert the remaining DocBooks to ReST.
 
-Do you only care about the ls output or does one of your applications
-depend on it?
+Gotta love this:
 
-Thanks,
-//richard
+>  124 files changed, 7469 insertions(+), 10511 deletions(-)
+
+I've just pulled the whole set from your experimental.git repo.  There are
+certainly a few rough edges, but that means it will fit into the rest of
+the docs just fine :)
+
+There are a few loose ends, but, rather than complaining about them, I'll
+just see what's to be done about them.
+
+Thanks for pushing this through, this is a nice milestone.
+
+jon
