@@ -1,26 +1,39 @@
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
+Received: from conssluserg-01.nifty.com ([210.131.2.80])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dBDBD-0002xG-TS
- for linux-mtd@lists.infradead.org; Thu, 18 May 2017 04:36:54 +0000
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "andrew@lunn.ch" <andrew@lunn.ch>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC: Boris Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Rob Herring <robh+dt@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 4/4] mtd: mchp23k256: Add support for mchp23lcv1024
-Date: Thu, 18 May 2017 04:36:00 +0000
-Message-ID: <54db7f06847c4026a91a7ae2cb72a790@svr-chch-ex1.atlnz.lc>
-References: <20170517053908.26138-1-chris.packham@alliedtelesis.co.nz>
- <20170517053908.26138-5-chris.packham@alliedtelesis.co.nz>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1dBEv1-00022M-0M
+ for linux-mtd@lists.infradead.org; Thu, 18 May 2017 06:28:16 +0000
+Received: from mail-yw0-f172.google.com (mail-yw0-f172.google.com
+ [209.85.161.172]) (authenticated)
+ by conssluserg-01.nifty.com with ESMTP id v4I6RCfl017659
+ for <linux-mtd@lists.infradead.org>; Thu, 18 May 2017 15:27:13 +0900
+Received: by mail-yw0-f172.google.com with SMTP id b68so16343368ywe.3
+ for <linux-mtd@lists.infradead.org>; Wed, 17 May 2017 23:27:13 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20170515135433.2edda630@bbrezillon>
+References: <1492585618-13655-1-git-send-email-yamada.masahiro@socionext.com>
+ <1492585618-13655-2-git-send-email-yamada.masahiro@socionext.com>
+ <20170428183250.4c43e107@bbrezillon>
+ <CAK7LNAQZyMoKJjzPjr12TE9s=G8GJbHGgfequtLE4h+meJT03w@mail.gmail.com>
+ <20170515135433.2edda630@bbrezillon>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Thu, 18 May 2017 15:27:11 +0900
+Message-ID: <CAK7LNAQzPcM6T+3yG8=ezd0vRetW-vcibHWYSw5yJC5TorPKVQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mtd: nand: add generic helpers to check, match,
+ maximize ECC settings
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Dinh Nguyen <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Graham Moore <grmoore@opensource.altera.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>,
+ Jassi Brar <jaswinder.singh@linaro.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,107 +43,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 17/05/17 17:39, Chris Packham wrote:=0A=
-> The mchp23lcv1024 is software compatible with the mchp23k256, the=0A=
-> only difference (from a software point of view) is the size. There=0A=
-> is no way to detect the size so we must be told via a Device Tree.=0A=
-=0A=
-=0A=
-I've just noticed that another difference between the 2 chips is 16-bit =0A=
-vs 24-bit addressing. So that will also need to be handled.=0A=
-=0A=
-=0A=
-> =0A=
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>=0A=
-> ---=0A=
->   .../bindings/mtd/microchip,mchp23k256.txt           |  2 +-=0A=
->   drivers/mtd/devices/mchp23k256.c                    | 21 ++++++++++++++=
-+++++--=0A=
->   2 files changed, 20 insertions(+), 3 deletions(-)=0A=
-> =0A=
-> diff --git a/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.t=
-xt b/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt=0A=
-> index 25e5ad38b0f0..7328eb92a03c 100644=0A=
-> --- a/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt=0A=
-> +++ b/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt=0A=
-> @@ -3,7 +3,7 @@=0A=
->   Required properties:=0A=
->   - #address-cells, #size-cells : Must be present if the device has sub-n=
-odes=0A=
->     representing partitions.=0A=
-> -- compatible : Must be "microchip,mchp23k256"=0A=
-> +- compatible : Must be one of "microchip,mchp23k256" or "microchip,mchp2=
-3lcv1024"=0A=
->   - reg : Chip-Select number=0A=
->   - spi-max-frequency : Maximum frequency of the SPI bus the chip can ope=
-rate at=0A=
->   =0A=
-> diff --git a/drivers/mtd/devices/mchp23k256.c b/drivers/mtd/devices/mchp2=
-3k256.c=0A=
-> index 02c6b9dcbd3e..d1eba587633c 100644=0A=
-> --- a/drivers/mtd/devices/mchp23k256.c=0A=
-> +++ b/drivers/mtd/devices/mchp23k256.c=0A=
-> @@ -21,6 +21,8 @@=0A=
->   #include <linux/spi/spi.h>=0A=
->   #include <linux/of_device.h>=0A=
->   =0A=
-> +enum chips { mchp23k256, mchp23lcv1024 };=0A=
-> +=0A=
->   struct mchp23k256_flash {=0A=
->   	struct spi_device	*spi;=0A=
->   	struct mutex		lock;=0A=
-> @@ -128,6 +130,7 @@ static int mchp23k256_probe(struct spi_device *spi)=
-=0A=
->   	struct mchp23k256_flash *flash;=0A=
->   	struct flash_platform_data *data;=0A=
->   	int err;=0A=
-> +	enum chips chip;=0A=
->   =0A=
->   	flash =3D devm_kzalloc(&spi->dev, sizeof(*flash), GFP_KERNEL);=0A=
->   	if (!flash)=0A=
-> @@ -143,15 +146,28 @@ static int mchp23k256_probe(struct spi_device *spi)=
-=0A=
->   =0A=
->   	data =3D dev_get_platdata(&spi->dev);=0A=
->   =0A=
-> +	if (spi->dev.of_node)=0A=
-> +		chip =3D (enum chips)of_device_get_match_data(&spi->dev);=0A=
-> +	else=0A=
-> +		chip =3D mchp23k256;=0A=
-> +=0A=
->   	mtd_set_of_node(&flash->mtd, spi->dev.of_node);=0A=
->   	flash->mtd.dev.parent	=3D &spi->dev;=0A=
->   	flash->mtd.type		=3D MTD_RAM;=0A=
->   	flash->mtd.flags	=3D MTD_CAP_RAM;=0A=
->   	flash->mtd.writesize	=3D 1;=0A=
-> -	flash->mtd.size		=3D SZ_32K;=0A=
->   	flash->mtd._read	=3D mchp23k256_read;=0A=
->   	flash->mtd._write	=3D mchp23k256_write;=0A=
->   =0A=
-> +	switch (chip){=0A=
-> +	case mchp23lcv1024:=0A=
-> +		flash->mtd.size		=3D SZ_128K;=0A=
-> +		break;=0A=
-> +	default:=0A=
-> +		flash->mtd.size		=3D SZ_32K;=0A=
-> +		break;=0A=
-> +	}=0A=
-> +=0A=
->   	flash->mtd.erasesize =3D PAGE_SIZE;=0A=
->   	while (flash->mtd.size & (flash->mtd.erasesize - 1))=0A=
->   		flash->mtd.erasesize >>=3D 1;=0A=
-> @@ -172,7 +188,8 @@ static int mchp23k256_remove(struct spi_device *spi)=
-=0A=
->   }=0A=
->   =0A=
->   static const struct of_device_id mchp23k256_of_table[] =3D {=0A=
-> -	{ .compatible =3D "microchip,mchp23k256" },=0A=
-> +	{ .compatible =3D "microchip,mchp23k256", .data =3D (void *)mchp23k256 =
-},=0A=
-> +	{ .compatible =3D "microchip,mchp23lcv1024", .data =3D (void *)mchp23lc=
-v1024 },=0A=
->   	{}=0A=
->   };=0A=
->   MODULE_DEVICE_TABLE(of, mchp23k256_of_table);=0A=
-> =0A=
-=0A=
+Hi Boris,
+
+
+
+2017-05-15 20:54 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> Hi Masahiro,
+>
+> Sorry for the late reply.
+>
+> On Mon, 8 May 2017 12:40:47 +0900
+> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>
+>> Hi Boris,
+>>
+>>
+>> 2017-04-29 1:32 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+>>
+>> >> +     for (setting = caps->ecc_settings; setting->step; setting++) {
+>> >> +             /* If chip->ecc.size is already set, respect it. */
+>> >> +             if (chip->ecc.size && setting->step != chip->ecc.size)
+>> >> +                     continue;
+>> >> +
+>> >> +             /* If chip->ecc.strength is already set, respect it. */
+>> >> +             if (chip->ecc.strength &&
+>> >> +                 setting->strength != chip->ecc.strength)
+>> >> +                     continue;
+>> >
+>> > Hm, I don't get it. If chip->ecc.strength and chip->ecc.size are
+>> > explicitly set, you should just call nand_check_ecc_caps() and skip
+>> > nand_try_to_match_ecc_req(). Why would you call
+>> > nand_try_to_match_ecc_req() in this case?
+>>
+>>
+>> I want to call this function if
+>> ecc.size is specified but ecc.strength is not
+>> (or vice versa).
+>
+> That's not a valid combination. I accepted the case where
+> nand-ecc-step-size is not defined in the DT just because sometime you
+> only have one possible setting which is imposed by the controller. In
+> this case ecc.size should be explicitly set by the driver not left to 0.
+>
+>>
+>>
+>> If both ecc.size and ecc.strength are already specified,
+>> you are right, no need to call this function.
+>> This function can check the sanity of the specified
+>> combination of (step, strength), but this is the same
+>> as what nand_check_ecc_caps() does.
+
+
+I am working on the next version because I really need to
+merge all of my Denali controller patches for my SoCs.
+
+
+One question about this part.
+
+
+       /* If chip->ecc.size is already set, respect it. */
+       if (chip->ecc.size && step_size != chip->ecc.size)
+               continue;
+
+Does this make sense for nand_try_to_maximize_ecc()?
+
+(In other words, can nand-ecc-maximize stand together with nand-ecc-step-size?)
+
+
+-- 
+Best Regards
+Masahiro Yamada
