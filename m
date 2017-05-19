@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by merlin.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWet-0005ge-Do
- for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:24:50 +0000
+ id 1dBWet-0005gc-Dm
+ for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:24:48 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -12,17 +12,15 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 13/30] kselftest.txt: standardize document format
-Date: Thu, 18 May 2017 22:24:05 -0300
-Message-Id: <576c937dad1f8c3600c5e4453cda9fc3b55741ff.1495156975.git.mchehab@s-opensource.com>
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
+ Marc Zyngier <marc.zyngier@arm.com>
+Subject: [PATCH 04/30] IRQ-domain.txt: standardize document format
+Date: Thu, 18 May 2017 22:23:56 -0300
+Message-Id: <dc3f7f85fa5d500a8ff9569b5aed6d64d1620bf7.1495156975.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156975.git.mchehab@s-opensource.com>
 References: <cover.1495156975.git.mchehab@s-opensource.com>
-MIME-Version: 1.0
 In-Reply-To: <cover.1495156975.git.mchehab@s-opensource.com>
 References: <cover.1495156975.git.mchehab@s-opensource.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 Sender: Mauro Carvalho Chehab <mchehab@smtp.s-opensource.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -39,117 +37,171 @@ format. Some doesn't even have titles!
 Change its representation to follow the adopted standard,
 using ReST markups for it to be parseable by Sphinx:
 
-- promote the level of the document title;
-- use literal blocks where needed;
-- add whitespaces to fix one literal block.
+- use proper markups for titles;
+- mark literal blocks as such;
+- add blank lines where needed.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/kselftest.txt | 37 +++++++++++++++++++++++++------------
- 1 file changed, 25 insertions(+), 12 deletions(-)
+ Documentation/IRQ-domain.txt | 69 +++++++++++++++++++++++++++++++-------------
+ 1 file changed, 49 insertions(+), 20 deletions(-)
 
-diff --git a/Documentation/kselftest.txt b/Documentation/kselftest.txt
-index 5bd590335839..98be003ce4eb 100644
---- a/Documentation/kselftest.txt
-+++ b/Documentation/kselftest.txt
+diff --git a/Documentation/IRQ-domain.txt b/Documentation/IRQ-domain.txt
+index 82001a25a14b..ef32ec0f2b04 100644
+--- a/Documentation/IRQ-domain.txt
++++ b/Documentation/IRQ-domain.txt
 @@ -1,4 +1,6 @@
-+======================
- Linux Kernel Selftests
-+======================
+-irq_domain interrupt number mapping library
++===============================================
++The irq_domain interrupt number mapping library
++===============================================
  
- The kernel contains a set of "self tests" under the tools/testing/selftests/
- directory. These are intended to be small tests to exercise individual code
-@@ -15,14 +17,17 @@ hotplug test is run on 2% of hotplug capable memory instead of 10%.
- Running the selftests (hotplug tests are run in limited mode)
- =============================================================
+ The current design of the Linux kernel uses a single large number
+ space where each separate IRQ source is assigned a different number.
+@@ -36,7 +38,9 @@ irq_domain also implements translation from an abstract irq_fwspec
+ structure to hwirq numbers (Device Tree and ACPI GSI so far), and can
+ be easily extended to support other IRQ topology data sources.
  
--To build the tests:
-+To build the tests::
+-=== irq_domain usage ===
++irq_domain usage
++================
 +
-   $ make -C tools/testing/selftests
+ An interrupt controller driver creates and registers an irq_domain by
+ calling one of the irq_domain_add_*() functions (each mapping method
+ has a different allocator function, more on that later).  The function
+@@ -62,15 +66,21 @@ If the driver has the Linux IRQ number or the irq_data pointer, and
+ needs to know the associated hwirq number (such as in the irq_chip
+ callbacks) then it can be directly obtained from irq_data->hwirq.
  
- 
--To run the tests:
-+To run the tests::
+-=== Types of irq_domain mappings ===
++Types of irq_domain mappings
++============================
 +
-   $ make -C tools/testing/selftests run_tests
+ There are several mechanisms available for reverse mapping from hwirq
+ to Linux irq, and each mechanism uses a different allocation function.
+ Which reverse map type should be used depends on the use case.  Each
+ of the reverse map types are described below:
  
--To build and run the tests with a single command, use:
-+To build and run the tests with a single command, use::
+-==== Linear ====
+-irq_domain_add_linear()
+-irq_domain_create_linear()
++Linear
++------
 +
-   $ make kselftest
- 
- - note that some tests will require root privileges.
-@@ -33,10 +38,12 @@ Running a subset of selftests
- You can use the "TARGETS" variable on the make command line to specify
- single test to run, or a list of tests to run.
- 
--To run only tests targeted for a single subsystem:
-+To run only tests targeted for a single subsystem::
++::
 +
-   $  make -C tools/testing/selftests TARGETS=ptrace run_tests
++	irq_domain_add_linear()
++	irq_domain_create_linear()
  
--You can specify multiple tests to build and run:
-+You can specify multiple tests to build and run::
+ The linear reverse map maintains a fixed size table indexed by the
+ hwirq number.  When a hwirq is mapped, an irq_desc is allocated for
+@@ -89,9 +99,13 @@ accepts a more general abstraction 'struct fwnode_handle'.
+ 
+ The majority of drivers should use the linear map.
+ 
+-==== Tree ====
+-irq_domain_add_tree()
+-irq_domain_create_tree()
++Tree
++----
 +
-   $  make TARGETS="size timers" kselftest
- 
- See the top-level tools/testing/selftests/Makefile for the list of all
-@@ -46,10 +53,12 @@ possible targets.
- Running the full range hotplug selftests
- ========================================
- 
--To build the hotplug tests:
-+To build the hotplug tests::
++::
 +
-   $ make -C tools/testing/selftests hotplug
++	irq_domain_add_tree()
++	irq_domain_create_tree()
  
--To run the hotplug tests:
-+To run the hotplug tests::
+ The irq_domain maintains a radix tree map from hwirq numbers to Linux
+ IRQs.  When an hwirq is mapped, an irq_desc is allocated and the
+@@ -109,8 +123,12 @@ accepts a more general abstraction 'struct fwnode_handle'.
+ 
+ Very few drivers should need this mapping.
+ 
+-==== No Map ===-
+-irq_domain_add_nomap()
++No Map
++------
 +
-   $ make -C tools/testing/selftests run_hotplug
- 
- - note that some tests will require root privileges.
-@@ -62,11 +71,13 @@ You can use kselftest_install.sh tool installs selftests in default
- location which is tools/testing/selftests/kselftest or a user specified
- location.
- 
--To install selftests in default location:
-+To install selftests in default location::
++::
 +
-    $ cd tools/testing/selftests
-    $ ./kselftest_install.sh
++	irq_domain_add_nomap()
  
--To install selftests in a user specified location:
-+To install selftests in a user specified location::
+ The No Map mapping is to be used when the hwirq number is
+ programmable in the hardware.  In this case it is best to program the
+@@ -121,10 +139,14 @@ Linux IRQ number into the hardware.
+ 
+ Most drivers cannot use this mapping.
+ 
+-==== Legacy ====
+-irq_domain_add_simple()
+-irq_domain_add_legacy()
+-irq_domain_add_legacy_isa()
++Legacy
++------
 +
-    $ cd tools/testing/selftests
-    $ ./kselftest_install.sh install_dir
- 
-@@ -77,10 +88,10 @@ Kselftest install as well as the Kselftest tarball provide a script
- named "run_kselftest.sh" to run the tests.
- 
- You can simply do the following to run the installed Kselftests. Please
--note some tests will require root privileges.
-+note some tests will require root privileges::
- 
--cd kselftest
--./run_kselftest.sh
-+   $ cd kselftest
-+   $ ./run_kselftest.sh
- 
- Contributing new tests
- ======================
-@@ -101,8 +112,10 @@ Contributing new tests(details)
- 
-  * Use TEST_GEN_XXX if such binaries or files are generated during
-    compiling.
++::
 +
-    TEST_PROGS, TEST_GEN_PROGS mean it is the excutable tested by
-    default.
++	irq_domain_add_simple()
++	irq_domain_add_legacy()
++	irq_domain_add_legacy_isa()
+ 
+ The Legacy mapping is a special case for drivers that already have a
+ range of irq_descs allocated for the hwirqs.  It is used when the
+@@ -163,14 +185,17 @@ that the driver using the simple domain call irq_create_mapping()
+ before any irq_find_mapping() since the latter will actually work
+ for the static IRQ assignment case.
+ 
+-==== Hierarchy IRQ domain ====
++Hierarchy IRQ domain
++--------------------
 +
-    TEST_PROGS_EXTENDED, TEST_GEN_PROGS_EXTENDED mean it is the
-    executable which is not tested by default.
-    TEST_FILES, TEST_GEN_FILES mean it is the file which is used by
+ On some architectures, there may be multiple interrupt controllers
+ involved in delivering an interrupt from the device to the target CPU.
+-Let's look at a typical interrupt delivering path on x86 platforms:
++Let's look at a typical interrupt delivering path on x86 platforms::
+ 
+-Device --> IOAPIC -> Interrupt remapping Controller -> Local APIC -> CPU
++  Device --> IOAPIC -> Interrupt remapping Controller -> Local APIC -> CPU
+ 
+ There are three interrupt controllers involved:
++
+ 1) IOAPIC controller
+ 2) Interrupt remapping controller
+ 3) Local APIC controller
+@@ -180,7 +205,8 @@ hardware architecture, an irq_domain data structure is built for each
+ interrupt controller and those irq_domains are organized into hierarchy.
+ When building irq_domain hierarchy, the irq_domain near to the device is
+ child and the irq_domain near to CPU is parent. So a hierarchy structure
+-as below will be built for the example above.
++as below will be built for the example above::
++
+ 	CPU Vector irq_domain (root irq_domain to manage CPU vectors)
+ 		^
+ 		|
+@@ -190,6 +216,7 @@ as below will be built for the example above.
+ 	IOAPIC irq_domain (manage IOAPIC delivery entries/pins)
+ 
+ There are four major interfaces to use hierarchy irq_domain:
++
+ 1) irq_domain_alloc_irqs(): allocate IRQ descriptors and interrupt
+    controller related resources to deliver these interrupts.
+ 2) irq_domain_free_irqs(): free IRQ descriptors and interrupt controller
+@@ -199,7 +226,8 @@ There are four major interfaces to use hierarchy irq_domain:
+ 4) irq_domain_deactivate_irq(): deactivate interrupt controller hardware
+    to stop delivering the interrupt.
+ 
+-Following changes are needed to support hierarchy irq_domain.
++Following changes are needed to support hierarchy irq_domain:
++
+ 1) a new field 'parent' is added to struct irq_domain; it's used to
+    maintain irq_domain hierarchy information.
+ 2) a new field 'parent_data' is added to struct irq_data; it's used to
+@@ -223,6 +251,7 @@ software architecture.
+ 
+ For an interrupt controller driver to support hierarchy irq_domain, it
+ needs to:
++
+ 1) Implement irq_domain_ops.alloc and irq_domain_ops.free
+ 2) Optionally implement irq_domain_ops.activate and
+    irq_domain_ops.deactivate.
 -- 
 2.9.4
