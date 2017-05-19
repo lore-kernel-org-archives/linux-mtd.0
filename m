@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWdG-0000LM-BJ
- for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:23:08 +0000
+ id 1dBWdG-0000LL-BL
+ for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:23:10 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -13,9 +13,9 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 10/31] cputopology.txt: standardize document format
-Date: Thu, 18 May 2017 22:22:15 -0300
-Message-Id: <1204117803e4bf860e4307a9eb2dd02accec1210.1495156488.git.mchehab@s-opensource.com>
+Subject: [PATCH 17/31] DMA-ISA-LPC.txt: standardize document format
+Date: Thu, 18 May 2017 22:22:22 -0300
+Message-Id: <6ac1c549a03ccf64f7833b2159ad2b0866df686a.1495156488.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
 References: <cover.1495156488.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
@@ -36,98 +36,148 @@ format. Some doesn't even have titles!
 Change its representation to follow the adopted standard,
 using ReST markups for it to be parseable by Sphinx:
 
-- Add a title for the document;
-- mark literals;
-- use table markup for existing table.
+- use proper markups for titles;
+- use :Author: for authorship;
+- identify the literal blocks.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/cputopology.txt | 35 +++++++++++++++++++++--------------
- 1 file changed, 21 insertions(+), 14 deletions(-)
+ Documentation/DMA-ISA-LPC.txt | 71 ++++++++++++++++++++++---------------------
+ 1 file changed, 36 insertions(+), 35 deletions(-)
 
-diff --git a/Documentation/cputopology.txt b/Documentation/cputopology.txt
-index 127c9d8c2174..c6e7e9196a8b 100644
---- a/Documentation/cputopology.txt
-+++ b/Documentation/cputopology.txt
-@@ -1,3 +1,6 @@
-+===========================================
-+How CPU topology info is exported via sysfs
-+===========================================
+diff --git a/Documentation/DMA-ISA-LPC.txt b/Documentation/DMA-ISA-LPC.txt
+index c41331398752..c44be1a2176f 100644
+--- a/Documentation/DMA-ISA-LPC.txt
++++ b/Documentation/DMA-ISA-LPC.txt
+@@ -1,19 +1,20 @@
+-                        DMA with ISA and LPC devices
+-                        ============================
++============================
++DMA with ISA and LPC devices
++============================
  
- Export CPU topology info via sysfs. Items (attributes) are similar
- to /proc/cpuinfo output of some architectures:
-@@ -75,24 +78,26 @@ CONFIG_SCHED_BOOK and CONFIG_DRAWER are currently only used on s390, where
- they reflect the cpu and cache hierarchy.
+-                      Pierre Ossman <drzeus@drzeus.cx>
++:Author: Pierre Ossman <drzeus@drzeus.cx>
  
- For an architecture to support this feature, it must define some of
--these macros in include/asm-XXX/topology.h:
--#define topology_physical_package_id(cpu)
--#define topology_core_id(cpu)
--#define topology_book_id(cpu)
--#define topology_drawer_id(cpu)
--#define topology_sibling_cpumask(cpu)
--#define topology_core_cpumask(cpu)
--#define topology_book_cpumask(cpu)
--#define topology_drawer_cpumask(cpu)
-+these macros in include/asm-XXX/topology.h::
+ This document describes how to do DMA transfers using the old ISA DMA
+ controller. Even though ISA is more or less dead today the LPC bus
+ uses the same DMA system so it will be around for quite some time.
  
--The type of **_id macros is int.
--The type of **_cpumask macros is (const) struct cpumask *. The latter
--correspond with appropriate **_siblings sysfs attributes (except for
-+	#define topology_physical_package_id(cpu)
-+	#define topology_core_id(cpu)
-+	#define topology_book_id(cpu)
-+	#define topology_drawer_id(cpu)
-+	#define topology_sibling_cpumask(cpu)
-+	#define topology_core_cpumask(cpu)
-+	#define topology_book_cpumask(cpu)
-+	#define topology_drawer_cpumask(cpu)
-+
-+The type of ``**_id macros`` is int.
-+The type of ``**_cpumask macros`` is ``(const) struct cpumask *``. The latter
-+correspond with appropriate ``**_siblings`` sysfs attributes (except for
- topology_sibling_cpumask() which corresponds with thread_siblings).
+-Part I - Headers and dependencies
+----------------------------------
++Headers and dependencies
++------------------------
  
- To be consistent on all architectures, include/linux/topology.h
- provides default definitions for any of the above macros that are
- not defined by include/asm-XXX/topology.h:
-+
- 1) physical_package_id: -1
- 2) core_id: 0
- 3) sibling_cpumask: just the given CPU
-@@ -107,6 +112,7 @@ Additionally, CPU topology information is provided under
- /sys/devices/system/cpu and includes these files.  The internal
- source for the output is in brackets ("[]").
+-To do ISA style DMA you need to include two headers:
++To do ISA style DMA you need to include two headers::
  
-+    =========== ==========================================================
-     kernel_max: the maximum CPU index allowed by the kernel configuration.
- 		[NR_CPUS-1]
+-#include <linux/dma-mapping.h>
+-#include <asm/dma.h>
++	#include <linux/dma-mapping.h>
++	#include <asm/dma.h>
  
-@@ -122,6 +128,7 @@ source for the output is in brackets ("[]").
+ The first is the generic DMA API used to convert virtual addresses to
+ bus addresses (see Documentation/DMA-API.txt for details).
+@@ -23,8 +24,8 @@ this is not present on all platforms make sure you construct your
+ Kconfig to be dependent on ISA_DMA_API (not ISA) so that nobody tries
+ to build your driver on unsupported platforms.
  
-     present:	CPUs that have been identified as being present in the
- 		system. [cpu_present_mask]
-+    =========== ==========================================================
+-Part II - Buffer allocation
+----------------------------
++Buffer allocation
++-----------------
  
- The format for the above output is compatible with cpulist_parse()
- [see <linux/cpumask.h>].  Some examples follow.
-@@ -129,7 +136,7 @@ The format for the above output is compatible with cpulist_parse()
- In this example, there are 64 CPUs in the system but cpus 32-63 exceed
- the kernel max which is limited to 0..31 by the NR_CPUS config option
- being 32.  Note also that CPUs 2 and 4-31 are not online but could be
--brought online as they are both present and possible.
-+brought online as they are both present and possible::
+ The ISA DMA controller has some very strict requirements on which
+ memory it can access so extra care must be taken when allocating
+@@ -47,8 +48,8 @@ __GFP_REPEAT and __GFP_NOWARN to make the allocator try a bit harder.
+ (This scarcity also means that you should allocate the buffer as
+ early as possible and not release it until the driver is unloaded.)
  
-      kernel_max: 31
-         offline: 2,4-31,32-63
-@@ -140,7 +147,7 @@ brought online as they are both present and possible.
- In this example, the NR_CPUS config option is 128, but the kernel was
- started with possible_cpus=144.  There are 4 CPUs in the system and cpu2
- was manually taken offline (and is the only CPU that can be brought
--online.)
-+online.)::
+-Part III - Address translation
+-------------------------------
++Address translation
++-------------------
  
-      kernel_max: 127
-         offline: 2,4-127,128-143
+ To translate the virtual address to a bus address, use the normal DMA
+ API. Do _not_ use isa_virt_to_phys() even though it does the same
+@@ -61,8 +62,8 @@ Note: x86_64 had a broken DMA API when it came to ISA but has since
+ been fixed. If your arch has problems then fix the DMA API instead of
+ reverting to the ISA functions.
+ 
+-Part IV - Channels
+-------------------
++Channels
++--------
+ 
+ A normal ISA DMA controller has 8 channels. The lower four are for
+ 8-bit transfers and the upper four are for 16-bit transfers.
+@@ -80,8 +81,8 @@ The ability to use 16-bit or 8-bit transfers is _not_ up to you as a
+ driver author but depends on what the hardware supports. Check your
+ specs or test different channels.
+ 
+-Part V - Transfer data
+-----------------------
++Transfer data
++-------------
+ 
+ Now for the good stuff, the actual DMA transfer. :)
+ 
+@@ -112,37 +113,37 @@ Once the DMA transfer is finished (or timed out) you should disable
+ the channel again. You should also check get_dma_residue() to make
+ sure that all data has been transferred.
+ 
+-Example:
++Example::
+ 
+-int flags, residue;
++	int flags, residue;
+ 
+-flags = claim_dma_lock();
++	flags = claim_dma_lock();
+ 
+-clear_dma_ff();
++	clear_dma_ff();
+ 
+-set_dma_mode(channel, DMA_MODE_WRITE);
+-set_dma_addr(channel, phys_addr);
+-set_dma_count(channel, num_bytes);
++	set_dma_mode(channel, DMA_MODE_WRITE);
++	set_dma_addr(channel, phys_addr);
++	set_dma_count(channel, num_bytes);
+ 
+-dma_enable(channel);
++	dma_enable(channel);
+ 
+-release_dma_lock(flags);
++	release_dma_lock(flags);
+ 
+-while (!device_done());
++	while (!device_done());
+ 
+-flags = claim_dma_lock();
++	flags = claim_dma_lock();
+ 
+-dma_disable(channel);
++	dma_disable(channel);
+ 
+-residue = dma_get_residue(channel);
+-if (residue != 0)
+-	printk(KERN_ERR "driver: Incomplete DMA transfer!"
+-		" %d bytes left!\n", residue);
++	residue = dma_get_residue(channel);
++	if (residue != 0)
++		printk(KERN_ERR "driver: Incomplete DMA transfer!"
++			" %d bytes left!\n", residue);
+ 
+-release_dma_lock(flags);
++	release_dma_lock(flags);
+ 
+-Part VI - Suspend/resume
+-------------------------
++Suspend/resume
++--------------
+ 
+ It is the driver's responsibility to make sure that the machine isn't
+ suspended while a DMA transfer is in progress. Also, all DMA settings
 -- 
 2.9.4
