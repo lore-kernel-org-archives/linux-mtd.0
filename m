@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by casper.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWet-0007Fc-OS
- for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:24:56 +0000
+ id 1dBWfG-0007Ip-T0
+ for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:25:20 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -13,9 +13,9 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 03/30] IRQ-affinity.txt: standardize document format
-Date: Thu, 18 May 2017 22:23:55 -0300
-Message-Id: <a4d8c886e288841234fe4deeac9b84631e6e9782.1495156975.git.mchehab@s-opensource.com>
+Subject: [PATCH 23/30] nommu-mmap.txt: don't use all upper case on titles
+Date: Thu, 18 May 2017 22:24:15 -0300
+Message-Id: <f068ba93984e49dc34905065778cf38a219414d2.1495156975.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156975.git.mchehab@s-opensource.com>
 References: <cover.1495156975.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156975.git.mchehab@s-opensource.com>
@@ -30,125 +30,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Each text file under Documentation follows a different
-format. Some doesn't even have titles!
+This file is almost in the standard format we're adopting for
+other documentation text files. Yet, it use upper case on
+titles.
 
-Change its representation to follow the adopted standard,
-using ReST markups for it to be parseable by Sphinx:
-
-- Add a title for the document;
-- mark literal blocks as such;
-- use a bulleted list for changelog.
+So, in order to uniform how chapter names, adjust caps on
+titles.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/IRQ-affinity.txt | 77 ++++++++++++++++++++++--------------------
- 1 file changed, 41 insertions(+), 36 deletions(-)
+ Documentation/nommu-mmap.txt | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/IRQ-affinity.txt b/Documentation/IRQ-affinity.txt
-index 01a675175a36..29da5000836a 100644
---- a/Documentation/IRQ-affinity.txt
-+++ b/Documentation/IRQ-affinity.txt
-@@ -1,8 +1,11 @@
--ChangeLog:
--	Started by Ingo Molnar <mingo@redhat.com>
--	Update by Max Krasnyansky <maxk@qualcomm.com>
--
-+================
- SMP IRQ affinity
-+================
-+
-+ChangeLog:
-+	- Started by Ingo Molnar <mingo@redhat.com>
-+	- Update by Max Krasnyansky <maxk@qualcomm.com>
-+
+diff --git a/Documentation/nommu-mmap.txt b/Documentation/nommu-mmap.txt
+index 39a62ab0f50a..69556f0d494b 100644
+--- a/Documentation/nommu-mmap.txt
++++ b/Documentation/nommu-mmap.txt
+@@ -1,5 +1,5 @@
+ =============================
+-NO-MMU MEMORY MAPPING SUPPORT
++No-MMU memory mapping support
+ =============================
  
- /proc/irq/IRQ#/smp_affinity and /proc/irq/IRQ#/smp_affinity_list specify
- which target CPUs are permitted for a given IRQ source.  It's a bitmask
-@@ -16,50 +19,52 @@ will be set to the default mask. It can then be changed as described above.
- Default mask is 0xffffffff.
+ The kernel has limited support for memory mapping under no-MMU conditions, such
+@@ -105,7 +105,7 @@ and it's also much more restricted in the latter case:
+ 	provide any such support, then the mapping request will be denied.
  
- Here is an example of restricting IRQ44 (eth1) to CPU0-3 then restricting
--it to CPU4-7 (this is an 8-CPU SMP box):
-+it to CPU4-7 (this is an 8-CPU SMP box)::
  
--[root@moon 44]# cd /proc/irq/44
--[root@moon 44]# cat smp_affinity
--ffffffff
-+	[root@moon 44]# cd /proc/irq/44
-+	[root@moon 44]# cat smp_affinity
-+	ffffffff
+-FURTHER NOTES ON NO-MMU MMAP
++Further notes on no-MMU MMAP
+ ============================
  
--[root@moon 44]# echo 0f > smp_affinity
--[root@moon 44]# cat smp_affinity
--0000000f
--[root@moon 44]# ping -f h
--PING hell (195.4.7.3): 56 data bytes
--...
----- hell ping statistics ---
--6029 packets transmitted, 6027 packets received, 0% packet loss
--round-trip min/avg/max = 0.1/0.1/0.4 ms
--[root@moon 44]# cat /proc/interrupts | grep 'CPU\|44:'
--           CPU0       CPU1       CPU2       CPU3      CPU4       CPU5        CPU6       CPU7
-- 44:       1068       1785       1785       1783         0          0           0         0    IO-APIC-level  eth1
-+	[root@moon 44]# echo 0f > smp_affinity
-+	[root@moon 44]# cat smp_affinity
-+	0000000f
-+	[root@moon 44]# ping -f h
-+	PING hell (195.4.7.3): 56 data bytes
-+	...
-+	--- hell ping statistics ---
-+	6029 packets transmitted, 6027 packets received, 0% packet loss
-+	round-trip min/avg/max = 0.1/0.1/0.4 ms
-+	[root@moon 44]# cat /proc/interrupts | grep 'CPU\|44:'
-+		CPU0       CPU1       CPU2       CPU3      CPU4       CPU5        CPU6       CPU7
-+	44:       1068       1785       1785       1783         0          0           0         0    IO-APIC-level  eth1
+  (#) A request for a private mapping of a file may return a buffer that is not
+@@ -160,7 +160,7 @@ FURTHER NOTES ON NO-MMU MMAP
+      with character device files, pipes, fifos and sockets.
  
- As can be seen from the line above IRQ44 was delivered only to the first four
- processors (0-3).
- Now lets restrict that IRQ to CPU(4-7).
  
--[root@moon 44]# echo f0 > smp_affinity
--[root@moon 44]# cat smp_affinity
--000000f0
--[root@moon 44]# ping -f h
--PING hell (195.4.7.3): 56 data bytes
--..
----- hell ping statistics ---
--2779 packets transmitted, 2777 packets received, 0% packet loss
--round-trip min/avg/max = 0.1/0.5/585.4 ms
--[root@moon 44]# cat /proc/interrupts |  'CPU\|44:'
--           CPU0       CPU1       CPU2       CPU3      CPU4       CPU5        CPU6       CPU7
-- 44:       1068       1785       1785       1783      1784       1069        1070       1069   IO-APIC-level  eth1
-+::
-+
-+	[root@moon 44]# echo f0 > smp_affinity
-+	[root@moon 44]# cat smp_affinity
-+	000000f0
-+	[root@moon 44]# ping -f h
-+	PING hell (195.4.7.3): 56 data bytes
-+	..
-+	--- hell ping statistics ---
-+	2779 packets transmitted, 2777 packets received, 0% packet loss
-+	round-trip min/avg/max = 0.1/0.5/585.4 ms
-+	[root@moon 44]# cat /proc/interrupts |  'CPU\|44:'
-+		CPU0       CPU1       CPU2       CPU3      CPU4       CPU5        CPU6       CPU7
-+	44:       1068       1785       1785       1783      1784       1069        1070       1069   IO-APIC-level  eth1
+-INTERPROCESS SHARED MEMORY
++Interprocess shared memory
+ ==========================
  
- This time around IRQ44 was delivered only to the last four processors.
- i.e counters for the CPU0-3 did not change.
+ Both SYSV IPC SHM shared memory and POSIX shared memory is supported in NOMMU
+@@ -168,7 +168,7 @@ mode.  The former through the usual mechanism, the latter through files created
+ on ramfs or tmpfs mounts.
  
--Here is an example of limiting that same irq (44) to cpus 1024 to 1031:
-+Here is an example of limiting that same irq (44) to cpus 1024 to 1031::
  
--[root@moon 44]# echo 1024-1031 > smp_affinity_list
--[root@moon 44]# cat smp_affinity_list
--1024-1031
-+	[root@moon 44]# echo 1024-1031 > smp_affinity_list
-+	[root@moon 44]# cat smp_affinity_list
-+	1024-1031
+-FUTEXES
++Futexes
+ =======
  
- Note that to do this with a bitmask would require 32 bitmasks of zero
- to follow the pertinent one.
+ Futexes are supported in NOMMU mode if the arch supports them.  An error will
+@@ -177,7 +177,7 @@ mappings made by a process or if the mapping in which the address lies does not
+ support futexes (such as an I/O chardev mapping).
+ 
+ 
+-NO-MMU MREMAP
++No-MMU mremap
+ =============
+ 
+ The mremap() function is partially supported.  It may change the size of a
+@@ -199,7 +199,7 @@ act on a complete mapping.
+ .. [#] Not currently supported.
+ 
+ 
+-PROVIDING SHAREABLE CHARACTER DEVICE SUPPORT
++Providing shareable character device support
+ ============================================
+ 
+ To provide shareable character device support, a driver must provide a
+@@ -244,7 +244,7 @@ copy mapped otherwise.
+ 	circumstances!
+ 
+ 
+-PROVIDING SHAREABLE MEMORY-BACKED FILE SUPPORT
++Providing shareable memory-backed file support
+ ==============================================
+ 
+ Provision of shared mappings on memory backed files is similar to the provision
+@@ -261,7 +261,7 @@ Memory backed devices are indicated by the mapping's backing device info having
+ the memory_backed flag set.
+ 
+ 
+-PROVIDING SHAREABLE BLOCK DEVICE SUPPORT
++Providing shareable block device support
+ ========================================
+ 
+ Provision of shared mappings on block device files is exactly the same as for
+@@ -269,7 +269,7 @@ character devices. If there isn't a real device underneath, then the driver
+ should allocate sufficient contiguous memory to honour any supported mapping.
+ 
+ 
+-ADJUSTING PAGE TRIMMING BEHAVIOUR
++Adjusting page trimming behaviour
+ =================================
+ 
+ NOMMU mmap automatically rounds up to the nearest power-of-2 number of pages
 -- 
 2.9.4
