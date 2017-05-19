@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWdl-0000Ou-Q4
- for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:23:50 +0000
+ id 1dBWdm-0000PC-Cj
+ for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:23:52 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -13,11 +13,11 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Darren Hart <dvhart@infradead.org>
-Subject: [PATCH 22/31] futex-requeue-pi.txt: standardize document format
-Date: Thu, 18 May 2017 22:22:27 -0300
-Message-Id: <d84d18fa0cd82f4d2e5a1fe9751ea97c22de8a23.1495156488.git.mchehab@s-opensource.com>
+ Kees Cook <keescook@chromium.org>, Emese Revfy <re.emese@gmail.com>,
+ kernel-hardening@lists.openwall.com
+Subject: [PATCH 23/31] gcc-plugins.txt: standardize document format
+Date: Thu, 18 May 2017 22:22:28 -0300
+Message-Id: <c6318a78ef026da30aa488bd90a5a19e18fc13a3.1495156488.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
 References: <cover.1495156488.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
@@ -38,124 +38,125 @@ format. Some doesn't even have titles!
 Change its representation to follow the adopted standard,
 using ReST markups for it to be parseable by Sphinx:
 
-- promote level for the document title;
-- mark literal blocks.
+- promote main title;
+- use the right markup for footnotes;
+- use bold markup for files name;
+- identify literal blocks;
+- add blank lines to avoid Sphinx to complain;
+- remove numeration from titles.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/futex-requeue-pi.txt | 83 +++++++++++++++++++-------------------
- 1 file changed, 42 insertions(+), 41 deletions(-)
+ Documentation/gcc-plugins.txt | 58 ++++++++++++++++++++++++-------------------
+ 1 file changed, 32 insertions(+), 26 deletions(-)
 
-diff --git a/Documentation/futex-requeue-pi.txt b/Documentation/futex-requeue-pi.txt
-index 77b36f59d16b..14ab5787b9a7 100644
---- a/Documentation/futex-requeue-pi.txt
-+++ b/Documentation/futex-requeue-pi.txt
-@@ -1,5 +1,6 @@
-+================
- Futex Requeue PI
------------------
-+================
- 
- Requeueing of tasks from a non-PI futex to a PI futex requires
- special handling in order to ensure the underlying rt_mutex is never
-@@ -20,28 +21,28 @@ implementation would wake the highest-priority waiter, and leave the
- rest to the natural wakeup inherent in unlocking the mutex
- associated with the condvar.
- 
--Consider the simplified glibc calls:
-+Consider the simplified glibc calls::
- 
--/* caller must lock mutex */
--pthread_cond_wait(cond, mutex)
--{
--	lock(cond->__data.__lock);
--	unlock(mutex);
--	do {
--	   unlock(cond->__data.__lock);
--	   futex_wait(cond->__data.__futex);
--	   lock(cond->__data.__lock);
--	} while(...)
--	unlock(cond->__data.__lock);
--	lock(mutex);
--}
-+	/* caller must lock mutex */
-+	pthread_cond_wait(cond, mutex)
-+	{
-+		lock(cond->__data.__lock);
-+		unlock(mutex);
-+		do {
-+		unlock(cond->__data.__lock);
-+		futex_wait(cond->__data.__futex);
-+		lock(cond->__data.__lock);
-+		} while(...)
-+		unlock(cond->__data.__lock);
-+		lock(mutex);
-+	}
- 
--pthread_cond_broadcast(cond)
--{
--	lock(cond->__data.__lock);
--	unlock(cond->__data.__lock);
--	futex_requeue(cond->data.__futex, cond->mutex);
--}
-+	pthread_cond_broadcast(cond)
-+	{
-+		lock(cond->__data.__lock);
-+		unlock(cond->__data.__lock);
-+		futex_requeue(cond->data.__futex, cond->mutex);
-+	}
- 
- Once pthread_cond_broadcast() requeues the tasks, the cond->mutex
- has waiters. Note that pthread_cond_wait() attempts to lock the
-@@ -53,29 +54,29 @@ In order to support PI-aware pthread_condvar's, the kernel needs to
- be able to requeue tasks to PI futexes.  This support implies that
- upon a successful futex_wait system call, the caller would return to
- user space already holding the PI futex.  The glibc implementation
--would be modified as follows:
-+would be modified as follows::
+diff --git a/Documentation/gcc-plugins.txt b/Documentation/gcc-plugins.txt
+index 433eaefb4aa1..8502f24396fb 100644
+--- a/Documentation/gcc-plugins.txt
++++ b/Documentation/gcc-plugins.txt
+@@ -1,14 +1,15 @@
++=========================
+ GCC plugin infrastructure
+ =========================
  
  
--/* caller must lock mutex */
--pthread_cond_wait_pi(cond, mutex)
--{
--	lock(cond->__data.__lock);
--	unlock(mutex);
--	do {
--	   unlock(cond->__data.__lock);
--	   futex_wait_requeue_pi(cond->__data.__futex);
--	   lock(cond->__data.__lock);
--	} while(...)
--	unlock(cond->__data.__lock);
--        /* the kernel acquired the mutex for us */
--}
-+	/* caller must lock mutex */
-+	pthread_cond_wait_pi(cond, mutex)
-+	{
-+		lock(cond->__data.__lock);
-+		unlock(mutex);
-+		do {
-+		unlock(cond->__data.__lock);
-+		futex_wait_requeue_pi(cond->__data.__futex);
-+		lock(cond->__data.__lock);
-+		} while(...)
-+		unlock(cond->__data.__lock);
-+		/* the kernel acquired the mutex for us */
-+	}
+-1. Introduction
+-===============
++Introduction
++============
  
--pthread_cond_broadcast_pi(cond)
--{
--	lock(cond->__data.__lock);
--	unlock(cond->__data.__lock);
--	futex_requeue_pi(cond->data.__futex, cond->mutex);
--}
-+	pthread_cond_broadcast_pi(cond)
-+	{
-+		lock(cond->__data.__lock);
-+		unlock(cond->__data.__lock);
-+		futex_requeue_pi(cond->data.__futex, cond->mutex);
-+	}
+ GCC plugins are loadable modules that provide extra features to the
+-compiler [1]. They are useful for runtime instrumentation and static analysis.
++compiler [1]_. They are useful for runtime instrumentation and static analysis.
+ We can analyse, change and add further code during compilation via
+-callbacks [2], GIMPLE [3], IPA [4] and RTL passes [5].
++callbacks [2]_, GIMPLE [3]_, IPA [4]_ and RTL passes [5]_.
  
- The actual glibc implementation will likely test for PI and make the
- necessary changes inside the existing calls rather than creating new
+ The GCC plugin infrastructure of the kernel supports all gcc versions from
+ 4.5 to 6.0, building out-of-tree modules, cross-compilation and building in a
+@@ -21,56 +22,61 @@ and versions 4.8+ can only be compiled by a C++ compiler.
+ Currently the GCC plugin infrastructure supports only the x86, arm, arm64 and
+ powerpc architectures.
+ 
+-This infrastructure was ported from grsecurity [6] and PaX [7].
++This infrastructure was ported from grsecurity [6]_ and PaX [7]_.
+ 
+ --
+-[1] https://gcc.gnu.org/onlinedocs/gccint/Plugins.html
+-[2] https://gcc.gnu.org/onlinedocs/gccint/Plugin-API.html#Plugin-API
+-[3] https://gcc.gnu.org/onlinedocs/gccint/GIMPLE.html
+-[4] https://gcc.gnu.org/onlinedocs/gccint/IPA.html
+-[5] https://gcc.gnu.org/onlinedocs/gccint/RTL.html
+-[6] https://grsecurity.net/
+-[7] https://pax.grsecurity.net/
+ 
++.. [1] https://gcc.gnu.org/onlinedocs/gccint/Plugins.html
++.. [2] https://gcc.gnu.org/onlinedocs/gccint/Plugin-API.html#Plugin-API
++.. [3] https://gcc.gnu.org/onlinedocs/gccint/GIMPLE.html
++.. [4] https://gcc.gnu.org/onlinedocs/gccint/IPA.html
++.. [5] https://gcc.gnu.org/onlinedocs/gccint/RTL.html
++.. [6] https://grsecurity.net/
++.. [7] https://pax.grsecurity.net/
+ 
+-2. Files
+-========
+ 
+-$(src)/scripts/gcc-plugins
++Files
++=====
++
++**$(src)/scripts/gcc-plugins**
++
+ 	This is the directory of the GCC plugins.
+ 
+-$(src)/scripts/gcc-plugins/gcc-common.h
++**$(src)/scripts/gcc-plugins/gcc-common.h**
++
+ 	This is a compatibility header for GCC plugins.
+ 	It should be always included instead of individual gcc headers.
+ 
+-$(src)/scripts/gcc-plugin.sh
++**$(src)/scripts/gcc-plugin.sh**
++
+ 	This script checks the availability of the included headers in
+ 	gcc-common.h and chooses the proper host compiler to build the plugins
+ 	(gcc-4.7 can be built by either gcc or g++).
+ 
+-$(src)/scripts/gcc-plugins/gcc-generate-gimple-pass.h
+-$(src)/scripts/gcc-plugins/gcc-generate-ipa-pass.h
+-$(src)/scripts/gcc-plugins/gcc-generate-simple_ipa-pass.h
+-$(src)/scripts/gcc-plugins/gcc-generate-rtl-pass.h
++**$(src)/scripts/gcc-plugins/gcc-generate-gimple-pass.h,
++$(src)/scripts/gcc-plugins/gcc-generate-ipa-pass.h,
++$(src)/scripts/gcc-plugins/gcc-generate-simple_ipa-pass.h,
++$(src)/scripts/gcc-plugins/gcc-generate-rtl-pass.h**
++
+ 	These headers automatically generate the registration structures for
+ 	GIMPLE, SIMPLE_IPA, IPA and RTL passes. They support all gcc versions
+ 	from 4.5 to 6.0.
+ 	They should be preferred to creating the structures by hand.
+ 
+ 
+-3. Usage
+-========
++Usage
++=====
+ 
+ You must install the gcc plugin headers for your gcc version,
+-e.g., on Ubuntu for gcc-4.9:
++e.g., on Ubuntu for gcc-4.9::
+ 
+ 	apt-get install gcc-4.9-plugin-dev
+ 
+-Enable a GCC plugin based feature in the kernel config:
++Enable a GCC plugin based feature in the kernel config::
+ 
+ 	CONFIG_GCC_PLUGIN_CYC_COMPLEXITY = y
+ 
+-To compile only the plugin(s):
++To compile only the plugin(s)::
+ 
+ 	make gcc-plugins
+ 
 -- 
 2.9.4
