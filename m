@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWl5-00027e-2P
- for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:31:15 +0000
+ id 1dBWl5-00027a-2O
+ for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:31:16 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -13,13 +13,13 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 09/30] kernel-per-CPU-kthreads.txt: standardize document format
-Date: Thu, 18 May 2017 22:24:01 -0300
-Message-Id: <6920d4abfe81c1f2fd52430bd988fc55ebced6aa.1495156975.git.mchehab@s-opensource.com>
-In-Reply-To: <cover.1495156975.git.mchehab@s-opensource.com>
-References: <cover.1495156975.git.mchehab@s-opensource.com>
-In-Reply-To: <cover.1495156975.git.mchehab@s-opensource.com>
-References: <cover.1495156975.git.mchehab@s-opensource.com>
+Subject: [PATCH 01/31] bcache.txt: standardize document format
+Date: Thu, 18 May 2017 22:22:06 -0300
+Message-Id: <f427fafc5136f92b5388126672114a7913c15dbe.1495156488.git.mchehab@s-opensource.com>
+In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
+References: <cover.1495156488.git.mchehab@s-opensource.com>
+In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
+References: <cover.1495156488.git.mchehab@s-opensource.com>
 Sender: Mauro Carvalho Chehab <mchehab@smtp.s-opensource.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -36,335 +36,450 @@ format. Some doesn't even have titles!
 Change its representation to follow the adopted standard,
 using ReST markups for it to be parseable by Sphinx:
 
-- Use title markups;
-- use "-" for bulletted lists;
-- Split Name/Purpose on two lines, in order to make visually
-  easier to read (in text format), and to bold the title
-  (on ReST output)
-- Add blank lines to split bulleted lists;
-- use sub-titles for the several kthread softirq types;
-- mark one literal var with asterisk as such, in order to
-  avoid an error warning on Sphinx.
+- Add a title for the document;
+- Use a list for the listed URLs;
+- mark literal blocks;
+- adjust whitespaces;
+- Don't capitalize section titles.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/kernel-per-CPU-kthreads.txt | 156 +++++++++++++++++++++++-------
- 1 file changed, 121 insertions(+), 35 deletions(-)
+ Documentation/bcache.txt | 200 ++++++++++++++++++++++++++---------------------
+ 1 file changed, 112 insertions(+), 88 deletions(-)
 
-diff --git a/Documentation/kernel-per-CPU-kthreads.txt b/Documentation/kernel-per-CPU-kthreads.txt
-index df31e30b6a02..5a09a4a99ecc 100644
---- a/Documentation/kernel-per-CPU-kthreads.txt
-+++ b/Documentation/kernel-per-CPU-kthreads.txt
-@@ -1,27 +1,29 @@
--REDUCING OS JITTER DUE TO PER-CPU KTHREADS
-+==========================================
-+Reducing OS jitter due to per-cpu kthreads
-+==========================================
+diff --git a/Documentation/bcache.txt b/Documentation/bcache.txt
+index a9259b562d5c..c0ce64d75bbf 100644
+--- a/Documentation/bcache.txt
++++ b/Documentation/bcache.txt
+@@ -1,10 +1,15 @@
++============================
++A block layer cache (bcache)
++============================
++
+ Say you've got a big slow raid 6, and an ssd or three. Wouldn't it be
+ nice if you could use them as cache... Hence bcache.
  
- This document lists per-CPU kthreads in the Linux kernel and presents
- options to control their OS jitter.  Note that non-per-CPU kthreads are
- not listed here.  To reduce OS jitter from non-per-CPU kthreads, bind
- them to a "housekeeping" CPU dedicated to such work.
+ Wiki and git repositories are at:
+-  http://bcache.evilpiepirate.org
+-  http://evilpiepirate.org/git/linux-bcache.git
+-  http://evilpiepirate.org/git/bcache-tools.git
++
++  - http://bcache.evilpiepirate.org
++  - http://evilpiepirate.org/git/linux-bcache.git
++  - http://evilpiepirate.org/git/bcache-tools.git
  
-+References
-+==========
+ It's designed around the performance characteristics of SSDs - it only allocates
+ in erase block sized buckets, and it uses a hybrid btree/log to track cached
+@@ -37,17 +42,19 @@ to be flushed.
  
--REFERENCES
-+-	Documentation/IRQ-affinity.txt:  Binding interrupts to sets of CPUs.
+ Getting started:
+ You'll need make-bcache from the bcache-tools repository. Both the cache device
+-and backing device must be formatted before use.
++and backing device must be formatted before use::
++
+   make-bcache -B /dev/sdb
+   make-bcache -C /dev/sdc
  
--o	Documentation/IRQ-affinity.txt:  Binding interrupts to sets of CPUs.
-+-	Documentation/cgroup-v1:  Using cgroups to bind tasks to sets of CPUs.
+ make-bcache has the ability to format multiple devices at the same time - if
+ you format your backing devices and cache device at the same time, you won't
+-have to manually attach:
++have to manually attach::
++
+   make-bcache -B /dev/sda /dev/sdb -C /dev/sdc
  
--o	Documentation/cgroup-v1:  Using cgroups to bind tasks to sets of CPUs.
+ bcache-tools now ships udev rules, and bcache devices are known to the kernel
+-immediately.  Without udev, you can manually register devices like this:
++immediately.  Without udev, you can manually register devices like this::
+ 
+   echo /dev/sdb > /sys/fs/bcache/register
+   echo /dev/sdc > /sys/fs/bcache/register
+@@ -60,16 +67,16 @@ slow devices as bcache backing devices without a cache, and you can choose to ad
+ a caching device later.
+ See 'ATTACHING' section below.
+ 
+-The devices show up as:
++The devices show up as::
+ 
+   /dev/bcache<N>
+ 
+-As well as (with udev):
++As well as (with udev)::
+ 
+   /dev/bcache/by-uuid/<uuid>
+   /dev/bcache/by-label/<label>
+ 
+-To get started:
++To get started::
+ 
+   mkfs.ext4 /dev/bcache0
+   mount /dev/bcache0 /mnt
+@@ -81,13 +88,13 @@ Cache devices are managed as sets; multiple caches per set isn't supported yet
+ but will allow for mirroring of metadata and dirty data in the future. Your new
+ cache set shows up as /sys/fs/bcache/<UUID>
+ 
+-ATTACHING
++Attaching
+ ---------
+ 
+ After your cache device and backing device are registered, the backing device
+ must be attached to your cache set to enable caching. Attaching a backing
+ device to a cache set is done thusly, with the UUID of the cache set in
+-/sys/fs/bcache:
++/sys/fs/bcache::
+ 
+   echo <CSET-UUID> > /sys/block/bcache0/bcache/attach
+ 
+@@ -97,7 +104,7 @@ your bcache devices. If a backing device has data in a cache somewhere, the
+ important if you have writeback caching turned on.
+ 
+ If you're booting up and your cache device is gone and never coming back, you
+-can force run the backing device:
++can force run the backing device::
+ 
+   echo 1 > /sys/block/sdb/bcache/running
+ 
+@@ -110,7 +117,7 @@ but all the cached data will be invalidated. If there was dirty data in the
+ cache, don't expect the filesystem to be recoverable - you will have massive
+ filesystem corruption, though ext4's fsck does work miracles.
+ 
+-ERROR HANDLING
++Error Handling
+ --------------
+ 
+ Bcache tries to transparently handle IO errors to/from the cache device without
+@@ -134,25 +141,27 @@ the backing devices to passthrough mode.
+    read some of the dirty data, though.
+ 
+ 
+-HOWTO/COOKBOOK
++Howto/cookbook
+ --------------
+ 
+ A) Starting a bcache with a missing caching device
+ 
+ If registering the backing device doesn't help, it's already there, you just need
+-to force it to run without the cache:
++to force it to run without the cache::
++
+ 	host:~# echo /dev/sdb1 > /sys/fs/bcache/register
+ 	[  119.844831] bcache: register_bcache() error opening /dev/sdb1: device already registered
+ 
+ Next, you try to register your caching device if it's present. However
+ if it's absent, or registration fails for some reason, you can still
+-start your bcache without its cache, like so:
++start your bcache without its cache, like so::
++
+ 	host:/sys/block/sdb/sdb1/bcache# echo 1 > running
+ 
+ Note that this may cause data loss if you were running in writeback mode.
+ 
+ 
+-B) Bcache does not find its cache
++B) Bcache does not find its cache::
+ 
+ 	host:/sys/block/md5/bcache# echo 0226553a-37cf-41d5-b3ce-8b1e944543a8 > attach
+ 	[ 1933.455082] bcache: bch_cached_dev_attach() Couldn't find uuid for md5 in set
+@@ -160,7 +169,8 @@ B) Bcache does not find its cache
+ 	[ 1933.478179] : cache set not found
+ 
+ In this case, the caching device was simply not registered at boot
+-or disappeared and came back, and needs to be (re-)registered:
++or disappeared and came back, and needs to be (re-)registered::
++
+ 	host:/sys/block/md5/bcache# echo /dev/sdh2 > /sys/fs/bcache/register
+ 
+ 
+@@ -180,7 +190,8 @@ device is still available at an 8KiB offset. So either via a loopdev
+ of the backing device created with --offset 8K, or any value defined by
+ --data-offset when you originally formatted bcache with `make-bcache`.
+ 
+-For example:
++For example::
++
+ 	losetup -o 8192 /dev/loop0 /dev/your_bcache_backing_dev
+ 
+ This should present your unmodified backing device data in /dev/loop0
+@@ -191,33 +202,38 @@ cache device without loosing data.
+ 
+ E) Wiping a cache device
+ 
+-host:~# wipefs -a /dev/sdh2
+-16 bytes were erased at offset 0x1018 (bcache)
+-they were: c6 85 73 f6 4e 1a 45 ca 82 65 f5 7f 48 ba 6d 81
 -
--o	man taskset:  Using the taskset command to bind tasks to sets
-+-	man taskset:  Using the taskset command to bind tasks to sets
- 	of CPUs.
+-After you boot back with bcache enabled, you recreate the cache and attach it:
+-host:~# make-bcache -C /dev/sdh2
+-UUID:                   7be7e175-8f4c-4f99-94b2-9c904d227045
+-Set UUID:               5bc072a8-ab17-446d-9744-e247949913c1
+-version:                0
+-nbuckets:               106874
+-block_size:             1
+-bucket_size:            1024
+-nr_in_set:              1
+-nr_this_dev:            0
+-first_bucket:           1
+-[  650.511912] bcache: run_cache_set() invalidating existing data
+-[  650.549228] bcache: register_cache() registered cache device sdh2
+-
+-start backing device with missing cache:
+-host:/sys/block/md5/bcache# echo 1 > running
+-
+-attach new cache:
+-host:/sys/block/md5/bcache# echo 5bc072a8-ab17-446d-9744-e247949913c1 > attach
+-[  865.276616] bcache: bch_cached_dev_attach() Caching md5 as bcache0 on set 5bc072a8-ab17-446d-9744-e247949913c1
+-
+-
+-F) Remove or replace a caching device
++::
++
++	host:~# wipefs -a /dev/sdh2
++	16 bytes were erased at offset 0x1018 (bcache)
++	they were: c6 85 73 f6 4e 1a 45 ca 82 65 f5 7f 48 ba 6d 81
++
++After you boot back with bcache enabled, you recreate the cache and attach it::
++
++	host:~# make-bcache -C /dev/sdh2
++	UUID:                   7be7e175-8f4c-4f99-94b2-9c904d227045
++	Set UUID:               5bc072a8-ab17-446d-9744-e247949913c1
++	version:                0
++	nbuckets:               106874
++	block_size:             1
++	bucket_size:            1024
++	nr_in_set:              1
++	nr_this_dev:            0
++	first_bucket:           1
++	[  650.511912] bcache: run_cache_set() invalidating existing data
++	[  650.549228] bcache: register_cache() registered cache device sdh2
++
++start backing device with missing cache::
++
++	host:/sys/block/md5/bcache# echo 1 > running
++
++attach new cache::
++
++	host:/sys/block/md5/bcache# echo 5bc072a8-ab17-446d-9744-e247949913c1 > attach
++	[  865.276616] bcache: bch_cached_dev_attach() Caching md5 as bcache0 on set 5bc072a8-ab17-446d-9744-e247949913c1
++
++
++F) Remove or replace a caching device::
  
--o	man sched_setaffinity:  Using the sched_setaffinity() system
-+-	man sched_setaffinity:  Using the sched_setaffinity() system
- 	call to bind tasks to sets of CPUs.
+ 	host:/sys/block/sda/sda7/bcache# echo 1 > detach
+ 	[  695.872542] bcache: cached_dev_detach_finish() Caching disabled for sda7
+@@ -226,13 +242,15 @@ F) Remove or replace a caching device
+ 	wipefs: error: /dev/nvme0n1p4: probing initialization failed: Device or resource busy
+ 	Ooops, it's disabled, but not unregistered, so it's still protected
  
--o	/sys/devices/system/cpu/cpuN/online:  Control CPU N's hotplug state,
-+-	/sys/devices/system/cpu/cpuN/online:  Control CPU N's hotplug state,
- 	writing "0" to offline and "1" to online.
+-We need to go and unregister it:
++We need to go and unregister it::
++
+ 	host:/sys/fs/bcache/b7ba27a1-2398-4649-8ae3-0959f57ba128# ls -l cache0
+ 	lrwxrwxrwx 1 root root 0 Feb 25 18:33 cache0 -> ../../../devices/pci0000:00/0000:00:1d.0/0000:70:00.0/nvme/nvme0/nvme0n1/nvme0n1p4/bcache/
+ 	host:/sys/fs/bcache/b7ba27a1-2398-4649-8ae3-0959f57ba128# echo 1 > stop
+ 	kernel: [  917.041908] bcache: cache_set_free() Cache set b7ba27a1-2398-4649-8ae3-0959f57ba128 unregistered
  
--o	In order to locate kernel-generated OS jitter on CPU N:
-+-	In order to locate kernel-generated OS jitter on CPU N:
+-Now we can wipe it:
++Now we can wipe it::
++
+ 	host:~# wipefs -a /dev/nvme0n1p4
+ 	/dev/nvme0n1p4: 16 bytes were erased at offset 0x00001018 (bcache): c6 85 73 f6 4e 1a 45 ca 82 65 f5 7f 48 ba 6d 81
  
- 		cd /sys/kernel/debug/tracing
- 		echo 1 > max_graph_depth # Increase the "1" for more detail
-@@ -29,12 +31,17 @@ o	In order to locate kernel-generated OS jitter on CPU N:
- 		# run workload
- 		cat per_cpu/cpuN/trace
+@@ -252,40 +270,44 @@ if there are any active backing or caching devices left on it:
  
-+kthreads
-+========
+ 1) Is it present in /dev/bcache* ? (there are times where it won't be)
  
--KTHREADS
-+Name:
-+  ehca_comp/%u
+-If so, it's easy:
++   If so, it's easy::
 +
-+Purpose:
-+  Periodically process Infiniband-related work.
+ 	host:/sys/block/bcache0/bcache# echo 1 > stop
  
--Name: ehca_comp/%u
--Purpose: Periodically process Infiniband-related work.
- To reduce its OS jitter, do any of the following:
+-2) But if your backing device is gone, this won't work:
++2) But if your backing device is gone, this won't work::
 +
- 1.	Don't use eHCA Infiniband hardware, instead choosing hardware
- 	that does not require per-CPU kthreads.  This will prevent these
- 	kthreads from being created in the first place.  (This will
-@@ -46,26 +53,45 @@ To reduce its OS jitter, do any of the following:
- 	provisioned only on selected CPUs.
+ 	host:/sys/block/bcache0# cd bcache
+ 	bash: cd: bcache: No such file or directory
+ 
+-In this case, you may have to unregister the dmcrypt block device that
+-references this bcache to free it up:
++   In this case, you may have to unregister the dmcrypt block device that
++   references this bcache to free it up::
++
+ 	host:~# dmsetup remove oldds1
+ 	bcache: bcache_device_free() bcache0 stopped
+ 	bcache: cache_set_free() Cache set 5bc072a8-ab17-446d-9744-e247949913c1 unregistered
+ 
+-This causes the backing bcache to be removed from /sys/fs/bcache and
+-then it can be reused.  This would be true of any block device stacking
+-where bcache is a lower device.
++   This causes the backing bcache to be removed from /sys/fs/bcache and
++   then it can be reused.  This would be true of any block device stacking
++   where bcache is a lower device.
+ 
+-3) In other cases, you can also look in /sys/fs/bcache/:
++3) In other cases, you can also look in /sys/fs/bcache/::
+ 
+-host:/sys/fs/bcache# ls -l */{cache?,bdev?}
+-lrwxrwxrwx 1 root root 0 Mar  5 09:39 0226553a-37cf-41d5-b3ce-8b1e944543a8/bdev1 -> ../../../devices/virtual/block/dm-1/bcache/
+-lrwxrwxrwx 1 root root 0 Mar  5 09:39 0226553a-37cf-41d5-b3ce-8b1e944543a8/cache0 -> ../../../devices/virtual/block/dm-4/bcache/
+-lrwxrwxrwx 1 root root 0 Mar  5 09:39 5bc072a8-ab17-446d-9744-e247949913c1/cache0 -> ../../../devices/pci0000:00/0000:00:01.0/0000:01:00.0/ata10/host9/target9:0:0/9:0:0:0/block/sdl/sdl2/bcache/
++	host:/sys/fs/bcache# ls -l */{cache?,bdev?}
++	lrwxrwxrwx 1 root root 0 Mar  5 09:39 0226553a-37cf-41d5-b3ce-8b1e944543a8/bdev1 -> ../../../devices/virtual/block/dm-1/bcache/
++	lrwxrwxrwx 1 root root 0 Mar  5 09:39 0226553a-37cf-41d5-b3ce-8b1e944543a8/cache0 -> ../../../devices/virtual/block/dm-4/bcache/
++	lrwxrwxrwx 1 root root 0 Mar  5 09:39 5bc072a8-ab17-446d-9744-e247949913c1/cache0 -> ../../../devices/pci0000:00/0000:00:01.0/0000:01:00.0/ata10/host9/target9:0:0/9:0:0:0/block/sdl/sdl2/bcache/
++
++   The device names will show which UUID is relevant, cd in that directory
++   and stop the cache::
+ 
+-The device names will show which UUID is relevant, cd in that directory
+-and stop the cache:
+ 	host:/sys/fs/bcache/5bc072a8-ab17-446d-9744-e247949913c1# echo 1 > stop
+ 
+-This will free up bcache references and let you reuse the partition for
+-other purposes.
++   This will free up bcache references and let you reuse the partition for
++   other purposes.
  
  
--Name: irq/%d-%s
--Purpose: Handle threaded interrupts.
-+Name:
-+  irq/%d-%s
-+
-+Purpose:
-+  Handle threaded interrupts.
-+
- To reduce its OS jitter, do the following:
-+
- 1.	Use irq affinity to force the irq threads to execute on
- 	some other CPU.
  
--Name: kcmtpd_ctr_%d
--Purpose: Handle Bluetooth work.
-+Name:
-+  kcmtpd_ctr_%d
-+
-+Purpose:
-+  Handle Bluetooth work.
-+
- To reduce its OS jitter, do one of the following:
-+
- 1.	Don't use Bluetooth, in which case these kthreads won't be
- 	created in the first place.
- 2.	Use irq affinity to force Bluetooth-related interrupts to
- 	occur on some other CPU and furthermore initiate all
- 	Bluetooth activity on some other CPU.
+-TROUBLESHOOTING PERFORMANCE
++Troubleshooting performance
+ ---------------------------
  
--Name: ksoftirqd/%u
--Purpose: Execute softirq handlers when threaded or when under heavy load.
-+Name:
-+  ksoftirqd/%u
-+
-+Purpose:
-+  Execute softirq handlers when threaded or when under heavy load.
-+
- To reduce its OS jitter, each softirq vector must be handled
- separately as follows:
--TIMER_SOFTIRQ:  Do all of the following:
-+
-+TIMER_SOFTIRQ
-+-------------
-+
-+Do all of the following:
-+
- 1.	To the extent possible, keep the CPU out of the kernel when it
- 	is non-idle, for example, by avoiding system calls and by forcing
- 	both kernel threads and interrupts to execute elsewhere.
-@@ -76,34 +102,59 @@ TIMER_SOFTIRQ:  Do all of the following:
- 	first one back online.  Once you have onlined the CPUs in question,
- 	do not offline any other CPUs, because doing so could force the
- 	timer back onto one of the CPUs in question.
--NET_TX_SOFTIRQ and NET_RX_SOFTIRQ:  Do all of the following:
-+
-+NET_TX_SOFTIRQ and NET_RX_SOFTIRQ
-+---------------------------------
-+
-+Do all of the following:
-+
- 1.	Force networking interrupts onto other CPUs.
- 2.	Initiate any network I/O on other CPUs.
- 3.	Once your application has started, prevent CPU-hotplug operations
- 	from being initiated from tasks that might run on the CPU to
- 	be de-jittered.  (It is OK to force this CPU offline and then
- 	bring it back online before you start your application.)
--BLOCK_SOFTIRQ:  Do all of the following:
-+
-+BLOCK_SOFTIRQ
-+-------------
-+
-+Do all of the following:
-+
- 1.	Force block-device interrupts onto some other CPU.
- 2.	Initiate any block I/O on other CPUs.
- 3.	Once your application has started, prevent CPU-hotplug operations
- 	from being initiated from tasks that might run on the CPU to
- 	be de-jittered.  (It is OK to force this CPU offline and then
- 	bring it back online before you start your application.)
--IRQ_POLL_SOFTIRQ:  Do all of the following:
-+
-+IRQ_POLL_SOFTIRQ
-+----------------
-+
-+Do all of the following:
-+
- 1.	Force block-device interrupts onto some other CPU.
- 2.	Initiate any block I/O and block-I/O polling on other CPUs.
- 3.	Once your application has started, prevent CPU-hotplug operations
- 	from being initiated from tasks that might run on the CPU to
- 	be de-jittered.  (It is OK to force this CPU offline and then
- 	bring it back online before you start your application.)
--TASKLET_SOFTIRQ: Do one or more of the following:
-+
-+TASKLET_SOFTIRQ
-+---------------
-+
-+Do one or more of the following:
-+
- 1.	Avoid use of drivers that use tasklets.  (Such drivers will contain
- 	calls to things like tasklet_schedule().)
- 2.	Convert all drivers that you must use from tasklets to workqueues.
- 3.	Force interrupts for drivers using tasklets onto other CPUs,
- 	and also do I/O involving these drivers on other CPUs.
--SCHED_SOFTIRQ: Do all of the following:
-+
-+SCHED_SOFTIRQ
-+-------------
-+
-+Do all of the following:
-+
- 1.	Avoid sending scheduler IPIs to the CPU to be de-jittered,
- 	for example, ensure that at most one runnable kthread is present
- 	on that CPU.  If a thread that expects to run on the de-jittered
-@@ -121,7 +172,12 @@ SCHED_SOFTIRQ: Do all of the following:
- 	forcing both kernel threads and interrupts to execute elsewhere.
- 	This further reduces the number of scheduler-clock interrupts
- 	received by the de-jittered CPU.
--HRTIMER_SOFTIRQ:  Do all of the following:
-+
-+HRTIMER_SOFTIRQ
-+---------------
-+
-+Do all of the following:
-+
- 1.	To the extent possible, keep the CPU out of the kernel when it
- 	is non-idle.  For example, avoid system calls and force both
- 	kernel threads and interrupts to execute elsewhere.
-@@ -132,9 +188,15 @@ HRTIMER_SOFTIRQ:  Do all of the following:
- 	back online.  Once you have onlined the CPUs in question, do not
- 	offline any other CPUs, because doing so could force the timer
- 	back onto one of the CPUs in question.
--RCU_SOFTIRQ:  Do at least one of the following:
-+
-+RCU_SOFTIRQ
-+-----------
-+
-+Do at least one of the following:
-+
- 1.	Offload callbacks and keep the CPU in either dyntick-idle or
- 	adaptive-ticks state by doing all of the following:
-+
- 	a.	Build with CONFIG_RCU_NOCB_CPU=y, CONFIG_RCU_NOCB_CPU_ALL=y,
- 		CONFIG_NO_HZ_FULL=y, and, in addition ensure that the CPU
- 		to be de-jittered is marked as an adaptive-ticks CPU using
-@@ -144,8 +206,10 @@ RCU_SOFTIRQ:  Do at least one of the following:
- 		when it is non-idle, for example, by avoiding system
- 		calls and by forcing both kernel threads and interrupts
- 		to execute elsewhere.
-+
- 2.	Enable RCU to do its processing remotely via dyntick-idle by
- 	doing all of the following:
-+
- 	a.	Build with CONFIG_NO_HZ=y and CONFIG_RCU_FAST_NO_HZ=y.
- 	b.	Ensure that the CPU goes idle frequently, allowing other
- 		CPUs to detect that it has passed through an RCU quiescent
-@@ -157,15 +221,20 @@ RCU_SOFTIRQ:  Do at least one of the following:
- 		calls and by forcing both kernel threads and interrupts
- 		to execute elsewhere.
+ Bcache has a bunch of config options and tunables. The defaults are intended to
+@@ -301,11 +323,13 @@ want for getting the best possible numbers when benchmarking.
+    raid stripe size to get the disk multiples that you would like.
  
--Name: kworker/%u:%d%s (cpu, id, priority)
--Purpose: Execute workqueue requests
-+Name:
-+  kworker/%u:%d%s (cpu, id, priority)
+    For example:  If you have a 64k stripe size, then the following offset
+-   would provide alignment for many common RAID5 data spindle counts:
++   would provide alignment for many common RAID5 data spindle counts::
 +
-+Purpose:
-+  Execute workqueue requests
-+
- To reduce its OS jitter, do any of the following:
-+
- 1.	Run your workload at a real-time priority, which will allow
- 	preempting the kworker daemons.
- 2.	A given workqueue can be made visible in the sysfs filesystem
- 	by passing the WQ_SYSFS to that workqueue's alloc_workqueue().
- 	Such a workqueue can be confined to a given subset of the
--	CPUs using the /sys/devices/virtual/workqueue/*/cpumask sysfs
-+	CPUs using the ``/sys/devices/virtual/workqueue/*/cpumask`` sysfs
- 	files.	The set of WQ_SYSFS workqueues can be displayed using
- 	"ls sys/devices/virtual/workqueue".  That said, the workqueues
- 	maintainer would like to caution people against indiscriminately
-@@ -175,6 +244,7 @@ To reduce its OS jitter, do any of the following:
- 	to remove it, even if its addition was a mistake.
- 3.	Do any of the following needed to avoid jitter that your
- 	application cannot tolerate:
-+
- 	a.	Build your kernel with CONFIG_SLUB=y rather than
- 		CONFIG_SLAB=y, thus avoiding the slab allocator's periodic
- 		use of each CPU's workqueues to run its cache_reap()
-@@ -188,6 +258,7 @@ To reduce its OS jitter, do any of the following:
- 		be able to build your kernel with CONFIG_CPU_FREQ=n to
- 		avoid the CPU-frequency governor periodically running
- 		on each CPU, including cs_dbs_timer() and od_dbs_timer().
-+
- 		WARNING:  Please check your CPU specifications to
- 		make sure that this is safe on your particular system.
- 	d.	As of v3.18, Christoph Lameter's on-demand vmstat workers
-@@ -224,9 +295,14 @@ To reduce its OS jitter, do any of the following:
- 		CONFIG_PMAC_RACKMETER=n to disable the CPU-meter,
- 		avoiding OS jitter from rackmeter_do_timer().
+ 	64k * 2*2*2*3*3*5*7 bytes = 161280k
  
--Name: rcuc/%u
--Purpose: Execute RCU callbacks in CONFIG_RCU_BOOST=y kernels.
-+Name:
-+  rcuc/%u
+    That space is wasted, but for only 157.5MB you can grow your RAID 5
+-   volume to the following data-spindle counts without re-aligning:
++   volume to the following data-spindle counts without re-aligning::
 +
-+Purpose:
-+  Execute RCU callbacks in CONFIG_RCU_BOOST=y kernels.
-+
- To reduce its OS jitter, do at least one of the following:
-+
- 1.	Build the kernel with CONFIG_PREEMPT=n.  This prevents these
- 	kthreads from being created in the first place, and also obviates
- 	the need for RCU priority boosting.  This approach is feasible
-@@ -247,9 +323,14 @@ To reduce its OS jitter, do at least one of the following:
- 	CPU, again preventing the rcuc/%u kthreads from having any work
- 	to do.
+ 	3,4,5,6,7,8,9,10,12,14,15,18,20,21 ...
  
--Name: rcuob/%d, rcuop/%d, and rcuos/%d
--Purpose: Offload RCU callbacks from the corresponding CPU.
-+Name:
-+  rcuob/%d, rcuop/%d, and rcuos/%d
-+
-+Purpose:
-+  Offload RCU callbacks from the corresponding CPU.
-+
- To reduce its OS jitter, do at least one of the following:
-+
- 1.	Use affinity, cgroups, or other mechanism to force these kthreads
- 	to execute on some other CPU.
- 2.	Build with CONFIG_RCU_NOCB_CPU=n, which will prevent these
-@@ -257,9 +338,14 @@ To reduce its OS jitter, do at least one of the following:
- 	note that this will not eliminate OS jitter, but will instead
- 	shift it to RCU_SOFTIRQ.
+  - Bad write performance
+@@ -313,9 +337,9 @@ want for getting the best possible numbers when benchmarking.
+    If write performance is not what you expected, you probably wanted to be
+    running in writeback mode, which isn't the default (not due to a lack of
+    maturity, but simply because in writeback mode you'll lose data if something
+-   happens to your SSD)
++   happens to your SSD)::
  
--Name: watchdog/%u
--Purpose: Detect software lockups on each CPU.
-+Name:
-+  watchdog/%u
-+
-+Purpose:
-+  Detect software lockups on each CPU.
-+
- To reduce its OS jitter, do at least one of the following:
-+
- 1.	Build with CONFIG_LOCKUP_DETECTOR=n, which will prevent these
- 	kthreads from being created in the first place.
- 2.	Boot with "nosoftlockup=0", which will also prevent these kthreads
+-   # echo writeback > /sys/block/bcache0/bcache/cache_mode
++	# echo writeback > /sys/block/bcache0/bcache/cache_mode
+ 
+  - Bad performance, or traffic not going to the SSD that you'd expect
+ 
+@@ -325,13 +349,13 @@ want for getting the best possible numbers when benchmarking.
+    accessed data out of your cache.
+ 
+    But if you want to benchmark reads from cache, and you start out with fio
+-   writing an 8 gigabyte test file - so you want to disable that.
++   writing an 8 gigabyte test file - so you want to disable that::
+ 
+-   # echo 0 > /sys/block/bcache0/bcache/sequential_cutoff
++	# echo 0 > /sys/block/bcache0/bcache/sequential_cutoff
+ 
+-   To set it back to the default (4 mb), do
++   To set it back to the default (4 mb), do::
+ 
+-   # echo 4M > /sys/block/bcache0/bcache/sequential_cutoff
++	# echo 4M > /sys/block/bcache0/bcache/sequential_cutoff
+ 
+  - Traffic's still going to the spindle/still getting cache misses
+ 
+@@ -344,10 +368,10 @@ want for getting the best possible numbers when benchmarking.
+    throttles traffic if the latency exceeds a threshold (it does this by
+    cranking down the sequential bypass).
+ 
+-   You can disable this if you need to by setting the thresholds to 0:
++   You can disable this if you need to by setting the thresholds to 0::
+ 
+-   # echo 0 > /sys/fs/bcache/<cache set>/congested_read_threshold_us
+-   # echo 0 > /sys/fs/bcache/<cache set>/congested_write_threshold_us
++	# echo 0 > /sys/fs/bcache/<cache set>/congested_read_threshold_us
++	# echo 0 > /sys/fs/bcache/<cache set>/congested_write_threshold_us
+ 
+    The default is 2000 us (2 milliseconds) for reads, and 20000 for writes.
+ 
+@@ -369,7 +393,7 @@ want for getting the best possible numbers when benchmarking.
+    a fix for the issue there).
+ 
+ 
+-SYSFS - BACKING DEVICE
++Sysfs - backing device
+ ----------------------
+ 
+ Available at /sys/block/<bdev>/bcache, /sys/block/bcache*/bcache and
+@@ -454,7 +478,8 @@ writeback_running
+   still be added to the cache until it is mostly full; only meant for
+   benchmarking. Defaults to on.
+ 
+-SYSFS - BACKING DEVICE STATS:
++Sysfs - backing device stats
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+ There are directories with these numbers for a running total, as well as
+ versions that decay over the past day, hour and 5 minutes; they're also
+@@ -463,14 +488,11 @@ aggregated in the cache set directory as well.
+ bypassed
+   Amount of IO (both reads and writes) that has bypassed the cache
+ 
+-cache_hits
+-cache_misses
+-cache_hit_ratio
++cache_hits, cache_misses, cache_hit_ratio
+   Hits and misses are counted per individual IO as bcache sees them; a
+   partial hit is counted as a miss.
+ 
+-cache_bypass_hits
+-cache_bypass_misses
++cache_bypass_hits, cache_bypass_misses
+   Hits and misses for IO that is intended to skip the cache are still counted,
+   but broken out here.
+ 
+@@ -482,7 +504,8 @@ cache_miss_collisions
+ cache_readaheads
+   Count of times readahead occurred.
+ 
+-SYSFS - CACHE SET:
++Sysfs - cache set
++~~~~~~~~~~~~~~~~~
+ 
+ Available at /sys/fs/bcache/<cset-uuid>
+ 
+@@ -520,8 +543,7 @@ flash_vol_create
+   Echoing a size to this file (in human readable units, k/M/G) creates a thinly
+   provisioned volume backed by the cache set.
+ 
+-io_error_halflife
+-io_error_limit
++io_error_halflife, io_error_limit
+   These determines how many errors we accept before disabling the cache.
+   Each error is decayed by the half life (in # ios).  If the decaying count
+   reaches io_error_limit dirty data is written out and the cache is disabled.
+@@ -545,7 +567,8 @@ unregister
+   Detaches all backing devices and closes the cache devices; if dirty data is
+   present it will disable writeback caching and wait for it to be flushed.
+ 
+-SYSFS - CACHE SET INTERNAL:
++Sysfs - cache set internal
++~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+ This directory also exposes timings for a number of internal operations, with
+ separate files for average duration, average frequency, last occurrence and max
+@@ -574,7 +597,8 @@ cache_read_races
+ trigger_gc
+   Writing to this file forces garbage collection to run.
+ 
+-SYSFS - CACHE DEVICE:
++Sysfs - Cache device
++~~~~~~~~~~~~~~~~~~~~
+ 
+ Available at /sys/block/<cdev>/bcache
+ 
 -- 
 2.9.4
