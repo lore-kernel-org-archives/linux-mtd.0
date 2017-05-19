@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWlR-0002Ct-5Q
- for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:32:05 +0000
+ id 1dBWlR-0002CX-4u
+ for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:32:12 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -13,14 +13,16 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- Johannes Thumshirn <morbidrsa@gmail.com>
-Subject: [PATCH 21/30] men-chameleon-bus.txt: standardize document format
-Date: Thu, 18 May 2017 22:24:13 -0300
-Message-Id: <8efb749ce7beb2b22c298fb5c9d7d80044076b05.1495156975.git.mchehab@s-opensource.com>
-In-Reply-To: <cover.1495156975.git.mchehab@s-opensource.com>
-References: <cover.1495156975.git.mchehab@s-opensource.com>
-In-Reply-To: <cover.1495156975.git.mchehab@s-opensource.com>
-References: <cover.1495156975.git.mchehab@s-opensource.com>
+ Ohad Ben-Cohen <ohad@wizery.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ linux-remoteproc@vger.kernel.org
+Subject: [PATCH 26/31] hwspinlock.txt: standardize document format
+Date: Thu, 18 May 2017 22:22:31 -0300
+Message-Id: <6331d7d9c3f80592e711a5b477b5c3f1bb6c6c4b.1495156488.git.mchehab@s-opensource.com>
+In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
+References: <cover.1495156488.git.mchehab@s-opensource.com>
+In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
+References: <cover.1495156488.git.mchehab@s-opensource.com>
 Sender: Mauro Carvalho Chehab <mchehab@smtp.s-opensource.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -37,338 +39,621 @@ format. Some doesn't even have titles!
 Change its representation to follow the adopted standard,
 using ReST markups for it to be parseable by Sphinx:
 
-- Adjust identations;
-- Remove title numbering;
-- mark literal blocks;
-- comment its TOC.
+- Adjust title markups;
+- remove explicit numeration from titles;
+- mark literal blocks as such;
+- replace _foo_ by **foo** for emphasis;
+- adjust whitespaces and add blank lines where needed.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/men-chameleon-bus.txt | 298 +++++++++++++++++++-----------------
- 1 file changed, 155 insertions(+), 143 deletions(-)
+ Documentation/hwspinlock.txt | 527 +++++++++++++++++++++++++------------------
+ 1 file changed, 307 insertions(+), 220 deletions(-)
 
-diff --git a/Documentation/men-chameleon-bus.txt b/Documentation/men-chameleon-bus.txt
-index 30ded732027e..1b1f048aa748 100644
---- a/Documentation/men-chameleon-bus.txt
-+++ b/Documentation/men-chameleon-bus.txt
-@@ -1,163 +1,175 @@
--                               MEN Chameleon Bus
--                               =================
--
--Table of Contents
- =================
--1 Introduction
--    1.1 Scope of this Document
--    1.2 Limitations of the current implementation
--2 Architecture
--    2.1 MEN Chameleon Bus
--    2.2 Carrier Devices
--    2.3 Parser
--3 Resource handling
--    3.1 Memory Resources
--    3.2 IRQs
--4 Writing an MCB driver
--    4.1 The driver structure
--    4.2 Probing and attaching
--    4.3 Initializing the driver
--
-+MEN Chameleon Bus
-+=================
+diff --git a/Documentation/hwspinlock.txt b/Documentation/hwspinlock.txt
+index 61c1ee98e59f..ed640a278185 100644
+--- a/Documentation/hwspinlock.txt
++++ b/Documentation/hwspinlock.txt
+@@ -1,6 +1,9 @@
++===========================
+ Hardware Spinlock Framework
++===========================
  
--1 Introduction
--===============
--  This document describes the architecture and implementation of the MEN
--  Chameleon Bus (called MCB throughout this document).
-+.. Table of Contents
-+   =================
-+   1 Introduction
-+       1.1 Scope of this Document
-+       1.2 Limitations of the current implementation
-+   2 Architecture
-+       2.1 MEN Chameleon Bus
-+       2.2 Carrier Devices
-+       2.3 Parser
-+   3 Resource handling
-+       3.1 Memory Resources
-+       3.2 IRQs
-+   4 Writing an MCB driver
-+       4.1 The driver structure
-+       4.2 Probing and attaching
-+       4.3 Initializing the driver
- 
--1.1 Scope of this Document
-----------------------------
--  This document is intended to be a short overview of the current
--  implementation and does by no means describe the complete possibilities of MCB
--  based devices.
- 
--1.2 Limitations of the current implementation
------------------------------------------------
--  The current implementation is limited to PCI and PCIe based carrier devices
--  that only use a single memory resource and share the PCI legacy IRQ.  Not
--  implemented are:
--  - Multi-resource MCB devices like the VME Controller or M-Module carrier.
--  - MCB devices that need another MCB device, like SRAM for a DMA Controller's
--    buffer descriptors or a video controller's video memory.
--  - A per-carrier IRQ domain for carrier devices that have one (or more) IRQs
--    per MCB device like PCIe based carriers with MSI or MSI-X support.
+-1. Introduction
 +Introduction
 +============
  
--2 Architecture
--===============
--  MCB is divided into 3 functional blocks:
--  - The MEN Chameleon Bus itself,
--  - drivers for MCB Carrier Devices and
--  - the parser for the Chameleon table.
-+This document describes the architecture and implementation of the MEN
-+Chameleon Bus (called MCB throughout this document).
+ Hardware spinlock modules provide hardware assistance for synchronization
+ and mutual exclusion between heterogeneous processors and those not operating
+@@ -32,286 +35,370 @@ structure).
+ A common hwspinlock interface makes it possible to have generic, platform-
+ independent, drivers.
  
--2.1 MEN Chameleon Bus
-+Scope of this Document
- ----------------------
--   The MEN Chameleon Bus is an artificial bus system that attaches to a so
--   called Chameleon FPGA device found on some hardware produced my MEN Mikro
--   Elektronik GmbH. These devices are multi-function devices implemented in a
--   single FPGA and usually attached via some sort of PCI or PCIe link. Each
--   FPGA contains a header section describing the content of the FPGA. The
--   header lists the device id, PCI BAR, offset from the beginning of the PCI
--   BAR, size in the FPGA, interrupt number and some other properties currently
--   not handled by the MCB implementation.
+-2. User API
++User API
++========
++
++::
+ 
+   struct hwspinlock *hwspin_lock_request(void);
+-   - dynamically assign an hwspinlock and return its address, or NULL
+-     in case an unused hwspinlock isn't available. Users of this
+-     API will usually want to communicate the lock's id to the remote core
+-     before it can be used to achieve synchronization.
+-     Should be called from a process context (might sleep).
++
++Dynamically assign an hwspinlock and return its address, or NULL
++in case an unused hwspinlock isn't available. Users of this
++API will usually want to communicate the lock's id to the remote core
++before it can be used to achieve synchronization.
++
++Should be called from a process context (might sleep).
++
++::
+ 
+   struct hwspinlock *hwspin_lock_request_specific(unsigned int id);
+-   - assign a specific hwspinlock id and return its address, or NULL
+-     if that hwspinlock is already in use. Usually board code will
+-     be calling this function in order to reserve specific hwspinlock
+-     ids for predefined purposes.
+-     Should be called from a process context (might sleep).
++
++Assign a specific hwspinlock id and return its address, or NULL
++if that hwspinlock is already in use. Usually board code will
++be calling this function in order to reserve specific hwspinlock
++ids for predefined purposes.
++
++Should be called from a process context (might sleep).
++
++::
+ 
+   int of_hwspin_lock_get_id(struct device_node *np, int index);
+-   - retrieve the global lock id for an OF phandle-based specific lock.
+-     This function provides a means for DT users of a hwspinlock module
+-     to get the global lock id of a specific hwspinlock, so that it can
+-     be requested using the normal hwspin_lock_request_specific() API.
+-     The function returns a lock id number on success, -EPROBE_DEFER if
+-     the hwspinlock device is not yet registered with the core, or other
+-     error values.
+-     Should be called from a process context (might sleep).
++
++Retrieve the global lock id for an OF phandle-based specific lock.
++This function provides a means for DT users of a hwspinlock module
++to get the global lock id of a specific hwspinlock, so that it can
++be requested using the normal hwspin_lock_request_specific() API.
++
++The function returns a lock id number on success, -EPROBE_DEFER if
++the hwspinlock device is not yet registered with the core, or other
++error values.
++
++Should be called from a process context (might sleep).
++
++::
+ 
+   int hwspin_lock_free(struct hwspinlock *hwlock);
+-   - free a previously-assigned hwspinlock; returns 0 on success, or an
+-     appropriate error code on failure (e.g. -EINVAL if the hwspinlock
+-     is already free).
+-     Should be called from a process context (might sleep).
++
++Free a previously-assigned hwspinlock; returns 0 on success, or an
++appropriate error code on failure (e.g. -EINVAL if the hwspinlock
++is already free).
++
++Should be called from a process context (might sleep).
++
++::
+ 
+   int hwspin_lock_timeout(struct hwspinlock *hwlock, unsigned int timeout);
+-   - lock a previously-assigned hwspinlock with a timeout limit (specified in
+-     msecs). If the hwspinlock is already taken, the function will busy loop
+-     waiting for it to be released, but give up when the timeout elapses.
+-     Upon a successful return from this function, preemption is disabled so
+-     the caller must not sleep, and is advised to release the hwspinlock as
+-     soon as possible, in order to minimize remote cores polling on the
+-     hardware interconnect.
+-     Returns 0 when successful and an appropriate error code otherwise (most
+-     notably -ETIMEDOUT if the hwspinlock is still busy after timeout msecs).
+-     The function will never sleep.
++
++Lock a previously-assigned hwspinlock with a timeout limit (specified in
++msecs). If the hwspinlock is already taken, the function will busy loop
++waiting for it to be released, but give up when the timeout elapses.
++Upon a successful return from this function, preemption is disabled so
++the caller must not sleep, and is advised to release the hwspinlock as
++soon as possible, in order to minimize remote cores polling on the
++hardware interconnect.
++
++Returns 0 when successful and an appropriate error code otherwise (most
++notably -ETIMEDOUT if the hwspinlock is still busy after timeout msecs).
++The function will never sleep.
++
++::
+ 
+   int hwspin_lock_timeout_irq(struct hwspinlock *hwlock, unsigned int timeout);
+-   - lock a previously-assigned hwspinlock with a timeout limit (specified in
+-     msecs). If the hwspinlock is already taken, the function will busy loop
+-     waiting for it to be released, but give up when the timeout elapses.
+-     Upon a successful return from this function, preemption and the local
+-     interrupts are disabled, so the caller must not sleep, and is advised to
+-     release the hwspinlock as soon as possible.
+-     Returns 0 when successful and an appropriate error code otherwise (most
+-     notably -ETIMEDOUT if the hwspinlock is still busy after timeout msecs).
+-     The function will never sleep.
++
++Lock a previously-assigned hwspinlock with a timeout limit (specified in
++msecs). If the hwspinlock is already taken, the function will busy loop
++waiting for it to be released, but give up when the timeout elapses.
++Upon a successful return from this function, preemption and the local
++interrupts are disabled, so the caller must not sleep, and is advised to
++release the hwspinlock as soon as possible.
++
++Returns 0 when successful and an appropriate error code otherwise (most
++notably -ETIMEDOUT if the hwspinlock is still busy after timeout msecs).
++The function will never sleep.
++
++::
+ 
+   int hwspin_lock_timeout_irqsave(struct hwspinlock *hwlock, unsigned int to,
+-							unsigned long *flags);
+-   - lock a previously-assigned hwspinlock with a timeout limit (specified in
+-     msecs). If the hwspinlock is already taken, the function will busy loop
+-     waiting for it to be released, but give up when the timeout elapses.
+-     Upon a successful return from this function, preemption is disabled,
+-     local interrupts are disabled and their previous state is saved at the
+-     given flags placeholder. The caller must not sleep, and is advised to
+-     release the hwspinlock as soon as possible.
+-     Returns 0 when successful and an appropriate error code otherwise (most
+-     notably -ETIMEDOUT if the hwspinlock is still busy after timeout msecs).
+-     The function will never sleep.
++				  unsigned long *flags);
++
++Lock a previously-assigned hwspinlock with a timeout limit (specified in
++msecs). If the hwspinlock is already taken, the function will busy loop
++waiting for it to be released, but give up when the timeout elapses.
++Upon a successful return from this function, preemption is disabled,
++local interrupts are disabled and their previous state is saved at the
++given flags placeholder. The caller must not sleep, and is advised to
++release the hwspinlock as soon as possible.
++
++Returns 0 when successful and an appropriate error code otherwise (most
++notably -ETIMEDOUT if the hwspinlock is still busy after timeout msecs).
++
++The function will never sleep.
++
++::
+ 
+   int hwspin_trylock(struct hwspinlock *hwlock);
+-   - attempt to lock a previously-assigned hwspinlock, but immediately fail if
+-     it is already taken.
+-     Upon a successful return from this function, preemption is disabled so
+-     caller must not sleep, and is advised to release the hwspinlock as soon as
+-     possible, in order to minimize remote cores polling on the hardware
+-     interconnect.
+-     Returns 0 on success and an appropriate error code otherwise (most
+-     notably -EBUSY if the hwspinlock was already taken).
+-     The function will never sleep.
++
++
++Attempt to lock a previously-assigned hwspinlock, but immediately fail if
++it is already taken.
++
++Upon a successful return from this function, preemption is disabled so
++caller must not sleep, and is advised to release the hwspinlock as soon as
++possible, in order to minimize remote cores polling on the hardware
++interconnect.
++
++Returns 0 on success and an appropriate error code otherwise (most
++notably -EBUSY if the hwspinlock was already taken).
++The function will never sleep.
++
++::
+ 
+   int hwspin_trylock_irq(struct hwspinlock *hwlock);
+-   - attempt to lock a previously-assigned hwspinlock, but immediately fail if
+-     it is already taken.
+-     Upon a successful return from this function, preemption and the local
+-     interrupts are disabled so caller must not sleep, and is advised to
+-     release the hwspinlock as soon as possible.
+-     Returns 0 on success and an appropriate error code otherwise (most
+-     notably -EBUSY if the hwspinlock was already taken).
+-     The function will never sleep.
++
++
++Attempt to lock a previously-assigned hwspinlock, but immediately fail if
++it is already taken.
++
++Upon a successful return from this function, preemption and the local
++interrupts are disabled so caller must not sleep, and is advised to
++release the hwspinlock as soon as possible.
++
++Returns 0 on success and an appropriate error code otherwise (most
++notably -EBUSY if the hwspinlock was already taken).
++
++The function will never sleep.
++
++::
+ 
+   int hwspin_trylock_irqsave(struct hwspinlock *hwlock, unsigned long *flags);
+-   - attempt to lock a previously-assigned hwspinlock, but immediately fail if
+-     it is already taken.
+-     Upon a successful return from this function, preemption is disabled,
+-     the local interrupts are disabled and their previous state is saved
+-     at the given flags placeholder. The caller must not sleep, and is advised
+-     to release the hwspinlock as soon as possible.
+-     Returns 0 on success and an appropriate error code otherwise (most
+-     notably -EBUSY if the hwspinlock was already taken).
+-     The function will never sleep.
++
++Attempt to lock a previously-assigned hwspinlock, but immediately fail if
++it is already taken.
++
++Upon a successful return from this function, preemption is disabled,
++the local interrupts are disabled and their previous state is saved
++at the given flags placeholder. The caller must not sleep, and is advised
++to release the hwspinlock as soon as possible.
++
++Returns 0 on success and an appropriate error code otherwise (most
++notably -EBUSY if the hwspinlock was already taken).
++The function will never sleep.
++
++::
+ 
+   void hwspin_unlock(struct hwspinlock *hwlock);
+-   - unlock a previously-locked hwspinlock. Always succeed, and can be called
+-     from any context (the function never sleeps). Note: code should _never_
+-     unlock an hwspinlock which is already unlocked (there is no protection
+-     against this).
++
++Unlock a previously-locked hwspinlock. Always succeed, and can be called
++from any context (the function never sleeps).
++
++.. note::
++
++  code should **never** unlock an hwspinlock which is already unlocked
++  (there is no protection against this).
++
++::
+ 
+   void hwspin_unlock_irq(struct hwspinlock *hwlock);
+-   - unlock a previously-locked hwspinlock and enable local interrupts.
+-     The caller should _never_ unlock an hwspinlock which is already unlocked.
+-     Doing so is considered a bug (there is no protection against this).
+-     Upon a successful return from this function, preemption and local
+-     interrupts are enabled. This function will never sleep.
++
++Unlock a previously-locked hwspinlock and enable local interrupts.
++The caller should **never** unlock an hwspinlock which is already unlocked.
++
++Doing so is considered a bug (there is no protection against this).
++Upon a successful return from this function, preemption and local
++interrupts are enabled. This function will never sleep.
++
++::
+ 
+   void
+   hwspin_unlock_irqrestore(struct hwspinlock *hwlock, unsigned long *flags);
+-   - unlock a previously-locked hwspinlock.
+-     The caller should _never_ unlock an hwspinlock which is already unlocked.
+-     Doing so is considered a bug (there is no protection against this).
+-     Upon a successful return from this function, preemption is reenabled,
+-     and the state of the local interrupts is restored to the state saved at
+-     the given flags. This function will never sleep.
++
++Unlock a previously-locked hwspinlock.
++
++The caller should **never** unlock an hwspinlock which is already unlocked.
++Doing so is considered a bug (there is no protection against this).
++Upon a successful return from this function, preemption is reenabled,
++and the state of the local interrupts is restored to the state saved at
++the given flags. This function will never sleep.
++
++::
+ 
+   int hwspin_lock_get_id(struct hwspinlock *hwlock);
+-   - retrieve id number of a given hwspinlock. This is needed when an
+-     hwspinlock is dynamically assigned: before it can be used to achieve
+-     mutual exclusion with a remote cpu, the id number should be communicated
+-     to the remote task with which we want to synchronize.
+-     Returns the hwspinlock id number, or -EINVAL if hwlock is null.
 -
--2.2 Carrier Devices
+-3. Typical usage
+-
+-#include <linux/hwspinlock.h>
+-#include <linux/err.h>
+-
+-int hwspinlock_example1(void)
+-{
+-	struct hwspinlock *hwlock;
+-	int ret;
+-
+-	/* dynamically assign a hwspinlock */
+-	hwlock = hwspin_lock_request();
+-	if (!hwlock)
+-		...
+-
+-	id = hwspin_lock_get_id(hwlock);
+-	/* probably need to communicate id to a remote processor now */
+-
+-	/* take the lock, spin for 1 sec if it's already taken */
+-	ret = hwspin_lock_timeout(hwlock, 1000);
+-	if (ret)
+-		...
+-
+-	/*
+-	 * we took the lock, do our thing now, but do NOT sleep
+-	 */
+-
+-	/* release the lock */
+-	hwspin_unlock(hwlock);
+-
+-	/* free the lock */
+-	ret = hwspin_lock_free(hwlock);
+-	if (ret)
+-		...
+-
+-	return ret;
+-}
+-
+-int hwspinlock_example2(void)
+-{
+-	struct hwspinlock *hwlock;
+-	int ret;
+-
+-	/*
+-	 * assign a specific hwspinlock id - this should be called early
+-	 * by board init code.
+-	 */
+-	hwlock = hwspin_lock_request_specific(PREDEFINED_LOCK_ID);
+-	if (!hwlock)
+-		...
+-
+-	/* try to take it, but don't spin on it */
+-	ret = hwspin_trylock(hwlock);
+-	if (!ret) {
+-		pr_info("lock is already taken\n");
+-		return -EBUSY;
+-	}
+ 
+-	/*
+-	 * we took the lock, do our thing now, but do NOT sleep
+-	 */
++Retrieve id number of a given hwspinlock. This is needed when an
++hwspinlock is dynamically assigned: before it can be used to achieve
++mutual exclusion with a remote cpu, the id number should be communicated
++to the remote task with which we want to synchronize.
 +
-+This document is intended to be a short overview of the current
-+implementation and does by no means describe the complete possibilities of MCB
-+based devices.
++Returns the hwspinlock id number, or -EINVAL if hwlock is null.
 +
-+Limitations of the current implementation
-+-----------------------------------------
++Typical usage
++=============
 +
-+The current implementation is limited to PCI and PCIe based carrier devices
-+that only use a single memory resource and share the PCI legacy IRQ.  Not
-+implemented are:
++::
 +
-+- Multi-resource MCB devices like the VME Controller or M-Module carrier.
-+- MCB devices that need another MCB device, like SRAM for a DMA Controller's
-+  buffer descriptors or a video controller's video memory.
-+- A per-carrier IRQ domain for carrier devices that have one (or more) IRQs
-+  per MCB device like PCIe based carriers with MSI or MSI-X support.
++	#include <linux/hwspinlock.h>
++	#include <linux/err.h>
 +
-+Architecture
-+============
++	int hwspinlock_example1(void)
++	{
++		struct hwspinlock *hwlock;
++		int ret;
 +
-+MCB is divided into 3 functional blocks:
++		/* dynamically assign a hwspinlock */
++		hwlock = hwspin_lock_request();
++		if (!hwlock)
++			...
+ 
+-	/* release the lock */
+-	hwspin_unlock(hwlock);
++		id = hwspin_lock_get_id(hwlock);
++		/* probably need to communicate id to a remote processor now */
+ 
+-	/* free the lock */
+-	ret = hwspin_lock_free(hwlock);
+-	if (ret)
+-		...
++		/* take the lock, spin for 1 sec if it's already taken */
++		ret = hwspin_lock_timeout(hwlock, 1000);
++		if (ret)
++			...
 +
-+- The MEN Chameleon Bus itself,
-+- drivers for MCB Carrier Devices and
-+- the parser for the Chameleon table.
++		/*
++		* we took the lock, do our thing now, but do NOT sleep
++		*/
 +
-+MEN Chameleon Bus
-+-----------------
++		/* release the lock */
++		hwspin_unlock(hwlock);
 +
-+The MEN Chameleon Bus is an artificial bus system that attaches to a so
-+called Chameleon FPGA device found on some hardware produced my MEN Mikro
-+Elektronik GmbH. These devices are multi-function devices implemented in a
-+single FPGA and usually attached via some sort of PCI or PCIe link. Each
-+FPGA contains a header section describing the content of the FPGA. The
-+header lists the device id, PCI BAR, offset from the beginning of the PCI
-+BAR, size in the FPGA, interrupt number and some other properties currently
-+not handled by the MCB implementation.
++		/* free the lock */
++		ret = hwspin_lock_free(hwlock);
++		if (ret)
++			...
 +
-+Carrier Devices
-+---------------
++		return ret;
++	}
 +
-+A carrier device is just an abstraction for the real world physical bus the
-+Chameleon FPGA is attached to. Some IP Core drivers may need to interact with
-+properties of the carrier device (like querying the IRQ number of a PCI
-+device). To provide abstraction from the real hardware bus, an MCB carrier
-+device provides callback methods to translate the driver's MCB function calls
-+to hardware related function calls. For example a carrier device may
-+implement the get_irq() method which can be translated into a hardware bus
-+query for the IRQ number the device should use.
++	int hwspinlock_example2(void)
++	{
++		struct hwspinlock *hwlock;
++		int ret;
 +
-+Parser
-+------
++		/*
++		* assign a specific hwspinlock id - this should be called early
++		* by board init code.
++		*/
++		hwlock = hwspin_lock_request_specific(PREDEFINED_LOCK_ID);
++		if (!hwlock)
++			...
 +
-+The parser reads the first 512 bytes of a Chameleon device and parses the
-+Chameleon table. Currently the parser only supports the Chameleon v2 variant
-+of the Chameleon table but can easily be adopted to support an older or
-+possible future variant. While parsing the table's entries new MCB devices
-+are allocated and their resources are assigned according to the resource
-+assignment in the Chameleon table. After resource assignment is finished, the
-+MCB devices are registered at the MCB and thus at the driver core of the
-+Linux kernel.
++		/* try to take it, but don't spin on it */
++		ret = hwspin_trylock(hwlock);
++		if (!ret) {
++			pr_info("lock is already taken\n");
++			return -EBUSY;
++		}
 +
-+Resource handling
++		/*
++		* we took the lock, do our thing now, but do NOT sleep
++		*/
++
++		/* release the lock */
++		hwspin_unlock(hwlock);
++
++		/* free the lock */
++		ret = hwspin_lock_free(hwlock);
++		if (ret)
++			...
++
++		return ret;
++	}
+ 
+-	return ret;
+-}
+ 
++API for implementors
++====================
+ 
+-4. API for implementors
++::
+ 
+   int hwspin_lock_register(struct hwspinlock_device *bank, struct device *dev,
+ 		const struct hwspinlock_ops *ops, int base_id, int num_locks);
+-   - to be called from the underlying platform-specific implementation, in
+-     order to register a new hwspinlock device (which is usually a bank of
+-     numerous locks). Should be called from a process context (this function
+-     might sleep).
+-     Returns 0 on success, or appropriate error code on failure.
++
++To be called from the underlying platform-specific implementation, in
++order to register a new hwspinlock device (which is usually a bank of
++numerous locks). Should be called from a process context (this function
++might sleep).
++
++Returns 0 on success, or appropriate error code on failure.
++
++::
+ 
+   int hwspin_lock_unregister(struct hwspinlock_device *bank);
+-   - to be called from the underlying vendor-specific implementation, in order
+-     to unregister an hwspinlock device (which is usually a bank of numerous
+-     locks).
+-     Should be called from a process context (this function might sleep).
+-     Returns the address of hwspinlock on success, or NULL on error (e.g.
+-     if the hwspinlock is still in use).
+-
+-5. Important structs
++
++To be called from the underlying vendor-specific implementation, in order
++to unregister an hwspinlock device (which is usually a bank of numerous
++locks).
++
++Should be called from a process context (this function might sleep).
++
++Returns the address of hwspinlock on success, or NULL on error (e.g.
++if the hwspinlock is still in use).
++
++Important structs
 +=================
-+
-+The current implementation assigns exactly one memory and one IRQ resource
-+per MCB device. But this is likely going to change in the future.
-+
-+Memory Resources
-+----------------
-+
-+Each MCB device has exactly one memory resource, which can be requested from
-+the MCB bus. This memory resource is the physical address of the MCB device
-+inside the carrier and is intended to be passed to ioremap() and friends. It
-+is already requested from the kernel by calling request_mem_region().
-+
-+IRQs
-+----
-+
-+Each MCB device has exactly one IRQ resource, which can be requested from the
-+MCB bus. If a carrier device driver implements the ->get_irq() callback
-+method, the IRQ number assigned by the carrier device will be returned,
-+otherwise the IRQ number inside the Chameleon table will be returned. This
-+number is suitable to be passed to request_irq().
-+
-+Writing an MCB driver
-+=====================
-+
-+The driver structure
- --------------------
--   A carrier device is just an abstraction for the real world physical bus the
--   Chameleon FPGA is attached to. Some IP Core drivers may need to interact with
--   properties of the carrier device (like querying the IRQ number of a PCI
--   device). To provide abstraction from the real hardware bus, an MCB carrier
--   device provides callback methods to translate the driver's MCB function calls
--   to hardware related function calls. For example a carrier device may
--   implement the get_irq() method which can be translated into a hardware bus
--   query for the IRQ number the device should use.
  
--2.3 Parser
-------------
--   The parser reads the first 512 bytes of a Chameleon device and parses the
--   Chameleon table. Currently the parser only supports the Chameleon v2 variant
--   of the Chameleon table but can easily be adopted to support an older or
--   possible future variant. While parsing the table's entries new MCB devices
--   are allocated and their resources are assigned according to the resource
--   assignment in the Chameleon table. After resource assignment is finished, the
--   MCB devices are registered at the MCB and thus at the driver core of the
--   Linux kernel.
-+Each MCB driver has a structure to identify the device driver as well as
-+device ids which identify the IP Core inside the FPGA. The driver structure
-+also contains callback methods which get executed on driver probe and
-+removal from the system::
+ struct hwspinlock_device is a device which usually contains a bank
+ of hardware locks. It is registered by the underlying hwspinlock
+ implementation using the hwspin_lock_register() API.
  
--3 Resource handling
--====================
--  The current implementation assigns exactly one memory and one IRQ resource
--  per MCB device. But this is likely going to change in the future.
-+	static const struct mcb_device_id foo_ids[] = {
-+		{ .device = 0x123 },
-+		{ }
+-/**
+- * struct hwspinlock_device - a device which usually spans numerous hwspinlocks
+- * @dev: underlying device, will be used to invoke runtime PM api
+- * @ops: platform-specific hwspinlock handlers
+- * @base_id: id index of the first lock in this device
+- * @num_locks: number of locks in this device
+- * @lock: dynamically allocated array of 'struct hwspinlock'
+- */
+-struct hwspinlock_device {
+-	struct device *dev;
+-	const struct hwspinlock_ops *ops;
+-	int base_id;
+-	int num_locks;
+-	struct hwspinlock lock[0];
+-};
++::
++
++	/**
++	* struct hwspinlock_device - a device which usually spans numerous hwspinlocks
++	* @dev: underlying device, will be used to invoke runtime PM api
++	* @ops: platform-specific hwspinlock handlers
++	* @base_id: id index of the first lock in this device
++	* @num_locks: number of locks in this device
++	* @lock: dynamically allocated array of 'struct hwspinlock'
++	*/
++	struct hwspinlock_device {
++		struct device *dev;
++		const struct hwspinlock_ops *ops;
++		int base_id;
++		int num_locks;
++		struct hwspinlock lock[0];
 +	};
-+	MODULE_DEVICE_TABLE(mcb, foo_ids);
  
--3.1 Memory Resources
-+	static struct mcb_driver foo_driver = {
-+	driver = {
-+		.name = "foo-bar",
-+		.owner = THIS_MODULE,
-+	},
-+		.probe = foo_probe,
-+		.remove = foo_remove,
-+		.id_table = foo_ids,
+ struct hwspinlock_device contains an array of hwspinlock structs, each
+-of which represents a single hardware lock:
++of which represents a single hardware lock::
+ 
+-/**
+- * struct hwspinlock - this struct represents a single hwspinlock instance
+- * @bank: the hwspinlock_device structure which owns this lock
+- * @lock: initialized and used by hwspinlock core
+- * @priv: private data, owned by the underlying platform-specific hwspinlock drv
+- */
+-struct hwspinlock {
+-	struct hwspinlock_device *bank;
+-	spinlock_t lock;
+-	void *priv;
+-};
++	/**
++	* struct hwspinlock - this struct represents a single hwspinlock instance
++	* @bank: the hwspinlock_device structure which owns this lock
++	* @lock: initialized and used by hwspinlock core
++	* @priv: private data, owned by the underlying platform-specific hwspinlock drv
++	*/
++	struct hwspinlock {
++		struct hwspinlock_device *bank;
++		spinlock_t lock;
++		void *priv;
 +	};
-+
-+Probing and attaching
- ---------------------
--   Each MCB device has exactly one memory resource, which can be requested from
--   the MCB bus. This memory resource is the physical address of the MCB device
--   inside the carrier and is intended to be passed to ioremap() and friends. It
--   is already requested from the kernel by calling request_mem_region().
  
--3.2 IRQs
-----------
--   Each MCB device has exactly one IRQ resource, which can be requested from the
--   MCB bus. If a carrier device driver implements the ->get_irq() callback
--   method, the IRQ number assigned by the carrier device will be returned,
--   otherwise the IRQ number inside the Chameleon table will be returned. This
--   number is suitable to be passed to request_irq().
-+When a driver is loaded and the MCB devices it services are found, the MCB
-+core will call the driver's probe callback method. When the driver is removed
-+from the system, the MCB core will call the driver's remove callback method::
+ When registering a bank of locks, the hwspinlock driver only needs to
+ set the priv members of the locks. The rest of the members are set and
+ initialized by the hwspinlock core itself.
  
--4 Writing an MCB driver
--=======================
-+	static init foo_probe(struct mcb_device *mdev, const struct mcb_device_id *id);
-+	static void foo_remove(struct mcb_device *mdev);
+-6. Implementation callbacks
++Implementation callbacks
++========================
  
--4.1 The driver structure
---------------------------
--    Each MCB driver has a structure to identify the device driver as well as
--    device ids which identify the IP Core inside the FPGA. The driver structure
--    also contains callback methods which get executed on driver probe and
--    removal from the system.
-+Initializing the driver
-+-----------------------
+-There are three possible callbacks defined in 'struct hwspinlock_ops':
++There are three possible callbacks defined in 'struct hwspinlock_ops'::
  
-+When the kernel is booted or your foo driver module is inserted, you have to
-+perform driver initialization. Usually it is enough to register your driver
-+module at the MCB core::
+-struct hwspinlock_ops {
+-	int (*trylock)(struct hwspinlock *lock);
+-	void (*unlock)(struct hwspinlock *lock);
+-	void (*relax)(struct hwspinlock *lock);
+-};
++	struct hwspinlock_ops {
++		int (*trylock)(struct hwspinlock *lock);
++		void (*unlock)(struct hwspinlock *lock);
++		void (*relax)(struct hwspinlock *lock);
++	};
  
--  static const struct mcb_device_id foo_ids[] = {
--          { .device = 0x123 },
--          { }
--  };
--  MODULE_DEVICE_TABLE(mcb, foo_ids);
-+	static int __init foo_init(void)
-+	{
-+		return mcb_register_driver(&foo_driver);
-+	}
-+	module_init(foo_init);
+ The first two callbacks are mandatory:
  
--  static struct mcb_driver foo_driver = {
--          driver = {
--                  .name = "foo-bar",
--                  .owner = THIS_MODULE,
--          },
--          .probe = foo_probe,
--          .remove = foo_remove,
--          .id_table = foo_ids,
--  };
-+	static void __exit foo_exit(void)
-+	{
-+		mcb_unregister_driver(&foo_driver);
-+	}
-+	module_exit(foo_exit);
+ The ->trylock() callback should make a single attempt to take the lock, and
+-return 0 on failure and 1 on success. This callback may _not_ sleep.
++return 0 on failure and 1 on success. This callback may **not** sleep.
  
--4.2 Probing and attaching
----------------------------
--   When a driver is loaded and the MCB devices it services are found, the MCB
--   core will call the driver's probe callback method. When the driver is removed
--   from the system, the MCB core will call the driver's remove callback method.
-+The module_mcb_driver() macro can be used to reduce the above code::
+ The ->unlock() callback releases the lock. It always succeed, and it, too,
+-may _not_ sleep.
++may **not** sleep.
  
--
--  static init foo_probe(struct mcb_device *mdev, const struct mcb_device_id *id);
--  static void foo_remove(struct mcb_device *mdev);
--
--4.3 Initializing the driver
------------------------------
--   When the kernel is booted or your foo driver module is inserted, you have to
--   perform driver initialization. Usually it is enough to register your driver
--   module at the MCB core.
--
--
--  static int __init foo_init(void)
--  {
--          return mcb_register_driver(&foo_driver);
--  }
--  module_init(foo_init);
--
--  static void __exit foo_exit(void)
--  {
--          mcb_unregister_driver(&foo_driver);
--  }
--  module_exit(foo_exit);
--
--   The module_mcb_driver() macro can be used to reduce the above code.
--
--
--  module_mcb_driver(foo_driver);
-+	module_mcb_driver(foo_driver);
+ The ->relax() callback is optional. It is called by hwspinlock core while
+ spinning on a lock, and can be used by the underlying implementation to force
+-a delay between two successive invocations of ->trylock(). It may _not_ sleep.
++a delay between two successive invocations of ->trylock(). It may **not** sleep.
 -- 
 2.9.4
