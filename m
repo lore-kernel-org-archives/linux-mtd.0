@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWqJ-0007Bq-Np
- for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:36:49 +0000
+ by merlin.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dBWhT-0005yD-3C
+ for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:27:29 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -12,10 +12,13 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 15/29] siphash.txt: standardize document format
-Date: Thu, 18 May 2017 22:25:59 -0300
-Message-Id: <c7aaa7fa31af17a41627d11232e2d7ad53417dd8.1495157082.git.mchehab@s-opensource.com>
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
+ Ohad Ben-Cohen <ohad@wizery.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ linux-remoteproc@vger.kernel.org
+Subject: [PATCH 11/29] rpmsg.txt: standardize document format
+Date: Thu, 18 May 2017 22:25:55 -0300
+Message-Id: <10e688d70615b38271156515e347e958662c7561.1495157082.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495157082.git.mchehab@s-opensource.com>
 References: <cover.1495157082.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495157082.git.mchehab@s-opensource.com>
@@ -36,286 +39,434 @@ format. Some doesn't even have titles!
 Change its representation to follow the adopted standard,
 using ReST markups for it to be parseable by Sphinx:
 
-- Mark titles;
-- Mark literal blocks;
-- Use :Author: for authorship;
-- Don't sumerate chapters;
-- Adjust identation.
-
-NOTE:
-
-This file has actually two documents inside it, the first
-one describing siphash, the second one describing halfsiphash.
-
-It is likely a good idea to split them when it gets moved to
-security/ (which is where it probably belongs).
+- mark document and chapter titles;
+- mark notes;
+- mark literal blocks;
+- adjust identation.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/siphash.txt | 186 +++++++++++++++++++++++++---------------------
- 1 file changed, 100 insertions(+), 86 deletions(-)
+ Documentation/rpmsg.txt | 340 ++++++++++++++++++++++++++++--------------------
+ 1 file changed, 200 insertions(+), 140 deletions(-)
 
-diff --git a/Documentation/siphash.txt b/Documentation/siphash.txt
-index 908d348ff777..9965821ab333 100644
---- a/Documentation/siphash.txt
-+++ b/Documentation/siphash.txt
-@@ -1,6 +1,8 @@
--         SipHash - a short input PRF
-------------------------------------------------
--Written by Jason A. Donenfeld <jason@zx2c4.com>
-+===========================
-+SipHash - a short input PRF
-+===========================
-+
-+:Author: Written by Jason A. Donenfeld <jason@zx2c4.com>
+diff --git a/Documentation/rpmsg.txt b/Documentation/rpmsg.txt
+index a95e36a43288..24b7a9e1a5f9 100644
+--- a/Documentation/rpmsg.txt
++++ b/Documentation/rpmsg.txt
+@@ -1,10 +1,15 @@
++============================================
+ Remote Processor Messaging (rpmsg) Framework
++============================================
  
- SipHash is a cryptographically secure PRF -- a keyed hash function -- that
- performs very well for short inputs, hence the name. It was designed by
-@@ -13,58 +15,61 @@ an input buffer or several input integers. It spits out an integer that is
- indistinguishable from random. You may then use that integer as part of secure
- sequence numbers, secure cookies, or mask it off for use in a hash table.
+-Note: this document describes the rpmsg bus and how to write rpmsg drivers.
+-To learn how to add rpmsg support for new platforms, check out remoteproc.txt
+-(also a resident of Documentation/).
++.. note::
  
--1. Generating a key
-+Generating a key
-+================
+-1. Introduction
++  This document describes the rpmsg bus and how to write rpmsg drivers.
++  To learn how to add rpmsg support for new platforms, check out remoteproc.txt
++  (also a resident of Documentation/).
++
++Introduction
++============
  
- Keys should always be generated from a cryptographically secure source of
--random numbers, either using get_random_bytes or get_random_once:
-+random numbers, either using get_random_bytes or get_random_once::
+ Modern SoCs typically employ heterogeneous remote processor devices in
+ asymmetric multiprocessing (AMP) configurations, which may be running
+@@ -58,170 +63,222 @@ to their destination address (this is done by invoking the driver's rx handler
+ with the payload of the inbound message).
  
--siphash_key_t key;
--get_random_bytes(&key, sizeof(key));
--
--If you're not deriving your key from here, you're doing it wrong.
--
--2. Using the functions
--
--There are two variants of the function, one that takes a list of integers, and
--one that takes a buffer:
--
--u64 siphash(const void *data, size_t len, const siphash_key_t *key);
--
--And:
--
--u64 siphash_1u64(u64, const siphash_key_t *key);
--u64 siphash_2u64(u64, u64, const siphash_key_t *key);
--u64 siphash_3u64(u64, u64, u64, const siphash_key_t *key);
--u64 siphash_4u64(u64, u64, u64, u64, const siphash_key_t *key);
--u64 siphash_1u32(u32, const siphash_key_t *key);
--u64 siphash_2u32(u32, u32, const siphash_key_t *key);
--u64 siphash_3u32(u32, u32, u32, const siphash_key_t *key);
--u64 siphash_4u32(u32, u32, u32, u32, const siphash_key_t *key);
--
--If you pass the generic siphash function something of a constant length, it
--will constant fold at compile-time and automatically choose one of the
--optimized functions.
--
--3. Hashtable key function usage:
--
--struct some_hashtable {
--	DECLARE_HASHTABLE(hashtable, 8);
- 	siphash_key_t key;
--};
-+	get_random_bytes(&key, sizeof(key));
  
--void init_hashtable(struct some_hashtable *table)
--{
--	get_random_bytes(&table->key, sizeof(table->key));
--}
-+If you're not deriving your key from here, you're doing it wrong.
- 
--static inline hlist_head *some_hashtable_bucket(struct some_hashtable *table, struct interesting_input *input)
--{
--	return &table->hashtable[siphash(input, sizeof(*input), &table->key) & (HASH_SIZE(table->hashtable) - 1)];
--}
-+Using the functions
-+===================
-+
-+There are two variants of the function, one that takes a list of integers, and
-+one that takes a buffer::
-+
-+	u64 siphash(const void *data, size_t len, const siphash_key_t *key);
-+
-+And::
-+
-+	u64 siphash_1u64(u64, const siphash_key_t *key);
-+	u64 siphash_2u64(u64, u64, const siphash_key_t *key);
-+	u64 siphash_3u64(u64, u64, u64, const siphash_key_t *key);
-+	u64 siphash_4u64(u64, u64, u64, u64, const siphash_key_t *key);
-+	u64 siphash_1u32(u32, const siphash_key_t *key);
-+	u64 siphash_2u32(u32, u32, const siphash_key_t *key);
-+	u64 siphash_3u32(u32, u32, u32, const siphash_key_t *key);
-+	u64 siphash_4u32(u32, u32, u32, u32, const siphash_key_t *key);
-+
-+If you pass the generic siphash function something of a constant length, it
-+will constant fold at compile-time and automatically choose one of the
-+optimized functions.
-+
-+Hashtable key function usage::
-+
-+	struct some_hashtable {
-+		DECLARE_HASHTABLE(hashtable, 8);
-+		siphash_key_t key;
-+	};
-+
-+	void init_hashtable(struct some_hashtable *table)
-+	{
-+		get_random_bytes(&table->key, sizeof(table->key));
-+	}
-+
-+	static inline hlist_head *some_hashtable_bucket(struct some_hashtable *table, struct interesting_input *input)
-+	{
-+		return &table->hashtable[siphash(input, sizeof(*input), &table->key) & (HASH_SIZE(table->hashtable) - 1)];
-+	}
- 
- You may then iterate like usual over the returned hash bucket.
- 
--4. Security
-+Security
+-2. User API
++User API
 +========
- 
- SipHash has a very high security margin, with its 128-bit key. So long as the
- key is kept secret, it is impossible for an attacker to guess the outputs of
-@@ -73,7 +78,8 @@ is significant.
- 
- Linux implements the "2-4" variant of SipHash.
- 
--5. Struct-passing Pitfalls
-+Struct-passing Pitfalls
-+=======================
- 
- Often times the XuY functions will not be large enough, and instead you'll
- want to pass a pre-filled struct to siphash. When doing this, it's important
-@@ -81,30 +87,32 @@ to always ensure the struct has no padding holes. The easiest way to do this
- is to simply arrange the members of the struct in descending order of size,
- and to use offsetendof() instead of sizeof() for getting the size. For
- performance reasons, if possible, it's probably a good thing to align the
--struct to the right boundary. Here's an example:
-+struct to the right boundary. Here's an example::
- 
--const struct {
--	struct in6_addr saddr;
--	u32 counter;
--	u16 dport;
--} __aligned(SIPHASH_ALIGNMENT) combined = {
--	.saddr = *(struct in6_addr *)saddr,
--	.counter = counter,
--	.dport = dport
--};
--u64 h = siphash(&combined, offsetofend(typeof(combined), dport), &secret);
-+	const struct {
-+		struct in6_addr saddr;
-+		u32 counter;
-+		u16 dport;
-+	} __aligned(SIPHASH_ALIGNMENT) combined = {
-+		.saddr = *(struct in6_addr *)saddr,
-+		.counter = counter,
-+		.dport = dport
-+	};
-+	u64 h = siphash(&combined, offsetofend(typeof(combined), dport), &secret);
- 
--6. Resources
-+Resources
-+=========
- 
- Read the SipHash paper if you're interested in learning more:
- https://131002.net/siphash/siphash.pdf
- 
-+-------------------------------------------------------------------------------
- 
--~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~
--
-+===============================================
- HalfSipHash - SipHash's insecure younger cousin
-------------------------------------------------
--Written by Jason A. Donenfeld <jason@zx2c4.com>
-+===============================================
 +
-+:Author: Written by Jason A. Donenfeld <jason@zx2c4.com>
- 
- On the off-chance that SipHash is not fast enough for your needs, you might be
- able to justify using HalfSipHash, a terrifying but potentially useful
-@@ -120,7 +128,8 @@ then when you can be absolutely certain that the outputs will never be
- transmitted out of the kernel. This is only remotely useful over `jhash` as a
- means of mitigating hashtable flooding denial of service attacks.
- 
--1. Generating a key
-+Generating a key
-+================
- 
- Keys should always be generated from a cryptographically secure source of
- random numbers, either using get_random_bytes or get_random_once:
-@@ -130,44 +139,49 @@ get_random_bytes(&key, sizeof(key));
- 
- If you're not deriving your key from here, you're doing it wrong.
- 
--2. Using the functions
-+Using the functions
-+===================
- 
- There are two variants of the function, one that takes a list of integers, and
--one that takes a buffer:
-+one that takes a buffer::
- 
--u32 hsiphash(const void *data, size_t len, const hsiphash_key_t *key);
-+	u32 hsiphash(const void *data, size_t len, const hsiphash_key_t *key);
- 
--And:
-+And::
- 
--u32 hsiphash_1u32(u32, const hsiphash_key_t *key);
--u32 hsiphash_2u32(u32, u32, const hsiphash_key_t *key);
--u32 hsiphash_3u32(u32, u32, u32, const hsiphash_key_t *key);
--u32 hsiphash_4u32(u32, u32, u32, u32, const hsiphash_key_t *key);
-+	u32 hsiphash_1u32(u32, const hsiphash_key_t *key);
-+	u32 hsiphash_2u32(u32, u32, const hsiphash_key_t *key);
-+	u32 hsiphash_3u32(u32, u32, u32, const hsiphash_key_t *key);
-+	u32 hsiphash_4u32(u32, u32, u32, u32, const hsiphash_key_t *key);
- 
- If you pass the generic hsiphash function something of a constant length, it
- will constant fold at compile-time and automatically choose one of the
- optimized functions.
- 
--3. Hashtable key function usage:
-+Hashtable key function usage
-+============================
- 
--struct some_hashtable {
--	DECLARE_HASHTABLE(hashtable, 8);
--	hsiphash_key_t key;
--};
 +::
  
--void init_hashtable(struct some_hashtable *table)
--{
--	get_random_bytes(&table->key, sizeof(table->key));
--}
-+	struct some_hashtable {
-+		DECLARE_HASHTABLE(hashtable, 8);
-+		hsiphash_key_t key;
-+	};
- 
--static inline hlist_head *some_hashtable_bucket(struct some_hashtable *table, struct interesting_input *input)
--{
--	return &table->hashtable[hsiphash(input, sizeof(*input), &table->key) & (HASH_SIZE(table->hashtable) - 1)];
--}
-+	void init_hashtable(struct some_hashtable *table)
-+	{
-+		get_random_bytes(&table->key, sizeof(table->key));
-+	}
+   int rpmsg_send(struct rpmsg_channel *rpdev, void *data, int len);
+-   - sends a message across to the remote processor on a given channel.
+-     The caller should specify the channel, the data it wants to send,
+-     and its length (in bytes). The message will be sent on the specified
+-     channel, i.e. its source and destination address fields will be
+-     set to the channel's src and dst addresses.
+-
+-     In case there are no TX buffers available, the function will block until
+-     one becomes available (i.e. until the remote processor consumes
+-     a tx buffer and puts it back on virtio's used descriptor ring),
+-     or a timeout of 15 seconds elapses. When the latter happens,
+-     -ERESTARTSYS is returned.
+-     The function can only be called from a process context (for now).
+-     Returns 0 on success and an appropriate error value on failure.
 +
-+	static inline hlist_head *some_hashtable_bucket(struct some_hashtable *table, struct interesting_input *input)
-+	{
-+		return &table->hashtable[hsiphash(input, sizeof(*input), &table->key) & (HASH_SIZE(table->hashtable) - 1)];
-+	}
++sends a message across to the remote processor on a given channel.
++The caller should specify the channel, the data it wants to send,
++and its length (in bytes). The message will be sent on the specified
++channel, i.e. its source and destination address fields will be
++set to the channel's src and dst addresses.
++
++In case there are no TX buffers available, the function will block until
++one becomes available (i.e. until the remote processor consumes
++a tx buffer and puts it back on virtio's used descriptor ring),
++or a timeout of 15 seconds elapses. When the latter happens,
++-ERESTARTSYS is returned.
++
++The function can only be called from a process context (for now).
++Returns 0 on success and an appropriate error value on failure.
++
++::
  
- You may then iterate like usual over the returned hash bucket.
+   int rpmsg_sendto(struct rpmsg_channel *rpdev, void *data, int len, u32 dst);
+-   - sends a message across to the remote processor on a given channel,
+-     to a destination address provided by the caller.
+-     The caller should specify the channel, the data it wants to send,
+-     its length (in bytes), and an explicit destination address.
+-     The message will then be sent to the remote processor to which the
+-     channel belongs, using the channel's src address, and the user-provided
+-     dst address (thus the channel's dst address will be ignored).
+-
+-     In case there are no TX buffers available, the function will block until
+-     one becomes available (i.e. until the remote processor consumes
+-     a tx buffer and puts it back on virtio's used descriptor ring),
+-     or a timeout of 15 seconds elapses. When the latter happens,
+-     -ERESTARTSYS is returned.
+-     The function can only be called from a process context (for now).
+-     Returns 0 on success and an appropriate error value on failure.
++
++sends a message across to the remote processor on a given channel,
++to a destination address provided by the caller.
++
++The caller should specify the channel, the data it wants to send,
++its length (in bytes), and an explicit destination address.
++
++The message will then be sent to the remote processor to which the
++channel belongs, using the channel's src address, and the user-provided
++dst address (thus the channel's dst address will be ignored).
++
++In case there are no TX buffers available, the function will block until
++one becomes available (i.e. until the remote processor consumes
++a tx buffer and puts it back on virtio's used descriptor ring),
++or a timeout of 15 seconds elapses. When the latter happens,
++-ERESTARTSYS is returned.
++
++The function can only be called from a process context (for now).
++Returns 0 on success and an appropriate error value on failure.
++
++::
  
--4. Performance
-+Performance
-+===========
+   int rpmsg_send_offchannel(struct rpmsg_channel *rpdev, u32 src, u32 dst,
+ 							void *data, int len);
+-   - sends a message across to the remote processor, using the src and dst
+-     addresses provided by the user.
+-     The caller should specify the channel, the data it wants to send,
+-     its length (in bytes), and explicit source and destination addresses.
+-     The message will then be sent to the remote processor to which the
+-     channel belongs, but the channel's src and dst addresses will be
+-     ignored (and the user-provided addresses will be used instead).
+-
+-     In case there are no TX buffers available, the function will block until
+-     one becomes available (i.e. until the remote processor consumes
+-     a tx buffer and puts it back on virtio's used descriptor ring),
+-     or a timeout of 15 seconds elapses. When the latter happens,
+-     -ERESTARTSYS is returned.
+-     The function can only be called from a process context (for now).
+-     Returns 0 on success and an appropriate error value on failure.
++
++
++sends a message across to the remote processor, using the src and dst
++addresses provided by the user.
++
++The caller should specify the channel, the data it wants to send,
++its length (in bytes), and explicit source and destination addresses.
++The message will then be sent to the remote processor to which the
++channel belongs, but the channel's src and dst addresses will be
++ignored (and the user-provided addresses will be used instead).
++
++In case there are no TX buffers available, the function will block until
++one becomes available (i.e. until the remote processor consumes
++a tx buffer and puts it back on virtio's used descriptor ring),
++or a timeout of 15 seconds elapses. When the latter happens,
++-ERESTARTSYS is returned.
++
++The function can only be called from a process context (for now).
++Returns 0 on success and an appropriate error value on failure.
++
++::
  
- HalfSipHash is roughly 3 times slower than JenkinsHash. For many replacements,
- this will not be a problem, as the hashtable lookup isn't the bottleneck. And
+   int rpmsg_trysend(struct rpmsg_channel *rpdev, void *data, int len);
+-   - sends a message across to the remote processor on a given channel.
+-     The caller should specify the channel, the data it wants to send,
+-     and its length (in bytes). The message will be sent on the specified
+-     channel, i.e. its source and destination address fields will be
+-     set to the channel's src and dst addresses.
+-
+-     In case there are no TX buffers available, the function will immediately
+-     return -ENOMEM without waiting until one becomes available.
+-     The function can only be called from a process context (for now).
+-     Returns 0 on success and an appropriate error value on failure.
++
++sends a message across to the remote processor on a given channel.
++The caller should specify the channel, the data it wants to send,
++and its length (in bytes). The message will be sent on the specified
++channel, i.e. its source and destination address fields will be
++set to the channel's src and dst addresses.
++
++In case there are no TX buffers available, the function will immediately
++return -ENOMEM without waiting until one becomes available.
++
++The function can only be called from a process context (for now).
++Returns 0 on success and an appropriate error value on failure.
++
++::
+ 
+   int rpmsg_trysendto(struct rpmsg_channel *rpdev, void *data, int len, u32 dst)
+-   - sends a message across to the remote processor on a given channel,
+-     to a destination address provided by the user.
+-     The user should specify the channel, the data it wants to send,
+-     its length (in bytes), and an explicit destination address.
+-     The message will then be sent to the remote processor to which the
+-     channel belongs, using the channel's src address, and the user-provided
+-     dst address (thus the channel's dst address will be ignored).
+-
+-     In case there are no TX buffers available, the function will immediately
+-     return -ENOMEM without waiting until one becomes available.
+-     The function can only be called from a process context (for now).
+-     Returns 0 on success and an appropriate error value on failure.
++
++
++sends a message across to the remote processor on a given channel,
++to a destination address provided by the user.
++
++The user should specify the channel, the data it wants to send,
++its length (in bytes), and an explicit destination address.
++
++The message will then be sent to the remote processor to which the
++channel belongs, using the channel's src address, and the user-provided
++dst address (thus the channel's dst address will be ignored).
++
++In case there are no TX buffers available, the function will immediately
++return -ENOMEM without waiting until one becomes available.
++
++The function can only be called from a process context (for now).
++Returns 0 on success and an appropriate error value on failure.
++
++::
+ 
+   int rpmsg_trysend_offchannel(struct rpmsg_channel *rpdev, u32 src, u32 dst,
+ 							void *data, int len);
+-   - sends a message across to the remote processor, using source and
+-     destination addresses provided by the user.
+-     The user should specify the channel, the data it wants to send,
+-     its length (in bytes), and explicit source and destination addresses.
+-     The message will then be sent to the remote processor to which the
+-     channel belongs, but the channel's src and dst addresses will be
+-     ignored (and the user-provided addresses will be used instead).
+-
+-     In case there are no TX buffers available, the function will immediately
+-     return -ENOMEM without waiting until one becomes available.
+-     The function can only be called from a process context (for now).
+-     Returns 0 on success and an appropriate error value on failure.
++
++
++sends a message across to the remote processor, using source and
++destination addresses provided by the user.
++
++The user should specify the channel, the data it wants to send,
++its length (in bytes), and explicit source and destination addresses.
++The message will then be sent to the remote processor to which the
++channel belongs, but the channel's src and dst addresses will be
++ignored (and the user-provided addresses will be used instead).
++
++In case there are no TX buffers available, the function will immediately
++return -ENOMEM without waiting until one becomes available.
++
++The function can only be called from a process context (for now).
++Returns 0 on success and an appropriate error value on failure.
++
++::
+ 
+   struct rpmsg_endpoint *rpmsg_create_ept(struct rpmsg_channel *rpdev,
+ 		void (*cb)(struct rpmsg_channel *, void *, int, void *, u32),
+ 		void *priv, u32 addr);
+-   - every rpmsg address in the system is bound to an rx callback (so when
+-     inbound messages arrive, they are dispatched by the rpmsg bus using the
+-     appropriate callback handler) by means of an rpmsg_endpoint struct.
+ 
+-     This function allows drivers to create such an endpoint, and by that,
+-     bind a callback, and possibly some private data too, to an rpmsg address
+-     (either one that is known in advance, or one that will be dynamically
+-     assigned for them).
++every rpmsg address in the system is bound to an rx callback (so when
++inbound messages arrive, they are dispatched by the rpmsg bus using the
++appropriate callback handler) by means of an rpmsg_endpoint struct.
+ 
+-     Simple rpmsg drivers need not call rpmsg_create_ept, because an endpoint
+-     is already created for them when they are probed by the rpmsg bus
+-     (using the rx callback they provide when they registered to the rpmsg bus).
++This function allows drivers to create such an endpoint, and by that,
++bind a callback, and possibly some private data too, to an rpmsg address
++(either one that is known in advance, or one that will be dynamically
++assigned for them).
+ 
+-     So things should just work for simple drivers: they already have an
+-     endpoint, their rx callback is bound to their rpmsg address, and when
+-     relevant inbound messages arrive (i.e. messages which their dst address
+-     equals to the src address of their rpmsg channel), the driver's handler
+-     is invoked to process it.
++Simple rpmsg drivers need not call rpmsg_create_ept, because an endpoint
++is already created for them when they are probed by the rpmsg bus
++(using the rx callback they provide when they registered to the rpmsg bus).
+ 
+-     That said, more complicated drivers might do need to allocate
+-     additional rpmsg addresses, and bind them to different rx callbacks.
+-     To accomplish that, those drivers need to call this function.
+-     Drivers should provide their channel (so the new endpoint would bind
+-     to the same remote processor their channel belongs to), an rx callback
+-     function, an optional private data (which is provided back when the
+-     rx callback is invoked), and an address they want to bind with the
+-     callback. If addr is RPMSG_ADDR_ANY, then rpmsg_create_ept will
+-     dynamically assign them an available rpmsg address (drivers should have
+-     a very good reason why not to always use RPMSG_ADDR_ANY here).
++So things should just work for simple drivers: they already have an
++endpoint, their rx callback is bound to their rpmsg address, and when
++relevant inbound messages arrive (i.e. messages which their dst address
++equals to the src address of their rpmsg channel), the driver's handler
++is invoked to process it.
+ 
+-     Returns a pointer to the endpoint on success, or NULL on error.
++That said, more complicated drivers might do need to allocate
++additional rpmsg addresses, and bind them to different rx callbacks.
++To accomplish that, those drivers need to call this function.
++Drivers should provide their channel (so the new endpoint would bind
++to the same remote processor their channel belongs to), an rx callback
++function, an optional private data (which is provided back when the
++rx callback is invoked), and an address they want to bind with the
++callback. If addr is RPMSG_ADDR_ANY, then rpmsg_create_ept will
++dynamically assign them an available rpmsg address (drivers should have
++a very good reason why not to always use RPMSG_ADDR_ANY here).
++
++Returns a pointer to the endpoint on success, or NULL on error.
++
++::
+ 
+   void rpmsg_destroy_ept(struct rpmsg_endpoint *ept);
+-   - destroys an existing rpmsg endpoint. user should provide a pointer
+-     to an rpmsg endpoint that was previously created with rpmsg_create_ept().
++
++
++destroys an existing rpmsg endpoint. user should provide a pointer
++to an rpmsg endpoint that was previously created with rpmsg_create_ept().
++
++::
+ 
+   int register_rpmsg_driver(struct rpmsg_driver *rpdrv);
+-   - registers an rpmsg driver with the rpmsg bus. user should provide
+-     a pointer to an rpmsg_driver struct, which contains the driver's
+-     ->probe() and ->remove() functions, an rx callback, and an id_table
+-     specifying the names of the channels this driver is interested to
+-     be probed with.
++
++
++registers an rpmsg driver with the rpmsg bus. user should provide
++a pointer to an rpmsg_driver struct, which contains the driver's
++->probe() and ->remove() functions, an rx callback, and an id_table
++specifying the names of the channels this driver is interested to
++be probed with.
++
++::
+ 
+   void unregister_rpmsg_driver(struct rpmsg_driver *rpdrv);
+-   - unregisters an rpmsg driver from the rpmsg bus. user should provide
+-     a pointer to a previously-registered rpmsg_driver struct.
+-     Returns 0 on success, and an appropriate error value on failure.
+ 
+ 
+-3. Typical usage
++unregisters an rpmsg driver from the rpmsg bus. user should provide
++a pointer to a previously-registered rpmsg_driver struct.
++Returns 0 on success, and an appropriate error value on failure.
++
++
++Typical usage
++=============
+ 
+ The following is a simple rpmsg driver, that sends an "hello!" message
+ on probe(), and whenever it receives an incoming message, it dumps its
+ content to the console.
+ 
+-#include <linux/kernel.h>
+-#include <linux/module.h>
+-#include <linux/rpmsg.h>
++::
+ 
+-static void rpmsg_sample_cb(struct rpmsg_channel *rpdev, void *data, int len,
++  #include <linux/kernel.h>
++  #include <linux/module.h>
++  #include <linux/rpmsg.h>
++
++  static void rpmsg_sample_cb(struct rpmsg_channel *rpdev, void *data, int len,
+ 						void *priv, u32 src)
+-{
++  {
+ 	print_hex_dump(KERN_INFO, "incoming message:", DUMP_PREFIX_NONE,
+ 						16, 1, data, len, true);
+-}
++  }
+ 
+-static int rpmsg_sample_probe(struct rpmsg_channel *rpdev)
+-{
++  static int rpmsg_sample_probe(struct rpmsg_channel *rpdev)
++  {
+ 	int err;
+ 
+ 	dev_info(&rpdev->dev, "chnl: 0x%x -> 0x%x\n", rpdev->src, rpdev->dst);
+@@ -234,32 +291,35 @@ static int rpmsg_sample_probe(struct rpmsg_channel *rpdev)
+ 	}
+ 
+ 	return 0;
+-}
++  }
+ 
+-static void rpmsg_sample_remove(struct rpmsg_channel *rpdev)
+-{
++  static void rpmsg_sample_remove(struct rpmsg_channel *rpdev)
++  {
+ 	dev_info(&rpdev->dev, "rpmsg sample client driver is removed\n");
+-}
++  }
+ 
+-static struct rpmsg_device_id rpmsg_driver_sample_id_table[] = {
++  static struct rpmsg_device_id rpmsg_driver_sample_id_table[] = {
+ 	{ .name	= "rpmsg-client-sample" },
+ 	{ },
+-};
+-MODULE_DEVICE_TABLE(rpmsg, rpmsg_driver_sample_id_table);
++  };
++  MODULE_DEVICE_TABLE(rpmsg, rpmsg_driver_sample_id_table);
+ 
+-static struct rpmsg_driver rpmsg_sample_client = {
++  static struct rpmsg_driver rpmsg_sample_client = {
+ 	.drv.name	= KBUILD_MODNAME,
+ 	.id_table	= rpmsg_driver_sample_id_table,
+ 	.probe		= rpmsg_sample_probe,
+ 	.callback	= rpmsg_sample_cb,
+ 	.remove		= rpmsg_sample_remove,
+-};
+-module_rpmsg_driver(rpmsg_sample_client);
++  };
++  module_rpmsg_driver(rpmsg_sample_client);
+ 
+-Note: a similar sample which can be built and loaded can be found
+-in samples/rpmsg/.
++.. note::
+ 
+-4. Allocations of rpmsg channels:
++   a similar sample which can be built and loaded can be found
++   in samples/rpmsg/.
++
++Allocations of rpmsg channels
++=============================
+ 
+ At this point we only support dynamic allocations of rpmsg channels.
+ 
 -- 
 2.9.4
