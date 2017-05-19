@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWdc-0000P2-Q4
- for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:23:32 +0000
+ id 1dBWdc-0000PN-Q6
+ for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:23:35 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -13,9 +13,9 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 19/31] efi-stub.txt: standardize document format
-Date: Thu, 18 May 2017 22:22:24 -0300
-Message-Id: <db4f9b1f261c4a96d4eef071f232033c02a9b8fd.1495156488.git.mchehab@s-opensource.com>
+Subject: [PATCH 02/31] bt8xxgpio.txt: standardize document format
+Date: Thu, 18 May 2017 22:22:07 -0300
+Message-Id: <70359a28fff3be1e1c64bb99d9d74155def6c0e9.1495156488.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
 References: <cover.1495156488.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
@@ -36,87 +36,55 @@ format. Some doesn't even have titles!
 Change its representation to follow the adopted standard,
 using ReST markups for it to be parseable by Sphinx:
 
-- use proper markups for titles;
-- identify literal blocks.
+- Adjust titles to match the convention;
+- use a literal block for ascii artwork.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/efi-stub.txt | 25 +++++++++++++++----------
- 1 file changed, 15 insertions(+), 10 deletions(-)
+ Documentation/bt8xxgpio.txt | 19 +++++++------------
+ 1 file changed, 7 insertions(+), 12 deletions(-)
 
-diff --git a/Documentation/efi-stub.txt b/Documentation/efi-stub.txt
-index e15746988261..41df801f9a50 100644
---- a/Documentation/efi-stub.txt
-+++ b/Documentation/efi-stub.txt
-@@ -1,5 +1,6 @@
--			  The EFI Boot Stub
--		     ---------------------------
-+=================
-+The EFI Boot Stub
-+=================
+diff --git a/Documentation/bt8xxgpio.txt b/Documentation/bt8xxgpio.txt
+index d8297e4ebd26..a845feb074de 100644
+--- a/Documentation/bt8xxgpio.txt
++++ b/Documentation/bt8xxgpio.txt
+@@ -1,12 +1,8 @@
+-===============================================================
+-==  BT8XXGPIO driver                                         ==
+-==                                                           ==
+-==  A driver for a selfmade cheap BT8xx based PCI GPIO-card  ==
+-==                                                           ==
+-==  For advanced documentation, see                          ==
+-==  http://www.bu3sch.de/btgpio.php                          ==
+-===============================================================
++===================================================================
++A driver for a selfmade cheap BT8xx based PCI GPIO-card (bt8xxgpio)
++===================================================================
  
- On the x86 and ARM platforms, a kernel zImage/bzImage can masquerade
- as a PE/COFF image, thereby convincing EFI firmware loaders to load
-@@ -25,7 +26,8 @@ a certain sense it *IS* the boot loader.
- The EFI boot stub is enabled with the CONFIG_EFI_STUB kernel option.
++For advanced documentation, see http://www.bu3sch.de/btgpio.php
  
- 
--**** How to install bzImage.efi
-+How to install bzImage.efi
-+--------------------------
- 
- The bzImage located in arch/x86/boot/bzImage must be copied to the EFI
- System Partition (ESP) and renamed with the extension ".efi". Without
-@@ -37,14 +39,16 @@ may not need to be renamed. Similarly for arm64, arch/arm64/boot/Image
- should be copied but not necessarily renamed.
+ A generic digital 24-port PCI GPIO card can be built out of an ordinary
+ Brooktree bt848, bt849, bt878 or bt879 based analog TV tuner card. The
+@@ -17,9 +13,8 @@ The bt8xx chip does have 24 digital GPIO ports.
+ These ports are accessible via 24 pins on the SMD chip package.
  
  
--**** Passing kernel parameters from the EFI shell
-+Passing kernel parameters from the EFI shell
-+--------------------------------------------
+-==============================================
+-==  How to physically access the GPIO pins  ==
+-==============================================
++How to physically access the GPIO pins
++======================================
  
--Arguments to the kernel can be passed after bzImage.efi, e.g.
-+Arguments to the kernel can be passed after bzImage.efi, e.g.::
+ The are several ways to access these pins. One might unsolder the whole chip
+ and put it on a custom PCI board, or one might only unsolder each individual
+@@ -27,7 +22,7 @@ GPIO pin and solder that to some tiny wire. As the chip package really is tiny
+ there are some advanced soldering skills needed in any case.
  
- 	fs0:> bzImage.efi console=ttyS0 root=/dev/sda4
+ The physical pinouts are drawn in the following ASCII art.
+-The GPIO pins are marked with G00-G23
++The GPIO pins are marked with G00-G23::
  
- 
--**** The "initrd=" option
-+The "initrd=" option
-+--------------------
- 
- Like most boot loaders, the EFI stub allows the user to specify
- multiple initrd files using the "initrd=" option. This is the only EFI
-@@ -54,9 +58,9 @@ kernel when it boots.
- The path to the initrd file must be an absolute path from the
- beginning of the ESP, relative path names do not work. Also, the path
- is an EFI-style path and directory elements must be separated with
--backslashes (\). For example, given the following directory layout,
-+backslashes (\). For example, given the following directory layout::
- 
--fs0:>
-+  fs0:>
- 	Kernels\
- 			bzImage.efi
- 			initrd-large.img
-@@ -66,7 +70,7 @@ fs0:>
- 			initrd-medium.img
- 
- to boot with the initrd-large.img file if the current working
--directory is fs0:\Kernels, the following command must be used,
-+directory is fs0:\Kernels, the following command must be used::
- 
- 	fs0:\Kernels> bzImage.efi initrd=\Kernels\initrd-large.img
- 
-@@ -76,7 +80,8 @@ which understands relative paths, whereas the rest of the command line
- is passed to bzImage.efi.
- 
- 
--**** The "dtb=" option
-+The "dtb=" option
-+-----------------
- 
- For the ARM and arm64 architectures, we also need to be able to provide a
- device tree to the kernel. This is done with the "dtb=" command line option,
+                                            G G G G G G G G G G G G     G G G G G G
+                                            0 0 0 0 0 0 0 0 0 0 1 1     1 1 1 1 1 1
 -- 
 2.9.4
