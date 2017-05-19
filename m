@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by merlin.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWhT-0005yC-3C
- for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:27:28 +0000
+ id 1dBWh8-0005su-QN
+ for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:27:11 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -12,10 +12,11 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 21/29] this_cpu_ops.txt: standardize document format
-Date: Thu, 18 May 2017 22:26:05 -0300
-Message-Id: <70e089d404aa13de6370f80b3f9b1ef750ddac71.1495157082.git.mchehab@s-opensource.com>
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
+ Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org
+Subject: [PATCH 23/29] vfio-mediated-device.txt: standardize document format
+Date: Thu, 18 May 2017 22:26:07 -0300
+Message-Id: <593114611704d32e22fb7526d16f3208602eb6ad.1495157082.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495157082.git.mchehab@s-opensource.com>
 References: <cover.1495157082.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495157082.git.mchehab@s-opensource.com>
@@ -33,193 +34,401 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Each text file under Documentation follows a different
 format. Some doesn't even have titles!
 
+In this specific document, the title, copyright and authorship
+are added as if it were a C file!
+
 Change its representation to follow the adopted standard,
 using ReST markups for it to be parseable by Sphinx:
-- promote document title one level;
+- convert document preambule to the proper format;
 - mark literal blocks;
-- move authorship to the beginning of the file and use markups.
+- adjust identation;
+- use numbered lists for references.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/this_cpu_ops.txt | 49 ++++++++++++++++++++++++------------------
- 1 file changed, 28 insertions(+), 21 deletions(-)
+ Documentation/vfio-mediated-device.txt | 252 +++++++++++++++++----------------
+ 1 file changed, 130 insertions(+), 122 deletions(-)
 
-diff --git a/Documentation/this_cpu_ops.txt b/Documentation/this_cpu_ops.txt
-index 2cbf71975381..5cb8b883ae83 100644
---- a/Documentation/this_cpu_ops.txt
-+++ b/Documentation/this_cpu_ops.txt
-@@ -1,5 +1,9 @@
-+===================
- this_cpu operations
---------------------
-+===================
+diff --git a/Documentation/vfio-mediated-device.txt b/Documentation/vfio-mediated-device.txt
+index e5e57b40f8af..1b3950346532 100644
+--- a/Documentation/vfio-mediated-device.txt
++++ b/Documentation/vfio-mediated-device.txt
+@@ -1,14 +1,17 @@
+-/*
+- * VFIO Mediated devices
+- *
+- * Copyright (c) 2016, NVIDIA CORPORATION. All rights reserved.
+- *     Author: Neo Jia <cjia@nvidia.com>
+- *             Kirti Wankhede <kwankhede@nvidia.com>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- */
++.. include:: <isonum.txt>
 +
-+:Author: Christoph Lameter, August 4th, 2014
-+:Author: Pranith Kumar, Aug 2nd, 2014
- 
- this_cpu operations are a way of optimizing access to per cpu
- variables associated with the *currently* executing processor. This is
-@@ -39,7 +43,7 @@ operations.
- 
- The following this_cpu() operations with implied preemption protection
- are defined. These operations can be used without worrying about
--preemption and interrupts.
-+preemption and interrupts::
- 
- 	this_cpu_read(pcp)
- 	this_cpu_write(pcp, val)
-@@ -67,14 +71,14 @@ to relocate a per cpu relative address to the proper per cpu area for
- the processor. So the relocation to the per cpu base is encoded in the
- instruction via a segment register prefix.
- 
--For example:
-+For example::
- 
- 	DEFINE_PER_CPU(int, x);
- 	int z;
- 
- 	z = this_cpu_read(x);
- 
--results in a single instruction
-+results in a single instruction::
- 
- 	mov ax, gs:[x]
- 
-@@ -84,16 +88,16 @@ this_cpu_ops such sequence also required preempt disable/enable to
- prevent the kernel from moving the thread to a different processor
- while the calculation is performed.
- 
--Consider the following this_cpu operation:
-+Consider the following this_cpu operation::
- 
- 	this_cpu_inc(x)
- 
--The above results in the following single instruction (no lock prefix!)
-+The above results in the following single instruction (no lock prefix!)::
- 
- 	inc gs:[x]
- 
- instead of the following operations required if there is no segment
--register:
-+register::
- 
- 	int *y;
- 	int cpu;
-@@ -121,8 +125,10 @@ has to be paid for this optimization is the need to add up the per cpu
- counters when the value of a counter is needed.
- 
- 
--Special operations:
---------------------
-+Special operations
-+------------------
++=====================
++VFIO Mediated devices
++=====================
 +
++:Copyright: |copy| 2016, NVIDIA CORPORATION. All rights reserved.
++:Author: Neo Jia <cjia@nvidia.com>
++:Author: Kirti Wankhede <kwankhede@nvidia.com>
++
++This program is free software; you can redistribute it and/or modify
++it under the terms of the GNU General Public License version 2 as
++published by the Free Software Foundation.
++
+ 
+ Virtual Function I/O (VFIO) Mediated devices[1]
+ ===============================================
+@@ -42,7 +45,7 @@ removes it from a VFIO group.
+ 
+ The following high-level block diagram shows the main components and interfaces
+ in the VFIO mediated driver framework. The diagram shows NVIDIA, Intel, and IBM
+-devices as examples, as these devices are the first devices to use this module.
++devices as examples, as these devices are the first devices to use this module::
+ 
+      +---------------+
+      |               |
+@@ -91,7 +94,7 @@ Registration Interface for a Mediated Bus Driver
+ ------------------------------------------------
+ 
+ The registration interface for a mediated bus driver provides the following
+-structure to represent a mediated device's driver:
++structure to represent a mediated device's driver::
+ 
+      /*
+       * struct mdev_driver [2] - Mediated device's driver
+@@ -110,14 +113,14 @@ structure to represent a mediated device's driver:
+ A mediated bus driver for mdev should use this structure in the function calls
+ to register and unregister itself with the core driver:
+ 
+-* Register:
++* Register::
+ 
+-  extern int  mdev_register_driver(struct mdev_driver *drv,
++    extern int  mdev_register_driver(struct mdev_driver *drv,
+ 				   struct module *owner);
+ 
+-* Unregister:
++* Unregister::
+ 
+-  extern void mdev_unregister_driver(struct mdev_driver *drv);
++    extern void mdev_unregister_driver(struct mdev_driver *drv);
+ 
+ The mediated bus driver is responsible for adding mediated devices to the VFIO
+ group when devices are bound to the driver and removing mediated devices from
+@@ -152,15 +155,15 @@ The callbacks in the mdev_parent_ops structure are as follows:
+ * mmap: mmap emulation callback
+ 
+ A driver should use the mdev_parent_ops structure in the function call to
+-register itself with the mdev core driver:
++register itself with the mdev core driver::
+ 
+-extern int  mdev_register_device(struct device *dev,
+-                                 const struct mdev_parent_ops *ops);
++	extern int  mdev_register_device(struct device *dev,
++	                                 const struct mdev_parent_ops *ops);
+ 
+ However, the mdev_parent_ops structure is not required in the function call
+-that a driver should use to unregister itself with the mdev core driver:
++that a driver should use to unregister itself with the mdev core driver::
+ 
+-extern void mdev_unregister_device(struct device *dev);
++	extern void mdev_unregister_device(struct device *dev);
+ 
+ 
+ Mediated Device Management Interface Through sysfs
+@@ -183,30 +186,32 @@ with the mdev core driver.
+ Directories and files under the sysfs for Each Physical Device
+ --------------------------------------------------------------
+ 
+-|- [parent physical device]
+-|--- Vendor-specific-attributes [optional]
+-|--- [mdev_supported_types]
+-|     |--- [<type-id>]
+-|     |   |--- create
+-|     |   |--- name
+-|     |   |--- available_instances
+-|     |   |--- device_api
+-|     |   |--- description
+-|     |   |--- [devices]
+-|     |--- [<type-id>]
+-|     |   |--- create
+-|     |   |--- name
+-|     |   |--- available_instances
+-|     |   |--- device_api
+-|     |   |--- description
+-|     |   |--- [devices]
+-|     |--- [<type-id>]
+-|          |--- create
+-|          |--- name
+-|          |--- available_instances
+-|          |--- device_api
+-|          |--- description
+-|          |--- [devices]
 +::
++
++  |- [parent physical device]
++  |--- Vendor-specific-attributes [optional]
++  |--- [mdev_supported_types]
++  |     |--- [<type-id>]
++  |     |   |--- create
++  |     |   |--- name
++  |     |   |--- available_instances
++  |     |   |--- device_api
++  |     |   |--- description
++  |     |   |--- [devices]
++  |     |--- [<type-id>]
++  |     |   |--- create
++  |     |   |--- name
++  |     |   |--- available_instances
++  |     |   |--- device_api
++  |     |   |--- description
++  |     |   |--- [devices]
++  |     |--- [<type-id>]
++  |          |--- create
++  |          |--- name
++  |          |--- available_instances
++  |          |--- device_api
++  |          |--- description
++  |          |--- [devices]
  
- 	y = this_cpu_ptr(&x)
+ * [mdev_supported_types]
  
-@@ -153,11 +159,15 @@ Therefore the use of x or &x outside of the context of per cpu
- operations is invalid and will generally be treated like a NULL
- pointer dereference.
+@@ -219,12 +224,12 @@ Directories and files under the sysfs for Each Physical Device
  
+   The [<type-id>] name is created by adding the device driver string as a prefix
+   to the string provided by the vendor driver. This format of this name is as
+-  follows:
++  follows::
+ 
+ 	sprintf(buf, "%s-%s", dev_driver_string(parent->dev), group->name);
+ 
+   (or using mdev_parent_dev(mdev) to arrive at the parent device outside
+-   of the core mdev code)
++  of the core mdev code)
+ 
+ * device_api
+ 
+@@ -239,7 +244,7 @@ Directories and files under the sysfs for Each Physical Device
+ * [device]
+ 
+   This directory contains links to the devices of type <type-id> that have been
+-created.
++  created.
+ 
+ * name
+ 
+@@ -253,21 +258,25 @@ created.
+ Directories and Files Under the sysfs for Each mdev Device
+ ----------------------------------------------------------
+ 
+-|- [parent phy device]
+-|--- [$MDEV_UUID]
 +::
 +
- 	DEFINE_PER_CPU(int, x);
++  |- [parent phy device]
++  |--- [$MDEV_UUID]
+          |--- remove
+          |--- mdev_type {link to its type}
+          |--- vendor-specific-attributes [optional]
  
- In the context of per cpu operations the above implies that x is a per
- cpu variable. Most this_cpu operations take a cpu variable.
- 
-+::
+ * remove (write only)
 +
- 	int __percpu *p = &x;
+ Writing '1' to the 'remove' file destroys the mdev device. The vendor driver can
+ fail the remove() callback if that device is active and the vendor driver
+ doesn't support hot unplug.
  
- &x and hence p is the *offset* of a per cpu variable. this_cpu_ptr()
-@@ -168,7 +178,7 @@ strange.
- Operations on a field of a per cpu structure
- --------------------------------------------
+-Example:
++Example::
++
+ 	# echo 1 > /sys/bus/mdev/devices/$mdev_UUID/remove
  
--Let's say we have a percpu structure
-+Let's say we have a percpu structure::
+-Mediated device Hot plug:
++Mediated device Hot plug
+ ------------------------
  
- 	struct s {
- 		int n,m;
-@@ -177,14 +187,14 @@ Let's say we have a percpu structure
- 	DEFINE_PER_CPU(struct s, p);
+ Mediated devices can be created and assigned at runtime. The procedure to hot
+@@ -277,13 +286,13 @@ Translation APIs for Mediated Devices
+ =====================================
+ 
+ The following APIs are provided for translating user pfn to host pfn in a VFIO
+-driver:
++driver::
+ 
+-extern int vfio_pin_pages(struct device *dev, unsigned long *user_pfn,
+-                          int npage, int prot, unsigned long *phys_pfn);
++	extern int vfio_pin_pages(struct device *dev, unsigned long *user_pfn,
++				  int npage, int prot, unsigned long *phys_pfn);
+ 
+-extern int vfio_unpin_pages(struct device *dev, unsigned long *user_pfn,
+-                            int npage);
++	extern int vfio_unpin_pages(struct device *dev, unsigned long *user_pfn,
++				    int npage);
+ 
+ These functions call back into the back-end IOMMU module by using the pin_pages
+ and unpin_pages callbacks of the struct vfio_iommu_driver_ops[4]. Currently
+@@ -304,81 +313,80 @@ card.
+ 
+    This step creates a dummy device, /sys/devices/virtual/mtty/mtty/
+ 
+-   Files in this device directory in sysfs are similar to the following:
++   Files in this device directory in sysfs are similar to the following::
+ 
+-   # tree /sys/devices/virtual/mtty/mtty/
+-      /sys/devices/virtual/mtty/mtty/
+-      |-- mdev_supported_types
+-      |   |-- mtty-1
+-      |   |   |-- available_instances
+-      |   |   |-- create
+-      |   |   |-- device_api
+-      |   |   |-- devices
+-      |   |   `-- name
+-      |   `-- mtty-2
+-      |       |-- available_instances
+-      |       |-- create
+-      |       |-- device_api
+-      |       |-- devices
+-      |       `-- name
+-      |-- mtty_dev
+-      |   `-- sample_mtty_dev
+-      |-- power
+-      |   |-- autosuspend_delay_ms
+-      |   |-- control
+-      |   |-- runtime_active_time
+-      |   |-- runtime_status
+-      |   `-- runtime_suspended_time
+-      |-- subsystem -> ../../../../class/mtty
+-      `-- uevent
++     # tree /sys/devices/virtual/mtty/mtty/
++        /sys/devices/virtual/mtty/mtty/
++        |-- mdev_supported_types
++        |   |-- mtty-1
++        |   |   |-- available_instances
++        |   |   |-- create
++        |   |   |-- device_api
++        |   |   |-- devices
++        |   |   `-- name
++        |   `-- mtty-2
++        |       |-- available_instances
++        |       |-- create
++        |       |-- device_api
++        |       |-- devices
++        |       `-- name
++        |-- mtty_dev
++        |   `-- sample_mtty_dev
++        |-- power
++        |   |-- autosuspend_delay_ms
++        |   |-- control
++        |   |-- runtime_active_time
++        |   |-- runtime_status
++        |   `-- runtime_suspended_time
++        |-- subsystem -> ../../../../class/mtty
++        `-- uevent
+ 
+ 2. Create a mediated device by using the dummy device that you created in the
+-   previous step.
++   previous step::
+ 
+-   # echo "83b8f4f2-509f-382f-3c1e-e6bfe0fa1001" >	\
++     # echo "83b8f4f2-509f-382f-3c1e-e6bfe0fa1001" >	\
+               /sys/devices/virtual/mtty/mtty/mdev_supported_types/mtty-2/create
+ 
+-3. Add parameters to qemu-kvm.
++3. Add parameters to qemu-kvm::
+ 
+-   -device vfio-pci,\
+-    sysfsdev=/sys/bus/mdev/devices/83b8f4f2-509f-382f-3c1e-e6bfe0fa1001
++     -device vfio-pci,\
++      sysfsdev=/sys/bus/mdev/devices/83b8f4f2-509f-382f-3c1e-e6bfe0fa1001
+ 
+ 4. Boot the VM.
+ 
+    In the Linux guest VM, with no hardware on the host, the device appears
+-   as  follows:
++   as  follows::
+ 
+-   # lspci -s 00:05.0 -xxvv
+-   00:05.0 Serial controller: Device 4348:3253 (rev 10) (prog-if 02 [16550])
+-           Subsystem: Device 4348:3253
+-           Physical Slot: 5
+-           Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr-
+-   Stepping- SERR- FastB2B- DisINTx-
+-           Status: Cap- 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+-   <TAbort- <MAbort- >SERR- <PERR- INTx-
+-           Interrupt: pin A routed to IRQ 10
+-           Region 0: I/O ports at c150 [size=8]
+-           Region 1: I/O ports at c158 [size=8]
+-           Kernel driver in use: serial
+-   00: 48 43 53 32 01 00 00 02 10 02 00 07 00 00 00 00
+-   10: 51 c1 00 00 59 c1 00 00 00 00 00 00 00 00 00 00
+-   20: 00 00 00 00 00 00 00 00 00 00 00 00 48 43 53 32
+-   30: 00 00 00 00 00 00 00 00 00 00 00 00 0a 01 00 00
++     # lspci -s 00:05.0 -xxvv
++     00:05.0 Serial controller: Device 4348:3253 (rev 10) (prog-if 02 [16550])
++             Subsystem: Device 4348:3253
++             Physical Slot: 5
++             Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr-
++     Stepping- SERR- FastB2B- DisINTx-
++             Status: Cap- 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
++     <TAbort- <MAbort- >SERR- <PERR- INTx-
++             Interrupt: pin A routed to IRQ 10
++             Region 0: I/O ports at c150 [size=8]
++             Region 1: I/O ports at c158 [size=8]
++             Kernel driver in use: serial
++     00: 48 43 53 32 01 00 00 02 10 02 00 07 00 00 00 00
++     10: 51 c1 00 00 59 c1 00 00 00 00 00 00 00 00 00 00
++     20: 00 00 00 00 00 00 00 00 00 00 00 00 48 43 53 32
++     30: 00 00 00 00 00 00 00 00 00 00 00 00 0a 01 00 00
+ 
+-   In the Linux guest VM, dmesg output for the device is as follows:
++     In the Linux guest VM, dmesg output for the device is as follows:
+ 
+-   serial 0000:00:05.0: PCI INT A -> Link[LNKA] -> GSI 10 (level, high) -> IRQ
+-10
+-   0000:00:05.0: ttyS1 at I/O 0xc150 (irq = 10) is a 16550A
+-   0000:00:05.0: ttyS2 at I/O 0xc158 (irq = 10) is a 16550A
++     serial 0000:00:05.0: PCI INT A -> Link[LNKA] -> GSI 10 (level, high) -> IRQ 10
++     0000:00:05.0: ttyS1 at I/O 0xc150 (irq = 10) is a 16550A
++     0000:00:05.0: ttyS2 at I/O 0xc158 (irq = 10) is a 16550A
  
  
--Operations on these fields are straightforward
-+Operations on these fields are straightforward::
+-5. In the Linux guest VM, check the serial ports.
++5. In the Linux guest VM, check the serial ports::
  
- 	this_cpu_inc(p.m)
+-   # setserial -g /dev/ttyS*
+-   /dev/ttyS0, UART: 16550A, Port: 0x03f8, IRQ: 4
+-   /dev/ttyS1, UART: 16550A, Port: 0xc150, IRQ: 10
+-   /dev/ttyS2, UART: 16550A, Port: 0xc158, IRQ: 10
++     # setserial -g /dev/ttyS*
++     /dev/ttyS0, UART: 16550A, Port: 0x03f8, IRQ: 4
++     /dev/ttyS1, UART: 16550A, Port: 0xc150, IRQ: 10
++     /dev/ttyS2, UART: 16550A, Port: 0xc158, IRQ: 10
  
- 	z = this_cpu_cmpxchg(p.m, 0, 1);
+ 6. Using minicom or any terminal emulation program, open port /dev/ttyS1 or
+    /dev/ttyS2 with hardware flow control disabled.
+@@ -388,14 +396,14 @@ card.
  
+    Data is loop backed from hosts mtty driver.
  
--If we have an offset to struct s:
-+If we have an offset to struct s::
+-8. Destroy the mediated device that you created.
++8. Destroy the mediated device that you created::
  
- 	struct s __percpu *ps = &p;
+-   # echo 1 > /sys/bus/mdev/devices/83b8f4f2-509f-382f-3c1e-e6bfe0fa1001/remove
++     # echo 1 > /sys/bus/mdev/devices/83b8f4f2-509f-382f-3c1e-e6bfe0fa1001/remove
  
-@@ -194,7 +204,7 @@ If we have an offset to struct s:
+ References
+ ==========
  
- 
- The calculation of the pointer may require the use of this_cpu_ptr()
--if we do not make use of this_cpu ops later to manipulate fields:
-+if we do not make use of this_cpu ops later to manipulate fields::
- 
- 	struct s *pp;
- 
-@@ -206,7 +216,7 @@ if we do not make use of this_cpu ops later to manipulate fields:
- 
- 
- Variants of this_cpu ops
---------------------------
-+------------------------
- 
- this_cpu ops are interrupt safe. Some architectures do not support
- these per cpu local operations. In that case the operation must be
-@@ -222,7 +232,7 @@ preemption. If a per cpu variable is not used in an interrupt context
- and the scheduler cannot preempt, then they are safe. If any interrupts
- still occur while an operation is in progress and if the interrupt too
- modifies the variable, then RMW actions can not be guaranteed to be
--safe.
-+safe::
- 
- 	__this_cpu_read(pcp)
- 	__this_cpu_write(pcp, val)
-@@ -279,7 +289,7 @@ unless absolutely necessary. Please consider using an IPI to wake up
- the remote CPU and perform the update to its per cpu area.
- 
- To access per-cpu data structure remotely, typically the per_cpu_ptr()
--function is used:
-+function is used::
- 
- 
- 	DEFINE_PER_CPU(struct data, datap);
-@@ -289,7 +299,7 @@ function is used:
- This makes it explicit that we are getting ready to access a percpu
- area remotely.
- 
--You can also do the following to convert the datap offset to an address
-+You can also do the following to convert the datap offset to an address::
- 
- 	struct data *p = this_cpu_ptr(&datap);
- 
-@@ -305,7 +315,7 @@ the following scenario that occurs because two per cpu variables
- share a cache-line but the relaxed synchronization is applied to
- only one process updating the cache-line.
- 
--Consider the following example
-+Consider the following example::
- 
- 
- 	struct test {
-@@ -327,6 +337,3 @@ mind that a remote write will evict the cache line from the processor
- that most likely will access it. If the processor wakes up and finds a
- missing local cache line of a per cpu area, its performance and hence
- the wake up times will be affected.
--
--Christoph Lameter, August 4th, 2014
--Pranith Kumar, Aug 2nd, 2014
+-[1] See Documentation/vfio.txt for more information on VFIO.
+-[2] struct mdev_driver in include/linux/mdev.h
+-[3] struct mdev_parent_ops in include/linux/mdev.h
+-[4] struct vfio_iommu_driver_ops in include/linux/vfio.h
++1. See Documentation/vfio.txt for more information on VFIO.
++2. struct mdev_driver in include/linux/mdev.h
++3. struct mdev_parent_ops in include/linux/mdev.h
++4. struct vfio_iommu_driver_ops in include/linux/vfio.h
 -- 
 2.9.4
