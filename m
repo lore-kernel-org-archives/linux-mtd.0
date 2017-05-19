@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by merlin.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWh3-0005sr-0Q
- for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:27:01 +0000
+ id 1dBWgh-0005rU-F7
+ for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:26:41 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -12,12 +12,10 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Darren Hart <dvhart@infradead.org>
-Subject: [PATCH 10/29] robust-futexes.txt: standardize document format
-Date: Thu, 18 May 2017 22:25:54 -0300
-Message-Id: <8c952717d193d4084221fd4b6522a77d49aec40b.1495157082.git.mchehab@s-opensource.com>
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH 02/29] pnp.txt: standardize document format
+Date: Thu, 18 May 2017 22:25:46 -0300
+Message-Id: <a474ec96880a2e15794f715a928425f30a70ccd6.1495157082.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495157082.git.mchehab@s-opensource.com>
 References: <cover.1495157082.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495157082.git.mchehab@s-opensource.com>
@@ -38,54 +36,462 @@ format. Some doesn't even have titles!
 Change its representation to follow the adopted standard,
 using ReST markups for it to be parseable by Sphinx:
 
-- add a title for the document;
+- Use a markup for document title;
+- use :Author: and :Last updated: for authorship;
+- adjust whitespaces where needed;
 - mark literal blocks;
+- fix a few subtitle markups.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/robust-futexes.txt | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ Documentation/pnp.txt | 343 ++++++++++++++++++++++++++++----------------------
+ 1 file changed, 192 insertions(+), 151 deletions(-)
 
-diff --git a/Documentation/robust-futexes.txt b/Documentation/robust-futexes.txt
-index 61c22d608759..6c42c75103eb 100644
---- a/Documentation/robust-futexes.txt
-+++ b/Documentation/robust-futexes.txt
-@@ -1,4 +1,8 @@
--Started by: Ingo Molnar <mingo@redhat.com>
-+========================================
-+A description of what robust futexes are
-+========================================
+diff --git a/Documentation/pnp.txt b/Documentation/pnp.txt
+index 763e4659bf18..bab2d10631f0 100644
+--- a/Documentation/pnp.txt
++++ b/Documentation/pnp.txt
+@@ -1,98 +1,118 @@
++=================================
+ Linux Plug and Play Documentation
+-by Adam Belay <ambx1@neo.rr.com>
+-last updated: Oct. 16, 2002
+----------------------------------------------------------------------------------------
++=================================
+ 
++:Author: Adam Belay <ambx1@neo.rr.com>
++:Last updated: Oct. 16, 2002
+ 
+ 
+ Overview
+ --------
+-	Plug and Play provides a means of detecting and setting resources for legacy or
 +
-+:Started by: Ingo Molnar <mingo@redhat.com>
++Plug and Play provides a means of detecting and setting resources for legacy or
+ otherwise unconfigurable devices.  The Linux Plug and Play Layer provides these 
+ services to compatible drivers.
  
- Background
- ----------
-@@ -163,7 +167,7 @@ Implementation details
- ----------------------
  
- The patch adds two new syscalls: one to register the userspace list, and
--one to query the registered list pointer:
-+one to query the registered list pointer::
+-
+ The User Interface
+ ------------------
+-	The Linux Plug and Play user interface provides a means to activate PnP devices
++
++The Linux Plug and Play user interface provides a means to activate PnP devices
+ for legacy and user level drivers that do not support Linux Plug and Play.  The 
+ user interface is integrated into sysfs.
  
-  asmlinkage long
-  sys_set_robust_list(struct robust_list_head __user *head,
-@@ -185,7 +189,7 @@ straightforward. The kernel doesn't have any internal distinction between
- robust and normal futexes.
+ In addition to the standard sysfs file the following are created in each
+ device's directory:
+-id - displays a list of support EISA IDs
+-options - displays possible resource configurations
+-resources - displays currently allocated resources and allows resource changes
++- id - displays a list of support EISA IDs
++- options - displays possible resource configurations
++- resources - displays currently allocated resources and allows resource changes
  
- If a futex is found to be held at exit time, the kernel sets the
--following bit of the futex word:
-+following bit of the futex word::
+--activating a device
++activating a device
++^^^^^^^^^^^^^^^^^^^
  
- 	#define FUTEX_OWNER_DIED        0x40000000
+-#echo "auto" > resources
++::
++
++	# echo "auto" > resources
  
-@@ -193,7 +197,7 @@ and wakes up the next futex waiter (if any). User-space does the rest of
- the cleanup.
+ this will invoke the automatic resource config system to activate the device
  
- Otherwise, robust futexes are acquired by glibc by putting the TID into
--the futex field atomically. Waiters set the FUTEX_WAITERS bit:
-+the futex field atomically. Waiters set the FUTEX_WAITERS bit::
+--manually activating a device
++manually activating a device
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^
  
- 	#define FUTEX_WAITERS           0x80000000
+-#echo "manual <depnum> <mode>" > resources
+-<depnum> - the configuration number
+-<mode> - static or dynamic
+-		static = for next boot
+-		dynamic = now
++::
+ 
+--disabling a device
++	# echo "manual <depnum> <mode>" > resources
+ 
+-#echo "disable" > resources
++	<depnum> - the configuration number
++	<mode> - static or dynamic
++		 static = for next boot
++		 dynamic = now
++
++disabling a device
++^^^^^^^^^^^^^^^^^^
++
++::
++
++	# echo "disable" > resources
+ 
+ 
+ EXAMPLE:
+ 
+ Suppose you need to activate the floppy disk controller.
+-1.) change to the proper directory, in my case it is 
+-/driver/bus/pnp/devices/00:0f
+-# cd /driver/bus/pnp/devices/00:0f
+-# cat name
+-PC standard floppy disk controller
+-
+-2.) check if the device is already active
+-# cat resources
+-DISABLED
+-
+-- Notice the string "DISABLED".  This means the device is not active.
+-
+-3.) check the device's possible configurations (optional)
+-# cat options
+-Dependent: 01 - Priority acceptable
+-    port 0x3f0-0x3f0, align 0x7, size 0x6, 16-bit address decoding
+-    port 0x3f7-0x3f7, align 0x0, size 0x1, 16-bit address decoding
+-    irq 6
+-    dma 2 8-bit compatible
+-Dependent: 02 - Priority acceptable
+-    port 0x370-0x370, align 0x7, size 0x6, 16-bit address decoding
+-    port 0x377-0x377, align 0x0, size 0x1, 16-bit address decoding
+-    irq 6
+-    dma 2 8-bit compatible
+-
+-4.) now activate the device
+-# echo "auto" > resources
+-
+-5.) finally check if the device is active
+-# cat resources
+-io 0x3f0-0x3f5
+-io 0x3f7-0x3f7
+-irq 6
+-dma 2
+-
+-also there are a series of kernel parameters:
+-pnp_reserve_irq=irq1[,irq2] ....
+-pnp_reserve_dma=dma1[,dma2] ....
+-pnp_reserve_io=io1,size1[,io2,size2] ....
+-pnp_reserve_mem=mem1,size1[,mem2,size2] ....
++
++1. change to the proper directory, in my case it is
++   /driver/bus/pnp/devices/00:0f::
++
++	# cd /driver/bus/pnp/devices/00:0f
++	# cat name
++	PC standard floppy disk controller
++
++2. check if the device is already active::
++
++	# cat resources
++	DISABLED
++
++  - Notice the string "DISABLED".  This means the device is not active.
++
++3. check the device's possible configurations (optional)::
++
++	# cat options
++	Dependent: 01 - Priority acceptable
++	    port 0x3f0-0x3f0, align 0x7, size 0x6, 16-bit address decoding
++	    port 0x3f7-0x3f7, align 0x0, size 0x1, 16-bit address decoding
++	    irq 6
++	    dma 2 8-bit compatible
++	Dependent: 02 - Priority acceptable
++	    port 0x370-0x370, align 0x7, size 0x6, 16-bit address decoding
++	    port 0x377-0x377, align 0x0, size 0x1, 16-bit address decoding
++	    irq 6
++	    dma 2 8-bit compatible
++
++4. now activate the device::
++
++	# echo "auto" > resources
++
++5. finally check if the device is active::
++
++	# cat resources
++	io 0x3f0-0x3f5
++	io 0x3f7-0x3f7
++	irq 6
++	dma 2
++
++also there are a series of kernel parameters::
++
++	pnp_reserve_irq=irq1[,irq2] ....
++	pnp_reserve_dma=dma1[,dma2] ....
++	pnp_reserve_io=io1,size1[,io2,size2] ....
++	pnp_reserve_mem=mem1,size1[,mem2,size2] ....
+ 
+ 
+ 
+ The Unified Plug and Play Layer
+ -------------------------------
+-	All Plug and Play drivers, protocols, and services meet at a central location 
++
++All Plug and Play drivers, protocols, and services meet at a central location
+ called the Plug and Play Layer.  This layer is responsible for the exchange of 
+ information between PnP drivers and PnP protocols.  Thus it automatically 
+ forwards commands to the proper protocol.  This makes writing PnP drivers 
+@@ -101,64 +121,73 @@ significantly easier.
+ The following functions are available from the Plug and Play Layer:
+ 
+ pnp_get_protocol
+-- increments the number of uses by one
++  increments the number of uses by one
+ 
+ pnp_put_protocol
+-- deincrements the number of uses by one
++  deincrements the number of uses by one
+ 
+ pnp_register_protocol
+-- use this to register a new PnP protocol
++  use this to register a new PnP protocol
+ 
+ pnp_unregister_protocol
+-- use this function to remove a PnP protocol from the Plug and Play Layer
++  use this function to remove a PnP protocol from the Plug and Play Layer
+ 
+ pnp_register_driver
+-- adds a PnP driver to the Plug and Play Layer
+-- this includes driver model integration
+-- returns zero for success or a negative error number for failure; count
++  adds a PnP driver to the Plug and Play Layer
++
++  this includes driver model integration
++  returns zero for success or a negative error number for failure; count
+   calls to the .add() method if you need to know how many devices bind to
+   the driver
+ 
+ pnp_unregister_driver
+-- removes a PnP driver from the Plug and Play Layer
++  removes a PnP driver from the Plug and Play Layer
+ 
+ 
+ 
+ Plug and Play Protocols
+ -----------------------
+-	This section contains information for PnP protocol developers.
++
++This section contains information for PnP protocol developers.
+ 
+ The following Protocols are currently available in the computing world:
+-- PNPBIOS: used for system devices such as serial and parallel ports.
+-- ISAPNP: provides PnP support for the ISA bus
+-- ACPI: among its many uses, ACPI provides information about system level 
+-devices.
++
++- PNPBIOS:
++    used for system devices such as serial and parallel ports.
++- ISAPNP:
++    provides PnP support for the ISA bus
++- ACPI:
++    among its many uses, ACPI provides information about system level
++    devices.
++
+ It is meant to replace the PNPBIOS.  It is not currently supported by Linux
+ Plug and Play but it is planned to be in the near future.
+ 
+ 
+ Requirements for a Linux PnP protocol:
+-1.) the protocol must use EISA IDs
+-2.) the protocol must inform the PnP Layer of a device's current configuration
++1. the protocol must use EISA IDs
++2. the protocol must inform the PnP Layer of a device's current configuration
++
+ - the ability to set resources is optional but preferred.
+ 
+ The following are PnP protocol related functions:
+ 
+ pnp_add_device
+-- use this function to add a PnP device to the PnP layer
+-- only call this function when all wanted values are set in the pnp_dev 
+-structure
++  use this function to add a PnP device to the PnP layer
++
++  only call this function when all wanted values are set in the pnp_dev
++  structure
+ 
+ pnp_init_device
+-- call this to initialize the PnP structure
++  call this to initialize the PnP structure
+ 
+ pnp_remove_device
+-- call this to remove a device from the Plug and Play Layer.
+-- it will fail if the device is still in use.
+-- automatically will free mem used by the device and related structures
++  call this to remove a device from the Plug and Play Layer.
++  it will fail if the device is still in use.
++  automatically will free mem used by the device and related structures
+ 
+ pnp_add_id
+-- adds an EISA ID to the list of supported IDs for the specified device
++  adds an EISA ID to the list of supported IDs for the specified device
+ 
+ For more information consult the source of a protocol such as
+ /drivers/pnp/pnpbios/core.c.
+@@ -167,85 +196,97 @@ For more information consult the source of a protocol such as
+ 
+ Linux Plug and Play Drivers
+ ---------------------------
+-	This section contains information for Linux PnP driver developers.
++
++This section contains information for Linux PnP driver developers.
+ 
+ The New Way
+-...........
+-1.) first make a list of supported EISA IDS
+-ex:
+-static const struct pnp_id pnp_dev_table[] = {
+-	/* Standard LPT Printer Port */
+-	{.id = "PNP0400", .driver_data = 0},
+-	/* ECP Printer Port */
+-	{.id = "PNP0401", .driver_data = 0},
+-	{.id = ""}
+-};
+-
+-Please note that the character 'X' can be used as a wild card in the function
+-portion (last four characters).
+-ex:
++^^^^^^^^^^^
++
++1. first make a list of supported EISA IDS
++
++   ex::
++
++	static const struct pnp_id pnp_dev_table[] = {
++		/* Standard LPT Printer Port */
++		{.id = "PNP0400", .driver_data = 0},
++		/* ECP Printer Port */
++		{.id = "PNP0401", .driver_data = 0},
++		{.id = ""}
++	};
++
++   Please note that the character 'X' can be used as a wild card in the function
++   portion (last four characters).
++
++   ex::
++
+ 	/* Unknown PnP modems */
+ 	{	"PNPCXXX",		UNKNOWN_DEV	},
+ 
+-Supported PnP card IDs can optionally be defined.
+-ex:
+-static const struct pnp_id pnp_card_table[] = {
+-	{	"ANYDEVS",		0	},
+-	{	"",			0	}
+-};
+-
+-2.) Optionally define probe and remove functions.  It may make sense not to 
+-define these functions if the driver already has a reliable method of detecting
+-the resources, such as the parport_pc driver.
+-ex:
+-static int
+-serial_pnp_probe(struct pnp_dev * dev, const struct pnp_id *card_id, const 
+-                 struct pnp_id *dev_id)
+-{
+-. . .
+-
+-ex:
+-static void serial_pnp_remove(struct pnp_dev * dev)
+-{
+-. . .
+-
+-consult /drivers/serial/8250_pnp.c for more information.
+-
+-3.) create a driver structure
+-ex:
+-
+-static struct pnp_driver serial_pnp_driver = {
+-	.name		= "serial",
+-	.card_id_table	= pnp_card_table,
+-	.id_table	= pnp_dev_table,
+-	.probe		= serial_pnp_probe,
+-	.remove		= serial_pnp_remove,
+-};
+-
+-* name and id_table cannot be NULL.
+-
+-4.) register the driver
+-ex:
+-
+-static int __init serial8250_pnp_init(void)
+-{
+-	return pnp_register_driver(&serial_pnp_driver);
+-}
++   Supported PnP card IDs can optionally be defined.
++   ex::
++
++	static const struct pnp_id pnp_card_table[] = {
++		{	"ANYDEVS",		0	},
++		{	"",			0	}
++	};
++
++2. Optionally define probe and remove functions.  It may make sense not to
++   define these functions if the driver already has a reliable method of detecting
++   the resources, such as the parport_pc driver.
++
++   ex::
++
++	static int
++	serial_pnp_probe(struct pnp_dev * dev, const struct pnp_id *card_id, const
++			struct pnp_id *dev_id)
++	{
++	. . .
++
++   ex::
++
++	static void serial_pnp_remove(struct pnp_dev * dev)
++	{
++	. . .
++
++   consult /drivers/serial/8250_pnp.c for more information.
++
++3. create a driver structure
++
++   ex::
++
++	static struct pnp_driver serial_pnp_driver = {
++		.name		= "serial",
++		.card_id_table	= pnp_card_table,
++		.id_table	= pnp_dev_table,
++		.probe		= serial_pnp_probe,
++		.remove		= serial_pnp_remove,
++	};
++
++   * name and id_table cannot be NULL.
++
++4. register the driver
++
++   ex::
++
++	static int __init serial8250_pnp_init(void)
++	{
++		return pnp_register_driver(&serial_pnp_driver);
++	}
+ 
+ The Old Way
+-...........
++^^^^^^^^^^^
+ 
+ A series of compatibility functions have been created to make it easy to convert
+ ISAPNP drivers.  They should serve as a temporary solution only.
+ 
+-They are as follows:
++They are as follows::
+ 
+-struct pnp_card *pnp_find_card(unsigned short vendor,
+-				 unsigned short device,
+-				 struct pnp_card *from)
++	struct pnp_card *pnp_find_card(unsigned short vendor,
++				       unsigned short device,
++				       struct pnp_card *from)
+ 
+-struct pnp_dev *pnp_find_dev(struct pnp_card *card,
+-				unsigned short vendor,
+-				unsigned short function,
+-				struct pnp_dev *from)
++	struct pnp_dev *pnp_find_dev(struct pnp_card *card,
++				     unsigned short vendor,
++				     unsigned short function,
++				     struct pnp_dev *from)
  
 -- 
 2.9.4
