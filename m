@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by merlin.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWgh-0005rU-F7
- for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:26:41 +0000
+ id 1dBWgh-0005rT-F8
+ for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:26:40 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -13,9 +13,9 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 02/29] pnp.txt: standardize document format
-Date: Thu, 18 May 2017 22:25:46 -0300
-Message-Id: <a474ec96880a2e15794f715a928425f30a70ccd6.1495157082.git.mchehab@s-opensource.com>
+Subject: [PATCH 06/29] rbtree.txt: standardize document format
+Date: Thu, 18 May 2017 22:25:50 -0300
+Message-Id: <49f34c0e7b2d9ca96330a9adc7647bfe839f6375.1495157082.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495157082.git.mchehab@s-opensource.com>
 References: <cover.1495157082.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495157082.git.mchehab@s-opensource.com>
@@ -36,462 +36,228 @@ format. Some doesn't even have titles!
 Change its representation to follow the adopted standard,
 using ReST markups for it to be parseable by Sphinx:
 
-- Use a markup for document title;
-- use :Author: and :Last updated: for authorship;
-- adjust whitespaces where needed;
+- Mark document title;
+- Use :Author: for authorship;
+- mark a sub-section title as such;
 - mark literal blocks;
-- fix a few subtitle markups.
+- adjust identation where needed.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/pnp.txt | 343 ++++++++++++++++++++++++++++----------------------
- 1 file changed, 192 insertions(+), 151 deletions(-)
+ Documentation/rbtree.txt | 88 +++++++++++++++++++++++++-----------------------
+ 1 file changed, 46 insertions(+), 42 deletions(-)
 
-diff --git a/Documentation/pnp.txt b/Documentation/pnp.txt
-index 763e4659bf18..bab2d10631f0 100644
---- a/Documentation/pnp.txt
-+++ b/Documentation/pnp.txt
-@@ -1,98 +1,118 @@
+diff --git a/Documentation/rbtree.txt b/Documentation/rbtree.txt
+index b9d9cc57be18..b8a8c70b0188 100644
+--- a/Documentation/rbtree.txt
++++ b/Documentation/rbtree.txt
+@@ -1,7 +1,10 @@
 +=================================
- Linux Plug and Play Documentation
--by Adam Belay <ambx1@neo.rr.com>
--last updated: Oct. 16, 2002
-----------------------------------------------------------------------------------------
+ Red-black Trees (rbtree) in Linux
+-January 18, 2007
+-Rob Landley <rob@landley.net>
+-=============================
 +=================================
- 
-+:Author: Adam Belay <ambx1@neo.rr.com>
-+:Last updated: Oct. 16, 2002
- 
- 
- Overview
- --------
--	Plug and Play provides a means of detecting and setting resources for legacy or
 +
-+Plug and Play provides a means of detecting and setting resources for legacy or
- otherwise unconfigurable devices.  The Linux Plug and Play Layer provides these 
- services to compatible drivers.
- 
- 
--
- The User Interface
- ------------------
--	The Linux Plug and Play user interface provides a means to activate PnP devices
 +
-+The Linux Plug and Play user interface provides a means to activate PnP devices
- for legacy and user level drivers that do not support Linux Plug and Play.  The 
- user interface is integrated into sysfs.
++:Date: January 18, 2007
++:Author: Rob Landley <rob@landley.net>
  
- In addition to the standard sysfs file the following are created in each
- device's directory:
--id - displays a list of support EISA IDs
--options - displays possible resource configurations
--resources - displays currently allocated resources and allows resource changes
-+- id - displays a list of support EISA IDs
-+- options - displays possible resource configurations
-+- resources - displays currently allocated resources and allows resource changes
+ What are red-black trees, and what are they for?
+ ------------------------------------------------
+@@ -56,7 +59,7 @@ user of the rbtree code.
+ Creating a new rbtree
+ ---------------------
  
---activating a device
-+activating a device
-+^^^^^^^^^^^^^^^^^^^
+-Data nodes in an rbtree tree are structures containing a struct rb_node member:
++Data nodes in an rbtree tree are structures containing a struct rb_node member::
  
--#echo "auto" > resources
-+::
-+
-+	# echo "auto" > resources
+   struct mytype {
+   	struct rb_node node;
+@@ -78,7 +81,7 @@ Searching for a value in an rbtree
+ Writing a search function for your tree is fairly straightforward: start at the
+ root, compare each value, and follow the left or right branch as necessary.
  
- this will invoke the automatic resource config system to activate the device
+-Example:
++Example::
  
---manually activating a device
-+manually activating a device
-+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   struct mytype *my_search(struct rb_root *root, char *string)
+   {
+@@ -110,7 +113,7 @@ The search for insertion differs from the previous search by finding the
+ location of the pointer on which to graft the new node.  The new node also
+ needs a link to its parent node for rebalancing purposes.
  
--#echo "manual <depnum> <mode>" > resources
--<depnum> - the configuration number
--<mode> - static or dynamic
--		static = for next boot
--		dynamic = now
-+::
+-Example:
++Example::
  
---disabling a device
-+	# echo "manual <depnum> <mode>" > resources
+   int my_insert(struct rb_root *root, struct mytype *data)
+   {
+@@ -140,11 +143,11 @@ Example:
+ Removing or replacing existing data in an rbtree
+ ------------------------------------------------
  
--#echo "disable" > resources
-+	<depnum> - the configuration number
-+	<mode> - static or dynamic
-+		 static = for next boot
-+		 dynamic = now
-+
-+disabling a device
-+^^^^^^^^^^^^^^^^^^
-+
-+::
-+
-+	# echo "disable" > resources
+-To remove an existing node from a tree, call:
++To remove an existing node from a tree, call::
  
+   void rb_erase(struct rb_node *victim, struct rb_root *tree);
  
- EXAMPLE:
+-Example:
++Example::
  
- Suppose you need to activate the floppy disk controller.
--1.) change to the proper directory, in my case it is 
--/driver/bus/pnp/devices/00:0f
--# cd /driver/bus/pnp/devices/00:0f
--# cat name
--PC standard floppy disk controller
--
--2.) check if the device is already active
--# cat resources
--DISABLED
--
--- Notice the string "DISABLED".  This means the device is not active.
--
--3.) check the device's possible configurations (optional)
--# cat options
--Dependent: 01 - Priority acceptable
--    port 0x3f0-0x3f0, align 0x7, size 0x6, 16-bit address decoding
--    port 0x3f7-0x3f7, align 0x0, size 0x1, 16-bit address decoding
--    irq 6
--    dma 2 8-bit compatible
--Dependent: 02 - Priority acceptable
--    port 0x370-0x370, align 0x7, size 0x6, 16-bit address decoding
--    port 0x377-0x377, align 0x0, size 0x1, 16-bit address decoding
--    irq 6
--    dma 2 8-bit compatible
--
--4.) now activate the device
--# echo "auto" > resources
--
--5.) finally check if the device is active
--# cat resources
--io 0x3f0-0x3f5
--io 0x3f7-0x3f7
--irq 6
--dma 2
--
--also there are a series of kernel parameters:
--pnp_reserve_irq=irq1[,irq2] ....
--pnp_reserve_dma=dma1[,dma2] ....
--pnp_reserve_io=io1,size1[,io2,size2] ....
--pnp_reserve_mem=mem1,size1[,mem2,size2] ....
-+
-+1. change to the proper directory, in my case it is
-+   /driver/bus/pnp/devices/00:0f::
-+
-+	# cd /driver/bus/pnp/devices/00:0f
-+	# cat name
-+	PC standard floppy disk controller
-+
-+2. check if the device is already active::
-+
-+	# cat resources
-+	DISABLED
-+
-+  - Notice the string "DISABLED".  This means the device is not active.
-+
-+3. check the device's possible configurations (optional)::
-+
-+	# cat options
-+	Dependent: 01 - Priority acceptable
-+	    port 0x3f0-0x3f0, align 0x7, size 0x6, 16-bit address decoding
-+	    port 0x3f7-0x3f7, align 0x0, size 0x1, 16-bit address decoding
-+	    irq 6
-+	    dma 2 8-bit compatible
-+	Dependent: 02 - Priority acceptable
-+	    port 0x370-0x370, align 0x7, size 0x6, 16-bit address decoding
-+	    port 0x377-0x377, align 0x0, size 0x1, 16-bit address decoding
-+	    irq 6
-+	    dma 2 8-bit compatible
-+
-+4. now activate the device::
-+
-+	# echo "auto" > resources
-+
-+5. finally check if the device is active::
-+
-+	# cat resources
-+	io 0x3f0-0x3f5
-+	io 0x3f7-0x3f7
-+	irq 6
-+	dma 2
-+
-+also there are a series of kernel parameters::
-+
-+	pnp_reserve_irq=irq1[,irq2] ....
-+	pnp_reserve_dma=dma1[,dma2] ....
-+	pnp_reserve_io=io1,size1[,io2,size2] ....
-+	pnp_reserve_mem=mem1,size1[,mem2,size2] ....
+   struct mytype *data = mysearch(&mytree, "walrus");
+ 
+@@ -153,7 +156,7 @@ Example:
+   	myfree(data);
+   }
+ 
+-To replace an existing node in a tree with a new one with the same key, call:
++To replace an existing node in a tree with a new one with the same key, call::
+ 
+   void rb_replace_node(struct rb_node *old, struct rb_node *new,
+   			struct rb_root *tree);
+@@ -166,7 +169,7 @@ Iterating through the elements stored in an rbtree (in sort order)
+ 
+ Four functions are provided for iterating through an rbtree's contents in
+ sorted order.  These work on arbitrary trees, and should not need to be
+-modified or wrapped (except for locking purposes):
++modified or wrapped (except for locking purposes)::
+ 
+   struct rb_node *rb_first(struct rb_root *tree);
+   struct rb_node *rb_last(struct rb_root *tree);
+@@ -184,7 +187,7 @@ which the containing data structure may be accessed with the container_of()
+ macro, and individual members may be accessed directly via
+ rb_entry(node, type, member).
+ 
+-Example:
++Example::
+ 
+   struct rb_node *node;
+   for (node = rb_first(&mytree); node; node = rb_next(node))
+@@ -241,7 +244,8 @@ user should have a single rb_erase_augmented() call site in order to limit
+ compiled code size.
  
  
+-Sample usage:
++Sample usage
++^^^^^^^^^^^^
  
- The Unified Plug and Play Layer
- -------------------------------
--	All Plug and Play drivers, protocols, and services meet at a central location 
-+
-+All Plug and Play drivers, protocols, and services meet at a central location
- called the Plug and Play Layer.  This layer is responsible for the exchange of 
- information between PnP drivers and PnP protocols.  Thus it automatically 
- forwards commands to the proper protocol.  This makes writing PnP drivers 
-@@ -101,64 +121,73 @@ significantly easier.
- The following functions are available from the Plug and Play Layer:
+ Interval tree is an example of augmented rb tree. Reference -
+ "Introduction to Algorithms" by Cormen, Leiserson, Rivest and Stein.
+@@ -259,12 +263,12 @@ This "extra information" stored in each node is the maximum hi
+ information can be maintained at each node just be looking at the node
+ and its immediate children. And this will be used in O(log n) lookup
+ for lowest match (lowest start address among all possible matches)
+-with something like:
++with something like::
  
- pnp_get_protocol
--- increments the number of uses by one
-+  increments the number of uses by one
- 
- pnp_put_protocol
--- deincrements the number of uses by one
-+  deincrements the number of uses by one
- 
- pnp_register_protocol
--- use this to register a new PnP protocol
-+  use this to register a new PnP protocol
- 
- pnp_unregister_protocol
--- use this function to remove a PnP protocol from the Plug and Play Layer
-+  use this function to remove a PnP protocol from the Plug and Play Layer
- 
- pnp_register_driver
--- adds a PnP driver to the Plug and Play Layer
--- this includes driver model integration
--- returns zero for success or a negative error number for failure; count
-+  adds a PnP driver to the Plug and Play Layer
-+
-+  this includes driver model integration
-+  returns zero for success or a negative error number for failure; count
-   calls to the .add() method if you need to know how many devices bind to
-   the driver
- 
- pnp_unregister_driver
--- removes a PnP driver from the Plug and Play Layer
-+  removes a PnP driver from the Plug and Play Layer
- 
- 
- 
- Plug and Play Protocols
- -----------------------
--	This section contains information for PnP protocol developers.
-+
-+This section contains information for PnP protocol developers.
- 
- The following Protocols are currently available in the computing world:
--- PNPBIOS: used for system devices such as serial and parallel ports.
--- ISAPNP: provides PnP support for the ISA bus
--- ACPI: among its many uses, ACPI provides information about system level 
--devices.
-+
-+- PNPBIOS:
-+    used for system devices such as serial and parallel ports.
-+- ISAPNP:
-+    provides PnP support for the ISA bus
-+- ACPI:
-+    among its many uses, ACPI provides information about system level
-+    devices.
-+
- It is meant to replace the PNPBIOS.  It is not currently supported by Linux
- Plug and Play but it is planned to be in the near future.
- 
- 
- Requirements for a Linux PnP protocol:
--1.) the protocol must use EISA IDs
--2.) the protocol must inform the PnP Layer of a device's current configuration
-+1. the protocol must use EISA IDs
-+2. the protocol must inform the PnP Layer of a device's current configuration
-+
- - the ability to set resources is optional but preferred.
- 
- The following are PnP protocol related functions:
- 
- pnp_add_device
--- use this function to add a PnP device to the PnP layer
--- only call this function when all wanted values are set in the pnp_dev 
--structure
-+  use this function to add a PnP device to the PnP layer
-+
-+  only call this function when all wanted values are set in the pnp_dev
-+  structure
- 
- pnp_init_device
--- call this to initialize the PnP structure
-+  call this to initialize the PnP structure
- 
- pnp_remove_device
--- call this to remove a device from the Plug and Play Layer.
--- it will fail if the device is still in use.
--- automatically will free mem used by the device and related structures
-+  call this to remove a device from the Plug and Play Layer.
-+  it will fail if the device is still in use.
-+  automatically will free mem used by the device and related structures
- 
- pnp_add_id
--- adds an EISA ID to the list of supported IDs for the specified device
-+  adds an EISA ID to the list of supported IDs for the specified device
- 
- For more information consult the source of a protocol such as
- /drivers/pnp/pnpbios/core.c.
-@@ -167,85 +196,97 @@ For more information consult the source of a protocol such as
- 
- Linux Plug and Play Drivers
- ---------------------------
--	This section contains information for Linux PnP driver developers.
-+
-+This section contains information for Linux PnP driver developers.
- 
- The New Way
--...........
--1.) first make a list of supported EISA IDS
--ex:
--static const struct pnp_id pnp_dev_table[] = {
--	/* Standard LPT Printer Port */
--	{.id = "PNP0400", .driver_data = 0},
--	/* ECP Printer Port */
--	{.id = "PNP0401", .driver_data = 0},
--	{.id = ""}
--};
--
--Please note that the character 'X' can be used as a wild card in the function
--portion (last four characters).
--ex:
-+^^^^^^^^^^^
-+
-+1. first make a list of supported EISA IDS
-+
-+   ex::
-+
-+	static const struct pnp_id pnp_dev_table[] = {
-+		/* Standard LPT Printer Port */
-+		{.id = "PNP0400", .driver_data = 0},
-+		/* ECP Printer Port */
-+		{.id = "PNP0401", .driver_data = 0},
-+		{.id = ""}
-+	};
-+
-+   Please note that the character 'X' can be used as a wild card in the function
-+   portion (last four characters).
-+
-+   ex::
-+
- 	/* Unknown PnP modems */
- 	{	"PNPCXXX",		UNKNOWN_DEV	},
- 
--Supported PnP card IDs can optionally be defined.
--ex:
--static const struct pnp_id pnp_card_table[] = {
--	{	"ANYDEVS",		0	},
--	{	"",			0	}
--};
--
--2.) Optionally define probe and remove functions.  It may make sense not to 
--define these functions if the driver already has a reliable method of detecting
--the resources, such as the parport_pc driver.
--ex:
--static int
--serial_pnp_probe(struct pnp_dev * dev, const struct pnp_id *card_id, const 
--                 struct pnp_id *dev_id)
+-struct interval_tree_node *
+-interval_tree_first_match(struct rb_root *root,
+-			  unsigned long start, unsigned long last)
 -{
--. . .
--
--ex:
--static void serial_pnp_remove(struct pnp_dev * dev)
--{
--. . .
--
--consult /drivers/serial/8250_pnp.c for more information.
--
--3.) create a driver structure
--ex:
--
--static struct pnp_driver serial_pnp_driver = {
--	.name		= "serial",
--	.card_id_table	= pnp_card_table,
--	.id_table	= pnp_dev_table,
--	.probe		= serial_pnp_probe,
--	.remove		= serial_pnp_remove,
--};
--
--* name and id_table cannot be NULL.
--
--4.) register the driver
--ex:
--
--static int __init serial8250_pnp_init(void)
--{
--	return pnp_register_driver(&serial_pnp_driver);
++  struct interval_tree_node *
++  interval_tree_first_match(struct rb_root *root,
++			    unsigned long start, unsigned long last)
++  {
+ 	struct interval_tree_node *node;
+ 
+ 	if (!root->rb_node)
+@@ -301,13 +305,13 @@ interval_tree_first_match(struct rb_root *root,
+ 		}
+ 		return NULL;	/* No match */
+ 	}
 -}
-+   Supported PnP card IDs can optionally be defined.
-+   ex::
-+
-+	static const struct pnp_id pnp_card_table[] = {
-+		{	"ANYDEVS",		0	},
-+		{	"",			0	}
-+	};
-+
-+2. Optionally define probe and remove functions.  It may make sense not to
-+   define these functions if the driver already has a reliable method of detecting
-+   the resources, such as the parport_pc driver.
-+
-+   ex::
-+
-+	static int
-+	serial_pnp_probe(struct pnp_dev * dev, const struct pnp_id *card_id, const
-+			struct pnp_id *dev_id)
-+	{
-+	. . .
-+
-+   ex::
-+
-+	static void serial_pnp_remove(struct pnp_dev * dev)
-+	{
-+	. . .
-+
-+   consult /drivers/serial/8250_pnp.c for more information.
-+
-+3. create a driver structure
-+
-+   ex::
-+
-+	static struct pnp_driver serial_pnp_driver = {
-+		.name		= "serial",
-+		.card_id_table	= pnp_card_table,
-+		.id_table	= pnp_dev_table,
-+		.probe		= serial_pnp_probe,
-+		.remove		= serial_pnp_remove,
-+	};
-+
-+   * name and id_table cannot be NULL.
-+
-+4. register the driver
-+
-+   ex::
-+
-+	static int __init serial8250_pnp_init(void)
-+	{
-+		return pnp_register_driver(&serial_pnp_driver);
-+	}
++  }
  
- The Old Way
--...........
-+^^^^^^^^^^^
+-Insertion/removal are defined using the following augmented callbacks:
++Insertion/removal are defined using the following augmented callbacks::
  
- A series of compatibility functions have been created to make it easy to convert
- ISAPNP drivers.  They should serve as a temporary solution only.
+-static inline unsigned long
+-compute_subtree_last(struct interval_tree_node *node)
+-{
++  static inline unsigned long
++  compute_subtree_last(struct interval_tree_node *node)
++  {
+ 	unsigned long max = node->last, subtree_last;
+ 	if (node->rb.rb_left) {
+ 		subtree_last = rb_entry(node->rb.rb_left,
+@@ -322,10 +326,10 @@ compute_subtree_last(struct interval_tree_node *node)
+ 			max = subtree_last;
+ 	}
+ 	return max;
+-}
++  }
  
--They are as follows:
-+They are as follows::
+-static void augment_propagate(struct rb_node *rb, struct rb_node *stop)
+-{
++  static void augment_propagate(struct rb_node *rb, struct rb_node *stop)
++  {
+ 	while (rb != stop) {
+ 		struct interval_tree_node *node =
+ 			rb_entry(rb, struct interval_tree_node, rb);
+@@ -335,20 +339,20 @@ static void augment_propagate(struct rb_node *rb, struct rb_node *stop)
+ 		node->__subtree_last = subtree_last;
+ 		rb = rb_parent(&node->rb);
+ 	}
+-}
++  }
  
--struct pnp_card *pnp_find_card(unsigned short vendor,
--				 unsigned short device,
--				 struct pnp_card *from)
-+	struct pnp_card *pnp_find_card(unsigned short vendor,
-+				       unsigned short device,
-+				       struct pnp_card *from)
+-static void augment_copy(struct rb_node *rb_old, struct rb_node *rb_new)
+-{
++  static void augment_copy(struct rb_node *rb_old, struct rb_node *rb_new)
++  {
+ 	struct interval_tree_node *old =
+ 		rb_entry(rb_old, struct interval_tree_node, rb);
+ 	struct interval_tree_node *new =
+ 		rb_entry(rb_new, struct interval_tree_node, rb);
  
--struct pnp_dev *pnp_find_dev(struct pnp_card *card,
--				unsigned short vendor,
--				unsigned short function,
--				struct pnp_dev *from)
-+	struct pnp_dev *pnp_find_dev(struct pnp_card *card,
-+				     unsigned short vendor,
-+				     unsigned short function,
-+				     struct pnp_dev *from)
+ 	new->__subtree_last = old->__subtree_last;
+-}
++  }
  
+-static void augment_rotate(struct rb_node *rb_old, struct rb_node *rb_new)
+-{
++  static void augment_rotate(struct rb_node *rb_old, struct rb_node *rb_new)
++  {
+ 	struct interval_tree_node *old =
+ 		rb_entry(rb_old, struct interval_tree_node, rb);
+ 	struct interval_tree_node *new =
+@@ -356,15 +360,15 @@ static void augment_rotate(struct rb_node *rb_old, struct rb_node *rb_new)
+ 
+ 	new->__subtree_last = old->__subtree_last;
+ 	old->__subtree_last = compute_subtree_last(old);
+-}
++  }
+ 
+-static const struct rb_augment_callbacks augment_callbacks = {
++  static const struct rb_augment_callbacks augment_callbacks = {
+ 	augment_propagate, augment_copy, augment_rotate
+-};
++  };
+ 
+-void interval_tree_insert(struct interval_tree_node *node,
+-			  struct rb_root *root)
+-{
++  void interval_tree_insert(struct interval_tree_node *node,
++			    struct rb_root *root)
++  {
+ 	struct rb_node **link = &root->rb_node, *rb_parent = NULL;
+ 	unsigned long start = node->start, last = node->last;
+ 	struct interval_tree_node *parent;
+@@ -383,10 +387,10 @@ void interval_tree_insert(struct interval_tree_node *node,
+ 	node->__subtree_last = last;
+ 	rb_link_node(&node->rb, rb_parent, link);
+ 	rb_insert_augmented(&node->rb, root, &augment_callbacks);
+-}
++  }
+ 
+-void interval_tree_remove(struct interval_tree_node *node,
+-			  struct rb_root *root)
+-{
++  void interval_tree_remove(struct interval_tree_node *node,
++			    struct rb_root *root)
++  {
+ 	rb_erase_augmented(&node->rb, root, &augment_callbacks);
+-}
++  }
 -- 
 2.9.4
