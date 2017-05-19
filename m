@@ -1,7 +1,7 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by merlin.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWh3-0005sr-Uc
+ id 1dBWh3-0005sl-0P
  for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:27:03 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
@@ -12,10 +12,11 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 13/29] SAK.txt: standardize document format
-Date: Thu, 18 May 2017 22:25:57 -0300
-Message-Id: <27d8707dc19fd02aac9808967d2b4f3f44efa87a.1495157082.git.mchehab@s-opensource.com>
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
+ Johannes Berg <johannes@sipsolutions.net>, linux-wireless@vger.kernel.org
+Subject: [PATCH 08/29] rfkill.txt: standardize document format
+Date: Thu, 18 May 2017 22:25:52 -0300
+Message-Id: <3361dce0e96427ed8fc375ab78371c0a6d0f55cc.1495157082.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495157082.git.mchehab@s-opensource.com>
 References: <cover.1495157082.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495157082.git.mchehab@s-opensource.com>
@@ -36,133 +37,117 @@ format. Some doesn't even have titles!
 Change its representation to follow the adopted standard,
 using ReST markups for it to be parseable by Sphinx:
 
-- mark document title;
-- use :Author: and :Date: for authorship;
-- adjust notation for literals and bold;
+- mark titles;
+- comment contents index;
 - mark literal blocks;
 - adjust identation.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/SAK.txt | 65 +++++++++++++++++++++++++++------------------------
- 1 file changed, 34 insertions(+), 31 deletions(-)
+ Documentation/rfkill.txt | 47 ++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 30 insertions(+), 17 deletions(-)
 
-diff --git a/Documentation/SAK.txt b/Documentation/SAK.txt
-index 74be14679ed8..260e1d3687bd 100644
---- a/Documentation/SAK.txt
-+++ b/Documentation/SAK.txt
-@@ -1,5 +1,9 @@
--Linux 2.4.2 Secure Attention Key (SAK) handling
--18 March 2001, Andrew Morton
-+=========================================
-+Linux Secure Attention Key (SAK) handling
-+=========================================
+diff --git a/Documentation/rfkill.txt b/Documentation/rfkill.txt
+index 8c174063b3f0..d22feccedbd1 100644
+--- a/Documentation/rfkill.txt
++++ b/Documentation/rfkill.txt
+@@ -1,13 +1,17 @@
++===============================
+ rfkill - RF kill switch support
+ ===============================
+ 
+-1. Introduction
+-2. Implementation details
+-3. Kernel API
+-4. Userspace support
++.. CONTENTS
+ 
++  1. Introduction
++  2. Implementation details
++  3. Kernel API
++  4. Userspace support
+ 
+-1. Introduction
 +
-+:Date: 18 March 2001
-+:Author: Andrew Morton
++Introduction
++============
  
- An operating system's Secure Attention Key is a security tool which is
- provided as protection against trojan password capturing programs.  It
-@@ -13,7 +17,7 @@ this sequence.  It is only available if the kernel was compiled with
- sysrq support.
+ The rfkill subsystem provides a generic interface to disabling any radio
+ transmitter in the system. When a transmitter is blocked, it shall not
+@@ -21,17 +25,24 @@ aircraft.
+ The rfkill subsystem has a concept of "hard" and "soft" block, which
+ differ little in their meaning (block == transmitters off) but rather in
+ whether they can be changed or not:
+- - hard block: read-only radio block that cannot be overridden by software
+- - soft block: writable radio block (need not be readable) that is set by
+-               the system software.
++
++ - hard block
++	read-only radio block that cannot be overridden by software
++
++ - soft block
++	writable radio block (need not be readable) that is set by
++        the system software.
  
- The proper way of generating a SAK is to define the key sequence using
--`loadkeys'.  This will work whether or not sysrq support is compiled
-+``loadkeys``.  This will work whether or not sysrq support is compiled
- into the kernel.
- 
- SAK works correctly when the keyboard is in raw mode.  This means that
-@@ -25,64 +29,63 @@ What key sequence should you use? Well, CTRL-ALT-DEL is used to reboot
- the machine.  CTRL-ALT-BACKSPACE is magical to the X server.  We'll
- choose CTRL-ALT-PAUSE.
- 
--In your rc.sysinit (or rc.local) file, add the command
-+In your rc.sysinit (or rc.local) file, add the command::
- 
- 	echo "control alt keycode 101 = SAK" | /bin/loadkeys
- 
- And that's it!  Only the superuser may reprogram the SAK key.
- 
- 
--NOTES
--=====
-+.. note::
- 
--1: Linux SAK is said to be not a "true SAK" as is required by
--   systems which implement C2 level security.  This author does not
--   know why.
-+  1. Linux SAK is said to be not a "true SAK" as is required by
-+     systems which implement C2 level security.  This author does not
-+     know why.
+ The rfkill subsystem has two parameters, rfkill.default_state and
+-rfkill.master_switch_mode, which are documented in admin-guide/kernel-parameters.rst.
++rfkill.master_switch_mode, which are documented in
++admin-guide/kernel-parameters.rst.
  
  
--2: On the PC keyboard, SAK kills all applications which have
--   /dev/console opened.
-+  2. On the PC keyboard, SAK kills all applications which have
-+     /dev/console opened.
+-2. Implementation details
++Implementation details
++======================
  
--   Unfortunately this includes a number of things which you don't
--   actually want killed.  This is because these applications are
--   incorrectly holding /dev/console open.  Be sure to complain to your
--   Linux distributor about this!
-+     Unfortunately this includes a number of things which you don't
-+     actually want killed.  This is because these applications are
-+     incorrectly holding /dev/console open.  Be sure to complain to your
-+     Linux distributor about this!
+ The rfkill subsystem is composed of three main components:
++
+  * the rfkill core,
+  * the deprecated rfkill-input module (an input layer handler, being
+    replaced by userspace policy code) and
+@@ -55,7 +66,8 @@ use the return value of rfkill_set_hw_state() unless the hardware actually
+ keeps track of soft and hard block separately.
  
--   You can identify processes which will be killed by SAK with the
--   command
-+     You can identify processes which will be killed by SAK with the
-+     command::
  
- 	# ls -l /proc/[0-9]*/fd/* | grep console
- 	l-wx------    1 root     root           64 Mar 18 00:46 /proc/579/fd/0 -> /dev/console
+-3. Kernel API
++Kernel API
++==========
  
--   Then:
-+     Then::
  
- 	# ps aux|grep 579
- 	root       579  0.0  0.1  1088  436 ?        S    00:43   0:00 gpm -t ps/2
+ Drivers for radio transmitters normally implement an rfkill driver.
+@@ -69,7 +81,7 @@ For some platforms, it is possible that the hardware state changes during
+ suspend/hibernation, in which case it will be necessary to update the rfkill
+ core with the current state is at resume time.
  
--   So `gpm' will be killed by SAK.  This is a bug in gpm.  It should
--   be closing standard input.  You can work around this by finding the
--   initscript which launches gpm and changing it thusly:
-+     So ``gpm`` will be killed by SAK.  This is a bug in gpm.  It should
-+     be closing standard input.  You can work around this by finding the
-+     initscript which launches gpm and changing it thusly:
+-To create an rfkill driver, driver's Kconfig needs to have
++To create an rfkill driver, driver's Kconfig needs to have::
  
--   Old:
-+     Old::
+ 	depends on RFKILL || !RFKILL
  
- 	daemon gpm
+@@ -87,7 +99,8 @@ RFKill provides per-switch LED triggers, which can be used to drive LEDs
+ according to the switch state (LED_FULL when blocked, LED_OFF otherwise).
  
--   New:
-+     New::
  
- 	daemon gpm < /dev/null
+-5. Userspace support
++Userspace support
++=================
  
--   Vixie cron also seems to have this problem, and needs the same treatment.
-+     Vixie cron also seems to have this problem, and needs the same treatment.
+ The recommended userspace interface to use is /dev/rfkill, which is a misc
+ character device that allows userspace to obtain and set the state of rfkill
+@@ -112,11 +125,11 @@ rfkill core framework.
+ Additionally, each rfkill device is registered in sysfs and emits uevents.
  
--   Also, one prominent Linux distribution has the following three
--   lines in its rc.sysinit and rc scripts:
-+     Also, one prominent Linux distribution has the following three
-+     lines in its rc.sysinit and rc scripts::
+ rfkill devices issue uevents (with an action of "change"), with the following
+-environment variables set:
++environment variables set::
  
- 	exec 3<&0
- 	exec 4>&1
- 	exec 5>&2
+-RFKILL_NAME
+-RFKILL_STATE
+-RFKILL_TYPE
++	RFKILL_NAME
++	RFKILL_STATE
++	RFKILL_TYPE
  
--   These commands cause *all* daemons which are launched by the
--   initscripts to have file descriptors 3, 4 and 5 attached to
--   /dev/console.  So SAK kills them all.  A workaround is to simply
--   delete these lines, but this may cause system management
--   applications to malfunction - test everything well.
-+     These commands cause **all** daemons which are launched by the
-+     initscripts to have file descriptors 3, 4 and 5 attached to
-+     /dev/console.  So SAK kills them all.  A workaround is to simply
-+     delete these lines, but this may cause system management
-+     applications to malfunction - test everything well.
- 
+ The contents of these variables corresponds to the "name", "state" and
+ "type" sysfs files explained above.
 -- 
 2.9.4
