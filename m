@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWdg-0000P2-8S
- for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:23:55 +0000
+ id 1dBWdk-0000PN-1F
+ for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:23:59 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -13,9 +13,9 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 05/31] cachetlb.txt: standardize document format
-Date: Thu, 18 May 2017 22:22:10 -0300
-Message-Id: <5ec4b6072ac3e17134e3ad1cda3490d5c9e200be.1495156488.git.mchehab@s-opensource.com>
+Subject: [PATCH 14/31] DMA-API.txt: standardize document format
+Date: Thu, 18 May 2017 22:22:19 -0300
+Message-Id: <4da2e4efc32ae463d0ae78536594484a5eadf46d.1495156488.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
 References: <cover.1495156488.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
@@ -36,287 +36,911 @@ format. Some doesn't even have titles!
 Change its representation to follow the adopted standard,
 using ReST markups for it to be parseable by Sphinx:
 
-- Adjust the title format;
-- use :Author: for author's name;
-- mark literals as such;
-- use note and important notation.
+- Fix some title marks to match ReST;
+- use :Author: for author name;
+- foo_ is an hyperlink. Get rid of it;
+- Mark literal blocks as such;
+- Use tables on some places that are almost using the
+  table format.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/cachetlb.txt | 92 ++++++++++++++++++++++++++--------------------
- 1 file changed, 52 insertions(+), 40 deletions(-)
+ Documentation/DMA-API.txt | 575 ++++++++++++++++++++++++++--------------------
+ 1 file changed, 326 insertions(+), 249 deletions(-)
 
-diff --git a/Documentation/cachetlb.txt b/Documentation/cachetlb.txt
-index 3f9f808b5119..6eb9d3f090cd 100644
---- a/Documentation/cachetlb.txt
-+++ b/Documentation/cachetlb.txt
-@@ -1,7 +1,8 @@
--		Cache and TLB Flushing
--		     Under Linux
-+==================================
-+Cache and TLB Flushing Under Linux
-+==================================
+diff --git a/Documentation/DMA-API.txt b/Documentation/DMA-API.txt
+index 6b20128fab8a..2104686b9f02 100644
+--- a/Documentation/DMA-API.txt
++++ b/Documentation/DMA-API.txt
+@@ -1,7 +1,7 @@
+-               Dynamic DMA mapping using the generic device
+-               ============================================
++Dynamic DMA mapping using the generic device
++============================================
  
--	    David S. Miller <davem@redhat.com>
-+:Author: David S. Miller <davem@redhat.com>
+-        James E.J. Bottomley <James.Bottomley@HansenPartnership.com>
++:Author: James E.J. Bottomley <James.Bottomley@HansenPartnership.com>
  
- This document describes the cache/tlb flushing interfaces called
- by the Linux VM subsystem.  It enumerates over each interface,
-@@ -28,7 +29,7 @@ Therefore when software page table changes occur, the kernel will
- invoke one of the following flush methods _after_ the page table
- changes occur:
+ This document describes the DMA API.  For a more gentle introduction
+ of the API (and actual examples), see Documentation/DMA-API-HOWTO.txt.
+@@ -12,10 +12,10 @@ machines.  Unless you know that your driver absolutely has to support
+ non-consistent platforms (this is usually only legacy platforms) you
+ should only use the API described in part I.
  
--1) void flush_tlb_all(void)
-+1) ``void flush_tlb_all(void)``
+-Part I - dma_ API
+--------------------------------------
++Part I - dma_API
++----------------
  
- 	The most severe flush of all.  After this interface runs,
- 	any previous page table modification whatsoever will be
-@@ -37,7 +38,7 @@ changes occur:
- 	This is usually invoked when the kernel page tables are
- 	changed, since such translations are "global" in nature.
+-To get the dma_ API, you must #include <linux/dma-mapping.h>.  This
++To get the dma_API, you must #include <linux/dma-mapping.h>.  This
+ provides dma_addr_t and the interfaces described below.
  
--2) void flush_tlb_mm(struct mm_struct *mm)
-+2) ``void flush_tlb_mm(struct mm_struct *mm)``
+ A dma_addr_t can hold any valid DMA address for the platform.  It can be
+@@ -26,9 +26,11 @@ address space and the DMA address space.
+ Part Ia - Using large DMA-coherent buffers
+ ------------------------------------------
  
- 	This interface flushes an entire user address space from
- 	the TLB.  After running, this interface must make sure that
-@@ -49,8 +50,8 @@ changes occur:
- 	page table operations such as what happens during
- 	fork, and exec.
+-void *
+-dma_alloc_coherent(struct device *dev, size_t size,
+-			     dma_addr_t *dma_handle, gfp_t flag)
++::
++
++	void *
++	dma_alloc_coherent(struct device *dev, size_t size,
++			   dma_addr_t *dma_handle, gfp_t flag)
  
--3) void flush_tlb_range(struct vm_area_struct *vma,
--			unsigned long start, unsigned long end)
-+3) ``void flush_tlb_range(struct vm_area_struct *vma,
-+   unsigned long start, unsigned long end)``
+ Consistent memory is memory for which a write by either the device or
+ the processor can immediately be read by the processor or device
+@@ -51,20 +53,24 @@ consolidate your requests for consistent memory as much as possible.
+ The simplest way to do that is to use the dma_pool calls (see below).
  
- 	Here we are flushing a specific range of (user) virtual
- 	address translations from the TLB.  After running, this
-@@ -69,7 +70,7 @@ changes occur:
- 	call flush_tlb_page (see below) for each entry which may be
- 	modified.
+ The flag parameter (dma_alloc_coherent() only) allows the caller to
+-specify the GFP_ flags (see kmalloc()) for the allocation (the
++specify the ``GFP_`` flags (see kmalloc()) for the allocation (the
+ implementation may choose to ignore flags that affect the location of
+ the returned memory, like GFP_DMA).
  
--4) void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
-+4) ``void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)``
+-void *
+-dma_zalloc_coherent(struct device *dev, size_t size,
+-			     dma_addr_t *dma_handle, gfp_t flag)
++::
++
++	void *
++	dma_zalloc_coherent(struct device *dev, size_t size,
++			    dma_addr_t *dma_handle, gfp_t flag)
  
- 	This time we need to remove the PAGE_SIZE sized translation
- 	from the TLB.  The 'vma' is the backing structure used by
-@@ -87,8 +88,8 @@ changes occur:
+ Wraps dma_alloc_coherent() and also zeroes the returned memory if the
+ allocation attempt succeeded.
  
- 	This is used primarily during fault processing.
+-void
+-dma_free_coherent(struct device *dev, size_t size, void *cpu_addr,
+-			   dma_addr_t dma_handle)
++::
++
++	void
++	dma_free_coherent(struct device *dev, size_t size, void *cpu_addr,
++			  dma_addr_t dma_handle)
  
--5) void update_mmu_cache(struct vm_area_struct *vma,
--			 unsigned long address, pte_t *ptep)
-+5) ``void update_mmu_cache(struct vm_area_struct *vma,
-+   unsigned long address, pte_t *ptep)``
+ Free a region of consistent memory you previously allocated.  dev,
+ size and dma_handle must all be the same as those passed into
+@@ -78,7 +84,7 @@ may only be called with IRQs enabled.
+ Part Ib - Using small DMA-coherent buffers
+ ------------------------------------------
  
- 	At the end of every page fault, this routine is invoked to
- 	tell the architecture specific code that a translation
-@@ -100,7 +101,7 @@ changes occur:
- 	translations for software managed TLB configurations.
- 	The sparc64 port currently does this.
+-To get this part of the dma_ API, you must #include <linux/dmapool.h>
++To get this part of the dma_API, you must #include <linux/dmapool.h>
  
--6) void tlb_migrate_finish(struct mm_struct *mm)
-+6) ``void tlb_migrate_finish(struct mm_struct *mm)``
+ Many drivers need lots of small DMA-coherent memory regions for DMA
+ descriptors or I/O buffers.  Rather than allocating in units of a page
+@@ -88,6 +94,8 @@ not __get_free_pages().  Also, they understand common hardware constraints
+ for alignment, like queue heads needing to be aligned on N-byte boundaries.
  
- 	This interface is called at the end of an explicit
- 	process migration. This interface provides a hook
-@@ -112,7 +113,7 @@ changes occur:
  
- Next, we have the cache flushing interfaces.  In general, when Linux
- is changing an existing virtual-->physical mapping to a new value,
--the sequence will be in one of the following forms:
-+the sequence will be in one of the following forms::
++::
++
+ 	struct dma_pool *
+ 	dma_pool_create(const char *name, struct device *dev,
+ 			size_t size, size_t align, size_t alloc);
+@@ -103,16 +111,21 @@ in bytes, and must be a power of two).  If your device has no boundary
+ crossing restrictions, pass 0 for alloc; passing 4096 says memory allocated
+ from this pool must not cross 4KByte boundaries.
  
- 	1) flush_cache_mm(mm);
- 	   change_all_page_tables_of(mm);
-@@ -143,7 +144,7 @@ and have no dependency on translation information.
++::
  
- Here are the routines, one by one:
+-	void *dma_pool_zalloc(struct dma_pool *pool, gfp_t mem_flags,
+-			      dma_addr_t *handle)
++	void *
++	dma_pool_zalloc(struct dma_pool *pool, gfp_t mem_flags,
++		        dma_addr_t *handle)
  
--1) void flush_cache_mm(struct mm_struct *mm)
-+1) ``void flush_cache_mm(struct mm_struct *mm)``
+ Wraps dma_pool_alloc() and also zeroes the returned memory if the
+ allocation attempt succeeded.
  
- 	This interface flushes an entire user address space from
- 	the caches.  That is, after running, there will be no cache
-@@ -152,7 +153,7 @@ Here are the routines, one by one:
- 	This interface is used to handle whole address space
- 	page table operations such as what happens during exit and exec.
  
--2) void flush_cache_dup_mm(struct mm_struct *mm)
-+2) ``void flush_cache_dup_mm(struct mm_struct *mm)``
+-	void *dma_pool_alloc(struct dma_pool *pool, gfp_t gfp_flags,
+-			dma_addr_t *dma_handle);
++::
++
++	void *
++	dma_pool_alloc(struct dma_pool *pool, gfp_t gfp_flags,
++		       dma_addr_t *dma_handle);
  
- 	This interface flushes an entire user address space from
- 	the caches.  That is, after running, there will be no cache
-@@ -164,8 +165,8 @@ Here are the routines, one by one:
- 	This option is separate from flush_cache_mm to allow some
- 	optimizations for VIPT caches.
+ This allocates memory from the pool; the returned memory will meet the
+ size and alignment requirements specified at creation time.  Pass
+@@ -122,16 +135,20 @@ blocking.  Like dma_alloc_coherent(), this returns two values:  an
+ address usable by the CPU, and the DMA address usable by the pool's
+ device.
  
--3) void flush_cache_range(struct vm_area_struct *vma,
--			  unsigned long start, unsigned long end)
-+3) ``void flush_cache_range(struct vm_area_struct *vma,
-+   unsigned long start, unsigned long end)``
++::
  
- 	Here we are flushing a specific range of (user) virtual
- 	addresses from the cache.  After running, there will be no
-@@ -181,7 +182,7 @@ Here are the routines, one by one:
- 	call flush_cache_page (see below) for each entry which may be
- 	modified.
+-	void dma_pool_free(struct dma_pool *pool, void *vaddr,
+-			dma_addr_t addr);
++	void
++	dma_pool_free(struct dma_pool *pool, void *vaddr,
++		      dma_addr_t addr);
  
--4) void flush_cache_page(struct vm_area_struct *vma, unsigned long addr, unsigned long pfn)
-+4) ``void flush_cache_page(struct vm_area_struct *vma, unsigned long addr, unsigned long pfn)``
+ This puts memory back into the pool.  The pool is what was passed to
+ dma_pool_alloc(); the CPU (vaddr) and DMA addresses are what
+ were returned when that routine allocated the memory being freed.
  
- 	This time we need to remove a PAGE_SIZE sized range
- 	from the cache.  The 'vma' is the backing structure used by
-@@ -202,7 +203,7 @@ Here are the routines, one by one:
++::
  
- 	This is used primarily during fault processing.
+-	void dma_pool_destroy(struct dma_pool *pool);
++	void
++	dma_pool_destroy(struct dma_pool *pool);
  
--5) void flush_cache_kmaps(void)
-+5) ``void flush_cache_kmaps(void)``
+ dma_pool_destroy() frees the resources of the pool.  It must be
+ called in a context which can sleep.  Make sure you've freed all allocated
+@@ -141,32 +158,40 @@ memory back to the pool before you destroy it.
+ Part Ic - DMA addressing limitations
+ ------------------------------------
  
- 	This routine need only be implemented if the platform utilizes
- 	highmem.  It will be called right before all of the kmaps
-@@ -214,8 +215,8 @@ Here are the routines, one by one:
+-int
+-dma_set_mask_and_coherent(struct device *dev, u64 mask)
++::
++
++	int
++	dma_set_mask_and_coherent(struct device *dev, u64 mask)
  
- 	This routing should be implemented in asm/highmem.h
+ Checks to see if the mask is possible and updates the device
+ streaming and coherent DMA mask parameters if it is.
  
--6) void flush_cache_vmap(unsigned long start, unsigned long end)
--   void flush_cache_vunmap(unsigned long start, unsigned long end)
-+6) ``void flush_cache_vmap(unsigned long start, unsigned long end)``
-+   ``void flush_cache_vunmap(unsigned long start, unsigned long end)``
+ Returns: 0 if successful and a negative error if not.
  
- 	Here in these two interfaces we are flushing a specific range
- 	of (kernel) virtual addresses from the cache.  After running,
-@@ -243,8 +244,10 @@ size).  This setting will force the SYSv IPC layer to only allow user
- processes to mmap shared memory at address which are a multiple of
- this value.
+-int
+-dma_set_mask(struct device *dev, u64 mask)
++::
++
++	int
++	dma_set_mask(struct device *dev, u64 mask)
  
--NOTE: This does not fix shared mmaps, check out the sparc64 port for
--one way to solve this (in particular SPARC_FLAG_MMAPSHARED).
+ Checks to see if the mask is possible and updates the device
+ parameters if it is.
+ 
+ Returns: 0 if successful and a negative error if not.
+ 
+-int
+-dma_set_coherent_mask(struct device *dev, u64 mask)
++::
++
++	int
++	dma_set_coherent_mask(struct device *dev, u64 mask)
+ 
+ Checks to see if the mask is possible and updates the device
+ parameters if it is.
+ 
+ Returns: 0 if successful and a negative error if not.
+ 
+-u64
+-dma_get_required_mask(struct device *dev)
++::
++
++	u64
++	dma_get_required_mask(struct device *dev)
+ 
+ This API returns the mask that the platform requires to
+ operate efficiently.  Usually this means the returned mask
+@@ -182,94 +207,107 @@ call to set the mask to the value returned.
+ Part Id - Streaming DMA mappings
+ --------------------------------
+ 
+-dma_addr_t
+-dma_map_single(struct device *dev, void *cpu_addr, size_t size,
+-		      enum dma_data_direction direction)
++::
++
++	dma_addr_t
++	dma_map_single(struct device *dev, void *cpu_addr, size_t size,
++		       enum dma_data_direction direction)
+ 
+ Maps a piece of processor virtual memory so it can be accessed by the
+ device and returns the DMA address of the memory.
+ 
+ The direction for both APIs may be converted freely by casting.
+-However the dma_ API uses a strongly typed enumerator for its
++However the dma_API uses a strongly typed enumerator for its
+ direction:
+ 
++======================= =============================================
+ DMA_NONE		no direction (used for debugging)
+ DMA_TO_DEVICE		data is going from the memory to the device
+ DMA_FROM_DEVICE		data is coming from the device to the memory
+ DMA_BIDIRECTIONAL	direction isn't known
++======================= =============================================
+ 
+-Notes:  Not all memory regions in a machine can be mapped by this API.
+-Further, contiguous kernel virtual space may not be contiguous as
+-physical memory.  Since this API does not provide any scatter/gather
+-capability, it will fail if the user tries to map a non-physically
+-contiguous piece of memory.  For this reason, memory to be mapped by
+-this API should be obtained from sources which guarantee it to be
+-physically contiguous (like kmalloc).
+-
+-Further, the DMA address of the memory must be within the
+-dma_mask of the device (the dma_mask is a bit mask of the
+-addressable region for the device, i.e., if the DMA address of
+-the memory ANDed with the dma_mask is still equal to the DMA
+-address, then the device can perform DMA to the memory).  To
+-ensure that the memory allocated by kmalloc is within the dma_mask,
+-the driver may specify various platform-dependent flags to restrict
+-the DMA address range of the allocation (e.g., on x86, GFP_DMA
+-guarantees to be within the first 16MB of available DMA addresses,
+-as required by ISA devices).
+-
+-Note also that the above constraints on physical contiguity and
+-dma_mask may not apply if the platform has an IOMMU (a device which
+-maps an I/O DMA address to a physical memory address).  However, to be
+-portable, device driver writers may *not* assume that such an IOMMU
+-exists.
+-
+-Warnings:  Memory coherency operates at a granularity called the cache
+-line width.  In order for memory mapped by this API to operate
+-correctly, the mapped region must begin exactly on a cache line
+-boundary and end exactly on one (to prevent two separately mapped
+-regions from sharing a single cache line).  Since the cache line size
+-may not be known at compile time, the API will not enforce this
+-requirement.  Therefore, it is recommended that driver writers who
+-don't take special care to determine the cache line size at run time
+-only map virtual regions that begin and end on page boundaries (which
+-are guaranteed also to be cache line boundaries).
+-
+-DMA_TO_DEVICE synchronisation must be done after the last modification
+-of the memory region by the software and before it is handed off to
+-the device.  Once this primitive is used, memory covered by this
+-primitive should be treated as read-only by the device.  If the device
+-may write to it at any point, it should be DMA_BIDIRECTIONAL (see
+-below).
+-
+-DMA_FROM_DEVICE synchronisation must be done before the driver
+-accesses data that may be changed by the device.  This memory should
+-be treated as read-only by the driver.  If the driver needs to write
+-to it at any point, it should be DMA_BIDIRECTIONAL (see below).
+-
+-DMA_BIDIRECTIONAL requires special handling: it means that the driver
+-isn't sure if the memory was modified before being handed off to the
+-device and also isn't sure if the device will also modify it.  Thus,
+-you must always sync bidirectional memory twice: once before the
+-memory is handed off to the device (to make sure all memory changes
+-are flushed from the processor) and once before the data may be
+-accessed after being used by the device (to make sure any processor
+-cache lines are updated with data that the device may have changed).
+-
+-void
+-dma_unmap_single(struct device *dev, dma_addr_t dma_addr, size_t size,
+-		 enum dma_data_direction direction)
 +.. note::
 +
-+  This does not fix shared mmaps, check out the sparc64 port for
-+  one way to solve this (in particular SPARC_FLAG_MMAPSHARED).
- 
- Next, you have to solve the D-cache aliasing issue for all
- other cases.  Please keep in mind that fact that, for a given page
-@@ -255,8 +258,8 @@ physical page into its address space, by implication the D-cache
- aliasing problem has the potential to exist since the kernel already
- maps this page at its virtual address.
- 
--  void copy_user_page(void *to, void *from, unsigned long addr, struct page *page)
--  void clear_user_page(void *to, unsigned long addr, struct page *page)
-+  ``void copy_user_page(void *to, void *from, unsigned long addr, struct page *page)``
-+  ``void clear_user_page(void *to, unsigned long addr, struct page *page)``
- 
- 	These two routines store data in user anonymous or COW
- 	pages.  It allows a port to efficiently avoid D-cache alias
-@@ -276,14 +279,16 @@ maps this page at its virtual address.
- 	If D-cache aliasing is not an issue, these two routines may
- 	simply call memcpy/memset directly and do nothing more.
- 
--  void flush_dcache_page(struct page *page)
-+  ``void flush_dcache_page(struct page *page)``
- 
- 	Any time the kernel writes to a page cache page, _OR_
- 	the kernel is about to read from a page cache page and
- 	user space shared/writable mappings of this page potentially
- 	exist, this routine is called.
- 
--	NOTE: This routine need only be called for page cache pages
-+	.. note::
++	Not all memory regions in a machine can be mapped by this API.
++	Further, contiguous kernel virtual space may not be contiguous as
++	physical memory.  Since this API does not provide any scatter/gather
++	capability, it will fail if the user tries to map a non-physically
++	contiguous piece of memory.  For this reason, memory to be mapped by
++	this API should be obtained from sources which guarantee it to be
++	physically contiguous (like kmalloc).
 +
-+	      This routine need only be called for page cache pages
- 	      which can potentially ever be mapped into the address
- 	      space of a user process.  So for example, VFS layer code
- 	      handling vfs symlinks in the page cache need not call
-@@ -322,18 +327,19 @@ maps this page at its virtual address.
- 	made of this flag bit, and if set the flush is done and the flag
- 	bit is cleared.
- 
--	IMPORTANT NOTE: It is often important, if you defer the flush,
-+	.. important::
++	Further, the DMA address of the memory must be within the
++	dma_mask of the device (the dma_mask is a bit mask of the
++	addressable region for the device, i.e., if the DMA address of
++	the memory ANDed with the dma_mask is still equal to the DMA
++	address, then the device can perform DMA to the memory).  To
++	ensure that the memory allocated by kmalloc is within the dma_mask,
++	the driver may specify various platform-dependent flags to restrict
++	the DMA address range of the allocation (e.g., on x86, GFP_DMA
++	guarantees to be within the first 16MB of available DMA addresses,
++	as required by ISA devices).
 +
-+			It is often important, if you defer the flush,
- 			that the actual flush occurs on the same CPU
- 			as did the cpu stores into the page to make it
- 			dirty.  Again, see sparc64 for examples of how
- 			to deal with this.
- 
--  void copy_to_user_page(struct vm_area_struct *vma, struct page *page,
--                         unsigned long user_vaddr,
--                         void *dst, void *src, int len)
--  void copy_from_user_page(struct vm_area_struct *vma, struct page *page,
--                           unsigned long user_vaddr,
--                           void *dst, void *src, int len)
-+  ``void copy_to_user_page(struct vm_area_struct *vma, struct page *page,
-+  unsigned long user_vaddr, void *dst, void *src, int len)``
-+  ``void copy_from_user_page(struct vm_area_struct *vma, struct page *page,
-+  unsigned long user_vaddr, void *dst, void *src, int len)``
++	Note also that the above constraints on physical contiguity and
++	dma_mask may not apply if the platform has an IOMMU (a device which
++	maps an I/O DMA address to a physical memory address).  However, to be
++	portable, device driver writers may *not* assume that such an IOMMU
++	exists.
 +
- 	When the kernel needs to copy arbitrary data in and out
- 	of arbitrary user pages (f.e. for ptrace()) it will use
- 	these two routines.
-@@ -344,8 +350,9 @@ maps this page at its virtual address.
- 	likely that you will need to flush the instruction cache
- 	for copy_to_user_page().
- 
--  void flush_anon_page(struct vm_area_struct *vma, struct page *page,
--                       unsigned long vmaddr)
-+  ``void flush_anon_page(struct vm_area_struct *vma, struct page *page,
-+  unsigned long vmaddr)``
++.. warning::
 +
-   	When the kernel needs to access the contents of an anonymous
- 	page, it calls this function (currently only
- 	get_user_pages()).  Note: flush_dcache_page() deliberately
-@@ -354,7 +361,8 @@ maps this page at its virtual address.
- 	architectures).  For incoherent architectures, it should flush
- 	the cache of the page at vmaddr.
- 
--  void flush_kernel_dcache_page(struct page *page)
-+  ``void flush_kernel_dcache_page(struct page *page)``
++	Memory coherency operates at a granularity called the cache
++	line width.  In order for memory mapped by this API to operate
++	correctly, the mapped region must begin exactly on a cache line
++	boundary and end exactly on one (to prevent two separately mapped
++	regions from sharing a single cache line).  Since the cache line size
++	may not be known at compile time, the API will not enforce this
++	requirement.  Therefore, it is recommended that driver writers who
++	don't take special care to determine the cache line size at run time
++	only map virtual regions that begin and end on page boundaries (which
++	are guaranteed also to be cache line boundaries).
 +
- 	When the kernel needs to modify a user page is has obtained
- 	with kmap, it calls this function after all modifications are
- 	complete (but before kunmapping it) to bring the underlying
-@@ -366,14 +374,16 @@ maps this page at its virtual address.
- 	the kernel cache for page (using page_address(page)).
- 
- 
--  void flush_icache_range(unsigned long start, unsigned long end)
-+  ``void flush_icache_range(unsigned long start, unsigned long end)``
++	DMA_TO_DEVICE synchronisation must be done after the last modification
++	of the memory region by the software and before it is handed off to
++	the device.  Once this primitive is used, memory covered by this
++	primitive should be treated as read-only by the device.  If the device
++	may write to it at any point, it should be DMA_BIDIRECTIONAL (see
++	below).
 +
-   	When the kernel stores into addresses that it will execute
- 	out of (eg when loading modules), this function is called.
- 
- 	If the icache does not snoop stores then this routine will need
- 	to flush it.
- 
--  void flush_icache_page(struct vm_area_struct *vma, struct page *page)
-+  ``void flush_icache_page(struct vm_area_struct *vma, struct page *page)``
++	DMA_FROM_DEVICE synchronisation must be done before the driver
++	accesses data that may be changed by the device.  This memory should
++	be treated as read-only by the driver.  If the driver needs to write
++	to it at any point, it should be DMA_BIDIRECTIONAL (see below).
 +
- 	All the functionality of flush_icache_page can be implemented in
- 	flush_dcache_page and update_mmu_cache. In the future, the hope
- 	is to remove this interface completely.
-@@ -387,7 +397,8 @@ the kernel trying to do I/O to vmap areas must manually manage
- coherency.  It must do this by flushing the vmap range before doing
- I/O and invalidating it after the I/O returns.
- 
--  void flush_kernel_vmap_range(void *vaddr, int size)
-+  ``void flush_kernel_vmap_range(void *vaddr, int size)``
++	DMA_BIDIRECTIONAL requires special handling: it means that the driver
++	isn't sure if the memory was modified before being handed off to the
++	device and also isn't sure if the device will also modify it.  Thus,
++	you must always sync bidirectional memory twice: once before the
++	memory is handed off to the device (to make sure all memory changes
++	are flushed from the processor) and once before the data may be
++	accessed after being used by the device (to make sure any processor
++	cache lines are updated with data that the device may have changed).
 +
-        flushes the kernel cache for a given virtual address range in
-        the vmap area.  This is to make sure that any data the kernel
-        modified in the vmap range is made visible to the physical
-@@ -395,7 +406,8 @@ I/O and invalidating it after the I/O returns.
-        Note that this API does *not* also flush the offset map alias
-        of the area.
- 
--  void invalidate_kernel_vmap_range(void *vaddr, int size) invalidates
-+  ``void invalidate_kernel_vmap_range(void *vaddr, int size) invalidates``
++::
 +
-        the cache for a given virtual address range in the vmap area
-        which prevents the processor from making the cache stale by
-        speculatively reading data while the I/O was occurring to the
++	void
++	dma_unmap_single(struct device *dev, dma_addr_t dma_addr, size_t size,
++			 enum dma_data_direction direction)
+ 
+ Unmaps the region previously mapped.  All the parameters passed in
+ must be identical to those passed in (and returned) by the mapping
+ API.
+ 
+-dma_addr_t
+-dma_map_page(struct device *dev, struct page *page,
+-		    unsigned long offset, size_t size,
+-		    enum dma_data_direction direction)
+-void
+-dma_unmap_page(struct device *dev, dma_addr_t dma_address, size_t size,
+-	       enum dma_data_direction direction)
++::
++
++	dma_addr_t
++	dma_map_page(struct device *dev, struct page *page,
++		     unsigned long offset, size_t size,
++		     enum dma_data_direction direction)
++
++	void
++	dma_unmap_page(struct device *dev, dma_addr_t dma_address, size_t size,
++		       enum dma_data_direction direction)
+ 
+ API for mapping and unmapping for pages.  All the notes and warnings
+ for the other mapping APIs apply here.  Also, although the <offset>
+@@ -277,20 +315,24 @@ and <size> parameters are provided to do partial page mapping, it is
+ recommended that you never use these unless you really know what the
+ cache width is.
+ 
+-dma_addr_t
+-dma_map_resource(struct device *dev, phys_addr_t phys_addr, size_t size,
+-		 enum dma_data_direction dir, unsigned long attrs)
++::
+ 
+-void
+-dma_unmap_resource(struct device *dev, dma_addr_t addr, size_t size,
+-		   enum dma_data_direction dir, unsigned long attrs)
++	dma_addr_t
++	dma_map_resource(struct device *dev, phys_addr_t phys_addr, size_t size,
++			 enum dma_data_direction dir, unsigned long attrs)
++
++	void
++	dma_unmap_resource(struct device *dev, dma_addr_t addr, size_t size,
++			   enum dma_data_direction dir, unsigned long attrs)
+ 
+ API for mapping and unmapping for MMIO resources. All the notes and
+ warnings for the other mapping APIs apply here. The API should only be
+ used to map device MMIO resources, mapping of RAM is not permitted.
+ 
+-int
+-dma_mapping_error(struct device *dev, dma_addr_t dma_addr)
++::
++
++	int
++	dma_mapping_error(struct device *dev, dma_addr_t dma_addr)
+ 
+ In some circumstances dma_map_single(), dma_map_page() and dma_map_resource()
+ will fail to create a mapping. A driver can check for these errors by testing
+@@ -298,9 +340,11 @@ the returned DMA address with dma_mapping_error(). A non-zero return value
+ means the mapping could not be created and the driver should take appropriate
+ action (e.g. reduce current DMA mapping usage or delay and try again later).
+ 
++::
++
+ 	int
+ 	dma_map_sg(struct device *dev, struct scatterlist *sg,
+-		int nents, enum dma_data_direction direction)
++		   int nents, enum dma_data_direction direction)
+ 
+ Returns: the number of DMA address segments mapped (this may be shorter
+ than <nents> passed in if some elements of the scatter/gather list are
+@@ -316,7 +360,7 @@ critical that the driver do something, in the case of a block driver
+ aborting the request or even oopsing is better than doing nothing and
+ corrupting the filesystem.
+ 
+-With scatterlists, you use the resulting mapping like this:
++With scatterlists, you use the resulting mapping like this::
+ 
+ 	int i, count = dma_map_sg(dev, sglist, nents, direction);
+ 	struct scatterlist *sg;
+@@ -337,9 +381,11 @@ Then you should loop count times (note: this can be less than nents times)
+ and use sg_dma_address() and sg_dma_len() macros where you previously
+ accessed sg->address and sg->length as shown above.
+ 
++::
++
+ 	void
+ 	dma_unmap_sg(struct device *dev, struct scatterlist *sg,
+-		int nents, enum dma_data_direction direction)
++		     int nents, enum dma_data_direction direction)
+ 
+ Unmap the previously mapped scatter/gather list.  All the parameters
+ must be the same as those and passed in to the scatter/gather mapping
+@@ -348,18 +394,27 @@ API.
+ Note: <nents> must be the number you passed in, *not* the number of
+ DMA address entries returned.
+ 
+-void
+-dma_sync_single_for_cpu(struct device *dev, dma_addr_t dma_handle, size_t size,
+-			enum dma_data_direction direction)
+-void
+-dma_sync_single_for_device(struct device *dev, dma_addr_t dma_handle, size_t size,
+-			   enum dma_data_direction direction)
+-void
+-dma_sync_sg_for_cpu(struct device *dev, struct scatterlist *sg, int nents,
+-		    enum dma_data_direction direction)
+-void
+-dma_sync_sg_for_device(struct device *dev, struct scatterlist *sg, int nents,
+-		       enum dma_data_direction direction)
++::
++
++	void
++	dma_sync_single_for_cpu(struct device *dev, dma_addr_t dma_handle,
++				size_t size,
++				enum dma_data_direction direction)
++
++	void
++	dma_sync_single_for_device(struct device *dev, dma_addr_t dma_handle,
++				   size_t size,
++				   enum dma_data_direction direction)
++
++	void
++	dma_sync_sg_for_cpu(struct device *dev, struct scatterlist *sg,
++			    int nents,
++			    enum dma_data_direction direction)
++
++	void
++	dma_sync_sg_for_device(struct device *dev, struct scatterlist *sg,
++			       int nents,
++			       enum dma_data_direction direction)
+ 
+ Synchronise a single contiguous or scatter/gather mapping for the CPU
+ and device. With the sync_sg API, all the parameters must be the same
+@@ -367,36 +422,41 @@ as those passed into the single mapping API. With the sync_single API,
+ you can use dma_handle and size parameters that aren't identical to
+ those passed into the single mapping API to do a partial sync.
+ 
+-Notes:  You must do this:
+ 
+-- Before reading values that have been written by DMA from the device
+-  (use the DMA_FROM_DEVICE direction)
+-- After writing values that will be written to the device using DMA
+-  (use the DMA_TO_DEVICE) direction
+-- before *and* after handing memory to the device if the memory is
+-  DMA_BIDIRECTIONAL
++.. note::
++
++   You must do this:
++
++   - Before reading values that have been written by DMA from the device
++     (use the DMA_FROM_DEVICE direction)
++   - After writing values that will be written to the device using DMA
++     (use the DMA_TO_DEVICE) direction
++   - before *and* after handing memory to the device if the memory is
++     DMA_BIDIRECTIONAL
+ 
+ See also dma_map_single().
+ 
+-dma_addr_t
+-dma_map_single_attrs(struct device *dev, void *cpu_addr, size_t size,
+-		     enum dma_data_direction dir,
+-		     unsigned long attrs)
++::
+ 
+-void
+-dma_unmap_single_attrs(struct device *dev, dma_addr_t dma_addr,
+-		       size_t size, enum dma_data_direction dir,
+-		       unsigned long attrs)
++	dma_addr_t
++	dma_map_single_attrs(struct device *dev, void *cpu_addr, size_t size,
++			     enum dma_data_direction dir,
++			     unsigned long attrs)
+ 
+-int
+-dma_map_sg_attrs(struct device *dev, struct scatterlist *sgl,
+-		 int nents, enum dma_data_direction dir,
+-		 unsigned long attrs)
++	void
++	dma_unmap_single_attrs(struct device *dev, dma_addr_t dma_addr,
++			       size_t size, enum dma_data_direction dir,
++			       unsigned long attrs)
+ 
+-void
+-dma_unmap_sg_attrs(struct device *dev, struct scatterlist *sgl,
+-		   int nents, enum dma_data_direction dir,
+-		   unsigned long attrs)
++	int
++	dma_map_sg_attrs(struct device *dev, struct scatterlist *sgl,
++			 int nents, enum dma_data_direction dir,
++			 unsigned long attrs)
++
++	void
++	dma_unmap_sg_attrs(struct device *dev, struct scatterlist *sgl,
++			   int nents, enum dma_data_direction dir,
++			   unsigned long attrs)
+ 
+ The four functions above are just like the counterpart functions
+ without the _attrs suffixes, except that they pass an optional
+@@ -410,37 +470,38 @@ is identical to those of the corresponding function
+ without the _attrs suffix. As a result dma_map_single_attrs()
+ can generally replace dma_map_single(), etc.
+ 
+-As an example of the use of the *_attrs functions, here's how
++As an example of the use of the ``*_attrs`` functions, here's how
+ you could pass an attribute DMA_ATTR_FOO when mapping memory
+-for DMA:
++for DMA::
+ 
+-#include <linux/dma-mapping.h>
+-/* DMA_ATTR_FOO should be defined in linux/dma-mapping.h and
+- * documented in Documentation/DMA-attributes.txt */
+-...
++	#include <linux/dma-mapping.h>
++	/* DMA_ATTR_FOO should be defined in linux/dma-mapping.h and
++	* documented in Documentation/DMA-attributes.txt */
++	...
+ 
+-	unsigned long attr;
+-	attr |= DMA_ATTR_FOO;
+-	....
+-	n = dma_map_sg_attrs(dev, sg, nents, DMA_TO_DEVICE, attr);
+-	....
++		unsigned long attr;
++		attr |= DMA_ATTR_FOO;
++		....
++		n = dma_map_sg_attrs(dev, sg, nents, DMA_TO_DEVICE, attr);
++		....
+ 
+ Architectures that care about DMA_ATTR_FOO would check for its
+ presence in their implementations of the mapping and unmapping
+-routines, e.g.:
++routines, e.g.:::
+ 
+-void whizco_dma_map_sg_attrs(struct device *dev, dma_addr_t dma_addr,
+-			     size_t size, enum dma_data_direction dir,
+-			     unsigned long attrs)
+-{
+-	....
+-	if (attrs & DMA_ATTR_FOO)
+-		/* twizzle the frobnozzle */
+-	....
++	void whizco_dma_map_sg_attrs(struct device *dev, dma_addr_t dma_addr,
++				     size_t size, enum dma_data_direction dir,
++				     unsigned long attrs)
++	{
++		....
++		if (attrs & DMA_ATTR_FOO)
++			/* twizzle the frobnozzle */
++		....
++	}
+ 
+ 
+-Part II - Advanced dma_ usage
+------------------------------
++Part II - Advanced dma usage
++----------------------------
+ 
+ Warning: These pieces of the DMA API should not be used in the
+ majority of cases, since they cater for unlikely corner cases that
+@@ -450,9 +511,11 @@ If you don't understand how cache line coherency works between a
+ processor and an I/O device, you should not be using this part of the
+ API at all.
+ 
+-void *
+-dma_alloc_noncoherent(struct device *dev, size_t size,
+-			       dma_addr_t *dma_handle, gfp_t flag)
++::
++
++	void *
++	dma_alloc_noncoherent(struct device *dev, size_t size,
++			      dma_addr_t *dma_handle, gfp_t flag)
+ 
+ Identical to dma_alloc_coherent() except that the platform will
+ choose to return either consistent or non-consistent memory as it sees
+@@ -468,39 +531,49 @@ only use this API if you positively know your driver will be
+ required to work on one of the rare (usually non-PCI) architectures
+ that simply cannot make consistent memory.
+ 
+-void
+-dma_free_noncoherent(struct device *dev, size_t size, void *cpu_addr,
+-			      dma_addr_t dma_handle)
++::
++
++	void
++	dma_free_noncoherent(struct device *dev, size_t size, void *cpu_addr,
++			     dma_addr_t dma_handle)
+ 
+ Free memory allocated by the nonconsistent API.  All parameters must
+ be identical to those passed in (and returned by
+ dma_alloc_noncoherent()).
+ 
+-int
+-dma_get_cache_alignment(void)
++::
++
++	int
++	dma_get_cache_alignment(void)
+ 
+ Returns the processor cache alignment.  This is the absolute minimum
+ alignment *and* width that you must observe when either mapping
+ memory or doing partial flushes.
+ 
+-Notes: This API may return a number *larger* than the actual cache
+-line, but it will guarantee that one or more cache lines fit exactly
+-into the width returned by this call.  It will also always be a power
+-of two for easy alignment.
++.. note::
+ 
+-void
+-dma_cache_sync(struct device *dev, void *vaddr, size_t size,
+-	       enum dma_data_direction direction)
++	This API may return a number *larger* than the actual cache
++	line, but it will guarantee that one or more cache lines fit exactly
++	into the width returned by this call.  It will also always be a power
++	of two for easy alignment.
++
++::
++
++	void
++	dma_cache_sync(struct device *dev, void *vaddr, size_t size,
++		       enum dma_data_direction direction)
+ 
+ Do a partial sync of memory that was allocated by
+ dma_alloc_noncoherent(), starting at virtual address vaddr and
+ continuing on for size.  Again, you *must* observe the cache line
+ boundaries when doing this.
+ 
+-int
+-dma_declare_coherent_memory(struct device *dev, phys_addr_t phys_addr,
+-			    dma_addr_t device_addr, size_t size, int
+-			    flags)
++::
++
++	int
++	dma_declare_coherent_memory(struct device *dev, phys_addr_t phys_addr,
++				    dma_addr_t device_addr, size_t size, int
++				    flags)
+ 
+ Declare region of memory to be handed out by dma_alloc_coherent() when
+ it's asked for coherent memory for this device.
+@@ -516,21 +589,21 @@ size is the size of the area (must be multiples of PAGE_SIZE).
+ 
+ flags can be ORed together and are:
+ 
+-DMA_MEMORY_MAP - request that the memory returned from
+-dma_alloc_coherent() be directly writable.
++- DMA_MEMORY_MAP - request that the memory returned from
++  dma_alloc_coherent() be directly writable.
+ 
+-DMA_MEMORY_IO - request that the memory returned from
+-dma_alloc_coherent() be addressable using read()/write()/memcpy_toio() etc.
++- DMA_MEMORY_IO - request that the memory returned from
++  dma_alloc_coherent() be addressable using read()/write()/memcpy_toio() etc.
+ 
+ One or both of these flags must be present.
+ 
+-DMA_MEMORY_INCLUDES_CHILDREN - make the declared memory be allocated by
+-dma_alloc_coherent of any child devices of this one (for memory residing
+-on a bridge).
++- DMA_MEMORY_INCLUDES_CHILDREN - make the declared memory be allocated by
++  dma_alloc_coherent of any child devices of this one (for memory residing
++  on a bridge).
+ 
+-DMA_MEMORY_EXCLUSIVE - only allocate memory from the declared regions. 
+-Do not allow dma_alloc_coherent() to fall back to system memory when
+-it's out of memory in the declared region.
++- DMA_MEMORY_EXCLUSIVE - only allocate memory from the declared regions.
++  Do not allow dma_alloc_coherent() to fall back to system memory when
++  it's out of memory in the declared region.
+ 
+ The return value will be either DMA_MEMORY_MAP or DMA_MEMORY_IO and
+ must correspond to a passed in flag (i.e. no returning DMA_MEMORY_IO
+@@ -543,15 +616,17 @@ must be accessed using the correct bus functions.  If your driver
+ isn't prepared to handle this contingency, it should not specify
+ DMA_MEMORY_IO in the input flags.
+ 
+-As a simplification for the platforms, only *one* such region of
++As a simplification for the platforms, only **one** such region of
+ memory may be declared per device.
+ 
+ For reasons of efficiency, most platforms choose to track the declared
+ region only at the granularity of a page.  For smaller allocations,
+ you should use the dma_pool() API.
+ 
+-void
+-dma_release_declared_memory(struct device *dev)
++::
++
++	void
++	dma_release_declared_memory(struct device *dev)
+ 
+ Remove the memory region previously declared from the system.  This
+ API performs *no* in-use checking for this region and will return
+@@ -559,9 +634,11 @@ unconditionally having removed all the required structures.  It is the
+ driver's job to ensure that no parts of this memory region are
+ currently in use.
+ 
+-void *
+-dma_mark_declared_memory_occupied(struct device *dev,
+-				  dma_addr_t device_addr, size_t size)
++::
++
++	void *
++	dma_mark_declared_memory_occupied(struct device *dev,
++					  dma_addr_t device_addr, size_t size)
+ 
+ This is used to occupy specific regions of the declared space
+ (dma_alloc_coherent() will hand out the first free region it finds).
+@@ -592,38 +669,37 @@ option has a performance impact. Do not enable it in production kernels.
+ If you boot the resulting kernel will contain code which does some bookkeeping
+ about what DMA memory was allocated for which device. If this code detects an
+ error it prints a warning message with some details into your kernel log. An
+-example warning message may look like this:
++example warning message may look like this::
+ 
+-------------[ cut here ]------------
+-WARNING: at /data2/repos/linux-2.6-iommu/lib/dma-debug.c:448
+-	check_unmap+0x203/0x490()
+-Hardware name:
+-forcedeth 0000:00:08.0: DMA-API: device driver frees DMA memory with wrong
+-	function [device address=0x00000000640444be] [size=66 bytes] [mapped as
+-single] [unmapped as page]
+-Modules linked in: nfsd exportfs bridge stp llc r8169
+-Pid: 0, comm: swapper Tainted: G        W  2.6.28-dmatest-09289-g8bb99c0 #1
+-Call Trace:
+- <IRQ>  [<ffffffff80240b22>] warn_slowpath+0xf2/0x130
+- [<ffffffff80647b70>] _spin_unlock+0x10/0x30
+- [<ffffffff80537e75>] usb_hcd_link_urb_to_ep+0x75/0xc0
+- [<ffffffff80647c22>] _spin_unlock_irqrestore+0x12/0x40
+- [<ffffffff8055347f>] ohci_urb_enqueue+0x19f/0x7c0
+- [<ffffffff80252f96>] queue_work+0x56/0x60
+- [<ffffffff80237e10>] enqueue_task_fair+0x20/0x50
+- [<ffffffff80539279>] usb_hcd_submit_urb+0x379/0xbc0
+- [<ffffffff803b78c3>] cpumask_next_and+0x23/0x40
+- [<ffffffff80235177>] find_busiest_group+0x207/0x8a0
+- [<ffffffff8064784f>] _spin_lock_irqsave+0x1f/0x50
+- [<ffffffff803c7ea3>] check_unmap+0x203/0x490
+- [<ffffffff803c8259>] debug_dma_unmap_page+0x49/0x50
+- [<ffffffff80485f26>] nv_tx_done_optimized+0xc6/0x2c0
+- [<ffffffff80486c13>] nv_nic_irq_optimized+0x73/0x2b0
+- [<ffffffff8026df84>] handle_IRQ_event+0x34/0x70
+- [<ffffffff8026ffe9>] handle_edge_irq+0xc9/0x150
+- [<ffffffff8020e3ab>] do_IRQ+0xcb/0x1c0
+- [<ffffffff8020c093>] ret_from_intr+0x0/0xa
+- <EOI> <4>---[ end trace f6435a98e2a38c0e ]---
++	WARNING: at /data2/repos/linux-2.6-iommu/lib/dma-debug.c:448
++		check_unmap+0x203/0x490()
++	Hardware name:
++	forcedeth 0000:00:08.0: DMA-API: device driver frees DMA memory with wrong
++		function [device address=0x00000000640444be] [size=66 bytes] [mapped as
++	single] [unmapped as page]
++	Modules linked in: nfsd exportfs bridge stp llc r8169
++	Pid: 0, comm: swapper Tainted: G        W  2.6.28-dmatest-09289-g8bb99c0 #1
++	Call Trace:
++	<IRQ>  [<ffffffff80240b22>] warn_slowpath+0xf2/0x130
++	[<ffffffff80647b70>] _spin_unlock+0x10/0x30
++	[<ffffffff80537e75>] usb_hcd_link_urb_to_ep+0x75/0xc0
++	[<ffffffff80647c22>] _spin_unlock_irqrestore+0x12/0x40
++	[<ffffffff8055347f>] ohci_urb_enqueue+0x19f/0x7c0
++	[<ffffffff80252f96>] queue_work+0x56/0x60
++	[<ffffffff80237e10>] enqueue_task_fair+0x20/0x50
++	[<ffffffff80539279>] usb_hcd_submit_urb+0x379/0xbc0
++	[<ffffffff803b78c3>] cpumask_next_and+0x23/0x40
++	[<ffffffff80235177>] find_busiest_group+0x207/0x8a0
++	[<ffffffff8064784f>] _spin_lock_irqsave+0x1f/0x50
++	[<ffffffff803c7ea3>] check_unmap+0x203/0x490
++	[<ffffffff803c8259>] debug_dma_unmap_page+0x49/0x50
++	[<ffffffff80485f26>] nv_tx_done_optimized+0xc6/0x2c0
++	[<ffffffff80486c13>] nv_nic_irq_optimized+0x73/0x2b0
++	[<ffffffff8026df84>] handle_IRQ_event+0x34/0x70
++	[<ffffffff8026ffe9>] handle_edge_irq+0xc9/0x150
++	[<ffffffff8020e3ab>] do_IRQ+0xcb/0x1c0
++	[<ffffffff8020c093>] ret_from_intr+0x0/0xa
++	<EOI> <4>---[ end trace f6435a98e2a38c0e ]---
+ 
+ The driver developer can find the driver and the device including a stacktrace
+ of the DMA-API call which caused this warning.
+@@ -637,43 +713,42 @@ details.
+ The debugfs directory for the DMA-API debugging code is called dma-api/. In
+ this directory the following files can currently be found:
+ 
+-	dma-api/all_errors	This file contains a numeric value. If this
++=============================== ===============================================
++dma-api/all_errors		This file contains a numeric value. If this
+ 				value is not equal to zero the debugging code
+ 				will print a warning for every error it finds
+ 				into the kernel log. Be careful with this
+ 				option, as it can easily flood your logs.
+ 
+-	dma-api/disabled	This read-only file contains the character 'Y'
++dma-api/disabled		This read-only file contains the character 'Y'
+ 				if the debugging code is disabled. This can
+ 				happen when it runs out of memory or if it was
+ 				disabled at boot time
+ 
+-	dma-api/error_count	This file is read-only and shows the total
++dma-api/error_count		This file is read-only and shows the total
+ 				numbers of errors found.
+ 
+-	dma-api/num_errors	The number in this file shows how many
++dma-api/num_errors		The number in this file shows how many
+ 				warnings will be printed to the kernel log
+ 				before it stops. This number is initialized to
+ 				one at system boot and be set by writing into
+ 				this file
+ 
+-	dma-api/min_free_entries
+-				This read-only file can be read to get the
++dma-api/min_free_entries	This read-only file can be read to get the
+ 				minimum number of free dma_debug_entries the
+ 				allocator has ever seen. If this value goes
+ 				down to zero the code will disable itself
+ 				because it is not longer reliable.
+ 
+-	dma-api/num_free_entries
+-				The current number of free dma_debug_entries
++dma-api/num_free_entries	The current number of free dma_debug_entries
+ 				in the allocator.
+ 
+-	dma-api/driver-filter
+-				You can write a name of a driver into this file
++dma-api/driver-filter		You can write a name of a driver into this file
+ 				to limit the debug output to requests from that
+ 				particular driver. Write an empty string to
+ 				that file to disable the filter and see
+ 				all errors again.
++=============================== ===============================================
+ 
+ If you have this code compiled into your kernel it will be enabled by default.
+ If you want to boot without the bookkeeping anyway you can provide
+@@ -692,7 +767,10 @@ of preallocated entries is defined per architecture. If it is too low for you
+ boot with 'dma_debug_entries=<your_desired_number>' to overwrite the
+ architectural default.
+ 
+-void debug_dmap_mapping_error(struct device *dev, dma_addr_t dma_addr);
++::
++
++	void
++	debug_dmap_mapping_error(struct device *dev, dma_addr_t dma_addr);
+ 
+ dma-debug interface debug_dma_mapping_error() to debug drivers that fail
+ to check DMA mapping errors on addresses returned by dma_map_single() and
+@@ -702,4 +780,3 @@ the driver. When driver does unmap, debug_dma_unmap() checks the flag and if
+ this flag is still set, prints warning message that includes call trace that
+ leads up to the unmap. This interface can be called from dma_mapping_error()
+ routines to enable DMA mapping error check debugging.
+-
 -- 
 2.9.4
