@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWdm-0000PC-Cj
- for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:23:52 +0000
+ id 1dBWdc-0000PY-Q0
+ for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:23:44 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -12,12 +12,10 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- Kees Cook <keescook@chromium.org>, Emese Revfy <re.emese@gmail.com>,
- kernel-hardening@lists.openwall.com
-Subject: [PATCH 23/31] gcc-plugins.txt: standardize document format
-Date: Thu, 18 May 2017 22:22:28 -0300
-Message-Id: <c6318a78ef026da30aa488bd90a5a19e18fc13a3.1495156488.git.mchehab@s-opensource.com>
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH 21/31] flexible-arrays.txt: standardize document format
+Date: Thu, 18 May 2017 22:22:26 -0300
+Message-Id: <75d1829cdf946a5dd9618491d8ac39310c81aae0.1495156488.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
 References: <cover.1495156488.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
@@ -38,125 +36,106 @@ format. Some doesn't even have titles!
 Change its representation to follow the adopted standard,
 using ReST markups for it to be parseable by Sphinx:
 
-- promote main title;
-- use the right markup for footnotes;
-- use bold markup for files name;
-- identify literal blocks;
-- add blank lines to avoid Sphinx to complain;
-- remove numeration from titles.
+- use :Author: and :Updated: markups;
+- use proper markup for the document title;
+- mark the literal-blocks.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/gcc-plugins.txt | 58 ++++++++++++++++++++++++-------------------
- 1 file changed, 32 insertions(+), 26 deletions(-)
+ Documentation/flexible-arrays.txt | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/gcc-plugins.txt b/Documentation/gcc-plugins.txt
-index 433eaefb4aa1..8502f24396fb 100644
---- a/Documentation/gcc-plugins.txt
-+++ b/Documentation/gcc-plugins.txt
-@@ -1,14 +1,15 @@
-+=========================
- GCC plugin infrastructure
- =========================
- 
- 
--1. Introduction
--===============
-+Introduction
-+============
- 
- GCC plugins are loadable modules that provide extra features to the
--compiler [1]. They are useful for runtime instrumentation and static analysis.
-+compiler [1]_. They are useful for runtime instrumentation and static analysis.
- We can analyse, change and add further code during compilation via
--callbacks [2], GIMPLE [3], IPA [4] and RTL passes [5].
-+callbacks [2]_, GIMPLE [3]_, IPA [4]_ and RTL passes [5]_.
- 
- The GCC plugin infrastructure of the kernel supports all gcc versions from
- 4.5 to 6.0, building out-of-tree modules, cross-compilation and building in a
-@@ -21,56 +22,61 @@ and versions 4.8+ can only be compiled by a C++ compiler.
- Currently the GCC plugin infrastructure supports only the x86, arm, arm64 and
- powerpc architectures.
- 
--This infrastructure was ported from grsecurity [6] and PaX [7].
-+This infrastructure was ported from grsecurity [6]_ and PaX [7]_.
- 
- --
--[1] https://gcc.gnu.org/onlinedocs/gccint/Plugins.html
--[2] https://gcc.gnu.org/onlinedocs/gccint/Plugin-API.html#Plugin-API
--[3] https://gcc.gnu.org/onlinedocs/gccint/GIMPLE.html
--[4] https://gcc.gnu.org/onlinedocs/gccint/IPA.html
--[5] https://gcc.gnu.org/onlinedocs/gccint/RTL.html
--[6] https://grsecurity.net/
--[7] https://pax.grsecurity.net/
- 
-+.. [1] https://gcc.gnu.org/onlinedocs/gccint/Plugins.html
-+.. [2] https://gcc.gnu.org/onlinedocs/gccint/Plugin-API.html#Plugin-API
-+.. [3] https://gcc.gnu.org/onlinedocs/gccint/GIMPLE.html
-+.. [4] https://gcc.gnu.org/onlinedocs/gccint/IPA.html
-+.. [5] https://gcc.gnu.org/onlinedocs/gccint/RTL.html
-+.. [6] https://grsecurity.net/
-+.. [7] https://pax.grsecurity.net/
- 
--2. Files
--========
- 
--$(src)/scripts/gcc-plugins
-+Files
-+=====
+diff --git a/Documentation/flexible-arrays.txt b/Documentation/flexible-arrays.txt
+index df904aec9904..45aec4d354f7 100644
+--- a/Documentation/flexible-arrays.txt
++++ b/Documentation/flexible-arrays.txt
+@@ -1,6 +1,8 @@
+ Using flexible arrays in the kernel
+-Last updated for 2.6.32
+-Jonathan Corbet <corbet@lwn.net>
++===================================
 +
-+**$(src)/scripts/gcc-plugins**
-+
- 	This is the directory of the GCC plugins.
++:Updated: Last updated for 2.6.32
++:Author: Jonathan Corbet <corbet@lwn.net>
  
--$(src)/scripts/gcc-plugins/gcc-common.h
-+**$(src)/scripts/gcc-plugins/gcc-common.h**
-+
- 	This is a compatibility header for GCC plugins.
- 	It should be always included instead of individual gcc headers.
+ Large contiguous memory allocations can be unreliable in the Linux kernel.
+ Kernel programmers will sometimes respond to this problem by allocating
+@@ -26,7 +28,7 @@ operation.  It's also worth noting that flexible arrays do no internal
+ locking at all; if concurrent access to an array is possible, then the
+ caller must arrange for appropriate mutual exclusion.
  
--$(src)/scripts/gcc-plugin.sh
-+**$(src)/scripts/gcc-plugin.sh**
-+
- 	This script checks the availability of the included headers in
- 	gcc-common.h and chooses the proper host compiler to build the plugins
- 	(gcc-4.7 can be built by either gcc or g++).
+-The creation of a flexible array is done with:
++The creation of a flexible array is done with::
  
--$(src)/scripts/gcc-plugins/gcc-generate-gimple-pass.h
--$(src)/scripts/gcc-plugins/gcc-generate-ipa-pass.h
--$(src)/scripts/gcc-plugins/gcc-generate-simple_ipa-pass.h
--$(src)/scripts/gcc-plugins/gcc-generate-rtl-pass.h
-+**$(src)/scripts/gcc-plugins/gcc-generate-gimple-pass.h,
-+$(src)/scripts/gcc-plugins/gcc-generate-ipa-pass.h,
-+$(src)/scripts/gcc-plugins/gcc-generate-simple_ipa-pass.h,
-+$(src)/scripts/gcc-plugins/gcc-generate-rtl-pass.h**
-+
- 	These headers automatically generate the registration structures for
- 	GIMPLE, SIMPLE_IPA, IPA and RTL passes. They support all gcc versions
- 	from 4.5 to 6.0.
- 	They should be preferred to creating the structures by hand.
+     #include <linux/flex_array.h>
  
+@@ -40,14 +42,14 @@ argument is passed directly to the internal memory allocation calls.  With
+ the current code, using flags to ask for high memory is likely to lead to
+ notably unpleasant side effects.
  
--3. Usage
--========
-+Usage
-+=====
+-It is also possible to define flexible arrays at compile time with:
++It is also possible to define flexible arrays at compile time with::
  
- You must install the gcc plugin headers for your gcc version,
--e.g., on Ubuntu for gcc-4.9:
-+e.g., on Ubuntu for gcc-4.9::
+     DEFINE_FLEX_ARRAY(name, element_size, total);
  
- 	apt-get install gcc-4.9-plugin-dev
+ This macro will result in a definition of an array with the given name; the
+ element size and total will be checked for validity at compile time.
  
--Enable a GCC plugin based feature in the kernel config:
-+Enable a GCC plugin based feature in the kernel config::
+-Storing data into a flexible array is accomplished with a call to:
++Storing data into a flexible array is accomplished with a call to::
  
- 	CONFIG_GCC_PLUGIN_CYC_COMPLEXITY = y
+     int flex_array_put(struct flex_array *array, unsigned int element_nr,
+     		       void *src, gfp_t flags);
+@@ -63,7 +65,7 @@ running in some sort of atomic context; in this situation, sleeping in the
+ memory allocator would be a bad thing.  That can be avoided by using
+ GFP_ATOMIC for the flags value, but, often, there is a better way.  The
+ trick is to ensure that any needed memory allocations are done before
+-entering atomic context, using:
++entering atomic context, using::
  
--To compile only the plugin(s):
-+To compile only the plugin(s)::
+     int flex_array_prealloc(struct flex_array *array, unsigned int start,
+ 			    unsigned int nr_elements, gfp_t flags);
+@@ -73,7 +75,7 @@ defined by start and nr_elements has been allocated.  Thereafter, a
+ flex_array_put() call on an element in that range is guaranteed not to
+ block.
  
- 	make gcc-plugins
+-Getting data back out of the array is done with:
++Getting data back out of the array is done with::
+ 
+     void *flex_array_get(struct flex_array *fa, unsigned int element_nr);
+ 
+@@ -89,7 +91,7 @@ involving that number probably result from use of unstored array entries.
+ Note that, if array elements are allocated with __GFP_ZERO, they will be
+ initialized to zero and this poisoning will not happen.
+ 
+-Individual elements in the array can be cleared with:
++Individual elements in the array can be cleared with::
+ 
+     int flex_array_clear(struct flex_array *array, unsigned int element_nr);
+ 
+@@ -97,7 +99,7 @@ This function will set the given element to FLEX_ARRAY_FREE and return
+ zero.  If storage for the indicated element is not allocated for the array,
+ flex_array_clear() will return -EINVAL instead.  Note that clearing an
+ element does not release the storage associated with it; to reduce the
+-allocated size of an array, call:
++allocated size of an array, call::
+ 
+     int flex_array_shrink(struct flex_array *array);
+ 
+@@ -106,12 +108,12 @@ This function works by scanning the array for pages containing nothing but
+ FLEX_ARRAY_FREE bytes, so (1) it can be expensive, and (2) it will not work
+ if the array's pages are allocated with __GFP_ZERO.
+ 
+-It is possible to remove all elements of an array with a call to:
++It is possible to remove all elements of an array with a call to::
+ 
+     void flex_array_free_parts(struct flex_array *array);
+ 
+ This call frees all elements, but leaves the array itself in place.
+-Freeing the entire array is done with:
++Freeing the entire array is done with::
+ 
+     void flex_array_free(struct flex_array *array);
  
 -- 
 2.9.4
