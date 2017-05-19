@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by merlin.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWh7-0005sl-J0
- for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:27:08 +0000
+ id 1dBWh6-0005ss-68
+ for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:27:06 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -13,9 +13,9 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 26/29] xillybus.txt: standardize document format
-Date: Thu, 18 May 2017 22:26:10 -0300
-Message-Id: <0466b4bdf3121ce62e55f1281ef243420cd3915d.1495157082.git.mchehab@s-opensource.com>
+Subject: [PATCH 22/29] unaligned-memory-access.txt: standardize document format
+Date: Thu, 18 May 2017 22:26:06 -0300
+Message-Id: <3d289e72adf12916d5934ff14490593108ca3925.1495157082.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495157082.git.mchehab@s-opensource.com>
 References: <cover.1495157082.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495157082.git.mchehab@s-opensource.com>
@@ -35,99 +35,152 @@ format. Some doesn't even have titles!
 
 Change its representation to follow the adopted standard,
 using ReST markups for it to be parseable by Sphinx:
-- Adjust indentation;
-- Mark authorship;
-- Comment internal contents table;
-- Mark literal blocks;
-- Don't use all-upercase titles.
+- promote document title one level;
+- use markups for authorship and put it at the beginning;
+- mark literal blocks;
+- adjust identation.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/xillybus.txt | 29 ++++++++++++++---------------
- 1 file changed, 14 insertions(+), 15 deletions(-)
+ Documentation/unaligned-memory-access.txt | 57 ++++++++++++++++---------------
+ 1 file changed, 30 insertions(+), 27 deletions(-)
 
-diff --git a/Documentation/xillybus.txt b/Documentation/xillybus.txt
-index 1660145b9969..2446ee303c09 100644
---- a/Documentation/xillybus.txt
-+++ b/Documentation/xillybus.txt
-@@ -1,12 +1,11 @@
-+==========================================
-+Xillybus driver for generic FPGA interface
-+==========================================
+diff --git a/Documentation/unaligned-memory-access.txt b/Documentation/unaligned-memory-access.txt
+index 3f76c0c37920..51b4ff031586 100644
+--- a/Documentation/unaligned-memory-access.txt
++++ b/Documentation/unaligned-memory-access.txt
+@@ -1,6 +1,15 @@
++=========================
+ UNALIGNED MEMORY ACCESSES
+ =========================
  
--               ==========================================
--               Xillybus driver for generic FPGA interface
--               ==========================================
-+:Author: Eli Billauer, Xillybus Ltd. (http://xillybus.com)
-+:Email:  eli.billauer@gmail.com or as advertised on Xillybus' site.
++:Author: Daniel Drake <dsd@gentoo.org>,
++:Author: Johannes Berg <johannes@sipsolutions.net>
++
++:With help from: Alan Cox, Avuton Olrich, Heikki Orsila, Jan Engelhardt,
++  Kyle McMartin, Kyle Moffett, Randy Dunlap, Robert Hancock, Uli Kunitz,
++  Vadim Lobanov
++
++
+ Linux runs on a wide variety of architectures which have varying behaviour
+ when it comes to memory access. This document presents some details about
+ unaligned accesses, why you need to write code that doesn't cause them,
+@@ -73,7 +82,7 @@ memory addresses of certain variables, etc.
  
--Author: Eli Billauer, Xillybus Ltd. (http://xillybus.com)
--Email:  eli.billauer@gmail.com or as advertised on Xillybus' site.
+ Fortunately things are not too complex, as in most cases, the compiler
+ ensures that things will work for you. For example, take the following
+-structure:
++structure::
+ 
+ 	struct foo {
+ 		u16 field1;
+@@ -106,7 +115,7 @@ On a related topic, with the above considerations in mind you may observe
+ that you could reorder the fields in the structure in order to place fields
+ where padding would otherwise be inserted, and hence reduce the overall
+ resident memory size of structure instances. The optimal layout of the
+-above example is:
++above example is::
+ 
+ 	struct foo {
+ 		u32 field2;
+@@ -139,21 +148,21 @@ Code that causes unaligned access
+ With the above in mind, let's move onto a real life example of a function
+ that can cause an unaligned memory access. The following function taken
+ from include/linux/etherdevice.h is an optimized routine to compare two
+-ethernet MAC addresses for equality.
++ethernet MAC addresses for equality::
+ 
+-bool ether_addr_equal(const u8 *addr1, const u8 *addr2)
+-{
+-#ifdef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
++  bool ether_addr_equal(const u8 *addr1, const u8 *addr2)
++  {
++  #ifdef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+ 	u32 fold = ((*(const u32 *)addr1) ^ (*(const u32 *)addr2)) |
+ 		   ((*(const u16 *)(addr1 + 4)) ^ (*(const u16 *)(addr2 + 4)));
+ 
+ 	return fold == 0;
+-#else
++  #else
+ 	const u16 *a = (const u16 *)addr1;
+ 	const u16 *b = (const u16 *)addr2;
+ 	return ((a[0] ^ b[0]) | (a[1] ^ b[1]) | (a[2] ^ b[2])) == 0;
+-#endif
+-}
++  #endif
++  }
+ 
+ In the above function, when the hardware has efficient unaligned access
+ capability, there is no issue with this code.  But when the hardware isn't
+@@ -171,7 +180,8 @@ as it is a decent optimization for the cases when you can ensure alignment,
+ which is true almost all of the time in ethernet networking context.
+ 
+ 
+-Here is another example of some code that could cause unaligned accesses:
++Here is another example of some code that could cause unaligned accesses::
++
+ 	void myfunc(u8 *data, u32 value)
+ 	{
+ 		[...]
+@@ -184,6 +194,7 @@ to an address that is not evenly divisible by 4.
+ 
+ In summary, the 2 main scenarios where you may run into unaligned access
+ problems involve:
++
+  1. Casting variables to types of different lengths
+  2. Pointer arithmetic followed by access to at least 2 bytes of data
+ 
+@@ -195,7 +206,7 @@ The easiest way to avoid unaligned access is to use the get_unaligned() and
+ put_unaligned() macros provided by the <asm/unaligned.h> header file.
+ 
+ Going back to an earlier example of code that potentially causes unaligned
+-access:
++access::
+ 
+ 	void myfunc(u8 *data, u32 value)
+ 	{
+@@ -204,7 +215,7 @@ access:
+ 		[...]
+ 	}
+ 
+-To avoid the unaligned memory access, you would rewrite it as follows:
++To avoid the unaligned memory access, you would rewrite it as follows::
+ 
+ 	void myfunc(u8 *data, u32 value)
+ 	{
+@@ -215,7 +226,7 @@ To avoid the unaligned memory access, you would rewrite it as follows:
+ 	}
+ 
+ The get_unaligned() macro works similarly. Assuming 'data' is a pointer to
+-memory and you wish to avoid unaligned access, its usage is as follows:
++memory and you wish to avoid unaligned access, its usage is as follows::
+ 
+ 	u32 value = get_unaligned((u32 *) data);
+ 
+@@ -245,18 +256,10 @@ For some ethernet hardware that cannot DMA to unaligned addresses like
+ 4*n+2 or non-ethernet hardware, this can be a problem, and it is then
+ required to copy the incoming frame into an aligned buffer. Because this is
+ unnecessary on architectures that can do unaligned accesses, the code can be
+-made dependent on CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS like so:
 -
--Contents:
-+.. Contents:
+-#ifdef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+-	skb = original skb
+-#else
+-	skb = copy skb
+-#endif
+-
+---
+-Authors: Daniel Drake <dsd@gentoo.org>,
+-         Johannes Berg <johannes@sipsolutions.net>
+-With help from: Alan Cox, Avuton Olrich, Heikki Orsila, Jan Engelhardt,
+-Kyle McMartin, Kyle Moffett, Randy Dunlap, Robert Hancock, Uli Kunitz,
+-Vadim Lobanov
++made dependent on CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS like so::
  
-  - Introduction
-   -- Background
-@@ -17,7 +16,7 @@ Contents:
-   -- Synchronization
-   -- Seekable pipes
- 
--- Internals
-+ - Internals
-   -- Source code organization
-   -- Pipe attributes
-   -- Host never reads from the FPGA
-@@ -29,7 +28,7 @@ Contents:
-   -- The "nonempty" message (supporting poll)
- 
- 
--INTRODUCTION
-+Introduction
- ============
- 
- Background
-@@ -105,7 +104,7 @@ driver is used to work out of the box with any Xillybus IP core.
- The data structure just mentioned should not be confused with PCI's
- configuration space or the Flattened Device Tree.
- 
--USAGE
-+Usage
- =====
- 
- User interface
-@@ -117,11 +116,11 @@ names of these files depend on the IP core that is loaded in the FPGA (see
- Probing below). To communicate with the FPGA, open the device file that
- corresponds to the hardware FIFO you want to send data or receive data from,
- and use plain write() or read() calls, just like with a regular pipe. In
--particular, it makes perfect sense to go:
-+particular, it makes perfect sense to go::
- 
--$ cat mydata > /dev/xillybus_thisfifo
-+	$ cat mydata > /dev/xillybus_thisfifo
- 
--$ cat /dev/xillybus_thatfifo > hisdata
-+	$ cat /dev/xillybus_thatfifo > hisdata
- 
- possibly pressing CTRL-C as some stage, even though the xillybus_* pipes have
- the capability to send an EOF (but may not use it).
-@@ -178,7 +177,7 @@ the attached memory is done by seeking to the desired address, and calling
- read() or write() as required.
- 
- 
--INTERNALS
-+Internals
- =========
- 
- Source code organization
-@@ -365,7 +364,7 @@ into that page. It can be shown that all pages requested from the kernel
- (except possibly for the last) are 100% utilized this way.
- 
- The "nonempty" message (supporting poll)
-----------------------------------------
-+----------------------------------------
- 
- In order to support the "poll" method (and hence select() ), there is a small
- catch regarding the FPGA to host direction: The FPGA may have filled a DMA
++	#ifdef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
++		skb = original skb
++	#else
++		skb = copy skb
++	#endif
 -- 
 2.9.4
