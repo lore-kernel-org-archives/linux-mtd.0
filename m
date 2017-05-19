@@ -1,7 +1,7 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWdG-0000LL-BL
+ id 1dBWdG-0000LK-BI
  for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:23:10 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
@@ -13,9 +13,9 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 17/31] DMA-ISA-LPC.txt: standardize document format
-Date: Thu, 18 May 2017 22:22:22 -0300
-Message-Id: <6ac1c549a03ccf64f7833b2159ad2b0866df686a.1495156488.git.mchehab@s-opensource.com>
+Subject: [PATCH 07/31] circular-buffers.txt: standardize document format
+Date: Thu, 18 May 2017 22:22:12 -0300
+Message-Id: <eeefe78d3c424db72b3180ad7e2788813e397f48.1495156488.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
 References: <cover.1495156488.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
@@ -36,148 +36,180 @@ format. Some doesn't even have titles!
 Change its representation to follow the adopted standard,
 using ReST markups for it to be parseable by Sphinx:
 
-- use proper markups for titles;
-- use :Author: for authorship;
-- identify the literal blocks.
+- Mark titles with ReST notation;
+- comment the contents table;
+- Use :Author: tag for authorship;
+- mark literal blocks as such;
+- use valid numbered list markups;
+- Don't capitalize titles.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/DMA-ISA-LPC.txt | 71 ++++++++++++++++++++++---------------------
- 1 file changed, 36 insertions(+), 35 deletions(-)
+ Documentation/circular-buffers.txt | 51 +++++++++++++++++---------------------
+ 1 file changed, 23 insertions(+), 28 deletions(-)
 
-diff --git a/Documentation/DMA-ISA-LPC.txt b/Documentation/DMA-ISA-LPC.txt
-index c41331398752..c44be1a2176f 100644
---- a/Documentation/DMA-ISA-LPC.txt
-+++ b/Documentation/DMA-ISA-LPC.txt
-@@ -1,19 +1,20 @@
--                        DMA with ISA and LPC devices
--                        ============================
-+============================
-+DMA with ISA and LPC devices
-+============================
+diff --git a/Documentation/circular-buffers.txt b/Documentation/circular-buffers.txt
+index 4a824d232472..d4628174b7c5 100644
+--- a/Documentation/circular-buffers.txt
++++ b/Documentation/circular-buffers.txt
+@@ -1,9 +1,9 @@
+-			       ================
+-			       CIRCULAR BUFFERS
+-			       ================
++================
++Circular Buffers
++================
  
--                      Pierre Ossman <drzeus@drzeus.cx>
-+:Author: Pierre Ossman <drzeus@drzeus.cx>
+-By: David Howells <dhowells@redhat.com>
+-    Paul E. McKenney <paulmck@linux.vnet.ibm.com>
++:Author: David Howells <dhowells@redhat.com>
++:Author: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
  
- This document describes how to do DMA transfers using the old ISA DMA
- controller. Even though ISA is more or less dead today the LPC bus
- uses the same DMA system so it will be around for quite some time.
  
--Part I - Headers and dependencies
-----------------------------------
-+Headers and dependencies
-+------------------------
+ Linux provides a number of features that can be used to implement circular
+@@ -20,7 +20,7 @@ producer and just one consumer.  It is possible to handle multiple producers by
+ serialising them, and to handle multiple consumers by serialising them.
  
--To do ISA style DMA you need to include two headers:
-+To do ISA style DMA you need to include two headers::
  
--#include <linux/dma-mapping.h>
--#include <asm/dma.h>
-+	#include <linux/dma-mapping.h>
-+	#include <asm/dma.h>
+-Contents:
++.. Contents:
  
- The first is the generic DMA API used to convert virtual addresses to
- bus addresses (see Documentation/DMA-API.txt for details).
-@@ -23,8 +24,8 @@ this is not present on all platforms make sure you construct your
- Kconfig to be dependent on ISA_DMA_API (not ISA) so that nobody tries
- to build your driver on unsupported platforms.
+  (*) What is a circular buffer?
  
--Part II - Buffer allocation
-----------------------------
-+Buffer allocation
-+-----------------
+@@ -31,8 +31,8 @@ Contents:
+      - The consumer.
  
- The ISA DMA controller has some very strict requirements on which
- memory it can access so extra care must be taken when allocating
-@@ -47,8 +48,8 @@ __GFP_REPEAT and __GFP_NOWARN to make the allocator try a bit harder.
- (This scarcity also means that you should allocate the buffer as
- early as possible and not release it until the driver is unloaded.)
  
--Part III - Address translation
--------------------------------
-+Address translation
-+-------------------
+-==========================
+-WHAT IS A CIRCULAR BUFFER?
++
++What is a circular buffer?
+ ==========================
  
- To translate the virtual address to a bus address, use the normal DMA
- API. Do _not_ use isa_virt_to_phys() even though it does the same
-@@ -61,8 +62,8 @@ Note: x86_64 had a broken DMA API when it came to ISA but has since
- been fixed. If your arch has problems then fix the DMA API instead of
- reverting to the ISA functions.
+ First of all, what is a circular buffer?  A circular buffer is a buffer of
+@@ -60,9 +60,7 @@ buffer, provided that neither index overtakes the other.  The implementer must
+ be careful, however, as a region more than one unit in size may wrap the end of
+ the buffer and be broken into two segments.
  
--Part IV - Channels
--------------------
-+Channels
-+--------
+-
+-============================
+-MEASURING POWER-OF-2 BUFFERS
++Measuring power-of-2 buffers
+ ============================
  
- A normal ISA DMA controller has 8 channels. The lower four are for
- 8-bit transfers and the upper four are for 16-bit transfers.
-@@ -80,8 +81,8 @@ The ability to use 16-bit or 8-bit transfers is _not_ up to you as a
- driver author but depends on what the hardware supports. Check your
- specs or test different channels.
+ Calculation of the occupancy or the remaining capacity of an arbitrarily sized
+@@ -71,13 +69,13 @@ modulus (divide) instruction.  However, if the buffer is of a power-of-2 size,
+ then a much quicker bitwise-AND instruction can be used instead.
  
--Part V - Transfer data
------------------------
-+Transfer data
-+-------------
+ Linux provides a set of macros for handling power-of-2 circular buffers.  These
+-can be made use of by:
++can be made use of by::
  
- Now for the good stuff, the actual DMA transfer. :)
+ 	#include <linux/circ_buf.h>
  
-@@ -112,37 +113,37 @@ Once the DMA transfer is finished (or timed out) you should disable
- the channel again. You should also check get_dma_residue() to make
- sure that all data has been transferred.
+ The macros are:
  
--Example:
-+Example::
+- (*) Measure the remaining capacity of a buffer:
++ (#) Measure the remaining capacity of a buffer::
  
--int flags, residue;
-+	int flags, residue;
+ 	CIRC_SPACE(head_index, tail_index, buffer_size);
  
--flags = claim_dma_lock();
-+	flags = claim_dma_lock();
+@@ -85,7 +83,7 @@ The macros are:
+      can be inserted.
  
--clear_dma_ff();
-+	clear_dma_ff();
  
--set_dma_mode(channel, DMA_MODE_WRITE);
--set_dma_addr(channel, phys_addr);
--set_dma_count(channel, num_bytes);
-+	set_dma_mode(channel, DMA_MODE_WRITE);
-+	set_dma_addr(channel, phys_addr);
-+	set_dma_count(channel, num_bytes);
+- (*) Measure the maximum consecutive immediate space in a buffer:
++ (#) Measure the maximum consecutive immediate space in a buffer::
  
--dma_enable(channel);
-+	dma_enable(channel);
+ 	CIRC_SPACE_TO_END(head_index, tail_index, buffer_size);
  
--release_dma_lock(flags);
-+	release_dma_lock(flags);
+@@ -94,14 +92,14 @@ The macros are:
+      beginning of the buffer.
  
--while (!device_done());
-+	while (!device_done());
  
--flags = claim_dma_lock();
-+	flags = claim_dma_lock();
+- (*) Measure the occupancy of a buffer:
++ (#) Measure the occupancy of a buffer::
  
--dma_disable(channel);
-+	dma_disable(channel);
+ 	CIRC_CNT(head_index, tail_index, buffer_size);
  
--residue = dma_get_residue(channel);
--if (residue != 0)
--	printk(KERN_ERR "driver: Incomplete DMA transfer!"
--		" %d bytes left!\n", residue);
-+	residue = dma_get_residue(channel);
-+	if (residue != 0)
-+		printk(KERN_ERR "driver: Incomplete DMA transfer!"
-+			" %d bytes left!\n", residue);
+      This returns the number of items currently occupying a buffer[2].
  
--release_dma_lock(flags);
-+	release_dma_lock(flags);
  
--Part VI - Suspend/resume
--------------------------
-+Suspend/resume
-+--------------
+- (*) Measure the non-wrapping occupancy of a buffer:
++ (#) Measure the non-wrapping occupancy of a buffer::
  
- It is the driver's responsibility to make sure that the machine isn't
- suspended while a DMA transfer is in progress. Also, all DMA settings
+ 	CIRC_CNT_TO_END(head_index, tail_index, buffer_size);
+ 
+@@ -112,7 +110,7 @@ The macros are:
+ Each of these macros will nominally return a value between 0 and buffer_size-1,
+ however:
+ 
+- [1] CIRC_SPACE*() are intended to be used in the producer.  To the producer
++ (1) CIRC_SPACE*() are intended to be used in the producer.  To the producer
+      they will return a lower bound as the producer controls the head index,
+      but the consumer may still be depleting the buffer on another CPU and
+      moving the tail index.
+@@ -120,7 +118,7 @@ however:
+      To the consumer it will show an upper bound as the producer may be busy
+      depleting the space.
+ 
+- [2] CIRC_CNT*() are intended to be used in the consumer.  To the consumer they
++ (2) CIRC_CNT*() are intended to be used in the consumer.  To the consumer they
+      will return a lower bound as the consumer controls the tail index, but the
+      producer may still be filling the buffer on another CPU and moving the
+      head index.
+@@ -128,14 +126,12 @@ however:
+      To the producer it will show an upper bound as the consumer may be busy
+      emptying the buffer.
+ 
+- [3] To a third party, the order in which the writes to the indices by the
++ (3) To a third party, the order in which the writes to the indices by the
+      producer and consumer become visible cannot be guaranteed as they are
+      independent and may be made on different CPUs - so the result in such a
+      situation will merely be a guess, and may even be negative.
+ 
+-
+-===========================================
+-USING MEMORY BARRIERS WITH CIRCULAR BUFFERS
++Using memory barriers with circular buffers
+ ===========================================
+ 
+ By using memory barriers in conjunction with circular buffers, you can avoid
+@@ -152,10 +148,10 @@ time, and only one thing should be emptying a buffer at any one time, but the
+ two sides can operate simultaneously.
+ 
+ 
+-THE PRODUCER
++The producer
+ ------------
+ 
+-The producer will look something like this:
++The producer will look something like this::
+ 
+ 	spin_lock(&producer_lock);
+ 
+@@ -193,10 +189,10 @@ ordering between the read of the index indicating that the consumer has
+ vacated a given element and the write by the producer to that same element.
+ 
+ 
+-THE CONSUMER
++The Consumer
+ ------------
+ 
+-The consumer will look something like this:
++The consumer will look something like this::
+ 
+ 	spin_lock(&consumer_lock);
+ 
+@@ -235,8 +231,7 @@ prevents the compiler from tearing the store, and enforces ordering
+ against previous accesses.
+ 
+ 
+-===============
+-FURTHER READING
++Further reading
+ ===============
+ 
+ See also Documentation/memory-barriers.txt for a description of Linux's memory
 -- 
 2.9.4
