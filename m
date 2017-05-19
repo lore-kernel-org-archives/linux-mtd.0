@@ -1,23 +1,28 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBchg-00048n-2M
- for linux-mtd@lists.infradead.org; Fri, 19 May 2017 07:52:06 +0000
-Date: Fri, 19 May 2017 09:51:40 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Jan Glauber <jglauber@cavium.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-mtd@lists.infradead.org
-Subject: Re: [RFC PATCH 2/2] nand: cavium: Nand flash controller for Cavium
- ARM64 SOCs
-Message-ID: <20170519095140.2a5f9e5c@bbrezillon>
-In-Reply-To: <20170327160524.29019-3-jglauber@cavium.com>
-References: <20170327160524.29019-1-jglauber@cavium.com>
- <20170327160524.29019-3-jglauber@cavium.com>
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dBdDV-0008FW-Sv
+ for linux-mtd@lists.infradead.org; Fri, 19 May 2017 08:25:00 +0000
+Subject: Re: [PATCH] mkfs.ubifs: Add support for symlinks in device table
+To: David Engraf <david.engraf@sysgo.com>
+References: <20170518133854.20744-1-david.engraf@sysgo.com>
+ <CAFLxGvyeA5tJ+pGfiav7t3-c7omvByT1+yEy62-f3bJUrxMeHw@mail.gmail.com>
+ <09400658-229c-b985-75d4-7df184e4be47@sysgo.com>
+ <d41978aa-9583-6a27-d992-77a49962daed@nod.at>
+ <678b2b7a-4f2e-5bfe-1f10-61de599a59bb@sysgo.com>
+ <652cc3d4-10a2-d476-c4b1-63eff6aa2ea7@nod.at>
+ <dc1e73ec-537b-8e23-6dab-0ce4c2e371a7@sysgo.com>
+ <97e661e2-0648-e148-280b-8ff6cc9cbe09@nod.at>
+ <9e19f6f3-e825-72b4-cf5e-fea2c12a5c7e@nod.at>
+ <9e37787a-3683-1417-a03e-8a00022a44ff@sysgo.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Oberhollenzer <goliath@sigma-star.at>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <3ecf5d12-6a22-58a2-b799-bd70a141a646@nod.at>
+Date: Fri, 19 May 2017 10:24:32 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <9e37787a-3683-1417-a03e-8a00022a44ff@sysgo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,115 +32,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jan,
+David,
 
-A few more comments.
+Am 19.05.2017 um 08:13 schrieb David Engraf:
+>> Do you only care about the ls output or does one of your applications
+>> depend on it?
+> 
+> It's mainly the output of ls because I'm using a verify script checking ownership of each file. Without having the ability to set the ownership of symlinks it will fail because ls
+> returns a uid/gid of my host development system which is not valid on the target.
 
-On Mon, 27 Mar 2017 18:05:24 +0200
-Jan Glauber <jglauber@cavium.com> wrote:
+this makes sense.
 
-> +
-> +struct ndf_nop_cmd {
-> +	u16 opcode	: 4;
-> +	u16 nop		: 12;
-> +};
-> +
-> +struct ndf_wait_cmd {
-> +	u16 opcode	: 4;
-> +	u16 r_b		: 1;	/* wait for one cycle or PBUS_WAIT deassert */
-> +	u16		: 3;
-> +	u16 wlen	: 3;	/* timing parameter select */
+Please also massage this comment in devtable.c:
+ * Don't bother with symlinks (permissions are irrelevant), hard links (special
+ * cases of regular files), or sockets (why bother).
 
-Can you clearly describe what this timing is? According to the code,
-it's tWB, but I'd prefer to have it documented here.
-BTW, it's not clear at first glance that the value you put here is
-actually encoding the tm_par slot.
+and make sure that the permissions are not set for symlinks.
+Otherwise I'd give users the impression that symlinks have permissions.
 
-> +	u16		: 5;
-> +};
-
-Hm, are you sure you want to trust the compiler for bitfield placement?
-AFAIK, bitfield ordering is not standardized and is thus
-implementation specific. I'd recommend that you switch to plain
-u16/u32/u64 fields and use macros to define bitfields:
-
-#define NFD_CMD_OPCODE(x)	(x)
-#define NFD_WAIT_CMD_WAIT_RB	BIT(5)
-#define NFD_WAIT_CMD_TPAR(x)	((x) << 8)
-...
-
-> +
-> +struct ndf_bus_cmd {
-> +	u16 opcode	: 4;
-> +	u16 direction	: 4;	/* 1 = acquire, 0 = release */
-
-Not sure why this is named direction if the only thing you can do is
-acquire or release the bus.
-
-> +	u16		: 8;
-> +};
-> +
-> +struct ndf_chip_cmd {
-> +	u16 opcode	: 4;
-> +	u16 chip	: 3;	/* select chip, 0 = disable */
-> +	u16 enable	: 1;	/* 1 = enable, 0 = disable */
-> +	u16 bus_width	: 2;	/* 10 = 16 bit, 01 = 8 bit */
-> +	u16		: 6;
-> +};
-> +
-> +struct ndf_cle_cmd {
-> +	u32 opcode	: 4;
-> +	u32		: 4;
-> +	u32 cmd_data	: 8;	/* command sent to the PBUS AD pins */
-> +	u32 clen1	: 3;	/* time between PBUS CLE and WE asserts */
-> +	u32 clen2	: 3;	/* time WE remains asserted */
-> +	u32 clen3	: 3;	/* time between WE deassert and CLE */
-
-Can you re-use the names defined here [1]?
-AFAICS, clen2 == tWP, clen3 == tCLH, clen1 == tCLS - tWP.
-
-> +	u32		: 7;
-> +};
-> +
-> +/* RD_EDO_CMD uses the same layout as RD_CMD */
-> +struct ndf_rd_cmd {
-> +	u32 opcode	: 4;
-> +	u32 data	: 16;	/* data bytes */
-> +	u32 rlen1	: 3;
-> +	u32 rlen2	: 3;
-> +	u32 rlen3	: 3;
-> +	u32 rlen4	: 3;
-
-Ditto: please document the timings and/or use better names.
-
-> +};
-> +
-> +struct ndf_wr_cmd {
-> +	u32 opcode	: 4;
-> +	u32 data	: 16;	/* data bytes */
-> +	u32		: 4;
-> +	u32 wlen1	: 3;
-> +	u32 wlen2	: 3;
-
-Ditto.
-
-> +	u32		: 3;
-> +};
-> +
-> +struct ndf_set_tm_par_cmd {
-> +	u64 opcode	: 4;
-> +	u64 tim_mult	: 4;	/* multiplier for the seven paramters */
-> +	u64 tm_par1	: 8;	/* --> Following are the 7 timing parameters that */
-> +	u64 tm_par2	: 8;	/*     specify the number of coprocessor cycles.  */
-> +	u64 tm_par3	: 8;	/*     A value of zero means one cycle.		  */
-> +	u64 tm_par4	: 8;	/*     All values are scaled by tim_mult	  */
-> +	u64 tm_par5	: 8;	/*     using tim_par * (2 ^ tim_mult).		  */
-
-Can you put this comment above the struct def (this comment applies to
-the whole driver)?
-
-> +	u64 tm_par6	: 8;
-> +	u64 tm_par7	: 8;
-> +};
-
-[1]http://elixir.free-electrons.com/linux/latest/source/include/linux/mtd/nand.h#L607
+Thanks,
+//richard
