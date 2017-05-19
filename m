@@ -1,29 +1,24 @@
-Received: from mail-yw0-x244.google.com ([2607:f8b0:4002:c05::244])
+Received: from us-smtp-delivery-212.mimecast.com ([63.128.21.212])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dBgD4-0008Kw-BE
- for linux-mtd@lists.infradead.org; Fri, 19 May 2017 11:36:43 +0000
-Received: by mail-yw0-x244.google.com with SMTP id h82so4715806ywb.3
- for <linux-mtd@lists.infradead.org>; Fri, 19 May 2017 04:36:22 -0700 (PDT)
-Date: Fri, 19 May 2017 07:36:14 -0400
-From: William Breathitt Gray <vilhelm.gray@gmail.com>
-To: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-Cc: Linux Doc Mailing List <linux-doc@vger.kernel.org>,
- Mauro Carvalho Chehab <mchehab@infradead.org>,
- linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 08/30] isa.txt: standardize document format
-Message-ID: <20170519113613.GA26174@sophia>
-References: <cover.1495156975.git.mchehab@s-opensource.com>
- <3cfb5ad6db86330e07c6d0f833bbdb2788d99fa7.1495156975.git.mchehab@s-opensource.com>
- <20170519021355.GA24556@sophia> <20170519055500.0334ebdc@vento.lan>
+ id 1dBgIM-0002Fw-Lg
+ for linux-mtd@lists.infradead.org; Fri, 19 May 2017 11:42:12 +0000
+Subject: Re: [PATCH] mtd: nand: Wait for PAGEPROG to finish in drivers setting
+ NAND_ECC_CUSTOM_PAGE_ACCESS
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+CC: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ Wenyou Yang <wenyou.yang@microchip.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, "Marek
+ Vasut" <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+References: <1494952069-3914-1-git-send-email-boris.brezillon@free-electrons.com>
+ <633b8440-2961-e84a-edde-5a5afb9f0f52@sigmadesigns.com>
+ <20170517125112.4a8113eb@bbrezillon>
+From: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+Message-ID: <a84810cf-75d1-c5d7-2c59-00f13ecba63c@sigmadesigns.com>
+Date: Fri, 19 May 2017 13:41:40 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20170519055500.0334ebdc@vento.lan>
+In-Reply-To: <20170517125112.4a8113eb@bbrezillon>
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,59 +28,112 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, May 19, 2017 at 05:55:00AM -0300, Mauro Carvalho Chehab wrote:
->Hi William,
->
->Em Thu, 18 May 2017 22:13:55 -0400
->William Breathitt Gray <vilhelm.gray@gmail.com> escreveu:
->
->> On Thu, May 18, 2017 at 10:24:00PM -0300, Mauro Carvalho Chehab wrote:
->> >Each text file under Documentation follows a different
->> >format. Some doesn't even have titles!
->> >
->> >Change its representation to follow the adopted standard,
->> >using ReST markups for it to be parseable by Sphinx:
->> >
->> >- Use the main title standard for this document;
->> >- replace _foo_ by **foo** for emphasis;
->> >- mark literal blocks as such.
->> >
->> >Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>  
->> 
->> I'm all right with this patch, but there's just one minor nitpick about
->> the title that I've inlined.
->> 
->> Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
->
->Thanks for review!
->
->> >---
->> > Documentation/isa.txt | 53 ++++++++++++++++++++++++++-------------------------
->> > 1 file changed, 27 insertions(+), 26 deletions(-)
->> >
->> >diff --git a/Documentation/isa.txt b/Documentation/isa.txt
->> >index f232c26a40be..def4a7b690b5 100644
->> >--- a/Documentation/isa.txt
->> >+++ b/Documentation/isa.txt
->> >@@ -1,5 +1,6 @@
->> >+===========
->> > ISA Drivers
->> >------------  
->> 
->> There's no need for this single-dashed line now so just remove it.
->
->Actually, the patch is removing the single-dashed line. The first "-"
->character on the above line from diff :-)
+On 17/05/2017 12:51, Boris Brezillon wrote:
 
-Ah yes, my apologies, you're absolutely correct! This should be
-perfectly fine then.
+> On Wed, 17 May 2017 12:41:01 +0200
+> Marc Gonzalez <marc_gonzalez@sigmadesigns.com> wrote:
+>=20
+>> On 16/05/2017 18:27, Boris Brezillon wrote:
+>>
+>>> Drivers setting NAND_ECC_CUSTOM_PAGE_ACCESS are supposed to handle the
+>>> full read/write page sequence, and waiting for a page to actually be
+>>> programmed is part of this write-page sequence.
+>>> This is also what is done in ->write_oob_xxx() hooks, so let's do that =
+in =20
+>>> ->write_page_xxx() as well to make it consistent. =20
+>>>
+>>> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+>>> ---
+>>>  drivers/mtd/nand/atmel/nand-controller.c |  6 +++++-
+>>>  drivers/mtd/nand/nand_base.c             | 10 ++++++----
+>>>  drivers/mtd/nand/nand_micron.c           | 10 ++++++++--
+>>>  drivers/mtd/nand/tango_nand.c            | 13 ++++++++++++-
+>>>  4 files changed, 31 insertions(+), 8 deletions(-)
+>>>
+>>> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.=
+c
+>>> index 8dafd2a54e11..08ff98c47e1f 100644
+>>> --- a/drivers/mtd/nand/nand_base.c
+>>> +++ b/drivers/mtd/nand/nand_base.c
+>>> @@ -2574,11 +2574,13 @@ static int nand_write_page(struct mtd_info *mtd=
+, struct nand_chip *chip,
+>>>  =09if (status < 0)
+>>>  =09=09return status;
+>>> =20
+>>> -=09if (nand_standard_page_accessors(&chip->ecc))
+>>> +=09if (nand_standard_page_accessors(&chip->ecc)) {
+>>>  =09=09chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
+>>> -=09status =3D chip->waitfunc(mtd, chip);
+>>> -=09if (status & NAND_STATUS_FAIL)
+>>> -=09=09return -EIO;
+>>> +
+>>> +=09=09status =3D chip->waitfunc(mtd, chip);
+>>> +=09=09if (status & NAND_STATUS_FAIL)
+>>> +=09=09=09return -EIO;
+>>> +=09} =20
+>>
+>> AFAIU, the wait operation used to be unconditional;
+>> but it is now skipped for CUSTOM accessors. OK.
+>=20
+> Yep.
+>=20
+>>
+>>
+>>> diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/tango_nan=
+d.c
+>>> index a2150b15d4c1..8498fa36e533 100644
+>>> --- a/drivers/mtd/nand/tango_nand.c
+>>> +++ b/drivers/mtd/nand/tango_nand.c
+>>> @@ -295,7 +295,7 @@ static int tango_write_page(struct mtd_info *mtd, s=
+truct nand_chip *chip,
+>>>  =09=09=09    const u8 *buf, int oob_required, int page)
+>>>  {
+>>>  =09struct tango_nfc *nfc =3D to_tango_nfc(chip->controller);
+>>> -=09int err, len =3D mtd->writesize;
+>>> +=09int err, status, len =3D mtd->writesize;
+>>> =20
+>>>  =09/* Calling tango_write_oob() would send PAGEPROG twice */
+>>>  =09if (oob_required)
+>>> @@ -306,6 +306,10 @@ static int tango_write_page(struct mtd_info *mtd, =
+struct nand_chip *chip,
+>>>  =09if (err)
+>>>  =09=09return err;
+>>> =20
+>>> +=09status =3D chip->waitfunc(mtd, chip);
+>>> +=09if (status & NAND_STATUS_FAIL)
+>>> +=09=09return -EIO;
+>>> +
+>>>  =09return 0;
+>>>  } =20
+>>
+>> When I introduced the custom_accessors flag, I missed the removal
+>> of this wait operation. The tango NFC is supposed to take care of
+>> everything, from start to finish.
+>>
+>> I applied the following patch:
+>>
+>> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+>> --- a/drivers/mtd/nand/nand_base.c
+>> +++ b/drivers/mtd/nand/nand_base.c
+>> @@ -2675,6 +2675,9 @@ static int nand_write_page(struct mtd_info *mtd, s=
+truct nand_chip *chip,
+>>         if (status < 0)
+>>                 return status;
+>> =20
+>> +       if (!nand_standard_page_accessors(&chip->ecc))
+>> +               return 0;
+>> +
+>>
+>> And ran mtd_speedtest. No measurable change.
+>> mtd_stresstest did not detect any issues.
+>=20
+> Okay. I think I'll keep the patch as is to avoid introducing extra
+> functional changes.
+> You can then send a patch removing the extra chip->waitfunc() from
+> tango_write_page() and explain why this is unneeded in your commit
+> message. Would that work for you?
 
-William Breathitt Gray
+Could you ping me when the patch hits linux-next?
+Then I'll send a fixup.
 
->
->> 
->> >+===========
->
->
->Thanks,
->Mauro
+Regards.
