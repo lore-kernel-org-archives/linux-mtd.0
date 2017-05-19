@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWdc-0000PM-Pm
- for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:23:44 +0000
+ id 1dBWdc-0000PB-Pz
+ for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:23:46 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -13,9 +13,9 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 09/31] cpu-load: standardize document format
-Date: Thu, 18 May 2017 22:22:14 -0300
-Message-Id: <08c1896acb6094127366b6b017a5efb0794a51fd.1495156488.git.mchehab@s-opensource.com>
+Subject: [PATCH 04/31] bus-virt-phys-mapping.txt: standardize document format
+Date: Thu, 18 May 2017 22:22:09 -0300
+Message-Id: <bb115c9642b0259384c7db0fe7803011764a2947.1495156488.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
 References: <cover.1495156488.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
@@ -36,174 +36,195 @@ format. Some doesn't even have titles!
 Change its representation to follow the adopted standard,
 using ReST markups for it to be parseable by Sphinx:
 
-- mark literals;
-- Adjust document title;
-- Use a list for references.
+- Move author info to the beginning of file and use :Author:
+- use warning/note annotation;
+- mark literal blocks as such;
+- Add a title for the document;
+- use **emphasis** instead of _emphasis_.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/cpu-load.txt | 117 +++++++++++++++++++++++----------------------
- 1 file changed, 59 insertions(+), 58 deletions(-)
+ Documentation/bus-virt-phys-mapping.txt | 63 +++++++++++++++++++--------------
+ 1 file changed, 37 insertions(+), 26 deletions(-)
 
-diff --git a/Documentation/cpu-load.txt b/Documentation/cpu-load.txt
-index 287224e57cfc..2d01ce43d2a2 100644
---- a/Documentation/cpu-load.txt
-+++ b/Documentation/cpu-load.txt
-@@ -1,9 +1,10 @@
-+========
- CPU load
----------
-+========
+diff --git a/Documentation/bus-virt-phys-mapping.txt b/Documentation/bus-virt-phys-mapping.txt
+index 2bc55ff3b4d1..26918b64bd6b 100644
+--- a/Documentation/bus-virt-phys-mapping.txt
++++ b/Documentation/bus-virt-phys-mapping.txt
+@@ -1,17 +1,26 @@
+-[ NOTE: The virt_to_bus() and bus_to_virt() functions have been
++How to access I/O mapped memory from within device drivers
++==========================================================
++
++:Author: Linus
++
++.. warning::
++
++	The virt_to_bus() and bus_to_virt() functions have been
+ 	superseded by the functionality provided by the PCI DMA interface
+ 	(see Documentation/DMA-API-HOWTO.txt).  They continue
+ 	to be documented below for historical purposes, but new code
+-	must not use them. --davidm 00/12/12 ]
++	must not use them. --davidm 00/12/12
  
--Linux exports various bits of information via `/proc/stat' and
--`/proc/uptime' that userland tools, such as top(1), use to calculate
--the average time system spent in a particular state, for example:
-+Linux exports various bits of information via ``/proc/stat`` and
-+``/proc/uptime`` that userland tools, such as top(1), use to calculate
-+the average time system spent in a particular state, for example::
+-[ This is a mail message in response to a query on IO mapping, thus the
+-  strange format for a "document" ]
++::
++
++  [ This is a mail message in response to a query on IO mapping, thus the
++    strange format for a "document" ]
  
-     $ iostat
-     Linux 2.6.18.3-exp (linmac)     02/20/2007
-@@ -17,7 +18,7 @@ Here the system thinks that over the default sampling period the
- system spent 10.01% of the time doing work in user space, 2.92% in the
- kernel, and was overall 81.63% of the time idle.
+ The AHA-1542 is a bus-master device, and your patch makes the driver give the
+ controller the physical address of the buffers, which is correct on x86
+ (because all bus master devices see the physical memory mappings directly). 
  
--In most cases the `/proc/stat' information reflects the reality quite
-+In most cases the ``/proc/stat``	 information reflects the reality quite
- closely, however due to the nature of how/when the kernel collects
- this data sometimes it can not be trusted at all.
+-However, on many setups, there are actually _three_ different ways of looking
++However, on many setups, there are actually **three** different ways of looking
+ at memory addresses, and in this case we actually want the third, the
+ so-called "bus address". 
  
-@@ -33,78 +34,78 @@ Example
- -------
+@@ -38,7 +47,7 @@ because the memory and the devices share the same address space, and that is
+ not generally necessarily true on other PCI/ISA setups. 
  
- If we imagine the system with one task that periodically burns cycles
--in the following manner:
-+in the following manner::
+ Now, just as an example, on the PReP (PowerPC Reference Platform), the 
+-CPU sees a memory map something like this (this is from memory):
++CPU sees a memory map something like this (this is from memory)::
  
-- time line between two timer interrupts
--|--------------------------------------|
-- ^                                    ^
-- |_ something begins working          |
--                                      |_ something goes to sleep
--                                     (only to be awaken quite soon)
-+     time line between two timer interrupts
-+    |--------------------------------------|
-+     ^                                    ^
-+     |_ something begins working          |
-+                                          |_ something goes to sleep
-+                                         (only to be awaken quite soon)
+ 	0-2 GB		"real memory"
+ 	2 GB-3 GB	"system IO" (inb/out and similar accesses on x86)
+@@ -52,7 +61,7 @@ So when the CPU wants any bus master to write to physical memory 0, it
+ has to give the master address 0x80000000 as the memory address.
  
- In the above situation the system will be 0% loaded according to the
--`/proc/stat' (since the timer interrupt will always happen when the
-+``/proc/stat`` (since the timer interrupt will always happen when the
- system is executing the idle handler), but in reality the load is
- closer to 99%.
+ So, for example, depending on how the kernel is actually mapped on the 
+-PPC, you can end up with a setup like this:
++PPC, you can end up with a setup like this::
  
- One can imagine many more situations where this behavior of the kernel
--will lead to quite erratic information inside `/proc/stat'.
-+will lead to quite erratic information inside ``/proc/stat``::
+  physical address:	0
+  virtual address:	0xC0000000
+@@ -61,7 +70,7 @@ PPC, you can end up with a setup like this:
+ where all the addresses actually point to the same thing.  It's just seen 
+ through different translations..
  
+-Similarly, on the Alpha, the normal translation is
++Similarly, on the Alpha, the normal translation is::
  
--/* gcc -o hog smallhog.c */
--#include <time.h>
--#include <limits.h>
--#include <signal.h>
--#include <sys/time.h>
--#define HIST 10
-+	/* gcc -o hog smallhog.c */
-+	#include <time.h>
-+	#include <limits.h>
-+	#include <signal.h>
-+	#include <sys/time.h>
-+	#define HIST 10
+  physical address:	0
+  virtual address:	0xfffffc0000000000
+@@ -70,7 +79,7 @@ Similarly, on the Alpha, the normal translation is
+ (but there are also Alphas where the physical address and the bus address
+ are the same). 
  
--static volatile sig_atomic_t stop;
-+	static volatile sig_atomic_t stop;
+-Anyway, the way to look up all these translations, you do
++Anyway, the way to look up all these translations, you do::
  
--static void sighandler (int signr)
--{
--     (void) signr;
--     stop = 1;
--}
--static unsigned long hog (unsigned long niters)
--{
--     stop = 0;
--     while (!stop && --niters);
--     return niters;
--}
--int main (void)
--{
--     int i;
--     struct itimerval it = { .it_interval = { .tv_sec = 0, .tv_usec = 1 },
--                             .it_value = { .tv_sec = 0, .tv_usec = 1 } };
--     sigset_t set;
--     unsigned long v[HIST];
--     double tmp = 0.0;
--     unsigned long n;
--     signal (SIGALRM, &sighandler);
--     setitimer (ITIMER_REAL, &it, NULL);
-+	static void sighandler (int signr)
-+	{
-+	(void) signr;
-+	stop = 1;
-+	}
-+	static unsigned long hog (unsigned long niters)
-+	{
-+	stop = 0;
-+	while (!stop && --niters);
-+	return niters;
-+	}
-+	int main (void)
-+	{
-+	int i;
-+	struct itimerval it = { .it_interval = { .tv_sec = 0, .tv_usec = 1 },
-+				.it_value = { .tv_sec = 0, .tv_usec = 1 } };
-+	sigset_t set;
-+	unsigned long v[HIST];
-+	double tmp = 0.0;
-+	unsigned long n;
-+	signal (SIGALRM, &sighandler);
-+	setitimer (ITIMER_REAL, &it, NULL);
+ 	#include <asm/io.h>
  
--     hog (ULONG_MAX);
--     for (i = 0; i < HIST; ++i) v[i] = ULONG_MAX - hog (ULONG_MAX);
--     for (i = 0; i < HIST; ++i) tmp += v[i];
--     tmp /= HIST;
--     n = tmp - (tmp / 3.0);
-+	hog (ULONG_MAX);
-+	for (i = 0; i < HIST; ++i) v[i] = ULONG_MAX - hog (ULONG_MAX);
-+	for (i = 0; i < HIST; ++i) tmp += v[i];
-+	tmp /= HIST;
-+	n = tmp - (tmp / 3.0);
+@@ -81,8 +90,8 @@ Anyway, the way to look up all these translations, you do
  
--     sigemptyset (&set);
--     sigaddset (&set, SIGALRM);
-+	sigemptyset (&set);
-+	sigaddset (&set, SIGALRM);
+ Now, when do you need these?
  
--     for (;;) {
--         hog (n);
--         sigwait (&set, &i);
--     }
--     return 0;
--}
-+	for (;;) {
-+		hog (n);
-+		sigwait (&set, &i);
-+	}
-+	return 0;
-+	}
+-You want the _virtual_ address when you are actually going to access that 
+-pointer from the kernel. So you can have something like this:
++You want the **virtual** address when you are actually going to access that
++pointer from the kernel. So you can have something like this::
  
+ 	/*
+ 	 * this is the hardware "mailbox" we use to communicate with
+@@ -104,7 +113,7 @@ pointer from the kernel. So you can have something like this:
+ 				...
  
- References
- ----------
+ on the other hand, you want the bus address when you have a buffer that 
+-you want to give to the controller:
++you want to give to the controller::
  
--http://lkml.org/lkml/2007/2/12/6
--Documentation/filesystems/proc.txt (1.8)
-+- http://lkml.org/lkml/2007/2/12/6
-+- Documentation/filesystems/proc.txt (1.8)
+ 	/* ask the controller to read the sense status into "sense_buffer" */
+ 	mbox.bufstart = virt_to_bus(&sense_buffer);
+@@ -112,7 +121,7 @@ you want to give to the controller:
+ 	mbox.status = 0;
+ 	notify_controller(&mbox);
  
+-And you generally _never_ want to use the physical address, because you can't
++And you generally **never** want to use the physical address, because you can't
+ use that from the CPU (the CPU only uses translated virtual addresses), and
+ you can't use it from the bus master. 
  
- Thanks
+@@ -124,8 +133,10 @@ be remapped as measured in units of pages, a.k.a. the pfn (the memory
+ management layer doesn't know about devices outside the CPU, so it
+ shouldn't need to know about "bus addresses" etc).
+ 
+-NOTE NOTE NOTE! The above is only one part of the whole equation. The above
+-only talks about "real memory", that is, CPU memory (RAM). 
++.. note::
++
++	The above is only one part of the whole equation. The above
++	only talks about "real memory", that is, CPU memory (RAM).
+ 
+ There is a completely different type of memory too, and that's the "shared
+ memory" on the PCI or ISA bus. That's generally not RAM (although in the case
+@@ -137,20 +148,22 @@ whatever, and there is only one way to access it: the readb/writeb and
+ related functions. You should never take the address of such memory, because
+ there is really nothing you can do with such an address: it's not
+ conceptually in the same memory space as "real memory" at all, so you cannot
+-just dereference a pointer. (Sadly, on x86 it _is_ in the same memory space,
++just dereference a pointer. (Sadly, on x86 it **is** in the same memory space,
+ so on x86 it actually works to just deference a pointer, but it's not
+ portable). 
+ 
+-For such memory, you can do things like
++For such memory, you can do things like:
++
++ - reading::
+ 
+- - reading:
+ 	/*
+ 	 * read first 32 bits from ISA memory at 0xC0000, aka
+ 	 * C000:0000 in DOS terms
+ 	 */
+ 	unsigned int signature = isa_readl(0xC0000);
+ 
+- - remapping and writing:
++ - remapping and writing::
++
+ 	/*
+ 	 * remap framebuffer PCI memory area at 0xFC000000,
+ 	 * size 1MB, so that we can access it: We can directly
+@@ -165,7 +178,8 @@ For such memory, you can do things like
+ 	/* unmap when we unload the driver */
+ 	iounmap(baseptr);
+ 
+- - copying and clearing:
++ - copying and clearing::
++
+ 	/* get the 6-byte Ethernet address at ISA address E000:0040 */
+ 	memcpy_fromio(kernel_buffer, 0xE0040, 6);
+ 	/* write a packet to the driver */
+@@ -181,10 +195,10 @@ happy that your driver works ;)
+ Note that kernel versions 2.0.x (and earlier) mistakenly called the
+ ioremap() function "vremap()".  ioremap() is the proper name, but I
+ didn't think straight when I wrote it originally.  People who have to
+-support both can do something like:
++support both can do something like::
+  
+ 	/* support old naming silliness */
+-	#if LINUX_VERSION_CODE < 0x020100                                     
++	#if LINUX_VERSION_CODE < 0x020100
+ 	#define ioremap vremap
+ 	#define iounmap vfree                                                     
+ 	#endif
+@@ -196,13 +210,10 @@ And the above sounds worse than it really is.  Most real drivers really
+ don't do all that complex things (or rather: the complexity is not so
+ much in the actual IO accesses as in error handling and timeouts etc). 
+ It's generally not hard to fix drivers, and in many cases the code
+-actually looks better afterwards:
++actually looks better afterwards::
+ 
+ 	unsigned long signature = *(unsigned int *) 0xC0000;
+ 		vs
+ 	unsigned long signature = readl(0xC0000);
+ 
+ I think the second version actually is more readable, no?
+-
+-		Linus
+-
 -- 
 2.9.4
