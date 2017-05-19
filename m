@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by merlin.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWh3-0005sl-0P
- for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:27:03 +0000
+ id 1dBWh3-0005ss-0O
+ for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:27:01 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -13,10 +13,12 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- Johannes Berg <johannes@sipsolutions.net>, linux-wireless@vger.kernel.org
-Subject: [PATCH 08/29] rfkill.txt: standardize document format
-Date: Thu, 18 May 2017 22:25:52 -0300
-Message-Id: <3361dce0e96427ed8fc375ab78371c0a6d0f55cc.1495157082.git.mchehab@s-opensource.com>
+ Alessandro Zummo <a.zummo@towertech.it>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ rtc-linux@googlegroups.com
+Subject: [PATCH 12/29] rtc.txt: standardize document format
+Date: Thu, 18 May 2017 22:25:56 -0300
+Message-Id: <de62f8091ae4e7d2af980e6cd79071348622cdc8.1495157082.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495157082.git.mchehab@s-opensource.com>
 References: <cover.1495157082.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495157082.git.mchehab@s-opensource.com>
@@ -37,117 +39,102 @@ format. Some doesn't even have titles!
 Change its representation to follow the adopted standard,
 using ReST markups for it to be parseable by Sphinx:
 
-- mark titles;
-- comment contents index;
-- mark literal blocks;
-- adjust identation.
+- adjust identation of the titles;
+- mark a table as such;
+- don't capitalize chapter names.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/rfkill.txt | 47 ++++++++++++++++++++++++++++++-----------------
- 1 file changed, 30 insertions(+), 17 deletions(-)
+ Documentation/rtc.txt | 44 +++++++++++++++++++++++---------------------
+ 1 file changed, 23 insertions(+), 21 deletions(-)
 
-diff --git a/Documentation/rfkill.txt b/Documentation/rfkill.txt
-index 8c174063b3f0..d22feccedbd1 100644
---- a/Documentation/rfkill.txt
-+++ b/Documentation/rfkill.txt
-@@ -1,13 +1,17 @@
-+===============================
- rfkill - RF kill switch support
- ===============================
+diff --git a/Documentation/rtc.txt b/Documentation/rtc.txt
+index ddc366026e00..47feb4414b7e 100644
+--- a/Documentation/rtc.txt
++++ b/Documentation/rtc.txt
+@@ -1,6 +1,6 @@
+-
+-	Real Time Clock (RTC) Drivers for Linux
+-	=======================================
++=======================================
++Real Time Clock (RTC) Drivers for Linux
++=======================================
  
--1. Introduction
--2. Implementation details
--3. Kernel API
--4. Userspace support
-+.. CONTENTS
- 
-+  1. Introduction
-+  2. Implementation details
-+  3. Kernel API
-+  4. Userspace support
- 
--1. Introduction
-+
-+Introduction
-+============
- 
- The rfkill subsystem provides a generic interface to disabling any radio
- transmitter in the system. When a transmitter is blocked, it shall not
-@@ -21,17 +25,24 @@ aircraft.
- The rfkill subsystem has a concept of "hard" and "soft" block, which
- differ little in their meaning (block == transmitters off) but rather in
- whether they can be changed or not:
-- - hard block: read-only radio block that cannot be overridden by software
-- - soft block: writable radio block (need not be readable) that is set by
--               the system software.
-+
-+ - hard block
-+	read-only radio block that cannot be overridden by software
-+
-+ - soft block
-+	writable radio block (need not be readable) that is set by
-+        the system software.
- 
- The rfkill subsystem has two parameters, rfkill.default_state and
--rfkill.master_switch_mode, which are documented in admin-guide/kernel-parameters.rst.
-+rfkill.master_switch_mode, which are documented in
-+admin-guide/kernel-parameters.rst.
+ When Linux developers talk about a "Real Time Clock", they usually mean
+ something that tracks wall clock time and is battery backed so that it
+@@ -32,8 +32,8 @@ only issue an alarm up to 24 hours in the future, other hardware may
+ be able to schedule one any time in the upcoming century.
  
  
--2. Implementation details
-+Implementation details
-+======================
+-	Old PC/AT-Compatible driver:  /dev/rtc
+-	--------------------------------------
++Old PC/AT-Compatible driver:  /dev/rtc
++--------------------------------------
  
- The rfkill subsystem is composed of three main components:
-+
-  * the rfkill core,
-  * the deprecated rfkill-input module (an input layer handler, being
-    replaced by userspace policy code) and
-@@ -55,7 +66,8 @@ use the return value of rfkill_set_hw_state() unless the hardware actually
- keeps track of soft and hard block separately.
+ All PCs (even Alpha machines) have a Real Time Clock built into them.
+ Usually they are built into the chipset of the computer, but some may
+@@ -105,8 +105,8 @@ that will be using this driver.  See the code at the end of this document.
+ (The original /dev/rtc driver was written by Paul Gortmaker.)
  
  
--3. Kernel API
-+Kernel API
-+==========
+-	New portable "RTC Class" drivers:  /dev/rtcN
+-	--------------------------------------------
++New portable "RTC Class" drivers:  /dev/rtcN
++--------------------------------------------
  
+ Because Linux supports many non-ACPI and non-PC platforms, some of which
+ have more than one RTC style clock, it needed a more portable solution
+@@ -136,35 +136,37 @@ a high functionality RTC is integrated into the SOC.  That system might read
+ the system clock from the discrete RTC, but use the integrated one for all
+ other tasks, because of its greater functionality.
  
- Drivers for radio transmitters normally implement an rfkill driver.
-@@ -69,7 +81,7 @@ For some platforms, it is possible that the hardware state changes during
- suspend/hibernation, in which case it will be necessary to update the rfkill
- core with the current state is at resume time.
+-SYSFS INTERFACE
++SYSFS interface
+ ---------------
  
--To create an rfkill driver, driver's Kconfig needs to have
-+To create an rfkill driver, driver's Kconfig needs to have::
+ The sysfs interface under /sys/class/rtc/rtcN provides access to various
+ rtc attributes without requiring the use of ioctls. All dates and times
+ are in the RTC's timezone, rather than in system time.
  
- 	depends on RFKILL || !RFKILL
+-date:  	   	 RTC-provided date
+-hctosys:   	 1 if the RTC provided the system time at boot via the
++================ ==============================================================
++date  	   	 RTC-provided date
++hctosys   	 1 if the RTC provided the system time at boot via the
+ 		 CONFIG_RTC_HCTOSYS kernel option, 0 otherwise
+-max_user_freq:	 The maximum interrupt rate an unprivileged user may request
++max_user_freq	 The maximum interrupt rate an unprivileged user may request
+ 		 from this RTC.
+-name:		 The name of the RTC corresponding to this sysfs directory
+-since_epoch:	 The number of seconds since the epoch according to the RTC
+-time:		 RTC-provided time
+-wakealarm:	 The time at which the clock will generate a system wakeup
++name		 The name of the RTC corresponding to this sysfs directory
++since_epoch	 The number of seconds since the epoch according to the RTC
++time		 RTC-provided time
++wakealarm	 The time at which the clock will generate a system wakeup
+ 		 event. This is a one shot wakeup event, so must be reset
+-		 after wake if a daily wakeup is required. Format is seconds since
+-		 the epoch by default, or if there's a leading +, seconds in the
+-		 future, or if there is a leading +=, seconds ahead of the current
+-		 alarm.
+-offset:		 The amount which the rtc clock has been adjusted in firmware.
++		 after wake if a daily wakeup is required. Format is seconds
++		 since the epoch by default, or if there's a leading +, seconds
++		 in the future, or if there is a leading +=, seconds ahead of
++		 the current alarm.
++offset		 The amount which the rtc clock has been adjusted in firmware.
+ 		 Visible only if the driver supports clock offset adjustment.
+ 		 The unit is parts per billion, i.e. The number of clock ticks
+ 		 which are added to or removed from the rtc's base clock per
+ 		 billion ticks. A positive value makes a day pass more slowly,
+ 		 longer, and a negative value makes a day pass more quickly.
++================ ==============================================================
  
-@@ -87,7 +99,8 @@ RFKill provides per-switch LED triggers, which can be used to drive LEDs
- according to the switch state (LED_FULL when blocked, LED_OFF otherwise).
+-IOCTL INTERFACE
++IOCTL interface
+ ---------------
  
- 
--5. Userspace support
-+Userspace support
-+=================
- 
- The recommended userspace interface to use is /dev/rfkill, which is a misc
- character device that allows userspace to obtain and set the state of rfkill
-@@ -112,11 +125,11 @@ rfkill core framework.
- Additionally, each rfkill device is registered in sysfs and emits uevents.
- 
- rfkill devices issue uevents (with an action of "change"), with the following
--environment variables set:
-+environment variables set::
- 
--RFKILL_NAME
--RFKILL_STATE
--RFKILL_TYPE
-+	RFKILL_NAME
-+	RFKILL_STATE
-+	RFKILL_TYPE
- 
- The contents of these variables corresponds to the "name", "state" and
- "type" sysfs files explained above.
+ The ioctl() calls supported by /dev/rtc are also supported by the RTC class
 -- 
 2.9.4
