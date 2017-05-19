@@ -1,7 +1,7 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by casper.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWeD-0007Ca-RR
+ id 1dBWeD-0007Cc-RP
  for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:24:08 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
@@ -13,9 +13,9 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 20/31] eisa.txt: standardize document format
-Date: Thu, 18 May 2017 22:22:25 -0300
-Message-Id: <e258396f4cec778d81ee7e0bf7c908e1136f00be.1495156488.git.mchehab@s-opensource.com>
+Subject: [PATCH 31/31] iostats.txt: standardize document format
+Date: Thu, 18 May 2017 22:22:36 -0300
+Message-Id: <4390b3ca8f9779c95db106605a41d182f6b6b2e7.1495156488.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
 References: <cover.1495156488.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
@@ -36,347 +36,125 @@ format. Some doesn't even have titles!
 Change its representation to follow the adopted standard,
 using ReST markups for it to be parseable by Sphinx:
 
-- use ReST notation for titles;
-- identify literal blocks;
-- use :Author: for document authorship;
-- use the proper notation for tables;
-- adjust whitespaces where needed.
+- promote main title level;
+- mark literal blocks as such;
+- Add blank lines to avoid Sphinx errors.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/eisa.txt | 260 +++++++++++++++++++++++++++----------------------
- 1 file changed, 143 insertions(+), 117 deletions(-)
+ Documentation/iostats.txt | 40 +++++++++++++++++++++++++++-------------
+ 1 file changed, 27 insertions(+), 13 deletions(-)
 
-diff --git a/Documentation/eisa.txt b/Documentation/eisa.txt
-index a55e4910924e..8e2c6e2b2a19 100644
---- a/Documentation/eisa.txt
-+++ b/Documentation/eisa.txt
-@@ -1,4 +1,7 @@
--EISA bus support (Marc Zyngier <maz@wild-wind.fr.eu.org>)
-+EISA bus support
-+================
+diff --git a/Documentation/iostats.txt b/Documentation/iostats.txt
+index 65f694f2d1c9..456a5b5e0c53 100644
+--- a/Documentation/iostats.txt
++++ b/Documentation/iostats.txt
+@@ -1,5 +1,6 @@
++=====================
+ I/O statistics fields
+----------------
++=====================
+ 
+ Since 2.4.20 (and some versions before, with patches), and 2.5.45,
+ more extensive disk statistics have been introduced to help measure disk
+@@ -16,20 +17,20 @@ is mounted on /sys, although of course it may be mounted anywhere.
+ Both /proc/diskstats and sysfs use the same source for the information
+ and so should not differ.
+ 
+-Here are examples of these different formats:
++Here are examples of these different formats::
+ 
+-2.4:
+-   3     0   39082680 hda 446216 784926 9550688 4382310 424847 312726 5922052 19310380 0 3376340 23705160
+-   3     1    9221278 hda1 35486 0 35496 38030 0 0 0 0 0 38030 38030
++   2.4:
++      3     0   39082680 hda 446216 784926 9550688 4382310 424847 312726 5922052 19310380 0 3376340 23705160
++      3     1    9221278 hda1 35486 0 35496 38030 0 0 0 0 0 38030 38030
+ 
+ 
+-2.6 sysfs:
+-   446216 784926 9550688 4382310 424847 312726 5922052 19310380 0 3376340 23705160
+-   35486    38030    38030    38030
++   2.6 sysfs:
++      446216 784926 9550688 4382310 424847 312726 5922052 19310380 0 3376340 23705160
++      35486    38030    38030    38030
+ 
+-2.6 diskstats:
+-   3    0   hda 446216 784926 9550688 4382310 424847 312726 5922052 19310380 0 3376340 23705160
+-   3    1   hda1 35486 38030 38030 38030
++   2.6 diskstats:
++      3    0   hda 446216 784926 9550688 4382310 424847 312726 5922052 19310380 0 3376340 23705160
++      3    1   hda1 35486 38030 38030 38030
+ 
+ On 2.4 you might execute "grep 'hda ' /proc/partitions". On 2.6, you have
+ a choice of "cat /sys/block/hda/stat" or "grep 'hda ' /proc/diskstats".
+@@ -59,30 +60,40 @@ system-wide stats you'll have to find all the devices and sum them all up.
+ 
+ Field  1 -- # of reads completed
+     This is the total number of reads completed successfully.
 +
-+:Author: Marc Zyngier <maz@wild-wind.fr.eu.org>
- 
- This document groups random notes about porting EISA drivers to the
- new EISA/sysfs API.
-@@ -14,168 +17,189 @@ detection code is generally also used to probe ISA cards). Moreover,
- most EISA drivers are among the oldest Linux drivers so, as you can
- imagine, some dust has settled here over the years.
- 
--The EISA infrastructure is made up of three parts :
-+The EISA infrastructure is made up of three parts:
- 
-     - The bus code implements most of the generic code. It is shared
--    among all the architectures that the EISA code runs on. It
--    implements bus probing (detecting EISA cards available on the bus),
--    allocates I/O resources, allows fancy naming through sysfs, and
--    offers interfaces for driver to register.
-+      among all the architectures that the EISA code runs on. It
-+      implements bus probing (detecting EISA cards available on the bus),
-+      allocates I/O resources, allows fancy naming through sysfs, and
-+      offers interfaces for driver to register.
- 
-     - The bus root driver implements the glue between the bus hardware
--    and the generic bus code. It is responsible for discovering the
--    device implementing the bus, and setting it up to be latter probed
--    by the bus code. This can go from something as simple as reserving
--    an I/O region on x86, to the rather more complex, like the hppa
--    EISA code. This is the part to implement in order to have EISA
--    running on an "new" platform.
-+      and the generic bus code. It is responsible for discovering the
-+      device implementing the bus, and setting it up to be latter probed
-+      by the bus code. This can go from something as simple as reserving
-+      an I/O region on x86, to the rather more complex, like the hppa
-+      EISA code. This is the part to implement in order to have EISA
-+      running on an "new" platform.
- 
-     - The driver offers the bus a list of devices that it manages, and
--    implements the necessary callbacks to probe and release devices
--    whenever told to.
-+      implements the necessary callbacks to probe and release devices
-+      whenever told to.
- 
- Every function/structure below lives in <linux/eisa.h>, which depends
- heavily on <linux/device.h>.
- 
--** Bus root driver :
-+Bus root driver
-+===============
- 
--int eisa_root_register (struct eisa_root_device *root);
-+::
+ Field  2 -- # of reads merged, field 6 -- # of writes merged
+     Reads and writes which are adjacent to each other may be merged for
+     efficiency.  Thus two 4K reads may become one 8K read before it is
+     ultimately handed to the disk, and so it will be counted (and queued)
+     as only one I/O.  This field lets you know how often this was done.
 +
-+	int eisa_root_register (struct eisa_root_device *root);
- 
- The eisa_root_register function is used to declare a device as the
- root of an EISA bus. The eisa_root_device structure holds a reference
--to this device, as well as some parameters for probing purposes.
-+to this device, as well as some parameters for probing purposes::
- 
--struct eisa_root_device {
--	struct device   *dev;	 /* Pointer to bridge device */
--	struct resource *res;
--	unsigned long    bus_base_addr;
--	int		 slots;  /* Max slot number */
--	int		 force_probe; /* Probe even when no slot 0 */
--	u64		 dma_mask; /* from bridge device */
--	int              bus_nr; /* Set by eisa_root_register */
--	struct resource  eisa_root_res;	/* ditto */
--};
-+	struct eisa_root_device {
-+		struct device   *dev;	 /* Pointer to bridge device */
-+		struct resource *res;
-+		unsigned long    bus_base_addr;
-+		int		 slots;  /* Max slot number */
-+		int		 force_probe; /* Probe even when no slot 0 */
-+		u64		 dma_mask; /* from bridge device */
-+		int              bus_nr; /* Set by eisa_root_register */
-+		struct resource  eisa_root_res;	/* ditto */
-+	};
- 
--node          : used for eisa_root_register internal purpose
--dev           : pointer to the root device
--res           : root device I/O resource
--bus_base_addr : slot 0 address on this bus
--slots	      : max slot number to probe
--force_probe   : Probe even when slot 0 is empty (no EISA mainboard)
--dma_mask      : Default DMA mask. Usually the bridge device dma_mask.
--bus_nr	      : unique bus id, set by eisa_root_register
-+============= ======================================================
-+node          used for eisa_root_register internal purpose
-+dev           pointer to the root device
-+res           root device I/O resource
-+bus_base_addr slot 0 address on this bus
-+slots	      max slot number to probe
-+force_probe   Probe even when slot 0 is empty (no EISA mainboard)
-+dma_mask      Default DMA mask. Usually the bridge device dma_mask.
-+bus_nr	      unique bus id, set by eisa_root_register
-+============= ======================================================
- 
--** Driver :
-+Driver
-+======
- 
--int eisa_driver_register (struct eisa_driver *edrv);
--void eisa_driver_unregister (struct eisa_driver *edrv);
-+::
+ Field  3 -- # of sectors read
+     This is the total number of sectors read successfully.
 +
-+	int eisa_driver_register (struct eisa_driver *edrv);
-+	void eisa_driver_unregister (struct eisa_driver *edrv);
- 
- Clear enough ?
- 
--struct eisa_device_id {
--        char sig[EISA_SIG_LEN];
--	unsigned long driver_data;
--};
--
--struct eisa_driver {
--        const struct eisa_device_id *id_table;
--        struct device_driver         driver;
--};
--
--id_table	: an array of NULL terminated EISA id strings,
--		  followed by an empty string. Each string can
--		  optionally be paired with a driver-dependent value
--		  (driver_data).
--
--driver		: a generic driver, such as described in
--		  Documentation/driver-model/driver.txt. Only .name,
--		  .probe and .remove members are mandatory.
--
--An example is the 3c59x driver :
--
--static struct eisa_device_id vortex_eisa_ids[] = {
--	{ "TCM5920", EISA_3C592_OFFSET },
--	{ "TCM5970", EISA_3C597_OFFSET },
--	{ "" }
--};
--
--static struct eisa_driver vortex_eisa_driver = {
--	.id_table = vortex_eisa_ids,
--	.driver   = {
--		.name    = "3c59x",
--		.probe   = vortex_eisa_probe,
--		.remove  = vortex_eisa_remove
--	}
--};
--
--** Device :
-+::
+ Field  4 -- # of milliseconds spent reading
+     This is the total number of milliseconds spent by all reads (as
+     measured from __make_request() to end_that_request_last()).
 +
-+	struct eisa_device_id {
-+		char sig[EISA_SIG_LEN];
-+		unsigned long driver_data;
-+	};
+ Field  5 -- # of writes completed
+     This is the total number of writes completed successfully.
 +
-+	struct eisa_driver {
-+		const struct eisa_device_id *id_table;
-+		struct device_driver         driver;
-+	};
+ Field  6 -- # of writes merged
+     See the description of field 2.
 +
-+=============== ====================================================
-+id_table	an array of NULL terminated EISA id strings,
-+		followed by an empty string. Each string can
-+		optionally be paired with a driver-dependent value
-+		(driver_data).
+ Field  7 -- # of sectors written
+     This is the total number of sectors written successfully.
 +
-+driver		a generic driver, such as described in
-+		Documentation/driver-model/driver.txt. Only .name,
-+		.probe and .remove members are mandatory.
-+=============== ====================================================
+ Field  8 -- # of milliseconds spent writing
+     This is the total number of milliseconds spent by all writes (as
+     measured from __make_request() to end_that_request_last()).
 +
-+An example is the 3c59x driver::
+ Field  9 -- # of I/Os currently in progress
+     The only field that should go to zero. Incremented as requests are
+     given to appropriate struct request_queue and decremented as they finish.
 +
-+	static struct eisa_device_id vortex_eisa_ids[] = {
-+		{ "TCM5920", EISA_3C592_OFFSET },
-+		{ "TCM5970", EISA_3C597_OFFSET },
-+		{ "" }
-+	};
+ Field 10 -- # of milliseconds spent doing I/Os
+     This field increases so long as field 9 is nonzero.
 +
-+	static struct eisa_driver vortex_eisa_driver = {
-+		.id_table = vortex_eisa_ids,
-+		.driver   = {
-+			.name    = "3c59x",
-+			.probe   = vortex_eisa_probe,
-+			.remove  = vortex_eisa_remove
-+		}
-+	};
+ Field 11 -- weighted # of milliseconds spent doing I/Os
+     This field is incremented at each I/O start, I/O completion, I/O
+     merge, or read of these stats by the number of I/Os in progress
+@@ -117,11 +128,14 @@ for partitions on 2.6 machines.  This is reflected in the examples above.
+ 
+ Field  1 -- # of reads issued
+     This is the total number of reads issued to this partition.
 +
-+Device
-+======
- 
- The sysfs framework calls .probe and .remove functions upon device
- discovery and removal (note that the .remove function is only called
- when driver is built as a module).
- 
- Both functions are passed a pointer to a 'struct device', which is
--encapsulated in a 'struct eisa_device' described as follows :
-+encapsulated in a 'struct eisa_device' described as follows::
- 
--struct eisa_device {
--        struct eisa_device_id id;
--        int                   slot;
--	int                   state;
--	unsigned long         base_addr;
--	struct resource       res[EISA_MAX_RESOURCES];
--	u64                   dma_mask;
--        struct device         dev; /* generic device */
--};
-+	struct eisa_device {
-+		struct eisa_device_id id;
-+		int                   slot;
-+		int                   state;
-+		unsigned long         base_addr;
-+		struct resource       res[EISA_MAX_RESOURCES];
-+		u64                   dma_mask;
-+		struct device         dev; /* generic device */
-+	};
- 
--id	: EISA id, as read from device. id.driver_data is set from the
--	  matching driver EISA id.
--slot	: slot number which the device was detected on
--state   : set of flags indicating the state of the device. Current
--	  flags are EISA_CONFIG_ENABLED and EISA_CONFIG_FORCED.
--res	: set of four 256 bytes I/O regions allocated to this device
--dma_mask: DMA mask set from the parent device.
--dev	: generic device (see Documentation/driver-model/device.txt)
-+======== ============================================================
-+id	 EISA id, as read from device. id.driver_data is set from the
-+	 matching driver EISA id.
-+slot	 slot number which the device was detected on
-+state    set of flags indicating the state of the device. Current
-+	 flags are EISA_CONFIG_ENABLED and EISA_CONFIG_FORCED.
-+res	 set of four 256 bytes I/O regions allocated to this device
-+dma_mask DMA mask set from the parent device.
-+dev	 generic device (see Documentation/driver-model/device.txt)
-+======== ============================================================
- 
- You can get the 'struct eisa_device' from 'struct device' using the
- 'to_eisa_device' macro.
- 
--** Misc stuff :
-+Misc stuff
-+==========
- 
--void eisa_set_drvdata (struct eisa_device *edev, void *data);
-+::
+ Field  2 -- # of sectors read
+     This is the total number of sectors requested to be read from this
+     partition.
 +
-+	void eisa_set_drvdata (struct eisa_device *edev, void *data);
- 
- Stores data into the device's driver_data area.
- 
--void *eisa_get_drvdata (struct eisa_device *edev):
-+::
+ Field  3 -- # of writes issued
+     This is the total number of writes issued to this partition.
 +
-+	void *eisa_get_drvdata (struct eisa_device *edev):
+ Field  4 -- # of sectors written
+     This is the total number of sectors requested to be written to
+     this partition.
+@@ -151,9 +165,9 @@ Additional notes
  
- Gets the pointer previously stored into the device's driver_data area.
+ In 2.6, sysfs is not mounted by default.  If your distribution of
+ Linux hasn't added it already, here's the line you'll want to add to
+-your /etc/fstab:
++your /etc/fstab::
  
--int eisa_get_region_index (void *addr);
-+::
-+
-+	int eisa_get_region_index (void *addr);
+-none /sys sysfs defaults 0 0
++	none /sys sysfs defaults 0 0
  
- Returns the region number (0 <= x < EISA_MAX_RESOURCES) of a given
- address.
  
--** Kernel parameters :
-+Kernel parameters
-+=================
- 
--eisa_bus.enable_dev :
-+eisa_bus.enable_dev
-+	A comma-separated list of slots to be enabled, even if the firmware
-+	set the card as disabled. The driver must be able to properly
-+	initialize the device in such conditions.
- 
--A comma-separated list of slots to be enabled, even if the firmware
--set the card as disabled. The driver must be able to properly
--initialize the device in such conditions.
-+eisa_bus.disable_dev
-+	A comma-separated list of slots to be enabled, even if the firmware
-+	set the card as enabled. The driver won't be called to handle this
-+	device.
- 
--eisa_bus.disable_dev :
-+virtual_root.force_probe
-+	Force the probing code to probe EISA slots even when it cannot find an
-+	EISA compliant mainboard (nothing appears on slot 0). Defaults to 0
-+	(don't force), and set to 1 (force probing) when either
-+	CONFIG_ALPHA_JENSEN or CONFIG_EISA_VLB_PRIMING are set.
- 
--A comma-separated list of slots to be enabled, even if the firmware
--set the card as enabled. The driver won't be called to handle this
--device.
--
--virtual_root.force_probe :
--
--Force the probing code to probe EISA slots even when it cannot find an
--EISA compliant mainboard (nothing appears on slot 0). Defaults to 0
--(don't force), and set to 1 (force probing) when either
--CONFIG_ALPHA_JENSEN or CONFIG_EISA_VLB_PRIMING are set.
--
--** Random notes :
-+Random notes
-+============
- 
- Converting an EISA driver to the new API mostly involves *deleting*
- code (since probing is now in the core EISA code). Unfortunately, most
-@@ -194,9 +218,11 @@ routine.
- For example, switching your favorite EISA SCSI card to the "hotplug"
- model is "the right thing"(tm).
- 
--** Thanks :
-+Thanks
-+======
-+
-+I'd like to thank the following people for their help:
- 
--I'd like to thank the following people for their help :
- - Xavier Benigni for lending me a wonderful Alpha Jensen,
- - James Bottomley, Jeff Garzik for getting this stuff into the kernel,
- - Andries Brouwer for contributing numerous EISA ids,
+ In 2.6, all disk statistics were removed from /proc/stat.  In 2.4, they
 -- 
 2.9.4
