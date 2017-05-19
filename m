@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by merlin.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWh5-0005sr-IX
- for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:27:04 +0000
+ id 1dBWh4-0005ss-2K
+ for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:27:03 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -13,9 +13,9 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 17/29] smsc_ece1099.txt: standardize document format
-Date: Thu, 18 May 2017 22:26:01 -0300
-Message-Id: <d3981bcd43255f789312c264d77044ae9c1c8a74.1495157082.git.mchehab@s-opensource.com>
+Subject: [PATCH 14/29] sgi-ioc4.txt: standardize document format
+Date: Thu, 18 May 2017 22:25:58 -0300
+Message-Id: <80fc63d374555603fceac9f587c348fbfb0d4e77.1495157082.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495157082.git.mchehab@s-opensource.com>
 References: <cover.1495157082.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495157082.git.mchehab@s-opensource.com>
@@ -34,26 +34,26 @@ Each text file under Documentation follows a different
 format. Some doesn't even have titles!
 
 Change its representation to follow the adopted standard,
-using ReST markups for it to be parseable by Sphinx:
+using ReST markups for it to be parseable by Sphinx.
 
-- Add a title for the document.
+In this case, just adding a title is enough.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/smsc_ece1099.txt | 4 ++++
+ Documentation/sgi-ioc4.txt | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/smsc_ece1099.txt b/Documentation/smsc_ece1099.txt
-index 6b492e82b43d..079277421eaf 100644
---- a/Documentation/smsc_ece1099.txt
-+++ b/Documentation/smsc_ece1099.txt
+diff --git a/Documentation/sgi-ioc4.txt b/Documentation/sgi-ioc4.txt
+index 876c96ae38db..72709222d3c0 100644
+--- a/Documentation/sgi-ioc4.txt
++++ b/Documentation/sgi-ioc4.txt
 @@ -1,3 +1,7 @@
-+=================================================
-+Msc Keyboard Scan Expansion/GPIO Expansion device
-+=================================================
++====================================
++SGI IOC4 PCI (multi function) device
++====================================
 +
- What is smsc-ece1099?
- ----------------------
+ The SGI IOC4 PCI device is a bit of a strange beast, so some notes on
+ it are in order.
  
 -- 
 2.9.4
