@@ -1,8 +1,8 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWdc-0000PN-Q6
- for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:23:35 +0000
+ id 1dBWdc-0000Ou-Qe
+ for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:23:37 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
@@ -13,9 +13,9 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 02/31] bt8xxgpio.txt: standardize document format
-Date: Thu, 18 May 2017 22:22:07 -0300
-Message-Id: <70359a28fff3be1e1c64bb99d9d74155def6c0e9.1495156488.git.mchehab@s-opensource.com>
+Subject: [PATCH 16/31] DMA-attributes.txt: standardize document format
+Date: Thu, 18 May 2017 22:22:21 -0300
+Message-Id: <adce8bc30c80646981f8fe4ae01d2eb188c1a22b.1495156488.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
 References: <cover.1495156488.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
@@ -36,55 +36,68 @@ format. Some doesn't even have titles!
 Change its representation to follow the adopted standard,
 using ReST markups for it to be parseable by Sphinx:
 
-- Adjust titles to match the convention;
-- use a literal block for ascii artwork.
+This file is almost on the standard format. All it needs
+to be parsed by Sphinx is to fix its main title and add
+a few blank lines.
+
+Yet, it is worth to replace NOTE: by the corresponding
+ReST markup.
+
+While here, remove the extra "---" from a subtitle.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/bt8xxgpio.txt | 19 +++++++------------
- 1 file changed, 7 insertions(+), 12 deletions(-)
+ Documentation/DMA-attributes.txt | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/bt8xxgpio.txt b/Documentation/bt8xxgpio.txt
-index d8297e4ebd26..a845feb074de 100644
---- a/Documentation/bt8xxgpio.txt
-+++ b/Documentation/bt8xxgpio.txt
-@@ -1,12 +1,8 @@
--===============================================================
--==  BT8XXGPIO driver                                         ==
--==                                                           ==
--==  A driver for a selfmade cheap BT8xx based PCI GPIO-card  ==
--==                                                           ==
--==  For advanced documentation, see                          ==
--==  http://www.bu3sch.de/btgpio.php                          ==
--===============================================================
-+===================================================================
-+A driver for a selfmade cheap BT8xx based PCI GPIO-card (bt8xxgpio)
-+===================================================================
+diff --git a/Documentation/DMA-attributes.txt b/Documentation/DMA-attributes.txt
+index 44c6bc496eee..8f8d97f65d73 100644
+--- a/Documentation/DMA-attributes.txt
++++ b/Documentation/DMA-attributes.txt
+@@ -1,5 +1,6 @@
+-			DMA attributes
+-			==============
++==============
++DMA attributes
++==============
  
-+For advanced documentation, see http://www.bu3sch.de/btgpio.php
+ This document describes the semantics of the DMA attributes that are
+ defined in linux/dma-mapping.h.
+@@ -108,6 +109,7 @@ This is a hint to the DMA-mapping subsystem that it's probably not worth
+ the time to try to allocate memory to in a way that gives better TLB
+ efficiency (AKA it's not worth trying to build the mapping out of larger
+ pages).  You might want to specify this if:
++
+ - You know that the accesses to this memory won't thrash the TLB.
+   You might know that the accesses are likely to be sequential or
+   that they aren't sequential but it's unlikely you'll ping-pong
+@@ -121,11 +123,12 @@ pages).  You might want to specify this if:
+   the mapping to have a short lifetime then it may be worth it to
+   optimize allocation (avoid coming up with large pages) instead of
+   getting the slight performance win of larger pages.
++
+ Setting this hint doesn't guarantee that you won't get huge pages, but it
+ means that we won't try quite as hard to get them.
  
- A generic digital 24-port PCI GPIO card can be built out of an ordinary
- Brooktree bt848, bt849, bt878 or bt879 based analog TV tuner card. The
-@@ -17,9 +13,8 @@ The bt8xx chip does have 24 digital GPIO ports.
- These ports are accessible via 24 pins on the SMD chip package.
+-NOTE: At the moment DMA_ATTR_ALLOC_SINGLE_PAGES is only implemented on ARM,
+-though ARM64 patches will likely be posted soon.
++.. note:: At the moment DMA_ATTR_ALLOC_SINGLE_PAGES is only implemented on ARM,
++	  though ARM64 patches will likely be posted soon.
  
+ DMA_ATTR_NO_WARN
+ ----------------
+@@ -142,10 +145,10 @@ problem at all, depending on the implementation of the retry mechanism.
+ So, this provides a way for drivers to avoid those error messages on calls
+ where allocation failures are not a problem, and shouldn't bother the logs.
  
--==============================================
--==  How to physically access the GPIO pins  ==
--==============================================
-+How to physically access the GPIO pins
-+======================================
+-NOTE: At the moment DMA_ATTR_NO_WARN is only implemented on PowerPC.
++.. note:: At the moment DMA_ATTR_NO_WARN is only implemented on PowerPC.
  
- The are several ways to access these pins. One might unsolder the whole chip
- and put it on a custom PCI board, or one might only unsolder each individual
-@@ -27,7 +22,7 @@ GPIO pin and solder that to some tiny wire. As the chip package really is tiny
- there are some advanced soldering skills needed in any case.
+ DMA_ATTR_PRIVILEGED
+-------------------------------
++-------------------
  
- The physical pinouts are drawn in the following ASCII art.
--The GPIO pins are marked with G00-G23
-+The GPIO pins are marked with G00-G23::
- 
-                                            G G G G G G G G G G G G     G G G G G G
-                                            0 0 0 0 0 0 0 0 0 0 1 1     1 1 1 1 1 1
+ Some advanced peripherals such as remote processors and GPUs perform
+ accesses to DMA buffers in both privileged "supervisor" and unprivileged
 -- 
 2.9.4
