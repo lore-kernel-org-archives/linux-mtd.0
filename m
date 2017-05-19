@@ -1,29 +1,29 @@
-Received: from s3.sipsolutions.net ([2a01:4f8:190:3424::2]
- helo=sipsolutions.net)
+Received: from mail-yw0-x244.google.com ([2607:f8b0:4002:c05::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dBfuF-0006gq-VZ
- for linux-mtd@lists.infradead.org; Fri, 19 May 2017 11:17:18 +0000
-Message-ID: <1495192604.3274.5.camel@sipsolutions.net>
-Subject: Re: [PATCH 08/29] rfkill.txt: standardize document format
-From: Johannes Berg <johannes@sipsolutions.net>
+ id 1dBgD4-0008Kw-BE
+ for linux-mtd@lists.infradead.org; Fri, 19 May 2017 11:36:43 +0000
+Received: by mail-yw0-x244.google.com with SMTP id h82so4715806ywb.3
+ for <linux-mtd@lists.infradead.org>; Fri, 19 May 2017 04:36:22 -0700 (PDT)
+Date: Fri, 19 May 2017 07:36:14 -0400
+From: William Breathitt Gray <vilhelm.gray@gmail.com>
 To: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-Cc: Linux Doc Mailing List <linux-doc@vger.kernel.org>, Mauro Carvalho
- Chehab <mchehab@infradead.org>, linux-kernel@vger.kernel.org, Jonathan
- Corbet <corbet@lwn.net>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>,  linux-mtd@lists.infradead.org,
- linux-wireless@vger.kernel.org
-Date: Fri, 19 May 2017 13:16:44 +0200
-In-Reply-To: <20170519081117.6da0a699@vento.lan>
-References: <cover.1495157082.git.mchehab@s-opensource.com>
- <3361dce0e96427ed8fc375ab78371c0a6d0f55cc.1495157082.git.mchehab@s-opensource.com>
- <1495188901.3274.0.camel@sipsolutions.net>
- <20170519081117.6da0a699@vento.lan>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Cc: Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+ Mauro Carvalho Chehab <mchehab@infradead.org>,
+ linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 08/30] isa.txt: standardize document format
+Message-ID: <20170519113613.GA26174@sophia>
+References: <cover.1495156975.git.mchehab@s-opensource.com>
+ <3cfb5ad6db86330e07c6d0f833bbdb2788d99fa7.1495156975.git.mchehab@s-opensource.com>
+ <20170519021355.GA24556@sophia> <20170519055500.0334ebdc@vento.lan>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20170519055500.0334ebdc@vento.lan>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,27 +33,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2017-05-19 at 08:11 -0300, Mauro Carvalho Chehab wrote:
-> 
-> Yes, it should work. Actually, you would need to use :depth: 2 to
-> produce this output:
-> 
-> 
-> 	Contents
-> 
-> 	    . rfkill - RF kill switch support
-> 	        . Introduction
-> 	        . Implementation details
-> 	        . Kernel API
-> 	        . Userspace support
+On Fri, May 19, 2017 at 05:55:00AM -0300, Mauro Carvalho Chehab wrote:
+>Hi William,
+>
+>Em Thu, 18 May 2017 22:13:55 -0400
+>William Breathitt Gray <vilhelm.gray@gmail.com> escreveu:
+>
+>> On Thu, May 18, 2017 at 10:24:00PM -0300, Mauro Carvalho Chehab wrote:
+>> >Each text file under Documentation follows a different
+>> >format. Some doesn't even have titles!
+>> >
+>> >Change its representation to follow the adopted standard,
+>> >using ReST markups for it to be parseable by Sphinx:
+>> >
+>> >- Use the main title standard for this document;
+>> >- replace _foo_ by **foo** for emphasis;
+>> >- mark literal blocks as such.
+>> >
+>> >Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>  
+>> 
+>> I'm all right with this patch, but there's just one minor nitpick about
+>> the title that I've inlined.
+>> 
+>> Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+>
+>Thanks for review!
+>
+>> >---
+>> > Documentation/isa.txt | 53 ++++++++++++++++++++++++++-------------------------
+>> > 1 file changed, 27 insertions(+), 26 deletions(-)
+>> >
+>> >diff --git a/Documentation/isa.txt b/Documentation/isa.txt
+>> >index f232c26a40be..def4a7b690b5 100644
+>> >--- a/Documentation/isa.txt
+>> >+++ b/Documentation/isa.txt
+>> >@@ -1,5 +1,6 @@
+>> >+===========
+>> > ISA Drivers
+>> >------------  
+>> 
+>> There's no need for this single-dashed line now so just remove it.
+>
+>Actually, the patch is removing the single-dashed line. The first "-"
+>character on the above line from diff :-)
 
-Sounds good to me.
+Ah yes, my apologies, you're absolutely correct! This should be
+perfectly fine then.
 
-> I opted to keep the contents as a comment just because, in the past,
-> some maintainers complained about TOC removal, arguing that it makes
-> harder for the ones that would be reading the file in ascii.
+William Breathitt Gray
 
-Ok. I don't really care much either way, I guess. The file is short
-enough that the TOC isn't all that important to start with.
-
-johannes
+>
+>> 
+>> >+===========
+>
+>
+>Thanks,
+>Mauro
