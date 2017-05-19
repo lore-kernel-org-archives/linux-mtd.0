@@ -1,7 +1,7 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWdG-0000LK-BI
+ id 1dBWdG-0000LR-BK
  for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:23:10 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
@@ -13,9 +13,9 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 07/31] circular-buffers.txt: standardize document format
-Date: Thu, 18 May 2017 22:22:12 -0300
-Message-Id: <eeefe78d3c424db72b3180ad7e2788813e397f48.1495156488.git.mchehab@s-opensource.com>
+Subject: [PATCH 18/31] debugging-via-ohci1394.txt: standardize document format
+Date: Thu, 18 May 2017 22:22:23 -0300
+Message-Id: <ff99f0940e66e4a42b67113363f4643e4ecb3340.1495156488.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
 References: <cover.1495156488.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
@@ -36,180 +36,79 @@ format. Some doesn't even have titles!
 Change its representation to follow the adopted standard,
 using ReST markups for it to be parseable by Sphinx:
 
-- Mark titles with ReST notation;
-- comment the contents table;
-- Use :Author: tag for authorship;
-- mark literal blocks as such;
-- use valid numbered list markups;
-- Don't capitalize titles.
+- Mark and adjust titles;
+- Mark and indent literal blocks.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/circular-buffers.txt | 51 +++++++++++++++++---------------------
- 1 file changed, 23 insertions(+), 28 deletions(-)
+ Documentation/debugging-via-ohci1394.txt | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/circular-buffers.txt b/Documentation/circular-buffers.txt
-index 4a824d232472..d4628174b7c5 100644
---- a/Documentation/circular-buffers.txt
-+++ b/Documentation/circular-buffers.txt
-@@ -1,9 +1,9 @@
--			       ================
--			       CIRCULAR BUFFERS
--			       ================
-+================
-+Circular Buffers
-+================
+diff --git a/Documentation/debugging-via-ohci1394.txt b/Documentation/debugging-via-ohci1394.txt
+index 9ff026d22b75..981ad4f89fd3 100644
+--- a/Documentation/debugging-via-ohci1394.txt
++++ b/Documentation/debugging-via-ohci1394.txt
+@@ -1,6 +1,6 @@
+-
+-  Using physical DMA provided by OHCI-1394 FireWire controllers for debugging
+-  ---------------------------------------------------------------------------
++===========================================================================
++Using physical DMA provided by OHCI-1394 FireWire controllers for debugging
++===========================================================================
  
--By: David Howells <dhowells@redhat.com>
--    Paul E. McKenney <paulmck@linux.vnet.ibm.com>
-+:Author: David Howells <dhowells@redhat.com>
-+:Author: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+ Introduction
+ ------------
+@@ -91,10 +91,10 @@ Step-by-step instructions for using firescope with early OHCI initialization:
+ 1) Verify that your hardware is supported:
  
+    Load the firewire-ohci module and check your kernel logs.
+-   You should see a line similar to
++   You should see a line similar to::
  
- Linux provides a number of features that can be used to implement circular
-@@ -20,7 +20,7 @@ producer and just one consumer.  It is possible to handle multiple producers by
- serialising them, and to handle multiple consumers by serialising them.
+-   firewire_ohci 0000:15:00.1: added OHCI v1.0 device as card 2, 4 IR + 4 IT
+-   ... contexts, quirks 0x11
++     firewire_ohci 0000:15:00.1: added OHCI v1.0 device as card 2, 4 IR + 4 IT
++     ... contexts, quirks 0x11
  
+    when loading the driver. If you have no supported controller, many PCI,
+    CardBus and even some Express cards which are fully compliant to OHCI-1394
+@@ -113,9 +113,9 @@ Step-by-step instructions for using firescope with early OHCI initialization:
+    stable connection and has matching connectors (there are small 4-pin and
+    large 6-pin FireWire ports) will do.
  
--Contents:
-+.. Contents:
+-   If an driver is running on both machines you should see a line like
++   If an driver is running on both machines you should see a line like::
  
-  (*) What is a circular buffer?
+-   firewire_core 0000:15:00.1: created device fw1: GUID 00061b0020105917, S400
++     firewire_core 0000:15:00.1: created device fw1: GUID 00061b0020105917, S400
  
-@@ -31,8 +31,8 @@ Contents:
-      - The consumer.
+    on both machines in the kernel log when the cable is plugged in
+    and connects the two machines.
+@@ -123,7 +123,7 @@ Step-by-step instructions for using firescope with early OHCI initialization:
+ 3) Test physical DMA using firescope:
  
+    On the debug host, make sure that /dev/fw* is accessible,
+-   then start firescope:
++   then start firescope::
  
--==========================
--WHAT IS A CIRCULAR BUFFER?
+ 	$ firescope
+ 	Port 0 (/dev/fw1) opened, 2 nodes detected
+@@ -163,7 +163,7 @@ Step-by-step instructions for using firescope with early OHCI initialization:
+    host loaded, reboot the debugged machine, booting the kernel which has
+    CONFIG_PROVIDE_OHCI1394_DMA_INIT enabled, with the option ohci1394_dma=early.
+ 
+-   Then, on the debugging host, run firescope, for example by using -A:
++   Then, on the debugging host, run firescope, for example by using -A::
+ 
+ 	firescope -A System.map-of-debug-target-kernel
+ 
+@@ -178,6 +178,7 @@ Step-by-step instructions for using firescope with early OHCI initialization:
+ 
+ Notes
+ -----
 +
-+What is a circular buffer?
- ==========================
+ Documentation and specifications: http://halobates.de/firewire/
  
- First of all, what is a circular buffer?  A circular buffer is a buffer of
-@@ -60,9 +60,7 @@ buffer, provided that neither index overtakes the other.  The implementer must
- be careful, however, as a region more than one unit in size may wrap the end of
- the buffer and be broken into two segments.
- 
--
--============================
--MEASURING POWER-OF-2 BUFFERS
-+Measuring power-of-2 buffers
- ============================
- 
- Calculation of the occupancy or the remaining capacity of an arbitrarily sized
-@@ -71,13 +69,13 @@ modulus (divide) instruction.  However, if the buffer is of a power-of-2 size,
- then a much quicker bitwise-AND instruction can be used instead.
- 
- Linux provides a set of macros for handling power-of-2 circular buffers.  These
--can be made use of by:
-+can be made use of by::
- 
- 	#include <linux/circ_buf.h>
- 
- The macros are:
- 
-- (*) Measure the remaining capacity of a buffer:
-+ (#) Measure the remaining capacity of a buffer::
- 
- 	CIRC_SPACE(head_index, tail_index, buffer_size);
- 
-@@ -85,7 +83,7 @@ The macros are:
-      can be inserted.
- 
- 
-- (*) Measure the maximum consecutive immediate space in a buffer:
-+ (#) Measure the maximum consecutive immediate space in a buffer::
- 
- 	CIRC_SPACE_TO_END(head_index, tail_index, buffer_size);
- 
-@@ -94,14 +92,14 @@ The macros are:
-      beginning of the buffer.
- 
- 
-- (*) Measure the occupancy of a buffer:
-+ (#) Measure the occupancy of a buffer::
- 
- 	CIRC_CNT(head_index, tail_index, buffer_size);
- 
-      This returns the number of items currently occupying a buffer[2].
- 
- 
-- (*) Measure the non-wrapping occupancy of a buffer:
-+ (#) Measure the non-wrapping occupancy of a buffer::
- 
- 	CIRC_CNT_TO_END(head_index, tail_index, buffer_size);
- 
-@@ -112,7 +110,7 @@ The macros are:
- Each of these macros will nominally return a value between 0 and buffer_size-1,
- however:
- 
-- [1] CIRC_SPACE*() are intended to be used in the producer.  To the producer
-+ (1) CIRC_SPACE*() are intended to be used in the producer.  To the producer
-      they will return a lower bound as the producer controls the head index,
-      but the consumer may still be depleting the buffer on another CPU and
-      moving the tail index.
-@@ -120,7 +118,7 @@ however:
-      To the consumer it will show an upper bound as the producer may be busy
-      depleting the space.
- 
-- [2] CIRC_CNT*() are intended to be used in the consumer.  To the consumer they
-+ (2) CIRC_CNT*() are intended to be used in the consumer.  To the consumer they
-      will return a lower bound as the consumer controls the tail index, but the
-      producer may still be filling the buffer on another CPU and moving the
-      head index.
-@@ -128,14 +126,12 @@ however:
-      To the producer it will show an upper bound as the consumer may be busy
-      emptying the buffer.
- 
-- [3] To a third party, the order in which the writes to the indices by the
-+ (3) To a third party, the order in which the writes to the indices by the
-      producer and consumer become visible cannot be guaranteed as they are
-      independent and may be made on different CPUs - so the result in such a
-      situation will merely be a guess, and may even be negative.
- 
--
--===========================================
--USING MEMORY BARRIERS WITH CIRCULAR BUFFERS
-+Using memory barriers with circular buffers
- ===========================================
- 
- By using memory barriers in conjunction with circular buffers, you can avoid
-@@ -152,10 +148,10 @@ time, and only one thing should be emptying a buffer at any one time, but the
- two sides can operate simultaneously.
- 
- 
--THE PRODUCER
-+The producer
- ------------
- 
--The producer will look something like this:
-+The producer will look something like this::
- 
- 	spin_lock(&producer_lock);
- 
-@@ -193,10 +189,10 @@ ordering between the read of the index indicating that the consumer has
- vacated a given element and the write by the producer to that same element.
- 
- 
--THE CONSUMER
-+The Consumer
- ------------
- 
--The consumer will look something like this:
-+The consumer will look something like this::
- 
- 	spin_lock(&consumer_lock);
- 
-@@ -235,8 +231,7 @@ prevents the compiler from tearing the store, and enforces ordering
- against previous accesses.
- 
- 
--===============
--FURTHER READING
-+Further reading
- ===============
- 
- See also Documentation/memory-barriers.txt for a description of Linux's memory
+ FireWire is a trademark of Apple Inc. - for more information please refer to:
 -- 
 2.9.4
