@@ -1,7 +1,7 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWpu-00078C-Uy
+ id 1dBWpu-00078D-Uy
  for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:36:16 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
@@ -13,9 +13,9 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 27/29] xz.txt: standardize document format
-Date: Thu, 18 May 2017 22:26:11 -0300
-Message-Id: <fa8c219cc27f0a45ae488ceb3d1e6ca661a95808.1495157082.git.mchehab@s-opensource.com>
+Subject: [PATCH 18/29] static-keys.txt: standardize document format
+Date: Thu, 18 May 2017 22:26:02 -0300
+Message-Id: <b3428067546db78470c8360c2b967c24baf50f85.1495157082.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495157082.git.mchehab@s-opensource.com>
 References: <cover.1495157082.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495157082.git.mchehab@s-opensource.com>
@@ -35,233 +35,349 @@ format. Some doesn't even have titles!
 
 Change its representation to follow the adopted standard,
 using ReST markups for it to be parseable by Sphinx:
-- Use marks for titles;
-- Adjust indentation.
+- Mark titles;
+- Add a warning mark;
+- Mark literals and literal blocks;
+- Adjust identation.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/xz.txt | 182 ++++++++++++++++++++++++++-------------------------
- 1 file changed, 94 insertions(+), 88 deletions(-)
+ Documentation/static-keys.txt | 199 ++++++++++++++++++++++--------------------
+ 1 file changed, 104 insertions(+), 95 deletions(-)
 
-diff --git a/Documentation/xz.txt b/Documentation/xz.txt
-index 2cf3e2608de3..b2220d03aa50 100644
---- a/Documentation/xz.txt
-+++ b/Documentation/xz.txt
-@@ -1,121 +1,127 @@
+diff --git a/Documentation/static-keys.txt b/Documentation/static-keys.txt
+index ef419fd0897f..b83dfa1c0602 100644
+--- a/Documentation/static-keys.txt
++++ b/Documentation/static-keys.txt
+@@ -1,30 +1,34 @@
+-			Static Keys
+-			-----------
++===========
++Static Keys
++===========
+ 
+-DEPRECATED API:
++.. warning::
+ 
+-The use of 'struct static_key' directly, is now DEPRECATED. In addition
+-static_key_{true,false}() is also DEPRECATED. IE DO NOT use the following:
++   DEPRECATED API:
+ 
+-struct static_key false = STATIC_KEY_INIT_FALSE;
+-struct static_key true = STATIC_KEY_INIT_TRUE;
+-static_key_true()
+-static_key_false()
++   The use of 'struct static_key' directly, is now DEPRECATED. In addition
++   static_key_{true,false}() is also DEPRECATED. IE DO NOT use the following::
+ 
+-The updated API replacements are:
++	struct static_key false = STATIC_KEY_INIT_FALSE;
++	struct static_key true = STATIC_KEY_INIT_TRUE;
++	static_key_true()
++	static_key_false()
+ 
+-DEFINE_STATIC_KEY_TRUE(key);
+-DEFINE_STATIC_KEY_FALSE(key);
+-DEFINE_STATIC_KEY_ARRAY_TRUE(keys, count);
+-DEFINE_STATIC_KEY_ARRAY_FALSE(keys, count);
+-static_branch_likely()
+-static_branch_unlikely()
++   The updated API replacements are::
+ 
+-0) Abstract
++	DEFINE_STATIC_KEY_TRUE(key);
++	DEFINE_STATIC_KEY_FALSE(key);
++	DEFINE_STATIC_KEY_ARRAY_TRUE(keys, count);
++	DEFINE_STATIC_KEY_ARRAY_FALSE(keys, count);
++	static_branch_likely()
++	static_branch_unlikely()
++
++Abstract
++========
+ 
+ Static keys allows the inclusion of seldom used features in
+ performance-sensitive fast-path kernel code, via a GCC feature and a code
+-patching technique. A quick example:
++patching technique. A quick example::
+ 
+ 	DEFINE_STATIC_KEY_FALSE(key);
+ 
+@@ -45,7 +49,8 @@ The static_branch_unlikely() branch will be generated into the code with as litt
+ impact to the likely code path as possible.
+ 
+ 
+-1) Motivation
++Motivation
++==========
+ 
+ 
+ Currently, tracepoints are implemented using a conditional branch. The
+@@ -60,7 +65,8 @@ possible. Although tracepoints are the original motivation for this work, other
+ kernel code paths should be able to make use of the static keys facility.
+ 
+ 
+-2) Solution
++Solution
++========
+ 
+ 
+ gcc (v4.5) adds a new 'asm goto' statement that allows branching to a label:
+@@ -71,7 +77,7 @@ Using the 'asm goto', we can create branches that are either taken or not taken
+ by default, without the need to check memory. Then, at run-time, we can patch
+ the branch site to change the branch direction.
+ 
+-For example, if we have a simple branch that is disabled by default:
++For example, if we have a simple branch that is disabled by default::
+ 
+ 	if (static_branch_unlikely(&key))
+ 		printk("I am the true branch\n");
+@@ -87,14 +93,15 @@ optimization.
+ This lowlevel patching mechanism is called 'jump label patching', and it gives
+ the basis for the static keys facility.
+ 
+-3) Static key label API, usage and examples:
++Static key label API, usage and examples
++========================================
+ 
+ 
+-In order to make use of this optimization you must first define a key:
++In order to make use of this optimization you must first define a key::
+ 
+ 	DEFINE_STATIC_KEY_TRUE(key);
+ 
+-or:
++or::
+ 
+ 	DEFINE_STATIC_KEY_FALSE(key);
+ 
+@@ -102,14 +109,14 @@ or:
+ The key must be global, that is, it can't be allocated on the stack or dynamically
+ allocated at run-time.
+ 
+-The key is then used in code as:
++The key is then used in code as::
+ 
+         if (static_branch_unlikely(&key))
+                 do unlikely code
+         else
+                 do likely code
+ 
+-Or:
++Or::
+ 
+         if (static_branch_likely(&key))
+                 do likely code
+@@ -120,15 +127,15 @@ Keys defined via DEFINE_STATIC_KEY_TRUE(), or DEFINE_STATIC_KEY_FALSE, may
+ be used in either static_branch_likely() or static_branch_unlikely()
+ statements.
+ 
+-Branch(es) can be set true via:
++Branch(es) can be set true via::
+ 
+-static_branch_enable(&key);
++	static_branch_enable(&key);
+ 
+-or false via:
++or false via::
+ 
+-static_branch_disable(&key);
++	static_branch_disable(&key);
+ 
+-The branch(es) can then be switched via reference counts:
++The branch(es) can then be switched via reference counts::
+ 
+ 	static_branch_inc(&key);
+ 	...
+@@ -142,11 +149,11 @@ static_branch_inc(), will change the branch back to true. Likewise, if the
+ key is initialized false, a 'static_branch_inc()', will change the branch to
+ true. And then a 'static_branch_dec()', will again make the branch false.
+ 
+-Where an array of keys is required, it can be defined as:
++Where an array of keys is required, it can be defined as::
+ 
+ 	DEFINE_STATIC_KEY_ARRAY_TRUE(keys, count);
+ 
+-or:
++or::
+ 
+ 	DEFINE_STATIC_KEY_ARRAY_FALSE(keys, count);
+ 
+@@ -159,96 +166,98 @@ simply fall back to a traditional, load, test, and jump sequence. Also, the
+ struct jump_entry table must be at least 4-byte aligned because the
+ static_key->entry field makes use of the two least significant bits.
+ 
+-* select HAVE_ARCH_JUMP_LABEL, see: arch/x86/Kconfig
++* ``select HAVE_ARCH_JUMP_LABEL``,
++    see: arch/x86/Kconfig
+ 
+-* #define JUMP_LABEL_NOP_SIZE, see: arch/x86/include/asm/jump_label.h
++* ``#define JUMP_LABEL_NOP_SIZE``,
++    see: arch/x86/include/asm/jump_label.h
+ 
+-* __always_inline bool arch_static_branch(struct static_key *key, bool branch), see:
+-					arch/x86/include/asm/jump_label.h
++* ``__always_inline bool arch_static_branch(struct static_key *key, bool branch)``,
++    see: arch/x86/include/asm/jump_label.h
+ 
+-* __always_inline bool arch_static_branch_jump(struct static_key *key, bool branch),
+-					see: arch/x86/include/asm/jump_label.h
++* ``__always_inline bool arch_static_branch_jump(struct static_key *key, bool branch)``,
++    see: arch/x86/include/asm/jump_label.h
+ 
+-* void arch_jump_label_transform(struct jump_entry *entry, enum jump_label_type type),
+-					see: arch/x86/kernel/jump_label.c
++* ``void arch_jump_label_transform(struct jump_entry *entry, enum jump_label_type type)``,
++    see: arch/x86/kernel/jump_label.c
+ 
+-* __init_or_module void arch_jump_label_transform_static(struct jump_entry *entry, enum jump_label_type type),
+-					see: arch/x86/kernel/jump_label.c
++* ``__init_or_module void arch_jump_label_transform_static(struct jump_entry *entry, enum jump_label_type type)``,
++    see: arch/x86/kernel/jump_label.c
+ 
 -
-+============================
- XZ data compression in Linux
- ============================
+-* struct jump_entry, see: arch/x86/include/asm/jump_label.h
++* ``struct jump_entry``,
++    see: arch/x86/include/asm/jump_label.h
  
- Introduction
-+============
  
--    XZ is a general purpose data compression format with high compression
--    ratio and relatively fast decompression. The primary compression
--    algorithm (filter) is LZMA2. Additional filters can be used to improve
--    compression ratio even further. E.g. Branch/Call/Jump (BCJ) filters
--    improve compression ratio of executable data.
-+XZ is a general purpose data compression format with high compression
-+ratio and relatively fast decompression. The primary compression
-+algorithm (filter) is LZMA2. Additional filters can be used to improve
-+compression ratio even further. E.g. Branch/Call/Jump (BCJ) filters
-+improve compression ratio of executable data.
+ 5) Static keys / jump label analysis, results (x86_64):
  
--    The XZ decompressor in Linux is called XZ Embedded. It supports
--    the LZMA2 filter and optionally also BCJ filters. CRC32 is supported
--    for integrity checking. The home page of XZ Embedded is at
--    <http://tukaani.org/xz/embedded.html>, where you can find the
--    latest version and also information about using the code outside
--    the Linux kernel.
-+The XZ decompressor in Linux is called XZ Embedded. It supports
-+the LZMA2 filter and optionally also BCJ filters. CRC32 is supported
-+for integrity checking. The home page of XZ Embedded is at
-+<http://tukaani.org/xz/embedded.html>, where you can find the
-+latest version and also information about using the code outside
-+the Linux kernel.
  
--    For userspace, XZ Utils provide a zlib-like compression library
--    and a gzip-like command line tool. XZ Utils can be downloaded from
--    <http://tukaani.org/xz/>.
-+For userspace, XZ Utils provide a zlib-like compression library
-+and a gzip-like command line tool. XZ Utils can be downloaded from
-+<http://tukaani.org/xz/>.
+ As an example, let's add the following branch to 'getppid()', such that the
+-system call now looks like:
++system call now looks like::
  
- XZ related components in the kernel
-+===================================
+-SYSCALL_DEFINE0(getppid)
+-{
++  SYSCALL_DEFINE0(getppid)
++  {
+         int pid;
  
--    The xz_dec module provides XZ decompressor with single-call (buffer
--    to buffer) and multi-call (stateful) APIs. The usage of the xz_dec
--    module is documented in include/linux/xz.h.
-+The xz_dec module provides XZ decompressor with single-call (buffer
-+to buffer) and multi-call (stateful) APIs. The usage of the xz_dec
-+module is documented in include/linux/xz.h.
+-+       if (static_branch_unlikely(&key))
+-+               printk("I am the true branch\n");
++  +     if (static_branch_unlikely(&key))
++  +             printk("I am the true branch\n");
  
--    The xz_dec_test module is for testing xz_dec. xz_dec_test is not
--    useful unless you are hacking the XZ decompressor. xz_dec_test
--    allocates a char device major dynamically to which one can write
--    .xz files from userspace. The decompressed output is thrown away.
--    Keep an eye on dmesg to see diagnostics printed by xz_dec_test.
--    See the xz_dec_test source code for the details.
-+The xz_dec_test module is for testing xz_dec. xz_dec_test is not
-+useful unless you are hacking the XZ decompressor. xz_dec_test
-+allocates a char device major dynamically to which one can write
-+.xz files from userspace. The decompressed output is thrown away.
-+Keep an eye on dmesg to see diagnostics printed by xz_dec_test.
-+See the xz_dec_test source code for the details.
+         rcu_read_lock();
+         pid = task_tgid_vnr(rcu_dereference(current->real_parent));
+         rcu_read_unlock();
  
--    For decompressing the kernel image, initramfs, and initrd, there
--    is a wrapper function in lib/decompress_unxz.c. Its API is the
--    same as in other decompress_*.c files, which is defined in
--    include/linux/decompress/generic.h.
-+For decompressing the kernel image, initramfs, and initrd, there
-+is a wrapper function in lib/decompress_unxz.c. Its API is the
-+same as in other decompress_*.c files, which is defined in
-+include/linux/decompress/generic.h.
+         return pid;
+-}
++  }
  
--    scripts/xz_wrap.sh is a wrapper for the xz command line tool found
--    from XZ Utils. The wrapper sets compression options to values suitable
--    for compressing the kernel image.
-+scripts/xz_wrap.sh is a wrapper for the xz command line tool found
-+from XZ Utils. The wrapper sets compression options to values suitable
-+for compressing the kernel image.
+-The resulting instructions with jump labels generated by GCC is:
++The resulting instructions with jump labels generated by GCC is::
  
--    For kernel makefiles, two commands are provided for use with
--    $(call if_needed). The kernel image should be compressed with
--    $(call if_needed,xzkern) which will use a BCJ filter and a big LZMA2
--    dictionary. It will also append a four-byte trailer containing the
--    uncompressed size of the file, which is needed by the boot code.
--    Other things should be compressed with $(call if_needed,xzmisc)
--    which will use no BCJ filter and 1 MiB LZMA2 dictionary.
-+For kernel makefiles, two commands are provided for use with
-+$(call if_needed). The kernel image should be compressed with
-+$(call if_needed,xzkern) which will use a BCJ filter and a big LZMA2
-+dictionary. It will also append a four-byte trailer containing the
-+uncompressed size of the file, which is needed by the boot code.
-+Other things should be compressed with $(call if_needed,xzmisc)
-+which will use no BCJ filter and 1 MiB LZMA2 dictionary.
+-ffffffff81044290 <sys_getppid>:
+-ffffffff81044290:       55                      push   %rbp
+-ffffffff81044291:       48 89 e5                mov    %rsp,%rbp
+-ffffffff81044294:       e9 00 00 00 00          jmpq   ffffffff81044299 <sys_getppid+0x9>
+-ffffffff81044299:       65 48 8b 04 25 c0 b6    mov    %gs:0xb6c0,%rax
+-ffffffff810442a0:       00 00
+-ffffffff810442a2:       48 8b 80 80 02 00 00    mov    0x280(%rax),%rax
+-ffffffff810442a9:       48 8b 80 b0 02 00 00    mov    0x2b0(%rax),%rax
+-ffffffff810442b0:       48 8b b8 e8 02 00 00    mov    0x2e8(%rax),%rdi
+-ffffffff810442b7:       e8 f4 d9 00 00          callq  ffffffff81051cb0 <pid_vnr>
+-ffffffff810442bc:       5d                      pop    %rbp
+-ffffffff810442bd:       48 98                   cltq
+-ffffffff810442bf:       c3                      retq
+-ffffffff810442c0:       48 c7 c7 e3 54 98 81    mov    $0xffffffff819854e3,%rdi
+-ffffffff810442c7:       31 c0                   xor    %eax,%eax
+-ffffffff810442c9:       e8 71 13 6d 00          callq  ffffffff8171563f <printk>
+-ffffffff810442ce:       eb c9                   jmp    ffffffff81044299 <sys_getppid+0x9>
++  ffffffff81044290 <sys_getppid>:
++  ffffffff81044290:       55                      push   %rbp
++  ffffffff81044291:       48 89 e5                mov    %rsp,%rbp
++  ffffffff81044294:       e9 00 00 00 00          jmpq   ffffffff81044299 <sys_getppid+0x9>
++  ffffffff81044299:       65 48 8b 04 25 c0 b6    mov    %gs:0xb6c0,%rax
++  ffffffff810442a0:       00 00
++  ffffffff810442a2:       48 8b 80 80 02 00 00    mov    0x280(%rax),%rax
++  ffffffff810442a9:       48 8b 80 b0 02 00 00    mov    0x2b0(%rax),%rax
++  ffffffff810442b0:       48 8b b8 e8 02 00 00    mov    0x2e8(%rax),%rdi
++  ffffffff810442b7:       e8 f4 d9 00 00          callq  ffffffff81051cb0 <pid_vnr>
++  ffffffff810442bc:       5d                      pop    %rbp
++  ffffffff810442bd:       48 98                   cltq
++  ffffffff810442bf:       c3                      retq
++  ffffffff810442c0:       48 c7 c7 e3 54 98 81    mov    $0xffffffff819854e3,%rdi
++  ffffffff810442c7:       31 c0                   xor    %eax,%eax
++  ffffffff810442c9:       e8 71 13 6d 00          callq  ffffffff8171563f <printk>
++  ffffffff810442ce:       eb c9                   jmp    ffffffff81044299 <sys_getppid+0x9>
  
- Notes on compression options
-+============================
+-Without the jump label optimization it looks like:
++Without the jump label optimization it looks like::
  
--    Since the XZ Embedded supports only streams with no integrity check or
--    CRC32, make sure that you don't use some other integrity check type
--    when encoding files that are supposed to be decoded by the kernel. With
--    liblzma, you need to use either LZMA_CHECK_NONE or LZMA_CHECK_CRC32
--    when encoding. With the xz command line tool, use --check=none or
--    --check=crc32.
-+Since the XZ Embedded supports only streams with no integrity check or
-+CRC32, make sure that you don't use some other integrity check type
-+when encoding files that are supposed to be decoded by the kernel. With
-+liblzma, you need to use either LZMA_CHECK_NONE or LZMA_CHECK_CRC32
-+when encoding. With the xz command line tool, use --check=none or
-+--check=crc32.
+-ffffffff810441f0 <sys_getppid>:
+-ffffffff810441f0:       8b 05 8a 52 d8 00       mov    0xd8528a(%rip),%eax        # ffffffff81dc9480 <key>
+-ffffffff810441f6:       55                      push   %rbp
+-ffffffff810441f7:       48 89 e5                mov    %rsp,%rbp
+-ffffffff810441fa:       85 c0                   test   %eax,%eax
+-ffffffff810441fc:       75 27                   jne    ffffffff81044225 <sys_getppid+0x35>
+-ffffffff810441fe:       65 48 8b 04 25 c0 b6    mov    %gs:0xb6c0,%rax
+-ffffffff81044205:       00 00
+-ffffffff81044207:       48 8b 80 80 02 00 00    mov    0x280(%rax),%rax
+-ffffffff8104420e:       48 8b 80 b0 02 00 00    mov    0x2b0(%rax),%rax
+-ffffffff81044215:       48 8b b8 e8 02 00 00    mov    0x2e8(%rax),%rdi
+-ffffffff8104421c:       e8 2f da 00 00          callq  ffffffff81051c50 <pid_vnr>
+-ffffffff81044221:       5d                      pop    %rbp
+-ffffffff81044222:       48 98                   cltq
+-ffffffff81044224:       c3                      retq
+-ffffffff81044225:       48 c7 c7 13 53 98 81    mov    $0xffffffff81985313,%rdi
+-ffffffff8104422c:       31 c0                   xor    %eax,%eax
+-ffffffff8104422e:       e8 60 0f 6d 00          callq  ffffffff81715193 <printk>
+-ffffffff81044233:       eb c9                   jmp    ffffffff810441fe <sys_getppid+0xe>
+-ffffffff81044235:       66 66 2e 0f 1f 84 00    data32 nopw %cs:0x0(%rax,%rax,1)
+-ffffffff8104423c:       00 00 00 00
++  ffffffff810441f0 <sys_getppid>:
++  ffffffff810441f0:       8b 05 8a 52 d8 00       mov    0xd8528a(%rip),%eax        # ffffffff81dc9480 <key>
++  ffffffff810441f6:       55                      push   %rbp
++  ffffffff810441f7:       48 89 e5                mov    %rsp,%rbp
++  ffffffff810441fa:       85 c0                   test   %eax,%eax
++  ffffffff810441fc:       75 27                   jne    ffffffff81044225 <sys_getppid+0x35>
++  ffffffff810441fe:       65 48 8b 04 25 c0 b6    mov    %gs:0xb6c0,%rax
++  ffffffff81044205:       00 00
++  ffffffff81044207:       48 8b 80 80 02 00 00    mov    0x280(%rax),%rax
++  ffffffff8104420e:       48 8b 80 b0 02 00 00    mov    0x2b0(%rax),%rax
++  ffffffff81044215:       48 8b b8 e8 02 00 00    mov    0x2e8(%rax),%rdi
++  ffffffff8104421c:       e8 2f da 00 00          callq  ffffffff81051c50 <pid_vnr>
++  ffffffff81044221:       5d                      pop    %rbp
++  ffffffff81044222:       48 98                   cltq
++  ffffffff81044224:       c3                      retq
++  ffffffff81044225:       48 c7 c7 13 53 98 81    mov    $0xffffffff81985313,%rdi
++  ffffffff8104422c:       31 c0                   xor    %eax,%eax
++  ffffffff8104422e:       e8 60 0f 6d 00          callq  ffffffff81715193 <printk>
++  ffffffff81044233:       eb c9                   jmp    ffffffff810441fe <sys_getppid+0xe>
++  ffffffff81044235:       66 66 2e 0f 1f 84 00    data32 nopw %cs:0x0(%rax,%rax,1)
++  ffffffff8104423c:       00 00 00 00
  
--    Using CRC32 is strongly recommended unless there is some other layer
--    which will verify the integrity of the uncompressed data anyway.
--    Double checking the integrity would probably be waste of CPU cycles.
--    Note that the headers will always have a CRC32 which will be validated
--    by the decoder; you can only change the integrity check type (or
--    disable it) for the actual uncompressed data.
-+Using CRC32 is strongly recommended unless there is some other layer
-+which will verify the integrity of the uncompressed data anyway.
-+Double checking the integrity would probably be waste of CPU cycles.
-+Note that the headers will always have a CRC32 which will be validated
-+by the decoder; you can only change the integrity check type (or
-+disable it) for the actual uncompressed data.
+ Thus, the disable jump label case adds a 'mov', 'test' and 'jne' instruction
+ vs. the jump label case just has a 'no-op' or 'jmp 0'. (The jmp 0, is patched
+ to a 5 byte atomic no-op instruction at boot-time.) Thus, the disabled jump
+-label case adds:
++label case adds::
  
--    In userspace, LZMA2 is typically used with dictionary sizes of several
--    megabytes. The decoder needs to have the dictionary in RAM, thus big
--    dictionaries cannot be used for files that are intended to be decoded
--    by the kernel. 1 MiB is probably the maximum reasonable dictionary
--    size for in-kernel use (maybe more is OK for initramfs). The presets
--    in XZ Utils may not be optimal when creating files for the kernel,
--    so don't hesitate to use custom settings. Example:
-+In userspace, LZMA2 is typically used with dictionary sizes of several
-+megabytes. The decoder needs to have the dictionary in RAM, thus big
-+dictionaries cannot be used for files that are intended to be decoded
-+by the kernel. 1 MiB is probably the maximum reasonable dictionary
-+size for in-kernel use (maybe more is OK for initramfs). The presets
-+in XZ Utils may not be optimal when creating files for the kernel,
-+so don't hesitate to use custom settings. Example::
+-6 (mov) + 2 (test) + 2 (jne) = 10 - 5 (5 byte jump 0) = 5 addition bytes.
++  6 (mov) + 2 (test) + 2 (jne) = 10 - 5 (5 byte jump 0) = 5 addition bytes.
  
--        xz --check=crc32 --lzma2=dict=512KiB inputfile
-+	xz --check=crc32 --lzma2=dict=512KiB inputfile
+ If we then include the padding bytes, the jump label code saves, 16 total bytes
+ of instruction memory for this small function. In this case the non-jump label
+@@ -262,7 +271,7 @@ Since there are a number of static key API uses in the scheduler paths,
+ 'pipe-test' (also known as 'perf bench sched pipe') can be used to show the
+ performance improvement. Testing done on 3.3.0-rc2:
  
--    An exception to above dictionary size limitation is when the decoder
--    is used in single-call mode. Decompressing the kernel itself is an
--    example of this situation. In single-call mode, the memory usage
--    doesn't depend on the dictionary size, and it is perfectly fine to
--    use a big dictionary: for maximum compression, the dictionary should
--    be at least as big as the uncompressed data itself.
-+An exception to above dictionary size limitation is when the decoder
-+is used in single-call mode. Decompressing the kernel itself is an
-+example of this situation. In single-call mode, the memory usage
-+doesn't depend on the dictionary size, and it is perfectly fine to
-+use a big dictionary: for maximum compression, the dictionary should
-+be at least as big as the uncompressed data itself.
+-jump label disabled:
++jump label disabled::
  
- Future plans
-+============
+  Performance counter stats for 'bash -c /tmp/pipe-test' (50 runs):
  
--    Creating a limited XZ encoder may be considered if people think it is
--    useful. LZMA2 is slower to compress than e.g. Deflate or LZO even at
--    the fastest settings, so it isn't clear if LZMA2 encoder is wanted
--    into the kernel.
-+Creating a limited XZ encoder may be considered if people think it is
-+useful. LZMA2 is slower to compress than e.g. Deflate or LZO even at
-+the fastest settings, so it isn't clear if LZMA2 encoder is wanted
-+into the kernel.
+@@ -279,7 +288,7 @@ jump label disabled:
  
--    Support for limited random-access reading is planned for the
--    decompression code. I don't know if it could have any use in the
--    kernel, but I know that it would be useful in some embedded projects
--    outside the Linux kernel.
-+Support for limited random-access reading is planned for the
-+decompression code. I don't know if it could have any use in the
-+kernel, but I know that it would be useful in some embedded projects
-+outside the Linux kernel.
+        1.601607384 seconds time elapsed                                          ( +-  0.07% )
  
- Conformance to the .xz file format specification
-+================================================
+-jump label enabled:
++jump label enabled::
  
--    There are a couple of corner cases where things have been simplified
--    at expense of detecting errors as early as possible. These should not
--    matter in practice all, since they don't cause security issues. But
--    it is good to know this if testing the code e.g. with the test files
--    from XZ Utils.
-+There are a couple of corner cases where things have been simplified
-+at expense of detecting errors as early as possible. These should not
-+matter in practice all, since they don't cause security issues. But
-+it is good to know this if testing the code e.g. with the test files
-+from XZ Utils.
+  Performance counter stats for 'bash -c /tmp/pipe-test' (50 runs):
  
- Reporting bugs
-+==============
- 
--    Before reporting a bug, please check that it's not fixed already
--    at upstream. See <http://tukaani.org/xz/embedded.html> to get the
--    latest code.
-+Before reporting a bug, please check that it's not fixed already
-+at upstream. See <http://tukaani.org/xz/embedded.html> to get the
-+latest code.
- 
--    Report bugs to <lasse.collin@tukaani.org> or visit #tukaani on
--    Freenode and talk to Larhzu. I don't actively read LKML or other
--    kernel-related mailing lists, so if there's something I should know,
--    you should email to me personally or use IRC.
-+Report bugs to <lasse.collin@tukaani.org> or visit #tukaani on
-+Freenode and talk to Larhzu. I don't actively read LKML or other
-+kernel-related mailing lists, so if there's something I should know,
-+you should email to me personally or use IRC.
- 
--    Don't bother Igor Pavlov with questions about the XZ implementation
--    in the kernel or about XZ Utils. While these two implementations
--    include essential code that is directly based on Igor Pavlov's code,
--    these implementations aren't maintained nor supported by him.
-+Don't bother Igor Pavlov with questions about the XZ implementation
-+in the kernel or about XZ Utils. While these two implementations
-+include essential code that is directly based on Igor Pavlov's code,
-+these implementations aren't maintained nor supported by him.
 -- 
 2.9.4
