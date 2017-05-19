@@ -1,23 +1,21 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWdc-0000Ov-Pk
+ id 1dBWdc-0000P0-Pp
  for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:23:45 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc: Mauro Carvalho Chehab <mchehab@osg.samsung.com>,
+Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Mauro Carvalho Chehab <mchehab@infradead.org>,
  linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
  David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- Doug Warzecha <Douglas_Warzecha@dell.com>,
- Mauro Carvalho Chehab <mchehab@s-opensource.com>
-Subject: [PATCH 12/31] dcdbas.txt: standardize document format
-Date: Thu, 18 May 2017 22:22:17 -0300
-Message-Id: <8b14c0380301e2161e5de8294a707e7db3542b3c.1495156488.git.mchehab@s-opensource.com>
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH 13/31] digsig.txt: standardize document format
+Date: Thu, 18 May 2017 22:22:18 -0300
+Message-Id: <2476e971e4fa6433b7d5af980314d93d1a7b51be.1495156488.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
 References: <cover.1495156488.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156488.git.mchehab@s-opensource.com>
@@ -32,94 +30,183 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-
 Each text file under Documentation follows a different
 format. Some doesn't even have titles!
 
 Change its representation to follow the adopted standard,
 using ReST markups for it to be parseable by Sphinx:
 
-- Mark titles;
-- Mark literal blocks;
-- Mark table.
+- comment the internal index;
+- use the proper markups for titles;
+- mark literal blocks.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/dcdbas.txt | 24 ++++++++++++++++--------
- 1 file changed, 16 insertions(+), 8 deletions(-)
+ Documentation/digsig.txt | 124 ++++++++++++++++++++++++-----------------------
+ 1 file changed, 64 insertions(+), 60 deletions(-)
 
-diff --git a/Documentation/dcdbas.txt b/Documentation/dcdbas.txt
-index e1c52e2dc361..309cc57a7c1c 100644
---- a/Documentation/dcdbas.txt
-+++ b/Documentation/dcdbas.txt
-@@ -1,4 +1,9 @@
-+===================================
-+Dell Systems Management Base Driver
-+===================================
+diff --git a/Documentation/digsig.txt b/Documentation/digsig.txt
+index 3f682889068b..7ce23eddee37 100644
+--- a/Documentation/digsig.txt
++++ b/Documentation/digsig.txt
+@@ -1,13 +1,19 @@
+ Digital Signature Verification API
++----------------------------------
+ 
+-CONTENTS
++:Author: Dmitry Kasatkin
++:Date: 06.10.2011
+ 
+-1. Introduction
+-2. API
+-3. User-space utilities
+ 
++.. CONTENTS
+ 
+-1. Introduction
++   1. Introduction
++   2. API
++   3. User-space utilities
 +
- Overview
-+========
++
++Introduction
++============
  
- The Dell Systems Management Base Driver provides a sysfs interface for
- systems management software such as Dell OpenManage to perform system
-@@ -17,6 +22,7 @@ more information about the libsmbios project.
+ Digital signature verification API provides a method to verify digital signature.
+ Currently digital signatures are used by the IMA/EVM integrity protection subsystem.
+@@ -17,25 +23,25 @@ GnuPG multi-precision integers (MPI) library. The kernel port provides
+ memory allocation errors handling, has been refactored according to kernel
+ coding style, and checkpatch.pl reported errors and warnings have been fixed.
+ 
+-Public key and signature consist of header and MPIs.
++Public key and signature consist of header and MPIs::
+ 
+-struct pubkey_hdr {
+-	uint8_t		version;	/* key format version */
+-	time_t		timestamp;	/* key made, always 0 for now */
+-	uint8_t		algo;
+-	uint8_t		nmpi;
+-	char		mpi[0];
+-} __packed;
++	struct pubkey_hdr {
++		uint8_t		version;	/* key format version */
++		time_t		timestamp;	/* key made, always 0 for now */
++		uint8_t		algo;
++		uint8_t		nmpi;
++		char		mpi[0];
++	} __packed;
+ 
+-struct signature_hdr {
+-	uint8_t		version;	/* signature format version */
+-	time_t		timestamp;	/* signature made */
+-	uint8_t		algo;
+-	uint8_t		hash;
+-	uint8_t		keyid[8];
+-	uint8_t		nmpi;
+-	char		mpi[0];
+-} __packed;
++	struct signature_hdr {
++		uint8_t		version;	/* signature format version */
++		time_t		timestamp;	/* signature made */
++		uint8_t		algo;
++		uint8_t		hash;
++		uint8_t		keyid[8];
++		uint8_t		nmpi;
++		char		mpi[0];
++	} __packed;
+ 
+ keyid equals to SHA1[12-19] over the total key content.
+ Signature header is used as an input to generate a signature.
+@@ -43,31 +49,33 @@ Such approach insures that key or signature header could not be changed.
+ It protects timestamp from been changed and can be used for rollback
+ protection.
+ 
+-2. API
++API
++===
+ 
+-API currently includes only 1 function:
++API currently includes only 1 function::
+ 
+ 	digsig_verify() - digital signature verification with public key
  
  
- System Management Interrupt
-+===========================
+-/**
+- * digsig_verify() - digital signature verification with public key
+- * @keyring:	keyring to search key in
+- * @sig:	digital signature
+- * @sigen:	length of the signature
+- * @data:	data
+- * @datalen:	length of the data
+- * @return:	0 on success, -EINVAL otherwise
+- *
+- * Verifies data integrity against digital signature.
+- * Currently only RSA is supported.
+- * Normally hash of the content is used as a data for this function.
+- *
+- */
+-int digsig_verify(struct key *keyring, const char *sig, int siglen,
+-						const char *data, int datalen);
++	/**
++	* digsig_verify() - digital signature verification with public key
++	* @keyring:	keyring to search key in
++	* @sig:	digital signature
++	* @sigen:	length of the signature
++	* @data:	data
++	* @datalen:	length of the data
++	* @return:	0 on success, -EINVAL otherwise
++	*
++	* Verifies data integrity against digital signature.
++	* Currently only RSA is supported.
++	* Normally hash of the content is used as a data for this function.
++	*
++	*/
++	int digsig_verify(struct key *keyring, const char *sig, int siglen,
++			  const char *data, int datalen);
  
- On some Dell systems, systems management software must access certain
- management information via a system management interrupt (SMI).  The SMI data
-@@ -24,12 +30,12 @@ buffer must reside in 32-bit address space, and the physical address of the
- buffer is required for the SMI.  The driver maintains the memory required for
- the SMI and provides a way for the application to generate the SMI.
- The driver creates the following sysfs entries for systems management
--software to perform these system management interrupts:
-+software to perform these system management interrupts::
+-3. User-space utilities
++User-space utilities
++====================
  
--/sys/devices/platform/dcdbas/smi_data
--/sys/devices/platform/dcdbas/smi_data_buf_phys_addr
--/sys/devices/platform/dcdbas/smi_data_buf_size
--/sys/devices/platform/dcdbas/smi_request
-+	/sys/devices/platform/dcdbas/smi_data
-+	/sys/devices/platform/dcdbas/smi_data_buf_phys_addr
-+	/sys/devices/platform/dcdbas/smi_data_buf_size
-+	/sys/devices/platform/dcdbas/smi_request
+ The signing and key management utilities evm-utils provide functionality
+ to generate signatures, to load keys into the kernel keyring.
+@@ -75,22 +83,18 @@ Keys can be in PEM or converted to the kernel format.
+ When the key is added to the kernel keyring, the keyid defines the name
+ of the key: 5D2B05FC633EE3E8 in the example bellow.
  
- Systems management software must perform the following steps to execute
- a SMI using this driver:
-@@ -43,6 +49,7 @@ a SMI using this driver:
- 
- 
- Host Control Action
-+===================
- 
- Dell OpenManage supports a host control feature that allows the administrator
- to perform a power cycle or power off of the system after the OS has finished
-@@ -69,12 +76,14 @@ power off host control action using this driver:
- 
- 
- Host Control SMI Type
-+=====================
- 
- The following table shows the value to write to host_control_smi_type to
- perform a power cycle or power off host control action:
- 
-+=================== =====================
- PowerEdge System    Host Control SMI Type
------------------    ---------------------
-+=================== =====================
-       300             HC_SMITYPE_TYPE1
-      1300             HC_SMITYPE_TYPE1
-      1400             HC_SMITYPE_TYPE2
-@@ -87,5 +96,4 @@ PowerEdge System    Host Control SMI Type
-      1655MC           HC_SMITYPE_TYPE2
-       700             HC_SMITYPE_TYPE3
-       750             HC_SMITYPE_TYPE3
+-Here is example output of the keyctl utility.
+-
+-$ keyctl show
+-Session Keyring
+-       -3 --alswrv      0     0  keyring: _ses
+-603976250 --alswrv      0    -1   \_ keyring: _uid.0
+-817777377 --alswrv      0     0       \_ user: kmk
+-891974900 --alswrv      0     0       \_ encrypted: evm-key
+-170323636 --alswrv      0     0       \_ keyring: _module
+-548221616 --alswrv      0     0       \_ keyring: _ima
+-128198054 --alswrv      0     0       \_ keyring: _evm
+-
+-$ keyctl list 128198054
+-1 key in keyring:
+-620789745: --alswrv     0     0 user: 5D2B05FC633EE3E8
 -
 -
-+=================== =====================
+-Dmitry Kasatkin
+-06.10.2011
++Here is example output of the keyctl utility::
++
++	$ keyctl show
++	Session Keyring
++	-3 --alswrv      0     0  keyring: _ses
++	603976250 --alswrv      0    -1   \_ keyring: _uid.0
++	817777377 --alswrv      0     0       \_ user: kmk
++	891974900 --alswrv      0     0       \_ encrypted: evm-key
++	170323636 --alswrv      0     0       \_ keyring: _module
++	548221616 --alswrv      0     0       \_ keyring: _ima
++	128198054 --alswrv      0     0       \_ keyring: _evm
++
++	$ keyctl list 128198054
++	1 key in keyring:
++	620789745: --alswrv     0     0 user: 5D2B05FC633EE3E8
 -- 
 2.9.4
