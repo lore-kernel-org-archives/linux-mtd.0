@@ -1,7 +1,7 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by merlin.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWhT-0005xl-3D
+ id 1dBWhT-0005yC-3C
  for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:27:28 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
@@ -13,9 +13,9 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 28/29] zorro.txt: standardize document format
-Date: Thu, 18 May 2017 22:26:12 -0300
-Message-Id: <ea7d645a23ca7035b3fad8c3af655eb4fe8a0a7e.1495157082.git.mchehab@s-opensource.com>
+Subject: [PATCH 21/29] this_cpu_ops.txt: standardize document format
+Date: Thu, 18 May 2017 22:26:05 -0300
+Message-Id: <70e089d404aa13de6370f80b3f9b1ef750ddac71.1495157082.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495157082.git.mchehab@s-opensource.com>
 References: <cover.1495157082.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495157082.git.mchehab@s-opensource.com>
@@ -35,137 +35,191 @@ format. Some doesn't even have titles!
 
 Change its representation to follow the adopted standard,
 using ReST markups for it to be parseable by Sphinx:
-
-- Use right marks for titles;
-- Use authorship marks;
-- Mark literals and literal blocks;
-- Use autonumbered list for references.
+- promote document title one level;
+- mark literal blocks;
+- move authorship to the beginning of the file and use markups.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/zorro.txt | 59 +++++++++++++++++++++++++------------------------
- 1 file changed, 30 insertions(+), 29 deletions(-)
+ Documentation/this_cpu_ops.txt | 49 ++++++++++++++++++++++++------------------
+ 1 file changed, 28 insertions(+), 21 deletions(-)
 
-diff --git a/Documentation/zorro.txt b/Documentation/zorro.txt
-index d530971beb00..664072b017e3 100644
---- a/Documentation/zorro.txt
-+++ b/Documentation/zorro.txt
-@@ -1,12 +1,13 @@
--		Writing Device Drivers for Zorro Devices
--		----------------------------------------
-+========================================
-+Writing Device Drivers for Zorro Devices
-+========================================
+diff --git a/Documentation/this_cpu_ops.txt b/Documentation/this_cpu_ops.txt
+index 2cbf71975381..5cb8b883ae83 100644
+--- a/Documentation/this_cpu_ops.txt
++++ b/Documentation/this_cpu_ops.txt
+@@ -1,5 +1,9 @@
++===================
+ this_cpu operations
+--------------------
++===================
++
++:Author: Christoph Lameter, August 4th, 2014
++:Author: Pranith Kumar, Aug 2nd, 2014
  
--Written by Geert Uytterhoeven <geert@linux-m68k.org>
--Last revised: September 5, 2003
-+:Author: Written by Geert Uytterhoeven <geert@linux-m68k.org>
-+:Last revised: September 5, 2003
+ this_cpu operations are a way of optimizing access to per cpu
+ variables associated with the *currently* executing processor. This is
+@@ -39,7 +43,7 @@ operations.
  
+ The following this_cpu() operations with implied preemption protection
+ are defined. These operations can be used without worrying about
+-preemption and interrupts.
++preemption and interrupts::
  
--1. Introduction
-----------------
-+Introduction
-+------------
+ 	this_cpu_read(pcp)
+ 	this_cpu_write(pcp, val)
+@@ -67,14 +71,14 @@ to relocate a per cpu relative address to the proper per cpu area for
+ the processor. So the relocation to the per cpu base is encoded in the
+ instruction via a segment register prefix.
  
- The Zorro bus is the bus used in the Amiga family of computers. Thanks to
- AutoConfig(tm), it's 100% Plug-and-Play.
-@@ -20,12 +21,12 @@ There are two types of Zorro buses, Zorro II and Zorro III:
-     with Zorro II. The Zorro III address space lies outside the first 16 MB.
+-For example:
++For example::
  
+ 	DEFINE_PER_CPU(int, x);
+ 	int z;
  
--2. Probing for Zorro Devices
------------------------------
-+Probing for Zorro Devices
-+-------------------------
+ 	z = this_cpu_read(x);
  
--Zorro devices are found by calling `zorro_find_device()', which returns a
--pointer to the `next' Zorro device with the specified Zorro ID. A probe loop
--for the board with Zorro ID `ZORRO_PROD_xxx' looks like:
-+Zorro devices are found by calling ``zorro_find_device()``, which returns a
-+pointer to the ``next`` Zorro device with the specified Zorro ID. A probe loop
-+for the board with Zorro ID ``ZORRO_PROD_xxx`` looks like::
+-results in a single instruction
++results in a single instruction::
  
-     struct zorro_dev *z = NULL;
+ 	mov ax, gs:[x]
  
-@@ -35,8 +36,8 @@ for the board with Zorro ID `ZORRO_PROD_xxx' looks like:
- 	...
-     }
+@@ -84,16 +88,16 @@ this_cpu_ops such sequence also required preempt disable/enable to
+ prevent the kernel from moving the thread to a different processor
+ while the calculation is performed.
  
--`ZORRO_WILDCARD' acts as a wildcard and finds any Zorro device. If your driver
--supports different types of boards, you can use a construct like:
-+``ZORRO_WILDCARD`` acts as a wildcard and finds any Zorro device. If your driver
-+supports different types of boards, you can use a construct like::
+-Consider the following this_cpu operation:
++Consider the following this_cpu operation::
  
-     struct zorro_dev *z = NULL;
+ 	this_cpu_inc(x)
  
-@@ -49,24 +50,24 @@ supports different types of boards, you can use a construct like:
-     }
+-The above results in the following single instruction (no lock prefix!)
++The above results in the following single instruction (no lock prefix!)::
  
+ 	inc gs:[x]
  
--3. Zorro Resources
--------------------
-+Zorro Resources
-+---------------
+ instead of the following operations required if there is no segment
+-register:
++register::
  
- Before you can access a Zorro device's registers, you have to make sure it's
- not yet in use. This is done using the I/O memory space resource management
--functions:
-+functions::
- 
-     request_mem_region()
-     release_mem_region()
- 
--Shortcuts to claim the whole device's address space are provided as well:
-+Shortcuts to claim the whole device's address space are provided as well::
- 
-     zorro_request_device
-     zorro_release_device
+ 	int *y;
+ 	int cpu;
+@@ -121,8 +125,10 @@ has to be paid for this optimization is the need to add up the per cpu
+ counters when the value of a counter is needed.
  
  
--4. Accessing the Zorro Address Space
--------------------------------------
-+Accessing the Zorro Address Space
-+---------------------------------
+-Special operations:
+--------------------
++Special operations
++------------------
++
++::
  
- The address regions in the Zorro device resources are Zorro bus address
- regions. Due to the identity bus-physical address mapping on the Zorro bus,
-@@ -78,26 +79,26 @@ The treatment of these regions depends on the type of Zorro space:
-     explicitly using z_ioremap().
-     
-     Conversion from bus/physical Zorro II addresses to kernel virtual addresses
--    and vice versa is done using:
-+    and vice versa is done using::
+ 	y = this_cpu_ptr(&x)
  
- 	virt_addr = ZTWO_VADDR(bus_addr);
- 	bus_addr = ZTWO_PADDR(virt_addr);
+@@ -153,11 +159,15 @@ Therefore the use of x or &x outside of the context of per cpu
+ operations is invalid and will generally be treated like a NULL
+ pointer dereference.
  
-   - Zorro III address space must be mapped explicitly using z_ioremap() first
--    before it can be accessed:
-+    before it can be accessed::
-  
- 	virt_addr = z_ioremap(bus_addr, size);
- 	...
- 	z_iounmap(virt_addr);
++::
++
+ 	DEFINE_PER_CPU(int, x);
+ 
+ In the context of per cpu operations the above implies that x is a per
+ cpu variable. Most this_cpu operations take a cpu variable.
+ 
++::
++
+ 	int __percpu *p = &x;
+ 
+ &x and hence p is the *offset* of a per cpu variable. this_cpu_ptr()
+@@ -168,7 +178,7 @@ strange.
+ Operations on a field of a per cpu structure
+ --------------------------------------------
+ 
+-Let's say we have a percpu structure
++Let's say we have a percpu structure::
+ 
+ 	struct s {
+ 		int n,m;
+@@ -177,14 +187,14 @@ Let's say we have a percpu structure
+ 	DEFINE_PER_CPU(struct s, p);
  
  
--5. References
---------------
-+References
-+----------
+-Operations on these fields are straightforward
++Operations on these fields are straightforward::
  
--linux/include/linux/zorro.h
--linux/include/uapi/linux/zorro.h
--linux/include/uapi/linux/zorro_ids.h
--linux/arch/m68k/include/asm/zorro.h
--linux/drivers/zorro
--/proc/bus/zorro
-+#. linux/include/linux/zorro.h
-+#. linux/include/uapi/linux/zorro.h
-+#. linux/include/uapi/linux/zorro_ids.h
-+#. linux/arch/m68k/include/asm/zorro.h
-+#. linux/drivers/zorro
-+#. /proc/bus/zorro
+ 	this_cpu_inc(p.m)
  
+ 	z = this_cpu_cmpxchg(p.m, 0, 1);
+ 
+ 
+-If we have an offset to struct s:
++If we have an offset to struct s::
+ 
+ 	struct s __percpu *ps = &p;
+ 
+@@ -194,7 +204,7 @@ If we have an offset to struct s:
+ 
+ 
+ The calculation of the pointer may require the use of this_cpu_ptr()
+-if we do not make use of this_cpu ops later to manipulate fields:
++if we do not make use of this_cpu ops later to manipulate fields::
+ 
+ 	struct s *pp;
+ 
+@@ -206,7 +216,7 @@ if we do not make use of this_cpu ops later to manipulate fields:
+ 
+ 
+ Variants of this_cpu ops
+--------------------------
++------------------------
+ 
+ this_cpu ops are interrupt safe. Some architectures do not support
+ these per cpu local operations. In that case the operation must be
+@@ -222,7 +232,7 @@ preemption. If a per cpu variable is not used in an interrupt context
+ and the scheduler cannot preempt, then they are safe. If any interrupts
+ still occur while an operation is in progress and if the interrupt too
+ modifies the variable, then RMW actions can not be guaranteed to be
+-safe.
++safe::
+ 
+ 	__this_cpu_read(pcp)
+ 	__this_cpu_write(pcp, val)
+@@ -279,7 +289,7 @@ unless absolutely necessary. Please consider using an IPI to wake up
+ the remote CPU and perform the update to its per cpu area.
+ 
+ To access per-cpu data structure remotely, typically the per_cpu_ptr()
+-function is used:
++function is used::
+ 
+ 
+ 	DEFINE_PER_CPU(struct data, datap);
+@@ -289,7 +299,7 @@ function is used:
+ This makes it explicit that we are getting ready to access a percpu
+ area remotely.
+ 
+-You can also do the following to convert the datap offset to an address
++You can also do the following to convert the datap offset to an address::
+ 
+ 	struct data *p = this_cpu_ptr(&datap);
+ 
+@@ -305,7 +315,7 @@ the following scenario that occurs because two per cpu variables
+ share a cache-line but the relaxed synchronization is applied to
+ only one process updating the cache-line.
+ 
+-Consider the following example
++Consider the following example::
+ 
+ 
+ 	struct test {
+@@ -327,6 +337,3 @@ mind that a remote write will evict the cache line from the processor
+ that most likely will access it. If the processor wakes up and finds a
+ missing local cache line of a per cpu area, its performance and hence
+ the wake up times will be affected.
+-
+-Christoph Lameter, August 4th, 2014
+-Pranith Kumar, Aug 2nd, 2014
 -- 
 2.9.4
