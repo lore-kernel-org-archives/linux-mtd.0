@@ -1,29 +1,26 @@
-Received: from mail.sysgo.com ([176.9.12.79])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dBdZz-0002NA-2A
- for linux-mtd@lists.infradead.org; Fri, 19 May 2017 08:48:13 +0000
-Subject: Re: [PATCH] mkfs.ubifs: Add support for symlinks in device table
-To: Richard Weinberger <richard@nod.at>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Oberhollenzer <goliath@sigma-star.at>
-References: <20170518133854.20744-1-david.engraf@sysgo.com>
- <CAFLxGvyeA5tJ+pGfiav7t3-c7omvByT1+yEy62-f3bJUrxMeHw@mail.gmail.com>
- <09400658-229c-b985-75d4-7df184e4be47@sysgo.com>
- <d41978aa-9583-6a27-d992-77a49962daed@nod.at>
- <678b2b7a-4f2e-5bfe-1f10-61de599a59bb@sysgo.com>
- <652cc3d4-10a2-d476-c4b1-63eff6aa2ea7@nod.at>
- <dc1e73ec-537b-8e23-6dab-0ce4c2e371a7@sysgo.com>
- <97e661e2-0648-e148-280b-8ff6cc9cbe09@nod.at>
- <9e19f6f3-e825-72b4-cf5e-fea2c12a5c7e@nod.at>
- <9e37787a-3683-1417-a03e-8a00022a44ff@sysgo.com>
- <3ecf5d12-6a22-58a2-b799-bd70a141a646@nod.at>
-From: David Engraf <david.engraf@sysgo.com>
-Message-ID: <6097f46d-d50a-2360-01a5-9fdec4ffd338@sysgo.com>
-Date: Fri, 19 May 2017 10:47:45 +0200
+Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
+ ([52.27.115.49] helo=osg.samsung.com)
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dBdh3-0004c5-Ug
+ for linux-mtd@lists.infradead.org; Fri, 19 May 2017 08:55:31 +0000
+Date: Fri, 19 May 2017 05:55:00 -0300
+From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+To: William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc: Linux Doc Mailing List <linux-doc@vger.kernel.org>, Mauro Carvalho
+ Chehab <mchehab@infradead.org>, linux-kernel@vger.kernel.org, Jonathan
+ Corbet <corbet@lwn.net>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 08/30] isa.txt: standardize document format
+Message-ID: <20170519055500.0334ebdc@vento.lan>
+In-Reply-To: <20170519021355.GA24556@sophia>
+References: <cover.1495156975.git.mchehab@s-opensource.com>
+ <3cfb5ad6db86330e07c6d0f833bbdb2788d99fa7.1495156975.git.mchehab@s-opensource.com>
+ <20170519021355.GA24556@sophia>
 MIME-Version: 1.0
-In-Reply-To: <3ecf5d12-6a22-58a2-b799-bd70a141a646@nod.at>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -34,36 +31,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
+Hi William,
 
-Am 19.05.2017 um 10:24 schrieb Richard Weinberger:
-> David,
+Em Thu, 18 May 2017 22:13:55 -0400
+William Breathitt Gray <vilhelm.gray@gmail.com> escreveu:
+
+> On Thu, May 18, 2017 at 10:24:00PM -0300, Mauro Carvalho Chehab wrote:
+> >Each text file under Documentation follows a different
+> >format. Some doesn't even have titles!
+> >
+> >Change its representation to follow the adopted standard,
+> >using ReST markups for it to be parseable by Sphinx:
+> >
+> >- Use the main title standard for this document;
+> >- replace _foo_ by **foo** for emphasis;
+> >- mark literal blocks as such.
+> >
+> >Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>  
 > 
-> Am 19.05.2017 um 08:13 schrieb David Engraf:
->>> Do you only care about the ls output or does one of your applications
->>> depend on it?
->>
->> It's mainly the output of ls because I'm using a verify script checking ownership of each file. Without having the ability to set the ownership of symlinks it will fail because ls
->> returns a uid/gid of my host development system which is not valid on the target.
+> I'm all right with this patch, but there's just one minor nitpick about
+> the title that I've inlined.
 > 
-> this makes sense.
+> Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+
+Thanks for review!
+
+> >---
+> > Documentation/isa.txt | 53 ++++++++++++++++++++++++++-------------------------
+> > 1 file changed, 27 insertions(+), 26 deletions(-)
+> >
+> >diff --git a/Documentation/isa.txt b/Documentation/isa.txt
+> >index f232c26a40be..def4a7b690b5 100644
+> >--- a/Documentation/isa.txt
+> >+++ b/Documentation/isa.txt
+> >@@ -1,5 +1,6 @@
+> >+===========
+> > ISA Drivers
+> >------------  
 > 
-> Please also massage this comment in devtable.c:
->   * Don't bother with symlinks (permissions are irrelevant), hard links (special
->   * cases of regular files), or sockets (why bother).
+> There's no need for this single-dashed line now so just remove it.
 
-Okay.
+Actually, the patch is removing the single-dashed line. The first "-"
+character on the above line from diff :-)
 
-> and make sure that the permissions are not set for symlinks.
-> Otherwise I'd give users the impression that symlinks have permissions.
+> 
+> >+===========
 
-You mean the mode should be ignore in the device table for symlinks. 
-This means the mode is taken from the original file and stored in the 
-ubifs inode (add_inode()). This would be okay for me but what is ubifs 
-doing with this information stored in its inode?
 
-We could also force symlinks to 777 and return an error if the user 
-tries to use a different value. What do you think?
-
-Best regards
-- David
+Thanks,
+Mauro
