@@ -1,11 +1,11 @@
 Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
  ([52.27.115.49] helo=osg.samsung.com)
  by merlin.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dBWfG-0005k5-Jh
- for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:25:14 +0000
+ id 1dBWfG-0005jy-Ji
+ for linux-mtd@lists.infradead.org; Fri, 19 May 2017 01:25:13 +0000
 From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
+Cc: Mauro Carvalho Chehab <mchehab@osg.samsung.com>,
  Mauro Carvalho Chehab <mchehab@infradead.org>,
  linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
  David Woodhouse <dwmw2@infradead.org>,
@@ -13,10 +13,10 @@ Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 27/30] parport-lowlevel.txt: standardize document format
-Date: Thu, 18 May 2017 22:24:19 -0300
-Message-Id: <a17bd80ceb4806bdfac0cc3f65757440636dfa1a.1495156975.git.mchehab@s-opensource.com>
+ Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Subject: [PATCH 19/30] memory-barriers.txt: use literals for variables
+Date: Thu, 18 May 2017 22:24:11 -0300
+Message-Id: <49c7957e1dc7c80a1b25dcb80072d5130c06c3fa.1495156975.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156975.git.mchehab@s-opensource.com>
 References: <cover.1495156975.git.mchehab@s-opensource.com>
 In-Reply-To: <cover.1495156975.git.mchehab@s-opensource.com>
@@ -31,2307 +31,494 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Each text file under Documentation follows a different
-format. This one uses a man-page like approach.
+From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
 
-Change its representation to be closer to the adopted standard,
-using ReST markups for it to be parseable by Sphinx:
+The minimal adjustments on this file were not enough
+to make it build clean with Sphinx:
 
-- Mark titles;
-- Mark literals and literal blocks;
-- Adjust identation.
+  Documentation/memory-barriers.rst:192: WARNING: Inline emphasis start-string without end-string.
+  Documentation/memory-barriers.rst:603: WARNING: Inline emphasis start-string without end-string.
+  Documentation/memory-barriers.rst:1065: WARNING: Inline emphasis start-string without end-string.
+  Documentation/memory-barriers.rst:1068: WARNING: Inline emphasis start-string without end-string.
+  Documentation/memory-barriers.rst:2289: WARNING: Inline emphasis start-string without end-string.
+  Documentation/memory-barriers.rst:2289: WARNING: Inline emphasis start-string without end-string.
+  Documentation/memory-barriers.rst:3091: WARNING: Inline emphasis start-string without end-string.
 
-Still, the best would be to move its contents to kernel-docs.
+What happens there is that, while some vars are inside
+'var' or `var`, most of them aren't, and some start with
+asterisk.
 
+Standardize it by always use ``literal``. As a bonus,
+the output will use the same monospaced fonts as the
+literal blocks.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
- Documentation/parport-lowlevel.txt | 1303 +++++++++++++++++++++++-------------
- 1 file changed, 832 insertions(+), 471 deletions(-)
+ Documentation/memory-barriers.txt | 154 +++++++++++++++++++-------------------
+ 1 file changed, 77 insertions(+), 77 deletions(-)
 
-diff --git a/Documentation/parport-lowlevel.txt b/Documentation/parport-lowlevel.txt
-index 120eb20dbb09..0633d70ffda7 100644
---- a/Documentation/parport-lowlevel.txt
-+++ b/Documentation/parport-lowlevel.txt
-@@ -1,11 +1,12 @@
-+===============================
- PARPORT interface documentation
---------------------------------
-+===============================
+diff --git a/Documentation/memory-barriers.txt b/Documentation/memory-barriers.txt
+index f37b418b3022..df3438ba49c6 100644
+--- a/Documentation/memory-barriers.txt
++++ b/Documentation/memory-barriers.txt
+@@ -181,16 +181,16 @@ As a further example, consider this sequence of events::
+ 	B = 4;		Q = P;
+ 	P = &B		D = *Q;
  
--Time-stamp: <2000-02-24 13:30:20 twaugh>
-+:Time-stamp: <2000-02-24 13:30:20 twaugh>
+-There is an obvious data dependency here, as the value loaded into D depends on
+-the address retrieved from P by CPU 2.  At the end of the sequence, any of the
++There is an obvious data dependency here, as the value loaded into ``D`` depends on
++the address retrieved from ``P`` by CPU 2.  At the end of the sequence, any of the
+ following results are possible::
  
- Described here are the following functions:
+ 	(Q == &A) and (D == 1)
+ 	(Q == &B) and (D == 2)
+ 	(Q == &B) and (D == 4)
  
--Global functions:
-+Global functions::
-   parport_register_driver
-   parport_unregister_driver
-   parport_enumerate
-@@ -31,7 +32,8 @@ Global functions:
-   parport_set_timeout
+-Note that CPU 2 will never try and load C into D because the CPU will load P
+-into Q before issuing the load of *Q.
++Note that CPU 2 will never try and load ``C`` into ``D`` because the CPU will load ``P``
++into ``Q`` before issuing the load of ``*Q``.
  
- Port functions (can be overridden by low-level drivers):
--  SPP:
-+
-+  SPP::
-     port->ops->read_data
-     port->ops->write_data
-     port->ops->read_status
-@@ -43,23 +45,23 @@ Port functions (can be overridden by low-level drivers):
-     port->ops->data_forward
-     port->ops->data_reverse
  
--  EPP:
-+  EPP::
-     port->ops->epp_write_data
-     port->ops->epp_read_data
-     port->ops->epp_write_addr
-     port->ops->epp_read_addr
+ Device operations
+@@ -199,8 +199,8 @@ Device operations
+ Some devices present their control interfaces as collections of memory
+ locations, but the order in which the control registers are accessed is very
+ important.  For instance, imagine an ethernet card with a set of internal
+-registers that are accessed through an address port register (A) and a data
+-port register (D).  To read internal register 5, the following code might then
++registers that are accessed through an address port register (``A``) and a data
++port register (``D``).  To read internal register 5, the following code might then
+ be used::
  
--  ECP:
-+  ECP::
-     port->ops->ecp_write_data
-     port->ops->ecp_read_data
-     port->ops->ecp_write_addr
+ 	*A = 5;
+@@ -558,12 +558,12 @@ following sequence of events::
+ 			      D = *Q;
  
--  Other:
-+  Other::
-     port->ops->nibble_read_data
-     port->ops->byte_read_data
-     port->ops->compat_write_data
+ There's a clear data dependency here, and it would seem that by the end of the
+-sequence, Q must be either &A or &B, and that::
++sequence, ``Q`` must be either ``&A`` or ``&B``, and that::
  
--The parport subsystem comprises 'parport' (the core port-sharing
-+The parport subsystem comprises ``parport`` (the core port-sharing
- code), and a variety of low-level drivers that actually do the port
- accesses.  Each low-level driver handles a particular style of port
- (PC, Amiga, and so on).
-@@ -70,14 +72,14 @@ into global functions and port functions.
- The global functions are mostly for communicating between the device
- driver and the parport subsystem: acquiring a list of available ports,
- claiming a port for exclusive use, and so on.  They also include
--'generic' functions for doing standard things that will work on any
-+``generic`` functions for doing standard things that will work on any
- IEEE 1284-capable architecture.
+ 	(Q == &A) implies (D == 1)
+ 	(Q == &B) implies (D == 4)
  
- The port functions are provided by the low-level drivers, although the
--core parport module provides generic 'defaults' for some routines.
-+core parport module provides generic ``defaults`` for some routines.
- The port functions can be split into three groups: SPP, EPP, and ECP.
+-But!  CPU 2's perception of P may be updated _before_ its perception of B, thus
++But!  CPU 2's perception of ``P`` may be updated _before_ its perception of ``B``, thus
+ leading to the following situation::
  
--SPP (Standard Parallel Port) functions modify so-called 'SPP'
-+SPP (Standard Parallel Port) functions modify so-called ``SPP``
- registers: data, status, and control.  The hardware may not actually
- have registers exactly like that, but the PC does and this interface is
- modelled after common PC implementations.  Other low-level drivers may
-@@ -95,58 +97,63 @@ to cope with peripherals that only tenuously support IEEE 1284, a
- low-level driver specific function is provided, for altering 'fudge
- factors'.
- 
-
--GLOBAL FUNCTIONS
------------------
-+Global functions
-+================
+ 	(Q == &B) and (D == 2) ????
+@@ -600,8 +600,8 @@ A data-dependency barrier must also order against dependent writes::
+ 			      <data dependency barrier>
+ 			      *Q = 5;
  
- parport_register_driver - register a device driver with parport
-------------------------
-+---------------------------------------------------------------
+-The data-dependency barrier must order the read into Q with the store
+-into *Q.  This prohibits this outcome::
++The data-dependency barrier must order the read into ``Q`` with the store
++into ``*Q``.  This prohibits this outcome::
  
- SYNOPSIS
-+^^^^^^^^
+ 	(Q == &B) && (B == 4)
  
--#include <linux/parport.h>
-+::
+@@ -615,11 +615,11 @@ prevents such records from being lost.
+ [!] Note that this extremely counterintuitive situation arises most easily on
+ machines with split caches, so that, for example, one cache bank processes
+ even-numbered cache lines and the other bank processes odd-numbered cache
+-lines.  The pointer P might be stored in an odd-numbered cache line, and the
+-variable B might be stored in an even-numbered cache line.  Then, if the
++lines.  The pointer ``P`` might be stored in an odd-numbered cache line, and the
++variable ``B`` might be stored in an even-numbered cache line.  Then, if the
+ even-numbered bank of the reading CPU's cache is extremely busy while the
+-odd-numbered bank is idle, one can see the new value of the pointer P (&B),
+-but the old value of the variable B (2).
++odd-numbered bank is idle, one can see the new value of the pointer ``P`` (``&B``),
++but the old value of the variable ``B`` (2).
  
--struct parport_driver {
--	const char *name;
--	void (*attach) (struct parport *);
--	void (*detach) (struct parport *);
--	struct parport_driver *next;
--};
--int parport_register_driver (struct parport_driver *driver);
-+	#include <linux/parport.h>
-+
-+	struct parport_driver {
-+		const char *name;
-+		void (*attach) (struct parport *);
-+		void (*detach) (struct parport *);
-+		struct parport_driver *next;
-+	};
-+	int parport_register_driver (struct parport_driver *driver);
  
- DESCRIPTION
-+^^^^^^^^^^^
+ The data dependency barrier is very important to the RCU system,
+@@ -651,7 +651,7 @@ following bit of code::
+ This will not have the desired effect because there is no actual data
+ dependency, but rather a control dependency that the CPU may short-circuit
+ by attempting to predict the outcome in advance, so that other CPUs see
+-the load from b as having happened before the load from a.  In such a
++the load from ``b`` as having happened before the load from ``a``.  In such a
+ case what's actually required is::
  
- In order to be notified about parallel ports when they are detected,
- parport_register_driver should be called.  Your driver will
- immediately be notified of all ports that have already been detected,
- and of each new port as low-level drivers are loaded.
+ 	q = READ_ONCE(a);
+@@ -671,12 +671,12 @@ for load-store control dependencies, as in the following example::
+ Control dependencies pair normally with other types of barriers.
+ That said, please note that neither READ_ONCE() nor WRITE_ONCE()
+ are optional! Without the READ_ONCE(), the compiler might combine the
+-load from 'a' with other loads from 'a'.  Without the WRITE_ONCE(),
+-the compiler might combine the store to 'b' with other stores to 'b'.
++load from ``a`` with other loads from ``a``.  Without the WRITE_ONCE(),
++the compiler might combine the store to ``b`` with other stores to ``b``.
+ Either can result in highly counterintuitive effects on ordering.
  
--A 'struct parport_driver' contains the textual name of your driver,
-+A ``struct parport_driver`` contains the textual name of your driver,
- a pointer to a function to handle new ports, and a pointer to a
- function to handle ports going away due to a low-level driver
- unloading.  Ports will only be detached if they are not being used
- (i.e. there are no devices registered on them).
+ Worse yet, if the compiler is able to prove (say) that the value of
+-variable 'a' is always non-zero, it would be well within its rights
++variable ``a`` is always non-zero, it would be well within its rights
+ to optimize the original example by eliminating the "if" statement
+ as follows::
  
--The visible parts of the 'struct parport *' argument given to
--attach/detach are:
-+The visible parts of the ``struct parport *`` argument given to
-+attach/detach are::
- 
--struct parport
--{
--	struct parport *next; /* next parport in list */
--	const char *name;     /* port's name */
--	unsigned int modes;   /* bitfield of hardware modes */
--	struct parport_device_info probe_info;
--			      /* IEEE1284 info */
--	int number;           /* parport index */
--	struct parport_operations *ops;
--	...
--};
-+	struct parport
-+	{
-+		struct parport *next; /* next parport in list */
-+		const char *name;     /* port's name */
-+		unsigned int modes;   /* bitfield of hardware modes */
-+		struct parport_device_info probe_info;
-+				/* IEEE1284 info */
-+		int number;           /* parport index */
-+		struct parport_operations *ops;
-+		...
-+	};
- 
- There are other members of the structure, but they should not be
- touched.
- 
--The 'modes' member summarises the capabilities of the underlying
-+The ``modes`` member summarises the capabilities of the underlying
- hardware.  It consists of flags which may be bitwise-ored together:
- 
-+  ============================= ===============================================
-   PARPORT_MODE_PCSPP		IBM PC registers are available,
- 				i.e. functions that act on data,
- 				control and status registers are
-@@ -169,297 +176,351 @@ hardware.  It consists of flags which may be bitwise-ored together:
- 				GFP_DMA flag with kmalloc) to the
- 				low-level driver in order to take
- 				advantage of it.
-+  ============================= ===============================================
- 
--There may be other flags in 'modes' as well.
-+There may be other flags in ``modes`` as well.
- 
--The contents of 'modes' is advisory only.  For example, if the
--hardware is capable of DMA, and PARPORT_MODE_DMA is in 'modes', it
-+The contents of ``modes`` is advisory only.  For example, if the
-+hardware is capable of DMA, and PARPORT_MODE_DMA is in ``modes``, it
- doesn't necessarily mean that DMA will always be used when possible.
- Similarly, hardware that is capable of assisting ECP transfers won't
- necessarily be used.
- 
- RETURN VALUE
-+^^^^^^^^^^^^
- 
- Zero on success, otherwise an error code.
- 
- ERRORS
-+^^^^^^
- 
- None. (Can it fail? Why return int?)
- 
- EXAMPLE
-+^^^^^^^
- 
--static void lp_attach (struct parport *port)
--{
--	...
--	private = kmalloc (...);
--	dev[count++] = parport_register_device (...);
--	...
--}
-+::
- 
--static void lp_detach (struct parport *port)
--{
--	...
--}
-+	static void lp_attach (struct parport *port)
-+	{
-+		...
-+		private = kmalloc (...);
-+		dev[count++] = parport_register_device (...);
-+		...
-+	}
-+
-+	static void lp_detach (struct parport *port)
-+	{
-+		...
-+	}
- 
--static struct parport_driver lp_driver = {
--	"lp",
--	lp_attach,
--	lp_detach,
--	NULL /* always put NULL here */
--};
-+	static struct parport_driver lp_driver = {
-+		"lp",
-+		lp_attach,
-+		lp_detach,
-+		NULL /* always put NULL here */
-+	};
- 
--int lp_init (void)
--{
--	...
--	if (parport_register_driver (&lp_driver)) {
--		/* Failed; nothing we can do. */
--		return -EIO;
-+	int lp_init (void)
-+	{
-+		...
-+		if (parport_register_driver (&lp_driver)) {
-+			/* Failed; nothing we can do. */
-+			return -EIO;
-+		}
-+		...
- 	}
--	...
--}
-+
- 
- SEE ALSO
-+^^^^^^^^
- 
- parport_unregister_driver, parport_register_device, parport_enumerate
--
-
-+
-+
-+
- parport_unregister_driver - tell parport to forget about this driver
---------------------------
-+--------------------------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--struct parport_driver {
--	const char *name;
--	void (*attach) (struct parport *);
--	void (*detach) (struct parport *);
--	struct parport_driver *next;
--};
--void parport_unregister_driver (struct parport_driver *driver);
-+	#include <linux/parport.h>
-+
-+	struct parport_driver {
-+		const char *name;
-+		void (*attach) (struct parport *);
-+		void (*detach) (struct parport *);
-+		struct parport_driver *next;
-+	};
-+	void parport_unregister_driver (struct parport_driver *driver);
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- This tells parport not to notify the device driver of new ports or of
- ports going away.  Registered devices belonging to that driver are NOT
- unregistered: parport_unregister_device must be used for each one.
- 
- EXAMPLE
-+^^^^^^^
- 
--void cleanup_module (void)
--{
--	...
--	/* Stop notifications. */
--	parport_unregister_driver (&lp_driver);
-+::
- 
--	/* Unregister devices. */
--	for (i = 0; i < NUM_DEVS; i++)
--		parport_unregister_device (dev[i]);
--	...
--}
-+	void cleanup_module (void)
-+	{
-+		...
-+		/* Stop notifications. */
-+		parport_unregister_driver (&lp_driver);
-+
-+		/* Unregister devices. */
-+		for (i = 0; i < NUM_DEVS; i++)
-+			parport_unregister_device (dev[i]);
-+		...
-+	}
- 
- SEE ALSO
-+^^^^^^^^
- 
- parport_register_driver, parport_enumerate
--
-
-+
-+
-+
- parport_enumerate - retrieve a list of parallel ports (DEPRECATED)
-------------------
-+------------------------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--struct parport *parport_enumerate (void);
-+	#include <linux/parport.h>
-+
-+	struct parport *parport_enumerate (void);
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- Retrieve the first of a list of valid parallel ports for this machine.
--Successive parallel ports can be found using the 'struct parport
--*next' element of the 'struct parport *' that is returned.  If 'next'
-+Successive parallel ports can be found using the ``struct parport
-+*next`` element of the ``struct parport *`` that is returned.  If ``next``
- is NULL, there are no more parallel ports in the list.  The number of
- ports in the list will not exceed PARPORT_MAX.
- 
- RETURN VALUE
-+^^^^^^^^^^^^
- 
--A 'struct parport *' describing a valid parallel port for the machine,
-+A ``struct parport *`` describing a valid parallel port for the machine,
- or NULL if there are none.
- 
- ERRORS
-+^^^^^^
- 
- This function can return NULL to indicate that there are no parallel
- ports to use.
- 
- EXAMPLE
-+^^^^^^^
- 
--int detect_device (void)
--{
--	struct parport *port;
-+::
-+
-+	int detect_device (void)
-+	{
-+		struct parport *port;
-+
-+		for (port = parport_enumerate ();
-+		port != NULL;
-+		port = port->next) {
-+			/* Try to detect a device on the port... */
-+			...
-+		}
-+		}
- 
--	for (port = parport_enumerate ();
--	     port != NULL;
--	     port = port->next) {
--		/* Try to detect a device on the port... */
- 		...
--             }
+@@ -713,8 +713,8 @@ optimization levels::
+ 		do_something_else();
  	}
  
--	...
--}
--
- NOTES
-+^^^^^
- 
- parport_enumerate is deprecated; parport_register_driver should be
- used instead.
- 
- SEE ALSO
-+^^^^^^^^
- 
- parport_register_driver, parport_unregister_driver
--
-
-+
-+
-+
- parport_register_device - register to use a port
-------------------------
-+------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--typedef int (*preempt_func) (void *handle);
--typedef void (*wakeup_func) (void *handle);
--typedef int (*irq_func) (int irq, void *handle, struct pt_regs *);
-+	#include <linux/parport.h>
- 
--struct pardevice *parport_register_device(struct parport *port,
--                                          const char *name,
--                                          preempt_func preempt,
--                                          wakeup_func wakeup,
--                                          irq_func irq,
--                                          int flags,
--                                          void *handle);
-+	typedef int (*preempt_func) (void *handle);
-+	typedef void (*wakeup_func) (void *handle);
-+	typedef int (*irq_func) (int irq, void *handle, struct pt_regs *);
-+
-+	struct pardevice *parport_register_device(struct parport *port,
-+						  const char *name,
-+						  preempt_func preempt,
-+						  wakeup_func wakeup,
-+						  irq_func irq,
-+						  int flags,
-+						  void *handle);
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- Use this function to register your device driver on a parallel port
--('port').  Once you have done that, you will be able to use
-+(``port``).  Once you have done that, you will be able to use
- parport_claim and parport_release in order to use the port.
- 
--The ('name') argument is the name of the device that appears in /proc
-+The (``name``) argument is the name of the device that appears in /proc
- filesystem. The string must be valid for the whole lifetime of the
- device (until parport_unregister_device is called).
- 
- This function will register three callbacks into your driver:
--'preempt', 'wakeup' and 'irq'.  Each of these may be NULL in order to
-+``preempt``, ``wakeup`` and ``irq``.  Each of these may be NULL in order to
- indicate that you do not want a callback.
- 
--When the 'preempt' function is called, it is because another driver
--wishes to use the parallel port.  The 'preempt' function should return
-+When the ``preempt`` function is called, it is because another driver
-+wishes to use the parallel port.  The ``preempt`` function should return
- non-zero if the parallel port cannot be released yet -- if zero is
- returned, the port is lost to another driver and the port must be
- re-claimed before use.
- 
--The 'wakeup' function is called once another driver has released the
-+The ``wakeup`` function is called once another driver has released the
- port and no other driver has yet claimed it.  You can claim the
--parallel port from within the 'wakeup' function (in which case the
-+parallel port from within the ``wakeup`` function (in which case the
- claim is guaranteed to succeed), or choose not to if you don't need it
- now.
- 
- If an interrupt occurs on the parallel port your driver has claimed,
--the 'irq' function will be called. (Write something about shared
-+the ``irq`` function will be called. (Write something about shared
- interrupts here.)
- 
--The 'handle' is a pointer to driver-specific data, and is passed to
-+The ``handle`` is a pointer to driver-specific data, and is passed to
- the callback functions.
- 
--'flags' may be a bitwise combination of the following flags:
-+``flags`` may be a bitwise combination of the following flags:
- 
-+  ===================== =================================================
-         Flag            Meaning
-+  ===================== =================================================
-   PARPORT_DEV_EXCL	The device cannot share the parallel port at all.
- 			Use this only when absolutely necessary.
-+  ===================== =================================================
- 
- The typedefs are not actually defined -- they are only shown in order
- to make the function prototype more readable.
- 
--The visible parts of the returned 'struct pardevice' are:
-+The visible parts of the returned ``struct pardevice`` are::
- 
--struct pardevice {
--	struct parport *port;	/* Associated port */
--	void *private;		/* Device driver's 'handle' */
--	...
--};
-+	struct pardevice {
-+		struct parport *port;	/* Associated port */
-+		void *private;		/* Device driver's 'handle' */
-+		...
-+	};
- 
- RETURN VALUE
-+^^^^^^^^^^^^
- 
--A 'struct pardevice *': a handle to the registered parallel port
-+A ``struct pardevice *``: a handle to the registered parallel port
- device that can be used for parport_claim, parport_release, etc.
- 
- ERRORS
-+^^^^^^
- 
- A return value of NULL indicates that there was a problem registering
- a device on that port.
- 
- EXAMPLE
-+^^^^^^^
- 
--static int preempt (void *handle)
--{
--	if (busy_right_now)
--		return 1;
-+::
- 
--	must_reclaim_port = 1;
--	return 0;
--}
-+	static int preempt (void *handle)
-+	{
-+		if (busy_right_now)
-+			return 1;
- 
--static void wakeup (void *handle)
--{
--	struct toaster *private = handle;
--	struct pardevice *dev = private->dev;
--	if (!dev) return; /* avoid races */
-+		must_reclaim_port = 1;
-+		return 0;
-+	}
- 
--	if (want_port)
--		parport_claim (dev);
--}
-+	static void wakeup (void *handle)
-+	{
-+		struct toaster *private = handle;
-+		struct pardevice *dev = private->dev;
-+		if (!dev) return; /* avoid races */
- 
--static int toaster_detect (struct toaster *private, struct parport *port)
--{
--	private->dev = parport_register_device (port, "toaster", preempt,
--					        wakeup, NULL, 0,
--						private);
--	if (!private->dev)
--		/* Couldn't register with parport. */
--		return -EIO;
-+		if (want_port)
-+			parport_claim (dev);
-+	}
-+
-+	static int toaster_detect (struct toaster *private, struct parport *port)
-+	{
-+		private->dev = parport_register_device (port, "toaster", preempt,
-+							wakeup, NULL, 0,
-+							private);
-+		if (!private->dev)
-+			/* Couldn't register with parport. */
-+			return -EIO;
- 
--	must_reclaim_port = 0;
--	busy_right_now = 1;
--	parport_claim_or_block (private->dev);
--	...
--	/* Don't need the port while the toaster warms up. */
--	busy_right_now = 0;
--	...
--	busy_right_now = 1;
--	if (must_reclaim_port) {
--		parport_claim_or_block (private->dev);
- 		must_reclaim_port = 0;
-+		busy_right_now = 1;
-+		parport_claim_or_block (private->dev);
-+		...
-+		/* Don't need the port while the toaster warms up. */
-+		busy_right_now = 0;
-+		...
-+		busy_right_now = 1;
-+		if (must_reclaim_port) {
-+			parport_claim_or_block (private->dev);
-+			must_reclaim_port = 0;
-+		}
-+		...
+-Now there is no conditional between the load from 'a' and the store to
+-'b', which means that the CPU is within its rights to reorder them:
++Now there is no conditional between the load from ``a`` and the store to
++``b``, which means that the CPU is within its rights to reorder them:
+ The conditional is absolutely required, and must be present in the
+ assembly code even after all compiler optimizations have been applied.
+ Therefore, if you need ordering in this example, you need explicit
+@@ -742,9 +742,9 @@ ordering is guaranteed only when the stores differ, for example::
  	}
--	...
--}
- 
- SEE ALSO
-+^^^^^^^^
- 
- parport_unregister_device, parport_claim
-+
-+
- 
-
- parport_unregister_device - finish using a port
---------------------------
-+-----------------------------------------------
- 
- SYNPOPSIS
- 
--#include <linux/parport.h>
-+::
- 
--void parport_unregister_device (struct pardevice *dev);
-+	#include <linux/parport.h>
-+
-+	void parport_unregister_device (struct pardevice *dev);
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- This function is the opposite of parport_register_device.  After using
--parport_unregister_device, 'dev' is no longer a valid device handle.
-+parport_unregister_device, ``dev`` is no longer a valid device handle.
- 
- You should not unregister a device that is currently claimed, although
- if you do it will be released automatically.
- 
- EXAMPLE
-+^^^^^^^
-+
-+::
- 
- 	...
- 	kfree (dev->private); /* before we lose the pointer */
-@@ -467,460 +528,602 @@ EXAMPLE
- 	...
- 
- SEE ALSO
-+^^^^^^^^
-+
- 
- parport_unregister_driver
- 
-
- parport_claim, parport_claim_or_block - claim the parallel port for a device
---------------------------------------
-+----------------------------------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--int parport_claim (struct pardevice *dev);
--int parport_claim_or_block (struct pardevice *dev);
-+	#include <linux/parport.h>
-+
-+	int parport_claim (struct pardevice *dev);
-+	int parport_claim_or_block (struct pardevice *dev);
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- These functions attempt to gain control of the parallel port on which
--'dev' is registered.  'parport_claim' does not block, but
--'parport_claim_or_block' may do. (Put something here about blocking
-+``dev`` is registered.  ``parport_claim`` does not block, but
-+``parport_claim_or_block`` may do. (Put something here about blocking
- interruptibly or non-interruptibly.)
- 
- You should not try to claim a port that you have already claimed.
- 
- RETURN VALUE
-+^^^^^^^^^^^^
- 
- A return value of zero indicates that the port was successfully
- claimed, and the caller now has possession of the parallel port.
- 
--If 'parport_claim_or_block' blocks before returning successfully, the
-+If ``parport_claim_or_block`` blocks before returning successfully, the
- return value is positive.
- 
- ERRORS
-+^^^^^^
- 
-+========== ==========================================================
-   -EAGAIN  The port is unavailable at the moment, but another attempt
-            to claim it may succeed.
-+========== ==========================================================
- 
- SEE ALSO
-+^^^^^^^^
-+
- 
- parport_release
- 
-
- parport_release - release the parallel port
-----------------
-+-------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--void parport_release (struct pardevice *dev);
-+	#include <linux/parport.h>
-+
-+	void parport_release (struct pardevice *dev);
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- Once a parallel port device has been claimed, it can be released using
--'parport_release'.  It cannot fail, but you should not release a
-+``parport_release``.  It cannot fail, but you should not release a
- device that you do not have possession of.
- 
- EXAMPLE
-+^^^^^^^
- 
--static size_t write (struct pardevice *dev, const void *buf,
--		     size_t len)
--{
--	...
--	written = dev->port->ops->write_ecp_data (dev->port, buf,
--						  len);
--	parport_release (dev);
--	...
--}
-+::
-+
-+	static size_t write (struct pardevice *dev, const void *buf,
-+			size_t len)
-+	{
-+		...
-+		written = dev->port->ops->write_ecp_data (dev->port, buf,
-+							len);
-+		parport_release (dev);
-+		...
-+	}
- 
- 
- SEE ALSO
-+^^^^^^^^
- 
- change_mode, parport_claim, parport_claim_or_block, parport_yield
--
-
-+
-+
-+
- parport_yield, parport_yield_blocking - temporarily release a parallel port
---------------------------------------
-+---------------------------------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--int parport_yield (struct pardevice *dev)
--int parport_yield_blocking (struct pardevice *dev);
-+	#include <linux/parport.h>
-+
-+	int parport_yield (struct pardevice *dev)
-+	int parport_yield_blocking (struct pardevice *dev);
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- When a driver has control of a parallel port, it may allow another
--driver to temporarily 'borrow' it.  'parport_yield' does not block;
--'parport_yield_blocking' may do.
-+driver to temporarily ``borrow`` it.  ``parport_yield`` does not block;
-+``parport_yield_blocking`` may do.
- 
- RETURN VALUE
-+^^^^^^^^^^^^
- 
- A return value of zero indicates that the caller still owns the port
- and the call did not block.
- 
--A positive return value from 'parport_yield_blocking' indicates that
-+A positive return value from ``parport_yield_blocking`` indicates that
- the caller still owns the port and the call blocked.
- 
- A return value of -EAGAIN indicates that the caller no longer owns the
- port, and it must be re-claimed before use.
- 
- ERRORS
-+^^^^^^
- 
-+========= ==========================================================
-   -EAGAIN  Ownership of the parallel port was given away.
-+========= ==========================================================
- 
- SEE ALSO
-+^^^^^^^^
- 
- parport_release
-+
-+
- 
-
- parport_wait_peripheral - wait for status lines, up to 35ms
-------------------------
-+-----------------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--int parport_wait_peripheral (struct parport *port,
--			     unsigned char mask,
--			     unsigned char val);
-+	#include <linux/parport.h>
-+
-+	int parport_wait_peripheral (struct parport *port,
-+				     unsigned char mask,
-+				     unsigned char val);
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- Wait for the status lines in mask to match the values in val.
- 
- RETURN VALUE
-+^^^^^^^^^^^^
- 
-+======== ==========================================================
-  -EINTR  a signal is pending
-       0  the status lines in mask have values in val
-       1  timed out while waiting (35ms elapsed)
-+======== ==========================================================
- 
- SEE ALSO
-+^^^^^^^^
- 
- parport_poll_peripheral
-+
-+
- 
-
- parport_poll_peripheral - wait for status lines, in usec
-------------------------
-+--------------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--int parport_poll_peripheral (struct parport *port,
--			     unsigned char mask,
--			     unsigned char val,
--			     int usec);
-+	#include <linux/parport.h>
-+
-+	int parport_poll_peripheral (struct parport *port,
-+				     unsigned char mask,
-+				     unsigned char val,
-+				     int usec);
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- Wait for the status lines in mask to match the values in val.
- 
- RETURN VALUE
-+^^^^^^^^^^^^
- 
-+======== ==========================================================
-  -EINTR  a signal is pending
-       0  the status lines in mask have values in val
-       1  timed out while waiting (usec microseconds have elapsed)
-+======== ==========================================================
- 
- SEE ALSO
-+^^^^^^^^
- 
- parport_wait_peripheral
--
-
-+
-+
-+
- parport_wait_event - wait for an event on a port
--------------------
-+------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--int parport_wait_event (struct parport *port, signed long timeout)
-+	#include <linux/parport.h>
-+
-+	int parport_wait_event (struct parport *port, signed long timeout)
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- Wait for an event (e.g. interrupt) on a port.  The timeout is in
- jiffies.
- 
- RETURN VALUE
-+^^^^^^^^^^^^
- 
-+======= ==========================================================
-       0  success
-      <0  error (exit as soon as possible)
-      >0  timed out
--
-
-+======= ==========================================================
-+
- parport_negotiate - perform IEEE 1284 negotiation
-------------------
-+-------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--int parport_negotiate (struct parport *, int mode);
-+	#include <linux/parport.h>
-+
-+	int parport_negotiate (struct parport *, int mode);
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- Perform IEEE 1284 negotiation.
- 
- RETURN VALUE
-+^^^^^^^^^^^^
- 
-+======= ==========================================================
-      0  handshake OK; IEEE 1284 peripheral and mode available
-     -1  handshake failed; peripheral not compliant (or none present)
-      1  handshake OK; IEEE 1284 peripheral present but mode not
-         available
-+======= ==========================================================
- 
- SEE ALSO
-+^^^^^^^^
- 
- parport_read, parport_write
--
-
-+
-+
-+
- parport_read - read data from device
--------------
-+------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--ssize_t parport_read (struct parport *, void *buf, size_t len);
-+	#include <linux/parport.h>
-+
-+	ssize_t parport_read (struct parport *, void *buf, size_t len);
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- Read data from device in current IEEE 1284 transfer mode.  This only
- works for modes that support reverse data transfer.
- 
- RETURN VALUE
-+^^^^^^^^^^^^
- 
- If negative, an error code; otherwise the number of bytes transferred.
- 
- SEE ALSO
-+^^^^^^^^
- 
- parport_write, parport_negotiate
--
-
-+
-+
-+
- parport_write - write data to device
---------------
-+------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--ssize_t parport_write (struct parport *, const void *buf, size_t len);
-+	#include <linux/parport.h>
-+
-+	ssize_t parport_write (struct parport *, const void *buf, size_t len);
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- Write data to device in current IEEE 1284 transfer mode.  This only
- works for modes that support forward data transfer.
- 
- RETURN VALUE
-+^^^^^^^^^^^^
- 
- If negative, an error code; otherwise the number of bytes transferred.
- 
- SEE ALSO
-+^^^^^^^^
- 
- parport_read, parport_negotiate
-+
-+
- 
-
- parport_open - register device for particular device number
--------------
-+-----------------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--struct pardevice *parport_open (int devnum, const char *name,
--			        int (*pf) (void *),
--				void (*kf) (void *),
--				void (*irqf) (int, void *,
--					      struct pt_regs *),
--				int flags, void *handle);
-+	#include <linux/parport.h>
-+
-+	struct pardevice *parport_open (int devnum, const char *name,
-+				        int (*pf) (void *),
-+					void (*kf) (void *),
-+					void (*irqf) (int, void *,
-+						      struct pt_regs *),
-+					int flags, void *handle);
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- This is like parport_register_device but takes a device number instead
- of a pointer to a struct parport.
- 
- RETURN VALUE
-+^^^^^^^^^^^^
- 
- See parport_register_device.  If no device is associated with devnum,
- NULL is returned.
- 
- SEE ALSO
-+^^^^^^^^
- 
- parport_register_device
--
-
-+
-+
-+
- parport_close - unregister device for particular device number
---------------
-+--------------------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--void parport_close (struct pardevice *dev);
-+	#include <linux/parport.h>
-+
-+	void parport_close (struct pardevice *dev);
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- This is the equivalent of parport_unregister_device for parport_open.
- 
- SEE ALSO
-+^^^^^^^^
- 
- parport_unregister_device, parport_open
--
-
-+
-+
-+
- parport_device_id - obtain IEEE 1284 Device ID
-------------------
-+----------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--ssize_t parport_device_id (int devnum, char *buffer, size_t len);
-+	#include <linux/parport.h>
-+
-+	ssize_t parport_device_id (int devnum, char *buffer, size_t len);
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- Obtains the IEEE 1284 Device ID associated with a given device.
- 
- RETURN VALUE
-+^^^^^^^^^^^^
- 
- If negative, an error code; otherwise, the number of bytes of buffer
- that contain the device ID.  The format of the device ID is as
--follows:
-+follows::
- 
--[length][ID]
-+	[length][ID]
- 
- The first two bytes indicate the inclusive length of the entire Device
- ID, and are in big-endian order.  The ID is a sequence of pairs of the
--form:
-+form::
- 
--key:value;
-+	key:value;
- 
- NOTES
-+^^^^^
- 
- Many devices have ill-formed IEEE 1284 Device IDs.
- 
- SEE ALSO
-+^^^^^^^^
- 
- parport_find_class, parport_find_device
--
-
-+
-+
-+
- parport_device_coords - convert device number to device coordinates
--------------------
-+-------------------------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--int parport_device_coords (int devnum, int *parport, int *mux,
--			   int *daisy);
-+	#include <linux/parport.h>
-+
-+	int parport_device_coords (int devnum, int *parport, int *mux,
-+				   int *daisy);
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- Convert between device number (zero-based) and device coordinates
- (port, multiplexor, daisy chain address).
- 
- RETURN VALUE
-+^^^^^^^^^^^^
- 
--Zero on success, in which case the coordinates are (*parport, *mux,
--*daisy).
-+Zero on success, in which case the coordinates are (``*parport``, ``*mux``,
-+``*daisy``).
- 
- SEE ALSO
-+^^^^^^^^
- 
- parport_open, parport_device_id
--
-
-+
-+
-+
- parport_find_class - find a device by its class
--------------------
-+-----------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--typedef enum {
--	PARPORT_CLASS_LEGACY = 0,       /* Non-IEEE1284 device */
--	PARPORT_CLASS_PRINTER,
--	PARPORT_CLASS_MODEM,
--	PARPORT_CLASS_NET,
--	PARPORT_CLASS_HDC,              /* Hard disk controller */
--	PARPORT_CLASS_PCMCIA,
--	PARPORT_CLASS_MEDIA,            /* Multimedia device */
--	PARPORT_CLASS_FDC,              /* Floppy disk controller */
--	PARPORT_CLASS_PORTS,
--	PARPORT_CLASS_SCANNER,
--	PARPORT_CLASS_DIGCAM,
--	PARPORT_CLASS_OTHER,            /* Anything else */
--	PARPORT_CLASS_UNSPEC,           /* No CLS field in ID */
--	PARPORT_CLASS_SCSIADAPTER
--} parport_device_class;
-+	#include <linux/parport.h>
- 
--int parport_find_class (parport_device_class cls, int from);
-+	typedef enum {
-+		PARPORT_CLASS_LEGACY = 0,       /* Non-IEEE1284 device */
-+		PARPORT_CLASS_PRINTER,
-+		PARPORT_CLASS_MODEM,
-+		PARPORT_CLASS_NET,
-+		PARPORT_CLASS_HDC,              /* Hard disk controller */
-+		PARPORT_CLASS_PCMCIA,
-+		PARPORT_CLASS_MEDIA,            /* Multimedia device */
-+		PARPORT_CLASS_FDC,              /* Floppy disk controller */
-+		PARPORT_CLASS_PORTS,
-+		PARPORT_CLASS_SCANNER,
-+		PARPORT_CLASS_DIGCAM,
-+		PARPORT_CLASS_OTHER,            /* Anything else */
-+		PARPORT_CLASS_UNSPEC,           /* No CLS field in ID */
-+		PARPORT_CLASS_SCSIADAPTER
-+	} parport_device_class;
-+
-+	int parport_find_class (parport_device_class cls, int from);
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- Find a device by class.  The search starts from device number from+1.
- 
- RETURN VALUE
-+^^^^^^^^^^^^
- 
- The device number of the next device in that class, or -1 if no such
- device exists.
- 
- NOTES
-+^^^^^
- 
--Example usage:
-+Example usage::
- 
--int devnum = -1;
--while ((devnum = parport_find_class (PARPORT_CLASS_DIGCAM, devnum)) != -1) {
--    struct pardevice *dev = parport_open (devnum, ...);
--    ...
--}
-+	int devnum = -1;
-+	while ((devnum = parport_find_class (PARPORT_CLASS_DIGCAM, devnum)) != -1) {
-+		struct pardevice *dev = parport_open (devnum, ...);
-+		...
-+	}
- 
- SEE ALSO
-+^^^^^^^^
- 
- parport_find_device, parport_open, parport_device_id
--
-
-+
-+
-+
- parport_find_device - find a device by its class
--------------------
-+------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--int parport_find_device (const char *mfg, const char *mdl, int from);
-+	#include <linux/parport.h>
-+
-+	int parport_find_device (const char *mfg, const char *mdl, int from);
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- Find a device by vendor and model.  The search starts from device
- number from+1.
- 
- RETURN VALUE
-+^^^^^^^^^^^^
- 
- The device number of the next device matching the specifications, or
- -1 if no such device exists.
- 
- NOTES
-+^^^^^
- 
--Example usage:
-+Example usage::
- 
--int devnum = -1;
--while ((devnum = parport_find_device ("IOMEGA", "ZIP+", devnum)) != -1) {
--    struct pardevice *dev = parport_open (devnum, ...);
--    ...
--}
-+	int devnum = -1;
-+	while ((devnum = parport_find_device ("IOMEGA", "ZIP+", devnum)) != -1) {
-+		struct pardevice *dev = parport_open (devnum, ...);
-+		...
-+	}
- 
- SEE ALSO
-+^^^^^^^^
- 
- parport_find_class, parport_open, parport_device_id
-+
-+
- 
-
- parport_set_timeout - set the inactivity timeout
---------------------
-+------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--long parport_set_timeout (struct pardevice *dev, long inactivity);
-+	#include <linux/parport.h>
-+
-+	long parport_set_timeout (struct pardevice *dev, long inactivity);
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- Set the inactivity timeout, in jiffies, for a registered device.  The
- previous timeout is returned.
- 
- RETURN VALUE
-+^^^^^^^^^^^^
- 
- The previous timeout, in jiffies.
- 
- NOTES
-+^^^^^
- 
- Some of the port->ops functions for a parport may take time, owing to
- delays at the peripheral.  After the peripheral has not responded for
--'inactivity' jiffies, a timeout will occur and the blocking function
-+``inactivity`` jiffies, a timeout will occur and the blocking function
- will return.
- 
- A timeout of 0 jiffies is a special case: the function must do as much
-@@ -932,29 +1135,37 @@ Once set for a registered device, the timeout will remain at the set
- value until set again.
- 
- SEE ALSO
-+^^^^^^^^
- 
- port->ops->xxx_read/write_yyy
--
-
-+
-+
-+
-+
- PORT FUNCTIONS
----------------
-+==============
- 
- The functions in the port->ops structure (struct parport_operations)
- are provided by the low-level driver responsible for that port.
- 
- port->ops->read_data - read the data register
----------------------
-+---------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--struct parport_operations {
--	...
--	unsigned char (*read_data) (struct parport *port);
--	...
--};
-+	#include <linux/parport.h>
-+
-+	struct parport_operations {
-+		...
-+		unsigned char (*read_data) (struct parport *port);
-+		...
-+	};
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- If port->modes contains the PARPORT_MODE_TRISTATE flag and the
- PARPORT_CONTROL_DIRECTION bit in the control register is set, this
-@@ -964,45 +1175,59 @@ not set, the return value _may_ be the last value written to the data
- register.  Otherwise the return value is undefined.
- 
- SEE ALSO
-+^^^^^^^^
- 
- write_data, read_status, write_control
-+
-+
- 
-
- port->ops->write_data - write the data register
-----------------------
-+-----------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--struct parport_operations {
--	...
--	void (*write_data) (struct parport *port, unsigned char d);
--	...
--};
-+	#include <linux/parport.h>
-+
-+	struct parport_operations {
-+		...
-+		void (*write_data) (struct parport *port, unsigned char d);
-+		...
-+	};
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- Writes to the data register.  May have side-effects (a STROBE pulse,
- for instance).
- 
- SEE ALSO
-+^^^^^^^^
- 
- read_data, read_status, write_control
-+
-+
- 
-
- port->ops->read_status - read the status register
------------------------
-+-------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--struct parport_operations {
--	...
--	unsigned char (*read_status) (struct parport *port);
--	...
--};
-+	#include <linux/parport.h>
-+
-+	struct parport_operations {
-+		...
-+		unsigned char (*read_status) (struct parport *port);
-+		...
-+	};
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- Reads from the status register.  This is a bitmask:
- 
-@@ -1015,76 +1240,98 @@ Reads from the status register.  This is a bitmask:
- There may be other bits set.
- 
- SEE ALSO
-+^^^^^^^^
- 
- read_data, write_data, write_control
-+
-+
- 
-
- port->ops->read_control - read the control register
-------------------------
-+---------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--struct parport_operations {
--	...
--	unsigned char (*read_control) (struct parport *port);
--	...
--};
-+	#include <linux/parport.h>
-+
-+	struct parport_operations {
-+		...
-+		unsigned char (*read_control) (struct parport *port);
-+		...
-+	};
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- Returns the last value written to the control register (either from
- write_control or frob_control).  No port access is performed.
- 
- SEE ALSO
-+^^^^^^^^
- 
- read_data, write_data, read_status, write_control
-+
-+
- 
-
- port->ops->write_control - write the control register
--------------------------
-+-----------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--struct parport_operations {
--	...
--	void (*write_control) (struct parport *port, unsigned char s);
--	...
--};
-+	#include <linux/parport.h>
-+
-+	struct parport_operations {
-+		...
-+		void (*write_control) (struct parport *port, unsigned char s);
-+		...
-+	};
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
--Writes to the control register. This is a bitmask:
--                          _______
--- PARPORT_CONTROL_STROBE (nStrobe)
--                          _______
--- PARPORT_CONTROL_AUTOFD (nAutoFd)
--                        _____
--- PARPORT_CONTROL_INIT (nInit)
--                          _________
--- PARPORT_CONTROL_SELECT (nSelectIn)
-+Writes to the control register. This is a bitmask::
-+
-+				  _______
-+	- PARPORT_CONTROL_STROBE (nStrobe)
-+				  _______
-+	- PARPORT_CONTROL_AUTOFD (nAutoFd)
-+				_____
-+	- PARPORT_CONTROL_INIT (nInit)
-+				  _________
-+	- PARPORT_CONTROL_SELECT (nSelectIn)
- 
- SEE ALSO
-+^^^^^^^^
- 
- read_data, write_data, read_status, frob_control
-+
-+
- 
-
- port->ops->frob_control - write control register bits
-------------------------
-+-----------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--struct parport_operations {
--	...
--	unsigned char (*frob_control) (struct parport *port,
--				       unsigned char mask,
--				       unsigned char val);
--	...
--};
-+	#include <linux/parport.h>
-+
-+	struct parport_operations {
-+		...
-+		unsigned char (*frob_control) (struct parport *port,
-+					unsigned char mask,
-+					unsigned char val);
-+		...
-+	};
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- This is equivalent to reading from the control register, masking out
- the bits in mask, exclusive-or'ing with the bits in val, and writing
-@@ -1095,23 +1342,30 @@ of its contents is maintained, so frob_control is in fact only one
- port access.
- 
- SEE ALSO
-+^^^^^^^^
- 
- read_data, write_data, read_status, write_control
-+
-+
- 
-
- port->ops->enable_irq - enable interrupt generation
-----------------------
-+---------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--struct parport_operations {
--	...
--	void (*enable_irq) (struct parport *port);
--	...
--};
-+	#include <linux/parport.h>
-+
-+	struct parport_operations {
-+		...
-+		void (*enable_irq) (struct parport *port);
-+		...
-+	};
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- The parallel port hardware is instructed to generate interrupts at
- appropriate moments, although those moments are
-@@ -1119,353 +1373,460 @@ architecture-specific.  For the PC architecture, interrupts are
- commonly generated on the rising edge of nAck.
- 
- SEE ALSO
-+^^^^^^^^
- 
- disable_irq
-+
-+
- 
-
- port->ops->disable_irq - disable interrupt generation
------------------------
-+-----------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--struct parport_operations {
--	...
--	void (*disable_irq) (struct parport *port);
--	...
--};
-+	#include <linux/parport.h>
-+
-+	struct parport_operations {
-+		...
-+		void (*disable_irq) (struct parport *port);
-+		...
-+	};
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- The parallel port hardware is instructed not to generate interrupts.
- The interrupt itself is not masked.
- 
- SEE ALSO
-+^^^^^^^^
- 
- enable_irq
- 
-
-+
-+
- port->ops->data_forward - enable data drivers
-------------------------
-+---------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--struct parport_operations {
--	...
--	void (*data_forward) (struct parport *port);
--	...
--};
-+	#include <linux/parport.h>
-+
-+	struct parport_operations {
-+		...
-+		void (*data_forward) (struct parport *port);
-+		...
-+	};
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- Enables the data line drivers, for 8-bit host-to-peripheral
- communications.
- 
- SEE ALSO
-+^^^^^^^^
- 
- data_reverse
-+
-+
- 
-
- port->ops->data_reverse - tristate the buffer
-------------------------
-+---------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--struct parport_operations {
--	...
--	void (*data_reverse) (struct parport *port);
--	...
--};
-+	#include <linux/parport.h>
-+
-+	struct parport_operations {
-+		...
-+		void (*data_reverse) (struct parport *port);
-+		...
-+	};
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- Places the data bus in a high impedance state, if port->modes has the
- PARPORT_MODE_TRISTATE bit set.
- 
- SEE ALSO
-+^^^^^^^^
- 
- data_forward
--
-
-+
-+
-+
- port->ops->epp_write_data - write EPP data
---------------------------
-+------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--struct parport_operations {
--	...
--	size_t (*epp_write_data) (struct parport *port, const void *buf,
--				  size_t len, int flags);
--	...
--};
-+	#include <linux/parport.h>
-+
-+	struct parport_operations {
-+		...
-+		size_t (*epp_write_data) (struct parport *port, const void *buf,
-+					size_t len, int flags);
-+		...
-+	};
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- Writes data in EPP mode, and returns the number of bytes written.
- 
--The 'flags' parameter may be one or more of the following,
-+The ``flags`` parameter may be one or more of the following,
- bitwise-or'ed together:
- 
-+======================= =================================================
- PARPORT_EPP_FAST	Use fast transfers. Some chips provide 16-bit and
- 			32-bit registers.  However, if a transfer
- 			times out, the return value may be unreliable.
-+======================= =================================================
- 
- SEE ALSO
-+^^^^^^^^
- 
- epp_read_data, epp_write_addr, epp_read_addr
-+
-+
- 
-
- port->ops->epp_read_data - read EPP data
--------------------------
-+----------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--struct parport_operations {
--	...
--	size_t (*epp_read_data) (struct parport *port, void *buf,
--				 size_t len, int flags);
--	...
--};
-+	#include <linux/parport.h>
-+
-+	struct parport_operations {
-+		...
-+		size_t (*epp_read_data) (struct parport *port, void *buf,
-+					size_t len, int flags);
-+		...
-+	};
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- Reads data in EPP mode, and returns the number of bytes read.
- 
--The 'flags' parameter may be one or more of the following,
-+The ``flags`` parameter may be one or more of the following,
- bitwise-or'ed together:
- 
-+======================= =================================================
- PARPORT_EPP_FAST	Use fast transfers. Some chips provide 16-bit and
- 			32-bit registers.  However, if a transfer
- 			times out, the return value may be unreliable.
-+======================= =================================================
- 
- SEE ALSO
-+^^^^^^^^
- 
- epp_write_data, epp_write_addr, epp_read_addr
--
-
-+
-+
-+
- port->ops->epp_write_addr - write EPP address
---------------------------
-+---------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--struct parport_operations {
--	...
--	size_t (*epp_write_addr) (struct parport *port,
--				  const void *buf, size_t len, int flags);
--	...
--};
-+	#include <linux/parport.h>
-+
-+	struct parport_operations {
-+		...
-+		size_t (*epp_write_addr) (struct parport *port,
-+					const void *buf, size_t len, int flags);
-+		...
-+	};
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- Writes EPP addresses (8 bits each), and returns the number written.
- 
--The 'flags' parameter may be one or more of the following,
-+The ``flags`` parameter may be one or more of the following,
- bitwise-or'ed together:
- 
-+======================= =================================================
- PARPORT_EPP_FAST	Use fast transfers. Some chips provide 16-bit and
- 			32-bit registers.  However, if a transfer
- 			times out, the return value may be unreliable.
-+======================= =================================================
- 
- (Does PARPORT_EPP_FAST make sense for this function?)
- 
- SEE ALSO
-+^^^^^^^^
- 
- epp_write_data, epp_read_data, epp_read_addr
-+
-+
- 
-
- port->ops->epp_read_addr - read EPP address
--------------------------
-+-------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--struct parport_operations {
--	...
--	size_t (*epp_read_addr) (struct parport *port, void *buf,
--				 size_t len, int flags);
--	...
--};
-+	#include <linux/parport.h>
-+
-+	struct parport_operations {
-+		...
-+		size_t (*epp_read_addr) (struct parport *port, void *buf,
-+					size_t len, int flags);
-+		...
-+	};
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
- Reads EPP addresses (8 bits each), and returns the number read.
- 
--The 'flags' parameter may be one or more of the following,
-+The ``flags`` parameter may be one or more of the following,
- bitwise-or'ed together:
- 
-+======================= =================================================
- PARPORT_EPP_FAST	Use fast transfers. Some chips provide 16-bit and
- 			32-bit registers.  However, if a transfer
- 			times out, the return value may be unreliable.
-+======================= =================================================
- 
- (Does PARPORT_EPP_FAST make sense for this function?)
- 
- SEE ALSO
-+^^^^^^^^
- 
- epp_write_data, epp_read_data, epp_write_addr
-+
-+
- 
-
- port->ops->ecp_write_data - write a block of ECP data
---------------------------
-+-----------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--struct parport_operations {
--	...
--	size_t (*ecp_write_data) (struct parport *port,
--				  const void *buf, size_t len, int flags);
--	...
--};
-+	#include <linux/parport.h>
-+
-+	struct parport_operations {
-+		...
-+		size_t (*ecp_write_data) (struct parport *port,
-+					const void *buf, size_t len, int flags);
-+		...
-+	};
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
--Writes a block of ECP data.  The 'flags' parameter is ignored.
-+Writes a block of ECP data.  The ``flags`` parameter is ignored.
- 
- RETURN VALUE
-+^^^^^^^^^^^^
- 
- The number of bytes written.
- 
- SEE ALSO
-+^^^^^^^^
- 
- ecp_read_data, ecp_write_addr
- 
-
-+
-+
- port->ops->ecp_read_data - read a block of ECP data
--------------------------
-+---------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--struct parport_operations {
--	...
--	size_t (*ecp_read_data) (struct parport *port,
--				 void *buf, size_t len, int flags);
--	...
--};
-+	#include <linux/parport.h>
-+
-+	struct parport_operations {
-+		...
-+		size_t (*ecp_read_data) (struct parport *port,
-+					void *buf, size_t len, int flags);
-+		...
-+	};
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
--Reads a block of ECP data.  The 'flags' parameter is ignored.
-+Reads a block of ECP data.  The ``flags`` parameter is ignored.
- 
- RETURN VALUE
-+^^^^^^^^^^^^
- 
- The number of bytes read.  NB. There may be more unread data in a
- FIFO.  Is there a way of stunning the FIFO to prevent this?
- 
- SEE ALSO
-+^^^^^^^^
- 
- ecp_write_block, ecp_write_addr
--
-
-+
-+
-+
- port->ops->ecp_write_addr - write a block of ECP addresses
---------------------------
-+----------------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--struct parport_operations {
--	...
--	size_t (*ecp_write_addr) (struct parport *port,
--				  const void *buf, size_t len, int flags);
--	...
--};
-+	#include <linux/parport.h>
-+
-+	struct parport_operations {
-+		...
-+		size_t (*ecp_write_addr) (struct parport *port,
-+					const void *buf, size_t len, int flags);
-+		...
-+	};
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
--Writes a block of ECP addresses.  The 'flags' parameter is ignored.
-+Writes a block of ECP addresses.  The ``flags`` parameter is ignored.
- 
- RETURN VALUE
-+^^^^^^^^^^^^
- 
- The number of bytes written.
- 
- NOTES
-+^^^^^
- 
- This may use a FIFO, and if so shall not return until the FIFO is empty.
- 
- SEE ALSO
-+^^^^^^^^
- 
- ecp_read_data, ecp_write_data
--
-
-+
-+
-+
- port->ops->nibble_read_data - read a block of data in nibble mode
-----------------------------
-+-----------------------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--struct parport_operations {
--	...
--	size_t (*nibble_read_data) (struct parport *port,
--				    void *buf, size_t len, int flags);
--	...
--};
-+	#include <linux/parport.h>
-+
-+	struct parport_operations {
-+		...
-+		size_t (*nibble_read_data) (struct parport *port,
-+					void *buf, size_t len, int flags);
-+		...
-+	};
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
--Reads a block of data in nibble mode.  The 'flags' parameter is ignored.
-+Reads a block of data in nibble mode.  The ``flags`` parameter is ignored.
- 
- RETURN VALUE
-+^^^^^^^^^^^^
- 
- The number of whole bytes read.
- 
- SEE ALSO
-+^^^^^^^^
- 
- byte_read_data, compat_write_data
-+
-+
- 
-
- port->ops->byte_read_data - read a block of data in byte mode
---------------------------
-+-------------------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--struct parport_operations {
--	...
--	size_t (*byte_read_data) (struct parport *port,
--				  void *buf, size_t len, int flags);
--	...
--};
-+	#include <linux/parport.h>
-+
-+	struct parport_operations {
-+		...
-+		size_t (*byte_read_data) (struct parport *port,
-+					void *buf, size_t len, int flags);
-+		...
-+	};
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
--Reads a block of data in byte mode.  The 'flags' parameter is ignored.
-+Reads a block of data in byte mode.  The ``flags`` parameter is ignored.
- 
- RETURN VALUE
-+^^^^^^^^^^^^
- 
- The number of bytes read.
- 
- SEE ALSO
-+^^^^^^^^
- 
- nibble_read_data, compat_write_data
-+
-+
- 
-
- port->ops->compat_write_data - write a block of data in compatibility mode
------------------------------
-+--------------------------------------------------------------------------
- 
- SYNOPSIS
-+^^^^^^^^
- 
--#include <linux/parport.h>
-+::
- 
--struct parport_operations {
--	...
--	size_t (*compat_write_data) (struct parport *port,
--				     const void *buf, size_t len, int flags);
--	...
--};
-+	#include <linux/parport.h>
-+
-+	struct parport_operations {
-+		...
-+		size_t (*compat_write_data) (struct parport *port,
-+					const void *buf, size_t len, int flags);
-+		...
-+	};
- 
- DESCRIPTION
-+^^^^^^^^^^^
- 
--Writes a block of data in compatibility mode.  The 'flags' parameter
-+Writes a block of data in compatibility mode.  The ``flags`` parameter
- is ignored.
- 
- RETURN VALUE
-+^^^^^^^^^^^^
- 
- The number of bytes written.
- 
- SEE ALSO
-+^^^^^^^^
- 
- nibble_read_data, byte_read_data
+ 
+ The initial READ_ONCE() is still required to prevent the compiler from
+-proving the value of 'a'.
++proving the value of ``a``.
+ 
+-In addition, you need to be careful what you do with the local variable 'q',
++In addition, you need to be careful what you do with the local variable ``q``,
+ otherwise the compiler might be able to guess the value and again remove
+ the needed conditional.  For example::
+ 
+@@ -757,7 +757,7 @@ the needed conditional.  For example::
+ 		do_something_else();
+ 	}
+ 
+-If MAX is defined to be 1, then the compiler knows that (q % MAX) is
++If MAX is defined to be 1, then the compiler knows that ``(q % MAX)`` is
+ equal to zero, in which case the compiler is within its rights to
+ transform the above code into the following::
+ 
+@@ -766,7 +766,7 @@ transform the above code into the following::
+ 	do_something_else();
+ 
+ Given this transformation, the CPU is not required to respect the ordering
+-between the load from variable 'a' and the store to variable 'b'.  It is
++between the load from variable ``a`` and the store to variable ``b``.  It is
+ tempting to add a barrier(), but this does not help.  The conditional
+ is gone, and the barrier won't bring it back.  Therefore, if you are
+ relying on this ordering, you should make sure that MAX is greater than
+@@ -782,7 +782,7 @@ one, perhaps as follows::
+ 		do_something_else();
+ 	}
+ 
+-Please note once again that the stores to 'b' differ.  If they were
++Please note once again that the stores to ``b`` differ.  If they were
+ identical, as noted earlier, the compiler could pull this store outside
+ of the 'if' statement.
+ 
+@@ -819,8 +819,8 @@ not necessarily apply to code following the if-statement::
+ 
+ It is tempting to argue that there in fact is ordering because the
+ compiler cannot reorder volatile accesses and also cannot reorder
+-the writes to 'b' with the condition.  Unfortunately for this line
+-of reasoning, the compiler might compile the two writes to 'b' as
++the writes to ``b`` with the condition.  Unfortunately for this line
++of reasoning, the compiler might compile the two writes to ``b`` as
+ conditional-move instructions, as in this fanciful pseudo-assembly
+ language::
+ 
+@@ -832,7 +832,7 @@ language::
+ 	st $1,c
+ 
+ A weakly ordered CPU would have no dependency of any sort between the load
+-from 'a' and the store to 'c'.  The control dependencies would extend
++from ``a`` and the store to ``c``.  The control dependencies would extend
+ only to the pair of cmov instructions and the store depending on them.
+ In short, control dependencies apply only to the stores in the then-clause
+ and else-clause of the if-statement in question (including functions
+@@ -840,7 +840,7 @@ invoked by those two clauses), not to code following that if-statement.
+ 
+ Finally, control dependencies do -not- provide transitivity.  This is
+ demonstrated by two related examples, with the initial values of
+-'x' and 'y' both being zero::
++``x`` and ``y`` both being zero::
+ 
+ 	CPU 0                     CPU 1
+ 	=======================   =======================
+@@ -994,9 +994,9 @@ Consider the following sequence of events::
+ 	STORE E = 5
+ 
+ This sequence of events is committed to the memory coherence system in an order
+-that the rest of the system might perceive as the unordered set of { STORE A,
+-STORE B, STORE C } all occurring before the unordered set of { STORE D, STORE E
+-}::
++that the rest of the system might perceive as the unordered set of ``{ STORE A,
++STORE B, STORE C }`` all occurring before the unordered set of ``{ STORE D, STORE E
++}``::
+ 
+ 	+-------+       :      :
+ 	|       |       +------+
+@@ -1062,11 +1062,11 @@ effectively random order, despite the write barrier issued by CPU 1::
+ 	                                        :       :
+ 
+ 
+-In the above example, CPU 2 perceives that B is 7, despite the load of *C
+-(which would be B) coming after the LOAD of C.
++In the above example, CPU 2 perceives that ``B`` is 7, despite the load of ``*C``
++(which would be ``B``) coming after the LOAD of ``C``.
+ 
+-If, however, a data dependency barrier were to be placed between the load of C
+-and the load of *C (ie: B) on CPU 2::
++If, however, a data dependency barrier were to be placed between the load of ``C``
++and the load of ``*C`` (ie: ``B``) on CPU 2::
+ 
+ 	CPU 1			CPU 2
+ 	=======================	=======================
+@@ -1142,8 +1142,8 @@ some effectively random order, despite the write barrier issued by CPU 1::
+ 	                                        :       :
+ 
+ 
+-If, however, a read barrier were to be placed between the load of B and the
+-load of A on CPU 2::
++If, however, a read barrier were to be placed between the load of ``B`` and the
++load of ``A`` on CPU 2::
+ 
+ 	CPU 1			CPU 2
+ 	=======================	=======================
+@@ -1179,7 +1179,7 @@ then the partial ordering imposed by CPU 1 will be perceived correctly by CPU
+ 
+ 
+ To illustrate this more completely, consider what could happen if the code
+-contained a load of A either side of the read barrier::
++contained a load of ``A`` either side of the read barrier::
+ 
+ 	CPU 1			CPU 2
+ 	=======================	=======================
+@@ -1192,7 +1192,7 @@ contained a load of A either side of the read barrier::
+ 				<read barrier>
+ 				LOAD A [second load of A]
+ 
+-Even though the two loads of A both occur after the load of B, they may both
++Even though the two loads of ``A`` both occur after the load of ``B``, they may both
+ come up with different values::
+ 
+ 	+-------+       :      :                :       :
+@@ -1218,7 +1218,7 @@ come up with different values::
+ 	                                        :       :       +-------+
+ 
+ 
+-But it may be that the update to A from CPU 1 becomes perceptible to CPU 2
++But it may be that the update to ``A`` from CPU 1 becomes perceptible to CPU 2
+ before the read barrier completes anyway::
+ 
+ 	+-------+       :      :                :       :
+@@ -1244,9 +1244,9 @@ before the read barrier completes anyway::
+ 	                                        :       :       +-------+
+ 
+ 
+-The guarantee is that the second load will always come up with A == 1 if the
+-load of B came up with B == 2.  No such guarantee exists for the first load of
+-A; that may come up with either A == 0 or A == 1.
++The guarantee is that the second load will always come up with ``A`` == 1 if the
++load of ``B`` came up with ``B`` == 2.  No such guarantee exists for the first load of
++``A``; that may come up with either ``A`` == 0 or ``A`` == 1.
+ 
+ 
+ Read memory barriers vs load speculation
+@@ -1360,21 +1360,21 @@ demonstrates transitivity::
+ 				<general barrier>	<general barrier>
+ 				LOAD Y			LOAD X
+ 
+-Suppose that CPU 2's load from X returns 1 and its load from Y returns 0.
+-This indicates that CPU 2's load from X in some sense follows CPU 1's
+-store to X and that CPU 2's load from Y in some sense preceded CPU 3's
+-store to Y.  The question is then "Can CPU 3's load from X return 0?"
++Suppose that CPU 2's load from ``X`` returns 1 and its load from ``Y`` returns 0.
++This indicates that CPU 2's load from ``X`` in some sense follows CPU 1's
++store to ``X`` and that CPU 2's load from ``Y`` in some sense preceded CPU 3's
++store to ``Y``.  The question is then "Can CPU 3's load from ``X`` return 0?"
+ 
+-Because CPU 2's load from X in some sense came after CPU 1's store, it
+-is natural to expect that CPU 3's load from X must therefore return 1.
++Because CPU 2's load from ``X`` in some sense came after CPU 1's store, it
++is natural to expect that CPU 3's load from ``X`` must therefore return 1.
+ This expectation is an example of transitivity: if a load executing on
+ CPU A follows a load from the same variable executing on CPU B, then
+ CPU A's load must either return the same value that CPU B's load did,
+ or must return some later value.
+ 
+ In the Linux kernel, use of general memory barriers guarantees
+-transitivity.  Therefore, in the above example, if CPU 2's load from X
+-returns 1 and its load from Y returns 0, then CPU 3's load from X must
++transitivity.  Therefore, in the above example, if CPU 2's load from ``X``
++returns 1 and its load from ``Y`` returns 0, then CPU 3's load from ``X`` must
+ also return 1.
+ 
+ However, transitivity is -not- guaranteed for read or write barriers.
+@@ -1389,8 +1389,8 @@ is changed to a read barrier as shown below::
+ 				LOAD Y			LOAD X
+ 
+ This substitution destroys transitivity: in this example, it is perfectly
+-legal for CPU 2's load from X to return 1, its load from Y to return 0,
+-and CPU 3's load from X to return 0.
++legal for CPU 2's load from ``X`` to return 1, its load from ``Y`` to return 0,
++and CPU 3's load from ``X`` to return 0.
+ 
+ The key point is that although CPU 2's read barrier orders its pair
+ of loads, it does not guarantee to order CPU 1's store.  Therefore, if
+@@ -1530,7 +1530,7 @@ of optimizations:
+ 	a[0] = x;
+ 	a[1] = x;
+ 
+-     Might result in an older value of x stored in a[1] than in a[0].
++     Might result in an older value of ``x`` stored in ``a[1]`` than in ``a[0]``.
+      Prevent both the compiler and the CPU from doing this as follows::
+ 
+ 	a[0] = READ_ONCE(x);
+@@ -1562,7 +1562,7 @@ of optimizations:
+  (#) The compiler is within its rights to reload a variable, for example,
+      in cases where high register pressure prevents the compiler from
+      keeping all data of interest in registers.  The compiler might
+-     therefore optimize the variable 'tmp' out of our previous example::
++     therefore optimize the variable ``tmp`` out of our previous example::
+ 
+ 	while (tmp = a)
+ 		do_something_with(tmp);
+@@ -1591,7 +1591,7 @@ of optimizations:
+ 
+  (#) The compiler is within its rights to omit a load entirely if it knows
+      what the value will be.  For example, if the compiler can prove that
+-     the value of variable 'a' is always zero, it can optimize this code::
++     the value of variable ``a`` is always zero, it can optimize this code::
+ 
+ 	while (tmp = a)
+ 		do_something_with(tmp);
+@@ -1603,7 +1603,7 @@ of optimizations:
+      This transformation is a win for single-threaded code because it
+      gets rid of a load and a branch.  The problem is that the compiler
+      will carry out its proof assuming that the current CPU is the only
+-     one updating variable 'a'.  If variable 'a' is shared, then the
++     one updating variable ``a``.  If variable ``a`` is shared, then the
+      compiler's proof will be erroneous.  Use READ_ONCE() to tell the
+      compiler that it doesn't know as much as it thinks it does::
+ 
+@@ -1620,7 +1620,7 @@ of optimizations:
+      Then the compiler knows that the result of the "%" operator applied
+      to MAX will always be zero, again allowing the compiler to optimize
+      the code into near-nonexistence.  (It will still load from the
+-     variable 'a'.)
++     variable ``a``.)
+ 
+  (#) Similarly, the compiler is within its rights to omit a store entirely
+      if it knows that the variable already has the value being stored.
+@@ -1633,9 +1633,9 @@ of optimizations:
+ 	... Code that does not store to variable a ...
+ 	a = 0;
+ 
+-     The compiler sees that the value of variable 'a' is already zero, so
++     The compiler sees that the value of variable ``a`` is already zero, so
+      it might well omit the second store.  This would come as a fatal
+-     surprise if some other CPU might have stored to variable 'a' in the
++     surprise if some other CPU might have stored to variable ``a`` in the
+      meantime.
+ 
+      Use WRITE_ONCE() to prevent the compiler from making this sort of
+@@ -1689,7 +1689,7 @@ of optimizations:
+ 
+      Note that the READ_ONCE() and WRITE_ONCE() wrappers in
+      interrupt_handler() are needed if this interrupt handler can itself
+-     be interrupted by something that also accesses 'flag' and 'msg',
++     be interrupted by something that also accesses ``flag`` and ``msg``,
+      for example, a nested interrupt or an NMI.  Otherwise, READ_ONCE()
+      and WRITE_ONCE() are not needed in interrupt_handler() other than
+      for documentation purposes.  (Note also that nested interrupts
+@@ -1727,7 +1727,7 @@ of optimizations:
+      In single-threaded code, this is not only safe, but also saves
+      a branch.  Unfortunately, in concurrent code, this optimization
+      could cause some other CPU to see a spurious value of 42 -- even
+-     if variable 'a' was never zero -- when loading variable 'b'.
++     if variable ``a`` was never zero -- when loading variable ``b``.
+      Use WRITE_ONCE() to prevent this as follows::
+ 
+ 	if (a)
+@@ -1779,7 +1779,7 @@ of optimizations:
+      volatile markings, the compiler would be well within its rights to
+      implement these three assignment statements as a pair of 32-bit
+      loads followed by a pair of 32-bit stores.  This would result in
+-     load tearing on 'foo1.b' and store tearing on 'foo2.b'.  READ_ONCE()
++     load tearing on ``foo1.b`` and store tearing on ``foo2.b``.  READ_ONCE()
+      and WRITE_ONCE() again prevent tearing in this example::
+ 
+ 	foo2.a = foo1.a;
+@@ -1788,7 +1788,7 @@ of optimizations:
+ 
+ All that aside, it is never necessary to use READ_ONCE() and
+ WRITE_ONCE() on a variable that has been marked volatile.  For example,
+-because 'jiffies' is marked volatile, it is never necessary to
++because ``jiffies`` is marked volatile, it is never necessary to
+ say READ_ONCE(jiffies).  The reason for this is that READ_ONCE() and
+ WRITE_ONCE() are implemented as volatile casts, which has no effect when
+ its argument is already marked volatile.
+@@ -1816,12 +1816,12 @@ All memory barriers except the data dependency barriers imply a compiler
+ barrier.  Data dependencies do not impose any additional compiler ordering.
+ 
+ Aside: In the case of data dependencies, the compiler would be expected
+-to issue the loads in the correct order (eg. `a[b]` would have to load
+-the value of b before loading a[b]), however there is no guarantee in
+-the C specification that the compiler may not speculate the value of b
+-(eg. is equal to 1) and load a before b (eg. tmp = a[1]; if (b != 1)
+-tmp = a[b]; ).  There is also the problem of a compiler reloading b after
+-having loaded a[b], thus having a newer copy of b than a[b].  A consensus
++to issue the loads in the correct order (eg. ``a[b]`` would have to load
++the value of ``b`` before loading ``a[b]``), however there is no guarantee in
++the C specification that the compiler may not speculate the value of ``b``
++(eg. is equal to 1) and load ``a`` before ``b`` (eg. ``tmp`` = ``a[1]``; if (``b`` != 1)
++``tmp = ``a[b]``; ).  There is also the problem of a compiler reloading b after
++having loaded ``a[b]``, thus having a newer copy of ``b`` than ``a[b]``.  A consensus
+ has not yet been reached about these problems, however the READ_ONCE()
+ macro is a good place to start looking.
+ 
+@@ -2197,7 +2197,7 @@ events, where X and Y are both initially zero::
+ 	wake_up();			  load from Y sees 1, no memory barrier
+ 					load from X might see 0
+ 
+-In contrast, if a wakeup does occur, CPU 2's load from X would be guaranteed
++In contrast, if a wakeup does occur, CPU 2's load from ``X`` would be guaranteed
+ to see 1.
+ 
+ The available waker functions include::
+@@ -2274,7 +2274,7 @@ conflict on any particular lock.
+ Acquires vs memory accesses
+ ---------------------------
+ 
+-Consider the following: the system has a pair of spinlocks (M) and (Q), and
++Consider the following: the system has a pair of spinlocks (``M``) and (``Q``), and
+ three CPUs; then should the following sequence of events occur::
+ 
+ 	CPU 1				CPU 2
+@@ -2286,8 +2286,8 @@ three CPUs; then should the following sequence of events occur::
+ 	RELEASE M			RELEASE Q
+ 	WRITE_ONCE(*D, d);		WRITE_ONCE(*H, h);
+ 
+-Then there is no guarantee as to what order CPU 3 will see the accesses to *A
+-through *H occur in, other than the constraints imposed by the separate locks
++Then there is no guarantee as to what order CPU 3 will see the accesses to ``*A``
++through ``*H`` occur in, other than the constraints imposed by the separate locks
+ on the separate CPUs.  It might, for example, see::
+ 
+ 	*E, ACQUIRE M, ACQUIRE Q, *G, *C, *F, *A, *B, RELEASE Q, *D, *H, RELEASE M
+@@ -2896,7 +2896,7 @@ now imagine that the second CPU wants to read those values::
+ 
+ The above pair of reads may then fail to happen in the expected order, as the
+ cacheline holding p may get updated in one of the second CPU's caches whilst
+-the update to the cacheline holding v is delayed in the other of the second
++the update to the cacheline holding ``v`` is delayed in the other of the second
+ CPU's caches by some other cache event::
+ 
+ 	CPU 1		CPU 2		COMMENT
+@@ -3089,7 +3089,7 @@ may be reduced to::
+ 	*A = W;
+ 
+ since, without either a write barrier or an WRITE_ONCE(), it can be
+-assumed that the effect of the storage of V to *A is lost.  Similarly::
++assumed that the effect of the storage of ``V`` to ``*A`` is lost.  Similarly::
+ 
+ 	*A = Y;
+ 	Z = *A;
 -- 
 2.9.4
