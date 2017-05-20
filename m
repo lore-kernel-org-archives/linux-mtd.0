@@ -1,19 +1,22 @@
-Received: from mail-qt0-x242.google.com ([2607:f8b0:400d:c0d::242])
+Received: from mail-qk0-x241.google.com ([2607:f8b0:400d:c09::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dC6FW-0000gX-Ld
- for linux-mtd@lists.infradead.org; Sat, 20 May 2017 15:25:00 +0000
-Received: by mail-qt0-x242.google.com with SMTP id l39so13177548qtb.1
- for <linux-mtd@lists.infradead.org>; Sat, 20 May 2017 08:24:38 -0700 (PDT)
+ id 1dC6Fg-0000hw-68
+ for linux-mtd@lists.infradead.org; Sat, 20 May 2017 15:25:12 +0000
+Received: by mail-qk0-x241.google.com with SMTP id o85so13770872qkh.0
+ for <linux-mtd@lists.infradead.org>; Sat, 20 May 2017 08:24:47 -0700 (PDT)
 From: "Mario J. Rugiero" <mrugiero@gmail.com>
 To: linux-mtd@lists.infradead.org
 Cc: computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
  marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr,
  "Mario J. Rugiero" <mrugiero@gmail.com>
-Subject: [PATCH 1/3] mtd: create per-device and module-scope debugfs entries
-Date: Sat, 20 May 2017 12:24:26 -0300
-Message-Id: <20170520152428.9184-2-mrugiero@gmail.com>
-In-Reply-To: <20170520152428.9184-1-mrugiero@gmail.com>
+Subject: [PATCH 3/3] mtd: nand: add option to ignore bad blocks when erasing,
+ opt-in through debugfs
+Date: Sat, 20 May 2017 12:24:28 -0300
+Message-Id: <20170520152428.9184-4-mrugiero@gmail.com>
+In-Reply-To: <20170520152428.9184-3-mrugiero@gmail.com>
 References: <20170520152428.9184-1-mrugiero@gmail.com>
+ <20170520152428.9184-2-mrugiero@gmail.com>
+ <20170520152428.9184-3-mrugiero@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,128 +28,97 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Signed-off-by: Mario J. Rugiero <mrugiero@gmail.com>
 ---
- drivers/mtd/mtdcore.c   | 17 +++++++++++++++++
- drivers/mtd/mtdcore.h   |  2 ++
- include/linux/mtd/mtd.h | 10 ++++++++++
- 3 files changed, 29 insertions(+)
+ drivers/mtd/nand/nand_base.c | 26 ++++++++++++++++++++++----
+ include/linux/mtd/nand.h     | 12 ++++++++++++
+ 2 files changed, 34 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 1517da3ddd7d..461e8139ac2d 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -40,6 +40,7 @@
- #include <linux/slab.h>
- #include <linux/reboot.h>
- #include <linux/leds.h>
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 52a257e12026..8cffea38a642 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -47,6 +47,7 @@
+ #include <linux/io.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/of.h>
 +#include <linux/debugfs.h>
  
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
-@@ -662,6 +663,8 @@ static void mtd_set_dev_defaults(struct mtd_info *mtd)
- 	}
- }
+ static int nand_get_device(struct mtd_info *mtd, int new_state);
  
-+static struct dentry *dfs_dir_mtd;
+@@ -3209,10 +3210,15 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+ 		/* Check if we have a bad block, we do not erase bad blocks! */
+ 		if (nand_block_checkbad(mtd, ((loff_t) page) <<
+ 					chip->page_shift, allowbbt)) {
+-			pr_warn("%s: attempt to erase a bad block at page 0x%08x\n",
+-				    __func__, page);
+-			instr->state = MTD_ERASE_FAILED;
+-			goto erase_exit;
++			if (!chip->dbg.scrub_enabled) {
++				pr_warn("%s: attempt to erase a bad block at page 0x%08x\n",
++				    	__func__, page);
++				instr->state = MTD_ERASE_FAILED;
++				goto erase_exit;
++			} else {
++				pr_warn("%s: erasing a bad block at page 0x%08x\n",
++					__func__, page);
++			}
+ 		}
+ 
+ 		/*
+@@ -4931,6 +4937,18 @@ int nand_device_register(struct mtd_info *mtd,
+ 			 int defnr_parts)
+ {
+ 	int ret = nand_device_register(mtd, defparts, defnr_parts);
++	struct nand_debug_info *dbg;
 +
- /**
-  * mtd_device_parse_register - parse partitions and register an MTD device.
-  *
-@@ -701,6 +704,10 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
++	if (!ret) {
++		dbg = &mtd_to_nand(mtd)->dbg;
++		dbg->scrub_enabled = false;
++		dbg->dfs_scrub_enabled = debugfs_create_bool("scrub_enabled",
++							     0600,
++							     mtd->dbg.dfs_dir,
++							     &dbg->scrub_enabled);
++		if (IS_ERR(dbg->dfs_scrub_enabled))
++			dbg->dfs_scrub_enabled = NULL;
++	}
  
- 	mtd_set_dev_defaults(mtd);
- 
-+	mtd->dbg.dfs_dir = debugfs_create_dir(mtd->name, dfs_dir_mtd);
-+	if (IS_ERR(mtd->dbg.dfs_dir))
-+		mtd->dbg.dfs_dir = NULL;
-+
- 	memset(&parsed, 0, sizeof(parsed));
- 
- 	ret = parse_mtd_partitions(mtd, types, &parsed, parser_data);
-@@ -740,6 +747,8 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
- out:
- 	/* Cleanup any parsed partitions */
- 	mtd_part_parser_cleanup(&parsed);
-+	if (ret)
-+		debugfs_remove_recursive(mtd->dbg.dfs_dir);
  	return ret;
  }
- EXPORT_SYMBOL_GPL(mtd_device_parse_register);
-@@ -754,6 +763,8 @@ int mtd_device_unregister(struct mtd_info *master)
- {
- 	int err;
- 
-+	debugfs_remove_recursive(master->dbg.dfs_dir);
-+
- 	if (master->_reboot)
- 		unregister_reboot_notifier(&master->reboot_notifier);
- 
-@@ -1807,6 +1818,10 @@ static int __init init_mtd(void)
- 
- 	proc_mtd = proc_create("mtd", 0, NULL, &mtd_proc_ops);
- 
-+	dfs_dir_mtd = debugfs_create_dir("mtd", NULL);
-+	if (IS_ERR(dfs_dir_mtd))
-+		dfs_dir_mtd = NULL;
-+
- 	ret = init_mtdchar();
- 	if (ret)
- 		goto out_procfs;
-@@ -1816,6 +1831,7 @@ static int __init init_mtd(void)
- out_procfs:
- 	if (proc_mtd)
- 		remove_proc_entry("mtd", NULL);
-+	debugfs_remove(dfs_dir_mtd);
- 	bdi_put(mtd_bdi);
- err_bdi:
- 	class_unregister(&mtd_class);
-@@ -1826,6 +1842,7 @@ static int __init init_mtd(void)
- 
- static void __exit cleanup_mtd(void)
- {
-+	debugfs_remove_recursive(dfs_dir_mtd);
- 	cleanup_mtdchar();
- 	if (proc_mtd)
- 		remove_proc_entry("mtd", NULL);
-diff --git a/drivers/mtd/mtdcore.h b/drivers/mtd/mtdcore.h
-index 55fdb8e1fd2a..b5d095d24087 100644
---- a/drivers/mtd/mtdcore.h
-+++ b/drivers/mtd/mtdcore.h
-@@ -19,6 +19,8 @@ int parse_mtd_partitions(struct mtd_info *master, const char * const *types,
- 
- void mtd_part_parser_cleanup(struct mtd_partitions *parts);
- 
-+extern struct dentry *debug_mtd;
-+
- int __init init_mtdchar(void);
- void __exit cleanup_mtdchar(void);
- 
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index f8a2ef239c60..6cd0f6b7658b 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -206,6 +206,15 @@ struct mtd_pairing_scheme {
- 
- struct module;	/* only needed for owner field in mtd_info */
- 
-+/**
-+ * struct mtd_debug_info - debugging information for an MTD device.
-+ *
-+ * @dfs_dir: direntry object of the MTD device debugfs directory
-+ */
-+struct mtd_debug_info {
-+	struct dentry *dfs_dir;
-+};
-+
- struct mtd_info {
- 	u_char type;
- 	uint32_t flags;
-@@ -346,6 +355,7 @@ struct mtd_info {
- 	struct module *owner;
- 	struct device dev;
- 	int usecount;
-+	struct mtd_debug_info dbg;
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 77fc60923fdd..24114b120d0f 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -731,6 +731,16 @@ struct nand_manufacturer_ops {
  };
  
- int mtd_ooblayout_ecc(struct mtd_info *mtd, int section,
+ /**
++ * struct nand_debug_info - NAND specific debugfs
++ * @dfs_scrub_enabled:	dentry for setting force-erase of bad blocks
++ * @scrub_enabled:	if true, erase can erase blocks marked as bad
++ */
++struct nand_debug_info {
++	struct dentry *dfs_scrub_enabled;
++	bool scrub_enabled;
++};
++
++/**
+  * struct nand_chip - NAND Private Flash Chip Data
+  * @mtd:		MTD device registered to the MTD framework
+  * @IO_ADDR_R:		[BOARDSPECIFIC] address to read the 8 I/O lines of the
+@@ -835,6 +845,7 @@ struct nand_manufacturer_ops {
+  *			additional error status checks (determine if errors are
+  *			correctable).
+  * @manufacturer:	[INTERN] Contains manufacturer information
++ * @dbg:		NAND debugfs data
+  */
+ 
+ struct nand_chip {
+@@ -926,6 +937,7 @@ struct nand_chip {
+ 		const struct nand_manufacturer *desc;
+ 		void *priv;
+ 	} manufacturer;
++	struct nand_debug_info dbg;
+ };
+ 
+ extern const struct mtd_ooblayout_ops nand_ooblayout_sp_ops;
 -- 
 2.13.0
