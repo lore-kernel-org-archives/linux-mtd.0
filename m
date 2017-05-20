@@ -1,20 +1,18 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dC03q-0001s8-IP
- for linux-mtd@lists.infradead.org; Sat, 20 May 2017 08:48:32 +0000
-Date: Sat, 20 May 2017 10:48:04 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: "Mario J. Rugiero" <mrugiero@gmail.com>
-Cc: "linux-mtd@lists.infradead.org"@mail.free-electrons.com,
- computersforpeace@gmail.com, marek.vasut@gmail.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr
-Subject: Re:
-Message-ID: <20170520104804.55cec3e6@bbrezillon>
-In-Reply-To: <20170519213731.21484-1-mrugiero@gmail.com>
-References: <20170519213731.21484-1-mrugiero@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: CHIPPro NAND issue with 4.12 rc1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Sat, 20 May 2017 08:49:04 -0600
+From: Angus Ainslie <angus@akkea.ca>
+Cc: David Woodhouse <dwmw2@infradead.org>, Richard Weinberger
+ <richard@nod.at>, Brian Norris <computersforpeace@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai
+ <wens@csie.org>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Message-ID: <399ea126f3b18071fbe46bfc9787df6b@www.akkea.ca>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,36 +22,224 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mario,
+Hi All,
 
-Not sure how you created this patchset, but you miss a Subject, and the
-diff-stat.
+I'm trying to boot a CHIPPro with the stock 4.12 rc1 kernel. If I make 
+no modifications to the sun5i-gr8-chip-pro.dtb the kernel boots but 
+can't find the root partition.
 
-Please use
+So I added the partitions to the dts file
 
-git format-patch -o <output-dir> -3 --cover-letter
+diff --git a/arch/arm/boot/dts/sun5i-gr8-chip-pro.dts 
+b/arch/arm/boot/dts/sun5i-gr8-chip-pro.dts
+index c55b11a..0e61e6b 100644
+--- a/arch/arm/boot/dts/sun5i-gr8-chip-pro.dts
++++ b/arch/arm/boot/dts/sun5i-gr8-chip-pro.dts
+@@ -146,6 +146,32 @@
+                 reg = <0>;
+                 allwinner,rb = <0>;
+                 nand-ecc-mode = "hw";
++    nand-on-flash-bbt;
++
++    spl@0 {
++      label = "SPL";
++      reg = /bits/ 64 <0x0 0x400000>;
++    };
++
++    spl-backup@400000 {
++      label = "SPL.backup";
++      reg = /bits/ 64 <0x400000 0x400000>;
++    };
++
++    u-boot@800000 {
++      label = "U-Boot";
++      reg = /bits/ 64 <0x800000 0x400000>;
++    };
++
++    env@c00000 {
++      label = "env";
++      reg = /bits/ 64 <0xc00000 0x400000>;
++    };
++
++    rootfs@1000000 {
++      label = "rootfs";
++      reg = /bits/ 64 <0x1000000 0x1f000000>;
++    };
+         };
+  };
 
-to generate patches, then fill the cover letter in.
+and now the kernel finds the partition but it times out trying to mount 
+it. It seems to be something in the dts files because if I use the 
+ntc-gr8-crumb.dts from the ntc 4.4.30 kernel then the system boots all 
+the way to userland.
 
-Once your cover letter is ready, you can send the patches with
+[    7.130000] ubi0: scanning is finished
+[    7.150000] ubi0: attached mtd4 (name "rootfs", size 496 MiB)
+[    7.160000] ubi0: PEB size: 262144 bytes (256 KiB), LEB size: 258048 
+bytes
+[    7.170000] ubi0: min./max. I/O unit sizes: 4096/4096, sub-page size 
+1024
+[    7.180000] ubi0: VID header offset: 1024 (aligned 1024), data 
+offset: 4096
+[    7.190000] ubi0: good PEBs: 1977, bad PEBs: 7, corrupted PEBs: 0
+[    7.200000] ubi0: user volume: 1, internal volumes: 1, max. volumes 
+count: 128
+[    7.210000] ubi0: max/mean erase counter: 3/1, WL threshold: 4096, 
+image sequence number: 1444477407
+[    7.220000] ubi0: available PEBs: 1, total reserved PEBs: 1976, PEBs 
+reserved for bad PEB handling: 33
+[    7.240000] hctosys: unable to open rtc device (rtc0)
+[    7.250000] vcc3v0: disabling
+[    7.250000] ALSA device list:
+[    7.260000]   #0: sun4i-codec
+[    7.260000] ubi0: background thread "ubi_bgt0d" started, PID 53
+[    8.320000] sunxi_nand 1c03000.nand: wait interrupt timedout
+[    9.320000] sunxi_nand 1c03000.nand: wait interrupt timedout
+[   10.330000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   11.340000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   12.350000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   13.360000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   14.370000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   14.380000] ubi0 warning: ubi_io_read: error -110 while reading 4096 
+bytes from PEB 1034:4096, read only 0 bytes, retry
+[   15.390000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   16.400000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   17.410000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   18.420000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   19.430000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   20.440000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   21.440000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   22.450000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   23.460000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   23.470000] ubi0 warning: ubi_io_read: error -110 while reading 4096 
+bytes from PEB 1034:4096, read only 0 bytes, retry
+[   24.480000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   25.490000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   26.500000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   27.510000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   28.510000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   29.520000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   30.530000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   31.540000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   32.540000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   32.550000] ubi0 warning: ubi_io_read: error -110 while reading 4096 
+bytes from PEB 1034:4096, read only 0 bytes, retry
 
-git send-email --to ... --cc ... <output-dir>/*.patch
-
-Regards,
-
-Boris
-
-Le Fri, 19 May 2017 18:37:28 -0300,
-"Mario J. Rugiero" <mrugiero@gmail.com> a =C3=A9crit :
-
-> Some manufacturers use different layouts than MTD for the NAND, creating
-> incompatibilities when going from a vendor-specific kernel to mainline.
-> In particular, NAND devices for AllWinner boards write non-FF values to
-> the bad block marker, and thus false positives arise when detecting bad
-> blocks with the MTD driver. Sometimes there are enough false positives
-> to make the device unusable.
-> A proposed solution is NAND scrubbing, something a user who knows what
-> she's doing (TM) could do to avoid this. It consists in erasing blocks
-> disregarding the BBM. Since the user must know what she's doing, the
-> only way to enable this feature is through a per-chip debugfs entry.
->=20
+[   32.550000] ubi0 warning: ubi_io_read: error -110 while reading 4096 
+bytes from PEB 1034:4096, read only 0 bytes, retry
+[   33.560000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   34.570000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   35.580000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   36.590000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   37.600000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   38.600000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   39.610000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   40.620000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   41.630000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO timedout
+[   41.630000] ubi0 error: ubi_io_read: error -110 while reading 4096 
+bytes from PEB 1034:4096, read 0 bytes
+[   41.650000] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 
+4.12.0-rc1TNCPro-dirty #7
+[   41.650000] Hardware name: Allwinner sun4i/sun5i Families
+[   41.650000] [<c010e440>] (unwind_backtrace) from [<c010b01c>] 
+(show_stack+0x10/0x14)
+[   41.650000] [<c010b01c>] (show_stack) from [<c036d46c>] 
+(dump_stack+0x84/0x98)
+[   41.650000] [<c036d46c>] (dump_stack) from [<c04b1e54>] 
+(ubi_io_read+0x144/0x328)
+[   41.650000] [<c04b1e54>] (ubi_io_read) from [<c04afc54>] 
+(ubi_eba_read_leb+0xcc/0x430)
+[   41.650000] [<c04afc54>] (ubi_eba_read_leb) from [<c04ae91c>] 
+(ubi_leb_read+0x70/0xc0)
+[   41.650000] [<c04ae91c>] (ubi_leb_read) from [<c02ffdfc>] 
+(ubifs_leb_read+0x2c/0x78)
+[   41.650000] [<c02ffdfc>] (ubifs_leb_read) from [<c0301834>] 
+(ubifs_read_node+0x94/0x28c)
+[   41.650000] [<c0301834>] (ubifs_read_node) from [<c02feaf4>] 
+(ubifs_read_sb_node+0x58/0x7c)
+[   41.650000] [<c02feaf4>] (ubifs_read_sb_node) from [<c02ff174>] 
+(ubifs_read_superblock+0x61c/0xc9c)
+[   41.650000] [<c02ff174>] (ubifs_read_superblock) from [<c02fdebc>] 
+(ubifs_mount+0xb7c/0x1588)
+[   41.650000] [<c02fdebc>] (ubifs_mount) from [<c01f820c>] 
+(mount_fs+0x14/0xa4)
+[   41.650000] [<c01f820c>] (mount_fs) from [<c02134f0>] 
+(vfs_kern_mount+0x4c/0x104)
+[   41.650000] [<c02134f0>] (vfs_kern_mount) from [<c0216340>] 
+(do_mount+0x154/0xbd8)
+[   41.650000] [<c0216340>] (do_mount) from [<c0217164>] 
+(SyS_mount+0x90/0xc0)
+[   41.650000] [<c0217164>] (SyS_mount) from [<c0a0117c>] 
+(mount_block_root+0x10c/0x270)
+[   41.650000] [<c0a0117c>] (mount_block_root) from [<c0a014a8>] 
+(prepare_namespace+0x9c/0x198)
+[   41.650000] [<c0a014a8>] (prepare_namespace) from [<c0a00e40>] 
+(kernel_init_freeable+0x1d8/0x1e8)
+[   41.650000] [<c0a00e40>] (kernel_init_freeable) from [<c070c4dc>] 
+(kernel_init+0x8/0x110)
+[   41.650000] [<c070c4dc>] (kernel_init) from [<c0107578>] 
+(ret_from_fork+0x14/0x3c)
+[   41.920000] UBIFS error (ubi0:0 pid 1): ubifs_leb_read: reading 4096 
+bytes from LEB 0:0 failed, error -110
+[   41.940000] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 
+4.12.0-rc1TNCPro-dirty #7
+[   41.940000] Hardware name: Allwinner sun4i/sun5i Families
+[   41.940000] [<c010e440>] (unwind_backtrace) from [<c010b01c>] 
+(show_stack+0x10/0x14)
+[   41.940000] [<c010b01c>] (show_stack) from [<c036d46c>] 
+(dump_stack+0x84/0x98)
+[   41.940000] [<c036d46c>] (dump_stack) from [<c02ffe44>] 
+(ubifs_leb_read+0x74/0x78)
+[   41.940000] [<c02ffe44>] (ubifs_leb_read) from [<c0301834>] 
+(ubifs_read_node+0x94/0x28c)
+[   41.940000] [<c0301834>] (ubifs_read_node) from [<c02feaf4>] 
+(ubifs_read_sb_node+0x58/0x7c)
+[   41.940000] [<c02feaf4>] (ubifs_read_sb_node) from [<c02ff174>] 
+(ubifs_read_superblock+0x61c/0xc9c)
+[   41.940000] [<c02ff174>] (ubifs_read_superblock) from [<c02fdebc>] 
+(ubifs_mount+0xb7c/0x1588)
+[   41.940000] [<c02fdebc>] (ubifs_mount) from [<c01f820c>] 
+(mount_fs+0x14/0xa4)
+[   41.940000] [<c01f820c>] (mount_fs) from [<c02134f0>] 
+(vfs_kern_mount+0x4c/0x104)
+[   41.940000] [<c02134f0>] (vfs_kern_mount) from [<c0216340>] 
+(do_mount+0x154/0xbd8)
+[   41.940000] [<c0216340>] (do_mount) from [<c0217164>] 
+(SyS_mount+0x90/0xc0)
+[   41.940000] [<c0217164>] (SyS_mount) from [<c0a0117c>] 
+(mount_block_root+0x10c/0x270)
+[   41.940000] [<c0a0117c>] (mount_block_root) from [<c0a014a8>] 
+(prepare_namespace+0x9c/0x198)
+[   41.940000] [<c0a014a8>] (prepare_namespace) from [<c0a00e40>] 
+(kernel_init_freeable+0x1d8/0x1e8)
+[   41.940000] [<c0a00e40>] (kernel_init_freeable) from [<c070c4dc>] 
+(kernel_init+0x8/0x110)
+[   41.940000] [<c070c4dc>] (kernel_init) from [<c0107578>] 
+(ret_from_fork+0x14/0x3c)
+[   42.200000] VFS: Cannot open root device "ubi0:rootfs" or 
+unknown-block(0,0): error -110
+[   42.220000] Please append a correct "root=" boot option; here are the 
+available partitions:
+[   42.230000] Kernel panic - not syncing: VFS: Unable to mount root fs 
+on unknown-block(0,0)
+[   42.230000] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 
+4.12.0-rc1TNCPro-dirty #7
+[   42.230000] Hardware name: Allwinner sun4i/sun5i Families
+[   42.230000] [<c010e440>] (unwind_backtrace) from [<c010b01c>] 
+(show_stack+0x10/0x14)
+[   42.230000] [<c010b01c>] (show_stack) from [<c036d46c>] 
+(dump_stack+0x84/0x98)
+[   42.230000] [<c036d46c>] (dump_stack) from [<c01a7968>] 
+(panic+0xdc/0x248)
+[   42.230000] [<c01a7968>] (panic) from [<c0a01208>] 
+(mount_block_root+0x198/0x270)
+[   42.230000] [<c0a01208>] (mount_block_root) from [<c0a014a8>] 
+(prepare_namespace+0x9c/0x198)
+[   42.230000] [<c0a014a8>] (prepare_namespace) from [<c0a00e40>] 
+(kernel_init_freeable+0x1d8/0x1e8)
+[   42.230000] [<c0a00e40>] (kernel_init_freeable) from [<c070c4dc>] 
+(kernel_init+0x8/0x110)
+[   42.230000] [<c070c4dc>] (kernel_init) from [<c0107578>] 
+(ret_from_fork+0x14/0x3c)
+[   42.230000] ---[ end Kernel panic - not syncing: VFS: Unable to mount 
+root fs on unknown-block(0,0)
