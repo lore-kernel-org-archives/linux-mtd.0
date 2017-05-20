@@ -1,18 +1,19 @@
-Received: from mail-qk0-x242.google.com ([2607:f8b0:400d:c09::242])
+Received: from mail-qt0-x242.google.com ([2607:f8b0:400d:c0d::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dC6FS-0000gS-5V
- for linux-mtd@lists.infradead.org; Sat, 20 May 2017 15:24:55 +0000
-Received: by mail-qk0-x242.google.com with SMTP id o85so13770449qkh.0
- for <linux-mtd@lists.infradead.org>; Sat, 20 May 2017 08:24:33 -0700 (PDT)
+ id 1dC6FW-0000gX-Ld
+ for linux-mtd@lists.infradead.org; Sat, 20 May 2017 15:25:00 +0000
+Received: by mail-qt0-x242.google.com with SMTP id l39so13177548qtb.1
+ for <linux-mtd@lists.infradead.org>; Sat, 20 May 2017 08:24:38 -0700 (PDT)
 From: "Mario J. Rugiero" <mrugiero@gmail.com>
 To: linux-mtd@lists.infradead.org
 Cc: computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
  marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr,
  "Mario J. Rugiero" <mrugiero@gmail.com>
-Subject: [PATCH 0/3] mtd: nand: allow force erasing of bad blocks through
- debugfs entry
-Date: Sat, 20 May 2017 12:24:25 -0300
-Message-Id: <20170520152428.9184-1-mrugiero@gmail.com>
+Subject: [PATCH 1/3] mtd: create per-device and module-scope debugfs entries
+Date: Sat, 20 May 2017 12:24:26 -0300
+Message-Id: <20170520152428.9184-2-mrugiero@gmail.com>
+In-Reply-To: <20170520152428.9184-1-mrugiero@gmail.com>
+References: <20170520152428.9184-1-mrugiero@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,63 +23,130 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some manufacturers use different layouts than MTD for the NAND, creating
-incompatibilities when going from a vendor-specific kernel to mainline.
-In particular, NAND devices for AllWinner boards write non-FF values to
-the bad block marker, and thus false positives arise when detecting bad
-blocks with the MTD driver. Sometimes there are enough false positives
-to make the device unusable.
-A proposed solution is NAND scrubbing, something a user who knows what
-she's doing (TM) could do to avoid this. It consists in erasing blocks
-disregarding the BBM. Since the user must know what she's doing, the
-only way to enable this feature is through a per-chip debugfs entry.
+Signed-off-by: Mario J. Rugiero <mrugiero@gmail.com>
+---
+ drivers/mtd/mtdcore.c   | 17 +++++++++++++++++
+ drivers/mtd/mtdcore.h   |  2 ++
+ include/linux/mtd/mtd.h | 10 ++++++++++
+ 3 files changed, 29 insertions(+)
 
-Mario J. Rugiero (3):
-  mtd: create per-device and module-scope debugfs entries
-  mtd: nand: create a wrapper for mtd_device_register for NAND specific
-    initialization.
-  mtd: nand: add option to ignore bad blocks when erasing, opt-in
-    through debugfs
-
- drivers/mtd/mtdcore.c                    | 17 ++++++++++++
- drivers/mtd/mtdcore.h                    |  2 ++
- drivers/mtd/nand/ams-delta.c             |  2 +-
- drivers/mtd/nand/atmel/nand-controller.c |  2 +-
- drivers/mtd/nand/au1550nd.c              |  2 +-
- drivers/mtd/nand/bf5xx_nand.c            |  2 +-
- drivers/mtd/nand/brcmnand/brcmnand.c     |  2 +-
- drivers/mtd/nand/davinci_nand.c          |  2 +-
- drivers/mtd/nand/denali.c                |  2 +-
- drivers/mtd/nand/diskonchip.c            |  4 +--
- drivers/mtd/nand/fsl_upm.c               |  2 +-
- drivers/mtd/nand/fsmc_nand.c             |  2 +-
- drivers/mtd/nand/gpio.c                  |  2 +-
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c   |  2 +-
- drivers/mtd/nand/hisi504_nand.c          |  2 +-
- drivers/mtd/nand/jz4780_nand.c           |  2 +-
- drivers/mtd/nand/lpc32xx_mlc.c           |  2 +-
- drivers/mtd/nand/lpc32xx_slc.c           |  2 +-
- drivers/mtd/nand/mpc5121_nfc.c           |  2 +-
- drivers/mtd/nand/nand_base.c             | 45 +++++++++++++++++++++++++++++---
- drivers/mtd/nand/nandsim.c               |  2 +-
- drivers/mtd/nand/ndfc.c                  |  2 +-
- drivers/mtd/nand/nuc900_nand.c           |  2 +-
- drivers/mtd/nand/omap2.c                 |  4 +--
- drivers/mtd/nand/orion_nand.c            |  2 +-
- drivers/mtd/nand/oxnas_nand.c            |  2 +-
- drivers/mtd/nand/pasemi_nand.c           |  2 +-
- drivers/mtd/nand/pxa3xx_nand.c           |  2 +-
- drivers/mtd/nand/qcom_nandc.c            |  2 +-
- drivers/mtd/nand/sh_flctl.c              |  2 +-
- drivers/mtd/nand/sm_common.c             |  2 +-
- drivers/mtd/nand/socrates_nand.c         |  2 +-
- drivers/mtd/nand/sunxi_nand.c            |  2 +-
- drivers/mtd/nand/tango_nand.c            |  2 +-
- drivers/mtd/nand/vf610_nfc.c             |  2 +-
- drivers/mtd/nand/xway_nand.c             |  2 +-
- include/linux/mtd/mtd.h                  | 10 +++++++
- include/linux/mtd/nand.h                 | 17 ++++++++++++
- 38 files changed, 122 insertions(+), 39 deletions(-)
-
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 1517da3ddd7d..461e8139ac2d 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -40,6 +40,7 @@
+ #include <linux/slab.h>
+ #include <linux/reboot.h>
+ #include <linux/leds.h>
++#include <linux/debugfs.h>
+ 
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+@@ -662,6 +663,8 @@ static void mtd_set_dev_defaults(struct mtd_info *mtd)
+ 	}
+ }
+ 
++static struct dentry *dfs_dir_mtd;
++
+ /**
+  * mtd_device_parse_register - parse partitions and register an MTD device.
+  *
+@@ -701,6 +704,10 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+ 
+ 	mtd_set_dev_defaults(mtd);
+ 
++	mtd->dbg.dfs_dir = debugfs_create_dir(mtd->name, dfs_dir_mtd);
++	if (IS_ERR(mtd->dbg.dfs_dir))
++		mtd->dbg.dfs_dir = NULL;
++
+ 	memset(&parsed, 0, sizeof(parsed));
+ 
+ 	ret = parse_mtd_partitions(mtd, types, &parsed, parser_data);
+@@ -740,6 +747,8 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+ out:
+ 	/* Cleanup any parsed partitions */
+ 	mtd_part_parser_cleanup(&parsed);
++	if (ret)
++		debugfs_remove_recursive(mtd->dbg.dfs_dir);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mtd_device_parse_register);
+@@ -754,6 +763,8 @@ int mtd_device_unregister(struct mtd_info *master)
+ {
+ 	int err;
+ 
++	debugfs_remove_recursive(master->dbg.dfs_dir);
++
+ 	if (master->_reboot)
+ 		unregister_reboot_notifier(&master->reboot_notifier);
+ 
+@@ -1807,6 +1818,10 @@ static int __init init_mtd(void)
+ 
+ 	proc_mtd = proc_create("mtd", 0, NULL, &mtd_proc_ops);
+ 
++	dfs_dir_mtd = debugfs_create_dir("mtd", NULL);
++	if (IS_ERR(dfs_dir_mtd))
++		dfs_dir_mtd = NULL;
++
+ 	ret = init_mtdchar();
+ 	if (ret)
+ 		goto out_procfs;
+@@ -1816,6 +1831,7 @@ static int __init init_mtd(void)
+ out_procfs:
+ 	if (proc_mtd)
+ 		remove_proc_entry("mtd", NULL);
++	debugfs_remove(dfs_dir_mtd);
+ 	bdi_put(mtd_bdi);
+ err_bdi:
+ 	class_unregister(&mtd_class);
+@@ -1826,6 +1842,7 @@ static int __init init_mtd(void)
+ 
+ static void __exit cleanup_mtd(void)
+ {
++	debugfs_remove_recursive(dfs_dir_mtd);
+ 	cleanup_mtdchar();
+ 	if (proc_mtd)
+ 		remove_proc_entry("mtd", NULL);
+diff --git a/drivers/mtd/mtdcore.h b/drivers/mtd/mtdcore.h
+index 55fdb8e1fd2a..b5d095d24087 100644
+--- a/drivers/mtd/mtdcore.h
++++ b/drivers/mtd/mtdcore.h
+@@ -19,6 +19,8 @@ int parse_mtd_partitions(struct mtd_info *master, const char * const *types,
+ 
+ void mtd_part_parser_cleanup(struct mtd_partitions *parts);
+ 
++extern struct dentry *debug_mtd;
++
+ int __init init_mtdchar(void);
+ void __exit cleanup_mtdchar(void);
+ 
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index f8a2ef239c60..6cd0f6b7658b 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -206,6 +206,15 @@ struct mtd_pairing_scheme {
+ 
+ struct module;	/* only needed for owner field in mtd_info */
+ 
++/**
++ * struct mtd_debug_info - debugging information for an MTD device.
++ *
++ * @dfs_dir: direntry object of the MTD device debugfs directory
++ */
++struct mtd_debug_info {
++	struct dentry *dfs_dir;
++};
++
+ struct mtd_info {
+ 	u_char type;
+ 	uint32_t flags;
+@@ -346,6 +355,7 @@ struct mtd_info {
+ 	struct module *owner;
+ 	struct device dev;
+ 	int usecount;
++	struct mtd_debug_info dbg;
+ };
+ 
+ int mtd_ooblayout_ecc(struct mtd_info *mtd, int section,
 -- 
 2.13.0
