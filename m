@@ -1,6 +1,6 @@
 Received: from hauke-m.de ([5.39.93.123] helo=mail.hauke-m.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dCQcy-0007Sn-CN
+ id 1dCQcy-0007QA-DN
  for linux-mtd@lists.infradead.org; Sun, 21 May 2017 13:10:37 +0000
 From: Hauke Mehrtens <hauke@hauke-m.de>
 To: ralf@linux-mips.org
@@ -9,9 +9,10 @@ Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
  martin.blumenstingl@googlemail.com, john@phrozen.org,
  linux-spi@vger.kernel.org, hauke.mehrtens@intel.com, robh@kernel.org,
  Hauke Mehrtens <hauke@hauke-m.de>
-Subject: [PATCH v2 14/15] MIPS: lantiq: remove old USB PHY initialisation
-Date: Sun, 21 May 2017 15:09:17 +0200
-Message-Id: <20170521130918.27446-15-hauke@hauke-m.de>
+Subject: [PATCH v2 05/15] MIPS: lantiq: Enable MFD_SYSCON to be able to use it
+ for the RCU MFD
+Date: Sun, 21 May 2017 15:09:08 +0200
+Message-Id: <20170521130918.27446-6-hauke@hauke-m.de>
 In-Reply-To: <20170521130918.27446-1-hauke@hauke-m.de>
 References: <20170521130918.27446-1-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,73 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is now done in a PHY driver.
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
 Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
 ---
- arch/mips/lantiq/xway/reset.c | 43 -------------------------------------------
- 1 file changed, 43 deletions(-)
+ arch/mips/lantiq/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/mips/lantiq/xway/reset.c b/arch/mips/lantiq/xway/reset.c
-index be5fd29de523..04cd9a7c04a3 100644
---- a/arch/mips/lantiq/xway/reset.c
-+++ b/arch/mips/lantiq/xway/reset.c
-@@ -114,45 +114,6 @@ static void ltq_machine_power_off(void)
- 	unreachable();
- }
+diff --git a/arch/mips/lantiq/Kconfig b/arch/mips/lantiq/Kconfig
+index 177769dbb0e8..f5db4a426568 100644
+--- a/arch/mips/lantiq/Kconfig
++++ b/arch/mips/lantiq/Kconfig
+@@ -17,6 +17,7 @@ config SOC_XWAY
+ 	bool "XWAY"
+ 	select SOC_TYPE_XWAY
+ 	select HW_HAS_PCI
++	select MFD_SYSCON
  
--static void ltq_usb_init(void)
--{
--	/* Power for USB cores 1 & 2 */
--	ltq_pmu_enable(PMU_AHBM);
--	ltq_pmu_enable(PMU_USB0);
--	ltq_pmu_enable(PMU_USB1);
--
--	ltq_rcu_w32(ltq_rcu_r32(RCU_CFG1A) | BIT(0), RCU_CFG1A);
--	ltq_rcu_w32(ltq_rcu_r32(RCU_CFG1B) | BIT(0), RCU_CFG1B);
--
--	/* Enable USB PHY power for cores 1 & 2 */
--	ltq_pmu_enable(PMU_USB0_P);
--	ltq_pmu_enable(PMU_USB1_P);
--
--	/* Configure cores to host mode */
--	ltq_rcu_w32(ltq_rcu_r32(RCU_USB1CFG) & ~RCU_USBCFG_HDSEL_BIT,
--		RCU_USB1CFG);
--	ltq_rcu_w32(ltq_rcu_r32(RCU_USB2CFG) & ~RCU_USBCFG_HDSEL_BIT,
--		RCU_USB2CFG);
--
--	/* Select DMA endianness (Host-endian: big-endian) */
--	ltq_rcu_w32((ltq_rcu_r32(RCU_USB1CFG) & ~RCU_USBCFG_SLV_END_BIT)
--		| RCU_USBCFG_HOST_END_BIT, RCU_USB1CFG);
--	ltq_rcu_w32(ltq_rcu_r32((RCU_USB2CFG) & ~RCU_USBCFG_SLV_END_BIT)
--		| RCU_USBCFG_HOST_END_BIT, RCU_USB2CFG);
--
--	/* Hard reset USB state machines */
--	ltq_rcu_w32(ltq_rcu_r32(RCU_USBRESET) | USBRESET_BIT, RCU_USBRESET);
--	udelay(50 * 1000);
--	ltq_rcu_w32(ltq_rcu_r32(RCU_USBRESET) & ~USBRESET_BIT, RCU_USBRESET);
--
--	/* Soft reset USB state machines */
--	ltq_rcu_w32(ltq_rcu_r32(RCU_USBRESET2)
--		| USB1RESET_BIT | USB2RESET_BIT, RCU_USBRESET2);
--	udelay(50 * 1000);
--	ltq_rcu_w32(ltq_rcu_r32(RCU_USBRESET2)
--		& ~(USB1RESET_BIT | USB2RESET_BIT), RCU_USBRESET2);
--}
--
- static int __init mips_reboot_setup(void)
- {
- 	struct resource res;
-@@ -176,10 +137,6 @@ static int __init mips_reboot_setup(void)
- 	if (!ltq_rcu_membase)
- 		panic("Failed to remap core memory");
- 
--	if (of_machine_is_compatible("lantiq,ar9") ||
--	    of_machine_is_compatible("lantiq,vr9"))
--		ltq_usb_init();
--
- 	_machine_restart = ltq_machine_restart;
- 	_machine_halt = ltq_machine_halt;
- 	pm_power_off = ltq_machine_power_off;
+ config SOC_FALCON
+ 	bool "FALCON"
 -- 
 2.11.0
