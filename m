@@ -1,30 +1,16 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mailrelay108.isp.belgacom.be ([195.238.20.135])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dCSwC-00033a-Rg
- for linux-mtd@lists.infradead.org; Sun, 21 May 2017 15:38:35 +0000
-Subject: Re: [OpenWrt-Devel] [RFC] Pre-seeded files/directories for UBIFS
-To: Ralph Sennhauser <ralph.sennhauser@gmail.com>
-References: <8f4afb8e-7e98-d59f-abb6-64190ed717f5@nod.at>
- <3dcf8aac-5b84-8ced-fcf1-9fe026861cd6@gmail.com>
- <20170520213654.6b6d18eb@gmail.com>
- <CAMuHMdXQ4Tc92njixXKiP_JgasvgFELR15hqFpk4DjvfT453EQ@mail.gmail.com>
- <b193086e-322b-16a6-0306-5d9c47068872@nod.at>
- <20170521142336.6bdc8782@gmail.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
- Florian Fainelli <f.fainelli@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- LEDE Development List <lede-dev@lists.infradead.org>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Christoph Hellwig <hch@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- OpenWrt Development List <openwrt-devel@lists.openwrt.org>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <e23b704b-a73e-8829-5297-ad3ba7c2f95a@nod.at>
-Date: Sun, 21 May 2017 17:38:04 +0200
-MIME-Version: 1.0
-In-Reply-To: <20170521142336.6bdc8782@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+ id 1dCSxy-0003bz-OB
+ for linux-mtd@lists.infradead.org; Sun, 21 May 2017 15:40:25 +0000
+From: Fabian Frederick <fabf@skynet.be>
+To: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ ocfs2-devel@oss.oracle.com, jfs-discussion@lists.sourceforge.net,
+ linux-mtd@lists.infradead.org, pvfs2-developers@beowulf-underground.org,
+ ceph-devel@vger.kernel.org, fabf@skynet.be
+Subject: [PATCH 00/11 linux-next] super magic values consolidation
+Date: Sun, 21 May 2017 17:39:47 +0200
+Message-Id: <20170521153947.26281-1-fabf@skynet.be>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,17 +20,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ralph,
+This small patchset reorganizes magic.h and fixes filesystems
+which defined locally super magic values.
 
-Am 21.05.2017 um 14:23 schrieb Ralph Sennhauser:
-> If the seeded ubifs could be generalized to snapshot support ala btrfs
-> that would change things a lot as it would enable uses far beyond just
-> factory reset. No idea how feasible that is but might be worth
-> considering instead.
+Fabian Frederick (11):
+  uapi: reorganize magic.h
+  exofs: use magic.h
+  ceph: use magic.h
+  orangefs: use magic.h
+  ubifs: use magic.h
+  jfs: use magic.h
+  ocfs2: use magic.h
+  fuse: use magic.h
+  freevxfs: use magic.h
+  fs: define hfs super magic values globally
+  hfsplus: export super magic value
 
-I thought about that too but this requires much more invasive changes
-in UBIFS.
-So I'm not sure whether it is worth the hassle.
+ fs/ceph/super.h            |   4 +-
+ fs/exofs/common.h          |   6 +--
+ fs/freevxfs/vxfs.h         |   6 +--
+ fs/fuse/control.c          |   3 +-
+ fs/fuse/inode.c            |   3 +-
+ fs/hfs/hfs.h               |   4 +-
+ fs/hfsplus/hfsplus_raw.h   |   2 +-
+ fs/hfsplus/part_tbl.c      |   2 -
+ fs/jfs/jfs_incore.h        |   6 +--
+ fs/ocfs2/ocfs2_fs.h        |   5 +--
+ fs/orangefs/protocol.h     |   3 +-
+ fs/ubifs/ubifs.h           |   4 +-
+ include/uapi/linux/magic.h | 104 ++++++++++++++++++++++-----------------------
+ 13 files changed, 65 insertions(+), 87 deletions(-)
 
-Thanks,
-//richard
+-- 
+2.9.3
