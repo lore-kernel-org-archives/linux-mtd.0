@@ -1,7 +1,7 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dCXMA-0000gF-J2
- for linux-mtd@lists.infradead.org; Sun, 21 May 2017 20:21:40 +0000
+ id 1dCXMA-0000gM-J0
+ for linux-mtd@lists.infradead.org; Sun, 21 May 2017 20:21:42 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: david@sigma-star.at, dedekind1@gmail.com, adrian.hunter@intel.com,
@@ -10,9 +10,11 @@ Cc: david@sigma-star.at, dedekind1@gmail.com, adrian.hunter@intel.com,
  linux-ext4@vger.kernel.org, bfields@redhat.com, marcus.folkesson@gmail.com,
  hyc.lee@gmail.com, rockdotlee@gmail.com, leon.pollak@gmail.com,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH 0/6] UBIFS NFS export support v2
-Date: Sun, 21 May 2017 22:20:45 +0200
-Message-Id: <1495398051-4604-1-git-send-email-richard@nod.at>
+Subject: [PATCH 2/6] ubifs: Provide a custom llseek for directories
+Date: Sun, 21 May 2017 22:20:47 +0200
+Message-Id: <1495398051-4604-3-git-send-email-richard@nod.at>
+In-Reply-To: <1495398051-4604-1-git-send-email-richard@nod.at>
+References: <1495398051-4604-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,36 +24,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Adding fscrypto support to UBIFS forced us to implement 64bit
-cookies. Using this building block we can finally implement
-export operations and allow UBIFS being exported via NFS.
-This series adds the last missing bits.
+When UBIFS is using 64bit cookies for directory offsets,
+we have to support seeking that deep into direcoties.
+Since generic_file_llseek() is uses sb->s_maxbytes it will
+fail for use because on ubifs sb->s_maxbytes is the real maxmal
+file size which can be much smaller than 64bit due to limitations
+of the flash device.
 
-It can be obtained from:
-git://git.infradead.org/users/rw/linux.git ubifs_export_v2
+Therefore provie a custom llseek operation.
 
-Changes since v1, https://lkml.org/lkml/2016/12/1/711
- - Addressed comments from Marcus Folkesson, Hyunchul Lee and J. Bruce Fields
- - Added Acks/Reviewed-bys from J. Bruce Fields and Andreas Dilger
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ fs/ubifs/dir.c         | 12 +++++++++++-
+ fs/ubifs/ubifs-media.h |  6 ++++++
+ 2 files changed, 17 insertions(+), 1 deletion(-)
 
-Richard Weinberger (6):
-  ext4: Move is_32bit_api() to generic code
-  ubifs: Provide a custom llseek for directories
-  ubifs: Use 64bit readdir cookies
-  ubifs: Maintain a parent pointer
-  ubifs: Implement export_operations
-  ubifs: Wire up NFS support
-
- fs/ext4/dir.c          |  9 -----
- fs/ubifs/dir.c         | 89 +++++++++++++++++++++++++++++++++++++-------------
- fs/ubifs/journal.c     |  5 ++-
- fs/ubifs/key.h         | 61 ++++++++++++++++++++++++++++++++++
- fs/ubifs/sb.c          |  2 ++
- fs/ubifs/super.c       | 39 ++++++++++++++++++++++
- fs/ubifs/ubifs-media.h | 18 ++++++++--
- fs/ubifs/ubifs.h       |  6 ++++
- include/linux/compat.h |  2 ++
- 9 files changed, 195 insertions(+), 36 deletions(-)
-
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 566079d9b402..cada60690c22 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -1686,6 +1686,16 @@ static int ubifs_dir_open(struct inode *dir, struct file *file)
+ 	return 0;
+ }
+ 
++static loff_t ubifs_dir_llseek(struct file *file, loff_t offset, int whence)
++{
++	struct inode *inode = file->f_mapping->host;
++
++	return generic_file_llseek_size(file, offset, whence,
++					(loff_t)UBIFS_S_KEY_HASH_MASK <<
++					UBIFS_DH_BITS | UBIFS_DH_MASK,
++					i_size_read(inode));
++}
++
+ const struct inode_operations ubifs_dir_inode_operations = {
+ 	.lookup      = ubifs_lookup,
+ 	.create      = ubifs_create,
+@@ -1706,7 +1716,7 @@ const struct inode_operations ubifs_dir_inode_operations = {
+ };
+ 
+ const struct file_operations ubifs_dir_operations = {
+-	.llseek         = generic_file_llseek,
++	.llseek         = ubifs_dir_llseek,
+ 	.release        = ubifs_dir_release,
+ 	.read           = generic_read_dir,
+ 	.iterate_shared = ubifs_readdir,
+diff --git a/fs/ubifs/ubifs-media.h b/fs/ubifs/ubifs-media.h
+index e8c23c9d4f4a..5939776c7359 100644
+--- a/fs/ubifs/ubifs-media.h
++++ b/fs/ubifs/ubifs-media.h
+@@ -214,6 +214,12 @@ enum {
+ #define UBIFS_S_KEY_HASH_MASK  UBIFS_S_KEY_BLOCK_MASK
+ 
+ /*
++ * We use 32 bits for the double hash cookie.
++ */
++#define UBIFS_DH_MASK 0xffffffff
++#define UBIFS_DH_BITS 32
++
++/*
+  * Key types.
+  *
+  * UBIFS_INO_KEY: inode node key
 -- 
 2.12.0
