@@ -1,23 +1,19 @@
-Date: Sun, 21 May 2017 14:23:36 +0200
-From: Ralph Sennhauser <ralph.sennhauser@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Florian Fainelli
- <f.fainelli@gmail.com>, Artem Bityutskiy <dedekind1@gmail.com>, LEDE
- Development List <lede-dev@lists.infradead.org>, Adrian Hunter
- <adrian.hunter@intel.com>, Christoph Hellwig <hch@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, OpenWrt
- Development List <openwrt-devel@lists.openwrt.org>
-Subject: Re: [OpenWrt-Devel] [RFC] Pre-seeded files/directories for UBIFS
-Message-ID: <20170521142336.6bdc8782@gmail.com>
-In-Reply-To: <b193086e-322b-16a6-0306-5d9c47068872@nod.at>
-References: <8f4afb8e-7e98-d59f-abb6-64190ed717f5@nod.at>
- <3dcf8aac-5b84-8ced-fcf1-9fe026861cd6@gmail.com>
- <20170520213654.6b6d18eb@gmail.com>
- <CAMuHMdXQ4Tc92njixXKiP_JgasvgFELR15hqFpk4DjvfT453EQ@mail.gmail.com>
- <b193086e-322b-16a6-0306-5d9c47068872@nod.at>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from hauke-m.de ([5.39.93.123] helo=mail.hauke-m.de)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dCQca-0007IU-Qs
+ for linux-mtd@lists.infradead.org; Sun, 21 May 2017 13:10:10 +0000
+From: Hauke Mehrtens <hauke@hauke-m.de>
+To: ralf@linux-mips.org
+Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
+ linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+ martin.blumenstingl@googlemail.com, john@phrozen.org,
+ linux-spi@vger.kernel.org, hauke.mehrtens@intel.com, robh@kernel.org,
+ Hauke Mehrtens <hauke@hauke-m.de>
+Subject: [PATCH v2 02/15] mtd: lantiq-flash: drop check of boot select
+Date: Sun, 21 May 2017 15:09:05 +0200
+Message-Id: <20170521130918.27446-3-hauke@hauke-m.de>
+In-Reply-To: <20170521130918.27446-1-hauke@hauke-m.de>
+References: <20170521130918.27446-1-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,47 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard
+Do not check which flash type the SoC was booted from before
+using this driver. Assume that the device tree is correct and use this
+driver when it was added to device tree. This also removes a build
+dependency to the SoC code.
 
-On Sun, 21 May 2017 10:40:05 +0200
-Richard Weinberger <richard@nod.at> wrote:
+Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+Acked-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/maps/lantiq-flash.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-> Geert,
-> 
-> Am 21.05.2017 um 10:37 schrieb Geert Uytterhoeven:
-> > On Sat, May 20, 2017 at 9:36 PM, Ralph Sennhauser
-> > <ralph.sennhauser@gmail.com> wrote:  
-> >> There is also the size consideration. Unless a seeded ubifs can get
-> >> close to squashfs in terms of compression there would still be a
-> >> use-case for squashfs with an ubifs overlay. My current root as
-> >> ubifs instead of squashfs is 76.8% bigger.  
-> > 
-> > As seeded files are stored and kept unmodified, they could be
-> > stored in compressed form?  
-> 
-> This is what UBIFS already does.
-
-Right, or it would be some 400-500% difference.
-
-Another advantage of the squashfs with overlay came to mind. OpenWrt
-doesn't do a factory reset per se but boots into a "failsafe" mode which
-just doesn't mount the overlay. This allows to fix the overlay (some
-screwed up config value which prevents connection) or to reset the
-password for example without having to reinstall packages and
-reconfigure the device from ground up. Wiping the overlay is basically
-the last resort.
-
-With the expectation distributions to use the same approach for as many
-devices possible I see the seeded ubifs running out of users fast. Some
-commercial vendor backporting it to a 3.10 kernel maybe?
-
-If the seeded ubifs could be generalized to snapshot support ala btrfs
-that would change things a lot as it would enable uses far beyond just
-factory reset. No idea how feasible that is but might be worth
-considering instead.
-
-Ralph
-
-> 
-> Thanks,
-> //richard
+diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
+index 3e33ab66eb24..77b1d8013295 100644
+--- a/drivers/mtd/maps/lantiq-flash.c
++++ b/drivers/mtd/maps/lantiq-flash.c
+@@ -114,12 +114,6 @@ ltq_mtd_probe(struct platform_device *pdev)
+ 	struct cfi_private *cfi;
+ 	int err;
+ 
+-	if (of_machine_is_compatible("lantiq,falcon") &&
+-			(ltq_boot_select() != BS_FLASH)) {
+-		dev_err(&pdev->dev, "invalid bootstrap options\n");
+-		return -ENODEV;
+-	}
+-
+ 	ltq_mtd = devm_kzalloc(&pdev->dev, sizeof(struct ltq_mtd), GFP_KERNEL);
+ 	if (!ltq_mtd)
+ 		return -ENOMEM;
+-- 
+2.11.0
