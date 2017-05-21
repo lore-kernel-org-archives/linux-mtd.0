@@ -1,6 +1,6 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dCXMX-0000iO-DW
+ id 1dCXMX-0000iN-DZ
  for linux-mtd@lists.infradead.org; Sun, 21 May 2017 20:22:04 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
@@ -10,9 +10,9 @@ Cc: david@sigma-star.at, dedekind1@gmail.com, adrian.hunter@intel.com,
  linux-ext4@vger.kernel.org, bfields@redhat.com, marcus.folkesson@gmail.com,
  hyc.lee@gmail.com, rockdotlee@gmail.com, leon.pollak@gmail.com,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH 6/6] ubifs: Wire up NFS support
-Date: Sun, 21 May 2017 22:20:51 +0200
-Message-Id: <1495398051-4604-7-git-send-email-richard@nod.at>
+Subject: [PATCH 5/6] ubifs: Implement export_operations
+Date: Sun, 21 May 2017 22:20:50 +0200
+Message-Id: <1495398051-4604-6-git-send-email-richard@nod.at>
 In-Reply-To: <1495398051-4604-1-git-send-email-richard@nod.at>
 References: <1495398051-4604-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,57 +24,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since we have 64bit readdir cookies and export operations
-we can finally enable NFS export support for UBIFS.
-
 Signed-off-by: Richard Weinberger <richard@nod.at>
-Reviewed-by: J. Bruce Fields <bfields@redhat.com>
 ---
- fs/ubifs/dir.c   | 10 ++--------
- fs/ubifs/super.c |  3 +++
- 2 files changed, 5 insertions(+), 8 deletions(-)
+ fs/ubifs/super.c | 35 +++++++++++++++++++++++++++++++++++
+ fs/ubifs/ubifs.h |  1 +
+ 2 files changed, 36 insertions(+)
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index a6eadb52a1a8..13b0db37be41 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -298,12 +298,8 @@ static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
- done:
- 	kfree(dent);
- 	fscrypt_free_filename(&nm);
--	/*
--	 * Note, d_splice_alias() would be required instead if we supported
--	 * NFS.
--	 */
--	d_add(dentry, inode);
--	return NULL;
-+
-+	return d_splice_alias(inode, dentry);
- 
- out_inode:
- 	iput(inode);
-@@ -525,8 +521,6 @@ static unsigned int vfs_dent_type(uint8_t type)
-  * properly by means of saving full directory entry name in the private field
-  * of the file description object.
-  *
-- * This means that UBIFS cannot support NFS which requires full
-- * 'seekdir()'/'telldir()' support.
-  */
- static int ubifs_readdir(struct file *file, struct dir_context *ctx)
- {
 diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 4788420162b8..00ddde36e546 100644
+index 7560071534bf..4788420162b8 100644
 --- a/fs/ubifs/super.c
 +++ b/fs/ubifs/super.c
-@@ -2091,6 +2091,9 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
- 		goto out_unlock;
- 	}
+@@ -2005,6 +2005,41 @@ const struct fscrypt_operations ubifs_crypt_operations = {
+ };
+ #endif
  
-+	if (c->parent_pointer && c->double_hash)
-+		sb->s_export_op = &ubifs_export_ops;
++static struct dentry *ubifs_get_parent(struct dentry *child)
++{
++	struct ubifs_inode *ui = ubifs_inode(d_inode(child));
 +
- 	/* Read the root inode */
- 	root = ubifs_iget(sb, UBIFS_ROOT_INO);
- 	if (IS_ERR(root)) {
++	return d_obtain_alias(ubifs_iget(child->d_sb, ui->parent_inum));
++}
++
++static struct inode *ubifs_nfs_get_inode(struct super_block *sb, uint64_t ino,
++					 uint32_t generation)
++{
++	return ubifs_iget(sb, ino);
++}
++
++static struct dentry *ubifs_fh_to_dentry(struct super_block *sb,
++					 struct fid *fid, int fh_len,
++					 int fh_type)
++{
++	return generic_fh_to_dentry(sb, fid, fh_len, fh_type,
++				    ubifs_nfs_get_inode);
++}
++
++static struct dentry *ubifs_fh_to_parent(struct super_block *sb,
++					 struct fid *fid, int fh_len,
++					 int fh_type)
++{
++	return generic_fh_to_parent(sb, fid, fh_len, fh_type,
++				    ubifs_nfs_get_inode);
++}
++
++static const struct export_operations ubifs_export_ops = {
++	.get_parent = ubifs_get_parent,
++	.fh_to_dentry = ubifs_fh_to_dentry,
++	.fh_to_parent = ubifs_fh_to_parent,
++};
++
+ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
+ {
+ 	struct ubifs_info *c = sb->s_fs_info;
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 3c64481f4032..a728d6e3eb47 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -45,6 +45,7 @@
+ #endif
+ #include <linux/random.h>
+ #include <linux/compat.h>
++#include <linux/exportfs.h>
+ #include "ubifs-media.h"
+ 
+ /* Version of this UBIFS implementation */
 -- 
 2.12.0
