@@ -1,19 +1,20 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dCTsF-0000WS-Vr
- for linux-mtd@lists.infradead.org; Sun, 21 May 2017 16:38:33 +0000
-Subject: Re: [PATCH 05/11 linux-next] ubifs: use magic.h
-To: Fabian Frederick <fabf@skynet.be>, Alexander Viro <viro@zeniv.linux.org.uk>
-References: <20170521154133.27428-1-fabf@skynet.be>
-Cc: linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dCXMA-0000gL-J0
+ for linux-mtd@lists.infradead.org; Sun, 21 May 2017 20:21:40 +0000
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <7ae468f1-e6b6-ff84-91f4-0f0ba0c6e062@nod.at>
-Date: Sun, 21 May 2017 18:38:06 +0200
-MIME-Version: 1.0
-In-Reply-To: <20170521154133.27428-1-fabf@skynet.be>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: 8bit
+To: linux-mtd@lists.infradead.org
+Cc: david@sigma-star.at, dedekind1@gmail.com, adrian.hunter@intel.com,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ adilger.kernel@dilger.ca, akpm@linux-foundation.org,
+ linux-ext4@vger.kernel.org, bfields@redhat.com, marcus.folkesson@gmail.com,
+ hyc.lee@gmail.com, rockdotlee@gmail.com, leon.pollak@gmail.com,
+ Richard Weinberger <richard@nod.at>
+Subject: [PATCH 1/6] ext4: Move is_32bit_api() to generic code
+Date: Sun, 21 May 2017 22:20:46 +0200
+Message-Id: <1495398051-4604-2-git-send-email-richard@nod.at>
+In-Reply-To: <1495398051-4604-1-git-send-email-richard@nod.at>
+References: <1495398051-4604-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,55 +24,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fabian,
+Since UBIFS will also use this function, move it to compat.h.
 
-Am 21.05.2017 um 17:41 schrieb Fabian Frederick:
-> Filesystems generally use SUPER_MAGIC values from magic.h
-> instead of a local definition.
-> 
-> Signed-off-by: Fabian Frederick <fabf@skynet.be>
-> ---
->  fs/ubifs/ubifs.h           | 4 +---
->  include/uapi/linux/magic.h | 1 +
->  2 files changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-> index 298b4d8..abc60d5 100644
-> --- a/fs/ubifs/ubifs.h
-> +++ b/fs/ubifs/ubifs.h
-> @@ -38,6 +38,7 @@
->  #include <linux/backing-dev.h>
->  #include <linux/security.h>
->  #include <linux/xattr.h>
-> +#include <linux/magic.h>
->  #ifdef CONFIG_UBIFS_FS_ENCRYPTION
->  #include <linux/fscrypt_supp.h>
->  #else
-> @@ -49,9 +50,6 @@
->  /* Version of this UBIFS implementation */
->  #define UBIFS_VERSION 1
->  
-> -/* UBIFS file system VFS magic number */
-> -#define UBIFS_SUPER_MAGIC 0x24051905
-> -
->  /* Number of UBIFS blocks per VFS page */
->  #define UBIFS_BLOCKS_PER_PAGE (PAGE_SIZE / UBIFS_BLOCK_SIZE)
->  #define UBIFS_BLOCKS_PER_PAGE_SHIFT (PAGE_SHIFT - UBIFS_BLOCK_SHIFT)
-> diff --git a/include/uapi/linux/magic.h b/include/uapi/linux/magic.h
-> index a83c48f..b651a02 100644
-> --- a/include/uapi/linux/magic.h
-> +++ b/include/uapi/linux/magic.h
-> @@ -70,6 +70,7 @@
->  #define SYSFS_MAGIC		0x62656572
->  #define TMPFS_MAGIC		0x01021994
->  #define TRACEFS_MAGIC		0x74726163
-> +#define UBIFS_SUPER_MAGIC	0x24051905
->  #define UDF_SUPER_MAGIC		0x15013346	/* Since UDF 2.01 is ISO 13346 based... */
->  #define USBDEVICE_SUPER_MAGIC	0x9fa2
->  #define V9FS_MAGIC		0x01021997
-> 
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+---
+ fs/ext4/dir.c          | 9 ---------
+ include/linux/compat.h | 2 ++
+ 2 files changed, 2 insertions(+), 9 deletions(-)
 
-Acked-by: Richard Weinberger <richard@nod.at>
-
-Thanks,
-//richard
+diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
+index e8b365000d73..464e6e99d744 100644
+--- a/fs/ext4/dir.c
++++ b/fs/ext4/dir.c
+@@ -290,15 +290,6 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
+ 	return err;
+ }
+ 
+-static inline int is_32bit_api(void)
+-{
+-#ifdef CONFIG_COMPAT
+-	return in_compat_syscall();
+-#else
+-	return (BITS_PER_LONG == 32);
+-#endif
+-}
+-
+ /*
+  * These functions convert from the major/minor hash to an f_pos
+  * value for dx directories
+diff --git a/include/linux/compat.h b/include/linux/compat.h
+index 1c5f3152cbb5..f33ffd8040a1 100644
+--- a/include/linux/compat.h
++++ b/include/linux/compat.h
+@@ -736,6 +736,7 @@ asmlinkage long compat_sys_arch_prctl(int option, unsigned long arg2);
+ #ifndef in_compat_syscall
+ static inline bool in_compat_syscall(void) { return is_compat_task(); }
+ #endif
++static inline int is_32bit_api(void) { return in_compat_syscall(); }
+ 
+ /**
+  * ns_to_compat_timeval - Compat version of ns_to_timeval
+@@ -759,6 +760,7 @@ static inline struct compat_timeval ns_to_compat_timeval(s64 nsec)
+ 
+ #define is_compat_task() (0)
+ static inline bool in_compat_syscall(void) { return false; }
++static inline int is_32bit_api(void) { return BITS_PER_LONG == 32; }
+ 
+ #endif /* CONFIG_COMPAT */
+ 
+-- 
+2.12.0
