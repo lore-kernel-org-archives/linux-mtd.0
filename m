@@ -1,24 +1,21 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dCiy9-0006QB-GO
- for linux-mtd@lists.infradead.org; Mon, 22 May 2017 08:45:39 +0000
-Subject: Re: [PATCH 4/6] ubifs: Maintain a parent pointer
-To: Hyunchul Lee <hyc.lee@gmail.com>
-References: <1495398051-4604-1-git-send-email-richard@nod.at>
- <1495398051-4604-5-git-send-email-richard@nod.at>
- <20170522043023.GA13501@sebu>
-Cc: linux-mtd@lists.infradead.org, david@sigma-star.at, bfields@redhat.com,
- dedekind1@gmail.com, linux-kernel@vger.kernel.org, adrian.hunter@intel.com,
- leon.pollak@gmail.com, adilger.kernel@dilger.ca,
- linux-fsdevel@vger.kernel.org, marcus.folkesson@gmail.com,
- akpm@linux-foundation.org, rockdotlee@gmail.com, kernel-team@lge.com
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <71c6f44e-ad49-d8b0-8e1c-cada1769a3be@nod.at>
-Date: Mon, 22 May 2017 10:45:08 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dCjT5-000746-Nw
+ for linux-mtd@lists.infradead.org; Mon, 22 May 2017 09:17:37 +0000
+Date: Mon, 22 May 2017 11:17:04 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Honza =?UTF-8?B?UGV0cm91xaE=?= <jpetrous@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd:nor:ppb_unlock: remove repeated chip unlock
+Message-ID: <20170522111704.52ce1c40@bbrezillon>
+In-Reply-To: <CAJbz7-1KY0h=f8HgnfZGKtG8CYTK+S+Qb9BR7mwSk2U35cRtVg@mail.gmail.com>
+References: <CAJbz7-1KY0h=f8HgnfZGKtG8CYTK+S+Qb9BR7mwSk2U35cRtVg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20170522043023.GA13501@sebu>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,26 +25,163 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hyunchul,
+Hi Honza,
 
-Am 22.05.2017 um 06:30 schrieb Hyunchul Lee:
->> +	if (move)
->> +		old_inode_ui->parent_inum = new_dir->i_ino;
->> +
->>  	err = ubifs_jnl_rename(c, old_dir, old_inode, &old_nm, new_dir,
->>  			       new_inode, &new_nm, whiteout, sync);
-> 
-> I think that old_inode_ui->parent_inum could point old_dir, even though old_inode
-> is a child of new_dir. this could happen that there is power-cut before
-> old_inode is synced. so I guess that old_inode is needed to be written with
-> rename's node group in ubifs_jnl_rename. is it right?
+On Wed, 17 May 2017 09:25:18 +0200
+Honza Petrou=C5=A1 <jpetrous@gmail.com> wrote:
 
-I assumed that the journal does this already because we change old_inode->i_ctime
-in this function too.
-But checking the code showed the opposite.
-So, if we face a power-cut the rename can succeed but we lose the ctime change.
+> The Persistent Protection Bits (PPB) locking of cfi_cmdset_0002.c
+> doesn't support per-sector-unlocking, so any unlock request
+> unlocks the whole chip. Because of that limitation the driver
+> does the unlock in three steps:
+>  1) remember all locked sector
+>  2) do the whole chip unlock
+>  3) lock back only the necessary sectors
+>=20
+> Unfortunately in step 2 (unlocking the chip) there is used
+> cfi_varsize_frob() for per-sector unlock, what ends up
+> in multiple chip unlocking calls (exactly the chip unlock
+> is called for every sector in the unlock area) even the only one
+> unlock per chip is enough.
+>=20
+> Signed-off-by: Honza Petrous <jpetrous@gmail.com>
+> ---
+>  drivers/mtd/chips/cfi_cmdset_0002.c | 37 +++++++++++++++++++++++++++++--=
+------
+>  1 file changed, 29 insertions(+), 8 deletions(-)
+>=20
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c
+> b/drivers/mtd/chips/cfi_cmdset_0002.c
+> index 56aa6b7..53c842a 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+> @@ -2534,8 +2534,10 @@ struct ppb_lock {
+>      struct flchip *chip;
+>      loff_t offset;
+>      int locked;
+> +    unsigned int erasesize;
+>  };
+>=20
+> +#define MAX_CHIPS            16
+>  #define MAX_SECTORS            512
+>=20
+>  #define DO_XXLOCK_ONEBLOCK_LOCK        ((void *)1)
+> @@ -2628,11 +2630,12 @@ static int __maybe_unused
+> cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs,
+>      struct map_info *map =3D mtd->priv;
+>      struct cfi_private *cfi =3D map->fldrv_priv;
+>      struct ppb_lock *sect;
+> +    struct ppb_lock *chips;
+>      unsigned long adr;
+>      loff_t offset;
+>      uint64_t length;
+>      int chipnum;
+> -    int i;
+> +    int i, j;
+>      int sectors;
+>      int ret;
+>=20
+> @@ -2642,15 +2645,19 @@ static int __maybe_unused
+> cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs,
+>       * first check the locking status of all sectors and save
+>       * it for future use.
+>       */
+> -    sect =3D kzalloc(MAX_SECTORS * sizeof(struct ppb_lock), GFP_KERNEL);
+> +    sect =3D kzalloc((MAX_SECTORS + MAX_CHIPS) * sizeof(struct ppb_lock),
+> +            GFP_KERNEL);
+>      if (!sect)
+>          return -ENOMEM;
+>=20
+> +    chips =3D &sect[MAX_SECTORS];
+> +
+>      /*
+>       * This code to walk all sectors is a slightly modified version
+>       * of the cfi_varsize_frob() code.
+>       */
+>      i =3D 0;
+> +    j =3D -1;
+>      chipnum =3D 0;
+>      adr =3D 0;
+>      sectors =3D 0;
+> @@ -2671,6 +2678,18 @@ static int __maybe_unused cfi_ppb_unlock(struct
+> mtd_info *mtd, loff_t ofs,
+>              sect[sectors].locked =3D do_ppb_xxlock(
+>                  map, &cfi->chips[chipnum], adr, 0,
+>                  DO_XXLOCK_ONEBLOCK_GETLOCK);
+> +        } else {
+> +            if (j < 0 || chips[j].chip !=3D &cfi->chips[chipnum]) {
+> +                j++;
+> +                if (j >=3D MAX_CHIPS) {
+> +                    printk(KERN_ERR "Only %d chips for PPB locking
+> supported!\n",
+> +                           MAX_CHIPS);
+> +                    kfree(sect);
+> +                    return -EINVAL;
+> +                }
+> +                chips[j].chip =3D &cfi->chips[chipnum];
+> +                chips[j].erasesize =3D size;
+> +            }
+>          }
+>=20
+>          adr +=3D size;
+> @@ -2697,12 +2716,14 @@ static int __maybe_unused
+> cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs,
+>          }
+>      }
+>=20
+> -    /* Now unlock the whole chip */
+> -    ret =3D cfi_varsize_frob(mtd, do_ppb_xxlock, ofs, len,
+> -                   DO_XXLOCK_ONEBLOCK_UNLOCK);
+> -    if (ret) {
+> -        kfree(sect);
+> -        return ret;
+> +    /* Now unlock all involved chip(s) */
+> +    for (i =3D 0; i <=3D j; i++) {
+> +        ret =3D do_ppb_xxlock(map, chips[i].chip, 0, chips[i].erasesize,
+> +                    DO_XXLOCK_ONEBLOCK_UNLOCK);
+> +        if (ret) {
+> +            kfree(sect);
+> +            return ret;
+> +        }
+>      }
+>=20
+>      /*
 
-This needs to be addressed before we can add the parent pointer.
+Hm, this logic looks over-complicated. How about the following changes?
+Would that work? And if it doesn't, can you detail why?
 
-Thanks,
-//richard
+--->8---
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cm=
+dset_0002.c
+index 56aa6b75213d..370c063c3d4d 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -2698,11 +2698,13 @@ static int __maybe_unused cfi_ppb_unlock(struct mtd=
+_info *mtd, loff_t ofs,
+        }
+=20
+        /* Now unlock the whole chip */
+-       ret =3D cfi_varsize_frob(mtd, do_ppb_xxlock, ofs, len,
+-                              DO_XXLOCK_ONEBLOCK_UNLOCK);
+-       if (ret) {
+-               kfree(sect);
+-               return ret;
++       for (chipnum =3D 0; chipnum < cfi->numchips; chipnum++) {
++               ret =3D do_ppb_xxlock(map, &cfi->chips[chipnum],
++                                   (loff_t)chipnum << cfi->chipshift,
++                                   1 << cfi->chipshift,
++                                   DO_XXLOCK_ONEBLOCK_UNLOCK);
++               if (ret)
++                       goto out;
+        }
+=20
+        /*
+@@ -2715,6 +2717,7 @@ static int __maybe_unused cfi_ppb_unlock(struct mtd_i=
+nfo *mtd, loff_t ofs,
+                                      DO_XXLOCK_ONEBLOCK_LOCK);
+        }
+=20
++out:
+        kfree(sect);
+        return ret;
+ }
