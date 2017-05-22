@@ -1,24 +1,25 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+Received: from mail-dm3nam03on0057.outbound.protection.outlook.com
+ ([104.47.41.57] helo=NAM03-DM3-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dCjiy-0005jI-UV
- for linux-mtd@lists.infradead.org; Mon, 22 May 2017 09:34:03 +0000
-Message-ID: <1495445613.3558.67.camel@pengutronix.de>
-Subject: Re: [PATCH v2 09/15] reset: Add a reset controller driver for the
- Lantiq XWAY based SoCs
-From: Philipp Zabel <p.zabel@pengutronix.de>
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: ralf@linux-mips.org, linux-mips@linux-mips.org,
- linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
- devicetree@vger.kernel.org, martin.blumenstingl@googlemail.com,
- john@phrozen.org,  linux-spi@vger.kernel.org, hauke.mehrtens@intel.com,
- robh@kernel.org
-Date: Mon, 22 May 2017 11:33:33 +0200
-In-Reply-To: <20170521130918.27446-10-hauke@hauke-m.de>
-References: <20170521130918.27446-1-hauke@hauke-m.de>
- <20170521130918.27446-10-hauke@hauke-m.de>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+ id 1dCldF-0006Jw-28
+ for linux-mtd@lists.infradead.org; Mon, 22 May 2017 11:36:15 +0000
+Date: Mon, 22 May 2017 13:35:37 +0200
+From: Jan Glauber <jan.glauber@caviumnetworks.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
+Subject: Re: [RFC PATCH 2/2] nand: cavium: Nand flash controller for Cavium
+ ARM64 SOCs
+Message-ID: <20170522113537.GA15301@hc>
+References: <20170327160524.29019-1-jglauber@cavium.com>
+ <20170327160524.29019-3-jglauber@cavium.com>
+ <20170519095140.2a5f9e5c@bbrezillon>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170519095140.2a5f9e5c@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,347 +29,147 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Hauke,
+Hi Boris,
 
-thank you for the patch. I have a few questions and comments below:
-
-On Sun, 2017-05-21 at 15:09 +0200, Hauke Mehrtens wrote:
-> From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+On Fri, May 19, 2017 at 09:51:40AM +0200, Boris Brezillon wrote:
+> Hi Jan,
 > 
-> The reset controllers (on xRX200 and newer SoCs have two of them) are
-> provided by the RCU module. This was initially implemented as a simple
-> reset controller. However, the RCU module provides more functionality
-> (ethernet GPHYs, USB PHY, etc.), which makes it a MFD device.
-> The old reset controller driver implementation from
-> arch/mips/lantiq/xway/reset.c did not honor this fact.
-
-Does this driver replace arch/mips/lantiq/xway/reset.c?
-
-> For some devices the request and the status bits are different.
+> A few more comments.
 > 
-> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> ---
->  .../devicetree/bindings/reset/lantiq,rcu-reset.txt |  30 +++
->  drivers/reset/Kconfig                              |   6 +
->  drivers/reset/Makefile                             |   1 +
->  drivers/reset/reset-lantiq-rcu.c                   | 201 +++++++++++++++++++++
->  4 files changed, 238 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/reset/lantiq,rcu-reset.txt
->  create mode 100644 drivers/reset/reset-lantiq-rcu.c
+> On Mon, 27 Mar 2017 18:05:24 +0200
+> Jan Glauber <jglauber@cavium.com> wrote:
 > 
-> diff --git a/Documentation/devicetree/bindings/reset/lantiq,rcu-reset.txt b/Documentation/devicetree/bindings/reset/lantiq,rcu-reset.txt
-> new file mode 100644
-> index 000000000000..ac57c4a1b191
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/reset/lantiq,rcu-reset.txt
-> @@ -0,0 +1,30 @@
-> +Lantiq XWAY SoC RCU reset controller binding
-> +============================================
-> +
-> +This binding describes a reset-controller found on the RCU module on Lantiq
-> +XWAY SoCs.
-> +
-> +
-> +-------------------------------------------------------------------------------
-> +Required properties (controller (parent) node):
-> +- compatible		: Should be "lantiq,rcu-reset"
-> +- lantiq,rcu-syscon	: A phandle to the RCU syscon, the reset register
-> +			  offset and the status register offset.
-> +- #reset-cells		: Specifies the number of cells needed to encode the
-> +			  reset line, should be 2.
-> +			  The first cell takes the reset set bit and the
-> +			  second cell takes the status bit.
-> +
-> +-------------------------------------------------------------------------------
-> +Example for the reset-controllers on the xRX200 SoCs:
-> +	rcu_reset0: rcu_reset {
+> > +
+> > +struct ndf_nop_cmd {
+> > +	u16 opcode	: 4;
+> > +	u16 nop		: 12;
+> > +};
+> > +
+> > +struct ndf_wait_cmd {
+> > +	u16 opcode	: 4;
+> > +	u16 r_b		: 1;	/* wait for one cycle or PBUS_WAIT deassert */
+> > +	u16		: 3;
+> > +	u16 wlen	: 3;	/* timing parameter select */
+> 
+> Can you clearly describe what this timing is? According to the code,
+> it's tWB, but I'd prefer to have it documented here.
 
-I'd prefer
-	rcu_reset0: reset-controller {
+It is until PBUS_WAIT deasserts, if that condition is already false it
+waits for one cycle.
 
-> +		compatible = "lantiq,rcu-reset";
-> +		lantiq,rcu-syscon = <&rcu0 0x10 0x14>;
-> +		#reset-cells = <2>;
-> +	};
-> +
-> +	rcu_reset1: rcu_reset {
-> +		compatible = "lantiq,rcu-reset";
-> +		lantiq,rcu-syscon = <&rcu0 0x48 0x24>;
-> +		#reset-cells = <2>;
-> +	};
+> BTW, it's not clear at first glance that the value you put here is
+> actually encoding the tm_par slot.
 
-I think these should be children of the &rcu0 node. Then you could use
-the reg property to specify the registers.
+Yes. All the timings use this schematic, so maybe a more prominent
+comment in the header file would help.
 
-Also, have you considered using a binding like the ti-syscon-reset? 
-That could remove the need for a rcu_reset node per register pair
-altogether, but might not make sense if the reset registers are densely
-populated.
+> > +	u16		: 5;
+> > +};
+> 
+> Hm, are you sure you want to trust the compiler for bitfield placement?
+> AFAIK, bitfield ordering is not standardized and is thus
+> implementation specific. I'd recommend that you switch to plain
+> u16/u32/u64 fields and use macros to define bitfields:
+> 
+> #define NFD_CMD_OPCODE(x)	(x)
+> #define NFD_WAIT_CMD_WAIT_RB	BIT(5)
+> #define NFD_WAIT_CMD_TPAR(x)	((x) << 8)
+> ...
 
-> diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-> index d21c07ccc94e..632e82155590 100644
-> --- a/drivers/reset/Kconfig
-> +++ b/drivers/reset/Kconfig
-> @@ -41,6 +41,12 @@ config RESET_IMX7
->  	help
->  	  This enables the reset controller driver for i.MX7 SoCs.
->  
-> +config RESET_LANTIQ_RCU
-> +	bool "Lantiq XWAY Reset Driver" if COMPILE_TEST
-> +	default SOC_TYPE_XWAY
-> +	help
-> +	  This enables the reset controller driver for Lantiq / Intel XWAY SoCs.
-> +
->  config RESET_LPC18XX
->  	bool "LPC18xx/43xx Reset Driver" if COMPILE_TEST
->  	default ARCH_LPC18XX
-> diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
-> index 02a74db94339..b19e77847b98 100644
-> --- a/drivers/reset/Makefile
-> +++ b/drivers/reset/Makefile
-> @@ -6,6 +6,7 @@ obj-$(CONFIG_RESET_A10SR) += reset-a10sr.o
->  obj-$(CONFIG_RESET_ATH79) += reset-ath79.o
->  obj-$(CONFIG_RESET_BERLIN) += reset-berlin.o
->  obj-$(CONFIG_RESET_IMX7) += reset-imx7.o
-> +obj-$(CONFIG_RESET_LANTIQ_RCU) += reset-lantiq-rcu.o
->  obj-$(CONFIG_RESET_LPC18XX) += reset-lpc18xx.o
->  obj-$(CONFIG_RESET_MESON) += reset-meson.o
->  obj-$(CONFIG_RESET_OXNAS) += reset-oxnas.o
-> diff --git a/drivers/reset/reset-lantiq-rcu.c b/drivers/reset/reset-lantiq-rcu.c
-> new file mode 100644
-> index 000000000000..f24191beed56
-> --- /dev/null
-> +++ b/drivers/reset/reset-lantiq-rcu.c
-> @@ -0,0 +1,201 @@
-> +/*
-> + *  This program is free software; you can redistribute it and/or modify it
-> + *  under the terms of the GNU General Public License version 2 as published
-> + *  by the Free Software Foundation.
-> + *
-> + *  Copyright (C) 2010 John Crispin <blogic@openwrt.org>
-> + *  Copyright (C) 2013-2015 Lantiq Beteiligungs-GmbH & Co.KG
-> + *  Copyright (C) 2016 Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> + *  Copyright (C) 2017 Hauke Mehrtens <hauke@hauke-m.de>
-> + */
-> +
-> +#include <linux/mfd/syscon.h>
-> +#include <linux/module.h>
-> +#include <linux/regmap.h>
-> +#include <linux/reset-controller.h>
-> +#include <linux/of_platform.h>
-> +
-> +#define LANTIQ_RCU_RESET_TIMEOUT	1000000
-> +
-> +struct lantiq_rcu_reset_priv {
-> +	struct reset_controller_dev rcdev;
-> +	struct device *dev;
-> +	struct regmap *regmap;
-> +	u32 reset_offset;
-> +	u32 status_offset;
-> +};
-> +
-> +static struct lantiq_rcu_reset_priv *to_lantiq_rcu_reset_priv(
-> +	struct reset_controller_dev *rcdev)
-> +{
-> +	return container_of(rcdev, struct lantiq_rcu_reset_priv, rcdev);
-> +}
-> +
-> +static int lantiq_rcu_reset_status(struct reset_controller_dev *rcdev,
-> +			     unsigned long id)
+Well, I had that discussion before :) Contrary to common wisdom I've not
+seen a problem with bitfields yet. Personaly I would prefer the bitfield
+notation as I found it more readable, but I don't mind converting it.
 
-Please align with the opening parenthesis above, or use consistent
-indentation for broken lines, also in the other cases below.
+> > +
+> > +struct ndf_bus_cmd {
+> > +	u16 opcode	: 4;
+> > +	u16 direction	: 4;	/* 1 = acquire, 0 = release */
+> 
+> Not sure why this is named direction if the only thing you can do is
+> acquire or release the bus.
 
-> +{
-> +	struct lantiq_rcu_reset_priv *priv = to_lantiq_rcu_reset_priv(rcdev);
-> +	unsigned int status = (id >> 8) & 0x1f;
-> +	u32 val;
-> +	int ret;
-> +
-> +	if (status >= rcdev->nr_resets)
-> +		return -EINVAL;
+I'm using the names from the official documentation. I know that this
+might not help everyone as it is not public, but for maintaining the
+driver or fixing bugs I find it more convenient. Sometimes the names
+are sub-optimal though, then I try to add comments as above.
 
-This should be checked in lantiq_rcu_reset_xlate instead.
+> > +	u16		: 8;
+> > +};
+> > +
+> > +struct ndf_chip_cmd {
+> > +	u16 opcode	: 4;
+> > +	u16 chip	: 3;	/* select chip, 0 = disable */
+> > +	u16 enable	: 1;	/* 1 = enable, 0 = disable */
+> > +	u16 bus_width	: 2;	/* 10 = 16 bit, 01 = 8 bit */
+> > +	u16		: 6;
+> > +};
+> > +
+> > +struct ndf_cle_cmd {
+> > +	u32 opcode	: 4;
+> > +	u32		: 4;
+> > +	u32 cmd_data	: 8;	/* command sent to the PBUS AD pins */
+> > +	u32 clen1	: 3;	/* time between PBUS CLE and WE asserts */
+> > +	u32 clen2	: 3;	/* time WE remains asserted */
+> > +	u32 clen3	: 3;	/* time between WE deassert and CLE */
+> 
+> Can you re-use the names defined here [1]?
+> AFAICS, clen2 == tWP, clen3 == tCLH, clen1 == tCLS - tWP.
 
-> +	ret = regmap_read(priv->regmap, priv->status_offset, &val);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return !!(val & BIT(status));
-> +}
-> +
-> +static int lantiq_rcu_reset_update(struct reset_controller_dev *rcdev,
-> +				   unsigned long id, bool assert)
-> +{
-> +	struct lantiq_rcu_reset_priv *priv = to_lantiq_rcu_reset_priv(rcdev);
-> +	int ret, retry = LANTIQ_RCU_RESET_TIMEOUT;
-> +	unsigned int set = id & 0x1f;
-> +	u32 val;
-> +
-> +	if (set >= rcdev->nr_resets)
-> +		return -EINVAL;
+Again, naming is to match the documentation. I found it incredible
+hard to get the timing parameters right, as the Cavium hardware
+adds another abstraction (PBUS), with often uses completely different
+timing names. Not sure what is the best to do here, if I only use
+the 'official' names I would ignore the PBUS layer.
 
-This should be checked in lantiq_rcu_reset_xlate instead.
+> > +	u32		: 7;
+> > +};
+> > +
+> > +/* RD_EDO_CMD uses the same layout as RD_CMD */
+> > +struct ndf_rd_cmd {
+> > +	u32 opcode	: 4;
+> > +	u32 data	: 16;	/* data bytes */
+> > +	u32 rlen1	: 3;
+> > +	u32 rlen2	: 3;
+> > +	u32 rlen3	: 3;
+> > +	u32 rlen4	: 3;
+> 
+> Ditto: please document the timings and/or use better names.
 
-> +	if (assert)
-> +		val = BIT(set);
-> +	else
-> +		val = 0;
-> +
-> +	ret = regmap_update_bits(priv->regmap, priv->reset_offset, BIT(set),
-> +				 val);
-> +	if (ret) {
-> +		dev_err(priv->dev, "Failed to set reset bit %u\n", set);
-> +		return ret;
-> +	}
-> +
-> +	do {} while (--retry && lantiq_rcu_reset_status(rcdev, id) != assert);
+Same as above.
 
-This ignores errors returned by lantiq_rcu_reset_status. Consider using
-regmap_read_poll_timeout() instead of open-coding the timeout.
+> > +};
+> > +
+> > +struct ndf_wr_cmd {
+> > +	u32 opcode	: 4;
+> > +	u32 data	: 16;	/* data bytes */
+> > +	u32		: 4;
+> > +	u32 wlen1	: 3;
+> > +	u32 wlen2	: 3;
+> 
+> Ditto.
+> 
+> > +	u32		: 3;
+> > +};
+> > +
+> > +struct ndf_set_tm_par_cmd {
+> > +	u64 opcode	: 4;
+> > +	u64 tim_mult	: 4;	/* multiplier for the seven paramters */
+> > +	u64 tm_par1	: 8;	/* --> Following are the 7 timing parameters that */
+> > +	u64 tm_par2	: 8;	/*     specify the number of coprocessor cycles.  */
+> > +	u64 tm_par3	: 8;	/*     A value of zero means one cycle.		  */
+> > +	u64 tm_par4	: 8;	/*     All values are scaled by tim_mult	  */
+> > +	u64 tm_par5	: 8;	/*     using tim_par * (2 ^ tim_mult).		  */
+> 
+> Can you put this comment above the struct def (this comment applies to
+> the whole driver)?
 
-> +	if (!retry) {
-> +		dev_err(priv->dev, "Failed to %s bit %u\n",
-> +			assert ? "assert" : "deassert", set);
-> +		return -EIO;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int lantiq_rcu_reset_assert(struct reset_controller_dev *rcdev,
-> +			     unsigned long id)
-> +{
-> +	return lantiq_rcu_reset_update(rcdev, id, true);
-> +}
-> +
-> +static int lantiq_rcu_reset_deassert(struct reset_controller_dev *rcdev,
-> +			       unsigned long id)
-> +{
-> +	return lantiq_rcu_reset_update(rcdev, id, false);
-> +}
-> +
-> +static int lantiq_rcu_reset_reset(struct reset_controller_dev *rcdev,
-> +			    unsigned long id)
-> +{
-> +	int ret;
-> +
-> +	ret = lantiq_rcu_reset_assert(rcdev, id);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return lantiq_rcu_reset_deassert(rcdev, id);
-> +}
-> +
-> +static struct reset_control_ops lantiq_rcu_reset_ops = {
+Sure, good idea.
 
-reset_control_ops should be const.
+Thanks for reviewing,
+--Jan
 
-> +	.assert = lantiq_rcu_reset_assert,
-> +	.deassert = lantiq_rcu_reset_deassert,
-> +	.status = lantiq_rcu_reset_status,
-> +	.reset	= lantiq_rcu_reset_reset,
-> +};
-> +
-> +static int lantiq_rcu_reset_of_probe(struct platform_device *pdev,
-> +			       struct lantiq_rcu_reset_priv *priv)
-> +{
-> +	struct device_node *np = pdev->dev.of_node;
-> +
-> +	priv->regmap = syscon_regmap_lookup_by_phandle(np,
-> +							"lantiq,rcu-syscon");
-
-This could be
-	priv->regmap = syscon_node_to_regmap(np->parent);
-if the reset controller device node is a child of the MFD device node.
-
-> +	if (IS_ERR(priv->regmap)) {
-> +		dev_err(&pdev->dev, "Failed to lookup RCU regmap\n");
-> +		return PTR_ERR(priv->regmap);
-> +	}
-> +
-> +	if (of_property_read_u32_index(np, "lantiq,rcu-syscon", 1,
-> +		&priv->reset_offset)) {
-> +		dev_err(&pdev->dev, "Failed to get RCU reset offset\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (of_property_read_u32_index(np, "lantiq,rcu-syscon", 2,
-> +		&priv->status_offset)) {
-> +		dev_err(&pdev->dev, "Failed to get RCU status offset\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int lantiq_rcu_reset_xlate(struct reset_controller_dev *rcdev,
-> +				  const struct of_phandle_args *reset_spec)
-> +{
-> +	unsigned int status, set;
-> +
-> +	set = reset_spec->args[0];
-> +	status = reset_spec->args[1];
-
-Check that set and status are valid here.
-
-> +	return (status << 8) | set;
-> +}
-> +
-> +static int lantiq_rcu_reset_probe(struct platform_device *pdev)
-> +{
-> +	struct lantiq_rcu_reset_priv *priv;
-> +	int err;
-> +
-> +	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	priv->dev = &pdev->dev;
-> +	platform_set_drvdata(pdev, priv);
-> +
-> +	err = lantiq_rcu_reset_of_probe(pdev, priv);
-> +	if (err)
-> +		return err;
-> +
-> +	priv->rcdev.ops = &lantiq_rcu_reset_ops;
-> +	priv->rcdev.owner = THIS_MODULE;
-> +	priv->rcdev.of_node = pdev->dev.of_node;
-> +	priv->rcdev.nr_resets = 32;
-> +	priv->rcdev.of_xlate = lantiq_rcu_reset_xlate;
-> +	priv->rcdev.of_reset_n_cells = 2;
-> +
-> +	err = reset_controller_register(&priv->rcdev);
-> +	if (err)
-> +		return err;
-> +
-> +	return 0;
-
-You can just
-	return reset_controller_register(&priv->rcdev);
-here.
-
-> +}
-> +
-> +static const struct of_device_id lantiq_rcu_reset_dt_ids[] = {
-> +	{ .compatible = "lantiq,rcu-reset", },
-> +	{ },
-> +};
-> +MODULE_DEVICE_TABLE(of, lantiq_rcu_reset_dt_ids);
-> +
-> +static struct platform_driver lantiq_rcu_reset_driver = {
-> +	.probe	= lantiq_rcu_reset_probe,
-> +	.driver = {
-> +		.name		= "lantiq-rcu-reset",
-> +		.of_match_table	= lantiq_rcu_reset_dt_ids,
-> +	},
-> +};
-> +module_platform_driver(lantiq_rcu_reset_driver);
-> +
-> +MODULE_AUTHOR("Martin Blumenstingl <martin.blumenstingl@googlemail.com>");
-> +MODULE_DESCRIPTION("Lantiq XWAY RCU Reset Controller Driver");
-> +MODULE_LICENSE("GPL");
-
-regards
-Philipp
+> > +	u64 tm_par6	: 8;
+> > +	u64 tm_par7	: 8;
+> > +};
+> 
+> [1]http://elixir.free-electrons.com/linux/latest/source/include/linux/mtd/nand.h#L607
