@@ -1,24 +1,19 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dCluN-0004eq-19
- for linux-mtd@lists.infradead.org; Mon, 22 May 2017 11:53:56 +0000
-Date: Mon, 22 May 2017 13:53:28 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Jan Glauber <jan.glauber@caviumnetworks.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-mtd@lists.infradead.org
-Subject: Re: [RFC PATCH 2/2] nand: cavium: Nand flash controller for Cavium
- ARM64 SOCs
-Message-ID: <20170522135328.3468a523@bbrezillon>
-In-Reply-To: <20170522113537.GA15301@hc>
-References: <20170327160524.29019-1-jglauber@cavium.com>
- <20170327160524.29019-3-jglauber@cavium.com>
- <20170519095140.2a5f9e5c@bbrezillon> <20170522113537.GA15301@hc>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mail-qk0-x243.google.com ([2607:f8b0:400d:c09::243])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dCowh-0005gU-Op
+ for linux-mtd@lists.infradead.org; Mon, 22 May 2017 15:08:51 +0000
+Received: by mail-qk0-x243.google.com with SMTP id u75so19229453qka.1
+ for <linux-mtd@lists.infradead.org>; Mon, 22 May 2017 08:08:10 -0700 (PDT)
+From: "Mario J. Rugiero" <mrugiero@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
+ marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr,
+ "Mario J. Rugiero" <mrugiero@gmail.com>
+Subject: [PATCH v5] mtd: create per-device and module-scope debugfs entries
+Date: Mon, 22 May 2017 12:07:58 -0300
+Message-Id: <20170522150758.30985-1-mrugiero@gmail.com>
+In-Reply-To: <20170516155616.26558-1-mrugiero@gmail.com>
+References: <20170516155616.26558-1-mrugiero@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,118 +23,333 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 22 May 2017 13:35:37 +0200
-Jan Glauber <jan.glauber@caviumnetworks.com> wrote:
+Several MTD devices are using debugfs entries created in the root of debugfs.
+This commit provides the means for a standardized subtree, creating one "mtd"
+entry at root, and one entry per device inside it, named after the device.
+Accordingly, cleanup of the debugfs tree is left for the generic MTD tree,
+instead of each doing it on its own.
+Devices docg3, mtdswap and nandsim were updated to use this subtree instead
+of custom ones.
 
-> Hi Boris,
-> 
-> On Fri, May 19, 2017 at 09:51:40AM +0200, Boris Brezillon wrote:
-> > Hi Jan,
-> > 
-> > A few more comments.
-> > 
-> > On Mon, 27 Mar 2017 18:05:24 +0200
-> > Jan Glauber <jglauber@cavium.com> wrote:
-> >   
-> > > +
-> > > +struct ndf_nop_cmd {
-> > > +	u16 opcode	: 4;
-> > > +	u16 nop		: 12;
-> > > +};
-> > > +
-> > > +struct ndf_wait_cmd {
-> > > +	u16 opcode	: 4;
-> > > +	u16 r_b		: 1;	/* wait for one cycle or PBUS_WAIT deassert */
-> > > +	u16		: 3;
-> > > +	u16 wlen	: 3;	/* timing parameter select */  
-> > 
-> > Can you clearly describe what this timing is? According to the code,
-> > it's tWB, but I'd prefer to have it documented here.  
-> 
-> It is until PBUS_WAIT deasserts, if that condition is already false it
-> waits for one cycle.
+Signed-off-by: Mario J. Rugiero <mrugiero@gmail.com>
+---
 
-I guess PBUS_WAIT is directly related to the R/B pin. So I guess this
-timing is tRR.
+v5: - cleanup drivers creating their own debugfs sub-tree.
+    - separate the patch again, as it makes sense on its own as cleanup.
+v4: - include in a bigger patchset which explains the use of this tree.
+v3: - move the changelog out of the commit message
+v2: - remove unused macros and add a commit message
+v1: - create the debugfs entries
+ drivers/mtd/devices/docg3.c | 36 ++++++++++++------------------------
+ drivers/mtd/mtdcore.c       | 23 +++++++++++++++++++++++
+ drivers/mtd/mtdcore.h       |  2 ++
+ drivers/mtd/mtdswap.c       | 17 ++---------------
+ drivers/mtd/nand/nandsim.c  | 29 +++++++----------------------
+ include/linux/mtd/mtd.h     | 10 ++++++++++
+ 6 files changed, 56 insertions(+), 61 deletions(-)
 
-> 
-> > BTW, it's not clear at first glance that the value you put here is
-> > actually encoding the tm_par slot.  
-> 
-> Yes. All the timings use this schematic, so maybe a more prominent
-> comment in the header file would help.
-
-It's still easier if the comment is appearing next to the struct
-definition. So maybe you can add a generic comment at the beginning of
-the file and then refer to it.
-
-> 
-> > > +	u16		: 5;
-> > > +};  
-> > 
-> > Hm, are you sure you want to trust the compiler for bitfield placement?
-> > AFAIK, bitfield ordering is not standardized and is thus
-> > implementation specific. I'd recommend that you switch to plain
-> > u16/u32/u64 fields and use macros to define bitfields:
-> > 
-> > #define NFD_CMD_OPCODE(x)	(x)
-> > #define NFD_WAIT_CMD_WAIT_RB	BIT(5)
-> > #define NFD_WAIT_CMD_TPAR(x)	((x) << 8)
-> > ...  
-> 
-> Well, I had that discussion before :) Contrary to common wisdom I've not
-> seen a problem with bitfields yet. Personaly I would prefer the bitfield
-> notation as I found it more readable, but I don't mind converting it.
-
-I'd still prefer to get rid of bitfields, to be consistent with how
-Linux deals with bitfields in general.
-
-> 
-> > > +
-> > > +struct ndf_bus_cmd {
-> > > +	u16 opcode	: 4;
-> > > +	u16 direction	: 4;	/* 1 = acquire, 0 = release */  
-> > 
-> > Not sure why this is named direction if the only thing you can do is
-> > acquire or release the bus.  
-> 
-> I'm using the names from the official documentation. I know that this
-> might not help everyone as it is not public, but for maintaining the
-> driver or fixing bugs I find it more convenient. Sometimes the names
-> are sub-optimal though, then I try to add comments as above.
-
-Okay for using datasheet names, but please document their meanings just
-before the struct or macro definition (it's done here, but it's not the
-case for all fields).
-
-> 
-> > > +	u16		: 8;
-> > > +};
-> > > +
-> > > +struct ndf_chip_cmd {
-> > > +	u16 opcode	: 4;
-> > > +	u16 chip	: 3;	/* select chip, 0 = disable */
-> > > +	u16 enable	: 1;	/* 1 = enable, 0 = disable */
-> > > +	u16 bus_width	: 2;	/* 10 = 16 bit, 01 = 8 bit */
-> > > +	u16		: 6;
-> > > +};
-> > > +
-> > > +struct ndf_cle_cmd {
-> > > +	u32 opcode	: 4;
-> > > +	u32		: 4;
-> > > +	u32 cmd_data	: 8;	/* command sent to the PBUS AD pins */
-> > > +	u32 clen1	: 3;	/* time between PBUS CLE and WE asserts */
-> > > +	u32 clen2	: 3;	/* time WE remains asserted */
-> > > +	u32 clen3	: 3;	/* time between WE deassert and CLE */  
-> > 
-> > Can you re-use the names defined here [1]?
-> > AFAICS, clen2 == tWP, clen3 == tCLH, clen1 == tCLS - tWP.  
-> 
-> Again, naming is to match the documentation. I found it incredible
-> hard to get the timing parameters right, as the Cavium hardware
-> adds another abstraction (PBUS), with often uses completely different
-> timing names. Not sure what is the best to do here, if I only use
-> the 'official' names I would ignore the PBUS layer.
-
-I'm fine with cavium specific names as long as their conversion to
-generic timings is clearly explained.
+diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
+index b833e6cc684c..0532fb36352b 100644
+--- a/drivers/mtd/devices/docg3.c
++++ b/drivers/mtd/devices/docg3.c
+@@ -1809,37 +1809,25 @@ static int dbg_protection_show(struct seq_file *s, void *p)
+ }
+ DEBUGFS_RO_ATTR(protection, dbg_protection_show);
+ 
+-static int __init doc_dbg_register(struct docg3 *docg3)
++static int __init doc_dbg_register(struct dentry *root)
+ {
+-	struct dentry *root, *entry;
+-
+-	root = debugfs_create_dir("docg3", NULL);
+ 	if (!root)
+ 		return -ENOMEM;
+ 
+-	entry = debugfs_create_file("flashcontrol", S_IRUSR, root, docg3,
+-				  &flashcontrol_fops);
+-	if (entry)
+-		entry = debugfs_create_file("asic_mode", S_IRUSR, root,
+-					    docg3, &asic_mode_fops);
+-	if (entry)
+-		entry = debugfs_create_file("device_id", S_IRUSR, root,
+-					    docg3, &device_id_fops);
+-	if (entry)
+-		entry = debugfs_create_file("protection", S_IRUSR, root,
+-					    docg3, &protection_fops);
+-	if (entry) {
+-		docg3->debugfs_root = root;
+-		return 0;
+-	} else {
+-		debugfs_remove_recursive(root);
+-		return -ENOMEM;
+-	}
++	debugfs_create_file("flashcontrol", S_IRUSR, root, docg3,
++			    &flashcontrol_fops);
++	debugfs_create_file("asic_mode", S_IRUSR, root, docg3,
++			    &asic_mode_fops);
++	debugfs_create_file("device_id", S_IRUSR, root, docg3,
++			    &device_id_fops);
++	debugfs_create_file("protection", S_IRUSR, root, docg3,
++			    &protection_fops);
++
++	return 0;
+ }
+ 
+ static void doc_dbg_unregister(struct docg3 *docg3)
+ {
+-	debugfs_remove_recursive(docg3->debugfs_root);
+ }
+ 
+ /**
+@@ -2121,7 +2109,7 @@ static int __init docg3_probe(struct platform_device *pdev)
+ 		goto err_probe;
+ 
+ 	platform_set_drvdata(pdev, cascade);
+-	doc_dbg_register(cascade->floors[0]->priv);
++	doc_dbg_register(mtd->dbg.dfs_dir);
+ 	return 0;
+ 
+ notfound:
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 1517da3ddd7d..cf501adbd303 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -40,6 +40,7 @@
+ #include <linux/slab.h>
+ #include <linux/reboot.h>
+ #include <linux/leds.h>
++#include <linux/debugfs.h>
+ 
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+@@ -652,6 +653,7 @@ static int mtd_add_device_partitions(struct mtd_info *mtd,
+  */
+ static void mtd_set_dev_defaults(struct mtd_info *mtd)
+ {
++	mtd->dbg.dfs_dir = NULL;
+ 	if (mtd->dev.parent) {
+ 		if (!mtd->owner && mtd->dev.parent->driver)
+ 			mtd->owner = mtd->dev.parent->driver->owner;
+@@ -662,6 +664,8 @@ static void mtd_set_dev_defaults(struct mtd_info *mtd)
+ 	}
+ }
+ 
++static struct dentry *dfs_dir_mtd;
++
+ /**
+  * mtd_device_parse_register - parse partitions and register an MTD device.
+  *
+@@ -701,6 +705,15 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+ 
+ 	mtd_set_dev_defaults(mtd);
+ 
++	if (dfs_dir_mtd) {
++		mtd->dbg.dfs_dir = debugfs_create_dir(mtd->name, dfs_dir_mtd);
++		if (IS_ERR(mtd->dbg.dfs_dir)) {
++			pr_debug("mtd device %s won't show data in debugfs\n",
++				 mtd->name);
++			mtd->dbg.dfs_dir = NULL;
++		}
++	}
++
+ 	memset(&parsed, 0, sizeof(parsed));
+ 
+ 	ret = parse_mtd_partitions(mtd, types, &parsed, parser_data);
+@@ -740,6 +753,8 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+ out:
+ 	/* Cleanup any parsed partitions */
+ 	mtd_part_parser_cleanup(&parsed);
++	if (ret)
++		debugfs_remove_recursive(mtd->dbg.dfs_dir);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mtd_device_parse_register);
+@@ -754,6 +769,8 @@ int mtd_device_unregister(struct mtd_info *master)
+ {
+ 	int err;
+ 
++	debugfs_remove_recursive(master->dbg.dfs_dir);
++
+ 	if (master->_reboot)
+ 		unregister_reboot_notifier(&master->reboot_notifier);
+ 
+@@ -1807,6 +1824,10 @@ static int __init init_mtd(void)
+ 
+ 	proc_mtd = proc_create("mtd", 0, NULL, &mtd_proc_ops);
+ 
++	dfs_dir_mtd = debugfs_create_dir("mtd", NULL);
++	if (IS_ERR(dfs_dir_mtd))
++		dfs_dir_mtd = NULL;
++
+ 	ret = init_mtdchar();
+ 	if (ret)
+ 		goto out_procfs;
+@@ -1816,6 +1837,7 @@ static int __init init_mtd(void)
+ out_procfs:
+ 	if (proc_mtd)
+ 		remove_proc_entry("mtd", NULL);
++	debugfs_remove(dfs_dir_mtd);
+ 	bdi_put(mtd_bdi);
+ err_bdi:
+ 	class_unregister(&mtd_class);
+@@ -1826,6 +1848,7 @@ static int __init init_mtd(void)
+ 
+ static void __exit cleanup_mtd(void)
+ {
++	debugfs_remove_recursive(dfs_dir_mtd);
+ 	cleanup_mtdchar();
+ 	if (proc_mtd)
+ 		remove_proc_entry("mtd", NULL);
+diff --git a/drivers/mtd/mtdcore.h b/drivers/mtd/mtdcore.h
+index 55fdb8e1fd2a..b5d095d24087 100644
+--- a/drivers/mtd/mtdcore.h
++++ b/drivers/mtd/mtdcore.h
+@@ -19,6 +19,8 @@ int parse_mtd_partitions(struct mtd_info *master, const char * const *types,
+ 
+ void mtd_part_parser_cleanup(struct mtd_partitions *parts);
+ 
++extern struct dentry *debug_mtd;
++
+ int __init init_mtdchar(void);
+ void __exit cleanup_mtdchar(void);
+ 
+diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
+index f12879a3d4ff..8d096be702cd 100644
+--- a/drivers/mtd/mtdswap.c
++++ b/drivers/mtd/mtdswap.c
+@@ -138,8 +138,6 @@ struct mtdswap_dev {
+ 
+ 	char *page_buf;
+ 	char *oob_buf;
+-
+-	struct dentry *debugfs_root;
+ };
+ 
+ struct mtdswap_oobdata {
+@@ -1318,26 +1316,16 @@ static int mtdswap_add_debugfs(struct mtdswap_dev *d)
+ 	struct gendisk *gd = d->mbd_dev->disk;
+ 	struct device *dev = disk_to_dev(gd);
+ 
+-	struct dentry *root;
++	struct dentry *root = d->mtd->dbg.dfs_dir;
+ 	struct dentry *dent;
+ 
+-	root = debugfs_create_dir(gd->disk_name, NULL);
+-	if (IS_ERR(root))
+-		return 0;
+-
+-	if (!root) {
+-		dev_err(dev, "failed to initialize debugfs\n");
++	if (!root)
+ 		return -1;
+-	}
+-
+-	d->debugfs_root = root;
+ 
+ 	dent = debugfs_create_file("stats", S_IRUSR, root, d,
+ 				&mtdswap_fops);
+ 	if (!dent) {
+ 		dev_err(d->dev, "debugfs_create_file failed\n");
+-		debugfs_remove_recursive(root);
+-		d->debugfs_root = NULL;
+ 		return -1;
+ 	}
+ 
+@@ -1540,7 +1528,6 @@ static void mtdswap_remove_dev(struct mtd_blktrans_dev *dev)
+ {
+ 	struct mtdswap_dev *d = MTDSWAP_MBD_TO_MTDSWAP(dev);
+ 
+-	debugfs_remove_recursive(d->debugfs_root);
+ 	del_mtd_blktrans_dev(dev);
+ 	mtdswap_cleanup(d);
+ 	kfree(d);
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index 03a0d057bf2f..29f800cc5320 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -525,40 +525,26 @@ static const struct file_operations dfs_fops = {
+ static int nandsim_debugfs_create(struct nandsim *dev)
+ {
+ 	struct nandsim_debug_info *dbg = &dev->dbg;
++	struct dentry *root = nsmtd->dbg.dfs_dir;
+ 	struct dentry *dent;
+ 
+-	if (!IS_ENABLED(CONFIG_DEBUG_FS))
++	if (!root)
+ 		return 0;
+ 
+-	dent = debugfs_create_dir("nandsim", NULL);
+-	if (!dent) {
+-		NS_ERR("cannot create \"nandsim\" debugfs directory\n");
+-		return -ENODEV;
+-	}
+-	dbg->dfs_root = dent;
+-
+ 	dent = debugfs_create_file("wear_report", S_IRUSR,
+-				   dbg->dfs_root, dev, &dfs_fops);
+-	if (!dent)
+-		goto out_remove;
++				   root, dev, &dfs_fops);
++	if (!dent || IS_ERR(dent)) {
++		dent = NULL;
++		NS_ERR("cannot create \"wear_report\" debugfs entry\n");
++	}
+ 	dbg->dfs_wear_report = dent;
+ 
+ 	return 0;
+ 
+ out_remove:
+-	debugfs_remove_recursive(dbg->dfs_root);
+ 	return -ENODEV;
+ }
+ 
+-/**
+- * nandsim_debugfs_remove - destroy all debugfs files
+- */
+-static void nandsim_debugfs_remove(struct nandsim *ns)
+-{
+-	if (IS_ENABLED(CONFIG_DEBUG_FS))
+-		debugfs_remove_recursive(ns->dbg.dfs_root);
+-}
+-
+ /*
+  * Allocate array of page pointers, create slab allocation for an array
+  * and initialize the array by NULL pointers.
+@@ -2395,7 +2381,6 @@ static void __exit ns_cleanup_module(void)
+ 	struct nandsim *ns = nand_get_controller_data(chip);
+ 	int i;
+ 
+-	nandsim_debugfs_remove(ns);
+ 	free_nandsim(ns);    /* Free nandsim private resources */
+ 	nand_release(nsmtd); /* Unregister driver */
+ 	for (i = 0;i < ARRAY_SIZE(ns->partitions); ++i)
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index f8a2ef239c60..6cd0f6b7658b 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -206,6 +206,15 @@ struct mtd_pairing_scheme {
+ 
+ struct module;	/* only needed for owner field in mtd_info */
+ 
++/**
++ * struct mtd_debug_info - debugging information for an MTD device.
++ *
++ * @dfs_dir: direntry object of the MTD device debugfs directory
++ */
++struct mtd_debug_info {
++	struct dentry *dfs_dir;
++};
++
+ struct mtd_info {
+ 	u_char type;
+ 	uint32_t flags;
+@@ -346,6 +355,7 @@ struct mtd_info {
+ 	struct module *owner;
+ 	struct device dev;
+ 	int usecount;
++	struct mtd_debug_info dbg;
+ };
+ 
+ int mtd_ooblayout_ecc(struct mtd_info *mtd, int section,
+-- 
+2.13.0
