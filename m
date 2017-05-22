@@ -1,24 +1,27 @@
-Date: Mon, 22 May 2017 09:01:17 +0200
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Angus Ainslie <angus@akkea.ca>, David Woodhouse <dwmw2@infradead.org>,
- Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Chen-Yu Tsai <wens@csie.org>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: CHIPPro NAND issue with 4.12 rc1
-Message-ID: <20170522070117.mwk4gm34o7idedye@flea.home>
-References: <399ea126f3b18071fbe46bfc9787df6b@www.akkea.ca>
- <20170520171418.4e8a47e0@bbrezillon>
- <6f3cefa6c54776f82160ed8954f4d0d4@www.akkea.ca>
- <20170521074535.4a4ba6dd@bbrezillon>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dChvn-0001J2-To
+ for linux-mtd@lists.infradead.org; Mon, 22 May 2017 07:39:10 +0000
+Date: Mon, 22 May 2017 09:38:35 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "andrew@lunn.ch" <andrew@lunn.ch>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>
+Subject: Re: [PATCH 3/4] mtd: mchp23k256: add partitioning support
+Message-ID: <20170522093835.70f7f110@bbrezillon>
+In-Reply-To: <31c94577108c42c1b51d410081d97eb5@svr-chch-ex1.atlnz.lc>
+References: <20170517053908.26138-1-chris.packham@alliedtelesis.co.nz>
+ <20170517053908.26138-4-chris.packham@alliedtelesis.co.nz>
+ <20170517172911.5f926712@bbrezillon>
+ <31c94577108c42c1b51d410081d97eb5@svr-chch-ex1.atlnz.lc>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="2k6kzaqr7q5gvmyo"
-Content-Disposition: inline
-In-Reply-To: <20170521074535.4a4ba6dd@bbrezillon>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,106 +31,138 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Chris,
 
---2k6kzaqr7q5gvmyo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, 22 May 2017 04:52:34 +0000
+Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
 
-Hi,
+> On 18/05/17 03:29, Boris Brezillon wrote:
+> > Hi Chris,
+> > 
+> > On Wed, 17 May 2017 17:39:07 +1200
+> > Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:
+> >   
+> >> Setting the of_node for the mtd device allows the generic mtd code to
+> >> setup the partitions. Additionally we must specify a non-zero erasesize
+> >> for the partitions to be writeable.
+> >>
+> >> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> >> ---
+> >>   drivers/mtd/devices/mchp23k256.c | 5 +++++
+> >>   1 file changed, 5 insertions(+)
+> >>
+> >> diff --git a/drivers/mtd/devices/mchp23k256.c b/drivers/mtd/devices/mchp23k256.c
+> >> index 2542f5b8b63f..02c6b9dcbd3e 100644
+> >> --- a/drivers/mtd/devices/mchp23k256.c
+> >> +++ b/drivers/mtd/devices/mchp23k256.c
+> >> @@ -143,6 +143,7 @@ static int mchp23k256_probe(struct spi_device *spi)
+> >>   
+> >>   	data = dev_get_platdata(&spi->dev);
+> >>   
+> >> +	mtd_set_of_node(&flash->mtd, spi->dev.of_node);
+> >>   	flash->mtd.dev.parent	= &spi->dev;
+> >>   	flash->mtd.type		= MTD_RAM;
+> >>   	flash->mtd.flags	= MTD_CAP_RAM;
+> >> @@ -151,6 +152,10 @@ static int mchp23k256_probe(struct spi_device *spi)
+> >>   	flash->mtd._read	= mchp23k256_read;
+> >>   	flash->mtd._write	= mchp23k256_write;
+> >>   
+> >> +	flash->mtd.erasesize = PAGE_SIZE;
+> >> +	while (flash->mtd.size & (flash->mtd.erasesize - 1))
+> >> +		flash->mtd.erasesize >>= 1;
+> >> +  
+> > 
+> > Can we fix allocate_partition() to properly handle the
+> > master->erasesize == 0 case instead of doing that?
+> >   
+> 
+> Do you mean something like this?
 
-On Sun, May 21, 2017 at 07:45:35AM +0200, Boris Brezillon wrote:
-> > >> [    7.130000] ubi0: scanning is finished
-> > >> [    7.150000] ubi0: attached mtd4 (name "rootfs", size 496 MiB)
-> > >> [    7.160000] ubi0: PEB size: 262144 bytes (256 KiB), LEB size:=20
-> > >> 258048
-> > >> bytes
-> > >> [    7.170000] ubi0: min./max. I/O unit sizes: 4096/4096, sub-page=
-=20
-> > >> size
-> > >> 1024
-> > >> [    7.180000] ubi0: VID header offset: 1024 (aligned 1024), data
-> > >> offset: 4096
-> > >> [    7.190000] ubi0: good PEBs: 1977, bad PEBs: 7, corrupted PEBs: 0
-> > >> [    7.200000] ubi0: user volume: 1, internal volumes: 1, max. volum=
-es
-> > >> count: 128
-> > >> [    7.210000] ubi0: max/mean erase counter: 3/1, WL threshold: 4096,
-> > >> image sequence number: 1444477407
-> > >> [    7.220000] ubi0: available PEBs: 1, total reserved PEBs: 1976,=
-=20
-> > >> PEBs
-> > >> reserved for bad PEB handling: 33 =20
-> > >=20
-> > > UBI attach works...
-> > >  =20
-> > >> [    7.240000] hctosys: unable to open rtc device (rtc0)
-> > >> [    7.250000] vcc3v0: disabling
->=20
-> Interestingly, it starts failing after the core disables all unused
-> regulators. Not sure this is related but that's worth having a look.
->=20
-> I looked at the schematics and it seems VCC-3V3 (which is powering the
-> NAND chip) is enabled with the EXTEN pin of the AXP209 [1]. I don't know
-> if this pin is controlled by Linux, but maybe you can dump register
-> 0x12 and check if EXTEN is set to 1.
->=20
-> > >> [    7.250000] ALSA device list:
-> > >> [    7.260000]   #0: sun4i-codec
-> > >> [    7.260000] ubi0: background thread "ubi_bgt0d" started, PID 53
-> > >> [    8.320000] sunxi_nand 1c03000.nand: wait interrupt timedout
-> > >> [    9.320000] sunxi_nand 1c03000.nand: wait interrupt timedout
-> > >> [   10.330000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO=20
-> > >> timedout
-> > >> [   11.340000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO=20
-> > >> timedout
-> > >> [   12.350000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO=20
-> > >> timedout
-> > >> [   13.360000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO=20
-> > >> timedout
-> > >> [   14.370000] sunxi_nand 1c03000.nand: wait for empty cmd FIFO=20
-> > >> timedout
-> > >> [   14.380000] ubi0 warning: ubi_io_read: error -110 while reading=
-=20
-> > >> 4096
-> > >> bytes from PEB 1034:4096, read only 0 bytes, retry =20
-> > >=20
-> > > And suddenly you get timeouts. That's really weird. =20
+I had something slightly different in mind (see below).
 
-This just made me realise, this is also the time where the clocks are
-disabled, and we changed our clock implementation in 4.11.
+> 
+> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+> index ea5e5307f667..0cd20ed6b374 100644
+> --- a/drivers/mtd/mtdpart.c
+> +++ b/drivers/mtd/mtdpart.c
+> @@ -577,6 +577,7 @@ static struct mtd_part *allocate_partition(struct 
+> mtd_info *master,
+>                          part->name);
+>          }
+>          if ((slave->mtd.flags & MTD_WRITEABLE) &&
+> +           master->erasesize != 0 &&
+>              mtd_mod_by_eb(slave->mtd.size, &slave->mtd)) {
+>                  slave->mtd.flags &= ~MTD_WRITEABLE;
+> 
+> 
+> I'm happy to submit this as a formal patch but it could potentially 
+> affect a number of devices. Whereas the snippet I initially added is 
+> consistent with drivers/mtd/chips/map_ram.c.
 
-And using the 4.4 DT will keep the old driver...
+Well, if you're duplicating a workaround that's a good sign this should
+actually be handled in the core.
 
-Did you test in 4.11? If it's also broken, could you try to revert
-1f4ce3b6ca79 and 6b48644b1d29 (I'm not sure it's going to be a trivial
-revert, but in that order it should work).
+> 
+> For now I'll leave v2 as-is but I can send a v3 if needed.
+> 
 
-Maxime
-
---=20
-Maxime Ripard, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
-
---2k6kzaqr7q5gvmyo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIcBAEBAgAGBQJZIoy9AAoJEBx+YmzsjxAgiBgP/00MFsdMxm+rfJlUzQrwGTGP
-8TvQz6c1cS8bTuAGRQtOfs/ZCAqLaZdXX/hfQRqBbJ1N+tCl+pI8xktvY1eVMwyz
-RwTe5hACUlQOHk8WDrOauDPz+O57KNf99yoSJWgH6iFjGkMpfjJhJb/X7x4hM32u
-99w/YPTYbaMnelRVqH+CE4rGoMEtG7h+MDvTNMUbhbk1YlVVtx/12QE4c8XjjPyd
-+hEDVZgypmp/6PfnM3x+kcVtDUgGnYY52pZh7ZkesHTRJeYED8IqjSGQqzekSOVv
-3y0WhMD1TShxg075Ckb34MC6YIuJW69WfYnCyi0wGn7foWB++lpKtgfTHTAnJ3QQ
-M+G1fpnYtSkz3CyzPJ6XFG0LPzbnsuB7CpW6sFaBEq4Pq7v1jyUwX2jzT3j1V2Fc
-2HFOw5hKNL/q1NOQUhQyns8LTXEKjxp+ydP/5V1flx5TW2+y5rAkQBNtStfBbAbp
-5LS0yWvtjDlQcAZj/FO/wD2UUESET7nt8jcgSkX/gjV0W8MeHjHz8uVYZJVn3tNe
-OdnxCGvXSXufis+oKOpriCe1KPRqa9BRdqYaS1a45cNwLtc6FW4H2IDasd0BSTtg
-exEfiKZ2NlyqcK7Xo8jFJ2NPa0xzzLgmaJkDFkzcnVM6mdt5n+kGLneSEauNdhW2
-kc8b8spKy/EF//FlLA8b
-=Y6lx
------END PGP SIGNATURE-----
-
---2k6kzaqr7q5gvmyo--
+--->8---
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index ea5e5307f667..378ff4a9174e 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -393,7 +393,9 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
+                        const struct mtd_partition *part, int partno,
+                        uint64_t cur_offset)
+ {
++       int wr_alignment = master->erasesize ? : master->writesize;
+        struct mtd_part *slave;
++       u32 remainder;
+        char *name;
+ 
+        /* allocate the partition structure */
+@@ -499,10 +501,12 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
+        if (slave->offset == MTDPART_OFS_APPEND)
+                slave->offset = cur_offset;
+        if (slave->offset == MTDPART_OFS_NXTBLK) {
++               u64 tmp = cur_offset;
++
+                slave->offset = cur_offset;
+-               if (mtd_mod_by_eb(cur_offset, master) != 0) {
+-                       /* Round up to next erasesize */
+-                       slave->offset = (mtd_div_by_eb(cur_offset, master) + 1) * master->erasesize;
++               remainder = do_div(tmp, wr_alignment);
++               if (remainder) {
++                       slave->offset += wr_alignment - remainder;
+                        printk(KERN_NOTICE "Moving partition %d: "
+                               "0x%012llx -> 0x%012llx\n", partno,
+                               (unsigned long long)cur_offset, (unsigned long long)slave->offset);
+@@ -567,19 +571,22 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
+                slave->mtd.erasesize = master->erasesize;
+        }
+ 
+-       if ((slave->mtd.flags & MTD_WRITEABLE) &&
+-           mtd_mod_by_eb(slave->offset, &slave->mtd)) {
++       tmp = slave->offset;
++       remainder = do_div(tmp, wr_alignment);
++       if ((slave->mtd.flags & MTD_WRITEABLE) && remainder) {
+                /* Doesn't start on a boundary of major erase size */
+                /* FIXME: Let it be writable if it is on a boundary of
+                 * _minor_ erase size though */
+                slave->mtd.flags &= ~MTD_WRITEABLE;
+-               printk(KERN_WARNING"mtd: partition \"%s\" doesn't start on an erase block boundary -- force read-only\n",
++               printk(KERN_WARNING"mtd: partition \"%s\" doesn't start on an erase/write block boundary -- force read-only\n",
+                        part->name);
+        }
+-       if ((slave->mtd.flags & MTD_WRITEABLE) &&
+-           mtd_mod_by_eb(slave->mtd.size, &slave->mtd)) {
++
++       tmp = slave->mtd.size;
++       remainder = do_div(tmp, wr_alignment);
++       if ((slave->mtd.flags & MTD_WRITEABLE) && remainder) {
+                slave->mtd.flags &= ~MTD_WRITEABLE;
+-               printk(KERN_WARNING"mtd: partition \"%s\" doesn't end on an erase block -- force read-only\n",
++               printk(KERN_WARNING"mtd: partition \"%s\" doesn't end on an erase/write block -- force read-only\n",
+                        part->name);
+        }
+ 
