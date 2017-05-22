@@ -1,27 +1,19 @@
-Received: from hqemgate14.nvidia.com ([216.228.121.143])
+Received: from mail-qt0-x243.google.com ([2607:f8b0:400d:c0d::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dCtB3-0001z0-4y
- for linux-mtd@lists.infradead.org; Mon, 22 May 2017 19:39:42 +0000
-Subject: Re: [PATCH 23/29] vfio-mediated-device.txt: standardize document
- format
-To: Mauro Carvalho Chehab <mchehab@s-opensource.com>, Linux Doc Mailing List
- <linux-doc@vger.kernel.org>
-References: <cover.1495157082.git.mchehab@s-opensource.com>
- <593114611704d32e22fb7526d16f3208602eb6ad.1495157082.git.mchehab@s-opensource.com>
-CC: Mauro Carvalho Chehab <mchehab@infradead.org>,
- <linux-kernel@vger.kernel.org>, Jonathan Corbet <corbet@lwn.net>, "David
- Woodhouse" <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, <linux-mtd@lists.infradead.org>,
- <kvm@vger.kernel.org>
-From: Kirti Wankhede <kwankhede@nvidia.com>
-Message-ID: <7964fad9-dfb7-be31-dd97-daa7abe3e73a@nvidia.com>
-Date: Tue, 23 May 2017 01:08:58 +0530
-MIME-Version: 1.0
-In-Reply-To: <593114611704d32e22fb7526d16f3208602eb6ad.1495157082.git.mchehab@s-opensource.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+ id 1dCtYC-0002s0-GY
+ for linux-mtd@lists.infradead.org; Mon, 22 May 2017 20:03:34 +0000
+Received: by mail-qt0-x243.google.com with SMTP id j13so19551514qta.3
+ for <linux-mtd@lists.infradead.org>; Mon, 22 May 2017 13:03:11 -0700 (PDT)
+From: "Mario J. Rugiero" <mrugiero@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
+ marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr,
+ "Mario J. Rugiero" <mrugiero@gmail.com>
+Subject: [PATCH v6] mtd: create per-device and module-scope debugfs entries
+Date: Mon, 22 May 2017 15:56:13 -0300
+Message-Id: <20170522185613.26760-1-mrugiero@gmail.com>
+In-Reply-To: <20170516155616.26558-1-mrugiero@gmail.com>
+References: <20170516155616.26558-1-mrugiero@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,414 +23,351 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Several MTD devices are using debugfs entries created in the root.
+This commit provides the means for a standardized subtree, creating
+one "mtd" entry at root, and one entry per device inside it, named
+after the device.
+Devices docg3, mtdswap and nandsim were updated to use this subtree
+instead of custom ones, and related cleanup to these was performed.
+
+Signed-off-by: Mario J. Rugiero <mrugiero@gmail.com>
+---
+
+v6: - as per bbrezillon suggestion, more cleanups were done in the drivers,
+      removing now unused structure members and functions.
+    - dropped explicit setting to NULL to the dfs_dir member for the MTD,
+      as it is expected to be zeroed out, thanks again to bbrezillon for
+      pointing this out.
+    - removed an extern declaration of a symbol which was never defined,
+      spotted by bbrezillon.
+v5: - cleanup drivers creating their own debugfs sub-tree.
+    - separate the patch again, as it makes sense on its own as cleanup.
+v4: - include in a bigger patchset which explains the use of this tree.
+v3: - move the changelog out of the commit message
+v2: - remove unused macros and add a commit message
+v1: - create the debugfs entries
 
 
-On 5/19/2017 6:56 AM, Mauro Carvalho Chehab wrote:
-> Each text file under Documentation follows a different
-> format. Some doesn't even have titles!
-> 
-> In this specific document, the title, copyright and authorship
-> are added as if it were a C file!
-> 
-> Change its representation to follow the adopted standard,
-> using ReST markups for it to be parseable by Sphinx:
-> - convert document preambule to the proper format;
-> - mark literal blocks;
-> - adjust identation;
-> - use numbered lists for references.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+ drivers/mtd/devices/docg3.c | 49 ++++++++++++++++-----------------------------
+ drivers/mtd/devices/docg3.h |  1 -
+ drivers/mtd/mtdcore.c       | 16 +++++++++++++++
+ drivers/mtd/mtdswap.c       | 16 +++------------
+ drivers/mtd/nand/nandsim.c  | 39 +++++-------------------------------
+ include/linux/mtd/mtd.h     | 10 +++++++++
+ 6 files changed, 51 insertions(+), 80 deletions(-)
 
-Looks good to me.
-
-Reviewed by: Kirti Wankhede <kwankhede@nvidia.com>
-
-Thanks,
-Kirti
-
-> ---
->  Documentation/vfio-mediated-device.txt | 252 +++++++++++++++++----------------
->  1 file changed, 130 insertions(+), 122 deletions(-)
-> 
-> diff --git a/Documentation/vfio-mediated-device.txt b/Documentation/vfio-mediated-device.txt
-> index e5e57b40f8af..1b3950346532 100644
-> --- a/Documentation/vfio-mediated-device.txt
-> +++ b/Documentation/vfio-mediated-device.txt
-> @@ -1,14 +1,17 @@
-> -/*
-> - * VFIO Mediated devices
-> - *
-> - * Copyright (c) 2016, NVIDIA CORPORATION. All rights reserved.
-> - *     Author: Neo Jia <cjia@nvidia.com>
-> - *             Kirti Wankhede <kwankhede@nvidia.com>
-> - *
-> - * This program is free software; you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License version 2 as
-> - * published by the Free Software Foundation.
-> - */
-> +.. include:: <isonum.txt>
-> +
-> +=====================
-> +VFIO Mediated devices
-> +=====================
-> +
-> +:Copyright: |copy| 2016, NVIDIA CORPORATION. All rights reserved.
-> +:Author: Neo Jia <cjia@nvidia.com>
-> +:Author: Kirti Wankhede <kwankhede@nvidia.com>
-> +
-> +This program is free software; you can redistribute it and/or modify
-> +it under the terms of the GNU General Public License version 2 as
-> +published by the Free Software Foundation.
-> +
->  
->  Virtual Function I/O (VFIO) Mediated devices[1]
->  ===============================================
-> @@ -42,7 +45,7 @@ removes it from a VFIO group.
->  
->  The following high-level block diagram shows the main components and interfaces
->  in the VFIO mediated driver framework. The diagram shows NVIDIA, Intel, and IBM
-> -devices as examples, as these devices are the first devices to use this module.
-> +devices as examples, as these devices are the first devices to use this module::
->  
->       +---------------+
->       |               |
-> @@ -91,7 +94,7 @@ Registration Interface for a Mediated Bus Driver
->  ------------------------------------------------
->  
->  The registration interface for a mediated bus driver provides the following
-> -structure to represent a mediated device's driver:
-> +structure to represent a mediated device's driver::
->  
->       /*
->        * struct mdev_driver [2] - Mediated device's driver
-> @@ -110,14 +113,14 @@ structure to represent a mediated device's driver:
->  A mediated bus driver for mdev should use this structure in the function calls
->  to register and unregister itself with the core driver:
->  
-> -* Register:
-> +* Register::
->  
-> -  extern int  mdev_register_driver(struct mdev_driver *drv,
-> +    extern int  mdev_register_driver(struct mdev_driver *drv,
->  				   struct module *owner);
->  
-> -* Unregister:
-> +* Unregister::
->  
-> -  extern void mdev_unregister_driver(struct mdev_driver *drv);
-> +    extern void mdev_unregister_driver(struct mdev_driver *drv);
->  
->  The mediated bus driver is responsible for adding mediated devices to the VFIO
->  group when devices are bound to the driver and removing mediated devices from
-> @@ -152,15 +155,15 @@ The callbacks in the mdev_parent_ops structure are as follows:
->  * mmap: mmap emulation callback
->  
->  A driver should use the mdev_parent_ops structure in the function call to
-> -register itself with the mdev core driver:
-> +register itself with the mdev core driver::
->  
-> -extern int  mdev_register_device(struct device *dev,
-> -                                 const struct mdev_parent_ops *ops);
-> +	extern int  mdev_register_device(struct device *dev,
-> +	                                 const struct mdev_parent_ops *ops);
->  
->  However, the mdev_parent_ops structure is not required in the function call
-> -that a driver should use to unregister itself with the mdev core driver:
-> +that a driver should use to unregister itself with the mdev core driver::
->  
-> -extern void mdev_unregister_device(struct device *dev);
-> +	extern void mdev_unregister_device(struct device *dev);
->  
->  
->  Mediated Device Management Interface Through sysfs
-> @@ -183,30 +186,32 @@ with the mdev core driver.
->  Directories and files under the sysfs for Each Physical Device
->  --------------------------------------------------------------
->  
-> -|- [parent physical device]
-> -|--- Vendor-specific-attributes [optional]
-> -|--- [mdev_supported_types]
-> -|     |--- [<type-id>]
-> -|     |   |--- create
-> -|     |   |--- name
-> -|     |   |--- available_instances
-> -|     |   |--- device_api
-> -|     |   |--- description
-> -|     |   |--- [devices]
-> -|     |--- [<type-id>]
-> -|     |   |--- create
-> -|     |   |--- name
-> -|     |   |--- available_instances
-> -|     |   |--- device_api
-> -|     |   |--- description
-> -|     |   |--- [devices]
-> -|     |--- [<type-id>]
-> -|          |--- create
-> -|          |--- name
-> -|          |--- available_instances
-> -|          |--- device_api
-> -|          |--- description
-> -|          |--- [devices]
-> +::
-> +
-> +  |- [parent physical device]
-> +  |--- Vendor-specific-attributes [optional]
-> +  |--- [mdev_supported_types]
-> +  |     |--- [<type-id>]
-> +  |     |   |--- create
-> +  |     |   |--- name
-> +  |     |   |--- available_instances
-> +  |     |   |--- device_api
-> +  |     |   |--- description
-> +  |     |   |--- [devices]
-> +  |     |--- [<type-id>]
-> +  |     |   |--- create
-> +  |     |   |--- name
-> +  |     |   |--- available_instances
-> +  |     |   |--- device_api
-> +  |     |   |--- description
-> +  |     |   |--- [devices]
-> +  |     |--- [<type-id>]
-> +  |          |--- create
-> +  |          |--- name
-> +  |          |--- available_instances
-> +  |          |--- device_api
-> +  |          |--- description
-> +  |          |--- [devices]
->  
->  * [mdev_supported_types]
->  
-> @@ -219,12 +224,12 @@ Directories and files under the sysfs for Each Physical Device
->  
->    The [<type-id>] name is created by adding the device driver string as a prefix
->    to the string provided by the vendor driver. This format of this name is as
-> -  follows:
-> +  follows::
->  
->  	sprintf(buf, "%s-%s", dev_driver_string(parent->dev), group->name);
->  
->    (or using mdev_parent_dev(mdev) to arrive at the parent device outside
-> -   of the core mdev code)
-> +  of the core mdev code)
->  
->  * device_api
->  
-> @@ -239,7 +244,7 @@ Directories and files under the sysfs for Each Physical Device
->  * [device]
->  
->    This directory contains links to the devices of type <type-id> that have been
-> -created.
-> +  created.
->  
->  * name
->  
-> @@ -253,21 +258,25 @@ created.
->  Directories and Files Under the sysfs for Each mdev Device
->  ----------------------------------------------------------
->  
-> -|- [parent phy device]
-> -|--- [$MDEV_UUID]
-> +::
-> +
-> +  |- [parent phy device]
-> +  |--- [$MDEV_UUID]
->           |--- remove
->           |--- mdev_type {link to its type}
->           |--- vendor-specific-attributes [optional]
->  
->  * remove (write only)
-> +
->  Writing '1' to the 'remove' file destroys the mdev device. The vendor driver can
->  fail the remove() callback if that device is active and the vendor driver
->  doesn't support hot unplug.
->  
-> -Example:
-> +Example::
-> +
->  	# echo 1 > /sys/bus/mdev/devices/$mdev_UUID/remove
->  
-> -Mediated device Hot plug:
-> +Mediated device Hot plug
->  ------------------------
->  
->  Mediated devices can be created and assigned at runtime. The procedure to hot
-> @@ -277,13 +286,13 @@ Translation APIs for Mediated Devices
->  =====================================
->  
->  The following APIs are provided for translating user pfn to host pfn in a VFIO
-> -driver:
-> +driver::
->  
-> -extern int vfio_pin_pages(struct device *dev, unsigned long *user_pfn,
-> -                          int npage, int prot, unsigned long *phys_pfn);
-> +	extern int vfio_pin_pages(struct device *dev, unsigned long *user_pfn,
-> +				  int npage, int prot, unsigned long *phys_pfn);
->  
-> -extern int vfio_unpin_pages(struct device *dev, unsigned long *user_pfn,
-> -                            int npage);
-> +	extern int vfio_unpin_pages(struct device *dev, unsigned long *user_pfn,
-> +				    int npage);
->  
->  These functions call back into the back-end IOMMU module by using the pin_pages
->  and unpin_pages callbacks of the struct vfio_iommu_driver_ops[4]. Currently
-> @@ -304,81 +313,80 @@ card.
->  
->     This step creates a dummy device, /sys/devices/virtual/mtty/mtty/
->  
-> -   Files in this device directory in sysfs are similar to the following:
-> +   Files in this device directory in sysfs are similar to the following::
->  
-> -   # tree /sys/devices/virtual/mtty/mtty/
-> -      /sys/devices/virtual/mtty/mtty/
-> -      |-- mdev_supported_types
-> -      |   |-- mtty-1
-> -      |   |   |-- available_instances
-> -      |   |   |-- create
-> -      |   |   |-- device_api
-> -      |   |   |-- devices
-> -      |   |   `-- name
-> -      |   `-- mtty-2
-> -      |       |-- available_instances
-> -      |       |-- create
-> -      |       |-- device_api
-> -      |       |-- devices
-> -      |       `-- name
-> -      |-- mtty_dev
-> -      |   `-- sample_mtty_dev
-> -      |-- power
-> -      |   |-- autosuspend_delay_ms
-> -      |   |-- control
-> -      |   |-- runtime_active_time
-> -      |   |-- runtime_status
-> -      |   `-- runtime_suspended_time
-> -      |-- subsystem -> ../../../../class/mtty
-> -      `-- uevent
-> +     # tree /sys/devices/virtual/mtty/mtty/
-> +        /sys/devices/virtual/mtty/mtty/
-> +        |-- mdev_supported_types
-> +        |   |-- mtty-1
-> +        |   |   |-- available_instances
-> +        |   |   |-- create
-> +        |   |   |-- device_api
-> +        |   |   |-- devices
-> +        |   |   `-- name
-> +        |   `-- mtty-2
-> +        |       |-- available_instances
-> +        |       |-- create
-> +        |       |-- device_api
-> +        |       |-- devices
-> +        |       `-- name
-> +        |-- mtty_dev
-> +        |   `-- sample_mtty_dev
-> +        |-- power
-> +        |   |-- autosuspend_delay_ms
-> +        |   |-- control
-> +        |   |-- runtime_active_time
-> +        |   |-- runtime_status
-> +        |   `-- runtime_suspended_time
-> +        |-- subsystem -> ../../../../class/mtty
-> +        `-- uevent
->  
->  2. Create a mediated device by using the dummy device that you created in the
-> -   previous step.
-> +   previous step::
->  
-> -   # echo "83b8f4f2-509f-382f-3c1e-e6bfe0fa1001" >	\
-> +     # echo "83b8f4f2-509f-382f-3c1e-e6bfe0fa1001" >	\
->                /sys/devices/virtual/mtty/mtty/mdev_supported_types/mtty-2/create
->  
-> -3. Add parameters to qemu-kvm.
-> +3. Add parameters to qemu-kvm::
->  
-> -   -device vfio-pci,\
-> -    sysfsdev=/sys/bus/mdev/devices/83b8f4f2-509f-382f-3c1e-e6bfe0fa1001
-> +     -device vfio-pci,\
-> +      sysfsdev=/sys/bus/mdev/devices/83b8f4f2-509f-382f-3c1e-e6bfe0fa1001
->  
->  4. Boot the VM.
->  
->     In the Linux guest VM, with no hardware on the host, the device appears
-> -   as  follows:
-> +   as  follows::
->  
-> -   # lspci -s 00:05.0 -xxvv
-> -   00:05.0 Serial controller: Device 4348:3253 (rev 10) (prog-if 02 [16550])
-> -           Subsystem: Device 4348:3253
-> -           Physical Slot: 5
-> -           Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr-
-> -   Stepping- SERR- FastB2B- DisINTx-
-> -           Status: Cap- 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-> -   <TAbort- <MAbort- >SERR- <PERR- INTx-
-> -           Interrupt: pin A routed to IRQ 10
-> -           Region 0: I/O ports at c150 [size=8]
-> -           Region 1: I/O ports at c158 [size=8]
-> -           Kernel driver in use: serial
-> -   00: 48 43 53 32 01 00 00 02 10 02 00 07 00 00 00 00
-> -   10: 51 c1 00 00 59 c1 00 00 00 00 00 00 00 00 00 00
-> -   20: 00 00 00 00 00 00 00 00 00 00 00 00 48 43 53 32
-> -   30: 00 00 00 00 00 00 00 00 00 00 00 00 0a 01 00 00
-> +     # lspci -s 00:05.0 -xxvv
-> +     00:05.0 Serial controller: Device 4348:3253 (rev 10) (prog-if 02 [16550])
-> +             Subsystem: Device 4348:3253
-> +             Physical Slot: 5
-> +             Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr-
-> +     Stepping- SERR- FastB2B- DisINTx-
-> +             Status: Cap- 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-> +     <TAbort- <MAbort- >SERR- <PERR- INTx-
-> +             Interrupt: pin A routed to IRQ 10
-> +             Region 0: I/O ports at c150 [size=8]
-> +             Region 1: I/O ports at c158 [size=8]
-> +             Kernel driver in use: serial
-> +     00: 48 43 53 32 01 00 00 02 10 02 00 07 00 00 00 00
-> +     10: 51 c1 00 00 59 c1 00 00 00 00 00 00 00 00 00 00
-> +     20: 00 00 00 00 00 00 00 00 00 00 00 00 48 43 53 32
-> +     30: 00 00 00 00 00 00 00 00 00 00 00 00 0a 01 00 00
->  
-> -   In the Linux guest VM, dmesg output for the device is as follows:
-> +     In the Linux guest VM, dmesg output for the device is as follows:
->  
-> -   serial 0000:00:05.0: PCI INT A -> Link[LNKA] -> GSI 10 (level, high) -> IRQ
-> -10
-> -   0000:00:05.0: ttyS1 at I/O 0xc150 (irq = 10) is a 16550A
-> -   0000:00:05.0: ttyS2 at I/O 0xc158 (irq = 10) is a 16550A
-> +     serial 0000:00:05.0: PCI INT A -> Link[LNKA] -> GSI 10 (level, high) -> IRQ 10
-> +     0000:00:05.0: ttyS1 at I/O 0xc150 (irq = 10) is a 16550A
-> +     0000:00:05.0: ttyS2 at I/O 0xc158 (irq = 10) is a 16550A
->  
->  
-> -5. In the Linux guest VM, check the serial ports.
-> +5. In the Linux guest VM, check the serial ports::
->  
-> -   # setserial -g /dev/ttyS*
-> -   /dev/ttyS0, UART: 16550A, Port: 0x03f8, IRQ: 4
-> -   /dev/ttyS1, UART: 16550A, Port: 0xc150, IRQ: 10
-> -   /dev/ttyS2, UART: 16550A, Port: 0xc158, IRQ: 10
-> +     # setserial -g /dev/ttyS*
-> +     /dev/ttyS0, UART: 16550A, Port: 0x03f8, IRQ: 4
-> +     /dev/ttyS1, UART: 16550A, Port: 0xc150, IRQ: 10
-> +     /dev/ttyS2, UART: 16550A, Port: 0xc158, IRQ: 10
->  
->  6. Using minicom or any terminal emulation program, open port /dev/ttyS1 or
->     /dev/ttyS2 with hardware flow control disabled.
-> @@ -388,14 +396,14 @@ card.
->  
->     Data is loop backed from hosts mtty driver.
->  
-> -8. Destroy the mediated device that you created.
-> +8. Destroy the mediated device that you created::
->  
-> -   # echo 1 > /sys/bus/mdev/devices/83b8f4f2-509f-382f-3c1e-e6bfe0fa1001/remove
-> +     # echo 1 > /sys/bus/mdev/devices/83b8f4f2-509f-382f-3c1e-e6bfe0fa1001/remove
->  
->  References
->  ==========
->  
-> -[1] See Documentation/vfio.txt for more information on VFIO.
-> -[2] struct mdev_driver in include/linux/mdev.h
-> -[3] struct mdev_parent_ops in include/linux/mdev.h
-> -[4] struct vfio_iommu_driver_ops in include/linux/vfio.h
-> +1. See Documentation/vfio.txt for more information on VFIO.
-> +2. struct mdev_driver in include/linux/mdev.h
-> +3. struct mdev_parent_ops in include/linux/mdev.h
-> +4. struct vfio_iommu_driver_ops in include/linux/vfio.h
-> 
+diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
+index b833e6cc684c..02c40a211b65 100644
+--- a/drivers/mtd/devices/docg3.c
++++ b/drivers/mtd/devices/docg3.c
+@@ -1809,37 +1809,22 @@ static int dbg_protection_show(struct seq_file *s, void *p)
+ }
+ DEBUGFS_RO_ATTR(protection, dbg_protection_show);
+ 
+-static int __init doc_dbg_register(struct docg3 *docg3)
+-{
+-	struct dentry *root, *entry;
+-
+-	root = debugfs_create_dir("docg3", NULL);
+-	if (!root)
+-		return -ENOMEM;
+-
+-	entry = debugfs_create_file("flashcontrol", S_IRUSR, root, docg3,
+-				  &flashcontrol_fops);
+-	if (entry)
+-		entry = debugfs_create_file("asic_mode", S_IRUSR, root,
+-					    docg3, &asic_mode_fops);
+-	if (entry)
+-		entry = debugfs_create_file("device_id", S_IRUSR, root,
+-					    docg3, &device_id_fops);
+-	if (entry)
+-		entry = debugfs_create_file("protection", S_IRUSR, root,
+-					    docg3, &protection_fops);
+-	if (entry) {
+-		docg3->debugfs_root = root;
+-		return 0;
+-	} else {
+-		debugfs_remove_recursive(root);
+-		return -ENOMEM;
+-	}
+-}
+-
+-static void doc_dbg_unregister(struct docg3 *docg3)
++static void __init doc_dbg_register(struct mtd_info *floor)
+ {
+-	debugfs_remove_recursive(docg3->debugfs_root);
++	struct dentry *root = floor->dbg.dfs_dir;
++	struct docg3 *docg3 = floor->priv;
++
++	if (IS_ERR_OR_NULL(root))
++		return;
++
++	debugfs_create_file("flashcontrol", S_IRUSR, root, docg3,
++			    &flashcontrol_fops);
++	debugfs_create_file("asic_mode", S_IRUSR, root, docg3,
++			    &asic_mode_fops);
++	debugfs_create_file("device_id", S_IRUSR, root, docg3,
++			    &device_id_fops);
++	debugfs_create_file("protection", S_IRUSR, root, docg3,
++			    &protection_fops);
+ }
+ 
+ /**
+@@ -2114,6 +2099,8 @@ static int __init docg3_probe(struct platform_device *pdev)
+ 						0);
+ 		if (ret)
+ 			goto err_probe;
++
++		doc_dbg_register(cascade->floors[floor]);
+ 	}
+ 
+ 	ret = doc_register_sysfs(pdev, cascade);
+@@ -2121,7 +2108,6 @@ static int __init docg3_probe(struct platform_device *pdev)
+ 		goto err_probe;
+ 
+ 	platform_set_drvdata(pdev, cascade);
+-	doc_dbg_register(cascade->floors[0]->priv);
+ 	return 0;
+ 
+ notfound:
+@@ -2148,7 +2134,6 @@ static int docg3_release(struct platform_device *pdev)
+ 	int floor;
+ 
+ 	doc_unregister_sysfs(pdev, cascade);
+-	doc_dbg_unregister(docg3);
+ 	for (floor = 0; floor < DOC_MAX_NBFLOORS; floor++)
+ 		if (cascade->floors[floor])
+ 			doc_release_device(cascade->floors[floor]);
+diff --git a/drivers/mtd/devices/docg3.h b/drivers/mtd/devices/docg3.h
+index 19fb93f96a3a..f3055907de3e 100644
+--- a/drivers/mtd/devices/docg3.h
++++ b/drivers/mtd/devices/docg3.h
+@@ -312,7 +312,6 @@ struct docg3 {
+ 	loff_t oob_write_ofs;
+ 	int oob_autoecc;
+ 	u8 oob_write_buf[DOC_LAYOUT_OOB_SIZE];
+-	struct dentry *debugfs_root;
+ };
+ 
+ #define doc_err(fmt, arg...) dev_err(docg3->dev, (fmt), ## arg)
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 1517da3ddd7d..ac5feb1b96e1 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -40,6 +40,7 @@
+ #include <linux/slab.h>
+ #include <linux/reboot.h>
+ #include <linux/leds.h>
++#include <linux/debugfs.h>
+ 
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+@@ -662,6 +663,8 @@ static void mtd_set_dev_defaults(struct mtd_info *mtd)
+ 	}
+ }
+ 
++static struct dentry *dfs_dir_mtd;
++
+ /**
+  * mtd_device_parse_register - parse partitions and register an MTD device.
+  *
+@@ -737,6 +740,14 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+ 		register_reboot_notifier(&mtd->reboot_notifier);
+ 	}
+ 
++	if (!IS_ERR_OR_NULL(dfs_dir_mtd)) {
++		mtd->dbg.dfs_dir = debugfs_create_dir(mtd->name, dfs_dir_mtd);
++		if (IS_ERR_OR_NULL(mtd->dbg.dfs_dir)) {
++			pr_debug("mtd device %s won't show data in debugfs\n",
++				 mtd->name);
++		}
++	}
++
+ out:
+ 	/* Cleanup any parsed partitions */
+ 	mtd_part_parser_cleanup(&parsed);
+@@ -754,6 +765,8 @@ int mtd_device_unregister(struct mtd_info *master)
+ {
+ 	int err;
+ 
++	debugfs_remove_recursive(master->dbg.dfs_dir);
++
+ 	if (master->_reboot)
+ 		unregister_reboot_notifier(&master->reboot_notifier);
+ 
+@@ -1811,6 +1824,8 @@ static int __init init_mtd(void)
+ 	if (ret)
+ 		goto out_procfs;
+ 
++	dfs_dir_mtd = debugfs_create_dir("mtd", NULL);
++
+ 	return 0;
+ 
+ out_procfs:
+@@ -1826,6 +1841,7 @@ static int __init init_mtd(void)
+ 
+ static void __exit cleanup_mtd(void)
+ {
++	debugfs_remove_recursive(dfs_dir_mtd);
+ 	cleanup_mtdchar();
+ 	if (proc_mtd)
+ 		remove_proc_entry("mtd", NULL);
+diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
+index f12879a3d4ff..ea46e52a6155 100644
+--- a/drivers/mtd/mtdswap.c
++++ b/drivers/mtd/mtdswap.c
+@@ -138,8 +138,6 @@ struct mtdswap_dev {
+ 
+ 	char *page_buf;
+ 	char *oob_buf;
+-
+-	struct dentry *debugfs_root;
+ };
+ 
+ struct mtdswap_oobdata {
+@@ -1318,26 +1316,19 @@ static int mtdswap_add_debugfs(struct mtdswap_dev *d)
+ 	struct gendisk *gd = d->mbd_dev->disk;
+ 	struct device *dev = disk_to_dev(gd);
+ 
+-	struct dentry *root;
++	struct dentry *root = d->mtd->dbg.dfs_dir;
+ 	struct dentry *dent;
+ 
+-	root = debugfs_create_dir(gd->disk_name, NULL);
+-	if (IS_ERR(root))
++	if (!IS_ENABLED(CONFIG_DEBUGFS))
+ 		return 0;
+ 
+-	if (!root) {
+-		dev_err(dev, "failed to initialize debugfs\n");
++	if (IS_ERR_OR_NULL(root))
+ 		return -1;
+-	}
+-
+-	d->debugfs_root = root;
+ 
+ 	dent = debugfs_create_file("stats", S_IRUSR, root, d,
+ 				&mtdswap_fops);
+ 	if (!dent) {
+ 		dev_err(d->dev, "debugfs_create_file failed\n");
+-		debugfs_remove_recursive(root);
+-		d->debugfs_root = NULL;
+ 		return -1;
+ 	}
+ 
+@@ -1540,7 +1531,6 @@ static void mtdswap_remove_dev(struct mtd_blktrans_dev *dev)
+ {
+ 	struct mtdswap_dev *d = MTDSWAP_MBD_TO_MTDSWAP(dev);
+ 
+-	debugfs_remove_recursive(d->debugfs_root);
+ 	del_mtd_blktrans_dev(dev);
+ 	mtdswap_cleanup(d);
+ 	kfree(d);
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index 03a0d057bf2f..357f6d914a5a 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -287,11 +287,6 @@ MODULE_PARM_DESC(bch,		 "Enable BCH ecc and set how many bits should "
+ /* Maximum page cache pages needed to read or write a NAND page to the cache_file */
+ #define NS_MAX_HELD_PAGES 16
+ 
+-struct nandsim_debug_info {
+-	struct dentry *dfs_root;
+-	struct dentry *dfs_wear_report;
+-};
+-
+ /*
+  * A union to represent flash memory contents and flash buffer.
+  */
+@@ -370,8 +365,6 @@ struct nandsim {
+ 	void *file_buf;
+ 	struct page *held_pages[NS_MAX_HELD_PAGES];
+ 	int held_cnt;
+-
+-	struct nandsim_debug_info dbg;
+ };
+ 
+ /*
+@@ -524,39 +517,18 @@ static const struct file_operations dfs_fops = {
+  */
+ static int nandsim_debugfs_create(struct nandsim *dev)
+ {
+-	struct nandsim_debug_info *dbg = &dev->dbg;
++	struct dentry *root = nsmtd->dbg.dfs_dir;
+ 	struct dentry *dent;
+ 
+-	if (!IS_ENABLED(CONFIG_DEBUG_FS))
++	if (IS_ERR_OR_NULL(root))
+ 		return 0;
+ 
+-	dent = debugfs_create_dir("nandsim", NULL);
+-	if (!dent) {
+-		NS_ERR("cannot create \"nandsim\" debugfs directory\n");
+-		return -ENODEV;
+-	}
+-	dbg->dfs_root = dent;
+-
+ 	dent = debugfs_create_file("wear_report", S_IRUSR,
+-				   dbg->dfs_root, dev, &dfs_fops);
+-	if (!dent)
+-		goto out_remove;
+-	dbg->dfs_wear_report = dent;
++				   root, dev, &dfs_fops);
++	if (IS_ERR_OR_NULL(dent))
++		NS_ERR("cannot create \"wear_report\" debugfs entry\n");
+ 
+ 	return 0;
+-
+-out_remove:
+-	debugfs_remove_recursive(dbg->dfs_root);
+-	return -ENODEV;
+-}
+-
+-/**
+- * nandsim_debugfs_remove - destroy all debugfs files
+- */
+-static void nandsim_debugfs_remove(struct nandsim *ns)
+-{
+-	if (IS_ENABLED(CONFIG_DEBUG_FS))
+-		debugfs_remove_recursive(ns->dbg.dfs_root);
+ }
+ 
+ /*
+@@ -2395,7 +2367,6 @@ static void __exit ns_cleanup_module(void)
+ 	struct nandsim *ns = nand_get_controller_data(chip);
+ 	int i;
+ 
+-	nandsim_debugfs_remove(ns);
+ 	free_nandsim(ns);    /* Free nandsim private resources */
+ 	nand_release(nsmtd); /* Unregister driver */
+ 	for (i = 0;i < ARRAY_SIZE(ns->partitions); ++i)
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index f8a2ef239c60..6cd0f6b7658b 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -206,6 +206,15 @@ struct mtd_pairing_scheme {
+ 
+ struct module;	/* only needed for owner field in mtd_info */
+ 
++/**
++ * struct mtd_debug_info - debugging information for an MTD device.
++ *
++ * @dfs_dir: direntry object of the MTD device debugfs directory
++ */
++struct mtd_debug_info {
++	struct dentry *dfs_dir;
++};
++
+ struct mtd_info {
+ 	u_char type;
+ 	uint32_t flags;
+@@ -346,6 +355,7 @@ struct mtd_info {
+ 	struct module *owner;
+ 	struct device dev;
+ 	int usecount;
++	struct mtd_debug_info dbg;
+ };
+ 
+ int mtd_ooblayout_ecc(struct mtd_info *mtd, int section,
+-- 
+2.13.0
