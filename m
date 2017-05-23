@@ -1,17 +1,18 @@
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dCxs7-0006iU-1b
- for linux-mtd@lists.infradead.org; Tue, 23 May 2017 00:40:24 +0000
-Received: by mail-pf0-x241.google.com with SMTP id n23so23415634pfb.3
- for <linux-mtd@lists.infradead.org>; Mon, 22 May 2017 17:40:02 -0700 (PDT)
+ id 1dCxs9-0007do-9X
+ for linux-mtd@lists.infradead.org; Tue, 23 May 2017 00:40:27 +0000
+Received: by mail-pf0-x243.google.com with SMTP id w69so23422301pfk.1
+ for <linux-mtd@lists.infradead.org>; Mon, 22 May 2017 17:40:06 -0700 (PDT)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org
 Cc: Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
  linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
  linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 1/4] ext4: don't bother checking for encryption key in ->mmap()
-Date: Mon, 22 May 2017 17:39:42 -0700
-Message-Id: <20170523003945.14279-2-ebiggers3@gmail.com>
+Subject: [PATCH 3/4] ubifs: don't bother checking for encryption key in
+ ->mmap()
+Date: Mon, 22 May 2017 17:39:44 -0700
+Message-Id: <20170523003945.14279-4-ebiggers3@gmail.com>
 In-Reply-To: <20170523003945.14279-1-ebiggers3@gmail.com>
 References: <20170523003945.14279-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,26 +32,28 @@ the key again before permitting each mmap().
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/ext4/file.c | 7 -------
- 1 file changed, 7 deletions(-)
+ fs/ubifs/file.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index 831fd6beebf0..f0039867b086 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -345,13 +345,6 @@ static int ext4_file_mmap(struct file *file, struct vm_area_struct *vma)
- 	if (unlikely(ext4_forced_shutdown(EXT4_SB(inode->i_sb))))
- 		return -EIO;
- 
--	if (ext4_encrypted_inode(inode)) {
--		int err = fscrypt_get_encryption_info(inode);
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index 2cda3d67e2d0..7dc58bda279b 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1607,15 +1607,6 @@ static const struct vm_operations_struct ubifs_file_vm_ops = {
+ static int ubifs_file_mmap(struct file *file, struct vm_area_struct *vma)
+ {
+ 	int err;
+-	struct inode *inode = file->f_mapping->host;
+-
+-	if (ubifs_crypt_is_encrypted(inode)) {
+-		err = fscrypt_get_encryption_info(inode);
 -		if (err)
--			return 0;
+-			return -EACCES;
 -		if (!fscrypt_has_encryption_key(inode))
 -			return -ENOKEY;
 -	}
- 	file_accessed(file);
- 	if (IS_DAX(file_inode(file))) {
- 		vma->vm_ops = &ext4_dax_vm_ops;
+ 
+ 	err = generic_file_mmap(file, vma);
+ 	if (err)
 -- 
 2.13.0.303.g4ebf302169-goog
