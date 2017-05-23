@@ -1,9 +1,9 @@
-Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
+Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dD2PP-0006E2-92
- for linux-mtd@lists.infradead.org; Tue, 23 May 2017 05:31:05 +0000
-Received: by mail-lf0-x241.google.com with SMTP id q24so7026956lfb.1
- for <linux-mtd@lists.infradead.org>; Mon, 22 May 2017 22:30:42 -0700 (PDT)
+ id 1dD2PR-0006EL-Cq
+ for linux-mtd@lists.infradead.org; Tue, 23 May 2017 05:31:07 +0000
+Received: by mail-lf0-x242.google.com with SMTP id m18so7025687lfj.0
+ for <linux-mtd@lists.infradead.org>; Mon, 22 May 2017 22:30:49 -0700 (PDT)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -17,10 +17,9 @@ Cc: Mark Rutland <mark.rutland@arm.com>, Frank Rowand <frowand.list@gmail.com>,
  Jonas Gorski <jonas.gorski@gmail.com>,
  Florian Fainelli <f.fainelli@gmail.com>,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH V3 1/4] dt-bindings: mtd: make partitions doc a bit more
- generic
-Date: Tue, 23 May 2017 07:30:19 +0200
-Message-Id: <20170523053022.3251-2-zajec5@gmail.com>
+Subject: [PATCH V3 4/4] mtd: ofpart: add of_match_table with "fixed-partitions"
+Date: Tue, 23 May 2017 07:30:22 +0200
+Message-Id: <20170523053022.3251-5-zajec5@gmail.com>
 In-Reply-To: <20170523053022.3251-1-zajec5@gmail.com>
 References: <20170523053022.3251-1-zajec5@gmail.com>
 MIME-Version: 1.0
@@ -35,85 +34,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Brian Norris <computersforpeace@gmail.com>
+From: Rafał Miłecki <rafal@milecki.pl>
 
-Currently the only documented partitioning is "fixed-partitions" but
-there are more methods in use that we may want to support in the future.
-Mention them and make it clear Fixed Partitions are just a single case.
+This allows using this parser with any flash driver that takes care of
+setting of_node (using mtd_set_of_node helper) correctly. Up to now
+support for "fixed-partitions" DT compatibility string was working only
+with flash drivers that were specifying "ofpart" (manually or by letting
+mtd use the default set of parsers).
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+This matches existing bindings documentation.
+
 Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Reviewed-by: Brian Norris <computersforpeace@gmail.com>
+Tested-by: Brian Norris <computersforpeace@gmail.com>
 ---
-This is based on Brian's patch:
-[RFC PATCH 3/7] doc: dt: mtd: partition: add on-flash format binding
+ drivers/mtd/ofpart.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-V1: Dropped "Section B: On-Flash Partition Tables" with Google's FMAP as this
-    patchset doesn't add that new parser.
-V2: Add "We currently only document a binding for fixed layouts." part
-V3: Extend description of 'partitions' subnode - thanks Florian
----
- .../devicetree/bindings/mtd/partition.txt          | 32 ++++++++++++++++++----
- 1 file changed, 26 insertions(+), 6 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
-index 81a224da63be..36f3b769a626 100644
---- a/Documentation/devicetree/bindings/mtd/partition.txt
-+++ b/Documentation/devicetree/bindings/mtd/partition.txt
-@@ -1,29 +1,49 @@
--Representing flash partitions in devicetree
-+Flash partitions in device tree
-+===============================
+diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
+index 2861c7079d7b..fb6f3df40e94 100644
+--- a/drivers/mtd/ofpart.c
++++ b/drivers/mtd/ofpart.c
+@@ -140,9 +140,16 @@ static int parse_ofpart_partitions(struct mtd_info *master,
+ 	return ret;
+ }
  
--Partitions can be represented by sub-nodes of an mtd device. This can be used
-+Flash devices can be partitioned into one or more functional ranges (e.g. "boot
-+code", "nvram", "kernel").
++static const struct of_device_id parse_ofpart_match_table[] = {
++	{ .compatible = "fixed-partitions" },
++	{},
++};
++MODULE_DEVICE_TABLE(of, parse_ofpart_match_table);
 +
-+Different devices may be partitioned in a different ways. Some may use a fixed
-+flash layout set at production time. Some may use on-flash table that describes
-+the geometry and naming/purpose of each functional region. It is also possible
-+to see these methods mixed.
-+
-+To assist system software in locating partitions, we allow describing which
-+method is used for a given flash device. To describe the method there should be
-+a subnode of the flash device that is named 'partitions'. It must have a
-+'compatible' property, which is used to identify the method to use.
-+
-+We currently only document a binding for fixed layouts.
-+
-+
-+Fixed Partitions
-+================
-+
-+Partitions can be represented by sub-nodes of a flash device. This can be used
- on platforms which have strong conventions about which portions of a flash are
- used for what purposes, but which don't use an on-flash partition table such
- as RedBoot.
+ static struct mtd_part_parser ofpart_parser = {
+ 	.parse_fn = parse_ofpart_partitions,
+ 	.name = "ofpart",
++	.of_match_table = parse_ofpart_match_table,
+ };
  
--The partition table should be a subnode of the mtd node and should be named
-+The partition table should be a subnode of the flash node and should be named
- 'partitions'. This node should have the following property:
- - compatible : (required) must be "fixed-partitions"
- Partitions are then defined in subnodes of the partitions node.
- 
--For backwards compatibility partitions as direct subnodes of the mtd device are
-+For backwards compatibility partitions as direct subnodes of the flash device are
- supported. This use is discouraged.
- NOTE: also for backwards compatibility, direct subnodes that have a compatible
- string are not considered partitions, as they may be used for other bindings.
- 
- #address-cells & #size-cells must both be present in the partitions subnode of the
--mtd device. There are two valid values for both:
-+flash device. There are two valid values for both:
- <1>: for partitions that require a single 32-bit cell to represent their
-      size/address (aka the value is below 4 GiB)
- <2>: for partitions that require two 32-bit cells to represent their
-      size/address (aka the value is 4 GiB or greater).
- 
- Required properties:
--- reg : The partition's offset and size within the mtd bank.
-+- reg : The partition's offset and size within the flash
- 
- Optional properties:
- - label : The label / name for this partition.  If omitted, the label is taken
+ static int parse_ofoldpart_partitions(struct mtd_info *master,
 -- 
 2.11.0
