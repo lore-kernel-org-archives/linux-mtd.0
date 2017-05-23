@@ -1,6 +1,6 @@
-Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dCxvO-0000tP-J0
+ id 1dCxvO-0000tK-If
  for linux-mtd@lists.infradead.org; Tue, 23 May 2017 00:43:50 +0000
 From: Chris Packham <chris.packham@alliedtelesis.co.nz>
 To: linux-mtd@lists.infradead.org, andrew@lunn.ch, computersforpeace@gmail.com,
@@ -8,12 +8,10 @@ To: linux-mtd@lists.infradead.org, andrew@lunn.ch, computersforpeace@gmail.com,
  linux-kernel@vger.kernel.org
 Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- devicetree@vger.kernel.org
-Subject: [PATCH v3 1/5] mtd: mchp23k256: Add OF device ID table
-Date: Tue, 23 May 2017 12:43:13 +1200
-Message-Id: <20170523004317.16908-2-chris.packham@alliedtelesis.co.nz>
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Subject: [PATCH v3 3/5] mtd: handle partitioning on devices with 0 erasesize
+Date: Tue, 23 May 2017 12:43:15 +1200
+Message-Id: <20170523004317.16908-4-chris.packham@alliedtelesis.co.nz>
 In-Reply-To: <20170523004317.16908-1-chris.packham@alliedtelesis.co.nz>
 References: <20170523004317.16908-1-chris.packham@alliedtelesis.co.nz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,74 +23,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This allows registering of this device via a Device Tree.
+erasesize is meaningful for flash devices but for SRAM there is no
+concept of an erase block so erasesize is set to 0. When partitioning
+these devices instead of ensuring partitions fall on erasesize
+boundaries we ensure they fall on writesize boundaries.
 
+Helped-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Tested-by: Andrew Lunn <andrew@lunn.ch>
 ---
-Changes in v2:
-- collect review/test from Andrew
 Changes in v3:
-- None
+- new
 
- .../devicetree/bindings/mtd/microchip,mchp23k256.txt   | 18 ++++++++++++++++++
- drivers/mtd/devices/mchp23k256.c                       |  8 ++++++++
- 2 files changed, 26 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt
+ drivers/mtd/mtdpart.c | 25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt b/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt
-new file mode 100644
-index 000000000000..25e5ad38b0f0
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt
-@@ -0,0 +1,18 @@
-+* MTD SPI driver for Microchip 23K256 (and similar) serial SRAM
-+
-+Required properties:
-+- #address-cells, #size-cells : Must be present if the device has sub-nodes
-+  representing partitions.
-+- compatible : Must be "microchip,mchp23k256"
-+- reg : Chip-Select number
-+- spi-max-frequency : Maximum frequency of the SPI bus the chip can operate at
-+
-+Example:
-+
-+	spi-sram@0 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "microchip,mchp23k256";
-+		reg = <0>;
-+		spi-max-frequency = <20000000>;
-+	};
-diff --git a/drivers/mtd/devices/mchp23k256.c b/drivers/mtd/devices/mchp23k256.c
-index e237db9f1bdb..9d8306a15833 100644
---- a/drivers/mtd/devices/mchp23k256.c
-+++ b/drivers/mtd/devices/mchp23k256.c
-@@ -19,6 +19,7 @@
- #include <linux/sizes.h>
- #include <linux/spi/flash.h>
- #include <linux/spi/spi.h>
-+#include <linux/of_device.h>
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index ea5e5307f667..5cef1247806c 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -393,8 +393,11 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
+ 			const struct mtd_partition *part, int partno,
+ 			uint64_t cur_offset)
+ {
++	int wr_alignment = master->erasesize ? : master->writesize;
+ 	struct mtd_part *slave;
++	u32 remainder;
+ 	char *name;
++	u64 tmp;
  
- struct mchp23k256_flash {
- 	struct spi_device	*spi;
-@@ -166,9 +167,16 @@ static int mchp23k256_remove(struct spi_device *spi)
- 	return mtd_device_unregister(&flash->mtd);
- }
+ 	/* allocate the partition structure */
+ 	slave = kzalloc(sizeof(*slave), GFP_KERNEL);
+@@ -499,10 +502,11 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
+ 	if (slave->offset == MTDPART_OFS_APPEND)
+ 		slave->offset = cur_offset;
+ 	if (slave->offset == MTDPART_OFS_NXTBLK) {
++		tmp = cur_offset;
+ 		slave->offset = cur_offset;
+-		if (mtd_mod_by_eb(cur_offset, master) != 0) {
+-			/* Round up to next erasesize */
+-			slave->offset = (mtd_div_by_eb(cur_offset, master) + 1) * master->erasesize;
++		remainder = do_div(tmp, wr_alignment);
++		if (remainder) {
++			slave->offset += wr_alignment - remainder;
+ 			printk(KERN_NOTICE "Moving partition %d: "
+ 			       "0x%012llx -> 0x%012llx\n", partno,
+ 			       (unsigned long long)cur_offset, (unsigned long long)slave->offset);
+@@ -567,19 +571,22 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
+ 		slave->mtd.erasesize = master->erasesize;
+ 	}
  
-+static const struct of_device_id mchp23k256_of_table[] = {
-+	{ .compatible = "microchip,mchp23k256" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, mchp23k256_of_table);
+-	if ((slave->mtd.flags & MTD_WRITEABLE) &&
+-	    mtd_mod_by_eb(slave->offset, &slave->mtd)) {
++	tmp = slave->offset;
++	remainder = do_div(tmp, wr_alignment);
++	if ((slave->mtd.flags & MTD_WRITEABLE) && remainder) {
+ 		/* Doesn't start on a boundary of major erase size */
+ 		/* FIXME: Let it be writable if it is on a boundary of
+ 		 * _minor_ erase size though */
+ 		slave->mtd.flags &= ~MTD_WRITEABLE;
+-		printk(KERN_WARNING"mtd: partition \"%s\" doesn't start on an erase block boundary -- force read-only\n",
++		printk(KERN_WARNING"mtd: partition \"%s\" doesn't start on an erase/write block boundary -- force read-only\n",
+ 			part->name);
+ 	}
+-	if ((slave->mtd.flags & MTD_WRITEABLE) &&
+-	    mtd_mod_by_eb(slave->mtd.size, &slave->mtd)) {
 +
- static struct spi_driver mchp23k256_driver = {
- 	.driver = {
- 		.name	= "mchp23k256",
-+		.of_match_table = of_match_ptr(mchp23k256_of_table),
- 	},
- 	.probe		= mchp23k256_probe,
- 	.remove		= mchp23k256_remove,
++	tmp = slave->mtd.size;
++	remainder = do_div(tmp, wr_alignment);
++	if ((slave->mtd.flags & MTD_WRITEABLE) && remainder) {
+ 		slave->mtd.flags &= ~MTD_WRITEABLE;
+-		printk(KERN_WARNING"mtd: partition \"%s\" doesn't end on an erase block -- force read-only\n",
++		printk(KERN_WARNING"mtd: partition \"%s\" doesn't end on an erase/write block -- force read-only\n",
+ 			part->name);
+ 	}
+ 
 -- 
 2.11.0.24.ge6920cf
