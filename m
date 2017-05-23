@@ -1,7 +1,7 @@
-Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dCxvO-0000tO-J1
- for linux-mtd@lists.infradead.org; Tue, 23 May 2017 00:43:48 +0000
+ id 1dCxvO-0000tJ-If
+ for linux-mtd@lists.infradead.org; Tue, 23 May 2017 00:43:50 +0000
 From: Chris Packham <chris.packham@alliedtelesis.co.nz>
 To: linux-mtd@lists.infradead.org, andrew@lunn.ch, computersforpeace@gmail.com,
  dwmw2@infradead.org, boris.brezillon@free-electrons.com,
@@ -9,9 +9,9 @@ To: linux-mtd@lists.infradead.org, andrew@lunn.ch, computersforpeace@gmail.com,
 Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Subject: [PATCH v3 2/5] mtd: mchp23k256: switch to mtd_device_register()
-Date: Tue, 23 May 2017 12:43:14 +1200
-Message-Id: <20170523004317.16908-3-chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v3 4/5] mtd: mchp23k256: add partitioning support
+Date: Tue, 23 May 2017 12:43:16 +1200
+Message-Id: <20170523004317.16908-5-chris.packham@alliedtelesis.co.nz>
 In-Reply-To: <20170523004317.16908-1-chris.packham@alliedtelesis.co.nz>
 References: <20170523004317.16908-1-chris.packham@alliedtelesis.co.nz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,36 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use mtd_device_register() instead of mtd_device_parse_register() to
-eliminate two unused parameters.
+Setting the of_node for the mtd device allows the generic mtd code to
+setup the partitions. Additionally we must specify a non-zero erasesize
+for the partitions to be writeable.
 
 Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 Tested-by: Andrew Lunn <andrew@lunn.ch>
 ---
 Changes in v2
-- collect review/test from Andrew
+- collect revew/test from Andrew
 Changes in v3:
-- None
+- remove setting of erasesize
 
- drivers/mtd/devices/mchp23k256.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/mtd/devices/mchp23k256.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/drivers/mtd/devices/mchp23k256.c b/drivers/mtd/devices/mchp23k256.c
-index 9d8306a15833..2542f5b8b63f 100644
+index 2542f5b8b63f..3e5feb454644 100644
 --- a/drivers/mtd/devices/mchp23k256.c
 +++ b/drivers/mtd/devices/mchp23k256.c
-@@ -151,9 +151,8 @@ static int mchp23k256_probe(struct spi_device *spi)
- 	flash->mtd._read	= mchp23k256_read;
- 	flash->mtd._write	= mchp23k256_write;
+@@ -143,6 +143,7 @@ static int mchp23k256_probe(struct spi_device *spi)
  
--	err = mtd_device_parse_register(&flash->mtd, NULL, NULL,
--					data ? data->parts : NULL,
--					data ? data->nr_parts : 0);
-+	err = mtd_device_register(&flash->mtd, data ? data->parts : NULL,
-+				  data ? data->nr_parts : 0);
- 	if (err)
- 		return err;
+ 	data = dev_get_platdata(&spi->dev);
  
++	mtd_set_of_node(&flash->mtd, spi->dev.of_node);
+ 	flash->mtd.dev.parent	= &spi->dev;
+ 	flash->mtd.type		= MTD_RAM;
+ 	flash->mtd.flags	= MTD_CAP_RAM;
 -- 
 2.11.0.24.ge6920cf
