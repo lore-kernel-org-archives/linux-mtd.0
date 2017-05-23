@@ -1,23 +1,24 @@
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mail-oi0-x243.google.com ([2607:f8b0:4003:c06::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dDA3F-0006Si-3V
- for linux-mtd@lists.infradead.org; Tue, 23 May 2017 13:40:49 +0000
-Subject: Re: [f2fs-dev] [PATCH 4/4] f2fs: don't bother checking for encryption
- key in ->write_iter()
-To: Eric Biggers <ebiggers3@gmail.com>, linux-fscrypt@vger.kernel.org
-Cc: Theodore Ts'o <tytso@mit.edu>, Eric Biggers <ebiggers@google.com>,
- linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
- Jaegeuk Kim <jaegeuk@kernel.org>, linux-ext4@vger.kernel.org
-References: <20170523003945.14279-1-ebiggers3@gmail.com>
- <20170523003945.14279-5-ebiggers3@gmail.com>
-From: Chao Yu <chao@kernel.org>
-Message-ID: <6016f168-9c2b-e7a6-4d21-9b40c4cb6edc@kernel.org>
-Date: Tue, 23 May 2017 21:39:13 +0800
+ id 1dDAa9-0007Pg-Pz
+ for linux-mtd@lists.infradead.org; Tue, 23 May 2017 14:14:43 +0000
+Received: by mail-oi0-x243.google.com with SMTP id h4so28006948oib.0
+ for <linux-mtd@lists.infradead.org>; Tue, 23 May 2017 07:14:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20170523003945.14279-5-ebiggers3@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20170523003945.14279-4-ebiggers3@gmail.com>
+References: <20170523003945.14279-1-ebiggers3@gmail.com>
+ <20170523003945.14279-4-ebiggers3@gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Tue, 23 May 2017 16:14:20 +0200
+Message-ID: <CAFLxGvxaiWFKH5L_BwPXGuG9PxA+0BkJ1qMvaDgAeVwBw+nCoQ@mail.gmail.com>
+Subject: Re: [PATCH 3/4] ubifs: don't bother checking for encryption key in
+ ->mmap()
+To: Eric Biggers <ebiggers3@gmail.com>
+Cc: linux-fscrypt@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
+ Eric Biggers <ebiggers@google.com>, linux-f2fs-devel@lists.sourceforge.net,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Jaegeuk Kim <jaegeuk@kernel.org>, linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,40 +28,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2017/5/23 8:39, Eric Biggers wrote:
+On Tue, May 23, 2017 at 2:39 AM, Eric Biggers <ebiggers3@gmail.com> wrote:
 > From: Eric Biggers <ebiggers@google.com>
-> 
-> Since only an open file can be written to, and we only allow open()ing
-> an encrypted file when its key is available, there is no need to check
-> for the key again before permitting each ->write_iter().
-> 
-> This code was also broken in that it wouldn't actually have failed if
-> the key was in fact unavailable.
-> 
+>
+> Since only an open file can be mmap'ed, and we only allow open()ing an
+> encrypted file when its key is available, there is no need to check for
+> the key again before permitting each mmap().
+>
 > Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-Acked-by: Chao Yu <yuchao0@huawei.com>
+Acked-by: Richard Weinberger <richard@nod.at>
 
+-- 
 Thanks,
-
-> ---
->  fs/f2fs/file.c | 5 -----
->  1 file changed, 5 deletions(-)
-> 
-> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> index ff4db3efc0ac..3ccc63089a47 100644
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -2318,11 +2318,6 @@ static ssize_t f2fs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
->  	struct blk_plug plug;
->  	ssize_t ret;
->  
-> -	if (f2fs_encrypted_inode(inode) &&
-> -				!fscrypt_has_encryption_key(inode) &&
-> -				fscrypt_get_encryption_info(inode))
-> -		return -EACCES;
-> -
->  	inode_lock(inode);
->  	ret = generic_write_checks(iocb, from);
->  	if (ret > 0) {
-> 
+//richard
