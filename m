@@ -1,29 +1,22 @@
-Received: from vps0.lunn.ch ([178.209.37.122])
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dCz53-000836-1u
- for linux-mtd@lists.infradead.org; Tue, 23 May 2017 01:57:51 +0000
-Date: Tue, 23 May 2017 03:57:23 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
+ id 1dD2ML-0004Ha-GY
+ for linux-mtd@lists.infradead.org; Tue, 23 May 2017 05:27:56 +0000
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v3 5/5] mtd: mchp23k256: Add support for mchp23lcv1024
-Message-ID: <20170523015723.GL13759@lunn.ch>
-References: <20170523004317.16908-1-chris.packham@alliedtelesis.co.nz>
- <20170523004317.16908-6-chris.packham@alliedtelesis.co.nz>
- <20170523005845.GI13759@lunn.ch>
- <f2d5f14ab64a412eab5eab5d572cc4a6@svr-chch-ex1.atlnz.lc>
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+CC: "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>, Gregory Clement
+ <gregory.clement@free-electrons.com>, Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>
+Subject: pxa3xx-nand failing to find device on linux-next
+Date: Tue, 23 May 2017 05:27:25 +0000
+Message-ID: <b36366e358904310aee4970b77f57dba@svr-chch-ex1.atlnz.lc>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f2d5f14ab64a412eab5eab5d572cc4a6@svr-chch-ex1.atlnz.lc>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,28 +26,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Agreed. How about this revised commit message
-> 
-> --- 8< ---
-> mtd: mchp23k256: Add support for mchp23lcv1024
-> 
-> The mchp23lcv1024 is similar to the mchp23k256, the differences (from a 
-> software point of view) are the capacity of the chip and the size of the 
-> addresses used.
-> 
-> There is no way to detect the specific chip so we must be told via a 
-> Device Tree or default to mchp23k256 when device tree is not used.
-> 
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> --- >8 ---
-
-Yes, that is good.
-
-> Can someone fixup the commit message or should I re-send?
-
-The less the maintainer has to do, the more likely he will do it.
-
-But hold on a few days, and see if you get any more comments.
-
-    Andrew
+Hi,=0A=
+=0A=
+I'm doing some testing on linux-next and I'm finding that my nand flash =0A=
+has disappeared.=0A=
+=0A=
+pxa3xx-nand f10d0000.flash: This platform can't do DMA on this device=0A=
+pxa3xx-nand f10d0000.flash: non-supported command ef=0A=
+pxa3xx-nand f10d0000.flash: non-supported command ee=0A=
+pxa3xx-nand f10d0000.flash: non-supported command ef=0A=
+pxa3xx-nand f10d0000.flash: non-supported command ee=0A=
+On-die ECC forcefully enabled, not supported=0A=
+nand: No NAND device found=0A=
+pxa3xx-nand f10d0000.flash: failed to scan nand at cs 0=0A=
+=0A=
+This was working around 4.11. I'll try to do some more digging tomorrow =0A=
+to narrow down a failure point but I thought I'd send this out now just =0A=
+in case it rings any bells.=0A=
+=0A=
+The board I'm using (DB-88F6820-AMC) is unfortunately out-of tree but it =
+=0A=
+should be pretty close to the armada-388-db. I can make my dts available =
+=0A=
+if it's helpful.=0A=
+=0A=
+Thanks,=0A=
+Chris=0A=
