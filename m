@@ -1,20 +1,15 @@
-Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dCxsD-0007oj-Il
- for linux-mtd@lists.infradead.org; Tue, 23 May 2017 00:40:34 +0000
-Received: by mail-pf0-x242.google.com with SMTP id f27so23440732pfe.0
- for <linux-mtd@lists.infradead.org>; Mon, 22 May 2017 17:40:09 -0700 (PDT)
-From: Eric Biggers <ebiggers3@gmail.com>
-To: linux-fscrypt@vger.kernel.org
-Cc: Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
- linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 4/4] f2fs: don't bother checking for encryption key in
- ->write_iter()
-Date: Mon, 22 May 2017 17:39:45 -0700
-Message-Id: <20170523003945.14279-5-ebiggers3@gmail.com>
-In-Reply-To: <20170523003945.14279-1-ebiggers3@gmail.com>
-References: <20170523003945.14279-1-ebiggers3@gmail.com>
+ id 1dCxvO-0000tM-Ig
+ for linux-mtd@lists.infradead.org; Tue, 23 May 2017 00:43:48 +0000
+From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+To: linux-mtd@lists.infradead.org, andrew@lunn.ch, computersforpeace@gmail.com,
+ dwmw2@infradead.org, boris.brezillon@free-electrons.com,
+ linux-kernel@vger.kernel.org
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v3 0/5] mtd: mchp23k256: device tree and mchp23lcv1024
+Date: Tue, 23 May 2017 12:43:12 +1200
+Message-Id: <20170523004317.16908-1-chris.packham@alliedtelesis.co.nz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +19,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Eric Biggers <ebiggers@google.com>
+This series adds device tree support to the mchp23k256 driver and
+support for the mchp23lcv1024 chip. I suspect there are more compatible
+variants that we could now enumerate if desired.
 
-Since only an open file can be written to, and we only allow open()ing
-an encrypted file when its key is available, there is no need to check
-for the key again before permitting each ->write_iter().
+Chris Packham (5):
+  mtd: mchp23k256: Add OF device ID table
+  mtd: mchp23k256: switch to mtd_device_register()
+  mtd: handle partitioning on devices with 0 erasesize
+  mtd: mchp23k256: add partitioning support
+  mtd: mchp23k256: Add support for mchp23lcv1024
 
-This code was also broken in that it wouldn't actually have failed if
-the key was in fact unavailable.
+ .../bindings/mtd/microchip,mchp23k256.txt          | 18 ++++++
+ drivers/mtd/devices/mchp23k256.c                   | 65 ++++++++++++++++++----
+ drivers/mtd/mtdpart.c                              | 25 ++++++---
+ 3 files changed, 87 insertions(+), 21 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/f2fs/file.c | 5 -----
- 1 file changed, 5 deletions(-)
-
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index ff4db3efc0ac..3ccc63089a47 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -2318,11 +2318,6 @@ static ssize_t f2fs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 	struct blk_plug plug;
- 	ssize_t ret;
- 
--	if (f2fs_encrypted_inode(inode) &&
--				!fscrypt_has_encryption_key(inode) &&
--				fscrypt_get_encryption_info(inode))
--		return -EACCES;
--
- 	inode_lock(inode);
- 	ret = generic_write_checks(iocb, from);
- 	if (ret > 0) {
 -- 
-2.13.0.303.g4ebf302169-goog
+2.11.0.24.ge6920cf
