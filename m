@@ -1,27 +1,26 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dD5WY-0000D0-UB
- for linux-mtd@lists.infradead.org; Tue, 23 May 2017 08:50:40 +0000
-Subject: Re: [PATCH 5/6] ubifs: Implement export_operations
-To: Christoph Hellwig <hch@infradead.org>
-References: <1495398051-4604-1-git-send-email-richard@nod.at>
- <1495398051-4604-6-git-send-email-richard@nod.at>
- <20170523083932.GC4107@infradead.org>
- <04af5127-e8f3-a2e9-4d2f-af5ef9fc1531@nod.at>
- <20170523084818.GA26514@infradead.org>
-Cc: linux-mtd@lists.infradead.org, david@sigma-star.at, dedekind1@gmail.com,
- adrian.hunter@intel.com, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, adilger.kernel@dilger.ca,
- akpm@linux-foundation.org, linux-ext4@vger.kernel.org, bfields@redhat.com,
- marcus.folkesson@gmail.com, hyc.lee@gmail.com, rockdotlee@gmail.com,
- leon.pollak@gmail.com
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <d3501e43-07c7-5e11-7057-dfee8b619caf@nod.at>
-Date: Tue, 23 May 2017 10:50:14 +0200
+ id 1dD5mQ-0000WB-0C
+ for linux-mtd@lists.infradead.org; Tue, 23 May 2017 09:07:04 +0000
+Received: by mail-lf0-x244.google.com with SMTP id q24so7406913lfb.1
+ for <linux-mtd@lists.infradead.org>; Tue, 23 May 2017 02:06:41 -0700 (PDT)
+Subject: Re: [PATCH V4 1/2] mtd: add support for partition parsers
+To: Brian Norris <computersforpeace@gmail.com>
+References: <20170227130633.4020-1-zajec5@gmail.com>
+ <20170330123527.30181-1-zajec5@gmail.com> <20170511182126.GG70297@google.com>
+ <d2eb6a73-38c7-498a-b32d-cd75b5ae1cf2@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Message-ID: <12299bb6-a34d-5b84-616d-d1f4d067c8dd@gmail.com>
+Date: Tue, 23 May 2017 11:06:37 +0200
 MIME-Version: 1.0
-In-Reply-To: <20170523084818.GA26514@infradead.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <d2eb6a73-38c7-498a-b32d-cd75b5ae1cf2@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,23 +30,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Christoph,
+On 05/23/2017 10:14 AM, Rafał Miłecki wrote:
+> On 05/11/2017 08:21 PM, Brian Norris wrote:
+>> On Thu, Mar 30, 2017 at 02:35:26PM +0200, Rafał Miłecki wrote:
+>>> + *
+>>> + * @slave: part to be parsed for subpartitions
+>>> + * @format: partition format used to call a proper parser
+>>> + *
+>>> + * Some partitions use a specific format to describe contained subpartitions
+>>> + * (volumes). This function tries to use a proper parser for a given format and
+>>> + * registers found (sub)partitions.
+>>> + */
+>>> +static int mtd_parse_part(struct mtd_part *slave, const char *format)
+>>> +{
+>>> +    struct mtd_partitions parsed;
+>>> +    const char *probes[2];
+>>> +    int i;
+>>> +    int err;
+>>> +
+>>> +    probes[0] = format; /* Use parser with name matching the format */
+>>> +    probes[1] = NULL; /* End of parsers */
+>>> +    err = parse_mtd_partitions(&slave->mtd, probes, &parsed, NULL);
+>>> +    if (err)
+>>> +        return err;
+>>> +    else if (!parsed.nr_parts)
+>>> +        return -ENOENT;
+>>> +
+>>> +    for (i = 0; i < parsed.nr_parts; i++) {
+>>> +        struct mtd_partition *part;
+>>> +
+>>> +        part = (struct mtd_partition *)&parsed.parts[i];
+>>
+>> I'm not super-happy with the de-constification cast here. What if the
+>> partition array was somehow shared? (I don't expect that, but you're
+>> still potentially violating a caller's assumptions when you modify their
+>> 'const' data.)
+>>
+>>> +        part->offset += slave->offset;
+>>> +    }
+>>> +
+>>> +    err = add_mtd_partitions(slave->master, parsed.parts, parsed.nr_parts);
+>>
+>> Maybe a better way to handle that offset modification is to either pass
+>> in the offset to add_mtd_partitions() (e.g., as a simple parameter), or
+>> else adapt add_mtd_partitions() to handle receiving a non-master as the
+>> first parameter. (Then you just pass "slave", and add_mtd_partitions()
+>> handle it with something like "if (mtd_is_partition(...))".)
+>>
+>> Then I wonder how we want the parenting structure to work; should the
+>> sub-partition have the "master" as its parent, or the original
+>> partition? I thought Richard had mentioned some problems with the
+>> existing parenting structure (with CONFIG_MTD_PARTITIONED_MASTER)
+>> already, but I don't remember what those were.
+>>
+>> Also, if you're "parsing" the slave, but "adding" to the master, then
+>> the bounds-checking logic in add_mtd_partitions() won't properly apply,
+>> and you'll be able to create sub-partitions that extend beyond the
+>> slave, right? If so, then I think (after auditing add_mtd_partitions() a
+>> little closer, and possibly adjusting some of its comments) you might
+>> really just want to pass 'slave', not 'slave->master'.
+>
+> I like this idea!
 
-Am 23.05.2017 um 10:48 schrieb Christoph Hellwig:
-> On Tue, May 23, 2017 at 10:41:16AM +0200, Richard Weinberger wrote:
->> UBIFS has no inode generations, inodes simply can't wrap around.
->> We "handle" it like JFF2 does, we assumes that the NAND is long dead
->> before we reach the maximum inode number.
-> 
-> So you never ever reuse an inode number once it's been unlinked and
-> the last opener went away?
+Oh, it's not that simple. Passing struct mtd_part to the add_mtd_partitions
+is simple, but it's getting complex afterwards.
 
-Correct.
-
-> If that is the case please add a comment explaining this next to
-> the get_inode helper.
-
-Will do.
-
-Thanks,
-//richard
+1) We can't simply adjust offset in add_mtd_partitions as we are still
+    dealing with const struct mtd_partition (note: const).
+2) We can't adjust offset after calling allocate_partition as this would
+    bypass some validation happening in the allocate_partition.
+3) Passing an extra argume to the allocate_partition is a bad idea as it
+    already receives uint64_t cur_offset - this would be confusing.
