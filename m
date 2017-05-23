@@ -1,22 +1,28 @@
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
+Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dD2ML-0004Ha-GY
- for linux-mtd@lists.infradead.org; Tue, 23 May 2017 05:27:56 +0000
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-CC: "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>, Gregory Clement
- <gregory.clement@free-electrons.com>, Thomas Petazzoni
- <thomas.petazzoni@free-electrons.com>
-Subject: pxa3xx-nand failing to find device on linux-next
-Date: Tue, 23 May 2017 05:27:25 +0000
-Message-ID: <b36366e358904310aee4970b77f57dba@svr-chch-ex1.atlnz.lc>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1dD2PN-0006Dr-Mu
+ for linux-mtd@lists.infradead.org; Tue, 23 May 2017 05:31:03 +0000
+Received: by mail-lf0-x243.google.com with SMTP id q24so7026914lfb.1
+ for <linux-mtd@lists.infradead.org>; Mon, 22 May 2017 22:30:40 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Rob Herring <robh+dt@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, Frank Rowand <frowand.list@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>,
+ Jonas Gorski <jonas.gorski@gmail.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH V3 0/4] mtd: extend support for "fixed-partitions"
+Date: Tue, 23 May 2017 07:30:18 +0200
+Message-Id: <20170523053022.3251-1-zajec5@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +32,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,=0A=
-=0A=
-I'm doing some testing on linux-next and I'm finding that my nand flash =0A=
-has disappeared.=0A=
-=0A=
-pxa3xx-nand f10d0000.flash: This platform can't do DMA on this device=0A=
-pxa3xx-nand f10d0000.flash: non-supported command ef=0A=
-pxa3xx-nand f10d0000.flash: non-supported command ee=0A=
-pxa3xx-nand f10d0000.flash: non-supported command ef=0A=
-pxa3xx-nand f10d0000.flash: non-supported command ee=0A=
-On-die ECC forcefully enabled, not supported=0A=
-nand: No NAND device found=0A=
-pxa3xx-nand f10d0000.flash: failed to scan nand at cs 0=0A=
-=0A=
-This was working around 4.11. I'll try to do some more digging tomorrow =0A=
-to narrow down a failure point but I thought I'd send this out now just =0A=
-in case it rings any bells.=0A=
-=0A=
-The board I'm using (DB-88F6820-AMC) is unfortunately out-of tree but it =
-=0A=
-should be pretty close to the armada-388-db. I can make my dts available =
-=0A=
-if it's helpful.=0A=
-=0A=
-Thanks,=0A=
-Chris=0A=
+From: Rafał Miłecki <rafal@milecki.pl>
+
+My recent work on adding wide support for linux,part-probe was reviewed and
+kind of Nack-ed, but fortunately I was pointed to the old (!) patchset from
+Brian doing similar thing in a cleaner way.
+
+This patchset picks the important changes from Brian, cleans them and rebases.
+
+Original patches:
+(not picked) [RFC PATCH 1/7] mtd: move partition parsers to drivers/mtd/partitions/
+(not picked) [RFC PATCH 2/7] mtd: move partition parsers' Kconfig under a sub-menu
+(partially)  [RFC PATCH 3/7] doc: dt: mtd: partition: add on-flash format binding
+(picked)     [RFC PATCH 4/7] mtd: add of_match_mtd_parser() and of_mtd_match_mtd_parser() helpers
+(partially)  [RFC PATCH 5/7] mtd: partitions: factor out "match by name" handling
+(picked)     [RFC PATCH 6/7] RFC: mtd: partitions: enable of_match_table matching
+(not picked) [RFC PATCH 7/7] mtd: partitions: add Google's FMAP partition parser
+
+At this point this simply adds a full support for "fixed-partitions" binding.
+It should also make adding new bindings (like Google's FMAP) easier in the
+future.
+
+I've successfully tested this with bcm47xxsflash driver on Tenda AC9 device. I
+used following DT node to get "ofpart" driver parse & register my partitions.
+
+&bcma-sflash {
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		partition@0 {
+			label = "cfe";
+			reg = <0x0000000 0x40000>;
+			read-only;
+		};
+
+		firmware@40000 {
+			label = "firmware";
+			reg = <0x40000 0x7f0000>;
+		};
+	};
+};
+
+V2: Modify patch 1/4
+    Include list of original patches in 0/4
+    Include changelog in every patch
+    Add Brian's tags (Acked/Reviewed/Tested)
+
+V3: Modify patch 1/4: extend documentation description - thanks Florian
+    Modify patch 3/4: add a simple comment to the code - thanks Jonas
+
+Brian Norris (3):
+  dt-bindings: mtd: make partitions doc a bit more generic
+  mtd: partitions: factor out code calling parser
+  mtd: partitions: add of_match_table parser matching
+
+Rafał Miłecki (1):
+  mtd: ofpart: add of_match_table with "fixed-partitions"
+
+ .../devicetree/bindings/mtd/partition.txt          | 32 +++++++--
+ drivers/mtd/mtdpart.c                              | 81 +++++++++++++++++++---
+ drivers/mtd/ofpart.c                               |  7 ++
+ include/linux/mtd/partitions.h                     |  1 +
+ 4 files changed, 106 insertions(+), 15 deletions(-)
+
+-- 
+2.11.0
