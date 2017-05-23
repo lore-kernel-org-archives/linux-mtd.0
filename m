@@ -1,28 +1,16 @@
-Received: from mail-it0-x230.google.com ([2607:f8b0:4001:c0b::230])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dD5sI-00038V-Go
- for linux-mtd@lists.infradead.org; Tue, 23 May 2017 09:13:08 +0000
-Received: by mail-it0-x230.google.com with SMTP id o5so15558487ith.1
- for <linux-mtd@lists.infradead.org>; Tue, 23 May 2017 02:12:44 -0700 (PDT)
+Received: from mail-oi0-x22a.google.com ([2607:f8b0:4003:c06::22a])
+ by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dD5xm-0001iH-4y
+ for linux-mtd@lists.infradead.org; Tue, 23 May 2017 09:18:47 +0000
+Received: by mail-oi0-x22a.google.com with SMTP id l18so193308076oig.2
+ for <linux-mtd@lists.infradead.org>; Tue, 23 May 2017 02:18:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <d16c41b5f7022add66672d43b5d595af74a1db34.1495157082.git.mchehab@s-opensource.com>
-References: <cover.1495157082.git.mchehab@s-opensource.com>
- <d16c41b5f7022add66672d43b5d595af74a1db34.1495157082.git.mchehab@s-opensource.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 23 May 2017 11:12:43 +0200
-Message-ID: <CACRpkdaDZQQ7fprGkSvXiUHfqdM_zGkPe4_T3R-p55asCDeQCw@mail.gmail.com>
-Subject: Re: [PATCH 01/29] pinctrl.txt: standardize document format
-To: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-Cc: Linux Doc Mailing List <linux-doc@vger.kernel.org>,
- Mauro Carvalho Chehab <mchehab@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Jonathan Corbet <corbet@lwn.net>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
+From: Andreas Fenkart <afenkart@gmail.com>
+Date: Tue, 23 May 2017 11:18:23 +0200
+Message-ID: <CALtMJEBb19Etkds1wVtBgOOzEC7g8NZOk2SMNXiVQORLoEH2CQ@mail.gmail.com>
+Subject: howto mark blocks with correctable bitflip errors as bad blocks
+ explicitly
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,28 +21,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, May 19, 2017 at 3:25 AM, Mauro Carvalho Chehab
-<mchehab@s-opensource.com> wrote:
+Hi list,
 
-> Each text file under Documentation follows a different
-> format. Some doesn't even have titles!
->
-> Change its representation to follow the adopted standard,
-> using ReST markups for it to be parseable by Sphinx.
->
-> This document is almost following the standard stile.
->
-> There are only two things to adjust on it:
->
-> - promote the level of the document title;
-> - mark literal blocks as such.
->
-> Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Is there a way to mark a block as bad explicitly with one of the
+nandwrite/nandtest tools?
 
-I applied the patch fixing some of the indentation mistakes pointed
-out by Geert.
+I had a device that reports bitflip errors, and I had the suspicion that
+the u-boot is not correcting those errors, hence it fails to verify the CRC
+checksum in the uimage header.
 
-Should the file be renamed pinctrl.rst now?
+$ nanddump --bb=skipbad --omitoob -l ${FSIZE} ${PART} -f $TMPFILE
+ECC failed: 0
+ECC corrected: 5
+Number of bad blocks: 0
+Number of bbt blocks: 0
+ECC: 1 corrected bitflip(s) at offset 0x003da000
 
-Yours,
-Linus Walleij
+The problem happened on a remote system and I don't have access to the
+console. I made a custom tool to mark that single block as bad and now,
+u-boot is booting the new kernel. Hence it seems u-boot has is not able to
+recover the same errors as the kernel. Probably it uses a weaker ECC
+algorithm. (need to verify check this)
+
+Since there are other installations, I would like to automate marking
+bitflips as errors too. Does this make sense?  I don't want to update u-boot
+and using a stronger ECC still makes sense for the rootfs that u-boot is not
+accessing.
+
+Is there already a tool that can do that automatically?  What would be the best
+place to add such a function?
+
+I was looking into nandtest and wanted to add some '--zero-error' flag to mark
+buffers with recovered ECC errors as bad forcefully. Unfortunately nandtest
+does not report those bitflip errors at all.
+
+Everytime nandump reports a bitflip error the 'ECC failed' counter increases on
+the next run. But when running nandtest it never does. Maybe it's because
+nanddump reads it min_io_size chunks while nandtest reads back the whole erase
+block.
+
+/Andi
