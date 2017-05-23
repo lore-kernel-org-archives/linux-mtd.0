@@ -1,25 +1,23 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dD5P7-0004XQ-5t
- for linux-mtd@lists.infradead.org; Tue, 23 May 2017 08:42:59 +0000
-Subject: Re: [PATCH 4/6] ubifs: Maintain a parent pointer
-To: Christoph Hellwig <hch@infradead.org>
-References: <1495398051-4604-1-git-send-email-richard@nod.at>
- <1495398051-4604-5-git-send-email-richard@nod.at>
- <20170523083758.GB4107@infradead.org>
-Cc: linux-mtd@lists.infradead.org, david@sigma-star.at, dedekind1@gmail.com,
- adrian.hunter@intel.com, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, adilger.kernel@dilger.ca,
- akpm@linux-foundation.org, linux-ext4@vger.kernel.org, bfields@redhat.com,
+Date: Tue, 23 May 2017 01:48:18 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Richard Weinberger <richard@nod.at>
+Cc: Christoph Hellwig <hch@infradead.org>, linux-mtd@lists.infradead.org,
+ david@sigma-star.at, dedekind1@gmail.com, adrian.hunter@intel.com,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ adilger.kernel@dilger.ca, akpm@linux-foundation.org,
+ linux-ext4@vger.kernel.org, bfields@redhat.com,
  marcus.folkesson@gmail.com, hyc.lee@gmail.com, rockdotlee@gmail.com,
  leon.pollak@gmail.com
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <99b3f295-be4e-14a1-a21d-e9055949a8ef@nod.at>
-Date: Tue, 23 May 2017 10:42:31 +0200
+Subject: Re: [PATCH 5/6] ubifs: Implement export_operations
+Message-ID: <20170523084818.GA26514@infradead.org>
+References: <1495398051-4604-1-git-send-email-richard@nod.at>
+ <1495398051-4604-6-git-send-email-richard@nod.at>
+ <20170523083932.GC4107@infradead.org>
+ <04af5127-e8f3-a2e9-4d2f-af5ef9fc1531@nod.at>
 MIME-Version: 1.0
-In-Reply-To: <20170523083758.GB4107@infradead.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <04af5127-e8f3-a2e9-4d2f-af5ef9fc1531@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,24 +27,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Christoph,
+On Tue, May 23, 2017 at 10:41:16AM +0200, Richard Weinberger wrote:
+> UBIFS has no inode generations, inodes simply can't wrap around.
+> We "handle" it like JFF2 does, we assumes that the NAND is long dead
+> before we reach the maximum inode number.
 
-Am 23.05.2017 um 10:37 schrieb Christoph Hellwig:
-> On Sun, May 21, 2017 at 10:20:49PM +0200, Richard Weinberger wrote:
->> The new feature UBIFS_FLG_PARENTPOINTER allows looking
->> up the parent. Usually the Linux VFS walks down the filesystem
->> and no parent pointers are needed. But when a filesystem
->> is exportable via NFS such a lookup is needed.
->> We can use a padding field in struct ubifs_ino_node to
->> maintain a pointer to the parent inode.
-> 
-> Note that nfsd/exportfs will only do this for directories, and beacause
-> we hardlinks for other objects that is an important distinction.
-> 
-> I think the ubifs code should make sure to only maintain the parent
-> pointers for directories, otherwise confusion and abuses will happen.
+So you never ever reuse an inode number once it's been unlinked and
+the last opener went away?
 
-Thanks for the info, I'll massage the code in that direction.
-
-Thanks,
-//richard
+If that is the case please add a comment explaining this next to
+the get_inode helper.
