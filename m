@@ -1,26 +1,26 @@
-Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dD5mQ-0000WB-0C
- for linux-mtd@lists.infradead.org; Tue, 23 May 2017 09:07:04 +0000
-Received: by mail-lf0-x244.google.com with SMTP id q24so7406913lfb.1
- for <linux-mtd@lists.infradead.org>; Tue, 23 May 2017 02:06:41 -0700 (PDT)
-Subject: Re: [PATCH V4 1/2] mtd: add support for partition parsers
-To: Brian Norris <computersforpeace@gmail.com>
-References: <20170227130633.4020-1-zajec5@gmail.com>
- <20170330123527.30181-1-zajec5@gmail.com> <20170511182126.GG70297@google.com>
- <d2eb6a73-38c7-498a-b32d-cd75b5ae1cf2@gmail.com>
+ id 1dD5rC-0002Vw-Sy
+ for linux-mtd@lists.infradead.org; Tue, 23 May 2017 09:12:00 +0000
+Received: by mail-wm0-x244.google.com with SMTP id b84so21936862wmh.0
+ for <linux-mtd@lists.infradead.org>; Tue, 23 May 2017 02:11:38 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1492860013-20848-1-git-send-email-andrea.adami@gmail.com>
+References: <1492860013-20848-1-git-send-email-andrea.adami@gmail.com>
+From: Andrea Adami <andrea.adami@gmail.com>
+Date: Tue, 23 May 2017 11:11:36 +0200
+Message-ID: <CAAQYJAv-8wH=UuEvOtubimw1bLTiPEwdgJTdhiYQ_z_PYd+keA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] mtd: sharpslpart partition parser
+To: linux-mtd@lists.infradead.org
 Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Message-ID: <12299bb6-a34d-5b84-616d-d1f4d067c8dd@gmail.com>
-Date: Tue, 23 May 2017 11:06:37 +0200
-MIME-Version: 1.0
-In-Reply-To: <d2eb6a73-38c7-498a-b32d-cd75b5ae1cf2@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Linus Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,74 +30,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 05/23/2017 10:14 AM, Rafał Miłecki wrote:
-> On 05/11/2017 08:21 PM, Brian Norris wrote:
->> On Thu, Mar 30, 2017 at 02:35:26PM +0200, Rafał Miłecki wrote:
->>> + *
->>> + * @slave: part to be parsed for subpartitions
->>> + * @format: partition format used to call a proper parser
->>> + *
->>> + * Some partitions use a specific format to describe contained subpartitions
->>> + * (volumes). This function tries to use a proper parser for a given format and
->>> + * registers found (sub)partitions.
->>> + */
->>> +static int mtd_parse_part(struct mtd_part *slave, const char *format)
->>> +{
->>> +    struct mtd_partitions parsed;
->>> +    const char *probes[2];
->>> +    int i;
->>> +    int err;
->>> +
->>> +    probes[0] = format; /* Use parser with name matching the format */
->>> +    probes[1] = NULL; /* End of parsers */
->>> +    err = parse_mtd_partitions(&slave->mtd, probes, &parsed, NULL);
->>> +    if (err)
->>> +        return err;
->>> +    else if (!parsed.nr_parts)
->>> +        return -ENOENT;
->>> +
->>> +    for (i = 0; i < parsed.nr_parts; i++) {
->>> +        struct mtd_partition *part;
->>> +
->>> +        part = (struct mtd_partition *)&parsed.parts[i];
->>
->> I'm not super-happy with the de-constification cast here. What if the
->> partition array was somehow shared? (I don't expect that, but you're
->> still potentially violating a caller's assumptions when you modify their
->> 'const' data.)
->>
->>> +        part->offset += slave->offset;
->>> +    }
->>> +
->>> +    err = add_mtd_partitions(slave->master, parsed.parts, parsed.nr_parts);
->>
->> Maybe a better way to handle that offset modification is to either pass
->> in the offset to add_mtd_partitions() (e.g., as a simple parameter), or
->> else adapt add_mtd_partitions() to handle receiving a non-master as the
->> first parameter. (Then you just pass "slave", and add_mtd_partitions()
->> handle it with something like "if (mtd_is_partition(...))".)
->>
->> Then I wonder how we want the parenting structure to work; should the
->> sub-partition have the "master" as its parent, or the original
->> partition? I thought Richard had mentioned some problems with the
->> existing parenting structure (with CONFIG_MTD_PARTITIONED_MASTER)
->> already, but I don't remember what those were.
->>
->> Also, if you're "parsing" the slave, but "adding" to the master, then
->> the bounds-checking logic in add_mtd_partitions() won't properly apply,
->> and you'll be able to create sub-partitions that extend beyond the
->> slave, right? If so, then I think (after auditing add_mtd_partitions() a
->> little closer, and possibly adjusting some of its comments) you might
->> really just want to pass 'slave', not 'slave->master'.
+On Sat, Apr 22, 2017 at 1:20 PM, Andrea Adami <andrea.adami@gmail.com> wrote:
+> This patchset introduces a simple partition parser for the Sharp SL
+> Series PXA handhelds. More details in the commit text.
 >
-> I like this idea!
+> I have set in cc the ARM PXA maintainers because this is the MTD part of
+> a planned wider patchset cleaning the Zaurus board files.
+>
+> Changelog:
+> v1 initial import of 2.4 sources [1]
+> v2 refactor applying many suggested fixes [2]
+>
+> [1] https://github.com/LinuxPDA/Sharp_FTL_2.4.20
+> [2] https://github.com/LinuxPDA/linux/commits/sharpslpart_v2
+>
+> Andrea Adami (3):
+>   mtd: sharpsl: add sharpslpart MTD partition parser
+>   mtd: nand: sharpsl.c: prefer sharpslpart MTD partition parser
+>   mtd: nand: tmio_nand.c: prefer sharpslpart MTD partition parser
+>
+>  drivers/mtd/Kconfig          |   8 ++
+>  drivers/mtd/Makefile         |   2 +
+>  drivers/mtd/nand/sharpsl.c   |   4 +-
+>  drivers/mtd/nand/tmio_nand.c |   4 +-
+>  drivers/mtd/sharpsl_ftl.c    | 219 +++++++++++++++++++++++++++++++++++++++++++
+>  drivers/mtd/sharpsl_ftl.h    |  34 +++++++
+>  drivers/mtd/sharpslpart.c    | 132 ++++++++++++++++++++++++++
+>  7 files changed, 401 insertions(+), 2 deletions(-)
+>  create mode 100644 drivers/mtd/sharpsl_ftl.c
+>  create mode 100644 drivers/mtd/sharpsl_ftl.h
+>  create mode 100644 drivers/mtd/sharpslpart.c
+>
+> --
+> 2.7.4
+>
 
-Oh, it's not that simple. Passing struct mtd_part to the add_mtd_partitions
-is simple, but it's getting complex afterwards.
+Hello,
 
-1) We can't simply adjust offset in add_mtd_partitions as we are still
-    dealing with const struct mtd_partition (note: const).
-2) We can't adjust offset after calling allocate_partition as this would
-    bypass some validation happening in the allocate_partition.
-3) Passing an extra argume to the allocate_partition is a bad idea as it
-    already receives uint64_t cur_offset - this would be confusing.
+I'd be thankful for a second review after the big changes from v1
+which was just a proof of concept.
+As for the memory management, it totally mimics the other parsers.
+
+The patch has been backported to 4.4 [1] and up to 3.10 [2] with
+minimal changes to module init/exit:
+since linux 4.5 (commit b8f70ba mtd: kill off MTD partition parser
+boilerplate) we use module_mtd_part_parser().
+
+With this parser we have finally a single linux-as bootloader kernel
+covering the 4 Zaurus pxa 27x devices (repartitioned or not).
+
+Thanks in advance
+Andrea
+
+[1] http://cgit.openembedded.org/meta-handheld/tree/recipes-kernel/linux/linux-handheld-4.4/sharpslpart/0001-mtd-sharpsl-add-sharpslpart-MTD-partition-parser.patch
+[2] https://github.com/greguu/linux-3.10.y-c3x00-f2fs-kexec-r0/commit/f087900fbd778cce642a8e24e7351a0d814bb9a7
