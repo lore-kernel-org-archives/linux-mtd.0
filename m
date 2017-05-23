@@ -1,17 +1,19 @@
 Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dCxvO-0000tK-If
- for linux-mtd@lists.infradead.org; Tue, 23 May 2017 00:43:50 +0000
+ id 1dCxvm-00010a-NN
+ for linux-mtd@lists.infradead.org; Tue, 23 May 2017 00:44:14 +0000
 From: Chris Packham <chris.packham@alliedtelesis.co.nz>
 To: linux-mtd@lists.infradead.org, andrew@lunn.ch, computersforpeace@gmail.com,
  dwmw2@infradead.org, boris.brezillon@free-electrons.com,
  linux-kernel@vger.kernel.org
 Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Subject: [PATCH v3 3/5] mtd: handle partitioning on devices with 0 erasesize
-Date: Tue, 23 May 2017 12:43:15 +1200
-Message-Id: <20170523004317.16908-4-chris.packham@alliedtelesis.co.nz>
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ devicetree@vger.kernel.org
+Subject: [PATCH v3 5/5] mtd: mchp23k256: Add support for mchp23lcv1024
+Date: Tue, 23 May 2017 12:43:17 +1200
+Message-Id: <20170523004317.16908-6-chris.packham@alliedtelesis.co.nz>
 In-Reply-To: <20170523004317.16908-1-chris.packham@alliedtelesis.co.nz>
 References: <20170523004317.16908-1-chris.packham@alliedtelesis.co.nz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,79 +25,164 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-erasesize is meaningful for flash devices but for SRAM there is no
-concept of an erase block so erasesize is set to 0. When partitioning
-these devices instead of ensuring partitions fall on erasesize
-boundaries we ensure they fall on writesize boundaries.
+The mchp23lcv1024 is software compatible with the mchp23k256, the
+only difference (from a software point of view) is the size. There
+is no way to detect the size so we must be told via a Device Tree.
 
-Helped-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 ---
+Changes in v2:
+- fix formatting in switch statement
+- add support for 24-bit addressing
 Changes in v3:
-- new
+- None
 
- drivers/mtd/mtdpart.c | 25 ++++++++++++++++---------
- 1 file changed, 16 insertions(+), 9 deletions(-)
+ .../bindings/mtd/microchip,mchp23k256.txt          |  2 +-
+ drivers/mtd/devices/mchp23k256.c                   | 53 ++++++++++++++++++----
+ 2 files changed, 44 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index ea5e5307f667..5cef1247806c 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -393,8 +393,11 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
- 			const struct mtd_partition *part, int partno,
- 			uint64_t cur_offset)
- {
-+	int wr_alignment = master->erasesize ? : master->writesize;
- 	struct mtd_part *slave;
-+	u32 remainder;
- 	char *name;
-+	u64 tmp;
+diff --git a/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt b/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt
+index 25e5ad38b0f0..7328eb92a03c 100644
+--- a/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt
++++ b/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt
+@@ -3,7 +3,7 @@
+ Required properties:
+ - #address-cells, #size-cells : Must be present if the device has sub-nodes
+   representing partitions.
+-- compatible : Must be "microchip,mchp23k256"
++- compatible : Must be one of "microchip,mchp23k256" or "microchip,mchp23lcv1024"
+ - reg : Chip-Select number
+ - spi-max-frequency : Maximum frequency of the SPI bus the chip can operate at
  
- 	/* allocate the partition structure */
- 	slave = kzalloc(sizeof(*slave), GFP_KERNEL);
-@@ -499,10 +502,11 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
- 	if (slave->offset == MTDPART_OFS_APPEND)
- 		slave->offset = cur_offset;
- 	if (slave->offset == MTDPART_OFS_NXTBLK) {
-+		tmp = cur_offset;
- 		slave->offset = cur_offset;
--		if (mtd_mod_by_eb(cur_offset, master) != 0) {
--			/* Round up to next erasesize */
--			slave->offset = (mtd_div_by_eb(cur_offset, master) + 1) * master->erasesize;
-+		remainder = do_div(tmp, wr_alignment);
-+		if (remainder) {
-+			slave->offset += wr_alignment - remainder;
- 			printk(KERN_NOTICE "Moving partition %d: "
- 			       "0x%012llx -> 0x%012llx\n", partno,
- 			       (unsigned long long)cur_offset, (unsigned long long)slave->offset);
-@@ -567,19 +571,22 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
- 		slave->mtd.erasesize = master->erasesize;
- 	}
+diff --git a/drivers/mtd/devices/mchp23k256.c b/drivers/mtd/devices/mchp23k256.c
+index 3e5feb454644..72ecf374a06a 100644
+--- a/drivers/mtd/devices/mchp23k256.c
++++ b/drivers/mtd/devices/mchp23k256.c
+@@ -21,10 +21,14 @@
+ #include <linux/spi/spi.h>
+ #include <linux/of_device.h>
  
--	if ((slave->mtd.flags & MTD_WRITEABLE) &&
--	    mtd_mod_by_eb(slave->offset, &slave->mtd)) {
-+	tmp = slave->offset;
-+	remainder = do_div(tmp, wr_alignment);
-+	if ((slave->mtd.flags & MTD_WRITEABLE) && remainder) {
- 		/* Doesn't start on a boundary of major erase size */
- 		/* FIXME: Let it be writable if it is on a boundary of
- 		 * _minor_ erase size though */
- 		slave->mtd.flags &= ~MTD_WRITEABLE;
--		printk(KERN_WARNING"mtd: partition \"%s\" doesn't start on an erase block boundary -- force read-only\n",
-+		printk(KERN_WARNING"mtd: partition \"%s\" doesn't start on an erase/write block boundary -- force read-only\n",
- 			part->name);
- 	}
--	if ((slave->mtd.flags & MTD_WRITEABLE) &&
--	    mtd_mod_by_eb(slave->mtd.size, &slave->mtd)) {
++#define MAX_CMD_SIZE		4
++enum chips { mchp23k256, mchp23lcv1024 };
 +
-+	tmp = slave->mtd.size;
-+	remainder = do_div(tmp, wr_alignment);
-+	if ((slave->mtd.flags & MTD_WRITEABLE) && remainder) {
- 		slave->mtd.flags &= ~MTD_WRITEABLE;
--		printk(KERN_WARNING"mtd: partition \"%s\" doesn't end on an erase block -- force read-only\n",
-+		printk(KERN_WARNING"mtd: partition \"%s\" doesn't end on an erase/write block -- force read-only\n",
- 			part->name);
- 	}
+ struct mchp23k256_flash {
+ 	struct spi_device	*spi;
+ 	struct mutex		lock;
+ 	struct mtd_info		mtd;
++	u8			addr_width;
+ };
  
+ #define MCHP23K256_CMD_WRITE_STATUS	0x01
+@@ -34,22 +38,35 @@ struct mchp23k256_flash {
+ 
+ #define to_mchp23k256_flash(x) container_of(x, struct mchp23k256_flash, mtd)
+ 
++static void mchp23k256_addr2cmd(struct mchp23k256_flash *flash,
++				unsigned int addr, u8 *cmd)
++{
++	/* cmd[0] has opcode */
++	cmd[1] = addr >> (flash->addr_width * 8 -  8);
++	cmd[2] = addr >> (flash->addr_width * 8 - 16);
++	cmd[3] = addr >> (flash->addr_width * 8 - 24);
++}
++
++static int mchp23k256_cmdsz(struct mchp23k256_flash *flash)
++{
++	return 1 + flash->addr_width;
++}
++
+ static int mchp23k256_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 			    size_t *retlen, const unsigned char *buf)
+ {
+ 	struct mchp23k256_flash *flash = to_mchp23k256_flash(mtd);
+ 	struct spi_transfer transfer[2] = {};
+ 	struct spi_message message;
+-	unsigned char command[3];
++	unsigned char command[MAX_CMD_SIZE];
+ 
+ 	spi_message_init(&message);
+ 
+ 	command[0] = MCHP23K256_CMD_WRITE;
+-	command[1] = to >> 8;
+-	command[2] = to;
++	mchp23k256_addr2cmd(flash, to, command);
+ 
+ 	transfer[0].tx_buf = command;
+-	transfer[0].len = sizeof(command);
++	transfer[0].len = mchp23k256_cmdsz(flash);
+ 	spi_message_add_tail(&transfer[0], &message);
+ 
+ 	transfer[1].tx_buf = buf;
+@@ -73,17 +90,16 @@ static int mchp23k256_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	struct mchp23k256_flash *flash = to_mchp23k256_flash(mtd);
+ 	struct spi_transfer transfer[2] = {};
+ 	struct spi_message message;
+-	unsigned char command[3];
++	unsigned char command[MAX_CMD_SIZE];
+ 
+ 	spi_message_init(&message);
+ 
+ 	memset(&transfer, 0, sizeof(transfer));
+ 	command[0] = MCHP23K256_CMD_READ;
+-	command[1] = from >> 8;
+-	command[2] = from;
++	mchp23k256_addr2cmd(flash, from, command);
+ 
+ 	transfer[0].tx_buf = command;
+-	transfer[0].len = sizeof(command);
++	transfer[0].len = mchp23k256_cmdsz(flash);
+ 	spi_message_add_tail(&transfer[0], &message);
+ 
+ 	transfer[1].rx_buf = buf;
+@@ -128,6 +144,7 @@ static int mchp23k256_probe(struct spi_device *spi)
+ 	struct mchp23k256_flash *flash;
+ 	struct flash_platform_data *data;
+ 	int err;
++	enum chips chip;
+ 
+ 	flash = devm_kzalloc(&spi->dev, sizeof(*flash), GFP_KERNEL);
+ 	if (!flash)
+@@ -143,15 +160,30 @@ static int mchp23k256_probe(struct spi_device *spi)
+ 
+ 	data = dev_get_platdata(&spi->dev);
+ 
++	if (spi->dev.of_node)
++		chip = (enum chips)of_device_get_match_data(&spi->dev);
++	else
++		chip = mchp23k256;
++
+ 	mtd_set_of_node(&flash->mtd, spi->dev.of_node);
+ 	flash->mtd.dev.parent	= &spi->dev;
+ 	flash->mtd.type		= MTD_RAM;
+ 	flash->mtd.flags	= MTD_CAP_RAM;
+ 	flash->mtd.writesize	= 1;
+-	flash->mtd.size		= SZ_32K;
+ 	flash->mtd._read	= mchp23k256_read;
+ 	flash->mtd._write	= mchp23k256_write;
+ 
++	switch (chip) {
++	case mchp23lcv1024:
++		flash->mtd.size		= SZ_128K;
++		flash->addr_width	= 3;
++		break;
++	default:
++		flash->mtd.size		= SZ_32K;
++		flash->addr_width	= 2;
++		break;
++	}
++
+ 	err = mtd_device_register(&flash->mtd, data ? data->parts : NULL,
+ 				  data ? data->nr_parts : 0);
+ 	if (err)
+@@ -168,7 +200,8 @@ static int mchp23k256_remove(struct spi_device *spi)
+ }
+ 
+ static const struct of_device_id mchp23k256_of_table[] = {
+-	{ .compatible = "microchip,mchp23k256" },
++	{ .compatible = "microchip,mchp23k256", .data = (void *)mchp23k256 },
++	{ .compatible = "microchip,mchp23lcv1024", .data = (void *)mchp23lcv1024 },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, mchp23k256_of_table);
 -- 
 2.11.0.24.ge6920cf
