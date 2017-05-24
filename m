@@ -1,24 +1,23 @@
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
+Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dDSjO-00022F-4R
- for linux-mtd@lists.infradead.org; Wed, 24 May 2017 09:37:28 +0000
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Thomas Petazzoni
- <thomas.petazzoni@free-electrons.com>
-CC: "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>, Gregory Clement
- <gregory.clement@free-electrons.com>
-Subject: Re: pxa3xx-nand failing to find device on linux-next
-Date: Wed, 24 May 2017 09:36:56 +0000
-Message-ID: <2a79405e219b4c37ba00defbe4a0dfe4@svr-chch-ex1.atlnz.lc>
-References: <b36366e358904310aee4970b77f57dba@svr-chch-ex1.atlnz.lc>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1dDSqn-0006Sx-IN
+ for linux-mtd@lists.infradead.org; Wed, 24 May 2017 09:45:11 +0000
+Received: by mail-lf0-x242.google.com with SMTP id 99so10405014lfu.2
+ for <linux-mtd@lists.infradead.org>; Wed, 24 May 2017 02:44:45 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH V5 0/4] mtd: add support for subpartitions
+Date: Wed, 24 May 2017 11:44:33 +0200
+Message-Id: <20170524094437.2174-1-zajec5@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,39 +27,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 23/05/17 17:27, Chris Packham wrote:=0A=
-> Hi,=0A=
->=0A=
-> I'm doing some testing on linux-next and I'm finding that my nand flash=
-=0A=
-> has disappeared.=0A=
->=0A=
-> pxa3xx-nand f10d0000.flash: This platform can't do DMA on this device=0A=
-> pxa3xx-nand f10d0000.flash: non-supported command ef=0A=
-> pxa3xx-nand f10d0000.flash: non-supported command ee=0A=
-> pxa3xx-nand f10d0000.flash: non-supported command ef=0A=
-> pxa3xx-nand f10d0000.flash: non-supported command ee=0A=
-> On-die ECC forcefully enabled, not supported=0A=
-> nand: No NAND device found=0A=
-> pxa3xx-nand f10d0000.flash: failed to scan nand at cs 0=0A=
->=0A=
-> This was working around 4.11. I'll try to do some more digging tomorrow=
-=0A=
-> to narrow down a failure point but I thought I'd send this out now just=
-=0A=
-> in case it rings any bells.=0A=
->=0A=
-> The board I'm using (DB-88F6820-AMC) is unfortunately out-of tree but it=
-=0A=
-> should be pretty close to the armada-388-db. I can make my dts available=
-=0A=
-> if it's helpful.=0A=
-=0A=
-Still works on 4.12-rc2. Fails on next-20170524.=0A=
-=0A=
-This appears to be due to commit b566d9c055de ("mtd: nand: add support =0A=
-for Micron on-die ECC"). Which based on the description seems intentional.=
-=0A=
-=0A=
-Since I have access to a hardware platform that has a micron flash with=0A=
-ECC forcefully enabled how can I help to get this implemented.=0A=
+From: Rafał Miłecki <rafal@milecki.pl>
+
+This patchset adds support for subpartitions. This feature means support
+for partitions that are containers with extra subpartitions / volumes.
+
+Initially I wanted to keep my changes minimalistic but Brian pointed
+that casting const to non-const is hacky and I should work with
+add_mtd_partitions / allocate_partition instead.
+
+Apart from trivial rename I needed to add 1 condition to the
+allocate_partition and modify 3 lines of code. I hope this is
+acceptable.
+
+Please let me know if you can still see any problems with this.
+
+Rafał Miłecki (4):
+  mtd: partitions: rename allocate_partition master argument to the
+    parent
+  mtd: partitions: add support for allocating subpartition
+  mtd: partitions: add support for partition parsers
+  mtd: extract TRX parser out of bcm47xxpart into a separated module
+
+ drivers/mtd/Kconfig              |   4 +
+ drivers/mtd/Makefile             |   1 +
+ drivers/mtd/bcm47xxpart.c        |  99 ++---------------------
+ drivers/mtd/mtdpart.c            | 170 +++++++++++++++++++++++++--------------
+ drivers/mtd/parsers/Kconfig      |   8 ++
+ drivers/mtd/parsers/Makefile     |   1 +
+ drivers/mtd/parsers/parser_trx.c | 126 +++++++++++++++++++++++++++++
+ include/linux/mtd/partitions.h   |   7 ++
+ 8 files changed, 260 insertions(+), 156 deletions(-)
+ create mode 100644 drivers/mtd/parsers/Kconfig
+ create mode 100644 drivers/mtd/parsers/Makefile
+ create mode 100644 drivers/mtd/parsers/parser_trx.c
+
+-- 
+2.11.0
