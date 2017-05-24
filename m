@@ -4,7 +4,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII;
  format=flowed
 Content-Transfer-Encoding: 7bit
-Date: Tue, 23 May 2017 16:46:33 -0600
+Date: Tue, 23 May 2017 22:05:14 -0600
 From: Angus Ainslie <angus@akkea.ca>
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, David Woodhouse
  <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Brian Norris
@@ -20,7 +20,7 @@ References: <399ea126f3b18071fbe46bfc9787df6b@www.akkea.ca>
  <20170522070117.mwk4gm34o7idedye@flea.home>
  <63aca137397dc3700a34993205c8cfba@www.akkea.ca>
  <20170523195239.6nsv4ydrt4u7q6ge@flea.home>
-Message-ID: <6da4225205128b8f5bb920c7c3375752@www.akkea.ca>
+Message-ID: <a022aed57030622591a8e7eb97a59ff1@www.akkea.ca>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,23 +31,6 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On 2017-05-23 13:52, Maxime Ripard wrote:
-> On Mon, May 22, 2017 at 10:32:42AM -0600, Angus Ainslie wrote:
->> Hi Maxime
->> 
->> On 2017-05-22 01:01, Maxime Ripard wrote:
->> >
->> > This just made me realise, this is also the time where the clocks are
->> > disabled, and we changed our clock implementation in 4.11.
->> >
->> > And using the 4.4 DT will keep the old driver...
->> >
->> > Did you test in 4.11? If it's also broken, could you try to revert
->> > 1f4ce3b6ca79 and 6b48644b1d29 (I'm not sure it's going to be a trivial
->> > revert, but in that order it should work).
->> >
->> 
->> Thanks reverting those two allow the kernel to boot and mount the 
->> NAND.
 > 
 > Ok, good.
 > 
@@ -56,40 +39,61 @@ On 2017-05-23 13:52, Maxime Ripard wrote:
 > 
 > Maxime
 
-Putting those back in with the changed command line doesn't work
 
-[    5.840000] UBI error: cannot open mtd 4, error -19
-[    5.840000] hctosys: unable to open rtc device (rtc0)
-[    5.860000] clk: Not disabling unused clocks
-[    5.860000] vcc3v0: disabling
-[    5.870000] ALSA device list:
-[    5.870000]   #0: sun4i-codec
-[    5.880000] VFS: Cannot open root device "ubi0:rootfs" or 
-unknown-block(0,0): error -19
-[    5.890000] Please append a correct "root=" boot option; here are the 
-available partitions:
-[    5.910000] Kernel panic - not syncing: VFS: Unable to mount root fs 
-on unknown-block(0,0)
-[    5.910000] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 
-4.12.0-rc2TNCPro #14
-[    5.910000] Hardware name: Allwinner sun4i/sun5i Families
-[    5.910000] [<c010e440>] (unwind_backtrace) from [<c010b01c>] 
-(show_stack+0x10/0x14)
-[    5.910000] [<c010b01c>] (show_stack) from [<c0372cac>] 
-(dump_stack+0x84/0x98)
-[    5.910000] [<c0372cac>] (dump_stack) from [<c01ad0b0>] 
-(panic+0xdc/0x248)
-[    5.910000] [<c01ad0b0>] (panic) from [<c0a01208>] 
-(mount_block_root+0x198/0x270)
-[    5.910000] [<c0a01208>] (mount_block_root) from [<c0a014a8>] 
-(prepare_namespace+0x9c/0x198)
-[    5.910000] [<c0a014a8>] (prepare_namespace) from [<c0a00e40>] 
-(kernel_init_freeable+0x1d8/0x1e8)
-[    5.910000] [<c0a00e40>] (kernel_init_freeable) from [<c0711e74>] 
-(kernel_init+0x8/0x110)
-[    5.910000] [<c0711e74>] (kernel_init) from [<c0107578>] 
-(ret_from_fork+0x14/0x3c)
-[    5.910000] ---[ end Kernel panic - not syncing: VFS: Unable to mount 
-root fs on unknown-block(0,0)
-[    6.430000] g_cdc gadget: high-speed config #1: CDC Composite (ECM + 
-ACM)
+If I use the clk_ignore_unused flag with the patches below then the 
+kernel can boot and mount the nand.
+
+diff --git a/drivers/clk/sunxi-ng/ccu-sun5i.c 
+b/drivers/clk/sunxi-ng/ccu-sun5i.c
+index 5c476f9..700944c 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun5i.c
++++ b/drivers/clk/sunxi-ng/ccu-sun5i.c
+@@ -251,7 +251,7 @@ static SUNXI_CCU_GATE(ahb_mmc1_clk, "ahb-mmc1",     
+"ahb",
+  static SUNXI_CCU_GATE(ahb_mmc2_clk,    "ahb-mmc2",     "ahb",
+                       0x060, BIT(10), 0);
+  static SUNXI_CCU_GATE(ahb_nand_clk,    "ahb-nand",     "ahb",
+-                     0x060, BIT(13), 0);
++                     0x060, BIT(13), CLK_IS_CRITICAL);
+  static SUNXI_CCU_GATE(ahb_sdram_clk,   "ahb-sdram",    "ahb",
+                       0x060, BIT(14), CLK_IS_CRITICAL);
+  static SUNXI_CCU_GATE(ahb_emac_clk,    "ahb-emac",     "ahb",
+
+
+diff --git a/arch/arm/boot/dts/sun5i-gr8-chip-pro.dts 
+b/arch/arm/boot/dts/sun5i-gr8-chip-pro.dts
+index c55b11a..fa37cce 100644
+--- a/arch/arm/boot/dts/sun5i-gr8-chip-pro.dts
++++ b/arch/arm/boot/dts/sun5i-gr8-chip-pro.dts
+@@ -146,6 +149,32 @@
+                 reg = <0>;
+                 allwinner,rb = <0>;
+                 nand-ecc-mode = "hw";
++    nand-on-flash-bbt;
++
++    spl@0 {
++      label = "SPL";
++      reg = /bits/ 64 <0x0 0x400000>;
++    };
++
++    spl-backup@400000 {
++      label = "SPL.backup";
++      reg = /bits/ 64 <0x400000 0x400000>;
++    };
++
++    u-boot@800000 {
++      label = "U-Boot";
++      reg = /bits/ 64 <0x800000 0x400000>;
++    };
++
++    env@c00000 {
++      label = "env";
++      reg = /bits/ 64 <0xc00000 0x400000>;
++    };
++
++    rootfs@1000000 {
++      label = "rootfs";
++      reg = /bits/ 64 <0x1000000 0x1f000000>;
++    };
+         };
+  };
