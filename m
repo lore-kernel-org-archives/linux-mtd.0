@@ -1,25 +1,21 @@
-Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dDSqv-00038Q-5t
- for linux-mtd@lists.infradead.org; Wed, 24 May 2017 09:45:17 +0000
-Received: by mail-lf0-x243.google.com with SMTP id q24so10416513lfb.1
- for <linux-mtd@lists.infradead.org>; Wed, 24 May 2017 02:44:55 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH V5 3/4] mtd: partitions: add support for partition parsers
-Date: Wed, 24 May 2017 11:44:36 +0200
-Message-Id: <20170524094437.2174-4-zajec5@gmail.com>
-In-Reply-To: <20170524094437.2174-1-zajec5@gmail.com>
-References: <20170524094437.2174-1-zajec5@gmail.com>
+Date: Wed, 24 May 2017 13:23:01 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>, "ezequiel.garcia@free-electrons.com"
+ <ezequiel.garcia@free-electrons.com>, Gregory Clement
+ <gregory.clement@free-electrons.com>
+Subject: Re: pxa3xx-nand failing to find device on linux-next
+Message-ID: <20170524132301.12ad33d8@bbrezillon>
+In-Reply-To: <2a79405e219b4c37ba00defbe4a0dfe4@svr-chch-ex1.atlnz.lc>
+References: <b36366e358904310aee4970b77f57dba@svr-chch-ex1.atlnz.lc>
+ <2a79405e219b4c37ba00defbe4a0dfe4@svr-chch-ex1.atlnz.lc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,119 +25,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+Hi Chris,
 
-Some devices have partitions that are kind of containers with extra
-subpartitions / volumes instead of e.g. a simple filesystem data. To
-support such cases we need to first create normal flash device
-partitions and then take care of these special ones.
+On Wed, 24 May 2017 09:36:56 +0000
+Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
 
-It's very common case for home routers. Depending on the vendor there
-are formats like TRX, Seama, TP-Link, WRGG & more. All of them are used
-to embed few partitions into a single one / single firmware file.
+> On 23/05/17 17:27, Chris Packham wrote:
+> > Hi,
+> >
+> > I'm doing some testing on linux-next and I'm finding that my nand flash
+> > has disappeared.
+> >
+> > pxa3xx-nand f10d0000.flash: This platform can't do DMA on this device
+> > pxa3xx-nand f10d0000.flash: non-supported command ef
+> > pxa3xx-nand f10d0000.flash: non-supported command ee
+> > pxa3xx-nand f10d0000.flash: non-supported command ef
+> > pxa3xx-nand f10d0000.flash: non-supported command ee
+> > On-die ECC forcefully enabled, not supported
+> > nand: No NAND device found
+> > pxa3xx-nand f10d0000.flash: failed to scan nand at cs 0
+> >
+> > This was working around 4.11. I'll try to do some more digging tomorrow
+> > to narrow down a failure point but I thought I'd send this out now just
+> > in case it rings any bells.
+> >
+> > The board I'm using (DB-88F6820-AMC) is unfortunately out-of tree but it
+> > should be pretty close to the armada-388-db. I can make my dts available
+> > if it's helpful.  
+> 
+> Still works on 4.12-rc2. Fails on next-20170524.
+> 
+> This appears to be due to commit b566d9c055de ("mtd: nand: add support 
+> for Micron on-die ECC"). Which based on the description seems intentional.
+> 
+> Since I have access to a hardware platform that has a micron flash with
+> ECC forcefully enabled how can I help to get this implemented.
 
-Ideally all vendors would use some well documented / standardized format
-like UBI (and some probably start doing so), but there are still
-countless devices on the market using these poor vendor specific
-formats.
+Can you try with this patch applied [1]?
 
-This patch extends MTD subsystem by allowing to specify list of parsers
-that should be tried for a given partition. Supporting such poor formats
-is highly unlikely to be the top priority so these changes try to
-minimize maintenance cost to the minimum. It reuses existing code for
-these new parsers and just adds a one property and one new function.
+Thanks,
 
-This implementation requires setting partition parsers in a flash
-parser. A proper change of bcm47xxpart will follow and in the future we
-will hopefully also find a solution for doing it with ofpart
-("fixed-partitions").
+Boris
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
-V2: A totally rebased & refreshed version.
-V3: Don't mention uImage in commit message, it was a mistake.
-V4: Document mtd_parse_part parameters
-V5: Make documentation more clear as pointed by Brian
-    Let offset be handled in add_mtd_partitions / allocate_partition
-    Switch "format" to "types"
----
- drivers/mtd/mtdpart.c          | 31 +++++++++++++++++++++++++++++++
- include/linux/mtd/partitions.h |  7 +++++++
- 2 files changed, 38 insertions(+)
-
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 8a0629449804..0674ff6c7ddd 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -369,6 +369,35 @@ static inline void free_partition(struct mtd_part *p)
- 	kfree(p);
- }
- 
-+/**
-+ * mtd_parse_part - parse MTD partition looking for subpartitions
-+ *
-+ * @slave: part that is supposed to be a container and should be parsed
-+ * @types: NULL-terminated array with names of partition parsers to try
-+ *
-+ * Some partitions are kind of containers with extra subpartitions (volumes).
-+ * There can be various formats of such containers. This function tries to use
-+ * specified parsers to analyze given partition and registers found
-+ * subpartitions on success.
-+ */
-+static int mtd_parse_part(struct mtd_part *slave, const char *const *types)
-+{
-+	struct mtd_partitions parsed;
-+	int err;
-+
-+	err = parse_mtd_partitions(&slave->mtd, types, &parsed, NULL);
-+	if (err)
-+		return err;
-+	else if (!parsed.nr_parts)
-+		return -ENOENT;
-+
-+	err = add_mtd_partitions(&slave->mtd, parsed.parts, parsed.nr_parts);
-+
-+	mtd_part_parser_cleanup(&parsed);
-+
-+	return err;
-+}
-+
- /*
-  * This function unregisters and destroy all slave MTD objects which are
-  * attached to the given master MTD object.
-@@ -739,6 +768,8 @@ int add_mtd_partitions(struct mtd_info *master,
- 
- 		add_mtd_device(&slave->mtd);
- 		mtd_add_partition_attrs(slave);
-+		if (parts[i].types)
-+			mtd_parse_part(slave, parts[i].types);
- 
- 		cur_offset = slave->offset + slave->mtd.size;
- 	}
-diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
-index 10db07c65f8a..11cb0c50cd84 100644
---- a/include/linux/mtd/partitions.h
-+++ b/include/linux/mtd/partitions.h
-@@ -20,6 +20,12 @@
-  *
-  * For each partition, these fields are available:
-  * name: string that will be used to label the partition's MTD device.
-+ * types: some partitions can be containers using specific format to describe
-+ *	embedded subpartitions / volumes. E.g. many home routers use "firmware"
-+ *	partition that contains at least kernel and rootfs. In such case an
-+ *	extra parser is needed that will detect these dynamic partitions and
-+ *	report them to the MTD subsystem. If set this property stores an array
-+ *	of parser names to use when looking for subpartitions.
-  * size: the partition size; if defined as MTDPART_SIZ_FULL, the partition
-  * 	will extend to the end of the master MTD device.
-  * offset: absolute starting position within the master MTD device; if
-@@ -38,6 +44,7 @@
- 
- struct mtd_partition {
- 	const char *name;		/* identifier string */
-+	const char *const *types;	/* names of parsers to use if any */
- 	uint64_t size;			/* partition size */
- 	uint64_t offset;		/* offset within the master MTD space */
- 	uint32_t mask_flags;		/* master MTD flags to mask out for this partition */
--- 
-2.11.0
+[1]http://code.bulix.org/eic5n9-135873
