@@ -1,21 +1,41 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from conssluserg-03.nifty.com ([210.131.2.82])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dDQII-0000kW-Fx
- for linux-mtd@lists.infradead.org; Wed, 24 May 2017 07:01:56 +0000
-From: Peter Pan <peterpandong@micron.com>
-To: <boris.brezillon@free-electrons.com>, <richard@nod.at>,
- <computersforpeace@gmail.com>, <arnaud.mouiche@gmail.com>,
- <thomas.petazzoni@free-electrons.com>, <marex@denx.de>,
- <cyrille.pitchen@wedev4u.fr>, <linux-mtd@lists.infradead.org>
-CC: <peterpandong@micron.com>, <peterpansjtu@gmail.com>,
- <linshunquan1@hisilicon.com>
-Subject: [PATCH v6 15/15] MAINTAINERS: Add SPI NAND entry
-Date: Wed, 24 May 2017 15:07:11 +0800
-Message-ID: <1495609631-18880-16-git-send-email-peterpandong@micron.com>
-In-Reply-To: <1495609631-18880-1-git-send-email-peterpandong@micron.com>
-References: <1495609631-18880-1-git-send-email-peterpandong@micron.com>
+ id 1dDRaj-0004kE-Vy
+ for linux-mtd@lists.infradead.org; Wed, 24 May 2017 08:24:27 +0000
+Received: from mail-yw0-f174.google.com (mail-yw0-f174.google.com
+ [209.85.161.174]) (authenticated)
+ by conssluserg-03.nifty.com with ESMTP id v4O8NcYe017828
+ for <linux-mtd@lists.infradead.org>; Wed, 24 May 2017 17:23:39 +0900
+Received: by mail-yw0-f174.google.com with SMTP id l14so85833091ywk.1
+ for <linux-mtd@lists.infradead.org>; Wed, 24 May 2017 01:23:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20170518090957.227954c1@bbrezillon>
+References: <1492585618-13655-1-git-send-email-yamada.masahiro@socionext.com>
+ <1492585618-13655-2-git-send-email-yamada.masahiro@socionext.com>
+ <20170428183250.4c43e107@bbrezillon>
+ <CAK7LNAQZyMoKJjzPjr12TE9s=G8GJbHGgfequtLE4h+meJT03w@mail.gmail.com>
+ <20170515135433.2edda630@bbrezillon>
+ <CAK7LNAQzPcM6T+3yG8=ezd0vRetW-vcibHWYSw5yJC5TorPKVQ@mail.gmail.com>
+ <20170518090957.227954c1@bbrezillon>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Wed, 24 May 2017 17:23:37 +0900
+Message-ID: <CAK7LNAT=b+QyK8xBafd8DvHLtwTovzuj44hz=CThqDmO-Gb4aA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mtd: nand: add generic helpers to check, match,
+ maximize ECC settings
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Dinh Nguyen <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Graham Moore <grmoore@opensource.altera.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>,
+ Jassi Brar <jaswinder.singh@linaro.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,32 +45,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add maintainer information for SPI NAND.
+Hi Boris,
 
-Signed-off-by: Peter Pan <peterpandong@micron.com>
----
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
+2017-05-18 16:09 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index fe4b69e..e4edb75 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8762,6 +8762,15 @@ S:	Maintained
- F:	drivers/mtd/nand/
- F:	include/linux/mtd/*nand*.h
- 
-+SPI NAND FLASH DRIVER
-+M:	Peter Pan <peterpandong@micron.com>
-+L:	linux-mtd@lists.infradead.org
-+W:	http://www.linux-mtd.infradead.org/
-+Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
-+S:	Maintained
-+F:	drivers/mtd/nand/spi/
-+F:	include/linux/mtd/spinand.h
-+
- NATSEMI ETHERNET DRIVER (DP8381x)
- S:	Orphan
- F:	drivers/net/ethernet/natsemi/natsemi.c
+>>
+>> One question about this part.
+>>
+>>
+>>        /* If chip->ecc.size is already set, respect it. */
+>>        if (chip->ecc.size && step_size != chip->ecc.size)
+>>                continue;
+>>
+>> Does this make sense for nand_try_to_maximize_ecc()?
+>>
+>> (In other words, can nand-ecc-maximize stand together with nand-ecc-step-size?)
+>
+> It could make sense if one wants to maximize the strength for a
+> specific step-size, but most of the time the user will let the driver
+> choose the best step-size+strength pair.
+
+
+OK.  I am keeping it here, but I do not have a strong opinion about this.
+I will follow your decision.
+
+Thanks.
+
 -- 
-1.9.1
+Best Regards
+Masahiro Yamada
