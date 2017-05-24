@@ -1,7 +1,7 @@
 Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dDQHU-000090-FO
- for linux-mtd@lists.infradead.org; Wed, 24 May 2017 07:01:20 +0000
+ id 1dDQHj-00009g-Fu
+ for linux-mtd@lists.infradead.org; Wed, 24 May 2017 07:01:15 +0000
 From: Peter Pan <peterpandong@micron.com>
 To: <boris.brezillon@free-electrons.com>, <richard@nod.at>,
  <computersforpeace@gmail.com>, <arnaud.mouiche@gmail.com>,
@@ -9,15 +9,13 @@ To: <boris.brezillon@free-electrons.com>, <richard@nod.at>,
  <cyrille.pitchen@wedev4u.fr>, <linux-mtd@lists.infradead.org>
 CC: <peterpandong@micron.com>, <peterpansjtu@gmail.com>,
  <linshunquan1@hisilicon.com>
-Subject: [PATCH v6 02/15] mtd: nand: move raw NAND related code to the raw/
- subdir
-Date: Wed, 24 May 2017 15:06:58 +0800
-Message-ID: <1495609631-18880-3-git-send-email-peterpandong@micron.com>
+Subject: [PATCH v6 06/15] mtd: nand: raw: make BBT code more generic
+Date: Wed, 24 May 2017 15:07:02 +0800
+Message-ID: <1495609631-18880-7-git-send-email-peterpandong@micron.com>
 In-Reply-To: <1495609631-18880-1-git-send-email-peterpandong@micron.com>
 References: <1495609631-18880-1-git-send-email-peterpandong@micron.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,1933 +27,1694 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-As part of the process of sharing more code between different NAND
-based devices, we need to move all raw NAND related code to the raw/
-subdirectory.
+BBT support is currently tightly tied to raw NAND, though this is the kind
+of code we could share across all NAND based devices, no matter what
+physical interface is to communicate with the NAND chip.
+
+Make BBT code interface agnostic by replacing all occurrence of
+struct nand_chip by struct nand_device, and move functions that are
+specific to raw NANDs to drivers/mtd/nand/rawnand/nand_base.c.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 Signed-off-by: Peter Pan <peterpandong@micron.com>
 ---
- MAINTAINERS                                        |  18 +-
- drivers/mtd/nand/Kconfig                           | 566 +--------------------
- drivers/mtd/nand/Makefile                          |  70 +--
- drivers/mtd/nand/raw/Kconfig                       | 565 ++++++++++++++++++++
- drivers/mtd/nand/raw/Makefile                      |  69 +++
- drivers/mtd/nand/{ => raw}/ams-delta.c             |   0
- drivers/mtd/nand/{ => raw}/atmel/Makefile          |   0
- drivers/mtd/nand/{ => raw}/atmel/nand-controller.c |   0
- drivers/mtd/nand/{ => raw}/atmel/pmecc.c           |   0
- drivers/mtd/nand/{ => raw}/atmel/pmecc.h           |   0
- drivers/mtd/nand/{ => raw}/au1550nd.c              |   0
- drivers/mtd/nand/{ => raw}/bcm47xxnflash/Makefile  |   0
- .../nand/{ => raw}/bcm47xxnflash/bcm47xxnflash.h   |   0
- drivers/mtd/nand/{ => raw}/bcm47xxnflash/main.c    |   0
- .../mtd/nand/{ => raw}/bcm47xxnflash/ops_bcm4706.c |   0
- drivers/mtd/nand/{ => raw}/bf5xx_nand.c            |   0
- drivers/mtd/nand/{ => raw}/brcmnand/Makefile       |   0
- .../mtd/nand/{ => raw}/brcmnand/bcm63138_nand.c    |   0
- drivers/mtd/nand/{ => raw}/brcmnand/bcm6368_nand.c |   0
- drivers/mtd/nand/{ => raw}/brcmnand/brcmnand.c     |   0
- drivers/mtd/nand/{ => raw}/brcmnand/brcmnand.h     |   0
- drivers/mtd/nand/{ => raw}/brcmnand/brcmstb_nand.c |   0
- drivers/mtd/nand/{ => raw}/brcmnand/iproc_nand.c   |   0
- drivers/mtd/nand/{ => raw}/cafe_nand.c             |   0
- drivers/mtd/nand/{ => raw}/cmx270_nand.c           |   0
- drivers/mtd/nand/{ => raw}/cs553x_nand.c           |   0
- drivers/mtd/nand/{ => raw}/davinci_nand.c          |   0
- drivers/mtd/nand/{ => raw}/denali.c                |   0
- drivers/mtd/nand/{ => raw}/denali.h                |   0
- drivers/mtd/nand/{ => raw}/denali_dt.c             |   0
- drivers/mtd/nand/{ => raw}/denali_pci.c            |   0
- drivers/mtd/nand/{ => raw}/diskonchip.c            |   0
- drivers/mtd/nand/{ => raw}/docg4.c                 |   0
- drivers/mtd/nand/{ => raw}/fsl_elbc_nand.c         |   0
- drivers/mtd/nand/{ => raw}/fsl_ifc_nand.c          |   0
- drivers/mtd/nand/{ => raw}/fsl_upm.c               |   0
- drivers/mtd/nand/{ => raw}/fsmc_nand.c             |   0
- drivers/mtd/nand/{ => raw}/gpio.c                  |   0
- drivers/mtd/nand/{ => raw}/gpmi-nand/Makefile      |   0
- drivers/mtd/nand/{ => raw}/gpmi-nand/bch-regs.h    |   0
- drivers/mtd/nand/{ => raw}/gpmi-nand/gpmi-lib.c    |   0
- drivers/mtd/nand/{ => raw}/gpmi-nand/gpmi-nand.c   |   0
- drivers/mtd/nand/{ => raw}/gpmi-nand/gpmi-nand.h   |   0
- drivers/mtd/nand/{ => raw}/gpmi-nand/gpmi-regs.h   |   0
- drivers/mtd/nand/{ => raw}/hisi504_nand.c          |   0
- drivers/mtd/nand/{ => raw}/jz4740_nand.c           |   0
- drivers/mtd/nand/{ => raw}/jz4780_bch.c            |   0
- drivers/mtd/nand/{ => raw}/jz4780_bch.h            |   0
- drivers/mtd/nand/{ => raw}/jz4780_nand.c           |   0
- drivers/mtd/nand/{ => raw}/lpc32xx_mlc.c           |   0
- drivers/mtd/nand/{ => raw}/lpc32xx_slc.c           |   0
- drivers/mtd/nand/{ => raw}/mpc5121_nfc.c           |   0
- drivers/mtd/nand/{ => raw}/mtk_ecc.c               |   0
- drivers/mtd/nand/{ => raw}/mtk_ecc.h               |   0
- drivers/mtd/nand/{ => raw}/mtk_nand.c              |   0
- drivers/mtd/nand/{ => raw}/mxc_nand.c              |   0
- drivers/mtd/nand/{ => raw}/nand_amd.c              |   0
- drivers/mtd/nand/{ => raw}/nand_base.c             |   0
- drivers/mtd/nand/{ => raw}/nand_bbt.c              |   0
- drivers/mtd/nand/{ => raw}/nand_bch.c              |   0
- drivers/mtd/nand/{ => raw}/nand_ecc.c              |   0
- drivers/mtd/nand/{ => raw}/nand_hynix.c            |   0
- drivers/mtd/nand/{ => raw}/nand_ids.c              |   0
- drivers/mtd/nand/{ => raw}/nand_macronix.c         |   0
- drivers/mtd/nand/{ => raw}/nand_micron.c           |   0
- drivers/mtd/nand/{ => raw}/nand_samsung.c          |   0
- drivers/mtd/nand/{ => raw}/nand_timings.c          |   0
- drivers/mtd/nand/{ => raw}/nand_toshiba.c          |   0
- drivers/mtd/nand/{ => raw}/nandsim.c               |   0
- drivers/mtd/nand/{ => raw}/ndfc.c                  |   0
- drivers/mtd/nand/{ => raw}/nuc900_nand.c           |   0
- drivers/mtd/nand/{ => raw}/omap2.c                 |   0
- drivers/mtd/nand/{ => raw}/omap_elm.c              |   0
- drivers/mtd/nand/{ => raw}/orion_nand.c            |   0
- drivers/mtd/nand/{ => raw}/oxnas_nand.c            |   0
- drivers/mtd/nand/{ => raw}/pasemi_nand.c           |   0
- drivers/mtd/nand/{ => raw}/plat_nand.c             |   0
- drivers/mtd/nand/{ => raw}/pxa3xx_nand.c           |   0
- drivers/mtd/nand/{ => raw}/qcom_nandc.c            |   0
- drivers/mtd/nand/{ => raw}/r852.c                  |   0
- drivers/mtd/nand/{ => raw}/r852.h                  |   0
- drivers/mtd/nand/{ => raw}/s3c2410.c               |   0
- drivers/mtd/nand/{ => raw}/sh_flctl.c              |   0
- drivers/mtd/nand/{ => raw}/sharpsl.c               |   0
- drivers/mtd/nand/{ => raw}/sm_common.c             |   0
- drivers/mtd/nand/{ => raw}/sm_common.h             |   0
- drivers/mtd/nand/{ => raw}/socrates_nand.c         |   0
- drivers/mtd/nand/{ => raw}/sunxi_nand.c            |   0
- drivers/mtd/nand/{ => raw}/tango_nand.c            |   0
- drivers/mtd/nand/{ => raw}/tmio_nand.c             |   0
- drivers/mtd/nand/{ => raw}/txx9ndfmc.c             |   0
- drivers/mtd/nand/{ => raw}/vf610_nfc.c             |   0
- drivers/mtd/nand/{ => raw}/xway_nand.c             |   0
- drivers/mtd/sm_ftl.c                               |   2 +-
- 94 files changed, 646 insertions(+), 644 deletions(-)
- create mode 100644 drivers/mtd/nand/raw/Kconfig
- create mode 100644 drivers/mtd/nand/raw/Makefile
- rename drivers/mtd/nand/{ => raw}/ams-delta.c (100%)
- rename drivers/mtd/nand/{ => raw}/atmel/Makefile (100%)
- rename drivers/mtd/nand/{ => raw}/atmel/nand-controller.c (100%)
- rename drivers/mtd/nand/{ => raw}/atmel/pmecc.c (100%)
- rename drivers/mtd/nand/{ => raw}/atmel/pmecc.h (100%)
- rename drivers/mtd/nand/{ => raw}/au1550nd.c (100%)
- rename drivers/mtd/nand/{ => raw}/bcm47xxnflash/Makefile (100%)
- rename drivers/mtd/nand/{ => raw}/bcm47xxnflash/bcm47xxnflash.h (100%)
- rename drivers/mtd/nand/{ => raw}/bcm47xxnflash/main.c (100%)
- rename drivers/mtd/nand/{ => raw}/bcm47xxnflash/ops_bcm4706.c (100%)
- rename drivers/mtd/nand/{ => raw}/bf5xx_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/brcmnand/Makefile (100%)
- rename drivers/mtd/nand/{ => raw}/brcmnand/bcm63138_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/brcmnand/bcm6368_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/brcmnand/brcmnand.c (100%)
- rename drivers/mtd/nand/{ => raw}/brcmnand/brcmnand.h (100%)
- rename drivers/mtd/nand/{ => raw}/brcmnand/brcmstb_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/brcmnand/iproc_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/cafe_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/cmx270_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/cs553x_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/davinci_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/denali.c (100%)
- rename drivers/mtd/nand/{ => raw}/denali.h (100%)
- rename drivers/mtd/nand/{ => raw}/denali_dt.c (100%)
- rename drivers/mtd/nand/{ => raw}/denali_pci.c (100%)
- rename drivers/mtd/nand/{ => raw}/diskonchip.c (100%)
- rename drivers/mtd/nand/{ => raw}/docg4.c (100%)
- rename drivers/mtd/nand/{ => raw}/fsl_elbc_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/fsl_ifc_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/fsl_upm.c (100%)
- rename drivers/mtd/nand/{ => raw}/fsmc_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/gpio.c (100%)
- rename drivers/mtd/nand/{ => raw}/gpmi-nand/Makefile (100%)
- rename drivers/mtd/nand/{ => raw}/gpmi-nand/bch-regs.h (100%)
- rename drivers/mtd/nand/{ => raw}/gpmi-nand/gpmi-lib.c (100%)
- rename drivers/mtd/nand/{ => raw}/gpmi-nand/gpmi-nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/gpmi-nand/gpmi-nand.h (100%)
- rename drivers/mtd/nand/{ => raw}/gpmi-nand/gpmi-regs.h (100%)
- rename drivers/mtd/nand/{ => raw}/hisi504_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/jz4740_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/jz4780_bch.c (100%)
- rename drivers/mtd/nand/{ => raw}/jz4780_bch.h (100%)
- rename drivers/mtd/nand/{ => raw}/jz4780_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/lpc32xx_mlc.c (100%)
- rename drivers/mtd/nand/{ => raw}/lpc32xx_slc.c (100%)
- rename drivers/mtd/nand/{ => raw}/mpc5121_nfc.c (100%)
- rename drivers/mtd/nand/{ => raw}/mtk_ecc.c (100%)
- rename drivers/mtd/nand/{ => raw}/mtk_ecc.h (100%)
- rename drivers/mtd/nand/{ => raw}/mtk_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/mxc_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/nand_amd.c (100%)
- rename drivers/mtd/nand/{ => raw}/nand_base.c (100%)
- rename drivers/mtd/nand/{ => raw}/nand_bbt.c (100%)
- rename drivers/mtd/nand/{ => raw}/nand_bch.c (100%)
- rename drivers/mtd/nand/{ => raw}/nand_ecc.c (100%)
- rename drivers/mtd/nand/{ => raw}/nand_hynix.c (100%)
- rename drivers/mtd/nand/{ => raw}/nand_ids.c (100%)
- rename drivers/mtd/nand/{ => raw}/nand_macronix.c (100%)
- rename drivers/mtd/nand/{ => raw}/nand_micron.c (100%)
- rename drivers/mtd/nand/{ => raw}/nand_samsung.c (100%)
- rename drivers/mtd/nand/{ => raw}/nand_timings.c (100%)
- rename drivers/mtd/nand/{ => raw}/nand_toshiba.c (100%)
- rename drivers/mtd/nand/{ => raw}/nandsim.c (100%)
- rename drivers/mtd/nand/{ => raw}/ndfc.c (100%)
- rename drivers/mtd/nand/{ => raw}/nuc900_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/omap2.c (100%)
- rename drivers/mtd/nand/{ => raw}/omap_elm.c (100%)
- rename drivers/mtd/nand/{ => raw}/orion_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/oxnas_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/pasemi_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/plat_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/pxa3xx_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/qcom_nandc.c (100%)
- rename drivers/mtd/nand/{ => raw}/r852.c (100%)
- rename drivers/mtd/nand/{ => raw}/r852.h (100%)
- rename drivers/mtd/nand/{ => raw}/s3c2410.c (100%)
- rename drivers/mtd/nand/{ => raw}/sh_flctl.c (100%)
- rename drivers/mtd/nand/{ => raw}/sharpsl.c (100%)
- rename drivers/mtd/nand/{ => raw}/sm_common.c (100%)
- rename drivers/mtd/nand/{ => raw}/sm_common.h (100%)
- rename drivers/mtd/nand/{ => raw}/socrates_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/sunxi_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/tango_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/tmio_nand.c (100%)
- rename drivers/mtd/nand/{ => raw}/txx9ndfmc.c (100%)
- rename drivers/mtd/nand/{ => raw}/vf610_nfc.c (100%)
- rename drivers/mtd/nand/{ => raw}/xway_nand.c (100%)
+ drivers/mtd/nand/raw/docg4.c     |   7 +-
+ drivers/mtd/nand/raw/nand_base.c |  92 +++++-
+ drivers/mtd/nand/raw/nand_bbt.c  | 683 +++++++++++++++++++--------------------
+ include/linux/mtd/nand.h         |  23 ++
+ include/linux/mtd/rawnand.h      |   6 -
+ 5 files changed, 443 insertions(+), 368 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 81bb063..fe4b69e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1899,7 +1899,7 @@ F:	drivers/input/keyboard/w90p910_keypad.c
- F:	drivers/input/touchscreen/w90p910_ts.c
- F:	drivers/watchdog/nuc900_wdt.c
- F:	drivers/net/ethernet/nuvoton/w90p910_ether.c
--F:	drivers/mtd/nand/nuc900_nand.c
-+F:	drivers/mtd/nand/raw/nuc900_nand.c
- F:	drivers/rtc/rtc-nuc900.c
- F:	drivers/spi/spi-nuc900.c
- F:	drivers/usb/host/ehci-w90x900.c
-@@ -2274,7 +2274,7 @@ M:	Wenyou Yang <wenyou.yang@atmel.com>
- M:	Josh Wu <rainyfeeling@outlook.com>
- L:	linux-mtd@lists.infradead.org
- S:	Supported
--F:	drivers/mtd/nand/atmel/*
-+F:	drivers/mtd/nand/raw/atmel/*
+diff --git a/drivers/mtd/nand/raw/docg4.c b/drivers/mtd/nand/raw/docg4.c
+index c4a4089..013cb99 100644
+--- a/drivers/mtd/nand/raw/docg4.c
++++ b/drivers/mtd/nand/raw/docg4.c
+@@ -1059,7 +1059,7 @@ static int __init read_factory_bbt(struct mtd_info *mtd)
+ 	 * operation after device power-up.  The above read ensures it never is.
+ 	 * Ugly, I know.
+ 	 */
+-	if (nand->bbt == NULL)  /* no memory-based bbt */
++	if (!nand_bbt_is_initialized(mtd_to_nand(mtd)))
+ 		goto exit;
  
- ATMEL SDMMC DRIVER
- M:	Ludovic Desroches <ludovic.desroches@microchip.com>
-@@ -2854,7 +2854,7 @@ M:	Kamal Dasu <kdasu.kdev@gmail.com>
- L:	linux-mtd@lists.infradead.org
- L:	bcm-kernel-feedback-list@broadcom.com
- S:	Maintained
--F:	drivers/mtd/nand/brcmnand/
-+F:	drivers/mtd/nand/raw/brcmnand/
+ 	if (mtd->ecc_stats.failed > eccfailed_stats) {
+@@ -1086,8 +1086,9 @@ static int __init read_factory_bbt(struct mtd_info *mtd)
+ 		unsigned long bits = ~buf[i];
+ 		for_each_set_bit(bitnum, &bits, 8) {
+ 			int badblock = block + 7 - bitnum;
+-			nand->bbt[badblock / 4] |=
+-				0x03 << ((badblock % 4) * 2);
++
++			nand_bbt_update_entry(mtd_to_nand(mtd), badblock,
++					      NAND_BBT_BLOCK_FACTORY_BAD);
+ 			mtd->ecc_stats.badblocks++;
+ 			dev_notice(doc->dev, "factory-marked bad block: %d\n",
+ 				   badblock);
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 8f8df15..8581c89 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -512,6 +512,7 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ static int nand_block_markbad_lowlevel(struct mtd_info *mtd, loff_t ofs)
+ {
+ 	struct nand_chip *chip = mtd_to_nandchip(mtd);
++	struct nand_device *nand = mtd_to_nand(mtd);
+ 	int res, ret = 0;
  
- BROADCOM STB AVS CPUFREQ DRIVER
- M:	Markus Mayer <mmayer@broadcom.com>
-@@ -5285,7 +5285,7 @@ FREESCALE GPMI NAND DRIVER
- M:	Han Xu <han.xu@nxp.com>
- L:	linux-mtd@lists.infradead.org
- S:	Maintained
--F:	drivers/mtd/nand/gpmi-nand/*
-+F:	drivers/mtd/nand/raw/gpmi-nand/*
+ 	if (!(chip->bbt_options & NAND_BBT_NO_OOB_BBM)) {
+@@ -531,8 +532,8 @@ static int nand_block_markbad_lowlevel(struct mtd_info *mtd, loff_t ofs)
+ 	}
  
- FREESCALE I2C CPM DRIVER
- M:	Jochen Friedrich <jochen@scram.de>
-@@ -6534,7 +6534,7 @@ INGENIC JZ4780 NAND DRIVER
- M:	Harvey Hunt <harveyhuntnexus@gmail.com>
- L:	linux-mtd@lists.infradead.org
- S:	Maintained
--F:	drivers/mtd/nand/jz4780_*
-+F:	drivers/mtd/nand/raw/jz4780_*
+ 	/* Mark block bad in BBT */
+-	if (chip->bbt) {
+-		res = nand_markbad_bbt(mtd, ofs);
++	if (nand_bbt_is_initialized(nand)) {
++		res = nand_markbad_bbt(nand, ofs);
+ 		if (!ret)
+ 			ret = res;
+ 	}
+@@ -572,12 +573,12 @@ static int nand_check_wp(struct mtd_info *mtd)
+  */
+ static int nand_block_isreserved(struct mtd_info *mtd, loff_t ofs)
+ {
+-	struct nand_chip *chip = mtd_to_nandchip(mtd);
++	struct nand_device *nand = mtd_to_nand(mtd);
  
- INTEGRITY MEASUREMENT ARCHITECTURE (IMA)
- M:	Mimi Zohar <zohar@linux.vnet.ibm.com>
-@@ -10430,7 +10430,7 @@ PXA3xx NAND FLASH DRIVER
- M:	Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
- L:	linux-mtd@lists.infradead.org
- S:	Maintained
--F:	drivers/mtd/nand/pxa3xx_nand.c
-+F:	drivers/mtd/nand/raw/pxa3xx_nand.c
+-	if (!chip->bbt)
++	if (!nand_bbt_is_initialized(nand))
+ 		return 0;
+ 	/* Return info from the table */
+-	return nand_isreserved_bbt(mtd, ofs);
++	return nand_isreserved_bbt(nand, ofs);
+ }
  
- MMP SUPPORT
- M:	Eric Miao <eric.y.miao@gmail.com>
-@@ -10866,8 +10866,8 @@ F:	include/linux/rhashtable.h
- RICOH SMARTMEDIA/XD DRIVER
- M:	Maxim Levitsky <maximlevitsky@gmail.com>
- S:	Maintained
--F:	drivers/mtd/nand/r852.c
--F:	drivers/mtd/nand/r852.h
-+F:	drivers/mtd/nand/raw/r852.c
-+F:	drivers/mtd/nand/raw/r852.h
+ /**
+@@ -591,13 +592,14 @@ static int nand_block_isreserved(struct mtd_info *mtd, loff_t ofs)
+  */
+ static int nand_block_checkbad(struct mtd_info *mtd, loff_t ofs, int allowbbt)
+ {
++	struct nand_device *nand = mtd_to_nand(mtd);
+ 	struct nand_chip *chip = mtd_to_nandchip(mtd);
  
- RICOH R5C592 MEMORYSTICK DRIVER
- M:	Maxim Levitsky <maximlevitsky@gmail.com>
-@@ -13472,7 +13472,7 @@ VF610 NAND DRIVER
- M:	Stefan Agner <stefan@agner.ch>
- L:	linux-mtd@lists.infradead.org
- S:	Supported
--F:	drivers/mtd/nand/vf610_nfc.c
-+F:	drivers/mtd/nand/raw/vf610_nfc.c
+-	if (!chip->bbt)
++	if (!nand_bbt_is_initialized(nand))
+ 		return chip->block_bad(mtd, ofs);
  
- VFAT/FAT/MSDOS FILESYSTEM
- M:	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 0bd2319..6d53734 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -1,565 +1 @@
--config MTD_NAND_ECC
--	tristate
--
--config MTD_NAND_ECC_SMC
--	bool "NAND ECC Smart Media byte order"
--	depends on MTD_NAND_ECC
--	default n
--	help
--	  Software ECC according to the Smart Media Specification.
--	  The original Linux implementation had byte 0 and 1 swapped.
--
--
--menuconfig MTD_NAND
--	tristate "NAND Device Support"
--	depends on MTD
--	select MTD_NAND_ECC
--	help
--	  This enables support for accessing all type of NAND flash
--	  devices. For further information see
--	  <http://www.linux-mtd.infradead.org/doc/nand.html>.
--
--if MTD_NAND
--
--config MTD_NAND_BCH
--	tristate
--	select BCH
--	depends on MTD_NAND_ECC_BCH
--	default MTD_NAND
--
--config MTD_NAND_ECC_BCH
--	bool "Support software BCH ECC"
--	default n
--	help
--	  This enables support for software BCH error correction. Binary BCH
--	  codes are more powerful and cpu intensive than traditional Hamming
--	  ECC codes. They are used with NAND devices requiring more than 1 bit
--	  of error correction.
--
--config MTD_SM_COMMON
--	tristate
--	default n
--
--config MTD_NAND_DENALI
--	tristate
--
--config MTD_NAND_DENALI_PCI
--        tristate "Support Denali NAND controller on Intel Moorestown"
--	select MTD_NAND_DENALI
--	depends on HAS_DMA && PCI
--        help
--          Enable the driver for NAND flash on Intel Moorestown, using the
--          Denali NAND controller core.
--
--config MTD_NAND_DENALI_DT
--	tristate "Support Denali NAND controller as a DT device"
--	select MTD_NAND_DENALI
--	depends on HAS_DMA && HAVE_CLK && OF
--	help
--	  Enable the driver for NAND flash on platforms using a Denali NAND
--	  controller as a DT device.
--
--config MTD_NAND_GPIO
--	tristate "GPIO assisted NAND Flash driver"
--	depends on GPIOLIB || COMPILE_TEST
--	depends on HAS_IOMEM
--	help
--	  This enables a NAND flash driver where control signals are
--	  connected to GPIO pins, and commands and data are communicated
--	  via a memory mapped interface.
--
--config MTD_NAND_AMS_DELTA
--	tristate "NAND Flash device on Amstrad E3"
--	depends on MACH_AMS_DELTA
--	default y
--	help
--	  Support for NAND flash on Amstrad E3 (Delta).
--
--config MTD_NAND_OMAP2
--	tristate "NAND Flash device on OMAP2, OMAP3, OMAP4 and Keystone"
--	depends on (ARCH_OMAP2PLUS || ARCH_KEYSTONE)
--	help
--          Support for NAND flash on Texas Instruments OMAP2, OMAP3, OMAP4
--	  and Keystone platforms.
--
--config MTD_NAND_OMAP_BCH
--	depends on MTD_NAND_OMAP2
--	bool "Support hardware based BCH error correction"
--	default n
--	select BCH
--	help
--	  This config enables the ELM hardware engine, which can be used to
--	  locate and correct errors when using BCH ECC scheme. This offloads
--	  the cpu from doing ECC error searching and correction. However some
--	  legacy OMAP families like OMAP2xxx, OMAP3xxx do not have ELM engine
--	  so this is optional for them.
--
--config MTD_NAND_OMAP_BCH_BUILD
--	def_tristate MTD_NAND_OMAP2 && MTD_NAND_OMAP_BCH
--
--config MTD_NAND_RICOH
--	tristate "Ricoh xD card reader"
--	default n
--	depends on PCI
--	select MTD_SM_COMMON
--	help
--	  Enable support for Ricoh R5C852 xD card reader
--	  You also need to enable ether
--	  NAND SSFDC (SmartMedia) read only translation layer' or new
--	  expermental, readwrite
--	  'SmartMedia/xD new translation layer'
--
--config MTD_NAND_AU1550
--	tristate "Au1550/1200 NAND support"
--	depends on MIPS_ALCHEMY
--	help
--	  This enables the driver for the NAND flash controller on the
--	  AMD/Alchemy 1550 SOC.
--
--config MTD_NAND_BF5XX
--	tristate "Blackfin on-chip NAND Flash Controller driver"
--	depends on BF54x || BF52x
--	help
--	  This enables the Blackfin on-chip NAND flash controller
--
--	  No board specific support is done by this driver, each board
--	  must advertise a platform_device for the driver to attach.
--
--	  This driver can also be built as a module. If so, the module
--	  will be called bf5xx-nand.
--
--config MTD_NAND_BF5XX_HWECC
--	bool "BF5XX NAND Hardware ECC"
--	default y
--	depends on MTD_NAND_BF5XX
--	help
--	  Enable the use of the BF5XX's internal ECC generator when
--	  using NAND.
--
--config MTD_NAND_BF5XX_BOOTROM_ECC
--	bool "Use Blackfin BootROM ECC Layout"
--	default n
--	depends on MTD_NAND_BF5XX_HWECC
--	help
--	  If you wish to modify NAND pages and allow the Blackfin on-chip
--	  BootROM to boot from them, say Y here.  This is only necessary
--	  if you are booting U-Boot out of NAND and you wish to update
--	  U-Boot from Linux' userspace.  Otherwise, you should say N here.
--
--	  If unsure, say N.
--
--config MTD_NAND_S3C2410
--	tristate "NAND Flash support for Samsung S3C SoCs"
--	depends on ARCH_S3C24XX || ARCH_S3C64XX
--	help
--	  This enables the NAND flash controller on the S3C24xx and S3C64xx
--	  SoCs
--
--	  No board specific support is done by this driver, each board
--	  must advertise a platform_device for the driver to attach.
--
--config MTD_NAND_S3C2410_DEBUG
--	bool "Samsung S3C NAND driver debug"
--	depends on MTD_NAND_S3C2410
--	help
--	  Enable debugging of the S3C NAND driver
--
--config MTD_NAND_NDFC
--	tristate "NDFC NanD Flash Controller"
--	depends on 4xx
--	select MTD_NAND_ECC_SMC
--	help
--	 NDFC Nand Flash Controllers are integrated in IBM/AMCC's 4xx SoCs
--
--config MTD_NAND_S3C2410_CLKSTOP
--	bool "Samsung S3C NAND IDLE clock stop"
--	depends on MTD_NAND_S3C2410
--	default n
--	help
--	  Stop the clock to the NAND controller when there is no chip
--	  selected to save power. This will mean there is a small delay
--	  when the is NAND chip selected or released, but will save
--	  approximately 5mA of power when there is nothing happening.
--
--config MTD_NAND_TANGO
--	tristate "NAND Flash support for Tango chips"
--	depends on ARCH_TANGO || COMPILE_TEST
--	depends on HAS_DMA
--	help
--	  Enables the NAND Flash controller on Tango chips.
--
--config MTD_NAND_DISKONCHIP
--	tristate "DiskOnChip 2000, Millennium and Millennium Plus (NAND reimplementation)"
--	depends on HAS_IOMEM
--	select REED_SOLOMON
--	select REED_SOLOMON_DEC16
--	help
--	  This is a reimplementation of M-Systems DiskOnChip 2000,
--	  Millennium and Millennium Plus as a standard NAND device driver,
--	  as opposed to the earlier self-contained MTD device drivers.
--	  This should enable, among other things, proper JFFS2 operation on
--	  these devices.
--
--config MTD_NAND_DISKONCHIP_PROBE_ADVANCED
--        bool "Advanced detection options for DiskOnChip"
--        depends on MTD_NAND_DISKONCHIP
--        help
--          This option allows you to specify nonstandard address at which to
--          probe for a DiskOnChip, or to change the detection options.  You
--          are unlikely to need any of this unless you are using LinuxBIOS.
--          Say 'N'.
--
--config MTD_NAND_DISKONCHIP_PROBE_ADDRESS
--        hex "Physical address of DiskOnChip" if MTD_NAND_DISKONCHIP_PROBE_ADVANCED
--        depends on MTD_NAND_DISKONCHIP
--        default "0"
--        ---help---
--        By default, the probe for DiskOnChip devices will look for a
--        DiskOnChip at every multiple of 0x2000 between 0xC8000 and 0xEE000.
--        This option allows you to specify a single address at which to probe
--        for the device, which is useful if you have other devices in that
--        range which get upset when they are probed.
--
--        (Note that on PowerPC, the normal probe will only check at
--        0xE4000000.)
--
--        Normally, you should leave this set to zero, to allow the probe at
--        the normal addresses.
--
--config MTD_NAND_DISKONCHIP_PROBE_HIGH
--        bool "Probe high addresses"
--        depends on MTD_NAND_DISKONCHIP_PROBE_ADVANCED
--        help
--          By default, the probe for DiskOnChip devices will look for a
--          DiskOnChip at every multiple of 0x2000 between 0xC8000 and 0xEE000.
--          This option changes to make it probe between 0xFFFC8000 and
--          0xFFFEE000.  Unless you are using LinuxBIOS, this is unlikely to be
--          useful to you.  Say 'N'.
--
--config MTD_NAND_DISKONCHIP_BBTWRITE
--	bool "Allow BBT writes on DiskOnChip Millennium and 2000TSOP"
--	depends on MTD_NAND_DISKONCHIP
--	help
--	  On DiskOnChip devices shipped with the INFTL filesystem (Millennium
--	  and 2000 TSOP/Alon), Linux reserves some space at the end of the
--	  device for the Bad Block Table (BBT).  If you have existing INFTL
--	  data on your device (created by non-Linux tools such as M-Systems'
--	  DOS drivers), your data might overlap the area Linux wants to use for
--	  the BBT.  If this is a concern for you, leave this option disabled and
--	  Linux will not write BBT data into this area.
--	  The downside of leaving this option disabled is that if bad blocks
--	  are detected by Linux, they will not be recorded in the BBT, which
--	  could cause future problems.
--	  Once you enable this option, new filesystems (INFTL or others, created
--	  in Linux or other operating systems) will not use the reserved area.
--	  The only reason not to enable this option is to prevent damage to
--	  preexisting filesystems.
--	  Even if you leave this disabled, you can enable BBT writes at module
--	  load time (assuming you build diskonchip as a module) with the module
--	  parameter "inftl_bbt_write=1".
--
--config MTD_NAND_DOCG4
--	tristate "Support for DiskOnChip G4"
--	depends on HAS_IOMEM
--	select BCH
--	select BITREVERSE
--	help
--	  Support for diskonchip G4 nand flash, found in various smartphones and
--	  PDAs, among them the Palm Treo680, HTC Prophet and Wizard, Toshiba
--	  Portege G900, Asus P526, and O2 XDA Zinc.
--
--	  With this driver you will be able to use UBI and create a ubifs on the
--	  device, so you may wish to consider enabling UBI and UBIFS as well.
--
--	  These devices ship with the Mys/Sandisk SAFTL formatting, for which
--	  there is currently no mtd parser, so you may want to use command line
--	  partitioning to segregate write-protected blocks. On the Treo680, the
--	  first five erase blocks (256KiB each) are write-protected, followed
--	  by the block containing the saftl partition table.  This is probably
--	  typical.
--
--config MTD_NAND_SHARPSL
--	tristate "Support for NAND Flash on Sharp SL Series (C7xx + others)"
--	depends on ARCH_PXA
--
--config MTD_NAND_CAFE
--	tristate "NAND support for OLPC CAFÉ chip"
--	depends on PCI
--	select REED_SOLOMON
--	select REED_SOLOMON_DEC16
--	help
--	  Use NAND flash attached to the CAFÉ chip designed for the OLPC
--	  laptop.
--
--config MTD_NAND_CS553X
--	tristate "NAND support for CS5535/CS5536 (AMD Geode companion chip)"
--	depends on X86_32
--	depends on !UML && HAS_IOMEM
--	help
--	  The CS553x companion chips for the AMD Geode processor
--	  include NAND flash controllers with built-in hardware ECC
--	  capabilities; enabling this option will allow you to use
--	  these. The driver will check the MSRs to verify that the
--	  controller is enabled for NAND, and currently requires that
--	  the controller be in MMIO mode.
--
--	  If you say "m", the module will be called cs553x_nand.
--
--config MTD_NAND_ATMEL
--	tristate "Support for NAND Flash / SmartMedia on AT91"
--	depends on ARCH_AT91
--	help
--	  Enables support for NAND Flash / Smart Media Card interface
--	  on Atmel AT91 processors.
--
--config MTD_NAND_PXA3xx
--	tristate "NAND support on PXA3xx and Armada 370/XP"
--	depends on PXA3xx || ARCH_MMP || PLAT_ORION
--	help
--	  This enables the driver for the NAND flash device found on
--	  PXA3xx processors (NFCv1) and also on Armada 370/XP (NFCv2).
--
--config MTD_NAND_SLC_LPC32XX
--	tristate "NXP LPC32xx SLC Controller"
--	depends on ARCH_LPC32XX
--	help
--	  Enables support for NXP's LPC32XX SLC (i.e. for Single Level Cell
--	  chips) NAND controller. This is the default for the PHYTEC 3250
--	  reference board which contains a NAND256R3A2CZA6 chip.
--
--	  Please check the actual NAND chip connected and its support
--	  by the SLC NAND controller.
--
--config MTD_NAND_MLC_LPC32XX
--	tristate "NXP LPC32xx MLC Controller"
--	depends on ARCH_LPC32XX
--	help
--	  Uses the LPC32XX MLC (i.e. for Multi Level Cell chips) NAND
--	  controller. This is the default for the WORK92105 controller
--	  board.
--
--	  Please check the actual NAND chip connected and its support
--	  by the MLC NAND controller.
--
--config MTD_NAND_CM_X270
--	tristate "Support for NAND Flash on CM-X270 modules"
--	depends on MACH_ARMCORE
--
--config MTD_NAND_PASEMI
--	tristate "NAND support for PA Semi PWRficient"
--	depends on PPC_PASEMI
--	help
--	  Enables support for NAND Flash interface on PA Semi PWRficient
--	  based boards
--
--config MTD_NAND_TMIO
--	tristate "NAND Flash device on Toshiba Mobile IO Controller"
--	depends on MFD_TMIO
--	help
--	  Support for NAND flash connected to a Toshiba Mobile IO
--	  Controller in some PDAs, including the Sharp SL6000x.
--
--config MTD_NAND_NANDSIM
--	tristate "Support for NAND Flash Simulator"
--	help
--	  The simulator may simulate various NAND flash chips for the
--	  MTD nand layer.
--
--config MTD_NAND_GPMI_NAND
--        tristate "GPMI NAND Flash Controller driver"
--        depends on MTD_NAND && MXS_DMA
--        help
--	 Enables NAND Flash support for IMX23, IMX28 or IMX6.
--	 The GPMI controller is very powerful, with the help of BCH
--	 module, it can do the hardware ECC. The GPMI supports several
--	 NAND flashs at the same time. The GPMI may conflicts with other
--	 block, such as SD card. So pay attention to it when you enable
--	 the GPMI.
--
--config MTD_NAND_BRCMNAND
--	tristate "Broadcom STB NAND controller"
--	depends on ARM || ARM64 || MIPS
--	help
--	  Enables the Broadcom NAND controller driver. The controller was
--	  originally designed for Set-Top Box but is used on various BCM7xxx,
--	  BCM3xxx, BCM63xxx, iProc/Cygnus and more.
--
--config MTD_NAND_BCM47XXNFLASH
--	tristate "Support for NAND flash on BCM4706 BCMA bus"
--	depends on BCMA_NFLASH
--	help
--	  BCMA bus can have various flash memories attached, they are
--	  registered by bcma as platform devices. This enables driver for
--	  NAND flash memories. For now only BCM4706 is supported.
--
--config MTD_NAND_PLATFORM
--	tristate "Support for generic platform NAND driver"
--	depends on HAS_IOMEM
--	help
--	  This implements a generic NAND driver for on-SOC platform
--	  devices. You will need to provide platform-specific functions
--	  via platform_data.
--
--config MTD_NAND_ORION
--	tristate "NAND Flash support for Marvell Orion SoC"
--	depends on PLAT_ORION
--	help
--	  This enables the NAND flash controller on Orion machines.
--
--	  No board specific support is done by this driver, each board
--	  must advertise a platform_device for the driver to attach.
--
--config MTD_NAND_OXNAS
--	tristate "NAND Flash support for Oxford Semiconductor SoC"
--	depends on ARCH_OXNAS || COMPILE_TEST
--	depends on HAS_IOMEM
--	help
--	  This enables the NAND flash controller on Oxford Semiconductor SoCs.
--
--config MTD_NAND_FSL_ELBC
--	tristate "NAND support for Freescale eLBC controllers"
--	depends on FSL_SOC
--	select FSL_LBC
--	help
--	  Various Freescale chips, including the 8313, include a NAND Flash
--	  Controller Module with built-in hardware ECC capabilities.
--	  Enabling this option will enable you to use this to control
--	  external NAND devices.
--
--config MTD_NAND_FSL_IFC
--	tristate "NAND support for Freescale IFC controller"
--	depends on FSL_SOC || ARCH_LAYERSCAPE || SOC_LS1021A
--	select FSL_IFC
--	select MEMORY
--	help
--	  Various Freescale chips e.g P1010, include a NAND Flash machine
--	  with built-in hardware ECC capabilities.
--	  Enabling this option will enable you to use this to control
--	  external NAND devices.
--
--config MTD_NAND_FSL_UPM
--	tristate "Support for NAND on Freescale UPM"
--	depends on PPC_83xx || PPC_85xx
--	select FSL_LBC
--	help
--	  Enables support for NAND Flash chips wired onto Freescale PowerPC
--	  processor localbus with User-Programmable Machine support.
--
--config MTD_NAND_MPC5121_NFC
--	tristate "MPC5121 built-in NAND Flash Controller support"
--	depends on PPC_MPC512x
--	help
--	  This enables the driver for the NAND flash controller on the
--	  MPC5121 SoC.
--
--config MTD_NAND_VF610_NFC
--	tristate "Support for Freescale NFC for VF610/MPC5125"
--	depends on (SOC_VF610 || COMPILE_TEST)
--	depends on HAS_IOMEM
--	help
--	  Enables support for NAND Flash Controller on some Freescale
--	  processors like the VF610, MPC5125, MCF54418 or Kinetis K70.
--	  The driver supports a maximum 2k page size. With 2k pages and
--	  64 bytes or more of OOB, hardware ECC with up to 32-bit error
--	  correction is supported. Hardware ECC is only enabled through
--	  device tree.
--
--config MTD_NAND_MXC
--	tristate "MXC NAND support"
--	depends on ARCH_MXC
--	help
--	  This enables the driver for the NAND flash controller on the
--	  MXC processors.
--
--config MTD_NAND_SH_FLCTL
--	tristate "Support for NAND on Renesas SuperH FLCTL"
--	depends on SUPERH || COMPILE_TEST
--	depends on HAS_IOMEM
--	depends on HAS_DMA
--	help
--	  Several Renesas SuperH CPU has FLCTL. This option enables support
--	  for NAND Flash using FLCTL.
--
--config MTD_NAND_DAVINCI
--        tristate "Support NAND on DaVinci/Keystone SoC"
--        depends on ARCH_DAVINCI || (ARCH_KEYSTONE && TI_AEMIF)
--        help
--	  Enable the driver for NAND flash chips on Texas Instruments
--	  DaVinci/Keystone processors.
--
--config MTD_NAND_TXX9NDFMC
--	tristate "NAND Flash support for TXx9 SoC"
--	depends on SOC_TX4938 || SOC_TX4939
--	help
--	  This enables the NAND flash controller on the TXx9 SoCs.
--
--config MTD_NAND_SOCRATES
--	tristate "Support for NAND on Socrates board"
--	depends on SOCRATES
--	help
--	  Enables support for NAND Flash chips wired onto Socrates board.
--
--config MTD_NAND_NUC900
--	tristate "Support for NAND on Nuvoton NUC9xx/w90p910 evaluation boards."
--	depends on ARCH_W90X900
--	help
--	  This enables the driver for the NAND Flash on evaluation board based
--	  on w90p910 / NUC9xx.
--
--config MTD_NAND_JZ4740
--	tristate "Support for JZ4740 SoC NAND controller"
--	depends on MACH_JZ4740
--	help
--		Enables support for NAND Flash on JZ4740 SoC based boards.
--
--config MTD_NAND_JZ4780
--	tristate "Support for NAND on JZ4780 SoC"
--	depends on MACH_JZ4780 && JZ4780_NEMC
--	help
--	  Enables support for NAND Flash connected to the NEMC on JZ4780 SoC
--	  based boards, using the BCH controller for hardware error correction.
--
--config MTD_NAND_FSMC
--	tristate "Support for NAND on ST Micros FSMC"
--	depends on OF
--	depends on PLAT_SPEAR || ARCH_NOMADIK || ARCH_U8500 || MACH_U300
--	help
--	  Enables support for NAND Flash chips on the ST Microelectronics
--	  Flexible Static Memory Controller (FSMC)
--
--config MTD_NAND_XWAY
--	bool "Support for NAND on Lantiq XWAY SoC"
--	depends on LANTIQ && SOC_TYPE_XWAY
--	help
--	  Enables support for NAND Flash chips on Lantiq XWAY SoCs. NAND is attached
--	  to the External Bus Unit (EBU).
--
--config MTD_NAND_SUNXI
--	tristate "Support for NAND on Allwinner SoCs"
--	depends on ARCH_SUNXI
--	help
--	  Enables support for NAND Flash chips on Allwinner SoCs.
--
--config MTD_NAND_HISI504
--	tristate "Support for NAND controller on Hisilicon SoC Hip04"
--	depends on ARCH_HISI || COMPILE_TEST
--	depends on HAS_DMA
--	help
--	  Enables support for NAND controller on Hisilicon SoC Hip04.
--
--config MTD_NAND_QCOM
--	tristate "Support for NAND on QCOM SoCs"
--	depends on ARCH_QCOM
--	help
--	  Enables support for NAND flash chips on SoCs containing the EBI2 NAND
--	  controller. This controller is found on IPQ806x SoC.
--
--config MTD_NAND_MTK
--	tristate "Support for NAND controller on MTK SoCs"
--	depends on ARCH_MEDIATEK || COMPILE_TEST
--	depends on HAS_DMA
--	help
--	  Enables support for NAND controller on MTK SoCs.
--	  This controller is found on mt27xx, mt81xx, mt65xx SoCs.
--
--endif # MTD_NAND
-+source "drivers/mtd/nand/raw/Kconfig"
-diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index ade5fc4..eee2f27 100644
---- a/drivers/mtd/nand/Makefile
-+++ b/drivers/mtd/nand/Makefile
-@@ -1,69 +1 @@
--#
--# linux/drivers/nand/Makefile
--#
--
--obj-$(CONFIG_MTD_NAND)			+= nand.o
--obj-$(CONFIG_MTD_NAND_ECC)		+= nand_ecc.o
--obj-$(CONFIG_MTD_NAND_BCH)		+= nand_bch.o
--obj-$(CONFIG_MTD_SM_COMMON) 		+= sm_common.o
--
--obj-$(CONFIG_MTD_NAND_CAFE)		+= cafe_nand.o
--obj-$(CONFIG_MTD_NAND_AMS_DELTA)	+= ams-delta.o
--obj-$(CONFIG_MTD_NAND_DENALI)		+= denali.o
--obj-$(CONFIG_MTD_NAND_DENALI_PCI)	+= denali_pci.o
--obj-$(CONFIG_MTD_NAND_DENALI_DT)	+= denali_dt.o
--obj-$(CONFIG_MTD_NAND_AU1550)		+= au1550nd.o
--obj-$(CONFIG_MTD_NAND_BF5XX)		+= bf5xx_nand.o
--obj-$(CONFIG_MTD_NAND_S3C2410)		+= s3c2410.o
--obj-$(CONFIG_MTD_NAND_TANGO)		+= tango_nand.o
--obj-$(CONFIG_MTD_NAND_DAVINCI)		+= davinci_nand.o
--obj-$(CONFIG_MTD_NAND_DISKONCHIP)	+= diskonchip.o
--obj-$(CONFIG_MTD_NAND_DOCG4)		+= docg4.o
--obj-$(CONFIG_MTD_NAND_FSMC)		+= fsmc_nand.o
--obj-$(CONFIG_MTD_NAND_SHARPSL)		+= sharpsl.o
--obj-$(CONFIG_MTD_NAND_NANDSIM)		+= nandsim.o
--obj-$(CONFIG_MTD_NAND_CS553X)		+= cs553x_nand.o
--obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
--obj-$(CONFIG_MTD_NAND_ATMEL)		+= atmel/
--obj-$(CONFIG_MTD_NAND_GPIO)		+= gpio.o
--omap2_nand-objs := omap2.o
--obj-$(CONFIG_MTD_NAND_OMAP2) 		+= omap2_nand.o
--obj-$(CONFIG_MTD_NAND_OMAP_BCH_BUILD)	+= omap_elm.o
--obj-$(CONFIG_MTD_NAND_CM_X270)		+= cmx270_nand.o
--obj-$(CONFIG_MTD_NAND_PXA3xx)		+= pxa3xx_nand.o
--obj-$(CONFIG_MTD_NAND_TMIO)		+= tmio_nand.o
--obj-$(CONFIG_MTD_NAND_PLATFORM)		+= plat_nand.o
--obj-$(CONFIG_MTD_NAND_PASEMI)		+= pasemi_nand.o
--obj-$(CONFIG_MTD_NAND_ORION)		+= orion_nand.o
--obj-$(CONFIG_MTD_NAND_OXNAS)		+= oxnas_nand.o
--obj-$(CONFIG_MTD_NAND_FSL_ELBC)		+= fsl_elbc_nand.o
--obj-$(CONFIG_MTD_NAND_FSL_IFC)		+= fsl_ifc_nand.o
--obj-$(CONFIG_MTD_NAND_FSL_UPM)		+= fsl_upm.o
--obj-$(CONFIG_MTD_NAND_SLC_LPC32XX)      += lpc32xx_slc.o
--obj-$(CONFIG_MTD_NAND_MLC_LPC32XX)      += lpc32xx_mlc.o
--obj-$(CONFIG_MTD_NAND_SH_FLCTL)		+= sh_flctl.o
--obj-$(CONFIG_MTD_NAND_MXC)		+= mxc_nand.o
--obj-$(CONFIG_MTD_NAND_SOCRATES)		+= socrates_nand.o
--obj-$(CONFIG_MTD_NAND_TXX9NDFMC)	+= txx9ndfmc.o
--obj-$(CONFIG_MTD_NAND_NUC900)		+= nuc900_nand.o
--obj-$(CONFIG_MTD_NAND_MPC5121_NFC)	+= mpc5121_nfc.o
--obj-$(CONFIG_MTD_NAND_VF610_NFC)	+= vf610_nfc.o
--obj-$(CONFIG_MTD_NAND_RICOH)		+= r852.o
--obj-$(CONFIG_MTD_NAND_JZ4740)		+= jz4740_nand.o
--obj-$(CONFIG_MTD_NAND_JZ4780)		+= jz4780_nand.o jz4780_bch.o
--obj-$(CONFIG_MTD_NAND_GPMI_NAND)	+= gpmi-nand/
--obj-$(CONFIG_MTD_NAND_XWAY)		+= xway_nand.o
--obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash/
--obj-$(CONFIG_MTD_NAND_SUNXI)		+= sunxi_nand.o
--obj-$(CONFIG_MTD_NAND_HISI504)	        += hisi504_nand.o
--obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand/
--obj-$(CONFIG_MTD_NAND_QCOM)		+= qcom_nandc.o
--obj-$(CONFIG_MTD_NAND_MTK)		+= mtk_nand.o mtk_ecc.o
--
--nand-objs := nand_base.o nand_bbt.o nand_timings.o nand_ids.o
--nand-objs += nand_amd.o
--nand-objs += nand_hynix.o
--nand-objs += nand_macronix.o
--nand-objs += nand_micron.o
--nand-objs += nand_samsung.o
--nand-objs += nand_toshiba.o
-+obj-y	+= raw/
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-new file mode 100644
-index 0000000..0bd2319
---- /dev/null
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -0,0 +1,565 @@
-+config MTD_NAND_ECC
-+	tristate
-+
-+config MTD_NAND_ECC_SMC
-+	bool "NAND ECC Smart Media byte order"
-+	depends on MTD_NAND_ECC
-+	default n
-+	help
-+	  Software ECC according to the Smart Media Specification.
-+	  The original Linux implementation had byte 0 and 1 swapped.
-+
-+
-+menuconfig MTD_NAND
-+	tristate "NAND Device Support"
-+	depends on MTD
-+	select MTD_NAND_ECC
-+	help
-+	  This enables support for accessing all type of NAND flash
-+	  devices. For further information see
-+	  <http://www.linux-mtd.infradead.org/doc/nand.html>.
-+
-+if MTD_NAND
-+
-+config MTD_NAND_BCH
-+	tristate
-+	select BCH
-+	depends on MTD_NAND_ECC_BCH
-+	default MTD_NAND
-+
-+config MTD_NAND_ECC_BCH
-+	bool "Support software BCH ECC"
-+	default n
-+	help
-+	  This enables support for software BCH error correction. Binary BCH
-+	  codes are more powerful and cpu intensive than traditional Hamming
-+	  ECC codes. They are used with NAND devices requiring more than 1 bit
-+	  of error correction.
-+
-+config MTD_SM_COMMON
-+	tristate
-+	default n
-+
-+config MTD_NAND_DENALI
-+	tristate
-+
-+config MTD_NAND_DENALI_PCI
-+        tristate "Support Denali NAND controller on Intel Moorestown"
-+	select MTD_NAND_DENALI
-+	depends on HAS_DMA && PCI
-+        help
-+          Enable the driver for NAND flash on Intel Moorestown, using the
-+          Denali NAND controller core.
-+
-+config MTD_NAND_DENALI_DT
-+	tristate "Support Denali NAND controller as a DT device"
-+	select MTD_NAND_DENALI
-+	depends on HAS_DMA && HAVE_CLK && OF
-+	help
-+	  Enable the driver for NAND flash on platforms using a Denali NAND
-+	  controller as a DT device.
-+
-+config MTD_NAND_GPIO
-+	tristate "GPIO assisted NAND Flash driver"
-+	depends on GPIOLIB || COMPILE_TEST
-+	depends on HAS_IOMEM
-+	help
-+	  This enables a NAND flash driver where control signals are
-+	  connected to GPIO pins, and commands and data are communicated
-+	  via a memory mapped interface.
-+
-+config MTD_NAND_AMS_DELTA
-+	tristate "NAND Flash device on Amstrad E3"
-+	depends on MACH_AMS_DELTA
-+	default y
-+	help
-+	  Support for NAND flash on Amstrad E3 (Delta).
-+
-+config MTD_NAND_OMAP2
-+	tristate "NAND Flash device on OMAP2, OMAP3, OMAP4 and Keystone"
-+	depends on (ARCH_OMAP2PLUS || ARCH_KEYSTONE)
-+	help
-+          Support for NAND flash on Texas Instruments OMAP2, OMAP3, OMAP4
-+	  and Keystone platforms.
-+
-+config MTD_NAND_OMAP_BCH
-+	depends on MTD_NAND_OMAP2
-+	bool "Support hardware based BCH error correction"
-+	default n
-+	select BCH
-+	help
-+	  This config enables the ELM hardware engine, which can be used to
-+	  locate and correct errors when using BCH ECC scheme. This offloads
-+	  the cpu from doing ECC error searching and correction. However some
-+	  legacy OMAP families like OMAP2xxx, OMAP3xxx do not have ELM engine
-+	  so this is optional for them.
-+
-+config MTD_NAND_OMAP_BCH_BUILD
-+	def_tristate MTD_NAND_OMAP2 && MTD_NAND_OMAP_BCH
-+
-+config MTD_NAND_RICOH
-+	tristate "Ricoh xD card reader"
-+	default n
-+	depends on PCI
-+	select MTD_SM_COMMON
-+	help
-+	  Enable support for Ricoh R5C852 xD card reader
-+	  You also need to enable ether
-+	  NAND SSFDC (SmartMedia) read only translation layer' or new
-+	  expermental, readwrite
-+	  'SmartMedia/xD new translation layer'
-+
-+config MTD_NAND_AU1550
-+	tristate "Au1550/1200 NAND support"
-+	depends on MIPS_ALCHEMY
-+	help
-+	  This enables the driver for the NAND flash controller on the
-+	  AMD/Alchemy 1550 SOC.
-+
-+config MTD_NAND_BF5XX
-+	tristate "Blackfin on-chip NAND Flash Controller driver"
-+	depends on BF54x || BF52x
-+	help
-+	  This enables the Blackfin on-chip NAND flash controller
-+
-+	  No board specific support is done by this driver, each board
-+	  must advertise a platform_device for the driver to attach.
-+
-+	  This driver can also be built as a module. If so, the module
-+	  will be called bf5xx-nand.
-+
-+config MTD_NAND_BF5XX_HWECC
-+	bool "BF5XX NAND Hardware ECC"
-+	default y
-+	depends on MTD_NAND_BF5XX
-+	help
-+	  Enable the use of the BF5XX's internal ECC generator when
-+	  using NAND.
-+
-+config MTD_NAND_BF5XX_BOOTROM_ECC
-+	bool "Use Blackfin BootROM ECC Layout"
-+	default n
-+	depends on MTD_NAND_BF5XX_HWECC
-+	help
-+	  If you wish to modify NAND pages and allow the Blackfin on-chip
-+	  BootROM to boot from them, say Y here.  This is only necessary
-+	  if you are booting U-Boot out of NAND and you wish to update
-+	  U-Boot from Linux' userspace.  Otherwise, you should say N here.
-+
-+	  If unsure, say N.
-+
-+config MTD_NAND_S3C2410
-+	tristate "NAND Flash support for Samsung S3C SoCs"
-+	depends on ARCH_S3C24XX || ARCH_S3C64XX
-+	help
-+	  This enables the NAND flash controller on the S3C24xx and S3C64xx
-+	  SoCs
-+
-+	  No board specific support is done by this driver, each board
-+	  must advertise a platform_device for the driver to attach.
-+
-+config MTD_NAND_S3C2410_DEBUG
-+	bool "Samsung S3C NAND driver debug"
-+	depends on MTD_NAND_S3C2410
-+	help
-+	  Enable debugging of the S3C NAND driver
-+
-+config MTD_NAND_NDFC
-+	tristate "NDFC NanD Flash Controller"
-+	depends on 4xx
-+	select MTD_NAND_ECC_SMC
-+	help
-+	 NDFC Nand Flash Controllers are integrated in IBM/AMCC's 4xx SoCs
-+
-+config MTD_NAND_S3C2410_CLKSTOP
-+	bool "Samsung S3C NAND IDLE clock stop"
-+	depends on MTD_NAND_S3C2410
-+	default n
-+	help
-+	  Stop the clock to the NAND controller when there is no chip
-+	  selected to save power. This will mean there is a small delay
-+	  when the is NAND chip selected or released, but will save
-+	  approximately 5mA of power when there is nothing happening.
-+
-+config MTD_NAND_TANGO
-+	tristate "NAND Flash support for Tango chips"
-+	depends on ARCH_TANGO || COMPILE_TEST
-+	depends on HAS_DMA
-+	help
-+	  Enables the NAND Flash controller on Tango chips.
-+
-+config MTD_NAND_DISKONCHIP
-+	tristate "DiskOnChip 2000, Millennium and Millennium Plus (NAND reimplementation)"
-+	depends on HAS_IOMEM
-+	select REED_SOLOMON
-+	select REED_SOLOMON_DEC16
-+	help
-+	  This is a reimplementation of M-Systems DiskOnChip 2000,
-+	  Millennium and Millennium Plus as a standard NAND device driver,
-+	  as opposed to the earlier self-contained MTD device drivers.
-+	  This should enable, among other things, proper JFFS2 operation on
-+	  these devices.
-+
-+config MTD_NAND_DISKONCHIP_PROBE_ADVANCED
-+        bool "Advanced detection options for DiskOnChip"
-+        depends on MTD_NAND_DISKONCHIP
-+        help
-+          This option allows you to specify nonstandard address at which to
-+          probe for a DiskOnChip, or to change the detection options.  You
-+          are unlikely to need any of this unless you are using LinuxBIOS.
-+          Say 'N'.
-+
-+config MTD_NAND_DISKONCHIP_PROBE_ADDRESS
-+        hex "Physical address of DiskOnChip" if MTD_NAND_DISKONCHIP_PROBE_ADVANCED
-+        depends on MTD_NAND_DISKONCHIP
-+        default "0"
-+        ---help---
-+        By default, the probe for DiskOnChip devices will look for a
-+        DiskOnChip at every multiple of 0x2000 between 0xC8000 and 0xEE000.
-+        This option allows you to specify a single address at which to probe
-+        for the device, which is useful if you have other devices in that
-+        range which get upset when they are probed.
-+
-+        (Note that on PowerPC, the normal probe will only check at
-+        0xE4000000.)
-+
-+        Normally, you should leave this set to zero, to allow the probe at
-+        the normal addresses.
-+
-+config MTD_NAND_DISKONCHIP_PROBE_HIGH
-+        bool "Probe high addresses"
-+        depends on MTD_NAND_DISKONCHIP_PROBE_ADVANCED
-+        help
-+          By default, the probe for DiskOnChip devices will look for a
-+          DiskOnChip at every multiple of 0x2000 between 0xC8000 and 0xEE000.
-+          This option changes to make it probe between 0xFFFC8000 and
-+          0xFFFEE000.  Unless you are using LinuxBIOS, this is unlikely to be
-+          useful to you.  Say 'N'.
-+
-+config MTD_NAND_DISKONCHIP_BBTWRITE
-+	bool "Allow BBT writes on DiskOnChip Millennium and 2000TSOP"
-+	depends on MTD_NAND_DISKONCHIP
-+	help
-+	  On DiskOnChip devices shipped with the INFTL filesystem (Millennium
-+	  and 2000 TSOP/Alon), Linux reserves some space at the end of the
-+	  device for the Bad Block Table (BBT).  If you have existing INFTL
-+	  data on your device (created by non-Linux tools such as M-Systems'
-+	  DOS drivers), your data might overlap the area Linux wants to use for
-+	  the BBT.  If this is a concern for you, leave this option disabled and
-+	  Linux will not write BBT data into this area.
-+	  The downside of leaving this option disabled is that if bad blocks
-+	  are detected by Linux, they will not be recorded in the BBT, which
-+	  could cause future problems.
-+	  Once you enable this option, new filesystems (INFTL or others, created
-+	  in Linux or other operating systems) will not use the reserved area.
-+	  The only reason not to enable this option is to prevent damage to
-+	  preexisting filesystems.
-+	  Even if you leave this disabled, you can enable BBT writes at module
-+	  load time (assuming you build diskonchip as a module) with the module
-+	  parameter "inftl_bbt_write=1".
-+
-+config MTD_NAND_DOCG4
-+	tristate "Support for DiskOnChip G4"
-+	depends on HAS_IOMEM
-+	select BCH
-+	select BITREVERSE
-+	help
-+	  Support for diskonchip G4 nand flash, found in various smartphones and
-+	  PDAs, among them the Palm Treo680, HTC Prophet and Wizard, Toshiba
-+	  Portege G900, Asus P526, and O2 XDA Zinc.
-+
-+	  With this driver you will be able to use UBI and create a ubifs on the
-+	  device, so you may wish to consider enabling UBI and UBIFS as well.
-+
-+	  These devices ship with the Mys/Sandisk SAFTL formatting, for which
-+	  there is currently no mtd parser, so you may want to use command line
-+	  partitioning to segregate write-protected blocks. On the Treo680, the
-+	  first five erase blocks (256KiB each) are write-protected, followed
-+	  by the block containing the saftl partition table.  This is probably
-+	  typical.
-+
-+config MTD_NAND_SHARPSL
-+	tristate "Support for NAND Flash on Sharp SL Series (C7xx + others)"
-+	depends on ARCH_PXA
-+
-+config MTD_NAND_CAFE
-+	tristate "NAND support for OLPC CAFÉ chip"
-+	depends on PCI
-+	select REED_SOLOMON
-+	select REED_SOLOMON_DEC16
-+	help
-+	  Use NAND flash attached to the CAFÉ chip designed for the OLPC
-+	  laptop.
-+
-+config MTD_NAND_CS553X
-+	tristate "NAND support for CS5535/CS5536 (AMD Geode companion chip)"
-+	depends on X86_32
-+	depends on !UML && HAS_IOMEM
-+	help
-+	  The CS553x companion chips for the AMD Geode processor
-+	  include NAND flash controllers with built-in hardware ECC
-+	  capabilities; enabling this option will allow you to use
-+	  these. The driver will check the MSRs to verify that the
-+	  controller is enabled for NAND, and currently requires that
-+	  the controller be in MMIO mode.
-+
-+	  If you say "m", the module will be called cs553x_nand.
-+
-+config MTD_NAND_ATMEL
-+	tristate "Support for NAND Flash / SmartMedia on AT91"
-+	depends on ARCH_AT91
-+	help
-+	  Enables support for NAND Flash / Smart Media Card interface
-+	  on Atmel AT91 processors.
-+
-+config MTD_NAND_PXA3xx
-+	tristate "NAND support on PXA3xx and Armada 370/XP"
-+	depends on PXA3xx || ARCH_MMP || PLAT_ORION
-+	help
-+	  This enables the driver for the NAND flash device found on
-+	  PXA3xx processors (NFCv1) and also on Armada 370/XP (NFCv2).
-+
-+config MTD_NAND_SLC_LPC32XX
-+	tristate "NXP LPC32xx SLC Controller"
-+	depends on ARCH_LPC32XX
-+	help
-+	  Enables support for NXP's LPC32XX SLC (i.e. for Single Level Cell
-+	  chips) NAND controller. This is the default for the PHYTEC 3250
-+	  reference board which contains a NAND256R3A2CZA6 chip.
-+
-+	  Please check the actual NAND chip connected and its support
-+	  by the SLC NAND controller.
-+
-+config MTD_NAND_MLC_LPC32XX
-+	tristate "NXP LPC32xx MLC Controller"
-+	depends on ARCH_LPC32XX
-+	help
-+	  Uses the LPC32XX MLC (i.e. for Multi Level Cell chips) NAND
-+	  controller. This is the default for the WORK92105 controller
-+	  board.
-+
-+	  Please check the actual NAND chip connected and its support
-+	  by the MLC NAND controller.
-+
-+config MTD_NAND_CM_X270
-+	tristate "Support for NAND Flash on CM-X270 modules"
-+	depends on MACH_ARMCORE
-+
-+config MTD_NAND_PASEMI
-+	tristate "NAND support for PA Semi PWRficient"
-+	depends on PPC_PASEMI
-+	help
-+	  Enables support for NAND Flash interface on PA Semi PWRficient
-+	  based boards
-+
-+config MTD_NAND_TMIO
-+	tristate "NAND Flash device on Toshiba Mobile IO Controller"
-+	depends on MFD_TMIO
-+	help
-+	  Support for NAND flash connected to a Toshiba Mobile IO
-+	  Controller in some PDAs, including the Sharp SL6000x.
-+
-+config MTD_NAND_NANDSIM
-+	tristate "Support for NAND Flash Simulator"
-+	help
-+	  The simulator may simulate various NAND flash chips for the
-+	  MTD nand layer.
-+
-+config MTD_NAND_GPMI_NAND
-+        tristate "GPMI NAND Flash Controller driver"
-+        depends on MTD_NAND && MXS_DMA
-+        help
-+	 Enables NAND Flash support for IMX23, IMX28 or IMX6.
-+	 The GPMI controller is very powerful, with the help of BCH
-+	 module, it can do the hardware ECC. The GPMI supports several
-+	 NAND flashs at the same time. The GPMI may conflicts with other
-+	 block, such as SD card. So pay attention to it when you enable
-+	 the GPMI.
-+
-+config MTD_NAND_BRCMNAND
-+	tristate "Broadcom STB NAND controller"
-+	depends on ARM || ARM64 || MIPS
-+	help
-+	  Enables the Broadcom NAND controller driver. The controller was
-+	  originally designed for Set-Top Box but is used on various BCM7xxx,
-+	  BCM3xxx, BCM63xxx, iProc/Cygnus and more.
-+
-+config MTD_NAND_BCM47XXNFLASH
-+	tristate "Support for NAND flash on BCM4706 BCMA bus"
-+	depends on BCMA_NFLASH
-+	help
-+	  BCMA bus can have various flash memories attached, they are
-+	  registered by bcma as platform devices. This enables driver for
-+	  NAND flash memories. For now only BCM4706 is supported.
-+
-+config MTD_NAND_PLATFORM
-+	tristate "Support for generic platform NAND driver"
-+	depends on HAS_IOMEM
-+	help
-+	  This implements a generic NAND driver for on-SOC platform
-+	  devices. You will need to provide platform-specific functions
-+	  via platform_data.
-+
-+config MTD_NAND_ORION
-+	tristate "NAND Flash support for Marvell Orion SoC"
-+	depends on PLAT_ORION
-+	help
-+	  This enables the NAND flash controller on Orion machines.
-+
-+	  No board specific support is done by this driver, each board
-+	  must advertise a platform_device for the driver to attach.
-+
-+config MTD_NAND_OXNAS
-+	tristate "NAND Flash support for Oxford Semiconductor SoC"
-+	depends on ARCH_OXNAS || COMPILE_TEST
-+	depends on HAS_IOMEM
-+	help
-+	  This enables the NAND flash controller on Oxford Semiconductor SoCs.
-+
-+config MTD_NAND_FSL_ELBC
-+	tristate "NAND support for Freescale eLBC controllers"
-+	depends on FSL_SOC
-+	select FSL_LBC
-+	help
-+	  Various Freescale chips, including the 8313, include a NAND Flash
-+	  Controller Module with built-in hardware ECC capabilities.
-+	  Enabling this option will enable you to use this to control
-+	  external NAND devices.
-+
-+config MTD_NAND_FSL_IFC
-+	tristate "NAND support for Freescale IFC controller"
-+	depends on FSL_SOC || ARCH_LAYERSCAPE || SOC_LS1021A
-+	select FSL_IFC
-+	select MEMORY
-+	help
-+	  Various Freescale chips e.g P1010, include a NAND Flash machine
-+	  with built-in hardware ECC capabilities.
-+	  Enabling this option will enable you to use this to control
-+	  external NAND devices.
-+
-+config MTD_NAND_FSL_UPM
-+	tristate "Support for NAND on Freescale UPM"
-+	depends on PPC_83xx || PPC_85xx
-+	select FSL_LBC
-+	help
-+	  Enables support for NAND Flash chips wired onto Freescale PowerPC
-+	  processor localbus with User-Programmable Machine support.
-+
-+config MTD_NAND_MPC5121_NFC
-+	tristate "MPC5121 built-in NAND Flash Controller support"
-+	depends on PPC_MPC512x
-+	help
-+	  This enables the driver for the NAND flash controller on the
-+	  MPC5121 SoC.
-+
-+config MTD_NAND_VF610_NFC
-+	tristate "Support for Freescale NFC for VF610/MPC5125"
-+	depends on (SOC_VF610 || COMPILE_TEST)
-+	depends on HAS_IOMEM
-+	help
-+	  Enables support for NAND Flash Controller on some Freescale
-+	  processors like the VF610, MPC5125, MCF54418 or Kinetis K70.
-+	  The driver supports a maximum 2k page size. With 2k pages and
-+	  64 bytes or more of OOB, hardware ECC with up to 32-bit error
-+	  correction is supported. Hardware ECC is only enabled through
-+	  device tree.
-+
-+config MTD_NAND_MXC
-+	tristate "MXC NAND support"
-+	depends on ARCH_MXC
-+	help
-+	  This enables the driver for the NAND flash controller on the
-+	  MXC processors.
-+
-+config MTD_NAND_SH_FLCTL
-+	tristate "Support for NAND on Renesas SuperH FLCTL"
-+	depends on SUPERH || COMPILE_TEST
-+	depends on HAS_IOMEM
-+	depends on HAS_DMA
-+	help
-+	  Several Renesas SuperH CPU has FLCTL. This option enables support
-+	  for NAND Flash using FLCTL.
-+
-+config MTD_NAND_DAVINCI
-+        tristate "Support NAND on DaVinci/Keystone SoC"
-+        depends on ARCH_DAVINCI || (ARCH_KEYSTONE && TI_AEMIF)
-+        help
-+	  Enable the driver for NAND flash chips on Texas Instruments
-+	  DaVinci/Keystone processors.
-+
-+config MTD_NAND_TXX9NDFMC
-+	tristate "NAND Flash support for TXx9 SoC"
-+	depends on SOC_TX4938 || SOC_TX4939
-+	help
-+	  This enables the NAND flash controller on the TXx9 SoCs.
-+
-+config MTD_NAND_SOCRATES
-+	tristate "Support for NAND on Socrates board"
-+	depends on SOCRATES
-+	help
-+	  Enables support for NAND Flash chips wired onto Socrates board.
-+
-+config MTD_NAND_NUC900
-+	tristate "Support for NAND on Nuvoton NUC9xx/w90p910 evaluation boards."
-+	depends on ARCH_W90X900
-+	help
-+	  This enables the driver for the NAND Flash on evaluation board based
-+	  on w90p910 / NUC9xx.
-+
-+config MTD_NAND_JZ4740
-+	tristate "Support for JZ4740 SoC NAND controller"
-+	depends on MACH_JZ4740
-+	help
-+		Enables support for NAND Flash on JZ4740 SoC based boards.
-+
-+config MTD_NAND_JZ4780
-+	tristate "Support for NAND on JZ4780 SoC"
-+	depends on MACH_JZ4780 && JZ4780_NEMC
-+	help
-+	  Enables support for NAND Flash connected to the NEMC on JZ4780 SoC
-+	  based boards, using the BCH controller for hardware error correction.
-+
-+config MTD_NAND_FSMC
-+	tristate "Support for NAND on ST Micros FSMC"
-+	depends on OF
-+	depends on PLAT_SPEAR || ARCH_NOMADIK || ARCH_U8500 || MACH_U300
-+	help
-+	  Enables support for NAND Flash chips on the ST Microelectronics
-+	  Flexible Static Memory Controller (FSMC)
-+
-+config MTD_NAND_XWAY
-+	bool "Support for NAND on Lantiq XWAY SoC"
-+	depends on LANTIQ && SOC_TYPE_XWAY
-+	help
-+	  Enables support for NAND Flash chips on Lantiq XWAY SoCs. NAND is attached
-+	  to the External Bus Unit (EBU).
-+
-+config MTD_NAND_SUNXI
-+	tristate "Support for NAND on Allwinner SoCs"
-+	depends on ARCH_SUNXI
-+	help
-+	  Enables support for NAND Flash chips on Allwinner SoCs.
-+
-+config MTD_NAND_HISI504
-+	tristate "Support for NAND controller on Hisilicon SoC Hip04"
-+	depends on ARCH_HISI || COMPILE_TEST
-+	depends on HAS_DMA
-+	help
-+	  Enables support for NAND controller on Hisilicon SoC Hip04.
-+
-+config MTD_NAND_QCOM
-+	tristate "Support for NAND on QCOM SoCs"
-+	depends on ARCH_QCOM
-+	help
-+	  Enables support for NAND flash chips on SoCs containing the EBI2 NAND
-+	  controller. This controller is found on IPQ806x SoC.
-+
-+config MTD_NAND_MTK
-+	tristate "Support for NAND controller on MTK SoCs"
-+	depends on ARCH_MEDIATEK || COMPILE_TEST
-+	depends on HAS_DMA
-+	help
-+	  Enables support for NAND controller on MTK SoCs.
-+	  This controller is found on mt27xx, mt81xx, mt65xx SoCs.
-+
-+endif # MTD_NAND
-diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
-new file mode 100644
-index 0000000..523d5c1
---- /dev/null
-+++ b/drivers/mtd/nand/raw/Makefile
-@@ -0,0 +1,69 @@
-+#
-+# linux/drivers/raw/nand/Makefile
-+#
-+
-+obj-$(CONFIG_MTD_NAND)			+= nand.o
-+obj-$(CONFIG_MTD_NAND_ECC)		+= nand_ecc.o
-+obj-$(CONFIG_MTD_NAND_BCH)		+= nand_bch.o
-+obj-$(CONFIG_MTD_SM_COMMON) 		+= sm_common.o
-+
-+obj-$(CONFIG_MTD_NAND_CAFE)		+= cafe_nand.o
-+obj-$(CONFIG_MTD_NAND_AMS_DELTA)	+= ams-delta.o
-+obj-$(CONFIG_MTD_NAND_DENALI)		+= denali.o
-+obj-$(CONFIG_MTD_NAND_DENALI_PCI)	+= denali_pci.o
-+obj-$(CONFIG_MTD_NAND_DENALI_DT)	+= denali_dt.o
-+obj-$(CONFIG_MTD_NAND_AU1550)		+= au1550nd.o
-+obj-$(CONFIG_MTD_NAND_BF5XX)		+= bf5xx_nand.o
-+obj-$(CONFIG_MTD_NAND_S3C2410)		+= s3c2410.o
-+obj-$(CONFIG_MTD_NAND_TANGO)		+= tango_nand.o
-+obj-$(CONFIG_MTD_NAND_DAVINCI)		+= davinci_nand.o
-+obj-$(CONFIG_MTD_NAND_DISKONCHIP)	+= diskonchip.o
-+obj-$(CONFIG_MTD_NAND_DOCG4)		+= docg4.o
-+obj-$(CONFIG_MTD_NAND_FSMC)		+= fsmc_nand.o
-+obj-$(CONFIG_MTD_NAND_SHARPSL)		+= sharpsl.o
-+obj-$(CONFIG_MTD_NAND_NANDSIM)		+= nandsim.o
-+obj-$(CONFIG_MTD_NAND_CS553X)		+= cs553x_nand.o
-+obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
-+obj-$(CONFIG_MTD_NAND_ATMEL)		+= atmel/
-+obj-$(CONFIG_MTD_NAND_GPIO)		+= gpio.o
-+omap2_nand-objs := omap2.o
-+obj-$(CONFIG_MTD_NAND_OMAP2) 		+= omap2_nand.o
-+obj-$(CONFIG_MTD_NAND_OMAP_BCH_BUILD)	+= omap_elm.o
-+obj-$(CONFIG_MTD_NAND_CM_X270)		+= cmx270_nand.o
-+obj-$(CONFIG_MTD_NAND_PXA3xx)		+= pxa3xx_nand.o
-+obj-$(CONFIG_MTD_NAND_TMIO)		+= tmio_nand.o
-+obj-$(CONFIG_MTD_NAND_PLATFORM)		+= plat_nand.o
-+obj-$(CONFIG_MTD_NAND_PASEMI)		+= pasemi_nand.o
-+obj-$(CONFIG_MTD_NAND_ORION)		+= orion_nand.o
-+obj-$(CONFIG_MTD_NAND_OXNAS)		+= oxnas_nand.o
-+obj-$(CONFIG_MTD_NAND_FSL_ELBC)		+= fsl_elbc_nand.o
-+obj-$(CONFIG_MTD_NAND_FSL_IFC)		+= fsl_ifc_nand.o
-+obj-$(CONFIG_MTD_NAND_FSL_UPM)		+= fsl_upm.o
-+obj-$(CONFIG_MTD_NAND_SLC_LPC32XX)      += lpc32xx_slc.o
-+obj-$(CONFIG_MTD_NAND_MLC_LPC32XX)      += lpc32xx_mlc.o
-+obj-$(CONFIG_MTD_NAND_SH_FLCTL)		+= sh_flctl.o
-+obj-$(CONFIG_MTD_NAND_MXC)		+= mxc_nand.o
-+obj-$(CONFIG_MTD_NAND_SOCRATES)		+= socrates_nand.o
-+obj-$(CONFIG_MTD_NAND_TXX9NDFMC)	+= txx9ndfmc.o
-+obj-$(CONFIG_MTD_NAND_NUC900)		+= nuc900_nand.o
-+obj-$(CONFIG_MTD_NAND_MPC5121_NFC)	+= mpc5121_nfc.o
-+obj-$(CONFIG_MTD_NAND_VF610_NFC)	+= vf610_nfc.o
-+obj-$(CONFIG_MTD_NAND_RICOH)		+= r852.o
-+obj-$(CONFIG_MTD_NAND_JZ4740)		+= jz4740_nand.o
-+obj-$(CONFIG_MTD_NAND_JZ4780)		+= jz4780_nand.o jz4780_bch.o
-+obj-$(CONFIG_MTD_NAND_GPMI_NAND)	+= gpmi-nand/
-+obj-$(CONFIG_MTD_NAND_XWAY)		+= xway_nand.o
-+obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash/
-+obj-$(CONFIG_MTD_NAND_SUNXI)		+= sunxi_nand.o
-+obj-$(CONFIG_MTD_NAND_HISI504)	        += hisi504_nand.o
-+obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand/
-+obj-$(CONFIG_MTD_NAND_QCOM)		+= qcom_nandc.o
-+obj-$(CONFIG_MTD_NAND_MTK)		+= mtk_nand.o mtk_ecc.o
-+
-+nand-objs := nand_base.o nand_bbt.o nand_timings.o nand_ids.o
-+nand-objs += nand_amd.o
-+nand-objs += nand_hynix.o
-+nand-objs += nand_macronix.o
-+nand-objs += nand_micron.o
-+nand-objs += nand_samsung.o
-+nand-objs += nand_toshiba.o
-diff --git a/drivers/mtd/nand/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
-similarity index 100%
-rename from drivers/mtd/nand/ams-delta.c
-rename to drivers/mtd/nand/raw/ams-delta.c
-diff --git a/drivers/mtd/nand/atmel/Makefile b/drivers/mtd/nand/raw/atmel/Makefile
-similarity index 100%
-rename from drivers/mtd/nand/atmel/Makefile
-rename to drivers/mtd/nand/raw/atmel/Makefile
-diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
-similarity index 100%
-rename from drivers/mtd/nand/atmel/nand-controller.c
-rename to drivers/mtd/nand/raw/atmel/nand-controller.c
-diff --git a/drivers/mtd/nand/atmel/pmecc.c b/drivers/mtd/nand/raw/atmel/pmecc.c
-similarity index 100%
-rename from drivers/mtd/nand/atmel/pmecc.c
-rename to drivers/mtd/nand/raw/atmel/pmecc.c
-diff --git a/drivers/mtd/nand/atmel/pmecc.h b/drivers/mtd/nand/raw/atmel/pmecc.h
-similarity index 100%
-rename from drivers/mtd/nand/atmel/pmecc.h
-rename to drivers/mtd/nand/raw/atmel/pmecc.h
-diff --git a/drivers/mtd/nand/au1550nd.c b/drivers/mtd/nand/raw/au1550nd.c
-similarity index 100%
-rename from drivers/mtd/nand/au1550nd.c
-rename to drivers/mtd/nand/raw/au1550nd.c
-diff --git a/drivers/mtd/nand/bcm47xxnflash/Makefile b/drivers/mtd/nand/raw/bcm47xxnflash/Makefile
-similarity index 100%
-rename from drivers/mtd/nand/bcm47xxnflash/Makefile
-rename to drivers/mtd/nand/raw/bcm47xxnflash/Makefile
-diff --git a/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h b/drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h
-similarity index 100%
-rename from drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
-rename to drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h
-diff --git a/drivers/mtd/nand/bcm47xxnflash/main.c b/drivers/mtd/nand/raw/bcm47xxnflash/main.c
-similarity index 100%
-rename from drivers/mtd/nand/bcm47xxnflash/main.c
-rename to drivers/mtd/nand/raw/bcm47xxnflash/main.c
-diff --git a/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-similarity index 100%
-rename from drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
-rename to drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/raw/bf5xx_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/bf5xx_nand.c
-rename to drivers/mtd/nand/raw/bf5xx_nand.c
-diff --git a/drivers/mtd/nand/brcmnand/Makefile b/drivers/mtd/nand/raw/brcmnand/Makefile
-similarity index 100%
-rename from drivers/mtd/nand/brcmnand/Makefile
-rename to drivers/mtd/nand/raw/brcmnand/Makefile
-diff --git a/drivers/mtd/nand/brcmnand/bcm63138_nand.c b/drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/brcmnand/bcm63138_nand.c
-rename to drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c
-diff --git a/drivers/mtd/nand/brcmnand/bcm6368_nand.c b/drivers/mtd/nand/raw/brcmnand/bcm6368_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/brcmnand/bcm6368_nand.c
-rename to drivers/mtd/nand/raw/brcmnand/bcm6368_nand.c
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-similarity index 100%
-rename from drivers/mtd/nand/brcmnand/brcmnand.c
-rename to drivers/mtd/nand/raw/brcmnand/brcmnand.c
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.h b/drivers/mtd/nand/raw/brcmnand/brcmnand.h
-similarity index 100%
-rename from drivers/mtd/nand/brcmnand/brcmnand.h
-rename to drivers/mtd/nand/raw/brcmnand/brcmnand.h
-diff --git a/drivers/mtd/nand/brcmnand/brcmstb_nand.c b/drivers/mtd/nand/raw/brcmnand/brcmstb_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/brcmnand/brcmstb_nand.c
-rename to drivers/mtd/nand/raw/brcmnand/brcmstb_nand.c
-diff --git a/drivers/mtd/nand/brcmnand/iproc_nand.c b/drivers/mtd/nand/raw/brcmnand/iproc_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/brcmnand/iproc_nand.c
-rename to drivers/mtd/nand/raw/brcmnand/iproc_nand.c
-diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/raw/cafe_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/cafe_nand.c
-rename to drivers/mtd/nand/raw/cafe_nand.c
-diff --git a/drivers/mtd/nand/cmx270_nand.c b/drivers/mtd/nand/raw/cmx270_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/cmx270_nand.c
-rename to drivers/mtd/nand/raw/cmx270_nand.c
-diff --git a/drivers/mtd/nand/cs553x_nand.c b/drivers/mtd/nand/raw/cs553x_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/cs553x_nand.c
-rename to drivers/mtd/nand/raw/cs553x_nand.c
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/davinci_nand.c
-rename to drivers/mtd/nand/raw/davinci_nand.c
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/raw/denali.c
-similarity index 100%
-rename from drivers/mtd/nand/denali.c
-rename to drivers/mtd/nand/raw/denali.c
-diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/raw/denali.h
-similarity index 100%
-rename from drivers/mtd/nand/denali.h
-rename to drivers/mtd/nand/raw/denali.h
-diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/raw/denali_dt.c
-similarity index 100%
-rename from drivers/mtd/nand/denali_dt.c
-rename to drivers/mtd/nand/raw/denali_dt.c
-diff --git a/drivers/mtd/nand/denali_pci.c b/drivers/mtd/nand/raw/denali_pci.c
-similarity index 100%
-rename from drivers/mtd/nand/denali_pci.c
-rename to drivers/mtd/nand/raw/denali_pci.c
-diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/raw/diskonchip.c
-similarity index 100%
-rename from drivers/mtd/nand/diskonchip.c
-rename to drivers/mtd/nand/raw/diskonchip.c
-diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/raw/docg4.c
-similarity index 100%
-rename from drivers/mtd/nand/docg4.c
-rename to drivers/mtd/nand/raw/docg4.c
-diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/raw/fsl_elbc_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/fsl_elbc_nand.c
-rename to drivers/mtd/nand/raw/fsl_elbc_nand.c
-diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/fsl_ifc_nand.c
-rename to drivers/mtd/nand/raw/fsl_ifc_nand.c
-diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/raw/fsl_upm.c
-similarity index 100%
-rename from drivers/mtd/nand/fsl_upm.c
-rename to drivers/mtd/nand/raw/fsl_upm.c
-diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/fsmc_nand.c
-rename to drivers/mtd/nand/raw/fsmc_nand.c
-diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/raw/gpio.c
-similarity index 100%
-rename from drivers/mtd/nand/gpio.c
-rename to drivers/mtd/nand/raw/gpio.c
-diff --git a/drivers/mtd/nand/gpmi-nand/Makefile b/drivers/mtd/nand/raw/gpmi-nand/Makefile
-similarity index 100%
-rename from drivers/mtd/nand/gpmi-nand/Makefile
-rename to drivers/mtd/nand/raw/gpmi-nand/Makefile
-diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/raw/gpmi-nand/bch-regs.h
-similarity index 100%
-rename from drivers/mtd/nand/gpmi-nand/bch-regs.h
-rename to drivers/mtd/nand/raw/gpmi-nand/bch-regs.h
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
-similarity index 100%
-rename from drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-rename to drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-similarity index 100%
-rename from drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-rename to drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
-similarity index 100%
-rename from drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-rename to drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-regs.h b/drivers/mtd/nand/raw/gpmi-nand/gpmi-regs.h
-similarity index 100%
-rename from drivers/mtd/nand/gpmi-nand/gpmi-regs.h
-rename to drivers/mtd/nand/raw/gpmi-nand/gpmi-regs.h
-diff --git a/drivers/mtd/nand/hisi504_nand.c b/drivers/mtd/nand/raw/hisi504_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/hisi504_nand.c
-rename to drivers/mtd/nand/raw/hisi504_nand.c
-diff --git a/drivers/mtd/nand/jz4740_nand.c b/drivers/mtd/nand/raw/jz4740_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/jz4740_nand.c
-rename to drivers/mtd/nand/raw/jz4740_nand.c
-diff --git a/drivers/mtd/nand/jz4780_bch.c b/drivers/mtd/nand/raw/jz4780_bch.c
-similarity index 100%
-rename from drivers/mtd/nand/jz4780_bch.c
-rename to drivers/mtd/nand/raw/jz4780_bch.c
-diff --git a/drivers/mtd/nand/jz4780_bch.h b/drivers/mtd/nand/raw/jz4780_bch.h
-similarity index 100%
-rename from drivers/mtd/nand/jz4780_bch.h
-rename to drivers/mtd/nand/raw/jz4780_bch.h
-diff --git a/drivers/mtd/nand/jz4780_nand.c b/drivers/mtd/nand/raw/jz4780_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/jz4780_nand.c
-rename to drivers/mtd/nand/raw/jz4780_nand.c
-diff --git a/drivers/mtd/nand/lpc32xx_mlc.c b/drivers/mtd/nand/raw/lpc32xx_mlc.c
-similarity index 100%
-rename from drivers/mtd/nand/lpc32xx_mlc.c
-rename to drivers/mtd/nand/raw/lpc32xx_mlc.c
-diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/raw/lpc32xx_slc.c
-similarity index 100%
-rename from drivers/mtd/nand/lpc32xx_slc.c
-rename to drivers/mtd/nand/raw/lpc32xx_slc.c
-diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/raw/mpc5121_nfc.c
-similarity index 100%
-rename from drivers/mtd/nand/mpc5121_nfc.c
-rename to drivers/mtd/nand/raw/mpc5121_nfc.c
-diff --git a/drivers/mtd/nand/mtk_ecc.c b/drivers/mtd/nand/raw/mtk_ecc.c
-similarity index 100%
-rename from drivers/mtd/nand/mtk_ecc.c
-rename to drivers/mtd/nand/raw/mtk_ecc.c
-diff --git a/drivers/mtd/nand/mtk_ecc.h b/drivers/mtd/nand/raw/mtk_ecc.h
-similarity index 100%
-rename from drivers/mtd/nand/mtk_ecc.h
-rename to drivers/mtd/nand/raw/mtk_ecc.h
-diff --git a/drivers/mtd/nand/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/mtk_nand.c
-rename to drivers/mtd/nand/raw/mtk_nand.c
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/mxc_nand.c
-rename to drivers/mtd/nand/raw/mxc_nand.c
-diff --git a/drivers/mtd/nand/nand_amd.c b/drivers/mtd/nand/raw/nand_amd.c
-similarity index 100%
-rename from drivers/mtd/nand/nand_amd.c
-rename to drivers/mtd/nand/raw/nand_amd.c
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-similarity index 100%
-rename from drivers/mtd/nand/nand_base.c
-rename to drivers/mtd/nand/raw/nand_base.c
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
-similarity index 100%
-rename from drivers/mtd/nand/nand_bbt.c
-rename to drivers/mtd/nand/raw/nand_bbt.c
-diff --git a/drivers/mtd/nand/nand_bch.c b/drivers/mtd/nand/raw/nand_bch.c
-similarity index 100%
-rename from drivers/mtd/nand/nand_bch.c
-rename to drivers/mtd/nand/raw/nand_bch.c
-diff --git a/drivers/mtd/nand/nand_ecc.c b/drivers/mtd/nand/raw/nand_ecc.c
-similarity index 100%
-rename from drivers/mtd/nand/nand_ecc.c
-rename to drivers/mtd/nand/raw/nand_ecc.c
-diff --git a/drivers/mtd/nand/nand_hynix.c b/drivers/mtd/nand/raw/nand_hynix.c
-similarity index 100%
-rename from drivers/mtd/nand/nand_hynix.c
-rename to drivers/mtd/nand/raw/nand_hynix.c
-diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/raw/nand_ids.c
-similarity index 100%
-rename from drivers/mtd/nand/nand_ids.c
-rename to drivers/mtd/nand/raw/nand_ids.c
-diff --git a/drivers/mtd/nand/nand_macronix.c b/drivers/mtd/nand/raw/nand_macronix.c
-similarity index 100%
-rename from drivers/mtd/nand/nand_macronix.c
-rename to drivers/mtd/nand/raw/nand_macronix.c
-diff --git a/drivers/mtd/nand/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
-similarity index 100%
-rename from drivers/mtd/nand/nand_micron.c
-rename to drivers/mtd/nand/raw/nand_micron.c
-diff --git a/drivers/mtd/nand/nand_samsung.c b/drivers/mtd/nand/raw/nand_samsung.c
-similarity index 100%
-rename from drivers/mtd/nand/nand_samsung.c
-rename to drivers/mtd/nand/raw/nand_samsung.c
-diff --git a/drivers/mtd/nand/nand_timings.c b/drivers/mtd/nand/raw/nand_timings.c
-similarity index 100%
-rename from drivers/mtd/nand/nand_timings.c
-rename to drivers/mtd/nand/raw/nand_timings.c
-diff --git a/drivers/mtd/nand/nand_toshiba.c b/drivers/mtd/nand/raw/nand_toshiba.c
-similarity index 100%
-rename from drivers/mtd/nand/nand_toshiba.c
-rename to drivers/mtd/nand/raw/nand_toshiba.c
-diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
-similarity index 100%
-rename from drivers/mtd/nand/nandsim.c
-rename to drivers/mtd/nand/raw/nandsim.c
-diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/raw/ndfc.c
-similarity index 100%
-rename from drivers/mtd/nand/ndfc.c
-rename to drivers/mtd/nand/raw/ndfc.c
-diff --git a/drivers/mtd/nand/nuc900_nand.c b/drivers/mtd/nand/raw/nuc900_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/nuc900_nand.c
-rename to drivers/mtd/nand/raw/nuc900_nand.c
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/raw/omap2.c
-similarity index 100%
-rename from drivers/mtd/nand/omap2.c
-rename to drivers/mtd/nand/raw/omap2.c
-diff --git a/drivers/mtd/nand/omap_elm.c b/drivers/mtd/nand/raw/omap_elm.c
-similarity index 100%
-rename from drivers/mtd/nand/omap_elm.c
-rename to drivers/mtd/nand/raw/omap_elm.c
-diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/raw/orion_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/orion_nand.c
-rename to drivers/mtd/nand/raw/orion_nand.c
-diff --git a/drivers/mtd/nand/oxnas_nand.c b/drivers/mtd/nand/raw/oxnas_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/oxnas_nand.c
-rename to drivers/mtd/nand/raw/oxnas_nand.c
-diff --git a/drivers/mtd/nand/pasemi_nand.c b/drivers/mtd/nand/raw/pasemi_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/pasemi_nand.c
-rename to drivers/mtd/nand/raw/pasemi_nand.c
-diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/raw/plat_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/plat_nand.c
-rename to drivers/mtd/nand/raw/plat_nand.c
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/raw/pxa3xx_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/pxa3xx_nand.c
-rename to drivers/mtd/nand/raw/pxa3xx_nand.c
-diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-similarity index 100%
-rename from drivers/mtd/nand/qcom_nandc.c
-rename to drivers/mtd/nand/raw/qcom_nandc.c
-diff --git a/drivers/mtd/nand/r852.c b/drivers/mtd/nand/raw/r852.c
-similarity index 100%
-rename from drivers/mtd/nand/r852.c
-rename to drivers/mtd/nand/raw/r852.c
-diff --git a/drivers/mtd/nand/r852.h b/drivers/mtd/nand/raw/r852.h
-similarity index 100%
-rename from drivers/mtd/nand/r852.h
-rename to drivers/mtd/nand/raw/r852.h
-diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/raw/s3c2410.c
-similarity index 100%
-rename from drivers/mtd/nand/s3c2410.c
-rename to drivers/mtd/nand/raw/s3c2410.c
-diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/raw/sh_flctl.c
-similarity index 100%
-rename from drivers/mtd/nand/sh_flctl.c
-rename to drivers/mtd/nand/raw/sh_flctl.c
-diff --git a/drivers/mtd/nand/sharpsl.c b/drivers/mtd/nand/raw/sharpsl.c
-similarity index 100%
-rename from drivers/mtd/nand/sharpsl.c
-rename to drivers/mtd/nand/raw/sharpsl.c
-diff --git a/drivers/mtd/nand/sm_common.c b/drivers/mtd/nand/raw/sm_common.c
-similarity index 100%
-rename from drivers/mtd/nand/sm_common.c
-rename to drivers/mtd/nand/raw/sm_common.c
-diff --git a/drivers/mtd/nand/sm_common.h b/drivers/mtd/nand/raw/sm_common.h
-similarity index 100%
-rename from drivers/mtd/nand/sm_common.h
-rename to drivers/mtd/nand/raw/sm_common.h
-diff --git a/drivers/mtd/nand/socrates_nand.c b/drivers/mtd/nand/raw/socrates_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/socrates_nand.c
-rename to drivers/mtd/nand/raw/socrates_nand.c
-diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/sunxi_nand.c
-rename to drivers/mtd/nand/raw/sunxi_nand.c
-diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/raw/tango_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/tango_nand.c
-rename to drivers/mtd/nand/raw/tango_nand.c
-diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/raw/tmio_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/tmio_nand.c
-rename to drivers/mtd/nand/raw/tmio_nand.c
-diff --git a/drivers/mtd/nand/txx9ndfmc.c b/drivers/mtd/nand/raw/txx9ndfmc.c
-similarity index 100%
-rename from drivers/mtd/nand/txx9ndfmc.c
-rename to drivers/mtd/nand/raw/txx9ndfmc.c
-diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/raw/vf610_nfc.c
-similarity index 100%
-rename from drivers/mtd/nand/vf610_nfc.c
-rename to drivers/mtd/nand/raw/vf610_nfc.c
-diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/raw/xway_nand.c
-similarity index 100%
-rename from drivers/mtd/nand/xway_nand.c
-rename to drivers/mtd/nand/raw/xway_nand.c
-diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
-index 3692dd5..bcc851d 100644
---- a/drivers/mtd/sm_ftl.c
-+++ b/drivers/mtd/sm_ftl.c
-@@ -17,7 +17,7 @@
+ 	/* Return info from the table */
+-	return nand_isbad_bbt(mtd, ofs, allowbbt);
++	return nand_isbad_bbt(nand, ofs, allowbbt);
+ }
+ 
+ /**
+@@ -3457,6 +3459,75 @@ static void nand_shutdown(struct mtd_info *mtd)
+ 	nand_get_device(mtd, FL_PM_SUSPENDED);
+ }
+ 
++/*
++ * Define some generic bad / good block scan pattern which are used
++ * while scanning a device for factory marked good / bad blocks.
++ */
++static u8 scan_ff_pattern[] = { 0xff, 0xff };
++
++#define BADBLOCK_SCAN_MASK (~NAND_BBT_NO_OOB)
++
++/**
++ * nand_create_badblock_pattern - [INTERN] Creates a BBT descriptor structure
++ * @this: NAND chip to create descriptor for
++ *
++ * This function allocates and initializes a nand_bbt_descr for BBM detection
++ * based on the properties of @this. The new descriptor is stored in
++ * this->badblock_pattern. Thus, this->badblock_pattern should be NULL when
++ * passed to this function.
++ */
++static int nand_create_badblock_pattern(struct nand_chip *chip)
++{
++	struct nand_device *this = &chip->base.base;
++	struct nand_bbt_descr *bd;
++
++	if (this->bbt.bbp) {
++		pr_warn("Bad block pattern already allocated; not replacing\n");
++		return -EINVAL;
++	}
++
++	bd = kzalloc(sizeof(*bd), GFP_KERNEL);
++	if (!bd)
++		return -ENOMEM;
++
++	bd->options = this->bbt.options & BADBLOCK_SCAN_MASK;
++	bd->offs = chip->badblockpos;
++	bd->len = (chip->options & NAND_BUSWIDTH_16) ? 2 : 1;
++	bd->pattern = scan_ff_pattern;
++	bd->options |= NAND_BBT_DYNAMICSTRUCT;
++	this->bbt.bbp = bd;
++
++	return 0;
++}
++
++/**
++ * nand_default_bbt - Select a default bad block table for the device
++ * @mtd: MTD device structure
++ *
++ * This function selects the default bad block table support for the device and
++ * calls the nand_scan_bbt function.
++ */
++static int nand_default_bbt(struct mtd_info *mtd)
++{
++	struct nand_device *this = mtd_to_nand(mtd);
++	struct nand_chip *chip = mtd_to_nandchip(mtd);
++	int ret;
++
++	/* Initialize BBT config from nand_chip info */
++	this->bbt.options = chip->bbt_options;
++	this->bbt.td = chip->bbt_td;
++	this->bbt.md = chip->bbt_md;
++	this->bbt.bbp = chip->badblock_pattern;
++
++	if (!this->bbt.bbp) {
++		ret = nand_create_badblock_pattern(chip);
++		if (ret)
++			return ret;
++	}
++
++	return nand_scan_bbt(this);
++}
++
+ /* Set default functions */
+ static void nand_set_defaults(struct nand_chip *chip)
+ {
+@@ -4950,14 +5021,17 @@ int nand_scan(struct mtd_info *mtd, int maxchips)
+  */
+ void nand_cleanup(struct nand_chip *chip)
+ {
++	struct nand_device *nand = &chip->base.base;
++
+ 	if (chip->ecc.mode == NAND_ECC_SOFT &&
+ 	    chip->ecc.algo == NAND_ECC_BCH)
+ 		nand_bch_free((struct nand_bch_control *)chip->ecc.priv);
+ 
+ 	nand_release_data_interface(chip);
+ 
+-	/* Free bad block table memory */
+-	kfree(chip->bbt);
++	if (nand_bbt_is_initialized(nand))
++		nand_release_bbt(nand);
++
+ 	if (!(chip->options & NAND_OWN_BUFFERS) && chip->buffers) {
+ 		kfree(chip->buffers->databuf);
+ 		kfree(chip->buffers->ecccode);
+diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
+index 396b248..26f5c3f 100644
+--- a/drivers/mtd/nand/raw/nand_bbt.c
++++ b/drivers/mtd/nand/raw/nand_bbt.c
+@@ -61,35 +61,28 @@
+ #include <linux/types.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/bbm.h>
+-#include <linux/mtd/rawnand.h>
++#include <linux/mtd/nand.h>
  #include <linux/bitops.h>
- #include <linux/slab.h>
- #include <linux/mtd/nand_ecc.h>
--#include "nand/sm_common.h"
-+#include "nand/raw/sm_common.h"
- #include "sm_ftl.h"
+ #include <linux/delay.h>
+ #include <linux/vmalloc.h>
+ #include <linux/export.h>
+ #include <linux/string.h>
  
+-#define BBT_BLOCK_GOOD		0x00
+-#define BBT_BLOCK_WORN		0x01
+-#define BBT_BLOCK_RESERVED	0x02
+-#define BBT_BLOCK_FACTORY_BAD	0x03
+-
+ #define BBT_ENTRY_MASK		0x03
+ #define BBT_ENTRY_SHIFT		2
  
+-static int nand_update_bbt(struct mtd_info *mtd, loff_t offs);
+-
+-static inline uint8_t bbt_get_entry(struct nand_chip *chip, int block)
++static inline u8 bbt_get_entry(struct nand_device *chip, int block)
+ {
+-	uint8_t entry = chip->bbt[block >> BBT_ENTRY_SHIFT];
++	u8 entry = chip->bbt.bbt[block >> BBT_ENTRY_SHIFT];
+ 	entry >>= (block & BBT_ENTRY_MASK) * 2;
+ 	return entry & BBT_ENTRY_MASK;
+ }
+ 
+-static inline void bbt_mark_entry(struct nand_chip *chip, int block,
+-		uint8_t mark)
++static inline void bbt_mark_entry(struct nand_device *chip, int block,
++				  u8 mark)
+ {
+ 	uint8_t msk = (mark & BBT_ENTRY_MASK) << ((block & BBT_ENTRY_MASK) * 2);
+-	chip->bbt[block >> BBT_ENTRY_SHIFT] |= msk;
++	chip->bbt.bbt[block >> BBT_ENTRY_SHIFT] |= msk;
+ }
+ 
+ static int check_pattern_no_oob(uint8_t *buf, struct nand_bbt_descr *td)
+@@ -100,6 +93,23 @@ static int check_pattern_no_oob(uint8_t *buf, struct nand_bbt_descr *td)
+ }
+ 
+ /**
++ * nand_bbt_update_entry - Update an entry in the in-memory bad block table
++ * @this: NAND device
++ * @eraseblock: eraseblock entry to update
++ * @status: new status for this eraseblock
++ *
++ * Update the eraseblock status in the in-memory BBT.
++ * This function should not be used unless your controller wants to manually
++ * initialize the BBT.
++ */
++void nand_bbt_update_entry(struct nand_device *this, int eraseblock,
++			   enum nand_bbt_block_status status)
++{
++	bbt_mark_entry(this, eraseblock, status);
++}
++EXPORT_SYMBOL_GPL(nand_bbt_update_entry);
++
++/**
+  * check_pattern - [GENERIC] check if a pattern is in the buffer
+  * @buf: the buffer to search
+  * @len: the length of buffer to search
+@@ -159,7 +169,7 @@ static u32 add_marker_len(struct nand_bbt_descr *td)
+ 
+ /**
+  * read_bbt - [GENERIC] Read the bad block table starting from page
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @buf: temporary buffer
+  * @page: the starting page
+  * @num: the number of bbt descriptors to read
+@@ -168,11 +178,11 @@ static u32 add_marker_len(struct nand_bbt_descr *td)
+  *
+  * Read the bad block table starting from page.
+  */
+-static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
+-		struct nand_bbt_descr *td, int offs)
++static int read_bbt(struct nand_device *this, uint8_t *buf, int page, int num,
++		    struct nand_bbt_descr *td, int offs)
+ {
++	struct mtd_info *mtd = nand_to_mtd(this);
+ 	int res, ret = 0, i, j, act = 0;
+-	struct nand_chip *this = mtd_to_nandchip(mtd);
+ 	size_t retlen, len, totlen;
+ 	loff_t from;
+ 	int bits = td->options & NAND_BBT_NRBITS_MSK;
+@@ -182,10 +192,10 @@ static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
+ 
+ 	totlen = (num * bits) >> 3;
+ 	marker_len = add_marker_len(td);
+-	from = ((loff_t)page) << this->page_shift;
++	from = nand_page_to_offs(this, page);
+ 
+ 	while (totlen) {
+-		len = min(totlen, (size_t)(1 << this->bbt_erase_shift));
++		len = min(totlen, nand_eraseblock_size(this));
+ 		if (marker_len) {
+ 			/*
+ 			 * In case the BBT marker is not in the OOB area it
+@@ -199,11 +209,11 @@ static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
+ 		if (res < 0) {
+ 			if (mtd_is_eccerr(res)) {
+ 				pr_info("nand_bbt: ECC error in BBT at 0x%012llx\n",
+-					from & ~mtd->writesize);
++					from & ~nand_page_size(this));
+ 				return res;
+ 			} else if (mtd_is_bitflip(res)) {
+ 				pr_info("nand_bbt: corrected error in BBT at 0x%012llx\n",
+-					from & ~mtd->writesize);
++					from & ~nand_page_size(this));
+ 				ret = res;
+ 			} else {
+ 				pr_info("nand_bbt: error reading BBT\n");
+@@ -220,10 +230,10 @@ static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
+ 					continue;
+ 				if (reserved_block_code && (tmp == reserved_block_code)) {
+ 					pr_info("nand_read_bbt: reserved block at 0x%012llx\n",
+-						 (loff_t)(offs + act) <<
+-						 this->bbt_erase_shift);
++						nand_eraseblock_to_offs(this,
++								offs + act));
+ 					bbt_mark_entry(this, offs + act,
+-							BBT_BLOCK_RESERVED);
++						NAND_BBT_BLOCK_RESERVED);
+ 					mtd->ecc_stats.bbtblocks++;
+ 					continue;
+ 				}
+@@ -232,15 +242,15 @@ static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
+ 				 * move this message to pr_debug.
+ 				 */
+ 				pr_info("nand_read_bbt: bad block at 0x%012llx\n",
+-					 (loff_t)(offs + act) <<
+-					 this->bbt_erase_shift);
++					nand_eraseblock_to_offs(this,
++								offs + act));
+ 				/* Factory marked bad or worn out? */
+ 				if (tmp == 0)
+ 					bbt_mark_entry(this, offs + act,
+-							BBT_BLOCK_FACTORY_BAD);
++						NAND_BBT_BLOCK_FACTORY_BAD);
+ 				else
+ 					bbt_mark_entry(this, offs + act,
+-							BBT_BLOCK_WORN);
++						       NAND_BBT_BLOCK_WORN);
+ 				mtd->ecc_stats.badblocks++;
+ 			}
+ 		}
+@@ -252,7 +262,7 @@ static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
+ 
+ /**
+  * read_abs_bbt - [GENERIC] Read the bad block table starting at a given page
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @buf: temporary buffer
+  * @td: descriptor for the bad block table
+  * @chip: read the table for a specific chip, -1 read all chips; applies only if
+@@ -261,25 +271,27 @@ static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
+  * Read the bad block table for all chips starting at a given page. We assume
+  * that the bbt bits are in consecutive order.
+  */
+-static int read_abs_bbt(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_descr *td, int chip)
++static int read_abs_bbt(struct nand_device *this, uint8_t *buf,
++			struct nand_bbt_descr *td, int chip)
+ {
+-	struct nand_chip *this = mtd_to_nandchip(mtd);
++	int ndies = nand_ndies(this);
+ 	int res = 0, i;
+ 
+ 	if (td->options & NAND_BBT_PERCHIP) {
+-		int offs = 0;
+-		for (i = 0; i < this->numchips; i++) {
++		int offs = 0, nbbd = nand_eraseblocks_per_die(this);
++
++		for (i = 0; i < ndies; i++) {
+ 			if (chip == -1 || chip == i)
+-				res = read_bbt(mtd, buf, td->pages[i],
+-					this->chipsize >> this->bbt_erase_shift,
+-					td, offs);
++				res = read_bbt(this, buf, td->pages[i], nbbd,
++					       td, offs);
+ 			if (res)
+ 				return res;
+-			offs += this->chipsize >> this->bbt_erase_shift;
++
++			offs += nbbd;
+ 		}
+ 	} else {
+-		res = read_bbt(mtd, buf, td->pages[0],
+-				mtd->size >> this->bbt_erase_shift, td, 0);
++		res = read_bbt(this, buf, td->pages[0],
++			       nand_neraseblocks(this), td, 0);
+ 		if (res)
+ 			return res;
+ 	}
+@@ -287,9 +299,10 @@ static int read_abs_bbt(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_desc
+ }
+ 
+ /* BBT marker is in the first page, no OOB */
+-static int scan_read_data(struct mtd_info *mtd, uint8_t *buf, loff_t offs,
+-			 struct nand_bbt_descr *td)
++static int scan_read_data(struct nand_device *this, uint8_t *buf, loff_t offs,
++			  struct nand_bbt_descr *td)
+ {
++	struct mtd_info *mtd = nand_to_mtd(this);
+ 	size_t retlen;
+ 	size_t len;
+ 
+@@ -302,7 +315,7 @@ static int scan_read_data(struct mtd_info *mtd, uint8_t *buf, loff_t offs,
+ 
+ /**
+  * scan_read_oob - [GENERIC] Scan data+OOB region to buffer
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @buf: temporary buffer
+  * @offs: offset at which to scan
+  * @len: length of data region to read
+@@ -311,19 +324,20 @@ static int scan_read_data(struct mtd_info *mtd, uint8_t *buf, loff_t offs,
+  * page,OOB,page,OOB,... in buf. Completes transfer and returns the "strongest"
+  * ECC condition (error or bitflip). May quit on the first (non-ECC) error.
+  */
+-static int scan_read_oob(struct mtd_info *mtd, uint8_t *buf, loff_t offs,
++static int scan_read_oob(struct nand_device *this, uint8_t *buf, loff_t offs,
+ 			 size_t len)
+ {
++	struct mtd_info *mtd = nand_to_mtd(this);
+ 	struct mtd_oob_ops ops;
+ 	int res, ret = 0;
+ 
+ 	ops.mode = MTD_OPS_PLACE_OOB;
+ 	ops.ooboffs = 0;
+-	ops.ooblen = mtd->oobsize;
++	ops.ooblen = nand_per_page_oobsize(this);
+ 
+ 	while (len > 0) {
+ 		ops.datbuf = buf;
+-		ops.len = min(len, (size_t)mtd->writesize);
++		ops.len = min(len, nand_page_size(this));
+ 		ops.oobbuf = buf + ops.len;
+ 
+ 		res = mtd_read_oob(mtd, offs, &ops);
+@@ -334,31 +348,32 @@ static int scan_read_oob(struct mtd_info *mtd, uint8_t *buf, loff_t offs,
+ 				ret = res;
+ 		}
+ 
+-		buf += mtd->oobsize + mtd->writesize;
+-		len -= mtd->writesize;
+-		offs += mtd->writesize;
++		buf += nand_per_page_oobsize(this) + nand_page_size(this);
++		len -= nand_page_size(this);
++		offs += nand_page_size(this);
+ 	}
+ 	return ret;
+ }
+ 
+-static int scan_read(struct mtd_info *mtd, uint8_t *buf, loff_t offs,
+-			 size_t len, struct nand_bbt_descr *td)
++static int scan_read(struct nand_device *this, uint8_t *buf, loff_t offs,
++		     size_t len, struct nand_bbt_descr *td)
+ {
+ 	if (td->options & NAND_BBT_NO_OOB)
+-		return scan_read_data(mtd, buf, offs, td);
++		return scan_read_data(this, buf, offs, td);
+ 	else
+-		return scan_read_oob(mtd, buf, offs, len);
++		return scan_read_oob(this, buf, offs, len);
+ }
+ 
+ /* Scan write data with oob to flash */
+-static int scan_write_bbt(struct mtd_info *mtd, loff_t offs, size_t len,
++static int scan_write_bbt(struct nand_device *this, loff_t offs, size_t len,
+ 			  uint8_t *buf, uint8_t *oob)
+ {
++	struct mtd_info *mtd = nand_to_mtd(this);
+ 	struct mtd_oob_ops ops;
+ 
+ 	ops.mode = MTD_OPS_PLACE_OOB;
+ 	ops.ooboffs = 0;
+-	ops.ooblen = mtd->oobsize;
++	ops.ooblen = nand_per_page_oobsize(this);
+ 	ops.datbuf = buf;
+ 	ops.oobbuf = oob;
+ 	ops.len = len;
+@@ -366,18 +381,19 @@ static int scan_write_bbt(struct mtd_info *mtd, loff_t offs, size_t len,
+ 	return mtd_write_oob(mtd, offs, &ops);
+ }
+ 
+-static u32 bbt_get_ver_offs(struct mtd_info *mtd, struct nand_bbt_descr *td)
++static u32 bbt_get_ver_offs(struct nand_device *this,
++			    struct nand_bbt_descr *td)
+ {
+ 	u32 ver_offs = td->veroffs;
+ 
+ 	if (!(td->options & NAND_BBT_NO_OOB))
+-		ver_offs += mtd->writesize;
++		ver_offs += nand_page_size(this);
+ 	return ver_offs;
+ }
+ 
+ /**
+  * read_abs_bbts - [GENERIC] Read the bad block table(s) for all chips starting at a given page
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @buf: temporary buffer
+  * @td: descriptor for the bad block table
+  * @md:	descriptor for the bad block table mirror
+@@ -385,38 +401,37 @@ static u32 bbt_get_ver_offs(struct mtd_info *mtd, struct nand_bbt_descr *td)
+  * Read the bad block table(s) for all chips starting at a given page. We
+  * assume that the bbt bits are in consecutive order.
+  */
+-static void read_abs_bbts(struct mtd_info *mtd, uint8_t *buf,
++static void read_abs_bbts(struct nand_device *this, uint8_t *buf,
+ 			  struct nand_bbt_descr *td, struct nand_bbt_descr *md)
+ {
+-	struct nand_chip *this = mtd_to_nandchip(mtd);
+-
+ 	/* Read the primary version, if available */
+ 	if (td->options & NAND_BBT_VERSION) {
+-		scan_read(mtd, buf, (loff_t)td->pages[0] << this->page_shift,
+-			      mtd->writesize, td);
+-		td->version[0] = buf[bbt_get_ver_offs(mtd, td)];
++		scan_read(this, buf, nand_page_to_offs(this, td->pages[0]),
++			  nand_page_size(this), td);
++		td->version[0] = buf[bbt_get_ver_offs(this, td)];
+ 		pr_info("Bad block table at page %d, version 0x%02X\n",
+ 			 td->pages[0], td->version[0]);
+ 	}
+ 
+ 	/* Read the mirror version, if available */
+ 	if (md && (md->options & NAND_BBT_VERSION)) {
+-		scan_read(mtd, buf, (loff_t)md->pages[0] << this->page_shift,
+-			      mtd->writesize, md);
+-		md->version[0] = buf[bbt_get_ver_offs(mtd, md)];
++		scan_read(this, buf, nand_page_to_offs(this, td->pages[0]),
++			  nand_page_size(this), md);
++		md->version[0] = buf[bbt_get_ver_offs(this, md)];
+ 		pr_info("Bad block table at page %d, version 0x%02X\n",
+ 			 md->pages[0], md->version[0]);
+ 	}
+ }
+ 
+ /* Scan a given block partially */
+-static int scan_block_fast(struct mtd_info *mtd, struct nand_bbt_descr *bd,
++static int scan_block_fast(struct nand_device *this, struct nand_bbt_descr *bd,
+ 			   loff_t offs, uint8_t *buf, int numpages)
+ {
++	struct mtd_info *mtd = nand_to_mtd(this);
+ 	struct mtd_oob_ops ops;
+ 	int j, ret;
+ 
+-	ops.ooblen = mtd->oobsize;
++	ops.ooblen = nand_per_page_oobsize(this);
+ 	ops.oobbuf = buf;
+ 	ops.ooboffs = 0;
+ 	ops.datbuf = NULL;
+@@ -435,14 +450,14 @@ static int scan_block_fast(struct mtd_info *mtd, struct nand_bbt_descr *bd,
+ 		if (check_short_pattern(buf, bd))
+ 			return 1;
+ 
+-		offs += mtd->writesize;
++		offs += nand_page_size(this);
+ 	}
+ 	return 0;
+ }
+ 
+ /**
+  * create_bbt - [GENERIC] Create a bad block table by scanning the device
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @buf: temporary buffer
+  * @bd: descriptor for the good/bad block search pattern
+  * @chip: create the table for a specific chip, -1 read all chips; applies only
+@@ -451,10 +466,10 @@ static int scan_block_fast(struct mtd_info *mtd, struct nand_bbt_descr *bd,
+  * Create a bad block table by scanning the device for the given good/bad block
+  * identify pattern.
+  */
+-static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
+-	struct nand_bbt_descr *bd, int chip)
++static int create_bbt(struct nand_device *this, uint8_t *buf,
++		      struct nand_bbt_descr *bd, int chip)
+ {
+-	struct nand_chip *this = mtd_to_nandchip(mtd);
++	struct mtd_info *mtd = nand_to_mtd(this);
+ 	int i, numblocks, numpages;
+ 	int startblock;
+ 	loff_t from;
+@@ -467,48 +482,49 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 		numpages = 1;
+ 
+ 	if (chip == -1) {
+-		numblocks = mtd->size >> this->bbt_erase_shift;
++		numblocks = nand_neraseblocks(this);
+ 		startblock = 0;
+ 		from = 0;
+ 	} else {
+-		if (chip >= this->numchips) {
++		if (chip >= nand_ndies(this)) {
+ 			pr_warn("create_bbt(): chipnr (%d) > available chips (%d)\n",
+-			       chip + 1, this->numchips);
++			       chip + 1, nand_ndies(this));
+ 			return -EINVAL;
+ 		}
+-		numblocks = this->chipsize >> this->bbt_erase_shift;
++		numblocks = nand_eraseblocks_per_die(this);
+ 		startblock = chip * numblocks;
+ 		numblocks += startblock;
+-		from = (loff_t)startblock << this->bbt_erase_shift;
++		from = nand_eraseblock_to_offs(this, startblock);
+ 	}
+ 
+-	if (this->bbt_options & NAND_BBT_SCANLASTPAGE)
+-		from += mtd->erasesize - (mtd->writesize * numpages);
++	if (this->bbt.options & NAND_BBT_SCANLASTPAGE)
++		from += nand_eraseblock_size(this) -
++			(nand_page_size(this) * numpages);
+ 
+ 	for (i = startblock; i < numblocks; i++) {
+ 		int ret;
+ 
+ 		BUG_ON(bd->options & NAND_BBT_NO_OOB);
+ 
+-		ret = scan_block_fast(mtd, bd, from, buf, numpages);
++		ret = scan_block_fast(this, bd, from, buf, numpages);
+ 		if (ret < 0)
+ 			return ret;
+ 
+ 		if (ret) {
+-			bbt_mark_entry(this, i, BBT_BLOCK_FACTORY_BAD);
++			bbt_mark_entry(this, i, NAND_BBT_BLOCK_FACTORY_BAD);
+ 			pr_warn("Bad eraseblock %d at 0x%012llx\n",
+ 				i, (unsigned long long)from);
+ 			mtd->ecc_stats.badblocks++;
+ 		}
+ 
+-		from += (1 << this->bbt_erase_shift);
++		from += nand_eraseblock_size(this);
+ 	}
+ 	return 0;
+ }
+ 
+ /**
+  * search_bbt - [GENERIC] scan the device for a specific bad block table
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @buf: temporary buffer
+  * @td: descriptor for the bad block table
+  *
+@@ -521,18 +537,17 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
+  *
+  * The bbt ident pattern resides in the oob area of the first page in a block.
+  */
+-static int search_bbt(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_descr *td)
++static int search_bbt(struct nand_device *this, uint8_t *buf,
++		      struct nand_bbt_descr *td)
+ {
+-	struct nand_chip *this = mtd_to_nandchip(mtd);
+ 	int i, chips;
+ 	int startblock, block, dir;
+-	int scanlen = mtd->writesize + mtd->oobsize;
++	int scanlen = nand_page_size(this) + nand_per_page_oobsize(this);
+ 	int bbtblocks;
+-	int blocktopage = this->bbt_erase_shift - this->page_shift;
+ 
+ 	/* Search direction top -> down? */
+ 	if (td->options & NAND_BBT_LASTBLOCK) {
+-		startblock = (mtd->size >> this->bbt_erase_shift) - 1;
++		startblock = nand_neraseblocks(this) - 1;
+ 		dir = -1;
+ 	} else {
+ 		startblock = 0;
+@@ -541,12 +556,12 @@ static int search_bbt(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_descr
+ 
+ 	/* Do we have a bbt per chip? */
+ 	if (td->options & NAND_BBT_PERCHIP) {
+-		chips = this->numchips;
+-		bbtblocks = this->chipsize >> this->bbt_erase_shift;
++		chips = nand_ndies(this);
++		bbtblocks = nand_eraseblocks_per_die(this);
+ 		startblock &= bbtblocks - 1;
+ 	} else {
+ 		chips = 1;
+-		bbtblocks = mtd->size >> this->bbt_erase_shift;
++		bbtblocks = nand_neraseblocks(this);
+ 	}
+ 
+ 	for (i = 0; i < chips; i++) {
+@@ -557,20 +572,22 @@ static int search_bbt(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_descr
+ 		for (block = 0; block < td->maxblocks; block++) {
+ 
+ 			int actblock = startblock + dir * block;
+-			loff_t offs = (loff_t)actblock << this->bbt_erase_shift;
++			loff_t offs = nand_eraseblock_to_offs(this, actblock);
+ 
+ 			/* Read first page */
+-			scan_read(mtd, buf, offs, mtd->writesize, td);
+-			if (!check_pattern(buf, scanlen, mtd->writesize, td)) {
+-				td->pages[i] = actblock << blocktopage;
++			scan_read(this, buf, offs, nand_page_size(this), td);
++			if (!check_pattern(buf, scanlen,
++					   nand_page_size(this), td)) {
++				td->pages[i] = nand_eraseblock_to_page(this,
++								  actblock);
+ 				if (td->options & NAND_BBT_VERSION) {
+-					offs = bbt_get_ver_offs(mtd, td);
++					offs = bbt_get_ver_offs(this, td);
+ 					td->version[i] = buf[offs];
+ 				}
+ 				break;
+ 			}
+ 		}
+-		startblock += this->chipsize >> this->bbt_erase_shift;
++		startblock += nand_eraseblocks_per_die(this);
+ 	}
+ 	/* Check, if we found a bbt for each requested chip */
+ 	for (i = 0; i < chips; i++) {
+@@ -585,23 +602,23 @@ static int search_bbt(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_descr
+ 
+ /**
+  * search_read_bbts - [GENERIC] scan the device for bad block table(s)
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @buf: temporary buffer
+  * @td: descriptor for the bad block table
+  * @md: descriptor for the bad block table mirror
+  *
+  * Search and read the bad block table(s).
+  */
+-static void search_read_bbts(struct mtd_info *mtd, uint8_t *buf,
++static void search_read_bbts(struct nand_device *this, uint8_t *buf,
+ 			     struct nand_bbt_descr *td,
+ 			     struct nand_bbt_descr *md)
+ {
+ 	/* Search the primary table */
+-	search_bbt(mtd, buf, td);
++	search_bbt(this, buf, td);
+ 
+ 	/* Search the mirror table */
+ 	if (md)
+-		search_bbt(mtd, buf, md);
++		search_bbt(this, buf, md);
+ }
+ 
+ /**
+@@ -617,7 +634,7 @@ static void search_read_bbts(struct mtd_info *mtd, uint8_t *buf,
+  * pointing to a valid block we re-use it, otherwise we search for the next
+  * valid one.
+  */
+-static int get_bbt_block(struct nand_chip *this, struct nand_bbt_descr *td,
++static int get_bbt_block(struct nand_device *this, struct nand_bbt_descr *td,
+ 			 struct nand_bbt_descr *md, int chip)
+ {
+ 	int startblock, dir, page, numblocks, i;
+@@ -628,12 +645,11 @@ static int get_bbt_block(struct nand_chip *this, struct nand_bbt_descr *td,
+ 	 * td->pages.
+ 	 */
+ 	if (td->pages[chip] != -1)
+-		return td->pages[chip] >>
+-				(this->bbt_erase_shift - this->page_shift);
++		return nand_page_to_eraseblock(this, td->pages[chip]);
+ 
+-	numblocks = (int)(this->chipsize >> this->bbt_erase_shift);
++	numblocks = nand_eraseblocks_per_die(this);
+ 	if (!(td->options & NAND_BBT_PERCHIP))
+-		numblocks *= this->numchips;
++		numblocks *= nand_ndies(this);
+ 
+ 	/*
+ 	 * Automatic placement of the bad block table. Search direction
+@@ -652,12 +668,12 @@ static int get_bbt_block(struct nand_chip *this, struct nand_bbt_descr *td,
+ 
+ 		/* Check, if the block is bad */
+ 		switch (bbt_get_entry(this, block)) {
+-		case BBT_BLOCK_WORN:
+-		case BBT_BLOCK_FACTORY_BAD:
++		case NAND_BBT_BLOCK_WORN:
++		case NAND_BBT_BLOCK_FACTORY_BAD:
+ 			continue;
+ 		}
+ 
+-		page = block << (this->bbt_erase_shift - this->page_shift);
++		page = nand_eraseblock_to_page(this, block);
+ 
+ 		/* Check, if the block is used by the mirror table */
+ 		if (!md || md->pages[chip] != page)
+@@ -679,18 +695,15 @@ static int get_bbt_block(struct nand_chip *this, struct nand_bbt_descr *td,
+  * block as bad using a bad block marker and invalidating the associated
+  * td->pages[] entry.
+  */
+-static void mark_bbt_block_bad(struct nand_chip *this,
++static void mark_bbt_block_bad(struct nand_device *this,
+ 			       struct nand_bbt_descr *td,
+ 			       int chip, int block)
+ {
+-	struct mtd_info *mtd = nandchip_to_mtd(this);
+-	loff_t to;
+ 	int res;
+ 
+-	bbt_mark_entry(this, block, BBT_BLOCK_WORN);
++	bbt_mark_entry(this, block, NAND_BBT_BLOCK_WORN);
+ 
+-	to = (loff_t)block << this->bbt_erase_shift;
+-	res = this->block_markbad(mtd, to);
++	res = nand_markbad(this, block);
+ 	if (res)
+ 		pr_warn("nand_bbt: error %d while marking block %d bad\n",
+ 			res, block);
+@@ -700,7 +713,7 @@ static void mark_bbt_block_bad(struct nand_chip *this,
+ 
+ /**
+  * write_bbt - [GENERIC] (Re)write the bad block table
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @buf: temporary buffer
+  * @td: descriptor for the bad block table
+  * @md: descriptor for the bad block table mirror
+@@ -708,11 +721,11 @@ static void mark_bbt_block_bad(struct nand_chip *this,
+  *
+  * (Re)write the bad block table.
+  */
+-static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
++static int write_bbt(struct nand_device *this, uint8_t *buf,
+ 		     struct nand_bbt_descr *td, struct nand_bbt_descr *md,
+ 		     int chipsel)
+ {
+-	struct nand_chip *this = mtd_to_nandchip(mtd);
++	struct mtd_info *mtd = nand_to_mtd(this);
+ 	struct erase_info einfo;
+ 	int i, res, chip = 0;
+ 	int bits, page, offs, numblocks, sft, sftmsk;
+@@ -723,7 +736,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 	loff_t to;
+ 	struct mtd_oob_ops ops;
+ 
+-	ops.ooblen = mtd->oobsize;
++	ops.ooblen = nand_per_page_oobsize(this);
+ 	ops.ooboffs = 0;
+ 	ops.datbuf = NULL;
+ 	ops.mode = MTD_OPS_PLACE_OOB;
+@@ -732,16 +745,16 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 		rcode = 0xff;
+ 	/* Write bad block table per chip rather than per device? */
+ 	if (td->options & NAND_BBT_PERCHIP) {
+-		numblocks = (int)(this->chipsize >> this->bbt_erase_shift);
++		numblocks = nand_eraseblocks_per_die(this);
+ 		/* Full device write or specific chip? */
+ 		if (chipsel == -1) {
+-			nrchips = this->numchips;
++			nrchips = nand_ndies(this);
+ 		} else {
+ 			nrchips = chipsel + 1;
+ 			chip = chipsel;
+ 		}
+ 	} else {
+-		numblocks = (int)(mtd->size >> this->bbt_erase_shift);
++		numblocks = nand_neraseblocks(this);
+ 		nrchips = 1;
+ 	}
+ 
+@@ -760,7 +773,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 		 * get_bbt_block() returns a block number, shift the value to
+ 		 * get a page number.
+ 		 */
+-		page = block << (this->bbt_erase_shift - this->page_shift);
++		page = nand_eraseblock_to_page(this, block);
+ 
+ 		/* Set up shift count and masks for the flash table */
+ 		bits = td->options & NAND_BBT_NRBITS_MSK;
+@@ -781,13 +794,14 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 		default: return -EINVAL;
+ 		}
+ 
+-		to = ((loff_t)page) << this->page_shift;
++		to = nand_page_to_offs(this, page);
+ 
+ 		/* Must we save the block contents? */
+ 		if (td->options & NAND_BBT_SAVECONTENT) {
+ 			/* Make it block aligned */
+-			to &= ~(((loff_t)1 << this->bbt_erase_shift) - 1);
+-			len = 1 << this->bbt_erase_shift;
++			to = nand_eraseblock_to_offs(this,
++					nand_page_to_eraseblock(this, page));
++			len = nand_eraseblock_size(this);
+ 			res = mtd_read(mtd, to, len, &retlen, buf);
+ 			if (res < 0) {
+ 				if (retlen != len) {
+@@ -797,18 +811,21 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 				pr_warn("nand_bbt: ECC error while reading block for writing bad block table\n");
+ 			}
+ 			/* Read oob data */
+-			ops.ooblen = (len >> this->page_shift) * mtd->oobsize;
++			ops.ooblen = nand_len_to_pages(this, len) *
++				     nand_per_page_oobsize(this);
+ 			ops.oobbuf = &buf[len];
+-			res = mtd_read_oob(mtd, to + mtd->writesize, &ops);
++			res = mtd_read_oob(mtd, to + nand_page_size(this),
++					   &ops);
+ 			if (res < 0 || ops.oobretlen != ops.ooblen)
+ 				goto outerr;
+ 
+ 			/* Calc the byte offset in the buffer */
+-			pageoffs = page - (int)(to >> this->page_shift);
+-			offs = pageoffs << this->page_shift;
++			pageoffs = page - nand_offs_to_page(this, to);
++			offs = nand_page_to_offs(this, pageoffs);
+ 			/* Preset the bbt area with 0xff */
+ 			memset(&buf[offs], 0xff, (size_t)(numblocks >> sft));
+-			ooboffs = len + (pageoffs * mtd->oobsize);
++			ooboffs = len +
++				  (pageoffs * nand_per_page_oobsize(this));
+ 
+ 		} else if (td->options & NAND_BBT_NO_OOB) {
+ 			ooboffs = 0;
+@@ -820,7 +837,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 			len = (size_t)(numblocks >> sft);
+ 			len += offs;
+ 			/* Make it page aligned! */
+-			len = ALIGN(len, mtd->writesize);
++			len = ALIGN(len, nand_page_size(this));
+ 			/* Preset the buffer with 0xff */
+ 			memset(buf, 0xff, len);
+ 			/* Pattern is located at the begin of first page */
+@@ -829,10 +846,11 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 			/* Calc length */
+ 			len = (size_t)(numblocks >> sft);
+ 			/* Make it page aligned! */
+-			len = ALIGN(len, mtd->writesize);
++			len = ALIGN(len, nand_page_size(this));
+ 			/* Preset the buffer with 0xff */
+ 			memset(buf, 0xff, len +
+-			       (len >> this->page_shift)* mtd->oobsize);
++					  (nand_len_to_pages(this, len) *
++					   nand_per_page_oobsize(this)));
+ 			offs = 0;
+ 			ooboffs = len;
+ 			/* Pattern is located in oob area of first page */
+@@ -854,8 +872,8 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 		memset(&einfo, 0, sizeof(einfo));
+ 		einfo.mtd = mtd;
+ 		einfo.addr = to;
+-		einfo.len = 1 << this->bbt_erase_shift;
+-		res = nand_erase_nand(mtd, &einfo, 1);
++		einfo.len = nand_eraseblock_size(this);
++		res = nand_erase(this, &einfo, 1);
+ 		if (res < 0) {
+ 			pr_warn("nand_bbt: error while erasing BBT block %d\n",
+ 				res);
+@@ -863,9 +881,9 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 			continue;
+ 		}
+ 
+-		res = scan_write_bbt(mtd, to, len, buf,
+-				td->options & NAND_BBT_NO_OOB ? NULL :
+-				&buf[len]);
++		res = scan_write_bbt(this, to, len, buf,
++				     td->options & NAND_BBT_NO_OOB ? NULL :
++				     &buf[len]);
+ 		if (res < 0) {
+ 			pr_warn("nand_bbt: error while writing BBT block %d\n",
+ 				res);
+@@ -888,22 +906,31 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 
+ /**
+  * nand_memory_bbt - [GENERIC] create a memory based bad block table
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @bd: descriptor for the good/bad block search pattern
+  *
+  * The function creates a memory based bbt by scanning the device for
+  * manufacturer / software marked good / bad blocks.
+  */
+-static inline int nand_memory_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
++static inline int nand_memory_bbt(struct nand_device *this,
++				  struct nand_bbt_descr *bd)
+ {
+-	struct nand_chip *this = mtd_to_nandchip(mtd);
++	void *buffer;
++	int ret;
++
++	buffer = kmalloc(nand_page_size(this), GFP_KERNEL);
++	if (!buffer)
++		return -ENOMEM;
+ 
+-	return create_bbt(mtd, this->buffers->databuf, bd, -1);
++	ret = create_bbt(this, buffer, bd, -1);
++	kfree(buffer);
++
++	return ret;
+ }
+ 
+ /**
+  * check_create - [GENERIC] create and write bbt(s) if necessary
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @buf: temporary buffer
+  * @bd: descriptor for the good/bad block search pattern
+  *
+@@ -912,17 +939,17 @@ static inline int nand_memory_bbt(struct mtd_info *mtd, struct nand_bbt_descr *b
+  * for the chip/device. Update is necessary if one of the tables is missing or
+  * the version nr. of one table is less than the other.
+  */
+-static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_descr *bd)
++static int check_create(struct nand_device *this, uint8_t *buf,
++			struct nand_bbt_descr *bd)
+ {
+ 	int i, chips, writeops, create, chipsel, res, res2;
+-	struct nand_chip *this = mtd_to_nandchip(mtd);
+-	struct nand_bbt_descr *td = this->bbt_td;
+-	struct nand_bbt_descr *md = this->bbt_md;
++	struct nand_bbt_descr *td = this->bbt.td;
++	struct nand_bbt_descr *md = this->bbt.md;
+ 	struct nand_bbt_descr *rd, *rd2;
+ 
+ 	/* Do we have a bbt per chip? */
+ 	if (td->options & NAND_BBT_PERCHIP)
+-		chips = this->numchips;
++		chips = nand_ndies(this);
+ 	else
+ 		chips = 1;
+ 
+@@ -971,8 +998,8 @@ static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_desc
+ 				continue;
+ 
+ 			/* Create the table in memory by scanning the chip(s) */
+-			if (!(this->bbt_options & NAND_BBT_CREATE_EMPTY))
+-				create_bbt(mtd, buf, bd, chipsel);
++			if (!(this->bbt.options & NAND_BBT_CREATE_EMPTY))
++				create_bbt(this, buf, bd, chipsel);
+ 
+ 			td->version[i] = 1;
+ 			if (md)
+@@ -981,7 +1008,7 @@ static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_desc
+ 
+ 		/* Read back first? */
+ 		if (rd) {
+-			res = read_abs_bbt(mtd, buf, rd, chipsel);
++			res = read_abs_bbt(this, buf, rd, chipsel);
+ 			if (mtd_is_eccerr(res)) {
+ 				/* Mark table as invalid */
+ 				rd->pages[i] = -1;
+@@ -992,7 +1019,7 @@ static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_desc
+ 		}
+ 		/* If they weren't versioned, read both */
+ 		if (rd2) {
+-			res2 = read_abs_bbt(mtd, buf, rd2, chipsel);
++			res2 = read_abs_bbt(this, buf, rd2, chipsel);
+ 			if (mtd_is_eccerr(res2)) {
+ 				/* Mark table as invalid */
+ 				rd2->pages[i] = -1;
+@@ -1014,14 +1041,14 @@ static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_desc
+ 
+ 		/* Write the bad block table to the device? */
+ 		if ((writeops & 0x01) && (td->options & NAND_BBT_WRITE)) {
+-			res = write_bbt(mtd, buf, td, md, chipsel);
++			res = write_bbt(this, buf, td, md, chipsel);
+ 			if (res < 0)
+ 				return res;
+ 		}
+ 
+ 		/* Write the mirror bad block table to the device? */
+ 		if ((writeops & 0x02) && md && (md->options & NAND_BBT_WRITE)) {
+-			res = write_bbt(mtd, buf, md, td, chipsel);
++			res = write_bbt(this, buf, md, td, chipsel);
+ 			if (res < 0)
+ 				return res;
+ 		}
+@@ -1031,25 +1058,26 @@ static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_desc
+ 
+ /**
+  * mark_bbt_regions - [GENERIC] mark the bad block table regions
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @td: bad block table descriptor
+  *
+  * The bad block table regions are marked as "bad" to prevent accidental
+  * erasures / writes. The regions are identified by the mark 0x02.
+  */
+-static void mark_bbt_region(struct mtd_info *mtd, struct nand_bbt_descr *td)
++static void mark_bbt_region(struct nand_device *this,
++			    struct nand_bbt_descr *td)
+ {
+-	struct nand_chip *this = mtd_to_nandchip(mtd);
+ 	int i, j, chips, block, nrblocks, update;
+ 	uint8_t oldval;
++	loff_t offs;
+ 
+ 	/* Do we have a bbt per chip? */
+ 	if (td->options & NAND_BBT_PERCHIP) {
+-		chips = this->numchips;
+-		nrblocks = (int)(this->chipsize >> this->bbt_erase_shift);
++		chips = nand_ndies(this);
++		nrblocks = nand_eraseblocks_per_die(this);
+ 	} else {
+ 		chips = 1;
+-		nrblocks = (int)(mtd->size >> this->bbt_erase_shift);
++		nrblocks = nand_neraseblocks(this);
+ 	}
+ 
+ 	for (i = 0; i < chips; i++) {
+@@ -1057,13 +1085,14 @@ static void mark_bbt_region(struct mtd_info *mtd, struct nand_bbt_descr *td)
+ 		    !(td->options & NAND_BBT_WRITE)) {
+ 			if (td->pages[i] == -1)
+ 				continue;
+-			block = td->pages[i] >> (this->bbt_erase_shift - this->page_shift);
++			block = nand_page_to_eraseblock(this, td->pages[i]);
+ 			oldval = bbt_get_entry(this, block);
+-			bbt_mark_entry(this, block, BBT_BLOCK_RESERVED);
+-			if ((oldval != BBT_BLOCK_RESERVED) &&
+-					td->reserved_block_code)
+-				nand_update_bbt(mtd, (loff_t)block <<
+-						this->bbt_erase_shift);
++			bbt_mark_entry(this, block, NAND_BBT_BLOCK_RESERVED);
++			if ((oldval != NAND_BBT_BLOCK_RESERVED) &&
++			    td->reserved_block_code) {
++				offs = nand_eraseblock_to_offs(this, block);
++				nand_update_bbt(this, offs);
++			}
+ 			continue;
+ 		}
+ 		update = 0;
+@@ -1073,8 +1102,8 @@ static void mark_bbt_region(struct mtd_info *mtd, struct nand_bbt_descr *td)
+ 			block = i * nrblocks;
+ 		for (j = 0; j < td->maxblocks; j++) {
+ 			oldval = bbt_get_entry(this, block);
+-			bbt_mark_entry(this, block, BBT_BLOCK_RESERVED);
+-			if (oldval != BBT_BLOCK_RESERVED)
++			bbt_mark_entry(this, block, NAND_BBT_BLOCK_RESERVED);
++			if (oldval != NAND_BBT_BLOCK_RESERVED)
+ 				update = 1;
+ 			block++;
+ 		}
+@@ -1083,23 +1112,24 @@ static void mark_bbt_region(struct mtd_info *mtd, struct nand_bbt_descr *td)
+ 		 * new ones have been marked, then we need to update the stored
+ 		 * bbts.  This should only happen once.
+ 		 */
+-		if (update && td->reserved_block_code)
+-			nand_update_bbt(mtd, (loff_t)(block - 1) <<
+-					this->bbt_erase_shift);
++		if (update && td->reserved_block_code) {
++			offs = nand_eraseblock_to_offs(this, block - 1);
++			nand_update_bbt(this, offs);
++		}
+ 	}
+ }
+ 
+ /**
+  * verify_bbt_descr - verify the bad block description
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @bd: the table to verify
+  *
+  * This functions performs a few sanity checks on the bad block description
+  * table.
+  */
+-static void verify_bbt_descr(struct mtd_info *mtd, struct nand_bbt_descr *bd)
++static void verify_bbt_descr(struct nand_device *this,
++			     struct nand_bbt_descr *bd)
+ {
+-	struct nand_chip *this = mtd_to_nandchip(mtd);
+ 	u32 pattern_len;
+ 	u32 bits;
+ 	u32 table_size;
+@@ -1110,16 +1140,16 @@ static void verify_bbt_descr(struct mtd_info *mtd, struct nand_bbt_descr *bd)
+ 	pattern_len = bd->len;
+ 	bits = bd->options & NAND_BBT_NRBITS_MSK;
+ 
+-	BUG_ON((this->bbt_options & NAND_BBT_NO_OOB) &&
+-			!(this->bbt_options & NAND_BBT_USE_FLASH));
++	BUG_ON((this->bbt.options & NAND_BBT_NO_OOB) &&
++	       !(this->bbt.options & NAND_BBT_USE_FLASH));
+ 	BUG_ON(!bits);
+ 
+ 	if (bd->options & NAND_BBT_VERSION)
+ 		pattern_len++;
+ 
+ 	if (bd->options & NAND_BBT_NO_OOB) {
+-		BUG_ON(!(this->bbt_options & NAND_BBT_USE_FLASH));
+-		BUG_ON(!(this->bbt_options & NAND_BBT_NO_OOB));
++		BUG_ON(!(this->bbt.options & NAND_BBT_USE_FLASH));
++		BUG_ON(!(this->bbt.options & NAND_BBT_NO_OOB));
+ 		BUG_ON(bd->offs);
+ 		if (bd->options & NAND_BBT_VERSION)
+ 			BUG_ON(bd->veroffs != bd->len);
+@@ -1127,19 +1157,63 @@ static void verify_bbt_descr(struct mtd_info *mtd, struct nand_bbt_descr *bd)
+ 	}
+ 
+ 	if (bd->options & NAND_BBT_PERCHIP)
+-		table_size = this->chipsize >> this->bbt_erase_shift;
++		table_size = nand_eraseblocks_per_die(this);
+ 	else
+-		table_size = mtd->size >> this->bbt_erase_shift;
++		table_size = nand_neraseblocks(this);
+ 	table_size >>= 3;
+ 	table_size *= bits;
+ 	if (bd->options & NAND_BBT_NO_OOB)
+ 		table_size += pattern_len;
+-	BUG_ON(table_size > (1 << this->bbt_erase_shift));
++	BUG_ON(table_size > nand_eraseblock_size(this));
+ }
+ 
++/* Generic flash bbt descriptors */
++static u8 bbt_pattern[] = {'B', 'b', 't', '0' };
++static u8 mirror_pattern[] = {'1', 't', 'b', 'B' };
++
++static struct nand_bbt_descr bbt_main_descr = {
++	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
++		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
++	.offs =	8,
++	.len = 4,
++	.veroffs = 12,
++	.maxblocks = NAND_BBT_SCAN_MAXBLOCKS,
++	.pattern = bbt_pattern
++};
++
++static struct nand_bbt_descr bbt_mirror_descr = {
++	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
++		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
++	.offs =	8,
++	.len = 4,
++	.veroffs = 12,
++	.maxblocks = NAND_BBT_SCAN_MAXBLOCKS,
++	.pattern = mirror_pattern
++};
++
++static struct nand_bbt_descr bbt_main_no_oob_descr = {
++	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
++		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP
++		| NAND_BBT_NO_OOB,
++	.len = 4,
++	.veroffs = 4,
++	.maxblocks = NAND_BBT_SCAN_MAXBLOCKS,
++	.pattern = bbt_pattern
++};
++
++static struct nand_bbt_descr bbt_mirror_no_oob_descr = {
++	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
++		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP
++		| NAND_BBT_NO_OOB,
++	.len = 4,
++	.veroffs = 4,
++	.maxblocks = NAND_BBT_SCAN_MAXBLOCKS,
++	.pattern = mirror_pattern
++};
++
+ /**
+  * nand_scan_bbt - [NAND Interface] scan, find, read and maybe create bad block table(s)
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @bd: descriptor for the good/bad block search pattern
+  *
+  * The function checks, if a bad block table(s) is/are already available. If
+@@ -1149,21 +1223,40 @@ static void verify_bbt_descr(struct mtd_info *mtd, struct nand_bbt_descr *bd)
+  * The bad block table memory is allocated here. It must be freed by calling
+  * the nand_free_bbt function.
+  */
+-static int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
++int nand_scan_bbt(struct nand_device *this)
+ {
+-	struct nand_chip *this = mtd_to_nandchip(mtd);
+ 	int len, res;
+ 	uint8_t *buf;
+-	struct nand_bbt_descr *td = this->bbt_td;
+-	struct nand_bbt_descr *md = this->bbt_md;
++	struct nand_bbt_descr *td, *md, *bd;
++
++	/* Is a flash based bad block table requested? */
++	if (this->bbt.options & NAND_BBT_USE_FLASH) {
++		/* Use the default pattern descriptors */
++		if (!this->bbt.td) {
++			if (this->bbt.options & NAND_BBT_NO_OOB) {
++				this->bbt.td = &bbt_main_no_oob_descr;
++				this->bbt.md = &bbt_mirror_no_oob_descr;
++			} else {
++				this->bbt.td = &bbt_main_descr;
++				this->bbt.md = &bbt_mirror_descr;
++			}
++		}
++	} else {
++		this->bbt.td = NULL;
++		this->bbt.md = NULL;
++	}
++
++	td = this->bbt.td;
++	md = this->bbt.md;
++	bd = this->bbt.bbp;
+ 
+-	len = (mtd->size >> (this->bbt_erase_shift + 2)) ? : 1;
+ 	/*
+ 	 * Allocate memory (2bit per block) and clear the memory bad block
+ 	 * table.
+ 	 */
+-	this->bbt = kzalloc(len, GFP_KERNEL);
+-	if (!this->bbt)
++	len = DIV_ROUND_UP(nand_neraseblocks(this) * 2, 8);
++	this->bbt.bbt = kzalloc(len, GFP_KERNEL);
++	if (!this->bbt.bbt)
+ 		return -ENOMEM;
+ 
+ 	/*
+@@ -1171,18 +1264,19 @@ static int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
+ 	 * memory based bad block table.
+ 	 */
+ 	if (!td) {
+-		if ((res = nand_memory_bbt(mtd, bd))) {
++		res = nand_memory_bbt(this, bd);
++		if (res) {
+ 			pr_err("nand_bbt: can't scan flash and build the RAM-based BBT\n");
+ 			goto err;
+ 		}
++
+ 		return 0;
+ 	}
+-	verify_bbt_descr(mtd, td);
+-	verify_bbt_descr(mtd, md);
++	verify_bbt_descr(this, td);
++	verify_bbt_descr(this, md);
+ 
+ 	/* Allocate a temporary buffer for one eraseblock incl. oob */
+-	len = (1 << this->bbt_erase_shift);
+-	len += (len >> this->page_shift) * mtd->oobsize;
++	len = nand_eraseblock_size(this) + nand_per_eraseblock_oobsize(this);
+ 	buf = vmalloc(len);
+ 	if (!buf) {
+ 		res = -ENOMEM;
+@@ -1191,59 +1285,68 @@ static int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
+ 
+ 	/* Is the bbt at a given page? */
+ 	if (td->options & NAND_BBT_ABSPAGE) {
+-		read_abs_bbts(mtd, buf, td, md);
++		read_abs_bbts(this, buf, td, md);
+ 	} else {
+ 		/* Search the bad block table using a pattern in oob */
+-		search_read_bbts(mtd, buf, td, md);
++		search_read_bbts(this, buf, td, md);
+ 	}
+ 
+-	res = check_create(mtd, buf, bd);
++	res = check_create(this, buf, bd);
+ 	if (res)
+ 		goto err;
+ 
+ 	/* Prevent the bbt regions from erasing / writing */
+-	mark_bbt_region(mtd, td);
++	mark_bbt_region(this, td);
+ 	if (md)
+-		mark_bbt_region(mtd, md);
++		mark_bbt_region(this, md);
+ 
+ 	vfree(buf);
+ 	return 0;
+ 
+ err:
+-	kfree(this->bbt);
+-	this->bbt = NULL;
++	kfree(this->bbt.bbt);
++	this->bbt.bbt = NULL;
+ 	return res;
+ }
+ 
+ /**
++ * nand_release_bbt - release bad block table(s)
++ * @this: NAND device
++ *
++ * The function releases the bad block table(s).
++ */
++void nand_release_bbt(struct nand_device *this)
++{
++	kfree(this->bbt.bbt);
++}
++
++/**
+  * nand_update_bbt - update bad block table(s)
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @offs: the offset of the newly marked block
+  *
+  * The function updates the bad block table(s).
+  */
+-static int nand_update_bbt(struct mtd_info *mtd, loff_t offs)
++int nand_update_bbt(struct nand_device *this, loff_t offs)
+ {
+-	struct nand_chip *this = mtd_to_nandchip(mtd);
+ 	int len, res = 0;
+ 	int chip, chipsel;
+ 	uint8_t *buf;
+-	struct nand_bbt_descr *td = this->bbt_td;
+-	struct nand_bbt_descr *md = this->bbt_md;
++	struct nand_bbt_descr *td = this->bbt.td;
++	struct nand_bbt_descr *md = this->bbt.md;
+ 
+-	if (!this->bbt || !td)
++	if (!this->bbt.bbt || !td)
+ 		return -EINVAL;
+ 
+ 	/* Allocate a temporary buffer for one eraseblock incl. oob */
+-	len = (1 << this->bbt_erase_shift);
+-	len += (len >> this->page_shift) * mtd->oobsize;
++	len = nand_eraseblock_size(this) + nand_per_eraseblock_oobsize(this);
+ 	buf = kmalloc(len, GFP_KERNEL);
+ 	if (!buf)
+ 		return -ENOMEM;
+ 
+ 	/* Do we have a bbt per chip? */
+ 	if (td->options & NAND_BBT_PERCHIP) {
+-		chip = (int)(offs >> this->chip_shift);
++		chip = nand_offs_to_die(this, offs);
+ 		chipsel = chip;
+ 	} else {
+ 		chip = 0;
+@@ -1256,13 +1359,13 @@ static int nand_update_bbt(struct mtd_info *mtd, loff_t offs)
+ 
+ 	/* Write the bad block table to the device? */
+ 	if (td->options & NAND_BBT_WRITE) {
+-		res = write_bbt(mtd, buf, td, md, chipsel);
++		res = write_bbt(this, buf, td, md, chipsel);
+ 		if (res < 0)
+ 			goto out;
+ 	}
+ 	/* Write the mirror bad block table to the device? */
+ 	if (md && (md->options & NAND_BBT_WRITE)) {
+-		res = write_bbt(mtd, buf, md, td, chipsel);
++		res = write_bbt(this, buf, md, td, chipsel);
+ 	}
+ 
+  out:
+@@ -1270,160 +1373,41 @@ static int nand_update_bbt(struct mtd_info *mtd, loff_t offs)
+ 	return res;
+ }
+ 
+-/*
+- * Define some generic bad / good block scan pattern which are used
+- * while scanning a device for factory marked good / bad blocks.
+- */
+-static uint8_t scan_ff_pattern[] = { 0xff, 0xff };
+-
+-/* Generic flash bbt descriptors */
+-static uint8_t bbt_pattern[] = {'B', 'b', 't', '0' };
+-static uint8_t mirror_pattern[] = {'1', 't', 'b', 'B' };
+-
+-static struct nand_bbt_descr bbt_main_descr = {
+-	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
+-		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
+-	.offs =	8,
+-	.len = 4,
+-	.veroffs = 12,
+-	.maxblocks = NAND_BBT_SCAN_MAXBLOCKS,
+-	.pattern = bbt_pattern
+-};
+-
+-static struct nand_bbt_descr bbt_mirror_descr = {
+-	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
+-		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
+-	.offs =	8,
+-	.len = 4,
+-	.veroffs = 12,
+-	.maxblocks = NAND_BBT_SCAN_MAXBLOCKS,
+-	.pattern = mirror_pattern
+-};
+-
+-static struct nand_bbt_descr bbt_main_no_oob_descr = {
+-	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
+-		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP
+-		| NAND_BBT_NO_OOB,
+-	.len = 4,
+-	.veroffs = 4,
+-	.maxblocks = NAND_BBT_SCAN_MAXBLOCKS,
+-	.pattern = bbt_pattern
+-};
+-
+-static struct nand_bbt_descr bbt_mirror_no_oob_descr = {
+-	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
+-		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP
+-		| NAND_BBT_NO_OOB,
+-	.len = 4,
+-	.veroffs = 4,
+-	.maxblocks = NAND_BBT_SCAN_MAXBLOCKS,
+-	.pattern = mirror_pattern
+-};
+-
+-#define BADBLOCK_SCAN_MASK (~NAND_BBT_NO_OOB)
+-/**
+- * nand_create_badblock_pattern - [INTERN] Creates a BBT descriptor structure
+- * @this: NAND chip to create descriptor for
+- *
+- * This function allocates and initializes a nand_bbt_descr for BBM detection
+- * based on the properties of @this. The new descriptor is stored in
+- * this->badblock_pattern. Thus, this->badblock_pattern should be NULL when
+- * passed to this function.
+- */
+-static int nand_create_badblock_pattern(struct nand_chip *this)
+-{
+-	struct nand_bbt_descr *bd;
+-	if (this->badblock_pattern) {
+-		pr_warn("Bad block pattern already allocated; not replacing\n");
+-		return -EINVAL;
+-	}
+-	bd = kzalloc(sizeof(*bd), GFP_KERNEL);
+-	if (!bd)
+-		return -ENOMEM;
+-	bd->options = this->bbt_options & BADBLOCK_SCAN_MASK;
+-	bd->offs = this->badblockpos;
+-	bd->len = (this->options & NAND_BUSWIDTH_16) ? 2 : 1;
+-	bd->pattern = scan_ff_pattern;
+-	bd->options |= NAND_BBT_DYNAMICSTRUCT;
+-	this->badblock_pattern = bd;
+-	return 0;
+-}
+-
+-/**
+- * nand_default_bbt - [NAND Interface] Select a default bad block table for the device
+- * @mtd: MTD device structure
+- *
+- * This function selects the default bad block table support for the device and
+- * calls the nand_scan_bbt function.
+- */
+-int nand_default_bbt(struct mtd_info *mtd)
+-{
+-	struct nand_chip *this = mtd_to_nandchip(mtd);
+-	int ret;
+-
+-	/* Is a flash based bad block table requested? */
+-	if (this->bbt_options & NAND_BBT_USE_FLASH) {
+-		/* Use the default pattern descriptors */
+-		if (!this->bbt_td) {
+-			if (this->bbt_options & NAND_BBT_NO_OOB) {
+-				this->bbt_td = &bbt_main_no_oob_descr;
+-				this->bbt_md = &bbt_mirror_no_oob_descr;
+-			} else {
+-				this->bbt_td = &bbt_main_descr;
+-				this->bbt_md = &bbt_mirror_descr;
+-			}
+-		}
+-	} else {
+-		this->bbt_td = NULL;
+-		this->bbt_md = NULL;
+-	}
+-
+-	if (!this->badblock_pattern) {
+-		ret = nand_create_badblock_pattern(this);
+-		if (ret)
+-			return ret;
+-	}
+-
+-	return nand_scan_bbt(mtd, this->badblock_pattern);
+-}
+-
+ /**
+  * nand_isreserved_bbt - [NAND Interface] Check if a block is reserved
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @offs: offset in the device
+  */
+-int nand_isreserved_bbt(struct mtd_info *mtd, loff_t offs)
++int nand_isreserved_bbt(struct nand_device *this, loff_t offs)
+ {
+-	struct nand_chip *this = mtd_to_nandchip(mtd);
+ 	int block;
+ 
+-	block = (int)(offs >> this->bbt_erase_shift);
+-	return bbt_get_entry(this, block) == BBT_BLOCK_RESERVED;
++	block = nand_offs_to_eraseblock(this, offs);
++	return bbt_get_entry(this, block) == NAND_BBT_BLOCK_RESERVED;
+ }
+ 
+ /**
+  * nand_isbad_bbt - [NAND Interface] Check if a block is bad
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @offs: offset in the device
+  * @allowbbt: allow access to bad block table region
+  */
+-int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt)
++int nand_isbad_bbt(struct nand_device *this, loff_t offs, int allowbbt)
+ {
+-	struct nand_chip *this = mtd_to_nandchip(mtd);
+ 	int block, res;
+ 
+-	block = (int)(offs >> this->bbt_erase_shift);
++	block = nand_offs_to_eraseblock(this, offs);
+ 	res = bbt_get_entry(this, block);
+ 
+ 	pr_debug("nand_isbad_bbt(): bbt info for offs 0x%08x: (block %d) 0x%02x\n",
+ 		 (unsigned int)offs, block, res);
+ 
+ 	switch (res) {
+-	case BBT_BLOCK_GOOD:
++	case NAND_BBT_BLOCK_GOOD:
+ 		return 0;
+-	case BBT_BLOCK_WORN:
++	case NAND_BBT_BLOCK_WORN:
+ 		return 1;
+-	case BBT_BLOCK_RESERVED:
++	case NAND_BBT_BLOCK_RESERVED:
+ 		return allowbbt ? 0 : 1;
+ 	}
+ 	return 1;
+@@ -1431,22 +1415,21 @@ int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt)
+ 
+ /**
+  * nand_markbad_bbt - [NAND Interface] Mark a block bad in the BBT
+- * @mtd: MTD device structure
++ * @this: NAND device
+  * @offs: offset of the bad block
+  */
+-int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs)
++int nand_markbad_bbt(struct nand_device *this, loff_t offs)
+ {
+-	struct nand_chip *this = mtd_to_nandchip(mtd);
+ 	int block, ret = 0;
+ 
+-	block = (int)(offs >> this->bbt_erase_shift);
++	block = nand_offs_to_eraseblock(this, offs);
+ 
+ 	/* Mark bad block in memory */
+-	bbt_mark_entry(this, block, BBT_BLOCK_WORN);
++	bbt_mark_entry(this, block, NAND_BBT_BLOCK_WORN);
+ 
+ 	/* Update flash-based bad block table */
+-	if (this->bbt_options & NAND_BBT_USE_FLASH)
+-		ret = nand_update_bbt(mtd, offs);
++	if (this->bbt.options & NAND_BBT_USE_FLASH)
++		ret = nand_update_bbt(this, offs);
+ 
+ 	return ret;
+ }
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 446f941..78931ff 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -566,4 +566,27 @@ static inline struct device_node *nand_get_of_node(struct nand_device *nand)
+ {
+ 	return mtd_get_of_node(&nand->mtd);
+ }
++
++/* BBT related functions */
++enum nand_bbt_block_status {
++	NAND_BBT_BLOCK_GOOD,
++	NAND_BBT_BLOCK_WORN,
++	NAND_BBT_BLOCK_RESERVED,
++	NAND_BBT_BLOCK_FACTORY_BAD,
++};
++
++int nand_scan_bbt(struct nand_device *this);
++void nand_release_bbt(struct nand_device *this);
++int nand_update_bbt(struct nand_device *this, loff_t offs);
++int nand_isreserved_bbt(struct nand_device *this, loff_t offs);
++int nand_isbad_bbt(struct nand_device *this, loff_t offs, int allowbbt);
++int nand_markbad_bbt(struct nand_device *this, loff_t offs);
++
++void nand_bbt_update_entry(struct nand_device *this, int eraseblock,
++			   enum nand_bbt_block_status status);
++static inline bool nand_bbt_is_initialized(struct nand_device *this)
++{
++	return !!this->bbt.bbt;
++}
++
+ #endif /* __LINUX_MTD_NAND_H */
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 750fac2..04b0954 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -831,7 +831,6 @@ struct rawnand_device {
+  * @onfi_set_features:	[REPLACEABLE] set the features for ONFI nand
+  * @onfi_get_features:	[REPLACEABLE] get the features for ONFI nand
+  * @setup_data_interface: [OPTIONAL] setup the data interface and timing
+- * @bbt:		[INTERN] bad block table pointer
+  * @bbt_td:		[REPLACEABLE] bad block table descriptor for flash
+  *			lookup.
+  * @bbt_md:		[REPLACEABLE] bad block table mirror descriptor
+@@ -924,7 +923,6 @@ struct nand_chip {
+ 	unsigned long buf_align;
+ 	struct nand_hw_control hwcontrol;
+ 
+-	uint8_t *bbt;
+ 	struct nand_bbt_descr *bbt_td;
+ 	struct nand_bbt_descr *bbt_md;
+ 
+@@ -1114,10 +1112,6 @@ struct nand_manufacturer {
+ extern const struct nand_manufacturer_ops amd_nand_manuf_ops;
+ extern const struct nand_manufacturer_ops macronix_nand_manuf_ops;
+ 
+-int nand_default_bbt(struct mtd_info *mtd);
+-int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs);
+-int nand_isreserved_bbt(struct mtd_info *mtd, loff_t offs);
+-int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt);
+ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+ 		    int allowbbt);
+ int nand_do_read(struct mtd_info *mtd, loff_t from, size_t len,
 -- 
 1.9.1
