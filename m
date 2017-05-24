@@ -1,7 +1,7 @@
 Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dDQHU-00008z-FS
- for linux-mtd@lists.infradead.org; Wed, 24 May 2017 07:00:36 +0000
+ id 1dDQHe-00009c-FT
+ for linux-mtd@lists.infradead.org; Wed, 24 May 2017 07:00:47 +0000
 From: Peter Pan <peterpandong@micron.com>
 To: <boris.brezillon@free-electrons.com>, <richard@nod.at>,
  <computersforpeace@gmail.com>, <arnaud.mouiche@gmail.com>,
@@ -9,15 +9,13 @@ To: <boris.brezillon@free-electrons.com>, <richard@nod.at>,
  <cyrille.pitchen@wedev4u.fr>, <linux-mtd@lists.infradead.org>
 CC: <peterpandong@micron.com>, <peterpansjtu@gmail.com>,
  <linshunquan1@hisilicon.com>
-Subject: [PATCH v6 03/15] mtd: nand: add a nand.h file to expose basic NAND
- stuff
-Date: Wed, 24 May 2017 15:06:59 +0800
-Message-ID: <1495609631-18880-4-git-send-email-peterpandong@micron.com>
+Subject: [PATCH v6 05/15] mtd: nand: raw: create struct rawnand_device
+Date: Wed, 24 May 2017 15:07:01 +0800
+Message-ID: <1495609631-18880-6-git-send-email-peterpandong@micron.com>
 In-Reply-To: <1495609631-18880-1-git-send-email-peterpandong@micron.com>
 References: <1495609631-18880-1-git-send-email-peterpandong@micron.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,590 +27,153 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Now that raw NAND header has been moved to rawnand.h, we can add a new
-nand.h file and define the common nand stuff in there.
+Create the rawnand_device struct inheriting from nand_device and make
+nand_chip inherit from this struct.
+
+The rawnand_device object should be used for the new
+rawnand-device/rawnand-controller model, and fields inside nand_chip
+should progressively move to the future rawnand_controller or the existing
+rawnand_device struct.
+
+In the meantime, we make sure nand_device fields are properly initialized
+by converting information stored in mtd_info and nand_chip into the
+nand_memory_organization format.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 Signed-off-by: Peter Pan <peterpandong@micron.com>
 ---
- include/linux/mtd/nand.h | 569 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 569 insertions(+)
- create mode 100644 include/linux/mtd/nand.h
+ drivers/mtd/nand/raw/nand_base.c | 40 ++++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/rawnand.h      | 26 ++++++++++++++++++++------
+ 2 files changed, 60 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-new file mode 100644
-index 0000000..446f941
---- /dev/null
-+++ b/include/linux/mtd/nand.h
-@@ -0,0 +1,569 @@
-+/*
-+ *  Copyright © 2016 - Boris Brezillon <boris.brezillon@free-electrons.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef __LINUX_MTD_NAND_H
-+#define __LINUX_MTD_NAND_H
-+
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/bbm.h>
-+/**
-+ * struct nand_memory_organization - memory organization structure
-+ * @pagesize: page size
-+ * @oobsize: OOB area size
-+ * @eraseblocksize: erase block size
-+ * @planesize: plane size
-+ * @nplanes: number of planes embedded in a die
-+ * @diesize: die size
-+ * @ndies: number of dies embedded in the device
-+ */
-+struct nand_memory_organization {
-+	int pagesize;
-+	int oobsize;
-+	int eraseblocksize;
-+	size_t planesize;
-+	int nplanes;
-+	u64 diesize;
-+	int ndies;
-+};
-+
-+/**
-+ * struct nand_bbt - bad block table structure
-+ * @options: bad block specific options
-+ * @td: bad block table descriptor for flash lookup.
-+ * @md: bad block table mirror descriptor
-+ * @bbp: bad block pattern
-+ * @bbt: in memory BBT
-+ */
-+struct nand_bbt {
-+	unsigned int options;
-+	/*
-+	 * Discourage new custom usages here; suggest usage of the
-+	 * relevant NAND_BBT_* options instead
-+	 */
-+	struct nand_bbt_descr *td;
-+	struct nand_bbt_descr *md;
-+	struct nand_bbt_descr *bbp;
-+	u8 *bbt;
-+};
-+
-+struct nand_device;
-+
-+/**
-+ * struct nand_ops - NAND operations
-+ * @erase: erase the blocks covered by the erase_info description
-+ */
-+struct nand_ops {
-+	int (*erase)(struct nand_device *nand, struct erase_info *einfo);
-+	int (*markbad)(struct nand_device *mtd, int block);
-+};
-+
-+/**
-+ * struct nand_device - NAND device
-+ * @mtd: MTD instance attached to the NAND device
-+ * @memorg: memory layout
-+ * @bbt: bad block table info
-+ * @ops: NAND operations attached to the NAND device
-+ */
-+struct nand_device {
-+	struct mtd_info mtd;
-+	struct nand_memory_organization memorg;
-+	struct nand_bbt bbt;
-+
-+	const struct nand_ops *ops;
-+};
-+
-+/**
-+ * mtd_to_nand - Get the NAND device attached to the MTD instance
-+ * @mtd: MTD instance
-+ *
-+ * Returns the NAND device attached to @mtd.
-+ */
-+static inline struct nand_device *mtd_to_nand(struct mtd_info *mtd)
-+{
-+	return container_of(mtd, struct nand_device, mtd);
-+}
-+
-+/**
-+ * nand_to_mtd - Get the MTD device attached to a NAND device
-+ * @nand: NAND device
-+ *
-+ * Returns the MTD device attached to @nand.
-+ */
-+static inline struct mtd_info *nand_to_mtd(struct nand_device *nand)
-+{
-+	return &nand->mtd;
-+}
-+
-+/**
-+ * nand_page_to_offs - Convert a page number to an absolute offset
-+ * @nand: NAND device
-+ * @page: page number
-+ *
-+ * Returns the offset pointing to the beginning of @page.
-+ */
-+static inline loff_t nand_page_to_offs(struct nand_device *nand, int page)
-+{
-+	return (loff_t)nand->memorg.pagesize * page;
-+}
-+
-+/**
-+ * nand_offs_to_page - Convert an absolute offset to a page offset
-+ * @nand: NAND device
-+ * @offs: absolute offset
-+ *
-+ * Returns the page number containing @offs.
-+ */
-+static inline int nand_offs_to_page(struct nand_device *nand, loff_t offs)
-+{
-+	u64 page = offs;
-+
-+	do_div(page, nand->memorg.pagesize);
-+
-+	return page;
-+}
-+
-+/**
-+ * nand_len_to_pages - Convert a length into a number of pages
-+ * @nand: NAND device
-+ * @len: length in bytes
-+ *
-+ * Returns the number of pages required to store @len bytes.
-+ * This functions assumes your storing those data at a page-aligned offset.
-+ */
-+static inline int nand_len_to_pages(struct nand_device *nand, size_t len)
-+{
-+	return DIV_ROUND_UP(len, nand->memorg.pagesize);
-+}
-+
-+/**
-+ * nand_pages_to_len - Convert a number of pages into a length expressed in
-+ *		       bytes
-+ * @nand: NAND device
-+ * @npages: number of pages
-+ *
-+ * Returns the size taken by @npages pages.
-+ */
-+static inline size_t nand_pages_to_len(struct nand_device *nand, int npages)
-+{
-+	return (size_t)npages * nand->memorg.pagesize;
-+}
-+
-+/**
-+ * nand_page_size - Get NAND page size
-+ * @nand: NAND device
-+ *
-+ * Returns the page size.
-+ */
-+static inline size_t nand_page_size(struct nand_device *nand)
-+{
-+	return nand->memorg.pagesize;
-+}
-+
-+/**
-+ * nand_per_page_oobsize - Get NAND OOB size
-+ * @nand: NAND device
-+ *
-+ * Returns the OOB size.
-+ */
-+static inline int nand_per_page_oobsize(struct nand_device *nand)
-+{
-+	return nand->memorg.oobsize;
-+}
-+
-+/**
-+ * nand_per_page_oobsize - Get NAND erase block size
-+ * @nand: NAND device
-+ *
-+ * Returns the erase block size.
-+ */
-+static inline size_t nand_eraseblock_size(struct nand_device *nand)
-+{
-+	return nand->memorg.eraseblocksize;
-+}
-+
-+/**
-+ * nand_page_to_offs - Convert an eraseblock number to an absolute offset
-+ * @nand: NAND device
-+ * @block: eraseblock number
-+ *
-+ * Returns the offset pointing to the beginning of @block.
-+ */
-+static inline loff_t nand_eraseblock_to_offs(struct nand_device *nand,
-+					     int block)
-+{
-+	return (loff_t)nand->memorg.eraseblocksize * block;
-+}
-+
-+/**
-+ * nand_offs_to_eraseblock - Convert an absolute offset to an eraseblock offset
-+ * @nand: NAND device
-+ * @offs: absolute offset
-+ *
-+ * Returns the eraseblock number containing @offs.
-+ */
-+static inline int nand_offs_to_eraseblock(struct nand_device *nand, loff_t offs)
-+{
-+	u64 block = offs;
-+
-+	do_div(block, nand->memorg.eraseblocksize);
-+
-+	return block;
-+}
-+
-+/**
-+ * nand_len_to_eraseblocks - Convert a length into a number of erablocks
-+ * @nand: NAND device
-+ * @len: length in bytes
-+ *
-+ * Returns the number of eraseblocks required to store @len bytes.
-+ * This functions assumes your storing those data at an eraseblock-aligned
-+ * offset.
-+ */
-+static inline int nand_len_to_eraseblocks(struct nand_device *nand, size_t len)
-+{
-+	return DIV_ROUND_UP(len, nand->memorg.eraseblocksize);
-+}
-+
-+/**
-+ * nand_eraseblocks_to_len - Convert a number of eraseblocks into a length
-+ *			     expressed in bytes
-+ * @nand: NAND device
-+ * @nblocks: number of eraseblocks
-+ *
-+ * Returns the size taken by @nblock pages.
-+ */
-+static inline size_t nand_eraseblocks_to_len(struct nand_device *nand,
-+					     int nblocks)
-+{
-+	return (size_t)nblocks * nand->memorg.eraseblocksize;
-+}
-+
-+/**
-+ * nand_per_eraseblock_oobsize - Get the amount of OOB bytes in an eraseblock
-+ * @nand: NAND device
-+ *
-+ * Returns the OOB size per eraseblock.
-+ */
-+static inline int nand_per_eraseblock_oobsize(struct nand_device *nand)
-+{
-+	int pagesperblock = nand->memorg.eraseblocksize /
-+			    nand->memorg.pagesize;
-+
-+	return nand->memorg.oobsize * pagesperblock;
-+}
-+
-+/**
-+ * nand_eraseblock_to_page - Convert an eraseblock number to a page number
-+ * @nand: NAND device
-+ * @block: eraseblock number
-+ *
-+ * Returns the page number assigned to the first page of @block eraseblock.
-+ */
-+static inline int nand_eraseblock_to_page(struct nand_device *nand, int block)
-+{
-+	int pagesperblock = nand->memorg.eraseblocksize /
-+			    nand->memorg.pagesize;
-+
-+	return block * pagesperblock;
-+}
-+
-+/**
-+ * nand_page_to_eraseblock - Convert a page number to an eraseblock number
-+ * @nand: NAND device
-+ * @page: page number
-+ *
-+ * Returns the eraseblock number containing @page.
-+ */
-+static inline int nand_page_to_eraseblock(struct nand_device *nand, int page)
-+{
-+	int pagesperblock = nand->memorg.eraseblocksize /
-+			    nand->memorg.pagesize;
-+
-+	return page / pagesperblock;
-+}
-+
-+/**
-+ * nand_eraseblocks_per_die - Get the number of eraseblocks per die
-+ * @nand: NAND device
-+ *
-+ * Returns the number of eraseblocks per die.
-+ */
-+static inline int nand_eraseblocks_per_die(struct nand_device *nand)
-+{
-+	u64 nblocks = nand->memorg.diesize;
-+
-+	do_div(nblocks, nand->memorg.eraseblocksize);
-+
-+	return nblocks;
-+}
-+
-+/**
-+ * nand_eraseblocks_per_die - Get the number of eraseblocks per die
-+ * @nand: NAND device
-+ *
-+ * Returns the number of eraseblocks per die.
-+ */
-+static inline u64 nand_diesize(struct nand_device *nand)
-+{
-+	return nand->memorg.diesize;
-+}
-+
-+/**
-+ * nand_ndies - Get the total of dies
-+ * @nand: NAND device
-+ *
-+ * Returns the number of dies exposed by @nand.
-+ */
-+static inline int nand_ndies(struct nand_device *nand)
-+{
-+	return nand->memorg.ndies;
-+}
-+
-+/**
-+ * nand_die_to_offs - Convert a die number to an absolute offset
-+ * @nand: NAND device
-+ * @die: die number
-+ *
-+ * Returns the offset pointing to the beginning of @die.
-+ */
-+static inline loff_t nand_die_to_offs(struct nand_device *nand, int die)
-+{
-+	return (loff_t)nand->memorg.diesize * die;
-+}
-+
-+/**
-+ * nand_offs_to_die - Convert an absolute offset to a die number
-+ * @nand: NAND device
-+ * @offs: absolute offset
-+ *
-+ * Returns the die number containing @offs.
-+ */
-+static inline int nand_offs_to_die(struct nand_device *nand, loff_t offs)
-+{
-+	return div64_u64((u64)offs, nand->memorg.diesize);
-+}
-+
-+/**
-+ * nand_ndies - Get the total number of erasablocks
-+ * @nand: NAND device
-+ *
-+ * Returns the number of eraseblocks exposed by @nand.
-+ */
-+static inline int nand_neraseblocks(struct nand_device *nand)
-+{
-+	u64 nblocks = nand->memorg.ndies * nand->memorg.diesize;
-+
-+	do_div(nblocks, nand->memorg.eraseblocksize);
-+
-+	return nblocks;
-+}
-+
-+/**
-+ * nand_size - Get NAND size
-+ * @nand: NAND device
-+ *
-+ * Returns the total size exposed by @nand.
-+ */
-+static inline u64 nand_size(struct nand_device *nand)
-+{
-+	return nand->memorg.ndies * nand->memorg.diesize;
-+}
-+
-+/**
-+ * nand_check_address - check NAND address is valid or not
-+ * @nand: NAND device
-+ * @addr: address to check
-+ *
-+ * Returns 0 for valid address and -EINVAL for invalid address.
-+ */
-+static inline int nand_check_address(struct nand_device *nand, loff_t addr)
-+{
-+	return addr < nand_size(nand) ? 0 : -EINVAL;
-+}
-+
-+/**
-+ * nand_check_oob_ops - check mtd_oob_ops is valid or not
-+ * @nand: NAND device
-+ * @start: start address to check
-+ * @ops: oob operation description struct
-+ *
-+ * Returns 0 for valid ops and -EINVAL for invalid ops.
-+ */
-+static inline int nand_check_oob_ops(struct nand_device *nand, loff_t start,
-+				     struct mtd_oob_ops *ops)
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index a113cfb..8f8df15 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -3957,6 +3957,43 @@ static bool find_full_id_nand(struct nand_chip *chip,
+ 	return false;
+ }
+ 
++static int rawnand_erase(struct nand_device *nand, struct erase_info *einfo)
 +{
 +	struct mtd_info *mtd = nand_to_mtd(nand);
-+	int oobbytes_per_page = ops->mode == MTD_OPS_AUTO_OOB ?
-+				mtd->oobavail : mtd->oobsize;
-+	int pages = nand_len_to_pages(nand, nand_size(nand));
-+	int max_pages = pages - nand_offs_to_page(nand, start);
-+	int max_ooblen = max_pages * oobbytes_per_page;
 +
-+	if ((!!ops->datbuf != !!ops->len) ||
-+	    (!!ops->oobbuf != !!ops->ooblen))
-+		return -EINVAL;
-+	if (ops->ooboffs >= oobbytes_per_page)
-+		return -EINVAL;
-+	if (ops->ooboffs + ops->ooblen > max_ooblen)
-+		return -EINVAL;
-+
-+	return 0;
++	return nand_erase_nand(mtd, einfo, 1);
 +}
 +
-+/**
-+ * nand_oob_ops_across_page - check oob operation across page or not
-+ * @nand: NAND device
-+ * @ops: oob operation description struct
-+ *
-+ * Returns true if oob operation across page and false when not.
-+ */
-+static inline bool nand_oob_ops_across_page(struct nand_device *nand,
-+					    struct mtd_oob_ops *ops)
++static int rawnand_markbad(struct nand_device *nand, int block)
 +{
 +	struct mtd_info *mtd = nand_to_mtd(nand);
-+	int oobbytes_per_page = ops->mode == MTD_OPS_AUTO_OOB ?
-+				mtd->oobavail : mtd->oobsize;
++	struct nand_chip *chip = mtd_to_nandchip(mtd);
++	loff_t offs = nand_eraseblock_to_offs(nand, block);
 +
-+	return (ops->ooboffs + ops->ooblen) > oobbytes_per_page;
++	return chip->block_markbad(mtd, offs);
 +}
++
++static const struct nand_ops rawnand_ops = {
++	.erase = rawnand_erase,
++	.markbad = rawnand_markbad,
++};
++
++static void nandc_fill_nandd(struct nand_chip *chip)
++{
++	struct mtd_info *mtd = nandchip_to_mtd(chip);
++	struct nand_device *nand = mtd_to_nand(mtd);
++	struct nand_memory_organization *memorg = &nand->memorg;
++
++	memorg->pagesize = mtd->writesize;
++	memorg->oobsize = mtd->oobsize;
++	memorg->eraseblocksize = mtd->erasesize;
++	memorg->ndies = chip->numchips;
++	memorg->diesize = chip->chipsize;
++	/* TODO: fill ->planesize and ->nplanes */
++
++	nand->ops = &rawnand_ops;
++}
++
+ /*
+  * Manufacturer detection. Only used when the NAND is not ONFI or JEDEC
+  * compliant and does not have a full-id or legacy-id entry in the nand_ids
+@@ -4409,6 +4446,9 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+ 	chip->numchips = i;
+ 	mtd->size = i * chip->chipsize;
+ 
++	/* Fill nand_device info */
++	nandc_fill_nandd(chip);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL(nand_scan_ident);
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index aa43ec4..750fac2 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -20,6 +20,7 @@
+ #include <linux/spinlock.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/flashchip.h>
++#include <linux/mtd/nand.h>
+ #include <linux/mtd/bbm.h>
+ 
+ struct mtd_info;
+@@ -727,8 +728,21 @@ struct nand_manufacturer_ops {
+ };
+ 
+ /**
++ * struct rawnand_device - raw NAND device structure
++ * @base: NAND device instance (inheritance)
++ *
++ * This structure describes a raw NAND device and should progressively
++ * replace the nand_chip struct.
++ *
++ * Note: do not blindly move nand_chip fields into rawnand_device.
++ */
++struct rawnand_device {
++	struct nand_device base;
++};
 +
 +/**
-+ * nand_check_erase_ops - check erase operation is valid or not
-+ * @nand: NAND device
-+ * @einfo: erase instruction
-+ *
-+ * Returns 0 for valid erase operation and -EINVAL for invalid.
-+ */
-+static inline int nand_check_erase_ops(struct nand_device *nand,
-+				       struct erase_info *einfo)
-+{
-+	/* check address align on block boundary */
-+	if (einfo->addr & (nand_eraseblock_size(nand) - 1))
-+		return -EINVAL;
-+	/* check lendth align on block boundary */
-+	if (einfo->len & (nand_eraseblock_size(nand) - 1))
-+		return -EINVAL;
-+	/* Do not allow erase past end of device */
-+	if ((einfo->addr + einfo->len) > nand_size(nand))
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+/**
-+ * nand_register - Register a NAND device
-+ * @nand: NAND device
-+ *
-+ * Register a NAND device.
-+ * This function is just a wrapper around mtd_device_register()
-+ * registering the MTD device attached to @nand.
-+ */
-+static inline int nand_register(struct nand_device *nand)
-+{
-+	return mtd_device_register(&nand->mtd, NULL, 0);
-+}
-+
-+/**
-+ * nand_unregister - Unregister a NAND device
-+ * @nand: NAND device
-+ *
-+ * Unregister a NAND device.
-+ * This function is just a wrapper around mtd_device_unregister()
-+ * unregistering the MTD device attached to @nand.
-+ */
-+static inline int nand_unregister(struct nand_device *nand)
-+{
-+	return mtd_device_unregister(&nand->mtd);
-+}
-+
-+/**
-+ * nand_read - Read data from NAND
-+ * @nand: NAND device
-+ * @offs: offset you want to read data from
-+ * @ops: options describing what you want to read (in-band/out-of-band data)
-+ *	 and how (raw or normal mode)
-+ *
-+ * Read data from NAND.
-+ */
-+static inline int nand_read(struct nand_device *nand, loff_t offs,
-+			    struct mtd_oob_ops *ops)
-+{
-+	return mtd_read_oob(&nand->mtd, offs, ops);
-+}
-+
-+/**
-+ * nand_write - Write data to NAND
-+ * @nand: NAND device
-+ * @offs: offset you want to write data to
-+ * @ops: options describing what you want to write (in-band/out-of-band data)
-+ *	 and how (raw or normal mode)
-+ *
-+ * Read data from NAND.
-+ */
-+static inline int nand_write(struct nand_device *nand, loff_t offs,
-+			     struct mtd_oob_ops *ops)
-+{
-+	return mtd_write_oob(&nand->mtd, offs, ops);
-+}
-+
-+/**
-+ * nand_erase - Erase a NAND portion
-+ * @nand: NAND device
-+ * @einfo: erase information
-+ * @force: whether bad or protected blocks should be erased or not
-+ *
-+ * Erase the NAND portion described by @einfo. If @force is passed, bad and
-+ * reserved block checking is bypassed and the implementation is asked to
-+ * force the erasure.
-+ */
-+static inline int nand_erase(struct nand_device *nand,
-+			     struct erase_info *einfo,
-+			     bool force)
-+{
-+	if (!force)
-+		return mtd_erase(&nand->mtd, einfo);
-+
-+	return nand->ops->erase(nand, einfo);
-+}
-+
-+/**
-+ * nand_markbad - Write a bad block marker to a block
-+ * @nand: NAND device
-+ * @block: block to mark bad
-+ *
-+ * Mark a block bad. This function is not using the BBT.
-+ */
-+static inline int nand_markbad(struct nand_device *nand, int block)
-+{
-+	return nand->ops->markbad(nand, block);
-+}
-+
-+/**
-+ * nand_set_of_node - Attach a DT node to a NAND device
-+ * @nand: NAND device
-+ * @np: DT node
-+ *
-+ * Attach a DT node to a NAND device.
-+ */
-+static inline void nand_set_of_node(struct nand_device *nand,
-+				    struct device_node *np)
-+{
-+	mtd_set_of_node(&nand->mtd, np);
-+}
-+
-+/**
-+ * nand_get_of_node - Retrieve the DT node attached a NAND device
-+ * @nand: NAND device
-+ *
-+ * Returns the DT node attached to @nand.
-+ */
-+static inline struct device_node *nand_get_of_node(struct nand_device *nand)
-+{
-+	return mtd_get_of_node(&nand->mtd);
-+}
-+#endif /* __LINUX_MTD_NAND_H */
+  * struct nand_chip - NAND Private Flash Chip Data
+- * @mtd:		MTD device registered to the MTD framework
++ * @base:		raw NAND device instance (inheritance)
+  * @IO_ADDR_R:		[BOARDSPECIFIC] address to read the 8 I/O lines of the
+  *			flash device
+  * @IO_ADDR_W:		[BOARDSPECIFIC] address to write the 8 I/O lines of the
+@@ -834,7 +848,7 @@ struct nand_manufacturer_ops {
+  */
+ 
+ struct nand_chip {
+-	struct mtd_info mtd;
++	struct rawnand_device base;
+ 	void __iomem *IO_ADDR_R;
+ 	void __iomem *IO_ADDR_W;
+ 
+@@ -930,22 +944,22 @@ struct nand_chip {
+ static inline void nand_set_flash_node(struct nand_chip *chip,
+ 				       struct device_node *np)
+ {
+-	mtd_set_of_node(&chip->mtd, np);
++	nand_set_of_node(&chip->base.base, np);
+ }
+ 
+ static inline struct device_node *nand_get_flash_node(struct nand_chip *chip)
+ {
+-	return mtd_get_of_node(&chip->mtd);
++	return nand_get_of_node(&chip->base.base);
+ }
+ 
+ static inline struct nand_chip *mtd_to_nandchip(struct mtd_info *mtd)
+ {
+-	return container_of(mtd, struct nand_chip, mtd);
++	return container_of(mtd_to_nand(mtd), struct nand_chip, base.base);
+ }
+ 
+ static inline struct mtd_info *nandchip_to_mtd(struct nand_chip *chip)
+ {
+-	return &chip->mtd;
++	return nand_to_mtd(&chip->base.base);
+ }
+ 
+ static inline void *nand_get_controller_data(struct nand_chip *chip)
 -- 
 1.9.1
