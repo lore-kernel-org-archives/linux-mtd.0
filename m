@@ -1,7 +1,7 @@
 Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dDQHt-0000Iq-GZ
- for linux-mtd@lists.infradead.org; Wed, 24 May 2017 07:00:59 +0000
+ id 1dDQHt-0000GL-Gz
+ for linux-mtd@lists.infradead.org; Wed, 24 May 2017 07:01:01 +0000
 From: Peter Pan <peterpandong@micron.com>
 To: <boris.brezillon@free-electrons.com>, <richard@nod.at>,
  <computersforpeace@gmail.com>, <arnaud.mouiche@gmail.com>,
@@ -9,9 +9,9 @@ To: <boris.brezillon@free-electrons.com>, <richard@nod.at>,
  <cyrille.pitchen@wedev4u.fr>, <linux-mtd@lists.infradead.org>
 CC: <peterpandong@micron.com>, <peterpansjtu@gmail.com>,
  <linshunquan1@hisilicon.com>
-Subject: [PATCH v6 09/15] mtd: nand: make sure mtd_oob_ops consistent in bbt
-Date: Wed, 24 May 2017 15:07:05 +0800
-Message-ID: <1495609631-18880-10-git-send-email-peterpandong@micron.com>
+Subject: [PATCH v6 07/15] mtd: nand: move BBT code to drivers/mtd/nand/
+Date: Wed, 24 May 2017 15:07:03 +0800
+Message-ID: <1495609631-18880-8-git-send-email-peterpandong@micron.com>
 In-Reply-To: <1495609631-18880-1-git-send-email-peterpandong@micron.com>
 References: <1495609631-18880-1-git-send-email-peterpandong@micron.com>
 MIME-Version: 1.0
@@ -25,72 +25,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit makes sure struct mtd_oob_ops passed to mtd_read/write_ops()
-is consistent, which means .datbuf = NULL and .len = 0 when not reading
-page; .oobbuf = NULL and .ooblen = 0 when not reading oob. If no, (ie.
-ops.datbuf = NULL, while ops.len != 0.), nand_for_each_page() will run
-forever.
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
 
+Now that the BBT code is generic, we can move it to drivers/mtd/nand/.
+
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 Signed-off-by: Peter Pan <peterpandong@micron.com>
 ---
- drivers/mtd/nand/bbt.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ drivers/mtd/nand/Kconfig                   | 3 +++
+ drivers/mtd/nand/Makefile                  | 4 ++++
+ drivers/mtd/nand/{raw/nand_bbt.c => bbt.c} | 5 +++++
+ drivers/mtd/nand/raw/Kconfig               | 1 +
+ drivers/mtd/nand/raw/Makefile              | 2 +-
+ 5 files changed, 14 insertions(+), 1 deletion(-)
+ rename drivers/mtd/nand/{raw/nand_bbt.c => bbt.c} (99%)
 
-diff --git a/drivers/mtd/nand/bbt.c b/drivers/mtd/nand/bbt.c
-index 56115d5..96d4e14 100644
---- a/drivers/mtd/nand/bbt.c
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 6d53734..1c1a1f4 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -1 +1,4 @@
++config MTD_NAND_CORE
++	tristate
++
+ source "drivers/mtd/nand/raw/Kconfig"
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index eee2f27..fe430d9 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -1 +1,5 @@
++obj-$(CONFIG_MTD_NAND_CORE) += nandcore.o
++
++nandcore-objs :=  bbt.o
++
+ obj-y	+= raw/
+diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/bbt.c
+similarity index 99%
+rename from drivers/mtd/nand/raw/nand_bbt.c
+rename to drivers/mtd/nand/bbt.c
+index 26f5c3f..56115d5 100644
+--- a/drivers/mtd/nand/raw/nand_bbt.c
 +++ b/drivers/mtd/nand/bbt.c
-@@ -328,7 +328,7 @@ static int scan_read_oob(struct nand_device *this, uint8_t *buf, loff_t offs,
- 			 size_t len)
- {
- 	struct mtd_info *mtd = nand_to_mtd(this);
--	struct mtd_oob_ops ops;
-+	struct mtd_oob_ops ops = {};
- 	int res, ret = 0;
+@@ -1308,6 +1308,7 @@ int nand_scan_bbt(struct nand_device *this)
+ 	this->bbt.bbt = NULL;
+ 	return res;
+ }
++EXPORT_SYMBOL_GPL(nand_scan_bbt);
  
- 	ops.mode = MTD_OPS_PLACE_OOB;
-@@ -369,11 +369,12 @@ static int scan_write_bbt(struct nand_device *this, loff_t offs, size_t len,
- 			  uint8_t *buf, uint8_t *oob)
- {
- 	struct mtd_info *mtd = nand_to_mtd(this);
--	struct mtd_oob_ops ops;
-+	struct mtd_oob_ops ops = {};
+ /**
+  * nand_release_bbt - release bad block table(s)
+@@ -1372,6 +1373,7 @@ int nand_update_bbt(struct nand_device *this, loff_t offs)
+ 	kfree(buf);
+ 	return res;
+ }
++EXPORT_SYMBOL_GPL(nand_update_bbt);
  
- 	ops.mode = MTD_OPS_PLACE_OOB;
- 	ops.ooboffs = 0;
--	ops.ooblen = nand_per_page_oobsize(this);
-+	/* oob from caller may be NULL */
-+	ops.ooblen = oob ? nand_per_page_oobsize(this) : 0;
- 	ops.datbuf = buf;
- 	ops.oobbuf = oob;
- 	ops.len = len;
-@@ -428,13 +429,12 @@ static int scan_block_fast(struct nand_device *this, struct nand_bbt_descr *bd,
- 			   loff_t offs, uint8_t *buf, int numpages)
- {
- 	struct mtd_info *mtd = nand_to_mtd(this);
--	struct mtd_oob_ops ops;
-+	struct mtd_oob_ops ops = {};
- 	int j, ret;
+ /**
+  * nand_isreserved_bbt - [NAND Interface] Check if a block is reserved
+@@ -1385,6 +1387,7 @@ int nand_isreserved_bbt(struct nand_device *this, loff_t offs)
+ 	block = nand_offs_to_eraseblock(this, offs);
+ 	return bbt_get_entry(this, block) == NAND_BBT_BLOCK_RESERVED;
+ }
++EXPORT_SYMBOL_GPL(nand_isreserved_bbt);
  
- 	ops.ooblen = nand_per_page_oobsize(this);
- 	ops.oobbuf = buf;
- 	ops.ooboffs = 0;
--	ops.datbuf = NULL;
- 	ops.mode = MTD_OPS_PLACE_OOB;
+ /**
+  * nand_isbad_bbt - [NAND Interface] Check if a block is bad
+@@ -1412,6 +1415,7 @@ int nand_isbad_bbt(struct nand_device *this, loff_t offs, int allowbbt)
+ 	}
+ 	return 1;
+ }
++EXPORT_SYMBOL_GPL(nand_isbad_bbt);
  
- 	for (j = 0; j < numpages; j++) {
-@@ -734,11 +734,10 @@ static int write_bbt(struct nand_device *this, uint8_t *buf,
- 	uint8_t rcode = td->reserved_block_code;
- 	size_t retlen, len = 0;
- 	loff_t to;
--	struct mtd_oob_ops ops;
-+	struct mtd_oob_ops ops = {};
+ /**
+  * nand_markbad_bbt - [NAND Interface] Mark a block bad in the BBT
+@@ -1433,3 +1437,4 @@ int nand_markbad_bbt(struct nand_device *this, loff_t offs)
  
- 	ops.ooblen = nand_per_page_oobsize(this);
- 	ops.ooboffs = 0;
--	ops.datbuf = NULL;
- 	ops.mode = MTD_OPS_PLACE_OOB;
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(nand_markbad_bbt);
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index 0bd2319..d7c97f9 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -14,6 +14,7 @@ menuconfig MTD_NAND
+ 	tristate "NAND Device Support"
+ 	depends on MTD
+ 	select MTD_NAND_ECC
++	select MTD_NAND_CORE
+ 	help
+ 	  This enables support for accessing all type of NAND flash
+ 	  devices. For further information see
+diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
+index 523d5c1..e9207e3 100644
+--- a/drivers/mtd/nand/raw/Makefile
++++ b/drivers/mtd/nand/raw/Makefile
+@@ -60,7 +60,7 @@ obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand/
+ obj-$(CONFIG_MTD_NAND_QCOM)		+= qcom_nandc.o
+ obj-$(CONFIG_MTD_NAND_MTK)		+= mtk_nand.o mtk_ecc.o
  
- 	if (!rcode)
+-nand-objs := nand_base.o nand_bbt.o nand_timings.o nand_ids.o
++nand-objs := nand_base.o nand_timings.o nand_ids.o
+ nand-objs += nand_amd.o
+ nand-objs += nand_hynix.o
+ nand-objs += nand_macronix.o
 -- 
 1.9.1
