@@ -1,29 +1,18 @@
-Received: from mail-qk0-f193.google.com ([209.85.220.193])
+Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dDhi4-0008I4-98
- for linux-mtd@lists.infradead.org; Thu, 25 May 2017 01:37:05 +0000
-Received: by mail-qk0-f193.google.com with SMTP id y128so28668239qka.3
- for <linux-mtd@lists.infradead.org>; Wed, 24 May 2017 18:36:43 -0700 (PDT)
-Date: Wed, 24 May 2017 22:36:36 -0300
-From: Gustavo Padovan <gustavo@padovan.org>
-To: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-Cc: Linux Doc Mailing List <linux-doc@vger.kernel.org>,
- Mauro Carvalho Chehab <mchehab@infradead.org>,
- linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
+ id 1dDkjw-0004C1-4u
+ for linux-mtd@lists.infradead.org; Thu, 25 May 2017 04:51:14 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- Sumit Semwal <sumit.semwal@linaro.org>, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 20/29] sync_file.txt: standardize document format
-Message-ID: <20170525013636.GB16058@jade>
-References: <cover.1495157082.git.mchehab@s-opensource.com>
- <e781f61e582e7c7eb5de456608043aff9fe2b2b5.1495157082.git.mchehab@s-opensource.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e781f61e582e7c7eb5de456608043aff9fe2b2b5.1495157082.git.mchehab@s-opensource.com>
+ Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd: nand: check ecc->total sanity in nand_scan_tail
+Date: Thu, 25 May 2017 13:50:20 +0900
+Message-Id: <1495687820-30692-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,24 +22,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mauro,
+Drivers are supposed to set correct ecc->{size,strength,bytes} before
+calling nand_scan_tail(), but it does not complain about ecc->total
+bigger than oobsize.
 
-2017-05-18 Mauro Carvalho Chehab <mchehab@s-opensource.com>:
+In this case, chip->scan_bbt() crashes due to memory corruption, but
+it is hard to debug.  It would be kind to fail it earlier with a clear
+message.
 
-> Each text file under Documentation follows a different
-> format. Some doesn't even have titles!
-> 
-> Change its representation to follow the adopted standard,
-> using ReST markups for it to be parseable by Sphinx:
-> - Use markup for document title and authorship;
-> - Mark literal blocks;
-> - Use a numbered list for references.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-> ---
->  Documentation/sync_file.txt | 23 +++++++++++++----------
->  1 file changed, 13 insertions(+), 10 deletions(-)
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
 
-We went ahead and applied this to drm-misc-next. Thanks.
+I was actually hit by this case.
 
-Gustavo
+I wasted half a day until I figured out my coding mistake in my
+Denali driver.  It will be helpful to check this in NAND core.
+
+
+ drivers/mtd/nand/nand_base.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index f4d686192717..14d6a5aa3ee8 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -4970,6 +4970,11 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		goto err_free;
+ 	}
+ 	ecc->total = ecc->steps * ecc->bytes;
++	if (ecc->total > mtd->oobsize) {
++		WARN(1, "Total number of ECC bytes exceeded oobsize\n");
++		ret = -EINVAL;
++		goto err_free;
++	}
+ 
+ 	/*
+ 	 * The number of bytes available for a client to place data into
+-- 
+2.7.4
