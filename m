@@ -1,28 +1,29 @@
-Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
+Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dDzKi-0000mQ-Af
- for linux-mtd@lists.infradead.org; Thu, 25 May 2017 20:26:10 +0000
-Received: by mail-pf0-x244.google.com with SMTP id u26so41301773pfd.2
- for <linux-mtd@lists.infradead.org>; Thu, 25 May 2017 13:25:47 -0700 (PDT)
-Date: Thu, 25 May 2017 13:25:44 -0700
+ id 1dDzTD-0003W3-NZ
+ for linux-mtd@lists.infradead.org; Thu, 25 May 2017 20:34:57 +0000
+Received: by mail-pf0-x241.google.com with SMTP id f27so41347410pfe.0
+ for <linux-mtd@lists.infradead.org>; Thu, 25 May 2017 13:34:35 -0700 (PDT)
+Date: Thu, 25 May 2017 13:34:32 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
  =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH V5 2/4] mtd: partitions: add support for allocating
- subpartition
-Message-ID: <20170525202544.GB114788@google.com>
-References: <20170524094437.2174-1-zajec5@gmail.com>
- <20170524094437.2174-3-zajec5@gmail.com>
+Subject: Re: [PATCH V4 1/2] mtd: add support for partition parsers
+Message-ID: <20170525203432.GC114788@google.com>
+References: <20170227130633.4020-1-zajec5@gmail.com>
+ <20170330123527.30181-1-zajec5@gmail.com>
+ <20170511182126.GG70297@google.com>
+ <d2eb6a73-38c7-498a-b32d-cd75b5ae1cf2@gmail.com>
+ <12299bb6-a34d-5b84-616d-d1f4d067c8dd@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20170524094437.2174-3-zajec5@gmail.com>
+In-Reply-To: <12299bb6-a34d-5b84-616d-d1f4d067c8dd@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,168 +33,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 24, 2017 at 11:44:35AM +0200, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
+On Tue, May 23, 2017 at 11:06:37AM +0200, Rafał Miłecki wrote:
+> On 05/23/2017 10:14 AM, Rafał Miłecki wrote:
+> >On 05/11/2017 08:21 PM, Brian Norris wrote:
+> >>Maybe a better way to handle that offset modification is to either pass
+> >>in the offset to add_mtd_partitions() (e.g., as a simple parameter), or
+> >>else adapt add_mtd_partitions() to handle receiving a non-master as the
+> >>first parameter. (Then you just pass "slave", and add_mtd_partitions()
+> >>handle it with something like "if (mtd_is_partition(...))".)
+> >>
+> >>Then I wonder how we want the parenting structure to work; should the
+> >>sub-partition have the "master" as its parent, or the original
+> >>partition? I thought Richard had mentioned some problems with the
+> >>existing parenting structure (with CONFIG_MTD_PARTITIONED_MASTER)
+> >>already, but I don't remember what those were.
+> >>
+> >>Also, if you're "parsing" the slave, but "adding" to the master, then
+> >>the bounds-checking logic in add_mtd_partitions() won't properly apply,
+> >>and you'll be able to create sub-partitions that extend beyond the
+> >>slave, right? If so, then I think (after auditing add_mtd_partitions() a
+> >>little closer, and possibly adjusting some of its comments) you might
+> >>really just want to pass 'slave', not 'slave->master'.
+> >
+> >I like this idea!
 > 
-> Some flash device partitions can be containers with extra subpartitions
-> (volumes). When allocating subpartition it should be validated against
-> its parent but its master pointer has to point flash device. It's needed
-> to make all callbacks like part_read work as expected. It also has to
-> have offset calculated correctly.
+> Oh, it's not that simple. Passing struct mtd_part to the add_mtd_partitions
+> is simple, but it's getting complex afterwards.
 > 
-> This patch modifies allocate_partition to detect if provided parent is
-> an existing partition and sets "master" and "offset" correctly if so.
-> 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-> ---
-> V5: Introduction of this patch to handle offset in allocate_partition
->     and avoid casting const to non-const in mtd_parse_part.
-> ---
->  drivers/mtd/mtdpart.c | 31 +++++++++++++++++++++++--------
->  1 file changed, 23 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-> index 92acd89e07cb..8a0629449804 100644
-> --- a/drivers/mtd/mtdpart.c
-> +++ b/drivers/mtd/mtdpart.c
-> @@ -37,7 +37,13 @@
->  static LIST_HEAD(mtd_partitions);
->  static DEFINE_MUTEX(mtd_partitions_mutex);
->  
-> -/* Our partition node structure */
-> +/**
-> + * struct mtd_part - our partition node structure
-> + *
-> + * @mtd: struct holding partition details
-> + * @master: pointer to the flash device MTD struct
-> + * @offset: partition offset relative to the *flash device*
-> + */
->  struct mtd_part {
->  	struct mtd_info mtd;
->  	struct mtd_info *master;
-> @@ -393,9 +399,18 @@ static struct mtd_part *allocate_partition(struct mtd_info *parent,
->  			const struct mtd_partition *part, int partno,
->  			uint64_t cur_offset)
->  {
-> +	struct mtd_info *master = parent;
->  	struct mtd_part *slave;
-> +	uint64_t parent_offset = 0;
->  	char *name;
->  
-> +	if (mtd_is_partition(parent)) {
-> +		struct mtd_part *parent_part = mtd_to_part(parent);
-> +
-> +		master = parent_part->master;
+> 1) We can't simply adjust offset in add_mtd_partitions as we are still
+>    dealing with const struct mtd_partition (note: const).
+> 2) We can't adjust offset after calling allocate_partition as this would
+>    bypass some validation happening in the allocate_partition.
 
-Are you trying to keep a flat structure, or a tree? It seems like you're mostly
-doing a flat structure (with one bug, see below), but I was kinda thinking it'd
-be natural to actually represent the tree structure. In case that's confusing,
-I'll try to expalin below.
+I think I was assuming you'd use a tree structure, in which case you
+don't have to modify the offsets at all. The offsets would get
+translated by, e.g., a recursive call to part_read() (the subpartition's
+part_read() would call the parent partition's part_read(), which would
+adjust the offset and call the master's ->read() callback).
 
-Take a look at these two snippets:
+Or maybe the recursion (and tree structure) is not a great idea. You
+came up with a mostly-OK solution that keeps a flat tree structure and
+no recursion in your next version.
 
-        slave->mtd.dev.parent = IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER) ?
-                                &parent->dev :
-                                parent->dev.parent;
-	...
-	slave->master = master;
+> 3) Passing an extra argume to the allocate_partition is a bad idea as it
+>    already receives uint64_t cur_offset - this would be confusing.
 
-So (assuming CONFIG_MTD_PARTITIONED_MASTER), you've set up a sysfs structure in
-which the parent device is always the device that created you, but the ->master
-always points at the top-level "master" MTD.
-
-[In the !CONFIG_MTD_PARTITIONED_MASTER case, then the sub-partitions will have
-->dev.parent set to the device that created the *master*, not the device
-(i.e., MTD) that created the subpartition. This is inconsistent.]
-
-So I guess you need to decide if you're aiming to keep a mostly flat parental
-structure. i.e., should the ->master graph look like:
-
-  master MTD
-   -> partition 1
-   -> partition parsed from partition 1
-
-or should it be a tree:
-
-  master MTD
-   -> partition 1
-      -> partition parsed from partition 1
-
-Then, to be consistent you either need the ->mtd.dev.parent to be flat, like
-this:
-
-	slave->mtd.dev.parent = IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER) || mtd_is_partition(parent) ?
-				&master->dev :
-				master->dev.parent;
-
-or tree-like:
-
-	slave->mtd.dev.parent = IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER) || mtd_is_partition(parent) ?
-				&parent->dev :
-				parent->dev.parent;
-
-And the corresponding ->master for flat:
-
-	slave->master = master;
-
-or tree-like:
-
-	slave->master = parent;
-
-With tree-like, you need fewer modifications to this function. (Mostly
-you just would want the naming changes and/or comments, to clarify what
-"master" means.)
-
-With flat, I suppose maybe you only need to bugfix the
-slave->mtd.dev.parent assignment.
-
-Let me know what you think.
+Yeah, might be. But I think you came up with a different solution
+anyway.
 
 Brian
-
-> +		parent_offset = parent_part->offset;
-> +	}
-> +
->  	/* allocate the partition structure */
->  	slave = kzalloc(sizeof(*slave), GFP_KERNEL);
->  	name = kstrdup(part->name, GFP_KERNEL);
-> @@ -493,12 +508,12 @@ static struct mtd_part *allocate_partition(struct mtd_info *parent,
->  		slave->mtd._put_device = part_put_device;
->  
->  	slave->mtd._erase = part_erase;
-> -	slave->master = parent;
-> -	slave->offset = part->offset;
-> +	slave->master = master;
-> +	slave->offset = parent_offset + part->offset;
->  
-> -	if (slave->offset == MTDPART_OFS_APPEND)
-> +	if (part->offset == MTDPART_OFS_APPEND)
->  		slave->offset = cur_offset;
-> -	if (slave->offset == MTDPART_OFS_NXTBLK) {
-> +	if (part->offset == MTDPART_OFS_NXTBLK) {
->  		slave->offset = cur_offset;
->  		if (mtd_mod_by_eb(cur_offset, parent) != 0) {
->  			/* Round up to next erasesize */
-> @@ -508,7 +523,7 @@ static struct mtd_part *allocate_partition(struct mtd_info *parent,
->  			       (unsigned long long)cur_offset, (unsigned long long)slave->offset);
->  		}
->  	}
-> -	if (slave->offset == MTDPART_OFS_RETAIN) {
-> +	if (part->offset == MTDPART_OFS_RETAIN) {
->  		slave->offset = cur_offset;
->  		if (parent->size - slave->offset >= slave->mtd.size) {
->  			slave->mtd.size = parent->size - slave->offset
-> @@ -536,8 +551,8 @@ static struct mtd_part *allocate_partition(struct mtd_info *parent,
->  			part->name);
->  		goto out_register;
->  	}
-> -	if (slave->offset + slave->mtd.size > parent->size) {
-> -		slave->mtd.size = parent->size - slave->offset;
-> +	if (slave->offset + slave->mtd.size > parent_offset + parent->size) {
-> +		slave->mtd.size = parent_offset + parent->size - slave->offset;
->  		printk(KERN_WARNING"mtd: partition \"%s\" extends beyond the end of device \"%s\" -- size truncated to %#llx\n",
->  			part->name, parent->name, (unsigned long long)slave->mtd.size);
->  	}
-> -- 
-> 2.11.0
-> 
