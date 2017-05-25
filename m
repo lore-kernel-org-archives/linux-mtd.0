@@ -1,25 +1,24 @@
-Date: Thu, 25 May 2017 08:17:47 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Thomas Petazzoni
- <thomas.petazzoni@free-electrons.com>, "ezequiel.garcia@free-electrons.com"
- <ezequiel.garcia@free-electrons.com>, Gregory Clement
- <gregory.clement@free-electrons.com>
-Subject: Re: pxa3xx-nand failing to find device on linux-next
-Message-ID: <20170525081747.4c86164c@bbrezillon>
-In-Reply-To: <69dfc0d5ca774efb8c92e9ec635f68ec@svr-chch-ex1.atlnz.lc>
-References: <b36366e358904310aee4970b77f57dba@svr-chch-ex1.atlnz.lc>
- <2a79405e219b4c37ba00defbe4a0dfe4@svr-chch-ex1.atlnz.lc>
- <20170524132301.12ad33d8@bbrezillon>
- <20170524132508.420614c7@bbrezillon>
- <ebe9d9bca4754d1ba920295f2fdd1359@svr-chch-ex1.atlnz.lc>
- <20170525003646.276516d0@bbrezillon>
- <69dfc0d5ca774efb8c92e9ec635f68ec@svr-chch-ex1.atlnz.lc>
+Received: from mail-qt0-x243.google.com ([2607:f8b0:400d:c0d::243])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dDnsQ-0002vA-Oe
+ for linux-mtd@lists.infradead.org; Thu, 25 May 2017 08:12:12 +0000
+Received: by mail-qt0-x243.google.com with SMTP id a46so29267877qte.0
+ for <linux-mtd@lists.infradead.org>; Thu, 25 May 2017 01:11:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <CAJbz7-3zUrkr4OV4Hkp6B0px+MGQGukmGKo31rid-8K=TCooXA@mail.gmail.com>
+References: <CAJbz7-1KY0h=f8HgnfZGKtG8CYTK+S+Qb9BR7mwSk2U35cRtVg@mail.gmail.com>
+ <20170522111704.52ce1c40@bbrezillon>
+ <CAJbz7-3zUrkr4OV4Hkp6B0px+MGQGukmGKo31rid-8K=TCooXA@mail.gmail.com>
+From: =?UTF-8?Q?Honza_Petrou=C5=A1?= <jpetrous@gmail.com>
+Date: Thu, 25 May 2017 10:11:46 +0200
+Message-ID: <CAJbz7-0fKC_tOn3jRF=cqGLnt26qP5h6fCApCFmtA5wN6fpkNw@mail.gmail.com>
+Subject: Re: [PATCH] mtd:nor:ppb_unlock: remove repeated chip unlock
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,123 +29,193 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le Wed, 24 May 2017 22:58:53 +0000,
-Chris Packham <Chris.Packham@alliedtelesis.co.nz> a =C3=A9crit :
+Hi Boris
 
-> On 25/05/17 10:36, Boris Brezillon wrote:
-> > Le Wed, 24 May 2017 22:03:52 +0000,
-> > Chris Packham <Chris.Packham@alliedtelesis.co.nz> a =C3=A9crit :
-> >  =20
-> >> On 24/05/17 23:25, Boris Brezillon wrote: =20
-> >>> On Wed, 24 May 2017 13:23:01 +0200
-> >>> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-> >>>     =20
-> >>>> Hi Chris,
-> >>>>
-> >>>> On Wed, 24 May 2017 09:36:56 +0000
-> >>>> Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
-> >>>>    =20
-> >>>>> On 23/05/17 17:27, Chris Packham wrote: =20
-> >>>>>> Hi,
-> >>>>>>
-> >>>>>> I'm doing some testing on linux-next and I'm finding that my nand =
-flash
-> >>>>>> has disappeared.
-> >>>>>>
-> >>>>>> pxa3xx-nand f10d0000.flash: This platform can't do DMA on this dev=
-ice
-> >>>>>> pxa3xx-nand f10d0000.flash: non-supported command ef
-> >>>>>> pxa3xx-nand f10d0000.flash: non-supported command ee
-> >>>>>> pxa3xx-nand f10d0000.flash: non-supported command ef
-> >>>>>> pxa3xx-nand f10d0000.flash: non-supported command ee
-> >>>>>> On-die ECC forcefully enabled, not supported
-> >>>>>> nand: No NAND device found
-> >>>>>> pxa3xx-nand f10d0000.flash: failed to scan nand at cs 0
-> >>>>>>
-> >>>>>> This was working around 4.11. I'll try to do some more digging tom=
-orrow
-> >>>>>> to narrow down a failure point but I thought I'd send this out now=
- just
-> >>>>>> in case it rings any bells.
-> >>>>>>
-> >>>>>> The board I'm using (DB-88F6820-AMC) is unfortunately out-of tree =
-but it
-> >>>>>> should be pretty close to the armada-388-db. I can make my dts ava=
-ilable
-> >>>>>> if it's helpful. =20
-> >>>>>
-> >>>>> Still works on 4.12-rc2. Fails on next-20170524.
-> >>>>>
-> >>>>> This appears to be due to commit b566d9c055de ("mtd: nand: add supp=
-ort
-> >>>>> for Micron on-die ECC"). Which based on the description seems inten=
-tional.
-> >>>>>
-> >>>>> Since I have access to a hardware platform that has a micron flash =
-with
-> >>>>> ECC forcefully enabled how can I help to get this implemented. =20
-> >>>>
-> >>>> Can you try with this patch applied [1]? =20
-> >>>
-> >>> Sorry, wrong patch. Can you try this one [1] instead?
-> >>>
-> >>> [1]http://code.bulix.org/pkfhmi-135875
-> >>>     =20
-> >>
-> >> With the patch above the chip is detected but ubifs is unhappy =20
-> >=20
-> > Hm, weird. And if you revert my both Thomas patch and mine, what do you
-> > get? =20
->=20
-> Seems to work just fine.
+2017-05-23 8:45 GMT+02:00 Honza Petrou=C5=A1 <jpetrous@gmail.com>:
+> 2017-05-22 11:17 GMT+02:00 Boris Brezillon <boris.brezillon@free-electron=
+s.com>:
+>> Hi Honza,
+>>
+>> On Wed, 17 May 2017 09:25:18 +0200
+>> Honza Petrou=C5=A1 <jpetrous@gmail.com> wrote:
+>>
+>>> The Persistent Protection Bits (PPB) locking of cfi_cmdset_0002.c
+>>> doesn't support per-sector-unlocking, so any unlock request
+>>> unlocks the whole chip. Because of that limitation the driver
+>>> does the unlock in three steps:
+>>>  1) remember all locked sector
+>>>  2) do the whole chip unlock
+>>>  3) lock back only the necessary sectors
+>>>
+>>> Unfortunately in step 2 (unlocking the chip) there is used
+>>> cfi_varsize_frob() for per-sector unlock, what ends up
+>>> in multiple chip unlocking calls (exactly the chip unlock
+>>> is called for every sector in the unlock area) even the only one
+>>> unlock per chip is enough.
+>>>
+>>> Signed-off-by: Honza Petrous <jpetrous@gmail.com>
+>>> ---
+>>>  drivers/mtd/chips/cfi_cmdset_0002.c | 37 +++++++++++++++++++++++++++++=
+--------
+>>>  1 file changed, 29 insertions(+), 8 deletions(-)
+>>>
+>>> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c
+>>> b/drivers/mtd/chips/cfi_cmdset_0002.c
+>>> index 56aa6b7..53c842a 100644
+>>> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+>>> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+>>> @@ -2534,8 +2534,10 @@ struct ppb_lock {
+>>>      struct flchip *chip;
+>>>      loff_t offset;
+>>>      int locked;
+>>> +    unsigned int erasesize;
+>>>  };
+>>>
+>>> +#define MAX_CHIPS            16
+>>>  #define MAX_SECTORS            512
+>>>
+>>>  #define DO_XXLOCK_ONEBLOCK_LOCK        ((void *)1)
+>>> @@ -2628,11 +2630,12 @@ static int __maybe_unused
+>>> cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs,
+>>>      struct map_info *map =3D mtd->priv;
+>>>      struct cfi_private *cfi =3D map->fldrv_priv;
+>>>      struct ppb_lock *sect;
+>>> +    struct ppb_lock *chips;
+>>>      unsigned long adr;
+>>>      loff_t offset;
+>>>      uint64_t length;
+>>>      int chipnum;
+>>> -    int i;
+>>> +    int i, j;
+>>>      int sectors;
+>>>      int ret;
+>>>
+>>> @@ -2642,15 +2645,19 @@ static int __maybe_unused
+>>> cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs,
+>>>       * first check the locking status of all sectors and save
+>>>       * it for future use.
+>>>       */
+>>> -    sect =3D kzalloc(MAX_SECTORS * sizeof(struct ppb_lock), GFP_KERNEL=
+);
+>>> +    sect =3D kzalloc((MAX_SECTORS + MAX_CHIPS) * sizeof(struct ppb_loc=
+k),
+>>> +            GFP_KERNEL);
+>>>      if (!sect)
+>>>          return -ENOMEM;
+>>>
+>>> +    chips =3D &sect[MAX_SECTORS];
+>>> +
+>>>      /*
+>>>       * This code to walk all sectors is a slightly modified version
+>>>       * of the cfi_varsize_frob() code.
+>>>       */
+>>>      i =3D 0;
+>>> +    j =3D -1;
+>>>      chipnum =3D 0;
+>>>      adr =3D 0;
+>>>      sectors =3D 0;
+>>> @@ -2671,6 +2678,18 @@ static int __maybe_unused cfi_ppb_unlock(struct
+>>> mtd_info *mtd, loff_t ofs,
+>>>              sect[sectors].locked =3D do_ppb_xxlock(
+>>>                  map, &cfi->chips[chipnum], adr, 0,
+>>>                  DO_XXLOCK_ONEBLOCK_GETLOCK);
+>>> +        } else {
+>>> +            if (j < 0 || chips[j].chip !=3D &cfi->chips[chipnum]) {
+>>> +                j++;
+>>> +                if (j >=3D MAX_CHIPS) {
+>>> +                    printk(KERN_ERR "Only %d chips for PPB locking
+>>> supported!\n",
+>>> +                           MAX_CHIPS);
+>>> +                    kfree(sect);
+>>> +                    return -EINVAL;
+>>> +                }
+>>> +                chips[j].chip =3D &cfi->chips[chipnum];
+>>> +                chips[j].erasesize =3D size;
+>>> +            }
+>>>          }
+>>>
+>>>          adr +=3D size;
+>>> @@ -2697,12 +2716,14 @@ static int __maybe_unused
+>>> cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs,
+>>>          }
+>>>      }
+>>>
+>>> -    /* Now unlock the whole chip */
+>>> -    ret =3D cfi_varsize_frob(mtd, do_ppb_xxlock, ofs, len,
+>>> -                   DO_XXLOCK_ONEBLOCK_UNLOCK);
+>>> -    if (ret) {
+>>> -        kfree(sect);
+>>> -        return ret;
+>>> +    /* Now unlock all involved chip(s) */
+>>> +    for (i =3D 0; i <=3D j; i++) {
+>>> +        ret =3D do_ppb_xxlock(map, chips[i].chip, 0, chips[i].erasesiz=
+e,
+>>> +                    DO_XXLOCK_ONEBLOCK_UNLOCK);
+>>> +        if (ret) {
+>>> +            kfree(sect);
+>>> +            return ret;
+>>> +        }
+>>>      }
+>>>
+>>>      /*
+>>
+>> Hm, this logic looks over-complicated. How about the following changes?
+>> Would that work? And if it doesn't, can you detail why?
+>>
+>> --->8---
+>> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi=
+_cmdset_0002.c
+>> index 56aa6b75213d..370c063c3d4d 100644
+>> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+>> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+>> @@ -2698,11 +2698,13 @@ static int __maybe_unused cfi_ppb_unlock(struct =
+mtd_info *mtd, loff_t ofs,
+>>         }
+>>
+>>         /* Now unlock the whole chip */
+>> -       ret =3D cfi_varsize_frob(mtd, do_ppb_xxlock, ofs, len,
+>> -                              DO_XXLOCK_ONEBLOCK_UNLOCK);
+>> -       if (ret) {
+>> -               kfree(sect);
+>> -               return ret;
+>> +       for (chipnum =3D 0; chipnum < cfi->numchips; chipnum++) {
+>> +               ret =3D do_ppb_xxlock(map, &cfi->chips[chipnum],
+>> +                                   (loff_t)chipnum << cfi->chipshift,
+>> +                                   1 << cfi->chipshift,
+>> +                                   DO_XXLOCK_ONEBLOCK_UNLOCK);
+>> +               if (ret)
+>> +                       goto out;
+>>         }
+>>
+>>         /*
+>> @@ -2715,6 +2717,7 @@ static int __maybe_unused cfi_ppb_unlock(struct mt=
+d_info *mtd, loff_t ofs,
+>>                                       DO_XXLOCK_ONEBLOCK_LOCK);
+>>         }
+>>
+>> +out:
+>>         kfree(sect);
+>>         return ret;
+>>  }
 
-Okay. Let's try with something simpler then. Can you test the following
-patch?
+I just tested your fix and it works as expected.
 
---->8---
-=46rom 0a0eaa39ea9b19191ae0c31ff3625c224a8a55f2 Mon Sep 17 00:00:00 2001
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-Date: Thu, 25 May 2017 08:15:15 +0200
-Subject: [PATCH] mtd: nand: pxa3xx: Implement failing
- ->onfi_{set,get}_features() stubs
+So you can add my:
 
-Implement stubs returning -ENOTSUPP for ->onfi_{set,get}_features() so
-that we don't let the core think we are supporting the GET/SET FEATURES
-operation.
+Tested-by: Honza Petrous <jpetrous@gmail.com>
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
- drivers/mtd/nand/pxa3xx_nand.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 649ba8200832..341a229046f5 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1649,6 +1649,13 @@ static int pxa_ecc_init(struct pxa3xx_nand_info *inf=
-o,
- 	return 0;
- }
-=20
-+static int pxa3xx_nand_get_set_features(struct mtd_info *mtd,
-+					struct nand_chip *chip,
-+					int feature_addr, u8 *subfeature_para)
-+{
-+	return -ENOTSUPP;
-+}
-+
- static int pxa3xx_nand_scan(struct mtd_info *mtd)
- {
- 	struct nand_chip *chip =3D mtd_to_nand(mtd);
-@@ -1812,6 +1819,8 @@ static int alloc_nand_resource(struct platform_device=
- *pdev)
- 		chip->write_buf		=3D pxa3xx_nand_write_buf;
- 		chip->options		|=3D NAND_NO_SUBPAGE_WRITE;
- 		chip->cmdfunc		=3D nand_cmdfunc;
-+		chip->onfi_set_features	=3D pxa3xx_nand_get_set_features;
-+		chip->onfi_get_features	=3D pxa3xx_nand_get_set_features;
- 	}
-=20
- 	nand_hw_control_init(chip->controller);
---=20
-2.11.0
+>
+> Well, your fix should work (I'm going to verify it on our hw asap) and I =
+agree
+> it is much more simple :)
+>
+> But I found another use case, when it is not fully optimized
+> - it not cover the multi-chip setting when the requested unlock area
+> not involve all chips. In that case it execute few unneeded commands
+> (both full chip unlock and every-sector re-lock) on chips which
+> are out of requested area.
+>
+> Though, I can agree it is very minor use case, so might be not worth
+> of caught it.
+>
+> /Honza
