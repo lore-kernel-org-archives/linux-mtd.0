@@ -1,18 +1,26 @@
-Received: from conuserg-07.nifty.com ([210.131.2.74])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dDkjw-0004C1-4u
- for linux-mtd@lists.infradead.org; Thu, 25 May 2017 04:51:14 +0000
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: linux-mtd@lists.infradead.org
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] mtd: nand: check ecc->total sanity in nand_scan_tail
-Date: Thu, 25 May 2017 13:50:20 +0900
-Message-Id: <1495687820-30692-1-git-send-email-yamada.masahiro@socionext.com>
+Date: Thu, 25 May 2017 08:17:47 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>, "ezequiel.garcia@free-electrons.com"
+ <ezequiel.garcia@free-electrons.com>, Gregory Clement
+ <gregory.clement@free-electrons.com>
+Subject: Re: pxa3xx-nand failing to find device on linux-next
+Message-ID: <20170525081747.4c86164c@bbrezillon>
+In-Reply-To: <69dfc0d5ca774efb8c92e9ec635f68ec@svr-chch-ex1.atlnz.lc>
+References: <b36366e358904310aee4970b77f57dba@svr-chch-ex1.atlnz.lc>
+ <2a79405e219b4c37ba00defbe4a0dfe4@svr-chch-ex1.atlnz.lc>
+ <20170524132301.12ad33d8@bbrezillon>
+ <20170524132508.420614c7@bbrezillon>
+ <ebe9d9bca4754d1ba920295f2fdd1359@svr-chch-ex1.atlnz.lc>
+ <20170525003646.276516d0@bbrezillon>
+ <69dfc0d5ca774efb8c92e9ec635f68ec@svr-chch-ex1.atlnz.lc>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +30,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Drivers are supposed to set correct ecc->{size,strength,bytes} before
-calling nand_scan_tail(), but it does not complain about ecc->total
-bigger than oobsize.
+Le Wed, 24 May 2017 22:58:53 +0000,
+Chris Packham <Chris.Packham@alliedtelesis.co.nz> a =C3=A9crit :
 
-In this case, chip->scan_bbt() crashes due to memory corruption, but
-it is hard to debug.  It would be kind to fail it earlier with a clear
-message.
+> On 25/05/17 10:36, Boris Brezillon wrote:
+> > Le Wed, 24 May 2017 22:03:52 +0000,
+> > Chris Packham <Chris.Packham@alliedtelesis.co.nz> a =C3=A9crit :
+> >  =20
+> >> On 24/05/17 23:25, Boris Brezillon wrote: =20
+> >>> On Wed, 24 May 2017 13:23:01 +0200
+> >>> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+> >>>     =20
+> >>>> Hi Chris,
+> >>>>
+> >>>> On Wed, 24 May 2017 09:36:56 +0000
+> >>>> Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
+> >>>>    =20
+> >>>>> On 23/05/17 17:27, Chris Packham wrote: =20
+> >>>>>> Hi,
+> >>>>>>
+> >>>>>> I'm doing some testing on linux-next and I'm finding that my nand =
+flash
+> >>>>>> has disappeared.
+> >>>>>>
+> >>>>>> pxa3xx-nand f10d0000.flash: This platform can't do DMA on this dev=
+ice
+> >>>>>> pxa3xx-nand f10d0000.flash: non-supported command ef
+> >>>>>> pxa3xx-nand f10d0000.flash: non-supported command ee
+> >>>>>> pxa3xx-nand f10d0000.flash: non-supported command ef
+> >>>>>> pxa3xx-nand f10d0000.flash: non-supported command ee
+> >>>>>> On-die ECC forcefully enabled, not supported
+> >>>>>> nand: No NAND device found
+> >>>>>> pxa3xx-nand f10d0000.flash: failed to scan nand at cs 0
+> >>>>>>
+> >>>>>> This was working around 4.11. I'll try to do some more digging tom=
+orrow
+> >>>>>> to narrow down a failure point but I thought I'd send this out now=
+ just
+> >>>>>> in case it rings any bells.
+> >>>>>>
+> >>>>>> The board I'm using (DB-88F6820-AMC) is unfortunately out-of tree =
+but it
+> >>>>>> should be pretty close to the armada-388-db. I can make my dts ava=
+ilable
+> >>>>>> if it's helpful. =20
+> >>>>>
+> >>>>> Still works on 4.12-rc2. Fails on next-20170524.
+> >>>>>
+> >>>>> This appears to be due to commit b566d9c055de ("mtd: nand: add supp=
+ort
+> >>>>> for Micron on-die ECC"). Which based on the description seems inten=
+tional.
+> >>>>>
+> >>>>> Since I have access to a hardware platform that has a micron flash =
+with
+> >>>>> ECC forcefully enabled how can I help to get this implemented. =20
+> >>>>
+> >>>> Can you try with this patch applied [1]? =20
+> >>>
+> >>> Sorry, wrong patch. Can you try this one [1] instead?
+> >>>
+> >>> [1]http://code.bulix.org/pkfhmi-135875
+> >>>     =20
+> >>
+> >> With the patch above the chip is detected but ubifs is unhappy =20
+> >=20
+> > Hm, weird. And if you revert my both Thomas patch and mine, what do you
+> > get? =20
+>=20
+> Seems to work just fine.
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Okay. Let's try with something simpler then. Can you test the following
+patch?
+
+--->8---
+=46rom 0a0eaa39ea9b19191ae0c31ff3625c224a8a55f2 Mon Sep 17 00:00:00 2001
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+Date: Thu, 25 May 2017 08:15:15 +0200
+Subject: [PATCH] mtd: nand: pxa3xx: Implement failing
+ ->onfi_{set,get}_features() stubs
+
+Implement stubs returning -ENOTSUPP for ->onfi_{set,get}_features() so
+that we don't let the core think we are supporting the GET/SET FEATURES
+operation.
+
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
+ drivers/mtd/nand/pxa3xx_nand.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-I was actually hit by this case.
-
-I wasted half a day until I figured out my coding mistake in my
-Denali driver.  It will be helpful to check this in NAND core.
-
-
- drivers/mtd/nand/nand_base.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index f4d686192717..14d6a5aa3ee8 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -4970,6 +4970,11 @@ int nand_scan_tail(struct mtd_info *mtd)
- 		goto err_free;
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 649ba8200832..341a229046f5 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -1649,6 +1649,13 @@ static int pxa_ecc_init(struct pxa3xx_nand_info *inf=
+o,
+ 	return 0;
+ }
+=20
++static int pxa3xx_nand_get_set_features(struct mtd_info *mtd,
++					struct nand_chip *chip,
++					int feature_addr, u8 *subfeature_para)
++{
++	return -ENOTSUPP;
++}
++
+ static int pxa3xx_nand_scan(struct mtd_info *mtd)
+ {
+ 	struct nand_chip *chip =3D mtd_to_nand(mtd);
+@@ -1812,6 +1819,8 @@ static int alloc_nand_resource(struct platform_device=
+ *pdev)
+ 		chip->write_buf		=3D pxa3xx_nand_write_buf;
+ 		chip->options		|=3D NAND_NO_SUBPAGE_WRITE;
+ 		chip->cmdfunc		=3D nand_cmdfunc;
++		chip->onfi_set_features	=3D pxa3xx_nand_get_set_features;
++		chip->onfi_get_features	=3D pxa3xx_nand_get_set_features;
  	}
- 	ecc->total = ecc->steps * ecc->bytes;
-+	if (ecc->total > mtd->oobsize) {
-+		WARN(1, "Total number of ECC bytes exceeded oobsize\n");
-+		ret = -EINVAL;
-+		goto err_free;
-+	}
- 
- 	/*
- 	 * The number of bytes available for a client to place data into
--- 
-2.7.4
+=20
+ 	nand_hw_control_init(chip->controller);
+--=20
+2.11.0
