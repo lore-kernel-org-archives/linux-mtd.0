@@ -1,24 +1,27 @@
+Received: from hauke-m.de ([2001:41d0:8:b27b::1] helo=mail.hauke-m.de)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dDxPS-0004QV-FZ
+ for linux-mtd@lists.infradead.org; Thu, 25 May 2017 18:22:56 +0000
+Subject: Re: [PATCH v2 07/15] MIPS: lantiq: Convert the xbar driver to a
+ platform_driver
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+References: <20170521130918.27446-1-hauke@hauke-m.de>
+ <20170521130918.27446-8-hauke@hauke-m.de>
+ <CAHp75VeQgekiWc+YxP5sDFBB4fvmRs1=heFcdYS6mAgqPACW7g@mail.gmail.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>,
+ Linux MIPS Mailing List <linux-mips@linux-mips.org>,
+ "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+ linux-watchdog@vger.kernel.org, devicetree <devicetree@vger.kernel.org>,
+ martin.blumenstingl@googlemail.com, john@phrozen.org,
+ linux-spi <linux-spi@vger.kernel.org>, hauke.mehrtens@intel.com,
+ Rob Herring <robh@kernel.org>
+From: Hauke Mehrtens <hauke@hauke-m.de>
+Message-ID: <aa0f9259-b96f-f072-93d4-a42e05fadc82@hauke-m.de>
+Date: Thu, 25 May 2017 20:22:26 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Date: Thu, 25 May 2017 01:22:27 -0700
-From: Stefan Agner <stefan@agner.ch>
-To: Han Xu <han.xu@nxp.com>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
- cyrille.pitchen@atmel.com, robh+dt@kernel.org, mark.rutland@arm.com,
- shawnguo@kernel.org, kernel@pengutronix.de, fabio.estevam@freescale.com,
- "LW@KARO-electronics.de" <LW@karo-electronics.de>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/5] ARM: dts: imx7: add GPMI NAND
-In-Reply-To: <8f039bb6-9bc3-349a-cfe8-727e4caf41de@nxp.com>
-References: <20170422012338.4635-1-stefan@agner.ch>
- <20170422012338.4635-5-stefan@agner.ch>
- <c66ca9c8-2a9f-8938-7a70-7f9dfe763457@nxp.com>
- <48b5c543e713f9597b67a39a51ffd521@agner.ch>
- <8f039bb6-9bc3-349a-cfe8-727e4caf41de@nxp.com>
-Message-ID: <0149534ab05adac384070fe432d83c48@agner.ch>
+In-Reply-To: <CAHp75VeQgekiWc+YxP5sDFBB4fvmRs1=heFcdYS6mAgqPACW7g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,115 +31,148 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2017-05-04 15:59, Han Xu wrote:
-> On 05/04/2017 04:50 PM, Stefan Agner wrote:
->> On 2017-05-04 12:13, Han Xu wrote:
->>> On 04/21/2017 08:23 PM, Stefan Agner wrote:
->>>> Add i.MX 7 GPMI NAND module.
->>>>
->>>> Signed-off-by: Stefan Agner <stefan@agner.ch>
->>>> ---
->>>>    arch/arm/boot/dts/imx7s.dtsi | 31 +++++++++++++++++++++++++++++++
->>>>    1 file changed, 31 insertions(+)
->>>>
->>>> diff --git a/arch/arm/boot/dts/imx7s.dtsi b/arch/arm/boot/dts/imx7s.dtsi
->>>> index 843eb379e1ea..9645257638d4 100644
->>>> --- a/arch/arm/boot/dts/imx7s.dtsi
->>>> +++ b/arch/arm/boot/dts/imx7s.dtsi
->>>> @@ -995,5 +995,36 @@
->>>>    				status = "disabled";
->>>>    			};
->>>>    		};
->>>> +
->>>> +		dma_apbh: dma-apbh@33000000 {
->>>> +			compatible = "fsl,imx7d-dma-apbh", "fsl,imx28-dma-apbh";
->>>> +			reg = <0x33000000 0x2000>;
->>>> +			interrupts = <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>,
->>>> +				     <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>,
->>>> +				     <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>,
->>>> +				     <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
->>>> +			interrupt-names = "gpmi0", "gpmi1", "gpmi2", "gpmi3";
->>>> +			#dma-cells = <1>;
->>>> +			dma-channels = <4>;
->>>> +			clocks = <&clks IMX7D_NAND_USDHC_BUS_ROOT_CLK>,
->>>> +				<&clks IMX7D_NAND_ROOT_CLK>;
->>>> +			clock-names = "dma_apbh_bch", "dma_apbh_io";
->>>> +		};
->>> Do you need some patches to enable all clks for APBH DMA? Refer to
->>> https://emea01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpatchwork.ozlabs.org%2Fpatch%2F551967%2F&data=01%7C01%7Chan.xu%40nxp.com%7C98493f7e475341dbf67008d49337b441%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0&sdata=FH9k%2FC4VcVCeyidkRgUJ5Ahu4%2B%2FlDAjXVwO0DY7XMhA%3D&reserved=0
->>>
->> Oh I see, with the current code and this device tree we actually only
->> enable the first clock... But it seems to work in practice...
+On 05/22/2017 08:05 AM, Andy Shevchenko wrote:
+> On Sun, May 21, 2017 at 4:09 PM, Hauke Mehrtens <hauke@hauke-m.de> wrote:
+>> From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 >>
->> What is interesting, the chapter 5.2.5 System Clocks only describes
->> APBHDMA, and no GPMI module.
->>
->> Chapter 9.4 about APBH-Bridge-DMA bridge only specifies "hclk" as clock
->> sources.
->>
->> When looking at the table in chapter 5.2.5, hclk is
->> NAND_USDHC_BUS_CLK_ROOT
->>
->> Module    Syste Module Clock   Clock Root
->> APBHDMA   apbhdma.hclk         NAND_USDHC_BUS_CLK_ROOT
->>
->> So my guess is that the actual DMA controller should work fine with
->> IMX7D_NAND_USDHC_BUS_ROOT_CLK only. It is only the GPMI module which
->> needs the NAND_ROOT_CLK. My guess is since the APBHDMA controller is
->> only used for GPMI these days, it has been combined in one module in the
->> table in chapter 5.2.5.
->>
->> So we could actually only specify:
->>
->> clocks = <&clks IMX7D_NAND_USDHC_BUS_ROOT_CLK>;
->>
->> Tested with this and NAND seems to work fine.
->>
->> Also tested accessing APBHDMA register in U-Boot with
->> IMX7D_NAND_ROOT_CLK disabled, it worked fine.
->>
->> What do you think? Should we go with this?
->>
->> This probably even saves power since GPMI's runtime clock management
->> disables IMX7D_NAND_ROOT_CLK when NAND is idle (according to the
->> nand_root_clk counter in clk_summary and the root clock register at
->> 0x3038AA00).
+>> This allows using the xbar driver on ARX300 based SoCs which require the
+>> same xbar setup as the xRX200 chipsets because the xbar driver
+>> initialization is not guarded by an xRX200 specific
+>> of_machine_is_compatible condition anymore. Additionally the new driver
+>> takes a syscon phandle to configure the XBAR endianness bits in RCU
+>> (before this was done in arch/mips/lantiq/xway/reset.c and also
+>> guarded by an VRX200 specific if-statement).
 > 
-> It also surprised me how it can work on your side, I remember we made 
-> the code change for some purpose, please give me some time I can check 
-> if the doc is wrong.
+>> +#include <linux/ioport.h>
 > 
+> I'm not sure you need this.
+> 
+>> +#include <linux/mfd/syscon.h>
+>> +#include <linux/module.h>
+> 
+>> +#include <linux/of.h>
+>> +#include <linux/of_platform.h>
+>> +#include <linux/of_address.h>
+> 
+> And these lines are under question, see below.
 
-Hi Han,
+I will remove them they look unneeded.
 
-Do you have an update to this?
+>> +#include <linux/regmap.h>
+>> +
+> 
+>> +#include <lantiq_soc.h>
+> 
+> This rather should be "lantiq_soc.h"
 
-Otherwise, I will send out a version which only uses
-IMX7D_NAND_USDHC_BUS_ROOT_CLK for now. This binding is already defined
-and needs no driver change. We can still extend the binding (and
-ddriver) when it turns out it is actually required.
+lantiq_soc.h is located here:
+arch/mips/include/asm/mach-lantiq/xway/lantiq_soc.h
+I do not think that #include "lantiq_soc.h" would work.
+It is only needed for ltq_w32_mask(), I will probably inline this and
+then this include is not needed any more.
 
---
-Stefan
+>> +static int ltq_xbar_probe(struct platform_device *pdev)
+>> +{
+>> +       struct device *dev = &pdev->dev;
+>> +       struct device_node *np = dev->of_node;
+>> +       struct resource res_xbar;
+>> +       struct regmap *rcu_regmap;
+>> +       void __iomem *xbar_membase;
+>> +       u32 rcu_ahb_endianness_reg_offset;
+>> +       u32 rcu_ahb_endianness_val;
+>> +       int ret;
+>> +
+> 
+>> +       ret = of_address_to_resource(np, 0, &res_xbar);
+>> +       if (ret) {
+>> +               dev_err(dev, "Failed to get xbar resources");
+>> +               return ret;
+>> +       }
+>> +
+>> +       if (!devm_request_mem_region(dev, res_xbar.start,
+>> +                                    resource_size(&res_xbar),
+>> +               res_xbar.name)) {
+>> +               dev_err(dev, "Failed to get xbar resources");
+>> +               return -ENODEV;
+>> +       }
+>> +
+>> +       xbar_membase = devm_ioremap_nocache(dev, res_xbar.start,
+>> +                                               resource_size(&res_xbar));
+>> +       if (!xbar_membase) {
+>> +               dev_err(dev, "Failed to remap xbar resources");
+>> +               return -ENODEV;
+>> +       }
+> 
+> And what's wrong with traditional pattern
+> 
+> y = platform_get_resource(IOMEM);
+> x = devm_ioremap_resource(y);
+> if (IS_ERR(x))
+>  return PTR_ERR(x);
+> 
+> ?
 
->> --
->> Stefan
->>
->>>> +
->>>> +		gpmi: gpmi-nand@33002000{
->>>> +			compatible = "fsl,imx7d-gpmi-nand";
->>>> +			#address-cells = <1>;
->>>> +			#size-cells = <1>;
->>>> +			reg = <0x33002000 0x2000>, <0x33004000 0x4000>;
->>>> +			reg-names = "gpmi-nand", "bch";
->>>> +			interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
->>>> +			interrupt-names = "bch";
->>>> +			clocks = <&clks IMX7D_NAND_ROOT_CLK>,
->>>> +				<&clks IMX7D_NAND_USDHC_BUS_ROOT_CLK>;
->>>> +			clock-names = "gpmi_io", "gpmi_bch_apb";
->>>> +			dmas = <&dma_apbh 0>;
->>>> +			dma-names = "rx-tx";
->>>> +			status = "disabled";
->>>> +		};
->>>>    	};
->>>>    };
+Your suggestion looks better, I will change it.
+
+>> +
+>> +       /* RCU configuration is optional */
+>> +       rcu_regmap = syscon_regmap_lookup_by_phandle(np, "lantiq,rcu-syscon");
+>> +       if (!IS_ERR_OR_NULL(rcu_regmap)) {
+> 
+>> +               if (of_property_read_u32_index(np, "lantiq,rcu-syscon", 1,
+>> +                       &rcu_ahb_endianness_reg_offset)) {
+> 
+> device_property_*() ?
+
+The device tree property looks like this:
+lantiq,rcu-syscon = <&rcu0 0x4c>;
+
+This would would probably return a pointer to phandle and not to 0x4c. I
+would use an array here, and access it at [1], but I do not think that
+is better.
+device_property_read_u32(dev, "lantiq,rcu-syscon",
+			  &rcu_ahb_endianness_reg_offset);
+
+>> +                       dev_err(&pdev->dev, "Failed to get RCU reg offset\n");
+>> +                       return -EINVAL;
+>> +               }
+>> +
+>> +               if (of_device_is_big_endian(np))
+> 
+> Do we have common helper for this (I mean resource provider agnostic one)?
+
+I am not aware of any. This will check for this device tree property:
+big-endian;
+
+> 
+>> +                       rcu_ahb_endianness_val = RCU_VR9_BE_AHB1S;
+>> +               else
+>> +                       rcu_ahb_endianness_val = 0;
+>> +
+>> +               if (regmap_update_bits(rcu_regmap,
+>> +                                       rcu_ahb_endianness_reg_offset,
+>> +                                       RCU_VR9_BE_AHB1S,
+>> +                                       rcu_ahb_endianness_val))
+>> +                       dev_warn(&pdev->dev,
+>> +                               "Failed to configure RCU AHB endianness\n");
+>> +       }
+>> +
+>> +       /* disable fpi burst */
+>> +       ltq_w32_mask(XBAR_FPI_BURST_EN, 0,
+>> +                    xbar_membase + XBAR_ALWAYS_LAST);
+>> +
+>> +       return 0;
+>> +}
+> 
+>> +builtin_platform_driver(xbar_driver);
+> 
+> Why it can't be module?
+
+Currently this is used to load it early. This sets the AHB bus system
+which connects the USB and the PCIe controllers to the system to big
+Endian mode, this is needed for at least some accesses to these
+components. It would be better to have a dependency in device tree to
+reflect this.
+Should I use a phandle to connect them?
+
+Hauke
