@@ -1,29 +1,29 @@
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dDzTD-0003W3-NZ
- for linux-mtd@lists.infradead.org; Thu, 25 May 2017 20:34:57 +0000
-Received: by mail-pf0-x241.google.com with SMTP id f27so41347410pfe.0
- for <linux-mtd@lists.infradead.org>; Thu, 25 May 2017 13:34:35 -0700 (PDT)
-Date: Thu, 25 May 2017 13:34:32 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
+ id 1dDzfs-0000w4-Kj
+ for linux-mtd@lists.infradead.org; Thu, 25 May 2017 20:48:02 +0000
+Received: by mail-wm0-x242.google.com with SMTP id d127so55748911wmf.1
+ for <linux-mtd@lists.infradead.org>; Thu, 25 May 2017 13:47:39 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20170525192515.GA114788@google.com>
+References: <1492860013-20848-1-git-send-email-andrea.adami@gmail.com>
+ <1492860013-20848-4-git-send-email-andrea.adami@gmail.com>
+ <20170525192515.GA114788@google.com>
+From: Andrea Adami <andrea.adami@gmail.com>
+Date: Thu, 25 May 2017 22:47:37 +0200
+Message-ID: <CAAQYJAt0L=swoZhD+2nx7NQ+nCxGWh-71g2wgJsK=72nu=z18g@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] mtd: nand: tmio_nand.c: prefer sharpslpart MTD
+ partition parser
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH V4 1/2] mtd: add support for partition parsers
-Message-ID: <20170525203432.GC114788@google.com>
-References: <20170227130633.4020-1-zajec5@gmail.com>
- <20170330123527.30181-1-zajec5@gmail.com>
- <20170511182126.GG70297@google.com>
- <d2eb6a73-38c7-498a-b32d-cd75b5ae1cf2@gmail.com>
- <12299bb6-a34d-5b84-616d-d1f4d067c8dd@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <12299bb6-a34d-5b84-616d-d1f4d067c8dd@gmail.com>
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Linus Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.org,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,52 +33,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, May 23, 2017 at 11:06:37AM +0200, Rafał Miłecki wrote:
-> On 05/23/2017 10:14 AM, Rafał Miłecki wrote:
-> >On 05/11/2017 08:21 PM, Brian Norris wrote:
-> >>Maybe a better way to handle that offset modification is to either pass
-> >>in the offset to add_mtd_partitions() (e.g., as a simple parameter), or
-> >>else adapt add_mtd_partitions() to handle receiving a non-master as the
-> >>first parameter. (Then you just pass "slave", and add_mtd_partitions()
-> >>handle it with something like "if (mtd_is_partition(...))".)
-> >>
-> >>Then I wonder how we want the parenting structure to work; should the
-> >>sub-partition have the "master" as its parent, or the original
-> >>partition? I thought Richard had mentioned some problems with the
-> >>existing parenting structure (with CONFIG_MTD_PARTITIONED_MASTER)
-> >>already, but I don't remember what those were.
-> >>
-> >>Also, if you're "parsing" the slave, but "adding" to the master, then
-> >>the bounds-checking logic in add_mtd_partitions() won't properly apply,
-> >>and you'll be able to create sub-partitions that extend beyond the
-> >>slave, right? If so, then I think (after auditing add_mtd_partitions() a
-> >>little closer, and possibly adjusting some of its comments) you might
-> >>really just want to pass 'slave', not 'slave->master'.
-> >
-> >I like this idea!
-> 
-> Oh, it's not that simple. Passing struct mtd_part to the add_mtd_partitions
-> is simple, but it's getting complex afterwards.
-> 
-> 1) We can't simply adjust offset in add_mtd_partitions as we are still
->    dealing with const struct mtd_partition (note: const).
-> 2) We can't adjust offset after calling allocate_partition as this would
->    bypass some validation happening in the allocate_partition.
+On Thu, May 25, 2017 at 9:25 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> On Sat, Apr 22, 2017 at 01:20:13PM +0200, Andrea Adami wrote:
+>> This is the specific parser for Sharp SL Series (Zaurus)
+>>
+>> Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
+>> ---
+>>  drivers/mtd/nand/tmio_nand.c | 4 +++-
+>>  1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
+>> index fc5e773..f3612ac 100644
+>> --- a/drivers/mtd/nand/tmio_nand.c
+>> +++ b/drivers/mtd/nand/tmio_nand.c
+>> @@ -357,6 +357,8 @@ static void tmio_hw_stop(struct platform_device *dev, struct tmio_nand *tmio)
+>>               cell->disable(dev);
+>>  }
+>>
+>> +static const char * const probes[] = { "sharpslpart", NULL };
+>
+> This breaks anyone who might have used (or might want to use) the ofpart
+> or cmdlinepart parsers. At a minimum, you need to include those in your
+> array here.
 
-I think I was assuming you'd use a tree structure, in which case you
-don't have to modify the offsets at all. The offsets would get
-translated by, e.g., a recursive call to part_read() (the subpartition's
-part_read() would call the parent partition's part_read(), which would
-adjust the offset and call the master's ->read() callback).
+I have been under the wrong assumption there is cmdlinepart as last
+option (if compiled) so I have taken a wrong example.
+Grepping in /mt for probes gives many examples: what if I change it with
 
-Or maybe the recursion (and tree structure) is not a great idea. You
-came up with a mostly-OK solution that keeps a flat tree structure and
-no recursion in your next version.
+static const char * const probes[] = { "sharpslpart", "cmdlinepart", NULL };
 
-> 3) Passing an extra argume to the allocate_partition is a bad idea as it
->    already receives uint64_t cur_offset - this would be confusing.
+ofpart is utopic at the moment: these machines are not yet converted
+to devicetree and it will take a while.
 
-Yeah, might be. But I think you came up with a different solution
-anyway.
+With this patchset we can move a step forward DT, removing all the
+static partition definition from spitz.c, tosa.c, corgi.c and poodle.c
 
-Brian
+I don't dare adding ofpart here: this will be done once Zaurus pxa
+platform is moved to devicetree.
+
+>
+> But really, I'd rather not add any more parser listings like this in
+> drivers. Parser selection should be determined by the platform, not by
+> the driver. See my last response to Rafal, who is trying to extend
+> support for device-tree based listing of parsers:
+>
+> http://lists.infradead.org/pipermail/linux-mtd/2017-April/073729.html
+
+Ok then but remember these are obsolete devices and as far as I know
+these nand drivers are only used on Zaurus devices. No future use I
+guess.
+
+>
+> He has some more work posted to the mailing list since then; search the
+> archives.
+>
+> I'll take a look at the parser itself, and maybe we can merge that. But
+> I'm not likely to merge this patch, in any form.
+>
+The little parser itself is universal for all Zaurus pxa variants.
+As said above, please consider we can remove many lines of board code.
+
+Thanks
+Andrea
+
+> Brian
+>
+>> +
+>>  static int tmio_probe(struct platform_device *dev)
+>>  {
+>>       struct tmio_nand_data *data = dev_get_platdata(&dev->dev);
+>> @@ -440,7 +442,7 @@ static int tmio_probe(struct platform_device *dev)
+>>               goto err_irq;
+>>
+>>       /* Register the partitions */
+>> -     retval = mtd_device_parse_register(mtd, NULL, NULL,
+>> +     retval = mtd_device_parse_register(mtd, probes, NULL,
+>>                                          data ? data->partition : NULL,
+>>                                          data ? data->num_partitions : 0);
+>>       if (!retval)
+>> --
+>> 2.7.4
+>>
