@@ -1,28 +1,17 @@
-Date: Fri, 26 May 2017 14:12:51 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Thomas Petazzoni
- <thomas.petazzoni@free-electrons.com>, "ezequiel.garcia@free-electrons.com"
- <ezequiel.garcia@free-electrons.com>, Gregory Clement
- <gregory.clement@free-electrons.com>
-Subject: Re: pxa3xx-nand failing to find device on linux-next
-Message-ID: <20170526141251.6c387b4a@bbrezillon>
-In-Reply-To: <e0462e8bf0ca436ab1dee6bca275e7d2@svr-chch-ex1.atlnz.lc>
-References: <b36366e358904310aee4970b77f57dba@svr-chch-ex1.atlnz.lc>
- <2a79405e219b4c37ba00defbe4a0dfe4@svr-chch-ex1.atlnz.lc>
- <20170524132301.12ad33d8@bbrezillon>
- <20170524132508.420614c7@bbrezillon>
- <ebe9d9bca4754d1ba920295f2fdd1359@svr-chch-ex1.atlnz.lc>
- <20170525003646.276516d0@bbrezillon>
- <69dfc0d5ca774efb8c92e9ec635f68ec@svr-chch-ex1.atlnz.lc>
- <20170525081747.4c86164c@bbrezillon>
- <e0462e8bf0ca436ab1dee6bca275e7d2@svr-chch-ex1.atlnz.lc>
+Received: from ovhsrv02.undanet.com ([164.132.164.131])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dEEUK-00060R-Dr
+ for linux-mtd@lists.infradead.org; Fri, 26 May 2017 12:37:06 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Fri, 26 May 2017 13:28:46 +0100
+From: Sony Pictures Animation <info@sonypic.com>
+To: undisclosed-recipients:;
+Subject: Talent Scout
+Reply-To: sonypictureanimationfilms@usa.com
+Message-ID: <e913995ed33c8a79ba77c6d3211cca77@confer.es>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,108 +21,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le Thu, 25 May 2017 22:12:12 +0000,
-Chris Packham <Chris.Packham@alliedtelesis.co.nz> a =C3=A9crit :
 
-> On 25/05/17 18:19, Boris Brezillon wrote:
-> > Le Wed, 24 May 2017 22:58:53 +0000,
-> > Chris Packham <Chris.Packham@alliedtelesis.co.nz> a =C3=A9crit :
-> >  =20
-> >> On 25/05/17 10:36, Boris Brezillon wrote: =20
-> >>> Le Wed, 24 May 2017 22:03:52 +0000,
-> >>> Chris Packham <Chris.Packham@alliedtelesis.co.nz> a =C3=A9crit :
-> >>>     =20
-> >>>> On 24/05/17 23:25, Boris Brezillon wrote: =20
-> >>>>> On Wed, 24 May 2017 13:23:01 +0200
-> >>>>> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-> >>>>>        =20
-> >>>>>> Hi Chris,
-> >>>>>>
-> >>>>>> On Wed, 24 May 2017 09:36:56 +0000
-> >>>>>> Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
-> >>>>>>       =20
-> >>>>>>> On 23/05/17 17:27, Chris Packham wrote: =20
-> >>>>>>>> Hi,
-> >>>>>>>>
-> >>>>>>>> I'm doing some testing on linux-next and I'm finding that my nan=
-d flash
-> >>>>>>>> has disappeared.
-> >>>>>>>>
-> >>>>>>>> pxa3xx-nand f10d0000.flash: This platform can't do DMA on this d=
-evice
-> >>>>>>>> pxa3xx-nand f10d0000.flash: non-supported command ef
-> >>>>>>>> pxa3xx-nand f10d0000.flash: non-supported command ee
-> >>>>>>>> pxa3xx-nand f10d0000.flash: non-supported command ef
-> >>>>>>>> pxa3xx-nand f10d0000.flash: non-supported command ee
-> >>>>>>>> On-die ECC forcefully enabled, not supported
-> >>>>>>>> nand: No NAND device found
-> >>>>>>>> pxa3xx-nand f10d0000.flash: failed to scan nand at cs 0
-> >>>>>>>>
-> >>>>>>>> This was working around 4.11. I'll try to do some more digging t=
-omorrow
-> >>>>>>>> to narrow down a failure point but I thought I'd send this out n=
-ow just
-> >>>>>>>> in case it rings any bells.
-> >>>>>>>>
-> >>>>>>>> The board I'm using (DB-88F6820-AMC) is unfortunately out-of tre=
-e but it
-> >>>>>>>> should be pretty close to the armada-388-db. I can make my dts a=
-vailable
-> >>>>>>>> if it's helpful. =20
-> >>>>>>>
-> >>>>>>> Still works on 4.12-rc2. Fails on next-20170524.
-> >>>>>>>
-> >>>>>>> This appears to be due to commit b566d9c055de ("mtd: nand: add su=
-pport
-> >>>>>>> for Micron on-die ECC"). Which based on the description seems int=
-entional.
-> >>>>>>>
-> >>>>>>> Since I have access to a hardware platform that has a micron flas=
-h with
-> >>>>>>> ECC forcefully enabled how can I help to get this implemented. =20
-> >>>>>>
-> >>>>>> Can you try with this patch applied [1]? =20
-> >>>>>
-> >>>>> Sorry, wrong patch. Can you try this one [1] instead?
-> >>>>>
-> >>>>> [1]http://code.bulix.org/pkfhmi-135875
-> >>>>>        =20
-> >>>>
-> >>>> With the patch above the chip is detected but ubifs is unhappy =20
-> >>>
-> >>> Hm, weird. And if you revert my both Thomas patch and mine, what do y=
-ou
-> >>> get? =20
-> >>
-> >> Seems to work just fine. =20
-> >=20
-> > Okay. Let's try with something simpler then. Can you test the following
-> > patch?
-> >  =20
-> > --->8--- =20
-> >  From 0a0eaa39ea9b19191ae0c31ff3625c224a8a55f2 Mon Sep 17 00:00:00 2001
-> > From: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > Date: Thu, 25 May 2017 08:15:15 +0200
-> > Subject: [PATCH] mtd: nand: pxa3xx: Implement failing =20
-> >   ->onfi_{set,get}_features() stubs =20
-> >=20
-> > Implement stubs returning -ENOTSUPP for ->onfi_{set,get}_features() so
-> > that we don't let the core think we are supporting the GET/SET FEATURES
-> > operation.
-> >=20
-> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > --- =20
->=20
-> Yep that seems to work.
 
-Arrggg!! I hate this situation. Now I have to check all drivers
-implementing their own ->cmdfunc() to make sure they support
-NAND_CMD_SET/GET_FEATURES, and if they don't, do what I did for pxa3xx.
+Dear Talented,
 
-Anyway, thanks for testing. I'll try to re-arrange my nand/next branch
-to avoid breaking bisectibility (put this patch before the on-die ECC
-one).
+I am Talent Scout For Sony Pictures Animation, Present Sony Pictures 
+Animation Movies a Film Corporation Located in the United State, is 
+Soliciting for the
+Right to use Your Photo/Face and Personality as One of the Semi -Major
+Role/ Character in our Upcoming ANIMATED Stereoscope 3D Movie-The Story
+of Peter Rabbit (Peter Rabbit 2018) The Movie is Currently Filming (In
+Production) Please Note That There Will Be No Auditions, Traveling or
+Any Special / Professional Acting Skills, Since the Production of This
+Movie Will Be Done with our State of Art Computer -Generating Imagery
+Equipment. We Are Prepared to Pay the Total Sum of $560,000.00 USD. For
+More Information/Understanding, Please Write us on the E-Mail Below.
+CONTACT EMAIL: sonypictureanimationfilms@usa.com
+All Reply to:  sonypictureanimationfilms@usa.com
+Note: Only the Response send to this mail will be Given a Prior
+Consideration.
 
-Regards,
-
-Boris
+Talent Scout
+Becky Miles
