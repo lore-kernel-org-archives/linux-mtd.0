@@ -1,17 +1,18 @@
-Received: from lgeamrelo11.lge.com ([156.147.23.51])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dE2DL-0004jz-Sq
- for linux-mtd@lists.infradead.org; Thu, 25 May 2017 23:30:46 +0000
-From: Hyunchul Lee <hyc.lee@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-CC: Artem Bityutskiy <dedekind1@gmail.com>, <adrian.hunter@intel.com>,
- <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <kernel-team@lge.com>
-Subject: [PATCH] ubifs: Add freeze support
-Date: Fri, 26 May 2017 08:30:04 +0900
-Message-ID: <1495755004-17036-1-git-send-email-hyc.lee@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+Received: from mo1502.tsb.2iij.net ([210.149.48.174] helo=mo.tsb.2iij.net)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dE3s7-0001CE-QG
+ for linux-mtd@lists.infradead.org; Fri, 26 May 2017 01:16:58 +0000
+Content-Transfer-Encoding: 7bit
+From: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+To: boris.brezillon@free-electrons.com, richard@nod.at, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com,
+ cyrille.pitchen@wedev4u.fr, linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org,
+ KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+Subject: [PATCH -next] mtd: nand: Add support for Toshiba BENAND (Built-in ECC
+ NAND)
+Date: Fri, 26 May 2017 10:15:35 +0900
+Message-Id: <1495761335-20535-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,161 +22,236 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Hyunchul Lee <cheol.lee@lge.com>
+This patch enables support for Toshiba BENAND. It was originally posted on
+  https://lkml.org/lkml/2015/7/24/571
 
-for un/freeze support, implement freeze_super and un/freeze_fs
-of super_operations.
-ubifs_freeze_super just calls freeze_super. because freeze_super always
-succeeds if file system is read-only,  UBIFS errors should be checked.
-if there are errors, UBIFS is switched to read-only mode.
-ubifs_freeze_fs runs commit if TNC/LPT isn't clean. though all writes
-are blocked and sync_fs is called before, if commit alreay was started
-before writes are blocked, TNC/LPT might have dirty COW nodes.
+This patch is rewrote to adapt the recent mtd "separate vendor specific code
+from core" cleanup process.
 
-Signed-off-by: Hyunchul Lee <cheol.lee@lge.com>
+Signed-off-by: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
 ---
- fs/ubifs/commit.c |  6 +++---
- fs/ubifs/super.c  | 63 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- fs/ubifs/ubifs.h  |  1 +
- 3 files changed, 67 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/Kconfig        |  17 ++++++
+ drivers/mtd/nand/nand_base.c    |  15 ++++++
+ drivers/mtd/nand/nand_toshiba.c | 112 +++++++++++++++++++++++++++++++++++++++-
+ include/linux/mtd/nand.h        |   1 +
+ 4 files changed, 143 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ubifs/commit.c b/fs/ubifs/commit.c
-index 63f5661..ab347ff 100644
---- a/fs/ubifs/commit.c
-+++ b/fs/ubifs/commit.c
-@@ -49,7 +49,7 @@
- #include "ubifs.h"
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 0bd2319..6634d4b 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -36,6 +36,23 @@ config MTD_NAND_ECC_BCH
+ 	  ECC codes. They are used with NAND devices requiring more than 1 bit
+ 	  of error correction.
  
- /*
-- * nothing_to_commit - check if there is nothing to commit.
-+ * ubifs_nothing_to_commit - check if there is nothing to commit.
-  * @c: UBIFS file-system description object
-  *
-  * This is a helper function which checks if there is anything to commit. It is
-@@ -65,7 +65,7 @@
-  *
-  * This function returns %1 if there is nothing to commit and %0 otherwise.
-  */
--static int nothing_to_commit(struct ubifs_info *c)
-+int ubifs_nothing_to_commit(struct ubifs_info *c)
- {
- 	/*
- 	 * During mounting or remounting from R/O mode to R/W mode we may
-@@ -120,7 +120,7 @@ static int do_commit(struct ubifs_info *c)
- 		goto out_up;
- 	}
- 
--	if (nothing_to_commit(c)) {
-+	if (ubifs_nothing_to_commit(c)) {
- 		up_write(&c->commit_sem);
- 		err = 0;
- 		goto out_cancel;
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index b73811b..16fc22c 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -356,6 +356,7 @@ static void ubifs_evict_inode(struct inode *inode)
- 	if (inode->i_nlink)
- 		goto done;
- 
-+	sb_start_intwrite(inode->i_sb);
- 	if (is_bad_inode(inode))
- 		goto out;
- 
-@@ -377,6 +378,7 @@ static void ubifs_evict_inode(struct inode *inode)
- 		c->bi.nospace = c->bi.nospace_rp = 0;
- 		smp_wmb();
- 	}
-+	sb_end_intwrite(inode->i_sb);
- done:
- 	clear_inode(inode);
- #ifdef CONFIG_UBIFS_FS_ENCRYPTION
-@@ -486,6 +488,64 @@ static int ubifs_sync_fs(struct super_block *sb, int wait)
- 	return ubi_sync(c->vi.ubi_num);
- }
- 
-+static int ubifs_freeze_super(struct super_block *sb)
-+{
-+	struct ubifs_info *c = sb->s_fs_info;
-+	int err;
++config MTD_NAND_BENAND
++	bool "Support for Toshiba BENAND (Built-in ECC NAND)"
++	default n
++	help
++	  This enables support for Toshiba BENAND.
++	  Toshiba BENAND is a SLC NAND solution that automatically
++	  generates ECC inside NAND chip.
 +
-+	dbg_gen("starting");
-+	/* freeze_super always succeeds if file system is in read-only.
-+	 * however if there are errors, UBIFS is switched to read-only mode.
-+	 * so @ro_error should be checked.
-+	 */
-+	err = freeze_super(sb);
-+	if (!err && c->ro_error) {
-+		thaw_super(sb);
-+		return -EIO;
-+	}
-+	return err;
-+}
++config MTD_NAND_BENAND_ECC_STATUS
++	bool "Enable ECC Status Read Command(0x7A)"
++	depends on MTD_NAND_BENAND
++	default n
++	help
++	  This enables support for ECC Status Read Command(0x7A) of BENAND.
++	  When this enables, report the real number of bitflips.
++	  In other cases, report the assumud number.
 +
-+static int ubifs_freeze(struct super_block *sb)
-+{
-+	struct ubifs_info *c = sb->s_fs_info;
-+	int ret;
-+
-+	if (c->ro_error)
-+		return -EIO;
-+
-+	if (c->ro_mount)
-+		return 0;
-+
-+	down_write(&c->commit_sem);
-+	ret = ubifs_nothing_to_commit(c);
-+	up_write(&c->commit_sem);
-+
-+	/* writes were blocked and ubifs_sync_fs was called before.
-+	 * but TNC/LPT isn't guarranteed to be clean. because if commit was
-+	 * already started before writes were blocked, TNC/LPT might have
-+	 * COW nodes. so we try to commit again in this case.
-+	 */
-+	if (!ret) {
-+		ret = ubifs_run_commit(c);
-+		if (ret)
-+			return ret;
-+
-+		down_write(&c->commit_sem);
-+		ret = ubifs_nothing_to_commit(c);
-+		up_write(&c->commit_sem);
-+		if (!ret)
-+			return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int ubifs_unfreeze(struct super_block *sb)
-+{
-+	return 0;
-+}
-+
- /**
-  * init_constants_early - initialize UBIFS constants.
-  * @c: UBIFS file-system description object
-@@ -1889,6 +1949,9 @@ static int ubifs_remount_fs(struct super_block *sb, int *flags, char *data)
- 	.remount_fs    = ubifs_remount_fs,
- 	.show_options  = ubifs_show_options,
- 	.sync_fs       = ubifs_sync_fs,
-+	.freeze_super  = ubifs_freeze_super,
-+	.freeze_fs     = ubifs_freeze,
-+	.unfreeze_fs   = ubifs_unfreeze,
+ config MTD_SM_COMMON
+ 	tristate
+ 	default n
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 43722a8..ab8652e 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -4186,6 +4186,7 @@ static const char * const nand_ecc_modes[] = {
+ 	[NAND_ECC_HW_SYNDROME]	= "hw_syndrome",
+ 	[NAND_ECC_HW_OOB_FIRST]	= "hw_oob_first",
+ 	[NAND_ECC_ON_DIE]	= "on-die",
++	[NAND_ECC_BENAND]	= "benand",
  };
  
- /**
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index abdd116..545796e 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -1645,6 +1645,7 @@ unsigned long ubifs_shrink_count(struct shrinker *shrink,
- void ubifs_recovery_commit(struct ubifs_info *c);
- int ubifs_gc_should_commit(struct ubifs_info *c);
- void ubifs_wait_for_commit(struct ubifs_info *c);
-+int ubifs_nothing_to_commit(struct ubifs_info *c);
+ static int of_get_nand_ecc_mode(struct device_node *np)
+@@ -4751,6 +4752,19 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 			ecc->write_oob = nand_write_oob_std;
+ 		break;
  
- /* master.c */
- int ubifs_read_master(struct ubifs_info *c);
++	case NAND_ECC_BENAND:
++		if (!ecc->read_page || !ecc->read_subpage) {
++			WARN(1, "No ECC functions supplied; benand ECC not possible\n");
++			ret = -EINVAL;
++			goto err_free;
++		}
++		ecc->write_page = nand_write_page_raw;
++		ecc->read_page_raw = nand_read_page_raw;
++		ecc->write_page_raw = nand_write_page_raw;
++		ecc->read_oob = nand_read_oob_std;
++		ecc->write_oob = nand_write_oob_std;
++		break;
++
+ 	case NAND_ECC_NONE:
+ 		pr_warn("NAND_ECC_NONE selected by board driver. This is not recommended!\n");
+ 		ecc->read_page = nand_read_page_raw;
+@@ -4831,6 +4845,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	/* Large page NAND with SOFT_ECC should support subpage reads */
+ 	switch (ecc->mode) {
+ 	case NAND_ECC_SOFT:
++	case NAND_ECC_BENAND:
+ 		if (chip->page_shift > 9)
+ 			chip->options |= NAND_SUBPAGE_READ;
+ 		break;
+diff --git a/drivers/mtd/nand/nand_toshiba.c b/drivers/mtd/nand/nand_toshiba.c
+index fa787ba..bb3c852 100644
+--- a/drivers/mtd/nand/nand_toshiba.c
++++ b/drivers/mtd/nand/nand_toshiba.c
+@@ -17,6 +17,97 @@
+ 
+ #include <linux/mtd/nand.h>
+ 
++/* ECC Status Read Command for BENAND */
++#define NAND_CMD_ECC_STATUS	0x7A
++
++/* Recommended to rewrite for BENAND */
++#define NAND_STATUS_RECOM_REWRT	0x08
++
++
++static int toshiba_nand_benand_status_chk(struct mtd_info *mtd,
++			struct nand_chip *chip)
++{
++	unsigned int max_bitflips = 0;
++	u8 status;
++
++	/* Check Read Status */
++	chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
++	status = chip->read_byte(mtd);
++
++	/* timeout */
++	if (!(status & NAND_STATUS_READY)) {
++		pr_debug("BENAND : Time Out!\n");
++		return -EIO;
++	}
++
++	/* uncorrectable */
++	else if (status & NAND_STATUS_FAIL)
++		mtd->ecc_stats.failed++;
++
++	/* correctable */
++	else if (status & NAND_STATUS_RECOM_REWRT) {
++		if (chip->cmd_ctrl &&
++			IS_ENABLED(CONFIG_MTD_NAND_BENAND_ECC_STATUS)) {
++
++			int i;
++			u8 ecc_status;
++			unsigned int bitflips;
++
++			/* Check Read ECC Status */
++			chip->cmd_ctrl(mtd, NAND_CMD_ECC_STATUS,
++				NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
++			/* Get bitflips info per 512Byte */
++			for (i = 0; i < mtd->writesize >> 9; i++) {
++				ecc_status = chip->read_byte(mtd);
++				bitflips = ecc_status & 0x0f;
++				max_bitflips = max_t(unsigned int,
++						max_bitflips, bitflips);
++			}
++			mtd->ecc_stats.corrected += max_bitflips;
++		} else {
++			/*
++			 * If can't use chip->cmd_ctrl,
++			 * we can't get real number of bitflips.
++			 * So, we set max_bitflips mtd->bitflip_threshold.
++			 */
++			max_bitflips = mtd->bitflip_threshold;
++			mtd->ecc_stats.corrected += max_bitflips;
++		}
++	}
++
++	return max_bitflips;
++}
++
++static int toshiba_nand_read_page_benand(struct mtd_info *mtd,
++			struct nand_chip *chip, uint8_t *buf,
++			int oob_required, int page)
++{
++	unsigned int max_bitflips = 0;
++
++	chip->ecc.read_page_raw(mtd, chip, buf, oob_required, page);
++	max_bitflips = toshiba_nand_benand_status_chk(mtd, chip);
++
++	return max_bitflips;
++}
++
++static int toshiba_nand_read_subpage_benand(struct mtd_info *mtd,
++			struct nand_chip *chip, uint32_t data_offs,
++			uint32_t readlen, uint8_t *bufpoi, int page)
++{
++	uint8_t *p;
++	unsigned int max_bitflips = 0;
++
++	if (data_offs != 0)
++		chip->cmdfunc(mtd, NAND_CMD_RNDOUT, data_offs, -1);
++
++	p = bufpoi + data_offs;
++	chip->read_buf(mtd, p, readlen);
++
++	max_bitflips = toshiba_nand_benand_status_chk(mtd, chip);
++
++	return max_bitflips;
++}
++
+ static void toshiba_nand_decode_id(struct nand_chip *chip)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+@@ -33,15 +124,32 @@ static void toshiba_nand_decode_id(struct nand_chip *chip)
+ 	 */
+ 	if (chip->id.len >= 6 && nand_is_slc(chip) &&
+ 	    (chip->id.data[5] & 0x7) == 0x6 /* 24nm */ &&
+-	    !(chip->id.data[4] & 0x80) /* !BENAND */)
+-		mtd->oobsize = 32 * mtd->writesize >> 9;
++	    (chip->id.data[4] & 0x80) /* BENAND */) {
++		if (IS_ENABLED(CONFIG_MTD_NAND_BENAND))
++			chip->ecc.mode = NAND_ECC_BENAND;
++	} else {
++		mtd->oobsize = 32 * mtd->writesize >> 9;	/* !BENAND */
++	}
+ }
+ 
+ static int toshiba_nand_init(struct nand_chip *chip)
+ {
++	struct mtd_info *mtd = nand_to_mtd(chip);
++
+ 	if (nand_is_slc(chip))
+ 		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
+ 
++	if (chip->ecc.mode == NAND_ECC_BENAND) {
++		chip->ecc.options = NAND_ECC_CUSTOM_PAGE_ACCESS;
++		chip->ecc.bytes = 0;
++		chip->ecc.strength = 8;
++		chip->ecc.total = 0;
++		chip->ecc.read_page = toshiba_nand_read_page_benand;
++		chip->ecc.read_subpage = toshiba_nand_read_subpage_benand;
++
++		mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
++	}
++
+ 	return 0;
+ }
+ 
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 3a6a77f..6821334 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -117,6 +117,7 @@ typedef enum {
+ 	NAND_ECC_HW_SYNDROME,
+ 	NAND_ECC_HW_OOB_FIRST,
+ 	NAND_ECC_ON_DIE,
++	NAND_ECC_BENAND,
+ } nand_ecc_modes_t;
+ 
+ enum nand_ecc_algo {
 -- 
-1.9.1
+2.7.4
