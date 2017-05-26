@@ -1,22 +1,20 @@
-Received: from conssluserg-03.nifty.com ([210.131.2.82])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dEAZQ-000792-DG
- for linux-mtd@lists.infradead.org; Fri, 26 May 2017 08:26:06 +0000
-Received: from mail-yw0-f176.google.com (mail-yw0-f176.google.com
- [209.85.161.176]) (authenticated)
- by conssluserg-03.nifty.com with ESMTP id v4Q8PDIi004775
- for <linux-mtd@lists.infradead.org>; Fri, 26 May 2017 17:25:13 +0900
-Received: by mail-yw0-f176.google.com with SMTP id l74so1650987ywe.2
- for <linux-mtd@lists.infradead.org>; Fri, 26 May 2017 01:25:13 -0700 (PDT)
+ id 1dEBvn-0008Qs-1D
+ for linux-mtd@lists.infradead.org; Fri, 26 May 2017 09:53:17 +0000
+Subject: Re: [PATCH] ubifs: Add freeze support
+To: Hyunchul Lee <hyc.lee@gmail.com>
+References: <1495755004-17036-1-git-send-email-hyc.lee@gmail.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, adrian.hunter@intel.com,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, kernel-team@lge.com
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <2f3210d7-b0c3-f006-754e-ec4bae26454c@nod.at>
+Date: Fri, 26 May 2017 11:52:42 +0200
 MIME-Version: 1.0
-In-Reply-To: <1495786662-27862-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1495786662-27862-1-git-send-email-yamada.masahiro@socionext.com>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Fri, 26 May 2017 17:25:12 +0900
-Message-ID: <CAK7LNARuk-DseT2mrCQvYOK_34LUOXU_v1GpgYhNnR6oriSnkA@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: uniphier: reserve more memory for LD11/LD20
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1495755004-17036-1-git-send-email-hyc.lee@gmail.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,63 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-To MTD developers,
+Hyunchul,
 
-Please ignore this.
-I sent this to a wrong ML by accident.  Sorry for noise.
+Am 26.05.2017 um 01:30 schrieb Hyunchul Lee:
+> From: Hyunchul Lee <cheol.lee@lge.com>
+> 
+> for un/freeze support, implement freeze_super and un/freeze_fs
+> of super_operations.
+> ubifs_freeze_super just calls freeze_super. because freeze_super always
+> succeeds if file system is read-only,  UBIFS errors should be checked.
+> if there are errors, UBIFS is switched to read-only mode.
+> ubifs_freeze_fs runs commit if TNC/LPT isn't clean. though all writes
+> are blocked and sync_fs is called before, if commit alreay was started
+> before writes are blocked, TNC/LPT might have dirty COW nodes.
 
+you explain how you implement that feature, but not why.
+What is the use-case?
+I always thought this interface is only being used by LVM.
 
-
-2017-05-26 17:17 GMT+09:00 Masahiro Yamada <yamada.masahiro@socionext.com>:
-> Reserve enough space below the kernel base.
-> The assumed address map is:
->   80000000 - 80ffffff : for IPP
->   81000000 - 81ffffff : for ARM secure
->   82000000 -          : for Linux
->
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> ---
->
->  arch/arm64/boot/dts/socionext/uniphier-ld11.dtsi | 2 +-
->  arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/arm64/boot/dts/socionext/uniphier-ld11.dtsi b/arch/arm64/boot/dts/socionext/uniphier-ld11.dtsi
-> index 53ede23d68cb..702f5b175456 100644
-> --- a/arch/arm64/boot/dts/socionext/uniphier-ld11.dtsi
-> +++ b/arch/arm64/boot/dts/socionext/uniphier-ld11.dtsi
-> @@ -43,7 +43,7 @@
->   *     OTHER DEALINGS IN THE SOFTWARE.
->   */
->
-> -/memreserve/ 0x80000000 0x00080000;
-> +/memreserve/ 0x80000000 0x02000000;
->
->  / {
->         compatible = "socionext,uniphier-ld11";
-> diff --git a/arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi b/arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi
-> index aa4dad51bf46..f120059e6e24 100644
-> --- a/arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi
-> +++ b/arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi
-> @@ -43,7 +43,7 @@
->   *     OTHER DEALINGS IN THE SOFTWARE.
->   */
->
-> -/memreserve/ 0x80000000 0x00080000;
-> +/memreserve/ 0x80000000 0x02000000;
->
->  / {
->         compatible = "socionext,uniphier-ld20";
-> --
-> 2.7.4
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+Thanks,
+//richard
