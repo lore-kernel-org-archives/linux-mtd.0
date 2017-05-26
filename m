@@ -1,26 +1,20 @@
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dEF50-0003Da-Ni
- for linux-mtd@lists.infradead.org; Fri, 26 May 2017 13:15:14 +0000
-Received: by mail-lf0-x242.google.com with SMTP id m18so992107lfj.0
- for <linux-mtd@lists.infradead.org>; Fri, 26 May 2017 06:14:37 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dEGt9-00020z-K3
+ for linux-mtd@lists.infradead.org; Fri, 26 May 2017 15:10:53 +0000
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH V6 5/5] mtd: extract TRX parser out of bcm47xxpart into a
- separated module
-Date: Fri, 26 May 2017 15:14:15 +0200
-Message-Id: <20170526131415.27186-6-zajec5@gmail.com>
-In-Reply-To: <20170526131415.27186-1-zajec5@gmail.com>
-References: <20170526131415.27186-1-zajec5@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Subject: [PATCH] mtd: nand: Make sure drivers not supporting SET/GET_FEATURES
+ return -ENOTSUPP
+Date: Fri, 26 May 2017 17:10:15 +0200
+Message-Id: <20170526151015.32673-1-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,337 +24,273 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+A lot of drivers are providing their own ->cmdfunc(), and most of the
+time this implementation does not support all possible NAND operations.
+But since ->cmdfunc() cannot return an error code, the core has no way
+to know that the operation it requested is not supported.
 
-This makes TRX parsing code reusable with other platforms and parsers.
+This is a problem we cannot address for all kind of operations with the
+current design, but we can prevent these silent failures for the
+GET/SET FEATURES operation by overloading the default
+->onfi_{set,get}_features() methods with one returning -ENOTSUPP.
 
-Please note this patch doesn't really change anything in the existing
-code, just moves it. There is still some place for improvement (e.g.
-working on non-hacky method of checking rootfs format) but it's not
-really a subject of this change.
-
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Reported-by: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
-V2: A totally rebased & refreshed version.
-V5: Add TRX format verification, improve comment, fix memory leak
-    Thanks Brian
-V6: Add COMPILE_TEST to Kconfig's depends
----
- drivers/mtd/Kconfig              |   4 ++
- drivers/mtd/Makefile             |   1 +
- drivers/mtd/bcm47xxpart.c        |  99 ++----------------------------
- drivers/mtd/parsers/Kconfig      |   8 +++
- drivers/mtd/parsers/Makefile     |   1 +
- drivers/mtd/parsers/parser_trx.c | 126 +++++++++++++++++++++++++++++++++++++++
- 6 files changed, 145 insertions(+), 94 deletions(-)
- create mode 100644 drivers/mtd/parsers/Kconfig
- create mode 100644 drivers/mtd/parsers/Makefile
- create mode 100644 drivers/mtd/parsers/parser_trx.c
 
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index e83a279f1217..5a2d71729b9a 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -155,6 +155,10 @@ config MTD_BCM47XX_PARTS
- 	  This provides partitions parser for devices based on BCM47xx
- 	  boards.
+This bug has been discovered by Chris while testing linux-next on his
+marvell platform (which is using pxa3xx NAND controller driver).
+The bug was caused by commit b566d9c055de ("mtd: nand: add support for
+Micron on-die ECC") which is using ->set/get_features() to detect
+whether the NAND supports on-die ECC or not.
+
+This reveals how fragile the current ->cmdfunc() interface is. Not only
+->cmdfunc() cannot return an error code, but even if it could, most of
+the time, learning that a specific operation is not supported when
+trying to execute it is already too late.
+
+Anyway, this is not something we can address immediately (I'm working
+on a new ->exec_op()/->supports_op() interface that will hopefully
+address the aforementioned problems), but I guess this fix can serve as
+a reference to show that overloading ->cmdfunc() is a really bad idea
+and that ->cmd_ctrl() should be implemented instead, unless it's proven
+to be impossible.
+
+Note that I didn't add a Fixes tag because I plan to rearrange my
+nand/next branch to put this commit before b566d9c055de to avoid
+breaking bisectability.
+---
+ drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c  |  2 ++
+ drivers/mtd/nand/cafe_nand.c                  |  2 ++
+ drivers/mtd/nand/denali.c                     |  2 ++
+ drivers/mtd/nand/docg4.c                      |  2 ++
+ drivers/mtd/nand/fsl_elbc_nand.c              |  2 ++
+ drivers/mtd/nand/fsl_ifc_nand.c               |  2 ++
+ drivers/mtd/nand/hisi504_nand.c               |  2 ++
+ drivers/mtd/nand/mpc5121_nfc.c                |  2 ++
+ drivers/mtd/nand/nand_base.c                  | 19 +++++++++++++++++++
+ drivers/mtd/nand/pxa3xx_nand.c                |  2 ++
+ drivers/mtd/nand/qcom_nandc.c                 |  2 ++
+ drivers/mtd/nand/sh_flctl.c                   |  2 ++
+ drivers/mtd/nand/vf610_nfc.c                  |  2 ++
+ drivers/staging/mt29f_spinand/mt29f_spinand.c |  2 ++
+ include/linux/mtd/nand.h                      |  5 +++++
+ 15 files changed, 50 insertions(+)
+
+diff --git a/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
+index f1da4ea88f2c..54bac5b73f0a 100644
+--- a/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
++++ b/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
+@@ -392,6 +392,8 @@ int bcm47xxnflash_ops_bcm4706_init(struct bcm47xxnflash *b47n)
+ 	b47n->nand_chip.read_byte = bcm47xxnflash_ops_bcm4706_read_byte;
+ 	b47n->nand_chip.read_buf = bcm47xxnflash_ops_bcm4706_read_buf;
+ 	b47n->nand_chip.write_buf = bcm47xxnflash_ops_bcm4706_write_buf;
++	b47n->nand_chip.onfi_set_features = nand_onfi_get_set_features_notsupp;
++	b47n->nand_chip.onfi_get_features = nand_onfi_get_set_features_notsupp;
  
-+menu "Partition parsers"
-+source "drivers/mtd/parsers/Kconfig"
-+endmenu
-+
- comment "User Modules And Translation Layers"
+ 	nand_chip->chip_delay = 50;
+ 	b47n->nand_chip.bbt_options = NAND_BBT_USE_FLASH;
+diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
+index d40c32d311d8..2fd733eba0a3 100644
+--- a/drivers/mtd/nand/cafe_nand.c
++++ b/drivers/mtd/nand/cafe_nand.c
+@@ -654,6 +654,8 @@ static int cafe_nand_probe(struct pci_dev *pdev,
+ 	cafe->nand.read_buf = cafe_read_buf;
+ 	cafe->nand.write_buf = cafe_write_buf;
+ 	cafe->nand.select_chip = cafe_select_chip;
++	cafe->nand.onfi_set_features = nand_onfi_get_set_features_notsupp;
++	cafe->nand.onfi_get_features = nand_onfi_get_set_features_notsupp;
  
- #
-diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
-index 99bb9a1f6e16..151d60df303a 100644
---- a/drivers/mtd/Makefile
-+++ b/drivers/mtd/Makefile
-@@ -13,6 +13,7 @@ obj-$(CONFIG_MTD_AFS_PARTS)	+= afs.o
- obj-$(CONFIG_MTD_AR7_PARTS)	+= ar7part.o
- obj-$(CONFIG_MTD_BCM63XX_PARTS)	+= bcm63xxpart.o
- obj-$(CONFIG_MTD_BCM47XX_PARTS)	+= bcm47xxpart.o
-+obj-y				+= parsers/
+ 	cafe->nand.chip_delay = 0;
  
- # 'Users' - code which presents functionality to userspace.
- obj-$(CONFIG_MTD_BLKDEVS)	+= mtd_blkdevs.o
-diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
-index d10fa6c8f074..fe2581d9d882 100644
---- a/drivers/mtd/bcm47xxpart.c
-+++ b/drivers/mtd/bcm47xxpart.c
-@@ -43,7 +43,8 @@
- #define ML_MAGIC2			0x26594131
- #define TRX_MAGIC			0x30524448
- #define SHSQ_MAGIC			0x71736873	/* shsq (weird ZTE H218N endianness) */
--#define UBI_EC_MAGIC			0x23494255	/* UBI# */
-+
-+static const char * const trx_types[] = { "trx", NULL };
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 16634df2e39a..b3c99d98fdee 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -1531,6 +1531,8 @@ int denali_init(struct denali_nand_info *denali)
+ 	chip->cmdfunc = denali_cmdfunc;
+ 	chip->read_byte = denali_read_byte;
+ 	chip->waitfunc = denali_waitfunc;
++	chip->onfi_set_features = nand_onfi_get_set_features_notsupp;
++	chip->onfi_get_features = nand_onfi_get_set_features_notsupp;
  
- struct trx_header {
- 	uint32_t magic;
-@@ -62,89 +63,6 @@ static void bcm47xxpart_add_part(struct mtd_partition *part, const char *name,
- 	part->mask_flags = mask_flags;
+ 	/*
+ 	 * scan for NAND devices attached to the controller
+diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
+index 7af2a3cd949e..a27a84fbfb84 100644
+--- a/drivers/mtd/nand/docg4.c
++++ b/drivers/mtd/nand/docg4.c
+@@ -1260,6 +1260,8 @@ static void __init init_mtd_structs(struct mtd_info *mtd)
+ 	nand->read_buf = docg4_read_buf;
+ 	nand->write_buf = docg4_write_buf16;
+ 	nand->erase = docg4_erase_block;
++	nand->onfi_set_features = nand_onfi_get_set_features_notsupp;
++	nand->onfi_get_features = nand_onfi_get_set_features_notsupp;
+ 	nand->ecc.read_page = docg4_read_page;
+ 	nand->ecc.write_page = docg4_write_page;
+ 	nand->ecc.read_page_raw = docg4_read_page_raw;
+diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+index 113f76e59937..b9ac16f05057 100644
+--- a/drivers/mtd/nand/fsl_elbc_nand.c
++++ b/drivers/mtd/nand/fsl_elbc_nand.c
+@@ -775,6 +775,8 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
+ 	chip->select_chip = fsl_elbc_select_chip;
+ 	chip->cmdfunc = fsl_elbc_cmdfunc;
+ 	chip->waitfunc = fsl_elbc_wait;
++	chip->onfi_set_features = nand_onfi_get_set_features_notsupp;
++	chip->onfi_get_features = nand_onfi_get_set_features_notsupp;
+ 
+ 	chip->bbt_td = &bbt_main_descr;
+ 	chip->bbt_md = &bbt_mirror_descr;
+diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+index d1570f512f0b..89e14daeaba6 100644
+--- a/drivers/mtd/nand/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/fsl_ifc_nand.c
+@@ -831,6 +831,8 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
+ 	chip->select_chip = fsl_ifc_select_chip;
+ 	chip->cmdfunc = fsl_ifc_cmdfunc;
+ 	chip->waitfunc = fsl_ifc_wait;
++	chip->onfi_set_features = nand_onfi_get_set_features_notsupp;
++	chip->onfi_get_features = nand_onfi_get_set_features_notsupp;
+ 
+ 	chip->bbt_td = &bbt_main_descr;
+ 	chip->bbt_md = &bbt_mirror_descr;
+diff --git a/drivers/mtd/nand/hisi504_nand.c b/drivers/mtd/nand/hisi504_nand.c
+index e40364eeb556..530caa80b1b6 100644
+--- a/drivers/mtd/nand/hisi504_nand.c
++++ b/drivers/mtd/nand/hisi504_nand.c
+@@ -764,6 +764,8 @@ static int hisi_nfc_probe(struct platform_device *pdev)
+ 	chip->write_buf		= hisi_nfc_write_buf;
+ 	chip->read_buf		= hisi_nfc_read_buf;
+ 	chip->chip_delay	= HINFC504_CHIP_DELAY;
++	chip->onfi_set_features	= nand_onfi_get_set_features_notsupp;
++	chip->onfi_get_features	= nand_onfi_get_set_features_notsupp;
+ 
+ 	hisi_nfc_host_init(host);
+ 
+diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/mpc5121_nfc.c
+index 6d6eaed2d20c..0e86fb6277c3 100644
+--- a/drivers/mtd/nand/mpc5121_nfc.c
++++ b/drivers/mtd/nand/mpc5121_nfc.c
+@@ -708,6 +708,8 @@ static int mpc5121_nfc_probe(struct platform_device *op)
+ 	chip->read_buf = mpc5121_nfc_read_buf;
+ 	chip->write_buf = mpc5121_nfc_write_buf;
+ 	chip->select_chip = mpc5121_nfc_select_chip;
++	chip->onfi_set_features	= nand_onfi_get_set_features_notsupp;
++	chip->onfi_get_features	= nand_onfi_get_set_features_notsupp;
+ 	chip->bbt_options = NAND_BBT_USE_FLASH;
+ 	chip->ecc.mode = NAND_ECC_SOFT;
+ 	chip->ecc.algo = NAND_ECC_HAMMING;
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 54a1dfa327ff..d6fb4a139387 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3424,6 +3424,25 @@ static int nand_onfi_get_features(struct mtd_info *mtd, struct nand_chip *chip,
  }
  
--static const char *bcm47xxpart_trx_data_part_name(struct mtd_info *master,
--						  size_t offset)
--{
--	uint32_t buf;
--	size_t bytes_read;
--	int err;
--
--	err  = mtd_read(master, offset, sizeof(buf), &bytes_read,
--			(uint8_t *)&buf);
--	if (err && !mtd_is_bitflip(err)) {
--		pr_err("mtd_read error while parsing (offset: 0x%X): %d\n",
--			offset, err);
--		goto out_default;
--	}
--
--	if (buf == UBI_EC_MAGIC)
--		return "ubi";
--
--out_default:
--	return "rootfs";
--}
--
--static int bcm47xxpart_parse_trx(struct mtd_info *master,
--				 struct mtd_partition *trx,
--				 struct mtd_partition *parts,
--				 size_t parts_len)
--{
--	struct trx_header header;
--	size_t bytes_read;
--	int curr_part = 0;
--	int i, err;
--
--	if (parts_len < 3) {
--		pr_warn("No enough space to add TRX partitions!\n");
--		return -ENOMEM;
--	}
--
--	err = mtd_read(master, trx->offset, sizeof(header), &bytes_read,
--		       (uint8_t *)&header);
--	if (err && !mtd_is_bitflip(err)) {
--		pr_err("mtd_read error while reading TRX header: %d\n", err);
--		return err;
--	}
--
--	i = 0;
--
--	/* We have LZMA loader if offset[2] points to sth */
--	if (header.offset[2]) {
--		bcm47xxpart_add_part(&parts[curr_part++], "loader",
--				     trx->offset + header.offset[i], 0);
--		i++;
--	}
--
--	if (header.offset[i]) {
--		bcm47xxpart_add_part(&parts[curr_part++], "linux",
--				     trx->offset + header.offset[i], 0);
--		i++;
--	}
--
--	if (header.offset[i]) {
--		size_t offset = trx->offset + header.offset[i];
--		const char *name = bcm47xxpart_trx_data_part_name(master,
--								  offset);
--
--		bcm47xxpart_add_part(&parts[curr_part++], name, offset, 0);
--		i++;
--	}
--
--	/*
--	 * Assume that every partition ends at the beginning of the one it is
--	 * followed by.
--	 */
--	for (i = 0; i < curr_part; i++) {
--		u64 next_part_offset = (i < curr_part - 1) ?
--					parts[i + 1].offset :
--					trx->offset + trx->size;
--
--		parts[i].size = next_part_offset - parts[i].offset;
--	}
--
--	return curr_part;
--}
--
  /**
-  * bcm47xxpart_bootpartition - gets index of TRX partition used by bootloader
-  *
-@@ -362,17 +280,10 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 	for (i = 0; i < trx_num; i++) {
- 		struct mtd_partition *trx = &parts[trx_parts[i]];
- 
--		if (i == bcm47xxpart_bootpartition()) {
--			int num_parts;
--
--			num_parts = bcm47xxpart_parse_trx(master, trx,
--							  parts + curr_part,
--							  BCM47XXPART_MAX_PARTS - curr_part);
--			if (num_parts > 0)
--				curr_part += num_parts;
--		} else {
-+		if (i == bcm47xxpart_bootpartition())
-+			trx->types = trx_types;
-+		else
- 			trx->name = "failsafe";
--		}
++ * nand_onfi_get_set_features_notsupp - set/get features stub returning
++ *					-ENOTSUPP
++ * @mtd: MTD device structure
++ * @chip: nand chip info structure
++ * @addr: feature address.
++ * @subfeature_param: the subfeature parameters, a four bytes array.
++ *
++ * Should be used by NAND controller drivers that do not support the SET/GET
++ * FEATURES operations.
++ */
++int nand_onfi_get_set_features_notsupp(struct mtd_info *mtd,
++				       struct nand_chip *chip,
++				       int feature_addr, u8 *subfeature_para)
++{
++	return -ENOTSUPP;
++}
++EXPORT_SYMBOL(nand_onfi_get_set_features_notsupp);
++
++/**
+  * nand_suspend - [MTD Interface] Suspend the NAND flash
+  * @mtd: MTD device structure
+  */
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 649ba8200832..74dae4bbdac8 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -1812,6 +1812,8 @@ static int alloc_nand_resource(struct platform_device *pdev)
+ 		chip->write_buf		= pxa3xx_nand_write_buf;
+ 		chip->options		|= NAND_NO_SUBPAGE_WRITE;
+ 		chip->cmdfunc		= nand_cmdfunc;
++		chip->onfi_set_features	= nand_onfi_get_set_features_notsupp;
++		chip->onfi_get_features	= nand_onfi_get_set_features_notsupp;
  	}
  
- 	*pparts = parts;
-diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
-new file mode 100644
-index 000000000000..d206b3c533bc
---- /dev/null
-+++ b/drivers/mtd/parsers/Kconfig
-@@ -0,0 +1,8 @@
-+config MTD_PARSER_TRX
-+	tristate "Parser for TRX format partitions"
-+	depends on MTD && (BCM47XX || ARCH_BCM_5301X || COMPILE_TEST)
-+	help
-+	  TRX is a firmware format used by Broadcom on their devices. It
-+	  may contain up to 3/4 partitions (depending on the version).
-+	  This driver will parse TRX header and report at least two partitions:
-+	  kernel and rootfs.
-diff --git a/drivers/mtd/parsers/Makefile b/drivers/mtd/parsers/Makefile
-new file mode 100644
-index 000000000000..4d9024e0be3b
---- /dev/null
-+++ b/drivers/mtd/parsers/Makefile
-@@ -0,0 +1 @@
-+obj-$(CONFIG_MTD_PARSER_TRX)		+= parser_trx.o
-diff --git a/drivers/mtd/parsers/parser_trx.c b/drivers/mtd/parsers/parser_trx.c
-new file mode 100644
-index 000000000000..e805108afd31
---- /dev/null
-+++ b/drivers/mtd/parsers/parser_trx.c
-@@ -0,0 +1,126 @@
-+/*
-+ * Parser for TRX format partitions
-+ *
-+ * Copyright (C) 2012 - 2017 Rafał Miłecki <rafal@milecki.pl>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ */
+ 	nand_hw_control_init(chip->controller);
+diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
+index 57d483ac5765..88af7145a51a 100644
+--- a/drivers/mtd/nand/qcom_nandc.c
++++ b/drivers/mtd/nand/qcom_nandc.c
+@@ -2008,6 +2008,8 @@ static int qcom_nand_host_init(struct qcom_nand_controller *nandc,
+ 	chip->read_byte		= qcom_nandc_read_byte;
+ 	chip->read_buf		= qcom_nandc_read_buf;
+ 	chip->write_buf		= qcom_nandc_write_buf;
++	chip->onfi_set_features	= nand_onfi_get_set_features_notsupp;
++	chip->onfi_get_features	= nand_onfi_get_set_features_notsupp;
+ 
+ 	/*
+ 	 * the bad block marker is readable only when we read the last codeword
+diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
+index 442ce619b3b6..891ac7b99305 100644
+--- a/drivers/mtd/nand/sh_flctl.c
++++ b/drivers/mtd/nand/sh_flctl.c
+@@ -1183,6 +1183,8 @@ static int flctl_probe(struct platform_device *pdev)
+ 	nand->read_buf = flctl_read_buf;
+ 	nand->select_chip = flctl_select_chip;
+ 	nand->cmdfunc = flctl_cmdfunc;
++	nand->onfi_set_features = nand_onfi_get_set_features_notsupp;
++	nand->onfi_get_features = nand_onfi_get_set_features_notsupp;
+ 
+ 	if (pdata->flcmncr_val & SEL_16BIT)
+ 		nand->options |= NAND_BUSWIDTH_16;
+diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
+index 3ea4bb19e12d..744ab10e8962 100644
+--- a/drivers/mtd/nand/vf610_nfc.c
++++ b/drivers/mtd/nand/vf610_nfc.c
+@@ -703,6 +703,8 @@ static int vf610_nfc_probe(struct platform_device *pdev)
+ 	chip->read_buf = vf610_nfc_read_buf;
+ 	chip->write_buf = vf610_nfc_write_buf;
+ 	chip->select_chip = vf610_nfc_select_chip;
++	chip->onfi_set_features = nand_onfi_get_set_features_notsupp;
++	chip->onfi_get_features = nand_onfi_get_set_features_notsupp;
+ 
+ 	chip->options |= NAND_NO_SUBPAGE_WRITE;
+ 
+diff --git a/drivers/staging/mt29f_spinand/mt29f_spinand.c b/drivers/staging/mt29f_spinand/mt29f_spinand.c
+index e389009fca42..a4e3ae8f0c85 100644
+--- a/drivers/staging/mt29f_spinand/mt29f_spinand.c
++++ b/drivers/staging/mt29f_spinand/mt29f_spinand.c
+@@ -915,6 +915,8 @@ static int spinand_probe(struct spi_device *spi_nand)
+ 	chip->waitfunc	= spinand_wait;
+ 	chip->options	|= NAND_CACHEPRG;
+ 	chip->select_chip = spinand_select_chip;
++	chip->onfi_set_features = nand_onfi_get_set_features_notsupp;
++	chip->onfi_get_features = nand_onfi_get_set_features_notsupp;
+ 
+ 	mtd = nand_to_mtd(chip);
+ 
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index f01991649118..5388c07836fd 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -1261,6 +1261,11 @@ int nand_read_oob_std(struct mtd_info *mtd, struct nand_chip *chip, int page);
+ int nand_read_oob_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+ 			   int page);
+ 
++/* Stub used by drivers that do not support GET/SET FEATURES operations */
++int nand_onfi_get_set_features_notsupp(struct mtd_info *mtd,
++				       struct nand_chip *chip,
++				       int feature_addr, u8 *subfeature_para);
 +
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/partitions.h>
-+
-+#define TRX_PARSER_MAX_PARTS		4
-+
-+/* Magics */
-+#define TRX_MAGIC			0x30524448
-+#define UBI_EC_MAGIC			0x23494255	/* UBI# */
-+
-+struct trx_header {
-+	uint32_t magic;
-+	uint32_t length;
-+	uint32_t crc32;
-+	uint16_t flags;
-+	uint16_t version;
-+	uint32_t offset[3];
-+} __packed;
-+
-+static const char *parser_trx_data_part_name(struct mtd_info *master,
-+					     size_t offset)
-+{
-+	uint32_t buf;
-+	size_t bytes_read;
-+	int err;
-+
-+	err  = mtd_read(master, offset, sizeof(buf), &bytes_read,
-+			(uint8_t *)&buf);
-+	if (err && !mtd_is_bitflip(err)) {
-+		pr_err("mtd_read error while parsing (offset: 0x%X): %d\n",
-+			offset, err);
-+		goto out_default;
-+	}
-+
-+	if (buf == UBI_EC_MAGIC)
-+		return "ubi";
-+
-+out_default:
-+	return "rootfs";
-+}
-+
-+static int parser_trx_parse(struct mtd_info *mtd,
-+			    const struct mtd_partition **pparts,
-+			    struct mtd_part_parser_data *data)
-+{
-+	struct mtd_partition *parts;
-+	struct mtd_partition *part;
-+	struct trx_header trx;
-+	size_t bytes_read;
-+	uint8_t curr_part = 0, i = 0;
-+	int err;
-+
-+	parts = kzalloc(sizeof(struct mtd_partition) * TRX_PARSER_MAX_PARTS,
-+			GFP_KERNEL);
-+	if (!parts)
-+		return -ENOMEM;
-+
-+	err = mtd_read(mtd, 0, sizeof(trx), &bytes_read, (uint8_t *)&trx);
-+	if (err) {
-+		pr_err("MTD reading error: %d\n", err);
-+		kfree(parts);
-+		return err;
-+	}
-+
-+	if (trx.magic != TRX_MAGIC) {
-+		kfree(parts);
-+		return -ENOENT;
-+	}
-+
-+	/* We have LZMA loader if there is address in offset[2] */
-+	if (trx.offset[2]) {
-+		part = &parts[curr_part++];
-+		part->name = "loader";
-+		part->offset = trx.offset[i];
-+		i++;
-+	}
-+
-+	if (trx.offset[i]) {
-+		part = &parts[curr_part++];
-+		part->name = "linux";
-+		part->offset = trx.offset[i];
-+		i++;
-+	}
-+
-+	if (trx.offset[i]) {
-+		part = &parts[curr_part++];
-+		part->name = parser_trx_data_part_name(mtd, trx.offset[i]);
-+		part->offset = trx.offset[i];
-+		i++;
-+	}
-+
-+	/*
-+	 * Assume that every partition ends at the beginning of the one it is
-+	 * followed by.
-+	 */
-+	for (i = 0; i < curr_part; i++) {
-+		u64 next_part_offset = (i < curr_part - 1) ?
-+				       parts[i + 1].offset : mtd->size;
-+
-+		parts[i].size = next_part_offset - parts[i].offset;
-+	}
-+
-+	*pparts = parts;
-+	return i;
-+};
-+
-+static struct mtd_part_parser mtd_parser_trx = {
-+	.parse_fn = parser_trx_parse,
-+	.name = "trx",
-+};
-+module_mtd_part_parser(mtd_parser_trx);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("Parser for TRX format partitions");
+ /* Default read_page_raw implementation */
+ int nand_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 		       uint8_t *buf, int oob_required, int page);
 -- 
 2.11.0
