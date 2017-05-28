@@ -1,23 +1,20 @@
-Received: from mailsec108.isp.belgacom.be ([195.238.20.104])
+Received: from hauke-m.de ([5.39.93.123] helo=mail.hauke-m.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dEwsF-00044Z-T9
- for linux-mtd@lists.infradead.org; Sun, 28 May 2017 12:00:46 +0000
-Date: Sun, 28 May 2017 14:00:18 +0200 (CEST)
-From: Fabian Frederick <fabf@skynet.be>
-Reply-To: Fabian Frederick <fabf@skynet.be>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: linux-mtd@lists.infradead.org, pvfs2-developers@beowulf-underground.org,
- ocfs2-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
- Alexander Viro <viro@zeniv.linux.org.uk>, ceph-devel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, jfs-discussion@lists.sourceforge.net
-Message-ID: <958803264.435844.1495972818238.open-xchange@webmail.nmp.proximus.be>
-In-Reply-To: <20170528093401.GD14519@infradead.org>
-References: <20170521153947.26281-1-fabf@skynet.be>
- <20170528093401.GD14519@infradead.org>
-Subject: Re: [PATCH 00/11 linux-next] super magic values consolidation
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ id 1dF37Q-0006Bk-2X
+ for linux-mtd@lists.infradead.org; Sun, 28 May 2017 18:40:50 +0000
+From: Hauke Mehrtens <hauke@hauke-m.de>
+To: ralf@linux-mips.org
+Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
+ linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+ martin.blumenstingl@googlemail.com, john@phrozen.org,
+ linux-spi@vger.kernel.org, hauke.mehrtens@intel.com, robh@kernel.org,
+ andy.shevchenko@gmail.com, p.zabel@pengutronix.de,
+ Hauke Mehrtens <hauke@hauke-m.de>
+Subject: [PATCH v3 02/16] mtd: lantiq-flash: drop check of boot select
+Date: Sun, 28 May 2017 20:39:52 +0200
+Message-Id: <20170528184006.31668-3-hauke@hauke-m.de>
+In-Reply-To: <20170528184006.31668-1-hauke@hauke-m.de>
+References: <20170528184006.31668-1-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,19 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Do not check which flash type the SoC was booted from before
+using this driver. Assume that the device tree is correct and use this
+driver when it was added to device tree. This also removes a build
+dependency to the SoC code.
 
+Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+Acked-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/maps/lantiq-flash.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-> On 28 May 2017 at 11:34 Christoph Hellwig <hch@infradead.org> wrote:
->
->
-> On Sun, May 21, 2017 at 05:39:47PM +0200, Fabian Frederick wrote:
-> > This small patchset reorganizes magic.h and fixes filesystems
-> > which defined locally super magic values.
->
-> And what's the point?
-
-Current magic.h organization is strange for the less. Filesystems generally use
-SUPER_MAGIC values from magic.h
-instead of a local definition plus it looks easier for new subsystems to look at
-just one file when
-seeking for unique value.
+diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
+index 3e33ab66eb24..77b1d8013295 100644
+--- a/drivers/mtd/maps/lantiq-flash.c
++++ b/drivers/mtd/maps/lantiq-flash.c
+@@ -114,12 +114,6 @@ ltq_mtd_probe(struct platform_device *pdev)
+ 	struct cfi_private *cfi;
+ 	int err;
+ 
+-	if (of_machine_is_compatible("lantiq,falcon") &&
+-			(ltq_boot_select() != BS_FLASH)) {
+-		dev_err(&pdev->dev, "invalid bootstrap options\n");
+-		return -ENODEV;
+-	}
+-
+ 	ltq_mtd = devm_kzalloc(&pdev->dev, sizeof(struct ltq_mtd), GFP_KERNEL);
+ 	if (!ltq_mtd)
+ 		return -ENOMEM;
+-- 
+2.11.0
