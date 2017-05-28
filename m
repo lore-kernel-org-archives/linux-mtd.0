@@ -1,6 +1,6 @@
 Received: from hauke-m.de ([2001:41d0:8:b27b::1] helo=mail.hauke-m.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dF37n-0006EN-He
+ id 1dF37n-0006Ep-Ha
  for linux-mtd@lists.infradead.org; Sun, 28 May 2017 18:41:13 +0000
 From: Hauke Mehrtens <hauke@hauke-m.de>
 To: ralf@linux-mips.org
@@ -10,10 +10,10 @@ Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
  linux-spi@vger.kernel.org, hauke.mehrtens@intel.com, robh@kernel.org,
  andy.shevchenko@gmail.com, p.zabel@pengutronix.de,
  Hauke Mehrtens <hauke@hauke-m.de>
-Subject: [PATCH v3 05/16] watchdog: lantiq: add device tree binding
- documentation
-Date: Sun, 28 May 2017 20:39:55 +0200
-Message-Id: <20170528184006.31668-6-hauke@hauke-m.de>
+Subject: [PATCH v3 11/16] MIPS: lantiq: remove old reset controller
+ implementation
+Date: Sun, 28 May 2017 20:40:01 +0200
+Message-Id: <20170528184006.31668-12-hauke@hauke-m.de>
 In-Reply-To: <20170528184006.31668-1-hauke@hauke-m.de>
 References: <20170528184006.31668-1-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,47 +25,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The binding was not documented before, add the documentation now.
+This code is now replaced by a reset controller in drivers/reset/reset-
+lantiq-rcu.c. The old code was never used anyway.
 
 Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
 ---
- .../devicetree/bindings/watchdog/lantiq-wdt.txt    | 28 ++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/watchdog/lantiq-wdt.txt
+ arch/mips/lantiq/xway/reset.c | 68 -------------------------------------------
+ 1 file changed, 68 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/watchdog/lantiq-wdt.txt b/Documentation/devicetree/bindings/watchdog/lantiq-wdt.txt
-new file mode 100644
-index 000000000000..675c30e23b65
---- /dev/null
-+++ b/Documentation/devicetree/bindings/watchdog/lantiq-wdt.txt
-@@ -0,0 +1,28 @@
-+Lantiq WTD watchdog binding
-+============================
-+
-+This describes the binding of the Lantiq watchdog driver.
-+
-+-------------------------------------------------------------------------------
-+Required properties:
-+- compatible		: Should be one of
-+				"lantiq,wdt"
-+				"lantiq,wdt-xrx100"
-+				"lantiq,wdt-falcon"
-+
-+Optional properties:
-+- regmap		: A phandle to the RCU syscon
-+- offset-status		: Offset of the reset cause register
-+- mask-status		: Mask of the reset cause register value
-+
-+
-+-------------------------------------------------------------------------------
-+Example for the watchdog on the xRX200 SoCs:
-+		watchdog@803F0 {
-+			compatible = "lantiq,wdt-xrx200", "lantiq,wdt-xrx100";
-+			reg = <0x803F0 0x10>;
-+
-+			regmap = <&rcu0>;
-+			offset-status = <0x14>;
-+			mask-status = <0x80000000>;
-+		};
+diff --git a/arch/mips/lantiq/xway/reset.c b/arch/mips/lantiq/xway/reset.c
+index 2dedcf939901..5cb9309b0047 100644
+--- a/arch/mips/lantiq/xway/reset.c
++++ b/arch/mips/lantiq/xway/reset.c
+@@ -194,74 +194,6 @@ int xrx200_gphy_boot(struct device *dev, unsigned int id, dma_addr_t dev_addr)
+ 	return 0;
+ }
+ 
+-/* reset a io domain for u micro seconds */
+-void ltq_reset_once(unsigned int module, ulong u)
+-{
+-	ltq_rcu_w32(ltq_rcu_r32(RCU_RST_REQ) | module, RCU_RST_REQ);
+-	udelay(u);
+-	ltq_rcu_w32(ltq_rcu_r32(RCU_RST_REQ) & ~module, RCU_RST_REQ);
+-}
+-
+-static int ltq_assert_device(struct reset_controller_dev *rcdev,
+-				unsigned long id)
+-{
+-	u32 val;
+-
+-	if (id < 8)
+-		return -1;
+-
+-	val = ltq_rcu_r32(RCU_RST_REQ);
+-	val |= BIT(id);
+-	ltq_rcu_w32(val, RCU_RST_REQ);
+-
+-	return 0;
+-}
+-
+-static int ltq_deassert_device(struct reset_controller_dev *rcdev,
+-				  unsigned long id)
+-{
+-	u32 val;
+-
+-	if (id < 8)
+-		return -1;
+-
+-	val = ltq_rcu_r32(RCU_RST_REQ);
+-	val &= ~BIT(id);
+-	ltq_rcu_w32(val, RCU_RST_REQ);
+-
+-	return 0;
+-}
+-
+-static int ltq_reset_device(struct reset_controller_dev *rcdev,
+-			       unsigned long id)
+-{
+-	ltq_assert_device(rcdev, id);
+-	return ltq_deassert_device(rcdev, id);
+-}
+-
+-static const struct reset_control_ops reset_ops = {
+-	.reset = ltq_reset_device,
+-	.assert = ltq_assert_device,
+-	.deassert = ltq_deassert_device,
+-};
+-
+-static struct reset_controller_dev reset_dev = {
+-	.ops			= &reset_ops,
+-	.owner			= THIS_MODULE,
+-	.nr_resets		= 32,
+-	.of_reset_n_cells	= 1,
+-};
+-
+-void ltq_rst_init(void)
+-{
+-	reset_dev.of_node = of_find_compatible_node(NULL, NULL,
+-						"lantiq,xway-reset");
+-	if (!reset_dev.of_node)
+-		pr_err("Failed to find reset controller node");
+-	else
+-		reset_controller_register(&reset_dev);
+-}
+-
+ static void ltq_machine_restart(char *command)
+ {
+ 	u32 val = ltq_rcu_r32(RCU_RST_REQ);
 -- 
 2.11.0
