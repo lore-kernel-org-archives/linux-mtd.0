@@ -1,24 +1,24 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dFGeI-00021M-JB
- for linux-mtd@lists.infradead.org; Mon, 29 May 2017 09:07:40 +0000
-Subject: Re: [PATCH] ubifs: Add freeze support
-To: Amir Goldstein <amir73il@gmail.com>, Hyunchul Lee <hyc.lee@gmail.com>
-References: <1495755004-17036-1-git-send-email-hyc.lee@gmail.com>
- <2f3210d7-b0c3-f006-754e-ec4bae26454c@nod.at> <20170529011834.GB10215@sebu>
- <20170529044059.GA12991@sebu>
- <CAOQ4uxgdTnDY2Vpo0S+oyZkFN37GX-G=om3qATwtC1WF1g_NDw@mail.gmail.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- linux-kernel <linux-kernel@vger.kernel.org>, kernel-team@lge.com,
- linux-mtd@lists.infradead.org, linux-fsdevel <linux-fsdevel@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <bca235a8-7e25-8857-1c52-5b872a027eea@nod.at>
-Date: Mon, 29 May 2017 11:00:32 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dFGkL-0004YM-Ql
+ for linux-mtd@lists.infradead.org; Mon, 29 May 2017 09:13:55 +0000
+Date: Mon, 29 May 2017 11:13:19 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: linux-mtd@lists.infradead.org, andrew@lunn.ch,
+ computersforpeace@gmail.com, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ devicetree@vger.kernel.org
+Subject: Re: [PATCH v4 1/5] mtd: mchp23k256: Add OF device ID table
+Message-ID: <20170529111319.1c261582@bbrezillon>
+In-Reply-To: <20170524234916.16181-2-chris.packham@alliedtelesis.co.nz>
+References: <20170524234916.16181-1-chris.packham@alliedtelesis.co.nz>
+ <20170524234916.16181-2-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
-In-Reply-To: <CAOQ4uxgdTnDY2Vpo0S+oyZkFN37GX-G=om3qATwtC1WF1g_NDw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,35 +28,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Amir, Hyunchul,
+On Thu, 25 May 2017 11:49:12 +1200
+Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:
 
-Am 29.05.2017 um 07:40 schrieb Amir Goldstein:
-> On Mon, May 29, 2017 at 7:40 AM, Hyunchul Lee <hyc.lee@gmail.com> wrote:
->>
->> and I missed the following case.
->>
->> in some embedded systems, clean-up for shutdown should be fast.
->> during this clean-up, freeze file system to guarantee integrity.
->> umount with MNT_DETACH is not suitable because of not killing tasks.
-
-more details please, UBIFS is designed to survive a power-cut/reboot/etc.
-at any time. How would it corrupt?
-
-> Interesting point. It seems that good old "sync; reboot" does not cut
-> it anymore.
-> Not even emergency remount read-only sysrq trigger.
+> This allows registering of this device via a Device Tree.
 > 
-> Some of you may have been following this thread on fsdevel:
-> https://www.spinics.net/lists/linux-xfs/msg06953.html
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> Tested-by: Andrew Lunn <andrew@lunn.ch>
+
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
+> ---
+> Changes in v2:
+> - collect review/test from Andrew
+> Changes in v3:
+> - None
+> Changes in v4:
+> - None
 > 
-> Probably less have been following this longer thread on xfs list:
-> https://www.spinics.net/lists/linux-xfs/msg06883.html
-
-Well, UBIFS is a bit different.
-The UBIFS journal is not an add-on feature, you have to replay it in
-any case. Otherwise you're facing corrupted data.
-What simple bootloaders often do is it replaying the journal only to memory
-but don't write back to the MTD.
-
-Thanks,
-//richard
+>  .../devicetree/bindings/mtd/microchip,mchp23k256.txt   | 18 ++++++++++++++++++
+>  drivers/mtd/devices/mchp23k256.c                       |  8 ++++++++
+>  2 files changed, 26 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt b/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt
+> new file mode 100644
+> index 000000000000..25e5ad38b0f0
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt
+> @@ -0,0 +1,18 @@
+> +* MTD SPI driver for Microchip 23K256 (and similar) serial SRAM
+> +
+> +Required properties:
+> +- #address-cells, #size-cells : Must be present if the device has sub-nodes
+> +  representing partitions.
+> +- compatible : Must be "microchip,mchp23k256"
+> +- reg : Chip-Select number
+> +- spi-max-frequency : Maximum frequency of the SPI bus the chip can operate at
+> +
+> +Example:
+> +
+> +	spi-sram@0 {
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		compatible = "microchip,mchp23k256";
+> +		reg = <0>;
+> +		spi-max-frequency = <20000000>;
+> +	};
+> diff --git a/drivers/mtd/devices/mchp23k256.c b/drivers/mtd/devices/mchp23k256.c
+> index e237db9f1bdb..9d8306a15833 100644
+> --- a/drivers/mtd/devices/mchp23k256.c
+> +++ b/drivers/mtd/devices/mchp23k256.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/sizes.h>
+>  #include <linux/spi/flash.h>
+>  #include <linux/spi/spi.h>
+> +#include <linux/of_device.h>
+>  
+>  struct mchp23k256_flash {
+>  	struct spi_device	*spi;
+> @@ -166,9 +167,16 @@ static int mchp23k256_remove(struct spi_device *spi)
+>  	return mtd_device_unregister(&flash->mtd);
+>  }
+>  
+> +static const struct of_device_id mchp23k256_of_table[] = {
+> +	{ .compatible = "microchip,mchp23k256" },
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(of, mchp23k256_of_table);
+> +
+>  static struct spi_driver mchp23k256_driver = {
+>  	.driver = {
+>  		.name	= "mchp23k256",
+> +		.of_match_table = of_match_ptr(mchp23k256_of_table),
+>  	},
+>  	.probe		= mchp23k256_probe,
+>  	.remove		= mchp23k256_remove,
