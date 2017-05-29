@@ -1,26 +1,24 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dFGMR-0000k1-Ke
- for linux-mtd@lists.infradead.org; Mon, 29 May 2017 08:49:13 +0000
-Date: Mon, 29 May 2017 10:48:38 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Darwin Dingel <Darwin.Dingel@alliedtelesis.co.nz>
-Cc: Pavel Machek <pavel@ucw.cz>, "richard@nod.at" <richard@nod.at>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "cyrille.pitchen@atmel.com"
- <cyrille.pitchen@atmel.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "mark.marshall@omicronenergy.com"
- <mark.marshall@omicronenergy.com>, "b44839@freescale.com"
- <b44839@freescale.com>, "prabhakar@freescale.com" <prabhakar@freescale.com>
-Subject: Re: mtd: nand: fsl_ifc: fix handing of bit flips in erased pages
-Message-ID: <20170529104838.48225166@bbrezillon>
-In-Reply-To: <5f665145ea304d3a9e1ecb39c51a951e@svr-chch-ex1.atlnz.lc>
-References: <5f665145ea304d3a9e1ecb39c51a951e@svr-chch-ex1.atlnz.lc>
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dFGeI-00021M-JB
+ for linux-mtd@lists.infradead.org; Mon, 29 May 2017 09:07:40 +0000
+Subject: Re: [PATCH] ubifs: Add freeze support
+To: Amir Goldstein <amir73il@gmail.com>, Hyunchul Lee <hyc.lee@gmail.com>
+References: <1495755004-17036-1-git-send-email-hyc.lee@gmail.com>
+ <2f3210d7-b0c3-f006-754e-ec4bae26454c@nod.at> <20170529011834.GB10215@sebu>
+ <20170529044059.GA12991@sebu>
+ <CAOQ4uxgdTnDY2Vpo0S+oyZkFN37GX-G=om3qATwtC1WF1g_NDw@mail.gmail.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ linux-kernel <linux-kernel@vger.kernel.org>, kernel-team@lge.com,
+ linux-mtd@lists.infradead.org, linux-fsdevel <linux-fsdevel@vger.kernel.org>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <bca235a8-7e25-8857-1c52-5b872a027eea@nod.at>
+Date: Mon, 29 May 2017 11:00:32 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAOQ4uxgdTnDY2Vpo0S+oyZkFN37GX-G=om3qATwtC1WF1g_NDw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,72 +28,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Amir, Hyunchul,
 
-On Thu, 25 May 2017 23:33:43 +0000
-Darwin Dingel <Darwin.Dingel@alliedtelesis.co.nz> wrote:
+Am 29.05.2017 um 07:40 schrieb Amir Goldstein:
+> On Mon, May 29, 2017 at 7:40 AM, Hyunchul Lee <hyc.lee@gmail.com> wrote:
+>>
+>> and I missed the following case.
+>>
+>> in some embedded systems, clean-up for shutdown should be fast.
+>> during this clean-up, freeze file system to guarantee integrity.
+>> umount with MNT_DETACH is not suitable because of not killing tasks.
 
-> Hi,
+more details please, UBIFS is designed to survive a power-cut/reboot/etc.
+at any time. How would it corrupt?
+
+> Interesting point. It seems that good old "sync; reboot" does not cut
+> it anymore.
+> Not even emergency remount read-only sysrq trigger.
 > 
-> We are also having the same problem where the IFC (nand flash) was 
-> reporting ECC uncorrectable errors on single bitflips with erased pages. 
-> Applying this patch with some minor modifications seems to solve our 
-> issue. We are still doing more testing but recent results looks promising.
+> Some of you may have been following this thread on fsdevel:
+> https://www.spinics.net/lists/linux-xfs/msg06953.html
+> 
+> Probably less have been following this longer thread on xfs list:
+> https://www.spinics.net/lists/linux-xfs/msg06883.html
 
-Pavel, can you send a v2 fixing these problems?
+Well, UBIFS is a bit different.
+The UBIFS journal is not an add-on feature, you have to replay it in
+any case. Otherwise you're facing corrupted data.
+What simple bootloaders often do is it replaying the journal only to memory
+but don't write back to the MTD.
 
 Thanks,
-
-Boris
-
-> 
-> Our kernel is 4.4.6 so we have to modify it a bit to fit the old ECC 
-> layout structure. We just have a few comments about the patch:
-> 
->  > -				if (!is_blank(mtd, bufnum))
->  > -					ctrl->nand_stat |=
->  > -						IFC_NAND_EVTER_STAT_ECCER;
->  > -				break;
->  > +				ctrl->nand_stat |= IFC_NAND_EVTER_STAT_ECCER;  
-> 
-> Added 'error = 0' after setting the flag since no error was actually 
-> corrected.
-> 
->  > -	if (ctrl->nand_stat & IFC_NAND_EVTER_STAT_ECCER)
->  > -		dev_err(priv->dev, "NAND Flash ECC Uncorrectable Error\n");
->  > -
->  >  	if (ctrl->nand_stat != IFC_NAND_EVTER_STAT_OPC)
->  >  		mtd->ecc_stats.failed++;
->  > +
->  > +	if (ctrl->nand_stat & IFC_NAND_EVTER_STAT_ECCER) {
->  > +		int res;
->  > +
->  > +		if (!oob_required)
->  > +			fsl_ifc_read_buf(mtd, chip->oob_poi, mtd->oobsize);
->  > +
->  > +		res = check_erased_page(chip, buf);
->  > +		return res;
->  > +	}  
-> 
-> We have to do the check IFC_NAND_EVTER_STAT_ECCER first because the 
-> condition (ctrl->nand_stat != IFC_NAND_EVTER_STAT_OPC) will never be 
-> true since IFC always sets IFC_NAND_EVTER_STAT_ECCER on empty pages. 
-> Incrementing failed stats first before doing check_erased_page() makes 
-> nand_read() report ECC error all time.
-> 
-> Our exact modification was:
-> 	if (ctrl->nand_stat & IFC_NAND_EVTER_STAT_ECCER) {
-> 		if (!oob_required)
-> 			fsl_ifc_read_buf(mtd, chip->oob_poi, mtd->oobsize);
-> 
-> 		return check_erased_page(chip, buf);
-> 	}
-> 
-> 	if (ctrl->nand_stat != IFC_NAND_EVTER_STAT_OPC)
-> 		mtd->ecc_stats.failed++;
-> 
-> Because check_erased_page() will be updating the failed stat anyway.
-> 
-> 
-> Cheers,
-> Darwin
+//richard
