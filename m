@@ -1,8 +1,8 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dFRsp-0005F1-MH
- for linux-mtd@lists.infradead.org; Mon, 29 May 2017 21:07:25 +0000
-Date: Mon, 29 May 2017 23:06:51 +0200
+ id 1dFRy9-00072d-1Q
+ for linux-mtd@lists.infradead.org; Mon, 29 May 2017 21:12:55 +0000
+Date: Mon, 29 May 2017 23:12:20 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Peter Pan <peterpandong@micron.com>
 Cc: <richard@nod.at>, <computersforpeace@gmail.com>,
@@ -10,12 +10,11 @@ Cc: <richard@nod.at>, <computersforpeace@gmail.com>,
  <marex@denx.de>, <cyrille.pitchen@wedev4u.fr>,
  <linux-mtd@lists.infradead.org>, <peterpansjtu@gmail.com>,
  <linshunquan1@hisilicon.com>
-Subject: Re: [PATCH v6 09/15] mtd: nand: make sure mtd_oob_ops consistent in
- bbt
-Message-ID: <20170529230651.41670304@bbrezillon>
-In-Reply-To: <1495609631-18880-10-git-send-email-peterpandong@micron.com>
+Subject: Re: [PATCH v6 08/15] mtd: nand: Add the page iterator concept
+Message-ID: <20170529231220.59767a76@bbrezillon>
+In-Reply-To: <1495609631-18880-9-git-send-email-peterpandong@micron.com>
 References: <1495609631-18880-1-git-send-email-peterpandong@micron.com>
- <1495609631-18880-10-git-send-email-peterpandong@micron.com>
+ <1495609631-18880-9-git-send-email-peterpandong@micron.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,77 +27,137 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 24 May 2017 15:07:05 +0800
+On Wed, 24 May 2017 15:07:04 +0800
 Peter Pan <peterpandong@micron.com> wrote:
 
-> This commit makes sure struct mtd_oob_ops passed to mtd_read/write_ops()
-> is consistent, which means .datbuf = NULL and .len = 0 when not reading
-> page; .oobbuf = NULL and .ooblen = 0 when not reading oob. If no, (ie.
-> ops.datbuf = NULL, while ops.len != 0.), nand_for_each_page() will run
-> forever.
-
-This should be done before making bbt core generic, and this is
-something I can already apply in this release.
-
+> From: Boris Brezillon <boris.brezillon@free-electrons.com>
 > 
+
+Please squash these changes int patch 3.
+
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 > Signed-off-by: Peter Pan <peterpandong@micron.com>
 > ---
->  drivers/mtd/nand/bbt.c | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
+>  include/linux/mtd/nand.h | 93 ++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 93 insertions(+)
 > 
-> diff --git a/drivers/mtd/nand/bbt.c b/drivers/mtd/nand/bbt.c
-> index 56115d5..96d4e14 100644
-> --- a/drivers/mtd/nand/bbt.c
-> +++ b/drivers/mtd/nand/bbt.c
-> @@ -328,7 +328,7 @@ static int scan_read_oob(struct nand_device *this, uint8_t *buf, loff_t offs,
->  			 size_t len)
->  {
->  	struct mtd_info *mtd = nand_to_mtd(this);
-> -	struct mtd_oob_ops ops;
-> +	struct mtd_oob_ops ops = {};
->  	int res, ret = 0;
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 78931ff..479ff9f 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -78,6 +78,24 @@ struct nand_device {
+>  };
 >  
->  	ops.mode = MTD_OPS_PLACE_OOB;
-> @@ -369,11 +369,12 @@ static int scan_write_bbt(struct nand_device *this, loff_t offs, size_t len,
->  			  uint8_t *buf, uint8_t *oob)
->  {
->  	struct mtd_info *mtd = nand_to_mtd(this);
-> -	struct mtd_oob_ops ops;
-> +	struct mtd_oob_ops ops = {};
+>  /**
+> + * struct nand_page_iter - NAND page iterator
+> + * @page: the page
+> + * @pageoffs: the offset within a page
+> + * @dataleft: the left page data to read/write
+> + * @ooboffs: the offset within page oob
+> + * @oobleft: the left oob data to read/write
+> + * @oobbytes_per_page: maximun oob bytes to read/write per page
+> + */
+> +struct nand_page_iter {
+> +	int page;
+> +	int pageoffs;
+> +	size_t dataleft;
+> +	int ooboffs;
+> +	size_t oobleft;
+> +	int oobbytes_per_page;
+> +};
+> +
+> +/**
+>   * mtd_to_nand - Get the NAND device attached to the MTD instance
+>   * @mtd: MTD instance
+>   *
+> @@ -176,6 +194,81 @@ static inline int nand_per_page_oobsize(struct nand_device *nand)
+>  }
 >  
->  	ops.mode = MTD_OPS_PLACE_OOB;
->  	ops.ooboffs = 0;
-> -	ops.ooblen = nand_per_page_oobsize(this);
-> +	/* oob from caller may be NULL */
-> +	ops.ooblen = oob ? nand_per_page_oobsize(this) : 0;
->  	ops.datbuf = buf;
->  	ops.oobbuf = oob;
->  	ops.len = len;
-> @@ -428,13 +429,12 @@ static int scan_block_fast(struct nand_device *this, struct nand_bbt_descr *bd,
->  			   loff_t offs, uint8_t *buf, int numpages)
->  {
->  	struct mtd_info *mtd = nand_to_mtd(this);
-> -	struct mtd_oob_ops ops;
-> +	struct mtd_oob_ops ops = {};
->  	int j, ret;
->  
->  	ops.ooblen = nand_per_page_oobsize(this);
->  	ops.oobbuf = buf;
->  	ops.ooboffs = 0;
-> -	ops.datbuf = NULL;
->  	ops.mode = MTD_OPS_PLACE_OOB;
->  
->  	for (j = 0; j < numpages; j++) {
-> @@ -734,11 +734,10 @@ static int write_bbt(struct nand_device *this, uint8_t *buf,
->  	uint8_t rcode = td->reserved_block_code;
->  	size_t retlen, len = 0;
->  	loff_t to;
-> -	struct mtd_oob_ops ops;
-> +	struct mtd_oob_ops ops = {};
->  
->  	ops.ooblen = nand_per_page_oobsize(this);
->  	ops.ooboffs = 0;
-> -	ops.datbuf = NULL;
->  	ops.mode = MTD_OPS_PLACE_OOB;
->  
->  	if (!rcode)
+>  /**
+> + * nand_page_iter_init - Initialize a NAND page iterator
+> + * @nand: NAND device
+> + * @offs: absolute offset
+> + * @len: page data length to read/write
+> + * @ooboffs: oob offset within page
+> + * @ooblen: oob data length to read/write
+> + * @oobbytes_per_page: oob data can read/write per page
+> + * @iter: page iterator
+> + */
+> +static inline void nand_page_iter_init(struct nand_device *nand,
+> +				       loff_t offs, size_t len, u32 ooboffs,
+> +				       size_t ooblen, u32 oobbytes_per_page,
+> +				       struct nand_page_iter *iter)
+> +{
+> +	u64 page = offs;
+> +
+> +	iter->pageoffs = do_div(page, nand->memorg.pagesize);
+> +	iter->page = page;
+> +	iter->dataleft = len;
+> +	iter->ooboffs = ooboffs;
+> +	iter->oobleft = ooblen;
+> +	iter->oobbytes_per_page = oobbytes_per_page;
+> +}
+> +
+> +/**
+> + * nand_page_iter_next - Move to the next page
+> + * @nand: NAND device
+> + * @iter: page iterator
+> + */
+> +static inline void nand_page_iter_next(struct nand_device *nand,
+> +				       struct nand_page_iter *iter)
+> +{
+> +	iter->page++;
+> +	iter->pageoffs = 0;
+
+Blank line.
+
+> +	if (iter->dataleft)
+> +		iter->dataleft -= min_t (int,
+> +					 nand_page_size(nand) - iter->pageoffs,
+> +					 iter->dataleft);
+
+Ditto.
+
+> +	if (iter->oobleft)
+> +		iter->oobleft -= min_t(int,
+> +				       iter->oobbytes_per_page - iter->ooboffs,
+> +				       iter->oobleft);
+> +}
+> +
+> +/**
+> + * nand_page_iter_end - Should end iteration or not
+> + * @nand: NAND device
+> + * @iter: page iterator
+> + */
+> +static inline bool nand_page_iter_end(struct nand_device *nand,
+> +				      struct nand_page_iter *iter)
+> +{
+> +	if (iter->dataleft || iter->oobleft)
+> +		return false;
+
+Ditto.
+
+> +	return true;
+> +}
+> +
+> +/**
+> + * nand_for_each_page - Iterate nand pages
+> + * @nand: NAND device
+> + * @start: start address to read/write
+> + * @len: page data length to read/write
+> + * @ooboffs: oob offset within page
+> + * @ooblen: oob data length to read/write
+> + * @oobbytes_per_page: oob data can read/write per page
+> + * @iter: page iterator
+> + */
+> +#define nand_for_each_page(nand, start, len, ooboffs, ooblen,	\
+> +			   oobbytes_per_page, iter)	\
+> +	for (nand_page_iter_init(nand, start, len, ooboffs, ooblen,	\
+> +				 oobbytes_per_page, iter);	\
+> +	     !nand_page_iter_end(nand, iter);		\
+> +	     nand_page_iter_next(nand, iter))
+> +
+> +/**
+>   * nand_per_page_oobsize - Get NAND erase block size
+>   * @nand: NAND device
+>   *
