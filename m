@@ -1,30 +1,23 @@
-Received: from mail-oi0-x244.google.com ([2607:f8b0:4003:c06::244])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dFJ6n-0003T5-Vy
- for linux-mtd@lists.infradead.org; Mon, 29 May 2017 11:45:15 +0000
-Received: by mail-oi0-x244.google.com with SMTP id v80so11059874oie.2
- for <linux-mtd@lists.infradead.org>; Mon, 29 May 2017 04:44:53 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <b81dcdea-19d8-be73-057d-7059cf5fb3ab@nod.at>
-References: <1495755004-17036-1-git-send-email-hyc.lee@gmail.com>
- <2f3210d7-b0c3-f006-754e-ec4bae26454c@nod.at> <20170529011834.GB10215@sebu>
- <20170529044059.GA12991@sebu>
- <CAOQ4uxgdTnDY2Vpo0S+oyZkFN37GX-G=om3qATwtC1WF1g_NDw@mail.gmail.com>
- <bca235a8-7e25-8857-1c52-5b872a027eea@nod.at>
- <CAOQ4uxiYxdfTgrPo-ej7mS4ShAm2d4bU4v8y63Ej+c1kKXEMow@mail.gmail.com>
- <b81dcdea-19d8-be73-057d-7059cf5fb3ab@nod.at>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Mon, 29 May 2017 14:44:52 +0300
-Message-ID: <CAOQ4uxiSJ1+LjMTpHsrk3ED3=7DMRFmKafGiMXC=EwewK3M8Mw@mail.gmail.com>
-Subject: Re: [PATCH] ubifs: Add freeze support
-To: Richard Weinberger <richard@nod.at>
-Cc: Hyunchul Lee <hyc.lee@gmail.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- kernel-team@lge.com, linux-mtd@lists.infradead.org,
+ id 1dFJCL-0006dl-Qp
+ for linux-mtd@lists.infradead.org; Mon, 29 May 2017 11:51:00 +0000
+Subject: Setting ->s_dev to a char device (Was: Re: [PATCH v2] ubifs: allow
+ userspace to map mounts to volumes)
+To: Rabin Vincent <rabin.vincent@axis.com>, dedekind1@gmail.com,
+ adrian.hunter@intel.com
+References: <1496042533-17024-1-git-send-email-rabin.vincent@axis.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Rabin Vincent <rabinv@axis.com>,
  linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- "Darrick J. Wong" <darrick.wong@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+ Christoph Hellwig <hch@infradead.org>, Al Viro <viro@zeniv.linux.org.uk>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <6737a526-18ba-6d8c-f6c8-03f03d74b90a@nod.at>
+Date: Mon, 29 May 2017 13:50:30 +0200
+MIME-Version: 1.0
+In-Reply-To: <1496042533-17024-1-git-send-email-rabin.vincent@axis.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,47 +27,317 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, May 29, 2017 at 1:17 PM, Richard Weinberger <richard@nod.at> wrote:
-> Amir,
->
-> Am 29.05.2017 um 12:04 schrieb Amir Goldstein:
->>> Well, UBIFS is a bit different.
->>> The UBIFS journal is not an add-on feature, you have to replay it in
->>> any case. Otherwise you're facing corrupted data.
->>
->> Yes, I suppose you are right.
->> I guess there is no equivalent of mount -oro,{norecovery,noload} for
->> ubifs.
->
-> Correct.
->
->> I don't know the ubifs journal implementation details.
->> Can ubifs_run_commit() when writers are frozen contribute to
->> shorter journal replay time after boot with some workloads?
->
-> If the journal is empty then mounting will be faster, yes.
-> But I'm still interested in Hyunchul's use-case/problem.
+CC'ing VFS folks
 
-Makes sense.
+Am 29.05.2017 um 09:22 schrieb Rabin Vincent:
+> From: Rabin Vincent <rabinv@axis.com>
+> 
+> There currently appears to be no way for userspace to find out the
+> underlying volume number for a mounted ubifs file system, since ubifs
+> uses anonymous block devices.  The volume name is present in
+> /proc/mounts but UBI volumes can be renamed after the volume has been
+> mounted.
+> 
+> To remedy this, provide a directory in /sys/fs/ubifs named after the
+> underlying anonymous block device's number (obtainable by userspace via
+> stat(2)) and provide a link named "ubi" to the underlying UBI volume.
 
-> Usually you run UBIFS in an embedded environment where you simple
-> never shutdown or reboot in a clean way. The power supply just
-> cut off.
->
-> On the other hand, if you want an empty journal for a faster mount,
-> just make sure that you umount upon shutdown.
+I wonder whether it would make more sense to just assign the character device
+number of the UBI volume to ->s_dev.
+Then userspace can query the underlying device without additional sysfs
+magic.
 
-So you see, unmount upon shutdown is not always an option
-when you are in a system where not all tasks are killed before
-attempting to unmount (or even attempting to remounr,ro).
-This is what Darrick's patch was all about.
+Sure if userspace expects a block number from UBIFS it will get confused.
 
-Maybe there is no such embedded system...
-With the numbers of different embedded systems going to infinity,
-the probability of no "such embedded system" is unlikely.
+Comments?
 
-FIFREEZE gives a privileged process the ability to checkpoint the
-journal (e.g. for shorter mount time) and reboot without having to
-kill all other processes in the system first.
+>  # mount | head -1
+>  ubi0:rootfs on / type ubifs (rw,relatime)
+>  # ubirename /dev/ubi0 rootfs foo
+>  # mount | head -1
+>  ubi0:rootfs on / type ubifs (rw,relatime)
+>  # stat /
+>    File: /
+>    Size: 1520      	Blocks: 0          IO Block: 4096   directory
+>  Device: dh/13d	Inode: 1           Links: 18
+>  ...
+>  # ls -l /sys/fs/ubifs/
+>  drwxr-xr-x    2 root     root             0 May 23 09:57 0:13
+>  drwxr-xr-x    2 root     root             0 May 23 09:57 0:17
+>  # ls -l /sys/fs/ubifs/0\:13/
+>  lrwxrwxrwx    1 root     root             0 May 23 11:45 ubi
+>    -> ../../../devices/virtual/ubi/ubi0/ubi0_10
+> 
+> Signed-off-by: Rabin Vincent <rabinv@axis.com>
+> ---
+> v2: export symbol to fix module build
+> 
+>  Documentation/ABI/testing/sysfs-fs-ubifs |  6 +++
+>  drivers/mtd/ubi/kapi.c                   | 13 +++++++
+>  fs/ubifs/Makefile                        |  2 +-
+>  fs/ubifs/super.c                         | 16 +++++++-
+>  fs/ubifs/sysfs.c                         | 66 ++++++++++++++++++++++++++++++++
+>  fs/ubifs/sysfs.h                         | 11 ++++++
+>  fs/ubifs/ubifs.h                         |  7 ++++
+>  include/linux/mtd/ubi.h                  |  3 ++
+>  8 files changed, 122 insertions(+), 2 deletions(-)
+>  create mode 100644 Documentation/ABI/testing/sysfs-fs-ubifs
+>  create mode 100644 fs/ubifs/sysfs.c
+>  create mode 100644 fs/ubifs/sysfs.h
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-fs-ubifs b/Documentation/ABI/testing/sysfs-fs-ubifs
+> new file mode 100644
+> index 0000000..1735859
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-fs-ubifs
+> @@ -0,0 +1,6 @@
+> +What:		/sys/fs/ubifs/<disk>/ubi
+> +Date:		May 2017
+> +Description:
+> +		This symbolic link points to the file system's underlying UBI
+> +		volume.  The <disk> is the major:minor numbers of the anonymous
+> +		block device backing the file system.
+> diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
+> index d4b2e87..395dae6 100644
+> --- a/drivers/mtd/ubi/kapi.c
+> +++ b/drivers/mtd/ubi/kapi.c
+> @@ -107,6 +107,19 @@ void ubi_get_volume_info(struct ubi_volume_desc *desc,
+>  EXPORT_SYMBOL_GPL(ubi_get_volume_info);
+>  
+>  /**
+> + * ubi_volume_kobject - get kobject for a UBI volume.
+> + * @desc: volume descriptor
+> + *
+> + * Retrieves a pointer to the struct kobject underlying the UBI volume.
+> + * The caller must hold a reference to the UBI volume.
+> + */
+> +struct kobject *ubi_volume_kobj(struct ubi_volume_desc *desc)
+> +{
+> +	return &desc->vol->dev.kobj;
+> +}
+> +EXPORT_SYMBOL_GPL(ubi_volume_kobj);
+> +
+> +/**
+>   * ubi_open_volume - open UBI volume.
+>   * @ubi_num: UBI device number
+>   * @vol_id: volume ID
+> diff --git a/fs/ubifs/Makefile b/fs/ubifs/Makefile
+> index 6f3251c..7bf4689 100644
+> --- a/fs/ubifs/Makefile
+> +++ b/fs/ubifs/Makefile
+> @@ -4,5 +4,5 @@ ubifs-y += shrinker.o journal.o file.o dir.o super.o sb.o io.o
+>  ubifs-y += tnc.o master.o scan.o replay.o log.o commit.o gc.o orphan.o
+>  ubifs-y += budget.o find.o tnc_commit.o compress.o lpt.o lprops.o
+>  ubifs-y += recovery.o ioctl.o lpt_commit.o tnc_misc.o xattr.o debug.o
+> -ubifs-y += misc.o
+> +ubifs-y += sysfs.o misc.o
+>  ubifs-$(CONFIG_UBIFS_FS_ENCRYPTION) += crypto.o
+> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+> index cf4cc99..fdcfefe 100644
+> --- a/fs/ubifs/super.c
+> +++ b/fs/ubifs/super.c
+> @@ -1164,6 +1164,10 @@ static int mount_ubifs(struct ubifs_info *c)
+>  	if (err)
+>  		return err;
+>  
+> +	err = ubifs_sysfs_register(c);
+> +	if (err)
+> +		goto out_debugging;
+> +
+>  	err = check_volume_empty(c);
+>  	if (err)
+>  		goto out_free;
+> @@ -1496,6 +1500,8 @@ static int mount_ubifs(struct ubifs_info *c)
+>  	vfree(c->ileb_buf);
+>  	vfree(c->sbuf);
+>  	kfree(c->bottom_up_buf);
+> +	ubifs_sysfs_unregister(c);
+> +out_debugging:
+>  	ubifs_debugging_exit(c);
+>  	return err;
+>  }
+> @@ -1536,6 +1542,7 @@ static void ubifs_umount(struct ubifs_info *c)
+>  	vfree(c->sbuf);
+>  	kfree(c->bottom_up_buf);
+>  	ubifs_debugging_exit(c);
+> +	ubifs_sysfs_unregister(c);
+>  }
+>  
+>  /**
+> @@ -2271,14 +2278,20 @@ static int __init ubifs_init(void)
+>  	if (err)
+>  		goto out_compr;
+>  
+> +	err = ubifs_sysfs_init();
+> +	if (err)
+> +		goto out_dbg;
+> +
+>  	err = register_filesystem(&ubifs_fs_type);
+>  	if (err) {
+>  		pr_err("UBIFS error (pid %d): cannot register file system, error %d",
+>  		       current->pid, err);
+> -		goto out_dbg;
+> +		goto out_sysfs;
+>  	}
+>  	return 0;
+>  
+> +out_sysfs:
+> +	ubifs_sysfs_exit();
+>  out_dbg:
+>  	dbg_debugfs_exit();
+>  out_compr:
+> @@ -2308,6 +2321,7 @@ static void __exit ubifs_exit(void)
+>  	rcu_barrier();
+>  	kmem_cache_destroy(ubifs_inode_slab);
+>  	unregister_filesystem(&ubifs_fs_type);
+> +	ubifs_sysfs_exit();
+>  }
+>  module_exit(ubifs_exit);
+>  
+> diff --git a/fs/ubifs/sysfs.c b/fs/ubifs/sysfs.c
+> new file mode 100644
+> index 0000000..8f2cba1
+> --- /dev/null
+> +++ b/fs/ubifs/sysfs.c
+> @@ -0,0 +1,66 @@
+> +#include <linux/fs.h>
+> +
+> +#include "ubifs.h"
+> +
+> +static struct kset *ubifs_kset;
+> +
+> +static void ubifs_sb_release(struct kobject *kobj)
+> +{
+> +	struct ubifs_info *c = container_of(kobj, struct ubifs_info, kobj);
+> +
+> +	complete(&c->kobj_unregister);
+> +}
+> +
+> +static struct kobj_type ubifs_sb_ktype = {
+> +	.sysfs_ops	= &kobj_sysfs_ops,
+> +	.release	= ubifs_sb_release,
+> +};
+> +
+> +int ubifs_sysfs_register(struct ubifs_info *c)
+> +{
+> +	dev_t devt = c->vfs_sb->s_dev;
+> +	int ret;
+> +
+> +	c->kobj.kset = ubifs_kset;
+> +	init_completion(&c->kobj_unregister);
+> +
+> +	ret = kobject_init_and_add(&c->kobj, &ubifs_sb_ktype, NULL,
+> +				   "%u:%u", MAJOR(devt), MINOR(devt));
+> +	if (ret)
+> +		goto out_put;
+> +
+> +	ret = sysfs_create_link(&c->kobj, ubi_volume_kobj(c->ubi), "ubi");
+> +	if (ret)
+> +		goto out_del;
+> +
+> +	return 0;
+> +
+> +out_del:
+> +	kobject_del(&c->kobj);
+> +out_put:
+> +	kobject_put(&c->kobj);
+> +	wait_for_completion(&c->kobj_unregister);
+> +	return ret;
+> +}
+> +
+> +void ubifs_sysfs_unregister(struct ubifs_info *c)
+> +{
+> +	sysfs_remove_link(&c->kobj, "ubi");
+> +	kobject_del(&c->kobj);
+> +	kobject_put(&c->kobj);
+> +	wait_for_completion(&c->kobj_unregister);
+> +}
+> +
+> +int __init ubifs_sysfs_init(void)
+> +{
+> +	ubifs_kset = kset_create_and_add("ubifs", NULL, fs_kobj);
+> +	if (!ubifs_kset)
+> +		return -ENOMEM;
+> +
+> +	return 0;
+> +}
+> +
+> +void ubifs_sysfs_exit(void)
+> +{
+> +	kset_unregister(ubifs_kset);
+> +}
+> diff --git a/fs/ubifs/sysfs.h b/fs/ubifs/sysfs.h
+> new file mode 100644
+> index 0000000..4b7e70b
+> --- /dev/null
+> +++ b/fs/ubifs/sysfs.h
+> @@ -0,0 +1,11 @@
+> +#ifndef __UBIFS_SYSFS_H__
+> +#define __UBIFS_SYSFS_H__
+> +
+> +struct ubifs_info;
+> +
+> +int ubifs_sysfs_init(void);
+> +void ubifs_sysfs_exit(void);
+> +int ubifs_sysfs_register(struct ubifs_info *c);
+> +void ubifs_sysfs_unregister(struct ubifs_info *c);
+> +
+> +#endif
+> diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+> index 298b4d8..3a3154f 100644
+> --- a/fs/ubifs/ubifs.h
+> +++ b/fs/ubifs/ubifs.h
+> @@ -43,7 +43,10 @@
+>  #else
+>  #include <linux/fscrypt_notsupp.h>
+>  #endif
+> +#include <linux/sysfs.h>
+> +#include <linux/completion.h>
+>  #include <linux/random.h>
+> +#include "sysfs.h"
+>  #include "ubifs-media.h"
+>  
+>  /* Version of this UBIFS implementation */
+> @@ -1216,6 +1219,8 @@ struct ubifs_debug_info;
+>   * @mount_opts: UBIFS-specific mount options
+>   *
+>   * @dbg: debugging-related information
+> + * @kobj: kobject for /sys/fs/ubifs/
+> + * @kobj_unregister: completion to unregister sysfs kobject
+>   */
+>  struct ubifs_info {
+>  	struct super_block *vfs_sb;
+> @@ -1446,6 +1451,8 @@ struct ubifs_info {
+>  	struct ubifs_mount_opts mount_opts;
+>  
+>  	struct ubifs_debug_info *dbg;
+> +	struct kobject kobj;
+> +	struct completion kobj_unregister;
+>  };
+>  
+>  extern struct list_head ubifs_infos;
+> diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
+> index 1e271cb..d35e84f 100644
+> --- a/include/linux/mtd/ubi.h
+> +++ b/include/linux/mtd/ubi.h
+> @@ -26,6 +26,8 @@
+>  #include <linux/scatterlist.h>
+>  #include <mtd/ubi-user.h>
+>  
+> +struct kobject;
+> +
+>  /* All voumes/LEBs */
+>  #define UBI_ALL -1
+>  
+> @@ -241,6 +243,7 @@ struct ubi_volume_desc *ubi_open_volume(int ubi_num, int vol_id, int mode);
+>  struct ubi_volume_desc *ubi_open_volume_nm(int ubi_num, const char *name,
+>  					   int mode);
+>  struct ubi_volume_desc *ubi_open_volume_path(const char *pathname, int mode);
+> +struct kobject *ubi_volume_kobj(struct ubi_volume_desc *desc);
+>  
+>  int ubi_register_volume_notifier(struct notifier_block *nb,
+>  				 int ignore_existing);
+> 
 
-Amir.
+Thanks,
+//richard
