@@ -1,21 +1,19 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dFGkL-0004YM-Ql
- for linux-mtd@lists.infradead.org; Mon, 29 May 2017 09:13:55 +0000
-Date: Mon, 29 May 2017 11:13:19 +0200
+ id 1dFGkT-0004bB-3t
+ for linux-mtd@lists.infradead.org; Mon, 29 May 2017 09:14:04 +0000
+Date: Mon, 29 May 2017 11:13:34 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Chris Packham <chris.packham@alliedtelesis.co.nz>
 Cc: linux-mtd@lists.infradead.org, andrew@lunn.ch,
  computersforpeace@gmail.com, dwmw2@infradead.org,
  linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 1/5] mtd: mchp23k256: Add OF device ID table
-Message-ID: <20170529111319.1c261582@bbrezillon>
-In-Reply-To: <20170524234916.16181-2-chris.packham@alliedtelesis.co.nz>
+ Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Subject: Re: [PATCH v4 2/5] mtd: mchp23k256: switch to mtd_device_register()
+Message-ID: <20170529111334.00cb8fbe@bbrezillon>
+In-Reply-To: <20170524234916.16181-3-chris.packham@alliedtelesis.co.nz>
 References: <20170524234916.16181-1-chris.packham@alliedtelesis.co.nz>
- <20170524234916.16181-2-chris.packham@alliedtelesis.co.nz>
+ <20170524234916.16181-3-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,10 +26,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 25 May 2017 11:49:12 +1200
+On Thu, 25 May 2017 11:49:13 +1200
 Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:
 
-> This allows registering of this device via a Device Tree.
+> Use mtd_device_register() instead of mtd_device_parse_register() to
+> eliminate two unused parameters.
 > 
 > Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
@@ -40,68 +39,29 @@ Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:
 Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
 > ---
-> Changes in v2:
+> Changes in v2
 > - collect review/test from Andrew
 > Changes in v3:
 > - None
 > Changes in v4:
 > - None
 > 
->  .../devicetree/bindings/mtd/microchip,mchp23k256.txt   | 18 ++++++++++++++++++
->  drivers/mtd/devices/mchp23k256.c                       |  8 ++++++++
->  2 files changed, 26 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt
+>  drivers/mtd/devices/mchp23k256.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt b/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt
-> new file mode 100644
-> index 000000000000..25e5ad38b0f0
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/microchip,mchp23k256.txt
-> @@ -0,0 +1,18 @@
-> +* MTD SPI driver for Microchip 23K256 (and similar) serial SRAM
-> +
-> +Required properties:
-> +- #address-cells, #size-cells : Must be present if the device has sub-nodes
-> +  representing partitions.
-> +- compatible : Must be "microchip,mchp23k256"
-> +- reg : Chip-Select number
-> +- spi-max-frequency : Maximum frequency of the SPI bus the chip can operate at
-> +
-> +Example:
-> +
-> +	spi-sram@0 {
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		compatible = "microchip,mchp23k256";
-> +		reg = <0>;
-> +		spi-max-frequency = <20000000>;
-> +	};
 > diff --git a/drivers/mtd/devices/mchp23k256.c b/drivers/mtd/devices/mchp23k256.c
-> index e237db9f1bdb..9d8306a15833 100644
+> index 9d8306a15833..2542f5b8b63f 100644
 > --- a/drivers/mtd/devices/mchp23k256.c
 > +++ b/drivers/mtd/devices/mchp23k256.c
-> @@ -19,6 +19,7 @@
->  #include <linux/sizes.h>
->  #include <linux/spi/flash.h>
->  #include <linux/spi/spi.h>
-> +#include <linux/of_device.h>
+> @@ -151,9 +151,8 @@ static int mchp23k256_probe(struct spi_device *spi)
+>  	flash->mtd._read	= mchp23k256_read;
+>  	flash->mtd._write	= mchp23k256_write;
 >  
->  struct mchp23k256_flash {
->  	struct spi_device	*spi;
-> @@ -166,9 +167,16 @@ static int mchp23k256_remove(struct spi_device *spi)
->  	return mtd_device_unregister(&flash->mtd);
->  }
+> -	err = mtd_device_parse_register(&flash->mtd, NULL, NULL,
+> -					data ? data->parts : NULL,
+> -					data ? data->nr_parts : 0);
+> +	err = mtd_device_register(&flash->mtd, data ? data->parts : NULL,
+> +				  data ? data->nr_parts : 0);
+>  	if (err)
+>  		return err;
 >  
-> +static const struct of_device_id mchp23k256_of_table[] = {
-> +	{ .compatible = "microchip,mchp23k256" },
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(of, mchp23k256_of_table);
-> +
->  static struct spi_driver mchp23k256_driver = {
->  	.driver = {
->  		.name	= "mchp23k256",
-> +		.of_match_table = of_match_ptr(mchp23k256_of_table),
->  	},
->  	.probe		= mchp23k256_probe,
->  	.remove		= mchp23k256_remove,
