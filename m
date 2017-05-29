@@ -1,18 +1,20 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dFPbO-0000lc-Su
- for linux-mtd@lists.infradead.org; Mon, 29 May 2017 18:41:16 +0000
-Date: Mon, 29 May 2017 20:40:49 +0200
+ id 1dFPkp-0003tZ-3i
+ for linux-mtd@lists.infradead.org; Mon, 29 May 2017 18:51:00 +0000
+Date: Mon, 29 May 2017 20:50:37 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: nand: check ecc->total sanity in nand_scan_tail
-Message-ID: <20170529204049.25cb8c30@bbrezillon>
-In-Reply-To: <1495687820-30692-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1495687820-30692-1-git-send-email-yamada.masahiro@socionext.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Brian Norris <computersforpeace@gmail.com>, David
+ Woodhouse <dwmw2@infradead.org>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>
+Subject: Re: [PATCH] mtd: nand: Support 'EXIT GET STATUS' command in
+ nand_command_lp()
+Message-ID: <20170529205037.7a3f7cb2@bbrezillon>
+In-Reply-To: <1494952545-5089-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1494952545-5089-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,50 +27,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 25 May 2017 13:50:20 +0900
-Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+On Tue, 16 May 2017 18:35:45 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-> Drivers are supposed to set correct ecc->{size,strength,bytes} before
-> calling nand_scan_tail(), but it does not complain about ecc->total
-> bigger than oobsize.
+> READ0 is sometimes used to exit GET STATUS mode. When this is the case
+> no address cycles are requested, and we can use this information to
+> detect that READSTART should not be issued after READ0 or that we
+> shouldn't wait for the chip to be ready.
 > 
-> In this case, chip->scan_bbt() crashes due to memory corruption, but
-> it is hard to debug.  It would be kind to fail it earlier with a clear
-> message.
-> 
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-
 
 Applied to nand/next.
 
-Thanks,
-
-Boris
-
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 > ---
-> 
-> I was actually hit by this case.
-> 
-> I wasted half a day until I figured out my coding mistake in my
-> Denali driver.  It will be helpful to check this in NAND core.
-> 
-> 
->  drivers/mtd/nand/nand_base.c | 5 +++++
->  1 file changed, 5 insertions(+)
+>  drivers/mtd/nand/nand_base.c | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
 > 
 > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index f4d686192717..14d6a5aa3ee8 100644
+> index 08ff98c47e1f..fe87bd3513fa 100644
 > --- a/drivers/mtd/nand/nand_base.c
 > +++ b/drivers/mtd/nand/nand_base.c
-> @@ -4970,6 +4970,11 @@ int nand_scan_tail(struct mtd_info *mtd)
->  		goto err_free;
->  	}
->  	ecc->total = ecc->steps * ecc->bytes;
-> +	if (ecc->total > mtd->oobsize) {
-> +		WARN(1, "Total number of ECC bytes exceeded oobsize\n");
-> +		ret = -EINVAL;
-> +		goto err_free;
-> +	}
+> @@ -753,6 +753,16 @@ static void nand_command(struct mtd_info *mtd, unsigned int command,
+>  		return;
 >  
->  	/*
->  	 * The number of bytes available for a client to place data into
+>  		/* This applies to read commands */
+> +	case NAND_CMD_READ0:
+> +		/*
+> +		 * READ0 is sometimes used to exit GET STATUS mode. When this
+> +		 * is the case no address cycles are requested, and we can use
+> +		 * this information to detect that we should not wait for the
+> +		 * device to be ready.
+> +		 */
+> +		if (column == -1 && page_addr == -1)
+> +			return;
+> +
+>  	default:
+>  		/*
+>  		 * If we don't have access to the busy pin, we apply the given
+> @@ -887,6 +897,15 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
+>  		return;
+>  
+>  	case NAND_CMD_READ0:
+> +		/*
+> +		 * READ0 is sometimes used to exit GET STATUS mode. When this
+> +		 * is the case no address cycles are requested, and we can use
+> +		 * this information to detect that READSTART should not be
+> +		 * issued.
+> +		 */
+> +		if (column == -1 && page_addr == -1)
+> +			return;
+> +
+>  		chip->cmd_ctrl(mtd, NAND_CMD_READSTART,
+>  			       NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
+>  		chip->cmd_ctrl(mtd, NAND_CMD_NONE,
