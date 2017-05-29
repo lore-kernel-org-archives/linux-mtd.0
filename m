@@ -1,26 +1,24 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dFHjq-0006l8-H6
- for linux-mtd@lists.infradead.org; Mon, 29 May 2017 10:17:28 +0000
-Subject: Re: [PATCH] ubifs: Add freeze support
-To: Amir Goldstein <amir73il@gmail.com>
-References: <1495755004-17036-1-git-send-email-hyc.lee@gmail.com>
- <2f3210d7-b0c3-f006-754e-ec4bae26454c@nod.at> <20170529011834.GB10215@sebu>
- <20170529044059.GA12991@sebu>
- <CAOQ4uxgdTnDY2Vpo0S+oyZkFN37GX-G=om3qATwtC1WF1g_NDw@mail.gmail.com>
- <bca235a8-7e25-8857-1c52-5b872a027eea@nod.at>
- <CAOQ4uxiYxdfTgrPo-ej7mS4ShAm2d4bU4v8y63Ej+c1kKXEMow@mail.gmail.com>
-Cc: Hyunchul Lee <hyc.lee@gmail.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- linux-kernel <linux-kernel@vger.kernel.org>, kernel-team@lge.com,
- linux-mtd@lists.infradead.org, linux-fsdevel <linux-fsdevel@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <b81dcdea-19d8-be73-057d-7059cf5fb3ab@nod.at>
-Date: Mon, 29 May 2017 12:17:00 +0200
-MIME-Version: 1.0
-In-Reply-To: <CAOQ4uxiYxdfTgrPo-ej7mS4ShAm2d4bU4v8y63Ej+c1kKXEMow@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+ id 1dFHn1-0008LA-2M
+ for linux-mtd@lists.infradead.org; Mon, 29 May 2017 10:20:44 +0000
+Message-ID: <1496053214.17695.49.camel@pengutronix.de>
+Subject: Re: [PATCH v3 10/16] reset: Add a reset controller driver for the
+ Lantiq XWAY based SoCs
+From: Philipp Zabel <p.zabel@pengutronix.de>
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Cc: ralf@linux-mips.org, linux-mips@linux-mips.org,
+ linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
+ devicetree@vger.kernel.org, martin.blumenstingl@googlemail.com,
+ john@phrozen.org,  linux-spi@vger.kernel.org, hauke.mehrtens@intel.com,
+ robh@kernel.org,  andy.shevchenko@gmail.com
+Date: Mon, 29 May 2017 12:20:14 +0200
+In-Reply-To: <20170528184006.31668-11-hauke@hauke-m.de>
+References: <20170528184006.31668-1-hauke@hauke-m.de>
+ <20170528184006.31668-11-hauke@hauke-m.de>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,47 +28,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Amir,
+Hi Hauke,
 
-Am 29.05.2017 um 12:04 schrieb Amir Goldstein:
->> Well, UBIFS is a bit different.
->> The UBIFS journal is not an add-on feature, you have to replay it in
->> any case. Otherwise you're facing corrupted data.
-> 
-> Yes, I suppose you are right.
-> I guess there is no equivalent of mount -oro,{norecovery,noload} for
-> ubifs.
+On Sun, 2017-05-28 at 20:40 +0200, Hauke Mehrtens wrote:
+[...]
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/reset/lantiq,reset.txt
+> @@ -0,0 +1,30 @@
+> +Lantiq XWAY SoC RCU reset controller binding
+> +============================================
+> +
+> +This binding describes a reset-controller found on the RCU module on Lantiq
+> +XWAY SoCs.
+> +
+> +
+> +-------------------------------------------------------------------------------
+> +Required properties:
+> +- compatible		: Should be one of
+> +				"lantiq,reset-danube"
+> +				"lantiq,reset-xrx200"
+> +- regmap		: A phandle to the RCU syscon
+> +- offset-set		: Offset of the reset set register
+> +- offset-status		: Offset of the reset status register
+> +- #reset-cells		: Specifies the number of cells needed to encode the
+> +			  reset line, should be 2.
+> +			  The first cell takes the reset set bit and the
+> +			  second cell takes the status bit.
+> +
+> +-------------------------------------------------------------------------------
+> +Example for the reset-controllers on the xRX200 SoCs:
+> +	reset0: reset-controller@0 {
+> +		compatible = "lantiq,reset-xrx200";
+> +
+> +		regmap = <&rcu0>;
 
-Correct.
+Why not place these nodes as children of &rcu0 ? This property would be
+superfluous then.
 
-> I don't know the ubifs journal implementation details.
-> Can ubifs_run_commit() when writers are frozen contribute to
-> shorter journal replay time after boot with some workloads?
+> +		offset-set = <0x10>;
+> +		offset-status = <0x14>;
+> +		#reset-cells = <2>;
+> +	};
+[...]
+> --- /dev/null
+> +++ b/drivers/reset/reset-lantiq.c
+> @@ -0,0 +1,205 @@
+[...]
+> +static int lantiq_rcu_reset_update(struct reset_controller_dev *rcdev,
+> +				   unsigned long id, bool assert)
+> +{
+> +	struct lantiq_rcu_reset_priv *priv = to_lantiq_rcu_reset_priv(rcdev);
+> +	int ret, retry = LANTIQ_RCU_RESET_TIMEOUT;
+> +	unsigned int set = id & 0x1f;
+> +	u32 val;
+> +
+> +	if (assert)
+> +		val = BIT(set);
+> +	else
+> +		val = 0;
+> +
+> +	ret = regmap_update_bits(priv->regmap, priv->reset_offset, BIT(set),
+> +				 val);
+> +	if (ret) {
+> +		dev_err(priv->dev, "Failed to set reset bit %u\n", set);
+> +		return ret;
+> +	}
+> +
+> +	do {
+> +		ret = lantiq_rcu_reset_status(rcdev, id);
+> +		if (ret < 0)
+> +			return ret;
+> +		if (ret == assert)
+> +			break;
+> +		usleep_range(20, 40);
+> +	} while (--retry);
 
-If the journal is empty then mounting will be faster, yes.
-But I'm still interested in Hyunchul's use-case/problem.
-Usually you run UBIFS in an embedded environment where you simple
-never shutdown or reboot in a clean way. The power supply just
-cut off.
+How about wrapping this in a lantiq_rcu_poll_status(_timeout) function?
+I still think this is a case where regmap_read_poll_timeout could be
+used.
 
-On the other hand, if you want an empty journal for a faster mount,
-just make sure that you umount upon shutdown.
-Or make the size of the journal smaller at mkfs time.
-Also see:
+[...]
+> +static int lantiq_rcu_reset_of_probe(struct platform_device *pdev,
+> +			       struct lantiq_rcu_reset_priv *priv)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	int ret;
+> +
+> +	priv->regmap = syscon_regmap_lookup_by_phandle(dev->of_node, "regmap");
 
-commit 27ad27993313312a4ad0047d0a944c425cd511a5
-Author: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Date:   Thu Jan 29 16:34:30 2009 +0200
+Why not use syscon_node_to_regmap(dev->of_node->parent) ?
 
-    UBIFS: remove fast unmounting
-
-    This UBIFS feature has never worked properly, and it was a mistake
-    to add it because we simply have no use-cases. So, lets still accept
-    the fast_unmount mount option, but ignore it. This does not change
-    much, because UBIFS commit in sync_fs anyway, and sync_fs is called
-    while unmounting.
-
-    Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-
-Thanks,
-//richard
+regards
+Philipp
