@@ -1,8 +1,8 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dFRrV-0004fj-HI
- for linux-mtd@lists.infradead.org; Mon, 29 May 2017 21:06:03 +0000
-Date: Mon, 29 May 2017 23:05:29 +0200
+ id 1dFRsp-0005F1-MH
+ for linux-mtd@lists.infradead.org; Mon, 29 May 2017 21:07:25 +0000
+Date: Mon, 29 May 2017 23:06:51 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Peter Pan <peterpandong@micron.com>
 Cc: <richard@nod.at>, <computersforpeace@gmail.com>,
@@ -10,11 +10,12 @@ Cc: <richard@nod.at>, <computersforpeace@gmail.com>,
  <marex@denx.de>, <cyrille.pitchen@wedev4u.fr>,
  <linux-mtd@lists.infradead.org>, <peterpansjtu@gmail.com>,
  <linshunquan1@hisilicon.com>
-Subject: Re: [PATCH v6 05/15] mtd: nand: raw: create struct rawnand_device
-Message-ID: <20170529230529.2a0433f5@bbrezillon>
-In-Reply-To: <1495609631-18880-6-git-send-email-peterpandong@micron.com>
+Subject: Re: [PATCH v6 09/15] mtd: nand: make sure mtd_oob_ops consistent in
+ bbt
+Message-ID: <20170529230651.41670304@bbrezillon>
+In-Reply-To: <1495609631-18880-10-git-send-email-peterpandong@micron.com>
 References: <1495609631-18880-1-git-send-email-peterpandong@micron.com>
- <1495609631-18880-6-git-send-email-peterpandong@micron.com>
+ <1495609631-18880-10-git-send-email-peterpandong@micron.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,58 +28,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 24 May 2017 15:07:01 +0800
+On Wed, 24 May 2017 15:07:05 +0800
 Peter Pan <peterpandong@micron.com> wrote:
 
-> From: Boris Brezillon <boris.brezillon@free-electrons.com>
+> This commit makes sure struct mtd_oob_ops passed to mtd_read/write_ops()
+> is consistent, which means .datbuf = NULL and .len = 0 when not reading
+> page; .oobbuf = NULL and .ooblen = 0 when not reading oob. If no, (ie.
+> ops.datbuf = NULL, while ops.len != 0.), nand_for_each_page() will run
+> forever.
+
+This should be done before making bbt core generic, and this is
+something I can already apply in this release.
+
 > 
-> Create the rawnand_device struct inheriting from nand_device and make
-> nand_chip inherit from this struct.
-> 
-> The rawnand_device object should be used for the new
-> rawnand-device/rawnand-controller model, and fields inside nand_chip
-> should progressively move to the future rawnand_controller or the existing
-> rawnand_device struct.
-> 
-> In the meantime, we make sure nand_device fields are properly initialized
-> by converting information stored in mtd_info and nand_chip into the
-> nand_memory_organization format.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 > Signed-off-by: Peter Pan <peterpandong@micron.com>
 > ---
->  drivers/mtd/nand/raw/nand_base.c | 40 ++++++++++++++++++++++++++++++++++++++++
->  include/linux/mtd/rawnand.h      | 26 ++++++++++++++++++++------
->  2 files changed, 60 insertions(+), 6 deletions(-)
+>  drivers/mtd/nand/bbt.c | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index a113cfb..8f8df15 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -3957,6 +3957,43 @@ static bool find_full_id_nand(struct nand_chip *chip,
->  	return false;
->  }
+> diff --git a/drivers/mtd/nand/bbt.c b/drivers/mtd/nand/bbt.c
+> index 56115d5..96d4e14 100644
+> --- a/drivers/mtd/nand/bbt.c
+> +++ b/drivers/mtd/nand/bbt.c
+> @@ -328,7 +328,7 @@ static int scan_read_oob(struct nand_device *this, uint8_t *buf, loff_t offs,
+>  			 size_t len)
+>  {
+>  	struct mtd_info *mtd = nand_to_mtd(this);
+> -	struct mtd_oob_ops ops;
+> +	struct mtd_oob_ops ops = {};
+>  	int res, ret = 0;
 >  
-
-[...]
-
-> +
-> +static void nandc_fill_nandd(struct nand_chip *chip)
-
-I'll probably rename this function nandchip_init_nanddev() to be
-consistent with the nandchip prefix used in patch 4.
-
-> +{
-> +	struct mtd_info *mtd = nandchip_to_mtd(chip);
-> +	struct nand_device *nand = mtd_to_nand(mtd);
-> +	struct nand_memory_organization *memorg = &nand->memorg;
-> +
-> +	memorg->pagesize = mtd->writesize;
-> +	memorg->oobsize = mtd->oobsize;
-> +	memorg->eraseblocksize = mtd->erasesize;
-> +	memorg->ndies = chip->numchips;
-> +	memorg->diesize = chip->chipsize;
-> +	/* TODO: fill ->planesize and ->nplanes */
-> +
-> +	nand->ops = &rawnand_ops;
-> +}
+>  	ops.mode = MTD_OPS_PLACE_OOB;
+> @@ -369,11 +369,12 @@ static int scan_write_bbt(struct nand_device *this, loff_t offs, size_t len,
+>  			  uint8_t *buf, uint8_t *oob)
+>  {
+>  	struct mtd_info *mtd = nand_to_mtd(this);
+> -	struct mtd_oob_ops ops;
+> +	struct mtd_oob_ops ops = {};
+>  
+>  	ops.mode = MTD_OPS_PLACE_OOB;
+>  	ops.ooboffs = 0;
+> -	ops.ooblen = nand_per_page_oobsize(this);
+> +	/* oob from caller may be NULL */
+> +	ops.ooblen = oob ? nand_per_page_oobsize(this) : 0;
+>  	ops.datbuf = buf;
+>  	ops.oobbuf = oob;
+>  	ops.len = len;
+> @@ -428,13 +429,12 @@ static int scan_block_fast(struct nand_device *this, struct nand_bbt_descr *bd,
+>  			   loff_t offs, uint8_t *buf, int numpages)
+>  {
+>  	struct mtd_info *mtd = nand_to_mtd(this);
+> -	struct mtd_oob_ops ops;
+> +	struct mtd_oob_ops ops = {};
+>  	int j, ret;
+>  
+>  	ops.ooblen = nand_per_page_oobsize(this);
+>  	ops.oobbuf = buf;
+>  	ops.ooboffs = 0;
+> -	ops.datbuf = NULL;
+>  	ops.mode = MTD_OPS_PLACE_OOB;
+>  
+>  	for (j = 0; j < numpages; j++) {
+> @@ -734,11 +734,10 @@ static int write_bbt(struct nand_device *this, uint8_t *buf,
+>  	uint8_t rcode = td->reserved_block_code;
+>  	size_t retlen, len = 0;
+>  	loff_t to;
+> -	struct mtd_oob_ops ops;
+> +	struct mtd_oob_ops ops = {};
+>  
+>  	ops.ooblen = nand_per_page_oobsize(this);
+>  	ops.ooboffs = 0;
+> -	ops.datbuf = NULL;
+>  	ops.mode = MTD_OPS_PLACE_OOB;
+>  
+>  	if (!rcode)
