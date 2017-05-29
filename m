@@ -1,20 +1,30 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dFIrc-0006Ea-6r
- for linux-mtd@lists.infradead.org; Mon, 29 May 2017 11:29:34 +0000
-Date: Mon, 29 May 2017 13:29:09 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: "Mario J. Rugiero" <mrugiero@gmail.com>
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- marek.vasut@gmail.com, richard@nod.at, yrille.pitchen@wedev4u.fr
-Subject: Re: [PATCH v7] mtd: create per-device and module-scope debugfs entries
-Message-ID: <20170529132909.4ce0d5a4@bbrezillon>
-In-Reply-To: <20170529102348.10307-1-mrugiero@gmail.com>
-References: <20170516155616.26558-1-mrugiero@gmail.com>
- <20170529102348.10307-1-mrugiero@gmail.com>
+Received: from mail-oi0-x244.google.com ([2607:f8b0:4003:c06::244])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dFJ6n-0003T5-Vy
+ for linux-mtd@lists.infradead.org; Mon, 29 May 2017 11:45:15 +0000
+Received: by mail-oi0-x244.google.com with SMTP id v80so11059874oie.2
+ for <linux-mtd@lists.infradead.org>; Mon, 29 May 2017 04:44:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <b81dcdea-19d8-be73-057d-7059cf5fb3ab@nod.at>
+References: <1495755004-17036-1-git-send-email-hyc.lee@gmail.com>
+ <2f3210d7-b0c3-f006-754e-ec4bae26454c@nod.at> <20170529011834.GB10215@sebu>
+ <20170529044059.GA12991@sebu>
+ <CAOQ4uxgdTnDY2Vpo0S+oyZkFN37GX-G=om3qATwtC1WF1g_NDw@mail.gmail.com>
+ <bca235a8-7e25-8857-1c52-5b872a027eea@nod.at>
+ <CAOQ4uxiYxdfTgrPo-ej7mS4ShAm2d4bU4v8y63Ej+c1kKXEMow@mail.gmail.com>
+ <b81dcdea-19d8-be73-057d-7059cf5fb3ab@nod.at>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Mon, 29 May 2017 14:44:52 +0300
+Message-ID: <CAOQ4uxiSJ1+LjMTpHsrk3ED3=7DMRFmKafGiMXC=EwewK3M8Mw@mail.gmail.com>
+Subject: Re: [PATCH] ubifs: Add freeze support
+To: Richard Weinberger <richard@nod.at>
+Cc: Hyunchul Lee <hyc.lee@gmail.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ kernel-team@lge.com, linux-mtd@lists.infradead.org,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ "Darrick J. Wong" <darrick.wong@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,102 +34,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 29 May 2017 07:23:48 -0300
-"Mario J. Rugiero" <mrugiero@gmail.com> wrote:
+On Mon, May 29, 2017 at 1:17 PM, Richard Weinberger <richard@nod.at> wrote:
+> Amir,
+>
+> Am 29.05.2017 um 12:04 schrieb Amir Goldstein:
+>>> Well, UBIFS is a bit different.
+>>> The UBIFS journal is not an add-on feature, you have to replay it in
+>>> any case. Otherwise you're facing corrupted data.
+>>
+>> Yes, I suppose you are right.
+>> I guess there is no equivalent of mount -oro,{norecovery,noload} for
+>> ubifs.
+>
+> Correct.
+>
+>> I don't know the ubifs journal implementation details.
+>> Can ubifs_run_commit() when writers are frozen contribute to
+>> shorter journal replay time after boot with some workloads?
+>
+> If the journal is empty then mounting will be faster, yes.
+> But I'm still interested in Hyunchul's use-case/problem.
 
-> Several MTD devices are using debugfs entries created in the root.
-> This commit provides the means for a standardized subtree, creating
-> one "mtd" entry at root, and one entry per device inside it, named
-> after the device.
-> The tree is registered in add_mtd_device, and released in
-> del_mtd_device.
-> Devices docg3, mtdswap and nandsim were updated to use this subtree
-> instead of custom ones, and their entries were prefixed with the
-> drivers' names.
-> 
-> Signed-off-by: Mario J. Rugiero <mrugiero@gmail.com>
+Makes sense.
 
-Almost good (see my comments below). Once addressed:
+> Usually you run UBIFS in an embedded environment where you simple
+> never shutdown or reboot in a clean way. The power supply just
+> cut off.
+>
+> On the other hand, if you want an empty journal for a faster mount,
+> just make sure that you umount upon shutdown.
 
-Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+So you see, unmount upon shutdown is not always an option
+when you are in a system where not all tasks are killed before
+attempting to unmount (or even attempting to remounr,ro).
+This is what Darrick's patch was all about.
 
-> ---
-> v7: - as per derRichard and bbrezillon suggestion, dev_names are used
->       instead of 'pretty' names for the entries, and driver-specific
->       entries are prefixed with the drivers' names.
-> v6: - as per bbrezillon suggestion, more cleanups were done in the drivers,
->       removing now unused structure members and functions.
->     - dropped explicit setting to NULL to the dfs_dir member for the MTD,
->       as it is expected to be zeroed out, thanks again to bbrezillon for
->       pointing this out.
->     - removed an extern declaration of a symbol which was never defined,
->       spotted by bbrezillon.
-> v5: - cleanup drivers creating their own debugfs sub-tree.
->     - separate the patch again, as it makes sense on its own as cleanup.
-> v4: - include in a bigger patchset which explains the use of this tree.
-> v3: - move the changelog out of the commit message
-> v2: - remove unused macros and add a commit message
-> v1: - create the debugfs entries
-> 
->  drivers/mtd/devices/docg3.c | 49 +++++++++++++++-----------------------------
->  drivers/mtd/devices/docg3.h |  2 --
->  drivers/mtd/mtdcore.c       | 16 +++++++++++++++
->  drivers/mtd/mtdswap.c       | 18 ++++------------
->  drivers/mtd/nand/nandsim.c  | 50 ++++++++++++---------------------------------
->  include/linux/mtd/mtd.h     | 10 +++++++++
->  6 files changed, 60 insertions(+), 85 deletions(-)
-> 
+Maybe there is no such embedded system...
+With the numbers of different embedded systems going to infinity,
+the probability of no "such embedded system" is unlikely.
 
-[...]
+FIFREEZE gives a privileged process the ability to checkpoint the
+journal (e.g. for shorter mount time) and reboot without having to
+kill all other processes in the system first.
 
->  
->  struct mtdswap_oobdata {
-> @@ -1318,26 +1316,19 @@ static int mtdswap_add_debugfs(struct mtdswap_dev *d)
->  	struct gendisk *gd = d->mbd_dev->disk;
->  	struct device *dev = disk_to_dev(gd);
->  
-> -	struct dentry *root;
-> +	struct dentry *root = d->mtd->dbg.dfs_dir;
->  	struct dentry *dent;
->  
-> -	root = debugfs_create_dir(gd->disk_name, NULL);
-> -	if (IS_ERR(root))
-> +	if (!IS_ENABLED(CONFIG_DEBUGFS))
-
-Should be CONFIG_DEBUG_FS and not CONFIG_DEBUGFS.
-
->  		return 0;
->  
-> -	if (!root) {
-> -		dev_err(dev, "failed to initialize debugfs\n");
-> +	if (IS_ERR_OR_NULL(root))
->  		return -1;
-> -	}
-> -
-> -	d->debugfs_root = root;
->  
-> -	dent = debugfs_create_file("stats", S_IRUSR, root, d,
-> +	dent = debugfs_create_file("mtdswap_stats", S_IRUSR, root, d,
->  				&mtdswap_fops);
->  	if (!dent) {
->  		dev_err(d->dev, "debugfs_create_file failed\n");
-> -		debugfs_remove_recursive(root);
-> -		d->debugfs_root = NULL;
->  		return -1;
->  	}
-
-[...]
-
->  /*
-> @@ -524,39 +517,23 @@ static const struct file_operations dfs_fops = {
->   */
->  static int nandsim_debugfs_create(struct nandsim *dev)
->  {
-> -	struct nandsim_debug_info *dbg = &dev->dbg;
-> +	struct dentry *root = nsmtd->dbg.dfs_dir;
->  	struct dentry *dent;
->  
-> -	if (!IS_ENABLED(CONFIG_DEBUG_FS))
-> +	if (!IS_ENABLED(CONFIG_DEBUGFS))
-
-Ditto.
+Amir.
