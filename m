@@ -1,21 +1,28 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dFh8W-0000lc-1w
- for linux-mtd@lists.infradead.org; Tue, 30 May 2017 13:24:37 +0000
-Date: Tue, 30 May 2017 15:24:01 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Honza =?UTF-8?B?UGV0cm91xaE=?= <jpetrous@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 0/3] mtd:nor:ppb_unlock fixes
-Message-ID: <20170530152401.750d42e2@bbrezillon>
-In-Reply-To: <CAJbz7-0+WijkdxuwL_xvjwTWfzWcqL5PHAqSwGbwV=txQVnnAA@mail.gmail.com>
-References: <CAJbz7-0+WijkdxuwL_xvjwTWfzWcqL5PHAqSwGbwV=txQVnnAA@mail.gmail.com>
+Received: from mail-qt0-x22f.google.com ([2607:f8b0:400d:c0d::22f])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dFlo4-0002dx-LZ
+ for linux-mtd@lists.infradead.org; Tue, 30 May 2017 18:23:50 +0000
+Received: by mail-qt0-x22f.google.com with SMTP id c13so77042098qtc.1
+ for <linux-mtd@lists.infradead.org>; Tue, 30 May 2017 11:23:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20170528184006.31668-9-hauke@hauke-m.de>
+References: <20170528184006.31668-1-hauke@hauke-m.de>
+ <20170528184006.31668-9-hauke@hauke-m.de>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Tue, 30 May 2017 21:23:26 +0300
+Message-ID: <CAHp75VcU3cF07GQG5vPV9uhmpOzO2aGD8Fj9-Do4yN3BXNN1Rg@mail.gmail.com>
+Subject: Re: [PATCH v3 08/16] MIPS: lantiq: Convert the fpi bus driver to a
+ platform_driver
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Cc: Ralf Baechle <ralf@linux-mips.org>,
+ Linux MIPS Mailing List <linux-mips@linux-mips.org>,
+ "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+ linux-watchdog@vger.kernel.org, devicetree <devicetree@vger.kernel.org>,
+ "martin.blumenstingl" <martin.blumenstingl@googlemail.com>,
+ john <john@phrozen.org>, linux-spi <linux-spi@vger.kernel.org>,
+ "hauke.mehrtens" <hauke.mehrtens@intel.com>,
+ Rob Herring <robh@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +32,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 30 May 2017 11:51:07 +0200
-Honza Petrou=C5=A1 <jpetrous@gmail.com> wrote:
+On Sun, May 28, 2017 at 9:39 PM, Hauke Mehrtens <hauke@hauke-m.de> wrote:
+> From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+>
+> Instead of hacking the configuration of the FPI bus into the arch code
+> add an own bus driver for this internal bus. The FPI bus is the main
+> bus of the SoC. This bus driver makes sure the bus is configured
+> correctly before the child drivers are getting initialized. This driver
+> will probably also be used on different SoC later.
 
-> Hi Boris,
-> as you advised I come back with v2 patch, now it is the series
-> of three fixes I found them during the testing of the original fix.
->=20
-> From the fixes it is evident that PPB unlocking is not so much
-> widely used. What is understandable as usually the flashing
-> is done in bootloader. At least in projects I was involved before.
->=20
-> Anyway, I can say I tested the code only on one-flashchip
-> configuration, so I'm not 100% sure if all will be ok with multichip
-> setting. All my old embedded boards have unfortunatelly only
-> one nor chip.
+> +Optional properties:
+> +- regmap               : A phandle to the RCU syscon
 
-I think I found another bug here [1]. The test does not work for
-multichip flashes because adr is set back to 0 when you cross a chip
-boundary.
+> +- offset-endianness    : Offset of the endianness configuration register
 
-If you want my opinion, you'd better re-code the whole logic (you can
-probably do better, but here is an example [2]).
+Shouldn't be one of
 
-[1]http://elixir.free-electrons.com/linux/v4.12-rc3/source/drivers/mtd/chip=
-s/cfi_cmdset_0002.c#L2668
-[2]http://code.bulix.org/35oaxp-140047
+big-endian;
+little-endian;
+native-endian;
+
+?
+
+For what purpose that register is used?
+Is it configurable in RTL? IOW why you need to have it in DT?
+
+> +               offset-endianness = <0x4c>;
+> +               big-endian;
+
+> +       /* RCU configuration is optional */
+> +       rcu_regmap = syscon_regmap_lookup_by_phandle(np, "regmap");
+
+> +       if (!IS_ERR_OR_NULL(rcu_regmap)) {
+
+_OR_NULL is suspicious. You are doing something wrong.
+
+-- 
+With Best Regards,
+Andy Shevchenko
