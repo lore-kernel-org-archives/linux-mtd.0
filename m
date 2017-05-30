@@ -1,23 +1,26 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dFfOn-0001pO-9g
- for linux-mtd@lists.infradead.org; Tue, 30 May 2017 11:33:19 +0000
-Date: Tue, 30 May 2017 13:32:55 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Honza =?UTF-8?B?UGV0cm91xaE=?= <jpetrous@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 0/3] mtd:nor:ppb_unlock fixes
-Message-ID: <20170530133255.2d64f59a@bbrezillon>
-In-Reply-To: <CAJbz7-1Y=__8GdjzkD5oRjCq=NWUfyYT8qfz+XjU6iWoAyBxBA@mail.gmail.com>
-References: <CAJbz7-0+WijkdxuwL_xvjwTWfzWcqL5PHAqSwGbwV=txQVnnAA@mail.gmail.com>
- <20170530115959.4244924a@bbrezillon>
- <CAJbz7-1Y=__8GdjzkD5oRjCq=NWUfyYT8qfz+XjU6iWoAyBxBA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] ARM: dts: at91: Switch to the new NAND bindings
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, Jiri Prchal <jiri.prchal@aksignal.cz>,
+ Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
+ Rodolfo Giometti <giometti@linux.it>, Antoine Aubert <a.aubert@overkiz.com>,
+ info@egnite.de, Fabio Porcedda <fabio.porcedda@gmail.com>
+References: <1496136054-12390-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1496136054-12390-4-git-send-email-boris.brezillon@free-electrons.com>
+From: Peter Rosin <peda@axentia.se>
+Message-ID: <4561101c-3032-3cdf-7588-31372510c5b3@axentia.se>
+Date: Tue, 30 May 2017 15:11:25 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1496136054-12390-4-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,30 +30,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 30 May 2017 13:01:48 +0200
-Honza Petrou=C5=A1 <jpetrous@gmail.com> wrote:
+On 2017-05-30 11:20, Boris Brezillon wrote:
+> Use the new EBI/NAND bindings to declare NAND chips and remove old NAND
+> nodes along the way.
+> 
+> Note that we keep using old bindings in at91rm9200.dtsi because this
+> SoC is not supported by the EBI driver.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Cc: Jiri Prchal <jiri.prchal@aksignal.cz>
+> Cc: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+> Cc: Rodolfo Giometti <giometti@linux.it>
+> Cc: Antoine Aubert <a.aubert@overkiz.com>
+> Cc: Peter Rosin <peda@axentia.se>
+> Cc: info@egnite.de
+> Cc: Fabio Porcedda <fabio.porcedda@gmail.com>
+> ---
 
-> Hi Boris
->=20
-> 2017-05-30 11:59 GMT+02:00 Boris Brezillon <boris.brezillon@free-electron=
-s.com>:
-> > Hi Honza,
-> >
-> > On Tue, 30 May 2017 11:51:07 +0200
-> > Honza Petrou=C5=A1 <jpetrous@gmail.com> wrote:
-> > =20
-> >> Hi Boris,
-> >> as you advised I come back with v2 patch, now it is the series
-> >> of three fixes I found them during the testing of the original fix. =20
-> >
-> > Just a few things before I start reviewing the patches:
-> >
-> > 1/ commit title prefix should be "mtd: cfi: " not "mtd:nor:"
-> > 2/ Don't know how you send your patches, but patches 1 to 3 should be
-> >    "In-Reply-To" your cover letter, which is not the case here.
-> >    Normally, git send-email does that automatically.
-> > =20
->=20
-> OK, let me make v3 to fix that.
+For at91-tse850-3.dts (and therefore at91-linea.dtsi).
 
-Can you wait a bit. I'll try to review your v2 first.
+Tested-by: Peter Rosin <peda@axentia.se>
+
+Cheers,
+peda
