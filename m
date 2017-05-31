@@ -1,18 +1,16 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dFzjZ-0000rf-Ov
- for linux-mtd@lists.infradead.org; Wed, 31 May 2017 09:16:07 +0000
-Date: Wed, 31 May 2017 11:15:41 +0200
+ id 1dFzqZ-00046k-5Y
+ for linux-mtd@lists.infradead.org; Wed, 31 May 2017 09:23:21 +0000
+Date: Wed, 31 May 2017 11:22:55 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- linux-mips@linux-mips.org, linux-wireless@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, Brian Norris
- <computersforpeace@gmail.com>
-Subject: Re: [PATCH] bcm47xx: fix build regression
-Message-ID: <20170531111541.0ce9a99d@bbrezillon>
-In-Reply-To: <20170530112027.3983554-1-arnd@arndb.de>
-References: <20170530112027.3983554-1-arnd@arndb.de>
+To: Matthias Lange <matthias.lange@kernkonzept.com>
+Cc: linux-mtd@lists.infradead.org, han.xu@nxp.com,
+ computersforpeace@gmail.com, richard@nod.at, dwmw2@infradead.org
+Subject: Re: [PATCH] Fix typo in comment.
+Message-ID: <20170531112255.1073ca9a@bbrezillon>
+In-Reply-To: <1496130091-2363-1-git-send-email-matthias.lange@kernkonzept.com>
+References: <1496130091-2363-1-git-send-email-matthias.lange@kernkonzept.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,35 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 30 May 2017 13:20:12 +0200
-Arnd Bergmann <arnd@arndb.de> wrote:
+Hi Mattias,
 
-> An unknown change in the kernel headers caused a build regression
-> in an MTD partition driver:
-> 
-> In file included from drivers/mtd/bcm47xxpart.c:12:0:
-> include/linux/bcm47xx_nvram.h: In function 'bcm47xx_nvram_init_from_mem':
-> include/linux/bcm47xx_nvram.h:27:10: error: 'ENOTSUPP' undeclared (first use in this function)
-> 
-> Clearly we want to include linux/errno.h here.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Tue, 30 May 2017 09:41:31 +0200
+Matthias Lange <matthias.lange@kernkonzept.com> wrote:
 
-Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Commit title should be prefixed with "mtd: nand: gpmi: ".
 
+> Signed-off-by: Matthias Lange <matthias.lange@kernkonzept.com>
 > ---
->  include/linux/bcm47xx_nvram.h | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/mtd/nand/gpmi-nand/gpmi-lib.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/include/linux/bcm47xx_nvram.h b/include/linux/bcm47xx_nvram.h
-> index 2793652fbf66..a414a2b53e41 100644
-> --- a/include/linux/bcm47xx_nvram.h
-> +++ b/include/linux/bcm47xx_nvram.h
-> @@ -8,6 +8,7 @@
->  #ifndef __BCM47XX_NVRAM_H
->  #define __BCM47XX_NVRAM_H
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> index 141bd70..41f53ae 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> @@ -932,7 +932,7 @@ static int enable_edo_mode(struct gpmi_nand_data *this, int mode)
 >  
-> +#include <linux/errno.h>
->  #include <linux/types.h>
->  #include <linux/kernel.h>
->  #include <linux/vmalloc.h>
+>  	nand->select_chip(mtd, 0);
+>  
+> -	/* [1] send SET FEATURE commond to NAND */
+> +	/* [1] send SET FEATURE command to NAND */
+>  	feature[0] = mode;
+>  	ret = nand->onfi_set_features(mtd, nand,
+>  				ONFI_FEATURE_ADDR_TIMING_MODE, feature);
