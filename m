@@ -1,29 +1,20 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from mout.kundenserver.de ([212.227.126.133])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dFxeS-0007h2-Ez
- for linux-mtd@lists.infradead.org; Wed, 31 May 2017 07:02:42 +0000
-From: =?gb2312?B?UGV0ZXIgUGFuIMXLtrAgKHBldGVycGFuZG9uZyk=?=
- <peterpandong@micron.com>
+ id 1dFyrl-000863-2a
+ for linux-mtd@lists.infradead.org; Wed, 31 May 2017 08:20:31 +0000
+From: Arnd Bergmann <arnd@arndb.de>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-CC: "richard@nod.at" <richard@nod.at>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "arnaud.mouiche@gmail.com"
- <arnaud.mouiche@gmail.com>, "thomas.petazzoni@free-electrons.com"
- <thomas.petazzoni@free-electrons.com>, "marex@denx.de" <marex@denx.de>,
- "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "peterpansjtu@gmail.com" <peterpansjtu@gmail.com>,
- "linshunquan1@hisilicon.com" <linshunquan1@hisilicon.com>
-Subject: Re: [PATCH v6 10/15] nand: spi: add basic blocks for infrastructure
-Date: Wed, 31 May 2017 07:02:03 +0000
-Message-ID: <CC48790C-7A9C-4822-BA9D-5701009D21FD@micron.com>
-References: <1495609631-18880-1-git-send-email-peterpandong@micron.com>
- <1495609631-18880-11-git-send-email-peterpandong@micron.com>,
- <20170529235118.0096ac2a@bbrezillon>
-In-Reply-To: <20170529235118.0096ac2a@bbrezillon>
-Content-Language: zh-CN
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+Cc: Arnd Bergmann <arnd@arndb.de>, Wenyou Yang <wenyou.yang@atmel.com>,
+ Josh Wu <rainyfeeling@outlook.com>, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: nand: atmel: mark resume function __maybe_unused
+Date: Wed, 31 May 2017 10:19:26 +0200
+Message-Id: <20170531081950.2022014-1-arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,85 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQm9yaXMsDQoNCj4gT24gMzAgTWF5IDIwMTcsIGF0IDA1OjUxLCBCb3JpcyBCcmV6aWxsb24g
-PGJvcmlzLmJyZXppbGxvbkBmcmVlLWVsZWN0cm9ucy5jb20+IHdyb3RlOg0KPiANCj4gT24gV2Vk
-LCAyNCBNYXkgMjAxNyAxNTowNzowNiArMDgwMA0KPiBQZXRlciBQYW4gPHBldGVycGFuZG9uZ0Bt
-aWNyb24uY29tPiB3cm90ZToNCj4gDQo+PiBUaGlzIGlzIHRoZSBmaXJzdCBjb21taXQgZm9yIHNw
-aSBuYW5kIGZyYW1rZXdvcmsuDQo+IA0KPiAgICAgICAgICAgICAgICAgICAgXiBmcmFtZXdvcmsN
-Cj4gDQo+PiBUaGlzIGNvbW1pdCBpcyB0byBhZGQgYWRkIGJhc2ljIGJ1aWxkaW5nIGJsb2Nrcw0K
-PiANCj4gICAgICAgICAgaXMgYWRkaW5nIGJhc2ljIC4uLg0KPiANCj4+IGZvciB0aGUgU1BJIE5B
-TkQgaW5mcmFzdHJ1Y3R1cmUuDQo+PiANCj4+IFNpZ25lZC1vZmYtYnk6IFBldGVyIFBhbiA8cGV0
-ZXJwYW5kb25nQG1pY3Jvbi5jb20+DQo+PiAtLS0NCj4gDQo+IFsuLi5dDQo+IA0KPj4gKw0KPj4g
-Ky8qKg0KPj4gKyAqIGRldm1fc3BpbmFuZF9hbGxvYyAtIFtTUEkgTkFORCBJbnRlcmZhY2VdIGFs
-bG9jYXRlIFNQSSBOQU5EIGRldmljZSBpbnN0YW5jZQ0KPiANCj4gTGV0J3MgZHJvcCB0aG9zZSBb
-U1BJIE5BTkQgSW50ZXJmYWNlXSBzcGVjaWZpZXIuIEl0J3MgcHJldHR5IG9idmlvdXMNCj4gdGhh
-dCB0aGlzIGlzIHBhcnQgb2YgdGhlIHNwaS1uYW5kIEFQSSwgc2luY2UgdGhvc2Ugc3ltYm9scyBh
-cmUgZXhwb3J0ZWQuDQoNCk9rYXkgDQoNCj4gDQo+PiArICogQGRldjogcG9pbnRlciB0byBkZXZp
-Y2UgbW9kZWwgc3RydWN0dXJlDQo+PiArICovDQo+PiArc3RydWN0IHNwaW5hbmRfZGV2aWNlICpk
-ZXZtX3NwaW5hbmRfYWxsb2Moc3RydWN0IGRldmljZSAqZGV2KQ0KPiANCj4gWW91IGNhbiBwYXNz
-IGEgcG9pbnRlciB0byB0aGUgbmFuZF9jb250cm9sbGVyIG9iamVjdCBkcml2aW5nIHRoZQ0KPiBu
-YW5kX2RldmljZSBoZXJlLg0KPiANCj4+ICt7DQo+PiArICAgIHN0cnVjdCBzcGluYW5kX2Rldmlj
-ZSAqc3BpbmFuZDsNCj4+ICsgICAgc3RydWN0IG10ZF9pbmZvICptdGQ7DQo+PiArDQo+PiArICAg
-IHNwaW5hbmQgPSBkZXZtX2t6YWxsb2MoZGV2LCBzaXplb2YoKnNwaW5hbmQpLCBHRlBfS0VSTkVM
-KTsNCj4+ICsgICAgaWYgKCFzcGluYW5kKQ0KPj4gKyAgICAgICAgcmV0dXJuIEVSUl9QVFIoLUVO
-T01FTSk7DQo+PiArDQo+PiArICAgIHNwaW5hbmRfc2V0X29mX25vZGUoc3BpbmFuZCwgZGV2LT5v
-Zl9ub2RlKTsNCj4+ICsgICAgbXV0ZXhfaW5pdCgmc3BpbmFuZC0+bG9jayk7DQo+PiArICAgIHNw
-aW5hbmQtPmRldiA9IGRldjsNCj4gDQo+IEhtLCBJIGRvbid0IHRoaW5rIHRoaXMgaXMgY29ycmVj
-dC4gVGhlIGRldmljZSBoZXJlIGlzIGxpa2VseSB0bw0KPiByZXByZXNlbnQgdGhlIGNvbnRyb2xs
-ZXIgbm90IHRoZSBTUEkgTkFORCBkZXZpY2UuIEZvciB0aGUgZ2VuZXJpYyBzcGkNCj4gbmFuZCBj
-b250cm9sbGVyLCBJIGFncmVlLCBpdCdzIHRoZSBzYW1lLCBidXQsIGluIGNhc2UgeW91IGhhdmUg
-b25lDQo+IGNvbnRyb2xsZXIgdGhhdCBpcyBhdHRhY2hlZCBzZXZlcmFsIHNwaSBkZXZpY2VzLCBp
-dCdzIG5vdC4NCg0KWWVzLCB5b3UgYXJlIHJpZ2h0LiBJIG9ubHkgdGhvdWdodCBhYm91dCBnZW5l
-cmljIHNwaSBidXMgd2hlbiBJIHdhcw0Kd3JpdGluZyB0aGUgY29kZS4NCg0KPiANCj4gSG93IGFi
-b3V0IHB1dHRpbmcgdGhlIHN0cnVjdCBkZXZpY2UgcG9pbnRlciBpbiBuYW5kX2NvbnRyb2xsZXIg
-YW5kIHRoZW4NCj4gcGFzcyB0aGUgY29udHJvbGxlciB0byB0aGlzIHNwaW5hbmRfYWxsb2MoKSBm
-dW5jdGlvbi4NCg0KR29vZCBzb2x1dGlvbg0KDQo+IA0KPj4gKyAgICBtdGQgPSBzcGluYW5kX3Rv
-X210ZChzcGluYW5kKTsNCj4+ICsgICAgbXRkLT5kZXYucGFyZW50ID0gZGV2Ow0KPj4gKw0KPj4g
-KyAgICByZXR1cm4gc3BpbmFuZDsNCj4+ICt9DQo+PiArRVhQT1JUX1NZTUJPTF9HUEwoZGV2bV9z
-cGluYW5kX2FsbG9jKTsNCj4+ICsNCj4+ICsvKioNCj4+ICsgKiBzcGluYW5kX2luaXQgLSBbU1BJ
-IE5BTkQgSW50ZXJmYWNlXSBpbml0aWFsaXplIHRoZSBTUEkgTkFORCBkZXZpY2UNCj4+ICsgKiBA
-c3BpbmFuZDogU1BJIE5BTkQgZGV2aWNlIHN0cnVjdHVyZQ0KPj4gKyAqLw0KPj4gK2ludCBzcGlu
-YW5kX2luaXQoc3RydWN0IHNwaW5hbmRfZGV2aWNlICpzcGluYW5kKQ0KPj4gK3sNCj4+ICsgICAg
-c3RydWN0IG10ZF9pbmZvICptdGQgPSBzcGluYW5kX3RvX210ZChzcGluYW5kKTsNCj4+ICsgICAg
-c3RydWN0IG5hbmRfZGV2aWNlICpuYW5kID0gbXRkX3RvX25hbmQobXRkKTsNCj4+ICsgICAgaW50
-IHJldDsNCj4+ICsNCj4+ICsgICAgcmV0ID0gc3BpbmFuZF9kZXRlY3Qoc3BpbmFuZCk7DQo+PiAr
-ICAgIGlmIChyZXQpIHsNCj4+ICsgICAgICAgIGRldl9lcnIoc3BpbmFuZC0+ZGV2LA0KPj4gKyAg
-ICAgICAgICAgICJEZXRlY3QgU1BJIE5BTkQgZmFpbGVkIHdpdGggZXJyb3IgJWQuXG4iLCByZXQp
-Ow0KPj4gKyAgICAgICAgZ290byBlcnJfb3V0Ow0KPiANCj4gICAgICAgIHJldHVybiByZXQ7DQo+
-IA0KPiANCj4+ICsgICAgfQ0KPiANCj4gSSdkIHN0aWxsIHByZWZlciB0byBtb3ZlIHRoZSBkZXRl
-Y3Rpb24gc3RlcCBvdXQgb2YgdGhpcyBfaW5pdCgpDQo+IGZ1bmN0aW9uIGV2ZW4gaWYgdGhpcyBp
-bXBsaWVzIGR1cGxpY2F0aW5nIHRoZSBfZGV0ZWN0KCkrX2luaXQoKQ0KPiBzZXF1ZW5jZSBpbiBh
-bGwgZHJpdmVycy4gTWF5YmUgeW91IGNhbiBwcm92aWRlIGEgd3JhcHBlciBjYWxsZWQNCj4gc3Bp
-bmFuZF9kZXRlY3RfYW5kX2luaXQoKSB0byBkbyBib3RoIGluIG9uZSBnby4NCg0KT2theSBmb3Ig
-bWUgDQo+IA0KPj4gKw0KPj4gKyAgICBzcGluYW5kX3NldF9yZF93cl9vcChzcGluYW5kKTsNCj4+
-ICsNCj4+ICsgICAgLyoNCj4+ICsgICAgICogVXNlIGt6YWxsb2MoKSBpbnN0ZWFkIG9mIGRldm1f
-a3phbGxvYygpIGhlcmUsIGJlYWNhdXNlIHNvbWUgZHJpdmVycw0KPj4gKyAgICAgKiBtYXkgdXNl
-IHRoaXMgYnVmZmVyIGZvciBETUEgYWNjZXNzLg0KPj4gKyAgICAgKiBNZW1vcnkgYWxsb2NhdGVk
-IGJ5IGRldm1fIGRvZXMgbm90IGd1YXJhbnRlZSBETUEtc2FmZSBhbGlnbm1lbnQuDQo+PiArICAg
-ICAqLw0KPj4gKyAgICBzcGluYW5kLT5idWYgPSBremFsbG9jKG5hbmRfcGFnZV9zaXplKG5hbmQp
-ICsNCj4+ICsgICAgICAgICAgICAgICAgICAgbmFuZF9wZXJfcGFnZV9vb2JzaXplKG5hbmQpLA0K
-Pj4gKyAgICAgICAgICAgICAgICAgICBHRlBfS0VSTkVMKTsNCj4+ICsgICAgaWYgKCFzcGluYW5k
-LT5idWYpIHsNCj4+ICsgICAgICAgIHJldCA9IC1FTk9NRU07DQo+PiArICAgICAgICBnb3RvIGVy
-cl9vdXQ7DQo+IA0KPiAgICAgICAgcmV0dXJuIC1FTk9NRU07DQo+IA0KPj4gKyAgICB9DQo+PiAr
-DQo+PiArICAgIHNwaW5hbmQtPm9vYmJ1ZiA9IHNwaW5hbmQtPmJ1ZiArIG5hbmRfcGFnZV9zaXpl
-KG5hbmQpOw0KPj4gKw0KPj4gKyAgICByZXQgPSBzcGluYW5kX21hbnVmYWN0dXJlcl9pbml0KHNw
-aW5hbmQpOw0KPj4gKyAgICBpZiAocmV0KSB7DQo+PiArICAgICAgICBkZXZfZXJyKHNwaW5hbmQt
-PmRldiwNCj4+ICsgICAgICAgICAgICAiTWFudWZhY3VyZXIgaW5pdCBTUEkgTkFORCBmYWlsZWQg
-d2l0aCBlcnIgJWQuXG4iLA0KPj4gKyAgICAgICAgICAgIHJldCk7DQo+PiArICAgICAgICBnb3Rv
-IGVycl9mcmVlX2J1ZjsNCj4+ICsgICAgfQ0KPj4gKw0KPj4gKyAgICBtdGQtPm5hbWUgPSBzcGlu
-YW5kLT5uYW1lOw0KPj4gKyAgICBtdGQtPnNpemUgPSBuYW5kX3NpemUobmFuZCk7DQo+PiArICAg
-IG10ZC0+ZXJhc2VzaXplID0gbmFuZF9lcmFzZWJsb2NrX3NpemUobmFuZCk7DQo+PiArICAgIG10
-ZC0+d3JpdGVzaXplID0gbmFuZF9wYWdlX3NpemUobmFuZCk7DQo+PiArICAgIG10ZC0+d3JpdGVi
-dWZzaXplID0gbXRkLT53cml0ZXNpemU7DQo+PiArICAgIG10ZC0+b3duZXIgPSBUSElTX01PRFVM
-RTsNCj4+ICsgICAgbXRkLT50eXBlID0gTVREX05BTkRGTEFTSDsNCj4+ICsgICAgbXRkLT5mbGFn
-cyA9IE1URF9DQVBfTkFOREZMQVNIOw0KPj4gKyAgICBtdGQtPm9vYnNpemUgPSBuYW5kX3Blcl9w
-YWdlX29vYnNpemUobmFuZCk7DQo+PiArICAgIC8qDQo+PiArICAgICAqIFJpZ2h0IG5vdywgd2Ug
-ZG9uJ3Qgc3VwcG9ydCBFQ0MsIHNvIGxldCB0aGUgd2hvbGUgb29iDQo+PiArICAgICAqIGFyZWEg
-aXMgYXZhaWxhYmxlIGZvciB1c2VyLg0KPj4gKyAgICAgKi8NCj4+ICsgICAgbXRkLT5vb2JhdmFp
-bCA9IG10ZC0+b29ic2l6ZTsNCj4+ICsNCj4+ICsgICAgLyogQWZ0ZXIgcG93ZXIgdXAsIGFsbCBi
-bG9ja3MgYXJlIGxvY2tlZCwgc28gdW5sb2NrIGl0IGhlcmUuICovDQo+PiArICAgIHNwaW5hbmRf
-bG9ja19ibG9jayhzcGluYW5kLCBCTF9BTExfVU5MT0NLRUQpOw0KPj4gKw0KPj4gKyAgICByZXR1
-cm4gMDsNCj4+ICsNCj4+ICtlcnJfZnJlZV9idWY6DQo+PiArICAgIGtmcmVlKHNwaW5hbmQtPmJ1
-Zik7DQo+PiArZXJyX291dDoNCj4gDQo+IFlvdSBjYW4gZ2V0IHJpZCBvZiBlcnJfb3V0Lg0KPiAN
-Cg0KT2theQ0KDQpUaGFua3MgDQpQZXRlciBQYW4gDQo+PiArICAgIHJldHVybiByZXQ7DQo+PiAr
-fQ0KPj4gK0VYUE9SVF9TWU1CT0xfR1BMKHNwaW5hbmRfaW5pdCk7DQo+PiArDQo+IA0K
+The newly added suspend/resume support causes a harmless warning:
+
+drivers/mtd/nand/atmel/nand-controller.c:2513:12: error: 'atmel_nand_controller_resume' defined but not used [-Werror=unused-function]
+
+This shuts up the warning with a __maybe_unused annotation.
+
+Fixes: b107007a7114 ("mtd: nand: atmel: Add PM ops")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/mtd/nand/atmel/nand-controller.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/atmel/nand-controller.c
+index 6055831c953f..d24e67b95167 100644
+--- a/drivers/mtd/nand/atmel/nand-controller.c
++++ b/drivers/mtd/nand/atmel/nand-controller.c
+@@ -2510,7 +2510,7 @@ static int atmel_nand_controller_remove(struct platform_device *pdev)
+ 	return nc->caps->ops->remove(nc);
+ }
+ 
+-static int atmel_nand_controller_resume(struct device *dev)
++static __maybe_unused int atmel_nand_controller_resume(struct device *dev)
+ {
+ 	struct atmel_nand_controller *nc = dev_get_drvdata(dev);
+ 	struct atmel_nand *nand;
+-- 
+2.9.0
