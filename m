@@ -1,23 +1,19 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dG4gj-0001Uy-5p
- for linux-mtd@lists.infradead.org; Wed, 31 May 2017 14:33:30 +0000
-Date: Wed, 31 May 2017 16:32:55 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Nicolas Ferre <nicolas.ferre@microchip.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: atmel: mark resume function __maybe_unused
-Message-ID: <20170531163255.5c965f44@bbrezillon>
-In-Reply-To: <20170531081950.2022014-1-arnd@arndb.de>
-References: <20170531081950.2022014-1-arnd@arndb.de>
+Received: from serv1.kernkonzept.com ([88.99.87.17] helo=mx.kernkonzept.com)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dG5Gg-0007jD-5H
+ for linux-mtd@lists.infradead.org; Wed, 31 May 2017 15:10:40 +0000
+Subject: Re: [PATCH] Fix typo in comment.
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org, han.xu@nxp.com,
+ computersforpeace@gmail.com, richard@nod.at, dwmw2@infradead.org
+References: <1496130091-2363-1-git-send-email-matthias.lange@kernkonzept.com>
+ <20170531112255.1073ca9a@bbrezillon>
+From: Matthias Lange <matthias.lange@kernkonzept.com>
+Message-ID: <ed4d18bf-a18a-ea5c-5fc0-79a60fb3f2ee@kernkonzept.com>
+Date: Wed, 31 May 2017 17:07:54 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20170531112255.1073ca9a@bbrezillon>
+Content-Type: multipart/mixed; boundary="------------AA5669A06062FA5A66FD71C2"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,38 +23,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 31 May 2017 10:19:26 +0200
-Arnd Bergmann <arnd@arndb.de> wrote:
+This is a multi-part message in MIME format.
+--------------AA5669A06062FA5A66FD71C2
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-> The newly added suspend/resume support causes a harmless warning:
+Hi Boris,
+
+please consider the new version of the commit.
+
+Best,
+Matthias.
+
+
+On 05/31/2017 11:22 AM, Boris Brezillon wrote:
+> Hi Mattias,
 > 
-> drivers/mtd/nand/atmel/nand-controller.c:2513:12: error: 'atmel_nand_controller_resume' defined but not used [-Werror=unused-function]
+> On Tue, 30 May 2017 09:41:31 +0200
+> Matthias Lange <matthias.lange@kernkonzept.com> wrote:
 > 
-> This shuts up the warning with a __maybe_unused annotation.
-
-Applied to nand/next.
-
-Thanks,
-
-Boris
-
+> Commit title should be prefixed with "mtd: nand: gpmi: ".
 > 
-> Fixes: b107007a7114 ("mtd: nand: atmel: Add PM ops")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/mtd/nand/atmel/nand-controller.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/atmel/nand-controller.c
-> index 6055831c953f..d24e67b95167 100644
-> --- a/drivers/mtd/nand/atmel/nand-controller.c
-> +++ b/drivers/mtd/nand/atmel/nand-controller.c
-> @@ -2510,7 +2510,7 @@ static int atmel_nand_controller_remove(struct platform_device *pdev)
->  	return nc->caps->ops->remove(nc);
->  }
->  
-> -static int atmel_nand_controller_resume(struct device *dev)
-> +static __maybe_unused int atmel_nand_controller_resume(struct device *dev)
->  {
->  	struct atmel_nand_controller *nc = dev_get_drvdata(dev);
->  	struct atmel_nand *nand;
+>> Signed-off-by: Matthias Lange <matthias.lange@kernkonzept.com>
+>> ---
+>>  drivers/mtd/nand/gpmi-nand/gpmi-lib.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+>> index 141bd70..41f53ae 100644
+>> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+>> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+>> @@ -932,7 +932,7 @@ static int enable_edo_mode(struct gpmi_nand_data *this, int mode)
+>>  
+>>  	nand->select_chip(mtd, 0);
+>>  
+>> -	/* [1] send SET FEATURE commond to NAND */
+>> +	/* [1] send SET FEATURE command to NAND */
+>>  	feature[0] = mode;
+>>  	ret = nand->onfi_set_features(mtd, nand,
+>>  				ONFI_FEATURE_ADDR_TIMING_MODE, feature);
+
+--------------AA5669A06062FA5A66FD71C2
+Content-Type: text/x-patch;
+ name="0001-mtd-nand-gpmi-fix-typo-in-comment.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="0001-mtd-nand-gpmi-fix-typo-in-comment.patch"
+
+>From 09b2ba7b74617888376e1e8022b1e68d022473a9 Mon Sep 17 00:00:00 2001
+From: Matthias Lange <matthias.lange@kernkonzept.com>
+Date: Tue, 30 May 2017 09:35:03 +0200
+Subject: [PATCH] mtd: nand: gpmi: fix typo in comment
+
+Signed-off-by: Matthias Lange <matthias.lange@kernkonzept.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+index 141bd70..41f53ae 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+@@ -932,7 +932,7 @@ static int enable_edo_mode(struct gpmi_nand_data *this, int mode)
+ 
+ 	nand->select_chip(mtd, 0);
+ 
+-	/* [1] send SET FEATURE commond to NAND */
++	/* [1] send SET FEATURE command to NAND */
+ 	feature[0] = mode;
+ 	ret = nand->onfi_set_features(mtd, nand,
+ 				ONFI_FEATURE_ADDR_TIMING_MODE, feature);
+-- 
+2.7.4
+
+
+--------------AA5669A06062FA5A66FD71C2--
