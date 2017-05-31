@@ -1,11 +1,11 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dFwzX-0005DY-13
- for linux-mtd@lists.infradead.org; Wed, 31 May 2017 06:20:24 +0000
-Date: Wed, 31 May 2017 08:20:01 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: "Peter Pan =?UTF-8?B?5r2Y5qCL?= (peterpandong)" <peterpandong@micron.com>
-Cc: "arnaud.mouiche@gmail.com" <arnaud.mouiche@gmail.com>, "richard@nod.at"
+Received: from mailout.micron.com ([137.201.242.129])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dFxDn-0003Fg-5O
+ for linux-mtd@lists.infradead.org; Wed, 31 May 2017 06:35:21 +0000
+From: =?gb2312?B?UGV0ZXIgUGFuIMXLtrAgKHBldGVycGFuZG9uZyk=?=
+ <peterpandong@micron.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+CC: "arnaud.mouiche@gmail.com" <arnaud.mouiche@gmail.com>, "richard@nod.at"
  <richard@nod.at>, "computersforpeace@gmail.com"
  <computersforpeace@gmail.com>, "thomas.petazzoni@free-electrons.com"
  <thomas.petazzoni@free-electrons.com>, "marex@denx.de" <marex@denx.de>,
@@ -14,12 +14,15 @@ Cc: "arnaud.mouiche@gmail.com" <arnaud.mouiche@gmail.com>, "richard@nod.at"
  "peterpansjtu@gmail.com" <peterpansjtu@gmail.com>,
  "linshunquan1@hisilicon.com" <linshunquan1@hisilicon.com>
 Subject: Re: [PATCH v6 00/15] A SPI NAND framework under generic NAND framework
-Message-ID: <20170531082001.01d11e3d@bbrezillon>
-In-Reply-To: <74cb9a07bd3247fd86002ef97509828f@SIWEX4H.sing.micron.com>
-References: <74cb9a07bd3247fd86002ef97509828f@SIWEX4H.sing.micron.com>
+Date: Wed, 31 May 2017 06:34:30 +0000
+Message-ID: <9899C0E8-301D-410C-A18C-CC24DF117360@micron.com>
+References: <74cb9a07bd3247fd86002ef97509828f@SIWEX4H.sing.micron.com>,
+ <20170531082001.01d11e3d@bbrezillon>
+In-Reply-To: <20170531082001.01d11e3d@bbrezillon>
+Content-Language: zh-CN
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,76 +32,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le Wed, 31 May 2017 01:12:16 +0000,
-Peter Pan =E6=BD=98=E6=A0=8B (peterpandong) <peterpandong@micron.com> a =C3=
-=A9crit :
-
-> Hi Boris,
-> =20
-> On Thu, May 30, 2017 at 5:00 AM, Boris Brezillon
-> <boris.brezillon@free-electrons.com> wrote:
-> > Hi Peter,
-> >=20
-> > On Wed, 24 May 2017 15:06:56 +0800
-> > Peter Pan <peterpandong@micron.com> wrote:
-> >  =20
-> > > First of all, thank Boris and Marek for your priceless comments
-> > > on v5 and thank everyone reviewed and tested on my previous series.
-> > > I can never be here without your help. This series comes to v6
-> > > and it becomes much better with your help.
-> > >
-> > > SPI NAND is a new NAND family device with SPI protocol as
-> > > its interface. And its command set is totally different
-> > > with parallel NAND.
-> > >
-> > > Our first attempt to SPI NAND was more than 2 years ago[1].
-> > > At that time, I didn't make BBT shareable and there were
-> > > too many duplicate code with parallel NAND, so that serie
-> > > stoped. But the discussion never stops. Now Boris has a plan
-> > > to make a generic NAND framework which can be shared with
-> > > both parallel and SPI NAND. Now the first step of the
-> > > new generic NAND framework is finished. And it is waiting
-> > > for a user. After discussion with Boris. We both think it's
-> > > time to rebuild SPI NAND framework based on the new NAND
-> > > framework and send out for reviewing.
-> > >
-> > > This series includes two part. The first part (patch 1 to 9)
-> > > is a new generic NAND framework from Boris Brezillon, which
-> > > is from Biris's nand/generic branch[2]. The second part
-> > > (patch 10 to 15) introductes a SPI NAND framework based on
-> > > the new generic NAND framework.
-> > >
-> > > This series only supports basic SPI NAND features and uses
-> > > generic spi controller for data transfer. ECC support is removed
-> > > since it's not in a good structure and more important, it should
-> > > be shared between different NAND devices, which means it should
-> > > be in new NAND core. Support different types of ECC and advanced
-> > > SPI NAND features is the next step.
-> > >
-> > > This series is based on nand/next branch and is tested on
-> > > Xilinx Zedboard with Micron MT29F2G01ABAGDSF SPI NAND chip. =20
-> >=20
-> > As you can see, I started to review this v6, but I don't expect you to
-> > send a new version (at least not immediately).
-> >=20
-> > Here is the plan: I'll finish reviewing the series, and while I'm
-> > reviewing I'll try to address my own comments. Once the review/changes
-> > are done, I'll push a nand/spi branch to the github repo [1] and ask
-> > you and Arnaud to review/test the whole thing. If you're happy with
-> > my changes (it should only be minor changes to your
-> > initial implementation) I'll ask you to send a v7. I'll then wait for
-> > 4.13-rc1 to be out and apply everything to my nand/next branch (I
-> > expect a few conflicting changes in the nand/mtd area caused by the
-> > migration to the new doc format, that's why I'd like to wait one more
-> > cycle).
-> >=20
-> > If everything goes well, we should be good for 4.14, and the patches
-> > will have spent enough time in linux-next to discover obvious bugs.
-> >=20
-> > Let me know if you have a problem with this approach. =20
->=20
-> You plan is great, I'm OK with it. Looking forward to merge SPI NAND
-> to main line :)
-
-I'm still expecting replies to my review(s) to know if the changes I
-plan to do are correct ;-).
+SGkgQm9yaXMsDQoNCj4gT24gMzEgTWF5IDIwMTcsIGF0IDE0OjIwLCBCb3JpcyBCcmV6aWxsb24g
+PGJvcmlzLmJyZXppbGxvbkBmcmVlLWVsZWN0cm9ucy5jb20+IHdyb3RlOg0KPiANCj4gTGUgV2Vk
+LCAzMSBNYXkgMjAxNyAwMToxMjoxNiArMDAwMCwNCj4gUGV0ZXIgUGFuIMXLtrAgKHBldGVycGFu
+ZG9uZykgPHBldGVycGFuZG9uZ0BtaWNyb24uY29tPiBhIKimY3JpdCA6DQo+IA0KPj4gSGkgQm9y
+aXMsDQo+PiANCj4+IE9uIFRodSwgTWF5IDMwLCAyMDE3IGF0IDU6MDAgQU0sIEJvcmlzIEJyZXpp
+bGxvbg0KPj4gPGJvcmlzLmJyZXppbGxvbkBmcmVlLWVsZWN0cm9ucy5jb20+IHdyb3RlOg0KPj4+
+IEhpIFBldGVyLA0KPj4+IA0KPj4+IE9uIFdlZCwgMjQgTWF5IDIwMTcgMTU6MDY6NTYgKzA4MDAN
+Cj4+PiBQZXRlciBQYW4gPHBldGVycGFuZG9uZ0BtaWNyb24uY29tPiB3cm90ZToNCj4+PiANCj4+
+Pj4gRmlyc3Qgb2YgYWxsLCB0aGFuayBCb3JpcyBhbmQgTWFyZWsgZm9yIHlvdXIgcHJpY2VsZXNz
+IGNvbW1lbnRzDQo+Pj4+IG9uIHY1IGFuZCB0aGFuayBldmVyeW9uZSByZXZpZXdlZCBhbmQgdGVz
+dGVkIG9uIG15IHByZXZpb3VzIHNlcmllcy4NCj4+Pj4gSSBjYW4gbmV2ZXIgYmUgaGVyZSB3aXRo
+b3V0IHlvdXIgaGVscC4gVGhpcyBzZXJpZXMgY29tZXMgdG8gdjYNCj4+Pj4gYW5kIGl0IGJlY29t
+ZXMgbXVjaCBiZXR0ZXIgd2l0aCB5b3VyIGhlbHAuDQo+Pj4+IA0KPj4+PiBTUEkgTkFORCBpcyBh
+IG5ldyBOQU5EIGZhbWlseSBkZXZpY2Ugd2l0aCBTUEkgcHJvdG9jb2wgYXMNCj4+Pj4gaXRzIGlu
+dGVyZmFjZS4gQW5kIGl0cyBjb21tYW5kIHNldCBpcyB0b3RhbGx5IGRpZmZlcmVudA0KPj4+PiB3
+aXRoIHBhcmFsbGVsIE5BTkQuDQo+Pj4+IA0KPj4+PiBPdXIgZmlyc3QgYXR0ZW1wdCB0byBTUEkg
+TkFORCB3YXMgbW9yZSB0aGFuIDIgeWVhcnMgYWdvWzFdLg0KPj4+PiBBdCB0aGF0IHRpbWUsIEkg
+ZGlkbid0IG1ha2UgQkJUIHNoYXJlYWJsZSBhbmQgdGhlcmUgd2VyZQ0KPj4+PiB0b28gbWFueSBk
+dXBsaWNhdGUgY29kZSB3aXRoIHBhcmFsbGVsIE5BTkQsIHNvIHRoYXQgc2VyaWUNCj4+Pj4gc3Rv
+cGVkLiBCdXQgdGhlIGRpc2N1c3Npb24gbmV2ZXIgc3RvcHMuIE5vdyBCb3JpcyBoYXMgYSBwbGFu
+DQo+Pj4+IHRvIG1ha2UgYSBnZW5lcmljIE5BTkQgZnJhbWV3b3JrIHdoaWNoIGNhbiBiZSBzaGFy
+ZWQgd2l0aA0KPj4+PiBib3RoIHBhcmFsbGVsIGFuZCBTUEkgTkFORC4gTm93IHRoZSBmaXJzdCBz
+dGVwIG9mIHRoZQ0KPj4+PiBuZXcgZ2VuZXJpYyBOQU5EIGZyYW1ld29yayBpcyBmaW5pc2hlZC4g
+QW5kIGl0IGlzIHdhaXRpbmcNCj4+Pj4gZm9yIGEgdXNlci4gQWZ0ZXIgZGlzY3Vzc2lvbiB3aXRo
+IEJvcmlzLiBXZSBib3RoIHRoaW5rIGl0J3MNCj4+Pj4gdGltZSB0byByZWJ1aWxkIFNQSSBOQU5E
+IGZyYW1ld29yayBiYXNlZCBvbiB0aGUgbmV3IE5BTkQNCj4+Pj4gZnJhbWV3b3JrIGFuZCBzZW5k
+IG91dCBmb3IgcmV2aWV3aW5nLg0KPj4+PiANCj4+Pj4gVGhpcyBzZXJpZXMgaW5jbHVkZXMgdHdv
+IHBhcnQuIFRoZSBmaXJzdCBwYXJ0IChwYXRjaCAxIHRvIDkpDQo+Pj4+IGlzIGEgbmV3IGdlbmVy
+aWMgTkFORCBmcmFtZXdvcmsgZnJvbSBCb3JpcyBCcmV6aWxsb24sIHdoaWNoDQo+Pj4+IGlzIGZy
+b20gQmlyaXMncyBuYW5kL2dlbmVyaWMgYnJhbmNoWzJdLiBUaGUgc2Vjb25kIHBhcnQNCj4+Pj4g
+KHBhdGNoIDEwIHRvIDE1KSBpbnRyb2R1Y3RlcyBhIFNQSSBOQU5EIGZyYW1ld29yayBiYXNlZCBv
+bg0KPj4+PiB0aGUgbmV3IGdlbmVyaWMgTkFORCBmcmFtZXdvcmsuDQo+Pj4+IA0KPj4+PiBUaGlz
+IHNlcmllcyBvbmx5IHN1cHBvcnRzIGJhc2ljIFNQSSBOQU5EIGZlYXR1cmVzIGFuZCB1c2VzDQo+
+Pj4+IGdlbmVyaWMgc3BpIGNvbnRyb2xsZXIgZm9yIGRhdGEgdHJhbnNmZXIuIEVDQyBzdXBwb3J0
+IGlzIHJlbW92ZWQNCj4+Pj4gc2luY2UgaXQncyBub3QgaW4gYSBnb29kIHN0cnVjdHVyZSBhbmQg
+bW9yZSBpbXBvcnRhbnQsIGl0IHNob3VsZA0KPj4+PiBiZSBzaGFyZWQgYmV0d2VlbiBkaWZmZXJl
+bnQgTkFORCBkZXZpY2VzLCB3aGljaCBtZWFucyBpdCBzaG91bGQNCj4+Pj4gYmUgaW4gbmV3IE5B
+TkQgY29yZS4gU3VwcG9ydCBkaWZmZXJlbnQgdHlwZXMgb2YgRUNDIGFuZCBhZHZhbmNlZA0KPj4+
+PiBTUEkgTkFORCBmZWF0dXJlcyBpcyB0aGUgbmV4dCBzdGVwLg0KPj4+PiANCj4+Pj4gVGhpcyBz
+ZXJpZXMgaXMgYmFzZWQgb24gbmFuZC9uZXh0IGJyYW5jaCBhbmQgaXMgdGVzdGVkIG9uDQo+Pj4+
+IFhpbGlueCBaZWRib2FyZCB3aXRoIE1pY3JvbiBNVDI5RjJHMDFBQkFHRFNGIFNQSSBOQU5EIGNo
+aXAuICANCj4+PiANCj4+PiBBcyB5b3UgY2FuIHNlZSwgSSBzdGFydGVkIHRvIHJldmlldyB0aGlz
+IHY2LCBidXQgSSBkb24ndCBleHBlY3QgeW91IHRvDQo+Pj4gc2VuZCBhIG5ldyB2ZXJzaW9uIChh
+dCBsZWFzdCBub3QgaW1tZWRpYXRlbHkpLg0KPj4+IA0KPj4+IEhlcmUgaXMgdGhlIHBsYW46IEkn
+bGwgZmluaXNoIHJldmlld2luZyB0aGUgc2VyaWVzLCBhbmQgd2hpbGUgSSdtDQo+Pj4gcmV2aWV3
+aW5nIEknbGwgdHJ5IHRvIGFkZHJlc3MgbXkgb3duIGNvbW1lbnRzLiBPbmNlIHRoZSByZXZpZXcv
+Y2hhbmdlcw0KPj4+IGFyZSBkb25lLCBJJ2xsIHB1c2ggYSBuYW5kL3NwaSBicmFuY2ggdG8gdGhl
+IGdpdGh1YiByZXBvIFsxXSBhbmQgYXNrDQo+Pj4geW91IGFuZCBBcm5hdWQgdG8gcmV2aWV3L3Rl
+c3QgdGhlIHdob2xlIHRoaW5nLiBJZiB5b3UncmUgaGFwcHkgd2l0aA0KPj4+IG15IGNoYW5nZXMg
+KGl0IHNob3VsZCBvbmx5IGJlIG1pbm9yIGNoYW5nZXMgdG8geW91cg0KPj4+IGluaXRpYWwgaW1w
+bGVtZW50YXRpb24pIEknbGwgYXNrIHlvdSB0byBzZW5kIGEgdjcuIEknbGwgdGhlbiB3YWl0IGZv
+cg0KPj4+IDQuMTMtcmMxIHRvIGJlIG91dCBhbmQgYXBwbHkgZXZlcnl0aGluZyB0byBteSBuYW5k
+L25leHQgYnJhbmNoIChJDQo+Pj4gZXhwZWN0IGEgZmV3IGNvbmZsaWN0aW5nIGNoYW5nZXMgaW4g
+dGhlIG5hbmQvbXRkIGFyZWEgY2F1c2VkIGJ5IHRoZQ0KPj4+IG1pZ3JhdGlvbiB0byB0aGUgbmV3
+IGRvYyBmb3JtYXQsIHRoYXQncyB3aHkgSSdkIGxpa2UgdG8gd2FpdCBvbmUgbW9yZQ0KPj4+IGN5
+Y2xlKS4NCj4+PiANCj4+PiBJZiBldmVyeXRoaW5nIGdvZXMgd2VsbCwgd2Ugc2hvdWxkIGJlIGdv
+b2QgZm9yIDQuMTQsIGFuZCB0aGUgcGF0Y2hlcw0KPj4+IHdpbGwgaGF2ZSBzcGVudCBlbm91Z2gg
+dGltZSBpbiBsaW51eC1uZXh0IHRvIGRpc2NvdmVyIG9idmlvdXMgYnVncy4NCj4+PiANCj4+PiBM
+ZXQgbWUga25vdyBpZiB5b3UgaGF2ZSBhIHByb2JsZW0gd2l0aCB0aGlzIGFwcHJvYWNoLiAgDQo+
+PiANCj4+IFlvdSBwbGFuIGlzIGdyZWF0LCBJJ20gT0sgd2l0aCBpdC4gTG9va2luZyBmb3J3YXJk
+IHRvIG1lcmdlIFNQSSBOQU5EDQo+PiB0byBtYWluIGxpbmUgOikNCj4gDQo+IEknbSBzdGlsbCBl
+eHBlY3RpbmcgcmVwbGllcyB0byBteSByZXZpZXcocykgdG8ga25vdyBpZiB0aGUgY2hhbmdlcyBJ
+DQo+IHBsYW4gdG8gZG8gYXJlIGNvcnJlY3QgOy0pLg0KDQpBY3R1YWxseSBJJ20gbG9va2luZyBh
+dCB5b3VyIGNvbW1lbnRzIHJpZ2h0IG5vdy4gU29tZXRoaW5nIHdhcyB3cm9uZyB3aXRoIG15IG1h
+aWxib3guIEhvcGUgdG8gZ2l2ZSB5b3UgZmVlZGJhY2sgdG9kYXkgb3IgdG9tb3Jyb3cuDQoNClRo
+YW5rcyANClBldGVyIFBhbiA=
