@@ -1,15 +1,16 @@
-From: Xiaolei Li <xiaolei.li@mediatek.com>
-To: <boris.brezillon@free-electrons.com>, <computersforpeace@gmail.com>,
- <matthias.bgg@gmail.com>
-CC: <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>, <robh+dt@kernel.org>,
- <rogercc.lin@mediatek.com>, <yt.shen@mediatek.com>,
- <srv_heupstream@mediatek.com>, <xiaolei.li@mediatek.com>
-Subject: [PATCH v5 0/4] Mediatek MT2712 NAND FLASH Controller driver
-Date: Wed, 31 May 2017 16:26:37 +0800
-Message-ID: <1496219201-45414-1-git-send-email-xiaolei.li@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dFzPP-0006zY-3v
+ for linux-mtd@lists.infradead.org; Wed, 31 May 2017 08:55:17 +0000
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+To: fstests@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org, richard@nod.at,
+ David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Subject: [PATCH v2 1/4] Add tests for character devices
+Date: Wed, 31 May 2017 10:54:30 +0200
+Message-Id: <20170531085433.26865-2-david.oberhollenzer@sigma-star.at>
+In-Reply-To: <20170531085433.26865-1-david.oberhollenzer@sigma-star.at>
+References: <20170531085433.26865-1-david.oberhollenzer@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,85 +20,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The following patch-set adds support for Mediatek MT2712 NAND FLASH
-Controller.
+Implement _is_char_dev similar to _is_block_dev to test for
+character devices.
 
-Changes on v5 relative to:
---------------------
+Add a _require_local_device test. This test is similar to
+_require_block_device but checks if the path refers to a
+block or a character device.
 
-tree    : https://github.com/bbrezillon/linux-0day
-branch  : nand/next
-commit  :
-        'commit 2b12c057cc28 ("mtd: nand: brcmnand: Check flash #WP pin
-         status before nand erase/program")'
+Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+---
+ common/rc | 37 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
-Patch v5:
----------
-- rename variable j as closest_spare in function mtk_nfc_set_spare_per_sector
-- remove unneeded parenthesis
-- add define MTK_NFC_MIN_SPARE to check whether there is no entry that is
-  less than *sps.
-
-Patch v4:
----------
-- remove spare size array sort. iterate over all entries of spare size
-  table and pick the best one.
-
-Patch v3:
----------
-- separate patches into 4.
-- rename struct mtk_ecc_devdata and struct mtk_nfc_devdata to struct
-  mtk_ecc_caps and struct mtk_nfc_caps respectively.
-- add variables const u8 *ecc_strength and u8 num_ecc_strength into struct
-  mtk_ecc_caps, and remove u8 max_ecc_strength.
-- rename variabl u32 temp in function mtk_ecc_probe to u32 max_eccdata_size.
-- remove ECC_CNFG_xBIT define, use a for loop to do ecc hw configuration.
-- remove const u32 *spare_format from struct mtk_nfc_caps, and add variables
-  u8 num_spare_size and u8 pageformat_spare_shift.
-- remove PAGEFMT_SPARE_ define, use a for loop to do nfc hw configuration.
-- sort spare size array before setting spare size.
-- fix coding style issue.
-
-Patch v2:
----------
-- sperate patches into 3.
-- refine DT bindings documentation about NFC and ECC compatible.
-- use ecc->devdata->encode_parity_reg0 and ecc->devdata->err_mask
-  directly, but hide them in define.
-
-Tests:
-------
-
-* ubifs and jffs2 are validated on NAND device MT29F16G08ADBCA
-  by 'dd' command.
-* all drivers/mtd/tests/* pass.
-* speed test:
-  eraseblock write speed is 8318 KiB/s
-  eraseblock read speed is 11374 KiB/s
-  page write speed is 8155 KiB/s
-  page read speed is 11290 KiB/s
-  2 page write speed is 8217 KiB/s
-  2 page read speed is 11354 KiB/s
-  erase speed is 116472 KiB/s
-  2x multi-block erase speed is 352978 KiB/s
-  4x multi-block erase speed is 359750 KiB/s
-  8x multi-block erase speed is 361484 KiB/s
-  16x multi-block erase speed is 364116 KiB/s
-  32x multi-block erase speed is 364116 KiB/s
-  64x multi-block erase speed is 364116 KiB/s
-
-Xiaolei Li (4):
-  mtd: nand: mediatek: update DT bindings
-  mtd: nand: mediatek: refine register NFI_PAGEFMT setting
-  mtd: nand: mediatek: add support for different MTK NAND FLASH
-    Controller IP
-  mtd: nand: mediatek: add support for MT2712 NAND FLASH Controller
-
- Documentation/devicetree/bindings/mtd/mtk-nand.txt |   5 +-
- drivers/mtd/nand/mtk_ecc.c                         | 218 ++++++++++-----------
- drivers/mtd/nand/mtk_ecc.h                         |   2 +-
- drivers/mtd/nand/mtk_nand.c                        | 187 +++++++++---------
- 4 files changed, 206 insertions(+), 206 deletions(-)
-
---
-1.9.1
+diff --git a/common/rc b/common/rc
+index ba215961..ae8ea550 100644
+--- a/common/rc
++++ b/common/rc
+@@ -1363,6 +1363,26 @@ _is_block_dev()
+     fi
+ }
+ 
++# returns device number if a file is a character device
++#
++_is_char_dev()
++{
++    if [ $# -ne 1 ]
++    then
++	echo "Usage: _is_char_dev dev" 1>&2
++	exit 1
++    fi
++
++    _dev=$1
++    if [ -L "${_dev}" ]; then
++        _dev=`readlink -f "${_dev}"`
++    fi
++
++    if [ -c "${_dev}" ]; then
++        src/lstat64 "${_dev}" | $AWK_PROG '/Device type:/ { print $9 }'
++    fi
++}
++
+ # Do a command, log it to $seqres.full, optionally test return status
+ # and die if command fails. If called with one argument _do executes the
+ # command, logs it, and returns its exit status. With two arguments _do
+@@ -1791,6 +1811,23 @@ _require_block_device()
+ 	fi
+ }
+ 
++# this test requires a path to refere to a local block or character device
++# $1 - device
++_require_local_device()
++{
++	if [ -z "$1" ]; then
++		echo "Usage: _require_local_device <dev>" 1>&2
++		exit 1
++	fi
++	if [ "`_is_block_dev "$1"`" != "" ]; then
++		return 0
++	fi
++	if [ "`_is_char_dev "$1"`" != "" ]; then
++		return 0
++	fi
++	_notrun "require $1 to be local device"
++}
++
+ # brd based ram disks erase the device when they receive a flush command when no
+ # active references are present. This causes problems for DM devices sitting on
+ # top of brd devices as DM doesn't hold active references to the brd device.
+-- 
+2.12.0
