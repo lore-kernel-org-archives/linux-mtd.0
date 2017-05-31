@@ -1,19 +1,20 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
+Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dFzZB-0003dX-Kd
- for linux-mtd@lists.infradead.org; Wed, 31 May 2017 09:05:23 +0000
-Subject: Re: [PATCH v2] mkfs.ubifs: Add support for symlinks in device table
-To: David Engraf <david.engraf@sysgo.com>, richard@nod.at,
- linux-mtd@lists.infradead.org, goliath@sigma-star.at
-References: <20170518133854.20744-1-david.engraf@sysgo.com>
- <20170523065252.6257-1-david.engraf@sysgo.com>
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Message-ID: <f0cb1c68-6923-9a95-05d5-d24a7101a398@sigma-star.at>
-Date: Wed, 31 May 2017 11:04:59 +0200
+ id 1dFzjZ-0000rf-Ov
+ for linux-mtd@lists.infradead.org; Wed, 31 May 2017 09:16:07 +0000
+Date: Wed, 31 May 2017 11:15:41 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ linux-mips@linux-mips.org, linux-wireless@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, Brian Norris
+ <computersforpeace@gmail.com>
+Subject: Re: [PATCH] bcm47xx: fix build regression
+Message-ID: <20170531111541.0ce9a99d@bbrezillon>
+In-Reply-To: <20170530112027.3983554-1-arnd@arndb.de>
+References: <20170530112027.3983554-1-arnd@arndb.de>
 MIME-Version: 1.0
-In-Reply-To: <20170523065252.6257-1-david.engraf@sysgo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,63 +25,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Applied to mtd-utils.git.
+On Tue, 30 May 2017 13:20:12 +0200
+Arnd Bergmann <arnd@arndb.de> wrote:
 
-Thanks,
-
-David
-
-On 05/23/2017 08:52 AM, David Engraf wrote:
-> It is not possible to change ownership for symlinks in the device table file.
-> This patch adds support for symlinks equal to mkfs.jffs2 and updates the
-> sample device table file. The permission entry for symlinks in the device
-> table must be set to 0777.
+> An unknown change in the kernel headers caused a build regression
+> in an MTD partition driver:
 > 
-> Signed-off-by: David Engraf <david.engraf@sysgo.com>
+> In file included from drivers/mtd/bcm47xxpart.c:12:0:
+> include/linux/bcm47xx_nvram.h: In function 'bcm47xx_nvram_init_from_mem':
+> include/linux/bcm47xx_nvram.h:27:10: error: 'ENOTSUPP' undeclared (first use in this function)
+> 
+> Clearly we want to include linux/errno.h here.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
 > ---
->  jffsX-utils/device_table.txt      |  1 +
->  ubifs-utils/mkfs.ubifs/devtable.c | 10 ++++++++--
->  2 files changed, 9 insertions(+), 2 deletions(-)
+>  include/linux/bcm47xx_nvram.h | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/jffsX-utils/device_table.txt b/jffsX-utils/device_table.txt
-> index 394a62b..8930cae 100644
-> --- a/jffsX-utils/device_table.txt
-> +++ b/jffsX-utils/device_table.txt
-> @@ -14,6 +14,7 @@
->  #	c	Character special device file
->  #	b	Block special device file
->  #	p	Fifo (named pipe)
-> +#	l	Link
->  # uid is the user id for the target file, gid is the group id for the
->  # target file.  The rest of the entried apply only to device special
->  # file.
-> diff --git a/ubifs-utils/mkfs.ubifs/devtable.c b/ubifs-utils/mkfs.ubifs/devtable.c
-> index dee035d..3b46abc 100644
-> --- a/ubifs-utils/mkfs.ubifs/devtable.c
-> +++ b/ubifs-utils/mkfs.ubifs/devtable.c
-> @@ -33,9 +33,10 @@
->   * c  Character special device file
->   * b  Block special device file
->   * p  Fifo (named pipe)
-> + * l  Link
->   *
-> - * Don't bother with symlinks (permissions are irrelevant), hard links (special
-> - * cases of regular files), or sockets (why bother).
-> + * Don't bother with hard links (special cases of regular files), or sockets
-> + * (why bother).
->   *
->   * Regular files must exist in the target root directory. If a char, block,
->   * fifo, or directory does not exist, it will be created.
-> @@ -177,6 +178,11 @@ static int interpret_table_entry(const char *line)
->  		case 'b':
->  			mode |= S_IFBLK;
->  			break;
-> +		case 'l':
-> +			mode |= S_IFLNK;
-> +			if ((mode & 0777) != 0777)
-> +				return err_msg("link permission must be 0777");
-> +			break;
->  		default:
->  			return err_msg("unsupported file type '%c'", type);
->  	}
-> 
+> diff --git a/include/linux/bcm47xx_nvram.h b/include/linux/bcm47xx_nvram.h
+> index 2793652fbf66..a414a2b53e41 100644
+> --- a/include/linux/bcm47xx_nvram.h
+> +++ b/include/linux/bcm47xx_nvram.h
+> @@ -8,6 +8,7 @@
+>  #ifndef __BCM47XX_NVRAM_H
+>  #define __BCM47XX_NVRAM_H
+>  
+> +#include <linux/errno.h>
+>  #include <linux/types.h>
+>  #include <linux/kernel.h>
+>  #include <linux/vmalloc.h>
