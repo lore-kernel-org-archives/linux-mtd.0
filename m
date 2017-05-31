@@ -1,16 +1,24 @@
-Received: from bastet.se.axis.com ([195.60.68.11])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dG07g-0005LN-KI
- for linux-mtd@lists.infradead.org; Wed, 31 May 2017 09:41:02 +0000
-From: Rabin Vincent <rabin.vincent@axis.com>
-To: dedekind1@gmail.com,
-	richard@nod.at,
-	adrian.hunter@intel.com
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Rabin Vincent <rabinv@axis.com>
-Subject: [PATCH v4] ubifs: allow userspace to map mounts to volumes
-Date: Wed, 31 May 2017 11:40:27 +0200
-Message-Id: <1496223628-23127-1-git-send-email-rabin.vincent@axis.com>
+Received: from mail-qk0-x234.google.com ([2607:f8b0:400d:c09::234])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dG0Ab-000687-5X
+ for linux-mtd@lists.infradead.org; Wed, 31 May 2017 09:44:02 +0000
+Received: by mail-qk0-x234.google.com with SMTP id y201so7319833qka.0
+ for <linux-mtd@lists.infradead.org>; Wed, 31 May 2017 02:43:40 -0700 (PDT)
+Subject: Re: [PATCH] bcm47xx: fix build regression
+To: Arnd Bergmann <arnd@arndb.de>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <zajec5@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-wireless@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
+References: <20170530112027.3983554-1-arnd@arndb.de>
+From: Arend van Spriel <arend.vanspriel@broadcom.com>
+Message-ID: <7b6903a2-ce54-44f9-18ed-a14bd32069ce@broadcom.com>
+Date: Wed, 31 May 2017 11:43:36 +0200
+MIME-Version: 1.0
+In-Reply-To: <20170530112027.3983554-1-arnd@arndb.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,80 +28,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rabin Vincent <rabinv@axis.com>
+On 5/30/2017 1:20 PM, Arnd Bergmann wrote:
+> An unknown change in the kernel headers caused a build regression
+> in an MTD partition driver:
+> 
+> In file included from drivers/mtd/bcm47xxpart.c:12:0:
+> include/linux/bcm47xx_nvram.h: In function 'bcm47xx_nvram_init_from_mem':
+> include/linux/bcm47xx_nvram.h:27:10: error: 'ENOTSUPP' undeclared (first use in this function)
+> 
+> Clearly we want to include linux/errno.h here.
 
-There currently appears to be no way for userspace to find out the
-underlying volume number for a mounted ubifs file system, since ubifs
-uses anonymous block devices.  The volume name is present in
-/proc/mounts but UBI volumes can be renamed after the volume has been
-mounted.
+unfortunate that you did not find the commit that caused this build 
+regression. You could produce preprocessor output when it was working to 
+see where errno.h got implicitly included and start looking there for 
+git history.
 
-To remedy this, show the UBI number and UBI volume number as part of the
-options visible under /proc/mounts.
+Regards,
+Arend
 
-Also, accept and ignore the ubi= vol= options if they are used mounting
-(patch from Richard Weinberger).
-
- # mount -t ubifs ubi:baz x
- # mount
- ubi:baz on /root/x type ubifs (rw,relatime,ubi=0,vol=2)
- # ubirename /dev/ubi0 baz bazz
- # mount
- ubi:baz on /root/x type ubifs (rw,relatime,ubi=0,vol=2)
- # ubinfo -d 0 -n 2
- Volume ID:   2 (on ubi0)
- Type:        dynamic
- Alignment:   1
- Size:        67 LEBs (1063424 bytes, 1.0 MiB)
- State:       OK
- Name:        bazz
- Character device major/minor: 254:3
-
-Signed-off-by: Rabin Vincent <rabinv@axis.com>
----
-v4 - ignore options in mount
-
- fs/ubifs/super.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index cf4cc99..50cebbe 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -446,6 +446,8 @@ static int ubifs_show_options(struct seq_file *s, struct dentry *root)
- 			   ubifs_compr_name(c->mount_opts.compr_type));
- 	}
- 
-+	seq_printf(s, ",ubi=%d,vol=%d", c->vi.ubi_num, c->vi.vol_id);
-+
- 	return 0;
- }
- 
-@@ -931,6 +933,7 @@ enum {
- 	Opt_chk_data_crc,
- 	Opt_no_chk_data_crc,
- 	Opt_override_compr,
-+	Opt_ignore,
- 	Opt_err,
- };
- 
-@@ -942,6 +945,8 @@ static const match_table_t tokens = {
- 	{Opt_chk_data_crc, "chk_data_crc"},
- 	{Opt_no_chk_data_crc, "no_chk_data_crc"},
- 	{Opt_override_compr, "compr=%s"},
-+	{Opt_ignore, "ubi=%s"},
-+	{Opt_ignore, "vol=%s"},
- 	{Opt_err, NULL},
- };
- 
-@@ -1042,6 +1047,8 @@ static int ubifs_parse_options(struct ubifs_info *c, char *options,
- 			c->default_compr = c->mount_opts.compr_type;
- 			break;
- 		}
-+		case Opt_ignore:
-+			break;
- 		default:
- 		{
- 			unsigned long flag;
--- 
-2.1.4
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   include/linux/bcm47xx_nvram.h | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/include/linux/bcm47xx_nvram.h b/include/linux/bcm47xx_nvram.h
+> index 2793652fbf66..a414a2b53e41 100644
+> --- a/include/linux/bcm47xx_nvram.h
+> +++ b/include/linux/bcm47xx_nvram.h
+> @@ -8,6 +8,7 @@
+>   #ifndef __BCM47XX_NVRAM_H
+>   #define __BCM47XX_NVRAM_H
+>   
+> +#include <linux/errno.h>
+>   #include <linux/types.h>
+>   #include <linux/kernel.h>
+>   #include <linux/vmalloc.h>
+> 
