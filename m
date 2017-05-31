@@ -1,25 +1,29 @@
-Received: from hauke-m.de ([2001:41d0:8:b27b::1] helo=mail.hauke-m.de)
+Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dGA05-00056l-LJ
- for linux-mtd@lists.infradead.org; Wed, 31 May 2017 20:13:51 +0000
-Subject: Re: [PATCH v3 07/16] Documentation: DT: MIPS: lantiq: Add docs for
- the RCU bindings
-To: Rob Herring <robh@kernel.org>
-References: <20170528184006.31668-1-hauke@hauke-m.de>
- <20170528184006.31668-8-hauke@hauke-m.de>
- <20170531200540.joludfqpy35yc5yy@rob-hp-laptop>
-Cc: ralf@linux-mips.org, linux-mips@linux-mips.org,
- linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
- devicetree@vger.kernel.org, martin.blumenstingl@googlemail.com,
- john@phrozen.org, linux-spi@vger.kernel.org, hauke.mehrtens@intel.com,
- andy.shevchenko@gmail.com, p.zabel@pengutronix.de
-From: Hauke Mehrtens <hauke@hauke-m.de>
-Message-ID: <6b8bb1cd-c090-435d-d150-d53edf04d2df@hauke-m.de>
-Date: Wed, 31 May 2017 22:13:16 +0200
+ id 1dGAYi-0001rn-6Q
+ for linux-mtd@lists.infradead.org; Wed, 31 May 2017 20:49:38 +0000
+Date: Wed, 31 May 2017 22:49:13 +0200
+From: Pavel Machek <pavel@ucw.cz>
+To: Darwin Dingel <Darwin.Dingel@alliedtelesis.co.nz>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ "richard@nod.at" <richard@nod.at>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "cyrille.pitchen@atmel.com" <cyrille.pitchen@atmel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "mark.marshall@omicronenergy.com" <mark.marshall@omicronenergy.com>,
+ "b44839@freescale.com" <b44839@freescale.com>,
+ "prabhakar@freescale.com" <prabhakar@freescale.com>
+Subject: Re: mtd: nand: fsl_ifc: fix handing of bit flips in erased pages
+Message-ID: <20170531204913.GC16962@amd>
+References: <5f665145ea304d3a9e1ecb39c51a951e@svr-chch-ex1.atlnz.lc>
 MIME-Version: 1.0
-In-Reply-To: <20170531200540.joludfqpy35yc5yy@rob-hp-laptop>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="iFRdW5/EC4oqxDHL"
+Content-Disposition: inline
+In-Reply-To: <5f665145ea304d3a9e1ecb39c51a951e@svr-chch-ex1.atlnz.lc>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,139 +33,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 05/31/2017 10:05 PM, Rob Herring wrote:
-> On Sun, May 28, 2017 at 08:39:57PM +0200, Hauke Mehrtens wrote:
->> From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
->>
->> This adds the initial documentation for the RCU module (a MFD device
->> which provides USB PHYs, reset controllers and more).
->>
->> The RCU register range is used for multiple purposes. Mostly one device
->> uses one or multiple register exclusively, but for some registers some
->> bits are for one driver and some other bits are for a different driver.
->> With this patch all accesses to the RCU registers will go through
->> syscon.
->>
->> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
->> ---
->>  .../devicetree/bindings/mips/lantiq/rcu.txt        | 97 ++++++++++++++++++++++
->>  1 file changed, 97 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/mips/lantiq/rcu.txt
->>
->> diff --git a/Documentation/devicetree/bindings/mips/lantiq/rcu.txt b/Documentation/devicetree/bindings/mips/lantiq/rcu.txt
->> new file mode 100644
->> index 000000000000..3e2461262218
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mips/lantiq/rcu.txt
->> @@ -0,0 +1,97 @@
->> +Lantiq XWAY SoC RCU binding
->> +===========================
->> +
->> +This binding describes the RCU (reset controller unit) multifunction device,
->> +where each sub-device has it's own set of registers.
->> +
->> +The RCU register range is used for multiple purposes. Mostly one device
->> +uses one or multiple register exclusively, but for some registers some
->> +bits are for one driver and some other bits are for a different driver.
->> +With this patch all accesses to the RCU registers will go through
->> +syscon.
->> +
->> +
->> +-------------------------------------------------------------------------------
->> +Required properties:
->> +- compatible	: The first and second values must be: "simple-mfd", "syscon"
->> +- reg		: The address and length of the system control registers
->> +
->> +
->> +-------------------------------------------------------------------------------
->> +Example of the RCU bindings on a xRX200 SoC:
->> +	rcu0: rcu@203000 {
->> +		compatible = "lantiq,rcu-xrx200", "simple-mfd", "syscon";
->> +		reg = <0x203000 0x100>;
->> +		big-endian;
->> +
->> +		gphy0: gphy@0 {
-> 
-> Unit address without reg address is not valid.
-> 
->> +			compatible = "lantiq,xrx200a2x-rcu-gphy";
->> +
->> +			regmap = <&rcu0>;
->> +			offset = <0x20>;
-> 
-> Does reg not work instead?
 
-Is it ok to access some registers in this range with a reg = <0x20 0x04>
-setting and some others through syscon? This specific register is only
-used by this gphy, but the reset controller shares the register with
-some other drivers like the watchdog driver.
+--iFRdW5/EC4oqxDHL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->> +			resets = <&reset0 31 30>, <&reset1 7 7>;
->> +			reset-names = "gphy", "gphy2";
->> +			lantiq,gphy-mode = <GPHY_MODE_GE>;
->> +		};
->> +
->> +		gphy1: gphy@1 {
->> +			compatible = "lantiq,xrx200a2x-rcu-gphy";
->> +
->> +			regmap = <&rcu0>;
->> +			offset = <0x68>;
->> +			resets = <&reset0 29 28>, <&reset1 6 6>;
->> +			reset-names = "gphy", "gphy2";
->> +			lantiq,gphy-mode = <GPHY_MODE_GE>;
->> +		};
->> +
->> +		reset0: reset-controller@0 {
->> +			compatible = "lantiq,rcu-reset";
->> +
->> +			regmap = <&rcu0>;
->> +			offset-set = <0x10>;
->> +			offset-status = <0x14>;
->> +			#reset-cells = <2>;
->> +		};
->> +
->> +		reset1: reset-controller@1 {
->> +			compatible = "lantiq,rcu-reset";
->> +
->> +			regmap = <&rcu0>;
->> +			offset-set = <0x48>;
->> +			offset-status = <0x24>;
->> +			#reset-cells = <2>;
->> +		};
->> +
->> +		usb_phy0: usb2-phy@0 {
->> +			compatible = "lantiq,xrx200-rcu-usb2-phy";
->> +			status = "disabled";
->> +
->> +			regmap = <&rcu0>;
->> +			offset-phy = <0x18>;
->> +			offset-ana = <0x38>;
->> +			resets = <&reset1 4 4>, <&reset0 4 4>;
->> +			reset-names = "phy", "ctrl";
->> +			#phy-cells = <0>;
->> +		};
->> +
->> +		usb_phy1: usb2-phy@1 {
->> +			compatible = "lantiq,xrx200-rcu-usb2-phy";
->> +			status = "disabled";
->> +
->> +			regmap = <&rcu0>;
->> +			offset-phy = <0x34>;
->> +			offset-ana = <0x3C>;
->> +			resets = <&reset1 5 4>, <&reset0 4 4>;
->> +			reset-names = "phy", "ctrl";
->> +			#phy-cells = <0>;
->> +		};
->> +
->> +		reboot {
->> +			compatible = "syscon-reboot";
->> +
->> +			regmap = <&rcu0>;
->> +			offset = <0x10>;
->> +			mask = <0x40000000>;
->> +		};
->> +	};
->> +
->> -- 
->> 2.11.0
->>
+Hi!
+
+> We are also having the same problem where the IFC (nand flash) was=20
+> reporting ECC uncorrectable errors on single bitflips with erased pages.=
+=20
+> Applying this patch with some minor modifications seems to solve our=20
+> issue. We are still doing more testing but recent results looks
+> promising.
+
+First, thanks for letting me know.
+
+> Our kernel is 4.4.6 so we have to modify it a bit to fit the old ECC=20
+> layout structure. We just have a few comments about the patch:
+>=20
+>  > -				if (!is_blank(mtd, bufnum))
+>  > -					ctrl->nand_stat |=3D
+>  > -						IFC_NAND_EVTER_STAT_ECCER;
+>  > -				break;
+>  > +				ctrl->nand_stat |=3D IFC_NAND_EVTER_STAT_ECCER;
+>=20
+> Added 'error =3D 0' after setting the flag since no error was actually=20
+> corrected.
+
+You meen "errors =3D 0"? Does that actually make a difference? It is a
+local variable, and continue makes sure the value is not used:
+
+                for (i =3D sector; i <=3D sector_end; i++) {
+                        errors =3D check_read_ecc(mtd, ctrl, eccstat, i);
+
+                        if (errors =3D=3D 15) {
+				/*=20
+                                 * Uncorrectable error.=20
+                                 * We'll check for blank pages later.=20
+                                 *=20
+                                 * We disable ECCER reporting due to...=20
+                                 * erratum IFC-A002770 -- so report it now =
+if we=20
+                                 * see an uncorrectable error in ECCSTAT.=
+=20
+                                 */
+                                ctrl->nand_stat |=3D IFC_NAND_EVTER_STAT_EC=
+CER;
+                                continue;
+                        }
+
+
+>  > -	if (ctrl->nand_stat & IFC_NAND_EVTER_STAT_ECCER)
+>  > -		dev_err(priv->dev, "NAND Flash ECC Uncorrectable Error\n");
+>  > -
+>  >  	if (ctrl->nand_stat !=3D IFC_NAND_EVTER_STAT_OPC)
+>  >  		mtd->ecc_stats.failed++;
+>  > +
+>  > +	if (ctrl->nand_stat & IFC_NAND_EVTER_STAT_ECCER) {
+>  > +		int res;
+>  > +
+>  > +		if (!oob_required)
+>  > +			fsl_ifc_read_buf(mtd, chip->oob_poi, mtd->oobsize);
+>  > +
+>  > +		res =3D check_erased_page(chip, buf);
+>  > +		return res;
+>  > +	}
+>=20
+> We have to do the check IFC_NAND_EVTER_STAT_ECCER first because the=20
+> condition (ctrl->nand_stat !=3D IFC_NAND_EVTER_STAT_OPC) will never be=20
+> true since IFC always sets IFC_NAND_EVTER_STAT_ECCER on empty pages.=20
+> Incrementing failed stats first before doing check_erased_page() makes=20
+> nand_read() report ECC error all time.
+
+Yes, you are right; I overlooked that one. Thanks a lot!
+
+> Our exact modification was:
+> 	if (ctrl->nand_stat & IFC_NAND_EVTER_STAT_ECCER) {
+> 		if (!oob_required)
+> 			fsl_ifc_read_buf(mtd, chip->oob_poi, mtd->oobsize);
+>=20
+> 		return check_erased_page(chip, buf);
+> 	}
+>=20
+> 	if (ctrl->nand_stat !=3D IFC_NAND_EVTER_STAT_OPC)
+> 		mtd->ecc_stats.failed++;
+>=20
+> Because check_erased_page() will be updating the failed stat anyway.
+
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--iFRdW5/EC4oqxDHL
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlkvLEkACgkQMOfwapXb+vJzfwCcDY+1u98vc08qDliy0g/5plRM
+n4IAmgP3WQ3zmJpzsp+f3dK0ql0nkLoi
+=gMO1
+-----END PGP SIGNATURE-----
+
+--iFRdW5/EC4oqxDHL--
