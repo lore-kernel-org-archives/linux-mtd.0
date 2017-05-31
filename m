@@ -1,28 +1,28 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dG0T6-0001SY-K6
- for linux-mtd@lists.infradead.org; Wed, 31 May 2017 10:03:10 +0000
-Date: Wed, 31 May 2017 12:02:46 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: "Peter Pan =?UTF-8?B?5r2Y5qCL?= (peterpandong)" <peterpandong@micron.com>
-Cc: "richard@nod.at" <richard@nod.at>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "arnaud.mouiche@gmail.com"
- <arnaud.mouiche@gmail.com>, "thomas.petazzoni@free-electrons.com"
- <thomas.petazzoni@free-electrons.com>, "marex@denx.de" <marex@denx.de>,
- "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "peterpansjtu@gmail.com" <peterpansjtu@gmail.com>,
- "linshunquan1@hisilicon.com" <linshunquan1@hisilicon.com>
-Subject: Re: [PATCH v6 11/15] nand: spi: add basic operations support
-Message-ID: <20170531120246.60e3009e@bbrezillon>
-In-Reply-To: <B7799737-B040-4824-BBAF-5A0510CD553C@micron.com>
-References: <1495609631-18880-1-git-send-email-peterpandong@micron.com>
- <1495609631-18880-12-git-send-email-peterpandong@micron.com>
- <20170530001152.1d8beb72@bbrezillon>
- <B7799737-B040-4824-BBAF-5A0510CD553C@micron.com>
+Received: from mail-oi0-x244.google.com ([2607:f8b0:4003:c06::244])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dG0ku-0003xg-2W
+ for linux-mtd@lists.infradead.org; Wed, 31 May 2017 10:21:33 +0000
+Received: by mail-oi0-x244.google.com with SMTP id w10so1206194oif.1
+ for <linux-mtd@lists.infradead.org>; Wed, 31 May 2017 03:21:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Sender: arndbergmann@gmail.com
+In-Reply-To: <7b6903a2-ce54-44f9-18ed-a14bd32069ce@broadcom.com>
+References: <20170530112027.3983554-1-arnd@arndb.de>
+ <7b6903a2-ce54-44f9-18ed-a14bd32069ce@broadcom.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Wed, 31 May 2017 12:21:10 +0200
+Message-ID: <CAK8P3a2-kO==gMDm3E6U8CR-zhwmZGztRy7Trcezf8oZxgn01g@mail.gmail.com>
+Subject: Re: [PATCH] bcm47xx: fix build regression
+To: Arend van Spriel <arend.vanspriel@broadcom.com>
+Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ linux-wireless <linux-wireless@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>,
+ "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
+ Ingo Molnar <mingo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,91 +32,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Peter,
+On Wed, May 31, 2017 at 11:43 AM, Arend van Spriel
+<arend.vanspriel@broadcom.com> wrote:
+> On 5/30/2017 1:20 PM, Arnd Bergmann wrote:
+>>
+>> An unknown change in the kernel headers caused a build regression
+>> in an MTD partition driver:
+>>
+>> In file included from drivers/mtd/bcm47xxpart.c:12:0:
+>> include/linux/bcm47xx_nvram.h: In function 'bcm47xx_nvram_init_from_mem':
+>> include/linux/bcm47xx_nvram.h:27:10: error: 'ENOTSUPP' undeclared (first
+>> use in this function)
+>>
+>> Clearly we want to include linux/errno.h here.
+>
+>
+> unfortunate that you did not find the commit that caused this build
+> regression. You could produce preprocessor output when it was working to see
+> where errno.h got implicitly included and start looking there for git
+> history.
 
-On Wed, 31 May 2017 06:51:34 +0000
-Peter Pan =E6=BD=98=E6=A0=8B (peterpandong) <peterpandong@micron.com> wrote:
+I did a 'git bisect run make drivers/mtd/bcm47xxpart.o' now, which pointed to
+0bc2d534708b ("rcu: Refactor #includes from include/linux/rcupdate.h").
 
-> >> +/**
-> >> + * spinand_disable_ecc - disable internal ECC
-> >> + * @spinand: SPI NAND device structure
-> >> + */
-> >> +static void spinand_disable_ecc(struct spinand_device *spinand)
-> >> +{
-> >> +    u8 cfg =3D 0;
-> >> +
-> >> +    spinand_get_cfg(spinand, &cfg);
-> >> +
-> >> +    if ((cfg & CFG_ECC_MASK) =3D=3D CFG_ECC_ENABLE) {
-> >> +        cfg &=3D ~CFG_ECC_ENABLE;
-> >> +        spinand_set_cfg(spinand, cfg);
-> >> +    } =20
-> >=20
-> > Is this really a generic (manufacturer-agnostic) feature??? I had the
-> > feeling that is was only working for Micron. If that's the case, this
-> > 'disable-ecc' step should be done in spi/micron.c in a
-> > micron_spinand_init() function. =20
->=20
-> As far as I can see, Micron is not the only vendor to disable on die ecc=
-=20
-> by this way, actually all vendors I know use this .
+That commit seems reasonable, it was just bad luck that it caused this
+regression. The commit is currently in the rcu/rcu/next branch of tip.git,
+so Paul could merge the patch there.
 
-Hm, ok. I'm a bit skeptical (vendors tend to implement this kind of
-feature with vendor specific commands, but maybe it has changed with SPI
-NANDs), but I'll trust you on this one.=20
-
-> And this series=20
-> doesn't support on die ecc, so IMO it is necessary to disable it during
-> initialization
-
-Actually I was not arguing on the need to disable on-die ECC, just
-wasn't sure this should be done in the core. If it's really generic,
-then it's fine.
-
->=20
-> >  =20
-> >> +}
-
-[...]
-
-> >>=20
-> >> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-> >> index dd9da71..04ad1dd 100644
-> >> --- a/include/linux/mtd/spinand.h
-> >> +++ b/include/linux/mtd/spinand.h
-> >> @@ -103,11 +103,14 @@ struct spinand_controller_ops {
-> >>  *          return directly and let others to detect.
-> >>  * @init: initialize SPI NAND device.
-> >>  * @cleanup: clean SPI NAND device footprint.
-> >> + * @prepare_op: prepara read/write operation. =20
-> >=20
-> >           ^ prepare
-> >=20
-> >=20
-> >  =20
-> >>  */
-> >> struct spinand_manufacturer_ops {
-> >>    bool (*detect)(struct spinand_device *spinand);
-> >>    int (*init)(struct spinand_device *spinand);
-> >>    void (*cleanup)(struct spinand_device *spinand);
-> >> +    void (*prepare_op)(struct spinand_device *spinand,
-> >> +               struct spinand_op *op, u32 page, u32 column); =20
-> >=20
-> > It seems to be here to prepare read/write page operations, so I'd like
-> > to rename this method ->prepare_page_op() if you don't mind. =20
->=20
-> I'm ok with the new name
-
-Actually, in the mean time I asked Cyrille how dummy cycles were
-handled in the spi-nor subsystem and how spi flash controllers are
-dealing with such dummy cycles. It seems that some controllers are able
-to handle those dummy cycles on their own (without any software
-intervention to skip bits or move things around in output bufs.
-
-I'll let Cyrille comment on this specific aspect, but I wonder if we
-shouldn't just specify the number of dummy cycles and let the
-controller handle that.
-
-Regards,
-
-Boris
+       Arnd
