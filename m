@@ -13,10 +13,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Linus Walleij <linus.walleij@linaro.org>,
  Russell King <linux@armlinux.org.uk>, linux-mmc@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v3 9/9] arm: pxa: poodle.c: remove hardcoded partitioning,
+Subject: [PATCH v3 6/9] arm: pxa: corgi.c: remove hardcoded partitioning,
  use sharpslpart parser
-Date: Thu,  1 Jun 2017 00:40:58 +0200
-Message-Id: <1496270458-6479-10-git-send-email-andrea.adami@gmail.com>
+Date: Thu,  1 Jun 2017 00:40:55 +0200
+Message-Id: <1496270458-6479-7-git-send-email-andrea.adami@gmail.com>
 In-Reply-To: <1496270458-6479-1-git-send-email-andrea.adami@gmail.com>
 References: <1496270458-6479-1-git-send-email-andrea.adami@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,16 +30,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
 ---
- arch/arm/mach-pxa/poodle.c | 28 ++++++++--------------------
- 1 file changed, 8 insertions(+), 20 deletions(-)
+ arch/arm/mach-pxa/corgi.c | 31 ++++++++-----------------------
+ 1 file changed, 8 insertions(+), 23 deletions(-)
 
-diff --git a/arch/arm/mach-pxa/poodle.c b/arch/arm/mach-pxa/poodle.c
-index 62a1191..4881a43 100644
---- a/arch/arm/mach-pxa/poodle.c
-+++ b/arch/arm/mach-pxa/poodle.c
-@@ -333,24 +333,6 @@ static struct pxafb_mach_info poodle_fb_info = {
- 	.lcd_conn	= LCD_COLOR_TFT_16BPP,
- };
+diff --git a/arch/arm/mach-pxa/corgi.c b/arch/arm/mach-pxa/corgi.c
+index 7270f0d..2412add 100644
+--- a/arch/arm/mach-pxa/corgi.c
++++ b/arch/arm/mach-pxa/corgi.c
+@@ -606,24 +606,6 @@ static void __init corgi_init_spi(void)
+ static inline void corgi_init_spi(void) {}
+ #endif
  
 -static struct mtd_partition sharpsl_nand_partitions[] = {
 -	{
@@ -50,7 +50,7 @@ index 62a1191..4881a43 100644
 -	{
 -		.name = "Root Filesystem",
 -		.offset = 7 * 1024 * 1024,
--		.size = 22 * 1024 * 1024,
+-		.size = 25 * 1024 * 1024,
 -	},
 -	{
 -		.name = "Home Filesystem",
@@ -62,7 +62,7 @@ index 62a1191..4881a43 100644
  static uint8_t scan_ff_pattern[] = { 0xff, 0xff };
  
  static struct nand_bbt_descr sharpsl_bbt = {
-@@ -360,10 +342,16 @@ static struct nand_bbt_descr sharpsl_bbt = {
+@@ -633,10 +615,16 @@ static struct nand_bbt_descr sharpsl_bbt = {
  	.pattern = scan_ff_pattern
  };
  
@@ -81,5 +81,15 @@ index 62a1191..4881a43 100644
  };
  
  static struct resource sharpsl_nand_resources[] = {
+@@ -750,9 +738,6 @@ static void __init corgi_init(void)
+ 
+ 	platform_scoop_config = &corgi_pcmcia_config;
+ 
+-	if (machine_is_husky())
+-		sharpsl_nand_partitions[1].size = 53 * 1024 * 1024;
+-
+ 	platform_add_devices(devices, ARRAY_SIZE(devices));
+ 
+ 	regulator_has_full_constraints();
 -- 
 2.7.4
