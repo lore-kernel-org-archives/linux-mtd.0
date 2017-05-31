@@ -1,30 +1,18 @@
-Received: from mail-oi0-x244.google.com ([2607:f8b0:4003:c06::244])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dG3mR-00027M-7a
- for linux-mtd@lists.infradead.org; Wed, 31 May 2017 13:35:27 +0000
-Received: by mail-oi0-x244.google.com with SMTP id h4so1910723oib.0
- for <linux-mtd@lists.infradead.org>; Wed, 31 May 2017 06:34:58 -0700 (PDT)
+Date: Wed, 31 May 2017 16:32:29 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Xiaolei Li <xiaolei.li@mediatek.com>
+Cc: <computersforpeace@gmail.com>, <matthias.bgg@gmail.com>,
+ <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, <robh+dt@kernel.org>,
+ <rogercc.lin@mediatek.com>, <yt.shen@mediatek.com>,
+ <srv_heupstream@mediatek.com>
+Subject: Re: [PATCH v5 0/4] Mediatek MT2712 NAND FLASH Controller driver
+Message-ID: <20170531163229.50abc305@bbrezillon>
+In-Reply-To: <1496219201-45414-1-git-send-email-xiaolei.li@mediatek.com>
+References: <1496219201-45414-1-git-send-email-xiaolei.li@mediatek.com>
 MIME-Version: 1.0
-Sender: arndbergmann@gmail.com
-In-Reply-To: <20170531131216.GJ3956@linux.vnet.ibm.com>
-References: <20170530112027.3983554-1-arnd@arndb.de>
- <7b6903a2-ce54-44f9-18ed-a14bd32069ce@broadcom.com>
- <CAK8P3a2-kO==gMDm3E6U8CR-zhwmZGztRy7Trcezf8oZxgn01g@mail.gmail.com>
- <20170531131216.GJ3956@linux.vnet.ibm.com>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Wed, 31 May 2017 15:34:57 +0200
-Message-ID: <CAK8P3a1wcVC1+dPbtAgn=2RbToV_ai+dGc2tJxdQ4r1s+nxAFg@mail.gmail.com>
-Subject: Re: [PATCH] bcm47xx: fix build regression
-To: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
-Cc: Arend van Spriel <arend.vanspriel@broadcom.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- linux-wireless <linux-wireless@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>,
- Ingo Molnar <mingo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,45 +22,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 31, 2017 at 3:12 PM, Paul E. McKenney
-<paulmck@linux.vnet.ibm.com> wrote:
-> On Wed, May 31, 2017 at 12:21:10PM +0200, Arnd Bergmann wrote:
->> On Wed, May 31, 2017 at 11:43 AM, Arend van Spriel
->> <arend.vanspriel@broadcom.com> wrote:
->> > On 5/30/2017 1:20 PM, Arnd Bergmann wrote:
->> >>
->> >> An unknown change in the kernel headers caused a build regression
->> >> in an MTD partition driver:
->> >>
->> >> In file included from drivers/mtd/bcm47xxpart.c:12:0:
->> >> include/linux/bcm47xx_nvram.h: In function 'bcm47xx_nvram_init_from_mem':
->> >> include/linux/bcm47xx_nvram.h:27:10: error: 'ENOTSUPP' undeclared (first
->> >> use in this function)
->> >>
->> >> Clearly we want to include linux/errno.h here.
->> >
->> >
->> > unfortunate that you did not find the commit that caused this build
->> > regression. You could produce preprocessor output when it was working to see
->> > where errno.h got implicitly included and start looking there for git
->> > history.
->>
->> I did a 'git bisect run make drivers/mtd/bcm47xxpart.o' now, which pointed to
->> 0bc2d534708b ("rcu: Refactor #includes from include/linux/rcupdate.h").
->>
->> That commit seems reasonable, it was just bad luck that it caused this
->> regression. The commit is currently in the rcu/rcu/next branch of tip.git,
->> so Paul could merge the patch there.
->
-> Apologies for the inconvenience, not sure why 0day test robot didn't
-> find this.  Probably because it cannot test each and every driver.  ;-)
+On Wed, 31 May 2017 16:26:37 +0800
+Xiaolei Li <xiaolei.li@mediatek.com> wrote:
 
-No worries.
+> The following patch-set adds support for Mediatek MT2712 NAND FLASH
+> Controller.
 
-> This patch, correct?
->
->         https://lkml.org/lkml/2017/5/30/348
+Applied to nand/next.
 
-Right, I should have included the link.
+Thanks,
 
-      Arnd
+Boris
+
+> 
+> Changes on v5 relative to:
+> --------------------
+> 
+> tree    : https://github.com/bbrezillon/linux-0day
+> branch  : nand/next
+> commit  :
+>         'commit 2b12c057cc28 ("mtd: nand: brcmnand: Check flash #WP pin
+>          status before nand erase/program")'
+> 
+> Patch v5:
+> ---------
+> - rename variable j as closest_spare in function mtk_nfc_set_spare_per_sector
+> - remove unneeded parenthesis
+> - add define MTK_NFC_MIN_SPARE to check whether there is no entry that is
+>   less than *sps.
+> 
+> Patch v4:
+> ---------
+> - remove spare size array sort. iterate over all entries of spare size
+>   table and pick the best one.
+> 
+> Patch v3:
+> ---------
+> - separate patches into 4.
+> - rename struct mtk_ecc_devdata and struct mtk_nfc_devdata to struct
+>   mtk_ecc_caps and struct mtk_nfc_caps respectively.
+> - add variables const u8 *ecc_strength and u8 num_ecc_strength into struct
+>   mtk_ecc_caps, and remove u8 max_ecc_strength.
+> - rename variabl u32 temp in function mtk_ecc_probe to u32 max_eccdata_size.
+> - remove ECC_CNFG_xBIT define, use a for loop to do ecc hw configuration.
+> - remove const u32 *spare_format from struct mtk_nfc_caps, and add variables
+>   u8 num_spare_size and u8 pageformat_spare_shift.
+> - remove PAGEFMT_SPARE_ define, use a for loop to do nfc hw configuration.
+> - sort spare size array before setting spare size.
+> - fix coding style issue.
+> 
+> Patch v2:
+> ---------
+> - sperate patches into 3.
+> - refine DT bindings documentation about NFC and ECC compatible.
+> - use ecc->devdata->encode_parity_reg0 and ecc->devdata->err_mask
+>   directly, but hide them in define.
+> 
+> Tests:
+> ------
+> 
+> * ubifs and jffs2 are validated on NAND device MT29F16G08ADBCA
+>   by 'dd' command.
+> * all drivers/mtd/tests/* pass.
+> * speed test:
+>   eraseblock write speed is 8318 KiB/s
+>   eraseblock read speed is 11374 KiB/s
+>   page write speed is 8155 KiB/s
+>   page read speed is 11290 KiB/s
+>   2 page write speed is 8217 KiB/s
+>   2 page read speed is 11354 KiB/s
+>   erase speed is 116472 KiB/s
+>   2x multi-block erase speed is 352978 KiB/s
+>   4x multi-block erase speed is 359750 KiB/s
+>   8x multi-block erase speed is 361484 KiB/s
+>   16x multi-block erase speed is 364116 KiB/s
+>   32x multi-block erase speed is 364116 KiB/s
+>   64x multi-block erase speed is 364116 KiB/s
+> 
+> Xiaolei Li (4):
+>   mtd: nand: mediatek: update DT bindings
+>   mtd: nand: mediatek: refine register NFI_PAGEFMT setting
+>   mtd: nand: mediatek: add support for different MTK NAND FLASH
+>     Controller IP
+>   mtd: nand: mediatek: add support for MT2712 NAND FLASH Controller
+> 
+>  Documentation/devicetree/bindings/mtd/mtk-nand.txt |   5 +-
+>  drivers/mtd/nand/mtk_ecc.c                         | 218 ++++++++++-----------
+>  drivers/mtd/nand/mtk_ecc.h                         |   2 +-
+>  drivers/mtd/nand/mtk_nand.c                        | 187 +++++++++---------
+>  4 files changed, 206 insertions(+), 206 deletions(-)
+> 
+> --
+> 1.9.1
