@@ -1,26 +1,28 @@
-Received: from mail-oi0-f67.google.com ([209.85.218.67])
+Received: from mail-oi0-f65.google.com ([209.85.218.65])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dGAdx-00044w-6a
- for linux-mtd@lists.infradead.org; Wed, 31 May 2017 20:55:02 +0000
-Received: by mail-oi0-f67.google.com with SMTP id j66so954538oib.2
- for <linux-mtd@lists.infradead.org>; Wed, 31 May 2017 13:54:40 -0700 (PDT)
-Date: Wed, 31 May 2017 15:54:39 -0500
+ id 1dGAhI-000607-HZ
+ for linux-mtd@lists.infradead.org; Wed, 31 May 2017 20:58:29 +0000
+Received: by mail-oi0-f65.google.com with SMTP id w10so3799898oif.1
+ for <linux-mtd@lists.infradead.org>; Wed, 31 May 2017 13:58:08 -0700 (PDT)
+Date: Wed, 31 May 2017 15:58:06 -0500
 From: Rob Herring <robh@kernel.org>
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: ralf@linux-mips.org, linux-mips@linux-mips.org,
- linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
- devicetree@vger.kernel.org, martin.blumenstingl@googlemail.com,
- john@phrozen.org, linux-spi@vger.kernel.org,
- hauke.mehrtens@intel.com, andy.shevchenko@gmail.com, p.zabel@pengutronix.de
-Subject: Re: [PATCH v3 08/16] MIPS: lantiq: Convert the fpi bus driver to a
- platform_driver
-Message-ID: <20170531205439.l5fiatf4v3kp43yq@rob-hp-laptop>
+To: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Hauke Mehrtens <hauke@hauke-m.de>, ralf@linux-mips.org,
+ linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
+ linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+ martin.blumenstingl@googlemail.com, john@phrozen.org,
+ linux-spi@vger.kernel.org, hauke.mehrtens@intel.com,
+ andy.shevchenko@gmail.com
+Subject: Re: [PATCH v3 10/16] reset: Add a reset controller driver for the
+ Lantiq XWAY based SoCs
+Message-ID: <20170531205806.uohn2tr6qtrocpl6@rob-hp-laptop>
 References: <20170528184006.31668-1-hauke@hauke-m.de>
- <20170528184006.31668-9-hauke@hauke-m.de>
+ <20170528184006.31668-11-hauke@hauke-m.de>
+ <1496053214.17695.49.camel@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20170528184006.31668-9-hauke@hauke-m.de>
+In-Reply-To: <1496053214.17695.49.camel@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,77 +32,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, May 28, 2017 at 08:39:58PM +0200, Hauke Mehrtens wrote:
-> From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+On Mon, May 29, 2017 at 12:20:14PM +0200, Philipp Zabel wrote:
+> Hi Hauke,
 > 
-> Instead of hacking the configuration of the FPI bus into the arch code
-> add an own bus driver for this internal bus. The FPI bus is the main
-> bus of the SoC. This bus driver makes sure the bus is configured
-> correctly before the child drivers are getting initialized. This driver
-> will probably also be used on different SoC later.
+> On Sun, 2017-05-28 at 20:40 +0200, Hauke Mehrtens wrote:
+> [...]
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/reset/lantiq,reset.txt
+> > @@ -0,0 +1,30 @@
+> > +Lantiq XWAY SoC RCU reset controller binding
+> > +============================================
+> > +
+> > +This binding describes a reset-controller found on the RCU module on Lantiq
+> > +XWAY SoCs.
+> > +
+> > +
+> > +-------------------------------------------------------------------------------
+> > +Required properties:
+> > +- compatible		: Should be one of
+> > +				"lantiq,reset-danube"
+> > +				"lantiq,reset-xrx200"
+> > +- regmap		: A phandle to the RCU syscon
+> > +- offset-set		: Offset of the reset set register
+> > +- offset-status		: Offset of the reset status register
+> > +- #reset-cells		: Specifies the number of cells needed to encode the
+> > +			  reset line, should be 2.
+> > +			  The first cell takes the reset set bit and the
+> > +			  second cell takes the status bit.
+> > +
+> > +-------------------------------------------------------------------------------
+> > +Example for the reset-controllers on the xRX200 SoCs:
+> > +	reset0: reset-controller@0 {
+> > +		compatible = "lantiq,reset-xrx200";
+> > +
+> > +		regmap = <&rcu0>;
 > 
-> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> ---
->  .../devicetree/bindings/mips/lantiq/fpi-bus.txt    | 33 ++++++++
->  MAINTAINERS                                        |  1 +
->  arch/mips/lantiq/xway/reset.c                      |  4 -
->  arch/mips/lantiq/xway/sysctrl.c                    | 41 ----------
->  drivers/soc/Makefile                               |  1 +
->  drivers/soc/lantiq/Makefile                        |  1 +
->  drivers/soc/lantiq/fpi-bus.c                       | 91 ++++++++++++++++++++++
->  7 files changed, 127 insertions(+), 45 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mips/lantiq/fpi-bus.txt
->  create mode 100644 drivers/soc/lantiq/Makefile
->  create mode 100644 drivers/soc/lantiq/fpi-bus.c
-> 
-> diff --git a/Documentation/devicetree/bindings/mips/lantiq/fpi-bus.txt b/Documentation/devicetree/bindings/mips/lantiq/fpi-bus.txt
-> new file mode 100644
-> index 000000000000..52d4bb9d2ffa
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mips/lantiq/fpi-bus.txt
-> @@ -0,0 +1,33 @@
-> +Lantiq XWAY SoC FPI BUS binding
-> +============================
-> +
-> +
-> +-------------------------------------------------------------------------------
-> +Required properties:
-> +- compatible	: Should be one of
-> +				"lantiq,fpi-xrx200"
-> +- reg		: The address and length of the XBAR configuration register.
-> +		  Address and length of the FPI bus itself
-> +
-> +Optional properties:
-> +- regmap		: A phandle to the RCU syscon
-> +- offset-endianness	: Offset of the endianness configuration register
-> +
-> +
-> +-------------------------------------------------------------------------------
-> +Example for the FPI on the xrx200 SoCs:
-> +	fpi@10000000 {
-> +		compatible = "lantiq,fpi-xrx200", "simple-bus";
-> +		ranges = <0x0 0x10000000 0xF000000>;
+> Why not place these nodes as children of &rcu0 ? This property would be
+> superfluous then.
 
-lowercase hex please.
+They are children. So it should be removed and made clear that these are 
+child nodes of rcu (here and in other patches in this series).
 
-> +		reg =	<0x1F400000 0x1000>,
-> +			<0x10000000 0xF000000>;
-> +		regmap = <&rcu0>;
-> +		offset-endianness = <0x4c>;
-
-Presumably, this is for endianness of the children. So this needs to be 
-configured before probing the children. If so, then you should not call 
-this a "simple-bus".
-
-> +		big-endian;
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +
-> +		gptu@E100A00 {
-
-lowercase hex.
-
-> +			......
-> +		};
-> +	};
+Rob
