@@ -1,24 +1,33 @@
-From: Andrea Adami <andrea.adami@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Lee Jones <lee.jones@linaro.org>, Daniel Mack <daniel@zonque.org>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Linus Walleij <linus.walleij@linaro.org>,
- Russell King <linux@armlinux.org.uk>, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v3 6/9] arm: pxa: corgi.c: remove hardcoded partitioning,
- use sharpslpart parser
-Date: Thu,  1 Jun 2017 00:40:55 +0200
-Message-Id: <1496270458-6479-7-git-send-email-andrea.adami@gmail.com>
-In-Reply-To: <1496270458-6479-1-git-send-email-andrea.adami@gmail.com>
-References: <1496270458-6479-1-git-send-email-andrea.adami@gmail.com>
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dGCam-00030l-Q9
+ for linux-mtd@lists.infradead.org; Wed, 31 May 2017 22:59:54 +0000
+From: Darwin Dingel <Darwin.Dingel@alliedtelesis.co.nz>
+To: Pavel Machek <pavel@ucw.cz>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>
+CC: "richard@nod.at" <richard@nod.at>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "cyrille.pitchen@atmel.com"
+ <cyrille.pitchen@atmel.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "mark.marshall@omicronenergy.com"
+ <mark.marshall@omicronenergy.com>, "b44839@freescale.com"
+ <b44839@freescale.com>, "prabhakar@freescale.com" <prabhakar@freescale.com>
+Subject: Re: [PATCHv2] mtd: nand: fsl_ifc: fix handing of bit flips in erased
+ pages
+Date: Wed, 31 May 2017 22:59:24 +0000
+Message-ID: <8c35c069ba6f42a79b2c11338c2a4f80@svr-chch-ex1.atlnz.lc>
+References: <20170419231804.5a04ed69@bbrezillon> <20170419221507.GA24914@amd>
+ <20170420002748.5c76c9b9@bbrezillon> <20170420114057.GA4705@amd>
+ <20170421105107.GA7259@amd> <20170517122224.GB583@amd>
+ <20170517143211.205ff5de@bbrezillon> <20170517130059.GA3437@amd>
+ <20170517152548.6d52c41b@bbrezillon> <20170517200305.GA12537@amd>
+ <20170531205917.GA21878@amd>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,68 +37,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
----
- arch/arm/mach-pxa/corgi.c | 31 ++++++++-----------------------
- 1 file changed, 8 insertions(+), 23 deletions(-)
-
-diff --git a/arch/arm/mach-pxa/corgi.c b/arch/arm/mach-pxa/corgi.c
-index 7270f0d..2412add 100644
---- a/arch/arm/mach-pxa/corgi.c
-+++ b/arch/arm/mach-pxa/corgi.c
-@@ -606,24 +606,6 @@ static void __init corgi_init_spi(void)
- static inline void corgi_init_spi(void) {}
- #endif
- 
--static struct mtd_partition sharpsl_nand_partitions[] = {
--	{
--		.name = "System Area",
--		.offset = 0,
--		.size = 7 * 1024 * 1024,
--	},
--	{
--		.name = "Root Filesystem",
--		.offset = 7 * 1024 * 1024,
--		.size = 25 * 1024 * 1024,
--	},
--	{
--		.name = "Home Filesystem",
--		.offset = MTDPART_OFS_APPEND,
--		.size = MTDPART_SIZ_FULL,
--	},
--};
--
- static uint8_t scan_ff_pattern[] = { 0xff, 0xff };
- 
- static struct nand_bbt_descr sharpsl_bbt = {
-@@ -633,10 +615,16 @@ static struct nand_bbt_descr sharpsl_bbt = {
- 	.pattern = scan_ff_pattern
- };
- 
-+static const char * const probes[] = {
-+	"cmdlinepart",
-+	"ofpart",
-+	"sharpslpart",
-+	NULL,
-+};
-+
- static struct sharpsl_nand_platform_data sharpsl_nand_platform_data = {
- 	.badblock_pattern	= &sharpsl_bbt,
--	.partitions		= sharpsl_nand_partitions,
--	.nr_partitions		= ARRAY_SIZE(sharpsl_nand_partitions),
-+	.types			= probes,
- };
- 
- static struct resource sharpsl_nand_resources[] = {
-@@ -750,9 +738,6 @@ static void __init corgi_init(void)
- 
- 	platform_scoop_config = &corgi_pcmcia_config;
- 
--	if (machine_is_husky())
--		sharpsl_nand_partitions[1].size = 53 * 1024 * 1024;
--
- 	platform_add_devices(devices, ARRAY_SIZE(devices));
- 
- 	regulator_has_full_constraints();
--- 
-2.7.4
+=0A=
+On 01/06/17 08:59, Pavel Machek wrote:=0A=
+> If we see unrecoverable ECC error, we need to count number of bitflips=0A=
+> from all-ones and report correctable/uncorrectable according to=0A=
+> that. Otherwise we report ECC failed on erased flash with single bit erro=
+r.=0A=
+> =0A=
+> Signed-off-by: Pavel Machek <pavel@denx.de>=0A=
+> Reported-by: Darwin Dingel <Darwin.Dingel@alliedtelesis.co.nz>=0A=
+> =0A=
+=0A=
+Acked-by: Darwin Dingel <Darwin.Dingel@alliedtelesis.co.nz>=0A=
+=0A=
+=0A=
+Cheers,=0A=
+Darwin=0A=
