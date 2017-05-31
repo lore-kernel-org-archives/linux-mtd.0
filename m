@@ -1,16 +1,20 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dFzPP-0006zg-7U
- for linux-mtd@lists.infradead.org; Wed, 31 May 2017 08:55:19 +0000
+ id 1dFzZB-0003dX-Kd
+ for linux-mtd@lists.infradead.org; Wed, 31 May 2017 09:05:23 +0000
+Subject: Re: [PATCH v2] mkfs.ubifs: Add support for symlinks in device table
+To: David Engraf <david.engraf@sysgo.com>, richard@nod.at,
+ linux-mtd@lists.infradead.org, goliath@sigma-star.at
+References: <20170518133854.20744-1-david.engraf@sysgo.com>
+ <20170523065252.6257-1-david.engraf@sysgo.com>
 From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-To: fstests@vger.kernel.org
-Cc: linux-mtd@lists.infradead.org, richard@nod.at,
- David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Subject: [PATCH v2 4/4] Fix block device requirements and manual scratch mounts
-Date: Wed, 31 May 2017 10:54:33 +0200
-Message-Id: <20170531085433.26865-5-david.oberhollenzer@sigma-star.at>
-In-Reply-To: <20170531085433.26865-1-david.oberhollenzer@sigma-star.at>
-References: <20170531085433.26865-1-david.oberhollenzer@sigma-star.at>
+Message-ID: <f0cb1c68-6923-9a95-05d5-d24a7101a398@sigma-star.at>
+Date: Wed, 31 May 2017 11:04:59 +0200
+MIME-Version: 1.0
+In-Reply-To: <20170523065252.6257-1-david.engraf@sysgo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,165 +24,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some tests require the scratch volume to be a block device,
-although they don't do anything block device specific like
-the device mapper tests. They actually only require a local
-device and fail with network or overlay pseudo mount devices.
+Applied to mtd-utils.git.
 
-The same tests also try to mount the scratch device manually
-after running _scratch_mkfs. For UBIFS, _scratch_mkfs simply
-truncates the UBI volume and relies on the kernel to re-format
-the volume on the next mount. This fails if the fs type is not
-specified explicitly when mounting.
+Thanks,
 
-This patch replaces the block device requirement with a
-generic check for a local device and adds a filesystem
-specification to all manual mounts of the scratch device
-to a mount point.
+David
 
-Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
----
- tests/generic/076 |  2 +-
- tests/generic/409 |  8 ++++----
- tests/generic/410 |  8 ++++----
- tests/generic/411 | 10 +++++-----
- 4 files changed, 14 insertions(+), 14 deletions(-)
-
-diff --git a/tests/generic/076 b/tests/generic/076
-index 64e69583..a29f160a 100755
---- a/tests/generic/076
-+++ b/tests/generic/076
-@@ -56,7 +56,7 @@ _supported_fs generic
- _supported_os IRIX Linux
- 
- _require_scratch
--_require_block_device $SCRATCH_DEV
-+_require_local_device $SCRATCH_DEV
- 
- echo "*** init fs"
- 
-diff --git a/tests/generic/409 b/tests/generic/409
-index 4bfedf73..22af44c8 100755
---- a/tests/generic/409
-+++ b/tests/generic/409
-@@ -64,7 +64,7 @@ _supported_fs generic
- _supported_os Linux
- _require_test
- _require_scratch
--_require_block_device $SCRATCH_DEV
-+_require_local_device $SCRATCH_DEV
- 
- fs_stress()
- {
-@@ -114,7 +114,7 @@ start_test()
- 	local type=$1
- 
- 	_scratch_mkfs >$seqres.full 2>&1
--	_get_mount $SCRATCH_DEV $MNTHEAD
-+	_get_mount -t $FSTYP $SCRATCH_DEV $MNTHEAD
- 	$MOUNT_PROG --make-"${type}" $MNTHEAD
- 	mkdir $mpA $mpB $mpC $mpD
- }
-@@ -133,7 +133,7 @@ bind_run()
- 	start_test $dest
- 
- 	echo "bind $source on $dest"
--	_get_mount $SCRATCH_DEV $mpA
-+	_get_mount -t $FSTYP $SCRATCH_DEV $mpA
- 	mkdir -p $mpA/dir 2>/dev/null
- 	$MOUNT_PROG --make-shared $mpA
- 	_get_mount --bind $mpA $mpB
-@@ -147,7 +147,7 @@ bind_run()
- 	fi
- 	_get_mount --bind $mpC $mpD
- 	for m in $mpA $mpB $mpC $mpD; do
--		_get_mount $SCRATCH_DEV $m/dir
-+		_get_mount -t $FSTYP $SCRATCH_DEV $m/dir
- 		fs_stress $m/dir
- 		find_mnt
- 		_put_mount
-diff --git a/tests/generic/410 b/tests/generic/410
-index f2e0d1bb..18cb0c1c 100755
---- a/tests/generic/410
-+++ b/tests/generic/410
-@@ -72,7 +72,7 @@ _supported_fs generic
- _supported_os Linux
- _require_test
- _require_scratch
--_require_block_device $SCRATCH_DEV
-+_require_local_device $SCRATCH_DEV
- 
- fs_stress()
- {
-@@ -120,7 +120,7 @@ start_test()
- 	local type=$1
- 
- 	_scratch_mkfs >$seqres.full 2>&1
--	_get_mount $SCRATCH_DEV $MNTHEAD
-+	_get_mount -t $FSTYP $SCRATCH_DEV $MNTHEAD
- 	$MOUNT_PROG --make-"${type}" $MNTHEAD
- 	mkdir $mpA $mpB $mpC
- }
-@@ -143,7 +143,7 @@ run()
- 	start_test private
- 
- 	echo "make-$cmd a $orgs mount"
--	_get_mount $SCRATCH_DEV $mpA
-+	_get_mount -t $FSTYP $SCRATCH_DEV $mpA
- 	mkdir -p $mpA/dir 2>/dev/null
- 	$MOUNT_PROG --make-shared $mpA
- 
-@@ -165,7 +165,7 @@ run()
- 			find_mnt
- 		else
- 			for m in $mpA $mpB $mpC; do
--				_get_mount $SCRATCH_DEV $m/dir
-+				_get_mount -t $FSTYP $SCRATCH_DEV $m/dir
- 				fs_stress $m/dir
- 				find_mnt
- 				_put_mount
-diff --git a/tests/generic/411 b/tests/generic/411
-index 7b2dd33b..5db49a44 100755
---- a/tests/generic/411
-+++ b/tests/generic/411
-@@ -53,7 +53,7 @@ _supported_fs generic
- _supported_os Linux
- _require_test
- _require_scratch
--_require_block_device $SCRATCH_DEV
-+_require_local_device $SCRATCH_DEV
- 
- fs_stress()
- {
-@@ -103,7 +103,7 @@ start_test()
- 	local type=$1
- 
- 	_scratch_mkfs >$seqres.full 2>&1
--	_get_mount $SCRATCH_DEV $MNTHEAD
-+	_get_mount -t $FSTYP $SCRATCH_DEV $MNTHEAD
- 	$MOUNT_PROG --make-"${type}" $MNTHEAD
- 	mkdir $mpA $mpB $mpC
- }
-@@ -125,17 +125,17 @@ crash_test()
- {
- 	start_test shared
- 
--	_get_mount $SCRATCH_DEV $mpA
-+	_get_mount -t $FSTYP $SCRATCH_DEV $mpA
- 	mkdir $mpA/mnt1
- 	$MOUNT_PROG --make-shared $mpA
- 	_get_mount --bind $mpA $mpB
- 	_get_mount --bind $mpA $mpC
- 	$MOUNT_PROG --make-slave $mpB
- 	$MOUNT_PROG --make-slave $mpC
--	_get_mount $SCRATCH_DEV $mpA/mnt1
-+	_get_mount -t $FSTYP $SCRATCH_DEV $mpA/mnt1
- 	mkdir $mpA/mnt1/mnt2
- 
--	_get_mount $SCRATCH_DEV $mpB/mnt1/mnt2
-+	_get_mount -t $FSTYP $SCRATCH_DEV $mpB/mnt1/mnt2
- 	find_mnt
- 	fs_stress $mpB/mnt1/mnt2
- 
--- 
-2.12.0
+On 05/23/2017 08:52 AM, David Engraf wrote:
+> It is not possible to change ownership for symlinks in the device table file.
+> This patch adds support for symlinks equal to mkfs.jffs2 and updates the
+> sample device table file. The permission entry for symlinks in the device
+> table must be set to 0777.
+> 
+> Signed-off-by: David Engraf <david.engraf@sysgo.com>
+> ---
+>  jffsX-utils/device_table.txt      |  1 +
+>  ubifs-utils/mkfs.ubifs/devtable.c | 10 ++++++++--
+>  2 files changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/jffsX-utils/device_table.txt b/jffsX-utils/device_table.txt
+> index 394a62b..8930cae 100644
+> --- a/jffsX-utils/device_table.txt
+> +++ b/jffsX-utils/device_table.txt
+> @@ -14,6 +14,7 @@
+>  #	c	Character special device file
+>  #	b	Block special device file
+>  #	p	Fifo (named pipe)
+> +#	l	Link
+>  # uid is the user id for the target file, gid is the group id for the
+>  # target file.  The rest of the entried apply only to device special
+>  # file.
+> diff --git a/ubifs-utils/mkfs.ubifs/devtable.c b/ubifs-utils/mkfs.ubifs/devtable.c
+> index dee035d..3b46abc 100644
+> --- a/ubifs-utils/mkfs.ubifs/devtable.c
+> +++ b/ubifs-utils/mkfs.ubifs/devtable.c
+> @@ -33,9 +33,10 @@
+>   * c  Character special device file
+>   * b  Block special device file
+>   * p  Fifo (named pipe)
+> + * l  Link
+>   *
+> - * Don't bother with symlinks (permissions are irrelevant), hard links (special
+> - * cases of regular files), or sockets (why bother).
+> + * Don't bother with hard links (special cases of regular files), or sockets
+> + * (why bother).
+>   *
+>   * Regular files must exist in the target root directory. If a char, block,
+>   * fifo, or directory does not exist, it will be created.
+> @@ -177,6 +178,11 @@ static int interpret_table_entry(const char *line)
+>  		case 'b':
+>  			mode |= S_IFBLK;
+>  			break;
+> +		case 'l':
+> +			mode |= S_IFLNK;
+> +			if ((mode & 0777) != 0777)
+> +				return err_msg("link permission must be 0777");
+> +			break;
+>  		default:
+>  			return err_msg("unsupported file type '%c'", type);
+>  	}
+> 
