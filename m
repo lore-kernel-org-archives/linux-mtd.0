@@ -1,25 +1,21 @@
-Received: from mail-oi0-f68.google.com ([209.85.218.68])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dFqJ6-00064u-Le
- for linux-mtd@lists.infradead.org; Tue, 30 May 2017 23:12:10 +0000
-Received: by mail-oi0-f68.google.com with SMTP id v80so60677oie.2
- for <linux-mtd@lists.infradead.org>; Tue, 30 May 2017 16:11:48 -0700 (PDT)
-Date: Tue, 30 May 2017 18:11:46 -0500
-From: Rob Herring <robh@kernel.org>
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: ralf@linux-mips.org, linux-mips@linux-mips.org,
- linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
- devicetree@vger.kernel.org, martin.blumenstingl@googlemail.com,
- john@phrozen.org, linux-spi@vger.kernel.org, hauke.mehrtens@intel.com
-Subject: Re: [PATCH v2 07/15] MIPS: lantiq: Convert the xbar driver to a
- platform_driver
-Message-ID: <20170530231146.sk2zdq24a2oul6v4@rob-hp-laptop>
-References: <20170521130918.27446-1-hauke@hauke-m.de>
- <20170521130918.27446-8-hauke@hauke-m.de>
+Message-ID: <1496200531.492.0.camel@mhfsdcap03>
+Subject: Re: [PATCH v3 3/4] mtd: nand: mediatek: add support for different
+ MTK NAND FLASH Controller IP
+From: xiaolei li <xiaolei.li@mediatek.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+CC: <computersforpeace@gmail.com>, <matthias.bgg@gmail.com>,
+ <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, <robh+dt@kernel.org>,
+ <rogercc.lin@mediatek.com>, <yt.shen@mediatek.com>,
+ <srv_heupstream@mediatek.com>
+Date: Wed, 31 May 2017 11:15:31 +0800
+In-Reply-To: <20170529184842.06ec8275@bbrezillon>
+References: <1494851979-14416-1-git-send-email-xiaolei.li@mediatek.com>
+ <1494851979-14416-4-git-send-email-xiaolei.li@mediatek.com>
+ <20170529184842.06ec8275@bbrezillon>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170521130918.27446-8-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,62 +25,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, May 21, 2017 at 03:09:10PM +0200, Hauke Mehrtens wrote:
-> From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> 
-> This allows using the xbar driver on ARX300 based SoCs which require the
-> same xbar setup as the xRX200 chipsets because the xbar driver
-> initialization is not guarded by an xRX200 specific
-> of_machine_is_compatible condition anymore. Additionally the new driver
-> takes a syscon phandle to configure the XBAR endianness bits in RCU
-> (before this was done in arch/mips/lantiq/xway/reset.c and also
-> guarded by an VRX200 specific if-statement).
-> 
-> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> ---
->  .../devicetree/bindings/mips/lantiq/xbar.txt       |  24 +++++
->  MAINTAINERS                                        |   1 +
->  arch/mips/lantiq/xway/reset.c                      |   4 -
->  arch/mips/lantiq/xway/sysctrl.c                    |  41 ---------
->  drivers/soc/Makefile                               |   1 +
->  drivers/soc/lantiq/Makefile                        |   1 +
->  drivers/soc/lantiq/xbar.c                          | 101 +++++++++++++++++++++
->  7 files changed, 128 insertions(+), 45 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mips/lantiq/xbar.txt
->  create mode 100644 drivers/soc/lantiq/Makefile
->  create mode 100644 drivers/soc/lantiq/xbar.c
-> 
-> diff --git a/Documentation/devicetree/bindings/mips/lantiq/xbar.txt b/Documentation/devicetree/bindings/mips/lantiq/xbar.txt
-> new file mode 100644
-> index 000000000000..7e1ea5299744
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mips/lantiq/xbar.txt
-> @@ -0,0 +1,24 @@
-> +Lantiq XWAY SoC XBAR binding
-> +============================
-> +
-> +
-> +-------------------------------------------------------------------------------
-> +Required properties:
-> +- compatible	: Should be one of
-> +				"lantiq,xbar-xway"
-> +				"lantiq,xbar-xrx200"
+Hi Boris,
 
-The normal form is <vendor>,<soc>-<block>.
+On Mon, 2017-05-29 at 18:48 +0200, Boris Brezillon wrote:
+> Hi Xiaolei,
+> 
+> On Mon, 15 May 2017 20:39:38 +0800
+> Xiaolei Li <xiaolei.li@mediatek.com> wrote:
+> 
+> > ECC strength and spare size supported may be different among MTK NAND
+> > FLASH Controller IPs.
+> > 
+> > This patch contains changes as following:
+> > (1) add new struct mtk_nfc_caps to support different spare size.
+> > (2) add new struct mtk_ecc_caps to support different ecc strength.
+> > (3) remove ECC_CNFG_xBIT define, use a for loop to do ecc strength config.
+> > (4) remove PAGEFMT_SPARE_ define, use a for loop to do spare format config.
+> > (5) malloc ecc->eccdata buffer according to max ecc strength of this IP.
+> > 
+> > Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
+> > ---
+> >  drivers/mtd/nand/mtk_ecc.c  | 181 ++++++++++++++++++--------------------------
+> >  drivers/mtd/nand/mtk_ecc.h  |   2 +-
+> >  drivers/mtd/nand/mtk_nand.c | 175 +++++++++++++++++++++---------------------
+> >  3 files changed, 166 insertions(+), 192 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/mtk_ecc.c b/drivers/mtd/nand/mtk_ecc.c
+> > index dbf2562..ae51303 100644
+> > --- a/drivers/mtd/nand/mtk_ecc.c
+> > +++ b/drivers/mtd/nand/mtk_ecc.c
+> > @@ -33,26 +33,6 @@
+> 
+> [...]
+> 
+> > -static void mtk_nfc_set_spare_per_sector(u32 *sps, struct mtd_info *mtd)
+> > +static int cmp_map(const void *m0, const void *m1)
+> > +{
+> > +	return *(u8 *)m0 > *(u8 *)m1 ? 1 : -1;
+> > +}
+> > +
+> > +static int mtk_nfc_set_spare_per_sector(u32 *sps, struct mtd_info *mtd)
+> >  {
+> >  	struct nand_chip *nand = mtd_to_nand(mtd);
+> > -	u32 spare[] = {16, 26, 27, 28, 32, 36, 40, 44,
+> > -			48, 49, 50, 51, 52, 62, 63, 64};
+> > +	struct mtk_nfc *nfc = nand_get_controller_data(nand);
+> > +	u8 *spare;
+> >  	u32 eccsteps, i;
+> >  
+> > +	spare = vmalloc(nfc->caps->num_spare_size);
+> > +	if (!spare)
+> > +		return -ENOMEM;
+> > +
+> > +	memcpy(spare, nfc->caps->spare_size, nfc->caps->num_spare_size);
+> > +
+> > +	/*
+> > +	 * Spare size array of some IP may be not sorted, because the spare
+> > +	 * size does not always increase as the spare size bitfiled value of
+> > +	 * register NFI_PAGEFMT. So, sort it here.
+> > +	 */
+> > +	sort(spare, nfc->caps->num_spare_size, sizeof(u8), cmp_map, NULL);
+> > +
+> 
+> Let's avoid this dup+sort dance. If it's not sorted, we'd better
+> iterate over all entries of the table and pick the best one (the array
+> is rather small, so it shouldn't be a problem).
+> 
+OK. will remove sort next version.
 
-> +- reg		: The address and length of the XBAR registers
-> +
-> +Optional properties:
-> +- lantiq,rcu-syscon	: A phandle and offset to the endianness configuration
-> +			  registers in the RCU module
-> +
-> +
-> +-------------------------------------------------------------------------------
-> +Example for the XBAR on the xRX200 SoCs:
-> +	xbar0: xbar@400000 {
-> +		compatible = "lantiq,xbar-xway";
-> +		reg = <0x400000 0x1000>;
-> +		big-endian;
-> +		lantiq,rcu-syscon = <&rcu0 0x4c>;
-> +	};
+> >  	eccsteps = mtd->writesize / nand->ecc.size;
+> >  	*sps = mtd->oobsize / eccsteps;
+> >  
+> >  	if (nand->ecc.size == 1024)
+> >  		*sps >>= 1;
+> >  
+> > -	for (i = 0; i < ARRAY_SIZE(spare); i++) {
+> > +	for (i = 0; i < nfc->caps->num_spare_size; i++) {
+> >  		if (*sps <= spare[i]) {
+> >  			if (!i)
+> >  				*sps = spare[i];
+> 
