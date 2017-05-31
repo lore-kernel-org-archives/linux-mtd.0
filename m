@@ -1,29 +1,26 @@
-Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193])
+Received: from mail-oi0-f67.google.com ([209.85.218.67])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dGAYi-0001rn-6Q
- for linux-mtd@lists.infradead.org; Wed, 31 May 2017 20:49:38 +0000
-Date: Wed, 31 May 2017 22:49:13 +0200
-From: Pavel Machek <pavel@ucw.cz>
-To: Darwin Dingel <Darwin.Dingel@alliedtelesis.co.nz>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- "richard@nod.at" <richard@nod.at>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "cyrille.pitchen@atmel.com" <cyrille.pitchen@atmel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "mark.marshall@omicronenergy.com" <mark.marshall@omicronenergy.com>,
- "b44839@freescale.com" <b44839@freescale.com>,
- "prabhakar@freescale.com" <prabhakar@freescale.com>
-Subject: Re: mtd: nand: fsl_ifc: fix handing of bit flips in erased pages
-Message-ID: <20170531204913.GC16962@amd>
-References: <5f665145ea304d3a9e1ecb39c51a951e@svr-chch-ex1.atlnz.lc>
+ id 1dGAdx-00044w-6a
+ for linux-mtd@lists.infradead.org; Wed, 31 May 2017 20:55:02 +0000
+Received: by mail-oi0-f67.google.com with SMTP id j66so954538oib.2
+ for <linux-mtd@lists.infradead.org>; Wed, 31 May 2017 13:54:40 -0700 (PDT)
+Date: Wed, 31 May 2017 15:54:39 -0500
+From: Rob Herring <robh@kernel.org>
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Cc: ralf@linux-mips.org, linux-mips@linux-mips.org,
+ linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
+ devicetree@vger.kernel.org, martin.blumenstingl@googlemail.com,
+ john@phrozen.org, linux-spi@vger.kernel.org,
+ hauke.mehrtens@intel.com, andy.shevchenko@gmail.com, p.zabel@pengutronix.de
+Subject: Re: [PATCH v3 08/16] MIPS: lantiq: Convert the fpi bus driver to a
+ platform_driver
+Message-ID: <20170531205439.l5fiatf4v3kp43yq@rob-hp-laptop>
+References: <20170528184006.31668-1-hauke@hauke-m.de>
+ <20170528184006.31668-9-hauke@hauke-m.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="iFRdW5/EC4oqxDHL"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5f665145ea304d3a9e1ecb39c51a951e@svr-chch-ex1.atlnz.lc>
+In-Reply-To: <20170528184006.31668-9-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,111 +30,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Sun, May 28, 2017 at 08:39:58PM +0200, Hauke Mehrtens wrote:
+> From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> 
+> Instead of hacking the configuration of the FPI bus into the arch code
+> add an own bus driver for this internal bus. The FPI bus is the main
+> bus of the SoC. This bus driver makes sure the bus is configured
+> correctly before the child drivers are getting initialized. This driver
+> will probably also be used on different SoC later.
+> 
+> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> ---
+>  .../devicetree/bindings/mips/lantiq/fpi-bus.txt    | 33 ++++++++
+>  MAINTAINERS                                        |  1 +
+>  arch/mips/lantiq/xway/reset.c                      |  4 -
+>  arch/mips/lantiq/xway/sysctrl.c                    | 41 ----------
+>  drivers/soc/Makefile                               |  1 +
+>  drivers/soc/lantiq/Makefile                        |  1 +
+>  drivers/soc/lantiq/fpi-bus.c                       | 91 ++++++++++++++++++++++
+>  7 files changed, 127 insertions(+), 45 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mips/lantiq/fpi-bus.txt
+>  create mode 100644 drivers/soc/lantiq/Makefile
+>  create mode 100644 drivers/soc/lantiq/fpi-bus.c
+> 
+> diff --git a/Documentation/devicetree/bindings/mips/lantiq/fpi-bus.txt b/Documentation/devicetree/bindings/mips/lantiq/fpi-bus.txt
+> new file mode 100644
+> index 000000000000..52d4bb9d2ffa
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mips/lantiq/fpi-bus.txt
+> @@ -0,0 +1,33 @@
+> +Lantiq XWAY SoC FPI BUS binding
+> +============================
+> +
+> +
+> +-------------------------------------------------------------------------------
+> +Required properties:
+> +- compatible	: Should be one of
+> +				"lantiq,fpi-xrx200"
+> +- reg		: The address and length of the XBAR configuration register.
+> +		  Address and length of the FPI bus itself
+> +
+> +Optional properties:
+> +- regmap		: A phandle to the RCU syscon
+> +- offset-endianness	: Offset of the endianness configuration register
+> +
+> +
+> +-------------------------------------------------------------------------------
+> +Example for the FPI on the xrx200 SoCs:
+> +	fpi@10000000 {
+> +		compatible = "lantiq,fpi-xrx200", "simple-bus";
+> +		ranges = <0x0 0x10000000 0xF000000>;
 
---iFRdW5/EC4oqxDHL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+lowercase hex please.
 
-Hi!
+> +		reg =	<0x1F400000 0x1000>,
+> +			<0x10000000 0xF000000>;
+> +		regmap = <&rcu0>;
+> +		offset-endianness = <0x4c>;
 
-> We are also having the same problem where the IFC (nand flash) was=20
-> reporting ECC uncorrectable errors on single bitflips with erased pages.=
-=20
-> Applying this patch with some minor modifications seems to solve our=20
-> issue. We are still doing more testing but recent results looks
-> promising.
+Presumably, this is for endianness of the children. So this needs to be 
+configured before probing the children. If so, then you should not call 
+this a "simple-bus".
 
-First, thanks for letting me know.
+> +		big-endian;
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +
+> +		gptu@E100A00 {
 
-> Our kernel is 4.4.6 so we have to modify it a bit to fit the old ECC=20
-> layout structure. We just have a few comments about the patch:
->=20
->  > -				if (!is_blank(mtd, bufnum))
->  > -					ctrl->nand_stat |=3D
->  > -						IFC_NAND_EVTER_STAT_ECCER;
->  > -				break;
->  > +				ctrl->nand_stat |=3D IFC_NAND_EVTER_STAT_ECCER;
->=20
-> Added 'error =3D 0' after setting the flag since no error was actually=20
-> corrected.
+lowercase hex.
 
-You meen "errors =3D 0"? Does that actually make a difference? It is a
-local variable, and continue makes sure the value is not used:
-
-                for (i =3D sector; i <=3D sector_end; i++) {
-                        errors =3D check_read_ecc(mtd, ctrl, eccstat, i);
-
-                        if (errors =3D=3D 15) {
-				/*=20
-                                 * Uncorrectable error.=20
-                                 * We'll check for blank pages later.=20
-                                 *=20
-                                 * We disable ECCER reporting due to...=20
-                                 * erratum IFC-A002770 -- so report it now =
-if we=20
-                                 * see an uncorrectable error in ECCSTAT.=
-=20
-                                 */
-                                ctrl->nand_stat |=3D IFC_NAND_EVTER_STAT_EC=
-CER;
-                                continue;
-                        }
-
-
->  > -	if (ctrl->nand_stat & IFC_NAND_EVTER_STAT_ECCER)
->  > -		dev_err(priv->dev, "NAND Flash ECC Uncorrectable Error\n");
->  > -
->  >  	if (ctrl->nand_stat !=3D IFC_NAND_EVTER_STAT_OPC)
->  >  		mtd->ecc_stats.failed++;
->  > +
->  > +	if (ctrl->nand_stat & IFC_NAND_EVTER_STAT_ECCER) {
->  > +		int res;
->  > +
->  > +		if (!oob_required)
->  > +			fsl_ifc_read_buf(mtd, chip->oob_poi, mtd->oobsize);
->  > +
->  > +		res =3D check_erased_page(chip, buf);
->  > +		return res;
->  > +	}
->=20
-> We have to do the check IFC_NAND_EVTER_STAT_ECCER first because the=20
-> condition (ctrl->nand_stat !=3D IFC_NAND_EVTER_STAT_OPC) will never be=20
-> true since IFC always sets IFC_NAND_EVTER_STAT_ECCER on empty pages.=20
-> Incrementing failed stats first before doing check_erased_page() makes=20
-> nand_read() report ECC error all time.
-
-Yes, you are right; I overlooked that one. Thanks a lot!
-
-> Our exact modification was:
-> 	if (ctrl->nand_stat & IFC_NAND_EVTER_STAT_ECCER) {
-> 		if (!oob_required)
-> 			fsl_ifc_read_buf(mtd, chip->oob_poi, mtd->oobsize);
->=20
-> 		return check_erased_page(chip, buf);
-> 	}
->=20
-> 	if (ctrl->nand_stat !=3D IFC_NAND_EVTER_STAT_OPC)
-> 		mtd->ecc_stats.failed++;
->=20
-> Because check_erased_page() will be updating the failed stat anyway.
-
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---iFRdW5/EC4oqxDHL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlkvLEkACgkQMOfwapXb+vJzfwCcDY+1u98vc08qDliy0g/5plRM
-n4IAmgP3WQ3zmJpzsp+f3dK0ql0nkLoi
-=gMO1
------END PGP SIGNATURE-----
-
---iFRdW5/EC4oqxDHL--
+> +			......
+> +		};
+> +	};
