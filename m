@@ -1,30 +1,21 @@
-Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dGBxM-0004bs-Lu
- for linux-mtd@lists.infradead.org; Wed, 31 May 2017 22:19:10 +0000
-Date: Thu, 1 Jun 2017 00:18:46 +0200
-From: Pavel Machek <pavel@ucw.cz>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Darwin Dingel <Darwin.Dingel@alliedtelesis.co.nz>,
- "richard@nod.at" <richard@nod.at>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "cyrille.pitchen@atmel.com" <cyrille.pitchen@atmel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "mark.marshall@omicronenergy.com" <mark.marshall@omicronenergy.com>,
- "b44839@freescale.com" <b44839@freescale.com>,
- "prabhakar@freescale.com" <prabhakar@freescale.com>
-Subject: Re: mtd: nand: fsl_ifc: fix handing of bit flips in erased pages
-Message-ID: <20170531221846.GB25597@amd>
-References: <5f665145ea304d3a9e1ecb39c51a951e@svr-chch-ex1.atlnz.lc>
- <20170529104838.48225166@bbrezillon>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="O5XBE6gyVG5Rl6Rj"
-Content-Disposition: inline
-In-Reply-To: <20170529104838.48225166@bbrezillon>
+From: Andrea Adami <andrea.adami@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Lee Jones <lee.jones@linaro.org>, Daniel Mack <daniel@zonque.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Russell King <linux@armlinux.org.uk>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v3 0/9] mtd: sharpslpart partition parser
+Date: Thu,  1 Jun 2017 00:40:49 +0200
+Message-Id: <1496270458-6479-1-git-send-email-andrea.adami@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,48 +25,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This patchset introduces a simple partition parser for the Sharp SL
+Series PXA handhelds. More details in the commit text.
 
---O5XBE6gyVG5Rl6Rj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I have set in cc the ARM PXA maintainers because this is the MTD part of
+a planned wider patchset cleaning the Zaurus board files. The MFD maintainers
+are also in cc (tmio.h change).
 
-On Mon 2017-05-29 10:48:38, Boris Brezillon wrote:
-> Hi,
->=20
-> On Thu, 25 May 2017 23:33:43 +0000
-> Darwin Dingel <Darwin.Dingel@alliedtelesis.co.nz> wrote:
->=20
-> > Hi,
-> >=20
-> > We are also having the same problem where the IFC (nand flash) was=20
-> > reporting ECC uncorrectable errors on single bitflips with erased pages=
-=2E=20
-> > Applying this patch with some minor modifications seems to solve our=20
-> > issue. We are still doing more testing but recent results looks promisi=
-ng.
->=20
-> Pavel, can you send a v2 fixing these problems?
+Changelog:
+v1 initial import of 2.4 sources [1]
+v2 refactor applying many suggested fixes [2]
+v3 put the partition parser types in the platform data
 
-You should have v2 in your inbox by now.
+[1] https://github.com/LinuxPDA/Sharp_FTL_2.4.20
+[2] https://github.com/LinuxPDA/linux/commits/sharpslpart_v2
 
-Thanks,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
+Andrea Adami (9):
+  mtd: sharpslpart: add sharpslpart MTD partition parser
+  mtd: nand: sharpsl.h: support partition parser types
+  mfd: nand: tmio.h: support partition parser types
+  mtd: nand: sharpsl.c: take in account partition parser types
+  mtd: nand: tmio_nand.c: take in account partition parser types
+  arm: pxa: corgi.c: remove hardcoded partitioning, use sharpslpart
+    parser
+  arm: pxa: tosa.c: remove hardcoded partitioning, use sharpslpart
+    parser
+  arm: pxa: spitz.c: remove hardcoded partitioning, use sharpslpart
+    parser
+  arm: pxa: poodle.c: remove hardcoded partitioning, use sharpslpart
+    parser
 
---O5XBE6gyVG5Rl6Rj
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+ arch/arm/mach-pxa/corgi.c    |  31 ++-----
+ arch/arm/mach-pxa/poodle.c   |  28 ++----
+ arch/arm/mach-pxa/spitz.c    |  34 ++-----
+ arch/arm/mach-pxa/tosa.c     |  28 ++----
+ drivers/mtd/Kconfig          |   8 ++
+ drivers/mtd/Makefile         |   2 +
+ drivers/mtd/nand/sharpsl.c   |   9 +-
+ drivers/mtd/nand/tmio_nand.c |   4 +-
+ drivers/mtd/sharpsl_ftl.c    | 216 +++++++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/sharpsl_ftl.h    |  34 +++++++
+ drivers/mtd/sharpslpart.c    | 132 ++++++++++++++++++++++++++
+ include/linux/mfd/tmio.h     |   1 +
+ include/linux/mtd/sharpsl.h  |   1 +
+ 13 files changed, 437 insertions(+), 91 deletions(-)
+ create mode 100644 drivers/mtd/sharpsl_ftl.c
+ create mode 100644 drivers/mtd/sharpsl_ftl.h
+ create mode 100644 drivers/mtd/sharpslpart.c
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlkvQUYACgkQMOfwapXb+vI/1gCgks6xW5tCCQEZzvdocVvqTjBT
-AokAoINOsI84mcsUsLJupAMx6W+RDb9/
-=si1P
------END PGP SIGNATURE-----
-
---O5XBE6gyVG5Rl6Rj--
+-- 
+2.7.4
