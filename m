@@ -1,28 +1,37 @@
-Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dGAiT-0006KJ-4g
- for linux-mtd@lists.infradead.org; Wed, 31 May 2017 20:59:43 +0000
-Date: Wed, 31 May 2017 22:59:17 +0200
-From: Pavel Machek <pavel@ucw.cz>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Darwin Dingel <Darwin.Dingel@alliedtelesis.co.nz>
-Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
- marek.vasut@gmail.com, cyrille.pitchen@atmel.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- mark.marshall@omicronenergy.com, b44839@freescale.com,
- prabhakar@freescale.com
-Subject: [PATCHv2] mtd: nand: fsl_ifc: fix handing of bit flips in erased pages
-Message-ID: <20170531205917.GA21878@amd>
-References: <20170419231804.5a04ed69@bbrezillon> <20170419221507.GA24914@amd>
- <20170420002748.5c76c9b9@bbrezillon> <20170420114057.GA4705@amd>
- <20170421105107.GA7259@amd> <20170517122224.GB583@amd>
- <20170517143211.205ff5de@bbrezillon> <20170517130059.GA3437@amd>
- <20170517152548.6d52c41b@bbrezillon> <20170517200305.GA12537@amd>
+ id 1dGAnc-0000Tq-MQ
+ for linux-mtd@lists.infradead.org; Wed, 31 May 2017 21:05:02 +0000
+Received: from mail-yb0-f181.google.com (mail-yb0-f181.google.com
+ [209.85.213.181])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id B70FA23725
+ for <linux-mtd@lists.infradead.org>; Wed, 31 May 2017 21:04:38 +0000 (UTC)
+Received: by mail-yb0-f181.google.com with SMTP id 202so6660298ybd.0
+ for <linux-mtd@lists.infradead.org>; Wed, 31 May 2017 14:04:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="Q68bSM7Ycu6FN28Q"
-Content-Disposition: inline
-In-Reply-To: <20170517200305.GA12537@amd>
+In-Reply-To: <6b8bb1cd-c090-435d-d150-d53edf04d2df@hauke-m.de>
+References: <20170528184006.31668-1-hauke@hauke-m.de>
+ <20170528184006.31668-8-hauke@hauke-m.de>
+ <20170531200540.joludfqpy35yc5yy@rob-hp-laptop>
+ <6b8bb1cd-c090-435d-d150-d53edf04d2df@hauke-m.de>
+From: Rob Herring <robh@kernel.org>
+Date: Wed, 31 May 2017 16:04:17 -0500
+Message-ID: <CAL_JsqL=iapYifAhDcYSLRGyevx7RxGiUtji72NJD-uYCQnCdw@mail.gmail.com>
+Subject: Re: [PATCH v3 07/16] Documentation: DT: MIPS: lantiq: Add docs for
+ the RCU bindings
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Linux-MIPS <linux-mips@linux-mips.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ LINUX-WATCHDOG <linux-watchdog@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ John Crispin <john@phrozen.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ hauke.mehrtens@intel.com, Andy Shevchenko <andy.shevchenko@gmail.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,161 +41,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, May 31, 2017 at 3:13 PM, Hauke Mehrtens <hauke@hauke-m.de> wrote:
+> On 05/31/2017 10:05 PM, Rob Herring wrote:
+>> On Sun, May 28, 2017 at 08:39:57PM +0200, Hauke Mehrtens wrote:
+>>> From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+>>>
+>>> This adds the initial documentation for the RCU module (a MFD device
+>>> which provides USB PHYs, reset controllers and more).
+>>>
+>>> The RCU register range is used for multiple purposes. Mostly one device
+>>> uses one or multiple register exclusively, but for some registers some
+>>> bits are for one driver and some other bits are for a different driver.
+>>> With this patch all accesses to the RCU registers will go through
+>>> syscon.
+>>>
+>>> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+>>> ---
+>>>  .../devicetree/bindings/mips/lantiq/rcu.txt        | 97 ++++++++++++++++++++++
+>>>  1 file changed, 97 insertions(+)
+>>>  create mode 100644 Documentation/devicetree/bindings/mips/lantiq/rcu.txt
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/mips/lantiq/rcu.txt b/Documentation/devicetree/bindings/mips/lantiq/rcu.txt
+>>> new file mode 100644
+>>> index 000000000000..3e2461262218
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/mips/lantiq/rcu.txt
+>>> @@ -0,0 +1,97 @@
+>>> +Lantiq XWAY SoC RCU binding
+>>> +===========================
+>>> +
+>>> +This binding describes the RCU (reset controller unit) multifunction device,
+>>> +where each sub-device has it's own set of registers.
+>>> +
+>>> +The RCU register range is used for multiple purposes. Mostly one device
+>>> +uses one or multiple register exclusively, but for some registers some
+>>> +bits are for one driver and some other bits are for a different driver.
+>>> +With this patch all accesses to the RCU registers will go through
+>>> +syscon.
+>>> +
+>>> +
+>>> +-------------------------------------------------------------------------------
+>>> +Required properties:
+>>> +- compatible        : The first and second values must be: "simple-mfd", "syscon"
+>>> +- reg               : The address and length of the system control registers
+>>> +
+>>> +
+>>> +-------------------------------------------------------------------------------
+>>> +Example of the RCU bindings on a xRX200 SoC:
+>>> +    rcu0: rcu@203000 {
+>>> +            compatible = "lantiq,rcu-xrx200", "simple-mfd", "syscon";
+>>> +            reg = <0x203000 0x100>;
+>>> +            big-endian;
+>>> +
+>>> +            gphy0: gphy@0 {
+>>
+>> Unit address without reg address is not valid.
+>>
+>>> +                    compatible = "lantiq,xrx200a2x-rcu-gphy";
+>>> +
+>>> +                    regmap = <&rcu0>;
+>>> +                    offset = <0x20>;
+>>
+>> Does reg not work instead?
+>
+> Is it ok to access some registers in this range with a reg = <0x20 0x04>
+> setting and some others through syscon? This specific register is only
+> used by this gphy, but the reset controller shares the register with
+> some other drivers like the watchdog driver.
 
---Q68bSM7Ycu6FN28Q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes. The main thing is you need to use reg where you have unit addresses.
 
-If we see unrecoverable ECC error, we need to count number of bitflips
-=66rom all-ones and report correctable/uncorrectable according to
-that. Otherwise we report ECC failed on erased flash with single bit error.
+For the syscon-reboot, you could also just not describe in DT and have
+the reset ctrlr driver register reboot driver. DT is not the only way
+to instantiate drivers.
 
-Signed-off-by: Pavel Machek <pavel@denx.de>
-Reported-by: Darwin Dingel <Darwin.Dingel@alliedtelesis.co.nz>
-
----
-
-v2: I got order wrong, thus always reporting errors. Thanks to Darwin
-who found the problem.
-
-
-diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nan=
-d.c
-index d1570f5..052a7e3 100644
---- a/drivers/mtd/nand/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/fsl_ifc_nand.c
-@@ -171,34 +171,6 @@ static void set_addr(struct mtd_info *mtd, int column,=
- int page_addr, int oob)
- 		ifc_nand_ctrl->index +=3D mtd->writesize;
- }
-=20
--static int is_blank(struct mtd_info *mtd, unsigned int bufnum)
--{
--	struct nand_chip *chip =3D mtd_to_nand(mtd);
--	struct fsl_ifc_mtd *priv =3D nand_get_controller_data(chip);
--	u8 __iomem *addr =3D priv->vbase + bufnum * (mtd->writesize * 2);
--	u32 __iomem *mainarea =3D (u32 __iomem *)addr;
--	u8 __iomem *oob =3D addr + mtd->writesize;
--	struct mtd_oob_region oobregion =3D { };
--	int i, section =3D 0;
--
--	for (i =3D 0; i < mtd->writesize / 4; i++) {
--		if (__raw_readl(&mainarea[i]) !=3D 0xffffffff)
--			return 0;
--	}
--
--	mtd_ooblayout_ecc(mtd, section++, &oobregion);
--	while (oobregion.length) {
--		for (i =3D 0; i < oobregion.length; i++) {
--			if (__raw_readb(&oob[oobregion.offset + i]) !=3D 0xff)
--				return 0;
--		}
--
--		mtd_ooblayout_ecc(mtd, section++, &oobregion);
--	}
--
--	return 1;
--}
--
- /* returns nonzero if entire page is blank */
- static int check_read_ecc(struct mtd_info *mtd, struct fsl_ifc_ctrl *ctrl,
- 			  u32 *eccstat, unsigned int bufnum)
-@@ -274,16 +246,14 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
- 			if (errors =3D=3D 15) {
- 				/*
- 				 * Uncorrectable error.
--				 * OK only if the whole page is blank.
-+				 * We'll check for blank pages later.
- 				 *
- 				 * We disable ECCER reporting due to...
- 				 * erratum IFC-A002770 -- so report it now if we
- 				 * see an uncorrectable error in ECCSTAT.
- 				 */
--				if (!is_blank(mtd, bufnum))
--					ctrl->nand_stat |=3D
--						IFC_NAND_EVTER_STAT_ECCER;
--				break;
-+				ctrl->nand_stat |=3D IFC_NAND_EVTER_STAT_ECCER;
-+				continue;
- 			}
-=20
- 			mtd->ecc_stats.corrected +=3D errors;
-@@ -678,6 +648,38 @@ static int fsl_ifc_wait(struct mtd_info *mtd, struct n=
-and_chip *chip)
- 	return nand_fsr | NAND_STATUS_WP;
- }
-=20
-+/*
-+ * The controller does not check for bitflips in erased pages,
-+ * therefore software must check instead.
-+ */
-+static int check_erased_page(struct nand_chip *chip, u8 *buf)
-+{
-+	struct mtd_info *mtd =3D nand_to_mtd(chip);
-+	u8 *ecc =3D chip->oob_poi;
-+	const int ecc_size =3D chip->ecc.bytes;
-+	const int pkt_size =3D chip->ecc.size;
-+	int i, res, bitflips =3D 0;
-+	struct mtd_oob_region oobregion =3D { };
-+
-+	mtd_ooblayout_ecc(mtd, 0, &oobregion);
-+	ecc +=3D oobregion.offset;
-+
-+	for (i =3D 0; i < chip->ecc.steps; ++i) {
-+		res =3D nand_check_erased_ecc_chunk(buf, pkt_size, ecc, ecc_size,
-+						  NULL, 0,
-+						  chip->ecc.strength);
-+		if (res < 0)
-+			mtd->ecc_stats.failed++;
-+		else
-+			mtd->ecc_stats.corrected +=3D res;
-+
-+		bitflips =3D max(res, bitflips);
-+		buf +=3D pkt_size;
-+		ecc +=3D ecc_size;
-+	}
-+	return bitflips;
-+}
-+
- static int fsl_ifc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 			     uint8_t *buf, int oob_required, int page)
- {
-@@ -689,8 +691,15 @@ static int fsl_ifc_read_page(struct mtd_info *mtd, str=
-uct nand_chip *chip,
- 	if (oob_required)
- 		fsl_ifc_read_buf(mtd, chip->oob_poi, mtd->oobsize);
-=20
--	if (ctrl->nand_stat & IFC_NAND_EVTER_STAT_ECCER)
--		dev_err(priv->dev, "NAND Flash ECC Uncorrectable Error\n");
-+	if (ctrl->nand_stat & IFC_NAND_EVTER_STAT_ECCER) {
-+		int res;
-+
-+		if (!oob_required)
-+			fsl_ifc_read_buf(mtd, chip->oob_poi, mtd->oobsize);
-+
-+		res =3D check_erased_page(chip, buf);
-+		return res;
-+	}
-=20
- 	if (ctrl->nand_stat !=3D IFC_NAND_EVTER_STAT_OPC)
- 		mtd->ecc_stats.failed++;
-
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---Q68bSM7Ycu6FN28Q
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEUEARECAAYFAlkvLqUACgkQMOfwapXb+vIcfgCXUceWKJWQvAc5jT1U4MEXmpUk
-OwCghY72MLaYJWYIswETcWiwBTECVqA=
-=ytAz
------END PGP SIGNATURE-----
-
---Q68bSM7Ycu6FN28Q--
+Rob
