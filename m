@@ -1,21 +1,15 @@
-Message-ID: <1496200531.492.0.camel@mhfsdcap03>
-Subject: Re: [PATCH v3 3/4] mtd: nand: mediatek: add support for different
- MTK NAND FLASH Controller IP
-From: xiaolei li <xiaolei.li@mediatek.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-CC: <computersforpeace@gmail.com>, <matthias.bgg@gmail.com>,
- <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
+From: Xiaolei Li <xiaolei.li@mediatek.com>
+To: <boris.brezillon@free-electrons.com>, <computersforpeace@gmail.com>,
+ <matthias.bgg@gmail.com>
+CC: <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
  <linux-mediatek@lists.infradead.org>, <robh+dt@kernel.org>,
  <rogercc.lin@mediatek.com>, <yt.shen@mediatek.com>,
- <srv_heupstream@mediatek.com>
-Date: Wed, 31 May 2017 11:15:31 +0800
-In-Reply-To: <20170529184842.06ec8275@bbrezillon>
-References: <1494851979-14416-1-git-send-email-xiaolei.li@mediatek.com>
- <1494851979-14416-4-git-send-email-xiaolei.li@mediatek.com>
- <20170529184842.06ec8275@bbrezillon>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+ <srv_heupstream@mediatek.com>, <xiaolei.li@mediatek.com>
+Subject: [PATCH v4 0/4] Mediatek MT2712 NAND FLASH Controller driver
+Date: Wed, 31 May 2017 11:37:53 +0800
+Message-ID: <1496201877-34373-1-git-send-email-xiaolei.li@mediatek.com>
 MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,83 +19,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+The following patch-set adds support for Mediatek MT2712 NAND FLASH
+Controller.
 
-On Mon, 2017-05-29 at 18:48 +0200, Boris Brezillon wrote:
-> Hi Xiaolei,
-> 
-> On Mon, 15 May 2017 20:39:38 +0800
-> Xiaolei Li <xiaolei.li@mediatek.com> wrote:
-> 
-> > ECC strength and spare size supported may be different among MTK NAND
-> > FLASH Controller IPs.
-> > 
-> > This patch contains changes as following:
-> > (1) add new struct mtk_nfc_caps to support different spare size.
-> > (2) add new struct mtk_ecc_caps to support different ecc strength.
-> > (3) remove ECC_CNFG_xBIT define, use a for loop to do ecc strength config.
-> > (4) remove PAGEFMT_SPARE_ define, use a for loop to do spare format config.
-> > (5) malloc ecc->eccdata buffer according to max ecc strength of this IP.
-> > 
-> > Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
-> > ---
-> >  drivers/mtd/nand/mtk_ecc.c  | 181 ++++++++++++++++++--------------------------
-> >  drivers/mtd/nand/mtk_ecc.h  |   2 +-
-> >  drivers/mtd/nand/mtk_nand.c | 175 +++++++++++++++++++++---------------------
-> >  3 files changed, 166 insertions(+), 192 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/nand/mtk_ecc.c b/drivers/mtd/nand/mtk_ecc.c
-> > index dbf2562..ae51303 100644
-> > --- a/drivers/mtd/nand/mtk_ecc.c
-> > +++ b/drivers/mtd/nand/mtk_ecc.c
-> > @@ -33,26 +33,6 @@
-> 
-> [...]
-> 
-> > -static void mtk_nfc_set_spare_per_sector(u32 *sps, struct mtd_info *mtd)
-> > +static int cmp_map(const void *m0, const void *m1)
-> > +{
-> > +	return *(u8 *)m0 > *(u8 *)m1 ? 1 : -1;
-> > +}
-> > +
-> > +static int mtk_nfc_set_spare_per_sector(u32 *sps, struct mtd_info *mtd)
-> >  {
-> >  	struct nand_chip *nand = mtd_to_nand(mtd);
-> > -	u32 spare[] = {16, 26, 27, 28, 32, 36, 40, 44,
-> > -			48, 49, 50, 51, 52, 62, 63, 64};
-> > +	struct mtk_nfc *nfc = nand_get_controller_data(nand);
-> > +	u8 *spare;
-> >  	u32 eccsteps, i;
-> >  
-> > +	spare = vmalloc(nfc->caps->num_spare_size);
-> > +	if (!spare)
-> > +		return -ENOMEM;
-> > +
-> > +	memcpy(spare, nfc->caps->spare_size, nfc->caps->num_spare_size);
-> > +
-> > +	/*
-> > +	 * Spare size array of some IP may be not sorted, because the spare
-> > +	 * size does not always increase as the spare size bitfiled value of
-> > +	 * register NFI_PAGEFMT. So, sort it here.
-> > +	 */
-> > +	sort(spare, nfc->caps->num_spare_size, sizeof(u8), cmp_map, NULL);
-> > +
-> 
-> Let's avoid this dup+sort dance. If it's not sorted, we'd better
-> iterate over all entries of the table and pick the best one (the array
-> is rather small, so it shouldn't be a problem).
-> 
-OK. will remove sort next version.
+Changes on v4 relative to:
+--------------------
 
-> >  	eccsteps = mtd->writesize / nand->ecc.size;
-> >  	*sps = mtd->oobsize / eccsteps;
-> >  
-> >  	if (nand->ecc.size == 1024)
-> >  		*sps >>= 1;
-> >  
-> > -	for (i = 0; i < ARRAY_SIZE(spare); i++) {
-> > +	for (i = 0; i < nfc->caps->num_spare_size; i++) {
-> >  		if (*sps <= spare[i]) {
-> >  			if (!i)
-> >  				*sps = spare[i];
-> 
+tree    : https://github.com/bbrezillon/linux-0day
+branch  : nand/next
+commit  :
+        'commit 2b12c057cc28 ("mtd: nand: brcmnand: Check flash #WP pin
+         status before nand erase/program")'
+
+Patch v4:
+---------
+- remove spare size array sort. iterate over all entries of spare size
+  table and pick the best one.
+
+Patch v3:
+---------
+- separate patches into 4.
+- rename struct mtk_ecc_devdata and struct mtk_nfc_devdata to struct
+  mtk_ecc_caps and struct mtk_nfc_caps respectively.
+- add variables const u8 *ecc_strength and u8 num_ecc_strength into struct
+  mtk_ecc_caps, and remove u8 max_ecc_strength.
+- rename variabl u32 temp in function mtk_ecc_probe to u32 max_eccdata_size.
+- remove ECC_CNFG_xBIT define, use a for loop to do ecc hw configuration.
+- remove const u32 *spare_format from struct mtk_nfc_caps, and add variables
+  u8 num_spare_size and u8 pageformat_spare_shift.
+- remove PAGEFMT_SPARE_ define, use a for loop to do nfc hw configuration.
+- sort spare size array before setting spare size.
+- fix coding style issue.
+
+Patch v2:
+---------
+- sperate patches into 3.
+- refine DT bindings documentation about NFC and ECC compatible.
+- use ecc->devdata->encode_parity_reg0 and ecc->devdata->err_mask
+  directly, but hide them in define.
+
+Tests:
+------
+
+* ubifs and jffs2 are validated on NAND device MT29F16G08ADBCA
+  by 'dd' command.
+* all drivers/mtd/tests/* pass.
+* speed test:
+  eraseblock write speed is 8318 KiB/s
+  eraseblock read speed is 11374 KiB/s
+  page write speed is 8155 KiB/s
+  page read speed is 11290 KiB/s
+  2 page write speed is 8217 KiB/s
+  2 page read speed is 11354 KiB/s
+  erase speed is 116472 KiB/s
+  2x multi-block erase speed is 352978 KiB/s
+  4x multi-block erase speed is 359750 KiB/s
+  8x multi-block erase speed is 361484 KiB/s
+  16x multi-block erase speed is 364116 KiB/s
+  32x multi-block erase speed is 364116 KiB/s
+  64x multi-block erase speed is 364116 KiB/s
+
+Xiaolei Li (4):
+  mtd: nand: mediatek: update DT bindings
+  mtd: nand: mediatek: refine register NFI_PAGEFMT setting
+  mtd: nand: mediatek: add support for different MTK NAND FLASH
+    Controller IP
+  mtd: nand: mediatek: add support for MT2712 NAND FLASH Controller
+
+ Documentation/devicetree/bindings/mtd/mtk-nand.txt |   5 +-
+ drivers/mtd/nand/mtk_ecc.c                         | 218 ++++++++++-----------
+ drivers/mtd/nand/mtk_ecc.h                         |   2 +-
+ drivers/mtd/nand/mtk_nand.c                        | 183 +++++++++--------
+ 4 files changed, 202 insertions(+), 206 deletions(-)
+
+--
+1.9.1
