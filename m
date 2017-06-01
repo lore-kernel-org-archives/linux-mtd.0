@@ -8,9 +8,11 @@ Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
  linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  Stefan Agner <stefan@agner.ch>
-Subject: [PATCH v3 0/2] ARM: dts: imx7: add NAND support
-Date: Thu,  1 Jun 2017 12:20:42 -0700
-Message-Id: <20170601192044.6548-1-stefan@agner.ch>
+Subject: [PATCH v3 2/2] ARM: dts: imx7-colibri: add NAND support
+Date: Thu,  1 Jun 2017 12:20:44 -0700
+Message-Id: <20170601192044.6548-3-stefan@agner.ch>
+In-Reply-To: <20170601192044.6548-1-stefan@agner.ch>
+References: <20170601192044.6548-1-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,31 +22,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This are the missing device tree parts to add NAND support for i.MX 7.
-See previous patchset:
-https://lkml.org/lkml/2017/4/21/832
+The Colibri iMX7 modules come with 512MB on-module SLC NAND flash
+populated. Make use of it by enabling the GPMI controller.
 
-The previous version also included driver changes, which are already
-merged.
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+---
+ arch/arm/boot/dts/imx7-colibri.dtsi | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---
-Stefan
-
-Changes since v2:
-- Only specify IMX7D_NAND_USDHC_BUS_ROOT_CLK which seems to be sufficent
-- Dropped driver changes, alreay merged
-
-Changes since v1:
-- Make clks_count const
-- Introduce IS_IMX7D for i.MX 7 SoC's and make it part of GPMI_IS_MX6
-
-Stefan Agner (2):
-  ARM: dts: imx7: add GPMI NAND
-  ARM: dts: imx7-colibri: add NAND support
-
- arch/arm/boot/dts/imx7-colibri.dtsi |  9 +++++++++
- arch/arm/boot/dts/imx7s.dtsi        | 31 +++++++++++++++++++++++++++++++
- 2 files changed, 40 insertions(+)
-
+diff --git a/arch/arm/boot/dts/imx7-colibri.dtsi b/arch/arm/boot/dts/imx7-colibri.dtsi
+index 2d87489f9105..ad4ce19d455b 100644
+--- a/arch/arm/boot/dts/imx7-colibri.dtsi
++++ b/arch/arm/boot/dts/imx7-colibri.dtsi
+@@ -106,6 +106,15 @@
+ 	fsl,magic-packet;
+ };
+ 
++&gpmi {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_gpmi_nand>;
++	fsl,use-minimum-ecc;
++	nand-on-flash-bbt;
++	nand-ecc-mode = "hw";
++	status = "okay";
++};
++
+ &i2c1 {
+ 	clock-frequency = <100000>;
+ 	pinctrl-names = "default";
 -- 
 2.13.0
