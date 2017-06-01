@@ -1,32 +1,18 @@
-Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dGCam-00030l-Q9
- for linux-mtd@lists.infradead.org; Wed, 31 May 2017 22:59:54 +0000
-From: Darwin Dingel <Darwin.Dingel@alliedtelesis.co.nz>
-To: Pavel Machek <pavel@ucw.cz>, Boris Brezillon
- <boris.brezillon@free-electrons.com>
-CC: "richard@nod.at" <richard@nod.at>, "dwmw2@infradead.org"
- <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "cyrille.pitchen@atmel.com"
- <cyrille.pitchen@atmel.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "mark.marshall@omicronenergy.com"
- <mark.marshall@omicronenergy.com>, "b44839@freescale.com"
- <b44839@freescale.com>, "prabhakar@freescale.com" <prabhakar@freescale.com>
-Subject: Re: [PATCHv2] mtd: nand: fsl_ifc: fix handing of bit flips in erased
- pages
-Date: Wed, 31 May 2017 22:59:24 +0000
-Message-ID: <8c35c069ba6f42a79b2c11338c2a4f80@svr-chch-ex1.atlnz.lc>
-References: <20170419231804.5a04ed69@bbrezillon> <20170419221507.GA24914@amd>
- <20170420002748.5c76c9b9@bbrezillon> <20170420114057.GA4705@amd>
- <20170421105107.GA7259@amd> <20170517122224.GB583@amd>
- <20170517143211.205ff5de@bbrezillon> <20170517130059.GA3437@amd>
- <20170517152548.6d52c41b@bbrezillon> <20170517200305.GA12537@amd>
- <20170531205917.GA21878@amd>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <1496278287.492.13.camel@mhfsdcap03>
+Subject: Re: [PATCH v5 0/4] Mediatek MT2712 NAND FLASH Controller driver
+From: xiaolei li <xiaolei.li@mediatek.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+CC: <computersforpeace@gmail.com>, <matthias.bgg@gmail.com>,
+ <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, <robh+dt@kernel.org>,
+ <rogercc.lin@mediatek.com>, <yt.shen@mediatek.com>,
+ <srv_heupstream@mediatek.com>
+Date: Thu, 1 Jun 2017 08:51:27 +0800
+In-Reply-To: <20170531163229.50abc305@bbrezillon>
+References: <1496219201-45414-1-git-send-email-xiaolei.li@mediatek.com>
+ <20170531163229.50abc305@bbrezillon>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -37,19 +23,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=0A=
-On 01/06/17 08:59, Pavel Machek wrote:=0A=
-> If we see unrecoverable ECC error, we need to count number of bitflips=0A=
-> from all-ones and report correctable/uncorrectable according to=0A=
-> that. Otherwise we report ECC failed on erased flash with single bit erro=
-r.=0A=
-> =0A=
-> Signed-off-by: Pavel Machek <pavel@denx.de>=0A=
-> Reported-by: Darwin Dingel <Darwin.Dingel@alliedtelesis.co.nz>=0A=
-> =0A=
-=0A=
-Acked-by: Darwin Dingel <Darwin.Dingel@alliedtelesis.co.nz>=0A=
-=0A=
-=0A=
-Cheers,=0A=
-Darwin=0A=
+On Wed, 2017-05-31 at 16:32 +0200, Boris Brezillon wrote:
+> On Wed, 31 May 2017 16:26:37 +0800
+> Xiaolei Li <xiaolei.li@mediatek.com> wrote:
+> 
+> > The following patch-set adds support for Mediatek MT2712 NAND FLASH
+> > Controller.
+> 
+> Applied to nand/next.
+> 
+> Thanks,
+> 
+> Boris
+> 
+
+Thanks very much for all the reviews.
+
+Thanks,
+Xiaolei
+
+> > 
+> > Changes on v5 relative to:
+> > --------------------
+> > 
+> > tree    : https://github.com/bbrezillon/linux-0day
+> > branch  : nand/next
+> > commit  :
+> >         'commit 2b12c057cc28 ("mtd: nand: brcmnand: Check flash #WP pin
+> >          status before nand erase/program")'
+> > 
+> > Patch v5:
+> > ---------
+> > - rename variable j as closest_spare in function mtk_nfc_set_spare_per_sector
+> > - remove unneeded parenthesis
+> > - add define MTK_NFC_MIN_SPARE to check whether there is no entry that is
+> >   less than *sps.
+> > 
+> > Patch v4:
+> > ---------
+> > - remove spare size array sort. iterate over all entries of spare size
+> >   table and pick the best one.
+> > 
+> > Patch v3:
+> > ---------
+> > - separate patches into 4.
+> > - rename struct mtk_ecc_devdata and struct mtk_nfc_devdata to struct
+> >   mtk_ecc_caps and struct mtk_nfc_caps respectively.
+> > - add variables const u8 *ecc_strength and u8 num_ecc_strength into struct
+> >   mtk_ecc_caps, and remove u8 max_ecc_strength.
+> > - rename variabl u32 temp in function mtk_ecc_probe to u32 max_eccdata_size.
+> > - remove ECC_CNFG_xBIT define, use a for loop to do ecc hw configuration.
+> > - remove const u32 *spare_format from struct mtk_nfc_caps, and add variables
+> >   u8 num_spare_size and u8 pageformat_spare_shift.
+> > - remove PAGEFMT_SPARE_ define, use a for loop to do nfc hw configuration.
+> > - sort spare size array before setting spare size.
+> > - fix coding style issue.
+> > 
+> > Patch v2:
+> > ---------
+> > - sperate patches into 3.
+> > - refine DT bindings documentation about NFC and ECC compatible.
+> > - use ecc->devdata->encode_parity_reg0 and ecc->devdata->err_mask
+> >   directly, but hide them in define.
+> > 
+> > Tests:
+> > ------
+> > 
+> > * ubifs and jffs2 are validated on NAND device MT29F16G08ADBCA
+> >   by 'dd' command.
+> > * all drivers/mtd/tests/* pass.
+> > * speed test:
+> >   eraseblock write speed is 8318 KiB/s
+> >   eraseblock read speed is 11374 KiB/s
+> >   page write speed is 8155 KiB/s
+> >   page read speed is 11290 KiB/s
+> >   2 page write speed is 8217 KiB/s
+> >   2 page read speed is 11354 KiB/s
+> >   erase speed is 116472 KiB/s
+> >   2x multi-block erase speed is 352978 KiB/s
+> >   4x multi-block erase speed is 359750 KiB/s
+> >   8x multi-block erase speed is 361484 KiB/s
+> >   16x multi-block erase speed is 364116 KiB/s
+> >   32x multi-block erase speed is 364116 KiB/s
+> >   64x multi-block erase speed is 364116 KiB/s
+> > 
+> > Xiaolei Li (4):
+> >   mtd: nand: mediatek: update DT bindings
+> >   mtd: nand: mediatek: refine register NFI_PAGEFMT setting
+> >   mtd: nand: mediatek: add support for different MTK NAND FLASH
+> >     Controller IP
+> >   mtd: nand: mediatek: add support for MT2712 NAND FLASH Controller
+> > 
+> >  Documentation/devicetree/bindings/mtd/mtk-nand.txt |   5 +-
+> >  drivers/mtd/nand/mtk_ecc.c                         | 218 ++++++++++-----------
+> >  drivers/mtd/nand/mtk_ecc.h                         |   2 +-
+> >  drivers/mtd/nand/mtk_nand.c                        | 187 +++++++++---------
+> >  4 files changed, 206 insertions(+), 206 deletions(-)
+> > 
+> > --
+> > 1.9.1
+> 
