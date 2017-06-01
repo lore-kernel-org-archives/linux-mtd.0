@@ -1,33 +1,22 @@
-Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
+Received: from mail-pf0-x22c.google.com ([2607:f8b0:400e:c00::22c])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dGRCk-0000oz-BW
- for linux-mtd@lists.infradead.org; Thu, 01 Jun 2017 14:36:24 +0000
-Received: by mail-wm0-x233.google.com with SMTP id d127so62924190wmf.0
- for <linux-mtd@lists.infradead.org>; Thu, 01 Jun 2017 07:35:41 -0700 (PDT)
-Date: Thu, 1 Jun 2017 15:35:35 +0100
-From: Lee Jones <lee.jones@linaro.org>
-To: Andrea Adami <andrea.adami@gmail.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Linus Walleij <linus.walleij@linaro.org>,
- Russell King <linux@armlinux.org.uk>, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 3/9] mfd: tmio.h: support partition parser types
-Message-ID: <20170601143535.s6ovk5ts3cbehw3f@dell>
-References: <1496270458-6479-1-git-send-email-andrea.adami@gmail.com>
- <1496270458-6479-4-git-send-email-andrea.adami@gmail.com>
+ id 1dGUlF-0006mS-A5
+ for linux-mtd@lists.infradead.org; Thu, 01 Jun 2017 18:23:54 +0000
+Received: by mail-pf0-x22c.google.com with SMTP id e193so34271978pfh.0
+ for <linux-mtd@lists.infradead.org>; Thu, 01 Jun 2017 11:23:32 -0700 (PDT)
+Date: Thu, 1 Jun 2017 11:23:29 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Marek Vasut <marex@denx.de>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PULL] mtd: nand: Fixes for 4.12-rc3
+Message-ID: <20170601182329.GA142617@google.com>
+References: <20170522102131.220657ad@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1496270458-6479-4-git-send-email-andrea.adami@gmail.com>
+In-Reply-To: <20170522102131.220657ad@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,31 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 01 Jun 2017, Andrea Adami wrote:
-
-> Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
-> ---
->  include/linux/mfd/tmio.h | 1 +
->  1 file changed, 1 insertion(+)
+On Mon, May 22, 2017 at 10:21:31AM +0200, Boris Brezillon wrote:
+> Hi Brian,
 > 
-> diff --git a/include/linux/mfd/tmio.h b/include/linux/mfd/tmio.h
-> index a1520d8..23bb069 100644
-> --- a/include/linux/mfd/tmio.h
-> +++ b/include/linux/mfd/tmio.h
-> @@ -139,6 +139,7 @@ struct tmio_nand_data {
->  	struct nand_bbt_descr	*badblock_pattern;
->  	struct mtd_partition	*partition;
->  	unsigned int		num_partitions;
-> +	const char *const	*types;	/* names of parsers to use if any */
+> Here is a fixes PR for 4.12-rc3.
+> 
+> As usual, let me know if there's a problem and I'll update my PR.
+> 
+> Thanks,
+> 
+> Boris
+> 
+> The following changes since commit 08332893e37af6ae779367e78e444f8f9571511d:
+> 
+>   Linux 4.12-rc2 (2017-05-21 19:30:23 -0700)
+> 
+> are available in the git repository at:
+> 
+>   git://git.infradead.org/linux-mtd.git tags/nand/fixes-for-4.12-rc3
+> 
+> for you to fetch changes up to d4ed3b9015b5eebc90d629579d9e7944607cbae5:
+> 
+>   mtd: nand: make nand_ooblayout_lp_hamming_ops static (2017-05-22 09:42:29 +0200)
 
-Please use kerneldoc instead.
-
->  };
->  
->  #define FBIO_TMIO_ACC_WRITE	0x7C639300
-
--- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Pulled into mtd/master. Thanks.
