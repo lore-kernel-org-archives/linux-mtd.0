@@ -1,8 +1,8 @@
 Received: from www.zeus03.de ([194.117.254.33] helo=mail.zeus03.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dGLcS-00072d-7J
- for linux-mtd@lists.infradead.org; Thu, 01 Jun 2017 08:38:13 +0000
-Date: Thu, 1 Jun 2017 10:37:49 +0200
+ id 1dGLem-0000pM-1O
+ for linux-mtd@lists.infradead.org; Thu, 01 Jun 2017 08:40:37 +0000
+Date: Thu, 1 Jun 2017 10:40:13 +0200
 From: Wolfram Sang <wsa@the-dreams.de>
 To: Andrea Adami <andrea.adami@gmail.com>
 Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
@@ -18,16 +18,15 @@ Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
  Linus Walleij <linus.walleij@linaro.org>,
  Russell King <linux@armlinux.org.uk>, linux-mmc@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 5/9] mtd: nand: tmio_nand.c: take in account partition
- parser types
-Message-ID: <20170601083749.GC1477@katana>
+Subject: Re: [PATCH v3 3/9] mfd: tmio.h: support partition parser types
+Message-ID: <20170601084013.GD1477@katana>
 References: <1496270458-6479-1-git-send-email-andrea.adami@gmail.com>
- <1496270458-6479-6-git-send-email-andrea.adami@gmail.com>
+ <1496270458-6479-4-git-send-email-andrea.adami@gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="vEao7xgI/oilGqZ+"
+ protocol="application/pgp-signature"; boundary="PHCdUe6m4AxPMzOu"
 Content-Disposition: inline
-In-Reply-To: <1496270458-6479-6-git-send-email-andrea.adami@gmail.com>
+In-Reply-To: <1496270458-6479-4-git-send-email-andrea.adami@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,41 +37,34 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---vEao7xgI/oilGqZ+
+--PHCdUe6m4AxPMzOu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
+On Thu, Jun 01, 2017 at 12:40:52AM +0200, Andrea Adami wrote:
+> Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
 
-> -	retval = mtd_device_parse_register(mtd, NULL, NULL,
-> +	retval = mtd_device_parse_register(mtd,
-> +					   data->types ? data->types : NULL,
-
-This is superfluous. You want to check against 'data' instead as it is
-done below. Otherwis you might get a NULL pointer dereference.
-
-> +					   NULL,
->  					   data ? data->partition : NULL,
->  					   data ? data->num_partitions : 0);
+Acked-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
 
---vEao7xgI/oilGqZ+
+--PHCdUe6m4AxPMzOu
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAlkv0l0ACgkQFA3kzBSg
-KbZ3jQ//SMLSH7KRaP3ZgQfmpnqLUv6/xstDhcO1qz1+8ReMP+YL6fuTfyLQYjEJ
-FLt0l1t5xFfZ0l/nn9T6vAkGW3VA6aqqftTs81PufJRuoqwALU2NBfqrM+Kd8BH/
-YZOUilmBHK2jD+dHjQ1++bjFvri0ZLWShtZ50kh0WihlhhvOgndnDPSWt6QD1ZVL
-0fsq2o1ygYz+TQgdflGuzUGhzUcaqAQmF3IQGTaswk+W1sGUls+elSWaau+R40uY
-zHasxq3mEIef68HPf2mvzEkY7Y2z3Fjnp1cg+WpuUtJxxi+B3nvjjZxJIw94rx72
-39uilSglZrpJH1WwVcr5Hm1MnvdkX8/3a7JLQh9PfVKp4e1Qd4A9VpUVqtpWPqy5
-mzfd8RVjyLh5+Q67dzuqUHxQJ0VzsVbrwFFaPhPgMC8Xmb/drHKtsTXgCjhq3yz7
-cCwu9pT4vhYJ2OC3l1DXedj0aTsORDvvyRTunp4F6ORXjHMIP9PAiXieY6WfOGGb
-BN27KNxeTTO3y9Y1xnWRI0gf7/WWfKGsJ3kjl58HYe2VEw5kpEm9jha62UxWF7Xv
-4ldwB9q2pPbSmvAtnTNeEJjtx9h82EVq74KNTKROqAoo0GIwTqyuB/9qQYyV1D1O
-Z/oTut4Q7EoQNVqkoiRCJRiR3oJeTnA2xydXdFKnop/Afm3vo0I=
-=KqAq
+iQIzBAEBCAAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAlkv0uwACgkQFA3kzBSg
+KbYUERAAsBkvIKAYaMBNQYNZJYIdvUYHUPojFsBCc8zgk2cjOlXXTtXQ+XsFqi/r
+kLDwDu7OSSsS+9G307YqVZy3Jx3beP7bm2InwNaPSD88Qfvnc/SiOixwAcyrNeXI
+2UD5JOou8uPMulIDyOQXWIcgGYuFg087roeNpqCyRpFCCGHyXBV96ZbxuXEgfIxC
+59OK5mGaLeZHZ95fXNXCfsWNufxyDspEEK7VP95Sbv45az56wWsvQTTMFEDe9aOI
+T2A1q/8nEsrQsqzPQIspnDvaYdLUbVZCLGIcg6ClJvlvvy8D6cGn3EDvoK3TPxIR
+em2UCuSHMSayoQKrI/hTO392QxGuzB5a9e1bOcYFcGapbpMv0S2GtidfrxjcPCJ8
+6neH8z1N46/EqZx8NNK3IK7FAMKSigeZTGSPc3Mk1QgWV3VPw/nWCkyQTkxxNCL8
+ZYTJ7wdOH1noq4PMj0YHT5//obl3Q8VhKyN3w3Qp92zdC4ZzGs84iwYmaHJlE3RI
+wBhfFAJNe9uzY9DJjIrAYqIc55jDaKqUWnclFdXSQfd8SmQ738pu4WcQZYBxctx6
+Rx9Bl0PODflt2FEwe8AR4ibfM/D0qjaTCS6u3NjisPYLpSUeZLq5Lm3xHsTLsq0k
+5WsZrrZ1LeOuGQ4yShsbvHqbv1k79Msvyos69wH2h7trLbrGrEM=
+=+Nwp
 -----END PGP SIGNATURE-----
 
---vEao7xgI/oilGqZ+--
+--PHCdUe6m4AxPMzOu--
