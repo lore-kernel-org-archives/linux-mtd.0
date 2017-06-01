@@ -1,46 +1,35 @@
-Received: from mail-oi0-x242.google.com ([2607:f8b0:4003:c06::242])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dGNG2-0002wY-AY
- for linux-mtd@lists.infradead.org; Thu, 01 Jun 2017 10:23:10 +0000
-Received: by mail-oi0-x242.google.com with SMTP id j66so3200022oib.2
- for <linux-mtd@lists.infradead.org>; Thu, 01 Jun 2017 03:22:49 -0700 (PDT)
+Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dGPuM-0000c9-CZ
+ for linux-mtd@lists.infradead.org; Thu, 01 Jun 2017 13:13:00 +0000
+Date: Thu, 1 Jun 2017 15:12:32 +0200
+From: Pavel Machek <pavel@ucw.cz>
+To: Darwin Dingel <Darwin.Dingel@alliedtelesis.co.nz>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ "richard@nod.at" <richard@nod.at>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "cyrille.pitchen@atmel.com" <cyrille.pitchen@atmel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "mark.marshall@omicronenergy.com" <mark.marshall@omicronenergy.com>,
+ "b44839@freescale.com" <b44839@freescale.com>,
+ "prabhakar@freescale.com" <prabhakar@freescale.com>
+Subject: Re: [PATCHv2] mtd: nand: fsl_ifc: fix handing of bit flips in erased
+ pages
+Message-ID: <20170601131232.GA12630@amd>
+References: <20170420002748.5c76c9b9@bbrezillon> <20170420114057.GA4705@amd>
+ <20170421105107.GA7259@amd> <20170517122224.GB583@amd>
+ <20170517143211.205ff5de@bbrezillon> <20170517130059.GA3437@amd>
+ <20170517152548.6d52c41b@bbrezillon> <20170517200305.GA12537@amd>
+ <20170531205917.GA21878@amd>
+ <3ff6a5a52b4744caaa481d482cab54bd@svr-chch-ex1.atlnz.lc>
 MIME-Version: 1.0
-Sender: arndbergmann@gmail.com
-In-Reply-To: <CAAM7YAmp=cZKqGHa8UqDnrQLCe+6TKx+7w9SDZv4cW5fr4dfvA@mail.gmail.com>
-References: <1491613030-11599-1-git-send-email-deepa.kernel@gmail.com>
- <1491613030-11599-5-git-send-email-deepa.kernel@gmail.com>
- <CAAM7YAmp=cZKqGHa8UqDnrQLCe+6TKx+7w9SDZv4cW5fr4dfvA@mail.gmail.com>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 1 Jun 2017 12:22:47 +0200
-Message-ID: <CAK8P3a1pCw1Oo-Wg70kH5L12pbtEzGDfaPZ8g6ErERJjvY8znQ@mail.gmail.com>
-Subject: Re: [PATCH 04/12] fs: ceph: CURRENT_TIME with ktime_get_real_ts()
-To: "Yan, Zheng" <ukernel@gmail.com>
-Cc: Deepa Dinamani <deepa.kernel@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Thomas Gleixner <tglx@linutronix.de>, Al Viro <viro@zeniv.linux.org.uk>,
- gregkh <gregkh@linuxfoundation.org>, "Dilger,
- Andreas" <andreas.dilger@intel.com>,
- "J. Bruce Fields" <bfields@fieldses.org>, Chris Mason <clm@fb.com>,
- David Miller <davem@davemloft.net>,
- David Sterba <dsterba@suse.com>, Evgeniy Dushistov <dushistov@mail.ru>,
- Eric Paris <eparis@redhat.com>,
- Jaegeuk Kim <jaegeuk@kernel.org>, Josef Bacik <jbacik@fb.com>,
- Jeff Layton <jlayton@poochiereds.net>, John Stultz <john.stultz@linaro.org>,
- James Simmons <jsimmons@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- "Drokin, Oleg" <oleg.drokin@intel.com>, Paul Moore <paul@paul-moore.com>,
- Steven Rostedt <rostedt@goodmis.org>, yuchao0@huawei.com,
- ceph-devel <ceph-devel@vger.kernel.org>, devel@driverdev.osuosl.org,
- linux-audit@redhat.com, linux-btrfs <linux-btrfs@vger.kernel.org>,
- linux-cifs@vger.kernel.org,
- "Linux F2FS DEV, Mailing List" <linux-f2fs-devel@lists.sourceforge.net>,
- Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- LSM List <linux-security-module@vger.kernel.org>,
- Lustre Development List <lustre-devel@lists.lustre.org>,
- Networking <netdev@vger.kernel.org>,
- samba-technical@lists.samba.org, y2038 Mailman List <y2038@lists.linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="envbJBWh7q8WU6mo"
+Content-Disposition: inline
+In-Reply-To: <3ff6a5a52b4744caaa481d482cab54bd@svr-chch-ex1.atlnz.lc>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -50,58 +39,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 1, 2017 at 11:56 AM, Yan, Zheng <ukernel@gmail.com> wrote:
-> On Sat, Apr 8, 2017 at 8:57 AM, Deepa Dinamani <deepa.kernel@gmail.com> wrote:
 
->> diff --git a/drivers/block/rbd.c b/drivers/block/rbd.c
->> index 517838b..77204da 100644
->> --- a/drivers/block/rbd.c
->> +++ b/drivers/block/rbd.c
->> @@ -1922,7 +1922,7 @@ static void rbd_osd_req_format_write(struct rbd_obj_request *obj_request)
->>  {
->>         struct ceph_osd_request *osd_req = obj_request->osd_req;
->>
->> -       osd_req->r_mtime = CURRENT_TIME;
->> +       ktime_get_real_ts(&osd_req->r_mtime);
->>         osd_req->r_data_offset = obj_request->offset;
->>  }
->>
->> diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
->> index c681762..1d3fa90 100644
->> --- a/fs/ceph/mds_client.c
->> +++ b/fs/ceph/mds_client.c
->> @@ -1666,6 +1666,7 @@ struct ceph_mds_request *
->>  ceph_mdsc_create_request(struct ceph_mds_client *mdsc, int op, int mode)
->>  {
->>         struct ceph_mds_request *req = kzalloc(sizeof(*req), GFP_NOFS);
->> +       struct timespec ts;
->>
->>         if (!req)
->>                 return ERR_PTR(-ENOMEM);
->> @@ -1684,7 +1685,8 @@ ceph_mdsc_create_request(struct ceph_mds_client *mdsc, int op, int mode)
->>         init_completion(&req->r_safe_completion);
->>         INIT_LIST_HEAD(&req->r_unsafe_item);
->>
->> -       req->r_stamp = current_fs_time(mdsc->fsc->sb);
->> +       ktime_get_real_ts(&ts);
->> +       req->r_stamp = timespec_trunc(ts, mdsc->fsc->sb->s_time_gran);
->
-> This change causes our kernel_untar_tar test case to fail (inode's
-> ctime goes back). The reason is that there is time drift between the
-> time stamps got by  ktime_get_real_ts() and current_time(). We need to
-> revert this change until current_time() uses ktime_get_real_ts()
-> internally.
+--envbJBWh7q8WU6mo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hmm, the change was not supposed to have a user-visible effect, so
-something has gone wrong, but I don't immediately see how it
-relates to what you observe.
+On Thu 2017-06-01 01:09:17, Darwin Dingel wrote:
+> Hi Pavel,
+>=20
+> Just a minor thing. Sorry about the late comment.
+>=20
+> On 01/06/17 08:59, Pavel Machek wrote:
+> > +
+> > +		res =3D check_erased_page(chip, buf);
+> > +		return res;
+> > +	}
+>=20
+> Can we just remove 'res' and change this line to:
+> 	return check_erased_page(chip, buf);
 
-ktime_get_real_ts() and current_time() use the same time base, there
-is no drift, but there is a difference in resolution, as the latter uses
-the time stamp of the last jiffies update, which may be up to one jiffy
-(10ms) behind the exact time we put in the request stamps here.
+Well... I originally had a printk there, and yes, it can be
+simplified. I can roll v3, if required, but I'd leave it as is -- it
+is still convenient place to add debugging to.
 
-Do you still see problems if you use current_kernel_time() instead of
-ktime_get_real_ts()?
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
 
-        Arnd
+--envbJBWh7q8WU6mo
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlkwEsAACgkQMOfwapXb+vLQigCgro3v+EDZoM+eiFsLJxZxuk0k
+Ls0AoJuA0FUInHXxEjQRB9Pawkn9U3SC
+=xzuG
+-----END PGP SIGNATURE-----
+
+--envbJBWh7q8WU6mo--
