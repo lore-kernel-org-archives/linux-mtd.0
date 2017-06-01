@@ -1,27 +1,23 @@
-From: Han Xu <han.xu@nxp.com>
-To: Stefan Agner <stefan@agner.ch>, "shawnguo@kernel.org"
- <shawnguo@kernel.org>, "kernel@pengutronix.de" <kernel@pengutronix.de>
-CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "boris.brezillon@free-electrons.com"
- <boris.brezillon@free-electrons.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
- "cyrille.pitchen@atmel.com" <cyrille.pitchen@atmel.com>, "robh+dt@kernel.org"
- <robh+dt@kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "fabio.estevam@freescale.com" <fabio.estevam@freescale.com>,
- "LW@KARO-electronics.de" <LW@KARO-electronics.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 0/2] ARM: dts: imx7: add NAND support
-Date: Thu, 1 Jun 2017 21:14:57 +0000
-Message-ID: <3c086d95-96e5-71ec-b44f-12ed41903fcf@nxp.com>
-References: <20170601192044.6548-1-stefan@agner.ch>
-In-Reply-To: <20170601192044.6548-1-stefan@agner.ch>
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dGXfu-0000io-VD
+ for linux-mtd@lists.infradead.org; Thu, 01 Jun 2017 21:30:37 +0000
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>
+CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "andrew@lunn.ch"
+ <andrew@lunn.ch>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>, "Richard
+ Weinberger" <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Subject: Re: [PATCH 3/4] mtd: mchp23k256: add partitioning support
+Date: Thu, 1 Jun 2017 21:30:07 +0000
+Message-ID: <bba73e6d5f4b41a88423287300d892e5@svr-chch-ex1.atlnz.lc>
+References: <20170517053908.26138-1-chris.packham@alliedtelesis.co.nz>
+ <20170517053908.26138-4-chris.packham@alliedtelesis.co.nz>
+ <20170517172911.5f926712@bbrezillon> <20170601184340.GA102137@google.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="Windows-1252"
-Content-ID: <747476295435174AA58ABE6DCBF21B41@eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,40 +29,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-On 06/01/2017 02:20 PM, Stefan Agner wrote:
-> This are the missing device tree parts to add NAND support for i.MX 7.
-> See previous patchset:
-> https://emea01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flkml=
-.org%2Flkml%2F2017%2F4%2F21%2F832&data=3D01%7C01%7Chan.xu%40nxp.com%7C3b908=
-1a68c94476c4a2108d4a9235512%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0&sdata=3D=
-mQ2aq5rW%2B9uADY5mSzFxk8P6bAVq%2BosPJQAi0PL9SQg%3D&reserved=3D0
->
-> The previous version also included driver changes, which are already
-> merged.
->
-> --
-> Stefan
->
-> Changes since v2:
-> - Only specify IMX7D_NAND_USDHC_BUS_ROOT_CLK which seems to be sufficent
-Hi Stefan, sorry I didn't reply your last patch. I was unable to fully=20
-test on i.MX7 since the work bandwidth, but the quick test shows DMA=20
-cannot work WITHOUT IMX7D_NAND_ROOT_CLK on my side, I will fully check=20
-it tomorrow morning and let you know the result.
-> - Dropped driver changes, alreay merged
->
-> Changes since v1:
-> - Make clks_count const
-> - Introduce IS_IMX7D for i.MX 7 SoC's and make it part of GPMI_IS_MX6
->
-> Stefan Agner (2):
->    ARM: dts: imx7: add GPMI NAND
->    ARM: dts: imx7-colibri: add NAND support
->
->   arch/arm/boot/dts/imx7-colibri.dtsi |  9 +++++++++
->   arch/arm/boot/dts/imx7s.dtsi        | 31 ++++++++++++++++++++++++++++++=
-+
->   2 files changed, 40 insertions(+)
->
+On 02/06/17 06:43, Brian Norris wrote:=0A=
+> On Wed, May 17, 2017 at 05:29:11PM +0200, Boris Brezillon wrote:=0A=
+>> Hi Chris,=0A=
+>>=0A=
+>> On Wed, 17 May 2017 17:39:07 +1200=0A=
+>> Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:=0A=
+>>=0A=
+>>> Setting the of_node for the mtd device allows the generic mtd code to=
+=0A=
+>>> setup the partitions. Additionally we must specify a non-zero erasesize=
+=0A=
+>>> for the partitions to be writeable.=0A=
+>>>=0A=
+>>> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>=0A=
+>>> ---=0A=
+>>>  drivers/mtd/devices/mchp23k256.c | 5 +++++=0A=
+>>>  1 file changed, 5 insertions(+)=0A=
+>>>=0A=
+>>> diff --git a/drivers/mtd/devices/mchp23k256.c b/drivers/mtd/devices/mch=
+p23k256.c=0A=
+>>> index 2542f5b8b63f..02c6b9dcbd3e 100644=0A=
+>>> --- a/drivers/mtd/devices/mchp23k256.c=0A=
+>>> +++ b/drivers/mtd/devices/mchp23k256.c=0A=
+>>> @@ -143,6 +143,7 @@ static int mchp23k256_probe(struct spi_device *spi)=
+=0A=
+>>>=0A=
+>>>  	data =3D dev_get_platdata(&spi->dev);=0A=
+>>>=0A=
+>>> +	mtd_set_of_node(&flash->mtd, spi->dev.of_node);=0A=
+>>>  	flash->mtd.dev.parent	=3D &spi->dev;=0A=
+>>>  	flash->mtd.type		=3D MTD_RAM;=0A=
+>>>  	flash->mtd.flags	=3D MTD_CAP_RAM;=0A=
+>>> @@ -151,6 +152,10 @@ static int mchp23k256_probe(struct spi_device *spi=
+)=0A=
+>>>  	flash->mtd._read	=3D mchp23k256_read;=0A=
+>>>  	flash->mtd._write	=3D mchp23k256_write;=0A=
+>>>=0A=
+>>> +	flash->mtd.erasesize =3D PAGE_SIZE;=0A=
+>>> +	while (flash->mtd.size & (flash->mtd.erasesize - 1))=0A=
+>>> +		flash->mtd.erasesize >>=3D 1;=0A=
+>>> +=0A=
+>>=0A=
+>> Can we fix allocate_partition() to properly handle the=0A=
+>> master->erasesize =3D=3D 0 case instead of doing that?=0A=
+>=0A=
+> Is everything actually ready for the eraseblock size to be 0?=0A=
+=0A=
+That was my initial motivation for faking it.=0A=
+=0A=
+> That would=0A=
+> seem surprising to many applications, I would think. Can you, for=0A=
+> instance, even use UBI on such a device?=0A=
+=0A=
+I've tried ext2 and I believe Andrew has tried minix fs. We're talking =0A=
+SRAM so UBI/UBIFS doesn't really provide much benefit for this use-case.=0A=
+=0A=
+> BTW, I feel like this check is a little more natural to do with=0A=
+> 'mtd->flags & MTD_NO_ERASE', rather than checking the (apparently=0A=
+> meaningless) erasesize.=0A=
+>=0A=
+> (I realize there's a later version of these patches, but I figured I'd=0A=
+> put my comments where the suggestion was brought up.)=0A=
+>=0A=
+> Brian=0A=
+>=0A=
+=0A=
