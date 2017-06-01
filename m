@@ -1,34 +1,33 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dGQ2v-0005Wi-07
- for linux-mtd@lists.infradead.org; Thu, 01 Jun 2017 13:21:50 +0000
-Date: Thu, 1 Jun 2017 15:21:15 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Pavel Machek <pavel@ucw.cz>
-Cc: Darwin Dingel <Darwin.Dingel@alliedtelesis.co.nz>, "richard@nod.at"
- <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "cyrille.pitchen@atmel.com" <cyrille.pitchen@atmel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "mark.marshall@omicronenergy.com" <mark.marshall@omicronenergy.com>,
- "b44839@freescale.com" <b44839@freescale.com>, "prabhakar@freescale.com"
- <prabhakar@freescale.com>
-Subject: Re: [PATCHv2] mtd: nand: fsl_ifc: fix handing of bit flips in
- erased pages
-Message-ID: <20170601152115.06895287@bbrezillon>
-In-Reply-To: <20170601131232.GA12630@amd>
-References: <20170420002748.5c76c9b9@bbrezillon> <20170420114057.GA4705@amd>
- <20170421105107.GA7259@amd> <20170517122224.GB583@amd>
- <20170517143211.205ff5de@bbrezillon> <20170517130059.GA3437@amd>
- <20170517152548.6d52c41b@bbrezillon> <20170517200305.GA12537@amd>
- <20170531205917.GA21878@amd>
- <3ff6a5a52b4744caaa481d482cab54bd@svr-chch-ex1.atlnz.lc>
- <20170601131232.GA12630@amd>
+Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dGRCk-0000oz-BW
+ for linux-mtd@lists.infradead.org; Thu, 01 Jun 2017 14:36:24 +0000
+Received: by mail-wm0-x233.google.com with SMTP id d127so62924190wmf.0
+ for <linux-mtd@lists.infradead.org>; Thu, 01 Jun 2017 07:35:41 -0700 (PDT)
+Date: Thu, 1 Jun 2017 15:35:35 +0100
+From: Lee Jones <lee.jones@linaro.org>
+To: Andrea Adami <andrea.adami@gmail.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Russell King <linux@armlinux.org.uk>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 3/9] mfd: tmio.h: support partition parser types
+Message-ID: <20170601143535.s6ovk5ts3cbehw3f@dell>
+References: <1496270458-6479-1-git-send-email-andrea.adami@gmail.com>
+ <1496270458-6479-4-git-send-email-andrea.adami@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1496270458-6479-4-git-send-email-andrea.adami@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,29 +37,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 1 Jun 2017 15:12:32 +0200
-Pavel Machek <pavel@ucw.cz> wrote:
+On Thu, 01 Jun 2017, Andrea Adami wrote:
 
-> On Thu 2017-06-01 01:09:17, Darwin Dingel wrote:
-> > Hi Pavel,
-> > 
-> > Just a minor thing. Sorry about the late comment.
-> > 
-> > On 01/06/17 08:59, Pavel Machek wrote:  
-> > > +
-> > > +		res = check_erased_page(chip, buf);
-> > > +		return res;
-> > > +	}  
-> > 
-> > Can we just remove 'res' and change this line to:
-> > 	return check_erased_page(chip, buf);  
+> Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
+> ---
+>  include/linux/mfd/tmio.h | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Well... I originally had a printk there, and yes, it can be
-> simplified. I can roll v3, if required, but I'd leave it as is -- it
-> is still convenient place to add debugging to.
+> diff --git a/include/linux/mfd/tmio.h b/include/linux/mfd/tmio.h
+> index a1520d8..23bb069 100644
+> --- a/include/linux/mfd/tmio.h
+> +++ b/include/linux/mfd/tmio.h
+> @@ -139,6 +139,7 @@ struct tmio_nand_data {
+>  	struct nand_bbt_descr	*badblock_pattern;
+>  	struct mtd_partition	*partition;
+>  	unsigned int		num_partitions;
+> +	const char *const	*types;	/* names of parsers to use if any */
 
-I can fix it when applying, no need to send a new version.
+Please use kerneldoc instead.
 
-Regards,
+>  };
+>  
+>  #define FBIO_TMIO_ACC_WRITE	0x7C639300
 
-Boris
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
