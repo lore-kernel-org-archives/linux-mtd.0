@@ -1,26 +1,52 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dGiVR-0006G5-E3
- for linux-mtd@lists.infradead.org; Fri, 02 Jun 2017 09:04:31 +0000
-Date: Fri, 2 Jun 2017 11:04:06 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>, dwmw2@infradead.org,
- andrew@lunn.ch, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Subject: Re: [PATCH 3/4] mtd: mchp23k256: add partitioning support
-Message-ID: <20170602110406.49eda282@bbrezillon>
-In-Reply-To: <20170601220156.GD102137@google.com>
-References: <20170517053908.26138-1-chris.packham@alliedtelesis.co.nz>
- <20170517053908.26138-4-chris.packham@alliedtelesis.co.nz>
- <20170517172911.5f926712@bbrezillon>
- <20170601184340.GA102137@google.com>
- <20170601224712.6a81a458@bbrezillon>
- <20170601220156.GD102137@google.com>
+Received: from mail-oi0-x243.google.com ([2607:f8b0:4003:c06::243])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dGj9l-00049I-W1
+ for linux-mtd@lists.infradead.org; Fri, 02 Jun 2017 09:46:12 +0000
+Received: by mail-oi0-x243.google.com with SMTP id h4so10907156oib.0
+ for <linux-mtd@lists.infradead.org>; Fri, 02 Jun 2017 02:45:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Sender: arndbergmann@gmail.com
+In-Reply-To: <CAAM7YAkXNo_69tOrw6a5kpyref9nEpEp-2vxBbFVSHGmAVbt+A@mail.gmail.com>
+References: <1491613030-11599-1-git-send-email-deepa.kernel@gmail.com>
+ <1491613030-11599-5-git-send-email-deepa.kernel@gmail.com>
+ <CAAM7YAmp=cZKqGHa8UqDnrQLCe+6TKx+7w9SDZv4cW5fr4dfvA@mail.gmail.com>
+ <CAK8P3a1pCw1Oo-Wg70kH5L12pbtEzGDfaPZ8g6ErERJjvY8znQ@mail.gmail.com>
+ <CAAM7YAnWLUXMOCVbgfdKGfvK04EtAQcz-ETm7xFO=8Y=_fCvOQ@mail.gmail.com>
+ <CALAqxLV-yVKWM5es7fAFiDzhSQmtZFiZDPQwBRUYbWUtqhoWVg@mail.gmail.com>
+ <CABeXuvqvLr6sSGF+rZEXXxpCBDKTOeLX1ObSjbPPY4aFBuwvMg@mail.gmail.com>
+ <CAAM7YAkXNo_69tOrw6a5kpyref9nEpEp-2vxBbFVSHGmAVbt+A@mail.gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Fri, 2 Jun 2017 11:45:47 +0200
+Message-ID: <CAK8P3a1TwkVRCwDWqgYE8Z3wZT2+v6xayq=dVeW8KaHmO0W4cg@mail.gmail.com>
+Subject: Re: [PATCH 04/12] fs: ceph: CURRENT_TIME with ktime_get_real_ts()
+To: "Yan, Zheng" <ukernel@gmail.com>
+Cc: Deepa Dinamani <deepa.kernel@gmail.com>,
+ John Stultz <john.stultz@linaro.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Al Viro <viro@zeniv.linux.org.uk>,
+ gregkh <gregkh@linuxfoundation.org>, "Dilger,
+ Andreas" <andreas.dilger@intel.com>,
+ "J. Bruce Fields" <bfields@fieldses.org>, Chris Mason <clm@fb.com>,
+ David Miller <davem@davemloft.net>,
+ David Sterba <dsterba@suse.com>, Evgeniy Dushistov <dushistov@mail.ru>,
+ Eric Paris <eparis@redhat.com>,
+ Jaegeuk Kim <jaegeuk@kernel.org>, Josef Bacik <jbacik@fb.com>,
+ Jeff Layton <jlayton@poochiereds.net>, James Simmons <jsimmons@infradead.org>,
+ Ingo Molnar <mingo@redhat.com>, "Drokin, Oleg" <oleg.drokin@intel.com>,
+ Paul Moore <paul@paul-moore.com>, Steven Rostedt <rostedt@goodmis.org>,
+ yuchao0@huawei.com,
+ ceph-devel <ceph-devel@vger.kernel.org>, devel@driverdev.osuosl.org,
+ linux-audit@redhat.com, linux-btrfs <linux-btrfs@vger.kernel.org>,
+ linux-cifs@vger.kernel.org,
+ "Linux F2FS DEV, Mailing List" <linux-f2fs-devel@lists.sourceforge.net>,
+ Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ LSM List <linux-security-module@vger.kernel.org>,
+ Lustre Development List <lustre-devel@lists.lustre.org>,
+ Networking <netdev@vger.kernel.org>,
+ samba-technical@lists.samba.org, y2038 Mailman List <y2038@lists.linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,103 +56,149 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 1 Jun 2017 15:01:56 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
+On Fri, Jun 2, 2017 at 4:09 AM, Yan, Zheng <ukernel@gmail.com> wrote:
+> On Fri, Jun 2, 2017 at 8:57 AM, Deepa Dinamani <deepa.kernel@gmail.com> wrote:
+>> On Thu, Jun 1, 2017 at 5:36 PM, John Stultz <john.stultz@linaro.org> wrote:
+>>> On Thu, Jun 1, 2017 at 5:26 PM, Yan, Zheng <ukernel@gmail.com> wrote:
+>>>> On Thu, Jun 1, 2017 at 6:22 PM, Arnd Bergmann <arnd@arndb.de> wrote:
+>>>>> On Thu, Jun 1, 2017 at 11:56 AM, Yan, Zheng <ukernel@gmail.com> wrote:
+>>>>>> On Sat, Apr 8, 2017 at 8:57 AM, Deepa Dinamani <deepa.kernel@gmail.com> wrote:
+>>>>>
+>>>>>>> diff --git a/drivers/block/rbd.c b/drivers/block/rbd.c
+>>>>>>> index 517838b..77204da 100644
+>>>>>>> --- a/drivers/block/rbd.c
+>>>>>>> +++ b/drivers/block/rbd.c
+>>>>>>> @@ -1922,7 +1922,7 @@ static void rbd_osd_req_format_write(struct rbd_obj_request *obj_request)
+>>>>>>>  {
+>>>>>>>         struct ceph_osd_request *osd_req = obj_request->osd_req;
+>>>>>>>
+>>>>>>> -       osd_req->r_mtime = CURRENT_TIME;
+>>>>>>> +       ktime_get_real_ts(&osd_req->r_mtime);
+>>>>>>>         osd_req->r_data_offset = obj_request->offset;
+>>>>>>>  }
+>>>>>>>
+>>>>>>> diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
+>>>>>>> index c681762..1d3fa90 100644
+>>>>>>> --- a/fs/ceph/mds_client.c
+>>>>>>> +++ b/fs/ceph/mds_client.c
+>>>>>>> @@ -1666,6 +1666,7 @@ struct ceph_mds_request *
+>>>>>>>  ceph_mdsc_create_request(struct ceph_mds_client *mdsc, int op, int mode)
+>>>>>>>  {
+>>>>>>>         struct ceph_mds_request *req = kzalloc(sizeof(*req), GFP_NOFS);
+>>>>>>> +       struct timespec ts;
+>>>>>>>
+>>>>>>>         if (!req)
+>>>>>>>                 return ERR_PTR(-ENOMEM);
+>>>>>>> @@ -1684,7 +1685,8 @@ ceph_mdsc_create_request(struct ceph_mds_client *mdsc, int op, int mode)
+>>>>>>>         init_completion(&req->r_safe_completion);
+>>>>>>>         INIT_LIST_HEAD(&req->r_unsafe_item);
+>>>>>>>
+>>>>>>> -       req->r_stamp = current_fs_time(mdsc->fsc->sb);
+>>>>>>> +       ktime_get_real_ts(&ts);
+>>>>>>> +       req->r_stamp = timespec_trunc(ts, mdsc->fsc->sb->s_time_gran);
+>>>>>>
+>>>>>> This change causes our kernel_untar_tar test case to fail (inode's
+>>>>>> ctime goes back). The reason is that there is time drift between the
+>>>>>> time stamps got by  ktime_get_real_ts() and current_time(). We need to
+>>>>>> revert this change until current_time() uses ktime_get_real_ts()
+>>>>>> internally.
+>>>>>
+>>>>> Hmm, the change was not supposed to have a user-visible effect, so
+>>>>> something has gone wrong, but I don't immediately see how it
+>>>>> relates to what you observe.
+>>>>>
+>>>>> ktime_get_real_ts() and current_time() use the same time base, there
+>>>>> is no drift, but there is a difference in resolution, as the latter uses
+>>>>> the time stamp of the last jiffies update, which may be up to one jiffy
+>>>>> (10ms) behind the exact time we put in the request stamps here.
+>>>>>
+>>>>> Do you still see problems if you use current_kernel_time() instead of
+>>>>> ktime_get_real_ts()?
+>>>>
+>>>> The problem disappears after using current_kernel_time().
+>>>>
+>>>> https://github.com/ceph/ceph-client/commit/2e0f648da23167034a3cf1500bc90ec60aef2417
+>>>
+>>> From the commit above:
+>>> "It seems there is time drift between ktime_get_real_ts() and
+>>> current_kernel_time()"
+>>>
+>>> Its more of a granularity difference. current_kernel_time() returns
+>>> the cached time at the last tick, where as ktime_get_real_ts() reads
+>>> the clocksource hardware and returns the immediate time.
+>>>
+>>> Filesystems usually use the cached time (similar to
+>>> CLOCK_REALTIME_COARSE), for performance reasons, as touching the
+>>> clocksource takes time.
+>>
+>> Alternatively, it would be best for this code also to use current_time().
+>> I had suggested this in one of the previous versions of the patch.
+>> The implementation of current_time() will change when we switch vfs to
+>> use 64 bit time. This will prevent such errors from happening again.
+>> But, this also means there is more code reordering for these modules
+>> to get a reference to inode.
+>>
+>
+> I took a look. it's quite inconvenience to use current_time(). I
+> prefer to temporarily use current_kernel_time().
 
-> On Thu, Jun 01, 2017 at 10:47:12PM +0200, Boris Brezillon wrote:
-> > Le Thu, 1 Jun 2017 11:43:40 -0700,
-> > Brian Norris <computersforpeace@gmail.com> a =C3=A9crit : =20
-> > > On Wed, May 17, 2017 at 05:29:11PM +0200, Boris Brezillon wrote: =20
-> > > > On Wed, 17 May 2017 17:39:07 +1200
-> > > > Chris Packham <chris.packham@alliedtelesis.co.nz> wrote: =20
-> > > > > @@ -151,6 +152,10 @@ static int mchp23k256_probe(struct spi_devic=
-e *spi)
-> > > > >  	flash->mtd._read	=3D mchp23k256_read;
-> > > > >  	flash->mtd._write	=3D mchp23k256_write;
-> > > > > =20
-> > > > > +	flash->mtd.erasesize =3D PAGE_SIZE;
-> > > > > +	while (flash->mtd.size & (flash->mtd.erasesize - 1))
-> > > > > +		flash->mtd.erasesize >>=3D 1;
-> > > > > +   =20
-> > > >=20
-> > > > Can we fix allocate_partition() to properly handle the
-> > > > master->erasesize =3D=3D 0 case instead of doing that?   =20
-> > >=20
-> > > Is everything actually ready for the eraseblock size to be 0? That wo=
-uld
-> > > seem surprising to many applications, I would think. Can you, for
-> > > instance, even use UBI on such a device? =20
-> >=20
-> > Well, I think it's already broken. AFAICT this driver does not
-> > implement ->_erase(), and mtd_erase() does not check if MTD_NO_ERASE is
-> > set before calling mtd->_erase(), neither UBI does before calling
-> > mtd_erase(). =20
->=20
-> Sure.
->=20
-> > Between a NULL pointer exception and a div-by-zero exception, I can't
-> > decide what is better :-). =20
->=20
-> Well, there are other potential problems than that. What if someone was
-> iterating over the device size, by increments of erasesize? Infinite
-> loop! Or what about anything that might have assumed
-> 'writesize < erasesize'?
+I've looked at the code some more and I think there is another angle to it:
+In your test case, 'tar' calls into the utimes syscall (or a member of its
+family), which sets the i_ctime field in the inode to the curren time
+(using current_time()), then calls __ceph_setattr(), which creates
+a mds client request, and ceph_mdsc_create_request() takes another
+time stamp and stores it in r_stamp.
 
-Absolutely, div-by-zero is not the only problem we can face.
+We then store the first timestamp (only) in the in-memory inode, and the
+second time stamp in the request. Depending on the state of the inode,
+we may also set the ctime to a third timestamp we again take using
+current_time().
 
->=20
-> I'm mostly thinking out loud, because I'm not sure there's a really good
-> way to handle this, other than stop making those assumptions.
->=20
-> (A *possible* solution would be to have MTD enforce a fake erasesize for
-> NO_ERASE flash, instead of making drivers do it, like Chris was trying.
-> But I'm not sure that's a good one.)
+The mtime and atime from user space get passed correctly through
+union ceph_mds_request_args->setattr and are kept in sync between
+the in-memory inode and the persistent inode data, but the ctime
+in the inode never makes it to the lower protocol levels and instead
+we use the r_stamp field that got set a little earlier or a little later.
 
-Actually, by doing that we keep encouraging people to not do the right
-thing :-).
+I believe the bug you see is the result of the two timestamps
+currently being almost guaranteed to be different in the latest
+kernels.
+Changing r_stamp to use current_kernel_time() will make it the
+same value most of the time (as it was before Deepa's patch),
+but when the timer interrupt happens between the timestamps,
+the two are still different, it's just much harder to hit.
 
->=20
-> > IMO, we'd better add a check in UBI to refuse to attach a device with
-> > MTD_NO_ERASE or mtd->erasesize =3D=3D 0, and fix other places that don't
-> > check erasesize value instead of putting a fake erasesize and using a
-> > dummy ->_erase() implementation for those devices that simply can't be
-> > erased. =20
->=20
-> That's probably a good idea.
+I think the proper solution should be to change __ceph_setattr()
+in a way that has req->r_stamp always synchronized with i_ctime.
+If we copy i_ctime to r_stamp, that will also take care of the
+future issues with the planned changes to current_time().
 
-I'll try to post patches soon, but they definitely won't fix all
-problems. For example, we just can't catch the infinite loop issue you
-are mentioning above.
+The part I don't understand is what else r_stamp (i.e. the time
+stamp in ceph_msg_data with type==
+CEPH_MSG_CLIENT_REQUEST) is used for, other than setting
+ctime in CEPH_MDS_OP_SETATTR.
 
->=20
-> > We should also probably complain with -ENOTSUPP when someone calls
-> > mtd_erase() on a device with MTD_NO_ERASE and add more checks in the
-> > add_mtd_device() to detect drivers that don't have MTD_NO_ERASE set
-> > and do not implement ->_erase() or leave ->erasesize to 0.  =20
->=20
-> Yep.
->=20
-> > > BTW, I feel like this check is a little more natural to do with
-> > > 'mtd->flags & MTD_NO_ERASE', rather than checking the (apparently
-> > > meaningless) erasesize. =20
-> >=20
-> > Fair enough. =20
->=20
-> OK, well I'll take another look at v4, but that might be my only
-> criticism then.
->=20
-> Overall though, a "NO_ERASE" MTD makes me wonder why it's an MTD in the
-> first place. I guess we're kinda the wild west of things that don't fit
-> into the block subsystem...
+Will this be used to update the stored i_ctime for other operations
+too? If so, we would need to synchronize it with the in-memory
+i_ctime for all operations that do this.
 
-Yes, that's exactly what the MTD subsystem is: a place where you can
-put drivers for memory devices that are not block devices :-). Don't
-know if it's a good thing or not, but it definitely makes MTD users
-life harder.
+Semi-related side note: I see that the granularity for ceph_timespec
+is 1000 nanoseconds, so the value is always a multiple of 1000.
+If the full 32-bit data gets stored, we could use this it to store the
+epoch number in the future:
 
-BTW, MTD_NO_ERASE is not the only problem we have with UBI or JFFS2.
-Are we guaranteed that an erase operation fills an eraseblock with
-ones? Don't we have mem technologies that are filling them with zeros?
-Note that mtdram is artificially setting the mem-region to 0xff in its
-dummy erase operation, so maybe it's a implicit rule that ->_erase() is
-supposed to fill eraseblocks with 0xff.
+static inline void ceph_decode_timespec(struct timespec64 *ts,
+                                        const struct ceph_timespec *tv)
+{
+        u32 ns_epoch = le32_to_cpu(tv->tv_nsec);
+        u32 epoch = ns_epoch % 1000;
+
+        /* tv_sec is traditionally interpreted as unsigned
+         * with time ranges 1970-2106, we extend
+         * it to 1970-138069 */
+        ts->tv_sec = (u64)le32_to_cpu(tv->tv_sec) +
+                            (u64)epoch << 32;
+        ts->tv_nsec = ns_epoch - epoch;
+}
+
+      Arnd
