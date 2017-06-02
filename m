@@ -1,19 +1,16 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dGfGh-0002Nv-Hv
- for linux-mtd@lists.infradead.org; Fri, 02 Jun 2017 05:37:05 +0000
-Date: Fri, 2 Jun 2017 07:36:41 +0200
+Date: Fri, 2 Jun 2017 09:14:44 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: linux-mtd@lists.infradead.org, andrew@lunn.ch, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 0/5] mtd: mchp23k256: device tree and mchp23lcv1024
-Message-ID: <20170602073641.36be762b@bbrezillon>
-In-Reply-To: <20170602032119.22282-1-chris.packham@alliedtelesis.co.nz>
-References: <20170602032119.22282-1-chris.packham@alliedtelesis.co.nz>
+To: <xiaolei.li@mediatek.com>
+Cc: <computersforpeace@gmail.com>, <dwmw2@infradead.org>,
+ <linux-mtd@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
+Subject: Re: [PATCH] mtd: subpagetest: fix wrong written check in function
+ write_eraseblock2
+Message-ID: <20170602091444.1f1e1d1d@bbrezillon>
+In-Reply-To: <1496307679-16245-1-git-send-email-xiaolei.li@mediatek.com>
+References: <1496307679-16245-1-git-send-email-xiaolei.li@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +20,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Chris,
+On Thu, 1 Jun 2017 17:01:19 +0800
+<xiaolei.li@mediatek.com> wrote:
 
-Le Fri,  2 Jun 2017 15:21:14 +1200,
-Chris Packham <chris.packham@alliedtelesis.co.nz> a =C3=A9crit :
+> From: Xiaolei Li <xiaolei.li@mediatek.com>
+> 
+> Write size in function write_eraseblock2 is subpgsize * k.
+> It is wrong to check whether written is equal to subpgsize after each
+> mtd_write.
+> 
+> Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
 
-> This series adds device tree support to the mchp23k256 driver and
-> support for the mchp23lcv1024 chip. I suspect there are more compatible
-> variants that we could now enumerate if desired.
->=20
-> Note: I've included 2 patches that have already been applied to l2-mtd.gi=
-t for
-> context and so as not to upset the kbuild bot.
->=20
-> Chris Packham (5):
->   mtd: mchp23k256: Add OF device ID table
->   mtd: mchp23k256: switch to mtd_device_register()
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-You should drop patches that have already been applied when sending a
-new version.
-
->   mtd: handle partitioning on devices with 0 erasesize
->   mtd: mchp23k256: add partitioning support
->   mtd: mchp23k256: Add support for mchp23lcv1024
->=20
->  .../bindings/mtd/microchip,mchp23k256.txt          | 18 +++++
->  drivers/mtd/devices/mchp23k256.c                   | 78 ++++++++++++++++=
-++----
->  drivers/mtd/mtdpart.c                              | 25 ++++---
->  3 files changed, 100 insertions(+), 21 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mtd/microchip,mchp2=
-3k256.txt
->=20
+> ---
+>  drivers/mtd/tests/subpagetest.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/tests/subpagetest.c b/drivers/mtd/tests/subpagetest.c
+> index aecc6ce..fa2519a 100644
+> --- a/drivers/mtd/tests/subpagetest.c
+> +++ b/drivers/mtd/tests/subpagetest.c
+> @@ -102,7 +102,7 @@ static int write_eraseblock2(int ebnum)
+>  		if (unlikely(err || written != subpgsize * k)) {
+>  			pr_err("error: write failed at %#llx\n",
+>  			       (long long)addr);
+> -			if (written != subpgsize) {
+> +			if (written != subpgsize * k) {
+>  				pr_err("  write size: %#x\n",
+>  				       subpgsize * k);
+>  				pr_err("  written: %#08zx\n",
