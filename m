@@ -1,52 +1,17 @@
-Received: from mail-vk0-x243.google.com ([2607:f8b0:400c:c05::243])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dGjY0-0000rA-2P
- for linux-mtd@lists.infradead.org; Fri, 02 Jun 2017 10:11:16 +0000
-Received: by mail-vk0-x243.google.com with SMTP id w1so4299313vkd.1
- for <linux-mtd@lists.infradead.org>; Fri, 02 Jun 2017 03:10:51 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CAK8P3a1TwkVRCwDWqgYE8Z3wZT2+v6xayq=dVeW8KaHmO0W4cg@mail.gmail.com>
-References: <1491613030-11599-1-git-send-email-deepa.kernel@gmail.com>
- <1491613030-11599-5-git-send-email-deepa.kernel@gmail.com>
- <CAAM7YAmp=cZKqGHa8UqDnrQLCe+6TKx+7w9SDZv4cW5fr4dfvA@mail.gmail.com>
- <CAK8P3a1pCw1Oo-Wg70kH5L12pbtEzGDfaPZ8g6ErERJjvY8znQ@mail.gmail.com>
- <CAAM7YAnWLUXMOCVbgfdKGfvK04EtAQcz-ETm7xFO=8Y=_fCvOQ@mail.gmail.com>
- <CALAqxLV-yVKWM5es7fAFiDzhSQmtZFiZDPQwBRUYbWUtqhoWVg@mail.gmail.com>
- <CABeXuvqvLr6sSGF+rZEXXxpCBDKTOeLX1ObSjbPPY4aFBuwvMg@mail.gmail.com>
- <CAAM7YAkXNo_69tOrw6a5kpyref9nEpEp-2vxBbFVSHGmAVbt+A@mail.gmail.com>
- <CAK8P3a1TwkVRCwDWqgYE8Z3wZT2+v6xayq=dVeW8KaHmO0W4cg@mail.gmail.com>
-From: "Yan, Zheng" <ukernel@gmail.com>
-Date: Fri, 2 Jun 2017 18:10:49 +0800
-Message-ID: <CAAM7YA=BJHFLz_Ud==7L=yCzxj+1sjctc68tvpNogPhiSxxELQ@mail.gmail.com>
-Subject: Re: [PATCH 04/12] fs: ceph: CURRENT_TIME with ktime_get_real_ts()
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Deepa Dinamani <deepa.kernel@gmail.com>,
- John Stultz <john.stultz@linaro.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Thomas Gleixner <tglx@linutronix.de>, Al Viro <viro@zeniv.linux.org.uk>,
- gregkh <gregkh@linuxfoundation.org>, "Dilger,
- Andreas" <andreas.dilger@intel.com>,
- "J. Bruce Fields" <bfields@fieldses.org>, Chris Mason <clm@fb.com>,
- David Miller <davem@davemloft.net>,
- David Sterba <dsterba@suse.com>, Evgeniy Dushistov <dushistov@mail.ru>,
- Eric Paris <eparis@redhat.com>,
- Jaegeuk Kim <jaegeuk@kernel.org>, Josef Bacik <jbacik@fb.com>,
- Jeff Layton <jlayton@poochiereds.net>, James Simmons <jsimmons@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, "Drokin, Oleg" <oleg.drokin@intel.com>,
- Paul Moore <paul@paul-moore.com>, Steven Rostedt <rostedt@goodmis.org>,
- yuchao0@huawei.com,
- ceph-devel <ceph-devel@vger.kernel.org>, devel@driverdev.osuosl.org,
- linux-audit@redhat.com, linux-btrfs <linux-btrfs@vger.kernel.org>,
- linux-cifs@vger.kernel.org,
- "Linux F2FS DEV, Mailing List" <linux-f2fs-devel@lists.sourceforge.net>,
- Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- LSM List <linux-security-module@vger.kernel.org>,
- Lustre Development List <lustre-devel@lists.lustre.org>,
- Networking <netdev@vger.kernel.org>,
- samba-technical@lists.samba.org, y2038 Mailman List <y2038@lists.linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dGjfK-00077g-Ag
+ for linux-mtd@lists.infradead.org; Fri, 02 Jun 2017 10:18:48 +0000
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Subject: [PATCH] mtd: nand: Fix various memory leaks in core
+Date: Fri,  2 Jun 2017 12:18:24 +0200
+Message-Id: <1496398704-3559-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -56,162 +21,282 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jun 2, 2017 at 5:45 PM, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Fri, Jun 2, 2017 at 4:09 AM, Yan, Zheng <ukernel@gmail.com> wrote:
->> On Fri, Jun 2, 2017 at 8:57 AM, Deepa Dinamani <deepa.kernel@gmail.com> wrote:
->>> On Thu, Jun 1, 2017 at 5:36 PM, John Stultz <john.stultz@linaro.org> wrote:
->>>> On Thu, Jun 1, 2017 at 5:26 PM, Yan, Zheng <ukernel@gmail.com> wrote:
->>>>> On Thu, Jun 1, 2017 at 6:22 PM, Arnd Bergmann <arnd@arndb.de> wrote:
->>>>>> On Thu, Jun 1, 2017 at 11:56 AM, Yan, Zheng <ukernel@gmail.com> wrote:
->>>>>>> On Sat, Apr 8, 2017 at 8:57 AM, Deepa Dinamani <deepa.kernel@gmail.com> wrote:
->>>>>>
->>>>>>>> diff --git a/drivers/block/rbd.c b/drivers/block/rbd.c
->>>>>>>> index 517838b..77204da 100644
->>>>>>>> --- a/drivers/block/rbd.c
->>>>>>>> +++ b/drivers/block/rbd.c
->>>>>>>> @@ -1922,7 +1922,7 @@ static void rbd_osd_req_format_write(struct rbd_obj_request *obj_request)
->>>>>>>>  {
->>>>>>>>         struct ceph_osd_request *osd_req = obj_request->osd_req;
->>>>>>>>
->>>>>>>> -       osd_req->r_mtime = CURRENT_TIME;
->>>>>>>> +       ktime_get_real_ts(&osd_req->r_mtime);
->>>>>>>>         osd_req->r_data_offset = obj_request->offset;
->>>>>>>>  }
->>>>>>>>
->>>>>>>> diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
->>>>>>>> index c681762..1d3fa90 100644
->>>>>>>> --- a/fs/ceph/mds_client.c
->>>>>>>> +++ b/fs/ceph/mds_client.c
->>>>>>>> @@ -1666,6 +1666,7 @@ struct ceph_mds_request *
->>>>>>>>  ceph_mdsc_create_request(struct ceph_mds_client *mdsc, int op, int mode)
->>>>>>>>  {
->>>>>>>>         struct ceph_mds_request *req = kzalloc(sizeof(*req), GFP_NOFS);
->>>>>>>> +       struct timespec ts;
->>>>>>>>
->>>>>>>>         if (!req)
->>>>>>>>                 return ERR_PTR(-ENOMEM);
->>>>>>>> @@ -1684,7 +1685,8 @@ ceph_mdsc_create_request(struct ceph_mds_client *mdsc, int op, int mode)
->>>>>>>>         init_completion(&req->r_safe_completion);
->>>>>>>>         INIT_LIST_HEAD(&req->r_unsafe_item);
->>>>>>>>
->>>>>>>> -       req->r_stamp = current_fs_time(mdsc->fsc->sb);
->>>>>>>> +       ktime_get_real_ts(&ts);
->>>>>>>> +       req->r_stamp = timespec_trunc(ts, mdsc->fsc->sb->s_time_gran);
->>>>>>>
->>>>>>> This change causes our kernel_untar_tar test case to fail (inode's
->>>>>>> ctime goes back). The reason is that there is time drift between the
->>>>>>> time stamps got by  ktime_get_real_ts() and current_time(). We need to
->>>>>>> revert this change until current_time() uses ktime_get_real_ts()
->>>>>>> internally.
->>>>>>
->>>>>> Hmm, the change was not supposed to have a user-visible effect, so
->>>>>> something has gone wrong, but I don't immediately see how it
->>>>>> relates to what you observe.
->>>>>>
->>>>>> ktime_get_real_ts() and current_time() use the same time base, there
->>>>>> is no drift, but there is a difference in resolution, as the latter uses
->>>>>> the time stamp of the last jiffies update, which may be up to one jiffy
->>>>>> (10ms) behind the exact time we put in the request stamps here.
->>>>>>
->>>>>> Do you still see problems if you use current_kernel_time() instead of
->>>>>> ktime_get_real_ts()?
->>>>>
->>>>> The problem disappears after using current_kernel_time().
->>>>>
->>>>> https://github.com/ceph/ceph-client/commit/2e0f648da23167034a3cf1500bc90ec60aef2417
->>>>
->>>> From the commit above:
->>>> "It seems there is time drift between ktime_get_real_ts() and
->>>> current_kernel_time()"
->>>>
->>>> Its more of a granularity difference. current_kernel_time() returns
->>>> the cached time at the last tick, where as ktime_get_real_ts() reads
->>>> the clocksource hardware and returns the immediate time.
->>>>
->>>> Filesystems usually use the cached time (similar to
->>>> CLOCK_REALTIME_COARSE), for performance reasons, as touching the
->>>> clocksource takes time.
->>>
->>> Alternatively, it would be best for this code also to use current_time().
->>> I had suggested this in one of the previous versions of the patch.
->>> The implementation of current_time() will change when we switch vfs to
->>> use 64 bit time. This will prevent such errors from happening again.
->>> But, this also means there is more code reordering for these modules
->>> to get a reference to inode.
->>>
->>
->> I took a look. it's quite inconvenience to use current_time(). I
->> prefer to temporarily use current_kernel_time().
->
-> I've looked at the code some more and I think there is another angle to it:
-> In your test case, 'tar' calls into the utimes syscall (or a member of its
-> family), which sets the i_ctime field in the inode to the curren time
-> (using current_time()), then calls __ceph_setattr(), which creates
-> a mds client request, and ceph_mdsc_create_request() takes another
-> time stamp and stores it in r_stamp.
->
-> We then store the first timestamp (only) in the in-memory inode, and the
-> second time stamp in the request. Depending on the state of the inode,
-> we may also set the ctime to a third timestamp we again take using
-> current_time().
->
-> The mtime and atime from user space get passed correctly through
-> union ceph_mds_request_args->setattr and are kept in sync between
-> the in-memory inode and the persistent inode data, but the ctime
-> in the inode never makes it to the lower protocol levels and instead
-> we use the r_stamp field that got set a little earlier or a little later.
->
-> I believe the bug you see is the result of the two timestamps
-> currently being almost guaranteed to be different in the latest
-> kernels.
-> Changing r_stamp to use current_kernel_time() will make it the
-> same value most of the time (as it was before Deepa's patch),
-> but when the timer interrupt happens between the timestamps,
-> the two are still different, it's just much harder to hit.
->
-> I think the proper solution should be to change __ceph_setattr()
-> in a way that has req->r_stamp always synchronized with i_ctime.
-> If we copy i_ctime to r_stamp, that will also take care of the
-> future issues with the planned changes to current_time().
->
-I already have a patch
-https://github.com/ceph/ceph-client/commit/24f54cd18e195a002ee3d2ab50dbc952fd9f82af
+The nand_scan_ident() function is not expected to allocate resources,
+and people are usually not calling nand_cleanup() if something fails
+between nand_scan_ident() and nand_scan_tail().
 
+Move all functions that may allocate resource to the nand_scan_tail()
+path to prevent such resource leaks.
 
-> The part I don't understand is what else r_stamp (i.e. the time
-> stamp in ceph_msg_data with type==
-> CEPH_MSG_CLIENT_REQUEST) is used for, other than setting
-> ctime in CEPH_MDS_OP_SETATTR.
->
-> Will this be used to update the stored i_ctime for other operations
-> too? If so, we would need to synchronize it with the in-memory
-> i_ctime for all operations that do this.
->
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/nand/nand_base.c | 110 +++++++++++++++++++------------------------
+ 1 file changed, 48 insertions(+), 62 deletions(-)
 
-yes,  mds uses it to update ctime of modified inodes. For example,
-when handling mkdir, mds set ctime of both parent inode and new inode
-to r_stamp.
-
-Regards
-Yan, Zheng
-
-> Semi-related side note: I see that the granularity for ceph_timespec
-> is 1000 nanoseconds, so the value is always a multiple of 1000.
-> If the full 32-bit data gets stored, we could use this it to store the
-> epoch number in the future:
->
-> static inline void ceph_decode_timespec(struct timespec64 *ts,
->                                         const struct ceph_timespec *tv)
-> {
->         u32 ns_epoch = le32_to_cpu(tv->tv_nsec);
->         u32 epoch = ns_epoch % 1000;
->
->         /* tv_sec is traditionally interpreted as unsigned
->          * with time ranges 1970-2106, we extend
->          * it to 1970-138069 */
->         ts->tv_sec = (u64)le32_to_cpu(tv->tv_sec) +
->                             (u64)epoch << 32;
->         ts->tv_nsec = ns_epoch - epoch;
-> }
->
->       Arnd
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index d2332266b76c..fb5070c69060 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -4026,7 +4026,7 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+ 	const struct nand_manufacturer *manufacturer;
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	int busw;
+-	int i, ret;
++	int i;
+ 	u8 *id_data = chip->id.data;
+ 	u8 maf_id, dev_id;
+ 
+@@ -4167,10 +4167,6 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+ 	if (mtd->writesize > 512 && chip->cmdfunc == nand_command)
+ 		chip->cmdfunc = nand_command_lp;
+ 
+-	ret = nand_manufacturer_init(chip);
+-	if (ret)
+-		return ret;
+-
+ 	pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
+ 		maf_id, dev_id);
+ 
+@@ -4378,23 +4374,6 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+ 		return ret;
+ 	}
+ 
+-	/* Initialize the ->data_interface field. */
+-	ret = nand_init_data_interface(chip);
+-	if (ret)
+-		goto err_nand_init;
+-
+-	/*
+-	 * Setup the data interface correctly on the chip and controller side.
+-	 * This explicit call to nand_setup_data_interface() is only required
+-	 * for the first die, because nand_reset() has been called before
+-	 * ->data_interface and ->default_onfi_timing_mode were set.
+-	 * For the other dies, nand_reset() will automatically switch to the
+-	 * best mode for us.
+-	 */
+-	ret = nand_setup_data_interface(chip, 0);
+-	if (ret)
+-		goto err_nand_init;
+-
+ 	nand_maf_id = chip->id.data[0];
+ 	nand_dev_id = chip->id.data[1];
+ 
+@@ -4424,12 +4403,6 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+ 	mtd->size = i * chip->chipsize;
+ 
+ 	return 0;
+-
+-err_nand_init:
+-	/* Free manufacturer priv data. */
+-	nand_manufacturer_cleanup(chip);
+-
+-	return ret;
+ }
+ EXPORT_SYMBOL(nand_scan_ident);
+ 
+@@ -4596,55 +4569,52 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+ 	struct nand_ecc_ctrl *ecc = &chip->ecc;
+ 	struct nand_buffers *nbuf = NULL;
+-	int ret;
++	int ret, i;
+ 
+ 	/* New bad blocks should be marked in OOB, flash-based BBT, or both */
+ 	if (WARN_ON((chip->bbt_options & NAND_BBT_NO_OOB_BBM) &&
+ 		   !(chip->bbt_options & NAND_BBT_USE_FLASH))) {
+-		ret = -EINVAL;
+-		goto err_ident;
++		return -EINVAL;
+ 	}
+ 
+ 	if (invalid_ecc_page_accessors(chip)) {
+ 		pr_err("Invalid ECC page accessors setup\n");
+-		ret = -EINVAL;
+-		goto err_ident;
++		return -EINVAL;
+ 	}
+ 
+ 	if (!(chip->options & NAND_OWN_BUFFERS)) {
+ 		nbuf = kzalloc(sizeof(*nbuf), GFP_KERNEL);
+-		if (!nbuf) {
+-			ret = -ENOMEM;
+-			goto err_ident;
+-		}
++		if (!nbuf)
++			return -ENOMEM;
+ 
+ 		nbuf->ecccalc = kmalloc(mtd->oobsize, GFP_KERNEL);
+ 		if (!nbuf->ecccalc) {
+ 			ret = -ENOMEM;
+-			goto err_free;
++			goto err_free_nbuf;
+ 		}
+ 
+ 		nbuf->ecccode = kmalloc(mtd->oobsize, GFP_KERNEL);
+ 		if (!nbuf->ecccode) {
+ 			ret = -ENOMEM;
+-			goto err_free;
++			goto err_free_nbuf;
+ 		}
+ 
+ 		nbuf->databuf = kmalloc(mtd->writesize + mtd->oobsize,
+ 					GFP_KERNEL);
+ 		if (!nbuf->databuf) {
+ 			ret = -ENOMEM;
+-			goto err_free;
++			goto err_free_nbuf;
+ 		}
+ 
+ 		chip->buffers = nbuf;
+-	} else {
+-		if (!chip->buffers) {
+-			ret = -ENOMEM;
+-			goto err_ident;
+-		}
++	} else if (!chip->buffers) {
++		return -ENOMEM;
+ 	}
+ 
++	ret = nand_manufacturer_init(chip);
++	if (ret)
++		goto err_free_nbuf;
++
+ 	/* Set the internal oob buffer location, just after the page data */
+ 	chip->oob_poi = chip->buffers->databuf + mtd->writesize;
+ 
+@@ -4666,7 +4636,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 			WARN(1, "No oob scheme defined for oobsize %d\n",
+ 				mtd->oobsize);
+ 			ret = -EINVAL;
+-			goto err_free;
++			goto err_nand_manuf_cleanup;
+ 		}
+ 	}
+ 
+@@ -4681,7 +4651,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		if (!ecc->calculate || !ecc->correct || !ecc->hwctl) {
+ 			WARN(1, "No ECC functions supplied; hardware ECC not possible\n");
+ 			ret = -EINVAL;
+-			goto err_free;
++			goto err_nand_manuf_cleanup;
+ 		}
+ 		if (!ecc->read_page)
+ 			ecc->read_page = nand_read_page_hwecc_oob_first;
+@@ -4713,7 +4683,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		     ecc->write_page == nand_write_page_hwecc)) {
+ 			WARN(1, "No ECC functions supplied; hardware ECC not possible\n");
+ 			ret = -EINVAL;
+-			goto err_free;
++			goto err_nand_manuf_cleanup;
+ 		}
+ 		/* Use standard syndrome read/write page function? */
+ 		if (!ecc->read_page)
+@@ -4733,7 +4703,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 			if (!ecc->strength) {
+ 				WARN(1, "Driver must set ecc.strength when using hardware ECC\n");
+ 				ret = -EINVAL;
+-				goto err_free;
++				goto err_nand_manuf_cleanup;
+ 			}
+ 			break;
+ 		}
+@@ -4746,7 +4716,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		ret = nand_set_ecc_soft_ops(mtd);
+ 		if (ret) {
+ 			ret = -EINVAL;
+-			goto err_free;
++			goto err_nand_manuf_cleanup;
+ 		}
+ 		break;
+ 
+@@ -4754,7 +4724,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		if (!ecc->read_page || !ecc->write_page) {
+ 			WARN(1, "No ECC functions supplied; on-die ECC not possible\n");
+ 			ret = -EINVAL;
+-			goto err_free;
++			goto err_nand_manuf_cleanup;
+ 		}
+ 		if (!ecc->read_oob)
+ 			ecc->read_oob = nand_read_oob_std;
+@@ -4778,7 +4748,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	default:
+ 		WARN(1, "Invalid NAND_ECC_MODE %d\n", ecc->mode);
+ 		ret = -EINVAL;
+-		goto err_free;
++		goto err_nand_manuf_cleanup;
+ 	}
+ 
+ 	/* For many systems, the standard OOB write also works for raw */
+@@ -4799,13 +4769,13 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	if (ecc->steps * ecc->size != mtd->writesize) {
+ 		WARN(1, "Invalid ECC parameters\n");
+ 		ret = -EINVAL;
+-		goto err_free;
++		goto err_nand_manuf_cleanup;
+ 	}
+ 	ecc->total = ecc->steps * ecc->bytes;
+ 	if (ecc->total > mtd->oobsize) {
+ 		WARN(1, "Total number of ECC bytes exceeded oobsize\n");
+ 		ret = -EINVAL;
+-		goto err_free;
++		goto err_nand_manuf_cleanup;
+ 	}
+ 
+ 	/*
+@@ -4887,6 +4857,21 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	if (!mtd->bitflip_threshold)
+ 		mtd->bitflip_threshold = DIV_ROUND_UP(mtd->ecc_strength * 3, 4);
+ 
++	/* Initialize the ->data_interface field. */
++	ret = nand_init_data_interface(chip);
++	if (ret)
++		goto err_nand_manuf_cleanup;
++
++	/* Enter fastest possible mode on all dies. */
++	for (i = 0; i < chip->numchips; i++) {
++		chip->select_chip(mtd, i);
++		ret = nand_setup_data_interface(chip, i);
++		chip->select_chip(mtd, -1);
++
++		if (ret)
++			goto err_nand_data_iface_cleanup;
++	}
++
+ 	/* Check, if we should skip the bad block table scan */
+ 	if (chip->options & NAND_SKIP_BBTSCAN)
+ 		return 0;
+@@ -4894,10 +4879,17 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	/* Build bad block table */
+ 	ret = chip->scan_bbt(mtd);
+ 	if (ret)
+-		goto err_free;
++		goto err_nand_data_iface_cleanup;
++
+ 	return 0;
+ 
+-err_free:
++err_nand_data_iface_cleanup:
++	nand_release_data_interface(chip);
++
++err_nand_manuf_cleanup:
++	nand_manufacturer_cleanup(chip);
++
++err_free_nbuf:
+ 	if (nbuf) {
+ 		kfree(nbuf->databuf);
+ 		kfree(nbuf->ecccode);
+@@ -4905,12 +4897,6 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		kfree(nbuf);
+ 	}
+ 
+-err_ident:
+-	/* Clean up nand_scan_ident(). */
+-
+-	/* Free manufacturer priv data. */
+-	nand_manufacturer_cleanup(chip);
+-
+ 	return ret;
+ }
+ EXPORT_SYMBOL(nand_scan_tail);
+-- 
+2.7.4
