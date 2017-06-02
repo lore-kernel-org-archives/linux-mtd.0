@@ -1,27 +1,46 @@
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
+Received: from mail-ua0-x242.google.com ([2607:f8b0:400c:c08::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dGZCs-0008Hh-Jw
- for linux-mtd@lists.infradead.org; Thu, 01 Jun 2017 23:08:44 +0000
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: Brian Norris <computersforpeace@gmail.com>
-CC: Boris Brezillon <boris.brezillon@free-electrons.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>, "andrew@lunn.ch"
- <andrew@lunn.ch>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>, "Richard
- Weinberger" <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Subject: Re: [PATCH 3/4] mtd: mchp23k256: add partitioning support
-Date: Thu, 1 Jun 2017 23:08:08 +0000
-Message-ID: <92ffaa3cef7d49aeb9d5abae06e10ddb@svr-chch-ex1.atlnz.lc>
-References: <20170517053908.26138-1-chris.packham@alliedtelesis.co.nz>
- <20170517053908.26138-4-chris.packham@alliedtelesis.co.nz>
- <20170517172911.5f926712@bbrezillon> <20170601184340.GA102137@google.com>
- <bba73e6d5f4b41a88423287300d892e5@svr-chch-ex1.atlnz.lc>
- <20170601222320.GE102137@google.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1dGaQS-0001xo-V8
+ for linux-mtd@lists.infradead.org; Fri, 02 Jun 2017 00:26:50 +0000
+Received: by mail-ua0-x242.google.com with SMTP id i46so4205137uaa.3
+ for <linux-mtd@lists.infradead.org>; Thu, 01 Jun 2017 17:26:28 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CAK8P3a1pCw1Oo-Wg70kH5L12pbtEzGDfaPZ8g6ErERJjvY8znQ@mail.gmail.com>
+References: <1491613030-11599-1-git-send-email-deepa.kernel@gmail.com>
+ <1491613030-11599-5-git-send-email-deepa.kernel@gmail.com>
+ <CAAM7YAmp=cZKqGHa8UqDnrQLCe+6TKx+7w9SDZv4cW5fr4dfvA@mail.gmail.com>
+ <CAK8P3a1pCw1Oo-Wg70kH5L12pbtEzGDfaPZ8g6ErERJjvY8znQ@mail.gmail.com>
+From: "Yan, Zheng" <ukernel@gmail.com>
+Date: Fri, 2 Jun 2017 08:26:27 +0800
+Message-ID: <CAAM7YAnWLUXMOCVbgfdKGfvK04EtAQcz-ETm7xFO=8Y=_fCvOQ@mail.gmail.com>
+Subject: Re: [PATCH 04/12] fs: ceph: CURRENT_TIME with ktime_get_real_ts()
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Deepa Dinamani <deepa.kernel@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Al Viro <viro@zeniv.linux.org.uk>,
+ gregkh <gregkh@linuxfoundation.org>, "Dilger,
+ Andreas" <andreas.dilger@intel.com>,
+ "J. Bruce Fields" <bfields@fieldses.org>, Chris Mason <clm@fb.com>,
+ David Miller <davem@davemloft.net>,
+ David Sterba <dsterba@suse.com>, Evgeniy Dushistov <dushistov@mail.ru>,
+ Eric Paris <eparis@redhat.com>,
+ Jaegeuk Kim <jaegeuk@kernel.org>, Josef Bacik <jbacik@fb.com>,
+ Jeff Layton <jlayton@poochiereds.net>, John Stultz <john.stultz@linaro.org>,
+ James Simmons <jsimmons@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ "Drokin, Oleg" <oleg.drokin@intel.com>, Paul Moore <paul@paul-moore.com>,
+ Steven Rostedt <rostedt@goodmis.org>, yuchao0@huawei.com,
+ ceph-devel <ceph-devel@vger.kernel.org>, devel@driverdev.osuosl.org,
+ linux-audit@redhat.com, linux-btrfs <linux-btrfs@vger.kernel.org>,
+ linux-cifs@vger.kernel.org,
+ "Linux F2FS DEV, Mailing List" <linux-f2fs-devel@lists.sourceforge.net>,
+ Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ LSM List <linux-security-module@vger.kernel.org>,
+ Lustre Development List <lustre-devel@lists.lustre.org>,
+ Networking <netdev@vger.kernel.org>,
+ samba-technical@lists.samba.org, y2038 Mailman List <y2038@lists.linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,44 +50,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/06/17 10:23, Brian Norris wrote:=0A=
-> On Thu, Jun 01, 2017 at 09:30:07PM +0000, Chris Packham wrote:=0A=
->> On 02/06/17 06:43, Brian Norris wrote:=0A=
->>> On Wed, May 17, 2017 at 05:29:11PM +0200, Boris Brezillon wrote:=0A=
->>>> Can we fix allocate_partition() to properly handle the=0A=
->>>> master->erasesize =3D=3D 0 case instead of doing that?=0A=
->>>=0A=
->>> Is everything actually ready for the eraseblock size to be 0?=0A=
->>=0A=
->> That was my initial motivation for faking it.=0A=
-> =0A=
-> Understood. I think it's probably better to avoid hacking drivers like=0A=
-> you were about to, but I was also curious if anyone had thought through=
-=0A=
-> the implications of *not* forcing a non-zero size.=0A=
-> =0A=
->>> That would=0A=
->>> seem surprising to many applications, I would think. Can you, for=0A=
->>> instance, even use UBI on such a device?=0A=
->>=0A=
->> I've tried ext2 and I believe Andrew has tried minix fs. We're talking=
-=0A=
->> SRAM so UBI/UBIFS doesn't really provide much benefit for this use-case.=
-=0A=
-> =0A=
-> Right. But that's not necessarily true for all NO_ERASE devices, so we'd=
-=0A=
-> probably want to think about that before allowing it.=0A=
-=0A=
-Do we need a flag to indicate SRAM-like properties? I assume there is a =0A=
-difference between NO_ERASE on ROM devices where there is just no way of =
-=0A=
-erasing the data. For {S,F,M}RAM there is no block erase operation but =0A=
-you can overwrite data to destroy it (which is actually my use-case with =
-=0A=
-this SPI SRAM). I was tempted to set erase_size =3D 1 at one point which =
-=0A=
-in my mind was technically accurate but would probably upset the mtd =0A=
-layer just as much as 0.=0A=
-=0A=
-=0A=
+On Thu, Jun 1, 2017 at 6:22 PM, Arnd Bergmann <arnd@arndb.de> wrote:
+> On Thu, Jun 1, 2017 at 11:56 AM, Yan, Zheng <ukernel@gmail.com> wrote:
+>> On Sat, Apr 8, 2017 at 8:57 AM, Deepa Dinamani <deepa.kernel@gmail.com> wrote:
+>
+>>> diff --git a/drivers/block/rbd.c b/drivers/block/rbd.c
+>>> index 517838b..77204da 100644
+>>> --- a/drivers/block/rbd.c
+>>> +++ b/drivers/block/rbd.c
+>>> @@ -1922,7 +1922,7 @@ static void rbd_osd_req_format_write(struct rbd_obj_request *obj_request)
+>>>  {
+>>>         struct ceph_osd_request *osd_req = obj_request->osd_req;
+>>>
+>>> -       osd_req->r_mtime = CURRENT_TIME;
+>>> +       ktime_get_real_ts(&osd_req->r_mtime);
+>>>         osd_req->r_data_offset = obj_request->offset;
+>>>  }
+>>>
+>>> diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
+>>> index c681762..1d3fa90 100644
+>>> --- a/fs/ceph/mds_client.c
+>>> +++ b/fs/ceph/mds_client.c
+>>> @@ -1666,6 +1666,7 @@ struct ceph_mds_request *
+>>>  ceph_mdsc_create_request(struct ceph_mds_client *mdsc, int op, int mode)
+>>>  {
+>>>         struct ceph_mds_request *req = kzalloc(sizeof(*req), GFP_NOFS);
+>>> +       struct timespec ts;
+>>>
+>>>         if (!req)
+>>>                 return ERR_PTR(-ENOMEM);
+>>> @@ -1684,7 +1685,8 @@ ceph_mdsc_create_request(struct ceph_mds_client *mdsc, int op, int mode)
+>>>         init_completion(&req->r_safe_completion);
+>>>         INIT_LIST_HEAD(&req->r_unsafe_item);
+>>>
+>>> -       req->r_stamp = current_fs_time(mdsc->fsc->sb);
+>>> +       ktime_get_real_ts(&ts);
+>>> +       req->r_stamp = timespec_trunc(ts, mdsc->fsc->sb->s_time_gran);
+>>
+>> This change causes our kernel_untar_tar test case to fail (inode's
+>> ctime goes back). The reason is that there is time drift between the
+>> time stamps got by  ktime_get_real_ts() and current_time(). We need to
+>> revert this change until current_time() uses ktime_get_real_ts()
+>> internally.
+>
+> Hmm, the change was not supposed to have a user-visible effect, so
+> something has gone wrong, but I don't immediately see how it
+> relates to what you observe.
+>
+> ktime_get_real_ts() and current_time() use the same time base, there
+> is no drift, but there is a difference in resolution, as the latter uses
+> the time stamp of the last jiffies update, which may be up to one jiffy
+> (10ms) behind the exact time we put in the request stamps here.
+>
+> Do you still see problems if you use current_kernel_time() instead of
+> ktime_get_real_ts()?
+
+The problem disappears after using current_kernel_time().
+
+https://github.com/ceph/ceph-client/commit/2e0f648da23167034a3cf1500bc90ec60aef2417
+
+
+Regards
+Yan, Zheng
+>
+>         Arnd
