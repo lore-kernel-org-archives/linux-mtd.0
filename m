@@ -1,20 +1,32 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dGgwZ-0002mO-CI
- for linux-mtd@lists.infradead.org; Fri, 02 Jun 2017 07:24:24 +0000
-Date: Fri, 2 Jun 2017 09:23:52 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Matthias Lange <matthias.lange@kernkonzept.com>
-Cc: linux-mtd@lists.infradead.org, han.xu@nxp.com,
- computersforpeace@gmail.com, richard@nod.at, dwmw2@infradead.org
-Subject: Re: [PATCH] Fix typo in comment.
-Message-ID: <20170602092352.449c97be@bbrezillon>
-In-Reply-To: <ed4d18bf-a18a-ea5c-5fc0-79a60fb3f2ee@kernkonzept.com>
-References: <1496130091-2363-1-git-send-email-matthias.lange@kernkonzept.com>
- <20170531112255.1073ca9a@bbrezillon>
- <ed4d18bf-a18a-ea5c-5fc0-79a60fb3f2ee@kernkonzept.com>
+Received: from youngberry.canonical.com ([91.189.89.112])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dGh2Z-0006tE-RR
+ for linux-mtd@lists.infradead.org; Fri, 02 Jun 2017 07:30:37 +0000
+Subject: Re: [PATCH 10/12] apparmorfs: Replace CURRENT_TIME with current_time()
+To: Deepa Dinamani <deepa.kernel@gmail.com>, linux-kernel@vger.kernel.org,
+ akpm@linux-foundation.org
+Cc: tglx@linutronix.de, viro@zeniv.linux.org.uk, gregkh@linuxfoundation.org,
+ andreas.dilger@intel.com, arnd@arndb.de, bfields@fieldses.org, clm@fb.com,
+ davem@davemloft.net, dsterba@suse.com, dushistov@mail.ru, eparis@redhat.com,
+ jaegeuk@kernel.org, jbacik@fb.com, jlayton@poochiereds.net,
+ john.stultz@linaro.org, jsimmons@infradead.org, mingo@redhat.com,
+ oleg.drokin@intel.com, paul@paul-moore.com, rostedt@goodmis.org,
+ yuchao0@huawei.com, ceph-devel@vger.kernel.org, devel@driverdev.osuosl.org,
+ linux-audit@redhat.com, linux-btrfs@vger.kernel.org,
+ linux-cifs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-security-module@vger.kernel.org, lustre-devel@lists.lustre.org,
+ netdev@vger.kernel.org, samba-technical@lists.samba.org,
+ y2038@lists.linaro.org
+References: <1491613030-11599-1-git-send-email-deepa.kernel@gmail.com>
+ <1491613030-11599-11-git-send-email-deepa.kernel@gmail.com>
+From: John Johansen <john.johansen@canonical.com>
+Message-ID: <b5d3d600-d3fe-669f-f6bc-01dcedbb7fe3@canonical.com>
+Date: Fri, 2 Jun 2017 00:29:48 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1491613030-11599-11-git-send-email-deepa.kernel@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,44 +37,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 31 May 2017 17:07:54 +0200
-Matthias Lange <matthias.lange@kernkonzept.com> wrote:
+On 04/07/2017 05:57 PM, Deepa Dinamani wrote:
+> CURRENT_TIME macro is not y2038 safe on 32 bit systems.
+> 
+> The patch replaces all the uses of CURRENT_TIME by
+> current_time().
+> 
+> This is also in preparation for the patch that transitions
+> vfs timestamps to use 64 bit time and hence make them
+> y2038 safe. current_time() is also planned to be transitioned
+> to y2038 safe behavior along with this change.
+> 
+> CURRENT_TIME macro will be deleted before merging the
+> aforementioned change.
+> 
+> Signed-off-by: Deepa Dinamani <deepa.kernel@gmail.com>
 
-> Hi Boris,
-> 
-> please consider the new version of the commit.
+This is all good, and I have no objections to it being merged for 4.12.
+If it isn't this change is already queued up for the apparmor 4.13
+merge
 
-Can you send the patch you've put in attachment using git send-email
-and Cc all relevant maintainers?
+Acked-by: John Johansen <john.johansen@canonical.com>
 
+> ---
+>  security/apparmor/apparmorfs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Best,
-> Matthias.
+> diff --git a/security/apparmor/apparmorfs.c b/security/apparmor/apparmorfs.c
+> index be0b498..4f6ac9d 100644
+> --- a/security/apparmor/apparmorfs.c
+> +++ b/security/apparmor/apparmorfs.c
+> @@ -1357,7 +1357,7 @@ static int aa_mk_null_file(struct dentry *parent)
+>  
+>  	inode->i_ino = get_next_ino();
+>  	inode->i_mode = S_IFCHR | S_IRUGO | S_IWUGO;
+> -	inode->i_atime = inode->i_mtime = inode->i_ctime = CURRENT_TIME;
+> +	inode->i_atime = inode->i_mtime = inode->i_ctime = current_time(inode);
+>  	init_special_inode(inode, S_IFCHR | S_IRUGO | S_IWUGO,
+>  			   MKDEV(MEM_MAJOR, 3));
+>  	d_instantiate(dentry, inode);
 > 
-> 
-> On 05/31/2017 11:22 AM, Boris Brezillon wrote:
-> > Hi Mattias,
-> > 
-> > On Tue, 30 May 2017 09:41:31 +0200
-> > Matthias Lange <matthias.lange@kernkonzept.com> wrote:
-> > 
-> > Commit title should be prefixed with "mtd: nand: gpmi: ".
-> >   
-> >> Signed-off-by: Matthias Lange <matthias.lange@kernkonzept.com>
-> >> ---
-> >>  drivers/mtd/nand/gpmi-nand/gpmi-lib.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> >> index 141bd70..41f53ae 100644
-> >> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> >> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> >> @@ -932,7 +932,7 @@ static int enable_edo_mode(struct gpmi_nand_data *this, int mode)
-> >>  
-> >>  	nand->select_chip(mtd, 0);
-> >>  
-> >> -	/* [1] send SET FEATURE commond to NAND */
-> >> +	/* [1] send SET FEATURE command to NAND */
-> >>  	feature[0] = mode;
-> >>  	ret = nand->onfi_set_features(mtd, nand,
-> >>  				ONFI_FEATURE_ADDR_TIMING_MODE, feature);  
