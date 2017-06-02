@@ -1,47 +1,21 @@
-Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dGaaf-0006ks-Gm
- for linux-mtd@lists.infradead.org; Fri, 02 Jun 2017 00:37:22 +0000
-Received: by mail-wm0-x22e.google.com with SMTP id n195so8233265wmg.1
- for <linux-mtd@lists.infradead.org>; Thu, 01 Jun 2017 17:36:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAAM7YAnWLUXMOCVbgfdKGfvK04EtAQcz-ETm7xFO=8Y=_fCvOQ@mail.gmail.com>
-References: <1491613030-11599-1-git-send-email-deepa.kernel@gmail.com>
- <1491613030-11599-5-git-send-email-deepa.kernel@gmail.com>
- <CAAM7YAmp=cZKqGHa8UqDnrQLCe+6TKx+7w9SDZv4cW5fr4dfvA@mail.gmail.com>
- <CAK8P3a1pCw1Oo-Wg70kH5L12pbtEzGDfaPZ8g6ErERJjvY8znQ@mail.gmail.com>
- <CAAM7YAnWLUXMOCVbgfdKGfvK04EtAQcz-ETm7xFO=8Y=_fCvOQ@mail.gmail.com>
-From: John Stultz <john.stultz@linaro.org>
-Date: Thu, 1 Jun 2017 17:36:56 -0700
-Message-ID: <CALAqxLV-yVKWM5es7fAFiDzhSQmtZFiZDPQwBRUYbWUtqhoWVg@mail.gmail.com>
-Subject: Re: [PATCH 04/12] fs: ceph: CURRENT_TIME with ktime_get_real_ts()
-To: "Yan, Zheng" <ukernel@gmail.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Deepa Dinamani <deepa.kernel@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Thomas Gleixner <tglx@linutronix.de>, Al Viro <viro@zeniv.linux.org.uk>,
- gregkh <gregkh@linuxfoundation.org>, "Dilger,
- Andreas" <andreas.dilger@intel.com>,
- "J. Bruce Fields" <bfields@fieldses.org>, Chris Mason <clm@fb.com>,
- David Miller <davem@davemloft.net>,
- David Sterba <dsterba@suse.com>, Evgeniy Dushistov <dushistov@mail.ru>,
- Eric Paris <eparis@redhat.com>,
- Jaegeuk Kim <jaegeuk@kernel.org>, Josef Bacik <jbacik@fb.com>,
- Jeff Layton <jlayton@poochiereds.net>, James Simmons <jsimmons@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, "Drokin, Oleg" <oleg.drokin@intel.com>,
- Paul Moore <paul@paul-moore.com>, Steven Rostedt <rostedt@goodmis.org>,
- yuchao0@huawei.com,
- ceph-devel <ceph-devel@vger.kernel.org>, devel@driverdev.osuosl.org,
- linux-audit@redhat.com, linux-btrfs <linux-btrfs@vger.kernel.org>,
- linux-cifs@vger.kernel.org,
- "Linux F2FS DEV, Mailing List" <linux-f2fs-devel@lists.sourceforge.net>,
- Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- LSM List <linux-security-module@vger.kernel.org>,
- Lustre Development List <lustre-devel@lists.lustre.org>,
- Networking <netdev@vger.kernel.org>,
- samba-technical@lists.samba.org, y2038 Mailman List <y2038@lists.linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Date: Thu, 01 Jun 2017 18:48:30 -0700
+From: Stefan Agner <stefan@agner.ch>
+To: Han Xu <han.xu@nxp.com>
+Cc: shawnguo@kernel.org, kernel@pengutronix.de, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
+ marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@atmel.com,
+ robh+dt@kernel.org, mark.rutland@arm.com, fabio.estevam@freescale.com,
+ "LW@KARO-electronics.de" <LW@karo-electronics.de>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/2] ARM: dts: imx7: add NAND support
+In-Reply-To: <3c086d95-96e5-71ec-b44f-12ed41903fcf@nxp.com>
+References: <20170601192044.6548-1-stefan@agner.ch>
+ <3c086d95-96e5-71ec-b44f-12ed41903fcf@nxp.com>
+Message-ID: <e57ba49dc2b91b70b5848875e28b17ae@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -51,77 +25,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 1, 2017 at 5:26 PM, Yan, Zheng <ukernel@gmail.com> wrote:
-> On Thu, Jun 1, 2017 at 6:22 PM, Arnd Bergmann <arnd@arndb.de> wrote:
->> On Thu, Jun 1, 2017 at 11:56 AM, Yan, Zheng <ukernel@gmail.com> wrote:
->>> On Sat, Apr 8, 2017 at 8:57 AM, Deepa Dinamani <deepa.kernel@gmail.com> wrote:
->>
->>>> diff --git a/drivers/block/rbd.c b/drivers/block/rbd.c
->>>> index 517838b..77204da 100644
->>>> --- a/drivers/block/rbd.c
->>>> +++ b/drivers/block/rbd.c
->>>> @@ -1922,7 +1922,7 @@ static void rbd_osd_req_format_write(struct rbd_obj_request *obj_request)
->>>>  {
->>>>         struct ceph_osd_request *osd_req = obj_request->osd_req;
->>>>
->>>> -       osd_req->r_mtime = CURRENT_TIME;
->>>> +       ktime_get_real_ts(&osd_req->r_mtime);
->>>>         osd_req->r_data_offset = obj_request->offset;
->>>>  }
->>>>
->>>> diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
->>>> index c681762..1d3fa90 100644
->>>> --- a/fs/ceph/mds_client.c
->>>> +++ b/fs/ceph/mds_client.c
->>>> @@ -1666,6 +1666,7 @@ struct ceph_mds_request *
->>>>  ceph_mdsc_create_request(struct ceph_mds_client *mdsc, int op, int mode)
->>>>  {
->>>>         struct ceph_mds_request *req = kzalloc(sizeof(*req), GFP_NOFS);
->>>> +       struct timespec ts;
->>>>
->>>>         if (!req)
->>>>                 return ERR_PTR(-ENOMEM);
->>>> @@ -1684,7 +1685,8 @@ ceph_mdsc_create_request(struct ceph_mds_client *mdsc, int op, int mode)
->>>>         init_completion(&req->r_safe_completion);
->>>>         INIT_LIST_HEAD(&req->r_unsafe_item);
->>>>
->>>> -       req->r_stamp = current_fs_time(mdsc->fsc->sb);
->>>> +       ktime_get_real_ts(&ts);
->>>> +       req->r_stamp = timespec_trunc(ts, mdsc->fsc->sb->s_time_gran);
->>>
->>> This change causes our kernel_untar_tar test case to fail (inode's
->>> ctime goes back). The reason is that there is time drift between the
->>> time stamps got by  ktime_get_real_ts() and current_time(). We need to
->>> revert this change until current_time() uses ktime_get_real_ts()
->>> internally.
->>
->> Hmm, the change was not supposed to have a user-visible effect, so
->> something has gone wrong, but I don't immediately see how it
->> relates to what you observe.
->>
->> ktime_get_real_ts() and current_time() use the same time base, there
->> is no drift, but there is a difference in resolution, as the latter uses
->> the time stamp of the last jiffies update, which may be up to one jiffy
->> (10ms) behind the exact time we put in the request stamps here.
->>
->> Do you still see problems if you use current_kernel_time() instead of
->> ktime_get_real_ts()?
->
-> The problem disappears after using current_kernel_time().
->
-> https://github.com/ceph/ceph-client/commit/2e0f648da23167034a3cf1500bc90ec60aef2417
+Hi Han,
 
->From the commit above:
-"It seems there is time drift between ktime_get_real_ts() and
-current_kernel_time()"
+On 2017-06-01 14:14, Han Xu wrote:
+> On 06/01/2017 02:20 PM, Stefan Agner wrote:
+>> This are the missing device tree parts to add NAND support for i.MX 7.
+>> See previous patchset:
+>> https://emea01.safelinks.protection.outlook.com/?url=https%3A%2F%2Flkml.org%2Flkml%2F2017%2F4%2F21%2F832&data=01%7C01%7Chan.xu%40nxp.com%7C3b9081a68c94476c4a2108d4a9235512%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0&sdata=mQ2aq5rW%2B9uADY5mSzFxk8P6bAVq%2BosPJQAi0PL9SQg%3D&reserved=0
+>>
+>> The previous version also included driver changes, which are already
+>> merged.
+>>
+>> --
+>> Stefan
+>>
+>> Changes since v2:
+>> - Only specify IMX7D_NAND_USDHC_BUS_ROOT_CLK which seems to be sufficent
+> Hi Stefan, sorry I didn't reply your last patch. I was unable to fully 
+> test on i.MX7 since the work bandwidth, but the quick test shows DMA 
+> cannot work WITHOUT IMX7D_NAND_ROOT_CLK on my side, I will fully check 
+> it tomorrow morning and let you know the result.
 
-Its more of a granularity difference. current_kernel_time() returns
-the cached time at the last tick, where as ktime_get_real_ts() reads
-the clocksource hardware and returns the immediate time.
+How did you test that?
 
-Filesystems usually use the cached time (similar to
-CLOCK_REALTIME_COARSE), for performance reasons, as touching the
-clocksource takes time.
+Since DMA can only use NAND in i.MX 7, testing is somewhat hard.
 
-thanks
--john
+Fact is, I can access DMA registers using just NAND_USDHC_BUS_CLK_ROOT
+
+mw.l 0x30388980 0x11000000 # Enable NAND_USDHC_BUS_CLK_ROOT
+mw.l 0x3038aa00 0x00000000 # Enable NAND_CLK_ROOT
+
+md.l 0x33000100 0 # Access APBH_CH0_CURCMDAR
+
+This works for me.
+
+I can *boot* from a UBIFS using this driver and Linux 4.12-rc1 with my
+patchset applied...
+
+Monitoring clocks in /sys/kernel/debug/clk/clk_summary show that
+NAND_ROOT_CLK gets turned off and back on if NAND access happens, the
+system seems stable.
+
+All that said, this patchset v3 actually does not remove the
+NAND_ROOT_CLK as intended to. Will send a v4.
+
+--
+Stefan
+
+>> - Dropped driver changes, alreay merged
+>>
+>> Changes since v1:
+>> - Make clks_count const
+>> - Introduce IS_IMX7D for i.MX 7 SoC's and make it part of GPMI_IS_MX6
+>>
+>> Stefan Agner (2):
+>>    ARM: dts: imx7: add GPMI NAND
+>>    ARM: dts: imx7-colibri: add NAND support
+>>
+>>   arch/arm/boot/dts/imx7-colibri.dtsi |  9 +++++++++
+>>   arch/arm/boot/dts/imx7s.dtsi        | 31 +++++++++++++++++++++++++++++++
+>>   2 files changed, 40 insertions(+)
+>>
