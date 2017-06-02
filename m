@@ -1,26 +1,25 @@
-Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dGokj-0004xk-LX
- for linux-mtd@lists.infradead.org; Fri, 02 Jun 2017 15:44:45 +0000
-Received: by mail-wr0-x244.google.com with SMTP id e23so422533wre.3
- for <linux-mtd@lists.infradead.org>; Fri, 02 Jun 2017 08:44:21 -0700 (PDT)
-From: =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali.rohar@gmail.com>
-To: Joern Engel <joern@lazybastard.org>, David Woodhouse <dwmw2@infradead.org>,
+ id 1dGpCf-0001nr-Bw
+ for linux-mtd@lists.infradead.org; Fri, 02 Jun 2017 16:13:35 +0000
+Subject: Re: [PATCH 2/5] mtd: block2mtd: Add support for specifying MTD write
+ size and subpage shift
+To: =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali.rohar@gmail.com>,
+ Joern Engel <joern@lazybastard.org>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Marek Vasut <marek.vasut@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>,
  Artem Bityutskiy <dedekind1@gmail.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali.rohar@gmail.com>
-Subject: [PATCH 5/5] ubi: Allow to use read-only UBI volume with not enough
- PEBs
-Date: Fri,  2 Jun 2017 17:43:42 +0200
-Message-Id: <1496418222-23483-6-git-send-email-pali.rohar@gmail.com>
-In-Reply-To: <1496418222-23483-1-git-send-email-pali.rohar@gmail.com>
 References: <1496418222-23483-1-git-send-email-pali.rohar@gmail.com>
+ <1496418222-23483-3-git-send-email-pali.rohar@gmail.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <fa265d04-07b4-0ed3-9b51-c2026f7015db@nod.at>
+Date: Fri, 2 Jun 2017 18:13:02 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <1496418222-23483-3-git-send-email-pali.rohar@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,48 +30,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In read-only mode is skipped auto-resize. For pre-build images ready for
-auto-resize there can be reserved more PEBs as whole size of pre-build
-image. In read-only we do not do any write operation therefore this would
-allow to use read-only UBI volume which is not auto-resized yet.
+Pali,
 
-Signed-off-by: Pali Rohár <pali.rohar@gmail.com>
----
- drivers/mtd/ubi/vtbl.c |   14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+Am 02.06.2017 um 17:43 schrieb Pali Rohár:
+> It is needed for creating emulated devices suitable for using in UBI layer
+> and with UBIFS.
 
-diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
-index 263743e..1d708c5 100644
---- a/drivers/mtd/ubi/vtbl.c
-+++ b/drivers/mtd/ubi/vtbl.c
-@@ -240,8 +240,10 @@ static int vtbl_check(const struct ubi_device *ubi,
- 		if (reserved_pebs > ubi->good_peb_count) {
- 			ubi_err(ubi, "too large reserved_pebs %d, good PEBs %d",
- 				reserved_pebs, ubi->good_peb_count);
--			err = 9;
--			goto bad;
-+			if (!ubi->ro_mode) {
-+				err = 9;
-+				goto bad;
-+			}
- 		}
- 
- 		if (name_len > UBI_VOL_NAME_MAX) {
-@@ -652,10 +654,12 @@ static int init_volumes(struct ubi_device *ubi,
- 		if (ubi->corr_peb_count)
- 			ubi_err(ubi, "%d PEBs are corrupted and not used",
- 				ubi->corr_peb_count);
--		return -ENOSPC;
-+		if (!ubi->ro_mode)
-+			return -ENOSPC;
-+	} else {
-+		ubi->rsvd_pebs += reserved_pebs;
-+		ubi->avail_pebs -= reserved_pebs;
- 	}
--	ubi->rsvd_pebs += reserved_pebs;
--	ubi->avail_pebs -= reserved_pebs;
- 
- 	return 0;
- }
--- 
-1.7.9.5
+Why?
+
+It is not clear to me why kind of MTD you are constructing.
+subpages are NAND specific you create RAM and ROM MTDs.
+Sure, the MTD allows such constructs but I'm not sure whether this is a good idea.
+
+Thanks,
+//richard
