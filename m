@@ -1,58 +1,22 @@
-Received: from mail-oi0-x244.google.com ([2607:f8b0:4003:c06::244])
+Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dGnPb-00032t-Oc
- for linux-mtd@lists.infradead.org; Fri, 02 Jun 2017 14:18:49 +0000
-Received: by mail-oi0-x244.google.com with SMTP id d99so366722oic.1
- for <linux-mtd@lists.infradead.org>; Fri, 02 Jun 2017 07:18:27 -0700 (PDT)
+ id 1dGogZ-0002r5-Ra
+ for linux-mtd@lists.infradead.org; Fri, 02 Jun 2017 15:40:25 +0000
+Received: by mail-wr0-x242.google.com with SMTP id g76so1564981wrd.2
+ for <linux-mtd@lists.infradead.org>; Fri, 02 Jun 2017 08:40:02 -0700 (PDT)
+From: Pali =?utf-8?q?Roh=C3=A1r?= <pali.rohar@gmail.com>
+To: dedekind1@gmail.com
+Subject: Re: [PATCH] UBI: Do not try to autoresize in readonly mode
+Date: Fri, 2 Jun 2017 17:39:59 +0200
+Cc: linux-mtd@lists.infradead.org
+References: <8381186.XTLIOQGYR2@pali> <2142677.yEm4yDLVdN@pali>
+ <1345824556.2848.339.camel@sauron.fi.intel.com>
+In-Reply-To: <1345824556.2848.339.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
-Sender: arndbergmann@gmail.com
-In-Reply-To: <CAAM7YA=f74Wye8hgqR52CNG-c4Sh3sm74AzZYhSnhjN1B=G-Ow@mail.gmail.com>
-References: <1491613030-11599-1-git-send-email-deepa.kernel@gmail.com>
- <1491613030-11599-5-git-send-email-deepa.kernel@gmail.com>
- <CAAM7YAmp=cZKqGHa8UqDnrQLCe+6TKx+7w9SDZv4cW5fr4dfvA@mail.gmail.com>
- <CAK8P3a1pCw1Oo-Wg70kH5L12pbtEzGDfaPZ8g6ErERJjvY8znQ@mail.gmail.com>
- <CAAM7YAnWLUXMOCVbgfdKGfvK04EtAQcz-ETm7xFO=8Y=_fCvOQ@mail.gmail.com>
- <CALAqxLV-yVKWM5es7fAFiDzhSQmtZFiZDPQwBRUYbWUtqhoWVg@mail.gmail.com>
- <CABeXuvqvLr6sSGF+rZEXXxpCBDKTOeLX1ObSjbPPY4aFBuwvMg@mail.gmail.com>
- <CAAM7YAkXNo_69tOrw6a5kpyref9nEpEp-2vxBbFVSHGmAVbt+A@mail.gmail.com>
- <CAK8P3a1TwkVRCwDWqgYE8Z3wZT2+v6xayq=dVeW8KaHmO0W4cg@mail.gmail.com>
- <CAAM7YA=BJHFLz_Ud==7L=yCzxj+1sjctc68tvpNogPhiSxxELQ@mail.gmail.com>
- <CAK8P3a0D3EXuwBj+sSVL9cmpysdvQWXnkE0zEctBJS8XOqhX7A@mail.gmail.com>
- <CAAM7YAk8JNU=XV=sOCczagWjBimO4JSPU08th7E4u6FTJN--9A@mail.gmail.com>
- <CAK8P3a3m3nt6rfvAvDG6HFuUvy+qWbmk5K0UtLGqYhYHOfdF8w@mail.gmail.com>
- <CAAM7YA=f74Wye8hgqR52CNG-c4Sh3sm74AzZYhSnhjN1B=G-Ow@mail.gmail.com>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Fri, 2 Jun 2017 16:18:26 +0200
-Message-ID: <CAK8P3a1etuRz6zwytXTHqK-T0g2YnbR4zcCwo98ehjjD1Dj+Ow@mail.gmail.com>
-Subject: Re: [PATCH 04/12] fs: ceph: CURRENT_TIME with ktime_get_real_ts()
-To: "Yan, Zheng" <ukernel@gmail.com>
-Cc: Deepa Dinamani <deepa.kernel@gmail.com>,
- John Stultz <john.stultz@linaro.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Thomas Gleixner <tglx@linutronix.de>, Al Viro <viro@zeniv.linux.org.uk>,
- gregkh <gregkh@linuxfoundation.org>, "Dilger,
- Andreas" <andreas.dilger@intel.com>,
- "J. Bruce Fields" <bfields@fieldses.org>, Chris Mason <clm@fb.com>,
- David Miller <davem@davemloft.net>,
- David Sterba <dsterba@suse.com>, Evgeniy Dushistov <dushistov@mail.ru>,
- Eric Paris <eparis@redhat.com>,
- Jaegeuk Kim <jaegeuk@kernel.org>, Josef Bacik <jbacik@fb.com>,
- Jeff Layton <jlayton@poochiereds.net>, James Simmons <jsimmons@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, "Drokin, Oleg" <oleg.drokin@intel.com>,
- Paul Moore <paul@paul-moore.com>, Steven Rostedt <rostedt@goodmis.org>,
- yuchao0@huawei.com,
- ceph-devel <ceph-devel@vger.kernel.org>, devel@driverdev.osuosl.org,
- linux-audit@redhat.com, linux-btrfs <linux-btrfs@vger.kernel.org>,
- linux-cifs@vger.kernel.org,
- "Linux F2FS DEV, Mailing List" <linux-f2fs-devel@lists.sourceforge.net>,
- Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- LSM List <linux-security-module@vger.kernel.org>,
- Lustre Development List <lustre-devel@lists.lustre.org>,
- Networking <netdev@vger.kernel.org>,
- samba-technical@lists.samba.org, y2038 Mailman List <y2038@lists.linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="nextPart3967630.DzeFdH85js";
+ protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+Message-Id: <201706021739.59748@pali>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -62,39 +26,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jun 2, 2017 at 2:18 PM, Yan, Zheng <ukernel@gmail.com> wrote:
-> On Fri, Jun 2, 2017 at 7:33 PM, Arnd Bergmann <arnd@arndb.de> wrote:
->> On Fri, Jun 2, 2017 at 1:18 PM, Yan, Zheng <ukernel@gmail.com> wrote:
->> What I meant is another related problem in ceph_mkdir() where the
->> i_ctime field of the parent inode is different between the persistent
->> representation in the mds and the in-memory representation.
->>
->
-> I don't see any problem in mkdir case. Parent inode's i_ctime in mds is set to
-> r_stamp. When client receives request reply, it set its in-memory inode's ctime
-> to the same time stamp.
+--nextPart3967630.DzeFdH85js
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-Ok, I see it now, thanks for the clarification. Most other file systems do this
-the other way round and update all fields in the in-memory inode structure
-first and then write that to persistent storage, so I was getting confused about
-the order of events here.
+On Friday 24 August 2012 18:09:16 Artem Bityutskiy wrote:
+> On Fri, 2012-08-24 at 17:59 +0200, Pali Roh=C3=A1r wrote:
+> > > Why do you need to use block2mtd? If you have an image for NOR
+> > > flash, use mtdram, if it is for NAND - use nandsim. What
+> > > prevents you from using mtdram or nandsim?
+> >=20
+> > I do not know why, but copying 256 MB image to nandsim takes more
+> > time than losetup & block2mtd & mount...
+>=20
+> May be, how much more? Is that a show-stopper for you? If you copy
+> with 'dd', try 'bs=3D2048' if you are simulating a device with a 2048
+> bytes NAND page size.
+>=20
+> But I guess you can patch block2mtd, I do not have objections
+> (although it'll report about itself as NOR flash?), but I never used
+> it and I am not sure how many bugs there are.
 
-If I understand it all right, we have three different behaviors in ceph now,
-though the differences are very minor and probably don't ever matter:
+Hi! Years ago I wrote patches for block2mtd to allow specify write size=20
+and nand subpage shift. But I forgot to send them. I think they could be=20
+useful for other people, so rebased them on mainline kernel I will send=20
+them in few minutes.
 
-- in setattr(), we update ctime in the in-memory inode first and then send
-  the same time to the mds, and expect to set it again when the reply comes.
+=2D-=20
+Pali Roh=C3=A1r
+pali.rohar@gmail.com
 
-- in ceph_write_iter write() and mmap/page_mkwrite(), we call
-  file_update_time() to set i_mtime and i_ctime to the same
-  timestamp first once a write is observed by the fs and then take
-  two other timestamps that we send to the mds, and update the
-  in-memory inode a second time when the reply comes. ctime
-  is never older than mtime here, as far as I can tell, but it may
-  be newer when the timer interrupt happens between taking the
-  two stamps.
+--nextPart3967630.DzeFdH85js
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-- in all other calls, we only update the inode (and/or parent inode)
-  after the reply arrives.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
 
-       Arnd
+iEUEABECAAYFAlkxhs8ACgkQi/DJPQPkQ1Jj0gCgy45pMnGjP6xjRmZmiooTD3yU
+K88Al2d7U8Wl1tVPsGQ9qxr4LZvH3pU=
+=Q//M
+-----END PGP SIGNATURE-----
+
+--nextPart3967630.DzeFdH85js--
