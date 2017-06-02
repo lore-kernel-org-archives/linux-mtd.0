@@ -1,13 +1,18 @@
-Date: Fri, 2 Jun 2017 09:14:44 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dGgwZ-0002mO-CI
+ for linux-mtd@lists.infradead.org; Fri, 02 Jun 2017 07:24:24 +0000
+Date: Fri, 2 Jun 2017 09:23:52 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: <xiaolei.li@mediatek.com>
-Cc: <computersforpeace@gmail.com>, <dwmw2@infradead.org>,
- <linux-mtd@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH] mtd: subpagetest: fix wrong written check in function
- write_eraseblock2
-Message-ID: <20170602091444.1f1e1d1d@bbrezillon>
-In-Reply-To: <1496307679-16245-1-git-send-email-xiaolei.li@mediatek.com>
-References: <1496307679-16245-1-git-send-email-xiaolei.li@mediatek.com>
+To: Matthias Lange <matthias.lange@kernkonzept.com>
+Cc: linux-mtd@lists.infradead.org, han.xu@nxp.com,
+ computersforpeace@gmail.com, richard@nod.at, dwmw2@infradead.org
+Subject: Re: [PATCH] Fix typo in comment.
+Message-ID: <20170602092352.449c97be@bbrezillon>
+In-Reply-To: <ed4d18bf-a18a-ea5c-5fc0-79a60fb3f2ee@kernkonzept.com>
+References: <1496130091-2363-1-git-send-email-matthias.lange@kernkonzept.com>
+ <20170531112255.1073ca9a@bbrezillon>
+ <ed4d18bf-a18a-ea5c-5fc0-79a60fb3f2ee@kernkonzept.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -20,33 +25,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 1 Jun 2017 17:01:19 +0800
-<xiaolei.li@mediatek.com> wrote:
+On Wed, 31 May 2017 17:07:54 +0200
+Matthias Lange <matthias.lange@kernkonzept.com> wrote:
 
-> From: Xiaolei Li <xiaolei.li@mediatek.com>
+> Hi Boris,
 > 
-> Write size in function write_eraseblock2 is subpgsize * k.
-> It is wrong to check whether written is equal to subpgsize after each
-> mtd_write.
-> 
-> Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
+> please consider the new version of the commit.
 
-Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Can you send the patch you've put in attachment using git send-email
+and Cc all relevant maintainers?
 
-> ---
->  drivers/mtd/tests/subpagetest.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/mtd/tests/subpagetest.c b/drivers/mtd/tests/subpagetest.c
-> index aecc6ce..fa2519a 100644
-> --- a/drivers/mtd/tests/subpagetest.c
-> +++ b/drivers/mtd/tests/subpagetest.c
-> @@ -102,7 +102,7 @@ static int write_eraseblock2(int ebnum)
->  		if (unlikely(err || written != subpgsize * k)) {
->  			pr_err("error: write failed at %#llx\n",
->  			       (long long)addr);
-> -			if (written != subpgsize) {
-> +			if (written != subpgsize * k) {
->  				pr_err("  write size: %#x\n",
->  				       subpgsize * k);
->  				pr_err("  written: %#08zx\n",
+> Best,
+> Matthias.
+> 
+> 
+> On 05/31/2017 11:22 AM, Boris Brezillon wrote:
+> > Hi Mattias,
+> > 
+> > On Tue, 30 May 2017 09:41:31 +0200
+> > Matthias Lange <matthias.lange@kernkonzept.com> wrote:
+> > 
+> > Commit title should be prefixed with "mtd: nand: gpmi: ".
+> >   
+> >> Signed-off-by: Matthias Lange <matthias.lange@kernkonzept.com>
+> >> ---
+> >>  drivers/mtd/nand/gpmi-nand/gpmi-lib.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> >> index 141bd70..41f53ae 100644
+> >> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> >> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> >> @@ -932,7 +932,7 @@ static int enable_edo_mode(struct gpmi_nand_data *this, int mode)
+> >>  
+> >>  	nand->select_chip(mtd, 0);
+> >>  
+> >> -	/* [1] send SET FEATURE commond to NAND */
+> >> +	/* [1] send SET FEATURE command to NAND */
+> >>  	feature[0] = mode;
+> >>  	ret = nand->onfi_set_features(mtd, nand,
+> >>  				ONFI_FEATURE_ADDR_TIMING_MODE, feature);  
