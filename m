@@ -1,31 +1,21 @@
-From: Han Xu <han.xu@nxp.com>
-To: Stefan Agner <stefan@agner.ch>
-CC: "shawnguo@kernel.org" <shawnguo@kernel.org>, "kernel@pengutronix.de"
- <kernel@pengutronix.de>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "richard@nod.at"
- <richard@nod.at>, "cyrille.pitchen@atmel.com" <cyrille.pitchen@atmel.com>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "fabio.estevam@freescale.com"
- <fabio.estevam@freescale.com>, "LW@KARO-electronics.de"
- <LW@karo-electronics.de>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 0/2] ARM: dts: imx7: add NAND support
-Date: Fri, 2 Jun 2017 20:09:38 +0000
-Message-ID: <1dd0abe0-81a3-d4ea-69c1-98fe354f91f4@nxp.com>
-References: <20170601192044.6548-1-stefan@agner.ch>
- <3c086d95-96e5-71ec-b44f-12ed41903fcf@nxp.com>
- <e57ba49dc2b91b70b5848875e28b17ae@agner.ch>
-In-Reply-To: <e57ba49dc2b91b70b5848875e28b17ae@agner.ch>
-Content-Language: en-US
-Content-Type: text/plain; charset="Windows-1252"
-Content-ID: <04C6D6B187BD5F4AB360BAA5C8138663@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dGxvm-0002wi-At
+ for linux-mtd@lists.infradead.org; Sat, 03 Jun 2017 01:32:43 +0000
+Received: by mail-pg0-x241.google.com with SMTP id v18so99713pgb.3
+ for <linux-mtd@lists.infradead.org>; Fri, 02 Jun 2017 18:32:20 -0700 (PDT)
+Date: Fri, 2 Jun 2017 18:32:17 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Subject: [GIT PULL] MTD fixes for 4.12
+Message-ID: <20170603013217.GA135402@google.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,76 +25,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Linus,
 
+The following changes since commit 08332893e37af6ae779367e78e444f8f9571511d:
 
-On 06/01/2017 08:48 PM, Stefan Agner wrote:
-> Hi Han,
->
-> On 2017-06-01 14:14, Han Xu wrote:
->> On 06/01/2017 02:20 PM, Stefan Agner wrote:
->>> This are the missing device tree parts to add NAND support for i.MX 7.
->>> See previous patchset:
->>> https://emea01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flk=
-ml.org%2Flkml%2F2017%2F4%2F21%2F832&data=3D01%7C01%7Chan.xu%40nxp.com%7C3b9=
-081a68c94476c4a2108d4a9235512%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0&sdata=
-=3DmQ2aq5rW%2B9uADY5mSzFxk8P6bAVq%2BosPJQAi0PL9SQg%3D&reserved=3D0
->>>
->>> The previous version also included driver changes, which are already
->>> merged.
->>>
->>> --
->>> Stefan
->>>
->>> Changes since v2:
->>> - Only specify IMX7D_NAND_USDHC_BUS_ROOT_CLK which seems to be sufficen=
-t
->> Hi Stefan, sorry I didn't reply your last patch. I was unable to fully
->> test on i.MX7 since the work bandwidth, but the quick test shows DMA
->> cannot work WITHOUT IMX7D_NAND_ROOT_CLK on my side, I will fully check
->> it tomorrow morning and let you know the result.
-> How did you test that?
->
-> Since DMA can only use NAND in i.MX 7, testing is somewhat hard.
->
-> Fact is, I can access DMA registers using just NAND_USDHC_BUS_CLK_ROOT
->
-> mw.l 0x30388980 0x11000000 # Enable NAND_USDHC_BUS_CLK_ROOT
-> mw.l 0x3038aa00 0x00000000 # Enable NAND_CLK_ROOT
+  Linux 4.12-rc2 (2017-05-21 19:30:23 -0700)
 
-NAND_ROOT_CLK offset is 0x4140 which control the CCGR20 to gate on/off=20
-the rawnand module, including APBH/GPMI/BCH. Without enabling it, the=20
-mxs-dma hangs during initialization. I guess this bit was enabled in=20
-some early stage.
+are available in the git repository at:
 
-> md.l 0x33000100 0 # Access APBH_CH0_CURCMDAR
->
-> This works for me.
->
-> I can *boot* from a UBIFS using this driver and Linux 4.12-rc1 with my
-> patchset applied...
->
-> Monitoring clocks in /sys/kernel/debug/clk/clk_summary show that
-> NAND_ROOT_CLK gets turned off and back on if NAND access happens, the
-> system seems stable.
->
-> All that said, this patchset v3 actually does not remove the
-> NAND_ROOT_CLK as intended to. Will send a v4.
->
-> --
-> Stefan
->
->>> - Dropped driver changes, alreay merged
->>>
->>> Changes since v1:
->>> - Make clks_count const
->>> - Introduce IS_IMX7D for i.MX 7 SoC's and make it part of GPMI_IS_MX6
->>>
->>> Stefan Agner (2):
->>>     ARM: dts: imx7: add GPMI NAND
->>>     ARM: dts: imx7-colibri: add NAND support
->>>
->>>    arch/arm/boot/dts/imx7-colibri.dtsi |  9 +++++++++
->>>    arch/arm/boot/dts/imx7s.dtsi        | 31 +++++++++++++++++++++++++++=
-++++
->>>    2 files changed, 40 insertions(+)
->>>
+  git://git.infradead.org/linux-mtd.git tags/for-linus-20170602
+
+for you to fetch changes up to 05e97a9eda72d58dba293857df6aac62584ef99a:
+
+  Merge tag 'nand/fixes-for-4.12-rc3' of git://git.infradead.org/linux-mtd into MTD (2017-06-01 10:53:55 -0700)
+
+----------------------------------------------------------------
+MTD fixes for 4.12:
+
+NAND updates from Boris:
+"""
+tango fixes:
+ * Add missing MODULE_DEVICE_TABLE() in tango_nand.c
+ * Update the number of corrected bitflips
+
+core fixes:
+ * Fix a long standing memory leak in nand_scan_tail()
+ * Fix several bugs introduced by the per-vendor init/detection
+   infrastructure (introduced in 4.12)
+ * Add a static specifier to nand_ooblayout_lp_hamming_ops definition
+"""
+
+----------------------------------------------------------------
+Andres Galacho (1):
+      mtd: nand: tango: Export OF device ID table as module aliases
+
+Brian Norris (5):
+      mtd: nand: don't leak buffers when ->scan_bbt() fails
+      mtd: nand: drop unneeded module.h include
+      mtd: nand: free vendor-specific resources in init failure paths
+      mtd: nand: samsung: warn about un-parseable ECC info
+      Merge tag 'nand/fixes-for-4.12-rc3' of git://git.infradead.org/linux-mtd into MTD
+
+Colin Ian King (1):
+      mtd: nand: make nand_ooblayout_lp_hamming_ops static
+
+Marc Gonzalez (1):
+      mtd: nand: tango: Update ecc_stats.corrected
+
+ drivers/mtd/nand/nand_base.c    | 46 +++++++++++++++++++++++++++++++----------
+ drivers/mtd/nand/nand_ids.c     |  1 -
+ drivers/mtd/nand/nand_samsung.c |  3 +++
+ drivers/mtd/nand/tango_nand.c   | 23 ++++++++++++++-------
+ 4 files changed, 54 insertions(+), 19 deletions(-)
