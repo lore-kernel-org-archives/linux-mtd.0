@@ -1,58 +1,24 @@
-Received: from mail-ua0-x236.google.com ([2607:f8b0:400c:c08::236])
+Received: from mail-qt0-x232.google.com ([2607:f8b0:400d:c0d::232])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dHQNA-0002HA-Fb
- for linux-mtd@lists.infradead.org; Sun, 04 Jun 2017 07:54:54 +0000
-Received: by mail-ua0-x236.google.com with SMTP id x47so62940751uab.0
- for <linux-mtd@lists.infradead.org>; Sun, 04 Jun 2017 00:54:30 -0700 (PDT)
+ id 1dHYEs-0008JL-2i
+ for linux-mtd@lists.infradead.org; Sun, 04 Jun 2017 16:18:51 +0000
+Received: by mail-qt0-x232.google.com with SMTP id u12so36038493qth.0
+ for <linux-mtd@lists.infradead.org>; Sun, 04 Jun 2017 09:18:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a1etuRz6zwytXTHqK-T0g2YnbR4zcCwo98ehjjD1Dj+Ow@mail.gmail.com>
-References: <1491613030-11599-1-git-send-email-deepa.kernel@gmail.com>
- <1491613030-11599-5-git-send-email-deepa.kernel@gmail.com>
- <CAAM7YAmp=cZKqGHa8UqDnrQLCe+6TKx+7w9SDZv4cW5fr4dfvA@mail.gmail.com>
- <CAK8P3a1pCw1Oo-Wg70kH5L12pbtEzGDfaPZ8g6ErERJjvY8znQ@mail.gmail.com>
- <CAAM7YAnWLUXMOCVbgfdKGfvK04EtAQcz-ETm7xFO=8Y=_fCvOQ@mail.gmail.com>
- <CALAqxLV-yVKWM5es7fAFiDzhSQmtZFiZDPQwBRUYbWUtqhoWVg@mail.gmail.com>
- <CABeXuvqvLr6sSGF+rZEXXxpCBDKTOeLX1ObSjbPPY4aFBuwvMg@mail.gmail.com>
- <CAAM7YAkXNo_69tOrw6a5kpyref9nEpEp-2vxBbFVSHGmAVbt+A@mail.gmail.com>
- <CAK8P3a1TwkVRCwDWqgYE8Z3wZT2+v6xayq=dVeW8KaHmO0W4cg@mail.gmail.com>
- <CAAM7YA=BJHFLz_Ud==7L=yCzxj+1sjctc68tvpNogPhiSxxELQ@mail.gmail.com>
- <CAK8P3a0D3EXuwBj+sSVL9cmpysdvQWXnkE0zEctBJS8XOqhX7A@mail.gmail.com>
- <CAAM7YAk8JNU=XV=sOCczagWjBimO4JSPU08th7E4u6FTJN--9A@mail.gmail.com>
- <CAK8P3a3m3nt6rfvAvDG6HFuUvy+qWbmk5K0UtLGqYhYHOfdF8w@mail.gmail.com>
- <CAAM7YA=f74Wye8hgqR52CNG-c4Sh3sm74AzZYhSnhjN1B=G-Ow@mail.gmail.com>
- <CAK8P3a1etuRz6zwytXTHqK-T0g2YnbR4zcCwo98ehjjD1Dj+Ow@mail.gmail.com>
-From: "Yan, Zheng" <ukernel@gmail.com>
-Date: Sun, 4 Jun 2017 15:54:27 +0800
-Message-ID: <CAAM7YAky==hNmd18-C5jXfUpnygQH+HcmXeEMNARDSVkqVrtKw@mail.gmail.com>
-Subject: Re: [PATCH 04/12] fs: ceph: CURRENT_TIME with ktime_get_real_ts()
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Deepa Dinamani <deepa.kernel@gmail.com>,
- John Stultz <john.stultz@linaro.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Thomas Gleixner <tglx@linutronix.de>, Al Viro <viro@zeniv.linux.org.uk>,
- gregkh <gregkh@linuxfoundation.org>, "Dilger,
- Andreas" <andreas.dilger@intel.com>,
- "J. Bruce Fields" <bfields@fieldses.org>, Chris Mason <clm@fb.com>,
- David Miller <davem@davemloft.net>,
- David Sterba <dsterba@suse.com>, Evgeniy Dushistov <dushistov@mail.ru>,
- Eric Paris <eparis@redhat.com>,
- Jaegeuk Kim <jaegeuk@kernel.org>, Josef Bacik <jbacik@fb.com>,
- Jeff Layton <jlayton@poochiereds.net>, James Simmons <jsimmons@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, "Drokin, Oleg" <oleg.drokin@intel.com>,
- Paul Moore <paul@paul-moore.com>, Steven Rostedt <rostedt@goodmis.org>,
- yuchao0@huawei.com,
- ceph-devel <ceph-devel@vger.kernel.org>, devel@driverdev.osuosl.org,
- linux-audit@redhat.com, linux-btrfs <linux-btrfs@vger.kernel.org>,
- linux-cifs@vger.kernel.org,
- "Linux F2FS DEV, Mailing List" <linux-f2fs-devel@lists.sourceforge.net>,
- Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- LSM List <linux-security-module@vger.kernel.org>,
- Lustre Development List <lustre-devel@lists.lustre.org>,
- Networking <netdev@vger.kernel.org>,
- samba-technical@lists.samba.org, y2038 Mailman List <y2038@lists.linaro.org>
+In-Reply-To: <20170530152401.750d42e2@bbrezillon>
+References: <CAJbz7-0+WijkdxuwL_xvjwTWfzWcqL5PHAqSwGbwV=txQVnnAA@mail.gmail.com>
+ <20170530152401.750d42e2@bbrezillon>
+From: =?UTF-8?Q?Honza_Petrou=C5=A1?= <jpetrous@gmail.com>
+Date: Sun, 4 Jun 2017 18:18:27 +0200
+Message-ID: <CAJbz7-1oESF4TcCEi=xCxz8KRy-2tqPKFu6ojiKYRfX41zgJ7g@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] mtd:nor:ppb_unlock fixes
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -62,59 +28,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jun 2, 2017 at 10:18 PM, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Fri, Jun 2, 2017 at 2:18 PM, Yan, Zheng <ukernel@gmail.com> wrote:
->> On Fri, Jun 2, 2017 at 7:33 PM, Arnd Bergmann <arnd@arndb.de> wrote:
->>> On Fri, Jun 2, 2017 at 1:18 PM, Yan, Zheng <ukernel@gmail.com> wrote:
->>> What I meant is another related problem in ceph_mkdir() where the
->>> i_ctime field of the parent inode is different between the persistent
->>> representation in the mds and the in-memory representation.
->>>
+Hi Boris.
+
+2017-05-30 15:24 GMT+02:00 Boris Brezillon <boris.brezillon@free-electrons.=
+com>:
+> On Tue, 30 May 2017 11:51:07 +0200
+> Honza Petrou=C5=A1 <jpetrous@gmail.com> wrote:
+>
+>> Hi Boris,
+>> as you advised I come back with v2 patch, now it is the series
+>> of three fixes I found them during the testing of the original fix.
 >>
->> I don't see any problem in mkdir case. Parent inode's i_ctime in mds is set to
->> r_stamp. When client receives request reply, it set its in-memory inode's ctime
->> to the same time stamp.
+>> From the fixes it is evident that PPB unlocking is not so much
+>> widely used. What is understandable as usually the flashing
+>> is done in bootloader. At least in projects I was involved before.
+>>
+>> Anyway, I can say I tested the code only on one-flashchip
+>> configuration, so I'm not 100% sure if all will be ok with multichip
+>> setting. All my old embedded boards have unfortunatelly only
+>> one nor chip.
 >
-> Ok, I see it now, thanks for the clarification. Most other file systems do this
-> the other way round and update all fields in the in-memory inode structure
-> first and then write that to persistent storage, so I was getting confused about
-> the order of events here.
+> I think I found another bug here [1]. The test does not work for
+> multichip flashes because adr is set back to 0 when you cross a chip
+> boundary.
 >
-> If I understand it all right, we have three different behaviors in ceph now,
-> though the differences are very minor and probably don't ever matter:
->
-> - in setattr(), we update ctime in the in-memory inode first and then send
->   the same time to the mds, and expect to set it again when the reply comes.
->
-> - in ceph_write_iter write() and mmap/page_mkwrite(), we call
->   file_update_time() to set i_mtime and i_ctime to the same
->   timestamp first once a write is observed by the fs and then take
->   two other timestamps that we send to the mds, and update the
->   in-memory inode a second time when the reply comes. ctime
->   is never older than mtime here, as far as I can tell, but it may
->   be newer when the timer interrupt happens between taking the
->   two stamps.
+> If you want my opinion, you'd better re-code the whole logic (you can
+> probably do better, but here is an example [2]).
 
-We don't use request to send i_mtime/i_ctime to mds in this case.
-Instead, we use cap flush message. i_mtime/i_ctime are directly
-encoded in cap flush message. When mds receives the cap flush message,
-it writes i_mtime/i_ctime to persistent storage and sends a cap flush
-ack message to client. (when client receives the cap flush ack
-message, it does not update i_mtime/i_ctime). There is no issue as you
-described.
+Yeh, it seems the code has much more issues.
 
->
-> - in all other calls, we only update the inode (and/or parent inode)
->   after the reply arrives.
+I will try to recode it.
 
-There are two cases. 1. Client updates in-memory inode's ctime, it
-sends the new ctime to mds through cap flush message. 2. client set
-mds request's r_stamp and send the request to mds. MDS updates
-relavent inodes' ctime and sends reply to client. Client updates
-in-memory inodes' ctime according to the reply.
+Thanks.
 
-Regards
-Yan, Zheng
-
->
->        Arnd
+/Honza
