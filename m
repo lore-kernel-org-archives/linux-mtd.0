@@ -1,7 +1,7 @@
 Received: from conuserg-10.nifty.com ([210.131.2.77])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dI1La-00080V-6J
- for linux-mtd@lists.infradead.org; Mon, 05 Jun 2017 23:23:53 +0000
+ id 1dI1Lt-00084E-Rs
+ for linux-mtd@lists.infradead.org; Mon, 05 Jun 2017 23:24:03 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Enrico Jorns <ejo@pengutronix.de>,
@@ -18,9 +18,10 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v4 11/23] mtd: nand: denali: rework interrupt handling
-Date: Tue,  6 Jun 2017 08:21:50 +0900
-Message-Id: <1496704922-12261-12-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v4 21/23] mtd: nand: denali: skip driver internal bounce
+ buffer when possible
+Date: Tue,  6 Jun 2017 08:22:00 +0900
+Message-Id: <1496704922-12261-22-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1496704922-12261-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1496704922-12261-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,635 +33,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Simplify the interrupt handling and fix issues:
-
-- The register field view of INTR_EN / INTR_STATUS is different
-  among IP versions.  The global macro DENALI_IRQ_ALL is hard-coded
-  for Intel platforms.  The interrupt mask should be determined at
-  run-time depending on the running platform.
-
-- wait_for_irq() loops do {} while() until interested flags are
-  asserted.  The logic can be simplified.
-
-- The spin_lock() guard seems too complex (and suspicious in a race
-  condition if wait_for_completion_timeout() bails out by timeout).
-
-- denali->complete is reused again and again, but reinit_completion()
-  is missing.  Add it.
-
-Re-work the code to make it more robust and easier to handle.
-
-While we are here, also rename the jump label "failed_req_irq" to
-more appropriate "disable_irq".
+For ecc->read_page() and ecc->write_page(), it is possible to call
+dma_map_single() against the given buffer.  This bypasses the driver
+internal bounce buffer and save the memcpy().
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v4: None
-Changes in v3: None
+Changes in v4:
+  - Remove dma_unmap_single() from denali_remove()
+
+Changes in v3:
+  - Set chip->buf_align to 16
+
 Changes in v2:
   - Newly added
 
- drivers/mtd/nand/denali.c | 316 +++++++++++++++++-----------------------------
- drivers/mtd/nand/denali.h |   1 +
- 2 files changed, 116 insertions(+), 201 deletions(-)
+ drivers/mtd/nand/denali.c | 38 ++++++++++++--------------------------
+ 1 file changed, 12 insertions(+), 26 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 1bb57de..e8e6667 100644
+index 42e0620..e4ab397 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -31,21 +31,6 @@ MODULE_LICENSE("GPL");
- #define DENALI_NAND_NAME    "denali-nand"
- 
- /*
-- * We define a macro here that combines all interrupts this driver uses into
-- * a single constant value, for convenience.
-- */
--#define DENALI_IRQ_ALL	(INTR__DMA_CMD_COMP | \
--			INTR__ECC_TRANSACTION_DONE | \
--			INTR__ECC_ERR | \
--			INTR__PROGRAM_FAIL | \
--			INTR__LOAD_COMP | \
--			INTR__PROGRAM_COMP | \
--			INTR__TIME_OUT | \
--			INTR__ERASE_FAIL | \
--			INTR__RST_COMP | \
--			INTR__ERASE_COMP)
--
--/*
-  * indicates whether or not the internal value for the flash bank is
-  * valid or not
-  */
-@@ -71,20 +56,14 @@ static inline struct denali_nand_info *mtd_to_denali(struct mtd_info *mtd)
- #define DENALI_READ	0
- #define DENALI_WRITE	0x100
- 
-+#define DENALI_NR_BANKS		4
-+
- /*
-  * this is a helper macro that allows us to
-  * format the bank into the proper bits for the controller
-  */
- #define BANK(x) ((x) << 24)
- 
--/* forward declarations */
--static void clear_interrupts(struct denali_nand_info *denali);
--static uint32_t wait_for_irq(struct denali_nand_info *denali,
--							uint32_t irq_mask);
--static void denali_irq_enable(struct denali_nand_info *denali,
--							uint32_t int_mask);
--static uint32_t read_interrupt_status(struct denali_nand_info *denali);
--
- /*
-  * The bus interface clock, clk_x, is phase aligned with the core clock.  The
-  * clk_x is an integral multiple N of the core clk.  The value N is configured
-@@ -143,22 +122,6 @@ static void read_status(struct denali_nand_info *denali)
- 		write_byte_to_buf(denali, 0);
- }
- 
--/* resets a specific device connected to the core */
--static void reset_bank(struct denali_nand_info *denali)
--{
--	uint32_t irq_status;
--	uint32_t irq_mask = INTR__RST_COMP | INTR__TIME_OUT;
--
--	clear_interrupts(denali);
--
--	iowrite32(1 << denali->flash_bank, denali->flash_reg + DEVICE_RESET);
--
--	irq_status = wait_for_irq(denali, irq_mask);
--
--	if (irq_status & INTR__TIME_OUT)
--		dev_err(denali->dev, "reset bank failed.\n");
--}
--
- /* Reset the flash controller */
- static uint16_t denali_nand_reset(struct denali_nand_info *denali)
+@@ -643,12 +643,16 @@ static int denali_pio_xfer(struct denali_nand_info *denali, void *buf,
+ static int denali_dma_xfer(struct denali_nand_info *denali, void *buf,
+ 			   size_t size, int page, int raw, int write)
  {
-@@ -201,169 +164,123 @@ static void detect_max_banks(struct denali_nand_info *denali)
- 		denali->max_banks <<= 1;
- }
+-	dma_addr_t dma_addr = denali->dma_addr;
++	dma_addr_t dma_addr;
+ 	uint32_t irq_mask, irq_status, ecc_err_mask;
+ 	enum dma_data_direction dir = write ? DMA_TO_DEVICE : DMA_FROM_DEVICE;
+ 	int ret = 0;
  
--static void denali_set_intr_modes(struct denali_nand_info *denali,
--					uint16_t INT_ENABLE)
-+static void denali_enable_irq(struct denali_nand_info *denali)
- {
--	if (INT_ENABLE)
--		iowrite32(1, denali->flash_reg + GLOBAL_INT_ENABLE);
--	else
--		iowrite32(0, denali->flash_reg + GLOBAL_INT_ENABLE);
--}
-+	int i;
- 
--/*
-- * validation function to verify that the controlling software is making
-- * a valid request
-- */
--static inline bool is_flash_bank_valid(int flash_bank)
--{
--	return flash_bank >= 0 && flash_bank < 4;
-+	for (i = 0; i < DENALI_NR_BANKS; i++)
-+		iowrite32(U32_MAX, denali->flash_reg + INTR_EN(i));
-+	iowrite32(GLOBAL_INT_EN_FLAG, denali->flash_reg + GLOBAL_INT_ENABLE);
- }
- 
--static void denali_irq_init(struct denali_nand_info *denali)
-+static void denali_disable_irq(struct denali_nand_info *denali)
- {
--	uint32_t int_mask;
- 	int i;
- 
--	/* Disable global interrupts */
--	denali_set_intr_modes(denali, false);
--
--	int_mask = DENALI_IRQ_ALL;
--
--	/* Clear all status bits */
--	for (i = 0; i < denali->max_banks; ++i)
--		iowrite32(0xFFFF, denali->flash_reg + INTR_STATUS(i));
--
--	denali_irq_enable(denali, int_mask);
-+	for (i = 0; i < DENALI_NR_BANKS; i++)
-+		iowrite32(0, denali->flash_reg + INTR_EN(i));
-+	iowrite32(0, denali->flash_reg + GLOBAL_INT_ENABLE);
- }
- 
--static void denali_irq_cleanup(int irqnum, struct denali_nand_info *denali)
-+static void denali_clear_irq(struct denali_nand_info *denali,
-+			     int bank, uint32_t irq_status)
- {
--	denali_set_intr_modes(denali, false);
-+	/* write one to clear bits */
-+	iowrite32(irq_status, denali->flash_reg + INTR_STATUS(bank));
- }
- 
--static void denali_irq_enable(struct denali_nand_info *denali,
--							uint32_t int_mask)
-+static void denali_clear_irq_all(struct denali_nand_info *denali)
- {
- 	int i;
- 
--	for (i = 0; i < denali->max_banks; ++i)
--		iowrite32(int_mask, denali->flash_reg + INTR_EN(i));
-+	for (i = 0; i < DENALI_NR_BANKS; i++)
-+		denali_clear_irq(denali, i, U32_MAX);
- }
- 
--/*
-- * This function only returns when an interrupt that this driver cares about
-- * occurs. This is to reduce the overhead of servicing interrupts
-- */
--static inline uint32_t denali_irq_detected(struct denali_nand_info *denali)
-+static irqreturn_t denali_isr(int irq, void *dev_id)
- {
--	return read_interrupt_status(denali) & DENALI_IRQ_ALL;
--}
-+	struct denali_nand_info *denali = dev_id;
-+	irqreturn_t ret = IRQ_NONE;
-+	uint32_t irq_status;
-+	int i;
- 
--/* Interrupts are cleared by writing a 1 to the appropriate status bit */
--static inline void clear_interrupt(struct denali_nand_info *denali,
--							uint32_t irq_mask)
--{
--	uint32_t intr_status_reg;
-+	spin_lock(&denali->irq_lock);
- 
--	intr_status_reg = INTR_STATUS(denali->flash_bank);
-+	for (i = 0; i < DENALI_NR_BANKS; i++) {
-+		irq_status = ioread32(denali->flash_reg + INTR_STATUS(i));
-+		if (irq_status)
-+			ret = IRQ_HANDLED;
- 
--	iowrite32(irq_mask, denali->flash_reg + intr_status_reg);
--}
-+		denali_clear_irq(denali, i, irq_status);
- 
--static void clear_interrupts(struct denali_nand_info *denali)
--{
--	uint32_t status;
-+		if (i != denali->flash_bank)
-+			continue;
-+
-+		denali->irq_status |= irq_status;
- 
--	spin_lock_irq(&denali->irq_lock);
-+		if (denali->irq_status & denali->irq_mask)
-+			complete(&denali->complete);
+-	dma_sync_single_for_device(denali->dev, dma_addr, size, dir);
++	dma_addr = dma_map_single(denali->dev, buf, size, dir);
++	if (dma_mapping_error(denali->dev, dma_addr)) {
++		dev_dbg(denali->dev, "Failed to DMA-map buffer. Trying PIO.\n");
++		return denali_pio_xfer(denali, buf, size, page, raw, write);
 +	}
  
--	status = read_interrupt_status(denali);
--	clear_interrupt(denali, status);
-+	spin_unlock(&denali->irq_lock);
+ 	if (write) {
+ 		irq_mask = INTR__DMA_CMD_COMP | INTR__PROGRAM_FAIL;
+@@ -674,7 +678,7 @@ static int denali_dma_xfer(struct denali_nand_info *denali, void *buf,
+ 		ret = -EBADMSG;
  
--	denali->irq_status = 0x0;
--	spin_unlock_irq(&denali->irq_lock);
-+	return ret;
- }
- 
--static uint32_t read_interrupt_status(struct denali_nand_info *denali)
-+static void denali_reset_irq(struct denali_nand_info *denali)
- {
--	uint32_t intr_status_reg;
--
--	intr_status_reg = INTR_STATUS(denali->flash_bank);
-+	unsigned long flags;
- 
--	return ioread32(denali->flash_reg + intr_status_reg);
-+	spin_lock_irqsave(&denali->irq_lock, flags);
-+	denali->irq_status = 0;
-+	denali->irq_mask = 0;
-+	spin_unlock_irqrestore(&denali->irq_lock, flags);
- }
- 
--/*
-- * This is the interrupt service routine. It handles all interrupts
-- * sent to this device. Note that on CE4100, this is a shared interrupt.
-- */
--static irqreturn_t denali_isr(int irq, void *dev_id)
-+static uint32_t denali_wait_for_irq(struct denali_nand_info *denali,
-+				    uint32_t irq_mask)
- {
--	struct denali_nand_info *denali = dev_id;
-+	unsigned long time_left, flags;
- 	uint32_t irq_status;
--	irqreturn_t result = IRQ_NONE;
- 
--	spin_lock(&denali->irq_lock);
-+	spin_lock_irqsave(&denali->irq_lock, flags);
- 
--	/* check to see if a valid NAND chip has been selected. */
--	if (is_flash_bank_valid(denali->flash_bank)) {
--		/*
--		 * check to see if controller generated the interrupt,
--		 * since this is a shared interrupt
--		 */
--		irq_status = denali_irq_detected(denali);
--		if (irq_status != 0) {
--			/* handle interrupt */
--			/* first acknowledge it */
--			clear_interrupt(denali, irq_status);
--			/*
--			 * store the status in the device context for someone
--			 * to read
--			 */
--			denali->irq_status |= irq_status;
--			/* notify anyone who cares that it happened */
--			complete(&denali->complete);
--			/* tell the OS that we've handled this */
--			result = IRQ_HANDLED;
--		}
-+	irq_status = denali->irq_status;
-+
-+	if (irq_mask & irq_status) {
-+		spin_unlock_irqrestore(&denali->irq_lock, flags);
-+		return irq_status;
- 	}
--	spin_unlock(&denali->irq_lock);
--	return result;
-+
-+	denali->irq_mask = irq_mask;
-+	reinit_completion(&denali->complete);
-+	spin_unlock_irqrestore(&denali->irq_lock, flags);
-+
-+	time_left = wait_for_completion_timeout(&denali->complete,
-+						msecs_to_jiffies(1000));
-+	if (!time_left) {
-+		dev_err(denali->dev, "timeout while waiting for irq 0x%x\n",
-+			denali->irq_mask);
-+		return 0;
-+	}
-+
-+	return denali->irq_status;
- }
- 
--static uint32_t wait_for_irq(struct denali_nand_info *denali, uint32_t irq_mask)
-+/* resets a specific device connected to the core */
-+static void reset_bank(struct denali_nand_info *denali)
- {
--	unsigned long comp_res;
--	uint32_t intr_status;
--	unsigned long timeout = msecs_to_jiffies(1000);
-+	uint32_t irq_status;
- 
--	do {
--		comp_res =
--			wait_for_completion_timeout(&denali->complete, timeout);
--		spin_lock_irq(&denali->irq_lock);
--		intr_status = denali->irq_status;
--
--		if (intr_status & irq_mask) {
--			denali->irq_status &= ~irq_mask;
--			spin_unlock_irq(&denali->irq_lock);
--			/* our interrupt was detected */
--			break;
--		}
-+	denali_reset_irq(denali);
- 
--		/*
--		 * these are not the interrupts you are looking for -
--		 * need to wait again
--		 */
--		spin_unlock_irq(&denali->irq_lock);
--	} while (comp_res != 0);
-+	iowrite32(1 << denali->flash_bank, denali->flash_reg + DEVICE_RESET);
- 
--	if (comp_res == 0) {
--		/* timeout */
--		pr_err("timeout occurred, status = 0x%x, mask = 0x%x\n",
--				intr_status, irq_mask);
-+	irq_status = denali_wait_for_irq(denali,
-+					 INTR__RST_COMP | INTR__TIME_OUT);
- 
--		intr_status = 0;
--	}
--	return intr_status;
-+	if (!(irq_status & INTR__RST_COMP))
-+		dev_err(denali->dev, "reset bank failed.\n");
- }
- 
- /*
-@@ -397,7 +314,7 @@ static int denali_send_pipeline_cmd(struct denali_nand_info *denali,
- 
- 	setup_ecc_for_xfer(denali, ecc_en, transfer_spare);
- 
--	clear_interrupts(denali);
-+	denali_reset_irq(denali);
- 
- 	addr = BANK(denali->flash_bank) | denali->page;
- 
-@@ -479,9 +396,9 @@ static int write_oob_data(struct mtd_info *mtd, uint8_t *buf, int page)
- 		write_data_to_flash_mem(denali, buf, mtd->oobsize);
- 
- 		/* wait for operation to complete */
--		irq_status = wait_for_irq(denali, irq_mask);
-+		irq_status = denali_wait_for_irq(denali, irq_mask);
- 
--		if (irq_status == 0) {
-+		if (!(irq_status & INTR__PROGRAM_COMP)) {
- 			dev_err(denali->dev, "OOB write failed\n");
- 			status = -EIO;
- 		}
-@@ -510,9 +427,9 @@ static void read_oob_data(struct mtd_info *mtd, uint8_t *buf, int page)
- 		 * can always use status0 bit as the
- 		 * mask is identical for each bank.
- 		 */
--		irq_status = wait_for_irq(denali, irq_mask);
-+		irq_status = denali_wait_for_irq(denali, irq_mask);
- 
--		if (irq_status == 0)
-+		if (!(irq_status & INTR__LOAD_COMP))
- 			dev_err(denali->dev, "page on OOB timeout %d\n",
- 					denali->page);
- 
-@@ -620,9 +537,9 @@ static int denali_sw_ecc_fixup(struct mtd_info *mtd,
- 	unsigned int err_byte, err_sector, err_device;
- 	uint8_t err_cor_value;
- 	unsigned int prev_sector = 0;
-+	uint32_t irq_status;
- 
--	/* read the ECC errors. we'll ignore them for now */
--	denali_set_intr_modes(denali, false);
-+	denali_reset_irq(denali);
- 
- 	do {
- 		err_addr = ioread32(denali->flash_reg + ECC_ERROR_ADDRESS);
-@@ -674,10 +591,9 @@ static int denali_sw_ecc_fixup(struct mtd_info *mtd,
- 	 * ECC_TRANSACTION_DONE interrupt, so here just wait for
- 	 * a while for this interrupt
- 	 */
--	while (!(read_interrupt_status(denali) & INTR__ECC_TRANSACTION_DONE))
--		cpu_relax();
--	clear_interrupts(denali);
--	denali_set_intr_modes(denali, true);
-+	irq_status = denali_wait_for_irq(denali, INTR__ECC_TRANSACTION_DONE);
-+	if (!(irq_status & INTR__ECC_TRANSACTION_DONE))
-+		return -EIO;
- 
- 	return max_bitflips;
- }
-@@ -778,15 +694,14 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 
- 	dma_sync_single_for_device(denali->dev, addr, size, DMA_TO_DEVICE);
- 
--	clear_interrupts(denali);
-+	denali_reset_irq(denali);
- 	denali_enable_dma(denali, true);
- 
- 	denali_setup_dma(denali, DENALI_WRITE);
- 
- 	/* wait for operation to complete */
--	irq_status = wait_for_irq(denali, irq_mask);
--
--	if (irq_status == 0) {
-+	irq_status = denali_wait_for_irq(denali, irq_mask);
-+	if (!(irq_status & INTR__DMA_CMD_COMP)) {
- 		dev_err(denali->dev, "timeout on write_page (type = %d)\n",
- 			raw_xfer);
- 		ret = -EIO;
-@@ -865,11 +780,11 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	denali_enable_dma(denali, true);
- 	dma_sync_single_for_device(denali->dev, addr, size, DMA_FROM_DEVICE);
- 
--	clear_interrupts(denali);
-+	denali_reset_irq(denali);
- 	denali_setup_dma(denali, DENALI_READ);
- 
- 	/* wait for operation to complete */
--	irq_status = wait_for_irq(denali, irq_mask);
-+	irq_status = denali_wait_for_irq(denali, irq_mask);
- 
- 	dma_sync_single_for_cpu(denali->dev, addr, size, DMA_FROM_DEVICE);
- 
-@@ -901,6 +816,7 @@ static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 	dma_addr_t addr = denali->buf.dma_buf;
- 	size_t size = mtd->writesize + mtd->oobsize;
- 	uint32_t irq_mask = INTR__DMA_CMD_COMP;
-+	uint32_t irq_status;
- 
- 	denali->page = page;
- 
-@@ -909,11 +825,13 @@ static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 
- 	dma_sync_single_for_device(denali->dev, addr, size, DMA_FROM_DEVICE);
- 
--	clear_interrupts(denali);
-+	denali_reset_irq(denali);
- 	denali_setup_dma(denali, DENALI_READ);
- 
- 	/* wait for operation to complete */
--	wait_for_irq(denali, irq_mask);
-+	irq_status = denali_wait_for_irq(denali, irq_mask);
-+	if (irq_status & INTR__DMA_CMD_COMP)
-+		return -ETIMEDOUT;
- 
- 	dma_sync_single_for_cpu(denali->dev, addr, size, DMA_FROM_DEVICE);
- 
-@@ -940,9 +858,7 @@ static void denali_select_chip(struct mtd_info *mtd, int chip)
- {
- 	struct denali_nand_info *denali = mtd_to_denali(mtd);
- 
--	spin_lock_irq(&denali->irq_lock);
- 	denali->flash_bank = chip;
--	spin_unlock_irq(&denali->irq_lock);
- }
- 
- static int denali_waitfunc(struct mtd_info *mtd, struct nand_chip *chip)
-@@ -953,19 +869,19 @@ static int denali_waitfunc(struct mtd_info *mtd, struct nand_chip *chip)
- static int denali_erase(struct mtd_info *mtd, int page)
- {
- 	struct denali_nand_info *denali = mtd_to_denali(mtd);
--
- 	uint32_t cmd, irq_status;
- 
--	clear_interrupts(denali);
-+	denali_reset_irq(denali);
- 
- 	/* setup page read request for access type */
- 	cmd = MODE_10 | BANK(denali->flash_bank) | page;
- 	index_addr(denali, cmd, 0x1);
- 
- 	/* wait for erase to complete or failure to occur */
--	irq_status = wait_for_irq(denali, INTR__ERASE_COMP | INTR__ERASE_FAIL);
-+	irq_status = denali_wait_for_irq(denali,
-+					 INTR__ERASE_COMP | INTR__ERASE_FAIL);
- 
--	return irq_status & INTR__ERASE_FAIL ? NAND_STATUS_FAIL : PASS;
-+	return irq_status & INTR__ERASE_COMP ? 0 : NAND_STATUS_FAIL;
- }
- 
- static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
-@@ -1153,7 +1069,6 @@ static void denali_hw_init(struct denali_nand_info *denali)
- 	/* Should set value for these registers when init */
- 	iowrite32(0, denali->flash_reg + TWO_ROW_ADDR_CYCLES);
- 	iowrite32(1, denali->flash_reg + ECC_ENABLE);
--	denali_irq_init(denali);
- }
- 
- static int denali_calc_ecc_bytes(int step_size, int strength)
-@@ -1281,9 +1196,6 @@ static void denali_drv_init(struct denali_nand_info *denali)
- 
- 	/* indicate that MTD has not selected a valid bank yet */
- 	denali->flash_bank = CHIP_SELECT_INVALID;
--
--	/* initialize our irq_status variable to indicate no interrupts */
--	denali->irq_status = 0;
- }
- 
- static int denali_multidev_fixup(struct denali_nand_info *denali)
-@@ -1353,6 +1265,8 @@ int denali_init(struct denali_nand_info *denali)
- 	denali_hw_init(denali);
- 	denali_drv_init(denali);
- 
-+	denali_clear_irq_all(denali);
-+
- 	/* Request IRQ after all the hardware initialization is finished */
- 	ret = devm_request_irq(denali->dev, denali->irq, denali_isr,
- 			       IRQF_SHARED, DENALI_NAND_NAME, denali);
-@@ -1361,8 +1275,8 @@ int denali_init(struct denali_nand_info *denali)
- 		return ret;
- 	}
- 
--	/* now that our ISR is registered, we can enable interrupts */
--	denali_set_intr_modes(denali, true);
-+	denali_enable_irq(denali);
-+
- 	nand_set_flash_node(chip, denali->dev->of_node);
- 	/* Fallback to the default name if DT did not give "label" property */
- 	if (!mtd->name)
-@@ -1384,7 +1298,7 @@ int denali_init(struct denali_nand_info *denali)
- 	 */
- 	ret = nand_scan_ident(mtd, denali->max_banks, NULL);
- 	if (ret)
--		goto failed_req_irq;
-+		goto disable_irq;
- 
- 	/* allocate the right size buffer now */
- 	devm_kfree(denali->dev, denali->buf.buf);
-@@ -1393,7 +1307,7 @@ int denali_init(struct denali_nand_info *denali)
- 			     GFP_KERNEL);
- 	if (!denali->buf.buf) {
- 		ret = -ENOMEM;
--		goto failed_req_irq;
-+		goto disable_irq;
- 	}
- 
- 	ret = dma_set_mask(denali->dev,
-@@ -1401,7 +1315,7 @@ int denali_init(struct denali_nand_info *denali)
- 					64 : 32));
- 	if (ret) {
- 		dev_err(denali->dev, "No usable DMA configuration\n");
--		goto failed_req_irq;
-+		goto disable_irq;
- 	}
- 
- 	denali->buf.dma_buf = dma_map_single(denali->dev, denali->buf.buf,
-@@ -1410,7 +1324,7 @@ int denali_init(struct denali_nand_info *denali)
- 	if (dma_mapping_error(denali->dev, denali->buf.dma_buf)) {
- 		dev_err(denali->dev, "Failed to map DMA buffer\n");
- 		ret = -EIO;
--		goto failed_req_irq;
-+		goto disable_irq;
- 	}
- 
- 	/*
-@@ -1434,7 +1348,7 @@ int denali_init(struct denali_nand_info *denali)
- 	ret = denali_ecc_setup(mtd, chip, denali);
- 	if (ret) {
- 		dev_err(denali->dev, "Failed to setup ECC settings.\n");
--		goto failed_req_irq;
-+		goto disable_irq;
- 	}
- 
- 	dev_dbg(denali->dev,
-@@ -1468,21 +1382,21 @@ int denali_init(struct denali_nand_info *denali)
- 
- 	ret = denali_multidev_fixup(denali);
- 	if (ret)
--		goto failed_req_irq;
-+		goto disable_irq;
- 
- 	ret = nand_scan_tail(mtd);
- 	if (ret)
--		goto failed_req_irq;
-+		goto disable_irq;
- 
- 	ret = mtd_device_register(mtd, NULL, 0);
- 	if (ret) {
- 		dev_err(denali->dev, "Failed to register MTD: %d\n", ret);
--		goto failed_req_irq;
-+		goto disable_irq;
- 	}
- 	return 0;
- 
--failed_req_irq:
--	denali_irq_cleanup(denali->irq, denali);
-+disable_irq:
-+	denali_disable_irq(denali);
+ 	denali_enable_dma(denali, false);
+-	dma_sync_single_for_cpu(denali->dev, dma_addr, size, dir);
++	dma_unmap_single(denali->dev, dma_addr, size, dir);
  
  	return ret;
  }
-@@ -1500,7 +1414,7 @@ void denali_remove(struct denali_nand_info *denali)
- 	int bufsize = mtd->writesize + mtd->oobsize;
+@@ -857,12 +861,10 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	int stat = 0;
+ 	int ret;
+ 
+-	ret = denali_data_xfer(denali, denali->buf, mtd->writesize, page, 0, 0);
++	ret = denali_data_xfer(denali, buf, mtd->writesize, page, 0, 0);
+ 	if (ret && ret != -EBADMSG)
+ 		return ret;
+ 
+-	memcpy(buf, denali->buf, mtd->writesize);
+-
+ 	if (denali->caps & DENALI_CAP_HW_ECC_FIXUP)
+ 		stat = denali_hw_ecc_fixup(mtd, denali, &uncor_ecc_flags);
+ 	else if (ret == -EBADMSG)
+@@ -966,10 +968,8 @@ static int denali_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ {
+ 	struct denali_nand_info *denali = mtd_to_denali(mtd);
+ 
+-	memcpy(denali->buf, buf, mtd->writesize);
+-
+-	return denali_data_xfer(denali, denali->buf, mtd->writesize, page,
+-				0, 1);
++	return denali_data_xfer(denali, (void *)buf, mtd->writesize,
++				page, 0, 1);
+ }
+ 
+ static void denali_select_chip(struct mtd_info *mtd, int chip)
+@@ -1424,14 +1424,8 @@ int denali_init(struct denali_nand_info *denali)
+ 	}
+ 
+ 	if (denali->dma_avail) {
+-		denali->dma_addr = dma_map_single(denali->dev, denali->buf,
+-						  mtd->writesize + mtd->oobsize,
+-						  DMA_BIDIRECTIONAL);
+-		if (dma_mapping_error(denali->dev, denali->dma_addr)) {
+-			dev_info(denali->dev,
+-				 "Failed to map DMA buffer. Disabling DMA.\n");
+-			denali->dma_avail = 0;
+-		};
++		chip->options |= NAND_USE_BOUNCE_BUFFER;
++		chip->buf_align = 16;
+ 	}
+ 
+ 	/*
+@@ -1520,16 +1514,8 @@ EXPORT_SYMBOL(denali_init);
+ void denali_remove(struct denali_nand_info *denali)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(&denali->nand);
+-	/*
+-	 * Pre-compute DMA buffer size to avoid any problems in case
+-	 * nand_release() ever changes in a way that mtd->writesize and
+-	 * mtd->oobsize are not reliable after this call.
+-	 */
+-	int bufsize = mtd->writesize + mtd->oobsize;
  
  	nand_release(mtd);
--	denali_irq_cleanup(denali->irq, denali);
-+	denali_disable_irq(denali);
- 	dma_unmap_single(denali->dev, denali->buf.dma_buf, bufsize,
- 			 DMA_BIDIRECTIONAL);
+ 	denali_disable_irq(denali);
+-	dma_unmap_single(denali->dev, denali->dma_addr, bufsize,
+-			 DMA_BIDIRECTIONAL);
  }
-diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index f0f4d75..a46473a 100644
---- a/drivers/mtd/nand/denali.h
-+++ b/drivers/mtd/nand/denali.h
-@@ -325,6 +325,7 @@ struct denali_nand_info {
- 	/* elements used by ISR */
- 	struct completion complete;
- 	spinlock_t irq_lock;
-+	uint32_t irq_mask;
- 	uint32_t irq_status;
- 	int irq;
- 
+ EXPORT_SYMBOL(denali_remove);
 -- 
 2.7.4
