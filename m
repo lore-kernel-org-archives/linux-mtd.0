@@ -1,24 +1,15 @@
-Received: from mail-qt0-x232.google.com ([2607:f8b0:400d:c0d::232])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dHYEs-0008JL-2i
- for linux-mtd@lists.infradead.org; Sun, 04 Jun 2017 16:18:51 +0000
-Received: by mail-qt0-x232.google.com with SMTP id u12so36038493qth.0
- for <linux-mtd@lists.infradead.org>; Sun, 04 Jun 2017 09:18:29 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20170530152401.750d42e2@bbrezillon>
-References: <CAJbz7-0+WijkdxuwL_xvjwTWfzWcqL5PHAqSwGbwV=txQVnnAA@mail.gmail.com>
- <20170530152401.750d42e2@bbrezillon>
-From: =?UTF-8?Q?Honza_Petrou=C5=A1?= <jpetrous@gmail.com>
-Date: Sun, 4 Jun 2017 18:18:27 +0200
-Message-ID: <CAJbz7-1oESF4TcCEi=xCxz8KRy-2tqPKFu6ojiKYRfX41zgJ7g@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] mtd:nor:ppb_unlock fixes
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Received: from m12-18.163.com ([220.181.12.18])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dHioq-0004yc-Ie
+ for linux-mtd@lists.infradead.org; Mon, 05 Jun 2017 03:36:42 +0000
+From: Jia-Ju Bai <baijiaju1990@163.com>
+To: richard@nod.at,
+	dedekind1@gmail.com
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Jia-Ju Bai <baijiaju1990@163.com>
+Subject: [PATCH] ubifs: Fix a sleep-in-atomic bug in ubifs_read_nnode
+Date: Mon,  5 Jun 2017 11:38:36 +0800
+Message-Id: <1496633916-32362-1-git-send-email-baijiaju1990@163.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,37 +19,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris.
+The driver may sleep under a spin lock, and the function call path is:
+ubifs_change_lp (acquire the lock by spin_lock)
+  change_category
+    ubifs_remove_from_cat
+      remove_from_lpt_heap
+        dbg_check_heap
+          ubifs_lpt_lookup
+            ubifs_read_nnode
+              kzalloc(GFP_NOFS) --> may sleep
 
-2017-05-30 15:24 GMT+02:00 Boris Brezillon <boris.brezillon@free-electrons.=
-com>:
-> On Tue, 30 May 2017 11:51:07 +0200
-> Honza Petrou=C5=A1 <jpetrous@gmail.com> wrote:
->
->> Hi Boris,
->> as you advised I come back with v2 patch, now it is the series
->> of three fixes I found them during the testing of the original fix.
->>
->> From the fixes it is evident that PPB unlocking is not so much
->> widely used. What is understandable as usually the flashing
->> is done in bootloader. At least in projects I was involved before.
->>
->> Anyway, I can say I tested the code only on one-flashchip
->> configuration, so I'm not 100% sure if all will be ok with multichip
->> setting. All my old embedded boards have unfortunatelly only
->> one nor chip.
->
-> I think I found another bug here [1]. The test does not work for
-> multichip flashes because adr is set back to 0 when you cross a chip
-> boundary.
->
-> If you want my opinion, you'd better re-code the whole logic (you can
-> probably do better, but here is an example [2]).
+To fix it, "GFP_NOFS" is replaced with "GFP_ATOMIC".
 
-Yeh, it seems the code has much more issues.
+Signed-off-by: Jia-Ju Bai <baijiaju1990@163.com>
+---
+ fs/ubifs/lpt.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I will try to recode it.
-
-Thanks.
-
-/Honza
+diff --git a/fs/ubifs/lpt.c b/fs/ubifs/lpt.c
+index 9a51710..4247934c 100644
+--- a/fs/ubifs/lpt.c
++++ b/fs/ubifs/lpt.c
+@@ -1205,7 +1205,7 @@ int ubifs_read_nnode(struct ubifs_info *c, struct ubifs_nnode *parent, int iip)
+ 		lnum = c->lpt_lnum;
+ 		offs = c->lpt_offs;
+ 	}
+-	nnode = kzalloc(sizeof(struct ubifs_nnode), GFP_NOFS);
++	nnode = kzalloc(sizeof(struct ubifs_nnode), GFP_ATOMIC);
+ 	if (!nnode) {
+ 		err = -ENOMEM;
+ 		goto out;
+-- 
+1.7.9.5
