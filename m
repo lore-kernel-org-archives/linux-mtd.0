@@ -1,6 +1,6 @@
 Received: from conuserg-10.nifty.com ([210.131.2.77])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dI1LW-00080M-Bb
+ id 1dI1LW-00080O-Bj
  for linux-mtd@lists.infradead.org; Mon, 05 Jun 2017 23:23:45 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -18,9 +18,9 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v4 12/23] mtd: nand: denali: fix NAND_CMD_STATUS handling
-Date: Tue,  6 Jun 2017 08:21:51 +0900
-Message-Id: <1496704922-12261-13-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v4 01/23] mtd: nand: denali_dt: clean up resource ioremap
+Date: Tue,  6 Jun 2017 08:21:40 +0900
+Message-Id: <1496704922-12261-2-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1496704922-12261-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1496704922-12261-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,61 +32,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The current NAND_CMD_STATUS handling is weird; it just reads the
-WRITE_PROTECT register, and returns NAND_STATUS_WP if it is set.
-
-It does not send Read Status (0x70) command, so it is not helpful
-for checking the current device status.
+No need to use two struct resource pointers.  Just reuse one.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v4: None
-Changes in v3: None
-Changes in v2:
+Changes in v4:
   - Newly added
 
- drivers/mtd/nand/denali.c | 21 +++++----------------
- 1 file changed, 5 insertions(+), 16 deletions(-)
+Changes in v3: None
+Changes in v2: None
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index e8e6667..372c871 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -107,21 +107,6 @@ static void write_byte_to_buf(struct denali_nand_info *denali, uint8_t byte)
- 	denali->buf.buf[denali->buf.tail++] = byte;
- }
+ drivers/mtd/nand/denali_dt.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
+index df9ef36..b48430f 100644
+--- a/drivers/mtd/nand/denali_dt.c
++++ b/drivers/mtd/nand/denali_dt.c
+@@ -49,7 +49,7 @@ MODULE_DEVICE_TABLE(of, denali_nand_dt_ids);
  
--/* reads the status of the device */
--static void read_status(struct denali_nand_info *denali)
--{
--	uint32_t cmd;
--
--	/* initialize the data buffer to store status */
--	reset_buf(denali);
--
--	cmd = ioread32(denali->flash_reg + WRITE_PROTECT);
--	if (cmd)
--		write_byte_to_buf(denali, NAND_STATUS_WP);
--	else
--		write_byte_to_buf(denali, 0);
--}
--
- /* Reset the flash controller */
- static uint16_t denali_nand_reset(struct denali_nand_info *denali)
+ static int denali_dt_probe(struct platform_device *pdev)
  {
-@@ -893,7 +878,11 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
+-	struct resource *denali_reg, *nand_data;
++	struct resource *res;
+ 	struct denali_dt *dt;
+ 	const struct denali_dt_data *data;
+ 	struct denali_nand_info *denali;
+@@ -74,15 +74,13 @@ static int denali_dt_probe(struct platform_device *pdev)
+ 		return denali->irq;
+ 	}
  
- 	switch (cmd) {
- 	case NAND_CMD_STATUS:
--		read_status(denali);
-+		reset_buf(denali);
-+		addr = MODE_11 | BANK(denali->flash_bank);
-+		index_addr(denali, addr | 0, cmd);
-+		index_addr_read_data(denali, addr | 2, &id);
-+		write_byte_to_buf(denali, id);
- 		break;
- 	case NAND_CMD_READID:
- 	case NAND_CMD_PARAM:
+-	denali_reg = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+-						  "denali_reg");
+-	denali->flash_reg = devm_ioremap_resource(&pdev->dev, denali_reg);
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "denali_reg");
++	denali->flash_reg = devm_ioremap_resource(&pdev->dev, res);
+ 	if (IS_ERR(denali->flash_reg))
+ 		return PTR_ERR(denali->flash_reg);
+ 
+-	nand_data = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+-						 "nand_data");
+-	denali->flash_mem = devm_ioremap_resource(&pdev->dev, nand_data);
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand_data");
++	denali->flash_mem = devm_ioremap_resource(&pdev->dev, res);
+ 	if (IS_ERR(denali->flash_mem))
+ 		return PTR_ERR(denali->flash_mem);
+ 
 -- 
 2.7.4
