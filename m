@@ -1,26 +1,29 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from conuserg-10.nifty.com ([210.131.2.77])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dHqAf-00040I-M5
- for linux-mtd@lists.infradead.org; Mon, 05 Jun 2017 11:27:43 +0000
-Subject: Re: [PATCH 2/5] mtd: block2mtd: Add support for specifying MTD write
- size and subpage shift
-To: =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali.rohar@gmail.com>
-References: <1496418222-23483-1-git-send-email-pali.rohar@gmail.com>
- <1496418222-23483-3-git-send-email-pali.rohar@gmail.com>
- <fa265d04-07b4-0ed3-9b51-c2026f7015db@nod.at> <20170605112145.GE14675@pali>
- <ad488af9-a6c5-7795-87a2-87e610dd2121@nod.at> <20170605112508.GF14675@pali>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
+ id 1dI1LW-00080L-Bc
+ for linux-mtd@lists.infradead.org; Mon, 05 Jun 2017 23:23:40 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org
+Cc: Enrico Jorns <ejo@pengutronix.de>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Dinh Nguyen <dinguyen@kernel.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <79f3b92f-5be4-8d46-985d-0b38cffd6032@nod.at>
-Date: Mon, 5 Jun 2017 13:27:18 +0200
-MIME-Version: 1.0
-In-Reply-To: <20170605112508.GF14675@pali>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+ Marek Vasut <marek.vasut@gmail.com>,
+ Graham Moore <grmoore@opensource.altera.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>,
+ Jassi Brar <jaswinder.singh@linaro.org>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>
+Subject: [PATCH v4 05/23] mtd: nand: denali: remove Toshiba and Hynix specific
+ fixup code
+Date: Tue,  6 Jun 2017 08:21:44 +0900
+Message-Id: <1496704922-12261-6-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <1496704922-12261-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1496704922-12261-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,33 +33,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Pali,
+The Denali IP can automatically detect device parameters such as
+page size, oob size, device width, etc. and this driver currently
+relies on it.  However, this hardware function is known to be
+problematic.
 
-Am 05.06.2017 um 13:25 schrieb Pali Rohár:
-> On Monday 05 June 2017 13:23:22 Richard Weinberger wrote:
->> Pali,
->>
->> Am 05.06.2017 um 13:21 schrieb Pali Rohár:
->>> On Friday 02 June 2017 18:13:02 Richard Weinberger wrote:
->>>> Pali,
->>>>
->>>> Am 02.06.2017 um 17:43 schrieb Pali Rohár:
->>>>> It is needed for creating emulated devices suitable for using in UBI layer
->>>>> and with UBIFS.
->>>>
->>>> Why?
->>>
->>> ubifs depends on write size of nand. And without those parameters as
->>> specified in cover letter I'm unable to mount N900 rootfs image exported
->>> via block2mtd. ubifs reject such image.
->>
->> Hmm, so you render block2mtd into a semi-NAND chip? :)
-> 
-> Probably you can call it like that. But it is still MTD device...
+[1] Due to a hardware bug, various misdetected cases were reported.
+    That is why get_toshiba_nand_para() and get_hynix_nand_para()
+    exist to fix-up the misdetected parameters.  It is not realistic
+    to add a new NAND device to the *black list* every time we are
+    hit by a misdetected case.  We would never be able to guarantee
+    that all cases are covered.
 
-This is what I meant in my other mail.
-You add NAND specific properties but still denote it as MTD_RAM/ROM.
-I'm not sure whether this is a good idea.
+[2] Because this feature is unreliable, it is disabled on some
+    platforms.
 
-Thanks,
-//richard
+The nand_scan_ident() detects device parameters in a more tested
+way.  The hardware should not set the device parameter registers in
+a different, unreliable way.  Instead, set the parameters from the
+nand_scan_ident() back to the registers.
+
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
+
+Changes in v4: None
+Changes in v3: None
+Changes in v2: None
+
+ drivers/mtd/nand/denali.c | 40 ++++++----------------------------------
+ 1 file changed, 6 insertions(+), 34 deletions(-)
+
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 3204c51..422b6e4 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -337,36 +337,6 @@ static void get_samsung_nand_para(struct denali_nand_info *denali,
+ 	}
+ }
+ 
+-static void get_toshiba_nand_para(struct denali_nand_info *denali)
+-{
+-	/*
+-	 * Workaround to fix a controller bug which reports a wrong
+-	 * spare area size for some kind of Toshiba NAND device
+-	 */
+-	if ((ioread32(denali->flash_reg + DEVICE_MAIN_AREA_SIZE) == 4096) &&
+-		(ioread32(denali->flash_reg + DEVICE_SPARE_AREA_SIZE) == 64))
+-		iowrite32(216, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
+-}
+-
+-static void get_hynix_nand_para(struct denali_nand_info *denali,
+-							uint8_t device_id)
+-{
+-	switch (device_id) {
+-	case 0xD5: /* Hynix H27UAG8T2A, H27UBG8U5A or H27UCG8VFA */
+-	case 0xD7: /* Hynix H27UDG8VEM, H27UCG8UDM or H27UCG8V5A */
+-		iowrite32(128, denali->flash_reg + PAGES_PER_BLOCK);
+-		iowrite32(4096, denali->flash_reg + DEVICE_MAIN_AREA_SIZE);
+-		iowrite32(224, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
+-		iowrite32(0, denali->flash_reg + DEVICE_WIDTH);
+-		break;
+-	default:
+-		dev_warn(denali->dev,
+-			 "Unknown Hynix NAND (Device ID: 0x%x).\n"
+-			 "Will use default parameter values instead.\n",
+-			 device_id);
+-	}
+-}
+-
+ /*
+  * determines how many NAND chips are connected to the controller. Note for
+  * Intel CE4100 devices we don't support more than one device.
+@@ -453,10 +423,6 @@ static uint16_t denali_nand_timing_set(struct denali_nand_info *denali)
+ 			return FAIL;
+ 	} else if (maf_id == 0xEC) { /* Samsung NAND */
+ 		get_samsung_nand_para(denali, device_id);
+-	} else if (maf_id == 0x98) { /* Toshiba NAND */
+-		get_toshiba_nand_para(denali);
+-	} else if (maf_id == 0xAD) { /* Hynix NAND */
+-		get_hynix_nand_para(denali, device_id);
+ 	}
+ 
+ 	dev_info(denali->dev,
+@@ -1638,6 +1604,12 @@ int denali_init(struct denali_nand_info *denali)
+ 		chip->ecc.size, chip->ecc.strength, chip->ecc.bytes);
+ 
+ 	iowrite32(chip->ecc.strength, denali->flash_reg + ECC_CORRECTION);
++	iowrite32(mtd->erasesize / mtd->writesize,
++		  denali->flash_reg + PAGES_PER_BLOCK);
++	iowrite32(chip->options & NAND_BUSWIDTH_16 ? 1 : 0,
++		  denali->flash_reg + DEVICE_WIDTH);
++	iowrite32(mtd->writesize, denali->flash_reg + DEVICE_MAIN_AREA_SIZE);
++	iowrite32(mtd->oobsize, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
+ 
+ 	iowrite32(chip->ecc.size, denali->flash_reg + CFG_DATA_BLOCK_SIZE);
+ 	iowrite32(chip->ecc.size, denali->flash_reg + CFG_LAST_DATA_BLOCK_SIZE);
+-- 
+2.7.4
