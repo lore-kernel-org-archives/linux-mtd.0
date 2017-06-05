@@ -1,6 +1,6 @@
 Received: from conuserg-10.nifty.com ([210.131.2.77])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dI1LW-00080L-Bc
+ id 1dI1LW-00080N-Bh
  for linux-mtd@lists.infradead.org; Mon, 05 Jun 2017 23:23:40 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -18,10 +18,10 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v4 05/23] mtd: nand: denali: remove Toshiba and Hynix specific
- fixup code
-Date: Tue,  6 Jun 2017 08:21:44 +0900
-Message-Id: <1496704922-12261-6-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v4 15/23] mtd: nand: denali: fix bank reset function to detect
+ the number of chips
+Date: Tue,  6 Jun 2017 08:21:54 +0900
+Message-Id: <1496704922-12261-16-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1496704922-12261-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1496704922-12261-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,100 +33,125 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Denali IP can automatically detect device parameters such as
-page size, oob size, device width, etc. and this driver currently
-relies on it.  However, this hardware function is known to be
-problematic.
+The nand_scan_ident() iterates over maxchips, and calls nand_reset()
+for each.  This driver currently passes the maximum number of banks
+(=chip selects) supported by the controller as maxchips.  So, maxchips
+is typically 4 or 8.  Usually, less number of NAND chips are connected
+to the controller.
 
-[1] Due to a hardware bug, various misdetected cases were reported.
-    That is why get_toshiba_nand_para() and get_hynix_nand_para()
-    exist to fix-up the misdetected parameters.  It is not realistic
-    to add a new NAND device to the *black list* every time we are
-    hit by a misdetected case.  We would never be able to guarantee
-    that all cases are covered.
+This can be a problem for ONFi devices.  Now, this driver implements
+->setup_data_interface() hook, so nand_setup_data_interface() issues
+Set Features (0xEF) command, which waits until the chip returns R/B#
+response.  If no chip there, we know it never happens, but the driver
+still ends up with waiting for a long time.  It will finally bail-out
+with timeout error and the driver will work with existing chips, but
+unnecessary wait will give a bad user experience.
 
-[2] Because this feature is unreliable, it is disabled on some
-    platforms.
-
-The nand_scan_ident() detects device parameters in a more tested
-way.  The hardware should not set the device parameter registers in
-a different, unreliable way.  Instead, set the parameters from the
-nand_scan_ident() back to the registers.
+The denali_nand_reset() polls the INTR__RST_COMP and INTR__TIME_OUT
+bits, but they are always set even if not NAND chip is connected to
+that bank.  To know the chip existence, INTR__INT_ACT bit must be
+checked; this flag is set only when R/B# is toggled.  Since the Reset
+(0xFF) command toggles the R/B# pin, this can be used to know the
+actual number of chips, and update denali->max_banks.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v4: None
-Changes in v3: None
-Changes in v2: None
+Boris mentioned this information can be retrieved from DT
+(http://patchwork.ozlabs.org/patch/745118/), but I'd like to
+take time for controller/chip decoupling.  I am tackling on
+that, but not completed yet.
 
- drivers/mtd/nand/denali.c | 40 ++++++----------------------------------
- 1 file changed, 6 insertions(+), 34 deletions(-)
+I believe this commit stands for denali_pci, at least I do not
+know how to get the number of chips from PCI.
+
+
+Changes in v4:
+  - Reword commit-log
+
+Changes in v3: None
+Changes in v2:
+  - Newly added
+
+ drivers/mtd/nand/denali.c | 52 +++++++++++++++++++++--------------------------
+ 1 file changed, 23 insertions(+), 29 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 3204c51..422b6e4 100644
+index 083dfc7..775387e 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -337,36 +337,6 @@ static void get_samsung_nand_para(struct denali_nand_info *denali,
- 	}
+@@ -85,33 +85,6 @@ static void index_addr(struct denali_nand_info *denali,
+ 	iowrite32(data, denali->flash_mem + 0x10);
  }
  
--static void get_toshiba_nand_para(struct denali_nand_info *denali)
+-/* Reset the flash controller */
+-static uint16_t denali_nand_reset(struct denali_nand_info *denali)
 -{
--	/*
--	 * Workaround to fix a controller bug which reports a wrong
--	 * spare area size for some kind of Toshiba NAND device
--	 */
--	if ((ioread32(denali->flash_reg + DEVICE_MAIN_AREA_SIZE) == 4096) &&
--		(ioread32(denali->flash_reg + DEVICE_SPARE_AREA_SIZE) == 64))
--		iowrite32(216, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
--}
+-	int i;
 -
--static void get_hynix_nand_para(struct denali_nand_info *denali,
--							uint8_t device_id)
--{
--	switch (device_id) {
--	case 0xD5: /* Hynix H27UAG8T2A, H27UBG8U5A or H27UCG8VFA */
--	case 0xD7: /* Hynix H27UDG8VEM, H27UCG8UDM or H27UCG8V5A */
--		iowrite32(128, denali->flash_reg + PAGES_PER_BLOCK);
--		iowrite32(4096, denali->flash_reg + DEVICE_MAIN_AREA_SIZE);
--		iowrite32(224, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
--		iowrite32(0, denali->flash_reg + DEVICE_WIDTH);
--		break;
--	default:
--		dev_warn(denali->dev,
--			 "Unknown Hynix NAND (Device ID: 0x%x).\n"
--			 "Will use default parameter values instead.\n",
--			 device_id);
+-	for (i = 0; i < denali->max_banks; i++)
+-		iowrite32(INTR__RST_COMP | INTR__TIME_OUT,
+-		denali->flash_reg + INTR_STATUS(i));
+-
+-	for (i = 0; i < denali->max_banks; i++) {
+-		iowrite32(1 << i, denali->flash_reg + DEVICE_RESET);
+-		while (!(ioread32(denali->flash_reg + INTR_STATUS(i)) &
+-			(INTR__RST_COMP | INTR__TIME_OUT)))
+-			cpu_relax();
+-		if (ioread32(denali->flash_reg + INTR_STATUS(i)) &
+-			INTR__TIME_OUT)
+-			dev_dbg(denali->dev,
+-			"NAND Reset operation timed out on bank %d\n", i);
 -	}
+-
+-	for (i = 0; i < denali->max_banks; i++)
+-		iowrite32(INTR__RST_COMP | INTR__TIME_OUT,
+-			  denali->flash_reg + INTR_STATUS(i));
+-
+-	return PASS;
 -}
 -
  /*
-  * determines how many NAND chips are connected to the controller. Note for
-  * Intel CE4100 devices we don't support more than one device.
-@@ -453,10 +423,6 @@ static uint16_t denali_nand_timing_set(struct denali_nand_info *denali)
- 			return FAIL;
- 	} else if (maf_id == 0xEC) { /* Samsung NAND */
- 		get_samsung_nand_para(denali, device_id);
--	} else if (maf_id == 0x98) { /* Toshiba NAND */
--		get_toshiba_nand_para(denali);
--	} else if (maf_id == 0xAD) { /* Hynix NAND */
--		get_hynix_nand_para(denali, device_id);
- 	}
+  * Use the configuration feature register to determine the maximum number of
+  * banks that the hardware supports.
+@@ -999,7 +972,28 @@ static int denali_setup_data_interface(struct mtd_info *mtd,
+ 	return 0;
+ }
  
- 	dev_info(denali->dev,
-@@ -1638,6 +1604,12 @@ int denali_init(struct denali_nand_info *denali)
- 		chip->ecc.size, chip->ecc.strength, chip->ecc.bytes);
- 
- 	iowrite32(chip->ecc.strength, denali->flash_reg + ECC_CORRECTION);
-+	iowrite32(mtd->erasesize / mtd->writesize,
-+		  denali->flash_reg + PAGES_PER_BLOCK);
-+	iowrite32(chip->options & NAND_BUSWIDTH_16 ? 1 : 0,
-+		  denali->flash_reg + DEVICE_WIDTH);
-+	iowrite32(mtd->writesize, denali->flash_reg + DEVICE_MAIN_AREA_SIZE);
-+	iowrite32(mtd->oobsize, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
- 
- 	iowrite32(chip->ecc.size, denali->flash_reg + CFG_DATA_BLOCK_SIZE);
- 	iowrite32(chip->ecc.size, denali->flash_reg + CFG_LAST_DATA_BLOCK_SIZE);
+-/* Initialization code to bring the device up to a known good state */
++static void denali_reset_banks(struct denali_nand_info *denali)
++{
++	int i;
++
++	denali_clear_irq_all(denali);
++
++	for (i = 0; i < denali->max_banks; i++) {
++		iowrite32(1 << i, denali->flash_reg + DEVICE_RESET);
++		while (!(ioread32(denali->flash_reg + INTR_STATUS(i)) &
++			(INTR__RST_COMP | INTR__TIME_OUT)))
++			cpu_relax();
++		if (!(ioread32(denali->flash_reg + INTR_STATUS(i)) &
++		      INTR__INT_ACT))
++			break;
++	}
++
++	dev_dbg(denali->dev, "%d chips connected\n", i);
++	denali->max_banks = i;
++
++	denali_clear_irq_all(denali);
++}
++
+ static void denali_hw_init(struct denali_nand_info *denali)
+ {
+ 	/*
+@@ -1019,7 +1013,7 @@ static void denali_hw_init(struct denali_nand_info *denali)
+ 	denali->bbtskipbytes = ioread32(denali->flash_reg +
+ 						SPARE_AREA_SKIP_BYTES);
+ 	detect_max_banks(denali);
+-	denali_nand_reset(denali);
++	denali_reset_banks(denali);
+ 	iowrite32(0x0F, denali->flash_reg + RB_PIN_ENABLED);
+ 	iowrite32(CHIP_EN_DONT_CARE__FLAG,
+ 			denali->flash_reg + CHIP_ENABLE_DONT_CARE);
 -- 
 2.7.4
