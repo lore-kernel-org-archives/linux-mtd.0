@@ -1,6 +1,6 @@
 Received: from conuserg-10.nifty.com ([210.131.2.77])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dI1LW-00080R-Bd
+ id 1dI1LW-00080M-Bb
  for linux-mtd@lists.infradead.org; Mon, 05 Jun 2017 23:23:45 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -18,10 +18,9 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v4 16/23] mtd: nand: denali: use interrupt instead of polling
- for bank reset
-Date: Tue,  6 Jun 2017 08:21:55 +0900
-Message-Id: <1496704922-12261-17-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v4 12/23] mtd: nand: denali: fix NAND_CMD_STATUS handling
+Date: Tue,  6 Jun 2017 08:21:51 +0900
+Message-Id: <1496704922-12261-13-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1496704922-12261-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1496704922-12261-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,17 +32,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The current bank reset implementation polls the INTR_STATUS register
-until interested bits are set.  This is not good because:
+The current NAND_CMD_STATUS handling is weird; it just reads the
+WRITE_PROTECT register, and returns NAND_STATUS_WP if it is set.
 
-- polling simply wastes time-slice of the thread
-
-- The while() loop may continue eternally if no bit is set, for
-  example, due to the controller problem.  The denali_wait_for_irq()
-  uses wait_for_completion_timeout(), which is safer.
-
-We can use interrupt by moving the denali_reset_bank() call below
-the interrupt setup.
+It does not send Read Status (0x70) command, so it is not helpful
+for checking the current device status.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
@@ -53,76 +46,47 @@ Changes in v3: None
 Changes in v2:
   - Newly added
 
- drivers/mtd/nand/denali.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ drivers/mtd/nand/denali.c | 21 +++++----------------
+ 1 file changed, 5 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 775387e..6dee168 100644
+index e8e6667..372c871 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -974,24 +974,25 @@ static int denali_setup_data_interface(struct mtd_info *mtd,
+@@ -107,21 +107,6 @@ static void write_byte_to_buf(struct denali_nand_info *denali, uint8_t byte)
+ 	denali->buf.buf[denali->buf.tail++] = byte;
+ }
  
- static void denali_reset_banks(struct denali_nand_info *denali)
+-/* reads the status of the device */
+-static void read_status(struct denali_nand_info *denali)
+-{
+-	uint32_t cmd;
+-
+-	/* initialize the data buffer to store status */
+-	reset_buf(denali);
+-
+-	cmd = ioread32(denali->flash_reg + WRITE_PROTECT);
+-	if (cmd)
+-		write_byte_to_buf(denali, NAND_STATUS_WP);
+-	else
+-		write_byte_to_buf(denali, 0);
+-}
+-
+ /* Reset the flash controller */
+ static uint16_t denali_nand_reset(struct denali_nand_info *denali)
  {
-+	u32 irq_status;
- 	int i;
+@@ -893,7 +878,11 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
  
--	denali_clear_irq_all(denali);
--
- 	for (i = 0; i < denali->max_banks; i++) {
--		iowrite32(1 << i, denali->flash_reg + DEVICE_RESET);
--		while (!(ioread32(denali->flash_reg + INTR_STATUS(i)) &
--			(INTR__RST_COMP | INTR__TIME_OUT)))
--			cpu_relax();
--		if (!(ioread32(denali->flash_reg + INTR_STATUS(i)) &
--		      INTR__INT_ACT))
-+		denali->flash_bank = i;
-+
-+		denali_reset_irq(denali);
-+
-+		iowrite32(DEVICE_RESET__BANK(i),
-+			  denali->flash_reg + DEVICE_RESET);
-+
-+		irq_status = denali_wait_for_irq(denali,
-+			INTR__RST_COMP | INTR__INT_ACT | INTR__TIME_OUT);
-+		if (!(irq_status & INTR__INT_ACT))
- 			break;
- 	}
- 
- 	dev_dbg(denali->dev, "%d chips connected\n", i);
- 	denali->max_banks = i;
--
--	denali_clear_irq_all(denali);
- }
- 
- static void denali_hw_init(struct denali_nand_info *denali)
-@@ -1013,7 +1014,6 @@ static void denali_hw_init(struct denali_nand_info *denali)
- 	denali->bbtskipbytes = ioread32(denali->flash_reg +
- 						SPARE_AREA_SKIP_BYTES);
- 	detect_max_banks(denali);
--	denali_reset_banks(denali);
- 	iowrite32(0x0F, denali->flash_reg + RB_PIN_ENABLED);
- 	iowrite32(CHIP_EN_DONT_CARE__FLAG,
- 			denali->flash_reg + CHIP_ENABLE_DONT_CARE);
-@@ -1147,9 +1147,6 @@ static void denali_drv_init(struct denali_nand_info *denali)
- 	 * element that might be access shared data (interrupt status)
- 	 */
- 	spin_lock_init(&denali->irq_lock);
--
--	/* indicate that MTD has not selected a valid bank yet */
--	denali->flash_bank = CHIP_SELECT_INVALID;
- }
- 
- static int denali_multidev_fixup(struct denali_nand_info *denali)
-@@ -1224,6 +1221,9 @@ int denali_init(struct denali_nand_info *denali)
- 	}
- 
- 	denali_enable_irq(denali);
-+	denali_reset_banks(denali);
-+
-+	denali->flash_bank = CHIP_SELECT_INVALID;
- 
- 	nand_set_flash_node(chip, denali->dev->of_node);
- 	/* Fallback to the default name if DT did not give "label" property */
+ 	switch (cmd) {
+ 	case NAND_CMD_STATUS:
+-		read_status(denali);
++		reset_buf(denali);
++		addr = MODE_11 | BANK(denali->flash_bank);
++		index_addr(denali, addr | 0, cmd);
++		index_addr_read_data(denali, addr | 2, &id);
++		write_byte_to_buf(denali, id);
+ 		break;
+ 	case NAND_CMD_READID:
+ 	case NAND_CMD_PARAM:
 -- 
 2.7.4
