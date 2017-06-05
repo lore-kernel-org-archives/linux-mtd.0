@@ -1,6 +1,6 @@
 Received: from conuserg-10.nifty.com ([210.131.2.77])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dI1LW-00080U-Bf
+ id 1dI1LW-00080P-Be
  for linux-mtd@lists.infradead.org; Mon, 05 Jun 2017 23:23:42 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -18,10 +18,9 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v4 08/23] mtd: nand: denali: do not propagate NAND_STATUS_FAIL
- to waitfunc()
-Date: Tue,  6 Jun 2017 08:21:47 +0900
-Message-Id: <1496704922-12261-9-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v4 09/23] mtd: nand: denali: remove unneeded find_valid_banks()
+Date: Tue,  6 Jun 2017 08:21:48 +0900
+Message-Id: <1496704922-12261-10-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1496704922-12261-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1496704922-12261-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,16 +32,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently, the error handling of denali_write_page(_raw) is a bit
-complicated.  If the program command fails, NAND_STATUS_FAIL is set
-to the driver internal denali->status, then read out later by
-denali_waitfunc().
+The function find_valid_banks() issues the Read ID (0x90) command,
+then compares the first byte (Manufacturer ID) of each bank with
+the one of bank0.
 
-We can avoid it by exploiting the nand_write_page() implementation.
-If chip->ecc.write_page(_raw) returns negative code (i.e. -EIO), it
-errors out immediately.  This gives the same result as returning
-NAND_STATUS_FAIL from chip->waitfunc.  In either way, -EIO is
-returned to the upper MTD layer.
+This is equivalent to what nand_scan_ident() does.  The number of
+chips is detected there, so this is unneeded.
+
+What is worse for find_valid_banks() is that, if multiple chips are
+connected to INTEL_CE4100 platform, it crashes the kernel by BUG().
+This is what we should avoid.  This function is just harmful and
+unneeded.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
@@ -52,63 +52,86 @@ Changes in v3: None
 Changes in v2:
   - Newly added
 
- drivers/mtd/nand/denali.c | 12 ++++--------
+ drivers/mtd/nand/denali.c | 47 -----------------------------------------------
  drivers/mtd/nand/denali.h |  1 -
- 2 files changed, 4 insertions(+), 9 deletions(-)
+ 2 files changed, 48 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 3655284..4017262 100644
+index 4017262..a289011 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -1005,6 +1005,7 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	size_t size = mtd->writesize + mtd->oobsize;
- 	uint32_t irq_status;
- 	uint32_t irq_mask = INTR__DMA_CMD_COMP | INTR__PROGRAM_FAIL;
-+	int ret = 0;
- 
- 	denali->page = page;
- 
-@@ -1038,13 +1039,13 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	if (irq_status == 0) {
- 		dev_err(denali->dev, "timeout on write_page (type = %d)\n",
- 			raw_xfer);
--		denali->status = NAND_STATUS_FAIL;
-+		ret = -EIO;
- 	}
- 
- 	denali_enable_dma(denali, false);
- 	dma_sync_single_for_cpu(denali->dev, addr, size, DMA_TO_DEVICE);
- 
--	return 0;
-+	return ret;
+@@ -338,51 +338,6 @@ static void get_samsung_nand_para(struct denali_nand_info *denali,
  }
  
- /* NAND core entry points */
-@@ -1196,12 +1197,7 @@ static void denali_select_chip(struct mtd_info *mtd, int chip)
- 
- static int denali_waitfunc(struct mtd_info *mtd, struct nand_chip *chip)
- {
--	struct denali_nand_info *denali = mtd_to_denali(mtd);
--	int status = denali->status;
+ /*
+- * determines how many NAND chips are connected to the controller. Note for
+- * Intel CE4100 devices we don't support more than one device.
+- */
+-static void find_valid_banks(struct denali_nand_info *denali)
+-{
+-	uint32_t id[denali->max_banks];
+-	int i;
 -
--	denali->status = 0;
+-	denali->total_used_banks = 1;
+-	for (i = 0; i < denali->max_banks; i++) {
+-		index_addr(denali, MODE_11 | (i << 24) | 0, 0x90);
+-		index_addr(denali, MODE_11 | (i << 24) | 1, 0);
+-		index_addr_read_data(denali, MODE_11 | (i << 24) | 2, &id[i]);
 -
--	return status;
-+	return 0;
- }
+-		dev_dbg(denali->dev,
+-			"Return 1st ID for bank[%d]: %x\n", i, id[i]);
+-
+-		if (i == 0) {
+-			if (!(id[i] & 0x0ff))
+-				break; /* WTF? */
+-		} else {
+-			if ((id[i] & 0x0ff) == (id[0] & 0x0ff))
+-				denali->total_used_banks++;
+-			else
+-				break;
+-		}
+-	}
+-
+-	if (denali->platform == INTEL_CE4100) {
+-		/*
+-		 * Platform limitations of the CE4100 device limit
+-		 * users to a single chip solution for NAND.
+-		 * Multichip support is not enabled.
+-		 */
+-		if (denali->total_used_banks != 1) {
+-			dev_err(denali->dev,
+-				"Sorry, Intel CE4100 only supports a single NAND device.\n");
+-			BUG();
+-		}
+-	}
+-	dev_dbg(denali->dev,
+-		"denali->total_used_banks: %d\n", denali->total_used_banks);
+-}
+-
+-/*
+  * Use the configuration feature register to determine the maximum number of
+  * banks that the hardware supports.
+  */
+@@ -439,8 +394,6 @@ static uint16_t denali_nand_timing_set(struct denali_nand_info *denali)
+ 			ioread32(denali->flash_reg + RDWR_EN_HI_CNT),
+ 			ioread32(denali->flash_reg + CS_SETUP_CNT));
  
- static int denali_erase(struct mtd_info *mtd, int page)
+-	find_valid_banks(denali);
+-
+ 	/*
+ 	 * If the user specified to override the default timings
+ 	 * with a specific ONFI mode, we apply those changes here.
 diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index 5f08691..0e9297d 100644
+index 0e9297d..80767cf 100644
 --- a/drivers/mtd/nand/denali.h
 +++ b/drivers/mtd/nand/denali.h
-@@ -323,7 +323,6 @@ struct nand_buf {
- struct denali_nand_info {
- 	struct nand_chip nand;
- 	int flash_bank; /* currently selected chip */
--	int status;
+@@ -326,7 +326,6 @@ struct denali_nand_info {
  	int platform;
  	struct nand_buf buf;
  	struct device *dev;
+-	int total_used_banks;
+ 	int page;
+ 	void __iomem *flash_reg;	/* Register Interface */
+ 	void __iomem *flash_mem;	/* Host Data/Command Interface */
 -- 
 2.7.4
