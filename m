@@ -1,6 +1,6 @@
 Received: from conuserg-10.nifty.com ([210.131.2.77])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dI1LW-00080J-Ba
+ id 1dI1La-00080b-Bs
  for linux-mtd@lists.infradead.org; Mon, 05 Jun 2017 23:23:50 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -15,13 +15,15 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  Chuanxiao Dong <chuanxiao.dong@intel.com>,
  Jassi Brar <jaswinder.singh@linaro.org>,
  Masahiro Yamada <yamada.masahiro@socionext.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>
-Subject: [PATCH v4 14/23] mtd: nand: denali: switch over to cmd_ctrl instead
- of cmdfunc
-Date: Tue,  6 Jun 2017 08:21:53 +0900
-Message-Id: <1496704922-12261-15-git-send-email-yamada.masahiro@socionext.com>
+ Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH v4 06/23] mtd: nand: denali_dt: add compatible strings for
+ UniPhier SoC variants
+Date: Tue,  6 Jun 2017 08:21:45 +0900
+Message-Id: <1496704922-12261-7-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1496704922-12261-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1496704922-12261-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,180 +35,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The NAND_CMD_SET_FEATURES support is missing from denali_cmdfunc().
-This is needed for nand_onfi_set_features().
+Add two compatible strings for UniPhier SoC family.
 
-Besides, we see /* TODO: Read OOB data */ comment line.
+"socionext,uniphier-denali-nand-v5a" is used on UniPhier sLD3, LD4,
+Pro4, sLD8.
 
-It would be possible to add more commands along with the current
-implementation, but having ->cmd_ctrl() seems a better approach from
-the discussion with Boris [1].
-
-Rely on the default ->cmdfunc() from the framework and implement the
-driver's own ->cmd_ctrl().
-
-Also add ->write_byte(), which is needed for write direction commands.
-
-[1] https://lkml.org/lkml/2017/3/15/97
+"socionext,uniphier-denali-nand-v5b" is used on UniPhier Pro5, PXs2,
+LD6b, LD11, LD20.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v4: None
+Changes in v4:
+  - Adjusted to generic helpers for ECC engine caps
+
 Changes in v3: None
 Changes in v2:
-  - Newly added
+  - Change the compatible strings
+  - Fix the ecc_strength_capability
+  - Override revision number for the newer one
 
- drivers/mtd/nand/denali.c | 104 +++++++++++++++++++++++-----------------------
- 1 file changed, 52 insertions(+), 52 deletions(-)
+ .../devicetree/bindings/mtd/denali-nand.txt        |  6 +++++
+ drivers/mtd/nand/denali_dt.c                       | 31 ++++++++++++++++++++++
+ 2 files changed, 37 insertions(+)
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 4d46202..083dfc7 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -230,20 +230,16 @@ static uint32_t denali_wait_for_irq(struct denali_nand_info *denali,
- 	return denali->irq_status;
- }
+diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+index b7742a7..504291d 100644
+--- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+@@ -3,6 +3,8 @@
+ Required properties:
+   - compatible : should be one of the following:
+       "altr,socfpga-denali-nand"            - for Altera SOCFPGA
++      "socionext,uniphier-denali-nand-v5a"  - for Socionext UniPhier (v5a)
++      "socionext,uniphier-denali-nand-v5b"  - for Socionext UniPhier (v5b)
+   - reg : should contain registers location and length for data and reg.
+   - reg-names: Should contain the reg names "nand_data" and "denali_reg"
+   - interrupts : The interrupt number.
+@@ -10,8 +12,12 @@ Required properties:
+ Optional properties:
+   - nand-ecc-step-size: see nand.txt for details.  If present, the value must be
+       512        for "altr,socfpga-denali-nand"
++      1024       for "socionext,uniphier-denali-nand-v5a"
++      1024       for "socionext,uniphier-denali-nand-v5b"
+   - nand-ecc-strength: see nand.txt for details.  Valid values are:
+       8, 15      for "altr,socfpga-denali-nand"
++      8, 16, 24  for "socionext,uniphier-denali-nand-v5a"
++      8, 16      for "socionext,uniphier-denali-nand-v5b"
+   - nand-ecc-maximize: see nand.txt for details
  
--/* resets a specific device connected to the core */
--static void reset_bank(struct denali_nand_info *denali)
-+static uint32_t denali_check_irq(struct denali_nand_info *denali)
- {
-+	unsigned long flags;
- 	uint32_t irq_status;
+ The device tree may optionally contain sub-nodes describing partitions of the
+diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
+index 8c09bbe..38800ae 100644
+--- a/drivers/mtd/nand/denali_dt.c
++++ b/drivers/mtd/nand/denali_dt.c
+@@ -45,11 +45,42 @@ static const struct denali_dt_data denali_socfpga_data = {
+ 	},
+ };
  
--	denali_reset_irq(denali);
--
--	iowrite32(1 << denali->flash_bank, denali->flash_reg + DEVICE_RESET);
--
--	irq_status = denali_wait_for_irq(denali,
--					 INTR__RST_COMP | INTR__TIME_OUT);
-+	spin_lock_irqsave(&denali->irq_lock, flags);
-+	irq_status = denali->irq_status;
-+	spin_unlock_irqrestore(&denali->irq_lock, flags);
- 
--	if (!(irq_status & INTR__RST_COMP))
--		dev_err(denali->dev, "reset bank failed.\n");
-+	return irq_status;
- }
- 
- /*
-@@ -273,6 +269,42 @@ static uint8_t denali_read_byte(struct mtd_info *mtd)
- 	return ioread32(denali->flash_mem + 0x10);
- }
- 
-+static void denali_write_byte(struct mtd_info *mtd, uint8_t byte)
-+{
-+	struct denali_nand_info *denali = mtd_to_denali(mtd);
++static const int denali_uniphier_strengths[] = {8, 16, 24};
++static const struct denali_dt_data denali_uniphier_v5a_data = {
++	.caps = DENALI_CAP_HW_ECC_FIXUP |
++		DENALI_CAP_DMA_64BIT,
++	.stepinfo = {
++		.stepsize = 1024,
++		.strengths = denali_uniphier_strengths,
++		.nstrengths = ARRAY_SIZE(denali_uniphier_strengths),
++	},
++};
 +
-+	index_addr(denali, MODE_11 | BANK(denali->flash_bank) | 2, byte);
-+}
++static const struct denali_dt_data denali_uniphier_v5b_data = {
++	.revision = 0x0501,
++	.caps = DENALI_CAP_HW_ECC_FIXUP |
++		DENALI_CAP_DMA_64BIT,
++	.stepinfo = {
++		.stepsize = 1024,
++		.strengths = denali_uniphier_strengths,
++		/* no support for strength=24 */
++		.nstrengths = ARRAY_SIZE(denali_uniphier_strengths) - 1,
++	},
++};
 +
-+static void denali_cmd_ctrl(struct mtd_info *mtd, int dat, unsigned int ctrl)
-+{
-+	struct denali_nand_info *denali = mtd_to_denali(mtd);
-+	uint32_t type;
-+
-+	if (ctrl & NAND_CLE)
-+		type = 0;
-+	else if (ctrl & NAND_ALE)
-+		type = 1;
-+	else
-+		return;
-+
-+	/*
-+	 * Some commands are followed by chip->dev_ready or chip->waitfunc.
-+	 * irq_status must be cleared here to catch the R/B# interrupt later.
-+	 */
-+	if (ctrl & NAND_CTRL_CHANGE)
-+		denali_reset_irq(denali);
-+
-+	index_addr(denali, MODE_11 | BANK(denali->flash_bank) | type, dat);
-+}
-+
-+static int denali_dev_ready(struct mtd_info *mtd)
-+{
-+	struct denali_nand_info *denali = mtd_to_denali(mtd);
-+
-+	return !!(denali_check_irq(denali) & INTR__INT_ACT);
-+}
-+
- /*
-  * sends a pipeline command operation to the controller. See the Denali NAND
-  * controller's user guide for more information (section 4.2.3.6).
-@@ -824,7 +856,13 @@ static void denali_select_chip(struct mtd_info *mtd, int chip)
- 
- static int denali_waitfunc(struct mtd_info *mtd, struct nand_chip *chip)
- {
--	return 0;
-+	struct denali_nand_info *denali = mtd_to_denali(mtd);
-+	uint32_t irq_status;
-+
-+	/* R/B# pin transitioned from low to high? */
-+	irq_status = denali_wait_for_irq(denali, INTR__INT_ACT);
-+
-+	return irq_status & INTR__INT_ACT ? 0 : NAND_STATUS_FAIL;
- }
- 
- static int denali_erase(struct mtd_info *mtd, int page)
-@@ -845,46 +883,6 @@ static int denali_erase(struct mtd_info *mtd, int page)
- 	return irq_status & INTR__ERASE_COMP ? 0 : NAND_STATUS_FAIL;
- }
- 
--static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
--			   int page)
--{
--	struct denali_nand_info *denali = mtd_to_denali(mtd);
--	uint32_t addr, irq_status;
--	int wait_ready = 0;
--
--	switch (cmd) {
--	case NAND_CMD_PARAM:
--		wait_ready = 1;
--		break;
--	case NAND_CMD_STATUS:
--	case NAND_CMD_READID:
--		break;
--	case NAND_CMD_RESET:
--		reset_bank(denali);
--		break;
--	case NAND_CMD_READOOB:
--		/* TODO: Read OOB data */
--		return;
--	default:
--		pr_err(": unsupported command received 0x%x\n", cmd);
--		return;
--	}
--
--	denali_reset_irq(denali);
--
--	addr = MODE_11 | BANK(denali->flash_bank);
--	index_addr(denali, addr | 0, cmd);
--	if (col != -1)
--		index_addr(denali, addr | 1, col);
--
--	if (!wait_ready)
--		return;
--
--	irq_status = denali_wait_for_irq(denali, INTR__INT_ACT);
--	if (!(irq_status & INTR__INT_ACT))
--		dev_err(denali->dev, "failed to issue command 0x%x\n", cmd);
--}
--
- #define DIV_ROUND_DOWN_ULL(ll, d) \
- 	({ unsigned long long _tmp = (ll); do_div(_tmp, d); _tmp; })
- 
-@@ -1240,8 +1238,10 @@ int denali_init(struct denali_nand_info *denali)
- 
- 	/* register the driver with the NAND core subsystem */
- 	chip->select_chip = denali_select_chip;
--	chip->cmdfunc = denali_cmdfunc;
- 	chip->read_byte = denali_read_byte;
-+	chip->write_byte = denali_write_byte;
-+	chip->cmd_ctrl = denali_cmd_ctrl;
-+	chip->dev_ready = denali_dev_ready;
- 	chip->waitfunc = denali_waitfunc;
- 	/* clk rate info is needed for setup_data_interface */
- 	if (denali->clk_x_rate)
+ static const struct of_device_id denali_nand_dt_ids[] = {
+ 	{
+ 		.compatible = "altr,socfpga-denali-nand",
+ 		.data = &denali_socfpga_data,
+ 	},
++	{
++		.compatible = "socionext,uniphier-denali-nand-v5a",
++		.data = &denali_uniphier_v5a_data,
++	},
++	{
++		.compatible = "socionext,uniphier-denali-nand-v5b",
++		.data = &denali_uniphier_v5b_data,
++	},
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, denali_nand_dt_ids);
 -- 
 2.7.4
