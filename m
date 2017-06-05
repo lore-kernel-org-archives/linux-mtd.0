@@ -1,7 +1,7 @@
 Received: from conuserg-10.nifty.com ([210.131.2.77])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dI1LW-00080a-BZ
- for linux-mtd@lists.infradead.org; Mon, 05 Jun 2017 23:23:42 +0000
+ id 1dI1LW-00080T-Bi
+ for linux-mtd@lists.infradead.org; Mon, 05 Jun 2017 23:23:43 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Enrico Jorns <ejo@pengutronix.de>,
@@ -15,14 +15,15 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  Chuanxiao Dong <chuanxiao.dong@intel.com>,
  Jassi Brar <jaswinder.singh@linaro.org>,
  Masahiro Yamada <yamada.masahiro@socionext.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>
-Subject: [PATCH v4 00/23] mtd: nand: denali: Denali NAND IP patch bomb
-Date: Tue,  6 Jun 2017 08:21:39 +0900
-Message-Id: <1496704922-12261-1-git-send-email-yamada.masahiro@socionext.com>
+ Richard Weinberger <richard@nod.at>
+Subject: [PATCH v4 02/23] mtd: nand: denali: use BIT() and GENMASK() for
+ register macros
+Date: Tue,  6 Jun 2017 08:21:41 +0900
+Message-Id: <1496704922-12261-3-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <1496704922-12261-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1496704922-12261-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,65 +33,417 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch series intends to solve various problems.
+Use BIT() and GENMASK() for register field macros.  This will make
+it easier to compare the macros with the register description in the
+Denali User's Guide.
 
-[1] The driver just retrieves the OOB area as-is
-    whereas the controller uses syndrome page layout.
-[2] Many NAND chip specific parameters are hard-coded in the driver.
-[3] ONFi devices are not working
-[4] It can not read Bad Block Marker
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
 
-Outstanding changes are:
-- Fix raw/oob callbacks for syndrome page layout
-- Implement setup_data_interface() callback
-- Fix/implement more commands for ONFi devices
-- Allow to skip the driver internal bounce buffer
-- Support PIO in case DMA is not supported
-- Switch from ->cmdfunc over to ->cmd_ctrl
+Changes in v4: None
+Changes in v3: None
+Changes in v2:
+  - Newly added
 
-18 patches were merged at v2.
-11 patches were merged at v3.
-Here is the rest of the series.
+ drivers/mtd/nand/denali.h | 244 ++++++++++++++++++++++------------------------
+ 1 file changed, 119 insertions(+), 125 deletions(-)
 
-v1: https://lkml.org/lkml/2016/11/26/144
-v2: https://lkml.org/lkml/2017/3/22/804
-v3: https://lkml.org/lkml/2017/3/30/90
-
-
-Masahiro Yamada (23):
-  mtd: nand: denali_dt: clean up resource ioremap
-  mtd: nand: denali: use BIT() and GENMASK() for register macros
-  mtd: nand: add generic helpers to check, match, maximize ECC settings
-  mtd: nand: denali: avoid hard-coding ECC step, strength, bytes
-  mtd: nand: denali: remove Toshiba and Hynix specific fixup code
-  mtd: nand: denali_dt: add compatible strings for UniPhier SoC variants
-  mtd: nand: denali: set NAND_ECC_CUSTOM_PAGE_ACCESS
-  mtd: nand: denali: do not propagate NAND_STATUS_FAIL to waitfunc()
-  mtd: nand: denali: remove unneeded find_valid_banks()
-  mtd: nand: denali: handle timing parameters by setup_data_interface()
-  mtd: nand: denali: rework interrupt handling
-  mtd: nand: denali: fix NAND_CMD_STATUS handling
-  mtd: nand: denali: fix NAND_CMD_PARAM handling
-  mtd: nand: denali: switch over to cmd_ctrl instead of cmdfunc
-  mtd: nand: denali: fix bank reset function to detect the number of
-    chips
-  mtd: nand: denali: use interrupt instead of polling for bank reset
-  mtd: nand: denali: propagate page to helpers via function argument
-  mtd: nand: denali: merge struct nand_buf into struct denali_nand_info
-  mtd: nand: denali: use flag instead of register macro for direction
-  mtd: nand: denali: fix raw and oob accessors for syndrome page layout
-  mtd: nand: denali: skip driver internal bounce buffer when possible
-  mtd: nand: denali: use non-managed kmalloc() for DMA buffer
-  mtd: nand: denali: enable bad block table scan
-
- .../devicetree/bindings/mtd/denali-nand.txt        |   13 +
- drivers/mtd/nand/denali.c                          | 1701 +++++++++-----------
- drivers/mtd/nand/denali.h                          |  294 ++--
- drivers/mtd/nand/denali_dt.c                       |   54 +-
- drivers/mtd/nand/denali_pci.c                      |   15 +-
- drivers/mtd/nand/nand_base.c                       |  219 +++
- include/linux/mtd/nand.h                           |   35 +
- 7 files changed, 1235 insertions(+), 1096 deletions(-)
-
+diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
+index ec00485..3783353 100644
+--- a/drivers/mtd/nand/denali.h
++++ b/drivers/mtd/nand/denali.h
+@@ -24,273 +24,267 @@
+ #include <linux/mtd/nand.h>
+ 
+ #define DEVICE_RESET				0x0
+-#define     DEVICE_RESET__BANK0				0x0001
+-#define     DEVICE_RESET__BANK1				0x0002
+-#define     DEVICE_RESET__BANK2				0x0004
+-#define     DEVICE_RESET__BANK3				0x0008
++#define     DEVICE_RESET__BANK(bank)			BIT(bank)
+ 
+ #define TRANSFER_SPARE_REG			0x10
+-#define     TRANSFER_SPARE_REG__FLAG			0x0001
++#define     TRANSFER_SPARE_REG__FLAG			BIT(0)
+ 
+ #define LOAD_WAIT_CNT				0x20
+-#define     LOAD_WAIT_CNT__VALUE			0xffff
++#define     LOAD_WAIT_CNT__VALUE			GENMASK(15, 0)
+ 
+ #define PROGRAM_WAIT_CNT			0x30
+-#define     PROGRAM_WAIT_CNT__VALUE			0xffff
++#define     PROGRAM_WAIT_CNT__VALUE			GENMASK(15, 0)
+ 
+ #define ERASE_WAIT_CNT				0x40
+-#define     ERASE_WAIT_CNT__VALUE			0xffff
++#define     ERASE_WAIT_CNT__VALUE			GENMASK(15, 0)
+ 
+ #define INT_MON_CYCCNT				0x50
+-#define     INT_MON_CYCCNT__VALUE			0xffff
++#define     INT_MON_CYCCNT__VALUE			GENMASK(15, 0)
+ 
+ #define RB_PIN_ENABLED				0x60
+-#define     RB_PIN_ENABLED__BANK0			0x0001
+-#define     RB_PIN_ENABLED__BANK1			0x0002
+-#define     RB_PIN_ENABLED__BANK2			0x0004
+-#define     RB_PIN_ENABLED__BANK3			0x0008
++#define     RB_PIN_ENABLED__BANK(bank)			BIT(bank)
+ 
+ #define MULTIPLANE_OPERATION			0x70
+-#define     MULTIPLANE_OPERATION__FLAG			0x0001
++#define     MULTIPLANE_OPERATION__FLAG			BIT(0)
+ 
+ #define MULTIPLANE_READ_ENABLE			0x80
+-#define     MULTIPLANE_READ_ENABLE__FLAG		0x0001
++#define     MULTIPLANE_READ_ENABLE__FLAG		BIT(0)
+ 
+ #define COPYBACK_DISABLE			0x90
+-#define     COPYBACK_DISABLE__FLAG			0x0001
++#define     COPYBACK_DISABLE__FLAG			BIT(0)
+ 
+ #define CACHE_WRITE_ENABLE			0xa0
+-#define     CACHE_WRITE_ENABLE__FLAG			0x0001
++#define     CACHE_WRITE_ENABLE__FLAG			BIT(0)
+ 
+ #define CACHE_READ_ENABLE			0xb0
+-#define     CACHE_READ_ENABLE__FLAG			0x0001
++#define     CACHE_READ_ENABLE__FLAG			BIT(0)
+ 
+ #define PREFETCH_MODE				0xc0
+-#define     PREFETCH_MODE__PREFETCH_EN			0x0001
+-#define     PREFETCH_MODE__PREFETCH_BURST_LENGTH	0xfff0
++#define     PREFETCH_MODE__PREFETCH_EN			BIT(0)
++#define     PREFETCH_MODE__PREFETCH_BURST_LENGTH	GENMASK(15, 4)
+ 
+ #define CHIP_ENABLE_DONT_CARE			0xd0
+-#define     CHIP_EN_DONT_CARE__FLAG			0x01
++#define     CHIP_EN_DONT_CARE__FLAG			BIT(0)
+ 
+ #define ECC_ENABLE				0xe0
+-#define     ECC_ENABLE__FLAG				0x0001
++#define     ECC_ENABLE__FLAG				BIT(0)
+ 
+ #define GLOBAL_INT_ENABLE			0xf0
+-#define     GLOBAL_INT_EN_FLAG				0x01
++#define     GLOBAL_INT_EN_FLAG				BIT(0)
+ 
+ #define WE_2_RE					0x100
+-#define     WE_2_RE__VALUE				0x003f
++#define     WE_2_RE__VALUE				GENMASK(5, 0)
+ 
+ #define ADDR_2_DATA				0x110
+-#define     ADDR_2_DATA__VALUE				0x003f
++#define     ADDR_2_DATA__VALUE				GENMASK(5, 0)
+ 
+ #define RE_2_WE					0x120
+-#define     RE_2_WE__VALUE				0x003f
++#define     RE_2_WE__VALUE				GENMASK(5, 0)
+ 
+ #define ACC_CLKS				0x130
+-#define     ACC_CLKS__VALUE				0x000f
++#define     ACC_CLKS__VALUE				GENMASK(3, 0)
+ 
+ #define NUMBER_OF_PLANES			0x140
+-#define     NUMBER_OF_PLANES__VALUE			0x0007
++#define     NUMBER_OF_PLANES__VALUE			GENMASK(2, 0)
+ 
+ #define PAGES_PER_BLOCK				0x150
+-#define     PAGES_PER_BLOCK__VALUE			0xffff
++#define     PAGES_PER_BLOCK__VALUE			GENMASK(15, 0)
+ 
+ #define DEVICE_WIDTH				0x160
+-#define     DEVICE_WIDTH__VALUE				0x0003
++#define     DEVICE_WIDTH__VALUE				GENMASK(1, 0)
+ 
+ #define DEVICE_MAIN_AREA_SIZE			0x170
+-#define     DEVICE_MAIN_AREA_SIZE__VALUE		0xffff
++#define     DEVICE_MAIN_AREA_SIZE__VALUE		GENMASK(15, 0)
+ 
+ #define DEVICE_SPARE_AREA_SIZE			0x180
+-#define     DEVICE_SPARE_AREA_SIZE__VALUE		0xffff
++#define     DEVICE_SPARE_AREA_SIZE__VALUE		GENMASK(15, 0)
+ 
+ #define TWO_ROW_ADDR_CYCLES			0x190
+-#define     TWO_ROW_ADDR_CYCLES__FLAG			0x0001
++#define     TWO_ROW_ADDR_CYCLES__FLAG			BIT(0)
+ 
+ #define MULTIPLANE_ADDR_RESTRICT		0x1a0
+-#define     MULTIPLANE_ADDR_RESTRICT__FLAG		0x0001
++#define     MULTIPLANE_ADDR_RESTRICT__FLAG		BIT(0)
+ 
+ #define ECC_CORRECTION				0x1b0
+-#define     ECC_CORRECTION__VALUE			0x001f
++#define     ECC_CORRECTION__VALUE			GENMASK(4, 0)
+ 
+ #define READ_MODE				0x1c0
+-#define     READ_MODE__VALUE				0x000f
++#define     READ_MODE__VALUE				GENMASK(3, 0)
+ 
+ #define WRITE_MODE				0x1d0
+-#define     WRITE_MODE__VALUE				0x000f
++#define     WRITE_MODE__VALUE				GENMASK(3, 0)
+ 
+ #define COPYBACK_MODE				0x1e0
+-#define     COPYBACK_MODE__VALUE			0x000f
++#define     COPYBACK_MODE__VALUE			GENMASK(3, 0)
+ 
+ #define RDWR_EN_LO_CNT				0x1f0
+-#define     RDWR_EN_LO_CNT__VALUE			0x001f
++#define     RDWR_EN_LO_CNT__VALUE			GENMASK(4, 0)
+ 
+ #define RDWR_EN_HI_CNT				0x200
+-#define     RDWR_EN_HI_CNT__VALUE			0x001f
++#define     RDWR_EN_HI_CNT__VALUE			GENMASK(4, 0)
+ 
+ #define MAX_RD_DELAY				0x210
+-#define     MAX_RD_DELAY__VALUE				0x000f
++#define     MAX_RD_DELAY__VALUE				GENMASK(3, 0)
+ 
+ #define CS_SETUP_CNT				0x220
+-#define     CS_SETUP_CNT__VALUE				0x001f
++#define     CS_SETUP_CNT__VALUE				GENMASK(4, 0)
+ 
+ #define SPARE_AREA_SKIP_BYTES			0x230
+-#define     SPARE_AREA_SKIP_BYTES__VALUE		0x003f
++#define     SPARE_AREA_SKIP_BYTES__VALUE		GENMASK(5, 0)
+ 
+ #define SPARE_AREA_MARKER			0x240
+-#define     SPARE_AREA_MARKER__VALUE			0xffff
++#define     SPARE_AREA_MARKER__VALUE			GENMASK(15, 0)
+ 
+ #define DEVICES_CONNECTED			0x250
+-#define     DEVICES_CONNECTED__VALUE			0x0007
++#define     DEVICES_CONNECTED__VALUE			GENMASK(2, 0)
+ 
+ #define DIE_MASK				0x260
+-#define     DIE_MASK__VALUE				0x00ff
++#define     DIE_MASK__VALUE				GENMASK(7, 0)
+ 
+ #define FIRST_BLOCK_OF_NEXT_PLANE		0x270
+-#define     FIRST_BLOCK_OF_NEXT_PLANE__VALUE		0xffff
++#define     FIRST_BLOCK_OF_NEXT_PLANE__VALUE		GENMASK(15, 0)
+ 
+ #define WRITE_PROTECT				0x280
+-#define     WRITE_PROTECT__FLAG				0x0001
++#define     WRITE_PROTECT__FLAG				BIT(0)
+ 
+ #define RE_2_RE					0x290
+-#define     RE_2_RE__VALUE				0x003f
++#define     RE_2_RE__VALUE				GENMASK(5, 0)
+ 
+ #define MANUFACTURER_ID				0x300
+-#define     MANUFACTURER_ID__VALUE			0x00ff
++#define     MANUFACTURER_ID__VALUE			GENMASK(7, 0)
+ 
+ #define DEVICE_ID				0x310
+-#define     DEVICE_ID__VALUE				0x00ff
++#define     DEVICE_ID__VALUE				GENMASK(7, 0)
+ 
+ #define DEVICE_PARAM_0				0x320
+-#define     DEVICE_PARAM_0__VALUE			0x00ff
++#define     DEVICE_PARAM_0__VALUE			GENMASK(7, 0)
+ 
+ #define DEVICE_PARAM_1				0x330
+-#define     DEVICE_PARAM_1__VALUE			0x00ff
++#define     DEVICE_PARAM_1__VALUE			GENMASK(7, 0)
+ 
+ #define DEVICE_PARAM_2				0x340
+-#define     DEVICE_PARAM_2__VALUE			0x00ff
++#define     DEVICE_PARAM_2__VALUE			GENMASK(7, 0)
+ 
+ #define LOGICAL_PAGE_DATA_SIZE			0x350
+-#define     LOGICAL_PAGE_DATA_SIZE__VALUE		0xffff
++#define     LOGICAL_PAGE_DATA_SIZE__VALUE		GENMASK(15, 0)
+ 
+ #define LOGICAL_PAGE_SPARE_SIZE			0x360
+-#define     LOGICAL_PAGE_SPARE_SIZE__VALUE		0xffff
++#define     LOGICAL_PAGE_SPARE_SIZE__VALUE		GENMASK(15, 0)
+ 
+ #define REVISION				0x370
+-#define     REVISION__VALUE				0xffff
++#define     REVISION__VALUE				GENMASK(15, 0)
+ 
+ #define ONFI_DEVICE_FEATURES			0x380
+-#define     ONFI_DEVICE_FEATURES__VALUE			0x003f
++#define     ONFI_DEVICE_FEATURES__VALUE			GENMASK(5, 0)
+ 
+ #define ONFI_OPTIONAL_COMMANDS			0x390
+-#define     ONFI_OPTIONAL_COMMANDS__VALUE		0x003f
++#define     ONFI_OPTIONAL_COMMANDS__VALUE		GENMASK(5, 0)
+ 
+ #define ONFI_TIMING_MODE			0x3a0
+-#define     ONFI_TIMING_MODE__VALUE			0x003f
++#define     ONFI_TIMING_MODE__VALUE			GENMASK(5, 0)
+ 
+ #define ONFI_PGM_CACHE_TIMING_MODE		0x3b0
+-#define     ONFI_PGM_CACHE_TIMING_MODE__VALUE		0x003f
++#define     ONFI_PGM_CACHE_TIMING_MODE__VALUE		GENMASK(5, 0)
+ 
+ #define ONFI_DEVICE_NO_OF_LUNS			0x3c0
+-#define     ONFI_DEVICE_NO_OF_LUNS__NO_OF_LUNS		0x00ff
+-#define     ONFI_DEVICE_NO_OF_LUNS__ONFI_DEVICE		0x0100
++#define     ONFI_DEVICE_NO_OF_LUNS__NO_OF_LUNS		GENMASK(7, 0)
++#define     ONFI_DEVICE_NO_OF_LUNS__ONFI_DEVICE		BIT(8)
+ 
+ #define ONFI_DEVICE_NO_OF_BLOCKS_PER_LUN_L	0x3d0
+-#define     ONFI_DEVICE_NO_OF_BLOCKS_PER_LUN_L__VALUE	0xffff
++#define     ONFI_DEVICE_NO_OF_BLOCKS_PER_LUN_L__VALUE	GENMASK(15, 0)
+ 
+ #define ONFI_DEVICE_NO_OF_BLOCKS_PER_LUN_U	0x3e0
+-#define     ONFI_DEVICE_NO_OF_BLOCKS_PER_LUN_U__VALUE	0xffff
+-
+-#define FEATURES					0x3f0
+-#define     FEATURES__N_BANKS				0x0003
+-#define     FEATURES__ECC_MAX_ERR			0x003c
+-#define     FEATURES__DMA				0x0040
+-#define     FEATURES__CMD_DMA				0x0080
+-#define     FEATURES__PARTITION				0x0100
+-#define     FEATURES__XDMA_SIDEBAND			0x0200
+-#define     FEATURES__GPREG				0x0400
+-#define     FEATURES__INDEX_ADDR			0x0800
++#define     ONFI_DEVICE_NO_OF_BLOCKS_PER_LUN_U__VALUE	GENMASK(15, 0)
++
++#define FEATURES				0x3f0
++#define     FEATURES__N_BANKS				GENMASK(1, 0)
++#define     FEATURES__ECC_MAX_ERR			GENMASK(5, 2)
++#define     FEATURES__DMA				BIT(6)
++#define     FEATURES__CMD_DMA				BIT(7)
++#define     FEATURES__PARTITION				BIT(8)
++#define     FEATURES__XDMA_SIDEBAND			BIT(9)
++#define     FEATURES__GPREG				BIT(10)
++#define     FEATURES__INDEX_ADDR			BIT(11)
+ 
+ #define TRANSFER_MODE				0x400
+-#define     TRANSFER_MODE__VALUE			0x0003
++#define     TRANSFER_MODE__VALUE			GENMASK(1, 0)
+ 
+-#define INTR_STATUS(__bank)	(0x410 + ((__bank) * 0x50))
+-#define INTR_EN(__bank)		(0x420 + ((__bank) * 0x50))
++#define INTR_STATUS(bank)			(0x410 + (bank) * 0x50)
++#define INTR_EN(bank)				(0x420 + (bank) * 0x50)
+ /* bit[1:0] is used differently depending on IP version */
+-#define     INTR__ECC_UNCOR_ERR				0x0001	/* new IP */
+-#define     INTR__ECC_TRANSACTION_DONE			0x0001	/* old IP */
+-#define     INTR__ECC_ERR				0x0002	/* old IP */
+-#define     INTR__DMA_CMD_COMP				0x0004
+-#define     INTR__TIME_OUT				0x0008
+-#define     INTR__PROGRAM_FAIL				0x0010
+-#define     INTR__ERASE_FAIL				0x0020
+-#define     INTR__LOAD_COMP				0x0040
+-#define     INTR__PROGRAM_COMP				0x0080
+-#define     INTR__ERASE_COMP				0x0100
+-#define     INTR__PIPE_CPYBCK_CMD_COMP			0x0200
+-#define     INTR__LOCKED_BLK				0x0400
+-#define     INTR__UNSUP_CMD				0x0800
+-#define     INTR__INT_ACT				0x1000
+-#define     INTR__RST_COMP				0x2000
+-#define     INTR__PIPE_CMD_ERR				0x4000
+-#define     INTR__PAGE_XFER_INC				0x8000
+-
+-#define PAGE_CNT(__bank)	(0x430 + ((__bank) * 0x50))
+-#define ERR_PAGE_ADDR(__bank)	(0x440 + ((__bank) * 0x50))
+-#define ERR_BLOCK_ADDR(__bank)	(0x450 + ((__bank) * 0x50))
++#define     INTR__ECC_UNCOR_ERR				BIT(0)	/* new IP */
++#define     INTR__ECC_TRANSACTION_DONE			BIT(0)	/* old IP */
++#define     INTR__ECC_ERR				BIT(1)	/* old IP */
++#define     INTR__DMA_CMD_COMP				BIT(2)
++#define     INTR__TIME_OUT				BIT(3)
++#define     INTR__PROGRAM_FAIL				BIT(4)
++#define     INTR__ERASE_FAIL				BIT(5)
++#define     INTR__LOAD_COMP				BIT(6)
++#define     INTR__PROGRAM_COMP				BIT(7)
++#define     INTR__ERASE_COMP				BIT(8)
++#define     INTR__PIPE_CPYBCK_CMD_COMP			BIT(9)
++#define     INTR__LOCKED_BLK				BIT(10)
++#define     INTR__UNSUP_CMD				BIT(11)
++#define     INTR__INT_ACT				BIT(12)
++#define     INTR__RST_COMP				BIT(13)
++#define     INTR__PIPE_CMD_ERR				BIT(14)
++#define     INTR__PAGE_XFER_INC				BIT(15)
++
++#define PAGE_CNT(bank)				(0x430 + (bank) * 0x50)
++#define ERR_PAGE_ADDR(bank)			(0x440 + (bank) * 0x50)
++#define ERR_BLOCK_ADDR(bank)			(0x450 + (bank) * 0x50)
+ 
+ #define ECC_THRESHOLD				0x600
+-#define     ECC_THRESHOLD__VALUE			0x03ff
++#define     ECC_THRESHOLD__VALUE			GENMASK(9, 0)
+ 
+ #define ECC_ERROR_BLOCK_ADDRESS			0x610
+-#define     ECC_ERROR_BLOCK_ADDRESS__VALUE		0xffff
++#define     ECC_ERROR_BLOCK_ADDRESS__VALUE		GENMASK(15, 0)
+ 
+ #define ECC_ERROR_PAGE_ADDRESS			0x620
+-#define     ECC_ERROR_PAGE_ADDRESS__VALUE		0x0fff
+-#define     ECC_ERROR_PAGE_ADDRESS__BANK		0xf000
++#define     ECC_ERROR_PAGE_ADDRESS__VALUE		GENMASK(11, 0)
++#define     ECC_ERROR_PAGE_ADDRESS__BANK		GENMASK(15, 12)
+ 
+ #define ECC_ERROR_ADDRESS			0x630
+-#define     ECC_ERROR_ADDRESS__OFFSET			0x0fff
+-#define     ECC_ERROR_ADDRESS__SECTOR_NR		0xf000
++#define     ECC_ERROR_ADDRESS__OFFSET			GENMASK(11, 0)
++#define     ECC_ERROR_ADDRESS__SECTOR_NR		GENMASK(15, 12)
+ 
+ #define ERR_CORRECTION_INFO			0x640
+-#define     ERR_CORRECTION_INFO__BYTEMASK		0x00ff
+-#define     ERR_CORRECTION_INFO__DEVICE_NR		0x0f00
+-#define     ERR_CORRECTION_INFO__ERROR_TYPE		0x4000
+-#define     ERR_CORRECTION_INFO__LAST_ERR_INFO		0x8000
++#define     ERR_CORRECTION_INFO__BYTEMASK		GENMASK(7, 0)
++#define     ERR_CORRECTION_INFO__DEVICE_NR		GENMASK(11, 8)
++#define     ERR_CORRECTION_INFO__ERROR_TYPE		BIT(14)
++#define     ERR_CORRECTION_INFO__LAST_ERR_INFO		BIT(15)
+ 
+ #define ECC_COR_INFO(bank)			(0x650 + (bank) / 2 * 0x10)
+ #define     ECC_COR_INFO__SHIFT(bank)			((bank) % 2 * 8)
+-#define     ECC_COR_INFO__MAX_ERRORS			0x007f
+-#define     ECC_COR_INFO__UNCOR_ERR			0x0080
++#define     ECC_COR_INFO__MAX_ERRORS			GENMASK(6, 0)
++#define     ECC_COR_INFO__UNCOR_ERR			BIT(7)
+ 
+ #define DMA_ENABLE				0x700
+-#define     DMA_ENABLE__FLAG				0x0001
++#define     DMA_ENABLE__FLAG				BIT(0)
+ 
+ #define IGNORE_ECC_DONE				0x710
+-#define     IGNORE_ECC_DONE__FLAG			0x0001
++#define     IGNORE_ECC_DONE__FLAG			BIT(0)
+ 
+ #define DMA_INTR				0x720
+ #define DMA_INTR_EN				0x730
+-#define     DMA_INTR__TARGET_ERROR			0x0001
+-#define     DMA_INTR__DESC_COMP_CHANNEL0		0x0002
+-#define     DMA_INTR__DESC_COMP_CHANNEL1		0x0004
+-#define     DMA_INTR__DESC_COMP_CHANNEL2		0x0008
+-#define     DMA_INTR__DESC_COMP_CHANNEL3		0x0010
+-#define     DMA_INTR__MEMCOPY_DESC_COMP			0x0020
++#define     DMA_INTR__TARGET_ERROR			BIT(0)
++#define     DMA_INTR__DESC_COMP_CHANNEL0		BIT(1)
++#define     DMA_INTR__DESC_COMP_CHANNEL1		BIT(2)
++#define     DMA_INTR__DESC_COMP_CHANNEL2		BIT(3)
++#define     DMA_INTR__DESC_COMP_CHANNEL3		BIT(4)
++#define     DMA_INTR__MEMCOPY_DESC_COMP			BIT(5)
+ 
+ #define TARGET_ERR_ADDR_LO			0x740
+-#define     TARGET_ERR_ADDR_LO__VALUE			0xffff
++#define     TARGET_ERR_ADDR_LO__VALUE			GENMASK(15, 0)
+ 
+ #define TARGET_ERR_ADDR_HI			0x750
+-#define     TARGET_ERR_ADDR_HI__VALUE			0xffff
++#define     TARGET_ERR_ADDR_HI__VALUE			GENMASK(15, 0)
+ 
+ #define CHNL_ACTIVE				0x760
+-#define     CHNL_ACTIVE__CHANNEL0			0x0001
+-#define     CHNL_ACTIVE__CHANNEL1			0x0002
+-#define     CHNL_ACTIVE__CHANNEL2			0x0004
+-#define     CHNL_ACTIVE__CHANNEL3			0x0008
++#define     CHNL_ACTIVE__CHANNEL0			BIT(0)
++#define     CHNL_ACTIVE__CHANNEL1			BIT(1)
++#define     CHNL_ACTIVE__CHANNEL2			BIT(2)
++#define     CHNL_ACTIVE__CHANNEL3			BIT(3)
+ 
+ #define FAIL 1                  /*failed flag*/
+ #define PASS 0                  /*success flag*/
 -- 
 2.7.4
