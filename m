@@ -1,21 +1,17 @@
-From: Stefan Agner <stefan@agner.ch>
-To: shawnguo@kernel.org,
-	kernel@pengutronix.de,
-	sboyd@codeaurora.org
-Cc: aisheng.dong@nxp.com, dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
- robh+dt@kernel.org, mark.rutland@arm.com, han.xu@nxp.com,
- fabio.estevam@freescale.com, LW@KARO-electronics.de,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>
-Subject: [PATCH v5 3/3] ARM: dts: imx7-colibri: add NAND support
-Date: Mon,  5 Jun 2017 23:30:50 -0700
-Message-Id: <c740386a55dc28db37f250eccc11687c1b111554.1496730576.git-series.stefan@agner.ch>
-In-Reply-To: <cover.b62c3a17bd60de48d8fb2ade6dde4f2bc60aaf3c.1496730576.git-series.stefan@agner.ch>
-References: <cover.b62c3a17bd60de48d8fb2ade6dde4f2bc60aaf3c.1496730576.git-series.stefan@agner.ch>
-In-Reply-To: <cover.b62c3a17bd60de48d8fb2ade6dde4f2bc60aaf3c.1496730576.git-series.stefan@agner.ch>
-References: <cover.b62c3a17bd60de48d8fb2ade6dde4f2bc60aaf3c.1496730576.git-series.stefan@agner.ch>
+Received: from mail-qt0-x244.google.com ([2607:f8b0:400d:c0d::244])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dI8mj-0007lx-Ed
+ for linux-mtd@lists.infradead.org; Tue, 06 Jun 2017 07:20:15 +0000
+Received: by mail-qt0-x244.google.com with SMTP id w1so21621903qtg.0
+ for <linux-mtd@lists.infradead.org>; Tue, 06 Jun 2017 00:19:52 -0700 (PDT)
+MIME-Version: 1.0
+Reply-To: lori_robinson.usa@hotmail.com
+From: "From Lori J. Robinson" <barristermackunji@gmail.com>
+Date: Tue, 6 Jun 2017 00:19:51 -0700
+Message-ID: <CAKH8UXrFHDR0JgrcaEscPVZGJ_5Vv+M-_trbVc5aFXR6WUghUg@mail.gmail.com>
+Subject: 
+To: undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +21,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Colibri iMX7 modules come with 512MB on-module SLC NAND flash
-populated. Make use of it by enabling the GPMI controller.
+Hello,
 
-Signed-off-by: Stefan Agner <stefan@agner.ch>
----
- arch/arm/boot/dts/imx7-colibri.dtsi |  9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/arch/arm/boot/dts/imx7-colibri.dtsi b/arch/arm/boot/dts/imx7-colibri.dtsi
-index 2d87489..ad4ce19 100644
---- a/arch/arm/boot/dts/imx7-colibri.dtsi
-+++ b/arch/arm/boot/dts/imx7-colibri.dtsi
-@@ -106,6 +106,15 @@
- 	fsl,magic-packet;
- };
- 
-+&gpmi {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_gpmi_nand>;
-+	fsl,use-minimum-ecc;
-+	nand-on-flash-bbt;
-+	nand-ecc-mode = "hw";
-+	status = "okay";
-+};
-+
- &i2c1 {
- 	clock-frequency = <100000>;
- 	pinctrl-names = "default";
--- 
-git-series 0.9.1
+I am General Lori J. Robinson, I am presently in Afghanistan serving
+the UN/NATO military assignment here,i have an important discussion
+with you  kindly respond to me through my private  box
+lori_robinson.usa@hotmail.com  so that we can know ourselves better. I
+hope to read from you if your are also interested. Thanks and hoping
+to hear from you soonest.
