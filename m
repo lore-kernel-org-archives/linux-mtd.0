@@ -1,8 +1,8 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dIMKR-0004It-Up
- for linux-mtd@lists.infradead.org; Tue, 06 Jun 2017 21:47:58 +0000
-Date: Tue, 6 Jun 2017 23:47:33 +0200
+ id 1dIMY0-0002vz-Ge
+ for linux-mtd@lists.infradead.org; Tue, 06 Jun 2017 22:01:58 +0000
+Date: Wed, 7 Jun 2017 00:01:33 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Masahiro Yamada <yamada.masahiro@socionext.com>
 Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>, Artem
@@ -11,15 +11,16 @@ Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>, Artem
  <grmoore@opensource.altera.com>, David Woodhouse <dwmw2@infradead.org>,
  Masami Hiramatsu <mhiramat@kernel.org>, Chuanxiao Dong
  <chuanxiao.dong@intel.com>, Jassi Brar <jaswinder.singh@linaro.org>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
- Brian Norris <computersforpeace@gmail.com>, Richard Weinberger
- <richard@nod.at>
-Subject: Re: [PATCH v4 03/23] mtd: nand: add generic helpers to check,
- match, maximize ECC settings
-Message-ID: <20170606234733.0cbec509@bbrezillon>
-In-Reply-To: <1496704922-12261-4-git-send-email-yamada.masahiro@socionext.com>
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, Mark
+ Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v4 04/23] mtd: nand: denali: avoid hard-coding ECC step,
+ strength, bytes
+Message-ID: <20170607000133.69fbf82b@bbrezillon>
+In-Reply-To: <1496704922-12261-5-git-send-email-yamada.masahiro@socionext.com>
 References: <1496704922-12261-1-git-send-email-yamada.masahiro@socionext.com>
- <1496704922-12261-4-git-send-email-yamada.masahiro@socionext.com>
+ <1496704922-12261-5-git-send-email-yamada.masahiro@socionext.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -32,355 +33,207 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue,  6 Jun 2017 08:21:42 +0900
+On Tue,  6 Jun 2017 08:21:43 +0900
 Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-> Driver are responsible for setting up ECC parameters correctly.
-> Those include:
->   - Check if ECC parameters specified (usually by DT) are valid
->   - Meet the chip's ECC requirement
->   - Maximize ECC strength if NAND_ECC_MAXIMIZE flag is set
+> This driver was originally written for the Intel MRST platform with
+> several platform-specific parameters hard-coded.
 > 
-> The logic can be generalized by factoring out common code.
+> Currently, the ECC settings are hard-coded as follows:
 > 
-> This commit adds 3 helpers to the NAND framework:
-> nand_check_ecc_caps - Check if preset step_size and strength are valid
-> nand_match_ecc_req - Match the chip's requirement
-> nand_maximize_ecc - Maximize the ECC strength
+>   #define ECC_SECTOR_SIZE 512
+>   #define ECC_8BITS       14
+>   #define ECC_15BITS      26
 > 
-> To use the helpers above, a driver needs to provide:
->   - Data array of supported ECC step size and strength
->   - A hook that calculates ECC bytes from the combination of
->     step_size and strength.
+> Therefore, the driver can only support two cases.
+>  - ecc.size = 512, ecc.strength = 8    --> ecc.bytes = 14
+>  - ecc.size = 512, ecc.strength = 15   --> ecc.bytes = 26
 > 
-> By using those helpers, code duplication among drivers will be
-> reduced.
+> However, these are actually customizable parameters, for example,
+> UniPhier platform supports the following:
+> 
+>  - ecc.size = 1024, ecc.strength = 8   --> ecc.bytes = 14
+>  - ecc.size = 1024, ecc.strength = 16  --> ecc.bytes = 28
+>  - ecc.size = 1024, ecc.strength = 24  --> ecc.bytes = 42
+> 
+> So, we need to handle the ECC parameters in a more generic manner.
+> Fortunately, the Denali User's Guide explains how to calculate the
+> ecc.bytes.  The formula is:
+> 
+>   ecc.bytes = 2 * CEIL(13 * ecc.strength / 16)  (for ecc.size = 512)
+>   ecc.bytes = 2 * CEIL(14 * ecc.strength / 16)  (for ecc.size = 1024)
+> 
+> For DT platforms, it would be reasonable to allow DT to specify ECC
+> strength by either "nand-ecc-strength" or "nand-ecc-maximize".  If
+> none of them is specified, the driver will try to meet the chip's ECC
+> requirement.
+> 
+> For PCI platforms, the max ECC strength is used to keep the original
+> behavior.
+> 
+> Newer versions of this IP need ecc.size and ecc.steps explicitly
+> set up via the following registers:
+>   CFG_DATA_BLOCK_SIZE       (0x6b0)
+>   CFG_LAST_DATA_BLOCK_SIZE  (0x6c0)
+>   CFG_NUM_DATA_BLOCKS       (0x6d0)
+> 
+> For older IP versions, write accesses to these registers are just
+> ignored.
 > 
 > Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> Acked-by: Rob Herring <robh@kernel.org>
 > ---
 > 
-> Changes since the previous version:
+> Changes in v4:
+>   - Rewrite by using generic helpers, nand_check_caps(),
+>     nand_match_ecc_req(), nand_maximize_ecc().
 > 
->  - Step size info holds an array of associated strengths
->  - nand_match_ecc_req() does not take care of the case
->    where ecc_size/strength is already set
->  - Reflect more comments from Boris
+> Changes in v3:
+>   - Move DENALI_CAP_ define out of struct denali_nand_info
+>   - Use chip->ecc_step_ds as a hint to choose chip->ecc.size
+>     where possible
 > 
-> Previous version:
-> http://patchwork.ozlabs.org/patch/752107/
+> Changes in v2:
+>   - Change the capability prefix DENALI_CAPS_ -> DENALI_CAP_
+>   - Make ECC 512 cap and ECC 1024 cap independent
+>   - Set up three CFG_... registers
 > 
+>  .../devicetree/bindings/mtd/denali-nand.txt        |   7 ++
+>  drivers/mtd/nand/denali.c                          | 103 ++++++++++++++-------
+>  drivers/mtd/nand/denali.h                          |  11 ++-
+>  drivers/mtd/nand/denali_dt.c                       |   8 ++
+>  drivers/mtd/nand/denali_pci.c                      |   9 ++
+>  5 files changed, 101 insertions(+), 37 deletions(-)
 > 
-> Changes in v4: None
-> Changes in v3: None
-> Changes in v2: None
-> 
->  drivers/mtd/nand/nand_base.c | 219 +++++++++++++++++++++++++++++++++++++++++++
->  include/linux/mtd/nand.h     |  35 +++++++
->  2 files changed, 254 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index bdfa903..f2da4f2 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -4509,6 +4509,225 @@ static int nand_set_ecc_soft_ops(struct mtd_info *mtd)
->  	}
+> diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+> index e593bbe..b7742a7 100644
+> --- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+> @@ -7,6 +7,13 @@ Required properties:
+>    - reg-names: Should contain the reg names "nand_data" and "denali_reg"
+>    - interrupts : The interrupt number.
+>  
+> +Optional properties:
+> +  - nand-ecc-step-size: see nand.txt for details.  If present, the value must be
+> +      512        for "altr,socfpga-denali-nand"
+> +  - nand-ecc-strength: see nand.txt for details.  Valid values are:
+> +      8, 15      for "altr,socfpga-denali-nand"
+> +  - nand-ecc-maximize: see nand.txt for details
+> +
+>  The device tree may optionally contain sub-nodes describing partitions of the
+>  address space. See partition.txt for more detail.
+>  
+> diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+> index 16634df..3204c51 100644
+> --- a/drivers/mtd/nand/denali.c
+> +++ b/drivers/mtd/nand/denali.c
+> @@ -886,8 +886,6 @@ static int denali_hw_ecc_fixup(struct mtd_info *mtd,
+>  	return max_bitflips;
 >  }
 >  
-> +/**
-> + * nand_check_ecc_caps - check the sanity of preset ECC settings
-> + * @mtd: mtd info structure
-> + * @chip: nand chip info structure
-> + * @caps: ECC caps info structure
-> + *
-> + * When ECC step size and strength are already set, check if they are supported
-> + * by the controller and the calculated ECC bytes fit within the chip's OOB.
-> + * On success, the calculated ECC bytes is set.
-> + */
-> +int nand_check_ecc_caps(struct mtd_info *mtd, struct nand_chip *chip,
-> +			const struct nand_ecc_caps *caps)
-> +{
-> +	const struct nand_ecc_step_info *stepinfo;
-> +	int avail_oobsize = mtd->oobsize - caps->oob_reserve_bytes;
-> +	int preset_step = chip->ecc.size;
-> +	int preset_strength = chip->ecc.strength;
-> +	int ecc_bytes;
-> +	int i, j;
-> +
-> +	if (WARN_ON(avail_oobsize < 0))
-> +		return -EINVAL;
-> +
-> +	if (!preset_step || !preset_strength)
-> +		return -ENODATA;
-> +
-> +	for (i = 0; i < caps->nstepinfos; i++) {
-> +		stepinfo = &caps->stepinfos[i];
-> +
-> +		if (stepinfo->stepsize != preset_step)
-> +			continue;
-> +
-> +		for (j = 0; j < stepinfo->nstrengths; j++) {
-> +			if (stepinfo->strengths[j] == preset_strength)
-> +				goto found;
-> +		}
-> +	}
-> +
-> +	pr_err("ECC (step, strength) = (%d, %d) not supported on this controller",
-> +	       preset_step, preset_strength);
-> +
-> +	return -ENOTSUPP;
-> +
-> +found:
-
-I prefer something like:
-
-	if (i == caps->nstepinfos) {
-		pr_err(...);
-		return -ENOTSUPP;
-	}
-
-	...
-
-instead of this 'found' label.
-
-> +	ecc_bytes = caps->calc_ecc_bytes(preset_step, preset_strength);
-> +	if (WARN_ON_ONCE(ecc_bytes < 0))
-> +		return ecc_bytes;
-> +
-> +	if (ecc_bytes * mtd->writesize / preset_step > avail_oobsize) {
-> +		pr_err("ECC (step, strength) = (%d, %d) does not fit in OOB",
-> +		       preset_step, preset_strength);
-> +		return -ENOSPC;
-> +	}
-> +
-> +	chip->ecc.bytes = ecc_bytes;
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(nand_check_ecc_caps);
-> +
-> +/**
-> + * nand_match_ecc_req - meet the chip's requirement with least ECC bytes
-> + * @mtd: mtd info structure
-> + * @chip: nand chip info structure
-> + * @caps: ECC engine caps info structure
-> + *
-> + * If a chip's ECC requirement is provided, try to meet it with the least
-> + * number of ECC bytes (i.e. with the largest number of OOB-free bytes).
-> + * On success, the chosen ECC settings are set.
-> + */
-> +int nand_match_ecc_req(struct mtd_info *mtd, struct nand_chip *chip,
-> +		       const struct nand_ecc_caps *caps)
-> +{
-> +	const struct nand_ecc_step_info *stepinfo;
-> +	int avail_oobsize = mtd->oobsize - caps->oob_reserve_bytes;
-> +	int req_step = chip->ecc_step_ds;
-> +	int req_strength = chip->ecc_strength_ds;
-> +	int req_corr, step_size, strength, steps, ecc_bytes, ecc_bytes_total;
-> +	int best_step, best_strength, best_ecc_bytes;
-> +	int best_ecc_bytes_total = INT_MAX;
-
-Just nitpicking, but why not -1 instead of INT_MAX?
-
-> +	int i, j;
-> +
-> +	if (WARN_ON(avail_oobsize < 0))
-> +		return -EINVAL;
-> +
-> +	/* No information provided by the NAND chip */
-> +	if (!req_step || !req_strength)
-> +		return -ENOTSUPP;
-> +
-> +	/* number of correctable bits the chip requires in a page */
-> +	req_corr = mtd->writesize / req_step * req_strength;
-> +
-> +	for (i = 0; i < caps->nstepinfos; i++) {
-> +		stepinfo = &caps->stepinfos[i];
-> +		step_size = stepinfo->stepsize;
-> +
-> +		for (j = 0; j < stepinfo->nstrengths; j++) {
-> +			strength = stepinfo->strengths[j];
-> +
-> +			/*
-> +			 * If both step size and strength are smaller than the
-> +			 * chip's requirement, it is not easy to compare the
-> +			 * resulted reliability.
-> +			 */
-> +			if (step_size < req_step && strength < req_strength)
-> +				continue;
-> +
-> +			if (mtd->writesize % step_size)
-> +				continue;
-> +
-> +			steps = mtd->writesize / step_size;
-> +
-> +			ecc_bytes = caps->calc_ecc_bytes(step_size, strength);
-> +			if (WARN_ON_ONCE(ecc_bytes < 0))
-> +				continue;
-> +			ecc_bytes_total = ecc_bytes * steps;
-> +
-> +			if (ecc_bytes_total > avail_oobsize ||
-> +			    strength * steps < req_corr)
-> +				continue;
-> +
-> +			/*
-> +			 * We assume the best is to meet the chip's requrement
-> +			 * with the least number of ECC bytes.
-> +			 */
-> +			if (ecc_bytes_total < best_ecc_bytes_total) {
-> +				best_ecc_bytes_total = ecc_bytes_total;
-> +				best_step = step_size;
-> +				best_strength = strength;
-> +				best_ecc_bytes = ecc_bytes;
-> +			}
-> +		}
-> +	}
-> +
-> +	if (best_ecc_bytes_total == INT_MAX)
-> +		return -ENOTSUPP;
-> +
-> +	chip->ecc.size = best_step;
-> +	chip->ecc.strength = best_strength;
-> +	chip->ecc.bytes = best_ecc_bytes;
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(nand_match_ecc_req);
-> +
-> +/**
-> + * nand_maximize_ecc - choose the max ECC strength available
-> + * @mtd: mtd info structure
-> + * @chip: nand chip info structure
-> + * @caps: ECC engine caps info structure
-> + *
-> + * Choose the max ECC strength that is supported on the controller, and can fit
-> + * within the chip's OOB.  On success, the chosen ECC settings are set.
-> + */
-> +int nand_maximize_ecc(struct mtd_info *mtd, struct nand_chip *chip,
-> +		      const struct nand_ecc_caps *caps)
-> +{
-> +	const struct nand_ecc_step_info *stepinfo;
-> +	int avail_oobsize = mtd->oobsize - caps->oob_reserve_bytes;
-> +	int step_size, strength, steps, ecc_bytes, corr;
-> +	int best_corr = 0;
-> +	int best_step = 0;
-> +	int best_strength, best_ecc_bytes;
-> +	int i, j;
-> +
-> +	if (WARN_ON(avail_oobsize < 0))
-> +		return -EINVAL;
-> +
-> +	for (i = 0; i < caps->nstepinfos; i++) {
-> +		stepinfo = &caps->stepinfos[i];
-> +		step_size = stepinfo->stepsize;
-> +
-> +
-
-Extra blank line here.
-
-> +		/* If chip->ecc.size is already set, respect it */
-> +		if (chip->ecc.size && step_size != chip->ecc.size)
-> +			continue;
-> +
-> +		for (j = 0; j < stepinfo->nstrengths; j++) {
-> +			strength = stepinfo->strengths[j];
-> +
-> +			if (mtd->writesize % step_size)
-> +				continue;
-> +
-> +			steps = mtd->writesize / step_size;
-> +
-> +			ecc_bytes = caps->calc_ecc_bytes(step_size, strength);
-> +			if (WARN_ON_ONCE(ecc_bytes < 0))
-> +				continue;
-> +
-> +			if (ecc_bytes * steps > avail_oobsize)
-> +				continue;
-> +
-> +			corr = strength * steps;
-> +
-> +			/*
-> +			 * If the number of correctable bits is the same,
-> +			 * bigger step_size has more reliability.
-> +			 */
-> +			if (corr > best_corr ||
-> +			    (corr == best_corr && step_size > best_step)) {
-> +				best_corr = corr;
-> +				best_step = step_size;
-> +				best_strength = strength;
-> +				best_ecc_bytes = ecc_bytes;
-> +			}
-> +		}
-> +	}
-> +
-> +	if (!best_corr)
-> +		return -ENOTSUPP;
-> +
-> +	chip->ecc.size = best_step;
-> +	chip->ecc.strength = best_strength;
-> +	chip->ecc.bytes = best_ecc_bytes;
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(nand_maximize_ecc);
-> +
->  /*
->   * Check if the chip configuration meet the datasheet requirements.
+> -#define ECC_SECTOR_SIZE 512
+> -
+>  #define ECC_SECTOR(x)	(((x) & ECC_ERROR_ADDRESS__SECTOR_NR) >> 12)
+>  #define ECC_BYTE(x)	(((x) & ECC_ERROR_ADDRESS__OFFSET))
+>  #define ECC_CORRECTION_VALUE(x) ((x) & ERR_CORRECTION_INFO__BYTEMASK)
+> @@ -899,6 +897,7 @@ static int denali_sw_ecc_fixup(struct mtd_info *mtd,
+>  			       struct denali_nand_info *denali,
+>  			       unsigned long *uncor_ecc_flags, uint8_t *buf)
+>  {
+> +	unsigned int ecc_size = denali->nand.ecc.size;
+>  	unsigned int bitflips = 0;
+>  	unsigned int max_bitflips = 0;
+>  	uint32_t err_addr, err_cor_info;
+> @@ -928,9 +927,9 @@ static int denali_sw_ecc_fixup(struct mtd_info *mtd,
+>  			 * an erased sector.
+>  			 */
+>  			*uncor_ecc_flags |= BIT(err_sector);
+> -		} else if (err_byte < ECC_SECTOR_SIZE) {
+> +		} else if (err_byte < ecc_size) {
+>  			/*
+> -			 * If err_byte is larger than ECC_SECTOR_SIZE, means error
+> +			 * If err_byte is larger than ecc_size, means error
+>  			 * happened in OOB, so we ignore it. It's no need for
+>  			 * us to correct it err_device is represented the NAND
+>  			 * error bits are happened in if there are more than
+> @@ -939,7 +938,7 @@ static int denali_sw_ecc_fixup(struct mtd_info *mtd,
+>  			int offset;
+>  			unsigned int flips_in_byte;
 >  
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index 8f67b15..97ccb76 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -477,6 +477,32 @@ static inline void nand_hw_control_init(struct nand_hw_control *nfc)
+> -			offset = (err_sector * ECC_SECTOR_SIZE + err_byte) *
+> +			offset = (err_sector * ecc_size + err_byte) *
+>  						denali->devnum + err_device;
+>  
+>  			/* correct the ECC error */
+> @@ -1345,13 +1344,55 @@ static void denali_hw_init(struct denali_nand_info *denali)
+>  	denali_irq_init(denali);
 >  }
 >  
->  /**
-> + * struct nand_ecc_step_info - ECC step information of ECC engine
-> + * @stepsize: data bytes per ECC step
-> + * @strengths: array of supported strengths
-> + * @nstrengths: number of supported strengths
-> + */
-> +struct nand_ecc_step_info {
-> +	int stepsize;
-> +	const int *strengths;
-> +	int nstrengths;
-> +};
+> -/*
+> - * Althogh controller spec said SLC ECC is forceb to be 4bit,
+> - * but denali controller in MRST only support 15bit and 8bit ECC
+> - * correction
+> - */
+> -#define ECC_8BITS	14
+> -#define ECC_15BITS	26
+> +static int denali_calc_ecc_bytes(int step_size, int strength)
+> +{
+> +	int coef;
 > +
-> +/**
-> + * struct nand_ecc_caps - capability of ECC engine
-> + * @stepinfos: array of ECC step information
-> + * @nstepinfos: number of ECC step information
-> + * @calc_ecc_bytes: driver's hook to calculate ECC bytes per step
-> + * @oob_reserve_bytes: number of bytes in OOB that must be reserved
-> + */
-> +struct nand_ecc_caps {
-> +	const struct nand_ecc_step_info *stepinfos;
-> +	int nstepinfos;
-> +	int (*calc_ecc_bytes)(int step_size, int strength);
-> +	int oob_reserve_bytes;
+> +	switch (step_size) {
+> +	case 512:
+> +		coef = 13;
+> +		break;
+> +	case 1024:
+> +		coef = 14;
+> +		break;
+> +	default:
+> +		return -ENOTSUPP;
+> +	}
+> +
+> +	return DIV_ROUND_UP(strength * coef, 16) * 2;
 
-Why is this needed? I thought we agreed on passing oobavail as an
-argument to these helper funcs. If a driver needs to reserve a few OOB
-bytes, then doing mtd->oobsize - rsvd_bytes is not such a big deal.
+or just
 
-> +};
+	return DIV_ROUND_UP(strength * fls(8 * step_size), 16) * 2;
+
+the array of supported step size/strength should guarantee that you're
+called with unsupported settings.
+
+> +}
 > +
-> +/**
->   * struct nand_ecc_ctrl - Control structure for ECC
->   * @mode:	ECC mode
->   * @algo:	ECC algorithm
-> @@ -1244,6 +1270,15 @@ int nand_check_erased_ecc_chunk(void *data, int datalen,
->  				void *extraoob, int extraooblen,
->  				int threshold);
->  
-> +int nand_check_ecc_caps(struct mtd_info *mtd, struct nand_chip *chip,
-> +			const struct nand_ecc_caps *caps);
+> +static int denali_ecc_setup(struct mtd_info *mtd, struct nand_chip *chip,
+> +			    struct denali_nand_info *denali)
+> +{
+> +	struct nand_ecc_caps caps;
+> +	int ret;
 > +
-> +int nand_match_ecc_req(struct mtd_info *mtd, struct nand_chip *chip,
-> +		       const struct nand_ecc_caps *caps);
+> +	caps.stepinfos = denali->stepinfo;
+> +	caps.nstepinfos = 1;
+> +	caps.calc_ecc_bytes = denali_calc_ecc_bytes;
+> +	caps.oob_reserve_bytes = denali->bbtskipbytes;
+
+If you get rid of this oob_reserve_bytes field, you can define caps as
+a static const and even directly store ecc_caps in denali_nand_info.
+
 > +
-> +int nand_maximize_ecc(struct mtd_info *mtd, struct nand_chip *chip,
-> +		      const struct nand_ecc_caps *caps);
+> +	/*
+> +	 * If .size and .strength are already set (usually by DT),
+> +	 * check if they are supported by this controller.
+> +	 */
+> +	if (chip->ecc.size && chip->ecc.strength)
+> +		return nand_check_ecc_caps(mtd, chip, &caps);
 > +
->  /* Default write_oob implementation */
->  int nand_write_oob_std(struct mtd_info *mtd, struct nand_chip *chip, int page);
->  
+> +	/*
+> +	 * We want .size and .strength closest to the chip's requirement
+> +	 * unless NAND_ECC_MAXIMIZE is requested.
+> +	 */
+> +	if (!(chip->ecc.options & NAND_ECC_MAXIMIZE)) {
+> +		ret = nand_match_ecc_req(mtd, chip, &caps);
+> +		if (!ret)
+> +			return 0;
+> +	}
+> +
+> +	/* Max ECC strength is the last thing we can do */
+> +	return nand_maximize_ecc(mtd, chip, &caps);
+> +}
