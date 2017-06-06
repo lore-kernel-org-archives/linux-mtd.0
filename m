@@ -1,17 +1,19 @@
-Received: from mail-qt0-x244.google.com ([2607:f8b0:400d:c0d::244])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dI8mj-0007lx-Ed
- for linux-mtd@lists.infradead.org; Tue, 06 Jun 2017 07:20:15 +0000
-Received: by mail-qt0-x244.google.com with SMTP id w1so21621903qtg.0
- for <linux-mtd@lists.infradead.org>; Tue, 06 Jun 2017 00:19:52 -0700 (PDT)
+Subject: Re: [PATCH v4 1/4] mtd: nand: mediatek: update DT bindings
+To: Xiaolei Li <xiaolei.li@mediatek.com>, boris.brezillon@free-electrons.com,
+ computersforpeace@gmail.com
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, robh+dt@kernel.org,
+ rogercc.lin@mediatek.com, yt.shen@mediatek.com, srv_heupstream@mediatek.com
+References: <1496201877-34373-1-git-send-email-xiaolei.li@mediatek.com>
+ <1496201877-34373-2-git-send-email-xiaolei.li@mediatek.com>
+From: Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <e9286a90-8829-8b37-476a-ac8bd057d341@gmail.com>
+Date: Tue, 6 Jun 2017 12:55:48 +0200
 MIME-Version: 1.0
-Reply-To: lori_robinson.usa@hotmail.com
-From: "From Lori J. Robinson" <barristermackunji@gmail.com>
-Date: Tue, 6 Jun 2017 00:19:51 -0700
-Message-ID: <CAKH8UXrFHDR0JgrcaEscPVZGJ_5Vv+M-_trbVc5aFXR6WUghUg@mail.gmail.com>
-Subject: 
-To: undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1496201877-34373-2-git-send-email-xiaolei.li@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,11 +23,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
 
-I am General Lori J. Robinson, I am presently in Afghanistan serving
-the UN/NATO military assignment here,i have an important discussion
-with you  kindly respond to me through my private  box
-lori_robinson.usa@hotmail.com  so that we can know ourselves better. I
-hope to read from you if your are also interested. Thanks and hoping
-to hear from you soonest.
+
+On 31/05/17 05:37, Xiaolei Li wrote:
+> Add MT2712 NAND Flash Controller dt bindings documentation.
+> 
+> Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
+> Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+> ---
+
+Subject line should be something like;
+dt-bindings: mtd: Update mediatek bindings.
+
+>   Documentation/devicetree/bindings/mtd/mtk-nand.txt | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/mtk-nand.txt b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
+> index 069c192..dbf9e05 100644
+> --- a/Documentation/devicetree/bindings/mtd/mtk-nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
+> @@ -12,7 +12,8 @@ tree nodes.
+>   
+>   The first part of NFC is NAND Controller Interface (NFI) HW.
+>   Required NFI properties:
+> -- compatible:			Should be "mediatek,mtxxxx-nfc".
+> +- compatible:			Should be one of "mediatek,mt2701-nfc",
+> +				"mediatek,mt2712-nfc".
+>   - reg:				Base physical address and size of NFI.
+>   - interrupts:			Interrupts of NFI.
+>   - clocks:			NFI required clocks.
+> @@ -141,7 +142,7 @@ Example:
+>   ==============
+>   
+>   Required BCH properties:
+> -- compatible:	Should be "mediatek,mtxxxx-ecc".
+> +- compatible:	Should be one of "mediatek,mt2701-ecc", "mediatek,mt2712-ecc".
+>   - reg:		Base physical address and size of ECC.
+>   - interrupts:	Interrupts of ECC.
+>   - clocks:	ECC required clocks.
+> 
