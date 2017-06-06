@@ -1,29 +1,23 @@
-Received: from conuserg-10.nifty.com ([210.131.2.77])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dI1M8-0003mu-VA
- for linux-mtd@lists.infradead.org; Mon, 05 Jun 2017 23:24:18 +0000
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: linux-mtd@lists.infradead.org
-Cc: Enrico Jorns <ejo@pengutronix.de>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Dinh Nguyen <dinguyen@kernel.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Graham Moore <grmoore@opensource.altera.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Chuanxiao Dong <chuanxiao.dong@intel.com>,
- Jassi Brar <jaswinder.singh@linaro.org>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>
-Subject: [PATCH v4 18/23] mtd: nand: denali: merge struct nand_buf into struct
- denali_nand_info
-Date: Tue,  6 Jun 2017 08:21:57 +0900
-Message-Id: <1496704922-12261-19-git-send-email-yamada.masahiro@socionext.com>
-In-Reply-To: <1496704922-12261-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1496704922-12261-1-git-send-email-yamada.masahiro@socionext.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Date: Mon, 05 Jun 2017 22:16:07 -0700
+From: Stefan Agner <stefan@agner.ch>
+To: Han Xu <han.xu@nxp.com>
+Cc: shawnguo@kernel.org, kernel@pengutronix.de, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
+ marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@atmel.com,
+ robh+dt@kernel.org, mark.rutland@arm.com, fabio.estevam@freescale.com,
+ "LW@KARO-electronics.de" <LW@karo-electronics.de>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/2] ARM: dts: imx7: add NAND support
+In-Reply-To: <1dd0abe0-81a3-d4ea-69c1-98fe354f91f4@nxp.com>
+References: <20170601192044.6548-1-stefan@agner.ch>
+ <3c086d95-96e5-71ec-b44f-12ed41903fcf@nxp.com>
+ <e57ba49dc2b91b70b5848875e28b17ae@agner.ch>
+ <1dd0abe0-81a3-d4ea-69c1-98fe354f91f4@nxp.com>
+Message-ID: <09d82df6ce12a9f6df1f838df5eca9a6@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,151 +27,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now struct nand_buf has only two members, so I see no reason for the
-separation.
+On 2017-06-02 13:09, Han Xu wrote:
+> On 06/01/2017 08:48 PM, Stefan Agner wrote:
+>> Hi Han,
+>>
+>> On 2017-06-01 14:14, Han Xu wrote:
+>>> On 06/01/2017 02:20 PM, Stefan Agner wrote:
+>>>> This are the missing device tree parts to add NAND support for i.MX 7.
+>>>> See previous patchset:
+>>>> https://emea01.safelinks.protection.outlook.com/?url=https%3A%2F%2Flkml.org%2Flkml%2F2017%2F4%2F21%2F832&data=01%7C01%7Chan.xu%40nxp.com%7C3b9081a68c94476c4a2108d4a9235512%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0&sdata=mQ2aq5rW%2B9uADY5mSzFxk8P6bAVq%2BosPJQAi0PL9SQg%3D&reserved=0
+>>>>
+>>>> The previous version also included driver changes, which are already
+>>>> merged.
+>>>>
+>>>> --
+>>>> Stefan
+>>>>
+>>>> Changes since v2:
+>>>> - Only specify IMX7D_NAND_USDHC_BUS_ROOT_CLK which seems to be sufficent
+>>> Hi Stefan, sorry I didn't reply your last patch. I was unable to fully
+>>> test on i.MX7 since the work bandwidth, but the quick test shows DMA
+>>> cannot work WITHOUT IMX7D_NAND_ROOT_CLK on my side, I will fully check
+>>> it tomorrow morning and let you know the result.
+>> How did you test that?
+>>
+>> Since DMA can only use NAND in i.MX 7, testing is somewhat hard.
+>>
+>> Fact is, I can access DMA registers using just NAND_USDHC_BUS_CLK_ROOT
+>>
+>> mw.l 0x30388980 0x11000000 # Enable NAND_USDHC_BUS_CLK_ROOT
+>> mw.l 0x3038aa00 0x00000000 # Enable NAND_CLK_ROOT
+> 
+> NAND_ROOT_CLK offset is 0x4140 which control the CCGR20 to gate on/off 
+> the rawnand module, including APBH/GPMI/BCH. Without enabling it, the 
+> mxs-dma hangs during initialization. I guess this bit was enabled in 
+> some early stage.
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
+You are right, that clock gate was turned on, and it allowed access to
+the APBH DMA.
 
-Changes in v4: None
-Changes in v3: None
-Changes in v2:
-  - Newly added
+However, while the gate was enabled, disabling the NAND_CLK_ROOT still
+allowed to access APBH DMA, so the clock root itself is really not
+required, but the gate is...
 
- drivers/mtd/nand/denali.c | 29 ++++++++++++++---------------
- drivers/mtd/nand/denali.h |  8 ++------
- 2 files changed, 16 insertions(+), 21 deletions(-)
+The clock which is required is NAND_USDHC_BUS_CLK_ROOT, but the gate is
+part of NAND_CLK_ROOT. The clock tree is wrong: The gate is actually
+shared, both clocks use the same gate.
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index af60b1e..755825d 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -640,7 +640,7 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 			const uint8_t *buf, int page, bool raw_xfer)
- {
- 	struct denali_nand_info *denali = mtd_to_denali(mtd);
--	dma_addr_t addr = denali->buf.dma_buf;
-+	dma_addr_t addr = denali->dma_addr;
- 	size_t size = mtd->writesize + mtd->oobsize;
- 	uint32_t irq_status;
- 	uint32_t irq_mask = INTR__DMA_CMD_COMP | INTR__PROGRAM_FAIL;
-@@ -654,11 +654,11 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	setup_ecc_for_xfer(denali, !raw_xfer, raw_xfer);
- 
- 	/* copy buffer into DMA buffer */
--	memcpy(denali->buf.buf, buf, mtd->writesize);
-+	memcpy(denali->buf, buf, mtd->writesize);
- 
- 	if (raw_xfer) {
- 		/* transfer the data to the spare area */
--		memcpy(denali->buf.buf + mtd->writesize,
-+		memcpy(denali->buf + mtd->writesize,
- 			chip->oob_poi,
- 			mtd->oobsize);
- 	}
-@@ -735,7 +735,7 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 			    uint8_t *buf, int oob_required, int page)
- {
- 	struct denali_nand_info *denali = mtd_to_denali(mtd);
--	dma_addr_t addr = denali->buf.dma_buf;
-+	dma_addr_t addr = denali->dma_addr;
- 	size_t size = mtd->writesize + mtd->oobsize;
- 	uint32_t irq_status;
- 	uint32_t irq_mask = denali->caps & DENALI_CAP_HW_ECC_FIXUP ?
-@@ -757,7 +757,7 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 
- 	dma_sync_single_for_cpu(denali->dev, addr, size, DMA_FROM_DEVICE);
- 
--	memcpy(buf, denali->buf.buf, mtd->writesize);
-+	memcpy(buf, denali->buf, mtd->writesize);
- 
- 	if (denali->caps & DENALI_CAP_HW_ECC_FIXUP)
- 		stat = denali_hw_ecc_fixup(mtd, denali, &uncor_ecc_flags);
-@@ -782,7 +782,7 @@ static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 				uint8_t *buf, int oob_required, int page)
- {
- 	struct denali_nand_info *denali = mtd_to_denali(mtd);
--	dma_addr_t addr = denali->buf.dma_buf;
-+	dma_addr_t addr = denali->dma_addr;
- 	size_t size = mtd->writesize + mtd->oobsize;
- 	uint32_t irq_mask = INTR__DMA_CMD_COMP;
- 	uint32_t irq_status;
-@@ -804,8 +804,8 @@ static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 
- 	denali_enable_dma(denali, false);
- 
--	memcpy(buf, denali->buf.buf, mtd->writesize);
--	memcpy(chip->oob_poi, denali->buf.buf + mtd->writesize, mtd->oobsize);
-+	memcpy(buf, denali->buf, mtd->writesize);
-+	memcpy(chip->oob_poi, denali->buf + mtd->writesize, mtd->oobsize);
- 
- 	return 0;
- }
-@@ -1240,10 +1240,9 @@ int denali_init(struct denali_nand_info *denali)
- 	if (ret)
- 		goto disable_irq;
- 
--	denali->buf.buf = devm_kzalloc(denali->dev,
--			     mtd->writesize + mtd->oobsize,
--			     GFP_KERNEL);
--	if (!denali->buf.buf) {
-+	denali->buf = devm_kzalloc(denali->dev, mtd->writesize + mtd->oobsize,
-+				   GFP_KERNEL);
-+	if (!denali->buf) {
- 		ret = -ENOMEM;
- 		goto disable_irq;
- 	}
-@@ -1256,10 +1255,10 @@ int denali_init(struct denali_nand_info *denali)
- 		goto disable_irq;
- 	}
- 
--	denali->buf.dma_buf = dma_map_single(denali->dev, denali->buf.buf,
-+	denali->dma_addr = dma_map_single(denali->dev, denali->buf,
- 			     mtd->writesize + mtd->oobsize,
- 			     DMA_BIDIRECTIONAL);
--	if (dma_mapping_error(denali->dev, denali->buf.dma_buf)) {
-+	if (dma_mapping_error(denali->dev, denali->dma_addr)) {
- 		dev_err(denali->dev, "Failed to map DMA buffer\n");
- 		ret = -EIO;
- 		goto disable_irq;
-@@ -1353,7 +1352,7 @@ void denali_remove(struct denali_nand_info *denali)
- 
- 	nand_release(mtd);
- 	denali_disable_irq(denali);
--	dma_unmap_single(denali->dev, denali->buf.dma_buf, bufsize,
-+	dma_unmap_single(denali->dev, denali->dma_addr, bufsize,
- 			 DMA_BIDIRECTIONAL);
- }
- EXPORT_SYMBOL(denali_remove);
-diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index cb49eb5..49dc4ba 100644
---- a/drivers/mtd/nand/denali.h
-+++ b/drivers/mtd/nand/denali.h
-@@ -305,16 +305,10 @@
- #define MODE_10    0x08000000
- #define MODE_11    0x0C000000
- 
--struct nand_buf {
--	uint8_t *buf;
--	dma_addr_t dma_buf;
--};
--
- struct denali_nand_info {
- 	struct nand_chip nand;
- 	unsigned long clk_x_rate;	/* bus interface clock rate */
- 	int flash_bank; /* currently selected chip */
--	struct nand_buf buf;
- 	struct device *dev;
- 	void __iomem *flash_reg;	/* Register Interface */
- 	void __iomem *flash_mem;	/* Host Data/Command Interface */
-@@ -326,6 +320,8 @@ struct denali_nand_info {
- 	uint32_t irq_status;
- 	int irq;
- 
-+	void *buf;
-+	dma_addr_t dma_addr;
- 	int devnum;	/* represent how many nands connected */
- 	int bbtskipbytes;
- 	int max_banks;
--- 
-2.7.4
+In fact, assigning NAND_USDHC_BUS_CLK_ROOT directly to peripherals is
+wrong since the gate is between the root clock and the peripherals (see
+Figure 5-13 in RM). If we add the shared gate to NAND_USDHC_BUS_CLK_ROOT
+directly, it will get enabled when using SDHC instances (since that root
+clock is assigned to the sdhc instances, see
+https://patchwork.kernel.org/patch/9674281/)
+
+How about introducing NAND_USDHC_BUS_CLK_RAWNAND/NAND_CLK_RAWNAND which
+has the shared gate in between?
+
+--
+Stefan
+
+> 
+>> md.l 0x33000100 0 # Access APBH_CH0_CURCMDAR
+>>
+>> This works for me.
+>>
+>> I can *boot* from a UBIFS using this driver and Linux 4.12-rc1 with my
+>> patchset applied...
+>>
+>> Monitoring clocks in /sys/kernel/debug/clk/clk_summary show that
+>> NAND_ROOT_CLK gets turned off and back on if NAND access happens, the
+>> system seems stable.
+>>
+>> All that said, this patchset v3 actually does not remove the
+>> NAND_ROOT_CLK as intended to. Will send a v4.
+>>
+>> --
+>> Stefan
+>>
+>>>> - Dropped driver changes, alreay merged
+>>>>
+>>>> Changes since v1:
+>>>> - Make clks_count const
+>>>> - Introduce IS_IMX7D for i.MX 7 SoC's and make it part of GPMI_IS_MX6
+>>>>
+>>>> Stefan Agner (2):
+>>>>     ARM: dts: imx7: add GPMI NAND
+>>>>     ARM: dts: imx7-colibri: add NAND support
+>>>>
+>>>>    arch/arm/boot/dts/imx7-colibri.dtsi |  9 +++++++++
+>>>>    arch/arm/boot/dts/imx7s.dtsi        | 31 +++++++++++++++++++++++++++++++
+>>>>    2 files changed, 40 insertions(+)
+>>>>
