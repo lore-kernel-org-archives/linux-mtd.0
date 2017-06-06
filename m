@@ -1,18 +1,27 @@
-Received: from mail.sysgo.com ([176.9.12.79])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dIEoR-00069t-3m
- for linux-mtd@lists.infradead.org; Tue, 06 Jun 2017 13:46:24 +0000
-Subject: Re: [PATCH] mkfs.ubifs: Allow root entry in device table
-To: linux-mtd@lists.infradead.org
-References: <20170606133158.6973-1-david.engraf@sysgo.com>
-From: David Engraf <david.engraf@sysgo.com>
-Message-ID: <d6b0ecde-8047-22b6-713e-095997f893a0@sysgo.com>
-Date: Tue, 6 Jun 2017 15:46:01 +0200
 MIME-Version: 1.0
-In-Reply-To: <20170606133158.6973-1-david.engraf@sysgo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: de-DE
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <df22afd249abba1ee7c9d31be1c2c8dc1a68f69a.1496730576.git-series.stefan@agner.ch>
+References: <cover.b62c3a17bd60de48d8fb2ade6dde4f2bc60aaf3c.1496730576.git-series.stefan@agner.ch>
+ <df22afd249abba1ee7c9d31be1c2c8dc1a68f69a.1496730576.git-series.stefan@agner.ch>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Tue, 6 Jun 2017 13:33:41 -0300
+Message-ID: <CAOMZO5D=M2i0SAyrtmO5s4UMY8E8Yun-QgJCfrxvEa+1Jb3Xqg@mail.gmail.com>
+Subject: Re: [PATCH v5 1/3] clk: imx7d: create clocks behind rawnand clock gate
+To: Stefan Agner <stefan@agner.ch>
+Cc: Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <kernel@pengutronix.de>,
+ Stephen Boyd <sboyd@codeaurora.org>, Dong Aisheng <aisheng.dong@nxp.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ han.xu@nxp.com, Fabio Estevam <fabio.estevam@freescale.com>,
+ =?UTF-8?Q?Lothar_Wa=C3=9Fmann?= <LW@karo-electronics.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ linux-clk@vger.kernel.org, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,83 +31,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 06.06.2017 um 15:31 schrieb David Engraf:
-> When using a local root folder the permissions, user and group settings
-> are taken from the local folder. These permissions might be incorrect if
-> the folder has been created for the local user. Creating an UBIFS image
-> on my local system resulted in the following output on the target:
-> 
-> drwx------   17 1000     1000   1264 Jan  1 00:00 .
-> drwx------   17 1000     1000   1264 Jan  1 00:00 ..
-> drwxr-xr-x    2 root     root   9104 May 30  2017 bin
-> drwxr-xr-x    7 root     root   2760 Jan  1 00:00 dev
-> ...
-> 
-> mkfs.ubifs aborts with an error message when the device table contains
-> a root entry. This patch allows setting the root folder permissions,
-> user and group to overwrite local configurations.
+On Tue, Jun 6, 2017 at 3:30 AM, Stefan Agner <stefan@agner.ch> wrote:
+> The rawnand clock gate gates two clocks, NAND_USDHC_BUS_CLK_ROOT
+> and NAND_CLK_ROOT. However, the gate has been in the chain of the
+> latter only. This does not allow to use the NAND_USDHC_BUS_CLK_ROOT
+> only, e.g. as required by APBH-Bridge-DMA.
+>
+> Add new clocks which represent the clock after the gate, and use a
+> shared clock gate to correctly model the hardware.
+>
+> Signed-off-by: Stefan Agner <stefan@agner.ch>
 
-Signed-off-by: David Engraf <david.engraf@sysgo.com>
-
-> ---
->   ubifs-utils/mkfs.ubifs/devtable.c   |  8 ++++----
->   ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 13 +++++++++++++
->   2 files changed, 17 insertions(+), 4 deletions(-)
-> 
-> diff --git a/ubifs-utils/mkfs.ubifs/devtable.c b/ubifs-utils/mkfs.ubifs/devtable.c
-> index 3b46abc..10faaca 100644
-> --- a/ubifs-utils/mkfs.ubifs/devtable.c
-> +++ b/ubifs-utils/mkfs.ubifs/devtable.c
-> @@ -146,16 +146,16 @@ static int interpret_table_entry(const char *line)
->   		increment, count);
->   
->   	len = strnlen(buf, 1024);
-> +	if (len == 0)
-> +		return err_msg("empty path");
->   	if (len == 1024)
->   		return err_msg("too long path");
->   
-> -	if (!strcmp(buf, "/"))
-> +	if (buf[0] != '/')
->   		return err_msg("device table entries require absolute paths");
-> -	if (buf[1] == '\0')
-> -		return err_msg("root directory cannot be created");
->   	if (strstr(buf, "//"))
->   		return err_msg("'//' cannot be used in the path");
-> -	if (buf[len - 1] == '/')
-> +	if (len > 1 && buf[len - 1] == '/')
->   		return err_msg("do not put '/' at the end");
->   
->   	if (strstr(buf, "/./") || strstr(buf, "/../") ||
-> diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-> index a60052d..52ed511 100644
-> --- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-> +++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-> @@ -1823,6 +1823,8 @@ static int write_data(void)
->   {
->   	int err;
->   	mode_t mode = S_IFDIR | S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH;
-> +	struct path_htbl_element *ph_elt;
-> +	struct name_htbl_element *nh_elt;
->   
->   	if (root) {
->   		err = stat(root, &root_st);
-> @@ -1835,6 +1837,17 @@ static int write_data(void)
->   		root_st.st_mode = mode;
->   	}
->   
-> +	/*
-> +	 * Check for root entry and update permissions if it exists. This will
-> +	 * also remove the entry from the device table list.
-> +	 */
-> +	ph_elt = devtbl_find_path("/");
-> +	if (ph_elt) {
-> +		nh_elt = devtbl_find_name(ph_elt, "");
-> +		if (nh_elt && override_attributes(&root_st, ph_elt, nh_elt))
-> +			return -1;
-> +	}
-> +
->   	head_flags = 0;
->   
->   	err = create_inum_attr(UBIFS_ROOT_INO, root);
-> 
+Tested-by: Fabio Estevam <fabio.estevam@nxp.com>
