@@ -1,26 +1,20 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dIMY0-0002vz-Ge
- for linux-mtd@lists.infradead.org; Tue, 06 Jun 2017 22:01:58 +0000
-Date: Wed, 7 Jun 2017 00:01:33 +0200
+ by merlin.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dILlS-0006SK-Uj
+ for linux-mtd@lists.infradead.org; Tue, 06 Jun 2017 21:11:47 +0000
+Date: Tue, 6 Jun 2017 23:11:19 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>, Artem
- Bityutskiy <artem.bityutskiy@linux.intel.com>, Dinh Nguyen
- <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Graham Moore
- <grmoore@opensource.altera.com>, David Woodhouse <dwmw2@infradead.org>,
- Masami Hiramatsu <mhiramat@kernel.org>, Chuanxiao Dong
- <chuanxiao.dong@intel.com>, Jassi Brar <jaswinder.singh@linaro.org>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, Mark
- Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v4 04/23] mtd: nand: denali: avoid hard-coding ECC step,
- strength, bytes
-Message-ID: <20170607000133.69fbf82b@bbrezillon>
-In-Reply-To: <1496704922-12261-5-git-send-email-yamada.masahiro@socionext.com>
-References: <1496704922-12261-1-git-send-email-yamada.masahiro@socionext.com>
- <1496704922-12261-5-git-send-email-yamada.masahiro@socionext.com>
+To: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
+ marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] mtd: nand: Add support for Toshiba BENAND
+ (Built-in ECC NAND)
+Message-ID: <20170606231119.5f0fcf85@bbrezillon>
+In-Reply-To: <ea24c8c5-4607-6018-bca2-3eb7deaff5b9@toshiba.co.jp>
+References: <1495761335-20535-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
+ <20170526182254.6a4f98c8@bbrezillon>
+ <ea24c8c5-4607-6018-bca2-3eb7deaff5b9@toshiba.co.jp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -33,207 +27,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue,  6 Jun 2017 08:21:43 +0900
-Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+On Mon, 5 Jun 2017 14:36:23 +0900
+KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:
 
-> This driver was originally written for the Intel MRST platform with
-> several platform-specific parameters hard-coded.
+> Hi Boris,
 > 
-> Currently, the ECC settings are hard-coded as follows:
+> Thank you very much for your detailed review.
+> I just comming back from busy week for conference and started to look it.
 > 
->   #define ECC_SECTOR_SIZE 512
->   #define ECC_8BITS       14
->   #define ECC_15BITS      26
+> I have a question regarding to the following comment.
 > 
-> Therefore, the driver can only support two cases.
->  - ecc.size = 512, ecc.strength = 8    --> ecc.bytes = 14
->  - ecc.size = 512, ecc.strength = 15   --> ecc.bytes = 26
+> >>  static int toshiba_nand_init(struct nand_chip *chip)
+> >>  {
+> >> +	struct mtd_info *mtd = nand_to_mtd(chip);
+> >> +
+> >>  	if (nand_is_slc(chip))
+> >>  		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
+> >>  
+> >> +	if (chip->ecc.mode == NAND_ECC_BENAND) {
+> >> +		chip->ecc.options = NAND_ECC_CUSTOM_PAGE_ACCESS;
+> >> +		chip->ecc.bytes = 0;  
+> > 
+> > It should be set to 16 according to the datasheet. But I guess this is
+> > not exactly true. I'm pretty sure we can use some of these bytes to
+> > store real data. Assuming you're using BCH, only 13bytes are needed for
+> > 8bits/512bytes strength, and I guess the BBM region is also left
+> > untouched (first 2 bytes of the OOB region).  
 > 
-> However, these are actually customizable parameters, for example,
-> UniPhier platform supports the following:
-> 
->  - ecc.size = 1024, ecc.strength = 8   --> ecc.bytes = 14
->  - ecc.size = 1024, ecc.strength = 16  --> ecc.bytes = 28
->  - ecc.size = 1024, ecc.strength = 24  --> ecc.bytes = 42
-> 
-> So, we need to handle the ECC parameters in a more generic manner.
-> Fortunately, the Denali User's Guide explains how to calculate the
-> ecc.bytes.  The formula is:
-> 
->   ecc.bytes = 2 * CEIL(13 * ecc.strength / 16)  (for ecc.size = 512)
->   ecc.bytes = 2 * CEIL(14 * ecc.strength / 16)  (for ecc.size = 1024)
-> 
-> For DT platforms, it would be reasonable to allow DT to specify ECC
-> strength by either "nand-ecc-strength" or "nand-ecc-maximize".  If
-> none of them is specified, the driver will try to meet the chip's ECC
-> requirement.
-> 
-> For PCI platforms, the max ECC strength is used to keep the original
-> behavior.
-> 
-> Newer versions of this IP need ecc.size and ecc.steps explicitly
-> set up via the following registers:
->   CFG_DATA_BLOCK_SIZE       (0x6b0)
->   CFG_LAST_DATA_BLOCK_SIZE  (0x6c0)
->   CFG_NUM_DATA_BLOCKS       (0x6d0)
-> 
-> For older IP versions, write accesses to these registers are just
-> ignored.
-> 
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> Acked-by: Rob Herring <robh@kernel.org>
-> ---
-> 
-> Changes in v4:
->   - Rewrite by using generic helpers, nand_check_caps(),
->     nand_match_ecc_req(), nand_maximize_ecc().
-> 
-> Changes in v3:
->   - Move DENALI_CAP_ define out of struct denali_nand_info
->   - Use chip->ecc_step_ds as a hint to choose chip->ecc.size
->     where possible
-> 
-> Changes in v2:
->   - Change the capability prefix DENALI_CAPS_ -> DENALI_CAP_
->   - Make ECC 512 cap and ECC 1024 cap independent
->   - Set up three CFG_... registers
-> 
->  .../devicetree/bindings/mtd/denali-nand.txt        |   7 ++
->  drivers/mtd/nand/denali.c                          | 103 ++++++++++++++-------
->  drivers/mtd/nand/denali.h                          |  11 ++-
->  drivers/mtd/nand/denali_dt.c                       |   8 ++
->  drivers/mtd/nand/denali_pci.c                      |   9 ++
->  5 files changed, 101 insertions(+), 37 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-> index e593bbe..b7742a7 100644
-> --- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-> @@ -7,6 +7,13 @@ Required properties:
->    - reg-names: Should contain the reg names "nand_data" and "denali_reg"
->    - interrupts : The interrupt number.
->  
-> +Optional properties:
-> +  - nand-ecc-step-size: see nand.txt for details.  If present, the value must be
-> +      512        for "altr,socfpga-denali-nand"
-> +  - nand-ecc-strength: see nand.txt for details.  Valid values are:
-> +      8, 15      for "altr,socfpga-denali-nand"
-> +  - nand-ecc-maximize: see nand.txt for details
-> +
->  The device tree may optionally contain sub-nodes describing partitions of the
->  address space. See partition.txt for more detail.
->  
-> diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-> index 16634df..3204c51 100644
-> --- a/drivers/mtd/nand/denali.c
-> +++ b/drivers/mtd/nand/denali.c
-> @@ -886,8 +886,6 @@ static int denali_hw_ecc_fixup(struct mtd_info *mtd,
->  	return max_bitflips;
->  }
->  
-> -#define ECC_SECTOR_SIZE 512
-> -
->  #define ECC_SECTOR(x)	(((x) & ECC_ERROR_ADDRESS__SECTOR_NR) >> 12)
->  #define ECC_BYTE(x)	(((x) & ECC_ERROR_ADDRESS__OFFSET))
->  #define ECC_CORRECTION_VALUE(x) ((x) & ERR_CORRECTION_INFO__BYTEMASK)
-> @@ -899,6 +897,7 @@ static int denali_sw_ecc_fixup(struct mtd_info *mtd,
->  			       struct denali_nand_info *denali,
->  			       unsigned long *uncor_ecc_flags, uint8_t *buf)
->  {
-> +	unsigned int ecc_size = denali->nand.ecc.size;
->  	unsigned int bitflips = 0;
->  	unsigned int max_bitflips = 0;
->  	uint32_t err_addr, err_cor_info;
-> @@ -928,9 +927,9 @@ static int denali_sw_ecc_fixup(struct mtd_info *mtd,
->  			 * an erased sector.
->  			 */
->  			*uncor_ecc_flags |= BIT(err_sector);
-> -		} else if (err_byte < ECC_SECTOR_SIZE) {
-> +		} else if (err_byte < ecc_size) {
->  			/*
-> -			 * If err_byte is larger than ECC_SECTOR_SIZE, means error
-> +			 * If err_byte is larger than ecc_size, means error
->  			 * happened in OOB, so we ignore it. It's no need for
->  			 * us to correct it err_device is represented the NAND
->  			 * error bits are happened in if there are more than
-> @@ -939,7 +938,7 @@ static int denali_sw_ecc_fixup(struct mtd_info *mtd,
->  			int offset;
->  			unsigned int flips_in_byte;
->  
-> -			offset = (err_sector * ECC_SECTOR_SIZE + err_byte) *
-> +			offset = (err_sector * ecc_size + err_byte) *
->  						denali->devnum + err_device;
->  
->  			/* correct the ECC error */
-> @@ -1345,13 +1344,55 @@ static void denali_hw_init(struct denali_nand_info *denali)
->  	denali_irq_init(denali);
->  }
->  
-> -/*
-> - * Althogh controller spec said SLC ECC is forceb to be 4bit,
-> - * but denali controller in MRST only support 15bit and 8bit ECC
-> - * correction
-> - */
-> -#define ECC_8BITS	14
-> -#define ECC_15BITS	26
-> +static int denali_calc_ecc_bytes(int step_size, int strength)
-> +{
-> +	int coef;
-> +
-> +	switch (step_size) {
-> +	case 512:
-> +		coef = 13;
-> +		break;
-> +	case 1024:
-> +		coef = 14;
-> +		break;
-> +	default:
-> +		return -ENOTSUPP;
-> +	}
-> +
-> +	return DIV_ROUND_UP(strength * coef, 16) * 2;
+> On BENAND, all OOB reginon can be used by user (driver). The calculated
+> ECC data stored into other isolated area which is ubable to access from user.
+> This is why chip->ecc.bytes = 0.
 
-or just
+Oh, nice!
 
-	return DIV_ROUND_UP(strength * fls(8 * step_size), 16) * 2;
+> To make sure this specification, I also checked the BENAND datasheet
+> but unfortunatelly it was undocumented. Sorry for this confusion.
 
-the array of supported step size/strength should guarantee that you're
-called with unsupported settings.
+No problem. Do you think you can update the datasheet (or ask someone
+who can) to clarify this aspect? As you said, it's really not clear
+that these ECC bytes are actually stored in a dedicated region that is
+invisible to users.
 
-> +}
-> +
-> +static int denali_ecc_setup(struct mtd_info *mtd, struct nand_chip *chip,
-> +			    struct denali_nand_info *denali)
-> +{
-> +	struct nand_ecc_caps caps;
-> +	int ret;
-> +
-> +	caps.stepinfos = denali->stepinfo;
-> +	caps.nstepinfos = 1;
-> +	caps.calc_ecc_bytes = denali_calc_ecc_bytes;
-> +	caps.oob_reserve_bytes = denali->bbtskipbytes;
+> 
+> I think I can add comment here or add definition somewhere to describe this
+> specification.
 
-If you get rid of this oob_reserve_bytes field, you can define caps as
-a static const and even directly store ecc_caps in denali_nand_info.
+Yes please, add a comment in the code, just above the ->ecc.bytes = 0
+assignment.
 
-> +
-> +	/*
-> +	 * If .size and .strength are already set (usually by DT),
-> +	 * check if they are supported by this controller.
-> +	 */
-> +	if (chip->ecc.size && chip->ecc.strength)
-> +		return nand_check_ecc_caps(mtd, chip, &caps);
-> +
-> +	/*
-> +	 * We want .size and .strength closest to the chip's requirement
-> +	 * unless NAND_ECC_MAXIMIZE is requested.
-> +	 */
-> +	if (!(chip->ecc.options & NAND_ECC_MAXIMIZE)) {
-> +		ret = nand_match_ecc_req(mtd, chip, &caps);
-> +		if (!ret)
-> +			return 0;
-> +	}
-> +
-> +	/* Max ECC strength is the last thing we can do */
-> +	return nand_maximize_ecc(mtd, chip, &caps);
-> +}
+> If you have any preference or suggestion to describe this, please let me know.
+
+Nope. Just put the explanation you give here.
