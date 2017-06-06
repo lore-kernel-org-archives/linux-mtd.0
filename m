@@ -1,11 +1,11 @@
 MIME-Version: 1.0
-In-Reply-To: <df22afd249abba1ee7c9d31be1c2c8dc1a68f69a.1496730576.git-series.stefan@agner.ch>
+In-Reply-To: <151ddece1e1427d0b69c4ff11b86a69b6a035d0d.1496730576.git-series.stefan@agner.ch>
 References: <cover.b62c3a17bd60de48d8fb2ade6dde4f2bc60aaf3c.1496730576.git-series.stefan@agner.ch>
- <df22afd249abba1ee7c9d31be1c2c8dc1a68f69a.1496730576.git-series.stefan@agner.ch>
+ <151ddece1e1427d0b69c4ff11b86a69b6a035d0d.1496730576.git-series.stefan@agner.ch>
 From: Fabio Estevam <festevam@gmail.com>
-Date: Tue, 6 Jun 2017 13:33:41 -0300
-Message-ID: <CAOMZO5D=M2i0SAyrtmO5s4UMY8E8Yun-QgJCfrxvEa+1Jb3Xqg@mail.gmail.com>
-Subject: Re: [PATCH v5 1/3] clk: imx7d: create clocks behind rawnand clock gate
+Date: Tue, 6 Jun 2017 13:34:52 -0300
+Message-ID: <CAOMZO5Ai-_5j3gQviaq19y7MJmirRgBtUp59UYmuGaN3Fd5Sag@mail.gmail.com>
+Subject: Re: [PATCH v5 2/3] ARM: dts: imx7: add GPMI NAND and APBH DMA
 To: Stefan Agner <stefan@agner.ch>
 Cc: Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <kernel@pengutronix.de>,
  Stephen Boyd <sboyd@codeaurora.org>, Dong Aisheng <aisheng.dong@nxp.com>,
@@ -32,14 +32,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Tue, Jun 6, 2017 at 3:30 AM, Stefan Agner <stefan@agner.ch> wrote:
-> The rawnand clock gate gates two clocks, NAND_USDHC_BUS_CLK_ROOT
-> and NAND_CLK_ROOT. However, the gate has been in the chain of the
-> latter only. This does not allow to use the NAND_USDHC_BUS_CLK_ROOT
-> only, e.g. as required by APBH-Bridge-DMA.
->
-> Add new clocks which represent the clock after the gate, and use a
-> shared clock gate to correctly model the hardware.
+> Add i.MX 7 APBH DMA and GPMI NAND modules.
 >
 > Signed-off-by: Stefan Agner <stefan@agner.ch>
+
+Tested on a imx7d-sdb:
+
+[    1.303543] nand: device found, Manufacturer ID: 0xec, Chip ID: 0xd5
+[    1.309999] nand: Samsung NAND 2GiB 3,3V 8-bit
+[    1.314467] nand: 2048 MiB, MLC, erase size: 256 KiB, page size:
+2048, OOB size: 64
+[    1.346007] gpmi-nand 33002000.gpmi-nand: driver registered.
 
 Tested-by: Fabio Estevam <fabio.estevam@nxp.com>
