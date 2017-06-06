@@ -1,29 +1,35 @@
-Received: from conuserg-10.nifty.com ([210.131.2.77])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dI1M6-0003vU-Mz
- for linux-mtd@lists.infradead.org; Mon, 05 Jun 2017 23:24:21 +0000
+Received: from conssluserg-04.nifty.com ([210.131.2.83])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dI3rn-0002Mc-LE
+ for linux-mtd@lists.infradead.org; Tue, 06 Jun 2017 02:05:09 +0000
+Received: from mail-yw0-f169.google.com (mail-yw0-f169.google.com
+ [209.85.161.169]) (authenticated)
+ by conssluserg-04.nifty.com with ESMTP id v5624Kns008950
+ for <linux-mtd@lists.infradead.org>; Tue, 6 Jun 2017 11:04:21 +0900
+Received: by mail-yw0-f169.google.com with SMTP id l14so62729612ywk.1
+ for <linux-mtd@lists.infradead.org>; Mon, 05 Jun 2017 19:04:20 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20170330183030.14acbb47@bbrezillon>
+References: <1490861708-27813-1-git-send-email-yamada.masahiro@socionext.com>
+ <1490861708-27813-2-git-send-email-yamada.masahiro@socionext.com>
+ <20170330183030.14acbb47@bbrezillon>
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: linux-mtd@lists.infradead.org
-Cc: Enrico Jorns <ejo@pengutronix.de>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Dinh Nguyen <dinguyen@kernel.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Graham Moore <grmoore@opensource.altera.com>,
+Date: Tue, 6 Jun 2017 11:04:19 +0900
+Message-ID: <CAK7LNARFJfKHNOkOJkbLad0Chqsf=3mMdLJkagNKpc-gQwzsLQ@mail.gmail.com>
+Subject: Re: [PATCH v3 32/37] mtd: nand: denali: support hardware-assisted
+ erased page detection
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
  David Woodhouse <dwmw2@infradead.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>, Dinh Nguyen <dinguyen@kernel.org>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Graham Moore <grmoore@opensource.altera.com>,
+ Enrico Jorns <ejo@pengutronix.de>,
  Chuanxiao Dong <chuanxiao.dong@intel.com>,
- Jassi Brar <jaswinder.singh@linaro.org>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>
-Subject: [PATCH v4 19/23] mtd: nand: denali: use flag instead of register
- macro for direction
-Date: Tue,  6 Jun 2017 08:21:58 +0900
-Message-Id: <1496704922-12261-20-git-send-email-yamada.masahiro@socionext.com>
-In-Reply-To: <1496704922-12261-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1496704922-12261-1-git-send-email-yamada.masahiro@socionext.com>
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Jassi Brar <jaswinder.singh@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,167 +39,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It is not a good idea to re-use macros that represent a specific
-register bit field for the transfer direction.
+Hi Boris,
 
-It is true that bit 8 indicates the direction for the MAP10 pipeline
-operation and the data DMA operation, but this is not valid across
-the IP.
 
-Use a simple flag (write: 1, read: 0) for the direction.
+2017-03-31 1:30 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> On Thu, 30 Mar 2017 17:15:03 +0900
+> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>
+>> Recent versions of this IP support automatic erased page detection.
+>> If an erased page is detected on reads, the controller does not set
+>> INTR__ECC_UNCOR_ERR, but INTR__ERASED_PAGE.  If this feature is
+>> supported, the driver can use this information instead of calling
+>> nand_check_erased_ecc_chunk().
+>>
+>> The detection of erased page is based on the number of zeros in the
+>> page; if the number of zeros is less than the value in the field
+>> ERASED_THRESHOLD, the page is assumed as erased.
+>>
+>> Set the ERASED_THRESHOLD to (chip->ecc.strength + 1).  This is the
+>> worst case where all the bitflips come from the same ECC sector.
+>> This field is Reserved for older IP versions, so this commit has
+>> no impact on them.
+>
+> Do you have a way to know the actual number of bitflips in an erased
+> ECC block?
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
+There is no way to the actual number of bitflips
+except that the driver parses the whole buffer counting bitflips.
 
-Changes in v4: None
-Changes in v3: None
-Changes in v2:
-  - Newly added
 
- drivers/mtd/nand/denali.c | 36 +++++++++++++++++-------------------
- 1 file changed, 17 insertions(+), 19 deletions(-)
+> BTW, is the threshold a per-page information or a per ECC
+> block information.
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 755825d..d156d95 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -53,9 +53,6 @@ static inline struct denali_nand_info *mtd_to_denali(struct mtd_info *mtd)
- #define MAIN_ACCESS		0x42
- #define MAIN_SPARE_ACCESS	0x43
- 
--#define DENALI_READ	0
--#define DENALI_WRITE	0x100
--
- #define DENALI_NR_BANKS		4
- 
- /*
-@@ -284,7 +281,7 @@ static int denali_dev_ready(struct mtd_info *mtd)
-  */
- static int denali_send_pipeline_cmd(struct denali_nand_info *denali, int page,
- 				    bool ecc_en, bool transfer_spare,
--				    int access_type, int op)
-+				    int access_type, int write)
- {
- 	int status = PASS;
- 	uint32_t addr, cmd;
-@@ -295,17 +292,17 @@ static int denali_send_pipeline_cmd(struct denali_nand_info *denali, int page,
- 
- 	addr = BANK(denali->flash_bank) | page;
- 
--	if (op == DENALI_WRITE && access_type != SPARE_ACCESS) {
-+	if (write && access_type != SPARE_ACCESS) {
- 		cmd = MODE_01 | addr;
- 		iowrite32(cmd, denali->flash_mem);
--	} else if (op == DENALI_WRITE && access_type == SPARE_ACCESS) {
-+	} else if (write && access_type == SPARE_ACCESS) {
- 		/* read spare area */
- 		cmd = MODE_10 | addr;
- 		index_addr(denali, cmd, access_type);
- 
- 		cmd = MODE_01 | addr;
- 		iowrite32(cmd, denali->flash_mem);
--	} else if (op == DENALI_READ) {
-+	} else {
- 		/* setup page read request for access type */
- 		cmd = MODE_10 | addr;
- 		index_addr(denali, cmd, access_type);
-@@ -367,7 +364,7 @@ static int write_oob_data(struct mtd_info *mtd, uint8_t *buf, int page)
- 	int status = 0;
- 
- 	if (denali_send_pipeline_cmd(denali, page, false, false, SPARE_ACCESS,
--							DENALI_WRITE) == PASS) {
-+							1) == PASS) {
- 		write_data_to_flash_mem(denali, buf, mtd->oobsize);
- 
- 		/* wait for operation to complete */
-@@ -392,7 +389,7 @@ static void read_oob_data(struct mtd_info *mtd, uint8_t *buf, int page)
- 	uint32_t irq_status, addr, cmd;
- 
- 	if (denali_send_pipeline_cmd(denali, page, false, true, SPARE_ACCESS,
--							DENALI_READ) == PASS) {
-+							0) == PASS) {
- 		read_data_from_flash_mem(denali, buf, mtd->oobsize);
- 
- 		/*
-@@ -578,7 +575,7 @@ static void denali_enable_dma(struct denali_nand_info *denali, bool en)
- }
- 
- static void denali_setup_dma64(struct denali_nand_info *denali,
--			       dma_addr_t dma_addr, int page, int op)
-+			       dma_addr_t dma_addr, int page, int write)
- {
- 	uint32_t mode;
- 	const int page_count = 1;
-@@ -591,7 +588,8 @@ static void denali_setup_dma64(struct denali_nand_info *denali,
- 	 * 1. setup transfer type, interrupt when complete,
- 	 *    burst len = 64 bytes, the number of pages
- 	 */
--	index_addr(denali, mode, 0x01002000 | (64 << 16) | op | page_count);
-+	index_addr(denali, mode,
-+		   0x01002000 | (64 << 16) | (write << 8) | page_count);
- 
- 	/* 2. set memory low address */
- 	index_addr(denali, mode, dma_addr);
-@@ -601,7 +599,7 @@ static void denali_setup_dma64(struct denali_nand_info *denali,
- }
- 
- static void denali_setup_dma32(struct denali_nand_info *denali,
--			       dma_addr_t dma_addr, int page, int op)
-+			       dma_addr_t dma_addr, int page, int write)
- {
- 	uint32_t mode;
- 	const int page_count = 1;
-@@ -611,7 +609,7 @@ static void denali_setup_dma32(struct denali_nand_info *denali,
- 	/* DMA is a four step process */
- 
- 	/* 1. setup transfer type and # of pages */
--	index_addr(denali, mode | page, 0x2000 | op | page_count);
-+	index_addr(denali, mode | page, 0x2000 | (write << 8) | page_count);
- 
- 	/* 2. set memory high address bits 23:8 */
- 	index_addr(denali, mode | ((dma_addr >> 16) << 8), 0x2200);
-@@ -624,12 +622,12 @@ static void denali_setup_dma32(struct denali_nand_info *denali,
- }
- 
- static void denali_setup_dma(struct denali_nand_info *denali,
--			     dma_addr_t dma_addr, int page, int op)
-+			     dma_addr_t dma_addr, int page, int write)
- {
- 	if (denali->caps & DENALI_CAP_DMA_64BIT)
--		denali_setup_dma64(denali, dma_addr, page, op);
-+		denali_setup_dma64(denali, dma_addr, page, write);
- 	else
--		denali_setup_dma32(denali, dma_addr, page, op);
-+		denali_setup_dma32(denali, dma_addr, page, write);
- }
- 
- /*
-@@ -668,7 +666,7 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	denali_reset_irq(denali);
- 	denali_enable_dma(denali, true);
- 
--	denali_setup_dma(denali, addr, page, DENALI_WRITE);
-+	denali_setup_dma(denali, addr, page, 1);
- 
- 	/* wait for operation to complete */
- 	irq_status = denali_wait_for_irq(denali, irq_mask);
-@@ -750,7 +748,7 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	dma_sync_single_for_device(denali->dev, addr, size, DMA_FROM_DEVICE);
- 
- 	denali_reset_irq(denali);
--	denali_setup_dma(denali, addr, page, DENALI_READ);
-+	denali_setup_dma(denali, addr, page, 0);
- 
- 	/* wait for operation to complete */
- 	irq_status = denali_wait_for_irq(denali, irq_mask);
-@@ -793,7 +791,7 @@ static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 	dma_sync_single_for_device(denali->dev, addr, size, DMA_FROM_DEVICE);
- 
- 	denali_reset_irq(denali);
--	denali_setup_dma(denali, addr, page, DENALI_READ);
-+	denali_setup_dma(denali, addr, page, 0);
- 
- 	/* wait for operation to complete */
- 	irq_status = denali_wait_for_irq(denali, irq_mask);
+Per-page.
+
+Honestly, this hardware feature is not nice
+because per-chunk threshold makes sense .
+
+
+
+
+> If you can't know the real number of bitflips I don't think it's safe
+> to set the threshold to chip->ecc.strength + 1.
+
+Right.
+
+> You can still use the feature to detect erased pages without any
+> bitflips (set ERASED_THRESHOLD to 1), which should be the case most of
+> the time, but for cases where you have bitflips I'd recommend using
+> nand_check_erased_ecc_chunk() if you can't know the actual number of
+> bitflips in the page.
+>
+
+You are right.
+
+
+Probably, this feature can work safely
+only when ERASED_THRESHOLD == 1.
+
+
+I decided to drop this patch from v4 for now,
+but I will consider it.
+
+
 -- 
-2.7.4
+Best Regards
+Masahiro Yamada
