@@ -1,7 +1,7 @@
 Received: from conuserg-10.nifty.com ([210.131.2.77])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dIZWu-0004S1-5K
- for linux-mtd@lists.infradead.org; Wed, 07 Jun 2017 11:53:42 +0000
+ id 1dIZWu-0004S2-5O
+ for linux-mtd@lists.infradead.org; Wed, 07 Jun 2017 11:53:44 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Enrico Jorns <ejo@pengutronix.de>,
@@ -16,10 +16,10 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v5 04/23] mtd: nand: denali: remove Toshiba and Hynix specific
- fixup code
-Date: Wed,  7 Jun 2017 20:52:13 +0900
-Message-Id: <1496836352-8016-5-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v5 02/23] mtd: nand: add a shorthand to generate nand_ecc_caps
+ structure
+Date: Wed,  7 Jun 2017 20:52:11 +0900
+Message-Id: <1496836352-8016-3-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,101 +31,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Denali IP can automatically detect device parameters such as
-page size, oob size, device width, etc. and this driver currently
-relies on it.  However, this hardware function is known to be
-problematic.
+struct nand_ecc_caps was designed as flexible as possible to support
+multiple stepsizes (like sunxi_nand.c).
 
-[1] Due to a hardware bug, various misdetected cases were reported.
-    That is why get_toshiba_nand_para() and get_hynix_nand_para()
-    exist to fix-up the misdetected parameters.  It is not realistic
-    to add a new NAND device to the *black list* every time we are
-    hit by a misdetected case.  We would never be able to guarantee
-    that all cases are covered.
+So, we need to write multiple arrays even for the simplest case.
+I guess many controllers support a single stepsize, so here is a
+shorthand macro for the case.
 
-[2] Because this feature is unreliable, it is disabled on some
-    platforms.
+It allows to describe like ...
 
-The nand_scan_ident() detects device parameters in a more tested
-way.  The hardware should not set the device parameter registers in
-a different, unreliable way.  Instead, set the parameters from the
-nand_scan_ident() back to the registers.
+NAND_ECC_CAPS_SINGLE(denali_pci_ecc_caps, denali_calc_ecc_bytes, 512, 8, 15);
+
+... instead of
+
+static const int denali_pci_ecc_strengths[] = {8, 15};
+static const struct nand_ecc_step_info denali_pci_ecc_stepinfo = {
+        .stepsize = 512,
+        .strengths = denali_pci_ecc_strengths,
+        .nstrengths = ARRAY_SIZE(denali_pci_ecc_strengths),
+};
+static const struct nand_ecc_caps denali_pci_ecc_caps = {
+        .stepinfos = &denali_pci_ecc_stepinfo,
+        .nstepinfos = 1,
+        .calc_ecc_bytes = denali_calc_ecc_bytes,
+};
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v5: None
+Changes in v5:
+  - Newly added
+
 Changes in v4: None
 Changes in v3: None
 Changes in v2: None
 
- drivers/mtd/nand/denali.c | 40 ++++++----------------------------------
- 1 file changed, 6 insertions(+), 34 deletions(-)
+ include/linux/mtd/nand.h | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 0fff11faf603..991924b9ae2c 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -337,36 +337,6 @@ static void get_samsung_nand_para(struct denali_nand_info *denali,
- 	}
- }
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index c28a5792eed6..c08954a39657 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -500,6 +500,20 @@ struct nand_ecc_caps {
+ 	int (*calc_ecc_bytes)(int step_size, int strength);
+ };
  
--static void get_toshiba_nand_para(struct denali_nand_info *denali)
--{
--	/*
--	 * Workaround to fix a controller bug which reports a wrong
--	 * spare area size for some kind of Toshiba NAND device
--	 */
--	if ((ioread32(denali->flash_reg + DEVICE_MAIN_AREA_SIZE) == 4096) &&
--		(ioread32(denali->flash_reg + DEVICE_SPARE_AREA_SIZE) == 64))
--		iowrite32(216, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
--}
--
--static void get_hynix_nand_para(struct denali_nand_info *denali,
--							uint8_t device_id)
--{
--	switch (device_id) {
--	case 0xD5: /* Hynix H27UAG8T2A, H27UBG8U5A or H27UCG8VFA */
--	case 0xD7: /* Hynix H27UDG8VEM, H27UCG8UDM or H27UCG8V5A */
--		iowrite32(128, denali->flash_reg + PAGES_PER_BLOCK);
--		iowrite32(4096, denali->flash_reg + DEVICE_MAIN_AREA_SIZE);
--		iowrite32(224, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
--		iowrite32(0, denali->flash_reg + DEVICE_WIDTH);
--		break;
--	default:
--		dev_warn(denali->dev,
--			 "Unknown Hynix NAND (Device ID: 0x%x).\n"
--			 "Will use default parameter values instead.\n",
--			 device_id);
--	}
--}
--
- /*
-  * determines how many NAND chips are connected to the controller. Note for
-  * Intel CE4100 devices we don't support more than one device.
-@@ -453,10 +423,6 @@ static uint16_t denali_nand_timing_set(struct denali_nand_info *denali)
- 			return FAIL;
- 	} else if (maf_id == 0xEC) { /* Samsung NAND */
- 		get_samsung_nand_para(denali, device_id);
--	} else if (maf_id == 0x98) { /* Toshiba NAND */
--		get_toshiba_nand_para(denali);
--	} else if (maf_id == 0xAD) { /* Hynix NAND */
--		get_hynix_nand_para(denali, device_id);
- 	}
- 
- 	dev_info(denali->dev,
-@@ -1622,6 +1588,12 @@ int denali_init(struct denali_nand_info *denali)
- 		chip->ecc.size, chip->ecc.strength, chip->ecc.bytes);
- 
- 	iowrite32(chip->ecc.strength, denali->flash_reg + ECC_CORRECTION);
-+	iowrite32(mtd->erasesize / mtd->writesize,
-+		  denali->flash_reg + PAGES_PER_BLOCK);
-+	iowrite32(chip->options & NAND_BUSWIDTH_16 ? 1 : 0,
-+		  denali->flash_reg + DEVICE_WIDTH);
-+	iowrite32(mtd->writesize, denali->flash_reg + DEVICE_MAIN_AREA_SIZE);
-+	iowrite32(mtd->oobsize, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
- 
- 	iowrite32(chip->ecc.size, denali->flash_reg + CFG_DATA_BLOCK_SIZE);
- 	iowrite32(chip->ecc.size, denali->flash_reg + CFG_LAST_DATA_BLOCK_SIZE);
++/* a shorthand to generate struct nand_ecc_caps with only one ECC stepsize */
++#define NAND_ECC_CAPS_SINGLE(__name, __calc, __step, ...)	\
++static const int __name##_strengths[] = { __VA_ARGS__ };	\
++static const struct nand_ecc_step_info __name##_stepinfo = {	\
++	.stepsize = __step,					\
++	.strengths = __name##_strengths,			\
++	.nstrengths = ARRAY_SIZE(__name##_strengths),		\
++};								\
++static const struct nand_ecc_caps __name = {			\
++	.stepinfos = &__name##_stepinfo,			\
++	.nstepinfos = 1,					\
++	.calc_ecc_bytes = __calc,				\
++}
++
+ /**
+  * struct nand_ecc_ctrl - Control structure for ECC
+  * @mode:	ECC mode
 -- 
 2.7.4
