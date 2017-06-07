@@ -1,6 +1,6 @@
 Received: from conuserg-10.nifty.com ([210.131.2.77])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dIZXD-0004VH-Sl
+ id 1dIZXD-0004V9-Sw
  for linux-mtd@lists.infradead.org; Wed, 07 Jun 2017 11:54:01 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -16,9 +16,9 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v5 11/23] mtd: nand: denali: fix NAND_CMD_STATUS handling
-Date: Wed,  7 Jun 2017 20:52:20 +0900
-Message-Id: <1496836352-8016-12-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v5 23/23] mtd: nand: denali: enable bad block table scan
+Date: Wed,  7 Jun 2017 20:52:32 +0900
+Message-Id: <1496836352-8016-24-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,11 +30,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The current NAND_CMD_STATUS handling is weird; it just reads the
-WRITE_PROTECT register, and returns NAND_STATUS_WP if it is set.
+Now this driver is ready to remove NAND_SKIP_BBTSCAN.
 
-It does not send Read Status (0x70) command, so it is not helpful
-for checking the current device status.
+The BBT descriptors in denali.c are equivalent to the ones in
+nand_bbt.c.  There is no need to duplicate the equivalent structures.
+The with-oob decriptors do not work for this driver anyway.
+
+The bbt_pattern (offs = 8) and the version (veroffs = 12) area
+overlaps the ECC area.  Set NAND_BBT_NO_OOB flag to use the no_oob
+variant of the BBT descriptors.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
@@ -45,47 +49,58 @@ Changes in v3: None
 Changes in v2:
   - Newly added
 
- drivers/mtd/nand/denali.c | 21 +++++----------------
- 1 file changed, 5 insertions(+), 16 deletions(-)
+ drivers/mtd/nand/denali.c | 31 ++-----------------------------
+ 1 file changed, 2 insertions(+), 29 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 62798e6d7009..94beab57c145 100644
+index 904f859e19b6..43006c506a6b 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -107,21 +107,6 @@ static void write_byte_to_buf(struct denali_nand_info *denali, uint8_t byte)
- 	denali->buf.buf[denali->buf.tail++] = byte;
- }
+@@ -1247,29 +1247,6 @@ static const struct mtd_ooblayout_ops denali_ooblayout_ops = {
+ 	.free = denali_ooblayout_free,
+ };
  
--/* reads the status of the device */
--static void read_status(struct denali_nand_info *denali)
--{
--	uint32_t cmd;
+-static uint8_t bbt_pattern[] = {'B', 'b', 't', '0' };
+-static uint8_t mirror_pattern[] = {'1', 't', 'b', 'B' };
 -
--	/* initialize the data buffer to store status */
--	reset_buf(denali);
+-static struct nand_bbt_descr bbt_main_descr = {
+-	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
+-		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
+-	.offs =	8,
+-	.len = 4,
+-	.veroffs = 12,
+-	.maxblocks = 4,
+-	.pattern = bbt_pattern,
+-};
 -
--	cmd = ioread32(denali->flash_reg + WRITE_PROTECT);
--	if (cmd)
--		write_byte_to_buf(denali, NAND_STATUS_WP);
--	else
--		write_byte_to_buf(denali, 0);
--}
+-static struct nand_bbt_descr bbt_mirror_descr = {
+-	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
+-		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
+-	.offs =	8,
+-	.len = 4,
+-	.veroffs = 12,
+-	.maxblocks = 4,
+-	.pattern = mirror_pattern,
+-};
 -
- /* Reset the flash controller */
- static uint16_t denali_nand_reset(struct denali_nand_info *denali)
+ /* initialize driver data structures */
+ static void denali_drv_init(struct denali_nand_info *denali)
  {
-@@ -893,7 +878,11 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
+@@ -1412,13 +1389,9 @@ int denali_init(struct denali_nand_info *denali)
+ 	 * bad block management.
+ 	 */
  
- 	switch (cmd) {
- 	case NAND_CMD_STATUS:
--		read_status(denali);
-+		reset_buf(denali);
-+		addr = MODE_11 | BANK(denali->flash_bank);
-+		index_addr(denali, addr | 0, cmd);
-+		index_addr_read_data(denali, addr | 2, &id);
-+		write_byte_to_buf(denali, id);
- 		break;
- 	case NAND_CMD_READID:
- 	case NAND_CMD_PARAM:
+-	/* Bad block management */
+-	chip->bbt_td = &bbt_main_descr;
+-	chip->bbt_md = &bbt_mirror_descr;
+-
+-	/* skip the scan for now until we have OOB read and write support */
+ 	chip->bbt_options |= NAND_BBT_USE_FLASH;
+-	chip->options |= NAND_SKIP_BBTSCAN;
++	chip->bbt_options |= NAND_BBT_NO_OOB;
++
+ 	chip->ecc.mode = NAND_ECC_HW_SYNDROME;
+ 
+ 	/* no subpage writes on denali */
 -- 
 2.7.4
