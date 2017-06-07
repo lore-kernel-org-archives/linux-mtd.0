@@ -1,8 +1,8 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dIb5f-00062Q-Qw
- for linux-mtd@lists.infradead.org; Wed, 07 Jun 2017 13:33:41 +0000
-Date: Wed, 7 Jun 2017 15:33:18 +0200
+ id 1dIbSe-0002G3-Os
+ for linux-mtd@lists.infradead.org; Wed, 07 Jun 2017 13:57:26 +0000
+Date: Wed, 7 Jun 2017 15:57:01 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Masahiro Yamada <yamada.masahiro@socionext.com>
 Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>, Artem
@@ -13,15 +13,14 @@ Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>, Artem
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>, Richard Weinberger
  <richard@nod.at>
-Subject: Re: [PATCH v5 07/23] mtd: nand: denali: do not propagate
- NAND_STATUS_FAIL to waitfunc()
-Message-ID: <20170607153318.7e341dff@bbrezillon>
-In-Reply-To: <1496836352-8016-8-git-send-email-yamada.masahiro@socionext.com>
+Subject: Re: [PATCH v5 10/23] mtd: nand: denali: rework interrupt handling
+Message-ID: <20170607155701.4bc89ad8@bbrezillon>
+In-Reply-To: <1496836352-8016-11-git-send-email-yamada.masahiro@socionext.com>
 References: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
- <1496836352-8016-8-git-send-email-yamada.masahiro@socionext.com>
+ <1496836352-8016-11-git-send-email-yamada.masahiro@socionext.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,103 +30,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed,  7 Jun 2017 20:52:16 +0900
+On Wed,  7 Jun 2017 20:52:19 +0900
 Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-> Currently, the error handling of denali_write_page(_raw) is a bit
-> complicated.  If the program command fails, NAND_STATUS_FAIL is set
-> to the driver internal denali->status, then read out later by
-> denali_waitfunc().
->=20
-> We can avoid it by exploiting the nand_write_page() implementation.
-> If chip->ecc.write_page(_raw) returns negative code (i.e. -EIO), it
-> errors out immediately.  This gives the same result as returning
-> NAND_STATUS_FAIL from chip->waitfunc.  In either way, -EIO is
-> returned to the upper MTD layer.
 
-Actually, this is how it's supposed to work now (when they set
-the NAND_ECC_CUSTOM_PAGE_ACCESS flag, drivers are expected to wait for
-the program operation to finish and return -EIO if it failed), so you're
-all good ;-).
-
->=20
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> ---
->=20
-> Changes in v5: None
-> Changes in v4: None
-> Changes in v3: None
-> Changes in v2:
->   - Newly added
->=20
->  drivers/mtd/nand/denali.c | 12 ++++--------
->  drivers/mtd/nand/denali.h |  1 -
->  2 files changed, 4 insertions(+), 9 deletions(-)
->=20
-> diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-> index 1897fe238290..22acfc34b546 100644
-> --- a/drivers/mtd/nand/denali.c
-> +++ b/drivers/mtd/nand/denali.c
-> @@ -1005,6 +1005,7 @@ static int write_page(struct mtd_info *mtd, struct =
-nand_chip *chip,
->  	size_t size =3D mtd->writesize + mtd->oobsize;
->  	uint32_t irq_status;
->  	uint32_t irq_mask =3D INTR__DMA_CMD_COMP | INTR__PROGRAM_FAIL;
-
-As mentioned in my previous patch, I think you should wait for
-INTR__PROGRAM_COMP |=C2=A0INTR__PROGRAM_FAIL here.
-
-> +	int ret =3D 0;
-> =20
->  	denali->page =3D page;
-> =20
-> @@ -1038,13 +1039,13 @@ static int write_page(struct mtd_info *mtd, struc=
-t nand_chip *chip,
->  	if (irq_status =3D=3D 0) {
->  		dev_err(denali->dev, "timeout on write_page (type =3D %d)\n",
->  			raw_xfer);
-> -		denali->status =3D NAND_STATUS_FAIL;
-> +		ret =3D -EIO;
->  	}
-
-	if (irq_status & INTR__PROGRAM_FAIL) {
-		dev_err(denali->dev, "page program failed (type =3D %d)\n",
-  			raw_xfer);
-		ret =3D -EIO;
-	}
-> =20
->  	denali_enable_dma(denali, false);
->  	dma_sync_single_for_cpu(denali->dev, addr, size, DMA_TO_DEVICE);
-> =20
-> -	return 0;
-> +	return ret;
->  }
-> =20
->  /* NAND core entry points */
-> @@ -1196,12 +1197,7 @@ static void denali_select_chip(struct mtd_info *mt=
-d, int chip)
-> =20
->  static int denali_waitfunc(struct mtd_info *mtd, struct nand_chip *chip)
+> -/*
+> - * This is the interrupt service routine. It handles all interrupts
+> - * sent to this device. Note that on CE4100, this is a shared interrupt.
+> - */
+> -static irqreturn_t denali_isr(int irq, void *dev_id)
+> +static uint32_t denali_wait_for_irq(struct denali_nand_info *denali,
+> +				    uint32_t irq_mask)
 >  {
-> -	struct denali_nand_info *denali =3D mtd_to_denali(mtd);
-> -	int status =3D denali->status;
-> -
-> -	denali->status =3D 0;
-> -
-> -	return status;
-> +	return 0;
+> -	struct denali_nand_info *denali = dev_id;
+> +	unsigned long time_left, flags;
+>  	uint32_t irq_status;
+> -	irqreturn_t result = IRQ_NONE;
+>  
+> -	spin_lock(&denali->irq_lock);
+> +	spin_lock_irqsave(&denali->irq_lock, flags);
+>  
+> -	/* check to see if a valid NAND chip has been selected. */
+> -	if (is_flash_bank_valid(denali->flash_bank)) {
+> -		/*
+> -		 * check to see if controller generated the interrupt,
+> -		 * since this is a shared interrupt
+> -		 */
+> -		irq_status = denali_irq_detected(denali);
+> -		if (irq_status != 0) {
+> -			/* handle interrupt */
+> -			/* first acknowledge it */
+> -			clear_interrupt(denali, irq_status);
+> -			/*
+> -			 * store the status in the device context for someone
+> -			 * to read
+> -			 */
+> -			denali->irq_status |= irq_status;
+> -			/* notify anyone who cares that it happened */
+> -			complete(&denali->complete);
+> -			/* tell the OS that we've handled this */
+> -			result = IRQ_HANDLED;
+> -		}
+> +	irq_status = denali->irq_status;
+> +
+> +	if (irq_mask & irq_status) {
+> +		spin_unlock_irqrestore(&denali->irq_lock, flags);
+> +		return irq_status;
+>  	}
+> -	spin_unlock(&denali->irq_lock);
+> -	return result;
+> +
+> +	denali->irq_mask = irq_mask;
+> +	reinit_completion(&denali->complete);
+
+These 2 instructions should be done before calling
+denali_wait_for_irq() (for example in denali_reset_irq()), otherwise
+you might loose events if they happen between your irq_status read and
+the reinit_completion() call. You should also clear existing interrupts
+before launching your operation, otherwise you might wakeup on previous
+events.
+
+> +	spin_unlock_irqrestore(&denali->irq_lock, flags);
+> +
+> +	time_left = wait_for_completion_timeout(&denali->complete,
+> +						msecs_to_jiffies(1000));
+> +	if (!time_left) {
+> +		dev_err(denali->dev, "timeout while waiting for irq 0x%x\n",
+> +			denali->irq_mask);
+> +		return 0;
+> +	}
+> +
+> +	return denali->irq_status;
 >  }
-> =20
->  static int denali_erase(struct mtd_info *mtd, int page)
-> diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-> index a06ed741b550..352d8328b94a 100644
-> --- a/drivers/mtd/nand/denali.h
-> +++ b/drivers/mtd/nand/denali.h
-> @@ -323,7 +323,6 @@ struct nand_buf {
->  struct denali_nand_info {
->  	struct nand_chip nand;
->  	int flash_bank; /* currently selected chip */
-> -	int status;
->  	int platform;
->  	struct nand_buf buf;
->  	struct device *dev;
+>  
