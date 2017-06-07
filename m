@@ -1,32 +1,33 @@
-From: Han Xu <han.xu@nxp.com>
-To: Stefan Agner <stefan@agner.ch>, "shawnguo@kernel.org"
- <shawnguo@kernel.org>, "kernel@pengutronix.de" <kernel@pengutronix.de>,
- "sboyd@codeaurora.org" <sboyd@codeaurora.org>
-CC: "A.S. Dong" <aisheng.dong@nxp.com>, "dwmw2@infradead.org"
- <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "boris.brezillon@free-electrons.com"
- <boris.brezillon@free-electrons.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "fabio.estevam@freescale.com"
- <fabio.estevam@freescale.com>, "LW@KARO-electronics.de"
- <LW@KARO-electronics.de>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "linux-clk@vger.kernel.org"
- <linux-clk@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 2/3] ARM: dts: imx7: add GPMI NAND and APBH DMA
-Date: Wed, 7 Jun 2017 15:33:26 +0000
-Message-ID: <9d66efda-d7c1-89a2-e163-c86056e08fb1@nxp.com>
-References: <cover.b62c3a17bd60de48d8fb2ade6dde4f2bc60aaf3c.1496730576.git-series.stefan@agner.ch>
- <151ddece1e1427d0b69c4ff11b86a69b6a035d0d.1496730576.git-series.stefan@agner.ch>
-In-Reply-To: <151ddece1e1427d0b69c4ff11b86a69b6a035d0d.1496730576.git-series.stefan@agner.ch>
-Content-Language: en-US
-Content-Type: text/plain; charset="Windows-1252"
-Content-ID: <F00862B47729364989D44108CF5F95EC@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-ot0-f194.google.com ([74.125.82.194])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dIgDB-0007yf-GB
+ for linux-mtd@lists.infradead.org; Wed, 07 Jun 2017 19:01:47 +0000
+Received: by mail-ot0-f194.google.com with SMTP id a2so1787997oth.1
+ for <linux-mtd@lists.infradead.org>; Wed, 07 Jun 2017 12:01:24 -0700 (PDT)
+Date: Wed, 7 Jun 2017 14:01:22 -0500
+From: Rob Herring <robh@kernel.org>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Dinh Nguyen <dinguyen@kernel.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>,
+ Jassi Brar <jaswinder.singh@linaro.org>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v5 05/23] mtd: nand: denali_dt: add compatible strings
+ for UniPhier SoC variants
+Message-ID: <20170607190122.h3nkuxuzwfvx6gia@rob-hp-laptop>
+References: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
+ <1496836352-8016-6-git-send-email-yamada.masahiro@socionext.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1496836352-8016-6-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,58 +37,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-On 06/06/2017 01:30 AM, Stefan Agner wrote:
-> Add i.MX 7 APBH DMA and GPMI NAND modules.
->
-> Signed-off-by: Stefan Agner <stefan@agner.ch>
+On Wed, Jun 07, 2017 at 08:52:14PM +0900, Masahiro Yamada wrote:
+> Add two compatible strings for UniPhier SoC family.
+> 
+> "socionext,uniphier-denali-nand-v5a" is used on UniPhier sLD3, LD4,
+> Pro4, sLD8.
+> 
+> "socionext,uniphier-denali-nand-v5b" is used on UniPhier Pro5, PXs2,
+> LD6b, LD11, LD20.
+> 
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 > ---
->   arch/arm/boot/dts/imx7s.dtsi | 32 ++++++++++++++++++++++++++++++++
->   1 file changed, 32 insertions(+)
->
-> diff --git a/arch/arm/boot/dts/imx7s.dtsi b/arch/arm/boot/dts/imx7s.dtsi
-> index c4f12fd..d71acd8 100644
-> --- a/arch/arm/boot/dts/imx7s.dtsi
-> +++ b/arch/arm/boot/dts/imx7s.dtsi
-> @@ -995,5 +995,37 @@
->   				status =3D "disabled";
->   			};
->   		};
-> +
-> +		dma_apbh: dma-apbh@33000000 {
-> +			compatible =3D "fsl,imx7d-dma-apbh", "fsl,imx28-dma-apbh";
-> +			reg =3D <0x33000000 0x2000>;
-> +			interrupts =3D <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
-> +			interrupt-names =3D "gpmi0", "gpmi1", "gpmi2", "gpmi3";
-> +			#dma-cells =3D <1>;
-> +			dma-channels =3D <4>;
-> +			clocks =3D <&clks IMX7D_NAND_USDHC_BUS_RAWNAND_CLK>;
-> +			clock-names =3D "dma_apbh_bch", "dma_apbh_io";
+> 
+> Changes in v5:
+>   - Adjust to the update of generic helpers
+> 
+> Changes in v4:
+>   - Adjusted to generic helpers for ECC engine caps
+> 
+> Changes in v3: None
+> Changes in v2:
+>   - Change the compatible strings
+>   - Fix the ecc_strength_capability
+>   - Override revision number for the newer one
+> 
+>  .../devicetree/bindings/mtd/denali-nand.txt        |  6 ++++++
 
-please remove the clock names, I am good with all other changes.
+I acked v3. Please add acks when posting new versions.
 
-> +		};
-> +
-> +		gpmi: gpmi-nand@33002000{
-> +			compatible =3D "fsl,imx7d-gpmi-nand";
-> +			#address-cells =3D <1>;
-> +			#size-cells =3D <1>;
-> +			reg =3D <0x33002000 0x2000>, <0x33004000 0x4000>;
-> +			reg-names =3D "gpmi-nand", "bch";
-> +			interrupts =3D <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
-> +			interrupt-names =3D "bch";
-> +			clocks =3D <&clks IMX7D_NAND_RAWNAND_CLK>,
-> +				<&clks IMX7D_NAND_USDHC_BUS_RAWNAND_CLK>;
-> +			clock-names =3D "gpmi_io", "gpmi_bch_apb";
-> +			dmas =3D <&dma_apbh 0>;
-> +			dma-names =3D "rx-tx";
-> +			status =3D "disabled";
-> +			assigned-clocks =3D <&clks IMX7D_NAND_ROOT_SRC>;
-> +			assigned-clock-parents =3D <&clks IMX7D_PLL_ENET_MAIN_500M_CLK>;
-> +		};
->   	};
->   };
+Rob
+
+>  drivers/mtd/nand/denali_dt.c                       | 25 ++++++++++++++++++++++
+>  2 files changed, 31 insertions(+)
