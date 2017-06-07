@@ -1,16 +1,14 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dIWFs-0006WF-RV
+ id 1dIWFs-0006W9-T3
  for linux-mtd@lists.infradead.org; Wed, 07 Jun 2017 08:23:56 +0000
 From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 To: fstests@vger.kernel.org
-Cc: linux-mtd@lists.infradead.org, richard@nod.at,
- David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Subject: [PATCH v3 4/4] Fix block device requirements and manual scratch mounts
-Date: Wed,  7 Jun 2017 10:20:47 +0200
-Message-Id: <20170607082047.10802-5-david.oberhollenzer@sigma-star.at>
-In-Reply-To: <20170607082047.10802-1-david.oberhollenzer@sigma-star.at>
-References: <20170607082047.10802-1-david.oberhollenzer@sigma-star.at>
+Cc: linux-mtd@lists.infradead.org,
+	richard@nod.at
+Subject: [PATCH v3] Add UBIFS support to xfstests
+Date: Wed,  7 Jun 2017 10:20:43 +0200
+Message-Id: <20170607082047.10802-1-david.oberhollenzer@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,165 +18,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some tests require the scratch volume to be a block device,
-although they don't do anything block device specific like
-the device mapper tests. They actually only require a local
-device and fail with network or overlay pseudo mount devices.
+Hello,
 
-The same tests also try to mount the scratch device manually
-after running _scratch_mkfs. For UBIFS, _scratch_mkfs simply
-truncates the UBI volume and relies on the kernel to re-format
-the volume on the next mount. This fails if the fs type is not
-specified explicitly when mounting.
 
-This patch replaces the block device requirement with a
-generic check for a local device and adds a filesystem
-specification to all manual mounts of the scratch device
-to a mount point.
+this patch series attempts to add support for UBIFS to xfstests,
+loosely based on the previous patches for xfstests-dev.
 
-Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
----
- tests/generic/076 |  2 +-
- tests/generic/409 |  8 ++++----
- tests/generic/410 |  8 ++++----
- tests/generic/411 | 10 +++++-----
- 4 files changed, 14 insertions(+), 14 deletions(-)
+UBIFS is a filesystem for unmanaged flash memory devices. It works on
+top of UBI (Unsorted Block Images) which is a wear leveling and volume
+management layer on top of MTD (memory technology device) which
+abstracts flash memory devices.
 
-diff --git a/tests/generic/076 b/tests/generic/076
-index 64e69583..a29f160a 100755
---- a/tests/generic/076
-+++ b/tests/generic/076
-@@ -56,7 +56,7 @@ _supported_fs generic
- _supported_os IRIX Linux
- 
- _require_scratch
--_require_block_device $SCRATCH_DEV
-+_require_local_device $SCRATCH_DEV
- 
- echo "*** init fs"
- 
-diff --git a/tests/generic/409 b/tests/generic/409
-index 4bfedf73..22af44c8 100755
---- a/tests/generic/409
-+++ b/tests/generic/409
-@@ -64,7 +64,7 @@ _supported_fs generic
- _supported_os Linux
- _require_test
- _require_scratch
--_require_block_device $SCRATCH_DEV
-+_require_local_device $SCRATCH_DEV
- 
- fs_stress()
- {
-@@ -114,7 +114,7 @@ start_test()
- 	local type=$1
- 
- 	_scratch_mkfs >$seqres.full 2>&1
--	_get_mount $SCRATCH_DEV $MNTHEAD
-+	_get_mount -t $FSTYP $SCRATCH_DEV $MNTHEAD
- 	$MOUNT_PROG --make-"${type}" $MNTHEAD
- 	mkdir $mpA $mpB $mpC $mpD
- }
-@@ -133,7 +133,7 @@ bind_run()
- 	start_test $dest
- 
- 	echo "bind $source on $dest"
--	_get_mount $SCRATCH_DEV $mpA
-+	_get_mount -t $FSTYP $SCRATCH_DEV $mpA
- 	mkdir -p $mpA/dir 2>/dev/null
- 	$MOUNT_PROG --make-shared $mpA
- 	_get_mount --bind $mpA $mpB
-@@ -147,7 +147,7 @@ bind_run()
- 	fi
- 	_get_mount --bind $mpC $mpD
- 	for m in $mpA $mpB $mpC $mpD; do
--		_get_mount $SCRATCH_DEV $m/dir
-+		_get_mount -t $FSTYP $SCRATCH_DEV $m/dir
- 		fs_stress $m/dir
- 		find_mnt
- 		_put_mount
-diff --git a/tests/generic/410 b/tests/generic/410
-index f2e0d1bb..18cb0c1c 100755
---- a/tests/generic/410
-+++ b/tests/generic/410
-@@ -72,7 +72,7 @@ _supported_fs generic
- _supported_os Linux
- _require_test
- _require_scratch
--_require_block_device $SCRATCH_DEV
-+_require_local_device $SCRATCH_DEV
- 
- fs_stress()
- {
-@@ -120,7 +120,7 @@ start_test()
- 	local type=$1
- 
- 	_scratch_mkfs >$seqres.full 2>&1
--	_get_mount $SCRATCH_DEV $MNTHEAD
-+	_get_mount -t $FSTYP $SCRATCH_DEV $MNTHEAD
- 	$MOUNT_PROG --make-"${type}" $MNTHEAD
- 	mkdir $mpA $mpB $mpC
- }
-@@ -143,7 +143,7 @@ run()
- 	start_test private
- 
- 	echo "make-$cmd a $orgs mount"
--	_get_mount $SCRATCH_DEV $mpA
-+	_get_mount -t $FSTYP $SCRATCH_DEV $mpA
- 	mkdir -p $mpA/dir 2>/dev/null
- 	$MOUNT_PROG --make-shared $mpA
- 
-@@ -165,7 +165,7 @@ run()
- 			find_mnt
- 		else
- 			for m in $mpA $mpB $mpC; do
--				_get_mount $SCRATCH_DEV $m/dir
-+				_get_mount -t $FSTYP $SCRATCH_DEV $m/dir
- 				fs_stress $m/dir
- 				find_mnt
- 				_put_mount
-diff --git a/tests/generic/411 b/tests/generic/411
-index 7b2dd33b..5db49a44 100755
---- a/tests/generic/411
-+++ b/tests/generic/411
-@@ -53,7 +53,7 @@ _supported_fs generic
- _supported_os Linux
- _require_test
- _require_scratch
--_require_block_device $SCRATCH_DEV
-+_require_local_device $SCRATCH_DEV
- 
- fs_stress()
- {
-@@ -103,7 +103,7 @@ start_test()
- 	local type=$1
- 
- 	_scratch_mkfs >$seqres.full 2>&1
--	_get_mount $SCRATCH_DEV $MNTHEAD
-+	_get_mount -t $FSTYP $SCRATCH_DEV $MNTHEAD
- 	$MOUNT_PROG --make-"${type}" $MNTHEAD
- 	mkdir $mpA $mpB $mpC
- }
-@@ -125,17 +125,17 @@ crash_test()
- {
- 	start_test shared
- 
--	_get_mount $SCRATCH_DEV $mpA
-+	_get_mount -t $FSTYP $SCRATCH_DEV $mpA
- 	mkdir $mpA/mnt1
- 	$MOUNT_PROG --make-shared $mpA
- 	_get_mount --bind $mpA $mpB
- 	_get_mount --bind $mpA $mpC
- 	$MOUNT_PROG --make-slave $mpB
- 	$MOUNT_PROG --make-slave $mpC
--	_get_mount $SCRATCH_DEV $mpA/mnt1
-+	_get_mount -t $FSTYP $SCRATCH_DEV $mpA/mnt1
- 	mkdir $mpA/mnt1/mnt2
- 
--	_get_mount $SCRATCH_DEV $mpB/mnt1/mnt2
-+	_get_mount -t $FSTYP $SCRATCH_DEV $mpB/mnt1/mnt2
- 	find_mnt
- 	fs_stress $mpB/mnt1/mnt2
- 
--- 
-2.12.3
+Since the semantics of MTD and UBI devices are drastically different
+from normal block devices, they are exposed to user space as character
+devices with ioctls for special operations.
+
+The first patch adds helpers for dealing with character devices, the
+second one actually adds the UBIFS support and goes into a little more
+detail in its commit message on the quirks of UBIFS in contrast to
+other file systems.
+
+One notable quirk is the lack of needing an mkfs.ubifs tool. The kernel
+component automatically formats empty UBI devices when mounting them
+with '-t ubifs'.
+
+There actually is an mkfs.ubifs, but it is mainly used for creating
+images. Also, at the time of writing, it does not yet support the
+recently added UBIFS extensions for file level encryption.
+
+Instead of using the mkfs.ubifs tool, the _scratch_mkfs function is
+patched to truncate the UBI volume instead, which also required some
+changes to a few tests.
+
+The last two patches modify existing tests to work with UBIFS, i.e. in
+case of generic/398 to be more tolerant of returned error numbers and
+in the last patch to also accept a local character device and properly
+specify the filesystem type when remounting.
+
+
+The patch series has been tested inside a Debian Jessie VM, using the 
+UBIFS
+kernel tree from git://git.infradead.org/linux-ubifs.git and nandsim 
+emulating a nand flash device.
+
+
+The necessity of an additional -ubifs switch was discussed but
+auto detection of UBIFS formated UBI devices could not be reproduced
+on my end and is unlikely to work with empty UBI volumes anyway.
+
+
+Changes from v1 to v2:
+ - Minor refactoring and verbose commentary added as requested
+ - Added check for required utilities
+ - Addition of a _require_local_device helper for some tests
+   instead of completely removing the local device check
+ - Broken up into more fine grained patch set and split away
+   xfstests-bld patches which are currently still in progress
+
+Changes from v2 to v3:
+ - More coding style changes
+ - Detect and use ubiupdatevol the same way as other utility programs
+
+
+
+David
+
+[1] http://www.linux-mtd.infradead.org/nand-data/nanddata.html
