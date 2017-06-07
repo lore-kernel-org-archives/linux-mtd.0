@@ -1,17 +1,31 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dIVRa-00076O-F4
- for linux-mtd@lists.infradead.org; Wed, 07 Jun 2017 07:31:56 +0000
-Date: Wed, 7 Jun 2017 09:30:41 +0200
+ id 1dIVS4-0007PO-Jm
+ for linux-mtd@lists.infradead.org; Wed, 07 Jun 2017 07:32:26 +0000
+Date: Wed, 7 Jun 2017 09:31:42 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Matthias Lange <matthias.lange@kernkonzept.com>
-Cc: han.xu@nxp.com, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com,
- cyrille.pitchen@wedev4u.fr, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: nand: gpmi: Fix typo in data structure name
-Message-ID: <20170607093041.016f33c0@bbrezillon>
-In-Reply-To: <1496655231-3829-1-git-send-email-matthias.lange@kernkonzept.com>
-References: <1496655231-3829-1-git-send-email-matthias.lange@kernkonzept.com>
+To: Pavel Machek <pavel@ucw.cz>
+Cc: Darwin Dingel <Darwin.Dingel@alliedtelesis.co.nz>, "richard@nod.at"
+ <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "cyrille.pitchen@atmel.com" <cyrille.pitchen@atmel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "mark.marshall@omicronenergy.com" <mark.marshall@omicronenergy.com>,
+ "b44839@freescale.com" <b44839@freescale.com>, "prabhakar@freescale.com"
+ <prabhakar@freescale.com>
+Subject: Re: [PATCHv2] mtd: nand: fsl_ifc: fix handing of bit flips in
+ erased pages
+Message-ID: <20170607093142.0645bbf2@bbrezillon>
+In-Reply-To: <20170601152115.06895287@bbrezillon>
+References: <20170420002748.5c76c9b9@bbrezillon> <20170420114057.GA4705@amd>
+ <20170421105107.GA7259@amd> <20170517122224.GB583@amd>
+ <20170517143211.205ff5de@bbrezillon> <20170517130059.GA3437@amd>
+ <20170517152548.6d52c41b@bbrezillon> <20170517200305.GA12537@amd>
+ <20170531205917.GA21878@amd>
+ <3ff6a5a52b4744caaa481d482cab54bd@svr-chch-ex1.atlnz.lc>
+ <20170601131232.GA12630@amd> <20170601152115.06895287@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,61 +38,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon,  5 Jun 2017 11:33:51 +0200
-Matthias Lange <matthias.lange@kernkonzept.com> wrote:
+On Thu, 1 Jun 2017 15:21:15 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-> This makes it easier to grep.
+> On Thu, 1 Jun 2017 15:12:32 +0200
+> Pavel Machek <pavel@ucw.cz> wrote:
+> 
+> > On Thu 2017-06-01 01:09:17, Darwin Dingel wrote:  
+> > > Hi Pavel,
+> > > 
+> > > Just a minor thing. Sorry about the late comment.
+> > > 
+> > > On 01/06/17 08:59, Pavel Machek wrote:    
+> > > > +
+> > > > +		res = check_erased_page(chip, buf);
+> > > > +		return res;
+> > > > +	}    
+> > > 
+> > > Can we just remove 'res' and change this line to:
+> > > 	return check_erased_page(chip, buf);    
+> > 
+> > Well... I originally had a printk there, and yes, it can be
+> > simplified. I can roll v3, if required, but I'd leave it as is -- it
+> > is still convenient place to add debugging to.  
+> 
+> I can fix it when applying, no need to send a new version.
 
 Applied.
 
-> 
-> Signed-off-by: Matthias Lange <matthias.lange@kernkonzept.com>
-> ---
->  drivers/mtd/nand/gpmi-nand/gpmi-lib.c  | 4 ++--
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.h | 4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> index 141bd70..57ff051 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> @@ -26,7 +26,7 @@
->  #include "gpmi-regs.h"
->  #include "bch-regs.h"
->  
-> -static struct timing_threshod timing_default_threshold = {
-> +static struct timing_threshold timing_default_threshold = {
->  	.max_data_setup_cycles       = (BM_GPMI_TIMING0_DATA_SETUP >>
->  						BP_GPMI_TIMING0_DATA_SETUP),
->  	.internal_data_setup_in_ns   = 0,
-> @@ -329,7 +329,7 @@ static unsigned int ns_to_cycles(unsigned int time,
->  static int gpmi_nfc_compute_hardware_timing(struct gpmi_nand_data *this,
->  					struct gpmi_nfc_hardware_timing *hw)
->  {
-> -	struct timing_threshod *nfc = &timing_default_threshold;
-> +	struct timing_threshold *nfc = &timing_default_threshold;
->  	struct resources *r = &this->resources;
->  	struct nand_chip *nand = &this->nand;
->  	struct nand_timing target = this->timing;
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-> index 4e49a1f..41f5917 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-> @@ -231,7 +231,7 @@ struct gpmi_nfc_hardware_timing {
->  };
->  
->  /**
-> - * struct timing_threshod - Timing threshold
-> + * struct timing_threshold - Timing threshold
->   * @max_data_setup_cycles:       The maximum number of data setup cycles that
->   *                               can be expressed in the hardware.
->   * @internal_data_setup_in_ns:   The time, in ns, that the NFC hardware requires
-> @@ -253,7 +253,7 @@ struct gpmi_nfc_hardware_timing {
->   *                               progress, this is the clock frequency during
->   *                               the most recent I/O transaction.
->   */
-> -struct timing_threshod {
-> +struct timing_threshold {
->  	const unsigned int      max_chip_count;
->  	const unsigned int      max_data_setup_cycles;
->  	const unsigned int      internal_data_setup_in_ns;
+Thanks,
+
+Boris
