@@ -1,6 +1,6 @@
 Received: from conuserg-10.nifty.com ([210.131.2.77])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dIZWu-0004S5-5N
+ id 1dIZWu-0004S1-5K
  for linux-mtd@lists.infradead.org; Wed, 07 Jun 2017 11:53:42 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -16,10 +16,10 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v5 07/23] mtd: nand: denali: do not propagate NAND_STATUS_FAIL
- to waitfunc()
-Date: Wed,  7 Jun 2017 20:52:16 +0900
-Message-Id: <1496836352-8016-8-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v5 04/23] mtd: nand: denali: remove Toshiba and Hynix specific
+ fixup code
+Date: Wed,  7 Jun 2017 20:52:13 +0900
+Message-Id: <1496836352-8016-5-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,16 +31,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently, the error handling of denali_write_page(_raw) is a bit
-complicated.  If the program command fails, NAND_STATUS_FAIL is set
-to the driver internal denali->status, then read out later by
-denali_waitfunc().
+The Denali IP can automatically detect device parameters such as
+page size, oob size, device width, etc. and this driver currently
+relies on it.  However, this hardware function is known to be
+problematic.
 
-We can avoid it by exploiting the nand_write_page() implementation.
-If chip->ecc.write_page(_raw) returns negative code (i.e. -EIO), it
-errors out immediately.  This gives the same result as returning
-NAND_STATUS_FAIL from chip->waitfunc.  In either way, -EIO is
-returned to the upper MTD layer.
+[1] Due to a hardware bug, various misdetected cases were reported.
+    That is why get_toshiba_nand_para() and get_hynix_nand_para()
+    exist to fix-up the misdetected parameters.  It is not realistic
+    to add a new NAND device to the *black list* every time we are
+    hit by a misdetected case.  We would never be able to guarantee
+    that all cases are covered.
+
+[2] Because this feature is unreliable, it is disabled on some
+    platforms.
+
+The nand_scan_ident() detects device parameters in a more tested
+way.  The hardware should not set the device parameter registers in
+a different, unreliable way.  Instead, set the parameters from the
+nand_scan_ident() back to the registers.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
@@ -48,66 +57,75 @@ Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 Changes in v5: None
 Changes in v4: None
 Changes in v3: None
-Changes in v2:
-  - Newly added
+Changes in v2: None
 
- drivers/mtd/nand/denali.c | 12 ++++--------
- drivers/mtd/nand/denali.h |  1 -
- 2 files changed, 4 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/denali.c | 40 ++++++----------------------------------
+ 1 file changed, 6 insertions(+), 34 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 1897fe238290..22acfc34b546 100644
+index 0fff11faf603..991924b9ae2c 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -1005,6 +1005,7 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	size_t size = mtd->writesize + mtd->oobsize;
- 	uint32_t irq_status;
- 	uint32_t irq_mask = INTR__DMA_CMD_COMP | INTR__PROGRAM_FAIL;
-+	int ret = 0;
+@@ -337,36 +337,6 @@ static void get_samsung_nand_para(struct denali_nand_info *denali,
+ 	}
+ }
  
- 	denali->page = page;
- 
-@@ -1038,13 +1039,13 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	if (irq_status == 0) {
- 		dev_err(denali->dev, "timeout on write_page (type = %d)\n",
- 			raw_xfer);
--		denali->status = NAND_STATUS_FAIL;
-+		ret = -EIO;
+-static void get_toshiba_nand_para(struct denali_nand_info *denali)
+-{
+-	/*
+-	 * Workaround to fix a controller bug which reports a wrong
+-	 * spare area size for some kind of Toshiba NAND device
+-	 */
+-	if ((ioread32(denali->flash_reg + DEVICE_MAIN_AREA_SIZE) == 4096) &&
+-		(ioread32(denali->flash_reg + DEVICE_SPARE_AREA_SIZE) == 64))
+-		iowrite32(216, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
+-}
+-
+-static void get_hynix_nand_para(struct denali_nand_info *denali,
+-							uint8_t device_id)
+-{
+-	switch (device_id) {
+-	case 0xD5: /* Hynix H27UAG8T2A, H27UBG8U5A or H27UCG8VFA */
+-	case 0xD7: /* Hynix H27UDG8VEM, H27UCG8UDM or H27UCG8V5A */
+-		iowrite32(128, denali->flash_reg + PAGES_PER_BLOCK);
+-		iowrite32(4096, denali->flash_reg + DEVICE_MAIN_AREA_SIZE);
+-		iowrite32(224, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
+-		iowrite32(0, denali->flash_reg + DEVICE_WIDTH);
+-		break;
+-	default:
+-		dev_warn(denali->dev,
+-			 "Unknown Hynix NAND (Device ID: 0x%x).\n"
+-			 "Will use default parameter values instead.\n",
+-			 device_id);
+-	}
+-}
+-
+ /*
+  * determines how many NAND chips are connected to the controller. Note for
+  * Intel CE4100 devices we don't support more than one device.
+@@ -453,10 +423,6 @@ static uint16_t denali_nand_timing_set(struct denali_nand_info *denali)
+ 			return FAIL;
+ 	} else if (maf_id == 0xEC) { /* Samsung NAND */
+ 		get_samsung_nand_para(denali, device_id);
+-	} else if (maf_id == 0x98) { /* Toshiba NAND */
+-		get_toshiba_nand_para(denali);
+-	} else if (maf_id == 0xAD) { /* Hynix NAND */
+-		get_hynix_nand_para(denali, device_id);
  	}
  
- 	denali_enable_dma(denali, false);
- 	dma_sync_single_for_cpu(denali->dev, addr, size, DMA_TO_DEVICE);
+ 	dev_info(denali->dev,
+@@ -1622,6 +1588,12 @@ int denali_init(struct denali_nand_info *denali)
+ 		chip->ecc.size, chip->ecc.strength, chip->ecc.bytes);
  
--	return 0;
-+	return ret;
- }
+ 	iowrite32(chip->ecc.strength, denali->flash_reg + ECC_CORRECTION);
++	iowrite32(mtd->erasesize / mtd->writesize,
++		  denali->flash_reg + PAGES_PER_BLOCK);
++	iowrite32(chip->options & NAND_BUSWIDTH_16 ? 1 : 0,
++		  denali->flash_reg + DEVICE_WIDTH);
++	iowrite32(mtd->writesize, denali->flash_reg + DEVICE_MAIN_AREA_SIZE);
++	iowrite32(mtd->oobsize, denali->flash_reg + DEVICE_SPARE_AREA_SIZE);
  
- /* NAND core entry points */
-@@ -1196,12 +1197,7 @@ static void denali_select_chip(struct mtd_info *mtd, int chip)
- 
- static int denali_waitfunc(struct mtd_info *mtd, struct nand_chip *chip)
- {
--	struct denali_nand_info *denali = mtd_to_denali(mtd);
--	int status = denali->status;
--
--	denali->status = 0;
--
--	return status;
-+	return 0;
- }
- 
- static int denali_erase(struct mtd_info *mtd, int page)
-diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index a06ed741b550..352d8328b94a 100644
---- a/drivers/mtd/nand/denali.h
-+++ b/drivers/mtd/nand/denali.h
-@@ -323,7 +323,6 @@ struct nand_buf {
- struct denali_nand_info {
- 	struct nand_chip nand;
- 	int flash_bank; /* currently selected chip */
--	int status;
- 	int platform;
- 	struct nand_buf buf;
- 	struct device *dev;
+ 	iowrite32(chip->ecc.size, denali->flash_reg + CFG_DATA_BLOCK_SIZE);
+ 	iowrite32(chip->ecc.size, denali->flash_reg + CFG_LAST_DATA_BLOCK_SIZE);
 -- 
 2.7.4
