@@ -1,6 +1,6 @@
 Received: from conuserg-10.nifty.com ([210.131.2.77])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dIZWu-0004S4-5P
+ id 1dIZWu-0004Rk-5M
  for linux-mtd@lists.infradead.org; Wed, 07 Jun 2017 11:53:44 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -16,9 +16,10 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v5 06/23] mtd: nand: denali: set NAND_ECC_CUSTOM_PAGE_ACCESS
-Date: Wed,  7 Jun 2017 20:52:15 +0900
-Message-Id: <1496836352-8016-7-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v5 01/23] mtd: nand: add generic helpers to check, match,
+ maximize ECC settings
+Date: Wed,  7 Jun 2017 20:52:10 +0900
+Message-Id: <1496836352-8016-2-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,127 +31,327 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The denali_cmdfunc() actually does nothing valuable for
-NAND_CMD_{PAGEPROG,READ0,SEQIN}.
+Driver are responsible for setting up ECC parameters correctly.
+Those include:
+  - Check if ECC parameters specified (usually by DT) are valid
+  - Meet the chip's ECC requirement
+  - Maximize ECC strength if NAND_ECC_MAXIMIZE flag is set
 
-For NAND_CMD_{READ0,SEQIN}, it copies "page" to "denali->page", then
-denali_read_page() and denali_read_page_raw() compare them to check
-if the NAND framework called the callbacks in correct order.
-(Inconsistently, this check is missing from the denali_write_page()
-and denali_write_page_raw().)
+The logic can be generalized by factoring out common code.
 
-The framework is widely tested by many drivers, so this kind of
-sanity check is unneeded.  The Denali controller is equipped with
-high level interface for read/write, so let's skip unneeded call
-of cmdfunc().
+This commit adds 3 helpers to the NAND framework:
+nand_check_ecc_caps - Check if preset step_size and strength are valid
+nand_match_ecc_req - Match the chip's requirement
+nand_maximize_ecc - Maximize the ECC strength
+
+To use the helpers above, a driver needs to provide:
+  - Data array of supported ECC step size and strength
+  - A hook that calculates ECC bytes from the combination of
+    step_size and strength.
+
+By using those helpers, code duplication among drivers will be
+reduced.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v5: None
-Changes in v4: None
-Changes in v3: None
-Changes in v2:
+Changes in v5:
+  - Move oobavail from struct nand_ecc_caps to function argument
+  - Do not use goto label
+  - Drop mtd_info from func args
+  - Remove extra blank line
+
+Changes in v4:
   - Newly added
 
- drivers/mtd/nand/denali.c | 29 ++++++++---------------------
- 1 file changed, 8 insertions(+), 21 deletions(-)
+Changes in v3: None
+Changes in v2: None
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 991924b9ae2c..1897fe238290 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -998,7 +998,7 @@ static void denali_setup_dma(struct denali_nand_info *denali, int op)
-  * configuration details.
-  */
- static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
--			const uint8_t *buf, bool raw_xfer)
-+			const uint8_t *buf, int page, bool raw_xfer)
- {
- 	struct denali_nand_info *denali = mtd_to_denali(mtd);
- 	dma_addr_t addr = denali->buf.dma_buf;
-@@ -1006,6 +1006,8 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	uint32_t irq_status;
- 	uint32_t irq_mask = INTR__DMA_CMD_COMP | INTR__PROGRAM_FAIL;
+ drivers/mtd/nand/nand_base.c | 220 +++++++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/nand.h     |  33 +++++++
+ 2 files changed, 253 insertions(+)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index bdfa903cd355..dc0db1011761 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -4509,6 +4509,226 @@ static int nand_set_ecc_soft_ops(struct mtd_info *mtd)
+ 	}
+ }
  
-+	denali->page = page;
++/**
++ * nand_check_ecc_caps - check the sanity of preset ECC settings
++ * @chip: nand chip info structure
++ * @caps: ECC caps info structure
++ * @oobavail: OOB size that the ECC engine can use
++ *
++ * When ECC step size and strength are already set, check if they are supported
++ * by the controller and the calculated ECC bytes fit within the chip's OOB.
++ * On success, the calculated ECC bytes is set.
++ */
++int nand_check_ecc_caps(struct nand_chip *chip,
++			const struct nand_ecc_caps *caps, int oobavail)
++{
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	const struct nand_ecc_step_info *stepinfo;
++	int preset_step = chip->ecc.size;
++	int preset_strength = chip->ecc.strength;
++	int nsteps, ecc_bytes;
++	int i, j;
 +
- 	/*
- 	 * if it is a raw xfer, we want to disable ecc and send the spare area.
- 	 * !raw_xfer - enable ecc
-@@ -1059,7 +1061,7 @@ static int denali_write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	 * for regular page writes, we let HW handle all the ECC
- 	 * data written to the device.
- 	 */
--	return write_page(mtd, chip, buf, false);
-+	return write_page(mtd, chip, buf, page, false);
- }
- 
++	if (WARN_ON(oobavail < 0))
++		return -EINVAL;
++
++	if (!preset_step || !preset_strength)
++		return -ENODATA;
++
++	nsteps = mtd->writesize / preset_step;
++
++	for (i = 0; i < caps->nstepinfos; i++) {
++		stepinfo = &caps->stepinfos[i];
++
++		if (stepinfo->stepsize != preset_step)
++			continue;
++
++		for (j = 0; j < stepinfo->nstrengths; j++) {
++			if (stepinfo->strengths[j] != preset_strength)
++				continue;
++
++			ecc_bytes = caps->calc_ecc_bytes(preset_step,
++							 preset_strength);
++			if (WARN_ON_ONCE(ecc_bytes < 0))
++				return ecc_bytes;
++
++			if (ecc_bytes * nsteps > oobavail) {
++				pr_err("ECC (step, strength) = (%d, %d) does not fit in OOB",
++				       preset_step, preset_strength);
++				return -ENOSPC;
++			}
++
++			chip->ecc.bytes = ecc_bytes;
++
++			return 0;
++		}
++	}
++
++	pr_err("ECC (step, strength) = (%d, %d) not supported on this controller",
++	       preset_step, preset_strength);
++
++	return -ENOTSUPP;
++}
++EXPORT_SYMBOL_GPL(nand_check_ecc_caps);
++
++/**
++ * nand_match_ecc_req - meet the chip's requirement with least ECC bytes
++ * @chip: nand chip info structure
++ * @caps: ECC engine caps info structure
++ * @oobavail: OOB size that the ECC engine can use
++ *
++ * If a chip's ECC requirement is provided, try to meet it with the least
++ * number of ECC bytes (i.e. with the largest number of OOB-free bytes).
++ * On success, the chosen ECC settings are set.
++ */
++int nand_match_ecc_req(struct nand_chip *chip,
++		       const struct nand_ecc_caps *caps, int oobavail)
++{
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	const struct nand_ecc_step_info *stepinfo;
++	int req_step = chip->ecc_step_ds;
++	int req_strength = chip->ecc_strength_ds;
++	int req_corr, step_size, strength, nsteps, ecc_bytes, ecc_bytes_total;
++	int best_step, best_strength, best_ecc_bytes;
++	int best_ecc_bytes_total = INT_MAX;
++	int i, j;
++
++	if (WARN_ON(oobavail < 0))
++		return -EINVAL;
++
++	/* No information provided by the NAND chip */
++	if (!req_step || !req_strength)
++		return -ENOTSUPP;
++
++	/* number of correctable bits the chip requires in a page */
++	req_corr = mtd->writesize / req_step * req_strength;
++
++	for (i = 0; i < caps->nstepinfos; i++) {
++		stepinfo = &caps->stepinfos[i];
++		step_size = stepinfo->stepsize;
++
++		for (j = 0; j < stepinfo->nstrengths; j++) {
++			strength = stepinfo->strengths[j];
++
++			/*
++			 * If both step size and strength are smaller than the
++			 * chip's requirement, it is not easy to compare the
++			 * resulted reliability.
++			 */
++			if (step_size < req_step && strength < req_strength)
++				continue;
++
++			if (mtd->writesize % step_size)
++				continue;
++
++			nsteps = mtd->writesize / step_size;
++
++			ecc_bytes = caps->calc_ecc_bytes(step_size, strength);
++			if (WARN_ON_ONCE(ecc_bytes < 0))
++				continue;
++			ecc_bytes_total = ecc_bytes * nsteps;
++
++			if (ecc_bytes_total > oobavail ||
++			    strength * nsteps < req_corr)
++				continue;
++
++			/*
++			 * We assume the best is to meet the chip's requrement
++			 * with the least number of ECC bytes.
++			 */
++			if (ecc_bytes_total < best_ecc_bytes_total) {
++				best_ecc_bytes_total = ecc_bytes_total;
++				best_step = step_size;
++				best_strength = strength;
++				best_ecc_bytes = ecc_bytes;
++			}
++		}
++	}
++
++	if (best_ecc_bytes_total == INT_MAX)
++		return -ENOTSUPP;
++
++	chip->ecc.size = best_step;
++	chip->ecc.strength = best_strength;
++	chip->ecc.bytes = best_ecc_bytes;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(nand_match_ecc_req);
++
++/**
++ * nand_maximize_ecc - choose the max ECC strength available
++ * @chip: nand chip info structure
++ * @caps: ECC engine caps info structure
++ * @oobavail: OOB size that the ECC engine can use
++ *
++ * Choose the max ECC strength that is supported on the controller, and can fit
++ * within the chip's OOB.  On success, the chosen ECC settings are set.
++ */
++int nand_maximize_ecc(struct nand_chip *chip,
++		      const struct nand_ecc_caps *caps, int oobavail)
++{
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	const struct nand_ecc_step_info *stepinfo;
++	int step_size, strength, nsteps, ecc_bytes, corr;
++	int best_corr = 0;
++	int best_step = 0;
++	int best_strength, best_ecc_bytes;
++	int i, j;
++
++	if (WARN_ON(oobavail < 0))
++		return -EINVAL;
++
++	for (i = 0; i < caps->nstepinfos; i++) {
++		stepinfo = &caps->stepinfos[i];
++		step_size = stepinfo->stepsize;
++
++		/* If chip->ecc.size is already set, respect it */
++		if (chip->ecc.size && step_size != chip->ecc.size)
++			continue;
++
++		for (j = 0; j < stepinfo->nstrengths; j++) {
++			strength = stepinfo->strengths[j];
++
++			if (mtd->writesize % step_size)
++				continue;
++
++			nsteps = mtd->writesize / step_size;
++
++			ecc_bytes = caps->calc_ecc_bytes(step_size, strength);
++			if (WARN_ON_ONCE(ecc_bytes < 0))
++				continue;
++
++			if (ecc_bytes * nsteps > oobavail)
++				continue;
++
++			corr = strength * nsteps;
++
++			/*
++			 * If the number of correctable bits is the same,
++			 * bigger step_size has more reliability.
++			 */
++			if (corr > best_corr ||
++			    (corr == best_corr && step_size > best_step)) {
++				best_corr = corr;
++				best_step = step_size;
++				best_strength = strength;
++				best_ecc_bytes = ecc_bytes;
++			}
++		}
++	}
++
++	if (!best_corr)
++		return -ENOTSUPP;
++
++	chip->ecc.size = best_step;
++	chip->ecc.strength = best_strength;
++	chip->ecc.bytes = best_ecc_bytes;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(nand_maximize_ecc);
++
  /*
-@@ -1075,7 +1077,7 @@ static int denali_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 	 * for raw page writes, we want to disable ECC and simply write
- 	 * whatever data is in the buffer.
- 	 */
--	return write_page(mtd, chip, buf, true);
-+	return write_page(mtd, chip, buf, page, true);
+  * Check if the chip configuration meet the datasheet requirements.
+ 
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 8f67b1581683..c28a5792eed6 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -477,6 +477,30 @@ static inline void nand_hw_control_init(struct nand_hw_control *nfc)
  }
  
- static int denali_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
-@@ -1105,12 +1107,7 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	unsigned long uncor_ecc_flags = 0;
- 	int stat = 0;
+ /**
++ * struct nand_ecc_step_info - ECC step information of ECC engine
++ * @stepsize: data bytes per ECC step
++ * @strengths: array of supported strengths
++ * @nstrengths: number of supported strengths
++ */
++struct nand_ecc_step_info {
++	int stepsize;
++	const int *strengths;
++	int nstrengths;
++};
++
++/**
++ * struct nand_ecc_caps - capability of ECC engine
++ * @stepinfos: array of ECC step information
++ * @nstepinfos: number of ECC step information
++ * @calc_ecc_bytes: driver's hook to calculate ECC bytes per step
++ */
++struct nand_ecc_caps {
++	const struct nand_ecc_step_info *stepinfos;
++	int nstepinfos;
++	int (*calc_ecc_bytes)(int step_size, int strength);
++};
++
++/**
+  * struct nand_ecc_ctrl - Control structure for ECC
+  * @mode:	ECC mode
+  * @algo:	ECC algorithm
+@@ -1244,6 +1268,15 @@ int nand_check_erased_ecc_chunk(void *data, int datalen,
+ 				void *extraoob, int extraooblen,
+ 				int threshold);
  
--	if (page != denali->page) {
--		dev_err(denali->dev,
--			"IN %s: page %d is not equal to denali->page %d",
--			__func__, page, denali->page);
--		BUG();
--	}
-+	denali->page = page;
++int nand_check_ecc_caps(struct nand_chip *chip,
++			const struct nand_ecc_caps *caps, int oobavail);
++
++int nand_match_ecc_req(struct nand_chip *chip,
++		       const struct nand_ecc_caps *caps,  int oobavail);
++
++int nand_maximize_ecc(struct nand_chip *chip,
++		      const struct nand_ecc_caps *caps, int oobavail);
++
+ /* Default write_oob implementation */
+ int nand_write_oob_std(struct mtd_info *mtd, struct nand_chip *chip, int page);
  
- 	setup_ecc_for_xfer(denali, true, false);
- 
-@@ -1154,12 +1151,7 @@ static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 	size_t size = mtd->writesize + mtd->oobsize;
- 	uint32_t irq_mask = INTR__DMA_CMD_COMP;
- 
--	if (page != denali->page) {
--		dev_err(denali->dev,
--			"IN %s: page %d is not equal to denali->page %d",
--			__func__, page, denali->page);
--		BUG();
--	}
-+	denali->page = page;
- 
- 	setup_ecc_for_xfer(denali, false, true);
- 	denali_enable_dma(denali, true);
-@@ -1238,8 +1230,6 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
- 	int i;
- 
- 	switch (cmd) {
--	case NAND_CMD_PAGEPROG:
--		break;
- 	case NAND_CMD_STATUS:
- 		read_status(denali);
- 		break;
-@@ -1259,10 +1249,6 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
- 			write_byte_to_buf(denali, id);
- 		}
- 		break;
--	case NAND_CMD_READ0:
--	case NAND_CMD_SEQIN:
--		denali->page = page;
--		break;
- 	case NAND_CMD_RESET:
- 		reset_bank(denali);
- 		break;
-@@ -1603,6 +1589,7 @@ int denali_init(struct denali_nand_info *denali)
- 
- 	mtd_set_ooblayout(mtd, &denali_ooblayout_ops);
- 
-+	chip->ecc.options |= NAND_ECC_CUSTOM_PAGE_ACCESS;
- 	chip->ecc.read_page = denali_read_page;
- 	chip->ecc.read_page_raw = denali_read_page_raw;
- 	chip->ecc.write_page = denali_write_page;
 -- 
 2.7.4
