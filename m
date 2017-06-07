@@ -1,6 +1,6 @@
 Received: from conuserg-10.nifty.com ([210.131.2.77])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dIZXD-0004VB-Su
+ id 1dIZXD-0004VE-Sw
  for linux-mtd@lists.infradead.org; Wed, 07 Jun 2017 11:54:05 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -16,10 +16,10 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v5 13/23] mtd: nand: denali: switch over to cmd_ctrl instead
- of cmdfunc
-Date: Wed,  7 Jun 2017 20:52:22 +0900
-Message-Id: <1496836352-8016-14-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v5 21/23] mtd: nand: denali: skip driver internal bounce
+ buffer when possible
+Date: Wed,  7 Jun 2017 20:52:30 +0900
+Message-Id: <1496836352-8016-22-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,181 +31,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The NAND_CMD_SET_FEATURES support is missing from denali_cmdfunc().
-This is needed for nand_onfi_set_features().
-
-Besides, we see /* TODO: Read OOB data */ comment line.
-
-It would be possible to add more commands along with the current
-implementation, but having ->cmd_ctrl() seems a better approach from
-the discussion with Boris [1].
-
-Rely on the default ->cmdfunc() from the framework and implement the
-driver's own ->cmd_ctrl().
-
-Also add ->write_byte(), which is needed for write direction commands.
-
-[1] https://lkml.org/lkml/2017/3/15/97
+For ecc->read_page() and ecc->write_page(), it is possible to call
+dma_map_single() against the given buffer.  This bypasses the driver
+internal bounce buffer and save the memcpy().
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
 Changes in v5: None
-Changes in v4: None
-Changes in v3: None
+Changes in v4:
+  - Remove dma_unmap_single() from denali_remove()
+
+Changes in v3:
+  - Set chip->buf_align to 16
+
 Changes in v2:
   - Newly added
 
- drivers/mtd/nand/denali.c | 104 +++++++++++++++++++++++-----------------------
- 1 file changed, 52 insertions(+), 52 deletions(-)
+ drivers/mtd/nand/denali.c | 38 ++++++++++++--------------------------
+ 1 file changed, 12 insertions(+), 26 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index c3382954cf27..95bce6b341d7 100644
+index 90c702b9f14c..963638693850 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -230,20 +230,16 @@ static uint32_t denali_wait_for_irq(struct denali_nand_info *denali,
- 	return denali->irq_status;
- }
- 
--/* resets a specific device connected to the core */
--static void reset_bank(struct denali_nand_info *denali)
-+static uint32_t denali_check_irq(struct denali_nand_info *denali)
+@@ -643,12 +643,16 @@ static int denali_pio_xfer(struct denali_nand_info *denali, void *buf,
+ static int denali_dma_xfer(struct denali_nand_info *denali, void *buf,
+ 			   size_t size, int page, int raw, int write)
  {
-+	unsigned long flags;
- 	uint32_t irq_status;
+-	dma_addr_t dma_addr = denali->dma_addr;
++	dma_addr_t dma_addr;
+ 	uint32_t irq_mask, irq_status, ecc_err_mask;
+ 	enum dma_data_direction dir = write ? DMA_TO_DEVICE : DMA_FROM_DEVICE;
+ 	int ret = 0;
  
--	denali_reset_irq(denali);
--
--	iowrite32(1 << denali->flash_bank, denali->flash_reg + DEVICE_RESET);
--
--	irq_status = denali_wait_for_irq(denali,
--					 INTR__RST_COMP | INTR__TIME_OUT);
-+	spin_lock_irqsave(&denali->irq_lock, flags);
-+	irq_status = denali->irq_status;
-+	spin_unlock_irqrestore(&denali->irq_lock, flags);
+-	dma_sync_single_for_device(denali->dev, dma_addr, size, dir);
++	dma_addr = dma_map_single(denali->dev, buf, size, dir);
++	if (dma_mapping_error(denali->dev, dma_addr)) {
++		dev_dbg(denali->dev, "Failed to DMA-map buffer. Trying PIO.\n");
++		return denali_pio_xfer(denali, buf, size, page, raw, write);
++	}
  
--	if (!(irq_status & INTR__RST_COMP))
--		dev_err(denali->dev, "reset bank failed.\n");
-+	return irq_status;
+ 	if (write) {
+ 		irq_mask = INTR__DMA_CMD_COMP | INTR__PROGRAM_FAIL;
+@@ -674,7 +678,7 @@ static int denali_dma_xfer(struct denali_nand_info *denali, void *buf,
+ 		ret = -EBADMSG;
+ 
+ 	denali_enable_dma(denali, false);
+-	dma_sync_single_for_cpu(denali->dev, dma_addr, size, dir);
++	dma_unmap_single(denali->dev, dma_addr, size, dir);
+ 
+ 	return ret;
  }
+@@ -857,12 +861,10 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	int stat = 0;
+ 	int ret;
  
- /*
-@@ -273,6 +269,42 @@ static uint8_t denali_read_byte(struct mtd_info *mtd)
- 	return ioread32(denali->flash_mem + 0x10);
- }
+-	ret = denali_data_xfer(denali, denali->buf, mtd->writesize, page, 0, 0);
++	ret = denali_data_xfer(denali, buf, mtd->writesize, page, 0, 0);
+ 	if (ret && ret != -EBADMSG)
+ 		return ret;
  
-+static void denali_write_byte(struct mtd_info *mtd, uint8_t byte)
-+{
-+	struct denali_nand_info *denali = mtd_to_denali(mtd);
-+
-+	index_addr(denali, MODE_11 | BANK(denali->flash_bank) | 2, byte);
-+}
-+
-+static void denali_cmd_ctrl(struct mtd_info *mtd, int dat, unsigned int ctrl)
-+{
-+	struct denali_nand_info *denali = mtd_to_denali(mtd);
-+	uint32_t type;
-+
-+	if (ctrl & NAND_CLE)
-+		type = 0;
-+	else if (ctrl & NAND_ALE)
-+		type = 1;
-+	else
-+		return;
-+
-+	/*
-+	 * Some commands are followed by chip->dev_ready or chip->waitfunc.
-+	 * irq_status must be cleared here to catch the R/B# interrupt later.
-+	 */
-+	if (ctrl & NAND_CTRL_CHANGE)
-+		denali_reset_irq(denali);
-+
-+	index_addr(denali, MODE_11 | BANK(denali->flash_bank) | type, dat);
-+}
-+
-+static int denali_dev_ready(struct mtd_info *mtd)
-+{
-+	struct denali_nand_info *denali = mtd_to_denali(mtd);
-+
-+	return !!(denali_check_irq(denali) & INTR__INT_ACT);
-+}
-+
- /*
-  * sends a pipeline command operation to the controller. See the Denali NAND
-  * controller's user guide for more information (section 4.2.3.6).
-@@ -824,7 +856,13 @@ static void denali_select_chip(struct mtd_info *mtd, int chip)
- 
- static int denali_waitfunc(struct mtd_info *mtd, struct nand_chip *chip)
+-	memcpy(buf, denali->buf, mtd->writesize);
+-
+ 	if (denali->caps & DENALI_CAP_HW_ECC_FIXUP)
+ 		stat = denali_hw_ecc_fixup(mtd, denali, &uncor_ecc_flags);
+ 	else if (ret == -EBADMSG)
+@@ -966,10 +968,8 @@ static int denali_write_page(struct mtd_info *mtd, struct nand_chip *chip,
  {
--	return 0;
-+	struct denali_nand_info *denali = mtd_to_denali(mtd);
-+	uint32_t irq_status;
-+
-+	/* R/B# pin transitioned from low to high? */
-+	irq_status = denali_wait_for_irq(denali, INTR__INT_ACT);
-+
-+	return irq_status & INTR__INT_ACT ? 0 : NAND_STATUS_FAIL;
+ 	struct denali_nand_info *denali = mtd_to_denali(mtd);
+ 
+-	memcpy(denali->buf, buf, mtd->writesize);
+-
+-	return denali_data_xfer(denali, denali->buf, mtd->writesize, page,
+-				0, 1);
++	return denali_data_xfer(denali, (void *)buf, mtd->writesize,
++				page, 0, 1);
  }
  
- static int denali_erase(struct mtd_info *mtd, int page)
-@@ -845,46 +883,6 @@ static int denali_erase(struct mtd_info *mtd, int page)
- 	return irq_status & INTR__ERASE_COMP ? 0 : NAND_STATUS_FAIL;
+ static void denali_select_chip(struct mtd_info *mtd, int chip)
+@@ -1408,14 +1408,8 @@ int denali_init(struct denali_nand_info *denali)
+ 	}
+ 
+ 	if (denali->dma_avail) {
+-		denali->dma_addr = dma_map_single(denali->dev, denali->buf,
+-						  mtd->writesize + mtd->oobsize,
+-						  DMA_BIDIRECTIONAL);
+-		if (dma_mapping_error(denali->dev, denali->dma_addr)) {
+-			dev_info(denali->dev,
+-				 "Failed to map DMA buffer. Disabling DMA.\n");
+-			denali->dma_avail = 0;
+-		};
++		chip->options |= NAND_USE_BOUNCE_BUFFER;
++		chip->buf_align = 16;
+ 	}
+ 
+ 	/*
+@@ -1505,16 +1499,8 @@ EXPORT_SYMBOL(denali_init);
+ void denali_remove(struct denali_nand_info *denali)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(&denali->nand);
+-	/*
+-	 * Pre-compute DMA buffer size to avoid any problems in case
+-	 * nand_release() ever changes in a way that mtd->writesize and
+-	 * mtd->oobsize are not reliable after this call.
+-	 */
+-	int bufsize = mtd->writesize + mtd->oobsize;
+ 
+ 	nand_release(mtd);
+ 	denali_disable_irq(denali);
+-	dma_unmap_single(denali->dev, denali->dma_addr, bufsize,
+-			 DMA_BIDIRECTIONAL);
  }
- 
--static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
--			   int page)
--{
--	struct denali_nand_info *denali = mtd_to_denali(mtd);
--	uint32_t addr, irq_status;
--	int wait_ready = 0;
--
--	switch (cmd) {
--	case NAND_CMD_PARAM:
--		wait_ready = 1;
--		break;
--	case NAND_CMD_STATUS:
--	case NAND_CMD_READID:
--		break;
--	case NAND_CMD_RESET:
--		reset_bank(denali);
--		break;
--	case NAND_CMD_READOOB:
--		/* TODO: Read OOB data */
--		return;
--	default:
--		pr_err(": unsupported command received 0x%x\n", cmd);
--		return;
--	}
--
--	denali_reset_irq(denali);
--
--	addr = MODE_11 | BANK(denali->flash_bank);
--	index_addr(denali, addr | 0, cmd);
--	if (col != -1)
--		index_addr(denali, addr | 1, col);
--
--	if (!wait_ready)
--		return;
--
--	irq_status = denali_wait_for_irq(denali, INTR__INT_ACT);
--	if (!(irq_status & INTR__INT_ACT))
--		dev_err(denali->dev, "failed to issue command 0x%x\n", cmd);
--}
--
- #define DIV_ROUND_DOWN_ULL(ll, d) \
- 	({ unsigned long long _tmp = (ll); do_div(_tmp, d); _tmp; })
- 
-@@ -1224,8 +1222,10 @@ int denali_init(struct denali_nand_info *denali)
- 
- 	/* register the driver with the NAND core subsystem */
- 	chip->select_chip = denali_select_chip;
--	chip->cmdfunc = denali_cmdfunc;
- 	chip->read_byte = denali_read_byte;
-+	chip->write_byte = denali_write_byte;
-+	chip->cmd_ctrl = denali_cmd_ctrl;
-+	chip->dev_ready = denali_dev_ready;
- 	chip->waitfunc = denali_waitfunc;
- 	/* clk rate info is needed for setup_data_interface */
- 	if (denali->clk_x_rate)
+ EXPORT_SYMBOL(denali_remove);
 -- 
 2.7.4
