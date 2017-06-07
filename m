@@ -1,29 +1,20 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dIVKw-0003Fk-Ja
- for linux-mtd@lists.infradead.org; Wed, 07 Jun 2017 07:25:04 +0000
-Date: Wed, 7 Jun 2017 09:24:40 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>, Artem
- Bityutskiy <artem.bityutskiy@linux.intel.com>, Dinh Nguyen
- <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Graham Moore
- <grmoore@opensource.altera.com>, David Woodhouse <dwmw2@infradead.org>,
- Masami Hiramatsu <mhiramat@kernel.org>, Chuanxiao Dong
- <chuanxiao.dong@intel.com>, Jassi Brar <jaswinder.singh@linaro.org>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, devicetree@vger.kernel.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Brian Norris
- <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>, Rob
- Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v4 00/23] mtd: nand: denali: Denali NAND IP patch bomb
-Message-ID: <20170607092440.2b630e16@bbrezillon>
-In-Reply-To: <CAK7LNAScATQDDaas_sgJ-+2-nbF5PSoVdpF+f27Vpat1+cexgg@mail.gmail.com>
-References: <1496704922-12261-1-git-send-email-yamada.masahiro@socionext.com>
- <20170607000911.521d559d@bbrezillon>
- <CAK7LNAScATQDDaas_sgJ-+2-nbF5PSoVdpF+f27Vpat1+cexgg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-ID: <1496820297.28992.1.camel@mhfsdcap03>
+Subject: Re: [PATCH v4 1/4] mtd: nand: mediatek: update DT bindings
+From: xiaolei li <xiaolei.li@mediatek.com>
+To: Matthias Brugger <matthias.bgg@gmail.com>
+CC: <boris.brezillon@free-electrons.com>, <computersforpeace@gmail.com>,
+ <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, <robh+dt@kernel.org>,
+ <rogercc.lin@mediatek.com>, <yt.shen@mediatek.com>,
+ <srv_heupstream@mediatek.com>
+Date: Wed, 7 Jun 2017 15:24:57 +0800
+In-Reply-To: <e9286a90-8829-8b37-476a-ac8bd057d341@gmail.com>
+References: <1496201877-34373-1-git-send-email-xiaolei.li@mediatek.com>
+ <1496201877-34373-2-git-send-email-xiaolei.li@mediatek.com>
+ <e9286a90-8829-8b37-476a-ac8bd057d341@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,80 +24,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 7 Jun 2017 10:21:07 +0900
-Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+Hi Mattias,
 
-> Hi Boris,
+On Tue, 2017-06-06 at 12:55 +0200, Matthias Brugger wrote:
 > 
+> On 31/05/17 05:37, Xiaolei Li wrote:
+> > Add MT2712 NAND Flash Controller dt bindings documentation.
+> > 
+> > Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
+> > Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+> > ---
 > 
-> 2017-06-07 7:09 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
-> > Hi Masahiro,
-> >
-> > On Tue,  6 Jun 2017 08:21:39 +0900
-> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
-> >  
-> >> This patch series intends to solve various problems.
-> >>
-> >> [1] The driver just retrieves the OOB area as-is
-> >>     whereas the controller uses syndrome page layout.
-> >> [2] Many NAND chip specific parameters are hard-coded in the driver.
-> >> [3] ONFi devices are not working
-> >> [4] It can not read Bad Block Marker
-> >>
-> >> Outstanding changes are:
-> >> - Fix raw/oob callbacks for syndrome page layout
-> >> - Implement setup_data_interface() callback
-> >> - Fix/implement more commands for ONFi devices
-> >> - Allow to skip the driver internal bounce buffer
-> >> - Support PIO in case DMA is not supported
-> >> - Switch from ->cmdfunc over to ->cmd_ctrl
-> >>
-> >> 18 patches were merged at v2.
-> >> 11 patches were merged at v3.
-> >> Here is the rest of the series.
-> >>
-> >> v1: https://lkml.org/lkml/2016/11/26/144
-> >> v2: https://lkml.org/lkml/2017/3/22/804
-> >> v3: https://lkml.org/lkml/2017/3/30/90
-> >>
-> >>
-> >> Masahiro Yamada (23):
-> >>   mtd: nand: denali_dt: clean up resource ioremap
-> >>   mtd: nand: denali: use BIT() and GENMASK() for register macros
-> >>   mtd: nand: add generic helpers to check, match, maximize ECC settings
-> >>   mtd: nand: denali: avoid hard-coding ECC step, strength, bytes
-> >>   mtd: nand: denali: remove Toshiba and Hynix specific fixup code
-> >>   mtd: nand: denali_dt: add compatible strings for UniPhier SoC variants
-> >>   mtd: nand: denali: set NAND_ECC_CUSTOM_PAGE_ACCESS
-> >>   mtd: nand: denali: do not propagate NAND_STATUS_FAIL to waitfunc()
-> >>   mtd: nand: denali: remove unneeded find_valid_banks()
-> >>   mtd: nand: denali: handle timing parameters by setup_data_interface()
-> >>   mtd: nand: denali: rework interrupt handling
-> >>   mtd: nand: denali: fix NAND_CMD_STATUS handling
-> >>   mtd: nand: denali: fix NAND_CMD_PARAM handling
-> >>   mtd: nand: denali: switch over to cmd_ctrl instead of cmdfunc
-> >>   mtd: nand: denali: fix bank reset function to detect the number of
-> >>     chips
-> >>   mtd: nand: denali: use interrupt instead of polling for bank reset
-> >>   mtd: nand: denali: propagate page to helpers via function argument
-> >>   mtd: nand: denali: merge struct nand_buf into struct denali_nand_info
-> >>   mtd: nand: denali: use flag instead of register macro for direction
-> >>   mtd: nand: denali: fix raw and oob accessors for syndrome page layout
-> >>   mtd: nand: denali: skip driver internal bounce buffer when possible
-> >>   mtd: nand: denali: use non-managed kmalloc() for DMA buffer
-> >>   mtd: nand: denali: enable bad block table scan  
-> >
-> > I'd like to apply as much patches as possible from this series (already
-> > applied patches 1 and 2). Can you point patches that actually depend on
-> > patches 3 and 4?
-> >  
-> 
-> 
-> I think
-> 09 "mtd: nand: denali: remove unneeded find_valid_banks()"
-> is applicable independently.
-> 
-> I will try my best to work on v5 quickly.
+> Subject line should be something like;
+> dt-bindings: mtd: Update mediatek bindings.
 
-Applied patches 1 and 2. Can you send only patches 3 and 4 in your v5
-or re-order patches to avoid the dependency on these patches.
+This patch has been accepted on PATCH v5 by Boris. So, should I send
+PATCH v6?
+
+Thanks.
+> 
+> >   Documentation/devicetree/bindings/mtd/mtk-nand.txt | 5 +++--
+> >   1 file changed, 3 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mtd/mtk-nand.txt b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
+> > index 069c192..dbf9e05 100644
+> > --- a/Documentation/devicetree/bindings/mtd/mtk-nand.txt
+> > +++ b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
+> > @@ -12,7 +12,8 @@ tree nodes.
+> >   
+> >   The first part of NFC is NAND Controller Interface (NFI) HW.
+> >   Required NFI properties:
+> > -- compatible:			Should be "mediatek,mtxxxx-nfc".
+> > +- compatible:			Should be one of "mediatek,mt2701-nfc",
+> > +				"mediatek,mt2712-nfc".
+> >   - reg:				Base physical address and size of NFI.
+> >   - interrupts:			Interrupts of NFI.
+> >   - clocks:			NFI required clocks.
+> > @@ -141,7 +142,7 @@ Example:
+> >   ==============
+> >   
+> >   Required BCH properties:
+> > -- compatible:	Should be "mediatek,mtxxxx-ecc".
+> > +- compatible:	Should be one of "mediatek,mt2701-ecc", "mediatek,mt2712-ecc".
+> >   - reg:		Base physical address and size of ECC.
+> >   - interrupts:	Interrupts of ECC.
+> >   - clocks:	ECC required clocks.
+> > 
