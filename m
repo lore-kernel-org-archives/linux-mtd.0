@@ -1,33 +1,27 @@
-Received: from mail-wr0-x233.google.com ([2a00:1450:400c:c0c::233])
+Received: from conuserg-10.nifty.com ([210.131.2.77])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dIWcO-0007iT-Eg
- for linux-mtd@lists.infradead.org; Wed, 07 Jun 2017 08:47:10 +0000
-Received: by mail-wr0-x233.google.com with SMTP id g76so2914904wrd.1
- for <linux-mtd@lists.infradead.org>; Wed, 07 Jun 2017 01:46:46 -0700 (PDT)
-Date: Wed, 7 Jun 2017 10:46:42 +0200
-From: Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
+ id 1dIZWu-0004S5-5N
+ for linux-mtd@lists.infradead.org; Wed, 07 Jun 2017 11:53:42 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org
+Cc: Enrico Jorns <ejo@pengutronix.de>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Dinh Nguyen <dinguyen@kernel.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] mtd: block2mtd: Add support for specifying MTD write
- size and subpage shift
-Message-ID: <20170607084642.GG4690@pali>
-References: <1496418222-23483-1-git-send-email-pali.rohar@gmail.com>
- <1496418222-23483-3-git-send-email-pali.rohar@gmail.com>
- <fa265d04-07b4-0ed3-9b51-c2026f7015db@nod.at>
- <20170605112145.GE14675@pali>
- <ad488af9-a6c5-7795-87a2-87e610dd2121@nod.at>
- <20170605112508.GF14675@pali>
- <79f3b92f-5be4-8d46-985d-0b38cffd6032@nod.at>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <79f3b92f-5be4-8d46-985d-0b38cffd6032@nod.at>
+ Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>,
+ Jassi Brar <jaswinder.singh@linaro.org>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>
+Subject: [PATCH v5 07/23] mtd: nand: denali: do not propagate NAND_STATUS_FAIL
+ to waitfunc()
+Date: Wed,  7 Jun 2017 20:52:16 +0900
+Message-Id: <1496836352-8016-8-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,40 +31,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 05 June 2017 13:27:18 Richard Weinberger wrote:
-> Pali,
-> 
-> Am 05.06.2017 um 13:25 schrieb Pali Rohár:
-> > On Monday 05 June 2017 13:23:22 Richard Weinberger wrote:
-> >> Pali,
-> >>
-> >> Am 05.06.2017 um 13:21 schrieb Pali Rohár:
-> >>> On Friday 02 June 2017 18:13:02 Richard Weinberger wrote:
-> >>>> Pali,
-> >>>>
-> >>>> Am 02.06.2017 um 17:43 schrieb Pali Rohár:
-> >>>>> It is needed for creating emulated devices suitable for using in UBI layer
-> >>>>> and with UBIFS.
-> >>>>
-> >>>> Why?
-> >>>
-> >>> ubifs depends on write size of nand. And without those parameters as
-> >>> specified in cover letter I'm unable to mount N900 rootfs image exported
-> >>> via block2mtd. ubifs reject such image.
-> >>
-> >> Hmm, so you render block2mtd into a semi-NAND chip? :)
-> > 
-> > Probably you can call it like that. But it is still MTD device...
-> 
-> This is what I meant in my other mail.
-> You add NAND specific properties but still denote it as MTD_RAM/ROM.
-> I'm not sure whether this is a good idea.
+Currently, the error handling of denali_write_page(_raw) is a bit
+complicated.  If the program command fails, NAND_STATUS_FAIL is set
+to the driver internal denali->status, then read out later by
+denali_waitfunc().
 
-Ok, lets wait what other people think.
+We can avoid it by exploiting the nand_write_page() implementation.
+If chip->ecc.write_page(_raw) returns negative code (i.e. -EIO), it
+errors out immediately.  This gives the same result as returning
+NAND_STATUS_FAIL from chip->waitfunc.  In either way, -EIO is
+returned to the upper MTD layer.
 
-At least patches like fallback or check should be less problematic and
-could be applied separately.
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
 
+Changes in v5: None
+Changes in v4: None
+Changes in v3: None
+Changes in v2:
+  - Newly added
+
+ drivers/mtd/nand/denali.c | 12 ++++--------
+ drivers/mtd/nand/denali.h |  1 -
+ 2 files changed, 4 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 1897fe238290..22acfc34b546 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -1005,6 +1005,7 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	size_t size = mtd->writesize + mtd->oobsize;
+ 	uint32_t irq_status;
+ 	uint32_t irq_mask = INTR__DMA_CMD_COMP | INTR__PROGRAM_FAIL;
++	int ret = 0;
+ 
+ 	denali->page = page;
+ 
+@@ -1038,13 +1039,13 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	if (irq_status == 0) {
+ 		dev_err(denali->dev, "timeout on write_page (type = %d)\n",
+ 			raw_xfer);
+-		denali->status = NAND_STATUS_FAIL;
++		ret = -EIO;
+ 	}
+ 
+ 	denali_enable_dma(denali, false);
+ 	dma_sync_single_for_cpu(denali->dev, addr, size, DMA_TO_DEVICE);
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ /* NAND core entry points */
+@@ -1196,12 +1197,7 @@ static void denali_select_chip(struct mtd_info *mtd, int chip)
+ 
+ static int denali_waitfunc(struct mtd_info *mtd, struct nand_chip *chip)
+ {
+-	struct denali_nand_info *denali = mtd_to_denali(mtd);
+-	int status = denali->status;
+-
+-	denali->status = 0;
+-
+-	return status;
++	return 0;
+ }
+ 
+ static int denali_erase(struct mtd_info *mtd, int page)
+diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
+index a06ed741b550..352d8328b94a 100644
+--- a/drivers/mtd/nand/denali.h
++++ b/drivers/mtd/nand/denali.h
+@@ -323,7 +323,6 @@ struct nand_buf {
+ struct denali_nand_info {
+ 	struct nand_chip nand;
+ 	int flash_bank; /* currently selected chip */
+-	int status;
+ 	int platform;
+ 	struct nand_buf buf;
+ 	struct device *dev;
 -- 
-Pali Rohár
-pali.rohar@gmail.com
+2.7.4
