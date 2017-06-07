@@ -1,6 +1,6 @@
 Received: from conuserg-10.nifty.com ([210.131.2.77])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dIZWu-0004Rs-5L
+ id 1dIZWu-0004S4-5P
  for linux-mtd@lists.infradead.org; Wed, 07 Jun 2017 11:53:44 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -13,14 +13,14 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  Chuanxiao Dong <chuanxiao.dong@intel.com>,
  Jassi Brar <jaswinder.singh@linaro.org>,
  Masahiro Yamada <yamada.masahiro@socionext.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>
-Subject: [PATCH v5 00/23] mtd: nand: denali: Denali NAND IP patch bomb
-Date: Wed,  7 Jun 2017 20:52:09 +0900
-Message-Id: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
+ Richard Weinberger <richard@nod.at>
+Subject: [PATCH v5 06/23] mtd: nand: denali: set NAND_ECC_CUSTOM_PAGE_ACCESS
+Date: Wed,  7 Jun 2017 20:52:15 +0900
+Message-Id: <1496836352-8016-7-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,66 +30,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch series intends to solve various problems.
+The denali_cmdfunc() actually does nothing valuable for
+NAND_CMD_{PAGEPROG,READ0,SEQIN}.
 
-[1] The driver just retrieves the OOB area as-is
-    whereas the controller uses syndrome page layout.
-[2] Many NAND chip specific parameters are hard-coded in the driver.
-[3] ONFi devices are not working
-[4] It can not read Bad Block Marker
+For NAND_CMD_{READ0,SEQIN}, it copies "page" to "denali->page", then
+denali_read_page() and denali_read_page_raw() compare them to check
+if the NAND framework called the callbacks in correct order.
+(Inconsistently, this check is missing from the denali_write_page()
+and denali_write_page_raw().)
 
-Outstanding changes are:
-- Fix raw/oob callbacks for syndrome page layout
-- Implement setup_data_interface() callback
-- Fix/implement more commands for ONFi devices
-- Allow to skip the driver internal bounce buffer
-- Support PIO in case DMA is not supported
-- Switch from ->cmdfunc over to ->cmd_ctrl
+The framework is widely tested by many drivers, so this kind of
+sanity check is unneeded.  The Denali controller is equipped with
+high level interface for read/write, so let's skip unneeded call
+of cmdfunc().
 
-18 patches were merged at v2.
-11 patches were merged at v3.
-2 patches were merged at 4.
-Here is the rest of the series.
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
 
-v1: https://lkml.org/lkml/2016/11/26/144
-v2: https://lkml.org/lkml/2017/3/22/804
-v3: https://lkml.org/lkml/2017/3/30/90
+Changes in v5: None
+Changes in v4: None
+Changes in v3: None
+Changes in v2:
+  - Newly added
 
+ drivers/mtd/nand/denali.c | 29 ++++++++---------------------
+ 1 file changed, 8 insertions(+), 21 deletions(-)
 
-Masahiro Yamada (23):
-  mtd: nand: add generic helpers to check, match, maximize ECC settings
-  mtd: nand: add a shorthand to generate nand_ecc_caps structure
-  mtd: nand: denali: avoid hard-coding ECC step, strength, bytes
-  mtd: nand: denali: remove Toshiba and Hynix specific fixup code
-  mtd: nand: denali_dt: add compatible strings for UniPhier SoC variants
-  mtd: nand: denali: set NAND_ECC_CUSTOM_PAGE_ACCESS
-  mtd: nand: denali: do not propagate NAND_STATUS_FAIL to waitfunc()
-  mtd: nand: denali: remove unneeded find_valid_banks()
-  mtd: nand: denali: handle timing parameters by setup_data_interface()
-  mtd: nand: denali: rework interrupt handling
-  mtd: nand: denali: fix NAND_CMD_STATUS handling
-  mtd: nand: denali: fix NAND_CMD_PARAM handling
-  mtd: nand: denali: switch over to cmd_ctrl instead of cmdfunc
-  mtd: nand: denali: fix bank reset function to detect the number of
-    chips
-  mtd: nand: denali: use interrupt instead of polling for bank reset
-  mtd: nand: denali: propagate page to helpers via function argument
-  mtd: nand: denali: merge struct nand_buf into struct denali_nand_info
-  mtd: nand: denali: use flag instead of register macro for direction
-  mtd: nand: denali: fix raw and oob accessors for syndrome page layout
-  mtd: nand: denali: support hardware-assisted erased page detection
-  mtd: nand: denali: skip driver internal bounce buffer when possible
-  mtd: nand: denali: use non-managed kmalloc() for DMA buffer
-  mtd: nand: denali: enable bad block table scan
-
- .../devicetree/bindings/mtd/denali-nand.txt        |   13 +
- drivers/mtd/nand/denali.c                          | 1686 +++++++++-----------
- drivers/mtd/nand/denali.h                          |   60 +-
- drivers/mtd/nand/denali_dt.c                       |   33 +-
- drivers/mtd/nand/denali_pci.c                      |   10 +-
- drivers/mtd/nand/nand_base.c                       |  220 +++
- include/linux/mtd/nand.h                           |   47 +
- 7 files changed, 1103 insertions(+), 966 deletions(-)
-
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 991924b9ae2c..1897fe238290 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -998,7 +998,7 @@ static void denali_setup_dma(struct denali_nand_info *denali, int op)
+  * configuration details.
+  */
+ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
+-			const uint8_t *buf, bool raw_xfer)
++			const uint8_t *buf, int page, bool raw_xfer)
+ {
+ 	struct denali_nand_info *denali = mtd_to_denali(mtd);
+ 	dma_addr_t addr = denali->buf.dma_buf;
+@@ -1006,6 +1006,8 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	uint32_t irq_status;
+ 	uint32_t irq_mask = INTR__DMA_CMD_COMP | INTR__PROGRAM_FAIL;
+ 
++	denali->page = page;
++
+ 	/*
+ 	 * if it is a raw xfer, we want to disable ecc and send the spare area.
+ 	 * !raw_xfer - enable ecc
+@@ -1059,7 +1061,7 @@ static int denali_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	 * for regular page writes, we let HW handle all the ECC
+ 	 * data written to the device.
+ 	 */
+-	return write_page(mtd, chip, buf, false);
++	return write_page(mtd, chip, buf, page, false);
+ }
+ 
+ /*
+@@ -1075,7 +1077,7 @@ static int denali_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 	 * for raw page writes, we want to disable ECC and simply write
+ 	 * whatever data is in the buffer.
+ 	 */
+-	return write_page(mtd, chip, buf, true);
++	return write_page(mtd, chip, buf, page, true);
+ }
+ 
+ static int denali_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
+@@ -1105,12 +1107,7 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	unsigned long uncor_ecc_flags = 0;
+ 	int stat = 0;
+ 
+-	if (page != denali->page) {
+-		dev_err(denali->dev,
+-			"IN %s: page %d is not equal to denali->page %d",
+-			__func__, page, denali->page);
+-		BUG();
+-	}
++	denali->page = page;
+ 
+ 	setup_ecc_for_xfer(denali, true, false);
+ 
+@@ -1154,12 +1151,7 @@ static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 	size_t size = mtd->writesize + mtd->oobsize;
+ 	uint32_t irq_mask = INTR__DMA_CMD_COMP;
+ 
+-	if (page != denali->page) {
+-		dev_err(denali->dev,
+-			"IN %s: page %d is not equal to denali->page %d",
+-			__func__, page, denali->page);
+-		BUG();
+-	}
++	denali->page = page;
+ 
+ 	setup_ecc_for_xfer(denali, false, true);
+ 	denali_enable_dma(denali, true);
+@@ -1238,8 +1230,6 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
+ 	int i;
+ 
+ 	switch (cmd) {
+-	case NAND_CMD_PAGEPROG:
+-		break;
+ 	case NAND_CMD_STATUS:
+ 		read_status(denali);
+ 		break;
+@@ -1259,10 +1249,6 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
+ 			write_byte_to_buf(denali, id);
+ 		}
+ 		break;
+-	case NAND_CMD_READ0:
+-	case NAND_CMD_SEQIN:
+-		denali->page = page;
+-		break;
+ 	case NAND_CMD_RESET:
+ 		reset_bank(denali);
+ 		break;
+@@ -1603,6 +1589,7 @@ int denali_init(struct denali_nand_info *denali)
+ 
+ 	mtd_set_ooblayout(mtd, &denali_ooblayout_ops);
+ 
++	chip->ecc.options |= NAND_ECC_CUSTOM_PAGE_ACCESS;
+ 	chip->ecc.read_page = denali_read_page;
+ 	chip->ecc.read_page_raw = denali_read_page_raw;
+ 	chip->ecc.write_page = denali_write_page;
 -- 
 2.7.4
