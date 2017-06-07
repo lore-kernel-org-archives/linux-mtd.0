@@ -1,6 +1,6 @@
 Received: from conuserg-10.nifty.com ([210.131.2.77])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dIZWu-0004S2-5O
+ id 1dIZWu-0004S3-5O
  for linux-mtd@lists.infradead.org; Wed, 07 Jun 2017 11:53:44 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -16,10 +16,9 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v5 02/23] mtd: nand: add a shorthand to generate nand_ecc_caps
- structure
-Date: Wed,  7 Jun 2017 20:52:11 +0900
-Message-Id: <1496836352-8016-3-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v5 08/23] mtd: nand: denali: remove unneeded find_valid_banks()
+Date: Wed,  7 Jun 2017 20:52:17 +0900
+Message-Id: <1496836352-8016-9-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,68 +30,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-struct nand_ecc_caps was designed as flexible as possible to support
-multiple stepsizes (like sunxi_nand.c).
+The function find_valid_banks() issues the Read ID (0x90) command,
+then compares the first byte (Manufacturer ID) of each bank with
+the one of bank0.
 
-So, we need to write multiple arrays even for the simplest case.
-I guess many controllers support a single stepsize, so here is a
-shorthand macro for the case.
+This is equivalent to what nand_scan_ident() does.  The number of
+chips is detected there, so this is unneeded.
 
-It allows to describe like ...
-
-NAND_ECC_CAPS_SINGLE(denali_pci_ecc_caps, denali_calc_ecc_bytes, 512, 8, 15);
-
-... instead of
-
-static const int denali_pci_ecc_strengths[] = {8, 15};
-static const struct nand_ecc_step_info denali_pci_ecc_stepinfo = {
-        .stepsize = 512,
-        .strengths = denali_pci_ecc_strengths,
-        .nstrengths = ARRAY_SIZE(denali_pci_ecc_strengths),
-};
-static const struct nand_ecc_caps denali_pci_ecc_caps = {
-        .stepinfos = &denali_pci_ecc_stepinfo,
-        .nstepinfos = 1,
-        .calc_ecc_bytes = denali_calc_ecc_bytes,
-};
+What is worse for find_valid_banks() is that, if multiple chips are
+connected to INTEL_CE4100 platform, it crashes the kernel by BUG().
+This is what we should avoid.  This function is just harmful and
+unneeded.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v5:
-  - Newly added
-
+Changes in v5: None
 Changes in v4: None
 Changes in v3: None
-Changes in v2: None
+Changes in v2:
+  - Newly added
 
- include/linux/mtd/nand.h | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/mtd/nand/denali.c | 47 -----------------------------------------------
+ drivers/mtd/nand/denali.h |  1 -
+ 2 files changed, 48 deletions(-)
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index c28a5792eed6..c08954a39657 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -500,6 +500,20 @@ struct nand_ecc_caps {
- 	int (*calc_ecc_bytes)(int step_size, int strength);
- };
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 22acfc34b546..f090486cab66 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -338,51 +338,6 @@ static void get_samsung_nand_para(struct denali_nand_info *denali,
+ }
  
-+/* a shorthand to generate struct nand_ecc_caps with only one ECC stepsize */
-+#define NAND_ECC_CAPS_SINGLE(__name, __calc, __step, ...)	\
-+static const int __name##_strengths[] = { __VA_ARGS__ };	\
-+static const struct nand_ecc_step_info __name##_stepinfo = {	\
-+	.stepsize = __step,					\
-+	.strengths = __name##_strengths,			\
-+	.nstrengths = ARRAY_SIZE(__name##_strengths),		\
-+};								\
-+static const struct nand_ecc_caps __name = {			\
-+	.stepinfos = &__name##_stepinfo,			\
-+	.nstepinfos = 1,					\
-+	.calc_ecc_bytes = __calc,				\
-+}
-+
- /**
-  * struct nand_ecc_ctrl - Control structure for ECC
-  * @mode:	ECC mode
+ /*
+- * determines how many NAND chips are connected to the controller. Note for
+- * Intel CE4100 devices we don't support more than one device.
+- */
+-static void find_valid_banks(struct denali_nand_info *denali)
+-{
+-	uint32_t id[denali->max_banks];
+-	int i;
+-
+-	denali->total_used_banks = 1;
+-	for (i = 0; i < denali->max_banks; i++) {
+-		index_addr(denali, MODE_11 | (i << 24) | 0, 0x90);
+-		index_addr(denali, MODE_11 | (i << 24) | 1, 0);
+-		index_addr_read_data(denali, MODE_11 | (i << 24) | 2, &id[i]);
+-
+-		dev_dbg(denali->dev,
+-			"Return 1st ID for bank[%d]: %x\n", i, id[i]);
+-
+-		if (i == 0) {
+-			if (!(id[i] & 0x0ff))
+-				break; /* WTF? */
+-		} else {
+-			if ((id[i] & 0x0ff) == (id[0] & 0x0ff))
+-				denali->total_used_banks++;
+-			else
+-				break;
+-		}
+-	}
+-
+-	if (denali->platform == INTEL_CE4100) {
+-		/*
+-		 * Platform limitations of the CE4100 device limit
+-		 * users to a single chip solution for NAND.
+-		 * Multichip support is not enabled.
+-		 */
+-		if (denali->total_used_banks != 1) {
+-			dev_err(denali->dev,
+-				"Sorry, Intel CE4100 only supports a single NAND device.\n");
+-			BUG();
+-		}
+-	}
+-	dev_dbg(denali->dev,
+-		"denali->total_used_banks: %d\n", denali->total_used_banks);
+-}
+-
+-/*
+  * Use the configuration feature register to determine the maximum number of
+  * banks that the hardware supports.
+  */
+@@ -439,8 +394,6 @@ static uint16_t denali_nand_timing_set(struct denali_nand_info *denali)
+ 			ioread32(denali->flash_reg + RDWR_EN_HI_CNT),
+ 			ioread32(denali->flash_reg + CS_SETUP_CNT));
+ 
+-	find_valid_banks(denali);
+-
+ 	/*
+ 	 * If the user specified to override the default timings
+ 	 * with a specific ONFI mode, we apply those changes here.
+diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
+index 352d8328b94a..0e4a8965f6f1 100644
+--- a/drivers/mtd/nand/denali.h
++++ b/drivers/mtd/nand/denali.h
+@@ -326,7 +326,6 @@ struct denali_nand_info {
+ 	int platform;
+ 	struct nand_buf buf;
+ 	struct device *dev;
+-	int total_used_banks;
+ 	int page;
+ 	void __iomem *flash_reg;	/* Register Interface */
+ 	void __iomem *flash_mem;	/* Host Data/Command Interface */
 -- 
 2.7.4
