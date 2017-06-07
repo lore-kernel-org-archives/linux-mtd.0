@@ -1,7 +1,7 @@
 Received: from conuserg-10.nifty.com ([210.131.2.77])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dIZXD-0004VD-Su
- for linux-mtd@lists.infradead.org; Wed, 07 Jun 2017 11:54:04 +0000
+ id 1dIZXD-0004VB-Su
+ for linux-mtd@lists.infradead.org; Wed, 07 Jun 2017 11:54:05 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Enrico Jorns <ejo@pengutronix.de>,
@@ -16,10 +16,10 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v5 14/23] mtd: nand: denali: fix bank reset function to detect
- the number of chips
-Date: Wed,  7 Jun 2017 20:52:23 +0900
-Message-Id: <1496836352-8016-15-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v5 13/23] mtd: nand: denali: switch over to cmd_ctrl instead
+ of cmdfunc
+Date: Wed,  7 Jun 2017 20:52:22 +0900
+Message-Id: <1496836352-8016-14-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,126 +31,181 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The nand_scan_ident() iterates over maxchips, and calls nand_reset()
-for each.  This driver currently passes the maximum number of banks
-(=chip selects) supported by the controller as maxchips.  So, maxchips
-is typically 4 or 8.  Usually, less number of NAND chips are connected
-to the controller.
+The NAND_CMD_SET_FEATURES support is missing from denali_cmdfunc().
+This is needed for nand_onfi_set_features().
 
-This can be a problem for ONFi devices.  Now, this driver implements
-->setup_data_interface() hook, so nand_setup_data_interface() issues
-Set Features (0xEF) command, which waits until the chip returns R/B#
-response.  If no chip there, we know it never happens, but the driver
-still ends up with waiting for a long time.  It will finally bail-out
-with timeout error and the driver will work with existing chips, but
-unnecessary wait will give a bad user experience.
+Besides, we see /* TODO: Read OOB data */ comment line.
 
-The denali_nand_reset() polls the INTR__RST_COMP and INTR__TIME_OUT
-bits, but they are always set even if not NAND chip is connected to
-that bank.  To know the chip existence, INTR__INT_ACT bit must be
-checked; this flag is set only when R/B# is toggled.  Since the Reset
-(0xFF) command toggles the R/B# pin, this can be used to know the
-actual number of chips, and update denali->max_banks.
+It would be possible to add more commands along with the current
+implementation, but having ->cmd_ctrl() seems a better approach from
+the discussion with Boris [1].
+
+Rely on the default ->cmdfunc() from the framework and implement the
+driver's own ->cmd_ctrl().
+
+Also add ->write_byte(), which is needed for write direction commands.
+
+[1] https://lkml.org/lkml/2017/3/15/97
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Boris mentioned this information can be retrieved from DT
-(http://patchwork.ozlabs.org/patch/745118/), but I'd like to
-take time for controller/chip decoupling.  I am tackling on
-that, but not completed yet.
-
-I believe this commit stands for denali_pci, at least I do not
-know how to get the number of chips from PCI.
-
-
 Changes in v5: None
-Changes in v4:
-  - Reword commit-log
-
+Changes in v4: None
 Changes in v3: None
 Changes in v2:
   - Newly added
 
- drivers/mtd/nand/denali.c | 52 +++++++++++++++++++++--------------------------
- 1 file changed, 23 insertions(+), 29 deletions(-)
+ drivers/mtd/nand/denali.c | 104 +++++++++++++++++++++++-----------------------
+ 1 file changed, 52 insertions(+), 52 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 95bce6b341d7..8e2399ddfe3f 100644
+index c3382954cf27..95bce6b341d7 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -85,33 +85,6 @@ static void index_addr(struct denali_nand_info *denali,
- 	iowrite32(data, denali->flash_mem + 0x10);
+@@ -230,20 +230,16 @@ static uint32_t denali_wait_for_irq(struct denali_nand_info *denali,
+ 	return denali->irq_status;
  }
  
--/* Reset the flash controller */
--static uint16_t denali_nand_reset(struct denali_nand_info *denali)
--{
--	int i;
+-/* resets a specific device connected to the core */
+-static void reset_bank(struct denali_nand_info *denali)
++static uint32_t denali_check_irq(struct denali_nand_info *denali)
+ {
++	unsigned long flags;
+ 	uint32_t irq_status;
+ 
+-	denali_reset_irq(denali);
 -
--	for (i = 0; i < denali->max_banks; i++)
--		iowrite32(INTR__RST_COMP | INTR__TIME_OUT,
--		denali->flash_reg + INTR_STATUS(i));
+-	iowrite32(1 << denali->flash_bank, denali->flash_reg + DEVICE_RESET);
 -
--	for (i = 0; i < denali->max_banks; i++) {
--		iowrite32(1 << i, denali->flash_reg + DEVICE_RESET);
--		while (!(ioread32(denali->flash_reg + INTR_STATUS(i)) &
--			(INTR__RST_COMP | INTR__TIME_OUT)))
--			cpu_relax();
--		if (ioread32(denali->flash_reg + INTR_STATUS(i)) &
--			INTR__TIME_OUT)
--			dev_dbg(denali->dev,
--			"NAND Reset operation timed out on bank %d\n", i);
--	}
--
--	for (i = 0; i < denali->max_banks; i++)
--		iowrite32(INTR__RST_COMP | INTR__TIME_OUT,
--			  denali->flash_reg + INTR_STATUS(i));
--
--	return PASS;
--}
--
+-	irq_status = denali_wait_for_irq(denali,
+-					 INTR__RST_COMP | INTR__TIME_OUT);
++	spin_lock_irqsave(&denali->irq_lock, flags);
++	irq_status = denali->irq_status;
++	spin_unlock_irqrestore(&denali->irq_lock, flags);
+ 
+-	if (!(irq_status & INTR__RST_COMP))
+-		dev_err(denali->dev, "reset bank failed.\n");
++	return irq_status;
+ }
+ 
  /*
-  * Use the configuration feature register to determine the maximum number of
-  * banks that the hardware supports.
-@@ -999,7 +972,28 @@ static int denali_setup_data_interface(struct mtd_info *mtd,
- 	return 0;
+@@ -273,6 +269,42 @@ static uint8_t denali_read_byte(struct mtd_info *mtd)
+ 	return ioread32(denali->flash_mem + 0x10);
  }
  
--/* Initialization code to bring the device up to a known good state */
-+static void denali_reset_banks(struct denali_nand_info *denali)
++static void denali_write_byte(struct mtd_info *mtd, uint8_t byte)
 +{
-+	int i;
++	struct denali_nand_info *denali = mtd_to_denali(mtd);
 +
-+	denali_clear_irq_all(denali);
-+
-+	for (i = 0; i < denali->max_banks; i++) {
-+		iowrite32(1 << i, denali->flash_reg + DEVICE_RESET);
-+		while (!(ioread32(denali->flash_reg + INTR_STATUS(i)) &
-+			(INTR__RST_COMP | INTR__TIME_OUT)))
-+			cpu_relax();
-+		if (!(ioread32(denali->flash_reg + INTR_STATUS(i)) &
-+		      INTR__INT_ACT))
-+			break;
-+	}
-+
-+	dev_dbg(denali->dev, "%d chips connected\n", i);
-+	denali->max_banks = i;
-+
-+	denali_clear_irq_all(denali);
++	index_addr(denali, MODE_11 | BANK(denali->flash_bank) | 2, byte);
 +}
 +
- static void denali_hw_init(struct denali_nand_info *denali)
++static void denali_cmd_ctrl(struct mtd_info *mtd, int dat, unsigned int ctrl)
++{
++	struct denali_nand_info *denali = mtd_to_denali(mtd);
++	uint32_t type;
++
++	if (ctrl & NAND_CLE)
++		type = 0;
++	else if (ctrl & NAND_ALE)
++		type = 1;
++	else
++		return;
++
++	/*
++	 * Some commands are followed by chip->dev_ready or chip->waitfunc.
++	 * irq_status must be cleared here to catch the R/B# interrupt later.
++	 */
++	if (ctrl & NAND_CTRL_CHANGE)
++		denali_reset_irq(denali);
++
++	index_addr(denali, MODE_11 | BANK(denali->flash_bank) | type, dat);
++}
++
++static int denali_dev_ready(struct mtd_info *mtd)
++{
++	struct denali_nand_info *denali = mtd_to_denali(mtd);
++
++	return !!(denali_check_irq(denali) & INTR__INT_ACT);
++}
++
+ /*
+  * sends a pipeline command operation to the controller. See the Denali NAND
+  * controller's user guide for more information (section 4.2.3.6).
+@@ -824,7 +856,13 @@ static void denali_select_chip(struct mtd_info *mtd, int chip)
+ 
+ static int denali_waitfunc(struct mtd_info *mtd, struct nand_chip *chip)
  {
- 	/*
-@@ -1019,7 +1013,7 @@ static void denali_hw_init(struct denali_nand_info *denali)
- 	denali->bbtskipbytes = ioread32(denali->flash_reg +
- 						SPARE_AREA_SKIP_BYTES);
- 	detect_max_banks(denali);
--	denali_nand_reset(denali);
-+	denali_reset_banks(denali);
- 	iowrite32(0x0F, denali->flash_reg + RB_PIN_ENABLED);
- 	iowrite32(CHIP_EN_DONT_CARE__FLAG,
- 			denali->flash_reg + CHIP_ENABLE_DONT_CARE);
+-	return 0;
++	struct denali_nand_info *denali = mtd_to_denali(mtd);
++	uint32_t irq_status;
++
++	/* R/B# pin transitioned from low to high? */
++	irq_status = denali_wait_for_irq(denali, INTR__INT_ACT);
++
++	return irq_status & INTR__INT_ACT ? 0 : NAND_STATUS_FAIL;
+ }
+ 
+ static int denali_erase(struct mtd_info *mtd, int page)
+@@ -845,46 +883,6 @@ static int denali_erase(struct mtd_info *mtd, int page)
+ 	return irq_status & INTR__ERASE_COMP ? 0 : NAND_STATUS_FAIL;
+ }
+ 
+-static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
+-			   int page)
+-{
+-	struct denali_nand_info *denali = mtd_to_denali(mtd);
+-	uint32_t addr, irq_status;
+-	int wait_ready = 0;
+-
+-	switch (cmd) {
+-	case NAND_CMD_PARAM:
+-		wait_ready = 1;
+-		break;
+-	case NAND_CMD_STATUS:
+-	case NAND_CMD_READID:
+-		break;
+-	case NAND_CMD_RESET:
+-		reset_bank(denali);
+-		break;
+-	case NAND_CMD_READOOB:
+-		/* TODO: Read OOB data */
+-		return;
+-	default:
+-		pr_err(": unsupported command received 0x%x\n", cmd);
+-		return;
+-	}
+-
+-	denali_reset_irq(denali);
+-
+-	addr = MODE_11 | BANK(denali->flash_bank);
+-	index_addr(denali, addr | 0, cmd);
+-	if (col != -1)
+-		index_addr(denali, addr | 1, col);
+-
+-	if (!wait_ready)
+-		return;
+-
+-	irq_status = denali_wait_for_irq(denali, INTR__INT_ACT);
+-	if (!(irq_status & INTR__INT_ACT))
+-		dev_err(denali->dev, "failed to issue command 0x%x\n", cmd);
+-}
+-
+ #define DIV_ROUND_DOWN_ULL(ll, d) \
+ 	({ unsigned long long _tmp = (ll); do_div(_tmp, d); _tmp; })
+ 
+@@ -1224,8 +1222,10 @@ int denali_init(struct denali_nand_info *denali)
+ 
+ 	/* register the driver with the NAND core subsystem */
+ 	chip->select_chip = denali_select_chip;
+-	chip->cmdfunc = denali_cmdfunc;
+ 	chip->read_byte = denali_read_byte;
++	chip->write_byte = denali_write_byte;
++	chip->cmd_ctrl = denali_cmd_ctrl;
++	chip->dev_ready = denali_dev_ready;
+ 	chip->waitfunc = denali_waitfunc;
+ 	/* clk rate info is needed for setup_data_interface */
+ 	if (denali->clk_x_rate)
 -- 
 2.7.4
