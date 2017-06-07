@@ -1,33 +1,14 @@
-Received: from mail-ot0-f194.google.com ([74.125.82.194])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dIgDB-0007yf-GB
- for linux-mtd@lists.infradead.org; Wed, 07 Jun 2017 19:01:47 +0000
-Received: by mail-ot0-f194.google.com with SMTP id a2so1787997oth.1
- for <linux-mtd@lists.infradead.org>; Wed, 07 Jun 2017 12:01:24 -0700 (PDT)
-Date: Wed, 7 Jun 2017 14:01:22 -0500
-From: Rob Herring <robh@kernel.org>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Dinh Nguyen <dinguyen@kernel.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Chuanxiao Dong <chuanxiao.dong@intel.com>,
- Jassi Brar <jaswinder.singh@linaro.org>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v5 05/23] mtd: nand: denali_dt: add compatible strings
- for UniPhier SoC variants
-Message-ID: <20170607190122.h3nkuxuzwfvx6gia@rob-hp-laptop>
-References: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
- <1496836352-8016-6-git-send-email-yamada.masahiro@socionext.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1496836352-8016-6-git-send-email-yamada.masahiro@socionext.com>
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dIiab-0003dJ-Jk
+ for linux-mtd@lists.infradead.org; Wed, 07 Jun 2017 21:34:07 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, adrian.hunter@intel.com, dedekind1@gmail.com,
+ Richard Weinberger <richard@nod.at>
+Subject: [PATCH] ubifs: Fail commit if TNC is obviously inconsistent
+Date: Wed,  7 Jun 2017 23:33:35 +0200
+Message-Id: <20170607213335.23059-1-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,35 +18,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jun 07, 2017 at 08:52:14PM +0900, Masahiro Yamada wrote:
-> Add two compatible strings for UniPhier SoC family.
-> 
-> "socionext,uniphier-denali-nand-v5a" is used on UniPhier sLD3, LD4,
-> Pro4, sLD8.
-> 
-> "socionext,uniphier-denali-nand-v5b" is used on UniPhier Pro5, PXs2,
-> LD6b, LD11, LD20.
-> 
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> ---
-> 
-> Changes in v5:
->   - Adjust to the update of generic helpers
-> 
-> Changes in v4:
->   - Adjusted to generic helpers for ECC engine caps
-> 
-> Changes in v3: None
-> Changes in v2:
->   - Change the compatible strings
->   - Fix the ecc_strength_capability
->   - Override revision number for the newer one
-> 
->  .../devicetree/bindings/mtd/denali-nand.txt        |  6 ++++++
+A reference to LEB 0 or with length 0 in the TNC
+is never correct and could be caused by a memory corruption.
+Don't write such a bad index node to the MTD.
+Instead fail the commit which will turn UBIFS into read-only mode.
 
-I acked v3. Please add acks when posting new versions.
+This is less painful than having the bad reference on the MTD
+from where UBFIS has no chance to recover.
 
-Rob
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ fs/ubifs/tnc_commit.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
->  drivers/mtd/nand/denali_dt.c                       | 25 ++++++++++++++++++++++
->  2 files changed, 31 insertions(+)
+diff --git a/fs/ubifs/tnc_commit.c b/fs/ubifs/tnc_commit.c
+index 51157da3f76e..aa31f60220ef 100644
+--- a/fs/ubifs/tnc_commit.c
++++ b/fs/ubifs/tnc_commit.c
+@@ -57,6 +57,8 @@ static int make_idx_node(struct ubifs_info *c, struct ubifs_idx_node *idx,
+ 			ubifs_dump_znode(c, znode);
+ 			if (zbr->znode)
+ 				ubifs_dump_znode(c, zbr->znode);
++
++			return -EINVAL;
+ 		}
+ 	}
+ 	ubifs_prepare_node(c, idx, len, 0);
+@@ -859,6 +861,8 @@ static int write_index(struct ubifs_info *c)
+ 				ubifs_dump_znode(c, znode);
+ 				if (zbr->znode)
+ 					ubifs_dump_znode(c, zbr->znode);
++
++				return -EINVAL;
+ 			}
+ 		}
+ 		len = ubifs_idx_node_sz(c, znode->child_cnt);
+-- 
+2.12.3
