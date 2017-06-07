@@ -1,27 +1,32 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dIben-0006fh-1C
- for linux-mtd@lists.infradead.org; Wed, 07 Jun 2017 14:09:58 +0000
-Date: Wed, 7 Jun 2017 16:09:35 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>, Artem
- Bityutskiy <artem.bityutskiy@linux.intel.com>, Dinh Nguyen
- <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Masami Hiramatsu <mhiramat@kernel.org>, Chuanxiao
- Dong <chuanxiao.dong@intel.com>, Jassi Brar <jaswinder.singh@linaro.org>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
- Brian Norris <computersforpeace@gmail.com>, Richard Weinberger
- <richard@nod.at>
-Subject: Re: [PATCH v5 19/23] mtd: nand: denali: fix raw and oob accessors
- for syndrome page layout
-Message-ID: <20170607160935.6b064eef@bbrezillon>
-In-Reply-To: <1496836352-8016-20-git-send-email-yamada.masahiro@socionext.com>
-References: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
- <1496836352-8016-20-git-send-email-yamada.masahiro@socionext.com>
+From: Han Xu <han.xu@nxp.com>
+To: Stefan Agner <stefan@agner.ch>, "shawnguo@kernel.org"
+ <shawnguo@kernel.org>, "kernel@pengutronix.de" <kernel@pengutronix.de>,
+ "sboyd@codeaurora.org" <sboyd@codeaurora.org>
+CC: "A.S. Dong" <aisheng.dong@nxp.com>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "boris.brezillon@free-electrons.com"
+ <boris.brezillon@free-electrons.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>, "mark.rutland@arm.com"
+ <mark.rutland@arm.com>, "fabio.estevam@freescale.com"
+ <fabio.estevam@freescale.com>, "LW@KARO-electronics.de"
+ <LW@KARO-electronics.de>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "linux-clk@vger.kernel.org"
+ <linux-clk@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 2/3] ARM: dts: imx7: add GPMI NAND and APBH DMA
+Date: Wed, 7 Jun 2017 15:33:26 +0000
+Message-ID: <9d66efda-d7c1-89a2-e163-c86056e08fb1@nxp.com>
+References: <cover.b62c3a17bd60de48d8fb2ade6dde4f2bc60aaf3c.1496730576.git-series.stefan@agner.ch>
+ <151ddece1e1427d0b69c4ff11b86a69b6a035d0d.1496730576.git-series.stefan@agner.ch>
+In-Reply-To: <151ddece1e1427d0b69c4ff11b86a69b6a035d0d.1496730576.git-series.stefan@agner.ch>
+Content-Language: en-US
+Content-Type: text/plain; charset="Windows-1252"
+Content-ID: <F00862B47729364989D44108CF5F95EC@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,16 +36,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed,  7 Jun 2017 20:52:28 +0900
-Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
->  
-> +static void denali_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
-> +{
-> +	struct denali_nand_info *denali = mtd_to_denali(mtd);
-> +	int i;
+
+On 06/06/2017 01:30 AM, Stefan Agner wrote:
+> Add i.MX 7 APBH DMA and GPMI NAND modules.
+>
+> Signed-off-by: Stefan Agner <stefan@agner.ch>
+> ---
+>   arch/arm/boot/dts/imx7s.dtsi | 32 ++++++++++++++++++++++++++++++++
+>   1 file changed, 32 insertions(+)
+>
+> diff --git a/arch/arm/boot/dts/imx7s.dtsi b/arch/arm/boot/dts/imx7s.dtsi
+> index c4f12fd..d71acd8 100644
+> --- a/arch/arm/boot/dts/imx7s.dtsi
+> +++ b/arch/arm/boot/dts/imx7s.dtsi
+> @@ -995,5 +995,37 @@
+>   				status =3D "disabled";
+>   			};
+>   		};
 > +
-> +	iowrite32(MODE_11 | BANK(denali->flash_bank) | 2, denali->flash_mem);
+> +		dma_apbh: dma-apbh@33000000 {
+> +			compatible =3D "fsl,imx7d-dma-apbh", "fsl,imx28-dma-apbh";
+> +			reg =3D <0x33000000 0x2000>;
+> +			interrupts =3D <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-names =3D "gpmi0", "gpmi1", "gpmi2", "gpmi3";
+> +			#dma-cells =3D <1>;
+> +			dma-channels =3D <4>;
+> +			clocks =3D <&clks IMX7D_NAND_USDHC_BUS_RAWNAND_CLK>;
+> +			clock-names =3D "dma_apbh_bch", "dma_apbh_io";
 
-What is this '| 2'? You seem to use it a lot. Can you define a macro
-and maybe add a comment if the macro name is not self-descriptive.
+please remove the clock names, I am good with all other changes.
+
+> +		};
+> +
+> +		gpmi: gpmi-nand@33002000{
+> +			compatible =3D "fsl,imx7d-gpmi-nand";
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <1>;
+> +			reg =3D <0x33002000 0x2000>, <0x33004000 0x4000>;
+> +			reg-names =3D "gpmi-nand", "bch";
+> +			interrupts =3D <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-names =3D "bch";
+> +			clocks =3D <&clks IMX7D_NAND_RAWNAND_CLK>,
+> +				<&clks IMX7D_NAND_USDHC_BUS_RAWNAND_CLK>;
+> +			clock-names =3D "gpmi_io", "gpmi_bch_apb";
+> +			dmas =3D <&dma_apbh 0>;
+> +			dma-names =3D "rx-tx";
+> +			status =3D "disabled";
+> +			assigned-clocks =3D <&clks IMX7D_NAND_ROOT_SRC>;
+> +			assigned-clock-parents =3D <&clks IMX7D_PLL_ENET_MAIN_500M_CLK>;
+> +		};
+>   	};
+>   };
