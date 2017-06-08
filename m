@@ -1,28 +1,36 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dIrin-0006Cy-HN
- for linux-mtd@lists.infradead.org; Thu, 08 Jun 2017 07:19:11 +0000
-Date: Thu, 8 Jun 2017 09:18:33 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>, Artem
- Bityutskiy <artem.bityutskiy@linux.intel.com>, Dinh Nguyen
- <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Masami Hiramatsu <mhiramat@kernel.org>, Chuanxiao
- Dong <chuanxiao.dong@intel.com>, Jassi Brar <jaswinder.singh@linaro.org>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, devicetree@vger.kernel.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Brian Norris
- <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>, Rob
- Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v5 00/23] mtd: nand: denali: Denali NAND IP patch bomb
-Message-ID: <20170608091833.5dfd091b@bbrezillon>
-In-Reply-To: <CAK7LNASu=cmQo+gCmfY=MFLoGtm0oeZQ036Nst63bZOEwFxR4g@mail.gmail.com>
-References: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
- <CAK7LNAQMCCxZAJc=7EwEPmpxD+-VsgOvMxwk5ySLfxLVsarqhw@mail.gmail.com>
- <CAK7LNASu=cmQo+gCmfY=MFLoGtm0oeZQ036Nst63bZOEwFxR4g@mail.gmail.com>
+Received: from conssluserg-01.nifty.com ([210.131.2.80])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dIrwl-0004Iq-7b
+ for linux-mtd@lists.infradead.org; Thu, 08 Jun 2017 07:33:36 +0000
+Received: from mail-yw0-f176.google.com (mail-yw0-f176.google.com
+ [209.85.161.176]) (authenticated)
+ by conssluserg-01.nifty.com with ESMTP id v587WnRX015911
+ for <linux-mtd@lists.infradead.org>; Thu, 8 Jun 2017 16:32:50 +0900
+Received: by mail-yw0-f176.google.com with SMTP id e142so2360340ywa.1
+ for <linux-mtd@lists.infradead.org>; Thu, 08 Jun 2017 00:32:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20170607152658.51c90ba9@bbrezillon>
+References: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
+ <1496836352-8016-7-git-send-email-yamada.masahiro@socionext.com>
+ <20170607152658.51c90ba9@bbrezillon>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Thu, 8 Jun 2017 16:32:48 +0900
+Message-ID: <CAK7LNAT6o+RCW4ibOxr_5iYspcDY1THVWLrB4LM0p040DKC1Dg@mail.gmail.com>
+Subject: Re: [PATCH v5 06/23] mtd: nand: denali: set
+ NAND_ECC_CUSTOM_PAGE_ACCESS
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Dinh Nguyen <dinguyen@kernel.org>, linux-mtd@lists.infradead.org,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Jassi Brar <jaswinder.singh@linaro.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Enrico Jorns <ejo@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,58 +40,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le Thu, 8 Jun 2017 16:12:49 +0900,
-Masahiro Yamada <yamada.masahiro@socionext.com> a =C3=A9crit :
+Hi Boris
 
-> 2017-06-08 15:16 GMT+09:00 Masahiro Yamada <yamada.masahiro@socionext.com=
->:
-> > Hi Boris,
-> >
-> > 2017-06-07 20:52 GMT+09:00 Masahiro Yamada <yamada.masahiro@socionext.c=
-om>: =20
-> >> This patch series intends to solve various problems.
-> >>
-> >> [1] The driver just retrieves the OOB area as-is
-> >>     whereas the controller uses syndrome page layout.
-> >> [2] Many NAND chip specific parameters are hard-coded in the driver.
-> >> [3] ONFi devices are not working
-> >> [4] It can not read Bad Block Marker
-> >>
-> >> Outstanding changes are:
-> >> - Fix raw/oob callbacks for syndrome page layout
-> >> - Implement setup_data_interface() callback
-> >> - Fix/implement more commands for ONFi devices
-> >> - Allow to skip the driver internal bounce buffer
-> >> - Support PIO in case DMA is not supported
-> >> - Switch from ->cmdfunc over to ->cmd_ctrl =20
-> >
-> >
-> > I am planning v6, but
-> > how many can you pick-up from this series?
-> >
-> > I did not see your comments for 01-05, so are they applicable?
-> >
-> > Could you add
-> > Acked-by: Rob Herring <robh@kernel.org>
-> > for 05  (http://patchwork.ozlabs.org/patch/772388/)
-> >
-> > He had already acked it, but I just missed it.
-> > =20
->=20
-> BTW, this series can not apply to Boris's tree
-> because of the following commit.
->=20
-> commit 4a78cc644eed3cf2dae00c3a959910a86c140fd6
-> Author: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Date:   Fri May 26 17:10:15 2017 +0200
->=20
->     mtd: nand: Make sure drivers not supporting SET/GET_FEATURES
-> return -ENOTSUPP
->=20
->=20
->=20
-> I will send v6 rebased on nand/next branch.
->=20
+2017-06-07 22:26 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> On Wed,  7 Jun 2017 20:52:15 +0900
+> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>
+>> The denali_cmdfunc() actually does nothing valuable for
+>> NAND_CMD_{PAGEPROG,READ0,SEQIN}.
+>>
+>> For NAND_CMD_{READ0,SEQIN}, it copies "page" to "denali->page", then
+>> denali_read_page() and denali_read_page_raw() compare them to check
+>> if the NAND framework called the callbacks in correct order.
+>> (Inconsistently, this check is missing from the denali_write_page()
+>> and denali_write_page_raw().)
+>>
+>> The framework is widely tested by many drivers, so this kind of
+>> sanity check is unneeded.  The Denali controller is equipped with
+>> high level interface for read/write, so let's skip unneeded call
+>> of cmdfunc().
+>
+> I recently changed the semantic of ecc->write_page[_raw]() when
+> NAND_ECC_CUSTOM_PAGE_ACCESS is set [1]. I'm not sure your driver waits
+> for the program command to finish.
+> I think you should wait for INTR_STATUS__PROGRAM_COMP instead of
+> INTR_STATUS__DMA_CMD_COMP in write_page() [2], as is done in
+> write_oob_data().
 
-Please wait a bit before spamming the ML again. I'd like to finish
-reviewing patches and apply uncontroversial ones.
+Thanks for the pointer.
+
+I missed your commit because I usually develop based on
+Linus' tree instead of linux-next.
+
+I will fix this commit.
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
