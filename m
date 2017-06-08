@@ -1,30 +1,35 @@
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
+Received: from conssluserg-06.nifty.com ([210.131.2.91])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dIizj-0004sx-7n
- for linux-mtd@lists.infradead.org; Wed, 07 Jun 2017 22:00:05 +0000
-From: Darwin Dingel <Darwin.Dingel@alliedtelesis.co.nz>
-To: Pavel Machek <pavel@ucw.cz>
-CC: Boris Brezillon <boris.brezillon@free-electrons.com>, "richard@nod.at"
- <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "cyrille.pitchen@atmel.com"
- <cyrille.pitchen@atmel.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "mark.marshall@omicronenergy.com"
- <mark.marshall@omicronenergy.com>, "b44839@freescale.com"
- <b44839@freescale.com>, "prabhakar@freescale.com" <prabhakar@freescale.com>
-Subject: Re: mtd: nand: fsl_ifc: fix handing of bit flips in erased pages
-Date: Wed, 7 Jun 2017 21:59:32 +0000
-Message-ID: <1496872770936.46522@alliedtelesis.co.nz>
-References: <5f665145ea304d3a9e1ecb39c51a951e@svr-chch-ex1.atlnz.lc>
- <20170531204913.GC16962@amd>
- <95d9297bf6604c1f8fe9c36a231b8a06@svr-chch-ex1.atlnz.lc>,
- <20170531221554.GA25597@amd>
-In-Reply-To: <20170531221554.GA25597@amd>
-Content-Language: en-NZ
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1dIqez-0002tJ-Ec
+ for linux-mtd@lists.infradead.org; Thu, 08 Jun 2017 06:11:11 +0000
+Received: from mail-yw0-f174.google.com (mail-yw0-f174.google.com
+ [209.85.161.174]) (authenticated)
+ by conssluserg-06.nifty.com with ESMTP id v586AJAh002036
+ for <linux-mtd@lists.infradead.org>; Thu, 8 Jun 2017 15:10:20 +0900
+Received: by mail-yw0-f174.google.com with SMTP id l75so9935804ywc.3
+ for <linux-mtd@lists.infradead.org>; Wed, 07 Jun 2017 23:10:20 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20170607155701.4bc89ad8@bbrezillon>
+References: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
+ <1496836352-8016-11-git-send-email-yamada.masahiro@socionext.com>
+ <20170607155701.4bc89ad8@bbrezillon>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Thu, 8 Jun 2017 15:10:18 +0900
+Message-ID: <CAK7LNAQanUEcNQK=jUvZMpaN+_cePhp5_qt23AxmdwqE5JN_nA@mail.gmail.com>
+Subject: Re: [PATCH v5 10/23] mtd: nand: denali: rework interrupt handling
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Dinh Nguyen <dinguyen@kernel.org>, linux-mtd@lists.infradead.org,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Jassi Brar <jaswinder.singh@linaro.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Enrico Jorns <ejo@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,26 +39,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgUGF2ZWwsCgpMb29rcyBsaWtlIHVib290IGhhcyBzaW1pbGFyIElGQyBkcml2ZXIuIERvIHlv
-dSBoYXZlIHBsYW5zIHRvIGFwcGx5IHRoaXMgY2hhbmdlIHRvIHVib290IGFzIHdlbGw/CgoKQ2hl
-ZXJzLApEYXJ3aW4K4oCLCgpGcm9tOiBQYXZlbCBNYWNoZWsgPHBhdmVsQHVjdy5jej4KU2VudDog
-VGh1cnNkYXksIDEgSnVuZSAyMDE3IDEwOjE1IGEubS4KVG86IERhcndpbiBEaW5nZWwKQ2M6IEJv
-cmlzIEJyZXppbGxvbjsgcmljaGFyZEBub2QuYXQ7IGR3bXcyQGluZnJhZGVhZC5vcmc7IGNvbXB1
-dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbTsgbWFyZWsudmFzdXRAZ21haWwuY29tOyBjeXJpbGxlLnBp
-dGNoZW5AYXRtZWwuY29tOyBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgbGludXgta2Vy
-bmVsQHZnZXIua2VybmVsLm9yZzsgbWFyay5tYXJzaGFsbEBvbWljcm9uZW5lcmd5LmNvbTsgYjQ0
-ODM5QGZyZWVzY2FsZS5jb207ICBwcmFiaGFrYXJAZnJlZXNjYWxlLmNvbQpTdWJqZWN0OiBSZTog
-bXRkOiBuYW5kOiBmc2xfaWZjOiBmaXggaGFuZGluZyBvZiBiaXQgZmxpcHMgaW4gZXJhc2VkIHBh
-Z2VzCsKgICAgCkhpIQoKPiA+IFlvdSBtZWVuICJlcnJvcnMgPSAwIj8gRG9lcyB0aGF0IGFjdHVh
-bGx5IG1ha2UgYSBkaWZmZXJlbmNlPyBJdCBpcyBhCj4gPiBsb2NhbCB2YXJpYWJsZSwgYW5kIGNv
-bnRpbnVlIG1ha2VzIHN1cmUgdGhlIHZhbHVlIGlzIG5vdCB1c2VkOgo+ID4gCj4gCj4gSSBtaXNz
-ZWQgdGhlICdjb250aW51ZScgc3RhdGVtZW50IHRoZXJlLiBJbiB0aGF0IGNhc2Ugd2UgZG9uJ3Qg
-bmVlZCB0byAKPiByZXNldCAnZXJyb3InLgoKWWVzLCB0aGFua3MsIEkgd2FudGVkIHRvIGRvdWJs
-ZS1jaGVjay4gSWYgeW91IGNvdWxkIHRha2UgYSBsb29rIGF0ClBBVENIdjIgLS0gaXQgc2hvdWxk
-IGhhdmUgdGhlIHByb2JsZW1zIGZpeGVkLiBZb3VyIEFja2VkLWJ5IHdvdWxkIGJlCm5pY2UgOy0p
-LgoKVGhhbmtzIGEgbG90LArCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFBhdmVsCi0tIAoo
-ZW5nbGlzaCkgaHR0cDovL3d3dy5saXZlam91cm5hbC5jb20vfnBhdmVsbWFjaGVrCihjZXNreSwg
-cGljdHVyZXMpICBodHRwOi8vYXRyZXkua2FybGluLm1mZi5jdW5pLmN6L35wYXZlbC9waWN0dXJl
-L2hvcnNlcy9ibG9nLmh0bWwKICAgIA==
+Hi Boris,
+
+
+2017-06-07 22:57 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> On Wed,  7 Jun 2017 20:52:19 +0900
+> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>
+>
+>> -/*
+>> - * This is the interrupt service routine. It handles all interrupts
+>> - * sent to this device. Note that on CE4100, this is a shared interrupt.
+>> - */
+>> -static irqreturn_t denali_isr(int irq, void *dev_id)
+>> +static uint32_t denali_wait_for_irq(struct denali_nand_info *denali,
+>> +                                 uint32_t irq_mask)
+>>  {
+>> -     struct denali_nand_info *denali = dev_id;
+>> +     unsigned long time_left, flags;
+>>       uint32_t irq_status;
+>> -     irqreturn_t result = IRQ_NONE;
+>>
+>> -     spin_lock(&denali->irq_lock);
+>> +     spin_lock_irqsave(&denali->irq_lock, flags);
+>>
+>> -     /* check to see if a valid NAND chip has been selected. */
+>> -     if (is_flash_bank_valid(denali->flash_bank)) {
+>> -             /*
+>> -              * check to see if controller generated the interrupt,
+>> -              * since this is a shared interrupt
+>> -              */
+>> -             irq_status = denali_irq_detected(denali);
+>> -             if (irq_status != 0) {
+>> -                     /* handle interrupt */
+>> -                     /* first acknowledge it */
+>> -                     clear_interrupt(denali, irq_status);
+>> -                     /*
+>> -                      * store the status in the device context for someone
+>> -                      * to read
+>> -                      */
+>> -                     denali->irq_status |= irq_status;
+>> -                     /* notify anyone who cares that it happened */
+>> -                     complete(&denali->complete);
+>> -                     /* tell the OS that we've handled this */
+>> -                     result = IRQ_HANDLED;
+>> -             }
+>> +     irq_status = denali->irq_status;
+>> +
+>> +     if (irq_mask & irq_status) {
+>> +             spin_unlock_irqrestore(&denali->irq_lock, flags);
+>> +             return irq_status;
+>>       }
+>> -     spin_unlock(&denali->irq_lock);
+>> -     return result;
+>> +
+>> +     denali->irq_mask = irq_mask;
+>> +     reinit_completion(&denali->complete);
+>
+> These 2 instructions should be done before calling
+> denali_wait_for_irq() (for example in denali_reset_irq()), otherwise
+> you might loose events if they happen between your irq_status read and
+> the reinit_completion() call.
+
+No.
+
+denali->irq_lock avoids a race between denali_isr() and
+denali_wait_for_irq().
+
+
+The line
+     denali->irq_status |= irq_status;
+in denali_isr() accumulates all events that have happened
+since denali_reset_irq().
+
+If the interested IRQs have already happened
+before denali_wait_for_irq(), it just return immediately
+without using completion.
+
+I do not mind adding a comment like below
+if you think my intention is unclear, though.
+
+        /* Return immediately if interested IRQs have already happend. */
+        if (irq_mask & irq_status) {
+                spin_unlock_irqrestore(&denali->irq_lock, flags);
+                return irq_status;
+        }
+
+
+
+
+
+> You should also clear existing interrupts
+> before launching your operation, otherwise you might wakeup on previous
+> events.
+
+
+I do not see a point in your suggestion.
+
+denali_isr() reads out IRQ_STATUS(i) and immediately clears IRQ bits.
+
+IRQ events triggered by previous events are accumulated in denali->irq_status.
+
+denali_reset_irq() clears it.
+
+        denali->irq_status = 0;
+
+
+Again, denali->irq_lock avoids a race between denali_reset_irq() and
+denali_irq(),
+so this works correctly.
+
+
+-- 
+Best Regards
+Masahiro Yamada
