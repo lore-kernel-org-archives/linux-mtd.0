@@ -1,35 +1,35 @@
-Received: from conssluserg-01.nifty.com ([210.131.2.80])
+Received: from conssluserg-06.nifty.com ([210.131.2.91])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dIqfZ-00032r-5Z
- for linux-mtd@lists.infradead.org; Thu, 08 Jun 2017 06:11:49 +0000
-Received: from mail-yb0-f177.google.com (mail-yb0-f177.google.com
- [209.85.213.177]) (authenticated)
- by conssluserg-01.nifty.com with ESMTP id v586B4xY017288
- for <linux-mtd@lists.infradead.org>; Thu, 8 Jun 2017 15:11:05 +0900
-Received: by mail-yb0-f177.google.com with SMTP id f192so7437708yba.2
- for <linux-mtd@lists.infradead.org>; Wed, 07 Jun 2017 23:11:04 -0700 (PDT)
+ id 1dIqlG-0005Xz-5m
+ for linux-mtd@lists.infradead.org; Thu, 08 Jun 2017 06:17:40 +0000
+Received: from mail-yw0-f178.google.com (mail-yw0-f178.google.com
+ [209.85.161.178]) (authenticated)
+ by conssluserg-06.nifty.com with ESMTP id v586Gs4u004352
+ for <linux-mtd@lists.infradead.org>; Thu, 8 Jun 2017 15:16:54 +0900
+Received: by mail-yw0-f178.google.com with SMTP id e142so1958119ywa.1
+ for <linux-mtd@lists.infradead.org>; Wed, 07 Jun 2017 23:16:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20170607153318.7e341dff@bbrezillon>
+In-Reply-To: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
- <1496836352-8016-8-git-send-email-yamada.masahiro@socionext.com>
- <20170607153318.7e341dff@bbrezillon>
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Thu, 8 Jun 2017 15:11:03 +0900
-Message-ID: <CAK7LNAR55jsT4Ch-vwhvEMvSmEGJPBQQc6Tw2gkiTianer2zjQ@mail.gmail.com>
-Subject: Re: [PATCH v5 07/23] mtd: nand: denali: do not propagate
- NAND_STATUS_FAIL to waitfunc()
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Chuanxiao Dong <chuanxiao.dong@intel.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Dinh Nguyen <dinguyen@kernel.org>, linux-mtd@lists.infradead.org,
- Masami Hiramatsu <mhiramat@kernel.org>,
+Date: Thu, 8 Jun 2017 15:16:53 +0900
+Message-ID: <CAK7LNAQMCCxZAJc=7EwEPmpxD+-VsgOvMxwk5ySLfxLVsarqhw@mail.gmail.com>
+Subject: Re: [PATCH v5 00/23] mtd: nand: denali: Denali NAND IP patch bomb
+To: linux-mtd@lists.infradead.org
+Cc: Enrico Jorns <ejo@pengutronix.de>,
  Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Dinh Nguyen <dinguyen@kernel.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>,
  Jassi Brar <jaswinder.singh@linaro.org>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, devicetree@vger.kernel.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Enrico Jorns <ejo@pengutronix.de>
+ Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -42,97 +42,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Boris,
 
-
-2017-06-07 22:33 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
-> On Wed,  7 Jun 2017 20:52:16 +0900
-> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+2017-06-07 20:52 GMT+09:00 Masahiro Yamada <yamada.masahiro@socionext.com>:
+> This patch series intends to solve various problems.
 >
->> Currently, the error handling of denali_write_page(_raw) is a bit
->> complicated.  If the program command fails, NAND_STATUS_FAIL is set
->> to the driver internal denali->status, then read out later by
->> denali_waitfunc().
->>
->> We can avoid it by exploiting the nand_write_page() implementation.
->> If chip->ecc.write_page(_raw) returns negative code (i.e. -EIO), it
->> errors out immediately.  This gives the same result as returning
->> NAND_STATUS_FAIL from chip->waitfunc.  In either way, -EIO is
->> returned to the upper MTD layer.
+> [1] The driver just retrieves the OOB area as-is
+>     whereas the controller uses syndrome page layout.
+> [2] Many NAND chip specific parameters are hard-coded in the driver.
+> [3] ONFi devices are not working
+> [4] It can not read Bad Block Marker
 >
-> Actually, this is how it's supposed to work now (when they set
-> the NAND_ECC_CUSTOM_PAGE_ACCESS flag, drivers are expected to wait for
-> the program operation to finish and return -EIO if it failed), so you're
-> all good ;-).
->
->>
->> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
->> ---
->>
->> Changes in v5: None
->> Changes in v4: None
->> Changes in v3: None
->> Changes in v2:
->>   - Newly added
->>
->>  drivers/mtd/nand/denali.c | 12 ++++--------
->>  drivers/mtd/nand/denali.h |  1 -
->>  2 files changed, 4 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
->> index 1897fe238290..22acfc34b546 100644
->> --- a/drivers/mtd/nand/denali.c
->> +++ b/drivers/mtd/nand/denali.c
->> @@ -1005,6 +1005,7 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
->>       size_t size = mtd->writesize + mtd->oobsize;
->>       uint32_t irq_status;
->>       uint32_t irq_mask = INTR__DMA_CMD_COMP | INTR__PROGRAM_FAIL;
->
-> As mentioned in my previous patch, I think you should wait for
-> INTR__PROGRAM_COMP | INTR__PROGRAM_FAIL here.
-
-No.
-It is intentional to use INTR__DMA_CMD_COMP
-instead of INTR__PROGRAM_COMP here.
+> Outstanding changes are:
+> - Fix raw/oob callbacks for syndrome page layout
+> - Implement setup_data_interface() callback
+> - Fix/implement more commands for ONFi devices
+> - Allow to skip the driver internal bounce buffer
+> - Support PIO in case DMA is not supported
+> - Switch from ->cmdfunc over to ->cmd_ctrl
 
 
-This is very strange of this IP,
-INTR__PROGRAM_COMP is never set when DMA mode is being used.
-(INTR__DMA_CMD_COMP is set instead.)
+I am planning v6, but
+how many can you pick-up from this series?
 
+I did not see your comments for 01-05, so are they applicable?
 
-As far as I tested this IP,
-INTR__PROGRAM_COMP is set only when data are written by PIO mode.
+Could you add
+Acked-by: Rob Herring <robh@kernel.org>
+for 05  (http://patchwork.ozlabs.org/patch/772388/)
 
+He had already acked it, but I just missed it.
 
-I introduced PIO transfer in
-http://patchwork.ozlabs.org/patch/772398/
-
-I used INTR__PROGRAM_COMP in denali_pio_write().
-
-
-
->> +     int ret = 0;
->>
->>       denali->page = page;
->>
->> @@ -1038,13 +1039,13 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
->>       if (irq_status == 0) {
->>               dev_err(denali->dev, "timeout on write_page (type = %d)\n",
->>                       raw_xfer);
->> -             denali->status = NAND_STATUS_FAIL;
->> +             ret = -EIO;
->>       }
->
->         if (irq_status & INTR__PROGRAM_FAIL) {
->                 dev_err(denali->dev, "page program failed (type = %d)\n",
->                         raw_xfer);
->                 ret = -EIO;
->         }
-
-This will be fixed anyway by
-http://patchwork.ozlabs.org/patch/772414/
-
-
-I do not want to include unrelated change.
 
 
 -- 
