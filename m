@@ -1,32 +1,30 @@
-Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dJ6hy-0000SJ-2I
- for linux-mtd@lists.infradead.org; Thu, 08 Jun 2017 23:19:19 +0000
-Received: by mail-pg0-x243.google.com with SMTP id v14so5970268pgn.1
- for <linux-mtd@lists.infradead.org>; Thu, 08 Jun 2017 16:18:57 -0700 (PDT)
-Date: Thu, 8 Jun 2017 16:18:54 -0700
+ id 1dJ6kA-00027S-JF
+ for linux-mtd@lists.infradead.org; Thu, 08 Jun 2017 23:21:36 +0000
+Received: by mail-pf0-x242.google.com with SMTP id u26so6665648pfd.2
+ for <linux-mtd@lists.infradead.org>; Thu, 08 Jun 2017 16:21:13 -0700 (PDT)
+Date: Thu, 8 Jun 2017 16:21:10 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "andrew@lunn.ch" <andrew@lunn.ch>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>, dwmw2@infradead.org,
+ andrew@lunn.ch, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
 Subject: Re: [PATCH 3/4] mtd: mchp23k256: add partitioning support
-Message-ID: <20170608231854.GF102137@google.com>
+Message-ID: <20170608232110.GG102137@google.com>
 References: <20170517053908.26138-1-chris.packham@alliedtelesis.co.nz>
  <20170517053908.26138-4-chris.packham@alliedtelesis.co.nz>
  <20170517172911.5f926712@bbrezillon>
  <20170601184340.GA102137@google.com>
- <bba73e6d5f4b41a88423287300d892e5@svr-chch-ex1.atlnz.lc>
- <20170601222320.GE102137@google.com>
- <92ffaa3cef7d49aeb9d5abae06e10ddb@svr-chch-ex1.atlnz.lc>
+ <20170601224712.6a81a458@bbrezillon>
+ <20170601220156.GD102137@google.com>
+ <20170602110406.49eda282@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <92ffaa3cef7d49aeb9d5abae06e10ddb@svr-chch-ex1.atlnz.lc>
+In-Reply-To: <20170602110406.49eda282@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,25 +34,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 01, 2017 at 11:08:08PM +0000, Chris Packham wrote:
-> Do we need a flag to indicate SRAM-like properties? I assume there is a 
-> difference between NO_ERASE on ROM devices where there is just no way of 
-> erasing the data. For {S,F,M}RAM there is no block erase operation but 
+On Fri, Jun 02, 2017 at 11:04:06AM +0200, Boris Brezillon wrote:
+> BTW, MTD_NO_ERASE is not the only problem we have with UBI or JFFS2.
+> Are we guaranteed that an erase operation fills an eraseblock with
+> ones? Don't we have mem technologies that are filling them with zeros?
+> Note that mtdram is artificially setting the mem-region to 0xff in its
+> dummy erase operation, so maybe it's a implicit rule that ->_erase() is
+> supposed to fill eraseblocks with 0xff.
 
-I think we already have that:
-
-#define MTD_CAP_ROM             0
-#define MTD_CAP_RAM             (MTD_WRITEABLE | MTD_BIT_WRITEABLE | MTD_NO_ERASE)
-
-The key signifier for ROM would be !MTD_WRITEABLE.
-
-> you can overwrite data to destroy it (which is actually my use-case with 
-> this SPI SRAM). I was tempted to set erase_size = 1 at one point which 
-> in my mind was technically accurate but would probably upset the mtd 
-> layer just as much as 0.
-
-I'm not sure what erasesize should be here. I suppose 0, but really, I
-think the MTD_NO_ERASE flag is the clearer indication that erase is not
-needed, and that one should ignore the erasesize.
+I've wondered about the general assumption. But mtdram isn't really a
+good example, because it clearly calls itself a "test mtd device". So it
+makes sense it would emulate common MTDs (i.e., flash memory).
 
 Brian
