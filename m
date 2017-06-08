@@ -1,36 +1,21 @@
-Received: from conssluserg-01.nifty.com ([210.131.2.80])
+Received: from mail.linuxfoundation.org ([140.211.169.12])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dIrwl-0004Iq-7b
- for linux-mtd@lists.infradead.org; Thu, 08 Jun 2017 07:33:36 +0000
-Received: from mail-yw0-f176.google.com (mail-yw0-f176.google.com
- [209.85.161.176]) (authenticated)
- by conssluserg-01.nifty.com with ESMTP id v587WnRX015911
- for <linux-mtd@lists.infradead.org>; Thu, 8 Jun 2017 16:32:50 +0900
-Received: by mail-yw0-f176.google.com with SMTP id e142so2360340ywa.1
- for <linux-mtd@lists.infradead.org>; Thu, 08 Jun 2017 00:32:50 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20170607152658.51c90ba9@bbrezillon>
-References: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
- <1496836352-8016-7-git-send-email-yamada.masahiro@socionext.com>
- <20170607152658.51c90ba9@bbrezillon>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Thu, 8 Jun 2017 16:32:48 +0900
-Message-ID: <CAK7LNAT6o+RCW4ibOxr_5iYspcDY1THVWLrB4LM0p040DKC1Dg@mail.gmail.com>
-Subject: Re: [PATCH v5 06/23] mtd: nand: denali: set
- NAND_ECC_CUSTOM_PAGE_ACCESS
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Chuanxiao Dong <chuanxiao.dong@intel.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Dinh Nguyen <dinguyen@kernel.org>, linux-mtd@lists.infradead.org,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Jassi Brar <jaswinder.singh@linaro.org>,
+ id 1dIsZF-0001oC-Jf
+ for linux-mtd@lists.infradead.org; Thu, 08 Jun 2017 08:13:23 +0000
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-kernel@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Enrico Jorns <ejo@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
+Subject: [PATCH 3/7] mtd: use class_groups instead of class_attrs
+Date: Thu,  8 Jun 2017 10:12:38 +0200
+Message-Id: <20170608081242.27061-4-gregkh@linuxfoundation.org>
+In-Reply-To: <20170608081242.27061-1-gregkh@linuxfoundation.org>
+References: <20170608081242.27061-1-gregkh@linuxfoundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,42 +25,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris
+The class_attrs pointer is long depreciated, and is about to be finally
+removed, so move to use the class_groups pointer instead.
 
-2017-06-07 22:26 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
-> On Wed,  7 Jun 2017 20:52:15 +0900
-> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
->
->> The denali_cmdfunc() actually does nothing valuable for
->> NAND_CMD_{PAGEPROG,READ0,SEQIN}.
->>
->> For NAND_CMD_{READ0,SEQIN}, it copies "page" to "denali->page", then
->> denali_read_page() and denali_read_page_raw() compare them to check
->> if the NAND framework called the callbacks in correct order.
->> (Inconsistently, this check is missing from the denali_write_page()
->> and denali_write_page_raw().)
->>
->> The framework is widely tested by many drivers, so this kind of
->> sanity check is unneeded.  The Denali controller is equipped with
->> high level interface for read/write, so let's skip unneeded call
->> of cmdfunc().
->
-> I recently changed the semantic of ecc->write_page[_raw]() when
-> NAND_ECC_CUSTOM_PAGE_ACCESS is set [1]. I'm not sure your driver waits
-> for the program command to finish.
-> I think you should wait for INTR_STATUS__PROGRAM_COMP instead of
-> INTR_STATUS__DMA_CMD_COMP in write_page() [2], as is done in
-> write_oob_data().
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: <linux-mtd@lists.infradead.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/mtd/ubi/build.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-Thanks for the pointer.
-
-I missed your commit because I usually develop based on
-Linus' tree instead of linux-next.
-
-I will fix this commit.
-
-
-
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 93e5d251a9e4..d854521962ef 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -104,23 +104,25 @@ DEFINE_MUTEX(ubi_devices_mutex);
+ static DEFINE_SPINLOCK(ubi_devices_lock);
+ 
+ /* "Show" method for files in '/<sysfs>/class/ubi/' */
+-static ssize_t ubi_version_show(struct class *class,
+-				struct class_attribute *attr, char *buf)
++/* UBI version attribute ('/<sysfs>/class/ubi/version') */
++static ssize_t version_show(struct class *class, struct class_attribute *attr,
++			    char *buf)
+ {
+ 	return sprintf(buf, "%d\n", UBI_VERSION);
+ }
++static CLASS_ATTR_RO(version);
+ 
+-/* UBI version attribute ('/<sysfs>/class/ubi/version') */
+-static struct class_attribute ubi_class_attrs[] = {
+-	__ATTR(version, S_IRUGO, ubi_version_show, NULL),
+-	__ATTR_NULL
++static struct attribute *ubi_class_attrs[] = {
++	&class_attr_version.attr,
++	NULL,
+ };
++ATTRIBUTE_GROUPS(ubi_class);
+ 
+ /* Root UBI "class" object (corresponds to '/<sysfs>/class/ubi/') */
+ struct class ubi_class = {
+ 	.name		= UBI_NAME_STR,
+ 	.owner		= THIS_MODULE,
+-	.class_attrs	= ubi_class_attrs,
++	.class_groups	= ubi_class_groups,
+ };
+ 
+ static ssize_t dev_attribute_show(struct device *dev,
 -- 
-Best Regards
-Masahiro Yamada
+2.13.1
