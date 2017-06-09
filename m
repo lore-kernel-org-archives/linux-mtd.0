@@ -1,29 +1,34 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dJEAg-0007Xy-Jx
- for linux-mtd@lists.infradead.org; Fri, 09 Jun 2017 07:17:28 +0000
-Date: Fri, 9 Jun 2017 09:16:43 +0200
+ id 1dJEob-0005ej-Hn
+ for linux-mtd@lists.infradead.org; Fri, 09 Jun 2017 07:58:45 +0000
+Date: Fri, 9 Jun 2017 09:58:03 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Andrea Adami <andrea.adami@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, David Woodhouse
- <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, Dmitry Eremin-Solenikov
- <dbaryshkov@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Linus
- Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] mtd: sharpsl: add sharpslpart MTD partition parser
-Message-ID: <20170609091643.4e70e629@bbrezillon>
-In-Reply-To: <20170609023251.GN102137@google.com>
-References: <1492287078-22369-1-git-send-email-andrea.adami@gmail.com>
- <1492287078-22369-2-git-send-email-andrea.adami@gmail.com>
- <d9ef9878-932c-955a-5ba6-c0f0ec03731c@gmail.com>
- <20170417164412.3dc5b457@bbrezillon>
- <CAAQYJAsOJy=SCpBxvrQvfPt6LJ=FjAxDw2gr=5s-vT+8xM-DPQ@mail.gmail.com>
- <20170418113556.54e25231@bbrezillon>
- <20170609023251.GN102137@google.com>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger
+ <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Artem
+ Bityutskiy <artem.bityutskiy@linux.intel.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Dinh Nguyen <dinguyen@kernel.org>,
+ linux-mtd@lists.infradead.org, Masami Hiramatsu <mhiramat@kernel.org>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>, Jassi Brar
+ <jaswinder.singh@linaro.org>, Brian Norris <computersforpeace@gmail.com>,
+ Enrico Jorns <ejo@pengutronix.de>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH v5 10/23] mtd: nand: denali: rework interrupt handling
+Message-ID: <20170609095803.2b755283@bbrezillon>
+In-Reply-To: <CAK7LNAQ3OwpC60oZ5pXTAzLN5uQHbm2jRMMQiwJuznHZYPWnTg@mail.gmail.com>
+References: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
+ <1496836352-8016-11-git-send-email-yamada.masahiro@socionext.com>
+ <20170607155701.4bc89ad8@bbrezillon>
+ <CAK7LNAQanUEcNQK=jUvZMpaN+_cePhp5_qt23AxmdwqE5JN_nA@mail.gmail.com>
+ <20170608091239.0095511b@bbrezillon>
+ <CAK7LNAQSCC-MB3Ck7KyE47HVeAOJ1t1Xop2s=tuJ-UH-OpvShQ@mail.gmail.com>
+ <20170608132620.17fc7c96@bbrezillon>
+ <CAK7LNARbaAKyB2ss780o=L=sqqUdz=fix+PaxW_ODDAM63VXOw@mail.gmail.com>
+ <20170608174311.4f012cc5@bbrezillon>
+ <CAK7LNAQ3OwpC60oZ5pXTAzLN5uQHbm2jRMMQiwJuznHZYPWnTg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,222 +38,360 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+Hi Masahiro,
 
-On Thu, 8 Jun 2017 19:32:51 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
+On Fri, 9 Jun 2017 02:26:34 +0900
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-> Hi Boris and Andrea,
-> 
-> Sorry I didn't thoroughly read through this earlier discussion before
-> reviewing the later versions. I also don't want to rehash old
-> disagreements. But I had a few questions.
-> 
-> On Tue, Apr 18, 2017 at 11:35:56AM +0200, Boris Brezillon wrote:
-> > On Tue, 18 Apr 2017 10:58:02 +0200
-> > Andrea Adami <andrea.adami@gmail.com> wrote:  
-> > > On Mon, Apr 17, 2017 at 4:44 PM, Boris Brezillon <
-> > > boris.brezillon@free-electrons.com> wrote:  
-> > > > I'll try to document myself on the on-flash format of the FTL and
-> > > > partition table before giving a definitive opinion, but I have the
-> > > > feeling this ancient FTL is not 100% safe, and by accepting an old
-> > > > (maybe unreliable?) FTL we are setting a precedent, and refusing other
-> > > > (broken) proprietary/vendor FTLs will be almost impossible after that.  
-> 
-> IIUC, drivers/mtd/*ftl*.c shows several FTLs in the kernel... And I'll
-> admit I've basically never reviewed them. I don't think they've really
-> created much precedent either...except that I'm bringing them up right
-> now ;) and possibly that no good alternatives have been developed,
-> except for UBI (and IMO, UBI doesn't necessarily apply in all the same
-> situations that some "boot partitions" might; you have to bootstrap
-> *somewhere*).
+> Hi Boris
+>=20
+> 2017-06-09 0:43 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons=
+.com>:
+> > On Thu, 8 Jun 2017 21:58:00 +0900
+> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+> > =20
+> >> Hi Boris,
+> >>
+> >> 2017-06-08 20:26 GMT+09:00 Boris Brezillon <boris.brezillon@free-elect=
+rons.com>: =20
+> >> > On Thu, 8 Jun 2017 19:41:39 +0900
+> >> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+> >> > =20
+> >> >> Hi Boris,
+> >> >>
+> >> >>
+> >> >> 2017-06-08 16:12 GMT+09:00 Boris Brezillon <boris.brezillon@free-el=
+ectrons.com>: =20
+> >> >> > Le Thu, 8 Jun 2017 15:10:18 +0900,
+> >> >> > Masahiro Yamada <yamada.masahiro@socionext.com> a =C3=A9crit :
+> >> >> > =20
+> >> >> >> Hi Boris,
+> >> >> >>
+> >> >> >>
+> >> >> >> 2017-06-07 22:57 GMT+09:00 Boris Brezillon <boris.brezillon@free=
+-electrons.com>: =20
+> >> >> >> > On Wed,  7 Jun 2017 20:52:19 +0900
+> >> >> >> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+> >> >> >> >
+> >> >> >> > =20
+> >> >> >> >> -/*
+> >> >> >> >> - * This is the interrupt service routine. It handles all int=
+errupts
+> >> >> >> >> - * sent to this device. Note that on CE4100, this is a share=
+d interrupt.
+> >> >> >> >> - */
+> >> >> >> >> -static irqreturn_t denali_isr(int irq, void *dev_id)
+> >> >> >> >> +static uint32_t denali_wait_for_irq(struct denali_nand_info =
+*denali,
+> >> >> >> >> +                                 uint32_t irq_mask)
+> >> >> >> >>  {
+> >> >> >> >> -     struct denali_nand_info *denali =3D dev_id;
+> >> >> >> >> +     unsigned long time_left, flags;
+> >> >> >> >>       uint32_t irq_status;
+> >> >> >> >> -     irqreturn_t result =3D IRQ_NONE;
+> >> >> >> >>
+> >> >> >> >> -     spin_lock(&denali->irq_lock);
+> >> >> >> >> +     spin_lock_irqsave(&denali->irq_lock, flags);
+> >> >> >> >>
+> >> >> >> >> -     /* check to see if a valid NAND chip has been selected.=
+ */
+> >> >> >> >> -     if (is_flash_bank_valid(denali->flash_bank)) {
+> >> >> >> >> -             /*
+> >> >> >> >> -              * check to see if controller generated the int=
+errupt,
+> >> >> >> >> -              * since this is a shared interrupt
+> >> >> >> >> -              */
+> >> >> >> >> -             irq_status =3D denali_irq_detected(denali);
+> >> >> >> >> -             if (irq_status !=3D 0) {
+> >> >> >> >> -                     /* handle interrupt */
+> >> >> >> >> -                     /* first acknowledge it */
+> >> >> >> >> -                     clear_interrupt(denali, irq_status);
+> >> >> >> >> -                     /*
+> >> >> >> >> -                      * store the status in the device conte=
+xt for someone
+> >> >> >> >> -                      * to read
+> >> >> >> >> -                      */
+> >> >> >> >> -                     denali->irq_status |=3D irq_status;
+> >> >> >> >> -                     /* notify anyone who cares that it happ=
+ened */
+> >> >> >> >> -                     complete(&denali->complete);
+> >> >> >> >> -                     /* tell the OS that we've handled this =
+*/
+> >> >> >> >> -                     result =3D IRQ_HANDLED;
+> >> >> >> >> -             }
+> >> >> >> >> +     irq_status =3D denali->irq_status;
+> >> >> >> >> +
+> >> >> >> >> +     if (irq_mask & irq_status) {
+> >> >> >> >> +             spin_unlock_irqrestore(&denali->irq_lock, flags=
+);
+> >> >> >> >> +             return irq_status;
+> >> >> >> >>       }
+> >> >> >> >> -     spin_unlock(&denali->irq_lock);
+> >> >> >> >> -     return result;
+> >> >> >> >> +
+> >> >> >> >> +     denali->irq_mask =3D irq_mask;
+> >> >> >> >> +     reinit_completion(&denali->complete); =20
+> >> >> >> >
+> >> >> >> > These 2 instructions should be done before calling
+> >> >> >> > denali_wait_for_irq() (for example in denali_reset_irq()), oth=
+erwise
+> >> >> >> > you might loose events if they happen between your irq_status =
+read and
+> >> >> >> > the reinit_completion() call. =20
+> >> >> >>
+> >> >> >> No.
+> >> >> >>
+> >> >> >> denali->irq_lock avoids a race between denali_isr() and
+> >> >> >> denali_wait_for_irq().
+> >> >> >>
+> >> >> >>
+> >> >> >> The line
+> >> >> >>      denali->irq_status |=3D irq_status;
+> >> >> >> in denali_isr() accumulates all events that have happened
+> >> >> >> since denali_reset_irq().
+> >> >> >>
+> >> >> >> If the interested IRQs have already happened
+> >> >> >> before denali_wait_for_irq(), it just return immediately
+> >> >> >> without using completion.
+> >> >> >>
+> >> >> >> I do not mind adding a comment like below
+> >> >> >> if you think my intention is unclear, though.
+> >> >> >>
+> >> >> >>         /* Return immediately if interested IRQs have already ha=
+ppend. */
+> >> >> >>         if (irq_mask & irq_status) {
+> >> >> >>                 spin_unlock_irqrestore(&denali->irq_lock, flags);
+> >> >> >>                 return irq_status;
+> >> >> >>         }
+> >> >> >>
+> >> >> >> =20
+> >> >> >
+> >> >> > My bad, I didn't notice you were releasing the lock after calling
+> >> >> > reinit_completion(). I still find this solution more complex than=
+ my
+> >> >> > proposal, but I don't care that much. =20
+> >> >>
+> >> >>
+> >> >> At first, I implemented exactly like you suggested;
+> >> >>    denali->irq_mask =3D irq_mask;
+> >> >>    reinit_completion(&denali->complete)
+> >> >> in denali_reset_irq().
+> >> >>
+> >> >>
+> >> >> IIRC, things were like this.
+> >> >>
+> >> >> Some time later, you memtioned to use ->cmd_ctrl
+> >> >> instead of ->cmdfunc.
+> >> >>
+> >> >> Then I had a problem when I needed to implement
+> >> >> denali_check_irq() in
+> >> >> http://patchwork.ozlabs.org/patch/772395/
+> >> >>
+> >> >> denali_wait_for_irq() is blocked until interested IRQ happens.
+> >> >> but ->dev_ready() hook should not be blocked.
+> >> >> It should return if R/B# transition has happened or not. =20
+> >> >
+> >> > Nope, it should return whether the NAND is ready or not, not whether=
+ a
+> >> > busy -> ready transition occurred or not. It's typically done by
+> >> > reading the NAND STATUS register or by checking the R/B pin status. =
+=20
+> >>
+> >> Checking the R/B pin is probably impossible unless
+> >> the pin is changed into a GPIO port.
+> >>
+> >> I also considered NAND_CMD_STATUS, but
+> >> I can not recall why I chose the current approach.
+> >> Perhaps I thought returning detected IRQ
+> >> is faster than accessing the chip for NAND_CMD_STATUS.
+> >>
+> >> I can try NAND_CMD_STATUS approach if you like. =20
+> >
+> > Depends what you're trying to do. IIUC, you use denali_wait_for_irq()
+> > inside your ->reset()/->read/write_{page,oob}[_raw]() methods, which is
+> > perfectly fine (assuming CUSTOM_PAGE_ACCESS is set) since these hooks
+> > are expected to wait for chip readiness before returning.
+> >
+> > You could also implement ->waitfunc() using denali_wait_for_irq() if
+> > you're able to detect R/B transitions, =20
+>=20
+> R/B transition will set INTR__INT_ACT interrupt.
+>=20
+> I think it is easy in my implementation of denali_wait_for_irq(),
+> like
+>=20
+>    denali_wait_for_irq(denali, INTR__INT_ACT);
+>=20
+>=20
+>=20
+> But, you are suggesting me to change it.
 
-Okay, so you're fine merging FTLs as long as the code is pretty and
-it's already used on real devices, even if the FTL is badly designed?
+This is clearly not a hard requirement, I was just curious and wanted
+to understand why you had such a convoluted interrupt handling design. I
+think I now understand why (see below).
 
-> 
-> ...
-> 
-> > > > On Sun, 16 Apr 2017 18:07:47 +0200
-> > > > Marek Vasut <marek.vasut@gmail.com> wrote:
-> > > >    
-> > > >> On 04/15/2017 10:11 PM, Andrea Adami wrote:    
-> > > >> > The Sharp SL Series (Zaurus) PXA handhelds have 16/64/128M of NAND    
-> > > flash  
-> > > >> > and share the same layout of the first 7M partition, managed by Sharp    
-> > > FTL.  
-> > > >> >
-> > > >> > The purpose of this self-contained patch is to add a common parser and
-> > > >> > remove the hardcoded sizes in the board files (these devices are not    
-> > > yet  
-> > > >> > converted to devicetree).
-> > > >> > Users will have benefits because the mtdparts= tag will not be    
-> > > necessary  
-> > > >> > anymore and they will be free to repartition the little sized flash.
-> > > >> >
-> > > >> > The obsolete bootloader can not pass the partitioning info to modern
-> > > >> > kernels anymore so it has to be read from flash at known logical    
-> > > addresses.  
-> > > >> > (see http://www.h5.dion.ne.jp/~rimemoon/zaurus/memo_006.htm )    
-> 
-> ...
-> 
-> > > This is done with a special kernel (linux-kexecboot) embedding the minimal
-> > > cpio and acting as 2nd stage bootloader.
-> > > It passes the mtdparts found in cmdline and does the extra trick of reading
-> > > it from mtd1 for zaurus.
-> > > You can even customize the cmdline in /boot/boot.cfg and hack the mtdparts
-> > > there.
-> > > 
-> > > Neverthless, what you don't seem to understand is that I cannot force
-> > > people to use kexecboot or to customize cmdline parts as I like...
-> > > I do just build kernels and images for testing...I maintain the OE build
-> > > infrastructure, not one distro.  
-> > 
-> > Well, you can say "if you want to use a mainline kernel, stop using
-> > this sharp FTL+partition-table and start using a 2nd stage
-> > bootloader like kexecboot". What do they use right now to boot a new
-> > kernel (newer than the 2.4 one)?  
-> 
-> IIUC, that doesn't get anybody to "stop using the FTL"; it just gets
-> them to stop parsing it in the kernel.
+> In your way, you give IRQ masks to denali_reset_irq(), like
+> denali_reset_irq(denali, INTR__ERASE_COMP | INTR__ERASE_FAIL);
+>=20
+> Then, we have no room of IRQ bit in denali_wait_for_irq().
+>=20
+> How will you implement it?
 
-It does prevent new people to use it. At least it cannot be done
-easily. Once it's in mainline, anyone will be able to activate this
-FTL+parser code and use it on their device.
+It should be pretty easy: just make sure you reset the INTR__INT_ACT
+status flag before sending a command (->cmd_ctrl()), and then unmask the
+INTR__INT_ACT in denali_waitfunc() just before calling
+denali_wait_for_irqs(). This should guarantee that you don't loose any
+events, while keeping the logic rather simple.
 
-> They would still be parsing it in
-> userspace, just to generate new parameters for the kexec'd kernel? Seems
-> like a lot of bloat for zero gain.
-> 
-> ...
-> 
-> > > > Just going through all these details to say that, IMO, we should only
-> > > > consider inclusion of this feature if we think it's safe, because I
-> > > > think all that is done here can be done from user-space.  
-> 
-> Wait, why is "it can be done from user-space" relevant to safety? The
-> end solution isn't any better, just because you layer user-space in
-> between to do the parsing job. Or am I misunderstanding?
+>=20
+>=20
+> > but I'm not sure it's worth it,
+> > because you overload almost all the methods using this hook (the only
+> > one remaining is ->onfi_set_features(), and using STATUS polling should
+> > not be an issue in this case).
+> >
+> > Implementing ->dev_ready() is not necessary. When not provided, the
+> > core falls back to STATUS polling and you seem to support
+> > NAND_CMD_STATUS in denali_cmdfunc(). Note that even if it's not fully
+> > reliable in the current driver, you're switching to ->cmd_ctrl() at the
+> > end of the series anyway, so we should be good after that. =20
+>=20
+> ->dev_ready() is optional, but we may end up with waiting more than neede=
+d. =20
+>=20
+>         case NAND_CMD_RESET:
+>                 if (chip->dev_ready)
+>                          break;
+>                 udelay(chip->chip_delay);
+>=20
+>=20
+> chip->chip_delay is probably set large enough, so this is not optimal.
 
-It's definitely not safer to do it in userspace, it's just about not
-merging ancient FTLs in mainline without carefully reviewing them first.
-I never said I would reject this FTL, I just said I wanted to review
-the design and decide after that. But when I said that, all I got in
-return was "no matter if it's safe or not, it has to be upstreamed
-because it's used on real devices". Well, I disagree with this kind of
-statement. Does that mean we should support all vendor FTLs just
-because they are shipped on devices? I'm not against FTLs in general,
-but shouldn't we decide to merge them only after reviewing their design
-and making sure they can be safely used?
+That's true, this udelay should not be needed in your case.
+=20
+>=20
+>=20
+> If I add something more, the following two bugs were found by
+> denali_dev_ready().
+>=20
+> commit 3158fa0e739615769cc047d2428f30f4c3b6640e
+> commit c5d664aa5a4c4b257a54eb35045031630d105f49
+>=20
+>=20
+> If NAND core is fine, denali_dev_ready() works fine too.
+>=20
+> If not, it is a sign of bug of nand_command(_lp).
+> This is contributing to the core improvement.
+>=20
 
-> 
-> > > Read only is safe.  
-> > 
-> > This is a lie.  
-> 
-> I don't see where you've disproved the claim of safety. The following
-> all seems to be a non sequitur.
+Had a second look at denali_dev_ready() and it seems to do the right
+thing, so let's keep it like that.
+=20
+>=20
+> >>
+> >> IIRC, I was thinking like this:
+> >>
+> >> One IRQ line may be shared among multiple hardware including Denali.
+> >> denali_pci may do this.
+> >>
+> >> The Denali IRQ handler need to check irq status
+> >> because it should return IRQ_HANDLED if the event comes from Denali co=
+ntroller.
+> >> Otherwise, the event comes from different hardware, so
+> >> Denali IRQ handler should return IRQ_NONE. =20
+> >
+> > Correct.
+> > =20
+> >>
+> >> wait_for_completion_timeout() may bail out with timeout error,
+> >> then proceed to denali_reset_irq() for the next operation. =20
+> >
+> > Before calling denali_reset_irq() you should re-mask the irqs you
+> > unmasked in #1. Actually, calling denali_reset_irq() after
+> > wait_for_completion_timeout() is not even needed here because you'll
+> > clear pending irqs before launching the next NAND command.
+> > =20
+> >> Afterwards, the event actually may happen, and invoke IRQ handler. =20
+> >
+> > Not if you masked IRQs after wait_for_completion_timeout() returned. =20
+>=20
+>=20
+>         wait_for_completion_timeout(&denali->complete, msecs_to_jiffies(1=
+000));
+>                 <<< WHAT IF IRQ EVENT HAPPENS HERE ? >>>
+>         iowrite32(0, denali->flash_reg + INTR_EN(denali->flash_bank));
 
-Just because it's only read-only from the kernel point of view, not in
-general.
+You're right, the write to INTR_EN() should be protected by a
+spin_lock_irqsave to prevent concurrency between the irq handler and
+the thread executing this function (and we should also take the lock
+from the irq handler when doing status & mask). I didn't consider the
+SMP case when coding this approach (one CPU can handle the interrupt
+while the other one continues executing this function after the
+timeout).
 
-> 
-> But my understanding (about the "safety" question) is that this whole
-> FTL construct is:
-> (a) required by the bootloader and
-> (b) not touched outside the bootloader, except (mostly, barring the
-> advanced tooling that people use infrequently, for installation?) read
-> only in a parser like this proposed one
+>=20
+>=20
+>=20
+>=20
+> Also, you ignore the return value of wait_for_completion_timeout(),
+> then drop my precious error message()
+>=20
+>   dev_err(denali->dev, "timeout while waiting for irq 0x%x\n",
+>           denali->irq_mask)
 
-Andrea, maybe I'm wrong, but I had the impression you had tools to
-update partitions embedded in the FTL (I'm not talking about partitions
-defined in the partition table, but the FTL embeds several sections,
-including one which is storing a kernel image).
+Timeout can be detected by testing the status: if none of the flags we
+were waiting for are set this is a timeout. Maybe I forgot to add this
+message back though.
 
-> 
-> (Please correct me if I'm wrong.)
-> 
-> I don't think we can reasonably disallow (a); it's often difficult or
-> impossible to replace bootloaders.
+>=20
+>=20
+>=20
+> > Here is a patch to show you what I had in mind [1] (it applies on top
+> > of this patch). AFAICT, there's no races, no interrupt loss, and you
+> > get rid of the ->irq_mask/status/lock fields.
+> >
+> > [1]http://code.bulix.org/fufia6-145571
+> > =20
+>=20
+>=20
+> Problem Scenario A
+>  [1] wait_for_completion_timeout() exits with timeout.
+>  [2] IRQ happens and denali_isr() is invoked
+>  [3] iowrite32(0, denali->flash_reg + INTR_EN(denali->flash_bank));
+>  [4] status =3D ioread32(denali->flash_reg + INTR_STATUS(bank)) &
+>               ioread32(denali->flash_reg + INTR_EN(bank));
+>       (status is set to 0 because INTR_EN(bank) is now 0)
+>  [5] return IRQ_NONE;
+>  [6] kernel complains  "irq *: nobody cared"
 
-I agree.
+Okay, this is the part I initially misunderstood. Your goal is to never
+ever return IRQ_NONE, while I was accepting to rarely return IRQ_NONE
+in the unlikely interrupt-just-after-timeout case. Note that the kernel
+irq infrastructure accepts rare occurrences or IRQ_NONE [1].
 
-> 
-> If (b) is true, then I don't see why this is a *huge* issue. Yes,
-> read-only NAND is technically not immune to unreliability issues like
-> read disturb, but judging by the lifetime of these products (they're
-> still being used, with out-of-tree parsing, no?) it can't have been too
-> bad.
+>=20
+>=20
+>=20
+> Problem Scenario B  (unlikely to happen, though)
+>  [1] wait_for_completion_timeout() exits with timeout.
+>  [2] IRQ happens and denali_isr() is invoked
+>  [3] iowrite32(0, denali->flash_reg + INTR_EN(denali->flash_bank));
+>  [4] chip->select_chip(mtd, -1)
+>  [5] denali->flash_bank =3D -1
+>  [6] status =3D ioread32(denali->flash_reg + INTR_STATUS(bank)) &
+>               ioread32(denali->flash_reg + INTR_EN(bank));
+>        ( access to non-existing INTR_STATUS(-1) )
 
-No, I was really taking about write accesses that can happen on top of
-the FTL. If there's a tool to update the kernel partition embedded in
-the FTL, and the FTL design has some flaws, then you might corrupt the
-partition table even though you were not directly manipulating it.
+Wrapping the write INTR_EN() into a
+spin_lock_irqsave/unlock_irqrestore() section and doing the same in the
+interrupt handler (without irqsave/restore) should solve the problem.
 
-> 
-> And about technical details: based on my review of what we're parsing
-> here, the most worrisome part is that the logical mapping of the FTL is
-> stored in OOB. But this all is of the same (or older?) era as JFFS2, so
-> that's also not highly unusual. And it does at least have several
-> (non-ECC) means of error detection (storing redundant versions of the
-> FTL mapping within the same page; a parity check on the mapping offsets;
-> and multiple copies of the partition table), though I'm not sure how
-> well it will hold up for error *correction*.
-
-Okay.
-
-> 
-> So, I'm not super happy with the format, and I wouldn't suggest it on
-> any new products (esp. considering that NAND has only gotten more
-> unreliable in the meantime), but I don't think it's as bad as you seem
-> to think.
-
-Really, if you look back at my initial reply, you'll see that I was
-willing to review the FTL design before giving a definitive opinion.
-But being told that, no matter the conclusion of this review, the FTL
-had to be supported because 'it's used on real devices' did not
-encourage me to finish my review.
-
-> 
-> > AFAIU, you have all the necessary tools to update the
-> > partition table from user-space, so even if you only have read-only
-> > support in the kernel, one can corrupt it from userspace, and the
-> > kernel may not be able to recover from this corruption.  
-> 
-> How is this any different from, e.g., GPT on block devices? Just because
-> user space can clobber the partition table doesn't mean we don't allow
-> GPT.
-
-If you can update other partitions embedded in the FTL (like the kernel
-partition) independently, and those updates can corrupt your partition
-table, then it's a bit different from the example you're giving, because
-the user did not asked for a partition table update and may end up with
-a device that do not boot.
-
-> 
-> Or are you implying issues with read disturb and the like?
-
-Nope, I was really talking about simple read/write consideration,
-update atomicity, ... The sort of things taken care of by something
-like UBI.
-
-> 
-> > Honestly, if we want to support this FTL+partition-table-format in the
-> > kernel, I'd recommend that we add RW support, otherwise you'll keep
-> > having those external tools.  
-> 
-> I don't understand that point, and I don't think Andrea did either.
-
-My point is that, if we decide to support this FTL in the kernel, why
-keeping those user-space tools to update the partition table (and other
-parts available in this FTL). Having all the logic maintained in the
-same place makes code maintenance easier (when a bug is detected, you
-don't have to update 2 different code base for example).
-
-Anyway, I'm glad someone else finally had a look at this code, and as I
-said earlier, I won't block it, so we're all good.
+This being said, I'm not asking you to change the code, I just wanted
+to understand why you were doing it like that.
 
 Thanks,
 
 Boris
+
+[1]http://elixir.free-electrons.com/linux/latest/source/kernel/irq/spurious=
+.c#L407
