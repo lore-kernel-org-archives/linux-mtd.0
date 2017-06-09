@@ -1,18 +1,29 @@
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dJB4i-0006Tu-Hk
- for linux-mtd@lists.infradead.org; Fri, 09 Jun 2017 03:59:06 +0000
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
-To: computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
- linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, andrew@lunn.ch,
- Chris Packham <chris.packham@alliedtelesis.co.nz>,
- David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Subject: [PATCH v6] mtd: handle partitioning on devices with 0 erasesize
-Date: Fri,  9 Jun 2017 15:58:31 +1200
-Message-Id: <20170609035831.6258-1-chris.packham@alliedtelesis.co.nz>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dJEAg-0007Xy-Jx
+ for linux-mtd@lists.infradead.org; Fri, 09 Jun 2017 07:17:28 +0000
+Date: Fri, 9 Jun 2017 09:16:43 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Andrea Adami <andrea.adami@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, David Woodhouse
+ <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>, Dmitry Eremin-Solenikov
+ <dbaryshkov@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Linus
+ Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] mtd: sharpsl: add sharpslpart MTD partition parser
+Message-ID: <20170609091643.4e70e629@bbrezillon>
+In-Reply-To: <20170609023251.GN102137@google.com>
+References: <1492287078-22369-1-git-send-email-andrea.adami@gmail.com>
+ <1492287078-22369-2-git-send-email-andrea.adami@gmail.com>
+ <d9ef9878-932c-955a-5ba6-c0f0ec03731c@gmail.com>
+ <20170417164412.3dc5b457@bbrezillon>
+ <CAAQYJAsOJy=SCpBxvrQvfPt6LJ=FjAxDw2gr=5s-vT+8xM-DPQ@mail.gmail.com>
+ <20170418113556.54e25231@bbrezillon>
+ <20170609023251.GN102137@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,89 +33,222 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-erasesize is meaningful for flash devices but for SRAM there is no
-concept of an erase block so erasesize is set to 0. When partitioning
-these devices instead of ensuring partitions fall on erasesize
-boundaries we ensure they fall on writesize boundaries.
+Hi Brian,
 
-Helped-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
-Changes in v3:
-- new
-Changes in v4:
-- None
-Changes in v5:
-- None (yet). There is some active discussion on this so it may change.
-  patch 4/5 is somewhat dependent on this but only if partitions are
-  specified on the dt node.
-  Changes in v6:
-- Use MTD_NO_ERASE flag to decide whether to use writesize or erasesize
-  for alignment purposes
+On Thu, 8 Jun 2017 19:32:51 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
 
- drivers/mtd/mtdpart.c | 26 +++++++++++++++++---------
- 1 file changed, 17 insertions(+), 9 deletions(-)
+> Hi Boris and Andrea,
+> 
+> Sorry I didn't thoroughly read through this earlier discussion before
+> reviewing the later versions. I also don't want to rehash old
+> disagreements. But I had a few questions.
+> 
+> On Tue, Apr 18, 2017 at 11:35:56AM +0200, Boris Brezillon wrote:
+> > On Tue, 18 Apr 2017 10:58:02 +0200
+> > Andrea Adami <andrea.adami@gmail.com> wrote:  
+> > > On Mon, Apr 17, 2017 at 4:44 PM, Boris Brezillon <
+> > > boris.brezillon@free-electrons.com> wrote:  
+> > > > I'll try to document myself on the on-flash format of the FTL and
+> > > > partition table before giving a definitive opinion, but I have the
+> > > > feeling this ancient FTL is not 100% safe, and by accepting an old
+> > > > (maybe unreliable?) FTL we are setting a precedent, and refusing other
+> > > > (broken) proprietary/vendor FTLs will be almost impossible after that.  
+> 
+> IIUC, drivers/mtd/*ftl*.c shows several FTLs in the kernel... And I'll
+> admit I've basically never reviewed them. I don't think they've really
+> created much precedent either...except that I'm bringing them up right
+> now ;) and possibly that no good alternatives have been developed,
+> except for UBI (and IMO, UBI doesn't necessarily apply in all the same
+> situations that some "boot partitions" might; you have to bootstrap
+> *somewhere*).
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index ea5e5307f667..2e152e53ace0 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -393,8 +393,12 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
- 			const struct mtd_partition *part, int partno,
- 			uint64_t cur_offset)
- {
-+	int wr_alignment = (master->flags & MTD_NO_ERASE) ? master->writesize:
-+							    master->erasesize;
- 	struct mtd_part *slave;
-+	u32 remainder;
- 	char *name;
-+	u64 tmp;
- 
- 	/* allocate the partition structure */
- 	slave = kzalloc(sizeof(*slave), GFP_KERNEL);
-@@ -499,10 +503,11 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
- 	if (slave->offset == MTDPART_OFS_APPEND)
- 		slave->offset = cur_offset;
- 	if (slave->offset == MTDPART_OFS_NXTBLK) {
-+		tmp = cur_offset;
- 		slave->offset = cur_offset;
--		if (mtd_mod_by_eb(cur_offset, master) != 0) {
--			/* Round up to next erasesize */
--			slave->offset = (mtd_div_by_eb(cur_offset, master) + 1) * master->erasesize;
-+		remainder = do_div(tmp, wr_alignment);
-+		if (remainder) {
-+			slave->offset += wr_alignment - remainder;
- 			printk(KERN_NOTICE "Moving partition %d: "
- 			       "0x%012llx -> 0x%012llx\n", partno,
- 			       (unsigned long long)cur_offset, (unsigned long long)slave->offset);
-@@ -567,19 +572,22 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
- 		slave->mtd.erasesize = master->erasesize;
- 	}
- 
--	if ((slave->mtd.flags & MTD_WRITEABLE) &&
--	    mtd_mod_by_eb(slave->offset, &slave->mtd)) {
-+	tmp = slave->offset;
-+	remainder = do_div(tmp, wr_alignment);
-+	if ((slave->mtd.flags & MTD_WRITEABLE) && remainder) {
- 		/* Doesn't start on a boundary of major erase size */
- 		/* FIXME: Let it be writable if it is on a boundary of
- 		 * _minor_ erase size though */
- 		slave->mtd.flags &= ~MTD_WRITEABLE;
--		printk(KERN_WARNING"mtd: partition \"%s\" doesn't start on an erase block boundary -- force read-only\n",
-+		printk(KERN_WARNING"mtd: partition \"%s\" doesn't start on an erase/write block boundary -- force read-only\n",
- 			part->name);
- 	}
--	if ((slave->mtd.flags & MTD_WRITEABLE) &&
--	    mtd_mod_by_eb(slave->mtd.size, &slave->mtd)) {
-+
-+	tmp = slave->mtd.size;
-+	remainder = do_div(tmp, wr_alignment);
-+	if ((slave->mtd.flags & MTD_WRITEABLE) && remainder) {
- 		slave->mtd.flags &= ~MTD_WRITEABLE;
--		printk(KERN_WARNING"mtd: partition \"%s\" doesn't end on an erase block -- force read-only\n",
-+		printk(KERN_WARNING"mtd: partition \"%s\" doesn't end on an erase/write block -- force read-only\n",
- 			part->name);
- 	}
- 
--- 
-2.13.0
+Okay, so you're fine merging FTLs as long as the code is pretty and
+it's already used on real devices, even if the FTL is badly designed?
+
+> 
+> ...
+> 
+> > > > On Sun, 16 Apr 2017 18:07:47 +0200
+> > > > Marek Vasut <marek.vasut@gmail.com> wrote:
+> > > >    
+> > > >> On 04/15/2017 10:11 PM, Andrea Adami wrote:    
+> > > >> > The Sharp SL Series (Zaurus) PXA handhelds have 16/64/128M of NAND    
+> > > flash  
+> > > >> > and share the same layout of the first 7M partition, managed by Sharp    
+> > > FTL.  
+> > > >> >
+> > > >> > The purpose of this self-contained patch is to add a common parser and
+> > > >> > remove the hardcoded sizes in the board files (these devices are not    
+> > > yet  
+> > > >> > converted to devicetree).
+> > > >> > Users will have benefits because the mtdparts= tag will not be    
+> > > necessary  
+> > > >> > anymore and they will be free to repartition the little sized flash.
+> > > >> >
+> > > >> > The obsolete bootloader can not pass the partitioning info to modern
+> > > >> > kernels anymore so it has to be read from flash at known logical    
+> > > addresses.  
+> > > >> > (see http://www.h5.dion.ne.jp/~rimemoon/zaurus/memo_006.htm )    
+> 
+> ...
+> 
+> > > This is done with a special kernel (linux-kexecboot) embedding the minimal
+> > > cpio and acting as 2nd stage bootloader.
+> > > It passes the mtdparts found in cmdline and does the extra trick of reading
+> > > it from mtd1 for zaurus.
+> > > You can even customize the cmdline in /boot/boot.cfg and hack the mtdparts
+> > > there.
+> > > 
+> > > Neverthless, what you don't seem to understand is that I cannot force
+> > > people to use kexecboot or to customize cmdline parts as I like...
+> > > I do just build kernels and images for testing...I maintain the OE build
+> > > infrastructure, not one distro.  
+> > 
+> > Well, you can say "if you want to use a mainline kernel, stop using
+> > this sharp FTL+partition-table and start using a 2nd stage
+> > bootloader like kexecboot". What do they use right now to boot a new
+> > kernel (newer than the 2.4 one)?  
+> 
+> IIUC, that doesn't get anybody to "stop using the FTL"; it just gets
+> them to stop parsing it in the kernel.
+
+It does prevent new people to use it. At least it cannot be done
+easily. Once it's in mainline, anyone will be able to activate this
+FTL+parser code and use it on their device.
+
+> They would still be parsing it in
+> userspace, just to generate new parameters for the kexec'd kernel? Seems
+> like a lot of bloat for zero gain.
+> 
+> ...
+> 
+> > > > Just going through all these details to say that, IMO, we should only
+> > > > consider inclusion of this feature if we think it's safe, because I
+> > > > think all that is done here can be done from user-space.  
+> 
+> Wait, why is "it can be done from user-space" relevant to safety? The
+> end solution isn't any better, just because you layer user-space in
+> between to do the parsing job. Or am I misunderstanding?
+
+It's definitely not safer to do it in userspace, it's just about not
+merging ancient FTLs in mainline without carefully reviewing them first.
+I never said I would reject this FTL, I just said I wanted to review
+the design and decide after that. But when I said that, all I got in
+return was "no matter if it's safe or not, it has to be upstreamed
+because it's used on real devices". Well, I disagree with this kind of
+statement. Does that mean we should support all vendor FTLs just
+because they are shipped on devices? I'm not against FTLs in general,
+but shouldn't we decide to merge them only after reviewing their design
+and making sure they can be safely used?
+
+> 
+> > > Read only is safe.  
+> > 
+> > This is a lie.  
+> 
+> I don't see where you've disproved the claim of safety. The following
+> all seems to be a non sequitur.
+
+Just because it's only read-only from the kernel point of view, not in
+general.
+
+> 
+> But my understanding (about the "safety" question) is that this whole
+> FTL construct is:
+> (a) required by the bootloader and
+> (b) not touched outside the bootloader, except (mostly, barring the
+> advanced tooling that people use infrequently, for installation?) read
+> only in a parser like this proposed one
+
+Andrea, maybe I'm wrong, but I had the impression you had tools to
+update partitions embedded in the FTL (I'm not talking about partitions
+defined in the partition table, but the FTL embeds several sections,
+including one which is storing a kernel image).
+
+> 
+> (Please correct me if I'm wrong.)
+> 
+> I don't think we can reasonably disallow (a); it's often difficult or
+> impossible to replace bootloaders.
+
+I agree.
+
+> 
+> If (b) is true, then I don't see why this is a *huge* issue. Yes,
+> read-only NAND is technically not immune to unreliability issues like
+> read disturb, but judging by the lifetime of these products (they're
+> still being used, with out-of-tree parsing, no?) it can't have been too
+> bad.
+
+No, I was really taking about write accesses that can happen on top of
+the FTL. If there's a tool to update the kernel partition embedded in
+the FTL, and the FTL design has some flaws, then you might corrupt the
+partition table even though you were not directly manipulating it.
+
+> 
+> And about technical details: based on my review of what we're parsing
+> here, the most worrisome part is that the logical mapping of the FTL is
+> stored in OOB. But this all is of the same (or older?) era as JFFS2, so
+> that's also not highly unusual. And it does at least have several
+> (non-ECC) means of error detection (storing redundant versions of the
+> FTL mapping within the same page; a parity check on the mapping offsets;
+> and multiple copies of the partition table), though I'm not sure how
+> well it will hold up for error *correction*.
+
+Okay.
+
+> 
+> So, I'm not super happy with the format, and I wouldn't suggest it on
+> any new products (esp. considering that NAND has only gotten more
+> unreliable in the meantime), but I don't think it's as bad as you seem
+> to think.
+
+Really, if you look back at my initial reply, you'll see that I was
+willing to review the FTL design before giving a definitive opinion.
+But being told that, no matter the conclusion of this review, the FTL
+had to be supported because 'it's used on real devices' did not
+encourage me to finish my review.
+
+> 
+> > AFAIU, you have all the necessary tools to update the
+> > partition table from user-space, so even if you only have read-only
+> > support in the kernel, one can corrupt it from userspace, and the
+> > kernel may not be able to recover from this corruption.  
+> 
+> How is this any different from, e.g., GPT on block devices? Just because
+> user space can clobber the partition table doesn't mean we don't allow
+> GPT.
+
+If you can update other partitions embedded in the FTL (like the kernel
+partition) independently, and those updates can corrupt your partition
+table, then it's a bit different from the example you're giving, because
+the user did not asked for a partition table update and may end up with
+a device that do not boot.
+
+> 
+> Or are you implying issues with read disturb and the like?
+
+Nope, I was really talking about simple read/write consideration,
+update atomicity, ... The sort of things taken care of by something
+like UBI.
+
+> 
+> > Honestly, if we want to support this FTL+partition-table-format in the
+> > kernel, I'd recommend that we add RW support, otherwise you'll keep
+> > having those external tools.  
+> 
+> I don't understand that point, and I don't think Andrea did either.
+
+My point is that, if we decide to support this FTL in the kernel, why
+keeping those user-space tools to update the partition table (and other
+parts available in this FTL). Having all the logic maintained in the
+same place makes code maintenance easier (when a bug is detected, you
+don't have to update 2 different code base for example).
+
+Anyway, I'm glad someone else finally had a look at this code, and as I
+said earlier, I won't block it, so we're all good.
+
+Thanks,
+
+Boris
