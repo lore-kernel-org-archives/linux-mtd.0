@@ -1,24 +1,21 @@
-Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dJTAK-0003Qe-ID
- for linux-mtd@lists.infradead.org; Fri, 09 Jun 2017 23:18:06 +0000
-Received: by mail-pf0-x243.google.com with SMTP id f27so9945662pfe.0
- for <linux-mtd@lists.infradead.org>; Fri, 09 Jun 2017 16:17:44 -0700 (PDT)
-Date: Fri, 9 Jun 2017 16:17:41 -0700
-From: Brian Norris <computersforpeace@gmail.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dJZSL-0005cy-Qt
+ for linux-mtd@lists.infradead.org; Sat, 10 Jun 2017 06:01:08 +0000
+Date: Sat, 10 Jun 2017 08:00:42 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: boris.brezillon@free-electrons.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, andrew@lunn.ch,
- David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, andrew@lunn.ch, David Woodhouse
+ <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
 Subject: Re: [PATCH v6] mtd: handle partitioning on devices with 0 erasesize
-Message-ID: <20170609231741.GP102137@google.com>
+Message-ID: <20170610080042.58479317@bbrezillon>
+In-Reply-To: <20170609035831.6258-1-chris.packham@alliedtelesis.co.nz>
 References: <20170609035831.6258-1-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170609035831.6258-1-chris.packham@alliedtelesis.co.nz>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,9 +25,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thanks Chris!
+On Fri,  9 Jun 2017 15:58:31 +1200
+Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:
 
-On Fri, Jun 09, 2017 at 03:58:31PM +1200, Chris Packham wrote:
 > erasesize is meaningful for flash devices but for SRAM there is no
 > concept of an erase block so erasesize is set to 0. When partitioning
 > these devices instead of ensuring partitions fall on erasesize
@@ -39,5 +36,82 @@ On Fri, Jun 09, 2017 at 03:58:31PM +1200, Chris Packham wrote:
 > Helped-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 > Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 
-Looks good to me. Did Boris have any last thoughts? Or else I'll merge
-this.
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
+> ---
+> Changes in v3:
+> - new
+> Changes in v4:
+> - None
+> Changes in v5:
+> - None (yet). There is some active discussion on this so it may change.
+>   patch 4/5 is somewhat dependent on this but only if partitions are
+>   specified on the dt node.
+>   Changes in v6:
+> - Use MTD_NO_ERASE flag to decide whether to use writesize or erasesize
+>   for alignment purposes
+> 
+>  drivers/mtd/mtdpart.c | 26 +++++++++++++++++---------
+>  1 file changed, 17 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+> index ea5e5307f667..2e152e53ace0 100644
+> --- a/drivers/mtd/mtdpart.c
+> +++ b/drivers/mtd/mtdpart.c
+> @@ -393,8 +393,12 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
+>  			const struct mtd_partition *part, int partno,
+>  			uint64_t cur_offset)
+>  {
+> +	int wr_alignment = (master->flags & MTD_NO_ERASE) ? master->writesize:
+> +							    master->erasesize;
+>  	struct mtd_part *slave;
+> +	u32 remainder;
+>  	char *name;
+> +	u64 tmp;
+>  
+>  	/* allocate the partition structure */
+>  	slave = kzalloc(sizeof(*slave), GFP_KERNEL);
+> @@ -499,10 +503,11 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
+>  	if (slave->offset == MTDPART_OFS_APPEND)
+>  		slave->offset = cur_offset;
+>  	if (slave->offset == MTDPART_OFS_NXTBLK) {
+> +		tmp = cur_offset;
+>  		slave->offset = cur_offset;
+> -		if (mtd_mod_by_eb(cur_offset, master) != 0) {
+> -			/* Round up to next erasesize */
+> -			slave->offset = (mtd_div_by_eb(cur_offset, master) + 1) * master->erasesize;
+> +		remainder = do_div(tmp, wr_alignment);
+> +		if (remainder) {
+> +			slave->offset += wr_alignment - remainder;
+>  			printk(KERN_NOTICE "Moving partition %d: "
+>  			       "0x%012llx -> 0x%012llx\n", partno,
+>  			       (unsigned long long)cur_offset, (unsigned long long)slave->offset);
+> @@ -567,19 +572,22 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
+>  		slave->mtd.erasesize = master->erasesize;
+>  	}
+>  
+> -	if ((slave->mtd.flags & MTD_WRITEABLE) &&
+> -	    mtd_mod_by_eb(slave->offset, &slave->mtd)) {
+> +	tmp = slave->offset;
+> +	remainder = do_div(tmp, wr_alignment);
+> +	if ((slave->mtd.flags & MTD_WRITEABLE) && remainder) {
+>  		/* Doesn't start on a boundary of major erase size */
+>  		/* FIXME: Let it be writable if it is on a boundary of
+>  		 * _minor_ erase size though */
+>  		slave->mtd.flags &= ~MTD_WRITEABLE;
+> -		printk(KERN_WARNING"mtd: partition \"%s\" doesn't start on an erase block boundary -- force read-only\n",
+> +		printk(KERN_WARNING"mtd: partition \"%s\" doesn't start on an erase/write block boundary -- force read-only\n",
+>  			part->name);
+>  	}
+> -	if ((slave->mtd.flags & MTD_WRITEABLE) &&
+> -	    mtd_mod_by_eb(slave->mtd.size, &slave->mtd)) {
+> +
+> +	tmp = slave->mtd.size;
+> +	remainder = do_div(tmp, wr_alignment);
+> +	if ((slave->mtd.flags & MTD_WRITEABLE) && remainder) {
+>  		slave->mtd.flags &= ~MTD_WRITEABLE;
+> -		printk(KERN_WARNING"mtd: partition \"%s\" doesn't end on an erase block -- force read-only\n",
+> +		printk(KERN_WARNING"mtd: partition \"%s\" doesn't end on an erase/write block -- force read-only\n",
+>  			part->name);
+>  	}
+>  
