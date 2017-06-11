@@ -1,28 +1,19 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dK9GP-0005Y5-Eo
- for linux-mtd@lists.infradead.org; Sun, 11 Jun 2017 20:15:11 +0000
-Date: Sun, 11 Jun 2017 22:14:44 +0200
+ id 1dK9hj-00079c-IS
+ for linux-mtd@lists.infradead.org; Sun, 11 Jun 2017 20:43:25 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>, Artem
- Bityutskiy <artem.bityutskiy@linux.intel.com>, Dinh Nguyen
- <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Masami Hiramatsu <mhiramat@kernel.org>, Chuanxiao
- Dong <chuanxiao.dong@intel.com>, Jassi Brar <jaswinder.singh@linaro.org>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, devicetree@vger.kernel.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Brian Norris
- <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>, Rob
- Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v5 00/23] mtd: nand: denali: Denali NAND IP patch bomb
-Message-ID: <20170611221444.396bb746@bbrezillon>
-In-Reply-To: <CAK7LNASu=cmQo+gCmfY=MFLoGtm0oeZQ036Nst63bZOEwFxR4g@mail.gmail.com>
-References: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
- <CAK7LNAQMCCxZAJc=7EwEPmpxD+-VsgOvMxwk5ySLfxLVsarqhw@mail.gmail.com>
- <CAK7LNASu=cmQo+gCmfY=MFLoGtm0oeZQ036Nst63bZOEwFxR4g@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+To: Robert Jarzmik <robert.jarzmik@free.fr>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, Kyungmin Park <kyungmin.park@samsung.com>
+Subject: [PATCH] mtd: Fallback to ->_read/write_oob() when ->_read/write() is
+ missing
+Date: Sun, 11 Jun 2017 22:42:55 +0200
+Message-Id: <20170611204255.18622-1-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,59 +23,329 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 8 Jun 2017 16:12:49 +0900
-Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+Some MTD sublayers/drivers are implementing ->_read/write_oob() and
+providing dummy wrappers for their ->_read/write() implementations.
+Let the core handle this case instead of duplicating the logic.
 
-> 2017-06-08 15:16 GMT+09:00 Masahiro Yamada <yamada.masahiro@socionext.com>:
-> > Hi Boris,
-> >
-> > 2017-06-07 20:52 GMT+09:00 Masahiro Yamada <yamada.masahiro@socionext.com>:  
-> >> This patch series intends to solve various problems.
-> >>
-> >> [1] The driver just retrieves the OOB area as-is
-> >>     whereas the controller uses syndrome page layout.
-> >> [2] Many NAND chip specific parameters are hard-coded in the driver.
-> >> [3] ONFi devices are not working
-> >> [4] It can not read Bad Block Marker
-> >>
-> >> Outstanding changes are:
-> >> - Fix raw/oob callbacks for syndrome page layout
-> >> - Implement setup_data_interface() callback
-> >> - Fix/implement more commands for ONFi devices
-> >> - Allow to skip the driver internal bounce buffer
-> >> - Support PIO in case DMA is not supported
-> >> - Switch from ->cmdfunc over to ->cmd_ctrl  
-> >
-> >
-> > I am planning v6, but
-> > how many can you pick-up from this series?
-> >
-> > I did not see your comments for 01-05, so are they applicable?
-> >
-> > Could you add
-> > Acked-by: Rob Herring <robh@kernel.org>
-> > for 05  (http://patchwork.ozlabs.org/patch/772388/)
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+Note that the goldfish_nand driver (currently in staging) has not been
+updated because some the ops->len != mtd->writesize check done in
+goldfish_nand_read/write_oob() prevents us from using this function as
+a fallback for ->_read/write().
 
-Applied patches 1 to 5 (with Rob's ack on patch 5).
+This behavior is buggy anyway, because the core expects drivers
+implementing ->_read_oob() to support reading more than ->writesize in
+a single call. Probably something we should fix.
+---
+ drivers/mtd/devices/docg3.c        | 65 --------------------------------------
+ drivers/mtd/mtdcore.c              | 31 ++++++++++++++++--
+ drivers/mtd/nand/nand_base.c       | 56 --------------------------------
+ drivers/mtd/onenand/onenand_base.c | 61 -----------------------------------
+ 4 files changed, 29 insertions(+), 184 deletions(-)
 
-> >
-> > He had already acked it, but I just missed it.
-> >  
-> 
-> BTW, this series can not apply to Boris's tree
-> because of the following commit.
-> 
-> commit 4a78cc644eed3cf2dae00c3a959910a86c140fd6
-> Author: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Date:   Fri May 26 17:10:15 2017 +0200
-> 
->     mtd: nand: Make sure drivers not supporting SET/GET_FEATURES
-> return -ENOTSUPP
->
-
-Note that ->setup_data_interface() prototype changed, so you'll have to
-adjust patch 9 too.
-
-Regards,
-
-Boris
+diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
+index b833e6cc684c..81e108454f54 100644
+--- a/drivers/mtd/devices/docg3.c
++++ b/drivers/mtd/devices/docg3.c
+@@ -990,36 +990,6 @@ static int doc_read_oob(struct mtd_info *mtd, loff_t from,
+ 	goto out;
+ }
+ 
+-/**
+- * doc_read - Read bytes from flash
+- * @mtd: the device
+- * @from: the offset from first block and first page, in bytes, aligned on page
+- *        size
+- * @len: the number of bytes to read (must be a multiple of 4)
+- * @retlen: the number of bytes actually read
+- * @buf: the filled in buffer
+- *
+- * Reads flash memory pages. This function does not read the OOB chunk, but only
+- * the page data.
+- *
+- * Returns 0 if read successful, of -EIO, -EINVAL if an error occurred
+- */
+-static int doc_read(struct mtd_info *mtd, loff_t from, size_t len,
+-	     size_t *retlen, u_char *buf)
+-{
+-	struct mtd_oob_ops ops;
+-	size_t ret;
+-
+-	memset(&ops, 0, sizeof(ops));
+-	ops.datbuf = buf;
+-	ops.len = len;
+-	ops.mode = MTD_OPS_AUTO_OOB;
+-
+-	ret = doc_read_oob(mtd, from, &ops);
+-	*retlen = ops.retlen;
+-	return ret;
+-}
+-
+ static int doc_reload_bbt(struct docg3 *docg3)
+ {
+ 	int block = DOC_LAYOUT_BLOCK_BBT;
+@@ -1513,39 +1483,6 @@ static int doc_write_oob(struct mtd_info *mtd, loff_t ofs,
+ 	return ret;
+ }
+ 
+-/**
+- * doc_write - Write a buffer to the chip
+- * @mtd: the device
+- * @to: the offset from first block and first page, in bytes, aligned on page
+- *      size
+- * @len: the number of bytes to write (must be a full page size, ie. 512)
+- * @retlen: the number of bytes actually written (0 or 512)
+- * @buf: the buffer to get bytes from
+- *
+- * Writes data to the chip.
+- *
+- * Returns 0 if write successful, -EIO if write error
+- */
+-static int doc_write(struct mtd_info *mtd, loff_t to, size_t len,
+-		     size_t *retlen, const u_char *buf)
+-{
+-	struct docg3 *docg3 = mtd->priv;
+-	int ret;
+-	struct mtd_oob_ops ops;
+-
+-	doc_dbg("doc_write(to=%lld, len=%zu)\n", to, len);
+-	ops.datbuf = (char *)buf;
+-	ops.len = len;
+-	ops.mode = MTD_OPS_PLACE_OOB;
+-	ops.oobbuf = NULL;
+-	ops.ooblen = 0;
+-	ops.ooboffs = 0;
+-
+-	ret = doc_write_oob(mtd, to, &ops);
+-	*retlen = ops.retlen;
+-	return ret;
+-}
+-
+ static struct docg3 *sysfs_dev2docg3(struct device *dev,
+ 				     struct device_attribute *attr)
+ {
+@@ -1876,8 +1813,6 @@ static int __init doc_set_driver_info(int chip_id, struct mtd_info *mtd)
+ 	mtd->writebufsize = mtd->writesize = DOC_LAYOUT_PAGE_SIZE;
+ 	mtd->oobsize = DOC_LAYOUT_OOB_SIZE;
+ 	mtd->_erase = doc_erase;
+-	mtd->_read = doc_read;
+-	mtd->_write = doc_write;
+ 	mtd->_read_oob = doc_read_oob;
+ 	mtd->_write_oob = doc_write_oob;
+ 	mtd->_block_isbad = doc_block_isbad;
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 1517da3ddd7d..e214af82b9be 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -1033,7 +1033,20 @@ int mtd_read(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
+ 	 * representing the maximum number of bitflips that were corrected on
+ 	 * any one ecc region (if applicable; zero otherwise).
+ 	 */
+-	ret_code = mtd->_read(mtd, from, len, retlen, buf);
++	if (mtd->_read) {
++		ret_code = mtd->_read(mtd, from, len, retlen, buf);
++	} else if (mtd->_read_oob) {
++		struct mtd_oob_ops ops = {
++			.len = len,
++			.datbuf = buf,
++		};
++
++		ret_code = mtd->_read_oob(mtd, from, &ops);
++		*retlen = ops.retlen;
++	} else {
++		return -ENOTSUPP;
++	}
++
+ 	if (unlikely(ret_code < 0))
+ 		return ret_code;
+ 	if (mtd->ecc_strength == 0)
+@@ -1048,11 +1061,25 @@ int mtd_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
+ 	*retlen = 0;
+ 	if (to < 0 || to >= mtd->size || len > mtd->size - to)
+ 		return -EINVAL;
+-	if (!mtd->_write || !(mtd->flags & MTD_WRITEABLE))
++	if ((!mtd->_write && !mtd->_write_oob) ||
++	    !(mtd->flags & MTD_WRITEABLE))
+ 		return -EROFS;
+ 	if (!len)
+ 		return 0;
+ 	ledtrig_mtd_activity();
++
++	if (!mtd->_write) {
++		struct mtd_oob_ops ops = {
++			.len = len,
++			.datbuf = (u8 *)buf,
++		};
++		int ret;
++
++		ret = mtd->_write_oob(mtd, to, &ops);
++		*retlen = ops.retlen;
++		return ret;
++	}
++
+ 	return mtd->_write(mtd, to, len, retlen, buf);
+ }
+ EXPORT_SYMBOL_GPL(mtd_write);
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index d474378ed810..4d7b2a3e63df 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2163,33 +2163,6 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ }
+ 
+ /**
+- * nand_read - [MTD Interface] MTD compatibility function for nand_do_read_ecc
+- * @mtd: MTD device structure
+- * @from: offset to read from
+- * @len: number of bytes to read
+- * @retlen: pointer to variable to store the number of read bytes
+- * @buf: the databuffer to put data
+- *
+- * Get hold of the chip and call nand_do_read.
+- */
+-static int nand_read(struct mtd_info *mtd, loff_t from, size_t len,
+-		     size_t *retlen, uint8_t *buf)
+-{
+-	struct mtd_oob_ops ops;
+-	int ret;
+-
+-	nand_get_device(mtd, FL_READING);
+-	memset(&ops, 0, sizeof(ops));
+-	ops.len = len;
+-	ops.datbuf = buf;
+-	ops.mode = MTD_OPS_PLACE_OOB;
+-	ret = nand_do_read_ops(mtd, from, &ops);
+-	*retlen = ops.retlen;
+-	nand_release_device(mtd);
+-	return ret;
+-}
+-
+-/**
+  * nand_read_oob_std - [REPLACEABLE] the most common OOB data read function
+  * @mtd: mtd info structure
+  * @chip: nand chip info structure
+@@ -2976,33 +2949,6 @@ static int panic_nand_write(struct mtd_info *mtd, loff_t to, size_t len,
+ }
+ 
+ /**
+- * nand_write - [MTD Interface] NAND write with ECC
+- * @mtd: MTD device structure
+- * @to: offset to write to
+- * @len: number of bytes to write
+- * @retlen: pointer to variable to store the number of written bytes
+- * @buf: the data to write
+- *
+- * NAND write with ECC.
+- */
+-static int nand_write(struct mtd_info *mtd, loff_t to, size_t len,
+-			  size_t *retlen, const uint8_t *buf)
+-{
+-	struct mtd_oob_ops ops;
+-	int ret;
+-
+-	nand_get_device(mtd, FL_WRITING);
+-	memset(&ops, 0, sizeof(ops));
+-	ops.len = len;
+-	ops.datbuf = (uint8_t *)buf;
+-	ops.mode = MTD_OPS_PLACE_OOB;
+-	ret = nand_do_write_ops(mtd, to, &ops);
+-	*retlen = ops.retlen;
+-	nand_release_device(mtd);
+-	return ret;
+-}
+-
+-/**
+  * nand_do_write_oob - [MTD Interface] NAND write out-of-band
+  * @mtd: MTD device structure
+  * @to: offset to write to
+@@ -4812,8 +4758,6 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	mtd->_erase = nand_erase;
+ 	mtd->_point = NULL;
+ 	mtd->_unpoint = NULL;
+-	mtd->_read = nand_read;
+-	mtd->_write = nand_write;
+ 	mtd->_panic_write = panic_nand_write;
+ 	mtd->_read_oob = nand_read_oob;
+ 	mtd->_write_oob = nand_write_oob;
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index 1a6d0e367b89..dbbc5b6cecc1 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -1448,38 +1448,6 @@ static int onenand_read_oob_nolock(struct mtd_info *mtd, loff_t from,
+ }
+ 
+ /**
+- * onenand_read - [MTD Interface] Read data from flash
+- * @param mtd		MTD device structure
+- * @param from		offset to read from
+- * @param len		number of bytes to read
+- * @param retlen	pointer to variable to store the number of read bytes
+- * @param buf		the databuffer to put data
+- *
+- * Read with ecc
+-*/
+-static int onenand_read(struct mtd_info *mtd, loff_t from, size_t len,
+-	size_t *retlen, u_char *buf)
+-{
+-	struct onenand_chip *this = mtd->priv;
+-	struct mtd_oob_ops ops = {
+-		.len	= len,
+-		.ooblen	= 0,
+-		.datbuf	= buf,
+-		.oobbuf	= NULL,
+-	};
+-	int ret;
+-
+-	onenand_get_device(mtd, FL_READING);
+-	ret = ONENAND_IS_4KB_PAGE(this) ?
+-		onenand_mlc_read_ops_nolock(mtd, from, &ops) :
+-		onenand_read_ops_nolock(mtd, from, &ops);
+-	onenand_release_device(mtd);
+-
+-	*retlen = ops.retlen;
+-	return ret;
+-}
+-
+-/**
+  * onenand_read_oob - [MTD Interface] Read main and/or out-of-band
+  * @param mtd:		MTD device structure
+  * @param from:		offset to read from
+@@ -2129,35 +2097,6 @@ static int onenand_write_oob_nolock(struct mtd_info *mtd, loff_t to,
+ }
+ 
+ /**
+- * onenand_write - [MTD Interface] write buffer to FLASH
+- * @param mtd		MTD device structure
+- * @param to		offset to write to
+- * @param len		number of bytes to write
+- * @param retlen	pointer to variable to store the number of written bytes
+- * @param buf		the data to write
+- *
+- * Write with ECC
+- */
+-static int onenand_write(struct mtd_info *mtd, loff_t to, size_t len,
+-	size_t *retlen, const u_char *buf)
+-{
+-	struct mtd_oob_ops ops = {
+-		.len	= len,
+-		.ooblen	= 0,
+-		.datbuf	= (u_char *) buf,
+-		.oobbuf	= NULL,
+-	};
+-	int ret;
+-
+-	onenand_get_device(mtd, FL_WRITING);
+-	ret = onenand_write_ops_nolock(mtd, to, &ops);
+-	onenand_release_device(mtd);
+-
+-	*retlen = ops.retlen;
+-	return ret;
+-}
+-
+-/**
+  * onenand_write_oob - [MTD Interface] NAND write data and/or out-of-band
+  * @param mtd:		MTD device structure
+  * @param to:		offset to write
+-- 
+2.11.0
