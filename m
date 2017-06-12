@@ -1,19 +1,17 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
+Received: from lgeamrelo13.lge.com ([156.147.23.53])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dK9hj-00079c-IS
- for linux-mtd@lists.infradead.org; Sun, 11 Jun 2017 20:43:25 +0000
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, Kyungmin Park <kyungmin.park@samsung.com>
-Subject: [PATCH] mtd: Fallback to ->_read/write_oob() when ->_read/write() is
- missing
-Date: Sun, 11 Jun 2017 22:42:55 +0200
-Message-Id: <20170611204255.18622-1-boris.brezillon@free-electrons.com>
+ id 1dKERi-0004Cb-Lg
+ for linux-mtd@lists.infradead.org; Mon, 12 Jun 2017 01:47:13 +0000
+From: karam.lee@lge.com
+To: Richard Weinberger <richard@nod.at>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Cc: "karam.lee" <karam.lee@lge.com>,
+	"seungho.park" <seungho1.park@lge.com>
+Subject: [PATCH] ubifs : fix oops when remounting with no_bulk_read.
+Date: Mon, 12 Jun 2017 10:46:31 +0900
+Message-Id: <1497231991-4794-1-git-send-email-karam.lee@lge.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,329 +21,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some MTD sublayers/drivers are implementing ->_read/write_oob() and
-providing dummy wrappers for their ->_read/write() implementations.
-Let the core handle this case instead of duplicating the logic.
+From: "karam.lee" <karam.lee@lge.com>
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+When remounting with the no_bulk_read option,
+there is a problem accessing the "bulk_read buffer(bu.buf)"
+which has already been freed.
+
+If the bulk_read option is enabled,
+ubifs_tnc_bulk_read uses the pre-allocated bu.buf.
+
+While bu.buf is being used by ubifs_tnc_bulk_read,
+remounting with no_bulk_read frees bu.buf.
+
+So I added code to check the use of "bu.buf" to avoid this situation.
+
+------
+I tested as follows(kernel v3.18) :
+
+Use the script to repeat "no_bulk_read <-> bulk_read"
+	remount.sh
+	#!/bin/sh
+	while true do;
+		mount -o remount,no_bulk_read ${MOUNT_POINT};
+		sleep 1;
+		mount -o remount,bulk_read ${MOUNT_POINT};
+		sleep 1;
+	done
+
+Perform read operation
+	cat ${MOUNT_POINT}/* > /dev/null
+
+The problem is reproduced immediately.
+
+[  234.256845][kernel.0]Internal error: Oops: 17 [#1] PREEMPT ARM
+[  234.258557][kernel.0]CPU: 0 PID: 2752 Comm: cat Tainted: G        W  O   3.18.31+ #51
+[  234.259531][kernel.0]task: cbff8580 ti: cbd66000 task.ti: cbd66000
+[  234.260306][kernel.0]PC is at validate_data_node+0x10/0x264
+[  234.260994][kernel.0]LR is at ubifs_tnc_bulk_read+0x388/0x3ec
+[  234.261712][kernel.0]pc : [<c01d98fc>]    lr : [<c01dc300>]    psr: 80000013
+[  234.261712][kernel.0]sp : cbd67ba0  ip : 00000001  fp : 00000000
+[  234.263337][kernel.0]r10: cd3e0260  r9 : c0df2008  r8 : 00000000
+[  234.264087][kernel.0]r7 : cd3e0000  r6 : 00000000  r5 : cd3e0278  r4 : cd3e0000
+[  234.264999][kernel.0]r3 : 00000003  r2 : cd3e0280  r1 : 00000000  r0 : cd3e0000
+[  234.265910][kernel.0]Flags: Nzcv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
+[  234.266896][kernel.0]Control: 10c53c7d  Table: 8c40c059  DAC: 00000015
+[  234.267711][kernel.0]Process cat (pid: 2752, stack limit = 0xcbd66400)
+[  234.268525][kernel.0]Stack: (0xcbd67ba0 to 0xcbd68000)
+[  234.269169][kernel.0]7ba0: cd7c3940 c03d8650 0001bfe0 00002ab2 00000000 cbd67c5c cbd67c58 0001bfe0
+[  234.270287][kernel.0]7bc0: cd3e0000 00002ab2 0001bfe0 00000014 cbd66000 cd3e0260 00000000 c01d6660
+[  234.271403][kernel.0]7be0: 00002ab2 00000000 c82a5800 ffffffff cd3e0298 cd3e0278 00000000 cd3e0000
+[  234.272520][kernel.0]7c00: 00000000 00000000 cd3e0260 c01dc300 00002ab2 00000000 60000013 d663affa
+[  234.273639][kernel.0]7c20: cd3e01f0 cd3e01f0 60000013 c09397ec 00000000 cd3e0278 00002ab2 00000000
+[  234.274755][kernel.0]7c40: cd3e0000 c01dbf48 00000014 00000003 00000160 00000015 00000004 d663affa
+[  234.275874][kernel.0]7c60: ccdaa978 cd3e0278 cd3e0000 cf32a5f4 ccdaa820 00000044 cbd66000 cd3e0260
+[  234.276992][kernel.0]7c80: 00000003 c01cec84 ccdaa8dc cbd67cc4 cbd67ec0 00000010 ccdaa978 00000000
+[  234.278108][kernel.0]7ca0: 0000015e ccdaa8dc 00000000 00000000 cf32a5d0 00000000 0000015f ccdaa8dc
+[  234.279228][kernel.0]7cc0: 00000000 c8488300 0009e5a4 0000000e cbd66000 0000015e cf32a5f4 c0113c04
+[  234.280346][kernel.0]7ce0: 0000009f 0000003c c00098c4 ffffffff 00001000 00000000 000000ad 00000010
+[  234.281463][kernel.0]7d00: 00000038 cd68f580 00000150 c8488360 00000000 cbd67d30 cbd67d70 0000000e
+[  234.282579][kernel.0]7d20: 00000010 00000000 c0951874 c0112a9c cf379b60 cf379b84 cf379890 cf3798b4
+[  234.283699][kernel.0]7d40: cf379578 cf37959c cf379380 cf3793a4 cf3790b0 cf3790d4 cf378fd8 cf378ffc
+[  234.284814][kernel.0]7d60: cf378f48 cf378f6c cf32a5f4 cf32a5d0 00000000 00001000 00000018 00000000
+[  234.285932][kernel.0]7d80: 00001000 c0050da4 00000000 00001000 cec04c00 00000000 00001000 c0e11328
+[  234.287049][kernel.0]7da0: 00000000 00001000 cbd66000 00000000 00001000 c0012a60 00000000 00001000
+[  234.288166][kernel.0]7dc0: cbd67dd4 00000000 00001000 80000013 00000000 00001000 cd68f580 00000000
+[  234.289285][kernel.0]7de0: 00001000 c915d600 00000000 00001000 cbd67e48 00000000 00001000 00000018
+[  234.290402][kernel.0]7e00: 00000000 00001000 00000000 00000000 00001000 c915d768 c915d768 c0113550
+[  234.291522][kernel.0]7e20: cd68f580 cbd67e48 cd68f580 cb6713c0 00010000 000ac5a4 00000000 001fc5a4
+[  234.292637][kernel.0]7e40: 00000000 c8488300 cbd67ec0 00eb0000 cd68f580 c0113ee4 00000000 cbd67ec0
+[  234.293754][kernel.0]7e60: cd68f580 c8488300 cbd67ec0 00eb0000 cd68f580 00150000 c8488300 00eb0000
+[  234.294874][kernel.0]7e80: 00010000 c0112fd0 00000000 cbd67ec0 cd68f580 00150000 00000000 cd68f580
+[  234.295991][kernel.0]7ea0: cbd67ef0 c011308c 00000000 00000002 cd768850 00010000 00000000 c01133fc
+[  234.297110][kernel.0]7ec0: 00150000 00000000 cbd67f50 00000000 00000000 cb6713c0 01000000 cbd67f48
+[  234.298226][kernel.0]7ee0: cbd67f50 c8488300 00000000 c0113204 00010000 01000000 00000000 cb6713c0
+[  234.299342][kernel.0]7f00: 00150000 00000000 cbd67f50 00000000 00000000 00000000 00000000 00000000
+[  234.300462][kernel.0]7f20: cbd67f50 01000000 01000000 cb6713c0 c8488300 c00ebba8 01000000 00000000
+[  234.301577][kernel.0]7f40: c8488300 cb6713c0 00000000 00000000 00000000 00000000 ccdaa820 00000000
+[  234.302697][kernel.0]7f60: 00000000 01000000 00000003 00000001 cbd66000 00000000 00000001 c00ec678
+[  234.303813][kernel.0]7f80: 00000000 00000200 00000000 01000000 01000000 00000000 00000000 000000ef
+[  234.304933][kernel.0]7fa0: c000e904 c000e780 01000000 00000000 00000001 00000003 00000000 01000000
+[  234.306049][kernel.0]7fc0: 01000000 00000000 00000000 000000ef 00000001 00000003 01000000 00000001
+[  234.307165][kernel.0]7fe0: 00000000 beafb78c 0000ad08 00128d1c 60000010 00000001 00000000 00000000
+[  234.308292][kernel.0][<c01d98fc>] (validate_data_node) from [<c01dc300>] (ubifs_tnc_bulk_read+0x388/0x3ec)
+[  234.309493][kernel.0][<c01dc300>] (ubifs_tnc_bulk_read) from [<c01cec84>] (ubifs_readpage+0x1dc/0x46c)
+[  234.310656][kernel.0][<c01cec84>] (ubifs_readpage) from [<c0113c04>] (__generic_file_splice_read+0x29c/0x4cc)
+[  234.311890][kernel.0][<c0113c04>] (__generic_file_splice_read) from [<c0113ee4>] (generic_file_splice_read+0xb0/0xf4)
+[  234.313214][kernel.0][<c0113ee4>] (generic_file_splice_read) from [<c0112fd0>] (do_splice_to+0x68/0x7c)
+[  234.314386][kernel.0][<c0112fd0>] (do_splice_to) from [<c011308c>] (splice_direct_to_actor+0xa8/0x190)
+[  234.315544][kernel.0][<c011308c>] (splice_direct_to_actor) from [<c0113204>] (do_splice_direct+0x90/0xb8)
+[  234.316741][kernel.0][<c0113204>] (do_splice_direct) from [<c00ebba8>] (do_sendfile+0x17c/0x2b8)
+[  234.317838][kernel.0][<c00ebba8>] (do_sendfile) from [<c00ec678>] (SyS_sendfile64+0xc4/0xcc)
+[  234.318890][kernel.0][<c00ec678>] (SyS_sendfile64) from [<c000e780>] (ret_fast_syscall+0x0/0x38)
+[  234.319983][kernel.0]Code: e92d47f0 e24dd050 e59f9228 e1a04000 (e5d18014)
+
+Signed-off-by: karam.lee <karam.lee@lge.com>
 ---
-Note that the goldfish_nand driver (currently in staging) has not been
-updated because some the ops->len != mtd->writesize check done in
-goldfish_nand_read/write_oob() prevents us from using this function as
-a fallback for ->_read/write().
+ fs/ubifs/super.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-This behavior is buggy anyway, because the core expects drivers
-implementing ->_read_oob() to support reading more than ->writesize in
-a single call. Probably something we should fix.
----
- drivers/mtd/devices/docg3.c        | 65 --------------------------------------
- drivers/mtd/mtdcore.c              | 31 ++++++++++++++++--
- drivers/mtd/nand/nand_base.c       | 56 --------------------------------
- drivers/mtd/onenand/onenand_base.c | 61 -----------------------------------
- 4 files changed, 29 insertions(+), 184 deletions(-)
-
-diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-index b833e6cc684c..81e108454f54 100644
---- a/drivers/mtd/devices/docg3.c
-+++ b/drivers/mtd/devices/docg3.c
-@@ -990,36 +990,6 @@ static int doc_read_oob(struct mtd_info *mtd, loff_t from,
- 	goto out;
- }
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index cf4cc99..cc588f8 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1869,8 +1869,10 @@ static int ubifs_remount_fs(struct super_block *sb, int *flags, char *data)
+ 		bu_init(c);
+ 	else {
+ 		dbg_gen("disable bulk-read");
++		mutex_lock(&c->bu_mutex);
+ 		kfree(c->bu.buf);
+ 		c->bu.buf = NULL;
++		mutex_unlock(&c->bu_mutex);
+ 	}
  
--/**
-- * doc_read - Read bytes from flash
-- * @mtd: the device
-- * @from: the offset from first block and first page, in bytes, aligned on page
-- *        size
-- * @len: the number of bytes to read (must be a multiple of 4)
-- * @retlen: the number of bytes actually read
-- * @buf: the filled in buffer
-- *
-- * Reads flash memory pages. This function does not read the OOB chunk, but only
-- * the page data.
-- *
-- * Returns 0 if read successful, of -EIO, -EINVAL if an error occurred
-- */
--static int doc_read(struct mtd_info *mtd, loff_t from, size_t len,
--	     size_t *retlen, u_char *buf)
--{
--	struct mtd_oob_ops ops;
--	size_t ret;
--
--	memset(&ops, 0, sizeof(ops));
--	ops.datbuf = buf;
--	ops.len = len;
--	ops.mode = MTD_OPS_AUTO_OOB;
--
--	ret = doc_read_oob(mtd, from, &ops);
--	*retlen = ops.retlen;
--	return ret;
--}
--
- static int doc_reload_bbt(struct docg3 *docg3)
- {
- 	int block = DOC_LAYOUT_BLOCK_BBT;
-@@ -1513,39 +1483,6 @@ static int doc_write_oob(struct mtd_info *mtd, loff_t ofs,
- 	return ret;
- }
- 
--/**
-- * doc_write - Write a buffer to the chip
-- * @mtd: the device
-- * @to: the offset from first block and first page, in bytes, aligned on page
-- *      size
-- * @len: the number of bytes to write (must be a full page size, ie. 512)
-- * @retlen: the number of bytes actually written (0 or 512)
-- * @buf: the buffer to get bytes from
-- *
-- * Writes data to the chip.
-- *
-- * Returns 0 if write successful, -EIO if write error
-- */
--static int doc_write(struct mtd_info *mtd, loff_t to, size_t len,
--		     size_t *retlen, const u_char *buf)
--{
--	struct docg3 *docg3 = mtd->priv;
--	int ret;
--	struct mtd_oob_ops ops;
--
--	doc_dbg("doc_write(to=%lld, len=%zu)\n", to, len);
--	ops.datbuf = (char *)buf;
--	ops.len = len;
--	ops.mode = MTD_OPS_PLACE_OOB;
--	ops.oobbuf = NULL;
--	ops.ooblen = 0;
--	ops.ooboffs = 0;
--
--	ret = doc_write_oob(mtd, to, &ops);
--	*retlen = ops.retlen;
--	return ret;
--}
--
- static struct docg3 *sysfs_dev2docg3(struct device *dev,
- 				     struct device_attribute *attr)
- {
-@@ -1876,8 +1813,6 @@ static int __init doc_set_driver_info(int chip_id, struct mtd_info *mtd)
- 	mtd->writebufsize = mtd->writesize = DOC_LAYOUT_PAGE_SIZE;
- 	mtd->oobsize = DOC_LAYOUT_OOB_SIZE;
- 	mtd->_erase = doc_erase;
--	mtd->_read = doc_read;
--	mtd->_write = doc_write;
- 	mtd->_read_oob = doc_read_oob;
- 	mtd->_write_oob = doc_write_oob;
- 	mtd->_block_isbad = doc_block_isbad;
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 1517da3ddd7d..e214af82b9be 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -1033,7 +1033,20 @@ int mtd_read(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
- 	 * representing the maximum number of bitflips that were corrected on
- 	 * any one ecc region (if applicable; zero otherwise).
- 	 */
--	ret_code = mtd->_read(mtd, from, len, retlen, buf);
-+	if (mtd->_read) {
-+		ret_code = mtd->_read(mtd, from, len, retlen, buf);
-+	} else if (mtd->_read_oob) {
-+		struct mtd_oob_ops ops = {
-+			.len = len,
-+			.datbuf = buf,
-+		};
-+
-+		ret_code = mtd->_read_oob(mtd, from, &ops);
-+		*retlen = ops.retlen;
-+	} else {
-+		return -ENOTSUPP;
-+	}
-+
- 	if (unlikely(ret_code < 0))
- 		return ret_code;
- 	if (mtd->ecc_strength == 0)
-@@ -1048,11 +1061,25 @@ int mtd_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
- 	*retlen = 0;
- 	if (to < 0 || to >= mtd->size || len > mtd->size - to)
- 		return -EINVAL;
--	if (!mtd->_write || !(mtd->flags & MTD_WRITEABLE))
-+	if ((!mtd->_write && !mtd->_write_oob) ||
-+	    !(mtd->flags & MTD_WRITEABLE))
- 		return -EROFS;
- 	if (!len)
- 		return 0;
- 	ledtrig_mtd_activity();
-+
-+	if (!mtd->_write) {
-+		struct mtd_oob_ops ops = {
-+			.len = len,
-+			.datbuf = (u8 *)buf,
-+		};
-+		int ret;
-+
-+		ret = mtd->_write_oob(mtd, to, &ops);
-+		*retlen = ops.retlen;
-+		return ret;
-+	}
-+
- 	return mtd->_write(mtd, to, len, retlen, buf);
- }
- EXPORT_SYMBOL_GPL(mtd_write);
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index d474378ed810..4d7b2a3e63df 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2163,33 +2163,6 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
- }
- 
- /**
-- * nand_read - [MTD Interface] MTD compatibility function for nand_do_read_ecc
-- * @mtd: MTD device structure
-- * @from: offset to read from
-- * @len: number of bytes to read
-- * @retlen: pointer to variable to store the number of read bytes
-- * @buf: the databuffer to put data
-- *
-- * Get hold of the chip and call nand_do_read.
-- */
--static int nand_read(struct mtd_info *mtd, loff_t from, size_t len,
--		     size_t *retlen, uint8_t *buf)
--{
--	struct mtd_oob_ops ops;
--	int ret;
--
--	nand_get_device(mtd, FL_READING);
--	memset(&ops, 0, sizeof(ops));
--	ops.len = len;
--	ops.datbuf = buf;
--	ops.mode = MTD_OPS_PLACE_OOB;
--	ret = nand_do_read_ops(mtd, from, &ops);
--	*retlen = ops.retlen;
--	nand_release_device(mtd);
--	return ret;
--}
--
--/**
-  * nand_read_oob_std - [REPLACEABLE] the most common OOB data read function
-  * @mtd: mtd info structure
-  * @chip: nand chip info structure
-@@ -2976,33 +2949,6 @@ static int panic_nand_write(struct mtd_info *mtd, loff_t to, size_t len,
- }
- 
- /**
-- * nand_write - [MTD Interface] NAND write with ECC
-- * @mtd: MTD device structure
-- * @to: offset to write to
-- * @len: number of bytes to write
-- * @retlen: pointer to variable to store the number of written bytes
-- * @buf: the data to write
-- *
-- * NAND write with ECC.
-- */
--static int nand_write(struct mtd_info *mtd, loff_t to, size_t len,
--			  size_t *retlen, const uint8_t *buf)
--{
--	struct mtd_oob_ops ops;
--	int ret;
--
--	nand_get_device(mtd, FL_WRITING);
--	memset(&ops, 0, sizeof(ops));
--	ops.len = len;
--	ops.datbuf = (uint8_t *)buf;
--	ops.mode = MTD_OPS_PLACE_OOB;
--	ret = nand_do_write_ops(mtd, to, &ops);
--	*retlen = ops.retlen;
--	nand_release_device(mtd);
--	return ret;
--}
--
--/**
-  * nand_do_write_oob - [MTD Interface] NAND write out-of-band
-  * @mtd: MTD device structure
-  * @to: offset to write to
-@@ -4812,8 +4758,6 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	mtd->_erase = nand_erase;
- 	mtd->_point = NULL;
- 	mtd->_unpoint = NULL;
--	mtd->_read = nand_read;
--	mtd->_write = nand_write;
- 	mtd->_panic_write = panic_nand_write;
- 	mtd->_read_oob = nand_read_oob;
- 	mtd->_write_oob = nand_write_oob;
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index 1a6d0e367b89..dbbc5b6cecc1 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -1448,38 +1448,6 @@ static int onenand_read_oob_nolock(struct mtd_info *mtd, loff_t from,
- }
- 
- /**
-- * onenand_read - [MTD Interface] Read data from flash
-- * @param mtd		MTD device structure
-- * @param from		offset to read from
-- * @param len		number of bytes to read
-- * @param retlen	pointer to variable to store the number of read bytes
-- * @param buf		the databuffer to put data
-- *
-- * Read with ecc
--*/
--static int onenand_read(struct mtd_info *mtd, loff_t from, size_t len,
--	size_t *retlen, u_char *buf)
--{
--	struct onenand_chip *this = mtd->priv;
--	struct mtd_oob_ops ops = {
--		.len	= len,
--		.ooblen	= 0,
--		.datbuf	= buf,
--		.oobbuf	= NULL,
--	};
--	int ret;
--
--	onenand_get_device(mtd, FL_READING);
--	ret = ONENAND_IS_4KB_PAGE(this) ?
--		onenand_mlc_read_ops_nolock(mtd, from, &ops) :
--		onenand_read_ops_nolock(mtd, from, &ops);
--	onenand_release_device(mtd);
--
--	*retlen = ops.retlen;
--	return ret;
--}
--
--/**
-  * onenand_read_oob - [MTD Interface] Read main and/or out-of-band
-  * @param mtd:		MTD device structure
-  * @param from:		offset to read from
-@@ -2129,35 +2097,6 @@ static int onenand_write_oob_nolock(struct mtd_info *mtd, loff_t to,
- }
- 
- /**
-- * onenand_write - [MTD Interface] write buffer to FLASH
-- * @param mtd		MTD device structure
-- * @param to		offset to write to
-- * @param len		number of bytes to write
-- * @param retlen	pointer to variable to store the number of written bytes
-- * @param buf		the data to write
-- *
-- * Write with ECC
-- */
--static int onenand_write(struct mtd_info *mtd, loff_t to, size_t len,
--	size_t *retlen, const u_char *buf)
--{
--	struct mtd_oob_ops ops = {
--		.len	= len,
--		.ooblen	= 0,
--		.datbuf	= (u_char *) buf,
--		.oobbuf	= NULL,
--	};
--	int ret;
--
--	onenand_get_device(mtd, FL_WRITING);
--	ret = onenand_write_ops_nolock(mtd, to, &ops);
--	onenand_release_device(mtd);
--
--	*retlen = ops.retlen;
--	return ret;
--}
--
--/**
-  * onenand_write_oob - [MTD Interface] NAND write data and/or out-of-band
-  * @param mtd:		MTD device structure
-  * @param to:		offset to write
+ 	ubifs_assert(c->lst.taken_empty_lebs > 0);
 -- 
-2.11.0
+2.1.4
