@@ -1,18 +1,18 @@
-Received: from goliath.siemens.de ([192.35.17.28])
+Received: from thoth.sbs.de ([192.35.17.2])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dKMwY-0003Jw-Q7
- for linux-mtd@lists.infradead.org; Mon, 12 Jun 2017 10:51:39 +0000
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
- by goliath.siemens.de (8.15.2/8.15.2) with ESMTPS id v5CAp8lA022930
+ id 1dKMwY-0003Jy-Qh
+ for linux-mtd@lists.infradead.org; Mon, 12 Jun 2017 10:51:40 +0000
+Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
+ by thoth.sbs.de (8.15.2/8.15.2) with ESMTPS id v5CAp7LC004083
  (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
  for <linux-mtd@lists.infradead.org>; Mon, 12 Jun 2017 12:51:08 +0200
 From: Daniel Wagner <daniel.wagner@siemens.com>
 To: linux-mtd@lists.infradead.org
 Cc: Daniel Wagner <daniel.wagner@siemens.com>
-Subject: [PATCH v0 06/20] mtd-utils: lash_unlock: Use defines for exit code
- values
-Date: Mon, 12 Jun 2017 12:50:47 +0200
-Message-Id: <20170612105101.18223-7-daniel.wagner@siemens.com>
+Subject: [PATCH v0 03/20] mkfs.jffs2: Return error code if command line option
+ is unknown
+Date: Mon, 12 Jun 2017 12:50:44 +0200
+Message-Id: <20170612105101.18223-4-daniel.wagner@siemens.com>
 In-Reply-To: <20170612105101.18223-1-daniel.wagner@siemens.com>
 References: <20170612105101.18223-1-daniel.wagner@siemens.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,51 +31,25 @@ invocation.
 
 Signed-off-by: Daniel Wagner <daniel.wagner@siemens.com>
 ---
- misc-utils/flash_unlock.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ jffsX-utils/mkfs.jffs2.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/misc-utils/flash_unlock.c b/misc-utils/flash_unlock.c
-index 94f476114355..5a3aac532053 100644
---- a/misc-utils/flash_unlock.c
-+++ b/misc-utils/flash_unlock.c
-@@ -87,7 +87,7 @@ static void process_args(int argc, char *argv[])
+diff --git a/jffsX-utils/mkfs.jffs2.c b/jffsX-utils/mkfs.jffs2.c
+index ca5e0d560f98..c77f19005b3e 100644
+--- a/jffsX-utils/mkfs.jffs2.c
++++ b/jffsX-utils/mkfs.jffs2.c
+@@ -1629,9 +1629,11 @@ int main(int argc, char **argv)
+ 				break;
  
- 		switch (c) {
- 		case 'h':
--			usage(0);
-+			usage(EXIT_SUCCESS);
- 			break;
- 		case 'i':
- 			req = REQUEST_ISLOCKED;
-@@ -105,14 +105,14 @@ static void process_args(int argc, char *argv[])
- 			common_print_version();
- 			exit(0);
- 		default:
--			usage(1);
-+			usage(EXIT_FAILURE);
- 			break;
- 		}
- 	}
+ 			case 'h':
+-			case '?':
+ 				puts(helptext);
+ 				exit(EXIT_SUCCESS);
++			case '?':
++				puts(helptext);
++				exit(EXIT_FAILURE);
  
- 	if (req_set > 1) {
- 		errmsg("cannot specify more than one lock/unlock/islocked option");
--		usage(1);
-+		usage(EXIT_FAILURE);
- 	}
- 
- 	arg_idx = optind;
-@@ -120,10 +120,10 @@ static void process_args(int argc, char *argv[])
- 	/* Sanity checks */
- 	if (argc - arg_idx < 1) {
- 		errmsg("too few arguments");
--		usage(1);
-+		usage(EXIT_FAILURE);
- 	} else if (argc - arg_idx > 3) {
- 		errmsg("too many arguments");
--		usage(1);
-+		usage(EXIT_FAILURE);
- 	}
- 
- 	/* First non-option argument */
+ 			case 'v':
+ 				verbose = 1;
 -- 
 2.9.4
