@@ -1,18 +1,18 @@
-Received: from lizzard.sbs.de ([194.138.37.39])
+Received: from goliath.siemens.de ([192.35.17.28])
  by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dKMwV-0000sl-Gr
+ id 1dKMwV-0000sj-FW
  for linux-mtd@lists.infradead.org; Mon, 12 Jun 2017 10:51:34 +0000
 Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
- by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id v5CAp9qX020048
+ by goliath.siemens.de (8.15.2/8.15.2) with ESMTPS id v5CAp9a0023010
  (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
  for <linux-mtd@lists.infradead.org>; Mon, 12 Jun 2017 12:51:09 +0200
 From: Daniel Wagner <daniel.wagner@siemens.com>
 To: linux-mtd@lists.infradead.org
 Cc: Daniel Wagner <daniel.wagner@siemens.com>
-Subject: [PATCH v0 18/20] ubi-utils: ubirsvol: Return error code if command
+Subject: [PATCH v0 16/20] ubi-utils: ubimkvol: Return error code if command
  line option is unknown
-Date: Mon, 12 Jun 2017 12:50:59 +0200
-Message-Id: <20170612105101.18223-19-daniel.wagner@siemens.com>
+Date: Mon, 12 Jun 2017 12:50:57 +0200
+Message-Id: <20170612105101.18223-17-daniel.wagner@siemens.com>
 In-Reply-To: <20170612105101.18223-1-daniel.wagner@siemens.com>
 References: <20170612105101.18223-1-daniel.wagner@siemens.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,14 +34,14 @@ other exit code places.
 
 Signed-off-by: Daniel Wagner <daniel.wagner@siemens.com>
 ---
- ubi-utils/ubirsvol.c | 7 ++++++-
+ ubi-utils/ubimkvol.c | 7 ++++++-
  1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/ubi-utils/ubirsvol.c b/ubi-utils/ubirsvol.c
-index 69a4ea14ff8d..0854abc53947 100644
---- a/ubi-utils/ubirsvol.c
-+++ b/ubi-utils/ubirsvol.c
-@@ -137,12 +137,17 @@ static int parse_opt(int argc, char * const argv[])
+diff --git a/ubi-utils/ubimkvol.c b/ubi-utils/ubimkvol.c
+index fdbc67ffb781..b81fc99c949e 100644
+--- a/ubi-utils/ubimkvol.c
++++ b/ubi-utils/ubimkvol.c
+@@ -164,12 +164,17 @@ static int parse_opt(int argc, char * const argv[])
  			break;
  
  		case 'h':
