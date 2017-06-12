@@ -1,18 +1,18 @@
-Received: from lizzard.sbs.de ([194.138.37.39])
+Received: from gecko.sbs.de ([194.138.37.40])
  by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dKMwV-0000sk-Jw
- for linux-mtd@lists.infradead.org; Mon, 12 Jun 2017 10:51:36 +0000
-Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
- by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id v5CAp9KR020045
+ id 1dKMwV-0000sm-Js
+ for linux-mtd@lists.infradead.org; Mon, 12 Jun 2017 10:51:35 +0000
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+ by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id v5CAp9x4004236
  (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
  for <linux-mtd@lists.infradead.org>; Mon, 12 Jun 2017 12:51:09 +0200
 From: Daniel Wagner <daniel.wagner@siemens.com>
 To: linux-mtd@lists.infradead.org
 Cc: Daniel Wagner <daniel.wagner@siemens.com>
-Subject: [PATCH v0 17/20] ubi-utils: ubirmvol: Return error code if command
+Subject: [PATCH v0 20/20] ubi-utils: mkfs.ubifs: Return error code if command
  line option is unknown
-Date: Mon, 12 Jun 2017 12:50:58 +0200
-Message-Id: <20170612105101.18223-18-daniel.wagner@siemens.com>
+Date: Mon, 12 Jun 2017 12:51:01 +0200
+Message-Id: <20170612105101.18223-21-daniel.wagner@siemens.com>
 In-Reply-To: <20170612105101.18223-1-daniel.wagner@siemens.com>
 References: <20170612105101.18223-1-daniel.wagner@siemens.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,31 +34,32 @@ other exit code places.
 
 Signed-off-by: Daniel Wagner <daniel.wagner@siemens.com>
 ---
- ubi-utils/ubirmvol.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/ubi-utils/ubirmvol.c b/ubi-utils/ubirmvol.c
-index 3370aff3d336..049e70de3774 100644
---- a/ubi-utils/ubirmvol.c
-+++ b/ubi-utils/ubirmvol.c
-@@ -109,12 +109,17 @@ static int parse_opt(int argc, char * const argv[])
+diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+index a60052d12c46..9e69a4fddf4d 100644
+--- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
++++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+@@ -548,15 +548,17 @@ static int get_options(int argc, char**argv)
+ 			yes = 1;
  			break;
- 
  		case 'h':
--		case '?':
- 			printf("%s\n\n", doc);
- 			printf("%s\n\n", usage);
- 			printf("%s\n", optionsstr);
- 			exit(EXIT_SUCCESS);
- 
-+		case '?':
-+			printf("%s\n\n", doc);
-+			printf("%s\n\n", usage);
-+			printf("%s\n", optionsstr);
-+			return -1;
-+
++			printf("%s", helptext);
++			exit(EXIT_SUCCESS);
+ 		case '?':
+ 			printf("%s", helptext);
+-			exit(0);
++			exit(-1);
+ 		case 'v':
+ 			verbose = 1;
+ 			break;
  		case 'V':
  			common_print_version();
- 			exit(EXIT_SUCCESS);
+-			exit(0);
++			exit(EXIT_SUCCESS);
+ 		case 'g':
+ 			debug_level = strtol(optarg, &endp, 0);
+ 			if (*endp != '\0' || endp == optarg ||
 -- 
 2.9.4
