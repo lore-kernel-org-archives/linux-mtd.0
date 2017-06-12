@@ -1,18 +1,18 @@
-Received: from thoth.sbs.de ([192.35.17.2])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dKMwZ-0003Jz-P1
- for linux-mtd@lists.infradead.org; Mon, 12 Jun 2017 10:51:44 +0000
+Received: from lizzard.sbs.de ([194.138.37.39])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dKMwV-0000sk-Jw
+ for linux-mtd@lists.infradead.org; Mon, 12 Jun 2017 10:51:36 +0000
 Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
- by thoth.sbs.de (8.15.2/8.15.2) with ESMTPS id v5CAp7wT004070
+ by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id v5CAp9KR020045
  (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
- for <linux-mtd@lists.infradead.org>; Mon, 12 Jun 2017 12:51:08 +0200
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Jun 2017 12:51:09 +0200
 From: Daniel Wagner <daniel.wagner@siemens.com>
 To: linux-mtd@lists.infradead.org
 Cc: Daniel Wagner <daniel.wagner@siemens.com>
-Subject: [PATCH v0 01/20] jffs2dump: Return error code if command line option
- is unknown
-Date: Mon, 12 Jun 2017 12:50:42 +0200
-Message-Id: <20170612105101.18223-2-daniel.wagner@siemens.com>
+Subject: [PATCH v0 17/20] ubi-utils: ubirmvol: Return error code if command
+ line option is unknown
+Date: Mon, 12 Jun 2017 12:50:58 +0200
+Message-Id: <20170612105101.18223-18-daniel.wagner@siemens.com>
 In-Reply-To: <20170612105101.18223-1-daniel.wagner@siemens.com>
 References: <20170612105101.18223-1-daniel.wagner@siemens.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,50 +29,36 @@ not recognized. By returning an error code a calling script has the
 possibility to distinguish between a real success and an invalid
 invocation.
 
+We need to return -1 instead of EXIT_FAILURE to be consistent with the
+other exit code places.
+
 Signed-off-by: Daniel Wagner <daniel.wagner@siemens.com>
 ---
- jffsX-utils/jffs2dump.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ ubi-utils/ubirmvol.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/jffsX-utils/jffs2dump.c b/jffsX-utils/jffs2dump.c
-index a8d082bf1e39..df5b1e120b69 100644
---- a/jffsX-utils/jffs2dump.c
-+++ b/jffsX-utils/jffs2dump.c
-@@ -50,7 +50,7 @@
- long	imglen;		// length of image
- char	*data;		// image data
+diff --git a/ubi-utils/ubirmvol.c b/ubi-utils/ubirmvol.c
+index 3370aff3d336..049e70de3774 100644
+--- a/ubi-utils/ubirmvol.c
++++ b/ubi-utils/ubirmvol.c
+@@ -109,12 +109,17 @@ static int parse_opt(int argc, char * const argv[])
+ 			break;
  
--void display_help (void)
-+void display_help (int error)
- {
- 	printf("Usage: %s [OPTION]... INPUTFILE\n"
- 	       "Dump the contents of a binary JFFS2 image.\n\n"
-@@ -65,7 +65,7 @@ void display_help (void)
- 	       " -o, --oobsize=LEN            size of oob data chunk in binary image (NAND only)\n"
- 	       " -v, --verbose                verbose output\n",
- 	       PROGRAM_NAME);
--	exit(0);
-+	exit(error ? EXIT_FAILURE : EXIT_SUCCESS);
- }
+ 		case 'h':
+-		case '?':
+ 			printf("%s\n\n", doc);
+ 			printf("%s\n\n", usage);
+ 			printf("%s\n", optionsstr);
+ 			exit(EXIT_SUCCESS);
  
- void display_version (void)
-@@ -124,7 +124,7 @@ void process_options (int argc, char *argv[])
- 
- 		switch (c) {
- 			case 'h':
--				display_help();
-+				display_help(EXIT_SUCCESS);
- 				break;
- 			case 'V':
- 				display_version();
-@@ -161,7 +161,7 @@ void process_options (int argc, char *argv[])
- 	}
- 
- 	if ((argc - optind) != 1 || error)
--		display_help ();
-+		display_help (error);
- 
- 	img = argv[optind];
- }
++		case '?':
++			printf("%s\n\n", doc);
++			printf("%s\n\n", usage);
++			printf("%s\n", optionsstr);
++			return -1;
++
+ 		case 'V':
+ 			common_print_version();
+ 			exit(EXIT_SUCCESS);
 -- 
 2.9.4
