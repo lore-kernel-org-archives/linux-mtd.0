@@ -1,23 +1,20 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dKJ7G-0002Oz-Qh
- for linux-mtd@lists.infradead.org; Mon, 12 Jun 2017 06:46:24 +0000
-Date: Mon, 12 Jun 2017 08:45:58 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, Kyungmin Park <kyungmin.park@samsung.com>
-Subject: Re: [PATCH] mtd: Fallback to ->_read/write_oob() when
- ->_read/write() is missing
-Message-ID: <20170612084558.43fb1e21@bbrezillon>
-In-Reply-To: <87poe9vi4b.fsf@belgarion.home>
-References: <20170611204255.18622-1-boris.brezillon@free-electrons.com>
- <87poe9vi4b.fsf@belgarion.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from david.siemens.de ([192.35.17.14])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dKMwX-0003K5-O2
+ for linux-mtd@lists.infradead.org; Mon, 12 Jun 2017 10:51:35 +0000
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+ by david.siemens.de (8.15.2/8.15.2) with ESMTPS id v5CAp8DD023584
+ (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Jun 2017 12:51:08 +0200
+From: Daniel Wagner <daniel.wagner@siemens.com>
+To: linux-mtd@lists.infradead.org
+Cc: Daniel Wagner <daniel.wagner@siemens.com>
+Subject: [PATCH v0 10/20] mtd-utils: nftl_format: Use defines for exit code
+ values
+Date: Mon, 12 Jun 2017 12:50:51 +0200
+Message-Id: <20170612105101.18223-11-daniel.wagner@siemens.com>
+In-Reply-To: <20170612105101.18223-1-daniel.wagner@siemens.com>
+References: <20170612105101.18223-1-daniel.wagner@siemens.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,41 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Robert,
+The tool will quit with an exit code 0 if the command line option was
+not recognized. By returning an error code a calling script has the
+possibility to distinguish between a real success and an invalid
+invocation.
 
-Le Mon, 12 Jun 2017 08:24:04 +0200,
-Robert Jarzmik <robert.jarzmik@free.fr> a =C3=A9crit :
+Signed-off-by: Daniel Wagner <daniel.wagner@siemens.com>
+---
+ nand-utils/nftl_format.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> Boris Brezillon <boris.brezillon@free-electrons.com> writes:
->=20
-> > Some MTD sublayers/drivers are implementing ->_read/write_oob() and
-> > providing dummy wrappers for their ->_read/write() implementations.
-> > Let the core handle this case instead of duplicating the logic. =20
->=20
-> Hi Boris,
->=20
-> Unless I'm wrong, you're using mtd_oob_ops structures allocated on the
-> stack. This means they are not filled with 0/NULL at initialization, and
-> therefore the code is not equivalent to what was before in docg3 for exam=
-ple.
->=20
-> For example, oobbuf field needs initialization. Is it taken care in the c=
-ore ?
-
-According to the C99 standard (section 6.7.8.21):
-
-"
-If there are fewer initializers in a brace-enclosed list than there are
-elements or members of an aggregate, or fewer characters in a string
-literal used to initialize an array of known size than there are
-elements in the array, the remainder of the aggregate shall be
-initialized implicitly the same as objects that have static storage
-duration.
-"
-
-which should guarantee that uninitialized fields are actually set to 0,
-even when the struct is allocated on the stack.
-
-Regards,
-
-Boris
+diff --git a/nand-utils/nftl_format.c b/nand-utils/nftl_format.c
+index a329c59fc504..ea8199d5509d 100644
+--- a/nand-utils/nftl_format.c
++++ b/nand-utils/nftl_format.c
+@@ -234,7 +234,7 @@ int main(int argc, char **argv)
+ 	int idx = 0;
+ 
+ 	if (argc < 2)
+-		usage(1);
++		usage(EXIT_FAILURE);
+ 
+ 	nftl = "NFTL";
+ 
+@@ -249,13 +249,13 @@ int main(int argc, char **argv)
+ 				break;
+ 			case 'h':
+ 			case '?':
+-				usage(0);
++				usage(EXIT_SUCCESS);
+ 				break;
+ 			case 'V':
+ 				display_version();
+ 				break;
+ 			default:
+-				usage(1);
++				usage(EXIT_FAILURE);
+ 				break;
+ 		}
+ 	}
+-- 
+2.9.4
