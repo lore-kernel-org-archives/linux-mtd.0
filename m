@@ -1,17 +1,19 @@
-Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dKvYq-0005BQ-2x
- for linux-mtd@lists.infradead.org; Tue, 13 Jun 2017 23:49:28 +0000
-Received: by mail-pf0-x243.google.com with SMTP id d5so11698109pfe.1
- for <linux-mtd@lists.infradead.org>; Tue, 13 Jun 2017 16:49:03 -0700 (PDT)
+Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dKvYv-0007UO-3h
+ for linux-mtd@lists.infradead.org; Tue, 13 Jun 2017 23:49:30 +0000
+Received: by mail-pf0-x241.google.com with SMTP id s66so9331565pfs.2
+ for <linux-mtd@lists.infradead.org>; Tue, 13 Jun 2017 16:49:08 -0700 (PDT)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org
 Cc: Theodore Ts'o <tytso@mit.edu>, linux-fsdevel@vger.kernel.org,
  linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
  linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 0/3] fscrypt: forbid truncate(2) without key
-Date: Tue, 13 Jun 2017 16:47:52 -0700
-Message-Id: <20170613234755.111167-1-ebiggers3@gmail.com>
+Subject: [PATCH 2/3] f2fs: require key for truncate(2) of encrypted file
+Date: Tue, 13 Jun 2017 16:47:54 -0700
+Message-Id: <20170613234755.111167-3-ebiggers3@gmail.com>
+In-Reply-To: <20170613234755.111167-1-ebiggers3@gmail.com>
+References: <20170613234755.111167-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +25,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Eric Biggers <ebiggers@google.com>
 
-These patches update the various filesystems to forbid userspace from
-truncating encrypted files without the encryption key, as it's not
-possible to handle this correctly in general.  I believe this may have
-been missed because truncate() doesn't require opening the file first,
-and therefore it's not prevented by the existing requirement that open()
-is only allowed with the encryption key.
+Currently, filesystems allow truncate(2) on an encrypted file without
+the encryption key.  However, it's impossible to correctly handle the
+case where the size being truncated to is not a multiple of the
+filesystem block size, because that would require decrypting the final
+block, zeroing the part beyond i_size, then encrypting the block.
 
-It probably makes sense to take this series through the fscrypt tree, as
-the changes for each filesystem are basically identical.  (Eventually it
-might make sense to add an S_ENCRYPTED flag to struct inode and move
-some of these "hooks" up into the VFS; this one might fit nicely into
-setattr_prepare(), for example.)
+As other modifications to encrypted file contents are prohibited without
+the key, just prohibit truncate(2) as well, making it fail with ENOKEY.
 
-Eric Biggers (3):
-  ext4: require key for truncate(2) of encrypted file
-  f2fs: require key for truncate(2) of encrypted file
-  ubifs: require key for truncate(2) of encrypted file
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/f2fs/file.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
- fs/ext4/inode.c |  8 ++++++++
- fs/f2fs/file.c  | 10 +++++++---
- fs/ubifs/file.c |  8 ++++++++
- 3 files changed, 23 insertions(+), 3 deletions(-)
-
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 61af721329fa..be0b32bd1297 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -682,9 +682,13 @@ int f2fs_setattr(struct dentry *dentry, struct iattr *attr)
+ 		return err;
+ 
+ 	if (attr->ia_valid & ATTR_SIZE) {
+-		if (f2fs_encrypted_inode(inode) &&
+-				fscrypt_get_encryption_info(inode))
+-			return -EACCES;
++		if (f2fs_encrypted_inode(inode)) {
++			err = fscrypt_get_encryption_info(inode);
++			if (err)
++				return err;
++			if (!fscrypt_has_encryption_key(inode))
++				return -ENOKEY;
++		}
+ 
+ 		if (attr->ia_size <= i_size_read(inode)) {
+ 			truncate_setsize(inode, attr->ia_size);
 -- 
 2.13.1.508.gb3defc5cc-goog
