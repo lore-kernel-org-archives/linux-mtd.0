@@ -1,7 +1,7 @@
 Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dKe0y-0005xM-29
- for linux-mtd@lists.infradead.org; Tue, 13 Jun 2017 05:05:19 +0000
+ id 1dKe1N-0007Dv-QE
+ for linux-mtd@lists.infradead.org; Tue, 13 Jun 2017 05:05:45 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Enrico Jorns <ejo@pengutronix.de>,
@@ -16,10 +16,9 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v6 11/18] mtd: nand: denali: merge struct nand_buf into struct
- denali_nand_info
-Date: Tue, 13 Jun 2017 14:04:03 +0900
-Message-Id: <1497330250-17348-12-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v6 17/18] mtd: nand: denali: enable bad block table scan
+Date: Tue, 13 Jun 2017 14:04:09 +0900
+Message-Id: <1497330250-17348-18-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1497330250-17348-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1497330250-17348-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,8 +30,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now struct nand_buf has only two members, so I see no reason for the
-separation.
+Now this driver is ready to remove NAND_SKIP_BBTSCAN.
+
+The BBT descriptors in denali.c are equivalent to the ones in
+nand_bbt.c.  There is no need to duplicate the equivalent structures.
+The with-oob decriptors do not work for this driver anyway.
+
+The bbt_pattern (offs = 8) and the version (veroffs = 12) area
+overlaps the ECC area.  Set NAND_BBT_NO_OOB flag to use the no_oob
+variant of the BBT descriptors.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
@@ -44,140 +50,58 @@ Changes in v3: None
 Changes in v2:
   - Newly added
 
- drivers/mtd/nand/denali.c | 29 ++++++++++++++---------------
- drivers/mtd/nand/denali.h |  8 ++------
- 2 files changed, 16 insertions(+), 21 deletions(-)
+ drivers/mtd/nand/denali.c | 31 ++-----------------------------
+ 1 file changed, 2 insertions(+), 29 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index f2e50c5856f3..caf5ce64b185 100644
+index d37fb82f39ed..3bcc886579c8 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -640,7 +640,7 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 			const uint8_t *buf, int page, bool raw_xfer)
- {
- 	struct denali_nand_info *denali = mtd_to_denali(mtd);
--	dma_addr_t addr = denali->buf.dma_buf;
-+	dma_addr_t addr = denali->dma_addr;
- 	size_t size = mtd->writesize + mtd->oobsize;
- 	uint32_t irq_status;
- 	uint32_t irq_mask = INTR__DMA_CMD_COMP | INTR__PROGRAM_FAIL;
-@@ -654,11 +654,11 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	setup_ecc_for_xfer(denali, !raw_xfer, raw_xfer);
+@@ -1203,29 +1203,6 @@ static const struct mtd_ooblayout_ops denali_ooblayout_ops = {
+ 	.free = denali_ooblayout_free,
+ };
  
- 	/* copy buffer into DMA buffer */
--	memcpy(denali->buf.buf, buf, mtd->writesize);
-+	memcpy(denali->buf, buf, mtd->writesize);
- 
- 	if (raw_xfer) {
- 		/* transfer the data to the spare area */
--		memcpy(denali->buf.buf + mtd->writesize,
-+		memcpy(denali->buf + mtd->writesize,
- 			chip->oob_poi,
- 			mtd->oobsize);
- 	}
-@@ -735,7 +735,7 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 			    uint8_t *buf, int oob_required, int page)
- {
- 	struct denali_nand_info *denali = mtd_to_denali(mtd);
--	dma_addr_t addr = denali->buf.dma_buf;
-+	dma_addr_t addr = denali->dma_addr;
- 	size_t size = mtd->writesize + mtd->oobsize;
- 	uint32_t irq_status;
- 	uint32_t irq_mask = denali->caps & DENALI_CAP_HW_ECC_FIXUP ?
-@@ -757,7 +757,7 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 
- 	dma_sync_single_for_cpu(denali->dev, addr, size, DMA_FROM_DEVICE);
- 
--	memcpy(buf, denali->buf.buf, mtd->writesize);
-+	memcpy(buf, denali->buf, mtd->writesize);
- 
- 	if (denali->caps & DENALI_CAP_HW_ECC_FIXUP)
- 		stat = denali_hw_ecc_fixup(mtd, denali, &uncor_ecc_flags);
-@@ -782,7 +782,7 @@ static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 				uint8_t *buf, int oob_required, int page)
- {
- 	struct denali_nand_info *denali = mtd_to_denali(mtd);
--	dma_addr_t addr = denali->buf.dma_buf;
-+	dma_addr_t addr = denali->dma_addr;
- 	size_t size = mtd->writesize + mtd->oobsize;
- 	uint32_t irq_mask = INTR__DMA_CMD_COMP;
- 	uint32_t irq_status;
-@@ -804,8 +804,8 @@ static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 
- 	denali_enable_dma(denali, false);
- 
--	memcpy(buf, denali->buf.buf, mtd->writesize);
--	memcpy(chip->oob_poi, denali->buf.buf + mtd->writesize, mtd->oobsize);
-+	memcpy(buf, denali->buf, mtd->writesize);
-+	memcpy(chip->oob_poi, denali->buf + mtd->writesize, mtd->oobsize);
- 
- 	return 0;
- }
-@@ -1224,10 +1224,9 @@ int denali_init(struct denali_nand_info *denali)
- 	if (ret)
- 		goto disable_irq;
- 
--	denali->buf.buf = devm_kzalloc(denali->dev,
--			     mtd->writesize + mtd->oobsize,
--			     GFP_KERNEL);
--	if (!denali->buf.buf) {
-+	denali->buf = devm_kzalloc(denali->dev, mtd->writesize + mtd->oobsize,
-+				   GFP_KERNEL);
-+	if (!denali->buf) {
- 		ret = -ENOMEM;
- 		goto disable_irq;
- 	}
-@@ -1240,10 +1239,10 @@ int denali_init(struct denali_nand_info *denali)
- 		goto disable_irq;
- 	}
- 
--	denali->buf.dma_buf = dma_map_single(denali->dev, denali->buf.buf,
-+	denali->dma_addr = dma_map_single(denali->dev, denali->buf,
- 			     mtd->writesize + mtd->oobsize,
- 			     DMA_BIDIRECTIONAL);
--	if (dma_mapping_error(denali->dev, denali->buf.dma_buf)) {
-+	if (dma_mapping_error(denali->dev, denali->dma_addr)) {
- 		dev_err(denali->dev, "Failed to map DMA buffer\n");
- 		ret = -EIO;
- 		goto disable_irq;
-@@ -1337,7 +1336,7 @@ void denali_remove(struct denali_nand_info *denali)
- 
- 	nand_release(mtd);
- 	denali_disable_irq(denali);
--	dma_unmap_single(denali->dev, denali->buf.dma_buf, bufsize,
-+	dma_unmap_single(denali->dev, denali->dma_addr, bufsize,
- 			 DMA_BIDIRECTIONAL);
- }
- EXPORT_SYMBOL(denali_remove);
-diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index ad2223d179d0..1b991d3016f8 100644
---- a/drivers/mtd/nand/denali.h
-+++ b/drivers/mtd/nand/denali.h
-@@ -305,16 +305,10 @@
- #define MODE_10    0x08000000
- #define MODE_11    0x0C000000
- 
--struct nand_buf {
--	uint8_t *buf;
--	dma_addr_t dma_buf;
+-static uint8_t bbt_pattern[] = {'B', 'b', 't', '0' };
+-static uint8_t mirror_pattern[] = {'1', 't', 'b', 'B' };
+-
+-static struct nand_bbt_descr bbt_main_descr = {
+-	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
+-		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
+-	.offs =	8,
+-	.len = 4,
+-	.veroffs = 12,
+-	.maxblocks = 4,
+-	.pattern = bbt_pattern,
 -};
 -
- struct denali_nand_info {
- 	struct nand_chip nand;
- 	unsigned long clk_x_rate;	/* bus interface clock rate */
- 	int flash_bank; /* currently selected chip */
--	struct nand_buf buf;
- 	struct device *dev;
- 	void __iomem *flash_reg;	/* Register Interface */
- 	void __iomem *flash_mem;	/* Host Data/Command Interface */
-@@ -326,6 +320,8 @@ struct denali_nand_info {
- 	uint32_t irq_status;
- 	int irq;
+-static struct nand_bbt_descr bbt_mirror_descr = {
+-	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
+-		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
+-	.offs =	8,
+-	.len = 4,
+-	.veroffs = 12,
+-	.maxblocks = 4,
+-	.pattern = mirror_pattern,
+-};
+-
+ /* initialize driver data structures */
+ static void denali_drv_init(struct denali_nand_info *denali)
+ {
+@@ -1369,13 +1346,9 @@ int denali_init(struct denali_nand_info *denali)
+ 	 * bad block management.
+ 	 */
  
-+	void *buf;
-+	dma_addr_t dma_addr;
- 	int devnum;	/* represent how many nands connected */
- 	int bbtskipbytes;
- 	int max_banks;
+-	/* Bad block management */
+-	chip->bbt_td = &bbt_main_descr;
+-	chip->bbt_md = &bbt_mirror_descr;
+-
+-	/* skip the scan for now until we have OOB read and write support */
+ 	chip->bbt_options |= NAND_BBT_USE_FLASH;
+-	chip->options |= NAND_SKIP_BBTSCAN;
++	chip->bbt_options |= NAND_BBT_NO_OOB;
++
+ 	chip->ecc.mode = NAND_ECC_HW_SYNDROME;
+ 
+ 	/* no subpage writes on denali */
 -- 
 2.7.4
