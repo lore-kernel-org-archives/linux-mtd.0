@@ -1,6 +1,6 @@
 Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dKe0t-0005xG-R8
+ id 1dKe0t-0005xF-R6
  for linux-mtd@lists.infradead.org; Tue, 13 Jun 2017 05:05:16 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -16,9 +16,12 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v6 00/18] mtd: nand: denali: Denali NAND IP patch bomb
-Date: Tue, 13 Jun 2017 14:03:52 +0900
-Message-Id: <1497330250-17348-1-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v6 08/18] mtd: nand: denali: fix bank reset function to detect
+ the number of chips
+Date: Tue, 13 Jun 2017 14:04:00 +0900
+Message-Id: <1497330250-17348-9-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <1497330250-17348-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1497330250-17348-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,59 +31,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The nand_scan_ident() iterates over maxchips, and calls nand_reset()
+for each.  This driver currently passes the maximum number of banks
+(=chip selects) supported by the controller as maxchips.  So, maxchips
+is typically 4 or 8.  Usually, less number of NAND chips are connected
+to the controller.
 
-This patch series intends to solve various problems.
+This can be a problem for ONFi devices.  Now, this driver implements
+->setup_data_interface() hook, so nand_setup_data_interface() issues
+Set Features (0xEF) command, which waits until the chip returns R/B#
+response.  If no chip there, we know it never happens, but the driver
+still ends up with waiting for a long time.  It will finally bail-out
+with timeout error and the driver will work with existing chips, but
+unnecessary wait will give a bad user experience.
 
-[1] The driver just retrieves the OOB area as-is
-    whereas the controller uses syndrome page layout.
-[2] ONFi devices are not working
-[3] It can not read Bad Block Marker
+The denali_nand_reset() polls the INTR__RST_COMP and INTR__TIME_OUT
+bits, but they are always set even if not NAND chip is connected to
+that bank.  To know the chip existence, INTR__INT_ACT bit must be
+checked; this flag is set only when R/B# is toggled.  Since the Reset
+(0xFF) command toggles the R/B# pin, this can be used to know the
+actual number of chips, and update denali->max_banks.
 
-Outstanding changes are:
- - Fix raw/oob callbacks for syndrome page layout
- - Implement setup_data_interface() callback
- - Fix/implement more commands for ONFi devices
- - Allow to skip the driver internal bounce buffer
- - Support PIO in case DMA is not supported
- - Switch from ->cmdfunc over to ->cmd_ctrl
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
 
-18 patches were merged by v2.
-11 patches were merged by v3.
-2 patches were merged by v4.
-5 patches were merged by v5.
-Here is the rest of the series.
+Boris mentioned this information can be retrieved from DT
+(http://patchwork.ozlabs.org/patch/745118/), but I'd like to
+take time for controller/chip decoupling.  I am tackling on
+that, but not completed yet.
 
-v1: https://lkml.org/lkml/2016/11/26/144
-v2: https://lkml.org/lkml/2017/3/22/804
-v3: https://lkml.org/lkml/2017/3/30/90
-v4: https://lkml.org/lkml/2017/6/5/1005
+I believe this commit stands for denali_pci, at least I do not
+know how to get the number of chips from PCI.
 
-Masahiro Yamada (18):
-  mtd: nand: denali: set NAND_ECC_CUSTOM_PAGE_ACCESS
-  mtd: nand: denali: remove unneeded find_valid_banks()
-  mtd: nand: denali: handle timing parameters by setup_data_interface()
-  mtd: nand: denali: rework interrupt handling
-  mtd: nand: denali: fix NAND_CMD_STATUS handling
-  mtd: nand: denali: fix NAND_CMD_PARAM handling
-  mtd: nand: denali: switch over to cmd_ctrl instead of cmdfunc
-  mtd: nand: denali: fix bank reset function to detect the number of
-    chips
-  mtd: nand: denali: use interrupt instead of polling for bank reset
-  mtd: nand: denali: propagate page to helpers via function argument
-  mtd: nand: denali: merge struct nand_buf into struct denali_nand_info
-  mtd: nand: denali: use flag instead of register macro for direction
-  mtd: nand: denali: fix raw and oob accessors for syndrome page layout
-  mtd: nand: denali: support hardware-assisted erased page detection
-  mtd: nand: denali: skip driver internal bounce buffer when possible
-  mtd: nand: denali: use non-managed kmalloc() for DMA buffer
-  mtd: nand: denali: enable bad block table scan
-  mtd: nand: denali: avoid magic numbers and rename for clarification
 
- drivers/mtd/nand/denali.c     | 1715 ++++++++++++++++++-----------------------
- drivers/mtd/nand/denali.h     |   63 +-
- drivers/mtd/nand/denali_dt.c  |   15 +-
- drivers/mtd/nand/denali_pci.c |   22 +-
- 4 files changed, 800 insertions(+), 1015 deletions(-)
+Changes in v6: None
+Changes in v5: None
+Changes in v4:
+  - Reword commit-log
 
+Changes in v3: None
+Changes in v2:
+  - Newly added
+
+ drivers/mtd/nand/denali.c | 52 +++++++++++++++++++++--------------------------
+ 1 file changed, 23 insertions(+), 29 deletions(-)
+
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 09a14fafa967..61a2ee9fb367 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -85,33 +85,6 @@ static void index_addr(struct denali_nand_info *denali,
+ 	iowrite32(data, denali->flash_mem + 0x10);
+ }
+ 
+-/* Reset the flash controller */
+-static uint16_t denali_nand_reset(struct denali_nand_info *denali)
+-{
+-	int i;
+-
+-	for (i = 0; i < denali->max_banks; i++)
+-		iowrite32(INTR__RST_COMP | INTR__TIME_OUT,
+-		denali->flash_reg + INTR_STATUS(i));
+-
+-	for (i = 0; i < denali->max_banks; i++) {
+-		iowrite32(1 << i, denali->flash_reg + DEVICE_RESET);
+-		while (!(ioread32(denali->flash_reg + INTR_STATUS(i)) &
+-			(INTR__RST_COMP | INTR__TIME_OUT)))
+-			cpu_relax();
+-		if (ioread32(denali->flash_reg + INTR_STATUS(i)) &
+-			INTR__TIME_OUT)
+-			dev_dbg(denali->dev,
+-			"NAND Reset operation timed out on bank %d\n", i);
+-	}
+-
+-	for (i = 0; i < denali->max_banks; i++)
+-		iowrite32(INTR__RST_COMP | INTR__TIME_OUT,
+-			  denali->flash_reg + INTR_STATUS(i));
+-
+-	return PASS;
+-}
+-
+ /*
+  * Use the configuration feature register to determine the maximum number of
+  * banks that the hardware supports.
+@@ -998,7 +971,28 @@ static int denali_setup_data_interface(struct mtd_info *mtd, int chipnr,
+ 	return 0;
+ }
+ 
+-/* Initialization code to bring the device up to a known good state */
++static void denali_reset_banks(struct denali_nand_info *denali)
++{
++	int i;
++
++	denali_clear_irq_all(denali);
++
++	for (i = 0; i < denali->max_banks; i++) {
++		iowrite32(1 << i, denali->flash_reg + DEVICE_RESET);
++		while (!(ioread32(denali->flash_reg + INTR_STATUS(i)) &
++			(INTR__RST_COMP | INTR__TIME_OUT)))
++			cpu_relax();
++		if (!(ioread32(denali->flash_reg + INTR_STATUS(i)) &
++		      INTR__INT_ACT))
++			break;
++	}
++
++	dev_dbg(denali->dev, "%d chips connected\n", i);
++	denali->max_banks = i;
++
++	denali_clear_irq_all(denali);
++}
++
+ static void denali_hw_init(struct denali_nand_info *denali)
+ {
+ 	/*
+@@ -1018,7 +1012,7 @@ static void denali_hw_init(struct denali_nand_info *denali)
+ 	denali->bbtskipbytes = ioread32(denali->flash_reg +
+ 						SPARE_AREA_SKIP_BYTES);
+ 	detect_max_banks(denali);
+-	denali_nand_reset(denali);
++	denali_reset_banks(denali);
+ 	iowrite32(0x0F, denali->flash_reg + RB_PIN_ENABLED);
+ 	iowrite32(CHIP_EN_DONT_CARE__FLAG,
+ 			denali->flash_reg + CHIP_ENABLE_DONT_CARE);
 -- 
 2.7.4
