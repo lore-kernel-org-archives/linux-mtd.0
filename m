@@ -1,6 +1,6 @@
 Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dKe0y-0005xK-2k
+ id 1dKe0y-0005xN-2f
  for linux-mtd@lists.infradead.org; Tue, 13 Jun 2017 05:05:18 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -16,10 +16,10 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v6 12/18] mtd: nand: denali: use flag instead of register
- macro for direction
-Date: Tue, 13 Jun 2017 14:04:04 +0900
-Message-Id: <1497330250-17348-13-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v6 10/18] mtd: nand: denali: propagate page to helpers via
+ function argument
+Date: Tue, 13 Jun 2017 14:04:02 +0900
+Message-Id: <1497330250-17348-11-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1497330250-17348-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1497330250-17348-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,171 +31,237 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It is not a good idea to re-use macros that represent a specific
-register bit field for the transfer direction.
+This driver stores the currently addressed page into denali->page,
+which is later read out by helper functions.  While I am tackling on
+this driver, I often missed to insert "denali->page = page;" where
+needed.  This makes page_read/write callbacks to get access to a
+wrong page, which is a bug hard to figure out.
 
-It is true that bit 8 indicates the direction for the MAP10 pipeline
-operation and the data DMA operation, but this is not valid across
-the IP.
+Instead, I'd rather pass the page via function argument because the
+compiler's prototype checks will help to detect bugs.
 
-Use a simple flag (write: 1, read: 0) for the direction.
+For the same reason, propagate dma_addr to the DMA helpers instead
+of denali->buf.dma_buf .
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v6:
-  - Delete unused DENALI_{READ,WRITE}
-
+Changes in v6: None
 Changes in v5: None
 Changes in v4: None
 Changes in v3: None
 Changes in v2:
   - Newly added
 
- drivers/mtd/nand/denali.c | 36 +++++++++++++++++-------------------
- 1 file changed, 17 insertions(+), 19 deletions(-)
+ drivers/mtd/nand/denali.c | 58 ++++++++++++++++++++---------------------------
+ drivers/mtd/nand/denali.h |  1 -
+ 2 files changed, 24 insertions(+), 35 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index caf5ce64b185..03b75045d603 100644
+index 7ae2fa65d601..f2e50c5856f3 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -63,9 +63,6 @@ static inline struct denali_nand_info *mtd_to_denali(struct mtd_info *mtd)
- #define MAIN_ACCESS		0x42
- #define MAIN_SPARE_ACCESS	0x43
- 
--#define DENALI_READ	0
--#define DENALI_WRITE	0x100
--
- /*
-  * this is a helper macro that allows us to
-  * format the bank into the proper bits for the controller
-@@ -284,7 +281,7 @@ static int denali_dev_ready(struct mtd_info *mtd)
+@@ -282,7 +282,7 @@ static int denali_dev_ready(struct mtd_info *mtd)
+  * sends a pipeline command operation to the controller. See the Denali NAND
+  * controller's user guide for more information (section 4.2.3.6).
   */
- static int denali_send_pipeline_cmd(struct denali_nand_info *denali, int page,
+-static int denali_send_pipeline_cmd(struct denali_nand_info *denali,
++static int denali_send_pipeline_cmd(struct denali_nand_info *denali, int page,
  				    bool ecc_en, bool transfer_spare,
--				    int access_type, int op)
-+				    int access_type, int write)
+ 				    int access_type, int op)
  {
- 	int status = PASS;
- 	uint32_t addr, cmd;
-@@ -295,17 +292,17 @@ static int denali_send_pipeline_cmd(struct denali_nand_info *denali, int page,
+@@ -293,7 +293,7 @@ static int denali_send_pipeline_cmd(struct denali_nand_info *denali,
  
- 	addr = BANK(denali->flash_bank) | page;
+ 	denali_reset_irq(denali);
  
--	if (op == DENALI_WRITE && access_type != SPARE_ACCESS) {
-+	if (write && access_type != SPARE_ACCESS) {
+-	addr = BANK(denali->flash_bank) | denali->page;
++	addr = BANK(denali->flash_bank) | page;
+ 
+ 	if (op == DENALI_WRITE && access_type != SPARE_ACCESS) {
  		cmd = MODE_01 | addr;
- 		iowrite32(cmd, denali->flash_mem);
--	} else if (op == DENALI_WRITE && access_type == SPARE_ACCESS) {
-+	} else if (write && access_type == SPARE_ACCESS) {
- 		/* read spare area */
- 		cmd = MODE_10 | addr;
- 		index_addr(denali, cmd, access_type);
- 
- 		cmd = MODE_01 | addr;
- 		iowrite32(cmd, denali->flash_mem);
--	} else if (op == DENALI_READ) {
-+	} else {
- 		/* setup page read request for access type */
- 		cmd = MODE_10 | addr;
- 		index_addr(denali, cmd, access_type);
-@@ -367,7 +364,7 @@ static int write_oob_data(struct mtd_info *mtd, uint8_t *buf, int page)
+@@ -366,9 +366,7 @@ static int write_oob_data(struct mtd_info *mtd, uint8_t *buf, int page)
+ 	uint32_t irq_mask = INTR__PROGRAM_COMP | INTR__PROGRAM_FAIL;
  	int status = 0;
  
- 	if (denali_send_pipeline_cmd(denali, page, false, false, SPARE_ACCESS,
--							DENALI_WRITE) == PASS) {
-+							1) == PASS) {
+-	denali->page = page;
+-
+-	if (denali_send_pipeline_cmd(denali, false, false, SPARE_ACCESS,
++	if (denali_send_pipeline_cmd(denali, page, false, false, SPARE_ACCESS,
+ 							DENALI_WRITE) == PASS) {
  		write_data_to_flash_mem(denali, buf, mtd->oobsize);
  
- 		/* wait for operation to complete */
-@@ -392,7 +389,7 @@ static void read_oob_data(struct mtd_info *mtd, uint8_t *buf, int page)
+@@ -393,9 +391,7 @@ static void read_oob_data(struct mtd_info *mtd, uint8_t *buf, int page)
+ 	uint32_t irq_mask = INTR__LOAD_COMP;
  	uint32_t irq_status, addr, cmd;
  
- 	if (denali_send_pipeline_cmd(denali, page, false, true, SPARE_ACCESS,
--							DENALI_READ) == PASS) {
-+							0) == PASS) {
+-	denali->page = page;
+-
+-	if (denali_send_pipeline_cmd(denali, false, true, SPARE_ACCESS,
++	if (denali_send_pipeline_cmd(denali, page, false, true, SPARE_ACCESS,
+ 							DENALI_READ) == PASS) {
  		read_data_from_flash_mem(denali, buf, mtd->oobsize);
  
+@@ -407,8 +403,7 @@ static void read_oob_data(struct mtd_info *mtd, uint8_t *buf, int page)
+ 		irq_status = denali_wait_for_irq(denali, irq_mask);
+ 
+ 		if (!(irq_status & INTR__LOAD_COMP))
+-			dev_err(denali->dev, "page on OOB timeout %d\n",
+-					denali->page);
++			dev_err(denali->dev, "page on OOB timeout %d\n", page);
+ 
  		/*
-@@ -578,7 +575,7 @@ static void denali_enable_dma(struct denali_nand_info *denali, bool en)
+ 		 * We set the device back to MAIN_ACCESS here as I observed
+@@ -417,7 +412,7 @@ static void read_oob_data(struct mtd_info *mtd, uint8_t *buf, int page)
+ 		 * is reliable (according to the MTD test infrastructure)
+ 		 * if you are in MAIN_ACCESS.
+ 		 */
+-		addr = BANK(denali->flash_bank) | denali->page;
++		addr = BANK(denali->flash_bank) | page;
+ 		cmd = MODE_10 | addr;
+ 		index_addr(denali, cmd, MAIN_ACCESS);
+ 	}
+@@ -582,13 +577,13 @@ static void denali_enable_dma(struct denali_nand_info *denali, bool en)
+ 	ioread32(denali->flash_reg + DMA_ENABLE);
  }
  
- static void denali_setup_dma64(struct denali_nand_info *denali,
--			       dma_addr_t dma_addr, int page, int op)
-+			       dma_addr_t dma_addr, int page, int write)
+-static void denali_setup_dma64(struct denali_nand_info *denali, int op)
++static void denali_setup_dma64(struct denali_nand_info *denali,
++			       dma_addr_t dma_addr, int page, int op)
  {
  	uint32_t mode;
  	const int page_count = 1;
-@@ -591,7 +588,8 @@ static void denali_setup_dma64(struct denali_nand_info *denali,
- 	 * 1. setup transfer type, interrupt when complete,
- 	 *    burst len = 64 bytes, the number of pages
- 	 */
--	index_addr(denali, mode, 0x01002000 | (64 << 16) | op | page_count);
-+	index_addr(denali, mode,
-+		   0x01002000 | (64 << 16) | (write << 8) | page_count);
+-	uint64_t addr = denali->buf.dma_buf;
+ 
+-	mode = MODE_10 | BANK(denali->flash_bank) | denali->page;
++	mode = MODE_10 | BANK(denali->flash_bank) | page;
+ 
+ 	/* DMA is a three step process */
+ 
+@@ -599,41 +594,42 @@ static void denali_setup_dma64(struct denali_nand_info *denali, int op)
+ 	index_addr(denali, mode, 0x01002000 | (64 << 16) | op | page_count);
  
  	/* 2. set memory low address */
- 	index_addr(denali, mode, dma_addr);
-@@ -601,7 +599,7 @@ static void denali_setup_dma64(struct denali_nand_info *denali,
+-	index_addr(denali, mode, addr);
++	index_addr(denali, mode, dma_addr);
+ 
+ 	/* 3. set memory high address */
+-	index_addr(denali, mode, addr >> 32);
++	index_addr(denali, mode, (uint64_t)dma_addr >> 32);
  }
  
- static void denali_setup_dma32(struct denali_nand_info *denali,
--			       dma_addr_t dma_addr, int page, int op)
-+			       dma_addr_t dma_addr, int page, int write)
+-static void denali_setup_dma32(struct denali_nand_info *denali, int op)
++static void denali_setup_dma32(struct denali_nand_info *denali,
++			       dma_addr_t dma_addr, int page, int op)
  {
  	uint32_t mode;
  	const int page_count = 1;
-@@ -611,7 +609,7 @@ static void denali_setup_dma32(struct denali_nand_info *denali,
+-	uint32_t addr = denali->buf.dma_buf;
+ 
+ 	mode = MODE_10 | BANK(denali->flash_bank);
+ 
  	/* DMA is a four step process */
  
  	/* 1. setup transfer type and # of pages */
--	index_addr(denali, mode | page, 0x2000 | op | page_count);
-+	index_addr(denali, mode | page, 0x2000 | (write << 8) | page_count);
+-	index_addr(denali, mode | denali->page, 0x2000 | op | page_count);
++	index_addr(denali, mode | page, 0x2000 | op | page_count);
  
  	/* 2. set memory high address bits 23:8 */
- 	index_addr(denali, mode | ((dma_addr >> 16) << 8), 0x2200);
-@@ -624,12 +622,12 @@ static void denali_setup_dma32(struct denali_nand_info *denali,
+-	index_addr(denali, mode | ((addr >> 16) << 8), 0x2200);
++	index_addr(denali, mode | ((dma_addr >> 16) << 8), 0x2200);
+ 
+ 	/* 3. set memory low address bits 23:8 */
+-	index_addr(denali, mode | ((addr & 0xffff) << 8), 0x2300);
++	index_addr(denali, mode | ((dma_addr & 0xffff) << 8), 0x2300);
+ 
+ 	/* 4. interrupt when complete, burst len = 64 bytes */
+ 	index_addr(denali, mode | 0x14000, 0x2400);
  }
  
- static void denali_setup_dma(struct denali_nand_info *denali,
--			     dma_addr_t dma_addr, int page, int op)
-+			     dma_addr_t dma_addr, int page, int write)
+-static void denali_setup_dma(struct denali_nand_info *denali, int op)
++static void denali_setup_dma(struct denali_nand_info *denali,
++			     dma_addr_t dma_addr, int page, int op)
  {
  	if (denali->caps & DENALI_CAP_DMA_64BIT)
--		denali_setup_dma64(denali, dma_addr, page, op);
-+		denali_setup_dma64(denali, dma_addr, page, write);
+-		denali_setup_dma64(denali, op);
++		denali_setup_dma64(denali, dma_addr, page, op);
  	else
--		denali_setup_dma32(denali, dma_addr, page, op);
-+		denali_setup_dma32(denali, dma_addr, page, write);
+-		denali_setup_dma32(denali, op);
++		denali_setup_dma32(denali, dma_addr, page, op);
  }
  
  /*
-@@ -668,7 +666,7 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
+@@ -650,8 +646,6 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	uint32_t irq_mask = INTR__DMA_CMD_COMP | INTR__PROGRAM_FAIL;
+ 	int ret = 0;
+ 
+-	denali->page = page;
+-
+ 	/*
+ 	 * if it is a raw xfer, we want to disable ecc and send the spare area.
+ 	 * !raw_xfer - enable ecc
+@@ -674,7 +668,7 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
  	denali_reset_irq(denali);
  	denali_enable_dma(denali, true);
  
--	denali_setup_dma(denali, addr, page, DENALI_WRITE);
-+	denali_setup_dma(denali, addr, page, 1);
+-	denali_setup_dma(denali, DENALI_WRITE);
++	denali_setup_dma(denali, addr, page, DENALI_WRITE);
  
  	/* wait for operation to complete */
  	irq_status = denali_wait_for_irq(denali, irq_mask);
-@@ -750,7 +748,7 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+@@ -750,15 +744,13 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	unsigned long uncor_ecc_flags = 0;
+ 	int stat = 0;
+ 
+-	denali->page = page;
+-
+ 	setup_ecc_for_xfer(denali, true, false);
+ 
+ 	denali_enable_dma(denali, true);
  	dma_sync_single_for_device(denali->dev, addr, size, DMA_FROM_DEVICE);
  
  	denali_reset_irq(denali);
--	denali_setup_dma(denali, addr, page, DENALI_READ);
-+	denali_setup_dma(denali, addr, page, 0);
+-	denali_setup_dma(denali, DENALI_READ);
++	denali_setup_dma(denali, addr, page, DENALI_READ);
  
  	/* wait for operation to complete */
  	irq_status = denali_wait_for_irq(denali, irq_mask);
-@@ -793,7 +791,7 @@ static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+@@ -777,7 +769,7 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 		return stat;
+ 
+ 	if (uncor_ecc_flags) {
+-		read_oob_data(mtd, chip->oob_poi, denali->page);
++		read_oob_data(mtd, chip->oob_poi, page);
+ 
+ 		stat = denali_check_erased_page(mtd, chip, buf,
+ 						uncor_ecc_flags, stat);
+@@ -795,15 +787,13 @@ static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 	uint32_t irq_mask = INTR__DMA_CMD_COMP;
+ 	uint32_t irq_status;
+ 
+-	denali->page = page;
+-
+ 	setup_ecc_for_xfer(denali, false, true);
+ 	denali_enable_dma(denali, true);
+ 
  	dma_sync_single_for_device(denali->dev, addr, size, DMA_FROM_DEVICE);
  
  	denali_reset_irq(denali);
--	denali_setup_dma(denali, addr, page, DENALI_READ);
-+	denali_setup_dma(denali, addr, page, 0);
+-	denali_setup_dma(denali, DENALI_READ);
++	denali_setup_dma(denali, addr, page, DENALI_READ);
  
  	/* wait for operation to complete */
  	irq_status = denali_wait_for_irq(denali, irq_mask);
+diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
+index a84d8784ee98..ad2223d179d0 100644
+--- a/drivers/mtd/nand/denali.h
++++ b/drivers/mtd/nand/denali.h
+@@ -316,7 +316,6 @@ struct denali_nand_info {
+ 	int flash_bank; /* currently selected chip */
+ 	struct nand_buf buf;
+ 	struct device *dev;
+-	int page;
+ 	void __iomem *flash_reg;	/* Register Interface */
+ 	void __iomem *flash_mem;	/* Host Data/Command Interface */
+ 
 -- 
 2.7.4
