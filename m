@@ -1,29 +1,25 @@
-Received: from conuserg-09.nifty.com ([210.131.2.76])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dKe1e-0001fA-1k
- for linux-mtd@lists.infradead.org; Tue, 13 Jun 2017 05:06:00 +0000
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: linux-mtd@lists.infradead.org
-Cc: Enrico Jorns <ejo@pengutronix.de>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Dinh Nguyen <dinguyen@kernel.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Chuanxiao Dong <chuanxiao.dong@intel.com>,
- Jassi Brar <jaswinder.singh@linaro.org>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- Russell King <rmk+kernel@armlinux.org.uk>,
- Lars-Peter Clausen <lars@metafoo.de>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]
+ helo=smtp.smtpout.orange.fr)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dKfGW-00075P-7C
+ for linux-mtd@lists.infradead.org; Tue, 13 Jun 2017 06:25:26 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>
-Subject: [PATCH v6 16/18] mtd: nand: denali: use non-managed kmalloc() for DMA
- buffer
-Date: Tue, 13 Jun 2017 14:04:08 +0900
-Message-Id: <1497330250-17348-17-git-send-email-yamada.masahiro@socionext.com>
-In-Reply-To: <1497330250-17348-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1497330250-17348-1-git-send-email-yamada.masahiro@socionext.com>
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
+ Kyungmin Park <kyungmin.park@samsung.com>
+Subject: Re: [PATCH] mtd: Fallback to ->_read/write_oob() when ->_read/write()
+ is missing
+References: <20170611204255.18622-1-boris.brezillon@free-electrons.com>
+ <87poe9vi4b.fsf@belgarion.home> <20170612084558.43fb1e21@bbrezillon>
+Date: Tue, 13 Jun 2017 08:24:56 +0200
+In-Reply-To: <20170612084558.43fb1e21@bbrezillon> (Boris Brezillon's message
+ of "Mon, 12 Jun 2017 08:45:58 +0200")
+Message-ID: <87lgowv1zb.fsf@belgarion.home>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,97 +29,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As Russell and Lars stated in the discussion [1], using
-devm_k*alloc() with DMA is not a good idea.
+Boris Brezillon <boris.brezillon@free-electrons.com> writes:
 
-Let's use kmalloc (not kzalloc because no need for zero-out).
-Also, allocate the buffer as late as possible because it must be
-freed for any error that follows.
+> According to the C99 standard (section 6.7.8.21):
+>
+> "
+> If there are fewer initializers in a brace-enclosed list than there are
+> elements or members of an aggregate, or fewer characters in a string
+> literal used to initialize an array of known size than there are
+> elements in the array, the remainder of the aggregate shall be
+> initialized implicitly the same as objects that have static storage
+> duration.
+> "
+>
+> which should guarantee that uninitialized fields are actually set to 0,
+> even when the struct is allocated on the stack.
+Ah yes, indeed, my bad.
 
-[1] https://lkml.org/lkml/2017/3/8/693
+Therefore for docg3.c :
+Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Russell King <rmk+kernel@armlinux.org.uk>
-Cc: Lars-Peter Clausen <lars@metafoo.de>
-Acked-by: Robin Murphy <robin.murphy@arm.com>
----
+Cheers.
 
-Changes in v6: None
-Changes in v5: None
-Changes in v4: None
-Changes in v3: None
-Changes in v2:
-  - Newly added
-
- drivers/mtd/nand/denali.c | 26 +++++++++++++++++---------
- 1 file changed, 17 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 918b9b9bbe53..d37fb82f39ed 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -23,6 +23,7 @@
- #include <linux/mutex.h>
- #include <linux/mtd/mtd.h>
- #include <linux/module.h>
-+#include <linux/slab.h>
- 
- #include "denali.h"
- 
-@@ -1343,13 +1344,6 @@ int denali_init(struct denali_nand_info *denali)
- 	if (ret)
- 		goto disable_irq;
- 
--	denali->buf = devm_kzalloc(denali->dev, mtd->writesize + mtd->oobsize,
--				   GFP_KERNEL);
--	if (!denali->buf) {
--		ret = -ENOMEM;
--		goto disable_irq;
--	}
--
- 	if (ioread32(denali->flash_reg + FEATURES) & FEATURES__DMA)
- 		denali->dma_avail = 1;
- 
-@@ -1434,17 +1428,30 @@ int denali_init(struct denali_nand_info *denali)
- 	if (ret)
- 		goto disable_irq;
- 
-+	/*
-+	 * This buffer is DMA-mapped by denali_{read,write}_page_raw.  Do not
-+	 * use devm_kmalloc() because the memory allocated by devm_ does not
-+	 * guarantee DMA-safe alignment.
-+	 */
-+	denali->buf = kmalloc(mtd->writesize + mtd->oobsize, GFP_KERNEL);
-+	if (!denali->buf) {
-+		ret = -ENOMEM;
-+		goto disable_irq;
-+	}
-+
- 	ret = nand_scan_tail(mtd);
- 	if (ret)
--		goto disable_irq;
-+		goto free_buf;
- 
- 	ret = mtd_device_register(mtd, NULL, 0);
- 	if (ret) {
- 		dev_err(denali->dev, "Failed to register MTD: %d\n", ret);
--		goto disable_irq;
-+		goto free_buf;
- 	}
- 	return 0;
- 
-+free_buf:
-+	kfree(denali->buf);
- disable_irq:
- 	denali_disable_irq(denali);
- 
-@@ -1458,6 +1465,7 @@ void denali_remove(struct denali_nand_info *denali)
- 	struct mtd_info *mtd = nand_to_mtd(&denali->nand);
- 
- 	nand_release(mtd);
-+	kfree(denali->buf);
- 	denali_disable_irq(denali);
- }
- EXPORT_SYMBOL(denali_remove);
 -- 
-2.7.4
+Robert
