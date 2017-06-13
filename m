@@ -1,7 +1,7 @@
 Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dKe1N-0007Du-QH
- for linux-mtd@lists.infradead.org; Tue, 13 Jun 2017 05:05:46 +0000
+ id 1dKe1N-0007Dt-Qi
+ for linux-mtd@lists.infradead.org; Tue, 13 Jun 2017 05:05:47 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Enrico Jorns <ejo@pengutronix.de>,
@@ -16,10 +16,10 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v6 15/18] mtd: nand: denali: skip driver internal bounce
- buffer when possible
-Date: Tue, 13 Jun 2017 14:04:07 +0900
-Message-Id: <1497330250-17348-16-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v6 14/18] mtd: nand: denali: support hardware-assisted erased
+ page detection
+Date: Tue, 13 Jun 2017 14:04:06 +0900
+Message-Id: <1497330250-17348-15-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1497330250-17348-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1497330250-17348-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,119 +31,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-For ecc->read_page() and ecc->write_page(), it is possible to call
-dma_map_single() against the given buffer.  This bypasses the driver
-internal bounce buffer and save the memcpy().
+Recent versions of this IP support automatic erased page detection.
+If an erased page is detected on reads, the controller does not set
+INTR__ECC_UNCOR_ERR, but INTR__ERASED_PAGE.
+
+The detection of erased pages is based on the number of zeros in a
+page; if the number of zeros is less than the value in the field
+ERASED_THRESHOLD, the page is assumed as erased.
+
+Please note ERASED_THRESHOLD specifies the number of zeros in a _page_
+instead of an ECC chunk.  Moreover, the controller does not provide a
+way to know the actual number of bitflips.
+
+Actually, an erased page (all 0xff) is not an ECC correctable pattern
+on the Denali ECC engine.  In other words, there may be overlap between
+the following two:
+
+[1] a bit pattern reachable from a valid payload + ECC pattern within
+    ecc.strength bitflips
+[2] a bit pattern reachable from an erased state (all 0xff) within
+    ecc.strength bitflips
+
+So, this feature may intercept ECC correctable patterns, then replace
+[1] with [2].
+
+After all, this feature can work safely only when ECC_THRESHOLD == 1,
+i.e. detect erased pages without any bitflips.  This should be the
+case most of the time.  If there is a bitflip or more, the driver will
+fallback to the software method by using nand_check_erased_ecc_chunk().
+
+Strangely enough, the driver still has to fill the buffer with 0xff
+in case of INTR__ERASED_PAGE because the ECC correction engine has
+already manipulated the data in the buffer before it judges erased
+pages.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v6: None
-Changes in v5: None
-Changes in v4:
-  - Remove dma_unmap_single() from denali_remove()
+Changes in v6:
+  - memset(buf, 0xff, size) is necessary even if the page is completely
+    erased (all 0xff), strangely.
 
-Changes in v3:
-  - Set chip->buf_align to 16
+Changes in v5:
+  - Set ECC_THRESHOLD to 1
 
+Changes in v4: None
+Changes in v3: None
 Changes in v2:
   - Newly added
 
- drivers/mtd/nand/denali.c | 38 ++++++++++++--------------------------
- 1 file changed, 12 insertions(+), 26 deletions(-)
+ drivers/mtd/nand/denali.c | 9 ++++++++-
+ drivers/mtd/nand/denali.h | 5 +++++
+ 2 files changed, 13 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 1ded7cc00b1a..918b9b9bbe53 100644
+index d58ea17c0a69..1ded7cc00b1a 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -592,12 +592,16 @@ static int denali_pio_xfer(struct denali_nand_info *denali, void *buf,
- static int denali_dma_xfer(struct denali_nand_info *denali, void *buf,
- 			   size_t size, int page, int raw, int write)
- {
--	dma_addr_t dma_addr = denali->dma_addr;
-+	dma_addr_t dma_addr;
- 	uint32_t irq_mask, irq_status, ecc_err_mask;
- 	enum dma_data_direction dir = write ? DMA_TO_DEVICE : DMA_FROM_DEVICE;
- 	int ret = 0;
+@@ -552,6 +552,9 @@ static int denali_pio_read(struct denali_nand_info *denali, void *buf,
+ 	if (!(irq_status & INTR__PAGE_XFER_INC))
+ 		return -EIO;
  
--	dma_sync_single_for_device(denali->dev, dma_addr, size, dir);
-+	dma_addr = dma_map_single(denali->dev, buf, size, dir);
-+	if (dma_mapping_error(denali->dev, dma_addr)) {
-+		dev_dbg(denali->dev, "Failed to DMA-map buffer. Trying PIO.\n");
-+		return denali_pio_xfer(denali, buf, size, page, raw, write);
-+	}
++	if (irq_status & INTR__ERASED_PAGE)
++		memset(buf, 0xff, size);
++
+ 	return irq_status & ecc_err_mask ? -EBADMSG : 0;
+ }
  
- 	if (write) {
- 		/*
-@@ -628,7 +632,7 @@ static int denali_dma_xfer(struct denali_nand_info *denali, void *buf,
- 		ret = -EBADMSG;
- 
+@@ -627,6 +630,9 @@ static int denali_dma_xfer(struct denali_nand_info *denali, void *buf,
  	denali_enable_dma(denali, false);
--	dma_sync_single_for_cpu(denali->dev, dma_addr, size, dir);
-+	dma_unmap_single(denali->dev, dma_addr, size, dir);
+ 	dma_sync_single_for_cpu(denali->dev, dma_addr, size, dir);
  
- 	if (irq_status & INTR__ERASED_PAGE)
- 		memset(buf, 0xff, size);
-@@ -814,12 +818,10 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	int stat = 0;
- 	int ret;
- 
--	ret = denali_data_xfer(denali, denali->buf, mtd->writesize, page, 0, 0);
-+	ret = denali_data_xfer(denali, buf, mtd->writesize, page, 0, 0);
- 	if (ret && ret != -EBADMSG)
- 		return ret;
- 
--	memcpy(buf, denali->buf, mtd->writesize);
--
- 	if (denali->caps & DENALI_CAP_HW_ECC_FIXUP)
- 		stat = denali_hw_ecc_fixup(mtd, denali, &uncor_ecc_flags);
- 	else if (ret == -EBADMSG)
-@@ -923,10 +925,8 @@ static int denali_write_page(struct mtd_info *mtd, struct nand_chip *chip,
- {
- 	struct denali_nand_info *denali = mtd_to_denali(mtd);
- 
--	memcpy(denali->buf, buf, mtd->writesize);
--
--	return denali_data_xfer(denali, denali->buf, mtd->writesize, page,
--				0, 1);
-+	return denali_data_xfer(denali, (void *)buf, mtd->writesize,
-+				page, 0, 1);
++	if (irq_status & INTR__ERASED_PAGE)
++		memset(buf, 0xff, size);
++
+ 	return ret;
  }
  
- static void denali_select_chip(struct mtd_info *mtd, int chip)
-@@ -1365,14 +1365,8 @@ int denali_init(struct denali_nand_info *denali)
- 	}
+@@ -1397,7 +1403,8 @@ int denali_init(struct denali_nand_info *denali)
+ 		"chosen ECC settings: step=%d, strength=%d, bytes=%d\n",
+ 		chip->ecc.size, chip->ecc.strength, chip->ecc.bytes);
  
- 	if (denali->dma_avail) {
--		denali->dma_addr = dma_map_single(denali->dev, denali->buf,
--						  mtd->writesize + mtd->oobsize,
--						  DMA_BIDIRECTIONAL);
--		if (dma_mapping_error(denali->dev, denali->dma_addr)) {
--			dev_info(denali->dev,
--				 "Failed to map DMA buffer. Disabling DMA.\n");
--			denali->dma_avail = 0;
--		};
-+		chip->options |= NAND_USE_BOUNCE_BUFFER;
-+		chip->buf_align = 16;
- 	}
+-	iowrite32(chip->ecc.strength, denali->flash_reg + ECC_CORRECTION);
++	iowrite32(MAKE_ECC_CORRECTION(chip->ecc.strength, 1),
++		  denali->flash_reg + ECC_CORRECTION);
+ 	iowrite32(mtd->erasesize / mtd->writesize,
+ 		  denali->flash_reg + PAGES_PER_BLOCK);
+ 	iowrite32(chip->options & NAND_BUSWIDTH_16 ? 1 : 0,
+diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
+index f5da52f09e34..657a794af695 100644
+--- a/drivers/mtd/nand/denali.h
++++ b/drivers/mtd/nand/denali.h
+@@ -110,6 +110,10 @@
  
- 	/*
-@@ -1462,16 +1456,8 @@ EXPORT_SYMBOL(denali_init);
- void denali_remove(struct denali_nand_info *denali)
- {
- 	struct mtd_info *mtd = nand_to_mtd(&denali->nand);
--	/*
--	 * Pre-compute DMA buffer size to avoid any problems in case
--	 * nand_release() ever changes in a way that mtd->writesize and
--	 * mtd->oobsize are not reliable after this call.
--	 */
--	int bufsize = mtd->writesize + mtd->oobsize;
+ #define ECC_CORRECTION				0x1b0
+ #define     ECC_CORRECTION__VALUE			GENMASK(4, 0)
++#define     ECC_CORRECTION__ERASE_THRESHOLD		GENMASK(31, 16)
++#define     MAKE_ECC_CORRECTION(val, thresh)		\
++			(((val) & (ECC_CORRECTION__VALUE)) | \
++			(((thresh) << 16) & (ECC_CORRECTION__ERASE_THRESHOLD)))
  
- 	nand_release(mtd);
- 	denali_disable_irq(denali);
--	dma_unmap_single(denali->dev, denali->dma_addr, bufsize,
--			 DMA_BIDIRECTIONAL);
- }
- EXPORT_SYMBOL(denali_remove);
+ #define READ_MODE				0x1c0
+ #define     READ_MODE__VALUE				GENMASK(3, 0)
+@@ -233,6 +237,7 @@
+ #define     INTR__RST_COMP				BIT(13)
+ #define     INTR__PIPE_CMD_ERR				BIT(14)
+ #define     INTR__PAGE_XFER_INC				BIT(15)
++#define     INTR__ERASED_PAGE				BIT(16)
+ 
+ #define PAGE_CNT(bank)				(0x430 + (bank) * 0x50)
+ #define ERR_PAGE_ADDR(bank)			(0x440 + (bank) * 0x50)
 -- 
 2.7.4
