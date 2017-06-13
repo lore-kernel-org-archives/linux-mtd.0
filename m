@@ -1,7 +1,7 @@
 Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dKe0t-0005xD-R9
- for linux-mtd@lists.infradead.org; Tue, 13 Jun 2017 05:05:15 +0000
+ id 1dKe0t-0005xG-R8
+ for linux-mtd@lists.infradead.org; Tue, 13 Jun 2017 05:05:16 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Enrico Jorns <ejo@pengutronix.de>,
@@ -16,11 +16,9 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v6 05/18] mtd: nand: denali: fix NAND_CMD_STATUS handling
-Date: Tue, 13 Jun 2017 14:03:57 +0900
-Message-Id: <1497330250-17348-6-git-send-email-yamada.masahiro@socionext.com>
-In-Reply-To: <1497330250-17348-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1497330250-17348-1-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v6 00/18] mtd: nand: denali: Denali NAND IP patch bomb
+Date: Tue, 13 Jun 2017 14:03:52 +0900
+Message-Id: <1497330250-17348-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,63 +28,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The current NAND_CMD_STATUS handling is weird; it just reads the
-WRITE_PROTECT register, and returns NAND_STATUS_WP if it is set.
 
-It does not send Read Status (0x70) command, so it is not helpful
-for checking the current device status.
+This patch series intends to solve various problems.
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
+[1] The driver just retrieves the OOB area as-is
+    whereas the controller uses syndrome page layout.
+[2] ONFi devices are not working
+[3] It can not read Bad Block Marker
 
-Changes in v6: None
-Changes in v5: None
-Changes in v4: None
-Changes in v3: None
-Changes in v2:
-  - Newly added
+Outstanding changes are:
+ - Fix raw/oob callbacks for syndrome page layout
+ - Implement setup_data_interface() callback
+ - Fix/implement more commands for ONFi devices
+ - Allow to skip the driver internal bounce buffer
+ - Support PIO in case DMA is not supported
+ - Switch from ->cmdfunc over to ->cmd_ctrl
 
- drivers/mtd/nand/denali.c | 21 +++++----------------
- 1 file changed, 5 insertions(+), 16 deletions(-)
+18 patches were merged by v2.
+11 patches were merged by v3.
+2 patches were merged by v4.
+5 patches were merged by v5.
+Here is the rest of the series.
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index d7e7555a3d73..4bf93232ca30 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -107,21 +107,6 @@ static void write_byte_to_buf(struct denali_nand_info *denali, uint8_t byte)
- 	denali->buf.buf[denali->buf.tail++] = byte;
- }
- 
--/* reads the status of the device */
--static void read_status(struct denali_nand_info *denali)
--{
--	uint32_t cmd;
--
--	/* initialize the data buffer to store status */
--	reset_buf(denali);
--
--	cmd = ioread32(denali->flash_reg + WRITE_PROTECT);
--	if (cmd)
--		write_byte_to_buf(denali, NAND_STATUS_WP);
--	else
--		write_byte_to_buf(denali, 0);
--}
--
- /* Reset the flash controller */
- static uint16_t denali_nand_reset(struct denali_nand_info *denali)
- {
-@@ -893,7 +878,11 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
- 
- 	switch (cmd) {
- 	case NAND_CMD_STATUS:
--		read_status(denali);
-+		reset_buf(denali);
-+		addr = MODE_11 | BANK(denali->flash_bank);
-+		index_addr(denali, addr | 0, cmd);
-+		index_addr_read_data(denali, addr | 2, &id);
-+		write_byte_to_buf(denali, id);
- 		break;
- 	case NAND_CMD_READID:
- 	case NAND_CMD_PARAM:
+v1: https://lkml.org/lkml/2016/11/26/144
+v2: https://lkml.org/lkml/2017/3/22/804
+v3: https://lkml.org/lkml/2017/3/30/90
+v4: https://lkml.org/lkml/2017/6/5/1005
+
+Masahiro Yamada (18):
+  mtd: nand: denali: set NAND_ECC_CUSTOM_PAGE_ACCESS
+  mtd: nand: denali: remove unneeded find_valid_banks()
+  mtd: nand: denali: handle timing parameters by setup_data_interface()
+  mtd: nand: denali: rework interrupt handling
+  mtd: nand: denali: fix NAND_CMD_STATUS handling
+  mtd: nand: denali: fix NAND_CMD_PARAM handling
+  mtd: nand: denali: switch over to cmd_ctrl instead of cmdfunc
+  mtd: nand: denali: fix bank reset function to detect the number of
+    chips
+  mtd: nand: denali: use interrupt instead of polling for bank reset
+  mtd: nand: denali: propagate page to helpers via function argument
+  mtd: nand: denali: merge struct nand_buf into struct denali_nand_info
+  mtd: nand: denali: use flag instead of register macro for direction
+  mtd: nand: denali: fix raw and oob accessors for syndrome page layout
+  mtd: nand: denali: support hardware-assisted erased page detection
+  mtd: nand: denali: skip driver internal bounce buffer when possible
+  mtd: nand: denali: use non-managed kmalloc() for DMA buffer
+  mtd: nand: denali: enable bad block table scan
+  mtd: nand: denali: avoid magic numbers and rename for clarification
+
+ drivers/mtd/nand/denali.c     | 1715 ++++++++++++++++++-----------------------
+ drivers/mtd/nand/denali.h     |   63 +-
+ drivers/mtd/nand/denali_dt.c  |   15 +-
+ drivers/mtd/nand/denali_pci.c |   22 +-
+ 4 files changed, 800 insertions(+), 1015 deletions(-)
+
 -- 
 2.7.4
