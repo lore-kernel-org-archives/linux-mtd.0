@@ -1,6 +1,6 @@
 Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dKe0t-0005xE-R5
+ id 1dKe0y-0005xK-2k
  for linux-mtd@lists.infradead.org; Tue, 13 Jun 2017 05:05:18 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -16,9 +16,10 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v6 06/18] mtd: nand: denali: fix NAND_CMD_PARAM handling
-Date: Tue, 13 Jun 2017 14:03:58 +0900
-Message-Id: <1497330250-17348-7-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v6 12/18] mtd: nand: denali: use flag instead of register
+ macro for direction
+Date: Tue, 13 Jun 2017 14:04:04 +0900
+Message-Id: <1497330250-17348-13-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1497330250-17348-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1497330250-17348-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,228 +31,171 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-NAND_CMD_PARAM is not working at all due to multiple bugs.
+It is not a good idea to re-use macros that represent a specific
+register bit field for the transfer direction.
 
-[1] The command 0x90 issued instead of 0xec
+It is true that bit 8 indicates the direction for the MAP10 pipeline
+operation and the data DMA operation, but this is not valid across
+the IP.
 
-The command code 0x90 is hard-code as
-   index_addr(denali, addr | 0, 0x90)
-So, Read ID (0x90) command is sent to the device instead of Read
-Parameter Page (0xec).
-
-[2] only first 8 bytes are read
-
-Even if [1] is fixed, the current implementation is problematic.
-The only first 8 bytes are read by MAP11 command, and put into the
-temporal buffer:
-
-    for (i = 0; i < 8; i++) {
-            index_addr_read_data(denali, addr | 2, &id);
-            write_byte_to_buf(denali, id);
-    }
-
-Obviously, this is not sufficient for NAND_CMD_PARAM; the ONFi
-parameters are 256-byte long.  This is still insufficient.
-As you see in nand_flash_detect_onfi() reads out (256 * 3) bytes
-at maximum (Redundant Parameter Pages).  However, changing the loop
-to for (i = 0; i < 768; i++) is a crazy idea.  At the point of the
-chip->cmdfunc() call, we cannot know how many times chip->read_byte()
-will be called.  So, pre-reading enough number of bytes in the
-chip->cmdfunc() is a design mistake.
-
-[3] no wait for R/B#
-
-The current code handles NAND_CMD_READID and NAND_CMD_PARAM in the
-same way, but this is also wrong.  The difference between them is
-that Read ID command does not toggle R/B# whereas the Read Parameter
-Page command requires R/B#.  Without the wait for R/B# interrupt,
-wrong data are retrieved.
-
-In order to fix those problems, data read cycle of the MAP11 command
-has been moved to chip->read_byte().  Data are read out as needed.
-Another good thing is early temporal buffer is not needed any more.
-The ugly devm_kzalloc()/devm_kfree() dance has been killed.
+Use a simple flag (write: 1, read: 0) for the direction.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v6: None
+Changes in v6:
+  - Delete unused DENALI_{READ,WRITE}
+
 Changes in v5: None
 Changes in v4: None
 Changes in v3: None
 Changes in v2:
   - Newly added
 
- drivers/mtd/nand/denali.c | 95 +++++++++++++++--------------------------------
- drivers/mtd/nand/denali.h |  2 -
- 2 files changed, 30 insertions(+), 67 deletions(-)
+ drivers/mtd/nand/denali.c | 36 +++++++++++++++++-------------------
+ 1 file changed, 17 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 4bf93232ca30..2325a97aa54a 100644
+index caf5ce64b185..03b75045d603 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -85,28 +85,6 @@ static void index_addr(struct denali_nand_info *denali,
- 	iowrite32(data, denali->flash_mem + 0x10);
- }
+@@ -63,9 +63,6 @@ static inline struct denali_nand_info *mtd_to_denali(struct mtd_info *mtd)
+ #define MAIN_ACCESS		0x42
+ #define MAIN_SPARE_ACCESS	0x43
  
--/* Perform an indexed read of the device */
--static void index_addr_read_data(struct denali_nand_info *denali,
--				 uint32_t address, uint32_t *pdata)
--{
--	iowrite32(address, denali->flash_mem);
--	*pdata = ioread32(denali->flash_mem + 0x10);
--}
+-#define DENALI_READ	0
+-#define DENALI_WRITE	0x100
 -
--/*
-- * We need to buffer some data for some of the NAND core routines.
-- * The operations manage buffering that data.
-- */
--static void reset_buf(struct denali_nand_info *denali)
--{
--	denali->buf.head = denali->buf.tail = 0;
--}
--
--static void write_byte_to_buf(struct denali_nand_info *denali, uint8_t byte)
--{
--	denali->buf.buf[denali->buf.tail++] = byte;
--}
--
- /* Reset the flash controller */
- static uint16_t denali_nand_reset(struct denali_nand_info *denali)
- {
-@@ -286,6 +264,15 @@ static void setup_ecc_for_xfer(struct denali_nand_info *denali, bool ecc_en,
- 	iowrite32(transfer_spare_flag, denali->flash_reg + TRANSFER_SPARE_REG);
- }
- 
-+static uint8_t denali_read_byte(struct mtd_info *mtd)
-+{
-+	struct denali_nand_info *denali = mtd_to_denali(mtd);
-+
-+	iowrite32(MODE_11 | BANK(denali->flash_bank) | 2, denali->flash_mem);
-+
-+	return ioread32(denali->flash_mem + 0x10);
-+}
-+
  /*
-  * sends a pipeline command operation to the controller. See the Denali NAND
-  * controller's user guide for more information (section 4.2.3.6).
-@@ -828,17 +815,6 @@ static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 	return 0;
+  * this is a helper macro that allows us to
+  * format the bank into the proper bits for the controller
+@@ -284,7 +281,7 @@ static int denali_dev_ready(struct mtd_info *mtd)
+  */
+ static int denali_send_pipeline_cmd(struct denali_nand_info *denali, int page,
+ 				    bool ecc_en, bool transfer_spare,
+-				    int access_type, int op)
++				    int access_type, int write)
+ {
+ 	int status = PASS;
+ 	uint32_t addr, cmd;
+@@ -295,17 +292,17 @@ static int denali_send_pipeline_cmd(struct denali_nand_info *denali, int page,
+ 
+ 	addr = BANK(denali->flash_bank) | page;
+ 
+-	if (op == DENALI_WRITE && access_type != SPARE_ACCESS) {
++	if (write && access_type != SPARE_ACCESS) {
+ 		cmd = MODE_01 | addr;
+ 		iowrite32(cmd, denali->flash_mem);
+-	} else if (op == DENALI_WRITE && access_type == SPARE_ACCESS) {
++	} else if (write && access_type == SPARE_ACCESS) {
+ 		/* read spare area */
+ 		cmd = MODE_10 | addr;
+ 		index_addr(denali, cmd, access_type);
+ 
+ 		cmd = MODE_01 | addr;
+ 		iowrite32(cmd, denali->flash_mem);
+-	} else if (op == DENALI_READ) {
++	} else {
+ 		/* setup page read request for access type */
+ 		cmd = MODE_10 | addr;
+ 		index_addr(denali, cmd, access_type);
+@@ -367,7 +364,7 @@ static int write_oob_data(struct mtd_info *mtd, uint8_t *buf, int page)
+ 	int status = 0;
+ 
+ 	if (denali_send_pipeline_cmd(denali, page, false, false, SPARE_ACCESS,
+-							DENALI_WRITE) == PASS) {
++							1) == PASS) {
+ 		write_data_to_flash_mem(denali, buf, mtd->oobsize);
+ 
+ 		/* wait for operation to complete */
+@@ -392,7 +389,7 @@ static void read_oob_data(struct mtd_info *mtd, uint8_t *buf, int page)
+ 	uint32_t irq_status, addr, cmd;
+ 
+ 	if (denali_send_pipeline_cmd(denali, page, false, true, SPARE_ACCESS,
+-							DENALI_READ) == PASS) {
++							0) == PASS) {
+ 		read_data_from_flash_mem(denali, buf, mtd->oobsize);
+ 
+ 		/*
+@@ -578,7 +575,7 @@ static void denali_enable_dma(struct denali_nand_info *denali, bool en)
  }
  
--static uint8_t denali_read_byte(struct mtd_info *mtd)
--{
--	struct denali_nand_info *denali = mtd_to_denali(mtd);
--	uint8_t result = 0xff;
--
--	if (denali->buf.head < denali->buf.tail)
--		result = denali->buf.buf[denali->buf.head++];
--
--	return result;
--}
--
- static void denali_select_chip(struct mtd_info *mtd, int chip)
+ static void denali_setup_dma64(struct denali_nand_info *denali,
+-			       dma_addr_t dma_addr, int page, int op)
++			       dma_addr_t dma_addr, int page, int write)
  {
- 	struct denali_nand_info *denali = mtd_to_denali(mtd);
-@@ -873,43 +849,40 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
- 			   int page)
- {
- 	struct denali_nand_info *denali = mtd_to_denali(mtd);
--	uint32_t addr, id;
--	int i;
-+	uint32_t addr, irq_status;
-+	int wait_ready = 0;
+ 	uint32_t mode;
+ 	const int page_count = 1;
+@@ -591,7 +588,8 @@ static void denali_setup_dma64(struct denali_nand_info *denali,
+ 	 * 1. setup transfer type, interrupt when complete,
+ 	 *    burst len = 64 bytes, the number of pages
+ 	 */
+-	index_addr(denali, mode, 0x01002000 | (64 << 16) | op | page_count);
++	index_addr(denali, mode,
++		   0x01002000 | (64 << 16) | (write << 8) | page_count);
  
- 	switch (cmd) {
--	case NAND_CMD_STATUS:
--		reset_buf(denali);
--		addr = MODE_11 | BANK(denali->flash_bank);
--		index_addr(denali, addr | 0, cmd);
--		index_addr_read_data(denali, addr | 2, &id);
--		write_byte_to_buf(denali, id);
-+	case NAND_CMD_PARAM:
-+		wait_ready = 1;
- 		break;
-+	case NAND_CMD_STATUS:
- 	case NAND_CMD_READID:
--	case NAND_CMD_PARAM:
--		reset_buf(denali);
--		/*
--		 * sometimes ManufactureId read from register is not right
--		 * e.g. some of Micron MT29F32G08QAA MLC NAND chips
--		 * So here we send READID cmd to NAND insteand
--		 */
--		addr = MODE_11 | BANK(denali->flash_bank);
--		index_addr(denali, addr | 0, 0x90);
--		index_addr(denali, addr | 1, col);
--		for (i = 0; i < 8; i++) {
--			index_addr_read_data(denali, addr | 2, &id);
--			write_byte_to_buf(denali, id);
--		}
- 		break;
- 	case NAND_CMD_RESET:
- 		reset_bank(denali);
- 		break;
- 	case NAND_CMD_READOOB:
- 		/* TODO: Read OOB data */
--		break;
-+		return;
- 	default:
- 		pr_err(": unsupported command received 0x%x\n", cmd);
--		break;
-+		return;
- 	}
-+
-+	denali_reset_irq(denali);
-+
-+	addr = MODE_11 | BANK(denali->flash_bank);
-+	index_addr(denali, addr | 0, cmd);
-+	if (col != -1)
-+		index_addr(denali, addr | 1, col);
-+
-+	if (!wait_ready)
-+		return;
-+
-+	irq_status = denali_wait_for_irq(denali, INTR__INT_ACT);
-+	if (!(irq_status & INTR__INT_ACT))
-+		dev_err(denali->dev, "failed to issue command 0x%x\n", cmd);
+ 	/* 2. set memory low address */
+ 	index_addr(denali, mode, dma_addr);
+@@ -601,7 +599,7 @@ static void denali_setup_dma64(struct denali_nand_info *denali,
  }
  
- #define DIV_ROUND_DOWN_ULL(ll, d) \
-@@ -1227,12 +1200,6 @@ int denali_init(struct denali_nand_info *denali)
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	int ret;
+ static void denali_setup_dma32(struct denali_nand_info *denali,
+-			       dma_addr_t dma_addr, int page, int op)
++			       dma_addr_t dma_addr, int page, int write)
+ {
+ 	uint32_t mode;
+ 	const int page_count = 1;
+@@ -611,7 +609,7 @@ static void denali_setup_dma32(struct denali_nand_info *denali,
+ 	/* DMA is a four step process */
  
--	/* allocate a temporary buffer for nand_scan_ident() */
--	denali->buf.buf = devm_kzalloc(denali->dev, PAGE_SIZE,
--					GFP_DMA | GFP_KERNEL);
--	if (!denali->buf.buf)
--		return -ENOMEM;
--
- 	mtd->dev.parent = denali->dev;
- 	denali_hw_init(denali);
- 	denali_drv_init(denali);
-@@ -1275,8 +1242,6 @@ int denali_init(struct denali_nand_info *denali)
- 	if (ret)
- 		goto disable_irq;
+ 	/* 1. setup transfer type and # of pages */
+-	index_addr(denali, mode | page, 0x2000 | op | page_count);
++	index_addr(denali, mode | page, 0x2000 | (write << 8) | page_count);
  
--	/* allocate the right size buffer now */
--	devm_kfree(denali->dev, denali->buf.buf);
- 	denali->buf.buf = devm_kzalloc(denali->dev,
- 			     mtd->writesize + mtd->oobsize,
- 			     GFP_KERNEL);
-diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index a0ac0f84f8b5..a84d8784ee98 100644
---- a/drivers/mtd/nand/denali.h
-+++ b/drivers/mtd/nand/denali.h
-@@ -306,8 +306,6 @@
- #define MODE_11    0x0C000000
+ 	/* 2. set memory high address bits 23:8 */
+ 	index_addr(denali, mode | ((dma_addr >> 16) << 8), 0x2200);
+@@ -624,12 +622,12 @@ static void denali_setup_dma32(struct denali_nand_info *denali,
+ }
  
- struct nand_buf {
--	int head;
--	int tail;
- 	uint8_t *buf;
- 	dma_addr_t dma_buf;
- };
+ static void denali_setup_dma(struct denali_nand_info *denali,
+-			     dma_addr_t dma_addr, int page, int op)
++			     dma_addr_t dma_addr, int page, int write)
+ {
+ 	if (denali->caps & DENALI_CAP_DMA_64BIT)
+-		denali_setup_dma64(denali, dma_addr, page, op);
++		denali_setup_dma64(denali, dma_addr, page, write);
+ 	else
+-		denali_setup_dma32(denali, dma_addr, page, op);
++		denali_setup_dma32(denali, dma_addr, page, write);
+ }
+ 
+ /*
+@@ -668,7 +666,7 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	denali_reset_irq(denali);
+ 	denali_enable_dma(denali, true);
+ 
+-	denali_setup_dma(denali, addr, page, DENALI_WRITE);
++	denali_setup_dma(denali, addr, page, 1);
+ 
+ 	/* wait for operation to complete */
+ 	irq_status = denali_wait_for_irq(denali, irq_mask);
+@@ -750,7 +748,7 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	dma_sync_single_for_device(denali->dev, addr, size, DMA_FROM_DEVICE);
+ 
+ 	denali_reset_irq(denali);
+-	denali_setup_dma(denali, addr, page, DENALI_READ);
++	denali_setup_dma(denali, addr, page, 0);
+ 
+ 	/* wait for operation to complete */
+ 	irq_status = denali_wait_for_irq(denali, irq_mask);
+@@ -793,7 +791,7 @@ static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 	dma_sync_single_for_device(denali->dev, addr, size, DMA_FROM_DEVICE);
+ 
+ 	denali_reset_irq(denali);
+-	denali_setup_dma(denali, addr, page, DENALI_READ);
++	denali_setup_dma(denali, addr, page, 0);
+ 
+ 	/* wait for operation to complete */
+ 	irq_status = denali_wait_for_irq(denali, irq_mask);
 -- 
 2.7.4
