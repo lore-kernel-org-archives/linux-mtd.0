@@ -1,6 +1,6 @@
 Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dKe0t-0005xB-R3
+ id 1dKe0t-0005xC-R5
  for linux-mtd@lists.infradead.org; Tue, 13 Jun 2017 05:05:14 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -16,9 +16,10 @@ Cc: Enrico Jorns <ejo@pengutronix.de>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH v6 01/18] mtd: nand: denali: set NAND_ECC_CUSTOM_PAGE_ACCESS
-Date: Tue, 13 Jun 2017 14:03:53 +0900
-Message-Id: <1497330250-17348-2-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v6 07/18] mtd: nand: denali: switch over to cmd_ctrl instead
+ of cmdfunc
+Date: Tue, 13 Jun 2017 14:03:59 +0900
+Message-Id: <1497330250-17348-8-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1497330250-17348-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1497330250-17348-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,27 +31,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The denali_cmdfunc() actually does nothing valuable for
-NAND_CMD_{PAGEPROG,READ0,SEQIN}.
+The NAND_CMD_SET_FEATURES support is missing from denali_cmdfunc().
 
-For NAND_CMD_{READ0,SEQIN}, it copies "page" to "denali->page", then
-denali_read_page(_raw) compares them just for the sanity check.
-(Inconsistently, this check is missing from denali_write_page(_raw).)
+Besides, we see /* TODO: Read OOB data */ comment line.
 
-The Denali controller is equipped with high level read/write interface,
-so let's skip unneeded call of cmdfunc().
+It would be possible to add more commands along with the current
+implementation, but having ->cmd_ctrl() seems a better approach from
+the discussion with Boris [1].
 
-If NAND_ECC_CUSTOM_PAGE_ACCESS is set, nand_write_page() will not
-call ->waitfunc hook.  So, ->write_page(_raw) hooks should directly
-return -EIO on failure.  The error handling of page writes will be
-much simpler.
+Rely on the default ->cmdfunc() from the framework and implement the
+driver's own ->cmd_ctrl().
+
+Also add ->write_byte(), which is needed for write direction commands.
+
+Then, we can drop nand_onfi_get_set_features_notsupp from this driver.
+
+[1] https://lkml.org/lkml/2017/3/15/97
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
 Changes in v6:
-  - Squash two commits to adjust to commit 41145649f4ac
-    (mtd: nand: Wait for PAGEPROG to finish in drivers setting NAND_ECC_CUSTOM_PAGE_ACCESS)
+  - Remove nand_onfi_get_set_features_notsupp()
 
 Changes in v5: None
 Changes in v4: None
@@ -58,147 +60,159 @@ Changes in v3: None
 Changes in v2:
   - Newly added
 
- drivers/mtd/nand/denali.c | 41 ++++++++++++-----------------------------
- drivers/mtd/nand/denali.h |  1 -
- 2 files changed, 12 insertions(+), 30 deletions(-)
+ drivers/mtd/nand/denali.c | 106 +++++++++++++++++++++++-----------------------
+ 1 file changed, 52 insertions(+), 54 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 2b4618bb8d72..7133a33b4ad3 100644
+index 2325a97aa54a..09a14fafa967 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -998,13 +998,16 @@ static void denali_setup_dma(struct denali_nand_info *denali, int op)
-  * configuration details.
-  */
- static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
--			const uint8_t *buf, bool raw_xfer)
-+			const uint8_t *buf, int page, bool raw_xfer)
- {
- 	struct denali_nand_info *denali = mtd_to_denali(mtd);
- 	dma_addr_t addr = denali->buf.dma_buf;
- 	size_t size = mtd->writesize + mtd->oobsize;
- 	uint32_t irq_status;
- 	uint32_t irq_mask = INTR__DMA_CMD_COMP | INTR__PROGRAM_FAIL;
-+	int ret = 0;
-+
-+	denali->page = page;
- 
- 	/*
- 	 * if it is a raw xfer, we want to disable ecc and send the spare area.
-@@ -1036,13 +1039,13 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	if (irq_status == 0) {
- 		dev_err(denali->dev, "timeout on write_page (type = %d)\n",
- 			raw_xfer);
--		denali->status = NAND_STATUS_FAIL;
-+		ret = -EIO;
- 	}
- 
- 	denali_enable_dma(denali, false);
- 	dma_sync_single_for_cpu(denali->dev, addr, size, DMA_TO_DEVICE);
- 
--	return 0;
-+	return ret;
+@@ -230,20 +230,16 @@ static uint32_t denali_wait_for_irq(struct denali_nand_info *denali,
+ 	return denali->irq_status;
  }
  
- /* NAND core entry points */
-@@ -1059,7 +1062,7 @@ static int denali_write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	 * for regular page writes, we let HW handle all the ECC
- 	 * data written to the device.
- 	 */
--	return write_page(mtd, chip, buf, false);
-+	return write_page(mtd, chip, buf, page, false);
+-/* resets a specific device connected to the core */
+-static void reset_bank(struct denali_nand_info *denali)
++static uint32_t denali_check_irq(struct denali_nand_info *denali)
+ {
++	unsigned long flags;
+ 	uint32_t irq_status;
+ 
+-	denali_reset_irq(denali);
+-
+-	iowrite32(1 << denali->flash_bank, denali->flash_reg + DEVICE_RESET);
+-
+-	irq_status = denali_wait_for_irq(denali,
+-					 INTR__RST_COMP | INTR__TIME_OUT);
++	spin_lock_irqsave(&denali->irq_lock, flags);
++	irq_status = denali->irq_status;
++	spin_unlock_irqrestore(&denali->irq_lock, flags);
+ 
+-	if (!(irq_status & INTR__RST_COMP))
+-		dev_err(denali->dev, "reset bank failed.\n");
++	return irq_status;
  }
  
  /*
-@@ -1075,7 +1078,7 @@ static int denali_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 	 * for raw page writes, we want to disable ECC and simply write
- 	 * whatever data is in the buffer.
- 	 */
--	return write_page(mtd, chip, buf, true);
-+	return write_page(mtd, chip, buf, page, true);
+@@ -273,6 +269,42 @@ static uint8_t denali_read_byte(struct mtd_info *mtd)
+ 	return ioread32(denali->flash_mem + 0x10);
  }
  
- static int denali_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
-@@ -1105,12 +1108,7 @@ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	unsigned long uncor_ecc_flags = 0;
- 	int stat = 0;
- 
--	if (page != denali->page) {
--		dev_err(denali->dev,
--			"IN %s: page %d is not equal to denali->page %d",
--			__func__, page, denali->page);
--		BUG();
--	}
-+	denali->page = page;
- 
- 	setup_ecc_for_xfer(denali, true, false);
- 
-@@ -1154,12 +1152,7 @@ static int denali_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 	size_t size = mtd->writesize + mtd->oobsize;
- 	uint32_t irq_mask = INTR__DMA_CMD_COMP;
- 
--	if (page != denali->page) {
--		dev_err(denali->dev,
--			"IN %s: page %d is not equal to denali->page %d",
--			__func__, page, denali->page);
--		BUG();
--	}
-+	denali->page = page;
- 
- 	setup_ecc_for_xfer(denali, false, true);
- 	denali_enable_dma(denali, true);
-@@ -1204,12 +1197,7 @@ static void denali_select_chip(struct mtd_info *mtd, int chip)
++static void denali_write_byte(struct mtd_info *mtd, uint8_t byte)
++{
++	struct denali_nand_info *denali = mtd_to_denali(mtd);
++
++	index_addr(denali, MODE_11 | BANK(denali->flash_bank) | 2, byte);
++}
++
++static void denali_cmd_ctrl(struct mtd_info *mtd, int dat, unsigned int ctrl)
++{
++	struct denali_nand_info *denali = mtd_to_denali(mtd);
++	uint32_t type;
++
++	if (ctrl & NAND_CLE)
++		type = 0;
++	else if (ctrl & NAND_ALE)
++		type = 1;
++	else
++		return;
++
++	/*
++	 * Some commands are followed by chip->dev_ready or chip->waitfunc.
++	 * irq_status must be cleared here to catch the R/B# interrupt later.
++	 */
++	if (ctrl & NAND_CTRL_CHANGE)
++		denali_reset_irq(denali);
++
++	index_addr(denali, MODE_11 | BANK(denali->flash_bank) | type, dat);
++}
++
++static int denali_dev_ready(struct mtd_info *mtd)
++{
++	struct denali_nand_info *denali = mtd_to_denali(mtd);
++
++	return !!(denali_check_irq(denali) & INTR__INT_ACT);
++}
++
+ /*
+  * sends a pipeline command operation to the controller. See the Denali NAND
+  * controller's user guide for more information (section 4.2.3.6).
+@@ -824,7 +856,13 @@ static void denali_select_chip(struct mtd_info *mtd, int chip)
  
  static int denali_waitfunc(struct mtd_info *mtd, struct nand_chip *chip)
  {
--	struct denali_nand_info *denali = mtd_to_denali(mtd);
--	int status = denali->status;
--
--	denali->status = 0;
--
--	return status;
-+	return 0;
+-	return 0;
++	struct denali_nand_info *denali = mtd_to_denali(mtd);
++	uint32_t irq_status;
++
++	/* R/B# pin transitioned from low to high? */
++	irq_status = denali_wait_for_irq(denali, INTR__INT_ACT);
++
++	return irq_status & INTR__INT_ACT ? 0 : NAND_STATUS_FAIL;
  }
  
  static int denali_erase(struct mtd_info *mtd, int page)
-@@ -1238,8 +1226,6 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
- 	int i;
+@@ -845,46 +883,6 @@ static int denali_erase(struct mtd_info *mtd, int page)
+ 	return irq_status & INTR__ERASE_COMP ? 0 : NAND_STATUS_FAIL;
+ }
  
- 	switch (cmd) {
--	case NAND_CMD_PAGEPROG:
+-static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
+-			   int page)
+-{
+-	struct denali_nand_info *denali = mtd_to_denali(mtd);
+-	uint32_t addr, irq_status;
+-	int wait_ready = 0;
+-
+-	switch (cmd) {
+-	case NAND_CMD_PARAM:
+-		wait_ready = 1;
 -		break;
- 	case NAND_CMD_STATUS:
- 		read_status(denali);
- 		break;
-@@ -1259,10 +1245,6 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
- 			write_byte_to_buf(denali, id);
- 		}
- 		break;
--	case NAND_CMD_READ0:
--	case NAND_CMD_SEQIN:
--		denali->page = page;
+-	case NAND_CMD_STATUS:
+-	case NAND_CMD_READID:
 -		break;
- 	case NAND_CMD_RESET:
- 		reset_bank(denali);
- 		break;
-@@ -1605,6 +1587,7 @@ int denali_init(struct denali_nand_info *denali)
+-	case NAND_CMD_RESET:
+-		reset_bank(denali);
+-		break;
+-	case NAND_CMD_READOOB:
+-		/* TODO: Read OOB data */
+-		return;
+-	default:
+-		pr_err(": unsupported command received 0x%x\n", cmd);
+-		return;
+-	}
+-
+-	denali_reset_irq(denali);
+-
+-	addr = MODE_11 | BANK(denali->flash_bank);
+-	index_addr(denali, addr | 0, cmd);
+-	if (col != -1)
+-		index_addr(denali, addr | 1, col);
+-
+-	if (!wait_ready)
+-		return;
+-
+-	irq_status = denali_wait_for_irq(denali, INTR__INT_ACT);
+-	if (!(irq_status & INTR__INT_ACT))
+-		dev_err(denali->dev, "failed to issue command 0x%x\n", cmd);
+-}
+-
+ #define DIV_ROUND_DOWN_ULL(ll, d) \
+ 	({ unsigned long long _tmp = (ll); do_div(_tmp, d); _tmp; })
  
- 	mtd_set_ooblayout(mtd, &denali_ooblayout_ops);
+@@ -1223,11 +1221,11 @@ int denali_init(struct denali_nand_info *denali)
  
-+	chip->ecc.options |= NAND_ECC_CUSTOM_PAGE_ACCESS;
- 	chip->ecc.read_page = denali_read_page;
- 	chip->ecc.read_page_raw = denali_read_page_raw;
- 	chip->ecc.write_page = denali_write_page;
-diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index a06ed741b550..352d8328b94a 100644
---- a/drivers/mtd/nand/denali.h
-+++ b/drivers/mtd/nand/denali.h
-@@ -323,7 +323,6 @@ struct nand_buf {
- struct denali_nand_info {
- 	struct nand_chip nand;
- 	int flash_bank; /* currently selected chip */
--	int status;
- 	int platform;
- 	struct nand_buf buf;
- 	struct device *dev;
+ 	/* register the driver with the NAND core subsystem */
+ 	chip->select_chip = denali_select_chip;
+-	chip->cmdfunc = denali_cmdfunc;
+ 	chip->read_byte = denali_read_byte;
++	chip->write_byte = denali_write_byte;
++	chip->cmd_ctrl = denali_cmd_ctrl;
++	chip->dev_ready = denali_dev_ready;
+ 	chip->waitfunc = denali_waitfunc;
+-	chip->onfi_set_features = nand_onfi_get_set_features_notsupp;
+-	chip->onfi_get_features = nand_onfi_get_set_features_notsupp;
+ 
+ 	/* clk rate info is needed for setup_data_interface */
+ 	if (denali->clk_x_rate)
 -- 
 2.7.4
