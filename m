@@ -1,21 +1,43 @@
-Received: from mail-ve1eur01on0102.outbound.protection.outlook.com
- ([104.47.1.102] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
+Received: from conssluserg-01.nifty.com ([210.131.2.80])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dKQrR-0006sz-Bs
- for linux-mtd@lists.infradead.org; Mon, 12 Jun 2017 15:02:35 +0000
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-To: linux-mtd@lists.infradead.org
-Cc: Alexander Sverdlin <alexander.sverdlin@nokia.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>
-Subject: [PATCH] mtd: spi-nor: Recover from Spansion/Cypress errors
-Date: Mon, 12 Jun 2017 17:01:40 +0200
-Message-Id: <20170612150140.11278-1-alexander.sverdlin@nokia.com>
+ id 1dKdeZ-0007Eb-0F
+ for linux-mtd@lists.infradead.org; Tue, 13 Jun 2017 04:42:09 +0000
+Received: from mail-yw0-f169.google.com (mail-yw0-f169.google.com
+ [209.85.161.169]) (authenticated)
+ by conssluserg-01.nifty.com with ESMTP id v5D4fPQm014636
+ for <linux-mtd@lists.infradead.org>; Tue, 13 Jun 2017 13:41:26 +0900
+Received: by mail-yw0-f169.google.com with SMTP id v7so27467439ywc.2
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Jun 2017 21:41:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20170609095803.2b755283@bbrezillon>
+References: <1496836352-8016-1-git-send-email-yamada.masahiro@socionext.com>
+ <1496836352-8016-11-git-send-email-yamada.masahiro@socionext.com>
+ <20170607155701.4bc89ad8@bbrezillon>
+ <CAK7LNAQanUEcNQK=jUvZMpaN+_cePhp5_qt23AxmdwqE5JN_nA@mail.gmail.com>
+ <20170608091239.0095511b@bbrezillon>
+ <CAK7LNAQSCC-MB3Ck7KyE47HVeAOJ1t1Xop2s=tuJ-UH-OpvShQ@mail.gmail.com>
+ <20170608132620.17fc7c96@bbrezillon>
+ <CAK7LNARbaAKyB2ss780o=L=sqqUdz=fix+PaxW_ODDAM63VXOw@mail.gmail.com>
+ <20170608174311.4f012cc5@bbrezillon>
+ <CAK7LNAQ3OwpC60oZ5pXTAzLN5uQHbm2jRMMQiwJuznHZYPWnTg@mail.gmail.com>
+ <20170609095803.2b755283@bbrezillon>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Tue, 13 Jun 2017 13:41:24 +0900
+Message-ID: <CAK7LNATEDLAC-8c0FWaGUfRk56Y=DOEeE-MhbAEGCv5bNx+QBg@mail.gmail.com>
+Subject: Re: [PATCH v5 10/23] mtd: nand: denali: rework interrupt handling
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>, Dinh Nguyen <dinguyen@kernel.org>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Jassi Brar <jaswinder.singh@linaro.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Enrico Jorns <ejo@pengutronix.de>, David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,120 +47,268 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-S25FL{128|256|512}S datasheets say:
-"When P_ERR or E_ERR bits are set to one, the WIP bit will remain set to
-one indicating the device remains busy and unable to receive new operation
-commands. A Clear Status Register (CLSR) command must be received to return
-the device to standby mode."
+Hi Boris,
 
-Current spi-nor code works until first error occurs, but write/erase errors
-are not just rare hardware failures, they also occur if user tries to flash
-write-protected areas. After such attempt no SPI command can be executed
-any more and even read fails. This patch adds support for P_ERR and E_ERR
-bits in Status Register 1 (so that operation fails immediately and not
-after a long timeout) and proper recovery from the error condition.
 
-Tested on Spansion S25FS128S, which is supported by S25FL129P entry.
+2017-06-09 16:58 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.=
+com>:
+> Hi Masahiro,
+>
+> On Fri, 9 Jun 2017 02:26:34 +0900
+> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>
+>> Hi Boris
+>>
+>> 2017-06-09 0:43 GMT+09:00 Boris Brezillon <boris.brezillon@free-electron=
+s.com>:
+>> > On Thu, 8 Jun 2017 21:58:00 +0900
+>> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>> >
+>> >> Hi Boris,
+>> >>
+>> >> 2017-06-08 20:26 GMT+09:00 Boris Brezillon <boris.brezillon@free-elec=
+trons.com>:
+>> >> > On Thu, 8 Jun 2017 19:41:39 +0900
+>> >> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>> >> >
+>> >> >> Hi Boris,
+>> >> >>
+>> >> >>
+>> >> >> 2017-06-08 16:12 GMT+09:00 Boris Brezillon <boris.brezillon@free-e=
+lectrons.com>:
+>> >> >> > Le Thu, 8 Jun 2017 15:10:18 +0900,
+>> >> >> > Masahiro Yamada <yamada.masahiro@socionext.com> a =C3=A9crit :
+>> >> >> >
+>> >> >> >> Hi Boris,
+>> >> >> >>
+>> >> >> >>
+>> >> >> >> 2017-06-07 22:57 GMT+09:00 Boris Brezillon <boris.brezillon@fre=
+e-electrons.com>:
+>> >> >> >> > On Wed,  7 Jun 2017 20:52:19 +0900
+>> >> >> >> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >> >> -/*
+>> >> >> >> >> - * This is the interrupt service routine. It handles all in=
+terrupts
+>> >> >> >> >> - * sent to this device. Note that on CE4100, this is a shar=
+ed interrupt.
+>> >> >> >> >> - */
+>> >> >> >> >> -static irqreturn_t denali_isr(int irq, void *dev_id)
+>> >> >> >> >> +static uint32_t denali_wait_for_irq(struct denali_nand_info=
+ *denali,
+>> >> >> >> >> +                                 uint32_t irq_mask)
+>> >> >> >> >>  {
+>> >> >> >> >> -     struct denali_nand_info *denali =3D dev_id;
+>> >> >> >> >> +     unsigned long time_left, flags;
+>> >> >> >> >>       uint32_t irq_status;
+>> >> >> >> >> -     irqreturn_t result =3D IRQ_NONE;
+>> >> >> >> >>
+>> >> >> >> >> -     spin_lock(&denali->irq_lock);
+>> >> >> >> >> +     spin_lock_irqsave(&denali->irq_lock, flags);
+>> >> >> >> >>
+>> >> >> >> >> -     /* check to see if a valid NAND chip has been selected=
+. */
+>> >> >> >> >> -     if (is_flash_bank_valid(denali->flash_bank)) {
+>> >> >> >> >> -             /*
+>> >> >> >> >> -              * check to see if controller generated the in=
+terrupt,
+>> >> >> >> >> -              * since this is a shared interrupt
+>> >> >> >> >> -              */
+>> >> >> >> >> -             irq_status =3D denali_irq_detected(denali);
+>> >> >> >> >> -             if (irq_status !=3D 0) {
+>> >> >> >> >> -                     /* handle interrupt */
+>> >> >> >> >> -                     /* first acknowledge it */
+>> >> >> >> >> -                     clear_interrupt(denali, irq_status);
+>> >> >> >> >> -                     /*
+>> >> >> >> >> -                      * store the status in the device cont=
+ext for someone
+>> >> >> >> >> -                      * to read
+>> >> >> >> >> -                      */
+>> >> >> >> >> -                     denali->irq_status |=3D irq_status;
+>> >> >> >> >> -                     /* notify anyone who cares that it hap=
+pened */
+>> >> >> >> >> -                     complete(&denali->complete);
+>> >> >> >> >> -                     /* tell the OS that we've handled this=
+ */
+>> >> >> >> >> -                     result =3D IRQ_HANDLED;
+>> >> >> >> >> -             }
+>> >> >> >> >> +     irq_status =3D denali->irq_status;
+>> >> >> >> >> +
+>> >> >> >> >> +     if (irq_mask & irq_status) {
+>> >> >> >> >> +             spin_unlock_irqrestore(&denali->irq_lock, flag=
+s);
+>> >> >> >> >> +             return irq_status;
+>> >> >> >> >>       }
+>> >> >> >> >> -     spin_unlock(&denali->irq_lock);
+>> >> >> >> >> -     return result;
+>> >> >> >> >> +
+>> >> >> >> >> +     denali->irq_mask =3D irq_mask;
+>> >> >> >> >> +     reinit_completion(&denali->complete);
+>> >> >> >> >
+>> >> >> >> > These 2 instructions should be done before calling
+>> >> >> >> > denali_wait_for_irq() (for example in denali_reset_irq()), ot=
+herwise
+>> >> >> >> > you might loose events if they happen between your irq_status=
+ read and
+>> >> >> >> > the reinit_completion() call.
+>> >> >> >>
+>> >> >> >> No.
+>> >> >> >>
+>> >> >> >> denali->irq_lock avoids a race between denali_isr() and
+>> >> >> >> denali_wait_for_irq().
+>> >> >> >>
+>> >> >> >>
+>> >> >> >> The line
+>> >> >> >>      denali->irq_status |=3D irq_status;
+>> >> >> >> in denali_isr() accumulates all events that have happened
+>> >> >> >> since denali_reset_irq().
+>> >> >> >>
+>> >> >> >> If the interested IRQs have already happened
+>> >> >> >> before denali_wait_for_irq(), it just return immediately
+>> >> >> >> without using completion.
+>> >> >> >>
+>> >> >> >> I do not mind adding a comment like below
+>> >> >> >> if you think my intention is unclear, though.
+>> >> >> >>
+>> >> >> >>         /* Return immediately if interested IRQs have already h=
+append. */
+>> >> >> >>         if (irq_mask & irq_status) {
+>> >> >> >>                 spin_unlock_irqrestore(&denali->irq_lock, flags=
+);
+>> >> >> >>                 return irq_status;
+>> >> >> >>         }
+>> >> >> >>
+>> >> >> >>
+>> >> >> >
+>> >> >> > My bad, I didn't notice you were releasing the lock after callin=
+g
+>> >> >> > reinit_completion(). I still find this solution more complex tha=
+n my
+>> >> >> > proposal, but I don't care that much.
+>> >> >>
+>> >> >>
+>> >> >> At first, I implemented exactly like you suggested;
+>> >> >>    denali->irq_mask =3D irq_mask;
+>> >> >>    reinit_completion(&denali->complete)
+>> >> >> in denali_reset_irq().
+>> >> >>
+>> >> >>
+>> >> >> IIRC, things were like this.
+>> >> >>
+>> >> >> Some time later, you memtioned to use ->cmd_ctrl
+>> >> >> instead of ->cmdfunc.
+>> >> >>
+>> >> >> Then I had a problem when I needed to implement
+>> >> >> denali_check_irq() in
+>> >> >> http://patchwork.ozlabs.org/patch/772395/
+>> >> >>
+>> >> >> denali_wait_for_irq() is blocked until interested IRQ happens.
+>> >> >> but ->dev_ready() hook should not be blocked.
+>> >> >> It should return if R/B# transition has happened or not.
+>> >> >
+>> >> > Nope, it should return whether the NAND is ready or not, not whethe=
+r a
+>> >> > busy -> ready transition occurred or not. It's typically done by
+>> >> > reading the NAND STATUS register or by checking the R/B pin status.
+>> >>
+>> >> Checking the R/B pin is probably impossible unless
+>> >> the pin is changed into a GPIO port.
+>> >>
+>> >> I also considered NAND_CMD_STATUS, but
+>> >> I can not recall why I chose the current approach.
+>> >> Perhaps I thought returning detected IRQ
+>> >> is faster than accessing the chip for NAND_CMD_STATUS.
+>> >>
+>> >> I can try NAND_CMD_STATUS approach if you like.
+>> >
+>> > Depends what you're trying to do. IIUC, you use denali_wait_for_irq()
+>> > inside your ->reset()/->read/write_{page,oob}[_raw]() methods, which i=
+s
+>> > perfectly fine (assuming CUSTOM_PAGE_ACCESS is set) since these hooks
+>> > are expected to wait for chip readiness before returning.
+>> >
+>> > You could also implement ->waitfunc() using denali_wait_for_irq() if
+>> > you're able to detect R/B transitions,
+>>
+>> R/B transition will set INTR__INT_ACT interrupt.
+>>
+>> I think it is easy in my implementation of denali_wait_for_irq(),
+>> like
+>>
+>>    denali_wait_for_irq(denali, INTR__INT_ACT);
+>>
+>>
+>>
+>> But, you are suggesting me to change it.
+>
+> This is clearly not a hard requirement, I was just curious and wanted
+> to understand why you had such a convoluted interrupt handling design. I
+> think I now understand why (see below).
+>
+>> In your way, you give IRQ masks to denali_reset_irq(), like
+>> denali_reset_irq(denali, INTR__ERASE_COMP | INTR__ERASE_FAIL);
+>>
+>> Then, we have no room of IRQ bit in denali_wait_for_irq().
+>>
+>> How will you implement it?
+>
+> It should be pretty easy: just make sure you reset the INTR__INT_ACT
+> status flag before sending a command (->cmd_ctrl()), and then unmask the
+> INTR__INT_ACT in denali_waitfunc() just before calling
+> denali_wait_for_irqs(). This should guarantee that you don't loose any
+> events, while keeping the logic rather simple.
 
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 29 +++++++++++++++++++++--------
- include/linux/mtd/spi-nor.h   |  5 +++++
- 2 files changed, 26 insertions(+), 8 deletions(-)
+Right.  This way will be possible.
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index dea8c9c..efb3519 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -86,6 +86,7 @@ struct flash_info {
- 					 * to support memory size above 128Mib.
- 					 */
- #define NO_CHIP_ERASE		BIT(12) /* Chip does not support chip erase */
-+#define USE_CLSR		BIT(13)	/* use CLSR command */
- };
- 
- #define JEDEC_MFR(info)	((info)->id[0])
-@@ -320,8 +321,18 @@ static inline int spi_nor_sr_ready(struct spi_nor *nor)
- 	int sr = read_sr(nor);
- 	if (sr < 0)
- 		return sr;
--	else
--		return !(sr & SR_WIP);
-+
-+	if (nor->flags & SNOR_F_USE_CLSR && sr & (SR_E_ERR | SR_P_ERR)) {
-+		if (sr & SR_E_ERR)
-+			dev_err(nor->dev, "Erase Error occurred\n");
-+		else
-+			dev_err(nor->dev, "Programming Error occurred\n");
-+
-+		nor->write_reg(nor, SPINOR_OP_CLSR, NULL, 0);
-+		return -EIO;
-+	}
-+
-+	return !(sr & SR_WIP);
- }
- 
- static inline int spi_nor_fsr_ready(struct spi_nor *nor)
-@@ -1053,15 +1064,15 @@ static const struct flash_info spi_nor_ids[] = {
- 	 */
- 	{ "s25sl032p",  INFO(0x010215, 0x4d00,  64 * 1024,  64, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
--	{ "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, 0) },
--	{ "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
--	{ "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-+	{ "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, USE_CLSR) },
-+	{ "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
-+	{ "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
- 	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
- 	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
- 	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
--	{ "s25fl128s",	INFO6(0x012018, 0x4d0180, 64 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
--	{ "s25fl129p0", INFO(0x012018, 0x4d00, 256 * 1024,  64, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
--	{ "s25fl129p1", INFO(0x012018, 0x4d01,  64 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-+	{ "s25fl128s",  INFO6(0x012018, 0x4d0180, 64 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
-+	{ "s25fl129p0", INFO(0x012018, 0x4d00, 256 * 1024,  64, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
-+	{ "s25fl129p1", INFO(0x012018, 0x4d01,  64 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
- 	{ "s25sl004a",  INFO(0x010212,      0,  64 * 1024,   8, 0) },
- 	{ "s25sl008a",  INFO(0x010213,      0,  64 * 1024,  16, 0) },
- 	{ "s25sl016a",  INFO(0x010214,      0,  64 * 1024,  32, 0) },
-@@ -1641,6 +1652,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
- 		nor->flags |= SNOR_F_HAS_SR_TB;
- 	if (info->flags & NO_CHIP_ERASE)
- 		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
-+	if (info->flags & USE_CLSR)
-+		nor->flags |= SNOR_F_USE_CLSR;
- 
- #ifdef CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
- 	/* prefer "small sector" erase if possible */
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index f2a7180..0dc6c34 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -93,6 +93,7 @@
- 
- /* Used for Spansion flashes only. */
- #define SPINOR_OP_BRWR		0x17	/* Bank register write */
-+#define SPINOR_OP_CLSR		0x30	/* Clear status register 1 */
- 
- /* Used for Micron flashes only. */
- #define SPINOR_OP_RD_EVCR      0x65    /* Read EVCR register */
-@@ -107,6 +108,9 @@
- #define SR_BP2			BIT(4)	/* Block protect 2 */
- #define SR_TB			BIT(5)	/* Top/Bottom protect */
- #define SR_SRWD			BIT(7)	/* SR write protect */
-+/* Spansion/Cypress specific status bits */
-+#define SR_E_ERR		BIT(5)
-+#define SR_P_ERR		BIT(6)
- 
- #define SR_QUAD_EN_MX		BIT(6)	/* Macronix Quad I/O */
- 
-@@ -141,6 +145,7 @@ enum spi_nor_option_flags {
- 	SNOR_F_NO_OP_CHIP_ERASE	= BIT(2),
- 	SNOR_F_S3AN_ADDR_DEFAULT = BIT(3),
- 	SNOR_F_READY_XSR_RDY	= BIT(4),
-+	SNOR_F_USE_CLSR		= BIT(5),
- };
- 
- /**
--- 
-2.4.6
+One compromise I see is that
+it sets INTR__INT_ACT (=3D wait for R/B# IRQ event) for all commands.
+Some commands actually trigger R/B# transition, but some do not.
+
+We can make it precise like nand_command_lp(),
+but I do not want to write such a switch statement in my driver.
+(this must be maintained for possible new command addition in the future)
+
+
+Anyway, I will send v6 in my current approach.
+
+
+
+
+>>
+>>
+>>
+>> > Here is a patch to show you what I had in mind [1] (it applies on top
+>> > of this patch). AFAICT, there's no races, no interrupt loss, and you
+>> > get rid of the ->irq_mask/status/lock fields.
+>> >
+>> > [1]http://code.bulix.org/fufia6-145571
+>> >
+>>
+>>
+>> Problem Scenario A
+>>  [1] wait_for_completion_timeout() exits with timeout.
+>>  [2] IRQ happens and denali_isr() is invoked
+>>  [3] iowrite32(0, denali->flash_reg + INTR_EN(denali->flash_bank));
+>>  [4] status =3D ioread32(denali->flash_reg + INTR_STATUS(bank)) &
+>>               ioread32(denali->flash_reg + INTR_EN(bank));
+>>       (status is set to 0 because INTR_EN(bank) is now 0)
+>>  [5] return IRQ_NONE;
+>>  [6] kernel complains  "irq *: nobody cared"
+>
+> Okay, this is the part I initially misunderstood. Your goal is to never
+> ever return IRQ_NONE, while I was accepting to rarely return IRQ_NONE
+> in the unlikely interrupt-just-after-timeout case. Note that the kernel
+> irq infrastructure accepts rare occurrences or IRQ_NONE [1].
+
+I wanted to be strict here.
+
+But, I did not know the kernel is tolerant with rare IRQ_NONE.
+Thanks for the pointer!
+
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
