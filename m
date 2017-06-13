@@ -1,17 +1,24 @@
-Date: Tue, 13 Jun 2017 15:14:55 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Cc: Nicolas Ferre <nicolas.ferre@microchip.com>, Wenyou Yang
- <wenyou.yang@atmel.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: atmel_nand: drop unused include
-Message-ID: <20170613151455.1b458499@bbrezillon>
-In-Reply-To: <20170613125842.16422-1-alexandre.belloni@free-electrons.com>
-References: <20170613125842.16422-1-alexandre.belloni@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from conuserg-09.nifty.com ([210.131.2.76])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dKm9k-0006QN-Nu
+ for linux-mtd@lists.infradead.org; Tue, 13 Jun 2017 13:46:55 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org
+Cc: Enrico Jorns <ejo@pengutronix.de>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Dinh Nguyen <dinguyen@kernel.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Chuanxiao Dong <chuanxiao.dong@intel.com>,
+ Jassi Brar <jaswinder.singh@linaro.org>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>
+Subject: [PATCH v7 00/16] mtd: nand: denali: Denali NAND IP improvements
+Date: Tue, 13 Jun 2017 22:45:34 +0900
+Message-Id: <1497361550-8115-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,33 +28,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 13 Jun 2017 14:58:42 +0200
-Alexandre Belloni <alexandre.belloni@free-electrons.com> wrote:
 
-> The Atmel NAND driver doesn't used anything from
-> linux/platform_data/atmel.h, stop including it.
-> 
+This patch series intends to solve various problems.
 
-Applied.
+[1] The driver just retrieves the OOB area as-is
+    whereas the controller uses syndrome page layout.
+[2] ONFi devices are not working
+[3] It can not read Bad Block Marker
 
-Thanks,
+Outstanding changes are:
+ - Fix raw/oob callbacks for syndrome page layout
+ - Implement setup_data_interface() callback
+ - Fix/implement more commands for ONFi devices
+ - Allow to skip the driver internal bounce buffer
+ - Support PIO in case DMA is not supported
+ - Switch from ->cmdfunc over to ->cmd_ctrl
 
-Boris
+18 patches were merged by v2.
+11 patches were merged by v3.
+2 patches were merged by v4.
+5 patches were merged by v5.
+Here is the rest of the series.
 
-> Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-> ---
->  drivers/mtd/nand/atmel/nand-controller.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/atmel/nand-controller.c
-> index 3b2446896147..6bd61acfc2c8 100644
-> --- a/drivers/mtd/nand/atmel/nand-controller.c
-> +++ b/drivers/mtd/nand/atmel/nand-controller.c
-> @@ -64,7 +64,6 @@
->  #include <linux/of_platform.h>
->  #include <linux/iopoll.h>
->  #include <linux/platform_device.h>
-> -#include <linux/platform_data/atmel.h>
->  #include <linux/regmap.h>
->  
->  #include "pmecc.h"
+v1: https://lkml.org/lkml/2016/11/26/144
+v2: https://lkml.org/lkml/2017/3/22/804
+v3: https://lkml.org/lkml/2017/3/30/90
+v4: https://lkml.org/lkml/2017/6/5/1005
+
+
+Masahiro Yamada (16):
+  mtd: nand: denali: set NAND_ECC_CUSTOM_PAGE_ACCESS
+  mtd: nand: denali: remove unneeded find_valid_banks()
+  mtd: nand: denali: handle timing parameters by setup_data_interface()
+  mtd: nand: denali: rework interrupt handling
+  mtd: nand: denali: switch over to cmd_ctrl instead of cmdfunc
+  mtd: nand: denali: fix bank reset function to detect the number of
+    chips
+  mtd: nand: denali: use interrupt instead of polling for bank reset
+  mtd: nand: denali: propagate page to helpers via function argument
+  mtd: nand: denali: merge struct nand_buf into struct denali_nand_info
+  mtd: nand: denali: use flag instead of register macro for direction
+  mtd: nand: denali: fix raw and oob accessors for syndrome page layout
+  mtd: nand: denali: support hardware-assisted erased page detection
+  mtd: nand: denali: skip driver internal bounce buffer when possible
+  mtd: nand: denali: use non-managed kmalloc() for DMA buffer
+  mtd: nand: denali: enable bad block table scan
+  mtd: nand: denali: avoid magic numbers and rename for clarification
+
+ drivers/mtd/nand/denali.c     | 1724 ++++++++++++++++++-----------------------
+ drivers/mtd/nand/denali.h     |   63 +-
+ drivers/mtd/nand/denali_dt.c  |   15 +-
+ drivers/mtd/nand/denali_pci.c |   22 +-
+ 4 files changed, 806 insertions(+), 1018 deletions(-)
+
+-- 
+2.7.4
