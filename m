@@ -1,25 +1,15 @@
-Received: from mail-it0-x242.google.com ([2607:f8b0:4001:c0b::242])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dKvy0-0002WG-I9
- for linux-mtd@lists.infradead.org; Wed, 14 Jun 2017 00:15:26 +0000
-Received: by mail-it0-x242.google.com with SMTP id l6so16064687iti.0
- for <linux-mtd@lists.infradead.org>; Tue, 13 Jun 2017 17:15:03 -0700 (PDT)
-From: Andreas Dilger <adilger@dilger.ca>
-Message-Id: <72134F72-718F-4B14-891D-20F2CF781A16@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_D677EA3E-69F5-4A75-98CD-0364624B1082";
- protocol="application/pgp-signature"; micalg=pgp-sha1
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH 1/3] ext4: require key for truncate(2) of encrypted file
-Date: Tue, 13 Jun 2017 18:14:53 -0600
-In-Reply-To: <20170613234755.111167-2-ebiggers3@gmail.com>
-Cc: linux-fscrypt@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
- Eric Biggers <ebiggers@google.com>
-To: Eric Biggers <ebiggers3@gmail.com>
-References: <20170613234755.111167-1-ebiggers3@gmail.com>
- <20170613234755.111167-2-ebiggers3@gmail.com>
+Received: from lgeamrelo13.lge.com ([156.147.23.53])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dKwEL-0008UL-HX
+ for linux-mtd@lists.infradead.org; Wed, 14 Jun 2017 00:32:19 +0000
+From: Hyunchul Lee <hyc.lee@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, adrian.hunter@intel.com,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, kernel-team@lge.com
+Subject: [PATCH v3] ubifs: Change gfp flags in page allocation for bulk read
+Date: Wed, 14 Jun 2017 09:31:49 +0900
+Message-Id: <1497400309-12336-1-git-send-email-hyc.lee@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,101 +19,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From: Hyunchul Lee <cheol.lee@lge.com>
 
---Apple-Mail=_D677EA3E-69F5-4A75-98CD-0364624B1082
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+In low memory situations, page allocations for bulk read
+can kill applications for reclaiming memory, and print an
+failure message when allocations are failed.
+Because bulk read is just an optimization, we don't have
+to do these and can stop page allocations.
 
-On Jun 13, 2017, at 5:47 PM, Eric Biggers <ebiggers3@gmail.com> wrote:
->=20
-> From: Eric Biggers <ebiggers@google.com>
->=20
-> Currently, filesystems allow truncate(2) on an encrypted file without
-> the encryption key.  However, it's impossible to correctly handle the
-> case where the size being truncated to is not a multiple of the
-> filesystem block size, because that would require decrypting the final
-> block, zeroing the part beyond i_size, then encrypting the block.
->=20
-> As other modifications to encrypted file contents are prohibited =
-without
-> the key, just prohibit truncate(2) as well, making it fail with =
-ENOKEY.
+Though this siutation happens rarely, add __GFP_NORETRY
+to prevent from excessive memory reclaim and killing
+applications, and __GFP_WARN to suppress this failure
+message.
 
-Out of curiosity, if an encrypted block is zero-filled at the end when
-the key is unavailable, what would happen?  At worst this would result
-in garbage at the end of the file when the zeroes are "decrypted"?
+For this, Use readahead_gfp_mask for gfp flags when
+allocating pages.
 
-Is it possible to unlink files if they are encrypted without the key (if
-the user has permission to write to the directory)?
+Signed-off-by: Hyunchul Lee <cheol.lee@lge.com>
+---
+v3:
+* fix the invalid format of version history in 
+ this patch.
 
-Does file unlink result in the per-file crypto key being erased in the
-inode, or is the inode just marked unused but not overwritten?  One of
-the desirable features of per-file crypto is "secure erase" so that once
-the inode is unlinked the crypto key is gone and there is no way to =
-decrypt
-the data after the fact, even if the filesystem/user key is later =
-recovered.
-If the per-file key is still sitting in the inode, then it may be =
-possible
-to decrypt the data long after the file was deleted if the key is later
-compromised and the inode+data blocks were not re-used.
+v2:
+* rewrite a commit message for explaining why this
+ patch is needed.
 
-Cheers, Andreas
+ fs/ubifs/file.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
-> fs/ext4/inode.c | 8 ++++++++
-> 1 file changed, 8 insertions(+)
->=20
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 5cf82d03968c..baf8630de6a5 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -5307,6 +5307,14 @@ int ext4_setattr(struct dentry *dentry, struct =
-iattr *attr)
-> 		loff_t oldsize =3D inode->i_size;
-> 		int shrink =3D (attr->ia_size <=3D inode->i_size);
->=20
-> +		if (ext4_encrypted_inode(inode)) {
-> +			error =3D fscrypt_get_encryption_info(inode);
-> +			if (error)
-> +				return error;
-> +			if (!fscrypt_has_encryption_key(inode))
-> +				return -ENOKEY;
-> +		}
-> +
-> 		if (!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))) =
-{
-> 			struct ext4_sb_info *sbi =3D =
-EXT4_SB(inode->i_sb);
->=20
-> --
-> 2.13.1.508.gb3defc5cc-goog
->=20
-
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_D677EA3E-69F5-4A75-98CD-0364624B1082
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iD8DBQFZQH//pIg59Q01vtYRAla2AJ90SaY0+2olcFVUFQxmwnCD9ty2UQCdHkhZ
-kFUDY2KF7HvByFVWB1nnHyY=
-=Mm2s
------END PGP SIGNATURE-----
-
---Apple-Mail=_D677EA3E-69F5-4A75-98CD-0364624B1082--
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index d9ae86f..4396c04 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -735,6 +735,7 @@ static int ubifs_do_bulk_read(struct ubifs_info *c, struct bu_info *bu,
+ 	int err, page_idx, page_cnt, ret = 0, n = 0;
+ 	int allocate = bu->buf ? 0 : 1;
+ 	loff_t isize;
++	gfp_t ra_gfp_mask = readahead_gfp_mask(mapping) & ~__GFP_FS;
+ 
+ 	err = ubifs_tnc_get_bu_keys(c, bu);
+ 	if (err)
+@@ -796,8 +797,7 @@ static int ubifs_do_bulk_read(struct ubifs_info *c, struct bu_info *bu,
+ 
+ 		if (page_offset > end_index)
+ 			break;
+-		page = find_or_create_page(mapping, page_offset,
+-					   GFP_NOFS | __GFP_COLD);
++		page = find_or_create_page(mapping, page_offset, ra_gfp_mask);
+ 		if (!page)
+ 			break;
+ 		if (!PageUptodate(page))
+-- 
+1.9.1
