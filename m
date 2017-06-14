@@ -1,18 +1,20 @@
-Received: from goliath.siemens.de ([192.35.17.28])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dL5gI-0006Tw-AY
- for linux-mtd@lists.infradead.org; Wed, 14 Jun 2017 10:37:48 +0000
-Subject: Re: [PATCH v0 00/20] mtd-utils: Return error code if command line
- option is unknown
-To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-References: <20170612105101.18223-1-daniel.wagner@siemens.com>
- <056e2db4-5f34-a846-d5d9-48d3d4f752b2@sigma-star.at>
-Cc: linux-mtd@lists.infradead.org
-From: Daniel Wagner <daniel.wagner@siemens.com>
-Message-ID: <aa8112f4-c26c-806f-b01a-e73f7af7cfe4@siemens.com>
-Date: Wed, 14 Jun 2017 12:37:15 +0200
+ id 1dL7fb-0000R3-JT
+ for linux-mtd@lists.infradead.org; Wed, 14 Jun 2017 12:45:12 +0000
+Subject: Re: [f2fs-dev] [PATCH 2/3] f2fs: require key for truncate(2) of
+ encrypted file
+To: Eric Biggers <ebiggers3@gmail.com>, linux-fscrypt@vger.kernel.org
+Cc: Theodore Ts'o <tytso@mit.edu>, Eric Biggers <ebiggers@google.com>,
+ linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
+References: <20170613234755.111167-1-ebiggers3@gmail.com>
+ <20170613234755.111167-3-ebiggers3@gmail.com>
+From: Chao Yu <chao@kernel.org>
+Message-ID: <e558657c-d383-4528-9be0-8c2d1ab8344c@kernel.org>
+Date: Wed, 14 Jun 2017 20:44:19 +0800
 MIME-Version: 1.0
-In-Reply-To: <056e2db4-5f34-a846-d5d9-48d3d4f752b2@sigma-star.at>
+In-Reply-To: <20170613234755.111167-3-ebiggers3@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -25,14 +27,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi David,
+On 2017/6/14 7:47, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Currently, filesystems allow truncate(2) on an encrypted file without
+> the encryption key.  However, it's impossible to correctly handle the
+> case where the size being truncated to is not a multiple of the
+> filesystem block size, because that would require decrypting the final
+> block, zeroing the part beyond i_size, then encrypting the block.
+> 
+> As other modifications to encrypted file contents are prohibited without
+> the key, just prohibit truncate(2) as well, making it fail with ENOKEY.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-On 06/14/2017 11:12 AM, David Oberhollenzer wrote:
-> I applied your patches to mtd-utils.git. However, I took the liberty
-> of reordering and squashing some of the patches with identical commit
-> messages and identical, tiny changes to different programs.
+Acked-by: Chao Yu <yuchao0@huawei.com>
 
-Works for me. Thanks!
-
-cheers,
-Daniel
+Thanks,
