@@ -1,16 +1,24 @@
-Received: from da1vs02.rockwellcollins.com ([205.175.227.29])
+Received: from mout.kundenserver.de ([212.227.126.131])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dLAtW-0005cE-Vt
- for linux-mtd@lists.infradead.org; Wed, 14 Jun 2017 16:11:48 +0000
-Received: by mail-it0-f69.google.com with SMTP id s131so3417168itd.6
- for <linux-mtd@lists.infradead.org>; Wed, 14 Jun 2017 09:11:25 -0700 (PDT)
-MIME-Version: 1.0
-From: Ronak Desai <ronak.desai@rockwellcollins.com>
-Date: Wed, 14 Jun 2017 11:11:24 -0500
-Message-ID: <CADFuHZ411pOkuCSyHNqS=GNh92XJcYgec729FEJebUcusFRQwQ@mail.gmail.com>
-Subject: Regarding jffs2 failure to report extended attributes
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+ id 1dLFh8-0005jy-Eh
+ for linux-mtd@lists.infradead.org; Wed, 14 Jun 2017 21:19:20 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: kasan-dev@googlegroups.com, Dmitry Vyukov <dvyukov@google.com>,
+ Alexander Potapenko <glider@google.com>,
+ Andrey Ryabinin <aryabinin@virtuozzo.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ Arend van Spriel <arend.vanspriel@broadcom.com>,
+ Arnd Bergmann <arnd@arndb.de>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
+Subject: [PATCH v2 05/11] mtd: cfi: reduce stack size with KASAN
+Date: Wed, 14 Jun 2017 23:15:40 +0200
+Message-Id: <20170614211556.2062728-6-arnd@arndb.de>
+In-Reply-To: <20170614211556.2062728-1-arnd@arndb.de>
+References: <20170614211556.2062728-1-arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,39 +28,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+When CONFIG_KASAN is used, we consume a lot of extra stack space:
 
-We are having a product which is running an old Linux kernel 2.6.27
-and using jffs2 filesystem. We use SELinux policy and security labels
-on this system.
+drivers/mtd/chips/cfi_cmdset_0020.c: In function 'do_write_buffer':
+drivers/mtd/chips/cfi_cmdset_0020.c:603:1: error: the frame size of 2184 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]
+drivers/mtd/chips/cfi_cmdset_0020.c: In function 'cfi_staa_erase_varsize':
+drivers/mtd/chips/cfi_cmdset_0020.c:972:1: error: the frame size of 1936 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]
+drivers/mtd/chips/cfi_cmdset_0001.c: In function 'do_write_buffer':
+drivers/mtd/chips/cfi_cmdset_0001.c:1841:1: error: the frame size of 1776 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]
 
-One of the jffs2 partition we use as rw and copy some files and read
-back those files at regular interval. Now, following is the scenario
-we encounter in the field and that is completely random.
+This marks some functions as noinline_if_stackbloat to keep reduce the
+overall stack size.
 
-Directory structure for example, /mnt/dir_abc/file_xyz
-SELinux security label (stored as extended attributes) on "dir_abc" is
-not reported and instead it shows the default label "file_t" while
-security label on "file_xyz" is intact. No process touches the
-"dir_abc" during the process and it's inode number remains the same as
-whatever is set by default in jffs2.img. We can see that the inode
-version number is changed though in the jffs2dump analysis. So
-definitely garbage collection is moving the data around.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/mtd/chips/cfi_cmdset_0020.c | 8 ++++----
+ include/linux/mtd/map.h             | 8 ++++----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-When looking at the hexdump of this mtd partition, we can see that the
-security label for "dir_abc" is in there but somehow filesystem does
-not report it and instead report the default label "file_t".
-
-Now, after doing multiple power cycles on the same unit and
-mount/unmount on this partition, the issue disappears and filesystem
-stats showing the correct label again.
-
-We understand that it is an old kernel and may be missing fixes but it
-is not possible to update to latest kernel. So, are there any specific
-commit list on jffs2 that we should review and try to back-port to
-avoid problems like this. We are looking for areas for which we should
-review commits as definitely there are number of commits after 2.6.27
-on jffs2 subsystem.
-
-Best Regards,
-Ronak Desai
+diff --git a/drivers/mtd/chips/cfi_cmdset_0020.c b/drivers/mtd/chips/cfi_cmdset_0020.c
+index 7d342965f392..5eee5e883f55 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0020.c
++++ b/drivers/mtd/chips/cfi_cmdset_0020.c
+@@ -244,7 +244,7 @@ static struct mtd_info *cfi_staa_setup(struct map_info *map)
+ }
+ 
+ 
+-static inline int do_read_onechip(struct map_info *map, struct flchip *chip, loff_t adr, size_t len, u_char *buf)
++static noinline_if_stackbloat int do_read_onechip(struct map_info *map, struct flchip *chip, loff_t adr, size_t len, u_char *buf)
+ {
+ 	map_word status, status_OK;
+ 	unsigned long timeo;
+@@ -728,7 +728,7 @@ cfi_staa_writev(struct mtd_info *mtd, const struct kvec *vecs,
+ }
+ 
+ 
+-static inline int do_erase_oneblock(struct map_info *map, struct flchip *chip, unsigned long adr)
++static noinline_if_stackbloat int do_erase_oneblock(struct map_info *map, struct flchip *chip, unsigned long adr)
+ {
+ 	struct cfi_private *cfi = map->fldrv_priv;
+ 	map_word status, status_OK;
+@@ -1029,7 +1029,7 @@ static void cfi_staa_sync (struct mtd_info *mtd)
+ 	}
+ }
+ 
+-static inline int do_lock_oneblock(struct map_info *map, struct flchip *chip, unsigned long adr)
++static noinline_if_stackbloat int do_lock_oneblock(struct map_info *map, struct flchip *chip, unsigned long adr)
+ {
+ 	struct cfi_private *cfi = map->fldrv_priv;
+ 	map_word status, status_OK;
+@@ -1175,7 +1175,7 @@ static int cfi_staa_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 	}
+ 	return 0;
+ }
+-static inline int do_unlock_oneblock(struct map_info *map, struct flchip *chip, unsigned long adr)
++static noinline_if_stackbloat int do_unlock_oneblock(struct map_info *map, struct flchip *chip, unsigned long adr)
+ {
+ 	struct cfi_private *cfi = map->fldrv_priv;
+ 	map_word status, status_OK;
+diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
+index 3aa56e3104bb..29db74314db8 100644
+--- a/include/linux/mtd/map.h
++++ b/include/linux/mtd/map.h
+@@ -316,7 +316,7 @@ static inline map_word map_word_or(struct map_info *map, map_word val1, map_word
+ 	return r;
+ }
+ 
+-static inline int map_word_andequal(struct map_info *map, map_word val1, map_word val2, map_word val3)
++static noinline_if_stackbloat int map_word_andequal(struct map_info *map, map_word val1, map_word val2, map_word val3)
+ {
+ 	int i;
+ 
+@@ -328,7 +328,7 @@ static inline int map_word_andequal(struct map_info *map, map_word val1, map_wor
+ 	return 1;
+ }
+ 
+-static inline int map_word_bitsset(struct map_info *map, map_word val1, map_word val2)
++static noinline_if_stackbloat int map_word_bitsset(struct map_info *map, map_word val1, map_word val2)
+ {
+ 	int i;
+ 
+@@ -362,7 +362,7 @@ static inline map_word map_word_load(struct map_info *map, const void *ptr)
+ 	return r;
+ }
+ 
+-static inline map_word map_word_load_partial(struct map_info *map, map_word orig, const unsigned char *buf, int start, int len)
++static noinline_if_stackbloat map_word map_word_load_partial(struct map_info *map, map_word orig, const unsigned char *buf, int start, int len)
+ {
+ 	int i;
+ 
+@@ -392,7 +392,7 @@ static inline map_word map_word_load_partial(struct map_info *map, map_word orig
+ #define MAP_FF_LIMIT 8
+ #endif
+ 
+-static inline map_word map_word_ff(struct map_info *map)
++static noinline_if_stackbloat map_word map_word_ff(struct map_info *map)
+ {
+ 	map_word r;
+ 	int i;
+-- 
+2.9.0
