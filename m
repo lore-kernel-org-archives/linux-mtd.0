@@ -1,23 +1,21 @@
-Received: from mail.kernel.org ([198.145.29.99])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dL7fb-0000R3-JT
- for linux-mtd@lists.infradead.org; Wed, 14 Jun 2017 12:45:12 +0000
-Subject: Re: [f2fs-dev] [PATCH 2/3] f2fs: require key for truncate(2) of
- encrypted file
-To: Eric Biggers <ebiggers3@gmail.com>, linux-fscrypt@vger.kernel.org
-Cc: Theodore Ts'o <tytso@mit.edu>, Eric Biggers <ebiggers@google.com>,
- linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
-References: <20170613234755.111167-1-ebiggers3@gmail.com>
- <20170613234755.111167-3-ebiggers3@gmail.com>
-From: Chao Yu <chao@kernel.org>
-Message-ID: <e558657c-d383-4528-9be0-8c2d1ab8344c@kernel.org>
-Date: Wed, 14 Jun 2017 20:44:19 +0800
+Date: Wed, 14 Jun 2017 23:11:47 +0800
+From: Shawn Guo <shawnguo@kernel.org>
+To: Stefan Agner <stefan@agner.ch>
+Cc: kernel@pengutronix.de, sboyd@codeaurora.org, aisheng.dong@nxp.com,
+ dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
+ richard@nod.at, robh+dt@kernel.org, mark.rutland@arm.com,
+ han.xu@nxp.com, fabio.estevam@freescale.com, LW@KARO-electronics.de,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 0/3] ARM: dts: imx7: add NAND support
+Message-ID: <20170614151146.GC30112@dragon>
+References: <cover.9fab78eaa869dbad4c9ad7e8578c9cef3e49daa8.1496961128.git-series.stefan@agner.ch>
 MIME-Version: 1.0
-In-Reply-To: <20170613234755.111167-3-ebiggers3@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.9fab78eaa869dbad4c9ad7e8578c9cef3e49daa8.1496961128.git-series.stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,20 +25,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2017/6/14 7:47, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> Currently, filesystems allow truncate(2) on an encrypted file without
-> the encryption key.  However, it's impossible to correctly handle the
-> case where the size being truncated to is not a multiple of the
-> filesystem block size, because that would require decrypting the final
-> block, zeroing the part beyond i_size, then encrypting the block.
-> 
-> As other modifications to encrypted file contents are prohibited without
-> the key, just prohibit truncate(2) as well, making it fail with ENOKEY.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+On Thu, Jun 08, 2017 at 03:34:46PM -0700, Stefan Agner wrote:
+> Stefan Agner (3):
+>   clk: imx7d: create clocks behind rawnand clock gate
+>   ARM: dts: imx7: add GPMI NAND and APBH DMA
+>   ARM: dts: imx7-colibri: add NAND support
 
-Acked-by: Chao Yu <yuchao0@huawei.com>
+Both dts patches look good to me.  Please ping me after the clk patch
+lands on mainline.
 
-Thanks,
+Shawn
