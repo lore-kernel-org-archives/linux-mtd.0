@@ -1,15 +1,25 @@
-Received: from lgeamrelo13.lge.com ([156.147.23.53])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dKwEL-0008UL-HX
- for linux-mtd@lists.infradead.org; Wed, 14 Jun 2017 00:32:19 +0000
-From: Hyunchul Lee <hyc.lee@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, adrian.hunter@intel.com,
- linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mtd@lists.infradead.org, kernel-team@lge.com
-Subject: [PATCH v3] ubifs: Change gfp flags in page allocation for bulk read
-Date: Wed, 14 Jun 2017 09:31:49 +0900
-Message-Id: <1497400309-12336-1-git-send-email-hyc.lee@gmail.com>
+Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dKyk2-00039v-9c
+ for linux-mtd@lists.infradead.org; Wed, 14 Jun 2017 03:13:11 +0000
+Received: by mail-pf0-x243.google.com with SMTP id d5so12333110pfe.1
+ for <linux-mtd@lists.infradead.org>; Tue, 13 Jun 2017 20:12:49 -0700 (PDT)
+Date: Tue, 13 Jun 2017 20:12:45 -0700
+From: Eric Biggers <ebiggers3@gmail.com>
+To: Andreas Dilger <adilger@dilger.ca>
+Cc: linux-fscrypt@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH 1/3] ext4: require key for truncate(2) of encrypted file
+Message-ID: <20170614031245.GA605@zzz>
+References: <20170613234755.111167-1-ebiggers3@gmail.com>
+ <20170613234755.111167-2-ebiggers3@gmail.com>
+ <72134F72-718F-4B14-891D-20F2CF781A16@dilger.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <72134F72-718F-4B14-891D-20F2CF781A16@dilger.ca>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,56 +29,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Hyunchul Lee <cheol.lee@lge.com>
+Hi Andreas,
 
-In low memory situations, page allocations for bulk read
-can kill applications for reclaiming memory, and print an
-failure message when allocations are failed.
-Because bulk read is just an optimization, we don't have
-to do these and can stop page allocations.
+On Tue, Jun 13, 2017 at 06:14:53PM -0600, Andreas Dilger wrote:
+> On Jun 13, 2017, at 5:47 PM, Eric Biggers <ebiggers3@gmail.com> wrote:
+> > 
+> > From: Eric Biggers <ebiggers@google.com>
+> > 
+> > Currently, filesystems allow truncate(2) on an encrypted file without
+> > the encryption key.  However, it's impossible to correctly handle the
+> > case where the size being truncated to is not a multiple of the
+> > filesystem block size, because that would require decrypting the final
+> > block, zeroing the part beyond i_size, then encrypting the block.
+> > 
+> > As other modifications to encrypted file contents are prohibited without
+> > the key, just prohibit truncate(2) as well, making it fail with ENOKEY.
+> 
+> Out of curiosity, if an encrypted block is zero-filled at the end when
+> the key is unavailable, what would happen?  At worst this would result
+> in garbage at the end of the file when the zeroes are "decrypted"?
 
-Though this siutation happens rarely, add __GFP_NORETRY
-to prevent from excessive memory reclaim and killing
-applications, and __GFP_WARN to suppress this failure
-message.
+Currently ext4 just skips zeroing the final block entirely, which is perhaps the
+most reasonable behavior, but it's wrong because it breaks truncate() semantics.
+If it did zero the final block on-disk, yes it wouldn't actually be zeroes after
+being decrypted, so if the file were to be extended later the extended portion
+wouldn't be filled with zeroes, and more importantly even without extending, up
+to the last 15 bytes of the file would be corrupted since AES-XTS encryption
+operates on 16 byte blocks.  Also, the ciphertext page would likely end up in
+the pagecache, which is supposed to contain the plaintext.  So if the file were
+read later (which requires the key), up to the last PAGE_SIZE bytes of the file
+would appear as garbage.
 
-For this, Use readahead_gfp_mask for gfp flags when
-allocating pages.
+> 
+> Is it possible to unlink files if they are encrypted without the key (if
+> the user has permission to write to the directory)?
+> 
 
-Signed-off-by: Hyunchul Lee <cheol.lee@lge.com>
----
-v3:
-* fix the invalid format of version history in 
- this patch.
+Yes, that's supported.
 
-v2:
-* rewrite a commit message for explaining why this
- patch is needed.
+> Does file unlink result in the per-file crypto key being erased in the
+> inode, or is the inode just marked unused but not overwritten?  One of
+> the desirable features of per-file crypto is "secure erase" so that once
+> the inode is unlinked the crypto key is gone and there is no way to decrypt
+> the data after the fact, even if the filesystem/user key is later recovered.
+> If the per-file key is still sitting in the inode, then it may be possible
+> to decrypt the data long after the file was deleted if the key is later
+> compromised and the inode+data blocks were not re-used.
 
- fs/ubifs/file.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I assume you're talking about the key derivation nonce in the encryption xattr
+(which is stored on-disk and is not really a "key"; although it's used as an
+AES-ECB key in derive_key_aes(), that's really an implementation detail, and the
+key derivation algorithm could/should be replaced with something less
+idiosyncratic like an HKDF).  This is a completely separate issue, but no, as
+far as I know we aren't securely erasing the nonce following a file deletion so
+that someone with access to both the raw disk and the master key can no longer
+derive the per-file key.  It's a good idea, though, and I think it should be
+done if practical.  Note, though, that the xattr may be stored in an external
+xattr block, and it also may have moved around over time --- so it may be
+necessary to zero the whole inode and xattr block.
 
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index d9ae86f..4396c04 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -735,6 +735,7 @@ static int ubifs_do_bulk_read(struct ubifs_info *c, struct bu_info *bu,
- 	int err, page_idx, page_cnt, ret = 0, n = 0;
- 	int allocate = bu->buf ? 0 : 1;
- 	loff_t isize;
-+	gfp_t ra_gfp_mask = readahead_gfp_mask(mapping) & ~__GFP_FS;
- 
- 	err = ubifs_tnc_get_bu_keys(c, bu);
- 	if (err)
-@@ -796,8 +797,7 @@ static int ubifs_do_bulk_read(struct ubifs_info *c, struct bu_info *bu,
- 
- 		if (page_offset > end_index)
- 			break;
--		page = find_or_create_page(mapping, page_offset,
--					   GFP_NOFS | __GFP_COLD);
-+		page = find_or_create_page(mapping, page_offset, ra_gfp_mask);
- 		if (!page)
- 			break;
- 		if (!PageUptodate(page))
--- 
-1.9.1
+Eric
