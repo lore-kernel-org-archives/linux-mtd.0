@@ -1,19 +1,15 @@
-Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dKvYw-0007Ue-8M
- for linux-mtd@lists.infradead.org; Tue, 13 Jun 2017 23:49:32 +0000
-Received: by mail-pg0-x241.google.com with SMTP id a70so21076768pge.0
- for <linux-mtd@lists.infradead.org>; Tue, 13 Jun 2017 16:49:09 -0700 (PDT)
-From: Eric Biggers <ebiggers3@gmail.com>
-To: linux-fscrypt@vger.kernel.org
-Cc: Theodore Ts'o <tytso@mit.edu>, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 3/3] ubifs: require key for truncate(2) of encrypted file
-Date: Tue, 13 Jun 2017 16:47:55 -0700
-Message-Id: <20170613234755.111167-4-ebiggers3@gmail.com>
-In-Reply-To: <20170613234755.111167-1-ebiggers3@gmail.com>
-References: <20170613234755.111167-1-ebiggers3@gmail.com>
+Received: from lgeamrelo11.lge.com ([156.147.23.51])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dKvus-0001mL-RZ
+ for linux-mtd@lists.infradead.org; Wed, 14 Jun 2017 00:12:13 +0000
+From: Hyunchul Lee <hyc.lee@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, adrian.hunter@intel.com,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, kernel-team@lge.com
+Subject: [PATCH v2] ubifs: Change gfp flags in page allocation for bulk read
+Date: Wed, 14 Jun 2017 09:11:32 +0900
+Message-Id: <1497399092-11859-1-git-send-email-hyc.lee@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,40 +19,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Eric Biggers <ebiggers@google.com>
+From: Hyunchul Lee <cheol.lee@lge.com>
 
-Currently, filesystems allow truncate(2) on an encrypted file without
-the encryption key.  However, it's impossible to correctly handle the
-case where the size being truncated to is not a multiple of the
-filesystem block size, because that would require decrypting the final
-block, zeroing the part beyond i_size, then encrypting the block.
+In low memory situations, page allocations for bulk read
+can kill applications for reclaiming memory, and print an
+failure message when allocations are failed.
+Because bulk read is just an optimization, we don't have
+to do these and can stop page allocations.
 
-As other modifications to encrypted file contents are prohibited without
-the key, just prohibit truncate(2) as well, making it fail with ENOKEY.
+Though this siutation happens rarely, add __GFP_NORETRY
+to prevent from excessive memory reclaim and killing
+applications, and __GFP_WARN to suppress this failure
+message.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
+For this, Use readahead_gfp_mask for gfp flags when
+allocating pages.
+
+Signed-off-by: Hyunchul Lee <cheol.lee@lge.com>
 ---
- fs/ubifs/file.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+v2:
+* rewrite a commit message for explaining why this
+ patch is needed.
+---
+ fs/ubifs/file.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 2cda3d67e2d0..ee3ff4c6bf4a 100644
+index d9ae86f..4396c04 100644
 --- a/fs/ubifs/file.c
 +++ b/fs/ubifs/file.c
-@@ -1284,6 +1284,14 @@ int ubifs_setattr(struct dentry *dentry, struct iattr *attr)
- 	if (err)
- 		return err;
+@@ -735,6 +735,7 @@ static int ubifs_do_bulk_read(struct ubifs_info *c, struct bu_info *bu,
+ 	int err, page_idx, page_cnt, ret = 0, n = 0;
+ 	int allocate = bu->buf ? 0 : 1;
+ 	loff_t isize;
++	gfp_t ra_gfp_mask = readahead_gfp_mask(mapping) & ~__GFP_FS;
  
-+	if (ubifs_crypt_is_encrypted(inode) && (attr->ia_valid & ATTR_SIZE)) {
-+		err = fscrypt_get_encryption_info(inode);
-+		if (err)
-+			return err;
-+		if (!fscrypt_has_encryption_key(inode))
-+			return -ENOKEY;
-+	}
-+
- 	if ((attr->ia_valid & ATTR_SIZE) && attr->ia_size < inode->i_size)
- 		/* Truncation to a smaller size */
- 		err = do_truncation(c, inode, attr);
+ 	err = ubifs_tnc_get_bu_keys(c, bu);
+ 	if (err)
+@@ -796,8 +797,7 @@ static int ubifs_do_bulk_read(struct ubifs_info *c, struct bu_info *bu,
+ 
+ 		if (page_offset > end_index)
+ 			break;
+-		page = find_or_create_page(mapping, page_offset,
+-					   GFP_NOFS | __GFP_COLD);
++		page = find_or_create_page(mapping, page_offset, ra_gfp_mask);
+ 		if (!page)
+ 			break;
+ 		if (!PageUptodate(page))
 -- 
-2.13.1.508.gb3defc5cc-goog
+1.9.1
