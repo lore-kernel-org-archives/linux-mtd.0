@@ -1,21 +1,17 @@
-Received: from relmlor1.renesas.com ([210.160.252.171]
- helo=relmlie4.idc.renesas.com)
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dLWBg-00052W-BT
- for linux-mtd@lists.infradead.org; Thu, 15 Jun 2017 14:55:59 +0000
-Received: from relmlii1.idc.renesas.com (relmlii1.idc.renesas.com
- [10.200.68.65])
- by relmlir1.idc.renesas.com (Postfix) with ESMTP id 1D73D7947B
- for <linux-mtd@lists.infradead.org>; Thu, 15 Jun 2017 23:55:32 +0900 (JST)
-From: Chris Brandt <Chris.Brandt@renesas.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Does XIP_MTD really exist?
-Date: Thu, 15 Jun 2017 14:55:30 +0000
-Message-ID: <SG2PR06MB11657F2D01E82DBA288C16948AC00@SG2PR06MB1165.apcprd06.prod.outlook.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from alt42.smtp-out.videotron.ca ([23.233.128.29])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dLXfR-0006EN-RB
+ for linux-mtd@lists.infradead.org; Thu, 15 Jun 2017 16:30:48 +0000
+Date: Thu, 15 Jun 2017 12:30:18 -0400 (EDT)
+From: Nicolas Pitre <nico@linaro.org>
+To: Chris Brandt <Chris.Brandt@renesas.com>
+cc: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: Re: Does XIP_MTD really exist?
+In-Reply-To: <SG2PR06MB11657F2D01E82DBA288C16948AC00@SG2PR06MB1165.apcprd06.prod.outlook.com>
+Message-ID: <alpine.LFD.2.20.1706151220060.29475@knanqh.ubzr>
+References: <SG2PR06MB11657F2D01E82DBA288C16948AC00@SG2PR06MB1165.apcprd06.prod.outlook.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +21,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In the MTD directory, there are hints that an XIP from MTD exits, but=20
-mostly only to make code run from RAM when modifying a parallel NOR flash.
+On Thu, 15 Jun 2017, Chris Brandt wrote:
 
-Is this code all abandoned?
+> In the MTD directory, there are hints that an XIP from MTD exits, but 
+> mostly only to make code run from RAM when modifying a parallel NOR flash.
+> 
+> Is this code all abandoned?
 
-Also, I don't really see of any mainline filesystem driver that would=20
-make use of it.
+It used to work on some SA1100 and PXA targets... more than 10 years 
+ago. No idea if it is still 
+in use. Last time I suggested ripping it out entirely, someone raised a 
+hand to say they're still relying on it. That too was a few years back.
 
-Since as of v4.0, filemap_xip.c was removed (from the guys that added=20
-DAX) which broke AXFS which I had been using.
+> Also, I don't really see of any mainline filesystem driver that would 
+> make use of it.
 
-So, now I'm trying to decide if I need to rework AXFS to work with a=20
-mainline kernel (basically by adding filemap_xip.c back in under an fs/axfs
-directory), or if there is some other obvious XIP file system method=20
-that I'm missing.
+Upon a time, the cramfs filesystem had the ability to flag some files 
+that would not be compressed, aligned to a page boundary, and be mapped 
+directly out of flash. I might have to revive that functionality in the 
+near future if no longer available.
 
-The NO_MMU + XIP_KERNEL people must be using something for a file=20
-system....I'm just not sure what that is.
+> Since as of v4.0, filemap_xip.c was removed (from the guys that added 
+> DAX) which broke AXFS which I had been using.
+> 
+> So, now I'm trying to decide if I need to rework AXFS to work with a 
+> mainline kernel (basically by adding filemap_xip.c back in under an fs/axfs
+> directory), or if there is some other obvious XIP file system method 
+> that I'm missing.
+> 
+> The NO_MMU + XIP_KERNEL people must be using something for a file 
+> system....I'm just not sure what that is.
 
-Any suggestions are welcome.
+So far I've seen initramfs packaged with the kernel. The kernel is XIP 
+but user space ends up living in RAM forever.
 
 
-Thank you,
-Chris
+Nicolas
