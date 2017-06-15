@@ -1,24 +1,21 @@
-Received: from mout.kundenserver.de ([212.227.126.131])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dLFh8-0005jy-Eh
- for linux-mtd@lists.infradead.org; Wed, 14 Jun 2017 21:19:20 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: kasan-dev@googlegroups.com, Dmitry Vyukov <dvyukov@google.com>,
- Alexander Potapenko <glider@google.com>,
- Andrey Ryabinin <aryabinin@virtuozzo.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Arend van Spriel <arend.vanspriel@broadcom.com>,
- Arnd Bergmann <arnd@arndb.de>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
-Subject: [PATCH v2 05/11] mtd: cfi: reduce stack size with KASAN
-Date: Wed, 14 Jun 2017 23:15:40 +0200
-Message-Id: <20170614211556.2062728-6-arnd@arndb.de>
-In-Reply-To: <20170614211556.2062728-1-arnd@arndb.de>
-References: <20170614211556.2062728-1-arnd@arndb.de>
+Received: from relmlor1.renesas.com ([210.160.252.171]
+ helo=relmlie4.idc.renesas.com)
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dLWBg-00052W-BT
+ for linux-mtd@lists.infradead.org; Thu, 15 Jun 2017 14:55:59 +0000
+Received: from relmlii1.idc.renesas.com (relmlii1.idc.renesas.com
+ [10.200.68.65])
+ by relmlir1.idc.renesas.com (Postfix) with ESMTP id 1D73D7947B
+ for <linux-mtd@lists.infradead.org>; Thu, 15 Jun 2017 23:55:32 +0900 (JST)
+From: Chris Brandt <Chris.Brandt@renesas.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: Does XIP_MTD really exist?
+Date: Thu, 15 Jun 2017 14:55:30 +0000
+Message-ID: <SG2PR06MB11657F2D01E82DBA288C16948AC00@SG2PR06MB1165.apcprd06.prod.outlook.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,103 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When CONFIG_KASAN is used, we consume a lot of extra stack space:
+In the MTD directory, there are hints that an XIP from MTD exits, but=20
+mostly only to make code run from RAM when modifying a parallel NOR flash.
 
-drivers/mtd/chips/cfi_cmdset_0020.c: In function 'do_write_buffer':
-drivers/mtd/chips/cfi_cmdset_0020.c:603:1: error: the frame size of 2184 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]
-drivers/mtd/chips/cfi_cmdset_0020.c: In function 'cfi_staa_erase_varsize':
-drivers/mtd/chips/cfi_cmdset_0020.c:972:1: error: the frame size of 1936 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]
-drivers/mtd/chips/cfi_cmdset_0001.c: In function 'do_write_buffer':
-drivers/mtd/chips/cfi_cmdset_0001.c:1841:1: error: the frame size of 1776 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]
+Is this code all abandoned?
 
-This marks some functions as noinline_if_stackbloat to keep reduce the
-overall stack size.
+Also, I don't really see of any mainline filesystem driver that would=20
+make use of it.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/mtd/chips/cfi_cmdset_0020.c | 8 ++++----
- include/linux/mtd/map.h             | 8 ++++----
- 2 files changed, 8 insertions(+), 8 deletions(-)
+Since as of v4.0, filemap_xip.c was removed (from the guys that added=20
+DAX) which broke AXFS which I had been using.
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0020.c b/drivers/mtd/chips/cfi_cmdset_0020.c
-index 7d342965f392..5eee5e883f55 100644
---- a/drivers/mtd/chips/cfi_cmdset_0020.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0020.c
-@@ -244,7 +244,7 @@ static struct mtd_info *cfi_staa_setup(struct map_info *map)
- }
- 
- 
--static inline int do_read_onechip(struct map_info *map, struct flchip *chip, loff_t adr, size_t len, u_char *buf)
-+static noinline_if_stackbloat int do_read_onechip(struct map_info *map, struct flchip *chip, loff_t adr, size_t len, u_char *buf)
- {
- 	map_word status, status_OK;
- 	unsigned long timeo;
-@@ -728,7 +728,7 @@ cfi_staa_writev(struct mtd_info *mtd, const struct kvec *vecs,
- }
- 
- 
--static inline int do_erase_oneblock(struct map_info *map, struct flchip *chip, unsigned long adr)
-+static noinline_if_stackbloat int do_erase_oneblock(struct map_info *map, struct flchip *chip, unsigned long adr)
- {
- 	struct cfi_private *cfi = map->fldrv_priv;
- 	map_word status, status_OK;
-@@ -1029,7 +1029,7 @@ static void cfi_staa_sync (struct mtd_info *mtd)
- 	}
- }
- 
--static inline int do_lock_oneblock(struct map_info *map, struct flchip *chip, unsigned long adr)
-+static noinline_if_stackbloat int do_lock_oneblock(struct map_info *map, struct flchip *chip, unsigned long adr)
- {
- 	struct cfi_private *cfi = map->fldrv_priv;
- 	map_word status, status_OK;
-@@ -1175,7 +1175,7 @@ static int cfi_staa_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 	}
- 	return 0;
- }
--static inline int do_unlock_oneblock(struct map_info *map, struct flchip *chip, unsigned long adr)
-+static noinline_if_stackbloat int do_unlock_oneblock(struct map_info *map, struct flchip *chip, unsigned long adr)
- {
- 	struct cfi_private *cfi = map->fldrv_priv;
- 	map_word status, status_OK;
-diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
-index 3aa56e3104bb..29db74314db8 100644
---- a/include/linux/mtd/map.h
-+++ b/include/linux/mtd/map.h
-@@ -316,7 +316,7 @@ static inline map_word map_word_or(struct map_info *map, map_word val1, map_word
- 	return r;
- }
- 
--static inline int map_word_andequal(struct map_info *map, map_word val1, map_word val2, map_word val3)
-+static noinline_if_stackbloat int map_word_andequal(struct map_info *map, map_word val1, map_word val2, map_word val3)
- {
- 	int i;
- 
-@@ -328,7 +328,7 @@ static inline int map_word_andequal(struct map_info *map, map_word val1, map_wor
- 	return 1;
- }
- 
--static inline int map_word_bitsset(struct map_info *map, map_word val1, map_word val2)
-+static noinline_if_stackbloat int map_word_bitsset(struct map_info *map, map_word val1, map_word val2)
- {
- 	int i;
- 
-@@ -362,7 +362,7 @@ static inline map_word map_word_load(struct map_info *map, const void *ptr)
- 	return r;
- }
- 
--static inline map_word map_word_load_partial(struct map_info *map, map_word orig, const unsigned char *buf, int start, int len)
-+static noinline_if_stackbloat map_word map_word_load_partial(struct map_info *map, map_word orig, const unsigned char *buf, int start, int len)
- {
- 	int i;
- 
-@@ -392,7 +392,7 @@ static inline map_word map_word_load_partial(struct map_info *map, map_word orig
- #define MAP_FF_LIMIT 8
- #endif
- 
--static inline map_word map_word_ff(struct map_info *map)
-+static noinline_if_stackbloat map_word map_word_ff(struct map_info *map)
- {
- 	map_word r;
- 	int i;
--- 
-2.9.0
+So, now I'm trying to decide if I need to rework AXFS to work with a=20
+mainline kernel (basically by adding filemap_xip.c back in under an fs/axfs
+directory), or if there is some other obvious XIP file system method=20
+that I'm missing.
+
+The NO_MMU + XIP_KERNEL people must be using something for a file=20
+system....I'm just not sure what that is.
+
+Any suggestions are welcome.
+
+
+Thank you,
+Chris
