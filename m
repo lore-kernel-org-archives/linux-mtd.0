@@ -1,23 +1,21 @@
-Received: from mail-wr0-x241.google.com ([2a00:1450:400c:c0c::241])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dLYOt-0001yi-R2
- for linux-mtd@lists.infradead.org; Thu, 15 Jun 2017 17:17:46 +0000
-Received: by mail-wr0-x241.google.com with SMTP id z45so4355914wrb.2
- for <linux-mtd@lists.infradead.org>; Thu, 15 Jun 2017 10:17:22 -0700 (PDT)
-Subject: Re: [PATCH v2 1/1] MAINTAINERS: Update SPI NOR subsystem git
- repositories
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- computersforpeace@gmail.com, dwmw2@infradead.org, richard@nod.at,
- boris.brezillon@free-electrons.com, linux-mtd@lists.infradead.org
-References: <20170613194624.9815-1-cyrille.pitchen@wedev4u.fr>
-Cc: linux-kernel@vger.kernel.org
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <053a3410-62cf-5d34-d4c2-5d3c5b7a5f87@gmail.com>
-Date: Thu, 15 Jun 2017 19:12:28 +0200
+Received: from relmlor3.renesas.com ([210.160.252.173]
+ helo=relmlie2.idc.renesas.com)
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dLZ4f-0003i6-Pr
+ for linux-mtd@lists.infradead.org; Thu, 15 Jun 2017 18:00:56 +0000
+From: Chris Brandt <Chris.Brandt@renesas.com>
+To: Nicolas Pitre <nico@linaro.org>
+CC: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: RE: Does XIP_MTD really exist?
+Date: Thu, 15 Jun 2017 18:00:23 +0000
+Message-ID: <SG2PR06MB1165D2F9B807BB92749D09C18AC00@SG2PR06MB1165.apcprd06.prod.outlook.com>
+References: <SG2PR06MB11657F2D01E82DBA288C16948AC00@SG2PR06MB1165.apcprd06.prod.outlook.com>
+ <alpine.LFD.2.20.1706151220060.29475@knanqh.ubzr>
+In-Reply-To: <alpine.LFD.2.20.1706151220060.29475@knanqh.ubzr>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <20170613194624.9815-1-cyrille.pitchen@wedev4u.fr>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,43 +25,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/13/2017 09:46 PM, Cyrille Pitchen wrote:
-> SPI NOR branches are now hosted on MTD repos, spi-nor/next is on l2-mtd
-> and spi-nor/fixes is on linux-mtd.
-> 
-> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Hello Nicolas,
 
-Excellent.
+(I was wondering if you watched this mailing list)
 
-Acked-by: Marek Vasut <marek.vasut@gmail.com>
+On Thursday, June 15, 2017 1, Nicolas Pitre wrote:
+> > Also, I don't really see of any mainline filesystem driver that would
+> > make use of it.
+>=20
+> Upon a time, the cramfs filesystem had the ability to flag some files
+> that would not be compressed, aligned to a page boundary, and be mapped
+> directly out of flash. I might have to revive that functionality in the
+> near future if no longer available.
 
-> ---
-> 
-> ChangeLog
-> 
-> v1 -> v2
-> - add branch names 'spi-nor/fixes' and 'spi-nor/next' after url.
-> 
->  MAINTAINERS | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 3bf9897f8df4..46177688a4e8 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -12282,7 +12282,8 @@ M:	Marek Vasut <marek.vasut@gmail.com>
->  L:	linux-mtd@lists.infradead.org
->  W:	http://www.linux-mtd.infradead.org/
->  Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
-> -T:	git git://github.com/spi-nor/linux.git
-> +T:	git git://git.infradead.org/linux-mtd.git spi-nor/fixes
-> +T:	git git://git.infradead.org/l2-mtd.git spi-nor/next
->  S:	Maintained
->  F:	drivers/mtd/spi-nor/
->  F:	include/linux/mtd/spi-nor.h
-> 
+Yes, I think that was the only XIP file system left when I was looking 2
+years ago. But I remember something about the method for marking the=20
+files for XIP was a bit of a hack, and maybe was broken??? After I decided
+on AXFS (and forward ported it to the 3.14 kernel), I never went back=20
+and tried cramfs-XIP.
+
+> > The NO_MMU + XIP_KERNEL people must be using something for a file
+> > system....I'm just not sure what that is.
+>=20
+> So far I've seen initramfs packaged with the kernel.
+
+Oh, initramfs. That would explain it. Funny!
 
 
--- 
-Best regards,
-Marek Vasut
+> The kernel is XIP
+> but user space ends up living in RAM forever.
+
+Hmm, that seems like a waste. Some big bloated open source packages use=20
+up lots of code pages that would be much better served XIP from ROM=20
+space. Qt comes to mind.
+
+Anyway way, thank you for the info.
+I might have another look at cramfs, but still end up forward porting=20
+AXFS to 4.x.
+
+Thank you,
+Chris
