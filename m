@@ -1,28 +1,15 @@
-Received: from smtp1-2.goneo.de ([85.220.129.31] helo=smtp1.goneo.de)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dLrxm-0007bV-Jw
- for linux-mtd@lists.infradead.org; Fri, 16 Jun 2017 14:11:04 +0000
-Content-Type: text/plain; charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v2 00/53] Get rid of Docbook
-From: Markus Heiser <markus.heiser@darmarit.de>
-In-Reply-To: <20170518200140.11982b12@vento.lan>
-Date: Fri, 16 Jun 2017 16:03:23 +0200
-Cc: Jonathan Corbet <corbet@lwn.net>,
- Linux Doc Mailing List <linux-doc@vger.kernel.org>,
- Mauro Carvalho Chehab <mchehab@infradead.org>,
- "linux-kernel@vger.kernel.org org List" <linux-kernel@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <C33A12EC-8748-4BB9-A7A2-023B1901AB4B@darmarit.de>
-References: <cover.1494935649.git.mchehab@s-opensource.com>
- <20170518112608.4f355068@lwn.net> <20170518200140.11982b12@vento.lan>
-To: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
- Jani Nikula <jani.nikula@intel.com>
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dLs8o-0004sr-93
+ for linux-mtd@lists.infradead.org; Fri, 16 Jun 2017 14:22:29 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Cc: Richard Weinberger <richard@nod.at>, stable@vger.kernel.org,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] ubifs: Don't leak kernel memory to the MTD
+Date: Fri, 16 Jun 2017 16:21:44 +0200
+Message-Id: <20170616142144.4244-1-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,46 +19,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+When UBIFS prepares data structures which will be written to the MTD it
+ensues that their lengths are multiple of 8. Since it uses kmalloc() the
+padded bytes are left uninitialized and we leak a few bytes of kernel
+memory to the MTD.
+To make sure that all bytes are initialized, let's switch to kzalloc().
+Kzalloc() is fine in this case because the buffers are not huge and in
+the IO path the performance bottleneck is anyway the MTD.
 
-> Am 19.05.2017 um 01:01 schrieb Mauro Carvalho Chehab =
-<mchehab@s-opensource.com>:
->=20
-> Em Thu, 18 May 2017 11:26:08 -0600
-> Jonathan Corbet <corbet@lwn.net> escreveu:
->=20
->> On Tue, 16 May 2017 09:15:52 -0300
->> Mauro Carvalho Chehab <mchehab@s-opensource.com> wrote:
->>=20
->>> This patch series convert the remaining DocBooks to ReST.
->>=20
->> Gotta love this:
->>=20
->>> 124 files changed, 7469 insertions(+), 10511 deletions(-)
->=20
-> Heh, yeah, lots of stuff changed :-)
+Cc: stable@vger.kernel.org
+Fixes: 1e51764a3c2a ("UBIFS: add new flash file system")
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ fs/ubifs/journal.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Hi Mauro,
-
-I guess there are little remains lying around ;) what I have found:
-
-DocBook stuff
-
-./scripts/kernel-doc-xml-ref
-
-docproc and some lines in the Makefile & .gitignore
-
-./scripts/docproc.c
-./scripts/.docproc.cmd
-./scripts/Makefile
-./scripts/.gitignore
-
-Do we need the following any longer?=20
-
-./Documentation/sphinx/convert_template.sed
-./Documentation/sphinx/post_convert.sed
-
-If you have time for, can you take a look at this?
-
-Thanks!
-
-=E2=80=94 Markus =E2=80=94=
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index 294519b98874..981a7ea86674 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -574,7 +574,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+ 	/* Make sure to also account for extended attributes */
+ 	len += host_ui->data_len;
+ 
+-	dent = kmalloc(len, GFP_NOFS);
++	dent = kzalloc(len, GFP_NOFS);
+ 	if (!dent)
+ 		return -ENOMEM;
+ 
+@@ -967,7 +967,7 @@ int ubifs_jnl_xrename(struct ubifs_info *c, const struct inode *fst_dir,
+ 	if (twoparents)
+ 		len += plen;
+ 
+-	dent1 = kmalloc(len, GFP_NOFS);
++	dent1 = kzalloc(len, GFP_NOFS);
+ 	if (!dent1)
+ 		return -ENOMEM;
+ 
+@@ -1117,7 +1117,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+ 	len = aligned_dlen1 + aligned_dlen2 + ALIGN(ilen, 8) + ALIGN(plen, 8);
+ 	if (move)
+ 		len += plen;
+-	dent = kmalloc(len, GFP_NOFS);
++	dent = kzalloc(len, GFP_NOFS);
+ 	if (!dent)
+ 		return -ENOMEM;
+ 
+@@ -1500,7 +1500,7 @@ int ubifs_jnl_delete_xattr(struct ubifs_info *c, const struct inode *host,
+ 	hlen = host_ui->data_len + UBIFS_INO_NODE_SZ;
+ 	len = aligned_xlen + UBIFS_INO_NODE_SZ + ALIGN(hlen, 8);
+ 
+-	xent = kmalloc(len, GFP_NOFS);
++	xent = kzalloc(len, GFP_NOFS);
+ 	if (!xent)
+ 		return -ENOMEM;
+ 
+@@ -1607,7 +1607,7 @@ int ubifs_jnl_change_xattr(struct ubifs_info *c, const struct inode *inode,
+ 	aligned_len1 = ALIGN(len1, 8);
+ 	aligned_len = aligned_len1 + ALIGN(len2, 8);
+ 
+-	ino = kmalloc(aligned_len, GFP_NOFS);
++	ino = kzalloc(aligned_len, GFP_NOFS);
+ 	if (!ino)
+ 		return -ENOMEM;
+ 
+-- 
+2.12.3
