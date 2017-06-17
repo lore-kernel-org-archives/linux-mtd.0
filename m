@@ -1,22 +1,29 @@
-Received: from mail-wr0-x241.google.com ([2a00:1450:400c:c0c::241])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dMCwC-0006BP-PJ
- for linux-mtd@lists.infradead.org; Sat, 17 Jun 2017 12:34:52 +0000
-Received: by mail-wr0-x241.google.com with SMTP id y25so6694390wrd.1
- for <linux-mtd@lists.infradead.org>; Sat, 17 Jun 2017 05:34:25 -0700 (PDT)
-Subject: Re: [PATCH 1/1] mtd: spi-nor: parse Serial Flash Discoverable
- Parameters (SFDP) tables
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-References: <634e2c0432d1501106283fa4f407afe9e748cb59.1497604916.git.cyrille.pitchen@atmel.com>
-Cc: computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
- richard@nod.at, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <9b37a83b-ca9a-956f-a077-acc300490e7e@gmail.com>
-Date: Sat, 17 Jun 2017 14:34:22 +0200
+Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
+ ([52.27.115.49] helo=osg.samsung.com)
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dMF8a-0003bX-TC
+ for linux-mtd@lists.infradead.org; Sat, 17 Jun 2017 14:55:48 +0000
+Date: Sat, 17 Jun 2017 11:55:10 -0300
+From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: Joe Perches <joe@perches.com>, Linux Doc Mailing List
+ <linux-doc@vger.kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>,
+ linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 04/29] printk-formats.txt: standardize document format
+Message-ID: <20170617115510.69ae5bdd@vento.lan>
+In-Reply-To: <0eb65f46-f1cc-2d79-7083-235e608882a9@infradead.org>
+References: <cover.1495157082.git.mchehab@s-opensource.com>
+ <6c973f1a04299e7f637949f717ea7f6c9777b0b4.1495157082.git.mchehab@s-opensource.com>
+ <1495189568.31562.34.camel@perches.com>
+ <20170519172801.042a238e@vela.lan>
+ <0eb65f46-f1cc-2d79-7083-235e608882a9@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <634e2c0432d1501106283fa4f407afe9e748cb59.1497604916.git.cyrille.pitchen@atmel.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,801 +34,675 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/16/2017 02:40 PM, Cyrille Pitchen wrote:
-> From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Em Fri, 19 May 2017 16:37:34 -0700
+Randy Dunlap <rdunlap@infradead.org> escreveu:
+
+> On 05/19/17 13:28, Mauro Carvalho Chehab wrote:
+> > Em Fri, 19 May 2017 03:26:08 -0700
+> > Joe Perches <joe@perches.com> escreveu:
+> >   
+> >> On Thu, 2017-05-18 at 22:25 -0300, Mauro Carvalho Chehab wrote:  
+> >>> Each text file under Documentation follows a different
+> >>> format. Some doesn't even have titles!
+> >>>
+> >>> Change its representation to follow the adopted standard,
+> >>> using ReST markups for it to be parseable by Sphinx:
+> >>>
+> >>> - add a title for the document;
+> >>> - add markups for section titles;
+> >>> - move authorship to the beginning and use :Author:;
+> >>> - use right markup for tables;
+> >>> - mark literals and literal blocks.    
+> >>
+> >> I think the .rst markup is far uglier to read as text
+> >> and harder to modify for new additions to %p<foo>
+> >> given column alignments.
+> >>
+> >> For instance below, but other than that, the .rst
+> >> is easier to read.
+> >>  
+> >>> diff --git a/Documentation/printk-formats.txt b/Documentation/printk-formats.txt    
+> >> []  
+> >>> @@ -1,139 +1,180 @@
+> >>> -If variable is of Type,		use printk format specifier:
+> >>> ----------------------------------------------------------
+> >>> -		int			%d or %x
+> >>> -		unsigned int		%u or %x
+> >>> -		long			%ld or %lx
+> >>> -		unsigned long		%lu or %lx
+> >>> -		long long		%lld or %llx
+> >>> -		unsigned long long	%llu or %llx
+> >>> -		size_t			%zu or %zx
+> >>> -		ssize_t			%zd or %zx
+> >>> -		s32			%d or %x
+> >>> -		u32			%u or %x
+> >>> -		s64			%lld or %llx
+> >>> -		u64			%llu or %llx    
+> >> []  
+> >>> +======================= ===========================
+> >>> +If variable is of Type	use printk format specifier
+> >>> +======================= ===========================
+> >>> +``int``			``%d or %x``
+> >>> +``unsigned int``	``%u or %x``
+> >>> +``long``		``%ld or %lx``
+> >>> +``unsigned long``	``%lu or %lx``
+> >>> +``long long``		``%lld or %llx``
+> >>> +``unsigned long long``	``%llu or %llx``
+> >>> +``size_t``		``%zu or %zx``
+> >>> +``ssize_t``		``%zd or %zx``
+> >>> +``s32``			``%d or %x``
+> >>> +``u32``			``%u or %x``
+> >>> +``s64``			``%lld or %llx``
+> >>> +``u64``			``%llu or %llx``
+> >>> +======================= ===========================    
+> > 
+> > Well, we could,instead, use literal blocks, e. g. something like:
+> > 
+> > ::
+> > 
+> >  -If variable is of Type,		use printk format specifier:
+> >  ----------------------------------------------------------
+> >  -		int			%d or %x
+> >  -		unsigned int		%u or %x
+> >  -		long			%ld or %lx
+> >  -		unsigned long		%lu or %lx
+> >  -		long long		%lld or %llx
+> >  -		unsigned long long	%llu or %llx
+> >  -		size_t			%zu or %zx
+> >  -		ssize_t			%zd or %zx
+> >  -		s32			%d or %x
+> >  -		u32			%u or %x
+> >  -		s64			%lld or %llx
+> >  -		u64			%llu or %llx  
+> >   
 > 
-> This patch adds support to the JESD216B standard and parses the SFDP
-> tables to dynamically initialize the 'struct spi_nor_flash_parameter'.
+> I like that latter option.
 > 
-> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-> ---
-> Hi all,
-> 
-> starting a new series since most patches of previous series have already
-> been merged into the spi-nor/next branch of l2-mtd, hence also available
-> in linux-next (support of the 4-byte address instruction set and SPI 1-4-4
-> protocol).
-> So this is the continuation of my work:
-> https://patchwork.ozlabs.org/patch/742380/
-> 
-> From v5 RFC, I've made the following changes (taking Marek's comments
-> into account):
-> - rebase the SFDP patch so it no longer depends on the patch adding
->   support of SPI NOR memories with non-uniform erase sector map. I'm still
->   working on this other topic too, studying Marek's suggestions on how to
->   manage the erase sector maps, but this is not ready yet.
->   So I'm focusing on SFDP first. Anyway, the actual layout of the erase
->   sector map is provided by some dedicated SFDP table, the Sector Map table.
-> 
-> - rewrite the final test at the end of spansion_new_quad_enable() and
->   sr2_bit7_quad_enable() so it follows a common pattern with the already
->   existing macronix_quad_enable() and spansion_quad_enable() functions.
-> 
-> - remove some u32 and u16 casts.
-> 
-> - replace the 'enum sfdp_bfpt_dword' by a DFPT_DWORD() macro so we can
->   handle the translation from 1-indexed JESD216 Basic Flash Parameter
->   DWORDx and the 0-indexed arrays of the C language.
-> 
-> - remove some u in integral constants: 0x07u -> 0x07
-> 
-> - remove dev_err() message when kmalloc() fails
-> 
-> - test return code of spi_nor_parse_sfdp() from spi_nor_init_params().
-> 
-> - fix the decoding of the SPI NOR flash memory size from DWORD2 of the
->   Basic Flash Paramaters: a +1 was missing to get the correct size.
-> 
-> - add check of DWORD1 to handle the cases of 3-byte only and 4-byte only
->   address.
-> 
-> - restore the 'struct spi_nor_flash_parameter' to its previous state if
->   the parsing of the SFDP tables fails for any reason.
-> 
-> - add a new test to skip the parsing of the SFDP tables: since all 'old'
->   SPI memories are not JESD216x compliant (this specification did not exit
->   yet), we try to parse the SFDP tables only for memory with info->flags
->   including SPI_NOR_DUAL_READ or SPI_NOR_QUAD_READ. Indeed, SFDP tables
->   are mainly used to get settings of Dual and/or Quad SPI commands.
->   Also, AFAIK, SPI NOR memories compliant with the JESD216x specification
->   are all QSPI memories.
->   Avoiding sending a useless command to 'old' SPI NOR memories prevents
->   from slowing the detection of the memory and maybe (never get this case
->   yet) from getting unexpected side effects.
-> 
-> 
-> Best regards,
-> 
-> Cyrille
-> 
-> 
->  drivers/mtd/spi-nor/spi-nor.c | 590 +++++++++++++++++++++++++++++++++++++++++-
->  include/linux/mtd/spi-nor.h   |   6 +
->  2 files changed, 594 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index eef55b597ec7..dcac6d2d8651 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -17,6 +17,7 @@
->  #include <linux/mutex.h>
->  #include <linux/math64.h>
->  #include <linux/sizes.h>
-> +#include <linux/slab.h>
->  
->  #include <linux/mtd/mtd.h>
->  #include <linux/of_platform.h>
-> @@ -86,6 +87,7 @@ struct flash_info {
->  					 * to support memory size above 128Mib.
->  					 */
->  #define NO_CHIP_ERASE		BIT(12) /* Chip does not support chip erase */
-> +#define SPI_NOR_SKIP_SFDP	BIT(13)	/* Skip parsing of SFDP tables */
->  };
->  
->  #define JEDEC_MFR(info)	((info)->id[0])
-> @@ -1447,6 +1449,97 @@ static int spansion_quad_enable(struct spi_nor *nor)
->  	return 0;
->  }
+> thanks.
 
-Please add kerneldoc , also I dunno about the _new_ name , maybe you
-should find something more descriptive. The _new_ will be obsolete once
-spansion invents something newer .
+Sorry for taking so long to return to this thread... got sidetracked by two
+trips.
 
-> +static int spansion_new_quad_enable(struct spi_nor *nor)
-> +{
-> +	u8 sr_cr[2];
-> +	int ret;
-> +
-> +	/* Check current Quad Enable bit value. */
-> +	ret = read_cr(nor);
-> +	if (ret < 0) {
-> +		dev_err(nor->dev,
-> +			"error while reading configuration register\n");
-> +		return -EINVAL;
-> +	}
-> +	sr_cr[1] = ret;
-> +	if (sr_cr[1] & CR_QUAD_EN_SPAN)
-> +		return 0;
+Changed to avoid adding that many literal escaping sequences.
+The end result, in HTML format is at:
+	https://www.infradead.org/~mchehab/kernel_docs/unsorted/printk-formats.html
 
-I'd invert this, so that the code would test the rest and only then
-assign it into sr_cr, ie.
+Patch enclosed.
 
-if (ret & CR_....)
-  return 0;
+Regards,
+Mauro
 
-sr_cr[1] = ret;
-
-> +	/* Keep the current value of the Status Register. */
-> +	ret = read_sr(nor);
-> +	if (ret < 0) {
-> +		dev_err(nor->dev,
-> +			"error while reading status register\n");
-> +		return -EINVAL;
-> +	}
-> +	sr_cr[0] = ret;
-> +	sr_cr[1] |= CR_QUAD_EN_SPAN;
-> +
-> +	write_enable(nor);
-> +
-> +	ret = nor->write_reg(nor, SPINOR_OP_WRSR, sr_cr, 2);
-> +	if (ret < 0) {
-> +		dev_err(nor->dev,
-> +			"error while writing configuration register\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	ret = spi_nor_wait_till_ready(nor);
-> +	if (ret < 0) {
-> +		dev_err(nor->dev, "error while waiting for WRSR completion\n");
-> +		return ret;
-> +	}
-> +
-> +	/* Read back and check it. */
-> +	ret = read_cr(nor);
-> +	if (!(ret > 0 && (ret & CR_QUAD_EN_SPAN))) {
-> +		dev_err(nor->dev, "Spansion Quad bit not set\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-
-kerneldoc . What does sr2 mean? (I know what it means, but kerneldoc
-should explain it)
-
-> +static int sr2_bit7_quad_enable(struct spi_nor *nor)
-> +{
-> +	u8 sr2;
-> +	int ret;
-> +
-> +	/* Check current Quad Enable bit value. */
-> +	ret = nor->read_reg(nor, SPINOR_OP_RDSR2, &sr2, 1);
-> +	if (ret)
-> +		return ret;
-> +	if (sr2 & SR2_QUAD_EN_BIT7)
-> +		return 0;
-> +
-> +	/* Update the Quad Enable bit. */
-> +	sr2 |= SR2_QUAD_EN_BIT7;
-> +
-> +	write_enable(nor);
-> +
-> +	ret = nor->write_reg(nor, SPINOR_OP_WRSR2, &sr2, 1);
-> +	if (ret < 0) {
-> +		dev_err(nor->dev,
-> +			"error while writing status register 2\n");
-
-Maybe introduce a new variable dev = nor->dev and avoid breaking the
-lines like that ? DTTO above.
-
-> +		return -EINVAL;
-> +	}
-> +
-> +	ret = spi_nor_wait_till_ready(nor);
-> +	if (ret < 0) {
-> +		dev_err(nor->dev, "error while waiting for WRSR2 completion\n");
-> +		return ret;
-> +	}
-> +
-> +	/* Read back and check it. */
-> +	ret = nor->read_reg(nor, SPINOR_OP_RDSR2, &sr2, 1);
-> +	if (!(ret > 0 && (sr2 & SR2_QUAD_EN_BIT7))) {
-> +		dev_err(nor->dev, "SR2 Quad bit not set\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int spi_nor_check(struct spi_nor *nor)
->  {
->  	if (!nor->dev || !nor->read || !nor->write ||
-> @@ -1586,6 +1679,477 @@ spi_nor_set_pp_settings(struct spi_nor_pp_command *pp,
->  	pp->proto = proto;
->  }
->  
-> +/*
-> + * SFDP parsing.
-> + */
-> +
-> +static int spi_nor_read_sfdp(struct spi_nor *nor, u32 addr,
-> +			     size_t len, void *buf)
-> +{
-> +	u8 addr_width, read_opcode, read_dummy;
-> +	int ret;
-> +
-> +	read_opcode = nor->read_opcode;
-> +	addr_width = nor->addr_width;
-> +	read_dummy = nor->read_dummy;
-> +
-> +	nor->read_opcode = SPINOR_OP_RDSFDP;
-> +	nor->addr_width = 3;
-> +	nor->read_dummy = 8;
-> +
-> +	ret = nor->read(nor, addr, len, (u8 *)buf);
-> +
-> +	nor->read_opcode = read_opcode;
-> +	nor->addr_width = addr_width;
-> +	nor->read_dummy = read_dummy;
-> +
-> +	return (ret < 0) ? ret : 0;
-
-Would it hurt to just propagate the ret from nor->read ?
-
-> +}
-> +
-> +struct sfdp_parameter_header {
-> +	u8		id_lsb;
-> +	u8		minor;
-> +	u8		major;
-> +	u8		length; /* in double words */
-> +	u8		parameter_table_pointer[3]; /* byte address */
-> +	u8		id_msb;
-> +};
-> +
-> +#define SFDP_PARAM_HEADER_ID(p)	(((p)->id_msb << 8) | (p)->id_lsb)
-> +#define SFDP_PARAM_HEADER_PTP(p) \
-> +	(((p)->parameter_table_pointer[2] << 16) | \
-> +	 ((p)->parameter_table_pointer[1] <<  8) | \
-> +	 ((p)->parameter_table_pointer[0] <<  0))
-> +
-> +#define SFDP_BFPT_ID		0xff00	/* Basic Flash Parameter Table */
-> +#define SFDP_SECTOR_MAP_ID	0xff81	/* Sector Map Table */
-> +
-> +#define SFDP_SIGNATURE		0x50444653U
-> +#define SFDP_JESD216_MAJOR	1
-> +#define SFDP_JESD216_MINOR	0
-> +#define SFDP_JESD216A_MINOR	5
-> +#define SFDP_JESD216B_MINOR	6
-> +
-> +struct sfdp_header {
-> +	u32		signature; /* Ox50444653U <=> "SFDP" */
-> +	u8		minor;
-> +	u8		major;
-> +	u8		nph; /* 0-base number of parameter headers */
-> +	u8		unused;
-> +
-> +	/* Basic Flash Parameter Table. */
-> +	struct sfdp_parameter_header	bfpt_header;
-> +};
-> +
-> +/* Basic Flash Parameter Table */
-> +
-> +/*
-> + * JESD216B defines a Basic Flash Parameter Table of 16 DWORDs.
-> + * They are indexed from 1 but C arrays are indexed from 0.
-> + */
-> +#define BFPT_DWORD(i)		((i) - 1)
-> +#define BFPT_DWORD_MAX		16
-> +
-> +/* The first revision of JESB216 defined only 9 DWORDs. */
-> +#define BFPT_DWORD_MAX_JESD216			9
-> +
-> +/* 1st DWORD. */
-> +#define BFPT_DWORD1_FAST_READ_1_1_2		BIT(16)
-> +#define BFPT_DWORD1_ADDRESS_BYTES_MASK		GENMASK(18, 17)
-> +#define BFPT_DWORD1_ADDRESS_BYTES_3_ONLY	(0x0UL << 17)
-> +#define BFPT_DWORD1_ADDRESS_BYTES_3_OR_4	(0x1UL << 17)
-> +#define BFPT_DWORD1_ADDRESS_BYTES_4_ONLY	(0x2UL << 17)
-> +#define BFPT_DWORD1_DTR				BIT(19)
-> +#define BFPT_DWORD1_FAST_READ_1_2_2		BIT(20)
-> +#define BFPT_DWORD1_FAST_READ_1_4_4		BIT(21)
-> +#define BFPT_DWORD1_FAST_READ_1_1_4		BIT(22)
-> +
-> +/* 5th DWORD. */
-> +#define BFPT_DWORD5_FAST_READ_2_2_2		BIT(0)
-> +#define BFPT_DWORD5_FAST_READ_4_4_4		BIT(4)
-> +
-> +/* 11th DWORD. */
-> +#define BFPT_DWORD11_PAGE_SIZE_SHIFT		4
-> +#define BFPT_DWORD11_PAGE_SIZE_MASK		GENMASK(7, 4)
-> +
-> +/* 15th DWORD. */
-> +
-> +/*
-> + * (from JESD216B)
-> + * Quad Enable Requirements (QER):
-> + * - 000b: Device does not have a QE bit. Device detects 1-1-4 and 1-4-4
-> + *         reads based on instruction. DQ3/HOLD# functions are hold during
-> + *         instruction phase.
-> + * - 001b: QE is bit 1 of status register 2. It is set via Write Status with
-> + *         two data bytes where bit 1 of the second byte is one.
-> + *         [...]
-> + *         Writing only one byte to the status register has the side-effect of
-> + *         clearing status register 2, including the QE bit. The 100b code is
-> + *         used if writing one byte to the status register does not modify
-> + *         status register 2.
-> + * - 010b: QE is bit 6 of status register 1. It is set via Write Status with
-> + *         one data byte where bit 6 is one.
-> + *         [...]
-> + * - 011b: QE is bit 7 of status register 2. It is set via Write status
-> + *         register 2 instruction 3Eh with one data byte where bit 7 is one.
-> + *         [...]
-> + *         The status register 2 is read using instruction 3Fh.
-> + * - 100b: QE is bit 1 of status register 2. It is set via Write Status with
-> + *         two data bytes where bit 1 of the second byte is one.
-> + *         [...]
-> + *         In contrast to the 001b code, writing one byte to the status
-> + *         register does not modify status register 2.
-> + * - 101b: QE is bit 1 of status register 2. Status register 1 is read using
-> + *         Read Status instruction 05h. Status register2 is read using
-> + *         instruction 35h. QE is set via Writ Status instruction 01h with
-> + *         two data bytes where bit 1 of the second byte is one.
-> + *         [...]
-> + */
-> +#define BFPT_DWORD15_QER_MASK			GENMASK(22, 20)
-> +#define BFPT_DWORD15_QER_NONE			(0x0UL << 20) /* Micron */
-> +#define BFPT_DWORD15_QER_SR2_BIT1_BUGGY		(0x1UL << 20)
-> +#define BFPT_DWORD15_QER_SR1_BIT6		(0x2UL << 20) /* Macronix */
-> +#define BFPT_DWORD15_QER_SR2_BIT7		(0x3UL << 20)
-> +#define BFPT_DWORD15_QER_SR2_BIT1_NO_RD		(0x4UL << 20)
-> +#define BFPT_DWORD15_QER_SR2_BIT1		(0x5UL << 20) /* Spansion */
-> +
-> +struct sfdp_bfpt {
-> +	u32	dwords[BFPT_DWORD_MAX];
-> +};
-> +
-> +/* Fast Read settings. */
-> +
-> +static inline void
-> +spi_nor_set_read_settings_from_bfpt(struct spi_nor_read_command *read,
-> +				    u16 half,
-> +				    enum spi_nor_protocol proto)
-> +{
-> +	read->num_mode_clocks = (half >> 5) & 0x07;
-> +	read->num_wait_states = (half >> 0) & 0x1f;
-> +	read->opcode = (half >> 8) & 0xff;
-> +	read->proto = proto;
-> +}
-> +
-> +struct sfdp_bfpt_read {
-> +	/* The Fast Read x-y-z hardware capability in params->hwcaps.mask. */
-> +	u32			hwcaps;
-> +
-> +	/*
-> +	 * The <supported_bit> bit in <supported_dword> BFPT DWORD tells us
-> +	 * whether the Fast Read x-y-z command is supported.
-> +	 */
-> +	u32			supported_dword;
-> +	u32			supported_bit;
-> +
-> +	/*
-> +	 * The half-word at offset <setting_shift> in <setting_dword> BFPT DWORD
-> +	 * encodes the op code, the number of mode clocks and the number of wait
-> +	 * states to be used by Fast Read x-y-z command.
-> +	 */
-> +	u32			settings_dword;
-> +	int			settings_shift;
-> +
-> +	/* The SPI protocol for this Fast Read x-y-z command. */
-> +	enum spi_nor_protocol	proto;
-> +};
-> +
-> +static const struct sfdp_bfpt_read sfdp_bfpt_reads[] = {
-> +	/* Fast Read 1-1-2 */
-> +	{
-> +		SNOR_HWCAPS_READ_1_1_2,
-> +		BFPT_DWORD(1), BIT(16),	/* Supported bit */
-> +		BFPT_DWORD(4), 0,	/* Settings */
-> +		SNOR_PROTO_1_1_2,
-> +	},
-> +
-> +	/* Fast Read 1-2-2 */
-> +	{
-> +		SNOR_HWCAPS_READ_1_2_2,
-> +		BFPT_DWORD(1), BIT(20),	/* Supported bit */
-> +		BFPT_DWORD(4), 16,	/* Settings */
-> +		SNOR_PROTO_1_2_2,
-> +	},
-> +
-> +	/* Fast Read 2-2-2 */
-> +	{
-> +		SNOR_HWCAPS_READ_2_2_2,
-> +		BFPT_DWORD(5),  BIT(0),	/* Supported bit */
-> +		BFPT_DWORD(6), 16,	/* Settings */
-> +		SNOR_PROTO_2_2_2,
-> +	},
-> +
-> +	/* Fast Read 1-1-4 */
-> +	{
-> +		SNOR_HWCAPS_READ_1_1_4,
-> +		BFPT_DWORD(1), BIT(22),	/* Supported bit */
-> +		BFPT_DWORD(3), 16,	/* Settings */
-> +		SNOR_PROTO_1_1_4,
-> +	},
-> +
-> +	/* Fast Read 1-4-4 */
-> +	{
-> +		SNOR_HWCAPS_READ_1_4_4,
-> +		BFPT_DWORD(1), BIT(21),	/* Supported bit */
-> +		BFPT_DWORD(3), 0,		/* Settings */
-> +		SNOR_PROTO_1_4_4,
-> +	},
-> +
-> +	/* Fast Read 4-4-4 */
-> +	{
-> +		SNOR_HWCAPS_READ_4_4_4,
-> +		BFPT_DWORD(5), BIT(4),	/* Supported bit */
-> +		BFPT_DWORD(7), 16,	/* Settings */
-> +		SNOR_PROTO_4_4_4,
-> +	},
-> +};
-> +
-> +struct sfdp_bfpt_erase {
-> +	/*
-> +	 * The half-word at offset <shift> in DWORD <dwoard> encodes the
-> +	 * op code and erase sector size to be used by Sector Erase commands.
-> +	 */
-> +	u32			dword;
-> +	int			shift;
-
-Should the shift be unsigned too ?
-
-> +};
-> +
-> +static const struct sfdp_bfpt_erase sfdp_bfpt_erases[] = {
-> +	/* Erase Type 1 in DWORD8 bits[15:0] */
-> +	{BFPT_DWORD(8), 0},
-> +
-> +	/* Erase Type 2 in DWORD8 bits[31:16] */
-> +	{BFPT_DWORD(8), 16},
-> +
-> +	/* Erase Type 3 in DWORD9 bits[15:0] */
-> +	{BFPT_DWORD(9), 0},
-> +
-> +	/* Erase Type 4 in DWORD9 bits[31:16] */
-> +	{BFPT_DWORD(9), 16},
-> +};
-> +
-> +static int spi_nor_hwcaps_read2cmd(u32 hwcaps);
-> +
-> +static int spi_nor_parse_bfpt(struct spi_nor *nor,
-> +			      const struct sfdp_parameter_header *bfpt_header,
-> +			      struct spi_nor_flash_parameter *params)
-> +{
-> +	struct mtd_info *mtd = &nor->mtd;
-> +	struct sfdp_bfpt bfpt;
-> +	size_t len;
-> +	int i, cmd, err;
-> +	u32 addr;
-> +	u16 half;
-> +
-> +	/* JESD216 Basic Flash Parameter Table length is at least 9 DWORDs. */
-> +	if (bfpt_header->length < BFPT_DWORD_MAX_JESD216)
-> +		return -EINVAL;
-> +
-> +	/* Read the Basic Flash Parameter Table. */
-> +	len = min_t(size_t, sizeof(bfpt),
-> +		    bfpt_header->length * sizeof(uint32_t));
-
-sizeof(u32) , nuke all the uint.*_t .
-
-> +	addr = SFDP_PARAM_HEADER_PTP(bfpt_header);
-> +	memset(&bfpt, 0, sizeof(bfpt));
-> +	err = spi_nor_read_sfdp(nor,  addr, len, &bfpt);
-> +	if (err)
-> +		return err;
-> +
-> +	/* Fix endianness of the BFPT DWORDs. */
-> +	for (i = 0; i < BFPT_DWORD_MAX; i++)
-> +		bfpt.dwords[i] = le32_to_cpu(bfpt.dwords[i]);
-> +
-> +	/* Number of address bytes. */
-> +	switch (bfpt.dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) {
-> +	case BFPT_DWORD1_ADDRESS_BYTES_3_ONLY:
-> +		nor->addr_width = 3;
-> +		break;
-> +
-> +	case BFPT_DWORD1_ADDRESS_BYTES_4_ONLY:
-> +		nor->addr_width = 4;
-> +		break;
-> +
-> +	default:
-> +		break;
-> +	}
-> +
-> +	/* Flash Memory Density (in bits). */
-> +	params->size = bfpt.dwords[BFPT_DWORD(2)];
-> +	if (params->size & BIT(31)) {
-> +		params->size &= ~BIT(31);
-> +		params->size = 1ULL << params->size;
-> +	} else {
-> +		params->size++;
-> +	}
-> +	params->size >>= 3; /* Convert to bytes. */
-> +
-> +	/* Fast Read settings. */
-> +	for (i = 0; i < ARRAY_SIZE(sfdp_bfpt_reads); i++) {
-> +		const struct sfdp_bfpt_read *rd = &sfdp_bfpt_reads[i];
-> +		struct spi_nor_read_command *read;
-> +
-> +		if (!(bfpt.dwords[rd->supported_dword] & rd->supported_bit)) {
-> +			params->hwcaps.mask &= ~rd->hwcaps;
-> +			continue;
-> +		}
-> +
-> +		params->hwcaps.mask |= rd->hwcaps;
-> +		cmd = spi_nor_hwcaps_read2cmd(rd->hwcaps);
-> +		read = &params->reads[cmd];
-> +		half = bfpt.dwords[rd->settings_dword] >> rd->settings_shift;
-> +		spi_nor_set_read_settings_from_bfpt(read, half, rd->proto);
-> +	}
-> +
-> +	/* Sector Erase settings. */
-> +	for (i = 0; i < ARRAY_SIZE(sfdp_bfpt_erases); i++) {
-> +		const struct sfdp_bfpt_erase *er = &sfdp_bfpt_erases[i];
-> +		uint32_t erasesize;
-> +		u8 opcode;
-> +
-> +		half = bfpt.dwords[er->dword] >> er->shift;
-> +		erasesize = half & 0xff;
-> +
-> +		/* erasesize == 0 means this Erase Type is not supported. */
-> +		if (!erasesize)
-> +			continue;
-> +
-> +		erasesize = (1U << erasesize);
-
-Drop the parenthesis .
-
-> +		opcode = (half >> 8) & 0xff;
-> +#ifdef CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
-> +		if (erasesize == 4096) {
-> +			nor->erase_opcode = opcode;
-> +			mtd->erasesize = erasesize;
-> +			break;
-> +		}
-> +#endif
-> +		if (!mtd->erasesize || mtd->erasesize < erasesize) {
-> +			nor->erase_opcode = opcode;
-> +			mtd->erasesize = erasesize;
-> +		}
-> +	}
-> +
-> +	/* Stop here if not JESD216 rev A or later. */
-> +	if (bfpt_header->length < BFPT_DWORD_MAX)
-> +		return 0;
-> +
-> +	/* Page size: this field specifies 'N' so the page size = 2^N bytes. */
-> +	params->page_size = bfpt.dwords[BFPT_DWORD(11)];
-> +	params->page_size &= BFPT_DWORD11_PAGE_SIZE_MASK;
-> +	params->page_size >>= BFPT_DWORD11_PAGE_SIZE_SHIFT;
-> +	params->page_size = (1U << params->page_size);
-
-Drop the ()
-
-> +	/* Enable Quad I/O. */
-> +	switch (bfpt.dwords[BFPT_DWORD(15)] & BFPT_DWORD15_QER_MASK) {
-> +	default:
-> +	case BFPT_DWORD15_QER_NONE:
-> +		params->quad_enable = NULL;
-> +		break;
-> +
-> +	case BFPT_DWORD15_QER_SR2_BIT1_BUGGY:
-> +	case BFPT_DWORD15_QER_SR2_BIT1_NO_RD:
-> +		params->quad_enable = spansion_quad_enable;
-> +		break;
-> +
-> +	case BFPT_DWORD15_QER_SR1_BIT6:
-> +		params->quad_enable = macronix_quad_enable;
-> +		break;
-> +
-> +	case BFPT_DWORD15_QER_SR2_BIT7:
-> +		params->quad_enable = sr2_bit7_quad_enable;
-> +		break;
-> +
-> +	case BFPT_DWORD15_QER_SR2_BIT1:
-> +		params->quad_enable = spansion_new_quad_enable;
-> +		break;
-
-Is default: needed here ?
-
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int spi_nor_parse_sfdp(struct spi_nor *nor,
-> +			      struct spi_nor_flash_parameter *params)
-> +{
-> +	const struct sfdp_parameter_header *param_header, *bfpt_header;
-> +	struct sfdp_parameter_header *param_headers = NULL;
-> +	struct sfdp_header header;
-> +	size_t psize;
-> +	int i, err;
-> +
-> +	/* Get the SFDP header. */
-> +	err = spi_nor_read_sfdp(nor, 0, sizeof(header), &header);
-> +	if (err)
-> +		return err;
-> +
-> +	/* Check the SFDP header version. */
-> +	if (le32_to_cpu(header.signature) != SFDP_SIGNATURE ||
-> +	    header.major != SFDP_JESD216_MAJOR ||
-> +	    header.minor < SFDP_JESD216_MINOR)
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * Verify that the first and only mandatory parameter header is a
-> +	 * Basic Flash Parameter Table header as specified in JESD216.
-> +	 */
-> +	bfpt_header = &header.bfpt_header;
-> +	if (SFDP_PARAM_HEADER_ID(bfpt_header) != SFDP_BFPT_ID ||
-> +	    bfpt_header->major != SFDP_JESD216_MAJOR)
-> +		return -EINVAL;
-> +
-> +	/* Allocate memory for parameter headers. */
-> +	if (header.nph) {
-> +		psize = header.nph * sizeof(*param_headers);
-> +
-> +		param_headers = kmalloc(psize, GFP_KERNEL);
-
-devm_() ?
-
-> +		if (!param_headers)
-> +			return -ENOMEM;
-> +
-> +		err = spi_nor_read_sfdp(nor, sizeof(header),
-> +					psize, param_headers);
-> +		if (err) {
-> +			dev_err(nor->dev,
-> +				"failed to read SFDP parameter headers\n");
-> +			goto exit;
-> +		}
-> +	}
-> +
-> +	/*
-> +	 * Check other parameter headers to get the latest revision of
-> +	 * the basic flash parameter table.
-> +	 */
-> +	for (i = 0; i < header.nph; i++) {
-> +		param_header = &param_headers[i];
-> +
-> +		if (SFDP_PARAM_HEADER_ID(param_header) == SFDP_BFPT_ID &&
-> +		    param_header->major == SFDP_JESD216_MAJOR &&
-> +		    (param_header->minor > bfpt_header->minor ||
-> +		     (param_header->minor == bfpt_header->minor &&
-> +		      param_header->length > bfpt_header->length)))
-
-I'm not comfortable with this indent ...
-
-> +			bfpt_header = param_header;
-> +	}
-
-Newline.
-
-> +	err = spi_nor_parse_bfpt(nor, bfpt_header, params);
-> +	if (err)
-> +		goto exit;
-> +
-> +	/* Parse other parameter headers. */
-> +	for (i = 0; i < header.nph; i++) {
-> +		param_header = &param_headers[i];
-> +
-> +		switch (SFDP_PARAM_HEADER_ID(param_header)) {
-> +		case SFDP_SECTOR_MAP_ID:
-> +			dev_info(nor->dev,
-> +				 "non-uniform erase sector maps are not supported yet.\n");
-> +			break;
-> +
-> +		default:
-> +			break;
-> +		}
-> +
-> +		if (err)
-> +			goto exit;
-> +	}
-> +
-> +exit:
-> +	kfree(param_headers);
-> +	return err;
-> +}
-> +
->  static int spi_nor_init_params(struct spi_nor *nor,
->  			       const struct flash_info *info,
->  			       struct spi_nor_flash_parameter *params)
-> @@ -1646,6 +2210,22 @@ static int spi_nor_init_params(struct spi_nor *nor,
->  		}
->  	}
->  
-> +	/* Override the parameters with data read from SFDP tables. */
-> +	nor->addr_width = 0;
-> +	nor->mtd.erasesize = 0;
-> +	if ((info->flags & (SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)) &&
-> +	    !(info->flags & SPI_NOR_SKIP_SFDP)) {
-> +		struct spi_nor_flash_parameter sfdp_params;
-> +
-> +		memcpy(&sfdp_params, params, sizeof(sfdp_params));
-> +		if (spi_nor_parse_sfdp(nor, &sfdp_params)) {
-> +			nor->addr_width = 0;
-> +			nor->mtd.erasesize = 0;
-> +		} else {
-> +			memcpy(params, &sfdp_params, sizeof(*params));
-> +		}
-> +	}
-> +
->  	return 0;
->  }
->  
-> @@ -1757,6 +2337,10 @@ static int spi_nor_select_erase(struct spi_nor *nor,
->  {
->  	struct mtd_info *mtd = &nor->mtd;
->  
-> +	/* Do nothing if already configured from SFDP. */
-> +	if (mtd->erasesize)
-> +		return 0;
-> +
->  #ifdef CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
->  	/* prefer "small sector" erase if possible */
->  	if (info->flags & SECT_4K) {
-> @@ -1989,9 +2573,11 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
->  	if (ret)
->  		return ret;
->  
-> -	if (info->addr_width)
-> +	if (nor->addr_width) {
-> +		/* already configured by spi_nor_setup() */
-> +	} else if (info->addr_width) {
->  		nor->addr_width = info->addr_width;
-> -	else if (mtd->size > 0x1000000) {
-> +	} else if (mtd->size > 0x1000000) {
->  		/* enable 4-byte addressing if the device exceeds 16MiB */
->  		nor->addr_width = 4;
->  		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index 55faa2f07cca..0df3638ff0b8 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -41,6 +41,8 @@
->  #define SPINOR_OP_WREN		0x06	/* Write enable */
->  #define SPINOR_OP_RDSR		0x05	/* Read status register */
->  #define SPINOR_OP_WRSR		0x01	/* Write status register 1 byte */
-> +#define SPINOR_OP_RDSR2		0x3f	/* Read status register 2 */
-> +#define SPINOR_OP_WRSR2		0x3e	/* Write status register 2 */
->  #define SPINOR_OP_READ		0x03	/* Read data bytes (low frequency) */
->  #define SPINOR_OP_READ_FAST	0x0b	/* Read data bytes (high frequency) */
->  #define SPINOR_OP_READ_1_1_2	0x3b	/* Read data bytes (Dual Output SPI) */
-> @@ -56,6 +58,7 @@
->  #define SPINOR_OP_CHIP_ERASE	0xc7	/* Erase whole flash chip */
->  #define SPINOR_OP_SE		0xd8	/* Sector erase (usually 64KiB) */
->  #define SPINOR_OP_RDID		0x9f	/* Read JEDEC ID */
-> +#define SPINOR_OP_RDSFDP	0x5a	/* Read SFDP */
->  #define SPINOR_OP_RDCR		0x35	/* Read configuration register */
->  #define SPINOR_OP_RDFSR		0x70	/* Read flag status register */
->  
-> @@ -128,6 +131,9 @@
->  /* Configuration Register bits. */
->  #define CR_QUAD_EN_SPAN		BIT(1)	/* Spansion Quad I/O */
->  
-> +/* Status Register 2 bits. */
-> +#define SR2_QUAD_EN_BIT7	BIT(7)
-> +
->  /* Supported SPI protocols */
->  #define SNOR_PROTO_INST_MASK	GENMASK(23, 16)
->  #define SNOR_PROTO_INST_SHIFT	16
-> 
+-
 
 
--- 
-Best regards,
-Marek Vasut
+[PATCH] printk-formats.txt: standardize document format
+
+Each text file under Documentation follows a different
+format. Some doesn't even have titles!
+
+Change its representation to follow the adopted standard,
+using ReST markups for it to be parseable by Sphinx:
+
+- add a title for the document;
+- add markups for section titles;
+- move authorship to the beginning and use :Author:;
+- use right markup for tables;
+- mark literals and literal blocks.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+
+diff --git a/Documentation/printk-formats.txt b/Documentation/printk-formats.txt
+index 5962949944fd..7824f8442ec4 100644
+--- a/Documentation/printk-formats.txt
++++ b/Documentation/printk-formats.txt
+@@ -1,5 +1,18 @@
+-If variable is of Type,		use printk format specifier:
+----------------------------------------------------------
++=========================================
++How to get printk format specifiers right
++=========================================
++
++:Author: Randy Dunlap <rdunlap@infradead.org>
++:Author: Andrew Murray <amurray@mpc-data.co.uk>
++
++
++Integer types
++=============
++
++::
++
++	If variable is of Type,		use printk format specifier:
++	------------------------------------------------------------
+ 		int			%d or %x
+ 		unsigned int		%u or %x
+ 		long			%ld or %lx
+@@ -13,25 +26,29 @@ If variable is of Type,		use printk format specifier:
+ 		s64			%lld or %llx
+ 		u64			%llu or %llx
+ 
+-If <type> is dependent on a config option for its size (e.g., sector_t,
+-blkcnt_t) or is architecture-dependent for its size (e.g., tcflag_t), use a
+-format specifier of its largest possible type and explicitly cast to it.
+-Example:
++If <type> is dependent on a config option for its size (e.g., ``sector_t``,
++``blkcnt_t``) or is architecture-dependent for its size (e.g., ``tcflag_t``),
++use a format specifier of its largest possible type and explicitly cast to it.
++
++Example::
+ 
+ 	printk("test: sector number/total blocks: %llu/%llu\n",
+ 		(unsigned long long)sector, (unsigned long long)blockcount);
+ 
+-Reminder: sizeof() result is of type size_t.
++Reminder: ``sizeof()`` result is of type ``size_t``.
+ 
+-The kernel's printf does not support %n. For obvious reasons, floating
+-point formats (%e, %f, %g, %a) are also not recognized. Use of any
++The kernel's printf does not support ``%n``. For obvious reasons, floating
++point formats (``%e, %f, %g, %a``) are also not recognized. Use of any
+ unsupported specifier or length qualifier results in a WARN and early
+ return from vsnprintf.
+ 
+ Raw pointer value SHOULD be printed with %p. The kernel supports
+ the following extended format specifiers for pointer types:
+ 
+-Symbols/Function Pointers:
++Symbols/Function Pointers
++=========================
++
++::
+ 
+ 	%pF	versatile_init+0x0/0x110
+ 	%pf	versatile_init
+@@ -41,99 +58,122 @@ Symbols/Function Pointers:
+ 	%ps	versatile_init
+ 	%pB	prev_fn_of_versatile_init+0x88/0x88
+ 
+-	For printing symbols and function pointers. The 'S' and 's' specifiers
+-	result in the symbol name with ('S') or without ('s') offsets. Where
+-	this is used on a kernel without KALLSYMS - the symbol address is
+-	printed instead.
++For printing symbols and function pointers. The ``S`` and ``s`` specifiers
++result in the symbol name with (``S``) or without (``s``) offsets. Where
++this is used on a kernel without KALLSYMS - the symbol address is
++printed instead.
++
++The ``B`` specifier results in the symbol name with offsets and should be
++used when printing stack backtraces. The specifier takes into
++consideration the effect of compiler optimisations which may occur
++when tail-call``s are used and marked with the noreturn GCC attribute.
+ 
+-	The 'B' specifier results in the symbol name with offsets and should be
+-	used when printing stack backtraces. The specifier takes into
+-	consideration the effect of compiler optimisations which may occur
+-	when tail-call's are used and marked with the noreturn GCC attribute.
++On ia64, ppc64 and parisc64 architectures function pointers are
++actually function descriptors which must first be resolved. The ``F`` and
++``f`` specifiers perform this resolution and then provide the same
++functionality as the ``S`` and ``s`` specifiers.
+ 
+-	On ia64, ppc64 and parisc64 architectures function pointers are
+-	actually function descriptors which must first be resolved. The 'F' and
+-	'f' specifiers perform this resolution and then provide the same
+-	functionality as the 'S' and 's' specifiers.
++Kernel Pointers
++===============
+ 
+-Kernel Pointers:
++::
+ 
+ 	%pK	0x01234567 or 0x0123456789abcdef
+ 
+-	For printing kernel pointers which should be hidden from unprivileged
+-	users. The behaviour of %pK depends on the kptr_restrict sysctl - see
+-	Documentation/sysctl/kernel.txt for more details.
++For printing kernel pointers which should be hidden from unprivileged
++users. The behaviour of ``%pK`` depends on the ``kptr_restrict sysctl`` - see
++Documentation/sysctl/kernel.txt for more details.
+ 
+-Struct Resources:
++Struct Resources
++================
++
++::
+ 
+ 	%pr	[mem 0x60000000-0x6fffffff flags 0x2200] or
+ 		[mem 0x0000000060000000-0x000000006fffffff flags 0x2200]
+ 	%pR	[mem 0x60000000-0x6fffffff pref] or
+ 		[mem 0x0000000060000000-0x000000006fffffff pref]
+ 
+-	For printing struct resources. The 'R' and 'r' specifiers result in a
+-	printed resource with ('R') or without ('r') a decoded flags member.
+-	Passed by reference.
++For printing struct resources. The ``R`` and ``r`` specifiers result in a
++printed resource with (``R``) or without (``r``) a decoded flags member.
++Passed by reference.
++
++Physical addresses types ``phys_addr_t``
++========================================
+ 
+-Physical addresses types phys_addr_t:
++::
+ 
+ 	%pa[p]	0x01234567 or 0x0123456789abcdef
+ 
+-	For printing a phys_addr_t type (and its derivatives, such as
+-	resource_size_t) which can vary based on build options, regardless of
+-	the width of the CPU data path. Passed by reference.
++For printing a ``phys_addr_t`` type (and its derivatives, such as
++``resource_size_t``) which can vary based on build options, regardless of
++the width of the CPU data path. Passed by reference.
+ 
+-DMA addresses types dma_addr_t:
++DMA addresses types ``dma_addr_t``
++==================================
++
++::
+ 
+ 	%pad	0x01234567 or 0x0123456789abcdef
+ 
+-	For printing a dma_addr_t type which can vary based on build options,
+-	regardless of the width of the CPU data path. Passed by reference.
++For printing a ``dma_addr_t`` type which can vary based on build options,
++regardless of the width of the CPU data path. Passed by reference.
++
++Raw buffer as an escaped string
++===============================
+ 
+-Raw buffer as an escaped string:
++::
+ 
+ 	%*pE[achnops]
+ 
+-	For printing raw buffer as an escaped string. For the following buffer
++For printing raw buffer as an escaped string. For the following buffer::
+ 
+ 		1b 62 20 5c 43 07 22 90 0d 5d
+ 
+-	few examples show how the conversion would be done (the result string
+-	without surrounding quotes):
++few examples show how the conversion would be done (the result string
++without surrounding quotes)::
+ 
+ 		%*pE		"\eb \C\a"\220\r]"
+ 		%*pEhp		"\x1bb \C\x07"\x90\x0d]"
+ 		%*pEa		"\e\142\040\\\103\a\042\220\r\135"
+ 
+-	The conversion rules are applied according to an optional combination
+-	of flags (see string_escape_mem() kernel documentation for the
+-	details):
+-		a - ESCAPE_ANY
+-		c - ESCAPE_SPECIAL
+-		h - ESCAPE_HEX
+-		n - ESCAPE_NULL
+-		o - ESCAPE_OCTAL
+-		p - ESCAPE_NP
+-		s - ESCAPE_SPACE
+-	By default ESCAPE_ANY_NP is used.
++The conversion rules are applied according to an optional combination
++of flags (see :c:func:`string_escape_mem` kernel documentation for the
++details):
++
++	- ``a`` - ESCAPE_ANY
++	- ``c`` - ESCAPE_SPECIAL
++	- ``h`` - ESCAPE_HEX
++	- ``n`` - ESCAPE_NULL
++	- ``o`` - ESCAPE_OCTAL
++	- ``p`` - ESCAPE_NP
++	- ``s`` - ESCAPE_SPACE
++
++By default ESCAPE_ANY_NP is used.
++
++ESCAPE_ANY_NP is the sane choice for many cases, in particularly for
++printing SSIDs.
+ 
+-	ESCAPE_ANY_NP is the sane choice for many cases, in particularly for
+-	printing SSIDs.
++If field width is omitted the 1 byte only will be escaped.
+ 
+-	If field width is omitted the 1 byte only will be escaped.
++Raw buffer as a hex string
++==========================
+ 
+-Raw buffer as a hex string:
++::
+ 
+ 	%*ph	00 01 02  ...  3f
+ 	%*phC	00:01:02: ... :3f
+ 	%*phD	00-01-02- ... -3f
+ 	%*phN	000102 ... 3f
+ 
+-	For printing a small buffers (up to 64 bytes long) as a hex string with
+-	certain separator. For the larger buffers consider to use
+-	print_hex_dump().
++For printing a small buffers (up to 64 bytes long) as a hex string with
++certain separator. For the larger buffers consider to use
++:c:func:`print_hex_dump`.
+ 
+-MAC/FDDI addresses:
++MAC/FDDI addresses
++==================
++
++::
+ 
+ 	%pM	00:01:02:03:04:05
+ 	%pMR	05:04:03:02:01:00
+@@ -141,53 +181,62 @@ MAC/FDDI addresses:
+ 	%pm	000102030405
+ 	%pmR	050403020100
+ 
+-	For printing 6-byte MAC/FDDI addresses in hex notation. The 'M' and 'm'
+-	specifiers result in a printed address with ('M') or without ('m') byte
+-	separators. The default byte separator is the colon (':').
++For printing 6-byte MAC/FDDI addresses in hex notation. The ``M`` and ``m``
++specifiers result in a printed address with (``M``) or without (``m``) byte
++separators. The default byte separator is the colon (``:``).
++
++Where FDDI addresses are concerned the ``F`` specifier can be used after
++the ``M`` specifier to use dash (``-``) separators instead of the default
++separator.
+ 
+-	Where FDDI addresses are concerned the 'F' specifier can be used after
+-	the 'M' specifier to use dash ('-') separators instead of the default
+-	separator.
++For Bluetooth addresses the ``R`` specifier shall be used after the ``M``
++specifier to use reversed byte order suitable for visual interpretation
++of Bluetooth addresses which are in the little endian order.
+ 
+-	For Bluetooth addresses the 'R' specifier shall be used after the 'M'
+-	specifier to use reversed byte order suitable for visual interpretation
+-	of Bluetooth addresses which are in the little endian order.
++Passed by reference.
+ 
+-	Passed by reference.
++IPv4 addresses
++==============
+ 
+-IPv4 addresses:
++::
+ 
+ 	%pI4	1.2.3.4
+ 	%pi4	001.002.003.004
+ 	%p[Ii]4[hnbl]
+ 
+-	For printing IPv4 dot-separated decimal addresses. The 'I4' and 'i4'
+-	specifiers result in a printed address with ('i4') or without ('I4')
+-	leading zeros.
++For printing IPv4 dot-separated decimal addresses. The ``I4`` and ``i4``
++specifiers result in a printed address with (``i4``) or without (``I4``)
++leading zeros.
+ 
+-	The additional 'h', 'n', 'b', and 'l' specifiers are used to specify
+-	host, network, big or little endian order addresses respectively. Where
+-	no specifier is provided the default network/big endian order is used.
++The additional ``h``, ``n``, ``b``, and ``l`` specifiers are used to specify
++host, network, big or little endian order addresses respectively. Where
++no specifier is provided the default network/big endian order is used.
+ 
+-	Passed by reference.
++Passed by reference.
+ 
+-IPv6 addresses:
++IPv6 addresses
++==============
++
++::
+ 
+ 	%pI6	0001:0002:0003:0004:0005:0006:0007:0008
+ 	%pi6	00010002000300040005000600070008
+ 	%pI6c	1:2:3:4:5:6:7:8
+ 
+-	For printing IPv6 network-order 16-bit hex addresses. The 'I6' and 'i6'
+-	specifiers result in a printed address with ('I6') or without ('i6')
+-	colon-separators. Leading zeros are always used.
++For printing IPv6 network-order 16-bit hex addresses. The ``I6`` and ``i6``
++specifiers result in a printed address with (``I6``) or without (``i6``)
++colon-separators. Leading zeros are always used.
++
++The additional ``c`` specifier can be used with the ``I`` specifier to
++print a compressed IPv6 address as described by
++http://tools.ietf.org/html/rfc5952
+ 
+-	The additional 'c' specifier can be used with the 'I' specifier to
+-	print a compressed IPv6 address as described by
+-	http://tools.ietf.org/html/rfc5952
++Passed by reference.
+ 
+-	Passed by reference.
++IPv4/IPv6 addresses (generic, with port, flowinfo, scope)
++=========================================================
+ 
+-IPv4/IPv6 addresses (generic, with port, flowinfo, scope):
++::
+ 
+ 	%pIS	1.2.3.4		or 0001:0002:0003:0004:0005:0006:0007:0008
+ 	%piS	001.002.003.004	or 00010002000300040005000600070008
+@@ -195,141 +244,161 @@ IPv4/IPv6 addresses (generic, with port, flowinfo, scope):
+ 	%pISpc	1.2.3.4:12345	or [1:2:3:4:5:6:7:8]:12345
+ 	%p[Ii]S[pfschnbl]
+ 
+-	For printing an IP address without the need to distinguish whether it's
+-	of type AF_INET or AF_INET6, a pointer to a valid 'struct sockaddr',
+-	specified through 'IS' or 'iS', can be passed to this format specifier.
++For printing an IP address without the need to distinguish whether it``s
++of type AF_INET or AF_INET6, a pointer to a valid ``struct sockaddr``,
++specified through ``IS`` or ``iS``, can be passed to this format specifier.
+ 
+-	The additional 'p', 'f', and 's' specifiers are used to specify port
+-	(IPv4, IPv6), flowinfo (IPv6) and scope (IPv6). Ports have a ':' prefix,
+-	flowinfo a '/' and scope a '%', each followed by the actual value.
++The additional ``p``, ``f``, and ``s`` specifiers are used to specify port
++(IPv4, IPv6), flowinfo (IPv6) and scope (IPv6). Ports have a ``:`` prefix,
++flowinfo a ``/`` and scope a ``%``, each followed by the actual value.
+ 
+-	In case of an IPv6 address the compressed IPv6 address as described by
+-	http://tools.ietf.org/html/rfc5952 is being used if the additional
+-	specifier 'c' is given. The IPv6 address is surrounded by '[', ']' in
+-	case of additional specifiers 'p', 'f' or 's' as suggested by
+-	https://tools.ietf.org/html/draft-ietf-6man-text-addr-representation-07
++In case of an IPv6 address the compressed IPv6 address as described by
++http://tools.ietf.org/html/rfc5952 is being used if the additional
++specifier ``c`` is given. The IPv6 address is surrounded by ``[``, ``]`` in
++case of additional specifiers ``p``, ``f`` or ``s`` as suggested by
++https://tools.ietf.org/html/draft-ietf-6man-text-addr-representation-07
+ 
+-	In case of IPv4 addresses, the additional 'h', 'n', 'b', and 'l'
+-	specifiers can be used as well and are ignored in case of an IPv6
+-	address.
++In case of IPv4 addresses, the additional ``h``, ``n``, ``b``, and ``l``
++specifiers can be used as well and are ignored in case of an IPv6
++address.
+ 
+-	Passed by reference.
++Passed by reference.
+ 
+-	Further examples:
++Further examples::
+ 
+ 	%pISfc		1.2.3.4		or [1:2:3:4:5:6:7:8]/123456789
+ 	%pISsc		1.2.3.4		or [1:2:3:4:5:6:7:8]%1234567890
+ 	%pISpfc		1.2.3.4:12345	or [1:2:3:4:5:6:7:8]:12345/123456789
+ 
+-UUID/GUID addresses:
++UUID/GUID addresses
++===================
++
++::
+ 
+ 	%pUb	00010203-0405-0607-0809-0a0b0c0d0e0f
+ 	%pUB	00010203-0405-0607-0809-0A0B0C0D0E0F
+ 	%pUl	03020100-0504-0706-0809-0a0b0c0e0e0f
+ 	%pUL	03020100-0504-0706-0809-0A0B0C0E0E0F
+ 
+-	For printing 16-byte UUID/GUIDs addresses. The additional 'l', 'L',
+-	'b' and 'B' specifiers are used to specify a little endian order in
+-	lower ('l') or upper case ('L') hex characters - and big endian order
+-	in lower ('b') or upper case ('B') hex characters.
++For printing 16-byte UUID/GUIDs addresses. The additional 'l', 'L',
++'b' and 'B' specifiers are used to specify a little endian order in
++lower ('l') or upper case ('L') hex characters - and big endian order
++in lower ('b') or upper case ('B') hex characters.
++
++Where no additional specifiers are used the default big endian
++order with lower case hex characters will be printed.
+ 
+-	Where no additional specifiers are used the default big endian
+-	order with lower case hex characters will be printed.
++Passed by reference.
+ 
+-	Passed by reference.
++dentry names
++============
+ 
+-dentry names:
++::
+ 
+ 	%pd{,2,3,4}
+ 	%pD{,2,3,4}
+ 
+-	For printing dentry name; if we race with d_move(), the name might be
+-	a mix of old and new ones, but it won't oops.  %pd dentry is a safer
+-	equivalent of %s dentry->d_name.name we used to use, %pd<n> prints
+-	n last components.  %pD does the same thing for struct file.
++For printing dentry name; if we race with :c:func:`d_move`, the name might be
++a mix of old and new ones, but it won't oops.  ``%pd`` dentry is a safer
++equivalent of ``%s`` ``dentry->d_name.name`` we used to use, ``%pd<n>`` prints
++``n`` last components.  ``%pD`` does the same thing for struct file.
++
++Passed by reference.
+ 
+-	Passed by reference.
++block_device names
++==================
+ 
+-block_device names:
++::
+ 
+ 	%pg	sda, sda1 or loop0p1
+ 
+-	For printing name of block_device pointers.
++For printing name of block_device pointers.
+ 
+-struct va_format:
++struct va_format
++================
++
++::
+ 
+ 	%pV
+ 
+-	For printing struct va_format structures. These contain a format string
+-	and va_list as follows:
++For printing struct va_format structures. These contain a format string
++and va_list as follows::
+ 
+ 	struct va_format {
+ 		const char *fmt;
+ 		va_list *va;
+ 	};
+ 
+-	Implements a "recursive vsnprintf".
++Implements a "recursive vsnprintf".
++
++Do not use this feature without some mechanism to verify the
++correctness of the format string and va_list arguments.
+ 
+-	Do not use this feature without some mechanism to verify the
+-	correctness of the format string and va_list arguments.
++Passed by reference.
+ 
+-	Passed by reference.
++struct clk
++==========
+ 
+-struct clk:
++::
+ 
+ 	%pC	pll1
+ 	%pCn	pll1
+ 	%pCr	1560000000
+ 
+-	For printing struct clk structures. '%pC' and '%pCn' print the name
+-	(Common Clock Framework) or address (legacy clock framework) of the
+-	structure; '%pCr' prints the current clock rate.
++For printing struct clk structures. ``%pC`` and ``%pCn`` print the name
++(Common Clock Framework) or address (legacy clock framework) of the
++structure; ``%pCr`` prints the current clock rate.
+ 
+-	Passed by reference.
++Passed by reference.
+ 
+-bitmap and its derivatives such as cpumask and nodemask:
++bitmap and its derivatives such as cpumask and nodemask
++=======================================================
++
++::
+ 
+ 	%*pb	0779
+ 	%*pbl	0,3-6,8-10
+ 
+-	For printing bitmap and its derivatives such as cpumask and nodemask,
+-	%*pb output the bitmap with field width as the number of bits and %*pbl
+-	output the bitmap as range list with field width as the number of bits.
++For printing bitmap and its derivatives such as cpumask and nodemask,
++``%*pb`` output the bitmap with field width as the number of bits and ``%*pbl``
++output the bitmap as range list with field width as the number of bits.
++
++Passed by reference.
+ 
+-	Passed by reference.
++Flags bitfields such as page flags, gfp_flags
++=============================================
+ 
+-Flags bitfields such as page flags, gfp_flags:
++::
+ 
+ 	%pGp	referenced|uptodate|lru|active|private
+ 	%pGg	GFP_USER|GFP_DMA32|GFP_NOWARN
+ 	%pGv	read|exec|mayread|maywrite|mayexec|denywrite
+ 
+-	For printing flags bitfields as a collection of symbolic constants that
+-	would construct the value. The type of flags is given by the third
+-	character. Currently supported are [p]age flags, [v]ma_flags (both
+-	expect unsigned long *) and [g]fp_flags (expects gfp_t *). The flag
+-	names and print order depends on the particular	type.
++For printing flags bitfields as a collection of symbolic constants that
++would construct the value. The type of flags is given by the third
++character. Currently supported are [p]age flags, [v]ma_flags (both
++expect ``unsigned long *``) and [g]fp_flags (expects ``gfp_t *``). The flag
++names and print order depends on the particular	type.
+ 
+-	Note that this format should not be used directly in TP_printk() part
+-	of a tracepoint. Instead, use the show_*_flags() functions from
+-	<trace/events/mmflags.h>.
++Note that this format should not be used directly in :c:func:`TP_printk()` part
++of a tracepoint. Instead, use the ``show_*_flags()`` functions from
++<trace/events/mmflags.h>.
+ 
+-	Passed by reference.
++Passed by reference.
+ 
+-Network device features:
++Network device features
++=======================
++
++::
+ 
+ 	%pNF	0x000000000000c000
+ 
+-	For printing netdev_features_t.
++For printing netdev_features_t.
+ 
+-	Passed by reference.
++Passed by reference.
+ 
+-If you add other %p extensions, please extend lib/test_printf.c with
++If you add other ``%p`` extensions, please extend lib/test_printf.c with
+ one or more test cases, if at all feasible.
+ 
+ 
+ Thank you for your cooperation and attention.
+-
+-
+-By Randy Dunlap <rdunlap@infradead.org> and
+-Andrew Murray <amurray@mpc-data.co.uk>
