@@ -1,34 +1,16 @@
-Received: from mail-qt0-x22a.google.com ([2607:f8b0:400d:c0d::22a])
+Received: from smtp1.ascom-ws.com ([195.81.148.76] helo=mail.ascom-ws.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dMXix-0005Nj-PO
- for linux-mtd@lists.infradead.org; Sun, 18 Jun 2017 10:46:33 +0000
-Received: by mail-qt0-x22a.google.com with SMTP id u12so94788278qth.0
- for <linux-mtd@lists.infradead.org>; Sun, 18 Jun 2017 03:46:10 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Sun, 18 Jun 2017 06:46:02 -0400
-From: Tejun Heo <tj@kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Linux Doc Mailing List <linux-doc@vger.kernel.org>,
- Mauro Carvalho Chehab <mchehab@infradead.org>,
- linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-mtd@lists.infradead.org, Li Zefan <lizefan@huawei.com>,
- Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
- Mauro Carvalho Chehab <mchehab@s-opensource.com>
-Subject: Re: [PATCH 06/31] cgroup-v2.txt: standardize document format
-Message-ID: <20170618104602.GD28042@htj.duckdns.org>
-References: <cover.1495156488.git.mchehab@s-opensource.com>
- <1f0804f2263073287d2a106c12f88f295a30cec5.1495156488.git.mchehab@s-opensource.com>
- <20170519145921.GB7174@wtj.duckdns.org>
- <20170617121831.541ebb18@vento.lan>
+ id 1dMwhm-0006Af-55
+ for linux-mtd@lists.infradead.org; Mon, 19 Jun 2017 13:27:03 +0000
+From: Danesh Daroui <Danesh.Daroui@ascom.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: 4-bits ECC correction
+Date: Mon, 19 Jun 2017 13:26:33 +0000
+Message-ID: <39BC08CB3FF4C84CB6397533D4FC79097E94EE06@SEGOTEXCH02.ascom-Resource.ads>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170617121831.541ebb18@vento.lan>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,17 +20,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello, Andrew.
+Hello all,
 
-Can you please apply Mauro's doc format update patch for
-cgroup-v2.txt?  The mm part causes conflicts, so I think it'd be
-easier to route it through -mm.
+We are using a NAND flash memory which requires  4-bit ECC per 540 bytes. S=
+ince this is usually done by the MCU in a circuit and our MCU supports only=
+ 1-bit ECC, I wanted to ask whether it is possible (or maybe it has been do=
+ne) to implement 4-bit ECC at driver/UBI or UBIFS level for the cases like =
+we have that hardware, that is not able to support higher levels of ECC?=20
 
-The patch to apply is in the following message.
+Regards,
 
- https://marc.info/?l=linux-cgroups&m=149771274105674&q=raw
-
-Thanks.
-
--- 
-tejun
+Danesh Daroui
