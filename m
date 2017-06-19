@@ -1,20 +1,21 @@
-Received: from smtp1.ascom-ws.com ([195.81.148.76] helo=mail.ascom-ws.com)
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dMy63-0003WD-S0
- for linux-mtd@lists.infradead.org; Mon, 19 Jun 2017 14:56:09 +0000
-From: Danesh Daroui <Danesh.Daroui@ascom.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: RE: 4-bits ECC correction
-Date: Mon, 19 Jun 2017 14:55:41 +0000
-Message-ID: <39BC08CB3FF4C84CB6397533D4FC79097E94EE69@SEGOTEXCH02.ascom-Resource.ads>
+ id 1dMyjB-000598-EQ
+ for linux-mtd@lists.infradead.org; Mon, 19 Jun 2017 15:36:36 +0000
+Subject: Re: 4-bits ECC correction
+To: Danesh Daroui <Danesh.Daroui@ascom.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 References: <39BC08CB3FF4C84CB6397533D4FC79097E94EE06@SEGOTEXCH02.ascom-Resource.ads>
  <CAFLxGvw7OSL=WWaxbyXR0mCWCkqjUKU0=4-BDrnvmuZ42bnSUA@mail.gmail.com>
-In-Reply-To: <CAFLxGvw7OSL=WWaxbyXR0mCWCkqjUKU0=4-BDrnvmuZ42bnSUA@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <39BC08CB3FF4C84CB6397533D4FC79097E94EE69@SEGOTEXCH02.ascom-Resource.ads>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <5b38d3c9-3d83-02c3-5dc6-cfd29e980a01@nod.at>
+Date: Mon, 19 Jun 2017 17:36:05 +0200
 MIME-Version: 1.0
+In-Reply-To: <39BC08CB3FF4C84CB6397533D4FC79097E94EE69@SEGOTEXCH02.ascom-Resource.ads>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +25,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-VGhhbmtzIGEgbG90IGZvciB5b3VyIGFuc3dlci4NCg0KSXMgdGhlcmUgYW55IGRvY3VtZW50IGFi
-b3V0IGhvdyBjYW4gd2UgdXNlIHNvZnR3YXJlIEVDQyB3aXRoIGF0IGxlYXN0IGxldmVsIDQgKDQt
-Yml0IEVDQykgb3IgaG93IGl0IGNhbiBiZSBhY3RpdmF0ZWQgaW4gdGhlIGtlcm5lbD8gQWxzbywg
-aXMgdGhlcmUgYW55IHBvc3NpYmxlIHdheSB0byBrbm93IHdoYXQgbGV2ZWwgb2YgRUNDIGlzIGN1
-cnJlbnRseSB1c2VkIGJ5IFVCSS9VQklGUyBvciB0aGUgTkFORCBmbGFzaCBoYXJkd2FyZSBpdHNl
-bGY/DQoNCldoYXQga2luZCBvZiBpbmNvbXBhdGliaWxpdHkgbWlnaHQgb2NjdXI/IFdlIGFyZSB1
-c2luZyBxdWl0ZSBvbGQga2VybmVsICgyLjYuMzkuNCkgc28gd291bGQgaXQgYmUgcG9zc2libGUg
-dG8gdXNlIHNvZnR3YXJlIEVDQyBvbiB0aGlzIGtlcm5lbCBhcyB3ZWxsIG9yIHdlIG5lZWQgdG8g
-dXBkYXRlIHRoZSBrZXJuZWwgZmlyc3QgKHdlIHByZWZlciBub3QgYXQgdGhpcyBzdGFnZSk/DQoN
-ClRoYW5rcyBmb3IgeW91ciBoZWxwLA0KDQpEYW5lc2gNCg0KDQpGcm9tOiBSaWNoYXJkIFdlaW5i
-ZXJnZXIgW21haWx0bzpyaWNoYXJkLndlaW5iZXJnZXJAZ21haWwuY29tXSANClNlbnQ6IGRlbiAx
-OSBqdW5pIDIwMTcgMTY6NTANClRvOiBEYW5lc2ggRGFyb3VpIDxEYW5lc2guRGFyb3VpQGFzY29t
-LmNvbT4NCkNjOiBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZw0KU3ViamVjdDogUmU6IDQt
-Yml0cyBFQ0MgY29ycmVjdGlvbg0KDQpEYW5lc2gsDQoNCk9uIE1vbmRheSwgSnVuZSAxOSwgMjAx
-NywgRGFuZXNoIERhcm91aSA8RGFuZXNoLkRhcm91aUBhc2NvbS5jb20+IHdyb3RlOg0KPiBIZWxs
-byBhbGwsDQo+DQo+IFdlIGFyZSB1c2luZyBhIE5BTkQgZmxhc2ggbWVtb3J5IHdoaWNoIHJlcXVp
-cmVzwqAgNC1iaXQgRUNDIHBlciA1NDAgYnl0ZXMuIFNpbmNlIHRoaXMgaXMgdXN1YWxseSBkb25l
-IGJ5IHRoZSBNQ1UgaW4gYSBjaXJjdWl0IGFuZCBvdXIgTUNVIHN1cHBvcnRzIG9ubHkgMS1iaXQg
-RUNDLCBJIHdhbnRlZCB0byBhc2sgd2hldGhlciBpdCBpcyBwb3NzaWJsZSAob3IgbWF5YmUgaXQg
-aGFzIGJlZW4gZG9uZSkgdG8gaW1wbGVtZW50IDQtYml0IEVDQyBhdCBkcml2ZXIvVUJJIG9yIFVC
-SUZTIGxldmVsIGZvciB0aGUgY2FzZXMgbGlrZSB3ZSBoYXZlIHRoYXQgaGFyZHdhcmUsIHRoYXQg
-aXMgbm90IGFibGUgdG8gc3VwcG9ydCBoaWdoZXIgbGV2ZWxzIG9mIEVDQz8NCg0KWW91IGNhbiB1
-c2UgTGludXgncyBzb2Z0d2FyZSBFQ0MuDQpOdXIga2VlcCBpbiBtaW5kLCB0aGF0IHRoaXMgbWF5
-IGJlIGluY29tcGF0aWJsZSB3aXRoIHlvdXIgYm9vdGxvYWRlci4NCg0KDQo+IFJlZ2FyZHMsDQo+
-DQo+IERhbmVzaCBEYXJvdWkNCj4NCj4NCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fDQo+IExpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcg
-bGlzdA0KPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
-LW10ZC8NCj4NCg0KLS0gDQpUaGFua3MsDQovL3JpY2hhcmQNCg==
+Danesh,
+
+
+Am 19.06.2017 um 16:55 schrieb Danesh Daroui:
+> Thanks a lot for your answer.
+> 
+> Is there any document about how can we use software ECC with at least level 4 (4-bit ECC) or how it can be activated in the kernel? Also, is there any possible way to know what level of ECC is currently used by UBI/UBIFS or the NAND flash hardware itself?
+
+UBI/UBIFS does not not ECC. The NFC or the Linux NAND core does.
+See Documentation/devicetree/bindings/mtd/nand.txt on setting the ECC mode.
+
+> What kind of incompatibility might occur? We are using quite old kernel (2.6.39.4) so would it be possible to use software ECC on this kernel as well or we need to update the kernel first 
+
+Well, your bootloader has to implement Software ECC exactly the same way as Linux does.
+Sorry, I don't remember when we merged software BCH.
+
+Thanks,
+//richard
