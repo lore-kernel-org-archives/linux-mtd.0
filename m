@@ -1,21 +1,21 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from hauke-m.de ([5.39.93.123] helo=mail.hauke-m.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dMyjB-000598-EQ
- for linux-mtd@lists.infradead.org; Mon, 19 Jun 2017 15:36:36 +0000
-Subject: Re: 4-bits ECC correction
-To: Danesh Daroui <Danesh.Daroui@ascom.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-References: <39BC08CB3FF4C84CB6397533D4FC79097E94EE06@SEGOTEXCH02.ascom-Resource.ads>
- <CAFLxGvw7OSL=WWaxbyXR0mCWCkqjUKU0=4-BDrnvmuZ42bnSUA@mail.gmail.com>
- <39BC08CB3FF4C84CB6397533D4FC79097E94EE69@SEGOTEXCH02.ascom-Resource.ads>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <5b38d3c9-3d83-02c3-5dc6-cfd29e980a01@nod.at>
-Date: Mon, 19 Jun 2017 17:36:05 +0200
-MIME-Version: 1.0
-In-Reply-To: <39BC08CB3FF4C84CB6397533D4FC79097E94EE69@SEGOTEXCH02.ascom-Resource.ads>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+ id 1dN58A-0002vB-Ix
+ for linux-mtd@lists.infradead.org; Mon, 19 Jun 2017 22:26:48 +0000
+From: Hauke Mehrtens <hauke@hauke-m.de>
+To: ralf@linux-mips.org
+Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
+ linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+ martin.blumenstingl@googlemail.com, john@phrozen.org,
+ linux-spi@vger.kernel.org, hauke.mehrtens@intel.com, robh@kernel.org,
+ andy.shevchenko@gmail.com, p.zabel@pengutronix.de,
+ Hauke Mehrtens <hauke@hauke-m.de>
+Subject: [PATCH v4 01/16] MIPS: lantiq: Use of_platform_default_populate
+ instead of __dt_register_buses
+Date: Tue, 20 Jun 2017 00:25:53 +0200
+Message-Id: <20170619222608.13344-2-hauke@hauke-m.de>
+In-Reply-To: <20170619222608.13344-1-hauke@hauke-m.de>
+References: <20170619222608.13344-1-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,21 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Danesh,
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
+This allows populating syscon devices which are using "simple-mfd"
+instead of "simple-bus".
 
-Am 19.06.2017 um 16:55 schrieb Danesh Daroui:
-> Thanks a lot for your answer.
-> 
-> Is there any document about how can we use software ECC with at least level 4 (4-bit ECC) or how it can be activated in the kernel? Also, is there any possible way to know what level of ECC is currently used by UBI/UBIFS or the NAND flash hardware itself?
+Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+---
+ arch/mips/lantiq/prom.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-UBI/UBIFS does not not ECC. The NFC or the Linux NAND core does.
-See Documentation/devicetree/bindings/mtd/nand.txt on setting the ECC mode.
-
-> What kind of incompatibility might occur? We are using quite old kernel (2.6.39.4) so would it be possible to use software ECC on this kernel as well or we need to update the kernel first 
-
-Well, your bootloader has to implement Software ECC exactly the same way as Linux does.
-Sorry, I don't remember when we merged software BCH.
-
-Thanks,
-//richard
+diff --git a/arch/mips/lantiq/prom.c b/arch/mips/lantiq/prom.c
+index 96773bed8a8a..9ff7ccde9de0 100644
+--- a/arch/mips/lantiq/prom.c
++++ b/arch/mips/lantiq/prom.c
+@@ -117,7 +117,7 @@ void __init prom_init(void)
+ 
+ int __init plat_of_setup(void)
+ {
+-	return __dt_register_buses(soc_info.compatible, "simple-bus");
++	return of_platform_default_populate(NULL, NULL, NULL);
+ }
+ 
+ arch_initcall(plat_of_setup);
+-- 
+2.11.0
