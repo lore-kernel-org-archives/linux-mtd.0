@@ -1,28 +1,29 @@
-Received: from hauke-m.de ([5.39.93.123] helo=mail.hauke-m.de)
+Received: from 13.mo6.mail-out.ovh.net ([188.165.56.124])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dNRUj-0007Pi-9c
- for linux-mtd@lists.infradead.org; Tue, 20 Jun 2017 22:19:35 +0000
-Subject: Re: [PATCH v4 12/16] MIPS: lantiq: Add a GPHY driver which uses the
- RCU syscon-mfd
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-References: <20170619222608.13344-1-hauke@hauke-m.de>
- <20170619222608.13344-13-hauke@hauke-m.de>
- <CAHp75VcDgC7n3FVig0r0RBg=B655sv_jWQt7RWXU9uPx9QGvqA@mail.gmail.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>,
- Linux MIPS Mailing List <linux-mips@linux-mips.org>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- linux-watchdog@vger.kernel.org, devicetree <devicetree@vger.kernel.org>,
- "martin.blumenstingl" <martin.blumenstingl@googlemail.com>,
- john <john@phrozen.org>, linux-spi <linux-spi@vger.kernel.org>,
- "hauke.mehrtens" <hauke.mehrtens@intel.com>, Rob Herring <robh@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>
-From: Hauke Mehrtens <hauke@hauke-m.de>
-Message-ID: <c3fae486-6ded-0bb2-d7e4-89ada96986d0@hauke-m.de>
-Date: Wed, 21 Jun 2017 00:19:09 +0200
+ id 1dNRWB-0000az-4A
+ for linux-mtd@lists.infradead.org; Tue, 20 Jun 2017 22:21:05 +0000
+Received: from player774.ha.ovh.net (b6.ovh.net [213.186.33.56])
+ by mo6.mail-out.ovh.net (Postfix) with ESMTP id 7A4EFED35E
+ for <linux-mtd@lists.infradead.org>; Wed, 21 Jun 2017 00:20:40 +0200 (CEST)
+Subject: Re: [PATCH 2/2] mtd: spi-nor: add Dual and Quad read mode support to
+ some flash devices
+To: Marek Vasut <marek.vasut@gmail.com>, =?UTF-8?Q?C=c3=a9dric_Le_Goater?=
+ <clg@kaod.org>, linux-mtd@lists.infradead.org
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>
+References: <1492610420-12397-1-git-send-email-clg@kaod.org>
+ <1492610420-12397-3-git-send-email-clg@kaod.org>
+ <ab889dad-bd43-9e8b-d3c9-cf6d4be64a23@gmail.com>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <8fdc155e-ab20-51f5-9200-f41731c90f45@wedev4u.fr>
+Date: Wed, 21 Jun 2017 00:20:32 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VcDgC7n3FVig0r0RBg=B655sv_jWQt7RWXU9uPx9QGvqA@mail.gmail.com>
+In-Reply-To: <ab889dad-bd43-9e8b-d3c9-cf6d4be64a23@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,76 +33,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/20/2017 01:36 AM, Andy Shevchenko wrote:
-> On Tue, Jun 20, 2017 at 1:26 AM, Hauke Mehrtens <hauke@hauke-m.de> wrote:
->> From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
->>
->> Compared to the old xrx200_phy_fw driver the new version has multiple
->> enhancements. The name of the firmware files does not have to be added
->> to all .dts files anymore - one now configures the GPHY mode (FE or GE)
->> instead. Each GPHY can now also boot separate firmware (thus mixing of
->> GE and FE GPHYs is now possible).
->> The new implementation is based on the RCU syscon-mfd and uses the
->> reeset_controller framework instead of raw RCU register reads/writes.
->>
+Le 19/04/2017 à 16:05, Marek Vasut a écrit :
+> On 04/19/2017 04:00 PM, Cédric Le Goater wrote:
+>> These devices are used on OpenPOWER systems. The SPI_NOR_DUAL_READ
+>> flags is added for the Aspeed SoCs which do not support QUAD reads.
 > 
-> Couple of comments, otherwise FWIW,
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> It's added more like because the chip supports it ;-)
 > 
->> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+> Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
+>
+
+Applied to the spi-nor/next branch of l2-mtd
+
+Thanks!
+
+
+>> Signed-off-by: Cédric Le Goater <clg@kaod.org>
 >> ---
->>  .../devicetree/bindings/mips/lantiq/rcu-gphy.txt   |  36 +++
->>  arch/mips/lantiq/xway/sysctrl.c                    |   6 +-
->>  drivers/soc/lantiq/Makefile                        |   1 +
->>  drivers/soc/lantiq/gphy.c                          | 261 +++++++++++++++++++++
->>  include/dt-bindings/mips/lantiq_rcu_gphy.h         |  15 ++
->>  5 files changed, 317 insertions(+), 2 deletions(-)
->>  create mode 100644 Documentation/devicetree/bindings/mips/lantiq/rcu-gphy.txt
->>  create mode 100644 drivers/soc/lantiq/gphy.c
->>  create mode 100644 include/dt-bindings/mips/lantiq_rcu_gphy.h
-
-......
-
->> +
->> +       /*
->> +        * GPHY cores need the firmware code in a persistent and contiguous
->> +        * memory area with a 16 kB boundary aligned start address.
->> +        */
->> +       priv->size = fw->size + XRX200_GPHY_FW_ALIGN;
->> +
->> +       priv->fw_addr = dma_alloc_coherent(dev, priv->size,
->> +                                          &priv->dma_addr, GFP_KERNEL);
+>>
+>>  The lines are over 80 characters but it looks better.
+>>
+>>  drivers/mtd/spi-nor/spi-nor.c | 8 ++++----
+>>  1 file changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>> index ee777df4466c..f029fb7a3edc 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -1016,10 +1016,10 @@ static const struct flash_info spi_nor_ids[] = {
+>>  	{ "mx25u6435f",  INFO(0xc22537, 0, 64 * 1024, 128, SECT_4K) },
+>>  	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
+>>  	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
+>> -	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
+>> +	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>>  	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K) },
+>>  	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
+>> -	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_QUAD_READ) },
+>> +	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>>  	{ "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>>  	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
+>>  
+>> @@ -1031,7 +1031,7 @@ static const struct flash_info spi_nor_ids[] = {
+>>  	{ "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
+>>  	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
+>>  	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
+>> -	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
+>> +	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>>  	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+>>  	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+>>  	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+>> @@ -1150,7 +1150,7 @@ static const struct flash_info spi_nor_ids[] = {
+>>  	{ "w25q80", INFO(0xef5014, 0, 64 * 1024,  16, SECT_4K) },
+>>  	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16, SECT_4K) },
+>>  	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256, SECT_4K) },
+>> -	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, SECT_4K) },
+>> +	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>>  
+>>  	/* Catalyst / On Semiconductor -- non-JEDEC */
+>>  	{ "cat25c11", CAT25_INFO(  16, 8, 16, 1, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+>>
 > 
-> dmam_ ?
-
-Thanks, didn't know this functions was looking for something with devm_
-prefix, but dmam_ makes the code simpler.
-
-....
-
->> +
->> +       ret = xway_gphy_load(dev, priv, &fw_addr);
->> +       if (ret)
 > 
-> You need to disable and unprepare a clock.
-
-Done
-
->> +               return ret;
->> +
-
-....
-> 
->> +       dma_free_coherent(dev, priv->size, priv->fw_addr, priv->dma_addr);
-> 
-> It will go away if dmam_ variant is in use.
-
-Done
-
->> +
->> +       ret = unregister_reboot_notifier(&priv->gphy_reboot_nb);
->> +       if (ret)
->> +               dev_warn(dev, "Failed to unregister reboot notifier\n");
-...
-
-Hauke
