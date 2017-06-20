@@ -1,12 +1,13 @@
-Received: from 3.mo1.mail-out.ovh.net ([46.105.60.232])
+Received: from 14.mo1.mail-out.ovh.net ([178.32.97.215])
  by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dNJY3-0004Jf-EU
- for linux-mtd@lists.infradead.org; Tue, 20 Jun 2017 13:50:28 +0000
+ id 1dNJoP-0004So-6R
+ for linux-mtd@lists.infradead.org; Tue, 20 Jun 2017 14:07:22 +0000
 Received: from player691.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo1.mail-out.ovh.net (Postfix) with ESMTP id 3CB8C7E331
- for <linux-mtd@lists.infradead.org>; Tue, 20 Jun 2017 15:49:46 +0200 (CEST)
+ by mo1.mail-out.ovh.net (Postfix) with ESMTP id A715A7C233
+ for <linux-mtd@lists.infradead.org>; Tue, 20 Jun 2017 16:06:55 +0200 (CEST)
+From: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
 Subject: Re: [PATCH 4/4] mtd: spi-nor: aspeed: use command mode for reads
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
  Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
 References: <1492689397-4704-1-git-send-email-clg@kaod.org>
  <1492689397-4704-5-git-send-email-clg@kaod.org>
@@ -19,9 +20,8 @@ Cc: Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
  David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>
-From: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-Message-ID: <e360b04d-1eba-b9e1-5327-36d236182848@kaod.org>
-Date: Tue, 20 Jun 2017 15:49:36 +0200
+Message-ID: <107f014f-3cdf-80d3-2892-b0d88ff1fc95@kaod.org>
+Date: Tue, 20 Jun 2017 16:06:46 +0200
 MIME-Version: 1.0
 In-Reply-To: <2bd0b105-7652-8917-4a1d-6f218eaf848e@atmel.com>
 Content-Type: text/plain; charset=utf-8
@@ -34,6 +34,9 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+
+[ fixing Cyrille email. your "From" is still @atmel.com. Am I doing
+  something wrong ? ]
 
 On 06/20/2017 03:42 PM, Cyrille Pitchen wrote:
 > Hi Cédric,
