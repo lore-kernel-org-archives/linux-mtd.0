@@ -1,19 +1,33 @@
-Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dNKT0-0004I2-Ji
- for linux-mtd@lists.infradead.org; Tue, 20 Jun 2017 14:49:20 +0000
-Received: by mail-pf0-x243.google.com with SMTP id y7so23616315pfd.3
- for <linux-mtd@lists.infradead.org>; Tue, 20 Jun 2017 07:48:58 -0700 (PDT)
-Sender: "joel.stan@gmail.com" <joel.stan@gmail.com>
-From: Joel Stanley <joel@jms.id.au>
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Marek Vasut <marek.vasut@gmail.com>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- linux-mtd@lists.infradead.org,
- =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
-Subject: [PATCH v4] spi-nor: Add Winbond w25m512jv
-Date: Wed, 21 Jun 2017 00:18:43 +0930
-Message-Id: <20170620144843.23913-1-joel@jms.id.au>
+ id 1dNQG2-0003GL-Cg
+ for linux-mtd@lists.infradead.org; Tue, 20 Jun 2017 21:00:20 +0000
+Received: by mail-pf0-x242.google.com with SMTP id y7so25902992pfd.3
+ for <linux-mtd@lists.infradead.org>; Tue, 20 Jun 2017 13:59:57 -0700 (PDT)
+Date: Tue, 20 Jun 2017 13:59:53 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Frank Rowand <frowand.list@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Jonas Gorski <jonas.gorski@gmail.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH V3 3/4] mtd: partitions: add of_match_table parser matching
+Message-ID: <20170620205953.GA14148@google.com>
+References: <20170523053022.3251-1-zajec5@gmail.com>
+ <20170523053022.3251-4-zajec5@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20170523053022.3251-4-zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,36 +37,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Hi Rafal,
 
-Similar to the other ones, different size. The "JV" suffix is in
-the datasheet, I haven't seen mentions of a different one.
+On Tue, May 23, 2017 at 07:30:21AM +0200, Rafał Miłecki wrote:
+> From: Brian Norris <computersforpeace@gmail.com>
+> 
+> Partition parsers can now provide an of_match_table to enable
+> flash<-->parser matching via device tree.
+> 
+> This support is currently limited to built-in parsers as it uses
+> request_module() and friends. This should be sufficient for most cases
+> though as compiling parsers as modules isn't a common choice.
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> Acked-by: Brian Norris <computersforpeac@gmail.com>
 
-The the datasheet indicates DUAL and QUAD are supported.
+I've pushed patches 1 and 2 to l2-mtd.git. I'm still looking at one
+piece below:
 
- http://www.winbond.com/resource-files/w25m512jv%20revc%2001062017.pdf
+> ---
+> This is based on Brian's patches:
+> [RFC PATCH 4/7] mtd: add of_match_mtd_parser() and of_mtd_match_mtd_parser() helpers
+> [RFC PATCH 6/7] RFC: mtd: partitions: enable of_match_table matching
+> 
+> V1: Put helpers in mtdpart.c instead of drivers/of/of_mtd.c
+>     Merge helpers into a single of_mtd_match_mtd_parser
+> V3: Add a simple comment to note we will need the best match in the future
+> ---
+>  drivers/mtd/mtdpart.c          | 48 ++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/mtd/partitions.h |  1 +
+>  2 files changed, 49 insertions(+)
+> 
+> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+> index 73c52f1a2e4c..0d3cc1e79014 100644
+> --- a/drivers/mtd/mtdpart.c
+> +++ b/drivers/mtd/mtdpart.c
+> @@ -861,6 +861,42 @@ static int mtd_part_do_parse(struct mtd_part_parser *parser,
+>  	return ret;
+>  }
+>  
+> +static bool of_mtd_match_mtd_parser(struct mtd_info *mtd,
+> +				    struct mtd_part_parser *parser)
+> +{
+> +	struct device_node *np;
+> +	bool ret;
+> +
+> +	np = mtd_get_of_node(mtd);
+> +	np = of_get_child_by_name(np, "partitions");
+> +
+> +	ret = !!of_match_node(parser->of_match_table, np);
+> +
+> +	of_node_put(np);
+> +
+> +	return ret;
+> +}
+> +
+> +static struct mtd_part_parser *mtd_part_get_parser_by_of(struct mtd_info *mtd)
+> +{
+> +	struct mtd_part_parser *p, *ret = NULL;
+> +
+> +	spin_lock(&part_parser_lock);
+> +
+> +	/* TODO: Pick parser with the best match (score) */
 
-Signed-off-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Signed-off-by: Joel Stanley <joel@jms.id.au>
----
-v4: Get the name of the chip correct
-v3: Added the DUAL and QUAD flags for Ben. Tested with aspeed-smc driver.
+I don't usually like sticking in TODOs for known issues like this on new
+code. This one isn't really that hard to solve; there just aren't any
+nice helpers for it. I see you even wrote up something on one of the
+prior versions.
 
- drivers/mtd/spi-nor/spi-nor.c | 2 ++
- 1 file changed, 2 insertions(+)
+I might take a look myself at improving your other proposal. I'd rather
+give that a chance than take this with a TODO.
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index eef55b597ec7..43de5adafcb7 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1146,6 +1146,8 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16, SECT_4K) },
- 	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256, SECT_4K) },
- 	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, SECT_4K) },
-+	{ "w25m512jv", INFO(0xef7119, 0, 64 * 1024, 1024,
-+			SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_READ) },
- 
- 	/* Catalyst / On Semiconductor -- non-JEDEC */
- 	{ "cat25c11", CAT25_INFO(  16, 8, 16, 1, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
--- 
-2.11.0
+> +	list_for_each_entry(p, &part_parsers, list) {
+> +		if (of_mtd_match_mtd_parser(mtd, p) &&
+> +				try_module_get(p->owner)) {
+> +			ret = p;
+> +			break;
+> +		}
+> +	}
+> +
+> +	spin_unlock(&part_parser_lock);
+> +
+> +	return ret;
+> +}
+> +
+>  /**
+>   * parse_mtd_partitions - parse MTD partitions
+>   * @master: the master partition (describes whole MTD device)
+
+Brian
