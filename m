@@ -1,25 +1,24 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dNDad-0007eE-5N
- for linux-mtd@lists.infradead.org; Tue, 20 Jun 2017 07:28:45 +0000
-Date: Tue, 20 Jun 2017 09:28:11 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Enrico Jorns <ejo@pengutronix.de>, Artem
- Bityutskiy <artem.bityutskiy@linux.intel.com>, Dinh Nguyen
- <dinguyen@kernel.org>, Marek Vasut <marek.vasut@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Masami Hiramatsu <mhiramat@kernel.org>, Chuanxiao
- Dong <chuanxiao.dong@intel.com>, Jassi Brar <jaswinder.singh@linaro.org>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
- Brian Norris <computersforpeace@gmail.com>, Richard Weinberger
- <richard@nod.at>
-Subject: Re: [PATCH v7 00/16] mtd: nand: denali: Denali NAND IP improvements
-Message-ID: <20170620092811.33d2dfff@bbrezillon>
-In-Reply-To: <1497361550-8115-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1497361550-8115-1-git-send-email-yamada.masahiro@socionext.com>
+Received: from 4.mo1.mail-out.ovh.net ([46.105.76.26])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dNE3r-00034D-9d
+ for linux-mtd@lists.infradead.org; Tue, 20 Jun 2017 07:58:58 +0000
+Received: from player795.ha.ovh.net (b9.ovh.net [213.186.33.59])
+ by mo1.mail-out.ovh.net (Postfix) with ESMTP id 018687E0C5
+ for <linux-mtd@lists.infradead.org>; Tue, 20 Jun 2017 09:58:26 +0200 (CEST)
+Subject: Re: [PATCH v3] spi-nor: Add Winbond w25q512jv
+To: Joel Stanley <joel@jms.id.au>, Marek Vasut <marek.vasut@gmail.com>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ linux-mtd@lists.infradead.org, =?UTF-8?Q?C=c3=a9dric_Le_Goater?=
+ <clg@kaod.org>
+References: <20170620062028.7520-1-joel@jms.id.au>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <1612427b-ac29-6c7a-5111-be6087421f35@wedev4u.fr>
+Date: Tue, 20 Jun 2017 09:58:17 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20170620062028.7520-1-joel@jms.id.au>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,71 +28,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 13 Jun 2017 22:45:34 +0900
-Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+Hi all,
 
-> This patch series intends to solve various problems.
+Le 20/06/2017 à 08:20, Joel Stanley a écrit :
+> From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
 > 
-> [1] The driver just retrieves the OOB area as-is
->     whereas the controller uses syndrome page layout.
-> [2] ONFi devices are not working
-> [3] It can not read Bad Block Marker
+> Similar to the other ones, different size. The "JV" suffix is in
+> the datasheet, I haven't seen mentions of a different one.
 > 
-> Outstanding changes are:
->  - Fix raw/oob callbacks for syndrome page layout
->  - Implement setup_data_interface() callback
->  - Fix/implement more commands for ONFi devices
->  - Allow to skip the driver internal bounce buffer
->  - Support PIO in case DMA is not supported
->  - Switch from ->cmdfunc over to ->cmd_ctrl
+> The the datasheet indicates DUAL and QUAD are supported.
 > 
-> 18 patches were merged by v2.
-> 11 patches were merged by v3.
-> 2 patches were merged by v4.
-> 5 patches were merged by v5.
-> Here is the rest of the series.
+> http://www.winbond.com/resource-files/w25m512jv%20revc%2001062017.pdf
 > 
-> v1: https://lkml.org/lkml/2016/11/26/144
-> v2: https://lkml.org/lkml/2017/3/22/804
-> v3: https://lkml.org/lkml/2017/3/30/90
-> v4: https://lkml.org/lkml/2017/6/5/1005
+> Signed-off-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Signed-off-by: Joel Stanley <joel@jms.id.au>
+> ---
+> v3:
+>  - Added the DUAL and QUAD flags for ben. Tested with aspeed-smc driver.
 > 
+>  drivers/mtd/spi-nor/spi-nor.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> Masahiro Yamada (16):
->   mtd: nand: denali: set NAND_ECC_CUSTOM_PAGE_ACCESS
->   mtd: nand: denali: remove unneeded find_valid_banks()
->   mtd: nand: denali: handle timing parameters by setup_data_interface()
->   mtd: nand: denali: rework interrupt handling
->   mtd: nand: denali: switch over to cmd_ctrl instead of cmdfunc
->   mtd: nand: denali: fix bank reset function to detect the number of
->     chips
->   mtd: nand: denali: use interrupt instead of polling for bank reset
->   mtd: nand: denali: propagate page to helpers via function argument
->   mtd: nand: denali: merge struct nand_buf into struct denali_nand_info
->   mtd: nand: denali: use flag instead of register macro for direction
->   mtd: nand: denali: fix raw and oob accessors for syndrome page layout
->   mtd: nand: denali: support hardware-assisted erased page detection
->   mtd: nand: denali: skip driver internal bounce buffer when possible
->   mtd: nand: denali: use non-managed kmalloc() for DMA buffer
->   mtd: nand: denali: enable bad block table scan
->   mtd: nand: denali: avoid magic numbers and rename for clarification
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index eef55b597ec7..ad46dc82c8d1 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1146,6 +1146,8 @@ static const struct flash_info spi_nor_ids[] = {
+>  	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16, SECT_4K) },
+>  	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256, SECT_4K) },
+>  	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, SECT_4K) },
+> +	{ "w25q512jv", INFO(0xef7119, 0, 64 * 1024, 1024,
+> +			SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_READ) },
+>
 
-Applied patches 1 to 15 and v8 of patch 16.
+This looks good, I'll try to apply it this evening.
 
-Thanks a lot for your patience and the cleanup/rework you've done.
+Best regards,
 
-BTW, I'd be happy to have you flagged as the maintainer of the NAND
-denali driver. If you like the idea, just send a patch adding an entry
-in MAINTAINERS.
+Cyrille
 
-Regards,
-
-Boris
-
-> 
->  drivers/mtd/nand/denali.c     | 1724 ++++++++++++++++++-----------------------
->  drivers/mtd/nand/denali.h     |   63 +-
->  drivers/mtd/nand/denali_dt.c  |   15 +-
->  drivers/mtd/nand/denali_pci.c |   22 +-
->  4 files changed, 806 insertions(+), 1018 deletions(-)
+>  	/* Catalyst / On Semiconductor -- non-JEDEC */
+>  	{ "cat25c11", CAT25_INFO(  16, 8, 16, 1, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
 > 
