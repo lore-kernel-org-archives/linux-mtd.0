@@ -1,27 +1,29 @@
-MIME-Version: 1.0
-In-Reply-To: <20170609014240.GM102137@google.com>
-References: <1496270458-6479-1-git-send-email-andrea.adami@gmail.com>
- <1496270458-6479-2-git-send-email-andrea.adami@gmail.com>
- <20170609014240.GM102137@google.com>
-From: Andrea Adami <andrea.adami@gmail.com>
-Date: Tue, 20 Jun 2017 10:56:32 +0200
-Message-ID: <CAAQYJAuiMd5mViL76x6qwUw_VxSvMmUXbwMTvwmnO+rnifgSzw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/9] mtd: sharpslpart: add sharpslpart MTD partition
- parser
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+Received: from 13.mo3.mail-out.ovh.net ([188.165.33.202])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dNF8q-0005Z6-JF
+ for linux-mtd@lists.infradead.org; Tue, 20 Jun 2017 09:08:11 +0000
+Received: from player758.ha.ovh.net (b6.ovh.net [213.186.33.56])
+ by mo3.mail-out.ovh.net (Postfix) with ESMTP id 11A27EF98E
+ for <linux-mtd@lists.infradead.org>; Tue, 20 Jun 2017 11:07:44 +0200 (CEST)
+From: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
+Subject: Re: [PATCH 4/4] mtd: spi-nor: aspeed: use command mode for reads
+To: Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
+References: <1492689397-4704-1-git-send-email-clg@kaod.org>
+ <1492689397-4704-5-git-send-email-clg@kaod.org>
+ <b28c97cc-1daf-c1dd-4a86-4f8bf6c46b2b@gmail.com>
+ <66e385ec-6688-9ce7-1250-ec840201147e@kaod.org>
+ <9c60f3f9-3f74-930d-07f9-9cb7cb8ba8f4@gmail.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Lee Jones <lee.jones@linaro.org>,
- Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Linus Walleij <linus.walleij@linaro.org>, Russell King <linux@armlinux.org.uk>,
- linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Message-ID: <d86528a8-7189-427b-dab7-69bc526c8fb0@kaod.org>
+Date: Tue, 20 Jun 2017 11:07:35 +0200
+MIME-Version: 1.0
+In-Reply-To: <9c60f3f9-3f74-930d-07f9-9cb7cb8ba8f4@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,77 +33,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jun 9, 2017 at 3:42 AM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> Oh, one more thing:
->
-> On Thu, Jun 01, 2017 at 12:40:50AM +0200, Andrea Adami wrote:
->> diff --git a/drivers/mtd/sharpslpart.c b/drivers/mtd/sharpslpart.c
->> new file mode 100644
->> index 0000000..40aebe9
->> --- /dev/null
->> +++ b/drivers/mtd/sharpslpart.c
->> @@ -0,0 +1,132 @@
->> +/*
->> + * MTD partition parser for NAND flash on Sharp SL Series
->> + *
->> + * Copyright (C) 2017 Andrea Adami <andrea.adami@gmail.com>
->> + *
->> + * This program is free software; you can redistribute it and/or modify
->> + * it under the terms of the GNU General Public License as published by
->> + * the Free Software Foundation; either version 2 of the License, or
->> + * (at your option) any later version.
->> + *
->> + * This program is distributed in the hope that it will be useful,
->> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
->> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->> + * GNU General Public License for more details.
->> + *
->> + */
->> +
->> +#include <linux/kernel.h>
->> +#include <linux/slab.h>
->> +#include <linux/module.h>
->> +#include <linux/mtd/mtd.h>
->> +#include <linux/mtd/partitions.h>
->> +#include "sharpsl_ftl.h"
->> +
->> +/* factory defaults */
->> +#define SHARPSL_NAND_PARTS           3
->> +#define SHARPSL_FTL_PARTITION_SIZE   (7 * 1024 * 1024)
->> +#define PARAM_BLOCK_PARTITIONINFO1   0x00060000
->> +#define PARAM_BLOCK_PARTITIONINFO2   0x00064000
->> +
->> +#define BOOT_MAGIC                   be32_to_cpu(0x424f4f54)   /* BOOT */
->> +#define FSRO_MAGIC                   be32_to_cpu(0x4653524f)   /* FSRO */
->> +#define FSRW_MAGIC                   be32_to_cpu(0x46535257)   /* FSRW */
->
-> [...]
->
->> +struct sharpsl_nand_partitioninfo {
->> +     u32 start;
->> +     u32 end;
->
-> I was going to ignore this earlier, but I just noticed that you handle
-> endianness for the magic values above, so...
->
-> shouldn't you handle endianness for the start and end fields too?
->
->> +     u32 magic;
->> +     u32 reserved;
->> +};
-> [...]
->
-> Brian
+[ fixing Cyrille email ] 
 
-Brian,
-I have added a macro so to avoid to repeat le32_to_cpu() for each value.
-This seems even to work as intended...
+On 04/20/2017 03:58 PM, Marek Vasut wrote:
+> On 04/20/2017 03:53 PM, Cédric Le Goater wrote:
+>> On 04/20/2017 03:31 PM, Marek Vasut wrote:
+>>> On 04/20/2017 01:56 PM, Cédric Le Goater wrote:
+>>>> When reading flash contents, try to use the "command mode" if the AHB
+>>>> window configured for the flash module is big enough. Else, just fall
+>>>> back to the "user mode" to perform the read.
+>>>>
+>>>> Signed-off-by: Cédric Le Goater <clg@kaod.org>
+>>>> ---
+>>>>
+>>>>  Changes since initial version :
+>>>>
+>>>>  - rebased on current patchset which removed DMA support
+>>>>
+>>>>  drivers/mtd/spi-nor/aspeed-smc.c | 27 ++++++++++++++++++++++++++-
+>>>>  1 file changed, 26 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
+>>>> index 60c020482946..43015aec4557 100644
+>>>> --- a/drivers/mtd/spi-nor/aspeed-smc.c
+>>>> +++ b/drivers/mtd/spi-nor/aspeed-smc.c
+>>>> @@ -394,6 +394,31 @@ static ssize_t aspeed_smc_read_user(struct spi_nor *nor, loff_t from,
+>>>>  
+>>>>  	aspeed_smc_read_from_ahb(read_buf, chip->ahb_base, len);
+>>>>  	aspeed_smc_stop_user(nor);
+>>>> +	return 0;
+>>>> +}
+>>>> +
+>>>> +static ssize_t aspeed_smc_read(struct spi_nor *nor, loff_t from, size_t len,
+>>>> +			       u_char *read_buf)
+>>>> +{
+>>>> +	struct aspeed_smc_chip *chip = nor->priv;
+>>>> +
+>>>> +	/*
+>>>> +	 * The AHB window configured for the chip is too small for the
+>>>> +	 * read offset. Use the "User mode" of the controller to
+>>>> +	 * perform the read.
+>>>> +	 */
+>>>> +	if (from >= chip->ahb_window_size) {
+>>>> +		aspeed_smc_read_user(nor, from, len, read_buf);
+>>>> +		goto out;
+>>>
+>>> What about turning this into dumb if () {} else {} and dropping the goto ?
+>>
+>> yes, well, this is because I have other patches adding DMAs :
+>>
+>> 	https://github.com/legoater/linux/commit/6880924dc2cf7a47c446a708df528b72d9bf9134#diff-e466368d609006970aab53a7b840221fR575
+>>
+>> but as of today, the benefits in speed are to be proven and the current 
+>> implementation does not support vmalloc'ed buffers. So I can drop the 
+>> goto without too much regrets (if you insist :)
+> 
+> Nah, if you have further plans with this code, I don't mind either way.
+> 
 
-Note that the magics are 'texts' so they appear as BE.
-Some more tests and I'll send v4 of the patch to your attention.
+OK let's keep that way.
 
-Thanks in advance.
+Do you think we can merge these four patches in the next window ? 
 
+Thanks,
 
-Andrea
+C.
