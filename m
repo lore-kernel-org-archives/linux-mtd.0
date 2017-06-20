@@ -1,29 +1,28 @@
-Received: from hauke-m.de ([5.39.93.123] helo=mail.hauke-m.de)
+Received: from 5.mo6.mail-out.ovh.net ([46.105.54.31])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dNRWN-0000b5-BW
- for linux-mtd@lists.infradead.org; Tue, 20 Jun 2017 22:21:17 +0000
-Subject: Re: [PATCH v4 14/16] phy: Add an USB PHY driver for the Lantiq SoCs
- using the RCU module
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-References: <20170619222608.13344-1-hauke@hauke-m.de>
- <20170619222608.13344-15-hauke@hauke-m.de>
- <CAHp75VcYoPBd651s7a=y5yB3mjRG4W+=gWbeKFzwyw04qcg-MQ@mail.gmail.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>,
- Linux MIPS Mailing List <linux-mips@linux-mips.org>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- linux-watchdog@vger.kernel.org, devicetree <devicetree@vger.kernel.org>,
- "martin.blumenstingl" <martin.blumenstingl@googlemail.com>,
- john <john@phrozen.org>, linux-spi <linux-spi@vger.kernel.org>,
- "hauke.mehrtens" <hauke.mehrtens@intel.com>, Rob Herring <robh@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Kishon Vijay Abraham I <kishon@ti.com>
-From: Hauke Mehrtens <hauke@hauke-m.de>
-Message-ID: <a35bc5b3-fe52-8a06-6bc3-7f974c8b2740@hauke-m.de>
-Date: Wed, 21 Jun 2017 00:20:49 +0200
+ id 1dNRay-0002nl-Mh
+ for linux-mtd@lists.infradead.org; Tue, 20 Jun 2017 22:26:02 +0000
+Received: from player774.ha.ovh.net (b6.ovh.net [213.186.33.56])
+ by mo6.mail-out.ovh.net (Postfix) with ESMTP id CA1C4ED7E4
+ for <linux-mtd@lists.infradead.org>; Wed, 21 Jun 2017 00:25:37 +0200 (CEST)
+Subject: Re: [PATCH 1/4] mtd: spi-nor: aspeed: remove dummies from keep mask
+To: Marek Vasut <marek.vasut@gmail.com>, =?UTF-8?Q?C=c3=a9dric_Le_Goater?=
+ <clg@kaod.org>, linux-mtd@lists.infradead.org
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>
+References: <1492689397-4704-1-git-send-email-clg@kaod.org>
+ <1492689397-4704-2-git-send-email-clg@kaod.org>
+ <cfd472d8-8213-3780-01a5-f95dfc1c7cd3@gmail.com>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <7ecaa2fe-3492-fba0-99c6-2de5bb54e3bb@wedev4u.fr>
+Date: Wed, 21 Jun 2017 00:25:29 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VcYoPBd651s7a=y5yB3mjRG4W+=gWbeKFzwyw04qcg-MQ@mail.gmail.com>
+In-Reply-To: <cfd472d8-8213-3780-01a5-f95dfc1c7cd3@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,69 +32,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/20/2017 01:39 AM, Andy Shevchenko wrote:
-> On Tue, Jun 20, 2017 at 1:26 AM, Hauke Mehrtens <hauke@hauke-m.de> wrote:
->> This driver starts the DWC2 core(s) built into the XWAY SoCs and provides
->> the PHY interfaces for each core. The phy instances can be passed to the
->> dwc2 driver, which already supports the generic phy interface.
+Le 20/04/2017 à 15:28, Marek Vasut a écrit :
+> On 04/20/2017 01:56 PM, Cédric Le Goater wrote:
+>> There is no need to keep the dummy bytes in the control register if
+>> the command mode is not kept also. This could lead to an inconsistent
+>> setting : normal read mode (command 0x3) and dummy bytes. It is to be
+>> noted that the HW allows such a configuration.
 >>
->> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
->> Cc: Kishon Vijay Abraham I <kishon@ti.com>
+>> Signed-off-by: Cédric Le Goater <clg@kaod.org>
+> 
+> Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
+>
+
+Applied to the spi-nor/next branch of l2-mtd
+
+Thanks!
+
 >> ---
->>  .../bindings/phy/phy-lantiq-rcu-usb2.txt           |  41 ++++
->>  arch/mips/lantiq/xway/sysctrl.c                    |  24 +-
->>  drivers/phy/Kconfig                                |   8 +
->>  drivers/phy/Makefile                               |   1 +
->>  drivers/phy/phy-lantiq-rcu-usb2.c                  | 272 +++++++++++++++++++++
->>  5 files changed, 334 insertions(+), 12 deletions(-)
->>  create mode 100644 Documentation/devicetree/bindings/phy/phy-lantiq-rcu-usb2.txt
->>  create mode 100644 drivers/phy/phy-lantiq-rcu-usb2.c
+>>  drivers/mtd/spi-nor/aspeed-smc.c | 3 +--
+>>  1 file changed, 1 insertion(+), 2 deletions(-)
 >>
-
-....
-
->> +       /*
->> +        * Power on the USB PHY. We have to do it early because
->> +        * otherwise the second core won't turn on properly.
->> +        */
->> +       ret = clk_prepare_enable(priv->phy_gate_clk);
->> +       if (ret) {
->> +               dev_err(dev, "failed to enable PHY gate\n");
+>> diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
+>> index 56051d30f000..2940f2098420 100644
+>> --- a/drivers/mtd/spi-nor/aspeed-smc.c
+>> +++ b/drivers/mtd/spi-nor/aspeed-smc.c
+>> @@ -180,8 +180,7 @@ struct aspeed_smc_controller {
+>>  
+>>  #define CONTROL_KEEP_MASK						\
+>>  	(CONTROL_AAF_MODE | CONTROL_CE_INACTIVE_MASK | CONTROL_CLK_DIV4 | \
+>> -	 CONTROL_IO_DUMMY_MASK | CONTROL_CLOCK_FREQ_SEL_MASK |		\
+>> -	 CONTROL_LSB_FIRST | CONTROL_CLOCK_MODE_3)
+>> +	 CONTROL_CLOCK_FREQ_SEL_MASK | CONTROL_LSB_FIRST | CONTROL_CLOCK_MODE_3)
+>>  
+>>  /*
+>>   * The Segment Register uses a 8MB unit to encode the start address
+>>
 > 
-> Disable and unprepare control clock.
-
-Done, is there no devm_ version of this?
-
->> +               return ret;
->> +       }
-
-...
-
->> +       ret = ltq_rcu_usb2_start_cores(priv);
->> +       if (ret)
->> +               return ret;
->> +
 > 
->> +       provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
->> +
->> +       if (IS_ERR(provider))
-> 
-> Remove line in between.
-
-Done
-
->> +               return PTR_ERR(provider);
->> +
->> +       dev_set_drvdata(priv->dev, priv);
->> +       return 0;
-> 
-> You need to carefully check error path that you disabled clocks.
-
-Done
-
->> +}
->> +
-
-.....
-
-Hauke
