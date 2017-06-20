@@ -1,23 +1,26 @@
-Received: from 5.mo6.mail-out.ovh.net ([46.105.54.31])
+Received: from 14.mo6.mail-out.ovh.net ([46.105.56.113])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dNR8R-0007IU-Hb
- for linux-mtd@lists.infradead.org; Tue, 20 Jun 2017 21:56:33 +0000
+ id 1dNRGz-0000r6-9c
+ for linux-mtd@lists.infradead.org; Tue, 20 Jun 2017 22:05:23 +0000
 Received: from player774.ha.ovh.net (b6.ovh.net [213.186.33.56])
- by mo6.mail-out.ovh.net (Postfix) with ESMTP id E8AAAED8D4
- for <linux-mtd@lists.infradead.org>; Tue, 20 Jun 2017 23:56:07 +0200 (CEST)
-Subject: Re: [PATCH] mtd: spi-nor: cqspi: make of_device_ids const
-To: Marek Vasut <marek.vasut@gmail.com>,
- Arvind Yadav <arvind.yadav.cs@gmail.com>, dwmw2@infradead.org,
- computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
- richard@nod.at
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <c4663aaa9e5753053f6ac12a3565e0e1995f3b55.1497605323.git.arvind.yadav.cs@gmail.com>
- <4f604ebc-69a7-4e35-d682-cc4fa9e76c82@gmail.com>
+ by mo6.mail-out.ovh.net (Postfix) with ESMTP id BB1CDED233
+ for <linux-mtd@lists.infradead.org>; Wed, 21 Jun 2017 00:04:57 +0200 (CEST)
+Subject: Re: [PATCH 1/2] mtd: spi-nor: Add support for Macronix mx66l1g45g spi
+ flash
+To: Marek Vasut <marek.vasut@gmail.com>, =?UTF-8?Q?C=c3=a9dric_Le_Goater?=
+ <clg@kaod.org>, linux-mtd@lists.infradead.org
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>
+References: <1492610420-12397-1-git-send-email-clg@kaod.org>
+ <1492610420-12397-2-git-send-email-clg@kaod.org>
+ <6a7e7585-5989-8feb-cec1-3e4e78787d5e@gmail.com>
 From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <a612035a-817a-4474-8305-a8cb16882f03@wedev4u.fr>
-Date: Tue, 20 Jun 2017 23:56:00 +0200
+Message-ID: <433d4e5b-069b-d942-62d3-59d62c1999d2@wedev4u.fr>
+Date: Wed, 21 Jun 2017 00:04:49 +0200
 MIME-Version: 1.0
-In-Reply-To: <4f604ebc-69a7-4e35-d682-cc4fa9e76c82@gmail.com>
+In-Reply-To: <6a7e7585-5989-8feb-cec1-3e4e78787d5e@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -30,15 +33,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 16/06/2017 à 12:27, Marek Vasut a écrit :
-> On 06/16/2017 11:35 AM, Arvind Yadav wrote:
->> of_device_ids are not supposed to change at runtime. All functions
->> working with of_device_ids provided by <linux/of.h> work with const
->> of_device_ids. So mark the non-const structs as const.
+Le 19/04/2017 à 16:04, Marek Vasut a écrit :
+> On 04/19/2017 04:00 PM, Cédric Le Goater wrote:
+>> These modules are used on the OpenPOWER Witherspoon systems to hold
+>> the POWER9 host firmware image. The SPI_NOR_DUAL_READ flags is added
+>> for the Aspeed SoCs which do not support QUAD reads.
 >>
->> Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+>> Signed-off-by: Cédric Le Goater <clg@kaod.org>
 > 
-> Works for me
 > Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
 >
 
@@ -47,22 +49,24 @@ Applied to the spi-nor/next branch of l2-mtd
 Thanks!
 
 >> ---
->>  drivers/mtd/spi-nor/cadence-quadspi.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
 >>
->> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
->> index 9f8102d..1a25637 100644
->> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
->> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
->> @@ -1277,7 +1277,7 @@ static int cqspi_resume(struct device *dev)
->>  #define CQSPI_DEV_PM_OPS	NULL
->>  #endif
+>>  The line is over 80 characters but it looks better.
+>>
+>>  drivers/mtd/spi-nor/spi-nor.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>> index 747645c74134..ee777df4466c 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -1020,6 +1020,7 @@ static const struct flash_info spi_nor_ids[] = {
+>>  	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K) },
+>>  	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
+>>  	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_QUAD_READ) },
+>> +	{ "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>>  	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
 >>  
->> -static struct of_device_id const cqspi_dt_ids[] = {
->> +static const struct of_device_id const cqspi_dt_ids[] = {
->>  	{.compatible = "cdns,qspi-nor",},
->>  	{ /* end of table */ }
->>  };
+>>  	/* Micron */
 >>
 > 
 > 
