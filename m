@@ -1,29 +1,21 @@
-Received: from 13.mo3.mail-out.ovh.net ([188.165.33.202])
+Received: from gate.crashing.org ([63.228.1.57])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dNF8q-0005Z6-JF
- for linux-mtd@lists.infradead.org; Tue, 20 Jun 2017 09:08:11 +0000
-Received: from player758.ha.ovh.net (b6.ovh.net [213.186.33.56])
- by mo3.mail-out.ovh.net (Postfix) with ESMTP id 11A27EF98E
- for <linux-mtd@lists.infradead.org>; Tue, 20 Jun 2017 11:07:44 +0200 (CEST)
-From: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-Subject: Re: [PATCH 4/4] mtd: spi-nor: aspeed: use command mode for reads
-To: Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
-References: <1492689397-4704-1-git-send-email-clg@kaod.org>
- <1492689397-4704-5-git-send-email-clg@kaod.org>
- <b28c97cc-1daf-c1dd-4a86-4f8bf6c46b2b@gmail.com>
- <66e385ec-6688-9ce7-1250-ec840201147e@kaod.org>
- <9c60f3f9-3f74-930d-07f9-9cb7cb8ba8f4@gmail.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Message-ID: <d86528a8-7189-427b-dab7-69bc526c8fb0@kaod.org>
-Date: Tue, 20 Jun 2017 11:07:35 +0200
-MIME-Version: 1.0
-In-Reply-To: <9c60f3f9-3f74-930d-07f9-9cb7cb8ba8f4@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+ id 1dNF9o-0005su-25
+ for linux-mtd@lists.infradead.org; Tue, 20 Jun 2017 09:09:10 +0000
+Message-ID: <1497949706.31581.46.camel@kernel.crashing.org>
+Subject: Re: [PATCH v3] spi-nor: Add Winbond w25q512jv
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+To: Marek Vasut <marek.vasut@gmail.com>, Joel Stanley <joel@jms.id.au>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org, =?ISO-8859-1?Q?C=E9dric?= Le Goater
+ <clg@kaod.org>
+Date: Tue, 20 Jun 2017 19:08:26 +1000
+In-Reply-To: <5e822197-9fcd-192e-82e6-310236ee50e4@gmail.com>
+References: <20170620062028.7520-1-joel@jms.id.au>
+ <5e822197-9fcd-192e-82e6-310236ee50e4@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,68 +25,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[ fixing Cyrille email ] 
-
-On 04/20/2017 03:58 PM, Marek Vasut wrote:
-> On 04/20/2017 03:53 PM, Cédric Le Goater wrote:
->> On 04/20/2017 03:31 PM, Marek Vasut wrote:
->>> On 04/20/2017 01:56 PM, Cédric Le Goater wrote:
->>>> When reading flash contents, try to use the "command mode" if the AHB
->>>> window configured for the flash module is big enough. Else, just fall
->>>> back to the "user mode" to perform the read.
->>>>
->>>> Signed-off-by: Cédric Le Goater <clg@kaod.org>
->>>> ---
->>>>
->>>>  Changes since initial version :
->>>>
->>>>  - rebased on current patchset which removed DMA support
->>>>
->>>>  drivers/mtd/spi-nor/aspeed-smc.c | 27 ++++++++++++++++++++++++++-
->>>>  1 file changed, 26 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
->>>> index 60c020482946..43015aec4557 100644
->>>> --- a/drivers/mtd/spi-nor/aspeed-smc.c
->>>> +++ b/drivers/mtd/spi-nor/aspeed-smc.c
->>>> @@ -394,6 +394,31 @@ static ssize_t aspeed_smc_read_user(struct spi_nor *nor, loff_t from,
->>>>  
->>>>  	aspeed_smc_read_from_ahb(read_buf, chip->ahb_base, len);
->>>>  	aspeed_smc_stop_user(nor);
->>>> +	return 0;
->>>> +}
->>>> +
->>>> +static ssize_t aspeed_smc_read(struct spi_nor *nor, loff_t from, size_t len,
->>>> +			       u_char *read_buf)
->>>> +{
->>>> +	struct aspeed_smc_chip *chip = nor->priv;
->>>> +
->>>> +	/*
->>>> +	 * The AHB window configured for the chip is too small for the
->>>> +	 * read offset. Use the "User mode" of the controller to
->>>> +	 * perform the read.
->>>> +	 */
->>>> +	if (from >= chip->ahb_window_size) {
->>>> +		aspeed_smc_read_user(nor, from, len, read_buf);
->>>> +		goto out;
->>>
->>> What about turning this into dumb if () {} else {} and dropping the goto ?
->>
->> yes, well, this is because I have other patches adding DMAs :
->>
->> 	https://github.com/legoater/linux/commit/6880924dc2cf7a47c446a708df528b72d9bf9134#diff-e466368d609006970aab53a7b840221fR575
->>
->> but as of today, the benefits in speed are to be proven and the current 
->> implementation does not support vmalloc'ed buffers. So I can drop the 
->> goto without too much regrets (if you insist :)
+On Tue, 2017-06-20 at 09:23 +0200, Marek Vasut wrote:
+> On 06/20/2017 08:20 AM, Joel Stanley wrote:
+> > From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> > 
+> > Similar to the other ones, different size. The "JV" suffix is in
+> > the datasheet, I haven't seen mentions of a different one.
+> > 
+> > The the datasheet indicates DUAL and QUAD are supported.
+> > 
+> > http://www.winbond.com/resource-files/w25m512jv%20revc%2001062017.pdf
 > 
-> Nah, if you have further plans with this code, I don't mind either way.
+> The datasheet says W25M512 not W25Q512.
+>                       ^-----------^-------- different letter here.
+
+Page 23 mentions the "Q" version which is what we have.
+
+Cheers,
+Ben.
+
 > 
-
-OK let's keep that way.
-
-Do you think we can merge these four patches in the next window ? 
-
-Thanks,
-
-C.
+> > Signed-off-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> > Signed-off-by: Joel Stanley <joel@jms.id.au>
+> > ---
+> > v3:
+> >  - Added the DUAL and QUAD flags for ben. Tested with aspeed-smc driver.
+> > 
+> >  drivers/mtd/spi-nor/spi-nor.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> > index eef55b597ec7..ad46dc82c8d1 100644
+> > --- a/drivers/mtd/spi-nor/spi-nor.c
+> > +++ b/drivers/mtd/spi-nor/spi-nor.c
+> > @@ -1146,6 +1146,8 @@ static const struct flash_info spi_nor_ids[] = {
+> >  	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16, SECT_4K) },
+> >  	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256, SECT_4K) },
+> >  	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, SECT_4K) },
+> > +	{ "w25q512jv", INFO(0xef7119, 0, 64 * 1024, 1024,
+> > +			SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_READ) },
+> >  
+> >  	/* Catalyst / On Semiconductor -- non-JEDEC */
+> >  	{ "cat25c11", CAT25_INFO(  16, 8, 16, 1, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+> > 
+> 
+> 
