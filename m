@@ -1,24 +1,22 @@
-Received: from 4.mo1.mail-out.ovh.net ([46.105.76.26])
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dNE3r-00034D-9d
- for linux-mtd@lists.infradead.org; Tue, 20 Jun 2017 07:58:58 +0000
-Received: from player795.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo1.mail-out.ovh.net (Postfix) with ESMTP id 018687E0C5
- for <linux-mtd@lists.infradead.org>; Tue, 20 Jun 2017 09:58:26 +0200 (CEST)
+ id 1dNEQY-0006Jq-7k
+ for linux-mtd@lists.infradead.org; Tue, 20 Jun 2017 08:22:27 +0000
+Received: by mail-wm0-x241.google.com with SMTP id f90so21399688wmh.0
+ for <linux-mtd@lists.infradead.org>; Tue, 20 Jun 2017 01:22:01 -0700 (PDT)
 Subject: Re: [PATCH v3] spi-nor: Add Winbond w25q512jv
-To: Joel Stanley <joel@jms.id.au>, Marek Vasut <marek.vasut@gmail.com>
+To: Joel Stanley <joel@jms.id.au>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+References: <20170620062028.7520-1-joel@jms.id.au>
 Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>,
  linux-mtd@lists.infradead.org, =?UTF-8?Q?C=c3=a9dric_Le_Goater?=
  <clg@kaod.org>
-References: <20170620062028.7520-1-joel@jms.id.au>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <1612427b-ac29-6c7a-5111-be6087421f35@wedev4u.fr>
-Date: Tue, 20 Jun 2017 09:58:17 +0200
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <5e822197-9fcd-192e-82e6-310236ee50e4@gmail.com>
+Date: Tue, 20 Jun 2017 09:23:53 +0200
 MIME-Version: 1.0
 In-Reply-To: <20170620062028.7520-1-joel@jms.id.au>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,9 +26,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
-
-Le 20/06/2017 à 08:20, Joel Stanley a écrit :
+On 06/20/2017 08:20 AM, Joel Stanley wrote:
 > From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
 > 
 > Similar to the other ones, different size. The "JV" suffix is in
@@ -39,7 +35,10 @@ Le 20/06/2017 à 08:20, Joel Stanley a écrit :
 > The the datasheet indicates DUAL and QUAD are supported.
 > 
 > http://www.winbond.com/resource-files/w25m512jv%20revc%2001062017.pdf
-> 
+
+The datasheet says W25M512 not W25Q512.
+                      ^-----------^-------- different letter here.
+
 > Signed-off-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
 > Signed-off-by: Joel Stanley <joel@jms.id.au>
 > ---
@@ -59,14 +58,12 @@ Le 20/06/2017 à 08:20, Joel Stanley a écrit :
 >  	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, SECT_4K) },
 > +	{ "w25q512jv", INFO(0xef7119, 0, 64 * 1024, 1024,
 > +			SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_READ) },
->
-
-This looks good, I'll try to apply it this evening.
-
-Best regards,
-
-Cyrille
-
+>  
 >  	/* Catalyst / On Semiconductor -- non-JEDEC */
 >  	{ "cat25c11", CAT25_INFO(  16, 8, 16, 1, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
 > 
+
+
+-- 
+Best regards,
+Marek Vasut
