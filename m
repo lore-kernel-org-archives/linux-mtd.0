@@ -1,31 +1,19 @@
-Received: from 14.mo1.mail-out.ovh.net ([178.32.97.215])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dNJoP-0004So-6R
- for linux-mtd@lists.infradead.org; Tue, 20 Jun 2017 14:07:22 +0000
-Received: from player691.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo1.mail-out.ovh.net (Postfix) with ESMTP id A715A7C233
- for <linux-mtd@lists.infradead.org>; Tue, 20 Jun 2017 16:06:55 +0200 (CEST)
-From: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-Subject: Re: [PATCH 4/4] mtd: spi-nor: aspeed: use command mode for reads
+Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dNKT0-0004I2-Ji
+ for linux-mtd@lists.infradead.org; Tue, 20 Jun 2017 14:49:20 +0000
+Received: by mail-pf0-x243.google.com with SMTP id y7so23616315pfd.3
+ for <linux-mtd@lists.infradead.org>; Tue, 20 Jun 2017 07:48:58 -0700 (PDT)
+Sender: "joel.stan@gmail.com" <joel.stan@gmail.com>
+From: Joel Stanley <joel@jms.id.au>
 To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
-References: <1492689397-4704-1-git-send-email-clg@kaod.org>
- <1492689397-4704-5-git-send-email-clg@kaod.org>
- <b28c97cc-1daf-c1dd-4a86-4f8bf6c46b2b@gmail.com>
- <66e385ec-6688-9ce7-1250-ec840201147e@kaod.org>
- <9c60f3f9-3f74-930d-07f9-9cb7cb8ba8f4@gmail.com>
- <d86528a8-7189-427b-dab7-69bc526c8fb0@kaod.org>
- <2bd0b105-7652-8917-4a1d-6f218eaf848e@atmel.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>
-Message-ID: <107f014f-3cdf-80d3-2892-b0d88ff1fc95@kaod.org>
-Date: Tue, 20 Jun 2017 16:06:46 +0200
-MIME-Version: 1.0
-In-Reply-To: <2bd0b105-7652-8917-4a1d-6f218eaf848e@atmel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+ Marek Vasut <marek.vasut@gmail.com>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ linux-mtd@lists.infradead.org,
+ =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
+Subject: [PATCH v4] spi-nor: Add Winbond w25m512jv
+Date: Wed, 21 Jun 2017 00:18:43 +0930
+Message-Id: <20170620144843.23913-1-joel@jms.id.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,97 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[ fixing Cyrille email. your "From" is still @atmel.com. Am I doing
-  something wrong ? ]
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
 
-On 06/20/2017 03:42 PM, Cyrille Pitchen wrote:
-> Hi Cédric,
-> 
-> Le 20/06/2017 à 11:07, Cédric Le Goater a écrit :
->> [ fixing Cyrille email ] 
->>
->> On 04/20/2017 03:58 PM, Marek Vasut wrote:
->>> On 04/20/2017 03:53 PM, Cédric Le Goater wrote:
->>>> On 04/20/2017 03:31 PM, Marek Vasut wrote:
->>>>> On 04/20/2017 01:56 PM, Cédric Le Goater wrote:
->>>>>> When reading flash contents, try to use the "command mode" if the AHB
->>>>>> window configured for the flash module is big enough. Else, just fall
->>>>>> back to the "user mode" to perform the read.
->>>>>>
->>>>>> Signed-off-by: Cédric Le Goater <clg@kaod.org>
->>>>>> ---
->>>>>>
->>>>>>  Changes since initial version :
->>>>>>
->>>>>>  - rebased on current patchset which removed DMA support
->>>>>>
->>>>>>  drivers/mtd/spi-nor/aspeed-smc.c | 27 ++++++++++++++++++++++++++-
->>>>>>  1 file changed, 26 insertions(+), 1 deletion(-)
->>>>>>
->>>>>> diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
->>>>>> index 60c020482946..43015aec4557 100644
->>>>>> --- a/drivers/mtd/spi-nor/aspeed-smc.c
->>>>>> +++ b/drivers/mtd/spi-nor/aspeed-smc.c
->>>>>> @@ -394,6 +394,31 @@ static ssize_t aspeed_smc_read_user(struct spi_nor *nor, loff_t from,
->>>>>>  
->>>>>>  	aspeed_smc_read_from_ahb(read_buf, chip->ahb_base, len);
->>>>>>  	aspeed_smc_stop_user(nor);
->>>>>> +	return 0;
->>>>>> +}
->>>>>> +
->>>>>> +static ssize_t aspeed_smc_read(struct spi_nor *nor, loff_t from, size_t len,
->>>>>> +			       u_char *read_buf)
->>>>>> +{
->>>>>> +	struct aspeed_smc_chip *chip = nor->priv;
->>>>>> +
->>>>>> +	/*
->>>>>> +	 * The AHB window configured for the chip is too small for the
->>>>>> +	 * read offset. Use the "User mode" of the controller to
->>>>>> +	 * perform the read.
->>>>>> +	 */
->>>>>> +	if (from >= chip->ahb_window_size) {
->>>>>> +		aspeed_smc_read_user(nor, from, len, read_buf);
->>>>>> +		goto out;
->>>>>
->>>>> What about turning this into dumb if () {} else {} and dropping the goto ?
->>>>
->>>> yes, well, this is because I have other patches adding DMAs :
->>>>
->>>> 	https://github.com/legoater/linux/commit/6880924dc2cf7a47c446a708df528b72d9bf9134#diff-e466368d609006970aab53a7b840221fR575
->>>>
->>>> but as of today, the benefits in speed are to be proven and the current 
->>>> implementation does not support vmalloc'ed buffers. So I can drop the 
->>>> goto without too much regrets (if you insist :)
->>>
->>> Nah, if you have further plans with this code, I don't mind either way.
->>>
->>
->> OK let's keep that way.
->>
->> Do you think we can merge these four patches in the next window ? 
->>
-> 
-> I've planned to merge them in the spi-nor/next branch of l2-mtd within
-> the next days if everything is OK.
+Similar to the other ones, different size. The "JV" suffix is in
+the datasheet, I haven't seen mentions of a different one.
 
-That's the git repo : git://github.com/spi-nor/linux.git  ? 
+The the datasheet indicates DUAL and QUAD are supported.
+
+ http://www.winbond.com/resource-files/w25m512jv%20revc%2001062017.pdf
+
+Signed-off-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Signed-off-by: Joel Stanley <joel@jms.id.au>
+---
+v4: Get the name of the chip correct
+v3: Added the DUAL and QUAD flags for Ben. Tested with aspeed-smc driver.
+
+ drivers/mtd/spi-nor/spi-nor.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index eef55b597ec7..43de5adafcb7 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1146,6 +1146,8 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16, SECT_4K) },
+ 	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256, SECT_4K) },
+ 	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, SECT_4K) },
++	{ "w25m512jv", INFO(0xef7119, 0, 64 * 1024, 1024,
++			SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_READ) },
  
-> Last Friday I saw on patchwork that your patches were still waiting to
-> be merged. I've just forgotten them sorry and last week-end I was not
-> available to catch up.
-> 
-> I add a quick overview of the series, everything looks good. patch 2
-> won't apply as is since flash_read no longer exists in 'struct spi_nor'
-> so I will try to adapt your patch myself if I can.
-
-Ah. I work on mainline generally, so I missed it.
-
-> Otherwise I will ask you help to rebase it but I guess the modification
-> will be quite straight forward.
-
-Sure. Please don't hesitate to ping me. I will take a quick look
-anyway.
-
-Thanks,
-
-C.
+ 	/* Catalyst / On Semiconductor -- non-JEDEC */
+ 	{ "cat25c11", CAT25_INFO(  16, 8, 16, 1, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+-- 
+2.11.0
