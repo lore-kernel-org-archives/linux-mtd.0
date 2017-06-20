@@ -1,22 +1,19 @@
-Date: Mon, 19 Jun 2017 18:01:25 -0700
-From: Stephen Boyd <sboyd@codeaurora.org>
-To: Stefan Agner <stefan@agner.ch>
-Cc: shawnguo@kernel.org, kernel@pengutronix.de, aisheng.dong@nxp.com,
- dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
- richard@nod.at, robh+dt@kernel.org, mark.rutland@arm.com,
- han.xu@nxp.com, fabio.estevam@freescale.com, LW@KARO-electronics.de,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 1/3] clk: imx7d: create clocks behind rawnand clock gate
-Message-ID: <20170620010125.GI20170@codeaurora.org>
-References: <cover.9fab78eaa869dbad4c9ad7e8578c9cef3e49daa8.1496961128.git-series.stefan@agner.ch>
- <8b9edf13938e3166081e72ba8fa4ac822035079c.1496961128.git-series.stefan@agner.ch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8b9edf13938e3166081e72ba8fa4ac822035079c.1496961128.git-series.stefan@agner.ch>
+Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dNCX9-0002Eb-So
+ for linux-mtd@lists.infradead.org; Tue, 20 Jun 2017 06:21:06 +0000
+Received: by mail-pg0-x242.google.com with SMTP id j186so19655934pge.1
+ for <linux-mtd@lists.infradead.org>; Mon, 19 Jun 2017 23:20:43 -0700 (PDT)
+Sender: "joel.stan@gmail.com" <joel.stan@gmail.com>
+From: Joel Stanley <joel@jms.id.au>
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Marek Vasut <marek.vasut@gmail.com>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ linux-mtd@lists.infradead.org,
+ =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
+Subject: [PATCH v3] spi-nor: Add Winbond w25q512jv
+Date: Tue, 20 Jun 2017 15:50:28 +0930
+Message-Id: <20170620062028.7520-1-joel@jms.id.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,21 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/08, Stefan Agner wrote:
-> The rawnand clock gate gates two clocks, NAND_USDHC_BUS_CLK_ROOT
-> and NAND_CLK_ROOT. However, the gate has been in the chain of the
-> latter only. This does not allow to use the NAND_USDHC_BUS_CLK_ROOT
-> only, e.g. as required by APBH-Bridge-DMA.
-> 
-> Add new clocks which represent the clock after the gate, and use a
-> shared clock gate to correctly model the hardware.
-> 
-> Signed-off-by: Stefan Agner <stefan@agner.ch>
-> Tested-by: Fabio Estevam <fabio.estevam@nxp.com>
-> ---
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
 
-Applied to clk-next
+Similar to the other ones, different size. The "JV" suffix is in
+the datasheet, I haven't seen mentions of a different one.
 
+The the datasheet indicates DUAL and QUAD are supported.
+
+http://www.winbond.com/resource-files/w25m512jv%20revc%2001062017.pdf
+
+Signed-off-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Signed-off-by: Joel Stanley <joel@jms.id.au>
+---
+v3:
+ - Added the DUAL and QUAD flags for ben. Tested with aspeed-smc driver.
+
+ drivers/mtd/spi-nor/spi-nor.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index eef55b597ec7..ad46dc82c8d1 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1146,6 +1146,8 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16, SECT_4K) },
+ 	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256, SECT_4K) },
+ 	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, SECT_4K) },
++	{ "w25q512jv", INFO(0xef7119, 0, 64 * 1024, 1024,
++			SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_READ) },
+ 
+ 	/* Catalyst / On Semiconductor -- non-JEDEC */
+ 	{ "cat25c11", CAT25_INFO(  16, 8, 16, 1, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.11.0
