@@ -1,28 +1,28 @@
-Received: from mail-pg0-x232.google.com ([2607:f8b0:400e:c05::232])
+Received: from mail-ot0-x242.google.com ([2607:f8b0:4003:c0f::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dNUMS-0001FY-GM
- for linux-mtd@lists.infradead.org; Wed, 21 Jun 2017 01:23:15 +0000
-Received: by mail-pg0-x232.google.com with SMTP id f185so70211572pgc.0
- for <linux-mtd@lists.infradead.org>; Tue, 20 Jun 2017 18:22:52 -0700 (PDT)
-Date: Tue, 20 Jun 2017 18:22:47 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+ id 1dNYGs-0008U9-B5
+ for linux-mtd@lists.infradead.org; Wed, 21 Jun 2017 05:33:43 +0000
+Received: by mail-ot0-x242.google.com with SMTP id q16so14996453otb.0
+ for <linux-mtd@lists.infradead.org>; Tue, 20 Jun 2017 22:33:20 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20170620225007.GB14148@google.com>
+References: <20170526131415.27186-1-zajec5@gmail.com>
+ <20170526131415.27186-2-zajec5@gmail.com>
+ <20170620225007.GB14148@google.com>
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Date: Wed, 21 Jun 2017 07:33:19 +0200
+Message-ID: <CACna6rwsFBFmrdvumBa9H6C0uJuaY=cS-Q+akXsQmgo2dqTFVQ@mail.gmail.com>
+Subject: Re: [PATCH V6 1/5] mtd: partitions: add helper for deleting partition
+To: Brian Norris <computersforpeace@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH V6 2/5] mtd: partitions: rename "master" to the "parent"
- where appropriate
-Message-ID: <20170621012247.GC14148@google.com>
-References: <20170526131415.27186-1-zajec5@gmail.com>
- <20170526131415.27186-3-zajec5@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20170526131415.27186-3-zajec5@gmail.com>
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,29 +32,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, May 26, 2017 at 03:14:12PM +0200, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
-> 
-> This prepares mtd subsystem for the new feature: subpartitions. In some
-> cases flash device partition can be a container with extra subpartitions
-> (volumes).
-> 
-> So far there was a flat structure implemented. One master (flash device)
-> could be partitioned into few partitions. Every partition got its master
-> and it was enough to get things running.
-> 
-> To support subpartitions we need to store pointer to the parent for each
-> partition. This is required to implement more natural tree structure and
-> handle all recursion and offsets calculation.
-> 
-> To make code consistent this patch renamed "master" to the "parent" in
-> places where we can be dealing with subpartitions.
-> 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-> ---
-> V5: Introduction of this patch to prepare allocate_partition for further
->     modification.
-> V6: Rename "master" in more places including callback functions
+On 21 June 2017 at 00:50, Brian Norris <computersforpeace@gmail.com> wrote:
+> On Fri, May 26, 2017 at 03:14:11PM +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
+>> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+>>
+>> There are two similar functions handling deletion. One handles single
+>> partition and another whole MTD flash device. They share (duplicate)
+>> some code so it makes sense to add a small helper for that part.
+>>
+>> Function del_mtd_partitions has been moved a bit to keep all deleting
+>> stuff together.
+>>
+>> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+>
+>> +/**
+>> + * __mtd_del_partition - delete MTD partition
+>> + *
+>> + * @priv: internal MTD struct for partition to be deleted
+>> + *
+>> + * This function must be called with the partitions mutex locked.
+>> + */
+>> +static int __mtd_del_partition(struct mtd_part *priv)
+>> +{
+>> +     int err;
+>> +
+>> +     sysfs_remove_files(&priv->mtd.dev.kobj, mtd_partition_attrs);
+>
+> Notably, the above wasn't called in del_mtd_partitions() previously. Is
+> that intentional?
+>
+> As I read the code, we were actually missing this before; either in
+> error handling, or on device removal. But in either case, the entire
+> device was going to disappear, so the sysfs files would have been
+> cleaned up anyway?
+>
+> Also, is there any chance of double-calling this? I think not, but even
+> if there is, it looks like the low-level routines are reslient to
+> non-existent files.
+>
+> I'm mostly thinking out loud here. I think this is a positive change,
+> even if it wasn't noted explicitly.
 
-This patch has some conflicts with l2-mtd.git now. I might end up
-working them out, but it'd be easier if you'd rebase.
+I think that call was missing, however I could make it more clear I'm
+adding it. I'll try splitting this change out V7 and add a proper
+description.
+
+--=20
+Rafa=C5=82
