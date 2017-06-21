@@ -1,29 +1,19 @@
-Received: from 1.mo2.mail-out.ovh.net ([46.105.63.121])
+Received: from esa1.microchip.iphmx.com ([68.232.147.91])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dNeiB-0003Mt-Rd
- for linux-mtd@lists.infradead.org; Wed, 21 Jun 2017 12:26:22 +0000
-Received: from player796.ha.ovh.net (b6.ovh.net [213.186.33.56])
- by mo2.mail-out.ovh.net (Postfix) with ESMTP id 315F994528
- for <linux-mtd@lists.infradead.org>; Wed, 21 Jun 2017 14:25:57 +0200 (CEST)
-Subject: Re: [PATCH 2/4] mtd: spi-nor: aspeed: add support for SPI dual IO
- read mode
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
-References: <1492689397-4704-1-git-send-email-clg@kaod.org>
- <1492689397-4704-3-git-send-email-clg@kaod.org>
- <38e7d4b9-9a0b-301a-ad06-3716a1ee91e0@wedev4u.fr>
- <c529137d-f52e-48b2-caa3-670d62d7163d@kaod.org>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Robert Lippert <rlippert@google.com>, Richard Weinberger <richard@nod.at>,
- Marek Vasut <marek.vasut@gmail.com>, Robert Lippert <roblip@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-From: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-Message-ID: <28db8eb7-7680-84fe-4352-7d69332de375@kaod.org>
-Date: Wed, 21 Jun 2017 14:25:45 +0200
+ id 1dNiJC-0007zh-Bz
+ for linux-mtd@lists.infradead.org; Wed, 21 Jun 2017 16:16:50 +0000
+From: Cyrille Pitchen <cyrille.pitchen@microchip.com>
+To: <marek.vasut@gmail.com>
+CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
+ <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, Cyrille Pitchen
+ <cyrille.pitchen@microchip.com>
+Subject: [PATCH v2 1/1] mtd: spi-nor: parse Serial Flash Discoverable
+ Parameters (SFDP) tables
+Date: Wed, 21 Jun 2017 18:16:28 +0200
+Message-ID: <3ac095eb39cea2a045a85178ff4bbac2b70a35d4.1498059894.git.cyrille.pitchen@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <c529137d-f52e-48b2-caa3-670d62d7163d@kaod.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,124 +23,956 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/21/2017 09:32 AM, Cédric Le Goater wrote:
-> On 06/21/2017 12:50 AM, Cyrille Pitchen wrote:
->> Hi Cédric,
->>
->>
->> Le 20/04/2017 à 13:56, Cédric Le Goater a écrit :
->>> From: Robert Lippert <roblip@gmail.com>
->>>
->>> Implements support for the dual IO read mode on aspeed SMC/FMC
->>> controllers which uses both MISO and MOSI lines for data during a read
->>> to double the read bandwidth.
->>>
->>> Signed-off-by: Robert Lippert <rlippert@google.com>
->>> [clg: adapted to mainline driver ]
->>> Signed-off-by: Cédric Le Goater <clg@kaod.org>
->>> ---
->>>  drivers/mtd/spi-nor/aspeed-smc.c | 19 ++++++++++++++-----
->>>  1 file changed, 14 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
->>> index 2940f2098420..183d950e621b 100644
->>> --- a/drivers/mtd/spi-nor/aspeed-smc.c
->>> +++ b/drivers/mtd/spi-nor/aspeed-smc.c
->>> @@ -372,12 +372,20 @@ static ssize_t aspeed_smc_read_user(struct spi_nor *nor, loff_t from,
->>>  	struct aspeed_smc_chip *chip = nor->priv;
->>>  	int i;
->>>  	u8 dummy = 0xFF;
->>> +	u32 ctl;
->>>  
->>>  	aspeed_smc_start_user(nor);
->>>  	aspeed_smc_send_cmd_addr(nor, nor->read_opcode, from);
->>>  	for (i = 0; i < chip->nor.read_dummy / 8; i++)
->>>  		aspeed_smc_write_to_ahb(chip->ahb_base, &dummy, sizeof(dummy));
->>>  
->>> +	if (chip->nor.flash_read == SPI_NOR_DUAL) {
->>> +		/* Switch to dual I/O mode for data cycle */
->>> +		ctl = readl(chip->ctl) & ~CONTROL_IO_MODE_MASK;
->>> +		ctl |= CONTROL_IO_DUAL_DATA;
->>> +		writel(ctl, chip->ctl);
->>> +	}
->>> +
->>
->> As expected this patch doesn't apply as is to the spi-nor/next branch of
->> l2-mtd because flash_read and SPI_NOR_{DUAL|QUAD} enums no longer exists.
->>
->> Besides it looks like the Aspeed controller can support SPI 1-2-2 as
->> well as SPI 1-1-2.
->>
->> I see:
->> #define CONTROL_IO_DUAL_DATA		BIT(29)
->> #define CONTROL_IO_DUAL_ADDR_DATA	(BIT(29) | BIT(28))
->>
->> Now spi_nor_scan() makes the difference between these 2 SPI protocols.
->>
->> Besides, you may also want to use the compatible DT string to make the
->> difference between Aspeed controllers also supporting SPI 1-1-4 and SPI
->> 1-4-4 and other controllers supporting only Dual SPI protocols so you
->> could fill the hwcaps parameter of spi_nor_scan() as needed.
->>
->> So I think we should spend a little more time to rework this patch.
-> 
-> OK. I will take a look.
-> 
-> Please consider taking :
-> 
->   [PATCH 4/4] mtd: spi-nor: aspeed: use command mode for reads
+This patch adds support to the JESD216 rev B standard and parses the SFDP
+tables to dynamically initialize the 'struct spi_nor_flash_parameter'.
 
-Forget it. I am having issues with this patch on newer kernels. I will 
-cook a patchset after the merge window.
+Signed-off-by: Cyrille Pitchen <cyrille.pitchen@microchip.com>
+---
 
-Thanks,
+Hi all,
 
-C. 
-   
+a new version of the SFDP patch based on next-20170619
+
+tested on sama5d2 xplained with the following QSPI memories:
+Macronix
+- mx25l25673g
+
+Spansion/Cypress
+- s25fl164
+- s25fl127
+- s25fl512
+
+Winbond
+- w25q256
+- w25m512
+
+SST
+- sst26vf064
+
+Micron
+- m25q128
+- n25q128a
+- m25ql512
+- m25ql01g
+
+For my tests, I used mtd_debug to erase, write then read back some areas
+inside data array of the SPI NOR flash memory.
+To verify the integrity of the data, I used sha1sum to compare the
+original file with the one read from the SPI flash memory.
+
+For memories with a non-uniform erase map (sst26vf064, s25fl512, ...), I
+chose an offset in the data array so the sector size is the one set into
+nor->mtd.erasesize.
+
+CONFIG_MTD_SPI_NOR_USE_4K_SECTORS was defined in my .config file.
+Older tests were also run with this macro undefined and with other memory
+parts.
+Here I'm only talking about tests performed within the last few days.
+
+For sst26vf064, the Global Unlock Block Protection command was already
+sent to the memory by the bootloader so once in Linux, the memory was in a
+rw mode, otherwise Sector Erase and Page Program would fail.
+
+Flash unlock (block protection) and  non-uniform erase map are out of the
+scope of this patch and would be addressed later in dedicated patches.
+
+I added/updated few entries in the spi_nor_ids[] array so I could use all
+the memory parts listed above with SFDP support.
+
+My s25fl127 sample is buggy and I don't know whether the issue has been
+fixed by Cypress with the later revisions of this part number (s25fl128s):
+The SFDP data programmed in my sample claim that the memory is compliant
+with JESD216 rev B (version 1.6) however DWORDs 10 to 16 of the Basic
+Flash Parameter Table are all 0xFFFFFFFF, only the first 9 DWORDs are
+programmed correctly as is the memory was only compliant with JESD216
+(version 1.0). Hence when testing the QER bits in DWORD15, the reserved
+value 111b is read. That why I've changed the default case for QER bits
+so it now returns -EINVAL when an unexpected value is read.
+So the SFDP data are reported as invalid and just ignored.
+I didn't use the SPI_NOR_SKIP_SFDP info->flags because s25fl127 and
+s25fl128s share the same JEDEC ID and I want to give a chance to use the
+SFDP tables of the later revisions of this memory part if the above
+issue has been fixed.
+
+ChangeLog
+
+v1 -> v2:
+- add kernel-doc to the main functions introduced by this patch.
+- rename spansion_new_quad_enable() into spansion_read_cr_quad_enable().
+- add spansion_no_read_cr_quad_enable(): the explanation is given in
+  the kernel-doc.
+- take Marek's comments into account (add new lines, remove parenthesis,
+  keep new error messages on the same line as dev_err(), already exisiting
+  error messages are left unchanged, use u32 instead of int for >>
+  operand, use sizeof(u32) instead of sizeof(uint32_t)).
+- propagate return code of spi_nor_read_sfdp().
+- handle the default case of the QER bits differently: now returns -EINVAL
+
+
+ drivers/mtd/spi-nor/spi-nor.c | 745 +++++++++++++++++++++++++++++++++++++++++-
+ include/linux/mtd/spi-nor.h   |   6 +
+ 2 files changed, 738 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index eef55b597ec7..05243157424f 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -17,6 +17,7 @@
+ #include <linux/mutex.h>
+ #include <linux/math64.h>
+ #include <linux/sizes.h>
++#include <linux/slab.h>
  
-> while I reconcile my patchset with the spi-nor tree.
-> 
-> Thanks,
-> 
-> C.
-> 
->>
->>>  	aspeed_smc_read_from_ahb(read_buf, chip->ahb_base, len);
->>>  	aspeed_smc_stop_user(nor);
->>>  	return len;
->>> @@ -591,6 +599,9 @@ static int aspeed_smc_chip_setup_finish(struct aspeed_smc_chip *chip)
->>>  	case SPI_NOR_FAST:
->>>  		cmd = CONTROL_COMMAND_MODE_FREAD;
->>>  		break;
->>> +	case SPI_NOR_DUAL:
->>> +		cmd = CONTROL_COMMAND_MODE_FREAD | CONTROL_IO_DUAL_DATA;
->>> +		break;
->>>  	default:
->>>  		dev_err(chip->nor.dev, "unsupported SPI read mode\n");
->>>  		return -EINVAL;
->>> @@ -599,7 +610,7 @@ static int aspeed_smc_chip_setup_finish(struct aspeed_smc_chip *chip)
->>>  	chip->ctl_val[smc_read] |= cmd |
->>>  		CONTROL_IO_DUMMY_SET(chip->nor.read_dummy / 8);
->>>  
->>> -	dev_dbg(controller->dev, "base control register: %08x\n",
->>> +	dev_dbg(controller->dev, "read control register: %08x\n",
->>>  		chip->ctl_val[smc_read]);
->>>  	return 0;
->>>  }
->>> @@ -670,11 +681,9 @@ static int aspeed_smc_setup_flash(struct aspeed_smc_controller *controller,
->>>  			break;
->>>  
->>>  		/*
->>> -		 * TODO: Add support for SPI_NOR_QUAD and SPI_NOR_DUAL
->>> -		 * attach when board support is present as determined
->>> -		 * by of property.
->>> +		 * Aspeed SoCs only support Dual mode
->>>  		 */
->>> -		ret = spi_nor_scan(nor, NULL, SPI_NOR_NORMAL);
->>> +		ret = spi_nor_scan(nor, NULL, SPI_NOR_DUAL);
->>>  		if (ret)
->>>  			break;
->>>  
->>>
->>
-> 
+ #include <linux/mtd/mtd.h>
+ #include <linux/of_platform.h>
+@@ -86,6 +87,7 @@ struct flash_info {
+ 					 * to support memory size above 128Mib.
+ 					 */
+ #define NO_CHIP_ERASE		BIT(12) /* Chip does not support chip erase */
++#define SPI_NOR_SKIP_SFDP	BIT(13)	/* Skip parsing of SFDP tables */
+ };
+ 
+ #define JEDEC_MFR(info)	((info)->id[0])
+@@ -1375,6 +1377,14 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	return ret;
+ }
+ 
++/**
++ * macronix_quad_enable - set QE bit in Status Register.
++ * @nor:	pointer to a 'struct spi_nor'
++ *
++ * Set the Quad Enable (QE) bit in the Status Register.
++ *
++ * bit 6 of the Status Register is the QE bit for Macronix like QSPI memories.
++ */
+ static int macronix_quad_enable(struct spi_nor *nor)
+ {
+ 	int ret, val;
+@@ -1408,22 +1418,13 @@ static int macronix_quad_enable(struct spi_nor *nor)
+  * second byte will be written to the configuration register.
+  * Return negative if error occurred.
+  */
+-static int write_sr_cr(struct spi_nor *nor, u16 val)
+-{
+-	nor->cmd_buf[0] = val & 0xff;
+-	nor->cmd_buf[1] = (val >> 8);
+-
+-	return nor->write_reg(nor, SPINOR_OP_WRSR, nor->cmd_buf, 2);
+-}
+-
+-static int spansion_quad_enable(struct spi_nor *nor)
++static int write_sr_cr(struct spi_nor *nor, u8 *sr_cr)
+ {
+ 	int ret;
+-	int quad_en = CR_QUAD_EN_SPAN << 8;
+ 
+ 	write_enable(nor);
+ 
+-	ret = write_sr_cr(nor, quad_en);
++	ret = nor->write_reg(nor, SPINOR_OP_WRSR, sr_cr, 2);
+ 	if (ret < 0) {
+ 		dev_err(nor->dev,
+ 			"error while writing configuration register\n");
+@@ -1437,6 +1438,39 @@ static int spansion_quad_enable(struct spi_nor *nor)
+ 		return ret;
+ 	}
+ 
++	return 0;
++}
++
++/**
++ * spansion_quad_enable - set QE bit in Configuraiton Register.
++ * @nor:	pointer to a 'struct spi_nor'
++ *
++ * Set the Quad Enable (QE) bit in the Configuration Register.
++ * This function is kept for legacy purpose because it has been used for a
++ * long time without anybody complaining but it should be considered as
++ * deprecated and maybe buggy.
++ * First, this function doesn't care about the previous values of the Status
++ * and Configuration Registers when it sets the QE bit (bit 1) in the
++ * Configuration Register: all other bits are cleared, which may have unwanted
++ * side effects like removing some block protections.
++ * Secondly, it uses the Read Configuration Register (35h) instruction though
++ * some very old and few memories don't support this instruction. If a pull-up
++ * resistor is present on the MISO/IO1 line, we might still be able to pass the
++ * "read back" test because the QSPI memory doesn't recognize the command,
++ * so leaves the MISO/IO1 line state unchanged, hence read_cr() returns 0xFF.
++ *
++ * bit 1 of the Configuration Register is the QE bit for Spansion like QSPI
++ * memories.
++ */
++static int spansion_quad_enable(struct spi_nor *nor)
++{
++	u8 sr_cr[2] = {0, CR_QUAD_EN_SPAN};
++	int ret;
++
++	ret = write_sr_cr(nor, sr_cr);
++	if (ret)
++		return ret;
++
+ 	/* read back and check it */
+ 	ret = read_cr(nor);
+ 	if (!(ret > 0 && (ret & CR_QUAD_EN_SPAN))) {
+@@ -1447,6 +1481,134 @@ static int spansion_quad_enable(struct spi_nor *nor)
+ 	return 0;
+ }
+ 
++/**
++ * spansion_no_read_cr_quad_enable - set QE bit in Configuration Register.
++ * @nor:	pointer to a 'struct spi_nor'
++ *
++ * Set the Quad Enable (QE) bit in the Configuration Register.
++ * This function should be used with QSPI memories not supporting the Read
++ * Configuration Register (35h) instruction.
++ *
++ * bit 1 of the Configuration Register is the QE bit for Spansion like QSPI
++ * memories.
++ */
++static int spansion_no_read_cr_quad_enable(struct spi_nor *nor)
++{
++	u8 sr_cr[2];
++	int ret;
++
++	/* Keep the current value of the Status Register. */
++	ret = read_sr(nor);
++	if (ret < 0) {
++		dev_err(nor->dev, "error while reading status register\n");
++		return -EINVAL;
++	}
++	sr_cr[0] = ret;
++	sr_cr[1] = CR_QUAD_EN_SPAN;
++
++	return write_sr_cr(nor, sr_cr);
++}
++
++/**
++ * spansion_read_cr_quad_enable - set QE bit in Configuration Register.
++ * @nor:	pointer to a 'struct spi_nor'
++ *
++ * Set the Quad Enable (QE) bit in the Configuration Register.
++ * This function should be used with QSPI memories supporting the Read
++ * Configuration Register (35h) instruction.
++ *
++ * bit 1 of the Configuration Register is the QE bit for Spansion like QSPI
++ * memories.
++ */
++static int spansion_read_cr_quad_enable(struct spi_nor *nor)
++{
++	struct device *dev = nor->dev;
++	u8 sr_cr[2];
++	int ret;
++
++	/* Check current Quad Enable bit value. */
++	ret = read_cr(nor);
++	if (ret < 0) {
++		dev_err(dev, "error while reading configuration register\n");
++		return -EINVAL;
++	}
++
++	if (ret & CR_QUAD_EN_SPAN)
++		return 0;
++
++	sr_cr[1] = ret | CR_QUAD_EN_SPAN;
++
++	/* Keep the current value of the Status Register. */
++	ret = read_sr(nor);
++	if (ret < 0) {
++		dev_err(dev, "error while reading status register\n");
++		return -EINVAL;
++	}
++	sr_cr[0] = ret;
++
++	ret = write_sr_cr(nor, sr_cr);
++	if (ret)
++		return ret;
++
++	/* Read back and check it. */
++	ret = read_cr(nor);
++	if (!(ret > 0 && (ret & CR_QUAD_EN_SPAN))) {
++		dev_err(nor->dev, "Spansion Quad bit not set\n");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++/**
++ * sr2_bit7_quad_enable - set QE bit in Status Register 2.
++ * @nor:	pointer to a 'struct spi_nor'
++ *
++ * Set the Quad Enable (QE) bit in the Status Register 2.
++ *
++ * This is one of the procedures to set the QE bit described in the SFDP
++ * (JESD216 rev B) specification but no manufacturer using this procedure has
++ * been identified yet, hence the name of the function.
++ */
++static int sr2_bit7_quad_enable(struct spi_nor *nor)
++{
++	u8 sr2;
++	int ret;
++
++	/* Check current Quad Enable bit value. */
++	ret = nor->read_reg(nor, SPINOR_OP_RDSR2, &sr2, 1);
++	if (ret)
++		return ret;
++	if (sr2 & SR2_QUAD_EN_BIT7)
++		return 0;
++
++	/* Update the Quad Enable bit. */
++	sr2 |= SR2_QUAD_EN_BIT7;
++
++	write_enable(nor);
++
++	ret = nor->write_reg(nor, SPINOR_OP_WRSR2, &sr2, 1);
++	if (ret < 0) {
++		dev_err(nor->dev, "error while writing status register 2\n");
++		return -EINVAL;
++	}
++
++	ret = spi_nor_wait_till_ready(nor);
++	if (ret < 0) {
++		dev_err(nor->dev, "timeout while writing status register 2\n");
++		return ret;
++	}
++
++	/* Read back and check it. */
++	ret = nor->read_reg(nor, SPINOR_OP_RDSR2, &sr2, 1);
++	if (!(ret > 0 && (sr2 & SR2_QUAD_EN_BIT7))) {
++		dev_err(nor->dev, "SR2 Quad bit not set\n");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static int spi_nor_check(struct spi_nor *nor)
+ {
+ 	if (!nor->dev || !nor->read || !nor->write ||
+@@ -1586,6 +1748,540 @@ spi_nor_set_pp_settings(struct spi_nor_pp_command *pp,
+ 	pp->proto = proto;
+ }
+ 
++/*
++ * Serial Flash Discoverable Parameters (SFDP) parsing.
++ */
++
++/**
++ * spi_nor_read_sfdp - read Serial Flash Discoverable Parameters.
++ * @nor:	pointer to a 'struct spi_nor'
++ * @addr:	offset in the SFDP area to start reading data from
++ * @len:	number of bytes to read
++ * @buf:	buffer where the SFDP data are copied into
++ *
++ * Whatever the actual numbers of bytes for address and dummy cycles are
++ * for (Fast) Read commands, the Read SFDP (5Ah) instruction is always
++ * followed by a 3-byte address and 8 dummy clock cycles.
++ */
++static int spi_nor_read_sfdp(struct spi_nor *nor, u32 addr,
++			     size_t len, void *buf)
++{
++	u8 addr_width, read_opcode, read_dummy;
++	int ret;
++
++	read_opcode = nor->read_opcode;
++	addr_width = nor->addr_width;
++	read_dummy = nor->read_dummy;
++
++	nor->read_opcode = SPINOR_OP_RDSFDP;
++	nor->addr_width = 3;
++	nor->read_dummy = 8;
++
++	ret = nor->read(nor, addr, len, (u8 *)buf);
++
++	nor->read_opcode = read_opcode;
++	nor->addr_width = addr_width;
++	nor->read_dummy = read_dummy;
++
++	return ret;
++}
++
++struct sfdp_parameter_header {
++	u8		id_lsb;
++	u8		minor;
++	u8		major;
++	u8		length; /* in double words */
++	u8		parameter_table_pointer[3]; /* byte address */
++	u8		id_msb;
++};
++
++#define SFDP_PARAM_HEADER_ID(p)	(((p)->id_msb << 8) | (p)->id_lsb)
++#define SFDP_PARAM_HEADER_PTP(p) \
++	(((p)->parameter_table_pointer[2] << 16) | \
++	 ((p)->parameter_table_pointer[1] <<  8) | \
++	 ((p)->parameter_table_pointer[0] <<  0))
++
++#define SFDP_BFPT_ID		0xff00	/* Basic Flash Parameter Table */
++#define SFDP_SECTOR_MAP_ID	0xff81	/* Sector Map Table */
++
++#define SFDP_SIGNATURE		0x50444653U
++#define SFDP_JESD216_MAJOR	1
++#define SFDP_JESD216_MINOR	0
++#define SFDP_JESD216A_MINOR	5
++#define SFDP_JESD216B_MINOR	6
++
++struct sfdp_header {
++	u32		signature; /* Ox50444653U <=> "SFDP" */
++	u8		minor;
++	u8		major;
++	u8		nph; /* 0-base number of parameter headers */
++	u8		unused;
++
++	/* Basic Flash Parameter Table. */
++	struct sfdp_parameter_header	bfpt_header;
++};
++
++/* Basic Flash Parameter Table */
++
++/*
++ * JESD216 rev B defines a Basic Flash Parameter Table of 16 DWORDs.
++ * They are indexed from 1 but C arrays are indexed from 0.
++ */
++#define BFPT_DWORD(i)		((i) - 1)
++#define BFPT_DWORD_MAX		16
++
++/* The first version of JESB216 defined only 9 DWORDs. */
++#define BFPT_DWORD_MAX_JESD216			9
++
++/* 1st DWORD. */
++#define BFPT_DWORD1_FAST_READ_1_1_2		BIT(16)
++#define BFPT_DWORD1_ADDRESS_BYTES_MASK		GENMASK(18, 17)
++#define BFPT_DWORD1_ADDRESS_BYTES_3_ONLY	(0x0UL << 17)
++#define BFPT_DWORD1_ADDRESS_BYTES_3_OR_4	(0x1UL << 17)
++#define BFPT_DWORD1_ADDRESS_BYTES_4_ONLY	(0x2UL << 17)
++#define BFPT_DWORD1_DTR				BIT(19)
++#define BFPT_DWORD1_FAST_READ_1_2_2		BIT(20)
++#define BFPT_DWORD1_FAST_READ_1_4_4		BIT(21)
++#define BFPT_DWORD1_FAST_READ_1_1_4		BIT(22)
++
++/* 5th DWORD. */
++#define BFPT_DWORD5_FAST_READ_2_2_2		BIT(0)
++#define BFPT_DWORD5_FAST_READ_4_4_4		BIT(4)
++
++/* 11th DWORD. */
++#define BFPT_DWORD11_PAGE_SIZE_SHIFT		4
++#define BFPT_DWORD11_PAGE_SIZE_MASK		GENMASK(7, 4)
++
++/* 15th DWORD. */
++
++/*
++ * (from JESD216 rev B)
++ * Quad Enable Requirements (QER):
++ * - 000b: Device does not have a QE bit. Device detects 1-1-4 and 1-4-4
++ *         reads based on instruction. DQ3/HOLD# functions are hold during
++ *         instruction phase.
++ * - 001b: QE is bit 1 of status register 2. It is set via Write Status with
++ *         two data bytes where bit 1 of the second byte is one.
++ *         [...]
++ *         Writing only one byte to the status register has the side-effect of
++ *         clearing status register 2, including the QE bit. The 100b code is
++ *         used if writing one byte to the status register does not modify
++ *         status register 2.
++ * - 010b: QE is bit 6 of status register 1. It is set via Write Status with
++ *         one data byte where bit 6 is one.
++ *         [...]
++ * - 011b: QE is bit 7 of status register 2. It is set via Write status
++ *         register 2 instruction 3Eh with one data byte where bit 7 is one.
++ *         [...]
++ *         The status register 2 is read using instruction 3Fh.
++ * - 100b: QE is bit 1 of status register 2. It is set via Write Status with
++ *         two data bytes where bit 1 of the second byte is one.
++ *         [...]
++ *         In contrast to the 001b code, writing one byte to the status
++ *         register does not modify status register 2.
++ * - 101b: QE is bit 1 of status register 2. Status register 1 is read using
++ *         Read Status instruction 05h. Status register2 is read using
++ *         instruction 35h. QE is set via Writ Status instruction 01h with
++ *         two data bytes where bit 1 of the second byte is one.
++ *         [...]
++ */
++#define BFPT_DWORD15_QER_MASK			GENMASK(22, 20)
++#define BFPT_DWORD15_QER_NONE			(0x0UL << 20) /* Micron */
++#define BFPT_DWORD15_QER_SR2_BIT1_BUGGY		(0x1UL << 20)
++#define BFPT_DWORD15_QER_SR1_BIT6		(0x2UL << 20) /* Macronix */
++#define BFPT_DWORD15_QER_SR2_BIT7		(0x3UL << 20)
++#define BFPT_DWORD15_QER_SR2_BIT1_NO_RD		(0x4UL << 20)
++#define BFPT_DWORD15_QER_SR2_BIT1		(0x5UL << 20) /* Spansion */
++
++struct sfdp_bfpt {
++	u32	dwords[BFPT_DWORD_MAX];
++};
++
++/* Fast Read settings. */
++
++static inline void
++spi_nor_set_read_settings_from_bfpt(struct spi_nor_read_command *read,
++				    u16 half,
++				    enum spi_nor_protocol proto)
++{
++	read->num_mode_clocks = (half >> 5) & 0x07;
++	read->num_wait_states = (half >> 0) & 0x1f;
++	read->opcode = (half >> 8) & 0xff;
++	read->proto = proto;
++}
++
++struct sfdp_bfpt_read {
++	/* The Fast Read x-y-z hardware capability in params->hwcaps.mask. */
++	u32			hwcaps;
++
++	/*
++	 * The <supported_bit> bit in <supported_dword> BFPT DWORD tells us
++	 * whether the Fast Read x-y-z command is supported.
++	 */
++	u32			supported_dword;
++	u32			supported_bit;
++
++	/*
++	 * The half-word at offset <setting_shift> in <setting_dword> BFPT DWORD
++	 * encodes the op code, the number of mode clocks and the number of wait
++	 * states to be used by Fast Read x-y-z command.
++	 */
++	u32			settings_dword;
++	u32			settings_shift;
++
++	/* The SPI protocol for this Fast Read x-y-z command. */
++	enum spi_nor_protocol	proto;
++};
++
++static const struct sfdp_bfpt_read sfdp_bfpt_reads[] = {
++	/* Fast Read 1-1-2 */
++	{
++		SNOR_HWCAPS_READ_1_1_2,
++		BFPT_DWORD(1), BIT(16),	/* Supported bit */
++		BFPT_DWORD(4), 0,	/* Settings */
++		SNOR_PROTO_1_1_2,
++	},
++
++	/* Fast Read 1-2-2 */
++	{
++		SNOR_HWCAPS_READ_1_2_2,
++		BFPT_DWORD(1), BIT(20),	/* Supported bit */
++		BFPT_DWORD(4), 16,	/* Settings */
++		SNOR_PROTO_1_2_2,
++	},
++
++	/* Fast Read 2-2-2 */
++	{
++		SNOR_HWCAPS_READ_2_2_2,
++		BFPT_DWORD(5),  BIT(0),	/* Supported bit */
++		BFPT_DWORD(6), 16,	/* Settings */
++		SNOR_PROTO_2_2_2,
++	},
++
++	/* Fast Read 1-1-4 */
++	{
++		SNOR_HWCAPS_READ_1_1_4,
++		BFPT_DWORD(1), BIT(22),	/* Supported bit */
++		BFPT_DWORD(3), 16,	/* Settings */
++		SNOR_PROTO_1_1_4,
++	},
++
++	/* Fast Read 1-4-4 */
++	{
++		SNOR_HWCAPS_READ_1_4_4,
++		BFPT_DWORD(1), BIT(21),	/* Supported bit */
++		BFPT_DWORD(3), 0,	/* Settings */
++		SNOR_PROTO_1_4_4,
++	},
++
++	/* Fast Read 4-4-4 */
++	{
++		SNOR_HWCAPS_READ_4_4_4,
++		BFPT_DWORD(5), BIT(4),	/* Supported bit */
++		BFPT_DWORD(7), 16,	/* Settings */
++		SNOR_PROTO_4_4_4,
++	},
++};
++
++struct sfdp_bfpt_erase {
++	/*
++	 * The half-word at offset <shift> in DWORD <dwoard> encodes the
++	 * op code and erase sector size to be used by Sector Erase commands.
++	 */
++	u32			dword;
++	u32			shift;
++};
++
++static const struct sfdp_bfpt_erase sfdp_bfpt_erases[] = {
++	/* Erase Type 1 in DWORD8 bits[15:0] */
++	{BFPT_DWORD(8), 0},
++
++	/* Erase Type 2 in DWORD8 bits[31:16] */
++	{BFPT_DWORD(8), 16},
++
++	/* Erase Type 3 in DWORD9 bits[15:0] */
++	{BFPT_DWORD(9), 0},
++
++	/* Erase Type 4 in DWORD9 bits[31:16] */
++	{BFPT_DWORD(9), 16},
++};
++
++static int spi_nor_hwcaps_read2cmd(u32 hwcaps);
++
++/**
++ * spi_nor_parse_bfpt - read and parse the Basic Flash Parameter Table.
++ * @nor:		pointer to a 'struct spi_nor'
++ * @bfpt_header:	pointer to the 'struct sfdp_parameter_header' describing
++ *			the Basic Flash Parameter Table length and version
++ * @params:		pointer to the 'struct spi_nor_flash_parameter' to be
++ *			filled
++ *
++ * The Basic Flash Parameter Table is the main and only mandatory table as
++ * defined by the SFDP (JESD216) specification.
++ * It provides us with the total size (memory density) of the data array and
++ * the number of address bytes for Fast Read, Page Program and Sector Erase
++ * commands.
++ * For Fast READ commands, it also gives the number of mode clock cycles and
++ * wait states (regrouped in the number of dummy clock cycles) for each
++ * supported instruction op code.
++ * For Page Program, the page size is now available since JESD216 rev A, however
++ * the supported instruction op codes are still not provided.
++ * For Sector Erase commands, this table stores the supported instruction op
++ * codes and the associated sector sizes.
++ * Finally, the Quad Enable Requirements (QER) are also available since JESD216
++ * rev A. The QER bits encode the manufacturer dependent procedure to be
++ * executed to set the Quad Enable (QE) bit in some internal register of the
++ * Quad SPI memory. Indeed the QE bit, when it exists, must be set before
++ * sending any Quad SPI command to the memory. Actually, setting the QE bit
++ * tells the memory to reassign its WP# and HOLD#/RESET# pins to functions IO2
++ * and IO3 hence enabling 4 (Quad) I/O lines.
++ */
++static int spi_nor_parse_bfpt(struct spi_nor *nor,
++			      const struct sfdp_parameter_header *bfpt_header,
++			      struct spi_nor_flash_parameter *params)
++{
++	struct mtd_info *mtd = &nor->mtd;
++	struct sfdp_bfpt bfpt;
++	size_t len;
++	int i, cmd, err;
++	u32 addr;
++	u16 half;
++
++	/* JESD216 Basic Flash Parameter Table length is at least 9 DWORDs. */
++	if (bfpt_header->length < BFPT_DWORD_MAX_JESD216)
++		return -EINVAL;
++
++	/* Read the Basic Flash Parameter Table. */
++	len = min_t(size_t, sizeof(bfpt),
++		    bfpt_header->length * sizeof(u32));
++	addr = SFDP_PARAM_HEADER_PTP(bfpt_header);
++	memset(&bfpt, 0, sizeof(bfpt));
++	err = spi_nor_read_sfdp(nor,  addr, len, &bfpt);
++	if (err < 0)
++		return err;
++
++	/* Fix endianness of the BFPT DWORDs. */
++	for (i = 0; i < BFPT_DWORD_MAX; i++)
++		bfpt.dwords[i] = le32_to_cpu(bfpt.dwords[i]);
++
++	/* Number of address bytes. */
++	switch (bfpt.dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) {
++	case BFPT_DWORD1_ADDRESS_BYTES_3_ONLY:
++		nor->addr_width = 3;
++		break;
++
++	case BFPT_DWORD1_ADDRESS_BYTES_4_ONLY:
++		nor->addr_width = 4;
++		break;
++
++	default:
++		break;
++	}
++
++	/* Flash Memory Density (in bits). */
++	params->size = bfpt.dwords[BFPT_DWORD(2)];
++	if (params->size & BIT(31)) {
++		params->size &= ~BIT(31);
++		params->size = 1ULL << params->size;
++	} else {
++		params->size++;
++	}
++	params->size >>= 3; /* Convert to bytes. */
++
++	/* Fast Read settings. */
++	for (i = 0; i < ARRAY_SIZE(sfdp_bfpt_reads); i++) {
++		const struct sfdp_bfpt_read *rd = &sfdp_bfpt_reads[i];
++		struct spi_nor_read_command *read;
++
++		if (!(bfpt.dwords[rd->supported_dword] & rd->supported_bit)) {
++			params->hwcaps.mask &= ~rd->hwcaps;
++			continue;
++		}
++
++		params->hwcaps.mask |= rd->hwcaps;
++		cmd = spi_nor_hwcaps_read2cmd(rd->hwcaps);
++		read = &params->reads[cmd];
++		half = bfpt.dwords[rd->settings_dword] >> rd->settings_shift;
++		spi_nor_set_read_settings_from_bfpt(read, half, rd->proto);
++	}
++
++	/* Sector Erase settings. */
++	for (i = 0; i < ARRAY_SIZE(sfdp_bfpt_erases); i++) {
++		const struct sfdp_bfpt_erase *er = &sfdp_bfpt_erases[i];
++		u32 erasesize;
++		u8 opcode;
++
++		half = bfpt.dwords[er->dword] >> er->shift;
++		erasesize = half & 0xff;
++
++		/* erasesize == 0 means this Erase Type is not supported. */
++		if (!erasesize)
++			continue;
++
++		erasesize = 1U << erasesize;
++		opcode = (half >> 8) & 0xff;
++#ifdef CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
++		if (erasesize == SZ_4K) {
++			nor->erase_opcode = opcode;
++			mtd->erasesize = erasesize;
++			break;
++		}
++#endif
++		if (!mtd->erasesize || mtd->erasesize < erasesize) {
++			nor->erase_opcode = opcode;
++			mtd->erasesize = erasesize;
++		}
++	}
++
++	/* Stop here if not JESD216 rev A or later. */
++	if (bfpt_header->length < BFPT_DWORD_MAX)
++		return 0;
++
++	/* Page size: this field specifies 'N' so the page size = 2^N bytes. */
++	params->page_size = bfpt.dwords[BFPT_DWORD(11)];
++	params->page_size &= BFPT_DWORD11_PAGE_SIZE_MASK;
++	params->page_size >>= BFPT_DWORD11_PAGE_SIZE_SHIFT;
++	params->page_size = 1U << params->page_size;
++
++	/* Quad Enable Requirements. */
++	switch (bfpt.dwords[BFPT_DWORD(15)] & BFPT_DWORD15_QER_MASK) {
++	case BFPT_DWORD15_QER_NONE:
++		params->quad_enable = NULL;
++		break;
++
++	case BFPT_DWORD15_QER_SR2_BIT1_BUGGY:
++	case BFPT_DWORD15_QER_SR2_BIT1_NO_RD:
++		params->quad_enable = spansion_no_read_cr_quad_enable;
++		break;
++
++	case BFPT_DWORD15_QER_SR1_BIT6:
++		params->quad_enable = macronix_quad_enable;
++		break;
++
++	case BFPT_DWORD15_QER_SR2_BIT7:
++		params->quad_enable = sr2_bit7_quad_enable;
++		break;
++
++	case BFPT_DWORD15_QER_SR2_BIT1:
++		params->quad_enable = spansion_read_cr_quad_enable;
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++/**
++ * spi_nor_parse_sfdp - read and parse the Serial Flash Discoverable Parameters.
++ * @nor:		pointer to a 'struct spi_nor'
++ * @params:		pointer to the 'struct spi_nor_flash_parameter' to be
++ *			filled
++ *
++ * The Serial Flash Discoverable Parameters are described by the JEDEC JESD216
++ * specification. This is a standard which tends to supported by almost all
++ * (Q)SPI memory manufacturers. Those hard-coded tables allow us to learn at
++ * runtime the main parameters needed to perform basic SPI flash operations such
++ * as Fast Read, Page Program or Sector Erase commands.
++ */
++static int spi_nor_parse_sfdp(struct spi_nor *nor,
++			      struct spi_nor_flash_parameter *params)
++{
++	const struct sfdp_parameter_header *param_header, *bfpt_header;
++	struct sfdp_parameter_header *param_headers = NULL;
++	struct sfdp_header header;
++	struct device *dev = nor->dev;
++	size_t psize;
++	int i, err;
++
++	/* Get the SFDP header. */
++	err = spi_nor_read_sfdp(nor, 0, sizeof(header), &header);
++	if (err < 0)
++		return err;
++
++	/* Check the SFDP header version. */
++	if (le32_to_cpu(header.signature) != SFDP_SIGNATURE ||
++	    header.major != SFDP_JESD216_MAJOR ||
++	    header.minor < SFDP_JESD216_MINOR)
++		return -EINVAL;
++
++	/*
++	 * Verify that the first and only mandatory parameter header is a
++	 * Basic Flash Parameter Table header as specified in JESD216.
++	 */
++	bfpt_header = &header.bfpt_header;
++	if (SFDP_PARAM_HEADER_ID(bfpt_header) != SFDP_BFPT_ID ||
++	    bfpt_header->major != SFDP_JESD216_MAJOR)
++		return -EINVAL;
++
++	/*
++	 * Allocate memory then read all parameter headers with a single
++	 * Read SFDP command. These parameter headers will actually be parsed
++	 * twice: a first time to get the latest revision of the basic flash
++	 * parameter table, then a second time to handle the supported optional
++	 * tables.
++	 * Hence we read the parameter headers once for all to reduce the
++	 * processing time. Also we use kmalloc() instead of devm_kmalloc()
++	 * because we don't need to keep these parameter headers: the allocated
++	 * memory is always released with kfree() before exiting this function.
++	 */
++	if (header.nph) {
++		psize = header.nph * sizeof(*param_headers);
++
++		param_headers = kmalloc(psize, GFP_KERNEL);
++		if (!param_headers)
++			return -ENOMEM;
++
++		err = spi_nor_read_sfdp(nor, sizeof(header),
++					psize, param_headers);
++		if (err < 0) {
++			dev_err(dev, "failed to read SFDP parameter headers\n");
++			goto exit;
++		}
++	}
++
++	/*
++	 * Check other parameter headers to get the latest revision of
++	 * the basic flash parameter table.
++	 */
++	for (i = 0; i < header.nph; i++) {
++		param_header = &param_headers[i];
++
++		if (SFDP_PARAM_HEADER_ID(param_header) == SFDP_BFPT_ID &&
++		    param_header->major == SFDP_JESD216_MAJOR &&
++		    (param_header->minor > bfpt_header->minor ||
++		     (param_header->minor == bfpt_header->minor &&
++		      param_header->length > bfpt_header->length)))
++			bfpt_header = param_header;
++	}
++
++	err = spi_nor_parse_bfpt(nor, bfpt_header, params);
++	if (err)
++		goto exit;
++
++	/* Parse other parameter headers. */
++	for (i = 0; i < header.nph; i++) {
++		param_header = &param_headers[i];
++
++		switch (SFDP_PARAM_HEADER_ID(param_header)) {
++		case SFDP_SECTOR_MAP_ID:
++			dev_info(dev, "non-uniform erase sector maps are not supported yet.\n");
++			break;
++
++		default:
++			break;
++		}
++
++		if (err)
++			goto exit;
++	}
++
++exit:
++	kfree(param_headers);
++	return err;
++}
++
+ static int spi_nor_init_params(struct spi_nor *nor,
+ 			       const struct flash_info *info,
+ 			       struct spi_nor_flash_parameter *params)
+@@ -1641,11 +2337,28 @@ static int spi_nor_init_params(struct spi_nor *nor,
+ 			break;
+ 
+ 		default:
++			/* Kept only for backward compatibility purpose. */
+ 			params->quad_enable = spansion_quad_enable;
+ 			break;
+ 		}
+ 	}
+ 
++	/* Override the parameters with data read from SFDP tables. */
++	nor->addr_width = 0;
++	nor->mtd.erasesize = 0;
++	if ((info->flags & (SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)) &&
++	    !(info->flags & SPI_NOR_SKIP_SFDP)) {
++		struct spi_nor_flash_parameter sfdp_params;
++
++		memcpy(&sfdp_params, params, sizeof(sfdp_params));
++		if (spi_nor_parse_sfdp(nor, &sfdp_params)) {
++			nor->addr_width = 0;
++			nor->mtd.erasesize = 0;
++		} else {
++			memcpy(params, &sfdp_params, sizeof(*params));
++		}
++	}
++
+ 	return 0;
+ }
+ 
+@@ -1757,6 +2470,10 @@ static int spi_nor_select_erase(struct spi_nor *nor,
+ {
+ 	struct mtd_info *mtd = &nor->mtd;
+ 
++	/* Do nothing if already configured from SFDP. */
++	if (mtd->erasesize)
++		return 0;
++
+ #ifdef CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
+ 	/* prefer "small sector" erase if possible */
+ 	if (info->flags & SECT_4K) {
+@@ -1989,9 +2706,11 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 	if (ret)
+ 		return ret;
+ 
+-	if (info->addr_width)
++	if (nor->addr_width) {
++		/* already configured by spi_nor_setup() */
++	} else if (info->addr_width) {
+ 		nor->addr_width = info->addr_width;
+-	else if (mtd->size > 0x1000000) {
++	} else if (mtd->size > 0x1000000) {
+ 		/* enable 4-byte addressing if the device exceeds 16MiB */
+ 		nor->addr_width = 4;
+ 		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index 55faa2f07cca..0df3638ff0b8 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -41,6 +41,8 @@
+ #define SPINOR_OP_WREN		0x06	/* Write enable */
+ #define SPINOR_OP_RDSR		0x05	/* Read status register */
+ #define SPINOR_OP_WRSR		0x01	/* Write status register 1 byte */
++#define SPINOR_OP_RDSR2		0x3f	/* Read status register 2 */
++#define SPINOR_OP_WRSR2		0x3e	/* Write status register 2 */
+ #define SPINOR_OP_READ		0x03	/* Read data bytes (low frequency) */
+ #define SPINOR_OP_READ_FAST	0x0b	/* Read data bytes (high frequency) */
+ #define SPINOR_OP_READ_1_1_2	0x3b	/* Read data bytes (Dual Output SPI) */
+@@ -56,6 +58,7 @@
+ #define SPINOR_OP_CHIP_ERASE	0xc7	/* Erase whole flash chip */
+ #define SPINOR_OP_SE		0xd8	/* Sector erase (usually 64KiB) */
+ #define SPINOR_OP_RDID		0x9f	/* Read JEDEC ID */
++#define SPINOR_OP_RDSFDP	0x5a	/* Read SFDP */
+ #define SPINOR_OP_RDCR		0x35	/* Read configuration register */
+ #define SPINOR_OP_RDFSR		0x70	/* Read flag status register */
+ 
+@@ -128,6 +131,9 @@
+ /* Configuration Register bits. */
+ #define CR_QUAD_EN_SPAN		BIT(1)	/* Spansion Quad I/O */
+ 
++/* Status Register 2 bits. */
++#define SR2_QUAD_EN_BIT7	BIT(7)
++
+ /* Supported SPI protocols */
+ #define SNOR_PROTO_INST_MASK	GENMASK(23, 16)
+ #define SNOR_PROTO_INST_SHIFT	16
+-- 
+2.7.4
