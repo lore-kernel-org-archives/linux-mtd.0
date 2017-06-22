@@ -1,15 +1,25 @@
-Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
+Received: from mail-pg0-x233.google.com ([2607:f8b0:400e:c05::233])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dO9MM-0003YO-Bw
- for linux-mtd@lists.infradead.org; Thu, 22 Jun 2017 21:09:51 +0000
-Received: by mail-pf0-x244.google.com with SMTP id s66so4633407pfs.2
- for <linux-mtd@lists.infradead.org>; Thu, 22 Jun 2017 14:09:29 -0700 (PDT)
+ id 1dO9cT-0003rC-Pj
+ for linux-mtd@lists.infradead.org; Thu, 22 Jun 2017 21:26:31 +0000
+Received: by mail-pg0-x233.google.com with SMTP id e187so12932406pgc.1
+ for <linux-mtd@lists.infradead.org>; Thu, 22 Jun 2017 14:26:09 -0700 (PDT)
+Date: Thu, 22 Jun 2017 14:26:06 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH] mtd: partitions: fixup some allocate_partition() whitespace
-Date: Thu, 22 Jun 2017 14:09:18 -0700
-Message-Id: <20170622210918.68280-1-computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
+ David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, Kyungmin Park <kyungmin.park@samsung.com>
+Subject: Re: [PATCH] mtd: Fallback to ->_read/write_oob() when
+ ->_read/write() is missing
+Message-ID: <20170622212606.GF14148@google.com>
+References: <20170611204255.18622-1-boris.brezillon@free-electrons.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170611204255.18622-1-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,37 +29,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some recent patches caused churn around this area, and checkpatch
-noticed the existing issues.
+On Sun, Jun 11, 2017 at 10:42:55PM +0200, Boris Brezillon wrote:
+> Some MTD sublayers/drivers are implementing ->_read/write_oob() and
+> providing dummy wrappers for their ->_read/write() implementations.
+> Let the core handle this case instead of duplicating the logic.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+> Note that the goldfish_nand driver (currently in staging) has not been
+> updated because some the ops->len != mtd->writesize check done in
+> goldfish_nand_read/write_oob() prevents us from using this function as
+> a fallback for ->_read/write().
+> 
+> This behavior is buggy anyway, because the core expects drivers
+> implementing ->_read_oob() to support reading more than ->writesize in
+> a single call. Probably something we should fix.
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/mtdpart.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Looks OK to me:
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 2ad9493703f9..5736b0c90b33 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -402,7 +402,7 @@ static struct mtd_part *allocate_partition(struct mtd_info *parent,
- 			const struct mtd_partition *part, int partno,
- 			uint64_t cur_offset)
- {
--	int wr_alignment = (parent->flags & MTD_NO_ERASE) ? parent->writesize:
-+	int wr_alignment = (parent->flags & MTD_NO_ERASE) ? parent->writesize :
- 							    parent->erasesize;
- 	struct mtd_part *slave;
- 	u32 remainder;
-@@ -480,8 +480,8 @@ static struct mtd_part *allocate_partition(struct mtd_info *parent,
- 		slave->mtd._sync = part_sync;
- 	if (!partno && !parent->dev.class && parent->_suspend &&
- 	    parent->_resume) {
--			slave->mtd._suspend = part_suspend;
--			slave->mtd._resume = part_resume;
-+		slave->mtd._suspend = part_suspend;
-+		slave->mtd._resume = part_resume;
- 	}
- 	if (parent->_writev)
- 		slave->mtd._writev = part_writev;
--- 
-2.13.1.611.g7e3b11ae1-goog
+Acked-by: Brian Norris <computersforpeace@gmail.com>
+
+This touches NAND drivers more than core MTD stuff, so feel free to take
+it in your branch.
