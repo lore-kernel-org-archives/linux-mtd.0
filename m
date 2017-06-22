@@ -1,18 +1,30 @@
-Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
+Received: from mail-pg0-x22b.google.com ([2607:f8b0:400e:c05::22b])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dO8Fc-00028l-68
- for linux-mtd@lists.infradead.org; Thu, 22 Jun 2017 19:58:50 +0000
-Received: by mail-pg0-x244.google.com with SMTP id j186so3692263pge.1
- for <linux-mtd@lists.infradead.org>; Thu, 22 Jun 2017 12:58:27 -0700 (PDT)
-From: Harry Chou <harryyc.chou@gmail.com>
-To: cyrille.pitchen@wedev4u.fr
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, richard@nod.at,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Harry Chou <HarryYC.Chou@gmail.com>
-Subject: [PATCH v2] mtd: spi-nor: Add support for Spansion S25FL064L
-Date: Fri, 23 Jun 2017 03:58:11 +0800
-Message-Id: <1498161491-22411-1-git-send-email-HarryYC.Chou@gmail.com>
+ id 1dO9Ib-00029k-Ta
+ for linux-mtd@lists.infradead.org; Thu, 22 Jun 2017 21:05:59 +0000
+Received: by mail-pg0-x22b.google.com with SMTP id u62so12706858pgb.3
+ for <linux-mtd@lists.infradead.org>; Thu, 22 Jun 2017 14:05:37 -0700 (PDT)
+Date: Thu, 22 Jun 2017 14:05:33 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+ Dan Ehrenberg <dehrenberg@chromium.org>
+Subject: Re: [PATCH V7 2/6] mtd: partitions: remove sysfs files when deleting
+ all master's partitions
+Message-ID: <20170622210533.GD14148@google.com>
+References: <20170526131415.27186-1-zajec5@gmail.com>
+ <20170621062647.6072-1-zajec5@gmail.com>
+ <20170621062647.6072-3-zajec5@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20170621062647.6072-3-zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +34,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It's an 8 MiB flash with 4 KiB erase sectors.
+On Wed, Jun 21, 2017 at 08:26:43AM +0200, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
+> 
+> When support for sysfs "offset" file was added it missed to update the
+> del_mtd_partitions function. It deletes partitions just like
+> mtd_del_partition does so both should also take care of removing sysfs
+> files.
+> 
+> This change moves sysfs_remove_files call to the shared function to fix
+> this issue.
+> 
+> Fixes: a62c24d755291 ("mtd: part: Add sysfs variable for offset of partition")
+> Cc: Dan Ehrenberg <dehrenberg@chromium.org>
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> ---
+> V7: Introduction of this patch, it was separated from the 1/6. It should
+>     be clear now that this change is introduced. If something goes wrong
+>     it should also be easier to revert it this way.
 
-Signed-off-by: Harry Chou <HarryYC.Chou@gmail.com>
----
-Changes v1 -> v2:
- - added SPI_NOR_DUAL_READ flag (supports Dual Output and I/O)
- - added SPI_NOR_QUAD_READ flag (supports Quad Output and I/O)
- - added SPI_NOR_4B_OPCODES flag (supports the 4-byte address instruction set)
+Thanks, splitting this out is nice actually. And thanks for looking up
+the background on this oversight.
 
- drivers/mtd/spi-nor/spi-nor.c | 1 +
- 1 file changed, 1 insertion(+)
+I'm not really sure what the actual effect of that omission would be;
+the file won't be left dangling in sysfs (the device is removed
+entirely), but I'm not sure if that'd trigger some kind of internal
+kobject memory leak.
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index dea8c9c..9db5861 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1076,6 +1076,7 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "s25fl164k",  INFO(0x014017,      0,  64 * 1024, 128, SECT_4K) },
- 	{ "s25fl204k",  INFO(0x014013,      0,  64 * 1024,   8, SECT_4K | SPI_NOR_DUAL_READ) },
- 	{ "s25fl208k",  INFO(0x014014,      0,  64 * 1024,  16, SECT_4K | SPI_NOR_DUAL_READ) },
-+	{ "s25fl064l",  INFO(0x016017,      0,  64 * 1024, 128, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
- 
- 	/* SST -- large erase sizes are "overlays", "sectors" are 4K */
- 	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
--- 
-2.7.4
+Anyway, looks good to me.
+
+Side note: this patch series sort of massages the definition of this
+"offset" file. Now, IIUC, subpartitions will have an "offset" file
+relative to their parent partition, not the master flash device. I'm not
+sure which way is expected.
+
+Brian
