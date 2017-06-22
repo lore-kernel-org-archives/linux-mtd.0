@@ -1,22 +1,18 @@
-Received: from mail-db5eur03on0703.outbound.protection.outlook.com
- ([2a01:111:f400:fe0a::703]
- helo=EUR03-DB5-obe.outbound.protection.outlook.com)
+Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dO0B2-0008E9-C8
- for linux-mtd@lists.infradead.org; Thu, 22 Jun 2017 11:21:34 +0000
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-To: linux-mtd@lists.infradead.org
-Cc: Alexander Sverdlin <alexander.sverdlin@nokia.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>
-Subject: [PATCH] mtd: spi-nor: Add support for mx66u51235f
-Date: Thu, 22 Jun 2017 13:20:36 +0200
-Message-Id: <20170622112036.22987-1-alexander.sverdlin@nokia.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+ id 1dO1cv-0007Rm-6p
+ for linux-mtd@lists.infradead.org; Thu, 22 Jun 2017 12:54:26 +0000
+Received: by mail-pg0-x242.google.com with SMTP id u62so2332261pgb.0
+ for <linux-mtd@lists.infradead.org>; Thu, 22 Jun 2017 05:54:04 -0700 (PDT)
+From: Harry Chou <harryyc.chou@gmail.com>
+To: cyrille.pitchen@wedev4u.fr
+Cc: marek.vasut@gmail.com, dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, richard@nod.at,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Harry Chou <HarryYC.Chou@gmail.com>
+Subject: [PATCH] mtd: spi-nor: Add support for Spansion S25FL064L
+Date: Thu, 22 Jun 2017 20:53:18 +0800
+Message-Id: <1498135998-17788-1-git-send-email-HarryYC.Chou@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,25 +22,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This chip supports stateless 4-byte opcodes, dual and quad read and
-uniform 4K-byte erase.
+It's an 8 MiB flash with 4 KiB erase sectors.
 
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Signed-off-by: Harry Chou <HarryYC.Chou@gmail.com>
 ---
  drivers/mtd/spi-nor/spi-nor.c | 1 +
  1 file changed, 1 insertion(+)
 
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 040ab5d..2659bba 100644
+index dea8c9c..1f84765 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1012,6 +1012,7 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_4B_OPCODES) },
- 	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
- 	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-+	{ "mx66u51235f", INFO(0xc2253a, 0, 64 * 1024, 1024, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
- 	{ "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
+@@ -1076,6 +1076,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "s25fl164k",  INFO(0x014017,      0,  64 * 1024, 128, SECT_4K) },
+ 	{ "s25fl204k",  INFO(0x014013,      0,  64 * 1024,   8, SECT_4K | SPI_NOR_DUAL_READ) },
+ 	{ "s25fl208k",  INFO(0x014014,      0,  64 * 1024,  16, SECT_4K | SPI_NOR_DUAL_READ) },
++	{ "s25fl064l",  INFO(0x016017,      0,  64 * 1024, 128, SECT_4K) },
  
+ 	/* SST -- large erase sizes are "overlays", "sectors" are 4K */
+ 	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
 -- 
-2.4.6
+2.7.4
