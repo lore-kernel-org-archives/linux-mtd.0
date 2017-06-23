@@ -1,33 +1,26 @@
-Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
+Received: from youngberry.canonical.com ([91.189.89.112])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dOSqF-0004xW-8e
- for linux-mtd@lists.infradead.org; Fri, 23 Jun 2017 17:58:01 +0000
-Received: by mail-pg0-x242.google.com with SMTP id e187so6986758pgc.3
- for <linux-mtd@lists.infradead.org>; Fri, 23 Jun 2017 10:57:38 -0700 (PDT)
-Date: Fri, 23 Jun 2017 10:57:35 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+ id 1dOSvf-0006am-TU
+ for linux-mtd@lists.infradead.org; Fri, 23 Jun 2017 18:03:37 +0000
+Subject: Re: [PATCH][mtd-next] mtd: parser: print hex size_t value using
+ correct %zx printk format specifier
+To: Brian Norris <computersforpeace@gmail.com>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+References: <20170623090023.9482-1-colin.king@canonical.com>
+ <e8cf8fb56ef0b56cca3dce61302a1099@milecki.pl>
+ <20170623175124.GI14148@google.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
- Dan Ehrenberg <dehrenberg@chromium.org>
-Subject: Re: [PATCH V7 2/6] mtd: partitions: remove sysfs files when deleting
- all master's partitions
-Message-ID: <20170623175735.GA55942@google.com>
-References: <20170526131415.27186-1-zajec5@gmail.com>
- <20170621062647.6072-1-zajec5@gmail.com>
- <20170621062647.6072-3-zajec5@gmail.com>
- <20170622210533.GD14148@google.com>
- <CACna6rw3B5=48qbRK+vQ1gsxsZtCtJfNa=kORZY6FrCko5PJFg@mail.gmail.com>
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
+ kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Colin Ian King <colin.king@canonical.com>
+Message-ID: <c8049ec7-74c6-3a44-dbe3-b9f4b02c8666@canonical.com>
+Date: Fri, 23 Jun 2017 19:03:11 +0100
 MIME-Version: 1.0
+In-Reply-To: <20170623175124.GI14148@google.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACna6rw3B5=48qbRK+vQ1gsxsZtCtJfNa=kORZY6FrCko5PJFg@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,32 +30,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 22, 2017 at 11:40:47PM +0200, Rafał Miłecki wrote:
-> On 22 June 2017 at 23:05, Brian Norris <computersforpeace@gmail.com> wrote:
-> > Side note: this patch series sort of massages the definition of this
-> > "offset" file. Now, IIUC, subpartitions will have an "offset" file
-> > relative to their parent partition, not the master flash device. I'm not
-> > sure which way is expected.
+On 23/06/17 18:51, Brian Norris wrote:
+> On Fri, Jun 23, 2017 at 12:02:34PM +0200, Rafał Miłecki wrote:
+>> On 2017-06-23 11:00, Colin King wrote:
+>>> From: Colin Ian King <colin.king@canonical.com>
+>>>
+>>> Use %zx instead of %X for size_t variable offset, fixes build warning:
+>>>
+>>> warning: format '%X' expects argument of type 'unsigned int', but
+>>> argument
+>>> 2 has type 'size_t {aka long unsigned int}' [-Wformat=]
+>>>
+>>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>>
+>> I sent similar patch few hours earlier:
+>> [PATCH] mtd: parsers: trx: fix pr_err format for printing offset
+>> https://patchwork.ozlabs.org/patch/779789/
+>>
+>> Brian: you may pick the one with nicer commit message, whichever one you
+>> prefer :)
 > 
-> I didn't think about this. I should be able to easily get an absolute
-> offset if needed (a simple recursion), but I'm not sure what behavior
-> is actually expected. Since we use a tree struct in the sysfs now,
-> maybe relative offsets are actually correct ones?
+> I'll go with:
+> (a) the earlier one and
+> (b) the one that doesn't change 'X' to 'x'
+> 
+> That means Rafał, you're our lucky winner today! Thanks for playing,
+> Colin.
 
-Yeah, that seems OK to me. The only holdup is that the current
-description uses the term "master", where perhaps it should just mean
-say "parent" now:
+FYI, I used %zx rather than %zX as couldn't find any instances of it in
+the kernel and I wasn't 100% sure if it was supported or not.
 
-Documentation/ABI/testing/sysfs-class-mtd:
+linux-next:
 
-What:           /sys/class/mtd/mtdX/offset
-Date:           March 2015
-KernelVersion:  4.1
-Contact:        linux-mtd@lists.infradead.org
-Description:
-                For a partition, the offset of that partition from the start
-                of the master device in bytes. This attribute is absent on
-                main devices, so it can be used to distinguish between
-                partitions and devices that aren't partitions.
+$ git grep "%zx" | wc -l
+161
 
-Brian
+$ git grep "%zX" | wc -l
+0
+
+Colin
+
+> 
+> Regards,
+> Brian
+> --
+> To unsubscribe from this list: send the line "unsubscribe kernel-janitors" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
