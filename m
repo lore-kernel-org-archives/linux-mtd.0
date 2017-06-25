@@ -1,24 +1,21 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dP93N-0005xq-TH
- for linux-mtd@lists.infradead.org; Sun, 25 Jun 2017 15:02:23 +0000
-Date: Sun, 25 Jun 2017 17:01:58 +0200
+ id 1dP9yo-0004vC-6I
+ for linux-mtd@lists.infradead.org; Sun, 25 Jun 2017 16:01:44 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>, David Woodhouse
- <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, Kyungmin Park <kyungmin.park@samsung.com>
-Subject: Re: [PATCH] mtd: Fallback to ->_read/write_oob() when
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
+ Kyungmin Park <kyungmin.park@samsung.com>
+Subject: [PATCH v2 2/2] mtd: Fallback to ->_read/write_oob() when
  ->_read/write() is missing
-Message-ID: <20170625170158.0cf82223@bbrezillon>
-In-Reply-To: <20170624221219.703762e1@bbrezillon>
-References: <20170611204255.18622-1-boris.brezillon@free-electrons.com>
- <20170622212606.GF14148@google.com>
- <20170624221219.703762e1@bbrezillon>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Date: Sun, 25 Jun 2017 18:01:13 +0200
+Message-Id: <20170625160113.11860-2-boris.brezillon@free-electrons.com>
+In-Reply-To: <20170625160113.11860-1-boris.brezillon@free-electrons.com>
+References: <20170625160113.11860-1-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,42 +25,325 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le Sat, 24 Jun 2017 22:12:19 +0200,
-Boris Brezillon <boris.brezillon@free-electrons.com> a =C3=A9crit :
+Some MTD sublayers/drivers are implementing ->_read/write_oob() and
+providing dummy wrappers for their ->_read/write() implementations.
+Let the core handle this case instead of duplicating the logic.
 
-> Le Thu, 22 Jun 2017 14:26:06 -0700,
-> Brian Norris <computersforpeace@gmail.com> a =C3=A9crit :
->=20
-> > On Sun, Jun 11, 2017 at 10:42:55PM +0200, Boris Brezillon wrote: =20
-> > > Some MTD sublayers/drivers are implementing ->_read/write_oob() and
-> > > providing dummy wrappers for their ->_read/write() implementations.
-> > > Let the core handle this case instead of duplicating the logic.
-> > >=20
-> > > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > > ---
-> > > Note that the goldfish_nand driver (currently in staging) has not been
-> > > updated because some the ops->len !=3D mtd->writesize check done in
-> > > goldfish_nand_read/write_oob() prevents us from using this function as
-> > > a fallback for ->_read/write().
-> > >=20
-> > > This behavior is buggy anyway, because the core expects drivers
-> > > implementing ->_read_oob() to support reading more than ->writesize in
-> > > a single call. Probably something we should fix.   =20
-> >=20
-> > Looks OK to me:
-> >=20
-> > Acked-by: Brian Norris <computersforpeace@gmail.com>
-> >=20
-> > This touches NAND drivers more than core MTD stuff, so feel free to take
-> > it in your branch. =20
->=20
-> Applied to nand/next.
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Acked-by: Brian Norris <computersforpeace@gmail.com>
+---
+Changes since v1:
+- none
+---
+ drivers/mtd/devices/docg3.c        | 65 --------------------------------------
+ drivers/mtd/mtdcore.c              | 31 ++++++++++++++++--
+ drivers/mtd/nand/nand_base.c       | 56 --------------------------------
+ drivers/mtd/onenand/onenand_base.c | 61 -----------------------------------
+ 4 files changed, 29 insertions(+), 184 deletions(-)
 
-It seems that this patch is triggering a NULL pointer exception,
-probably because some code is calling ->_read/write() directly instead
-of using mtd_read/write() wrappers.
-
-Removed the from nand/next until I figure out what's happening and come
-up with a better solution: either remove direct ->_read/write() calls or
-implement a default _read/_write() -> _read/write_oob() wrapper instead
-of handling that in the mtd_read/write() function.
+diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
+index b833e6cc684c..81e108454f54 100644
+--- a/drivers/mtd/devices/docg3.c
++++ b/drivers/mtd/devices/docg3.c
+@@ -990,36 +990,6 @@ static int doc_read_oob(struct mtd_info *mtd, loff_t from,
+ 	goto out;
+ }
+ 
+-/**
+- * doc_read - Read bytes from flash
+- * @mtd: the device
+- * @from: the offset from first block and first page, in bytes, aligned on page
+- *        size
+- * @len: the number of bytes to read (must be a multiple of 4)
+- * @retlen: the number of bytes actually read
+- * @buf: the filled in buffer
+- *
+- * Reads flash memory pages. This function does not read the OOB chunk, but only
+- * the page data.
+- *
+- * Returns 0 if read successful, of -EIO, -EINVAL if an error occurred
+- */
+-static int doc_read(struct mtd_info *mtd, loff_t from, size_t len,
+-	     size_t *retlen, u_char *buf)
+-{
+-	struct mtd_oob_ops ops;
+-	size_t ret;
+-
+-	memset(&ops, 0, sizeof(ops));
+-	ops.datbuf = buf;
+-	ops.len = len;
+-	ops.mode = MTD_OPS_AUTO_OOB;
+-
+-	ret = doc_read_oob(mtd, from, &ops);
+-	*retlen = ops.retlen;
+-	return ret;
+-}
+-
+ static int doc_reload_bbt(struct docg3 *docg3)
+ {
+ 	int block = DOC_LAYOUT_BLOCK_BBT;
+@@ -1513,39 +1483,6 @@ static int doc_write_oob(struct mtd_info *mtd, loff_t ofs,
+ 	return ret;
+ }
+ 
+-/**
+- * doc_write - Write a buffer to the chip
+- * @mtd: the device
+- * @to: the offset from first block and first page, in bytes, aligned on page
+- *      size
+- * @len: the number of bytes to write (must be a full page size, ie. 512)
+- * @retlen: the number of bytes actually written (0 or 512)
+- * @buf: the buffer to get bytes from
+- *
+- * Writes data to the chip.
+- *
+- * Returns 0 if write successful, -EIO if write error
+- */
+-static int doc_write(struct mtd_info *mtd, loff_t to, size_t len,
+-		     size_t *retlen, const u_char *buf)
+-{
+-	struct docg3 *docg3 = mtd->priv;
+-	int ret;
+-	struct mtd_oob_ops ops;
+-
+-	doc_dbg("doc_write(to=%lld, len=%zu)\n", to, len);
+-	ops.datbuf = (char *)buf;
+-	ops.len = len;
+-	ops.mode = MTD_OPS_PLACE_OOB;
+-	ops.oobbuf = NULL;
+-	ops.ooblen = 0;
+-	ops.ooboffs = 0;
+-
+-	ret = doc_write_oob(mtd, to, &ops);
+-	*retlen = ops.retlen;
+-	return ret;
+-}
+-
+ static struct docg3 *sysfs_dev2docg3(struct device *dev,
+ 				     struct device_attribute *attr)
+ {
+@@ -1876,8 +1813,6 @@ static int __init doc_set_driver_info(int chip_id, struct mtd_info *mtd)
+ 	mtd->writebufsize = mtd->writesize = DOC_LAYOUT_PAGE_SIZE;
+ 	mtd->oobsize = DOC_LAYOUT_OOB_SIZE;
+ 	mtd->_erase = doc_erase;
+-	mtd->_read = doc_read;
+-	mtd->_write = doc_write;
+ 	mtd->_read_oob = doc_read_oob;
+ 	mtd->_write_oob = doc_write_oob;
+ 	mtd->_block_isbad = doc_block_isbad;
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 1517da3ddd7d..e214af82b9be 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -1033,7 +1033,20 @@ int mtd_read(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
+ 	 * representing the maximum number of bitflips that were corrected on
+ 	 * any one ecc region (if applicable; zero otherwise).
+ 	 */
+-	ret_code = mtd->_read(mtd, from, len, retlen, buf);
++	if (mtd->_read) {
++		ret_code = mtd->_read(mtd, from, len, retlen, buf);
++	} else if (mtd->_read_oob) {
++		struct mtd_oob_ops ops = {
++			.len = len,
++			.datbuf = buf,
++		};
++
++		ret_code = mtd->_read_oob(mtd, from, &ops);
++		*retlen = ops.retlen;
++	} else {
++		return -ENOTSUPP;
++	}
++
+ 	if (unlikely(ret_code < 0))
+ 		return ret_code;
+ 	if (mtd->ecc_strength == 0)
+@@ -1048,11 +1061,25 @@ int mtd_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
+ 	*retlen = 0;
+ 	if (to < 0 || to >= mtd->size || len > mtd->size - to)
+ 		return -EINVAL;
+-	if (!mtd->_write || !(mtd->flags & MTD_WRITEABLE))
++	if ((!mtd->_write && !mtd->_write_oob) ||
++	    !(mtd->flags & MTD_WRITEABLE))
+ 		return -EROFS;
+ 	if (!len)
+ 		return 0;
+ 	ledtrig_mtd_activity();
++
++	if (!mtd->_write) {
++		struct mtd_oob_ops ops = {
++			.len = len,
++			.datbuf = (u8 *)buf,
++		};
++		int ret;
++
++		ret = mtd->_write_oob(mtd, to, &ops);
++		*retlen = ops.retlen;
++		return ret;
++	}
++
+ 	return mtd->_write(mtd, to, len, retlen, buf);
+ }
+ EXPORT_SYMBOL_GPL(mtd_write);
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 85edac9b2bb5..d77c75e5c6b7 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2190,33 +2190,6 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ }
+ 
+ /**
+- * nand_read - [MTD Interface] MTD compatibility function for nand_do_read_ecc
+- * @mtd: MTD device structure
+- * @from: offset to read from
+- * @len: number of bytes to read
+- * @retlen: pointer to variable to store the number of read bytes
+- * @buf: the databuffer to put data
+- *
+- * Get hold of the chip and call nand_do_read.
+- */
+-static int nand_read(struct mtd_info *mtd, loff_t from, size_t len,
+-		     size_t *retlen, uint8_t *buf)
+-{
+-	struct mtd_oob_ops ops;
+-	int ret;
+-
+-	nand_get_device(mtd, FL_READING);
+-	memset(&ops, 0, sizeof(ops));
+-	ops.len = len;
+-	ops.datbuf = buf;
+-	ops.mode = MTD_OPS_PLACE_OOB;
+-	ret = nand_do_read_ops(mtd, from, &ops);
+-	*retlen = ops.retlen;
+-	nand_release_device(mtd);
+-	return ret;
+-}
+-
+-/**
+  * nand_read_oob_std - [REPLACEABLE] the most common OOB data read function
+  * @mtd: mtd info structure
+  * @chip: nand chip info structure
+@@ -2984,33 +2957,6 @@ static int panic_nand_write(struct mtd_info *mtd, loff_t to, size_t len,
+ }
+ 
+ /**
+- * nand_write - [MTD Interface] NAND write with ECC
+- * @mtd: MTD device structure
+- * @to: offset to write to
+- * @len: number of bytes to write
+- * @retlen: pointer to variable to store the number of written bytes
+- * @buf: the data to write
+- *
+- * NAND write with ECC.
+- */
+-static int nand_write(struct mtd_info *mtd, loff_t to, size_t len,
+-			  size_t *retlen, const uint8_t *buf)
+-{
+-	struct mtd_oob_ops ops;
+-	int ret;
+-
+-	nand_get_device(mtd, FL_WRITING);
+-	memset(&ops, 0, sizeof(ops));
+-	ops.len = len;
+-	ops.datbuf = (uint8_t *)buf;
+-	ops.mode = MTD_OPS_PLACE_OOB;
+-	ret = nand_do_write_ops(mtd, to, &ops);
+-	*retlen = ops.retlen;
+-	nand_release_device(mtd);
+-	return ret;
+-}
+-
+-/**
+  * nand_do_write_oob - [MTD Interface] NAND write out-of-band
+  * @mtd: MTD device structure
+  * @to: offset to write to
+@@ -5069,8 +5015,6 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	mtd->_erase = nand_erase;
+ 	mtd->_point = NULL;
+ 	mtd->_unpoint = NULL;
+-	mtd->_read = nand_read;
+-	mtd->_write = nand_write;
+ 	mtd->_panic_write = panic_nand_write;
+ 	mtd->_read_oob = nand_read_oob;
+ 	mtd->_write_oob = nand_write_oob;
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index 1a6d0e367b89..dbbc5b6cecc1 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -1448,38 +1448,6 @@ static int onenand_read_oob_nolock(struct mtd_info *mtd, loff_t from,
+ }
+ 
+ /**
+- * onenand_read - [MTD Interface] Read data from flash
+- * @param mtd		MTD device structure
+- * @param from		offset to read from
+- * @param len		number of bytes to read
+- * @param retlen	pointer to variable to store the number of read bytes
+- * @param buf		the databuffer to put data
+- *
+- * Read with ecc
+-*/
+-static int onenand_read(struct mtd_info *mtd, loff_t from, size_t len,
+-	size_t *retlen, u_char *buf)
+-{
+-	struct onenand_chip *this = mtd->priv;
+-	struct mtd_oob_ops ops = {
+-		.len	= len,
+-		.ooblen	= 0,
+-		.datbuf	= buf,
+-		.oobbuf	= NULL,
+-	};
+-	int ret;
+-
+-	onenand_get_device(mtd, FL_READING);
+-	ret = ONENAND_IS_4KB_PAGE(this) ?
+-		onenand_mlc_read_ops_nolock(mtd, from, &ops) :
+-		onenand_read_ops_nolock(mtd, from, &ops);
+-	onenand_release_device(mtd);
+-
+-	*retlen = ops.retlen;
+-	return ret;
+-}
+-
+-/**
+  * onenand_read_oob - [MTD Interface] Read main and/or out-of-band
+  * @param mtd:		MTD device structure
+  * @param from:		offset to read from
+@@ -2129,35 +2097,6 @@ static int onenand_write_oob_nolock(struct mtd_info *mtd, loff_t to,
+ }
+ 
+ /**
+- * onenand_write - [MTD Interface] write buffer to FLASH
+- * @param mtd		MTD device structure
+- * @param to		offset to write to
+- * @param len		number of bytes to write
+- * @param retlen	pointer to variable to store the number of written bytes
+- * @param buf		the data to write
+- *
+- * Write with ECC
+- */
+-static int onenand_write(struct mtd_info *mtd, loff_t to, size_t len,
+-	size_t *retlen, const u_char *buf)
+-{
+-	struct mtd_oob_ops ops = {
+-		.len	= len,
+-		.ooblen	= 0,
+-		.datbuf	= (u_char *) buf,
+-		.oobbuf	= NULL,
+-	};
+-	int ret;
+-
+-	onenand_get_device(mtd, FL_WRITING);
+-	ret = onenand_write_ops_nolock(mtd, to, &ops);
+-	onenand_release_device(mtd);
+-
+-	*retlen = ops.retlen;
+-	return ret;
+-}
+-
+-/**
+  * onenand_write_oob - [MTD Interface] NAND write data and/or out-of-band
+  * @param mtd:		MTD device structure
+  * @param to:		offset to write
+-- 
+2.11.0
