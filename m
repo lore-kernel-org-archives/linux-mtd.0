@@ -1,23 +1,24 @@
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dP5Sx-00023N-Fp
- for linux-mtd@lists.infradead.org; Sun, 25 Jun 2017 11:12:33 +0000
-Received: by mail-lf0-x242.google.com with SMTP id t72so1079531lff.0
- for <linux-mtd@lists.infradead.org>; Sun, 25 Jun 2017 04:12:10 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH] Documentation: ABI: mtd: describe "offset" more precisely
-Date: Sun, 25 Jun 2017 13:11:54 +0200
-Message-Id: <20170625111154.14022-1-zajec5@gmail.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dP93N-0005xq-TH
+ for linux-mtd@lists.infradead.org; Sun, 25 Jun 2017 15:02:23 +0000
+Date: Sun, 25 Jun 2017 17:01:58 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>, David Woodhouse
+ <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, Kyungmin Park <kyungmin.park@samsung.com>
+Subject: Re: [PATCH] mtd: Fallback to ->_read/write_oob() when
+ ->_read/write() is missing
+Message-ID: <20170625170158.0cf82223@bbrezillon>
+In-Reply-To: <20170624221219.703762e1@bbrezillon>
+References: <20170611204255.18622-1-boris.brezillon@free-electrons.com>
+ <20170622212606.GF14148@google.com>
+ <20170624221219.703762e1@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,32 +28,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+Le Sat, 24 Jun 2017 22:12:19 +0200,
+Boris Brezillon <boris.brezillon@free-electrons.com> a =C3=A9crit :
 
-So far Linux supported only two levels of MTD devices so we didn't need
-a very precise description for this sysfs file. With commit
-97519dc52b44a ("mtd: partitions: add support for subpartitions") there
-is support for a tree structure so we should have more precise
-description. Using "parent" and "flash device" makes it more accurate.
+> Le Thu, 22 Jun 2017 14:26:06 -0700,
+> Brian Norris <computersforpeace@gmail.com> a =C3=A9crit :
+>=20
+> > On Sun, Jun 11, 2017 at 10:42:55PM +0200, Boris Brezillon wrote: =20
+> > > Some MTD sublayers/drivers are implementing ->_read/write_oob() and
+> > > providing dummy wrappers for their ->_read/write() implementations.
+> > > Let the core handle this case instead of duplicating the logic.
+> > >=20
+> > > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > > ---
+> > > Note that the goldfish_nand driver (currently in staging) has not been
+> > > updated because some the ops->len !=3D mtd->writesize check done in
+> > > goldfish_nand_read/write_oob() prevents us from using this function as
+> > > a fallback for ->_read/write().
+> > >=20
+> > > This behavior is buggy anyway, because the core expects drivers
+> > > implementing ->_read_oob() to support reading more than ->writesize in
+> > > a single call. Probably something we should fix.   =20
+> >=20
+> > Looks OK to me:
+> >=20
+> > Acked-by: Brian Norris <computersforpeace@gmail.com>
+> >=20
+> > This touches NAND drivers more than core MTD stuff, so feel free to take
+> > it in your branch. =20
+>=20
+> Applied to nand/next.
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
- Documentation/ABI/testing/sysfs-class-mtd | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+It seems that this patch is triggering a NULL pointer exception,
+probably because some code is calling ->_read/write() directly instead
+of using mtd_read/write() wrappers.
 
-diff --git a/Documentation/ABI/testing/sysfs-class-mtd b/Documentation/ABI/testing/sysfs-class-mtd
-index 3b5c3bca9186..f34e592301d1 100644
---- a/Documentation/ABI/testing/sysfs-class-mtd
-+++ b/Documentation/ABI/testing/sysfs-class-mtd
-@@ -229,6 +229,6 @@ KernelVersion:	4.1
- Contact:	linux-mtd@lists.infradead.org
- Description:
- 		For a partition, the offset of that partition from the start
--		of the master device in bytes. This attribute is absent on
--		main devices, so it can be used to distinguish between
--		partitions and devices that aren't partitions.
-+		of the parent (another partition or a flash device) in bytes.
-+		This attribute is absent on flash devices, so it can be used
-+		to distinguish them from partitions.
--- 
-2.11.0
+Removed the from nand/next until I figure out what's happening and come
+up with a better solution: either remove direct ->_read/write() calls or
+implement a default _read/_write() -> _read/write_oob() wrapper instead
+of handling that in the mtd_read/write() function.
