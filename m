@@ -1,21 +1,20 @@
-Received: from esa3.microchip.iphmx.com ([68.232.153.233])
+Received: from mga07.intel.com ([134.134.136.100])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dPTmr-0001Mi-AP
- for linux-mtd@lists.infradead.org; Mon, 26 Jun 2017 13:10:43 +0000
-From: Cyrille Pitchen <cyrille.pitchen@microchip.com>
-To: <marek.vasut@gmail.com>
-CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
- <richard@nod.at>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, Cyrille Pitchen
- <cyrille.pitchen@microchip.com>
-Subject: [PATCH v3 1/2] mtd: st_spi_fsm: remove SPINOR_OP_RDSR2 and use
- SPINOR_OP_RDCR instead
-Date: Mon, 26 Jun 2017 15:09:59 +0200
-Message-ID: <c8c997ad7a678490503006f7103fe4c2320ac477.1498481714.git.cyrille.pitchen@microchip.com>
-In-Reply-To: <cover.1498481714.git.cyrille.pitchen@microchip.com>
-References: <cover.1498481714.git.cyrille.pitchen@microchip.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+ id 1dPWeN-0006AZ-MR
+ for linux-mtd@lists.infradead.org; Mon, 26 Jun 2017 16:14:09 +0000
+From: matthew.gerlach@linux.intel.com
+To: vndao@altera.com, dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
+ cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org, mark.rutland@arm.com,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+ davem@davemloft.net, mchehab@kernel.org
+Cc: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+Subject: [PATCH 1/3] ARM: dts: Bindings for Altera Quadspi Controller Version 2
+Date: Mon, 26 Jun 2017 09:13:37 -0700
+Message-Id: <1498493619-4633-2-git-send-email-matthew.gerlach@linux.intel.com>
+In-Reply-To: <1498493619-4633-1-git-send-email-matthew.gerlach@linux.intel.com>
+References: <1498493619-4633-1-git-send-email-matthew.gerlach@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,64 +24,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The 35h instruction op code has two aliases/macro definitions:
-- SPINOR_OP_RDCR from include/linux/mtd/spi-nor.h
-- SPINOR_OP_RDSR2 from drivers/mtd/devices/serial_flash_cmds.h
+From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
 
-Actually, some manufacturers name the associated internal register Status
-Register 2 whereas other manufacturers name it Configuration Register
-hence the two different macros for the very same instruction op code.
+Device Tree bindings for Version 2 of the Altera Quadspi Controller
+that can be optionally paired with a windowed bridge.
 
-Since the spi-nor.h file is the reference file for all SPI NOR instruction
-op codes, this patch removes the definition of the SPINOR_OP_RDSR2 macro.
-
-Also the SPINOR_OP_RDSR2 macro will be associated to another instruction
-op code in a further patch so we need to avoid a conflict defining this
-macro twice. Indeed the JESD216 rev B specification, defining the SFDP
-tables, also refers to the 3Eh and 3Fh instruction op codes to write/read
-the Status Register 2 on some SPI NOR flash memories, the 35h op code
-still being used to read the Configuration Register/Status Register 2 on
-other memories.
-
-Signed-off-by: Cyrille Pitchen <cyrille.pitchen@microchip.com>
+Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
 ---
- drivers/mtd/devices/serial_flash_cmds.h | 1 -
- drivers/mtd/devices/st_spi_fsm.c        | 4 ++--
- 2 files changed, 2 insertions(+), 3 deletions(-)
+ .../devicetree/bindings/mtd/altera-quadspi-v2.txt  | 37 ++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
 
-diff --git a/drivers/mtd/devices/serial_flash_cmds.h b/drivers/mtd/devices/serial_flash_cmds.h
-index 8b81e15105dd..eba125c9f23f 100644
---- a/drivers/mtd/devices/serial_flash_cmds.h
-+++ b/drivers/mtd/devices/serial_flash_cmds.h
-@@ -13,7 +13,6 @@
- #define _MTD_SERIAL_FLASH_CMDS_H
- 
- /* Generic Flash Commands/OPCODEs */
--#define SPINOR_OP_RDSR2		0x35
- #define SPINOR_OP_WRVCR		0x81
- #define SPINOR_OP_RDVCR		0x85
- 
-diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 804313a33f2b..21afd94cd904 100644
---- a/drivers/mtd/devices/st_spi_fsm.c
-+++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -1445,7 +1445,7 @@ static int stfsm_s25fl_config(struct stfsm *fsm)
- 	}
- 
- 	/* Check status of 'QE' bit, update if required. */
--	stfsm_read_status(fsm, SPINOR_OP_RDSR2, &cr1, 1);
-+	stfsm_read_status(fsm, SPINOR_OP_RDCR, &cr1, 1);
- 	data_pads = ((fsm->stfsm_seq_read.seq_cfg >> 16) & 0x3) + 1;
- 	if (data_pads == 4) {
- 		if (!(cr1 & STFSM_S25FL_CONFIG_QE)) {
-@@ -1490,7 +1490,7 @@ static int stfsm_w25q_config(struct stfsm *fsm)
- 		return ret;
- 
- 	/* Check status of 'QE' bit, update if required. */
--	stfsm_read_status(fsm, SPINOR_OP_RDSR2, &sr2, 1);
-+	stfsm_read_status(fsm, SPINOR_OP_RDCR, &sr2, 1);
- 	data_pads = ((fsm->stfsm_seq_read.seq_cfg >> 16) & 0x3) + 1;
- 	if (data_pads == 4) {
- 		if (!(sr2 & W25Q_STATUS_QE)) {
+diff --git a/Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt b/Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
+new file mode 100644
+index 0000000..8ba63d7
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
+@@ -0,0 +1,37 @@
++* Altera Quad SPI Controller Version 2
++
++Required properties:
++- compatible : Should be "altr,quadspi-v2".
++- reg : Contains at least two entries, and possibly three entries, each of
++	which is a tuple consisting of a physical address and length.
++- reg-names : Should contain the names "avl_csr" and "avl_mem" corresponding
++	      to the control and status registers and qspi memory, respectively.
++
++
++The Altera Quad SPI Controller Version 2 can be paired with a windowed bridge
++in order to reduce the footprint of the memory interface.  When a windowed
++bridge is used, reads and writes of data must be 32 bits wide.
++
++Optional properties:
++- reg-names : Should contain the name "avl_window", if the windowed bridge
++	      is used.  This name corresponds to the register space that
++	      controls the window.
++- window-size : The size of the window which must be an even power of 2.
++- read-bit-reverse : A boolean indicating the data read from the flash should
++		     be bit reversed on a byte by byte basis before being
++		     delivered to the MTD layer.
++- write-bit-reverse : A boolean indicating the data written to the flash should
++		      be bit reversed on a byte by byte basis.
++
++Example:
++
++qspi: spi@a0001000 {
++	compatible = "altr,quadspi-v2";
++	reg = <0xa0001000 0x40>, <0xb0000000 0x4000000>;
++	reg-names = "avl_csr", "avl_mem";
++
++	flash@0 {
++		reg = <0>;
++		label = "FPGA Image";
++	};
++};
 -- 
 2.7.4
