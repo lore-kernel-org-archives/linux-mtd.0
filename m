@@ -1,6 +1,6 @@
 Received: from mga07.intel.com ([134.134.136.100])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dPWeN-0006AZ-MR
+ id 1dPWeN-0006AW-MS
  for linux-mtd@lists.infradead.org; Mon, 26 Jun 2017 16:14:09 +0000
 From: matthew.gerlach@linux.intel.com
 To: vndao@altera.com, dwmw2@infradead.org, computersforpeace@gmail.com,
@@ -10,11 +10,9 @@ To: vndao@altera.com, dwmw2@infradead.org, computersforpeace@gmail.com,
  linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
  davem@davemloft.net, mchehab@kernel.org
 Cc: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-Subject: [PATCH 1/3] ARM: dts: Bindings for Altera Quadspi Controller Version 2
-Date: Mon, 26 Jun 2017 09:13:37 -0700
-Message-Id: <1498493619-4633-2-git-send-email-matthew.gerlach@linux.intel.com>
-In-Reply-To: <1498493619-4633-1-git-send-email-matthew.gerlach@linux.intel.com>
-References: <1498493619-4633-1-git-send-email-matthew.gerlach@linux.intel.com>
+Subject: [PATCH 0/3] Altera Quadspi Controller Version 2
+Date: Mon, 26 Jun 2017 09:13:36 -0700
+Message-Id: <1498493619-4633-1-git-send-email-matthew.gerlach@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,57 +24,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
 
-Device Tree bindings for Version 2 of the Altera Quadspi Controller
-that can be optionally paired with a windowed bridge.
+Hi Everyone,
 
-Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
----
- .../devicetree/bindings/mtd/altera-quadspi-v2.txt  | 37 ++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+This patch set adds support for Version 2 of the Altera
+Quadspi Controller.  Version 1 of the Altera Quadspi
+Controller only supported 1 byte of flash id instead of
+the 3 bytes required for a JEDEC ID.  As such the driver
+for Version 1 was rejected.  Please see 
+https://patchwork.kernel.org/patch/7025681
+
+Patch 1: add device tree bindings document for platform driver
+
+Patch 2: add core code for driver
+
+Patch 3: add platform driver
+
+Matthew Gerlach (3):
+  ARM: dts: Bindings for Altera Quadspi Controller Version 2
+  mtd: spi-nor: core code for the Altera Quadspi Flash Controller v2
+  mtd: spi-nor: Altera Quadspi Flash Controller v2 Platform driver
+
+ .../devicetree/bindings/mtd/altera-quadspi-v2.txt  |  37 ++
+ MAINTAINERS                                        |   8 +
+ drivers/mtd/spi-nor/Kconfig                        |  10 +
+ drivers/mtd/spi-nor/Makefile                       |   5 +-
+ drivers/mtd/spi-nor/altera-quadspi-platform.c      | 137 +++++
+ drivers/mtd/spi-nor/altera-quadspi.c               | 676 +++++++++++++++++++++
+ include/linux/mtd/altera-quadspi.h                 |  28 +
+ 7 files changed, 900 insertions(+), 1 deletion(-)
  create mode 100644 Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
+ create mode 100644 drivers/mtd/spi-nor/altera-quadspi-platform.c
+ create mode 100644 drivers/mtd/spi-nor/altera-quadspi.c
+ create mode 100644 include/linux/mtd/altera-quadspi.h
 
-diff --git a/Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt b/Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
-new file mode 100644
-index 0000000..8ba63d7
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
-@@ -0,0 +1,37 @@
-+* Altera Quad SPI Controller Version 2
-+
-+Required properties:
-+- compatible : Should be "altr,quadspi-v2".
-+- reg : Contains at least two entries, and possibly three entries, each of
-+	which is a tuple consisting of a physical address and length.
-+- reg-names : Should contain the names "avl_csr" and "avl_mem" corresponding
-+	      to the control and status registers and qspi memory, respectively.
-+
-+
-+The Altera Quad SPI Controller Version 2 can be paired with a windowed bridge
-+in order to reduce the footprint of the memory interface.  When a windowed
-+bridge is used, reads and writes of data must be 32 bits wide.
-+
-+Optional properties:
-+- reg-names : Should contain the name "avl_window", if the windowed bridge
-+	      is used.  This name corresponds to the register space that
-+	      controls the window.
-+- window-size : The size of the window which must be an even power of 2.
-+- read-bit-reverse : A boolean indicating the data read from the flash should
-+		     be bit reversed on a byte by byte basis before being
-+		     delivered to the MTD layer.
-+- write-bit-reverse : A boolean indicating the data written to the flash should
-+		      be bit reversed on a byte by byte basis.
-+
-+Example:
-+
-+qspi: spi@a0001000 {
-+	compatible = "altr,quadspi-v2";
-+	reg = <0xa0001000 0x40>, <0xb0000000 0x4000000>;
-+	reg-names = "avl_csr", "avl_mem";
-+
-+	flash@0 {
-+		reg = <0>;
-+		label = "FPGA Image";
-+	};
-+};
 -- 
 2.7.4
