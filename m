@@ -1,31 +1,25 @@
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dPuke-0008D9-Ka
- for linux-mtd@lists.infradead.org; Tue, 27 Jun 2017 17:58:14 +0000
-Received: by mail-wm0-x242.google.com with SMTP id p204so2372133wmg.1
- for <linux-mtd@lists.infradead.org>; Tue, 27 Jun 2017 10:57:51 -0700 (PDT)
-Subject: Re: [PATCH 2/3] mtd: spi-nor: core code for the Altera Quadspi Flash
- Controller v2
-To: matthew.gerlach@linux.intel.com
-References: <1498493619-4633-1-git-send-email-matthew.gerlach@linux.intel.com>
- <1498493619-4633-3-git-send-email-matthew.gerlach@linux.intel.com>
- <852b819d-ea7a-4854-cae1-3857cf92930d@gmail.com>
- <alpine.DEB.2.20.1706270737120.8058@mgerlach-VirtualBox>
- <0cb464ef-eeb8-ebc9-fde9-b6d42bf03877@gmail.com>
- <alpine.DEB.2.20.1706271019140.8058@mgerlach-VirtualBox>
-Cc: vndao@altera.com, dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org, mark.rutland@arm.com,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
- davem@davemloft.net, mchehab@kernel.org
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <9ca626e3-fc80-2b50-85aa-5db102dc9b7f@gmail.com>
-Date: Tue, 27 Jun 2017 19:55:36 +0200
+ id 1dPvVW-00044j-4s
+ for linux-mtd@lists.infradead.org; Tue, 27 Jun 2017 18:46:40 +0000
+Received: by mail-pf0-x241.google.com with SMTP id d5so5822720pfe.1
+ for <linux-mtd@lists.infradead.org>; Tue, 27 Jun 2017 11:46:17 -0700 (PDT)
+Date: Tue, 27 Jun 2017 11:46:14 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, Robert Jarzmik <robert.jarzmik@free.fr>,
+ Kyungmin Park <kyungmin.park@samsung.com>
+Subject: Re: [PATCH v2 1/2] mtd: Stop directly calling master ->_xxx() hooks
+ from mtdpart code
+Message-ID: <20170627184614.GC55942@google.com>
+References: <20170625160113.11860-1-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.20.1706271019140.8058@mgerlach-VirtualBox>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170625160113.11860-1-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,52 +29,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/27/2017 07:26 PM, matthew.gerlach@linux.intel.com wrote:
+On Sun, Jun 25, 2017 at 06:01:12PM +0200, Boris Brezillon wrote:
+> The MTD layer provides several wrappers around mtd->_xxx() hooks. Call
+> these wrappers instead of directly dereferencing the associated ->_xxx()
+> pointer.
+> 
+> This change has been motivated by another rework letting the core
+> handle the case where ->_read/write_oob() are implemented but not
+> ->_read/write(). In this case, we want mtd_read/write() to fall back to
+> ->_read/write_oob() when ->_read/write() are NULL. The problem is,
+> mtdpart is directly calling the ->_xxx() instead of using the wrappers,
+> thus leading to a NULL pointer exception.
+> 
+> Even though we only need to do the change for part_read/write(), going
+> through those wrappers for all kind of part -> master operation
+> propagation is a good thing, because other wrappers might become
+> smarter over time, and the duplicated check overhead (parameters will
+> be checked at the partition and master level instead of only at the
+> partition level) should be negligible.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+> Changes since v1:
+> - new patch needed to fix a NULL pointer dereference BUG
+
+I think I like this patch on the whole. A few notes below.
+
+> ---
+>  drivers/mtd/mtdpart.c | 71 ++++++++++++++++++++++-----------------------------
+>  1 file changed, 31 insertions(+), 40 deletions(-)
+> 
+> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+> index ea5e5307f667..11486ec6cab0 100644
+> --- a/drivers/mtd/mtdpart.c
+> +++ b/drivers/mtd/mtdpart.c
+> @@ -68,8 +68,7 @@ static int part_read(struct mtd_info *mtd, loff_t from, size_t len,
+>  	int res;
+>  
+>  	stats = part->master->ecc_stats;
+> -	res = part->master->_read(part->master, from + part->offset, len,
+> -				  retlen, buf);
+> +	res = mtd_read(part->master, from + part->offset, len, retlen, buf);
+>  	if (unlikely(mtd_is_eccerr(res)))
+>  		mtd->ecc_stats.failed +=
+>  			part->master->ecc_stats.failed - stats.failed;
+
+The parent-to-child ECC stat handling is different here than it is
+below, in part_read_oob().
+
+...
+
+> @@ -132,7 +130,7 @@ static int part_read_oob(struct mtd_info *mtd, loff_t from,
+>  			return -EINVAL;
+>  	}
+>  
+> -	res = part->master->_read_oob(part->master, from + part->offset, ops);
+> +	res = mtd_read_oob(part->master, from + part->offset, ops);
+>  	if (unlikely(res)) {
+>  		if (mtd_is_bitflip(res))
+>  			mtd->ecc_stats.corrected++;
+
+Notice how we only count a single increment here.
+
+That seems wrong, doesn't it? But then, do we guarantee that
+->_read_oob() implementations follow the same stat recording guarantees
+that ->_read() implementations do (or should)? Might double check that
+before trying to fiddle here any more than you are.
+
+I'm not sure if that affects your next patch at all. It's not a
+criticism of this patch either, but I just noticed it when reviewing.
 
 [...]
 
->>>>> +#ifndef __ALTERA_QUADSPI_H
->>>>> +#define __ALTERA_QUADSPI_H
->>>>> +
->>>>> +#include <linux/device.h>
->>>>> +
->>>>> +#define ALTERA_QUADSPI_FL_BITREV_READ BIT(0)
->>>>> +#define ALTERA_QUADSPI_FL_BITREV_WRITE BIT(1)
->>>>> +
->>>>> +#define ALTERA_QUADSPI_MAX_NUM_FLASH_CHIP 3
->>>>> +
->>>>> +int altera_quadspi_create(struct device *dev, void __iomem *csr_base,
->>>>> +              void __iomem *data_base, void __iomem *window_reg,
->>>>> +              size_t window_size, u32 flags);
->>>>> +
->>>>> +int altera_qspi_add_bank(struct device *dev,
->>>>> +             u32 bank, struct device_node *np);
->>>>> +
->>>>> +int altera_quadspi_remove_banks(struct device *dev);
->>>>
->>>> Why is this header needed at all ?
->>>
->>> This header is needed because of the very different ways
->>> FPGAs can be used with a processor running Linux.  In the case of a
->>> soft processor in the FPGA or an ARM connected to a FPGA, this header
->>> is not necessary because device trees are used to probe the driver.
->>> However, if the FPGA is on a PCIe card connected to an x86, device trees
->>> are not generally used, and the pcie driver must enumerate the
->>> "sub-driver".
->>
->> But we don't support that later part, do we ?
-> 
-> There is currently v2 patch set for the intel-fpga PCIe driver being
-> reviewed where I am adding support for version 2 of the Altera Quadspi
-> controller.
+I was also wondering whether this patch couldn't go a step further, and
+remove conditions like this:
 
-It'd be real nice to mention that in the cover letter with a link to
-that patchset , otherwise it's real hard to understand why you did this.
+	if (parent->_panic_write)
+		slave->mtd._panic_write = part_panic_write; 
 
-> This technique of separating core driver code from platform/device tree
-> code has been reviewed and accepted for the Altera Partial
-> Reconfiguration IP, Altera Freeze Bridge, and the fpga region.
+Since part_panic_write() should call mtd_panic_write() on the parent
+(master), which would do its own -EOPNOTSUPP check. But then I suppose
+that might invert the order of the checks, causing (for example) -EINVAL
+for out-of-bounds panic write instead of -EOPNOTSUPP. So maybe that's
+better left alone.
 
--- 
-Best regards,
-Marek Vasut
+Brian
