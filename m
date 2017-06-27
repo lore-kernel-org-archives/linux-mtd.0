@@ -1,8 +1,8 @@
-Received: from mga07.intel.com ([134.134.136.100])
+Received: from mga06.intel.com ([134.134.136.31])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dPuGR-0005h5-6x
- for linux-mtd@lists.infradead.org; Tue, 27 Jun 2017 17:27:00 +0000
-Date: Tue, 27 Jun 2017 10:26:35 -0700 (PDT)
+ id 1dPuSC-0005GB-4g
+ for linux-mtd@lists.infradead.org; Tue, 27 Jun 2017 17:39:09 +0000
+Date: Tue, 27 Jun 2017 10:38:44 -0700 (PDT)
 From: matthew.gerlach@linux.intel.com
 To: Marek Vasut <marek.vasut@gmail.com>
 cc: vndao@altera.com, dwmw2@infradead.org, computersforpeace@gmail.com,
@@ -11,15 +11,15 @@ cc: vndao@altera.com, dwmw2@infradead.org, computersforpeace@gmail.com,
  linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
  davem@davemloft.net, mchehab@kernel.org
-Subject: Re: [PATCH 2/3] mtd: spi-nor: core code for the Altera Quadspi Flash
- Controller v2
-In-Reply-To: <0cb464ef-eeb8-ebc9-fde9-b6d42bf03877@gmail.com>
-Message-ID: <alpine.DEB.2.20.1706271019140.8058@mgerlach-VirtualBox>
+Subject: Re: [PATCH 3/3] mtd: spi-nor: Altera Quadspi Flash Controller v2
+ Platform driver
+In-Reply-To: <5f0e2ddd-d329-cb3d-01bc-c101247281a7@gmail.com>
+Message-ID: <alpine.DEB.2.20.1706271028260.8058@mgerlach-VirtualBox>
 References: <1498493619-4633-1-git-send-email-matthew.gerlach@linux.intel.com>
- <1498493619-4633-3-git-send-email-matthew.gerlach@linux.intel.com>
- <852b819d-ea7a-4854-cae1-3857cf92930d@gmail.com>
- <alpine.DEB.2.20.1706270737120.8058@mgerlach-VirtualBox>
- <0cb464ef-eeb8-ebc9-fde9-b6d42bf03877@gmail.com>
+ <1498493619-4633-4-git-send-email-matthew.gerlach@linux.intel.com>
+ <2ac33989-5665-33e0-c6f0-6791c8e46b0d@gmail.com>
+ <alpine.DEB.2.20.1706270800240.8058@mgerlach-VirtualBox>
+ <5f0e2ddd-d329-cb3d-01bc-c101247281a7@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII; format=flowed
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -35,132 +35,56 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 On Tue, 27 Jun 2017, Marek Vasut wrote:
 
-> On 06/27/2017 04:57 PM, matthew.gerlach@linux.intel.com wrote:
->
-> [...]
->
->>>> +static int altera_quadspi_read_reg(struct spi_nor *nor, u8 opcode,
->>>> u8 *val,
->>>> +                   int len)
->>>> +{
->>>> +    struct altera_quadspi_flash *flash = nor->priv;
->>>> +    struct altera_quadspi *q = flash->q;
->>>> +    u32 data = 0;
->>>> +
->>>> +    memset(val, 0, len);
->>>> +
->>>> +    altera_quadspi_chip_select(q, flash->bank);
->>>> +
->>>> +    switch (opcode) {
->>>> +    case SPINOR_OP_RDSR:
->>>> +        data = alt_qspi_readl(q->csr_base, QUADSPI_SR_REG);
->>>> +        dev_dbg(q->dev, "%s RDSR 0x%x\n", __func__, data);
->>>> +        *val = (u8)data & QUADSPI_SR_MASK;
->>>> +        break;
->>>> +    case SPINOR_OP_RDID:
->>>> +        if (q->opcode_id == EPCS_OPCODE_ID)
->>>> +            data = alt_qspi_readl(q->csr_base, QUADSPI_SID_REG);
->>>> +        else
->>>> +            data = alt_qspi_readl(q->csr_base, QUADSPI_RDID_REG);
->>>> +
->>>> +        *((u32 *)val) = data;
->>>
->>> What are these awful casts ?
+> On 06/27/2017 05:15 PM, matthew.gerlach@linux.intel.com wrote:
 >>
->> This component requires reading the registers as 32 bit quantities. So it
->> seemed the right thing to do to me.
->
-> Does this handle endianness well ?
-
-Good point.  This would break horribly on a big endian cpu.
-
->
->>>> +        break;
->>>> +    case SPINOR_OP_RDFSR:
->>>> +        data = alt_qspi_readl(q->csr_base, QUADSPI_FLAG_STATUS_REG);
->>>> +        dev_dbg(q->dev, "%s RDFSR 0x%x\n", __func__, data);
->>>> +        *val = (u8)(data & 0xff);
->>>> +        break;
->>>> +    default:
->>>> +        dev_dbg(q->dev, "%s UNHANDLED read_reg 0x%x\n",
->>>> +            __func__, opcode);
->>>> +        *val = 0;
->>>> +        break;
->>>> +    }
->>>> +    return 0;
->>>> +}
->
-> [...]
->
->>>> +#define WINDOW_ALIGN 4
->>>> +#define WINDOW_MASK (WINDOW_ALIGN - 1)
->>>
->>> What are these undocumented macros in the middle of the code ?
 >>
->> The bindings document states that when a windowed bridge
->> is used, all accesses must be 32 bit.  I can comment/rename
->> and put at the top.
->
-> Yes please.
->
-> [...]
->
->>>> diff --git a/include/linux/mtd/altera-quadspi.h
->>>> b/include/linux/mtd/altera-quadspi.h
->>>> new file mode 100644
->>>> index 0000000..58f31ee
->>>> --- /dev/null
->>>> +++ b/include/linux/mtd/altera-quadspi.h
->>>> @@ -0,0 +1,28 @@
->>>> +/*
->>>> + *
->>>> + * Copyright 2017 Intel Corporation, Inc.
->>>> + *
->>>> + * This program is free software; you can redistribute it and/or modify
->>>> + * it under the terms of the GNU General Public License as published by
->>>> + * the Free Software Foundation; either version 2 of the License, or
->>>> + * (at your option) any later version.
->>>> + */
->>>> +#ifndef __ALTERA_QUADSPI_H
->>>> +#define __ALTERA_QUADSPI_H
->>>> +
->>>> +#include <linux/device.h>
->>>> +
->>>> +#define ALTERA_QUADSPI_FL_BITREV_READ BIT(0)
->>>> +#define ALTERA_QUADSPI_FL_BITREV_WRITE BIT(1)
->>>> +
->>>> +#define ALTERA_QUADSPI_MAX_NUM_FLASH_CHIP 3
->>>> +
->>>> +int altera_quadspi_create(struct device *dev, void __iomem *csr_base,
->>>> +              void __iomem *data_base, void __iomem *window_reg,
->>>> +              size_t window_size, u32 flags);
->>>> +
->>>> +int altera_qspi_add_bank(struct device *dev,
->>>> +             u32 bank, struct device_node *np);
->>>> +
->>>> +int altera_quadspi_remove_banks(struct device *dev);
->>>
->>> Why is this header needed at all ?
+>> On Tue, 27 Jun 2017, Marek Vasut wrote:
 >>
->> This header is needed because of the very different ways
->> FPGAs can be used with a processor running Linux.  In the case of a
->> soft processor in the FPGA or an ARM connected to a FPGA, this header
->> is not necessary because device trees are used to probe the driver.
->> However, if the FPGA is on a PCIe card connected to an x86, device trees
->> are not generally used, and the pcie driver must enumerate the
->> "sub-driver".
+>>> On 06/26/2017 06:13 PM, matthew.gerlach@linux.intel.com wrote:
+>>>> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+>>>
+>>> Just wrap it into the Altera QSPI driver , no need for separate platform
+>>> driver IMO.
+>>
+>> Hi Marek,
+>>
+>> I answered this question when you asked why the header file was
+>> necessary, but I think further discussion could be helpful, since this
+>> problem is becoming more prevelent.  The Altera Quadspi component is a
+>> soft IP in a
+>> FPGA, and the processor using the component may or may not have device
+>> tree support compiled into the Linux kernel.  Since device tree support
+>> may or may not be available, the device tree specific code must be
+>> separated
+>> from the core driver code.
 >
-> But we don't support that later part, do we ?
+> I see, that's fine, although there is no PCIe or other support in this
+> submission. Is that planned ?
 
-There is currently v2 patch set for the intel-fpga PCIe driver being 
-reviewed where I am adding support for version 2 of the Altera Quadspi 
-controller.
-
-This technique of separating core driver code from platform/device tree 
-code has been reviewed and accepted for the Altera Partial Reconfiguration 
-IP, Altera Freeze Bridge, and the fpga region.
+You probably would not see a PCIe driver for a card with a FPGA that would 
+only have the Altera Quadspi component on it.  Usually a FPGA has several 
+components, each requiring their own driver which are considered 
+sub-drivers of the PCIe driver.  I will be adding Altera Quadspi support 
+to the Intel-FPGA PCIe driver that is currently under review.  We have 
+also seen people use the Altera Quadspi with a NIOS-II soft processor, and 
+I expect someone would want to use the component with ARM SOCFPGAs.
 
 Matthew Gerlach
+
+>
+>> One can certainly make the case, that device tree support could/should
+>> be available everywhere, but the current reality is most x86 Linux
+>> kernel configurations do not include device tree support.
+>>
+>> For the record, I believe device trees, and more specifically device
+>> tree overlays, are the best way for Linux to use FPGAs, but I have to
+>> deal with the current realities.
+>>
+>> Thanks again for all the great feedback.
+>>
+>> Matthew Gerlach
+>
+> [...]
 >
 > -- 
 > Best regards,
