@@ -1,31 +1,26 @@
-Received: from 9.mo173.mail-out.ovh.net ([46.105.72.44])
+Received: from mail-it0-x22d.google.com ([2607:f8b0:4001:c0b::22d])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dPyfE-0008UL-M4
- for linux-mtd@lists.infradead.org; Tue, 27 Jun 2017 22:08:54 +0000
-Received: from player739.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo173.mail-out.ovh.net (Postfix) with ESMTP id D4CAB5AF08
- for <linux-mtd@lists.infradead.org>; Wed, 28 Jun 2017 00:08:25 +0200 (CEST)
-Subject: Re: [PATCH] mtd: spi-nor: cqspi: remove duplicate const
-To: Marek Vasut <marek.vasut@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20170627153508.1329697-1-arnd@arndb.de>
- <77950900-a78b-b5b7-5baf-1df7075fc6d3@gmail.com>
- <f5b3de86-ff3d-7d4d-65b0-83b45079461f@wedev4u.fr>
- <8fec019c-0e8f-b9d6-3554-d88f6735460c@gmail.com>
- <6956fba6-ab14-fc53-1da2-c80df0adf85a@wedev4u.fr>
- <819ac96e-0740-5855-5896-df2ac0242d0b@gmail.com>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <7e54bc24-45a0-fb70-8bee-a7de6b6aae16@wedev4u.fr>
-Date: Wed, 28 Jun 2017 00:08:16 +0200
+ id 1dQ0DA-0002wg-R4
+ for linux-mtd@lists.infradead.org; Tue, 27 Jun 2017 23:48:02 +0000
+Received: by mail-it0-x22d.google.com with SMTP id b205so24771216itg.1
+ for <linux-mtd@lists.infradead.org>; Tue, 27 Jun 2017 16:47:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <819ac96e-0740-5855-5896-df2ac0242d0b@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Sender: keescook@google.com
+In-Reply-To: <1493928654-18768-1-git-send-email-Julia.Lawall@lip6.fr>
+References: <1493928654-18768-1-git-send-email-Julia.Lawall@lip6.fr>
+From: Kees Cook <keescook@chromium.org>
+Date: Tue, 27 Jun 2017 16:47:37 -0700
+Message-ID: <CAGXu5jK+oz7SoBKmHDjUpmZ96=keiou+75WK2or37Z8RL9jLxA@mail.gmail.com>
+Subject: Re: [PATCH 0/9] Drop unnecessary static
+To: Julia Lawall <Julia.Lawall@lip6.fr>
+Cc: Linux PM list <linux-pm@vger.kernel.org>, kernel-janitors@vger.kernel.org,
+ Linux mtd <linux-mtd@lists.infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ drbd-dev@lists.linbit.com, linux-omap@vger.kernel.org,
+ Hartmut Knaack <knaack.h@gmx.de>, Lars-Peter Clausen <lars@metafoo.de>,
+ Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+ linux-input <linux-input@vger.kernel.org>, linux-iio@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,88 +30,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 27/06/2017 à 22:53, Marek Vasut a écrit :
-> On 06/27/2017 10:21 PM, Cyrille Pitchen wrote:
->> Le 27/06/2017 à 21:51, Marek Vasut a écrit :
->>> On 06/27/2017 09:48 PM, Cyrille Pitchen wrote:
->>>> Le 27/06/2017 à 18:11, Marek Vasut a écrit :
->>>>> On 06/27/2017 05:34 PM, Arnd Bergmann wrote:
->>>>>> The variable was already marked 'const' before the previous
->>>>>> patch, but the qualifier was in an unusual place, and now the
->>>>>> extra 'const' causes a harmless warning:
->>>>>>
->>>>>> drivers/mtd/spi-nor/cadence-quadspi.c:1286:34: error: duplicate 'const' declaration specifier [-Werror=duplicate-decl-specifier]
->>>>>>
->>>>>> This removes the other 'const' instead.
->>>>>
->>>>> Isn't that const array const elements , thus two consts ?
->>>>> IMO the original code is correct.
->>>>
->>>> Indeed the 2 'const' don't have the same meaning so the original code
->>>> may be correct but with an array like cqspi_dt_ids[] we can't write
->>>> "cqspi_dt_ids = (const struct of_device_id *)<right value>;" anyway.
->>>
->>> Not sure I understand what you're trying to say here.
->>>
->>
->> Just that once an array like cqspi_dt_ids[] has been defined, you can
->> never assign it a new value later:
->>
->> cqspi_dt_ids = <new value>; /* that doesn't work */
->>
->> For this specific point, an array behaves like a constant pointer (but
->> otherwise I agree that arrays and constant pointers are not the same
->> things). So I guess the 2nd 'const' could be considered as implicit :)
-> 
-> I had to think about this a little and I think what you're getting at is
-> something slightly different.
+On Thu, May 4, 2017 at 1:10 PM, Julia Lawall <Julia.Lawall@lip6.fr> wrote:
+> These patches fix cases where there is a static on a local variable, but
+> the variable is either first initialized or never used, on every possible
+> execution path through the function.  The static has no benefit, and
+> dropping it reduces the code size.
+>
+> ---
+>
+>  drivers/block/drbd/drbd_nl.c            |    2 +-
+>  drivers/clocksource/timer-fttmr010.c    |    2 +-
+>  drivers/iio/accel/hid-sensor-accel-3d.c |    2 +-
+>  drivers/mfd/max8925-i2c.c               |    2 +-
+>  drivers/mfd/twl4030-irq.c               |    2 +-
+>  drivers/mtd/chips/cfi_cmdset_0020.c     |    2 +-
+>  drivers/mtd/maps/physmap_of_gemini.c    |    2 +-
+>  drivers/power/supply/axp20x_usb_power.c |    2 +-
+>  drivers/regulator/palmas-regulator.c    |    2 +-
+>  9 files changed, 9 insertions(+), 9 deletions(-)
 
-Indeed, you're right, I've misunderstood the 2nd 'const' ;)
+It looks like most of these were taken. I pinged the other three. Thanks!
 
-So this time if I understand correctly, patch f993c123b461 was actually
-useless since the elements of the array were already constant before
-that patch, the syntax "Type const array[] = {...};" being equivalent to
-"const Type array[] = {...};"
+-Kees
 
-Anyway, the issue is fixed :)
-
-> 
-> IIUC if this was array of pointers (which it is not), you'd need this
-> const Type *const name[] , but since this is array of Type , you can do
-> with const Type name[] and the whole thing is implicitly const.
-> 
-> But in that case:
-> Acked-by: Marek Vasut <marek.vasut@gmail.com>
-> 
->>>> So I think the 2nd 'const' is useless here then if this patch removes a
->>>> warning, let's apply it, right?
->>>>
->>>>>
->>>>>> Fixes: f993c123b461 ("mtd: spi-nor: cqspi: make of_device_ids const")
->>>>>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->>>>>> ---
->>>>>>  drivers/mtd/spi-nor/cadence-quadspi.c | 2 +-
->>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>>
->>>>>> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
->>>>>> index d315c326e72f..53c7d8e0327a 100644
->>>>>> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
->>>>>> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
->>>>>> @@ -1283,7 +1283,7 @@ static const struct dev_pm_ops cqspi__dev_pm_ops = {
->>>>>>  #define CQSPI_DEV_PM_OPS	NULL
->>>>>>  #endif
->>>>>>  
->>>>>> -static const struct of_device_id const cqspi_dt_ids[] = {
->>>>>> +static const struct of_device_id cqspi_dt_ids[] = {
->>>>>>  	{.compatible = "cdns,qspi-nor",},
->>>>>>  	{ /* end of table */ }
->>>>>>  };
->>>>>>
->>>>>
->>>>>
->>>>
->>>
->>>
->>
-> 
-> 
+-- 
+Kees Cook
+Pixel Security
