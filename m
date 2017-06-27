@@ -1,20 +1,20 @@
-Received: from mail-oi0-x22d.google.com ([2607:f8b0:4003:c06::22d])
+Received: from mx.eurodcs.com ([89.110.144.168])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dPoqx-0003Fk-Ra
- for linux-mtd@lists.infradead.org; Tue, 27 Jun 2017 11:40:21 +0000
-Received: by mail-oi0-x22d.google.com with SMTP id c189so15726496oia.2
- for <linux-mtd@lists.infradead.org>; Tue, 27 Jun 2017 04:39:59 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <AE0F02A50174E945B94BE6AC0B7199D81A593D0E@GOEMAIL-Server2.goerlitz.int>
+ id 1dPqff-00039w-Fp
+ for linux-mtd@lists.infradead.org; Tue, 27 Jun 2017 13:36:49 +0000
+From: Stelling Carsten <Carsten.Stelling@goerlitz.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: AW: UBI bitrot checking and scrubbing
+Date: Tue, 27 Jun 2017 13:36:21 +0000
+Message-ID: <AE0F02A50174E945B94BE6AC0B7199D81A593EBD@GOEMAIL-Server2.goerlitz.int>
 References: <AE0F02A50174E945B94BE6AC0B7199D81A593D0E@GOEMAIL-Server2.goerlitz.int>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Tue, 27 Jun 2017 13:39:57 +0200
-Message-ID: <CAFLxGvwa9psUt-Xy2R5Whwc+oF46USdMDekKqGWPEavb4d4DCg@mail.gmail.com>
-Subject: Re: UBI bitrot checking and scrubbing
-To: Stelling Carsten <Carsten.Stelling@goerlitz.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+ <CAFLxGvwa9psUt-Xy2R5Whwc+oF46USdMDekKqGWPEavb4d4DCg@mail.gmail.com>
+In-Reply-To: <CAFLxGvwa9psUt-Xy2R5Whwc+oF46USdMDekKqGWPEavb4d4DCg@mail.gmail.com>
+Content-Language: de-DE
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Carsten,
-
-On Tue, Jun 27, 2017 at 12:59 PM, Stelling Carsten
-<Carsten.Stelling@goerlitz.com> wrote:
-> Hi,
->
-> I found Richard=E2=80=99s patches http://lists.infradead.org/pipermail/li=
-nux-mtd/2015-April/058677.html or
-> http://lists.infradead.org/pipermail/linux-mtd/2015-November/063122.html,=
- but can't identify any
-> of the code in newer kernel versions (e.g. 4.9 or 4.11).
-> I wonder, if ubihealthd http://lists.infradead.org/pipermail/linux-mtd/20=
-15-November/063128.html
-> was never released with mtd-utils (actually 1.5.2). Possibly, I have miss=
-ed some information on
-> this topic.
-> Is there actually a comparable mechanism in UBI, I haven=E2=80=99t found =
-yet?
-> Like wear levelling, reading and scrubbing (if necessary) *all* PEB=E2=80=
-=99s from time to time is an
-> essential task to ensure durability of information. Especially, for PEB=
-=E2=80=99s which are not accessed
-> frequently. With Fastmap enabled, one can't rely on cyclic reboots, becau=
-se not all UBI
-> VID/EC headers are read at boot time.
-> Regarding bitrot checking, a lot of effort was made by several contributo=
-rs, but I can't find
-> their work in mainline kernel driver code. Have I overlooked something?
-> Any hints or suggestions are greatly appreciated.
-
-Since the MLC topic kind of faded away I had no chance to work on the
-bitrot stuff.
-But you are right we should revive ubihealthd and the needed kernel
-interface because for Fastmap
-this is a topic.
-
-Would you volunteer to forward port the patches?
-
---=20
-Thanks,
-//richard
+SGkgUmljaGFyZCwNCg0KPiBCdXQgeW91IGFyZSByaWdodCB3ZSBzaG91bGQgcmV2aXZlIHViaWhl
+YWx0aGQgYW5kIHRoZSBuZWVkZWQga2VybmVsDQo+IGludGVyZmFjZSBiZWNhdXNlIGZvciBGYXN0
+bWFwDQo+IHRoaXMgaXMgYSB0b3BpYy4NCkkgdGhpbmsgaXQncyBhIHRvcGljIGZvciBhbGwgZGV2
+aWNlcyB3aXRoIG9yIHdpdGhvdXQgRmFzdG1hcCBlbmFibGVkLCBidXQgcmFyZWx5DQpwb3dlcmVk
+IG9mZiBhbmQgb24sIG9yIHJlYm9vdGVkLiBGb3IgU0xDIE5BTkQsIGRhdGEgcmV0ZW50aW9uIGlz
+IHNwZWNpZmllZA0Kd2l0aCA1IHRvIDEwIHllYXJzLCBkZXBlbmRlbnQgb24gdHlwZSBhbmQgbWFu
+dWZhY3R1cmVyLiBCdXQgZGF0YSByZXRlbnRpb24NCnRpbWUgZGVncmFkZXMgd2l0aCB0ZW1wZXJh
+dHVyZSBhbmQgdGhlIG51bWJlciBvZiBQL0UgY3ljbGVzLiBSZWFkIGFuZCB3cml0ZQ0KZGlzdHVy
+YmFuY2UgaXMgYW5vdGhlciBpbmZsdWVuY2luZyB2YXJpYWJsZSwgd2hpY2ggbXVzdCBiZSB0YWtl
+biBpbnRvIGFjY291bnQuDQpUaGVyZWZvcmUsIGl0IGlzIG9ubHkgYSBtYXR0ZXIgb2YgdGltZSwg
+d2hlbiBhY2N1bXVsYXRlZCBiaXRmbGlwcyB3aXRoaW4gYSBwYWdlDQpjYW5ub3QgYmUgY29ycmVj
+dGVkIGJ5IHRoZSBFQ0MuIE1vc3Qgb2Z0ZW4sIHRoZXNlIGFjY3VtdWxhdGlvbiBvZiBiaXRmbGlw
+cyBpcw0Kbm90IGRldGVjdGVkIHdoaWxlIHRoZSBkZXZpY2UgaXMgb3BlcmF0aW5nLCBiZWNhdXNl
+IGV4ZWN1dGFibGUgY29kZSB3YXMgcmVhZA0KZnJvbSBOQU5ELCBjb3BpZWQgdG8gUkFNIGFuZCBl
+eGVjdXRlZCB0aGVyZS4gQnV0IGR1cmluZyByZWJvb3QsIGUuZy4gY2F1c2VkDQpieSBwb3dlciBp
+bnRlcnJ1cHRpb24sIHRoZSBleGVjdXRhYmxlIGNvZGUgb3Igb3RoZXIgcm9vdGZzIGNvbnRlbnQg
+Y2Fubm90IGJlDQpsb2FkZWQgcHJvcGVybHksIGNhdXNpbmcgdGhlIHN5c3RlbSB0byBmYWlsLg0K
+DQo+IFdvdWxkIHlvdSB2b2x1bnRlZXIgdG8gZm9yd2FyZCBwb3J0IHRoZSBwYXRjaGVzPw0KSSdt
+IHN0dWNrIHdpdGggYSAzLjE0IGtlcm5lbC4gSWYgSSd2ZSBiZWVuIGdpdmVuIGEgdGltZXNsb3Qg
+dG8gdXBkYXRlIHRoZSBrZXJuZWwNCmFuZCB0b29sY2hhaW4sIEkgd291bGQgbGlrZSB0byBkbyB0
+aGUgZm9yd2FyZCBwb3J0LiBCdXQgYWN0dWFsbHksIHRoaXMgc2VlbXMgbm90DQpwb3NzaWJsZSBm
+b3IgdGhlIG5leHQgZmV3IG1vbnRoLg0KDQpUaGFuayB5b3UuDQpDYXJzdGVuDQoNCg0KDQpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KIENhcnN0ZW4gU3RlbGxpbmcNCkYm
+RSBIYXJkd2FyZSAvIFImRCBIYXJkd2FyZQ0KDQpHw5ZSTElUWiBBa3RpZW5nZXNlbGxzY2hhZnQg
+fCBBdWd1c3QtVGh5c3Nlbi1TdHJhw59lIDMyIHwgRC01NjA3MCBLb2JsZW56DQpUOiArNDktMjYx
+LTkyODUtMzM2IHwgTTogIHwgRjogKzQ5LTI2MS05Mjg1LTE5MA0KTWFpbCB0bzogQ2Fyc3Rlbi5T
+dGVsbGluZ0Bnb2VybGl0ei5jb20gfCB3d3cuZ29lcmxpdHouY29tDQoNClZvcnN0YW5kIHwgRXhl
+Y3V0aXZlIEJvYXJkOiBKw7ZyZyBGaWdnZQ0KVm9yc2l0emVuZGVyIGRlcyBBdWZzaWNodHNyYXRl
+cyB8IENoYWlybWFuIG9mIHRoZSBzdXBlcnZpc29yeSBib2FyZDogTm9yYmVydCBXYWduZXINClJl
+Z2lzdGVyZ2VyaWNodCB8IENvdXJ0IG9mIHJlZ2lzdHJhdGlvbjogQW10c2dlcmljaHQgS29ibGVu
+eiBIUkIgNTM0Ng0KU2l0eiBkZXIgR2VzZWxsc2NoYWZ0IHwgUmVnaXN0ZXJlZCBvZmZpY2U6IEtv
+YmxlbnoNCk1lbWJlciBvZiB0aGUgSURTLUdyb3VwDQoNCkltbWVyIHVwLXRvLWRhdGUgbWl0IHVu
+c2VyZW0gTmV3c2xldHRlciEgSGllciBnZWh0J3MgenVyIEFubWVsZHVuZzogd3d3LmdvZXJsaXR6
+LmNvbS9uZXdzbGV0dGVyDQoNCg==
