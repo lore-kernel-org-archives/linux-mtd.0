@@ -1,6 +1,6 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dPw4f-0002Vv-H2
+ id 1dPw4f-0002Vu-H3
  for linux-mtd@lists.infradead.org; Tue, 27 Jun 2017 19:22:59 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: David Woodhouse <dwmw2@infradead.org>,
@@ -11,11 +11,9 @@ To: David Woodhouse <dwmw2@infradead.org>,
 Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
  Kyungmin Park <kyungmin.park@samsung.com>,
  Peter Pan <peterpandong@micron.com>
-Subject: [PATCH 2/2] mtd: Remove duplicate checks on mtd_oob_ops parameter
-Date: Tue, 27 Jun 2017 21:22:22 +0200
-Message-Id: <20170627192222.13716-2-boris.brezillon@free-electrons.com>
-In-Reply-To: <20170627192222.13716-1-boris.brezillon@free-electrons.com>
-References: <20170627192222.13716-1-boris.brezillon@free-electrons.com>
+Subject: [PATCH 1/2] mtd: Add sanity checks in mtd_write/read_oob()
+Date: Tue, 27 Jun 2017 21:22:21 +0200
+Message-Id: <20170627192222.13716-1-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,123 +23,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some of the check done in custom ->_read/write_oob() implementation are
-already done by the core (in mtd_check_oob_ops()).
+Unlike what's done in mtd_read/write(), there are no checks to make sure
+the parameters passed to mtd_read/write_oob() are consistent, which
+forces implementers of ->_read/write_oob() to do it, which in turn leads
+to code duplication and possibly errors in the logic.
+
+Do general sanity checks, like ops fields consistency and range checking.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Peter Pan <peterpandong@micron.com>
 ---
- drivers/mtd/devices/docg3.c        |  5 -----
- drivers/mtd/nand/nand_base.c       | 31 -------------------------------
- drivers/mtd/onenand/onenand_base.c | 18 ------------------
- 3 files changed, 54 deletions(-)
+Hi Peter,
 
-diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-index 81e108454f54..98100e270af1 100644
---- a/drivers/mtd/devices/docg3.c
-+++ b/drivers/mtd/devices/docg3.c
-@@ -904,9 +904,6 @@ static int doc_read_oob(struct mtd_info *mtd, loff_t from,
- 	if (ooblen % DOC_LAYOUT_OOB_SIZE)
- 		return -EINVAL;
+This patch is meant to replace
+https://patchwork.ozlabs.org/patch/766337/. Note that I changed my mind
+regarding the "do not fix inconsistent ->ooblen/oobuf and ->len/datbuf
+and return an error" solution. It seems that all users assume that
+->datbuf = NULL implies ->len = 0 and ->oobbuf = NULL implies ->ooblen =
+0, so I decided to silently fix ->[oob]len and ->dat/oobbuf mismatch in
+the mtd_check_oob_ops() helper instead.
+
+Regards,
+
+Boris
+---
+ drivers/mtd/mtdcore.c | 44 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
+
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index e02ccdbdcdf1..c83b407cbe15 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -1107,6 +1107,39 @@ int mtd_panic_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
+ }
+ EXPORT_SYMBOL_GPL(mtd_panic_write);
  
--	if (from + len > mtd->size)
--		return -EINVAL;
--
- 	ops->oobretlen = 0;
- 	ops->retlen = 0;
- 	ret = 0;
-@@ -1441,8 +1438,6 @@ static int doc_write_oob(struct mtd_info *mtd, loff_t ofs,
- 	if (len && ooblen &&
- 	    (len / DOC_LAYOUT_PAGE_SIZE) != (ooblen / oobdelta))
- 		return -EINVAL;
--	if (ofs + len > mtd->size)
--		return -EINVAL;
++static int mtd_check_oob_ops(struct mtd_info *mtd, loff_t offs,
++			     struct mtd_oob_ops *ops)
++{
++	/*
++	 * Some users are setting ->datbuf or ->oobbuf to NULL, but are leaving
++	 * ->len or ->ooblen uninitialized. Force ->len and ->ooblen to 0 in
++	 *  this case.
++	 */
++	if (!ops->datbuf)
++		ops->len = 0;
++
++	if (!ops->oobbuf)
++		ops->ooblen = 0;
++
++	if (offs < 0 || offs + ops->len >= mtd->size)
++		return -EINVAL;
++
++	if (ops->ooblen) {
++		u64 maxooblen;
++
++		if (ops->ooboffs >= mtd_oobavail(mtd, ops))
++			return -EINVAL;
++
++		maxooblen = ((mtd_div_by_ws(mtd->size, mtd) -
++			      mtd_div_by_ws(offs, mtd)) *
++			     mtd_oobavail(mtd, ops)) - ops->ooboffs;
++		if (ops->ooblen > maxooblen)
++			return -EINVAL;
++	}
++
++	return 0;
++}
++
+ int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops)
+ {
+ 	int ret_code;
+@@ -1114,6 +1147,10 @@ int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops)
+ 	if (!mtd->_read_oob)
+ 		return -EOPNOTSUPP;
  
- 	ops->oobretlen = 0;
- 	ops->retlen = 0;
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index ef4462b69eaf..5b86f0bd486d 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2323,21 +2323,6 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
- 
- 	len = mtd_oobavail(mtd, ops);
- 
--	if (unlikely(ops->ooboffs >= len)) {
--		pr_debug("%s: attempt to start read outside oob\n",
--				__func__);
--		return -EINVAL;
--	}
--
--	/* Do not allow reads past end of device */
--	if (unlikely(from >= mtd->size ||
--		     ops->ooboffs + readlen > ((mtd->size >> chip->page_shift) -
--					(from >> chip->page_shift)) * len)) {
--		pr_debug("%s: attempt to read beyond end of device\n",
--				__func__);
--		return -EINVAL;
--	}
--
- 	chipnr = (int)(from >> chip->chip_shift);
- 	chip->select_chip(mtd, chipnr);
- 
-@@ -2974,22 +2959,6 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
- 		return -EINVAL;
- 	}
- 
--	if (unlikely(ops->ooboffs >= len)) {
--		pr_debug("%s: attempt to start write outside oob\n",
--				__func__);
--		return -EINVAL;
--	}
--
--	/* Do not allow write past end of device */
--	if (unlikely(to >= mtd->size ||
--		     ops->ooboffs + ops->ooblen >
--			((mtd->size >> chip->page_shift) -
--			 (to >> chip->page_shift)) * len)) {
--		pr_debug("%s: attempt to write beyond end of device\n",
--				__func__);
--		return -EINVAL;
--	}
--
- 	chipnr = (int)(to >> chip->chip_shift);
- 
++	ret_code = mtd_check_oob_ops(mtd, from, ops);
++	if (ret_code)
++		return ret_code;
++
+ 	ledtrig_mtd_activity();
  	/*
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index dbbc5b6cecc1..1c002281734b 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -1383,15 +1383,6 @@ static int onenand_read_oob_nolock(struct mtd_info *mtd, loff_t from,
- 		return -EINVAL;
- 	}
- 
--	/* Do not allow reads past end of device */
--	if (unlikely(from >= mtd->size ||
--		     column + len > ((mtd->size >> this->page_shift) -
--				     (from >> this->page_shift)) * oobsize)) {
--		printk(KERN_ERR "%s: Attempted to read beyond end of device\n",
--			__func__);
--		return -EINVAL;
--	}
--
- 	stats = mtd->ecc_stats;
- 
- 	readcmd = ONENAND_IS_4KB_PAGE(this) ? ONENAND_CMD_READ : ONENAND_CMD_READOOB;
-@@ -2024,15 +2015,6 @@ static int onenand_write_oob_nolock(struct mtd_info *mtd, loff_t to,
- 		return -EINVAL;
- 	}
- 
--	/* Do not allow reads past end of device */
--	if (unlikely(to >= mtd->size ||
--		     column + len > ((mtd->size >> this->page_shift) -
--				     (to >> this->page_shift)) * oobsize)) {
--		printk(KERN_ERR "%s: Attempted to write past end of device\n",
--		       __func__);
--		return -EINVAL;
--	}
--
- 	oobbuf = this->oob_buf;
- 
- 	oobcmd = ONENAND_IS_4KB_PAGE(this) ? ONENAND_CMD_PROG : ONENAND_CMD_PROGOOB;
+ 	 * In cases where ops->datbuf != NULL, mtd->_read_oob() has semantics
+@@ -1133,11 +1170,18 @@ EXPORT_SYMBOL_GPL(mtd_read_oob);
+ int mtd_write_oob(struct mtd_info *mtd, loff_t to,
+ 				struct mtd_oob_ops *ops)
+ {
++	int ret;
++
+ 	ops->retlen = ops->oobretlen = 0;
+ 	if (!mtd->_write_oob)
+ 		return -EOPNOTSUPP;
+ 	if (!(mtd->flags & MTD_WRITEABLE))
+ 		return -EROFS;
++
++	ret = mtd_check_oob_ops(mtd, to, ops);
++	if (ret)
++		return ret;
++
+ 	ledtrig_mtd_activity();
+ 	return mtd->_write_oob(mtd, to, ops);
+ }
 -- 
 2.11.0
