@@ -1,20 +1,28 @@
-Received: from mail-qt0-x243.google.com ([2607:f8b0:400d:c0d::243])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dPwq2-0001Qb-6N
- for linux-mtd@lists.infradead.org; Tue, 27 Jun 2017 20:11:56 +0000
-Received: by mail-qt0-x243.google.com with SMTP id w12so5118074qta.2
- for <linux-mtd@lists.infradead.org>; Tue, 27 Jun 2017 13:11:32 -0700 (PDT)
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dPwuQ-0003Ct-1N
+ for linux-mtd@lists.infradead.org; Tue, 27 Jun 2017 20:16:27 +0000
+Date: Tue, 27 Jun 2017 22:15:52 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: "Peter Pan =?UTF-8?B?5r2Y5qCL?= (peterpandong)" <peterpandong@micron.com>
+Cc: "richard@nod.at" <richard@nod.at>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "arnaud.mouiche@gmail.com"
+ <arnaud.mouiche@gmail.com>, "thomas.petazzoni@free-electrons.com"
+ <thomas.petazzoni@free-electrons.com>, "marex@denx.de" <marex@denx.de>,
+ "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "peterpansjtu@gmail.com" <peterpansjtu@gmail.com>,
+ "linshunquan1@hisilicon.com" <linshunquan1@hisilicon.com>
+Subject: Re: [PATCH v6 11/15] nand: spi: add basic operations support
+Message-ID: <20170627221552.6e4efff9@bbrezillon>
+In-Reply-To: <B7799737-B040-4824-BBAF-5A0510CD553C@micron.com>
+References: <1495609631-18880-1-git-send-email-peterpandong@micron.com>
+ <1495609631-18880-12-git-send-email-peterpandong@micron.com>
+ <20170530001152.1d8beb72@bbrezillon>
+ <B7799737-B040-4824-BBAF-5A0510CD553C@micron.com>
 MIME-Version: 1.0
-In-Reply-To: <20170623230650.4669-1-harpreet@nestlabs.com>
-References: <20170623230650.4669-1-harpreet@nestlabs.com>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Tue, 27 Jun 2017 17:11:31 -0300
-Message-ID: <CAOMZO5CPDSsG9oe5ZV-VVxp9BVB=WU_i03LYtPe8LWy+d=5uAw@mail.gmail.com>
-Subject: Re: [PATCH] mtd-utils: tests: Fix nandbiterrs Failure Check
-To: harpreet@nestlabs.com
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- david.oberhollenzer@sigma-star.at
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,53 +32,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jun 23, 2017 at 8:06 PM,  <harpreet@nestlabs.com> wrote:
-> From: "Harpreet \"Eli\" Sangha" <harpreet@nestlabs.com>
->
-> After a page read, the old failure statistics are compared against the
-> new failure statistics before the new values are actually read.
->
-> Signed-off-by: Harpreet "Eli" Sangha
+   
+> >> 
+> >> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+> >> index dd9da71..04ad1dd 100644
+> >> --- a/include/linux/mtd/spinand.h
+> >> +++ b/include/linux/mtd/spinand.h
+> >> @@ -103,11 +103,14 @@ struct spinand_controller_ops {
+> >>  *          return directly and let others to detect.
+> >>  * @init: initialize SPI NAND device.
+> >>  * @cleanup: clean SPI NAND device footprint.
+> >> + * @prepare_op: prepara read/write operation.  
+> > 
+> >           ^ prepare
+> > 
+> > 
+> >   
+> >>  */
+> >> struct spinand_manufacturer_ops {
+> >>    bool (*detect)(struct spinand_device *spinand);
+> >>    int (*init)(struct spinand_device *spinand);
+> >>    void (*cleanup)(struct spinand_device *spinand);
+> >> +    void (*prepare_op)(struct spinand_device *spinand,
+> >> +               struct spinand_op *op, u32 page, u32 column);  
+> > 
+> > It seems to be here to prepare read/write page operations, so I'd like
+> > to rename this method ->prepare_page_op() if you don't mind.  
+> 
+> I'm ok with the new name
 
-Your email is missing in the Signed-off-by line.
+Hm, actually I wonder if this ->prepare_op() method is really what we
+want. It seems to be here to set the proper plane number and the
+number of dummy bytes after the address cycles.
+I'd say deducing the plane from the page is something standard. Whether
+we need it or not depends on the information provide in the memorg
+object (->nplanes).
 
-Also them From and Signed-off-by lines should match.
-
-Adding David on Cc.
-
-Thanks
-
-> ---
->  tests/mtd-tests/nandbiterrs.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/tests/mtd-tests/nandbiterrs.c b/tests/mtd-tests/nandbiterrs.c
-> index 6acbfee..de9d0dd 100644
-> --- a/tests/mtd-tests/nandbiterrs.c
-> +++ b/tests/mtd-tests/nandbiterrs.c
-> @@ -268,15 +268,15 @@ static int read_page(void)
->                 return -1;
->         }
->
-> +       if (ioctl(fd, ECCGETSTATS, &new) != 0)
-> +               goto failstats;
-> +
->         if (new.failed > old.failed) {
->                 fprintf(stderr, "Failed to recover %d bitflips\n",
->                                 new.failed - old.failed);
->                 return -1;
->         }
->
-> -       if (ioctl(fd, ECCGETSTATS, &new) != 0)
-> -               goto failstats;
-> -
->         return new.corrected - old.corrected;
->  failstats:
->         perror("ECCGETSTATS");
-> --
-> 2.13.1.611.g7e3b11ae1-goog
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Regarding the dummy byte, do you have examples of SPI NANDs requiring
+less or more dummy bytes in this read/write from/to cache use case?
+If not, I'd prefer to keep it hardcoded in the core for know, and add
+a hook when the need appears.
