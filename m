@@ -1,35 +1,25 @@
-Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
+Received: from 6.mo173.mail-out.ovh.net ([46.105.43.93])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dPwcj-0003gD-Ib
- for linux-mtd@lists.infradead.org; Tue, 27 Jun 2017 19:58:12 +0000
-Received: by mail-wr0-x242.google.com with SMTP id z45so32848501wrb.2
- for <linux-mtd@lists.infradead.org>; Tue, 27 Jun 2017 12:57:48 -0700 (PDT)
-Subject: Re: [PATCH 1/3] ARM: dts: Bindings for Altera Quadspi Controller
- Version 2
-To: matthew.gerlach@linux.intel.com
-References: <1498493619-4633-1-git-send-email-matthew.gerlach@linux.intel.com>
- <1498493619-4633-2-git-send-email-matthew.gerlach@linux.intel.com>
- <0bfc282d-2aec-8f36-1528-312f7ded8d9c@gmail.com>
- <alpine.DEB.2.20.1706270722440.8058@mgerlach-VirtualBox>
- <0ca53c35-732c-a122-8191-6d102e824d52@gmail.com>
- <alpine.DEB.2.20.1706270833100.8058@mgerlach-VirtualBox>
- <a7e3bb21-6e05-4117-0a25-8782a75b93ad@gmail.com>
- <alpine.DEB.2.20.1706271004460.8058@mgerlach-VirtualBox>
- <510a1968-3e5c-8621-a2f1-116cfe8f6eac@gmail.com>
- <alpine.DEB.2.20.1706271226100.8058@mgerlach-VirtualBox>
-Cc: vndao@altera.com, dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org, mark.rutland@arm.com,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
- davem@davemloft.net, mchehab@kernel.org
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <6d1cba23-afc9-96db-00d1-47e6aefcc9f0@gmail.com>
-Date: Tue, 27 Jun 2017 21:56:10 +0200
+ id 1dPwi4-0005dO-0D
+ for linux-mtd@lists.infradead.org; Tue, 27 Jun 2017 20:03:42 +0000
+Received: from player739.ha.ovh.net (b9.ovh.net [213.186.33.59])
+ by mo173.mail-out.ovh.net (Postfix) with ESMTP id 8EA4A5B05F
+ for <linux-mtd@lists.infradead.org>; Tue, 27 Jun 2017 22:03:16 +0200 (CEST)
+Subject: Re: [PATCH v3 0/2] mtd: spi-nor: parse Serial Flash Discoverable
+ Parameters (SFDP) tables
+To: Cyrille Pitchen <cyrille.pitchen@microchip.com>, marek.vasut@gmail.com
+Cc: boris.brezillon@free-electrons.com, richard@nod.at,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com
+References: <cover.1498481714.git.cyrille.pitchen@microchip.com>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <abb40ac8-1992-594c-7dce-07bd9917e053@wedev4u.fr>
+Date: Tue, 27 Jun 2017 22:03:08 +0200
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.20.1706271226100.8058@mgerlach-VirtualBox>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <cover.1498481714.git.cyrille.pitchen@microchip.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,86 +29,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/27/2017 09:32 PM, matthew.gerlach@linux.intel.com wrote:
-
-[...]
-
->>> Hi Marek,
->>>
->>> I am trying to write an MTD/spi-nor driver for version 2 of the
->>> Altera Quadspi contoller.  This controller is soft IP that is deployed
->>> in a FPGA.  As such, this component/driver can be used in wide range of
->>> use cases.  The controller could be used to update EPCQ/EPCS flash
->>> stores containing bit streams, but this component could be used for
->>> flash for filesystems or any non-volatile data store.  My hope is that
->>> all possible use cases should be covered by this driver.
->>
->> How does this particular case where you have to reverse the bits look
->> like ?
+Le 26/06/2017 à 15:09, Cyrille Pitchen a écrit :
+> Hi all,
 > 
-> The use case for reversing the bits involves a processor updating
-> EPCQ/EPCS flash whose contents are read by the FPGA on power up.  The
-> processor and Altera Quadspi component, inside the configured FPGA,
-> access the bits in one way serially, but the hardware that accesses the
-> flash during power accesses the bits in the opposite way serially.
-
-So it's the same crap Xilinx does, they have some tool to do this with
-their bitstream before they write it into flash.
-
-But then, you only have to do it with your bitstream. If you put ie. UBI
-after the bitstream part, the UBI can be in normal bit ordering.
-So instead of polluting the DT bindings with this, make a similar tool
-to what Xilinx has, do the bit shuffling using that tool and then write
-the bitstream into the flash in the correct order.
-
->>>>>>> Thinking about this binding more, I wonder if the binding name(s)
->>>>>>> should be (read|write)-bit8-reverse to indicate reversings the bits
->>>>>>> in a byte as opposed to reversing the bits in a 32 bit word?
->>>>>>>
->>>>>>> I don't think bit reversal is specific to Altera/Intel components.
->>>>>>> I see
->>>>>>> a nand driver performing bit reversal, and I think I've recently
->>>>>>> seen
->>>>>>> other FPGA based drivers requiring bit reversal.
->>>>>>
->>>>>> $ git grep bit.reverse Documentation/devicetree/ | wc -l
->>>>>> 0
->>>>>>
->>>>>> So we don't have such a generic binding . It's up to Rob (I guess) to
->>>>>> decide whether this is SoC specific and should've altr, prefix or
->>>>>> not.
->>>>>> IMO it is.
->>>>>
->>>>> I agree there is no generic binding at this time, and I look forward
->>>>> to any input from Rob and anyone else on this issue.  I think it is
->>>>> worth pointing out that this really isn't an issue of an SoC, but
->>>>> rather
->>>>> it is an
->>>>> issue of how data in the flash chip is accessed.I think what makes
->>>>> this issue
->>>>> "weird" is that we have different hardware accessing the data in the
->>>>> flash with a different perspective.  The FPGA looks at the data
->>>>> from one
->>>>> perspective on power up, and a processor trying to update the flash
->>>>> has
->>>>> a different perspective.
->>>>
->>>> Another thing I'd ask here is, is that bit-reverse a hardware property
->>>> or is that some software configuration thing ?
->>>
->>> I would say the bit reversal is a property of the FPGA that is reading
->>> the flash at power up.
->>
->> So it's not a property of the block, but rather of the bus somewhere ?
+> a new version of the SFDP patch based on next-20170626
 > 
-> You are correct, it is not a property of the Altera Quadspi component, but
-> a property of the fpga and external hardware that access the flash on
-> power up.
+> tested on sama5d2 xplained with the following QSPI memories:
+> Macronix
+> - mx25l25673g
+> 
+> Spansion/Cypress
+> - s25fl164
+> - s25fl127
+> - s25fl512
+> 
+> Winbond
+> - w25q256
+> - w25m512
+> 
+> SST
+> - sst26vf064
+> 
+> Micron
+> - m25q128
+> - n25q128a
+> - m25ql512
+> - m25ql01g
+> 
+> For my tests, I used mtd_debug to erase, write then read back some areas
+> inside data array of the SPI NOR flash memory.
+> To verify the integrity of the data, I used sha1sum to compare the
+> original file with the one read from the SPI flash memory.
+> 
+> For memories with a non-uniform erase map (sst26vf064, s25fl512, ...), I
+> chose an offset in the data array so the sector size is the one set into
+> nor->mtd.erasesize.
+> 
+> CONFIG_MTD_SPI_NOR_USE_4K_SECTORS was defined in my .config file.
+> Older tests were also run with this macro undefined and with other memory
+> parts.
+> Here I'm only talking about tests performed within the last few days.
+> 
+> For sst26vf064, the Global Unlock Block Protection command was already
+> sent to the memory by the bootloader so once in Linux, the memory was in a
+> rw mode, otherwise Sector Erase and Page Program would fail.
+> 
+> Flash unlock (block protection) and  non-uniform erase map are out of the
+> scope of this patch and would be addressed later in dedicated patches.
+> 
+> I added/updated few entries in the spi_nor_ids[] array so I could use all
+> the memory parts listed above with SFDP support.
+> 
+> My s25fl127 sample is buggy and I don't know whether the issue has been
+> fixed by Cypress with the later revisions of this part number (s25fl128s):
+> The SFDP data programmed in my sample claim that the memory is compliant
+> with JESD216 rev B (version 1.6) however DWORDs 10 to 16 of the Basic
+> Flash Parameter Table are all 0xFFFFFFFF, only the first 9 DWORDs are
+> programmed correctly as is the memory was only compliant with JESD216
+> (version 1.0). Hence when testing the QER bits in DWORD15, the reserved
+> value 111b is read. That why I've changed the default case for QER bits
+> so it now returns -EINVAL when an unexpected value is read.
+> So the SFDP data are reported as invalid and just ignored.
+> I didn't use the SPI_NOR_SKIP_SFDP info->flags because s25fl127 and
+> s25fl128s share the same JEDEC ID and I want to give a chance to use the
+> SFDP tables of the later revisions of this memory part if the above
+> issue has been fixed.
+> 
+> Best regards,
+> 
+> Cyrille
+> 
+> 
+> ChangeLog
+> 
+> v2 > v3:
+> - add a small patch to fix a conflict when the SPINOR_OP_RDSR2 macro was
+>   defined twice: first in drivers/mtd/devices/serial_flash_cmds.h and
+>   secondly in include/linux/mtd/spi-nor.h. It resulted in a build warning.
+> - add the missing () in the kernel-doc comments for functions
+> - add a Return: section in the kernel-doc comments for functions
+> - improve spi_nor_read_sfdp() to take into account the case where all SFDP
+>   data can't be read in a single nor->read() call.
+> 
+> v1 -> v2:
+> - add kernel-doc to the main functions introduced by this patch.
+> - rename spansion_new_quad_enable() into spansion_read_cr_quad_enable().
+> - add spansion_no_read_cr_quad_enable(): the explanation is given in
+>   the kernel-doc.
+> - take Marek's comments into account (add new lines, remove parenthesis,
+>   keep new error messages on the same line as dev_err(), already exisiting
+>   error messages are left unchanged, use u32 instead of int for >>
+>   operand, use sizeof(u32) instead of sizeof(uint32_t)).
+> - propagate return code of spi_nor_read_sfdp().
+> - handle the default case of the QER bits differently: now returns -EINVAL
+> 
+> 
+> Cyrille Pitchen (2):
+>   mtd: st_spi_fsm: remove SPINOR_OP_RDSR2 and use SPINOR_OP_RDCR instead
+>   mtd: spi-nor: parse Serial Flash Discoverable Parameters (SFDP) tables
+> 
+>  drivers/mtd/devices/serial_flash_cmds.h |   1 -
+>  drivers/mtd/devices/st_spi_fsm.c        |   4 +-
+>  drivers/mtd/spi-nor/spi-nor.c           | 775 +++++++++++++++++++++++++++++++-
+>  include/linux/mtd/spi-nor.h             |   6 +
+>  4 files changed, 770 insertions(+), 16 deletions(-)
+> 
 
-So yes, it's a property of that small thing which loads the bitstream
-from the EPCS/EPCQ and programs the cells in the FPGA. This shouldn't be
-in this driver nor it's bindings, see above.
-
--- 
-Best regards,
-Marek Vasut
+series applied to the spi-nor/next branch of l2-mtd
