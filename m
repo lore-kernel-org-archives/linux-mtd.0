@@ -1,19 +1,25 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dPqlG-0006wo-15
- for linux-mtd@lists.infradead.org; Tue, 27 Jun 2017 13:42:36 +0000
-Subject: Re: [RFC] ubihealthd
-To: "Bean Huo (beanhuo)" <beanhuo@micron.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-References: <f9de52c909c44f5daa7bcb154ec27e2e@SIWEX5A.sing.micron.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <dfd0b51c-d878-5ffe-f9f6-b6aae9827562@nod.at>
-Date: Tue, 27 Jun 2017 15:42:11 +0200
+ id 1dPrXp-0002IG-Eh
+ for linux-mtd@lists.infradead.org; Tue, 27 Jun 2017 14:32:46 +0000
+Date: Tue, 27 Jun 2017 07:32:21 -0700 (PDT)
+From: matthew.gerlach@linux.intel.com
+To: Marek Vasut <marek.vasut@gmail.com>
+cc: vndao@altera.com, dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, richard@nod.at,
+ cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org, mark.rutland@arm.com,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+ davem@davemloft.net, mchehab@kernel.org
+Subject: Re: [PATCH 1/3] ARM: dts: Bindings for Altera Quadspi Controller
+ Version 2
+In-Reply-To: <0bfc282d-2aec-8f36-1528-312f7ded8d9c@gmail.com>
+Message-ID: <alpine.DEB.2.20.1706270722440.8058@mgerlach-VirtualBox>
+References: <1498493619-4633-1-git-send-email-matthew.gerlach@linux.intel.com>
+ <1498493619-4633-2-git-send-email-matthew.gerlach@linux.intel.com>
+ <0bfc282d-2aec-8f36-1528-312f7ded8d9c@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <f9de52c909c44f5daa7bcb154ec27e2e@SIWEX5A.sing.micron.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,24 +29,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Bean,
 
-Am 27.06.2017 um 15:35 schrieb Bean Huo (beanhuo):
-> Hi, Richard
-> I see ubihealthd tool doesn't merge in to mainline MTD-utils, also the kernel 
-> " UBI statistics and bitrot interface".  
-> http://lists.infradead.org/pipermail/linux-mtd/2015-November/063122.html
-> I have a little bit confusion.  What is it difference with your patch series " UBI: Bitrot checking "?
-> http://lists.infradead.org/pipermail/linux-mtd/2015-November/063122.html
 
-this is two times the same link.
-The most recent series is the latest approach. I sent multiple approaches.
+On Tue, 27 Jun 2017, Marek Vasut wrote:
 
-> the ubihealthd is a user space tool and can trigger re-reads and scrubbing.
-> I see " UBI: Bitrot checking " also has this action. They are separate or working together?
-> Can you please provide more information about both?
+Hi Marek,
 
-The planned mode was that all logic happens in userspace, therefore ubihealthd.
+Thanks for the feedback.  See my comments below.
 
-Thanks,
-//richard
+Matthew Gerlach
+
+> On 06/26/2017 06:13 PM, matthew.gerlach@linux.intel.com wrote:
+>> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+>>
+>> Device Tree bindings for Version 2 of the Altera Quadspi Controller
+>> that can be optionally paired with a windowed bridge.
+>>
+>> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+>> ---
+>>  .../devicetree/bindings/mtd/altera-quadspi-v2.txt  | 37 ++++++++++++++++++++++
+>>  1 file changed, 37 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
+>>
+>> diff --git a/Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt b/Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
+>> new file mode 100644
+>> index 0000000..8ba63d7
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
+>> @@ -0,0 +1,37 @@
+>> +* Altera Quad SPI Controller Version 2
+>> +
+>> +Required properties:
+>> +- compatible : Should be "altr,quadspi-v2".
+>> +- reg : Contains at least two entries, and possibly three entries, each of
+>> +	which is a tuple consisting of a physical address and length.
+>> +- reg-names : Should contain the names "avl_csr" and "avl_mem" corresponding
+>> +	      to the control and status registers and qspi memory, respectively.
+>> +
+>> +
+>> +The Altera Quad SPI Controller Version 2 can be paired with a windowed bridge
+>> +in order to reduce the footprint of the memory interface.  When a windowed
+>> +bridge is used, reads and writes of data must be 32 bits wide.
+>> +
+>> +Optional properties:
+>> +- reg-names : Should contain the name "avl_window", if the windowed bridge
+>> +	      is used.  This name corresponds to the register space that
+>> +	      controls the window.
+>> +- window-size : The size of the window which must be an even power of 2.
+>> +- read-bit-reverse : A boolean indicating the data read from the flash should
+>> +		     be bit reversed on a byte by byte basis before being
+>> +		     delivered to the MTD layer.
+>> +- write-bit-reverse : A boolean indicating the data written to the flash should
+>> +		      be bit reversed on a byte by byte basis.
+>
+> Is there ever a usecase where you need to set just one of these props ?
+> Also, they're altera specific, so altr, prefix should be added.
+
+In general, I think if bit reversal is required, it would be required in
+both directions.  However, anything is possible when using FPGAs.  So
+I thought separate booleans would be future proofing the bindings.
+Thinking about this binding more, I wonder if the binding name(s)
+should be (read|write)-bit8-reverse to indicate reversings the bits
+in a byte as opposed to reversing the bits in a 32 bit word?
+
+I don't think bit reversal is specific to Altera/Intel components. I see
+a nand driver performing bit reversal, and I think I've recently seen 
+other FPGA based drivers requiring bit reversal.
+
+>
+>> +Example:
+>> +
+>> +qspi: spi@a0001000 {
+>> +	compatible = "altr,quadspi-v2";
+>> +	reg = <0xa0001000 0x40>, <0xb0000000 0x4000000>;
+>> +	reg-names = "avl_csr", "avl_mem";
+>> +
+>> +	flash@0 {
+>> +		reg = <0>;
+>> +		label = "FPGA Image";
+>> +	};
+>> +};
+>>
+>
+>
+> -- 
+> Best regards,
+> Marek Vasut
+>
