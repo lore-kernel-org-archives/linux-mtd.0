@@ -1,25 +1,21 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mx.eurodcs.com ([89.110.144.168])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dPrXp-0002IG-Eh
- for linux-mtd@lists.infradead.org; Tue, 27 Jun 2017 14:32:46 +0000
-Date: Tue, 27 Jun 2017 07:32:21 -0700 (PDT)
-From: matthew.gerlach@linux.intel.com
-To: Marek Vasut <marek.vasut@gmail.com>
-cc: vndao@altera.com, dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org, mark.rutland@arm.com,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
- davem@davemloft.net, mchehab@kernel.org
-Subject: Re: [PATCH 1/3] ARM: dts: Bindings for Altera Quadspi Controller
- Version 2
-In-Reply-To: <0bfc282d-2aec-8f36-1528-312f7ded8d9c@gmail.com>
-Message-ID: <alpine.DEB.2.20.1706270722440.8058@mgerlach-VirtualBox>
-References: <1498493619-4633-1-git-send-email-matthew.gerlach@linux.intel.com>
- <1498493619-4633-2-git-send-email-matthew.gerlach@linux.intel.com>
- <0bfc282d-2aec-8f36-1528-312f7ded8d9c@gmail.com>
+ id 1dPron-00079i-GO
+ for linux-mtd@lists.infradead.org; Tue, 27 Jun 2017 14:50:19 +0000
+From: Stelling Carsten <Carsten.Stelling@goerlitz.com>
+To: Richard Weinberger <richard@nod.at>, Richard Weinberger
+ <richard.weinberger@gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: AW: UBI bitrot checking and scrubbing
+Date: Tue, 27 Jun 2017 14:49:52 +0000
+Message-ID: <AE0F02A50174E945B94BE6AC0B7199D81A593F24@GOEMAIL-Server2.goerlitz.int>
+References: <AE0F02A50174E945B94BE6AC0B7199D81A593D0E@GOEMAIL-Server2.goerlitz.int>
+ <06df018f-e3e8-ddba-6a21-c1587878508c@nod.at>
+In-Reply-To: <06df018f-e3e8-ddba-6a21-c1587878508c@nod.at>
+Content-Language: de-DE
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,90 +25,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-On Tue, 27 Jun 2017, Marek Vasut wrote:
-
-Hi Marek,
-
-Thanks for the feedback.  See my comments below.
-
-Matthew Gerlach
-
-> On 06/26/2017 06:13 PM, matthew.gerlach@linux.intel.com wrote:
->> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->>
->> Device Tree bindings for Version 2 of the Altera Quadspi Controller
->> that can be optionally paired with a windowed bridge.
->>
->> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->> ---
->>  .../devicetree/bindings/mtd/altera-quadspi-v2.txt  | 37 ++++++++++++++++++++++
->>  1 file changed, 37 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt b/Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
->> new file mode 100644
->> index 0000000..8ba63d7
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
->> @@ -0,0 +1,37 @@
->> +* Altera Quad SPI Controller Version 2
->> +
->> +Required properties:
->> +- compatible : Should be "altr,quadspi-v2".
->> +- reg : Contains at least two entries, and possibly three entries, each of
->> +	which is a tuple consisting of a physical address and length.
->> +- reg-names : Should contain the names "avl_csr" and "avl_mem" corresponding
->> +	      to the control and status registers and qspi memory, respectively.
->> +
->> +
->> +The Altera Quad SPI Controller Version 2 can be paired with a windowed bridge
->> +in order to reduce the footprint of the memory interface.  When a windowed
->> +bridge is used, reads and writes of data must be 32 bits wide.
->> +
->> +Optional properties:
->> +- reg-names : Should contain the name "avl_window", if the windowed bridge
->> +	      is used.  This name corresponds to the register space that
->> +	      controls the window.
->> +- window-size : The size of the window which must be an even power of 2.
->> +- read-bit-reverse : A boolean indicating the data read from the flash should
->> +		     be bit reversed on a byte by byte basis before being
->> +		     delivered to the MTD layer.
->> +- write-bit-reverse : A boolean indicating the data written to the flash should
->> +		      be bit reversed on a byte by byte basis.
->
-> Is there ever a usecase where you need to set just one of these props ?
-> Also, they're altera specific, so altr, prefix should be added.
-
-In general, I think if bit reversal is required, it would be required in
-both directions.  However, anything is possible when using FPGAs.  So
-I thought separate booleans would be future proofing the bindings.
-Thinking about this binding more, I wonder if the binding name(s)
-should be (read|write)-bit8-reverse to indicate reversings the bits
-in a byte as opposed to reversing the bits in a 32 bit word?
-
-I don't think bit reversal is specific to Altera/Intel components. I see
-a nand driver performing bit reversal, and I think I've recently seen 
-other FPGA based drivers requiring bit reversal.
-
->
->> +Example:
->> +
->> +qspi: spi@a0001000 {
->> +	compatible = "altr,quadspi-v2";
->> +	reg = <0xa0001000 0x40>, <0xb0000000 0x4000000>;
->> +	reg-names = "avl_csr", "avl_mem";
->> +
->> +	flash@0 {
->> +		reg = <0>;
->> +		label = "FPGA Image";
->> +	};
->> +};
->>
->
->
-> -- 
-> Best regards,
-> Marek Vasut
->
+SGkgUmljaGFyZCwNCg0KPj4+IFdvdWxkIHlvdSB2b2x1bnRlZXIgdG8gZm9yd2FyZCBwb3J0IHRo
+ZSBwYXRjaGVzPw0KPj4gSSdtIHN0dWNrIHdpdGggYSAzLjE0IGtlcm5lbC4gSWYgSSd2ZSBiZWVu
+IGdpdmVuIGEgdGltZXNsb3QgdG8gdXBkYXRlIHRoZSBrZXJuZWwNCj4+IGFuZCB0b29sY2hhaW4s
+IEkgd291bGQgbGlrZSB0byBkbyB0aGUgZm9yd2FyZCBwb3J0LiBCdXQgYWN0dWFsbHksIHRoaXMg
+c2VlbXMgbm90DQo+PiBwb3NzaWJsZSBmb3IgdGhlIG5leHQgZmV3IG1vbnRoLg0KDQo+IFNvLCBp
+dCBpcyBzdGlsbCB1cCB0byBtZT8gOy0pDQpBY3R1YWxseSwgYW5kIGZvciBuZXdlciBrZXJuZWwg
+NC54LCB5ZXMgOi0oDQoNClJlZ2FyZHMsDQpDYXJzdGVuDQoNCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fDQogQ2Fyc3RlbiBTdGVsbGluZw0KRiZFIEhhcmR3YXJlIC8gUiZE
+IEhhcmR3YXJlDQoNCkfDllJMSVRaIEFrdGllbmdlc2VsbHNjaGFmdCB8IEF1Z3VzdC1UaHlzc2Vu
+LVN0cmHDn2UgMzIgfCBELTU2MDcwIEtvYmxlbnoNClQ6ICs0OS0yNjEtOTI4NS0zMzYgfCBNOiAg
+fCBGOiArNDktMjYxLTkyODUtMTkwDQpNYWlsIHRvOiBDYXJzdGVuLlN0ZWxsaW5nQGdvZXJsaXR6
+LmNvbSB8IHd3dy5nb2VybGl0ei5jb20NCg0KVm9yc3RhbmQgfCBFeGVjdXRpdmUgQm9hcmQ6IErD
+tnJnIEZpZ2dlDQpWb3JzaXR6ZW5kZXIgZGVzIEF1ZnNpY2h0c3JhdGVzIHwgQ2hhaXJtYW4gb2Yg
+dGhlIHN1cGVydmlzb3J5IGJvYXJkOiBOb3JiZXJ0IFdhZ25lcg0KUmVnaXN0ZXJnZXJpY2h0IHwg
+Q291cnQgb2YgcmVnaXN0cmF0aW9uOiBBbXRzZ2VyaWNodCBLb2JsZW56IEhSQiA1MzQ2DQpTaXR6
+IGRlciBHZXNlbGxzY2hhZnQgfCBSZWdpc3RlcmVkIG9mZmljZTogS29ibGVueg0KTWVtYmVyIG9m
+IHRoZSBJRFMtR3JvdXANCg0KSW1tZXIgdXAtdG8tZGF0ZSBtaXQgdW5zZXJlbSBOZXdzbGV0dGVy
+ISBIaWVyIGdlaHQncyB6dXIgQW5tZWxkdW5nOiB3d3cuZ29lcmxpdHouY29tL25ld3NsZXR0ZXIN
+Cg0K
