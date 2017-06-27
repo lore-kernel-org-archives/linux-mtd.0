@@ -1,20 +1,22 @@
-Received: from mx.eurodcs.com ([89.110.144.168])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dPqff-00039w-Fp
- for linux-mtd@lists.infradead.org; Tue, 27 Jun 2017 13:36:49 +0000
-From: Stelling Carsten <Carsten.Stelling@goerlitz.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: AW: UBI bitrot checking and scrubbing
-Date: Tue, 27 Jun 2017 13:36:21 +0000
-Message-ID: <AE0F02A50174E945B94BE6AC0B7199D81A593EBD@GOEMAIL-Server2.goerlitz.int>
+ id 1dPqja-0006CW-0u
+ for linux-mtd@lists.infradead.org; Tue, 27 Jun 2017 13:40:56 +0000
+Subject: Re: UBI bitrot checking and scrubbing
+To: Stelling Carsten <Carsten.Stelling@goerlitz.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 References: <AE0F02A50174E945B94BE6AC0B7199D81A593D0E@GOEMAIL-Server2.goerlitz.int>
  <CAFLxGvwa9psUt-Xy2R5Whwc+oF46USdMDekKqGWPEavb4d4DCg@mail.gmail.com>
-In-Reply-To: <CAFLxGvwa9psUt-Xy2R5Whwc+oF46USdMDekKqGWPEavb4d4DCg@mail.gmail.com>
-Content-Language: de-DE
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <AE0F02A50174E945B94BE6AC0B7199D81A593EBD@GOEMAIL-Server2.goerlitz.int>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <06df018f-e3e8-ddba-6a21-c1587878508c@nod.at>
+Date: Tue, 27 Jun 2017 15:40:21 +0200
 MIME-Version: 1.0
+In-Reply-To: <AE0F02A50174E945B94BE6AC0B7199D81A593EBD@GOEMAIL-Server2.goerlitz.int>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +26,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgUmljaGFyZCwNCg0KPiBCdXQgeW91IGFyZSByaWdodCB3ZSBzaG91bGQgcmV2aXZlIHViaWhl
-YWx0aGQgYW5kIHRoZSBuZWVkZWQga2VybmVsDQo+IGludGVyZmFjZSBiZWNhdXNlIGZvciBGYXN0
-bWFwDQo+IHRoaXMgaXMgYSB0b3BpYy4NCkkgdGhpbmsgaXQncyBhIHRvcGljIGZvciBhbGwgZGV2
-aWNlcyB3aXRoIG9yIHdpdGhvdXQgRmFzdG1hcCBlbmFibGVkLCBidXQgcmFyZWx5DQpwb3dlcmVk
-IG9mZiBhbmQgb24sIG9yIHJlYm9vdGVkLiBGb3IgU0xDIE5BTkQsIGRhdGEgcmV0ZW50aW9uIGlz
-IHNwZWNpZmllZA0Kd2l0aCA1IHRvIDEwIHllYXJzLCBkZXBlbmRlbnQgb24gdHlwZSBhbmQgbWFu
-dWZhY3R1cmVyLiBCdXQgZGF0YSByZXRlbnRpb24NCnRpbWUgZGVncmFkZXMgd2l0aCB0ZW1wZXJh
-dHVyZSBhbmQgdGhlIG51bWJlciBvZiBQL0UgY3ljbGVzLiBSZWFkIGFuZCB3cml0ZQ0KZGlzdHVy
-YmFuY2UgaXMgYW5vdGhlciBpbmZsdWVuY2luZyB2YXJpYWJsZSwgd2hpY2ggbXVzdCBiZSB0YWtl
-biBpbnRvIGFjY291bnQuDQpUaGVyZWZvcmUsIGl0IGlzIG9ubHkgYSBtYXR0ZXIgb2YgdGltZSwg
-d2hlbiBhY2N1bXVsYXRlZCBiaXRmbGlwcyB3aXRoaW4gYSBwYWdlDQpjYW5ub3QgYmUgY29ycmVj
-dGVkIGJ5IHRoZSBFQ0MuIE1vc3Qgb2Z0ZW4sIHRoZXNlIGFjY3VtdWxhdGlvbiBvZiBiaXRmbGlw
-cyBpcw0Kbm90IGRldGVjdGVkIHdoaWxlIHRoZSBkZXZpY2UgaXMgb3BlcmF0aW5nLCBiZWNhdXNl
-IGV4ZWN1dGFibGUgY29kZSB3YXMgcmVhZA0KZnJvbSBOQU5ELCBjb3BpZWQgdG8gUkFNIGFuZCBl
-eGVjdXRlZCB0aGVyZS4gQnV0IGR1cmluZyByZWJvb3QsIGUuZy4gY2F1c2VkDQpieSBwb3dlciBp
-bnRlcnJ1cHRpb24sIHRoZSBleGVjdXRhYmxlIGNvZGUgb3Igb3RoZXIgcm9vdGZzIGNvbnRlbnQg
-Y2Fubm90IGJlDQpsb2FkZWQgcHJvcGVybHksIGNhdXNpbmcgdGhlIHN5c3RlbSB0byBmYWlsLg0K
-DQo+IFdvdWxkIHlvdSB2b2x1bnRlZXIgdG8gZm9yd2FyZCBwb3J0IHRoZSBwYXRjaGVzPw0KSSdt
-IHN0dWNrIHdpdGggYSAzLjE0IGtlcm5lbC4gSWYgSSd2ZSBiZWVuIGdpdmVuIGEgdGltZXNsb3Qg
-dG8gdXBkYXRlIHRoZSBrZXJuZWwNCmFuZCB0b29sY2hhaW4sIEkgd291bGQgbGlrZSB0byBkbyB0
-aGUgZm9yd2FyZCBwb3J0LiBCdXQgYWN0dWFsbHksIHRoaXMgc2VlbXMgbm90DQpwb3NzaWJsZSBm
-b3IgdGhlIG5leHQgZmV3IG1vbnRoLg0KDQpUaGFuayB5b3UuDQpDYXJzdGVuDQoNCg0KDQpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KIENhcnN0ZW4gU3RlbGxpbmcNCkYm
-RSBIYXJkd2FyZSAvIFImRCBIYXJkd2FyZQ0KDQpHw5ZSTElUWiBBa3RpZW5nZXNlbGxzY2hhZnQg
-fCBBdWd1c3QtVGh5c3Nlbi1TdHJhw59lIDMyIHwgRC01NjA3MCBLb2JsZW56DQpUOiArNDktMjYx
-LTkyODUtMzM2IHwgTTogIHwgRjogKzQ5LTI2MS05Mjg1LTE5MA0KTWFpbCB0bzogQ2Fyc3Rlbi5T
-dGVsbGluZ0Bnb2VybGl0ei5jb20gfCB3d3cuZ29lcmxpdHouY29tDQoNClZvcnN0YW5kIHwgRXhl
-Y3V0aXZlIEJvYXJkOiBKw7ZyZyBGaWdnZQ0KVm9yc2l0emVuZGVyIGRlcyBBdWZzaWNodHNyYXRl
-cyB8IENoYWlybWFuIG9mIHRoZSBzdXBlcnZpc29yeSBib2FyZDogTm9yYmVydCBXYWduZXINClJl
-Z2lzdGVyZ2VyaWNodCB8IENvdXJ0IG9mIHJlZ2lzdHJhdGlvbjogQW10c2dlcmljaHQgS29ibGVu
-eiBIUkIgNTM0Ng0KU2l0eiBkZXIgR2VzZWxsc2NoYWZ0IHwgUmVnaXN0ZXJlZCBvZmZpY2U6IEtv
-YmxlbnoNCk1lbWJlciBvZiB0aGUgSURTLUdyb3VwDQoNCkltbWVyIHVwLXRvLWRhdGUgbWl0IHVu
-c2VyZW0gTmV3c2xldHRlciEgSGllciBnZWh0J3MgenVyIEFubWVsZHVuZzogd3d3LmdvZXJsaXR6
-LmNvbS9uZXdzbGV0dGVyDQoNCg==
+Carsten,
+
+Am 27.06.2017 um 15:36 schrieb Stelling Carsten:
+>> Would you volunteer to forward port the patches?
+> I'm stuck with a 3.14 kernel. If I've been given a timeslot to update the kernel
+> and toolchain, I would like to do the forward port. But actually, this seems not
+> possible for the next few month.
+
+So, it is still up to me? ;-)
+
+Thanks,
+//richard
