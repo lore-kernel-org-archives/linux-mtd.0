@@ -1,29 +1,27 @@
-Received: from mga04.intel.com ([192.55.52.120])
+Received: from 2.mo173.mail-out.ovh.net ([178.33.251.49])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dPwPt-0004ZA-Mm
- for linux-mtd@lists.infradead.org; Tue, 27 Jun 2017 19:44:55 +0000
-Date: Tue, 27 Jun 2017 12:44:29 -0700 (PDT)
-From: matthew.gerlach@linux.intel.com
-To: Marek Vasut <marek.vasut@gmail.com>
-cc: vndao@altera.com, dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org, mark.rutland@arm.com,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
- davem@davemloft.net, mchehab@kernel.org
-Subject: Re: [PATCH 2/3] mtd: spi-nor: core code for the Altera Quadspi Flash
- Controller v2
-In-Reply-To: <9ca626e3-fc80-2b50-85aa-5db102dc9b7f@gmail.com>
-Message-ID: <alpine.DEB.2.20.1706271243150.8058@mgerlach-VirtualBox>
-References: <1498493619-4633-1-git-send-email-matthew.gerlach@linux.intel.com>
- <1498493619-4633-3-git-send-email-matthew.gerlach@linux.intel.com>
- <852b819d-ea7a-4854-cae1-3857cf92930d@gmail.com>
- <alpine.DEB.2.20.1706270737120.8058@mgerlach-VirtualBox>
- <0cb464ef-eeb8-ebc9-fde9-b6d42bf03877@gmail.com>
- <alpine.DEB.2.20.1706271019140.8058@mgerlach-VirtualBox>
- <9ca626e3-fc80-2b50-85aa-5db102dc9b7f@gmail.com>
+ id 1dPwTv-0006ov-8n
+ for linux-mtd@lists.infradead.org; Tue, 27 Jun 2017 19:49:05 +0000
+Received: from player739.ha.ovh.net (b9.ovh.net [213.186.33.59])
+ by mo173.mail-out.ovh.net (Postfix) with ESMTP id BA4615B035
+ for <linux-mtd@lists.infradead.org>; Tue, 27 Jun 2017 21:48:37 +0200 (CEST)
+Subject: Re: [PATCH] mtd: spi-nor: cqspi: remove duplicate const
+To: Marek Vasut <marek.vasut@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20170627153508.1329697-1-arnd@arndb.de>
+ <77950900-a78b-b5b7-5baf-1df7075fc6d3@gmail.com>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <f5b3de86-ff3d-7d4d-65b0-83b45079461f@wedev4u.fr>
+Date: Tue, 27 Jun 2017 21:48:26 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+In-Reply-To: <77950900-a78b-b5b7-5baf-1df7075fc6d3@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,64 +31,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-On Tue, 27 Jun 2017, Marek Vasut wrote:
-
-> On 06/27/2017 07:26 PM, matthew.gerlach@linux.intel.com wrote:
->
-> [...]
->
->>>>>> +#ifndef __ALTERA_QUADSPI_H
->>>>>> +#define __ALTERA_QUADSPI_H
->>>>>> +
->>>>>> +#include <linux/device.h>
->>>>>> +
->>>>>> +#define ALTERA_QUADSPI_FL_BITREV_READ BIT(0)
->>>>>> +#define ALTERA_QUADSPI_FL_BITREV_WRITE BIT(1)
->>>>>> +
->>>>>> +#define ALTERA_QUADSPI_MAX_NUM_FLASH_CHIP 3
->>>>>> +
->>>>>> +int altera_quadspi_create(struct device *dev, void __iomem *csr_base,
->>>>>> +              void __iomem *data_base, void __iomem *window_reg,
->>>>>> +              size_t window_size, u32 flags);
->>>>>> +
->>>>>> +int altera_qspi_add_bank(struct device *dev,
->>>>>> +             u32 bank, struct device_node *np);
->>>>>> +
->>>>>> +int altera_quadspi_remove_banks(struct device *dev);
->>>>>
->>>>> Why is this header needed at all ?
->>>>
->>>> This header is needed because of the very different ways
->>>> FPGAs can be used with a processor running Linux.  In the case of a
->>>> soft processor in the FPGA or an ARM connected to a FPGA, this header
->>>> is not necessary because device trees are used to probe the driver.
->>>> However, if the FPGA is on a PCIe card connected to an x86, device trees
->>>> are not generally used, and the pcie driver must enumerate the
->>>> "sub-driver".
->>>
->>> But we don't support that later part, do we ?
+Le 27/06/2017 à 18:11, Marek Vasut a écrit :
+> On 06/27/2017 05:34 PM, Arnd Bergmann wrote:
+>> The variable was already marked 'const' before the previous
+>> patch, but the qualifier was in an unusual place, and now the
+>> extra 'const' causes a harmless warning:
 >>
->> There is currently v2 patch set for the intel-fpga PCIe driver being
->> reviewed where I am adding support for version 2 of the Altera Quadspi
->> controller.
->
-> It'd be real nice to mention that in the cover letter with a link to
-> that patchset , otherwise it's real hard to understand why you did this.
+>> drivers/mtd/spi-nor/cadence-quadspi.c:1286:34: error: duplicate 'const' declaration specifier [-Werror=duplicate-decl-specifier]
+>>
+>> This removes the other 'const' instead.
+> 
+> Isn't that const array const elements , thus two consts ?
+> IMO the original code is correct.
 
-The v2 patch set does not have my changes in it, but adding discussion in 
-the cover letter is great idea!
+Indeed the 2 'const' don't have the same meaning so the original code
+may be correct but with an array like cqspi_dt_ids[] we can't write
+"cqspi_dt_ids = (const struct of_device_id *)<right value>;" anyway.
 
-Many thanks,
+So I think the 2nd 'const' is useless here then if this patch removes a
+warning, let's apply it, right?
 
-Matthew Gerlach
->
->> This technique of separating core driver code from platform/device tree
->> code has been reviewed and accepted for the Altera Partial
->> Reconfiguration IP, Altera Freeze Bridge, and the fpga region.
->
-> -- 
-> Best regards,
-> Marek Vasut
->
+> 
+>> Fixes: f993c123b461 ("mtd: spi-nor: cqspi: make of_device_ids const")
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>> ---
+>>  drivers/mtd/spi-nor/cadence-quadspi.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+>> index d315c326e72f..53c7d8e0327a 100644
+>> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
+>> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+>> @@ -1283,7 +1283,7 @@ static const struct dev_pm_ops cqspi__dev_pm_ops = {
+>>  #define CQSPI_DEV_PM_OPS	NULL
+>>  #endif
+>>  
+>> -static const struct of_device_id const cqspi_dt_ids[] = {
+>> +static const struct of_device_id cqspi_dt_ids[] = {
+>>  	{.compatible = "cdns,qspi-nor",},
+>>  	{ /* end of table */ }
+>>  };
+>>
+> 
+> 
