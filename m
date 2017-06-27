@@ -1,25 +1,20 @@
-Received: from 6.mo173.mail-out.ovh.net ([46.105.43.93])
+Received: from mail-qt0-x243.google.com ([2607:f8b0:400d:c0d::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dPwi4-0005dO-0D
- for linux-mtd@lists.infradead.org; Tue, 27 Jun 2017 20:03:42 +0000
-Received: from player739.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo173.mail-out.ovh.net (Postfix) with ESMTP id 8EA4A5B05F
- for <linux-mtd@lists.infradead.org>; Tue, 27 Jun 2017 22:03:16 +0200 (CEST)
-Subject: Re: [PATCH v3 0/2] mtd: spi-nor: parse Serial Flash Discoverable
- Parameters (SFDP) tables
-To: Cyrille Pitchen <cyrille.pitchen@microchip.com>, marek.vasut@gmail.com
-Cc: boris.brezillon@free-electrons.com, richard@nod.at,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com
-References: <cover.1498481714.git.cyrille.pitchen@microchip.com>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <abb40ac8-1992-594c-7dce-07bd9917e053@wedev4u.fr>
-Date: Tue, 27 Jun 2017 22:03:08 +0200
+ id 1dPwq2-0001Qb-6N
+ for linux-mtd@lists.infradead.org; Tue, 27 Jun 2017 20:11:56 +0000
+Received: by mail-qt0-x243.google.com with SMTP id w12so5118074qta.2
+ for <linux-mtd@lists.infradead.org>; Tue, 27 Jun 2017 13:11:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <cover.1498481714.git.cyrille.pitchen@microchip.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20170623230650.4669-1-harpreet@nestlabs.com>
+References: <20170623230650.4669-1-harpreet@nestlabs.com>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Tue, 27 Jun 2017 17:11:31 -0300
+Message-ID: <CAOMZO5CPDSsG9oe5ZV-VVxp9BVB=WU_i03LYtPe8LWy+d=5uAw@mail.gmail.com>
+Subject: Re: [PATCH] mtd-utils: tests: Fix nandbiterrs Failure Check
+To: harpreet@nestlabs.com
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ david.oberhollenzer@sigma-star.at
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,110 +24,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 26/06/2017 à 15:09, Cyrille Pitchen a écrit :
-> Hi all,
-> 
-> a new version of the SFDP patch based on next-20170626
-> 
-> tested on sama5d2 xplained with the following QSPI memories:
-> Macronix
-> - mx25l25673g
-> 
-> Spansion/Cypress
-> - s25fl164
-> - s25fl127
-> - s25fl512
-> 
-> Winbond
-> - w25q256
-> - w25m512
-> 
-> SST
-> - sst26vf064
-> 
-> Micron
-> - m25q128
-> - n25q128a
-> - m25ql512
-> - m25ql01g
-> 
-> For my tests, I used mtd_debug to erase, write then read back some areas
-> inside data array of the SPI NOR flash memory.
-> To verify the integrity of the data, I used sha1sum to compare the
-> original file with the one read from the SPI flash memory.
-> 
-> For memories with a non-uniform erase map (sst26vf064, s25fl512, ...), I
-> chose an offset in the data array so the sector size is the one set into
-> nor->mtd.erasesize.
-> 
-> CONFIG_MTD_SPI_NOR_USE_4K_SECTORS was defined in my .config file.
-> Older tests were also run with this macro undefined and with other memory
-> parts.
-> Here I'm only talking about tests performed within the last few days.
-> 
-> For sst26vf064, the Global Unlock Block Protection command was already
-> sent to the memory by the bootloader so once in Linux, the memory was in a
-> rw mode, otherwise Sector Erase and Page Program would fail.
-> 
-> Flash unlock (block protection) and  non-uniform erase map are out of the
-> scope of this patch and would be addressed later in dedicated patches.
-> 
-> I added/updated few entries in the spi_nor_ids[] array so I could use all
-> the memory parts listed above with SFDP support.
-> 
-> My s25fl127 sample is buggy and I don't know whether the issue has been
-> fixed by Cypress with the later revisions of this part number (s25fl128s):
-> The SFDP data programmed in my sample claim that the memory is compliant
-> with JESD216 rev B (version 1.6) however DWORDs 10 to 16 of the Basic
-> Flash Parameter Table are all 0xFFFFFFFF, only the first 9 DWORDs are
-> programmed correctly as is the memory was only compliant with JESD216
-> (version 1.0). Hence when testing the QER bits in DWORD15, the reserved
-> value 111b is read. That why I've changed the default case for QER bits
-> so it now returns -EINVAL when an unexpected value is read.
-> So the SFDP data are reported as invalid and just ignored.
-> I didn't use the SPI_NOR_SKIP_SFDP info->flags because s25fl127 and
-> s25fl128s share the same JEDEC ID and I want to give a chance to use the
-> SFDP tables of the later revisions of this memory part if the above
-> issue has been fixed.
-> 
-> Best regards,
-> 
-> Cyrille
-> 
-> 
-> ChangeLog
-> 
-> v2 > v3:
-> - add a small patch to fix a conflict when the SPINOR_OP_RDSR2 macro was
->   defined twice: first in drivers/mtd/devices/serial_flash_cmds.h and
->   secondly in include/linux/mtd/spi-nor.h. It resulted in a build warning.
-> - add the missing () in the kernel-doc comments for functions
-> - add a Return: section in the kernel-doc comments for functions
-> - improve spi_nor_read_sfdp() to take into account the case where all SFDP
->   data can't be read in a single nor->read() call.
-> 
-> v1 -> v2:
-> - add kernel-doc to the main functions introduced by this patch.
-> - rename spansion_new_quad_enable() into spansion_read_cr_quad_enable().
-> - add spansion_no_read_cr_quad_enable(): the explanation is given in
->   the kernel-doc.
-> - take Marek's comments into account (add new lines, remove parenthesis,
->   keep new error messages on the same line as dev_err(), already exisiting
->   error messages are left unchanged, use u32 instead of int for >>
->   operand, use sizeof(u32) instead of sizeof(uint32_t)).
-> - propagate return code of spi_nor_read_sfdp().
-> - handle the default case of the QER bits differently: now returns -EINVAL
-> 
-> 
-> Cyrille Pitchen (2):
->   mtd: st_spi_fsm: remove SPINOR_OP_RDSR2 and use SPINOR_OP_RDCR instead
->   mtd: spi-nor: parse Serial Flash Discoverable Parameters (SFDP) tables
-> 
->  drivers/mtd/devices/serial_flash_cmds.h |   1 -
->  drivers/mtd/devices/st_spi_fsm.c        |   4 +-
->  drivers/mtd/spi-nor/spi-nor.c           | 775 +++++++++++++++++++++++++++++++-
->  include/linux/mtd/spi-nor.h             |   6 +
->  4 files changed, 770 insertions(+), 16 deletions(-)
-> 
+On Fri, Jun 23, 2017 at 8:06 PM,  <harpreet@nestlabs.com> wrote:
+> From: "Harpreet \"Eli\" Sangha" <harpreet@nestlabs.com>
+>
+> After a page read, the old failure statistics are compared against the
+> new failure statistics before the new values are actually read.
+>
+> Signed-off-by: Harpreet "Eli" Sangha
 
-series applied to the spi-nor/next branch of l2-mtd
+Your email is missing in the Signed-off-by line.
+
+Also them From and Signed-off-by lines should match.
+
+Adding David on Cc.
+
+Thanks
+
+> ---
+>  tests/mtd-tests/nandbiterrs.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/tests/mtd-tests/nandbiterrs.c b/tests/mtd-tests/nandbiterrs.c
+> index 6acbfee..de9d0dd 100644
+> --- a/tests/mtd-tests/nandbiterrs.c
+> +++ b/tests/mtd-tests/nandbiterrs.c
+> @@ -268,15 +268,15 @@ static int read_page(void)
+>                 return -1;
+>         }
+>
+> +       if (ioctl(fd, ECCGETSTATS, &new) != 0)
+> +               goto failstats;
+> +
+>         if (new.failed > old.failed) {
+>                 fprintf(stderr, "Failed to recover %d bitflips\n",
+>                                 new.failed - old.failed);
+>                 return -1;
+>         }
+>
+> -       if (ioctl(fd, ECCGETSTATS, &new) != 0)
+> -               goto failstats;
+> -
+>         return new.corrected - old.corrected;
+>  failstats:
+>         perror("ECCGETSTATS");
+> --
+> 2.13.1.611.g7e3b11ae1-goog
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
