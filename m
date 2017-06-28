@@ -1,34 +1,18 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dQ9Tw-0008RU-LE
- for linux-mtd@lists.infradead.org; Wed, 28 Jun 2017 09:41:58 +0000
-Received: by mail-wm0-x244.google.com with SMTP id y5so10370223wmh.3
- for <linux-mtd@lists.infradead.org>; Wed, 28 Jun 2017 02:41:35 -0700 (PDT)
-Subject: Re: [PATCH v6 11/15] nand: spi: add basic operations support
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- =?UTF-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
- <peterpandong@micron.com>
-Cc: "richard@nod.at" <richard@nod.at>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "thomas.petazzoni@free-electrons.com" <thomas.petazzoni@free-electrons.com>,
- "marex@denx.de" <marex@denx.de>,
- "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "peterpansjtu@gmail.com" <peterpansjtu@gmail.com>,
- "linshunquan1@hisilicon.com" <linshunquan1@hisilicon.com>
-References: <1495609631-18880-1-git-send-email-peterpandong@micron.com>
- <1495609631-18880-12-git-send-email-peterpandong@micron.com>
- <20170530001152.1d8beb72@bbrezillon>
- <B7799737-B040-4824-BBAF-5A0510CD553C@micron.com>
- <20170627221552.6e4efff9@bbrezillon>
-From: Arnaud Mouiche <arnaud.mouiche@gmail.com>
-Message-ID: <07de9ec3-4ac5-2bfa-eea1-e996a4db1bba@gmail.com>
-Date: Wed, 28 Jun 2017 11:41:03 +0200
-MIME-Version: 1.0
-In-Reply-To: <20170627221552.6e4efff9@bbrezillon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dQAqJ-0006Zx-Rp
+ for linux-mtd@lists.infradead.org; Wed, 28 Jun 2017 11:09:09 +0000
+Received: from localhost (localhost.localdomain [127.0.0.1])
+ by mail.sigma-star.at (Postfix) with ESMTP id 2EEEF24E0014
+ for <linux-mtd@lists.infradead.org>; Wed, 28 Jun 2017 13:08:42 +0200 (CEST)
+Received: from linux-4sv6.suse (unknown [82.150.214.13])
+ by mail.sigma-star.at (Postfix) with ESMTPSA id BD31724E0010
+ for <linux-mtd@lists.infradead.org>; Wed, 28 Jun 2017 13:08:41 +0200 (CEST)
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 0/9] mtd-utils: various cleanups, enable compiler warnings
+Date: Wed, 28 Jun 2017 13:08:10 +0200
+Message-Id: <20170628110819.30563-1-david.oberhollenzer@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,40 +22,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Boris,
+Hello,
 
-On 27/06/2017 22:15, Boris Brezillon wrote:
->    
-> Hm, actually I wonder if this ->prepare_op() method is really what we
-> want. It seems to be here to set the proper plane number and the
-> number of dummy bytes after the address cycles.
-> I'd say deducing the plane from the page is something standard. Whether
-> we need it or not depends on the information provide in the memorg
-> object (->nplanes).
->
-> Regarding the dummy byte, do you have examples of SPI NANDs requiring
-> less or more dummy bytes in this read/write from/to cache use case?
-> If not, I'd prefer to keep it hardcoded in the core for know, and add
-> a hook when the need appears.
-Here is the page read description for various devices I have:
 
-MT29FxG01AAADD
-- fetch to internal: CMD_READ (0x13) + (3 bytes page_id)
-- read from internal: CMD_READ_RDM (0x03) + (2 bytes address + pane 
-selection @ bit 12) + 1 dummy byte
+this patch series contains a number of cleanups for mtd-utils.
 
-GD5FxxQ4xC
-- fetch to internal: CMD_READ (0x13) + (3 bytes page_id)
-- read from internal: CMD_FAST_READ (0x0B) + 1 dummy byte + (2 bytes 
-address) + 1 dummy byte
+Apart from some minor cleanups, the first larger change in the series is
+a restructuring of the dependency handling in the autoconf.ac file. The
+main idea is to always have the configure script finish and _then_ print
+a list of _all_ missing libraries for the current build configuration
+instead of having to go back and forth between installing libraries/
+changing external build scrips and rebuilding just to see what else is
+missing.
 
-MX35LFxGE4AB
-F50L1G41A
-W25N01GVZEIG
-- fetch to internal: CMD_READ (0x13) + (3 bytes page_id)
-- read from internal: CMD_READ_RDM (0x03) + (2 bytes address) + 1 dummy byte
+The second larger change deals with compiler warnings. A number of
+compiler warning flags are set if the compiler supports them. An m4
+script has been borrowed from coreutils (via util-linux) to check if
+the compiler supports a specific warning flag.
 
-But you are right. It's time to have an adopted implementation for 
-Micron as proposed by Peter, and we will adapt it later for others.
+The rest of the patch set attempts to deal with the resulting fallout.
 
-Arnaud
+For now, -Wshadow and -Wsign-compare are explicitly disabled. Dealing
+with those would require a number of non-trivial code changes that
+should probably be handled as a separate patch set.
+
+
+David
