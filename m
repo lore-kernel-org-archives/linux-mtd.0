@@ -1,16 +1,16 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dQAqg-0006gb-5s
+ id 1dQAqg-0006gF-5e
  for linux-mtd@lists.infradead.org; Wed, 28 Jun 2017 11:09:33 +0000
 Received: from localhost (localhost.localdomain [127.0.0.1])
- by mail.sigma-star.at (Postfix) with ESMTP id 69F5324E0015
+ by mail.sigma-star.at (Postfix) with ESMTP id 5920D24E0012
  for <linux-mtd@lists.infradead.org>; Wed, 28 Jun 2017 13:08:44 +0200 (CEST)
 From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Subject: [PATCH 8/9] Silence warnings about unused arguments
-Date: Wed, 28 Jun 2017 13:08:18 +0200
-Message-Id: <20170628110819.30563-9-david.oberhollenzer@sigma-star.at>
+Subject: [PATCH 3/9] Use autoconf header detection correctly for libmissing
+Date: Wed, 28 Jun 2017 13:08:13 +0200
+Message-Id: <20170628110819.30563-4-david.oberhollenzer@sigma-star.at>
 In-Reply-To: <20170628110819.30563-1-david.oberhollenzer@sigma-star.at>
 References: <20170628110819.30563-1-david.oberhollenzer@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,93 +22,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch deals with functions that need to have a certain signature,
-but don't make use of all the arguments (e.g. signal handlers).
+AC_CHECK_HEADERS already makes sure our config header contains a
+HAVE_$FOO_H macro if a header was found. There is no need to
+awkwardly set our own Automake conditionals and check for it all
+over the place in the Automake files.
 
 Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 ---
- lib/execinfo.c                        | 3 +++
- tests/fs-tests/utils/fstest_monitor.c | 2 ++
- tests/jittertest/JitterTest.c         | 6 ++++++
- 3 files changed, 11 insertions(+)
+ Makefile.am                  | 4 ----
+ configure.ac                 | 3 +--
+ include/libmissing.h         | 6 ++++--
+ lib/execinfo.c               | 4 ++--
+ tests/fs-tests/Makemodule.am | 7 +------
+ 5 files changed, 8 insertions(+), 16 deletions(-)
 
+diff --git a/Makefile.am b/Makefile.am
+index 31b21bc..4c123f2 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -10,10 +10,6 @@ if WITHOUT_LZO
+ AM_CPPFLAGS += -DWITHOUT_LZO
+ endif
+ 
+-if HAVE_EXECINFO
+-AM_CPPFLAGS += -DHAVE_EXECINFO
+-endif
+-
+ sbin_PROGRAMS =
+ sbin_SCRIPTS =
+ noinst_LIBRARIES =
+diff --git a/configure.ac b/configure.ac
+index aedbb32..8db281d 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -164,7 +164,7 @@ if test "x$need_cmocka" = "xyes"; then
+ 	PKG_CHECK_MODULES(CMOCKA, [cmocka], [], [cmocka_missing="yes"])
+ fi
+ 
+-AC_CHECK_HEADERS([execinfo.h], [execinfo_found=yes])
++AC_CHECK_HEADERS([execinfo.h])
+ 
+ ##### produce summary on dependencies #####
+ 
+@@ -223,7 +223,6 @@ fi
+ 
+ AM_CONDITIONAL([WITHOUT_LZO], [test "x$need_lzo" != "xyes"])
+ AM_CONDITIONAL([WITHOUT_XATTR], [test "x$need_xattr" != "xyes"])
+-AM_CONDITIONAL([HAVE_EXECINFO], [test "x$execinfo_found" == "xyes"])
+ 
+ AC_CHECK_SIZEOF([off_t])
+ AC_CHECK_SIZEOF([loff_t])
+diff --git a/include/libmissing.h b/include/libmissing.h
+index c765f6d..0196033 100644
+--- a/include/libmissing.h
++++ b/include/libmissing.h
+@@ -1,11 +1,13 @@
+ #ifndef LIBMISSING_H
+ #define LIBMISSING_H
+ 
+-#ifdef HAVE_EXECINFO
++#include "config.h"
++
++#ifdef HAVE_EXECINFO_H
+ #include <execinfo.h>
+ #endif
+ 
+-#ifndef HAVE_EXECINFO
++#ifndef HAVE_EXECINFO_H
+ int backtrace(void **buffer, int size);
+ char **backtrace_symbols(void *const *buffer, int size);
+ void backtrace_symbols_fd(void *const *buffer, int size, int fd);
 diff --git a/lib/execinfo.c b/lib/execinfo.c
-index a59f6a9..499b0c3 100644
+index a39df83..a59f6a9 100644
 --- a/lib/execinfo.c
 +++ b/lib/execinfo.c
-@@ -7,6 +7,7 @@
- int backtrace(void **buffer, int size)
- {
- 	void *addr = __builtin_return_address(0);
-+	(void)buffer; (void)size;
+@@ -1,6 +1,6 @@
+ #include "libmissing.h"
  
- 	errmsg("backtrace() is not implemented. Called from %p", addr);
- 	return 0;
-@@ -14,12 +15,14 @@ int backtrace(void **buffer, int size)
+-#ifndef HAVE_EXECINFO
++#ifndef HAVE_EXECINFO_H
+ #define PROGRAM_NAME "libmissing"
+ #include "common.h"
  
- char **backtrace_symbols(void *const *buffer, int size)
+@@ -22,4 +22,4 @@ void backtrace_symbols_fd(void *const *buffer, int size, int fd)
  {
-+	(void)buffer; (void)size;
- 	errmsg("backtrace_symbols() is not implemented");
- 	return NULL;
- }
- 
- void backtrace_symbols_fd(void *const *buffer, int size, int fd)
- {
-+	(void)buffer; (void)size; (void)fd;
  	errmsg("backtrace_symbols_fd() is not implemented");
  }
- #endif /* !HAVE_EXECINFO_H */
-diff --git a/tests/fs-tests/utils/fstest_monitor.c b/tests/fs-tests/utils/fstest_monitor.c
-index 58946cc..afb951b 100644
---- a/tests/fs-tests/utils/fstest_monitor.c
-+++ b/tests/fs-tests/utils/fstest_monitor.c
-@@ -177,6 +177,7 @@ static int parse_command_line(char *cmdline, int *pargc, char ***pargv)
+-#endif /* !HAVE_EXECINFO */
++#endif /* !HAVE_EXECINFO_H */
+diff --git a/tests/fs-tests/Makemodule.am b/tests/fs-tests/Makemodule.am
+index d3acaa5..2eae860 100644
+--- a/tests/fs-tests/Makemodule.am
++++ b/tests/fs-tests/Makemodule.am
+@@ -1,12 +1,7 @@
+ integck_SOURCES = tests/fs-tests/integrity/integck.c
+-integck_LDADD = libubi.a
++integck_LDADD = libubi.a libmissing.a
+ integck_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/ubi-utils/include
  
- static void signal_handler(int signum)
- {
-+	(void)signum;
- 	kill_children();
- }
+-if HAVE_EXECINFO
+-else
+-integck_LDADD += libmissing.a
+-endif
+-
+ test_1_SOURCES = tests/fs-tests/simple/test_1.c tests/fs-tests/lib/tests.c
+ test_1_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/tests/fs-tests/lib
  
-@@ -185,6 +186,7 @@ int alarm_gone_off = 0;
- 
- static void alarm_handler(int signum)
- {
-+	(void)signum;
- 	if (!result)
- 		alarm_gone_off = 1;
- 	kill_children();
-diff --git a/tests/jittertest/JitterTest.c b/tests/jittertest/JitterTest.c
-index 0364a00..4627fb0 100644
---- a/tests/jittertest/JitterTest.c
-+++ b/tests/jittertest/JitterTest.c
-@@ -426,6 +426,8 @@ void SignalHandler(
-     char tmpBuf[200];
- 
-     /* Note sigNum not used. */
-+    (void)sigNum;
-+
-     printf("Ctrl+C detected. Worst Jitter time was:%fms.\nJitterTest exiting.\n",
-            (float)LastMaxDiff/1000.0);
- 
-@@ -458,6 +460,8 @@ static void doGrabKProfile(int jitterusec, char *fileName)
-     int readBytes;
-     char readBuf[4096];
- 
-+    (void)jitterusec;
-+
-     if((fdSnapshot = open(fileName, O_WRONLY | O_CREAT, S_IRWXU)) <= 0)
-     {
-         fprintf(stderr, "Could not open file %s.\n", fileName);
-@@ -553,6 +557,8 @@ void AlarmHandler(
- 				   if invoked < 1sec apart.
- 				*/
- 
-+    (void)sigNum;
-+
-     if (gettimeofday(&CurrTimeVal, NULL) == (int) 0) {
- 
-         /*----------------------------------------------------------------
 -- 
 2.12.3
