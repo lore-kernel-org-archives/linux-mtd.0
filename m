@@ -1,31 +1,32 @@
-Received: from mail-vk0-x242.google.com ([2607:f8b0:400c:c05::242])
+Received: from mail-it0-f66.google.com ([209.85.214.66])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dQKNi-00028W-9j
- for linux-mtd@lists.infradead.org; Wed, 28 Jun 2017 21:20:16 +0000
-Received: by mail-vk0-x242.google.com with SMTP id 82so4569178vki.0
- for <linux-mtd@lists.infradead.org>; Wed, 28 Jun 2017 14:19:52 -0700 (PDT)
+ id 1dQM5n-0006Yb-8K
+ for linux-mtd@lists.infradead.org; Wed, 28 Jun 2017 23:09:53 +0000
+Received: by mail-it0-f66.google.com with SMTP id x12so6680813itb.0
+ for <linux-mtd@lists.infradead.org>; Wed, 28 Jun 2017 16:09:30 -0700 (PDT)
+Date: Wed, 28 Jun 2017 18:09:28 -0500
+From: Rob Herring <robh@kernel.org>
+To: matthew.gerlach@linux.intel.com
+Cc: Marek Vasut <marek.vasut@gmail.com>, vndao@altera.com,
+ dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, richard@nod.at,
+ cyrille.pitchen@wedev4u.fr, mark.rutland@arm.com,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+ davem@davemloft.net, mchehab@kernel.org
+Subject: Re: [PATCH 1/3] ARM: dts: Bindings for Altera Quadspi Controller
+ Version 2
+Message-ID: <20170628230928.k3hafpxhqrr26val@rob-hp-laptop>
+References: <1498493619-4633-1-git-send-email-matthew.gerlach@linux.intel.com>
+ <1498493619-4633-2-git-send-email-matthew.gerlach@linux.intel.com>
+ <0bfc282d-2aec-8f36-1528-312f7ded8d9c@gmail.com>
+ <alpine.DEB.2.20.1706270722440.8058@mgerlach-VirtualBox>
+ <0ca53c35-732c-a122-8191-6d102e824d52@gmail.com>
+ <alpine.DEB.2.20.1706270833100.8058@mgerlach-VirtualBox>
 MIME-Version: 1.0
-In-Reply-To: <20170624231025.23292-1-zajec5@gmail.com>
-References: <20170624231025.23292-1-zajec5@gmail.com>
-From: Jonas Gorski <jonas.gorski@gmail.com>
-Date: Wed, 28 Jun 2017 23:19:31 +0200
-Message-ID: <CAOiHx=kkOfQpj-aUdck25WDQQkpwxRh8CDJAmP=ymSMm02K_Vg@mail.gmail.com>
-Subject: Re: [PATCH V4 1/2] mtd: partitions: add of_match_table parser matching
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Frank Rowand <frowand.list@gmail.com>, Linus Walleij <linus.walleij@linaro.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Florian Fainelli <f.fainelli@gmail.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.20.1706270833100.8058@mgerlach-VirtualBox>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,63 +36,129 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Tue, Jun 27, 2017 at 08:57:14AM -0700, matthew.gerlach@linux.intel.com wrote:
+> 
+> 
+> On Tue, 27 Jun 2017, Marek Vasut wrote:
+> 
+> > On 06/27/2017 04:32 PM, matthew.gerlach@linux.intel.com wrote:
+> > > 
+> > > 
+> > > On Tue, 27 Jun 2017, Marek Vasut wrote:
+> > > 
+> > > Hi Marek,
+> > > 
+> > > Thanks for the feedback.  See my comments below.
+> > > 
+> > > Matthew Gerlach
+> > > 
+> > > > On 06/26/2017 06:13 PM, matthew.gerlach@linux.intel.com wrote:
+> > > > > From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> > > > > 
+> > > > > Device Tree bindings for Version 2 of the Altera Quadspi Controller
+> > > > > that can be optionally paired with a windowed bridge.
+> > > > > 
+> > > > > Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> > > > > ---
+> > > > >  .../devicetree/bindings/mtd/altera-quadspi-v2.txt  | 37
+> > > > > ++++++++++++++++++++++
+> > > > >  1 file changed, 37 insertions(+)
+> > > > >  create mode 100644
+> > > > > Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
+> > > > > 
+> > > > > diff --git
+> > > > > a/Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
+> > > > > b/Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
+> > > > > new file mode 100644
+> > > > > index 0000000..8ba63d7
+> > > > > --- /dev/null
+> > > > > +++ b/Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
+> > > > > @@ -0,0 +1,37 @@
+> > > > > +* Altera Quad SPI Controller Version 2
+> > > > > +
+> > > > > +Required properties:
+> > > > > +- compatible : Should be "altr,quadspi-v2".
+> > > > > +- reg : Contains at least two entries, and possibly three entries,
+> > > > > each of
+> > > > > +    which is a tuple consisting of a physical address and length.
+> > > > > +- reg-names : Should contain the names "avl_csr" and "avl_mem"
+> > > > > corresponding
+> > > > > +          to the control and status registers and qspi memory,
+> > > > > respectively.
+> > > > > +
+> > > > > +
+> > > > > +The Altera Quad SPI Controller Version 2 can be paired with a
+> > > > > windowed bridge
+> > > > > +in order to reduce the footprint of the memory interface.  When a
+> > > > > windowed
+> > > > > +bridge is used, reads and writes of data must be 32 bits wide.
+> > > > > +
+> > > > > +Optional properties:
+> > > > > +- reg-names : Should contain the name "avl_window", if the windowed
+> > > > > bridge
+> > > > > +          is used.  This name corresponds to the register space that
+> > > > > +          controls the window.
+> > > > > +- window-size : The size of the window which must be an even power
+> > > > > of 2.
+> > > > > +- read-bit-reverse : A boolean indicating the data read from the
+> > > > > flash should
+> > > > > +             be bit reversed on a byte by byte basis before being
+> > > > > +             delivered to the MTD layer.
+> > > > > +- write-bit-reverse : A boolean indicating the data written to the
+> > > > > flash should
+> > > > > +              be bit reversed on a byte by byte basis.
+> > > > 
+> > > > Is there ever a usecase where you need to set just one of these props ?
+> > > > Also, they're altera specific, so altr, prefix should be added.
+> > > 
+> > > In general, I think if bit reversal is required, it would be required in
+> > > both directions.  However, anything is possible when using FPGAs.  So
+> > > I thought separate booleans would be future proofing the bindings.
+> > 
+> > Maybe we should drop this whole thing and add it when this is actually
+> > required.
+> > 
+> > Are there any users of this in the wild currently ?
+> > 
+> > What is the purpose of doing this per-byte bit reverse instead of
+> > storing th bits in the original order ?
+> 
+> Hi Marek,
+> 
+> Yes, there is hardware that has been in the wild for years that needs this
+> bit reversal.  The specific use case is when a flash chip is connected to
+> a FPGA, and the contents of the flash is used to configure the FPGA on power
+> up.  In this use case, there is no processor involved with configuring the
+> FPGA.  I am most familiar with this feature/bug with Altera FPGAs, but I
+> believe this issue exists with other programmable devices.
+> 
+> > 
+> > > Thinking about this binding more, I wonder if the binding name(s)
+> > > should be (read|write)-bit8-reverse to indicate reversings the bits
+> > > in a byte as opposed to reversing the bits in a 32 bit word?
+> > > 
+> > > I don't think bit reversal is specific to Altera/Intel components. I see
+> > > a nand driver performing bit reversal, and I think I've recently seen
+> > > other FPGA based drivers requiring bit reversal.
+> > 
+> > $ git grep bit.reverse Documentation/devicetree/ | wc -l
+> > 0
+> > 
+> > So we don't have such a generic binding . It's up to Rob (I guess) to
+> > decide whether this is SoC specific and should've altr, prefix or not.
+> > IMO it is.
+> 
+> I agree there is no generic binding at this time, and I look forward
+> to any input from Rob and anyone else on this issue.  I think it is worth
+> pointing out that this really isn't an issue of an SoC, but rather it is an
+> issue of how data in the flash chip is accessed.  I think what makes this issue
+> "weird" is that we have different hardware accessing the data in the flash
+> with a different perspective.  The FPGA looks at the data from one
+> perspective on power up, and a processor trying to update the flash has a
+> different perspective.
 
-On 25 June 2017 at 01:10, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
-> From: Brian Norris <computersforpeace@gmail.com>
->
-> Partition parsers can now provide an of_match_table to enable
-> flash<-->parser matching via device tree.
->
-> This support is currently limited to built-in parsers as it uses
-> request_module() and friends. This should be sufficient for most cases
-> though as compiling parsers as modules isn't a common choice.
->
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+Given the comment that it is reversing bits in each byte, that seems 
+fairly Altera specific. I'd be more in favor of a generic property if it 
+was flipping all the bits in a word (for any size word).
 
-I gave this and Rafa=C5=82's recent patches a spin and split out
-bcm63xxpart's imagetag parsing into its own parser as a partition
-parser assigned to the imagetag partition, then added an
-of_match_table to bcm63xxpart, and it worked beautifully:
-
-[    1.111302] m25p80 spi1.0: s25fl129p1 (16384 Kbytes)
-[    1.117222] bcm63xxpart: Partition 0 is CFE offset 0 and length 10000
-[    1.127313] bcm63xxpart: Partition 1 is nvram offset ff0000 and length 1=
-0000
-[    1.134604] bcm63xxpart: Partition 2 is linux offset 10000 and length fe=
-0000
-[    1.141927] 3 bcm63xxpart partitions found on MTD device spi1.0
-[    1.148032] Creating 3 MTD partitions on "spi1.0":
-[    1.152945] 0x000000000000-0x000000010000 : "CFE"
-[    1.161004] 0x000000ff0000-0x000001000000 : "nvram"
-[    1.169777] 0x000000010000-0x000000ff0000 : "linux"
-[    1.179489] parser_bcm63xx_imagetag: rootfs: CFE image tag found at
-0x0 with version 6, board type 96328avng
-[    1.189671] parser_bcm63xx_imagetag: Partition 0 is kernel offset
-100 and length 151f52
-[    1.197902] parser_bcm63xx_imagetag: Partition 1 is rootfs offset
-152052 and length e8dfae
-[    1.206405] parser_bcm63xx_imagetag: Spare partition is offset
-350004 and length c8fffc
-[    1.214738] 2 bcm63xx-imagetag partitions found on MTD device linux
-[    1.221201] Creating 2 MTD partitions on "linux":
-[    1.226032] 0x000000000100-0x000000152052 : "kernel"
-[    1.234445] 0x000000152052-0x000000fe0000 : "rootfs"
-
-Things I did:
-1) having just the compatible for bcm63xxpart: bcm63xxpart was used.
-2) bcm63xxpart, then fixed-partitions as two compatible strings:
-bcm63xxpart was used.
-3) fixed-partitons, then bcm63xxpart: ofpart was used.
-4) non-existent compatible, then fixed-partitons: ofpart was used.
-
-then I ran out of ideas to test.
-
-I guess this might be enough for a
-
-Tested-by: Jonas Gorski <jonas.gorski@gmail.com>
-
-
-Regards
-Jonas
+Rob
