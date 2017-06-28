@@ -1,20 +1,21 @@
-Received: from mail.aswsp.com ([193.34.35.150])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dQG6T-0006jq-JE
- for linux-mtd@lists.infradead.org; Wed, 28 Jun 2017 16:46:11 +0000
-Subject: Re: [PATCH -next] mtd: nand: Add support for Toshiba BENAND (Built-in
- ECC NAND)
-References: <1495761335-20535-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
- <20170526182254.6a4f98c8@bbrezillon>
-From: Jean-Louis Thekekara <jeanlouis.thekekara@parrot.com>
-To: <linux-mtd@lists.infradead.org>
-Message-ID: <36cc0535-09c9-8bd0-8ff2-85ccab17f765@parrot.com>
-Date: Wed, 28 Jun 2017 18:45:37 +0200
-MIME-Version: 1.0
-In-Reply-To: <20170526182254.6a4f98c8@bbrezillon>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From: Andrea Adami <andrea.adami@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Lee Jones <lee.jones@linaro.org>, Daniel Mack <daniel@zonque.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Russell King <linux@armlinux.org.uk>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v4 0/9] mtd: sharpslpart partition parser
+Date: Wed, 28 Jun 2017 22:30:27 +0200
+Message-Id: <1498681836-3765-1-git-send-email-andrea.adami@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,106 +25,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Kobayashi, Boris,
+This patchset introduces a simple partition parser for the Sharp SL
+Series PXA handhelds. More details in the commit text.
 
-I'm using a Toshiba BENAND for our next product and had to adapt the 
-original patch for our custom kernel (4.9). I was about to propose a 
-patch for linux-next until I see this update proposed by Kobayashi.
+I have set in cc the ARM PXA maintainers because this is the MTD part of
+a planned wider patchset cleaning the Zaurus board files. The MFD maintainers
+are also in cc (tmio.h change).
 
-I have a few comments on it.
+Changelog:
+v1 initial import of 2.4 sources [1]
+v2 refactor applying many suggested fixes [2]
+v3 put the partition parser types in the platform data [3]
+v4 refactor after ML review [4]
 
-On 26/05/2017 18:22, boris.brezillon at free-electrons.com (Boris
->> +config MTD_NAND_BENAND
->> +	bool "Support for Toshiba BENAND (Built-in ECC NAND)"
->> +	default n
->> +	help
->> +	  This enables support for Toshiba BENAND.
->> +	  Toshiba BENAND is a SLC NAND solution that automatically
->> +	  generates ECC inside NAND chip.
->> +
->> +config MTD_NAND_BENAND_ECC_STATUS
->> +	bool "Enable ECC Status Read Command(0x7A)"
->> +	depends on MTD_NAND_BENAND
->> +	default n
->> +	help
->> +	  This enables support for ECC Status Read Command(0x7A) of BENAND.
->> +	  When this enables, report the real number of bitflips.
->> +	  In other cases, report the assumud number.
->> +
-> 
-> Please drop the Kconfig options. The amount of code added here is quite
-> small, and I don't think we need to compile it out. If the vendor code
-> continues to grow we'll see how we want to deal with that, but we're
-> not there yet.
-> 
-I'm interested into keeping MTD_NAND_BENAND_ECC_STATUS config for two 
-reasons:
+[1] http://support.ezaurus.com/developer/source/source_dl.asp
+[2] https://github.com/LinuxPDA/linux/commits/sharpslpart_v2
+[3] https://github.com/LinuxPDA/linux/commits/sharpslpart_v3
+[4] https://github.com/LinuxPDA/linux/commits/sharpslpart_v4
 
-* if disabled, this can save some extra cycles. One can decide to report 
-an arbitrary number of bitflips (= mtd->bitflip_threshold), it's fine.
-* some NAND controller/driver might not support this command, as you 
-stated later.
+Andrea Adami (9):
+  mtd: sharpslpart: add sharpslpart MTD partition parser
+  mtd: nand: sharpsl.h: support partition parser types
+  mfd: tmio.h: support partition parser types
+  mtd: nand: sharpsl.c: take in account partition parser types
+  mtd: nand: tmio_nand.c: take in account partition parser types
+  ARM: pxa: corgi.c: remove hardcoded partitioning, use sharpslpart
+    parser
+  ARM: pxa: tosa.c: remove hardcoded partitioning, use sharpslpart
+    parser
+  ARM: pxa: spitz.c: remove hardcoded partitioning, use sharpslpart
+    parser
+  ARM: pxa: poodle.c: remove hardcoded partitioning, use sharpslpart
+    parser
 
->>   static void toshiba_nand_decode_id(struct nand_chip *chip)
->>   {
->>   	struct mtd_info *mtd = nand_to_mtd(chip);
->> @@ -33,15 +124,32 @@ static void toshiba_nand_decode_id(struct nand_chip *chip)
->>   	 */
->>   	if (chip->id.len >= 6 && nand_is_slc(chip) &&
->>   	    (chip->id.data[5] & 0x7) == 0x6 /* 24nm */ &&
->> -	    !(chip->id.data[4] & 0x80) /* !BENAND */)
->> -		mtd->oobsize = 32 * mtd->writesize >> 9;
->> +	    (chip->id.data[4] & 0x80) /* BENAND */) {
->> +		if (IS_ENABLED(CONFIG_MTD_NAND_BENAND))
->> +			chip->ecc.mode = NAND_ECC_BENAND;
-> 
-> No, you should not set that explicitly. This choice should be left to
-> the user. Now, since the internal ECC engine cannot be disabled here,
-> you should fail in toshiba_nand_init() if you are dealing with a BENAND
-> and chip->ecc.mode != NAND_ECC_ON_DIE.
-> 
-> 
->> +	} else {
->> +		mtd->oobsize = 32 * mtd->writesize >> 9;	/* !BENAND */
->> +	}
-> 
-> You're changing the ID decoding logic here.
-> 
-> It should be:
-> 
-> 	if (chip->id.len >= 6 && nand_is_slc(chip) &&
->    	    (chip->id.data[5] & 0x7) == 0x6 /* 24nm */) {
-> 		if (chip->id.data[4] & 0x80)
-> 			chip->ecc.mode = NAND_ECC_BENAND;
-> 		else
-> 			mtd->oobsize = 32 * mtd->writesize >> 9;
-> 	}
->>   }
->>
+ arch/arm/mach-pxa/corgi.c    |  31 +---
+ arch/arm/mach-pxa/poodle.c   |  28 +---
+ arch/arm/mach-pxa/spitz.c    |  34 +---
+ arch/arm/mach-pxa/tosa.c     |  28 +---
+ drivers/mtd/Kconfig          |   8 +
+ drivers/mtd/Makefile         |   1 +
+ drivers/mtd/nand/sharpsl.c   |   2 +-
+ drivers/mtd/nand/tmio_nand.c |   4 +-
+ drivers/mtd/sharpslpart.c    | 391 +++++++++++++++++++++++++++++++++++++++++++
+ include/linux/mfd/tmio.h     |   1 +
+ include/linux/mtd/sharpsl.h  |   1 +
+ 11 files changed, 439 insertions(+), 90 deletions(-)
+ create mode 100644 drivers/mtd/sharpslpart.c
 
-I have a BENAND in my hands which, according to the datasheet reports 
-only 5 bytes, so we can't depend on chip->id.len >= 6 for selecting 
-NAND_ECC_BENAND. Another reason: some NAND controller don't report more 
-than 5 bytes (which is, by the way, our case).
-
-It could be something like:
-
->  if (chip->id.len >=5) {
->     if(chip->id.data[4] & 0x80) {
->       chip->ecc.mode = NAND_ECC_BENAND;
->     }
->     /*
->      * Toshiba 24nm raw SLC (i.e., not BENAND) have 32B OOB per
->      * 512B page. For Toshiba SLC, we decode the 5th/6th byte as
->      * follows:
->      * - ID byte 6, bits[2:0]: 100b -> 43nm, 101b -> 32nm,
->      *                         110b -> 24nm
->      * - ID byte 5, bit[7]:    1 -> BENAND, 0 -> raw SLC
->      */
->     else if (chip->id.len >= 6 && nand_is_slc(chip) &&
->              (chip->id.data[5] & 0x7) == 0x6 /* 24nm */) {
->       mtd->oobsize = 32 * mtd->writesize >> 9;
->     }
->   }
-    Regards,
-Jean-Louis Thekekara.
+-- 
+2.7.4
