@@ -1,25 +1,21 @@
 Received: from hauke-m.de ([5.39.93.123] helo=mail.hauke-m.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dQg2S-0001Hj-MH
- for linux-mtd@lists.infradead.org; Thu, 29 Jun 2017 20:27:47 +0000
-Subject: Re: [PATCH v5 07/16] Documentation: DT: MIPS: lantiq: Add docs for
- the RCU bindings
-To: Rob Herring <robh@kernel.org>
-References: <20170620223743.13735-1-hauke@hauke-m.de>
- <20170620223743.13735-8-hauke@hauke-m.de>
- <20170623221224.fhfc6ezydd3uglfr@rob-hp-laptop>
-Cc: ralf@linux-mips.org, linux-mips@linux-mips.org,
- linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
- devicetree@vger.kernel.org, martin.blumenstingl@googlemail.com,
- john@phrozen.org, linux-spi@vger.kernel.org, hauke.mehrtens@intel.com,
- andy.shevchenko@gmail.com, p.zabel@pengutronix.de
+ id 1dQhAw-0000Vq-VC
+ for linux-mtd@lists.infradead.org; Thu, 29 Jun 2017 21:40:37 +0000
 From: Hauke Mehrtens <hauke@hauke-m.de>
-Message-ID: <1171930b-769b-f0ea-778e-ddcd11b20775@hauke-m.de>
-Date: Thu, 29 Jun 2017 22:27:19 +0200
-MIME-Version: 1.0
-In-Reply-To: <20170623221224.fhfc6ezydd3uglfr@rob-hp-laptop>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+To: ralf@linux-mips.org
+Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
+ linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+ martin.blumenstingl@googlemail.com, john@phrozen.org,
+ linux-spi@vger.kernel.org, hauke.mehrtens@intel.com, robh@kernel.org,
+ andy.shevchenko@gmail.com, p.zabel@pengutronix.de,
+ Hauke Mehrtens <hauke@hauke-m.de>
+Subject: [PATCH v6 01/16] MIPS: lantiq: Use of_platform_default_populate
+ instead of __dt_register_buses
+Date: Thu, 29 Jun 2017 23:39:36 +0200
+Message-Id: <20170629213951.31176-2-hauke@hauke-m.de>
+In-Reply-To: <20170629213951.31176-1-hauke@hauke-m.de>
+References: <20170629213951.31176-1-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,182 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/24/2017 12:12 AM, Rob Herring wrote:
-> On Wed, Jun 21, 2017 at 12:37:34AM +0200, Hauke Mehrtens wrote:
->> From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
->>
->> This adds the initial documentation for the RCU module (a MFD device
->> which provides USB PHYs, reset controllers and more).
->>
->> The RCU register range is used for multiple purposes. Mostly one device
->> uses one or multiple register exclusively, but for some registers some
->> bits are for one driver and some other bits are for a different driver.
->> With this patch all accesses to the RCU registers will go through
->> syscon.
->>
->> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
->> ---
->>  .../devicetree/bindings/mips/lantiq/rcu.txt        | 95 ++++++++++++++++++++++
->>  1 file changed, 95 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/mips/lantiq/rcu.txt
->>
->> diff --git a/Documentation/devicetree/bindings/mips/lantiq/rcu.txt b/Documentation/devicetree/bindings/mips/lantiq/rcu.txt
->> new file mode 100644
->> index 000000000000..9c875f4f3c90
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mips/lantiq/rcu.txt
->> @@ -0,0 +1,95 @@
->> +Lantiq XWAY SoC RCU binding
->> +===========================
->> +
->> +This binding describes the RCU (reset controller unit) multifunction device,
->> +where each sub-device has it's own set of registers.
->> +
->> +The RCU register range is used for multiple purposes. Mostly one device
->> +uses one or multiple register exclusively, but for some registers some
->> +bits are for one driver and some other bits are for a different driver.
->> +With this patch all accesses to the RCU registers will go through
->> +syscon.
->> +
->> +
->> +-------------------------------------------------------------------------------
->> +Required properties:
->> +- compatible	: The first and second values must be:
->> +		  "lantiq,xrx200-rcu", "simple-mfd", "syscon"
->> +- reg		: The address and length of the system control registers
->> +
->> +
->> +-------------------------------------------------------------------------------
->> +Example of the RCU bindings on a xRX200 SoC:
->> +	rcu0: rcu@203000 {
->> +		compatible = "lantiq,xrx200-rcu", "simple-mfd", "syscon";
->> +		reg = <0x203000 0x100>;
->> +		ranges = <0x0 0x203000 0x100>;
->> +		big-endian;
->> +
->> +		gphy0: gphy@0 {
-> 
-> unit address should match reg, so "phy@20"
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-done
+This allows populating syscon devices which are using "simple-mfd"
+instead of "simple-bus".
 
->> +			compatible = "lantiq,xrx200a2x-gphy";
->> +			reg = <0x20 0x4>;
->> +
->> +			resets = <&reset0 31 30>, <&reset1 7 7>;
->> +			reset-names = "gphy", "gphy2";
->> +			lantiq,gphy-mode = <GPHY_MODE_GE>;
->> +		};
->> +
->> +		gphy1: gphy@1 {
-> 
-> phy@68
+Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+---
+ arch/mips/lantiq/prom.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-done
-
->> +			compatible = "lantiq,xrx200a2x-gphy";
->> +			reg = <0x68 0x4>;
->> +
->> +			resets = <&reset0 29 28>, <&reset1 6 6>;
->> +			reset-names = "gphy", "gphy2";
->> +			lantiq,gphy-mode = <GPHY_MODE_GE>;
->> +		};
->> +
->> +		reset0: reset-controller@0 {
-> 
-> ...@10
-
-done
-
-
->> +			compatible = "lantiq,xrx200-reset";
->> +
->> +			offset-set = <0x10>;
->> +			offset-status = <0x14>;
-> 
-> reg = <0x10 8>;
-
-done
-
->> +			#reset-cells = <2>;
->> +		};
->> +
->> +		reset1: reset-controller@1 {
->> +			compatible = "lantiq,xrx200-reset";
->> +
->> +			offset-set = <0x48>;
->> +			offset-status = <0x24>;
-> 
-> reg = <0x48 4>, <0x24 4>;
-
-done
-
->> +			#reset-cells = <2>;
->> +		};
->> +
->> +		usb_phy0: usb2-phy@0 {
->> +			compatible = "lantiq,xrx200-usb2-phy";
->> +			status = "disabled";
->> +
->> +			regmap = <&rcu0>;
-> 
-> This should be dropped.
-
-I will get this from the parent device now.
-
->> +			offset-phy = <0x18>;
->> +			offset-ana = <0x38>;
-> 
-> Use reg.
-
-There is also one bit used to reset the DSL digital frontend at offset
-0x38. This has nothing to do with USB.
-
->> +			resets = <&reset1 4 4>, <&reset0 4 4>;
->> +			reset-names = "phy", "ctrl";
->> +			#phy-cells = <0>;
->> +		};
->> +
->> +		usb_phy1: usb2-phy@1 {
->> +			compatible = "lantiq,xrx200-usb2-phy";
->> +			status = "disabled";
->> +
->> +			regmap = <&rcu0>;
-> 
-> Drop.
-
-done
-
->> +			offset-phy = <0x34>;
->> +			offset-ana = <0x3C>;
-> 
-> Use reg.
-
-There is also a bits to configure something with the DSL dying gasp at
-offset 0x34. This has nothing to do with USB.
-
-> 
->> +			resets = <&reset1 5 4>, <&reset0 4 4>;
->> +			reset-names = "phy", "ctrl";
->> +			#phy-cells = <0>;
->> +		};
->> +
->> +		reboot {
->> +			compatible = "syscon-reboot";
->> +
->> +			regmap = <&rcu0>;
-> 
-> Drop.
-
-The syscon-reboot driver uses this code to get the regmap:
-ctx->map = syscon_regmap_lookup_by_phandle(dev->of_node, "regmap");
-This driver was not added by me.
-
->> +			offset = <0x10>;
->> +			mask = <0x40000000>;
->> +		};
->> +	};
->> +
->> -- 
->> 2.11.0
->>
+diff --git a/arch/mips/lantiq/prom.c b/arch/mips/lantiq/prom.c
+index 96773bed8a8a..9ff7ccde9de0 100644
+--- a/arch/mips/lantiq/prom.c
++++ b/arch/mips/lantiq/prom.c
+@@ -117,7 +117,7 @@ void __init prom_init(void)
+ 
+ int __init plat_of_setup(void)
+ {
+-	return __dt_register_buses(soc_info.compatible, "simple-bus");
++	return of_platform_default_populate(NULL, NULL, NULL);
+ }
+ 
+ arch_initcall(plat_of_setup);
+-- 
+2.11.0
