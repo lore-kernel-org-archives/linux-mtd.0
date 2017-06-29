@@ -1,21 +1,32 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dQThd-0008Ut-I8
- for linux-mtd@lists.infradead.org; Thu, 29 Jun 2017 07:17:26 +0000
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org, mark.rutland@arm.com
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- andy.gross@linaro.org, architt@codeaurora.org, sricharan@codeaurora.org,
- Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH 07/14] qcom: mtd: nand: support for passing flags in transfer
- functions
-Date: Thu, 29 Jun 2017 12:45:59 +0530
-Message-Id: <1498720566-20782-8-git-send-email-absahu@codeaurora.org>
-In-Reply-To: <1498720566-20782-1-git-send-email-absahu@codeaurora.org>
-References: <1498720566-20782-1-git-send-email-absahu@codeaurora.org>
+Received: from mail-wr0-x241.google.com ([2a00:1450:400c:c0c::241])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dQW02-0005Gk-VR
+ for linux-mtd@lists.infradead.org; Thu, 29 Jun 2017 09:44:37 +0000
+Received: by mail-wr0-x241.google.com with SMTP id 77so36263753wrb.3
+ for <linux-mtd@lists.infradead.org>; Thu, 29 Jun 2017 02:44:14 -0700 (PDT)
+Subject: Re: [PATCH 1/3] ARM: dts: Bindings for Altera Quadspi Controller
+ Version 2
+To: Rob Herring <robh@kernel.org>, matthew.gerlach@linux.intel.com
+References: <1498493619-4633-1-git-send-email-matthew.gerlach@linux.intel.com>
+ <1498493619-4633-2-git-send-email-matthew.gerlach@linux.intel.com>
+ <0bfc282d-2aec-8f36-1528-312f7ded8d9c@gmail.com>
+ <alpine.DEB.2.20.1706270722440.8058@mgerlach-VirtualBox>
+ <0ca53c35-732c-a122-8191-6d102e824d52@gmail.com>
+ <alpine.DEB.2.20.1706270833100.8058@mgerlach-VirtualBox>
+ <20170628230928.k3hafpxhqrr26val@rob-hp-laptop>
+Cc: vndao@altera.com, dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, richard@nod.at,
+ cyrille.pitchen@wedev4u.fr, mark.rutland@arm.com,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+ davem@davemloft.net, mchehab@kernel.org
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <5bd89165-3e42-9db4-321d-5f3df35922ce@gmail.com>
+Date: Thu, 29 Jun 2017 11:43:55 +0200
+MIME-Version: 1.0
+In-Reply-To: <20170628230928.k3hafpxhqrr26val@rob-hp-laptop>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,318 +36,137 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The BAM has multiple flags to control the transfer. This patch
-adds flags parameter in register and data transfer functions and
-modifies all these function call with appropriate flags.
+On 06/29/2017 01:09 AM, Rob Herring wrote:
+> On Tue, Jun 27, 2017 at 08:57:14AM -0700, matthew.gerlach@linux.intel.com wrote:
+>>
+>>
+>> On Tue, 27 Jun 2017, Marek Vasut wrote:
+>>
+>>> On 06/27/2017 04:32 PM, matthew.gerlach@linux.intel.com wrote:
+>>>>
+>>>>
+>>>> On Tue, 27 Jun 2017, Marek Vasut wrote:
+>>>>
+>>>> Hi Marek,
+>>>>
+>>>> Thanks for the feedback.  See my comments below.
+>>>>
+>>>> Matthew Gerlach
+>>>>
+>>>>> On 06/26/2017 06:13 PM, matthew.gerlach@linux.intel.com wrote:
+>>>>>> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+>>>>>>
+>>>>>> Device Tree bindings for Version 2 of the Altera Quadspi Controller
+>>>>>> that can be optionally paired with a windowed bridge.
+>>>>>>
+>>>>>> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+>>>>>> ---
+>>>>>>  .../devicetree/bindings/mtd/altera-quadspi-v2.txt  | 37
+>>>>>> ++++++++++++++++++++++
+>>>>>>  1 file changed, 37 insertions(+)
+>>>>>>  create mode 100644
+>>>>>> Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
+>>>>>>
+>>>>>> diff --git
+>>>>>> a/Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
+>>>>>> b/Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
+>>>>>> new file mode 100644
+>>>>>> index 0000000..8ba63d7
+>>>>>> --- /dev/null
+>>>>>> +++ b/Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
+>>>>>> @@ -0,0 +1,37 @@
+>>>>>> +* Altera Quad SPI Controller Version 2
+>>>>>> +
+>>>>>> +Required properties:
+>>>>>> +- compatible : Should be "altr,quadspi-v2".
+>>>>>> +- reg : Contains at least two entries, and possibly three entries,
+>>>>>> each of
+>>>>>> +    which is a tuple consisting of a physical address and length.
+>>>>>> +- reg-names : Should contain the names "avl_csr" and "avl_mem"
+>>>>>> corresponding
+>>>>>> +          to the control and status registers and qspi memory,
+>>>>>> respectively.
+>>>>>> +
+>>>>>> +
+>>>>>> +The Altera Quad SPI Controller Version 2 can be paired with a
+>>>>>> windowed bridge
+>>>>>> +in order to reduce the footprint of the memory interface.  When a
+>>>>>> windowed
+>>>>>> +bridge is used, reads and writes of data must be 32 bits wide.
+>>>>>> +
+>>>>>> +Optional properties:
+>>>>>> +- reg-names : Should contain the name "avl_window", if the windowed
+>>>>>> bridge
+>>>>>> +          is used.  This name corresponds to the register space that
+>>>>>> +          controls the window.
+>>>>>> +- window-size : The size of the window which must be an even power
+>>>>>> of 2.
+>>>>>> +- read-bit-reverse : A boolean indicating the data read from the
+>>>>>> flash should
+>>>>>> +             be bit reversed on a byte by byte basis before being
+>>>>>> +             delivered to the MTD layer.
+>>>>>> +- write-bit-reverse : A boolean indicating the data written to the
+>>>>>> flash should
+>>>>>> +              be bit reversed on a byte by byte basis.
+>>>>>
+>>>>> Is there ever a usecase where you need to set just one of these props ?
+>>>>> Also, they're altera specific, so altr, prefix should be added.
+>>>>
+>>>> In general, I think if bit reversal is required, it would be required in
+>>>> both directions.  However, anything is possible when using FPGAs.  So
+>>>> I thought separate booleans would be future proofing the bindings.
+>>>
+>>> Maybe we should drop this whole thing and add it when this is actually
+>>> required.
+>>>
+>>> Are there any users of this in the wild currently ?
+>>>
+>>> What is the purpose of doing this per-byte bit reverse instead of
+>>> storing th bits in the original order ?
+>>
+>> Hi Marek,
+>>
+>> Yes, there is hardware that has been in the wild for years that needs this
+>> bit reversal.  The specific use case is when a flash chip is connected to
+>> a FPGA, and the contents of the flash is used to configure the FPGA on power
+>> up.  In this use case, there is no processor involved with configuring the
+>> FPGA.  I am most familiar with this feature/bug with Altera FPGAs, but I
+>> believe this issue exists with other programmable devices.
+>>
+>>>
+>>>> Thinking about this binding more, I wonder if the binding name(s)
+>>>> should be (read|write)-bit8-reverse to indicate reversings the bits
+>>>> in a byte as opposed to reversing the bits in a 32 bit word?
+>>>>
+>>>> I don't think bit reversal is specific to Altera/Intel components. I see
+>>>> a nand driver performing bit reversal, and I think I've recently seen
+>>>> other FPGA based drivers requiring bit reversal.
+>>>
+>>> $ git grep bit.reverse Documentation/devicetree/ | wc -l
+>>> 0
+>>>
+>>> So we don't have such a generic binding . It's up to Rob (I guess) to
+>>> decide whether this is SoC specific and should've altr, prefix or not.
+>>> IMO it is.
+>>
+>> I agree there is no generic binding at this time, and I look forward
+>> to any input from Rob and anyone else on this issue.  I think it is worth
+>> pointing out that this really isn't an issue of an SoC, but rather it is an
+>> issue of how data in the flash chip is accessed.  I think what makes this issue
+>> "weird" is that we have different hardware accessing the data in the flash
+>> with a different perspective.  The FPGA looks at the data from one
+>> perspective on power up, and a processor trying to update the flash has a
+>> different perspective.
+> 
+> Given the comment that it is reversing bits in each byte, that seems 
+> fairly Altera specific. I'd be more in favor of a generic property if it 
+> was flipping all the bits in a word (for any size word).
 
-Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
----
- drivers/mtd/nand/qcom_nandc.c | 114 ++++++++++++++++++++++++------------------
- 1 file changed, 65 insertions(+), 49 deletions(-)
+Actually, I'd prefer to fix up the FPGA bitstream in software and then
+write the fixed up bitstream into the flash. That way there's no need
+for any such DT property and other FPGA vendors (ie. xilinx) do it that
+way already.
 
-diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-index 7042a65..65c9059 100644
---- a/drivers/mtd/nand/qcom_nandc.c
-+++ b/drivers/mtd/nand/qcom_nandc.c
-@@ -170,6 +170,14 @@
- #define	ECC_BCH_4BIT	BIT(2)
- #define	ECC_BCH_8BIT	BIT(3)
- 
-+/* Flags used for BAM DMA desc preparation*/
-+/* Don't set the EOT in current tx sgl */
-+#define NAND_BAM_NO_EOT			(0x0001)
-+/* Set the NWD flag in current sgl */
-+#define NAND_BAM_NWD			(0x0002)
-+/* Finish writing in the current sgl and start writing in another sgl */
-+#define NAND_BAM_NEXT_SGL		(0x0004)
-+
- #define QPIC_PER_CW_MAX_CMD_ELEMENTS	(32)
- #define QPIC_PER_CW_MAX_CMD_SGL		(32)
- #define QPIC_PER_CW_MAX_DATA_SGL	(8)
-@@ -712,7 +720,7 @@ static int prep_dma_desc(struct qcom_nand_controller *nandc, bool read,
-  * @num_regs:		number of registers to read
-  */
- static int read_reg_dma(struct qcom_nand_controller *nandc, int first,
--			int num_regs)
-+			int num_regs, unsigned int flags)
- {
- 	bool flow_control = false;
- 	void *vaddr;
-@@ -736,7 +744,7 @@ static int read_reg_dma(struct qcom_nand_controller *nandc, int first,
-  * @num_regs:		number of registers to write
-  */
- static int write_reg_dma(struct qcom_nand_controller *nandc, int first,
--			 int num_regs)
-+			 int num_regs, unsigned int flags)
- {
- 	bool flow_control = false;
- 	struct nandc_regs *regs = nandc->regs;
-@@ -748,6 +756,9 @@ static int write_reg_dma(struct qcom_nand_controller *nandc, int first,
- 	if (first == NAND_FLASH_CMD)
- 		flow_control = true;
- 
-+	if (first == NAND_EXEC_CMD)
-+		flags |= NAND_BAM_NWD;
-+
- 	if (first == NAND_DEV_CMD1_RESTORE)
- 		first = NAND_DEV_CMD1;
- 
-@@ -768,7 +779,7 @@ static int write_reg_dma(struct qcom_nand_controller *nandc, int first,
-  * @size:		DMA transaction size in bytes
-  */
- static int read_data_dma(struct qcom_nand_controller *nandc, int reg_off,
--			 const u8 *vaddr, int size)
-+			 const u8 *vaddr, int size, unsigned int flags)
- {
- 	return prep_dma_desc(nandc, true, reg_off, vaddr, size, false);
- }
-@@ -782,7 +793,7 @@ static int read_data_dma(struct qcom_nand_controller *nandc, int reg_off,
-  * @size:		DMA transaction size in bytes
-  */
- static int write_data_dma(struct qcom_nand_controller *nandc, int reg_off,
--			  const u8 *vaddr, int size)
-+			  const u8 *vaddr, int size, unsigned int flags)
- {
- 	return prep_dma_desc(nandc, false, reg_off, vaddr, size, false);
- }
-@@ -793,14 +804,16 @@ static int write_data_dma(struct qcom_nand_controller *nandc, int reg_off,
-  */
- static void config_cw_read(struct qcom_nand_controller *nandc)
- {
--	write_reg_dma(nandc, NAND_FLASH_CMD, 3);
--	write_reg_dma(nandc, NAND_DEV0_CFG0, 3);
--	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1);
-+	write_reg_dma(nandc, NAND_FLASH_CMD, 3, 0);
-+	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
-+	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
- 
--	write_reg_dma(nandc, NAND_EXEC_CMD, 1);
-+	write_reg_dma(nandc, NAND_EXEC_CMD, 1,
-+		      NAND_BAM_NWD | NAND_BAM_NEXT_SGL);
- 
--	read_reg_dma(nandc, NAND_FLASH_STATUS, 2);
--	read_reg_dma(nandc, NAND_ERASED_CW_DETECT_STATUS, 1);
-+	read_reg_dma(nandc, NAND_FLASH_STATUS, 2, 0);
-+	read_reg_dma(nandc, NAND_ERASED_CW_DETECT_STATUS, 1,
-+		     NAND_BAM_NEXT_SGL);
- }
- 
- /*
-@@ -809,19 +822,20 @@ static void config_cw_read(struct qcom_nand_controller *nandc)
-  */
- static void config_cw_write_pre(struct qcom_nand_controller *nandc)
- {
--	write_reg_dma(nandc, NAND_FLASH_CMD, 3);
--	write_reg_dma(nandc, NAND_DEV0_CFG0, 3);
--	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1);
-+	write_reg_dma(nandc, NAND_FLASH_CMD, 3, 0);
-+	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
-+	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1,
-+		      NAND_BAM_NEXT_SGL);
- }
- 
- static void config_cw_write_post(struct qcom_nand_controller *nandc)
- {
--	write_reg_dma(nandc, NAND_EXEC_CMD, 1);
-+	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
- 
--	read_reg_dma(nandc, NAND_FLASH_STATUS, 1);
-+	read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
- 
--	write_reg_dma(nandc, NAND_FLASH_STATUS, 1);
--	write_reg_dma(nandc, NAND_READ_STATUS, 1);
-+	write_reg_dma(nandc, NAND_FLASH_STATUS, 1, 0);
-+	write_reg_dma(nandc, NAND_READ_STATUS, 1, NAND_BAM_NEXT_SGL);
- }
- 
- /*
-@@ -869,8 +883,8 @@ static int nandc_param(struct qcom_nand_host *host)
- 	nandc_set_reg(nandc, NAND_DEV_CMD1_RESTORE, nandc->cmd1);
- 	nandc_set_reg(nandc, NAND_DEV_CMD_VLD_RESTORE, nandc->vld);
- 
--	write_reg_dma(nandc, NAND_DEV_CMD_VLD, 1);
--	write_reg_dma(nandc, NAND_DEV_CMD1, 1);
-+	write_reg_dma(nandc, NAND_DEV_CMD_VLD, 1, 0);
-+	write_reg_dma(nandc, NAND_DEV_CMD1, 1, NAND_BAM_NEXT_SGL);
- 
- 	nandc->buf_count = 512;
- 	memset(nandc->data_buffer, 0xff, nandc->buf_count);
-@@ -878,11 +892,11 @@ static int nandc_param(struct qcom_nand_host *host)
- 	config_cw_read(nandc);
- 
- 	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer,
--		      nandc->buf_count);
-+		      nandc->buf_count, 0);
- 
- 	/* restore CMD1 and VLD regs */
--	write_reg_dma(nandc, NAND_DEV_CMD1_RESTORE, 1);
--	write_reg_dma(nandc, NAND_DEV_CMD_VLD_RESTORE, 1);
-+	write_reg_dma(nandc, NAND_DEV_CMD1_RESTORE, 1, 0);
-+	write_reg_dma(nandc, NAND_DEV_CMD_VLD_RESTORE, 1, NAND_BAM_NEXT_SGL);
- 
- 	return 0;
- }
-@@ -904,14 +918,14 @@ static int erase_block(struct qcom_nand_host *host, int page_addr)
- 	nandc_set_reg(nandc, NAND_FLASH_STATUS, host->clrflashstatus);
- 	nandc_set_reg(nandc, NAND_READ_STATUS, host->clrreadstatus);
- 
--	write_reg_dma(nandc, NAND_FLASH_CMD, 3);
--	write_reg_dma(nandc, NAND_DEV0_CFG0, 2);
--	write_reg_dma(nandc, NAND_EXEC_CMD, 1);
-+	write_reg_dma(nandc, NAND_FLASH_CMD, 3, NAND_BAM_NEXT_SGL);
-+	write_reg_dma(nandc, NAND_DEV0_CFG0, 2, NAND_BAM_NEXT_SGL);
-+	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
- 
--	read_reg_dma(nandc, NAND_FLASH_STATUS, 1);
-+	read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
- 
--	write_reg_dma(nandc, NAND_FLASH_STATUS, 1);
--	write_reg_dma(nandc, NAND_READ_STATUS, 1);
-+	write_reg_dma(nandc, NAND_FLASH_STATUS, 1, 0);
-+	write_reg_dma(nandc, NAND_READ_STATUS, 1, NAND_BAM_NEXT_SGL);
- 
- 	return 0;
- }
-@@ -931,10 +945,10 @@ static int read_id(struct qcom_nand_host *host, int column)
- 	nandc_set_reg(nandc, NAND_FLASH_CHIP_SELECT, DM_EN);
- 	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
- 
--	write_reg_dma(nandc, NAND_FLASH_CMD, 4);
--	write_reg_dma(nandc, NAND_EXEC_CMD, 1);
-+	write_reg_dma(nandc, NAND_FLASH_CMD, 4, NAND_BAM_NEXT_SGL);
-+	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
- 
--	read_reg_dma(nandc, NAND_READ_ID, 1);
-+	read_reg_dma(nandc, NAND_READ_ID, 1, NAND_BAM_NEXT_SGL);
- 
- 	return 0;
- }
-@@ -948,10 +962,10 @@ static int reset(struct qcom_nand_host *host)
- 	nandc_set_reg(nandc, NAND_FLASH_CMD, RESET_DEVICE);
- 	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
- 
--	write_reg_dma(nandc, NAND_FLASH_CMD, 1);
--	write_reg_dma(nandc, NAND_EXEC_CMD, 1);
-+	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
-+	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
- 
--	read_reg_dma(nandc, NAND_FLASH_STATUS, 1);
-+	read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
- 
- 	return 0;
- }
-@@ -1344,7 +1358,7 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
- 
- 		if (data_buf)
- 			read_data_dma(nandc, FLASH_BUF_ACC, data_buf,
--				      data_size);
-+				      data_size, 0);
- 
- 		/*
- 		 * when ecc is enabled, the controller doesn't read the real
-@@ -1360,7 +1374,7 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
- 				*oob_buf++ = 0xff;
- 
- 			read_data_dma(nandc, FLASH_BUF_ACC + data_size,
--				      oob_buf, oob_size);
-+				      oob_buf, oob_size, 0);
- 		}
- 
- 		if (data_buf)
-@@ -1402,7 +1416,7 @@ static int copy_last_cw(struct qcom_nand_host *host, int page)
- 
- 	config_cw_read(nandc);
- 
--	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer, size);
-+	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer, size, 0);
- 
- 	ret = submit_descs(nandc);
- 	if (ret)
-@@ -1470,19 +1484,19 @@ static int qcom_nandc_read_page_raw(struct mtd_info *mtd,
- 
- 		config_cw_read(nandc);
- 
--		read_data_dma(nandc, reg_off, data_buf, data_size1);
-+		read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
- 		reg_off += data_size1;
- 		data_buf += data_size1;
- 
--		read_data_dma(nandc, reg_off, oob_buf, oob_size1);
-+		read_data_dma(nandc, reg_off, oob_buf, oob_size1, 0);
- 		reg_off += oob_size1;
- 		oob_buf += oob_size1;
- 
--		read_data_dma(nandc, reg_off, data_buf, data_size2);
-+		read_data_dma(nandc, reg_off, data_buf, data_size2, 0);
- 		reg_off += data_size2;
- 		data_buf += data_size2;
- 
--		read_data_dma(nandc, reg_off, oob_buf, oob_size2);
-+		read_data_dma(nandc, reg_off, oob_buf, oob_size2, 0);
- 		oob_buf += oob_size2;
- 	}
- 
-@@ -1549,7 +1563,8 @@ static int qcom_nandc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 
- 		config_cw_write_pre(nandc);
- 
--		write_data_dma(nandc, FLASH_BUF_ACC, data_buf, data_size);
-+		write_data_dma(nandc, FLASH_BUF_ACC, data_buf, data_size,
-+			       i == (ecc->steps - 1) ? NAND_BAM_NO_EOT : 0);
- 
- 		/*
- 		 * when ECC is enabled, we don't really need to write anything
-@@ -1562,7 +1577,7 @@ static int qcom_nandc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 			oob_buf += host->bbm_size;
- 
- 			write_data_dma(nandc, FLASH_BUF_ACC + data_size,
--				       oob_buf, oob_size);
-+				       oob_buf, oob_size, 0);
- 		}
- 
- 		config_cw_write_post(nandc);
-@@ -1618,19 +1633,19 @@ static int qcom_nandc_write_page_raw(struct mtd_info *mtd,
- 
- 		config_cw_write_pre(nandc);
- 
--		write_data_dma(nandc, reg_off, data_buf, data_size1);
-+		write_data_dma(nandc, reg_off, data_buf, data_size1, 0);
- 		reg_off += data_size1;
- 		data_buf += data_size1;
- 
--		write_data_dma(nandc, reg_off, oob_buf, oob_size1);
-+		write_data_dma(nandc, reg_off, oob_buf, oob_size1, 0);
- 		reg_off += oob_size1;
- 		oob_buf += oob_size1;
- 
--		write_data_dma(nandc, reg_off, data_buf, data_size2);
-+		write_data_dma(nandc, reg_off, data_buf, data_size2, 0);
- 		reg_off += data_size2;
- 		data_buf += data_size2;
- 
--		write_data_dma(nandc, reg_off, oob_buf, oob_size2);
-+		write_data_dma(nandc, reg_off, oob_buf, oob_size2, 0);
- 		oob_buf += oob_size2;
- 
- 		config_cw_write_post(nandc);
-@@ -1685,7 +1700,7 @@ static int qcom_nandc_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
- 
- 	config_cw_write_pre(nandc);
- 	write_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer,
--		       data_size + oob_size);
-+		       data_size + oob_size, 0);
- 	config_cw_write_post(nandc);
- 
- 	ret = submit_descs(nandc);
-@@ -1769,7 +1784,8 @@ static int qcom_nandc_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 	update_rw_regs(host, 1, false);
- 
- 	config_cw_write_pre(nandc);
--	write_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer, host->cw_size);
-+	write_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer,
-+		       host->cw_size, 0);
- 	config_cw_write_post(nandc);
- 
- 	ret = submit_descs(nandc);
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+Best regards,
+Marek Vasut
