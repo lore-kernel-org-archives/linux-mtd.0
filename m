@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dQTi1-0008W4-5X
- for linux-mtd@lists.infradead.org; Thu, 29 Jun 2017 07:17:50 +0000
+ id 1dQThh-0008VE-5V
+ for linux-mtd@lists.infradead.org; Thu, 29 Jun 2017 07:17:31 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: dwmw2@infradead.org, computersforpeace@gmail.com,
  boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
@@ -10,9 +10,9 @@ Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
  andy.gross@linaro.org, architt@codeaurora.org, sricharan@codeaurora.org,
  Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH 13/14] qcom: mtd: nand: support for QPIC version 1.5.0
-Date: Thu, 29 Jun 2017 12:46:05 +0530
-Message-Id: <1498720566-20782-14-git-send-email-absahu@codeaurora.org>
+Subject: [PATCH 09/14] qcom: mtd: nand: BAM support for read page
+Date: Thu, 29 Jun 2017 12:46:01 +0530
+Message-Id: <1498720566-20782-10-git-send-email-absahu@codeaurora.org>
 In-Reply-To: <1498720566-20782-1-git-send-email-absahu@codeaurora.org>
 References: <1498720566-20782-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,189 +24,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The current QCOM NAND driver only supports version 1.4.0
-QCOM QPIC NAND controller. This patch adds the support for
-version 1.5.0 which contains some of the registers at
-different offsets. The driver data contains the register offset
-field which is being initialized with its crossponding register
-offsets array. A new compatible string has been added for
-version 1.5.0 in BAM mode which uses version 1.5.0 register
-offsets.
+1. The BAM mode requires few registers configuration before each
+   NAND page read and codeword read which is different from ADM
+   so add the helper functions which will be called in BAM mode
+   only.
+
+2. The NAND page read handling of BAM is different from ADM so
+   call the appropriate helper functions
 
 Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 ---
- .../devicetree/bindings/mtd/qcom_nandc.txt         | 44 ++++++++++++++++++
- drivers/mtd/nand/qcom_nandc.c                      | 54 ++++++++++++++++++++--
- 2 files changed, 95 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/qcom_nandc.c | 63 ++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 62 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-index 87b9a56..11e2da2 100644
---- a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-+++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-@@ -4,6 +4,8 @@ Required properties:
- - compatible:		must be one of the following:
- 	* "qcom,ebi2-nandc" - EBI2 NAND which uses ADM DMA like IPQ8064.
- 	* "qcom,qpic-nandc-v1.4.0" - QPIC NAND v1.4.0 which uses BAM DMA like IPQ4019.
-+	* "qcom,qpic-nandc-v1.5.0" - QPIC NAND v1.5.0 which uses BAM DMA like IPQ8074.
-+
- - reg:			MMIO address range
- - clocks:		must contain core clock and always on clock
- - clock-names:		must contain "core" for the core clock and "aon" for the
-@@ -130,3 +132,45 @@ nand@79b0000 {
- 		};
- 	};
- };
-+
-+nand@79b0000 {
-+	compatible = "qcom,qpic-nandc-v1.5.0";
-+	reg = <0x79B0000 0x1000>;
-+
-+	clocks = <&gcc GCC_QPIC_CLK>,
-+		<&gcc GCC_QPIC_AHB_CLK>;
-+	clock-names = "core", "aon";
-+
-+	dmas = <&qpicbam 0>,
-+		<&qpicbam 1>,
-+		<&qpicbam 2>;
-+	dma-names = "tx", "rx", "cmd";
-+
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	nandcs@0 {
-+		compatible = "qcom,nandcs";
-+		reg = <0>;
-+
-+		nand-ecc-strength = <4>;
-+		nand-ecc-step-size = <512>;
-+		nand-bus-width = <8>;
-+
-+		partitions {
-+			compatible = "fixed-partitions";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			partition@0 {
-+				label = "boot-nand";
-+				reg = <0 0x58a0000>;
-+			};
-+
-+			partition@58a0000 {
-+				label = "fs-nand";
-+				reg = <0x58a0000 0x4000000>;
-+			};
-+		};
-+	};
-+};
 diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-index 24750e6..641e85d 100644
+index 8e7dc9e..17766af 100644
 --- a/drivers/mtd/nand/qcom_nandc.c
 +++ b/drivers/mtd/nand/qcom_nandc.c
-@@ -430,15 +430,18 @@ struct qcom_nand_host {
-  * This data type corresponds to the nand driver data which will be used at
-  * driver probe time
-  * @ecc_modes - ecc mode for nand
-+ * @regs_offsets - contains the register offsets array pointer.
-  * @dma_bam_enabled - whether this driver is using bam
-  */
- struct qcom_nand_driver_data {
- 	u32 ecc_modes;
-+	const u32 *regs_offsets;
- 	bool dma_bam_enabled;
- };
- 
- /* Mapping table which contains the actual register offsets */
--static const u32 regs_offsets[] = {
-+/* NAND controller Version 1.4.0 mapping table */
-+static const u32 regs_offsets_v1_4_0[] = {
- 	[NAND_FLASH_CMD] = 0x00,
- 	[NAND_ADDR0] = 0x04,
- 	[NAND_ADDR1] = 0x08,
-@@ -471,6 +474,40 @@ struct qcom_nand_driver_data {
- 	[NAND_READ_LOCATION_3] = 0xf2c,
- };
- 
-+/* NAND controller Version 1.5.0 mapping table */
-+static const u32 regs_offsets_v1_5_0[] = {
-+	[NAND_FLASH_CMD] = 0x00,
-+	[NAND_ADDR0] = 0x04,
-+	[NAND_ADDR1] = 0x08,
-+	[NAND_FLASH_CHIP_SELECT] = 0x0c,
-+	[NAND_EXEC_CMD] = 0x10,
-+	[NAND_FLASH_STATUS] = 0x14,
-+	[NAND_BUFFER_STATUS] = 0x18,
-+	[NAND_DEV0_CFG0] = 0x20,
-+	[NAND_DEV0_CFG1] = 0x24,
-+	[NAND_DEV0_ECC_CFG] = 0x28,
-+	[NAND_DEV1_ECC_CFG] = 0x2c,
-+	[NAND_DEV1_CFG0] = 0x30,
-+	[NAND_DEV1_CFG1] = 0x34,
-+	[NAND_READ_ID] = 0x40,
-+	[NAND_READ_STATUS] = 0x44,
-+	[NAND_DEV_CMD0] = 0x70a0,
-+	[NAND_DEV_CMD1] = 0x70a4,
-+	[NAND_DEV_CMD2] = 0x70a8,
-+	[NAND_DEV_CMD_VLD] = 0x70ac,
-+	[SFLASHC_BURST_CFG] = 0xe0,
-+	[NAND_ERASED_CW_DETECT_CFG] = 0xe8,
-+	[NAND_ERASED_CW_DETECT_STATUS] = 0xec,
-+	[NAND_EBI2_ECC_BUF_CFG] = 0xf0,
-+	[FLASH_BUF_ACC] = 0x100,
-+	[NAND_CTRL] = 0xf00,
-+	[NAND_VERSION] = 0x4f08,
-+	[NAND_READ_LOCATION_0] = 0xf20,
-+	[NAND_READ_LOCATION_1] = 0xf24,
-+	[NAND_READ_LOCATION_2] = 0xf28,
-+	[NAND_READ_LOCATION_3] = 0xf2c,
-+};
-+
- /* Frees the BAM transaction memory */
- static void free_bam_transaction(struct qcom_nand_controller *nandc)
- {
-@@ -2832,7 +2869,7 @@ static int qcom_nandc_probe(struct platform_device *pdev)
- 
- 	nandc->ecc_modes = driver_data->ecc_modes;
- 	nandc->dma_bam_enabled = driver_data->dma_bam_enabled;
--	nandc->regs_offsets = regs_offsets;
-+	nandc->regs_offsets = driver_data->regs_offsets;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	nandc->base = devm_ioremap_resource(dev, res);
-@@ -2902,16 +2939,24 @@ static int qcom_nandc_remove(struct platform_device *pdev)
- 	return 0;
+@@ -870,6 +870,35 @@ static void config_cw_read(struct qcom_nand_controller *nandc)
  }
  
--
- static const struct qcom_nand_driver_data ebi2_nandc_data = {
- 	.ecc_modes = (ECC_RS_4BIT | ECC_BCH_8BIT),
- 	.dma_bam_enabled = false,
-+	.regs_offsets = regs_offsets_v1_4_0,
- };
- 
- static const struct qcom_nand_driver_data qpic_nandc_v1_4_0_data = {
- 	.ecc_modes = (ECC_BCH_4BIT | ECC_BCH_8BIT),
- 	.dma_bam_enabled = true,
-+	.regs_offsets = regs_offsets_v1_4_0,
-+};
-+
-+static const struct qcom_nand_driver_data qpic_nandc_v1_5_0_data = {
-+	.ecc_modes = (ECC_BCH_4BIT | ECC_BCH_8BIT),
-+	.dma_bam_enabled = true,
-+	.regs_offsets = regs_offsets_v1_5_0,
- };
-+
  /*
-  * data will hold a struct pointer containing more differences once we support
-  * more controller variants
-@@ -2923,6 +2968,9 @@ static int qcom_nandc_remove(struct platform_device *pdev)
- 	{	.compatible = "qcom,qpic-nandc-v1.4.0",
- 		.data = (void *)&qpic_nandc_v1_4_0_data,
- 	},
-+	{	.compatible = "qcom,qpic-nandc-v1.5.0",
-+		.data = (void *)&qpic_nandc_v1_5_0_data,
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, qcom_nandc_of_match);
++ * Helpers to prepare DMA descriptors for configuring registers
++ * before reading a NAND page with BAM.
++ */
++static void config_bam_page_read(struct qcom_nand_controller *nandc)
++{
++	write_reg_dma(nandc, NAND_FLASH_CMD, 3, 0);
++	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
++	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
++	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1, 0);
++	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1,
++		      NAND_ERASED_CW_SET | NAND_BAM_NEXT_SGL);
++}
++
++/*
++ * Helpers to prepare DMA descriptors for configuring registers
++ * before reading each codeword in NAND page with BAM.
++ */
++static void config_bam_cw_read(struct qcom_nand_controller *nandc)
++{
++	write_reg_dma(nandc, NAND_READ_LOCATION_0, 2, 0);
++	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
++	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
++
++	read_reg_dma(nandc, NAND_FLASH_STATUS, 2, 0);
++	read_reg_dma(nandc, NAND_ERASED_CW_DETECT_STATUS, 1,
++		     NAND_BAM_NEXT_SGL);
++}
++
++/*
+  * helpers to prepare dma descriptors used to configure registers needed for
+  * writing a codeword/step in a page
+  */
+@@ -1398,6 +1427,9 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
+ 	struct nand_ecc_ctrl *ecc = &chip->ecc;
+ 	int i, ret;
+ 
++	if (nandc->dma_bam_enabled)
++		config_bam_page_read(nandc);
++
+ 	/* queue cmd descs for each codeword */
+ 	for (i = 0; i < ecc->steps; i++) {
+ 		int data_size, oob_size;
+@@ -1411,7 +1443,36 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
+ 			oob_size = host->ecc_bytes_hw + host->spare_bytes;
+ 		}
+ 
+-		config_cw_read(nandc);
++		if (nandc->dma_bam_enabled) {
++			if (data_buf && oob_buf) {
++				nandc_set_reg(nandc, NAND_READ_LOCATION_0,
++					      (0 << READ_LOCATION_OFFSET) |
++					      (data_size <<
++					      READ_LOCATION_SIZE) |
++					      (0 << READ_LOCATION_LAST));
++				nandc_set_reg(nandc, NAND_READ_LOCATION_1,
++					      (data_size <<
++					      READ_LOCATION_OFFSET) |
++					      (oob_size << READ_LOCATION_SIZE) |
++					      (1 << READ_LOCATION_LAST));
++			} else if (data_buf) {
++				nandc_set_reg(nandc, NAND_READ_LOCATION_0,
++					      (0 << READ_LOCATION_OFFSET) |
++					      (data_size <<
++					      READ_LOCATION_SIZE) |
++					      (1 << READ_LOCATION_LAST));
++			} else {
++				nandc_set_reg(nandc, NAND_READ_LOCATION_0,
++					      (data_size <<
++					      READ_LOCATION_OFFSET) |
++					      (oob_size << READ_LOCATION_SIZE) |
++					      (1 << READ_LOCATION_LAST));
++			}
++
++			config_bam_cw_read(nandc);
++		} else {
++			config_cw_read(nandc);
++		}
+ 
+ 		if (data_buf)
+ 			read_data_dma(nandc, FLASH_BUF_ACC, data_buf,
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
