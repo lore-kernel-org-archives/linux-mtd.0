@@ -1,34 +1,14 @@
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+Received: from mail.aswsp.com ([193.34.35.150])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dQbX3-0000NE-PQ
- for linux-mtd@lists.infradead.org; Thu, 29 Jun 2017 15:39:04 +0000
-Received: by mail-wm0-x242.google.com with SMTP id y5so3276402wmh.3
- for <linux-mtd@lists.infradead.org>; Thu, 29 Jun 2017 08:38:41 -0700 (PDT)
-Subject: Re: [PATCH 1/3] ARM: dts: Bindings for Altera Quadspi Controller
- Version 2
-To: matthew.gerlach@linux.intel.com
-References: <1498493619-4633-1-git-send-email-matthew.gerlach@linux.intel.com>
- <1498493619-4633-2-git-send-email-matthew.gerlach@linux.intel.com>
- <0bfc282d-2aec-8f36-1528-312f7ded8d9c@gmail.com>
- <alpine.DEB.2.20.1706270722440.8058@mgerlach-VirtualBox>
- <0ca53c35-732c-a122-8191-6d102e824d52@gmail.com>
- <alpine.DEB.2.20.1706270833100.8058@mgerlach-VirtualBox>
- <20170628230928.k3hafpxhqrr26val@rob-hp-laptop>
- <5bd89165-3e42-9db4-321d-5f3df35922ce@gmail.com>
- <alpine.DEB.2.20.1706290748230.4589@mgerlach-VirtualBox>
-Cc: Rob Herring <robh@kernel.org>, vndao@altera.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
- richard@nod.at, cyrille.pitchen@wedev4u.fr, mark.rutland@arm.com,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
- davem@davemloft.net, mchehab@kernel.org
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <f0af2273-7c00-331d-82e0-2578b1a098ae@gmail.com>
-Date: Thu, 29 Jun 2017 17:38:35 +0200
+ id 1dQcwH-0000vx-4u
+ for linux-mtd@lists.infradead.org; Thu, 29 Jun 2017 17:09:11 +0000
+From: Jean-Louis Thekekara <jeanlouis.thekekara@parrot.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: nand: remove hard-coded NAND ids length
+Date: Thu, 29 Jun 2017 19:08:30 +0200
+Message-ID: <20170629170830.8084-1-jeanlouis.thekekara@parrot.com>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.20.1706290748230.4589@mgerlach-VirtualBox>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,205 +18,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/29/2017 05:03 PM, matthew.gerlach@linux.intel.com wrote:
-> 
-> 
-> On Thu, 29 Jun 2017, Marek Vasut wrote:
-> 
->> On 06/29/2017 01:09 AM, Rob Herring wrote:
->>> On Tue, Jun 27, 2017 at 08:57:14AM -0700,
->>> matthew.gerlach@linux.intel.com wrote:
->>>>
->>>>
->>>> On Tue, 27 Jun 2017, Marek Vasut wrote:
->>>>
->>>>> On 06/27/2017 04:32 PM, matthew.gerlach@linux.intel.com wrote:
->>>>>>
->>>>>>
->>>>>> On Tue, 27 Jun 2017, Marek Vasut wrote:
->>>>>>
->>>>>> Hi Marek,
->>>>>>
->>>>>> Thanks for the feedback.  See my comments below.
->>>>>>
->>>>>> Matthew Gerlach
->>>>>>
->>>>>>> On 06/26/2017 06:13 PM, matthew.gerlach@linux.intel.com wrote:
->>>>>>>> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->>>>>>>>
->>>>>>>> Device Tree bindings for Version 2 of the Altera Quadspi Controller
->>>>>>>> that can be optionally paired with a windowed bridge.
->>>>>>>>
->>>>>>>> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->>>>>>>> ---
->>>>>>>>  .../devicetree/bindings/mtd/altera-quadspi-v2.txt  | 37
->>>>>>>> ++++++++++++++++++++++
->>>>>>>>  1 file changed, 37 insertions(+)
->>>>>>>>  create mode 100644
->>>>>>>> Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
->>>>>>>>
->>>>>>>> diff --git
->>>>>>>> a/Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
->>>>>>>> b/Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
->>>>>>>> new file mode 100644
->>>>>>>> index 0000000..8ba63d7
->>>>>>>> --- /dev/null
->>>>>>>> +++ b/Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
->>>>>>>> @@ -0,0 +1,37 @@
->>>>>>>> +* Altera Quad SPI Controller Version 2
->>>>>>>> +
->>>>>>>> +Required properties:
->>>>>>>> +- compatible : Should be "altr,quadspi-v2".
->>>>>>>> +- reg : Contains at least two entries, and possibly three entries,
->>>>>>>> each of
->>>>>>>> +    which is a tuple consisting of a physical address and length.
->>>>>>>> +- reg-names : Should contain the names "avl_csr" and "avl_mem"
->>>>>>>> corresponding
->>>>>>>> +          to the control and status registers and qspi memory,
->>>>>>>> respectively.
->>>>>>>> +
->>>>>>>> +
->>>>>>>> +The Altera Quad SPI Controller Version 2 can be paired with a
->>>>>>>> windowed bridge
->>>>>>>> +in order to reduce the footprint of the memory interface.  When a
->>>>>>>> windowed
->>>>>>>> +bridge is used, reads and writes of data must be 32 bits wide.
->>>>>>>> +
->>>>>>>> +Optional properties:
->>>>>>>> +- reg-names : Should contain the name "avl_window", if the
->>>>>>>> windowed
->>>>>>>> bridge
->>>>>>>> +          is used.  This name corresponds to the register space
->>>>>>>> that
->>>>>>>> +          controls the window.
->>>>>>>> +- window-size : The size of the window which must be an even power
->>>>>>>> of 2.
->>>>>>>> +- read-bit-reverse : A boolean indicating the data read from the
->>>>>>>> flash should
->>>>>>>> +             be bit reversed on a byte by byte basis before being
->>>>>>>> +             delivered to the MTD layer.
->>>>>>>> +- write-bit-reverse : A boolean indicating the data written to the
->>>>>>>> flash should
->>>>>>>> +              be bit reversed on a byte by byte basis.
->>>>>>>
->>>>>>> Is there ever a usecase where you need to set just one of these
->>>>>>> props ?
->>>>>>> Also, they're altera specific, so altr, prefix should be added.
->>>>>>
->>>>>> In general, I think if bit reversal is required, it would be
->>>>>> required in
->>>>>> both directions.  However, anything is possible when using FPGAs.  So
->>>>>> I thought separate booleans would be future proofing the bindings.
->>>>>
->>>>> Maybe we should drop this whole thing and add it when this is actually
->>>>> required.
->>>>>
->>>>> Are there any users of this in the wild currently ?
->>>>>
->>>>> What is the purpose of doing this per-byte bit reverse instead of
->>>>> storing th bits in the original order ?
->>>>
->>>> Hi Marek,
->>>>
->>>> Yes, there is hardware that has been in the wild for years that
->>>> needs this
->>>> bit reversal.  The specific use case is when a flash chip is
->>>> connected to
->>>> a FPGA, and the contents of the flash is used to configure the FPGA
->>>> on power
->>>> up.  In this use case, there is no processor involved with
->>>> configuring the
->>>> FPGA.  I am most familiar with this feature/bug with Altera FPGAs,
->>>> but I
->>>> believe this issue exists with other programmable devices.
->>>>
->>>>>
->>>>>> Thinking about this binding more, I wonder if the binding name(s)
->>>>>> should be (read|write)-bit8-reverse to indicate reversings the bits
->>>>>> in a byte as opposed to reversing the bits in a 32 bit word?
->>>>>>
->>>>>> I don't think bit reversal is specific to Altera/Intel components.
->>>>>> I see
->>>>>> a nand driver performing bit reversal, and I think I've recently seen
->>>>>> other FPGA based drivers requiring bit reversal.
->>>>>
->>>>> $ git grep bit.reverse Documentation/devicetree/ | wc -l
->>>>> 0
->>>>>
->>>>> So we don't have such a generic binding . It's up to Rob (I guess) to
->>>>> decide whether this is SoC specific and should've altr, prefix or not.
->>>>> IMO it is.
->>>>
->>>> I agree there is no generic binding at this time, and I look forward
->>>> to any input from Rob and anyone else on this issue.  I think it is
->>>> worth
->>>> pointing out that this really isn't an issue of an SoC, but rather
->>>> it is an
->>>> issue of how data in the flash chip is accessed.  I think what makes
->>>> this issue
->>>> "weird" is that we have different hardware accessing the data in the
->>>> flash
->>>> with a different perspective.  The FPGA looks at the data from one
->>>> perspective on power up, and a processor trying to update the flash
->>>> has a
->>>> different perspective.
->>>
->>> Given the comment that it is reversing bits in each byte, that seems
->>> fairly Altera specific. I'd be more in favor of a generic property if it
->>> was flipping all the bits in a word (for any size word).
->>
->> Actually, I'd prefer to fix up the FPGA bitstream in software and then
->> write the fixed up bitstream into the flash. That way there's no need
->> for any such DT property and other FPGA vendors (ie. xilinx) do it that
->> way already.
->>
->> -- 
->> Best regards,
->> Marek Vasut
->>
-> 
-> While I totally understand Marek's point of view regarding bit flipping,
-> I think it is instructive to explore the other point of view.  For me
-> the issue of flipping the bits in user space versus kernel space came
-> down to laziness, which along with impatience and hubris are considered
-> by some to be good traits for a software engineer.  I looked around for
-> an existing user space to perform the function, but I did not find an
-> existing tool, but I suppose I could look more closely at Xilinx's
-> tools.  I do not want to create my own tool, and then it was pointed out
-> to me that the necessary bit flipping functions already exist in the
-> kernel.
+This commit removes hard-coded '8' used for looping into
+struct nand_chip.id.data array.
 
-Random internet search gives you ie.
-https://www.xilinx.com/itp/xilinx10/isehelp/pim_r_promformatter_files.htm
+NAND_MAX_ID_LEN has been introduced by Artem Bityutskiy in
+53552d22bfe1f for defining ids length in nand_flash_ids[] list.
 
-I recall there was some perl script to do the same too.
+This commit unifies ids length in nand base driver.
 
-> Even if we decided that performing the bit flipping in the kernel makes
-> sense, my original binding proposal is clearly inadequate.  As Rob
-> pointed such a binding should be more generic to support flipping the
-> bits in any word size (i.e. 8, 16, 32, 64 ...).  Additionally, Marek has
-> pointed out that a portion of the flash could requiring flipping, and
-> another portion of the same flash would not require flipping. 
-> Therefore, a bit flipping binding is not a property of the flash
-> controller, but rather it is a property of a particular flash partition.
+Signed-off-by: Jean-Louis Thekekara <jeanlouis.thekekara@parrot.com>
+---
+ drivers/mtd/nand/nand_base.c |  4 ++--
+ include/linux/mtd/nand.h     | 10 +++++-----
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-And so, we're starting to invent a convoluted scheme to describe policy
-in DT ; I don't like this.
-
-What would you do once the FPGA requires another bit order, would you
-add another DT property and more stuff to the kernel to handle it ? I
-don't think this scales. Going ad-absurdum, I might want to be lazy and
-try to dd a SOF file into a partition and hope the kernel will convert
-it to RBF and do the right thing ...
-
-But we won't put a SOF-to-RBF parser into the kernel. I don't see a
-reason why we should put this bit swapping into the kernel. Just let the
-user (in this case, FPGA developer) prepare the bitstream in the correct
-format and write it into the flash.
-
-> Matthew Gerlach
-
-
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 85edac9b2bb5..66db2ced87ad 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -4056,7 +4056,7 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+ 	chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1);
+ 
+ 	/* Read entire ID string */
+-	for (i = 0; i < 8; i++)
++	for (i = 0; i < ARRAY_SIZE(chip->id.data); i++)
+ 		id_data[i] = chip->read_byte(mtd);
+ 
+ 	if (id_data[0] != maf_id || id_data[1] != dev_id) {
+@@ -4065,7 +4065,7 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+ 		return -ENODEV;
+ 	}
+ 
+-	chip->id.len = nand_id_len(id_data, 8);
++	chip->id.len = nand_id_len(id_data, ARRAY_SIZE(chip->id.data));
+ 
+ 	/* Try to identify manufacturer */
+ 	manufacturer = nand_get_manufacturer(maf_id);
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index dc8fbc033442..c3c1a32a5ade 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -449,14 +449,16 @@ struct nand_jedec_params {
+ 	__le16 crc;
+ } __packed;
+ 
++/* The maximum expected count of bytes in the NAND ID sequence */
++#define NAND_MAX_ID_LEN 8
++
+ /**
+  * struct nand_id - NAND id structure
+- * @data: buffer containing the id bytes. Currently 8 bytes large, but can
+- *	  be extended if required.
++ * @data: buffer containing the id bytes.
+  * @len: ID length.
+  */
+ struct nand_id {
+-	u8 data[8];
++	u8 data[NAND_MAX_ID_LEN];
+ 	int len;
+ };
+ 
+@@ -1028,8 +1030,6 @@ static inline void *nand_get_manufacturer_data(struct nand_chip *chip)
+ #define NAND_MFR_ATO		0x9b
+ #define NAND_MFR_WINBOND	0xef
+ 
+-/* The maximum expected count of bytes in the NAND ID sequence */
+-#define NAND_MAX_ID_LEN 8
+ 
+ /*
+  * A helper for defining older NAND chips where the second ID byte fully
 -- 
-Best regards,
-Marek Vasut
+2.13.2
