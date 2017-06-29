@@ -1,20 +1,24 @@
-Received: from mail-pf0-x22f.google.com ([2607:f8b0:400e:c00::22f])
+Received: from hauke-m.de ([5.39.93.123] helo=mail.hauke-m.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dQehG-0002BZ-85
- for linux-mtd@lists.infradead.org; Thu, 29 Jun 2017 19:01:48 +0000
-Received: by mail-pf0-x22f.google.com with SMTP id c73so54918113pfk.2
- for <linux-mtd@lists.infradead.org>; Thu, 29 Jun 2017 12:01:25 -0700 (PDT)
-Received: from eliptus.pao.corp.google.com ([100.96.178.104])
- by smtp.gmail.com with ESMTPSA id q29sm2778581pfg.11.2017.06.29.12.01.22
- for <linux-mtd@lists.infradead.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
- Thu, 29 Jun 2017 12:01:22 -0700 (PDT)
-From: Harpreet Eli Sangha <harpreet@nestlabs.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd-utils: tests: Add Erased Pages Bit Flip Test
-Date: Thu, 29 Jun 2017 12:01:20 -0700
-Message-Id: <20170629190120.21245-1-harpreet@nestlabs.com>
+ id 1dQg2S-0001Hj-MH
+ for linux-mtd@lists.infradead.org; Thu, 29 Jun 2017 20:27:47 +0000
+Subject: Re: [PATCH v5 07/16] Documentation: DT: MIPS: lantiq: Add docs for
+ the RCU bindings
+To: Rob Herring <robh@kernel.org>
+References: <20170620223743.13735-1-hauke@hauke-m.de>
+ <20170620223743.13735-8-hauke@hauke-m.de>
+ <20170623221224.fhfc6ezydd3uglfr@rob-hp-laptop>
+Cc: ralf@linux-mips.org, linux-mips@linux-mips.org,
+ linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
+ devicetree@vger.kernel.org, martin.blumenstingl@googlemail.com,
+ john@phrozen.org, linux-spi@vger.kernel.org, hauke.mehrtens@intel.com,
+ andy.shevchenko@gmail.com, p.zabel@pengutronix.de
+From: Hauke Mehrtens <hauke@hauke-m.de>
+Message-ID: <1171930b-769b-f0ea-778e-ddcd11b20775@hauke-m.de>
+Date: Thu, 29 Jun 2017 22:27:19 +0200
 MIME-Version: 1.0
+In-Reply-To: <20170623221224.fhfc6ezydd3uglfr@rob-hp-laptop>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,149 +29,182 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: "Harpreet \"Eli\" Sangha" <harpreet@nestlabs.com>
+On 06/24/2017 12:12 AM, Rob Herring wrote:
+> On Wed, Jun 21, 2017 at 12:37:34AM +0200, Hauke Mehrtens wrote:
+>> From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+>>
+>> This adds the initial documentation for the RCU module (a MFD device
+>> which provides USB PHYs, reset controllers and more).
+>>
+>> The RCU register range is used for multiple purposes. Mostly one device
+>> uses one or multiple register exclusively, but for some registers some
+>> bits are for one driver and some other bits are for a different driver.
+>> With this patch all accesses to the RCU registers will go through
+>> syscon.
+>>
+>> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+>> ---
+>>  .../devicetree/bindings/mips/lantiq/rcu.txt        | 95 ++++++++++++++++++++++
+>>  1 file changed, 95 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/mips/lantiq/rcu.txt
+>>
+>> diff --git a/Documentation/devicetree/bindings/mips/lantiq/rcu.txt b/Documentation/devicetree/bindings/mips/lantiq/rcu.txt
+>> new file mode 100644
+>> index 000000000000..9c875f4f3c90
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/mips/lantiq/rcu.txt
+>> @@ -0,0 +1,95 @@
+>> +Lantiq XWAY SoC RCU binding
+>> +===========================
+>> +
+>> +This binding describes the RCU (reset controller unit) multifunction device,
+>> +where each sub-device has it's own set of registers.
+>> +
+>> +The RCU register range is used for multiple purposes. Mostly one device
+>> +uses one or multiple register exclusively, but for some registers some
+>> +bits are for one driver and some other bits are for a different driver.
+>> +With this patch all accesses to the RCU registers will go through
+>> +syscon.
+>> +
+>> +
+>> +-------------------------------------------------------------------------------
+>> +Required properties:
+>> +- compatible	: The first and second values must be:
+>> +		  "lantiq,xrx200-rcu", "simple-mfd", "syscon"
+>> +- reg		: The address and length of the system control registers
+>> +
+>> +
+>> +-------------------------------------------------------------------------------
+>> +Example of the RCU bindings on a xRX200 SoC:
+>> +	rcu0: rcu@203000 {
+>> +		compatible = "lantiq,xrx200-rcu", "simple-mfd", "syscon";
+>> +		reg = <0x203000 0x100>;
+>> +		ranges = <0x0 0x203000 0x100>;
+>> +		big-endian;
+>> +
+>> +		gphy0: gphy@0 {
+> 
+> unit address should match reg, so "phy@20"
 
-Bit flip detection for written and erased pages tend to have different
-implementations. Where written pages are detected and corrected using
-ECC, erased pages are typically detected by ensuring that the number of
-zeros is less than a specified threshold.
+done
 
-As such, it's necessary to have the 'nandbiterrs' test support the
-testing of written and erased pages. Bit flips in erased pages are
-emulated by rewriting the page in raw mode, to prevent the use of ECC.
+>> +			compatible = "lantiq,xrx200a2x-gphy";
+>> +			reg = <0x20 0x4>;
+>> +
+>> +			resets = <&reset0 31 30>, <&reset1 7 7>;
+>> +			reset-names = "gphy", "gphy2";
+>> +			lantiq,gphy-mode = <GPHY_MODE_GE>;
+>> +		};
+>> +
+>> +		gphy1: gphy@1 {
+> 
+> phy@68
 
-Signed-off-by: Harpreet "Eli" Sangha <harpreet@nestlabs.com>
----
- tests/mtd-tests/nandbiterrs.c | 43 +++++++++++++++++++++++++++++++++++--------
- 1 file changed, 35 insertions(+), 8 deletions(-)
+done
 
-diff --git a/tests/mtd-tests/nandbiterrs.c b/tests/mtd-tests/nandbiterrs.c
-index de9d0dd..200fe1c 100644
---- a/tests/mtd-tests/nandbiterrs.c
-+++ b/tests/mtd-tests/nandbiterrs.c
-@@ -62,6 +62,7 @@
- #define KEEP_CONTENTS 0x01
- #define MODE_INCREMENTAL 0x02
- #define MODE_OVERWRITE 0x04
-+#define PAGE_ERASED 0x08
- 
- static int peb = -1, page = -1, max_overwrite = -1, seed = -1;
- static const char *mtddev;
-@@ -77,6 +78,7 @@ static const struct option options[] = {
- 	{ "peb", required_argument, NULL, 'b' },
- 	{ "page", required_argument, NULL, 'p' },
- 	{ "seed", required_argument, NULL, 's' },
-+	{ "erased", no_argument, NULL, 'e' },
- 	{ "writes", required_argument, NULL, 'w' },
- 	{ "incremental", no_argument, NULL, 'i' },
- 	{ "overwrite", no_argument, NULL, 'o' },
-@@ -92,7 +94,8 @@ static void usage(int status)
- 	"  -k, --keep          Restore existing contents after test\n"
- 	"  -b, --peb <num>     Use this physical erase block\n"
- 	"  -p, --page <num>    Use this page within the erase block\n"
--	"  -s, --seed <num>    Specify seed for PRNG\n\n"
-+	"  -s, --seed <num>    Specify seed for PRNG\n"
-+	"  -e, --erased        Test erased pages instead of written pages\n\n"
- 	"Options controling test mode:\n"
- 	"  -i, --incremental   Manually insert bit errors until ECC fails\n"
- 	"  -o, --overwrite     Rewrite page until bits flip and ECC fails\n\n"
-@@ -121,7 +124,7 @@ static void process_options(int argc, char **argv)
- 	int c;
- 
- 	while (1) {
--		c = getopt_long(argc, argv, "hkb:p:s:iow:", options, NULL);
-+		c = getopt_long(argc, argv, "hkb:p:s:eiow:", options, NULL);
- 		if (c == -1)
- 			break;
- 
-@@ -169,6 +172,9 @@ static void process_options(int argc, char **argv)
- 			if (page < 0)
- 				goto failarg;
- 			break;
-+		case 'e':
-+			flags |= PAGE_ERASED;
-+			break;
- 		case 'h':
- 			usage(EXIT_SUCCESS);
- 		default:
-@@ -224,17 +230,39 @@ static unsigned char hash(unsigned int offset)
- 	return c;
- }
- 
-+static void init_buffer(void)
-+{
-+	unsigned int i;
-+
-+	if (flags & PAGE_ERASED) {
-+		memset(wbuffer, 0xff, pagesize);
-+	} else {
-+		for (i = 0; i < pagesize; ++i)
-+			wbuffer[i] = hash(i+seed);
-+	}
-+}
-+
- static int write_page(void)
- {
-+	int raw = flags & PAGE_ERASED;
- 	int err;
- 
-+	if (raw && ioctl(fd, MTDFILEMODE, MTD_FILE_MODE_RAW) != 0)
-+		goto fail_mode;
-+
- 	err = mtd_write(mtd_desc, &mtd, fd, peb, page*pagesize,
- 					wbuffer, pagesize, NULL, 0, 0);
- 
- 	if (err)
- 		fprintf(stderr, "Failed to write page %d in block %d\n", peb, page);
- 
-+	if (raw && ioctl(fd, MTDFILEMODE, MTD_FILE_MODE_NORMAL) != 0)
-+		goto fail_mode;
-+
- 	return err;
-+fail_mode:
-+	perror("MTDFILEMODE");
-+	return -1;
- }
- 
- static int rewrite_page(void)
-@@ -285,10 +313,11 @@ failstats:
- 
- static int verify_page(void)
- {
-+	int erased = flags & PAGE_ERASED;
- 	unsigned int i, errs = 0;
- 
- 	for (i = 0; i < pagesize; ++i) {
--		if (rbuffer[i] != hash(i+seed))
-+		if (rbuffer[i] != (erased ? 0xff : hash(i+seed)))
- 			++errs;
- 	}
- 
-@@ -321,13 +350,12 @@ static int insert_biterror(void)
-  * errors into the page, while verifying each step. */
- static int incremental_errors_test(void)
- {
--	unsigned int i, errs_per_subpage = 0;
-+	unsigned int errs_per_subpage = 0;
- 	int count = 0;
- 
- 	puts("incremental biterrors test");
- 
--	for (i = 0; i < pagesize; ++i)
--		wbuffer[i] = hash(i+seed);
-+	init_buffer();
- 
- 	if (write_page() != 0)
- 		return -1;
-@@ -372,8 +400,7 @@ static int overwrite_test(void)
- 
- 	puts("overwrite biterrors test");
- 
--	for (i = 0; i < pagesize; ++i)
--		wbuffer[i] = hash(i+seed);
-+	init_buffer();
- 
- 	if (write_page() != 0)
- 		return -1;
--- 
-2.13.2.725.g09c95d1e9-goog
+>> +			compatible = "lantiq,xrx200a2x-gphy";
+>> +			reg = <0x68 0x4>;
+>> +
+>> +			resets = <&reset0 29 28>, <&reset1 6 6>;
+>> +			reset-names = "gphy", "gphy2";
+>> +			lantiq,gphy-mode = <GPHY_MODE_GE>;
+>> +		};
+>> +
+>> +		reset0: reset-controller@0 {
+> 
+> ...@10
+
+done
+
+
+>> +			compatible = "lantiq,xrx200-reset";
+>> +
+>> +			offset-set = <0x10>;
+>> +			offset-status = <0x14>;
+> 
+> reg = <0x10 8>;
+
+done
+
+>> +			#reset-cells = <2>;
+>> +		};
+>> +
+>> +		reset1: reset-controller@1 {
+>> +			compatible = "lantiq,xrx200-reset";
+>> +
+>> +			offset-set = <0x48>;
+>> +			offset-status = <0x24>;
+> 
+> reg = <0x48 4>, <0x24 4>;
+
+done
+
+>> +			#reset-cells = <2>;
+>> +		};
+>> +
+>> +		usb_phy0: usb2-phy@0 {
+>> +			compatible = "lantiq,xrx200-usb2-phy";
+>> +			status = "disabled";
+>> +
+>> +			regmap = <&rcu0>;
+> 
+> This should be dropped.
+
+I will get this from the parent device now.
+
+>> +			offset-phy = <0x18>;
+>> +			offset-ana = <0x38>;
+> 
+> Use reg.
+
+There is also one bit used to reset the DSL digital frontend at offset
+0x38. This has nothing to do with USB.
+
+>> +			resets = <&reset1 4 4>, <&reset0 4 4>;
+>> +			reset-names = "phy", "ctrl";
+>> +			#phy-cells = <0>;
+>> +		};
+>> +
+>> +		usb_phy1: usb2-phy@1 {
+>> +			compatible = "lantiq,xrx200-usb2-phy";
+>> +			status = "disabled";
+>> +
+>> +			regmap = <&rcu0>;
+> 
+> Drop.
+
+done
+
+>> +			offset-phy = <0x34>;
+>> +			offset-ana = <0x3C>;
+> 
+> Use reg.
+
+There is also a bits to configure something with the DSL dying gasp at
+offset 0x34. This has nothing to do with USB.
+
+> 
+>> +			resets = <&reset1 5 4>, <&reset0 4 4>;
+>> +			reset-names = "phy", "ctrl";
+>> +			#phy-cells = <0>;
+>> +		};
+>> +
+>> +		reboot {
+>> +			compatible = "syscon-reboot";
+>> +
+>> +			regmap = <&rcu0>;
+> 
+> Drop.
+
+The syscon-reboot driver uses this code to get the regmap:
+ctx->map = syscon_regmap_lookup_by_phandle(dev->of_node, "regmap");
+This driver was not added by me.
+
+>> +			offset = <0x10>;
+>> +			mask = <0x40000000>;
+>> +		};
+>> +	};
+>> +
+>> -- 
+>> 2.11.0
+>>
