@@ -1,19 +1,30 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga14.intel.com ([192.55.52.115])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dQXte-0001Rj-Th
- for linux-mtd@lists.infradead.org; Thu, 29 Jun 2017 11:46:13 +0000
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: linux-mtd@lists.infradead.org
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: [PATCH] spi-nor: intel-spi: Add support for Intel Denverton SPI
- serial flash controller
-Date: Thu, 29 Jun 2017 14:45:42 +0300
-Message-Id: <20170629114542.74720-1-mika.westerberg@linux.intel.com>
+ id 1dQazK-0006s1-Na
+ for linux-mtd@lists.infradead.org; Thu, 29 Jun 2017 15:04:12 +0000
+Date: Thu, 29 Jun 2017 08:03:46 -0700 (PDT)
+From: matthew.gerlach@linux.intel.com
+To: Marek Vasut <marek.vasut@gmail.com>
+cc: Rob Herring <robh@kernel.org>, vndao@altera.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
+ richard@nod.at, cyrille.pitchen@wedev4u.fr, mark.rutland@arm.com,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+ davem@davemloft.net, mchehab@kernel.org
+Subject: Re: [PATCH 1/3] ARM: dts: Bindings for Altera Quadspi Controller
+ Version 2
+In-Reply-To: <5bd89165-3e42-9db4-321d-5f3df35922ce@gmail.com>
+Message-ID: <alpine.DEB.2.20.1706290748230.4589@mgerlach-VirtualBox>
+References: <1498493619-4633-1-git-send-email-matthew.gerlach@linux.intel.com>
+ <1498493619-4633-2-git-send-email-matthew.gerlach@linux.intel.com>
+ <0bfc282d-2aec-8f36-1528-312f7ded8d9c@gmail.com>
+ <alpine.DEB.2.20.1706270722440.8058@mgerlach-VirtualBox>
+ <0ca53c35-732c-a122-8191-6d102e824d52@gmail.com>
+ <alpine.DEB.2.20.1706270833100.8058@mgerlach-VirtualBox>
+ <20170628230928.k3hafpxhqrr26val@rob-hp-laptop>
+ <5bd89165-3e42-9db4-321d-5f3df35922ce@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,143 +34,163 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Intel Denverton exposes the SPI serial flash controller as a PCI device
-instead of being part of the LPC chip as previous generations did.
 
-Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
----
- drivers/mtd/spi-nor/Kconfig         | 16 ++++++++
- drivers/mtd/spi-nor/Makefile        |  3 +-
- drivers/mtd/spi-nor/intel-spi-pci.c | 82 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 100 insertions(+), 1 deletion(-)
- create mode 100644 drivers/mtd/spi-nor/intel-spi-pci.c
 
-diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-index bfdfb1e72b38..8cc9b4070d9e 100644
---- a/drivers/mtd/spi-nor/Kconfig
-+++ b/drivers/mtd/spi-nor/Kconfig
-@@ -106,6 +106,22 @@ config SPI_INTEL_SPI_PLATFORM
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called intel-spi-platform.
- 
-+config SPI_INTEL_SPI_PCI
-+	tristate "Intel PCH/PCU SPI flash PCI driver" if EXPERT
-+	depends on X86 && PCI
-+	select SPI_INTEL_SPI
-+	help
-+	  This enables PCI support for the Intel PCH/PCU SPI controller in
-+	  master mode. This controller is present in modern Intel hardware
-+	  and is used to hold BIOS and other persistent settings. Using
-+	  this driver it is possible to upgrade BIOS directly from Linux.
-+
-+	  Say N here unless you know what you are doing. Overwriting the
-+	  SPI flash may render the system unbootable.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called intel-spi-pci.
-+
- config SPI_STM32_QUADSPI
- 	tristate "STM32 Quad SPI controller"
- 	depends on ARCH_STM32
-diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index 285aab86c7ca..92695f2eb7ae 100644
---- a/drivers/mtd/spi-nor/Makefile
-+++ b/drivers/mtd/spi-nor/Makefile
-@@ -8,4 +8,5 @@ obj-$(CONFIG_MTD_MT81xx_NOR)    += mtk-quadspi.o
- obj-$(CONFIG_SPI_NXP_SPIFI)	+= nxp-spifi.o
- obj-$(CONFIG_SPI_INTEL_SPI)	+= intel-spi.o
- obj-$(CONFIG_SPI_INTEL_SPI_PLATFORM)	+= intel-spi-platform.o
--obj-$(CONFIG_SPI_STM32_QUADSPI)	+= stm32-quadspi.o
-\ No newline at end of file
-+obj-$(CONFIG_SPI_INTEL_SPI_PCI)	+= intel-spi-pci.o
-+obj-$(CONFIG_SPI_STM32_QUADSPI)	+= stm32-quadspi.o
-diff --git a/drivers/mtd/spi-nor/intel-spi-pci.c b/drivers/mtd/spi-nor/intel-spi-pci.c
-new file mode 100644
-index 000000000000..e82652335ede
---- /dev/null
-+++ b/drivers/mtd/spi-nor/intel-spi-pci.c
-@@ -0,0 +1,82 @@
-+/*
-+ * Intel PCH/PCU SPI flash PCI driver.
-+ *
-+ * Copyright (C) 2016, Intel Corporation
-+ * Author: Mika Westerberg <mika.westerberg@linux.intel.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/ioport.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/pci.h>
-+
-+#include "intel-spi.h"
-+
-+#define BCR		0xdc
-+#define BCR_WPD		BIT(0)
-+
-+static const struct intel_spi_boardinfo bxt_info = {
-+	.type = INTEL_SPI_BXT,
-+};
-+
-+static int intel_spi_pci_probe(struct pci_dev *pdev,
-+			       const struct pci_device_id *id)
-+{
-+	struct intel_spi_boardinfo *info;
-+	struct intel_spi *ispi;
-+	u32 bcr;
-+	int ret;
-+
-+	ret = pcim_enable_device(pdev);
-+	if (ret)
-+		return ret;
-+
-+	info = devm_kmemdup(&pdev->dev, (void *)id->driver_data, sizeof(*info),
-+			    GFP_KERNEL);
-+	if (!info)
-+		return -ENOMEM;
-+
-+	/* Try to make the chip read/write */
-+	pci_read_config_dword(pdev, BCR, &bcr);
-+	if (!(bcr & BCR_WPD)) {
-+		bcr |= BCR_WPD;
-+		pci_write_config_dword(pdev, BCR, bcr);
-+		pci_read_config_dword(pdev, BCR, &bcr);
-+	}
-+	info->writeable = !!(bcr & BCR_WPD);
-+
-+	ispi = intel_spi_probe(&pdev->dev, &pdev->resource[0], info);
-+	if (IS_ERR(ispi))
-+		return PTR_ERR(ispi);
-+
-+	pci_set_drvdata(pdev, ispi);
-+	return 0;
-+}
-+
-+static void intel_spi_pci_remove(struct pci_dev *pdev)
-+{
-+	intel_spi_remove(pci_get_drvdata(pdev));
-+}
-+
-+static const struct pci_device_id intel_spi_pci_ids[] = {
-+	{ PCI_VDEVICE(INTEL, 0x19e0), (unsigned long)&bxt_info },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(pci, intel_spi_pci_ids);
-+
-+static struct pci_driver intel_spi_pci_driver = {
-+	.name = "intel-spi",
-+	.id_table = intel_spi_pci_ids,
-+	.probe = intel_spi_pci_probe,
-+	.remove = intel_spi_pci_remove,
-+};
-+
-+module_pci_driver(intel_spi_pci_driver);
-+
-+MODULE_DESCRIPTION("Intel PCH/PCU SPI flash PCI driver");
-+MODULE_AUTHOR("Mika Westerberg <mika.westerberg@linux.intel.com>");
-+MODULE_LICENSE("GPL v2");
--- 
-2.11.0
+On Thu, 29 Jun 2017, Marek Vasut wrote:
+
+> On 06/29/2017 01:09 AM, Rob Herring wrote:
+>> On Tue, Jun 27, 2017 at 08:57:14AM -0700, matthew.gerlach@linux.intel.com wrote:
+>>>
+>>>
+>>> On Tue, 27 Jun 2017, Marek Vasut wrote:
+>>>
+>>>> On 06/27/2017 04:32 PM, matthew.gerlach@linux.intel.com wrote:
+>>>>>
+>>>>>
+>>>>> On Tue, 27 Jun 2017, Marek Vasut wrote:
+>>>>>
+>>>>> Hi Marek,
+>>>>>
+>>>>> Thanks for the feedback.  See my comments below.
+>>>>>
+>>>>> Matthew Gerlach
+>>>>>
+>>>>>> On 06/26/2017 06:13 PM, matthew.gerlach@linux.intel.com wrote:
+>>>>>>> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+>>>>>>>
+>>>>>>> Device Tree bindings for Version 2 of the Altera Quadspi Controller
+>>>>>>> that can be optionally paired with a windowed bridge.
+>>>>>>>
+>>>>>>> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+>>>>>>> ---
+>>>>>>>  .../devicetree/bindings/mtd/altera-quadspi-v2.txt  | 37
+>>>>>>> ++++++++++++++++++++++
+>>>>>>>  1 file changed, 37 insertions(+)
+>>>>>>>  create mode 100644
+>>>>>>> Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
+>>>>>>>
+>>>>>>> diff --git
+>>>>>>> a/Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
+>>>>>>> b/Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
+>>>>>>> new file mode 100644
+>>>>>>> index 0000000..8ba63d7
+>>>>>>> --- /dev/null
+>>>>>>> +++ b/Documentation/devicetree/bindings/mtd/altera-quadspi-v2.txt
+>>>>>>> @@ -0,0 +1,37 @@
+>>>>>>> +* Altera Quad SPI Controller Version 2
+>>>>>>> +
+>>>>>>> +Required properties:
+>>>>>>> +- compatible : Should be "altr,quadspi-v2".
+>>>>>>> +- reg : Contains at least two entries, and possibly three entries,
+>>>>>>> each of
+>>>>>>> +    which is a tuple consisting of a physical address and length.
+>>>>>>> +- reg-names : Should contain the names "avl_csr" and "avl_mem"
+>>>>>>> corresponding
+>>>>>>> +          to the control and status registers and qspi memory,
+>>>>>>> respectively.
+>>>>>>> +
+>>>>>>> +
+>>>>>>> +The Altera Quad SPI Controller Version 2 can be paired with a
+>>>>>>> windowed bridge
+>>>>>>> +in order to reduce the footprint of the memory interface.  When a
+>>>>>>> windowed
+>>>>>>> +bridge is used, reads and writes of data must be 32 bits wide.
+>>>>>>> +
+>>>>>>> +Optional properties:
+>>>>>>> +- reg-names : Should contain the name "avl_window", if the windowed
+>>>>>>> bridge
+>>>>>>> +          is used.  This name corresponds to the register space that
+>>>>>>> +          controls the window.
+>>>>>>> +- window-size : The size of the window which must be an even power
+>>>>>>> of 2.
+>>>>>>> +- read-bit-reverse : A boolean indicating the data read from the
+>>>>>>> flash should
+>>>>>>> +             be bit reversed on a byte by byte basis before being
+>>>>>>> +             delivered to the MTD layer.
+>>>>>>> +- write-bit-reverse : A boolean indicating the data written to the
+>>>>>>> flash should
+>>>>>>> +              be bit reversed on a byte by byte basis.
+>>>>>>
+>>>>>> Is there ever a usecase where you need to set just one of these props ?
+>>>>>> Also, they're altera specific, so altr, prefix should be added.
+>>>>>
+>>>>> In general, I think if bit reversal is required, it would be required in
+>>>>> both directions.  However, anything is possible when using FPGAs.  So
+>>>>> I thought separate booleans would be future proofing the bindings.
+>>>>
+>>>> Maybe we should drop this whole thing and add it when this is actually
+>>>> required.
+>>>>
+>>>> Are there any users of this in the wild currently ?
+>>>>
+>>>> What is the purpose of doing this per-byte bit reverse instead of
+>>>> storing th bits in the original order ?
+>>>
+>>> Hi Marek,
+>>>
+>>> Yes, there is hardware that has been in the wild for years that needs this
+>>> bit reversal.  The specific use case is when a flash chip is connected to
+>>> a FPGA, and the contents of the flash is used to configure the FPGA on power
+>>> up.  In this use case, there is no processor involved with configuring the
+>>> FPGA.  I am most familiar with this feature/bug with Altera FPGAs, but I
+>>> believe this issue exists with other programmable devices.
+>>>
+>>>>
+>>>>> Thinking about this binding more, I wonder if the binding name(s)
+>>>>> should be (read|write)-bit8-reverse to indicate reversings the bits
+>>>>> in a byte as opposed to reversing the bits in a 32 bit word?
+>>>>>
+>>>>> I don't think bit reversal is specific to Altera/Intel components. I see
+>>>>> a nand driver performing bit reversal, and I think I've recently seen
+>>>>> other FPGA based drivers requiring bit reversal.
+>>>>
+>>>> $ git grep bit.reverse Documentation/devicetree/ | wc -l
+>>>> 0
+>>>>
+>>>> So we don't have such a generic binding . It's up to Rob (I guess) to
+>>>> decide whether this is SoC specific and should've altr, prefix or not.
+>>>> IMO it is.
+>>>
+>>> I agree there is no generic binding at this time, and I look forward
+>>> to any input from Rob and anyone else on this issue.  I think it is worth
+>>> pointing out that this really isn't an issue of an SoC, but rather it is an
+>>> issue of how data in the flash chip is accessed.  I think what makes this issue
+>>> "weird" is that we have different hardware accessing the data in the flash
+>>> with a different perspective.  The FPGA looks at the data from one
+>>> perspective on power up, and a processor trying to update the flash has a
+>>> different perspective.
+>>
+>> Given the comment that it is reversing bits in each byte, that seems
+>> fairly Altera specific. I'd be more in favor of a generic property if it
+>> was flipping all the bits in a word (for any size word).
+>
+> Actually, I'd prefer to fix up the FPGA bitstream in software and then
+> write the fixed up bitstream into the flash. That way there's no need
+> for any such DT property and other FPGA vendors (ie. xilinx) do it that
+> way already.
+>
+> -- 
+> Best regards,
+> Marek Vasut
+>
+
+While I totally understand Marek's point of view regarding bit flipping,
+I think it is instructive to explore the other point of view.  For me the 
+issue of flipping the bits in user space versus kernel space came down to 
+laziness, which along with impatience and hubris are considered by some to 
+be good traits for a software engineer.  I looked around for an existing user 
+space to perform the function, but I did not find an existing tool, but I 
+suppose I could look more closely at Xilinx's tools.  I do not want to 
+create my own tool, and then it was pointed out to me that the necessary 
+bit flipping functions already exist in the kernel.
+
+Even if we decided that performing the bit flipping in the kernel makes 
+sense, my original binding proposal is clearly inadequate.  As Rob pointed 
+such a binding should be more generic to support flipping the bits in any word 
+size (i.e. 8, 16, 32, 64 ...).  Additionally, Marek has pointed out that a 
+portion of the flash could requiring flipping, and another portion of the 
+same flash would not require flipping.  Therefore, a bit flipping binding 
+is not a property of the flash controller, but rather it is a property of 
+a particular flash partition.
+
+Matthew Gerlach
