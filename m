@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dQThP-0006w2-Ch
- for linux-mtd@lists.infradead.org; Thu, 29 Jun 2017 07:17:18 +0000
+ id 1dQThU-00073y-DS
+ for linux-mtd@lists.infradead.org; Thu, 29 Jun 2017 07:17:28 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: dwmw2@infradead.org, computersforpeace@gmail.com,
  boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
@@ -10,11 +10,14 @@ Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
  andy.gross@linaro.org, architt@codeaurora.org, sricharan@codeaurora.org,
  Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH 05/14] qcom: mtd: nand: allocate bam transaction
-Date: Thu, 29 Jun 2017 12:45:57 +0530
-Message-Id: <1498720566-20782-6-git-send-email-absahu@codeaurora.org>
+Subject: [PATCH 06/14] qcom: mtd: nand: add bam dma descriptor handling
+Date: Thu, 29 Jun 2017 12:45:58 +0530
+Message-Id: <1498720566-20782-7-git-send-email-absahu@codeaurora.org>
 In-Reply-To: <1498720566-20782-1-git-send-email-absahu@codeaurora.org>
 References: <1498720566-20782-1-git-send-email-absahu@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,209 +27,185 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The BAM transaction is the core data structure which will be used
-for all the data transfers in QPIC NAND. Since the base layer is
-serializing all the NAND requests so allocating BAM transaction
-before every transfer will be overhead. The memory for it be
-allocated during probe time and before every transfer, it will be
-cleared. The BAM transaction contains the array of command
-elements, command and data scatter gather list and indexes. For
-every transfer, all the resource will be taken from bam
-transaction.
+1. prepare_bam_async_desc is the function which will call
+   all the DMA API’s. It will fetch the outstanding scatter gather
+   list for passed channel and will do the DMA descriptor formation.
+   The DMA flag is dependent upon the type of channel.
+
+2. For ADM DMA, the descriptor is being formed for every DMA
+   request so its sgl count will be always 1 while in BAM DMA, the
+   clubbing of descriptor is being done to increase throughput.
+
+3. ADM uses only one channel while in BAM, data descriptors
+   will be submitted to tx channel (for write) or rx channel
+   (for read) and all the registers read/write descriptors in
+   command channel.
 
 Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 ---
- drivers/mtd/nand/qcom_nandc.c | 116 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 116 insertions(+)
+ drivers/mtd/nand/qcom_nandc.c | 119 ++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 114 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-index eb0ec19..f8d0bde 100644
+index f8d0bde..7042a65 100644
 --- a/drivers/mtd/nand/qcom_nandc.c
 +++ b/drivers/mtd/nand/qcom_nandc.c
-@@ -22,6 +22,7 @@
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/delay.h>
-+#include <linux/dma/qcom_bam_dma.h>
- 
- /* NANDc reg offsets */
- #define	NAND_FLASH_CMD			0x00
-@@ -169,6 +170,45 @@
- #define	ECC_BCH_4BIT	BIT(2)
- #define	ECC_BCH_8BIT	BIT(3)
- 
-+#define QPIC_PER_CW_MAX_CMD_ELEMENTS	(32)
-+#define QPIC_PER_CW_MAX_CMD_SGL		(32)
-+#define QPIC_PER_CW_MAX_DATA_SGL	(8)
-+
-+/*
-+ * This data type corresponds to the BAM transaction which will be used for all
-+ * NAND transfers.
-+ * @bam_ce - the array of bam command elements
-+ * @cmd_sgl - sgl for nand bam command pipe
-+ * @data_sgl - sgl for nand bam consumer/producer pipe
-+ * @bam_ce_pos - the index in bam_ce which is available for next sgl request
-+ * @bam_ce_start - the index in bam_ce which marks the start position ce
-+ *		   for current sgl. It will be used for size calculation
-+ *		   for current sgl
-+ * @cmd_sgl_pos - current index in command sgl.
-+ * @tx_sgl_pos - current index in data sgl for tx.
-+ * @rx_sgl_pos - current index in data sgl for rx.
-+ */
-+struct bam_transaction {
-+	struct bam_cmd_element *bam_ce;
-+	struct scatterlist *cmd_sgl;
-+	struct scatterlist *data_sg;
-+	u32 bam_ce_pos;
-+	u32 bam_ce_start;
-+	u32 cmd_sgl_pos;
-+	u32 cmd_sgl_start;
-+	u32 tx_sgl_pos;
-+	u32 tx_sgl_start;
-+	u32 rx_sgl_pos;
-+	u32 rx_sgl_start;
-+};
-+
-+/*
-+ * This data type corresponds to the nand dma descriptor
-+ * @list - list for desc_info
-+ * @dir - DMA transfer direction
-+ * @sgl - sgl which will be used for single sgl dma descriptor
-+ * @dma_desc - low level dma engine descriptor
-+ */
+@@ -206,14 +206,22 @@ struct bam_transaction {
+  * This data type corresponds to the nand dma descriptor
+  * @list - list for desc_info
+  * @dir - DMA transfer direction
+- * @sgl - sgl which will be used for single sgl dma descriptor
++ * @sgl - sgl which will be used for single sgl dma descriptor. Only used by ADM
++ * @bam_sgl - sgl which will be used for dma descriptor. Only used by BAM
++ * @sgl_cnt - number of SGL in bam_sgl. Only used by BAM
+  * @dma_desc - low level dma engine descriptor
+  */
  struct desc_info {
  	struct list_head node;
  
-@@ -217,6 +257,7 @@ struct nandc_regs {
-  * @aon_clk:			another controller clock
-  *
-  * @chan:			dma channel
-+ * @bam_txn:			contains the bam transaction buffer
-  * @cmd_crci:			ADM DMA CRCI for command flow control
-  * @data_crci:			ADM DMA CRCI for data flow control
-  * @desc_list:			DMA descriptor list (list of desc_infos)
-@@ -237,6 +278,8 @@ struct nandc_regs {
-  *				initialized via DT match data
-  * @dma_bam_enabled:		flag to tell whether nand controller is using
-  *				bam dma
-+ * @max_cwperpage:		maximum qpic codeword required. calcualted
-+ *				from all nand device pagesize
-  */
- struct qcom_nand_controller {
- 	struct nand_hw_control controller;
-@@ -264,12 +307,14 @@ struct qcom_nand_controller {
- 	};
- 
- 	struct list_head desc_list;
-+	struct bam_transaction *bam_txn;
- 
- 	u8		*data_buffer;
- 	bool		dma_bam_enabled;
- 	int		buf_size;
- 	int		buf_count;
- 	int		buf_start;
-+	unsigned int	max_cwperpage;
- 
- 	__le32 *reg_read_buf;
- 	dma_addr_t reg_read_buf_phys;
-@@ -342,6 +387,51 @@ struct qcom_nand_driver_data {
- 	bool dma_bam_enabled;
+ 	enum dma_data_direction dir;
+-	struct scatterlist sgl;
++	union {
++			struct scatterlist sgl;
++			struct {
++				struct scatterlist *bam_sgl;
++				int sgl_cnt;
++			};
++	};
+ 	struct dma_async_tx_descriptor *dma_desc;
  };
  
-+/* Frees the BAM transaction memory */
-+static void free_bam_transaction(struct qcom_nand_controller *nandc)
+@@ -564,6 +572,68 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read)
+ 	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
+ }
+ 
++/*
++ * Maps the scatter gather list for DMA transfer and forms the DMA descriptor
++ * for BAM. This descriptor will be added in the NAND DMA descriptor queue
++ * which will be submitted to DMA engine.
++ */
++static int prepare_bam_async_desc(struct qcom_nand_controller *nandc,
++				  struct dma_chan *chan,
++				  unsigned long flags)
 +{
++	struct desc_info *desc;
++	struct scatterlist *sgl;
++	unsigned int sgl_cnt;
 +	struct bam_transaction *bam_txn = nandc->bam_txn;
++	enum dma_transfer_direction dir_eng;
++	struct dma_async_tx_descriptor *dma_desc;
 +
-+	devm_kfree(nandc->dev, bam_txn->bam_ce);
-+	devm_kfree(nandc->dev, bam_txn->cmd_sgl);
-+	devm_kfree(nandc->dev, bam_txn->data_sg);
-+	devm_kfree(nandc->dev, bam_txn);
-+}
++	desc = kzalloc(sizeof(*desc), GFP_KERNEL);
++	if (!desc)
++		return -ENOMEM;
 +
-+/* Allocates and Initializes the BAM transaction */
-+static struct bam_transaction *
-+alloc_bam_transaction(struct qcom_nand_controller *nandc, unsigned int num_cw)
-+{
-+	struct bam_transaction *bam_txn;
-+
-+	bam_txn = devm_kzalloc(nandc->dev, sizeof(*bam_txn), GFP_KERNEL);
-+
-+	if (!bam_txn)
-+		return NULL;
-+
-+	bam_txn->bam_ce =
-+		devm_kzalloc(nandc->dev, sizeof(*bam_txn->bam_ce) *
-+			     num_cw * QPIC_PER_CW_MAX_CMD_ELEMENTS, GFP_KERNEL);
-+	if (!bam_txn->bam_ce)
-+		return NULL;
-+
-+	bam_txn->cmd_sgl =
-+		devm_kzalloc(nandc->dev, sizeof(*bam_txn->cmd_sgl) * num_cw *
-+			     QPIC_PER_CW_MAX_CMD_SGL, GFP_KERNEL);
-+	if (!bam_txn->cmd_sgl)
-+		return NULL;
-+
-+	bam_txn->data_sg =
-+		devm_kzalloc(nandc->dev, sizeof(*bam_txn->data_sg) *
-+			     num_cw * QPIC_PER_CW_MAX_DATA_SGL, GFP_KERNEL);
-+	if (!bam_txn->data_sg)
-+		return NULL;
-+
-+	nandc->max_cwperpage = num_cw;
-+
-+	return bam_txn;
-+}
-+
- static inline struct qcom_nand_host *to_qcom_nand_host(struct nand_chip *chip)
- {
- 	return container_of(chip, struct qcom_nand_host, chip);
-@@ -1868,6 +1958,8 @@ static int qcom_nand_host_setup(struct qcom_nand_host *host)
- 	mtd_set_ooblayout(mtd, &qcom_nand_ooblayout_ops);
- 
- 	cwperpage = mtd->writesize / ecc->size;
-+	nandc->max_cwperpage = max_t(unsigned int, nandc->max_cwperpage,
-+					cwperpage);
- 
- 	/*
- 	 * DATA_UD_BYTES varies based on whether the read/write command protects
-@@ -2010,6 +2102,19 @@ static int qcom_nandc_alloc(struct qcom_nand_controller *nandc)
- 			dev_err(nandc->dev, "failed to request cmd channel\n");
- 			return -ENODEV;
- 		}
-+
-+		/*
-+		 * Initially allocate BAM transaction to read ONFI param page.
-+		 * After detecting all the devices, this BAM transaction will
-+		 * be freed and the next BAM tranasction will be allocated with
-+		 * maximum codeword size
-+		 */
-+		nandc->bam_txn = alloc_bam_transaction(nandc, 1);
-+		if (!nandc->bam_txn) {
-+			dev_err(nandc->dev,
-+				"failed to allocate bam transaction\n");
-+			return -ENOMEM;
-+		}
- 	}
- 
- 	INIT_LIST_HEAD(&nandc->desc_list);
-@@ -2153,6 +2258,17 @@ static int qcom_probe_nand_devices(struct qcom_nand_controller *nandc)
- 	if (list_empty(&nandc->host_list))
- 		return -ENODEV;
- 
-+	if (nandc->dma_bam_enabled) {
-+		free_bam_transaction(nandc);
-+		nandc->bam_txn = alloc_bam_transaction(nandc,
-+						       nandc->max_cwperpage);
-+		if (!nandc->bam_txn) {
-+			dev_err(nandc->dev,
-+				"failed to allocate bam transaction\n");
-+			return -ENOMEM;
-+		}
++	if (chan == nandc->cmd_chan) {
++		sgl = &bam_txn->cmd_sgl[bam_txn->cmd_sgl_start];
++		sgl_cnt = bam_txn->cmd_sgl_pos - bam_txn->cmd_sgl_start;
++		bam_txn->cmd_sgl_start = bam_txn->cmd_sgl_pos;
++		dir_eng = DMA_MEM_TO_DEV;
++		desc->dir = DMA_TO_DEVICE;
++	} else if (chan == nandc->tx_chan) {
++		sgl = &bam_txn->data_sg[bam_txn->tx_sgl_start];
++		sgl_cnt = bam_txn->tx_sgl_pos - bam_txn->tx_sgl_start;
++		bam_txn->tx_sgl_start = bam_txn->tx_sgl_pos;
++		dir_eng = DMA_MEM_TO_DEV;
++		desc->dir = DMA_TO_DEVICE;
++	} else {
++		sgl = &bam_txn->data_sg[bam_txn->rx_sgl_start];
++		sgl_cnt = bam_txn->rx_sgl_pos - bam_txn->rx_sgl_start;
++		bam_txn->rx_sgl_start = bam_txn->rx_sgl_pos;
++		desc->dir = DMA_FROM_DEVICE;
++		dir_eng = DMA_DEV_TO_MEM;
 +	}
 +
- 	list_for_each_entry_safe(host, tmp, &nandc->host_list, node) {
- 		ret = qcom_nand_mtd_register(nandc, host, child);
- 		if (ret) {
++	sg_mark_end(sgl + sgl_cnt - 1);
++	dma_map_sg(nandc->dev, sgl, sgl_cnt, desc->dir);
++
++	desc->sgl_cnt = sgl_cnt;
++	desc->bam_sgl = sgl;
++
++	dma_desc = dmaengine_prep_slave_sg(chan, sgl, sgl_cnt, dir_eng,
++					   flags);
++
++	if (!dma_desc) {
++		dev_err(nandc->dev, "failure in prep desc\n");
++		kfree(desc);
++		return -EINVAL;
++	}
++
++	desc->dma_desc = dma_desc;
++
++	list_add_tail(&desc->node, &nandc->desc_list);
++
++	return 0;
++}
++
+ static int prep_dma_desc(struct qcom_nand_controller *nandc, bool read,
+ 			 int reg_off, const void *vaddr, int size,
+ 			 bool flow_control)
+@@ -891,12 +961,44 @@ static int submit_descs(struct qcom_nand_controller *nandc)
+ {
+ 	struct desc_info *desc;
+ 	dma_cookie_t cookie = 0;
++	struct bam_transaction *bam_txn = nandc->bam_txn;
++	int r;
++
++	if (nandc->dma_bam_enabled) {
++		if (bam_txn->rx_sgl_pos - bam_txn->rx_sgl_start) {
++			r = prepare_bam_async_desc(nandc, nandc->rx_chan, 0);
++			if (r)
++				return r;
++		}
++
++		if (bam_txn->tx_sgl_pos - bam_txn->tx_sgl_start) {
++			r = prepare_bam_async_desc(nandc, nandc->tx_chan,
++						   DMA_PREP_INTERRUPT);
++			if (r)
++				return r;
++		}
++
++		if (bam_txn->cmd_sgl_pos - bam_txn->cmd_sgl_start) {
++			r = prepare_bam_async_desc(nandc, nandc->cmd_chan,
++						   DMA_PREP_CMD);
++			if (r)
++				return r;
++		}
++	}
+ 
+ 	list_for_each_entry(desc, &nandc->desc_list, node)
+ 		cookie = dmaengine_submit(desc->dma_desc);
+ 
+-	if (dma_sync_wait(nandc->chan, cookie) != DMA_COMPLETE)
+-		return -ETIMEDOUT;
++	if (nandc->dma_bam_enabled) {
++		dma_async_issue_pending(nandc->tx_chan);
++		dma_async_issue_pending(nandc->rx_chan);
++
++		if (dma_sync_wait(nandc->cmd_chan, cookie) != DMA_COMPLETE)
++			return -ETIMEDOUT;
++	} else {
++		if (dma_sync_wait(nandc->chan, cookie) != DMA_COMPLETE)
++			return -ETIMEDOUT;
++	}
+ 
+ 	return 0;
+ }
+@@ -907,7 +1009,14 @@ static void free_descs(struct qcom_nand_controller *nandc)
+ 
+ 	list_for_each_entry_safe(desc, n, &nandc->desc_list, node) {
+ 		list_del(&desc->node);
+-		dma_unmap_sg(nandc->dev, &desc->sgl, 1, desc->dir);
++
++		if (nandc->dma_bam_enabled)
++			dma_unmap_sg(nandc->dev, desc->bam_sgl,
++				     desc->sgl_cnt, desc->dir);
++		else
++			dma_unmap_sg(nandc->dev, &desc->sgl, 1,
++				     desc->dir);
++
+ 		kfree(desc);
+ 	}
+ }
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
