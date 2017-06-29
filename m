@@ -1,20 +1,20 @@
-Received: from youngberry.canonical.com ([91.189.89.112])
+Received: from mail-pf0-x22f.google.com ([2607:f8b0:400e:c00::22f])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dQdbC-0002t7-7U
- for linux-mtd@lists.infradead.org; Thu, 29 Jun 2017 17:51:27 +0000
-From: Colin King <colin.king@canonical.com>
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][mtd-next] mtd: spi-nor: remove redundant check on err
-Date: Thu, 29 Jun 2017 18:50:54 +0100
-Message-Id: <20170629175054.12231-1-colin.king@canonical.com>
+ id 1dQehG-0002BZ-85
+ for linux-mtd@lists.infradead.org; Thu, 29 Jun 2017 19:01:48 +0000
+Received: by mail-pf0-x22f.google.com with SMTP id c73so54918113pfk.2
+ for <linux-mtd@lists.infradead.org>; Thu, 29 Jun 2017 12:01:25 -0700 (PDT)
+Received: from eliptus.pao.corp.google.com ([100.96.178.104])
+ by smtp.gmail.com with ESMTPSA id q29sm2778581pfg.11.2017.06.29.12.01.22
+ for <linux-mtd@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+ Thu, 29 Jun 2017 12:01:22 -0700 (PDT)
+From: Harpreet Eli Sangha <harpreet@nestlabs.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd-utils: tests: Add Erased Pages Bit Flip Test
+Date: Thu, 29 Jun 2017 12:01:20 -0700
+Message-Id: <20170629190120.21245-1-harpreet@nestlabs.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,31 +25,149 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Colin Ian King <colin.king@canonical.com>
+From: "Harpreet \"Eli\" Sangha" <harpreet@nestlabs.com>
 
-The variable err is not updated since the previous check on it, so
-the subsequent check on err is redundant and can be removed.
+Bit flip detection for written and erased pages tend to have different
+implementations. Where written pages are detected and corrected using
+ECC, erased pages are typically detected by ensuring that the number of
+zeros is less than a specified threshold.
 
-Detected by CoverityScan, CID#1448658 ("Logically dead code")
+As such, it's necessary to have the 'nandbiterrs' test support the
+testing of written and erased pages. Bit flips in erased pages are
+emulated by rewriting the page in raw mode, to prevent the use of ECC.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Harpreet "Eli" Sangha <harpreet@nestlabs.com>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 3 ---
- 1 file changed, 3 deletions(-)
+ tests/mtd-tests/nandbiterrs.c | 43 +++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 35 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 196b52f083ae..1296c1931591 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -2307,9 +2307,6 @@ static int spi_nor_parse_sfdp(struct spi_nor *nor,
- 		default:
+diff --git a/tests/mtd-tests/nandbiterrs.c b/tests/mtd-tests/nandbiterrs.c
+index de9d0dd..200fe1c 100644
+--- a/tests/mtd-tests/nandbiterrs.c
++++ b/tests/mtd-tests/nandbiterrs.c
+@@ -62,6 +62,7 @@
+ #define KEEP_CONTENTS 0x01
+ #define MODE_INCREMENTAL 0x02
+ #define MODE_OVERWRITE 0x04
++#define PAGE_ERASED 0x08
+ 
+ static int peb = -1, page = -1, max_overwrite = -1, seed = -1;
+ static const char *mtddev;
+@@ -77,6 +78,7 @@ static const struct option options[] = {
+ 	{ "peb", required_argument, NULL, 'b' },
+ 	{ "page", required_argument, NULL, 'p' },
+ 	{ "seed", required_argument, NULL, 's' },
++	{ "erased", no_argument, NULL, 'e' },
+ 	{ "writes", required_argument, NULL, 'w' },
+ 	{ "incremental", no_argument, NULL, 'i' },
+ 	{ "overwrite", no_argument, NULL, 'o' },
+@@ -92,7 +94,8 @@ static void usage(int status)
+ 	"  -k, --keep          Restore existing contents after test\n"
+ 	"  -b, --peb <num>     Use this physical erase block\n"
+ 	"  -p, --page <num>    Use this page within the erase block\n"
+-	"  -s, --seed <num>    Specify seed for PRNG\n\n"
++	"  -s, --seed <num>    Specify seed for PRNG\n"
++	"  -e, --erased        Test erased pages instead of written pages\n\n"
+ 	"Options controling test mode:\n"
+ 	"  -i, --incremental   Manually insert bit errors until ECC fails\n"
+ 	"  -o, --overwrite     Rewrite page until bits flip and ECC fails\n\n"
+@@ -121,7 +124,7 @@ static void process_options(int argc, char **argv)
+ 	int c;
+ 
+ 	while (1) {
+-		c = getopt_long(argc, argv, "hkb:p:s:iow:", options, NULL);
++		c = getopt_long(argc, argv, "hkb:p:s:eiow:", options, NULL);
+ 		if (c == -1)
  			break;
- 		}
--
--		if (err)
--			goto exit;
+ 
+@@ -169,6 +172,9 @@ static void process_options(int argc, char **argv)
+ 			if (page < 0)
+ 				goto failarg;
+ 			break;
++		case 'e':
++			flags |= PAGE_ERASED;
++			break;
+ 		case 'h':
+ 			usage(EXIT_SUCCESS);
+ 		default:
+@@ -224,17 +230,39 @@ static unsigned char hash(unsigned int offset)
+ 	return c;
+ }
+ 
++static void init_buffer(void)
++{
++	unsigned int i;
++
++	if (flags & PAGE_ERASED) {
++		memset(wbuffer, 0xff, pagesize);
++	} else {
++		for (i = 0; i < pagesize; ++i)
++			wbuffer[i] = hash(i+seed);
++	}
++}
++
+ static int write_page(void)
+ {
++	int raw = flags & PAGE_ERASED;
+ 	int err;
+ 
++	if (raw && ioctl(fd, MTDFILEMODE, MTD_FILE_MODE_RAW) != 0)
++		goto fail_mode;
++
+ 	err = mtd_write(mtd_desc, &mtd, fd, peb, page*pagesize,
+ 					wbuffer, pagesize, NULL, 0, 0);
+ 
+ 	if (err)
+ 		fprintf(stderr, "Failed to write page %d in block %d\n", peb, page);
+ 
++	if (raw && ioctl(fd, MTDFILEMODE, MTD_FILE_MODE_NORMAL) != 0)
++		goto fail_mode;
++
+ 	return err;
++fail_mode:
++	perror("MTDFILEMODE");
++	return -1;
+ }
+ 
+ static int rewrite_page(void)
+@@ -285,10 +313,11 @@ failstats:
+ 
+ static int verify_page(void)
+ {
++	int erased = flags & PAGE_ERASED;
+ 	unsigned int i, errs = 0;
+ 
+ 	for (i = 0; i < pagesize; ++i) {
+-		if (rbuffer[i] != hash(i+seed))
++		if (rbuffer[i] != (erased ? 0xff : hash(i+seed)))
+ 			++errs;
  	}
  
- exit:
+@@ -321,13 +350,12 @@ static int insert_biterror(void)
+  * errors into the page, while verifying each step. */
+ static int incremental_errors_test(void)
+ {
+-	unsigned int i, errs_per_subpage = 0;
++	unsigned int errs_per_subpage = 0;
+ 	int count = 0;
+ 
+ 	puts("incremental biterrors test");
+ 
+-	for (i = 0; i < pagesize; ++i)
+-		wbuffer[i] = hash(i+seed);
++	init_buffer();
+ 
+ 	if (write_page() != 0)
+ 		return -1;
+@@ -372,8 +400,7 @@ static int overwrite_test(void)
+ 
+ 	puts("overwrite biterrors test");
+ 
+-	for (i = 0; i < pagesize; ++i)
+-		wbuffer[i] = hash(i+seed);
++	init_buffer();
+ 
+ 	if (write_page() != 0)
+ 		return -1;
 -- 
-2.11.0
+2.13.2.725.g09c95d1e9-goog
