@@ -1,34 +1,35 @@
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dQTN3-0008C8-Lh
- for linux-mtd@lists.infradead.org; Thu, 29 Jun 2017 06:56:10 +0000
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.16.0.20/8.16.0.20) with SMTP id
- v5T6s4gP142798
- for <linux-mtd@lists.infradead.org>; Thu, 29 Jun 2017 02:55:43 -0400
-Received: from e23smtp02.au.ibm.com (e23smtp02.au.ibm.com [202.81.31.144])
- by mx0a-001b2d01.pphosted.com with ESMTP id 2bcvba0v9p-1
- (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=NOT)
- for <linux-mtd@lists.infradead.org>; Thu, 29 Jun 2017 02:55:43 -0400
-Received: from localhost
- by e23smtp02.au.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <linux-mtd@lists.infradead.org> from <cyrilbur@gmail.com>;
- Thu, 29 Jun 2017 16:55:37 +1000
-Received: from d23av05.au.ibm.com (d23av05.au.ibm.com [9.190.234.119])
- by d23relay09.au.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- v5T6tQ3639518428
- for <linux-mtd@lists.infradead.org>; Thu, 29 Jun 2017 16:55:34 +1000
-Received: from d23av05.au.ibm.com (localhost [127.0.0.1])
- by d23av05.au.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
- v5T6t1im026221
- for <linux-mtd@lists.infradead.org>; Thu, 29 Jun 2017 16:55:01 +1000
-From: Cyril Bur <cyrilbur@gmail.com>
-To: linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org
-Cc: dwmw2@infradead.org, stewart@linux.vnet.ibm.com
-Subject: [PATCH 0/5] Allow opal-async waiters to get interrupted
-Date: Thu, 29 Jun 2017 16:54:08 +1000
-Message-Id: <20170629065413.19845-1-cyrilbur@gmail.com>
+Received: from mail-wr0-x22e.google.com ([2a00:1450:400c:c0c::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dQTW5-0001rS-1M
+ for linux-mtd@lists.infradead.org; Thu, 29 Jun 2017 07:05:30 +0000
+Received: by mail-wr0-x22e.google.com with SMTP id r103so184660328wrb.0
+ for <linux-mtd@lists.infradead.org>; Thu, 29 Jun 2017 00:05:05 -0700 (PDT)
+Subject: Re: [PATCH v6 11/15] nand: spi: add basic operations support
+To: =?UTF-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
+ <peterpandong@micron.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: "richard@nod.at" <richard@nod.at>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "thomas.petazzoni@free-electrons.com" <thomas.petazzoni@free-electrons.com>,
+ "marex@denx.de" <marex@denx.de>,
+ "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "peterpansjtu@gmail.com" <peterpansjtu@gmail.com>,
+ "linshunquan1@hisilicon.com" <linshunquan1@hisilicon.com>
+References: <1495609631-18880-1-git-send-email-peterpandong@micron.com>
+ <1495609631-18880-12-git-send-email-peterpandong@micron.com>
+ <20170530001152.1d8beb72@bbrezillon>
+ <B7799737-B040-4824-BBAF-5A0510CD553C@micron.com>
+ <20170627221552.6e4efff9@bbrezillon>
+ <C3581AD4-9CFE-489B-91E7-B923217DDCBD@micron.com>
+From: Arnaud Mouiche <arnaud.mouiche@gmail.com>
+Message-ID: <14f6f4f7-6a27-212b-4fb9-7a4303c1be34@gmail.com>
+Date: Thu, 29 Jun 2017 09:05:02 +0200
+MIME-Version: 1.0
+In-Reply-To: <C3581AD4-9CFE-489B-91E7-B923217DDCBD@micron.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: fr
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,43 +39,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
 
-This patchset aims to solve the problem that currently all users of
-the opal-async calls must use wait_event(), this may be undesirable
-when there is a userspace process behind the request for the opal
-call, if OPAL takes too long to complete the call then hung task
-warnings will appear.
 
-In order to solve the problem callers should use
-wait_event_interruptible(), due to the interruptible nature of this
-call the opal-async infrastructure needs to track extra state
-associated with each async token, this is prepared for in patch 2/5.
-
-Patch 3/5 attempts to provide a solution to the problem that the
-powernv_flash MTD driver can use in patch 5/5.
-
-Hello MTD folk, traditionally Michael Ellerman takes powernv_flash
-driver patches through the powerpc tree, as always your feedback is
-very welcome.
-
-Thanks,
-
-Cyril
-
-Cyril Bur (5):
-  powerpc/opal: Make __opal_async_{get,release}_token() static
-  powerpc/opal: Rework the opal-async interface
-  powerpc/opal: Add opal_async_wait_response_interruptible() to
-    opal-async
-  powerpc/powernv: Add OPAL_BUSY to opal_error_code()
-  mtd: powernv_flash: Use opal_async_wait_response_interruptible()
-
- arch/powerpc/include/asm/opal.h             |   3 +-
- arch/powerpc/platforms/powernv/opal-async.c | 190 ++++++++++++++++++++--------
- arch/powerpc/platforms/powernv/opal.c       |   1 +
- drivers/mtd/devices/powernv_flash.c         |  18 ++-
- 4 files changed, 151 insertions(+), 61 deletions(-)
-
--- 
-2.13.2
+On 29/06/2017 08:07, Peter Pan 潘栋 (peterpandong) wrote:
+> Hi Boris,
+>
+>> 在 2017年6月28日，04:16，Boris Brezillon <boris.brezillon@free-electrons.com> 写道：
+>>
+>>
+>>>>> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+>>>>> index dd9da71..04ad1dd 100644
+>>>>> --- a/include/linux/mtd/spinand.h
+>>>>> +++ b/include/linux/mtd/spinand.h
+>>>>> @@ -103,11 +103,14 @@ struct spinand_controller_ops {
+>>>>> *          return directly and let others to detect.
+>>>>> * @init: initialize SPI NAND device.
+>>>>> * @cleanup: clean SPI NAND device footprint.
+>>>>> + * @prepare_op: prepara read/write operation.
+>>>>           ^ prepare
+>>>>
+>>>>
+>>>>
+>>>>> */
+>>>>> struct spinand_manufacturer_ops {
+>>>>>    bool (*detect)(struct spinand_device *spinand);
+>>>>>    int (*init)(struct spinand_device *spinand);
+>>>>>    void (*cleanup)(struct spinand_device *spinand);
+>>>>> +    void (*prepare_op)(struct spinand_device *spinand,
+>>>>> +               struct spinand_op *op, u32 page, u32 column);
+>>>> It seems to be here to prepare read/write page operations, so I'd like
+>>>> to rename this method ->prepare_page_op() if you don't mind.
+>>> I'm ok with the new name
+>> Hm, actually I wonder if this ->prepare_op() method is really what we
+>> want. It seems to be here to set the proper plane number and the
+>> number of dummy bytes after the address cycles.
+>> I'd say deducing the plane from the page is something standard. Whether
+>> we need it or not depends on the information provide in the memorg
+>> object (->nplanes).
+> For Micron spi nand, it's true. But I don't know whether other vendors'
+> spi nand need set plane number when the chip has more than one
+> planes. The reason Micron spi nand need to set plane number is
+> internal cache register is per plane.
+>
+> Arnaud,
+> Do you have info about this?
+I don't know the internals, only the user side.
+Up to now, Micron is the only one requiring a "pane bit" in the offset 
+address.
+Arnaud
+>
+> Thanks
+> Peter Pan
+>
+>> Regarding the dummy byte, do you have examples of SPI NANDs requiring
+>> less or more dummy bytes in this read/write from/to cache use case?
+>> If not, I'd prefer to keep it hardcoded in the core for know, and add
+>> a hook when the need appears.
