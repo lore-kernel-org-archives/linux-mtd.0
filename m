@@ -1,27 +1,19 @@
-Received: from mail-qk0-x22e.google.com ([2607:f8b0:400d:c09::22e])
+Received: from mail-vk0-x22a.google.com ([2607:f8b0:400c:c05::22a])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dQuxC-0002D7-2w
- for linux-mtd@lists.infradead.org; Fri, 30 Jun 2017 12:23:19 +0000
-Received: by mail-qk0-x22e.google.com with SMTP id v143so15043521qkb.0
- for <linux-mtd@lists.infradead.org>; Fri, 30 Jun 2017 05:22:57 -0700 (PDT)
+ id 1dR3mx-0001st-Lm
+ for linux-mtd@lists.infradead.org; Fri, 30 Jun 2017 21:49:21 +0000
+Received: by mail-vk0-x22a.google.com with SMTP id r125so73409423vkf.1
+ for <linux-mtd@lists.infradead.org>; Fri, 30 Jun 2017 14:48:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20170629213951.31176-11-hauke@hauke-m.de>
-References: <20170629213951.31176-1-hauke@hauke-m.de>
- <20170629213951.31176-11-hauke@hauke-m.de>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Fri, 30 Jun 2017 15:22:56 +0300
-Message-ID: <CAHp75Ve+oO7Zzk4jN3BOVCWWsEVki0yNQfpkfuw4Q5K85CMQHg@mail.gmail.com>
-Subject: Re: [PATCH v6 10/16] reset: Add a reset controller driver for the
- Lantiq XWAY based SoCs
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: Ralf Baechle <ralf@linux-mips.org>,
- Linux MIPS Mailing List <linux-mips@linux-mips.org>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- linux-watchdog@vger.kernel.org, devicetree <devicetree@vger.kernel.org>,
- "martin.blumenstingl" <martin.blumenstingl@googlemail.com>,
- john <john@phrozen.org>, linux-spi <linux-spi@vger.kernel.org>,
- "hauke.mehrtens" <hauke.mehrtens@intel.com>,
- Rob Herring <robh@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>
+In-Reply-To: <20170629190120.21245-1-harpreet@nestlabs.com>
+References: <20170629190120.21245-1-harpreet@nestlabs.com>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Fri, 30 Jun 2017 18:48:57 -0300
+Message-ID: <CAOMZO5C-KMf_DDe2iQATi05AD0dMEV_yqig5Cx7LemkfEAi+UQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd-utils: tests: Add Erased Pages Bit Flip Test
+To: Harpreet Eli Sangha <harpreet@nestlabs.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ david.oberhollenzer@sigma-star.at
 Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,49 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jun 30, 2017 at 12:39 AM, Hauke Mehrtens <hauke@hauke-m.de> wrote:
+Hi Harpreet,
 
-> +static int lantiq_rcu_reset_update(struct reset_controller_dev *rcdev,
-> +                                  unsigned long id, bool assert)
-> +{
-> +       struct lantiq_rcu_reset_priv *priv = to_lantiq_rcu_reset_priv(rcdev);
-> +       unsigned int set = id & 0x1f;
+On Thu, Jun 29, 2017 at 4:01 PM, Harpreet Eli Sangha
+<harpreet@nestlabs.com> wrote:
+> From: "Harpreet \"Eli\" Sangha" <harpreet@nestlabs.com>
+>
+> Bit flip detection for written and erased pages tend to have different
+> implementations. Where written pages are detected and corrected using
+> ECC, erased pages are typically detected by ensuring that the number of
+> zeros is less than a specified threshold.
+>
+> As such, it's necessary to have the 'nandbiterrs' test support the
+> testing of written and erased pages. Bit flips in erased pages are
+> emulated by rewriting the page in raw mode, to prevent the use of ECC.
+>
+> Signed-off-by: Harpreet "Eli" Sangha <harpreet@nestlabs.com>
 
+Looks like you missed to add David on Cc once again.
 
-> +       int ret;
-> +       u32 val;
-> +
-> +       if (assert)
-> +               val = BIT(set);
-> +       else
-> +               val = 0;
+A nitpick: your From and Signed-off-by still do not match.
 
-I would put this as
-
-u32 val = assert ? BIT(set) : 0;
-int ret;
-
-...but it's up to you.
-
-The rest looks fine.
-
-> +
-> +       ret = regmap_update_bits(priv->regmap, priv->reset_offset, BIT(set),
-> +                                val);
-> +       if (ret) {
-> +               dev_err(priv->dev, "Failed to set reset bit %u\n", set);
-> +               return ret;
-> +       }
-> +
-> +
-> +       ret = lantiq_rcu_reset_status_timeout(rcdev, id, assert);
-> +       if (ret)
-> +               dev_err(priv->dev, "Failed to %s bit %u\n",
-> +                       assert ? "assert" : "deassert", set);
-> +
-> +       return ret;
-> +}
-
--- 
-With Best Regards,
-Andy Shevchenko
+The From field has two \ character , which is not very common.
