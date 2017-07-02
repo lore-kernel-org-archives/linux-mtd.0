@@ -1,6 +1,6 @@
-Received: from hauke-m.de ([5.39.93.123] helo=mail.hauke-m.de)
+Received: from hauke-m.de ([2001:41d0:8:b27b::1] helo=mail.hauke-m.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dRnYg-0008VU-I3
+ id 1dRnYh-0008VX-0j
  for linux-mtd@lists.infradead.org; Sun, 02 Jul 2017 22:41:40 +0000
 From: Hauke Mehrtens <hauke@hauke-m.de>
 To: ralf@linux-mips.org
@@ -10,9 +10,9 @@ Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
  linux-spi@vger.kernel.org, hauke.mehrtens@intel.com, robh@kernel.org,
  andy.shevchenko@gmail.com, p.zabel@pengutronix.de,
  Hauke Mehrtens <hauke@hauke-m.de>
-Subject: [PATCH v7 03/16] mtd: spi-falcon: drop check of boot select
-Date: Mon,  3 Jul 2017 00:40:38 +0200
-Message-Id: <20170702224051.15109-4-hauke@hauke-m.de>
+Subject: [PATCH v7 02/16] mtd: lantiq-flash: drop check of boot select
+Date: Mon,  3 Jul 2017 00:40:37 +0200
+Message-Id: <20170702224051.15109-3-hauke@hauke-m.de>
 In-Reply-To: <20170702224051.15109-1-hauke@hauke-m.de>
 References: <20170702224051.15109-1-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,25 +30,27 @@ driver when it was added to device tree. This also removes a build
 dependency to the SoC code.
 
 Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+Acked-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/spi/spi-falcon.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/mtd/maps/lantiq-flash.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/spi/spi-falcon.c b/drivers/spi/spi-falcon.c
-index 286b2c81fc6b..f8638e82e5db 100644
---- a/drivers/spi/spi-falcon.c
-+++ b/drivers/spi/spi-falcon.c
-@@ -395,11 +395,6 @@ static int falcon_sflash_probe(struct platform_device *pdev)
- 	struct spi_master *master;
- 	int ret;
+diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
+index 3e33ab66eb24..77b1d8013295 100644
+--- a/drivers/mtd/maps/lantiq-flash.c
++++ b/drivers/mtd/maps/lantiq-flash.c
+@@ -114,12 +114,6 @@ ltq_mtd_probe(struct platform_device *pdev)
+ 	struct cfi_private *cfi;
+ 	int err;
  
--	if (ltq_boot_select() != BS_SPI) {
+-	if (of_machine_is_compatible("lantiq,falcon") &&
+-			(ltq_boot_select() != BS_FLASH)) {
 -		dev_err(&pdev->dev, "invalid bootstrap options\n");
 -		return -ENODEV;
 -	}
 -
- 	master = spi_alloc_master(&pdev->dev, sizeof(*priv));
- 	if (!master)
+ 	ltq_mtd = devm_kzalloc(&pdev->dev, sizeof(struct ltq_mtd), GFP_KERNEL);
+ 	if (!ltq_mtd)
  		return -ENOMEM;
 -- 
 2.11.0
