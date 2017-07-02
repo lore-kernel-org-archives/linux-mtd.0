@@ -1,23 +1,18 @@
-Received: from 8.mo68.mail-out.ovh.net ([46.105.74.219])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dRJ6G-0002GI-9m
- for linux-mtd@lists.infradead.org; Sat, 01 Jul 2017 14:10:18 +0000
-Received: from player750.ha.ovh.net (b6.ovh.net [213.186.33.56])
- by mo68.mail-out.ovh.net (Postfix) with ESMTP id 4D7336790D
- for <linux-mtd@lists.infradead.org>; Sat,  1 Jul 2017 16:09:42 +0200 (CEST)
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Linux MTD Development List <linux-mtd@lists.infradead.org>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Subject: [PULL] mtd: spi-nor: Changes for 4.13
-Message-ID: <a003346e-ae4f-3ca6-58e2-ce78cab6cf11@wedev4u.fr>
-Date: Sat, 1 Jul 2017 16:09:34 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dRg3g-00084Q-3Z
+ for linux-mtd@lists.infradead.org; Sun, 02 Jul 2017 14:41:10 +0000
+Date: Sun, 2 Jul 2017 16:40:42 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Jean-Louis Thekekara <jeanlouis.thekekara@parrot.com>
+Cc: <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] mtd: nand: remove hard-coded NAND ids length
+Message-ID: <20170702164042.08534135@bbrezillon>
+In-Reply-To: <20170629170830.8084-1-jeanlouis.thekekara@parrot.com>
+References: <20170629170830.8084-1-jeanlouis.thekekara@parrot.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,87 +22,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Le Thu, 29 Jun 2017 19:08:30 +0200,
+Jean-Louis Thekekara <jeanlouis.thekekara@parrot.com> a =C3=A9crit :
 
-this is the PR for 4.13.
+> This commit removes hard-coded '8' used for looping into
+> struct nand_chip.id.data array.
+>=20
+> NAND_MAX_ID_LEN has been introduced by Artem Bityutskiy in
+> 53552d22bfe1f for defining ids length in nand_flash_ids[] list.
+>=20
+> This commit unifies ids length in nand base driver.
+>=20
+> Signed-off-by: Jean-Louis Thekekara <jeanlouis.thekekara@parrot.com>
 
-Please note that I did not include the patch for the SFDP support since it
-has spent less than a week in linux-next.
+LGTM. I'll apply to nand/next once 4.13-rc1 is out.
 
-Best regards,
+Just a note for your future MTD/NAND contributions, can you please Cc
+NAND/MTD maintainers (you can get the list with
+scripts/get_maintainers.pl ;-)).
 
-Cyrille
-
-The following changes since commit 2ea659a9ef488125eb46da6eb571de5eae5c43f6:
-
-  Linux 4.12-rc1 (2017-05-13 13:19:49 -0700)
-
-are available in the git repository at:
-
-  git://git.infradead.org/l2-mtd.git tags/spi-nor/for-4.13
-
-for you to fetch changes up to 9447332ffacceeb49467ae5314887a30f6c0aaa9:
-
-  mtd: st_spi_fsm: remove SPINOR_OP_RDSR2 and use SPINOR_OP_RDCR instead (2017-06-27 21:50:17 +0200)
-
-----------------------------------------------------------------
-This pull request contains the following notable changes:
-- introduce support to the SPI 1-2-2 and 1-4-4 protocols.
-- introduce support to the Double Data Rate (DDR) mode.
-- introduce support to the Octo SPI protocols.
-- add support to new memory parts for Spansion, Macronix and Winbond.
-- add fixes for the Aspeed, STM32 and Cadence QSPI controler drivers.
-- clean up the st_spi_fsm driver.
-
-----------------------------------------------------------------
-Alexander Sverdlin (1):
-      mtd: spi-nor: Add support for mx66u51235f
-
-Arnd Bergmann (1):
-      mtd: spi-nor: cqspi: remove duplicate const
-
-Arvind Yadav (1):
-      mtd: spi-nor: cqspi: make of_device_ids const
-
-Benjamin Herrenschmidt (1):
-      spi-nor: Add Winbond w25m512jv
-
-Brian Norris (1):
-      mtd: spi-nor: stm32-quadspi: allow building with COMPILE_TEST
-
-Cyrille Pitchen (6):
-      mtd: spi-nor: introduce SPI 1-2-2 and SPI 1-4-4 protocols
-      mtd: m25p80: add support of SPI 1-2-2 and 1-4-4 protocols
-      mtd: spi-nor: introduce Double Transfer Rate (DTR) SPI protocols
-      mtd: spi-nor: introduce Octo SPI protocols
-      mtd: spi-nor: stm32-quadspi: fix compiler errors with COMPILE_TEST
-      mtd: st_spi_fsm: remove SPINOR_OP_RDSR2 and use SPINOR_OP_RDCR instead
-
-Cédric Le Goater (4):
-      mtd: spi-nor: Add support for Macronix mx66l1g45g spi flash
-      mtd: spi-nor: add Dual and Quad read mode support to some flash devices
-      mtd: spi-nor: aspeed: remove dummies from keep mask
-      mtd: spi-nor: aspeed: configure chip window on AHB bus
-
-Dan Carpenter (1):
-      mtd: spi-nor: Potential oops on error path in quad_enable()
-
-Harry Chou (1):
-      mtd: spi-nor: Add support for Spansion S25FL064L
-
- drivers/mtd/devices/m25p80.c            | 121 +++++++++++++++++++++++++++++------------
- drivers/mtd/devices/serial_flash_cmds.h |   1 -
- drivers/mtd/devices/st_spi_fsm.c        |   4 +-
- drivers/mtd/spi-nor/Kconfig             |   2 +-
- drivers/mtd/spi-nor/aspeed-smc.c        | 183 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----
- drivers/mtd/spi-nor/atmel-quadspi.c     |  83 +++++++++++++++++++---------
- drivers/mtd/spi-nor/cadence-quadspi.c   |  20 ++++---
- drivers/mtd/spi-nor/fsl-quadspi.c       |   6 +-
- drivers/mtd/spi-nor/hisi-sfc.c          |  31 ++++++++---
- drivers/mtd/spi-nor/intel-spi.c         |   7 ++-
- drivers/mtd/spi-nor/mtk-quadspi.c       |  15 +++--
- drivers/mtd/spi-nor/nxp-spifi.c         |  22 ++++----
- drivers/mtd/spi-nor/spi-nor.c           | 488 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----------------------------------
- drivers/mtd/spi-nor/stm32-quadspi.c     |  32 ++++++-----
- include/linux/mtd/spi-nor.h             | 161 +++++++++++++++++++++++++++++++++++++++++++++++++++---
- 15 files changed, 937 insertions(+), 239 deletions(-)
+> ---
+>  drivers/mtd/nand/nand_base.c |  4 ++--
+>  include/linux/mtd/nand.h     | 10 +++++-----
+>  2 files changed, 7 insertions(+), 7 deletions(-)
+>=20
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 85edac9b2bb5..66db2ced87ad 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -4056,7 +4056,7 @@ static int nand_detect(struct nand_chip *chip, stru=
+ct nand_flash_dev *type)
+>  	chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1);
+> =20
+>  	/* Read entire ID string */
+> -	for (i =3D 0; i < 8; i++)
+> +	for (i =3D 0; i < ARRAY_SIZE(chip->id.data); i++)
+>  		id_data[i] =3D chip->read_byte(mtd);
+> =20
+>  	if (id_data[0] !=3D maf_id || id_data[1] !=3D dev_id) {
+> @@ -4065,7 +4065,7 @@ static int nand_detect(struct nand_chip *chip, stru=
+ct nand_flash_dev *type)
+>  		return -ENODEV;
+>  	}
+> =20
+> -	chip->id.len =3D nand_id_len(id_data, 8);
+> +	chip->id.len =3D nand_id_len(id_data, ARRAY_SIZE(chip->id.data));
+> =20
+>  	/* Try to identify manufacturer */
+>  	manufacturer =3D nand_get_manufacturer(maf_id);
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index dc8fbc033442..c3c1a32a5ade 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -449,14 +449,16 @@ struct nand_jedec_params {
+>  	__le16 crc;
+>  } __packed;
+> =20
+> +/* The maximum expected count of bytes in the NAND ID sequence */
+> +#define NAND_MAX_ID_LEN 8
+> +
+>  /**
+>   * struct nand_id - NAND id structure
+> - * @data: buffer containing the id bytes. Currently 8 bytes large, but c=
+an
+> - *	  be extended if required.
+> + * @data: buffer containing the id bytes.
+>   * @len: ID length.
+>   */
+>  struct nand_id {
+> -	u8 data[8];
+> +	u8 data[NAND_MAX_ID_LEN];
+>  	int len;
+>  };
+> =20
+> @@ -1028,8 +1030,6 @@ static inline void *nand_get_manufacturer_data(stru=
+ct nand_chip *chip)
+>  #define NAND_MFR_ATO		0x9b
+>  #define NAND_MFR_WINBOND	0xef
+> =20
+> -/* The maximum expected count of bytes in the NAND ID sequence */
+> -#define NAND_MAX_ID_LEN 8
+> =20
+>  /*
+>   * A helper for defining older NAND chips where the second ID byte fully
