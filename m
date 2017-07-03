@@ -1,44 +1,25 @@
-Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
+Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dS1q4-0004Xb-DT
- for linux-mtd@lists.infradead.org; Mon, 03 Jul 2017 13:56:34 +0000
-Received: from localhost.localdomain ([127.0.0.1]:36250 "EHLO linux-mips.org"
- rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
- id S23994803AbdGCN4Iao-1i (ORCPT
- <rfc822;linux-mtd@lists.infradead.org>);
- Mon, 3 Jul 2017 15:56:08 +0200
-Date: Mon, 3 Jul 2017 15:55:55 +0200
-From: Ralf Baechle <ralf@linux-mips.org>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Paul Cercueil <paul@crapouillou.net>, Alexandre Courbot <gnurou@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Maarten ter Huurne <maarten@treewalker.org>,
- Lars-Peter Clausen <lars@metafoo.de>, Paul Burton <paul.burton@imgtec.com>,
- James Hogan <james.hogan@imgtec.com>,
- "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Linux MIPS <linux-mips@linux-mips.org>,
- "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
- "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>
-Subject: Re: [PATCH v5 05/14] MIPS: ingenic: Enable pinctrl for all ingenic
- SoCs
-Message-ID: <20170703135555.GA686@linux-mips.org>
-References: <20170402204244.14216-2-paul@crapouillou.net>
- <20170428200824.10906-1-paul@crapouillou.net>
- <20170428200824.10906-6-paul@crapouillou.net>
- <CACRpkdauf5c2i4o5i8QY8YHPNjizkvTu6kAbnquWiP_=v2=KdQ@mail.gmail.com>
- <1499013301.1477.0@smtp.crapouillou.net>
- <CACRpkdb=Zti+C+2me_WP0=m6z12G5Kz+W_cPcZsw=CVzBO_wAg@mail.gmail.com>
+ id 1dS7Eb-0003dU-6V
+ for linux-mtd@lists.infradead.org; Mon, 03 Jul 2017 19:42:15 +0000
+Date: Mon, 3 Jul 2017 21:41:50 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Archit Taneja <architt@codeaurora.org>
+Cc: Abhishek Sahu <absahu@codeaurora.org>, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com, richard@nod.at,
+ cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org, mark.rutland@arm.com,
+ devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ andy.gross@linaro.org, sricharan@codeaurora.org
+Subject: Re: [PATCH 01/14] qcom: mtd: nand: Add driver data for QPIC DMA
+Message-ID: <20170703214150.6a7b3f38@bbrezillon>
+In-Reply-To: <bd6add74-4f42-5036-3513-2e672ef97b15@codeaurora.org>
+References: <1498720566-20782-1-git-send-email-absahu@codeaurora.org>
+ <1498720566-20782-2-git-send-email-absahu@codeaurora.org>
+ <bd6add74-4f42-5036-3513-2e672ef97b15@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdb=Zti+C+2me_WP0=m6z12G5Kz+W_cPcZsw=CVzBO_wAg@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -48,14 +29,224 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jul 03, 2017 at 11:07:09AM +0200, Linus Walleij wrote:
+On Mon, 3 Jul 2017 10:08:32 +0530
+Archit Taneja <architt@codeaurora.org> wrote:
 
-> > There has been no word from Ralf, is this going into 4.13?
+> On 06/29/2017 12:45 PM, Abhishek Sahu wrote:
+> > The current driver only support EBI2 NAND which uses ADM DMA. The
+> > latest QCOM controller supports QPIC NAND which uses BAM DMA. NAND
+> > registers and programming sequence are same for EBI2 and QPIC
+> > NAND so the same driver can support QPIC NAND also by adding the
+> > BAM DMA support. This patch adds the QPIC NAND support in current
+> > NAND driver with compatible string "qcom,qpic-nandc-v1.4.0" and
+> > maps it with different configuration parameter in driver data.
+> > 
+> > Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+> > ---
+> >   .../devicetree/bindings/mtd/qcom_nandc.txt         | 41 +++++++++++++++++++++-
+> >   drivers/mtd/nand/qcom_nandc.c                      | 37 ++++++++++++++++---
+> >   2 files changed, 73 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+> > index 70dd511..5d0f7ae 100644
+> > --- a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+> > +++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+> > @@ -1,7 +1,9 @@
+> >   * Qualcomm NAND controller
+> >   
+> >   Required properties:
+> > -- compatible:		should be "qcom,ipq806x-nand"  
+> 
+> Since you're changing the compatible string, could you mention in the commit message that
+> it's okay to do so since there aren't any upstream dtsi files using this binding?
 
-Acked-by: Ralf Baechle <ralf@linux-mips.org>
+Yep. I was going to ask about backward compat, but I guess it's fine if
+there's no user in mainline yet, just mention it in the commit message
+as suggested by Archit.
 
-for the whole series.
+> 
+> > +- compatible:		must be one of the following:
+> > +	* "qcom,ebi2-nandc" - EBI2 NAND which uses ADM DMA like IPQ8064.  
+> 
+> Are we sure that all EBI2 based NAND controllers would work by this single binding?
+> Should we put a version here too like we've done for QPIC?
+> 
+> > +	* "qcom,qpic-nandc-v1.4.0" - QPIC NAND v1.4.0 which uses BAM DMA like IPQ4019.
+> >   - reg:			MMIO address range
+> >   - clocks:		must contain core clock and always on clock
+> >   - clock-names:		must contain "core" for the core clock and "aon" for the
+> > @@ -84,3 +86,40 @@ nand@1ac00000 {
+> >   		};
+> >   	};
+> >   };
+> > +
+> > +nand@79b0000 {
 
-Thanks,
+nand-controller@xxxx {
 
-  Ralf
+BTW, glad to see another driver moving to the new DT representation :-).
+
+> > +	compatible = "qcom,qpic-nandc-v1.4.0";
+> > +	reg = <0x79b0000 0x1000>;
+> > +
+> > +	clocks = <&gcc GCC_QPIC_CLK>,
+> > +		<&gcc GCC_QPIC_AHB_CLK>;
+> > +	clock-names = "core", "aon";
+> > +
+> > +	#address-cells = <1>;
+> > +	#size-cells = <0>;
+> > +
+> > +	nandcs@0 {
+
+	nand@0 {
+
+> > +		compatible = "qcom,nandcs";
+
+Why do you need a compatible here?
+
+> > +		reg = <0>;
+> > +
+> > +		nand-ecc-strength = <4>;
+> > +		nand-ecc-step-size = <512>;
+> > +		nand-bus-width = <8>;
+> > +
+> > +		partitions {
+> > +			compatible = "fixed-partitions";
+> > +			#address-cells = <1>;
+> > +			#size-cells = <1>;
+> > +
+> > +			partition@0 {
+> > +				label = "boot-nand";
+> > +				reg = <0 0x58a0000>;
+> > +			};
+> > +
+> > +			partition@58a0000 {
+> > +				label = "fs-nand";
+> > +				reg = <0x58a0000 0x4000000>;
+> > +			};
+> > +		};
+> > +	};
+> > +};
+> > diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
+> > index 57d483a..f55f728 100644
+> > --- a/drivers/mtd/nand/qcom_nandc.c
+> > +++ b/drivers/mtd/nand/qcom_nandc.c
+> > @@ -1,5 +1,5 @@
+> >   /*
+> > - * Copyright (c) 2016, The Linux Foundation. All rights reserved.
+> > + * Copyright (c) 2016-2017, The Linux Foundation. All rights reserved.
+> >    *
+> >    * This software is licensed under the terms of the GNU General Public
+> >    * License version 2, as published by the Free Software Foundation, and
+> > @@ -234,6 +234,8 @@ struct nandc_regs {
+> >    * @cmd1/vld:			some fixed controller register values
+> >    * @ecc_modes:			supported ECC modes by the current controller,
+> >    *				initialized via DT match data
+> > + * @dma_bam_enabled:		flag to tell whether nand controller is using
+> > + *				bam dma
+> >    */
+> >   struct qcom_nand_controller {
+> >   	struct nand_hw_control controller;
+> > @@ -253,6 +255,7 @@ struct qcom_nand_controller {
+> >   	struct list_head desc_list;
+> >   
+> >   	u8		*data_buffer;
+> > +	bool		dma_bam_enabled;
+> >   	int		buf_size;
+> >   	int		buf_count;
+> >   	int		buf_start;
+> > @@ -316,6 +319,17 @@ struct qcom_nand_host {
+> >   	u32 clrreadstatus;
+> >   };
+> >   
+> > +/*
+> > + * This data type corresponds to the nand driver data which will be used at
+> > + * driver probe time
+> > + * @ecc_modes - ecc mode for nand
+> > + * @dma_bam_enabled - whether this driver is using bam
+> > + */
+> > +struct qcom_nand_driver_data {
+> > +	u32 ecc_modes;
+> > +	bool dma_bam_enabled;
+> > +};
+> > +
+> >   static inline struct qcom_nand_host *to_qcom_nand_host(struct nand_chip *chip)
+> >   {
+> >   	return container_of(chip, struct qcom_nand_host, chip);
+> > @@ -2073,6 +2087,7 @@ static int qcom_nandc_probe(struct platform_device *pdev)
+> >   	struct device_node *dn = dev->of_node, *child;
+> >   	struct resource *res;
+> >   	int ret;
+> > +	const struct qcom_nand_driver_data *driver_data;
+> >   
+> >   	nandc = devm_kzalloc(&pdev->dev, sizeof(*nandc), GFP_KERNEL);
+> >   	if (!nandc)
+> > @@ -2087,7 +2102,10 @@ static int qcom_nandc_probe(struct platform_device *pdev)
+> >   		return -ENODEV;
+> >   	}
+> >   
+> > -	nandc->ecc_modes = (unsigned long)dev_data;
+> > +	driver_data = (const struct qcom_nand_driver_data *)dev_data;
+
+Cast is unneeded here.
+
+> > +
+> > +	nandc->ecc_modes = driver_data->ecc_modes;
+> > +	nandc->dma_bam_enabled = driver_data->dma_bam_enabled;
+
+Why don't you store a pointer to the driver data object in your nandc
+struct?
+
+> >   
+> >   	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> >   	nandc->base = devm_ioremap_resource(dev, res);
+> > @@ -2179,15 +2197,26 @@ static int qcom_nandc_remove(struct platform_device *pdev)
+> >   	return 0;
+> >   }
+> >   
+> > -#define EBI2_NANDC_ECC_MODES	(ECC_RS_4BIT | ECC_BCH_8BIT)
+> >   
+> > +static const struct qcom_nand_driver_data ebi2_nandc_data = {
+> > +	.ecc_modes = (ECC_RS_4BIT | ECC_BCH_8BIT),
+> > +	.dma_bam_enabled = false,
+> > +};
+> > +
+> > +static const struct qcom_nand_driver_data qpic_nandc_v1_4_0_data = {
+> > +	.ecc_modes = (ECC_BCH_4BIT | ECC_BCH_8BIT),
+> > +	.dma_bam_enabled = true,
+> > +};
+
+This patch should be split in 2 IMO:
+1/ introduce the qcom_nand_driver_data struct (which I'd prefer to call
+qcom_nand_controller_caps, or something like that) and use it for the
+existing compatible
+2/ add the new compat with its own set of capabilities.
+
+> >   /*
+> >    * data will hold a struct pointer containing more differences once we support
+> >    * more controller variants
+> >    */
+> >   static const struct of_device_id qcom_nandc_of_match[] = {
+> >   	{	.compatible = "qcom,ipq806x-nand",  
+> 
+> Please make sure that you update the compatible string above too.
+> 
+> Thanks,
+> Archit
+> 
+> > -		.data = (void *)EBI2_NANDC_ECC_MODES,
+> > +		.data = (void *)&ebi2_nandc_data,
+
+Cast unneeded.
+
+> > +	},
+> > +	{	.compatible = "qcom,qpic-nandc-v1.4.0",
+> > +		.data = (void *)&qpic_nandc_v1_4_0_data,
+
+Ditto.
+
+> >   	},
+> >   	{}
+> >   };
+> >   
+> 
