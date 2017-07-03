@@ -1,16 +1,21 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dRwoN-0006Za-2d
- for linux-mtd@lists.infradead.org; Mon, 03 Jul 2017 08:34:29 +0000
-Subject: Re: [PATCH] mtd-utils: tests: Add Erased Pages Bit Flip Test
-To: Harpreet Eli Sangha <harpreet@nestlabs.com>, linux-mtd@lists.infradead.org
-References: <CAOMZO5C-KMf_DDe2iQATi05AD0dMEV_yqig5Cx7LemkfEAi+UQ@mail.gmail.com>
- <20170630221218.25687-1-harpreet@nestlabs.com>
+ id 1dRwpG-0006ud-HZ
+ for linux-mtd@lists.infradead.org; Mon, 03 Jul 2017 08:35:24 +0000
+Received: from localhost (localhost.localdomain [127.0.0.1])
+ by mail.sigma-star.at (Postfix) with ESMTP id 880D624E0011
+ for <linux-mtd@lists.infradead.org>; Mon,  3 Jul 2017 10:34:57 +0200 (CEST)
+Received: from [10.1.1.170] (unknown [82.150.214.13])
+ by mail.sigma-star.at (Postfix) with ESMTPSA id 31B8F24E0010
+ for <linux-mtd@lists.infradead.org>; Mon,  3 Jul 2017 10:34:57 +0200 (CEST)
+Subject: Re: [PATCH 0/9] mtd-utils: various cleanups, enable compiler warnings
 From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Message-ID: <ef69d5ea-3b3f-a472-aa30-d50cfaf4b333@sigma-star.at>
-Date: Mon, 3 Jul 2017 10:34:01 +0200
+To: linux-mtd@lists.infradead.org
+References: <20170628110819.30563-1-david.oberhollenzer@sigma-star.at>
+Message-ID: <c7c5bab3-f8f2-fa5f-bfbf-abfbe75562af@sigma-star.at>
+Date: Mon, 3 Jul 2017 10:35:01 +0200
 MIME-Version: 1.0
-In-Reply-To: <20170630221218.25687-1-harpreet@nestlabs.com>
+In-Reply-To: <20170628110819.30563-1-david.oberhollenzer@sigma-star.at>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -24,7 +29,3 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Applied to mtd-utils.git
-
-Thanks,
-
-David
