@@ -1,8 +1,9 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dRuoO-0003Nv-Fx
- for linux-mtd@lists.infradead.org; Mon, 03 Jul 2017 06:26:21 +0000
-Subject: Re: [PATCH 03/14] qcom: mtd: nand: Fixed config error for BCH
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dRuvG-0007v9-KX
+ for linux-mtd@lists.infradead.org; Mon, 03 Jul 2017 06:33:28 +0000
+Subject: Re: [PATCH 02/14] qcom: mtd: nand: add and initialize QPIC DMA
+ resources
 To: Abhishek Sahu <absahu@codeaurora.org>, dwmw2@infradead.org,
  computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
  marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr,
@@ -11,12 +12,12 @@ Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
  andy.gross@linaro.org, architt@codeaurora.org
 References: <1498720566-20782-1-git-send-email-absahu@codeaurora.org>
- <1498720566-20782-4-git-send-email-absahu@codeaurora.org>
+ <1498720566-20782-3-git-send-email-absahu@codeaurora.org>
 From: Sricharan R <sricharan@codeaurora.org>
-Message-ID: <497e44b6-0872-0de3-5ca8-2f10af13d254@codeaurora.org>
-Date: Mon, 3 Jul 2017 11:55:49 +0530
+Message-ID: <b65cc9b8-0749-9b94-0050-e01104c65e24@codeaurora.org>
+Date: Mon, 3 Jul 2017 12:02:58 +0530
 MIME-Version: 1.0
-In-Reply-To: <1498720566-20782-4-git-send-email-absahu@codeaurora.org>
+In-Reply-To: <1498720566-20782-3-git-send-email-absahu@codeaurora.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -32,31 +33,145 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Hi Abhishek,
 
 On 6/29/2017 12:45 PM, Abhishek Sahu wrote:
-> The configuration for BCH is not correct in the current
-> driver so this patch fixed the same.
+> 1. The QPIC NAND uses 3 BAM channels: command, data tx and
+>    data rx while EBI2 NAND uses only single ADM channel.
+> 
+> 2. The EBI2 NAND uses normal register read buffer since this
+>    buffer will be remapped with dma_map_sg. The QPIC NAND will give
+>    register read buffer in command descriptor and the command
+>    descriptor will be mapped with dma_map_sg so the register buffer
+>    should be DMA coherent.
 > 
 > Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 > ---
->  drivers/mtd/nand/qcom_nandc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  .../devicetree/bindings/mtd/qcom_nandc.txt         |  25 +++--
+>  drivers/mtd/nand/qcom_nandc.c                      | 106 ++++++++++++++++-----
+>  2 files changed, 99 insertions(+), 32 deletions(-)
 > 
+> diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+> index 5d0f7ae..87b9a56 100644
+> --- a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+> +++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+> @@ -9,15 +9,17 @@ Required properties:
+>  - clock-names:		must contain "core" for the core clock and "aon" for the
+>  			always on clock
+>  - dmas:			DMA specifier, consisting of a phandle to the ADM DMA
+> -			controller node and the channel number to be used for
+> -			NAND. Refer to dma.txt and qcom_adm.txt for more details
+> -- dma-names:		must be "rxtx"
+> -- qcom,cmd-crci:	must contain the ADM command type CRCI block instance
+> -			number specified for the NAND controller on the given
+> -			platform
+> -- qcom,data-crci:	must contain the ADM data type CRCI block instance
+> -			number specified for the NAND controller on the given
+> -			platform
+> +			or BAM DMA controller node and the channel number to
+> +			be used for NAND. Refer to dma.txt, qcom_adm.txt(ADM)
+> +			and qcom/bam_dma.txt(BAM) for more details
+> +- dma-names:		"rxtx" - ADM
+> +			"tx", "rx", "cmd" - BAM
+> +- qcom,cmd-crci:	Only required for ADM DMA. must contain the ADM command
+> +			type CRCI block instance number specified for the NAND
+> +			controller on the given platform.
+> +- qcom,data-crci:	Only required for ADM DMA. must contain the ADM data
+> +			type CRCI block instance number specified for the NAND
+> +			controller on the given platform.
+>  - #address-cells:	<1> - subnodes give the chip-select number
+>  - #size-cells:		<0>
+>  
+> @@ -95,6 +97,11 @@ nand@79b0000 {
+>  		<&gcc GCC_QPIC_AHB_CLK>;
+>  	clock-names = "core", "aon";
+>  
+> +	dmas = <&qpicbam 0>,
+> +		<&qpicbam 1>,
+> +		<&qpicbam 2>;
+> +	dma-names = "tx", "rx", "cmd";
+> +
+>  	#address-cells = <1>;
+>  	#size-cells = <0>;
+>  
 > diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-> index 520add9..410ee53 100644
+> index f55f728..520add9 100644
 > --- a/drivers/mtd/nand/qcom_nandc.c
 > +++ b/drivers/mtd/nand/qcom_nandc.c
-> @@ -1919,7 +1919,7 @@ static int qcom_nand_host_setup(struct qcom_nand_host *host)
->  				| wide_bus << WIDE_FLASH
->  				| 1 << DEV0_CFG1_ECC_DISABLE;
+> @@ -226,6 +226,7 @@ struct nandc_regs {
+>   *				by upper layers directly
+>   * @buf_size/count/start:	markers for chip->read_buf/write_buf functions
+>   * @reg_read_buf:		local buffer for reading back registers via DMA
+> + * @reg_read_buf_phys:		contains dma address for register read buffer
+>   * @reg_read_pos:		marker for data read in reg_read_buf
+>   *
+>   * @regs:			a contiguous chunk of memory for DMA register
+> @@ -249,9 +250,19 @@ struct qcom_nand_controller {
+>  	struct clk *core_clk;
+>  	struct clk *aon_clk;
 >  
-> -	host->ecc_bch_cfg = host->bch_enabled << ECC_CFG_ECC_DISABLE
-> +	host->ecc_bch_cfg = !host->bch_enabled << ECC_CFG_ECC_DISABLE
->  				| 0 << ECC_SW_RESET
->  				| host->cw_data << ECC_NUM_DATA_BYTES
->  				| 1 << ECC_FORCE_CLK_OPEN
-> 
+> -	struct dma_chan *chan;
+> -	unsigned int cmd_crci;
+> -	unsigned int data_crci;
+> +	union {
+> +		struct {
+> +			struct dma_chan *tx_chan;
+> +			struct dma_chan *rx_chan;
+> +			struct dma_chan *cmd_chan;
+> +		};
+> +		struct {
+> +			struct dma_chan *chan;
+> +			unsigned int cmd_crci;
+> +			unsigned int data_crci;
+> +		};
+> +	};
+> +
+>  	struct list_head desc_list;
+>  
+>  	u8		*data_buffer;
+> @@ -261,6 +272,7 @@ struct qcom_nand_controller {
+>  	int		buf_start;
+>  
+>  	__le32 *reg_read_buf;
+> +	dma_addr_t reg_read_buf_phys;
+>  	int reg_read_pos;
+>  
+>  	struct nandc_regs *regs;
+> @@ -1956,16 +1968,48 @@ static int qcom_nandc_alloc(struct qcom_nand_controller *nandc)
+>  	if (!nandc->regs)
+>  		return -ENOMEM;
+>  
+> -	nandc->reg_read_buf = devm_kzalloc(nandc->dev,
+> -				MAX_REG_RD * sizeof(*nandc->reg_read_buf),
+> -				GFP_KERNEL);
+> -	if (!nandc->reg_read_buf)
+> -		return -ENOMEM;
+>  
+> -	nandc->chan = dma_request_slave_channel(nandc->dev, "rxtx");
+> -	if (!nandc->chan) {
+> -		dev_err(nandc->dev, "failed to request slave channel\n");
+> -		return -ENODEV;
+> +	if (!nandc->dma_bam_enabled) {
+> +		nandc->reg_read_buf =
+> +			devm_kzalloc(nandc->dev, MAX_REG_RD *
+> +				     sizeof(*nandc->reg_read_buf), GFP_KERNEL);
+> +
+> +		if (!nandc->reg_read_buf)
+> +			return -ENOMEM;
+> +
+> +		nandc->chan = dma_request_slave_channel(nandc->dev, "rxtx");
+> +		if (!nandc->chan) {
+> +			dev_err(nandc->dev,
+> +				"failed to request slave channel\n");
+> +			return -ENODEV;
+> +		}
+> +	} else {
+> +		nandc->reg_read_buf =
+> +			dmam_alloc_coherent(nandc->dev, MAX_REG_RD *
+> +					    sizeof(*nandc->reg_read_buf),
+> +					    &nandc->reg_read_buf_phys,
+> +					    GFP_KERNEL);
+> +
 
- This could be patch #1, so basically all fixes first and then support
- for bam after that.
+ I think as Archit has commented, do not see a reason for this to be
+ alloc_coherent change here.
 
 Regards,
  Sricharan
