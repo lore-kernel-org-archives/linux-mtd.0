@@ -1,26 +1,28 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-qk0-x242.google.com ([2607:f8b0:400d:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dRuvG-0007v9-KX
- for linux-mtd@lists.infradead.org; Mon, 03 Jul 2017 06:33:28 +0000
-Subject: Re: [PATCH 02/14] qcom: mtd: nand: add and initialize QPIC DMA
- resources
-To: Abhishek Sahu <absahu@codeaurora.org>, dwmw2@infradead.org,
- computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
- marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr,
- robh+dt@kernel.org, mark.rutland@arm.com
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- andy.gross@linaro.org, architt@codeaurora.org
-References: <1498720566-20782-1-git-send-email-absahu@codeaurora.org>
- <1498720566-20782-3-git-send-email-absahu@codeaurora.org>
-From: Sricharan R <sricharan@codeaurora.org>
-Message-ID: <b65cc9b8-0749-9b94-0050-e01104c65e24@codeaurora.org>
-Date: Mon, 3 Jul 2017 12:02:58 +0530
+ id 1dRw3n-0003gd-CJ
+ for linux-mtd@lists.infradead.org; Mon, 03 Jul 2017 07:46:21 +0000
+Received: by mail-qk0-x242.google.com with SMTP id 91so22979649qkq.1
+ for <linux-mtd@lists.infradead.org>; Mon, 03 Jul 2017 00:45:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1498720566-20782-3-git-send-email-absahu@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20170702224051.15109-9-hauke@hauke-m.de>
+References: <20170702224051.15109-1-hauke@hauke-m.de>
+ <20170702224051.15109-9-hauke@hauke-m.de>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Mon, 3 Jul 2017 10:45:56 +0300
+Message-ID: <CAHp75Veq+JLJWNbUTK8iC_BXCDB4=yh-Zfi4UMJpLhBF85JthA@mail.gmail.com>
+Subject: Re: [PATCH v7 08/16] MIPS: lantiq: Convert the fpi bus driver to a
+ platform_driver
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Cc: Ralf Baechle <ralf@linux-mips.org>,
+ Linux MIPS Mailing List <linux-mips@linux-mips.org>,
+ "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+ linux-watchdog@vger.kernel.org, devicetree <devicetree@vger.kernel.org>,
+ "martin.blumenstingl" <martin.blumenstingl@googlemail.com>,
+ john <john@phrozen.org>, linux-spi <linux-spi@vger.kernel.org>,
+ "hauke.mehrtens" <hauke.mehrtens@intel.com>,
+ Rob Herring <robh@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,155 +32,285 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Abhishek,
+On Mon, Jul 3, 2017 at 1:40 AM, Hauke Mehrtens <hauke@hauke-m.de> wrote:
+> Instead of hacking the configuration of the FPI bus into the arch code
+> add an own bus driver for this internal bus. The FPI bus is the main
+> bus of the SoC. This bus driver makes sure the bus is configured
+> correctly before the child drivers are getting initialized. This driver
+> will probably also be used on different SoC later.
+>
 
-On 6/29/2017 12:45 PM, Abhishek Sahu wrote:
-> 1. The QPIC NAND uses 3 BAM channels: command, data tx and
->    data rx while EBI2 NAND uses only single ADM channel.
-> 
-> 2. The EBI2 NAND uses normal register read buffer since this
->    buffer will be remapped with dma_map_sg. The QPIC NAND will give
->    register read buffer in command descriptor and the command
->    descriptor will be mapped with dma_map_sg so the register buffer
->    should be DMA coherent.
-> 
-> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 > ---
->  .../devicetree/bindings/mtd/qcom_nandc.txt         |  25 +++--
->  drivers/mtd/nand/qcom_nandc.c                      | 106 ++++++++++++++++-----
->  2 files changed, 99 insertions(+), 32 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-> index 5d0f7ae..87b9a56 100644
-> --- a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-> +++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-> @@ -9,15 +9,17 @@ Required properties:
->  - clock-names:		must contain "core" for the core clock and "aon" for the
->  			always on clock
->  - dmas:			DMA specifier, consisting of a phandle to the ADM DMA
-> -			controller node and the channel number to be used for
-> -			NAND. Refer to dma.txt and qcom_adm.txt for more details
-> -- dma-names:		must be "rxtx"
-> -- qcom,cmd-crci:	must contain the ADM command type CRCI block instance
-> -			number specified for the NAND controller on the given
-> -			platform
-> -- qcom,data-crci:	must contain the ADM data type CRCI block instance
-> -			number specified for the NAND controller on the given
-> -			platform
-> +			or BAM DMA controller node and the channel number to
-> +			be used for NAND. Refer to dma.txt, qcom_adm.txt(ADM)
-> +			and qcom/bam_dma.txt(BAM) for more details
-> +- dma-names:		"rxtx" - ADM
-> +			"tx", "rx", "cmd" - BAM
-> +- qcom,cmd-crci:	Only required for ADM DMA. must contain the ADM command
-> +			type CRCI block instance number specified for the NAND
-> +			controller on the given platform.
-> +- qcom,data-crci:	Only required for ADM DMA. must contain the ADM data
-> +			type CRCI block instance number specified for the NAND
-> +			controller on the given platform.
->  - #address-cells:	<1> - subnodes give the chip-select number
->  - #size-cells:		<0>
->  
-> @@ -95,6 +97,11 @@ nand@79b0000 {
->  		<&gcc GCC_QPIC_AHB_CLK>;
->  	clock-names = "core", "aon";
->  
-> +	dmas = <&qpicbam 0>,
-> +		<&qpicbam 1>,
-> +		<&qpicbam 2>;
-> +	dma-names = "tx", "rx", "cmd";
+>  .../devicetree/bindings/mips/lantiq/fpi-bus.txt    | 31 ++++++++
+>  MAINTAINERS                                        |  1 +
+>  arch/mips/lantiq/xway/reset.c                      |  4 -
+>  arch/mips/lantiq/xway/sysctrl.c                    | 41 ----------
+>  drivers/soc/Makefile                               |  1 +
+>  drivers/soc/lantiq/Makefile                        |  1 +
+>  drivers/soc/lantiq/fpi-bus.c                       | 87 ++++++++++++++++++++++
+>  7 files changed, 121 insertions(+), 45 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mips/lantiq/fpi-bus.txt
+>  create mode 100644 drivers/soc/lantiq/Makefile
+>  create mode 100644 drivers/soc/lantiq/fpi-bus.c
+>
+> diff --git a/Documentation/devicetree/bindings/mips/lantiq/fpi-bus.txt b/Documentation/devicetree/bindings/mips/lantiq/fpi-bus.txt
+> new file mode 100644
+> index 000000000000..0a2df4338332
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mips/lantiq/fpi-bus.txt
+> @@ -0,0 +1,31 @@
+> +Lantiq XWAY SoC FPI BUS binding
+> +============================
 > +
->  	#address-cells = <1>;
->  	#size-cells = <0>;
->  
-> diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-> index f55f728..520add9 100644
-> --- a/drivers/mtd/nand/qcom_nandc.c
-> +++ b/drivers/mtd/nand/qcom_nandc.c
-> @@ -226,6 +226,7 @@ struct nandc_regs {
->   *				by upper layers directly
->   * @buf_size/count/start:	markers for chip->read_buf/write_buf functions
->   * @reg_read_buf:		local buffer for reading back registers via DMA
-> + * @reg_read_buf_phys:		contains dma address for register read buffer
->   * @reg_read_pos:		marker for data read in reg_read_buf
->   *
->   * @regs:			a contiguous chunk of memory for DMA register
-> @@ -249,9 +250,19 @@ struct qcom_nand_controller {
->  	struct clk *core_clk;
->  	struct clk *aon_clk;
->  
-> -	struct dma_chan *chan;
-> -	unsigned int cmd_crci;
-> -	unsigned int data_crci;
-> +	union {
-> +		struct {
-> +			struct dma_chan *tx_chan;
-> +			struct dma_chan *rx_chan;
-> +			struct dma_chan *cmd_chan;
-> +		};
-> +		struct {
-> +			struct dma_chan *chan;
-> +			unsigned int cmd_crci;
-> +			unsigned int data_crci;
-> +		};
-> +	};
 > +
->  	struct list_head desc_list;
->  
->  	u8		*data_buffer;
-> @@ -261,6 +272,7 @@ struct qcom_nand_controller {
->  	int		buf_start;
->  
->  	__le32 *reg_read_buf;
-> +	dma_addr_t reg_read_buf_phys;
->  	int reg_read_pos;
->  
->  	struct nandc_regs *regs;
-> @@ -1956,16 +1968,48 @@ static int qcom_nandc_alloc(struct qcom_nand_controller *nandc)
->  	if (!nandc->regs)
->  		return -ENOMEM;
->  
-> -	nandc->reg_read_buf = devm_kzalloc(nandc->dev,
-> -				MAX_REG_RD * sizeof(*nandc->reg_read_buf),
-> -				GFP_KERNEL);
-> -	if (!nandc->reg_read_buf)
-> -		return -ENOMEM;
->  
-> -	nandc->chan = dma_request_slave_channel(nandc->dev, "rxtx");
-> -	if (!nandc->chan) {
-> -		dev_err(nandc->dev, "failed to request slave channel\n");
-> -		return -ENODEV;
-> +	if (!nandc->dma_bam_enabled) {
-> +		nandc->reg_read_buf =
-> +			devm_kzalloc(nandc->dev, MAX_REG_RD *
-> +				     sizeof(*nandc->reg_read_buf), GFP_KERNEL);
+> +-------------------------------------------------------------------------------
+> +Required properties:
+> +- compatible                   : Should be one of
+> +                                       "lantiq,xrx200-fpi"
+> +- reg                          : The address and length of the XBAR
+> +                                 configuration register.
+> +                                 Address and length of the FPI bus itself.
+> +- lantiq,rcu                   : A phandle to the RCU syscon
+> +- lantiq,offset-endianness     : Offset of the endianness configuration
+> +                                 register
 > +
-> +		if (!nandc->reg_read_buf)
-> +			return -ENOMEM;
+> +-------------------------------------------------------------------------------
+> +Example for the FPI on the xrx200 SoCs:
+> +       fpi@10000000 {
+> +               compatible = "lantiq,xrx200-fpi";
+> +               ranges = <0x0 0x10000000 0xf000000>;
+> +               reg =   <0x1f400000 0x1000>,
+> +                       <0x10000000 0xf000000>;
+> +               lantiq,rcu = <&rcu0>;
+> +               lantiq,offset-endianness = <0x4c>;
+> +               #address-cells = <1>;
+> +               #size-cells = <1>;
 > +
-> +		nandc->chan = dma_request_slave_channel(nandc->dev, "rxtx");
-> +		if (!nandc->chan) {
-> +			dev_err(nandc->dev,
-> +				"failed to request slave channel\n");
-> +			return -ENODEV;
-> +		}
-> +	} else {
-> +		nandc->reg_read_buf =
-> +			dmam_alloc_coherent(nandc->dev, MAX_REG_RD *
-> +					    sizeof(*nandc->reg_read_buf),
-> +					    &nandc->reg_read_buf_phys,
-> +					    GFP_KERNEL);
+> +               gptu@e100a00 {
+> +                       ......
+> +               };
+> +       };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 09b5ab6a8a5c..5a85d67d8d8a 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -7440,6 +7440,7 @@ M:        John Crispin <john@phrozen.org>
+>  L:     linux-mips@linux-mips.org
+>  S:     Maintained
+>  F:     arch/mips/lantiq
+> +F:     drivers/soc/lantiq
+>
+>  LAPB module
+>  L:     linux-x25@vger.kernel.org
+> diff --git a/arch/mips/lantiq/xway/reset.c b/arch/mips/lantiq/xway/reset.c
+> index 83fd65d76e81..b6752c95a600 100644
+> --- a/arch/mips/lantiq/xway/reset.c
+> +++ b/arch/mips/lantiq/xway/reset.c
+> @@ -373,10 +373,6 @@ static int __init mips_reboot_setup(void)
+>             of_machine_is_compatible("lantiq,vr9"))
+>                 ltq_usb_init();
+>
+> -       if (of_machine_is_compatible("lantiq,vr9"))
+> -               ltq_rcu_w32(ltq_rcu_r32(RCU_AHB_ENDIAN) | RCU_VR9_BE_AHB1S,
+> -                           RCU_AHB_ENDIAN);
+> -
+>         _machine_restart = ltq_machine_restart;
+>         _machine_halt = ltq_machine_halt;
+>         pm_power_off = ltq_machine_power_off;
+> diff --git a/arch/mips/lantiq/xway/sysctrl.c b/arch/mips/lantiq/xway/sysctrl.c
+> index 95bec460b651..706639a343bc 100644
+> --- a/arch/mips/lantiq/xway/sysctrl.c
+> +++ b/arch/mips/lantiq/xway/sysctrl.c
+> @@ -145,15 +145,7 @@ static u32 pmu_clk_cr_b[] = {
+>  #define pmu_w32(x, y)  ltq_w32((x), pmu_membase + (y))
+>  #define pmu_r32(x)     ltq_r32(pmu_membase + (x))
+>
+> -#define XBAR_ALWAYS_LAST       0x430
+> -#define XBAR_FPI_BURST_EN      BIT(1)
+> -#define XBAR_AHB_BURST_EN      BIT(2)
+> -
+> -#define xbar_w32(x, y) ltq_w32((x), ltq_xbar_membase + (y))
+> -#define xbar_r32(x)    ltq_r32(ltq_xbar_membase + (x))
+> -
+>  static void __iomem *pmu_membase;
+> -static void __iomem *ltq_xbar_membase;
+>  void __iomem *ltq_cgu_membase;
+>  void __iomem *ltq_ebu_membase;
+>
+> @@ -293,16 +285,6 @@ static void pci_ext_disable(struct clk *clk)
+>         ltq_cgu_w32((1 << 31) | (1 << 30), pcicr);
+>  }
+>
+> -static void xbar_fpi_burst_disable(void)
+> -{
+> -       u32 reg;
+> -
+> -       /* bit 1 as 1 --burst; bit 1 as 0 -- single */
+> -       reg = xbar_r32(XBAR_ALWAYS_LAST);
+> -       reg &= ~XBAR_FPI_BURST_EN;
+> -       xbar_w32(reg, XBAR_ALWAYS_LAST);
+> -}
+> -
+>  /* enable a clockout source */
+>  static int clkout_enable(struct clk *clk)
+>  {
+> @@ -459,26 +441,6 @@ void __init ltq_soc_init(void)
+>         if (!pmu_membase || !ltq_cgu_membase || !ltq_ebu_membase)
+>                 panic("Failed to remap core resources");
+>
+> -       if (of_machine_is_compatible("lantiq,vr9")) {
+> -               struct resource res_xbar;
+> -               struct device_node *np_xbar =
+> -                               of_find_compatible_node(NULL, NULL,
+> -                                                       "lantiq,xbar-xway");
+> -
+> -               if (!np_xbar)
+> -                       panic("Failed to load xbar nodes from devicetree");
+> -               if (of_address_to_resource(np_xbar, 0, &res_xbar))
+> -                       panic("Failed to get xbar resources");
+> -               if (!request_mem_region(res_xbar.start, resource_size(&res_xbar),
+> -                       res_xbar.name))
+> -                       panic("Failed to get xbar resources");
+> -
+> -               ltq_xbar_membase = ioremap_nocache(res_xbar.start,
+> -                                                  resource_size(&res_xbar));
+> -               if (!ltq_xbar_membase)
+> -                       panic("Failed to remap xbar resources");
+> -       }
+> -
+>         /* make sure to unprotect the memory region where flash is located */
+>         ltq_ebu_w32(ltq_ebu_r32(LTQ_EBU_BUSCON0) & ~EBU_WRDIS, LTQ_EBU_BUSCON0);
+>
+> @@ -605,7 +567,4 @@ void __init ltq_soc_init(void)
+>                 clkdev_add_pmu("1e116000.mei", "dfe", 1, 0, PMU_DFE);
+>                 clkdev_add_pmu("1e100400.serial", NULL, 1, 0, PMU_ASC0);
+>         }
+> -
+> -       if (of_machine_is_compatible("lantiq,vr9"))
+> -               xbar_fpi_burst_disable();
+>  }
+> diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
+> index 824b44281efa..009b5de74a24 100644
+> --- a/drivers/soc/Makefile
+> +++ b/drivers/soc/Makefile
+> @@ -8,6 +8,7 @@ obj-$(CONFIG_ARCH_DOVE)         += dove/
+>  obj-$(CONFIG_MACH_DOVE)                += dove/
+>  obj-y                          += fsl/
+>  obj-$(CONFIG_ARCH_MXC)         += imx/
+> +obj-$(CONFIG_SOC_XWAY)         += lantiq/
+>  obj-$(CONFIG_ARCH_MEDIATEK)    += mediatek/
+>  obj-$(CONFIG_ARCH_QCOM)                += qcom/
+>  obj-$(CONFIG_ARCH_RENESAS)     += renesas/
+> diff --git a/drivers/soc/lantiq/Makefile b/drivers/soc/lantiq/Makefile
+> new file mode 100644
+> index 000000000000..35aa86bd1023
+> --- /dev/null
+> +++ b/drivers/soc/lantiq/Makefile
+> @@ -0,0 +1 @@
+> +obj-y                          += fpi-bus.o
+> diff --git a/drivers/soc/lantiq/fpi-bus.c b/drivers/soc/lantiq/fpi-bus.c
+> new file mode 100644
+> index 000000000000..a671c9984c4c
+> --- /dev/null
+> +++ b/drivers/soc/lantiq/fpi-bus.c
+> @@ -0,0 +1,87 @@
+> +/*
+> + *  This program is free software; you can redistribute it and/or modify it
+> + *  under the terms of the GNU General Public License version 2 as published
+> + *  by the Free Software Foundation.
+> + *
+> + *  Copyright (C) 2011-2015 John Crispin <blogic@phrozen.org>
+> + *  Copyright (C) 2015 Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> + *  Copyright (C) 2017 Hauke Mehrtens <hauke@hauke-m.de>
+> + */
 > +
+> +#include <linux/device.h>
+> +#include <linux/err.h>
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/property.h>
+> +#include <linux/regmap.h>
+> +
+> +#include <lantiq_soc.h>
+> +
+> +#define XBAR_ALWAYS_LAST       0x430
+> +#define XBAR_FPI_BURST_EN      BIT(1)
+> +#define XBAR_AHB_BURST_EN      BIT(2)
+> +
+> +#define RCU_VR9_BE_AHB1S       0x00000008
+> +
+> +static int ltq_fpi_probe(struct platform_device *pdev)
+> +{
+> +       struct device *dev = &pdev->dev;
+> +       struct device_node *np = dev->of_node;
+> +       struct resource *res_xbar;
+> +       struct regmap *rcu_regmap;
+> +       void __iomem *xbar_membase;
+> +       u32 rcu_ahb_endianness_reg_offset;
+> +       int ret;
+> +
+> +       res_xbar = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +       xbar_membase = devm_ioremap_resource(dev, res_xbar);
+> +       if (IS_ERR(xbar_membase))
+> +               return PTR_ERR(xbar_membase);
+> +
+> +       /* RCU configuration is optional */
+> +       rcu_regmap = syscon_regmap_lookup_by_phandle(np, "lantiq,rcu");
+> +       if (IS_ERR(rcu_regmap))
+> +               return PTR_ERR(rcu_regmap);
+> +
+> +       ret = device_property_read_u32(dev, "lantiq,offset-endianness",
+> +                                      &rcu_ahb_endianness_reg_offset);
+> +       if (ret) {
+> +               dev_err(&pdev->dev, "Failed to get RCU reg offset\n");
+> +               return ret;
+> +       }
+> +
+> +       ret = regmap_update_bits(rcu_regmap, rcu_ahb_endianness_reg_offset,
+> +                                RCU_VR9_BE_AHB1S, RCU_VR9_BE_AHB1S);
+> +       if (ret) {
+> +               dev_warn(&pdev->dev,
+> +                        "Failed to configure RCU AHB endianness\n");
+> +               return ret;
+> +       }
+> +
+> +       /* disable fpi burst */
+> +       ltq_w32_mask(XBAR_FPI_BURST_EN, 0, xbar_membase + XBAR_ALWAYS_LAST);
+> +
+> +       return of_platform_populate(dev->of_node, NULL, NULL, dev);
+> +}
+> +
+> +static const struct of_device_id ltq_fpi_match[] = {
+> +       { .compatible = "lantiq,xrx200-fpi" },
+> +       {},
+> +};
+> +MODULE_DEVICE_TABLE(of, ltq_fpi_match);
+> +
+> +static struct platform_driver ltq_fpi_driver = {
+> +       .probe = ltq_fpi_probe,
+> +       .driver = {
+> +               .name = "fpi-xway",
+> +               .of_match_table = ltq_fpi_match,
+> +       },
+> +};
+> +
+> +module_platform_driver(ltq_fpi_driver);
+> +
+> +MODULE_DESCRIPTION("Lantiq FPI bus driver");
+> +MODULE_LICENSE("GPL");
+> --
+> 2.11.0
+>
 
- I think as Archit has commented, do not see a reason for this to be
- alloc_coherent change here.
 
-Regards,
- Sricharan
 
 -- 
-"QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
-
----
-This email has been checked for viruses by Avast antivirus software.
-https://www.avast.com/antivirus
+With Best Regards,
+Andy Shevchenko
