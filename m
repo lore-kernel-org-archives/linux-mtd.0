@@ -1,28 +1,44 @@
-MIME-Version: 1.0
-In-Reply-To: <20170703112621.rd3ija3efqlq57rg@dell>
-References: <1498681836-3765-1-git-send-email-andrea.adami@gmail.com>
- <1498681836-3765-4-git-send-email-andrea.adami@gmail.com>
- <20170703112621.rd3ija3efqlq57rg@dell>
-From: Andrea Adami <andrea.adami@gmail.com>
-Date: Mon, 3 Jul 2017 14:03:32 +0200
-Message-ID: <CAAQYJAuPpzDb_OV1naHZCovy4LJC0_6gFJKPqo7REt7zZzh0pw@mail.gmail.com>
-Subject: Re: [PATCH v4 3/9] mfd: tmio.h: support partition parser types
-To: Lee Jones <lee.jones@linaro.org>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
+Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dS1q4-0004Xb-DT
+ for linux-mtd@lists.infradead.org; Mon, 03 Jul 2017 13:56:34 +0000
+Received: from localhost.localdomain ([127.0.0.1]:36250 "EHLO linux-mips.org"
+ rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+ id S23994803AbdGCN4Iao-1i (ORCPT
+ <rfc822;linux-mtd@lists.infradead.org>);
+ Mon, 3 Jul 2017 15:56:08 +0200
+Date: Mon, 3 Jul 2017 15:55:55 +0200
+From: Ralf Baechle <ralf@linux-mips.org>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Paul Cercueil <paul@crapouillou.net>, Alexandre Courbot <gnurou@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Daniel Mack <daniel@zonque.org>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Linus Walleij <linus.walleij@linaro.org>,
- Russell King <linux@armlinux.org.uk>, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+ Thierry Reding <thierry.reding@gmail.com>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Maarten ter Huurne <maarten@treewalker.org>,
+ Lars-Peter Clausen <lars@metafoo.de>, Paul Burton <paul.burton@imgtec.com>,
+ James Hogan <james.hogan@imgtec.com>,
+ "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Linux MIPS <linux-mips@linux-mips.org>,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+ "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>
+Subject: Re: [PATCH v5 05/14] MIPS: ingenic: Enable pinctrl for all ingenic
+ SoCs
+Message-ID: <20170703135555.GA686@linux-mips.org>
+References: <20170402204244.14216-2-paul@crapouillou.net>
+ <20170428200824.10906-1-paul@crapouillou.net>
+ <20170428200824.10906-6-paul@crapouillou.net>
+ <CACRpkdauf5c2i4o5i8QY8YHPNjizkvTu6kAbnquWiP_=v2=KdQ@mail.gmail.com>
+ <1499013301.1477.0@smtp.crapouillou.net>
+ <CACRpkdb=Zti+C+2me_WP0=m6z12G5Kz+W_cPcZsw=CVzBO_wAg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdb=Zti+C+2me_WP0=m6z12G5Kz+W_cPcZsw=CVzBO_wAg@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,57 +48,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jul 3, 2017 at 1:26 PM, Lee Jones <lee.jones@linaro.org> wrote:
-> Please use the $SUBJECT line expected by the subsystem.
->
-> `git log --oneline -- $SUBSYSTEM` can help with this.
->
-> You also need a commit log.
->
+On Mon, Jul 03, 2017 at 11:07:09AM +0200, Linus Walleij wrote:
 
-Lee,
+> > There has been no word from Ralf, is this going into 4.13?
 
-thanks for spotting it.
-I'll fix the subject and add a little text in these patches touching header=
-s.
+Acked-by: Ralf Baechle <ralf@linux-mips.org>
 
-I am awaiting for a new review of the big piece of the patch, the
-ftl/parser, then I'll send a fixed v5.
+for the whole series.
 
+Thanks,
 
->> Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
->> ---
->>  include/linux/mfd/tmio.h | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/include/linux/mfd/tmio.h b/include/linux/mfd/tmio.h
->> index a1520d8..23bb069 100644
->> --- a/include/linux/mfd/tmio.h
->> +++ b/include/linux/mfd/tmio.h
->> @@ -139,6 +139,7 @@ struct tmio_nand_data {
->>       struct nand_bbt_descr   *badblock_pattern;
->>       struct mtd_partition    *partition;
->>       unsigned int            num_partitions;
->> +     const char *const       *types; /* names of parsers to use if any =
-*/
->
-> I'm okay with this if it's suits the MTD folk.
->
-
-Other than kerneldoc comments there are maybe other little
-discordances to settle: see above is *partition, num_partitions.
-In the other header it is *partitions, nr_partitions ...I'll see if
-oneday I can janiitor this.
-
-Regards
-Andrea
-
->>  };
->>
->>  #define FBIO_TMIO_ACC_WRITE  0x7C639300
->
-> --
-> Lee Jones
-> Linaro STMicroelectronics Landing Team Lead
-> Linaro.org =E2=94=82 Open source software for ARM SoCs
-> Follow Linaro: Facebook | Twitter | Blog
+  Ralf
