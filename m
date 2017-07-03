@@ -1,19 +1,33 @@
-Date: Mon, 3 Jul 2017 13:54:28 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Xiaolei Li <xiaolei.li@mediatek.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dRzV7-0005iv-Uy
+ for linux-mtd@lists.infradead.org; Mon, 03 Jul 2017 11:26:47 +0000
+Received: by mail-wm0-x233.google.com with SMTP id i127so105179446wma.0
+ for <linux-mtd@lists.infradead.org>; Mon, 03 Jul 2017 04:26:25 -0700 (PDT)
+Date: Mon, 3 Jul 2017 12:26:21 +0100
+From: Lee Jones <lee.jones@linaro.org>
+To: Andrea Adami <andrea.adami@gmail.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- linux-mtd@lists.infradead.org, linux-mediatek@lists.infradead.org,
- kernel-janitors@vger.kernel.org
-Subject: [PATCH] mtd: nand: mtk: release lock on error path
-Message-ID: <20170703104858.2226i5bmcvnhhy2x@mwanda>
+ Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Russell King <linux@armlinux.org.uk>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 3/9] mfd: tmio.h: support partition parser types
+Message-ID: <20170703112621.rd3ija3efqlq57rg@dell>
+References: <1498681836-3765-1-git-send-email-andrea.adami@gmail.com>
+ <1498681836-3765-4-git-send-email-andrea.adami@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1498681836-3765-4-git-send-email-andrea.adami@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,24 +37,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We only want to hold the lock on the success path, not this error path.
+Please use the $SUBJECT line expected by the subsystem.
 
-Fixes: 7ec4a37c5d71 ("mtd: nand: mediatek: add support for different MTK NAND FLASH Controller IP")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+`git log --oneline -- $SUBSYSTEM` can help with this.
 
-diff --git a/drivers/mtd/nand/mtk_ecc.c b/drivers/mtd/nand/mtk_ecc.c
-index f38e2bb1953e..6c3a4aab0b48 100644
---- a/drivers/mtd/nand/mtk_ecc.c
-+++ b/drivers/mtd/nand/mtk_ecc.c
-@@ -273,8 +273,10 @@ int mtk_ecc_enable(struct mtk_ecc *ecc, struct mtk_ecc_config *config)
- 	mtk_ecc_wait_idle(ecc, op);
- 
- 	ret = mtk_ecc_config(ecc, config);
--	if (ret)
-+	if (ret) {
-+		mutex_unlock(&ecc->lock);
- 		return ret;
-+	}
- 
- 	if (config->mode != ECC_NFI_MODE || op != ECC_ENCODE) {
- 		init_completion(&ecc->done);
+You also need a commit log.
+
+> Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
+> ---
+>  include/linux/mfd/tmio.h | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/include/linux/mfd/tmio.h b/include/linux/mfd/tmio.h
+> index a1520d8..23bb069 100644
+> --- a/include/linux/mfd/tmio.h
+> +++ b/include/linux/mfd/tmio.h
+> @@ -139,6 +139,7 @@ struct tmio_nand_data {
+>  	struct nand_bbt_descr	*badblock_pattern;
+>  	struct mtd_partition	*partition;
+>  	unsigned int		num_partitions;
+> +	const char *const	*types;	/* names of parsers to use if any */
+
+I'm okay with this if it's suits the MTD folk.
+
+>  };
+>  
+>  #define FBIO_TMIO_ACC_WRITE	0x7C639300
+
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
