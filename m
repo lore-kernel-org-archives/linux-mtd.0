@@ -1,20 +1,18 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dRze6-0001xR-UX
- for linux-mtd@lists.infradead.org; Mon, 03 Jul 2017 11:36:04 +0000
-Date: Mon, 3 Jul 2017 13:35:31 +0200
+ id 1dRzhS-0002zw-6z
+ for linux-mtd@lists.infradead.org; Mon, 03 Jul 2017 11:39:31 +0000
+Date: Mon, 3 Jul 2017 13:38:58 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Colin King <colin.king@canonical.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ubi: fastmap: fix spelling mistake: "invalidiate" ->
- "invalidate"
-Message-ID: <20170703133531.2b27d956@bbrezillon>
-In-Reply-To: <20170703093701.11588-1-colin.king@canonical.com>
-References: <20170703093701.11588-1-colin.king@canonical.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Marek Vasut <marex@denx.de>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Richard Weinberger <richard@nod.at>, David
+ Woodhouse <dwmw2@infradead.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: Re: [PULL] mtd: nand: Changes for 4.13
+Message-ID: <20170703133858.33f697b6@bbrezillon>
+In-Reply-To: <20170625210459.6d360960@bbrezillon>
+References: <20170625210459.6d360960@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,31 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon,  3 Jul 2017 10:37:01 +0100
-Colin King <colin.king@canonical.com> wrote:
+Hi Brian,
 
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Trivial fix to spelling mistake in ubi_err error message
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+On Sun, 25 Jun 2017 21:04:59 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-> ---
->  drivers/mtd/ubi/fastmap.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-> index b44c8d348e78..5a832bc79b1b 100644
-> --- a/drivers/mtd/ubi/fastmap.c
-> +++ b/drivers/mtd/ubi/fastmap.c
-> @@ -1667,7 +1667,7 @@ int ubi_update_fastmap(struct ubi_device *ubi)
->  
->  	ret = invalidate_fastmap(ubi);
->  	if (ret < 0) {
-> -		ubi_err(ubi, "Unable to invalidiate current fastmap!");
-> +		ubi_err(ubi, "Unable to invalidate current fastmap!");
->  		ubi_ro_mode(ubi);
->  	} else {
->  		return_fm_pebs(ubi, old_fm);
+> Xiaolei Li (9):
+>       mtd: nand: mediatek: update DT bindings
+>       mtd: nand: mediatek: refine register NFI_PAGEFMT setting
+>       mtd: nand: mediatek: add support for different MTK NAND FLASH Controller IP
+
+Please ignore this PR. I'll send a new one containing Dan's fix ("mtd:
+nand: mtk: release lock on error path").
+
+Regards,
+
+Boris
+
+>       mtd: nand: mediatek: add support for MT2712 NAND FLASH Controller
+>       mtd: nand: mtk: fix incorrect register setting order about ecc irq
+>       mtd: nand: mtk: disable ecc irq when writing page with hwecc
+>       mtd: nand: mtk: remove unneeded mtk_nfc_hw_init from mtk_nfc_resume
+>       mtd: nand: mtk: remove unneeded mtk_ecc_hw_init from mtk_ecc_resume
+>       mtd: nand: mtk: add ->setup_data_interface() hook
+> 
