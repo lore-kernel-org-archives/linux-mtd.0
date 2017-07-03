@@ -1,33 +1,23 @@
-Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dRzV7-0005iv-Uy
- for linux-mtd@lists.infradead.org; Mon, 03 Jul 2017 11:26:47 +0000
-Received: by mail-wm0-x233.google.com with SMTP id i127so105179446wma.0
- for <linux-mtd@lists.infradead.org>; Mon, 03 Jul 2017 04:26:25 -0700 (PDT)
-Date: Mon, 3 Jul 2017 12:26:21 +0100
-From: Lee Jones <lee.jones@linaro.org>
-To: Andrea Adami <andrea.adami@gmail.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Linus Walleij <linus.walleij@linaro.org>,
- Russell King <linux@armlinux.org.uk>, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 3/9] mfd: tmio.h: support partition parser types
-Message-ID: <20170703112621.rd3ija3efqlq57rg@dell>
-References: <1498681836-3765-1-git-send-email-andrea.adami@gmail.com>
- <1498681836-3765-4-git-send-email-andrea.adami@gmail.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dRze6-0001xR-UX
+ for linux-mtd@lists.infradead.org; Mon, 03 Jul 2017 11:36:04 +0000
+Date: Mon, 3 Jul 2017 13:35:31 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Colin King <colin.king@canonical.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ubi: fastmap: fix spelling mistake: "invalidiate" ->
+ "invalidate"
+Message-ID: <20170703133531.2b27d956@bbrezillon>
+In-Reply-To: <20170703093701.11588-1-colin.king@canonical.com>
+References: <20170703093701.11588-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1498681836-3765-4-git-send-email-andrea.adami@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,35 +27,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Please use the $SUBJECT line expected by the subsystem.
+On Mon,  3 Jul 2017 10:37:01 +0100
+Colin King <colin.king@canonical.com> wrote:
 
-`git log --oneline -- $SUBSYSTEM` can help with this.
-
-You also need a commit log.
-
-> Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
-> ---
->  include/linux/mfd/tmio.h | 1 +
->  1 file changed, 1 insertion(+)
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> diff --git a/include/linux/mfd/tmio.h b/include/linux/mfd/tmio.h
-> index a1520d8..23bb069 100644
-> --- a/include/linux/mfd/tmio.h
-> +++ b/include/linux/mfd/tmio.h
-> @@ -139,6 +139,7 @@ struct tmio_nand_data {
->  	struct nand_bbt_descr	*badblock_pattern;
->  	struct mtd_partition	*partition;
->  	unsigned int		num_partitions;
-> +	const char *const	*types;	/* names of parsers to use if any */
+> Trivial fix to spelling mistake in ubi_err error message
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-I'm okay with this if it's suits the MTD folk.
+Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
->  };
+> ---
+>  drivers/mtd/ubi/fastmap.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+> index b44c8d348e78..5a832bc79b1b 100644
+> --- a/drivers/mtd/ubi/fastmap.c
+> +++ b/drivers/mtd/ubi/fastmap.c
+> @@ -1667,7 +1667,7 @@ int ubi_update_fastmap(struct ubi_device *ubi)
 >  
->  #define FBIO_TMIO_ACC_WRITE	0x7C639300
-
--- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+>  	ret = invalidate_fastmap(ubi);
+>  	if (ret < 0) {
+> -		ubi_err(ubi, "Unable to invalidiate current fastmap!");
+> +		ubi_err(ubi, "Unable to invalidate current fastmap!");
+>  		ubi_ro_mode(ubi);
+>  	} else {
+>  		return_fm_pebs(ubi, old_fm);
