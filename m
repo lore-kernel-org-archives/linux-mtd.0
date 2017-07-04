@@ -1,25 +1,19 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dSHji-0003wQ-Cc
- for linux-mtd@lists.infradead.org; Tue, 04 Jul 2017 06:55:04 +0000
-Subject: Re: [PATCH 08/14] qcom: mtd: nand: Add support for additional CSRs
-To: Abhishek Sahu <absahu@codeaurora.org>, dwmw2@infradead.org,
- computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
- marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr,
- robh+dt@kernel.org, mark.rutland@arm.com
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- andy.gross@linaro.org, sricharan@codeaurora.org
-References: <1498720566-20782-1-git-send-email-absahu@codeaurora.org>
- <1498720566-20782-9-git-send-email-absahu@codeaurora.org>
-From: Archit Taneja <architt@codeaurora.org>
-Message-ID: <a04e02b5-56c0-3fb8-813e-a2dd8a53861f@codeaurora.org>
-Date: Tue, 4 Jul 2017 12:24:34 +0530
+ id 1dSHlD-0006HE-VU
+ for linux-mtd@lists.infradead.org; Tue, 04 Jul 2017 06:56:39 +0000
+Subject: Re: ubifs error after power-cut
+To: zhouwarcraft@sina.com
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
+References: <20170704061551.B6D4481000E5@webmail.sinamail.sina.com.cn>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <febf67f4-7e1d-3aa8-5003-0b4283a8cb4a@nod.at>
+Date: Tue, 4 Jul 2017 08:56:07 +0200
 MIME-Version: 1.0
-In-Reply-To: <1498720566-20782-9-git-send-email-absahu@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20170704061551.B6D4481000E5@webmail.sinamail.sina.com.cn>
+Content-Type: text/plain; charset=UTF-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,198 +23,277 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Zhou,
 
+Am 04.07.2017 um 08:15 schrieb Zhou:
+>  Dear Richard
+> 
+> Please forgive my rudeness,I try to send this to mtd mailing list,but my
+> office only can send HTML email.
 
-On 06/29/2017 12:46 PM, Abhishek Sahu wrote:
-> 1. NAND_READ_LOCATION: provides the offset in page for
->     reading in BAM DMA mode
-> 
-> 2. NAND_ERASED_CW_DETECT_CFG: contains the status for erased
->     code words
-> 
-> 3. NAND_BUFFER_STATUS: contains the status for ECC
-> 
-> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
-> ---
->   drivers/mtd/nand/qcom_nandc.c | 67 ++++++++++++++++++++++++++++++++++++++++++-
->   1 file changed, 66 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-> index 65c9059..8e7dc9e 100644
-> --- a/drivers/mtd/nand/qcom_nandc.c
-> +++ b/drivers/mtd/nand/qcom_nandc.c
-> @@ -54,6 +54,8 @@
->   #define	NAND_VERSION			0xf08
->   #define	NAND_READ_LOCATION_0		0xf20
->   #define	NAND_READ_LOCATION_1		0xf24
-> +#define	NAND_READ_LOCATION_2		0xf28
-> +#define	NAND_READ_LOCATION_3		0xf2c
->   
->   /* dummy register offsets, used by write_reg_dma */
->   #define	NAND_DEV_CMD1_RESTORE		0xdead
-> @@ -132,6 +134,11 @@
->   #define	ERASED_PAGE			(PAGE_ALL_ERASED | PAGE_ERASED)
->   #define	ERASED_CW			(CODEWORD_ALL_ERASED | CODEWORD_ERASED)
->   
-> +/* NAND_READ_LOCATION_n bits */
-> +#define READ_LOCATION_OFFSET		0
-> +#define READ_LOCATION_SIZE		16
-> +#define READ_LOCATION_LAST		31
-> +
->   /* Version Mask */
->   #define	NAND_VERSION_MAJOR_MASK		0xf0000000
->   #define	NAND_VERSION_MAJOR_SHIFT	28
-> @@ -177,6 +184,11 @@
->   #define NAND_BAM_NWD			(0x0002)
->   /* Finish writing in the current sgl and start writing in another sgl */
->   #define NAND_BAM_NEXT_SGL		(0x0004)
-> +/*
-> + * Erased codeword status is being used two times in single transfer so this
-> + * flag will determine the current value of erased codeword status register
-> + */
-> +#define NAND_ERASED_CW_SET		(0x0008)
->   
->   #define QPIC_PER_CW_MAX_CMD_ELEMENTS	(32)
->   #define QPIC_PER_CW_MAX_CMD_SGL		(32)
-> @@ -258,6 +270,13 @@ struct nandc_regs {
->   	__le32 orig_vld;
->   
->   	__le32 ecc_buf_cfg;
-> +	__le32 read_location0;
-> +	__le32 read_location1;
-> +	__le32 read_location2;
-> +	__le32 read_location3;
-> +
-> +	__le32 erased_cw_detect_cfg_clr;
-> +	__le32 erased_cw_detect_cfg_set;
->   };
->   
->   /*
-> @@ -504,6 +523,16 @@ static __le32 *offset_to_nandc_reg(struct nandc_regs *regs, int offset)
->   		return &regs->orig_vld;
->   	case NAND_EBI2_ECC_BUF_CFG:
->   		return &regs->ecc_buf_cfg;
-> +	case NAND_BUFFER_STATUS:
-> +		return &regs->clrreadstatus;
-> +	case NAND_READ_LOCATION_0:
-> +		return &regs->read_location0;
-> +	case NAND_READ_LOCATION_1:
-> +		return &regs->read_location1;
-> +	case NAND_READ_LOCATION_2:
-> +		return &regs->read_location2;
-> +	case NAND_READ_LOCATION_3:
-> +		return &regs->read_location3;
->   	default:
->   		return NULL;
->   	}
-> @@ -545,7 +574,7 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read)
->   {
->   	struct nand_chip *chip = &host->chip;
->   	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-> -	u32 cmd, cfg0, cfg1, ecc_bch_cfg;
-> +	u32 cmd, cfg0, cfg1, ecc_bch_cfg, read_location0;
->   
->   	if (read) {
->   		if (host->use_ecc)
-> @@ -562,12 +591,20 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read)
->   
->   		cfg1 = host->cfg1;
->   		ecc_bch_cfg = host->ecc_bch_cfg;
-> +		if (read)
-> +			read_location0 = (0 << READ_LOCATION_OFFSET) |
-> +				(host->cw_data << READ_LOCATION_SIZE) |
-> +				(1 << READ_LOCATION_LAST);
->   	} else {
->   		cfg0 = (host->cfg0_raw & ~(7U << CW_PER_PAGE)) |
->   				(num_cw - 1) << CW_PER_PAGE;
->   
->   		cfg1 = host->cfg1_raw;
->   		ecc_bch_cfg = 1 << ECC_CFG_ECC_DISABLE;
-> +		if (read)
-> +			read_location0 = (0 << READ_LOCATION_OFFSET) |
-> +				(host->cw_size << READ_LOCATION_SIZE) |
-> +				(1 << READ_LOCATION_LAST);
->   	}
->   
->   	nandc_set_reg(nandc, NAND_FLASH_CMD, cmd);
-> @@ -578,6 +615,9 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read)
->   	nandc_set_reg(nandc, NAND_FLASH_STATUS, host->clrflashstatus);
->   	nandc_set_reg(nandc, NAND_READ_STATUS, host->clrreadstatus);
->   	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
-> +
-> +	if (read)
-> +		nandc_set_reg(nandc, NAND_READ_LOCATION_0, read_location0);
->   }
->   
->   /*
-> @@ -756,6 +796,13 @@ static int write_reg_dma(struct qcom_nand_controller *nandc, int first,
->   	if (first == NAND_FLASH_CMD)
->   		flow_control = true;
->   
-> +	if (first == NAND_ERASED_CW_DETECT_CFG) {
-> +		if (flags & NAND_ERASED_CW_SET)
-> +			vaddr = &regs->erased_cw_detect_cfg_set;
-> +		else
-> +			vaddr = &regs->erased_cw_detect_cfg_clr;
-> +	}
-> +
->   	if (first == NAND_EXEC_CMD)
->   		flags |= NAND_BAM_NWD;
->   
-> @@ -808,6 +855,12 @@ static void config_cw_read(struct qcom_nand_controller *nandc)
->   	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
->   	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
->   
-> +	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1, 0);
-> +	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1, NAND_ERASED_CW_SET);
-> +	if (nandc->dma_bam_enabled)
-> +		write_reg_dma(nandc, NAND_READ_LOCATION_0, 1,
-> +			      NAND_BAM_NEXT_SGL);
-> +
->   	write_reg_dma(nandc, NAND_EXEC_CMD, 1,
->   		      NAND_BAM_NWD | NAND_BAM_NEXT_SGL);
->   
-> @@ -882,6 +935,10 @@ static int nandc_param(struct qcom_nand_host *host)
->   
->   	nandc_set_reg(nandc, NAND_DEV_CMD1_RESTORE, nandc->cmd1);
->   	nandc_set_reg(nandc, NAND_DEV_CMD_VLD_RESTORE, nandc->vld);
-> +	nandc_set_reg(nandc, NAND_READ_LOCATION_0,
-> +		      (0 << READ_LOCATION_OFFSET) |
-> +		      (512 << READ_LOCATION_SIZE) |
-> +		      (1 << READ_LOCATION_LAST));
->   
->   	write_reg_dma(nandc, NAND_DEV_CMD_VLD, 1, 0);
->   	write_reg_dma(nandc, NAND_DEV_CMD1, 1, NAND_BAM_NEXT_SGL);
-> @@ -1413,6 +1470,10 @@ static int copy_last_cw(struct qcom_nand_host *host, int page)
->   
->   	set_address(host, host->cw_size * (ecc->steps - 1), page);
->   	update_rw_regs(host, 1, true);
-> +	nandc_set_reg(nandc, NAND_READ_LOCATION_0,
-> +		      (0 << READ_LOCATION_OFFSET) |
-> +		      (size << READ_LOCATION_SIZE) |
-> +		      (1 << READ_LOCATION_LAST));
->   
->   	config_cw_read(nandc);
->   
-> @@ -2147,6 +2208,10 @@ static int qcom_nand_host_setup(struct qcom_nand_host *host)
->   
->   	host->clrflashstatus = FS_READY_BSY_N;
->   	host->clrreadstatus = 0xc0;
-> +	nandc->regs->erased_cw_detect_cfg_clr =
-> +		cpu_to_le32(CLR_ERASED_PAGE_DET);
-> +	nandc->regs->erased_cw_detect_cfg_set =
-> +		cpu_to_le32(SET_ERASED_PAGE_DET);
->   
+:-(
 
-Can these 2 be put in qcom_nand_host like done for other registers?
+> I read ubi & ubifs faq on www.linux-mtd.infradead.org/doc/ and surfed
+> online,but can't find any answer about this problem.
+> The project use UBIFS on a Nor-flash (MX25L51245G) as 3 data
+>  partitions.
+> 
+> kernel version :3.14.19
+> 
+> error log:
+> 
+> [    0.852742] Freeing unused kernel memory: 192K (c05e0000 - c0610000)
+> Mount /sys.
+> Attached mtd to ubi.
+> [    1.041152] UBI: attaching mtd2 to ubi0
+> [    1.045967] UBI: scanning is finished
+> [    1.052457] UBI: attached mtd2 (name "data", size 5 MiB) to ubi0
+> [    1.058472] UBI: PEB size: 65536 bytes (64 KiB), LEB size: 65408 bytes
+> [    1.064983] UBI: min./max. I/O unit sizes: 1/256, sub-page size 1
+> [    1.071056] UBI: VID header offset: 64 (aligned 64), data offset: 128
+> [    1.077475] UBI: good PEBs: 80, bad PEBs: 0, corrupted PEBs: 0
+> [    1.083290] UBI: user volume: 1, internal volumes: 1, max. volumes count: 128
+> [    1.090401] UBI: max/mean erase counter: 3/1, WL threshold: 4096, image sequence number: 2056918313
+> [    1.099412] UBI: available PEBs: 0, total reserved PEBs: 80, PEBs reserved for bad PEB handling: 0
+> [    1.108346] UBI: background thread "ubi_bgt0d" started, PID 45
+> UBI device number 0, total 80 LEBs (5232640 bytes, 5.0 MiB), available 0 LEBs (0 bytes), LEB size 65408 bytes (63.9 KiB)
+> Make ubi volume.
+> ubimkvol: error!: UBI device does no[    1.130146] UBIFS: background thread "ubifs_bgt0_0" started, PID 48
+> t have f[    1.137089] UBIFS: recovery needed
+> ree logical eraseblocks
+> Mount ubifs.
+> [    1.305638] UBIFS: recovery completed
+> [    1.309372] UBIFS: mounted UBI device 0, volume 0, name "sflashfs"
+> [    1.315542] UBIFS: LEB size: 65408 bytes (63 KiB), min./max. I/O unit sizes: 8 bytes/256 bytes
+> [    1.324134] UBIFS: FS size: 4316928 bytes (4 MiB, 66 LEBs), journal size 523265 bytes (0 MiB, 6 LEBs)
+> [    1.333323] UBIFS: reserved for root: 203898 bytes (199 KiB)
+> [    1.338971] UBIFS: media format: w4/r0 (latest is w4/r0), UUID 415B310F-7DB0-49E9-B120-1216FDF2030D, small LPT model
+> /data:
+> .     ..    conf  log   root
+>  
+> /data/conf:
+> .   ..
+>  
+> /data/log:
+> .   ..
+>  
+> /data/root:
+> .   ..
+> Mount successful.
+> Unmount /sys.
+> Mount /sys.
+> Attached mtd to ubi.
+> [    1.497743] UBI: attaching mtd3 to ubi1
+> [    1.503039] UBI: scanning is finished
+> [    1.509662] UBI: attached mtd3 (name "data1", size 10 MiB) to ubi1
+> [    1.515843] UBI: PEB size: 65536 bytes (64 KiB), LEB size: 65408 bytes
+> [    1.522351] UBI: min./max. I/O unit sizes: 1/256, sub-page size 1
+> [    1.528431] UBI: VID header offset: 64 (aligned 64), data offset: 128
+> [    1.534850] UBI: good PEBs: 160, bad PEBs: 0, corrupted PEBs: 0
+> [    1.540751] UBI: user volume: 1, internal volumes: 1, max. volumes count: 128
+> [    1.547864] UBI: max/mean erase counter: 3/1, WL threshold: 4096, image sequence number: 267157987
+> [    1.556788] UBI: available PEBs: 0, total reserved PEBs: 160, PEBs reserved for bad PEB handling: 0
+> [    1.565810] UBI: background thread "ubi_bgt1d" started, PID 56
+> UBI device number 1, total 160 LEBs (10465280 bytes, 10.0 MiB), available 0 LEBs (0 bytes), LEB size 65408 bytes (63.9 KiB)
+> Make ubi volume.
+> ubimkvol: error!: UBI dev[    1.587008] UBIFS: background thread "ubifs_bgt1_0" started, PID 59
+> ice does[    1.593845] UBIFS: recovery needed
+>  not have free logical eraseblocks
+> Mount ubifs.
+> [    1.925846] UBIFS: recovery completed
+> [    1.929611] UBIFS: mounted UBI device 1, volume 0, name "sflashfs1"
+> [    1.935864] UBIFS: LEB size: 65408 bytes (63 KiB), min./max. I/O unit sizes: 8 bytes/256 bytes
+> [    1.944452] UBIFS: FS size: 9549568 bytes (9 MiB, 146 LEBs), journal size 523265 bytes (0 MiB, 7 LEBs)
+> [    1.953727] UBIFS: reserved for root: 451049 bytes (440 KiB)
+> [    1.959374] UBIFS: media format: w4/r0 (latest is w4/r0), UUID 0B65F047-B1AB-416C-B509-52608BF5CD50, small LPT model
+> /data1:
+> [    2.084260] UBIFS error (pid 60): ubifs_check_node: bad CRC: calculated 0x2603efdc, read 0x6265efa9
+
+The data corrupted after writing.
+
+> [    2.093535] UBIFS error (pid 60): ubifs_check_node: bad node at LEB 11:2200
+> [    2.100479]  magic          0x6101831
+> [    2.104139]  crc            0x6265efa9
+> [    2.107879]  node_type      0 (inode node)
+> [    2.111965]  group_type     2 (last of node group)
+> [    2.116742]  sqnum          861
+> [    2.119878]  len            160
+> [    2.123016]  key            (68, inode)
+> [    2.126842]  creat_sqnum    857
+> [    2.129978]  size           1152310
+> [    2.133443]  nlink          1
+> [    2.136407]  atime          33.0
+> [    2.139629]  mtime          33.0
+> [    2.142852]  ctime          33.0
+> [    2.146073]  uid            0
+> [    2.149021]  gid            0
+> [    2.151985]  mode           33188
+> [    2.155293]  flags          0x1
+> [    2.158429]  xattr_cnt      0
+> [    2.161377]  xattr_size     0
+> [    2.164339]  xattr_names    0
+> [    2.167302]  compr_type     0x1
+> [    2.170439]  data len       0
+> [    2.173395] CPU: 0 PID: 60 Comm: ls Not tainted 3.14.19 #1
+> [    2.178902] [<c0015910>] (unwind_backtrace) from [<c0011ff8>] (show_stack+0x10/0x14)
+> [    2.186632] [<c0011ff8>] (show_stack) from [<c0475264>] (dump_stack+0x80/0x90)
+> [    2.193844] [<c0475264>] (dump_stack) from [<c01a5c00>] (ubifs_check_node+0x180/0x298)
+> [    2.201747] [<c01a5c00>] (ubifs_check_node) from [<c01a7448>] (ubifs_read_node+0xe4/0x2e4)
+> [    2.209990] [<c01a7448>] (ubifs_read_node) from [<c01c7d14>] (ubifs_tnc_read_node+0x4c/0x1e8)
+> [    2.218491] [<c01c7d14>] (ubifs_tnc_read_node) from [<c01ab158>] (ubifs_tnc_locate+0x1a4/0x1ac)
+> [    2.227164] [<c01ab158>] (ubifs_tnc_locate) from [<c01a16ac>] (ubifs_iget+0x98/0x5f8)
+> [    2.234973] [<c01a16ac>] (ubifs_iget) from [<c019e880>] (ubifs_lookup+0x120/0x244)
+> [    2.242531] [<c019e880>] (ubifs_lookup) from [<c00ad564>] (lookup_real+0x20/0x4c)
+> [    2.250003] [<c00ad564>] (lookup_real) from [<c00adeb0>] (__lookup_hash+0x34/0x3c)
+> [    2.257563] [<c00adeb0>] (__lookup_hash) from [<c00aeab0>] (lookup_slow+0x38/0xa4)
+> [    2.265119] [<c00aeab0>] (lookup_slow) from [<c00b0638>] (path_lookupat+0x6d8/0x720)
+> [    2.272844] [<c00b0638>] (path_lookupat) from [<c00b06a0>] (filename_lookup.isra.54+0x20/0x60)
+> [    2.281431] [<c00b06a0>] (filename_lookup.isra.54) from [<c00b2f2c>] (user_path_at_empty+0x50/0x78)
+> [    2.290451] [<c00b2f2c>] (user_path_at_empty) from [<c00b2f68>] (user_path_at+0x14/0x1c)
+> [    2.298521] [<c00b2f68>] (user_path_at) from [<c00a9038>] (vfs_fstatat+0x44/0x98)
+> [    2.305986] [<c00a9038>] (vfs_fstatat) from [<c00a9748>] (SyS_lstat64+0x14/0x30)
+> [    2.313366] [<c00a9748>] (SyS_lstat64) from [<c000ebe0>] (ret_fast_syscall+0x0/0x30)
+> [    2.321083] UBIFS error (pid 60): ubifs_read_node: expected node type 0
+> [    2.327676] UBIFS error (pid 60): ubifs_iget: failed to read inode 68, error -117
+> [    2.335171] UBIFS error (pid 60): ubifs_lookup: dead directory entry 'flashNo3', error -117
+> [    2.343522] UBIFS warning (pid 60): ubifs_ro_mode: switched to read-only mode, error -117
+> [    2.351684] CPU: 0 PID: 60 Comm: ls Not tainted 3.14.19 #1
+> [    2.357169] [<c0015910>] (unwind_backtrace) from [<c0011ff8>] (show_stack+0x10/0x14)
+> [    2.364898] [<c0011ff8>] (show_stack) from [<c0475264>] (dump_stack+0x80/0x90)
+> [    2.372110] [<c0475264>] (dump_stack) from [<c019e994>] (ubifs_lookup+0x234/0x244)
+> [    2.379664] [<c019e994>] (ubifs_lookup) from [<c00ad564>] (lookup_real+0x20/0x4c)
+> [    2.387137] [<c00ad564>] (lookup_real) from [<c00adeb0>] (__lookup_hash+0x34/0x3c)
+> [    2.394698] [<c00adeb0>] (__lookup_hash) from [<c00aeab0>] (lookup_slow+0x38/0xa4)
+> [    2.402256] [<c00aeab0>] (lookup_slow) from [<c00b0638>] (path_lookupat+0x6d8/0x720)
+> [    2.409979] [<c00b0638>] (path_lookupat) from [<c00b06a0>] (filename_lookup.isra.54+0x20/0x60)
+> [    2.418566] [<c00b06a0>] (filename_lookup.isra.54) from [<c00b2f2c>] (user_path_at_empty+0x50/0x78)
+> [    2.427586] [<c00b2f2c>] (user_path_at_empty) from [<c00b2f68>] (user_path_at+0x14/0x1c)
+> [    2.435655] [<c00b2f68>] (user_path_at) from [<c00a9038>] (vfs_fstatat+0x44/0x98)
+> [    2.443122] [<c00a9038>] (vfs_fstatat) from [<c00a9748>] (SyS_lstat64+0x14/0x30)
+> [    2.450501] [<c00a9748>] (SyS_lstat64) from [<c000ebe0>] (ret_fast_syscall+0x0/0x30)
+> ls: /data1/flashNo3: Structure needs cleaning
+> .         ..        bt.data   flashNo1  f[    2.469926] UBIFS: un-mount UBI device 1, volume 0
+> lashNo2 UBIFS: background thread "ubifs_bgt1_0" stops
+> [0m
+> ubi1:sflashfs1 on /data1 type ubifs (ro,relatime)
+> Unmount /data1.
+> Mount successful. But probably data filesystem is damaged.
+> Remove ubi volume.
+> Detached ubi.
+> [    2.836303] UBI: detaching mtd3 from ubi1
+> [    2.984358] UBI: mtd3 is detached from ubi1
+> Erase mtd3 device.
+> Erasing 64 Kibyte @ a00000 - 100% complete.
+> At[   27.455657] UBI: attaching mtd3 to ubi1
+> tached mtd to ub[   27.460869] UBI: scanning is finished
+> i. (retr[   27.464998] UBI: empty MTD device detected
+> y)
+> [   27.828063] UBI: attached mtd3 (name "data1", size 10 MiB) to ubi1
+> [   27.834249] UBI: PEB size: 65536 bytes (64 KiB), LEB size: 65408 bytes
+> [   27.840758] UBI: min./max. I/O unit sizes: 1/256, sub-page size 1
+> [   27.846839] UBI: VID header offset: 64 (aligned 64), data offset: 128
+> [   27.853257] UBI: good PEBs: 160, bad PEBs: 0, corrupted PEBs: 0
+> [   27.859160] UBI: user volume: 0, internal volumes: 1, max. volumes count: 128
+> [   27.866272] UBI: max/mean erase counter: 0/0, WL threshold: 4096, image sequence number: 2382463312
+> [   27.875290] UBI: available PEBs: 156, total reserved PEBs: 4, PEBs reserved for bad PEB handling: 0
+> [   27.884311] UBI: background thread "ubi_bgt1d" started, PID 68
+> UBI device number 1, total 160 LEBs (10465280 bytes, 10.0 MiB), available 156 LEBs (10203648 bytes, 9.7 MiB), LEB size 65408 bytes (63.9 KiB)
+> Make ubi volume. (second try)
+> Set volume size to 10203648
+> Volume ID 0, size 156 LEBs (10203648 bytes, 9.7 [   33.619701] UBIFS error (pid 70): ubifs_mount: cannot open "ubi1:sflashfs", error -19
+> MiB), LEB size 65408 bytes (63.9 KiB), dynamic, name "sflashfs1", alignment 1
+> Mount ubifs. (retry)
+> mount: mounting ubi1:sflashfs on /data failed: No such device
+> WARNING: Failed to mount Data partition (/dev/mtdblock3). setup Data partition on DDR.
+> Unmount /sys.
+> Mount /sys.
+> Attached mtd to ubi.
+> [   33.657061] UBI: attaching mtd4 to ubi2
+> [   36.381053] UBI: scanning is finished
+> [   39.162967] UBI: attached mtd4 (name "data2", size 10 MiB) to ubi2
+> [   39.169157] UBI: PEB size: 65536 bytes (64 KiB), LEB size: 65408 bytes
+> [   39.175669] UBI: min./max. I/O unit sizes: 1/256, sub-page size 1
+> [   39.181750] UBI: VID header offset: 64 (aligned 64), data offset: 128
+> [   39.188168] UBI: good PEBs: 160, bad PEBs: 0, corrupted PEBs: 0
+> [   39.194070] UBI: user volume: 1, internal volumes: 1, max. volumes count: 128
+> [   39.201181] UBI: max/mean erase counter: 3/1, WL threshold: 4096, image sequence number: 2758875152
+> [   39.210194] UBI: available PEBs: 0, total reserved PEBs: 160, PEBs reserved for bad PEB handling: 0
+> [   39.219225] UBI: background thread "ubi_bgt2d" started, PID 76
+> UBI device number 2, total 160 LEBs (10465280 bytes, 10.0 MiB), available 0 LEBs (0 bytes), LEB size 65408 bytes (63.9 KiB)
+> Make ubi volume.
+> ubimkvol: error!: UBI device does not have free logical eraseblocks
+> Mount ubifs.
+> [   41.924339] UBIFS: background thread "ubifs_bgt2_0" started, PID 79
+> [   42.701389] UBIFS: recovery needed
+> [   52.829808] UBIFS: recovery completed
+> [   52.833533] UBIFS: mounted UBI device 2, volume 0, name "sflashfs2"
+> [   52.839792] UBIFS: LEB size: 65408 bytes (63 KiB), min./max. I/O unit sizes: 8 bytes/256 bytes
+> [   52.848378] UBIFS: FS size: 9549568 bytes (9 MiB, 146 LEBs), journal size 523265 bytes (0 MiB, 7 LEBs)
+> [   52.857652] UBIFS: reserved for root: 451049 bytes (440 KiB)
+> [   52.863299] UBIFS: media format: w4/r0 (latest is w4/r0), UUID D922488C-A456-4966-A3E4-4B81EA7BC23F, small LPT model
+> /data2:
+> .         ..        bt.data   flashNo1  flashNo2  flashNo3
+> Mount successful.
+> Unmount /sys.
+> 
+> //error log end
+> 
+> mounting script:
+> //choose mount /data/ as an example
+> if [ "x$SYSTEM_TYPE" = "xSERIAL_CS2_FLASH" ];then
+> 193                 wait_device mtdblock2 3
+> 194                 if [ $? -ne 0 ];then
+> 195                         echo "WARNING: Failed to mount Data partition (/dev/mtdblock2). setup Data partition on DDR."
+> 196                         make_virtual_data_partition
+> 197                 else
+> 198                         echo "Mount /sys."
+> 199                         mount /sys
+> 200                         echo "Attached mtd to ubi."
+> 201                         /usr/sbin/ubiattach /dev/ubi_ctrl -d 0 -m 2 2>/dev/null
+> 202                         echo "Make ubi volume."
+> 203                         /usr/sbin/ubimkvol /dev/ubi0 -N sflashfs -m 2>/dev/null
+> 204                         echo "Mount ubifs."
+> 205                         mount -t ubifs ubi0:sflashfs /data
+> 206                         #mount -t ubifs ubi0:sflashfs -o sync /data
+> 207                         #mount -t ubifs ubi0:sflashfs -o sync,no_chk_data_crc /data
+> 208                         if [ $? -ne 0 ];then
+> 209                                 echo "Mount failed. Probably data filesystem is damaged."
+> 210                                 cs2_ubifs_reformat
+> 211                         else
+> 212                                 ls -aR /data >/dev/null 2>&1
+> 213                                 mount -v | fgrep '/data type ubifs (ro' >/dev/null
+> 214                                 if [ $? -ne 0 ];then
+> 215                                         echo "Mount successful."
+> 216                                 else
+> 217                                         echo "Unmount /data."
+> 218                                         umount /data
+> 219                                         echo "Mount successful. But probably data filesystem is damaged."
+> 220                                         cs2_ubifs_reformat
+> 221                                 fi
+> 222                         fi
+> 223                         echo "Unmount /sys."
+> 224                         umount /sys
+> 225                 fi
+> 226                 make_data_dir
+> 227         fi
+> //
+> 
+> 
+> Mounting failed does not occur every time,it aways happen after power
+> -cut,maybe 1/100.
+> 
+> if mounting failed happen,I must use flash_eraseall /dev/mtd to
+>  retry(even if data is lost).
+> 
+> I'm not a linux expert .After I joined the project this problem
+> confuse me for a long time , I have no idea and need your help.
+> 
+> what  you think about this problem? Is it a hardware problem?
+
+It could be a hardware issues, yes. But also a misconfiguration
+of your flash chip.
+Maybe you give your flash not enough time to write data and after a power-cut
+already written data corrupts.
 
 Thanks,
-Archit
-
->   	dev_dbg(nandc->dev,
->   		"cfg0 %x cfg1 %x ecc_buf_cfg %x ecc_bch cfg %x cw_size %d cw_data %d strength %d parity_bytes %d steps %d\n",
-> 
-
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+//richard
