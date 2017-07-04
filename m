@@ -1,25 +1,34 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dSKaY-0004FO-8u
- for linux-mtd@lists.infradead.org; Tue, 04 Jul 2017 09:57:50 +0000
-Subject: Re: [PATCH 13/14] qcom: mtd: nand: support for QPIC version 1.5.0
-To: Abhishek Sahu <absahu@codeaurora.org>, dwmw2@infradead.org,
- computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
- marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr,
- robh+dt@kernel.org, mark.rutland@arm.com
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- andy.gross@linaro.org, sricharan@codeaurora.org
-References: <1498720566-20782-1-git-send-email-absahu@codeaurora.org>
- <1498720566-20782-14-git-send-email-absahu@codeaurora.org>
-From: Archit Taneja <architt@codeaurora.org>
-Message-ID: <d6566f4e-c55b-18ed-611b-35bc191b2f5f@codeaurora.org>
-Date: Tue, 4 Jul 2017 15:27:18 +0530
+ id 1dSLF8-0001aR-Rf
+ for linux-mtd@lists.infradead.org; Tue, 04 Jul 2017 10:39:48 +0000
+Received: by mail-lf0-x241.google.com with SMTP id z78so5036024lff.2
+ for <linux-mtd@lists.infradead.org>; Tue, 04 Jul 2017 03:39:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1498720566-20782-14-git-send-email-absahu@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <54a6cd9d-8d4a-8d22-26e7-b5e0f8df0f5b@wedev4u.fr>
+References: <1498493619-4633-1-git-send-email-matthew.gerlach@linux.intel.com>
+ <1498493619-4633-3-git-send-email-matthew.gerlach@linux.intel.com>
+ <54a6cd9d-8d4a-8d22-26e7-b5e0f8df0f5b@wedev4u.fr>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Tue, 4 Jul 2017 12:38:39 +0200
+Message-ID: <CAOMqctTBK35P2mbRnp=CKWhDFniKdeHK_VVu9is1zU3gdoNMZQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mtd: spi-nor: core code for the Altera Quadspi Flash
+ Controller v2
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: matthew.gerlach@linux.intel.com, vndao@altera.com,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ devicetree <devicetree@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Greg KH <gregkh@linuxfoundation.org>,
+ David Miller <davem@davemloft.net>, mchehab@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,204 +38,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 4 July 2017 at 02:00, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr> wrote=
+:
+> Hi Matthew,
+>
+>
+> Le 26/06/2017 =C3=A0 18:13, matthew.gerlach@linux.intel.com a =C3=A9crit =
+:
+>> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
 
+>> +static int altera_quadspi_setup_banks(struct device *dev,
+>> +                                   u32 bank, struct device_node *np)
+>> +{
+>> +     struct altera_quadspi *q =3D dev_get_drvdata(dev);
+>> +     struct altera_quadspi_flash *flash;
+>> +     struct spi_nor *nor;
+>> +     int ret =3D 0;
+>> +     char modalias[40] =3D {0};
+>> +     struct spi_nor_hwcaps hwcaps =3D {
+>> +             .mask =3D SNOR_HWCAPS_READ |
+>> +                     SNOR_HWCAPS_READ_FAST |
+>> +                     SNOR_HWCAPS_READ_1_1_2 |
+>> +                     SNOR_HWCAPS_READ_1_1_4 |
+>> +                     SNOR_HWCAPS_PP,
+>> +     };
+>
+> since aletera_quadspi_{read|erase} just don't care about
+> nor->read_opcode, nor->program_opcode and so on and anyway override all
+> settings chosen by spi-nor.c, it means they will use Dual or Quad SPI
+> controllers as they want, whether SNOR_HWCAPS_READ_1_1_{2|4} are set or n=
+ot.
+> Then I think it's risky to declare the READ_1_1_2 and READ_1_1_4 hwcaps
+> because it may trigger additionnal calls of nor->read_reg() /
+> nor->write_reg() from spi_nor_scan() with op codes not supported by
+> altera_quadspi_{read|write}_reg().
+>
+>> +
+>> +     if (bank > q->num_flashes - 1)
+>> +             return -EINVAL;
+>> +
+>> +     altera_quadspi_chip_select(q, bank);
+>> +
+>> +     flash =3D devm_kzalloc(q->dev, sizeof(*flash), GFP_KERNEL);
+>> +     if (!flash)
+>> +             return -ENOMEM;
+>> +
+>> +     q->flash[bank] =3D flash;
+>> +     nor =3D &flash->nor;
+>> +     nor->dev =3D dev;
+>> +     nor->priv =3D flash;
+>> +     nor->mtd.priv =3D nor;
+>> +     flash->q =3D q;
+>> +     flash->bank =3D bank;
+>> +     spi_nor_set_flash_node(nor, np);
+>> +
+>> +     /* spi nor framework*/
+>> +     nor->read_reg =3D altera_quadspi_read_reg;
+>> +     nor->write_reg =3D altera_quadspi_write_reg;
+>> +     nor->read =3D altera_quadspi_read;
+>> +     nor->write =3D altera_quadspi_write;
+>> +     nor->erase =3D altera_quadspi_erase;
+>> +     nor->flash_lock =3D altera_quadspi_lock;
+>> +     nor->flash_unlock =3D altera_quadspi_unlock;
+>
+> nor->flash_lock and nor->flash_unlock are described as "FLASH SPECIFIC"
+> in include/linux/mtd/spi-nor.h as opposed to "DRIVER SPECIFIC" functions
+> like nor->read, nor->read_reg, ...
+>
+> It means the actual implementations should be provided by the spi-nor
+> sub-system but not by each SPI controller driver.
+>
+>
+>
+> For me, it really sounds like a bad idea that this driver tries so much
+> to mystify the spi-nor sub-system.
+>
+> I can understand that you have to cope with the hardware design and its
+> limitations but clearly it looks the spi-nor API is not suited to this
+> hardware. This driver ignores and by-passes any settings selected by
+> spi_nor_scan().
+> Duplicating code is generally a bad idea but in this case, I don't know
+> if trying to reuse spi_nor_read() / spi_nor_write() and spi_nor_erase()
+> from spi-nor.c is that helpful.
+>
+> Why not directly plug your driver into the above mtd layer implementing
+> you own version of mtd->_read(), mtd->_write() and mtd->_erase() then
+> registering the mtd device? It may be not the way to go but at least we
+> should study this alternative.
 
-On 06/29/2017 12:46 PM, Abhishek Sahu wrote:
-> The current QCOM NAND driver only supports version 1.4.0
-> QCOM QPIC NAND controller. This patch adds the support for
-> version 1.5.0 which contains some of the registers at
-> different offsets. The driver data contains the register offset
-> field which is being initialized with its crossponding register
+AFAICT fsl-quadspi does just that preventing the use of the SPI
+controller for non-flash devices.
 
-s/crossponding/corresponding
+There is at least one accelerated driver that is passed the opcodes to
+program in the controller for read acceleration in spi_flash_read so
+reusing that should be viable. If the opcodes can be programmed or
+match what is hardcoded in the controller use the acceleration and
+fallback to plain spi transfer if there is mismatch between what
+m25p80_read requests and what the controller can do.
 
-> offsets array. A new compatible string has been added for
-> version 1.5.0 in BAM mode which uses version 1.5.0 register
-> offsets.
+If this works and you can still use the plain SPI trnsfers the
+controller will be much morer useful than fsl-quadspi.
 
-Please split into 2 patches.
+Thanks
 
-Thanks,
-Archit
-
-> 
-> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
-> ---
->   .../devicetree/bindings/mtd/qcom_nandc.txt         | 44 ++++++++++++++++++
->   drivers/mtd/nand/qcom_nandc.c                      | 54 ++++++++++++++++++++--
->   2 files changed, 95 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-> index 87b9a56..11e2da2 100644
-> --- a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-> +++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-> @@ -4,6 +4,8 @@ Required properties:
->   - compatible:		must be one of the following:
->   	* "qcom,ebi2-nandc" - EBI2 NAND which uses ADM DMA like IPQ8064.
->   	* "qcom,qpic-nandc-v1.4.0" - QPIC NAND v1.4.0 which uses BAM DMA like IPQ4019.
-> +	* "qcom,qpic-nandc-v1.5.0" - QPIC NAND v1.5.0 which uses BAM DMA like IPQ8074.
-> +
->   - reg:			MMIO address range
->   - clocks:		must contain core clock and always on clock
->   - clock-names:		must contain "core" for the core clock and "aon" for the
-> @@ -130,3 +132,45 @@ nand@79b0000 {
->   		};
->   	};
->   };
-> +
-> +nand@79b0000 {
-> +	compatible = "qcom,qpic-nandc-v1.5.0";
-> +	reg = <0x79B0000 0x1000>;
-> +
-> +	clocks = <&gcc GCC_QPIC_CLK>,
-> +		<&gcc GCC_QPIC_AHB_CLK>;
-> +	clock-names = "core", "aon";
-> +
-> +	dmas = <&qpicbam 0>,
-> +		<&qpicbam 1>,
-> +		<&qpicbam 2>;
-> +	dma-names = "tx", "rx", "cmd";
-> +
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +
-> +	nandcs@0 {
-> +		compatible = "qcom,nandcs";
-> +		reg = <0>;
-> +
-> +		nand-ecc-strength = <4>;
-> +		nand-ecc-step-size = <512>;
-> +		nand-bus-width = <8>;
-> +
-> +		partitions {
-> +			compatible = "fixed-partitions";
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-> +
-> +			partition@0 {
-> +				label = "boot-nand";
-> +				reg = <0 0x58a0000>;
-> +			};
-> +
-> +			partition@58a0000 {
-> +				label = "fs-nand";
-> +				reg = <0x58a0000 0x4000000>;
-> +			};
-> +		};
-> +	};
-> +};
-> diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-> index 24750e6..641e85d 100644
-> --- a/drivers/mtd/nand/qcom_nandc.c
-> +++ b/drivers/mtd/nand/qcom_nandc.c
-> @@ -430,15 +430,18 @@ struct qcom_nand_host {
->    * This data type corresponds to the nand driver data which will be used at
->    * driver probe time
->    * @ecc_modes - ecc mode for nand
-> + * @regs_offsets - contains the register offsets array pointer.
->    * @dma_bam_enabled - whether this driver is using bam
->    */
->   struct qcom_nand_driver_data {
->   	u32 ecc_modes;
-> +	const u32 *regs_offsets;
->   	bool dma_bam_enabled;
->   };
->   
->   /* Mapping table which contains the actual register offsets */
-> -static const u32 regs_offsets[] = {
-> +/* NAND controller Version 1.4.0 mapping table */
-> +static const u32 regs_offsets_v1_4_0[] = {
->   	[NAND_FLASH_CMD] = 0x00,
->   	[NAND_ADDR0] = 0x04,
->   	[NAND_ADDR1] = 0x08,
-> @@ -471,6 +474,40 @@ struct qcom_nand_driver_data {
->   	[NAND_READ_LOCATION_3] = 0xf2c,
->   };
->   
-> +/* NAND controller Version 1.5.0 mapping table */
-> +static const u32 regs_offsets_v1_5_0[] = {
-> +	[NAND_FLASH_CMD] = 0x00,
-> +	[NAND_ADDR0] = 0x04,
-> +	[NAND_ADDR1] = 0x08,
-> +	[NAND_FLASH_CHIP_SELECT] = 0x0c,
-> +	[NAND_EXEC_CMD] = 0x10,
-> +	[NAND_FLASH_STATUS] = 0x14,
-> +	[NAND_BUFFER_STATUS] = 0x18,
-> +	[NAND_DEV0_CFG0] = 0x20,
-> +	[NAND_DEV0_CFG1] = 0x24,
-> +	[NAND_DEV0_ECC_CFG] = 0x28,
-> +	[NAND_DEV1_ECC_CFG] = 0x2c,
-> +	[NAND_DEV1_CFG0] = 0x30,
-> +	[NAND_DEV1_CFG1] = 0x34,
-> +	[NAND_READ_ID] = 0x40,
-> +	[NAND_READ_STATUS] = 0x44,
-> +	[NAND_DEV_CMD0] = 0x70a0,
-> +	[NAND_DEV_CMD1] = 0x70a4,
-> +	[NAND_DEV_CMD2] = 0x70a8,
-> +	[NAND_DEV_CMD_VLD] = 0x70ac,
-> +	[SFLASHC_BURST_CFG] = 0xe0,
-> +	[NAND_ERASED_CW_DETECT_CFG] = 0xe8,
-> +	[NAND_ERASED_CW_DETECT_STATUS] = 0xec,
-> +	[NAND_EBI2_ECC_BUF_CFG] = 0xf0,
-> +	[FLASH_BUF_ACC] = 0x100,
-> +	[NAND_CTRL] = 0xf00,
-> +	[NAND_VERSION] = 0x4f08,
-> +	[NAND_READ_LOCATION_0] = 0xf20,
-> +	[NAND_READ_LOCATION_1] = 0xf24,
-> +	[NAND_READ_LOCATION_2] = 0xf28,
-> +	[NAND_READ_LOCATION_3] = 0xf2c,
-> +};
-> +
->   /* Frees the BAM transaction memory */
->   static void free_bam_transaction(struct qcom_nand_controller *nandc)
->   {
-> @@ -2832,7 +2869,7 @@ static int qcom_nandc_probe(struct platform_device *pdev)
->   
->   	nandc->ecc_modes = driver_data->ecc_modes;
->   	nandc->dma_bam_enabled = driver_data->dma_bam_enabled;
-> -	nandc->regs_offsets = regs_offsets;
-> +	nandc->regs_offsets = driver_data->regs_offsets;
->   
->   	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->   	nandc->base = devm_ioremap_resource(dev, res);
-> @@ -2902,16 +2939,24 @@ static int qcom_nandc_remove(struct platform_device *pdev)
->   	return 0;
->   }
->   
-> -
->   static const struct qcom_nand_driver_data ebi2_nandc_data = {
->   	.ecc_modes = (ECC_RS_4BIT | ECC_BCH_8BIT),
->   	.dma_bam_enabled = false,
-> +	.regs_offsets = regs_offsets_v1_4_0,
->   };
->   
->   static const struct qcom_nand_driver_data qpic_nandc_v1_4_0_data = {
->   	.ecc_modes = (ECC_BCH_4BIT | ECC_BCH_8BIT),
->   	.dma_bam_enabled = true,
-> +	.regs_offsets = regs_offsets_v1_4_0,
-> +};
-> +
-> +static const struct qcom_nand_driver_data qpic_nandc_v1_5_0_data = {
-> +	.ecc_modes = (ECC_BCH_4BIT | ECC_BCH_8BIT),
-> +	.dma_bam_enabled = true,
-> +	.regs_offsets = regs_offsets_v1_5_0,
->   };
-> +
->   /*
->    * data will hold a struct pointer containing more differences once we support
->    * more controller variants
-> @@ -2923,6 +2968,9 @@ static int qcom_nandc_remove(struct platform_device *pdev)
->   	{	.compatible = "qcom,qpic-nandc-v1.4.0",
->   		.data = (void *)&qpic_nandc_v1_4_0_data,
->   	},
-> +	{	.compatible = "qcom,qpic-nandc-v1.5.0",
-> +		.data = (void *)&qpic_nandc_v1_5_0_data,
-> +	},
->   	{}
->   };
->   MODULE_DEVICE_TABLE(of, qcom_nandc_of_match);
-> 
-
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Michal
