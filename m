@@ -1,27 +1,24 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dSJEH-0001gF-Er
- for linux-mtd@lists.infradead.org; Tue, 04 Jul 2017 08:30:44 +0000
-Message-ID: <1499157009.4045.4.camel@pengutronix.de>
-Subject: Re: [PATCH v7 10/16] reset: Add a reset controller driver for the
- Lantiq XWAY based SoCs
-From: Philipp Zabel <p.zabel@pengutronix.de>
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, Ralf Baechle
- <ralf@linux-mips.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- linux-watchdog@vger.kernel.org, devicetree <devicetree@vger.kernel.org>,
- "martin.blumenstingl" <martin.blumenstingl@googlemail.com>, john
- <john@phrozen.org>, linux-spi <linux-spi@vger.kernel.org>, "hauke.mehrtens"
- <hauke.mehrtens@intel.com>,  Rob Herring <robh@kernel.org>
-Date: Tue, 04 Jul 2017 10:30:09 +0200
-In-Reply-To: <e1160f30-eeff-3db2-884c-9cd4af35a37d@hauke-m.de>
-References: <20170702224051.15109-1-hauke@hauke-m.de>
- <20170702224051.15109-11-hauke@hauke-m.de>
- <CAHp75VexwnVsb-ojXaZDN7QPVRKUeP-R=5C+j5ZSkE37Dtyp1Q@mail.gmail.com>
- <e1160f30-eeff-3db2-884c-9cd4af35a37d@hauke-m.de>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dSKK0-000490-54
+ for linux-mtd@lists.infradead.org; Tue, 04 Jul 2017 09:40:41 +0000
+Subject: Re: [PATCH 09/14] qcom: mtd: nand: BAM support for read page
+To: Abhishek Sahu <absahu@codeaurora.org>, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
+ marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr,
+ robh+dt@kernel.org, mark.rutland@arm.com
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ andy.gross@linaro.org, sricharan@codeaurora.org
+References: <1498720566-20782-1-git-send-email-absahu@codeaurora.org>
+ <1498720566-20782-10-git-send-email-absahu@codeaurora.org>
+From: Archit Taneja <architt@codeaurora.org>
+Message-ID: <ddf2e1c0-e08e-c8b8-2b10-ef39ce1482b2@codeaurora.org>
+Date: Tue, 4 Jul 2017 15:10:11 +0530
+MIME-Version: 1.0
+In-Reply-To: <1498720566-20782-10-git-send-email-absahu@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,46 +29,159 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2017-07-03 at 23:30 +0200, Hauke Mehrtens wrote:
-> On 07/03/2017 09:51 AM, Andy Shevchenko wrote:
-> > On Mon, Jul 3, 2017 at 1:40 AM, Hauke Mehrtens <hauke@hauke-m.de> wrote:
-> >> From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> >>
-> >> The reset controllers (on xRX200 and newer SoCs have two of them) are
-> >> provided by the RCU module. This was initially implemented as a simple
-> >> reset controller. However, the RCU module provides more functionality
-> >> (ethernet GPHYs, USB PHY, etc.), which makes it a MFD device.
-> >> The old reset controller driver implementation from
-> >> arch/mips/lantiq/xway/reset.c did not honor this fact.
-> >>
-> >> For some devices the request and the status bits are different.
-> > 
-> >> +Required properties:
-> >> +- compatible           : Should be one of
-> >> +                               "lantiq,danube-reset"
-> >> +                               "lantiq,xrx200-reset"
-> >> +- offset-set           : Offset of the reset set register
-> >> +- offset-status                : Offset of the reset status register
-> > 
-> > Just one side comment (I'm fine with either choice, just for your
-> > information). Recently I have reviewed at24 patch which adds a
-> > property for getting MAC offset and my reseach ends up with the naming
-> > pattern mac-offset (as many others are doing this way). So, perhaps in
-> > your case it might make sense to do that way? Anyway, it's a matter of
-> > a (bit of a) chaos in DT bindings, whatever you decide users will live
-> > with.
-> > 
-> I put the offset first to group them better together, but I have no
-> problem in reversing the order, then it is in a more natural speaking form.
 
-Either way, I would like to see an Acked-by from the device tree
-maintainers for the bindings. Given that,
 
-Acked-by: Philipp Zabel <p.zabel@pengutronix.de>
+On 06/29/2017 12:46 PM, Abhishek Sahu wrote:
+> 1. The BAM mode requires few registers configuration before each
+>     NAND page read and codeword read which is different from ADM
+>     so add the helper functions which will be called in BAM mode
+>     only.
+> 
+> 2. The NAND page read handling of BAM is different from ADM so
+>     call the appropriate helper functions
+> 
+> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+> ---
+>   drivers/mtd/nand/qcom_nandc.c | 63 ++++++++++++++++++++++++++++++++++++++++++-
+>   1 file changed, 62 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
+> index 8e7dc9e..17766af 100644
+> --- a/drivers/mtd/nand/qcom_nandc.c
+> +++ b/drivers/mtd/nand/qcom_nandc.c
+> @@ -870,6 +870,35 @@ static void config_cw_read(struct qcom_nand_controller *nandc)
+>   }
+>   
+>   /*
+> + * Helpers to prepare DMA descriptors for configuring registers
+> + * before reading a NAND page with BAM.
+> + */
+> +static void config_bam_page_read(struct qcom_nand_controller *nandc)
+> +{
+> +	write_reg_dma(nandc, NAND_FLASH_CMD, 3, 0);
+> +	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
+> +	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
+> +	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1, 0);
+> +	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1,
+> +		      NAND_ERASED_CW_SET | NAND_BAM_NEXT_SGL);
+> +}
+> +
+> +/*
+> + * Helpers to prepare DMA descriptors for configuring registers
+> + * before reading each codeword in NAND page with BAM.
+> + */
 
-to merge this driver through the mips tree, since a git merge with
-    git://git.kernel.org/pub/scm/linux/kernel/git/arm/arm-soc.git drivers/reset-2
-is conflict free.
+If I understood right, EBI2 nand required us to load all the registers
+configured in config_cw_read() for every codeword, and for BAM, the
+registers configured in config_bam_page_read() just needs to be done once,
+and the registers in config_bam_cw_read()  need to be reloaded for every
+codeword?
 
-regards
-Philipp
+Could you please clarify this better in the commit message and comments? Also,
+I still see config_cw_read() being used for QPIC nand in nandc_param() and
+copy_last_cw()?
+
+Also, I think these should be called config_qpic_page_read() and
+config_qpic_cw_read() since it seems more of a property of the NAND controller
+rather than the underlying DMA engine. If so, config_cw_read() can be called
+config_cw_ebi2_read(). Please correct me if I'm wrong somewhere.
+
+> +static void config_bam_cw_read(struct qcom_nand_controller *nandc)
+> +{
+> +	write_reg_dma(nandc, NAND_READ_LOCATION_0, 2, 0);
+> +	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
+> +	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
+> +
+> +	read_reg_dma(nandc, NAND_FLASH_STATUS, 2, 0);
+> +	read_reg_dma(nandc, NAND_ERASED_CW_DETECT_STATUS, 1,
+> +		     NAND_BAM_NEXT_SGL);
+> +}
+> +
+> +/*
+>    * helpers to prepare dma descriptors used to configure registers needed for
+>    * writing a codeword/step in a page
+>    */
+> @@ -1398,6 +1427,9 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
+>   	struct nand_ecc_ctrl *ecc = &chip->ecc;
+>   	int i, ret;
+>   
+> +	if (nandc->dma_bam_enabled)
+> +		config_bam_page_read(nandc);
+> +
+>   	/* queue cmd descs for each codeword */
+>   	for (i = 0; i < ecc->steps; i++) {
+>   		int data_size, oob_size;
+> @@ -1411,7 +1443,36 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
+>   			oob_size = host->ecc_bytes_hw + host->spare_bytes;
+>   		}
+>   
+> -		config_cw_read(nandc);
+> +		if (nandc->dma_bam_enabled) {
+> +			if (data_buf && oob_buf) {
+> +				nandc_set_reg(nandc, NAND_READ_LOCATION_0,
+> +					      (0 << READ_LOCATION_OFFSET) |
+> +					      (data_size <<
+> +					      READ_LOCATION_SIZE) |
+> +					      (0 << READ_LOCATION_LAST));
+> +				nandc_set_reg(nandc, NAND_READ_LOCATION_1,
+> +					      (data_size <<
+> +					      READ_LOCATION_OFFSET) |
+> +					      (oob_size << READ_LOCATION_SIZE) |
+> +					      (1 << READ_LOCATION_LAST));
+> +			} else if (data_buf) {
+> +				nandc_set_reg(nandc, NAND_READ_LOCATION_0,
+> +					      (0 << READ_LOCATION_OFFSET) |
+> +					      (data_size <<
+> +					      READ_LOCATION_SIZE) |
+> +					      (1 << READ_LOCATION_LAST));
+> +			} else {
+> +				nandc_set_reg(nandc, NAND_READ_LOCATION_0,
+> +					      (data_size <<
+> +					      READ_LOCATION_OFFSET) |
+> +					      (oob_size << READ_LOCATION_SIZE) |
+> +					      (1 << READ_LOCATION_LAST));
+> +			}
+
+Could we put the READ_LOCATION_x register configuration into a small helper?
+This is probably a matter of taste, but you could consider configuring like this.
+Maybe something similar for patch #11 for raw page reads.
+
+	if (data_buf && oob_buf) {
+		r0_off = 0;
+		r0_size = r1_off = data_size;
+		r1_size = oob_size;
+		r0_last = 0;
+		r1_last = 1;
+	} else if (data_buf) {
+		rl0_off = 0;
+		rl0_size = data_size;
+		rl0_last = 1;
+	} else {
+		rl0_off = data_size;
+		rl0_size = oob_size;
+		rl0_last = 1;
+	}
+
+	nandc_set_reg(nandc, NAND_READ_LOCATION_0,
+		      (rl0_off << READ_LOCATION_OFFSET) |
+		      (rl0_size << READ_LOCATION_SIZE) |
+		      (rl0_last << READ_LOCATION_LAST));
+	if (rl1_last)
+		/* program LOCATION_1 register */
+
+Thanks,
+Archit
+
+> +
+> +			config_bam_cw_read(nandc);
+> +		} else {
+> +			config_cw_read(nandc);
+> +		}
+>   
+>   		if (data_buf)
+>   			read_data_dma(nandc, FLASH_BUF_ACC, data_buf,
+> 
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
