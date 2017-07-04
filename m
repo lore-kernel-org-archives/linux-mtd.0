@@ -1,18 +1,25 @@
-Message-ID: <1499131247.21448.2.camel@mhfsdcap03>
-Subject: Re: [PATCH] mtd: nand: mtk: release lock on error path
-From: xiaolei li <xiaolei.li@mediatek.com>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-CC: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, "Cyrille
- Pitchen" <cyrille.pitchen@wedev4u.fr>, Matthias Brugger
- <matthias.bgg@gmail.com>, <linux-mtd@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>, <kernel-janitors@vger.kernel.org>
-Date: Tue, 4 Jul 2017 09:20:47 +0800
-In-Reply-To: <20170703104858.2226i5bmcvnhhy2x@mwanda>
-References: <20170703104858.2226i5bmcvnhhy2x@mwanda>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dSEQv-0002mr-3a
+ for linux-mtd@lists.infradead.org; Tue, 04 Jul 2017 03:23:27 +0000
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "andrew@lunn.ch" <andrew@lunn.ch>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>, "boris.brezillon@free-electrons.com"
+ <boris.brezillon@free-electrons.com>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Brian
+ Norris" <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>
+Subject: Re: [PATCH v5 3/5] mtd: handle partitioning on devices with 0
+ erasesize
+Date: Tue, 4 Jul 2017 03:22:52 +0000
+Message-ID: <ec40da4af0be445b9a1f2ed29e61a547@svr-chch-ex1.atlnz.lc>
+References: <20170602032119.22282-1-chris.packham@alliedtelesis.co.nz>
+ <20170602032119.22282-4-chris.packham@alliedtelesis.co.nz>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,30 +30,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2017-07-03 at 13:54 +0300, Dan Carpenter wrote:
-> We only want to hold the lock on the success path, not this error path.
-> 
-> Fixes: 7ec4a37c5d71 ("mtd: nand: mediatek: add support for different MTK NAND FLASH Controller IP")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> 
-> diff --git a/drivers/mtd/nand/mtk_ecc.c b/drivers/mtd/nand/mtk_ecc.c
-> index f38e2bb1953e..6c3a4aab0b48 100644
-> --- a/drivers/mtd/nand/mtk_ecc.c
-> +++ b/drivers/mtd/nand/mtk_ecc.c
-> @@ -273,8 +273,10 @@ int mtk_ecc_enable(struct mtk_ecc *ecc, struct mtk_ecc_config *config)
->  	mtk_ecc_wait_idle(ecc, op);
->  
->  	ret = mtk_ecc_config(ecc, config);
-> -	if (ret)
-> +	if (ret) {
-> +		mutex_unlock(&ecc->lock);
->  		return ret;
-> +	}
->  
->  	if (config->mode != ECC_NFI_MODE || op != ECC_ENCODE) {
->  		init_completion(&ecc->done);
-
-Reviewed-by: Xiaolei Li <xiaolei.li@mediatek.com>
-
-Thanks a lot!
-Xiaolei
+Hi,=0A=
+=0A=
+On 02/06/17 15:21, Chris Packham wrote:=0A=
+> erasesize is meaningful for flash devices but for SRAM there is no=0A=
+> concept of an erase block so erasesize is set to 0. When partitioning=0A=
+> these devices instead of ensuring partitions fall on erasesize=0A=
+> boundaries we ensure they fall on writesize boundaries.=0A=
+> =0A=
+> Helped-by: Boris Brezillon <boris.brezillon@free-electrons.com>=0A=
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>=0A=
+=0A=
+I had someone mention to me in passing that mtdinfo was failing for them =
+=0A=
+(crashing with some floating point error). I'm wondering if we've =0A=
+created a divide-by-zero problem by reporting 0 erase size in /proc/mtd. =
+=0A=
+I don't have any other info and right now I don't have access to the =0A=
+system I had with the mchp23lcv1024 sram.=0A=
+=0A=
+Andrew, do you still have access to your device?=0A=
