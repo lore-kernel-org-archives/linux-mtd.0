@@ -1,16 +1,23 @@
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dSnGE-0006Zn-Uv
- for linux-mtd@lists.infradead.org; Wed, 05 Jul 2017 16:34:44 +0000
-Received: by mail-wm0-x242.google.com with SMTP id p204so33699427wmg.1
- for <linux-mtd@lists.infradead.org>; Wed, 05 Jul 2017 09:34:21 -0700 (PDT)
-From: Romain Izard <romain.izard.pro@gmail.com>
-To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Cc: linux-mtd@lists.infradead.org,
-	Romain Izard <romain.izard.pro@gmail.com>
-Subject: [PATCH] mkfs.ubifs: Only require 17 LEBs
-Date: Wed,  5 Jul 2017 18:34:11 +0200
-Message-Id: <20170705163411.23546-1-romain.izard.pro@gmail.com>
+ id 1dSoOb-0005jk-HK
+ for linux-mtd@lists.infradead.org; Wed, 05 Jul 2017 17:47:27 +0000
+Received: by mail-wr0-x244.google.com with SMTP id z45so50831338wrb.2
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Jul 2017 10:47:04 -0700 (PDT)
+From: Karl Beldan <karl.beldan@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ Kamal Dasu <kdasu.kdev@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Karl Beldan <karl.beldan+oss@gmail.com>
+Subject: [PATCH] brcmnand: Fix up the flash cache register offset for older
+ controllers
+Date: Wed,  5 Jul 2017 17:46:53 +0000
+Message-Id: <20170705174653.21797-1-karl.beldan+oss@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,53 +27,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The minimum size for a UBIFS volume is 17 LEBs. As mkfs.ubifs counted
-the reserved log and orphan blocks twice, the program did not allow
-such a small volume.
+From: Karl Beldan <karl.beldan-ext@sagemcom.com>
 
-Fix the calculations to be able to build an image with 17 LEBs. With
-this, the following command works:
+Tested on BCM{63138,6838,63268} and cross checked with the various
+*_map_part.h which the brcmnand_regs_v* in brcmnand.c have historically
+been derived from.
 
-mkfs.ubifs -c 17 -l2 -m 2048 -e 124KiB -o small.ubifs
-
-Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: Kamal Dasu <kdasu.kdev@gmail.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Signed-off-by: Karl Beldan <karl.beldan-ext@sagemcom.com>
 ---
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/brcmnand/brcmnand.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-index 9e69a4f..ba0293c 100644
---- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-+++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -331,6 +331,9 @@ static long long add_space_overhead(long long size)
-         return size / divisor;
- }
+diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+index 7419c5c..e6371ff6 100644
+--- a/drivers/mtd/nand/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+@@ -250,7 +250,7 @@ static const u16 brcmnand_regs_v40[] = {
+ 	[BRCMNAND_OOB_READ_10_BASE]	= 0x130,
+ 	[BRCMNAND_OOB_WRITE_BASE]	=  0x30,
+ 	[BRCMNAND_OOB_WRITE_10_BASE]	=     0,
+-	[BRCMNAND_FC_BASE]		= 0x200,
++	[BRCMNAND_FC_BASE]		= 0x400,
+ };
  
-+#define UBIFS_MIN_LEB_NOLOG   (UBIFS_MIN_LEB_CNT - UBIFS_MIN_LOG_LEBS)
-+#define UBIFS_MIN_LEB_NOORPH  (UBIFS_MIN_LEB_CNT - UBIFS_MIN_ORPH_LEBS)
-+
- static int validate_options(void)
- {
- 	int tmp;
-@@ -372,15 +375,15 @@ static int validate_options(void)
- 	if (c->log_lebs < UBIFS_MIN_LOG_LEBS)
- 		return err_msg("too few log LEBs, minimum is %d",
- 			       UBIFS_MIN_LOG_LEBS);
--	if (c->log_lebs >= c->max_leb_cnt - UBIFS_MIN_LEB_CNT)
-+	if (c->log_lebs > c->max_leb_cnt - UBIFS_MIN_LEB_NOLOG)
- 		return err_msg("too many log LEBs, maximum is %d",
--			       c->max_leb_cnt - UBIFS_MIN_LEB_CNT);
-+			       c->max_leb_cnt - UBIFS_MIN_LEB_NOLOG);
- 	if (c->orph_lebs < UBIFS_MIN_ORPH_LEBS)
- 		return err_msg("too few orphan LEBs, minimum is %d",
- 			       UBIFS_MIN_ORPH_LEBS);
--	if (c->orph_lebs >= c->max_leb_cnt - UBIFS_MIN_LEB_CNT)
-+	if (c->orph_lebs > c->max_leb_cnt - UBIFS_MIN_LEB_NOORPH)
- 		return err_msg("too many orphan LEBs, maximum is %d",
--			       c->max_leb_cnt - UBIFS_MIN_LEB_CNT);
-+			       c->max_leb_cnt - UBIFS_MIN_LEB_NOORPH);
- 	tmp = UBIFS_SB_LEBS + UBIFS_MST_LEBS + c->log_lebs + c->lpt_lebs;
- 	tmp += c->orph_lebs + 4;
- 	if (tmp > c->max_leb_cnt)
+ /* BRCMNAND v5.0 */
+@@ -280,7 +280,7 @@ static const u16 brcmnand_regs_v50[] = {
+ 	[BRCMNAND_OOB_READ_10_BASE]	= 0x130,
+ 	[BRCMNAND_OOB_WRITE_BASE]	=  0x30,
+ 	[BRCMNAND_OOB_WRITE_10_BASE]	= 0x140,
+-	[BRCMNAND_FC_BASE]		= 0x200,
++	[BRCMNAND_FC_BASE]		= 0x400,
+ };
+ 
+ /* BRCMNAND v6.0 - v7.1 */
 -- 
-2.11.0
+2.10.1
