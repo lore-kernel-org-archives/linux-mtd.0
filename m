@@ -1,14 +1,14 @@
-Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
+Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dSotP-0001Fy-MN
- for linux-mtd@lists.infradead.org; Wed, 05 Jul 2017 18:19:17 +0000
-Received: by mail-pg0-x243.google.com with SMTP id u36so33136154pgn.3
- for <linux-mtd@lists.infradead.org>; Wed, 05 Jul 2017 11:18:55 -0700 (PDT)
-Date: Wed, 5 Jul 2017 11:18:52 -0700
-From: Brian Norris <computersforpeace@gmail.com>
+ id 1dSrNN-0004vt-4q
+ for linux-mtd@lists.infradead.org; Wed, 05 Jul 2017 20:58:22 +0000
+Received: by mail-wr0-x244.google.com with SMTP id k67so212465wrc.1
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Jul 2017 13:58:00 -0700 (PDT)
+Date: Wed, 5 Jul 2017 20:57:48 +0000
+From: Karl Beldan <karl.beldan@gmail.com>
 To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Karl Beldan <karl.beldan@gmail.com>, linux-mtd@lists.infradead.org,
- bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org,
+Cc: linux-mtd@lists.infradead.org, bcm-kernel-feedback-list@broadcom.com,
+ linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
  Kamal Dasu <kdasu.kdev@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
@@ -17,7 +17,7 @@ Cc: Karl Beldan <karl.beldan@gmail.com>, linux-mtd@lists.infradead.org,
  Karl Beldan <karl.beldan+oss@gmail.com>
 Subject: Re: [PATCH] brcmnand: Fix up the flash cache register offset for
  older controllers
-Message-ID: <20170705181852.GA117111@google.com>
+Message-ID: <20170705205707.36bgfwvwp7hz4wsc@gobelin>
 References: <20170705174653.21797-1-karl.beldan+oss@gmail.com>
  <7f7804da-e431-f197-31b9-c98359b9151a@gmail.com>
 MIME-Version: 1.0
@@ -33,8 +33,6 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ha, I was in the middle of writing essentially this :)
-
 On Wed, Jul 05, 2017 at 11:15:01AM -0700, Florian Fainelli wrote:
 > On 07/05/2017 10:46 AM, Karl Beldan wrote:
 > > From: Karl Beldan <karl.beldan-ext@sagemcom.com>
@@ -48,19 +46,15 @@ On Wed, Jul 05, 2017 at 11:15:01AM -0700, Florian Fainelli wrote:
 > off the main FLASH block, and finally 63268 does have a v4.0 controller
 > and the flash cache is also in a separate register that makes it end up
 > at 0x400.
-
-The joy of arbitrarily-changing IP, since of course business units
-within a company (or even divisions within the same business unit) would
-never want to share software...
-
+> 
 > Your change, as proposed would break chips like 7425 which use 5.0
 > controller with the flash cache at 0x200 bytes.
 > 
 > The binding describes an optional flash-cache register cell that you can
 > specify, so that's probably what you want to do here?
+> 
 
-What he said ^^^
-
-The "nand-cache" register range sounds like what you're looking for.
-
-Brian
+I wasn't aware the flash cache offset was variable but the flash-cache
+binding you are pointing to makes it obvious ;). 
+ 
+Karl
