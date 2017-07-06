@@ -1,22 +1,30 @@
-Received: from mail-qt0-x232.google.com ([2607:f8b0:400d:c0d::232])
+Received: from smtp1-2.goneo.de ([85.220.129.31] helo=smtp1.goneo.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dT1gB-0001AL-Br
- for linux-mtd@lists.infradead.org; Thu, 06 Jul 2017 07:58:29 +0000
-Received: by mail-qt0-x232.google.com with SMTP id r30so9303353qtc.0
- for <linux-mtd@lists.infradead.org>; Thu, 06 Jul 2017 00:58:05 -0700 (PDT)
-MIME-Version: 1.0
-Sender: romain.izard@mobile-devices.fr
-In-Reply-To: <1499323603.18035.44.camel@gmail.com>
-References: <20170705163411.23546-1-romain.izard.pro@gmail.com>
- <1499323603.18035.44.camel@gmail.com>
-From: Romain Izard <romain.izard.pro@gmail.com>
-Date: Thu, 6 Jul 2017 09:57:44 +0200
-Message-ID: <CAGkQfmP0oUakmCg_v9Wt1=HnM9dStoCHqQSvgyJixsf=q3Wbug@mail.gmail.com>
-Subject: Re: [PATCH] mkfs.ubifs: Only require 17 LEBs
-To: dedekind1@gmail.com
-Cc: David Oberhollenzer <david.oberhollenzer@sigma-star.at>,
- linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+ id 1dT2gf-0006Ri-7G
+ for linux-mtd@lists.infradead.org; Thu, 06 Jul 2017 09:03:03 +0000
+Content-Type: text/plain; charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v2 00/53] Get rid of Docbook
+From: Markus Heiser <markus.heiser@darmarit.de>
+In-Reply-To: <CA+r1ZhhZw6+LOAMbw6=kidPBr2Ntrz0ORGV165DEWuX8haKrWw@mail.gmail.com>
+Date: Thu, 6 Jul 2017 10:54:51 +0200
+Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
+ Jani Nikula <jani.nikula@intel.com>, Jonathan Corbet <corbet@lwn.net>,
+ Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+ Mauro Carvalho Chehab <mchehab@infradead.org>,
+ "linux-kernel@vger.kernel.org org List" <linux-kernel@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <386A482A-26F9-4C82-871D-E03E9F6401D8@darmarit.de>
+References: <cover.1494935649.git.mchehab@s-opensource.com>
+ <20170518112608.4f355068@lwn.net> <20170518200140.11982b12@vento.lan>
+ <C33A12EC-8748-4BB9-A7A2-023B1901AB4B@darmarit.de>
+ <CA+r1ZhhZw6+LOAMbw6=kidPBr2Ntrz0ORGV165DEWuX8haKrWw@mail.gmail.com>
+To: Jim Davis <jim.epost@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,40 +34,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2017-07-06 8:46 GMT+02:00 Artem Bityutskiy <dedekind1@gmail.com>:
->
-> If this change is done in userspace, it should also be done in the
-> kernel, which also can "format" the media.
->
-> I cannot remember now, but very small volumes were very problematic.
-> May be it was very inprecise free space estimation. Or something like
-> -ENOSPC when trying to remove a file.
->
-> The point is, make sure to test the tiny volumes very thoroughly before
-> this is merged.
->
 
-The algorithm used to determine the size of a UBIFS volume is not
-exactly the same in mkfs.ubifs and in the kernel. mkfs.ubifs lets the
-user tune more parameters, by specifying the number of log LEBs or
-orphan LEBs, whereas the kernel calculates all these values by itself.
+> Am 05.07.2017 um 23:45 schrieb Jim Davis <jim.epost@gmail.com>:
+> 
+> On Fri, Jun 16, 2017 at 7:03 AM, Markus Heiser
+> <markus.heiser@darmarit.de> wrote:
+>> 
+> 
+>> docproc and some lines in the Makefile & .gitignore
+>> 
+>> ./scripts/docproc.c
+>> ./scripts/.docproc.cmd
+>> ./scripts/Makefile
+>> ./scripts/.gitignore
+> 
+> With 4.12, running make xmldocs (or any other working target) and then
+> "make cleandocs; git clean -fdx" turns up
+> 
+> Removing scripts/.check-lc_ctype.cmd
+> Removing scripts/.docproc.cmd
+> Removing scripts/basic/.fixdep.cmd
+> Removing scripts/basic/fixdep
+> Removing scripts/check-lc_ctype
+> Removing scripts/docproc
 
-As a result, the kernel already accepts such small file systems, and
-creates them when trying to mount an empty UBI volume of 17 LEBs. If the
-empty volume has 16 or less LEBs, mounting fails with the following
-error message:
+Tried with Jon's docs-next .. only 'fixdep' remains (not part
+of Documentation). I guess the docproc & Co. was already fixed
+by Jon [1]:
 
-[66897.450000] UBIFS error (ubi0:12 pid 12977): ubifs_mount: too few
-LEBs (16), min. is 17
+ 52b3f23 Docs: clean up some DocBook loose ends
 
-I modified mkfs.ubifs to be able to generate offline an image matching
-the exact setup of an existing device. In this device, there is a small
-volume with a tiny 17 LEBs UBIFS. I did not notice anything special
-about it, but your comment worries me a little as I do not really have
-the means to test "very thoroughly" this configuration.
+[1] https://www.mail-archive.com/linux-doc@vger.kernel.org/msg13238.html
 
-Should I do something about it ?
-
-Best regards,
--- 
-Romain Izard
+-- Markus --
