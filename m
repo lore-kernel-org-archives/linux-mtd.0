@@ -1,30 +1,20 @@
-Received: from mail-it0-x241.google.com ([2607:f8b0:4001:c0b::241])
+Received: from mga09.intel.com ([134.134.136.24])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dSs73-0005n3-Is
- for linux-mtd@lists.infradead.org; Wed, 05 Jul 2017 21:45:35 +0000
-Received: by mail-it0-x241.google.com with SMTP id 188so15889185itx.0
- for <linux-mtd@lists.infradead.org>; Wed, 05 Jul 2017 14:45:07 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <C33A12EC-8748-4BB9-A7A2-023B1901AB4B@darmarit.de>
-References: <cover.1494935649.git.mchehab@s-opensource.com>
- <20170518112608.4f355068@lwn.net> <20170518200140.11982b12@vento.lan>
- <C33A12EC-8748-4BB9-A7A2-023B1901AB4B@darmarit.de>
-From: Jim Davis <jim.epost@gmail.com>
-Date: Wed, 5 Jul 2017 14:45:06 -0700
-Message-ID: <CA+r1ZhhZw6+LOAMbw6=kidPBr2Ntrz0ORGV165DEWuX8haKrWw@mail.gmail.com>
-Subject: Re: [PATCH v2 00/53] Get rid of Docbook
-To: Markus Heiser <markus.heiser@darmarit.de>
-Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
- Jani Nikula <jani.nikula@intel.com>, Jonathan Corbet <corbet@lwn.net>,
- Linux Doc Mailing List <linux-doc@vger.kernel.org>,
- Mauro Carvalho Chehab <mchehab@infradead.org>,
- "linux-kernel@vger.kernel.org org List" <linux-kernel@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
+ id 1dT0Z9-0001o8-Sf
+ for linux-mtd@lists.infradead.org; Thu, 06 Jul 2017 06:47:09 +0000
+Message-ID: <1499323603.18035.44.camel@gmail.com>
+Subject: Re: [PATCH] mkfs.ubifs: Only require 17 LEBs
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Romain Izard <romain.izard.pro@gmail.com>, David Oberhollenzer
+ <david.oberhollenzer@sigma-star.at>
+Cc: linux-mtd@lists.infradead.org
+Date: Thu, 06 Jul 2017 09:46:43 +0300
+In-Reply-To: <20170705163411.23546-1-romain.izard.pro@gmail.com>
+References: <20170705163411.23546-1-romain.izard.pro@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,26 +24,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jun 16, 2017 at 7:03 AM, Markus Heiser
-<markus.heiser@darmarit.de> wrote:
->
+If this change is done in userspace, it should also be done in the
+kernel, which also can "format" the media.
 
-> docproc and some lines in the Makefile & .gitignore
->
-> ./scripts/docproc.c
-> ./scripts/.docproc.cmd
-> ./scripts/Makefile
-> ./scripts/.gitignore
+I cannot remember now, but very small volumes were very problematic.
+May be it was very inprecise free space estimation. Or something like
+-ENOSPC when trying to remove a file.
 
-With 4.12, running make xmldocs (or any other working target) and then
-"make cleandocs; git clean -fdx" turns up
+The point is, make sure to test the tiny volumes very thoroughly before
+this is merged.
 
-Removing scripts/.check-lc_ctype.cmd
-Removing scripts/.docproc.cmd
-Removing scripts/basic/.fixdep.cmd
-Removing scripts/basic/fixdep
-Removing scripts/check-lc_ctype
-Removing scripts/docproc
-
--- 
-Jim
+On Wed, 2017-07-05 at 18:34 +0200, Romain Izard wrote:
+> The minimum size for a UBIFS volume is 17 LEBs. As mkfs.ubifs counted
+> the reserved log and orphan blocks twice, the program did not allow
+> such a small volume.
+> 
+> Fix the calculations to be able to build an image with 17 LEBs. With
+> this, the following command works:
+> 
+> mkfs.ubifs -c 17 -l2 -m 2048 -e 124KiB -o small.ubifs
+> 
+> Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
+> ---
+>  ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-
+> utils/mkfs.ubifs/mkfs.ubifs.c
+> index 9e69a4f..ba0293c 100644
+> --- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+> +++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+> @@ -331,6 +331,9 @@ static long long add_space_overhead(long long
+> size)
+>          return size / divisor;
+>  }
+>  
+> +#define UBIFS_MIN_LEB_NOLOG   (UBIFS_MIN_LEB_CNT -
+> UBIFS_MIN_LOG_LEBS)
+> +#define UBIFS_MIN_LEB_NOORPH  (UBIFS_MIN_LEB_CNT -
+> UBIFS_MIN_ORPH_LEBS)
+> +
+>  static int validate_options(void)
+>  {
+>  	int tmp;
+> @@ -372,15 +375,15 @@ static int validate_options(void)
+>  	if (c->log_lebs < UBIFS_MIN_LOG_LEBS)
+>  		return err_msg("too few log LEBs, minimum is %d",
+>  			       UBIFS_MIN_LOG_LEBS);
+> -	if (c->log_lebs >= c->max_leb_cnt - UBIFS_MIN_LEB_CNT)
+> +	if (c->log_lebs > c->max_leb_cnt - UBIFS_MIN_LEB_NOLOG)
+>  		return err_msg("too many log LEBs, maximum is %d",
+> -			       c->max_leb_cnt - UBIFS_MIN_LEB_CNT);
+> +			       c->max_leb_cnt -
+> UBIFS_MIN_LEB_NOLOG);
+>  	if (c->orph_lebs < UBIFS_MIN_ORPH_LEBS)
+>  		return err_msg("too few orphan LEBs, minimum is %d",
+>  			       UBIFS_MIN_ORPH_LEBS);
+> -	if (c->orph_lebs >= c->max_leb_cnt - UBIFS_MIN_LEB_CNT)
+> +	if (c->orph_lebs > c->max_leb_cnt - UBIFS_MIN_LEB_NOORPH)
+>  		return err_msg("too many orphan LEBs, maximum is
+> %d",
+> -			       c->max_leb_cnt - UBIFS_MIN_LEB_CNT);
+> +			       c->max_leb_cnt -
+> UBIFS_MIN_LEB_NOORPH);
+>  	tmp = UBIFS_SB_LEBS + UBIFS_MST_LEBS + c->log_lebs + c-
+> >lpt_lebs;
+>  	tmp += c->orph_lebs + 4;
+>  	if (tmp > c->max_leb_cnt)
