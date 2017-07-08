@@ -1,23 +1,23 @@
-Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dTeXy-00046V-Ru
- for linux-mtd@lists.infradead.org; Sat, 08 Jul 2017 01:28:36 +0000
-Received: by mail-pf0-x243.google.com with SMTP id q85so6533939pfq.2
- for <linux-mtd@lists.infradead.org>; Fri, 07 Jul 2017 18:28:14 -0700 (PDT)
-Date: Fri, 7 Jul 2017 18:28:11 -0700
+Received: from mail-pg0-x235.google.com ([2607:f8b0:400e:c05::235])
+ by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dTeqU-0000lp-8n
+ for linux-mtd@lists.infradead.org; Sat, 08 Jul 2017 01:47:43 +0000
+Received: by mail-pg0-x235.google.com with SMTP id u62so24606603pgb.3
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Jul 2017 18:47:18 -0700 (PDT)
+Date: Fri, 7 Jul 2017 18:47:14 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Cyril Bur <cyrilbur@gmail.com>
-Cc: linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org,
- stewart@linux.vnet.ibm.com, dwmw2@infradead.org
-Subject: Re: [PATCH 5/5] mtd: powernv_flash: Use
- opal_async_wait_response_interruptible()
-Message-ID: <20170708012811.GF55942@google.com>
-References: <20170629065413.19845-1-cyrilbur@gmail.com>
- <20170629065413.19845-6-cyrilbur@gmail.com>
+To: Martin Habets <mhabets@solarflare.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtdcore: Infrastructure for the device release API
+Message-ID: <20170708014714.GG55942@google.com>
+References: <20170518092248.23934.15034.stgit@mh-desktop.uk.solarflarecom.com>
+ <20170527001323.GF114788@google.com>
+ <7b7511f7-4380-fd3e-703e-8e50a3fcc265@solarflare.com>
+ <1f68fe2b-b546-9c9f-03ee-2b90ba382038@solarflare.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20170629065413.19845-6-cyrilbur@gmail.com>
+In-Reply-To: <1f68fe2b-b546-9c9f-03ee-2b90ba382038@solarflare.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,21 +27,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 29, 2017 at 04:54:13PM +1000, Cyril Bur wrote:
-> The OPAL calls performed in this driver shouldn't be using
-> opal_async_wait_response() as this performs a wait_event() which, on
-> long running OPAL calls could result in hung task warnings. wait_event()
-> also prevents timely signal delivery which is also undesirable.
-> 
-> This patch also attempts to quieten down the use of dev_err() when
-> errors haven't actually occurred and also to return better information up
-> the stack rather than always -EIO.
-> 
-> Signed-off-by: Cyril Bur <cyrilbur@gmail.com>
-> ---
->  drivers/mtd/devices/powernv_flash.c | 18 +++++++++++-------
->  1 file changed, 11 insertions(+), 7 deletions(-)
+On Thu, Jun 22, 2017 at 02:54:07PM +0100, Martin Habets wrote:
+> Brian, any opinion about this?
 
-Seems OK:
+I'm sure this is all awesome, but I haven't seen a patch that utilizes
+this. It's save me some mental energy of trying to figure out what all
+is supposed to be happening here if I had one.
 
-Acked-by: Brian Norris <computersforpeace@gmail.com>
+Or this can wait until I've spent more time trying to figure out what
+you're trying to do with this. And I haven't proven myself to spend a
+lot of time looking at your patches so far ;)
+
+Brian
