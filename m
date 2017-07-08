@@ -1,23 +1,21 @@
-Received: from mail-pg0-x235.google.com ([2607:f8b0:400e:c05::235])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dTeqU-0000lp-8n
- for linux-mtd@lists.infradead.org; Sat, 08 Jul 2017 01:47:43 +0000
-Received: by mail-pg0-x235.google.com with SMTP id u62so24606603pgb.3
- for <linux-mtd@lists.infradead.org>; Fri, 07 Jul 2017 18:47:18 -0700 (PDT)
-Date: Fri, 7 Jul 2017 18:47:14 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Martin Habets <mhabets@solarflare.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtdcore: Infrastructure for the device release API
-Message-ID: <20170708014714.GG55942@google.com>
-References: <20170518092248.23934.15034.stgit@mh-desktop.uk.solarflarecom.com>
- <20170527001323.GF114788@google.com>
- <7b7511f7-4380-fd3e-703e-8e50a3fcc265@solarflare.com>
- <1f68fe2b-b546-9c9f-03ee-2b90ba382038@solarflare.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1f68fe2b-b546-9c9f-03ee-2b90ba382038@solarflare.com>
+Received: from gate.crashing.org ([63.228.1.57])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dTvuV-00088h-I4
+ for linux-mtd@lists.infradead.org; Sat, 08 Jul 2017 20:01:02 +0000
+Message-ID: <1499543997.29707.6.camel@kernel.crashing.org>
+Subject: Re: [PATCH 5/5] mtd: powernv_flash: Use
+ opal_async_wait_response_interruptible()
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+To: Cyril Bur <cyrilbur@gmail.com>, linuxppc-dev@lists.ozlabs.org,
+ linux-mtd@lists.infradead.org
+Cc: stewart@linux.vnet.ibm.com, dwmw2@infradead.org
+Date: Sat, 08 Jul 2017 14:59:57 -0500
+In-Reply-To: <20170629065413.19845-6-cyrilbur@gmail.com>
+References: <20170629065413.19845-1-cyrilbur@gmail.com>
+ <20170629065413.19845-6-cyrilbur@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,15 +25,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 22, 2017 at 02:54:07PM +0100, Martin Habets wrote:
-> Brian, any opinion about this?
+On Thu, 2017-06-29 at 16:54 +1000, Cyril Bur wrote:
+> The OPAL calls performed in this driver shouldn't be using
+> opal_async_wait_response() as this performs a wait_event() which, on
+> long running OPAL calls could result in hung task warnings. wait_event()
+> also prevents timely signal delivery which is also undesirable.
+> 
+> This patch also attempts to quieten down the use of dev_err() when
+> errors haven't actually occurred and also to return better information up
+> the stack rather than always -EIO.
 
-I'm sure this is all awesome, but I haven't seen a patch that utilizes
-this. It's save me some mental energy of trying to figure out what all
-is supposed to be happening here if I had one.
+So what happens when you get a signal then ? The async op is still in
+progress, will the callers properly handle that ?
 
-Or this can wait until I've spent more time trying to figure out what
-you're trying to do with this. And I haven't proven myself to spend a
-lot of time looking at your patches so far ;)
+For example, for a read, OPAL will potentially still be writing to
+the destination buffer. Are the callers expecting this ?
 
-Brian
+That sounds very broken to me ....
+
+You should simply limit the amount of flash that can be affected by
+a single call to avoid long hung tasks.
+
+> Signed-off-by: Cyril Bur <cyrilbur@gmail.com>
+> ---
+>  drivers/mtd/devices/powernv_flash.c | 18 +++++++++++-------
+>  1 file changed, 11 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/mtd/devices/powernv_flash.c b/drivers/mtd/devices/powernv_flash.c
+> index 7b41af06f4fe..a7c5ae2b2898 100644
+> --- a/drivers/mtd/devices/powernv_flash.c
+> +++ b/drivers/mtd/devices/powernv_flash.c
+> @@ -88,19 +88,23 @@ static int powernv_flash_async_op(struct mtd_info *mtd, enum flash_op op,
+>  	}
+>  
+>  	if (rc != OPAL_ASYNC_COMPLETION) {
+> -		dev_err(dev, "opal_flash_async_op(op=%d) failed (rc %d)\n",
+> -				op, rc);
+> +		if (rc != OPAL_BUSY)
+> +			dev_err(dev, "opal_flash_async_op(op=%d) failed (rc %d)\n",
+> +					op, rc);
+>  		opal_async_release_token(token);
+> -		rc = -EIO;
+> +		rc = opal_error_code(rc);
+>  		goto out;
+>  	}
+>  
+> -	rc = opal_async_wait_response(token, &msg);
+> +	rc = opal_async_wait_response_interruptible(token, &msg);
+>  	opal_async_release_token(token);
+>  	mutex_unlock(&info->lock);
+>  	if (rc) {
+> -		dev_err(dev, "opal async wait failed (rc %d)\n", rc);
+> -		return -EIO;
+> +		if (rc == -ERESTARTSYS)
+> +			rc = -EINTR;
+> +		else
+> +			dev_err(dev, "opal async wait failed (rc %d)\n", rc);
+> +		return rc;
+>  	}
+>  
+>  	rc = opal_get_async_rc(msg);
+> @@ -109,7 +113,7 @@ static int powernv_flash_async_op(struct mtd_info *mtd, enum flash_op op,
+>  		if (retlen)
+>  			*retlen = len;
+>  	} else {
+> -		rc = -EIO;
+> +		rc = opal_error_code(rc);
+>  	}
+>  
+>  	return rc;
