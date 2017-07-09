@@ -1,16 +1,24 @@
-Received: from 77.117.185.176.wireless.dyn.drei.com ([77.117.185.176]
- helo=localhost)
- by bombadil.infradead.org with esmtpsa (Exim 4.87 #1 (Red Hat Linux))
- id 1dUI4B-0007dk-J3
- for linux-mtd@lists.infradead.org; Sun, 09 Jul 2017 19:40:28 +0000
-Date: Sun, 9 Jul 2017 21:40:24 +0200
-From: Christoph Hellwig <hch@infradead.org>
-To: linux-mtd@lists.infradead.org
-Subject: [ANNOUNCE] Alpine Linux Persistence and Storage Summit
-Message-ID: <20170709194024.bihyw7kpfpenibct@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dUM6h-0000pw-Ih
+ for linux-mtd@lists.infradead.org; Sun, 09 Jul 2017 23:59:21 +0000
+Received: by mail-pg0-x242.google.com with SMTP id d193so10618897pgc.2
+ for <linux-mtd@lists.infradead.org>; Sun, 09 Jul 2017 16:58:57 -0700 (PDT)
+Message-ID: <1499644730.6344.3.camel@gmail.com>
+Subject: Re: [PATCH 5/5] mtd: powernv_flash: Use
+ opal_async_wait_response_interruptible()
+From: Cyril Bur <cyrilbur@gmail.com>
+To: Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org
+Cc: stewart@linux.vnet.ibm.com, dwmw2@infradead.org
+Date: Mon, 10 Jul 2017 09:58:50 +1000
+In-Reply-To: <1499543997.29707.6.camel@kernel.crashing.org>
+References: <20170629065413.19845-1-cyrilbur@gmail.com>
+ <20170629065413.19845-6-cyrilbur@gmail.com>
+ <1499543997.29707.6.camel@kernel.crashing.org>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,41 +28,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We proudly announce the Alpine Linux Persistence and Storage Summit
-(ALPSS), which will be held from September 27-29 at the Lizumerhuette
-[1][2] in Austria 
+On Sat, 2017-07-08 at 14:59 -0500, Benjamin Herrenschmidt wrote:
+> On Thu, 2017-06-29 at 16:54 +1000, Cyril Bur wrote:
+> > The OPAL calls performed in this driver shouldn't be using
+> > opal_async_wait_response() as this performs a wait_event() which, on
+> > long running OPAL calls could result in hung task warnings. wait_event()
+> > also prevents timely signal delivery which is also undesirable.
+> > 
+> > This patch also attempts to quieten down the use of dev_err() when
+> > errors haven't actually occurred and also to return better information up
+> > the stack rather than always -EIO.
+> 
+> So what happens when you get a signal then ? The async op is still in
+> progress, will the callers properly handle that ?
+> 
+> For example, for a read, OPAL will potentially still be writing to
+> the destination buffer. Are the callers expecting this ?
+> 
+> That sounds very broken to me ....
+> 
 
-The goal of this conference is to discuss the hot topics in Linux storage
-and file systems, such as persistent memory, NVMe, multi-pathing, raw or
-open channel flash and I/O scheduling in a cool and relaxed setting with
-spectacular views in the Austrian alps.
+Correct - I have a v2 that I let stew in my head over the weekend
+before sending. I think its good.
 
-We plan to have a small selection of short and to the point talks, and
-lots of room for discussion in small groups, as well as ample downtime
-to enjoy the surrounding.
+Thanks,
 
-Attendance is free except for the accommodation and food at the lodge [3],
-but the number of seats is strictly limited.  If you are interested in
-attending please reserve a seat by mailing your favorite topic(s) to:
+Cyril
 
-	alpss-pc@lists.infradead.org
-
-If you are interested in giving a short and crisp talk please also send
-an abstract to the same address.
-
-Note: The Lizumerhuette is an Alpine Society lodge in a high alpine
-environment.  A hike of approximately 2 hours is required to the lodge,
-and no other accommodations are available within walking distance.
-
-Thank you on behalf of the program committee:
-
-    Stephen Bates
-    Sagi Grimberg
-    Christoph Hellwig
-    Johannes Thumshirn
-    Richard Weinberger
-
-[1] http://www.tyrol.com/things-to-do/sports/hiking/refuge-huts/a-lizumer-hut
-[2] https://www.glungezer.at/l-i-z-u-m-e-r-h-%C3%BC-t-t-e/
-[3] approx. EUR 40-60 per person and night, depending on the room
-    category
+> You should simply limit the amount of flash that can be affected by
+> a single call to avoid long hung tasks.
+> 
+> > Signed-off-by: Cyril Bur <cyrilbur@gmail.com>
+> > ---
+> >  drivers/mtd/devices/powernv_flash.c | 18 +++++++++++-------
+> >  1 file changed, 11 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/devices/powernv_flash.c b/drivers/mtd/devices/powernv_flash.c
+> > index 7b41af06f4fe..a7c5ae2b2898 100644
+> > --- a/drivers/mtd/devices/powernv_flash.c
+> > +++ b/drivers/mtd/devices/powernv_flash.c
+> > @@ -88,19 +88,23 @@ static int powernv_flash_async_op(struct mtd_info *mtd, enum flash_op op,
+> >  	}
+> >  
+> >  	if (rc != OPAL_ASYNC_COMPLETION) {
+> > -		dev_err(dev, "opal_flash_async_op(op=%d) failed (rc %d)\n",
+> > -				op, rc);
+> > +		if (rc != OPAL_BUSY)
+> > +			dev_err(dev, "opal_flash_async_op(op=%d) failed (rc %d)\n",
+> > +					op, rc);
+> >  		opal_async_release_token(token);
+> > -		rc = -EIO;
+> > +		rc = opal_error_code(rc);
+> >  		goto out;
+> >  	}
+> >  
+> > -	rc = opal_async_wait_response(token, &msg);
+> > +	rc = opal_async_wait_response_interruptible(token, &msg);
+> >  	opal_async_release_token(token);
+> >  	mutex_unlock(&info->lock);
+> >  	if (rc) {
+> > -		dev_err(dev, "opal async wait failed (rc %d)\n", rc);
+> > -		return -EIO;
+> > +		if (rc == -ERESTARTSYS)
+> > +			rc = -EINTR;
+> > +		else
+> > +			dev_err(dev, "opal async wait failed (rc %d)\n", rc);
+> > +		return rc;
+> >  	}
+> >  
+> >  	rc = opal_get_async_rc(msg);
+> > @@ -109,7 +113,7 @@ static int powernv_flash_async_op(struct mtd_info *mtd, enum flash_op op,
+> >  		if (retlen)
+> >  			*retlen = len;
+> >  	} else {
+> > -		rc = -EIO;
+> > +		rc = opal_error_code(rc);
+> >  	}
+> >  
+> >  	return rc;
