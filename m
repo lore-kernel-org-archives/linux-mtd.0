@@ -1,25 +1,28 @@
-Received: from smtp-out6.electric.net ([192.162.217.183])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dUZKE-0002wU-U8
- for linux-mtd@lists.infradead.org; Mon, 10 Jul 2017 14:06:12 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Cyril Bur' <cyrilbur@gmail.com>, "linuxppc-dev@lists.ozlabs.org"
- <linuxppc-dev@lists.ozlabs.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-CC: "stewart@linux.vnet.ibm.com" <stewart@linux.vnet.ibm.com>,
- "alistair@popple.id.au" <alistair@popple.id.au>, "dwmw2@infradead.org"
- <dwmw2@infradead.org>, "rlippert@google.com" <rlippert@google.com>
-Subject: RE: [PATCH v2 08/10] powerpc/opal: Add
- opal_async_wait_response_interruptible() to opal-async
-Date: Mon, 10 Jul 2017 14:05:34 +0000
-Message-ID: <063D6719AE5E284EB5DD2968C1650D6DD0036C52@AcuExch.aculab.com>
-References: <20170710013106.27276-1-cyrilbur@gmail.com>
- <20170710013106.27276-9-cyrilbur@gmail.com>
-In-Reply-To: <20170710013106.27276-9-cyrilbur@gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+ id 1dUZP8-0007MO-GC
+ for linux-mtd@lists.infradead.org; Mon, 10 Jul 2017 14:11:16 +0000
+Subject: Re: [PATCH 07/14] qcom: mtd: nand: support for passing flags in
+ transfer functions
+To: Archit Taneja <architt@codeaurora.org>,
+ Abhishek Sahu <absahu@codeaurora.org>, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
+ marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr,
+ robh+dt@kernel.org, mark.rutland@arm.com
+Cc: devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ andy.gross@linaro.org
+References: <1498720566-20782-1-git-send-email-absahu@codeaurora.org>
+ <1498720566-20782-8-git-send-email-absahu@codeaurora.org>
+ <da4830df-7f64-d5b3-d562-86e290416c8a@codeaurora.org>
+From: Sricharan R <sricharan@codeaurora.org>
+Message-ID: <70776f79-6d51-5544-8be8-38e62b7c073e@codeaurora.org>
+Date: Mon, 10 Jul 2017 19:40:46 +0530
 MIME-Version: 1.0
+In-Reply-To: <da4830df-7f64-d5b3-d562-86e290416c8a@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,38 +32,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Cyril Bur
-> Sent: 10 July 2017 02:31
-> This patch adds an _interruptible version of opal_async_wait_response().
-> This is useful when a long running OPAL call is performed on behalf of a
-> userspace thread, for example, the opal_flash_{read,write,erase}
-> functions performed by the powernv-flash MTD driver.
->=20
-> It is foreseeable that these functions would take upwards of two minutes
-> causing the wait_event() to block long enough to cause hung task
-> warnings. Furthermore, wait_event_interruptible() is preferable as
-> otherwise there is no way for signals to stop the process which is going
-> to be confusing in userspace.
+Hi,
 
-ISTM that if you are doing (something like) a flash full device erase
-(that really can take minutes) it isn't actually an interruptible
-operation - the flash chip will still be busy.
-So allowing the user process be interrupted just leaves a big mess.
+On 7/4/2017 12:19 PM, Archit Taneja wrote:
+> 
+> 
+> On 06/29/2017 12:45 PM, Abhishek Sahu wrote:
+>> The BAM has multiple flags to control the transfer. This patch
+>> adds flags parameter in register and data transfer functions and
+>> modifies all these function call with appropriate flags.
+>>
+>> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+>> ---
+>>   drivers/mtd/nand/qcom_nandc.c | 114 ++++++++++++++++++++++++------------------
+>>   1 file changed, 65 insertions(+), 49 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
+>> index 7042a65..65c9059 100644
+>> --- a/drivers/mtd/nand/qcom_nandc.c
+>> +++ b/drivers/mtd/nand/qcom_nandc.c
+>> @@ -170,6 +170,14 @@
+>>   #define    ECC_BCH_4BIT    BIT(2)
+>>   #define    ECC_BCH_8BIT    BIT(3)
+>>   +/* Flags used for BAM DMA desc preparation*/
+>> +/* Don't set the EOT in current tx sgl */
+>> +#define NAND_BAM_NO_EOT            (0x0001)
+>> +/* Set the NWD flag in current sgl */
+>> +#define NAND_BAM_NWD            (0x0002)
+>> +/* Finish writing in the current sgl and start writing in another sgl */
+>> +#define NAND_BAM_NEXT_SGL        (0x0004)
+>> +
+>>   #define QPIC_PER_CW_MAX_CMD_ELEMENTS    (32)
+>>   #define QPIC_PER_CW_MAX_CMD_SGL        (32)
+>>   #define QPIC_PER_CW_MAX_DATA_SGL    (8)
+>> @@ -712,7 +720,7 @@ static int prep_dma_desc(struct qcom_nand_controller *nandc, bool read,
+>>    * @num_regs:        number of registers to read
+>>    */
+>>   static int read_reg_dma(struct qcom_nand_controller *nandc, int first,
+>> -            int num_regs)
+>> +            int num_regs, unsigned int flags)
+>>   {
+>>       bool flow_control = false;
+>>       void *vaddr;
+>> @@ -736,7 +744,7 @@ static int read_reg_dma(struct qcom_nand_controller *nandc, int first,
+>>    * @num_regs:        number of registers to write
+>>    */
+>>   static int write_reg_dma(struct qcom_nand_controller *nandc, int first,
+>> -             int num_regs)
+>> +             int num_regs, unsigned int flags)
+> 
+> Adding flags to read_reg_dma and write_reg_dma is making things a bit messy. I can't
+> think of a better way to share the code either, though.
+> 
+> One thing we could consider doing is something like below. I don't know if it would
+> make things more legible.
+> 
+> union nand_dma_props {
+>     bool adm_flow_control;
+>     unsigned int bam_flags;
+> };
+> 
+> config_cw_read()
+> {
+>     union nand_dma_props dma_props;
+>     ...
+>     ...
+> 
+>     if (is_bam)
+>         dma_props.bam_flags = NAND_BAM_NWD;
+>     else
+>         dma_props.adm_flow_control = false;
+> 
+>     write_reg_dma(nandc, NAND_EXEC_CMD, 1, &dma_props);
+>     ...
+>     ...
+> }
 
-OTOH the 'hung task' warning isn't the only problem with uninterruptible
-sleeps - the processes also count towards the 'load average'.
-Some software believes the 'load average' is a meaningful value.
+ Right, with this , i think we can have two different indirections for functions like,
+ prep_dma_desc_command and prep_dma_desc. That will help to reduce the bam_dma_enabled
+ checks.
 
-It would be more generally useful for tasks to be able to sleep
-uninterruptibly without counting towards the 'load average' or triggering
-the 'task stuck' warning.
-(I've code somewhere that sleeps interruptibly unless there is a signal
-pending when it sleeps uninterruptibly.)
+Regards,
+ Sricharan
 
-WRT flash erases, 'whole device' erases aren't significantly quicker
-than sector by sector erases.
-The latter can be interrupted between sectors.
-I'm not sure you'd want to do writes than lock down enough kernel
-memory to take even a second to complete.
+-- 
+"QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
 
-	David
+---
+This email has been checked for viruses by Avast antivirus software.
+https://www.avast.com/antivirus
