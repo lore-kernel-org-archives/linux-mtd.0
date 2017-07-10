@@ -1,22 +1,20 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dUWzJ-0006X7-9R
- for linux-mtd@lists.infradead.org; Mon, 10 Jul 2017 11:36:27 +0000
-Date: Mon, 10 Jul 2017 13:35:56 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Miquel Raynal <miquel.raynal@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org (open list:NAND
- FLASH SUBSYSTEM), linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH] mtd: nand: fix lack of oob layout when using no ecc
-Message-ID: <20170710133556.23e48f54@bbrezillon>
-In-Reply-To: <20170710103726.31858-1-miquel.raynal@free-electrons.com>
-References: <20170710103726.31858-1-miquel.raynal@free-electrons.com>
+Received: from mx1.emlix.com ([46.4.235.150])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dUXH8-0005n3-38
+ for linux-mtd@lists.infradead.org; Mon, 10 Jul 2017 11:54:52 +0000
+Received: from mailer.emlix.com (unknown [80.150.94.234])
+ (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ by mx1.emlix.com (Postfix) with ESMTPS id A19A925F06A
+ for <linux-mtd@lists.infradead.org>; Mon, 10 Jul 2017 13:54:24 +0200 (CEST)
+From: Rolf Eike Beer <eb@emlix.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] ubifs: fix inclusion of uuid.h
+Date: Mon, 10 Jul 2017 13:54:24 +0200
+Message-ID: <1870262.xSbmLmMA2F@devpool21>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,74 +24,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 10 Jul 2017 12:37:26 +0200
-Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
+=46rom de17ee444ad4d523131806e4afe07c41a4c310d1 Mon Sep 17 00:00:00 2001
+=46rom: Rolf Eike Beer <eb@emlix.com>
+Date: Mon, 10 Jul 2017 13:43:06 +0200
+Subject: [PATCH] ubifs: fix inclusion of uuid.h
 
-> Fix nand core lack of OOB layout when:
-> - the NFC driver does not provide any OOB layout,
-> - ECC operations are disabled (using NAND_ECC_NONE).
-> Using this configuration leads to a crash during the probe.
-> 
-> Add layout functions for small and large pages with mainly free bytes
-> plus reserved space for bad block markers.
-> 
-> Check the configuration and eventually assign this OOB layout in
-> nand_scan_tail().
-> 
-> Bad block markers position was extracted from the existing OOB layouts
-> by assigning as free all the bytes marked as ECC.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
-> ---
->  drivers/mtd/nand/nand_base.c | 75 +++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 74 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index c5221795a1e8..28ff58e4385f 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -53,7 +53,45 @@ static int nand_get_device(struct mtd_info *mtd, int new_state);
->  static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
->  			     struct mtd_oob_ops *ops);
->  
-> -/* Define default oob placement schemes for large and small page devices */
-> +/*
-> + * Define default OOB placement schemes for:
-> + *   - no ECC or software ECC
-> + *   - small or large page devices
-> + */
-> +static int nand_ooblayout_ecc_sp_bbm_only(struct mtd_info *mtd, int section,
-> +					  struct mtd_oob_region *oobregion)
-> +{
-> +	return -ERANGE;
-> +}
-> +
-> +static int nand_ooblayout_free_sp_bbm_only(struct mtd_info *mtd, int section,
-> +					   struct mtd_oob_region *oobregion)
-> +{
-> +	if (section > 1)
-> +		return -ERANGE;
-> +
-> +	if (!section) {
-> +		if (mtd->oobsize == 16) {
-> +			oobregion->offset = 0;
-> +			oobregion->length = 4;
-> +		} else {
-> +			oobregion->offset = 0;
-> +			oobregion->length = 5;
-> +		}
-> +	} else {
-> +		oobregion->offset = 6;
-> +		oobregion->length = mtd->oobsize - oobregion->offset;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +const struct mtd_ooblayout_ops nand_ooblayout_sp_bbm_only_ops = {
-> +	.ecc = nand_ooblayout_ecc_sp_bbm_only,
+The include directory exported by uuid.pc is */include/uuid, so uuid.h must=
+ be
+included without any directory in the path. This usually works out because =
+uuid
+is installed in the normal prefix, so the parent directory of what uuid has=
+ as
+include dir ends up in the include path anyway. In case one uses a custom u=
+uid
+outside of the regular include path this breaks.
 
-Actually, you don't have to implement ->ecc() in this case, just leave
-it to NULL, the core takes care of returning -ENOTSUPP in this case [1].
+Signed-off-by: Rolf Eike Beer <eb@emlix.com>
+=2D--
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[1]http://elixir.free-electrons.com/linux/latest/source/drivers/mtd/mtdcore.c#L1143
+diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.h b/ubifs-utils/mkfs.ubifs/m=
+kfs.ubifs.h
+index 944a159..1321191 100644
+=2D-- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.h
++++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.h
+@@ -43,7 +43,7 @@
+ #include <errno.h>
+ #include <libgen.h>
+ #include <ctype.h>
+=2D#include <uuid/uuid.h>
++#include <uuid.h>
+ #include <sys/file.h>
+=20
+ #include <mtd/ubifs-media.h>
+=2D-=20
+2.13.2
+
+
+=2D-=20
+Rolf Eike Beer, emlix GmbH, http://www.emlix.com
+=46on +49 551 30664-0, Fax +49 551 30664-11
+Bertha-von-Suttner-Str. 9, 37085 G=C3=B6ttingen, Germany
+Sitz der Gesellschaft: G=C3=B6ttingen, Amtsgericht G=C3=B6ttingen HR B 3160
+Gesch=C3=A4ftsf=C3=BChrung: Heike Jordan, Dr. Uwe Kracke =E2=80=93 Ust-IdNr=
+=2E: DE 205 198 055
+
+emlix =E2=80=93 smart embedded open source
