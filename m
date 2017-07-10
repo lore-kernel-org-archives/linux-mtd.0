@@ -1,35 +1,20 @@
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dUNZS-0001LA-Jx
- for linux-mtd@lists.infradead.org; Mon, 10 Jul 2017 01:33:11 +0000
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.16.0.21/8.16.0.21) with SMTP id
- v6A1SaB4028878
- for <linux-mtd@lists.infradead.org>; Sun, 9 Jul 2017 21:32:46 -0400
-Received: from e23smtp06.au.ibm.com (e23smtp06.au.ibm.com [202.81.31.148])
- by mx0a-001b2d01.pphosted.com with ESMTP id 2bjukq9gp5-1
- (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=NOT)
- for <linux-mtd@lists.infradead.org>; Sun, 09 Jul 2017 21:32:45 -0400
-Received: from localhost
- by e23smtp06.au.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <linux-mtd@lists.infradead.org> from <cyrilbur@gmail.com>;
- Mon, 10 Jul 2017 11:32:43 +1000
-Received: from d23av04.au.ibm.com (d23av04.au.ibm.com [9.190.235.139])
- by d23relay08.au.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- v6A1VQLs19923196
- for <linux-mtd@lists.infradead.org>; Mon, 10 Jul 2017 11:31:26 +1000
-Received: from d23av04.au.ibm.com (localhost [127.0.0.1])
- by d23av04.au.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
- v6A1VOb9006281
- for <linux-mtd@lists.infradead.org>; Mon, 10 Jul 2017 11:31:24 +1000
-From: Cyril Bur <cyrilbur@gmail.com>
-To: linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org
-Cc: benh@kernel.crashing.org, stewart@linux.vnet.ibm.com, dwmw2@infradead.org,
- rlippert@google.com, alistair@popple.id.au
-Subject: [PATCH v2 00/10] Allow opal-async waiters to get interrupted
-Date: Mon, 10 Jul 2017 11:30:56 +1000
-Message-Id: <20170710013106.27276-1-cyrilbur@gmail.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dUW4u-0000NT-GE
+ for linux-mtd@lists.infradead.org; Mon, 10 Jul 2017 10:38:10 +0000
+From: Miquel Raynal <miquel.raynal@free-electrons.com>
+To: 
+Cc: Miquel Raynal <miquel.raynal@free-electrons.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org (open list:NAND FLASH SUBSYSTEM),
+ linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] mtd: nand: fix lack of oob layout when using no ecc
+Date: Mon, 10 Jul 2017 12:37:26 +0200
+Message-Id: <20170710103726.31858-1-miquel.raynal@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,59 +24,124 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Fix nand core lack of OOB layout when:
+- the NFC driver does not provide any OOB layout,
+- ECC operations are disabled (using NAND_ECC_NONE).
+Using this configuration leads to a crash during the probe.
 
-Version one of this series ignored that OPAL may continue to use
-buffers passed to it after Linux kfree()s the buffer. This version
-addresses this, not in a particularly nice way - future work could
-make this better. This version also includes a few cleanups and fixups
-to powernv_flash driver one along the course of this work that I
-thought I would just send.
+Add layout functions for small and large pages with mainly free bytes
+plus reserved space for bad block markers.
 
-The problem we're trying to solve here is that currently all users of
-the opal-async calls must use wait_event(), this may be undesirable
-when there is a userspace process behind the request for the opal
-call, if OPAL takes too long to complete the call then hung task
-warnings will appear.
+Check the configuration and eventually assign this OOB layout in
+nand_scan_tail().
 
-In order to solve the problem callers should use
-wait_event_interruptible(), due to the interruptible nature of this
-call the opal-async infrastructure needs to track extra state
-associated with each async token, this is prepared for in patch 6/10.
+Bad block markers position was extracted from the existing OOB layouts
+by assigning as free all the bytes marked as ECC.
 
-While I was working on the opal-async infrastructure improvements
-Stewart fixed another problem and he relies on the corrected behaviour
-of opal-async so I've sent it here.
+Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+---
+ drivers/mtd/nand/nand_base.c | 75 +++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 74 insertions(+), 1 deletion(-)
 
-Hello MTD folk, traditionally Michael Ellerman takes powernv_flash
-driver patches through the powerpc tree, as always your feedback is
-very welcome.
-
-Thanks,
-
-Cyril
-
-Cyril Bur (9):
-  mtd: powernv_flash: Use WARN_ON_ONCE() rather than BUG_ON()
-  mtd: powernv_flash: Lock around concurrent access to OPAL
-  mtd: powernv_flash: Don't treat OPAL_SUCCESS as an error
-  mtd: powernv_flash: Remove pointless goto in driver init
-  powerpc/opal: Make __opal_async_{get,release}_token() static
-  powerpc/opal: Rework the opal-async interface
-  powerpc/opal: Add opal_async_wait_response_interruptible() to
-    opal-async
-  powerpc/powernv: Add OPAL_BUSY to opal_error_code()
-  mtd: powernv_flash: Use opal_async_wait_response_interruptible()
-
-Stewart Smith (1):
-  powernv/opal-sensor: remove not needed lock
-
- arch/powerpc/include/asm/opal.h              |   4 +-
- arch/powerpc/platforms/powernv/opal-async.c  | 188 +++++++++++++++++++--------
- arch/powerpc/platforms/powernv/opal-sensor.c |  17 +--
- arch/powerpc/platforms/powernv/opal.c        |   1 +
- drivers/mtd/devices/powernv_flash.c          |  66 +++++++---
- 5 files changed, 190 insertions(+), 86 deletions(-)
-
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index c5221795a1e8..28ff58e4385f 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -53,7 +53,45 @@ static int nand_get_device(struct mtd_info *mtd, int new_state);
+ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
+ 			     struct mtd_oob_ops *ops);
+ 
+-/* Define default oob placement schemes for large and small page devices */
++/*
++ * Define default OOB placement schemes for:
++ *   - no ECC or software ECC
++ *   - small or large page devices
++ */
++static int nand_ooblayout_ecc_sp_bbm_only(struct mtd_info *mtd, int section,
++					  struct mtd_oob_region *oobregion)
++{
++	return -ERANGE;
++}
++
++static int nand_ooblayout_free_sp_bbm_only(struct mtd_info *mtd, int section,
++					   struct mtd_oob_region *oobregion)
++{
++	if (section > 1)
++		return -ERANGE;
++
++	if (!section) {
++		if (mtd->oobsize == 16) {
++			oobregion->offset = 0;
++			oobregion->length = 4;
++		} else {
++			oobregion->offset = 0;
++			oobregion->length = 5;
++		}
++	} else {
++		oobregion->offset = 6;
++		oobregion->length = mtd->oobsize - oobregion->offset;
++	}
++
++	return 0;
++}
++
++const struct mtd_ooblayout_ops nand_ooblayout_sp_bbm_only_ops = {
++	.ecc = nand_ooblayout_ecc_sp_bbm_only,
++	.free = nand_ooblayout_free_sp_bbm_only,
++};
++EXPORT_SYMBOL_GPL(nand_ooblayout_sp_bbm_only_ops);
++
+ static int nand_ooblayout_ecc_sp(struct mtd_info *mtd, int section,
+ 				 struct mtd_oob_region *oobregion)
+ {
+@@ -109,6 +147,30 @@ const struct mtd_ooblayout_ops nand_ooblayout_sp_ops = {
+ };
+ EXPORT_SYMBOL_GPL(nand_ooblayout_sp_ops);
+ 
++static int nand_ooblayout_ecc_lp_bbm_only(struct mtd_info *mtd, int section,
++					  struct mtd_oob_region *oobregion)
++{
++	return -ERANGE;
++}
++
++static int nand_ooblayout_free_lp_bbm_only(struct mtd_info *mtd, int section,
++					   struct mtd_oob_region *oobregion)
++{
++	if (section)
++		return -ERANGE;
++
++	oobregion->offset = 2;
++	oobregion->length = mtd->oobsize - oobregion->offset;
++
++	return 0;
++}
++
++const struct mtd_ooblayout_ops nand_ooblayout_lp_bbm_only_ops = {
++	.ecc = nand_ooblayout_ecc_lp_bbm_only,
++	.free = nand_ooblayout_free_lp_bbm_only,
++};
++EXPORT_SYMBOL_GPL(nand_ooblayout_lp_bbm_only_ops);
++
+ static int nand_ooblayout_ecc_lp(struct mtd_info *mtd, int section,
+ 				 struct mtd_oob_region *oobregion)
+ {
+@@ -4635,6 +4697,17 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	chip->oob_poi = chip->buffers->databuf + mtd->writesize;
+ 
+ 	/*
++	 * When using ECC_NONE, ooblayout must only reserve space for bad block
++	 * markers.
++	 */
++	if (!mtd->ooblayout && ecc->mode == NAND_ECC_NONE) {
++		if (mtd->writesize <= 512)
++			mtd_set_ooblayout(mtd, &nand_ooblayout_sp_bbm_only_ops);
++		else
++			mtd_set_ooblayout(mtd, &nand_ooblayout_lp_bbm_only_ops);
++	}
++
++	/*
+ 	 * If no default placement scheme is given, select an appropriate one.
+ 	 */
+ 	if (!mtd->ooblayout &&
 -- 
-2.13.2
+2.11.0
