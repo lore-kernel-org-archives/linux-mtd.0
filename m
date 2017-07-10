@@ -1,25 +1,24 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dUZP8-0007MO-GC
- for linux-mtd@lists.infradead.org; Mon, 10 Jul 2017 14:11:16 +0000
-Subject: Re: [PATCH 07/14] qcom: mtd: nand: support for passing flags in
- transfer functions
+ id 1dUZTP-0000rY-PW
+ for linux-mtd@lists.infradead.org; Mon, 10 Jul 2017 14:15:41 +0000
+Subject: Re: [PATCH 09/14] qcom: mtd: nand: BAM support for read page
 To: Archit Taneja <architt@codeaurora.org>,
  Abhishek Sahu <absahu@codeaurora.org>, dwmw2@infradead.org,
  computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
  marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr,
  robh+dt@kernel.org, mark.rutland@arm.com
-Cc: devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
  andy.gross@linaro.org
 References: <1498720566-20782-1-git-send-email-absahu@codeaurora.org>
- <1498720566-20782-8-git-send-email-absahu@codeaurora.org>
- <da4830df-7f64-d5b3-d562-86e290416c8a@codeaurora.org>
+ <1498720566-20782-10-git-send-email-absahu@codeaurora.org>
+ <ddf2e1c0-e08e-c8b8-2b10-ef39ce1482b2@codeaurora.org>
 From: Sricharan R <sricharan@codeaurora.org>
-Message-ID: <70776f79-6d51-5544-8be8-38e62b7c073e@codeaurora.org>
-Date: Mon, 10 Jul 2017 19:40:46 +0530
+Message-ID: <02f94de8-aa01-599f-453b-83abe558ec92@codeaurora.org>
+Date: Mon, 10 Jul 2017 19:45:11 +0530
 MIME-Version: 1.0
-In-Reply-To: <da4830df-7f64-d5b3-d562-86e290416c8a@codeaurora.org>
+In-Reply-To: <ddf2e1c0-e08e-c8b8-2b10-ef39ce1482b2@codeaurora.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -34,86 +33,167 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-On 7/4/2017 12:19 PM, Archit Taneja wrote:
+On 7/4/2017 3:10 PM, Archit Taneja wrote:
 > 
 > 
-> On 06/29/2017 12:45 PM, Abhishek Sahu wrote:
->> The BAM has multiple flags to control the transfer. This patch
->> adds flags parameter in register and data transfer functions and
->> modifies all these function call with appropriate flags.
+> On 06/29/2017 12:46 PM, Abhishek Sahu wrote:
+>> 1. The BAM mode requires few registers configuration before each
+>>     NAND page read and codeword read which is different from ADM
+>>     so add the helper functions which will be called in BAM mode
+>>     only.
+>>
+>> 2. The NAND page read handling of BAM is different from ADM so
+>>     call the appropriate helper functions
 >>
 >> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 >> ---
->>   drivers/mtd/nand/qcom_nandc.c | 114 ++++++++++++++++++++++++------------------
->>   1 file changed, 65 insertions(+), 49 deletions(-)
+>>   drivers/mtd/nand/qcom_nandc.c | 63 ++++++++++++++++++++++++++++++++++++++++++-
+>>   1 file changed, 62 insertions(+), 1 deletion(-)
 >>
 >> diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
->> index 7042a65..65c9059 100644
+>> index 8e7dc9e..17766af 100644
 >> --- a/drivers/mtd/nand/qcom_nandc.c
 >> +++ b/drivers/mtd/nand/qcom_nandc.c
->> @@ -170,6 +170,14 @@
->>   #define    ECC_BCH_4BIT    BIT(2)
->>   #define    ECC_BCH_8BIT    BIT(3)
->>   +/* Flags used for BAM DMA desc preparation*/
->> +/* Don't set the EOT in current tx sgl */
->> +#define NAND_BAM_NO_EOT            (0x0001)
->> +/* Set the NWD flag in current sgl */
->> +#define NAND_BAM_NWD            (0x0002)
->> +/* Finish writing in the current sgl and start writing in another sgl */
->> +#define NAND_BAM_NEXT_SGL        (0x0004)
+>> @@ -870,6 +870,35 @@ static void config_cw_read(struct qcom_nand_controller *nandc)
+>>   }
+>>     /*
+>> + * Helpers to prepare DMA descriptors for configuring registers
+>> + * before reading a NAND page with BAM.
+>> + */
+>> +static void config_bam_page_read(struct qcom_nand_controller *nandc)
+>> +{
+>> +    write_reg_dma(nandc, NAND_FLASH_CMD, 3, 0);
+>> +    write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
+>> +    write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
+>> +    write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1, 0);
+>> +    write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1,
+>> +              NAND_ERASED_CW_SET | NAND_BAM_NEXT_SGL);
+>> +}
 >> +
->>   #define QPIC_PER_CW_MAX_CMD_ELEMENTS    (32)
->>   #define QPIC_PER_CW_MAX_CMD_SGL        (32)
->>   #define QPIC_PER_CW_MAX_DATA_SGL    (8)
->> @@ -712,7 +720,7 @@ static int prep_dma_desc(struct qcom_nand_controller *nandc, bool read,
->>    * @num_regs:        number of registers to read
->>    */
->>   static int read_reg_dma(struct qcom_nand_controller *nandc, int first,
->> -            int num_regs)
->> +            int num_regs, unsigned int flags)
->>   {
->>       bool flow_control = false;
->>       void *vaddr;
->> @@ -736,7 +744,7 @@ static int read_reg_dma(struct qcom_nand_controller *nandc, int first,
->>    * @num_regs:        number of registers to write
->>    */
->>   static int write_reg_dma(struct qcom_nand_controller *nandc, int first,
->> -             int num_regs)
->> +             int num_regs, unsigned int flags)
+>> +/*
+>> + * Helpers to prepare DMA descriptors for configuring registers
+>> + * before reading each codeword in NAND page with BAM.
+>> + */
 > 
-> Adding flags to read_reg_dma and write_reg_dma is making things a bit messy. I can't
-> think of a better way to share the code either, though.
+> If I understood right, EBI2 nand required us to load all the registers
+> configured in config_cw_read() for every codeword, and for BAM, the
+> registers configured in config_bam_page_read() just needs to be done once,
+> and the registers in config_bam_cw_read()  need to be reloaded for every
+> codeword?
 > 
-> One thing we could consider doing is something like below. I don't know if it would
-> make things more legible.
+> Could you please clarify this better in the commit message and comments? Also,
+> I still see config_cw_read() being used for QPIC nand in nandc_param() and
+> copy_last_cw()?
 > 
-> union nand_dma_props {
->     bool adm_flow_control;
->     unsigned int bam_flags;
-> };
+> Also, I think these should be called config_qpic_page_read() and
+> config_qpic_cw_read() since it seems more of a property of the NAND controller
+> rather than the underlying DMA engine. If so, config_cw_read() can be called
+> config_cw_ebi2_read(). Please correct me if I'm wrong somewhere.
 > 
-> config_cw_read()
-> {
->     union nand_dma_props dma_props;
->     ...
->     ...
-> 
->     if (is_bam)
->         dma_props.bam_flags = NAND_BAM_NWD;
->     else
->         dma_props.adm_flow_control = false;
-> 
->     write_reg_dma(nandc, NAND_EXEC_CMD, 1, &dma_props);
->     ...
->     ...
-> }
 
- Right, with this , i think we can have two different indirections for functions like,
- prep_dma_desc_command and prep_dma_desc. That will help to reduce the bam_dma_enabled
+ Even here as well, if we have different function pointers for config_bam_cw_read
+ and config_cw_read for bam, adm, we can still share code with helpers and have
+ only the difference populated in to those functions, reducing the if (bam_dma_enabled)
  checks.
 
 Regards,
  Sricharan
+
+
+
+>> +static void config_bam_cw_read(struct qcom_nand_controller *nandc)
+>> +{
+>> +    write_reg_dma(nandc, NAND_READ_LOCATION_0, 2, 0);
+>> +    write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
+>> +    write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
+>> +
+>> +    read_reg_dma(nandc, NAND_FLASH_STATUS, 2, 0);
+>> +    read_reg_dma(nandc, NAND_ERASED_CW_DETECT_STATUS, 1,
+>> +             NAND_BAM_NEXT_SGL);
+>> +}
+>> +
+>> +/*
+>>    * helpers to prepare dma descriptors used to configure registers needed for
+>>    * writing a codeword/step in a page
+>>    */
+>> @@ -1398,6 +1427,9 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
+>>       struct nand_ecc_ctrl *ecc = &chip->ecc;
+>>       int i, ret;
+>>   +    if (nandc->dma_bam_enabled)
+>> +        config_bam_page_read(nandc);
+>> +
+>>       /* queue cmd descs for each codeword */
+>>       for (i = 0; i < ecc->steps; i++) {
+>>           int data_size, oob_size;
+>> @@ -1411,7 +1443,36 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
+>>               oob_size = host->ecc_bytes_hw + host->spare_bytes;
+>>           }
+>>   -        config_cw_read(nandc);
+>> +        if (nandc->dma_bam_enabled) {
+>> +            if (data_buf && oob_buf) {
+>> +                nandc_set_reg(nandc, NAND_READ_LOCATION_0,
+>> +                          (0 << READ_LOCATION_OFFSET) |
+>> +                          (data_size <<
+>> +                          READ_LOCATION_SIZE) |
+>> +                          (0 << READ_LOCATION_LAST));
+>> +                nandc_set_reg(nandc, NAND_READ_LOCATION_1,
+>> +                          (data_size <<
+>> +                          READ_LOCATION_OFFSET) |
+>> +                          (oob_size << READ_LOCATION_SIZE) |
+>> +                          (1 << READ_LOCATION_LAST));
+>> +            } else if (data_buf) {
+>> +                nandc_set_reg(nandc, NAND_READ_LOCATION_0,
+>> +                          (0 << READ_LOCATION_OFFSET) |
+>> +                          (data_size <<
+>> +                          READ_LOCATION_SIZE) |
+>> +                          (1 << READ_LOCATION_LAST));
+>> +            } else {
+>> +                nandc_set_reg(nandc, NAND_READ_LOCATION_0,
+>> +                          (data_size <<
+>> +                          READ_LOCATION_OFFSET) |
+>> +                          (oob_size << READ_LOCATION_SIZE) |
+>> +                          (1 << READ_LOCATION_LAST));
+>> +            }
+> 
+> Could we put the READ_LOCATION_x register configuration into a small helper?
+> This is probably a matter of taste, but you could consider configuring like this.
+> Maybe something similar for patch #11 for raw page reads.
+> 
+>     if (data_buf && oob_buf) {
+>         r0_off = 0;
+>         r0_size = r1_off = data_size;
+>         r1_size = oob_size;
+>         r0_last = 0;
+>         r1_last = 1;
+>     } else if (data_buf) {
+>         rl0_off = 0;
+>         rl0_size = data_size;
+>         rl0_last = 1;
+>     } else {
+>         rl0_off = data_size;
+>         rl0_size = oob_size;
+>         rl0_last = 1;
+>     }
+> 
+>     nandc_set_reg(nandc, NAND_READ_LOCATION_0,
+>               (rl0_off << READ_LOCATION_OFFSET) |
+>               (rl0_size << READ_LOCATION_SIZE) |
+>               (rl0_last << READ_LOCATION_LAST));
+>     if (rl1_last)
+>         /* program LOCATION_1 register */
+> 
+> Thanks,
+> Archit
+> 
+>> +
+>> +            config_bam_cw_read(nandc);
+>> +        } else {
+>> +            config_cw_read(nandc);
+>> +        }
+>>             if (data_buf)
+>>               read_data_dma(nandc, FLASH_BUF_ACC, data_buf,
+>>
+> 
 
 -- 
 "QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
