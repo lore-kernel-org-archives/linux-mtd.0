@@ -1,18 +1,25 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by casper.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dUXWZ-0006ko-72
- for linux-mtd@lists.infradead.org; Mon, 10 Jul 2017 12:10:48 +0000
-Subject: Re: [PATCH] ubifs: fix inclusion of uuid.h
-To: Rolf Eike Beer <eb@emlix.com>, linux-mtd@lists.infradead.org
-References: <1870262.xSbmLmMA2F@devpool21>
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Message-ID: <e727ba10-d8b2-2579-e57b-d2d03543d247@sigma-star.at>
-Date: Mon, 10 Jul 2017 14:10:24 +0200
-MIME-Version: 1.0
-In-Reply-To: <1870262.xSbmLmMA2F@devpool21>
-Content-Type: text/plain; charset=utf-8
+Received: from smtp-out6.electric.net ([192.162.217.183])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dUZKE-0002wU-U8
+ for linux-mtd@lists.infradead.org; Mon, 10 Jul 2017 14:06:12 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Cyril Bur' <cyrilbur@gmail.com>, "linuxppc-dev@lists.ozlabs.org"
+ <linuxppc-dev@lists.ozlabs.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+CC: "stewart@linux.vnet.ibm.com" <stewart@linux.vnet.ibm.com>,
+ "alistair@popple.id.au" <alistair@popple.id.au>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>, "rlippert@google.com" <rlippert@google.com>
+Subject: RE: [PATCH v2 08/10] powerpc/opal: Add
+ opal_async_wait_response_interruptible() to opal-async
+Date: Mon, 10 Jul 2017 14:05:34 +0000
+Message-ID: <063D6719AE5E284EB5DD2968C1650D6DD0036C52@AcuExch.aculab.com>
+References: <20170710013106.27276-1-cyrilbur@gmail.com>
+ <20170710013106.27276-9-cyrilbur@gmail.com>
+In-Reply-To: <20170710013106.27276-9-cyrilbur@gmail.com>
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,14 +29,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Applied to mtd-utils.git
+From: Cyril Bur
+> Sent: 10 July 2017 02:31
+> This patch adds an _interruptible version of opal_async_wait_response().
+> This is useful when a long running OPAL call is performed on behalf of a
+> userspace thread, for example, the opal_flash_{read,write,erase}
+> functions performed by the powernv-flash MTD driver.
+>=20
+> It is foreseeable that these functions would take upwards of two minutes
+> causing the wait_event() to block long enough to cause hung task
+> warnings. Furthermore, wait_event_interruptible() is preferable as
+> otherwise there is no way for signals to stop the process which is going
+> to be confusing in userspace.
 
-Please prefix future patches for mkfs-ubifs with "mkfs-ubifs:"
-or simply use "mtd-utils:" for patches that go into mtd-utils.
+ISTM that if you are doing (something like) a flash full device erase
+(that really can take minutes) it isn't actually an interruptible
+operation - the flash chip will still be busy.
+So allowing the user process be interrupted just leaves a big mess.
 
-"ubifs:" would imply that it is a kernel UBIFS patch.
+OTOH the 'hung task' warning isn't the only problem with uninterruptible
+sleeps - the processes also count towards the 'load average'.
+Some software believes the 'load average' is a meaningful value.
 
+It would be more generally useful for tasks to be able to sleep
+uninterruptibly without counting towards the 'load average' or triggering
+the 'task stuck' warning.
+(I've code somewhere that sleeps interruptibly unless there is a signal
+pending when it sleeps uninterruptibly.)
 
-Thanks,
+WRT flash erases, 'whole device' erases aren't significantly quicker
+than sector by sector erases.
+The latter can be interrupted between sectors.
+I'm not sure you'd want to do writes than lock down enough kernel
+memory to take even a second to complete.
 
-David
+	David
