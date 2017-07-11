@@ -1,26 +1,29 @@
-Received: from hauke-m.de ([2001:41d0:8:b27b::1] helo=mail.hauke-m.de)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dV2Wy-0005vn-DT
- for linux-mtd@lists.infradead.org; Tue, 11 Jul 2017 21:17:18 +0000
-Subject: Re: [PATCH v7 14/16] phy: Add an USB PHY driver for the Lantiq SoCs
- using the RCU module
-To: Kishon Vijay Abraham I <kishon@ti.com>, Rob Herring <robh@kernel.org>
-References: <20170702224051.15109-1-hauke@hauke-m.de>
- <20170702224051.15109-15-hauke@hauke-m.de>
- <20170707142312.5pwily3gbntvesbm@rob-hp-laptop>
- <30adb3f5-50b5-35e3-685f-9fe0fa8c31f8@ti.com>
-Cc: ralf@linux-mips.org, linux-mips@linux-mips.org,
- linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
- devicetree@vger.kernel.org, martin.blumenstingl@googlemail.com,
- john@phrozen.org, linux-spi@vger.kernel.org, hauke.mehrtens@intel.com,
- andy.shevchenko@gmail.com, p.zabel@pengutronix.de
-From: Hauke Mehrtens <hauke@hauke-m.de>
-Message-ID: <231fc92f-5e3e-bff0-9a59-081e291f83e8@hauke-m.de>
-Date: Tue, 11 Jul 2017 23:16:31 +0200
 MIME-Version: 1.0
-In-Reply-To: <30adb3f5-50b5-35e3-685f-9fe0fa8c31f8@ti.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAAQYJAuPpzDb_OV1naHZCovy4LJC0_6gFJKPqo7REt7zZzh0pw@mail.gmail.com>
+References: <1498681836-3765-1-git-send-email-andrea.adami@gmail.com>
+ <1498681836-3765-4-git-send-email-andrea.adami@gmail.com>
+ <20170703112621.rd3ija3efqlq57rg@dell>
+ <CAAQYJAuPpzDb_OV1naHZCovy4LJC0_6gFJKPqo7REt7zZzh0pw@mail.gmail.com>
+From: Andrea Adami <andrea.adami@gmail.com>
+Date: Wed, 12 Jul 2017 00:42:00 +0200
+Message-ID: <CAAQYJAvCdSG25U6DjiD5owC7GHyGnWyyaLD_R-fzuMGUDZN8pQ@mail.gmail.com>
+Subject: Re: [PATCH v4 3/9] mfd: tmio.h: support partition parser types
+To: Lee Jones <lee.jones@linaro.org>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Daniel Mack <daniel@zonque.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Russell King <linux@armlinux.org.uk>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,36 +33,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/11/2017 08:38 AM, Kishon Vijay Abraham I wrote:
-> Hi,
-> 
-> On Friday 07 July 2017 07:53 PM, Rob Herring wrote:
->> On Mon, Jul 03, 2017 at 12:40:49AM +0200, Hauke Mehrtens wrote:
->>> This driver starts the DWC2 core(s) built into the XWAY SoCs and provides
->>> the PHY interfaces for each core. The phy instances can be passed to the
->>> dwc2 driver, which already supports the generic phy interface.
->>>
->>> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
->>> Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> 
-> I see you have added my name in cc but for some reason I don't have the patch
-> in my mailbox. Can you resend it please?
+On Mon, Jul 3, 2017 at 2:03 PM, Andrea Adami <andrea.adami@gmail.com> wrote=
+:
+> On Mon, Jul 3, 2017 at 1:26 PM, Lee Jones <lee.jones@linaro.org> wrote:
+>> Please use the $SUBJECT line expected by the subsystem.
+>>
+>> `git log --oneline -- $SUBSYSTEM` can help with this.
+>>
+>> You also need a commit log.
+>>
+>
+> Lee,
+>
+> thanks for spotting it.
+> I'll fix the subject and add a little text in these patches touching head=
+ers.
+>
+> I am awaiting for a new review of the big piece of the patch, the
+> ftl/parser, then I'll send a fixed v5.
+>
+>
 
-I send it to you and I did not receive any error message from the mail
-servers involved, I will check my mail server log files the next time.
+Lee,
 
-I assume that your mail server just silently drops my mails.
+I have looked at the history of mfd/tmio.h but couldn't find
+unambiguous examples.
+Do you prefer
 
+Subject: mfd: tmio: tmio_nand: add partition parsers platform data
+or
+Subject: mfd: tmio: tmio-nand: add partition parsers platform data
+or
+Subject: mfd: tmio: tmio/nand: add partition parsers platform data
+
+Thanks
+Andrea
+
+
+>>> Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
 >>> ---
->>>  .../bindings/phy/phy-lantiq-rcu-usb2.txt           |  42 ++++
->>>  arch/mips/lantiq/xway/sysctrl.c                    |  24 +-
->>>  drivers/phy/Kconfig                                |   8 +
->>>  drivers/phy/Makefile                               |   1 +
->>>  drivers/phy/phy-lantiq-rcu-usb2.c                  | 275 +++++++++++++++++++++
-> 
-> Please create a new directory withing phy for adding a phy driver.
-
-Should I use lantiq or intel as folder name? Lantiq was bought by Intel
-and the Lantiq brand will be replaced by the Intel brand in the future.
-
-Hauke
+>>>  include/linux/mfd/tmio.h | 1 +
+>>>  1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/include/linux/mfd/tmio.h b/include/linux/mfd/tmio.h
+>>> index a1520d8..23bb069 100644
+>>> --- a/include/linux/mfd/tmio.h
+>>> +++ b/include/linux/mfd/tmio.h
+>>> @@ -139,6 +139,7 @@ struct tmio_nand_data {
+>>>       struct nand_bbt_descr   *badblock_pattern;
+>>>       struct mtd_partition    *partition;
+>>>       unsigned int            num_partitions;
+>>> +     const char *const       *types; /* names of parsers to use if any=
+ */
+>>
+>> I'm okay with this if it's suits the MTD folk.
+>>
+>
+> Other than kerneldoc comments there are maybe other little
+> discordances to settle: see above is *partition, num_partitions.
+> In the other header it is *partitions, nr_partitions ...I'll see if
+> oneday I can janiitor this.
+>
+> Regards
+> Andrea
+>
+>>>  };
+>>>
+>>>  #define FBIO_TMIO_ACC_WRITE  0x7C639300
+>>
+>> --
+>> Lee Jones
+>> Linaro STMicroelectronics Landing Team Lead
+>> Linaro.org =E2=94=82 Open source software for ARM SoCs
+>> Follow Linaro: Facebook | Twitter | Blog
