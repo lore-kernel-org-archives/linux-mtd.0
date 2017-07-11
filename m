@@ -1,28 +1,26 @@
-Received: from mail-wr0-x234.google.com ([2a00:1450:400c:c0c::234])
+Received: from hauke-m.de ([2001:41d0:8:b27b::1] helo=mail.hauke-m.de)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dUrQz-000131-VF
- for linux-mtd@lists.infradead.org; Tue, 11 Jul 2017 09:26:29 +0000
-Received: by mail-wr0-x234.google.com with SMTP id 77so174716903wrb.1
- for <linux-mtd@lists.infradead.org>; Tue, 11 Jul 2017 02:26:01 -0700 (PDT)
-Date: Tue, 11 Jul 2017 10:25:56 +0100
-From: Lee Jones <lee.jones@linaro.org>
-To: Nicolas Ferre <nicolas.ferre@microchip.com>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, alexandre.belloni@free-electrons.com,
- boris.brezillon@free-electrons.com, computersforpeace@gmail.com
-Subject: Re: [PATCH 3/3] ARM: dts: at91: sama5d2: use sama5d2 compatible
- string for SMC
-Message-ID: <20170711092556.mukp4umf4r4etqvt@dell>
-References: <20170711074015.30440-1-ludovic.desroches@microchip.com>
- <20170711074015.30440-4-ludovic.desroches@microchip.com>
- <029b80a8-2d3f-11b4-d4df-55f5fc48c8e7@microchip.com>
- <20170711075829.5rzdrjgao6efiuj2@rfolt0960.corp.atmel.com>
- <20170711080853.uxdmxocq5nhrp7vq@rfolt0960.corp.atmel.com>
+ id 1dV2Wy-0005vn-DT
+ for linux-mtd@lists.infradead.org; Tue, 11 Jul 2017 21:17:18 +0000
+Subject: Re: [PATCH v7 14/16] phy: Add an USB PHY driver for the Lantiq SoCs
+ using the RCU module
+To: Kishon Vijay Abraham I <kishon@ti.com>, Rob Herring <robh@kernel.org>
+References: <20170702224051.15109-1-hauke@hauke-m.de>
+ <20170702224051.15109-15-hauke@hauke-m.de>
+ <20170707142312.5pwily3gbntvesbm@rob-hp-laptop>
+ <30adb3f5-50b5-35e3-685f-9fe0fa8c31f8@ti.com>
+Cc: ralf@linux-mips.org, linux-mips@linux-mips.org,
+ linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
+ devicetree@vger.kernel.org, martin.blumenstingl@googlemail.com,
+ john@phrozen.org, linux-spi@vger.kernel.org, hauke.mehrtens@intel.com,
+ andy.shevchenko@gmail.com, p.zabel@pengutronix.de
+From: Hauke Mehrtens <hauke@hauke-m.de>
+Message-ID: <231fc92f-5e3e-bff0-9a59-081e291f83e8@hauke-m.de>
+Date: Tue, 11 Jul 2017 23:16:31 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20170711080853.uxdmxocq5nhrp7vq@rfolt0960.corp.atmel.com>
+In-Reply-To: <30adb3f5-50b5-35e3-685f-9fe0fa8c31f8@ti.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,63 +30,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 11 Jul 2017, Ludovic Desroches wrote:
-
-> On Tue, Jul 11, 2017 at 09:58:29AM +0200, Ludovic Desroches wrote:
-> > On Tue, Jul 11, 2017 at 09:52:58AM +0200, Nicolas Ferre wrote:
-> > > On 11/07/2017 at 09:40, Ludovic Desroches wrote:
-> > > > A new compatible string has been introduced for sama5d2 SMC to allow to
-> > > > manage the registers mapping change.
-> > > > 
-> > > > Signed-off-by: Ludovic Desroches <ludovic.desroches@microchip.com>
-> > > > ---
-> > > >  arch/arm/boot/dts/sama5d2.dtsi | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
-> > > > index 4fcd5bb219e3..60e69aeacbdb 100644
-> > > > --- a/arch/arm/boot/dts/sama5d2.dtsi
-> > > > +++ b/arch/arm/boot/dts/sama5d2.dtsi
-> > > > @@ -1048,7 +1048,7 @@
-> > > >  			};
-> > > >  
-> > > >  			hsmc: hsmc@f8014000 {
-> > > > -				compatible = "atmel,sama5d3-smc", "syscon", "simple-mfd";
-> > > > +				compatible = "atmel,sama5d2-smc", "syscon", "simple-mfd";
-> > > 
-> > > You'd better use something like:
-> > >  compatible = "atmel,sama5d2-smc", "atmel,sama5d3-smc", "syscon", "simple-mfd";
-> > 
-> > But it's not true, during data interface setup, we will write values in
-> > the wrong place if we fallback on "atmel,sama5d3-smc".
-> > 
-> > Regards
-> > 
-> > Ludovic
-> > 
-> > > 
-> > > So that this patch is independent from the rest of the series and
-> > > we can avoid to having to synchronize with mfd or mtd/nand for this part.
+On 07/11/2017 08:38 AM, Kishon Vijay Abraham I wrote:
+> Hi,
 > 
-> If Lee and Boris agree, maybe the series can go through AT91.
+> On Friday 07 July 2017 07:53 PM, Rob Herring wrote:
+>> On Mon, Jul 03, 2017 at 12:40:49AM +0200, Hauke Mehrtens wrote:
+>>> This driver starts the DWC2 core(s) built into the XWAY SoCs and provides
+>>> the PHY interfaces for each core. The phy instances can be passed to the
+>>> dwc2 driver, which already supports the generic phy interface.
+>>>
+>>> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+>>> Cc: Kishon Vijay Abraham I <kishon@ti.com>
+> 
+> I see you have added my name in cc but for some reason I don't have the patch
+> in my mailbox. Can you resend it please?
 
-That's fine, but if the series goes though another tree, I will
-require a pull-request.
+I send it to you and I did not receive any error message from the mail
+servers involved, I will check my mail server log files the next time.
 
-I am also happy to carry though the MFD tree (and will of course send
-out a PR to the other affected Maintainers).
+I assume that your mail server just silently drops my mails.
 
-> > > Regards,
-> > > 
-> > > >  				reg = <0xf8014000 0x1000>;
-> > > >  				interrupts = <17 IRQ_TYPE_LEVEL_HIGH 6>;
-> > > >  				clocks = <&hsmc_clk>;
-> > > > 
-> > > 
-> > > 
+>>> ---
+>>>  .../bindings/phy/phy-lantiq-rcu-usb2.txt           |  42 ++++
+>>>  arch/mips/lantiq/xway/sysctrl.c                    |  24 +-
+>>>  drivers/phy/Kconfig                                |   8 +
+>>>  drivers/phy/Makefile                               |   1 +
+>>>  drivers/phy/phy-lantiq-rcu-usb2.c                  | 275 +++++++++++++++++++++
+> 
+> Please create a new directory withing phy for adding a phy driver.
 
--- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Should I use lantiq or intel as folder name? Lantiq was bought by Intel
+and the Lantiq brand will be replaced by the Intel brand in the future.
+
+Hauke
