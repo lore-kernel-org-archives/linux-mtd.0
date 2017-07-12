@@ -1,38 +1,37 @@
 Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dV9CB-0001Lm-GH
- for linux-mtd@lists.infradead.org; Wed, 12 Jul 2017 04:24:20 +0000
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+ id 1dV9Cj-0001lm-Ro
+ for linux-mtd@lists.infradead.org; Wed, 12 Jul 2017 04:25:00 +0000
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.16.0.21/8.16.0.21) with SMTP id
- v6C4Nssr055450
- for <linux-mtd@lists.infradead.org>; Wed, 12 Jul 2017 00:23:55 -0400
-Received: from e23smtp01.au.ibm.com (e23smtp01.au.ibm.com [202.81.31.143])
- by mx0a-001b2d01.pphosted.com with ESMTP id 2bncj4g8bf-1
+ v6C4ORpD116790
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Jul 2017 00:24:29 -0400
+Received: from e23smtp04.au.ibm.com (e23smtp04.au.ibm.com [202.81.31.146])
+ by mx0a-001b2d01.pphosted.com with ESMTP id 2bncj8090s-1
  (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=NOT)
- for <linux-mtd@lists.infradead.org>; Wed, 12 Jul 2017 00:23:53 -0400
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Jul 2017 00:24:28 -0400
 Received: from localhost
- by e23smtp01.au.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ by e23smtp04.au.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
  Violators will be prosecuted
  for <linux-mtd@lists.infradead.org> from <cyrilbur@gmail.com>;
- Wed, 12 Jul 2017 14:23:36 +1000
-Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
- by d23relay08.au.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- v6C4NVGX26673156
+ Wed, 12 Jul 2017 14:23:38 +1000
+Received: from d23av06.au.ibm.com (d23av06.au.ibm.com [9.190.235.151])
+ by d23relay07.au.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ v6C4NVvi19464326
  for <linux-mtd@lists.infradead.org>; Wed, 12 Jul 2017 14:23:31 +1000
-Received: from d23av03.au.ibm.com (localhost [127.0.0.1])
- by d23av03.au.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
- v6C4NMHc002109
- for <linux-mtd@lists.infradead.org>; Wed, 12 Jul 2017 14:23:23 +1000
+Received: from d23av06.au.ibm.com (localhost [127.0.0.1])
+ by d23av06.au.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
+ v6C4NVbx007255
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Jul 2017 14:23:31 +1000
 From: Cyril Bur <cyrilbur@gmail.com>
 To: linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org
 Cc: benh@kernel.crashing.org, stewart@linux.vnet.ibm.com, dwmw2@infradead.org,
  rlippert@google.com, alistair@popple.id.au
-Subject: [PATCH v3 02/10] mtd: powernv_flash: Lock around concurrent access to
- OPAL
-Date: Wed, 12 Jul 2017 14:22:56 +1000
+Subject: [PATCH v3 07/10] powernv/opal-sensor: remove not needed lock
+Date: Wed, 12 Jul 2017 14:23:01 +1000
 In-Reply-To: <20170712042304.19745-1-cyrilbur@gmail.com>
 References: <20170712042304.19745-1-cyrilbur@gmail.com>
-Message-Id: <20170712042304.19745-3-cyrilbur@gmail.com>
+Message-Id: <20170712042304.19745-8-cyrilbur@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,86 +41,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-OPAL can only manage one flash access at a time and will return an
-OPAL_BUSY error for each concurrent access to the flash. The simplest
-way to prevent this from happening is with a mutex.
+From: Stewart Smith <stewart@linux.vnet.ibm.com>
 
+Parallel sensor reads could run out of async tokens due to
+opal_get_sensor_data grabbing tokens but then doing the sensor
+read behind a mutex, essentially serializing the (possibly
+asynchronous and relatively slow) sensor read.
+
+It turns out that the mutex isn't needed at all, not only
+should the OPAL interface allow concurrent reads, the implementation
+is certainly safe for that, and if any sensor we were reading
+from somewhere isn't, doing the mutual exclusion in the kernel
+is the wrong place to do it, OPAL should be doing it for the kernel.
+
+So, remove the mutex.
+
+Additionally, we shouldn't be printing out an error when we don't
+get a token as the only way this should happen is if we've been
+interrupted in down_interruptible() on the semaphore.
+
+Reported-by: Robert Lippert <rlippert@google.com>
+Signed-off-by: Stewart Smith <stewart@linux.vnet.ibm.com>
 Signed-off-by: Cyril Bur <cyrilbur@gmail.com>
 ---
- drivers/mtd/devices/powernv_flash.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+ arch/powerpc/platforms/powernv/opal-sensor.c | 17 ++++-------------
+ 1 file changed, 4 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/mtd/devices/powernv_flash.c b/drivers/mtd/devices/powernv_flash.c
-index a9a20c00687c..7b41af06f4fe 100644
---- a/drivers/mtd/devices/powernv_flash.c
-+++ b/drivers/mtd/devices/powernv_flash.c
-@@ -38,6 +38,7 @@
+diff --git a/arch/powerpc/platforms/powernv/opal-sensor.c b/arch/powerpc/platforms/powernv/opal-sensor.c
+index aa267f120033..0a7074bb91dc 100644
+--- a/arch/powerpc/platforms/powernv/opal-sensor.c
++++ b/arch/powerpc/platforms/powernv/opal-sensor.c
+@@ -19,13 +19,10 @@
+  */
  
- struct powernv_flash {
- 	struct mtd_info	mtd;
-+	struct mutex lock;
- 	u32 id;
- };
+ #include <linux/delay.h>
+-#include <linux/mutex.h>
+ #include <linux/of_platform.h>
+ #include <asm/opal.h>
+ #include <asm/machdep.h>
  
-@@ -59,12 +60,15 @@ static int powernv_flash_async_op(struct mtd_info *mtd, enum flash_op op,
- 	dev_dbg(dev, "%s(op=%d, offset=0x%llx, len=%zu)\n",
- 			__func__, op, offset, len);
+-static DEFINE_MUTEX(opal_sensor_mutex);
+-
+ /*
+  * This will return sensor information to driver based on the requested sensor
+  * handle. A handle is an opaque id for the powernv, read by the driver from the
+@@ -38,13 +35,9 @@ int opal_get_sensor_data(u32 sensor_hndl, u32 *sensor_data)
+ 	__be32 data;
  
-+	mutex_lock(&info->lock);
-+
  	token = opal_async_get_token_interruptible();
- 	if (token < 0) {
- 		if (token != -ERESTARTSYS)
- 			dev_err(dev, "Failed to get an async token\n");
+-	if (token < 0) {
+-		pr_err("%s: Couldn't get the token, returning\n", __func__);
+-		ret = token;
+-		goto out;
+-	}
++	if (token < 0)
++		return token;
  
--		return token;
-+		rc = token;
-+		goto out;
- 	}
+-	mutex_lock(&opal_sensor_mutex);
+ 	ret = opal_sensor_read(sensor_hndl, token, &data);
+ 	switch (ret) {
+ 	case OPAL_ASYNC_COMPLETION:
+@@ -52,7 +45,7 @@ int opal_get_sensor_data(u32 sensor_hndl, u32 *sensor_data)
+ 		if (ret) {
+ 			pr_err("%s: Failed to wait for the async response, %d\n",
+ 			       __func__, ret);
+-			goto out_token;
++			goto out;
+ 		}
  
- 	switch (op) {
-@@ -79,18 +83,21 @@ static int powernv_flash_async_op(struct mtd_info *mtd, enum flash_op op,
+ 		ret = opal_error_code(opal_get_async_rc(msg));
+@@ -73,10 +66,8 @@ int opal_get_sensor_data(u32 sensor_hndl, u32 *sensor_data)
  		break;
- 	default:
- 		WARN_ON_ONCE(1);
--		return -EIO;
-+		rc = -EIO;
-+		goto out;
  	}
  
- 	if (rc != OPAL_ASYNC_COMPLETION) {
- 		dev_err(dev, "opal_flash_async_op(op=%d) failed (rc %d)\n",
- 				op, rc);
- 		opal_async_release_token(token);
--		return -EIO;
-+		rc = -EIO;
-+		goto out;
- 	}
- 
- 	rc = opal_async_wait_response(token, &msg);
- 	opal_async_release_token(token);
-+	mutex_unlock(&info->lock);
- 	if (rc) {
- 		dev_err(dev, "opal async wait failed (rc %d)\n", rc);
- 		return -EIO;
-@@ -106,6 +113,9 @@ static int powernv_flash_async_op(struct mtd_info *mtd, enum flash_op op,
- 	}
- 
- 	return rc;
-+out:
-+	mutex_unlock(&info->lock);
-+	return rc;
+-out_token:
+-	mutex_unlock(&opal_sensor_mutex);
+-	opal_async_release_token(token);
+ out:
++	opal_async_release_token(token);
+ 	return ret;
  }
- 
- /**
-@@ -237,6 +247,8 @@ static int powernv_flash_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto out;
- 
-+	mutex_init(&data->lock);
-+
- 	dev_set_drvdata(dev, data);
- 
- 	/*
+ EXPORT_SYMBOL_GPL(opal_get_sensor_data);
 -- 
 2.13.2
