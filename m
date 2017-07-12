@@ -1,29 +1,23 @@
-MIME-Version: 1.0
-In-Reply-To: <CAAQYJAuPpzDb_OV1naHZCovy4LJC0_6gFJKPqo7REt7zZzh0pw@mail.gmail.com>
-References: <1498681836-3765-1-git-send-email-andrea.adami@gmail.com>
- <1498681836-3765-4-git-send-email-andrea.adami@gmail.com>
- <20170703112621.rd3ija3efqlq57rg@dell>
- <CAAQYJAuPpzDb_OV1naHZCovy4LJC0_6gFJKPqo7REt7zZzh0pw@mail.gmail.com>
-From: Andrea Adami <andrea.adami@gmail.com>
-Date: Wed, 12 Jul 2017 00:42:00 +0200
-Message-ID: <CAAQYJAvCdSG25U6DjiD5owC7GHyGnWyyaLD_R-fzuMGUDZN8pQ@mail.gmail.com>
-Subject: Re: [PATCH v4 3/9] mfd: tmio.h: support partition parser types
-To: Lee Jones <lee.jones@linaro.org>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
+Received: from mail-pg0-x235.google.com ([2607:f8b0:400e:c05::235])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dV5ev-0007Zr-EW
+ for linux-mtd@lists.infradead.org; Wed, 12 Jul 2017 00:37:43 +0000
+Received: by mail-pg0-x235.google.com with SMTP id k14so4092375pgr.0
+ for <linux-mtd@lists.infradead.org>; Tue, 11 Jul 2017 17:37:20 -0700 (PDT)
+Date: Tue, 11 Jul 2017 17:37:17 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: Marek Vasut <marek.vasut@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Daniel Mack <daniel@zonque.org>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Linus Walleij <linus.walleij@linaro.org>,
- Russell King <linux@armlinux.org.uk>, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Linux MTD Development List <linux-mtd@lists.infradead.org>
+Subject: Re: [PULL] mtd: spi-nor: Changes for 4.13
+Message-ID: <20170712003717.GH55942@google.com>
+References: <a003346e-ae4f-3ca6-58e2-ce78cab6cf11@wedev4u.fr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a003346e-ae4f-3ca6-58e2-ce78cab6cf11@wedev4u.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,76 +27,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jul 3, 2017 at 2:03 PM, Andrea Adami <andrea.adami@gmail.com> wrote=
-:
-> On Mon, Jul 3, 2017 at 1:26 PM, Lee Jones <lee.jones@linaro.org> wrote:
->> Please use the $SUBJECT line expected by the subsystem.
->>
->> `git log --oneline -- $SUBSYSTEM` can help with this.
->>
->> You also need a commit log.
->>
->
-> Lee,
->
-> thanks for spotting it.
-> I'll fix the subject and add a little text in these patches touching head=
-ers.
->
-> I am awaiting for a new review of the big piece of the patch, the
-> ftl/parser, then I'll send a fixed v5.
->
->
+Hi Cyrille,
 
-Lee,
+On Sat, Jul 01, 2017 at 04:09:34PM +0200, Cyrille Pitchen wrote:
+> Hi all,
+> 
+> this is the PR for 4.13.
+> 
+> Please note that I did not include the patch for the SFDP support since it
+> has spent less than a week in linux-next.
+> 
+> Best regards,
+> 
+> Cyrille
+> 
+> The following changes since commit 2ea659a9ef488125eb46da6eb571de5eae5c43f6:
+> 
+>   Linux 4.12-rc1 (2017-05-13 13:19:49 -0700)
+> 
+> are available in the git repository at:
+> 
+>   git://git.infradead.org/l2-mtd.git tags/spi-nor/for-4.13
+> 
+> for you to fetch changes up to 9447332ffacceeb49467ae5314887a30f6c0aaa9:
+> 
+>   mtd: st_spi_fsm: remove SPINOR_OP_RDSR2 and use SPINOR_OP_RDCR instead (2017-06-27 21:50:17 +0200)
+> 
+> ----------------------------------------------------------------
+> This pull request contains the following notable changes:
+> - introduce support to the SPI 1-2-2 and 1-4-4 protocols.
+> - introduce support to the Double Data Rate (DDR) mode.
+> - introduce support to the Octo SPI protocols.
+> - add support to new memory parts for Spansion, Macronix and Winbond.
+> - add fixes for the Aspeed, STM32 and Cadence QSPI controler drivers.
+> - clean up the st_spi_fsm driver.
+> 
+> ----------------------------------------------------------------
 
-I have looked at the history of mfd/tmio.h but couldn't find
-unambiguous examples.
-Do you prefer
-
-Subject: mfd: tmio: tmio_nand: add partition parsers platform data
-or
-Subject: mfd: tmio: tmio-nand: add partition parsers platform data
-or
-Subject: mfd: tmio: tmio/nand: add partition parsers platform data
-
-Thanks
-Andrea
-
-
->>> Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
->>> ---
->>>  include/linux/mfd/tmio.h | 1 +
->>>  1 file changed, 1 insertion(+)
->>>
->>> diff --git a/include/linux/mfd/tmio.h b/include/linux/mfd/tmio.h
->>> index a1520d8..23bb069 100644
->>> --- a/include/linux/mfd/tmio.h
->>> +++ b/include/linux/mfd/tmio.h
->>> @@ -139,6 +139,7 @@ struct tmio_nand_data {
->>>       struct nand_bbt_descr   *badblock_pattern;
->>>       struct mtd_partition    *partition;
->>>       unsigned int            num_partitions;
->>> +     const char *const       *types; /* names of parsers to use if any=
- */
->>
->> I'm okay with this if it's suits the MTD folk.
->>
->
-> Other than kerneldoc comments there are maybe other little
-> discordances to settle: see above is *partition, num_partitions.
-> In the other header it is *partitions, nr_partitions ...I'll see if
-> oneday I can janiitor this.
->
-> Regards
-> Andrea
->
->>>  };
->>>
->>>  #define FBIO_TMIO_ACC_WRITE  0x7C639300
->>
->> --
->> Lee Jones
->> Linaro STMicroelectronics Landing Team Lead
->> Linaro.org =E2=94=82 Open source software for ARM SoCs
->> Follow Linaro: Facebook | Twitter | Blog
+Pulled, thanks!
