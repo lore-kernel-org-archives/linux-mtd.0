@@ -1,36 +1,23 @@
-Received: from mail-wr0-x22d.google.com ([2a00:1450:400c:c0c::22d])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dVDTZ-0003HF-6x
- for linux-mtd@lists.infradead.org; Wed, 12 Jul 2017 08:58:31 +0000
-Received: by mail-wr0-x22d.google.com with SMTP id 77so24379395wrb.1
- for <linux-mtd@lists.infradead.org>; Wed, 12 Jul 2017 01:58:08 -0700 (PDT)
-Date: Wed, 12 Jul 2017 09:58:04 +0100
-From: Lee Jones <lee.jones@linaro.org>
-To: Andrea Adami <andrea.adami@gmail.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Linus Walleij <linus.walleij@linaro.org>,
- Russell King <linux@armlinux.org.uk>, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 3/9] mfd: tmio.h: support partition parser types
-Message-ID: <20170712085804.ya5b3trqbipuel3f@dell>
-References: <1498681836-3765-1-git-send-email-andrea.adami@gmail.com>
- <1498681836-3765-4-git-send-email-andrea.adami@gmail.com>
- <20170703112621.rd3ija3efqlq57rg@dell>
- <CAAQYJAuPpzDb_OV1naHZCovy4LJC0_6gFJKPqo7REt7zZzh0pw@mail.gmail.com>
- <CAAQYJAvCdSG25U6DjiD5owC7GHyGnWyyaLD_R-fzuMGUDZN8pQ@mail.gmail.com>
+Date: Wed, 12 Jul 2017 15:59:27 +0200
+From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+To: Lee Jones <lee.jones@linaro.org>
+Cc: Nicolas Ferre <nicolas.ferre@microchip.com>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, boris.brezillon@free-electrons.com,
+ computersforpeace@gmail.com
+Subject: Re: [PATCH 3/3] ARM: dts: at91: sama5d2: use sama5d2 compatible
+ string for SMC
+Message-ID: <20170712135927.v2mlzknsn4w4o2r2@piout.net>
+References: <20170711074015.30440-1-ludovic.desroches@microchip.com>
+ <20170711074015.30440-4-ludovic.desroches@microchip.com>
+ <029b80a8-2d3f-11b4-d4df-55f5fc48c8e7@microchip.com>
+ <20170711075829.5rzdrjgao6efiuj2@rfolt0960.corp.atmel.com>
+ <20170711080853.uxdmxocq5nhrp7vq@rfolt0960.corp.atmel.com>
+ <20170711092556.mukp4umf4r4etqvt@dell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAQYJAvCdSG25U6DjiD5owC7GHyGnWyyaLD_R-fzuMGUDZN8pQ@mail.gmail.com>
+In-Reply-To: <20170711092556.mukp4umf4r4etqvt@dell>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,80 +27,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 12 Jul 2017, Andrea Adami wrote:
-
-> On Mon, Jul 3, 2017 at 2:03 PM, Andrea Adami <andrea.adami@gmail.com> wrote:
-> > On Mon, Jul 3, 2017 at 1:26 PM, Lee Jones <lee.jones@linaro.org> wrote:
-> >> Please use the $SUBJECT line expected by the subsystem.
-> >>
-> >> `git log --oneline -- $SUBSYSTEM` can help with this.
-> >>
-> >> You also need a commit log.
-> >>
-> >
-> > Lee,
-> >
-> > thanks for spotting it.
-> > I'll fix the subject and add a little text in these patches touching headers.
-> >
-> > I am awaiting for a new review of the big piece of the patch, the
-> > ftl/parser, then I'll send a fixed v5.
-> >
-> >
+On 11/07/2017 at 10:25:56 +0100, Lee Jones wrote:
+> On Tue, 11 Jul 2017, Ludovic Desroches wrote:
 > 
-> Lee,
+> > On Tue, Jul 11, 2017 at 09:58:29AM +0200, Ludovic Desroches wrote:
+> > > On Tue, Jul 11, 2017 at 09:52:58AM +0200, Nicolas Ferre wrote:
+> > > > On 11/07/2017 at 09:40, Ludovic Desroches wrote:
+> > > > > A new compatible string has been introduced for sama5d2 SMC to allow to
+> > > > > manage the registers mapping change.
+> > > > > 
+> > > > > Signed-off-by: Ludovic Desroches <ludovic.desroches@microchip.com>
+> > > > > ---
+> > > > >  arch/arm/boot/dts/sama5d2.dtsi | 2 +-
+> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > 
+> > > > > diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
+> > > > > index 4fcd5bb219e3..60e69aeacbdb 100644
+> > > > > --- a/arch/arm/boot/dts/sama5d2.dtsi
+> > > > > +++ b/arch/arm/boot/dts/sama5d2.dtsi
+> > > > > @@ -1048,7 +1048,7 @@
+> > > > >  			};
+> > > > >  
+> > > > >  			hsmc: hsmc@f8014000 {
+> > > > > -				compatible = "atmel,sama5d3-smc", "syscon", "simple-mfd";
+> > > > > +				compatible = "atmel,sama5d2-smc", "syscon", "simple-mfd";
+> > > > 
+> > > > You'd better use something like:
+> > > >  compatible = "atmel,sama5d2-smc", "atmel,sama5d3-smc", "syscon", "simple-mfd";
+> > > 
+> > > But it's not true, during data interface setup, we will write values in
+> > > the wrong place if we fallback on "atmel,sama5d3-smc".
+> > > 
+> > > Regards
+> > > 
+> > > Ludovic
+> > > 
+> > > > 
+> > > > So that this patch is independent from the rest of the series and
+> > > > we can avoid to having to synchronize with mfd or mtd/nand for this part.
+> > 
+> > If Lee and Boris agree, maybe the series can go through AT91.
 > 
-> I have looked at the history of mfd/tmio.h but couldn't find
-> unambiguous examples.
-> Do you prefer
+> That's fine, but if the series goes though another tree, I will
+> require a pull-request.
 > 
-> Subject: mfd: tmio: tmio_nand: add partition parsers platform data
-> or
-> Subject: mfd: tmio: tmio-nand: add partition parsers platform data
-> or
-> Subject: mfd: tmio: tmio/nand: add partition parsers platform data
+> I am also happy to carry though the MFD tree (and will of course send
+> out a PR to the other affected Maintainers).
+> 
 
-Better to look at the subsystem as a whole.
+I think the easiest is that you take the first two patches through mfd
+and I'll take the third one through at91.
 
-  `git log --oneline -- drivers/mfd`
+Our plan is to get everything fixed for the final 4.13 (I'll send the DT
+as a fix, on top of 4.13-rc1). Is that OK for you ?
 
-You will see something like:
-
-  mfd: device-driver: Short subject starting with an uppercase char
-  
-> >>> Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
-> >>> ---
-> >>>  include/linux/mfd/tmio.h | 1 +
-> >>>  1 file changed, 1 insertion(+)
-> >>>
-> >>> diff --git a/include/linux/mfd/tmio.h b/include/linux/mfd/tmio.h
-> >>> index a1520d8..23bb069 100644
-> >>> --- a/include/linux/mfd/tmio.h
-> >>> +++ b/include/linux/mfd/tmio.h
-> >>> @@ -139,6 +139,7 @@ struct tmio_nand_data {
-> >>>       struct nand_bbt_descr   *badblock_pattern;
-> >>>       struct mtd_partition    *partition;
-> >>>       unsigned int            num_partitions;
-> >>> +     const char *const       *types; /* names of parsers to use if any */
-> >>
-> >> I'm okay with this if it's suits the MTD folk.
-> >>
-> >
-> > Other than kerneldoc comments there are maybe other little
-> > discordances to settle: see above is *partition, num_partitions.
-> > In the other header it is *partitions, nr_partitions ...I'll see if
-> > oneday I can janiitor this.
-> >
-> > Regards
-> > Andrea
-> >
-> >>>  };
-> >>>
-> >>>  #define FBIO_TMIO_ACC_WRITE  0x7C639300
-> >>
 
 -- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Alexandre Belloni, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
