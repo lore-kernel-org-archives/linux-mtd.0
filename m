@@ -1,24 +1,39 @@
-Received: from mail-pg0-x231.google.com ([2607:f8b0:400e:c05::231])
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]
+ helo=mx0a-001b2d01.pphosted.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dV629-0007ZV-0N
- for linux-mtd@lists.infradead.org; Wed, 12 Jul 2017 01:01:43 +0000
-Received: by mail-pg0-x231.google.com with SMTP id t186so4314407pgb.1
- for <linux-mtd@lists.infradead.org>; Tue, 11 Jul 2017 18:01:19 -0700 (PDT)
-Date: Tue, 11 Jul 2017 18:01:15 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>, Marek Vasut <marex@denx.de>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Subject: Re: [PULL v2] mtd: nand: Changes for 4.13
-Message-ID: <20170712010115.GI55942@google.com>
-References: <20170703134609.0ea9cd63@bbrezillon>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170703134609.0ea9cd63@bbrezillon>
+ id 1dV9C3-0001Ld-Jc
+ for linux-mtd@lists.infradead.org; Wed, 12 Jul 2017 04:24:09 +0000
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+ by mx0b-001b2d01.pphosted.com (8.16.0.21/8.16.0.21) with SMTP id
+ v6C4NhFq138107
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Jul 2017 00:23:43 -0400
+Received: from e23smtp04.au.ibm.com (e23smtp04.au.ibm.com [202.81.31.146])
+ by mx0b-001b2d01.pphosted.com with ESMTP id 2bncjc87ps-1
+ (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=NOT)
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Jul 2017 00:23:38 -0400
+Received: from localhost
+ by e23smtp04.au.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ Violators will be prosecuted
+ for <linux-mtd@lists.infradead.org> from <cyrilbur@gmail.com>;
+ Wed, 12 Jul 2017 14:23:35 +1000
+Received: from d23av01.au.ibm.com (d23av01.au.ibm.com [9.190.234.96])
+ by d23relay10.au.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ v6C4NWVE22085820
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Jul 2017 14:23:32 +1000
+Received: from d23av01.au.ibm.com (localhost [127.0.0.1])
+ by d23av01.au.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
+ v6C4NVmm012053
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Jul 2017 14:23:31 +1000
+From: Cyril Bur <cyrilbur@gmail.com>
+To: linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org
+Cc: benh@kernel.crashing.org, stewart@linux.vnet.ibm.com, dwmw2@infradead.org,
+ rlippert@google.com, alistair@popple.id.au
+Subject: [PATCH v3 10/10] mtd: powernv_flash: Use
+ opal_async_wait_response_interruptible()
+Date: Wed, 12 Jul 2017 14:23:04 +1000
+In-Reply-To: <20170712042304.19745-1-cyrilbur@gmail.com>
+References: <20170712042304.19745-1-cyrilbur@gmail.com>
+Message-Id: <20170712042304.19745-11-cyrilbur@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,84 +43,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ Thomas, as I don't really want to dig up the original patch to review
-right now
+The OPAL calls performed in this driver shouldn't be using
+opal_async_wait_response() as this performs a wait_event() which, on
+long running OPAL calls could result in hung task warnings. wait_event()
+prevents timely signal delivery which is also undesirable.
 
-On Mon, Jul 03, 2017 at 01:46:09PM +0200, Boris Brezillon wrote:
-> Hi,
-> 
-> Here's my PR for 4.13. This v2 includes Dan's fix ("mtd: nand: mtk:
-> release lock on error path").
-> 
-> As usual, let me know if you see any problem.
-> 
-> Thanks,
-> 
-> Boris
-> 
-> The following changes since commit 2ea659a9ef488125eb46da6eb571de5eae5c43f6:
-> 
->   Linux 4.12-rc1 (2017-05-13 13:19:49 -0700)
-> 
-> are available in the git repository at:
-> 
->   ssh://git.infradead.org/srv/git/l2-mtd.git tags/nand/for-4.13
+This patch also attempts to quieten down the use of dev_err() when
+errors haven't actually occurred and also to return better information up
+the stack rather than always -EIO.
 
-I happen to have SSH access to that repository :) but a
-publicly-readable link is usually a better idea, in the highly unlikely
-case that someone else wants to review your pull request.
+Signed-off-by: Cyril Bur <cyrilbur@gmail.com>
+---
+ drivers/mtd/devices/powernv_flash.c | 28 +++++++++++++++++++++++-----
+ 1 file changed, 23 insertions(+), 5 deletions(-)
 
-> for you to fetch changes up to 81667e9c8ad827365f2d1e8b924caf062a19c593:
-> 
->   mtd: nand: mtk: release lock on error path (2017-07-03 13:39:09 +0200)
-> 
-> ----------------------------------------------------------------
-> This pull request contains the following core changes:
-> 
-> * addition of on-ecc support to Micron driver
-
-This still works by overriding chip->ecc.{read,write}_page{,_raw}()
-callbacks... I never liked that, and there have been multiple
-submissions that tried this already, IIRC. It's for sure not going to
-work with at least one in-tree driver (brcmnand); I suspect others
-(qcom_nand? mtk_nand?). Can this be improved to either bail out when
-this clobbers a controller's existing callback, or even better, to
-utilize a controller's existing _raw() implementation, instead of
-assuming it can use the nand_base defaults?
-
-The latter seems difficult to do in time for this merge, but maybe the
-former can be done within the release?
-
-I'm still tempted to pull this, since at least it does require somebody
-to opt in via the device tree binding. So they should probably make sure
-it works with their driver before using it.
-
-> * addition of helpers to help drivers choose most appropriate ECC
->   settings
-> * deletion of dead-code (cached programming and ->errstat() hook)
-> * make sure drivers that do not support the SET/GET FEATURES command
->   return ENOTSUPP use a dummy ->set/get_features implementation
->   returning -ENOTSUPP (required for Micron on-die ECC)
-> * change the semantic of ecc->write_page() for drivers setting the
->   NAND_ECC_CUSTOM_PAGE_ACCESS flag
-> * support exiting 'GET STATUS' command in default ->cmdfunc()
->   implementations
-> * change the prototype of ->setup_data_interface()
-> 
-> A bunch of driver related changes:
-> 
-> * various cleanup, fixes and improvements of the MTK driver
-> * OMAP DT bindings fixes
-> * support for ->setup_data_interface() in the fsmc driver
-> * support for imx7 in the gpmi driver
-> * finalization of the denali driver rework (thanks to Masahiro for the
->   work he's done on this driver)
-> * fix "bitflips in erased pages" handling in the ifc driver
-> * addition of PM ops and dynamic timing configuration to the atmel
->   driver
-> 
-> And as usual we also have a few minor cleanup/fixes/improvements
-> patches across the subsystem.
-> 
-
-Brian
+diff --git a/drivers/mtd/devices/powernv_flash.c b/drivers/mtd/devices/powernv_flash.c
+index d7243b72ba6e..cfa274ba7e40 100644
+--- a/drivers/mtd/devices/powernv_flash.c
++++ b/drivers/mtd/devices/powernv_flash.c
+@@ -90,16 +90,34 @@ static int powernv_flash_async_op(struct mtd_info *mtd, enum flash_op op,
+ 		goto out_success;
+ 
+ 	if (rc != OPAL_ASYNC_COMPLETION) {
+-		dev_err(dev, "opal_flash_async_op(op=%d) failed (rc %d)\n",
++		if (rc != OPAL_BUSY)
++			dev_err(dev, "opal_flash_async_op(op=%d) failed (rc %d)\n",
+ 				op, rc);
+-		rc = -EIO;
++		rc = opal_error_code(rc);
+ 		goto out;
+ 	}
+ 
+-	rc = opal_async_wait_response(token, &msg);
++	rc = opal_async_wait_response_interruptible(token, &msg);
+ 	if (rc) {
+-		dev_err(dev, "opal async wait failed (rc %d)\n", rc);
+-		rc = -EIO;
++		/*
++		 * Awkward, we've been interrupted but we cannot return. If we
++		 * do return the mtd core will free the buffer we've just
++		 * passed to OPAL but OPAL will continue to read or write from
++		 * that memory.
++		 * Future work will introduce a call to tell OPAL to stop
++		 * using the buffer.
++		 * It may be tempting to ultimately return 0 if we're doing a
++		 * read or a write since we are going to end up waiting until
++		 * OPAL is done. However, because the MTD core sends us the
++		 * userspace request in chunks, we must report EINTR so that
++		 * it doesn't just send us the next chunk, thus defeating the
++		 * point of the _interruptible wait.
++		 */
++		rc = -EINTR;
++		if (op == FLASH_OP_READ || op == FLASH_OP_WRITE) {
++			if (opal_async_wait_response(token, &msg))
++				dev_err(dev, "opal async wait failed (rc %d)\n", rc);
++		}
+ 		goto out;
+ 	}
+ 
+-- 
+2.13.2
