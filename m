@@ -1,9 +1,9 @@
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dVOm7-0004yr-4O
- for linux-mtd@lists.infradead.org; Wed, 12 Jul 2017 21:02:24 +0000
-Received: by mail-pf0-x241.google.com with SMTP id c24so4556689pfe.1
- for <linux-mtd@lists.infradead.org>; Wed, 12 Jul 2017 14:02:02 -0700 (PDT)
+ id 1dVOmA-0004zL-K2
+ for linux-mtd@lists.infradead.org; Wed, 12 Jul 2017 21:02:30 +0000
+Received: by mail-pg0-x242.google.com with SMTP id d193so4336649pgc.2
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Jul 2017 14:02:07 -0700 (PDT)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org
 Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
@@ -11,9 +11,12 @@ Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
  linux-crypto@vger.kernel.org, "Theodore Y . Ts'o" <tytso@mit.edu>,
  Jaegeuk Kim <jaegeuk@kernel.org>, Alex Cope <alexcope@google.com>,
  Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 0/6] fscrypt: key verification and KDF improvement
-Date: Wed, 12 Jul 2017 14:00:29 -0700
-Message-Id: <20170712210035.51534-1-ebiggers3@gmail.com>
+Subject: [PATCH 2/6] fscrypt: rename ->ci_master_key to
+ ->ci_master_key_descriptor
+Date: Wed, 12 Jul 2017 14:00:31 -0700
+Message-Id: <20170712210035.51534-3-ebiggers3@gmail.com>
+In-Reply-To: <20170712210035.51534-1-ebiggers3@gmail.com>
+References: <20170712210035.51534-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,63 +28,68 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Eric Biggers <ebiggers@google.com>
 
-This patch series solves two major problems which filesystem-level
-encryption has currently.  First, the user-supplied master keys are not
-verified, which means a malicious user can provide the wrong key for
-another user's file and cause a DOS attack or worse.  This flaw has been
-criticized in the past [1].  Second, the KDF (Key Derivation Function)
-used to derive per-file keys is ad-hoc and nonstandard.  While it meets
-the primary security requirement, it's inflexible and is missing some
-useful properties such as non-reversibility, which is important under
-some threat models.  This weakness was noted by Unterluggauer and
-Mangard (2016) [2] who also demonstrated an EM attack against the
-current AES-based KDF.
+In struct fscrypt_info, ->ci_master_key is the master key descriptor,
+not the master key itself.  In preparation for introducing a struct
+fscrypt_master_key and making ->ci_master_key point to it, rename the
+existing ->ci_master_key to ->ci_master_key_descriptor.
 
-These problems are solved together by introducing a new encryption
-policy version where the KDF is changed to HKDF-SHA512, i.e. RFC-5869
-[3] with SHA-512 as the underlying hash function.  HKDF is used to
-derive the per-file keys as well as to generate a "key hash" which is
-stored on-disk to allow key verification.  The HMAC transform for each
-master key is pre-keyed and cached, which in practice makes the new KDF
-about as fast or even faster than the old one which did not use the
-crypto API efficiently.
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/crypto/fscrypt_private.h | 2 +-
+ fs/crypto/keyinfo.c         | 4 ++--
+ fs/crypto/policy.c          | 5 +++--
+ 3 files changed, 6 insertions(+), 5 deletions(-)
 
-Please give special consideration to the choice and usage of crypto
-algorithms and any other on-disk format and API changes, since we will
-be locked into these once merged.
-
-All these changes are independent of filesystem and encryption mode,
-i.e. the "v2" encryption policies can be used on any fscrypt-capable
-filesystem (ext4, f2fs, or ubifs currently) and with any of the
-supported encryption modes.
-
-References:
-  [1] https://blog.quarkslab.com/a-glimpse-of-ext4-filesystem-level-encryption.html
-
-  [2] Unterluggauer and Mangard (2016).  "Exploiting the Physical
-      Disparity: Side-Channel Attacks on Memory Encryption".
-      https://eprint.iacr.org/2016/473.pdf
-
-  [3] RFC 5869. "HMAC-based Extract-and-Expand Key Derivation Function
-      (HKDF)".  https://tools.ietf.org/html/rfc5869
-
-Eric Biggers (6):
-  fscrypt: add v2 encryption context and policy
-  fscrypt: rename ->ci_master_key to ->ci_master_key_descriptor
-  fscrypt: use HKDF-SHA512 to derive the per-inode encryption keys
-  fscrypt: verify that the correct master key was supplied
-  fscrypt: cache the HMAC transform for each master key
-  fscrypt: for v2 policies, support "fscrypt:" key prefix only
-
- fs/crypto/Kconfig              |   2 +
- fs/crypto/fscrypt_private.h    | 109 ++++++-
- fs/crypto/keyinfo.c            | 669 ++++++++++++++++++++++++++++++++++-------
- fs/crypto/policy.c             | 118 ++++++--
- fs/super.c                     |   4 +
- include/linux/fs.h             |   5 +
- include/linux/fscrypt_common.h |   2 +-
- include/uapi/linux/fs.h        |   6 +
- 8 files changed, 766 insertions(+), 149 deletions(-)
-
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index ef6909035823..5470aac82cab 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -107,7 +107,7 @@ struct fscrypt_info {
+ 	u8 ci_data_mode;
+ 	u8 ci_filename_mode;
+ 	u8 ci_flags;
+-	u8 ci_master_key[FS_KEY_DESCRIPTOR_SIZE];
++	u8 ci_master_key_descriptor[FS_KEY_DESCRIPTOR_SIZE];
+ };
+ 
+ typedef enum {
+diff --git a/fs/crypto/keyinfo.c b/fs/crypto/keyinfo.c
+index 7e664a11340a..5591fd24e4b2 100644
+--- a/fs/crypto/keyinfo.c
++++ b/fs/crypto/keyinfo.c
+@@ -293,8 +293,8 @@ int fscrypt_get_encryption_info(struct inode *inode)
+ 	crypt_info->ci_data_mode = ctx.contents_encryption_mode;
+ 	crypt_info->ci_filename_mode = ctx.filenames_encryption_mode;
+ 	crypt_info->ci_flags = ctx.flags;
+-	memcpy(crypt_info->ci_master_key, ctx.master_key_descriptor,
+-				sizeof(crypt_info->ci_master_key));
++	memcpy(crypt_info->ci_master_key_descriptor, ctx.master_key_descriptor,
++	       FS_KEY_DESCRIPTOR_SIZE);
+ 
+ 	res = determine_cipher_type(crypt_info, inode, &cipher_str, &keysize);
+ 	if (res)
+diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
+index 044f23fadb5a..81c59f8e45c0 100644
+--- a/fs/crypto/policy.c
++++ b/fs/crypto/policy.c
+@@ -224,7 +224,8 @@ int fscrypt_has_permitted_context(struct inode *parent, struct inode *child)
+ 	child_ci = child->i_crypt_info;
+ 
+ 	if (parent_ci && child_ci) {
+-		return memcmp(parent_ci->ci_master_key, child_ci->ci_master_key,
++		return memcmp(parent_ci->ci_master_key_descriptor,
++			      child_ci->ci_master_key_descriptor,
+ 			      FS_KEY_DESCRIPTOR_SIZE) == 0 &&
+ 			(parent_ci->ci_context_version ==
+ 			 child_ci->ci_context_version) &&
+@@ -282,7 +283,7 @@ int fscrypt_inherit_context(struct inode *parent, struct inode *child,
+ 	ctx.contents_encryption_mode = ci->ci_data_mode;
+ 	ctx.filenames_encryption_mode = ci->ci_filename_mode;
+ 	ctx.flags = ci->ci_flags;
+-	memcpy(ctx.master_key_descriptor, ci->ci_master_key,
++	memcpy(ctx.master_key_descriptor, ci->ci_master_key_descriptor,
+ 	       FS_KEY_DESCRIPTOR_SIZE);
+ 	get_random_bytes(ctx.nonce, FS_KEY_DERIVATION_NONCE_SIZE);
+ 	if (ctx.version != FSCRYPT_CONTEXT_V1)
 -- 
 2.13.2.932.g7449e964c-goog
