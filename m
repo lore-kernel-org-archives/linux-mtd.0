@@ -1,23 +1,19 @@
-Date: Wed, 12 Jul 2017 15:59:27 +0200
-From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-To: Lee Jones <lee.jones@linaro.org>
-Cc: Nicolas Ferre <nicolas.ferre@microchip.com>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, boris.brezillon@free-electrons.com,
- computersforpeace@gmail.com
-Subject: Re: [PATCH 3/3] ARM: dts: at91: sama5d2: use sama5d2 compatible
- string for SMC
-Message-ID: <20170712135927.v2mlzknsn4w4o2r2@piout.net>
-References: <20170711074015.30440-1-ludovic.desroches@microchip.com>
- <20170711074015.30440-4-ludovic.desroches@microchip.com>
- <029b80a8-2d3f-11b4-d4df-55f5fc48c8e7@microchip.com>
- <20170711075829.5rzdrjgao6efiuj2@rfolt0960.corp.atmel.com>
- <20170711080853.uxdmxocq5nhrp7vq@rfolt0960.corp.atmel.com>
- <20170711092556.mukp4umf4r4etqvt@dell>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170711092556.mukp4umf4r4etqvt@dell>
+Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dVOm7-0004yr-4O
+ for linux-mtd@lists.infradead.org; Wed, 12 Jul 2017 21:02:24 +0000
+Received: by mail-pf0-x241.google.com with SMTP id c24so4556689pfe.1
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Jul 2017 14:02:02 -0700 (PDT)
+From: Eric Biggers <ebiggers3@gmail.com>
+To: linux-fscrypt@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
+ linux-crypto@vger.kernel.org, "Theodore Y . Ts'o" <tytso@mit.edu>,
+ Jaegeuk Kim <jaegeuk@kernel.org>, Alex Cope <alexcope@google.com>,
+ Eric Biggers <ebiggers@google.com>
+Subject: [PATCH 0/6] fscrypt: key verification and KDF improvement
+Date: Wed, 12 Jul 2017 14:00:29 -0700
+Message-Id: <20170712210035.51534-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,62 +23,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/07/2017 at 10:25:56 +0100, Lee Jones wrote:
-> On Tue, 11 Jul 2017, Ludovic Desroches wrote:
-> 
-> > On Tue, Jul 11, 2017 at 09:58:29AM +0200, Ludovic Desroches wrote:
-> > > On Tue, Jul 11, 2017 at 09:52:58AM +0200, Nicolas Ferre wrote:
-> > > > On 11/07/2017 at 09:40, Ludovic Desroches wrote:
-> > > > > A new compatible string has been introduced for sama5d2 SMC to allow to
-> > > > > manage the registers mapping change.
-> > > > > 
-> > > > > Signed-off-by: Ludovic Desroches <ludovic.desroches@microchip.com>
-> > > > > ---
-> > > > >  arch/arm/boot/dts/sama5d2.dtsi | 2 +-
-> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > 
-> > > > > diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
-> > > > > index 4fcd5bb219e3..60e69aeacbdb 100644
-> > > > > --- a/arch/arm/boot/dts/sama5d2.dtsi
-> > > > > +++ b/arch/arm/boot/dts/sama5d2.dtsi
-> > > > > @@ -1048,7 +1048,7 @@
-> > > > >  			};
-> > > > >  
-> > > > >  			hsmc: hsmc@f8014000 {
-> > > > > -				compatible = "atmel,sama5d3-smc", "syscon", "simple-mfd";
-> > > > > +				compatible = "atmel,sama5d2-smc", "syscon", "simple-mfd";
-> > > > 
-> > > > You'd better use something like:
-> > > >  compatible = "atmel,sama5d2-smc", "atmel,sama5d3-smc", "syscon", "simple-mfd";
-> > > 
-> > > But it's not true, during data interface setup, we will write values in
-> > > the wrong place if we fallback on "atmel,sama5d3-smc".
-> > > 
-> > > Regards
-> > > 
-> > > Ludovic
-> > > 
-> > > > 
-> > > > So that this patch is independent from the rest of the series and
-> > > > we can avoid to having to synchronize with mfd or mtd/nand for this part.
-> > 
-> > If Lee and Boris agree, maybe the series can go through AT91.
-> 
-> That's fine, but if the series goes though another tree, I will
-> require a pull-request.
-> 
-> I am also happy to carry though the MFD tree (and will of course send
-> out a PR to the other affected Maintainers).
-> 
+From: Eric Biggers <ebiggers@google.com>
 
-I think the easiest is that you take the first two patches through mfd
-and I'll take the third one through at91.
+This patch series solves two major problems which filesystem-level
+encryption has currently.  First, the user-supplied master keys are not
+verified, which means a malicious user can provide the wrong key for
+another user's file and cause a DOS attack or worse.  This flaw has been
+criticized in the past [1].  Second, the KDF (Key Derivation Function)
+used to derive per-file keys is ad-hoc and nonstandard.  While it meets
+the primary security requirement, it's inflexible and is missing some
+useful properties such as non-reversibility, which is important under
+some threat models.  This weakness was noted by Unterluggauer and
+Mangard (2016) [2] who also demonstrated an EM attack against the
+current AES-based KDF.
 
-Our plan is to get everything fixed for the final 4.13 (I'll send the DT
-as a fix, on top of 4.13-rc1). Is that OK for you ?
+These problems are solved together by introducing a new encryption
+policy version where the KDF is changed to HKDF-SHA512, i.e. RFC-5869
+[3] with SHA-512 as the underlying hash function.  HKDF is used to
+derive the per-file keys as well as to generate a "key hash" which is
+stored on-disk to allow key verification.  The HMAC transform for each
+master key is pre-keyed and cached, which in practice makes the new KDF
+about as fast or even faster than the old one which did not use the
+crypto API efficiently.
 
+Please give special consideration to the choice and usage of crypto
+algorithms and any other on-disk format and API changes, since we will
+be locked into these once merged.
+
+All these changes are independent of filesystem and encryption mode,
+i.e. the "v2" encryption policies can be used on any fscrypt-capable
+filesystem (ext4, f2fs, or ubifs currently) and with any of the
+supported encryption modes.
+
+References:
+  [1] https://blog.quarkslab.com/a-glimpse-of-ext4-filesystem-level-encryption.html
+
+  [2] Unterluggauer and Mangard (2016).  "Exploiting the Physical
+      Disparity: Side-Channel Attacks on Memory Encryption".
+      https://eprint.iacr.org/2016/473.pdf
+
+  [3] RFC 5869. "HMAC-based Extract-and-Expand Key Derivation Function
+      (HKDF)".  https://tools.ietf.org/html/rfc5869
+
+Eric Biggers (6):
+  fscrypt: add v2 encryption context and policy
+  fscrypt: rename ->ci_master_key to ->ci_master_key_descriptor
+  fscrypt: use HKDF-SHA512 to derive the per-inode encryption keys
+  fscrypt: verify that the correct master key was supplied
+  fscrypt: cache the HMAC transform for each master key
+  fscrypt: for v2 policies, support "fscrypt:" key prefix only
+
+ fs/crypto/Kconfig              |   2 +
+ fs/crypto/fscrypt_private.h    | 109 ++++++-
+ fs/crypto/keyinfo.c            | 669 ++++++++++++++++++++++++++++++++++-------
+ fs/crypto/policy.c             | 118 ++++++--
+ fs/super.c                     |   4 +
+ include/linux/fs.h             |   5 +
+ include/linux/fscrypt_common.h |   2 +-
+ include/uapi/linux/fs.h        |   6 +
+ 8 files changed, 766 insertions(+), 149 deletions(-)
 
 -- 
-Alexandre Belloni, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+2.13.2.932.g7449e964c-goog
