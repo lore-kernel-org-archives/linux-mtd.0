@@ -1,28 +1,26 @@
-Received: from orcrist.hmeau.com ([104.223.48.154] helo=deadmen.hmeau.com)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dVgfp-0003m8-M7
- for linux-mtd@lists.infradead.org; Thu, 13 Jul 2017 16:09:08 +0000
-Date: Fri, 14 Jul 2017 00:07:54 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>
+Received: from mail.eperm.de ([89.247.134.16])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dVgp0-0007lH-2r
+ for linux-mtd@lists.infradead.org; Thu, 13 Jul 2017 16:18:36 +0000
+From: Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To: Herbert Xu <herbert@gondor.apana.org.au>
 Cc: Eric Biggers <ebiggers3@gmail.com>, linux-fscrypt@vger.kernel.org,
  linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, linux-crypto@vger.kernel.org,
- "Theodore Y . Ts'o" <tytso@mit.edu>,
+ linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
+ linux-crypto@vger.kernel.org, "Theodore Y . Ts'o" <tytso@mit.edu>,
  Jaegeuk Kim <jaegeuk@kernel.org>, Alex Cope <alexcope@google.com>,
  Eric Biggers <ebiggers@google.com>
 Subject: Re: [PATCH 3/6] fscrypt: use HKDF-SHA512 to derive the per-inode
  encryption keys
-Message-ID: <20170713160753.GA25989@gondor.apana.org.au>
+Date: Thu, 13 Jul 2017 18:18:02 +0200
+Message-ID: <4273111.qD8qsi0XUh@tauon.chronox.de>
+In-Reply-To: <20170713160753.GA25989@gondor.apana.org.au>
 References: <20170712210035.51534-1-ebiggers3@gmail.com>
- <20170712210035.51534-4-ebiggers3@gmail.com>
  <2034167.Brpu2WxA6s@tauon.chronox.de>
+ <20170713160753.GA25989@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2034167.Brpu2WxA6s@tauon.chronox.de>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,24 +30,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jul 13, 2017 at 04:54:55PM +0200, Stephan Müller wrote:
-> Am Mittwoch, 12. Juli 2017, 23:00:32 CEST schrieb Eric Biggers:
-> 
-> Hi Herbert,
-> 
-> This patch adds a second KDF to the kernel -- the first is found in the keys 
-> subsystem.
-> 
-> The next KDF that may come in is in the TLS scope.
-> 
-> Would it make sense to warm up the KDF patches adding generic KDF support to 
-> the kernel crypto API that I supplied some time ago? The advantages would be 
-> to have one location of KDF implementations and the benefit of the testmgr.
+Am Donnerstag, 13. Juli 2017, 18:07:54 CEST schrieb Herbert Xu:
 
-Sure.  Though I'd like to see what it looks like before I commit :)
+Hi Herbert,
 
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+> Sure.  Though I'd like to see what it looks like before I commit :)
+
+Naturally. :-)
+
+The patches would create an RNG template support. KDFs are not more than 
+special-purpose RNGs.
+
+Ciao
+Stephan
