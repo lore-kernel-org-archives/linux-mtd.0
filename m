@@ -1,26 +1,30 @@
-Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
+Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dViLx-0008NP-2M
- for linux-mtd@lists.infradead.org; Thu, 13 Jul 2017 17:56:43 +0000
-Received: by mail-pg0-x243.google.com with SMTP id u62so7728322pgb.0
- for <linux-mtd@lists.infradead.org>; Thu, 13 Jul 2017 10:56:23 -0700 (PDT)
-Date: Thu, 13 Jul 2017 10:56:20 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH] Documentation: ABI: mtd: describe "offset" more precisely
-Message-ID: <20170713175620.GK55942@google.com>
-References: <20170625111154.14022-1-zajec5@gmail.com>
+ id 1dVia8-0002g5-Hf
+ for linux-mtd@lists.infradead.org; Thu, 13 Jul 2017 18:11:22 +0000
+Received: by mail-pg0-x244.google.com with SMTP id u62so7766613pgb.0
+ for <linux-mtd@lists.infradead.org>; Thu, 13 Jul 2017 11:10:59 -0700 (PDT)
+Date: Thu, 13 Jul 2017 11:10:57 -0700
+From: Eric Biggers <ebiggers3@gmail.com>
+To: Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>
+Cc: herbert@gondor.apana.org.au, linux-fscrypt@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net,
+ linux-mtd@lists.infradead.org, linux-crypto@vger.kernel.org,
+ "Theodore Y . Ts'o" <tytso@mit.edu>,
+ Jaegeuk Kim <jaegeuk@kernel.org>, Alex Cope <alexcope@google.com>,
+ Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH 3/6] fscrypt: use HKDF-SHA512 to derive the per-inode
+ encryption keys
+Message-ID: <20170713181057.GA143898@gmail.com>
+References: <20170712210035.51534-1-ebiggers3@gmail.com>
+ <20170712210035.51534-4-ebiggers3@gmail.com>
+ <2034167.Brpu2WxA6s@tauon.chronox.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20170625111154.14022-1-zajec5@gmail.com>
+In-Reply-To: <2034167.Brpu2WxA6s@tauon.chronox.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,15 +34,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Jun 25, 2017 at 01:11:54PM +0200, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
-> 
-> So far Linux supported only two levels of MTD devices so we didn't need
-> a very precise description for this sysfs file. With commit
-> 97519dc52b44a ("mtd: partitions: add support for subpartitions") there
-> is support for a tree structure so we should have more precise
-> description. Using "parent" and "flash device" makes it more accurate.
-> 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Hi Stephan,
 
-Applied to linux-mtd.git
+On Thu, Jul 13, 2017 at 04:54:55PM +0200, Stephan M�ller wrote:
+> Am Mittwoch, 12. Juli 2017, 23:00:32 CEST schrieb Eric Biggers:
+> 
+> Hi Herbert,
+> 
+> This patch adds a second KDF to the kernel -- the first is found in the keys 
+> subsystem.
+> 
+> The next KDF that may come in is in the TLS scope.
+> 
+> Would it make sense to warm up the KDF patches adding generic KDF support to 
+> the kernel crypto API that I supplied some time ago? The advantages would be 
+> to have one location of KDF implementations and the benefit of the testmgr.
+> 
+
+That may be a good idea.  Looking at the old thread, I share Herbert's concern
+(http://www.spinics.net/lists/linux-crypto/msg21231.html) about there likely not
+being more than one implementation of each KDF algorithm.  So, perhaps some
+simple helper functions would be more appropriate.  However, making the KDFs be
+covered by self-tests would be very nice.
+
+Also, it seems your patch
+(http://www.spinics.net/lists/linux-crypto/msg21137.html) doesn't allow a salt
+to be passed in.  In order to fully support HKDF, crypto_rng_reset() (which as I
+understand would be the way to invoke the "extract" step) would somehow need to
+accept both the input keying material and salt, both of which are arbitrary
+length binary.
+
+Eric
