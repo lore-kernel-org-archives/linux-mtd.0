@@ -1,14 +1,14 @@
-Received: from mail.nic.cz ([2001:1488:800:400::400])
+Received: from mail.nic.cz ([217.31.204.67])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dW3RO-0001vv-08
- for linux-mtd@lists.infradead.org; Fri, 14 Jul 2017 16:27:44 +0000
+ id 1dW3So-0002NP-5h
+ for linux-mtd@lists.infradead.org; Fri, 14 Jul 2017 16:29:12 +0000
 From: =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>
 To: linux-mtd@lists.infradead.org
 Cc: Tomas Hlavacek <tomas.hlavacek@nic.cz>,
  =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>
-Subject: [PATCH] mtd: fsl_elbc_nanc: Add SOFT_BCH ECC mode selection via DT
-Date: Fri, 14 Jul 2017 18:26:35 +0200
-Message-Id: <20170714162635.1802-1-marek.behun@nic.cz>
+Subject: [PATCH] mtd: fsl_elbc_nand: Add SOFT_BCH ECC mode selection via DT
+Date: Fri, 14 Jul 2017 18:28:12 +0200
+Message-Id: <20170714162812.2348-1-marek.behun@nic.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
