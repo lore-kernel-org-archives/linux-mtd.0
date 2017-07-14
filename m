@@ -1,29 +1,27 @@
-Received: from mail-eopbgr10063.outbound.protection.outlook.com ([40.107.1.63]
- helo=EUR02-HE1-obe.outbound.protection.outlook.com)
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dW1yl-0002cT-NB
- for linux-mtd@lists.infradead.org; Fri, 14 Jul 2017 14:54:07 +0000
-From: Han Xu <han.xu@nxp.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Miquel Raynal
- <miquel.raynal@free-electrons.com>
-CC: "richard@nod.at" <richard@nod.at>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "cyrille.pitchen@wedev4u.fr"
- <cyrille.pitchen@wedev4u.fr>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mtd: gpmi-nand: do not fail setting ONFI timing mode if
- available
-Date: Fri, 14 Jul 2017 14:53:39 +0000
-Message-ID: <178298b1-b482-e636-2daa-1a6595b8c139@nxp.com>
-References: <20170713192030.22177-1-miquel.raynal@free-electrons.com>
- <20170713221520.268bc554@bbrezillon>
-In-Reply-To: <20170713221520.268bc554@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <4FA9F6137B667E47859BC3267E6A73D5@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+Received: from mail-pf0-x229.google.com ([2607:f8b0:400e:c00::229])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dW2dz-0007WW-Fy
+ for linux-mtd@lists.infradead.org; Fri, 14 Jul 2017 15:36:41 +0000
+Received: by mail-pf0-x229.google.com with SMTP id q85so47162679pfq.1
+ for <linux-mtd@lists.infradead.org>; Fri, 14 Jul 2017 08:36:17 -0700 (PDT)
+Date: Fri, 14 Jul 2017 08:36:15 -0700
+From: Michael Halcrow <mhalcrow@google.com>
+To: Eric Biggers <ebiggers3@gmail.com>
+Cc: linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-mtd@lists.infradead.org, linux-crypto@vger.kernel.org,
+ "Theodore Y . Ts'o" <tytso@mit.edu>,
+ Jaegeuk Kim <jaegeuk@kernel.org>, Alex Cope <alexcope@google.com>,
+ Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH 2/6] fscrypt: rename ->ci_master_key to
+ ->ci_master_key_descriptor
+Message-ID: <20170714153615.GA25453@google.com>
+References: <20170712210035.51534-1-ebiggers3@gmail.com>
+ <20170712210035.51534-3-ebiggers3@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170712210035.51534-3-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,44 +31,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCk9uIDA3LzEzLzIwMTcgMDM6MTUgUE0sIEJvcmlzIEJyZXppbGxvbiB3cm90ZToNCj4gSGkg
-TWlxdWVsLA0KPg0KPiBMZSBUaHUsIDEzIEp1bCAyMDE3IDIxOjIwOjMwICswMjAwLA0KPiBNaXF1
-ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGZyZWUtZWxlY3Ryb25zLmNvbT4gYSDDqWNyaXQgOg0K
-Pg0KPj4gR1BNSSBORkMgZHJpdmVyIGZhaWxzIHRvIGFwcGx5IHRpbWluZyBtb2RlIGlmIHRoZSAt
-Pm9uZmlfZ2V0X2ZlYXR1cmVzKCkNCj4+IGRvZXMgbm90IHJldHVybiB0aGUgbW9kZSB0aGF0IHdh
-cyBwcmV2aW91c2x5IGFwcGxpZWQuDQo+Pg0KPj4gV2UgY2FuIGFzc3VtZSB0aGF0IGEgbmFuZCBj
-aGlwIHN1cHBvcnRzIGEgdGltaW5nIGFzIGxvbmcgYXMgaXQgaXMNCj4+IHJlYWQgZnJvbSB0aGUg
-T05GSSBwYXJhbWV0ZXIgcGFnZS4gUmVhZGluZyBiYWNrIGEgZGlmZmVyZW50IG1vZGUgdGhhbg0K
-Pj4gdGhlIG9uZSBwcmV2aW91c2x5IGFwcGxpZWQgZG9lcyBub3QgbWVhbiB0aGUgbW9kZSBpcyB1
-bnN1cHBvcnRlZCBidXQNCj4+IHRoYXQgdGhlIG5hbmQgY2hpcCBkb2VzIG5vdCBpbXBsZW1lbnQg
-dGhlIE9ORkkgZmVhdHVyZSBiZWNhdXNlIGl0DQo+PiBwcm9iYWJseSBkb2VzIG5vdCBuZWVkIHRv
-Lg0KPj4NCj4+IFRoZSBvdXRwdXQgb2YgLT5vbmZpX2dldF9mZWF0dXJlKCkgaXMgaXJyZWxldmFu
-dCBzbyBkZWxldGUgaXQuDQo+IEhhdmluZyB0aGUgTkFORCBwYXJ0IHRoYXQgaXMgbm90IHN1cHBv
-cnRpbmcgdGhlIGdldC9zZXQodGltaW5nX21vZGUpDQo+IGZlYXR1cmUgZXhwbGljaXRseSBtZW50
-aW9uZWQgaW4gdGhlIGNvbW1pdCBtZXNzYWdlIHdvdWxkIGhlbHAgcmV2aWV3ZXJzDQo+IHVuZGVy
-c3RhbmQgd2h5IHRoaXMgcGF0Y2ggaXMgbmVlZGVkLg0KPg0KPiBBbHNvIG1lbnRpb24gdGhhdCwg
-ZXZlbiB0aG91Z2ggdGhlIFNFVC9HRVRfRkVBVFVSRVModGltaW5nX21vZGUpIGlzDQo+IG1hcmtl
-ZCBhcyByZXF1aXJlZCBpbiB0aGUgT05GSSBzcGVjLCB0aGlzIE1hY3Jvbml4IGNoaXAgZG9lcyBu
-b3QNCj4gc3VwcG9ydCBpdCB3aGljaCBjb3VsZCBiZSBjb25zaWRlcmVkIGFzIGEgYnVnLg0KPg0K
-PiBSZWdhcmRzLA0KPg0KPiBCb3Jpcw0KDQpZZXMsIHRoaXMgaXMgYSBNYWNyb25peCBjaGlwIGJ1
-ZyBhbmQgSSBoYXZlIHJlcHJvZHVjZWQgb24gbXkgc2lkZSwgDQppZ25vcmluZyB0aGUgR0VUX0ZF
-QVRVUkUgY2hlY2tpbmcgaXMgYSB3b3JrYXJvdW5kIGFuZCB0aGUgY2hpcCB3aWxsIA0Kc3RpbGwg
-d29ya3MgaW4gRURPIG1vZGUgNSwgYnV0IEkgZG9uJ3QgYWNjZXB0IHRvIHJlbW92ZSB0aGUgcmVh
-c29uYWJsZSANCmNoZWNraW5nIGNvZGUgZm9yIGEgY2hpcCBidWcuDQoNCj4+IFNpZ25lZC1vZmYt
-Ynk6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAZnJlZS1lbGVjdHJvbnMuY29tPg0KPj4g
-LS0tDQo+PiAgIGRyaXZlcnMvbXRkL25hbmQvZ3BtaS1uYW5kL2dwbWktbGliLmMgfCA3IC0tLS0t
-LS0NCj4+ICAgMSBmaWxlIGNoYW5nZWQsIDcgZGVsZXRpb25zKC0pDQo+Pg0KPj4gZGlmZiAtLWdp
-dCBhL2RyaXZlcnMvbXRkL25hbmQvZ3BtaS1uYW5kL2dwbWktbGliLmMgYi9kcml2ZXJzL210ZC9u
-YW5kL2dwbWktbmFuZC9ncG1pLWxpYi5jDQo+PiBpbmRleCAxNDFiZDcwYTQ5YzIuLjRkMTM3MTQ1
-NDM5YyAxMDA2NDQNCj4+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvZ3BtaS1uYW5kL2dwbWktbGli
-LmMNCj4+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvZ3BtaS1uYW5kL2dwbWktbGliLmMNCj4+IEBA
-IC05MzksMTMgKzkzOSw2IEBAIHN0YXRpYyBpbnQgZW5hYmxlX2Vkb19tb2RlKHN0cnVjdCBncG1p
-X25hbmRfZGF0YSAqdGhpcywgaW50IG1vZGUpDQo+PiAgIAlpZiAocmV0KQ0KPj4gICAJCWdvdG8g
-ZXJyX291dDsNCj4+ICAgDQo+PiAtCS8qIFsyXSBzZW5kIEdFVCBGRUFUVVJFIGNvbW1hbmQgdG8g
-ZG91YmxlLWNoZWNrIHRoZSB0aW1pbmcgbW9kZSAqLw0KPj4gLQltZW1zZXQoZmVhdHVyZSwgMCwg
-T05GSV9TVUJGRUFUVVJFX1BBUkFNX0xFTik7DQo+PiAtCXJldCA9IG5hbmQtPm9uZmlfZ2V0X2Zl
-YXR1cmVzKG10ZCwgbmFuZCwNCj4+IC0JCQkJT05GSV9GRUFUVVJFX0FERFJfVElNSU5HX01PREUs
-IGZlYXR1cmUpOw0KPj4gLQlpZiAocmV0IHx8IGZlYXR1cmVbMF0gIT0gbW9kZSkNCj4+IC0JCWdv
-dG8gZXJyX291dDsNCj4+IC0NCj4+ICAgCW5hbmQtPnNlbGVjdF9jaGlwKG10ZCwgLTEpOw0KPj4g
-ICANCj4+ICAgCS8qIFszXSBzZXQgdGhlIG1haW4gSU8gY2xvY2ssIDEwME1IeiBmb3IgbW9kZSA1
-LCA4ME1IeiBmb3IgbW9kZSA0LiAqLw0K
+On Wed, Jul 12, 2017 at 02:00:31PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> In struct fscrypt_info, ->ci_master_key is the master key descriptor,
+> not the master key itself.  In preparation for introducing a struct
+> fscrypt_master_key and making ->ci_master_key point to it, rename the
+> existing ->ci_master_key to ->ci_master_key_descriptor.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+
+Acked-by: Michael Halcrow <mhalcrow@google.com>
+
+> ---
+>  fs/crypto/fscrypt_private.h | 2 +-
+>  fs/crypto/keyinfo.c         | 4 ++--
+>  fs/crypto/policy.c          | 5 +++--
+>  3 files changed, 6 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+> index ef6909035823..5470aac82cab 100644
+> --- a/fs/crypto/fscrypt_private.h
+> +++ b/fs/crypto/fscrypt_private.h
+> @@ -107,7 +107,7 @@ struct fscrypt_info {
+>  	u8 ci_data_mode;
+>  	u8 ci_filename_mode;
+>  	u8 ci_flags;
+> -	u8 ci_master_key[FS_KEY_DESCRIPTOR_SIZE];
+> +	u8 ci_master_key_descriptor[FS_KEY_DESCRIPTOR_SIZE];
+>  };
+>  
+>  typedef enum {
+> diff --git a/fs/crypto/keyinfo.c b/fs/crypto/keyinfo.c
+> index 7e664a11340a..5591fd24e4b2 100644
+> --- a/fs/crypto/keyinfo.c
+> +++ b/fs/crypto/keyinfo.c
+> @@ -293,8 +293,8 @@ int fscrypt_get_encryption_info(struct inode *inode)
+>  	crypt_info->ci_data_mode = ctx.contents_encryption_mode;
+>  	crypt_info->ci_filename_mode = ctx.filenames_encryption_mode;
+>  	crypt_info->ci_flags = ctx.flags;
+> -	memcpy(crypt_info->ci_master_key, ctx.master_key_descriptor,
+> -				sizeof(crypt_info->ci_master_key));
+> +	memcpy(crypt_info->ci_master_key_descriptor, ctx.master_key_descriptor,
+> +	       FS_KEY_DESCRIPTOR_SIZE);
+>  
+>  	res = determine_cipher_type(crypt_info, inode, &cipher_str, &keysize);
+>  	if (res)
+> diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
+> index 044f23fadb5a..81c59f8e45c0 100644
+> --- a/fs/crypto/policy.c
+> +++ b/fs/crypto/policy.c
+> @@ -224,7 +224,8 @@ int fscrypt_has_permitted_context(struct inode *parent, struct inode *child)
+>  	child_ci = child->i_crypt_info;
+>  
+>  	if (parent_ci && child_ci) {
+> -		return memcmp(parent_ci->ci_master_key, child_ci->ci_master_key,
+> +		return memcmp(parent_ci->ci_master_key_descriptor,
+> +			      child_ci->ci_master_key_descriptor,
+>  			      FS_KEY_DESCRIPTOR_SIZE) == 0 &&
+>  			(parent_ci->ci_context_version ==
+>  			 child_ci->ci_context_version) &&
+> @@ -282,7 +283,7 @@ int fscrypt_inherit_context(struct inode *parent, struct inode *child,
+>  	ctx.contents_encryption_mode = ci->ci_data_mode;
+>  	ctx.filenames_encryption_mode = ci->ci_filename_mode;
+>  	ctx.flags = ci->ci_flags;
+> -	memcpy(ctx.master_key_descriptor, ci->ci_master_key,
+> +	memcpy(ctx.master_key_descriptor, ci->ci_master_key_descriptor,
+>  	       FS_KEY_DESCRIPTOR_SIZE);
+>  	get_random_bytes(ctx.nonce, FS_KEY_DERIVATION_NONCE_SIZE);
+>  	if (ctx.version != FSCRYPT_CONTEXT_V1)
+> -- 
+> 2.13.2.932.g7449e964c-goog
+> 
