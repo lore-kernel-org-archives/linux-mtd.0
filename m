@@ -1,25 +1,19 @@
-Received: from mail.eperm.de ([89.247.134.16])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dW2rW-00059m-Id
- for linux-mtd@lists.infradead.org; Fri, 14 Jul 2017 15:50:43 +0000
-From: Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
-To: Eric Biggers <ebiggers3@gmail.com>
-Cc: herbert@gondor.apana.org.au, linux-fscrypt@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
- linux-crypto@vger.kernel.org, "Theodore Y . Ts'o" <tytso@mit.edu>,
- Jaegeuk Kim <jaegeuk@kernel.org>, Alex Cope <alexcope@google.com>,
- Eric Biggers <ebiggers@google.com>
-Subject: Re: [PATCH 3/6] fscrypt: use HKDF-SHA512 to derive the per-inode
- encryption keys
-Date: Fri, 14 Jul 2017 17:50:06 +0200
-Message-ID: <6581107.6MsbyqD4B1@positron.chronox.de>
-In-Reply-To: <20170713181057.GA143898@gmail.com>
-References: <20170712210035.51534-1-ebiggers3@gmail.com>
- <2034167.Brpu2WxA6s@tauon.chronox.de> <20170713181057.GA143898@gmail.com>
+Date: Fri, 14 Jul 2017 11:06:03 -0500
+From: Rob Herring <robh@kernel.org>
+To: Ludovic Desroches <ludovic.desroches@microchip.com>
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ lee.jones@linaro.org, nicolas.ferre@microchip.com,
+ alexandre.belloni@free-electrons.com,
+ boris.brezillon@free-electrons.com, computersforpeace@gmail.com
+Subject: Re: [PATCH 1/3] mfd: syscon: update Atmel SMC binding doc
+Message-ID: <20170714160603.b6hwut3t7spoygdx@rob-hp-laptop>
+References: <20170711074015.30440-1-ludovic.desroches@microchip.com>
+ <20170711074015.30440-2-ludovic.desroches@microchip.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170711074015.30440-2-ludovic.desroches@microchip.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,54 +23,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Donnerstag, 13. Juli 2017, 20:10:57 CEST schrieb Eric Biggers:
+On Tue, Jul 11, 2017 at 09:40:13AM +0200, Ludovic Desroches wrote:
+> A new compatible string is introduced for SMC on sama5d2 to manage a
+> different layout of the registers.
+> 
+> Signed-off-by: Ludovic Desroches <ludovic.desroches@microchip.com>
+> ---
+>  Documentation/devicetree/bindings/mfd/atmel-smc.txt | 1 +
+>  1 file changed, 1 insertion(+)
 
-Hi Eric,
-
-> Hi Stephan,
->=20
-> On Thu, Jul 13, 2017 at 04:54:55PM +0200, Stephan M=FCller wrote:
-> > Am Mittwoch, 12. Juli 2017, 23:00:32 CEST schrieb Eric Biggers:
-> >=20
-> > Hi Herbert,
-> >=20
-> > This patch adds a second KDF to the kernel -- the first is found in the
-> > keys subsystem.
-> >=20
-> > The next KDF that may come in is in the TLS scope.
-> >=20
-> > Would it make sense to warm up the KDF patches adding generic KDF suppo=
-rt
-> > to the kernel crypto API that I supplied some time ago? The advantages
-> > would be to have one location of KDF implementations and the benefit of
-> > the testmgr.
-> That may be a good idea.  Looking at the old thread, I share Herbert's
-> concern (http://www.spinics.net/lists/linux-crypto/msg21231.html) about
-> there likely not being more than one implementation of each KDF algorithm=
-=2E=20
-> So, perhaps some simple helper functions would be more appropriate.=20
-> However, making the KDFs be covered by self-tests would be very nice.
-
-I agree that it is likely that specific KDF implementations may only be use=
-d=20
-once. But still, I would recommend to maintain those implementation under t=
-he=20
-crypto API umbrella, as KDFs are cryptographic operations.
-
->=20
-> Also, it seems your patch
-> (http://www.spinics.net/lists/linux-crypto/msg21137.html) doesn't allow a
-> salt to be passed in.  In order to fully support HKDF, crypto_rng_reset()
-> (which as I understand would be the way to invoke the "extract" step) wou=
-ld
-> somehow need to accept both the input keying material and salt, both of
-> which are arbitrary length binary.
-
-I concur with you. I have implemented the HKDF in my libkcapi as well and s=
-aw=20
-the need for a salt.
-
-Let me work on an update to the KDF patch for the kernel crypto API.
-
-Ciao
-Stephan
+Acked-by: Rob Herring <robh@kernel.org>
