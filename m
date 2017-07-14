@@ -1,22 +1,29 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dVybD-0000xt-QV
- for linux-mtd@lists.infradead.org; Fri, 14 Jul 2017 11:17:34 +0000
-Date: Fri, 14 Jul 2017 13:17:06 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- kernel@pengutronix.de, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH RFC] mtdpart: don't force alignment to eraseblock if
- flags have MTD_NO_ERASE
-Message-ID: <20170714131706.5527200f@bbrezillon>
-In-Reply-To: <20170714102027.9916-1-u.kleine-koenig@pengutronix.de>
-References: <20170714102027.9916-1-u.kleine-koenig@pengutronix.de>
+Received: from mail-eopbgr10063.outbound.protection.outlook.com ([40.107.1.63]
+ helo=EUR02-HE1-obe.outbound.protection.outlook.com)
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dW1yl-0002cT-NB
+ for linux-mtd@lists.infradead.org; Fri, 14 Jul 2017 14:54:07 +0000
+From: Han Xu <han.xu@nxp.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Miquel Raynal
+ <miquel.raynal@free-electrons.com>
+CC: "richard@nod.at" <richard@nod.at>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "cyrille.pitchen@wedev4u.fr"
+ <cyrille.pitchen@wedev4u.fr>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: gpmi-nand: do not fail setting ONFI timing mode if
+ available
+Date: Fri, 14 Jul 2017 14:53:39 +0000
+Message-ID: <178298b1-b482-e636-2daa-1a6595b8c139@nxp.com>
+References: <20170713192030.22177-1-miquel.raynal@free-electrons.com>
+ <20170713221520.268bc554@bbrezillon>
+In-Reply-To: <20170713221520.268bc554@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4FA9F6137B667E47859BC3267E6A73D5@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,128 +33,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le Fri, 14 Jul 2017 12:20:27 +0200,
-Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de> a =C3=A9crit :
-
-> Some mtd devices don't need to be erased before writing to them. For
-> these it doesn't make sense to force partition alignment to erase
-> blocks.
->=20
-> This patch allows partitioning an Everspin mr25h256 that has
-> erasesize=3D32768, size=3D32768 and writesize=3D1.
-
-I might be wrong but it seems this patch is more or less addressing the
-problem fixed by [1].
-
-Can you try linux-next (or l2-mtd/master)?
-
-[1]https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/comm=
-it/drivers/mtd/mtdpart.c?h=3Dnext-20170714&id=3D1eeef2d7483a7e3f8d2dd2a5b99=
-39b3b814dc549
-
->=20
-> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-> ---
-> Hello,
->=20
-> this is my followup suggestion for
->=20
-> 	From: Bastian Stender <bst@pengutronix.de>
-> 	Subject: Re: [PATCH 1/2] mtd: spi-nor: make n_sectors in flash_info 32 b=
-it wide
-> 	Message-Id: <afb06b83-e97b-48db-9875-9f76b365a5f4@pengutronix.de>
->=20
->=20
->=20
-> It's IMHO ugly because the two bodys of the newly introduced if look very
-> similar, but I think there is not much we can do about this.
->=20
-> To ease your reviews: The else body is exactly what we had before.
->=20
-> I'm a bit unsure about the check
->=20
-> 	slave->mtd.erasesize >=3D slave->mtd.writesize
->=20
-> because if that is false, the old code is not only inconvenient by not al=
-lowing
-> partitions, but also wrong. So probably the check can safely be dropped?
->=20
-> Otherwise the logic should be:
->=20
-> 	if (MTD_NO_ERASE):
-> 		alignto =3D writesize
-> 	else:
-> 		alignto =3D max(writesize, erasesize)
-> 	   =20
-> Best regards
-> Uwe
->=20
->  drivers/mtd/mtdpart.c | 47 +++++++++++++++++++++++++++++++++------------=
---
->  1 file changed, 33 insertions(+), 14 deletions(-)
->=20
-> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-> index ea5e5307f667..956c8f0ce2dd 100644
-> --- a/drivers/mtd/mtdpart.c
-> +++ b/drivers/mtd/mtdpart.c
-> @@ -567,20 +567,39 @@ static struct mtd_part *allocate_partition(struct m=
-td_info *master,
->  		slave->mtd.erasesize =3D master->erasesize;
->  	}
-> =20
-> -	if ((slave->mtd.flags & MTD_WRITEABLE) &&
-> -	    mtd_mod_by_eb(slave->offset, &slave->mtd)) {
-> -		/* Doesn't start on a boundary of major erase size */
-> -		/* FIXME: Let it be writable if it is on a boundary of
-> -		 * _minor_ erase size though */
-> -		slave->mtd.flags &=3D ~MTD_WRITEABLE;
-> -		printk(KERN_WARNING"mtd: partition \"%s\" doesn't start on an erase bl=
-ock boundary -- force read-only\n",
-> -			part->name);
-> -	}
-> -	if ((slave->mtd.flags & MTD_WRITEABLE) &&
-> -	    mtd_mod_by_eb(slave->mtd.size, &slave->mtd)) {
-> -		slave->mtd.flags &=3D ~MTD_WRITEABLE;
-> -		printk(KERN_WARNING"mtd: partition \"%s\" doesn't end on an erase bloc=
-k -- force read-only\n",
-> -			part->name);
-> +	if (slave->mtd.flags & MTD_NO_ERASE &&
-> +	    slave->mtd.erasesize >=3D slave->mtd.writesize) {
-> +		/* If we don't need to erase, then align to writesize */
-> +		if ((slave->mtd.flags & MTD_WRITEABLE) &&
-> +		    mtd_mod_by_ws(slave->offset, &slave->mtd)) {
-> +			/* Doesn't start on a boundary of page */
-> +			/* FIXME: Can a minor erase block be smaller than a page? */
-> +			slave->mtd.flags &=3D ~MTD_WRITEABLE;
-> +			printk(KERN_WARNING"mtd: partition \"%s\" doesn't start on a page bou=
-ndary -- force read-only\n",
-> +			       part->name);
-> +		}
-> +		if ((slave->mtd.flags & MTD_WRITEABLE) &&
-> +		    mtd_mod_by_ws(slave->mtd.size, &slave->mtd)) {
-> +			slave->mtd.flags &=3D ~MTD_WRITEABLE;
-> +			printk(KERN_WARNING"mtd: partition \"%s\" doesn't end on a page bound=
-ary -- force read-only\n",
-> +			       part->name);
-> +		}
-> +	} else {
-> +		if ((slave->mtd.flags & MTD_WRITEABLE) &&
-> +		    mtd_mod_by_eb(slave->offset, &slave->mtd)) {
-> +			/* Doesn't start on a boundary of major erase size */
-> +			/* FIXME: Let it be writable if it is on a boundary of
-> +			 * _minor_ erase size though */
-> +			slave->mtd.flags &=3D ~MTD_WRITEABLE;
-> +			printk(KERN_WARNING"mtd: partition \"%s\" doesn't start on an erase b=
-lock boundary -- force read-only\n",
-> +			       part->name);
-> +		}
-> +		if ((slave->mtd.flags & MTD_WRITEABLE) &&
-> +		    mtd_mod_by_eb(slave->mtd.size, &slave->mtd)) {
-> +			slave->mtd.flags &=3D ~MTD_WRITEABLE;
-> +			printk(KERN_WARNING"mtd: partition \"%s\" doesn't end on an erase blo=
-ck -- force read-only\n",
-> +			       part->name);
-> +		}
->  	}
-> =20
->  	mtd_set_ooblayout(&slave->mtd, &part_ooblayout_ops);
+DQoNCk9uIDA3LzEzLzIwMTcgMDM6MTUgUE0sIEJvcmlzIEJyZXppbGxvbiB3cm90ZToNCj4gSGkg
+TWlxdWVsLA0KPg0KPiBMZSBUaHUsIDEzIEp1bCAyMDE3IDIxOjIwOjMwICswMjAwLA0KPiBNaXF1
+ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGZyZWUtZWxlY3Ryb25zLmNvbT4gYSDDqWNyaXQgOg0K
+Pg0KPj4gR1BNSSBORkMgZHJpdmVyIGZhaWxzIHRvIGFwcGx5IHRpbWluZyBtb2RlIGlmIHRoZSAt
+Pm9uZmlfZ2V0X2ZlYXR1cmVzKCkNCj4+IGRvZXMgbm90IHJldHVybiB0aGUgbW9kZSB0aGF0IHdh
+cyBwcmV2aW91c2x5IGFwcGxpZWQuDQo+Pg0KPj4gV2UgY2FuIGFzc3VtZSB0aGF0IGEgbmFuZCBj
+aGlwIHN1cHBvcnRzIGEgdGltaW5nIGFzIGxvbmcgYXMgaXQgaXMNCj4+IHJlYWQgZnJvbSB0aGUg
+T05GSSBwYXJhbWV0ZXIgcGFnZS4gUmVhZGluZyBiYWNrIGEgZGlmZmVyZW50IG1vZGUgdGhhbg0K
+Pj4gdGhlIG9uZSBwcmV2aW91c2x5IGFwcGxpZWQgZG9lcyBub3QgbWVhbiB0aGUgbW9kZSBpcyB1
+bnN1cHBvcnRlZCBidXQNCj4+IHRoYXQgdGhlIG5hbmQgY2hpcCBkb2VzIG5vdCBpbXBsZW1lbnQg
+dGhlIE9ORkkgZmVhdHVyZSBiZWNhdXNlIGl0DQo+PiBwcm9iYWJseSBkb2VzIG5vdCBuZWVkIHRv
+Lg0KPj4NCj4+IFRoZSBvdXRwdXQgb2YgLT5vbmZpX2dldF9mZWF0dXJlKCkgaXMgaXJyZWxldmFu
+dCBzbyBkZWxldGUgaXQuDQo+IEhhdmluZyB0aGUgTkFORCBwYXJ0IHRoYXQgaXMgbm90IHN1cHBv
+cnRpbmcgdGhlIGdldC9zZXQodGltaW5nX21vZGUpDQo+IGZlYXR1cmUgZXhwbGljaXRseSBtZW50
+aW9uZWQgaW4gdGhlIGNvbW1pdCBtZXNzYWdlIHdvdWxkIGhlbHAgcmV2aWV3ZXJzDQo+IHVuZGVy
+c3RhbmQgd2h5IHRoaXMgcGF0Y2ggaXMgbmVlZGVkLg0KPg0KPiBBbHNvIG1lbnRpb24gdGhhdCwg
+ZXZlbiB0aG91Z2ggdGhlIFNFVC9HRVRfRkVBVFVSRVModGltaW5nX21vZGUpIGlzDQo+IG1hcmtl
+ZCBhcyByZXF1aXJlZCBpbiB0aGUgT05GSSBzcGVjLCB0aGlzIE1hY3Jvbml4IGNoaXAgZG9lcyBu
+b3QNCj4gc3VwcG9ydCBpdCB3aGljaCBjb3VsZCBiZSBjb25zaWRlcmVkIGFzIGEgYnVnLg0KPg0K
+PiBSZWdhcmRzLA0KPg0KPiBCb3Jpcw0KDQpZZXMsIHRoaXMgaXMgYSBNYWNyb25peCBjaGlwIGJ1
+ZyBhbmQgSSBoYXZlIHJlcHJvZHVjZWQgb24gbXkgc2lkZSwgDQppZ25vcmluZyB0aGUgR0VUX0ZF
+QVRVUkUgY2hlY2tpbmcgaXMgYSB3b3JrYXJvdW5kIGFuZCB0aGUgY2hpcCB3aWxsIA0Kc3RpbGwg
+d29ya3MgaW4gRURPIG1vZGUgNSwgYnV0IEkgZG9uJ3QgYWNjZXB0IHRvIHJlbW92ZSB0aGUgcmVh
+c29uYWJsZSANCmNoZWNraW5nIGNvZGUgZm9yIGEgY2hpcCBidWcuDQoNCj4+IFNpZ25lZC1vZmYt
+Ynk6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAZnJlZS1lbGVjdHJvbnMuY29tPg0KPj4g
+LS0tDQo+PiAgIGRyaXZlcnMvbXRkL25hbmQvZ3BtaS1uYW5kL2dwbWktbGliLmMgfCA3IC0tLS0t
+LS0NCj4+ICAgMSBmaWxlIGNoYW5nZWQsIDcgZGVsZXRpb25zKC0pDQo+Pg0KPj4gZGlmZiAtLWdp
+dCBhL2RyaXZlcnMvbXRkL25hbmQvZ3BtaS1uYW5kL2dwbWktbGliLmMgYi9kcml2ZXJzL210ZC9u
+YW5kL2dwbWktbmFuZC9ncG1pLWxpYi5jDQo+PiBpbmRleCAxNDFiZDcwYTQ5YzIuLjRkMTM3MTQ1
+NDM5YyAxMDA2NDQNCj4+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvZ3BtaS1uYW5kL2dwbWktbGli
+LmMNCj4+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvZ3BtaS1uYW5kL2dwbWktbGliLmMNCj4+IEBA
+IC05MzksMTMgKzkzOSw2IEBAIHN0YXRpYyBpbnQgZW5hYmxlX2Vkb19tb2RlKHN0cnVjdCBncG1p
+X25hbmRfZGF0YSAqdGhpcywgaW50IG1vZGUpDQo+PiAgIAlpZiAocmV0KQ0KPj4gICAJCWdvdG8g
+ZXJyX291dDsNCj4+ICAgDQo+PiAtCS8qIFsyXSBzZW5kIEdFVCBGRUFUVVJFIGNvbW1hbmQgdG8g
+ZG91YmxlLWNoZWNrIHRoZSB0aW1pbmcgbW9kZSAqLw0KPj4gLQltZW1zZXQoZmVhdHVyZSwgMCwg
+T05GSV9TVUJGRUFUVVJFX1BBUkFNX0xFTik7DQo+PiAtCXJldCA9IG5hbmQtPm9uZmlfZ2V0X2Zl
+YXR1cmVzKG10ZCwgbmFuZCwNCj4+IC0JCQkJT05GSV9GRUFUVVJFX0FERFJfVElNSU5HX01PREUs
+IGZlYXR1cmUpOw0KPj4gLQlpZiAocmV0IHx8IGZlYXR1cmVbMF0gIT0gbW9kZSkNCj4+IC0JCWdv
+dG8gZXJyX291dDsNCj4+IC0NCj4+ICAgCW5hbmQtPnNlbGVjdF9jaGlwKG10ZCwgLTEpOw0KPj4g
+ICANCj4+ICAgCS8qIFszXSBzZXQgdGhlIG1haW4gSU8gY2xvY2ssIDEwME1IeiBmb3IgbW9kZSA1
+LCA4ME1IeiBmb3IgbW9kZSA0LiAqLw0K
