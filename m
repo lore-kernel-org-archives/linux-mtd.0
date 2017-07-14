@@ -1,29 +1,32 @@
-Received: from mail-it0-x244.google.com ([2607:f8b0:4001:c0b::244])
+Received: from mail-it0-x234.google.com ([2607:f8b0:4001:c0b::234])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dW6tB-0001P4-An
- for linux-mtd@lists.infradead.org; Fri, 14 Jul 2017 20:08:39 +0000
-Received: by mail-it0-x244.google.com with SMTP id v193so13416604itc.2
- for <linux-mtd@lists.infradead.org>; Fri, 14 Jul 2017 13:08:16 -0700 (PDT)
-From: Andreas Dilger <adilger@dilger.ca>
-Message-Id: <B17BECD5-98E6-4429-AAFB-454C5DA5BB40@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_252F5455-DDA5-4EA7-BA49-1713ED82BA6A";
- protocol="application/pgp-signature"; micalg=pgp-sha1
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH 1/6] fscrypt: add v2 encryption context and policy
-Date: Fri, 14 Jul 2017 13:08:10 -0700
-In-Reply-To: <20170713225838.GA73286@gmail.com>
-Cc: Michael Halcrow <mhalcrow@google.com>, linux-fscrypt@vger.kernel.org,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- Ext4 Developers List <linux-ext4@vger.kernel.org>,
- linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
- linux-crypto@vger.kernel.org, "Theodore Y . Ts'o" <tytso@mit.edu>,
- Jaegeuk Kim <jaegeuk@kernel.org>, Alex Cope <alexcope@google.com>,
- Eric Biggers <ebiggers@google.com>
-To: Eric Biggers <ebiggers3@gmail.com>
-References: <20170712210035.51534-1-ebiggers3@gmail.com>
- <20170712210035.51534-2-ebiggers3@gmail.com>
- <20170713222944.GA23111@google.com> <20170713225838.GA73286@gmail.com>
+ id 1dW9oI-00048K-NA
+ for linux-mtd@lists.infradead.org; Fri, 14 Jul 2017 23:15:48 +0000
+Received: by mail-it0-x234.google.com with SMTP id k192so32573613ith.1
+ for <linux-mtd@lists.infradead.org>; Fri, 14 Jul 2017 16:15:24 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <386A482A-26F9-4C82-871D-E03E9F6401D8@darmarit.de>
+References: <cover.1494935649.git.mchehab@s-opensource.com>
+ <20170518112608.4f355068@lwn.net> <20170518200140.11982b12@vento.lan>
+ <C33A12EC-8748-4BB9-A7A2-023B1901AB4B@darmarit.de>
+ <CA+r1ZhhZw6+LOAMbw6=kidPBr2Ntrz0ORGV165DEWuX8haKrWw@mail.gmail.com>
+ <386A482A-26F9-4C82-871D-E03E9F6401D8@darmarit.de>
+From: Jim Davis <jim.epost@gmail.com>
+Date: Fri, 14 Jul 2017 16:15:23 -0700
+Message-ID: <CA+r1Zhj6NqnR_Dg+xGiW7==1ZmQW3XBvt0XY9c=gjqssso74Qg@mail.gmail.com>
+Subject: Re: [PATCH v2 00/53] Get rid of Docbook
+To: Markus Heiser <markus.heiser@darmarit.de>
+Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>,
+ Jani Nikula <jani.nikula@intel.com>, Jonathan Corbet <corbet@lwn.net>,
+ Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+ Mauro Carvalho Chehab <mchehab@infradead.org>,
+ "linux-kernel@vger.kernel.org org List" <linux-kernel@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,98 +36,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, Jul 6, 2017 at 1:54 AM, Markus Heiser <markus.heiser@darmarit.de> wrote:
 
---Apple-Mail=_252F5455-DDA5-4EA7-BA49-1713ED82BA6A
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+>  52b3f23 Docs: clean up some DocBook loose ends
 
-On Jul 13, 2017, at 3:58 PM, Eric Biggers <ebiggers3@gmail.com> wrote:
->=20
-> Hi Michael,
->=20
-> On Thu, Jul 13, 2017 at 03:29:44PM -0700, Michael Halcrow wrote:
->> On Wed, Jul 12, 2017 at 02:00:30PM -0700, Eric Biggers wrote:
->>> From: Eric Biggers <ebiggers@google.com>
->>>=20
->>> Currently, the fscrypt_context (i.e. the encryption xattr) does not
->>> contain a cryptographically secure identifier for the master key's
->>> payload.  Therefore it's not possible to verify that the correct key =
-was
->>> supplied, which is problematic in multi-user scenarios.  To make =
-this
->>> possible, define a new fscrypt_context version (v2) which includes a
->>> key_hash field, and allow userspace to opt-in to it when setting an
->>> encryption policy by setting fscrypt_policy.version to 2.  For now =
-just
->>> zero the new field; a later patch will start setting it for real.
->>=20
->> The main concern that comes to mind is potentially blowing past the
->> inline xattr size limit and allocating a new inode block.  The
->> security benefit probably outweighs that concern in this case.
->>=20
->=20
-> The way it adds up now for ext4 is:
->=20
-> 128 bytes for base inode
-> + 32 bytes for i_extra fields
-> + 4 bytes for in-inode xattrs header
-> + 20 bytes for encryption xattr header + name
-> + 28 bytes for encryption xattr value
-> ----------------------------------
-> =3D 212 bytes total.
->=20
-> By adding the 16-byte 'key_hash' field it grows to 228 bytes total.  =
-So it still
-> fits in a 256-byte inode, though it's getting closer to the limit.  We =
-could
-> save 8 bytes by instead using the design where master_key_descriptor =
-is extended
-> to 16 bytes and redefined as a cryptographically secure hash.  But as =
-noted,
-> that has some significant disadvantages.
->=20
-> Also note that we don't really have to worry about leaving space for a =
-SELinux
-> xattr anymore because with 256-byte inodes + encryption the SELinux =
-xattr is
-> already being written to an external block, given that it requires =
-about 52-62
-> bytes (at least when using Android's SELinux policy; different SELinux =
-policies
-> may use different values), and 212 + 52 > 256.  So if someone wants =
-both xattrs
-> in-inode they need to use 512-byte inodes already.
+Speaking of minor loose ends,
 
-It is probably time to consider changing to a default of 512-byte inodes =
-for
-larger filesystems anyway.  In our testing, this affected performance =
-only by
-a couple of percent under normal usage, and avoided a significant =
-performance
-drop if the xattrs ever fall out of the inode.
+make SPHINXDIRS=userspace-api pdfdocs
 
-Cheers, Andreas
+works -- though now that it's all sphinx, wouldn't just DIRS be better? -- and
 
+make DOCBOOKS=userspace-api pdfdocs
 
+still works too.  But that generates all of the pdf files, and not
+just the userspace-api.pdf.  And running now-dead targets like "make
+ps" or "make sgmldocs" or "make mandocs" just returns with no output.
 
-
-
-
---Apple-Mail=_252F5455-DDA5-4EA7-BA49-1713ED82BA6A
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iD8DBQFZaSSqpIg59Q01vtYRAn4GAJ9XFN3HO0M0XU182bsIKADNJS0DrQCg5Eym
-ddQgImO+FcoiHiwybZus14E=
-=e7Vp
------END PGP SIGNATURE-----
-
---Apple-Mail=_252F5455-DDA5-4EA7-BA49-1713ED82BA6A--
+-- 
+Jim
