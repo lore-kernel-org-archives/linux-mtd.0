@@ -1,27 +1,25 @@
-Received: from mail-pf0-x229.google.com ([2607:f8b0:400e:c00::229])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dW2dz-0007WW-Fy
- for linux-mtd@lists.infradead.org; Fri, 14 Jul 2017 15:36:41 +0000
-Received: by mail-pf0-x229.google.com with SMTP id q85so47162679pfq.1
- for <linux-mtd@lists.infradead.org>; Fri, 14 Jul 2017 08:36:17 -0700 (PDT)
-Date: Fri, 14 Jul 2017 08:36:15 -0700
-From: Michael Halcrow <mhalcrow@google.com>
+Received: from mail.eperm.de ([89.247.134.16])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dW2rW-00059m-Id
+ for linux-mtd@lists.infradead.org; Fri, 14 Jul 2017 15:50:43 +0000
+From: Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
 To: Eric Biggers <ebiggers3@gmail.com>
-Cc: linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, linux-crypto@vger.kernel.org,
- "Theodore Y . Ts'o" <tytso@mit.edu>,
+Cc: herbert@gondor.apana.org.au, linux-fscrypt@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
+ linux-crypto@vger.kernel.org, "Theodore Y . Ts'o" <tytso@mit.edu>,
  Jaegeuk Kim <jaegeuk@kernel.org>, Alex Cope <alexcope@google.com>,
  Eric Biggers <ebiggers@google.com>
-Subject: Re: [PATCH 2/6] fscrypt: rename ->ci_master_key to
- ->ci_master_key_descriptor
-Message-ID: <20170714153615.GA25453@google.com>
+Subject: Re: [PATCH 3/6] fscrypt: use HKDF-SHA512 to derive the per-inode
+ encryption keys
+Date: Fri, 14 Jul 2017 17:50:06 +0200
+Message-ID: <6581107.6MsbyqD4B1@positron.chronox.de>
+In-Reply-To: <20170713181057.GA143898@gmail.com>
 References: <20170712210035.51534-1-ebiggers3@gmail.com>
- <20170712210035.51534-3-ebiggers3@gmail.com>
+ <2034167.Brpu2WxA6s@tauon.chronox.de> <20170713181057.GA143898@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170712210035.51534-3-ebiggers3@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,75 +29,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jul 12, 2017 at 02:00:31PM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> In struct fscrypt_info, ->ci_master_key is the master key descriptor,
-> not the master key itself.  In preparation for introducing a struct
-> fscrypt_master_key and making ->ci_master_key point to it, rename the
-> existing ->ci_master_key to ->ci_master_key_descriptor.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+Am Donnerstag, 13. Juli 2017, 20:10:57 CEST schrieb Eric Biggers:
 
-Acked-by: Michael Halcrow <mhalcrow@google.com>
+Hi Eric,
 
-> ---
->  fs/crypto/fscrypt_private.h | 2 +-
->  fs/crypto/keyinfo.c         | 4 ++--
->  fs/crypto/policy.c          | 5 +++--
->  3 files changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-> index ef6909035823..5470aac82cab 100644
-> --- a/fs/crypto/fscrypt_private.h
-> +++ b/fs/crypto/fscrypt_private.h
-> @@ -107,7 +107,7 @@ struct fscrypt_info {
->  	u8 ci_data_mode;
->  	u8 ci_filename_mode;
->  	u8 ci_flags;
-> -	u8 ci_master_key[FS_KEY_DESCRIPTOR_SIZE];
-> +	u8 ci_master_key_descriptor[FS_KEY_DESCRIPTOR_SIZE];
->  };
->  
->  typedef enum {
-> diff --git a/fs/crypto/keyinfo.c b/fs/crypto/keyinfo.c
-> index 7e664a11340a..5591fd24e4b2 100644
-> --- a/fs/crypto/keyinfo.c
-> +++ b/fs/crypto/keyinfo.c
-> @@ -293,8 +293,8 @@ int fscrypt_get_encryption_info(struct inode *inode)
->  	crypt_info->ci_data_mode = ctx.contents_encryption_mode;
->  	crypt_info->ci_filename_mode = ctx.filenames_encryption_mode;
->  	crypt_info->ci_flags = ctx.flags;
-> -	memcpy(crypt_info->ci_master_key, ctx.master_key_descriptor,
-> -				sizeof(crypt_info->ci_master_key));
-> +	memcpy(crypt_info->ci_master_key_descriptor, ctx.master_key_descriptor,
-> +	       FS_KEY_DESCRIPTOR_SIZE);
->  
->  	res = determine_cipher_type(crypt_info, inode, &cipher_str, &keysize);
->  	if (res)
-> diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
-> index 044f23fadb5a..81c59f8e45c0 100644
-> --- a/fs/crypto/policy.c
-> +++ b/fs/crypto/policy.c
-> @@ -224,7 +224,8 @@ int fscrypt_has_permitted_context(struct inode *parent, struct inode *child)
->  	child_ci = child->i_crypt_info;
->  
->  	if (parent_ci && child_ci) {
-> -		return memcmp(parent_ci->ci_master_key, child_ci->ci_master_key,
-> +		return memcmp(parent_ci->ci_master_key_descriptor,
-> +			      child_ci->ci_master_key_descriptor,
->  			      FS_KEY_DESCRIPTOR_SIZE) == 0 &&
->  			(parent_ci->ci_context_version ==
->  			 child_ci->ci_context_version) &&
-> @@ -282,7 +283,7 @@ int fscrypt_inherit_context(struct inode *parent, struct inode *child,
->  	ctx.contents_encryption_mode = ci->ci_data_mode;
->  	ctx.filenames_encryption_mode = ci->ci_filename_mode;
->  	ctx.flags = ci->ci_flags;
-> -	memcpy(ctx.master_key_descriptor, ci->ci_master_key,
-> +	memcpy(ctx.master_key_descriptor, ci->ci_master_key_descriptor,
->  	       FS_KEY_DESCRIPTOR_SIZE);
->  	get_random_bytes(ctx.nonce, FS_KEY_DERIVATION_NONCE_SIZE);
->  	if (ctx.version != FSCRYPT_CONTEXT_V1)
-> -- 
-> 2.13.2.932.g7449e964c-goog
-> 
+> Hi Stephan,
+>=20
+> On Thu, Jul 13, 2017 at 04:54:55PM +0200, Stephan M=FCller wrote:
+> > Am Mittwoch, 12. Juli 2017, 23:00:32 CEST schrieb Eric Biggers:
+> >=20
+> > Hi Herbert,
+> >=20
+> > This patch adds a second KDF to the kernel -- the first is found in the
+> > keys subsystem.
+> >=20
+> > The next KDF that may come in is in the TLS scope.
+> >=20
+> > Would it make sense to warm up the KDF patches adding generic KDF suppo=
+rt
+> > to the kernel crypto API that I supplied some time ago? The advantages
+> > would be to have one location of KDF implementations and the benefit of
+> > the testmgr.
+> That may be a good idea.  Looking at the old thread, I share Herbert's
+> concern (http://www.spinics.net/lists/linux-crypto/msg21231.html) about
+> there likely not being more than one implementation of each KDF algorithm=
+=2E=20
+> So, perhaps some simple helper functions would be more appropriate.=20
+> However, making the KDFs be covered by self-tests would be very nice.
+
+I agree that it is likely that specific KDF implementations may only be use=
+d=20
+once. But still, I would recommend to maintain those implementation under t=
+he=20
+crypto API umbrella, as KDFs are cryptographic operations.
+
+>=20
+> Also, it seems your patch
+> (http://www.spinics.net/lists/linux-crypto/msg21137.html) doesn't allow a
+> salt to be passed in.  In order to fully support HKDF, crypto_rng_reset()
+> (which as I understand would be the way to invoke the "extract" step) wou=
+ld
+> somehow need to accept both the input keying material and salt, both of
+> which are arbitrary length binary.
+
+I concur with you. I have implemented the HKDF in my libkcapi as well and s=
+aw=20
+the need for a salt.
+
+Let me work on an update to the KDF patch for the kernel crypto API.
+
+Ciao
+Stephan
