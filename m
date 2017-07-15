@@ -1,30 +1,25 @@
-Received: from ec2-52-27-115-49.us-west-2.compute.amazonaws.com
- ([52.27.115.49] helo=osg.samsung.com)
+Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dWCGK-0006UJ-QC
- for linux-mtd@lists.infradead.org; Sat, 15 Jul 2017 01:52:55 +0000
-Date: Fri, 14 Jul 2017 22:52:13 -0300
-From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-To: Jim Davis <jim.epost@gmail.com>
-Cc: Markus Heiser <markus.heiser@darmarit.de>, Jani Nikula
- <jani.nikula@intel.com>, Jonathan Corbet <corbet@lwn.net>, Linux Doc
- Mailing List <linux-doc@vger.kernel.org>, Mauro Carvalho Chehab
- <mchehab@infradead.org>, "linux-kernel@vger.kernel.org org List"
- <linux-kernel@vger.kernel.org>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 00/53] Get rid of Docbook
-Message-ID: <20170714225213.0a6dba4f@vento.lan>
-In-Reply-To: <CA+r1Zhj6NqnR_Dg+xGiW7==1ZmQW3XBvt0XY9c=gjqssso74Qg@mail.gmail.com>
-References: <cover.1494935649.git.mchehab@s-opensource.com>
- <20170518112608.4f355068@lwn.net>
- <20170518200140.11982b12@vento.lan>
- <C33A12EC-8748-4BB9-A7A2-023B1901AB4B@darmarit.de>
- <CA+r1ZhhZw6+LOAMbw6=kidPBr2Ntrz0ORGV165DEWuX8haKrWw@mail.gmail.com>
- <386A482A-26F9-4C82-871D-E03E9F6401D8@darmarit.de>
- <CA+r1Zhj6NqnR_Dg+xGiW7==1ZmQW3XBvt0XY9c=gjqssso74Qg@mail.gmail.com>
+ id 1dWKga-0008Ai-IK
+ for linux-mtd@lists.infradead.org; Sat, 15 Jul 2017 10:52:34 +0000
+Date: Sat, 15 Jul 2017 12:52:00 +0200
+From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Han Xu <han.xu@nxp.com>, "richard@nod.at" <richard@nod.at>,
+ "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
+Subject: Re: [PATCH] mtd: gpmi-nand: do not fail setting ONFI timing mode if
+ available
+Message-ID: <20170715125200.0b74d494@xps13>
+In-Reply-To: <20170714193143.034c4c24@bbrezillon>
+References: <20170713192030.22177-1-miquel.raynal@free-electrons.com>
+ <20170713221520.268bc554@bbrezillon>
+ <178298b1-b482-e636-2daa-1a6595b8c139@nxp.com>
+ <20170714193143.034c4c24@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -37,119 +32,126 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Em Fri, 14 Jul 2017 16:15:23 -0700
-Jim Davis <jim.epost@gmail.com> escreveu:
+Hi Han and Boris,
 
-> On Thu, Jul 6, 2017 at 1:54 AM, Markus Heiser <markus.heiser@darmarit.de>=
- wrote:
+On Fri, 14 Jul 2017 19:31:43 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+
+> Hi Han,
 >=20
-> >  52b3f23 Docs: clean up some DocBook loose ends =20
+> Le Fri, 14 Jul 2017 14:53:39 +0000,
+> Han Xu <han.xu@nxp.com> a =C3=A9crit :
 >=20
-> Speaking of minor loose ends,
+> > On 07/13/2017 03:15 PM, Boris Brezillon wrote: =20
+> > > Hi Miquel,
+> > >
+> > > Le Thu, 13 Jul 2017 21:20:30 +0200,
+> > > Miquel Raynal <miquel.raynal@free-electrons.com> a =C3=A9crit :
+> > >   =20
+> > >> GPMI NFC driver fails to apply timing mode if the
+> > >> ->onfi_get_features() does not return the mode that was
+> > >> previously applied.
+> > >>
+> > >> We can assume that a nand chip supports a timing as long as it is
+> > >> read from the ONFI parameter page. Reading back a different mode
+> > >> than the one previously applied does not mean the mode is
+> > >> unsupported but that the nand chip does not implement the ONFI
+> > >> feature because it probably does not need to.
+> > >>
+> > >> The output of ->onfi_get_feature() is irrelevant so delete
+> > >> it.   =20
+> > > Having the NAND part that is not supporting the
+> > > get/set(timing_mode) feature explicitly mentioned in the commit
+> > > message would help reviewers understand why this patch is needed.
+> > >
+> > > Also mention that, even though the SET/GET_FEATURES(timing_mode)
+> > > is marked as required in the ONFI spec, this Macronix chip does
+> > > not support it which could be considered as a bug.
+> > >
+> > > Regards,
+> > >
+> > > Boris   =20
+> >=20
+> > Yes, this is a Macronix chip bug and I have reproduced on my side,=20
+> > ignoring the GET_FEATURE checking is a workaround and the chip will=20
+> > still works in EDO mode 5, but I don't accept to remove the
+> > reasonable checking code for a chip bug. =20
 >=20
-> make SPHINXDIRS=3Duserspace-api pdfdocs
+> I understand why you're reluctant to remove this check just to make
+> one particular chip work correctly, but, on the other hand, if we were
+> only supporting non-broken NAND chip in mainline, plenty of boards
+> wouldn't be supported. Flash vendors tend to take liberties with
+> standards, that's a fact, and once the chip is out there's nothing we
+> can do about it, except add a workaround to support it.
 >=20
-> works -- though now that it's all sphinx, wouldn't just DIRS be better? -=
-- and
+> So let's try to find a solution that makes everyone happy: now that we
+> have nand_manufacturer_ops, we can easily let manufacturer code flag
+> specific chip features as broken and let the core or drivers test for
+> it before using the feature.
+> This way, the gpmi-nand driver could check this flag before trying to
+> call ->onfi_set/get_features(TIMING).
+> Would that work for you?
+>=20
+> BTW, that'd be great to have this driver converted to the
+> ->setup_data_interface() approach at some point. =20
 
-Hmm... I don't like the idea of just DIRS, as there are other paths
-used on Makefile (INSTALL_PATH, INSTALL_MOD_PATH, INSTALL_HDR_PATH).
+I do agree with both of you.
+
+If sent this patch without asking myself more questions because:
+not checking if the timings have been properly set by a call to
+->onfi_get_features() is what the nand core does.
+
+http://elixir.free-electrons.com/linux/v4.12/source/drivers/mtd/nand/nand_b=
+ase.c#L1110
+
+Of course it would be better to use the ->setup_data_interface()
+but this is much bigger effort.
+
+
+Regards,
+Miqu=C3=A8l
 
 >=20
-> make DOCBOOKS=3Duserspace-api pdfdocs
+> Regards,
 >=20
-> still works too.  But that generates all of the pdf files, and not
-> just the userspace-api.pdf.=20
+> Boris
+>=20
+> >  =20
+> > >> Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+> > >> ---
+> > >>   drivers/mtd/nand/gpmi-nand/gpmi-lib.c | 7 -------
+> > >>   1 file changed, 7 deletions(-)
+> > >>
+> > >> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> > >> b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c index
+> > >> 141bd70a49c2..4d137145439c 100644 ---
+> > >> a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c +++
+> > >> b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c @@ -939,13 +939,6 @@
+> > >> static int enable_edo_mode(struct gpmi_nand_data *this, int
+> > >> mode) if (ret) goto err_out;
+> > >>  =20
+> > >> -	/* [2] send GET FEATURE command to double-check the
+> > >> timing mode */
+> > >> -	memset(feature, 0, ONFI_SUBFEATURE_PARAM_LEN);
+> > >> -	ret =3D nand->onfi_get_features(mtd, nand,
+> > >> -				ONFI_FEATURE_ADDR_TIMING_MODE,
+> > >> feature);
+> > >> -	if (ret || feature[0] !=3D mode)
+> > >> -		goto err_out;
+> > >> -
+> > >>   	nand->select_chip(mtd, -1);
+> > >>  =20
+> > >>   	/* [3] set the main IO clock, 100MHz for mode 5, 80MHz
+> > >> for mode 4. */   =20
+>=20
+>=20
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
-It will just ignore it. The same happens if you do:
-	make FOO=3Dbar htmldocs
 
-Yet, it could make sense to either warn or make it equivalent to
-SPHINXDIRS at the Documentation/Makefile.
 
-> And running now-dead targets like "make
-> ps" or "make sgmldocs" or "make mandocs" just returns with no output.
-
-Yeah. We need to get rid of those targets from Documentation/Makefile:
-
-	sgmldocs:
-	psdocs:
-	mandocs:
-	installmandocs:
-
-I guess the enclosed patch should do the trick.
-
-Thanks,
-Mauro
-
--
-
-docs: Makefile: remove no-ops targets
-
-After removal of DocBook, those targets are bogus.
-
-Reported-by: Jim Davis <jim.epost@gmail.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-
-diff --git a/Documentation/Makefile b/Documentation/Makefile
-index a42320385df3..d75c00e3aadb 100644
---- a/Documentation/Makefile
-+++ b/Documentation/Makefile
-@@ -95,16 +95,6 @@ endif # HAVE_SPHINX
- # The following targets are independent of HAVE_SPHINX, and the rules shou=
-ld
- # work or silently pass without Sphinx.
-=20
--# no-ops for the Sphinx toolchain
--sgmldocs:
--	@:
--psdocs:
--	@:
--mandocs:
--	@:
--installmandocs:
--	@:
--
- cleandocs:
- 	$(Q)rm -rf $(BUILDDIR)
- 	$(Q)$(MAKE) BUILDDIR=3D$(abspath $(BUILDDIR)) $(build)=3DDocumentation/me=
-dia clean
-diff --git a/Documentation/translations/zh_CN/HOWTO b/Documentation/transla=
-tions/zh_CN/HOWTO
-index 11be075ba5fa..5f6d09edc9ac 100644
---- a/Documentation/translations/zh_CN/HOWTO
-+++ b/Documentation/translations/zh_CN/HOWTO
-@@ -149,9 +149,7 @@ Linux=E5=86=85=E6=A0=B8=E4=BB=A3=E7=A0=81=E4=B8=AD=E5=
-=8C=85=E5=90=AB=E6=9C=89=E5=A4=A7=E9=87=8F=E7=9A=84=E6=96=87=E6=A1=A3=E3=80=
-=82=E8=BF=99=E4=BA=9B=E6=96=87=E6=A1=A3=E5=AF=B9=E4=BA=8E=E5=AD=A6=E4=B9=A0=
-=E5=A6=82=E4=BD=95=E4=B8=8E
- =E6=A0=B8=E6=BA=90=E7=A0=81=E7=9A=84=E4=B8=BB=E7=9B=AE=E5=BD=95=E4=B8=AD=
-=E4=BD=BF=E7=94=A8=E4=BB=A5=E4=B8=8B=E4=B8=8D=E5=90=8C=E5=91=BD=E4=BB=A4=E5=
-=B0=86=E4=BC=9A=E5=88=86=E5=88=AB=E7=94=9F=E6=88=90PDF=E3=80=81Postscript=
-=E3=80=81HTML=E5=92=8C=E6=89=8B=E5=86=8C
- =E9=A1=B5=E7=AD=89=E4=B8=8D=E5=90=8C=E6=A0=BC=E5=BC=8F=E7=9A=84=E6=96=87=
-=E6=A1=A3=EF=BC=9A
-     make pdfdocs
--    make psdocs
-     make htmldocs
--    make mandocs
-=20
-=20
- =E5=A6=82=E4=BD=95=E6=88=90=E4=B8=BA=E5=86=85=E6=A0=B8=E5=BC=80=E5=8F=91=
-=E8=80=85
-diff --git a/Makefile b/Makefile
-index 547947ff87de..5db9c669e541 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1459,7 +1459,7 @@ $(help-board-dirs): help-%:
-=20
- # Documentation targets
- # ------------------------------------------------------------------------=
----
--DOC_TARGETS :=3D xmldocs sgmldocs psdocs latexdocs pdfdocs htmldocs mandoc=
-s installmandocs epubdocs cleandocs linkcheckdocs
-+DOC_TARGETS :=3D xmldocs latexdocs pdfdocs htmldocs epubdocs cleandocs lin=
-kcheckdocs
- PHONY +=3D $(DOC_TARGETS)
- $(DOC_TARGETS): scripts_basic FORCE
- 	$(Q)$(MAKE) $(build)=3DDocumentation $@
+--=20
+Miquel Raynal, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
