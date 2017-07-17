@@ -1,13 +1,26 @@
+Received: from mail-pf0-x22a.google.com ([2607:f8b0:400e:c00::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dXA63-00058v-7Q
+ for linux-mtd@lists.infradead.org; Mon, 17 Jul 2017 17:46:24 +0000
+Received: by mail-pf0-x22a.google.com with SMTP id q85so79815426pfq.1
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Jul 2017 10:45:53 -0700 (PDT)
+Date: Mon, 17 Jul 2017 10:45:51 -0700
+From: Michael Halcrow <mhalcrow@google.com>
+To: Eric Biggers <ebiggers3@gmail.com>
+Cc: linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-mtd@lists.infradead.org, linux-crypto@vger.kernel.org,
+ "Theodore Y . Ts'o" <tytso@mit.edu>,
+ Jaegeuk Kim <jaegeuk@kernel.org>, Alex Cope <alexcope@google.com>,
+ Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH 5/6] fscrypt: cache the HMAC transform for each master key
+Message-ID: <20170717174551.GA32282@google.com>
+References: <20170712210035.51534-1-ebiggers3@gmail.com>
+ <20170712210035.51534-6-ebiggers3@gmail.com>
 MIME-Version: 1.0
-From: Romain Izard <romain.izard.pro@gmail.com>
-Date: Mon, 17 Jul 2017 18:11:26 +0200
-Message-ID: <CAMiSF3CtVY7G=ugt-bpsOOMqLcFrmx7hDstUag2_6H-KrN4yBg@mail.gmail.com>
-Subject: Uncorrectable bitflips with Linux 4.12 on SAMA5D2
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Yang Wenyou <Wenyou.Yang@atmel.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- linux-mtd <linux-mtd@lists.infradead.org>
-Content-Type: multipart/mixed; boundary="94eb2c0b8d5ea4f763055485a646"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170712210035.51534-6-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,436 +30,298 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---94eb2c0b8d5ea4f763055485a646
-Content-Type: text/plain; charset="UTF-8"
+On Wed, Jul 12, 2017 at 02:00:34PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Now that we have a key_hash field which securely identifies a master key
+> payload, introduce a cache of the HMAC transforms for the master keys
+> currently in use for inodes using v2+ encryption policies.  The entries
+> in this cache are called 'struct fscrypt_master_key' and are identified
+> by key_hash.  The cache is per-superblock.  (It could be global, but
+> making it per-superblock should reduce the lock contention a bit, and we
+> may need to keep track of keys on a per-superblock basis for other
+> reasons later, e.g. to implement an ioctl for evicting keys.)
+> 
+> This results in a large efficiency gain: we now only have to allocate
+> and key an "hmac(sha512)" transformation, execute HKDF-Extract, and
+> compute key_hash once per master key rather than once per inode.  Note
+> that this optimization can't easily be applied to the original AES-based
+> KDF because that uses a different AES key for each KDF execution.  In
+> practice, this difference makes the HKDF per-inode encryption key
+> derivation performance comparable to or even faster than the old KDF,
+> which typically spends more time allocating an "ecb(aes)" transformation
+> from the crypto API than doing actual crypto work.
+> 
+> Note that it would have been possible to make the mapping be from
+> raw_key => fscrypt_master_key (where raw_key denotes the actual bytes of
+> the master key) rather than from key_hash => fscrypt_master_key.
+> However, an advantage of doing lookups by key_hash is that it replaces
+> the keyring lookup in most cases, which opens up the future
+> possibilities of not even having the master key in memory following an
+> initial provisioning step (if the HMAC-SHA512 implementation is
+> hardware-backed), or of introducing an ioctl to provision a key to the
+> filesystem directly, avoiding keyrings and their visibility problems
+> entirely.  Also, because key_hash is public information while raw_key is
+> secret information, it would have been very difficult to use raw_key as
+> a map key in a way that would prevent timing attacks while still being
+> scalable to a large number of entries.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-Hello,
+Reviewed-by: Michael Halcrow <mhalcrow@google.com>
 
-On a custom board based on Microchip's SAMA5D2 SoC, I am encountering
-ECC problems with the NAND Flash controller. The board is currently
-working with Linux v4.9.x, but it does not with Linux 4.12.
+> ---
+>  fs/crypto/fscrypt_private.h |  11 ++++
+>  fs/crypto/keyinfo.c         | 134 +++++++++++++++++++++++++++++++++++++++++++-
+>  fs/crypto/policy.c          |   5 +-
+>  fs/super.c                  |   4 ++
+>  include/linux/fs.h          |   5 ++
+>  5 files changed, 152 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+> index a7baeac92575..4b158717a8c3 100644
+> --- a/fs/crypto/fscrypt_private.h
+> +++ b/fs/crypto/fscrypt_private.h
+> @@ -88,11 +88,22 @@ fscrypt_valid_context_format(const struct fscrypt_context *ctx, int size)
+>  
+>  /*
+>   * fscrypt_master_key - an in-use master key
+> + *
+> + * This is referenced from each in-core inode that has been "unlocked" using a
+> + * particular master key.  It's primarily used to cache the HMAC transform so
+> + * that the per-inode encryption keys can be derived efficiently with HKDF.  It
+> + * is securely erased once all inodes referencing it have been evicted.
+> + *
+> + * If the same master key is used on different filesystems (unusual, but
+> + * possible), we'll create one of these structs for each filesystem.
+>   */
+>  struct fscrypt_master_key {
+>  	struct crypto_shash	*mk_hmac;
+>  	unsigned int		mk_size;
+>  	u8			mk_hash[FSCRYPT_KEY_HASH_SIZE];
+> +	refcount_t		mk_refcount;
+> +	struct rb_node		mk_node;
+> +	struct super_block	*mk_sb;
+>  };
+>  
+>  /*
+> diff --git a/fs/crypto/keyinfo.c b/fs/crypto/keyinfo.c
+> index 12a60eacf819..bf60e76f9599 100644
+> --- a/fs/crypto/keyinfo.c
+> +++ b/fs/crypto/keyinfo.c
+> @@ -176,6 +176,14 @@ static void put_master_key(struct fscrypt_master_key *k)
+>  	if (!k)
+>  		return;
+>  
+> +	if (refcount_read(&k->mk_refcount) != 0) { /* in ->s_master_keys? */
+> +		if (!refcount_dec_and_lock(&k->mk_refcount,
+> +					   &k->mk_sb->s_master_keys_lock))
+> +			return;
+> +		rb_erase(&k->mk_node, &k->mk_sb->s_master_keys);
+> +		spin_unlock(&k->mk_sb->s_master_keys_lock);
+> +	}
+> +
+>  	crypto_free_shash(k->mk_hmac);
+>  	kzfree(k);
+>  }
+> @@ -231,6 +239,87 @@ alloc_master_key(const struct fscrypt_key *payload)
+>  	goto out;
+>  }
+>  
+> +/*
+> + * ->s_master_keys is a map of master keys currently in use by in-core inodes on
+> + * a given filesystem, identified by key_hash which is a cryptographically
+> + * secure identifier for an actual key payload.
+> + *
+> + * Note that master_key_descriptor cannot be used to identify the keys because
+> + * master_key_descriptor only identifies the "location" of a key in the keyring,
+> + * not the actual key payload --- i.e., buggy or malicious userspace may provide
+> + * different keys with the same master_key_descriptor.
+> + */
+> +
+> +/*
+> + * Search ->s_master_keys for the fscrypt_master_key having the specified hash.
+> + * If found return it with a reference taken, otherwise return NULL.
+> + */
+> +static struct fscrypt_master_key *
+> +get_cached_master_key(struct super_block *sb,
+> +		      const u8 hash[FSCRYPT_KEY_HASH_SIZE])
+> +{
+> +	struct rb_node *node;
+> +	struct fscrypt_master_key *k;
+> +	int res;
+> +
+> +	spin_lock(&sb->s_master_keys_lock);
+> +	node = sb->s_master_keys.rb_node;
+> +	while (node) {
+> +		k = rb_entry(node, struct fscrypt_master_key, mk_node);
+> +		res = memcmp(hash, k->mk_hash, FSCRYPT_KEY_HASH_SIZE);
+> +		if (res < 0)
+> +			node = node->rb_left;
+> +		else if (res > 0)
+> +			node = node->rb_right;
+> +		else {
+> +			refcount_inc(&k->mk_refcount);
+> +			goto out;
+> +		}
+> +	}
+> +	k = NULL;
+> +out:
+> +	spin_unlock(&sb->s_master_keys_lock);
+> +	return k;
+> +}
+> +
+> +/*
+> + * Try to insert the specified fscrypt_master_key into ->s_master_keys.  If it
+> + * already exists, then drop the key being inserted and take a reference to the
+> + * existing one instead.
+> + */
+> +static struct fscrypt_master_key *
+> +insert_master_key(struct super_block *sb, struct fscrypt_master_key *new)
+> +{
+> +	struct fscrypt_master_key *k;
+> +	struct rb_node *parent = NULL, **p;
+> +	int res;
+> +
+> +	spin_lock(&sb->s_master_keys_lock);
+> +	p = &sb->s_master_keys.rb_node;
+> +	while (*p) {
+> +		parent = *p;
+> +		k = rb_entry(parent, struct fscrypt_master_key, mk_node);
+> +		res = memcmp(new->mk_hash, k->mk_hash, FSCRYPT_KEY_HASH_SIZE);
+> +		if (res < 0)
+> +			p = &parent->rb_left;
+> +		else if (res > 0)
+> +			p = &parent->rb_right;
+> +		else {
+> +			refcount_inc(&k->mk_refcount);
+> +			spin_unlock(&sb->s_master_keys_lock);
+> +			put_master_key(new);
+> +			return k;
+> +		}
+> +	}
+> +
+> +	rb_link_node(&new->mk_node, parent, p);
+> +	rb_insert_color(&new->mk_node, &sb->s_master_keys);
+> +	refcount_set(&new->mk_refcount, 1);
+> +	new->mk_sb = sb;
+> +	spin_unlock(&sb->s_master_keys_lock);
+> +	return new;
+> +}
+> +
+>  static void release_keyring_key(struct key *keyring_key)
+>  {
+>  	up_read(&keyring_key->sem);
+> @@ -321,6 +410,47 @@ load_master_key_from_keyring(const struct inode *inode,
+>  	return master_key;
+>  }
+>  
+> +/*
+> + * Get the fscrypt_master_key identified by the specified v2+ encryption
+> + * context, or create it if not found.
+> + *
+> + * Returns the fscrypt_master_key with a reference taken, or an ERR_PTR().
+> + */
+> +static struct fscrypt_master_key *
+> +find_or_create_master_key(const struct inode *inode,
+> +			  const struct fscrypt_context *ctx,
+> +			  unsigned int min_keysize)
+> +{
+> +	struct fscrypt_master_key *master_key;
+> +
+> +	if (WARN_ON(ctx->version < FSCRYPT_CONTEXT_V2))
+> +		return ERR_PTR(-EINVAL);
 
-Some pages on the NAND Flash memory chip of the device have bitflips.
-With Linux 4.9.x, the bitflips are fixed by the PMECC code, but with
-Linux 4.12, the errors are reported as uncorrectable.
+Isn't this a programming error?  If so, consider either BUG_ON() or
+omit the check.
 
->From my end, I updated the board's device tree to include the
-sama5d2.dtsi as it exists in Linux 4.12, but the rest of the file is
-the same as for Linux 4.9. From my understanding, it should be
-sufficient as the legacy DTB binding for the NAND controller is
-supported.
-
-The relevant extract is:
-
-        nand0: nand@80000000 {
-            pinctrl-names = "default";
-            pinctrl-0 = <&pinctrl_nand_default>;
-            status = "okay";
-            nand-ecc-mode = "hw";
-            atmel,pmecc-cap = <8>;
-            atmel,pmecc-sector-size = <512>;
-            /delete-property/ atmel,nand-has-dma;
-        };
-
-The attached files show the same block read through nanddump, with
-Linux 4.9 and Linux 4.12
-
-Best regards,
--- 
-Romain Izard
-
---94eb2c0b8d5ea4f763055485a646
-Content-Type: application/octet-stream; name="ad97000_nofix.dump"
-Content-Disposition: attachment; filename="ad97000_nofix.dump"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_j58c94ib0
-
-MHgwYWQ5NzAwMDogZWQgNmEgYWEgY2UgYzkgZDkgODMgMzMgYjAgZWUgY2IgMTIgZTEgZGEgODQg
-YjQgIHwuai4uLi4uMy4uLi4uLi4ufAoweDBhZDk3MDEwOiBiNiAyYyBmNiAxNSA0OSA4ZSBmMSBi
-NiAyYiAzYSA0NCA2MSAzMiAwYyBiNiA5YyAgfC4sLi5JLi4uKzpEYTIuLi58CjB4MGFkOTcwMjA6
-IGJjIDU2IDBjIDI2IDc3IDg1IDVkIGM1IDI1IGNlIDUxIGNkIGNmIGU4IDY5IDY1ICB8LlYuJncu
-XS4lLlEuLi5pZXwKMHgwYWQ5NzAzMDogZWYgOTEgZjIgNWYgYzIgNTUgNmYgMWIgMWEgMGYgYjkg
-MmQgMzIgZjkgNDQgNTYgIHwuLi5fLlVvLi4uLi0yLkRWfAoweDBhZDk3MDQwOiBkMSAyMSA3MiBk
-ZiAzNiBhYSBlMSA1ZiBlYiA4NyAwMyA3YiBkNyA3OCA4NCAwZSAgfC4hci42Li5fLi4uey54Li58
-CjB4MGFkOTcwNTA6IDQwIGE2IGIzIDc0IGFhIGE0IGJhIGY5IDY5IGE1IDE4IDdlIDQzIDkwIDFh
-IDJkICB8QC4udC4uLi5pLi5+Qy4uLXwKMHgwYWQ5NzA2MDogNjQgMDQgMzIgOTcgNDcgY2MgNjkg
-MzkgOWIgMDYgZmYgOWUgNzAgMWMgNzkgMGUgIHxkLjIuRy5pOS4uLi5wLnkufAoweDBhZDk3MDcw
-OiBjNSBlYiBhMSAzZCAzYyA5MiBjMCAxZiBlNiBmYSA3NSA0MSA0ZiBhZiBmMyAyNiAgfC4uLj08
-Li4uLi51QU8uLiZ8CjB4MGFkOTcwODA6IDdiIDJiIGIwIDM5IGI5IDA4IGMxIDNiIDdkIGJkIDZh
-IDk5IDgyIGUxIGRjIDE3ICB8eysuOS4uLjt9LmouLi4uLnwKMHgwYWQ5NzA5MDogOTggMzAgZWIg
-NTMgMmYgNGIgNWQgMWIgYmQgYTcgMzEgYzcgOWEgNDIgMTEgOGUgIHwuMC5TL0tdLi4uMS4uQi4u
-fAoweDBhZDk3MGEwOiAyYiA1MiAyZSAxMCA2ZSBiMyAwMyAxNiA5OSA0ZCBiNCA3ZSBmNiAzMiA3
-OSAxYiAgfCtSLi5uLi4uLk0ufi4yeS58CjB4MGFkOTcwYjA6IDk3IGI1IDQ1IDM4IGVmIGI3IGJl
-IGIzIDBmIDA1IDk0IDcwIDRkIDMwIDFmIDNhICB8Li5FOC4uLi4uLi5wTTAuOnwKMHgwYWQ5NzBj
-MDogY2IgMTIgNTIgYTggNDEgYzYgN2UgMmIgZDIgZTQgNWUgOGQgOTUgODEgNDIgZmIgIHwuLlIu
-QS5+Ky4uXi4uLkIufAoweDBhZDk3MGQwOiAzNyBlMSBhYSA5MCA4NCBlMCBlZSA2NiBiMyA2MCA1
-OSA3YiAwOSA4YiA4OCAxNyAgfDcuLi4uLi5mLmBZey4uLi58CjB4MGFkOTcwZTA6IDQyIGVjIDMw
-IDA3IDVkIDlkIDI1IDhlIDVmIGUyIDM4IDNmIGM0IDQ4IGY4IDc4ICB8Qi4wLl0uJS5fLjg/Lkgu
-eHwKMHgwYWQ5NzBmMDogMDYgMTkgYjMgODIgZjAgYTUgN2QgZDYgMDkgZTIgMTAgMzggMTcgNDAg
-ZGQgN2YgIHwuLi4uLi59Li4uLjguQC4ufAoweDBhZDk3MTAwOiAzNCAyZiBmOCBmZCA1MCAzMSA0
-MSBiYyBlZSAzZiBlMCBlNiA5NiA2ZCA2NyBhYyAgfDQvLi5QMUEuLj8uLi5tZy58CjB4MGFkOTcx
-MTA6IDMyIDZkIGMwIDU5IDEyIDNkIGQ3IGRhIDY2IDdmIDc4IDY4IGE0IGM2IGQ1IDAzICB8Mm0u
-WS49Li5mLnhoLi4uLnwKMHgwYWQ5NzEyMDogMWYgMzggYjQgNDQgNzIgY2UgYzQgMDIgNmIgN2Ug
-MjYgYjQgY2IgNmMgMWYgZWUgIHwuOC5Eci4uLmt+Ji4ubC4ufAoweDBhZDk3MTMwOiBlMCA5ZSBm
-MyA1NyA4NyBlZSBlNiBmYSA4MSA1NiA0MiAwNiA3MyBlNiAxNCA4NiAgfC4uLlcuLi4uLlZCLnMu
-Li58CjB4MGFkOTcxNDA6IGNhIDI0IDMzIDIxIGEwIDdjIGJkIDM4IDk2IDQ3IDQzIDMzIDNkIDJk
-IDM0IDBkICB8LiQzIS58LjguR0MzPS00LnwKMHgwYWQ5NzE1MDogMjIgODYgYjMgOGIgM2UgZGQg
-ZTcgN2YgZGIgYmMgMWIgMzggZTggNjUgMDAgODAgIHwiLi4uPi4uLi4uLjguZS4ufAoweDBhZDk3
-MTYwOiA4MCAzMiBiMiAwMCA5MSBmMyA0MSAzYiBmMiA5YiBlMCA2ZCBiNyA4ZCAzOCAzNiAgfC4y
-Li4uLkE7Li4ubS4uODZ8CjB4MGFkOTcxNzA6IDkyIGM3IDNlIDMxIDYwIGZhIGMwIDM5IGM0IGE3
-IDJlIDU1IDVlIGY0IGVkIDYxICB8Li4+MWAuLjkuLi5VXi4uYXwKMHgwYWQ5NzE4MDogNDUgNjcg
-MjMgNmQgOWEgZmIgZDQgZDIgZGIgY2QgNjYgZmQgYTIgNDAgZjEgNDIgIHxFZyNtLi4uLi4uZi4u
-QC5CfAoweDBhZDk3MTkwOiA4ZCBmYyA1NyBmZiBhYyAxZiBmMSAwZCBkYyA0ZiBmMCAyYSA1YyA0
-NCA5OCBhNCAgfC4uVy4uLi4uLk8uKlxELi58CjB4MGFkOTcxYTA6IDQ0IGMxIDY2IGQwIDVhIDQx
-IGUxIDRkIDllIDQ4IGRiIDU5IDhmIGNhIDg3IGUxICB8RC5mLlpBLk0uSC5ZLi4uLnwKMHgwYWQ5
-NzFiMDogMWIgMWUgNjMgNTEgODYgNzQgZDIgNzMgYjUgOTIgNDQgYjcgM2QgZmMgODkgOGIgIHwu
-LmNRLnQucy4uRC49Li4ufAoweDBhZDk3MWMwOiA4MiA4MSBhZSA5YiAxNSA3NyA5YSA2MiAxYiBh
-YiA3YSBiNSA3YyA3ZSA4YyBkYSAgfC4uLi4udy5iLi56Lnx+Li58CjB4MGFkOTcxZDA6IGExIDdm
-IDk0IGY0IGUwIDFlIGNiIGRiIDQ5IDE3IDUwIDNlIDRjIGVmIGM5IDJkICB8Li4uLi4uLi5JLlA+
-TC4uLXwKMHgwYWQ5NzFlMDogM2QgOTggNTcgNjcgM2IgMDQgZDQgNmQgNDUgYWMgOGEgNzkgYzQg
-N2IgZjcgMzAgIHw9LldnOy4ubUUuLnkuey4wfAoweDBhZDk3MWYwOiBiMyBmZiBmOCBiYyBjZCA3
-YiBmYSAzNiA1MiAzNyA3NiA0YiAzOSBjOCA0YyBkZSAgfC4uLi4uey42Ujd2SzkuTC58CjB4MGFk
-OTcyMDA6IDU2IDQyIDhkIGI1IDM0IDg2IGYyIDE3IDU0IDhkIGJhIGRiIGQ3IGZkIDM0IDE3ICB8
-VkIuLjQuLi5ULi4uLi40LnwKMHgwYWQ5NzIxMDogNmMgMmIgMjEgNzUgMmUgZWUgMDUgOTkgMzMg
-YmMgNDggOTIgNDkgMDMgNjUgNGQgIHxsKyF1Li4uLjMuSC5JLmVNfAoweDBhZDk3MjIwOiA3ZiBm
-YiBiYyAxYSAwZSA4NiBjNyAwOSA3MCBlNSBhZCBiZSAzNCA1MSBjYSA2YiAgfC4uLi4uLi4ucC4u
-LjRRLmt8CjB4MGFkOTcyMzA6IGJhIDIwIDFlIGFlIDI0IGFkIDAxIDUyIDNjIDc1IGFmIGU3IGQ2
-IGU0IGQ4IGU2ICB8LiAuLiQuLlI8dS4uLi4uLnwKMHgwYWQ5NzI0MDogNmIgYTMgNjcgNGYgNjcg
-MjYgYWMgZmQgNjQgYTggNzIgZjkgYzIgYWYgYzQgM2UgIHxrLmdPZyYuLmQuci4uLi4+fAoweDBh
-ZDk3MjUwOiBlOCAzYyBkZiA3NyAwOCA1MCA5ZCAzOSAwYSAyMCA0YSA1OSBkNiA1YiAzZiAwNSAg
-fC48LncuUC45LiBKWS5bPy58CjB4MGFkOTcyNjA6IGY2IGU2IDY1IGFlIDIyIDI3IGMzIGVjIDhj
-IDNlIGYxIDcwIDhhIDFlIDhmIDlhICB8Li5lLiInLi4uPi5wLi4uLnwKMHgwYWQ5NzI3MDogYzMg
-ZmUgMjIgZjYgNjAgMzIgOGUgZDAgNmIgNzIgN2QgMGEgZDkgM2IgMTEgNWUgIHwuLiIuYDIuLmty
-fS4uOy5efAoweDBhZDk3MjgwOiBkYiBjNSA2YyA0NiA3NSBmYiA0MiA3MyAwNSBiMSA3MiA1OSAw
-YiA2OCA1MSAwYiAgfC4ubEZ1LkJzLi5yWS5oUS58CjB4MGFkOTcyOTA6IDdjIDM4IDQ2IGNlIGU5
-IDRlIDU5IDlkIGNhIDA5IGZmIDUyIDcwIDViIGFhIDRmICB8fDhGLi5OWS4uLi5ScFsuT3wKMHgw
-YWQ5NzJhMDogN2MgZWUgZTggMWEgYzEgNjUgNWQgZWIgZWMgMjkgNzkgMzQgNGEgZjkgYmEgOTIg
-IHx8Li4uLmVdLi4peTRKLi4ufAoweDBhZDk3MmIwOiAxOSA4NyA3ZCA5MyBkMyAxZCAwMCBlNiAz
-ZiBkYyAwMyBkYiA3ZiAzMyAwOSBhOCAgfC4ufS4uLi4uPy4uLi4zLi58CjB4MGFkOTcyYzA6IGU2
-IDZkIDI2IDJiIDNmIDM0IGFkIDMyIDM5IGM2IGEyIGNjIGY5IDVkIDczIGExICB8Lm0mKz80LjI5
-Li4uLl1zLnwKMHgwYWQ5NzJkMDogNGIgMzQgNDAgZWQgNjggMWIgZjMgNTQgNzggYjMgMjAgYWUg
-NTMgNTcgNjggMzYgIHxLNEAuaC4uVHguIC5TV2g2fAoweDBhZDk3MmUwOiA5NCBlMyA3YSBkYiBi
-MyBhYyA5YyA0NiAyNiBlZSBlMCBmNSA5YyAzNyA5YiAxNiAgfC4uei4uLi5GJi4uLi43Li58CjB4
-MGFkOTcyZjA6IDhhIDE2IDQwIDEwIGUyIGQ4IDcyIDZiIDljIGQ1IGRkIGE1IGZmIDA3IDA2IDRm
-ICB8Li5ALi4ucmsuLi4uLi4uT3wKMHgwYWQ5NzMwMDogYWQgYTkgY2MgZmQgMGMgYzkgMTUgYTEg
-NzcgMGQgMjQgOGEgZWEgYzAgMGQgN2QgIHwuLi4uLi4uLncuJC4uLi59fAoweDBhZDk3MzEwOiA1
-NSA4MiA1YiA2MiAwZSAzMSA3OSA3YiAyYyBkZCBiMSAwYiA5YiA1OSA4YiBiZCAgfFUuW2IuMXl7
-LC4uLi5ZLi58CjB4MGFkOTczMjA6IDBhIDE5IGNiIGQwIDE2IDQ0IDBkIDQxIDE5IDBjIGY2IGJi
-IDkyIDNmIGVjIDQ0ICB8Li4uLi5ELkEuLi4uLj8uRHwKMHgwYWQ5NzMzMDogYmUgZTkgOTEgMDMg
-NzcgNDAgOGYgZTkgMmEgZTggNzYgNDIgZTggNWEgNWIgNTkgIHwuLi4ud0AuLioudkIuWltZfAow
-eDBhZDk3MzQwOiBiZSBkMCBjMiA2MCA4ZCAwMiBjMyBkMiBlMCA3YiBjMCBmMyBiMSA3YiBjNCBh
-NSAgfC4uLmAuLi4uLnsuLi57Li58CjB4MGFkOTczNTA6IDNlIGFjIGY3IDBkIDI5IDdlIDc5IDM4
-IDhmIDNiIGQ3IDYzIDA1IGE4IDExIDc0ICB8Pi4uLil+eTguOy5jLi4udHwKMHgwYWQ5NzM2MDog
-ZWYgZTkgZTQgMGYgNjMgYzEgYTUgMTkgZDkgMzggNWMgZTEgNTggNGYgNDQgNjIgIHwuLi4uYy4u
-Li44XC5YT0RifAoweDBhZDk3MzcwOiAzMyA4NSAzYSA4OCA4NyBkZCA5OSAwYiBkYSBlYSBlYSBj
-NyBhMCBkMiBlZSAwYSAgfDMuOi4uLi4uLi4uLi4uLi58CjB4MGFkOTczODA6IDNlIGQxIGYzIDNj
-IDMyIDIwIGY1IDFhIGYzIDZhIDY0IGFkIDQwIDAwIGYwIDQ5ICB8Pi4uPDIgLi4uamQuQC4uSXwK
-MHgwYWQ5NzM5MDogMjIgNWUgMTAgZjEgZWYgZDQgNmQgODggYTAgZDEgODMgNTUgMjUgMzEgYTMg
-M2EgIHwiXi4uLi5tLi4uLlUlMS46fAoweDBhZDk3M2EwOiBlMyBlNSAwYiBkMSAzOSA2YyBhMiAw
-ZCA4YSA0ZSBiOCBjNyBkOSBlNyAxYiBiZiAgfC4uLi45bC4uLk4uLi4uLi58CjB4MGFkOTczYjA6
-IDk2IDYwIDhhIGIzIDVkIGIyIGQyIDkwIGYyIGY1IDkwIDUwIDg0IDBiIGFkIGYzICB8LmAuLl0u
-Li4uLi5QLi4uLnwKMHgwYWQ5NzNjMDogNjUgNTEgYjkgZmYgODkgZTUgYmQgZGQgNjkgNWMgNDMg
-NTMgNDAgZTEgNzIgMTkgIHxlUS4uLi4uLmlcQ1NALnIufAoweDBhZDk3M2QwOiBhNSA3NSA0ZCA5
-NyAyYSBhMCA2ZCBjOCAzYiA4ZCAwZCBhNyA3YyA0MyAyZiBjMyAgfC51TS4qLm0uOy4uLnxDLy58
-CjB4MGFkOTczZTA6IDZlIDMwIDVlIDcxIDdhIDIwIGRlIDYzIGE3IDM5IDI1IGQzIGFhIGMyIGJl
-IDZkICB8bjBecXogLmMuOSUuLi4ubXwKMHgwYWQ5NzNmMDogOWMgMzQgYzkgNDUgZGUgYTggZDYg
-ZDEgOGIgMWYgYWUgZDIgMDYgZjEgMzAgZTAgIHwuNC5FLi4uLi4uLi4uLjAufAoweDBhZDk3NDAw
-OiA0ZiBhMSBhYyA3YSA2NSBjYyBhZiBmNCBkMiBkOSAzZiAzZiAxMyA1MyA0YSA4MCAgfE8uLnpl
-Li4uLi4/Py5TSi58CjB4MGFkOTc0MTA6IGY2IGRiIGE0IDk4IDJjIGRmIDE0IDg4IGU1IDcyIDUy
-IDFiIGVjIDE3IDJkIGI5ICB8Li4uLiwuLi4uclIuLi4tLnwKMHgwYWQ5NzQyMDogMzEgMTggMTAg
-MDYgOWEgZjMgY2QgZTIgMDAgNjUgMDAgMDAgMDAgMDAgMDAgMDAgIHwxLi4uLi4uLi5lLi4uLi4u
-fAoweDBhZDk3NDMwOiAzMCAxMCAwMCAwMCAwMSAwMCAwMCAwMCAxZSAwMSAwMCAwMCBjOSAwNiAw
-MCAyMCAgfDAuLi4uLi4uLi4uLi4uLiB8CjB4MGFkOTc0NDA6IDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDEwIDAwIDAwIDAwIDAwIDAwIDAwICB8Li4uLi4uLi4uLi4uLi4uLnwKMHgwYWQ5NzQ1
-MDogZDAgZmEgYTggNmQgMDUgNzkgYzIgZDIgMjIgYjUgNWIgN2EgZmEgZDIgNzQgMDAgIHwuLi5t
-LnkuLiIuW3ouLnQufAoweDBhZDk3NDYwOiA2NSBkOCA5YiBhZCBjNSBmOCA4NyAwMyAwNiAxZiBm
-YSA3OSBhOSBjZiBlMyAzYSAgfGUuLi4uLi4uLi4ueS4uLjp8CjB4MGFkOTc0NzA6IGNhIGU1IGU1
-IGNhIDViIDJhIDVjIGI2IDYwIGQ4IGM1IGVkIGQyIDM2IDE2IGI0ICB8Li4uLlsqXC5gLi4uLjYu
-LnwKMHgwYWQ5NzQ4MDogMTIgNTggNjIgYzcgMTYgMWEgNTIgNjMgZjEgY2UgZjkgYzAgMWQgOWUg
-NGIgODQgIHwuWGIuLi5SYy4uLi4uLksufAoweDBhZDk3NDkwOiA1MyBjNiBiZiA1YyBjNCA4YyA3
-YSBiYyA1MyA1MiBiNCA0NyAyMCBkZCA0ZCA5MSAgfFMuLlwuLnouU1IuRyAuTS58CjB4MGFkOTc0
-YTA6IDFkIDU3IDk4IDI4IDYyIGIzIDg4IDJkIDVlIDg3IDc0IDZkIGM3IGI1IGIyIDZiICB8Llcu
-KGIuLi1eLnRtLi4ua3wKMHgwYWQ5NzRiMDogMTcgYjYgMDcgZjIgNWEgM2QgNTggNDAgNmEgODgg
-MDIgNjMgMjEgNGEgODAgOTkgIHwuLi4uWj1YQGouLmMhSi4ufAoweDBhZDk3NGMwOiA5YiAxYiA5
-ZSBmMyA4MCBhMCA5MSA1YiAwOCBmMiBjYiBiZiA3YyA5MCA0NyBkZiAgfC4uLi4uLi5bLi4uLnwu
-Ry58CjB4MGFkOTc0ZDA6IGEzIDViIDAwIGNlIDk2IDEyIDc0IDU5IDU2IDFlIDczIDQ5IGE4IDA2
-IGVhIDdlICB8LlsuLi4udFlWLnNJLi4ufnwKMHgwYWQ5NzRlMDogMDAgMDAgMDAgMDAgMDYgMTYg
-MmQgNDQgMDAgMDEgOGQgYzMgMDIgODAgODAgMDggIHwuLi4uLi4tRC4uLi4uLi4ufAoweDBhZDk3
-NGYwOiBhMiA4MiBhYSBiMSAzZSAzMCAwZCA4YiAwMiAwMCAwMCAwMCAwMCAwMSA1OSA1YSAgfC4u
-Li4+MC4uLi4uLi4uWVp8CjB4MGFkOTc1MDA6IGZkIDM3IDdhIDU4IDVhIDAwIDAwIDAxIDY5IDIy
-IGRlIDM2IDAzIGMwIGU0IGVlICB8Ljd6WFouLi5pIi42Li4uLnwKMHgwYWQ5NzUxMDogMDIgODAg
-ODAgMDggMjEgMDEgMGEgMDAgZWQgMzcgNGYgNjYgZTEgZmYgZmYgYjcgIHwuLi4uIS4uLi43T2Yu
-Li4ufAoweDBhZDk3NTIwOiA1YyA1ZCAwMCA3MSAzZiBlZCBkNCAwNiBjOCAyNCA0MSBjOSBiZiA1
-MCBlMSA2YyAgfFxdLnE/Li4uLiRBLi5QLmx8CjB4MGFkOTc1MzA6IGIwIGI3IGY0IDQzIDY2IDc5
-IDEyIDg5IGVmIGE4IDZjIGE4IDBlIDc1IGQyIGVkICB8Li4uQ2Z5Li4uLmwuLnUuLnwKMHgwYWQ5
-NzU0MDogNWQgNTcgYjYgZjggNzQgNmYgYzggMDYgZmEgMzcgZjYgMzEgNTEgN2YgMmYgZDIgIHxd
-Vy4udG8uLi43LjFRLi8ufAoweDBhZDk3NTUwOiA5NCBkMyA5YSAyYiBjZCA0OCBkMyAzMSAyMyA0
-NiBmMSA3OSA1NyBjNiBiOSBjNiAgfC4uLisuSC4xI0YueVcuLi58CjB4MGFkOTc1NjA6IDVjIDQ5
-IDI2IDk3IDA4IDBmIDEwIGVhIDliIDdiIDRmIGI3IDc1IDIxIDRiIDg4ICB8XEkmLi4uLi4ue08u
-dSFLLnwKMHgwYWQ5NzU3MDogN2IgMGIgMGIgZWIgNjYgZDIgNTcgMjIgOGUgYTAgOWYgZjUgYjcg
-OTggMmIgYTMgIHx7Li4uZi5XIi4uLi4uLisufAoweDBhZDk3NTgwOiAzMyA2ZCA4MCA1OCA3NCBk
-NSA2MSAwMyAzZCAwMCA3MCBhMSBkMCBiMCA5MCA2YiAgfDNtLlh0LmEuPS5wLi4uLmt8CjB4MGFk
-OTc1OTA6IDY2IGY3IDUxIGIxIDEwIGY1IGM3IGM4IGM1IDc0IDYwIDgyIDQzIDY1IDUxIGEwICB8
-Zi5RLi4uLi4udGAuQ2VRLnwKMHgwYWQ5NzVhMDogOGUgMzEgNDEgNjIgZTkgZjEgOGYgN2MgMjIg
-MzYgYjQgZTIgNGEgYTAgMWYgMzIgIHwuMUFiLi4ufCI2Li5KLi4yfAoweDBhZDk3NWIwOiAzYSA5
-YSBjOSBhMSA1YiBiOCA1YSA4YiBjNiA1NyAyNyBmNiBjMCBjZiA5ZiBmMSAgfDouLi5bLlouLlcn
-Li4uLi58CjB4MGFkOTc1YzA6IDJjIDY1IDdkIGVmIGY2IDhjIGYwIDBjIGE0IDYwIGM0IDgxIDg4
-IGQwIDhiIDkxICB8LGV9Li4uLi4uYC4uLi4uLnwKMHgwYWQ5NzVkMDogZDIgNDQgOWIgMGIgNDYg
-NzAgZjUgZDcgYzIgZDQgMmMgN2EgMDYgMDkgMzIgNDcgIHwuRC4uRnAuLi4uLHouLjJHfAoweDBh
-ZDk3NWUwOiA1YyBjYiAxOSBhOSBkZiBhYiA4MCAyNyA4ZCA2ZSBiOSA4YiAzNSBmOSAzMSA4NyAg
-fFwuLi4uLi4nLm4uLjUuMS58CjB4MGFkOTc1ZjA6IGY0IGI5IGQ2IDQ0IDI0IDYwIDcxIDE2IDkx
-IDU0IGQ4IDk0IGNiIDVlIDc4IDBmICB8Li4uRCRgcS4uVC4uLl54LnwKMHgwYWQ5NzYwMDogODQg
-ZTQgMDIgMmEgZGUgOTEgZjQgNjQgZTIgZTggYWIgN2QgNTQgNjkgZDAgOWUgIHwuLi4qLi4uZC4u
-Ln1UaS4ufAoweDBhZDk3NjEwOiBjNyA5YiA4MCA2MiA1NyBiYSA4ZCBlMCAzMCBhZCBlOCBlMyA4
-MyAwOCA3OSAzZiAgfC4uLmJXLi4uMC4uLi4ueT98CjB4MGFkOTc2MjA6IGUwIDY5IDQwIDg4IDEw
-IGY1IDAwIGQ5IDJjIDhjIDFlIDYxIGZjIDYyIDkzIDQ3ICB8LmlALi4uLi4sLi5hLmIuR3wKMHgw
-YWQ5NzYzMDogNmMgM2QgYTEgMWEgM2UgNDUgOGUgMGMgMDggY2MgNDcgNDEgZjAgYjQgZjMgMjgg
-IHxsPS4uPkUuLi4uR0EuLi4ofAoweDBhZDk3NjQwOiBiNyBlMSBmZiBmMSA4NiA5OSA2NyBjNSAz
-YSAyYSA4OCA4ZSAzMSAwMCAyMCAzOCAgfC4uLi4uLmcuOiouLjEuIDh8CjB4MGFkOTc2NTA6IGM4
-IGFjIDU5IGZhIDg1IDBhIDU0IDViIGE5IDYzIGFmIGM1IDdiIGZiIGI4IDgzICB8Li5ZLi4uVFsu
-Yy4uey4uLnwKMHgwYWQ5NzY2MDogODkgNmQgNWEgMDIgZmYgNWUgNDkgNWMgMzcgNzQgYzcgMjAg
-NDIgNmEgOGUgZmYgIHwubVouLl5JXDd0LiBCai4ufAoweDBhZDk3NjcwOiAwMyBjYSA4ZCBlZCA0
-NSAxYSBlZSBmZSA5YiA1NyA3MSA0OSA2NSA3NSAxMiAzMyAgfC4uLi5FLi4uLldxSWV1LjN8CjB4
-MGFkOTc2ODA6IDc2IGFmIDBhIGE5IGQwIDQ1IDEwIDMwIDAwIGYwIDVjIGYwIDI1IDg3IDcwIDZj
-ICB8di4uLi5FLjAuLlwuJS5wbHwKMHgwYWQ5NzY5MDogYjMgMTggZTEgODMgODkgZTEgZjMgZDQg
-N2EgY2EgMmYgODYgYWYgYmEgN2QgOWMgIHwuLi4uLi4uLnouLy4uLn0ufAoweDBhZDk3NmEwOiA3
-OCBkNSA5MyA5NiAzZSA5OCA2YyBiMCA3ZSBmYiA1NiAxNSAxZiAwOSBkOSA3MyAgfHguLi4+Lmwu
-fi5WLi4uLnN8CjB4MGFkOTc2YjA6IDJiIDQ1IDc2IGU3IDAwIDdmIDNhIDdiIDQ0IDllIDUxIGQ0
-IDI4IDI3IGY1IDBiICB8K0V2Li4uOntELlEuKCcuLnwKMHgwYWQ5NzZjMDogODIgOGIgZTggM2Mg
-NTAgZWYgZGQgMmMgNzcgYzYgMmIgOTUgYjQgM2YgNjUgZTkgIHwuLi48UC4uLHcuKy4uP2UufAow
-eDBhZDk3NmQwOiAwNyBlNSBmNiAyZiA5NSBhNSAxMyBiMiA4MCBkNiA4OSA3OSAwMyA0OSAyNiA5
-YiAgfC4uLi8uLi4uLi4ueS5JJi58CjB4MGFkOTc2ZTA6IGUwIDc3IDIyIGRjIDg1IDNlIDIyIDRk
-IDNhIGM1IGMzIGMxIDk3IDc2IDlhIDU3ICB8LnciLi4+Ik06Li4uLnYuV3wKMHgwYWQ5NzZmMDog
-NmIgYWQgZDAgZTUgOTkgMzcgZjggZmIgMjIgOTcgNjcgYzMgYjEgNDMgNWUgY2YgIHxrLi4uLjcu
-LiIuZy4uQ14ufAoweDBhZDk3NzAwOiAyMyA0NyBiOSA1NSBkMCBhYiA4YiA4MSAyYSAwMyBiZCA3
-MyA1ZSBmZiBmYSAzYSAgfCNHLlUuLi4uKi4uc14uLjp8CjB4MGFkOTc3MTA6IDJiIDYyIDNkIGMy
-IDdhIGM1IDNjIDkyIGFkIGRhIDJlIDk3IDFiIGVlIDdjIGEyICB8K2I9LnouPC4uLi4uLi58LnwK
-MHgwYWQ5NzcyMDogOTYgYjIgNTUgY2IgNWYgMDYgMjkgZTEgN2IgZmQgODMgMzUgMzcgYzUgZmMg
-OWIgIHwuLlUuXy4pLnsuLjU3Li4ufAoweDBhZDk3NzMwOiBiOSBmYSAzYyA3NiA4MCA3MyAzZCA5
-OSAxYSA0OCA3YSAzNyAwMyBkYSAzMyBiMiAgfC4uPHYucz0uLkh6Ny4uMy58CjB4MGFkOTc3NDA6
-IDFkIGE3IDMxIGQwIDVkIDQ0IDY2IGI3IGQ2IDJiIDQyIGNlIDM0IGUwIDhmIGZlICB8Li4xLl1E
-Zi4uK0IuNC4uLnwKMHgwYWQ5Nzc1MDogNzUgMmEgMTUgMTIgNWUgZmMgZjggZjMgZDYgYTMgOTgg
-ZGMgOTUgMzUgYjYgZGQgIHx1Ki4uXi4uLi4uLi4uNS4ufAoweDBhZDk3NzYwOiBlZiAwOSA2ZSA0
-MiAxNCA0MSA5ZiBmMyA4MCA4YiA3YyBlMiA1OSBhZiBhNCAyNSAgfC4ubkIuQS4uLi58LlkuLiV8
-CjB4MGFkOTc3NzA6IDNjIGQ4IDVjIGY3IDViIGE3IGFhIDRmIGIxIDQzIDZmIDg2IGZiIDVmIGY4
-IDc3ICB8PC5cLlsuLk8uQ28uLl8ud3wKMHgwYWQ5Nzc4MDogMTMgZmUgZmEgODIgOTcgODQgYWEg
-YzAgMjUgZjkgYWQgNTcgMjQgNDIgYjkgNGEgIHwuLi4uLi4uLiUuLlckQi5KfAoweDBhZDk3Nzkw
-OiA4OSA2ZiBiNiA2MCAzNCA3MyBhZSBhZiBlNyA2ZSAxZSA1ZCAzZiA5NiAyMCA2YyAgfC5vLmA0
-cy4uLm4uXT8uIGx8CjB4MGFkOTc3YTA6IDY2IGIyIDBjIDAwIDUxIGM1IDFiIDIzIGQxIDFiIDdj
-IGYzIGMwIDQ3IDY5IDk4ICB8Zi4uLlEuLiMuLnwuLkdpLnwKMHgwYWQ5NzdiMDogOTQgZGIgMTkg
-YjIgMWQgMWMgYjMgNjMgYmIgNDUgZmQgZDggY2IgNjQgOWMgZWUgIHwuLi4uLi4uYy5FLi4uZC4u
-fAoweDBhZDk3N2MwOiAwNyA0ZiAzNCA3MyBkNCA3NyAyOCBlMSBlMCBkNyBkZCBjNSAxZSBlOCAz
-YyBmZCAgfC5PNHMudyguLi4uLi4uPC58CjB4MGFkOTc3ZDA6IGM3IGQ3IDNkIGQ4IGUzIDI1IDI0
-IGUzIGUxIDkxIDNhIDdiIGY3IDdlIDUyIDVhICB8Li49Li4lJC4uLjp7Ln5SWnwKMHgwYWQ5Nzdl
-MDogMzMgYmYgY2IgYjMgOGUgZGEgNWMgZjUgYjggN2MgZDUgMmEgODYgYzMgZGUgZGYgIHwzLi4u
-Li5cLi58LiouLi4ufAoweDBhZDk3N2YwOiBlOCA4MSAyNyA3ZiBkNSBiMSAyOSBiZiBjZCBhZiBj
-MSA3ZCBmMiAzMyAzOCBhNCAgfC4uJy4uLikuLi4ufS4zOC58CiAgT09CIERhdGE6IGZmIGZmIGZm
-IGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmICB8Li4uLi4uLi4uLi4uLi4u
-LnwKICBPT0IgRGF0YTogZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYg
-ZmYgZmYgIHwuLi4uLi4uLi4uLi4uLi4ufAogIE9PQiBEYXRhOiBmZiBmZiBmZiBmZiBmZiBmZiBm
-ZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiAgfC4uLi4uLi4uLi4uLi4uLi58CiAgT09CIERh
-dGE6IGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmICB8Li4u
-Li4uLi4uLi4uLi4uLnwKICBPT0IgRGF0YTogZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYg
-ZmYgZmYgNTUgODYgODYgNTIgIHwuLi4uLi4uLi4uLi5VLi5SfAogIE9PQiBEYXRhOiA5YSBmZSBj
-ZCA5NCBiZSAxZiBiZCA4MCBiNiBiYiA1ZSBkNCBlYiBkYyBmYyA5OSAgfC4uLi4uLi4uLi5eLi4u
-Li58CiAgT09CIERhdGE6IDcwIDY4IGFiIGExIGVjIDgxIDkyIGQ0IGM2IDM2IDc4IDZlIDZmIDU1
-IDkxIGNkICB8cGguLi4uLi4uNnhub1UuLnwKICBPT0IgRGF0YTogZjMgNTkgN2IgNTMgNzcgODYg
-NmIgM2IgYmYgYjQgZGEgMjkgNTUgMWUgYzYgZjMgIHwuWXtTdy5rOy4uLilVLi4ufAo=
---94eb2c0b8d5ea4f763055485a646
-Content-Type: application/octet-stream; name="ad97000_fix.dump"
-Content-Disposition: attachment; filename="ad97000_fix.dump"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_j58c94iv1
-
-MHgwYWQ5NzAwMDogZWQgNmEgYWEgY2UgYzkgZDkgODMgMzMgYjAgZWUgY2IgMTIgZTEgZGEgODQg
-YjQgIHwuai4uLi4uMy4uLi4uLi4ufAoweDBhZDk3MDEwOiBiNiAyYyBmNiAxNSA0OSA4ZSBmMSBi
-NiAyYiAzYSA0NCA2MSAzMiAwYyBiNiA5YyAgfC4sLi5JLi4uKzpEYTIuLi58CjB4MGFkOTcwMjA6
-IGJjIDU2IDBjIDI2IDc3IDg1IDVkIGM1IDI1IGNlIDUxIGNkIGNmIGU4IDY5IDY1ICB8LlYuJncu
-XS4lLlEuLi5pZXwKMHgwYWQ5NzAzMDogZWYgOTEgZjIgNWYgYzIgNTUgNmYgMWIgMWEgMGYgYjkg
-MmQgMzIgZjkgNDQgNTYgIHwuLi5fLlVvLi4uLi0yLkRWfAoweDBhZDk3MDQwOiBkMSAyMSA3MiBk
-ZiAzNiBhYSBlMSA1ZiBlYiA4NyAwMyA3YiBkNyA3OCA4NCAwZSAgfC4hci42Li5fLi4uey54Li58
-CjB4MGFkOTcwNTA6IDQwIGE2IGIzIDc0IGFhIGE0IGJhIGY5IDY5IGE1IDE4IDdlIDQzIDkwIDFh
-IDJkICB8QC4udC4uLi5pLi5+Qy4uLXwKMHgwYWQ5NzA2MDogNjQgMDQgMzIgOTcgNDcgY2MgNjkg
-MzkgOWIgMDYgZmYgOWUgNzAgMWMgNzkgMGUgIHxkLjIuRy5pOS4uLi5wLnkufAoweDBhZDk3MDcw
-OiBjNSBlYiBhMSAzZCAzYyA5MiBjMCAxZiBlNiBmYSA3NSA0MSA0ZiBhZiBmMyAyNiAgfC4uLj08
-Li4uLi51QU8uLiZ8CjB4MGFkOTcwODA6IDdiIDJiIGIwIDM5IGI5IDA4IGMxIDNiIDdkIGJkIDZh
-IDk5IDgyIGUxIGRjIDE3ICB8eysuOS4uLjt9LmouLi4uLnwKMHgwYWQ5NzA5MDogOTggMzAgZWIg
-NTMgMmYgNGIgNWQgMWIgYmQgYTcgMzEgYzcgOWEgNDIgMTEgOGUgIHwuMC5TL0tdLi4uMS4uQi4u
-fAoweDBhZDk3MGEwOiAyYiA1MiAyZSAxMCA2ZSBiMyAwMyAxNiA5OSA0ZCBiNCA3ZSBmNiAzMiA3
-OSAxYiAgfCtSLi5uLi4uLk0ufi4yeS58CjB4MGFkOTcwYjA6IDk3IGI1IDQ1IDM4IGVmIGI3IGJl
-IGIzIDBmIDA1IDk0IDcwIDRkIDMwIDFmIDNhICB8Li5FOC4uLi4uLi5wTTAuOnwKMHgwYWQ5NzBj
-MDogY2IgMTIgNTIgYTggNDEgYzYgN2UgMmIgZDIgZTQgNWUgOGQgOTUgODEgNDIgZmIgIHwuLlIu
-QS5+Ky4uXi4uLkIufAoweDBhZDk3MGQwOiAzNyBlMSBhYSA5MCA4NCBlMCBlZSA2NiBiMyA2MCA1
-OSA3YiAwOSA4YiA4OCAxNyAgfDcuLi4uLi5mLmBZey4uLi58CjB4MGFkOTcwZTA6IDQyIGVjIDMw
-IDA3IDVkIDlkIDI1IDhlIDVmIGUyIDM4IDNmIGM0IDQ4IGY4IDc4ICB8Qi4wLl0uJS5fLjg/Lkgu
-eHwKMHgwYWQ5NzBmMDogMDYgMTkgYjMgODIgZjAgYTUgN2QgZDYgMDkgZTIgMTAgMzggMTcgNDAg
-ZGQgN2YgIHwuLi4uLi59Li4uLjguQC4ufAoweDBhZDk3MTAwOiAzNCAyZiBmOCBmZCA1MCAzMSA0
-MSBiYyBlZSAzZiBlMCBlNiA5NiA2ZCA2NyBhYyAgfDQvLi5QMUEuLj8uLi5tZy58CjB4MGFkOTcx
-MTA6IDMyIDZkIGMwIDU5IDEyIDNkIGQ3IGRhIDY2IDdmIDc4IDY4IGE0IGM2IGQ1IDAzICB8Mm0u
-WS49Li5mLnhoLi4uLnwKMHgwYWQ5NzEyMDogMWYgMzggYjQgNDQgNzIgY2UgYzQgMDIgNmIgN2Ug
-MjYgYjQgY2IgNmMgMWYgZWUgIHwuOC5Eci4uLmt+Ji4ubC4ufAoweDBhZDk3MTMwOiBlMCA5ZSBm
-MyA1NyA4NyBlZSBlNiBmYSA4MSA1NiA0MiAwNiA3MyBlNiAxNCA4NiAgfC4uLlcuLi4uLlZCLnMu
-Li58CjB4MGFkOTcxNDA6IGNhIDI0IDMzIDIxIGEwIDdjIGJkIDM4IDk2IDQ3IDQzIDMzIDNkIDJk
-IDM0IDBkICB8LiQzIS58LjguR0MzPS00LnwKMHgwYWQ5NzE1MDogMjIgODYgYjMgOGIgM2UgZGQg
-ZTcgN2YgZGIgYmMgMWIgMzggZTggNjUgMDAgODAgIHwiLi4uPi4uLi4uLjguZS4ufAoweDBhZDk3
-MTYwOiA4MCAzMiBiMiAwMCA5MSBmMyA0MSAzYiBmMiA5YiBlMCA2ZCBiNyA4ZCAzOCAzNiAgfC4y
-Li4uLkE7Li4ubS4uODZ8CjB4MGFkOTcxNzA6IDkyIGM3IDNlIDMxIDYwIGZhIGMwIDM5IGM0IGE3
-IDJlIDU1IDVlIGY0IGVkIDYxICB8Li4+MWAuLjkuLi5VXi4uYXwKMHgwYWQ5NzE4MDogNDUgNjcg
-MjMgNmQgOWEgZmIgZDQgZDIgZGIgY2QgNjYgZmQgYTIgNDAgZjEgNDIgIHxFZyNtLi4uLi4uZi4u
-QC5CfAoweDBhZDk3MTkwOiA4ZCBmYyA1NyBmZiBhYyAxZiBmMSAwZCBkYyA0ZiBmMCAyYSA1YyA0
-NCA5OCBhNCAgfC4uVy4uLi4uLk8uKlxELi58CjB4MGFkOTcxYTA6IDQ0IGMxIDY2IGQwIDVhIDQx
-IGUxIDRkIDllIDQ4IGRiIDU5IDhmIGNhIDg3IGUxICB8RC5mLlpBLk0uSC5ZLi4uLnwKMHgwYWQ5
-NzFiMDogMWIgMWUgNjMgNTEgODYgNzQgZDIgNzMgYjUgOTIgNDQgYjcgM2QgZmMgODkgOGIgIHwu
-LmNRLnQucy4uRC49Li4ufAoweDBhZDk3MWMwOiA4MiA4MSBhZSA5YiAxNSA3NyA5YSA2MiAxYiBh
-YiA3YSBiNSA3YyA3ZSA4YyBkYSAgfC4uLi4udy5iLi56Lnx+Li58CjB4MGFkOTcxZDA6IGExIDdm
-IDk0IGY0IGUwIDFlIGNiIGRiIDQ5IDE3IDUwIDNlIDRjIGVmIGM5IDJkICB8Li4uLi4uLi5JLlA+
-TC4uLXwKMHgwYWQ5NzFlMDogM2QgOTggNTcgNjcgM2IgMDQgZDQgNmQgNDUgYWMgOGEgNzkgYzQg
-N2IgZjcgMzAgIHw9LldnOy4ubUUuLnkuey4wfAoweDBhZDk3MWYwOiBiMyBmZiBmOCBiYyBjZCA3
-YiBmYSAzNiA1MiAzNyA3NiA0YiAzOSBjOCA0YyBkZSAgfC4uLi4uey42Ujd2SzkuTC58CjB4MGFk
-OTcyMDA6IDU2IDQyIDhkIGI1IDM0IDg2IGYyIDE3IDU0IDhkIGJhIGRiIGQ3IGZkIDM0IDE3ICB8
-VkIuLjQuLi5ULi4uLi40LnwKMHgwYWQ5NzIxMDogNmMgMmIgMjEgNzUgMmUgZWUgMDUgOTkgMzMg
-YmMgNDggOTIgNDkgMDMgNjUgNGQgIHxsKyF1Li4uLjMuSC5JLmVNfAoweDBhZDk3MjIwOiA3ZiBm
-YiBiYyAxYSAwZSA4NiBjNyAwOSA3MCBlNSBhZCBiZSAzNCA1MSBjYSA2YiAgfC4uLi4uLi4ucC4u
-LjRRLmt8CjB4MGFkOTcyMzA6IGJhIDIwIDFlIGFlIDI0IGFkIDAxIDUyIDNjIDc1IGFmIGU3IGQ2
-IGU0IGQ4IGU2ICB8LiAuLiQuLlI8dS4uLi4uLnwKMHgwYWQ5NzI0MDogNmIgYTMgNjcgNGYgNjcg
-MjYgYWMgZmQgNjQgYTggNzIgZjkgYzIgYWYgYzQgM2UgIHxrLmdPZyYuLmQuci4uLi4+fAoweDBh
-ZDk3MjUwOiBlOCAzYyBkZiA3NyAwOCA1MCA5ZCAzOSAwYSAyMCA0YSA1OSBkNiA1YiAzZiAwNSAg
-fC48LncuUC45LiBKWS5bPy58CjB4MGFkOTcyNjA6IGY2IGU2IDY1IGFlIDIyIDI3IGMzIGVjIDhj
-IDNlIGYxIDcwIDhhIDFlIDhmIDlhICB8Li5lLiInLi4uPi5wLi4uLnwKMHgwYWQ5NzI3MDogYzMg
-ZmUgMjIgZjYgNjAgMzIgOGUgZDAgNmIgNzIgN2QgMGEgZDkgM2IgMTEgNWUgIHwuLiIuYDIuLmty
-fS4uOy5efAoweDBhZDk3MjgwOiBkYiBjNSA2YyA0NiA3NSBmYiA0MiA3MyAwNSBiMSA3MiA1OSAw
-YiA2OCA1MSAwYiAgfC4ubEZ1LkJzLi5yWS5oUS58CjB4MGFkOTcyOTA6IDdjIDM4IDQ2IGNlIGU5
-IDRlIDU5IDlkIGNhIDA5IGZmIDUyIDcwIDViIGFhIDRmICB8fDhGLi5OWS4uLi5ScFsuT3wKMHgw
-YWQ5NzJhMDogN2MgZWUgZTggMWEgYzEgNjUgNWQgZWIgZWMgMjkgNzkgMzQgNGEgZjkgYmEgOTIg
-IHx8Li4uLmVdLi4peTRKLi4ufAoweDBhZDk3MmIwOiAxOSA4NyA3ZCA5MyBkMyAxZCAwMCBlNiAz
-ZiBkYyAwMyBkYiA3ZiAzMyAwOSBhOCAgfC4ufS4uLi4uPy4uLi4zLi58CjB4MGFkOTcyYzA6IGU2
-IDZkIDI2IDJiIDNmIDM0IGFkIDMyIDM5IGM2IGEyIGNjIGY5IDVkIDczIGExICB8Lm0mKz80LjI5
-Li4uLl1zLnwKMHgwYWQ5NzJkMDogNGIgMzQgNDAgZWQgNjggMWIgZjMgNTQgNzggYjMgMjAgYWUg
-NTMgNTcgNjggMzYgIHxLNEAuaC4uVHguIC5TV2g2fAoweDBhZDk3MmUwOiA5NCBlMyA3YSBkYiBi
-MyBhYyA5YyA0NiAyNiBlZSBlMCBmNSA5YyAzNyA5YiAxNiAgfC4uei4uLi5GJi4uLi43Li58CjB4
-MGFkOTcyZjA6IDhhIDE2IDQwIDEwIGUyIGQ4IDcyIDZiIDljIGQ1IGRkIGE1IGZmIDA3IDA2IDRm
-ICB8Li5ALi4ucmsuLi4uLi4uT3wKMHgwYWQ5NzMwMDogYWQgYTkgY2MgZmQgMGMgYzkgMTUgYTEg
-NzcgMGQgMjQgOGEgZWEgYzAgMGQgN2QgIHwuLi4uLi4uLncuJC4uLi59fAoweDBhZDk3MzEwOiA1
-NSA4MiA1YiA2MiAwZSAzMSA3OSA3YiAyYyBkZCBiMSAwYiA5YiA1OSA4YiBiZCAgfFUuW2IuMXl7
-LC4uLi5ZLi58CjB4MGFkOTczMjA6IDBhIDE5IGNiIGQwIDE2IDQ0IDBkIDQxIDE5IDBjIGY2IGJi
-IDkyIDNmIGVjIDQ0ICB8Li4uLi5ELkEuLi4uLj8uRHwKMHgwYWQ5NzMzMDogYmUgZTkgOTEgMDMg
-NzcgNDAgOGYgZTkgMmEgZTggNzYgNDIgZTggNWEgNWIgNTkgIHwuLi4ud0AuLioudkIuWltZfAow
-eDBhZDk3MzQwOiBiZSBkMCBjMiA2MCA4ZCAwMiBjMyBkMiBhMCA3YiBjMCBmMyBiMSA3YiBjNCBh
-NSAgfC4uLmAuLi4uLnsuLi57Li58CjB4MGFkOTczNTA6IDNlIGFjIGY3IDBkIDI5IDdlIDc5IDM4
-IDhmIDNiIGQ3IDYzIDA1IGE4IDExIDc0ICB8Pi4uLil+eTguOy5jLi4udHwKMHgwYWQ5NzM2MDog
-ZWYgZTkgZTQgMGYgNjMgYzEgYTUgMTkgZDkgMzggNWMgZTEgNTggNGYgNDQgNjIgIHwuLi4uYy4u
-Li44XC5YT0RifAoweDBhZDk3MzcwOiAzMyA4NSAzYSA4OCA4NyBkZCA5OSAwYiBkYSBlYSBlYSBj
-NyBhMCBkMiBlZSAwYSAgfDMuOi4uLi4uLi4uLi4uLi58CjB4MGFkOTczODA6IDNlIGQxIGYzIDNj
-IDMyIDIwIGY1IDFhIGYzIDZhIDY0IGFkIDQwIDAwIGYwIDQ5ICB8Pi4uPDIgLi4uamQuQC4uSXwK
-MHgwYWQ5NzM5MDogMjIgNWUgMTAgZjEgZWYgZDQgNmQgODggYTAgZDEgODMgNTUgMjUgMzEgYTMg
-M2EgIHwiXi4uLi5tLi4uLlUlMS46fAoweDBhZDk3M2EwOiBlMyBlNSAwYiBkMSAzOSA2YyBhMiAw
-ZCA4YSA0ZSBiOCBjNyBkOSBlNyAxYiBiZiAgfC4uLi45bC4uLk4uLi4uLi58CjB4MGFkOTczYjA6
-IDk2IDYwIDhhIGIzIDVkIGIyIGQyIDkwIGYyIGY1IDkwIDUwIDg0IDBiIGFkIGYzICB8LmAuLl0u
-Li4uLi5QLi4uLnwKMHgwYWQ5NzNjMDogNjUgNTEgYjkgZmYgODkgZTUgYmQgZGQgNjkgNWMgNDMg
-NTMgNDAgZTEgNzIgMTkgIHxlUS4uLi4uLmlcQ1NALnIufAoweDBhZDk3M2QwOiBhNSA3NSA0ZCA5
-NyAyYSBhMCA2ZCBjOCAzYiA4ZCAwZCBhNyA3YyA0MyAyZiBjMyAgfC51TS4qLm0uOy4uLnxDLy58
-CjB4MGFkOTczZTA6IDZlIDMwIDVlIDcxIDdhIDIwIGRlIDYzIGE3IDM5IDI1IGQzIGFhIGMyIGJl
-IDZkICB8bjBecXogLmMuOSUuLi4ubXwKMHgwYWQ5NzNmMDogOWMgMzQgYzkgNDUgZGUgYTggZDYg
-ZDEgOGIgMWYgYWUgZDIgMDYgZjEgMzAgZTAgIHwuNC5FLi4uLi4uLi4uLjAufAoweDBhZDk3NDAw
-OiA0ZiBhMSBhYyA3YSA2NSBjYyBhZiBmNCBkMiBkOSAzZiAzZiAxMyA1MyA0YSA4MCAgfE8uLnpl
-Li4uLi4/Py5TSi58CjB4MGFkOTc0MTA6IGY2IGRiIGE0IDk4IDJjIGRmIDE0IDg4IGU1IDcyIDUy
-IDFiIGVjIDE3IDJkIGI5ICB8Li4uLiwuLi4uclIuLi4tLnwKMHgwYWQ5NzQyMDogMzEgMTggMTAg
-MDYgOWEgZjMgY2QgZTIgMDAgNjUgMDAgMDAgMDAgMDAgMDAgMDAgIHwxLi4uLi4uLi5lLi4uLi4u
-fAoweDBhZDk3NDMwOiAzMCAxMCAwMCAwMCAwMSAwMCAwMCAwMCAxZSAwMSAwMCAwMCBjOSAwNiAw
-MCAyMCAgfDAuLi4uLi4uLi4uLi4uLiB8CjB4MGFkOTc0NDA6IDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDEwIDAwIDAwIDAwIDAwIDAwIDAwICB8Li4uLi4uLi4uLi4uLi4uLnwKMHgwYWQ5NzQ1
-MDogZDAgZmEgYTggNmQgMDUgNzkgYzIgZDIgMjIgYjUgNWIgN2EgZmEgZDIgNzQgMDAgIHwuLi5t
-LnkuLiIuW3ouLnQufAoweDBhZDk3NDYwOiA2NSBkOCA5YiBhZCBjNSBmOCA4NyAwMyAwNiAxZiBm
-YSA3OSBhOSBjZiBlMyAzYSAgfGUuLi4uLi4uLi4ueS4uLjp8CjB4MGFkOTc0NzA6IGNhIGU1IGU1
-IGNhIDViIDJhIDVjIGI2IDYwIGQ4IGM1IGVkIGQyIDM2IDE2IGI0ICB8Li4uLlsqXC5gLi4uLjYu
-LnwKMHgwYWQ5NzQ4MDogMTIgNTggNjIgYzcgMTYgMWEgNTIgNjMgZjEgY2UgZjkgYzAgMWQgOWUg
-NGIgODQgIHwuWGIuLi5SYy4uLi4uLksufAoweDBhZDk3NDkwOiA1MyBjNiBiZiA1YyBjNCA4YyA3
-YSBiYyA1MyA1MiBiNCA0NyAyMCBkZCA0ZCA5MSAgfFMuLlwuLnouU1IuRyAuTS58CjB4MGFkOTc0
-YTA6IDFkIDU3IDk4IDI4IDYyIGIzIDg4IDJkIDVlIDg3IDc0IDZkIGM3IGI1IGIyIDZiICB8Llcu
-KGIuLi1eLnRtLi4ua3wKMHgwYWQ5NzRiMDogMTcgYjYgMDcgZjIgNWEgM2QgNTggNDAgNmEgODgg
-MDIgNjMgMjEgNGEgODAgOTkgIHwuLi4uWj1YQGouLmMhSi4ufAoweDBhZDk3NGMwOiA5YiAxYiA5
-ZSBmMyA4MCBhMCA5MSA1YiAwOCBmMiBjYiBiZiA3YyA5MCA0NyBkZiAgfC4uLi4uLi5bLi4uLnwu
-Ry58CjB4MGFkOTc0ZDA6IGEzIDViIDAwIGNlIDk2IDEyIDc0IDU5IDU2IDFlIDczIDQ5IGE4IDA2
-IGVhIDdlICB8LlsuLi4udFlWLnNJLi4ufnwKMHgwYWQ5NzRlMDogMDAgMDAgMDAgMDAgMDYgMTYg
-MmQgNDQgMDAgMDEgOGQgYzMgMDIgODAgODAgMDggIHwuLi4uLi4tRC4uLi4uLi4ufAoweDBhZDk3
-NGYwOiBhMiA4MiBhYSBiMSAzZSAzMCAwZCA4YiAwMiAwMCAwMCAwMCAwMCAwMSA1OSA1YSAgfC4u
-Li4+MC4uLi4uLi4uWVp8CjB4MGFkOTc1MDA6IGZkIDM3IDdhIDU4IDVhIDAwIDAwIDAxIDY5IDIy
-IGRlIDM2IDAzIGMwIGU0IGVlICB8Ljd6WFouLi5pIi42Li4uLnwKMHgwYWQ5NzUxMDogMDIgODAg
-ODAgMDggMjEgMDEgMGEgMDAgZWQgMzcgNGYgNjYgZTEgZmYgZmYgYjcgIHwuLi4uIS4uLi43T2Yu
-Li4ufAoweDBhZDk3NTIwOiA1YyA1ZCAwMCA3MSAzZiBlZCBkNCAwNiBjOCAyNCA0MSBjOSBiZiA1
-MCBlMSA2YyAgfFxdLnE/Li4uLiRBLi5QLmx8CjB4MGFkOTc1MzA6IGIwIGI3IGY0IDQzIDY2IDc5
-IDEyIDg5IGVmIGE4IDZjIGE4IDBlIDc1IGQyIGVkICB8Li4uQ2Z5Li4uLmwuLnUuLnwKMHgwYWQ5
-NzU0MDogNWQgNTcgYjYgZjggNzQgNmYgYzggMDYgZmEgMzcgZjYgMzEgNTEgN2YgMmYgZDIgIHxd
-Vy4udG8uLi43LjFRLi8ufAoweDBhZDk3NTUwOiA5NCBkMyA5YSAyYiBjZCA0OCBkMyAzMSAyMyA0
-NiBmMSA3OSA1NyBjNiBiOSBjNiAgfC4uLisuSC4xI0YueVcuLi58CjB4MGFkOTc1NjA6IDVjIDQ5
-IDI2IDk3IDA4IDBmIDEwIGVhIDliIDdiIDRmIGI3IDc1IDIxIDRiIDg4ICB8XEkmLi4uLi4ue08u
-dSFLLnwKMHgwYWQ5NzU3MDogN2IgMGIgMGIgZWIgNjYgZDIgNTcgMjIgOGUgYTAgOWYgZjUgYjcg
-OTggMmIgYTMgIHx7Li4uZi5XIi4uLi4uLisufAoweDBhZDk3NTgwOiAzMyA2ZCA4MCA1OCA3NCBk
-NSA2MSAwMyAzZCAwMCA3MCBhMSBkMCBiMCA5MCA2YiAgfDNtLlh0LmEuPS5wLi4uLmt8CjB4MGFk
-OTc1OTA6IDY2IGY3IDUxIGIxIDEwIGY1IGM3IGM4IGM1IDc0IDYwIDgyIDQzIDY1IDUxIGEwICB8
-Zi5RLi4uLi4udGAuQ2VRLnwKMHgwYWQ5NzVhMDogOGUgMzEgNDEgNjIgZTkgZjEgOGYgN2MgMjIg
-MzYgYjQgZTIgNGEgYTAgMWYgMzIgIHwuMUFiLi4ufCI2Li5KLi4yfAoweDBhZDk3NWIwOiAzYSA5
-YSBjOSBhMSA1YiBiOCA1YSA4YiBjNiA1NyAyNyBmNiBjMCBjZiA5ZiBmMSAgfDouLi5bLlouLlcn
-Li4uLi58CjB4MGFkOTc1YzA6IDJjIDY1IDdkIGVmIGY2IDhjIGYwIDBjIGE0IDYwIGM0IDgxIDg4
-IGQwIDhiIDkxICB8LGV9Li4uLi4uYC4uLi4uLnwKMHgwYWQ5NzVkMDogZDIgNDQgOWIgMGIgNDYg
-NzAgZjUgZDcgYzIgZDQgMmMgN2EgMDYgMDkgMzIgNDcgIHwuRC4uRnAuLi4uLHouLjJHfAoweDBh
-ZDk3NWUwOiA1YyBjYiAxOSBhOSBkZiBhYiA4MCAyNyA4ZCA2ZSBiOSA4YiAzNSBmOSAzMSA4NyAg
-fFwuLi4uLi4nLm4uLjUuMS58CjB4MGFkOTc1ZjA6IGY0IGI5IGQ2IDQ0IDI0IDYwIDcxIDE2IDkx
-IDU0IGQ4IDk0IGNiIDVlIDc4IDBmICB8Li4uRCRgcS4uVC4uLl54LnwKMHgwYWQ5NzYwMDogODQg
-ZTQgMDIgMmEgZGUgOTEgZjQgNjQgZTIgZTggYWIgN2QgNTQgNjkgZDAgOWUgIHwuLi4qLi4uZC4u
-Ln1UaS4ufAoweDBhZDk3NjEwOiBjNyA5YiA4MCA2MiA1NyBiYSA4ZCBlMCAzMCBhZCBlOCBlMyA4
-MyAwOCA3OSAzZiAgfC4uLmJXLi4uMC4uLi4ueT98CjB4MGFkOTc2MjA6IGUwIDY5IDQwIDg4IDEw
-IGY1IDAwIGQ5IDJjIDhjIDFlIDYxIGZjIDYyIDkzIDQ3ICB8LmlALi4uLi4sLi5hLmIuR3wKMHgw
-YWQ5NzYzMDogNmMgM2QgYTEgMWEgM2UgNDUgOGUgMGMgMDggY2MgNDcgNDEgZjAgYjQgZjMgMjgg
-IHxsPS4uPkUuLi4uR0EuLi4ofAoweDBhZDk3NjQwOiBiNyBlMSBmZiBmMSA4NiA5OSA2NyBjNSAz
-YSAyYSA4OCA4ZSAzMSAwMCAyMCAzOCAgfC4uLi4uLmcuOiouLjEuIDh8CjB4MGFkOTc2NTA6IGM4
-IGFjIDU5IGZhIDg1IDBhIDU0IDViIGE5IDYzIGFmIGM1IDdiIGZiIGI4IDgzICB8Li5ZLi4uVFsu
-Yy4uey4uLnwKMHgwYWQ5NzY2MDogODkgNmQgNWEgMDIgZmYgNWUgNDkgNWMgMzcgNzQgYzcgMjAg
-NDIgNmEgOGUgZmYgIHwubVouLl5JXDd0LiBCai4ufAoweDBhZDk3NjcwOiAwMyBjYSA4ZCBlZCA0
-NSAxYSBlZSBmZSA5YiA1NyA3MSA0OSA2NSA3NSAxMiAzMyAgfC4uLi5FLi4uLldxSWV1LjN8CjB4
-MGFkOTc2ODA6IDc2IGFmIDBhIGE5IGQwIDQ1IDEwIDMwIDAwIGYwIDVjIGYwIDI1IDg3IDcwIDZj
-ICB8di4uLi5FLjAuLlwuJS5wbHwKMHgwYWQ5NzY5MDogYjMgMTggZTEgODMgODkgZTEgZjMgZDQg
-N2EgY2EgMmYgODYgYWYgYmEgN2QgOWMgIHwuLi4uLi4uLnouLy4uLn0ufAoweDBhZDk3NmEwOiA3
-OCBkNSA5MyA5NiAzZSA5OCA2YyBiMCA3ZSBmYiA1NiAxNSAxZiAwOSBkOSA3MyAgfHguLi4+Lmwu
-fi5WLi4uLnN8CjB4MGFkOTc2YjA6IDJiIDQ1IDc2IGU3IDAwIDdmIDNhIDdiIDQ0IDllIDUxIGQ0
-IDI4IDI3IGY1IDBiICB8K0V2Li4uOntELlEuKCcuLnwKMHgwYWQ5NzZjMDogODIgOGIgZTggM2Mg
-NTAgZWYgZGQgMmMgNzcgYzYgMmIgOTUgYjQgM2YgNjUgZTkgIHwuLi48UC4uLHcuKy4uP2UufAow
-eDBhZDk3NmQwOiAwNyBlNSBmNiAyZiA5NSBhNSAxMyBiMiA4MCBkNiA4OSA3OSAwMyA0OSAyNiA5
-YiAgfC4uLi8uLi4uLi4ueS5JJi58CjB4MGFkOTc2ZTA6IGUwIDc3IDIyIGRjIDg1IDNlIDIyIDRk
-IDNhIGM1IGMzIGMxIDk3IDc2IDlhIDU3ICB8LnciLi4+Ik06Li4uLnYuV3wKMHgwYWQ5NzZmMDog
-NmIgYWQgZDAgZTUgOTkgMzcgZjggZmIgMjIgOTcgNjcgYzMgYjEgNDMgNWUgY2YgIHxrLi4uLjcu
-LiIuZy4uQ14ufAoweDBhZDk3NzAwOiAyMyA0NyBiOSA1NSBkMCBhYiA4YiA4MSAyYSAwMyBiZCA3
-MyA1ZSBmZiBmYSAzYSAgfCNHLlUuLi4uKi4uc14uLjp8CjB4MGFkOTc3MTA6IDJiIDYyIDNkIGMy
-IDdhIGM1IDNjIDkyIGFkIGRhIDJlIDk3IDFiIGVlIDdjIGEyICB8K2I9LnouPC4uLi4uLi58LnwK
-MHgwYWQ5NzcyMDogOTYgYjIgNTUgY2IgNWYgMDYgMjkgZTEgN2IgZmQgODMgMzUgMzcgYzUgZmMg
-OWIgIHwuLlUuXy4pLnsuLjU3Li4ufAoweDBhZDk3NzMwOiBiOSBmYSAzYyA3NiA4MCA3MyAzZCA5
-OSAxYSA0OCA3YSAzNyAwMyBkYSAzMyBiMiAgfC4uPHYucz0uLkh6Ny4uMy58CjB4MGFkOTc3NDA6
-IDFkIGE3IDMxIGQwIDVkIDQ0IDY2IGI3IGQ2IDJiIDQyIGNlIDM0IGUwIDhmIGZlICB8Li4xLl1E
-Zi4uK0IuNC4uLnwKMHgwYWQ5Nzc1MDogNzUgMmEgMTUgMTIgNWUgZmMgZjggZjMgZDYgYTMgOTgg
-ZGMgOTUgMzUgYjYgZGQgIHx1Ki4uXi4uLi4uLi4uNS4ufAoweDBhZDk3NzYwOiBlZiAwOSA2ZSA0
-MiAxNCA0MSA5ZiBmMyA4MCA4YiA3YyBlMiA1OSBhZiBhNCAyNSAgfC4ubkIuQS4uLi58LlkuLiV8
-CjB4MGFkOTc3NzA6IDNjIGQ4IDVjIGY3IDViIGE3IGFhIDRmIGIxIDQzIDZmIDg2IGZiIDVmIGY4
-IDc3ICB8PC5cLlsuLk8uQ28uLl8ud3wKMHgwYWQ5Nzc4MDogMTMgZmUgZmEgODIgOTcgODQgYWEg
-YzAgMjUgZjkgYWQgNTcgMjQgNDIgYjkgNGEgIHwuLi4uLi4uLiUuLlckQi5KfAoweDBhZDk3Nzkw
-OiA4OSA2ZiBiNiA2MCAzNCA3MyBhZSBhZiBlNyA2ZSAxZSA1ZCAzZiA5NiAyMCA2YyAgfC5vLmA0
-cy4uLm4uXT8uIGx8CjB4MGFkOTc3YTA6IDY2IGIyIDBjIDAwIDUxIGM1IDFiIDIzIGQxIDFiIDdj
-IGYzIGMwIDQ3IDY5IDk4ICB8Zi4uLlEuLiMuLnwuLkdpLnwKMHgwYWQ5NzdiMDogOTQgZGIgMTkg
-YjIgMWQgMWMgYjMgNjMgYmIgNDUgZmQgZDggY2IgNjQgOWMgZWUgIHwuLi4uLi4uYy5FLi4uZC4u
-fAoweDBhZDk3N2MwOiAwNyA0ZiAzNCA3MyBkNCA3NyAyOCBlMSBlMCBkNyBkZCBjNSAxZSBlOCAz
-YyBmZCAgfC5PNHMudyguLi4uLi4uPC58CjB4MGFkOTc3ZDA6IGM3IGQ3IDNkIGQ4IGUzIDI1IDI0
-IGUzIGUxIDkxIDNhIDdiIGY3IDdlIDUyIDVhICB8Li49Li4lJC4uLjp7Ln5SWnwKMHgwYWQ5Nzdl
-MDogMzMgYmYgY2IgYjMgOGUgZGEgNWMgZjUgYjggN2MgZDUgMmEgODYgYzMgZGUgZGYgIHwzLi4u
-Li5cLi58LiouLi4ufAoweDBhZDk3N2YwOiBlOCA4MSAyNyA3ZiBkNSBiMSAyOSBiZiBjZCBhZiBj
-MSA3ZCBmMiAzMyAzOCBhNCAgfC4uJy4uLikuLi4ufS4zOC58CiAgT09CIERhdGE6IGZmIGZmIGZm
-IGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmICB8Li4uLi4uLi4uLi4uLi4u
-LnwKICBPT0IgRGF0YTogZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYg
-ZmYgZmYgIHwuLi4uLi4uLi4uLi4uLi4ufAogIE9PQiBEYXRhOiBmZiBmZiBmZiBmZiBmZiBmZiBm
-ZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiAgfC4uLi4uLi4uLi4uLi4uLi58CiAgT09CIERh
-dGE6IGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmICB8Li4u
-Li4uLi4uLi4uLi4uLnwKICBPT0IgRGF0YTogZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYg
-ZmYgZmYgNTUgODYgODYgNTIgIHwuLi4uLi4uLi4uLi5VLi5SfAogIE9PQiBEYXRhOiA5YSBmZSBj
-ZCA5NCBiZSAxZiBiZCA4MCBiNiBiYiA1ZSBkNCBlYiBkYyBmYyA5OSAgfC4uLi4uLi4uLi5eLi4u
-Li58CiAgT09CIERhdGE6IDcwIDY4IGFiIGExIGVjIDgxIDkyIGQ0IGM2IDM2IDc4IDZlIDZmIDU1
-IDkxIGNkICB8cGguLi4uLi4uNnhub1UuLnwKICBPT0IgRGF0YTogZjMgNTkgN2IgNTMgNzcgODYg
-NmIgM2IgYmYgYjQgZGEgMjkgNTUgMWUgYzYgZjMgIHwuWXtTdy5rOy4uLilVLi4ufAo=
---94eb2c0b8d5ea4f763055485a646--
+> +
+> +	/*
+> +	 * First try looking up the master key by its cryptographically secure
+> +	 * key_hash.  If it's already in memory, there's no need to do a keyring
+> +	 * search.  (Note that we don't enforce access control based on which
+> +	 * processes "have the key" and which don't, as encryption is meant to
+> +	 * be orthogonal to operating-system level access control.  Hence, it's
+> +	 * sufficient for anyone on the system to have added the needed key.)
+> +	 */
+> +	master_key = get_cached_master_key(inode->i_sb, ctx->key_hash);
+> +	if (master_key)
+> +		return master_key;
+> +
+> +	/*
+> +	 * The needed master key isn't in memory yet.  Load it from the keyring.
+> +	 */
+> +	master_key = load_master_key_from_keyring(inode,
+> +						  ctx->master_key_descriptor,
+> +						  min_keysize);
+> +	if (IS_ERR(master_key))
+> +		return master_key;
+> +
+> +	/* Cache the key for later */
+> +	return insert_master_key(inode->i_sb, master_key);
+> +}
+> +
+>  static void derive_crypt_complete(struct crypto_async_request *req, int rc)
+>  {
+>  	struct fscrypt_completion_result *ecr = req->data;
+> @@ -638,9 +768,7 @@ int fscrypt_get_encryption_info(struct inode *inode)
+>  					     derived_keysize);
+>  	} else {
+>  		crypt_info->ci_master_key =
+> -			load_master_key_from_keyring(inode,
+> -						     ctx.master_key_descriptor,
+> -						     derived_keysize);
+> +			find_or_create_master_key(inode, &ctx, derived_keysize);
+>  		if (IS_ERR(crypt_info->ci_master_key)) {
+>  			res = PTR_ERR(crypt_info->ci_master_key);
+>  			crypt_info->ci_master_key = NULL;
+> diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
+> index 2934bc2bff4b..7661c66a3533 100644
+> --- a/fs/crypto/policy.c
+> +++ b/fs/crypto/policy.c
+> @@ -259,10 +259,7 @@ int fscrypt_has_permitted_context(struct inode *parent, struct inode *child)
+>  			(parent_ci->ci_filename_mode ==
+>  			 child_ci->ci_filename_mode) &&
+>  			(parent_ci->ci_flags == child_ci->ci_flags) &&
+> -			(parent_ci->ci_context_version == FSCRYPT_CONTEXT_V1 ||
+> -			 (memcmp(parent_ci->ci_master_key->mk_hash,
+> -				 child_ci->ci_master_key->mk_hash,
+> -				 FSCRYPT_KEY_HASH_SIZE) == 0));
+> +			(parent_ci->ci_master_key == child_ci->ci_master_key);
+>  	}
+>  
+>  	res = cops->get_context(parent, &parent_ctx, sizeof(parent_ctx));
+> diff --git a/fs/super.c b/fs/super.c
+> index adb0c0de428c..90bd61ea139c 100644
+> --- a/fs/super.c
+> +++ b/fs/super.c
+> @@ -215,6 +215,10 @@ static struct super_block *alloc_super(struct file_system_type *type, int flags,
+>  	spin_lock_init(&s->s_inode_list_lock);
+>  	INIT_LIST_HEAD(&s->s_inodes_wb);
+>  	spin_lock_init(&s->s_inode_wblist_lock);
+> +#if IS_ENABLED(CONFIG_FS_ENCRYPTION)
+> +	s->s_master_keys = RB_ROOT;
+> +	spin_lock_init(&s->s_master_keys_lock);
+> +#endif
+>  
+>  	if (list_lru_init_memcg(&s->s_dentry_lru))
+>  		goto fail;
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 976aaa1af82a..4f47e1bc81bc 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -1417,6 +1417,11 @@ struct super_block {
+>  
+>  	spinlock_t		s_inode_wblist_lock;
+>  	struct list_head	s_inodes_wb;	/* writeback inodes */
+> +
+> +#if IS_ENABLED(CONFIG_FS_ENCRYPTION)
+> +	spinlock_t		s_master_keys_lock;
+> +	struct rb_root		s_master_keys;	/* master crypto keys in use */
+> +#endif
+>  };
+>  
+>  /* Helper functions so that in most cases filesystems will
+> -- 
+> 2.13.2.932.g7449e964c-goog
+> 
