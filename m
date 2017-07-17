@@ -1,26 +1,24 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dX0W7-0001Xe-2w
- for linux-mtd@lists.infradead.org; Mon, 17 Jul 2017 07:32:34 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Received: from mail-io0-x233.google.com ([2607:f8b0:4001:c06::233])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dX0ZL-0006XI-3d
+ for linux-mtd@lists.infradead.org; Mon, 17 Jul 2017 07:35:52 +0000
+Received: by mail-io0-x233.google.com with SMTP id h64so38761965iod.0
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Jul 2017 00:35:30 -0700 (PDT)
+Message-ID: <1500276875.8256.3.camel@gmail.com>
+Subject: Re: [PATCH v3 02/10] mtd: powernv_flash: Lock around concurrent
+ access to OPAL
+From: Balbir Singh <bsingharora@gmail.com>
+To: Cyril Bur <cyrilbur@gmail.com>, linuxppc-dev@lists.ozlabs.org,
+ linux-mtd@lists.infradead.org
+Cc: stewart@linux.vnet.ibm.com, alistair@popple.id.au, dwmw2@infradead.org,
+ rlippert@google.com
+Date: Mon, 17 Jul 2017 17:34:35 +1000
+In-Reply-To: <20170712042304.19745-3-cyrilbur@gmail.com>
+References: <20170712042304.19745-1-cyrilbur@gmail.com>
+ <20170712042304.19745-3-cyrilbur@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Date: Mon, 17 Jul 2017 13:02:08 +0530
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: Archit Taneja <architt@codeaurora.org>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org, mark.rutland@arm.com,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- andy.gross@linaro.org, sricharan@codeaurora.org
-Subject: Re: [PATCH 13/14] qcom: mtd: nand: support for QPIC version 1.5.0
-In-Reply-To: <d6566f4e-c55b-18ed-611b-35bc191b2f5f@codeaurora.org>
-References: <1498720566-20782-1-git-send-email-absahu@codeaurora.org>
- <1498720566-20782-14-git-send-email-absahu@codeaurora.org>
- <d6566f4e-c55b-18ed-611b-35bc191b2f5f@codeaurora.org>
-Message-ID: <820c71cdcb18b9f4bf72135b9a0d1436@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,220 +28,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2017-07-04 15:27, Archit Taneja wrote:
-> On 06/29/2017 12:46 PM, Abhishek Sahu wrote:
->> The current QCOM NAND driver only supports version 1.4.0
->> QCOM QPIC NAND controller. This patch adds the support for
->> version 1.5.0 which contains some of the registers at
->> different offsets. The driver data contains the register offset
->> field which is being initialized with its crossponding register
+On Wed, 2017-07-12 at 14:22 +1000, Cyril Bur wrote:
+> OPAL can only manage one flash access at a time and will return an
+> OPAL_BUSY error for each concurrent access to the flash. The simplest
+> way to prevent this from happening is with a mutex.
 > 
-> s/crossponding/corresponding
-> 
+> Signed-off-by: Cyril Bur <cyrilbur@gmail.com>
+> ---
 
-  I Will fix this in v2.
+Should the mutex_lock() be mutex_lock_interruptible()? Are we OK waiting on
+the mutex while other operations with the lock are busy?
 
->> offsets array. A new compatible string has been added for
->> version 1.5.0 in BAM mode which uses version 1.5.0 register
->> offsets.
-> 
-> Please split into 2 patches.
-> 
-
-  Sure. I will split it.
-
-> Thanks,
-> Archit
-> 
->> 
->> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
->> ---
->>   .../devicetree/bindings/mtd/qcom_nandc.txt         | 44 
->> ++++++++++++++++++
->>   drivers/mtd/nand/qcom_nandc.c                      | 54 
->> ++++++++++++++++++++--
->>   2 files changed, 95 insertions(+), 3 deletions(-)
->> 
->> diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt 
->> b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
->> index 87b9a56..11e2da2 100644
->> --- a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
->> +++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
->> @@ -4,6 +4,8 @@ Required properties:
->>   - compatible:		must be one of the following:
->>   	* "qcom,ebi2-nandc" - EBI2 NAND which uses ADM DMA like IPQ8064.
->>   	* "qcom,qpic-nandc-v1.4.0" - QPIC NAND v1.4.0 which uses BAM DMA 
->> like IPQ4019.
->> +	* "qcom,qpic-nandc-v1.5.0" - QPIC NAND v1.5.0 which uses BAM DMA 
->> like IPQ8074.
->> +
->>   - reg:			MMIO address range
->>   - clocks:		must contain core clock and always on clock
->>   - clock-names:		must contain "core" for the core clock and "aon" for 
->> the
->> @@ -130,3 +132,45 @@ nand@79b0000 {
->>   		};
->>   	};
->>   };
->> +
->> +nand@79b0000 {
->> +	compatible = "qcom,qpic-nandc-v1.5.0";
->> +	reg = <0x79B0000 0x1000>;
->> +
->> +	clocks = <&gcc GCC_QPIC_CLK>,
->> +		<&gcc GCC_QPIC_AHB_CLK>;
->> +	clock-names = "core", "aon";
->> +
->> +	dmas = <&qpicbam 0>,
->> +		<&qpicbam 1>,
->> +		<&qpicbam 2>;
->> +	dma-names = "tx", "rx", "cmd";
->> +
->> +	#address-cells = <1>;
->> +	#size-cells = <0>;
->> +
->> +	nandcs@0 {
->> +		compatible = "qcom,nandcs";
->> +		reg = <0>;
->> +
->> +		nand-ecc-strength = <4>;
->> +		nand-ecc-step-size = <512>;
->> +		nand-bus-width = <8>;
->> +
->> +		partitions {
->> +			compatible = "fixed-partitions";
->> +			#address-cells = <1>;
->> +			#size-cells = <1>;
->> +
->> +			partition@0 {
->> +				label = "boot-nand";
->> +				reg = <0 0x58a0000>;
->> +			};
->> +
->> +			partition@58a0000 {
->> +				label = "fs-nand";
->> +				reg = <0x58a0000 0x4000000>;
->> +			};
->> +		};
->> +	};
->> +};
->> diff --git a/drivers/mtd/nand/qcom_nandc.c 
->> b/drivers/mtd/nand/qcom_nandc.c
->> index 24750e6..641e85d 100644
->> --- a/drivers/mtd/nand/qcom_nandc.c
->> +++ b/drivers/mtd/nand/qcom_nandc.c
->> @@ -430,15 +430,18 @@ struct qcom_nand_host {
->>    * This data type corresponds to the nand driver data which will be 
->> used at
->>    * driver probe time
->>    * @ecc_modes - ecc mode for nand
->> + * @regs_offsets - contains the register offsets array pointer.
->>    * @dma_bam_enabled - whether this driver is using bam
->>    */
->>   struct qcom_nand_driver_data {
->>   	u32 ecc_modes;
->> +	const u32 *regs_offsets;
->>   	bool dma_bam_enabled;
->>   };
->> 
->>   /* Mapping table which contains the actual register offsets */
->> -static const u32 regs_offsets[] = {
->> +/* NAND controller Version 1.4.0 mapping table */
->> +static const u32 regs_offsets_v1_4_0[] = {
->>   	[NAND_FLASH_CMD] = 0x00,
->>   	[NAND_ADDR0] = 0x04,
->>   	[NAND_ADDR1] = 0x08,
->> @@ -471,6 +474,40 @@ struct qcom_nand_driver_data {
->>   	[NAND_READ_LOCATION_3] = 0xf2c,
->>   };
->> 
->> +/* NAND controller Version 1.5.0 mapping table */
->> +static const u32 regs_offsets_v1_5_0[] = {
->> +	[NAND_FLASH_CMD] = 0x00,
->> +	[NAND_ADDR0] = 0x04,
->> +	[NAND_ADDR1] = 0x08,
->> +	[NAND_FLASH_CHIP_SELECT] = 0x0c,
->> +	[NAND_EXEC_CMD] = 0x10,
->> +	[NAND_FLASH_STATUS] = 0x14,
->> +	[NAND_BUFFER_STATUS] = 0x18,
->> +	[NAND_DEV0_CFG0] = 0x20,
->> +	[NAND_DEV0_CFG1] = 0x24,
->> +	[NAND_DEV0_ECC_CFG] = 0x28,
->> +	[NAND_DEV1_ECC_CFG] = 0x2c,
->> +	[NAND_DEV1_CFG0] = 0x30,
->> +	[NAND_DEV1_CFG1] = 0x34,
->> +	[NAND_READ_ID] = 0x40,
->> +	[NAND_READ_STATUS] = 0x44,
->> +	[NAND_DEV_CMD0] = 0x70a0,
->> +	[NAND_DEV_CMD1] = 0x70a4,
->> +	[NAND_DEV_CMD2] = 0x70a8,
->> +	[NAND_DEV_CMD_VLD] = 0x70ac,
->> +	[SFLASHC_BURST_CFG] = 0xe0,
->> +	[NAND_ERASED_CW_DETECT_CFG] = 0xe8,
->> +	[NAND_ERASED_CW_DETECT_STATUS] = 0xec,
->> +	[NAND_EBI2_ECC_BUF_CFG] = 0xf0,
->> +	[FLASH_BUF_ACC] = 0x100,
->> +	[NAND_CTRL] = 0xf00,
->> +	[NAND_VERSION] = 0x4f08,
->> +	[NAND_READ_LOCATION_0] = 0xf20,
->> +	[NAND_READ_LOCATION_1] = 0xf24,
->> +	[NAND_READ_LOCATION_2] = 0xf28,
->> +	[NAND_READ_LOCATION_3] = 0xf2c,
->> +};
->> +
->>   /* Frees the BAM transaction memory */
->>   static void free_bam_transaction(struct qcom_nand_controller *nandc)
->>   {
->> @@ -2832,7 +2869,7 @@ static int qcom_nandc_probe(struct 
->> platform_device *pdev)
->> 
->>   	nandc->ecc_modes = driver_data->ecc_modes;
->>   	nandc->dma_bam_enabled = driver_data->dma_bam_enabled;
->> -	nandc->regs_offsets = regs_offsets;
->> +	nandc->regs_offsets = driver_data->regs_offsets;
->> 
->>   	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->>   	nandc->base = devm_ioremap_resource(dev, res);
->> @@ -2902,16 +2939,24 @@ static int qcom_nandc_remove(struct 
->> platform_device *pdev)
->>   	return 0;
->>   }
->> 
->> -
->>   static const struct qcom_nand_driver_data ebi2_nandc_data = {
->>   	.ecc_modes = (ECC_RS_4BIT | ECC_BCH_8BIT),
->>   	.dma_bam_enabled = false,
->> +	.regs_offsets = regs_offsets_v1_4_0,
->>   };
->> 
->>   static const struct qcom_nand_driver_data qpic_nandc_v1_4_0_data = {
->>   	.ecc_modes = (ECC_BCH_4BIT | ECC_BCH_8BIT),
->>   	.dma_bam_enabled = true,
->> +	.regs_offsets = regs_offsets_v1_4_0,
->> +};
->> +
->> +static const struct qcom_nand_driver_data qpic_nandc_v1_5_0_data = {
->> +	.ecc_modes = (ECC_BCH_4BIT | ECC_BCH_8BIT),
->> +	.dma_bam_enabled = true,
->> +	.regs_offsets = regs_offsets_v1_5_0,
->>   };
->> +
->>   /*
->>    * data will hold a struct pointer containing more differences once 
->> we support
->>    * more controller variants
->> @@ -2923,6 +2968,9 @@ static int qcom_nandc_remove(struct 
->> platform_device *pdev)
->>   	{	.compatible = "qcom,qpic-nandc-v1.4.0",
->>   		.data = (void *)&qpic_nandc_v1_4_0_data,
->>   	},
->> +	{	.compatible = "qcom,qpic-nandc-v1.5.0",
->> +		.data = (void *)&qpic_nandc_v1_5_0_data,
->> +	},
->>   	{}
->>   };
->>   MODULE_DEVICE_TABLE(of, qcom_nandc_of_match);
->> 
-
--- 
-Abhishek Sahu
+Balbir Singh.
