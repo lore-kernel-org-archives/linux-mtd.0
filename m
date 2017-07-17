@@ -1,27 +1,22 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dXCxP-00071X-4K
- for linux-mtd@lists.infradead.org; Mon, 17 Jul 2017 20:49:32 +0000
-Received: by mail-wm0-x243.google.com with SMTP id 15so1067002wmm.3
- for <linux-mtd@lists.infradead.org>; Mon, 17 Jul 2017 13:49:10 -0700 (PDT)
-Subject: Re: [PATCH] mtd: nand: vf610_nfc: add NULL check on of_match_device()
- return value
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-References: <20170707065926.GA25776@embeddedgus>
- <20170717224619.1615e13f@bbrezillon>
-Cc: Stefan Agner <stefan@agner.ch>, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <198201f8-ad5f-99d5-b357-9634185ca9e3@gmail.com>
-Date: Mon, 17 Jul 2017 22:49:06 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dXCxz-0007FU-Ac
+ for linux-mtd@lists.infradead.org; Mon, 17 Jul 2017 20:50:12 +0000
+Date: Mon, 17 Jul 2017 22:49:35 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: spear_smi: add NULL check on devm_kzalloc() return
+ value
+Message-ID: <20170717224935.4dd40ba0@bbrezillon>
+In-Reply-To: <20170706222550.GA30998@embeddedgus>
+References: <20170706222550.GA30998@embeddedgus>
 MIME-Version: 1.0
-In-Reply-To: <20170717224619.1615e13f@bbrezillon>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,43 +26,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/17/2017 10:46 PM, Boris Brezillon wrote:
-> Le Fri, 7 Jul 2017 01:59:26 -0500,
-> "Gustavo A. R. Silva" <garsilva@embeddedor.com> a écrit :
-> 
->> Check return value from call to of_match_device()
->> in order to prevent a NULL pointer dereference.
->>
->> In case of NULL print error message and return -ENODEV
->>
->> Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
->> ---
->>  drivers/mtd/nand/vf610_nfc.c | 5 +++++
->>  1 file changed, 5 insertions(+)
->>
->> diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
->> index 744ab10..ca0ab96 100644
->> --- a/drivers/mtd/nand/vf610_nfc.c
->> +++ b/drivers/mtd/nand/vf610_nfc.c
->> @@ -674,6 +674,11 @@ static int vf610_nfc_probe(struct platform_device *pdev)
->>  	}
->>  
->>  	of_id = of_match_device(vf610_nfc_dt_ids, &pdev->dev);
->> +	if (!of_id) {
->> +		dev_err(&pdev->dev, "Failed to match device!\n");
->> +		return -ENODEV;
->> +	}
->> +
-> 
-> While this check is functionally correct, this case cannot happen,
-> because this is DT-only driver, and without a valid match in
-> vf610_nfc_dt_ids the dev wouldn't have been probed in the first place.
-> 
-> I'll let Stefan decide whether he wants it or not, but I see no real
-> reason for this extra check. 
+Le Thu, 6 Jul 2017 17:25:50 -0500,
+"Gustavo A. R. Silva" <garsilva@embeddedor.com> a =C3=A9crit :
 
-So how did you trigger the issue in the first place ?
+> Check return value from call to devm_kzalloc()
+> in order to prevent a NULL pointer dereference.
+>=20
+> This issue was detected using Coccinelle and the following semantic patch:
+>=20
+> @@
+> expression x;
+> identifier fld;
+> @@
+>=20
+> * x =3D devm_kzalloc(...);
+>   ... when !=3D x =3D=3D NULL
+>   x->fld
+>=20
+> Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
 
--- 
-Best regards,
-Marek Vasut
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
+> ---
+>  drivers/mtd/devices/spear_smi.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spear_=
+smi.c
+> index dd50698..ddf4789 100644
+> --- a/drivers/mtd/devices/spear_smi.c
+> +++ b/drivers/mtd/devices/spear_smi.c
+> @@ -775,6 +775,8 @@ static int spear_smi_probe_config_dt(struct platform_=
+device *pdev,
+>  	pdata->board_flash_info =3D devm_kzalloc(&pdev->dev,
+>  					       sizeof(*pdata->board_flash_info),
+>  					       GFP_KERNEL);
+> +	if (!pdata->board_flash_info)
+> +		return -ENOMEM;
+> =20
+>  	/* Fill structs for each subnode (flash device) */
+>  	while ((pp =3D of_get_next_child(np, pp))) {
