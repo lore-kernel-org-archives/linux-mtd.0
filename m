@@ -1,23 +1,16 @@
-Received: from mail-qt0-x244.google.com ([2607:f8b0:400d:c0d::244])
+Received: from smtp1.ascom-ws.com ([195.81.148.76] helo=mail.ascom-ws.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dX4HF-0004V3-M7
- for linux-mtd@lists.infradead.org; Mon, 17 Jul 2017 11:33:27 +0000
-Received: by mail-qt0-x244.google.com with SMTP id v31so17782260qtb.3
- for <linux-mtd@lists.infradead.org>; Mon, 17 Jul 2017 04:33:04 -0700 (PDT)
+ id 1dX5By-0006Al-T5
+ for linux-mtd@lists.infradead.org; Mon, 17 Jul 2017 12:32:04 +0000
+From: Danesh Daroui <Danesh.Daroui@ascom.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Why data is moved upon fixable bit-flip
+Date: Mon, 17 Jul 2017 12:31:43 +0000
+Message-ID: <39BC08CB3FF4C84CB6397533D4FC79097E950CA8@SEGOTEXCH02.ascom-Resource.ads>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <20170712042304.19745-2-cyrilbur@gmail.com>
-References: <20170712042304.19745-1-cyrilbur@gmail.com>
- <20170712042304.19745-2-cyrilbur@gmail.com>
-From: Frans Klaver <fransklaver@gmail.com>
-Date: Mon, 17 Jul 2017 13:33:03 +0200
-Message-ID: <CAH6sp9PgJFSPRGxk9HEtJuVK8b_4oOfBLYeu4MUbhN-UkonnCA@mail.gmail.com>
-Subject: Re: [PATCH v3 01/10] mtd: powernv_flash: Use WARN_ON_ONCE() rather
- than BUG_ON()
-To: Cyril Bur <cyrilbur@gmail.com>
-Cc: linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org,
- stewart@linux.vnet.ibm.com, benh@kernel.crashing.org, alistair@popple.id.au,
- David Woodhouse <dwmw2@infradead.org>, rlippert@google.com
-Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,31 +20,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jul 12, 2017 at 6:22 AM, Cyril Bur <cyrilbur@gmail.com> wrote:
-> BUG_ON() should be reserved in situations where we can not longer
-> guarantee the integrity of the system. In the case where
-> powernv_flash_async_op() receives an impossible op, we can still
-> guarantee the integrity of the system.
->
-> Signed-off-by: Cyril Bur <cyrilbur@gmail.com>
-> ---
->  drivers/mtd/devices/powernv_flash.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/mtd/devices/powernv_flash.c b/drivers/mtd/devices/powernv_flash.c
-> index f5396f26ddb4..a9a20c00687c 100644
-> --- a/drivers/mtd/devices/powernv_flash.c
-> +++ b/drivers/mtd/devices/powernv_flash.c
-> @@ -78,7 +78,8 @@ static int powernv_flash_async_op(struct mtd_info *mtd, enum flash_op op,
->                 rc = opal_flash_erase(info->id, offset, len, token);
->                 break;
->         default:
-> -               BUG_ON(1);
-> +               WARN_ON_ONCE(1);
-> +               return -EIO;
+Hi all,
 
-Based on the fact that all three values in enum flash_op are handled,
-I would go as far as stating that the default lemma adds no value and
-can be removed.
+I am running some torture tests on a NAND flash memory having UBIFS on it. =
+Running the tests for few days shows some errors which are apparently fixab=
+le by UBI. Some errors look like:
 
-Frans
+UBI DBG (pid 25): ubi_io_read: fixable bit-flip detected at PEB 557
+UBI DBG (pid 25): ubi_io_read: fixable bit-flip detected at PEB 1627
+UBI: run torture test for PEB 1627
+UBI: PEB 1627 passed torture test, do not mark it a bad
+UBI DBG (pid 25): ubi_io_read: fixable bit-flip detected at PEB 557
+UBI DBG (pid 25): ubi_io_read: fixable bit-flip detected at PEB 1627
+UBI: run torture test for PEB 1627
+UBI: PEB 1627 passed torture test, do not mark it a bad
+UBI DBG (pid 25): ubi_io_read: fixable bit-flip detected at PEB 557
+UBI DBG (pid 25): ubi_io_read: fixable bit-flip detected at PEB 1627
+UBI: run torture test for PEB 1627
+UBI: PEB 1627 passed torture test, do not mark it a bad
+
+which are promising since it seems that the file system has been able to fi=
+x the error as it says "fixable bit-flip'. However, some other errors are l=
+ike:
+
+UBI DBG (pid 1691): ubi_io_read: fixable bit-flip detected at PEB 1546
+UBI DBG (pid 1691): ubi_wl_scrub_peb: schedule PEB 1546 for scrubbing
+UBI DBG (pid 25): ubi_io_read: fixable bit-flip detected at PEB 1546
+UBI: scrubbed PEB 1546 (LEB 3:177), data moved to PEB 1875
+UBI DBG (pid 1691): ubi_io_read: fixable bit-flip detected at PEB 217
+UBI DBG (pid 1691): ubi_wl_scrub_peb: schedule PEB 217 for scrubbing
+UBI DBG (pid 25): ubi_io_read: fixable bit-flip detected at PEB 217
+UBI: scrubbed PEB 217 (LEB 3:937), data moved to PEB 1875
+UBI DBG (pid 1691): ubi_io_read: fixable bit-flip detected at PEB 1546
+UBI DBG (pid 1691): ubi_wl_scrub_peb: schedule PEB 1546 for scrubbing
+UBI DBG (pid 25): ubi_io_read: fixable bit-flip detected at PEB 1546
+UBI: scrubbed PEB 1546 (LEB 3:1054), data moved to PEB 1875
+
+This is a bit strange though, because the data is moved even when the error=
+ was fixable because of bit-flip as the log says.
+
+Now I would like to know why the data is moved even when it is fixable? Is =
+it something that we need to be worried about? Why the bit-flip is not simp=
+ly corrected as it is in the former case but it is rather scrubbed and the =
+data is moved? Also, will the PEB be marked as unusable bad cell when it is=
+ scrubbed and the data is moved to another PEB?
+
+Thanks a lot for your help,
+
+Danesh Daroui
