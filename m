@@ -1,16 +1,20 @@
-Received: from aserp1040.oracle.com ([141.146.126.69])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dXAOh-000865-8I
- for linux-mtd@lists.infradead.org; Mon, 17 Jul 2017 18:05:32 +0000
-Date: Mon, 17 Jul 2017 21:04:58 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: richard@nod.at
-Cc: linux-mtd@lists.infradead.org
-Subject: [bug report] ubifs: Fix unlink code wrt. double hash lookups
-Message-ID: <20170717180458.abqmp7w42yytfciv@mwanda>
+Date: Mon, 17 Jul 2017 20:20:08 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Romain Izard <romain.izard.pro@gmail.com>
+Cc: Yang Wenyou <Wenyou.Yang@atmel.com>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, linux-mtd
+ <linux-mtd@lists.infradead.org>, Ludovic Desroches
+ <ludovic.desroches@microchip.com>, Nicolas Ferre
+ <nicolas.ferre@microchip.com>, Alexandre Belloni
+ <alexandre.belloni@free-electrons.com>
+Subject: Re: Uncorrectable bitflips with Linux 4.12 on SAMA5D2
+Message-ID: <20170717202008.6c798789@bbrezillon>
+In-Reply-To: <20170717194809.4a080e0c@bbrezillon>
+References: <CAMiSF3CtVY7G=ugt-bpsOOMqLcFrmx7hDstUag2_6H-KrN4yBg@mail.gmail.com>
+ <20170717194809.4a080e0c@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,65 +24,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Richard Weinberger,
+Le Mon, 17 Jul 2017 19:48:09 +0200,
+Boris Brezillon <boris.brezillon@free-electrons.com> a =C3=A9crit :
 
-The patch 781f675e2d7e: "ubifs: Fix unlink code wrt. double hash
-lookups" from May 17, 2017, leads to the following static checker
-warning:
+> +Ludovic, Nicolas and Alexandre
+>=20
+> Hi Romain,
+>=20
+> Le Mon, 17 Jul 2017 18:11:26 +0200,
+> Romain Izard <romain.izard.pro@gmail.com> a =C3=A9crit :
+>=20
+> > Hello,
+> >=20
+> > On a custom board based on Microchip's SAMA5D2 SoC, I am encountering
+> > ECC problems with the NAND Flash controller. The board is currently
+> > working with Linux v4.9.x, but it does not with Linux 4.12.
+> >=20
+> > Some pages on the NAND Flash memory chip of the device have bitflips.
+> > With Linux 4.9.x, the bitflips are fixed by the PMECC code, but with
+> > Linux 4.12, the errors are reported as uncorrectable.
+> >=20
+> > From my end, I updated the board's device tree to include the
+> > sama5d2.dtsi as it exists in Linux 4.12, but the rest of the file is
+> > the same as for Linux 4.9. From my understanding, it should be
+> > sufficient as the legacy DTB binding for the NAND controller is
+> > supported. =20
+>=20
+> I know Ludovic add some problems with the NAND controller on sama5d2,
+> but it was with the new bindings (see the fixes here [1]).
+>=20
+> Your problem seems a bit different since you're using the backward
+> compat code.
 
-	fs/ubifs/tnc.c:1893 search_dh_cookie()
-	error: uninitialized symbol 'err'.
+Can you try with the following patch applied?
 
-fs/ubifs/tnc.c
-  1883  static int search_dh_cookie(struct ubifs_info *c, const union ubifs_key *key,
-  1884                              struct ubifs_dent_node *dent, uint32_t cookie,
-  1885                              struct ubifs_znode **zn, int *n)
-  1886  {
-  1887          int err;
-                ^^^^^^^
+--->8---
+=46rom cb95a16cdd497137872c44d5dd4e251ec73c79c1 Mon Sep 17 00:00:00 2001
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+Date: Mon, 17 Jul 2017 20:09:59 +0200
+Subject: [PATCH] mtd: nand: atmel: Fix DT backward compatibility in pmecc.c
 
-This used to be initialized with:
+PMECC caps extraction from old DT bindings is broken, thus leading to
+erroneous EL registers offset, which in turn make HW ECC unusable on
+sama5d2 when old bindings are in use.
 
-	err = ubifs_lookup_level0(c, &start_key, &znode, &n);
+Passing the NAND dev node instead of the NFC node to of_match_node()
+solves the problem.
 
-  1888          struct ubifs_znode *znode = *zn;
-  1889          struct ubifs_zbranch *zbr;
-  1890          union ubifs_key *dkey;
-  1891  
-  1892          for (;;) {
-  1893                  if (!err) {
-                            ^^^^
-Uninitialized.
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Fixes: f88fc122cc34 ("mtd: nand: Cleanup/rework the atmel_nand driver")
+Cc: <stable@vger.kernel.org>
+---
+ drivers/mtd/nand/atmel/pmecc.c | 21 ++++++---------------
+ 1 file changed, 6 insertions(+), 15 deletions(-)
 
-  1894                          err = tnc_next(c, &znode, n);
-  1895                          if (err)
-  1896                                  goto out;
-  1897                  }
-  1898  
-  1899                  zbr = &znode->zbranch[*n];
-  1900                  dkey = &zbr->key;
-  1901  
-  1902                  if (key_inum(c, dkey) != key_inum(c, key) ||
-  1903                      key_type(c, dkey) != key_type(c, key)) {
-  1904                          err = -ENOENT;
-  1905                          goto out;
-  1906                  }
-  1907  
-  1908                  err = tnc_read_hashed_node(c, zbr, dent);
-  1909                  if (err)
-  1910                          goto out;
-  1911  
-  1912                  if (key_hash(c, key) == key_hash(c, dkey) &&
-  1913                      le32_to_cpu(dent->cookie) == cookie) {
-  1914                          *zn = znode;
-  1915                          goto out;
-  1916                  }
-  1917          }
-  1918  
-  1919  out:
-  1920  
-  1921          return err;
-  1922  }
-
-regards,
-dan carpenter
+diff --git a/drivers/mtd/nand/atmel/pmecc.c b/drivers/mtd/nand/atmel/pmecc.c
+index 55a8ee5306ea..8c210a5776bc 100644
+--- a/drivers/mtd/nand/atmel/pmecc.c
++++ b/drivers/mtd/nand/atmel/pmecc.c
+@@ -945,6 +945,7 @@ struct atmel_pmecc *devm_atmel_pmecc_get(struct device =
+*userdev)
+ 		 */
+ 		struct platform_device *pdev =3D to_platform_device(userdev);
+ 		const struct atmel_pmecc_caps *caps;
++		const struct of_device_id *match;
+=20
+ 		/* No PMECC engine available. */
+ 		if (!of_property_read_bool(userdev->of_node,
+@@ -953,21 +954,11 @@ struct atmel_pmecc *devm_atmel_pmecc_get(struct devic=
+e *userdev)
+=20
+ 		caps =3D &at91sam9g45_caps;
+=20
+-		/*
+-		 * Try to find the NFC subnode and extract the associated caps
+-		 * from there.
+-		 */
+-		np =3D of_find_compatible_node(userdev->of_node, NULL,
+-					     "atmel,sama5d3-nfc");
+-		if (np) {
+-			const struct of_device_id *match;
+-
+-			match =3D of_match_node(atmel_pmecc_legacy_match, np);
+-			if (match && match->data)
+-				caps =3D match->data;
+-
+-			of_node_put(np);
+-		}
++		/* Find the caps associated to the NAND dev node. */
++		match =3D of_match_node(atmel_pmecc_legacy_match,
++				      userdev->of_node);
++		if (match && match->data)
++			caps =3D match->data;
+=20
+ 		pmecc =3D atmel_pmecc_create(pdev, caps, 1, 2);
+ 	}
