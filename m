@@ -1,27 +1,16 @@
-Received: from mail-pg0-x234.google.com ([2607:f8b0:400e:c05::234])
+Received: from aserp1040.oracle.com ([141.146.126.69])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dXAEl-0003JZ-WA
- for linux-mtd@lists.infradead.org; Mon, 17 Jul 2017 17:55:17 +0000
-Received: by mail-pg0-x234.google.com with SMTP id k14so83591166pgr.0
- for <linux-mtd@lists.infradead.org>; Mon, 17 Jul 2017 10:54:54 -0700 (PDT)
-Date: Mon, 17 Jul 2017 10:54:52 -0700
-From: Michael Halcrow <mhalcrow@google.com>
-To: Eric Biggers <ebiggers3@gmail.com>
-Cc: linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, linux-crypto@vger.kernel.org,
- "Theodore Y . Ts'o" <tytso@mit.edu>,
- Jaegeuk Kim <jaegeuk@kernel.org>, Alex Cope <alexcope@google.com>,
- Eric Biggers <ebiggers@google.com>
-Subject: Re: [PATCH 6/6] fscrypt: for v2 policies, support "fscrypt:" key
- prefix only
-Message-ID: <20170717175452.GB32282@google.com>
-References: <20170712210035.51534-1-ebiggers3@gmail.com>
- <20170712210035.51534-7-ebiggers3@gmail.com>
+ id 1dXAOh-000865-8I
+ for linux-mtd@lists.infradead.org; Mon, 17 Jul 2017 18:05:32 +0000
+Date: Mon, 17 Jul 2017 21:04:58 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: richard@nod.at
+Cc: linux-mtd@lists.infradead.org
+Subject: [bug report] ubifs: Fix unlink code wrt. double hash lookups
+Message-ID: <20170717180458.abqmp7w42yytfciv@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20170712210035.51534-7-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,110 +20,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jul 12, 2017 at 02:00:35PM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> Since v2 encryption policies are opt-in, take the opportunity to also
-> drop support for the legacy filesystem-specific key description prefixes
-> "ext4:", "f2fs:", and "ubifs:", instead requiring the generic prefix
-> "fscrypt:".  The generic prefix is preferred since it works for all
-> filesystems.  Also there is a performance benefit from not having to
-> search the keyrings twice.
-> 
-> The old prefixes remain supported for v1 encryption policies.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+Hello Richard Weinberger,
 
-Reviewed-by: Michael Halcrow <mhalcrow@google.com>
+The patch 781f675e2d7e: "ubifs: Fix unlink code wrt. double hash
+lookups" from May 17, 2017, leads to the following static checker
+warning:
 
-> ---
->  fs/crypto/fscrypt_private.h |  3 +--
->  fs/crypto/keyinfo.c         | 16 ++++------------
->  fs/crypto/policy.c          |  2 +-
->  3 files changed, 6 insertions(+), 15 deletions(-)
-> 
-> diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-> index 4b158717a8c3..201906ff7033 100644
-> --- a/fs/crypto/fscrypt_private.h
-> +++ b/fs/crypto/fscrypt_private.h
-> @@ -167,8 +167,7 @@ extern struct page *fscrypt_alloc_bounce_page(struct fscrypt_ctx *ctx,
->  					      gfp_t gfp_flags);
->  
->  /* keyinfo.c */
-> -extern int fscrypt_compute_key_hash(const struct inode *inode,
-> -				    const struct fscrypt_policy *policy,
-> +extern int fscrypt_compute_key_hash(const struct fscrypt_policy *policy,
->  				    u8 hash[FSCRYPT_KEY_HASH_SIZE]);
->  extern void __exit fscrypt_essiv_cleanup(void);
->  
-> diff --git a/fs/crypto/keyinfo.c b/fs/crypto/keyinfo.c
-> index bf60e76f9599..e20b5e85c1b3 100644
-> --- a/fs/crypto/keyinfo.c
-> +++ b/fs/crypto/keyinfo.c
-> @@ -385,8 +385,7 @@ find_and_lock_keyring_key(const char *prefix,
->  }
->  
->  static struct fscrypt_master_key *
-> -load_master_key_from_keyring(const struct inode *inode,
-> -			     const u8 descriptor[FS_KEY_DESCRIPTOR_SIZE],
-> +load_master_key_from_keyring(const u8 descriptor[FS_KEY_DESCRIPTOR_SIZE],
->  			     unsigned int min_keysize)
->  {
->  	struct key *keyring_key;
-> @@ -395,11 +394,6 @@ load_master_key_from_keyring(const struct inode *inode,
->  
->  	keyring_key = find_and_lock_keyring_key(FS_KEY_DESC_PREFIX, descriptor,
->  						min_keysize, &payload);
-> -	if (keyring_key == ERR_PTR(-ENOKEY) && inode->i_sb->s_cop->key_prefix) {
-> -		keyring_key = find_and_lock_keyring_key(
-> -					inode->i_sb->s_cop->key_prefix,
-> -					descriptor, min_keysize, &payload);
-> -	}
->  	if (IS_ERR(keyring_key))
->  		return ERR_CAST(keyring_key);
->  
-> @@ -441,8 +435,7 @@ find_or_create_master_key(const struct inode *inode,
->  	/*
->  	 * The needed master key isn't in memory yet.  Load it from the keyring.
->  	 */
-> -	master_key = load_master_key_from_keyring(inode,
-> -						  ctx->master_key_descriptor,
-> +	master_key = load_master_key_from_keyring(ctx->master_key_descriptor,
->  						  min_keysize);
->  	if (IS_ERR(master_key))
->  		return master_key;
-> @@ -676,8 +669,7 @@ void __exit fscrypt_essiv_cleanup(void)
->  	crypto_free_shash(essiv_hash_tfm);
->  }
->  
-> -int fscrypt_compute_key_hash(const struct inode *inode,
-> -			     const struct fscrypt_policy *policy,
-> +int fscrypt_compute_key_hash(const struct fscrypt_policy *policy,
->  			     u8 hash[FSCRYPT_KEY_HASH_SIZE])
->  {
->  	struct fscrypt_master_key *k;
-> @@ -691,7 +683,7 @@ int fscrypt_compute_key_hash(const struct inode *inode,
->  		max(available_modes[policy->contents_encryption_mode].keysize,
->  		    available_modes[policy->filenames_encryption_mode].keysize);
->  
-> -	k = load_master_key_from_keyring(inode, policy->master_key_descriptor,
-> +	k = load_master_key_from_keyring(policy->master_key_descriptor,
->  					 min_keysize);
->  	if (IS_ERR(k))
->  		return PTR_ERR(k);
-> diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
-> index 7661c66a3533..cd8c9c7cc9a9 100644
-> --- a/fs/crypto/policy.c
-> +++ b/fs/crypto/policy.c
-> @@ -117,7 +117,7 @@ int fscrypt_ioctl_set_policy(struct file *filp, const void __user *arg)
->  		pr_warn_once("%s (pid %d) is setting less secure v0 encryption policy; recommend upgrading to v2.\n",
->  			     current->comm, current->pid);
->  	} else {
-> -		ret = fscrypt_compute_key_hash(inode, &policy, key_hash);
-> +		ret = fscrypt_compute_key_hash(&policy, key_hash);
->  		if (ret)
->  			return ret;
->  	}
-> -- 
-> 2.13.2.932.g7449e964c-goog
-> 
+	fs/ubifs/tnc.c:1893 search_dh_cookie()
+	error: uninitialized symbol 'err'.
+
+fs/ubifs/tnc.c
+  1883  static int search_dh_cookie(struct ubifs_info *c, const union ubifs_key *key,
+  1884                              struct ubifs_dent_node *dent, uint32_t cookie,
+  1885                              struct ubifs_znode **zn, int *n)
+  1886  {
+  1887          int err;
+                ^^^^^^^
+
+This used to be initialized with:
+
+	err = ubifs_lookup_level0(c, &start_key, &znode, &n);
+
+  1888          struct ubifs_znode *znode = *zn;
+  1889          struct ubifs_zbranch *zbr;
+  1890          union ubifs_key *dkey;
+  1891  
+  1892          for (;;) {
+  1893                  if (!err) {
+                            ^^^^
+Uninitialized.
+
+  1894                          err = tnc_next(c, &znode, n);
+  1895                          if (err)
+  1896                                  goto out;
+  1897                  }
+  1898  
+  1899                  zbr = &znode->zbranch[*n];
+  1900                  dkey = &zbr->key;
+  1901  
+  1902                  if (key_inum(c, dkey) != key_inum(c, key) ||
+  1903                      key_type(c, dkey) != key_type(c, key)) {
+  1904                          err = -ENOENT;
+  1905                          goto out;
+  1906                  }
+  1907  
+  1908                  err = tnc_read_hashed_node(c, zbr, dent);
+  1909                  if (err)
+  1910                          goto out;
+  1911  
+  1912                  if (key_hash(c, key) == key_hash(c, dkey) &&
+  1913                      le32_to_cpu(dent->cookie) == cookie) {
+  1914                          *zn = znode;
+  1915                          goto out;
+  1916                  }
+  1917          }
+  1918  
+  1919  out:
+  1920  
+  1921          return err;
+  1922  }
+
+regards,
+dan carpenter
