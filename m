@@ -1,19 +1,27 @@
-Date: Mon, 17 Jul 2017 19:48:09 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Romain Izard <romain.izard.pro@gmail.com>
-Cc: Yang Wenyou <Wenyou.Yang@atmel.com>, "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, linux-mtd
- <linux-mtd@lists.infradead.org>, Ludovic Desroches
- <ludovic.desroches@microchip.com>, Nicolas Ferre
- <nicolas.ferre@microchip.com>, Alexandre Belloni
- <alexandre.belloni@free-electrons.com>
-Subject: Re: Uncorrectable bitflips with Linux 4.12 on SAMA5D2
-Message-ID: <20170717194809.4a080e0c@bbrezillon>
-In-Reply-To: <CAMiSF3CtVY7G=ugt-bpsOOMqLcFrmx7hDstUag2_6H-KrN4yBg@mail.gmail.com>
-References: <CAMiSF3CtVY7G=ugt-bpsOOMqLcFrmx7hDstUag2_6H-KrN4yBg@mail.gmail.com>
+Received: from mail-pg0-x234.google.com ([2607:f8b0:400e:c05::234])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dXAEl-0003JZ-WA
+ for linux-mtd@lists.infradead.org; Mon, 17 Jul 2017 17:55:17 +0000
+Received: by mail-pg0-x234.google.com with SMTP id k14so83591166pgr.0
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Jul 2017 10:54:54 -0700 (PDT)
+Date: Mon, 17 Jul 2017 10:54:52 -0700
+From: Michael Halcrow <mhalcrow@google.com>
+To: Eric Biggers <ebiggers3@gmail.com>
+Cc: linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-mtd@lists.infradead.org, linux-crypto@vger.kernel.org,
+ "Theodore Y . Ts'o" <tytso@mit.edu>,
+ Jaegeuk Kim <jaegeuk@kernel.org>, Alex Cope <alexcope@google.com>,
+ Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH 6/6] fscrypt: for v2 policies, support "fscrypt:" key
+ prefix only
+Message-ID: <20170717175452.GB32282@google.com>
+References: <20170712210035.51534-1-ebiggers3@gmail.com>
+ <20170712210035.51534-7-ebiggers3@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170712210035.51534-7-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,64 +31,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+Ludovic, Nicolas and Alexandre
+On Wed, Jul 12, 2017 at 02:00:35PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Since v2 encryption policies are opt-in, take the opportunity to also
+> drop support for the legacy filesystem-specific key description prefixes
+> "ext4:", "f2fs:", and "ubifs:", instead requiring the generic prefix
+> "fscrypt:".  The generic prefix is preferred since it works for all
+> filesystems.  Also there is a performance benefit from not having to
+> search the keyrings twice.
+> 
+> The old prefixes remain supported for v1 encryption policies.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-Hi Romain,
+Reviewed-by: Michael Halcrow <mhalcrow@google.com>
 
-Le Mon, 17 Jul 2017 18:11:26 +0200,
-Romain Izard <romain.izard.pro@gmail.com> a =C3=A9crit :
-
-> Hello,
->=20
-> On a custom board based on Microchip's SAMA5D2 SoC, I am encountering
-> ECC problems with the NAND Flash controller. The board is currently
-> working with Linux v4.9.x, but it does not with Linux 4.12.
->=20
-> Some pages on the NAND Flash memory chip of the device have bitflips.
-> With Linux 4.9.x, the bitflips are fixed by the PMECC code, but with
-> Linux 4.12, the errors are reported as uncorrectable.
->=20
-> From my end, I updated the board's device tree to include the
-> sama5d2.dtsi as it exists in Linux 4.12, but the rest of the file is
-> the same as for Linux 4.9. From my understanding, it should be
-> sufficient as the legacy DTB binding for the NAND controller is
-> supported.
-
-I know Ludovic add some problems with the NAND controller on sama5d2,
-but it was with the new bindings (see the fixes here [1]).
-
-Your problem seems a bit different since you're using the backward
-compat code.
-
-Could you dump PMECC/NFC regs when booting 4.9 and 4.12, and see if
-there's a difference?
-
->=20
-> The relevant extract is:
->=20
->         nand0: nand@80000000 {
->             pinctrl-names =3D "default";
->             pinctrl-0 =3D <&pinctrl_nand_default>;
->             status =3D "okay";
->             nand-ecc-mode =3D "hw";
->             atmel,pmecc-cap =3D <8>;
->             atmel,pmecc-sector-size =3D <512>;
->             /delete-property/ atmel,nand-has-dma;
->         };
->=20
-> The attached files show the same block read through nanddump, with
-> Linux 4.9 and Linux 4.12
-
-Yep, the dumps show 2 identical pages except for the bitflip in ECC
-block 2, but I can't tell from this dump why PMECC fails to correct
-bitflips.
-
-Really sorry that you have to debug this problem, but I don't have a
-sama5d2 platform with a NAND on it and couldn't test my
-modification on this platform :-/.
-
-Thanks,
-
-Boris
-
-[1]https://lkml.org/lkml/2017/7/11/95
+> ---
+>  fs/crypto/fscrypt_private.h |  3 +--
+>  fs/crypto/keyinfo.c         | 16 ++++------------
+>  fs/crypto/policy.c          |  2 +-
+>  3 files changed, 6 insertions(+), 15 deletions(-)
+> 
+> diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+> index 4b158717a8c3..201906ff7033 100644
+> --- a/fs/crypto/fscrypt_private.h
+> +++ b/fs/crypto/fscrypt_private.h
+> @@ -167,8 +167,7 @@ extern struct page *fscrypt_alloc_bounce_page(struct fscrypt_ctx *ctx,
+>  					      gfp_t gfp_flags);
+>  
+>  /* keyinfo.c */
+> -extern int fscrypt_compute_key_hash(const struct inode *inode,
+> -				    const struct fscrypt_policy *policy,
+> +extern int fscrypt_compute_key_hash(const struct fscrypt_policy *policy,
+>  				    u8 hash[FSCRYPT_KEY_HASH_SIZE]);
+>  extern void __exit fscrypt_essiv_cleanup(void);
+>  
+> diff --git a/fs/crypto/keyinfo.c b/fs/crypto/keyinfo.c
+> index bf60e76f9599..e20b5e85c1b3 100644
+> --- a/fs/crypto/keyinfo.c
+> +++ b/fs/crypto/keyinfo.c
+> @@ -385,8 +385,7 @@ find_and_lock_keyring_key(const char *prefix,
+>  }
+>  
+>  static struct fscrypt_master_key *
+> -load_master_key_from_keyring(const struct inode *inode,
+> -			     const u8 descriptor[FS_KEY_DESCRIPTOR_SIZE],
+> +load_master_key_from_keyring(const u8 descriptor[FS_KEY_DESCRIPTOR_SIZE],
+>  			     unsigned int min_keysize)
+>  {
+>  	struct key *keyring_key;
+> @@ -395,11 +394,6 @@ load_master_key_from_keyring(const struct inode *inode,
+>  
+>  	keyring_key = find_and_lock_keyring_key(FS_KEY_DESC_PREFIX, descriptor,
+>  						min_keysize, &payload);
+> -	if (keyring_key == ERR_PTR(-ENOKEY) && inode->i_sb->s_cop->key_prefix) {
+> -		keyring_key = find_and_lock_keyring_key(
+> -					inode->i_sb->s_cop->key_prefix,
+> -					descriptor, min_keysize, &payload);
+> -	}
+>  	if (IS_ERR(keyring_key))
+>  		return ERR_CAST(keyring_key);
+>  
+> @@ -441,8 +435,7 @@ find_or_create_master_key(const struct inode *inode,
+>  	/*
+>  	 * The needed master key isn't in memory yet.  Load it from the keyring.
+>  	 */
+> -	master_key = load_master_key_from_keyring(inode,
+> -						  ctx->master_key_descriptor,
+> +	master_key = load_master_key_from_keyring(ctx->master_key_descriptor,
+>  						  min_keysize);
+>  	if (IS_ERR(master_key))
+>  		return master_key;
+> @@ -676,8 +669,7 @@ void __exit fscrypt_essiv_cleanup(void)
+>  	crypto_free_shash(essiv_hash_tfm);
+>  }
+>  
+> -int fscrypt_compute_key_hash(const struct inode *inode,
+> -			     const struct fscrypt_policy *policy,
+> +int fscrypt_compute_key_hash(const struct fscrypt_policy *policy,
+>  			     u8 hash[FSCRYPT_KEY_HASH_SIZE])
+>  {
+>  	struct fscrypt_master_key *k;
+> @@ -691,7 +683,7 @@ int fscrypt_compute_key_hash(const struct inode *inode,
+>  		max(available_modes[policy->contents_encryption_mode].keysize,
+>  		    available_modes[policy->filenames_encryption_mode].keysize);
+>  
+> -	k = load_master_key_from_keyring(inode, policy->master_key_descriptor,
+> +	k = load_master_key_from_keyring(policy->master_key_descriptor,
+>  					 min_keysize);
+>  	if (IS_ERR(k))
+>  		return PTR_ERR(k);
+> diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
+> index 7661c66a3533..cd8c9c7cc9a9 100644
+> --- a/fs/crypto/policy.c
+> +++ b/fs/crypto/policy.c
+> @@ -117,7 +117,7 @@ int fscrypt_ioctl_set_policy(struct file *filp, const void __user *arg)
+>  		pr_warn_once("%s (pid %d) is setting less secure v0 encryption policy; recommend upgrading to v2.\n",
+>  			     current->comm, current->pid);
+>  	} else {
+> -		ret = fscrypt_compute_key_hash(inode, &policy, key_hash);
+> +		ret = fscrypt_compute_key_hash(&policy, key_hash);
+>  		if (ret)
+>  			return ret;
+>  	}
+> -- 
+> 2.13.2.932.g7449e964c-goog
+> 
