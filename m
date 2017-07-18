@@ -1,19 +1,23 @@
-Received: from mail-pf0-f195.google.com ([209.85.192.195])
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dXaIj-0002Rj-I1
- for linux-mtd@lists.infradead.org; Tue, 18 Jul 2017 21:46:08 +0000
-Received: by mail-pf0-f195.google.com with SMTP id a11so4068205pfj.3
- for <linux-mtd@lists.infradead.org>; Tue, 18 Jul 2017 14:44:45 -0700 (PDT)
-From: Rob Herring <robh@kernel.org>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: Convert to using %pOF instead of full_name
-Date: Tue, 18 Jul 2017 16:43:17 -0500
-Message-Id: <20170718214339.7774-37-robh@kernel.org>
+ id 1dXbUs-0003y7-Bv
+ for linux-mtd@lists.infradead.org; Tue, 18 Jul 2017 23:01:44 +0000
+From: Kyeong Yoo <Kyeong.Yoo@alliedtelesis.co.nz>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] jffs2: GC deadlock reading a page that is used in
+ jffs2_write_begin()
+Date: Tue, 18 Jul 2017 23:00:58 +0000
+Message-ID: <0e1399d9-a7ed-9838-7a03-0a1b18be2234@alliedtelesis.co.nz>
+References: <149914202384.24318.7331828698981799313.stgit@kyeongy-dl.atlnz.lc>
+ <7e0d37e6-c3de-5c17-72e1-f6003e5d7d4a@alliedtelesis.co.nz>
+ <CAFLxGvwAJ+xfN=1QGfe_6mNksmMr6cTjSSRKPqYGKMi-1zvU2Q@mail.gmail.com>
+In-Reply-To: <CAFLxGvwAJ+xfN=1QGfe_6mNksmMr6cTjSSRKPqYGKMi-1zvU2Q@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <9B034B23CC0E4646BE37ABBEFE0EE164@atlnz.lc>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,141 +27,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now that we have a custom printf format specifier, convert users of
-full_name to use %pOF instead. This is preparation to remove storing
-of the full path string for each node.
-
-Signed-off-by: Rob Herring <robh@kernel.org>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: linux-mtd@lists.infradead.org
----
- drivers/mtd/maps/physmap_of_core.c |  4 ++--
- drivers/mtd/maps/sun_uflash.c      |  4 ++--
- drivers/mtd/ofpart.c               | 23 +++++++++++------------
- drivers/mtd/spi-nor/hisi-sfc.c     |  8 ++++----
- 4 files changed, 19 insertions(+), 20 deletions(-)
-
-diff --git a/drivers/mtd/maps/physmap_of_core.c b/drivers/mtd/maps/physmap_of_core.c
-index 62fa6836f218..1343c34092ca 100644
---- a/drivers/mtd/maps/physmap_of_core.c
-+++ b/drivers/mtd/maps/physmap_of_core.c
-@@ -178,8 +178,8 @@ static int of_flash_probe(struct platform_device *dev)
- 	 */
- 	p = of_get_property(dp, "reg", &count);
- 	if (!p || count % reg_tuple_size != 0) {
--		dev_err(&dev->dev, "Malformed reg property on %s\n",
--				dev->dev.of_node->full_name);
-+		dev_err(&dev->dev, "Malformed reg property on %pOF\n",
-+				dev->dev.of_node);
- 		err = -EINVAL;
- 		goto err_flash_remove;
- 	}
-diff --git a/drivers/mtd/maps/sun_uflash.c b/drivers/mtd/maps/sun_uflash.c
-index 414956eca0c9..1e73bba6e286 100644
---- a/drivers/mtd/maps/sun_uflash.c
-+++ b/drivers/mtd/maps/sun_uflash.c
-@@ -55,8 +55,8 @@ int uflash_devinit(struct platform_device *op, struct device_node *dp)
- 		/* Non-CFI userflash device-- once I find one we
- 		 * can work on supporting it.
- 		 */
--		printk(KERN_ERR PFX "Unsupported device at %s, 0x%llx\n",
--		       dp->full_name, (unsigned long long)op->resource[0].start);
-+		printk(KERN_ERR PFX "Unsupported device at %pOF, 0x%llx\n",
-+		       dp, (unsigned long long)op->resource[0].start);
-
- 		return -ENODEV;
- 	}
-diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-index 2861c7079d7b..6bdf4e525677 100644
---- a/drivers/mtd/ofpart.c
-+++ b/drivers/mtd/ofpart.c
-@@ -50,8 +50,8 @@ static int parse_ofpart_partitions(struct mtd_info *master,
- 		 * when using another parser), so don't be louder than
- 		 * KERN_DEBUG
- 		 */
--		pr_debug("%s: 'partitions' subnode not found on %s. Trying to parse direct subnodes as partitions.\n",
--			 master->name, mtd_node->full_name);
-+		pr_debug("%s: 'partitions' subnode not found on %pOF. Trying to parse direct subnodes as partitions.\n",
-+			 master->name, mtd_node);
- 		ofpart_node = mtd_node;
- 		dedicated = false;
- 	} else if (!of_device_is_compatible(ofpart_node, "fixed-partitions")) {
-@@ -87,9 +87,9 @@ static int parse_ofpart_partitions(struct mtd_info *master,
- 		reg = of_get_property(pp, "reg", &len);
- 		if (!reg) {
- 			if (dedicated) {
--				pr_debug("%s: ofpart partition %s (%s) missing reg property.\n",
--					 master->name, pp->full_name,
--					 mtd_node->full_name);
-+				pr_debug("%s: ofpart partition %pOF (%pOF) missing reg property.\n",
-+					 master->name, pp,
-+					 mtd_node);
- 				goto ofpart_fail;
- 			} else {
- 				nr_parts--;
-@@ -100,9 +100,9 @@ static int parse_ofpart_partitions(struct mtd_info *master,
- 		a_cells = of_n_addr_cells(pp);
- 		s_cells = of_n_size_cells(pp);
- 		if (len / 4 != a_cells + s_cells) {
--			pr_debug("%s: ofpart partition %s (%s) error parsing reg property.\n",
--				 master->name, pp->full_name,
--				 mtd_node->full_name);
-+			pr_debug("%s: ofpart partition %pOF (%pOF) error parsing reg property.\n",
-+				 master->name, pp,
-+				 mtd_node);
- 			goto ofpart_fail;
- 		}
-
-@@ -131,8 +131,8 @@ static int parse_ofpart_partitions(struct mtd_info *master,
- 	return nr_parts;
-
- ofpart_fail:
--	pr_err("%s: error parsing ofpart partition %s (%s)\n",
--	       master->name, pp->full_name, mtd_node->full_name);
-+	pr_err("%s: error parsing ofpart partition %pOF (%pOF)\n",
-+	       master->name, pp, mtd_node);
- 	ret = -EINVAL;
- ofpart_none:
- 	of_node_put(pp);
-@@ -166,8 +166,7 @@ static int parse_ofoldpart_partitions(struct mtd_info *master,
- 	if (!part)
- 		return 0; /* No partitions found */
-
--	pr_warn("Device tree uses obsolete partition map binding: %s\n",
--		dp->full_name);
-+	pr_warn("Device tree uses obsolete partition map binding: %pOF\n", dp);
-
- 	nr_parts = plen / sizeof(part[0]);
-
-diff --git a/drivers/mtd/spi-nor/hisi-sfc.c b/drivers/mtd/spi-nor/hisi-sfc.c
-index d1106832b9d5..04f9fb5cd9b6 100644
---- a/drivers/mtd/spi-nor/hisi-sfc.c
-+++ b/drivers/mtd/spi-nor/hisi-sfc.c
-@@ -355,16 +355,16 @@ static int hisi_spi_nor_register(struct device_node *np,
-
- 	ret = of_property_read_u32(np, "reg", &priv->chipselect);
- 	if (ret) {
--		dev_err(dev, "There's no reg property for %s\n",
--			np->full_name);
-+		dev_err(dev, "There's no reg property for %pOF\n",
-+			np);
- 		return ret;
- 	}
-
- 	ret = of_property_read_u32(np, "spi-max-frequency",
- 			&priv->clkrate);
- 	if (ret) {
--		dev_err(dev, "There's no spi-max-frequency property for %s\n",
--			np->full_name);
-+		dev_err(dev, "There's no spi-max-frequency property for %pOF\n",
-+			np);
- 		return ret;
- 	}
- 	priv->host = host;
---
-2.11.0
+SGkgUmljaGFyZCwNCg0KVGhpcyBwYXRjaCB3YXMgb24gdG9wIG9mIHY0LjEyIGFuZCBzdGlsbCBh
+cHBsaWVzIGNsZWFubHkgdG8gdGhlIGxhdGVzdCANCm1haW5saW5lIHdoaWNoIGhhcyB0aGUgZm9s
+bG93aW5nIGNvbW1pdCBhdCB0aGUgdG9wOg0KDQpjb21taXQgNzRjYmQ5NmJjMmUwMGY1ZGFhODA1
+ZTJlYmY0OWU5OThmNzA0NTA2MiAob3JpZ2luL21hc3Rlciwgb3JpZ2luL0hFQUQpDQpNZXJnZTog
+YmVmODViZDdkYjI2IDY0MDllODRlYzU4Zg0KQXV0aG9yOiBMaW51cyBUb3J2YWxkcyA8dG9ydmFs
+ZHNAbGludXgtZm91bmRhdGlvbi5vcmc+DQpEYXRlOiAgIFR1ZSBKdWwgMTggMTE6NTE6MDggMjAx
+NyAtMDcwMA0KDQogICAgIE1lcmdlIHRhZyAnbWQvNC4xMy1yYzInIG9mIA0KZ2l0Oi8vZ2l0Lmtl
+cm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3NobGkvbWQNCg0KDQpBbmQgSSBjYW4g
+c2VlIHRoZSBjb21taXQgeW91IG1lbnRpb25lZCBleGlzdHMgaW4gbXkgcmVwby4NCg0KICBjb21t
+aXQgMTU3MDc4ZjY0YjhhOWNkNzAxMWI2YjkwMGIyZjI0OThkZjg1MDc0OA0KICBBdXRob3I6IFRo
+b21hcyBCZXRrZXIgPHRob21hcy5iZXRrZXJAcm9oZGUtc2Nod2Fyei5jb20+DQogIERhdGU6ICAg
+VHVlIE5vdiAxMCAyMjoxODoxNSAyMDE1ICswMTAwDQoNCiAgICAgUmV2ZXJ0ICJqZmZzMjogRml4
+IGxvY2sgYWNxdWlzaXRpb24gb3JkZXIgYnVnIGluIGpmZnMyX3dyaXRlX2JlZ2luIg0KDQoNClRo
+ZSBsb2dpYyBvZiBkZWFkbG9jayBzdGlsbCBleGlzdHMgd2l0aCB0aGUgYWJvdmUgY29tbWl0LCB0
+aGF0J3Mgd2hhdCBJIA0KZGVzY3JpYmVkIGluIHRoZSBwYXRjaCBjb21taXQgbWVzc2FnZS4gQWN0
+dWFsIGtlcm5lbCB2ZXJzaW9uIEkgc2F3IHRoZSANCmlzc3VlIGlzIDQuNC42LiBCdXQgd2hhdCBJ
+IGZvdW5kIGlzIHRoZSBsb2dpYyByZWdhcmRpbmcgbG9ja2luZyBpcyBzYW1lIA0KaW4gdGhlIGN1
+cnJlbnQgbWFpbmxpbmUuDQpGb3IgeW91IGluZm9ybWF0aW9uLCBhdHRhY2hlZCB0aGUga2VybmVs
+IHBhbmljIGluZm8gYmVsb3cuDQoNClRoYW5rcywNCkt5ZW9uZw0KDQo8Mz5JTkZPOiB0YXNrIGpm
+ZnMyX2djZF9tdGQzOjE5MCBibG9ja2VkIGZvciBtb3JlIHRoYW4gMTIwIHNlY29uZHMuDQo8Mz4g
+ICAgICBUYWludGVkOiBQICAgICAgICAgICBPICAgIDQuNC42LWF0MSAjMQ0KPDM+ImVjaG8gMCA+
+IC9wcm9jL3N5cy9rZXJuZWwvaHVuZ190YXNrX3RpbWVvdXRfc2VjcyIgZGlzYWJsZXMgdGhpcyBt
+ZXNzYWdlLg0KPDY+amZmczJfZ2NkX210ZDMgIEQgMDAwMDAwMDAgICAgIDAgICAxOTAgICAgICAy
+IDB4MDAwMDA4MDANCjw2PkNhbGwgVHJhY2U6DQo8Nj5bYTcxMmZhZjBdIFthNDAwMzE4MF0gMHhh
+NDAwMzE4MCAodW5yZWxpYWJsZSkNCjw2PlthNzEyZmJiMF0gWzgwNjhlYTU0XSBfX3NjaGVkdWxl
+KzB4MWY0LzB4NWYwDQo8Nj5bYTcxMmZiZjBdIFs4MDY4ZWU4NF0gc2NoZWR1bGUrMHgzNC8weGIw
+DQo8Nj5bYTcxMmZjMDBdIFs4MDY5MWI0OF0gc2NoZWR1bGVfdGltZW91dCsweDE4OC8weDFkMA0K
+PDY+W2E3MTJmYzUwXSBbODA2OGU4MjRdIGlvX3NjaGVkdWxlX3RpbWVvdXQrMHg4NC8weGMwDQo8
+Nj5bYTcxMmZjNzBdIFs4MDY4ZjdjMF0gYml0X3dhaXRfaW8rMHgyMC8weDcwDQo8Nj5bYTcxMmZj
+ODBdIFs4MDY4ZjU4NF0gX193YWl0X29uX2JpdF9sb2NrKzB4YTQvMHgxNDANCjw2PlthNzEyZmNi
+MF0gWzgwMGI1MWJjXSBfX2xvY2tfcGFnZSsweDljLzB4YjANCjw2PlthNzEyZmNlMF0gWzgwMGI1
+OGM4XSBkb19yZWFkX2NhY2hlX3BhZ2UrMHgxNjgvMHgyMDANCjw2PlthNzEyZmQyMF0gWzgwMjJi
+NjcwXSBqZmZzMl9nY19mZXRjaF9wYWdlKzB4MzAvMHhkMA0KPDY+W2E3MTJmZDMwXSBbODA2OTQ5
+MzRdIGpmZnMyX2dhcmJhZ2VfY29sbGVjdF9saXZlKzB4OTU4LzB4ZTY0DQo8Nj5bYTcxMmZkZTBd
+IFs4MDIyODkzNF0gamZmczJfZ2FyYmFnZV9jb2xsZWN0X3Bhc3MrMHg0NTQvMHg3ZTANCjw2Plth
+NzEyZmU0MF0gWzgwMjJhMjkwXSBqZmZzMl9nYXJiYWdlX2NvbGxlY3RfdGhyZWFkKzB4YzAvMHgx
+ZDANCjw2PlthNzEyZmVmMF0gWzgwMDNmYjM4XSBrdGhyZWFkKzB4YzgvMHhlMA0KPDY+W2E3MTJm
+ZjQwXSBbODAwMGVlZDhdIHJldF9mcm9tX2tlcm5lbF90aHJlYWQrMHg1Yy8weDY0DQo8Mz5JTkZP
+OiB0YXNrIHN5c2xvZy1uZzo0ODMgYmxvY2tlZCBmb3IgbW9yZSB0aGFuIDEyMCBzZWNvbmRzLg0K
+PDM+ICAgICAgVGFpbnRlZDogUCAgICAgICAgICAgTyAgICA0LjQuNi1hdDEgIzENCjwzPiJlY2hv
+IDAgPiAvcHJvYy9zeXMva2VybmVsL2h1bmdfdGFza190aW1lb3V0X3NlY3MiIGRpc2FibGVzIHRo
+aXMgbWVzc2FnZS4NCjw2PnN5c2xvZy1uZyAgICAgICBEIDBmYzIxMDFjICAgICAwICAgNDgzICAg
+ICAgMSAweDAwMDAwMDAwDQo8Nj5DYWxsIFRyYWNlOg0KPDY+W2E2NjNiYjYwXSBbYTYzNDY4NDBd
+IDB4YTYzNDY4NDAgKHVucmVsaWFibGUpDQo8Nj5bYTY2M2JjMjBdIFs4MDY4ZWE1NF0gX19zY2hl
+ZHVsZSsweDFmNC8weDVmMA0KPDY+W2E2NjNiYzYwXSBbODA2OGVlODRdIHNjaGVkdWxlKzB4MzQv
+MHhiMA0KPDY+W2E2NjNiYzcwXSBbODA2OGYyMzBdIHNjaGVkdWxlX3ByZWVtcHRfZGlzYWJsZWQr
+MHgxMC8weDIwDQo8Nj5bYTY2M2JjODBdIFs4MDY5MDhhMF0gX19tdXRleF9sb2NrX3Nsb3dwYXRo
+KzB4YTAvMHgxNDANCjw2PlthNjYzYmNjMF0gWzgwNjkwOTk0XSBtdXRleF9sb2NrKzB4NTQvMHg3
+MA0KPDY+W2E2NjNiY2QwXSBbODAyMjM3ZTBdIGpmZnMyX3Jlc2VydmVfc3BhY2UrMHg0MC8weDMx
+MA0KPDY+W2E2NjNiZDQwXSBbODAyMjYzYjBdIGpmZnMyX3dyaXRlX2lub2RlX3JhbmdlKzB4ZTAv
+MHgyZTANCjw2PlthNjYzYmRhMF0gWzgwMjIwYzA0XSBqZmZzMl93cml0ZV9lbmQrMHhmNC8weDJk
+MA0KPDY+W2E2NjNiZGUwXSBbODAwYjYyYjRdIGdlbmVyaWNfcGVyZm9ybV93cml0ZSsweDExNC8w
+eDIwMA0KPDY+W2E2NjNiZTQwXSBbODAwYjc3MmNdIF9fZ2VuZXJpY19maWxlX3dyaXRlX2l0ZXIr
+MHgxYmMvMHgyMzANCjw2PlthNjYzYmU4MF0gWzgwMGI3OGIwXSBnZW5lcmljX2ZpbGVfd3JpdGVf
+aXRlcisweDExMC8weDMwMA0KPDY+W2E2NjNiZWEwXSBbODAxMDNjYjBdIF9fdmZzX3dyaXRlKzB4
+YzAvMHgxMzANCjw2PlthNjYzYmVmMF0gWzgwMTA0NjYwXSB2ZnNfd3JpdGUrMHhhMC8weDFiMA0K
+PDY+W2E2NjNiZjEwXSBbODAxMDUwNmNdIFN5U193cml0ZSsweDRjLzB4ZDANCjw2PlthNjYzYmY0
+MF0gWzgwMDBlZGEwXSByZXRfZnJvbV9zeXNjYWxsKzB4MC8weDNjDQo8Nj4tLS0gaW50ZXJydXB0
+OiBjMDEgYXQgMHhmYzIxMDFjDQo8Nj4gICAgTFIgPSAweDEwMDIzZTk0DQo8Mz5JTkZPOiB0YXNr
+IHNjcDoxNTE5MCBibG9ja2VkIGZvciBtb3JlIHRoYW4gMTIwIHNlY29uZHMuDQo8Mz4gICAgICBU
+YWludGVkOiBQICAgICAgICAgICBPICAgIDQuNC42LWF0MSAjMQ0KPDM+ImVjaG8gMCA+IC9wcm9j
+L3N5cy9rZXJuZWwvaHVuZ190YXNrX3RpbWVvdXRfc2VjcyIgZGlzYWJsZXMgdGhpcyBtZXNzYWdl
+Lg0KPDY+c2NwICAgICAgICAgICAgIEQgMWZkYjNiNGMgICAgIDAgMTUxOTAgIDE1MTg5IDB4MDAw
+MDAwMDANCjw2PkNhbGwgVHJhY2U6DQo8Nj5bYTQ2OGZiNjBdIFswOTI5ZWZmY10gMHg5MjllZmZj
+ICh1bnJlbGlhYmxlKQ0KPDY+W2E0NjhmYzIwXSBbODA2OGVhNTRdIF9fc2NoZWR1bGUrMHgxZjQv
+MHg1ZjANCjw2PlthNDY4ZmM2MF0gWzgwNjhlZTg0XSBzY2hlZHVsZSsweDM0LzB4YjANCjw2Plth
+NDY4ZmM3MF0gWzgwNjhmMjMwXSBzY2hlZHVsZV9wcmVlbXB0X2Rpc2FibGVkKzB4MTAvMHgyMA0K
+PDY+W2E0NjhmYzgwXSBbODA2OTA4YTBdIF9fbXV0ZXhfbG9ja19zbG93cGF0aCsweGEwLzB4MTQw
+DQo8Nj5bYTQ2OGZjYzBdIFs4MDY5MDk5NF0gbXV0ZXhfbG9jaysweDU0LzB4NzANCjw2PlthNDY4
+ZmNkMF0gWzgwMjIzN2UwXSBqZmZzMl9yZXNlcnZlX3NwYWNlKzB4NDAvMHgzMTANCjw2PlthNDY4
+ZmQ0MF0gWzgwMjI2M2IwXSBqZmZzMl93cml0ZV9pbm9kZV9yYW5nZSsweGUwLzB4MmUwDQo8Nj5b
+YTQ2OGZkYTBdIFs4MDIyMGMwNF0gamZmczJfd3JpdGVfZW5kKzB4ZjQvMHgyZDANCjw2PlthNDY4
+ZmRlMF0gWzgwMGI2MmI0XSBnZW5lcmljX3BlcmZvcm1fd3JpdGUrMHgxMTQvMHgyMDANCjw2Plth
+NDY4ZmU0MF0gWzgwMGI3NzJjXSBfX2dlbmVyaWNfZmlsZV93cml0ZV9pdGVyKzB4MWJjLzB4MjMw
+DQo8Nj5bYTQ2OGZlODBdIFs4MDBiNzhiMF0gZ2VuZXJpY19maWxlX3dyaXRlX2l0ZXIrMHgxMTAv
+MHgzMDANCjw2PlthNDY4ZmVhMF0gWzgwMTAzY2IwXSBfX3Zmc193cml0ZSsweGMwLzB4MTMwDQo8
+Nj5bYTQ2OGZlZjBdIFs4MDEwNDY2MF0gdmZzX3dyaXRlKzB4YTAvMHgxYjANCjw2PlthNDY4ZmYx
+MF0gWzgwMTA1MDZjXSBTeVNfd3JpdGUrMHg0Yy8weGQwDQo8Nj5bYTQ2OGZmNDBdIFs4MDAwZWRh
+MF0gcmV0X2Zyb21fc3lzY2FsbCsweDAvMHgzYw0KPDY+LS0tIGludGVycnVwdDogYzAxIGF0IDB4
+MWZkYjNiNGMNCjw2PiAgICBMUiA9IDB4MjAyMWFkY2MNCg0KT24gMTgvMDcvMTcgMTk6MTcsIFJp
+Y2hhcmQgV2VpbmJlcmdlciB3cm90ZToNCj4gS3llb25nIFlvbywNCj4gDQo+IE9uIE1vbiwgSnVs
+IDE3LCAyMDE3IGF0IDExOjU0IFBNLCBLeWVvbmcgWW9vDQo+IDxLeWVvbmcuWW9vQGFsbGllZHRl
+bGVzaXMuY28ubno+IHdyb3RlOg0KPj4gSGksDQo+Pg0KPj4gQ2FuIHNvbWVvbmUgcmV2aWV3IHRo
+aXMgYW5kIGdpdmUgbWUgYW55IGZlZWRiYWNrPw0KPj4NCj4+IFRoaXMgcGF0Y2ggaXMgdG8gcHJl
+dmVudCBkZWFkbG9jayBpbiBqZmZzMiBHQy4NCj4+DQo+PiBUaGFua3MsDQo+PiBLeWVvbmcNCj4+
+DQo+Pg0KPj4gT24gMDQvMDcvMTcgMTY6MjIsIEt5ZW9uZyBZb28gd3JvdGU6DQo+Pj4gR0MgdGFz
+ayBjYW4gZGVhZGxvY2sgaW4gcmVhZF9jYWNoZV9wYWdlKCkgYmVjYXVzZSBpdCBtYXkgYXR0ZW1w
+dA0KPj4+IHRvIHJlbGVhc2UgYSBwYWdlIHRoYXQgaXMgYWN0dWFsbHkgYWxsb2NhdGVkIGJ5IGFu
+b3RoZXIgdGFzayBpbg0KPj4+IGpmZnMyX3dyaXRlX2JlZ2luKCkuDQo+Pj4gVGhlIHJlYXNvbiBp
+cyB0aGF0IGluIGpmZnMyX3dyaXRlX2JlZ2luKCkgdGhlcmUgaXMgYSBzbWFsbCB3aW5kb3cNCj4+
+PiBhIGNhY2hlIHBhZ2UgaXMgYWxsb2NhdGVkIGZvciB1c2UgYnV0IG5vdCBzZXQgVXB0b2RhdGUg
+eWV0Lg0KPj4+DQo+Pj4gVGhpcyBlbmRzIHVwIHdpdGggYSBkZWFkbG9jayBiZXR3ZWVuIHR3byB0
+YXNrczoNCj4+PiAxKSBBIHRhc2sgKGUuZy4gZmlsZSBjb3B5KQ0KPj4+ICAgICAgLSBqZmZzMl93
+cml0ZV9iZWdpbigpIGxvY2tzIGEgY2FjaGUgcGFnZQ0KPj4+ICAgICAgLSBqZmZzMl93cml0ZV9l
+bmQoKSB0cmllcyB0byBsb2NrICJhbGxvY19zZW0iIGZyb20NCj4+PiAgICAgICAgIGpmZnMyX3Jl
+c2VydmVfc3BhY2UoKSA8LS0gU1RVQ0sNCj4+PiAyKSBHQyB0YXNrIChqZmZzMl9nY2RfbXRkMykN
+Cj4+PiAgICAgIC0gamZmczJfZ2FyYmFnZV9jb2xsZWN0X3Bhc3MoKSBsb2NrcyAiYWxsb2Nfc2Vt
+Ig0KPj4+ICAgICAgLSB0cnkgdG8gbG9jayB0aGUgc2FtZSBjYWNoZSBwYWdlIGluIHJlYWRfY2Fj
+aGVfcGFnZSgpIDwtLSBTVFVDSw0KPiANCj4gWW91ciBkZXNjcmlwdGlvbiBkb2VzIG5vdCBtYXRj
+aCB0aGUgY29kZS4gQXJlIHlvdSBzZWVpbmcgdGhpcyBvbiBhDQo+IHJlY2VudCBtYWlubGluZSBr
+ZXJuZWw/DQo+IENhbiB0IGJlIHRoYXQgeW91ciBrZXJuZWwgZG9lcyBub3QgaGFzIHRoaXMgY29t
+bWl0Pw0KPiBjb21taXQgMTU3MDc4ZjY0YjhhOWNkNzAxMWI2YjkwMGIyZjI0OThkZjg1MDc0OA0K
+PiBBdXRob3I6IFRob21hcyBCZXRrZXIgPHRob21hcy5iZXRrZXJAcm9oZGUtc2Nod2Fyei5jb20+
+DQo+IERhdGU6ICAgVHVlIE5vdiAxMCAyMjoxODoxNSAyMDE1ICswMTAwDQo+IA0KPiAgICAgIFJl
+dmVydCAiamZmczI6IEZpeCBsb2NrIGFjcXVpc2l0aW9uIG9yZGVyIGJ1ZyBpbiBqZmZzMl93cml0
+ZV9iZWdpbiINCj4gDQo+ICAgICAgVGhpcyByZXZlcnRzIGNvbW1pdCA1ZmZkMzQxMmFlNTUNCj4g
+ICAgICAoImpmZnMyOiBGaXggbG9jayBhY3F1aXNpdGlvbiBvcmRlciBidWcgaW4gamZmczJfd3Jp
+dGVfYmVnaW4iKS4NCj4gDQo+IA==
