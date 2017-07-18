@@ -1,25 +1,17 @@
-Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
+Received: from mail-qk0-x241.google.com ([2607:f8b0:400d:c09::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dXGb3-0007TJ-NE
- for linux-mtd@lists.infradead.org; Tue, 18 Jul 2017 00:42:51 +0000
-Received: by mail-pg0-x242.google.com with SMTP id v190so652559pgv.1
- for <linux-mtd@lists.infradead.org>; Mon, 17 Jul 2017 17:42:21 -0700 (PDT)
-Message-ID: <1500338535.2475.4.camel@gmail.com>
-Subject: Re: [PATCH v3 03/10] mtd: powernv_flash: Don't treat OPAL_SUCCESS
- as an error
-From: Cyril Bur <cyrilbur@gmail.com>
-To: Balbir Singh <bsingharora@gmail.com>, linuxppc-dev@lists.ozlabs.org,
- linux-mtd@lists.infradead.org
-Cc: stewart@linux.vnet.ibm.com, alistair@popple.id.au, dwmw2@infradead.org,
- rlippert@google.com
-Date: Tue, 18 Jul 2017 10:42:15 +1000
-In-Reply-To: <1500281422.8256.5.camel@gmail.com>
-References: <20170712042304.19745-1-cyrilbur@gmail.com>
- <20170712042304.19745-4-cyrilbur@gmail.com>
- <1500281422.8256.5.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+ id 1dXGmb-0003mM-VE
+ for linux-mtd@lists.infradead.org; Tue, 18 Jul 2017 00:54:39 +0000
+Received: by mail-qk0-x241.google.com with SMTP id q66so778063qki.1
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Jul 2017 17:54:17 -0700 (PDT)
+From: Fabio Estevam <festevam@gmail.com>
+To: boris.brezillon@free-electrons.com
+Cc: stefan@agner.ch, linux-mtd@lists.infradead.org,
+ Fabio Estevam <fabio.estevam@nxp.com>
+Subject: [PATCH v2 1/2] mtd: nand: vf610: Check the return value from
+ clk_prepare_enable()
+Date: Mon, 17 Jul 2017 21:54:07 -0300
+Message-Id: <1500339248-18132-1-git-send-email-festevam@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,29 +21,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2017-07-17 at 18:50 +1000, Balbir Singh wrote:
-> On Wed, 2017-07-12 at 14:22 +1000, Cyril Bur wrote:
-> > While this driver expects to interact asynchronously, OPAL is well
-> > within its rights to return OPAL_SUCCESS to indicate that the operation
-> > completed without the need for a callback. We shouldn't treat
-> > OPAL_SUCCESS as an error rather we should wrap up and return promptly to
-> > the caller.
-> > 
-> > Signed-off-by: Cyril Bur <cyrilbur@gmail.com>
-> > ---
-> > I'll note here that currently no OPAL exists that will return
-> > OPAL_SUCCESS so there isn't the possibility of a bug today.
-> 
-> It would help if you mentioned OPAL_SUCCESS to the async call. So effectively
-> what we expected to be an asynchronous call with callback, but OPAL returned
-> immediately with success.
-> 
+From: Fabio Estevam <fabio.estevam@nxp.com>
 
-Ah my favourite problems, commit message.
+clk_prepare_enable() may fail, so we should better check its return value
+and propagate it in the case of error.
 
-Thanks,
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+---
+Changes since v1:
+- None
 
-Cyril
+ drivers/mtd/nand/vf610_nfc.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-> Balbir Singh.
-> 
+diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
+index 744ab10..9e49672 100644
+--- a/drivers/mtd/nand/vf610_nfc.c
++++ b/drivers/mtd/nand/vf610_nfc.c
+@@ -814,12 +814,16 @@ static int vf610_nfc_suspend(struct device *dev)
+ 
+ static int vf610_nfc_resume(struct device *dev)
+ {
++	int err;
++
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
+ 
+ 	pinctrl_pm_select_default_state(dev);
+ 
+-	clk_prepare_enable(nfc->clk);
++	err = clk_prepare_enable(nfc->clk);
++	if (err)
++		return err;
+ 
+ 	vf610_nfc_preinit_controller(nfc);
+ 	vf610_nfc_init_controller(nfc);
+-- 
+2.7.4
