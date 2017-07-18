@@ -1,33 +1,21 @@
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
+Received: from mail-oi0-x242.google.com ([2607:f8b0:4003:c06::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dXKdb-0002tr-Vs
- for linux-mtd@lists.infradead.org; Tue, 18 Jul 2017 05:02:07 +0000
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.16.0.21/8.16.0.21) with SMTP id
- v6I4wt7u131303
- for <linux-mtd@lists.infradead.org>; Tue, 18 Jul 2017 01:01:15 -0400
-Received: from e11.ny.us.ibm.com (e11.ny.us.ibm.com [129.33.205.201])
- by mx0a-001b2d01.pphosted.com with ESMTP id 2brr0gs0jc-1
- (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=NOT)
- for <linux-mtd@lists.infradead.org>; Tue, 18 Jul 2017 01:01:14 -0400
-Received: from localhost
- by e11.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <linux-mtd@lists.infradead.org> from <stewart@linux.vnet.ibm.com>;
- Tue, 18 Jul 2017 01:01:12 -0400
-From: Stewart Smith <stewart@linux.vnet.ibm.com>
-To: Cyril Bur <cyrilbur@gmail.com>, dwmw2@infradead.org,
- computersforpeace@gmail.com, mpe@ellerman.id.au
-Cc: linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 2/2] mtd: powernv_flash: Lock around concurrent access to
- OPAL
-In-Reply-To: <20170607054355.10590-2-cyrilbur@gmail.com>
-References: <20170607054355.10590-1-cyrilbur@gmail.com>
- <20170607054355.10590-2-cyrilbur@gmail.com>
-Date: Tue, 18 Jul 2017 15:01:03 +1000
+ id 1dXMlR-0000sK-Go
+ for linux-mtd@lists.infradead.org; Tue, 18 Jul 2017 07:17:53 +0000
+Received: by mail-oi0-x242.google.com with SMTP id r74so1384202oie.2
+ for <linux-mtd@lists.infradead.org>; Tue, 18 Jul 2017 00:17:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Message-Id: <87r2xecp9s.fsf@linux.vnet.ibm.com>
+In-Reply-To: <7e0d37e6-c3de-5c17-72e1-f6003e5d7d4a@alliedtelesis.co.nz>
+References: <149914202384.24318.7331828698981799313.stgit@kyeongy-dl.atlnz.lc>
+ <7e0d37e6-c3de-5c17-72e1-f6003e5d7d4a@alliedtelesis.co.nz>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Tue, 18 Jul 2017 09:17:26 +0200
+Message-ID: <CAFLxGvwAJ+xfN=1QGfe_6mNksmMr6cTjSSRKPqYGKMi-1zvU2Q@mail.gmail.com>
+Subject: Re: [PATCH] jffs2: GC deadlock reading a page that is used in
+ jffs2_write_begin()
+To: Kyeong Yoo <Kyeong.Yoo@alliedtelesis.co.nz>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,22 +25,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Cyril Bur <cyrilbur@gmail.com> writes:
-> OPAL can only manage one flash access at a time and will return an
-> OPAL_BUSY error for each concurrent access to the flash. The simplest
-> way to prevent this from happening is with a mutex.
+Kyeong Yoo,
+
+On Mon, Jul 17, 2017 at 11:54 PM, Kyeong Yoo
+<Kyeong.Yoo@alliedtelesis.co.nz> wrote:
+> Hi,
 >
-> Signed-off-by: Cyril Bur <cyrilbur@gmail.com>
-> ---
-> This is to address https://github.com/open-power/skiboot/issues/80
+> Can someone review this and give me any feedback?
+>
+> This patch is to prevent deadlock in jffs2 GC.
+>
+> Thanks,
+> Kyeong
+>
+>
+> On 04/07/17 16:22, Kyeong Yoo wrote:
+>> GC task can deadlock in read_cache_page() because it may attempt
+>> to release a page that is actually allocated by another task in
+>> jffs2_write_begin().
+>> The reason is that in jffs2_write_begin() there is a small window
+>> a cache page is allocated for use but not set Uptodate yet.
+>>
+>> This ends up with a deadlock between two tasks:
+>> 1) A task (e.g. file copy)
+>>     - jffs2_write_begin() locks a cache page
+>>     - jffs2_write_end() tries to lock "alloc_sem" from
+>>        jffs2_reserve_space() <-- STUCK
+>> 2) GC task (jffs2_gcd_mtd3)
+>>     - jffs2_garbage_collect_pass() locks "alloc_sem"
+>>     - try to lock the same cache page in read_cache_page() <-- STUCK
 
-part of me wants to say "let's only take the lock if we ever get back
-OPAL_BUSY" or something like that (have a DT property to say the flash
-supports concurrent ops?)
+Your description does not match the code. Are you seeing this on a
+recent mainline kernel?
+Can t be that your kernel does not has this commit?
+commit 157078f64b8a9cd7011b6b900b2f2498df850748
+Author: Thomas Betker <thomas.betker@rohde-schwarz.com>
+Date:   Tue Nov 10 22:18:15 2015 +0100
 
-Although the other part of me says "you're overthinking this, get back
-to the work you're meant to be doing" :)
+    Revert "jffs2: Fix lock acquisition order bug in jffs2_write_begin"
+
+    This reverts commit 5ffd3412ae55
+    ("jffs2: Fix lock acquisition order bug in jffs2_write_begin").
+
 
 -- 
-Stewart Smith
-OPAL Architect, IBM.
+Thanks,
+//richard
