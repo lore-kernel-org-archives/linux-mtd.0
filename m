@@ -1,25 +1,14 @@
-Date: Tue, 18 Jul 2017 11:56:31 +0200
-From: Ludovic Desroches <ludovic.desroches@microchip.com>
-To: Lee Jones <lee.jones@linaro.org>
-CC: Nicolas Ferre <nicolas.ferre@microchip.com>, Ludovic Desroches
- <ludovic.desroches@microchip.com>, <devicetree@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <alexandre.belloni@free-electrons.com>,
- <boris.brezillon@free-electrons.com>, <computersforpeace@gmail.com>
-Subject: Re: [PATCH 2/3] mfd: syscon: atmel-smc: add helper to retrieve
- register layout
-Message-ID: <20170718095631.xz6p2u74z4i2n2lj@rfolt0960.corp.atmel.com>
-References: <20170711074015.30440-1-ludovic.desroches@microchip.com>
- <20170711074015.30440-3-ludovic.desroches@microchip.com>
- <20170718081508.yo6uld5ip5hr6ipk@dell>
- <20170718091238.wweaobzccdlgv5dh@dell>
- <02a0c390-610c-d38b-e6a3-f04120c6fbb3@microchip.com>
- <20170718093713.stqshzuuv3l7pfve@dell>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20170718093713.stqshzuuv3l7pfve@dell>
+Received: from smtp.transmode.se ([31.15.61.139])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dXRCg-0004oS-6N
+ for linux-mtd@lists.infradead.org; Tue, 18 Jul 2017 12:02:19 +0000
+From: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+To: linux-mtd@lists.infradead.org,
+ Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+Subject: [PATCH] lpc_ich: Avoton/Rangeley uses SPI_BYT method.
+Date: Tue, 18 Jul 2017 14:01:45 +0200
+Message-Id: <20170718120145.13585-1-joakim.tjernlund@infinera.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,66 +18,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 18, 2017 at 10:37:13AM +0100, Lee Jones wrote:
-> On Tue, 18 Jul 2017, Nicolas Ferre wrote:
-> 
-> > On 18/07/2017 at 11:12, Lee Jones wrote:
-> > > On Tue, 18 Jul 2017, Lee Jones wrote:
-> > > 
-> > >> On Tue, 11 Jul 2017, Ludovic Desroches wrote:
-> > >>
-> > >>> For HSMC controller, the register layout depends on the device i.e. the
-> > >>> offset of setup, pulse, cycle, mode and timings registers is not the
-> > >>> same. An helper is added to provide the correct register layout.
-> > >>>
-> > >>> Fixes: fe9d7cb22ef3 ("mfd: syscon: atmel-smc: Add new helpers to ease
-> > >>> SMC regs manipulation")
-> > >>> Suggested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > >>> Signed-off-by: Ludovic Desroches <ludovic.desroches@microchip.com>
-> > >>> ---
-> > >>>  drivers/memory/atmel-ebi.c               | 13 +++++--
-> > >>>  drivers/mfd/atmel-smc.c                  | 67 +++++++++++++++++++++++++-------
-> > >>>  drivers/mtd/nand/atmel/nand-controller.c | 10 +++--
-> > >>>  include/linux/mfd/syscon/atmel-smc.h     | 32 ++++++++++-----
-> > >>>  4 files changed, 92 insertions(+), 30 deletions(-)
-> > >>
-> > >> Applied, thanks.
-> > > 
-> > > Apologies, it looks like this needs 2 more Acks before I can even
-> > > consider taking it.
-> > > 
-> > > Unapplied.
-> > 
-> > If mine is missing, here it is:
-> > 
-> > For the whole series:
-> > Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-> > 
-> > And I think that Alexandre seemed okay by discussing the path those
-> > patches should take...
-> 
-> Thanks Anlexadre and Nicolas.
-> 
-> Patch does not apply to v4.13-rc1 however.
-> 
-> Ludovic,
-> 
-> Could you please rebase this patch and apply the 2 new Acks please?
-> 
-> Please also apply my:
-> 
-> For my own reference:
->   Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-> 
+Signed-off-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+---
+ drivers/mfd/lpc_ich.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Ok, I'll rebase the patch on top of v4.13-rc1 and resend it.
-
-Ludovic
-
-> ... and I'll get it applied ASAP.
-> 
-> -- 
-> Lee Jones
-> Linaro STMicroelectronics Landing Team Lead
-> Linaro.org │ Open source software for ARM SoCs
-> Follow Linaro: Facebook | Twitter | Blog
+diff --git a/drivers/mfd/lpc_ich.c b/drivers/mfd/lpc_ich.c
+index 985135828cfc..023d88dfad0e 100644
+--- a/drivers/mfd/lpc_ich.c
++++ b/drivers/mfd/lpc_ich.c
+@@ -532,6 +532,7 @@ static struct lpc_ich_info lpc_chipset_info[] = {
+ 		.name = "Avoton SoC",
+ 		.iTCO_version = 3,
+ 		.gpio_version = AVOTON_GPIO,
++		.spi_type = INTEL_SPI_BYT,
+ 	},
+ 	[LPC_BAYTRAIL] = {
+ 		.name = "Bay Trail SoC",
+-- 
+2.13.0
