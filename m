@@ -1,22 +1,19 @@
-Received: from dispatch1-us1.ppe-hosted.com ([67.231.154.164])
+Received: from mail-pf0-f195.google.com ([209.85.192.195])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dXUnF-0006h2-Le
- for linux-mtd@lists.infradead.org; Tue, 18 Jul 2017 15:52:15 +0000
-Subject: Re: [PATCH] mtdcore: Infrastructure for the device release API
-To: Brian Norris <computersforpeace@gmail.com>
-References: <20170518092248.23934.15034.stgit@mh-desktop.uk.solarflarecom.com>
- <20170527001323.GF114788@google.com>
- <7b7511f7-4380-fd3e-703e-8e50a3fcc265@solarflare.com>
- <1f68fe2b-b546-9c9f-03ee-2b90ba382038@solarflare.com>
- <20170708014714.GG55942@google.com>
-CC: <linux-mtd@lists.infradead.org>
-From: Martin Habets <mhabets@solarflare.com>
-Message-ID: <b80b6106-d953-6a66-ddfb-68b52b42e53b@solarflare.com>
-Date: Tue, 18 Jul 2017 16:51:32 +0100
-MIME-Version: 1.0
-In-Reply-To: <20170708014714.GG55942@google.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+ id 1dXaIj-0002Rj-I1
+ for linux-mtd@lists.infradead.org; Tue, 18 Jul 2017 21:46:08 +0000
+Received: by mail-pf0-f195.google.com with SMTP id a11so4068205pfj.3
+ for <linux-mtd@lists.infradead.org>; Tue, 18 Jul 2017 14:44:45 -0700 (PDT)
+From: Rob Herring <robh@kernel.org>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: Convert to using %pOF instead of full_name
+Date: Tue, 18 Jul 2017 16:43:17 -0500
+Message-Id: <20170718214339.7774-37-robh@kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,25 +23,141 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/07/17 02:47, Brian Norris wrote:
-> On Thu, Jun 22, 2017 at 02:54:07PM +0100, Martin Habets wrote:
->> Brian, any opinion about this?
-> 
-> I'm sure this is all awesome, but I haven't seen a patch that utilizes
-> this. It's save me some mental energy of trying to figure out what all
-> is supposed to be happening here if I had one.
+Now that we have a custom printf format specifier, convert users of
+full_name to use %pOF instead. This is preparation to remove storing
+of the full path string for each node.
 
-I can cook up a patch for mtdpart.c, but I cannot test it since I do not have any
-hardware that uses this. Or maybe this is enough reason that I should post my
-patch for the sfc driver here.
-In fact I'll probably post both those patches here.
+Signed-off-by: Rob Herring <robh@kernel.org>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org
+---
+ drivers/mtd/maps/physmap_of_core.c |  4 ++--
+ drivers/mtd/maps/sun_uflash.c      |  4 ++--
+ drivers/mtd/ofpart.c               | 23 +++++++++++------------
+ drivers/mtd/spi-nor/hisi-sfc.c     |  8 ++++----
+ 4 files changed, 19 insertions(+), 20 deletions(-)
 
-> Or this can wait until I've spent more time trying to figure out what
-> you're trying to do with this. And I haven't proven myself to spend a
-> lot of time looking at your patches so far ;)
+diff --git a/drivers/mtd/maps/physmap_of_core.c b/drivers/mtd/maps/physmap_of_core.c
+index 62fa6836f218..1343c34092ca 100644
+--- a/drivers/mtd/maps/physmap_of_core.c
++++ b/drivers/mtd/maps/physmap_of_core.c
+@@ -178,8 +178,8 @@ static int of_flash_probe(struct platform_device *dev)
+ 	 */
+ 	p = of_get_property(dp, "reg", &count);
+ 	if (!p || count % reg_tuple_size != 0) {
+-		dev_err(&dev->dev, "Malformed reg property on %s\n",
+-				dev->dev.of_node->full_name);
++		dev_err(&dev->dev, "Malformed reg property on %pOF\n",
++				dev->dev.of_node);
+ 		err = -EINVAL;
+ 		goto err_flash_remove;
+ 	}
+diff --git a/drivers/mtd/maps/sun_uflash.c b/drivers/mtd/maps/sun_uflash.c
+index 414956eca0c9..1e73bba6e286 100644
+--- a/drivers/mtd/maps/sun_uflash.c
++++ b/drivers/mtd/maps/sun_uflash.c
+@@ -55,8 +55,8 @@ int uflash_devinit(struct platform_device *op, struct device_node *dp)
+ 		/* Non-CFI userflash device-- once I find one we
+ 		 * can work on supporting it.
+ 		 */
+-		printk(KERN_ERR PFX "Unsupported device at %s, 0x%llx\n",
+-		       dp->full_name, (unsigned long long)op->resource[0].start);
++		printk(KERN_ERR PFX "Unsupported device at %pOF, 0x%llx\n",
++		       dp, (unsigned long long)op->resource[0].start);
 
-The easy step is to build a kernel with CONFIG_DEBUG_KOBJECT_RELEASE enabled,
-the tricky bit is to analyse the output it spews into dmesg when a module that
-uses mtd is unloaded.
+ 		return -ENODEV;
+ 	}
+diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
+index 2861c7079d7b..6bdf4e525677 100644
+--- a/drivers/mtd/ofpart.c
++++ b/drivers/mtd/ofpart.c
+@@ -50,8 +50,8 @@ static int parse_ofpart_partitions(struct mtd_info *master,
+ 		 * when using another parser), so don't be louder than
+ 		 * KERN_DEBUG
+ 		 */
+-		pr_debug("%s: 'partitions' subnode not found on %s. Trying to parse direct subnodes as partitions.\n",
+-			 master->name, mtd_node->full_name);
++		pr_debug("%s: 'partitions' subnode not found on %pOF. Trying to parse direct subnodes as partitions.\n",
++			 master->name, mtd_node);
+ 		ofpart_node = mtd_node;
+ 		dedicated = false;
+ 	} else if (!of_device_is_compatible(ofpart_node, "fixed-partitions")) {
+@@ -87,9 +87,9 @@ static int parse_ofpart_partitions(struct mtd_info *master,
+ 		reg = of_get_property(pp, "reg", &len);
+ 		if (!reg) {
+ 			if (dedicated) {
+-				pr_debug("%s: ofpart partition %s (%s) missing reg property.\n",
+-					 master->name, pp->full_name,
+-					 mtd_node->full_name);
++				pr_debug("%s: ofpart partition %pOF (%pOF) missing reg property.\n",
++					 master->name, pp,
++					 mtd_node);
+ 				goto ofpart_fail;
+ 			} else {
+ 				nr_parts--;
+@@ -100,9 +100,9 @@ static int parse_ofpart_partitions(struct mtd_info *master,
+ 		a_cells = of_n_addr_cells(pp);
+ 		s_cells = of_n_size_cells(pp);
+ 		if (len / 4 != a_cells + s_cells) {
+-			pr_debug("%s: ofpart partition %s (%s) error parsing reg property.\n",
+-				 master->name, pp->full_name,
+-				 mtd_node->full_name);
++			pr_debug("%s: ofpart partition %pOF (%pOF) error parsing reg property.\n",
++				 master->name, pp,
++				 mtd_node);
+ 			goto ofpart_fail;
+ 		}
 
-Martin
+@@ -131,8 +131,8 @@ static int parse_ofpart_partitions(struct mtd_info *master,
+ 	return nr_parts;
+
+ ofpart_fail:
+-	pr_err("%s: error parsing ofpart partition %s (%s)\n",
+-	       master->name, pp->full_name, mtd_node->full_name);
++	pr_err("%s: error parsing ofpart partition %pOF (%pOF)\n",
++	       master->name, pp, mtd_node);
+ 	ret = -EINVAL;
+ ofpart_none:
+ 	of_node_put(pp);
+@@ -166,8 +166,7 @@ static int parse_ofoldpart_partitions(struct mtd_info *master,
+ 	if (!part)
+ 		return 0; /* No partitions found */
+
+-	pr_warn("Device tree uses obsolete partition map binding: %s\n",
+-		dp->full_name);
++	pr_warn("Device tree uses obsolete partition map binding: %pOF\n", dp);
+
+ 	nr_parts = plen / sizeof(part[0]);
+
+diff --git a/drivers/mtd/spi-nor/hisi-sfc.c b/drivers/mtd/spi-nor/hisi-sfc.c
+index d1106832b9d5..04f9fb5cd9b6 100644
+--- a/drivers/mtd/spi-nor/hisi-sfc.c
++++ b/drivers/mtd/spi-nor/hisi-sfc.c
+@@ -355,16 +355,16 @@ static int hisi_spi_nor_register(struct device_node *np,
+
+ 	ret = of_property_read_u32(np, "reg", &priv->chipselect);
+ 	if (ret) {
+-		dev_err(dev, "There's no reg property for %s\n",
+-			np->full_name);
++		dev_err(dev, "There's no reg property for %pOF\n",
++			np);
+ 		return ret;
+ 	}
+
+ 	ret = of_property_read_u32(np, "spi-max-frequency",
+ 			&priv->clkrate);
+ 	if (ret) {
+-		dev_err(dev, "There's no spi-max-frequency property for %s\n",
+-			np->full_name);
++		dev_err(dev, "There's no spi-max-frequency property for %pOF\n",
++			np);
+ 		return ret;
+ 	}
+ 	priv->host = host;
+--
+2.11.0
