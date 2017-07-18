@@ -1,14 +1,18 @@
-Received: from smtp.transmode.se ([31.15.61.139])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dXRCg-0004oS-6N
- for linux-mtd@lists.infradead.org; Tue, 18 Jul 2017 12:02:19 +0000
-From: Joakim Tjernlund <joakim.tjernlund@infinera.com>
-To: linux-mtd@lists.infradead.org,
- Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: Joakim Tjernlund <joakim.tjernlund@infinera.com>
-Subject: [PATCH] lpc_ich: Avoton/Rangeley uses SPI_BYT method.
-Date: Tue, 18 Jul 2017 14:01:45 +0200
-Message-Id: <20170718120145.13585-1-joakim.tjernlund@infinera.com>
+From: Ludovic Desroches <ludovic.desroches@microchip.com>
+To: <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-mtd@lists.infradead.org>
+CC: <linux-kernel@vger.kernel.org>, <lee.jones@linaro.org>,
+ <nicolas.ferre@microchip.com>, <alexandre.belloni@free-electrons.com>,
+ <boris.brezillon@free-electrons.com>, <computersforpeace@gmail.com>,
+ <romain.izard.pro@gmail.com>, Ludovic Desroches
+ <ludovic.desroches@microchip.com>
+Subject: [PATCH v2 1/3] mfd: syscon: update Atmel SMC binding doc
+Date: Tue, 18 Jul 2017 15:22:18 +0200
+Message-ID: <20170718132220.25018-2-ludovic.desroches@microchip.com>
+In-Reply-To: <20170718132220.25018-1-ludovic.desroches@microchip.com>
+References: <20170718132220.25018-1-ludovic.desroches@microchip.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,22 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+A new compatible string is introduced for SMC on sama5d2 to manage a
+different layout of the registers.
+
+Signed-off-by: Ludovic Desroches <ludovic.desroches@microchip.com>
+Acked-by: Rob Herring <robh@kernel.org>
 ---
- drivers/mfd/lpc_ich.c | 1 +
+ Documentation/devicetree/bindings/mfd/atmel-smc.txt | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mfd/lpc_ich.c b/drivers/mfd/lpc_ich.c
-index 985135828cfc..023d88dfad0e 100644
---- a/drivers/mfd/lpc_ich.c
-+++ b/drivers/mfd/lpc_ich.c
-@@ -532,6 +532,7 @@ static struct lpc_ich_info lpc_chipset_info[] = {
- 		.name = "Avoton SoC",
- 		.iTCO_version = 3,
- 		.gpio_version = AVOTON_GPIO,
-+		.spi_type = INTEL_SPI_BYT,
- 	},
- 	[LPC_BAYTRAIL] = {
- 		.name = "Bay Trail SoC",
+diff --git a/Documentation/devicetree/bindings/mfd/atmel-smc.txt b/Documentation/devicetree/bindings/mfd/atmel-smc.txt
+index 26eeed373934..1103ce2030fb 100644
+--- a/Documentation/devicetree/bindings/mfd/atmel-smc.txt
++++ b/Documentation/devicetree/bindings/mfd/atmel-smc.txt
+@@ -8,6 +8,7 @@ Required properties:
+ - compatible:		Should be one of the following
+ 			"atmel,at91sam9260-smc", "syscon"
+ 			"atmel,sama5d3-smc", "syscon"
++			"atmel,sama5d2-smc", "syscon"
+ - reg:			Contains offset/length value of the SMC memory
+ 			region.
+ 
 -- 
-2.13.0
+2.12.2
