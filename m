@@ -1,25 +1,26 @@
-Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dXE6D-0007A4-3z
- for linux-mtd@lists.infradead.org; Mon, 17 Jul 2017 22:02:48 +0000
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (Client did not present a certificate)
- by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 3AF3A83646
- for <linux-mtd@lists.infradead.org>; Tue, 18 Jul 2017 09:54:58 +1200 (NZST)
-From: Kyeong Yoo <Kyeong.Yoo@alliedtelesis.co.nz>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] jffs2: GC deadlock reading a page that is used in
- jffs2_write_begin()
-Date: Mon, 17 Jul 2017 21:54:55 +0000
-Message-ID: <7e0d37e6-c3de-5c17-72e1-f6003e5d7d4a@alliedtelesis.co.nz>
-References: <149914202384.24318.7331828698981799313.stgit@kyeongy-dl.atlnz.lc>
-In-Reply-To: <149914202384.24318.7331828698981799313.stgit@kyeongy-dl.atlnz.lc>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <0AA8D7C9A7079D4F875F8DC2691BEFFA@atlnz.lc>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+ id 1dXGMd-0001VE-CS
+ for linux-mtd@lists.infradead.org; Tue, 18 Jul 2017 00:27:48 +0000
+Received: by mail-pf0-x243.google.com with SMTP id o88so597640pfk.1
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Jul 2017 17:27:26 -0700 (PDT)
+Message-ID: <1500337639.2475.1.camel@gmail.com>
+Subject: Re: [PATCH v3 01/10] mtd: powernv_flash: Use WARN_ON_ONCE() rather
+ than BUG_ON()
+From: Cyril Bur <cyrilbur@gmail.com>
+To: Frans Klaver <fransklaver@gmail.com>
+Cc: linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org,
+ stewart@linux.vnet.ibm.com, benh@kernel.crashing.org,
+ alistair@popple.id.au,  David Woodhouse <dwmw2@infradead.org>,
+ rlippert@google.com
+Date: Tue, 18 Jul 2017 10:27:19 +1000
+In-Reply-To: <CAH6sp9PgJFSPRGxk9HEtJuVK8b_4oOfBLYeu4MUbhN-UkonnCA@mail.gmail.com>
+References: <20170712042304.19745-1-cyrilbur@gmail.com>
+ <20170712042304.19745-2-cyrilbur@gmail.com>
+ <CAH6sp9PgJFSPRGxk9HEtJuVK8b_4oOfBLYeu4MUbhN-UkonnCA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,82 +30,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksDQoNCkNhbiBzb21lb25lIHJldmlldyB0aGlzIGFuZCBnaXZlIG1lIGFueSBmZWVkYmFjaz8N
-Cg0KVGhpcyBwYXRjaCBpcyB0byBwcmV2ZW50IGRlYWRsb2NrIGluIGpmZnMyIEdDLg0KDQpUaGFu
-a3MsDQpLeWVvbmcNCg0KDQpPbiAwNC8wNy8xNyAxNjoyMiwgS3llb25nIFlvbyB3cm90ZToNCj4g
-R0MgdGFzayBjYW4gZGVhZGxvY2sgaW4gcmVhZF9jYWNoZV9wYWdlKCkgYmVjYXVzZSBpdCBtYXkg
-YXR0ZW1wdA0KPiB0byByZWxlYXNlIGEgcGFnZSB0aGF0IGlzIGFjdHVhbGx5IGFsbG9jYXRlZCBi
-eSBhbm90aGVyIHRhc2sgaW4NCj4gamZmczJfd3JpdGVfYmVnaW4oKS4NCj4gVGhlIHJlYXNvbiBp
-cyB0aGF0IGluIGpmZnMyX3dyaXRlX2JlZ2luKCkgdGhlcmUgaXMgYSBzbWFsbCB3aW5kb3cNCj4g
-YSBjYWNoZSBwYWdlIGlzIGFsbG9jYXRlZCBmb3IgdXNlIGJ1dCBub3Qgc2V0IFVwdG9kYXRlIHll
-dC4NCj4gDQo+IFRoaXMgZW5kcyB1cCB3aXRoIGEgZGVhZGxvY2sgYmV0d2VlbiB0d28gdGFza3M6
-DQo+IDEpIEEgdGFzayAoZS5nLiBmaWxlIGNvcHkpDQo+ICAgICAtIGpmZnMyX3dyaXRlX2JlZ2lu
-KCkgbG9ja3MgYSBjYWNoZSBwYWdlDQo+ICAgICAtIGpmZnMyX3dyaXRlX2VuZCgpIHRyaWVzIHRv
-IGxvY2sgImFsbG9jX3NlbSIgZnJvbQ0KPiAJIGpmZnMyX3Jlc2VydmVfc3BhY2UoKSA8LS0gU1RV
-Q0sNCj4gMikgR0MgdGFzayAoamZmczJfZ2NkX210ZDMpDQo+ICAgICAtIGpmZnMyX2dhcmJhZ2Vf
-Y29sbGVjdF9wYXNzKCkgbG9ja3MgImFsbG9jX3NlbSINCj4gICAgIC0gdHJ5IHRvIGxvY2sgdGhl
-IHNhbWUgY2FjaGUgcGFnZSBpbiByZWFkX2NhY2hlX3BhZ2UoKSA8LS0gU1RVQ0sNCj4gDQo+IFNv
-IHRvIGF2b2lkIHRoaXMgZGVhZGxvY2ssIGhvbGQgImFsbG9jX3NlbSIgaW4gamZmczJfd3JpdGVf
-YmVnaW4oKQ0KPiB3aGlsZSByZWFkaW5nIGRhdGEgaW4gYSBjYWNoZSBwYWdlLg0KPiANCj4gU2ln
-bmVkLW9mZi1ieTogS3llb25nIFlvbyA8a3llb25nLnlvb0BhbGxpZWR0ZWxlc2lzLmNvLm56Pg0K
-PiAtLS0NCj4gDQo+IE5vdGU6IEknbSByZXNlbmRpbmcgdGhpcyBwYXRjaCB0byBsaW51eC1tdGQu
-DQo+IA0KPiAgIGZzL2pmZnMyL2ZpbGUuYyB8ICAgNDAgKysrKysrKysrKysrKysrKysrKysrKysr
-Ky0tLS0tLS0tLS0tLS0tLQ0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAyNSBpbnNlcnRpb25zKCspLCAx
-NSBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9mcy9qZmZzMi9maWxlLmMgYi9mcy9q
-ZmZzMi9maWxlLmMNCj4gaW5kZXggYzEyNDc2ZTMwOWM2Li5lYjRlNGQ3ODRkMjYgMTAwNjQ0DQo+
-IC0tLSBhL2ZzL2pmZnMyL2ZpbGUuYw0KPiArKysgYi9mcy9qZmZzMi9maWxlLmMNCj4gQEAgLTEz
-NSwyMCArMTM1LDE1IEBAIHN0YXRpYyBpbnQgamZmczJfd3JpdGVfYmVnaW4oc3RydWN0IGZpbGUg
-KmZpbHAsIHN0cnVjdCBhZGRyZXNzX3NwYWNlICptYXBwaW5nLA0KPiAgIAlzdHJ1Y3QgcGFnZSAq
-cGc7DQo+ICAgCXN0cnVjdCBpbm9kZSAqaW5vZGUgPSBtYXBwaW5nLT5ob3N0Ow0KPiAgIAlzdHJ1
-Y3QgamZmczJfaW5vZGVfaW5mbyAqZiA9IEpGRlMyX0lOT0RFX0lORk8oaW5vZGUpOw0KPiArCXN0
-cnVjdCBqZmZzMl9zYl9pbmZvICpjID0gSkZGUzJfU0JfSU5GTyhpbm9kZS0+aV9zYik7DQo+ICAg
-CXBnb2ZmX3QgaW5kZXggPSBwb3MgPj4gUEFHRV9TSElGVDsNCj4gICAJdWludDMyX3QgcGFnZW9m
-cyA9IGluZGV4IDw8IFBBR0VfU0hJRlQ7DQo+ICAgCWludCByZXQgPSAwOw0KPiAgIA0KPiAtCXBn
-ID0gZ3JhYl9jYWNoZV9wYWdlX3dyaXRlX2JlZ2luKG1hcHBpbmcsIGluZGV4LCBmbGFncyk7DQo+
-IC0JaWYgKCFwZykNCj4gLQkJcmV0dXJuIC1FTk9NRU07DQo+IC0JKnBhZ2VwID0gcGc7DQo+IC0N
-Cj4gICAJamZmczJfZGJnKDEsICIlcygpXG4iLCBfX2Z1bmNfXyk7DQo+ICAgDQo+ICAgCWlmIChw
-YWdlb2ZzID4gaW5vZGUtPmlfc2l6ZSkgew0KPiAgIAkJLyogTWFrZSBuZXcgaG9sZSBmcmFnIGZy
-b20gb2xkIEVPRiB0byBuZXcgcGFnZSAqLw0KPiAtCQlzdHJ1Y3QgamZmczJfc2JfaW5mbyAqYyA9
-IEpGRlMyX1NCX0lORk8oaW5vZGUtPmlfc2IpOw0KPiAgIAkJc3RydWN0IGpmZnMyX3Jhd19pbm9k
-ZSByaTsNCj4gICAJCXN0cnVjdCBqZmZzMl9mdWxsX2Rub2RlICpmbjsNCj4gICAJCXVpbnQzMl90
-IGFsbG9jX2xlbjsNCj4gQEAgLTE1OSw3ICsxNTQsNyBAQCBzdGF0aWMgaW50IGpmZnMyX3dyaXRl
-X2JlZ2luKHN0cnVjdCBmaWxlICpmaWxwLCBzdHJ1Y3QgYWRkcmVzc19zcGFjZSAqbWFwcGluZywN
-Cj4gICAJCXJldCA9IGpmZnMyX3Jlc2VydmVfc3BhY2UoYywgc2l6ZW9mKHJpKSwgJmFsbG9jX2xl
-biwNCj4gICAJCQkJCSAgQUxMT0NfTk9STUFMLCBKRkZTMl9TVU1NQVJZX0lOT0RFX1NJWkUpOw0K
-PiAgIAkJaWYgKHJldCkNCj4gLQkJCWdvdG8gb3V0X3BhZ2U7DQo+ICsJCQlnb3RvIG91dF9lcnI7
-DQo+ICAgDQo+ICAgCQltdXRleF9sb2NrKCZmLT5zZW0pOw0KPiAgIAkJbWVtc2V0KCZyaSwgMCwg
-c2l6ZW9mKHJpKSk7DQo+IEBAIC0xODksNyArMTg0LDcgQEAgc3RhdGljIGludCBqZmZzMl93cml0
-ZV9iZWdpbihzdHJ1Y3QgZmlsZSAqZmlscCwgc3RydWN0IGFkZHJlc3Nfc3BhY2UgKm1hcHBpbmcs
-DQo+ICAgCQkJcmV0ID0gUFRSX0VSUihmbik7DQo+ICAgCQkJamZmczJfY29tcGxldGVfcmVzZXJ2
-YXRpb24oYyk7DQo+ICAgCQkJbXV0ZXhfdW5sb2NrKCZmLT5zZW0pOw0KPiAtCQkJZ290byBvdXRf
-cGFnZTsNCj4gKwkJCWdvdG8gb3V0X2VycjsNCj4gICAJCX0NCj4gICAJCXJldCA9IGpmZnMyX2Fk
-ZF9mdWxsX2Rub2RlX3RvX2lub2RlKGMsIGYsIGZuKTsNCj4gICAJCWlmIChmLT5tZXRhZGF0YSkg
-ew0KPiBAQCAtMjA0LDcgKzE5OSw3IEBAIHN0YXRpYyBpbnQgamZmczJfd3JpdGVfYmVnaW4oc3Ry
-dWN0IGZpbGUgKmZpbHAsIHN0cnVjdCBhZGRyZXNzX3NwYWNlICptYXBwaW5nLA0KPiAgIAkJCWpm
-ZnMyX2ZyZWVfZnVsbF9kbm9kZShmbik7DQo+ICAgCQkJamZmczJfY29tcGxldGVfcmVzZXJ2YXRp
-b24oYyk7DQo+ICAgCQkJbXV0ZXhfdW5sb2NrKCZmLT5zZW0pOw0KPiAtCQkJZ290byBvdXRfcGFn
-ZTsNCj4gKwkJCWdvdG8gb3V0X2VycjsNCj4gICAJCX0NCj4gICAJCWpmZnMyX2NvbXBsZXRlX3Jl
-c2VydmF0aW9uKGMpOw0KPiAgIAkJaW5vZGUtPmlfc2l6ZSA9IHBhZ2VvZnM7DQo+IEBAIC0yMTIs
-NiArMjA3LDE5IEBAIHN0YXRpYyBpbnQgamZmczJfd3JpdGVfYmVnaW4oc3RydWN0IGZpbGUgKmZp
-bHAsIHN0cnVjdCBhZGRyZXNzX3NwYWNlICptYXBwaW5nLA0KPiAgIAl9DQo+ICAgDQo+ICAgCS8q
-DQo+ICsJICogV2hpbGUgZ2V0dGluZyBhIHBhZ2UgYW5kIHJlYWRpbmcgZGF0YSBpbiwgbG9jayBj
-LT5hbGxvY19zZW0gdW50aWwNCj4gKwkgKiB0aGUgcGFnZSBpcyBVcHRvZGF0ZS4gT3RoZXJ3aXNl
-IEdDIHRhc2sgbWF5IGF0dGVtcHQgdG8gcmVhZCB0aGUgc2FtZQ0KPiArCSAqIHBhZ2UgaW4gcmVh
-ZF9jYWNoZV9wYWdlKCksIHdoaWNoIGNhdXNlcyBhIGRlYWRsb2NrLg0KPiArCSAqLw0KPiArCW11
-dGV4X2xvY2soJmMtPmFsbG9jX3NlbSk7DQo+ICsJcGcgPSBncmFiX2NhY2hlX3BhZ2Vfd3JpdGVf
-YmVnaW4obWFwcGluZywgaW5kZXgsIGZsYWdzKTsNCj4gKwlpZiAoIXBnKSB7DQo+ICsJCXJldCA9
-IC1FTk9NRU07DQo+ICsJCWdvdG8gcmVsZWFzZV9zZW07DQo+ICsJfQ0KPiArCSpwYWdlcCA9IHBn
-Ow0KPiArDQo+ICsJLyoNCj4gICAJICogUmVhZCBpbiB0aGUgcGFnZSBpZiBpdCB3YXNuJ3QgYWxy
-ZWFkeSBwcmVzZW50LiBDYW5ub3Qgb3B0aW1pemUgYXdheQ0KPiAgIAkgKiB0aGUgd2hvbGUgcGFn
-ZSB3cml0ZSBjYXNlIHVudGlsIGpmZnMyX3dyaXRlX2VuZCBjYW4gaGFuZGxlIHRoZQ0KPiAgIAkg
-KiBjYXNlIG9mIGEgc2hvcnQtY29weS4NCj4gQEAgLTIyMCwxNSArMjI4LDE3IEBAIHN0YXRpYyBp
-bnQgamZmczJfd3JpdGVfYmVnaW4oc3RydWN0IGZpbGUgKmZpbHAsIHN0cnVjdCBhZGRyZXNzX3Nw
-YWNlICptYXBwaW5nLA0KPiAgIAkJbXV0ZXhfbG9jaygmZi0+c2VtKTsNCj4gICAJCXJldCA9IGpm
-ZnMyX2RvX3JlYWRwYWdlX25vbG9jayhpbm9kZSwgcGcpOw0KPiAgIAkJbXV0ZXhfdW5sb2NrKCZm
-LT5zZW0pOw0KPiAtCQlpZiAocmV0KQ0KPiAtCQkJZ290byBvdXRfcGFnZTsNCj4gKwkJaWYgKHJl
-dCkgew0KPiArCQkJdW5sb2NrX3BhZ2UocGcpOw0KPiArCQkJcHV0X3BhZ2UocGcpOw0KPiArCQkJ
-Z290byByZWxlYXNlX3NlbTsNCj4gKwkJfQ0KPiAgIAl9DQo+ICAgCWpmZnMyX2RiZygxLCAiZW5k
-IHdyaXRlX2JlZ2luKCkuIHBnLT5mbGFncyAlbHhcbiIsIHBnLT5mbGFncyk7DQo+IC0JcmV0dXJu
-IHJldDsNCj4gICANCj4gLW91dF9wYWdlOg0KPiAtCXVubG9ja19wYWdlKHBnKTsNCj4gLQlwdXRf
-cGFnZShwZyk7DQo+ICtyZWxlYXNlX3NlbToNCj4gKwltdXRleF91bmxvY2soJmMtPmFsbG9jX3Nl
-bSk7DQo+ICtvdXRfZXJyOg0KPiAgIAlyZXR1cm4gcmV0Ow0KPiAgIH0NCj4gICANCj4g
+On Mon, 2017-07-17 at 13:33 +0200, Frans Klaver wrote:
+> On Wed, Jul 12, 2017 at 6:22 AM, Cyril Bur <cyrilbur@gmail.com> wrote:
+> > BUG_ON() should be reserved in situations where we can not longer
+> > guarantee the integrity of the system. In the case where
+> > powernv_flash_async_op() receives an impossible op, we can still
+> > guarantee the integrity of the system.
+> > 
+> > Signed-off-by: Cyril Bur <cyrilbur@gmail.com>
+> > ---
+> >  drivers/mtd/devices/powernv_flash.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mtd/devices/powernv_flash.c b/drivers/mtd/devices/powernv_flash.c
+> > index f5396f26ddb4..a9a20c00687c 100644
+> > --- a/drivers/mtd/devices/powernv_flash.c
+> > +++ b/drivers/mtd/devices/powernv_flash.c
+> > @@ -78,7 +78,8 @@ static int powernv_flash_async_op(struct mtd_info *mtd, enum flash_op op,
+> >                 rc = opal_flash_erase(info->id, offset, len, token);
+> >                 break;
+> >         default:
+> > -               BUG_ON(1);
+> > +               WARN_ON_ONCE(1);
+> > +               return -EIO;
+> 
+> Based on the fact that all three values in enum flash_op are handled,
+> I would go as far as stating that the default lemma adds no value and
+> can be removed.
+> 
+
+The way I see it is that it isn't doing any harm being there and in
+cases of future programmer error or during corruption events, that
+WARN_ON might prove useful.
+
+> Frans
