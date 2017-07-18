@@ -1,21 +1,22 @@
-Received: from mail-oi0-x242.google.com ([2607:f8b0:4003:c06::242])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dXMlR-0000sK-Go
- for linux-mtd@lists.infradead.org; Tue, 18 Jul 2017 07:17:53 +0000
-Received: by mail-oi0-x242.google.com with SMTP id r74so1384202oie.2
- for <linux-mtd@lists.infradead.org>; Tue, 18 Jul 2017 00:17:27 -0700 (PDT)
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dXNKA-0001gq-Ex
+ for linux-mtd@lists.infradead.org; Tue, 18 Jul 2017 07:53:44 +0000
+Date: Tue, 18 Jul 2017 09:53:08 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: nand: fix lack of oob layout when using no ecc
+Message-ID: <20170718095308.4fa4c232@bbrezillon>
+In-Reply-To: <20170710140519.0cb26d90@xps13>
+References: <20170710103726.31858-1-miquel.raynal@free-electrons.com>
+ <20170710140519.0cb26d90@xps13>
 MIME-Version: 1.0
-In-Reply-To: <7e0d37e6-c3de-5c17-72e1-f6003e5d7d4a@alliedtelesis.co.nz>
-References: <149914202384.24318.7331828698981799313.stgit@kyeongy-dl.atlnz.lc>
- <7e0d37e6-c3de-5c17-72e1-f6003e5d7d4a@alliedtelesis.co.nz>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Tue, 18 Jul 2017 09:17:26 +0200
-Message-ID: <CAFLxGvwAJ+xfN=1QGfe_6mNksmMr6cTjSSRKPqYGKMi-1zvU2Q@mail.gmail.com>
-Subject: Re: [PATCH] jffs2: GC deadlock reading a page that is used in
- jffs2_write_begin()
-To: Kyeong Yoo <Kyeong.Yoo@alliedtelesis.co.nz>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,49 +26,119 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Kyeong Yoo,
+On Mon, 10 Jul 2017 14:05:19 +0200
+Miquel RAYNAL <miquel.raynal@free-electrons.com> wrote:
 
-On Mon, Jul 17, 2017 at 11:54 PM, Kyeong Yoo
-<Kyeong.Yoo@alliedtelesis.co.nz> wrote:
-> Hi,
->
-> Can someone review this and give me any feedback?
->
-> This patch is to prevent deadlock in jffs2 GC.
->
-> Thanks,
-> Kyeong
->
->
-> On 04/07/17 16:22, Kyeong Yoo wrote:
->> GC task can deadlock in read_cache_page() because it may attempt
->> to release a page that is actually allocated by another task in
->> jffs2_write_begin().
->> The reason is that in jffs2_write_begin() there is a small window
->> a cache page is allocated for use but not set Uptodate yet.
->>
->> This ends up with a deadlock between two tasks:
->> 1) A task (e.g. file copy)
->>     - jffs2_write_begin() locks a cache page
->>     - jffs2_write_end() tries to lock "alloc_sem" from
->>        jffs2_reserve_space() <-- STUCK
->> 2) GC task (jffs2_gcd_mtd3)
->>     - jffs2_garbage_collect_pass() locks "alloc_sem"
->>     - try to lock the same cache page in read_cache_page() <-- STUCK
+> Fix nand core lack of OOB layout when:
+> - the NFC driver does not provide any OOB layout,
+> - ECC operations are disabled (using NAND_ECC_NONE).
+> Using this configuration leads to a crash during the probe.
+> 
+> Add layout functions for small and large pages with mainly free bytes
+> plus reserved space for bad block markers.
+> 
+> Check the configuration and eventually assign this OOB layout in
+> nand_scan_tail().
+> 
+> Bad block markers position was extracted from the existing OOB layouts
+> by assigning as free all the bytes marked as ECC.
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+> ---
+>  drivers/mtd/nand/nand_base.c | 61 +++++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 60 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index c5221795a1e8..98ac54c0a0a7 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -53,7 +53,38 @@ static int nand_get_device(struct mtd_info *mtd, int new_state);
+>  static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
+>  			     struct mtd_oob_ops *ops);
+>  
+> -/* Define default oob placement schemes for large and small page devices */
+> +/*
+> + * Define default OOB placement schemes for:
+> + *   - no ECC or software ECC
+> + *   - small or large page devices
+> + */
+> +static int nand_ooblayout_free_sp_no_ecc(struct mtd_info *mtd, int section,
+> +					   struct mtd_oob_region *oobregion)
+> +{
+> +	if (section > 1)
+> +		return -ERANGE;
+> +
+> +	if (!section) {
+> +		if (mtd->oobsize == 16) {
+> +			oobregion->offset = 0;
+> +			oobregion->length = 4;
+> +		} else {
+> +			oobregion->offset = 0;
+> +			oobregion->length = 5;
+> +		}
+> +	} else {
+> +		oobregion->offset = 6;
+> +		oobregion->length = mtd->oobsize - oobregion->offset;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +const struct mtd_ooblayout_ops nand_ooblayout_sp_no_ecc_ops = {
+> +	.free = nand_ooblayout_free_sp_no_ecc,
+> +};
+> +EXPORT_SYMBOL_GPL(nand_ooblayout_sp_no_ecc_ops);
+> +
+>  static int nand_ooblayout_ecc_sp(struct mtd_info *mtd, int section,
+>  				 struct mtd_oob_region *oobregion)
+>  {
+> @@ -109,6 +140,23 @@ const struct mtd_ooblayout_ops nand_ooblayout_sp_ops = {
+>  };
+>  EXPORT_SYMBOL_GPL(nand_ooblayout_sp_ops);
+>  
+> +static int nand_ooblayout_free_lp_no_ecc(struct mtd_info *mtd, int section,
+> +					   struct mtd_oob_region *oobregion)
+> +{
+> +	if (section)
+> +		return -ERANGE;
+> +
+> +	oobregion->offset = 2;
+> +	oobregion->length = mtd->oobsize - oobregion->offset;
+> +
+> +	return 0;
+> +}
+> +
+> +const struct mtd_ooblayout_ops nand_ooblayout_lp_no_ecc_ops = {
+> +	.free = nand_ooblayout_free_lp_no_ecc,
+> +};
+> +EXPORT_SYMBOL_GPL(nand_ooblayout_lp_no_ecc_ops);
+> +
+>  static int nand_ooblayout_ecc_lp(struct mtd_info *mtd, int section,
+>  				 struct mtd_oob_region *oobregion)
+>  {
+> @@ -4635,6 +4683,17 @@ int nand_scan_tail(struct mtd_info *mtd)
+>  	chip->oob_poi = chip->buffers->databuf + mtd->writesize;
+>  
+>  	/*
+> +	 * When using ECC_NONE, ooblayout must only reserve space for bad block
+> +	 * markers.
+> +	 */
+> +	if (!mtd->ooblayout && ecc->mode == NAND_ECC_NONE) {
+> +		if (mtd->writesize <= 512)
+> +			mtd_set_ooblayout(mtd, &nand_ooblayout_sp_no_ecc_ops);
+> +		else
+> +			mtd_set_ooblayout(mtd, &nand_ooblayout_lp_no_ecc_ops);
+> +	}
 
-Your description does not match the code. Are you seeing this on a
-recent mainline kernel?
-Can t be that your kernel does not has this commit?
-commit 157078f64b8a9cd7011b6b900b2f2498df850748
-Author: Thomas Betker <thomas.betker@rohde-schwarz.com>
-Date:   Tue Nov 10 22:18:15 2015 +0100
+Just realized you were breaking existing users of ECC_NONE. Before your
+patch, they were using nand_ooblayout_sp_ops for NANDs with 8 or 16 OOB
+bytes, and nand_ooblayout_lp_hamming_ops for NANDs with 64 or 128
+OOB bytes.
 
-    Revert "jffs2: Fix lock acquisition order bug in jffs2_write_begin"
+Probably better to put this in the following switch (default case).
 
-    This reverts commit 5ffd3412ae55
-    ("jffs2: Fix lock acquisition order bug in jffs2_write_begin").
-
-
--- 
-Thanks,
-//richard
+> +
+> +	/*
+>  	 * If no default placement scheme is given, select an appropriate one.
+>  	 */
+>  	if (!mtd->ooblayout &&
