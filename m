@@ -1,17 +1,19 @@
-Received: from mail-qk0-x241.google.com ([2607:f8b0:400d:c09::241])
+Received: from mail-qt0-x242.google.com ([2607:f8b0:400d:c0d::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dXGmb-0003mM-VE
- for linux-mtd@lists.infradead.org; Tue, 18 Jul 2017 00:54:39 +0000
-Received: by mail-qk0-x241.google.com with SMTP id q66so778063qki.1
- for <linux-mtd@lists.infradead.org>; Mon, 17 Jul 2017 17:54:17 -0700 (PDT)
+ id 1dXGme-0003mV-2e
+ for linux-mtd@lists.infradead.org; Tue, 18 Jul 2017 00:54:41 +0000
+Received: by mail-qt0-x242.google.com with SMTP id l55so753278qtl.3
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Jul 2017 17:54:19 -0700 (PDT)
 From: Fabio Estevam <festevam@gmail.com>
 To: boris.brezillon@free-electrons.com
 Cc: stefan@agner.ch, linux-mtd@lists.infradead.org,
  Fabio Estevam <fabio.estevam@nxp.com>
-Subject: [PATCH v2 1/2] mtd: nand: vf610: Check the return value from
- clk_prepare_enable()
-Date: Mon, 17 Jul 2017 21:54:07 -0300
-Message-Id: <1500339248-18132-1-git-send-email-festevam@gmail.com>
+Subject: [PATCH v2 2/2] mtd: nand: vf610: Remove unneeded
+ pinctrl_pm_select_default_state()
+Date: Mon, 17 Jul 2017 21:54:08 -0300
+Message-Id: <1500339248-18132-2-git-send-email-festevam@gmail.com>
+In-Reply-To: <1500339248-18132-1-git-send-email-festevam@gmail.com>
+References: <1500339248-18132-1-git-send-email-festevam@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,38 +25,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Fabio Estevam <fabio.estevam@nxp.com>
 
-clk_prepare_enable() may fail, so we should better check its return value
-and propagate it in the case of error.
+pinctrl_pm_select_default_state() is already the default pinctrl state and
+since pinctrl_pm_select_sleep_state() is not used in this driver, there
+is no need to explicitly call pinctrl_pm_select_default_state().
 
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 ---
 Changes since v1:
-- None
+- Newly introduced
 
- drivers/mtd/nand/vf610_nfc.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/vf610_nfc.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
-index 744ab10..9e49672 100644
+index 9e49672..b88a0c91 100644
 --- a/drivers/mtd/nand/vf610_nfc.c
 +++ b/drivers/mtd/nand/vf610_nfc.c
-@@ -814,12 +814,16 @@ static int vf610_nfc_suspend(struct device *dev)
+@@ -34,7 +34,6 @@
+ #include <linux/mtd/nand.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/of_device.h>
+-#include <linux/pinctrl/consumer.h>
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
  
- static int vf610_nfc_resume(struct device *dev)
- {
-+	int err;
-+
+@@ -819,8 +818,6 @@ static int vf610_nfc_resume(struct device *dev)
  	struct mtd_info *mtd = dev_get_drvdata(dev);
  	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
  
- 	pinctrl_pm_select_default_state(dev);
- 
--	clk_prepare_enable(nfc->clk);
-+	err = clk_prepare_enable(nfc->clk);
-+	if (err)
-+		return err;
- 
- 	vf610_nfc_preinit_controller(nfc);
- 	vf610_nfc_init_controller(nfc);
+-	pinctrl_pm_select_default_state(dev);
+-
+ 	err = clk_prepare_enable(nfc->clk);
+ 	if (err)
+ 		return err;
 -- 
 2.7.4
