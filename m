@@ -1,18 +1,25 @@
-Received: from mail-qk0-x243.google.com ([2607:f8b0:400d:c09::243])
+Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dXGaa-0007I8-8D
- for linux-mtd@lists.infradead.org; Tue, 18 Jul 2017 00:42:13 +0000
-Received: by mail-qk0-x243.google.com with SMTP id d136so710641qkg.3
- for <linux-mtd@lists.infradead.org>; Mon, 17 Jul 2017 17:41:51 -0700 (PDT)
-From: Fabio Estevam <festevam@gmail.com>
-To: boris.brezillon@free-electrons.com
-Cc: cyrille.pitchen@wedev4u.fr, matthias.bgg@gmail.com,
- linux-mtd@lists.infradead.org, Fabio Estevam <fabio.estevam@nxp.com>
-Subject: [PATCH 2/2] mtd: mtk-quadspi: Remove unneeded pinctrl header
-Date: Mon, 17 Jul 2017 21:41:39 -0300
-Message-Id: <1500338499-17165-2-git-send-email-festevam@gmail.com>
-In-Reply-To: <1500338499-17165-1-git-send-email-festevam@gmail.com>
-References: <1500338499-17165-1-git-send-email-festevam@gmail.com>
+ id 1dXGb3-0007TJ-NE
+ for linux-mtd@lists.infradead.org; Tue, 18 Jul 2017 00:42:51 +0000
+Received: by mail-pg0-x242.google.com with SMTP id v190so652559pgv.1
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Jul 2017 17:42:21 -0700 (PDT)
+Message-ID: <1500338535.2475.4.camel@gmail.com>
+Subject: Re: [PATCH v3 03/10] mtd: powernv_flash: Don't treat OPAL_SUCCESS
+ as an error
+From: Cyril Bur <cyrilbur@gmail.com>
+To: Balbir Singh <bsingharora@gmail.com>, linuxppc-dev@lists.ozlabs.org,
+ linux-mtd@lists.infradead.org
+Cc: stewart@linux.vnet.ibm.com, alistair@popple.id.au, dwmw2@infradead.org,
+ rlippert@google.com
+Date: Tue, 18 Jul 2017 10:42:15 +1000
+In-Reply-To: <1500281422.8256.5.camel@gmail.com>
+References: <20170712042304.19745-1-cyrilbur@gmail.com>
+ <20170712042304.19745-4-cyrilbur@gmail.com>
+ <1500281422.8256.5.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,27 +29,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Fabio Estevam <fabio.estevam@nxp.com>
+On Mon, 2017-07-17 at 18:50 +1000, Balbir Singh wrote:
+> On Wed, 2017-07-12 at 14:22 +1000, Cyril Bur wrote:
+> > While this driver expects to interact asynchronously, OPAL is well
+> > within its rights to return OPAL_SUCCESS to indicate that the operation
+> > completed without the need for a callback. We shouldn't treat
+> > OPAL_SUCCESS as an error rather we should wrap up and return promptly to
+> > the caller.
+> > 
+> > Signed-off-by: Cyril Bur <cyrilbur@gmail.com>
+> > ---
+> > I'll note here that currently no OPAL exists that will return
+> > OPAL_SUCCESS so there isn't the possibility of a bug today.
+> 
+> It would help if you mentioned OPAL_SUCCESS to the async call. So effectively
+> what we expected to be an asynchronous call with callback, but OPAL returned
+> immediately with success.
+> 
 
-There is no need to include <linux/pinctrl/consumer.h> as no pinctrl
-function is used in this driver, so just remove it.
+Ah my favourite problems, commit message.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
----
- drivers/mtd/spi-nor/mtk-quadspi.c | 1 -
- 1 file changed, 1 deletion(-)
+Thanks,
 
-diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-quadspi.c
-index 8a20ec4..c258c7a 100644
---- a/drivers/mtd/spi-nor/mtk-quadspi.c
-+++ b/drivers/mtd/spi-nor/mtk-quadspi.c
-@@ -24,7 +24,6 @@
- #include <linux/mutex.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
--#include <linux/pinctrl/consumer.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/mtd/mtd.h>
--- 
-2.7.4
+Cyril
+
+> Balbir Singh.
+> 
