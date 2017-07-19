@@ -1,16 +1,23 @@
-Received: from mail-oi0-x233.google.com ([2607:f8b0:4003:c06::233])
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dXqL3-0000uv-Kr
- for linux-mtd@lists.infradead.org; Wed, 19 Jul 2017 14:52:35 +0000
-Received: by mail-oi0-x233.google.com with SMTP id 191so2815626oii.2
- for <linux-mtd@lists.infradead.org>; Wed, 19 Jul 2017 07:52:13 -0700 (PDT)
-MIME-Version: 1.0
-From: Pankaj Pandey <pankaj.embedded@gmail.com>
-Date: Wed, 19 Jul 2017 20:21:51 +0530
-Message-ID: <CAOdCjQvoL9Dezquv09FNy-GTpumVPbXB8yf7-VQ7E0tyno3pTA@mail.gmail.com>
-Subject: nand on-die ecc for jffs2
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+ id 1dXqui-0001IM-Ta
+ for linux-mtd@lists.infradead.org; Wed, 19 Jul 2017 15:29:26 +0000
+From: Philipp Zabel <p.zabel@pengutronix.de>
+To: linux-kernel@vger.kernel.org
+Cc: Philipp Zabel <p.zabel@pengutronix.de>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Chen-Yu Tsai <wens@csie.org>, linux-mtd@lists.infradead.org
+Subject: [PATCH 042/102] mtd: nand: sunxi: explicitly request exclusive reset
+ control
+Date: Wed, 19 Jul 2017 17:25:46 +0200
+Message-Id: <20170719152646.25903-43-p.zabel@pengutronix.de>
+In-Reply-To: <20170719152646.25903-1-p.zabel@pengutronix.de>
+References: <20170719152646.25903-1-p.zabel@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,36 +27,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Commit a53e35db70d1 ("reset: Ensure drivers are explicit when requesting
+reset lines") started to transition the reset control request API calls
+to explicitly state whether the driver needs exclusive or shared reset
+control behavior. Convert all drivers requesting exclusive resets to the
+explicit API call so the temporary transition helpers can be removed.
 
-I found below mentioned patches to support on-die ecc for micron nand
-flash which are working fine for me.
+No functional changes.
 
-Thomas Petazzoni (5):
-  dt-bindings: mtd: document new "on-die" nand-ecc-mode
-  mtd: nand: add core support for on-die ECC
-  mtd: nand: export nand_{read,write}_page_raw()
-  mtd: nand: add support for Micron on-die ECC
-  mtd: nand: fsmc_nand: handle on-die ECC case
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>
+Cc: Chen-Yu Tsai <wens@csie.org>
+Cc: linux-mtd@lists.infradead.org
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+---
+ drivers/mtd/nand/sunxi_nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-But regarding on-die ecc for jffs2 rootfilesystem I am getting
-below error when trying to untaring the rootfs on mounted nand flash
-mtd partition.
-
-[  120.103222] jffs2: mtd->read(0x44 bytes from 0x8c80030) returned ECC error
-[  120.118055] jffs2: mtd->read(0x22 bytes from 0x8c80074) returned ECC error
-
-Steps I have followed to format and untaring the rootfs.
-
-# flash_erase /dev/mtd11 0 0
-Erasing 128 Kibyte @ b7e0000 -- 100 % complete
-
-# mount -t jffs2 /dev/mtdblock11 /media
-# cd /media
-# cp /home/root/rootfs.tar.gz .
-# tar -xvzf rootfs.tar.gz
-
-Please suggest any pointer to fix this issue.  TIA !!
-
-Regards,
-Pankaj Pandey
+diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+index d0b6f8f9f297a..6eb97451f485c 100644
+--- a/drivers/mtd/nand/sunxi_nand.c
++++ b/drivers/mtd/nand/sunxi_nand.c
+@@ -2208,7 +2208,7 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto out_ahb_clk_unprepare;
+ 
+-	nfc->reset = devm_reset_control_get_optional(dev, "ahb");
++	nfc->reset = devm_reset_control_get_optional_exclusive(dev, "ahb");
+ 	if (IS_ERR(nfc->reset)) {
+ 		ret = PTR_ERR(nfc->reset);
+ 		goto out_mod_clk_unprepare;
+-- 
+2.11.0
