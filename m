@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dXnVL-0007eV-FP
- for linux-mtd@lists.infradead.org; Wed, 19 Jul 2017 11:51:44 +0000
+ id 1dXnVi-0007xq-5W
+ for linux-mtd@lists.infradead.org; Wed, 19 Jul 2017 11:52:15 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: dwmw2@infradead.org, computersforpeace@gmail.com,
  boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
@@ -10,10 +10,9 @@ Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
  andy.gross@linaro.org, architt@codeaurora.org, sricharan@codeaurora.org,
  Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH v2 11/25] mtd: nand: qcom: support for NAND controller
- properties
-Date: Wed, 19 Jul 2017 17:17:59 +0530
-Message-Id: <1500464893-11352-12-git-send-email-absahu@codeaurora.org>
+Subject: [PATCH v2 13/25] mtd: nand: qcom: add QPIC NAND compatible string
+Date: Wed, 19 Jul 2017 17:18:01 +0530
+Message-Id: <1500464893-11352-14-git-send-email-absahu@codeaurora.org>
 In-Reply-To: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
 References: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,92 +24,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently driver data is being assigned directly with ECC modes.
-Now, the plan is to add more NAND controller versions, so
-reorganized the current driver data assignment by creating NAND
-controller properties structure.  This will contain all
-properties specific to NAND controller.
+The current driver only support EBI2 NAND which uses ADM DMA. The
+latest QCOM controller supports QPIC NAND which uses BAM DMA. NAND
+registers and programming sequence are same for EBI2 and QPIC
+NAND so the same driver can support QPIC NAND also by adding the
+BAM DMA support. This patch adds the QPIC NAND support in current
+NAND driver with compatible string "qcom,qpic-nandc-v1.4.0" and
+maps it with different configuration parameter in driver data.
 
 Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 ---
- drivers/mtd/nand/qcom_nandc.c | 23 +++++++++++++++++------
- 1 file changed, 17 insertions(+), 6 deletions(-)
+ drivers/mtd/nand/qcom_nandc.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-index 8f9e86c..3b0ae91 100644
+index 3b0ae91..6d24630 100644
 --- a/drivers/mtd/nand/qcom_nandc.c
 +++ b/drivers/mtd/nand/qcom_nandc.c
-@@ -235,7 +235,7 @@ struct nandc_regs {
-  *				writes. contains the register values to be
-  *				written to controller
-  * @cmd1/vld:			some fixed controller register values
-- * @ecc_modes:			supported ECC modes by the current controller,
-+ * @props:			properties of current NAND controller IP,
-  *				initialized via DT match data
+@@ -323,9 +323,11 @@ struct qcom_nand_host {
+  * This data type corresponds to the nand controller properties which varies
+  * among different NAND controller IP's.
+  * @ecc_modes - ecc mode for NAND
++ * @is_bam - whether NAND controller is using bam
   */
- struct qcom_nand_controller {
-@@ -266,7 +266,7 @@ struct qcom_nand_controller {
- 	struct nandc_regs *regs;
- 
- 	u32 cmd1, vld;
--	u32 ecc_modes;
-+	const struct qcom_props *props;
+ struct qcom_props {
+ 	u32 ecc_modes;
++	bool is_bam;
  };
  
- /*
-@@ -319,6 +319,15 @@ struct qcom_nand_host {
- 	u32 clrreadstatus;
- };
+ static inline struct qcom_nand_host *to_qcom_nand_host(struct nand_chip *chip)
+@@ -2245,6 +2247,12 @@ static int qcom_nandc_remove(struct platform_device *pdev)
  
-+/*
-+ * This data type corresponds to the nand controller properties which varies
-+ * among different NAND controller IP's.
-+ * @ecc_modes - ecc mode for NAND
-+ */
-+struct qcom_props {
-+	u32 ecc_modes;
+ static const struct qcom_props ebi2_nandc_data = {
+ 	.ecc_modes = (ECC_RS_4BIT | ECC_BCH_8BIT),
++	.is_bam = false,
 +};
 +
- static inline struct qcom_nand_host *to_qcom_nand_host(struct nand_chip *chip)
- {
- 	return container_of(chip, struct qcom_nand_host, chip);
-@@ -1820,7 +1829,7 @@ static int qcom_nand_host_setup(struct qcom_nand_host *host)
- 		 * uses lesser bytes for ECC. If RS is used, the ECC bytes is
- 		 * always 10 bytes
- 		 */
--		if (nandc->ecc_modes & ECC_BCH_4BIT) {
-+		if (nandc->props->ecc_modes & ECC_BCH_4BIT) {
- 			/* BCH */
- 			host->bch_enabled = true;
- 			ecc_mode = 0;
-@@ -2165,7 +2174,7 @@ static int qcom_nandc_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
--	nandc->ecc_modes = (unsigned long)dev_data;
-+	nandc->props = dev_data;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	nandc->base = devm_ioremap_resource(dev, res);
-@@ -2234,7 +2243,9 @@ static int qcom_nandc_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--#define EBI2_NANDC_ECC_MODES	(ECC_RS_4BIT | ECC_BCH_8BIT)
-+static const struct qcom_props ebi2_nandc_data = {
-+	.ecc_modes = (ECC_RS_4BIT | ECC_BCH_8BIT),
-+};
++static const struct qcom_props qpic_nandc_v1_4_0_data = {
++	.ecc_modes = (ECC_BCH_4BIT | ECC_BCH_8BIT),
++	.is_bam = true,
+ };
  
  /*
-  * data will hold a struct pointer containing more differences once we support
-@@ -2242,7 +2253,7 @@ static int qcom_nandc_remove(struct platform_device *pdev)
-  */
- static const struct of_device_id qcom_nandc_of_match[] = {
+@@ -2255,6 +2263,9 @@ static int qcom_nandc_remove(struct platform_device *pdev)
  	{	.compatible = "qcom,ebi2-nandc",
--		.data = (void *)EBI2_NANDC_ECC_MODES,
-+		.data = &ebi2_nandc_data,
+ 		.data = &ebi2_nandc_data,
  	},
++	{	.compatible = "qcom,qpic-nandc-v1.4.0",
++		.data = &qpic_nandc_v1_4_0_data,
++	},
  	{}
  };
+ MODULE_DEVICE_TABLE(of, qcom_nandc_of_match);
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
