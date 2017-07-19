@@ -1,23 +1,21 @@
-Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dXbUs-0003y7-Bv
- for linux-mtd@lists.infradead.org; Tue, 18 Jul 2017 23:01:44 +0000
-From: Kyeong Yoo <Kyeong.Yoo@alliedtelesis.co.nz>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] jffs2: GC deadlock reading a page that is used in
- jffs2_write_begin()
-Date: Tue, 18 Jul 2017 23:00:58 +0000
-Message-ID: <0e1399d9-a7ed-9838-7a03-0a1b18be2234@alliedtelesis.co.nz>
-References: <149914202384.24318.7331828698981799313.stgit@kyeongy-dl.atlnz.lc>
- <7e0d37e6-c3de-5c17-72e1-f6003e5d7d4a@alliedtelesis.co.nz>
- <CAFLxGvwAJ+xfN=1QGfe_6mNksmMr6cTjSSRKPqYGKMi-1zvU2Q@mail.gmail.com>
-In-Reply-To: <CAFLxGvwAJ+xfN=1QGfe_6mNksmMr6cTjSSRKPqYGKMi-1zvU2Q@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <9B034B23CC0E4646BE37ABBEFE0EE164@atlnz.lc>
-Content-Transfer-Encoding: base64
+ id 1dXnTP-0005Ac-Og
+ for linux-mtd@lists.infradead.org; Wed, 19 Jul 2017 11:49:02 +0000
+From: Abhishek Sahu <absahu@codeaurora.org>
+To: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
+ cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org, mark.rutland@arm.com
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ andy.gross@linaro.org, architt@codeaurora.org, sricharan@codeaurora.org,
+ Abhishek Sahu <absahu@codeaurora.org>
+Subject: [PATCH v2 00/25] Add QCOM QPIC NAND support
+Date: Wed, 19 Jul 2017 17:17:48 +0530
+Message-Id: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,111 +25,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgUmljaGFyZCwNCg0KVGhpcyBwYXRjaCB3YXMgb24gdG9wIG9mIHY0LjEyIGFuZCBzdGlsbCBh
-cHBsaWVzIGNsZWFubHkgdG8gdGhlIGxhdGVzdCANCm1haW5saW5lIHdoaWNoIGhhcyB0aGUgZm9s
-bG93aW5nIGNvbW1pdCBhdCB0aGUgdG9wOg0KDQpjb21taXQgNzRjYmQ5NmJjMmUwMGY1ZGFhODA1
-ZTJlYmY0OWU5OThmNzA0NTA2MiAob3JpZ2luL21hc3Rlciwgb3JpZ2luL0hFQUQpDQpNZXJnZTog
-YmVmODViZDdkYjI2IDY0MDllODRlYzU4Zg0KQXV0aG9yOiBMaW51cyBUb3J2YWxkcyA8dG9ydmFs
-ZHNAbGludXgtZm91bmRhdGlvbi5vcmc+DQpEYXRlOiAgIFR1ZSBKdWwgMTggMTE6NTE6MDggMjAx
-NyAtMDcwMA0KDQogICAgIE1lcmdlIHRhZyAnbWQvNC4xMy1yYzInIG9mIA0KZ2l0Oi8vZ2l0Lmtl
-cm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3NobGkvbWQNCg0KDQpBbmQgSSBjYW4g
-c2VlIHRoZSBjb21taXQgeW91IG1lbnRpb25lZCBleGlzdHMgaW4gbXkgcmVwby4NCg0KICBjb21t
-aXQgMTU3MDc4ZjY0YjhhOWNkNzAxMWI2YjkwMGIyZjI0OThkZjg1MDc0OA0KICBBdXRob3I6IFRo
-b21hcyBCZXRrZXIgPHRob21hcy5iZXRrZXJAcm9oZGUtc2Nod2Fyei5jb20+DQogIERhdGU6ICAg
-VHVlIE5vdiAxMCAyMjoxODoxNSAyMDE1ICswMTAwDQoNCiAgICAgUmV2ZXJ0ICJqZmZzMjogRml4
-IGxvY2sgYWNxdWlzaXRpb24gb3JkZXIgYnVnIGluIGpmZnMyX3dyaXRlX2JlZ2luIg0KDQoNClRo
-ZSBsb2dpYyBvZiBkZWFkbG9jayBzdGlsbCBleGlzdHMgd2l0aCB0aGUgYWJvdmUgY29tbWl0LCB0
-aGF0J3Mgd2hhdCBJIA0KZGVzY3JpYmVkIGluIHRoZSBwYXRjaCBjb21taXQgbWVzc2FnZS4gQWN0
-dWFsIGtlcm5lbCB2ZXJzaW9uIEkgc2F3IHRoZSANCmlzc3VlIGlzIDQuNC42LiBCdXQgd2hhdCBJ
-IGZvdW5kIGlzIHRoZSBsb2dpYyByZWdhcmRpbmcgbG9ja2luZyBpcyBzYW1lIA0KaW4gdGhlIGN1
-cnJlbnQgbWFpbmxpbmUuDQpGb3IgeW91IGluZm9ybWF0aW9uLCBhdHRhY2hlZCB0aGUga2VybmVs
-IHBhbmljIGluZm8gYmVsb3cuDQoNClRoYW5rcywNCkt5ZW9uZw0KDQo8Mz5JTkZPOiB0YXNrIGpm
-ZnMyX2djZF9tdGQzOjE5MCBibG9ja2VkIGZvciBtb3JlIHRoYW4gMTIwIHNlY29uZHMuDQo8Mz4g
-ICAgICBUYWludGVkOiBQICAgICAgICAgICBPICAgIDQuNC42LWF0MSAjMQ0KPDM+ImVjaG8gMCA+
-IC9wcm9jL3N5cy9rZXJuZWwvaHVuZ190YXNrX3RpbWVvdXRfc2VjcyIgZGlzYWJsZXMgdGhpcyBt
-ZXNzYWdlLg0KPDY+amZmczJfZ2NkX210ZDMgIEQgMDAwMDAwMDAgICAgIDAgICAxOTAgICAgICAy
-IDB4MDAwMDA4MDANCjw2PkNhbGwgVHJhY2U6DQo8Nj5bYTcxMmZhZjBdIFthNDAwMzE4MF0gMHhh
-NDAwMzE4MCAodW5yZWxpYWJsZSkNCjw2PlthNzEyZmJiMF0gWzgwNjhlYTU0XSBfX3NjaGVkdWxl
-KzB4MWY0LzB4NWYwDQo8Nj5bYTcxMmZiZjBdIFs4MDY4ZWU4NF0gc2NoZWR1bGUrMHgzNC8weGIw
-DQo8Nj5bYTcxMmZjMDBdIFs4MDY5MWI0OF0gc2NoZWR1bGVfdGltZW91dCsweDE4OC8weDFkMA0K
-PDY+W2E3MTJmYzUwXSBbODA2OGU4MjRdIGlvX3NjaGVkdWxlX3RpbWVvdXQrMHg4NC8weGMwDQo8
-Nj5bYTcxMmZjNzBdIFs4MDY4ZjdjMF0gYml0X3dhaXRfaW8rMHgyMC8weDcwDQo8Nj5bYTcxMmZj
-ODBdIFs4MDY4ZjU4NF0gX193YWl0X29uX2JpdF9sb2NrKzB4YTQvMHgxNDANCjw2PlthNzEyZmNi
-MF0gWzgwMGI1MWJjXSBfX2xvY2tfcGFnZSsweDljLzB4YjANCjw2PlthNzEyZmNlMF0gWzgwMGI1
-OGM4XSBkb19yZWFkX2NhY2hlX3BhZ2UrMHgxNjgvMHgyMDANCjw2PlthNzEyZmQyMF0gWzgwMjJi
-NjcwXSBqZmZzMl9nY19mZXRjaF9wYWdlKzB4MzAvMHhkMA0KPDY+W2E3MTJmZDMwXSBbODA2OTQ5
-MzRdIGpmZnMyX2dhcmJhZ2VfY29sbGVjdF9saXZlKzB4OTU4LzB4ZTY0DQo8Nj5bYTcxMmZkZTBd
-IFs4MDIyODkzNF0gamZmczJfZ2FyYmFnZV9jb2xsZWN0X3Bhc3MrMHg0NTQvMHg3ZTANCjw2Plth
-NzEyZmU0MF0gWzgwMjJhMjkwXSBqZmZzMl9nYXJiYWdlX2NvbGxlY3RfdGhyZWFkKzB4YzAvMHgx
-ZDANCjw2PlthNzEyZmVmMF0gWzgwMDNmYjM4XSBrdGhyZWFkKzB4YzgvMHhlMA0KPDY+W2E3MTJm
-ZjQwXSBbODAwMGVlZDhdIHJldF9mcm9tX2tlcm5lbF90aHJlYWQrMHg1Yy8weDY0DQo8Mz5JTkZP
-OiB0YXNrIHN5c2xvZy1uZzo0ODMgYmxvY2tlZCBmb3IgbW9yZSB0aGFuIDEyMCBzZWNvbmRzLg0K
-PDM+ICAgICAgVGFpbnRlZDogUCAgICAgICAgICAgTyAgICA0LjQuNi1hdDEgIzENCjwzPiJlY2hv
-IDAgPiAvcHJvYy9zeXMva2VybmVsL2h1bmdfdGFza190aW1lb3V0X3NlY3MiIGRpc2FibGVzIHRo
-aXMgbWVzc2FnZS4NCjw2PnN5c2xvZy1uZyAgICAgICBEIDBmYzIxMDFjICAgICAwICAgNDgzICAg
-ICAgMSAweDAwMDAwMDAwDQo8Nj5DYWxsIFRyYWNlOg0KPDY+W2E2NjNiYjYwXSBbYTYzNDY4NDBd
-IDB4YTYzNDY4NDAgKHVucmVsaWFibGUpDQo8Nj5bYTY2M2JjMjBdIFs4MDY4ZWE1NF0gX19zY2hl
-ZHVsZSsweDFmNC8weDVmMA0KPDY+W2E2NjNiYzYwXSBbODA2OGVlODRdIHNjaGVkdWxlKzB4MzQv
-MHhiMA0KPDY+W2E2NjNiYzcwXSBbODA2OGYyMzBdIHNjaGVkdWxlX3ByZWVtcHRfZGlzYWJsZWQr
-MHgxMC8weDIwDQo8Nj5bYTY2M2JjODBdIFs4MDY5MDhhMF0gX19tdXRleF9sb2NrX3Nsb3dwYXRo
-KzB4YTAvMHgxNDANCjw2PlthNjYzYmNjMF0gWzgwNjkwOTk0XSBtdXRleF9sb2NrKzB4NTQvMHg3
-MA0KPDY+W2E2NjNiY2QwXSBbODAyMjM3ZTBdIGpmZnMyX3Jlc2VydmVfc3BhY2UrMHg0MC8weDMx
-MA0KPDY+W2E2NjNiZDQwXSBbODAyMjYzYjBdIGpmZnMyX3dyaXRlX2lub2RlX3JhbmdlKzB4ZTAv
-MHgyZTANCjw2PlthNjYzYmRhMF0gWzgwMjIwYzA0XSBqZmZzMl93cml0ZV9lbmQrMHhmNC8weDJk
-MA0KPDY+W2E2NjNiZGUwXSBbODAwYjYyYjRdIGdlbmVyaWNfcGVyZm9ybV93cml0ZSsweDExNC8w
-eDIwMA0KPDY+W2E2NjNiZTQwXSBbODAwYjc3MmNdIF9fZ2VuZXJpY19maWxlX3dyaXRlX2l0ZXIr
-MHgxYmMvMHgyMzANCjw2PlthNjYzYmU4MF0gWzgwMGI3OGIwXSBnZW5lcmljX2ZpbGVfd3JpdGVf
-aXRlcisweDExMC8weDMwMA0KPDY+W2E2NjNiZWEwXSBbODAxMDNjYjBdIF9fdmZzX3dyaXRlKzB4
-YzAvMHgxMzANCjw2PlthNjYzYmVmMF0gWzgwMTA0NjYwXSB2ZnNfd3JpdGUrMHhhMC8weDFiMA0K
-PDY+W2E2NjNiZjEwXSBbODAxMDUwNmNdIFN5U193cml0ZSsweDRjLzB4ZDANCjw2PlthNjYzYmY0
-MF0gWzgwMDBlZGEwXSByZXRfZnJvbV9zeXNjYWxsKzB4MC8weDNjDQo8Nj4tLS0gaW50ZXJydXB0
-OiBjMDEgYXQgMHhmYzIxMDFjDQo8Nj4gICAgTFIgPSAweDEwMDIzZTk0DQo8Mz5JTkZPOiB0YXNr
-IHNjcDoxNTE5MCBibG9ja2VkIGZvciBtb3JlIHRoYW4gMTIwIHNlY29uZHMuDQo8Mz4gICAgICBU
-YWludGVkOiBQICAgICAgICAgICBPICAgIDQuNC42LWF0MSAjMQ0KPDM+ImVjaG8gMCA+IC9wcm9j
-L3N5cy9rZXJuZWwvaHVuZ190YXNrX3RpbWVvdXRfc2VjcyIgZGlzYWJsZXMgdGhpcyBtZXNzYWdl
-Lg0KPDY+c2NwICAgICAgICAgICAgIEQgMWZkYjNiNGMgICAgIDAgMTUxOTAgIDE1MTg5IDB4MDAw
-MDAwMDANCjw2PkNhbGwgVHJhY2U6DQo8Nj5bYTQ2OGZiNjBdIFswOTI5ZWZmY10gMHg5MjllZmZj
-ICh1bnJlbGlhYmxlKQ0KPDY+W2E0NjhmYzIwXSBbODA2OGVhNTRdIF9fc2NoZWR1bGUrMHgxZjQv
-MHg1ZjANCjw2PlthNDY4ZmM2MF0gWzgwNjhlZTg0XSBzY2hlZHVsZSsweDM0LzB4YjANCjw2Plth
-NDY4ZmM3MF0gWzgwNjhmMjMwXSBzY2hlZHVsZV9wcmVlbXB0X2Rpc2FibGVkKzB4MTAvMHgyMA0K
-PDY+W2E0NjhmYzgwXSBbODA2OTA4YTBdIF9fbXV0ZXhfbG9ja19zbG93cGF0aCsweGEwLzB4MTQw
-DQo8Nj5bYTQ2OGZjYzBdIFs4MDY5MDk5NF0gbXV0ZXhfbG9jaysweDU0LzB4NzANCjw2PlthNDY4
-ZmNkMF0gWzgwMjIzN2UwXSBqZmZzMl9yZXNlcnZlX3NwYWNlKzB4NDAvMHgzMTANCjw2PlthNDY4
-ZmQ0MF0gWzgwMjI2M2IwXSBqZmZzMl93cml0ZV9pbm9kZV9yYW5nZSsweGUwLzB4MmUwDQo8Nj5b
-YTQ2OGZkYTBdIFs4MDIyMGMwNF0gamZmczJfd3JpdGVfZW5kKzB4ZjQvMHgyZDANCjw2PlthNDY4
-ZmRlMF0gWzgwMGI2MmI0XSBnZW5lcmljX3BlcmZvcm1fd3JpdGUrMHgxMTQvMHgyMDANCjw2Plth
-NDY4ZmU0MF0gWzgwMGI3NzJjXSBfX2dlbmVyaWNfZmlsZV93cml0ZV9pdGVyKzB4MWJjLzB4MjMw
-DQo8Nj5bYTQ2OGZlODBdIFs4MDBiNzhiMF0gZ2VuZXJpY19maWxlX3dyaXRlX2l0ZXIrMHgxMTAv
-MHgzMDANCjw2PlthNDY4ZmVhMF0gWzgwMTAzY2IwXSBfX3Zmc193cml0ZSsweGMwLzB4MTMwDQo8
-Nj5bYTQ2OGZlZjBdIFs4MDEwNDY2MF0gdmZzX3dyaXRlKzB4YTAvMHgxYjANCjw2PlthNDY4ZmYx
-MF0gWzgwMTA1MDZjXSBTeVNfd3JpdGUrMHg0Yy8weGQwDQo8Nj5bYTQ2OGZmNDBdIFs4MDAwZWRh
-MF0gcmV0X2Zyb21fc3lzY2FsbCsweDAvMHgzYw0KPDY+LS0tIGludGVycnVwdDogYzAxIGF0IDB4
-MWZkYjNiNGMNCjw2PiAgICBMUiA9IDB4MjAyMWFkY2MNCg0KT24gMTgvMDcvMTcgMTk6MTcsIFJp
-Y2hhcmQgV2VpbmJlcmdlciB3cm90ZToNCj4gS3llb25nIFlvbywNCj4gDQo+IE9uIE1vbiwgSnVs
-IDE3LCAyMDE3IGF0IDExOjU0IFBNLCBLeWVvbmcgWW9vDQo+IDxLeWVvbmcuWW9vQGFsbGllZHRl
-bGVzaXMuY28ubno+IHdyb3RlOg0KPj4gSGksDQo+Pg0KPj4gQ2FuIHNvbWVvbmUgcmV2aWV3IHRo
-aXMgYW5kIGdpdmUgbWUgYW55IGZlZWRiYWNrPw0KPj4NCj4+IFRoaXMgcGF0Y2ggaXMgdG8gcHJl
-dmVudCBkZWFkbG9jayBpbiBqZmZzMiBHQy4NCj4+DQo+PiBUaGFua3MsDQo+PiBLeWVvbmcNCj4+
-DQo+Pg0KPj4gT24gMDQvMDcvMTcgMTY6MjIsIEt5ZW9uZyBZb28gd3JvdGU6DQo+Pj4gR0MgdGFz
-ayBjYW4gZGVhZGxvY2sgaW4gcmVhZF9jYWNoZV9wYWdlKCkgYmVjYXVzZSBpdCBtYXkgYXR0ZW1w
-dA0KPj4+IHRvIHJlbGVhc2UgYSBwYWdlIHRoYXQgaXMgYWN0dWFsbHkgYWxsb2NhdGVkIGJ5IGFu
-b3RoZXIgdGFzayBpbg0KPj4+IGpmZnMyX3dyaXRlX2JlZ2luKCkuDQo+Pj4gVGhlIHJlYXNvbiBp
-cyB0aGF0IGluIGpmZnMyX3dyaXRlX2JlZ2luKCkgdGhlcmUgaXMgYSBzbWFsbCB3aW5kb3cNCj4+
-PiBhIGNhY2hlIHBhZ2UgaXMgYWxsb2NhdGVkIGZvciB1c2UgYnV0IG5vdCBzZXQgVXB0b2RhdGUg
-eWV0Lg0KPj4+DQo+Pj4gVGhpcyBlbmRzIHVwIHdpdGggYSBkZWFkbG9jayBiZXR3ZWVuIHR3byB0
-YXNrczoNCj4+PiAxKSBBIHRhc2sgKGUuZy4gZmlsZSBjb3B5KQ0KPj4+ICAgICAgLSBqZmZzMl93
-cml0ZV9iZWdpbigpIGxvY2tzIGEgY2FjaGUgcGFnZQ0KPj4+ICAgICAgLSBqZmZzMl93cml0ZV9l
-bmQoKSB0cmllcyB0byBsb2NrICJhbGxvY19zZW0iIGZyb20NCj4+PiAgICAgICAgIGpmZnMyX3Jl
-c2VydmVfc3BhY2UoKSA8LS0gU1RVQ0sNCj4+PiAyKSBHQyB0YXNrIChqZmZzMl9nY2RfbXRkMykN
-Cj4+PiAgICAgIC0gamZmczJfZ2FyYmFnZV9jb2xsZWN0X3Bhc3MoKSBsb2NrcyAiYWxsb2Nfc2Vt
-Ig0KPj4+ICAgICAgLSB0cnkgdG8gbG9jayB0aGUgc2FtZSBjYWNoZSBwYWdlIGluIHJlYWRfY2Fj
-aGVfcGFnZSgpIDwtLSBTVFVDSw0KPiANCj4gWW91ciBkZXNjcmlwdGlvbiBkb2VzIG5vdCBtYXRj
-aCB0aGUgY29kZS4gQXJlIHlvdSBzZWVpbmcgdGhpcyBvbiBhDQo+IHJlY2VudCBtYWlubGluZSBr
-ZXJuZWw/DQo+IENhbiB0IGJlIHRoYXQgeW91ciBrZXJuZWwgZG9lcyBub3QgaGFzIHRoaXMgY29t
-bWl0Pw0KPiBjb21taXQgMTU3MDc4ZjY0YjhhOWNkNzAxMWI2YjkwMGIyZjI0OThkZjg1MDc0OA0K
-PiBBdXRob3I6IFRob21hcyBCZXRrZXIgPHRob21hcy5iZXRrZXJAcm9oZGUtc2Nod2Fyei5jb20+
-DQo+IERhdGU6ICAgVHVlIE5vdiAxMCAyMjoxODoxNSAyMDE1ICswMTAwDQo+IA0KPiAgICAgIFJl
-dmVydCAiamZmczI6IEZpeCBsb2NrIGFjcXVpc2l0aW9uIG9yZGVyIGJ1ZyBpbiBqZmZzMl93cml0
-ZV9iZWdpbiINCj4gDQo+ICAgICAgVGhpcyByZXZlcnRzIGNvbW1pdCA1ZmZkMzQxMmFlNTUNCj4g
-ICAgICAoImpmZnMyOiBGaXggbG9jayBhY3F1aXNpdGlvbiBvcmRlciBidWcgaW4gamZmczJfd3Jp
-dGVfYmVnaW4iKS4NCj4gDQo+IA==
+v2:
+
+1. Addressed the review comments given in v1
+2. Removed the DMA coherent buffer for register read and used
+   streaming DMA API’s
+3. Reorganized the NAND read and write functions
+4. Separated patch for driver and documentation changes
+5. Changed the compatible string for EBI2
+
+v1:
+
+http://www.spinics.net/lists/devicetree/msg183706.html
+
+Abhishek Sahu (25):
+  mtd: nand: qcom: fix config error for BCH
+  mtd: nand: qcom: program NAND_DEV_CMD_VLD register
+  mtd: nand: qcom: change compatible string for EBI2 NANDC
+  dt-bindings: qcom_nandc: change compatible string for EBI2 NANDC
+  mtd: nand: qcom: remove redundant chip select compatible string
+  dt-bindings: qcom_nandc: remove chip select compatible string
+  mtd: nand: qcom: reorganize nand page read
+  mtd: nand: qcom: reorganize nand page write
+  mtd: nand: qcom: remove memset for clearing read register buffer
+  mtd: nand: qcom: reorganize nand devices probing
+  mtd: nand: qcom: support for NAND controller properties
+  dt-bindings: qcom_nandc: QPIC NAND documentation
+  mtd: nand: qcom: add QPIC NAND compatible string
+  mtd: nand: qcom: add and initialize QPIC DMA resources
+  mtd: nand: qcom: DMA mapping support for register read buffer
+  mtd: nand: qcom: allocate BAM transaction
+  mtd: nand: qcom: add BAM DMA descriptor handling
+  mtd: nand: qcom: support for passing flags in transfer functions
+  mtd: nand: qcom: support for read location registers
+  mtd: nand: qcom: erased codeword detection configuration
+  mtd: nand: qcom: support for QPIC page read/write
+  mtd: nand: qcom: QPIC raw write support
+  mtd: nand: qcom: change register offset defines with enums
+  dt-bindings: qcom_nandc: compatible string for version 1.5.0
+  mtd: nand: qcom: support for QPIC version 1.5.0
+
+ .../devicetree/bindings/mtd/qcom_nandc.txt         |   56 +-
+ drivers/mtd/nand/qcom_nandc.c                      | 1157 ++++++++++++++++----
+ 2 files changed, 1010 insertions(+), 203 deletions(-)
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
