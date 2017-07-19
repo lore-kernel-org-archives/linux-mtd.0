@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dXnTt-0005QS-FO
- for linux-mtd@lists.infradead.org; Wed, 19 Jul 2017 11:49:34 +0000
+ id 1dXnU3-0005ZV-Ev
+ for linux-mtd@lists.infradead.org; Wed, 19 Jul 2017 11:49:41 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: dwmw2@infradead.org, computersforpeace@gmail.com,
  boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
@@ -10,10 +10,10 @@ Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
  andy.gross@linaro.org, architt@codeaurora.org, sricharan@codeaurora.org,
  Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH v2 03/25] mtd: nand: qcom: change compatible string for EBI2
- NANDC
-Date: Wed, 19 Jul 2017 17:17:51 +0530
-Message-Id: <1500464893-11352-4-git-send-email-absahu@codeaurora.org>
+Subject: [PATCH v2 04/25] dt-bindings: qcom_nandc: change compatible string
+ for EBI2 NANDC
+Date: Wed, 19 Jul 2017 17:17:52 +0530
+Message-Id: <1500464893-11352-5-git-send-email-absahu@codeaurora.org>
 In-Reply-To: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
 References: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
 MIME-Version: 1.0
@@ -39,21 +39,23 @@ changing compatible string is safe.
 
 Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 ---
- drivers/mtd/nand/qcom_nandc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/mtd/qcom_nandc.txt | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-index f3b995d..8fa2f0c 100644
---- a/drivers/mtd/nand/qcom_nandc.c
-+++ b/drivers/mtd/nand/qcom_nandc.c
-@@ -2190,7 +2190,7 @@ static int qcom_nandc_remove(struct platform_device *pdev)
-  * more controller variants
-  */
- static const struct of_device_id qcom_nandc_of_match[] = {
--	{	.compatible = "qcom,ipq806x-nand",
-+	{	.compatible = "qcom,ebi2-nandc",
- 		.data = (void *)EBI2_NANDC_ECC_MODES,
- 	},
- 	{}
+diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+index 70dd511..4511918 100644
+--- a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
++++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+@@ -1,7 +1,9 @@
+ * Qualcomm NAND controller
+ 
+ Required properties:
+-- compatible:		should be "qcom,ipq806x-nand"
++- compatible:		should be "qcom,ebi2-nandc" - EBI2 NAND which uses ADM
++			DMA like IPQ8064.
++
+ - reg:			MMIO address range
+ - clocks:		must contain core clock and always on clock
+ - clock-names:		must contain "core" for the core clock and "aon" for the
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
