@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dXnVi-0007xq-5W
- for linux-mtd@lists.infradead.org; Wed, 19 Jul 2017 11:52:15 +0000
+ id 1dXnWG-0008QV-9m
+ for linux-mtd@lists.infradead.org; Wed, 19 Jul 2017 11:53:10 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: dwmw2@infradead.org, computersforpeace@gmail.com,
  boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
@@ -10,9 +10,9 @@ Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
  andy.gross@linaro.org, architt@codeaurora.org, sricharan@codeaurora.org,
  Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH v2 13/25] mtd: nand: qcom: add QPIC NAND compatible string
-Date: Wed, 19 Jul 2017 17:18:01 +0530
-Message-Id: <1500464893-11352-14-git-send-email-absahu@codeaurora.org>
+Subject: [PATCH v2 16/25] mtd: nand: qcom: allocate BAM transaction
+Date: Wed, 19 Jul 2017 17:18:04 +0530
+Message-Id: <1500464893-11352-17-git-send-email-absahu@codeaurora.org>
 In-Reply-To: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
 References: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,57 +24,199 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The current driver only support EBI2 NAND which uses ADM DMA. The
-latest QCOM controller supports QPIC NAND which uses BAM DMA. NAND
-registers and programming sequence are same for EBI2 and QPIC
-NAND so the same driver can support QPIC NAND also by adding the
-BAM DMA support. This patch adds the QPIC NAND support in current
-NAND driver with compatible string "qcom,qpic-nandc-v1.4.0" and
-maps it with different configuration parameter in driver data.
+The BAM transaction is the core data structure which will be used
+for all the data transfers in QPIC NAND. Since the base layer is
+serializing all the NAND requests so allocating BAM transaction
+before every transfer will be overhead. The memory for it be
+allocated during probe time and before every transfer, it will be
+cleared. The BAM transaction contains the array of command
+elements, command and data scatter gather list and indexes. For
+every transfer, all the resource will be taken from BAM
+transaction.
 
 Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 ---
- drivers/mtd/nand/qcom_nandc.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/mtd/nand/qcom_nandc.c | 114 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 114 insertions(+)
 
 diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-index 3b0ae91..6d24630 100644
+index f49c3da..fc29c97 100644
 --- a/drivers/mtd/nand/qcom_nandc.c
 +++ b/drivers/mtd/nand/qcom_nandc.c
-@@ -323,9 +323,11 @@ struct qcom_nand_host {
-  * This data type corresponds to the nand controller properties which varies
-  * among different NAND controller IP's.
-  * @ecc_modes - ecc mode for NAND
-+ * @is_bam - whether NAND controller is using bam
-  */
- struct qcom_props {
- 	u32 ecc_modes;
-+	bool is_bam;
- };
+@@ -22,6 +22,7 @@
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <linux/delay.h>
++#include <linux/dma/qcom_bam_dma.h>
  
- static inline struct qcom_nand_host *to_qcom_nand_host(struct nand_chip *chip)
-@@ -2245,6 +2247,12 @@ static int qcom_nandc_remove(struct platform_device *pdev)
+ /* NANDc reg offsets */
+ #define	NAND_FLASH_CMD			0x00
+@@ -172,6 +173,45 @@
+ #define	ECC_BCH_4BIT	BIT(2)
+ #define	ECC_BCH_8BIT	BIT(3)
  
- static const struct qcom_props ebi2_nandc_data = {
- 	.ecc_modes = (ECC_RS_4BIT | ECC_BCH_8BIT),
-+	.is_bam = false,
++#define QPIC_PER_CW_CMD_ELEMENTS	32
++#define QPIC_PER_CW_CMD_SGL		32
++#define QPIC_PER_CW_DATA_SGL		8
++
++/*
++ * This data type corresponds to the BAM transaction which will be used for all
++ * NAND transfers.
++ * @bam_ce - the array of bam command elements
++ * @cmd_sgl - sgl for nand bam command pipe
++ * @data_sgl - sgl for nand bam consumer/producer pipe
++ * @bam_ce_pos - the index in bam_ce which is available for next sgl request
++ * @bam_ce_start - the index in bam_ce which marks the start position ce
++ *		   for current sgl. It will be used for size calculation
++ *		   for current sgl
++ * @cmd_sgl_pos - current index in command sgl.
++ * @tx_sgl_pos - current index in data sgl for tx.
++ * @rx_sgl_pos - current index in data sgl for rx.
++ */
++struct bam_transaction {
++	struct bam_cmd_element *bam_ce;
++	struct scatterlist *cmd_sgl;
++	struct scatterlist *data_sgl;
++	u32 bam_ce_pos;
++	u32 bam_ce_start;
++	u32 cmd_sgl_pos;
++	u32 cmd_sgl_start;
++	u32 tx_sgl_pos;
++	u32 tx_sgl_start;
++	u32 rx_sgl_pos;
++	u32 rx_sgl_start;
 +};
 +
-+static const struct qcom_props qpic_nandc_v1_4_0_data = {
-+	.ecc_modes = (ECC_BCH_4BIT | ECC_BCH_8BIT),
-+	.is_bam = true,
++/*
++ * This data type corresponds to the nand dma descriptor
++ * @list - list for desc_info
++ * @dir - DMA transfer direction
++ * @sgl - sgl which will be used for single sgl dma descriptor
++ * @dma_desc - low level dma engine descriptor
++ */
+ struct desc_info {
+ 	struct list_head node;
+ 
+@@ -238,6 +278,8 @@ struct nandc_regs {
+  * @cmd1/vld:			some fixed controller register values
+  * @props:			properties of current NAND controller IP,
+  *				initialized via DT match data
++ * @max_cwperpage:		maximum qpic codeword required. calcualted
++ *				from all nand device pagesize
+  */
+ struct qcom_nand_controller {
+ 	struct nand_hw_control controller;
+@@ -265,11 +307,13 @@ struct qcom_nand_controller {
+ 	};
+ 
+ 	struct list_head desc_list;
++	struct bam_transaction *bam_txn;
+ 
+ 	u8		*data_buffer;
+ 	int		buf_size;
+ 	int		buf_count;
+ 	int		buf_start;
++	unsigned int	max_cwperpage;
+ 
+ 	__le32 *reg_read_buf;
+ 	dma_addr_t reg_read_buf_phys;
+@@ -342,6 +386,50 @@ struct qcom_props {
+ 	bool is_bam;
  };
  
- /*
-@@ -2255,6 +2263,9 @@ static int qcom_nandc_remove(struct platform_device *pdev)
- 	{	.compatible = "qcom,ebi2-nandc",
- 		.data = &ebi2_nandc_data,
- 	},
-+	{	.compatible = "qcom,qpic-nandc-v1.4.0",
-+		.data = &qpic_nandc_v1_4_0_data,
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, qcom_nandc_of_match);
++/* Frees the BAM transaction memory */
++static void free_bam_transaction(struct qcom_nand_controller *nandc)
++{
++	struct bam_transaction *bam_txn = nandc->bam_txn;
++
++	devm_kfree(nandc->dev, bam_txn);
++}
++
++/* Allocates and Initializes the BAM transaction */
++static struct bam_transaction *
++alloc_bam_transaction(struct qcom_nand_controller *nandc)
++{
++	struct bam_transaction *bam_txn;
++	size_t bam_txn_size;
++	unsigned int num_cw = nandc->max_cwperpage;
++	void *bam_txn_buf;
++
++	bam_txn_size =
++		sizeof(*bam_txn) + num_cw *
++		((sizeof(*bam_txn->bam_ce) * QPIC_PER_CW_CMD_ELEMENTS) +
++		(sizeof(*bam_txn->cmd_sgl) * QPIC_PER_CW_CMD_SGL) +
++		(sizeof(*bam_txn->data_sgl) * QPIC_PER_CW_DATA_SGL));
++
++	bam_txn_buf = devm_kzalloc(nandc->dev, bam_txn_size, GFP_KERNEL);
++	if (!bam_txn_buf)
++		return NULL;
++
++	bam_txn = bam_txn_buf;
++	bam_txn_buf += sizeof(*bam_txn);
++
++	bam_txn->bam_ce = bam_txn_buf;
++	bam_txn_buf +=
++		sizeof(*bam_txn->bam_ce) * QPIC_PER_CW_CMD_ELEMENTS * num_cw;
++
++	bam_txn->cmd_sgl = bam_txn_buf;
++	bam_txn_buf +=
++		sizeof(*bam_txn->bam_ce) * QPIC_PER_CW_CMD_SGL * num_cw;
++
++	bam_txn->data_sgl = bam_txn_buf;
++	nandc->max_cwperpage = num_cw;
++
++	return bam_txn;
++}
++
+ static inline struct qcom_nand_host *to_qcom_nand_host(struct nand_chip *chip)
+ {
+ 	return container_of(chip, struct qcom_nand_host, chip);
+@@ -1913,6 +2001,8 @@ static int qcom_nand_host_setup(struct qcom_nand_host *host)
+ 	mtd_set_ooblayout(mtd, &qcom_nand_ooblayout_ops);
+ 
+ 	cwperpage = mtd->writesize / ecc->size;
++	nandc->max_cwperpage = max_t(unsigned int, nandc->max_cwperpage,
++				     cwperpage);
+ 
+ 	/*
+ 	 * DATA_UD_BYTES varies based on whether the read/write command protects
+@@ -2047,6 +2137,20 @@ static int qcom_nandc_alloc(struct qcom_nand_controller *nandc)
+ 			dev_err(nandc->dev, "failed to request cmd channel\n");
+ 			return -ENODEV;
+ 		}
++
++		/*
++		 * Initially allocate BAM transaction to read ONFI param page.
++		 * After detecting all the devices, this BAM transaction will
++		 * be freed and the next BAM tranasction will be allocated with
++		 * maximum codeword size
++		 */
++		nandc->max_cwperpage = 1;
++		nandc->bam_txn = alloc_bam_transaction(nandc);
++		if (!nandc->bam_txn) {
++			dev_err(nandc->dev,
++				"failed to allocate bam transaction\n");
++			return -ENOMEM;
++		}
+ 	} else {
+ 		nandc->chan = dma_request_slave_channel(nandc->dev, "rxtx");
+ 		if (!nandc->chan) {
+@@ -2202,6 +2306,16 @@ static int qcom_probe_nand_devices(struct qcom_nand_controller *nandc)
+ 	if (list_empty(&nandc->host_list))
+ 		return -ENODEV;
+ 
++	if (nandc->props->is_bam) {
++		free_bam_transaction(nandc);
++		nandc->bam_txn = alloc_bam_transaction(nandc);
++		if (!nandc->bam_txn) {
++			dev_err(nandc->dev,
++				"failed to allocate bam transaction\n");
++			return -ENOMEM;
++		}
++	}
++
+ 	list_for_each_entry_safe(host, tmp, &nandc->host_list, node) {
+ 		ret = qcom_nand_mtd_register(nandc, host, child);
+ 		if (ret) {
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
