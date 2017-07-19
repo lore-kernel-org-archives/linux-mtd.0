@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dXnWt-0002Wu-09
- for linux-mtd@lists.infradead.org; Wed, 19 Jul 2017 11:52:40 +0000
+ id 1dXnVX-0002P1-Cv
+ for linux-mtd@lists.infradead.org; Wed, 19 Jul 2017 11:51:15 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: dwmw2@infradead.org, computersforpeace@gmail.com,
  boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
@@ -10,10 +10,9 @@ Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
  andy.gross@linaro.org, architt@codeaurora.org, sricharan@codeaurora.org,
  Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH v2 20/25] mtd: nand: qcom: erased codeword detection
- configuration
-Date: Wed, 19 Jul 2017 17:18:08 +0530
-Message-Id: <1500464893-11352-21-git-send-email-absahu@codeaurora.org>
+Subject: [PATCH v2 12/25] dt-bindings: qcom_nandc: QPIC NAND documentation
+Date: Wed, 19 Jul 2017 17:18:00 +0530
+Message-Id: <1500464893-11352-13-git-send-email-absahu@codeaurora.org>
 In-Reply-To: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
 References: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,82 +24,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The NAND controller returns ECC failure during read of completely
-erased codeword. The NAND controller has hardware functionality
-to detect erased codeword in case of BCH ECC algorithm. The
-NAND_ERASED_CW_DETECT_CFG register controls the Erased
-Codeword/Page detection controller. This register should be reset
-before every page read by setting and clearing bit 0 of
-NAND_ERASED_CW_DETECT_CFG.
+1. QPIC NAND will use compatible string "qcom,qpic-nandc-v1.4.0"
+2. QPIC NAND will 3 BAM channels: command, data tx and data rx
+   while EBI2 NAND uses only single ADM channel.
+3. CRCI is only required for ADM DMA and its not required for
+   QPIC NAND.
 
 Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 ---
- drivers/mtd/nand/qcom_nandc.c | 23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+ .../devicetree/bindings/mtd/qcom_nandc.txt         | 54 ++++++++++++++++++++--
+ 1 file changed, 51 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-index b9e0eec..89f6a89 100644
---- a/drivers/mtd/nand/qcom_nandc.c
-+++ b/drivers/mtd/nand/qcom_nandc.c
-@@ -196,6 +196,11 @@
- #define NAND_BAM_NWD			BIT(1)
- /* Finish writing in the current sgl and start writing in another sgl */
- #define NAND_BAM_NEXT_SGL		BIT(2)
-+/*
-+ * Erased codeword status is being used two times in single transfer so this
-+ * flag will determine the current value of erased codeword status register
-+ */
-+#define NAND_ERASED_CW_SET		BIT(4)
+diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+index b24adfe..8efaeb0 100644
+--- a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
++++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+@@ -1,13 +1,15 @@
+ * Qualcomm NAND controller
  
- /*
-  * This data type corresponds to the BAM transaction which will be used for all
-@@ -279,6 +284,8 @@ struct nandc_regs {
- 	__le32 read_location2;
- 	__le32 read_location3;
- 
-+	__le32 erased_cw_detect_cfg_clr;
-+	__le32 erased_cw_detect_cfg_set;
- };
- 
- /*
-@@ -815,6 +822,13 @@ static int write_reg_dma(struct qcom_nand_controller *nandc, int first,
- 	if (first == NAND_FLASH_CMD)
- 		flow_control = true;
- 
-+	if (first == NAND_ERASED_CW_DETECT_CFG) {
-+		if (flags & NAND_ERASED_CW_SET)
-+			vaddr = &regs->erased_cw_detect_cfg_set;
-+		else
-+			vaddr = &regs->erased_cw_detect_cfg_clr;
-+	}
+ Required properties:
+-- compatible:		should be "qcom,ebi2-nandc" - EBI2 NAND which uses ADM
+-			DMA like IPQ8064.
+-
++- compatible:		must be one of the following:
++	* "qcom,ebi2-nandc" - EBI2 NAND which uses ADM DMA like IPQ8064.
++	* "qcom,qpic-nandc-v1.4.0" - QPIC NAND v1.4.0 which uses BAM DMA like IPQ4019.
+ - reg:			MMIO address range
+ - clocks:		must contain core clock and always on clock
+ - clock-names:		must contain "core" for the core clock and "aon" for the
+ 			always on clock
 +
- 	if (first == NAND_EXEC_CMD)
- 		flags |= NAND_BAM_NWD;
++EBI2 specific properties:
+ - dmas:			DMA specifier, consisting of a phandle to the ADM DMA
+ 			controller node and the channel number to be used for
+ 			NAND. Refer to dma.txt and qcom_adm.txt for more details
+@@ -18,6 +20,12 @@ Required properties:
+ - qcom,data-crci:	must contain the ADM data type CRCI block instance
+ 			number specified for the NAND controller on the given
+ 			platform
++
++QPIC specific properties:
++- dmas:			DMA specifier, consisting of a phandle to the BAM DMA
++			and the channel number to be used for NAND. Refer to
++			dma.txt, qcom_bam_dma.txt for more details
++- dma-names:		must contain all 3 channel names : "tx", "rx", "cmd"
+ - #address-cells:	<1> - subnodes give the chip-select number
+ - #size-cells:		<0>
  
-@@ -867,6 +881,9 @@ static void config_nand_page_read(struct qcom_nand_controller *nandc)
- 	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
- 	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
- 	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
-+	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1, 0);
-+	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1,
-+		      NAND_ERASED_CW_SET | NAND_BAM_NEXT_SGL);
- }
- 
- /*
-@@ -2268,9 +2285,13 @@ static int qcom_nand_host_setup(struct qcom_nand_host *host)
- 
- 	host->clrflashstatus = FS_READY_BSY_N;
- 	host->clrreadstatus = 0xc0;
-+	nandc->regs->erased_cw_detect_cfg_clr =
-+		cpu_to_le32(CLR_ERASED_PAGE_DET);
-+	nandc->regs->erased_cw_detect_cfg_set =
-+		cpu_to_le32(SET_ERASED_PAGE_DET);
- 
- 	dev_dbg(nandc->dev,
--		"cfg0 %x cfg1 %x ecc_buf_cfg %x ecc_bch cfg %x cw_size %d cw_data %d strength %d parity_bytes %d steps %d\n",
-+	"cfg0 %x cfg1 %x ecc_buf_cfg %x ecc_bch cfg %x cw_size %d cw_data %d strength %d parity_bytes %d steps %d\n",
- 		host->cfg0, host->cfg1, host->ecc_buf_cfg, host->ecc_bch_cfg,
- 		host->cw_size, host->cw_data, ecc->strength, ecc->bytes,
- 		cwperpage);
+@@ -84,3 +92,43 @@ nand@1ac00000 {
+ 		};
+ 	};
+ };
++
++nand@79b0000 {
++	compatible = "qcom,qpic-nandc-v1.4.0";
++	reg = <0x79b0000 0x1000>;
++
++	clocks = <&gcc GCC_QPIC_CLK>,
++		<&gcc GCC_QPIC_AHB_CLK>;
++	clock-names = "core", "aon";
++
++	dmas = <&qpicbam 0>,
++		<&qpicbam 1>,
++		<&qpicbam 2>;
++	dma-names = "tx", "rx", "cmd";
++
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	nandcs@0 {
++		reg = <0>;
++		nand-ecc-strength = <4>;
++		nand-ecc-step-size = <512>;
++		nand-bus-width = <8>;
++
++		partitions {
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			partition@0 {
++				label = "boot-nand";
++				reg = <0 0x58a0000>;
++			};
++
++			partition@58a0000 {
++				label = "fs-nand";
++				reg = <0x58a0000 0x4000000>;
++			};
++		};
++	};
++};
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
