@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dXnUI-0005lU-Eh
- for linux-mtd@lists.infradead.org; Wed, 19 Jul 2017 11:49:56 +0000
+ by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dXnUU-00058Y-Mh
+ for linux-mtd@lists.infradead.org; Wed, 19 Jul 2017 11:50:07 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: dwmw2@infradead.org, computersforpeace@gmail.com,
  boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
@@ -10,10 +10,10 @@ Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
  andy.gross@linaro.org, architt@codeaurora.org, sricharan@codeaurora.org,
  Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH v2 05/25] mtd: nand: qcom: remove redundant chip select
+Subject: [PATCH v2 06/25] dt-bindings: qcom_nandc: remove chip select
  compatible string
-Date: Wed, 19 Jul 2017 17:17:53 +0530
-Message-Id: <1500464893-11352-6-git-send-email-absahu@codeaurora.org>
+Date: Wed, 19 Jul 2017 17:17:54 +0530
+Message-Id: <1500464893-11352-7-git-send-email-absahu@codeaurora.org>
 In-Reply-To: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
 References: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
 MIME-Version: 1.0
@@ -40,47 +40,28 @@ changing compatible string is safe.
 
 Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 ---
- drivers/mtd/nand/qcom_nandc.c | 26 ++++++++++++--------------
- 1 file changed, 12 insertions(+), 14 deletions(-)
+ Documentation/devicetree/bindings/mtd/qcom_nandc.txt | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-index 8fa2f0c..110a26a 100644
---- a/drivers/mtd/nand/qcom_nandc.c
-+++ b/drivers/mtd/nand/qcom_nandc.c
-@@ -2129,22 +2129,20 @@ static int qcom_nandc_probe(struct platform_device *pdev)
- 		goto err_setup;
+diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+index 4511918..b24adfe 100644
+--- a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
++++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+@@ -28,7 +28,6 @@ chip-selects which (may) contain NAND flash chips. Their properties are as
+ follows.
  
- 	for_each_available_child_of_node(dn, child) {
--		if (of_device_is_compatible(child, "qcom,nandcs")) {
--			host = devm_kzalloc(dev, sizeof(*host), GFP_KERNEL);
--			if (!host) {
--				of_node_put(child);
--				ret = -ENOMEM;
--				goto err_cs_init;
--			}
--
--			ret = qcom_nand_host_init(nandc, host, child);
--			if (ret) {
--				devm_kfree(dev, host);
--				continue;
--			}
-+		host = devm_kzalloc(dev, sizeof(*host), GFP_KERNEL);
-+		if (!host) {
-+			of_node_put(child);
-+			ret = -ENOMEM;
-+			goto err_cs_init;
-+		}
+ Required properties:
+-- compatible:		should contain "qcom,nandcs"
+ - reg:			a single integer representing the chip-select
+ 			number (e.g., 0, 1, 2, etc.)
+ - #address-cells:	see partition.txt
+@@ -62,7 +61,6 @@ nand@1ac00000 {
+ 	#size-cells = <0>;
  
--			list_add_tail(&host->node, &nandc->host_list);
-+		ret = qcom_nand_host_init(nandc, host, child);
-+		if (ret) {
-+			devm_kfree(dev, host);
-+			continue;
- 		}
-+
-+		list_add_tail(&host->node, &nandc->host_list);
- 	}
+ 	nandcs@0 {
+-		compatible = "qcom,nandcs";
+ 		reg = <0>;
  
- 	if (list_empty(&nandc->host_list)) {
+ 		nand-ecc-strength = <4>;
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
