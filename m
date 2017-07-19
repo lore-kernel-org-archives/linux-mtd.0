@@ -1,21 +1,16 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dXnVv-0005BP-2g
- for linux-mtd@lists.infradead.org; Wed, 19 Jul 2017 11:51:35 +0000
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org, mark.rutland@arm.com
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- andy.gross@linaro.org, architt@codeaurora.org, sricharan@codeaurora.org,
- Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH v2 14/25] mtd: nand: qcom: add and initialize QPIC DMA
- resources
-Date: Wed, 19 Jul 2017 17:18:02 +0530
-Message-Id: <1500464893-11352-15-git-send-email-absahu@codeaurora.org>
-In-Reply-To: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
-References: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
+Received: from mail-oi0-x233.google.com ([2607:f8b0:4003:c06::233])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dXqL3-0000uv-Kr
+ for linux-mtd@lists.infradead.org; Wed, 19 Jul 2017 14:52:35 +0000
+Received: by mail-oi0-x233.google.com with SMTP id 191so2815626oii.2
+ for <linux-mtd@lists.infradead.org>; Wed, 19 Jul 2017 07:52:13 -0700 (PDT)
+MIME-Version: 1.0
+From: Pankaj Pandey <pankaj.embedded@gmail.com>
+Date: Wed, 19 Jul 2017 20:21:51 +0530
+Message-ID: <CAOdCjQvoL9Dezquv09FNy-GTpumVPbXB8yf7-VQ7E0tyno3pTA@mail.gmail.com>
+Subject: nand on-die ecc for jffs2
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,138 +20,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-1. QPIC NAND uses 3 BAM channels: command, data tx and data
-   rx while EBI2 NAND uses only single ADM channel.
-2. CRCI is only required for ADM DMA and its not required for
-   QPIC NAND.
+Hi,
 
-Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
----
- drivers/mtd/nand/qcom_nandc.c | 83 +++++++++++++++++++++++++++++++++----------
- 1 file changed, 65 insertions(+), 18 deletions(-)
+I found below mentioned patches to support on-die ecc for micron nand
+flash which are working fine for me.
 
-diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-index 6d24630..cb2b245 100644
---- a/drivers/mtd/nand/qcom_nandc.c
-+++ b/drivers/mtd/nand/qcom_nandc.c
-@@ -250,9 +250,19 @@ struct qcom_nand_controller {
- 	struct clk *core_clk;
- 	struct clk *aon_clk;
- 
--	struct dma_chan *chan;
--	unsigned int cmd_crci;
--	unsigned int data_crci;
-+	union {
-+		struct {
-+			struct dma_chan *tx_chan;
-+			struct dma_chan *rx_chan;
-+			struct dma_chan *cmd_chan;
-+		};
-+		struct {
-+			struct dma_chan *chan;
-+			unsigned int cmd_crci;
-+			unsigned int data_crci;
-+		};
-+	};
-+
- 	struct list_head desc_list;
- 
- 	u8		*data_buffer;
-@@ -1985,10 +1995,31 @@ static int qcom_nandc_alloc(struct qcom_nand_controller *nandc)
- 	if (!nandc->reg_read_buf)
- 		return -ENOMEM;
- 
--	nandc->chan = dma_request_slave_channel(nandc->dev, "rxtx");
--	if (!nandc->chan) {
--		dev_err(nandc->dev, "failed to request slave channel\n");
--		return -ENODEV;
-+	if (nandc->props->is_bam) {
-+		nandc->tx_chan = dma_request_slave_channel(nandc->dev, "tx");
-+		if (!nandc->tx_chan) {
-+			dev_err(nandc->dev, "failed to request tx channel\n");
-+			return -ENODEV;
-+		}
-+
-+		nandc->rx_chan = dma_request_slave_channel(nandc->dev, "rx");
-+		if (!nandc->rx_chan) {
-+			dev_err(nandc->dev, "failed to request rx channel\n");
-+			return -ENODEV;
-+		}
-+
-+		nandc->cmd_chan = dma_request_slave_channel(nandc->dev, "cmd");
-+		if (!nandc->cmd_chan) {
-+			dev_err(nandc->dev, "failed to request cmd channel\n");
-+			return -ENODEV;
-+		}
-+	} else {
-+		nandc->chan = dma_request_slave_channel(nandc->dev, "rxtx");
-+		if (!nandc->chan) {
-+			dev_err(nandc->dev,
-+				"failed to request slave channel\n");
-+			return -ENODEV;
-+		}
- 	}
- 
- 	INIT_LIST_HEAD(&nandc->desc_list);
-@@ -2001,7 +2032,19 @@ static int qcom_nandc_alloc(struct qcom_nand_controller *nandc)
- 
- static void qcom_nandc_unalloc(struct qcom_nand_controller *nandc)
- {
--	dma_release_channel(nandc->chan);
-+	if (nandc->props->is_bam) {
-+		if (nandc->tx_chan)
-+			dma_release_channel(nandc->tx_chan);
-+
-+		if (nandc->rx_chan)
-+			dma_release_channel(nandc->rx_chan);
-+
-+		if (nandc->cmd_chan)
-+			dma_release_channel(nandc->cmd_chan);
-+	} else {
-+		if (nandc->chan)
-+			dma_release_channel(nandc->chan);
-+	}
- }
- 
- /* one time setup of a few nand controller registers */
-@@ -2140,16 +2183,20 @@ static int qcom_nandc_parse_dt(struct platform_device *pdev)
- 	struct device_node *np = nandc->dev->of_node;
- 	int ret;
- 
--	ret = of_property_read_u32(np, "qcom,cmd-crci", &nandc->cmd_crci);
--	if (ret) {
--		dev_err(nandc->dev, "command CRCI unspecified\n");
--		return ret;
--	}
-+	if (!nandc->props->is_bam) {
-+		ret = of_property_read_u32(np, "qcom,cmd-crci",
-+					   &nandc->cmd_crci);
-+		if (ret) {
-+			dev_err(nandc->dev, "command CRCI unspecified\n");
-+			return ret;
-+		}
- 
--	ret = of_property_read_u32(np, "qcom,data-crci", &nandc->data_crci);
--	if (ret) {
--		dev_err(nandc->dev, "data CRCI unspecified\n");
--		return ret;
-+		ret = of_property_read_u32(np, "qcom,data-crci",
-+					   &nandc->data_crci);
-+		if (ret) {
-+			dev_err(nandc->dev, "data CRCI unspecified\n");
-+			return ret;
-+		}
- 	}
- 
- 	return 0;
-@@ -2199,7 +2246,7 @@ static int qcom_nandc_probe(struct platform_device *pdev)
- 
- 	ret = qcom_nandc_alloc(nandc);
- 	if (ret)
--		return ret;
-+		goto err_core_clk;
- 
- 	ret = clk_prepare_enable(nandc->core_clk);
- 	if (ret)
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+Thomas Petazzoni (5):
+  dt-bindings: mtd: document new "on-die" nand-ecc-mode
+  mtd: nand: add core support for on-die ECC
+  mtd: nand: export nand_{read,write}_page_raw()
+  mtd: nand: add support for Micron on-die ECC
+  mtd: nand: fsmc_nand: handle on-die ECC case
+
+But regarding on-die ecc for jffs2 rootfilesystem I am getting
+below error when trying to untaring the rootfs on mounted nand flash
+mtd partition.
+
+[  120.103222] jffs2: mtd->read(0x44 bytes from 0x8c80030) returned ECC error
+[  120.118055] jffs2: mtd->read(0x22 bytes from 0x8c80074) returned ECC error
+
+Steps I have followed to format and untaring the rootfs.
+
+# flash_erase /dev/mtd11 0 0
+Erasing 128 Kibyte @ b7e0000 -- 100 % complete
+
+# mount -t jffs2 /dev/mtdblock11 /media
+# cd /media
+# cp /home/root/rootfs.tar.gz .
+# tar -xvzf rootfs.tar.gz
+
+Please suggest any pointer to fix this issue.  TIA !!
+
+Regards,
+Pankaj Pandey
