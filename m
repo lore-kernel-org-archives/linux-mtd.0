@@ -1,25 +1,90 @@
-Received: from mail-ua0-x22f.google.com ([2607:f8b0:400c:c08::22f])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dYI0w-0005WG-4m
- for linux-mtd@lists.infradead.org; Thu, 20 Jul 2017 20:25:39 +0000
-Received: by mail-ua0-x22f.google.com with SMTP id 35so31800093uax.3
- for <linux-mtd@lists.infradead.org>; Thu, 20 Jul 2017 13:25:16 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20170327160524.29019-1-jglauber@cavium.com>
-References: <20170327160524.29019-1-jglauber@cavium.com>
-From: Karl Beldan <karl.beldan@gmail.com>
-Date: Thu, 20 Jul 2017 20:25:14 +0000
-Message-ID: <CACYmx9NQCBSFJZTYhrw6J5G=rr5A3pAvFBLwm7d06-DoJdbtTg@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/2] Cavium NAND flash driver
-To: Jan Glauber <jglauber@cavium.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>,
+From: Heiko Stuebner <heiko@sntech.de>
+To: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+ Emilio =?ISO-8859-1?Q?L=F3pez?= <emilio@elopez.com.ar>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Alan Stern <stern@rowland.harvard.edu>, Alan Tull <atull@kernel.org>,
+ Alexandre Torgue <alexandre.torgue@st.com>, Andrew Lunn <andrew@lunn.ch>,
+ Ben Skeggs <bskeggs@redhat.com>,
+ Benjamin Gaignard <benjamin.gaignard@linaro.org>, Bin Liu <b-liu@ti.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Bjorn Helgaas <bhelgaas@google.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+ Chanwoo Choi <cw00.choi@samsung.com>, Chen Feng <puck.chen@hisilicon.com>,
+ Chen-Yu Tsai <wens@csie.org>, Corentin Labbe <clabbe.montjoie@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>, David Airlie <airlied@linux.ie>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Eduardo Valentin <edubezval@gmail.com>, Felipe Balbi <balbi@kernel.org>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Guenter Roeck <linux@roeck-us.net>, Hartmut Knaack <knaack.h@gmx.de>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ Jaehoon Chung <jh80.chung@samsung.com>, Jiri Slaby <jslaby@suse.com>,
+ Joachim Eastwood <manabian@gmail.com>, John Youn <johnyoun@synopsys.com>,
+ Jon Hunter <jonathanh@nvidia.com>, Jonathan Cameron <jic23@kernel.org>,
+ Jonathan Corbet <corbet@lwn.net>, Kalle Valo <kvalo@qca.qualcomm.com>,
+ Kishon Vijay Abraham I <kishon@ti.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Lars-Peter Clausen <lars@metafoo.de>, Laxman Dewangan <ldewangan@nvidia.com>,
+ Lee Jones <lee.jones@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Lucas Stach <l.stach@pengutronix.de>,
+ Marc Dietrich <marvin24@gmx.de>, Marek Vasut <marek.vasut@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Mark Yao <mark.yao@rock-chips.com>,
+ Mathias Nyman <mathias.nyman@intel.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Michael Turquette <mturquette@baylibre.com>,
+ Moritz Fischer <moritz.fischer@ettus.com>,
+ MyungJoo Ham <myungjoo.ham@samsung.com>, Ohad Ben-Cohen <ohad@wizery.com>,
+ Patrice Chotard <patrice.chotard@st.com>, Peter Chen <Peter.Chen@nxp.com>,
+ Peter De Schrijver <pdeschrijver@nvidia.com>,
+ Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+ Philippe Cornu <philippe.cornu@st.com>, Prashant Gaikwad <pgaikwad@nvidia.com>,
+ Rakesh Iyer <riyer@nvidia.com>, Ralf Baechle <ralf@linux-mips.org>,
+ Richard Weinberger <richard@nod.at>, Richard Zhu <hongxing.zhu@nxp.com>,
+ Rongrong Zou <zourongrong@gmail.com>, Ryder Lee <ryder.lee@mediatek.com>,
+ Salil Mehta <salil.mehta@huawei.com>, Shawn Lin <shawn.lin@rock-chips.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Stanimir Varbanov <svarbanov@mm-sol.com>, Stephen Boyd <sboyd@codeaurora.org>,
+ Tejun Heo <tj@kernel.org>, Thierry Reding <thierry.reding@gmail.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Vincent Abriou <vincent.abriou@st.com>, Vinod Koul <vinod.koul@intel.com>,
+ Vivien Didelot <vivien.didelot@savoirfairelinux.com>,
+ Wim Van Sebroeck <wim@iguana.be>, Wolfram Sang <wsa@the-dreams.de>,
+ Xinliang Liu <z.liuxinliang@hisilicon.com>,
+ Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+ Yannick Fertre <yannick.fertre@st.com>, Yisen Zhuang <yisen.zhuang@huawei.com>,
+ Zhang Rui <rui.zhang@intel.com>, alsa-devel@alsa-project.org,
+ ath10k@lists.infradead.org, devel@driverdev.osuosl.org,
+ dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+ linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-fpga@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+ linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, linux-mips@linux-mips.org,
+ linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-pci@vger.kernel.org, linux-pm@vger.kernel.org, linux-pwm@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org, linux-rockchip@lists.infradead.org,
+ linux-serial@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-tegra@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-watchdog@vger.kernel.org, linux-wireless@vger.kernel.org,
+ netdev@vger.kernel.org, nouveau@lists.freedesktop.org
+Subject: Re: [PATCH 000/102] Convert drivers to explicit reset API
+Date: Thu, 20 Jul 2017 22:32:49 +0200
+Message-ID: <1687646.TMvigZNUOP@phil>
+In-Reply-To: <20170719152646.25903-1-p.zabel@pengutronix.de>
+References: <20170719152646.25903-1-p.zabel@pengutronix.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,28 +96,14 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-On Mon, Mar 27, 2017 at 4:05 PM, Jan Glauber <jglauber@cavium.com> wrote:
-> This series adds a driver for the nand flash controller as found on Cavium's
-> ARM64 SOCs. For details about the controller see description of patch #2.
->
-> The nand flash chip on the board I used for testing is:
->
-> [   12.775877] nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xf1
-> [   12.782242] nand: Macronix MX30LF1GE8AB
-> [   12.786072] nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
->
-> This chip has internal on-die ECC (which cannot be disabled). Data
-> sheet can be found here:
-> http://www.macronix.com/en-us/products/NAND-Flash/SLC-NAND-Flash/Pages/spec.aspx?p=MX30LF1GE8AB
->
+>   crypto: rockchip: explicitly request exclusive reset control
+>   iio: adc: rockchip_saradc: explicitly request exclusive reset control
+>   PCI: rockchip: explicitly request exclusive reset control
+>   phy: rockchip-pcie: explicitly request exclusive reset control
+>   phy: rockchip-typec: explicitly request exclusive reset control
+>   phy: rockchip-usb: explicitly request exclusive reset control
+>   thermal: rockchip: explicitly request exclusive reset control
 
-I have some prototypes with this nand at hand.
-I wonder if anybody could get their hands on more information than
-what's on the datasheet or the archives on the site ?
-On the site are available:
-- a lld zip (low level driver) (no ondie ECC)
-- a verilog zip (only ondie ECC timings simulation)
-- a datasheet pdf (ambiguous, among other things ECC status vs sub pages)
+for the driver-related Rockchip changes
 
-
-Karl
+Acked-by: Heiko Stuebner <heiko@sntech.de>
