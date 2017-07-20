@@ -1,26 +1,25 @@
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Matt Brown <matthew.brown.dev@gmail.com>,
- "linuxppc-dev\@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
- "linux-ide\@vger.kernel.org" <linux-ide@vger.kernel.org>,
- DRI Development <dri-devel@lists.freedesktop.org>,
- "adi-buildroot-devel\@lists.sourceforge.net"
- <adi-buildroot-devel@lists.sourceforge.net>,
- Linux MMC List <linux-mmc@vger.kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel\@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- linux-spi <linux-spi@vger.kernel.org>,
- "linux-serial\@vger.kernel.org" <linux-serial@vger.kernel.org>,
- USB list <linux-usb@vger.kernel.org>
-Subject: Re: [PATCH] powerpc/asm/cacheflush: Cleanup cacheflush function params
-In-Reply-To: <CAMuHMdXU-R8kBs_xp7XDK0pnC5fakpghchuEPD8jtEcHLmgyHg@mail.gmail.com>
-References: <20170720062850.2195-1-matthew.brown.dev@gmail.com>
- <87mv7zgwpl.fsf@concordia.ellerman.id.au>
- <CAMuHMdXU-R8kBs_xp7XDK0pnC5fakpghchuEPD8jtEcHLmgyHg@mail.gmail.com>
-Date: Thu, 20 Jul 2017 23:01:56 +1000
-Message-ID: <87h8y7gt2z.fsf@concordia.ellerman.id.au>
+Received: from mail-ua0-x22f.google.com ([2607:f8b0:400c:c08::22f])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dYI0w-0005WG-4m
+ for linux-mtd@lists.infradead.org; Thu, 20 Jul 2017 20:25:39 +0000
+Received: by mail-ua0-x22f.google.com with SMTP id 35so31800093uax.3
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Jul 2017 13:25:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20170327160524.29019-1-jglauber@cavium.com>
+References: <20170327160524.29019-1-jglauber@cavium.com>
+From: Karl Beldan <karl.beldan@gmail.com>
+Date: Thu, 20 Jul 2017 20:25:14 +0000
+Message-ID: <CACYmx9NQCBSFJZTYhrw6J5G=rr5A3pAvFBLwm7d06-DoJdbtTg@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/2] Cavium NAND flash driver
+To: Jan Glauber <jglauber@cavium.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,40 +29,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+Hi,
 
-> On Thu, Jul 20, 2017 at 1:43 PM, Michael Ellerman <mpe@ellerman.id.au> wrote:
->> Matt Brown <matthew.brown.dev@gmail.com> writes:
->>> The cacheflush prototypes currently use start and stop values and each
->>> call requires typecasting the address to an unsigned long.
->>> This patch changes the cacheflush prototypes to follow the x86 style of
->>> using a base and size values, with base being a void pointer.
->>>
->>> All callers of the cacheflush functions, including drivers, have been
->>> modified to conform to the new prototypes.
->>>
->>> The 64 bit cacheflush functions which were implemented in assembly code
->>> (flush_dcache_range, flush_inval_dcache_range) have been translated into
->>> C for readability and coherence.
+On Mon, Mar 27, 2017 at 4:05 PM, Jan Glauber <jglauber@cavium.com> wrote:
+> This series adds a driver for the nand flash controller as found on Cavium's
+> ARM64 SOCs. For details about the controller see description of patch #2.
 >
->>> --- a/arch/powerpc/include/asm/cacheflush.h
->>> +++ b/arch/powerpc/include/asm/cacheflush.h
->>> @@ -51,13 +51,13 @@ static inline void __flush_dcache_icache_phys(unsigned long physaddr)
->>>   * Write any modified data cache blocks out to memory and invalidate them.
->>>   * Does not invalidate the corresponding instruction cache blocks.
->>>   */
->>> -static inline void flush_dcache_range(unsigned long start, unsigned long stop)
->>> +static inline void flush_dcache_range(void *start, unsigned long size)
->>>  {
->>> -     void *addr = (void *)(start & ~(L1_CACHE_BYTES - 1));
->>> -     unsigned long size = stop - (unsigned long)addr + (L1_CACHE_BYTES - 1);
->>> +     void *addr = (void *)((u32)start & ~(L1_CACHE_BYTES - 1));
->>
->> unsigned long would be nicer than u32.
+> The nand flash chip on the board I used for testing is:
 >
-> Indeed. That would make this work on ppc64, too.
-> After which ppc64 has an identical copy (u64 = unsigned long on ppc64) below?
+> [   12.775877] nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xf1
+> [   12.782242] nand: Macronix MX30LF1GE8AB
+> [   12.786072] nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+>
+> This chip has internal on-die ECC (which cannot be disabled). Data
+> sheet can be found here:
+> http://www.macronix.com/en-us/products/NAND-Flash/SLC-NAND-Flash/Pages/spec.aspx?p=MX30LF1GE8AB
+>
 
-That was Matt's homework to notice that ;)
+I have some prototypes with this nand at hand.
+I wonder if anybody could get their hands on more information than
+what's on the datasheet or the archives on the site ?
+On the site are available:
+- a lld zip (low level driver) (no ondie ECC)
+- a verilog zip (only ondie ECC timings simulation)
+- a datasheet pdf (ambiguous, among other things ECC status vs sub pages)
 
-cheers
+
+Karl
