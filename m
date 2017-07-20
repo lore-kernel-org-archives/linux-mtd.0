@@ -1,24 +1,25 @@
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dY5SY-0006tv-3g
+ for linux-mtd@lists.infradead.org; Thu, 20 Jul 2017 07:01:23 +0000
+Date: Thu, 20 Jul 2017 09:00:46 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, Maxime Ripard
+ <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 042/102] mtd: nand: sunxi: explicitly request exclusive
+ reset control
+Message-ID: <20170720090046.3991a18b@bbrezillon>
+In-Reply-To: <20170719152646.25903-43-p.zabel@pengutronix.de>
+References: <20170719152646.25903-1-p.zabel@pengutronix.de>
+ <20170719152646.25903-43-p.zabel@pengutronix.de>
 MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <20170720062850.2195-1-matthew.brown.dev@gmail.com>
-References: <20170720062850.2195-1-matthew.brown.dev@gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 20 Jul 2017 09:00:41 +0200
-Message-ID: <CAMuHMdVxnqD-90fDH+dqo8iJ94etcLHih27cqdVppi_AbFzbbw@mail.gmail.com>
-Subject: Re: [PATCH] powerpc/asm/cacheflush: Cleanup cacheflush function params
-To: Matt Brown <matthew.brown.dev@gmail.com>
-Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
- "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
- DRI Development <dri-devel@lists.freedesktop.org>,
- "adi-buildroot-devel@lists.sourceforge.net"
- <adi-buildroot-devel@lists.sourceforge.net>,
- Linux MMC List <linux-mmc@vger.kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- linux-spi <linux-spi@vger.kernel.org>,
- "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
- USB list <linux-usb@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,34 +29,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jul 20, 2017 at 8:28 AM, Matt Brown <matthew.brown.dev@gmail.com> wrote:
-> The cacheflush prototypes currently use start and stop values and each
-> call requires typecasting the address to an unsigned long.
-> This patch changes the cacheflush prototypes to follow the x86 style of
-> using a base and size values, with base being a void pointer.
->
-> All callers of the cacheflush functions, including drivers, have been
-> modified to conform to the new prototypes.
->
-> The 64 bit cacheflush functions which were implemented in assembly code
-> (flush_dcache_range, flush_inval_dcache_range) have been translated into
-> C for readability and coherence.
->
-> Signed-off-by: Matt Brown <matthew.brown.dev@gmail.com>
+Hi Philipp,
 
->  drivers/spi/spi-bfin5xx.c                    | 10 +++---
->  drivers/usb/musb/blackfin.c                  |  6 ++--
+On Wed, 19 Jul 2017 17:25:46 +0200
+Philipp Zabel <p.zabel@pengutronix.de> wrote:
 
-These are used on blackfin, so changing them without changing the blackfin
-cache ops will break the build.
+> Commit a53e35db70d1 ("reset: Ensure drivers are explicit when requesting
+> reset lines") started to transition the reset control request API calls
+> to explicitly state whether the driver needs exclusive or shared reset
+> control behavior. Convert all drivers requesting exclusive resets to the
+> explicit API call so the temporary transition helpers can be removed.
+> 
+> No functional changes.
 
-Gr{oetje,eeting}s,
+If you don't mind, I'd like to take this patch in the nand tree, just in
+case we have other modifications on sunxi_nand.c for this cycle.
 
-                        Geert
+Regards,
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Boris
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> 
+> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Cc: Marek Vasut <marek.vasut@gmail.com>
+> Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+> Cc: Maxime Ripard <maxime.ripard@free-electrons.com>
+> Cc: Chen-Yu Tsai <wens@csie.org>
+> Cc: linux-mtd@lists.infradead.org
+> Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+> ---
+>  drivers/mtd/nand/sunxi_nand.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+> index d0b6f8f9f297a..6eb97451f485c 100644
+> --- a/drivers/mtd/nand/sunxi_nand.c
+> +++ b/drivers/mtd/nand/sunxi_nand.c
+> @@ -2208,7 +2208,7 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto out_ahb_clk_unprepare;
+>  
+> -	nfc->reset = devm_reset_control_get_optional(dev, "ahb");
+> +	nfc->reset = devm_reset_control_get_optional_exclusive(dev, "ahb");
+>  	if (IS_ERR(nfc->reset)) {
+>  		ret = PTR_ERR(nfc->reset);
+>  		goto out_mod_clk_unprepare;
