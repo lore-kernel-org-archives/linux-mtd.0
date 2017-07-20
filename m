@@ -1,19 +1,98 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dY645-0004ej-Pq
- for linux-mtd@lists.infradead.org; Thu, 20 Jul 2017 07:40:07 +0000
-Date: Thu, 20 Jul 2017 09:39:34 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: "Vellemans, Noel" <Noel.Vellemans@visionBMS.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: ARM - IMX - NAND - Kernel 4.x - ONFI PARAMETER PAGE FAILS TO
- READ !
-Message-ID: <20170720093934.139d2d19@bbrezillon>
-In-Reply-To: <D24E577EA1E37B4788A3BFBC418F14A707591CE0@wetsrvex01.loepfe.com>
-References: <D24E577EA1E37B4788A3BFBC418F14A707591CE0@wetsrvex01.loepfe.com>
+Date: Thu, 20 Jul 2017 10:11:57 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+ Emilio =?iso-8859-1?Q?L=F3pez?= <emilio@elopez.com.ar>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Alan Stern <stern@rowland.harvard.edu>, Alan Tull <atull@kernel.org>,
+ Alexandre Torgue <alexandre.torgue@st.com>,
+ Andrew Lunn <andrew@lunn.ch>, Ben Skeggs <bskeggs@redhat.com>,
+ Benjamin Gaignard <benjamin.gaignard@linaro.org>, Bin Liu <b-liu@ti.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Bjorn Helgaas <bhelgaas@google.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Chanwoo Choi <cw00.choi@samsung.com>,
+ Chen Feng <puck.chen@hisilicon.com>, Chen-Yu Tsai <wens@csie.org>,
+ Corentin Labbe <clabbe.montjoie@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ David Airlie <airlied@linux.ie>, David Woodhouse <dwmw2@infradead.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Eduardo Valentin <edubezval@gmail.com>, Felipe Balbi <balbi@kernel.org>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+ Guenter Roeck <linux@roeck-us.net>,
+ Hartmut Knaack <knaack.h@gmx.de>, Heiko Stuebner <heiko@sntech.de>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ Jaehoon Chung <jh80.chung@samsung.com>,
+ Jiri Slaby <jslaby@suse.com>, Joachim Eastwood <manabian@gmail.com>,
+ John Youn <johnyoun@synopsys.com>, Jon Hunter <jonathanh@nvidia.com>,
+ Jonathan Cameron <jic23@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Kalle Valo <kvalo@qca.qualcomm.com>,
+ Kishon Vijay Abraham I <kishon@ti.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Lars-Peter Clausen <lars@metafoo.de>,
+ Laxman Dewangan <ldewangan@nvidia.com>, Lee Jones <lee.jones@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Lucas Stach <l.stach@pengutronix.de>, Marc Dietrich <marvin24@gmx.de>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Mark Yao <mark.yao@rock-chips.com>,
+ Mathias Nyman <mathias.nyman@intel.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Michael Turquette <mturquette@baylibre.com>,
+ Moritz Fischer <moritz.fischer@ettus.com>,
+ MyungJoo Ham <myungjoo.ham@samsung.com>, Ohad Ben-Cohen <ohad@wizery.com>,
+ Patrice Chotard <patrice.chotard@st.com>, Peter Chen <Peter.Chen@nxp.com>,
+ Peter De Schrijver <pdeschrijver@nvidia.com>,
+ Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+ Philippe Cornu <philippe.cornu@st.com>,
+ Prashant Gaikwad <pgaikwad@nvidia.com>,
+ Rakesh Iyer <riyer@nvidia.com>, Ralf Baechle <ralf@linux-mips.org>,
+ Richard Weinberger <richard@nod.at>, Richard Zhu <hongxing.zhu@nxp.com>,
+ Rongrong Zou <zourongrong@gmail.com>, Ryder Lee <ryder.lee@mediatek.com>,
+ Salil Mehta <salil.mehta@huawei.com>, Shawn Lin <shawn.lin@rock-chips.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Stanimir Varbanov <svarbanov@mm-sol.com>,
+ Stephen Boyd <sboyd@codeaurora.org>, Tejun Heo <tj@kernel.org>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Vincent Abriou <vincent.abriou@st.com>, Vinod Koul <vinod.koul@intel.com>,
+ Vivien Didelot <vivien.didelot@savoirfairelinux.com>,
+ Wim Van Sebroeck <wim@iguana.be>, Wolfram Sang <wsa@the-dreams.de>,
+ Xinliang Liu <z.liuxinliang@hisilicon.com>,
+ Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+ Yannick Fertre <yannick.fertre@st.com>,
+ Yisen Zhuang <yisen.zhuang@huawei.com>,
+ Zhang Rui <rui.zhang@intel.com>, alsa-devel@alsa-project.org,
+ ath10k@lists.infradead.org, devel@driverdev.osuosl.org,
+ dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+ linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-fpga@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+ linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, linux-mips@linux-mips.org,
+ linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-pwm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, linux-serial@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-tegra@vger.kernel.org,
+ linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+ linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+ nouveau@lists.freedesktop.org
+Subject: Re: [PATCH 000/102] Convert drivers to explicit reset API
+Message-ID: <20170720081157.GA11630@kroah.com>
+References: <20170719152646.25903-1-p.zabel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170719152646.25903-1-p.zabel@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,133 +102,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 20 Jul 2017 06:13:53 +0000
-"Vellemans, Noel" <Noel.Vellemans@visionBMS.com> wrote:
+On Wed, Jul 19, 2017 at 05:25:04PM +0200, Philipp Zabel wrote:
+> The reset control API has two modes: exclusive access, where the driver
+> expects to have full and immediate control over the state of the reset
+> line, and shared (clock-like) access, where drivers only request reset
+> deassertion while active, but don't care about the state of the reset line
+> while inactive.
+> 
+> Commit a53e35db70d1 ("reset: Ensure drivers are explicit when requesting
+> reset lines") started to transition the reset control request API calls
+> to explicitly state whether the driver needs exclusive or shared reset
+> control behavior.
+> 
+> This series converts all drivers that currently implicitly request
+> exclusive reset controls to the corresponding explicit API call. It is,
+> for the most part, generated from the following semantic patch:
 
-> Hi All
-> =C2=A0
-> I've  running 2.6.35.x for some time now on our IMX53 custom boards ( boo=
-ting from nand)
-> =C2=A0
-> Recently I  started in UPGRADING the kernel to a more recent version ( 4.=
-4.75 and/or a 4.12 series kernel).
-> Al fine so far.
-> =C2=A0
-> I'm using 10 boards (100% identical boards) =C2=A0to test drive the new k=
-ernel.
-> 9 out of the 10 boards are running fine with this new KERNEL , 1 board is=
- failing to recognize the NAND-FLASH ( 8 bits , 2 chips , hardware ECC enab=
-led, Micron MT29F16G08ABACAWP) with this NEW kernel ( with the old kernel a=
-ll seems to be fine...)
->=20
-> =C2=A0The reason for this failure is that when trying to read the ONFI-Pa=
-rameter PAGE, there seems to be a one BYTE offset into the bytes READ from =
-the NAND-CHIP ( command NAND_CMD_PARAM)
-> For 9 of the 10 boards... the data read back STARTS ( as specified ) with=
- ONFI ( and are working fine for multiple days.. )
-> =C2=A0
-> For the failing CPU/BOARD it starts with NFI ( O is missing) ( all 256 by=
-tes are shifted one byte , or otherwise said, the FIRST byte is missing ...=
- ( if the First Byte would be there all would be OK.. so it is no rubbish..=
-=C2=A0))
-> =C2=A0
-> Reading Manufacturer ID: 0x2c, Chip ID: 0x48 , is working... reading ONFI=
- PARAMETER PAGE... is failing ! ( with the 4.4.x-kernel)=C2=A0
-> =C2=A0
-> I do have swapped the FLASHES =C2=A0and the ERROR stays with the CPU/BOAR=
-D.
-> =C2=A0
-> { Note putting the OLD kernel back ... 2.6.35.x .. and all is working fin=
-e.. must be related to NEW-kernel drivers , but could be a silicon bug trig=
-gered by some exception=C2=A0if you ask me .. been digging for more than a =
-week on this}
-> =C2=A0
-> I've been cross checking ERATA's but can not find anything that would fit.
-> I've been triple checking each NFC register as well .. all registers are =
-setup correctly =C2=A0( comparing good/ bad board.=3D> same register settin=
-gs) =C2=A0!
-> =C2=A0
-> =C2=A0
-> Any clue ? any hints .. to get me =C2=A0going =C2=A0( as said before,=C2=
-=A0=C2=A0i've been searching for one week on this.. no luck so far, in unde=
-rstanding / solving the issue .. ! )
->=20
-> Details ? ( please see below)
-> =C2=A0
-> Just for info, type of NAND used ( 2 chips , 8 bit mode) :
-> nand: device found, Manufacturer ID: 0x2c, Chip ID: 0x48
-> nand: Micron MT29F16G08ABACAWP
-> nand: 2048 MiB, SLC, erase size: 512 KiB, page size: 4096, OOB size: 224
-> =C2=A0
->=20
-> At the error the  Kernel bails out with :=20
->=20
-> [    1.646968] nand: Could not find valid ONFI parameter page; aborting
-> [    1.653593] nand: No NAND device found
->=20
->=20
-> When looking up good ( working) vs  BAD ( not working) .. I come to this.=
- ( I've added some printk's to show the error details)
->=20
-> * For a good 'one '  I get this DUMP of the ONFI-parameters-read-back
->=20
-> [    2.909684] NAND_CMD_PARAM- data[0] =3D 0x4F =3D> O=20
-> [    2.914510] NAND_CMD_PARAM- data[1] =3D 0x4E =3D> N=20
-> [    2.919232] NAND_CMD_PARAM- data[2] =3D 0x46 =3D> F=20
-> [    2.923986] NAND_CMD_PARAM- data[3] =3D 0x49 =3D> I
-> [    2.928706] NAND_CMD_PARAM- data[4] =3D 0x1E
-> [    2.933456] NAND_CMD_PARAM- data[5] =3D 0x00
-> [    2.938175] NAND_CMD_PARAM- data[6] =3D 0x58
-> ..
-> ... some bytes/lines are stripped here
-> ..
-> [    4.149180] NAND_CMD_PARAM- data[254] =3D 0x20 (crc is/or should be he=
-re on this offset)
-> [    4.154101] NAND_CMD_PARAM- data[255] =3D 0x12 (crc is/or should be he=
-re on this offset)
->=20
-> =20
-> =20
->=20
-> * For the bad-one ( on kernel 4.12 / 4.4.x , but working on 2.6.35). I ge=
-t this DUMP of the ONFI-parameters-read-back
->=20
->=20
-> [    1.819926] NAND_CMD_PARAM- data[0] =3D 0x4E =3D>N
-> [    1.824666] NAND_CMD_PARAM- data[1] =3D 0x46 =3D> F
-> [    1.829405] NAND_CMD_PARAM- data[2] =3D 0x49 =3D> I
-> [    1.834143] NAND_CMD_PARAM- data[3] =3D 0x1E
-> [    1.838882] NAND_CMD_PARAM- data[4] =3D 0x00
-> [    1.843619] NAND_CMD_PARAM- data[5] =3D 0x58
-> ..
-> ... some bytes/lines are stripped here
-> ..
-> [   3.053545] NAND_CMD_PARAM- data[253] =3D 0x20 ????? ( crc byte also on=
- the wrong offset!!!)
-> [    3.058458] NAND_CMD_PARAM- data[254] =3D 0x12 (crc is/or should be he=
-re on this offset)
-> [    3.063371] NAND_CMD_PARAM- data[255] =3D 0x4F ( O of the second ONFI =
-parameter block)
+Hey, I'm all for large api changes, but this really seems ackward, isn't
+there a "better" way to do this?
 
-Hm, it seems you're missing the first byte. It might be that your
-controller is configured in some kind of EDO mode, and I'm pretty sure
-the param page should be read in mode 0 (this implies EDO mode
-disabled).
+Why not, as you say the "implicit" request is exclusive, just leave
+everything alone and state that the "reset_control_get()" call is
+exclusive and make the shared one the "odd" usage as that seems to not
+be the normal case.
 
-Maybe you can try playing with NFC_V3_DELAY_LINE, but honestly, I don't
-know the MXC NAND controller enough to tell what could explain this
-behavior.
+That should be a much smaller patch right?
 
->=20
-> =20
->=20
->=20
-> The strange thing is 9 out of 10 boards are OK , but 1 out of 10 is BAD .=
-.. on these recent kernels.
->=20
-> When running the older 2.6.35 kernel.. even on this BAD-board (lets say) =
-.. all is working fine.
->=20
-> Best Regards
-> Noel
->=20
+That way you don't break everything here, and require 100+ patches to
+just change the name of a function from one to another and do nothing
+else.
+
+thanks,
+
+greg k-h
