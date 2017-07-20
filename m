@@ -1,26 +1,19 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dY465-00058u-9W
- for linux-mtd@lists.infradead.org; Thu, 20 Jul 2017 05:34:02 +0000
+Received: from mail1.bemta5.messagelabs.com ([195.245.231.141])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dY4j7-0004D6-J1
+ for linux-mtd@lists.infradead.org; Thu, 20 Jul 2017 06:14:23 +0000
+Received: from wetsrvex01.loepfe.com (wetsrvex01.loepfe.com [10.55.2.117])
+ by wetsrvsepp01.loepfe.com (Postfix) with ESMTPS
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Jul 2017 08:13:54 +0200 (CEST)
+From: "Vellemans, Noel" <Noel.Vellemans@visionBMS.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: ARM - IMX - NAND - Kernel 4.x - ONFI PARAMETER PAGE FAILS TO READ !
+Date: Thu, 20 Jul 2017 06:13:53 +0000
+Message-ID: <D24E577EA1E37B4788A3BFBC418F14A707591CE0@wetsrvex01.loepfe.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date: Thu, 20 Jul 2017 11:03:39 +0530
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- richard@nod.at, cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org,
- mark.rutland@arm.com, devicetree@vger.kernel.org, architt@codeaurora.org,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, andy.gross@linaro.org,
- sricharan@codeaurora.org
-Subject: Re: [PATCH v2 12/25] dt-bindings: qcom_nandc: QPIC NAND documentation
-In-Reply-To: <20170719213904.60d9b681@bbrezillon>
-References: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
- <1500464893-11352-13-git-send-email-absahu@codeaurora.org>
- <20170719213904.60d9b681@bbrezillon>
-Message-ID: <6c962cb0c1a34d7c220b55f42cda2c78@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,122 +23,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2017-07-20 01:09, Boris Brezillon wrote:
-> On Wed, 19 Jul 2017 17:18:00 +0530
-> Abhishek Sahu <absahu@codeaurora.org> wrote:
-> 
->> 1. QPIC NAND will use compatible string "qcom,qpic-nandc-v1.4.0"
->> 2. QPIC NAND will 3 BAM channels: command, data tx and data rx
->>    while EBI2 NAND uses only single ADM channel.
->> 3. CRCI is only required for ADM DMA and its not required for
->>    QPIC NAND.
->> 
->> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
->> ---
->>  .../devicetree/bindings/mtd/qcom_nandc.txt         | 54 
->> ++++++++++++++++++++--
->>  1 file changed, 51 insertions(+), 3 deletions(-)
->> 
->> diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt 
->> b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
->> index b24adfe..8efaeb0 100644
->> --- a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
->> +++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
->> @@ -1,13 +1,15 @@
->>  * Qualcomm NAND controller
->> 
->>  Required properties:
->> -- compatible:		should be "qcom,ebi2-nandc" - EBI2 NAND which uses ADM
->> -			DMA like IPQ8064.
->> -
->> +- compatible:		must be one of the following:
->> +	* "qcom,ebi2-nandc" - EBI2 NAND which uses ADM DMA like IPQ8064.
->> +	* "qcom,qpic-nandc-v1.4.0" - QPIC NAND v1.4.0 which uses BAM DMA 
->> like IPQ4019.
->>  - reg:			MMIO address range
->>  - clocks:		must contain core clock and always on clock
->>  - clock-names:		must contain "core" for the core clock and "aon" for 
->> the
->>  			always on clock
->> +
->> +EBI2 specific properties:
->>  - dmas:			DMA specifier, consisting of a phandle to the ADM DMA
->>  			controller node and the channel number to be used for
->>  			NAND. Refer to dma.txt and qcom_adm.txt for more details
->> @@ -18,6 +20,12 @@ Required properties:
->>  - qcom,data-crci:	must contain the ADM data type CRCI block instance
->>  			number specified for the NAND controller on the given
->>  			platform
->> +
->> +QPIC specific properties:
->> +- dmas:			DMA specifier, consisting of a phandle to the BAM DMA
->> +			and the channel number to be used for NAND. Refer to
->> +			dma.txt, qcom_bam_dma.txt for more details
->> +- dma-names:		must contain all 3 channel names : "tx", "rx", "cmd"
->>  - #address-cells:	<1> - subnodes give the chip-select number
->>  - #size-cells:		<0>
->> 
->> @@ -84,3 +92,43 @@ nand@1ac00000 {
->>  		};
->>  	};
->>  };
->> +
->> +nand@79b0000 {
-> 
-> I think I already mentioned I'd prefer to have
-> 
-> nand-controller@xxxx {
-> 
+Hi All
+=A0
+I've  running 2.6.35.x for some time now on our IMX53 custom boards ( booti=
+ng from nand)
+=A0
+Recently I  started in UPGRADING the kernel to a more recent version ( 4.4.=
+75 and/or a 4.12 series kernel).
+Al fine so far.
+=A0
+I'm using 10 boards (100% identical boards) =A0to test drive the new kernel=
+.
+9 out of the 10 boards are running fine with this new KERNEL , 1 board is f=
+ailing to recognize the NAND-FLASH ( 8 bits , 2 chips , hardware ECC enable=
+d, Micron MT29F16G08ABACAWP) with this NEW kernel ( with the old kernel all=
+ seems to be fine...)
 
-  Sorry. I Missed that part. I will change it in v3.
+=A0The reason for this failure is that when trying to read the ONFI-Paramet=
+er PAGE, there seems to be a one BYTE offset into the bytes READ from the N=
+AND-CHIP ( command NAND_CMD_PARAM)
+For 9 of the 10 boards... the data read back STARTS ( as specified ) with O=
+NFI ( and are working fine for multiple days.. )
+=A0
+For the failing CPU/BOARD it starts with NFI ( O is missing) ( all 256 byte=
+s are shifted one byte , or otherwise said, the FIRST byte is missing ... (=
+ if the First Byte would be there all would be OK.. so it is no rubbish..=
+=A0))
+=A0
+Reading Manufacturer ID: 0x2c, Chip ID: 0x48 , is working... reading ONFI P=
+ARAMETER PAGE... is failing ! ( with the 4.4.x-kernel)=A0
+=A0
+I do have swapped the FLASHES =A0and the ERROR stays with the CPU/BOARD.
+=A0
+{ Note putting the OLD kernel back ... 2.6.35.x .. and all is working fine.=
+. must be related to NEW-kernel drivers , but could be a silicon bug trigge=
+red by some exception=A0if you ask me .. been digging for more than a week =
+on this}
+=A0
+I've been cross checking ERATA's but can not find anything that would fit.
+I've been triple checking each NFC register as well .. all registers are se=
+tup correctly =A0( comparing good/ bad board.=3D> same register settings) =
+=A0!
+=A0
+=A0
+Any clue ? any hints .. to get me =A0going =A0( as said before,=A0=A0i've b=
+een searching for one week on this.. no luck so far, in understanding / sol=
+ving the issue .. ! )
 
->> +	compatible = "qcom,qpic-nandc-v1.4.0";
->> +	reg = <0x79b0000 0x1000>;
->> +
->> +	clocks = <&gcc GCC_QPIC_CLK>,
->> +		<&gcc GCC_QPIC_AHB_CLK>;
->> +	clock-names = "core", "aon";
->> +
->> +	dmas = <&qpicbam 0>,
->> +		<&qpicbam 1>,
->> +		<&qpicbam 2>;
->> +	dma-names = "tx", "rx", "cmd";
->> +
->> +	#address-cells = <1>;
->> +	#size-cells = <0>;
->> +
->> +	nandcs@0 {
-> 
-> and
-> 	nand@x {
-> 
-> here.
-> 
+Details ? ( please see below)
+=A0
+Just for info, type of NAND used ( 2 chips , 8 bit mode) :
+nand: device found, Manufacturer ID: 0x2c, Chip ID: 0x48
+nand: Micron MT29F16G08ABACAWP
+nand: 2048 MiB, SLC, erase size: 512 KiB, page size: 4096, OOB size: 224
+=A0
 
-  Will change this also.
+At the error the  Kernel bails out with :=20
 
->> +		reg = <0>;
->> +		nand-ecc-strength = <4>;
->> +		nand-ecc-step-size = <512>;
->> +		nand-bus-width = <8>;
->> +
->> +		partitions {
->> +			compatible = "fixed-partitions";
->> +			#address-cells = <1>;
->> +			#size-cells = <1>;
->> +
->> +			partition@0 {
->> +				label = "boot-nand";
->> +				reg = <0 0x58a0000>;
->> +			};
->> +
->> +			partition@58a0000 {
->> +				label = "fs-nand";
->> +				reg = <0x58a0000 0x4000000>;
->> +			};
->> +		};
->> +	};
->> +};
+[    1.646968] nand: Could not find valid ONFI parameter page; aborting
+[    1.653593] nand: No NAND device found
 
--- 
-Abhishek Sahu
+
+When looking up good ( working) vs  BAD ( not working) .. I come to this. (=
+ I've added some printk's to show the error details)
+
+* For a good 'one '  I get this DUMP of the ONFI-parameters-read-back
+
+[    2.909684] NAND_CMD_PARAM- data[0] =3D 0x4F =3D> O=20
+[    2.914510] NAND_CMD_PARAM- data[1] =3D 0x4E =3D> N=20
+[    2.919232] NAND_CMD_PARAM- data[2] =3D 0x46 =3D> F=20
+[    2.923986] NAND_CMD_PARAM- data[3] =3D 0x49 =3D> I
+[    2.928706] NAND_CMD_PARAM- data[4] =3D 0x1E
+[    2.933456] NAND_CMD_PARAM- data[5] =3D 0x00
+[    2.938175] NAND_CMD_PARAM- data[6] =3D 0x58
+..
+... some bytes/lines are stripped here
+..
+[    4.149180] NAND_CMD_PARAM- data[254] =3D 0x20 (crc is/or should be here=
+ on this offset)
+[    4.154101] NAND_CMD_PARAM- data[255] =3D 0x12 (crc is/or should be here=
+ on this offset)
+
+=20
+=20
+
+* For the bad-one ( on kernel 4.12 / 4.4.x , but working on 2.6.35). I get =
+this DUMP of the ONFI-parameters-read-back
+
+
+[    1.819926] NAND_CMD_PARAM- data[0] =3D 0x4E =3D>N
+[    1.824666] NAND_CMD_PARAM- data[1] =3D 0x46 =3D> F
+[    1.829405] NAND_CMD_PARAM- data[2] =3D 0x49 =3D> I
+[    1.834143] NAND_CMD_PARAM- data[3] =3D 0x1E
+[    1.838882] NAND_CMD_PARAM- data[4] =3D 0x00
+[    1.843619] NAND_CMD_PARAM- data[5] =3D 0x58
+..
+... some bytes/lines are stripped here
+..
+[   3.053545] NAND_CMD_PARAM- data[253] =3D 0x20 ????? ( crc byte also on t=
+he wrong offset!!!)
+[    3.058458] NAND_CMD_PARAM- data[254] =3D 0x12 (crc is/or should be here=
+ on this offset)
+[    3.063371] NAND_CMD_PARAM- data[255] =3D 0x4F ( O of the second ONFI pa=
+rameter block)
+
+=20
+
+
+The strange thing is 9 out of 10 boards are OK , but 1 out of 10 is BAD ...=
+ on these recent kernels.
+
+When running the older 2.6.35 kernel.. even on this BAD-board (lets say) ..=
+ all is working fine.
+
+Best Regards
+Noel
