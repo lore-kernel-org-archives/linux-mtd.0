@@ -1,25 +1,24 @@
-Received: from mail-wr0-x241.google.com ([2a00:1450:400c:c0c::241])
+Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dYe2p-0000x5-BY
- for linux-mtd@lists.infradead.org; Fri, 21 Jul 2017 19:57:05 +0000
-Received: by mail-wr0-x241.google.com with SMTP id 12so4957484wrb.4
- for <linux-mtd@lists.infradead.org>; Fri, 21 Jul 2017 12:56:43 -0700 (PDT)
+ id 1dYeIV-0005lz-Ao
+ for linux-mtd@lists.infradead.org; Fri, 21 Jul 2017 20:13:17 +0000
+Received: by mail-wr0-x242.google.com with SMTP id c24so9423307wra.2
+ for <linux-mtd@lists.infradead.org>; Fri, 21 Jul 2017 13:12:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1496418222-23483-5-git-send-email-pali.rohar@gmail.com>
+In-Reply-To: <1496418222-23483-6-git-send-email-pali.rohar@gmail.com>
 References: <1496418222-23483-1-git-send-email-pali.rohar@gmail.com>
- <1496418222-23483-5-git-send-email-pali.rohar@gmail.com>
+ <1496418222-23483-6-git-send-email-pali.rohar@gmail.com>
 From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Fri, 21 Jul 2017 21:56:41 +0200
-Message-ID: <CAFLxGvwdcA1eHZnNcMNsGTqM4AAFyxyehZ1d==kEYBjCo8-_Rg@mail.gmail.com>
-Subject: Re: [PATCH 4/5] mtd: block2mtd: Add support for deleting block2mtd
- mapping
+Date: Fri, 21 Jul 2017 22:12:51 +0200
+Message-ID: <CAFLxGvzg2+wv91HuJCK6Z0U865NvqY2q=e7mmJKOe3_MrQskhA@mail.gmail.com>
+Subject: Re: [PATCH 5/5] ubi: Allow to use read-only UBI volume with not
+ enough PEBs
 To: =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali.rohar@gmail.com>
 Cc: Joern Engel <joern@lazybastard.org>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -37,15 +36,39 @@ Pali,
 
 On Fri, Jun 2, 2017 at 5:43 PM, Pali Roh=C3=A1r <pali.rohar@gmail.com> wrot=
 e:
-> This patch allows user to delete block2mtd mapping via parameters file
-> /sys/module/block2mtd/parameters/block2mtd
+> In read-only mode is skipped auto-resize. For pre-build images ready for
+> auto-resize there can be reserved more PEBs as whole size of pre-build
+> image. In read-only we do not do any write operation therefore this would
+> allow to use read-only UBI volume which is not auto-resized yet.
 >
-> Syntax is "del=3Ddevice", e.g.:
+> Signed-off-by: Pali Roh=C3=A1r <pali.rohar@gmail.com>
+> ---
+>  drivers/mtd/ubi/vtbl.c |   14 +++++++++-----
+>  1 file changed, 9 insertions(+), 5 deletions(-)
 >
-> $ echo -n del=3D/dev/loop0 > /sys/module/block2mtd/parameters/block2mtd
+> diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
+> index 263743e..1d708c5 100644
+> --- a/drivers/mtd/ubi/vtbl.c
+> +++ b/drivers/mtd/ubi/vtbl.c
+> @@ -240,8 +240,10 @@ static int vtbl_check(const struct ubi_device *ubi,
+>                 if (reserved_pebs > ubi->good_peb_count) {
+>                         ubi_err(ubi, "too large reserved_pebs %d, good PE=
+Bs %d",
+>                                 reserved_pebs, ubi->good_peb_count);
+> -                       err =3D 9;
+> -                       goto bad;
+> +                       if (!ubi->ro_mode) {
+> +                               err =3D 9;
+> +                               goto bad;
+> +                       }
 
-As I wrote in an earlier mail, I hate this interface.
-I suggest adding a decent ioctl based interface for dynamic block2mtd's.
+I fear this is not correct, it will disable a legit self-check of UBI volum=
+es.
+If the read-only volume is corrupted/truncated and you miss PEBs, this
+check will no longer
+trigger.
+
+Especially when dealing with nanddumps, truncation is a common problem.
 
 --=20
 Thanks,
