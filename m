@@ -1,28 +1,22 @@
-Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dYeIV-0005lz-Ao
- for linux-mtd@lists.infradead.org; Fri, 21 Jul 2017 20:13:17 +0000
-Received: by mail-wr0-x242.google.com with SMTP id c24so9423307wra.2
- for <linux-mtd@lists.infradead.org>; Fri, 21 Jul 2017 13:12:53 -0700 (PDT)
+ id 1dYeV1-0002up-8Z
+ for linux-mtd@lists.infradead.org; Fri, 21 Jul 2017 20:26:12 +0000
+Received: by mail-pf0-x242.google.com with SMTP id a11so5520379pfj.3
+ for <linux-mtd@lists.infradead.org>; Fri, 21 Jul 2017 13:25:50 -0700 (PDT)
+Date: Fri, 21 Jul 2017 13:25:46 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: "Mario J. Rugiero" <mrugiero@gmail.com>
+Cc: linux-mtd@lists.infradead.org, boris.brezillon@free-electrons.com,
+ marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr
+Subject: Re: [PATCH v8] mtd: create per-device and module-scope debugfs entries
+Message-ID: <20170721202546.GL55942@google.com>
+References: <20170516155616.26558-1-mrugiero@gmail.com>
+ <20170529113841.3850-1-mrugiero@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1496418222-23483-6-git-send-email-pali.rohar@gmail.com>
-References: <1496418222-23483-1-git-send-email-pali.rohar@gmail.com>
- <1496418222-23483-6-git-send-email-pali.rohar@gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Fri, 21 Jul 2017 22:12:51 +0200
-Message-ID: <CAFLxGvzg2+wv91HuJCK6Z0U865NvqY2q=e7mmJKOe3_MrQskhA@mail.gmail.com>
-Subject: Re: [PATCH 5/5] ubi: Allow to use read-only UBI volume with not
- enough PEBs
-To: =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali.rohar@gmail.com>
-Cc: Joern Engel <joern@lazybastard.org>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170529113841.3850-1-mrugiero@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,44 +26,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Pali,
-
-On Fri, Jun 2, 2017 at 5:43 PM, Pali Roh=C3=A1r <pali.rohar@gmail.com> wrot=
-e:
-> In read-only mode is skipped auto-resize. For pre-build images ready for
-> auto-resize there can be reserved more PEBs as whole size of pre-build
-> image. In read-only we do not do any write operation therefore this would
-> allow to use read-only UBI volume which is not auto-resized yet.
->
-> Signed-off-by: Pali Roh=C3=A1r <pali.rohar@gmail.com>
+On Mon, May 29, 2017 at 08:38:41AM -0300, Mario J. Rugiero wrote:
+> Several MTD devices are using debugfs entries created in the root.
+> This commit provides the means for a standardized subtree, creating
+> one "mtd" entry at root, and one entry per device inside it, named
+> after the device.
+> The tree is registered in add_mtd_device, and released in
+> del_mtd_device.
+> Devices docg3, mtdswap and nandsim were updated to use this subtree
+> instead of custom ones, and their entries were prefixed with the
+> drivers' names.
+> 
+> Signed-off-by: Mario J. Rugiero <mrugiero@gmail.com>
+> Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 > ---
->  drivers/mtd/ubi/vtbl.c |   14 +++++++++-----
->  1 file changed, 9 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
-> index 263743e..1d708c5 100644
-> --- a/drivers/mtd/ubi/vtbl.c
-> +++ b/drivers/mtd/ubi/vtbl.c
-> @@ -240,8 +240,10 @@ static int vtbl_check(const struct ubi_device *ubi,
->                 if (reserved_pebs > ubi->good_peb_count) {
->                         ubi_err(ubi, "too large reserved_pebs %d, good PE=
-Bs %d",
->                                 reserved_pebs, ubi->good_peb_count);
-> -                       err =3D 9;
-> -                       goto bad;
-> +                       if (!ubi->ro_mode) {
-> +                               err =3D 9;
-> +                               goto bad;
-> +                       }
+> v8: - fix CONFIG_DEBUG_FS typo.
+> v7: - as per derRichard and bbrezillon suggestion, dev_names are used
+>       instead of 'pretty' names for the entries, and driver-specific
+>       entries are prefixed with the drivers' names.
+> v6: - as per bbrezillon suggestion, more cleanups were done in the drivers,
+>       removing now unused structure members and functions.
+>     - dropped explicit setting to NULL to the dfs_dir member for the MTD,
+>       as it is expected to be zeroed out, thanks again to bbrezillon for
+>       pointing this out.
+>     - removed an extern declaration of a symbol which was never defined,
+>       spotted by bbrezillon.
+> v5: - cleanup drivers creating their own debugfs sub-tree.
+>     - separate the patch again, as it makes sense on its own as cleanup.
+> v4: - include in a bigger patchset which explains the use of this tree.
+> v3: - move the changelog out of the commit message
+> v2: - remove unused macros and add a commit message
+> v1: - create the debugfs entries
 
-I fear this is not correct, it will disable a legit self-check of UBI volum=
-es.
-If the read-only volume is corrupted/truncated and you miss PEBs, this
-check will no longer
-trigger.
-
-Especially when dealing with nanddumps, truncation is a common problem.
-
---=20
-Thanks,
-//richard
+Applied to l2-mtd.git
