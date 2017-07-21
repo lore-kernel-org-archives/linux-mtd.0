@@ -1,21 +1,21 @@
 Received: from mout.kundenserver.de ([217.72.192.74])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dYehH-00086z-9F
- for linux-mtd@lists.infradead.org; Fri, 21 Jul 2017 20:38:53 +0000
+ id 1dYgJu-0004XN-SY
+ for linux-mtd@lists.infradead.org; Fri, 21 Jul 2017 22:22:53 +0000
 From: Arnd Bergmann <arnd@arndb.de>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: Arnd Bergmann <arnd@arndb.de>, Jingoo Han <jg1.han@samsung.com>,
- Simon Baatz <gmbnomis@gmail.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- Arvind Yadav <arvind.yadav.cs@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: orion-nand: fix build error with ARMv4
-Date: Fri, 21 Jul 2017 22:38:06 +0200
-Message-Id: <20170721203814.3363448-1-arnd@arndb.de>
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>
+Cc: Arnd Bergmann <arnd@arndb.de>, Joel Stanley <joel@jms.id.au>,
+ =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
+ Ludovic Barre <ludovic.barre@st.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [RFC] mtd: atmel-quadspi: fix build issues
+Date: Sat, 22 Jul 2017 00:21:54 +0200
+Message-Id: <20170721222204.3402340-1-arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,59 +25,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-orion_nand_read_buf uses an inline assembly with the "ldrd"
-instruction, which is only available from ARMv5 upwards. This
-used to be fine, since all users have an ARMv5 or ARMv7 CPU,
-but now we can also build a multiplatform kernel with ARMv4
-support enabled in addition to the "kirkwood" (mvebu) platform.
+I ran into a link-time error with the atmel-quadspi driver on the
+EBSA110 platform:
 
-This provides an alternative to call the readsl() function that
-is supposed to have the same effect and is also optimized for
-performance.
+drivers/mtd/built-in.o: In function `atmel_qspi_run_command':
+:(.text+0x1ee3c): undefined reference to `_memcpy_toio'
+:(.text+0x1ee48): undefined reference to `_memcpy_fromio'
 
-I first posted a version of this patch back in 2014, and there
-was some discussion about it then. This fixes the bugs identified
-back then and should be a reasonable alternative for the rare
-corner case.
+The problem is that _memcpy_toio/_memcpy_fromio are not available
+on that platform, and we have to prevent building the driver there.
 
-Link: https://patchwork.kernel.org/patch/4144791/
-Cc: Jingoo Han <jg1.han@samsung.com>
+A related problem is that the functions are not portable APIs
+and should not be called directly from a device driver. On
+little-endian machines, the regular memcpy_toio/memcpy_fromio
+functions are defined as optimized versions using multi-byte
+transfers that are much faster.
+
+Cyrille mentioned that initially using memcpy_toio/memcpy_fromio
+did not work, but I suspect that this was the result of a bug
+that has since been fixed. With that change, we can also
+compile-test on other architectures.
+
+Link: http://lists.infradead.org/pipermail/linux-mtd/2016-July/068583.html
+Fixes: 161aaab8a067 ("mtd: atmel-quadspi: add driver for Atmel QSPI controller")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/mtd/nand/orion_nand.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/mtd/spi-nor/Kconfig         | 2 +-
+ drivers/mtd/spi-nor/atmel-quadspi.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
-index 209170ed2b76..41cb7acfc044 100644
---- a/drivers/mtd/nand/orion_nand.c
-+++ b/drivers/mtd/nand/orion_nand.c
-@@ -54,13 +54,16 @@ static void orion_nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
- 	void __iomem *io_base = chip->IO_ADDR_R;
-+#if __LINUX_ARM_ARCH__ >= 5
- 	uint64_t *buf64;
-+#endif
- 	int i = 0;
+diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+index 293c8a4d1e49..22e5fc4080f8 100644
+--- a/drivers/mtd/spi-nor/Kconfig
++++ b/drivers/mtd/spi-nor/Kconfig
+@@ -41,7 +41,7 @@ config SPI_ASPEED_SMC
  
- 	while (len && (unsigned long)buf & 7) {
- 		*buf++ = readb(io_base);
- 		len--;
- 	}
-+#if __LINUX_ARM_ARCH__ >= 5
- 	buf64 = (uint64_t *)buf;
- 	while (i < len/8) {
- 		/*
-@@ -74,6 +77,10 @@ static void orion_nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
- 		buf64[i++] = x;
- 	}
- 	i *= 8;
-+#else
-+	readsl(io_base, buf, len/4);
-+	i = len / 4 * 4;
-+#endif
- 	while (i < len)
- 		buf[i++] = readb(io_base);
+ config SPI_ATMEL_QUADSPI
+ 	tristate "Atmel Quad SPI Controller"
+-	depends on ARCH_AT91 || (ARM && COMPILE_TEST)
++	depends on ARCH_AT91 || (COMPILE_TEST && !ARCH_EBSA110)
+ 	depends on OF && HAS_IOMEM
+ 	help
+ 	  This enables support for the Quad SPI controller in master mode.
+diff --git a/drivers/mtd/spi-nor/atmel-quadspi.c b/drivers/mtd/spi-nor/atmel-quadspi.c
+index ba76fa8f2031..ff3849106e77 100644
+--- a/drivers/mtd/spi-nor/atmel-quadspi.c
++++ b/drivers/mtd/spi-nor/atmel-quadspi.c
+@@ -208,9 +208,9 @@ static int atmel_qspi_run_transfer(struct atmel_qspi *aq,
+ 	if (cmd->enable.bits.address)
+ 		ahb_mem += cmd->address;
+ 	if (cmd->tx_buf)
+-		_memcpy_toio(ahb_mem, cmd->tx_buf, cmd->buf_len);
++		memcpy_toio(ahb_mem, cmd->tx_buf, cmd->buf_len);
+ 	else
+-		_memcpy_fromio(cmd->rx_buf, ahb_mem, cmd->buf_len);
++		memcpy_fromio(cmd->rx_buf, ahb_mem, cmd->buf_len);
+ 
+ 	return 0;
  }
 -- 
 2.9.0
