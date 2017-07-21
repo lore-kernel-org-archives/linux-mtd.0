@@ -1,22 +1,29 @@
-Subject: Re: [PATCH] Documentation: mtk-quadspi: update DT bindings
-To: Guochun Mao <guochun.mao@mediatek.com>, Rob Herring <robh+dt@kernel.org>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Richard Weinberger <richard@nod.at>, Mark Rutland <mark.rutland@arm.com>,
- Russell King <linux@armlinux.org.uk>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <1500607619-21969-1-git-send-email-guochun.mao@mediatek.com>
- <1500607619-21969-2-git-send-email-guochun.mao@mediatek.com>
-From: Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <3c0fcf5e-8b2d-6db3-b436-0cfba37dcbae@gmail.com>
-Date: Fri, 21 Jul 2017 13:49:12 +0200
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dYdsE-0005r1-Q7
+ for linux-mtd@lists.infradead.org; Fri, 21 Jul 2017 19:46:17 +0000
+Received: by mail-wm0-x243.google.com with SMTP id m75so1692820wmb.2
+ for <linux-mtd@lists.infradead.org>; Fri, 21 Jul 2017 12:45:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1500607619-21969-2-git-send-email-guochun.mao@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1496418222-23483-2-git-send-email-pali.rohar@gmail.com>
+References: <1496418222-23483-1-git-send-email-pali.rohar@gmail.com>
+ <1496418222-23483-2-git-send-email-pali.rohar@gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Fri, 21 Jul 2017 21:45:43 +0200
+Message-ID: <CAFLxGvy4aMJTJHQq8WmN9F0yF9yH=ExrzR13bSXqAP6fnuOdpQ@mail.gmail.com>
+Subject: Re: [PATCH 1/5] mtd: block2mtd: Check for valid user supplied erase
+ size
+To: =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali.rohar@gmail.com>
+Cc: Joern Engel <joern@lazybastard.org>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +33,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-On 07/21/2017 05:26 AM, Guochun Mao wrote:
-> Add "mediatek,mt2712-nor" and "mediatek,mt7622-nor"
-> for nor flash node's compatible.
-> 
-> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
-
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-
+On Fri, Jun 2, 2017 at 5:43 PM, Pali Roh=C3=A1r <pali.rohar@gmail.com> wrot=
+e:
+> Erase size is limited to 32bit unsigned integer, but value parsed from us=
+er
+> is limited up to size_t C type.
+>
+> Signed-off-by: Pali Roh=C3=A1r <pali.rohar@gmail.com>
 > ---
->   .../devicetree/bindings/mtd/mtk-quadspi.txt        |    2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> index 5ded66a..9845ff4 100644
-> --- a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> +++ b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> @@ -3,6 +3,8 @@
->   Required properties:
->   - compatible: 	  The possible values are:
->   		  "mediatek,mt2701-nor"
-> +		  "mediatek,mt2712-nor"
-> +		  "mediatek,mt7622-nor"
->   		  "mediatek,mt7623-nor"
->   		  "mediatek,mt8173-nor"
->   		  For mt8173, compatible should be "mediatek,mt8173-nor".
-> 
+>  drivers/mtd/devices/block2mtd.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2=
+mtd.c
+> index 7c887f1..ee47cdd 100644
+> --- a/drivers/mtd/devices/block2mtd.c
+> +++ b/drivers/mtd/devices/block2mtd.c
+> @@ -419,7 +419,7 @@ static int block2mtd_setup2(const char *val)
+>
+>         if (token[1]) {
+>                 ret =3D parse_num(&erase_size, token[1]);
+> -               if (ret) {
+> +               if (ret || erase_size > U32_MAX) {
+>                         pr_err("illegal erase size\n");
+>                         return 0;
+>                 }
+
+Reviewed-by: Richard Weinberger <richard@nod.at>
+
+--=20
+Thanks,
+//richard
