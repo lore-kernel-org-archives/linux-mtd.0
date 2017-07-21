@@ -1,22 +1,26 @@
-Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
+Received: from mout.kundenserver.de ([212.227.126.130])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dYeV1-0002up-8Z
- for linux-mtd@lists.infradead.org; Fri, 21 Jul 2017 20:26:12 +0000
-Received: by mail-pf0-x242.google.com with SMTP id a11so5520379pfj.3
- for <linux-mtd@lists.infradead.org>; Fri, 21 Jul 2017 13:25:50 -0700 (PDT)
-Date: Fri, 21 Jul 2017 13:25:46 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: "Mario J. Rugiero" <mrugiero@gmail.com>
-Cc: linux-mtd@lists.infradead.org, boris.brezillon@free-electrons.com,
- marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr
-Subject: Re: [PATCH v8] mtd: create per-device and module-scope debugfs entries
-Message-ID: <20170721202546.GL55942@google.com>
-References: <20170516155616.26558-1-mrugiero@gmail.com>
- <20170529113841.3850-1-mrugiero@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170529113841.3850-1-mrugiero@gmail.com>
+ id 1dYeX2-0003KF-6Z
+ for linux-mtd@lists.infradead.org; Fri, 21 Jul 2017 20:28:18 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: Arnd Bergmann <arnd@arndb.de>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: Russell King <linux@armlinux.org.uk>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Nicholas Piggin <npiggin@gmail.com>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>, Michal Marek <mmarek@suse.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+ Kees Cook <keescook@chromium.org>, Peter Zijlstra <peterz@infradead.org>,
+ Chris Metcalf <cmetcalf@mellanox.com>, linux-arch@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: [PATCH] [RESEND] mtd: only use __xipram annotation when XIP_KERNEL is
+ set
+Date: Fri, 21 Jul 2017 22:26:25 +0200
+Message-Id: <20170721202636.3361536-1-arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +30,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, May 29, 2017 at 08:38:41AM -0300, Mario J. Rugiero wrote:
-> Several MTD devices are using debugfs entries created in the root.
-> This commit provides the means for a standardized subtree, creating
-> one "mtd" entry at root, and one entry per device inside it, named
-> after the device.
-> The tree is registered in add_mtd_device, and released in
-> del_mtd_device.
-> Devices docg3, mtdswap and nandsim were updated to use this subtree
-> instead of custom ones, and their entries were prefixed with the
-> drivers' names.
-> 
-> Signed-off-by: Mario J. Rugiero <mrugiero@gmail.com>
-> Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> ---
-> v8: - fix CONFIG_DEBUG_FS typo.
-> v7: - as per derRichard and bbrezillon suggestion, dev_names are used
->       instead of 'pretty' names for the entries, and driver-specific
->       entries are prefixed with the drivers' names.
-> v6: - as per bbrezillon suggestion, more cleanups were done in the drivers,
->       removing now unused structure members and functions.
->     - dropped explicit setting to NULL to the dfs_dir member for the MTD,
->       as it is expected to be zeroed out, thanks again to bbrezillon for
->       pointing this out.
->     - removed an extern declaration of a symbol which was never defined,
->       spotted by bbrezillon.
-> v5: - cleanup drivers creating their own debugfs sub-tree.
->     - separate the patch again, as it makes sense on its own as cleanup.
-> v4: - include in a bigger patchset which explains the use of this tree.
-> v3: - move the changelog out of the commit message
-> v2: - remove unused macros and add a commit message
-> v1: - create the debugfs entries
+When XIP_KERNEL is enabled, some functions are defined in the .data
+ELF section because we require them to be in RAM whenever we communicate
+with the flash chip. However this causes problems when FTRACE is
+enabled and gcc emits calls to __gnu_mcount_nc in the function
+prolog:
 
-Applied to l2-mtd.git
+drivers/built-in.o: In function `cfi_chip_setup':
+:(.data+0x272fc): relocation truncated to fit: R_ARM_CALL against symbol `__gnu_mcount_nc' defined in .text section in arch/arm/kernel/built-in.o
+drivers/built-in.o: In function `cfi_probe_chip':
+:(.data+0x27de8): relocation truncated to fit: R_ARM_CALL against symbol `__gnu_mcount_nc' defined in .text section in arch/arm/kernel/built-in.o
+/tmp/ccY172rP.s: Assembler messages:
+/tmp/ccY172rP.s:70: Warning: ignoring changed section attributes for .data
+/tmp/ccY172rP.s: Error: 1 warning, treating warnings as errors
+make[5]: *** [drivers/mtd/chips/cfi_probe.o] Error 1
+/tmp/ccK4rjeO.s: Assembler messages:
+/tmp/ccK4rjeO.s:421: Warning: ignoring changed section attributes for .data
+/tmp/ccK4rjeO.s: Error: 1 warning, treating warnings as errors
+make[5]: *** [drivers/mtd/chips/cfi_util.o] Error 1
+/tmp/ccUvhCYR.s: Assembler messages:
+/tmp/ccUvhCYR.s:1895: Warning: ignoring changed section attributes for .data
+/tmp/ccUvhCYR.s: Error: 1 warning, treating warnings as errors
+
+Specifically, this does not work because the .data section is not
+marked executable, which leads LD to not generate trampolines for
+long calls.
+
+This moves the __xipram functions into their own .xiptext section instead.
+The section is still placed next to .data and located in RAM but is marked
+executable, which avoids the build errors.
+
+Also, we only need to place the XIP functions into a separate section
+if both CONFIG_XIP_KERNEL and CONFIG_MTD_XIP are set: When only MTD_XIP
+is used, the whole kernel is still in RAM and we do not need to worry
+about pulling out the rug under it. When only XIP_KERNEL but not MTD_XIP
+is set, the kernel is in some form of ROM, but we never write to it.
+
+Note that MTD_XIP has been broken on ARM since around 2011 or 2012. I
+have sent another patch[2] to fix compilation, which I plan to merge
+through arm-soc unless there are objections. The obvious alternative
+to that would be to completely rip out the MTD_XIP support from the
+kernel, since obviously nobody has been using it in a long while.
+
+Link: [1] https://patchwork.kernel.org/patch/8109771/
+Link: [2] https://patchwork.kernel.org/patch/9855225/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ include/asm-generic/vmlinux.lds.h |  1 +
+ include/linux/mtd/xip.h           | 10 ++++++----
+ 2 files changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index da0be9a8d1de..ff507c178327 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -203,6 +203,7 @@
+  * pull in .data..stuff which has its own requirements. Same for bss.
+  */
+ #define DATA_DATA							\
++	*(.xiptext)							\
+ 	*(.data .data.[0-9a-zA-Z_]*)					\
+ 	*(.ref.data)							\
+ 	*(.data..shared_aligned) /* percpu related */			\
+diff --git a/include/linux/mtd/xip.h b/include/linux/mtd/xip.h
+index abed4dec5c2f..e373690cce0a 100644
+--- a/include/linux/mtd/xip.h
++++ b/include/linux/mtd/xip.h
+@@ -30,7 +30,9 @@
+  * obviously not be running from flash.  The __xipram is therefore marking
+  * those functions so they get relocated to ram.
+  */
+-#define __xipram noinline __attribute__ ((__section__ (".data")))
++#ifdef CONFIG_XIP_KERNEL
++#define __xipram noinline __attribute__ ((__section__ (".xiptext")))
++#endif
+ 
+ /*
+  * Each architecture has to provide the following macros.  They must access
+@@ -90,10 +92,10 @@
+ #define xip_cpu_idle()  do { } while (0)
+ #endif
+ 
+-#else
++#endif /* CONFIG_MTD_XIP */
+ 
++#ifndef __xipram
+ #define __xipram
+-
+-#endif /* CONFIG_MTD_XIP */
++#endif
+ 
+ #endif /* __LINUX_MTD_XIP_H__ */
+-- 
+2.9.0
