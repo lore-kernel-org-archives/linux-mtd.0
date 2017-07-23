@@ -1,21 +1,122 @@
-Received: from mout.kundenserver.de ([217.72.192.74])
+Received: from mail-io0-x22a.google.com ([2607:f8b0:4001:c06::22a])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dYgJu-0004XN-SY
- for linux-mtd@lists.infradead.org; Fri, 21 Jul 2017 22:22:53 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
+ id 1dZLpS-0001pl-VT
+ for linux-mtd@lists.infradead.org; Sun, 23 Jul 2017 18:42:13 +0000
+Received: by mail-io0-x22a.google.com with SMTP id g13so36163216ioj.5
+ for <linux-mtd@lists.infradead.org>; Sun, 23 Jul 2017 11:41:50 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <CAKdAkRTx8jd8UToz5_EgMmdW3V47i2uo++YvVB_yzytqSA=P1Q@mail.gmail.com>
+References: <20170719152646.25903-1-p.zabel@pengutronix.de>
+ <20170719211515.46a1196c@windsurf> <1500543415.2354.37.camel@pengutronix.de>
+ <20170720123640.43c2ce01@windsurf> <1500555312.2354.75.camel@pengutronix.de>
+ <CAKdAkRTx8jd8UToz5_EgMmdW3V47i2uo++YvVB_yzytqSA=P1Q@mail.gmail.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Sun, 23 Jul 2017 20:41:48 +0200
+Message-ID: <CACRpkdaXOv7mX+b-q1K34CB5w0SWPXCKa21wHaxL7qjf91PJXQ@mail.gmail.com>
+Subject: Re: [PATCH 000/102] Convert drivers to explicit reset API
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ lkml <linux-kernel@vger.kernel.org>,
+ Andrew Lunn <andrew@lunn.ch>, Prashant Gaikwad <pgaikwad@nvidia.com>,
+ Heiko Stuebner <heiko@sntech.de>,
+ Peter Chen <Peter.Chen@nxp.com>, DRI <dri-devel@lists.freedesktop.org>,
+ Marc Dietrich <marvin24@gmx.de>, Rakesh Iyer <riyer@nvidia.com>,
+ Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+ linux-clk <linux-clk@vger.kernel.org>,
+ Wim Van Sebroeck <wim@iguana.be>, Wolfram Sang <wsa@the-dreams.de>,
+ Xinliang Liu <z.liuxinliang@hisilicon.com>,
+ Chanwoo Choi <cw00.choi@samsung.com>,
+ Alan Stern <stern@rowland.harvard.edu>, Jiri Slaby <jslaby@suse.com>,
+ Michael Turquette <mturquette@baylibre.com>, Guenter Roeck <linux@roeck-us.net>,
+ Ohad Ben-Cohen <ohad@wizery.com>,
+ "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Vincent Abriou <vincent.abriou@st.com>,
+ Bin Liu <b-liu@ti.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ USB list <linux-usb@vger.kernel.org>,
+ linux-wireless <linux-wireless@vger.kernel.org>,
+ Ralf Baechle <ralf@linux-mips.org>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+ Tejun Heo <tj@kernel.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ David Airlie <airlied@linux.ie>,
+ nouveau@lists.freedesktop.org, Philippe Cornu <philippe.cornu@st.com>,
+ Kalle Valo <kvalo@qca.qualcomm.com>, Laxman Dewangan <ldewangan@nvidia.com>,
+ Corentin Labbe <clabbe.montjoie@gmail.com>,
+ Linux I2C <linux-i2c@vger.kernel.org>,
+ LINUXWATCHDOG <linux-watchdog@vger.kernel.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>
-Cc: Arnd Bergmann <arnd@arndb.de>, Joel Stanley <joel@jms.id.au>,
- =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
- Ludovic Barre <ludovic.barre@st.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [RFC] mtd: atmel-quadspi: fix build issues
-Date: Sat, 22 Jul 2017 00:21:54 +0200
-Message-Id: <20170721222204.3402340-1-arnd@arndb.de>
+ Lars-Peter Clausen <lars@metafoo.de>,
+ =?UTF-8?Q?Emilio_L=C3=B3pez?= <emilio@elopez.com.ar>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>, Jon Hunter <jonathanh@nvidia.com>,
+ "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+ MyungJoo Ham <myungjoo.ham@samsung.com>, Ben Skeggs <bskeggs@redhat.com>,
+ Yisen Zhuang <yisen.zhuang@huawei.com>,
+ "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+ Richard Zhu <hongxing.zhu@nxp.com>,
+ Alexandre Torgue <alexandre.torgue@st.com>,
+ Mathias Nyman <mathias.nyman@intel.com>,
+ "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+ Joachim Eastwood <manabian@gmail.com>,
+ "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+ "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>,
+ Bjorn Helgaas <bhelgaas@google.com>,
+ Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ Patrice Chotard <patrice.chotard@st.com>,
+ Stanimir Varbanov <svarbanov@mm-sol.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Hartmut Knaack <knaack.h@gmx.de>, Jonathan Cameron <jic23@kernel.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+ Linux PCI <linux-pci@vger.kernel.org>,
+ Shawn Lin <shawn.lin@rock-chips.com>,
+ "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Jonathan Corbet <corbet@lwn.net>, Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+ ath10k@lists.infradead.org, Kishon Vijay Abraham I <kishon@ti.com>,
+ Chen-Yu Tsai <wens@csie.org>,
+ "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+ "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+ Chen Feng <puck.chen@hisilicon.com>,
+ Mark Brown <broonie@kernel.org>, Dan Williams <dan.j.williams@intel.com>,
+ Felipe Balbi <balbi@kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
+ linux-mmc <linux-mmc@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ linux-remoteproc@vger.kernel.org,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
+ Lee Jones <lee.jones@linaro.org>,
+ "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
+ Yannick Fertre <yannick.fertre@st.com>,
+ Ryder Lee <ryder.lee@mediatek.com>, Herbert Xu <herbert@gondor.apana.org.au>,
+ Richard Weinberger <richard@nod.at>, Jaehoon Chung <jh80.chung@samsung.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ linux-serial <linux-serial@vger.kernel.org>,
+ Zhang Rui <rui.zhang@intel.com>, Alan Tull <atull@kernel.org>,
+ John Youn <johnyoun@synopsys.com>, Eduardo Valentin <edubezval@gmail.com>,
+ dmaengine@vger.kernel.org,
+ "moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>, Mark Yao <mark.yao@rock-chips.com>,
+ Moritz Fischer <moritz.fischer@ettus.com>,
+ Vivien Didelot <vivien.didelot@savoirfairelinux.com>,
+ netdev <netdev@vger.kernel.org>,
+ Peter De Schrijver <pdeschrijver@nvidia.com>,
+ Stephen Boyd <sboyd@codeaurora.org>,
+ Adrian Hunter <adrian.hunter@intel.com>, Vinod Koul <vinod.koul@intel.com>,
+ Rongrong Zou <zourongrong@gmail.com>, linux-fpga@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>, Lucas Stach <l.stach@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,63 +126,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I ran into a link-time error with the atmel-quadspi driver on the
-EBSA110 platform:
+On Thu, Jul 20, 2017 at 10:46 PM, Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
+> On Thu, Jul 20, 2017 at 5:55 AM, Philipp Zabel <p.zabel@pengutronix.de> wrote:
 
-drivers/mtd/built-in.o: In function `atmel_qspi_run_command':
-:(.text+0x1ee3c): undefined reference to `_memcpy_toio'
-:(.text+0x1ee48): undefined reference to `_memcpy_fromio'
+>>> What about reset_control_get(struct device *, const char *, int flags)
+>>> to replace all those variants ?
+>>
+>> While I like how this looks, unfortunately (devm_)reset_control_get
+>> already exists without the flags, so we can't change to that with a
+>> gentle transition.
+>
+> This was done for gpiod_get() and its flags argument with horrifying
+> #define-ry, which thankfully was completely hidden from users.
 
-The problem is that _memcpy_toio/_memcpy_fromio are not available
-on that platform, and we have to prevent building the driver there.
+For your reference:
 
-A related problem is that the functions are not portable APIs
-and should not be called directly from a device driver. On
-little-endian machines, the regular memcpy_toio/memcpy_fromio
-functions are defined as optimized versions using multi-byte
-transfers that are much faster.
+commit bae48da237fcedd7ad09569025483b988635efb7
+"gpiolib: add gpiod_get() and gpiod_put() functions"
 
-Cyrille mentioned that initially using memcpy_toio/memcpy_fromio
-did not work, but I suspect that this was the result of a bug
-that has since been fixed. With that change, we can also
-compile-test on other architectures.
+commit 39b2bbe3d715cf5013b5c48695ccdd25bd3bf120
+"gpio: add flags argument to gpiod_get*() functions"
 
-Link: http://lists.infradead.org/pipermail/linux-mtd/2016-July/068583.html
-Fixes: 161aaab8a067 ("mtd: atmel-quadspi: add driver for Atmel QSPI controller")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/mtd/spi-nor/Kconfig         | 2 +-
- drivers/mtd/spi-nor/atmel-quadspi.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+commit 0dbc8b7afef6e4fddcfebcbacbeb269a0a3b06d5
+"gpio: move varargs hack outside #ifdef GPIOLIB"
 
-diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-index 293c8a4d1e49..22e5fc4080f8 100644
---- a/drivers/mtd/spi-nor/Kconfig
-+++ b/drivers/mtd/spi-nor/Kconfig
-@@ -41,7 +41,7 @@ config SPI_ASPEED_SMC
- 
- config SPI_ATMEL_QUADSPI
- 	tristate "Atmel Quad SPI Controller"
--	depends on ARCH_AT91 || (ARM && COMPILE_TEST)
-+	depends on ARCH_AT91 || (COMPILE_TEST && !ARCH_EBSA110)
- 	depends on OF && HAS_IOMEM
- 	help
- 	  This enables support for the Quad SPI controller in master mode.
-diff --git a/drivers/mtd/spi-nor/atmel-quadspi.c b/drivers/mtd/spi-nor/atmel-quadspi.c
-index ba76fa8f2031..ff3849106e77 100644
---- a/drivers/mtd/spi-nor/atmel-quadspi.c
-+++ b/drivers/mtd/spi-nor/atmel-quadspi.c
-@@ -208,9 +208,9 @@ static int atmel_qspi_run_transfer(struct atmel_qspi *aq,
- 	if (cmd->enable.bits.address)
- 		ahb_mem += cmd->address;
- 	if (cmd->tx_buf)
--		_memcpy_toio(ahb_mem, cmd->tx_buf, cmd->buf_len);
-+		memcpy_toio(ahb_mem, cmd->tx_buf, cmd->buf_len);
- 	else
--		_memcpy_fromio(cmd->rx_buf, ahb_mem, cmd->buf_len);
-+		memcpy_fromio(cmd->rx_buf, ahb_mem, cmd->buf_len);
- 
- 	return 0;
- }
--- 
-2.9.0
+commit b17d1bf16cc72a374a48d748940f700009d40ff4
+"gpio: make flags mandatory for gpiod_get functions"
+
+Retrospectively ... was that really a good idea... it was a LOT
+of trouble to add a flag, maybe it had been better to try and
+just slam all users in a single go.
+
+But it worked.
+
+Yours,
+Linus Walleij
