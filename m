@@ -1,29 +1,22 @@
-From: Gregory CLEMENT <gregory.clement@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Jason Cooper <jason@lakedaemon.net>,  Andrew Lunn <andrew@lunn.ch>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,  Richard
- Weinberger <richard@nod.at>,  David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,  Marek Vasut
- <marek.vasut@gmail.com>,  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org,  Thomas
- Petazzoni <thomas.petazzoni@free-electrons.com>,
- linux-arm-kernel@lists.infradead.org,  Antoine Tenart
- <antoine.tenart@free-electrons.com>,  =?utf-8?Q?Miqu=C3=A8l?= Raynal
- <miquel.raynal@free-electrons.com>,  Nadav Haklai <nadavh@marvell.com>,
- Shadi Ammouri <shadi@marvell.com>,  Yehuda Yitschak
- <yehuday@marvell.com>,  Omri Itach <omrii@marvell.com>,  Hanna Hawa
- <hannah@marvell.com>,  Igal Liberman <igall@marvell.com>,  Marcin Wojtas
- <mw@semihalf.com>
-Subject: Re: [PATCH 2/2] ARM64: dts: marvell: add NAND support on the CP110
- master
-References: <20170719153126.16905-1-gregory.clement@free-electrons.com>
- <20170719153126.16905-3-gregory.clement@free-electrons.com>
-Date: Mon, 24 Jul 2017 17:19:59 +0200
-In-Reply-To: <20170719153126.16905-3-gregory.clement@free-electrons.com>
- (Gregory CLEMENT's message of "Wed, 19 Jul 2017 17:31:26 +0200")
-Message-ID: <878tjd50bk.fsf@free-electrons.com>
+Date: Mon, 24 Jul 2017 11:14:11 -0500
+From: Rob Herring <robh@kernel.org>
+To: Guochun Mao <guochun.mao@mediatek.com>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Richard Weinberger <richard@nod.at>, Mark Rutland <mark.rutland@arm.com>,
+ Russell King <linux@armlinux.org.uk>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Documentation: mtk-quadspi: update DT bindings
+Message-ID: <20170724161411.6fjl7eee4auvco5z@rob-hp-laptop>
+References: <1500607619-21969-1-git-send-email-guochun.mao@mediatek.com>
+ <1500607619-21969-2-git-send-email-guochun.mao@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1500607619-21969-2-git-send-email-guochun.mao@mediatek.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,61 +26,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
- 
- On mer., juil. 19 2017, Gregory CLEMENT <gregory.clement@free-electrons.com> wrote:
+On Fri, Jul 21, 2017 at 11:26:59AM +0800, Guochun Mao wrote:
+> Add "mediatek,mt2712-nor" and "mediatek,mt7622-nor"
+> for nor flash node's compatible.
 
-> The NAND controller used in A7K/A8K is present on the CP110 master
-> part. It is compatible with the pxa-nand driver.
->
-> Unlike most of the controller on the CP110 this one is only present on
-> the master for the Armada 8K SoCs.
+The subject could be improved because it is exactly the same as the last 
+patch adding the 2701 and 7623. Also, use "dt-bindings: mtd: ..." for 
+the subject prefix.
 
-Actually this is wrong. The controller is present on both CP, but
-because of the muxing only the one present on the CPS is available on
-the Armada 8K.
-
-I will send a new version fixing it.
-
-Gregory
-
->
-> Signed-off-by: Gregory CLEMENT <gregory.clement@free-electrons.com>
+> 
+> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
 > ---
->  arch/arm64/boot/dts/marvell/armada-cp110-master.dtsi | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/marvell/armada-cp110-master.dtsi b/arch/arm64/boot/dts/marvell/armada-cp110-master.dtsi
-> index 726528ce54e9..9be4a442ded5 100644
-> --- a/arch/arm64/boot/dts/marvell/armada-cp110-master.dtsi
-> +++ b/arch/arm64/boot/dts/marvell/armada-cp110-master.dtsi
-> @@ -240,6 +240,20 @@
->  				status = "disabled";
->  			};
->  
-> +			cpm_nand: nand@720000 {
-> +				/*
-> +				 * For A7K/A8K this controller is only
-> +				 * present on the CPM and not on the CPS
-> +				 */
-> +				compatible = "marvell,armada370-nand";
-> +				reg = <0x720000 0x54>;
-> +				#address-cells = <1>;
-> +				#size-cells = <1>;
-> +				interrupts = <ICU_GRP_NSR 115 IRQ_TYPE_LEVEL_HIGH>;
-> +				clocks = <&cpm_clk 1 2>;
-> +				status = "disabled";
-> +			};
-> +
->  			cpm_trng: trng@760000 {
->  				compatible = "marvell,armada-8k-rng", "inside-secure,safexcel-eip76";
->  				reg = <0x760000 0x7d>;
+>  .../devicetree/bindings/mtd/mtk-quadspi.txt        |    2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> index 5ded66a..9845ff4 100644
+> --- a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> +++ b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> @@ -3,6 +3,8 @@
+>  Required properties:
+>  - compatible: 	  The possible values are:
+>  		  "mediatek,mt2701-nor"
+> +		  "mediatek,mt2712-nor"
+> +		  "mediatek,mt7622-nor"
+>  		  "mediatek,mt7623-nor"
+>  		  "mediatek,mt8173-nor"
+>  		  For mt8173, compatible should be "mediatek,mt8173-nor".
 > -- 
-> 2.13.2
->
-
--- 
-Gregory Clement, Free Electrons
-Kernel, drivers, real-time and embedded Linux
-development, consulting, training and support.
-http://free-electrons.com
+> 1.7.9.5
+> 
