@@ -1,26 +1,18 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1da4nn-0003TP-0t
- for linux-mtd@lists.infradead.org; Tue, 25 Jul 2017 18:43:28 +0000
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1da4yU-0007rg-K9
+ for linux-mtd@lists.infradead.org; Tue, 25 Jul 2017 18:54:32 +0000
+Date: Tue, 25 Jul 2017 20:54:06 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Alexander Dahl <ada@thorsis.com>
+Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>
+Subject: Re: mtd: nand: atmel: probe of Spansion S34ML02G1 fails
+Message-ID: <20170725205406.5a946c08@bbrezillon>
+In-Reply-To: <5326598.QgYTQxcFMR@ada>
+References: <5326598.QgYTQxcFMR@ada>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date: Wed, 26 Jul 2017 00:13:03 +0530
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: Rob Herring <robh@kernel.org>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr, mark.rutland@arm.com,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- andy.gross@linaro.org, architt@codeaurora.org, sricharan@codeaurora.org
-Subject: Re: [PATCH v2 12/25] dt-bindings: qcom_nandc: QPIC NAND documentation
-In-Reply-To: <20170724191723.aisibziviylk5ihc@rob-hp-laptop>
-References: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
- <1500464893-11352-13-git-send-email-absahu@codeaurora.org>
- <20170724191723.aisibziviylk5ihc@rob-hp-laptop>
-Message-ID: <d8d8fef7d13acc4ffc29edac42eaa429@codeaurora.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,58 +22,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2017-07-25 00:47, Rob Herring wrote:
-> On Wed, Jul 19, 2017 at 05:18:00PM +0530, Abhishek Sahu wrote:
->> 1. QPIC NAND will use compatible string "qcom,qpic-nandc-v1.4.0"
->> 2. QPIC NAND will 3 BAM channels: command, data tx and data rx
->>    while EBI2 NAND uses only single ADM channel.
->> 3. CRCI is only required for ADM DMA and its not required for
->>    QPIC NAND.
->> 
->> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
->> ---
->>  .../devicetree/bindings/mtd/qcom_nandc.txt         | 54 
->> ++++++++++++++++++++--
->>  1 file changed, 51 insertions(+), 3 deletions(-)
->> 
->> diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt 
->> b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
->> index b24adfe..8efaeb0 100644
->> --- a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
->> +++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
->> @@ -1,13 +1,15 @@
->>  * Qualcomm NAND controller
->> 
->>  Required properties:
->> -- compatible:		should be "qcom,ebi2-nandc" - EBI2 NAND which uses ADM
->> -			DMA like IPQ8064.
->> -
->> +- compatible:		must be one of the following:
->> +	* "qcom,ebi2-nandc" - EBI2 NAND which uses ADM DMA like IPQ8064.
->> +	* "qcom,qpic-nandc-v1.4.0" - QPIC NAND v1.4.0 which uses BAM DMA 
->> like IPQ4019.
-> 
-> Looks like you have 2 SoCs and 2 versions of h/w. Use SoC specific
-> compatible strings.
+Hi Alexander,
 
-  We have 3 versions of NAND HW currently.
-  EBI2,
-  QPIC version 1.4.0
-  QPIC version 1.5.0
+Le Tue, 25 Jul 2017 11:26:33 +0200,
+Alexander Dahl <ada@thorsis.com> a =C3=A9crit :
 
-  and multiple Qualcomm SoCs which use any one of these.
+> Hello,
+>=20
+> when testing the recent v4.13-rc2 on our at91sam9g20 based platform I=20
+> discovered one of the NAND flash chips we use can not be setup correctly=
+=20
+> anymore. I guess this may be due to the reworked atmel nand driver after=
+=20
+> v4.9, but it may be another problem.
+>=20
+> The board layout is similar to the at91sam9g20ek for the NAND flash part=
+=20
+> and we're using different flash chips. With an hynix HY27UF082G2B=20
+> everything works, the console output on boot is like this:
+>=20
+>   nand: Could not find valid ONFI parameter page; aborting
+>   nand: device found, Manufacturer ID: 0xad, Chip ID: 0xda
+>   nand: Hynix NAND 256MiB 3,3V 8-bit
+>   nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+>=20
+> The same board with another pin compatible flash chip, the Spansion=20
+> S34ML02G100TF100 however fails. I added some debug print statements to a=
+=20
+> otherwise clean 4.13-rc2 kernel and get this:
+>=20
+>   nand: device found, Manufacturer ID: 0x01, Chip ID: 0xda
+>   nand: AMD/Spansion S34ML02G1
+>   nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+>   nand: onfi_version: 10, onfi_params.opt_cmd: 0x001B
+>   nand: chip->onfi_set_features() failed: -22
+>   nand: nand_setup_data_interface() failed: -22
+>   atmel-nand-controller 10000000.ebi:nand-controller: nand_scan_ident()=20
+> failed: -22
+>   atmel-nand-controller: probe of 10000000.ebi:nand-controller failed=20
+> with error -22
+>=20
+> So in the ONFI parameter page of the flash chip the value for "optional=20
+> commands supported" in the features block is 0x001B which is exactly=20
+> what the datasheet says. This means this flash chip does not support=20
+> "Get Features" and "Set Features".
+>=20
+> Now nand_onfi_set_features() correctly fails, because the nand chip can=20
+> not set features. It's called in nand_setup_data_interface() in=20
+> nand_base.c which fails itself because of the return value of the failed=
+=20
+> set features call and so the whole chain of fails starts.
 
-  The original plan was to have compatible string for NAND version since
-  same NAND hardware is being in different SoC and SoC dtsi will simply
-  use its NAND version compatible string like other Qualcomm hardwares
+Oh crap! We didn't consider ONFI NANDs which are supporting the SET/GET
+FEATURES operations when working on the timing selection logic.
 
-  
-http://elixir.free-electrons.com/linux/latest/source/Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
-  
-http://elixir.free-electrons.com/linux/latest/source/Documentation/devicetree/bindings/spi/qcom,spi-qup.txt
+>=20
+> The nand chip actually works fine in U-Boot, and with kernels up to=20
+> v4.9.35, I didn't test v4.10, v4.11, but IIRC the board booted from nand=
+=20
+> flash with v4.12.
+>=20
+> Can anyone help me to fix this?
 
-> 
-> Rob
+Can you try with the following fix?=20
 
--- 
-Abhishek Sahu
+Thanks,
+
+Boris
+
+>=20
+> Greets
+> Alex
+>=20
+--->8---
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 5fa5ddc94834..fc897f799def 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1125,7 +1125,9 @@ static int nand_setup_data_interface(struct nand_chip=
+ *chip, int chipnr)
+         * Ensure the timing mode has been changed on the chip side
+         * before changing timings on the controller side.
+         */
+-       if (chip->onfi_version) {
++       if (chip->onfi_version &&
++           (le16_to_cpu(chip->onfi_params.opt_cmd) &
++            ONFI_OPT_CMD_SET_GET_FEATURES)) {
+                u8 tmode_param[ONFI_SUBFEATURE_PARAM_LEN] =3D {
+                        chip->onfi_timing_mode_default,
+                };
