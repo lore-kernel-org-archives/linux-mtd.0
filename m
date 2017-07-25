@@ -1,17 +1,13 @@
-Received: from mail.thorsis.com ([213.211.200.15])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dZw7K-0007ME-09
- for linux-mtd@lists.infradead.org; Tue, 25 Jul 2017 09:27:03 +0000
-From: Alexander Dahl <ada@thorsis.com>
-To: linux-mtd@lists.infradead.org
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>
-Subject: mtd: nand: atmel: probe of Spansion S34ML02G1 fails
-Date: Tue, 25 Jul 2017 11:26:33 +0200
-Message-ID: <5326598.QgYTQxcFMR@ada>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+From: Andy Yan <andy.yan@rock-chips.com>
+To: cyrille.pitchen@wedev4u.fr,
+	heiko@sntech.de
+Cc: devicetree@vger.kernel.org, linux-rockchip@lists.infradead.org,
+ mchehab@kernel.org, boris.brezillon@free-electrons.com,
+ marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
+ Andy Yan <andy.yan@rock-chips.com>
+Subject: [PATCH v7 0/3] Add Rockchip SFC(serial flash controller) support
+Date: Tue, 25 Jul 2017 18:07:31 +0800
+Message-Id: <1500977251-15001-1-git-send-email-andy.yan@rock-chips.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,52 +17,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
 
-when testing the recent v4.13-rc2 on our at91sam9g20 based platform I 
-discovered one of the NAND flash chips we use can not be setup correctly 
-anymore. I guess this may be due to the reworked atmel nand driver after 
-v4.9, but it may be another problem.
+This is try to support SFC found on Rockchip RV1108 platform.
+As Shawn's workload is a little heavy, I go on with his steps
+from v6 [1].
 
-The board layout is similar to the at91sam9g20ek for the NAND flash part 
-and we're using different flash chips. With an hynix HY27UF082G2B 
-everything works, the console output on boot is like this:
+Feature:
+(1) Support x1, x2, x4 data bits mode
+(2) Support up to 4 chip select
+(3) Support two independent clock domain: AHB clock and SPI clock
+(4) Support DMA master up to 16KB/transfer
 
-  nand: Could not find valid ONFI parameter page; aborting
-  nand: device found, Manufacturer ID: 0xad, Chip ID: 0xda
-  nand: Hynix NAND 256MiB 3,3V 8-bit
-  nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+Test environment:
+This patchset was tested on RK1108 evb boards with Winboud w25q256,
+Gigadevice GD25Q256, working fine with PIO or DMA mode.
 
-The same board with another pin compatible flash chip, the Spansion 
-S34ML02G100TF100 however fails. I added some debug print statements to a 
-otherwise clean 4.13-rc2 kernel and get this:
+[1] https://patchwork.kernel.org/patch/9586107/
 
-  nand: device found, Manufacturer ID: 0x01, Chip ID: 0xda
-  nand: AMD/Spansion S34ML02G1
-  nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-  nand: onfi_version: 10, onfi_params.opt_cmd: 0x001B
-  nand: chip->onfi_set_features() failed: -22
-  nand: nand_setup_data_interface() failed: -22
-  atmel-nand-controller 10000000.ebi:nand-controller: nand_scan_ident() 
-failed: -22
-  atmel-nand-controller: probe of 10000000.ebi:nand-controller failed 
-with error -22
+Changes in v7:
+- correct the fifo status check in pio read/write mode.
+- copy data from user buffer to dma buffer
 
-So in the ONFI parameter page of the flash chip the value for "optional 
-commands supported" in the features block is 0x001B which is exactly 
-what the datasheet says. This means this flash chip does not support 
-"Get Features" and "Set Features".
+Changes in v6:
+- fold in Andy's improvement for checking fifo level
+  before pio read
+- rename the controller to rv1108 since offically it's
+  renamed and acked by Rob.
+- use dma_coerce_mask_and_coherent suggested by Andy.
 
-Now nand_onfi_set_features() correctly fails, because the nand chip can 
-not set features. It's called in nand_setup_data_interface() in 
-nand_base.c which fails itself because of the return value of the failed 
-set features call and so the whole chain of fails starts.
+Changes in v5:
+- check if the buf is aligned to 32bit
+- check if the buf for dma comes from vmalloc
+- fix to use 1-1-n according to the current framework
+- avoid bytes cnt overflow
 
-The nand chip actually works fine in U-Boot, and with kernels up to 
-v4.9.35, I didn't test v4.10, v4.11, but IIRC the board booted from nand 
-flash with v4.12.
+Changes in v4:
+- use uppercase DMA for description
+- simplify the code of get_if_type
+- use dma_dir to simplify the code
+- simplify the rockchip_sfc_do_rd_wr
+- some minor improvements
+- add reset controller when doing resume
 
-Can anyone help me to fix this?
+Changes in v3:
+- use io{read32,write32}_rep to simplify the corner cases
+- remove more unnecessary bit definitions
+- some minor comment fixes and improvement
+- fix wrong unregister function
+- unify more code
+- use nor to avoid constantly replicating the whole
+  sfc->flash[sfc->num_chip].nor
+- add email for MODULE_AUTHOR
+- remove #if 1 --- #endif
+- extract DMA code to imporve the code structure
+- reset all when failing to do dma
+- pass sfc to get_if_type
+- rename sfc-no-dma to sfc-no-DMA
 
-Greets
-Alex
+Changes in v2:
+- fix typos
+- add some comment for buffer and others operations
+- rename SFC_MAX_CHIP_NUM to MAX_CHIPSELECT_NUM
+- use u8 for cs
+- return -EINVAL for default case of get_if_type
+- use readl_poll_*() to check timeout cases
+- simplify and clarify some condition checks
+- rework the bitshifts to simplify the code
+- define SFC_CMD_DUMMY(x)
+- fix ummap for dma read path and finish all the
+  cache maintenance.
+- rename to rockchip_sfc_chip_priv and embed struct spi_nor
+  in it.
+- add MODULE_AUTHOR
+- add runtime PM and general PM support.
+- Thanks for Marek's comments. Link:
+  http://lists.infradead.org/pipermail/linux-mtd/2016-November/070321.html
+
+Andy Yan (1):
+  ARM: dts: rockchip: enable sfc for rv1108 evb
+
+Shawn Lin (2):
+  mtd: spi-nor: Bindings for Rockchip serial flash controller
+  mtd: spi-nor: add rockchip serial flash controller driver
+
+ .../devicetree/bindings/mtd/rockchip-sfc.txt       |  31 +
+ MAINTAINERS                                        |   8 +
+ arch/arm/boot/dts/rv1108-evb.dts                   |  10 +
+ arch/arm/boot/dts/rv1108.dtsi                      |  13 +
+ drivers/mtd/spi-nor/Kconfig                        |   7 +
+ drivers/mtd/spi-nor/Makefile                       |   3 +-
+ drivers/mtd/spi-nor/rockchip-sfc.c                 | 942 +++++++++++++++++++++
+ 7 files changed, 1013 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
+ create mode 100644 drivers/mtd/spi-nor/rockchip-sfc.c
+
+-- 
+2.7.4
