@@ -1,21 +1,26 @@
-Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1da3FP-0001f3-Nk
- for linux-mtd@lists.infradead.org; Tue, 25 Jul 2017 17:03:52 +0000
-Received: by mail-pf0-x244.google.com with SMTP id 1so5245995pfi.3
- for <linux-mtd@lists.infradead.org>; Tue, 25 Jul 2017 10:03:28 -0700 (PDT)
-Date: Tue, 25 Jul 2017 10:03:23 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- "Mario J . Rugiero" <mrugiero@gmail.com>, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] mtd: mtdswap: remove unused variables 'dev' and 'gd'
-Message-ID: <20170725170323.GB77953@google.com>
-References: <20170725000524.116808-1-computersforpeace@gmail.com>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1da4nn-0003TP-0t
+ for linux-mtd@lists.infradead.org; Tue, 25 Jul 2017 18:43:28 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170725000524.116808-1-computersforpeace@gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Wed, 26 Jul 2017 00:13:03 +0530
+From: Abhishek Sahu <absahu@codeaurora.org>
+To: Rob Herring <robh@kernel.org>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
+ cyrille.pitchen@wedev4u.fr, mark.rutland@arm.com,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ andy.gross@linaro.org, architt@codeaurora.org, sricharan@codeaurora.org
+Subject: Re: [PATCH v2 12/25] dt-bindings: qcom_nandc: QPIC NAND documentation
+In-Reply-To: <20170724191723.aisibziviylk5ihc@rob-hp-laptop>
+References: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
+ <1500464893-11352-13-git-send-email-absahu@codeaurora.org>
+ <20170724191723.aisibziviylk5ihc@rob-hp-laptop>
+Message-ID: <d8d8fef7d13acc4ffc29edac42eaa429@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +30,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jul 24, 2017 at 05:05:24PM -0700, Brian Norris wrote:
-> This was changed recently (commit e8e3edb95ce6 ("mtd: create per-device
-> and module-scope debugfs entries")) and some compilers are complaining:
+On 2017-07-25 00:47, Rob Herring wrote:
+> On Wed, Jul 19, 2017 at 05:18:00PM +0530, Abhishek Sahu wrote:
+>> 1. QPIC NAND will use compatible string "qcom,qpic-nandc-v1.4.0"
+>> 2. QPIC NAND will 3 BAM channels: command, data tx and data rx
+>>    while EBI2 NAND uses only single ADM channel.
+>> 3. CRCI is only required for ADM DMA and its not required for
+>>    QPIC NAND.
+>> 
+>> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+>> ---
+>>  .../devicetree/bindings/mtd/qcom_nandc.txt         | 54 
+>> ++++++++++++++++++++--
+>>  1 file changed, 51 insertions(+), 3 deletions(-)
+>> 
+>> diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt 
+>> b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+>> index b24adfe..8efaeb0 100644
+>> --- a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+>> +++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+>> @@ -1,13 +1,15 @@
+>>  * Qualcomm NAND controller
+>> 
+>>  Required properties:
+>> -- compatible:		should be "qcom,ebi2-nandc" - EBI2 NAND which uses ADM
+>> -			DMA like IPQ8064.
+>> -
+>> +- compatible:		must be one of the following:
+>> +	* "qcom,ebi2-nandc" - EBI2 NAND which uses ADM DMA like IPQ8064.
+>> +	* "qcom,qpic-nandc-v1.4.0" - QPIC NAND v1.4.0 which uses BAM DMA 
+>> like IPQ4019.
 > 
->    drivers//mtd/mtdswap.c: In function 'mtdswap_add_debugfs':
-> >> drivers//mtd/mtdswap.c:1317: warning: unused variable 'dev'
-> 
-> And once we kill 'dev', 'gd' is also unused.
-> 
-> Cc: Mario J. Rugiero <mrugiero@gmail.com>
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Looks like you have 2 SoCs and 2 versions of h/w. Use SoC specific
+> compatible strings.
 
-Arnd sent the same thing. Applied this one to l2-mtd.git.
+  We have 3 versions of NAND HW currently.
+  EBI2,
+  QPIC version 1.4.0
+  QPIC version 1.5.0
 
-> ---
->  drivers/mtd/mtdswap.c | 3 ---
->  1 file changed, 3 deletions(-)
+  and multiple Qualcomm SoCs which use any one of these.
+
+  The original plan was to have compatible string for NAND version since
+  same NAND hardware is being in different SoC and SoC dtsi will simply
+  use its NAND version compatible string like other Qualcomm hardwares
+
+  
+http://elixir.free-electrons.com/linux/latest/source/Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
+  
+http://elixir.free-electrons.com/linux/latest/source/Documentation/devicetree/bindings/spi/qcom,spi-qup.txt
+
 > 
-> diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
-> index 6b17932fe557..7d9080e33865 100644
-> --- a/drivers/mtd/mtdswap.c
-> +++ b/drivers/mtd/mtdswap.c
-> @@ -1313,9 +1313,6 @@ static const struct file_operations mtdswap_fops = {
->  
->  static int mtdswap_add_debugfs(struct mtdswap_dev *d)
->  {
-> -	struct gendisk *gd = d->mbd_dev->disk;
-> -	struct device *dev = disk_to_dev(gd);
-> -
->  	struct dentry *root = d->mtd->dbg.dfs_dir;
->  	struct dentry *dent;
->  
-> -- 
-> 2.14.0.rc0.284.gd933b75aa4-goog
-> 
+> Rob
+
+-- 
+Abhishek Sahu
