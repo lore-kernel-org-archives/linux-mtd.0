@@ -1,15 +1,16 @@
+Received: from regular1.263xmail.com ([211.150.99.132])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dZwqM-0005SO-CE
+ for linux-mtd@lists.infradead.org; Tue, 25 Jul 2017 10:13:36 +0000
 From: Andy Yan <andy.yan@rock-chips.com>
-To: cyrille.pitchen@wedev4u.fr,
-	heiko@sntech.de
-Cc: devicetree@vger.kernel.org, linux-rockchip@lists.infradead.org,
- mchehab@kernel.org, boris.brezillon@free-electrons.com,
- marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
+To: cyrille.pitchen@wedev4u.fr
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
+ computersforpeace@gmail.com, richard@nod.at, dwmw2@infradead.org,
  Andy Yan <andy.yan@rock-chips.com>
-Subject: [PATCH v7 3/3] ARM: dts: rockchip: enable sfc for rv1108 evb
-Date: Tue, 25 Jul 2017 18:09:26 +0800
-Message-Id: <1500977366-15155-1-git-send-email-andy.yan@rock-chips.com>
-In-Reply-To: <1500977251-15001-1-git-send-email-andy.yan@rock-chips.com>
-References: <1500977251-15001-1-git-send-email-andy.yan@rock-chips.com>
+Subject: [PATCH v4] mtd: spi-nor: add support for GD25Q256
+Date: Tue, 25 Jul 2017 18:12:54 +0800
+Message-Id: <1500977574-15915-1-git-send-email-andy.yan@rock-chips.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,66 +20,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Enable the sfc support for rv1108 evaluation board.
+Add support for GD25Q256, a 32MiB SPI Nor
+flash from Gigadevice.
 
 Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
+
 ---
 
-Changes in v7: None
-Changes in v6: None
-Changes in v5: None
-Changes in v4: None
-Changes in v3: None
-Changes in v2: None
+Changes in v4:
+- add SPI_NOR_HAS_LOCK and SPI_NOR_HAS_TB
 
- arch/arm/boot/dts/rv1108-evb.dts | 10 ++++++++++
- arch/arm/boot/dts/rv1108.dtsi    | 13 +++++++++++++
- 2 files changed, 23 insertions(+)
+Changes in v3:
+- rebase on top of spi-nor tree
+- add SPI_NOR_4B_OPCODES flag
 
-diff --git a/arch/arm/boot/dts/rv1108-evb.dts b/arch/arm/boot/dts/rv1108-evb.dts
-index e0d192d..44feea7 100644
---- a/arch/arm/boot/dts/rv1108-evb.dts
-+++ b/arch/arm/boot/dts/rv1108-evb.dts
-@@ -61,6 +61,16 @@
- 	status = "okay";
- };
+Changes in v2:
+- drop one line unnecessary modification
+
+ drivers/mtd/spi-nor/spi-nor.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 196b52f..e4145cd 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -986,6 +986,11 @@ static const struct flash_info spi_nor_ids[] = {
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+ 			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+ 	},
++	{
++		"gd25q256", INFO(0xc84019, 0, 64 * 1024, 512,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++			SPI_NOR_4B_OPCODES | SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
++	},
  
-+&sfc {
-+	status = "okay";
-+	spi-nor@0 {
-+		compatible = "jedec,spi-nor";
-+		spi-max-frequency = <100000000>;
-+		m25p,fast-read;
-+		reg = <0>;
-+	};
-+};
-+
- &uart0 {
- 	status = "okay";
- };
-diff --git a/arch/arm/boot/dts/rv1108.dtsi b/arch/arm/boot/dts/rv1108.dtsi
-index 675f774..452e397 100644
---- a/arch/arm/boot/dts/rv1108.dtsi
-+++ b/arch/arm/boot/dts/rv1108.dtsi
-@@ -210,6 +210,19 @@
- 		status = "disabled";
- 	};
+ 	/* Intel/Numonyx -- xxxs33b */
+ 	{ "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, 0) },
+@@ -2365,6 +2370,7 @@ static int spi_nor_init_params(struct spi_nor *nor,
+ 				   SNOR_HWCAPS_PP_QUAD)) {
+ 		switch (JEDEC_MFR(info)) {
+ 		case SNOR_MFR_MACRONIX:
++		case SNOR_MFR_GIGADEVICE:
+ 			params->quad_enable = macronix_quad_enable;
+ 			break;
  
-+	sfc: sfc@301c0000 {
-+		compatible = "rockchip,rv1108-sfc", "rockchip,sfc";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		clocks = <&cru SCLK_SFC>, <&cru HCLK_SFC>;
-+		clock-names = "sfc", "hsfc";
-+		interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
-+		reg = <0x301c0000 0x1000>;
-+		/* If you want to use PIO mode, activate this */
-+		/*rockchip,sfc-no-dma;*/
-+		status = "disabled";
-+	};
-+
- 	gic: interrupt-controller@32010000 {
- 		compatible = "arm,gic-400";
- 		interrupt-controller;
 -- 
 2.7.4
