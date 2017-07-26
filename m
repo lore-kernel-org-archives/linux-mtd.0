@@ -1,19 +1,21 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mout.kundenserver.de ([217.72.192.74])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1daSZC-0003DU-EP
- for linux-mtd@lists.infradead.org; Wed, 26 Jul 2017 20:06:00 +0000
-Subject: Re: Regarding UBI/UBIFS corruptions during random power-cuts.
-To: Ritesh Harjani <riteshh@codeaurora.org>
-Cc: linux-mtd@lists.infradead.org, bhuvanchandra.dv@toradex.com
-References: <c44fc096-c994-5b63-2647-1774e8406c0c@codeaurora.org>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <1ad7c77f-98e3-5d70-aa62-b72431000415@nod.at>
-Date: Wed, 26 Jul 2017 22:05:34 +0200
+ id 1daT7g-0001oR-DR
+ for linux-mtd@lists.infradead.org; Wed, 26 Jul 2017 20:41:38 +0000
+Date: Wed, 26 Jul 2017 22:40:56 +0200
+From: Alexander Dahl <post@lespocky.de>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Alexander Dahl <ada@thorsis.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org
+Subject: Re: mtd: nand: atmel: probe of Spansion S34ML02G1 fails
+Message-ID: <20170726204054.oejtb73jsxxlmovm@falbala.home.lespocky.de>
+References: <5326598.QgYTQxcFMR@ada> <20170725205406.5a946c08@bbrezillon>
+ <9879279.x3T2Y4a6KK@ada> <20170726203326.2159f0cc@bbrezillon>
 MIME-Version: 1.0
-In-Reply-To: <c44fc096-c994-5b63-2647-1774e8406c0c@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="7aion7tzqiex7r4x"
+Content-Disposition: inline
+In-Reply-To: <20170726203326.2159f0cc@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,33 +25,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ritesh,
 
-Am 25.07.2017 um 13:16 schrieb Ritesh Harjani:
-> Hi Richard,
-> 
-> Recently we also encountered a similar problem which is discussed in this thread. This was encountered on board with kernel 3.18.
-> This is happening with external power supply power cut testing.
-> 
-> https://patchwork.ozlabs.org/patch/719544/
-> 
-> Can you kindly help with what happened on this issue?
-> Were we able to identify any bug in kernel for this? Since I don't have any later conversations, it will be good to know if this problem is fixed in the latest kernel or not.
+--7aion7tzqiex7r4x
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Bhuvan and I are still looking into this.
+Hei Boris,
 
-> If yes, then could you please point me to the patches/discussion on this, if any.
-> 
-> 
-> Issue logs :-
-> https://pastebin.com/TL2b0ZbH
+On Wed, Jul 26, 2017 at 08:33:26PM +0200, Boris Brezillon wrote:
+> If it works, I'd like you to drop SMC timings in both situations (with
+> and without this commit).
 
-Do you see this in the same hardware?
-The error you're facing is rather generic.
-In our case we can reproduce the issue very reliable when we enable the UBIFS /sys/kernel/debug/ubifs/chk_fs debugfs knob.
-Can you please also try? Please note that chk_fs will make mounting UBIFS very slow.
+What do you mean with drop? For other CS? How?
 
-I'm very interested in your results, maybe it helps tracking down the root cause.
+> I'd also like to to dump NAND timings (those passed to
+> ->setup_data_interface()).
 
-Thanks,
-//richard
+I'll see hat I can do tomorrow.
+
+Greets
+Alex
+
+--=20
+=BBWith the first link, the chain is forged. The first speech censured,=20
+the first thought forbidden, the first freedom denied, chains us all=20
+irrevocably.=AB (Jean-Luc Picard, quoting Judge Aaron Satie)
+*** GnuPG-FP: C28E E6B9 0263 95CF 8FAF  08FA 34AD CD00 7221 5CC6 ***
+
+--7aion7tzqiex7r4x
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEwo7muQJjlc+Prwj6NK3NAHIhXMYFAll4/lAACgkQNK3NAHIh
+XMaySBAAxWCOHBCK4r3uJCws854VIgSR+vmct6c0LTbk+k4sD0/ikCUIVx3byxgf
+vERcY3UD4EyONWKV6A+srszjBKUou8MRd84VDOPlcOOgVWtJatENFR6Fh7deGQjn
+jGwjciM+tLgyjNbKruFlVByzi8t+Pp4QiiIRUiomAfzLuVyqEaJ3qCUkRkCUIuaA
+Wxpjv7aNNZAMLHjjHjDLwNJXtzXjKPGm1yILr3ZP8b7EaYxW9uPURVuvWrHV+c2b
+Eu+Z/uDh4FFCINDioDj6MogPtL46P0aiSIyDaISeUAluq0bxv+uZlm31zgrZm5uV
+VO7b4nXftsr4mJ4O4k4xHmXevNDBp2mhGBtxEravYAqQYghcZ6WHR6FruceIgxKw
+1RW71rmUsa/kabMYrfhwXYpw1H6RJ0GRRRNB8MfgY2SOqORky5YPqz1519/Ptwta
+4DHeP0krEByfHoZ48EoZt6AW+CtU8aIm1r//PRpeBVsmMruZ7iOQoqEpyN9i99MO
+UXf2IC4mG1PE12QdonNDv9senMx4L1tySAYQoKnDEJ4SjWkGWy55YzCpkHoOVLea
+CvdrJG6FkmBxkPsimqfn64Yqccdn8979mzDrrJu0/K1HaTxy+JpIIGemHzh54EHW
+Q2Udpg/BmSi43+rRY4jSEa/9Q1nh0s0d3aCEigX4xPERmoCFKH0=
+=xG4h
+-----END PGP SIGNATURE-----
+
+--7aion7tzqiex7r4x--
