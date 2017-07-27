@@ -1,25 +1,20 @@
-Received: from mail-ua0-x244.google.com ([2607:f8b0:400c:c08::244])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1daWlV-00011x-HG
- for linux-mtd@lists.infradead.org; Thu, 27 Jul 2017 00:35:00 +0000
-Received: by mail-ua0-x244.google.com with SMTP id q25so13263683uah.0
- for <linux-mtd@lists.infradead.org>; Wed, 26 Jul 2017 17:34:35 -0700 (PDT)
+ id 1dajWG-0006YQ-JS
+ for linux-mtd@lists.infradead.org; Thu, 27 Jul 2017 14:12:06 +0000
+Subject: Re: Regarding UBI/UBIFS corruptions during random power-cuts.
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, bhuvanchandra.dv@toradex.com
+References: <c44fc096-c994-5b63-2647-1774e8406c0c@codeaurora.org>
+ <1ad7c77f-98e3-5d70-aa62-b72431000415@nod.at>
+From: Ritesh Harjani <riteshh@codeaurora.org>
+Message-ID: <cd3ca825-82b4-857d-b5bd-d9f8947a434a@codeaurora.org>
+Date: Thu, 27 Jul 2017 19:41:38 +0530
 MIME-Version: 1.0
-In-Reply-To: <1500105555-14074-1-git-send-email-geert@linux-m68k.org>
-References: <1500105555-14074-1-git-send-email-geert@linux-m68k.org>
-From: Andrey Smirnov <andrew.smirnov@gmail.com>
-Date: Wed, 26 Jul 2017 17:34:34 -0700
-Message-ID: <CAHQ1cqHdARCaee5Aocc+qncZKXR9tM5B9ZKte1UwtC4o0d3x9g@mail.gmail.com>
-Subject: Re: [PATCH] mtd: dataflash: Use ULL suffix for 64-bit constants
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1ad7c77f-98e3-5d70-aa62-b72431000415@nod.at>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,49 +24,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Jul 15, 2017 at 12:59 AM, Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> With gcc 4.1.2:
->
->     drivers/mtd/devices/mtd_dataflash.c:740: warning: integer constant is=
- too large for =E2=80=98long=E2=80=99 type
->     drivers/mtd/devices/mtd_dataflash.c:741: warning: integer constant is=
- too large for =E2=80=98long=E2=80=99 type
->
-> Add the missing "ULL" suffix to fix this.
->
-> Fixes: 67e4145ebf2c161d ("mtd: dataflash: Add flash_info for AT45DB641E")
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-My bad, sorry about that. FWIW,
+On 7/27/2017 1:35 AM, Richard Weinberger wrote:
+> Ritesh,
+> 
+> Am 25.07.2017 um 13:16 schrieb Ritesh Harjani:
+>> Hi Richard,
+>>
+>> Recently we also encountered a similar problem which is discussed in this thread. This was encountered on board with kernel 3.18.
+>> This is happening with external power supply power cut testing.
+>>
+>> https://patchwork.ozlabs.org/patch/719544/
+>>
+>> Can you kindly help with what happened on this issue?
+>> Were we able to identify any bug in kernel for this? Since I don't have any later conversations, it will be good to know if this problem is fixed in the latest kernel or not.
+> 
+> Bhuvan and I are still looking into this.
 
-Acked-by: Andrey Smirnov <andrew.smirnov@gmail.com>
+Thanks for the updating us.
 
-> ---
->  drivers/mtd/devices/mtd_dataflash.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mt=
-d_dataflash.c
-> index 5dc8bd042cc54b2d..504e34f295180fd9 100644
-> --- a/drivers/mtd/devices/mtd_dataflash.c
-> +++ b/drivers/mtd/devices/mtd_dataflash.c
-> @@ -737,8 +737,8 @@ static struct flash_info dataflash_data[] =3D {
->         { "AT45DB642x",  0x1f2800, 8192, 1056, 11, SUP_POW2PS},
->         { "at45db642d",  0x1f2800, 8192, 1024, 10, SUP_POW2PS | IS_POW2PS=
-},
->
-> -       { "AT45DB641E",  0x1f28000100, 32768, 264, 9, SUP_EXTID | SUP_POW=
-2PS},
-> -       { "at45db641e",  0x1f28000100, 32768, 256, 8, SUP_EXTID | SUP_POW=
-2PS | IS_POW2PS},
-> +       { "AT45DB641E",  0x1f28000100ULL, 32768, 264, 9, SUP_EXTID | SUP_=
-POW2PS},
-> +       { "at45db641e",  0x1f28000100ULL, 32768, 256, 8, SUP_EXTID | SUP_=
-POW2PS | IS_POW2PS},
->  };
->
->  static struct flash_info *jedec_lookup(struct spi_device *spi,
-> --
-> 2.7.4
->
+> 
+>> If yes, then could you please point me to the patches/discussion on this, if any.
+>>
+>>
+>> Issue logs :-
+>> https://pastebin.com/TL2b0ZbH
+> 
+> Do you see this in the same hardware?
+No, the HW is different. It is some MSM Hardware.
+
+> The error you're facing is rather generic.
+> In our case we can reproduce the issue very reliable when we enable the UBIFS /sys/kernel/debug/ubifs/chk_fs debugfs knob.
+> Can you please also try? Please note that chk_fs will make mounting UBIFS very slow.
+> 
+> I'm very interested in your results, maybe it helps tracking down the root cause.
+Sure, I will give this a shot and let you know the outcome.
+
+
+Thanks
+Ritesh
+
+> 
+> Thanks,
+> //richard
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
