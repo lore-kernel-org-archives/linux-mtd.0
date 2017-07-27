@@ -1,20 +1,21 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dajWG-0006YQ-JS
- for linux-mtd@lists.infradead.org; Thu, 27 Jul 2017 14:12:06 +0000
-Subject: Re: Regarding UBI/UBIFS corruptions during random power-cuts.
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, bhuvanchandra.dv@toradex.com
-References: <c44fc096-c994-5b63-2647-1774e8406c0c@codeaurora.org>
- <1ad7c77f-98e3-5d70-aa62-b72431000415@nod.at>
-From: Ritesh Harjani <riteshh@codeaurora.org>
-Message-ID: <cd3ca825-82b4-857d-b5bd-d9f8947a434a@codeaurora.org>
-Date: Thu, 27 Jul 2017 19:41:38 +0530
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1daoRT-0001o4-26
+ for linux-mtd@lists.infradead.org; Thu, 27 Jul 2017 19:27:29 +0000
+Date: Thu, 27 Jul 2017 21:27:03 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Alexander Dahl <post@lespocky.de>
+Cc: Alexander Dahl <ada@thorsis.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org
+Subject: Re: mtd: nand: atmel: probe of Spansion S34ML02G1 fails
+Message-ID: <20170727212703.724d41fd@bbrezillon>
+In-Reply-To: <20170726204054.oejtb73jsxxlmovm@falbala.home.lespocky.de>
+References: <5326598.QgYTQxcFMR@ada> <20170725205406.5a946c08@bbrezillon>
+ <9879279.x3T2Y4a6KK@ada> <20170726203326.2159f0cc@bbrezillon>
+ <20170726204054.oejtb73jsxxlmovm@falbala.home.lespocky.de>
 MIME-Version: 1.0
-In-Reply-To: <1ad7c77f-98e3-5d70-aa62-b72431000415@nod.at>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,55 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Le Wed, 26 Jul 2017 22:40:56 +0200,
+Alexander Dahl <post@lespocky.de> a =C3=A9crit :
 
-On 7/27/2017 1:35 AM, Richard Weinberger wrote:
-> Ritesh,
-> 
-> Am 25.07.2017 um 13:16 schrieb Ritesh Harjani:
->> Hi Richard,
->>
->> Recently we also encountered a similar problem which is discussed in this thread. This was encountered on board with kernel 3.18.
->> This is happening with external power supply power cut testing.
->>
->> https://patchwork.ozlabs.org/patch/719544/
->>
->> Can you kindly help with what happened on this issue?
->> Were we able to identify any bug in kernel for this? Since I don't have any later conversations, it will be good to know if this problem is fixed in the latest kernel or not.
-> 
-> Bhuvan and I are still looking into this.
+> Hei Boris,
+>=20
+> On Wed, Jul 26, 2017 at 08:33:26PM +0200, Boris Brezillon wrote:
+> > If it works, I'd like you to drop SMC timings in both situations (with
+> > and without this commit). =20
+>=20
+> What do you mean with drop? For other CS? How?
 
-Thanks for the updating us.
+Sorry, I meant dump not drop.
 
-> 
->> If yes, then could you please point me to the patches/discussion on this, if any.
->>
->>
->> Issue logs :-
->> https://pastebin.com/TL2b0ZbH
-> 
-> Do you see this in the same hardware?
-No, the HW is different. It is some MSM Hardware.
+>=20
+> > I'd also like to to dump NAND timings (those passed to =20
+> > ->setup_data_interface()). =20
+>=20
+> I'll see hat I can do tomorrow.
 
-> The error you're facing is rather generic.
-> In our case we can reproduce the issue very reliable when we enable the UBIFS /sys/kernel/debug/ubifs/chk_fs debugfs knob.
-> Can you please also try? Please note that chk_fs will make mounting UBIFS very slow.
-> 
-> I'm very interested in your results, maybe it helps tracking down the root cause.
-Sure, I will give this a shot and let you know the outcome.
+Did you have time to test with f9ce2eddf176 ("mtd: nand: atmel: Add
+->setup_data_interface() hooks") reverted? BTW, it's probably simpler
+to just comment out this line [1]
 
+>=20
+> Greets
+> Alex
+>=20
 
-Thanks
-Ritesh
-
-> 
-> Thanks,
-> //richard
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+[1]http://elixir.free-electrons.com/linux/v4.13-rc2/source/drivers/mtd/nand=
+/atmel/nand-controller.c#L1493
