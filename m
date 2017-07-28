@@ -1,19 +1,22 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dbAhP-0007Hj-93
- for linux-mtd@lists.infradead.org; Fri, 28 Jul 2017 19:13:26 +0000
-Date: Fri, 28 Jul 2017 21:13:01 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Alexander Dahl <ada@thorsis.com>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>
-Subject: Re: mtd: nand: atmel: probe of Spansion S34ML02G1 fails
-Message-ID: <20170728211301.10d25227@bbrezillon>
-In-Reply-To: <2274647.ublHvqEhgW@ada>
-References: <5326598.QgYTQxcFMR@ada> <9879279.x3T2Y4a6KK@ada>
- <20170726203326.2159f0cc@bbrezillon> <2274647.ublHvqEhgW@ada>
+From: Alexandru Gagniuc <alex.g@adaptrum.com>
+To: linux-snps-arc@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Alexandru Gagniuc <alex.g@adaptrum.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org
+Subject: [PATCH 4/5] mtd: spi-nor: Add driver for Adaptrum Anarion QSPI
+ controller
+Date: Fri, 28 Jul 2017 15:07:04 -0700
+Message-Id: <20170728220707.13960-5-alex.g@adaptrum.com>
+In-Reply-To: <20170728220707.13960-1-alex.g@adaptrum.com>
+References: <20170728220707.13960-1-alex.g@adaptrum.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,165 +26,577 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le Fri, 28 Jul 2017 15:15:25 +0200,
-Alexander Dahl <ada@thorsis.com> a =C3=A9crit :
+Add support for the QSPI controller found in Adaptrum Anarion SOCs.
+This controller is designed specifically to handle SPI NOR chips, and
+the driver is modeled as such.
 
-> Hello Boris,
->=20
-> Am Mittwoch, 26. Juli 2017, 20:33:26 schrieb Boris Brezillon:
-> > Okay, first thing to test: revert f9ce2eddf176 ("mtd: nand: atmel: Add =
-=20
-> > ->setup_data_interface() hooks"). You may have to revert other =20
-> > commits to compile the driver.
-> >=20
-> > If it works, I'd like you to drop SMC timings in both situations (with
-> > and without this commit).
-> >=20
-> > I'd also like to to dump NAND timings (those passed to =20
-> > ->setup_data_interface()). =20
->=20
-> So based on those three atmel-ebi patches from earlier this week I used=20
-> the attached patch to dump the nand timings and smc settings before the=20
-> get applied. clk mck runs at 132096000 Hz (slow_xtal 32768, main_xtal=20
-> 18432000). Previously clock settings for NAND were set in (very old) U-
-> Boot to this (double checked, Linux didn't touch it):
->=20
-> 	U-Boot> md.l 0xffffef1c 1
-> 	ffffef1c: 0001000a    ....
-> 	U-Boot> md.l 0xffffec30 4
-> 	ffffec30: 00010001 03030303 00050005 00020003    ................
->=20
-> So setup, pulse, cycle, tdf all to quite low number of clock cycles, but=
-=20
-> as far as I can tell this worked with all flash chips we had connected=20
-> over the years.
->=20
-> Now with the old Hynix flash chip, I get the following:
->=20
-> 	atmel-nand-controller 10000000.ebi:nand-controller: atmel_smc_nand_setup=
-_data_interface(csline: 0, type: 0)
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tBERS_max: 0, tCCS_m=
-in: 500000, tPROG_max: 0, tR_max: 200000000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tALH_min: 20000, tAD=
-L_min: 400000, tALS_min: 50000, tAR_min: 25000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tCEA_max: 100000, tC=
-EH_min: 20000, tCH_min: 20000, tCHZ_max: 100000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tCLH_min: 20000, tCL=
-R_min: 20000, tCLS_min: 50000, tCOH_min: 0
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tCS_min: 70000, tDH_=
-min: 20000, tDS_min: 40000, tFEAT_max: 1000000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tIR_min: 10000, tITC=
-_max: 1000000, tRC_min: 100000, tREA_max: 40000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tREH_min: 30000, tRH=
-OH_min: 0, tRHW_min: 200000, tRHZ_max: 200000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tRLOH_min: 0, tRP_mi=
-n: 50000, tRR_min: 40000, tRST_max: 250000000000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tWB_max: 200000, tWC=
-_min: 100000, tWH_min: 30000, tWHR_min: 120000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tWP_min: 50000, tWW_=
-min: 100000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: smcconf: setup: 0x00=
-000002, pulse: 0x0f080f08, cycle: 0x000f000f, timings: 0x88060483, mode: 0x=
-001f0003
-> 	nand: Could not find valid ONFI parameter page; aborting
-> 	nand: device found, Manufacturer ID: 0xad, Chip ID: 0xda
-> 	nand: Hynix NAND 256MiB 3,3V 8-bit
-> 	nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
->=20
-> 	$ devmem 0xffffef1c
-> 	0x0001000A
-> 	$ devmem 0xffffec30
-> 	0x00000002
-> 	$ devmem 0xffffec34
-> 	0x0F080F08
-> 	$ devmem 0xffffec38
-> 	0x000F000F
-> 	$ devmem 0xffffec3c
-> 	0x001F0003
->=20
-> To me those values look like some kind of defaults every nand chip should=
- run with?
->=20
-> The failing Spansion chip here:
->=20
-> 	atmel-nand-controller 10000000.ebi:nand-controller: atmel_smc_nand_setup=
-_data_interface(csline: 0, type: 0)
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tBERS_max: 0, tCCS_m=
-in: 500000, tPROG_max: 0, tR_max: 200000000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tALH_min: 20000, tAD=
-L_min: 400000, tALS_min: 50000, tAR_min: 25000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tCEA_max: 100000, tC=
-EH_min: 20000, tCH_min: 20000, tCHZ_max: 100000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tCLH_min: 20000, tCL=
-R_min: 20000, tCLS_min: 50000, tCOH_min: 0
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tCS_min: 70000, tDH_=
-min: 20000, tDS_min: 40000, tFEAT_max: 1000000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tIR_min: 10000, tITC=
-_max: 1000000, tRC_min: 100000, tREA_max: 40000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tREH_min: 30000, tRH=
-OH_min: 0, tRHW_min: 200000, tRHZ_max: 200000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tRLOH_min: 0, tRP_mi=
-n: 50000, tRR_min: 40000, tRST_max: 250000000000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tWB_max: 200000, tWC=
-_min: 100000, tWH_min: 30000, tWHR_min: 120000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tWP_min: 50000, tWW_=
-min: 100000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: smcconf: setup: 0x00=
-000002, pulse: 0x0f080f08, cycle: 0x000f000f, timings: 0x88060483, mode: 0x=
-001f0003
-> 	nand: device found, Manufacturer ID: 0x01, Chip ID: 0xda
-> 	nand: AMD/Spansion S34ML02G1
-> 	nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-> 	atmel-nand-controller 10000000.ebi:nand-controller: atmel_smc_nand_setup=
-_data_interface(csline: -1, type: 0)
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tBERS_max: 141006540=
-8, tCCS_min: 100000, tPROG_max: 700000000, tR_max: 25000000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tALH_min: 5000, tADL=
-_min: 400000, tALS_min: 10000, tAR_min: 10000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tCEA_max: 25000, tCE=
-H_min: 20000, tCH_min: 5000, tCHZ_max: 30000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tCLH_min: 5000, tCLR=
-_min: 10000, tCLS_min: 10000, tCOH_min: 15000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tCS_min: 20000, tDH_=
-min: 5000, tDS_min: 10000, tFEAT_max: 1000000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tIR_min: 0, tITC_max=
-: 1000000, tRC_min: 25000, tREA_max: 20000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tREH_min: 10000, tRH=
-OH_min: 15000, tRHW_min: 100000, tRHZ_max: 100000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tRLOH_min: 5000, tRP=
-_min: 12000, tRR_min: 20000, tRST_max: 500000000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tWB_max: 100000, tWC=
-_min: 25000, tWH_min: 10000, tWHR_min: 80000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: tWP_min: 12000, tWW_=
-min: 100000
-> 	atmel-nand-controller 10000000.ebi:nand-controller: smcconf: setup: 0x00=
-000001, pulse: 0x05020502, cycle: 0x00050005, timings: 0x88030282, mode: 0x=
-001b0003
+Because the system is emulated on an FPGA, we don't have a way to test
+all the hardware adjustemts, so only basic features are implemented at
+this time.
 
+Signed-off-by: Alexandru Gagniuc <alex.g@adaptrum.com>
+---
+ .../devicetree/bindings/mtd/anarion-quadspi.txt    |  22 +
+ drivers/mtd/spi-nor/Kconfig                        |   7 +
+ drivers/mtd/spi-nor/Makefile                       |   1 +
+ drivers/mtd/spi-nor/anarion-quadspi.c              | 490 +++++++++++++++++++++
+ 4 files changed, 520 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/anarion-quadspi.txt
+ create mode 100644 drivers/mtd/spi-nor/anarion-quadspi.c
 
-Hm, ok. It seems that we're accepting mode 4 even though the controller
-is not supporting EDO mode which mandatory for mode 4 and 5.
-
-Can you try with the following patch? Timings are expressed in picoseconds
-and this test was testing against a value expressed in nanoseconds. =20
-
-BTW, did you try to comment the line I pointed out yesterday? I'd like
-to be sure this is a timing issue.
-
---->8---
-diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/at=
-mel/nand-controller.c
-index d922a88e407f..2c8baa0c2c4e 100644
---- a/drivers/mtd/nand/atmel/nand-controller.c
-+++ b/drivers/mtd/nand/atmel/nand-controller.c
-@@ -1201,7 +1201,7 @@ static int atmel_smc_nand_prepare_smcconf(struct atme=
-l_nand *nand,
-         * tRC < 30ns implies EDO mode. This controller does not support th=
-is
-         * mode.
-         */
--       if (conf->timings.sdr.tRC_min < 30)
-+       if (conf->timings.sdr.tRC_min < 30000)
-                return -ENOTSUPP;
-=20
-        atmel_smc_cs_conf_init(smcconf);
+diff --git a/Documentation/devicetree/bindings/mtd/anarion-quadspi.txt b/Documentation/devicetree/bindings/mtd/anarion-quadspi.txt
+new file mode 100644
+index 0000000..b4971e1
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/anarion-quadspi.txt
+@@ -0,0 +1,22 @@
++* Adaptrum Anarion Quad SPI controller
++
++Required properties:
++- compatible : Should be "adaptrum,anarion-qspi".
++- reg : Contains two entries, each of which is a tuple consisting of a
++	physical address and length. The first entry is the address and
++	length of the controller register set. The second entry is the
++	address and length of the memory-mapped flash. This second region is
++	the region where the controller responds to XIP requests, and may be
++	larger than the size of the attached flash.
++
++Example:
++
++	qspi: qspi@f200f000 {
++		compatible = "adaptrum,anarion-qspi";
++		reg = 	<0xf200f000 0x1000>,
++			<0x20000000 0x08000000>;
++
++		flash0: w25q128fvn@0 {
++			...
++		}
++	};
+diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+index 293c8a4..98dc012 100644
+--- a/drivers/mtd/spi-nor/Kconfig
++++ b/drivers/mtd/spi-nor/Kconfig
+@@ -48,6 +48,13 @@ config SPI_ATMEL_QUADSPI
+ 	  This driver does not support generic SPI. The implementation only
+ 	  supports SPI NOR.
+ 
++config SPI_ANARION_QUADSPI
++	tristate "Adaptrum Anarion Quad SPI Controller"
++	depends on OF && HAS_IOMEM
++	help
++	  Enable support for the Adaptrum Anarion Quad SPI controller.
++	  This driver does not support generic SPI. It only supports SPI NOR.
++
+ config SPI_CADENCE_QUADSPI
+ 	tristate "Cadence Quad SPI controller"
+ 	depends on OF && (ARM || COMPILE_TEST)
+diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+index 285aab8..53635f6 100644
+--- a/drivers/mtd/spi-nor/Makefile
++++ b/drivers/mtd/spi-nor/Makefile
+@@ -1,6 +1,7 @@
+ obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
+ obj-$(CONFIG_SPI_ASPEED_SMC)	+= aspeed-smc.o
+ obj-$(CONFIG_SPI_ATMEL_QUADSPI)	+= atmel-quadspi.o
++obj-$(CONFIG_SPI_ANARION_QUADSPI)	+= anarion-quadspi.o
+ obj-$(CONFIG_SPI_CADENCE_QUADSPI)	+= cadence-quadspi.o
+ obj-$(CONFIG_SPI_FSL_QUADSPI)	+= fsl-quadspi.o
+ obj-$(CONFIG_SPI_HISI_SFC)	+= hisi-sfc.o
+diff --git a/drivers/mtd/spi-nor/anarion-quadspi.c b/drivers/mtd/spi-nor/anarion-quadspi.c
+new file mode 100644
+index 0000000..d981356
+--- /dev/null
++++ b/drivers/mtd/spi-nor/anarion-quadspi.c
+@@ -0,0 +1,490 @@
++/*
++ * Adaptrum Anarion Quad SPI controller driver
++ *
++ * Copyright (C) 2017, Adaptrum, Inc.
++ * (Written by Alexandru Gagniuc <alex.g at adaptrum.com> for Adaptrum, Inc.)
++ * Licensed under the GPLv2 or (at your option) any later version.
++ */
++
++#include <linux/io.h>
++#include <linux/delay.h>
++#include <linux/iopoll.h>
++#include <linux/module.h>
++#include <linux/mtd/spi-nor.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
++
++#define ASPI_REG_CLOCK			0x00
++#define ASPI_REG_GO			0x04
++#define ASPI_REG_CHAIN			0x08
++#define ASPI_REG_CMD1			0x0c
++#define ASPI_REG_CMD2			0x10
++#define ASPI_REG_ADDR1			0x14
++#define ASPI_REG_ADDR2			0x18
++#define ASPI_REG_PERF1			0x1c
++#define ASPI_REG_PERF2			0x20
++#define ASPI_REG_HI_Z			0x24
++#define ASPI_REG_BYTE_COUNT		0x28
++#define ASPI_REG_DATA1			0x2c
++#define ASPI_REG_DATA2			0x30
++#define ASPI_REG_FINISH			0x34
++#define ASPI_REG_XIP			0x38
++#define ASPI_REG_FIFO_STATUS		0x3c
++#define ASPI_REG_LAT			0x40
++#define ASPI_REG_OUT_DELAY_0		0x44
++#define ASPI_REG_OUT_DELAY_1		0x48
++#define ASPI_REG_IN_DELAY_0		0x4c
++#define ASPI_REG_IN_DELAY_1		0x50
++#define ASPI_REG_DQS_DELAY		0x54
++#define ASPI_REG_STATUS			0x58
++#define ASPI_REG_IRQ_ENABLE		0x5c
++#define ASPI_REG_IRQ_STATUS		0x60
++#define ASPI_REG_AXI_BAR		0x64
++#define ASPI_REG_READ_CFG		0x6c
++
++#define ASPI_CLK_SW_RESET		(1 << 0)
++#define ASPI_CLK_RESET_BUF		(1 << 1)
++#define ASPI_CLK_RESET_ALL		(ASPI_CLK_SW_RESET | ASPI_CLK_RESET_BUF)
++#define ASPI_CLK_SPI_MODE3		(1 << 2)
++#define ASPI_CLOCK_DIV_MASK		(0xff << 8)
++#define ASPI_CLOCK_DIV(d)		(((d) << 8) & ASPI_CLOCK_DIV_MASK)
++
++#define ASPI_TIMEOUT_US		100000
++
++#define ASPI_DATA_LEN_MASK		0x3fff
++#define ASPI_MAX_XFER_LEN		(size_t)(ASPI_DATA_LEN_MASK + 1)
++
++#define MODE_IO_X1			(0 << 16)
++#define MODE_IO_X2			(1 << 16)
++#define MODE_IO_X4			(2 << 16)
++#define MODE_IO_SDR_POS_SKEW		(0 << 20)
++#define MODE_IO_SDR_NEG_SKEW		(1 << 20)
++#define MODE_IO_DDR_34_SKEW		(2 << 20)
++#define MODE_IO_DDR_PN_SKEW		(3 << 20)
++#define MODE_IO_DDR_DQS			(5 << 20)
++
++#define ASPI_STATUS_BUSY			(1 << 2)
++
++/*
++ * This mask does not match reality. Get over it:
++ * DATA2:	0x3fff
++ * CMD2:	0x0003
++ * ADDR2:	0x0007
++ * PERF2:	0x0000
++ * HI_Z:	0x003f
++ * BCNT:	0x0007
++ */
++#define CHAIN_LEN(x)		((x - 1) & ASPI_DATA_LEN_MASK)
++
++struct anarion_qspi {
++	struct		spi_nor nor;
++	struct		device *dev;
++	uintptr_t	regbase;
++	uintptr_t	xipbase;
++	uint32_t	xfer_mode_cmd;
++	uint32_t	xfer_mode_addr;
++	uint32_t	xfer_mode_data;
++	uint8_t		num_hi_z_clocks;
++};
++
++struct qspi_io_chain {
++	uint8_t action;
++	uint32_t data;
++	uint16_t data_len;
++	uint32_t mode;
++};
++
++enum chain_code {
++	CHAIN_NOP = 0,
++	CHAIN_CMD = 1,
++	CHAIN_ADDR = 2,
++	CHAIN_WTFIUM = 3,
++	CHAIN_HI_Z = 4,
++	CHAIN_DATA_OUT = 5,
++	CHAIN_DATA_IN = 6,
++	CHAIN_FINISH = 7,
++};
++
++static const struct chain_to_reg {
++	uint8_t data_reg;
++	uint8_t ctl_reg;
++} chain_to_reg_map[] = {
++	[CHAIN_NOP] =		{0, 0},
++	[CHAIN_CMD] =		{ASPI_REG_CMD1, ASPI_REG_CMD2},
++	[CHAIN_ADDR] =		{ASPI_REG_ADDR1, ASPI_REG_ADDR2},
++	[CHAIN_WTFIUM] =	{0, 0},
++	[CHAIN_HI_Z] =		{0, ASPI_REG_HI_Z},
++	[CHAIN_DATA_OUT] =	{0, ASPI_REG_DATA2},
++	[CHAIN_DATA_IN] =	{0, ASPI_REG_DATA2},
++	[CHAIN_FINISH] =	{0, ASPI_REG_FINISH},
++};
++
++static uint32_t aspi_read_reg(struct anarion_qspi *spi, uint8_t reg)
++{
++	return readl((void *)(spi->regbase + reg));
++};
++
++static void aspi_write_reg(struct anarion_qspi *spi, uint8_t reg, uint32_t val)
++{
++	writel(val, (void *)(spi->regbase + reg));
++};
++
++static size_t aspi_get_fifo_level(struct anarion_qspi *spi)
++{
++	return aspi_read_reg(spi, ASPI_REG_FIFO_STATUS) & 0xff;
++}
++
++static void aspi_drain_fifo(struct anarion_qspi *aspi, uint8_t *buf, size_t len)
++{
++	uint32_t data;
++
++	aspi_write_reg(aspi, ASPI_REG_BYTE_COUNT, sizeof(uint32_t));
++	while (len >= 4) {
++		data = aspi_read_reg(aspi, ASPI_REG_DATA1);
++		memcpy(buf, &data, sizeof(data));
++		buf += 4;
++		len -= 4;
++	}
++
++	if (len) {
++		aspi_write_reg(aspi, ASPI_REG_BYTE_COUNT, len);
++		data = aspi_read_reg(aspi, ASPI_REG_DATA1);
++		memcpy(buf, &data, len);
++	}
++}
++
++static void aspi_seed_fifo(struct anarion_qspi *spi,
++			   const uint8_t *buf, size_t len)
++{
++	uint32_t data;
++
++	aspi_write_reg(spi, ASPI_REG_BYTE_COUNT, sizeof(uint32_t));
++	while (len >= 4) {
++		memcpy(&data, buf, sizeof(data));
++		aspi_write_reg(spi, ASPI_REG_DATA1, data);
++		buf += 4;
++		len -= 4;
++	}
++
++	if (len) {
++		aspi_write_reg(spi, ASPI_REG_BYTE_COUNT, len);
++		memcpy(&data, buf, len);
++		aspi_write_reg(spi, ASPI_REG_DATA1, data);
++	}
++}
++
++static int aspi_wait_idle(struct anarion_qspi *aspi)
++{
++	uint32_t status;
++	void *status_reg = (void *)(aspi->regbase + ASPI_REG_STATUS);
++
++	return readl_poll_timeout(status_reg, status,
++				  !(status & ASPI_STATUS_BUSY),
++				  1, ASPI_TIMEOUT_US);
++}
++
++static int aspi_poll_and_seed_fifo(struct anarion_qspi *spi,
++				   const void *src_addr, size_t len)
++{
++	size_t wait_us, fifo_space = 0, xfer_len;
++	const uint8_t *src = src_addr;
++
++	while (len > 0) {
++		wait_us = 0;
++		while (wait_us++ < ASPI_TIMEOUT_US) {
++			fifo_space = 64 - aspi_get_fifo_level(spi);
++			if (fifo_space)
++				break;
++			udelay(1);
++		}
++
++		xfer_len = min(len, fifo_space);
++		aspi_seed_fifo(spi, src, xfer_len);
++		src += xfer_len;
++		len -= xfer_len;
++	}
++
++	return 0;
++}
++
++static void aspi_setup_chain(struct anarion_qspi *aspi,
++			     const struct qspi_io_chain *chain,
++			     size_t chain_len)
++{
++	size_t i;
++	uint32_t chain_reg = 0;
++	const struct qspi_io_chain *link;
++	const struct chain_to_reg *regs;
++
++	for (link = chain, i = 0; i < chain_len; i++, link++) {
++		regs = &chain_to_reg_map[link->action];
++
++		if (link->data_len && regs->data_reg)
++			aspi_write_reg(aspi, regs->data_reg, link->data);
++
++		if (regs->ctl_reg)
++			aspi_write_reg(aspi, regs->ctl_reg,
++				       CHAIN_LEN(link->data_len) | link->mode);
++
++		chain_reg |= link->action << (i * 4);
++	}
++
++	chain_reg |= CHAIN_FINISH << (i * 4);
++
++	aspi_write_reg(aspi, ASPI_REG_CHAIN, chain_reg);
++}
++
++static int aspi_execute_chain(struct anarion_qspi *aspi)
++{
++	/* Go, johnny go */
++	aspi_write_reg(aspi, ASPI_REG_GO, 1);
++	return aspi_wait_idle(aspi);
++}
++
++static int anarion_spi_read_nor_reg(struct spi_nor *nor, uint8_t opcode,
++				    uint8_t *buf, int len)
++{
++	struct anarion_qspi *aspi = nor->priv;
++	struct qspi_io_chain chain[] =  {
++		{CHAIN_CMD, opcode, 1, MODE_IO_X1},
++		{CHAIN_DATA_IN, 0, (uint16_t)len, MODE_IO_X1},
++	};
++
++	if (len >= 8)
++		return -EMSGSIZE;
++
++	aspi_setup_chain(aspi, chain, ARRAY_SIZE(chain));
++	aspi_execute_chain(aspi);
++
++	aspi_drain_fifo(aspi, buf, len);
++
++	return 0;
++}
++
++static int anarion_qspi_cmd_addr(struct anarion_qspi *aspi, uint16_t cmd,
++				 uint32_t addr, int addr_len)
++{
++	size_t chain_size;
++	const struct qspi_io_chain chain[] = {
++		{CHAIN_CMD, cmd, 1, MODE_IO_X1},
++		{CHAIN_ADDR, addr, addr_len, MODE_IO_X1},
++	};
++
++	chain_size = addr_len ? ARRAY_SIZE(chain) : (ARRAY_SIZE(chain) - 1);
++	aspi_setup_chain(aspi, chain, chain_size);
++	return aspi_execute_chain(aspi);
++}
++
++static int anarion_spi_write_nor_reg(struct spi_nor *nor, uint8_t opcode,
++				     uint8_t *buf, int len)
++{
++	uint32_t addr, i;
++	struct anarion_qspi *aspi = nor->priv;
++
++	if (len > sizeof(uint32_t))
++		return -ENOTSUPP;
++
++	for (i = 0, addr = 0; i < len; i++)
++		addr |= buf[len - 1 - i] << (i * 8);
++
++	return anarion_qspi_cmd_addr(aspi, opcode, addr, len);
++}
++
++/* After every operation, we need to restore the IO chain for XIP to work. */
++static void aspi_setup_xip_read_chain(struct anarion_qspi *spi,
++				      struct spi_nor *nor)
++{
++	struct qspi_io_chain chain[] =  {
++		{CHAIN_CMD, nor->read_opcode, 1, spi->xfer_mode_cmd},
++		{CHAIN_ADDR, 0, nor->addr_width, spi->xfer_mode_addr},
++		{CHAIN_HI_Z, 0, spi->num_hi_z_clocks, spi->xfer_mode_addr},
++		{CHAIN_DATA_IN, 0, ASPI_DATA_LEN_MASK, spi->xfer_mode_data},
++	};
++
++	aspi_setup_chain(spi, chain, ARRAY_SIZE(chain));
++}
++
++static int aspi_do_write_xfer(struct anarion_qspi *spi,
++			      struct spi_nor *nor, uint32_t addr,
++			      const void *buf, size_t len)
++{
++	struct qspi_io_chain chain[] =  {
++		{CHAIN_CMD, nor->program_opcode, 1, MODE_IO_X1},
++		{CHAIN_ADDR, addr, nor->addr_width, MODE_IO_X1},
++		{CHAIN_DATA_OUT, 0, len, MODE_IO_X1},
++	};
++
++	aspi_setup_chain(spi, chain, ARRAY_SIZE(chain));
++
++	/* Go, johnny go */
++	aspi_write_reg(spi, ASPI_REG_GO, 1);
++
++	aspi_poll_and_seed_fifo(spi, buf, len);
++	return aspi_wait_idle(spi);
++}
++
++/* While we could send read commands manually to the flash chip, we'd have to
++ * get data back through the DATA2 register. That is on the AHB bus, whereas
++ * XIP reads go over AXI. Hence, we use the memory-mapped flash space for read.
++ * TODO: Look at using DMA instead of memcpy().
++ */
++static ssize_t anarion_spi_nor_read(struct spi_nor *nor, loff_t from,
++				      size_t len, uint8_t *read_buf)
++{
++	struct anarion_qspi *aspi = nor->priv;
++	void *from_xip = (void *)(aspi->xipbase + from);
++
++	aspi_setup_xip_read_chain(aspi, nor);
++	memcpy(read_buf, from_xip, len);
++
++	return len;
++}
++
++static ssize_t anarion_spi_nor_write(struct spi_nor *nor, loff_t to,
++				     size_t len, const uint8_t *src)
++{
++	int ret;
++	struct anarion_qspi *aspi = nor->priv;
++
++	dev_err(aspi->dev, "%s, @0x%llx + %zu\n", __func__, to, len);
++
++	if (len > nor->page_size)
++		return -EINVAL;
++
++	ret = aspi_do_write_xfer(aspi, nor, to, src, len);
++	return (ret < 0) ? ret : len;
++}
++
++/* TODO: Revisit this when we get actual HW. Right now max speed is 6 MHz. */
++static void aspi_configure_clocks(struct anarion_qspi *aspi)
++{
++	uint8_t div = 0;
++	uint32_t ck_ctl = aspi_read_reg(aspi, ASPI_REG_CLOCK);
++
++	ck_ctl &= ~ASPI_CLOCK_DIV_MASK;
++	ck_ctl |= ASPI_CLOCK_DIV(div);
++	aspi_write_reg(aspi, ASPI_REG_CLOCK, ck_ctl);
++}
++
++static int anarion_qspi_drv_probe(struct platform_device *pdev)
++{
++	int ret;
++	void __iomem *mmiobase;
++	struct resource *res;
++	struct anarion_qspi *aspi;
++	struct device_node *flash_node;
++	struct spi_nor *nor;
++
++	aspi = devm_kzalloc(&pdev->dev, sizeof(*aspi), GFP_KERNEL);
++	if (!aspi)
++		return -ENOMEM;
++	platform_set_drvdata(pdev, aspi);
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	mmiobase  = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(mmiobase)) {
++		dev_err(&pdev->dev, "Cannot get base addresses (%ld)!\n",
++			PTR_ERR(mmiobase));
++		return PTR_ERR(mmiobase);
++	}
++	aspi->regbase = (uintptr_t)mmiobase;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
++	mmiobase = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(mmiobase)) {
++		dev_err(&pdev->dev, "Cannot get XIP addresses (%ld)!\n",
++			PTR_ERR(mmiobase));
++		return PTR_ERR(mmiobase);
++	}
++	aspi->xipbase = (uintptr_t)mmiobase;
++
++	aspi->dev = &pdev->dev;
++
++	/* only support one attached flash */
++	flash_node = of_get_next_available_child(pdev->dev.of_node, NULL);
++	if (!flash_node) {
++		dev_err(&pdev->dev, "no SPI flash device to configure\n");
++		return -ENODEV;
++	}
++
++	/* Reset the controller */
++	aspi_write_reg(aspi, ASPI_REG_CLOCK, ASPI_CLK_RESET_ALL);
++	aspi_write_reg(aspi, ASPI_REG_LAT, 0x010);
++	aspi_configure_clocks(aspi);
++
++	nor = &aspi->nor;
++	nor->priv = aspi;
++	nor->dev = aspi->dev;
++	nor->read = anarion_spi_nor_read;
++	nor->write = anarion_spi_nor_write;
++	nor->read_reg = anarion_spi_read_nor_reg;
++	nor->write_reg = anarion_spi_write_nor_reg;
++
++	spi_nor_set_flash_node(nor, flash_node);
++
++	ret = spi_nor_scan(&aspi->nor, NULL, SPI_NOR_DUAL);
++	if (ret)
++		return ret;
++
++	switch (nor->flash_read) {
++	default:		/* Fall through */
++	case SPI_NOR_NORMAL:
++		aspi->num_hi_z_clocks = nor->read_dummy;
++		aspi->xfer_mode_cmd = MODE_IO_X1;
++		aspi->xfer_mode_addr = MODE_IO_X1;
++		aspi->xfer_mode_data = MODE_IO_X1;
++		break;
++	case SPI_NOR_FAST:
++		aspi->num_hi_z_clocks = nor->read_dummy;
++		aspi->xfer_mode_cmd = MODE_IO_X1;
++		aspi->xfer_mode_addr = MODE_IO_X1;
++		aspi->xfer_mode_data = MODE_IO_X1;
++		break;
++	case SPI_NOR_DUAL:
++		aspi->num_hi_z_clocks = nor->read_dummy;
++		aspi->xfer_mode_cmd = MODE_IO_X1;
++		aspi->xfer_mode_addr = MODE_IO_X1;
++		aspi->xfer_mode_data = MODE_IO_X2;
++		break;
++	case SPI_NOR_QUAD:
++		aspi->num_hi_z_clocks = nor->read_dummy;
++		aspi->xfer_mode_cmd = MODE_IO_X1;
++		aspi->xfer_mode_addr = MODE_IO_X1;
++		aspi->xfer_mode_data = MODE_IO_X4;
++		break;
++	}
++
++	aspi_setup_xip_read_chain(aspi, nor);
++
++	mtd_device_register(&aspi->nor.mtd, NULL, 0);
++
++	return 0;
++}
++
++static int anarion_qspi_drv_remove(struct platform_device *pdev)
++{
++	struct anarion_qspi *aspi = platform_get_drvdata(pdev);
++
++	mtd_device_unregister(&aspi->nor.mtd);
++	return 0;
++}
++
++static const struct of_device_id anarion_qspi_of_match[] = {
++	{ .compatible = "adaptrum,anarion-qspi" },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, anarion_qspi_of_match);
++
++static struct platform_driver anarion_qspi_driver = {
++	.driver = {
++		.name	= "anarion-qspi",
++		.of_match_table = anarion_qspi_of_match,
++	},
++	.probe          = anarion_qspi_drv_probe,
++	.remove		= anarion_qspi_drv_remove,
++};
++module_platform_driver(anarion_qspi_driver);
++
++MODULE_DESCRIPTION("Adaptrum Anarion Quad SPI Controller Driver");
++MODULE_AUTHOR("Alexandru Gagniuc <mr.nuke.me@gmail.com>");
++MODULE_LICENSE("GPL v2");
+-- 
+2.9.3
