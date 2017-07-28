@@ -1,43 +1,19 @@
-Received: from outbound01.mx-relay.com ([5.39.185.33]
- helo=outbound01-b.mx-relay.com)
+Received: from esa5.microchip.iphmx.com ([216.71.150.166])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1daysz-0003WB-AZ
- for linux-mtd@lists.infradead.org; Fri, 28 Jul 2017 06:36:36 +0000
-Received: from [145.131.171.178] (rt171bb131-145-178.routit.net
- [145.131.171.178]) by outbound01-b.mx-relay.com with ESMTP id
- xZ8l2oi4JbmeFVNE (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
- for <linux-mtd@lists.infradead.org>; Fri, 28 Jul 2017 08:36:00 +0200 (CEST)
-Received: from localhost (localhost.localhost [127.0.0.1])
- by router38.aimvalley.nl (Postfix) with ESMTP id 46B0B639F5
- for <linux-mtd@lists.infradead.org>; Fri, 28 Jul 2017 08:36:00 +0200 (CEST)
-Received: from mail5.aimvalley.nl (mail5.aimsys.nl [10.10.0.115])
- by router38.aimvalley.nl (Postfix) with ESMTPS id DFF65639F1
- for <linux-mtd@lists.infradead.org>; Fri, 28 Jul 2017 08:35:59 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by mail5.aimvalley.nl (Postfix) with ESMTP id C97011480047
- for <linux-mtd@lists.infradead.org>; Fri, 28 Jul 2017 08:35:59 +0200 (CEST)
-Received: from mail5.aimvalley.nl ([127.0.0.1])
- by localhost (mail5.aimvalley.nl [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id mdamQrT8AVXv for <linux-mtd@lists.infradead.org>;
- Fri, 28 Jul 2017 08:35:59 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by mail5.aimvalley.nl (Postfix) with ESMTP id 897FB14805F3
- for <linux-mtd@lists.infradead.org>; Fri, 28 Jul 2017 08:35:59 +0200 (CEST)
-Received: from mail5.aimvalley.nl ([127.0.0.1])
- by localhost (mail5.aimvalley.nl [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id nuk-P1FZSzed for <linux-mtd@lists.infradead.org>;
- Fri, 28 Jul 2017 08:35:59 +0200 (CEST)
-Received: from linvm302.aimsys.nl (unknown [10.10.23.2])
- by mail5.aimvalley.nl (Postfix) with ESMTPSA id 739371480047
- for <linux-mtd@lists.infradead.org>; Fri, 28 Jul 2017 08:35:59 +0200 (CEST)
-To: Linux MTD <linux-mtd@lists.infradead.org>
-From: Kees Trommel <ctrommel@aimvalley.nl>
-Subject: nand_flash_detect_onfi issue
-Message-ID: <3067c688-35ab-113a-1875-395756118e24@aimvalley.nl>
-Date: Fri, 28 Jul 2017 08:35:59 +0200
+ id 1db1nA-0003Ey-Gw
+ for linux-mtd@lists.infradead.org; Fri, 28 Jul 2017 09:42:46 +0000
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
+To: <cyrille.pitchen@wedev4u.fr>, <marek.vasut@gmail.com>,
+ <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <boris.brezillon@free-electrons.com>, <richard@nod.at>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <nicolas.ferre@microchip.com>, Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH] mtd: spi-nor: add support for Microchip sst26vf064b QSPI
+ memory
+Date: Fri, 28 Jul 2017 12:41:38 +0300
+Message-ID: <1501234898-13171-1-git-send-email-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -47,24 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Add support for Microchip sst26vf064b QSPI memory.
 
-When testing with a LS1021A based custom board with NAND device the 
-U-boot printed 512 times the error message "fsl_ifc_read_byte beyond end 
-of buffer".
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-An investigation in this issue showed that the U-Boot function 
-"nand_flash_detect_onfi" in "drivers/mtd/nand/nand_base.c" read beyond 
-the 256 bytes written into the read buffer by the NAND chip driver as 
-result of the NAND_CMD_PARAM command. This happens only in case the CRC 
-of the ONFI parameter page is not correct.
-
-My question is whether the NAND_CMD_PARAM command must be in the "for (i 
-= 0; i < 3; i++)" loop or whether the NAND chip driver
-(FSL IFC in this case) should read 3*256 bytes from the NAND device 
-because an ONFI compatible device duplicates the ONFI parameter page.
-
-I will continue to investigate why the CRC fails. The CRC fail itself is 
-outside the scope of this email.
-
-Kees.
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 196b52f..796aac4 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1081,6 +1081,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "sst25wf040b", INFO(0x621613, 0, 64 * 1024,  8, SECT_4K) },
+ 	{ "sst25wf040",  INFO(0xbf2504, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
+ 	{ "sst25wf080",  INFO(0xbf2505, 0, 64 * 1024, 16, SECT_4K | SST_WRITE) },
++	{ "sst26vf064b", INFO(0xbf2643, 0,  4 * 1024, 2048, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 
+ 	/* ST Microelectronics -- newer production may have feature updates */
+ 	{ "m25p05",  INFO(0x202010,  0,  32 * 1024,   2, 0) },
+-- 
+2.7.4
