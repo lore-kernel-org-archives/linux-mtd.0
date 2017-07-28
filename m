@@ -1,20 +1,19 @@
-From: Jeff Layton <jlayton@kernel.org>
-To: Christoph Hellwig <hch@lst.de>,
-	jack@suse.cz,
-	viro@zeniv.linux.org.uk
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
- lustre-devel@lists.lustre.org, devel@driverdev.osuosl.org,
- linux-fbdev@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
- linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
- linux-cifs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- user-mode-linux-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
- jfs-discussion@lists.sourceforge.net, linux-ntfs-dev@lists.sourceforge.net,
- ocfs2-devel@oss.oracle.com, reiserfs-devel@vger.kernel.org,
- akpm@linux-foundation.org
-Subject: [PATCH] fs: convert a pile of fsync routines to errseq_t based
- reporting
-Date: Fri, 28 Jul 2017 10:23:21 -0400
-Message-Id: <20170728142321.11492-1-jlayton@kernel.org>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dbAhP-0007Hj-93
+ for linux-mtd@lists.infradead.org; Fri, 28 Jul 2017 19:13:26 +0000
+Date: Fri, 28 Jul 2017 21:13:01 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Alexander Dahl <ada@thorsis.com>
+Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>
+Subject: Re: mtd: nand: atmel: probe of Spansion S34ML02G1 fails
+Message-ID: <20170728211301.10d25227@bbrezillon>
+In-Reply-To: <2274647.ublHvqEhgW@ada>
+References: <5326598.QgYTQxcFMR@ada> <9879279.x3T2Y4a6KK@ada>
+ <20170726203326.2159f0cc@bbrezillon> <2274647.ublHvqEhgW@ada>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,357 +23,165 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Jeff Layton <jlayton@redhat.com>
+Le Fri, 28 Jul 2017 15:15:25 +0200,
+Alexander Dahl <ada@thorsis.com> a =C3=A9crit :
 
-This patch converts most of the in-kernel filesystems that do writeback
-out of the pagecache to report errors using the errseq_t-based
-infrastructure that was recently added. This allows them to report
-errors once for each open file description.
+> Hello Boris,
+>=20
+> Am Mittwoch, 26. Juli 2017, 20:33:26 schrieb Boris Brezillon:
+> > Okay, first thing to test: revert f9ce2eddf176 ("mtd: nand: atmel: Add =
+=20
+> > ->setup_data_interface() hooks"). You may have to revert other =20
+> > commits to compile the driver.
+> >=20
+> > If it works, I'd like you to drop SMC timings in both situations (with
+> > and without this commit).
+> >=20
+> > I'd also like to to dump NAND timings (those passed to =20
+> > ->setup_data_interface()). =20
+>=20
+> So based on those three atmel-ebi patches from earlier this week I used=20
+> the attached patch to dump the nand timings and smc settings before the=20
+> get applied. clk mck runs at 132096000 Hz (slow_xtal 32768, main_xtal=20
+> 18432000). Previously clock settings for NAND were set in (very old) U-
+> Boot to this (double checked, Linux didn't touch it):
+>=20
+> 	U-Boot> md.l 0xffffef1c 1
+> 	ffffef1c: 0001000a    ....
+> 	U-Boot> md.l 0xffffec30 4
+> 	ffffec30: 00010001 03030303 00050005 00020003    ................
+>=20
+> So setup, pulse, cycle, tdf all to quite low number of clock cycles, but=
+=20
+> as far as I can tell this worked with all flash chips we had connected=20
+> over the years.
+>=20
+> Now with the old Hynix flash chip, I get the following:
+>=20
+> 	atmel-nand-controller 10000000.ebi:nand-controller: atmel_smc_nand_setup=
+_data_interface(csline: 0, type: 0)
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tBERS_max: 0, tCCS_m=
+in: 500000, tPROG_max: 0, tR_max: 200000000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tALH_min: 20000, tAD=
+L_min: 400000, tALS_min: 50000, tAR_min: 25000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tCEA_max: 100000, tC=
+EH_min: 20000, tCH_min: 20000, tCHZ_max: 100000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tCLH_min: 20000, tCL=
+R_min: 20000, tCLS_min: 50000, tCOH_min: 0
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tCS_min: 70000, tDH_=
+min: 20000, tDS_min: 40000, tFEAT_max: 1000000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tIR_min: 10000, tITC=
+_max: 1000000, tRC_min: 100000, tREA_max: 40000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tREH_min: 30000, tRH=
+OH_min: 0, tRHW_min: 200000, tRHZ_max: 200000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tRLOH_min: 0, tRP_mi=
+n: 50000, tRR_min: 40000, tRST_max: 250000000000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tWB_max: 200000, tWC=
+_min: 100000, tWH_min: 30000, tWHR_min: 120000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tWP_min: 50000, tWW_=
+min: 100000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: smcconf: setup: 0x00=
+000002, pulse: 0x0f080f08, cycle: 0x000f000f, timings: 0x88060483, mode: 0x=
+001f0003
+> 	nand: Could not find valid ONFI parameter page; aborting
+> 	nand: device found, Manufacturer ID: 0xad, Chip ID: 0xda
+> 	nand: Hynix NAND 256MiB 3,3V 8-bit
+> 	nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+>=20
+> 	$ devmem 0xffffef1c
+> 	0x0001000A
+> 	$ devmem 0xffffec30
+> 	0x00000002
+> 	$ devmem 0xffffec34
+> 	0x0F080F08
+> 	$ devmem 0xffffec38
+> 	0x000F000F
+> 	$ devmem 0xffffec3c
+> 	0x001F0003
+>=20
+> To me those values look like some kind of defaults every nand chip should=
+ run with?
+>=20
+> The failing Spansion chip here:
+>=20
+> 	atmel-nand-controller 10000000.ebi:nand-controller: atmel_smc_nand_setup=
+_data_interface(csline: 0, type: 0)
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tBERS_max: 0, tCCS_m=
+in: 500000, tPROG_max: 0, tR_max: 200000000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tALH_min: 20000, tAD=
+L_min: 400000, tALS_min: 50000, tAR_min: 25000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tCEA_max: 100000, tC=
+EH_min: 20000, tCH_min: 20000, tCHZ_max: 100000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tCLH_min: 20000, tCL=
+R_min: 20000, tCLS_min: 50000, tCOH_min: 0
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tCS_min: 70000, tDH_=
+min: 20000, tDS_min: 40000, tFEAT_max: 1000000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tIR_min: 10000, tITC=
+_max: 1000000, tRC_min: 100000, tREA_max: 40000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tREH_min: 30000, tRH=
+OH_min: 0, tRHW_min: 200000, tRHZ_max: 200000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tRLOH_min: 0, tRP_mi=
+n: 50000, tRR_min: 40000, tRST_max: 250000000000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tWB_max: 200000, tWC=
+_min: 100000, tWH_min: 30000, tWHR_min: 120000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tWP_min: 50000, tWW_=
+min: 100000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: smcconf: setup: 0x00=
+000002, pulse: 0x0f080f08, cycle: 0x000f000f, timings: 0x88060483, mode: 0x=
+001f0003
+> 	nand: device found, Manufacturer ID: 0x01, Chip ID: 0xda
+> 	nand: AMD/Spansion S34ML02G1
+> 	nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+> 	atmel-nand-controller 10000000.ebi:nand-controller: atmel_smc_nand_setup=
+_data_interface(csline: -1, type: 0)
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tBERS_max: 141006540=
+8, tCCS_min: 100000, tPROG_max: 700000000, tR_max: 25000000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tALH_min: 5000, tADL=
+_min: 400000, tALS_min: 10000, tAR_min: 10000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tCEA_max: 25000, tCE=
+H_min: 20000, tCH_min: 5000, tCHZ_max: 30000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tCLH_min: 5000, tCLR=
+_min: 10000, tCLS_min: 10000, tCOH_min: 15000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tCS_min: 20000, tDH_=
+min: 5000, tDS_min: 10000, tFEAT_max: 1000000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tIR_min: 0, tITC_max=
+: 1000000, tRC_min: 25000, tREA_max: 20000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tREH_min: 10000, tRH=
+OH_min: 15000, tRHW_min: 100000, tRHZ_max: 100000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tRLOH_min: 5000, tRP=
+_min: 12000, tRR_min: 20000, tRST_max: 500000000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tWB_max: 100000, tWC=
+_min: 25000, tWH_min: 10000, tWHR_min: 80000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: tWP_min: 12000, tWW_=
+min: 100000
+> 	atmel-nand-controller 10000000.ebi:nand-controller: smcconf: setup: 0x00=
+000001, pulse: 0x05020502, cycle: 0x00050005, timings: 0x88030282, mode: 0x=
+001b0003
 
-Most filesystems have a fairly straightforward fsync operation. They
-call filemap_write_and_wait_range to write back all of the data and
-wait on it, and then (sometimes) sync out the metadata.
 
-For those filesystems this is a straightforward conversion from calling
-filemap_write_and_wait_range in their fsync operation to calling
-file_write_and_wait_range.
+Hm, ok. It seems that we're accepting mode 4 even though the controller
+is not supporting EDO mode which mandatory for mode 4 and 5.
 
-Signed-off-by: Jeff Layton <jlayton@redhat.com>
----
- arch/powerpc/platforms/cell/spufs/file.c   | 2 +-
- drivers/staging/lustre/lustre/llite/file.c | 2 +-
- drivers/video/fbdev/core/fb_defio.c        | 2 +-
- fs/9p/vfs_file.c                           | 4 ++--
- fs/affs/file.c                             | 2 +-
- fs/afs/write.c                             | 2 +-
- fs/cifs/file.c                             | 4 ++--
- fs/exofs/file.c                            | 2 +-
- fs/f2fs/file.c                             | 2 +-
- fs/hfs/inode.c                             | 2 +-
- fs/hfsplus/inode.c                         | 2 +-
- fs/hostfs/hostfs_kern.c                    | 2 +-
- fs/hpfs/file.c                             | 2 +-
- fs/jffs2/file.c                            | 2 +-
- fs/jfs/file.c                              | 2 +-
- fs/ncpfs/file.c                            | 2 +-
- fs/ntfs/dir.c                              | 2 +-
- fs/ntfs/file.c                             | 2 +-
- fs/ocfs2/file.c                            | 2 +-
- fs/reiserfs/dir.c                          | 2 +-
- fs/reiserfs/file.c                         | 2 +-
- fs/ubifs/file.c                            | 2 +-
- 22 files changed, 24 insertions(+), 24 deletions(-)
+Can you try with the following patch? Timings are expressed in picoseconds
+and this test was testing against a value expressed in nanoseconds. =20
 
-Rolling up all of these conversions into a single patch, as Christoph
-Hellwig suggested. Most of these are not tested, but the conversion
-here is fairly straightforward.
+BTW, did you try to comment the line I pointed out yesterday? I'd like
+to be sure this is a timing issue.
 
-Any maintainers who object, please let me know and I'll yank that
-part out of this patch.
-
-diff --git a/arch/powerpc/platforms/cell/spufs/file.c b/arch/powerpc/platforms/cell/spufs/file.c
-index ae2f740a82f1..5ffcdeb1eb17 100644
---- a/arch/powerpc/platforms/cell/spufs/file.c
-+++ b/arch/powerpc/platforms/cell/spufs/file.c
-@@ -1749,7 +1749,7 @@ static int spufs_mfc_flush(struct file *file, fl_owner_t id)
- static int spufs_mfc_fsync(struct file *file, loff_t start, loff_t end, int datasync)
- {
- 	struct inode *inode = file_inode(file);
--	int err = filemap_write_and_wait_range(inode->i_mapping, start, end);
-+	int err = file_write_and_wait_range(file, start, end);
- 	if (!err) {
- 		inode_lock(inode);
- 		err = spufs_mfc_flush(file, NULL);
-diff --git a/drivers/staging/lustre/lustre/llite/file.c b/drivers/staging/lustre/lustre/llite/file.c
-index ab1c85c1ed38..f7d07735ac66 100644
---- a/drivers/staging/lustre/lustre/llite/file.c
-+++ b/drivers/staging/lustre/lustre/llite/file.c
-@@ -2364,7 +2364,7 @@ int ll_fsync(struct file *file, loff_t start, loff_t end, int datasync)
- 	       PFID(ll_inode2fid(inode)), inode);
- 	ll_stats_ops_tally(ll_i2sbi(inode), LPROC_LL_FSYNC, 1);
- 
--	rc = filemap_write_and_wait_range(inode->i_mapping, start, end);
-+	rc = file_write_and_wait_range(file, start, end);
- 	inode_lock(inode);
- 
- 	/* catch async errors that were recorded back when async writeback
-diff --git a/drivers/video/fbdev/core/fb_defio.c b/drivers/video/fbdev/core/fb_defio.c
-index 37f69c061210..487d5e336e1b 100644
---- a/drivers/video/fbdev/core/fb_defio.c
-+++ b/drivers/video/fbdev/core/fb_defio.c
-@@ -69,7 +69,7 @@ int fb_deferred_io_fsync(struct file *file, loff_t start, loff_t end, int datasy
- {
- 	struct fb_info *info = file->private_data;
- 	struct inode *inode = file_inode(file);
--	int err = filemap_write_and_wait_range(inode->i_mapping, start, end);
-+	int err = file_write_and_wait_range(file, start, end);
- 	if (err)
- 		return err;
- 
-diff --git a/fs/9p/vfs_file.c b/fs/9p/vfs_file.c
-index 3de3b4a89d89..4802d75b3cf7 100644
---- a/fs/9p/vfs_file.c
-+++ b/fs/9p/vfs_file.c
-@@ -445,7 +445,7 @@ static int v9fs_file_fsync(struct file *filp, loff_t start, loff_t end,
- 	struct p9_wstat wstat;
- 	int retval;
- 
--	retval = filemap_write_and_wait_range(inode->i_mapping, start, end);
-+	retval = file_write_and_wait_range(filp, start, end);
- 	if (retval)
- 		return retval;
- 
-@@ -468,7 +468,7 @@ int v9fs_file_fsync_dotl(struct file *filp, loff_t start, loff_t end,
- 	struct inode *inode = filp->f_mapping->host;
- 	int retval;
- 
--	retval = filemap_write_and_wait_range(inode->i_mapping, start, end);
-+	retval = file_write_and_wait_range(filp, start, end);
- 	if (retval)
- 		return retval;
- 
-diff --git a/fs/affs/file.c b/fs/affs/file.c
-index 196ee7f6fdc4..00331810f690 100644
---- a/fs/affs/file.c
-+++ b/fs/affs/file.c
-@@ -954,7 +954,7 @@ int affs_file_fsync(struct file *filp, loff_t start, loff_t end, int datasync)
- 	struct inode *inode = filp->f_mapping->host;
- 	int ret, err;
- 
--	err = filemap_write_and_wait_range(inode->i_mapping, start, end);
-+	err = file_write_and_wait_range(filp, start, end);
- 	if (err)
- 		return err;
- 
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index 2d2fccd5044b..106e43db1115 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -714,7 +714,7 @@ int afs_fsync(struct file *file, loff_t start, loff_t end, int datasync)
- 	       vnode->fid.vid, vnode->fid.vnode, file,
- 	       datasync);
- 
--	ret = filemap_write_and_wait_range(inode->i_mapping, start, end);
-+	ret = file_write_and_wait_range(file, start, end);
- 	if (ret)
- 		return ret;
- 	inode_lock(inode);
-diff --git a/fs/cifs/file.c b/fs/cifs/file.c
-index bc09df6b473a..0786f19d288f 100644
---- a/fs/cifs/file.c
-+++ b/fs/cifs/file.c
-@@ -2329,7 +2329,7 @@ int cifs_strict_fsync(struct file *file, loff_t start, loff_t end,
- 	struct inode *inode = file_inode(file);
- 	struct cifs_sb_info *cifs_sb = CIFS_SB(inode->i_sb);
- 
--	rc = filemap_write_and_wait_range(inode->i_mapping, start, end);
-+	rc = file_write_and_wait_range(file, start, end);
- 	if (rc)
- 		return rc;
- 	inode_lock(inode);
-@@ -2371,7 +2371,7 @@ int cifs_fsync(struct file *file, loff_t start, loff_t end, int datasync)
- 	struct cifs_sb_info *cifs_sb = CIFS_FILE_SB(file);
- 	struct inode *inode = file->f_mapping->host;
- 
--	rc = filemap_write_and_wait_range(inode->i_mapping, start, end);
-+	rc = file_write_and_wait_range(file, start, end);
- 	if (rc)
- 		return rc;
- 	inode_lock(inode);
-diff --git a/fs/exofs/file.c b/fs/exofs/file.c
-index 28645f0640f7..a94594ea2aa3 100644
---- a/fs/exofs/file.c
-+++ b/fs/exofs/file.c
-@@ -48,7 +48,7 @@ static int exofs_file_fsync(struct file *filp, loff_t start, loff_t end,
- 	struct inode *inode = filp->f_mapping->host;
- 	int ret;
- 
--	ret = filemap_write_and_wait_range(inode->i_mapping, start, end);
-+	ret = file_write_and_wait_range(filp, start, end);
- 	if (ret)
- 		return ret;
- 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index a0e6d2c65a9e..40fb3d4bb9c2 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -206,7 +206,7 @@ static int f2fs_do_sync_file(struct file *file, loff_t start, loff_t end,
- 	/* if fdatasync is triggered, let's do in-place-update */
- 	if (datasync || get_dirty_pages(inode) <= SM_I(sbi)->min_fsync_blocks)
- 		set_inode_flag(inode, FI_NEED_IPU);
--	ret = filemap_write_and_wait_range(inode->i_mapping, start, end);
-+	ret = file_write_and_wait_range(file, start, end);
- 	clear_inode_flag(inode, FI_NEED_IPU);
- 
- 	if (ret) {
-diff --git a/fs/hfs/inode.c b/fs/hfs/inode.c
-index bfbba799430f..2538b49cc349 100644
---- a/fs/hfs/inode.c
-+++ b/fs/hfs/inode.c
-@@ -656,7 +656,7 @@ static int hfs_file_fsync(struct file *filp, loff_t start, loff_t end,
- 	struct super_block * sb;
- 	int ret, err;
- 
--	ret = filemap_write_and_wait_range(inode->i_mapping, start, end);
-+	ret = file_write_and_wait_range(filp, start, end);
- 	if (ret)
- 		return ret;
- 	inode_lock(inode);
-diff --git a/fs/hfsplus/inode.c b/fs/hfsplus/inode.c
-index e8638d528195..4f26b6877130 100644
---- a/fs/hfsplus/inode.c
-+++ b/fs/hfsplus/inode.c
-@@ -283,7 +283,7 @@ int hfsplus_file_fsync(struct file *file, loff_t start, loff_t end,
- 	struct hfsplus_sb_info *sbi = HFSPLUS_SB(inode->i_sb);
- 	int error = 0, error2;
- 
--	error = filemap_write_and_wait_range(inode->i_mapping, start, end);
-+	error = file_write_and_wait_range(file, start, end);
- 	if (error)
- 		return error;
- 	inode_lock(inode);
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index e61261a7417e..c148e7f4f451 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -374,7 +374,7 @@ static int hostfs_fsync(struct file *file, loff_t start, loff_t end,
- 	struct inode *inode = file->f_mapping->host;
- 	int ret;
- 
--	ret = filemap_write_and_wait_range(inode->i_mapping, start, end);
-+	ret = file_write_and_wait_range(file, start, end);
- 	if (ret)
- 		return ret;
- 
-diff --git a/fs/hpfs/file.c b/fs/hpfs/file.c
-index b3be1b5a62e2..f26138425b16 100644
---- a/fs/hpfs/file.c
-+++ b/fs/hpfs/file.c
-@@ -24,7 +24,7 @@ int hpfs_file_fsync(struct file *file, loff_t start, loff_t end, int datasync)
- 	struct inode *inode = file->f_mapping->host;
- 	int ret;
- 
--	ret = filemap_write_and_wait_range(file->f_mapping, start, end);
-+	ret = file_write_and_wait_range(file, start, end);
- 	if (ret)
- 		return ret;
- 	return sync_blockdev(inode->i_sb->s_bdev);
-diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
-index c12476e309c6..bd0428bebe9b 100644
---- a/fs/jffs2/file.c
-+++ b/fs/jffs2/file.c
-@@ -35,7 +35,7 @@ int jffs2_fsync(struct file *filp, loff_t start, loff_t end, int datasync)
- 	struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
- 	int ret;
- 
--	ret = filemap_write_and_wait_range(inode->i_mapping, start, end);
-+	ret = file_write_and_wait_range(filp, start, end);
- 	if (ret)
- 		return ret;
- 
-diff --git a/fs/jfs/file.c b/fs/jfs/file.c
-index 739492c7a3fd..36665fd37095 100644
---- a/fs/jfs/file.c
-+++ b/fs/jfs/file.c
-@@ -34,7 +34,7 @@ int jfs_fsync(struct file *file, loff_t start, loff_t end, int datasync)
- 	struct inode *inode = file->f_mapping->host;
- 	int rc = 0;
- 
--	rc = filemap_write_and_wait_range(inode->i_mapping, start, end);
-+	rc = file_write_and_wait_range(file, start, end);
- 	if (rc)
- 		return rc;
- 
-diff --git a/fs/ncpfs/file.c b/fs/ncpfs/file.c
-index 76965e772264..a06c07619ee6 100644
---- a/fs/ncpfs/file.c
-+++ b/fs/ncpfs/file.c
-@@ -23,7 +23,7 @@
- 
- static int ncp_fsync(struct file *file, loff_t start, loff_t end, int datasync)
- {
--	return filemap_write_and_wait_range(file->f_mapping, start, end);
-+	return file_write_and_wait_range(file, start, end);
- }
- 
- /*
-diff --git a/fs/ntfs/dir.c b/fs/ntfs/dir.c
-index 0ee19ecc982d..1a24be9e8405 100644
---- a/fs/ntfs/dir.c
-+++ b/fs/ntfs/dir.c
-@@ -1506,7 +1506,7 @@ static int ntfs_dir_fsync(struct file *filp, loff_t start, loff_t end,
- 
- 	ntfs_debug("Entering for inode 0x%lx.", vi->i_ino);
- 
--	err = filemap_write_and_wait_range(vi->i_mapping, start, end);
-+	err = file_write_and_wait_range(filp, start, end);
- 	if (err)
- 		return err;
- 	inode_lock(vi);
-diff --git a/fs/ntfs/file.c b/fs/ntfs/file.c
-index c4f68c338735..331910fa8442 100644
---- a/fs/ntfs/file.c
-+++ b/fs/ntfs/file.c
-@@ -1989,7 +1989,7 @@ static int ntfs_file_fsync(struct file *filp, loff_t start, loff_t end,
- 
- 	ntfs_debug("Entering for inode 0x%lx.", vi->i_ino);
- 
--	err = filemap_write_and_wait_range(vi->i_mapping, start, end);
-+	err = file_write_and_wait_range(filp, start, end);
- 	if (err)
- 		return err;
- 	inode_lock(vi);
-diff --git a/fs/ocfs2/file.c b/fs/ocfs2/file.c
-index bfeb647459d9..66e59d3163ea 100644
---- a/fs/ocfs2/file.c
-+++ b/fs/ocfs2/file.c
-@@ -196,7 +196,7 @@ static int ocfs2_sync_file(struct file *file, loff_t start, loff_t end,
- 	if (ocfs2_is_hard_readonly(osb) || ocfs2_is_soft_readonly(osb))
- 		return -EROFS;
- 
--	err = filemap_write_and_wait_range(inode->i_mapping, start, end);
-+	err = file_write_and_wait_range(file, start, end);
- 	if (err)
- 		return err;
- 
-diff --git a/fs/reiserfs/dir.c b/fs/reiserfs/dir.c
-index 45aa05e2232f..5b50689d8539 100644
---- a/fs/reiserfs/dir.c
-+++ b/fs/reiserfs/dir.c
-@@ -34,7 +34,7 @@ static int reiserfs_dir_fsync(struct file *filp, loff_t start, loff_t end,
- 	struct inode *inode = filp->f_mapping->host;
- 	int err;
- 
--	err = filemap_write_and_wait_range(inode->i_mapping, start, end);
-+	err = file_write_and_wait_range(filp, start, end);
- 	if (err)
- 		return err;
- 
-diff --git a/fs/reiserfs/file.c b/fs/reiserfs/file.c
-index b396eb09f288..843aadcc123c 100644
---- a/fs/reiserfs/file.c
-+++ b/fs/reiserfs/file.c
-@@ -154,7 +154,7 @@ static int reiserfs_sync_file(struct file *filp, loff_t start, loff_t end,
- 	int err;
- 	int barrier_done;
- 
--	err = filemap_write_and_wait_range(inode->i_mapping, start, end);
-+	err = file_write_and_wait_range(filp, start, end);
- 	if (err)
- 		return err;
- 
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 8cad0b19b404..f90a466ea5db 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -1337,7 +1337,7 @@ int ubifs_fsync(struct file *file, loff_t start, loff_t end, int datasync)
- 		 */
- 		return 0;
- 
--	err = filemap_write_and_wait_range(inode->i_mapping, start, end);
-+	err = file_write_and_wait_range(file, start, end);
- 	if (err)
- 		return err;
- 	inode_lock(inode);
--- 
-2.13.3
+--->8---
+diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/at=
+mel/nand-controller.c
+index d922a88e407f..2c8baa0c2c4e 100644
+--- a/drivers/mtd/nand/atmel/nand-controller.c
++++ b/drivers/mtd/nand/atmel/nand-controller.c
+@@ -1201,7 +1201,7 @@ static int atmel_smc_nand_prepare_smcconf(struct atme=
+l_nand *nand,
+         * tRC < 30ns implies EDO mode. This controller does not support th=
+is
+         * mode.
+         */
+-       if (conf->timings.sdr.tRC_min < 30)
++       if (conf->timings.sdr.tRC_min < 30000)
+                return -ENOTSUPP;
+=20
+        atmel_smc_cs_conf_init(smcconf);
