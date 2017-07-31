@@ -1,24 +1,41 @@
-Received: from mail.thorsis.com ([213.211.200.15])
+Received: from mail-io0-x230.google.com ([2607:f8b0:4001:c06::230])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dc9Tm-0006ip-Fq
- for linux-mtd@lists.infradead.org; Mon, 31 Jul 2017 12:07:24 +0000
-From: Alexander Dahl <ada@thorsis.com>
-To: linux-mtd@lists.infradead.org
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, stable@vger.kernel.org,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: nand: Declare tBERS,
- tR and tPROG as u64 to avoid integer overflow
-Date: Mon, 31 Jul 2017 14:06:15 +0200
-Message-ID: <2615235.I2bcY56GkF@ada>
-In-Reply-To: <1501489887-7372-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1501489887-7372-1-git-send-email-boris.brezillon@free-electrons.com>
+ id 1dcAl9-00008c-B9
+ for linux-mtd@lists.infradead.org; Mon, 31 Jul 2017 13:29:25 +0000
+Received: by mail-io0-x230.google.com with SMTP id m88so102193677iod.2
+ for <linux-mtd@lists.infradead.org>; Mon, 31 Jul 2017 06:29:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+In-Reply-To: <20170703135555.GA686@linux-mips.org>
+References: <20170402204244.14216-2-paul@crapouillou.net>
+ <20170428200824.10906-1-paul@crapouillou.net>
+ <20170428200824.10906-6-paul@crapouillou.net>
+ <CACRpkdauf5c2i4o5i8QY8YHPNjizkvTu6kAbnquWiP_=v2=KdQ@mail.gmail.com>
+ <1499013301.1477.0@smtp.crapouillou.net>
+ <CACRpkdb=Zti+C+2me_WP0=m6z12G5Kz+W_cPcZsw=CVzBO_wAg@mail.gmail.com>
+ <20170703135555.GA686@linux-mips.org>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Mon, 31 Jul 2017 15:29:00 +0200
+Message-ID: <CACRpkdZKAR-Ya-j-g=uyb24s1KqyEhbKOxzi=BdAaa29L1BO+w@mail.gmail.com>
+Subject: Re: [PATCH v5 05/14] MIPS: ingenic: Enable pinctrl for all ingenic
+ SoCs
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Paul Cercueil <paul@crapouillou.net>, Alexandre Courbot <gnurou@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Maarten ter Huurne <maarten@treewalker.org>,
+ Lars-Peter Clausen <lars@metafoo.de>, Paul Burton <paul.burton@imgtec.com>,
+ James Hogan <james.hogan@imgtec.com>,
+ "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Linux MIPS <linux-mips@linux-mips.org>,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+ "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,81 +45,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Mon, Jul 3, 2017 at 3:55 PM, Ralf Baechle <ralf@linux-mips.org> wrote:
+> On Mon, Jul 03, 2017 at 11:07:09AM +0200, Linus Walleij wrote:
+>
+>> > There has been no word from Ralf, is this going into 4.13?
+>
+> Acked-by: Ralf Baechle <ralf@linux-mips.org>
+>
+> for the whole series.
 
-Reviewed-by: Alexander Dahl <ada@thorsis.com>
-Tested-by: Alexander Dahl <ada@thorsis.com>
+Thanks Ralf, I missed to add this in, but everything seems to have
+landed smoothly in v4.13.
 
-Greets
-Alex
-
-Am Montag, 31. Juli 2017, 10:31:27 schrieb Boris Brezillon:
-> All timings in nand_sdr_timings are expressed in picoseconds but some=
-
-> of them may not fit in an u32.
->=20
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Fixes: 204e7ecd47e2 ("mtd: nand: Add a few more timings to
-> nand_sdr_timings") Reported-by: Alexander Dahl <ada@thorsis.com>
-> Cc: <stable@vger.kernel.org>
-> ---
->  drivers/mtd/nand/nand_timings.c | 6 +++---
->  include/linux/mtd/nand.h        | 6 +++---
->  2 files changed, 6 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/mtd/nand/nand_timings.c
-> b/drivers/mtd/nand/nand_timings.c index f06312df3669..7e36d7d13c26
-> 100644
-> --- a/drivers/mtd/nand/nand_timings.c
-> +++ b/drivers/mtd/nand/nand_timings.c
-> @@ -311,9 +311,9 @@ int onfi_init_data_interface(struct nand_chip
-> *chip, struct nand_sdr_timings *timings =3D &iface->timings.sdr;
->=20
->  =09=09/* microseconds -> picoseconds */
-> -=09=09timings->tPROG_max =3D 1000000UL * le16_to_cpu(params->t_prog)=
-;
-> -=09=09timings->tBERS_max =3D 1000000UL * le16_to_cpu(params->t_bers)=
-;
-> -=09=09timings->tR_max =3D 1000000UL * le16_to_cpu(params->t_r);
-> +=09=09timings->tPROG_max =3D 1000000ULL * le16_to_cpu(params->t_prog=
-);
-> +=09=09timings->tBERS_max =3D 1000000ULL * le16_to_cpu(params->t_bers=
-);
-> +=09=09timings->tR_max =3D 1000000ULL * le16_to_cpu(params->t_r);
->=20
->  =09=09/* nanoseconds -> picoseconds */
->  =09=09timings->tCCS_min =3D 1000UL * le16_to_cpu(params->t_ccs);
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index 892148c448cc..5216d2eb2289 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -681,10 +681,10 @@ struct nand_buffers {
->   * @tWW_min: WP# transition to WE# low
->   */
->  struct nand_sdr_timings {
-> -=09u32 tBERS_max;
-> +=09u64 tBERS_max;
->  =09u32 tCCS_min;
-> -=09u32 tPROG_max;
-> -=09u32 tR_max;
-> +=09u64 tPROG_max;
-> +=09u64 tR_max;
->  =09u32 tALH_min;
->  =09u32 tADL_min;
->  =09u32 tALS_min;
-
---=20
------------------------------------------------------------------------=
--
-Thorsis Technologies GmbH                     Tel.: +49-391-544 563-303=
-6
-Oststra=DFe 18                                  Fax.: +49-391-544 563-9=
-099
-39114 Magdeburg                                  http://www.thorsis.com=
-/
-
-Sitz der Gesellschaft: Magdeburg
-Amtsgericht Stendal HRB 110339
-Gesch=E4ftsf=FChrer: Dipl.-Ing. Thorsten Szczepanski
------------------------------------------------------------------------=
--
+Yours,
+Linus Walleij
