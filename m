@@ -1,15 +1,21 @@
-Date: Mon, 31 Jul 2017 18:28:40 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dcDcD-0002Y9-6v
+ for linux-mtd@lists.infradead.org; Mon, 31 Jul 2017 16:32:23 +0000
+Date: Mon, 31 Jul 2017 18:31:59 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Bryan O'Donoghue <pure.logic@nexus-software.ie>
-Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
- marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
- maxime.ripard@free-electrons.com, wens@csie.org,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: sunxi: fix potential divide-by-zero error
-Message-ID: <20170731182840.4cdca90d@bbrezillon>
-In-Reply-To: <1501248177-575-1-git-send-email-pure.logic@nexus-software.ie>
-References: <1501248177-575-1-git-send-email-pure.logic@nexus-software.ie>
+To: Miquel Raynal <miquel.raynal@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org (open list:NAND
+ FLASH SUBSYSTEM), linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH] nand: fix wrong default oob layout for small pages
+ using soft ecc
+Message-ID: <20170731183159.664e4c1c@bbrezillon>
+In-Reply-To: <20170705090453.7e412982@bbrezillon>
+References: <20170705065109.7738-1-miquel.raynal@free-electrons.com>
+ <20170705090453.7e412982@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -22,14 +28,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 28 Jul 2017 14:22:57 +0100
-Bryan O'Donoghue <pure.logic@nexus-software.ie> wrote:
+On Wed, 5 Jul 2017 09:04:53 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-> clk_round_rate() can return <= 0. Currently the value returned by
-> clk_round_rate() is used directly for a division. This patch introduces a
-> guard to ensure a divide-by-zero or a divide by a negative number for that
-> matter can't happen by bugging out returning -EINVAL if clk_round_rate()
-> returns <= 0.
+> Hi Miquel,
+> 
+> On Wed,  5 Jul 2017 08:51:09 +0200
+> Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
+> 
+> > When using soft ecc, if no ooblayout is given, the core automatically
+> > uses one of the nand_ooblayout_{sp,lp}*() functions to determine the
+> > layout inside the out of band data.
+> > 
+> > Until kernel version 4.6, struct nand_ecclayout was used for that
+> > purpose. During the migration from 4.6 to 4.7, an error shown up in the
+> > small page layout, in the case oob section is only 8 bytes long.
+> > 
+> > The layout was using three bytes (0, 1, 2) for ecc, two bytes (3, 4)
+> > as free bytes, one byte (5) for bad block marker and finally
+> > two bytes (6, 7) as free bytes, as shown there:
+> > 
+> > [linux-4.6] drivers/mtd/nand/nand_base.c:52
+> > static struct nand_ecclayout nand_oob_8 = {
+> > 	.eccbytes = 3,
+> > 	.eccpos = {0, 1, 2},
+> > 	.oobfree = {
+> > 		{.offset = 3,
+> > 		 .length = 2},
+> > 		{.offset = 6,
+> > 		 .length = 2} }
+> > };
+> > 
+> > This fixes the current implementation which is incoherent. It
+> > references bit 3 at the same time as an ecc byte and a free byte.
+> > 
+> > Furthermore, it is clear with the previous implementation that there
+> > is only one ecc section with 8 bytes oob sections. We shall return
+> > -ERANGE in the nand_ooblayout_ecc_sp() function when asked for the
+> > second section.
 
 Applied to nand/fixes.
 
@@ -37,26 +73,41 @@ Thanks,
 
 Boris
 
+> > 
+> > Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>  
 > 
-> Fixes: 2d43457f79e4 ("mtd: nand: sunxi: fix EDO mode selection")
+> Looks good to me. BTW, it looks like a good candidate for stable.
+> No need to send a v2, I'll add the following when applying:
 > 
-> Signed-off-by: Bryan O'Donoghue <pure.logic@nexus-software.ie>
-> ---
->  drivers/mtd/nand/sunxi_nand.c | 4 ++++
->  1 file changed, 4 insertions(+)
+> Fixes: 41b207a70d3a ("mtd: nand: implement the default mtd_ooblayout_ops")
+> Cc: <stable@vger.kernel.org>
 > 
-> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-> index d0b6f8f..6abd142 100644
-> --- a/drivers/mtd/nand/sunxi_nand.c
-> +++ b/drivers/mtd/nand/sunxi_nand.c
-> @@ -1728,6 +1728,10 @@ static int sunxi_nfc_setup_data_interface(struct mtd_info *mtd, int csline,
->  	 */
->  	chip->clk_rate = NSEC_PER_SEC / min_clk_period;
->  	real_clk_rate = clk_round_rate(nfc->mod_clk, chip->clk_rate);
-> +	if (real_clk_rate <= 0) {
-> +		dev_err(nfc->dev, "Unable to round clk %lu\n", chip->clk_rate);
-> +		return -EINVAL;
-> +	}
->  
->  	/*
->  	 * ONFI specification 3.1, paragraph 4.15.2 dictates that EDO data
+> Thanks,
+> 
+> Boris
+> 
+> > ---
+> >  drivers/mtd/nand/nand_base.c | 8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> > index b1dd12729f19..c5221795a1e8 100644
+> > --- a/drivers/mtd/nand/nand_base.c
+> > +++ b/drivers/mtd/nand/nand_base.c
+> > @@ -65,8 +65,14 @@ static int nand_ooblayout_ecc_sp(struct mtd_info *mtd, int section,
+> >  
+> >  	if (!section) {
+> >  		oobregion->offset = 0;
+> > -		oobregion->length = 4;
+> > +		if (mtd->oobsize == 16)
+> > +			oobregion->length = 4;
+> > +		else
+> > +			oobregion->length = 3;
+> >  	} else {
+> > +		if (mtd->oobsize == 8)
+> > +			return -ERANGE;
+> > +
+> >  		oobregion->offset = 6;
+> >  		oobregion->length = ecc->total - 4;
+> >  	}  
+> 
