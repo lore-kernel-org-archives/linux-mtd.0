@@ -1,22 +1,21 @@
 Received: from mail.thorsis.com ([213.211.200.15])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dc9G7-0004h0-Gp
- for linux-mtd@lists.infradead.org; Mon, 31 Jul 2017 11:53:18 +0000
+ id 1dc9Ho-0006ao-7N
+ for linux-mtd@lists.infradead.org; Mon, 31 Jul 2017 11:55:02 +0000
 From: Alexander Dahl <ada@thorsis.com>
 To: linux-mtd@lists.infradead.org
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, stable@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>, Nicolas Ferre <nicolas.ferre@atmel.com>,
  Marek Vasut <marek.vasut@gmail.com>,
- Miquel Raynal <miquel.raynal@free-electrons.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: nand: Fix timing setup for NANDs that do not support
- SET FEATURES
-Date: Mon, 31 Jul 2017 13:52:42 +0200
-Message-ID: <2195899.FJTP3fP8xy@ada>
-In-Reply-To: <1501489796-7264-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1501489796-7264-1-git-send-email-boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH] mtd: nand: atmel: Fix EDO mode check
+Date: Mon, 31 Jul 2017 13:54:28 +0200
+Message-ID: <4140295.E3feCPtUhy@ada>
+In-Reply-To: <1501489941-7468-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1501489941-7468-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
@@ -36,36 +35,28 @@ Tested-by: Alexander Dahl <ada@thorsis.com>
 Greets
 Alex
 
-Am Montag, 31. Juli 2017, 10:29:56 schrieb Boris Brezillon:
-> Some ONFI NANDs do not support the SET/GET FEATURES commands, which,
-> according to the spec, is perfectly valid.
-> 
-> On these NANDs we can't set a specific timing mode using the "timing
-> mode" feature, and we should assume the NAND does not require any
-> setup to enter a specific timing mode.
+Am Montag, 31. Juli 2017, 10:32:21 schrieb Boris Brezillon:
+> EDO mode should be used when tRC is less than 30ns, but timings are
+> expressed in picoseconds in the nand_sdr_timings struct.
 > 
 > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Fixes: d8e725dd8311 ("mtd: nand: automate NAND timings selection")
-> Reported-by: Alexander Dahl <ada@thorsis.com>
-> Cc: <stable@vger.kernel.org>
+> Fixes: f9ce2eddf176 ("mtd: nand: atmel: Add ->setup_data_interface()
+> hooks") Reported-by: Alexander Dahl <ada@thorsis.com>
 > ---
->  drivers/mtd/nand/nand_base.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>  drivers/mtd/nand/atmel/nand-controller.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/mtd/nand/nand_base.c
-> b/drivers/mtd/nand/nand_base.c index 7b3826b42447..f2bd2c00a8a1
-> 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -1131,7 +1131,9 @@ static int nand_setup_data_interface(struct
-> nand_chip *chip, int chipnr) * Ensure the timing mode has been
-> changed on the chip side * before changing timings on the controller
-> side.
+> diff --git a/drivers/mtd/nand/atmel/nand-controller.c
+> b/drivers/mtd/nand/atmel/nand-controller.c index
+> d922a88e407f..2c8baa0c2c4e 100644
+> --- a/drivers/mtd/nand/atmel/nand-controller.c
+> +++ b/drivers/mtd/nand/atmel/nand-controller.c
+> @@ -1201,7 +1201,7 @@ static int atmel_smc_nand_prepare_smcconf(struct
+> atmel_nand *nand, * tRC < 30ns implies EDO mode. This controller does
+> not support this * mode.
 >  	 */
-> -	if (chip->onfi_version) {
-> +	if (chip->onfi_version &&
-> +	    (le16_to_cpu(chip->onfi_params.opt_cmd) &
-> +	     ONFI_OPT_CMD_SET_GET_FEATURES)) {
->  		u8 tmode_param[ONFI_SUBFEATURE_PARAM_LEN] = {
->  			chip->onfi_timing_mode_default,
->  		};
+> -	if (conf->timings.sdr.tRC_min < 30)
+> +	if (conf->timings.sdr.tRC_min < 30000)
+>  		return -ENOTSUPP;
+> 
+>  	atmel_smc_cs_conf_init(smcconf);
