@@ -1,20 +1,15 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dcDYk-0007bi-TV
- for linux-mtd@lists.infradead.org; Mon, 31 Jul 2017 16:28:51 +0000
-Date: Mon, 31 Jul 2017 18:28:26 +0200
+Date: Mon, 31 Jul 2017 18:28:40 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, Alexander Dahl <ada@thorsis.com>,
- Miquel Raynal <miquel.raynal@free-electrons.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: Fix timing setup for NANDs that do not
- support SET FEATURES
-Message-ID: <20170731182826.7c2a45a6@bbrezillon>
-In-Reply-To: <1501489796-7264-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1501489796-7264-1-git-send-email-boris.brezillon@free-electrons.com>
+To: Bryan O'Donoghue <pure.logic@nexus-software.ie>
+Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
+ marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
+ maxime.ripard@free-electrons.com, wens@csie.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: nand: sunxi: fix potential divide-by-zero error
+Message-ID: <20170731182840.4cdca90d@bbrezillon>
+In-Reply-To: <1501248177-575-1-git-send-email-pure.logic@nexus-software.ie>
+References: <1501248177-575-1-git-send-email-pure.logic@nexus-software.ie>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,39 +22,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 31 Jul 2017 10:29:56 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+On Fri, 28 Jul 2017 14:22:57 +0100
+Bryan O'Donoghue <pure.logic@nexus-software.ie> wrote:
 
-> Some ONFI NANDs do not support the SET/GET FEATURES commands, which,
-> according to the spec, is perfectly valid.
-> 
-> On these NANDs we can't set a specific timing mode using the "timing
-> mode" feature, and we should assume the NAND does not require any setup
-> to enter a specific timing mode.
+> clk_round_rate() can return <= 0. Currently the value returned by
+> clk_round_rate() is used directly for a division. This patch introduces a
+> guard to ensure a divide-by-zero or a divide by a negative number for that
+> matter can't happen by bugging out returning -EINVAL if clk_round_rate()
+> returns <= 0.
 
 Applied to nand/fixes.
 
+Thanks,
+
+Boris
+
 > 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Fixes: d8e725dd8311 ("mtd: nand: automate NAND timings selection")
-> Reported-by: Alexander Dahl <ada@thorsis.com>
-> Cc: <stable@vger.kernel.org>
+> Fixes: 2d43457f79e4 ("mtd: nand: sunxi: fix EDO mode selection")
+> 
+> Signed-off-by: Bryan O'Donoghue <pure.logic@nexus-software.ie>
 > ---
->  drivers/mtd/nand/nand_base.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>  drivers/mtd/nand/sunxi_nand.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 7b3826b42447..f2bd2c00a8a1 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -1131,7 +1131,9 @@ static int nand_setup_data_interface(struct nand_chip *chip, int chipnr)
->  	 * Ensure the timing mode has been changed on the chip side
->  	 * before changing timings on the controller side.
+> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+> index d0b6f8f..6abd142 100644
+> --- a/drivers/mtd/nand/sunxi_nand.c
+> +++ b/drivers/mtd/nand/sunxi_nand.c
+> @@ -1728,6 +1728,10 @@ static int sunxi_nfc_setup_data_interface(struct mtd_info *mtd, int csline,
 >  	 */
-> -	if (chip->onfi_version) {
-> +	if (chip->onfi_version &&
-> +	    (le16_to_cpu(chip->onfi_params.opt_cmd) &
-> +	     ONFI_OPT_CMD_SET_GET_FEATURES)) {
->  		u8 tmode_param[ONFI_SUBFEATURE_PARAM_LEN] = {
->  			chip->onfi_timing_mode_default,
->  		};
+>  	chip->clk_rate = NSEC_PER_SEC / min_clk_period;
+>  	real_clk_rate = clk_round_rate(nfc->mod_clk, chip->clk_rate);
+> +	if (real_clk_rate <= 0) {
+> +		dev_err(nfc->dev, "Unable to round clk %lu\n", chip->clk_rate);
+> +		return -EINVAL;
+> +	}
+>  
+>  	/*
+>  	 * ONFI specification 3.1, paragraph 4.15.2 dictates that EDO data
