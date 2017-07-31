@@ -1,18 +1,21 @@
-Received: from ms.lwn.net ([45.79.88.28])
+Received: from mail.thorsis.com ([213.211.200.15])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dbwXd-0006LS-7R
- for linux-mtd@lists.infradead.org; Sun, 30 Jul 2017 22:18:30 +0000
-Date: Sun, 30 Jul 2017 16:18:03 -0600
-From: Jonathan Corbet <corbet@lwn.net>
+ id 1dc3y7-0002kR-22
+ for linux-mtd@lists.infradead.org; Mon, 31 Jul 2017 06:14:21 +0000
+From: Alexander Dahl <ada@thorsis.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+Cc: Alexander Dahl <post@lespocky.de>, Richard Weinberger <richard@nod.at>,
  linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: nand: Fix a docs build warning
-Message-ID: <20170730161803.1593200e@lwn.net>
+Subject: Re: mtd: nand: atmel: probe of Spansion S34ML02G1 fails
+Date: Mon, 31 Jul 2017 08:13:19 +0200
+Message-ID: <16874505.VNammbPfxu@ada>
+In-Reply-To: <20170727212703.724d41fd@bbrezillon>
+References: <5326598.QgYTQxcFMR@ada>
+ <20170726204054.oejtb73jsxxlmovm@falbala.home.lespocky.de>
+ <20170727212703.724d41fd@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Commit 0b4773fd1649 (mtd: nand: Drop unused cached programming support)
-removed the "cached" parameter from nand_write_page(), but did not update
-the kerneldoc comments, creating this docs build warning:
+Hei hei,
 
-  ./drivers/mtd/nand/nand_base.c:2751: warning: Excess function parameter 'cached' description in 'nand_write_page'
+Am Donnerstag, 27. Juli 2017, 21:27:03 schrieb Boris Brezillon:
+> Did you have time to test with f9ce2eddf176 ("mtd: nand: atmel: Add
+> ->setup_data_interface() hooks") reverted? BTW, it's probably simpler
+> to just comment out this line [1]
 
-Remove the offending line so we can have a little peace and quiet.
+This does not revert cleanly.
 
-Signed-off-by: Jonathan Corbet <corbet@lwn.net>
----
- drivers/mtd/nand/nand_base.c | 1 -
- 1 file changed, 1 deletion(-)
+> [1]http://elixir.free-electrons.com/linux/v4.13-rc2/source/drivers/mtd
+> /nand/atmel/nand-controller.c#L1493
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 5fa5ddc94834..ba57d8970f27 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2741,7 +2741,6 @@ static int nand_write_page_syndrome(struct mtd_info *mtd,
-  * @buf: the data to write
-  * @oob_required: must write chip->oob_poi to OOB
-  * @page: page number to write
-- * @cached: cached programming
-  * @raw: use _raw version of write_page
-  */
- static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
--- 
-2.13.3
+I tried this in atmel_nand_init():
+
++       /*
+        if (nc->mck && nc->caps->ops->setup_data_interface)
+                chip->setup_data_interface = atmel_nand_setup_data_interface;
++       */
+
+So this basically skips all those timing init, right? If I do this I get 
+the timings which were applied in U-Boot and the NAND-Flash just works.
+
+Greets
+Alex
