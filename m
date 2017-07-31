@@ -1,17 +1,20 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dcDXn-0007DS-5j
- for linux-mtd@lists.infradead.org; Mon, 31 Jul 2017 16:27:49 +0000
-Date: Mon, 31 Jul 2017 18:27:20 +0200
+ id 1dcDYL-0007Td-TK
+ for linux-mtd@lists.infradead.org; Mon, 31 Jul 2017 16:28:23 +0000
+Date: Mon, 31 Jul 2017 18:28:00 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Jonathan Corbet <corbet@lwn.net>
-Cc: Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: nand: Fix a docs build warning
-Message-ID: <20170731182720.209d7842@bbrezillon>
-In-Reply-To: <20170730161803.1593200e@lwn.net>
-References: <20170730161803.1593200e@lwn.net>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, Alexander Dahl <ada@thorsis.com>,
+ stable@vger.kernel.org
+Subject: Re: [PATCH] mtd: nand: Declare tBERS, tR and tPROG as u64 to avoid
+ integer overflow
+Message-ID: <20170731182800.7517f117@bbrezillon>
+In-Reply-To: <1501489887-7372-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1501489887-7372-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,38 +27,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 30 Jul 2017 16:18:03 -0600
-Jonathan Corbet <corbet@lwn.net> wrote:
+On Mon, 31 Jul 2017 10:31:27 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-> Commit 0b4773fd1649 (mtd: nand: Drop unused cached programming support)
-> removed the "cached" parameter from nand_write_page(), but did not update
-> the kerneldoc comments, creating this docs build warning:
-> 
->   ./drivers/mtd/nand/nand_base.c:2751: warning: Excess function parameter 'cached' description in 'nand_write_page'
-> 
-> Remove the offending line so we can have a little peace and quiet.
+> All timings in nand_sdr_timings are expressed in picoseconds but some
+> of them may not fit in an u32.
 
 Applied to nand/fixes.
 
-Thanks,
-
-Boris
-
 > 
-> Signed-off-by: Jonathan Corbet <corbet@lwn.net>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Fixes: 204e7ecd47e2 ("mtd: nand: Add a few more timings to nand_sdr_timings")
+> Reported-by: Alexander Dahl <ada@thorsis.com>
+> Cc: <stable@vger.kernel.org>
 > ---
->  drivers/mtd/nand/nand_base.c | 1 -
->  1 file changed, 1 deletion(-)
+>  drivers/mtd/nand/nand_timings.c | 6 +++---
+>  include/linux/mtd/nand.h        | 6 +++---
+>  2 files changed, 6 insertions(+), 6 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 5fa5ddc94834..ba57d8970f27 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -2741,7 +2741,6 @@ static int nand_write_page_syndrome(struct mtd_info *mtd,
->   * @buf: the data to write
->   * @oob_required: must write chip->oob_poi to OOB
->   * @page: page number to write
-> - * @cached: cached programming
->   * @raw: use _raw version of write_page
+> diff --git a/drivers/mtd/nand/nand_timings.c b/drivers/mtd/nand/nand_timings.c
+> index f06312df3669..7e36d7d13c26 100644
+> --- a/drivers/mtd/nand/nand_timings.c
+> +++ b/drivers/mtd/nand/nand_timings.c
+> @@ -311,9 +311,9 @@ int onfi_init_data_interface(struct nand_chip *chip,
+>  		struct nand_sdr_timings *timings = &iface->timings.sdr;
+>  
+>  		/* microseconds -> picoseconds */
+> -		timings->tPROG_max = 1000000UL * le16_to_cpu(params->t_prog);
+> -		timings->tBERS_max = 1000000UL * le16_to_cpu(params->t_bers);
+> -		timings->tR_max = 1000000UL * le16_to_cpu(params->t_r);
+> +		timings->tPROG_max = 1000000ULL * le16_to_cpu(params->t_prog);
+> +		timings->tBERS_max = 1000000ULL * le16_to_cpu(params->t_bers);
+> +		timings->tR_max = 1000000ULL * le16_to_cpu(params->t_r);
+>  
+>  		/* nanoseconds -> picoseconds */
+>  		timings->tCCS_min = 1000UL * le16_to_cpu(params->t_ccs);
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 892148c448cc..5216d2eb2289 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -681,10 +681,10 @@ struct nand_buffers {
+>   * @tWW_min: WP# transition to WE# low
 >   */
->  static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  struct nand_sdr_timings {
+> -	u32 tBERS_max;
+> +	u64 tBERS_max;
+>  	u32 tCCS_min;
+> -	u32 tPROG_max;
+> -	u32 tR_max;
+> +	u64 tPROG_max;
+> +	u64 tR_max;
+>  	u32 tALH_min;
+>  	u32 tADL_min;
+>  	u32 tALS_min;
