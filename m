@@ -12,12 +12,12 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
 References: <20170728220707.13960-1-alex.g@adaptrum.com>
  <20170728220707.13960-5-alex.g@adaptrum.com>
  <135fdf95-1029-2d34-2802-1283a73588e5@gmail.com>
- <83a4e27a-b96c-0558-fbb5-10e64f9bf59b@adaptrum.com>
+ <63953f85-795e-20a2-04aa-4d486db608cc@adaptrum.com>
 From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <e7c916c4-7b0a-1f76-b91f-5befeb24faf5@gmail.com>
-Date: Mon, 31 Jul 2017 23:33:42 +0200
+Message-ID: <cd005749-9943-2b6e-a792-93843d2cdf6c@gmail.com>
+Date: Mon, 31 Jul 2017 23:35:05 +0200
 MIME-Version: 1.0
-In-Reply-To: <83a4e27a-b96c-0558-fbb5-10e64f9bf59b@adaptrum.com>
+In-Reply-To: <63953f85-795e-20a2-04aa-4d486db608cc@adaptrum.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -30,114 +30,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/31/2017 07:17 PM, Alexandru Gagniuc wrote:
-[...]
-
->>> +++ b/drivers/mtd/spi-nor/anarion-quadspi.c
->>> @@ -0,0 +1,490 @@
->>> +/*
->>> + * Adaptrum Anarion Quad SPI controller driver
->>> + *
->>> + * Copyright (C) 2017, Adaptrum, Inc.
->>> + * (Written by Alexandru Gagniuc <alex.g at adaptrum.com> for
->>> Adaptrum, Inc.)
->>> + * Licensed under the GPLv2 or (at your option) any later version.
->>
->> The GPL boilerplate should be here.
+On 07/31/2017 10:54 PM, Alexandru Gagniuc wrote:
+> Hi Marek,
 > 
-> I chose this form of the boilerplate because it seems to be quite used
-> in other places. I am assuming the fatter boilerplate the requirement
-> for drivers/mtd, correct?
-
-AFAIK the regular GPLv2 boilerplate is the standard throughout the kernel.
-
-> [snip]
+> Me again!
 > 
->>> +#define ASPI_CLK_SW_RESET        (1 << 0)
->>
->> BIT(0) , fix globally
-> 
-> Staged for [PATCH v2].
-> 
->>> +#define ASPI_CLK_RESET_BUF        (1 << 1)
->>> +#define ASPI_CLK_RESET_ALL        (ASPI_CLK_SW_RESET |
->>> ASPI_CLK_RESET_BUF)
->>> +#define ASPI_CLK_SPI_MODE3        (1 << 2)
->>> +#define ASPI_CLOCK_DIV_MASK        (0xff << 8)
->>> +#define ASPI_CLOCK_DIV(d)        (((d) << 8) & ASPI_CLOCK_DIV_MASK)
->>> +
->>> +#define ASPI_TIMEOUT_US        100000
->>> +
->>> +#define ASPI_DATA_LEN_MASK        0x3fff
->>> +#define ASPI_MAX_XFER_LEN        (size_t)(ASPI_DATA_LEN_MASK + 1)
->>> +
->>> +#define MODE_IO_X1            (0 << 16)
->>> +#define MODE_IO_X2            (1 << 16)
->>> +#define MODE_IO_X4            (2 << 16)
->>> +#define MODE_IO_SDR_POS_SKEW        (0 << 20)
->>> +#define MODE_IO_SDR_NEG_SKEW        (1 << 20)
->>> +#define MODE_IO_DDR_34_SKEW        (2 << 20)
->>> +#define MODE_IO_DDR_PN_SKEW        (3 << 20)
->>> +#define MODE_IO_DDR_DQS            (5 << 20)
->>> +
->>> +#define ASPI_STATUS_BUSY            (1 << 2)
->>> +
->>> +/*
->>> + * This mask does not match reality. Get over it:
->>
->> What is this about ?
-> 
-> Each stage of the QSPI chain has two registers. The second register has
-> a bitfield which takes in the length of the stage. For example, for
-> DATA2, we can set the length up to 0x4000, but for ADDR2, we can only
-> set a max of 4 bytes. I wrote this comment as a reminder to myself to be
-> careful about using this mask. I'll rephrase the comment for [v2]
-
-Please do.
-
->>> + * DATA2:    0x3fff
->>> + * CMD2:    0x0003
->>> + * ADDR2:    0x0007
->>> + * PERF2:    0x0000
->>> + * HI_Z:    0x003f
->>> + * BCNT:    0x0007
->>> + */
->>> +#define CHAIN_LEN(x)        ((x - 1) & ASPI_DATA_LEN_MASK)
->>> +
->>> +struct anarion_qspi {
->>> +    struct        spi_nor nor;
->>> +    struct        device *dev;
->>> +    uintptr_t    regbase;
->>
->> Should be void __iomem * I guess ?
-> 
-> I chose uintptr_t as opposed to void *, because arithmetic on void * is
-> not valid in C. What is the right answer hen, without risking undefined
-> behavior?
-
-What sort of arithmetic ? It's perfectly valid in general ...
-
->>> +    uintptr_t    xipbase;
->>> +    uint32_t    xfer_mode_cmd;
->>
->> u32 etc, fix globally, this is not userspace.
-> 
-> From coding-style, section 5.(d), my understanding is that
-> "Linux-specific u8/u16/u32/u64 types [...] are not mandatory in new
-> code". Most of the code in this driver is shared between Linux, u-boot,
-> openocd, ASIC validation tests, and manufacturing tests. Unlike,
-> shortint types, stdint types are available in all cases.
-> 
-> Therefore, having to use a different set of primitive types makes code
-> sharing much more difficult, and increases the maintenance burden, hence
-> the strong preference for standard types. Is this reasonable?
-
-The uXX is still prevalent in drivers/mtd/ according to git grep , so
-I'd stick with that. Using uXX in U-Boot is perfectly fine and in fact
-recommended.
-
-> [snip]
-> 
+> On 07/29/2017 02:34 AM, Marek Vasut wrote:
+>> On 07/29/2017 12:07 AM, Alexandru Gagniuc wrote:
 >>> +static void aspi_drain_fifo(struct anarion_qspi *aspi, uint8_t *buf,
 >>> size_t len)
 >>> +{
@@ -145,74 +44,68 @@ recommended.
 >>
 >> Is this stuff below something like ioread32_rep() ?
 >>
->>> +    aspi_write_reg(aspi, ASPI_REG_BYTE_COUNT, sizeof(uint32_t));
+> [snip]
+>>> +    aspi_write_reg(spi, ASPI_REG_BYTE_COUNT, sizeof(uint32_t));
 >>> +    while (len >= 4) {
->>> +        data = aspi_read_reg(aspi, ASPI_REG_DATA1);
->>> +        memcpy(buf, &data, sizeof(data));
+>>> +        memcpy(&data, buf, sizeof(data));
+>>> +        aspi_write_reg(spi, ASPI_REG_DATA1, data);
+>>
+>> iowrite32_rep ?
+>>
 >>> +        buf += 4;
 >>> +        len -= 4;
 >>> +    }
 > 
-> That is very similar to ioread32_rep, yes. I kept this as for the
-> reasons outlined above, but changing this to _rep() seems innocent enough.
+> I looked at using io(read|write)32_rep in these two places, and I've run
+> into some issues.
+> 
+> First, I'm seeing unaligned MMIO accesses, which are not supported on
+> ARC. Note that 'buf' has an alignment of 1, while the register requires
+> an alignment of 4. The memcpy() in-between takes care of that, which was
+> the original intent.
+> 
+> Other than that, we still need to break off the tail because we need to
+> update ASPI_REG_BYTE_COUNT before writing/reading any more data from the
+> FIFO. We have to keep track of the remainder, so we're not really saving
+> any SLOC.
+> 
+> I'd like to keep the original version as I find it to be much more
+> symmetrical and readable.
 
-What reason ?
+Look at the other drivers, AFAIR the io*_rep() issue was solved over and
+over again, maybe you can factor that code out.
 
+> Thanks,
+> Alex
+> 
+>>> +
 >>> +    if (len) {
->>> +        aspi_write_reg(aspi, ASPI_REG_BYTE_COUNT, len);
->>> +        data = aspi_read_reg(aspi, ASPI_REG_DATA1);
->>> +        memcpy(buf, &data, len);
+>>> +        aspi_write_reg(spi, ASPI_REG_BYTE_COUNT, len);
+>>> +        memcpy(&data, buf, len);
+>>> +        aspi_write_reg(spi, ASPI_REG_DATA1, data);
 >>> +    }
 >>> +}
-
-[...]
-
->>> +    switch (nor->flash_read) {
->>> +    default:        /* Fall through */
->>
->> This will break once we add OSPI support ...
 > 
-> Ooh, I see the API here has changed significantly from the 4.9 LTS
-> branch where we originally developed the driver.I will add and test
-> normal and FAST_READ support, but I won't have the bandwidth to test
-> other modes yet. Those will have to remain as a TODO.
-
-Sigh, please be so kind and use -next for your development next time ...
-
->>> +    case SPI_NOR_NORMAL:
->>> +        aspi->num_hi_z_clocks = nor->read_dummy;
->>> +        aspi->xfer_mode_cmd = MODE_IO_X1;
->>> +        aspi->xfer_mode_addr = MODE_IO_X1;
->>> +        aspi->xfer_mode_data = MODE_IO_X1;
->>> +        break;
->>> +    case SPI_NOR_FAST:
->>> +        aspi->num_hi_z_clocks = nor->read_dummy;
->>> +        aspi->xfer_mode_cmd = MODE_IO_X1;
->>> +        aspi->xfer_mode_addr = MODE_IO_X1;
->>> +        aspi->xfer_mode_data = MODE_IO_X1;
->>> +        break;
->>> +    case SPI_NOR_DUAL:
->>> +        aspi->num_hi_z_clocks = nor->read_dummy;
->>> +        aspi->xfer_mode_cmd = MODE_IO_X1;
->>> +        aspi->xfer_mode_addr = MODE_IO_X1;
->>> +        aspi->xfer_mode_data = MODE_IO_X2;
->>> +        break;
->>> +    case SPI_NOR_QUAD:
->>> +        aspi->num_hi_z_clocks = nor->read_dummy;
->>> +        aspi->xfer_mode_cmd = MODE_IO_X1;
->>> +        aspi->xfer_mode_addr = MODE_IO_X1;
->>> +        aspi->xfer_mode_data = MODE_IO_X4;
->>> +        break;
->>> +    }
->>> +
->>> +    aspi_setup_xip_read_chain(aspi, nor);
->>> +
->>> +    mtd_device_register(&aspi->nor.mtd, NULL, 0);
->>> +
->>> +    return 0;
->>> +}
 > 
-> [snip]
+> Exhibit A: aspi_seed_fifo with writesl()
+> 
+> static void aspi_seed_fifo(struct anarion_qspi *spi,
+>                const uint8_t *buf, size_t len)
+> {
+>     uint32_t data;
+>     void __iomem *data_reg = (void *)(spi->regbase + ASPI_REG_DATA1);
+> 
+>     aspi_write_reg(spi, ASPI_REG_BYTE_COUNT, sizeof(uint32_t));
+>     writesl(data_reg, buf, len / 4);
+>     buf += len & ~0x03;
+>     len &= 0x03;
+> 
+>     if (len) {
+>         aspi_write_reg(spi, ASPI_REG_BYTE_COUNT, len);
+>         memcpy(&data, buf, len);
+>         aspi_write_reg(spi, ASPI_REG_DATA1, data);
+>     }
+> }
 
 
 -- 
