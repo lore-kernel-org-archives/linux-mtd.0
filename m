@@ -1,7 +1,7 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dc67C-00030B-IX
- for linux-mtd@lists.infradead.org; Mon, 31 Jul 2017 08:31:52 +0000
+ id 1dc684-0003NT-84
+ for linux-mtd@lists.infradead.org; Mon, 31 Jul 2017 08:32:45 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
@@ -9,11 +9,11 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Alexander Dahl <ada@thorsis.com>, stable@vger.kernel.org
-Subject: [PATCH] mtd: nand: Declare tBERS,
- tR and tPROG as u64 to avoid integer overflow
-Date: Mon, 31 Jul 2017 10:31:27 +0200
-Message-Id: <1501489887-7372-1-git-send-email-boris.brezillon@free-electrons.com>
+ Alexander Dahl <ada@thorsis.com>, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Subject: [PATCH] mtd: nand: atmel: Fix EDO mode check
+Date: Mon, 31 Jul 2017 10:32:21 +0200
+Message-Id: <1501489941-7468-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,52 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-All timings in nand_sdr_timings are expressed in picoseconds but some
-of them may not fit in an u32.
+EDO mode should be used when tRC is less than 30ns, but timings are
+expressed in picoseconds in the nand_sdr_timings struct.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-Fixes: 204e7ecd47e2 ("mtd: nand: Add a few more timings to nand_sdr_timings")
+Fixes: f9ce2eddf176 ("mtd: nand: atmel: Add ->setup_data_interface() hooks")
 Reported-by: Alexander Dahl <ada@thorsis.com>
-Cc: <stable@vger.kernel.org>
 ---
- drivers/mtd/nand/nand_timings.c | 6 +++---
- include/linux/mtd/nand.h        | 6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ drivers/mtd/nand/atmel/nand-controller.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/nand_timings.c b/drivers/mtd/nand/nand_timings.c
-index f06312df3669..7e36d7d13c26 100644
---- a/drivers/mtd/nand/nand_timings.c
-+++ b/drivers/mtd/nand/nand_timings.c
-@@ -311,9 +311,9 @@ int onfi_init_data_interface(struct nand_chip *chip,
- 		struct nand_sdr_timings *timings = &iface->timings.sdr;
+diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/atmel/nand-controller.c
+index d922a88e407f..2c8baa0c2c4e 100644
+--- a/drivers/mtd/nand/atmel/nand-controller.c
++++ b/drivers/mtd/nand/atmel/nand-controller.c
+@@ -1201,7 +1201,7 @@ static int atmel_smc_nand_prepare_smcconf(struct atmel_nand *nand,
+ 	 * tRC < 30ns implies EDO mode. This controller does not support this
+ 	 * mode.
+ 	 */
+-	if (conf->timings.sdr.tRC_min < 30)
++	if (conf->timings.sdr.tRC_min < 30000)
+ 		return -ENOTSUPP;
  
- 		/* microseconds -> picoseconds */
--		timings->tPROG_max = 1000000UL * le16_to_cpu(params->t_prog);
--		timings->tBERS_max = 1000000UL * le16_to_cpu(params->t_bers);
--		timings->tR_max = 1000000UL * le16_to_cpu(params->t_r);
-+		timings->tPROG_max = 1000000ULL * le16_to_cpu(params->t_prog);
-+		timings->tBERS_max = 1000000ULL * le16_to_cpu(params->t_bers);
-+		timings->tR_max = 1000000ULL * le16_to_cpu(params->t_r);
- 
- 		/* nanoseconds -> picoseconds */
- 		timings->tCCS_min = 1000UL * le16_to_cpu(params->t_ccs);
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 892148c448cc..5216d2eb2289 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -681,10 +681,10 @@ struct nand_buffers {
-  * @tWW_min: WP# transition to WE# low
-  */
- struct nand_sdr_timings {
--	u32 tBERS_max;
-+	u64 tBERS_max;
- 	u32 tCCS_min;
--	u32 tPROG_max;
--	u32 tR_max;
-+	u64 tPROG_max;
-+	u64 tR_max;
- 	u32 tALH_min;
- 	u32 tADL_min;
- 	u32 tALS_min;
+ 	atmel_smc_cs_conf_init(smcconf);
 -- 
 2.7.4
