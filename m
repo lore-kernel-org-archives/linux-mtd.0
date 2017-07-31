@@ -1,24 +1,21 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dcDcD-0002Y9-6v
- for linux-mtd@lists.infradead.org; Mon, 31 Jul 2017 16:32:23 +0000
-Date: Mon, 31 Jul 2017 18:31:59 +0200
+Date: Mon, 31 Jul 2017 18:35:32 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Miquel Raynal <miquel.raynal@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org (open list:NAND
- FLASH SUBSYSTEM), linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH] nand: fix wrong default oob layout for small pages
- using soft ecc
-Message-ID: <20170731183159.664e4c1c@bbrezillon>
-In-Reply-To: <20170705090453.7e412982@bbrezillon>
-References: <20170705065109.7738-1-miquel.raynal@free-electrons.com>
- <20170705090453.7e412982@bbrezillon>
+To: Romain Izard <romain.izard.pro@gmail.com>
+Cc: Nicolas Ferre <nicolas.ferre@microchip.com>, Yang Wenyou
+ <Wenyou.Yang@atmel.com>, Ludovic Desroches
+ <ludovic.desroches@microchip.com>, Alexandre Belloni
+ <alexandre.belloni@free-electrons.com>, linux-mtd
+ <linux-mtd@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>
+Subject: Re: Uncorrectable bitflips with Linux 4.12 on SAMA5D2
+Message-ID: <20170731183532.0c37aa41@bbrezillon>
+In-Reply-To: <20170717202008.6c798789@bbrezillon>
+References: <CAMiSF3CtVY7G=ugt-bpsOOMqLcFrmx7hDstUag2_6H-KrN4yBg@mail.gmail.com>
+ <20170717194809.4a080e0c@bbrezillon>
+ <20170717202008.6c798789@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,86 +25,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 5 Jul 2017 09:04:53 +0200
+On Mon, 17 Jul 2017 20:20:08 +0200
 Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-> Hi Miquel,
-> 
-> On Wed,  5 Jul 2017 08:51:09 +0200
-> Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
-> 
-> > When using soft ecc, if no ooblayout is given, the core automatically
-> > uses one of the nand_ooblayout_{sp,lp}*() functions to determine the
-> > layout inside the out of band data.
-> > 
-> > Until kernel version 4.6, struct nand_ecclayout was used for that
-> > purpose. During the migration from 4.6 to 4.7, an error shown up in the
-> > small page layout, in the case oob section is only 8 bytes long.
-> > 
-> > The layout was using three bytes (0, 1, 2) for ecc, two bytes (3, 4)
-> > as free bytes, one byte (5) for bad block marker and finally
-> > two bytes (6, 7) as free bytes, as shown there:
-> > 
-> > [linux-4.6] drivers/mtd/nand/nand_base.c:52
-> > static struct nand_ecclayout nand_oob_8 = {
-> > 	.eccbytes = 3,
-> > 	.eccpos = {0, 1, 2},
-> > 	.oobfree = {
-> > 		{.offset = 3,
-> > 		 .length = 2},
-> > 		{.offset = 6,
-> > 		 .length = 2} }
-> > };
-> > 
-> > This fixes the current implementation which is incoherent. It
-> > references bit 3 at the same time as an ecc byte and a free byte.
-> > 
-> > Furthermore, it is clear with the previous implementation that there
-> > is only one ecc section with 8 bytes oob sections. We shall return
-> > -ERANGE in the nand_ooblayout_ecc_sp() function when asked for the
-> > second section.
+> Le Mon, 17 Jul 2017 19:48:09 +0200,
+> Boris Brezillon <boris.brezillon@free-electrons.com> a =C3=A9crit :
+>=20
+> > +Ludovic, Nicolas and Alexandre
+> >=20
+> > Hi Romain,
+> >=20
+> > Le Mon, 17 Jul 2017 18:11:26 +0200,
+> > Romain Izard <romain.izard.pro@gmail.com> a =C3=A9crit :
+> >  =20
+> > > Hello,
+> > >=20
+> > > On a custom board based on Microchip's SAMA5D2 SoC, I am encountering
+> > > ECC problems with the NAND Flash controller. The board is currently
+> > > working with Linux v4.9.x, but it does not with Linux 4.12.
+> > >=20
+> > > Some pages on the NAND Flash memory chip of the device have bitflips.
+> > > With Linux 4.9.x, the bitflips are fixed by the PMECC code, but with
+> > > Linux 4.12, the errors are reported as uncorrectable.
+> > >=20
+> > > From my end, I updated the board's device tree to include the
+> > > sama5d2.dtsi as it exists in Linux 4.12, but the rest of the file is
+> > > the same as for Linux 4.9. From my understanding, it should be
+> > > sufficient as the legacy DTB binding for the NAND controller is
+> > > supported.   =20
+> >=20
+> > I know Ludovic add some problems with the NAND controller on sama5d2,
+> > but it was with the new bindings (see the fixes here [1]).
+> >=20
+> > Your problem seems a bit different since you're using the backward
+> > compat code. =20
+>=20
+> Can you try with the following patch applied?
+>=20
+> --->8--- =20
+> From cb95a16cdd497137872c44d5dd4e251ec73c79c1 Mon Sep 17 00:00:00 2001
+> From: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Date: Mon, 17 Jul 2017 20:09:59 +0200
+> Subject: [PATCH] mtd: nand: atmel: Fix DT backward compatibility in pmecc=
+.c
+>=20
+> PMECC caps extraction from old DT bindings is broken, thus leading to
+> erroneous EL registers offset, which in turn make HW ECC unusable on
+> sama5d2 when old bindings are in use.
+>=20
+> Passing the NAND dev node instead of the NFC node to of_match_node()
+> solves the problem.
+>=20
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Fixes: f88fc122cc34 ("mtd: nand: Cleanup/rework the atmel_nand driver")
+> Cc: <stable@vger.kernel.org>
 
 Applied to nand/fixes.
 
-Thanks,
-
-Boris
-
-> > 
-> > Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>  
-> 
-> Looks good to me. BTW, it looks like a good candidate for stable.
-> No need to send a v2, I'll add the following when applying:
-> 
-> Fixes: 41b207a70d3a ("mtd: nand: implement the default mtd_ooblayout_ops")
-> Cc: <stable@vger.kernel.org>
-> 
-> Thanks,
-> 
-> Boris
-> 
-> > ---
-> >  drivers/mtd/nand/nand_base.c | 8 +++++++-
-> >  1 file changed, 7 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> > index b1dd12729f19..c5221795a1e8 100644
-> > --- a/drivers/mtd/nand/nand_base.c
-> > +++ b/drivers/mtd/nand/nand_base.c
-> > @@ -65,8 +65,14 @@ static int nand_ooblayout_ecc_sp(struct mtd_info *mtd, int section,
-> >  
-> >  	if (!section) {
-> >  		oobregion->offset = 0;
-> > -		oobregion->length = 4;
-> > +		if (mtd->oobsize == 16)
-> > +			oobregion->length = 4;
-> > +		else
-> > +			oobregion->length = 3;
-> >  	} else {
-> > +		if (mtd->oobsize == 8)
-> > +			return -ERANGE;
-> > +
-> >  		oobregion->offset = 6;
-> >  		oobregion->length = ecc->total - 4;
-> >  	}  
-> 
+> ---
+>  drivers/mtd/nand/atmel/pmecc.c | 21 ++++++---------------
+>  1 file changed, 6 insertions(+), 15 deletions(-)
+>=20
+> diff --git a/drivers/mtd/nand/atmel/pmecc.c b/drivers/mtd/nand/atmel/pmec=
+c.c
+> index 55a8ee5306ea..8c210a5776bc 100644
+> --- a/drivers/mtd/nand/atmel/pmecc.c
+> +++ b/drivers/mtd/nand/atmel/pmecc.c
+> @@ -945,6 +945,7 @@ struct atmel_pmecc *devm_atmel_pmecc_get(struct devic=
+e *userdev)
+>  		 */
+>  		struct platform_device *pdev =3D to_platform_device(userdev);
+>  		const struct atmel_pmecc_caps *caps;
+> +		const struct of_device_id *match;
+> =20
+>  		/* No PMECC engine available. */
+>  		if (!of_property_read_bool(userdev->of_node,
+> @@ -953,21 +954,11 @@ struct atmel_pmecc *devm_atmel_pmecc_get(struct dev=
+ice *userdev)
+> =20
+>  		caps =3D &at91sam9g45_caps;
+> =20
+> -		/*
+> -		 * Try to find the NFC subnode and extract the associated caps
+> -		 * from there.
+> -		 */
+> -		np =3D of_find_compatible_node(userdev->of_node, NULL,
+> -					     "atmel,sama5d3-nfc");
+> -		if (np) {
+> -			const struct of_device_id *match;
+> -
+> -			match =3D of_match_node(atmel_pmecc_legacy_match, np);
+> -			if (match && match->data)
+> -				caps =3D match->data;
+> -
+> -			of_node_put(np);
+> -		}
+> +		/* Find the caps associated to the NAND dev node. */
+> +		match =3D of_match_node(atmel_pmecc_legacy_match,
+> +				      userdev->of_node);
+> +		if (match && match->data)
+> +			caps =3D match->data;
+> =20
+>  		pmecc =3D atmel_pmecc_create(pdev, caps, 1, 2);
+>  	}
+>=20
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
