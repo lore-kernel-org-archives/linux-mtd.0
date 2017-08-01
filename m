@@ -1,22 +1,26 @@
-Received: from smtp3-g21.free.fr ([212.27.42.3])
+Received: from mx02-sz.bfs.de ([194.94.69.103])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dcaMO-0004l8-M3
- for linux-mtd@lists.infradead.org; Tue, 01 Aug 2017 16:49:34 +0000
-Subject: Re: [PATCH v2 3/3] mtd: spi-nor: s25fl512s: Set a page size of 512
-To: mark.marshall@omicronenergy.com, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, cyrille.pitchen@atmel.com,
- marek.vasut@gmail.com
-Cc: richard@nod.at, dwmw2@infradead.org, markmarshall14@gmail.com,
- boris.brezillon@free-electrons.com
-References: <cover.1487085166.git.mark.marshall@omicronenergy.com>
- <22ee35326eb763a0f7477c845838ef7aa1c8d1fd.1487085166.git.mark.marshall@omicronenergy.com>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <857dea0d-d982-1108-c411-dbeb0083035c@wedev4u.fr>
-Date: Tue, 1 Aug 2017 18:49:08 +0200
+ id 1dcaXC-0002Mp-V5
+ for linux-mtd@lists.infradead.org; Tue, 01 Aug 2017 17:00:46 +0000
+Message-ID: <5980B396.7040802@bfs.de>
+Date: Tue, 01 Aug 2017 19:00:06 +0200
+From: walter harms <wharms@bfs.de>
+Reply-To: wharms@bfs.de
 MIME-Version: 1.0
-In-Reply-To: <22ee35326eb763a0f7477c845838ef7aa1c8d1fd.1487085166.git.mark.marshall@omicronenergy.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+CC: Colin King <colin.king@canonical.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][mtd-next] mtd: spi-nor: remove redundant check on err
+References: <20170629175054.12231-1-colin.king@canonical.com>
+ <e9fe2e63-aadf-d9cf-e7b1-dc7149677600@wedev4u.fr>
+In-Reply-To: <e9fe2e63-aadf-d9cf-e7b1-dc7149677600@wedev4u.fr>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,41 +31,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mark,
 
-Le 14/02/2017 à 16:35, mark.marshall@omicronenergy.com a écrit :
-> From: Mark Marshall <mark.marshall@omicronenergy.com>
+
+Am 01.08.2017 18:33, schrieb Cyrille Pitchen:
+> Hi Colin,
 > 
-> This device has a write page size of 512.  Changing this from 256 to 512
-> almost doubles the write performance of the flash.
-
-This issue should be fixed now parsing the SFDP tables of the s25fl512s
-memory part. Indeed bits[7:4] of DWORD11 in the Basic Flash Parameter
-Table encode the actual page size for Page Program operations.
-
-This value overrides the one read from info->page_size.
-
-Best regards,
-
-Cyrille
-
+> Le 29/06/2017 à 19:50, Colin King a écrit :
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> The variable err is not updated since the previous check on it, so
+>> the subsequent check on err is redundant and can be removed.
+>>
+>> Detected by CoverityScan, CID#1448658 ("Logically dead code")
+>>
+>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>> ---
+>>  drivers/mtd/spi-nor/spi-nor.c | 3 ---
+>>  1 file changed, 3 deletions(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>> index 196b52f083ae..1296c1931591 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -2307,9 +2307,6 @@ static int spi_nor_parse_sfdp(struct spi_nor *nor,
+>>  		default:
+>>  			break;
+>>  		}
+>> -
+>> -		if (err)
+>> -			goto exit;
 > 
-> Signed-off-by: Mark Marshall <mark.marshall@omicronenergy.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 2 ++
->  1 file changed, 2 insertions(+)
+> Sorry but this was done on purpose to prepare the structure of the
+> source code so it's more easy to add later parsing of optional SFDP
+> tables such as the 4-byte address instruction set table or sector erase
+> map table.
+> At that time each case of the switch statement should update the value
+> of 'err'.
 > 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 467dc93..ba4d7b7 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -1056,6 +1056,8 @@ static const struct flash_info spi_nor_ids[] = {
->  	{ "s25fl256s0", INFO(JEDEC_ID(0x010219, 0x4d00, 2), 256 * 1024, 128, 0) },
->  	{ "s25fl256s1", INFO(JEDEC_ID(0x010219, 0x4d01, 2),  64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->  	{ "s25fl512s",  INFO(JEDEC_ID(0x010220, 0x4d00, 2), 256 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> +	{ "s25fl512s",  INFO_FULL(JEDEC_ID(0x010220, 0x4d00, 2),
-> +				  256 * 1024, 256, 512, 0, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->  	{ "s70fl01gs",  INFO(JEDEC_ID(0x010221, 0x4d00, 2), 256 * 1024, 256, 0) },
->  	{ "s25sl12800", INFO(JEDEC_ID(0x012018, 0x0300, 2), 256 * 1024,  64, 0) },
->  	{ "s25sl12801", INFO(JEDEC_ID(0x012018, 0x0301, 2),  64 * 1024, 256, 0) },
+> Best regards,
+> 
+
+This is hard to guess, could you add a comment so the next well meaning person
+has a chance to know that this is onn purpose ?
+
+re,
+ wh
+
+
+> Cyrille
+>>  	}
+>>  
+>>  exit:
+>>
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe kernel-janitors" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 > 
