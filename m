@@ -7,11 +7,9 @@ CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
  <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
  <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
  Vignesh R <vigneshr@ti.com>
-Subject: [PATCH 7/7] ARM: configs: keystone: Enable Cadence QSPI driver
-Date: Tue, 1 Aug 2017 10:24:34 +0530
-Message-ID: <20170801045434.8733-8-vigneshr@ti.com>
-In-Reply-To: <20170801045434.8733-1-vigneshr@ti.com>
-References: <20170801045434.8733-1-vigneshr@ti.com>
+Subject: [PATCH 0/7] K2G: Add QSPI support
+Date: Tue, 1 Aug 2017 10:24:27 +0530
+Message-ID: <20170801045434.8733-1-vigneshr@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,26 +21,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-66AK2G SoC has a Cadence QSPI IP. Therefore, enable cadence-quadspi
-driver as part of keystone_defconfig. Since, QSPI flash can be used to
-for root filesystem, built it into the kernel instead of module.
+This series adds support for Cadence QSPI for 66AK2G SoC. The first
+three patches enhance the cadence-quadspi driver to support loopback
+clock and pm_runtime and tweaks for 66AK2G SoC. Remaining patches add
+DT nodes and enable the driver in defconfig.
 
-Signed-off-by: Vignesh R <vigneshr@ti.com>
----
- arch/arm/configs/keystone_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+Tested on 66AK2G GP and ICE boards.
 
-diff --git a/arch/arm/configs/keystone_defconfig b/arch/arm/configs/keystone_defconfig
-index d47ea43d097e..4c8abf3c1ab1 100644
---- a/arch/arm/configs/keystone_defconfig
-+++ b/arch/arm/configs/keystone_defconfig
-@@ -124,6 +124,7 @@ CONFIG_MTD_M25P80=y
- CONFIG_MTD_NAND=y
- CONFIG_MTD_NAND_DAVINCI=y
- CONFIG_MTD_SPI_NOR=y
-+CONFIG_SPI_CADENCE_QUADSPI=y
- CONFIG_MTD_UBI=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_SRAM=y
+Vignesh R (7):
+  mtd: spi-nor: cadence-quadspi: add a delay in write sequence
+  mtd: spi-nor: cadence-quadspi: Add support to enable loopback clock
+    circuit
+  mtd: spi-nor: cadence-quadspi: Add runtime PM support
+  ARM: dts: keystone-k2g: Add QSPI DT entry
+  ARM: dts: keystone-k2g-evm: Add QSPI node
+  ARM: dts: keystone-k2g-ice: Add QSPI node
+  ARM: configs: keystone: Enable Cadence QSPI driver
+
+ .../devicetree/bindings/mtd/cadence-quadspi.txt    |  4 ++
+ arch/arm/boot/dts/keystone-k2g-evm.dts             | 69 ++++++++++++++++++++++
+ arch/arm/boot/dts/keystone-k2g-ice.dts             | 69 ++++++++++++++++++++++
+ arch/arm/boot/dts/keystone-k2g.dtsi                | 15 +++++
+ arch/arm/configs/keystone_defconfig                |  1 +
+ drivers/mtd/spi-nor/cadence-quadspi.c              | 32 +++++++++-
+ 6 files changed, 188 insertions(+), 2 deletions(-)
+
 -- 
 2.13.3
