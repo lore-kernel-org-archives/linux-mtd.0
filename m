@@ -1,24 +1,21 @@
-Received: from mail-wr0-x22c.google.com ([2a00:1450:400c:c0c::22c])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dcVgK-0001WY-6c
- for linux-mtd@lists.infradead.org; Tue, 01 Aug 2017 11:49:51 +0000
-Received: by mail-wr0-x22c.google.com with SMTP id 33so5732297wrz.4
- for <linux-mtd@lists.infradead.org>; Tue, 01 Aug 2017 04:49:27 -0700 (PDT)
-Subject: Re: [PATCH 2/6] mtd: oxnas_nand: Handle
- clk_prepare_enable/clk_disable_unprepare.
-To: Arvind Yadav <arvind.yadav.cs@gmail.com>,
- boris.brezillon@free-electrons.com, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com,
- cyrille.pitchen@wedev4u.fr
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-oxnas@lists.tuxfamily.org
-References: <1501587447-21079-1-git-send-email-arvind.yadav.cs@gmail.com>
-From: Neil Armstrong <narmstrong@baylibre.com>
-Message-ID: <e30bab37-4aea-fad4-2ea0-912508bdaa80@baylibre.com>
-Date: Tue, 1 Aug 2017 13:49:22 +0200
+Subject: Re: [PATCH] dt-bindings: mtd: add new compatible strings for mtk nor
+ controller
+To: Guochun Mao <guochun.mao@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Richard Weinberger <richard@nod.at>, Mark Rutland <mark.rutland@arm.com>,
+ Russell King <linux@armlinux.org.uk>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1500948617-19627-1-git-send-email-guochun.mao@mediatek.com>
+ <1500948617-19627-2-git-send-email-guochun.mao@mediatek.com>
+From: Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <03016ea3-51ad-0b2d-e824-0a20913bd7c1@gmail.com>
+Date: Tue, 1 Aug 2017 14:33:22 +0200
 MIME-Version: 1.0
-In-Reply-To: <1501587447-21079-1-git-send-email-arvind.yadav.cs@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1500948617-19627-2-git-send-email-guochun.mao@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,79 +27,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/01/2017 01:37 PM, Arvind Yadav wrote:
->  - clk_prepare_enable() can fail here and we must check its return value.
->  - oxnas_nand_probe() can fail here and we must disable clock.
+
+
+On 07/25/2017 04:10 AM, Guochun Mao wrote:
+> Add "mediatek,mt2712-nor" and "mediatek,mt7622-nor"
+> for nor flash node's compatible strings.
 > 
-> Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+> Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
 > ---
->  drivers/mtd/nand/oxnas_nand.c | 25 ++++++++++++++++++-------
->  1 file changed, 18 insertions(+), 7 deletions(-)
+>   .../devicetree/bindings/mtd/mtk-quadspi.txt        |    2 ++
+>   1 file changed, 2 insertions(+)
 > 
-> diff --git a/drivers/mtd/nand/oxnas_nand.c b/drivers/mtd/nand/oxnas_nand.c
-> index 1b207aa..7061bb2 100644
-> --- a/drivers/mtd/nand/oxnas_nand.c
-> +++ b/drivers/mtd/nand/oxnas_nand.c
-> @@ -112,14 +112,19 @@ static int oxnas_nand_probe(struct platform_device *pdev)
->  	if (count > 1)
->  		return -EINVAL;
->  
-> -	clk_prepare_enable(oxnas->clk);
-> +	err = clk_prepare_enable(oxnas->clk);
-> +	if (err)
-> +		return err;
-> +
->  	device_reset_optional(&pdev->dev);
->  
->  	for_each_child_of_node(np, nand_np) {
->  		chip = devm_kzalloc(&pdev->dev, sizeof(struct nand_chip),
->  				    GFP_KERNEL);
-> -		if (!chip)
-> -			return -ENOMEM;
-> +		if (!chip) {
-> +			err = -ENOMEM;
-> +			goto err_clk_unprepare;
-> +		}
->  
->  		chip->controller = &oxnas->base;
->  
-> @@ -139,12 +144,12 @@ static int oxnas_nand_probe(struct platform_device *pdev)
->  		/* Scan to find existence of the device */
->  		err = nand_scan(mtd, 1);
->  		if (err)
-> -			return err;
-> +			goto err_clk_unprepare;
->  
->  		err = mtd_device_register(mtd, NULL, 0);
->  		if (err) {
->  			nand_release(mtd);
-> -			return err;
-> +			goto err_clk_unprepare;
->  		}
->  
->  		oxnas->chips[nchips] = chip;
-> @@ -152,12 +157,18 @@ static int oxnas_nand_probe(struct platform_device *pdev)
->  	}
->  
->  	/* Exit if no chips found */
-> -	if (!nchips)
-> -		return -ENODEV;
-> +	if (!nchips) {
-> +		err = -ENODEV;
-> +		goto err_clk_unprepare;
-> +	}
->  
->  	platform_set_drvdata(pdev, oxnas);
->  
->  	return 0;
-> +
-> +err_clk_unprepare:
-> +	clk_disable_unprepare(oxnas->clk);
-> +	return err;
->  }
->  
->  static int oxnas_nand_remove(struct platform_device *pdev)
+> diff --git a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> index 5ded66a..9845ff4 100644
+> --- a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> +++ b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> @@ -3,6 +3,8 @@
+>   Required properties:
+>   - compatible: 	  The possible values are:
+>   		  "mediatek,mt2701-nor"
+> +		  "mediatek,mt2712-nor"
+> +		  "mediatek,mt7622-nor"
+>   		  "mediatek,mt7623-nor"
+>   		  "mediatek,mt8173-nor"
+>   		  For mt8173, compatible should be "mediatek,mt8173-nor".
 > 
 
-Indeed, Thanks,
-Acked-by: Neil Armstrong <narmstrong@baylibre.com>
+Boris, will you take this through your tree, or do you prefer that I take it?
+
+Regards,
+Matthias
