@@ -7,9 +7,9 @@ CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
  <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
  <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
  Vignesh R <vigneshr@ti.com>
-Subject: [PATCH 4/7] ARM: dts: keystone-k2g: Add QSPI DT entry
-Date: Tue, 1 Aug 2017 10:24:31 +0530
-Message-ID: <20170801045434.8733-5-vigneshr@ti.com>
+Subject: [PATCH 7/7] ARM: configs: keystone: Enable Cadence QSPI driver
+Date: Tue, 1 Aug 2017 10:24:34 +0530
+Message-ID: <20170801045434.8733-8-vigneshr@ti.com>
 In-Reply-To: <20170801045434.8733-1-vigneshr@ti.com>
 References: <20170801045434.8733-1-vigneshr@ti.com>
 MIME-Version: 1.0
@@ -23,37 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add DT node for Cadence QSPI IP present in 66AK2G SoC.
+66AK2G SoC has a Cadence QSPI IP. Therefore, enable cadence-quadspi
+driver as part of keystone_defconfig. Since, QSPI flash can be used to
+for root filesystem, built it into the kernel instead of module.
 
 Signed-off-by: Vignesh R <vigneshr@ti.com>
 ---
- arch/arm/boot/dts/keystone-k2g.dtsi | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ arch/arm/configs/keystone_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/keystone-k2g.dtsi b/arch/arm/boot/dts/keystone-k2g.dtsi
-index bf4d1fa30840..95327aabfaa4 100644
---- a/arch/arm/boot/dts/keystone-k2g.dtsi
-+++ b/arch/arm/boot/dts/keystone-k2g.dtsi
-@@ -168,5 +168,20 @@
- 				#reset-cells = <2>;
- 			};
- 		};
-+
-+		qspi: qspi@2940000 {
-+			compatible = "ti,k2g-qspi", "cdns,qspi-nor";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0x02940000 0x1000>,
-+			      <0x24000000 0x4000000>;
-+			interrupts = <GIC_SPI 198 IRQ_TYPE_EDGE_RISING>;
-+			cdns,fifo-depth = <256>;
-+			cdns,fifo-width = <4>;
-+			cdns,trigger-address = <0x24000000>;
-+			clocks = <&k2g_clks 0x43 0x0>;
-+			power-domains = <&k2g_pds 0x43>;
-+			status = "disabled";
-+		};
- 	};
- };
+diff --git a/arch/arm/configs/keystone_defconfig b/arch/arm/configs/keystone_defconfig
+index d47ea43d097e..4c8abf3c1ab1 100644
+--- a/arch/arm/configs/keystone_defconfig
++++ b/arch/arm/configs/keystone_defconfig
+@@ -124,6 +124,7 @@ CONFIG_MTD_M25P80=y
+ CONFIG_MTD_NAND=y
+ CONFIG_MTD_NAND_DAVINCI=y
+ CONFIG_MTD_SPI_NOR=y
++CONFIG_SPI_CADENCE_QUADSPI=y
+ CONFIG_MTD_UBI=y
+ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_SRAM=y
 -- 
 2.13.3
