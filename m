@@ -1,14 +1,19 @@
+Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dcVWk-0004Ye-Ji
+ for linux-mtd@lists.infradead.org; Tue, 01 Aug 2017 11:40:42 +0000
+Received: by mail-pf0-x243.google.com with SMTP id 72so2106809pfl.4
+ for <linux-mtd@lists.infradead.org>; Tue, 01 Aug 2017 04:39:34 -0700 (PDT)
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
 To: boris.brezillon@free-electrons.com, richard@nod.at, dwmw2@infradead.org,
  computersforpeace@gmail.com, marek.vasut@gmail.com,
- cyrille.pitchen@wedev4u.fr, narmstrong@baylibre.com,
- slemieux.tyco@gmail.com
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 3/6] mtd: nand: lpc32xx_slc: Handle return value of
+ cyrille.pitchen@wedev4u.fr, narmstrong@baylibre.com
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 4/6] mtd: nand: vf610_nfc: Handle return value of
  clk_prepare_enable.
-Date: Tue,  1 Aug 2017 17:08:06 +0530
-Message-Id: <1501587486-21184-1-git-send-email-arvind.yadav.cs@gmail.com>
+Date: Tue,  1 Aug 2017 17:09:18 +0530
+Message-Id: <1501587558-21227-1-git-send-email-arvind.yadav.cs@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,37 +27,27 @@ clk_prepare_enable() can fail here and we must check its return value.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 ---
- drivers/mtd/nand/lpc32xx_slc.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/vf610_nfc.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/lpc32xx_slc.c
-index a0669a3..80c2829 100644
---- a/drivers/mtd/nand/lpc32xx_slc.c
-+++ b/drivers/mtd/nand/lpc32xx_slc.c
-@@ -840,7 +840,9 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 		res = -ENOENT;
- 		goto err_exit1;
- 	}
--	clk_prepare_enable(host->clk);
-+	res = clk_prepare_enable(host->clk);
-+	if (res)
-+		goto err_exit1;
- 
- 	/* Set NAND IO addresses and command/ready functions */
- 	chip->IO_ADDR_R = SLC_DATA(host->io_base);
-@@ -972,9 +974,12 @@ static int lpc32xx_nand_remove(struct platform_device *pdev)
- static int lpc32xx_nand_resume(struct platform_device *pdev)
+diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
+index 744ab10..db03d4f 100644
+--- a/drivers/mtd/nand/vf610_nfc.c
++++ b/drivers/mtd/nand/vf610_nfc.c
+@@ -816,10 +816,13 @@ static int vf610_nfc_resume(struct device *dev)
  {
- 	struct lpc32xx_nand_host *host = platform_get_drvdata(pdev);
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
 +	int ret;
  
- 	/* Re-enable NAND clock */
--	clk_prepare_enable(host->clk);
-+	ret = clk_prepare_enable(host->clk);
+ 	pinctrl_pm_select_default_state(dev);
+ 
+-	clk_prepare_enable(nfc->clk);
++	ret = clk_prepare_enable(nfc->clk);
 +	if (ret)
 +		return ret;
  
- 	/* Fresh init of NAND controller */
- 	lpc32xx_nand_setup(host);
+ 	vf610_nfc_preinit_controller(nfc);
+ 	vf610_nfc_init_controller(nfc);
 -- 
 1.9.1
