@@ -7,9 +7,9 @@ CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
  <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
  <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
  Vignesh R <vigneshr@ti.com>
-Subject: [PATCH 5/7] ARM: dts: keystone-k2g-evm: Add QSPI node
-Date: Tue, 1 Aug 2017 10:24:32 +0530
-Message-ID: <20170801045434.8733-6-vigneshr@ti.com>
+Subject: [PATCH 6/7] ARM: dts: keystone-k2g-ice: Add QSPI node
+Date: Tue, 1 Aug 2017 10:24:33 +0530
+Message-ID: <20170801045434.8733-7-vigneshr@ti.com>
 In-Reply-To: <20170801045434.8733-1-vigneshr@ti.com>
 References: <20170801045434.8733-1-vigneshr@ti.com>
 MIME-Version: 1.0
@@ -23,19 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-66AK2G EVM has a s25fl512s flash connected to QSPI CS0. Add pinmux for
-QSPI and DT entries for the same.
+66AK2G ICE board has a s25fl256s1 flash connected to QSPI CS0. Add
+pinmux and DT entries for the same.
 
 Signed-off-by: Vignesh R <vigneshr@ti.com>
 ---
- arch/arm/boot/dts/keystone-k2g-evm.dts | 69 ++++++++++++++++++++++++++++++++++
+ arch/arm/boot/dts/keystone-k2g-ice.dts | 69 ++++++++++++++++++++++++++++++++++
  1 file changed, 69 insertions(+)
 
-diff --git a/arch/arm/boot/dts/keystone-k2g-evm.dts b/arch/arm/boot/dts/keystone-k2g-evm.dts
-index 61883cb969d2..55d632977e8f 100644
---- a/arch/arm/boot/dts/keystone-k2g-evm.dts
-+++ b/arch/arm/boot/dts/keystone-k2g-evm.dts
-@@ -34,6 +34,18 @@
+diff --git a/arch/arm/boot/dts/keystone-k2g-ice.dts b/arch/arm/boot/dts/keystone-k2g-ice.dts
+index d820d37b5148..075c3a605c8b 100644
+--- a/arch/arm/boot/dts/keystone-k2g-ice.dts
++++ b/arch/arm/boot/dts/keystone-k2g-ice.dts
+@@ -26,6 +26,18 @@
  			K2G_CORE_IOPAD(0x11d0) (BUFFER_CLASS_B | PIN_PULLDOWN | MUX_MODE0)	/* uart0_txd.uart0_txd */
  		>;
  	};
@@ -54,7 +54,7 @@ index 61883cb969d2..55d632977e8f 100644
  };
  
  &uart0 {
-@@ -41,3 +53,60 @@
+@@ -33,3 +45,60 @@
  	pinctrl-0 = <&uart0_pins>;
  	status = "okay";
  };
@@ -66,7 +66,7 @@ index 61883cb969d2..55d632977e8f 100644
 +	status = "okay";
 +
 +	flash0: m25p80@0 {
-+		compatible = "s25fl512s", "jedec,spi-nor";
++		compatible = "s25fl256s1", "jedec,spi-nor";
 +		reg = <0>;
 +		spi-tx-bus-width = <1>;
 +		spi-rx-bus-width = <4>;
@@ -110,7 +110,7 @@ index 61883cb969d2..55d632977e8f 100644
 +			};
 +			partition@a00000 {
 +				label = "QSPI.file-system";
-+				reg = <0x00a00000 0x3600000>;
++				reg = <0x00a00000 0x1600000>;
 +			};
 +		};
 +	};
