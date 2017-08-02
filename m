@@ -1,6 +1,6 @@
 Received: from mx1.mailbox.org ([80.241.60.212])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dd2by-0003PH-SR
+ id 1dd2by-0003P9-Sr
  for linux-mtd@lists.infradead.org; Wed, 02 Aug 2017 22:59:35 +0000
 From: Hauke Mehrtens <hauke@hauke-m.de>
 To: ralf@linux-mips.org
@@ -10,10 +10,9 @@ Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
  linux-spi@vger.kernel.org, hauke.mehrtens@intel.com, robh@kernel.org,
  andy.shevchenko@gmail.com, p.zabel@pengutronix.de,
  Hauke Mehrtens <hauke@hauke-m.de>
-Subject: [PATCH v8 07/16] Documentation: DT: MIPS: lantiq: Add docs for the
- RCU bindings
-Date: Thu,  3 Aug 2017 00:57:08 +0200
-Message-Id: <20170802225717.24408-8-hauke@hauke-m.de>
+Subject: [PATCH v8 02/16] mtd: lantiq-flash: drop check of boot select
+Date: Thu,  3 Aug 2017 00:57:03 +0200
+Message-Id: <20170802225717.24408-3-hauke@hauke-m.de>
 In-Reply-To: <20170802225717.24408-1-hauke@hauke-m.de>
 References: <20170802225717.24408-1-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,119 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-
-This adds the initial documentation for the RCU module (a MFD device
-which provides USB PHYs, reset controllers and more).
-
-The RCU register range is used for multiple purposes. Mostly one device
-uses one or multiple register exclusively, but for some registers some
-bits are for one driver and some other bits are for a different driver.
-With this patch all accesses to the RCU registers will go through
-syscon.
+Do not check which flash type the SoC was booted from before
+using this driver. Assume that the device tree is correct and use this
+driver when it was added to device tree. This also removes a build
+dependency to the SoC code.
 
 Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
-Acked-by: Rob Herring <robh@kernel.org>
+Acked-by: Brian Norris <computersforpeace@gmail.com>
 ---
- .../devicetree/bindings/mips/lantiq/rcu.txt        | 90 ++++++++++++++++++++++
- 1 file changed, 90 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mips/lantiq/rcu.txt
+ drivers/mtd/maps/lantiq-flash.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mips/lantiq/rcu.txt b/Documentation/devicetree/bindings/mips/lantiq/rcu.txt
-new file mode 100644
-index 000000000000..7b9be2d13c53
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mips/lantiq/rcu.txt
-@@ -0,0 +1,90 @@
-+Lantiq XWAY SoC RCU binding
-+===========================
-+
-+This binding describes the RCU (reset controller unit) multifunction device,
-+where each sub-device has it's own set of registers.
-+
-+The RCU register range is used for multiple purposes. Mostly one device
-+uses one or multiple register exclusively, but for some registers some
-+bits are for one driver and some other bits are for a different driver.
-+With this patch all accesses to the RCU registers will go through
-+syscon.
-+
-+
-+-------------------------------------------------------------------------------
-+Required properties:
-+- compatible	: The first and second values must be:
-+		  "lantiq,xrx200-rcu", "simple-mfd", "syscon"
-+- reg		: The address and length of the system control registers
-+
-+
-+-------------------------------------------------------------------------------
-+Example of the RCU bindings on a xRX200 SoC:
-+	rcu0: rcu@203000 {
-+		compatible = "lantiq,xrx200-rcu", "simple-mfd", "syscon";
-+		reg = <0x203000 0x100>;
-+		ranges = <0x0 0x203000 0x100>;
-+		big-endian;
-+
-+		gphy0: gphy@20 {
-+			compatible = "lantiq,xrx200a2x-gphy";
-+			reg = <0x20 0x4>;
-+
-+			resets = <&reset0 31 30>, <&reset1 7 7>;
-+			reset-names = "gphy", "gphy2";
-+			lantiq,gphy-mode = <GPHY_MODE_GE>;
-+		};
-+
-+		gphy1: gphy@68 {
-+			compatible = "lantiq,xrx200a2x-gphy";
-+			reg = <0x68 0x4>;
-+
-+			resets = <&reset0 29 28>, <&reset1 6 6>;
-+			reset-names = "gphy", "gphy2";
-+			lantiq,gphy-mode = <GPHY_MODE_GE>;
-+		};
-+
-+		reset0: reset-controller@10 {
-+			compatible = "lantiq,xrx200-reset";
-+			reg = <0x10 4>, <0x14 4>;
-+
-+			#reset-cells = <2>;
-+		};
-+
-+		reset1: reset-controller@48 {
-+			compatible = "lantiq,xrx200-reset";
-+			reg = <0x48 4>, <0x24 4>;
-+
-+			#reset-cells = <2>;
-+		};
-+
-+		usb_phy0: usb2-phy@18 {
-+			compatible = "lantiq,xrx200-usb2-phy";
-+			reg = <0x18 4>, <0x38 4>;
-+			status = "disabled";
-+
-+			resets = <&reset1 4 4>, <&reset0 4 4>;
-+			reset-names = "phy", "ctrl";
-+			#phy-cells = <0>;
-+		};
-+
-+		usb_phy1: usb2-phy@34 {
-+			compatible = "lantiq,xrx200-usb2-phy";
-+			reg = <0x34 4>, <0x3C 4>;
-+			status = "disabled";
-+
-+			resets = <&reset1 5 4>, <&reset0 4 4>;
-+			reset-names = "phy", "ctrl";
-+			#phy-cells = <0>;
-+		};
-+
-+		reboot@10 {
-+			compatible = "syscon-reboot";
-+			reg = <0x10 4>;
-+
-+			regmap = <&rcu0>;
-+			offset = <0x10>;
-+			mask = <0x40000000>;
-+		};
-+	};
-+
+diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
+index 3e33ab66eb24..77b1d8013295 100644
+--- a/drivers/mtd/maps/lantiq-flash.c
++++ b/drivers/mtd/maps/lantiq-flash.c
+@@ -114,12 +114,6 @@ ltq_mtd_probe(struct platform_device *pdev)
+ 	struct cfi_private *cfi;
+ 	int err;
+ 
+-	if (of_machine_is_compatible("lantiq,falcon") &&
+-			(ltq_boot_select() != BS_FLASH)) {
+-		dev_err(&pdev->dev, "invalid bootstrap options\n");
+-		return -ENODEV;
+-	}
+-
+ 	ltq_mtd = devm_kzalloc(&pdev->dev, sizeof(struct ltq_mtd), GFP_KERNEL);
+ 	if (!ltq_mtd)
+ 		return -ENOMEM;
 -- 
 2.11.0
