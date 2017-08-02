@@ -1,25 +1,18 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dcp4l-0004rW-Lu
- for linux-mtd@lists.infradead.org; Wed, 02 Aug 2017 08:32:21 +0000
-Subject: Re: [PATCH v2 11/25] mtd: nand: qcom: support for NAND controller
- properties
-To: Abhishek Sahu <absahu@codeaurora.org>, dwmw2@infradead.org,
- computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
- marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr,
- robh+dt@kernel.org, mark.rutland@arm.com
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- andy.gross@linaro.org, sricharan@codeaurora.org
-References: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
- <1500464893-11352-12-git-send-email-absahu@codeaurora.org>
-From: Archit Taneja <architt@codeaurora.org>
-Message-ID: <758cc93e-e6e3-acab-479f-63288eb88b2a@codeaurora.org>
-Date: Wed, 2 Aug 2017 14:01:51 +0530
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dcp5v-0005Zc-58
+ for linux-mtd@lists.infradead.org; Wed, 02 Aug 2017 08:33:37 +0000
+Date: Wed, 2 Aug 2017 10:33:07 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Marek Vasut <marex@denx.de>, David Woodhouse
+ <dwmw2@infradead.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: [PULL v2] mtd: nand: Fixes for 4.13-rc4
+Message-ID: <20170802103307.42e69d38@bbrezillon>
 MIME-Version: 1.0
-In-Reply-To: <1500464893-11352-12-git-send-email-absahu@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,101 +23,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Brian,
 
+Sending a v2 of this PR because I forgot to add the Fixes and CC-stable
+tags on Miquel's patch.
 
-On 07/19/2017 05:17 PM, Abhishek Sahu wrote:
-> Currently driver data is being assigned directly with ECC modes.
-> Now, the plan is to add more NAND controller versions, so
-> reorganized the current driver data assignment by creating NAND
-> controller properties structure.  This will contain all
-> properties specific to NAND controller.
-> 
+This PR contains a few fixes for 4.13. Some of them are fixing
+long standing bugs which no one ever complained about (like the small
+page OOB layout fix) or theoretical ones (like the div-by-zero in the
+sunxi driver), but others are fixing real bugs introduced in 4.13
+(all atmel related bugs have been discovered recently and should
+ideally be fixed before 4.13 is released).
 
-Reviewed-by: Archit Taneja <architt@codeaurora.org>
+As usual, let me know if there's something wrong in this PR. If not, can
+you do your best to get these sent to Linus before the end of the week?
 
-> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
-> ---
->   drivers/mtd/nand/qcom_nandc.c | 23 +++++++++++++++++------
->   1 file changed, 17 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-> index 8f9e86c..3b0ae91 100644
-> --- a/drivers/mtd/nand/qcom_nandc.c
-> +++ b/drivers/mtd/nand/qcom_nandc.c
-> @@ -235,7 +235,7 @@ struct nandc_regs {
->    *				writes. contains the register values to be
->    *				written to controller
->    * @cmd1/vld:			some fixed controller register values
-> - * @ecc_modes:			supported ECC modes by the current controller,
-> + * @props:			properties of current NAND controller IP,
->    *				initialized via DT match data
->    */
->   struct qcom_nand_controller {
-> @@ -266,7 +266,7 @@ struct qcom_nand_controller {
->   	struct nandc_regs *regs;
->   
->   	u32 cmd1, vld;
-> -	u32 ecc_modes;
-> +	const struct qcom_props *props;
->   };
->   
->   /*
-> @@ -319,6 +319,15 @@ struct qcom_nand_host {
->   	u32 clrreadstatus;
->   };
->   
-> +/*
-> + * This data type corresponds to the nand controller properties which varies
-> + * among different NAND controller IP's.
-> + * @ecc_modes - ecc mode for NAND
-> + */
-> +struct qcom_props {
-> +	u32 ecc_modes;
-> +};
-> +
->   static inline struct qcom_nand_host *to_qcom_nand_host(struct nand_chip *chip)
->   {
->   	return container_of(chip, struct qcom_nand_host, chip);
-> @@ -1820,7 +1829,7 @@ static int qcom_nand_host_setup(struct qcom_nand_host *host)
->   		 * uses lesser bytes for ECC. If RS is used, the ECC bytes is
->   		 * always 10 bytes
->   		 */
-> -		if (nandc->ecc_modes & ECC_BCH_4BIT) {
-> +		if (nandc->props->ecc_modes & ECC_BCH_4BIT) {
->   			/* BCH */
->   			host->bch_enabled = true;
->   			ecc_mode = 0;
-> @@ -2165,7 +2174,7 @@ static int qcom_nandc_probe(struct platform_device *pdev)
->   		return -ENODEV;
->   	}
->   
-> -	nandc->ecc_modes = (unsigned long)dev_data;
-> +	nandc->props = dev_data;
->   
->   	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->   	nandc->base = devm_ioremap_resource(dev, res);
-> @@ -2234,7 +2243,9 @@ static int qcom_nandc_remove(struct platform_device *pdev)
->   	return 0;
->   }
->   
-> -#define EBI2_NANDC_ECC_MODES	(ECC_RS_4BIT | ECC_BCH_8BIT)
-> +static const struct qcom_props ebi2_nandc_data = {
-> +	.ecc_modes = (ECC_RS_4BIT | ECC_BCH_8BIT),
-> +};
->   
->   /*
->    * data will hold a struct pointer containing more differences once we support
-> @@ -2242,7 +2253,7 @@ static int qcom_nandc_remove(struct platform_device *pdev)
->    */
->   static const struct of_device_id qcom_nandc_of_match[] = {
->   	{	.compatible = "qcom,ebi2-nandc",
-> -		.data = (void *)EBI2_NANDC_ECC_MODES,
-> +		.data = &ebi2_nandc_data,
->   	},
->   	{}
->   };
-> 
+Thanks,
 
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Boris
+
+The following changes since commit 5771a8c08880cdca3bfb4a3fc6d309d6bba20877:
+
+  Linux v4.13-rc1 (2017-07-15 15:22:10 -0700)
+
+are available in the git repository at:
+
+  git://git.infradead.org/l2-mtd.git tags/nand/fixes-for-4.13-rc4
+
+for you to fetch changes up to ee02f73e04c0e690600f621a3a1d2245834af7fe:
+
+  mtd: nand: atmel: Fix EDO mode check (2017-08-02 10:26:43 +0200)
+
+----------------------------------------------------------------
+This PR contains both core and drivers fixes for 4.13.
+
+Core fixes:
+- Fix data interface setup for ONFI NANDs that do not support the SET
+  FEATURES command
+- Fix a kernel doc header
+- Fix potential integer overflow when retrieving timing information
+  from the parameter page
+- Fix wrong OOB layout for small page NANDs
+
+Driver fixes:
+- Fix potential division-by-zero bug
+- Fix backward compat with old atmel-nand DT bindings
+- Fix ->setup_data_interface() in the atmel NAND driver
+
+----------------------------------------------------------------
+Boris Brezillon (4):
+      mtd: nand: atmel: Fix DT backward compatibility in pmecc.c
+      mtd: nand: Fix timing setup for NANDs that do not support SET FEATURES
+      mtd: nand: Declare tBERS, tR and tPROG as u64 to avoid integer overflow
+      mtd: nand: atmel: Fix EDO mode check
+
+Bryan O'Donoghue (1):
+      mtd: nand: sunxi: fix potential divide-by-zero error
+
+Jonathan Corbet (1):
+      mtd: nand: Fix a docs build warning
+
+Miquel Raynal (1):
+      nand: fix wrong default oob layout for small pages using soft ecc
+
+ drivers/mtd/nand/atmel/nand-controller.c |  2 +-
+ drivers/mtd/nand/atmel/pmecc.c           | 21 ++++++---------------
+ drivers/mtd/nand/nand_base.c             | 13 ++++++++++---
+ drivers/mtd/nand/nand_timings.c          |  6 +++---
+ drivers/mtd/nand/sunxi_nand.c            |  4 ++++
+ include/linux/mtd/nand.h                 |  6 +++---
+ 6 files changed, 27 insertions(+), 25 deletions(-)
