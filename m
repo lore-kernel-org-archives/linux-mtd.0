@@ -1,26 +1,25 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dcpDh-0004Xz-1D
- for linux-mtd@lists.infradead.org; Wed, 02 Aug 2017 08:41:40 +0000
-Subject: Re: [PATCH v2 14/25] mtd: nand: qcom: add and initialize QPIC DMA
- resources
-To: Abhishek Sahu <absahu@codeaurora.org>, dwmw2@infradead.org,
- computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
- marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr,
- robh+dt@kernel.org, mark.rutland@arm.com
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- andy.gross@linaro.org, sricharan@codeaurora.org
-References: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
- <1500464893-11352-15-git-send-email-absahu@codeaurora.org>
-From: Archit Taneja <architt@codeaurora.org>
-Message-ID: <e84110af-c33a-72aa-0ee6-ec3458124167@codeaurora.org>
-Date: Wed, 2 Aug 2017 14:11:03 +0530
+Received: from 2.mo178.mail-out.ovh.net ([46.105.39.61])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dcpON-0005Il-El
+ for linux-mtd@lists.infradead.org; Wed, 02 Aug 2017 08:52:37 +0000
+Received: from player715.ha.ovh.net (b9.ovh.net [213.186.33.59])
+ by mo178.mail-out.ovh.net (Postfix) with ESMTP id 966B44B35A
+ for <linux-mtd@lists.infradead.org>; Wed,  2 Aug 2017 10:52:10 +0200 (CEST)
+From: =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
+To: linux-mtd@lists.infradead.org
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
+Subject: [PATCH] mtd: spi-nor: aspeed: set 4B setting for all chips
+Date: Wed,  2 Aug 2017 10:51:51 +0200
+Message-Id: <1501663911-26532-1-git-send-email-clg@kaod.org>
 MIME-Version: 1.0
-In-Reply-To: <1500464893-11352-15-git-send-email-absahu@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,157 +29,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The driver made the wrong assumption that the 4B setting was
+autodetected for all chips of the AST2500 FMC flash controller. This
+is only the case for the CS0.
 
+Signed-off-by: Cédric Le Goater <clg@kaod.org>
+---
+ drivers/mtd/spi-nor/aspeed-smc.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-On 07/19/2017 05:18 PM, Abhishek Sahu wrote:
-> 1. QPIC NAND uses 3 BAM channels: command, data tx and data
->     rx while EBI2 NAND uses only single ADM channel.
-> 2. CRCI is only required for ADM DMA and its not required for
-
-s/its/it's
-
->     QPIC NAND.
-> 
-> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
-> ---
->   drivers/mtd/nand/qcom_nandc.c | 83 +++++++++++++++++++++++++++++++++----------
->   1 file changed, 65 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-> index 6d24630..cb2b245 100644
-> --- a/drivers/mtd/nand/qcom_nandc.c
-> +++ b/drivers/mtd/nand/qcom_nandc.c
-> @@ -250,9 +250,19 @@ struct qcom_nand_controller {
->   	struct clk *core_clk;
->   	struct clk *aon_clk;
->   
-> -	struct dma_chan *chan;
-> -	unsigned int cmd_crci;
-> -	unsigned int data_crci;
-> +	union {
-> +		struct {
-> +			struct dma_chan *tx_chan;
-> +			struct dma_chan *rx_chan;
-> +			struct dma_chan *cmd_chan;
-> +		};
-> +		struct {
-> +			struct dma_chan *chan;
-> +			unsigned int cmd_crci;
-> +			unsigned int data_crci;
-> +		};
-> +	};
-
-Could you put comments here explaining one is for EBI2/ADM
-and other is for QPIC/BAM? It'll improve the readability a
-bit. Otherwise:
-
-Reviewed-by: Archit Taneja <architt@codeaurora.org>
-
-Thanks,
-Archit
-
-> +
->   	struct list_head desc_list;
->   
->   	u8		*data_buffer;
-> @@ -1985,10 +1995,31 @@ static int qcom_nandc_alloc(struct qcom_nand_controller *nandc)
->   	if (!nandc->reg_read_buf)
->   		return -ENOMEM;
->   
-> -	nandc->chan = dma_request_slave_channel(nandc->dev, "rxtx");
-> -	if (!nandc->chan) {
-> -		dev_err(nandc->dev, "failed to request slave channel\n");
-> -		return -ENODEV;
-> +	if (nandc->props->is_bam) {
-> +		nandc->tx_chan = dma_request_slave_channel(nandc->dev, "tx");
-> +		if (!nandc->tx_chan) {
-> +			dev_err(nandc->dev, "failed to request tx channel\n");
-> +			return -ENODEV;
-> +		}
-> +
-> +		nandc->rx_chan = dma_request_slave_channel(nandc->dev, "rx");
-> +		if (!nandc->rx_chan) {
-> +			dev_err(nandc->dev, "failed to request rx channel\n");
-> +			return -ENODEV;
-> +		}
-> +
-> +		nandc->cmd_chan = dma_request_slave_channel(nandc->dev, "cmd");
-> +		if (!nandc->cmd_chan) {
-> +			dev_err(nandc->dev, "failed to request cmd channel\n");
-> +			return -ENODEV;
-> +		}
-> +	} else {
-> +		nandc->chan = dma_request_slave_channel(nandc->dev, "rxtx");
-> +		if (!nandc->chan) {
-> +			dev_err(nandc->dev,
-> +				"failed to request slave channel\n");
-> +			return -ENODEV;
-> +		}
->   	}
->   
->   	INIT_LIST_HEAD(&nandc->desc_list);
-> @@ -2001,7 +2032,19 @@ static int qcom_nandc_alloc(struct qcom_nand_controller *nandc)
->   
->   static void qcom_nandc_unalloc(struct qcom_nand_controller *nandc)
->   {
-> -	dma_release_channel(nandc->chan);
-> +	if (nandc->props->is_bam) {
-> +		if (nandc->tx_chan)
-> +			dma_release_channel(nandc->tx_chan);
-> +
-> +		if (nandc->rx_chan)
-> +			dma_release_channel(nandc->rx_chan);
-> +
-> +		if (nandc->cmd_chan)
-> +			dma_release_channel(nandc->cmd_chan);
-> +	} else {
-> +		if (nandc->chan)
-> +			dma_release_channel(nandc->chan);
-> +	}
->   }
->   
->   /* one time setup of a few nand controller registers */
-> @@ -2140,16 +2183,20 @@ static int qcom_nandc_parse_dt(struct platform_device *pdev)
->   	struct device_node *np = nandc->dev->of_node;
->   	int ret;
->   
-> -	ret = of_property_read_u32(np, "qcom,cmd-crci", &nandc->cmd_crci);
-> -	if (ret) {
-> -		dev_err(nandc->dev, "command CRCI unspecified\n");
-> -		return ret;
-> -	}
-> +	if (!nandc->props->is_bam) {
-> +		ret = of_property_read_u32(np, "qcom,cmd-crci",
-> +					   &nandc->cmd_crci);
-> +		if (ret) {
-> +			dev_err(nandc->dev, "command CRCI unspecified\n");
-> +			return ret;
-> +		}
->   
-> -	ret = of_property_read_u32(np, "qcom,data-crci", &nandc->data_crci);
-> -	if (ret) {
-> -		dev_err(nandc->dev, "data CRCI unspecified\n");
-> -		return ret;
-> +		ret = of_property_read_u32(np, "qcom,data-crci",
-> +					   &nandc->data_crci);
-> +		if (ret) {
-> +			dev_err(nandc->dev, "data CRCI unspecified\n");
-> +			return ret;
-> +		}
->   	}
->   
->   	return 0;
-> @@ -2199,7 +2246,7 @@ static int qcom_nandc_probe(struct platform_device *pdev)
->   
->   	ret = qcom_nandc_alloc(nandc);
->   	if (ret)
-> -		return ret;
-> +		goto err_core_clk;
->   
->   	ret = clk_prepare_enable(nandc->core_clk);
->   	if (ret)
-> 
-
+diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
+index 23622bf62b6b..1b76fe14a435 100644
+--- a/drivers/mtd/spi-nor/aspeed-smc.c
++++ b/drivers/mtd/spi-nor/aspeed-smc.c
+@@ -794,19 +794,18 @@ static void aspeed_smc_chip_set_type(struct aspeed_smc_chip *chip, int type)
+ }
+ 
+ /*
+- * The AST2500 FMC flash controller should be strapped by hardware, or
+- * autodetected, but the AST2500 SPI flash needs to be set.
++ * The first chip of the AST2500 FMC flash controller is strapped by
++ * hardware, or autodetected, but other chips need to be set. Enforce
++ * the 4B setting for all chips.
+  */
+ static void aspeed_smc_chip_set_4b(struct aspeed_smc_chip *chip)
+ {
+ 	struct aspeed_smc_controller *controller = chip->controller;
+ 	u32 reg;
+ 
+-	if (chip->controller->info == &spi_2500_info) {
+-		reg = readl(controller->regs + CE_CONTROL_REG);
+-		reg |= 1 << chip->cs;
+-		writel(reg, controller->regs + CE_CONTROL_REG);
+-	}
++	reg = readl(controller->regs + CE_CONTROL_REG);
++	reg |= 1 << chip->cs;
++	writel(reg, controller->regs + CE_CONTROL_REG);
+ }
+ 
+ /*
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.7.5
