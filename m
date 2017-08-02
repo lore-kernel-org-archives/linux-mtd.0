@@ -1,27 +1,22 @@
-Subject: Re: [PATCH] dt-bindings: mtd: add new compatible strings for mtk nor
- controller
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Guochun Mao <guochun.mao@mediatek.com>, Richard Weinberger <richard@nod.at>,
- Russell King <linux@armlinux.org.uk>, linux-kernel@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- linux-mediatek@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org
-References: <1500948617-19627-1-git-send-email-guochun.mao@mediatek.com>
- <1500948617-19627-2-git-send-email-guochun.mao@mediatek.com>
- <03016ea3-51ad-0b2d-e824-0a20913bd7c1@gmail.com>
- <20170802103637.16cd6548@bbrezillon>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <535cc2d5-7bc9-2cb7-42cf-9d7058e64226@wedev4u.fr>
-Date: Wed, 2 Aug 2017 17:31:01 +0200
+Subject: Re: [PATCH 0/7] K2G: Add QSPI support
+To: Vignesh R <vigneshr@ti.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Rob Herring <robh+dt@kernel.org>, Santosh Shilimkar <ssantosh@kernel.org>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20170801045434.8733-1-vigneshr@ti.com>
+ <29c0e8ec-1f9f-cfc9-2d0e-e4d31890b699@oracle.com>
+ <00b2b8b8-3f3d-d563-bebc-f37f67362aa0@ti.com>
+From: Santosh Shilimkar <santosh.shilimkar@oracle.com>
+Message-ID: <ff8e0f4f-eb26-85dc-b5b2-8f6ddd39145b@oracle.com>
+Date: Wed, 2 Aug 2017 10:19:49 -0700
 MIME-Version: 1.0
-In-Reply-To: <20170802103637.16cd6548@bbrezillon>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <00b2b8b8-3f3d-d563-bebc-f37f67362aa0@ti.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,60 +26,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Guochun,
-
-Le 02/08/2017 à 10:36, Boris Brezillon a écrit :
-> Hi Matthias,
+8/1/2017 10:52 PM, Vignesh R wrote:
+> Hi,
 > 
-> On Tue, 1 Aug 2017 14:33:22 +0200
-> Matthias Brugger <matthias.bgg@gmail.com> wrote:
-> 
->> On 07/25/2017 04:10 AM, Guochun Mao wrote:
->>> Add "mediatek,mt2712-nor" and "mediatek,mt7622-nor"
->>> for nor flash node's compatible strings.
+> On Tuesday 01 August 2017 11:31 PM, Santosh Shilimkar wrote:
+>> On 7/31/2017 9:54 PM, Vignesh R wrote:
+>>> This series adds support for Cadence QSPI for 66AK2G SoC. The first
+>>> three patches enhance the cadence-quadspi driver to support loopback
+>>> clock and pm_runtime and tweaks for 66AK2G SoC. Remaining patches add
+>>> DT nodes and enable the driver in defconfig.
 >>>
->>> Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
->>> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
->>> ---
->>>   .../devicetree/bindings/mtd/mtk-quadspi.txt        |    2 ++
->>>   1 file changed, 2 insertions(+)
+>>> Tested on 66AK2G GP and ICE boards.
 >>>
->>> diff --git a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
->>> index 5ded66a..9845ff4 100644
->>> --- a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
->>> +++ b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
->>> @@ -3,6 +3,8 @@
->>>   Required properties:
->>>   - compatible: 	  The possible values are:
->>>   		  "mediatek,mt2701-nor"
->>> +		  "mediatek,mt2712-nor"
->>> +		  "mediatek,mt7622-nor"
->>>   		  "mediatek,mt7623-nor"
->>>   		  "mediatek,mt8173-nor"
->>>   		  For mt8173, compatible should be "mediatek,mt8173-nor".
+>>> Vignesh R (7):
+>>>     mtd: spi-nor: cadence-quadspi: add a delay in write sequence
+>>>     mtd: spi-nor: cadence-quadspi: Add support to enable loopback clock
+>>>       circuit
+>>>     mtd: spi-nor: cadence-quadspi: Add runtime PM support
+>>>     ARM: dts: keystone-k2g: Add QSPI DT entry
+>>>     ARM: dts: keystone-k2g-evm: Add QSPI node
+>>>     ARM: dts: keystone-k2g-ice: Add QSPI node
+>>>     ARM: configs: keystone: Enable Cadence QSPI driver
 >>>
-
-There should be another patch to update the mtk_nor_of_ids[] array in
-the mtk-quadspi.c driver, shouldn't it?
-
-Currently, I only see the "mediatek,mt8173-nor" compatible string at the
-driver side. The driver and its documentation should be aligned and both
-patches should be applied at the same time.
-
-Best regards,
-
-Cyrille
-
->>
->> Boris, will you take this through your tree, or do you prefer that I take it?
+>> Please separate dts and driver patches in its own series
+>> while posting next time since they go throgh different
+>> subsystem trees. Get your driver patch queed
+>> first before adding DTS and enabling config option.
 > 
-> I'm not the spi-nor maintainer, you should ask Cyrille or Marek.
+> Okay. I thought it would be easy for you to know when driver patches are
+> queued, if DTS changes are part of the same series. Will post DT nodes
+> separately from next time or if I need to do a v2 of this series.
 > 
-> Regards,
-> 
-> Boris
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+Thanks !!
