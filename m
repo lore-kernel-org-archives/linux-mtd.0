@@ -1,27 +1,19 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dcuBq-00028Q-Gp
- for linux-mtd@lists.infradead.org; Wed, 02 Aug 2017 14:00:00 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dcuIj-0000qq-O7
+ for linux-mtd@lists.infradead.org; Wed, 02 Aug 2017 14:07:07 +0000
+Date: Wed, 2 Aug 2017 16:06:42 +0200
+From: Oleksij Rempel <ore@pengutronix.de>
+To: kernel@pengutronix.de
+Cc: richard@nod.at, linux-mtd@lists.infradead.org
+Subject: Re: "UBIFS error (pid 396): dbg_check_space_info: free space changed
+ from" + ecryptfs
+Message-ID: <20170802140642.kpsdh3jfow2azevm@pengutronix.de>
+References: <dbc5bc9f-6c38-a0c3-e776-050a70382814@rempel-privat.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date: Wed, 02 Aug 2017 19:29:37 +0530
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: Archit Taneja <architt@codeaurora.org>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org, mark.rutland@arm.com,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- andy.gross@linaro.org, sricharan@codeaurora.org
-Subject: Re: [PATCH v2 14/25] mtd: nand: qcom: add and initialize QPIC DMA
- resources
-In-Reply-To: <e84110af-c33a-72aa-0ee6-ec3458124167@codeaurora.org>
-References: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
- <1500464893-11352-15-git-send-email-absahu@codeaurora.org>
- <e84110af-c33a-72aa-0ee6-ec3458124167@codeaurora.org>
-Message-ID: <048168de089e32ecff9b683d4fdcc332@codeaurora.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dbc5bc9f-6c38-a0c3-e776-050a70382814@rempel-privat.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,154 +23,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2017-08-02 14:11, Archit Taneja wrote:
-> On 07/19/2017 05:18 PM, Abhishek Sahu wrote:
->> 1. QPIC NAND uses 3 BAM channels: command, data tx and data
->>     rx while EBI2 NAND uses only single ADM channel.
->> 2. CRCI is only required for ADM DMA and its not required for
-> 
-> s/its/it's
+Hallo all,
 
-  I Will fix this.
+Initial issue was detected on kernel 4.0.9 and is still reproducible
+with same kernel version + most of back ported ubi/ubifs patches till
+the kernel v4.12. UBIfs encryption patches was not backported.
 
-> 
->>     QPIC NAND.
->> 
->> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
->> ---
->>   drivers/mtd/nand/qcom_nandc.c | 83 
->> +++++++++++++++++++++++++++++++++----------
->>   1 file changed, 65 insertions(+), 18 deletions(-)
->> 
->> diff --git a/drivers/mtd/nand/qcom_nandc.c 
->> b/drivers/mtd/nand/qcom_nandc.c
->> index 6d24630..cb2b245 100644
->> --- a/drivers/mtd/nand/qcom_nandc.c
->> +++ b/drivers/mtd/nand/qcom_nandc.c
->> @@ -250,9 +250,19 @@ struct qcom_nand_controller {
->>   	struct clk *core_clk;
->>   	struct clk *aon_clk;
->>   -	struct dma_chan *chan;
->> -	unsigned int cmd_crci;
->> -	unsigned int data_crci;
->> +	union {
->> +		struct {
->> +			struct dma_chan *tx_chan;
->> +			struct dma_chan *rx_chan;
->> +			struct dma_chan *cmd_chan;
->> +		};
->> +		struct {
->> +			struct dma_chan *chan;
->> +			unsigned int cmd_crci;
->> +			unsigned int data_crci;
->> +		};
->> +	};
-> 
-> Could you put comments here explaining one is for EBI2/ADM
-> and other is for QPIC/BAM? It'll improve the readability a
-> bit. Otherwise:
+To reproduce it I needed:
+- system with fresh flashed ubi image.
+- on first start it should run following script:
+> mount -o remount,rw /
+> mount -t ecryptfs ... /dst
+> ... do some work and mv some files to /dst
+> umount /dst
+> mount -o remount,ro / <--  UBIFS error (pid 396): dbg_check_space_info:
 
-  Yes that would be better. I will put the comment.
+UBIFS: background thread "ubifs_bgt0_0" stops
+UBIFS error (pid 396): dbg_check_space_info: free space changed from 36950545 to 36950885
+UBIFS: saved lprops statistics dump
+(pid 396) Lprops statistics: empty_lebs 350, idx_lebs  15
+ taken_empty_lebs 1, total_free 44818072, total_dirty 491616
+ total_used 77161336, total_dark 2549512, total_dead 373528
+UBIFS: saved budgeting info dump
+(pid 396) Budgeting info: data budget sum 360, total budget sum 360
+ budg_data_growth 0, budg_dd_growth 360, budg_idx_growth 0
+ min_idx_lebs 45, old_idx_sz 1839552, uncommitted_idx 0
+ page_budget 4144, inode_budget 160, dent_budget 312
+ nospace 0, nospace_rp 0
+ dark_wm 6144, dead_wm 2048, max_idx_node_sz 192
+UBIFS: saved idx_gc_cnt 0
+UBIFS: current lprops statistics dump
+(pid 396) Lprops statistics: empty_lebs 350, idx_lebs  15
+ taken_empty_lebs 1, total_free 44816384, total_dirty 494184
+ total_used 77160648, total_dark 2549512, total_dead 374216
+UBIFS: current budgeting info dump
+(pid 396) Budgeting info: data budget sum 0, total budget sum 0
+ budg_data_growth 0, budg_dd_growth 0, budg_idx_growth 0
+ min_idx_lebs 45, old_idx_sz 1839552, uncommitted_idx 0
+ page_budget 4144, inode_budget 160, dent_budget 312
+ nospace 0, nospace_rp 0
+ dark_wm 6144, dead_wm 2048, max_idx_node_sz 192
+ freeable_cnt 0, calc_idx_sz 1838288, idx_gc_cnt 0
+ dirty_pg_cnt 0, dirty_zn_cnt 7, clean_zn_cnt 1051
+ gc_lnum 625, ihead_lnum 640
+ jhead 0 (GC)  LEB -1
+ jhead 1 (base)   LEB 624
+ jhead 2 (data)    LEB -1
+ bud LEB 624
+ commit state 0
+Budgeting predictions:
+    available: 38003304, outstanding 0, free 36950885
+CPU: 0 PID: 396 Comm: mount Tainted: G           O    4.0.9-20161125-1 #2
+Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
+Backtrace:
+[<c0012020>] (dump_backtrace) from [<c0012244>] (show_stack+0x18/0x1c)
+r6:0233d365 r5:c0753da4 r4:00000000 r3:00000000
+[<c001222c>] (show_stack) from [<c0569064>] (dump_stack+0x90/0xa0)
+[<c0568fd4>] (dump_stack) from [<c01a94a8>] (dbg_check_space_info+0x12c/0x138)
+r5:00000000 r4:ce790000
+[<c01a937c>] (dbg_check_space_info) from [<c0181c80>] (ubifs_remount_fs+0x288/0x6ec)
+r10:00000000 r9:ce790898 r8:cdee5564 r7:00000003 r6:000001e0 r5:00000000
+r4:ce790000
+[<c01819f8>] (ubifs_remount_fs) from [<c00f4220>] (do_remount_sb+0x6c/0x1cc)
+r9:cdefac00 r8:00000000 r7:00000000 r6:00000001 r5:00000000 r4:cdefac00
+[<c00f41b4>] (do_remount_sb) from [<c01117fc>] (do_mount+0x7c8/0xc1c)
+r8:00800021 r7:cdefac40 r6:cdee83d0 r5:00000048 r4:00000000
+[<c0111034>] (do_mount) from [<c0111fc0>] (SyS_mount+0x7c/0xa8)
+r10:00000000 r9:cdaec000 r8:015a2d80 r7:00800421 r6:00000000 r5:cdb69240
+r4:cdb69200
+[<c0111f44>] (SyS_mount) from [<c000e980>] (ret_fast_syscall+0x0/0x3c)
+r8:c000eb24 r7:00000015 r6:00000000 r5:00000000 r4:00000000
+UBIFS warning (pid 396): ubifs_ro_mode: switched to read-only mode, error -22
+CPU: 0 PID: 396 Comm: mount Tainted: G           O    4.0.9-20161125-1 #2
+Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
+Backtrace:
+[<c0012020>] (dump_backtrace) from [<c0012244>] (show_stack+0x18/0x1c)
+r6:00000010 r5:c0753da4 r4:00000000 r3:00000000
+[<c001222c>] (show_stack) from [<c0569064>] (dump_stack+0x90/0xa0)
+[<c0568fd4>] (dump_stack) from [<c01853a8>] (ubifs_ro_mode.part.6+0x68/0x6c)
+r5:cdefac00 r4:00000006
+[<c0185340>] (ubifs_ro_mode.part.6) from [<c01854c8>] (ubifs_ro_mode+0x1c/0x20)
+r6:000001e0 r5:00000000 r4:ce790000 r3:00000002
+[<c01854ac>] (ubifs_ro_mode) from [<c0181c90>] (ubifs_remount_fs+0x298/0x6ec)
+[<c01819f8>] (ubifs_remount_fs) from [<c00f4220>] (do_remount_sb+0x6c/0x1cc)
+r9:cdefac00 r8:00000000 r7:00000000 r6:00000001 r5:00000000 r4:cdefac00
+[<c00f41b4>] (do_remount_sb) from [<c01117fc>] (do_mount+0x7c8/0xc1c)
+r8:00800021 r7:cdefac40 r6:cdee83d0 r5:00000048 r4:00000000
+[<c0111034>] (do_mount) from [<c0111fc0>] (SyS_mount+0x7c/0xa8)
+r10:00000000 r9:cdaec000 r8:015a2d80 r7:00800421 r6:00000000 r5:cdb69240
+r4:cdb69200
+[<c0111f44>] (SyS_mount) from [<c000e980>] (ret_fast_syscall+0x0/0x3c)
+r8:c000eb24 r7:00000015 r6:00000000 r5:00000000 r4:00000000
 
-> 
-> Reviewed-by: Archit Taneja <architt@codeaurora.org>
-> 
-> Thanks,
-> Archit
-> 
->> +
->>   	struct list_head desc_list;
->>     	u8		*data_buffer;
->> @@ -1985,10 +1995,31 @@ static int qcom_nandc_alloc(struct 
->> qcom_nand_controller *nandc)
->>   	if (!nandc->reg_read_buf)
->>   		return -ENOMEM;
->>   -	nandc->chan = dma_request_slave_channel(nandc->dev, "rxtx");
->> -	if (!nandc->chan) {
->> -		dev_err(nandc->dev, "failed to request slave channel\n");
->> -		return -ENODEV;
->> +	if (nandc->props->is_bam) {
->> +		nandc->tx_chan = dma_request_slave_channel(nandc->dev, "tx");
->> +		if (!nandc->tx_chan) {
->> +			dev_err(nandc->dev, "failed to request tx channel\n");
->> +			return -ENODEV;
->> +		}
->> +
->> +		nandc->rx_chan = dma_request_slave_channel(nandc->dev, "rx");
->> +		if (!nandc->rx_chan) {
->> +			dev_err(nandc->dev, "failed to request rx channel\n");
->> +			return -ENODEV;
->> +		}
->> +
->> +		nandc->cmd_chan = dma_request_slave_channel(nandc->dev, "cmd");
->> +		if (!nandc->cmd_chan) {
->> +			dev_err(nandc->dev, "failed to request cmd channel\n");
->> +			return -ENODEV;
->> +		}
->> +	} else {
->> +		nandc->chan = dma_request_slave_channel(nandc->dev, "rxtx");
->> +		if (!nandc->chan) {
->> +			dev_err(nandc->dev,
->> +				"failed to request slave channel\n");
->> +			return -ENODEV;
->> +		}
->>   	}
->>     	INIT_LIST_HEAD(&nandc->desc_list);
->> @@ -2001,7 +2032,19 @@ static int qcom_nandc_alloc(struct 
->> qcom_nand_controller *nandc)
->>     static void qcom_nandc_unalloc(struct qcom_nand_controller *nandc)
->>   {
->> -	dma_release_channel(nandc->chan);
->> +	if (nandc->props->is_bam) {
->> +		if (nandc->tx_chan)
->> +			dma_release_channel(nandc->tx_chan);
->> +
->> +		if (nandc->rx_chan)
->> +			dma_release_channel(nandc->rx_chan);
->> +
->> +		if (nandc->cmd_chan)
->> +			dma_release_channel(nandc->cmd_chan);
->> +	} else {
->> +		if (nandc->chan)
->> +			dma_release_channel(nandc->chan);
->> +	}
->>   }
->>     /* one time setup of a few nand controller registers */
->> @@ -2140,16 +2183,20 @@ static int qcom_nandc_parse_dt(struct 
->> platform_device *pdev)
->>   	struct device_node *np = nandc->dev->of_node;
->>   	int ret;
->>   -	ret = of_property_read_u32(np, "qcom,cmd-crci", &nandc->cmd_crci);
->> -	if (ret) {
->> -		dev_err(nandc->dev, "command CRCI unspecified\n");
->> -		return ret;
->> -	}
->> +	if (!nandc->props->is_bam) {
->> +		ret = of_property_read_u32(np, "qcom,cmd-crci",
->> +					   &nandc->cmd_crci);
->> +		if (ret) {
->> +			dev_err(nandc->dev, "command CRCI unspecified\n");
->> +			return ret;
->> +		}
->>   -	ret = of_property_read_u32(np, "qcom,data-crci", 
->> &nandc->data_crci);
->> -	if (ret) {
->> -		dev_err(nandc->dev, "data CRCI unspecified\n");
->> -		return ret;
->> +		ret = of_property_read_u32(np, "qcom,data-crci",
->> +					   &nandc->data_crci);
->> +		if (ret) {
->> +			dev_err(nandc->dev, "data CRCI unspecified\n");
->> +			return ret;
->> +		}
->>   	}
->>     	return 0;
->> @@ -2199,7 +2246,7 @@ static int qcom_nandc_probe(struct 
->> platform_device *pdev)
->>     	ret = qcom_nandc_alloc(nandc);
->>   	if (ret)
->> -		return ret;
->> +		goto err_core_clk;
->>     	ret = clk_prepare_enable(nandc->core_clk);
->>   	if (ret)
->> 
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
