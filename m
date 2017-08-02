@@ -1,16 +1,20 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dcp5v-0005Zc-58
- for linux-mtd@lists.infradead.org; Wed, 02 Aug 2017 08:33:37 +0000
-Date: Wed, 2 Aug 2017 10:33:07 +0200
+Date: Wed, 2 Aug 2017 10:36:37 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Marek Vasut <marex@denx.de>, David Woodhouse
- <dwmw2@infradead.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: [PULL v2] mtd: nand: Fixes for 4.13-rc4
-Message-ID: <20170802103307.42e69d38@bbrezillon>
+To: Matthias Brugger <matthias.bgg@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: Guochun Mao <guochun.mao@mediatek.com>, Rob Herring
+ <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ devicetree@vger.kernel.org, Richard Weinberger <richard@nod.at>, Russell
+ King <linux@armlinux.org.uk>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-mediatek@lists.infradead.org, David
+ Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] dt-bindings: mtd: add new compatible strings for mtk
+ nor controller
+Message-ID: <20170802103637.16cd6548@bbrezillon>
+In-Reply-To: <03016ea3-51ad-0b2d-e824-0a20913bd7c1@gmail.com>
+References: <1500948617-19627-1-git-send-email-guochun.mao@mediatek.com>
+ <1500948617-19627-2-git-send-email-guochun.mao@mediatek.com>
+ <03016ea3-51ad-0b2d-e824-0a20913bd7c1@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -23,73 +27,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+Hi Matthias,
 
-Sending a v2 of this PR because I forgot to add the Fixes and CC-stable
-tags on Miquel's patch.
+On Tue, 1 Aug 2017 14:33:22 +0200
+Matthias Brugger <matthias.bgg@gmail.com> wrote:
 
-This PR contains a few fixes for 4.13. Some of them are fixing
-long standing bugs which no one ever complained about (like the small
-page OOB layout fix) or theoretical ones (like the div-by-zero in the
-sunxi driver), but others are fixing real bugs introduced in 4.13
-(all atmel related bugs have been discovered recently and should
-ideally be fixed before 4.13 is released).
+> On 07/25/2017 04:10 AM, Guochun Mao wrote:
+> > Add "mediatek,mt2712-nor" and "mediatek,mt7622-nor"
+> > for nor flash node's compatible strings.
+> > 
+> > Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+> > Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
+> > ---
+> >   .../devicetree/bindings/mtd/mtk-quadspi.txt        |    2 ++
+> >   1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> > index 5ded66a..9845ff4 100644
+> > --- a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> > +++ b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> > @@ -3,6 +3,8 @@
+> >   Required properties:
+> >   - compatible: 	  The possible values are:
+> >   		  "mediatek,mt2701-nor"
+> > +		  "mediatek,mt2712-nor"
+> > +		  "mediatek,mt7622-nor"
+> >   		  "mediatek,mt7623-nor"
+> >   		  "mediatek,mt8173-nor"
+> >   		  For mt8173, compatible should be "mediatek,mt8173-nor".
+> >   
+> 
+> Boris, will you take this through your tree, or do you prefer that I take it?
 
-As usual, let me know if there's something wrong in this PR. If not, can
-you do your best to get these sent to Linus before the end of the week?
+I'm not the spi-nor maintainer, you should ask Cyrille or Marek.
 
-Thanks,
+Regards,
 
 Boris
-
-The following changes since commit 5771a8c08880cdca3bfb4a3fc6d309d6bba20877:
-
-  Linux v4.13-rc1 (2017-07-15 15:22:10 -0700)
-
-are available in the git repository at:
-
-  git://git.infradead.org/l2-mtd.git tags/nand/fixes-for-4.13-rc4
-
-for you to fetch changes up to ee02f73e04c0e690600f621a3a1d2245834af7fe:
-
-  mtd: nand: atmel: Fix EDO mode check (2017-08-02 10:26:43 +0200)
-
-----------------------------------------------------------------
-This PR contains both core and drivers fixes for 4.13.
-
-Core fixes:
-- Fix data interface setup for ONFI NANDs that do not support the SET
-  FEATURES command
-- Fix a kernel doc header
-- Fix potential integer overflow when retrieving timing information
-  from the parameter page
-- Fix wrong OOB layout for small page NANDs
-
-Driver fixes:
-- Fix potential division-by-zero bug
-- Fix backward compat with old atmel-nand DT bindings
-- Fix ->setup_data_interface() in the atmel NAND driver
-
-----------------------------------------------------------------
-Boris Brezillon (4):
-      mtd: nand: atmel: Fix DT backward compatibility in pmecc.c
-      mtd: nand: Fix timing setup for NANDs that do not support SET FEATURES
-      mtd: nand: Declare tBERS, tR and tPROG as u64 to avoid integer overflow
-      mtd: nand: atmel: Fix EDO mode check
-
-Bryan O'Donoghue (1):
-      mtd: nand: sunxi: fix potential divide-by-zero error
-
-Jonathan Corbet (1):
-      mtd: nand: Fix a docs build warning
-
-Miquel Raynal (1):
-      nand: fix wrong default oob layout for small pages using soft ecc
-
- drivers/mtd/nand/atmel/nand-controller.c |  2 +-
- drivers/mtd/nand/atmel/pmecc.c           | 21 ++++++---------------
- drivers/mtd/nand/nand_base.c             | 13 ++++++++++---
- drivers/mtd/nand/nand_timings.c          |  6 +++---
- drivers/mtd/nand/sunxi_nand.c            |  4 ++++
- include/linux/mtd/nand.h                 |  6 +++---
- 6 files changed, 27 insertions(+), 25 deletions(-)
