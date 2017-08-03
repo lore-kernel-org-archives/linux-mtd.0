@@ -1,26 +1,24 @@
-Message-ID: <1501726602.4381.23.camel@mhfsdcap03>
-Subject: Re: [PATCH] dt-bindings: mtd: add new compatible strings for mtk
- nor controller
-From: Guochun Mao <guochun.mao@mediatek.com>
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-CC: Boris Brezillon <boris.brezillon@free-electrons.com>, Matthias Brugger
- <matthias.bgg@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, "Cyrille
- Pitchen" <cyrille.pitchen@atmel.com>, Mark Rutland <mark.rutland@arm.com>,
- <devicetree@vger.kernel.org>, Richard Weinberger <richard@nod.at>, "Russell
- King" <linux@armlinux.org.uk>, <linux-kernel@vger.kernel.org>, Rob Herring
- <robh+dt@kernel.org>, <linux-mtd@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>, David Woodhouse <dwmw2@infradead.org>,
- <linux-arm-kernel@lists.infradead.org>
-Date: Thu, 3 Aug 2017 10:16:42 +0800
-In-Reply-To: <535cc2d5-7bc9-2cb7-42cf-9d7058e64226@wedev4u.fr>
-References: <1500948617-19627-1-git-send-email-guochun.mao@mediatek.com>
- <1500948617-19627-2-git-send-email-guochun.mao@mediatek.com>
- <03016ea3-51ad-0b2d-e824-0a20913bd7c1@gmail.com>
- <20170802103637.16cd6548@bbrezillon>
- <535cc2d5-7bc9-2cb7-42cf-9d7058e64226@wedev4u.fr>
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ddBa5-0004MA-Ls
+ for linux-mtd@lists.infradead.org; Thu, 03 Aug 2017 08:34:11 +0000
+Message-ID: <1501749222.23911.4.camel@pengutronix.de>
+Subject: Re: [PATCH v8 10/16] reset: Add a reset controller driver for the
+ Lantiq XWAY based SoCs
+From: Philipp Zabel <p.zabel@pengutronix.de>
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Cc: ralf@linux-mips.org, linux-mips@linux-mips.org,
+ linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
+ devicetree@vger.kernel.org, martin.blumenstingl@googlemail.com,
+ john@phrozen.org,  linux-spi@vger.kernel.org, hauke.mehrtens@intel.com,
+ robh@kernel.org,  andy.shevchenko@gmail.com
+Date: Thu, 03 Aug 2017 10:33:42 +0200
+In-Reply-To: <20170802225717.24408-11-hauke@hauke-m.de>
+References: <20170802225717.24408-1-hauke@hauke-m.de>
+ <20170802225717.24408-11-hauke@hauke-m.de>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-MIME-Version: 1.0
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,62 +28,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Cyrille,
+Hi Hauke,
 
-On Wed, 2017-08-02 at 17:31 +0200, Cyrille Pitchen wrote:
-> Hi Guochun,
+On Thu, 2017-08-03 at 00:57 +0200, Hauke Mehrtens wrote:
+> From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 > 
-> Le 02/08/2017 à 10:36, Boris Brezillon a écrit :
-> > Hi Matthias,
-> > 
-> > On Tue, 1 Aug 2017 14:33:22 +0200
-> > Matthias Brugger <matthias.bgg@gmail.com> wrote:
-> > 
-> >> On 07/25/2017 04:10 AM, Guochun Mao wrote:
-> >>> Add "mediatek,mt2712-nor" and "mediatek,mt7622-nor"
-> >>> for nor flash node's compatible strings.
-> >>>
-> >>> Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-> >>> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
-> >>> ---
-> >>>   .../devicetree/bindings/mtd/mtk-quadspi.txt        |    2 ++
-> >>>   1 file changed, 2 insertions(+)
-> >>>
-> >>> diff --git a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> >>> index 5ded66a..9845ff4 100644
-> >>> --- a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> >>> +++ b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> >>> @@ -3,6 +3,8 @@
-> >>>   Required properties:
-> >>>   - compatible: 	  The possible values are:
-> >>>   		  "mediatek,mt2701-nor"
-> >>> +		  "mediatek,mt2712-nor"
-> >>> +		  "mediatek,mt7622-nor"
-> >>>   		  "mediatek,mt7623-nor"
-> >>>   		  "mediatek,mt8173-nor"
-> >>>   		  For mt8173, compatible should be "mediatek,mt8173-nor".
-> >>>
+> The reset controllers (on xRX200 and newer SoCs have two of them) are
+> provided by the RCU module. This was initially implemented as a simple
+> reset controller. However, the RCU module provides more functionality
+> (ethernet GPHYs, USB PHY, etc.), which makes it a MFD device.
+> The old reset controller driver implementation from
+> arch/mips/lantiq/xway/reset.c did not honor this fact.
 > 
-> There should be another patch to update the mtk_nor_of_ids[] array in
-> the mtk-quadspi.c driver, shouldn't it?
+> For some devices the request and the status bits are different.
 > 
-> Currently, I only see the "mediatek,mt8173-nor" compatible string at the
-> driver side. The driver and its documentation should be aligned and both
-> patches should be applied at the same time.
-
-> Best regards,
+> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> ---
+>  .../devicetree/bindings/reset/lantiq,reset.txt     |  30 +++
+>  drivers/reset/Kconfig                              |   6 +
+>  drivers/reset/Makefile                             |   1 +
+>  drivers/reset/reset-lantiq.c                       | 224 +++++++++++++++++++++
+>  4 files changed, 261 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/reset/lantiq,reset.txt
+>  create mode 100644 drivers/reset/reset-lantiq.c
 > 
-> Cyrille
+[...]
+> diff --git a/drivers/reset/reset-lantiq.c b/drivers/reset/reset-lantiq.c
+> new file mode 100644
+> index 000000000000..b84c45e7e6b8
+> --- /dev/null
+> +++ b/drivers/reset/reset-lantiq.c
+> @@ -0,0 +1,224 @@
+[...]
+> +static int lantiq_rcu_reset_of_probe(struct platform_device *pdev,
+> +			       struct lantiq_rcu_reset_priv *priv)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct resource *res;
+> +	struct resource res_parent;
+> +	int ret;
+> +
+> +	priv->regmap = syscon_node_to_regmap(dev->of_node->parent);
+> +	if (IS_ERR(priv->regmap)) {
+> +		dev_err(&pdev->dev, "Failed to lookup RCU regmap\n");
+> +		return PTR_ERR(priv->regmap);
+> +	}
+> +
+> +	ret = of_address_to_resource(dev->of_node->parent, 0, &res_parent);
+> +	if (ret)
+> +		return ret;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	if (!res) {
+> +		dev_err(&pdev->dev, "Failed to get RCU reset offset\n");
+> +		return ret;
 
+This should return -EINVAL instead of 0.
 
->From my designer's info, these IPs' nor controller could use same
-driver, and I had verified it. I think there's no need to update
-mtk_nor_of_ids[], unless we find difference between these IPs(exactly
-compared with mt8173).
-How do you think?
+> +	}
+> +
+> +	if (res->start < res_parent.start)
+> +		return -ENOENT;
+> +	priv->reset_offset = res->start - res_parent.start;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+> +	if (!res) {
+> +		dev_err(&pdev->dev, "Failed to get RCU status offset\n");
+> +		return ret;
 
-And, we will add dts patches for new SOCs, are these patches should
-applied with this documentation?
+Same here.
 
-Best regards,
-Guochun
+With this fixed,
+Acked-by: Philipp Zabel <p.zabel@pengutronix.de>
+
+regards
+Philipp
