@@ -1,28 +1,26 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mx2.mailbox.org ([80.241.60.215])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ddLOZ-00047l-Hd
- for linux-mtd@lists.infradead.org; Thu, 03 Aug 2017 19:02:57 +0000
+ id 1ddNsN-0007nV-5v
+ for linux-mtd@lists.infradead.org; Thu, 03 Aug 2017 21:41:57 +0000
+Subject: Re: [PATCH v8 10/16] reset: Add a reset controller driver for the
+ Lantiq XWAY based SoCs
+To: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: ralf@linux-mips.org, linux-mips@linux-mips.org,
+ linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
+ devicetree@vger.kernel.org, martin.blumenstingl@googlemail.com,
+ john@phrozen.org, linux-spi@vger.kernel.org, hauke.mehrtens@intel.com,
+ robh@kernel.org, andy.shevchenko@gmail.com
+References: <20170802225717.24408-1-hauke@hauke-m.de>
+ <20170802225717.24408-11-hauke@hauke-m.de>
+ <1501749222.23911.4.camel@pengutronix.de>
+From: Hauke Mehrtens <hauke@hauke-m.de>
+Message-ID: <4f7f41ad-b6fe-082e-085f-119ad959b817@hauke-m.de>
+Date: Thu, 3 Aug 2017 23:41:15 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <1501749222.23911.4.camel@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date: Fri, 04 Aug 2017 00:32:33 +0530
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- richard@nod.at, cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org,
- mark.rutland@arm.com, devicetree@vger.kernel.org, architt@codeaurora.org,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, linux-mtd@lists.infradead.org,
- andy.gross@linaro.org, sricharan@codeaurora.org
-Subject: Re: [PATCH v2 01/25] mtd: nand: qcom: fix config error for BCH
-In-Reply-To: <20170803204726.74f75aaa@bbrezillon>
-References: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
- <1500464893-11352-2-git-send-email-absahu@codeaurora.org>
- <20170803175602.3e0a4c18@bbrezillon>
- <a48aafe1d5d0623f2cc7cd5c29fc1410@codeaurora.org>
- <20170803204726.74f75aaa@bbrezillon>
-Message-ID: <397c17de3aeafaea4295025f1c5d08e7@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,76 +30,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2017-08-04 00:17, Boris Brezillon wrote:
-> On Thu, 03 Aug 2017 23:22:37 +0530
-> Abhishek Sahu <absahu@codeaurora.org> wrote:
+On 08/03/2017 10:33 AM, Philipp Zabel wrote:
+> Hi Hauke,
 > 
->> On 2017-08-03 21:26, Boris Brezillon wrote:
->> > On Wed, 19 Jul 2017 17:17:49 +0530
->> > Abhishek Sahu <absahu@codeaurora.org> wrote:
->> >
->> >> The configuration for BCH is not correct in the current driver.
->> >> The ECC_CFG_ECC_DISABLE bit defines whether to enable or disable the
->> >> BCH ECC in which
->> >>
->> >> 	0x1 : BCH_DISABLED
->> >> 	0x0 : BCH_ENABLED
->> >>
->> >> But currently host->bch_enabled is being assined to BCH_DISABLED.
->> >>
->> >> Fixes: c76b78d8ec05a ("mtd: nand: Qualcomm NAND controller driver")
->> >> Cc: stable@vger.kernel.org
->> >> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
->> >> ---
->> >>  drivers/mtd/nand/qcom_nandc.c | 4 ++--
->> >>  1 file changed, 2 insertions(+), 2 deletions(-)
->> >>
->> >> diff --git a/drivers/mtd/nand/qcom_nandc.c
->> >> b/drivers/mtd/nand/qcom_nandc.c
->> >> index 57d483a..bc0408c 100644
->> >> --- a/drivers/mtd/nand/qcom_nandc.c
->> >> +++ b/drivers/mtd/nand/qcom_nandc.c
->> >> @@ -1,5 +1,5 @@
->> >>  /*
->> >> - * Copyright (c) 2016, The Linux Foundation. All rights reserved.
->> >> + * Copyright (c) 2016-2017, The Linux Foundation. All rights
->> >> reserved.
->> >
->> > Hm, this copyright update is not really related to the changes you're
->> > describing in the commit message. I'll drop this line from the commit
->> > (no need to resend it) and ask you to send a separate patch updating
->> > the
->> > copyright. Is that ok?
->> >
->> 
->>   The idea was to change the copyright year since we are making
->>   the changes in this file. If it requires separate patch, then I
->>   will do the same.
+> On Thu, 2017-08-03 at 00:57 +0200, Hauke Mehrtens wrote:
+>> From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+>>
+>> The reset controllers (on xRX200 and newer SoCs have two of them) are
+>> provided by the RCU module. This was initially implemented as a simple
+>> reset controller. However, the RCU module provides more functionality
+>> (ethernet GPHYs, USB PHY, etc.), which makes it a MFD device.
+>> The old reset controller driver implementation from
+>> arch/mips/lantiq/xway/reset.c did not honor this fact.
+>>
+>> For some devices the request and the status bits are different.
+>>
+>> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+>> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+>> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+>> ---
+>>  .../devicetree/bindings/reset/lantiq,reset.txt     |  30 +++
+>>  drivers/reset/Kconfig                              |   6 +
+>>  drivers/reset/Makefile                             |   1 +
+>>  drivers/reset/reset-lantiq.c                       | 224 +++++++++++++++++++++
+>>  4 files changed, 261 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/reset/lantiq,reset.txt
+>>  create mode 100644 drivers/reset/reset-lantiq.c
+>>
+> [...]
+>> diff --git a/drivers/reset/reset-lantiq.c b/drivers/reset/reset-lantiq.c
+>> new file mode 100644
+>> index 000000000000..b84c45e7e6b8
+>> --- /dev/null
+>> +++ b/drivers/reset/reset-lantiq.c
+>> @@ -0,0 +1,224 @@
+> [...]
+>> +static int lantiq_rcu_reset_of_probe(struct platform_device *pdev,
+>> +			       struct lantiq_rcu_reset_priv *priv)
+>> +{
+>> +	struct device *dev = &pdev->dev;
+>> +	struct resource *res;
+>> +	struct resource res_parent;
+>> +	int ret;
+>> +
+>> +	priv->regmap = syscon_node_to_regmap(dev->of_node->parent);
+>> +	if (IS_ERR(priv->regmap)) {
+>> +		dev_err(&pdev->dev, "Failed to lookup RCU regmap\n");
+>> +		return PTR_ERR(priv->regmap);
+>> +	}
+>> +
+>> +	ret = of_address_to_resource(dev->of_node->parent, 0, &res_parent);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> +	if (!res) {
+>> +		dev_err(&pdev->dev, "Failed to get RCU reset offset\n");
+>> +		return ret;
 > 
-> Yes, I'd prefer a separate patch.
+> This should return -EINVAL instead of 0.
 
-  Sure. will raise a separate patch
+I will fix this in the next round, I am still waiting for Rob's feedback.
 
-> 
->> 
->>   Also I need to change 'assined' -> assigned in commit text.
-> 
-> Yep, already fixed that one.
-> 
->> I can
->>   update the patch and fix this. I am planning to send the v3 patches
->>   tomorrow which incorporates all the review comments.
-> 
-> Can you wait a bit. I already applied some of your patches [1] and 
-> would
-> like to finish my review.
-
-  Thanks Boris. I will wait for it and will update my patch series
-  accordingly.
+The same problem exists in the USB PHY driver, I will also fix it there.
 
 > 
-> Thanks,
+>> +	}
+>> +
+>> +	if (res->start < res_parent.start)
+>> +		return -ENOENT;
+>> +	priv->reset_offset = res->start - res_parent.start;
+>> +
+>> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+>> +	if (!res) {
+>> +		dev_err(&pdev->dev, "Failed to get RCU status offset\n");
+>> +		return ret;
 > 
-> Boris
+> Same here.
 > 
-> [1]https://github.com/bbrezillon/linux-0day/commits/nand/next
+> With this fixed,
+> Acked-by: Philipp Zabel <p.zabel@pengutronix.de>
+> 
+> regards
+> Philipp
+> 
+
+Hauke
