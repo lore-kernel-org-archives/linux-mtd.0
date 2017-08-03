@@ -1,23 +1,26 @@
-Date: Thu, 3 Aug 2017 09:13:58 +0800
-From: Shawn Guo <shawnguo@kernel.org>
-To: Stefan Agner <stefan@agner.ch>
-Cc: kernel@pengutronix.de, sboyd@codeaurora.org, aisheng.dong@nxp.com,
- dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
- richard@nod.at, robh+dt@kernel.org, mark.rutland@arm.com,
- han.xu@nxp.com, fabio.estevam@freescale.com, LW@karo-electronics.de,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 0/3] ARM: dts: imx7: add NAND support
-Message-ID: <20170803011357.GA31819@dragon>
-References: <cover.9fab78eaa869dbad4c9ad7e8578c9cef3e49daa8.1496961128.git-series.stefan@agner.ch>
- <20170614151146.GC30112@dragon>
- <c05aff108433c9ced4c85efcf3ba65e8@agner.ch>
+Message-ID: <1501726602.4381.23.camel@mhfsdcap03>
+Subject: Re: [PATCH] dt-bindings: mtd: add new compatible strings for mtk
+ nor controller
+From: Guochun Mao <guochun.mao@mediatek.com>
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+CC: Boris Brezillon <boris.brezillon@free-electrons.com>, Matthias Brugger
+ <matthias.bgg@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, "Cyrille
+ Pitchen" <cyrille.pitchen@atmel.com>, Mark Rutland <mark.rutland@arm.com>,
+ <devicetree@vger.kernel.org>, Richard Weinberger <richard@nod.at>, "Russell
+ King" <linux@armlinux.org.uk>, <linux-kernel@vger.kernel.org>, Rob Herring
+ <robh+dt@kernel.org>, <linux-mtd@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, David Woodhouse <dwmw2@infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>
+Date: Thu, 3 Aug 2017 10:16:42 +0800
+In-Reply-To: <535cc2d5-7bc9-2cb7-42cf-9d7058e64226@wedev4u.fr>
+References: <1500948617-19627-1-git-send-email-guochun.mao@mediatek.com>
+ <1500948617-19627-2-git-send-email-guochun.mao@mediatek.com>
+ <03016ea3-51ad-0b2d-e824-0a20913bd7c1@gmail.com>
+ <20170802103637.16cd6548@bbrezillon>
+ <535cc2d5-7bc9-2cb7-42cf-9d7058e64226@wedev4u.fr>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c05aff108433c9ced4c85efcf3ba65e8@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +30,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Aug 01, 2017 at 07:41:41PM -0700, Stefan Agner wrote:
-> Hi Shawn,
+Hi Cyrille,
+
+On Wed, 2017-08-02 at 17:31 +0200, Cyrille Pitchen wrote:
+> Hi Guochun,
 > 
-> On 2017-06-14 08:11, Shawn Guo wrote:
-> > On Thu, Jun 08, 2017 at 03:34:46PM -0700, Stefan Agner wrote:
-> >> Stefan Agner (3):
-> >>   clk: imx7d: create clocks behind rawnand clock gate
-> >>   ARM: dts: imx7: add GPMI NAND and APBH DMA
-> >>   ARM: dts: imx7-colibri: add NAND support
+> Le 02/08/2017 à 10:36, Boris Brezillon a écrit :
+> > Hi Matthias,
 > > 
-> > Both dts patches look good to me.  Please ping me after the clk patch
-> > lands on mainline.
+> > On Tue, 1 Aug 2017 14:33:22 +0200
+> > Matthias Brugger <matthias.bgg@gmail.com> wrote:
+> > 
+> >> On 07/25/2017 04:10 AM, Guochun Mao wrote:
+> >>> Add "mediatek,mt2712-nor" and "mediatek,mt7622-nor"
+> >>> for nor flash node's compatible strings.
+> >>>
+> >>> Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+> >>> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
+> >>> ---
+> >>>   .../devicetree/bindings/mtd/mtk-quadspi.txt        |    2 ++
+> >>>   1 file changed, 2 insertions(+)
+> >>>
+> >>> diff --git a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> >>> index 5ded66a..9845ff4 100644
+> >>> --- a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> >>> +++ b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> >>> @@ -3,6 +3,8 @@
+> >>>   Required properties:
+> >>>   - compatible: 	  The possible values are:
+> >>>   		  "mediatek,mt2701-nor"
+> >>> +		  "mediatek,mt2712-nor"
+> >>> +		  "mediatek,mt7622-nor"
+> >>>   		  "mediatek,mt7623-nor"
+> >>>   		  "mediatek,mt8173-nor"
+> >>>   		  For mt8173, compatible should be "mediatek,mt8173-nor".
+> >>>
 > 
-> The clk patch landed in mainline. These two patches seem to apply fine
-> still. Can you queue them for -next?
+> There should be another patch to update the mtk_nor_of_ids[] array in
+> the mtk-quadspi.c driver, shouldn't it?
+> 
+> Currently, I only see the "mediatek,mt8173-nor" compatible string at the
+> driver side. The driver and its documentation should be aligned and both
+> patches should be applied at the same time.
 
-Just applied.  Thanks for reminding.
+> Best regards,
+> 
+> Cyrille
 
-Shawn
+
+>From my designer's info, these IPs' nor controller could use same
+driver, and I had verified it. I think there's no need to update
+mtk_nor_of_ids[], unless we find difference between these IPs(exactly
+compared with mt8173).
+How do you think?
+
+And, we will add dts patches for new SOCs, are these patches should
+applied with this documentation?
+
+Best regards,
+Guochun
