@@ -1,24 +1,18 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ddIU3-0002Sn-U2
- for linux-mtd@lists.infradead.org; Thu, 03 Aug 2017 15:56:25 +0000
-Date: Thu, 3 Aug 2017 17:56:02 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Abhishek Sahu <absahu@codeaurora.org>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- richard@nod.at, cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org,
- mark.rutland@arm.com, devicetree@vger.kernel.org, architt@codeaurora.org,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, linux-mtd@lists.infradead.org,
- andy.gross@linaro.org, sricharan@codeaurora.org
-Subject: Re: [PATCH v2 01/25] mtd: nand: qcom: fix config error for BCH
-Message-ID: <20170803175602.3e0a4c18@bbrezillon>
-In-Reply-To: <1500464893-11352-2-git-send-email-absahu@codeaurora.org>
-References: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
- <1500464893-11352-2-git-send-email-absahu@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ddItf-00005j-IL
+ for linux-mtd@lists.infradead.org; Thu, 03 Aug 2017 16:22:53 +0000
+Received: by mail-pf0-x242.google.com with SMTP id p13so1933394pfd.4
+ for <linux-mtd@lists.infradead.org>; Thu, 03 Aug 2017 09:22:30 -0700 (PDT)
+From: Arvind Yadav <arvind.yadav.cs@gmail.com>
+To: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
+ cyrille.pitchen@wedev4u.fr
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/6] constify mtd pci_device_id
+Date: Thu,  3 Aug 2017 21:52:04 +0530
+Message-Id: <1501777330-21380-1-git-send-email-arvind.yadav.cs@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,48 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 19 Jul 2017 17:17:49 +0530
-Abhishek Sahu <absahu@codeaurora.org> wrote:
+pci_device_id are not supposed to change at runtime. All functions
+working with pci_device_id provided by <linux/pci.h> work with
+const pci_device_id. So mark the non-const structs as const.
 
-> The configuration for BCH is not correct in the current driver.
-> The ECC_CFG_ECC_DISABLE bit defines whether to enable or disable the
-> BCH ECC in which
-> 
-> 	0x1 : BCH_DISABLED
-> 	0x0 : BCH_ENABLED
-> 
-> But currently host->bch_enabled is being assined to BCH_DISABLED.
-> 
-> Fixes: c76b78d8ec05a ("mtd: nand: Qualcomm NAND controller driver")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
-> ---
->  drivers/mtd/nand/qcom_nandc.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-> index 57d483a..bc0408c 100644
-> --- a/drivers/mtd/nand/qcom_nandc.c
-> +++ b/drivers/mtd/nand/qcom_nandc.c
-> @@ -1,5 +1,5 @@
->  /*
-> - * Copyright (c) 2016, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2016-2017, The Linux Foundation. All rights reserved.
+Arvind Yadav (6):
+  [PATCH 1/6] mtd: maps: ichxrom: constify pci_device_id.
+  [PATCH 2/6] mtd: amd76xrom: constify pci_device_id.
+  [PATCH 3/6] mtd: esb2rom: constify pci_device_id.
+  [PATCH 4/6] mtd: ck804xrom: constify pci_device_id.
+  [PATCH 5/6] mtd: intel_vr_nor: constify pci_device_id.
+  [PATCH 6/6] mtd: pci: constify pci_device_id.
 
-Hm, this copyright update is not really related to the changes you're
-describing in the commit message. I'll drop this line from the commit
-(no need to resend it) and ask you to send a separate patch updating the
-copyright. Is that ok?
+ drivers/mtd/maps/amd76xrom.c    | 4 ++--
+ drivers/mtd/maps/ck804xrom.c    | 4 ++--
+ drivers/mtd/maps/esb2rom.c      | 4 ++--
+ drivers/mtd/maps/ichxrom.c      | 4 ++--
+ drivers/mtd/maps/intel_vr_nor.c | 2 +-
+ drivers/mtd/maps/pci.c          | 2 +-
+ 6 files changed, 10 insertions(+), 10 deletions(-)
 
->   *
->   * This software is licensed under the terms of the GNU General Public
->   * License version 2, as published by the Free Software Foundation, and
-> @@ -1893,7 +1893,7 @@ static int qcom_nand_host_setup(struct qcom_nand_host *host)
->  				| wide_bus << WIDE_FLASH
->  				| 1 << DEV0_CFG1_ECC_DISABLE;
->  
-> -	host->ecc_bch_cfg = host->bch_enabled << ECC_CFG_ECC_DISABLE
-> +	host->ecc_bch_cfg = !host->bch_enabled << ECC_CFG_ECC_DISABLE
->  				| 0 << ECC_SW_RESET
->  				| host->cw_data << ECC_NUM_DATA_BYTES
->  				| 1 << ECC_FORCE_CLK_OPEN
+-- 
+2.7.4
