@@ -1,30 +1,26 @@
-Date: Thu, 3 Aug 2017 12:47:50 -0500
-From: Rob Herring <robh@kernel.org>
-To: Guochun Mao <guochun.mao@mediatek.com>
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Richard Weinberger <richard@nod.at>,
- Russell King <linux@armlinux.org.uk>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-mediatek@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] dt-bindings: mtd: add new compatible strings for mtk nor
- controller
-Message-ID: <20170803174750.bipdynhyyyozzjk6@rob-hp-laptop>
-References: <1500948617-19627-1-git-send-email-guochun.mao@mediatek.com>
- <1500948617-19627-2-git-send-email-guochun.mao@mediatek.com>
- <03016ea3-51ad-0b2d-e824-0a20913bd7c1@gmail.com>
- <20170802103637.16cd6548@bbrezillon>
- <535cc2d5-7bc9-2cb7-42cf-9d7058e64226@wedev4u.fr>
- <1501726602.4381.23.camel@mhfsdcap03>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ddKIx-0006EX-AB
+ for linux-mtd@lists.infradead.org; Thu, 03 Aug 2017 17:53:04 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1501726602.4381.23.camel@mhfsdcap03>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Thu, 03 Aug 2017 23:22:37 +0530
+From: Abhishek Sahu <absahu@codeaurora.org>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
+ richard@nod.at, cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org,
+ mark.rutland@arm.com, devicetree@vger.kernel.org, architt@codeaurora.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, linux-mtd@lists.infradead.org,
+ andy.gross@linaro.org, sricharan@codeaurora.org
+Subject: Re: [PATCH v2 01/25] mtd: nand: qcom: fix config error for BCH
+In-Reply-To: <20170803175602.3e0a4c18@bbrezillon>
+References: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
+ <1500464893-11352-2-git-send-email-absahu@codeaurora.org>
+ <20170803175602.3e0a4c18@bbrezillon>
+Message-ID: <a48aafe1d5d0623f2cc7cd5c29fc1410@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,71 +30,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Aug 03, 2017 at 10:16:42AM +0800, Guochun Mao wrote:
-> Hi Cyrille,
+On 2017-08-03 21:26, Boris Brezillon wrote:
+> On Wed, 19 Jul 2017 17:17:49 +0530
+> Abhishek Sahu <absahu@codeaurora.org> wrote:
 > 
-> On Wed, 2017-08-02 at 17:31 +0200, Cyrille Pitchen wrote:
-> > Hi Guochun,
-> > 
-> > Le 02/08/2017 à 10:36, Boris Brezillon a écrit :
-> > > Hi Matthias,
-> > > 
-> > > On Tue, 1 Aug 2017 14:33:22 +0200
-> > > Matthias Brugger <matthias.bgg@gmail.com> wrote:
-> > > 
-> > >> On 07/25/2017 04:10 AM, Guochun Mao wrote:
-> > >>> Add "mediatek,mt2712-nor" and "mediatek,mt7622-nor"
-> > >>> for nor flash node's compatible strings.
-> > >>>
-> > >>> Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-> > >>> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
-> > >>> ---
-> > >>>   .../devicetree/bindings/mtd/mtk-quadspi.txt        |    2 ++
-> > >>>   1 file changed, 2 insertions(+)
-> > >>>
-> > >>> diff --git a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> > >>> index 5ded66a..9845ff4 100644
-> > >>> --- a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> > >>> +++ b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> > >>> @@ -3,6 +3,8 @@
-> > >>>   Required properties:
-> > >>>   - compatible: 	  The possible values are:
-> > >>>   		  "mediatek,mt2701-nor"
-> > >>> +		  "mediatek,mt2712-nor"
-> > >>> +		  "mediatek,mt7622-nor"
-> > >>>   		  "mediatek,mt7623-nor"
-> > >>>   		  "mediatek,mt8173-nor"
-> > >>>   		  For mt8173, compatible should be "mediatek,mt8173-nor".
-> > >>>
-> > 
-> > There should be another patch to update the mtk_nor_of_ids[] array in
-> > the mtk-quadspi.c driver, shouldn't it?
-> > 
-> > Currently, I only see the "mediatek,mt8173-nor" compatible string at the
-> > driver side. The driver and its documentation should be aligned and both
-> > patches should be applied at the same time.
+>> The configuration for BCH is not correct in the current driver.
+>> The ECC_CFG_ECC_DISABLE bit defines whether to enable or disable the
+>> BCH ECC in which
+>> 
+>> 	0x1 : BCH_DISABLED
+>> 	0x0 : BCH_ENABLED
+>> 
+>> But currently host->bch_enabled is being assined to BCH_DISABLED.
+>> 
+>> Fixes: c76b78d8ec05a ("mtd: nand: Qualcomm NAND controller driver")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+>> ---
+>>  drivers/mtd/nand/qcom_nandc.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/mtd/nand/qcom_nandc.c 
+>> b/drivers/mtd/nand/qcom_nandc.c
+>> index 57d483a..bc0408c 100644
+>> --- a/drivers/mtd/nand/qcom_nandc.c
+>> +++ b/drivers/mtd/nand/qcom_nandc.c
+>> @@ -1,5 +1,5 @@
+>>  /*
+>> - * Copyright (c) 2016, The Linux Foundation. All rights reserved.
+>> + * Copyright (c) 2016-2017, The Linux Foundation. All rights 
+>> reserved.
 > 
-> > Best regards,
-> > 
-> > Cyrille
+> Hm, this copyright update is not really related to the changes you're
+> describing in the commit message. I'll drop this line from the commit
+> (no need to resend it) and ask you to send a separate patch updating 
+> the
+> copyright. Is that ok?
 > 
-> 
-> From my designer's info, these IPs' nor controller could use same
-> driver, and I had verified it. I think there's no need to update
-> mtk_nor_of_ids[], unless we find difference between these IPs(exactly
-> compared with mt8173).
-> How do you think?
 
-That is perfectly fine, but then the documentation needs to be explicit 
-as to what are the fallback compatibles. It's one valid combination per 
-line, not 1 compatible string per line.
+  The idea was to change the copyright year since we are making
+  the changes in this file. If it requires separate patch, then I
+  will do the same.
 
-Rob
+  Also I need to change 'assined' -> assigned in commit text. I can
+  update the patch and fix this. I am planning to send the v3 patches
+  tomorrow which incorporates all the review comments.
 
-> 
-> And, we will add dts patches for new SOCs, are these patches should
-> applied with this documentation?
-> 
-> Best regards,
-> Guochun
-> 
+>>   *
+>>   * This software is licensed under the terms of the GNU General 
+>> Public
+>>   * License version 2, as published by the Free Software Foundation, 
+>> and
+>> @@ -1893,7 +1893,7 @@ static int qcom_nand_host_setup(struct 
+>> qcom_nand_host *host)
+>>  				| wide_bus << WIDE_FLASH
+>>  				| 1 << DEV0_CFG1_ECC_DISABLE;
+>> 
+>> -	host->ecc_bch_cfg = host->bch_enabled << ECC_CFG_ECC_DISABLE
+>> +	host->ecc_bch_cfg = !host->bch_enabled << ECC_CFG_ECC_DISABLE
+>>  				| 0 << ECC_SW_RESET
+>>  				| host->cw_data << ECC_NUM_DATA_BYTES
+>>  				| 1 << ECC_FORCE_CLK_OPEN
+
+-- 
+Abhishek Sahu
