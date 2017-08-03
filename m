@@ -1,17 +1,18 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ddHld-00013s-4H
- for linux-mtd@lists.infradead.org; Thu, 03 Aug 2017 15:10:31 +0000
-Date: Thu, 3 Aug 2017 17:10:04 +0200
+ id 1ddHvb-0001Mo-LV
+ for linux-mtd@lists.infradead.org; Thu, 03 Aug 2017 15:20:49 +0000
+Date: Thu, 3 Aug 2017 17:20:25 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Abhishek Sahu <absahu@codeaurora.org>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- richard@nod.at, cyrille.pitchen@wedev4u.fr, linux-arm-msm@vger.kernel.org,
+To: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
+ marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr, narmstrong@baylibre.com,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: blkdevs: Fix mtd block write failure
-Message-ID: <20170803171004.3fbab4a7@bbrezillon>
-In-Reply-To: <1501677185-1308-1-git-send-email-absahu@codeaurora.org>
-References: <1501677185-1308-1-git-send-email-absahu@codeaurora.org>
+Subject: Re: [PATCH 4/6] mtd: nand: vf610_nfc: Handle return value of
+ clk_prepare_enable.
+Message-ID: <20170803172025.1058d316@bbrezillon>
+In-Reply-To: <1501587558-21227-1-git-send-email-arvind.yadav.cs@gmail.com>
+References: <1501587558-21227-1-git-send-email-arvind.yadav.cs@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,39 +25,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed,  2 Aug 2017 18:03:05 +0530
-Abhishek Sahu <absahu@codeaurora.org> wrote:
+On Tue,  1 Aug 2017 17:09:18 +0530
+Arvind Yadav <arvind.yadav.cs@gmail.com> wrote:
 
-> All the MTD block write requests are failing with
-> following error messages
-> 
->     mkfs.ext4  /dev/mtdblock0
-> 
->     print_req_error: I/O error, dev mtdblock0, sector 0
->     Buffer I/O error on dev mtdblock0, logical block 0,
->     lost async page write
-> 
-> The control is going to default case after block write request
-> because of missing return.
-> 
-> Fixes: commit 2a842acab109 ("block: introduce new block status code type")
-> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+> clk_prepare_enable() can fail here and we must check its return value.
 
-Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+You're just a few days late, this one has already been proposed by
+Fabio [1] ;-).
 
+I'll queue other patches from this patchset.
+
+Thanks,
+
+Boris
+
+[1]https://patchwork.ozlabs.org/patch/789812/
+
+> 
+> Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 > ---
->  drivers/mtd/mtd_blkdevs.c | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/mtd/nand/vf610_nfc.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-> index f336a9b..9ec8f03 100644
-> --- a/drivers/mtd/mtd_blkdevs.c
-> +++ b/drivers/mtd/mtd_blkdevs.c
-> @@ -113,6 +113,7 @@ static blk_status_t do_blktrans_request(struct mtd_blktrans_ops *tr,
->  		for (; nsect > 0; nsect--, block++, buf += tr->blksize)
->  			if (tr->writesect(dev, block, buf))
->  				return BLK_STS_IOERR;
-> +		return BLK_STS_OK;
->  	default:
->  		return BLK_STS_IOERR;
->  	}
+> diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
+> index 744ab10..db03d4f 100644
+> --- a/drivers/mtd/nand/vf610_nfc.c
+> +++ b/drivers/mtd/nand/vf610_nfc.c
+> @@ -816,10 +816,13 @@ static int vf610_nfc_resume(struct device *dev)
+>  {
+>  	struct mtd_info *mtd = dev_get_drvdata(dev);
+>  	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
+> +	int ret;
+>  
+>  	pinctrl_pm_select_default_state(dev);
+>  
+> -	clk_prepare_enable(nfc->clk);
+> +	ret = clk_prepare_enable(nfc->clk);
+> +	if (ret)
+> +		return ret;
+>  
+>  	vf610_nfc_preinit_controller(nfc);
+>  	vf610_nfc_init_controller(nfc);
