@@ -1,29 +1,20 @@
-Subject: Re: [PATCH] dt-bindings: mtd: add new compatible strings for mtk nor
- controller
-To: Guochun Mao <guochun.mao@mediatek.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
- linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, linux-mediatek@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
-References: <1500948617-19627-1-git-send-email-guochun.mao@mediatek.com>
- <1500948617-19627-2-git-send-email-guochun.mao@mediatek.com>
- <03016ea3-51ad-0b2d-e824-0a20913bd7c1@gmail.com>
- <20170802103637.16cd6548@bbrezillon>
- <535cc2d5-7bc9-2cb7-42cf-9d7058e64226@wedev4u.fr>
- <1501726602.4381.23.camel@mhfsdcap03>
-From: Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <0796f86e-044b-5891-e56e-c96242611608@gmail.com>
-Date: Thu, 3 Aug 2017 12:09:44 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1ddHld-00013s-4H
+ for linux-mtd@lists.infradead.org; Thu, 03 Aug 2017 15:10:31 +0000
+Date: Thu, 3 Aug 2017 17:10:04 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Abhishek Sahu <absahu@codeaurora.org>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
+ richard@nod.at, cyrille.pitchen@wedev4u.fr, linux-arm-msm@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: blkdevs: Fix mtd block write failure
+Message-ID: <20170803171004.3fbab4a7@bbrezillon>
+In-Reply-To: <1501677185-1308-1-git-send-email-absahu@codeaurora.org>
+References: <1501677185-1308-1-git-send-email-absahu@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <1501726602.4381.23.camel@mhfsdcap03>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,83 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed,  2 Aug 2017 18:03:05 +0530
+Abhishek Sahu <absahu@codeaurora.org> wrote:
 
-
-On 08/03/2017 04:16 AM, Guochun Mao wrote:
-> Hi Cyrille,
+> All the MTD block write requests are failing with
+> following error messages
 > 
-> On Wed, 2017-08-02 at 17:31 +0200, Cyrille Pitchen wrote:
->> Hi Guochun,
->>
->> Le 02/08/2017 à 10:36, Boris Brezillon a écrit :
->>> Hi Matthias,
->>>
->>> On Tue, 1 Aug 2017 14:33:22 +0200
->>> Matthias Brugger <matthias.bgg@gmail.com> wrote:
->>>
->>>> On 07/25/2017 04:10 AM, Guochun Mao wrote:
->>>>> Add "mediatek,mt2712-nor" and "mediatek,mt7622-nor"
->>>>> for nor flash node's compatible strings.
->>>>>
->>>>> Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
->>>>> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
->>>>> ---
->>>>>    .../devicetree/bindings/mtd/mtk-quadspi.txt        |    2 ++
->>>>>    1 file changed, 2 insertions(+)
->>>>>
->>>>> diff --git a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
->>>>> index 5ded66a..9845ff4 100644
->>>>> --- a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
->>>>> +++ b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
->>>>> @@ -3,6 +3,8 @@
->>>>>    Required properties:
->>>>>    - compatible: 	  The possible values are:
->>>>>    		  "mediatek,mt2701-nor"
->>>>> +		  "mediatek,mt2712-nor"
->>>>> +		  "mediatek,mt7622-nor"
->>>>>    		  "mediatek,mt7623-nor"
->>>>>    		  "mediatek,mt8173-nor"
->>>>>    		  For mt8173, compatible should be "mediatek,mt8173-nor".
->>>>>
->>
->> There should be another patch to update the mtk_nor_of_ids[] array in
->> the mtk-quadspi.c driver, shouldn't it?
->>
->> Currently, I only see the "mediatek,mt8173-nor" compatible string at the
->> driver side. The driver and its documentation should be aligned and both
->> patches should be applied at the same time.
+>     mkfs.ext4  /dev/mtdblock0
 > 
->> Best regards,
->>
->> Cyrille
+>     print_req_error: I/O error, dev mtdblock0, sector 0
+>     Buffer I/O error on dev mtdblock0, logical block 0,
+>     lost async page write
 > 
+> The control is going to default case after block write request
+> because of missing return.
 > 
->  From my designer's info, these IPs' nor controller could use same
-> driver, and I had verified it. I think there's no need to update
-> mtk_nor_of_ids[], unless we find difference between these IPs(exactly
-> compared with mt8173).
-> How do you think?
->
+> Fixes: commit 2a842acab109 ("block: introduce new block status code type")
+> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Right, mt8173-nor is the fallback binding which will be used by the driver. As 
-the documentation states, the compatible string should be something like:
-"mediatek,mt7622-nor", "mediatek,mt8173-nor"
-
-So the mt7622-nor binding is not matched in the driver, as the driver is the 
-same on all SoCs. Nonetheless if we realize in the future that mt7622 IP has 
-some special feature/bug, we can use the binding to implement that in the driver.
-
-AFAIK this is the standard way for bindings. Cyrille, is this ok for you, or do 
-want all bindings to be reflected in the driver even though they don't change 
-any functionality?
-
-Regards,
-Matthias
-
-> And, we will add dts patches for new SOCs, are these patches should
-> applied with this documentation?
+> ---
+>  drivers/mtd/mtd_blkdevs.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Best regards,
-> Guochun
-> 
+> diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+> index f336a9b..9ec8f03 100644
+> --- a/drivers/mtd/mtd_blkdevs.c
+> +++ b/drivers/mtd/mtd_blkdevs.c
+> @@ -113,6 +113,7 @@ static blk_status_t do_blktrans_request(struct mtd_blktrans_ops *tr,
+>  		for (; nsect > 0; nsect--, block++, buf += tr->blksize)
+>  			if (tr->writesect(dev, block, buf))
+>  				return BLK_STS_IOERR;
+> +		return BLK_STS_OK;
+>  	default:
+>  		return BLK_STS_IOERR;
+>  	}
