@@ -1,8 +1,8 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ddILh-0006C5-8n
- for linux-mtd@lists.infradead.org; Thu, 03 Aug 2017 15:47:46 +0000
-Date: Thu, 3 Aug 2017 17:47:13 +0200
+ id 1ddIMp-0006TH-FR
+ for linux-mtd@lists.infradead.org; Thu, 03 Aug 2017 15:48:57 +0000
+Date: Thu, 3 Aug 2017 17:48:34 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Abhishek Sahu <absahu@codeaurora.org>
 Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
@@ -13,7 +13,7 @@ Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
  architt@codeaurora.org, sricharan@codeaurora.org
 Subject: Re: [PATCH v2 02/25] mtd: nand: qcom: program NAND_DEV_CMD_VLD
  register
-Message-ID: <20170803174713.5b5f5dde@bbrezillon>
+Message-ID: <20170803174834.6ad3a542@bbrezillon>
 In-Reply-To: <1500464893-11352-3-git-send-email-absahu@codeaurora.org>
 References: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
  <1500464893-11352-3-git-send-email-absahu@codeaurora.org>
@@ -36,6 +36,10 @@ Abhishek Sahu <absahu@codeaurora.org> wrote:
 > NAND_DEV_CMD_VLD value is not valid.
 > 
 > Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+
+BTW, do you want to backport this fix? Maybe you add Fixes and
+Cc-stable tags...
+
 > ---
 >  drivers/mtd/nand/qcom_nandc.c | 4 ++++
 >  1 file changed, 4 insertions(+)
@@ -50,10 +54,6 @@ Abhishek Sahu <absahu@codeaurora.org> wrote:
 >  
 > +/* Value for NAND_DEV_CMD_VLD */
 > +#define NAND_DEV_CMD_VLD_VAL		0x1d
-
-Where does this 0x1d value comes from? Defining a macro instead of
-passing 0x1d does not change the fact that this is a magic value :-).
-
 > +
 >  /*
 >   * the NAND controller performs reads/writes with ECC in 516 byte chunks.
