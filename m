@@ -1,26 +1,17 @@
-Date: Fri, 4 Aug 2017 10:29:49 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1ddY1E-0003QZ-GM
+ for linux-mtd@lists.infradead.org; Fri, 04 Aug 2017 08:31:41 +0000
+Date: Fri, 4 Aug 2017 10:30:41 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Cc: Gregory CLEMENT <gregory.clement@free-electrons.com>, Jason Cooper
- <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>, Sebastian Hesselbarth
- <sebastian.hesselbarth@gmail.com>, Yehuda Yitschak <yehuday@marvell.com>,
- Omri Itach <omrii@marvell.com>, Marcin Wojtas <mw@semihalf.com>, Richard
- Weinberger <richard@nod.at>, Antoine Tenart
- <antoine.tenart@free-electrons.com>, =?UTF-8?B?TWlxdcOobA==?= Raynal
- <miquel.raynal@free-electrons.com>, linux-kernel@vger.kernel.org, Nadav
- Haklai <nadavh@marvell.com>, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, Igal Liberman <igall@marvell.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, Shadi Ammouri <shadi@marvell.com>,
- Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Hanna Hawa <hannah@marvell.com>,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/2] mtd: nand: pxa3xx_nand: enable building on mvebu
- 64-bit platforms
-Message-ID: <20170804102949.770ec88d@bbrezillon>
-In-Reply-To: <20170719174006.1ca20652@windsurf>
-References: <20170719153126.16905-1-gregory.clement@free-electrons.com>
- <20170719153126.16905-2-gregory.clement@free-electrons.com>
- <20170719174006.1ca20652@windsurf>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: stefan@agner.ch, linux-mtd@lists.infradead.org, Fabio Estevam
+ <fabio.estevam@nxp.com>
+Subject: Re: [PATCH v2 1/2] mtd: nand: vf610: Check the return value from
+ clk_prepare_enable()
+Message-ID: <20170804103041.6c10a51d@bbrezillon>
+In-Reply-To: <1500339248-18132-1-git-send-email-festevam@gmail.com>
+References: <1500339248-18132-1-git-send-email-festevam@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -33,26 +24,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 19 Jul 2017 17:40:06 +0200
-Thomas Petazzoni <thomas.petazzoni@free-electrons.com> wrote:
+On Mon, 17 Jul 2017 21:54:07 -0300
+Fabio Estevam <festevam@gmail.com> wrote:
 
-> Hello,
+> From: Fabio Estevam <fabio.estevam@nxp.com>
 > 
-> On Wed, 19 Jul 2017 17:31:25 +0200, Gregory CLEMENT wrote:
+> clk_prepare_enable() may fail, so we should better check its return value
+> and propagate it in the case of error.
 > 
-> >  config MTD_NAND_PXA3xx
-> >  	tristate "NAND support on PXA3xx and Armada 370/XP"
-> > -	depends on PXA3xx || ARCH_MMP || PLAT_ORION
-> > +	depends on PXA3xx || ARCH_MMP || PLAT_ORION  || ARCH_MVEBU  
-> 
->                                                    ^^^
-> 
-> Stupid minor nit: there are two spaces here, there should be one. No
-> need to send a v2 just for this, I'm sure Boris will happily fix this
-> when applying :-)
 
-Applied after removing the extra whitespace.
+Applied both.
 
 Thanks,
 
 Boris
+
+> Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+> ---
+> Changes since v1:
+> - None
+> 
+>  drivers/mtd/nand/vf610_nfc.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
+> index 744ab10..9e49672 100644
+> --- a/drivers/mtd/nand/vf610_nfc.c
+> +++ b/drivers/mtd/nand/vf610_nfc.c
+> @@ -814,12 +814,16 @@ static int vf610_nfc_suspend(struct device *dev)
+>  
+>  static int vf610_nfc_resume(struct device *dev)
+>  {
+> +	int err;
+> +
+>  	struct mtd_info *mtd = dev_get_drvdata(dev);
+>  	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
+>  
+>  	pinctrl_pm_select_default_state(dev);
+>  
+> -	clk_prepare_enable(nfc->clk);
+> +	err = clk_prepare_enable(nfc->clk);
+> +	if (err)
+> +		return err;
+>  
+>  	vf610_nfc_preinit_controller(nfc);
+>  	vf610_nfc_init_controller(nfc);
