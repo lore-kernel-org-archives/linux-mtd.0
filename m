@@ -1,28 +1,15 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ddaJY-0006iG-76
- for linux-mtd@lists.infradead.org; Fri, 04 Aug 2017 10:58:46 +0000
-Date: Fri, 4 Aug 2017 12:58:12 +0200
+Date: Fri, 4 Aug 2017 14:34:30 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Arnd Bergmann <arnd@arndb.de>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, linux-mtd@lists.infradead.org
 Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Russell King <linux@armlinux.org.uk>, Andrew Morton
- <akpm@linux-foundation.org>, Nicholas Piggin <npiggin@gmail.com>, Daniel
- Lezcano <daniel.lezcano@linaro.org>, Michal Marek <mmarek@suse.com>, Linus
- Walleij <linus.walleij@linaro.org>, Lorenzo Pieralisi
- <lorenzo.pieralisi@arm.com>, Kees Cook <keescook@chromium.org>, Peter
- Zijlstra <peterz@infradead.org>, Chris Metcalf <cmetcalf@mellanox.com>,
- linux-arch <linux-arch@vger.kernel.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] [RESEND] mtd: only use __xipram annotation when
- XIP_KERNEL is set
-Message-ID: <20170804125812.005f9cbe@bbrezillon>
-In-Reply-To: <CAK8P3a2Zvsc880ZYy9aaQ1fOJeO50uJc92OKMK0QxCcTzwGPsg@mail.gmail.com>
-References: <20170721202636.3361536-1-arnd@arndb.de>
- <20170804093550.41e5936c@bbrezillon>
- <CAK8P3a2Zvsc880ZYy9aaQ1fOJeO50uJc92OKMK0QxCcTzwGPsg@mail.gmail.com>
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@atmel.com>, linux-arm-kernel@lists.infradead.org,
+ stable@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: nand: mxc: Fix mxc_v1 ooblayout
+Message-ID: <20170804143430.5dbde945@bbrezillon>
+In-Reply-To: <1480069952-14989-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1480069952-14989-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -35,31 +22,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 4 Aug 2017 11:00:05 +0200
-Arnd Bergmann <arnd@arndb.de> wrote:
+On Fri, 25 Nov 2016 11:32:32 +0100
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-> On Fri, Aug 4, 2017 at 9:35 AM, Boris Brezillon
-> <boris.brezillon@free-electrons.com> wrote:
-> > On Fri, 21 Jul 2017 22:26:25 +0200
-> > Arnd Bergmann <arnd@arndb.de> wrote:  
+> Commit a894cf6c5a82 ("mtd: nand: mxc: switch to mtd_ooblayout_ops")
+> introduced a bug in the OOB layout description. Even if the driver claims
+> that 3 ECC bytes are reserved to protect 512 bytes of data, it's actually
+> 5 ECC bytes to protect 512+6 bytes of data (some OOB bytes are also
+> protected using extra ECC bytes).
 > 
-> >> Note that MTD_XIP has been broken on ARM since around 2011 or 2012. I
-> >> have sent another patch[2] to fix compilation, which I plan to merge
-> >> through arm-soc unless there are objections. The obvious alternative
-> >> to that would be to completely rip out the MTD_XIP support from the
-> >> kernel, since obviously nobody has been using it in a long while.
-> >>
-> >> Link: [1] https://patchwork.kernel.org/patch/8109771/
-> >> Link: [2] https://patchwork.kernel.org/patch/9855225/
-> >> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> >> ---
-> >>  include/asm-generic/vmlinux.lds.h |  1 +
-> >>  include/linux/mtd/xip.h           | 10 ++++++----  
-> >
-> > For the MTD part,
-> >
-> > Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>  
-> 
-> Thanks. If you don't mind, could you just apply the patch to the mtd tree?
+> Fix the mxc_v1_ooblayout_{free,ecc}() functions to reflect this behavior.
 
-Sure. I'll let Brian apply it.
+Applied.
+
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Fixes: a894cf6c5a82 ("mtd: nand: mxc: switch to mtd_ooblayout_ops")
+> Cc: <stable@vger.kernel.org>
+> ---
+> Changes in v2:
+> - Use a macro for the number of ECC bytes
+> ---
+>  drivers/mtd/nand/mxc_nand.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+> index 61ca020c5272..d929111b5ebe 100644
+> --- a/drivers/mtd/nand/mxc_nand.c
+> +++ b/drivers/mtd/nand/mxc_nand.c
+> @@ -877,6 +877,8 @@ static void mxc_do_addr_cycle(struct mtd_info *mtd, int column, int page_addr)
+>  	}
+>  }
+>  
+> +#define MXC_V1_ECCBYTES		5
+> +
+>  static int mxc_v1_ooblayout_ecc(struct mtd_info *mtd, int section,
+>  				struct mtd_oob_region *oobregion)
+>  {
+> @@ -886,7 +888,7 @@ static int mxc_v1_ooblayout_ecc(struct mtd_info *mtd, int section,
+>  		return -ERANGE;
+>  
+>  	oobregion->offset = (section * 16) + 6;
+> -	oobregion->length = nand_chip->ecc.bytes;
+> +	oobregion->length = MXC_V1_ECCBYTES;
+>  
+>  	return 0;
+>  }
+> @@ -908,8 +910,7 @@ static int mxc_v1_ooblayout_free(struct mtd_info *mtd, int section,
+>  			oobregion->length = 4;
+>  		}
+>  	} else {
+> -		oobregion->offset = ((section - 1) * 16) +
+> -				    nand_chip->ecc.bytes + 6;
+> +		oobregion->offset = ((section - 1) * 16) + MXC_V1_ECCBYTES + 6;
+>  		if (section < nand_chip->ecc.steps)
+>  			oobregion->length = (section * 16) + 6 -
+>  					    oobregion->offset;
