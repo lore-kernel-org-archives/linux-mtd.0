@@ -1,17 +1,15 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ddY1E-0003QZ-GM
- for linux-mtd@lists.infradead.org; Fri, 04 Aug 2017 08:31:41 +0000
-Date: Fri, 4 Aug 2017 10:30:41 +0200
+ id 1ddY1V-0003RZ-1m
+ for linux-mtd@lists.infradead.org; Fri, 04 Aug 2017 08:31:58 +0000
+Date: Fri, 4 Aug 2017 10:31:22 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Fabio Estevam <festevam@gmail.com>
-Cc: stefan@agner.ch, linux-mtd@lists.infradead.org, Fabio Estevam
- <fabio.estevam@nxp.com>
-Subject: Re: [PATCH v2 1/2] mtd: nand: vf610: Check the return value from
- clk_prepare_enable()
-Message-ID: <20170804103041.6c10a51d@bbrezillon>
-In-Reply-To: <1500339248-18132-1-git-send-email-festevam@gmail.com>
-References: <1500339248-18132-1-git-send-email-festevam@gmail.com>
+To: Jean-Louis Thekekara <jeanlouis.thekekara@parrot.com>
+Cc: <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] mtd: nand: remove hard-coded NAND ids length
+Message-ID: <20170804103122.6542fde5@bbrezillon>
+In-Reply-To: <20170629170830.8084-1-jeanlouis.thekekara@parrot.com>
+References: <20170629170830.8084-1-jeanlouis.thekekara@parrot.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,48 +22,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 17 Jul 2017 21:54:07 -0300
-Fabio Estevam <festevam@gmail.com> wrote:
+On Thu, 29 Jun 2017 19:08:30 +0200
+Jean-Louis Thekekara <jeanlouis.thekekara@parrot.com> wrote:
 
-> From: Fabio Estevam <fabio.estevam@nxp.com>
+> This commit removes hard-coded '8' used for looping into
+> struct nand_chip.id.data array.
 > 
-> clk_prepare_enable() may fail, so we should better check its return value
-> and propagate it in the case of error.
+> NAND_MAX_ID_LEN has been introduced by Artem Bityutskiy in
+> 53552d22bfe1f for defining ids length in nand_flash_ids[] list.
+> 
+> This commit unifies ids length in nand base driver.
 > 
 
-Applied both.
+Applied.
 
 Thanks,
 
 Boris
 
-> Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+> Signed-off-by: Jean-Louis Thekekara <jeanlouis.thekekara@parrot.com>
 > ---
-> Changes since v1:
-> - None
+>  drivers/mtd/nand/nand_base.c |  4 ++--
+>  include/linux/mtd/nand.h     | 10 +++++-----
+>  2 files changed, 7 insertions(+), 7 deletions(-)
 > 
->  drivers/mtd/nand/vf610_nfc.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
-> index 744ab10..9e49672 100644
-> --- a/drivers/mtd/nand/vf610_nfc.c
-> +++ b/drivers/mtd/nand/vf610_nfc.c
-> @@ -814,12 +814,16 @@ static int vf610_nfc_suspend(struct device *dev)
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 85edac9b2bb5..66db2ced87ad 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -4056,7 +4056,7 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+>  	chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1);
 >  
->  static int vf610_nfc_resume(struct device *dev)
->  {
-> +	int err;
+>  	/* Read entire ID string */
+> -	for (i = 0; i < 8; i++)
+> +	for (i = 0; i < ARRAY_SIZE(chip->id.data); i++)
+>  		id_data[i] = chip->read_byte(mtd);
+>  
+>  	if (id_data[0] != maf_id || id_data[1] != dev_id) {
+> @@ -4065,7 +4065,7 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+>  		return -ENODEV;
+>  	}
+>  
+> -	chip->id.len = nand_id_len(id_data, 8);
+> +	chip->id.len = nand_id_len(id_data, ARRAY_SIZE(chip->id.data));
+>  
+>  	/* Try to identify manufacturer */
+>  	manufacturer = nand_get_manufacturer(maf_id);
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index dc8fbc033442..c3c1a32a5ade 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -449,14 +449,16 @@ struct nand_jedec_params {
+>  	__le16 crc;
+>  } __packed;
+>  
+> +/* The maximum expected count of bytes in the NAND ID sequence */
+> +#define NAND_MAX_ID_LEN 8
 > +
->  	struct mtd_info *mtd = dev_get_drvdata(dev);
->  	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
+>  /**
+>   * struct nand_id - NAND id structure
+> - * @data: buffer containing the id bytes. Currently 8 bytes large, but can
+> - *	  be extended if required.
+> + * @data: buffer containing the id bytes.
+>   * @len: ID length.
+>   */
+>  struct nand_id {
+> -	u8 data[8];
+> +	u8 data[NAND_MAX_ID_LEN];
+>  	int len;
+>  };
 >  
->  	pinctrl_pm_select_default_state(dev);
+> @@ -1028,8 +1030,6 @@ static inline void *nand_get_manufacturer_data(struct nand_chip *chip)
+>  #define NAND_MFR_ATO		0x9b
+>  #define NAND_MFR_WINBOND	0xef
 >  
-> -	clk_prepare_enable(nfc->clk);
-> +	err = clk_prepare_enable(nfc->clk);
-> +	if (err)
-> +		return err;
+> -/* The maximum expected count of bytes in the NAND ID sequence */
+> -#define NAND_MAX_ID_LEN 8
 >  
->  	vf610_nfc_preinit_controller(nfc);
->  	vf610_nfc_init_controller(nfc);
+>  /*
+>   * A helper for defining older NAND chips where the second ID byte fully
