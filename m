@@ -1,24 +1,19 @@
-Received: from mail-bn3nam01on0055.outbound.protection.outlook.com
- ([104.47.33.55] helo=NAM01-BN3-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ddj0N-0008PQ-1B
- for linux-mtd@lists.infradead.org; Fri, 04 Aug 2017 20:15:32 +0000
-From: Alexandru Gagniuc <alex.g@adaptrum.com>
-To: marek.vasut@gmail.com
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Alexandru Gagniuc <alex.g@adaptrum.com>
-Subject: [PATCH v2 7/7] dt-bindings: Add documentation for adaptrum,
- anarion-quadspi
-Date: Fri,  4 Aug 2017 13:14:53 -0700
-Message-Id: <20170804201453.16172-2-alex.g@adaptrum.com>
-In-Reply-To: <20170804201453.16172-1-alex.g@adaptrum.com>
-References: <1da97744-bc02-420e-d4e9-5ebf331475e8@gmail.com>
- <20170804201453.16172-1-alex.g@adaptrum.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+Date: Fri, 4 Aug 2017 23:08:58 +0200
+From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Peter Pan <peterpandong@micron.com>, Hartley Sweeten
+ <hsweeten@visionengravers.com>, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] mtd: nand: Rename nand.h into rawnand.h
+Message-Id: <20170804230858.7c65e7e53fed824d96ea40c5@gmail.com>
+In-Reply-To: <1501860550-16506-2-git-send-email-boris.brezillon@free-electrons.com>
+References: <1501860550-16506-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1501860550-16506-2-git-send-email-boris.brezillon@free-electrons.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,41 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add devicetree binding documentation for the Anarion QSPI controller.
+Hello!
 
-Signed-off-by: Alexandru Gagniuc <alex.g@adaptrum.com>
----
- .../devicetree/bindings/mtd/anarion-quadspi.txt    | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/anarion-quadspi.txt
+On Fri,  4 Aug 2017 17:29:10 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-diff --git a/Documentation/devicetree/bindings/mtd/anarion-quadspi.txt b/Documentation/devicetree/bindings/mtd/anarion-quadspi.txt
-new file mode 100644
-index 0000000..b4971e1
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/anarion-quadspi.txt
-@@ -0,0 +1,22 @@
-+* Adaptrum Anarion Quad SPI controller
-+
-+Required properties:
-+- compatible : Should be "adaptrum,anarion-qspi".
-+- reg : Contains two entries, each of which is a tuple consisting of a
-+	physical address and length. The first entry is the address and
-+	length of the controller register set. The second entry is the
-+	address and length of the memory-mapped flash. This second region is
-+	the region where the controller responds to XIP requests, and may be
-+	larger than the size of the attached flash.
-+
-+Example:
-+
-+	qspi: qspi@f200f000 {
-+		compatible = "adaptrum,anarion-qspi";
-+		reg = 	<0xf200f000 0x1000>,
-+			<0x20000000 0x08000000>;
-+
-+		flash0: w25q128fvn@0 {
-+			...
-+		}
-+	};
+> We are planning to share more code between different NAND based
+> devices (SPI NAND, OneNAND and raw NANDs), but before doing that
+> we need to move the existing include/linux/mtd/nand.h file into
+> include/linux/mtd/rawnand.h so we can later create a nand.h header
+> containing all common structure and function prototypes.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Signed-off-by: Peter Pan <peterpandong@micron.com>
+
+[...]
+
+>  arch/arm/mach-ep93xx/snappercl15.c              | 2 +-
+>  arch/arm/mach-ep93xx/ts72xx.c                   | 2 +-
+
+For mach-ep93xx
+Acked-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+
 -- 
-2.9.3
+Alexander Sverdlin.
