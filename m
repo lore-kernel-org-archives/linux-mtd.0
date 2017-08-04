@@ -1,28 +1,26 @@
-Message-ID: <1501818250.4381.26.camel@mhfsdcap03>
-Subject: Re: [PATCH] dt-bindings: mtd: add new compatible strings for mtk
- nor controller
-From: Guochun Mao <guochun.mao@mediatek.com>
-To: Rob Herring <robh@kernel.org>
-CC: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Matthias Brugger
- <matthias.bgg@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, "Cyrille
- Pitchen" <cyrille.pitchen@atmel.com>, Mark Rutland <mark.rutland@arm.com>,
- <devicetree@vger.kernel.org>, Richard Weinberger <richard@nod.at>, "Russell
- King" <linux@armlinux.org.uk>, <linux-kernel@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <linux-mediatek@lists.infradead.org>, "David
- Woodhouse" <dwmw2@infradead.org>, <linux-arm-kernel@lists.infradead.org>
-Date: Fri, 4 Aug 2017 11:44:10 +0800
-In-Reply-To: <20170803174750.bipdynhyyyozzjk6@rob-hp-laptop>
-References: <1500948617-19627-1-git-send-email-guochun.mao@mediatek.com>
- <1500948617-19627-2-git-send-email-guochun.mao@mediatek.com>
- <03016ea3-51ad-0b2d-e824-0a20913bd7c1@gmail.com>
- <20170802103637.16cd6548@bbrezillon>
- <535cc2d5-7bc9-2cb7-42cf-9d7058e64226@wedev4u.fr>
- <1501726602.4381.23.camel@mhfsdcap03>
- <20170803174750.bipdynhyyyozzjk6@rob-hp-laptop>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ddV80-0001kb-VH
+ for linux-mtd@lists.infradead.org; Fri, 04 Aug 2017 05:26:30 +0000
+Subject: Re: [PATCH v2 15/25] mtd: nand: qcom: DMA mapping support for
+ register read buffer
+To: Abhishek Sahu <absahu@codeaurora.org>, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
+ marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr,
+ robh+dt@kernel.org, mark.rutland@arm.com
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ andy.gross@linaro.org, sricharan@codeaurora.org
+References: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
+ <1500464893-11352-16-git-send-email-absahu@codeaurora.org>
+From: Archit Taneja <architt@codeaurora.org>
+Message-ID: <2d1accf4-811a-1246-99cc-ab1b9c7f0a32@codeaurora.org>
+Date: Fri, 4 Aug 2017 10:56:01 +0530
 MIME-Version: 1.0
+In-Reply-To: <1500464893-11352-16-git-send-email-absahu@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,79 +30,157 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2017-08-03 at 12:47 -0500, Rob Herring wrote:
-> On Thu, Aug 03, 2017 at 10:16:42AM +0800, Guochun Mao wrote:
-> > Hi Cyrille,
-> > 
-> > On Wed, 2017-08-02 at 17:31 +0200, Cyrille Pitchen wrote:
-> > > Hi Guochun,
-> > > 
-> > > Le 02/08/2017 à 10:36, Boris Brezillon a écrit :
-> > > > Hi Matthias,
-> > > > 
-> > > > On Tue, 1 Aug 2017 14:33:22 +0200
-> > > > Matthias Brugger <matthias.bgg@gmail.com> wrote:
-> > > > 
-> > > >> On 07/25/2017 04:10 AM, Guochun Mao wrote:
-> > > >>> Add "mediatek,mt2712-nor" and "mediatek,mt7622-nor"
-> > > >>> for nor flash node's compatible strings.
-> > > >>>
-> > > >>> Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-> > > >>> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
-> > > >>> ---
-> > > >>>   .../devicetree/bindings/mtd/mtk-quadspi.txt        |    2 ++
-> > > >>>   1 file changed, 2 insertions(+)
-> > > >>>
-> > > >>> diff --git a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> > > >>> index 5ded66a..9845ff4 100644
-> > > >>> --- a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> > > >>> +++ b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> > > >>> @@ -3,6 +3,8 @@
-> > > >>>   Required properties:
-> > > >>>   - compatible: 	  The possible values are:
-> > > >>>   		  "mediatek,mt2701-nor"
-> > > >>> +		  "mediatek,mt2712-nor"
-> > > >>> +		  "mediatek,mt7622-nor"
-> > > >>>   		  "mediatek,mt7623-nor"
-> > > >>>   		  "mediatek,mt8173-nor"
-> > > >>>   		  For mt8173, compatible should be "mediatek,mt8173-nor".
-> > > >>>
-> > > 
-> > > There should be another patch to update the mtk_nor_of_ids[] array in
-> > > the mtk-quadspi.c driver, shouldn't it?
-> > > 
-> > > Currently, I only see the "mediatek,mt8173-nor" compatible string at the
-> > > driver side. The driver and its documentation should be aligned and both
-> > > patches should be applied at the same time.
-> > 
-> > > Best regards,
-> > > 
-> > > Cyrille
-> > 
-> > 
-> > From my designer's info, these IPs' nor controller could use same
-> > driver, and I had verified it. I think there's no need to update
-> > mtk_nor_of_ids[], unless we find difference between these IPs(exactly
-> > compared with mt8173).
-> > How do you think?
-> 
-> That is perfectly fine, but then the documentation needs to be explicit 
-> as to what are the fallback compatibles. It's one valid combination per 
-> line, not 1 compatible string per line.
+Hi,
 
-OK, I'll corret the description in next version.
-Thanks a lot.
+On 07/19/2017 05:18 PM, Abhishek Sahu wrote:
+> The EBI2 NAND directly remaps register read buffer with
+> dma_map_sg. The QPIC NAND will give register read buffer in its
+> command descriptor and the command descriptor will be mapped with
+> dma_map_sg instead of register read buffer. This command
+> descriptor will contain the dma address of the register read
+> buffer.
 
-Guochun
+It isn't entirely clear from the commit message why we can't use
+the existing code with QPIC NAND. A bit of background would help.
+Can you consider adding something like this:
 
+"On QPIC NAND, which uses BAM DMA, we read the controller registers
+by preparing a BAM command descriptor. This descriptor requires the
+the a) controller register address and b) the DMA address in which we
+want to store the value read back from the controller register. Therefore,
+it's required that we also map our register read buffer for DMA (using
+dma_map_single). We use the returned DMA address for preparing
+entries in our command descriptor."
 
 > 
-> Rob
+> This patch adds the DMA mapping support for register read buffer.
+> This buffer will be DMA mapped during allocation time. Before
+> starting of any operation, this buffer will be synced for device
+> operation and after operation completion, it will be synced for
+> CPU.
 > 
-> > 
-> > And, we will add dts patches for new SOCs, are these patches should
-> > applied with this documentation?
-> > 
-> > Best regards,
-> > Guochun
-> > 
+> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+> ---
+>   drivers/mtd/nand/qcom_nandc.c | 40 ++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 40 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
+> index cb2b245..f49c3da 100644
+> --- a/drivers/mtd/nand/qcom_nandc.c
+> +++ b/drivers/mtd/nand/qcom_nandc.c
+> @@ -229,6 +229,7 @@ struct nandc_regs {
+>    *				by upper layers directly
+>    * @buf_size/count/start:	markers for chip->read_buf/write_buf functions
+>    * @reg_read_buf:		local buffer for reading back registers via DMA
+> + * @reg_read_buf_phys:		contains dma address for register read buffer
+
+Maybe we should rename this as reg_read_dma since it is dma_addr_t ?
+
+Looks good otherwise.
+
+Thanks,
+Archit
+
+>    * @reg_read_pos:		marker for data read in reg_read_buf
+>    *
+>    * @regs:			a contiguous chunk of memory for DMA register
+> @@ -271,6 +272,7 @@ struct qcom_nand_controller {
+>   	int		buf_start;
+>   
+>   	__le32 *reg_read_buf;
+> +	dma_addr_t reg_read_buf_phys;
+>   	int reg_read_pos;
+>   
+>   	struct nandc_regs *regs;
+> @@ -363,6 +365,24 @@ static inline void nandc_write(struct qcom_nand_controller *nandc, int offset,
+>   	iowrite32(val, nandc->base + offset);
+>   }
+>   
+> +static inline void nandc_read_buffer_sync(struct qcom_nand_controller *nandc,
+> +					  bool is_cpu)
+> +{
+> +	if (!nandc->props->is_bam)
+> +		return;
+> +
+> +	if (is_cpu)
+> +		dma_sync_single_for_cpu(nandc->dev, nandc->reg_read_buf_phys,
+> +					MAX_REG_RD *
+> +					sizeof(*nandc->reg_read_buf),
+> +					DMA_FROM_DEVICE);
+> +	else
+> +		dma_sync_single_for_device(nandc->dev, nandc->reg_read_buf_phys,
+> +					   MAX_REG_RD *
+> +					   sizeof(*nandc->reg_read_buf),
+> +					   DMA_FROM_DEVICE);
+> +}
+> +
+>   static __le32 *offset_to_nandc_reg(struct nandc_regs *regs, int offset)
+>   {
+>   	switch (offset) {
+> @@ -847,6 +867,7 @@ static void free_descs(struct qcom_nand_controller *nandc)
+>   static void clear_read_regs(struct qcom_nand_controller *nandc)
+>   {
+>   	nandc->reg_read_pos = 0;
+> +	nandc_read_buffer_sync(nandc, false);
+>   }
+>   
+>   static void pre_command(struct qcom_nand_host *host, int command)
+> @@ -876,6 +897,7 @@ static void parse_erase_write_errors(struct qcom_nand_host *host, int command)
+>   	int i;
+>   
+>   	num_cw = command == NAND_CMD_PAGEPROG ? ecc->steps : 1;
+> +	nandc_read_buffer_sync(nandc, true);
+>   
+>   	for (i = 0; i < num_cw; i++) {
+>   		u32 flash_status = le32_to_cpu(nandc->reg_read_buf[i]);
+> @@ -897,6 +919,7 @@ static void post_command(struct qcom_nand_host *host, int command)
+>   
+>   	switch (command) {
+>   	case NAND_CMD_READID:
+> +		nandc_read_buffer_sync(nandc, true);
+>   		memcpy(nandc->data_buffer, nandc->reg_read_buf,
+>   		       nandc->buf_count);
+>   		break;
+> @@ -1060,6 +1083,7 @@ static int parse_read_errors(struct qcom_nand_host *host, u8 *data_buf,
+>   	int i;
+>   
+>   	buf = (struct read_stats *)nandc->reg_read_buf;
+> +	nandc_read_buffer_sync(nandc, true);
+>   
+>   	for (i = 0; i < ecc->steps; i++, buf++) {
+>   		u32 flash, buffer, erased_cw;
+> @@ -1996,6 +2020,16 @@ static int qcom_nandc_alloc(struct qcom_nand_controller *nandc)
+>   		return -ENOMEM;
+>   
+>   	if (nandc->props->is_bam) {
+> +		nandc->reg_read_buf_phys =
+> +			dma_map_single(nandc->dev, nandc->reg_read_buf,
+> +				       MAX_REG_RD *
+> +				       sizeof(*nandc->reg_read_buf),
+> +				       DMA_FROM_DEVICE);
+> +		if (dma_mapping_error(nandc->dev, nandc->reg_read_buf_phys)) {
+> +			dev_err(nandc->dev, "failed to DMA MAP reg buffer\n");
+> +			return -EIO;
+> +		}
+> +
+>   		nandc->tx_chan = dma_request_slave_channel(nandc->dev, "tx");
+>   		if (!nandc->tx_chan) {
+>   			dev_err(nandc->dev, "failed to request tx channel\n");
+> @@ -2033,6 +2067,12 @@ static int qcom_nandc_alloc(struct qcom_nand_controller *nandc)
+>   static void qcom_nandc_unalloc(struct qcom_nand_controller *nandc)
+>   {
+>   	if (nandc->props->is_bam) {
+> +		if (!dma_mapping_error(nandc->dev, nandc->reg_read_buf_phys))
+> +			dma_unmap_single(nandc->dev, nandc->reg_read_buf_phys,
+> +					 MAX_REG_RD *
+> +					 sizeof(*nandc->reg_read_buf),
+> +					 DMA_FROM_DEVICE);
+> +
+>   		if (nandc->tx_chan)
+>   			dma_release_channel(nandc->tx_chan);
+>   
+> 
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
