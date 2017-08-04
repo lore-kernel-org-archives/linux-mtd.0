@@ -1,14 +1,29 @@
-Received: from secvs01.rockwellcollins.com ([205.175.225.240])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ddcFY-00072P-IO
- for linux-mtd@lists.infradead.org; Fri, 04 Aug 2017 13:02:47 +0000
-From: Matt Weber <matthew.weber@rockwellcollins.com>
-To: linux-mtd@lists.infradead.org
-Cc: sgtandel <sanjay.tandel@rockwellcollins.com>,
- Matt Weber <matthew.weber@rockwellcollins.com>
-Subject: [PATCH] map-ram chip driver: 16-bit block transfer
-Date: Fri,  4 Aug 2017 08:02:20 -0500
-Message-Id: <1501851740-14125-1-git-send-email-matthew.weber@rockwellcollins.com>
+ id 1ddcOE-0003VN-I0
+ for linux-mtd@lists.infradead.org; Fri, 04 Aug 2017 13:11:44 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Fri, 04 Aug 2017 18:41:20 +0530
+From: Abhishek Sahu <absahu@codeaurora.org>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Rob Herring <robh@kernel.org>, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com, richard@nod.at,
+ cyrille.pitchen@wedev4u.fr, mark.rutland@arm.com,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ andy.gross@linaro.org, architt@codeaurora.org, sricharan@codeaurora.org
+Subject: Re: [PATCH v2 12/25] dt-bindings: qcom_nandc: QPIC NAND documentation
+In-Reply-To: <20170804144536.4177a12f@bbrezillon>
+References: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
+ <1500464893-11352-13-git-send-email-absahu@codeaurora.org>
+ <20170724191723.aisibziviylk5ihc@rob-hp-laptop>
+ <d8d8fef7d13acc4ffc29edac42eaa429@codeaurora.org>
+ <abf14014808fa0557696fee509c28046@codeaurora.org>
+ <20170804144536.4177a12f@bbrezillon>
+Message-ID: <ae7df79750977b366bf44ba505b791f0@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,124 +33,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: sgtandel <sanjay.tandel@rockwellcollins.com>
+On 2017-08-04 18:15, Boris Brezillon wrote:
+> On Mon, 31 Jul 2017 21:35:57 +0530
+> Abhishek Sahu <absahu@codeaurora.org> wrote:
+> 
+>> On 2017-07-26 00:13, Abhishek Sahu wrote:
+>> > On 2017-07-25 00:47, Rob Herring wrote:
+>> >> On Wed, Jul 19, 2017 at 05:18:00PM +0530, Abhishek Sahu wrote:
+>> >>> 1. QPIC NAND will use compatible string "qcom,qpic-nandc-v1.4.0"
+>> >>> 2. QPIC NAND will 3 BAM channels: command, data tx and data rx
+>> >>>    while EBI2 NAND uses only single ADM channel.
+>> >>> 3. CRCI is only required for ADM DMA and its not required for
+>> >>>    QPIC NAND.
+>> >>>
+>> >>> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+>> >>> ---
+>> >>>  .../devicetree/bindings/mtd/qcom_nandc.txt         | 54
+>> >>> ++++++++++++++++++++--
+>> >>>  1 file changed, 51 insertions(+), 3 deletions(-)
+>> >>>
+>> >>> diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+>> >>> b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+>> >>> index b24adfe..8efaeb0 100644
+>> >>> --- a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+>> >>> +++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+>> >>> @@ -1,13 +1,15 @@
+>> >>>  * Qualcomm NAND controller
+>> >>>
+>> >>>  Required properties:
+>> >>> -- compatible:		should be "qcom,ebi2-nandc" - EBI2 NAND which uses
+>> >>> ADM
+>> >>> -			DMA like IPQ8064.
+>> >>> -
+>> >>> +- compatible:		must be one of the following:
+>> >>> +	* "qcom,ebi2-nandc" - EBI2 NAND which uses ADM DMA like IPQ8064.
+>> >>> +	* "qcom,qpic-nandc-v1.4.0" - QPIC NAND v1.4.0 which uses BAM DMA
+>> >>> like IPQ4019.
+>> >>
+>> >> Looks like you have 2 SoCs and 2 versions of h/w. Use SoC specific
+>> >> compatible strings.
+>> >
+>> >  We have 3 versions of NAND HW currently.
+>> >  EBI2,
+>> >  QPIC version 1.4.0
+>> >  QPIC version 1.5.0
+>> >
+>> >  and multiple Qualcomm SoCs which use any one of these.
+>> >
+>> >  The original plan was to have compatible string for NAND version since
+>> >  same NAND hardware is being in different SoC and SoC dtsi will simply
+>> >  use its NAND version compatible string like other Qualcomm hardwares
+>> >
+>> >
+>> > http://elixir.free-electrons.com/linux/latest/source/Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
+>> >
+>> > http://elixir.free-electrons.com/linux/latest/source/Documentation/devicetree/bindings/spi/qcom,spi-qup.txt
+>> >
+>> 
+>>   Following are the partial list for NAND controller and supported
+>>   SoC
+>> 
+>>    EBI2:          IPQ8064, APQ8064, MSM7xx, MDM9x15
+>>    QPIC v1.4.0    MDM9x25, MDM9x35, MDM9x45, IPQ4019
+>>    QPIC v1.5.0    MDM9x55, IPQ8074
+>> 
+>>   so could we use NAND controller specific compatible strings instead 
+>> of
+>> SoC
+>>   since it will easy to maintain?
+> 
+> Nope, though you can re-use the compatible of an old SoC for new SoCs
+> if the IP did not change.
+> 
+> For example:
+> 
+> - EBI2: compatible = "qcom,ipq8064"
+> - QPIC 1.4: compatible = "qcom,mdm9x25"
+> - QPIC 1.5: compatible = "qcom,mdm9x55"
+> 
+> Note that we usually pick the oldest SoC that started embedding an IP
+> when choosing the compatible. So my suggestion assumes IPQ8064 is older
+> than APQ8064, MSM7xx and MDM9x15.
 
-This patch adds 16-bit I/O memory write function (map_copy_to16) in map-ram
-driver. map-ram driver's block write function(i.e map_copy_to) uses
-memcpy_toio() function for block transfer. memcpy_toio() is limited to do
-single byte write, irrespective of bankwidth. Therefore,
-added map_copy_to16() function to be used by map-ram driver for block
-transfers for chips that only supports word(16-bit) transfers. map-ram
-driver's single entity read/write functions (such as map_read and
-map_write) use bankwidth property(provided by DTS entry) and calls
-appropriate readb/readw/readq function. For block write, there was no such
-implementation found in map-ram driver. So map_copy_to() calls memcpy_toio
-(which in turn calls writeb) for all block write, irrespective of
-bankwidth. So wrong or corrupted data might be written into flash memory in
-case chips that does not support 8-bit write. This patch adds a condition
-in block write function (map_copy_to) to call map_copy_to16(), if bankwidth
-is 2. This patch also adds map_copy_from16() function to be used for 16-bit
-block read operation. map-ram driver's block read function
-(i.e map_copy_from) uses memcpy_fromio() function for all block read,
-irrespective of bankwidth. memcpy_fromio is limited to do single byte read.
-Therefore, Added map_copy_from16() function to be used by map-ram driver
-for block read for chips that only supports word(16-bit) transfers.
-map-ram driver's single entity read/write functions (such as map_read and
-map_write) already use bankwidth property(provided by DTS entry) and calls
-appropriate readb/readw/readq function. For block read, there was no such
-implementation found in map-ram driver. So map_copy_from() calls
-memcpy_fromio() (which in turn calls writeb) for all block write,
-irrespective of bankwidth. This patch adds a condition in block read
-function (i.e map_copy_from) to call map_copy_from16(), if bankwidth is 2.
+  Thanks Boris for detailed clarification.
+  Then I will change the patch to use SoC specific compatible string.
 
-Signed-off-by: Sanjay Tandel <sanjay.tandel@rockwellcollins.com>
-Signed-off-by: Matt Weber <matthew.weber@rockwellcollins.com>
----
- include/linux/mtd/map.h | 62 ++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 61 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
-index 3aa56e3..3d7a296 100644
---- a/include/linux/mtd/map.h
-+++ b/include/linux/mtd/map.h
-@@ -449,17 +449,77 @@ static inline void inline_map_write(struct map_info *map, const map_word datum,
- 	mb();
- }
- 
-+static void map_copy_from16(void *to, void __iomem *from, size_t count)
-+{
-+	const unsigned char *t = to;
-+
-+	if (!(IS_ALIGNED((u32)from, sizeof(u16)))) {
-+		from = (void __iomem *)ALIGN((u32)from, sizeof(u16))
-+							- sizeof(u16);
-+		*(u8 *)t = (u8)((readw(from) & 0xff00) >> 8);
-+		count--;
-+		t++;
-+		from += 2;
-+	}
-+	while (count >= 2) {
-+		*(u16 *)t = readw(from);
-+		count -= 2;
-+		t += 2;
-+		from += 2;
-+	};
-+	while (count > 0) {
-+		*(u8 *)t = (u8)(readw(from) & 0x00ff);
-+		count--;
-+		t++;
-+		from++;
-+	}
-+}
-+
- static inline void inline_map_copy_from(struct map_info *map, void *to, unsigned long from, ssize_t len)
- {
- 	if (map->cached)
- 		memcpy(to, (char *)map->cached + from, len);
-+	else if (map_bankwidth_is_2(map))
-+		map_copy_from16(to, map->virt + from, len);
- 	else
- 		memcpy_fromio(to, map->virt + from, len);
- }
- 
-+static void map_copy_to16(void __iomem *to, const void *from, size_t count)
-+{
-+	const unsigned char *f = from;
-+	u16 d;
-+
-+	if (!(IS_ALIGNED((u32)to, sizeof(u16)))) {
-+		to = (void __iomem *)ALIGN((u32)to, sizeof(u16))
-+							- sizeof(u16);
-+		d = (readw(to) & 0x00ff) | ((u16)(*(const u8 *)f) << 8);
-+		writew(d, to);
-+		count--;
-+		to += 2;
-+		f++;
-+	}
-+	while (count >= 2) {
-+		writew(*(const u16 *)f, to);
-+		count -= 2;
-+		to += 2;
-+		f += 2;
-+	};
-+	while (count > 0) {
-+		d = (readw(to) & 0xff00) | (u16)(*(const u8 *)f);
-+		writew(d, to);
-+		count--;
-+		to++;
-+		f++;
-+	}
-+}
-+
- static inline void inline_map_copy_to(struct map_info *map, unsigned long to, const void *from, ssize_t len)
- {
--	memcpy_toio(map->virt + to, from, len);
-+	if (map_bankwidth_is_2(map))
-+		map_copy_to16(map->virt + to, from, len);
-+	else
-+		memcpy_toio(map->virt + to, from, len);
- }
- 
- #ifdef CONFIG_MTD_COMPLEX_MAPPINGS
--- 
-1.9.1
+  Its better to use qcom,ipq4019 for 1.4.0 and qcom,ipq8074 for 1.5.0
+  since we don't have other SoC in upstream and I have tested the
+  NAND driver on these IPQ SoC's.
