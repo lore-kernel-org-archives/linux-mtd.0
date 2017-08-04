@@ -1,8 +1,8 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ddXMF-00036l-0x
- for linux-mtd@lists.infradead.org; Fri, 04 Aug 2017 07:49:23 +0000
-Date: Fri, 4 Aug 2017 09:48:52 +0200
+ id 1ddXN8-0003lx-0H
+ for linux-mtd@lists.infradead.org; Fri, 04 Aug 2017 07:50:15 +0000
+Date: Fri, 4 Aug 2017 09:49:52 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Abhishek Sahu <absahu@codeaurora.org>
 Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
@@ -11,12 +11,12 @@ Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-msm@vger.kernel.org, andy.gross@linaro.org,
  architt@codeaurora.org, sricharan@codeaurora.org
-Subject: Re: [PATCH v2 09/25] mtd: nand: qcom: remove memset for clearing
- read register buffer
-Message-ID: <20170804094852.59c9fbcb@bbrezillon>
-In-Reply-To: <1500464893-11352-10-git-send-email-absahu@codeaurora.org>
+Subject: Re: [PATCH v2 11/25] mtd: nand: qcom: support for NAND controller
+ properties
+Message-ID: <20170804094952.5862e078@bbrezillon>
+In-Reply-To: <1500464893-11352-12-git-send-email-absahu@codeaurora.org>
 References: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
- <1500464893-11352-10-git-send-email-absahu@codeaurora.org>
+ <1500464893-11352-12-git-send-email-absahu@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -29,12 +29,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 19 Jul 2017 17:17:57 +0530
+On Wed, 19 Jul 2017 17:17:59 +0530
 Abhishek Sahu <absahu@codeaurora.org> wrote:
 
-> The memset in clear_read_regs is overhead. All the register data
-> will be filled by DMA during NAND operation so making these
-> register variables zero is not required.
+> Currently driver data is being assigned directly with ECC modes.
+> Now, the plan is to add more NAND controller versions, so
+> reorganized the current driver data assignment by creating NAND
+> controller properties structure.  This will contain all
+> properties specific to NAND controller.
 > 
 
 Applied.
@@ -45,19 +47,82 @@ Boris
 
 > Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 > ---
->  drivers/mtd/nand/qcom_nandc.c | 2 --
->  1 file changed, 2 deletions(-)
+>  drivers/mtd/nand/qcom_nandc.c | 23 +++++++++++++++++------
+>  1 file changed, 17 insertions(+), 6 deletions(-)
 > 
 > diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-> index 5b71478..7ecd0f8 100644
+> index 8f9e86c..3b0ae91 100644
 > --- a/drivers/mtd/nand/qcom_nandc.c
 > +++ b/drivers/mtd/nand/qcom_nandc.c
-> @@ -826,8 +826,6 @@ static void free_descs(struct qcom_nand_controller *nandc)
->  static void clear_read_regs(struct qcom_nand_controller *nandc)
+> @@ -235,7 +235,7 @@ struct nandc_regs {
+>   *				writes. contains the register values to be
+>   *				written to controller
+>   * @cmd1/vld:			some fixed controller register values
+> - * @ecc_modes:			supported ECC modes by the current controller,
+> + * @props:			properties of current NAND controller IP,
+>   *				initialized via DT match data
+>   */
+>  struct qcom_nand_controller {
+> @@ -266,7 +266,7 @@ struct qcom_nand_controller {
+>  	struct nandc_regs *regs;
+>  
+>  	u32 cmd1, vld;
+> -	u32 ecc_modes;
+> +	const struct qcom_props *props;
+>  };
+>  
+>  /*
+> @@ -319,6 +319,15 @@ struct qcom_nand_host {
+>  	u32 clrreadstatus;
+>  };
+>  
+> +/*
+> + * This data type corresponds to the nand controller properties which varies
+> + * among different NAND controller IP's.
+> + * @ecc_modes - ecc mode for NAND
+> + */
+> +struct qcom_props {
+> +	u32 ecc_modes;
+> +};
+> +
+>  static inline struct qcom_nand_host *to_qcom_nand_host(struct nand_chip *chip)
 >  {
->  	nandc->reg_read_pos = 0;
-> -	memset(nandc->reg_read_buf, 0,
-> -	       MAX_REG_RD * sizeof(*nandc->reg_read_buf));
+>  	return container_of(chip, struct qcom_nand_host, chip);
+> @@ -1820,7 +1829,7 @@ static int qcom_nand_host_setup(struct qcom_nand_host *host)
+>  		 * uses lesser bytes for ECC. If RS is used, the ECC bytes is
+>  		 * always 10 bytes
+>  		 */
+> -		if (nandc->ecc_modes & ECC_BCH_4BIT) {
+> +		if (nandc->props->ecc_modes & ECC_BCH_4BIT) {
+>  			/* BCH */
+>  			host->bch_enabled = true;
+>  			ecc_mode = 0;
+> @@ -2165,7 +2174,7 @@ static int qcom_nandc_probe(struct platform_device *pdev)
+>  		return -ENODEV;
+>  	}
+>  
+> -	nandc->ecc_modes = (unsigned long)dev_data;
+> +	nandc->props = dev_data;
+>  
+>  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>  	nandc->base = devm_ioremap_resource(dev, res);
+> @@ -2234,7 +2243,9 @@ static int qcom_nandc_remove(struct platform_device *pdev)
+>  	return 0;
 >  }
 >  
->  static void pre_command(struct qcom_nand_host *host, int command)
+> -#define EBI2_NANDC_ECC_MODES	(ECC_RS_4BIT | ECC_BCH_8BIT)
+> +static const struct qcom_props ebi2_nandc_data = {
+> +	.ecc_modes = (ECC_RS_4BIT | ECC_BCH_8BIT),
+> +};
+>  
+>  /*
+>   * data will hold a struct pointer containing more differences once we support
+> @@ -2242,7 +2253,7 @@ static int qcom_nandc_remove(struct platform_device *pdev)
+>   */
+>  static const struct of_device_id qcom_nandc_of_match[] = {
+>  	{	.compatible = "qcom,ebi2-nandc",
+> -		.data = (void *)EBI2_NANDC_ECC_MODES,
+> +		.data = &ebi2_nandc_data,
+>  	},
+>  	{}
+>  };
