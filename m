@@ -47,8 +47,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  linux-oxnas@lists.tuxfamily.org, linuxppc-dev@lists.ozlabs.org,
  devel@driverdev.osuosl.org
 Subject: [PATCH] mtd: nand: Rename nand.h into rawnand.h
-Date: Fri,  4 Aug 2017 17:29:09 +0200
-Message-Id: <1501860550-16506-1-git-send-email-boris.brezillon@free-electrons.com>
+Date: Fri,  4 Aug 2017 17:29:10 +0200
+Message-Id: <1501860550-16506-2-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1501860550-16506-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1501860550-16506-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
