@@ -1,21 +1,26 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ddX6T-00043Z-Cj
- for linux-mtd@lists.infradead.org; Fri, 04 Aug 2017 07:33:03 +0000
-Date: Fri, 4 Aug 2017 09:32:40 +0200
+ id 1ddX9Y-0005cj-BM
+ for linux-mtd@lists.infradead.org; Fri, 04 Aug 2017 07:36:14 +0000
+Date: Fri, 4 Aug 2017 09:35:50 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Arnd Bergmann <arnd@arndb.de>
 Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
  <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
  Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Jingoo Han <jg1.han@samsung.com>, Simon Baatz <gmbnomis@gmail.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>, Arvind Yadav
- <arvind.yadav.cs@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: orion-nand: fix build error with ARMv4
-Message-ID: <20170804093240.25753a23@bbrezillon>
-In-Reply-To: <20170721203814.3363448-1-arnd@arndb.de>
-References: <20170721203814.3363448-1-arnd@arndb.de>
+ Russell King <linux@armlinux.org.uk>, Andrew Morton
+ <akpm@linux-foundation.org>, Nicholas Piggin <npiggin@gmail.com>, Daniel
+ Lezcano <daniel.lezcano@linaro.org>, Michal Marek <mmarek@suse.com>, Linus
+ Walleij <linus.walleij@linaro.org>, Lorenzo Pieralisi
+ <lorenzo.pieralisi@arm.com>, Kees Cook <keescook@chromium.org>, Peter
+ Zijlstra <peterz@infradead.org>, Chris Metcalf <cmetcalf@mellanox.com>,
+ linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] [RESEND] mtd: only use __xipram annotation when
+ XIP_KERNEL is set
+Message-ID: <20170804093550.41e5936c@bbrezillon>
+In-Reply-To: <20170721202636.3361536-1-arnd@arndb.de>
+References: <20170721202636.3361536-1-arnd@arndb.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,68 +33,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 21 Jul 2017 22:38:06 +0200
+On Fri, 21 Jul 2017 22:26:25 +0200
 Arnd Bergmann <arnd@arndb.de> wrote:
 
-> orion_nand_read_buf uses an inline assembly with the "ldrd"
-> instruction, which is only available from ARMv5 upwards. This
-> used to be fine, since all users have an ARMv5 or ARMv7 CPU,
-> but now we can also build a multiplatform kernel with ARMv4
-> support enabled in addition to the "kirkwood" (mvebu) platform.
+> When XIP_KERNEL is enabled, some functions are defined in the .data
+> ELF section because we require them to be in RAM whenever we communicate
+> with the flash chip. However this causes problems when FTRACE is
+> enabled and gcc emits calls to __gnu_mcount_nc in the function
+> prolog:
 > 
-> This provides an alternative to call the readsl() function that
-> is supposed to have the same effect and is also optimized for
-> performance.
+> drivers/built-in.o: In function `cfi_chip_setup':
+> :(.data+0x272fc): relocation truncated to fit: R_ARM_CALL against symbol `__gnu_mcount_nc' defined in .text section in arch/arm/kernel/built-in.o
+> drivers/built-in.o: In function `cfi_probe_chip':
+> :(.data+0x27de8): relocation truncated to fit: R_ARM_CALL against symbol `__gnu_mcount_nc' defined in .text section in arch/arm/kernel/built-in.o
+> /tmp/ccY172rP.s: Assembler messages:
+> /tmp/ccY172rP.s:70: Warning: ignoring changed section attributes for .data
+> /tmp/ccY172rP.s: Error: 1 warning, treating warnings as errors
+> make[5]: *** [drivers/mtd/chips/cfi_probe.o] Error 1
+> /tmp/ccK4rjeO.s: Assembler messages:
+> /tmp/ccK4rjeO.s:421: Warning: ignoring changed section attributes for .data
+> /tmp/ccK4rjeO.s: Error: 1 warning, treating warnings as errors
+> make[5]: *** [drivers/mtd/chips/cfi_util.o] Error 1
+> /tmp/ccUvhCYR.s: Assembler messages:
+> /tmp/ccUvhCYR.s:1895: Warning: ignoring changed section attributes for .data
+> /tmp/ccUvhCYR.s: Error: 1 warning, treating warnings as errors
 > 
-> I first posted a version of this patch back in 2014, and there
-> was some discussion about it then. This fixes the bugs identified
-> back then and should be a reasonable alternative for the rare
-> corner case.
-
-Looks good to me. Applied to nand/next. Let's see if anyone complains
-before the merge window.
-
-Thanks,
-
-Boris
-
+> Specifically, this does not work because the .data section is not
+> marked executable, which leads LD to not generate trampolines for
+> long calls.
 > 
-> Link: https://patchwork.kernel.org/patch/4144791/
-> Cc: Jingoo Han <jg1.han@samsung.com>
+> This moves the __xipram functions into their own .xiptext section instead.
+> The section is still placed next to .data and located in RAM but is marked
+> executable, which avoids the build errors.
+> 
+> Also, we only need to place the XIP functions into a separate section
+> if both CONFIG_XIP_KERNEL and CONFIG_MTD_XIP are set: When only MTD_XIP
+> is used, the whole kernel is still in RAM and we do not need to worry
+> about pulling out the rug under it. When only XIP_KERNEL but not MTD_XIP
+> is set, the kernel is in some form of ROM, but we never write to it.
+> 
+> Note that MTD_XIP has been broken on ARM since around 2011 or 2012. I
+> have sent another patch[2] to fix compilation, which I plan to merge
+> through arm-soc unless there are objections. The obvious alternative
+> to that would be to completely rip out the MTD_XIP support from the
+> kernel, since obviously nobody has been using it in a long while.
+> 
+> Link: [1] https://patchwork.kernel.org/patch/8109771/
+> Link: [2] https://patchwork.kernel.org/patch/9855225/
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  drivers/mtd/nand/orion_nand.c | 7 +++++++
->  1 file changed, 7 insertions(+)
+>  include/asm-generic/vmlinux.lds.h |  1 +
+>  include/linux/mtd/xip.h           | 10 ++++++----
+
+For the MTD part,
+
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
+>  2 files changed, 7 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
-> index 209170ed2b76..41cb7acfc044 100644
-> --- a/drivers/mtd/nand/orion_nand.c
-> +++ b/drivers/mtd/nand/orion_nand.c
-> @@ -54,13 +54,16 @@ static void orion_nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
->  {
->  	struct nand_chip *chip = mtd_to_nand(mtd);
->  	void __iomem *io_base = chip->IO_ADDR_R;
-> +#if __LINUX_ARM_ARCH__ >= 5
->  	uint64_t *buf64;
+> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> index da0be9a8d1de..ff507c178327 100644
+> --- a/include/asm-generic/vmlinux.lds.h
+> +++ b/include/asm-generic/vmlinux.lds.h
+> @@ -203,6 +203,7 @@
+>   * pull in .data..stuff which has its own requirements. Same for bss.
+>   */
+>  #define DATA_DATA							\
+> +	*(.xiptext)							\
+>  	*(.data .data.[0-9a-zA-Z_]*)					\
+>  	*(.ref.data)							\
+>  	*(.data..shared_aligned) /* percpu related */			\
+> diff --git a/include/linux/mtd/xip.h b/include/linux/mtd/xip.h
+> index abed4dec5c2f..e373690cce0a 100644
+> --- a/include/linux/mtd/xip.h
+> +++ b/include/linux/mtd/xip.h
+> @@ -30,7 +30,9 @@
+>   * obviously not be running from flash.  The __xipram is therefore marking
+>   * those functions so they get relocated to ram.
+>   */
+> -#define __xipram noinline __attribute__ ((__section__ (".data")))
+> +#ifdef CONFIG_XIP_KERNEL
+> +#define __xipram noinline __attribute__ ((__section__ (".xiptext")))
 > +#endif
->  	int i = 0;
 >  
->  	while (len && (unsigned long)buf & 7) {
->  		*buf++ = readb(io_base);
->  		len--;
->  	}
-> +#if __LINUX_ARM_ARCH__ >= 5
->  	buf64 = (uint64_t *)buf;
->  	while (i < len/8) {
->  		/*
-> @@ -74,6 +77,10 @@ static void orion_nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
->  		buf64[i++] = x;
->  	}
->  	i *= 8;
-> +#else
-> +	readsl(io_base, buf, len/4);
-> +	i = len / 4 * 4;
+>  /*
+>   * Each architecture has to provide the following macros.  They must access
+> @@ -90,10 +92,10 @@
+>  #define xip_cpu_idle()  do { } while (0)
+>  #endif
+>  
+> -#else
+> +#endif /* CONFIG_MTD_XIP */
+>  
+> +#ifndef __xipram
+>  #define __xipram
+> -
+> -#endif /* CONFIG_MTD_XIP */
 > +#endif
->  	while (i < len)
->  		buf[i++] = readb(io_base);
->  }
+>  
+>  #endif /* __LINUX_MTD_XIP_H__ */
