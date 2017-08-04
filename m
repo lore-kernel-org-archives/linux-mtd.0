@@ -1,26 +1,23 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ddX9Y-0005cj-BM
- for linux-mtd@lists.infradead.org; Fri, 04 Aug 2017 07:36:14 +0000
-Date: Fri, 4 Aug 2017 09:35:50 +0200
+ id 1ddXGO-0008G9-31
+ for linux-mtd@lists.infradead.org; Fri, 04 Aug 2017 07:43:18 +0000
+Date: Fri, 4 Aug 2017 09:42:54 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Arnd Bergmann <arnd@arndb.de>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Russell King <linux@armlinux.org.uk>, Andrew Morton
- <akpm@linux-foundation.org>, Nicholas Piggin <npiggin@gmail.com>, Daniel
- Lezcano <daniel.lezcano@linaro.org>, Michal Marek <mmarek@suse.com>, Linus
- Walleij <linus.walleij@linaro.org>, Lorenzo Pieralisi
- <lorenzo.pieralisi@arm.com>, Kees Cook <keescook@chromium.org>, Peter
- Zijlstra <peterz@infradead.org>, Chris Metcalf <cmetcalf@mellanox.com>,
- linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] [RESEND] mtd: only use __xipram annotation when
- XIP_KERNEL is set
-Message-ID: <20170804093550.41e5936c@bbrezillon>
-In-Reply-To: <20170721202636.3361536-1-arnd@arndb.de>
-References: <20170721202636.3361536-1-arnd@arndb.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>, kasan-dev@googlegroups.com,
+ Dmitry Vyukov <dvyukov@google.com>, Alexander Potapenko
+ <glider@google.com>, Andrey Ryabinin <aryabinin@virtuozzo.com>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Arend van Spriel
+ <arend.vanspriel@broadcom.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 05/11] mtd: cfi: reduce stack size with KASAN
+Message-ID: <20170804094254.369140c0@bbrezillon>
+In-Reply-To: <20170614211556.2062728-6-arnd@arndb.de>
+References: <20170614211556.2062728-1-arnd@arndb.de>
+ <20170614211556.2062728-6-arnd@arndb.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -33,102 +30,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 21 Jul 2017 22:26:25 +0200
+On Wed, 14 Jun 2017 23:15:40 +0200
 Arnd Bergmann <arnd@arndb.de> wrote:
 
-> When XIP_KERNEL is enabled, some functions are defined in the .data
-> ELF section because we require them to be in RAM whenever we communicate
-> with the flash chip. However this causes problems when FTRACE is
-> enabled and gcc emits calls to __gnu_mcount_nc in the function
-> prolog:
+> When CONFIG_KASAN is used, we consume a lot of extra stack space:
 > 
-> drivers/built-in.o: In function `cfi_chip_setup':
-> :(.data+0x272fc): relocation truncated to fit: R_ARM_CALL against symbol `__gnu_mcount_nc' defined in .text section in arch/arm/kernel/built-in.o
-> drivers/built-in.o: In function `cfi_probe_chip':
-> :(.data+0x27de8): relocation truncated to fit: R_ARM_CALL against symbol `__gnu_mcount_nc' defined in .text section in arch/arm/kernel/built-in.o
-> /tmp/ccY172rP.s: Assembler messages:
-> /tmp/ccY172rP.s:70: Warning: ignoring changed section attributes for .data
-> /tmp/ccY172rP.s: Error: 1 warning, treating warnings as errors
-> make[5]: *** [drivers/mtd/chips/cfi_probe.o] Error 1
-> /tmp/ccK4rjeO.s: Assembler messages:
-> /tmp/ccK4rjeO.s:421: Warning: ignoring changed section attributes for .data
-> /tmp/ccK4rjeO.s: Error: 1 warning, treating warnings as errors
-> make[5]: *** [drivers/mtd/chips/cfi_util.o] Error 1
-> /tmp/ccUvhCYR.s: Assembler messages:
-> /tmp/ccUvhCYR.s:1895: Warning: ignoring changed section attributes for .data
-> /tmp/ccUvhCYR.s: Error: 1 warning, treating warnings as errors
+> drivers/mtd/chips/cfi_cmdset_0020.c: In function 'do_write_buffer':
+> drivers/mtd/chips/cfi_cmdset_0020.c:603:1: error: the frame size of 2184 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]
+> drivers/mtd/chips/cfi_cmdset_0020.c: In function 'cfi_staa_erase_varsize':
+> drivers/mtd/chips/cfi_cmdset_0020.c:972:1: error: the frame size of 1936 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]
+> drivers/mtd/chips/cfi_cmdset_0001.c: In function 'do_write_buffer':
+> drivers/mtd/chips/cfi_cmdset_0001.c:1841:1: error: the frame size of 1776 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]
 > 
-> Specifically, this does not work because the .data section is not
-> marked executable, which leads LD to not generate trampolines for
-> long calls.
+> This marks some functions as noinline_if_stackbloat to keep reduce the
+> overall stack size.
 > 
-> This moves the __xipram functions into their own .xiptext section instead.
-> The section is still placed next to .data and located in RAM but is marked
-> executable, which avoids the build errors.
-> 
-> Also, we only need to place the XIP functions into a separate section
-> if both CONFIG_XIP_KERNEL and CONFIG_MTD_XIP are set: When only MTD_XIP
-> is used, the whole kernel is still in RAM and we do not need to worry
-> about pulling out the rug under it. When only XIP_KERNEL but not MTD_XIP
-> is set, the kernel is in some form of ROM, but we never write to it.
-> 
-> Note that MTD_XIP has been broken on ARM since around 2011 or 2012. I
-> have sent another patch[2] to fix compilation, which I plan to merge
-> through arm-soc unless there are objections. The obvious alternative
-> to that would be to completely rip out the MTD_XIP support from the
-> kernel, since obviously nobody has been using it in a long while.
-> 
-> Link: [1] https://patchwork.kernel.org/patch/8109771/
-> Link: [2] https://patchwork.kernel.org/patch/9855225/
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  include/asm-generic/vmlinux.lds.h |  1 +
->  include/linux/mtd/xip.h           | 10 ++++++----
-
-For the MTD part,
-
-Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-
->  2 files changed, 7 insertions(+), 4 deletions(-)
+>  drivers/mtd/chips/cfi_cmdset_0020.c | 8 ++++----
+>  include/linux/mtd/map.h             | 8 ++++----
+>  2 files changed, 8 insertions(+), 8 deletions(-)
 > 
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> index da0be9a8d1de..ff507c178327 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -203,6 +203,7 @@
->   * pull in .data..stuff which has its own requirements. Same for bss.
->   */
->  #define DATA_DATA							\
-> +	*(.xiptext)							\
->  	*(.data .data.[0-9a-zA-Z_]*)					\
->  	*(.ref.data)							\
->  	*(.data..shared_aligned) /* percpu related */			\
-> diff --git a/include/linux/mtd/xip.h b/include/linux/mtd/xip.h
-> index abed4dec5c2f..e373690cce0a 100644
-> --- a/include/linux/mtd/xip.h
-> +++ b/include/linux/mtd/xip.h
-> @@ -30,7 +30,9 @@
->   * obviously not be running from flash.  The __xipram is therefore marking
->   * those functions so they get relocated to ram.
->   */
-> -#define __xipram noinline __attribute__ ((__section__ (".data")))
-> +#ifdef CONFIG_XIP_KERNEL
-> +#define __xipram noinline __attribute__ ((__section__ (".xiptext")))
-> +#endif
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0020.c b/drivers/mtd/chips/cfi_cmdset_0020.c
+> index 7d342965f392..5eee5e883f55 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0020.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0020.c
+> @@ -244,7 +244,7 @@ static struct mtd_info *cfi_staa_setup(struct map_info *map)
+>  }
 >  
->  /*
->   * Each architecture has to provide the following macros.  They must access
-> @@ -90,10 +92,10 @@
->  #define xip_cpu_idle()  do { } while (0)
+>  
+> -static inline int do_read_onechip(struct map_info *map, struct flchip *chip, loff_t adr, size_t len, u_char *buf)
+> +static noinline_if_stackbloat int do_read_onechip(struct map_info *map, struct flchip *chip, loff_t adr, size_t len, u_char *buf)
+
+Why do we even need to mark those functions inline in the first place?
+Isn't the compiler smart enough to decide when it should inline things?
+
+>  {
+>  	map_word status, status_OK;
+>  	unsigned long timeo;
+> @@ -728,7 +728,7 @@ cfi_staa_writev(struct mtd_info *mtd, const struct kvec *vecs,
+>  }
+>  
+>  
+> -static inline int do_erase_oneblock(struct map_info *map, struct flchip *chip, unsigned long adr)
+> +static noinline_if_stackbloat int do_erase_oneblock(struct map_info *map, struct flchip *chip, unsigned long adr)
+>  {
+>  	struct cfi_private *cfi = map->fldrv_priv;
+>  	map_word status, status_OK;
+> @@ -1029,7 +1029,7 @@ static void cfi_staa_sync (struct mtd_info *mtd)
+>  	}
+>  }
+>  
+> -static inline int do_lock_oneblock(struct map_info *map, struct flchip *chip, unsigned long adr)
+> +static noinline_if_stackbloat int do_lock_oneblock(struct map_info *map, struct flchip *chip, unsigned long adr)
+>  {
+>  	struct cfi_private *cfi = map->fldrv_priv;
+>  	map_word status, status_OK;
+> @@ -1175,7 +1175,7 @@ static int cfi_staa_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  	}
+>  	return 0;
+>  }
+> -static inline int do_unlock_oneblock(struct map_info *map, struct flchip *chip, unsigned long adr)
+> +static noinline_if_stackbloat int do_unlock_oneblock(struct map_info *map, struct flchip *chip, unsigned long adr)
+>  {
+>  	struct cfi_private *cfi = map->fldrv_priv;
+>  	map_word status, status_OK;
+> diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
+> index 3aa56e3104bb..29db74314db8 100644
+> --- a/include/linux/mtd/map.h
+> +++ b/include/linux/mtd/map.h
+> @@ -316,7 +316,7 @@ static inline map_word map_word_or(struct map_info *map, map_word val1, map_word
+>  	return r;
+>  }
+>  
+> -static inline int map_word_andequal(struct map_info *map, map_word val1, map_word val2, map_word val3)
+> +static noinline_if_stackbloat int map_word_andequal(struct map_info *map, map_word val1, map_word val2, map_word val3)
+
+It's indeed needed for those defined in a header.
+
+>  {
+>  	int i;
+>  
+> @@ -328,7 +328,7 @@ static inline int map_word_andequal(struct map_info *map, map_word val1, map_wor
+>  	return 1;
+>  }
+>  
+> -static inline int map_word_bitsset(struct map_info *map, map_word val1, map_word val2)
+> +static noinline_if_stackbloat int map_word_bitsset(struct map_info *map, map_word val1, map_word val2)
+>  {
+>  	int i;
+>  
+> @@ -362,7 +362,7 @@ static inline map_word map_word_load(struct map_info *map, const void *ptr)
+>  	return r;
+>  }
+>  
+> -static inline map_word map_word_load_partial(struct map_info *map, map_word orig, const unsigned char *buf, int start, int len)
+> +static noinline_if_stackbloat map_word map_word_load_partial(struct map_info *map, map_word orig, const unsigned char *buf, int start, int len)
+>  {
+>  	int i;
+>  
+> @@ -392,7 +392,7 @@ static inline map_word map_word_load_partial(struct map_info *map, map_word orig
+>  #define MAP_FF_LIMIT 8
 >  #endif
 >  
-> -#else
-> +#endif /* CONFIG_MTD_XIP */
->  
-> +#ifndef __xipram
->  #define __xipram
-> -
-> -#endif /* CONFIG_MTD_XIP */
-> +#endif
->  
->  #endif /* __LINUX_MTD_XIP_H__ */
+> -static inline map_word map_word_ff(struct map_info *map)
+> +static noinline_if_stackbloat map_word map_word_ff(struct map_info *map)
+>  {
+>  	map_word r;
+>  	int i;
