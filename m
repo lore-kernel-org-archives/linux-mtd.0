@@ -1,25 +1,20 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ddVZz-0005T7-I7
- for linux-mtd@lists.infradead.org; Fri, 04 Aug 2017 05:55:25 +0000
-Subject: Re: [PATCH v2 17/25] mtd: nand: qcom: add BAM DMA descriptor handling
-To: Abhishek Sahu <absahu@codeaurora.org>, dwmw2@infradead.org,
- computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
- marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr,
- robh+dt@kernel.org, mark.rutland@arm.com
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- andy.gross@linaro.org, sricharan@codeaurora.org
-References: <1500464893-11352-1-git-send-email-absahu@codeaurora.org>
- <1500464893-11352-18-git-send-email-absahu@codeaurora.org>
-From: Archit Taneja <architt@codeaurora.org>
-Message-ID: <1dcd57be-0c97-2025-ff01-42b086833357@codeaurora.org>
-Date: Fri, 4 Aug 2017 11:24:55 +0530
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1ddX5E-0003iR-Fp
+ for linux-mtd@lists.infradead.org; Fri, 04 Aug 2017 07:31:46 +0000
+Date: Fri, 4 Aug 2017 09:31:23 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
+ marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr, narmstrong@baylibre.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/6] Handle clk_prepare_enable/clk_disable_unprepare.
+Message-ID: <20170804093123.48e49db1@bbrezillon>
+In-Reply-To: <1501587309-20900-1-git-send-email-arvind.yadav.cs@gmail.com>
+References: <1501587309-20900-1-git-send-email-arvind.yadav.cs@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1500464893-11352-18-git-send-email-absahu@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,253 +24,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue,  1 Aug 2017 17:05:08 +0530
+Arvind Yadav <arvind.yadav.cs@gmail.com> wrote:
 
+> clk_prepare_enable() can fail here and we must check its return value.
+> *_probe() can fail here and we must disable clock.
+> 
+> Arvind Yadav (6):
+>   [PATCH 1/6] mtd: nand: denali: Handle return value of clk_prepare_enable.
+>   [PATCH 2/6] mtd: oxnas_nand: Handle clk_prepare_enable/clk_disable_unprepare.
+>   [PATCH 3/6] mtd: nand: lpc32xx_slc: Handle return value of clk_prepare_enable.
+>   [PATCH 4/6] mtd: nand: vf610_nfc: Handle return value of clk_prepare_enable.
+>   [PATCH 5/6] mtd: nand: lpc32xx_mlc: Handle return value of clk_prepare_enable.
+>   [PATCH 6/6] mtd: st_spi_fsm: Handle clk_prepare_enable/clk_disable_unprepare.
 
-On 07/19/2017 05:18 PM, Abhishek Sahu wrote:
-> 1. prepare_bam_async_desc is the function which will call
->     all the DMA API’s. It will fetch the outstanding scatter gather
->     list for passed channel and will do the DMA descriptor formation.
->     The DMA flag is dependent upon the type of channel.
-> 
-> 2. For ADM DMA, the descriptor is being formed for every DMA
->     request so its sgl count will be always 1 while in BAM DMA, the
->     clubbing of descriptor is being done to increase throughput.
-> 
-> 3. ADM uses only one channel while in BAM, data descriptors
->     will be submitted to tx channel (for write) or rx channel
->     (for read) and all the registers read/write descriptors in
->     command channel.
+Applied everything except patch 4.
 
-Reviewed-by: Archit Taneja <architt@codeaurora.org>
+Thanks,
+
+Boris
 
 > 
-> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
-> ---
->   drivers/mtd/nand/qcom_nandc.c | 143 ++++++++++++++++++++++++++++++++++++++----
->   1 file changed, 130 insertions(+), 13 deletions(-)
+>  drivers/mtd/devices/st_spi_fsm.c | 20 ++++++++++++--------
+>  drivers/mtd/nand/denali_dt.c     |  4 +++-
+>  drivers/mtd/nand/lpc32xx_mlc.c   |  9 +++++++--
+>  drivers/mtd/nand/lpc32xx_slc.c   |  9 +++++++--
+>  drivers/mtd/nand/oxnas_nand.c    | 25 ++++++++++++++++++-------
+>  drivers/mtd/nand/vf610_nfc.c     |  5 ++++-
+>  6 files changed, 51 insertions(+), 21 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-> index fc29c97..589108b 100644
-> --- a/drivers/mtd/nand/qcom_nandc.c
-> +++ b/drivers/mtd/nand/qcom_nandc.c
-> @@ -209,14 +209,23 @@ struct bam_transaction {
->    * This data type corresponds to the nand dma descriptor
->    * @list - list for desc_info
->    * @dir - DMA transfer direction
-> - * @sgl - sgl which will be used for single sgl dma descriptor
-> + * @adm_sgl - sgl which will be used for single sgl dma descriptor. Only used by
-> + *	      ADM
-> + * @bam_sgl - sgl which will be used for dma descriptor. Only used by BAM
-> + * @sgl_cnt - number of SGL in bam_sgl. Only used by BAM
->    * @dma_desc - low level dma engine descriptor
->    */
->   struct desc_info {
->   	struct list_head node;
->   
->   	enum dma_data_direction dir;
-> -	struct scatterlist sgl;
-> +	union {
-> +		struct scatterlist adm_sgl;
-> +		struct {
-> +			struct scatterlist *bam_sgl;
-> +			int sgl_cnt;
-> +		};
-> +	};
->   	struct dma_async_tx_descriptor *dma_desc;
->   };
->   
-> @@ -580,9 +589,77 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read)
->   	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
->   }
->   
-> -static int prep_dma_desc(struct qcom_nand_controller *nandc, bool read,
-> -			 int reg_off, const void *vaddr, int size,
-> -			 bool flow_control)
-> +/*
-> + * Maps the scatter gather list for DMA transfer and forms the DMA descriptor
-> + * for BAM. This descriptor will be added in the NAND DMA descriptor queue
-> + * which will be submitted to DMA engine.
-> + */
-> +static int prepare_bam_async_desc(struct qcom_nand_controller *nandc,
-> +				  struct dma_chan *chan,
-> +				  unsigned long flags)
-> +{
-> +	struct desc_info *desc;
-> +	struct scatterlist *sgl;
-> +	unsigned int sgl_cnt;
-> +	int ret;
-> +	struct bam_transaction *bam_txn = nandc->bam_txn;
-> +	enum dma_transfer_direction dir_eng;
-> +	struct dma_async_tx_descriptor *dma_desc;
-> +
-> +	desc = kzalloc(sizeof(*desc), GFP_KERNEL);
-> +	if (!desc)
-> +		return -ENOMEM;
-> +
-> +	if (chan == nandc->cmd_chan) {
-> +		sgl = &bam_txn->cmd_sgl[bam_txn->cmd_sgl_start];
-> +		sgl_cnt = bam_txn->cmd_sgl_pos - bam_txn->cmd_sgl_start;
-> +		bam_txn->cmd_sgl_start = bam_txn->cmd_sgl_pos;
-> +		dir_eng = DMA_MEM_TO_DEV;
-> +		desc->dir = DMA_TO_DEVICE;
-> +	} else if (chan == nandc->tx_chan) {
-> +		sgl = &bam_txn->data_sgl[bam_txn->tx_sgl_start];
-> +		sgl_cnt = bam_txn->tx_sgl_pos - bam_txn->tx_sgl_start;
-> +		bam_txn->tx_sgl_start = bam_txn->tx_sgl_pos;
-> +		dir_eng = DMA_MEM_TO_DEV;
-> +		desc->dir = DMA_TO_DEVICE;
-> +	} else {
-> +		sgl = &bam_txn->data_sgl[bam_txn->rx_sgl_start];
-> +		sgl_cnt = bam_txn->rx_sgl_pos - bam_txn->rx_sgl_start;
-> +		bam_txn->rx_sgl_start = bam_txn->rx_sgl_pos;
-> +		desc->dir = DMA_FROM_DEVICE;
-> +		dir_eng = DMA_DEV_TO_MEM;
-> +	}
-> +
-> +	sg_mark_end(sgl + sgl_cnt - 1);
-> +	ret = dma_map_sg(nandc->dev, sgl, sgl_cnt, desc->dir);
-> +	if (ret == 0) {
-> +		dev_err(nandc->dev, "failure in mapping desc\n");
-> +		kfree(desc);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	desc->sgl_cnt = sgl_cnt;
-> +	desc->bam_sgl = sgl;
-> +
-> +	dma_desc = dmaengine_prep_slave_sg(chan, sgl, sgl_cnt, dir_eng,
-> +					   flags);
-> +
-> +	if (!dma_desc) {
-> +		dev_err(nandc->dev, "failure in prep desc\n");
-> +		kfree(desc);
-> +		return -EINVAL;
-> +	}
-> +
-> +	desc->dma_desc = dma_desc;
-> +
-> +	list_add_tail(&desc->node, &nandc->desc_list);
-> +
-> +	return 0;
-> +}
-> +
-> +static int prep_adm_dma_desc(struct qcom_nand_controller *nandc, bool read,
-> +			     int reg_off, const void *vaddr, int size,
-> +			     bool flow_control)
->   {
->   	struct desc_info *desc;
->   	struct dma_async_tx_descriptor *dma_desc;
-> @@ -595,7 +672,7 @@ static int prep_dma_desc(struct qcom_nand_controller *nandc, bool read,
->   	if (!desc)
->   		return -ENOMEM;
->   
-> -	sgl = &desc->sgl;
-> +	sgl = &desc->adm_sgl;
->   
->   	sg_init_one(sgl, vaddr, size);
->   
-> @@ -671,7 +748,7 @@ static int read_reg_dma(struct qcom_nand_controller *nandc, int first,
->   	vaddr = nandc->reg_read_buf + nandc->reg_read_pos;
->   	nandc->reg_read_pos += num_regs;
->   
-> -	return prep_dma_desc(nandc, true, first, vaddr, size, flow_control);
-> +	return prep_adm_dma_desc(nandc, true, first, vaddr, size, flow_control);
->   }
->   
->   /*
-> @@ -702,7 +779,8 @@ static int write_reg_dma(struct qcom_nand_controller *nandc, int first,
->   
->   	size = num_regs * sizeof(u32);
->   
-> -	return prep_dma_desc(nandc, false, first, vaddr, size, flow_control);
-> +	return prep_adm_dma_desc(nandc, false, first, vaddr, size,
-> +				 flow_control);
->   }
->   
->   /*
-> @@ -716,7 +794,7 @@ static int write_reg_dma(struct qcom_nand_controller *nandc, int first,
->   static int read_data_dma(struct qcom_nand_controller *nandc, int reg_off,
->   			 const u8 *vaddr, int size)
->   {
-> -	return prep_dma_desc(nandc, true, reg_off, vaddr, size, false);
-> +	return prep_adm_dma_desc(nandc, true, reg_off, vaddr, size, false);
->   }
->   
->   /*
-> @@ -730,7 +808,7 @@ static int read_data_dma(struct qcom_nand_controller *nandc, int reg_off,
->   static int write_data_dma(struct qcom_nand_controller *nandc, int reg_off,
->   			  const u8 *vaddr, int size)
->   {
-> -	return prep_dma_desc(nandc, false, reg_off, vaddr, size, false);
-> +	return prep_adm_dma_desc(nandc, false, reg_off, vaddr, size, false);
->   }
->   
->   /*
-> @@ -930,12 +1008,44 @@ static int submit_descs(struct qcom_nand_controller *nandc)
->   {
->   	struct desc_info *desc;
->   	dma_cookie_t cookie = 0;
-> +	struct bam_transaction *bam_txn = nandc->bam_txn;
-> +	int r;
-> +
-> +	if (nandc->props->is_bam) {
-> +		if (bam_txn->rx_sgl_pos > bam_txn->rx_sgl_start) {
-> +			r = prepare_bam_async_desc(nandc, nandc->rx_chan, 0);
-> +			if (r)
-> +				return r;
-> +		}
-> +
-> +		if (bam_txn->tx_sgl_pos > bam_txn->tx_sgl_start) {
-> +			r = prepare_bam_async_desc(nandc, nandc->tx_chan,
-> +						   DMA_PREP_INTERRUPT);
-> +			if (r)
-> +				return r;
-> +		}
-> +
-> +		if (bam_txn->cmd_sgl_pos > bam_txn->cmd_sgl_start) {
-> +			r = prepare_bam_async_desc(nandc, nandc->cmd_chan,
-> +						   DMA_PREP_CMD);
-> +			if (r)
-> +				return r;
-> +		}
-> +	}
->   
->   	list_for_each_entry(desc, &nandc->desc_list, node)
->   		cookie = dmaengine_submit(desc->dma_desc);
->   
-> -	if (dma_sync_wait(nandc->chan, cookie) != DMA_COMPLETE)
-> -		return -ETIMEDOUT;
-> +	if (nandc->props->is_bam) {
-> +		dma_async_issue_pending(nandc->tx_chan);
-> +		dma_async_issue_pending(nandc->rx_chan);
-> +
-> +		if (dma_sync_wait(nandc->cmd_chan, cookie) != DMA_COMPLETE)
-> +			return -ETIMEDOUT;
-> +	} else {
-> +		if (dma_sync_wait(nandc->chan, cookie) != DMA_COMPLETE)
-> +			return -ETIMEDOUT;
-> +	}
->   
->   	return 0;
->   }
-> @@ -946,7 +1056,14 @@ static void free_descs(struct qcom_nand_controller *nandc)
->   
->   	list_for_each_entry_safe(desc, n, &nandc->desc_list, node) {
->   		list_del(&desc->node);
-> -		dma_unmap_sg(nandc->dev, &desc->sgl, 1, desc->dir);
-> +
-> +		if (nandc->props->is_bam)
-> +			dma_unmap_sg(nandc->dev, desc->bam_sgl,
-> +				     desc->sgl_cnt, desc->dir);
-> +		else
-> +			dma_unmap_sg(nandc->dev, &desc->adm_sgl, 1,
-> +				     desc->dir);
-> +
->   		kfree(desc);
->   	}
->   }
-> 
-
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
