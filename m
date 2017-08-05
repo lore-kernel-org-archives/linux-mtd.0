@@ -1,18 +1,22 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ddy0y-0006tU-W2
- for linux-mtd@lists.infradead.org; Sat, 05 Aug 2017 12:17:10 +0000
-Received: by mail-wm0-x243.google.com with SMTP id y206so8442799wmd.5
- for <linux-mtd@lists.infradead.org>; Sat, 05 Aug 2017 05:16:48 -0700 (PDT)
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To: boris.brezillon@free-electrons.com,
-	linux-mtd@lists.infradead.org
-Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
- marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH] mtd: nand: hynix: add support for 20nm NAND chips
-Date: Sat,  5 Aug 2017 14:16:24 +0200
-Message-Id: <20170805121624.25553-1-martin.blumenstingl@googlemail.com>
+ id 1de1ok-0005IS-BM
+ for linux-mtd@lists.infradead.org; Sat, 05 Aug 2017 16:20:48 +0000
+From: Abhishek Sahu <absahu@codeaurora.org>
+To: dwmw2@infradead.org, boris.brezillon@free-electrons.com,
+ computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
+ mark.rutland@arm.com
+Cc: richard@nod.at, cyrille.pitchen@wedev4u.fr, devicetree@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, andy.gross@linaro.org,
+ architt@codeaurora.org, sricharan@codeaurora.org,
+ Abhishek Sahu <absahu@codeaurora.org>
+Subject: [PATCH v3 00/20] Add QCOM QPIC NAND support
+Date: Sat,  5 Aug 2017 21:49:38 +0530
+Message-Id: <1501949998-29859-1-git-send-email-absahu@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,51 +26,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-According to the datasheet of the H27UCG8T2BTR the NAND Technology field
-(6th byte of the "Device Identifier Description", bits 0-2) the
-following values are possible:
-- 0x0 = 48nm
-- 0x1 = 41nm
-- 0x2 = 32nm
-- 0x3 = 26nm
-- 0x4 = 20nm
-- (all others are reserved)
+* v3:
 
-Fix this by extending the mask for this field to allow detecting value
-0x4 (20nm) as valid NAND technology.
-Without this the detection of the ECC requirements fails, because the
-code assumes that the device is a 48nm device (0x4 & 0x3 = 0x0) and
-aborts with "Invalid ECC requirements" because it cannot map the "ECC
-Level". Extending the mask makes the ECC requirement detection code
-recognize this chip as <= 26nm and sets up the ECC step size and ECC
-strength correctly.
+1. Removed the patches already applied to linux-next and
+   rebased the remaining patches on [1]
+2. Reordered the patches and put the BAM DMA changes [2]
+   dependent patches and compatible string patches in last
+3. Removed the register offsets array and used the dev_cmd offsets
+4. Changed some macro names to small letters for better code readability
+5. Changed the compatible string to SoC specific
+6. Did minor code changes for adding comment, error handling, structure names
+7. Combined raw write (patch#18) and passing flag parameter (patch#22) patch
+   into one
+8. Made separate patch for compatible string and NAND properties
+9. Made separate patch for BAM command descriptor and data descriptors handling
+10. Changed commit message for some of the patches
+11. Addressed review comments given in v2
+12. Added Reviewed-by of Archit for some of the patches from v2
+13. All the MTD tests are working fine for IPQ8064 AP148, IPQ4019 DK04 and
+    IPQ8074 HK01 boards for v3 patches
 
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
- drivers/mtd/nand/nand_hynix.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+[1] http://git.infradead.org/l2-mtd.git/shortlog/refs/heads/nand/next
+[2] http://www.spinics.net/lists/dmaengine/msg13662.html
 
-diff --git a/drivers/mtd/nand/nand_hynix.c b/drivers/mtd/nand/nand_hynix.c
-index b12dc7325378..bd9a6e343848 100644
---- a/drivers/mtd/nand/nand_hynix.c
-+++ b/drivers/mtd/nand/nand_hynix.c
-@@ -477,7 +477,7 @@ static void hynix_nand_extract_ecc_requirements(struct nand_chip *chip,
- 		 * The ECC requirements field meaning depends on the
- 		 * NAND technology.
- 		 */
--		u8 nand_tech = chip->id.data[5] & 0x3;
-+		u8 nand_tech = chip->id.data[5] & 0x7;
- 
- 		if (nand_tech < 3) {
- 			/* > 26nm, reference: H27UBG8T2A datasheet */
-@@ -533,7 +533,7 @@ static void hynix_nand_extract_scrambling_requirements(struct nand_chip *chip,
- 		if (nand_tech > 0)
- 			chip->options |= NAND_NEED_SCRAMBLING;
- 	} else {
--		nand_tech = chip->id.data[5] & 0x3;
-+		nand_tech = chip->id.data[5] & 0x7;
- 
- 		/* < 32nm */
- 		if (nand_tech > 2)
+* v2:
+
+1. Addressed the review comments given in v1
+2. Removed the DMA coherent buffer for register read and used
+   streaming DMA API’s
+3. Reorganized the NAND read and write functions
+4. Separated patch for driver and documentation changes
+5. Changed the compatible string for EBI2
+
+* v1:
+
+http://www.spinics.net/lists/devicetree/msg183706.html
+
+Abhishek Sahu (20):
+  mtd: nand: qcom: program NAND_DEV_CMD_VLD register
+  mtd: nand: qcom: support for NAND controller properties
+  mtd: nand: qcom: add bam property for QPIC NAND controller
+  mtd: nand: qcom: add and initialize QPIC DMA resources
+  mtd: nand: qcom: DMA mapping support for register read buffer
+  mtd: nand: qcom: allocate BAM transaction
+  mtd: nand: qcom: add BAM DMA descriptor handling
+  mtd: nand: qcom: support for passing flags in transfer functions
+  mtd: nand: qcom: support for read location registers
+  mtd: nand: qcom: erased codeword detection configuration
+  mtd: nand: qcom: enable BAM or ADM mode
+  mtd: nand: qcom: QPIC data descriptors handling
+  mtd: nand: qcom: support for different DEV_CMD register offsets
+  mtd: nand: qcom: add command elements in BAM transaction
+  mtd: nand: qcom: support for command descriptor formation
+  dt-bindings: qcom_nandc: fix the ipq806x device tree example
+  dt-bindings: qcom_nandc: IPQ4019 QPIC NAND documentation
+  dt-bindings: qcom_nandc: IPQ8074 QPIC NAND documentation
+  mtd: nand: qcom: Support for IPQ4019 QPIC NAND controller
+  mtd: nand: qcom: Support for IPQ8074 QPIC NAND controller
+
+ .../devicetree/bindings/mtd/qcom_nandc.txt         |  63 +-
+ drivers/mtd/nand/qcom_nandc.c                      | 863 ++++++++++++++++++---
+ 2 files changed, 814 insertions(+), 112 deletions(-)
+
 -- 
-2.13.4
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
