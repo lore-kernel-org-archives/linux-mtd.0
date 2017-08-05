@@ -1,21 +1,24 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1de1pe-0006Uw-1N
- for linux-mtd@lists.infradead.org; Sat, 05 Aug 2017 16:21:44 +0000
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: dwmw2@infradead.org, boris.brezillon@free-electrons.com,
- computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
- mark.rutland@arm.com
-Cc: richard@nod.at, cyrille.pitchen@wedev4u.fr, devicetree@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, andy.gross@linaro.org,
- architt@codeaurora.org, sricharan@codeaurora.org,
- Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH v3 09/20] mtd: nand: qcom: support for read location registers
-Date: Sat,  5 Aug 2017 21:49:47 +0530
-Message-Id: <1501949998-29859-10-git-send-email-absahu@codeaurora.org>
-In-Reply-To: <1501949998-29859-1-git-send-email-absahu@codeaurora.org>
-References: <1501949998-29859-1-git-send-email-absahu@codeaurora.org>
+Received: from mail-lf0-x231.google.com ([2a00:1450:4010:c07::231])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1de6PW-0007e7-Lm
+ for linux-mtd@lists.infradead.org; Sat, 05 Aug 2017 21:15:04 +0000
+Received: by mail-lf0-x231.google.com with SMTP id g25so18147526lfh.1
+ for <linux-mtd@lists.infradead.org>; Sat, 05 Aug 2017 14:14:41 -0700 (PDT)
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Message-Id: <20170805211436.181653483@cogentembedded.com>
+Date: Sun, 06 Aug 2017 00:14:28 +0300
+To: Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
+Cc: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: [PATCH] mtd: nand: atmel: fix of_irq_get() error check
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Disposition: inline;
+ filename=mtd-nand-atmel-fix-of_irq_get-error-check.patch
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,181 +28,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In EBI2, all codeword data will be read in FLASH_BUF_ACC buffer
-and ADM will copy the data from source (FLASH_BUF_ACC) to
-destination (memory for data read).
+of_irq_get() may return 0 as well as negative error number on failure,
+while the driver only checks for the negative values.  The driver would
+then call devm_request_irq() for IRQ0  in its probe method and never get
+a valid interrupt.
 
-In QPIC, there is no FLASH_BUF_ACC and all the codeword data will
-held in QPIC BAM FIFO buffers. It provides multiple READ_LOCATION
-registers which will be used for copying the data from FIFO to
-memory. The READ_LOCATION register will be used to read a
-specific amount of data from a specific offset within the flash
-buffer. It supports sequential offset requests. Each request is
-composed of the following fields:
+Check for 'nc->irq <= 0' instead and return -ENXIO from the driver's probe
+iff of_irq_get() returned 0.
 
-a. Offset within the flash buffer from which data should be
-   read
-b. Amount of data to be read
-c. Flag bit specifying the last read request from the flash
-   buffer. Following the last read request the NANDc refers to the
-   buffer as empty.
+Fixes: f88fc122cc34 ("mtd: nand: Cleanup/rework the atmel_nand driver")
+Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 
-Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 ---
- drivers/mtd/nand/qcom_nandc.c | 64 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 64 insertions(+)
+The patch is against the 'master' branch of the 'linux-mtd.git' repo --
+the 'nand/fixes'  branch seems too old...
 
-diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-index fb1f5de..28543c1 100644
---- a/drivers/mtd/nand/qcom_nandc.c
-+++ b/drivers/mtd/nand/qcom_nandc.c
-@@ -53,6 +53,8 @@
- #define	NAND_VERSION			0xf08
- #define	NAND_READ_LOCATION_0		0xf20
- #define	NAND_READ_LOCATION_1		0xf24
-+#define	NAND_READ_LOCATION_2		0xf28
-+#define	NAND_READ_LOCATION_3		0xf2c
- 
- /* dummy register offsets, used by write_reg_dma */
- #define	NAND_DEV_CMD1_RESTORE		0xdead
-@@ -135,6 +137,11 @@
- #define	ERASED_PAGE			(PAGE_ALL_ERASED | PAGE_ERASED)
- #define	ERASED_CW			(CODEWORD_ALL_ERASED | CODEWORD_ERASED)
- 
-+/* NAND_READ_LOCATION_n bits */
-+#define READ_LOCATION_OFFSET		0
-+#define READ_LOCATION_SIZE		16
-+#define READ_LOCATION_LAST		31
-+
- /* Version Mask */
- #define	NAND_VERSION_MAJOR_MASK		0xf0000000
- #define	NAND_VERSION_MAJOR_SHIFT	28
-@@ -179,6 +186,12 @@
- #define	ECC_BCH_4BIT	BIT(2)
- #define	ECC_BCH_8BIT	BIT(3)
- 
-+#define nandc_set_readl(nandc, reg, offset, size, is_last)	\
-+nandc_set_reg(nandc, NAND_READ_LOCATION_##reg,			\
-+	      ((offset) << READ_LOCATION_OFFSET) |		\
-+	      ((size) << READ_LOCATION_SIZE) |			\
-+	      ((is_last) << READ_LOCATION_LAST))
-+
- #define QPIC_PER_CW_CMD_SGL		32
- #define QPIC_PER_CW_DATA_SGL		8
- 
-@@ -262,6 +275,11 @@ struct nandc_regs {
- 	__le32 orig_vld;
- 
- 	__le32 ecc_buf_cfg;
-+	__le32 read_location0;
-+	__le32 read_location1;
-+	__le32 read_location2;
-+	__le32 read_location3;
-+
- };
- 
- /*
-@@ -518,6 +536,14 @@ static __le32 *offset_to_nandc_reg(struct nandc_regs *regs, int offset)
- 		return &regs->orig_vld;
- 	case NAND_EBI2_ECC_BUF_CFG:
- 		return &regs->ecc_buf_cfg;
-+	case NAND_READ_LOCATION_0:
-+		return &regs->read_location0;
-+	case NAND_READ_LOCATION_1:
-+		return &regs->read_location1;
-+	case NAND_READ_LOCATION_2:
-+		return &regs->read_location2;
-+	case NAND_READ_LOCATION_3:
-+		return &regs->read_location3;
- 	default:
- 		return NULL;
+ drivers/mtd/nand/atmel/nand-controller.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+Index: linux-mtd/drivers/mtd/nand/atmel/nand-controller.c
+===================================================================
+--- linux-mtd.orig/drivers/mtd/nand/atmel/nand-controller.c
++++ linux-mtd/drivers/mtd/nand/atmel/nand-controller.c
+@@ -2078,11 +2078,11 @@ atmel_hsmc_nand_controller_legacy_init(s
  	}
-@@ -592,6 +618,10 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read)
- 	nandc_set_reg(nandc, NAND_FLASH_STATUS, host->clrflashstatus);
- 	nandc_set_reg(nandc, NAND_READ_STATUS, host->clrreadstatus);
- 	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
-+
-+	if (read)
-+		nandc_set_readl(nandc, 0, 0, host->use_ecc ?
-+				host->cw_data : host->cw_size, 1);
- }
  
- /*
-@@ -837,6 +867,10 @@ static void config_nand_page_read(struct qcom_nand_controller *nandc)
-  */
- static void config_nand_cw_read(struct qcom_nand_controller *nandc)
- {
-+	if (nandc->props->is_bam)
-+		write_reg_dma(nandc, NAND_READ_LOCATION_0, 4,
-+			      NAND_BAM_NEXT_SGL);
-+
- 	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
- 	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
+ 	nc->irq = of_irq_get(nand_np, 0);
+-	if (nc->irq < 0) {
+-		ret = nc->irq;
+-		if (ret != -EPROBE_DEFER)
++	if (nc->irq <= 0) {
++		if (nc->irq != -EPROBE_DEFER)
+ 			dev_err(dev, "Failed to get IRQ number (err = %d)\n",
+-				ret);
++				nc->irq);
++		ret = nc->irq ?: -ENXIO;
+ 		goto out;
+ 	}
  
-@@ -926,6 +960,7 @@ static int nandc_param(struct qcom_nand_host *host)
+@@ -2168,11 +2168,11 @@ atmel_hsmc_nand_controller_init(struct a
  
- 	nandc_set_reg(nandc, NAND_DEV_CMD1_RESTORE, nandc->cmd1);
- 	nandc_set_reg(nandc, NAND_DEV_CMD_VLD_RESTORE, nandc->vld);
-+	nandc_set_readl(nandc, 0, 0, 512, 1);
+ 	nc->irq = of_irq_get(np, 0);
+ 	of_node_put(np);
+-	if (nc->irq < 0) {
++	if (nc->irq <= 0) {
+ 		if (nc->irq != -EPROBE_DEFER)
+ 			dev_err(dev, "Failed to get IRQ number (err = %d)\n",
+ 				nc->irq);
+-		return nc->irq;
++		return nc->irq ?: -ENXIO;
+ 	}
  
- 	write_reg_dma(nandc, NAND_DEV_CMD_VLD, 1, 0);
- 	write_reg_dma(nandc, NAND_DEV_CMD1, 1, NAND_BAM_NEXT_SGL);
-@@ -1401,6 +1436,19 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
- 			oob_size = host->ecc_bytes_hw + host->spare_bytes;
- 		}
- 
-+		if (nandc->props->is_bam) {
-+			if (data_buf && oob_buf) {
-+				nandc_set_readl(nandc, 0, 0, data_size, 0);
-+				nandc_set_readl(nandc, 1, data_size,
-+						oob_size, 1);
-+			} else if (data_buf) {
-+				nandc_set_readl(nandc, 0, 0, data_size, 1);
-+			} else {
-+				nandc_set_readl(nandc, 0, data_size,
-+						oob_size, 1);
-+			}
-+		}
-+
- 		config_nand_cw_read(nandc);
- 
- 		if (data_buf)
-@@ -1460,6 +1508,7 @@ static int copy_last_cw(struct qcom_nand_host *host, int page)
- 
- 	set_address(host, host->cw_size * (ecc->steps - 1), page);
- 	update_rw_regs(host, 1, true);
-+	nandc_set_readl(nandc, 0, 0, size, 1);
- 
- 	config_nand_single_cw_page_read(nandc);
- 
-@@ -1505,6 +1554,7 @@ static int qcom_nandc_read_page_raw(struct mtd_info *mtd,
- 	u8 *data_buf, *oob_buf;
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 	int i, ret;
-+	int read_loc;
- 
- 	data_buf = buf;
- 	oob_buf = chip->oob_poi;
-@@ -1530,6 +1580,20 @@ static int qcom_nandc_read_page_raw(struct mtd_info *mtd,
- 			oob_size2 = host->ecc_bytes_hw + host->spare_bytes;
- 		}
- 
-+		if (nandc->props->is_bam) {
-+			read_loc = 0;
-+			nandc_set_readl(nandc, 0, read_loc, data_size1, 0);
-+			read_loc += data_size1;
-+
-+			nandc_set_readl(nandc, 1, read_loc, oob_size1, 0);
-+			read_loc += oob_size1;
-+
-+			nandc_set_readl(nandc, 2, read_loc, data_size2, 0);
-+			read_loc += data_size2;
-+
-+			nandc_set_readl(nandc, 3, read_loc, oob_size2, 1);
-+		}
-+
- 		config_nand_cw_read(nandc);
- 
- 		read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+ 	np = of_parse_phandle(dev->of_node, "atmel,nfc-io", 0);
