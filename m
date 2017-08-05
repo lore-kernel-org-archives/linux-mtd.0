@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1de1ps-0006V8-Je
- for linux-mtd@lists.infradead.org; Sat, 05 Aug 2017 16:21:57 +0000
+ id 1de1pe-0006Uy-1M
+ for linux-mtd@lists.infradead.org; Sat, 05 Aug 2017 16:21:44 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: dwmw2@infradead.org, boris.brezillon@free-electrons.com,
  computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
@@ -11,10 +11,10 @@ Cc: richard@nod.at, cyrille.pitchen@wedev4u.fr, devicetree@vger.kernel.org,
  linux-mtd@lists.infradead.org, andy.gross@linaro.org,
  architt@codeaurora.org, sricharan@codeaurora.org,
  Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH v3 13/20] mtd: nand: qcom: support for different DEV_CMD
- register offsets
-Date: Sat,  5 Aug 2017 21:49:51 +0530
-Message-Id: <1501949998-29859-14-git-send-email-absahu@codeaurora.org>
+Subject: [PATCH v3 10/20] mtd: nand: qcom: erased codeword detection
+ configuration
+Date: Sat,  5 Aug 2017 21:49:48 +0530
+Message-Id: <1501949998-29859-11-git-send-email-absahu@codeaurora.org>
 In-Reply-To: <1501949998-29859-1-git-send-email-absahu@codeaurora.org>
 References: <1501949998-29859-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,95 +26,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The FLASH_DEV_CMD registers starting offset is not same in
-different QPIC NAND controller versions. This patch adds
-the starting offset in NAND controller properties and uses
-the same for calculating the actual offset of these registers.
+The NAND controller returns ECC failure during read of completely
+erased codeword. The NAND controller has hardware functionality
+to detect erased codeword in case of BCH ECC algorithm. The
+NAND_ERASED_CW_DETECT_CFG register controls the erased
+codeword/page detection controller. This register should be reset
+before every page read by setting and clearing bit 0 of
+NAND_ERASED_CW_DETECT_CFG.
 
 Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 ---
- drivers/mtd/nand/qcom_nandc.c | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
+ drivers/mtd/nand/qcom_nandc.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
 diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-index d7a2ca4..c940a20 100644
+index 28543c1..67c7e62 100644
 --- a/drivers/mtd/nand/qcom_nandc.c
 +++ b/drivers/mtd/nand/qcom_nandc.c
-@@ -195,6 +195,9 @@
- 	      ((size) << READ_LOCATION_SIZE) |			\
- 	      ((is_last) << READ_LOCATION_LAST))
+@@ -202,6 +202,11 @@
+ #define NAND_BAM_NWD			BIT(1)
+ /* Finish writing in the current sgl and start writing in another sgl */
+ #define NAND_BAM_NEXT_SGL		BIT(2)
++/*
++ * Erased codeword status is being used two times in single transfer so this
++ * flag will determine the current value of erased codeword status register
++ */
++#define NAND_ERASED_CW_SET		BIT(4)
  
-+/* Returns the actual register address for NAND_FLASH_DEV_* */
-+#define nandc_dev_addr(nandc, reg) ((nandc)->props->flash_dev_offset + (reg))
-+
- #define QPIC_PER_CW_CMD_SGL		32
- #define QPIC_PER_CW_DATA_SGL		8
+ /*
+  * This data type corresponds to the BAM transaction which will be used for all
+@@ -280,6 +285,8 @@ struct nandc_regs {
+ 	__le32 read_location2;
+ 	__le32 read_location3;
  
-@@ -428,10 +431,12 @@ struct qcom_nand_host {
-  * among different NAND controllers.
-  * @ecc_modes - ecc mode for NAND
-  * @is_bam - whether NAND controller is using BAM
-+ * @flash_dev_offset - NAND_FLASH_DEV_* registers start offset
-  */
- struct qcom_nandc_props {
- 	u32 ecc_modes;
- 	bool is_bam;
-+	u32 flash_dev_offset;
- };
- 
- /* Frees the BAM transaction memory */
-@@ -846,6 +851,9 @@ static int read_reg_dma(struct qcom_nand_controller *nandc, int first,
- 	if (first == NAND_READ_ID || first == NAND_FLASH_STATUS)
- 		flow_control = true;
- 
-+	if (first == NAND_DEV_CMD_VLD || first == NAND_DEV_CMD1)
-+		first = nandc_dev_addr(nandc, first);
-+
- 	size = num_regs * sizeof(u32);
- 	vaddr = nandc->reg_read_buf + nandc->reg_read_pos;
- 	nandc->reg_read_pos += num_regs;
-@@ -883,11 +891,11 @@ static int write_reg_dma(struct qcom_nand_controller *nandc, int first,
- 	if (first == NAND_EXEC_CMD)
- 		flags |= NAND_BAM_NWD;
- 
--	if (first == NAND_DEV_CMD1_RESTORE)
--		first = NAND_DEV_CMD1;
-+	if (first == NAND_DEV_CMD1_RESTORE || first == NAND_DEV_CMD1)
-+		first = nandc_dev_addr(nandc, NAND_DEV_CMD1);
- 
--	if (first == NAND_DEV_CMD_VLD_RESTORE)
--		first = NAND_DEV_CMD_VLD;
-+	if (first == NAND_DEV_CMD_VLD_RESTORE || first == NAND_DEV_CMD_VLD)
-+		first = nandc_dev_addr(nandc, NAND_DEV_CMD_VLD);
- 
- 	size = num_regs * sizeof(u32);
- 
-@@ -2495,7 +2503,8 @@ static int qcom_nandc_setup(struct qcom_nand_controller *nandc)
- 
- 	/* kill onenand */
- 	nandc_write(nandc, SFLASHC_BURST_CFG, 0);
--	nandc_write(nandc, NAND_DEV_CMD_VLD, NAND_DEV_CMD_VLD_VAL);
-+	nandc_write(nandc, nandc_dev_addr(nandc, NAND_DEV_CMD_VLD),
-+		    NAND_DEV_CMD_VLD_VAL);
- 
- 	/* enable ADM or BAM DMA */
- 	if (nandc->props->is_bam) {
-@@ -2506,7 +2515,7 @@ static int qcom_nandc_setup(struct qcom_nand_controller *nandc)
- 	}
- 
- 	/* save the original values of these registers */
--	nandc->cmd1 = nandc_read(nandc, NAND_DEV_CMD1);
-+	nandc->cmd1 = nandc_read(nandc, nandc_dev_addr(nandc, NAND_DEV_CMD1));
- 	nandc->vld = NAND_DEV_CMD_VLD_VAL;
- 
- 	return 0;
-@@ -2755,6 +2764,7 @@ static int qcom_nandc_remove(struct platform_device *pdev)
- static const struct qcom_nandc_props ipq806x_nandc_props = {
- 	.ecc_modes = (ECC_RS_4BIT | ECC_BCH_8BIT),
- 	.is_bam = false,
-+	.flash_dev_offset = 0x0,
++	__le32 erased_cw_detect_cfg_clr;
++	__le32 erased_cw_detect_cfg_set;
  };
  
  /*
+@@ -807,6 +814,13 @@ static int write_reg_dma(struct qcom_nand_controller *nandc, int first,
+ 	if (first == NAND_FLASH_CMD)
+ 		flow_control = true;
+ 
++	if (first == NAND_ERASED_CW_DETECT_CFG) {
++		if (flags & NAND_ERASED_CW_SET)
++			vaddr = &regs->erased_cw_detect_cfg_set;
++		else
++			vaddr = &regs->erased_cw_detect_cfg_clr;
++	}
++
+ 	if (first == NAND_EXEC_CMD)
+ 		flags |= NAND_BAM_NWD;
+ 
+@@ -859,6 +873,9 @@ static void config_nand_page_read(struct qcom_nand_controller *nandc)
+ 	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
+ 	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
+ 	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
++	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1, 0);
++	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1,
++		      NAND_ERASED_CW_SET | NAND_BAM_NEXT_SGL);
+ }
+ 
+ /*
+@@ -2261,6 +2278,10 @@ static int qcom_nand_host_setup(struct qcom_nand_host *host)
+ 
+ 	host->clrflashstatus = FS_READY_BSY_N;
+ 	host->clrreadstatus = 0xc0;
++	nandc->regs->erased_cw_detect_cfg_clr =
++		cpu_to_le32(CLR_ERASED_PAGE_DET);
++	nandc->regs->erased_cw_detect_cfg_set =
++		cpu_to_le32(SET_ERASED_PAGE_DET);
+ 
+ 	dev_dbg(nandc->dev,
+ 		"cfg0 %x cfg1 %x ecc_buf_cfg %x ecc_bch cfg %x cw_size %d cw_data %d strength %d parity_bytes %d steps %d\n",
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
