@@ -1,18 +1,28 @@
-Received: from smtp04.smtpout.orange.fr ([80.12.242.126]
- helo=smtp.smtpout.orange.fr)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1deM9z-0004no-I9
- for linux-mtd@lists.infradead.org; Sun, 06 Aug 2017 14:04:06 +0000
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- kernel-janitors@vger.kernel.org,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] mtd: physmap_of: Fix resources leak in 'of_flash_probe()'
-Date: Sun,  6 Aug 2017 14:55:01 +0200
-Message-Id: <20170806125501.10368-1-christophe.jaillet@wanadoo.fr>
+Received: from smtp-out-sh.livemail.co.uk ([213.171.216.91]
+ helo=smtp-out-sh3.livemail.co.uk)
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1deMH8-0001ju-Tk
+ for linux-mtd@lists.infradead.org; Sun, 06 Aug 2017 14:11:30 +0000
+Received: from localhost (unknown [127.0.0.1])
+ by smtp-out-sh3.livemail.co.uk (Postfix) with ESMTP id 6FD8F798004
+ for <linux-mtd@lists.infradead.org>; Sun,  6 Aug 2017 14:11:00 +0000 (UTC)
+Received: from smtp-out-sh3.livemail.co.uk ([127.0.0.1])
+ by localhost (smtp-out-sh3.livemail.co.uk [127.0.0.1]) (amavisd-new,
+ port 10024)
+ with ESMTP id K2EiIFVT7g0U for <linux-mtd@lists.infradead.org>;
+ Sun,  6 Aug 2017 15:10:52 +0100 (BST)
+Received: from linweb03.linvh1.fasthosts.co.uk
+ (server88-208-252-194.fasthosts.net.uk [88.208.252.194])
+ by smtp-out-sh3.livemail.co.uk (Postfix) with ESMTP id DB56B798002
+ for <linux-mtd@lists.infradead.org>; Sun,  6 Aug 2017 15:10:52 +0100 (BST)
+Received: from localhost (localhost [IPv6:::1])
+ by linweb03.linvh1.fasthosts.co.uk (Postfix) with SMTP id BE84F1FF8D2
+ for <linux-mtd@lists.infradead.org>; Sun,  6 Aug 2017 15:10:52 +0100 (BST)
+Subject: You were invited by 
+Message-Id: <20170806141052.BE84F1FF8D2@linweb03.linvh1.fasthosts.co.uk>
+Date: Sun,  6 Aug 2017 15:10:52 +0100 (BST)
+From: yandengluan@163.com
+To: undisclosed-recipients: ;
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,31 +32,1018 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If 'of_flash_probe_gemini()' or 'of_flash_probe_versatile()' fail, we must
-reslease some resources, as already done in all error handling paths in
-this function.
+|
+|
+forget the above information 
+-----------------------------------------------------------------------------
+Nice day, dear friend-:)
+Hope this email find you well-:)
+This is Ana, a lovely girl from China shenzhen, manufacturer of audio connectors,dc connectors ,alligator clips, test cable,
+and rf connectors for 13 years.
+After saw your website, I thought you might be interested in our product as below picture showed,
+https://ae01.alicdn.com/kf/HTB1b2G.SpXXXXXYXpXXq6xXFXXXV.jpg   
+would you like to get some samples for testing , my friend ?We still have many other models, 
+i can send you our more information if it's okay for you, 
+ODM & OEM available since 2001
+dear friend -:)I'm here waiting for your reply-:)
+all email send to  sales@koko-go.com  
+Contact person : Ana
+whatsapp :+86-18126184197  
+E-mail :sales@koko-go.com   
+wechat : yibaokeji121  
+Skype : michael.zhaoyanhui  
+web :www.koko-go.com   
+-----------------------------------------------------------------------------
+forget the below information 
+|
+|
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/mtd/maps/physmap_of_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/maps/physmap_of_core.c b/drivers/mtd/maps/physmap_of_core.c
-index 62fa6836f218..2c8cc97ce019 100644
---- a/drivers/mtd/maps/physmap_of_core.c
-+++ b/drivers/mtd/maps/physmap_of_core.c
-@@ -235,10 +235,10 @@ static int of_flash_probe(struct platform_device *dev)
- 
- 		err = of_flash_probe_gemini(dev, dp, &info->list[i].map);
- 		if (err)
--			return err;
-+			goto err_out;
- 		err = of_flash_probe_versatile(dev, dp, &info->list[i].map);
- 		if (err)
--			return err;
-+			goto err_out;
- 
- 		err = -ENOMEM;
- 		info->list[i].map.virt = ioremap(info->list[i].map.phys,
--- 
-2.11.0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ to visit site at http://www.angelpaths.com/apshop/!
+Date: Sun, 06 Aug 2017 14:10:52 +0000
+From: yandengluan@163.com
+Reply-To: yandengluan@163.com
+Content-Type: text/plain;
+	charset="iso-8859-1"
+To: linux-mtd@lists.infradead.org
+Message-ID: <150202865221458267575987236cc3db3@www.angelpaths.com>
+MIME-Version: 1.0
+
+Thought you might be interested in seeing the Wheel of the Year spread at http://www.angelpaths.com/apshop/product_details.php?item_id=130
+
+
+|
+|
+forget the above information 
+-----------------------------------------------------------------------------
+Nice day, dear friend-:)
+Hope this email find you well-:)
+This is Ana, a lovely girl from China shenzhen, manufacturer of audio connectors,dc connectors ,alligator clips, test cable,
+and rf connectors for 13 years.
+After saw your website, I thought you might be interested in our product as below picture showed,
+https://ae01.alicdn.com/kf/HTB1b2G.SpXXXXXYXpXXq6xXFXXXV.jpg   
+would you like to get some samples for testing , my friend ?We still have many other models, 
+i can send you our more information if it's okay for you, 
+ODM & OEM available since 2001
+dear friend -:)I'm here waiting for your reply-:)
+all email send to  sales@koko-go.com  
+Contact person : Ana
+whatsapp :+86-18126184197  
+E-mail :sales@koko-go.com   
+wechat : yibaokeji121  
+Skype : michael.zhaoyanhui  
+web :www.koko-go.com   
+-----------------------------------------------------------------------------
+forget the below information 
+|
+|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ left you a note:
+Serve banana plugs, audio connectors,dc connectors,alligator clips, battery clips, and rf connectors
