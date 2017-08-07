@@ -1,26 +1,18 @@
-Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dekA9-00077C-3y
- for linux-mtd@lists.infradead.org; Mon, 07 Aug 2017 15:41:51 +0000
-Received: by mail-wm0-x22e.google.com with SMTP id m85so10367901wma.0
- for <linux-mtd@lists.infradead.org>; Mon, 07 Aug 2017 08:41:28 -0700 (PDT)
-Date: Mon, 7 Aug 2017 16:41:24 +0100
-From: Lee Jones <lee.jones@linaro.org>
-To: Ludovic Desroches <ludovic.desroches@microchip.com>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- nicolas.ferre@microchip.com, alexandre.belloni@free-electrons.com,
- boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
- romain.izard.pro@gmail.com
-Subject: Re: [PATCH v2 1/3] mfd: syscon: update Atmel SMC binding doc
-Message-ID: <20170807154124.norjlxavx4u75yzs@dell>
-References: <20170718132220.25018-1-ludovic.desroches@microchip.com>
- <20170718132220.25018-2-ludovic.desroches@microchip.com>
+Received: from mail-oi0-x243.google.com ([2607:f8b0:4003:c06::243])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dem5x-0006u8-8w
+ for linux-mtd@lists.infradead.org; Mon, 07 Aug 2017 17:45:38 +0000
+Received: by mail-oi0-x243.google.com with SMTP id j194so1068935oib.4
+ for <linux-mtd@lists.infradead.org>; Mon, 07 Aug 2017 10:45:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20170718132220.25018-2-ludovic.desroches@microchip.com>
+Reply-To: ibrahim.buba@live.fr
+From: "Dr. IBRAHIM BUBA" <dibbuba3@gmail.com>
+Date: Mon, 7 Aug 2017 19:45:15 +0200
+Message-ID: <CAM9mrauDOUo49jh9Aup+wH=YsUQbS4D=3RTNXUEpzGuYwr4e-w@mail.gmail.com>
+Subject: Business Proposal
+To: undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,38 +22,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Enjoy!
+My dear good friend
+Greetings,
 
-The following changes since commit 5771a8c08880cdca3bfb4a3fc6d309d6bba20877:
+Please assist me to save my only child
 
-  Linux v4.13-rc1 (2017-07-15 15:22:10 -0700)
+I am Dr. IBRAHIM BUBA, the Head of file Department in Bank of  Africa.
+I seek your assistance and I  assured of your capability to champion
+this business opportunity to remit $10, million USD. Into  your
+account. I agree that 40% of this money will be for you 10% will be
+set aside for expenses  incurred during the business and 50% would be
+for me.
 
-are available in the git repository at:
+The depositor of the said fund died with his entire family,the
+depositor used his wife as the next  of kin but unfortunately, the
+wife died along side with him leaving nobody for the claim. I don't
+want the fund to go into our bank treasury account as unclaimed bill.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-arm-v4.14
+As the Head of file Department,I will present you to my bank as his
+next of kin (COUSIN / RELATION)  so that my bank will transfer the
+fund into your bank account. Then after the transfer of the fund  into
+your bank account I will travel down to your country for the sharing
+of the fund. At this  juncture, I wish to tell you what prompted me to
+package this deal. I have my only 9 years old  daughter who has
+leukemia disease, a disease of the blood, and she needs a bone marrow
+transplant or  she will die. I want this transplanting to be done in
+any good children's hospital in your Country,  if there is one.
 
-for you to fetch changes up to 5df46ec0f4cf3b2cb0791abe5c68821a4f7ffffe:
+If you are interested send me the following information, And if you
+are not willing to handle the  transaction don=E2=80=99t bother to reply me=
+.
 
-  ARM: dts: at91: sama5d2: Use sama5d2 compatible string for SMC (2017-08-07 16:38:30 +0100)
 
-----------------------------------------------------------------
-Immutable branch between MFD and ARM due for the v4.14 merge window
+(1) Full Names:
+(2) Residential Address:
+(3) Country of Residence:
+(4) Age:
+(5) Phone/Cell Number:
+(6) Occupation:
 
-----------------------------------------------------------------
-Ludovic Desroches (3):
-      mfd: syscon: Update Atmel SMC binding doc
-      mfd: syscon: atmel-smc: Add helper to retrieve register layout
-      ARM: dts: at91: sama5d2: Use sama5d2 compatible string for SMC
-
- .../devicetree/bindings/mfd/atmel-smc.txt          |  1 +
- arch/arm/boot/dts/sama5d2.dtsi                     |  2 +-
- drivers/memory/atmel-ebi.c                         | 13 +++--
- drivers/mfd/atmel-smc.c                            | 67 +++++++++++++++++-----
- drivers/mtd/nand/atmel/nand-controller.c           | 10 +++-
- include/linux/mfd/syscon/atmel-smc.h               | 32 ++++++++---
- 
--- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Regards,
+Dr. IBRAHIM BUBA.
