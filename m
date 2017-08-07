@@ -1,23 +1,22 @@
-Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
+Received: from esa1.microchip.iphmx.com ([68.232.147.91])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1deWeb-0006Xi-Vn
- for linux-mtd@lists.infradead.org; Mon, 07 Aug 2017 01:16:23 +0000
-Received: by mail-pg0-x244.google.com with SMTP id 123so7299320pga.5
- for <linux-mtd@lists.infradead.org>; Sun, 06 Aug 2017 18:16:00 -0700 (PDT)
-Date: Sun, 6 Aug 2017 18:15:52 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Marek Vasut <marex@denx.de>, David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PULL v2] mtd: nand: Fixes for 4.13-rc4
-Message-ID: <20170807011552.GA102997@google.com>
-References: <20170802103307.42e69d38@bbrezillon>
+ id 1deYt6-0001gN-J4
+ for linux-mtd@lists.infradead.org; Mon, 07 Aug 2017 03:39:30 +0000
+Subject: Re: [PATCH] mtd: nand: atmel: fix of_irq_get() error check
+To: Wenyou Yang <wenyou.yang@atmel.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, <linux-mtd@lists.infradead.org>
+References: <20170805211436.181653483@cogentembedded.com>
+From: "Yang, Wenyou" <Wenyou.Yang@Microchip.com>
+Message-ID: <244d6398-6fa9-17c2-43a4-7309fd080318@Microchip.com>
+Date: Mon, 7 Aug 2017 11:38:55 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170802103307.42e69d38@bbrezillon>
+In-Reply-To: <20170805211436.181653483@cogentembedded.com>
+Content-Type: text/plain; charset="iso-8859-15"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +26,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Aug 02, 2017 at 10:33:07AM +0200, Boris Brezillon wrote:
-> Hi Brian,
-> 
-> Sending a v2 of this PR because I forgot to add the Fixes and CC-stable
-> tags on Miquel's patch.
-> 
-> This PR contains a few fixes for 4.13. Some of them are fixing
-> long standing bugs which no one ever complained about (like the small
-> page OOB layout fix) or theoretical ones (like the div-by-zero in the
-> sunxi driver), but others are fixing real bugs introduced in 4.13
-> (all atmel related bugs have been discovered recently and should
-> ideally be fixed before 4.13 is released).
-> 
-> As usual, let me know if there's something wrong in this PR. If not, can
-> you do your best to get these sent to Linus before the end of the week?
+tested
 
-I'm not sure if I've satisfied the last part, but otherwise...pulled.
 
-BTW, you've double-tagged your sign-off on a few of these, probably
-because you wrote them yourself, then still used an automated 'apply +
-sign off' script. Not a big deal.
-
-Brian
+On 2017/8/6 5:14, Sergei Shtylyov wrote:
