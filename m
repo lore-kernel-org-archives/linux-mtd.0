@@ -1,22 +1,62 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1demT2-0007DP-G1
- for linux-mtd@lists.infradead.org; Mon, 07 Aug 2017 18:09:29 +0000
-Subject: Re: Regarding UBI/UBIFS corruptions during random power-cuts.
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, bhuvanchandra.dv@toradex.com
-References: <c44fc096-c994-5b63-2647-1774e8406c0c@codeaurora.org>
- <1ad7c77f-98e3-5d70-aa62-b72431000415@nod.at>
- <cd3ca825-82b4-857d-b5bd-d9f8947a434a@codeaurora.org>
- <f832b55f-a914-efae-6292-431959edf414@nod.at>
-From: Ritesh Harjani <riteshh@codeaurora.org>
-Message-ID: <bc9517c3-b0c7-b971-75ab-0b17a2ce8af9@codeaurora.org>
-Date: Mon, 7 Aug 2017 23:39:01 +0530
+Date: Mon, 7 Aug 2017 21:06:09 +0200
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Peter Pan <peterpandong@micron.com>,
+ Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
+ Kevin Hilman <khilman@kernel.org>,
+ Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Hartley Sweeten <hsweeten@visionengravers.com>,
+ Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <kernel@pengutronix.de>,
+ Fabio Estevam <fabio.estevam@nxp.com>,
+ Imre Kaloz <kaloz@openwrt.org>, Krzysztof Halasa <khalasa@piap.pl>,
+ Eric Miao <eric.y.miao@gmail.com>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>,
+ Alexander Clouter <alex@digriz.org.uk>, Daniel Mack <daniel@zonque.org>,
+ Robert Jarzmik <robert.jarzmik@free.fr>, Kukjin Kim <kgene@kernel.org>,
+ Simtec Linux Team <linux@simtec.co.uk>,
+ Steven Miao <realmz6@gmail.com>, Mikael Starvik <starvik@axis.com>,
+ Jesper Nilsson <jesper.nilsson@axis.com>,
+ Ralf Baechle <ralf@linux-mips.org>,
+ Yoshinori Sato <ysato@users.sourceforge.jp>,
+ Rich Felker <dalias@libc.org>, Wenyou Yang <wenyou.yang@atmel.com>,
+ Josh Wu <rainyfeeling@outlook.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Han Xu <han.xu@nxp.com>, Harvey Hunt <harveyhuntnexus@gmail.com>,
+ Vladimir Zapolskiy <vz@mleia.com>,
+ Sylvain Lemieux <slemieux.tyco@gmail.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Wan ZongShun <mcuos.com@gmail.com>,
+ Neil Armstrong <narmstrong@baylibre.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Maxim Levitsky <maximlevitsky@gmail.com>,
+ Marc Gonzalez <marc_gonzalez@sigmadesigns.com>,
+ Stefan Agner <stefan@agner.ch>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-omap@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+ adi-buildroot-devel@lists.sourceforge.net,
+ linux-cris-kernel@axis.com, linux-mips@linux-mips.org,
+ linux-sh@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+ linux-mediatek@lists.infradead.org, linux-oxnas@lists.tuxfamily.org,
+ linuxppc-dev@lists.ozlabs.org, devel@driverdev.osuosl.org
+Subject: Re: [PATCH] mtd: nand: Rename nand.h into rawnand.h
+Message-ID: <20170807190609.uz6fpatkzijfgifr@kozik-lap>
+References: <1501860550-16506-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1501860550-16506-2-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-In-Reply-To: <f832b55f-a914-efae-6292-431959edf414@nod.at>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1501860550-16506-2-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +66,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
+On Fri, Aug 04, 2017 at 05:29:10PM +0200, Boris Brezillon wrote:
+> We are planning to share more code between different NAND based
+> devices (SPI NAND, OneNAND and raw NANDs), but before doing that
+> we need to move the existing include/linux/mtd/nand.h file into
+> include/linux/mtd/rawnand.h so we can later create a nand.h header
+> containing all common structure and function prototypes.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Signed-off-by: Peter Pan <peterpandong@micron.com>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Sekhar Nori <nsekhar@ti.com>
+> Cc: Kevin Hilman <khilman@kernel.org>
+> Cc: Jason Cooper <jason@lakedaemon.net>
+> Cc: Andrew Lunn <andrew@lunn.ch>
+> Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+> Cc: Gregory Clement <gregory.clement@free-electrons.com>
+> Cc: Hartley Sweeten <hsweeten@visionengravers.com>
+> Cc: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+> Cc: Shawn Guo <shawnguo@kernel.org>
+> Cc: Sascha Hauer <kernel@pengutronix.de>
+> Cc: Fabio Estevam <fabio.estevam@nxp.com>
+> Cc: Imre Kaloz <kaloz@openwrt.org>
+> Cc: Krzysztof Halasa <khalasa@piap.pl>
+> Cc: Eric Miao <eric.y.miao@gmail.com>
+> Cc: Haojian Zhuang <haojian.zhuang@gmail.com>
+> Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
+> Cc: Tony Lindgren <tony@atomide.com>
+> Cc: Alexander Clouter <alex@digriz.org.uk>
+> Cc: Daniel Mack <daniel@zonque.org>
+> Cc: Robert Jarzmik <robert.jarzmik@free.fr>
+> Cc: Marek Vasut <marek.vasut@gmail.com>
+> Cc: Kukjin Kim <kgene@kernel.org>
+> Cc: Krzysztof Kozlowski <krzk@kernel.org>
+> Cc: Simtec Linux Team <linux@simtec.co.uk>
+> Cc: Steven Miao <realmz6@gmail.com>
+> Cc: Mikael Starvik <starvik@axis.com>
+> Cc: Jesper Nilsson <jesper.nilsson@axis.com>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+> Cc: Rich Felker <dalias@libc.org>
+> Cc: Wenyou Yang <wenyou.yang@atmel.com>
+> Cc: Josh Wu <rainyfeeling@outlook.com>
+> Cc: Kamal Dasu <kdasu.kdev@gmail.com>
+> Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+> Cc: Han Xu <han.xu@nxp.com>
+> Cc: Harvey Hunt <harveyhuntnexus@gmail.com>
+> Cc: Vladimir Zapolskiy <vz@mleia.com>
+> Cc: Sylvain Lemieux <slemieux.tyco@gmail.com>
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Cc: Wan ZongShun <mcuos.com@gmail.com>
+> Cc: Neil Armstrong <narmstrong@baylibre.com>
+> Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> Cc: Maxim Levitsky <maximlevitsky@gmail.com>
+> Cc: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+> Cc: Stefan Agner <stefan@agner.ch>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: linux-doc@vger.kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-omap@vger.kernel.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> Cc: adi-buildroot-devel@lists.sourceforge.net
+> Cc: linux-cris-kernel@axis.com
+> Cc: linux-mips@linux-mips.org
+> Cc: linux-sh@vger.kernel.org
+> Cc: bcm-kernel-feedback-list@broadcom.com
+> Cc: linux-mediatek@lists.infradead.org
+> Cc: linux-oxnas@lists.tuxfamily.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: devel@driverdev.osuosl.org
+> ---
+> Hi All,
+> 
+> Sorry for the huge Cc list, but I'd like to collect as much acks as
+> possible for this patch which is actually part of a bigger series [1].
+> 
+> Note that there's nothing complicated here, it's just a mechanical
+> s/nand\.h/rawnand\.h/ replacement, but it impacts several architectures,
+> the doc and staging directories.
+> 
+> Regards,
+> 
+> Boris
+> 
+> [1]https://lwn.net/Articles/723694/
+> ---
+>  Documentation/driver-api/mtdnand.rst            | 8 ++++----
+>  MAINTAINERS                                     | 2 +-
+>  arch/arm/mach-davinci/board-da850-evm.c         | 2 +-
+>  arch/arm/mach-davinci/board-dm355-evm.c         | 2 +-
+>  arch/arm/mach-davinci/board-dm355-leopard.c     | 2 +-
+>  arch/arm/mach-davinci/board-dm365-evm.c         | 2 +-
+>  arch/arm/mach-davinci/board-dm644x-evm.c        | 2 +-
+>  arch/arm/mach-davinci/board-dm646x-evm.c        | 2 +-
+>  arch/arm/mach-davinci/board-sffsdr.c            | 2 +-
+>  arch/arm/mach-dove/dove-db-setup.c              | 2 +-
+>  arch/arm/mach-ep93xx/snappercl15.c              | 2 +-
+>  arch/arm/mach-ep93xx/ts72xx.c                   | 2 +-
+>  arch/arm/mach-imx/mach-qong.c                   | 2 +-
+>  arch/arm/mach-ixp4xx/ixdp425-setup.c            | 2 +-
+>  arch/arm/mach-mmp/aspenite.c                    | 2 +-
+>  arch/arm/mach-omap1/board-fsample.c             | 2 +-
+>  arch/arm/mach-omap1/board-h2.c                  | 2 +-
+>  arch/arm/mach-omap1/board-h3.c                  | 2 +-
+>  arch/arm/mach-omap1/board-nand.c                | 2 +-
+>  arch/arm/mach-omap1/board-perseus2.c            | 2 +-
+>  arch/arm/mach-orion5x/db88f5281-setup.c         | 2 +-
+>  arch/arm/mach-orion5x/kurobox_pro-setup.c       | 2 +-
+>  arch/arm/mach-orion5x/ts209-setup.c             | 2 +-
+>  arch/arm/mach-orion5x/ts78xx-setup.c            | 2 +-
+>  arch/arm/mach-pxa/balloon3.c                    | 2 +-
+>  arch/arm/mach-pxa/em-x270.c                     | 2 +-
+>  arch/arm/mach-pxa/eseries.c                     | 2 +-
+>  arch/arm/mach-pxa/palmtx.c                      | 2 +-
+>  arch/arm/mach-pxa/tosa.c                        | 2 +-
+>  arch/arm/mach-s3c24xx/common-smdk.c             | 2 +-
+>  arch/arm/mach-s3c24xx/mach-anubis.c             | 2 +-
+>  arch/arm/mach-s3c24xx/mach-at2440evb.c          | 2 +-
+>  arch/arm/mach-s3c24xx/mach-bast.c               | 2 +-
+>  arch/arm/mach-s3c24xx/mach-gta02.c              | 2 +-
+>  arch/arm/mach-s3c24xx/mach-jive.c               | 2 +-
+>  arch/arm/mach-s3c24xx/mach-mini2440.c           | 2 +-
+>  arch/arm/mach-s3c24xx/mach-osiris.c             | 2 +-
+>  arch/arm/mach-s3c24xx/mach-qt2410.c             | 2 +-
+>  arch/arm/mach-s3c24xx/mach-rx3715.c             | 2 +-
+>  arch/arm/mach-s3c24xx/mach-vstms.c              | 2 +-
 
-On 8/6/2017 2:35 PM, Richard Weinberger wrote:
-> Ritesh,
-> 
-> Am 27.07.2017 um 16:11 schrieb Ritesh Harjani:
->>> The error you're facing is rather generic.
->>> In our case we can reproduce the issue very reliable when we enable the UBIFS /sys/kernel/debug/ubifs/chk_fs debugfs knob.
->>> Can you please also try? Please note that chk_fs will make mounting UBIFS very slow.
->>>
->>> I'm very interested in your results, maybe it helps tracking down the root cause.
->> Sure, I will give this a shot and let you know the outcome.
-> 
-> Have you been able to trigger it again on your target?
-Yes, we tried reproducing with chk_fs enabled. But could not reproduce 
-it yet (earlier we were trying without chk_fs enabled). We will continue 
-to retry for more time. Is there anything specific scenario you think I 
-should include in power on/off to reproduce this issue. The test(with 
-chk_fs enabled) is still running since 6-7 hours.
+For s3c24xx:
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-> 
-> Thanks,
-> //richard
-> 
-
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Best regards,
+Krzysztof
