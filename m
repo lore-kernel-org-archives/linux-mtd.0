@@ -1,22 +1,23 @@
-Received: from esa4.microchip.iphmx.com ([68.232.154.123])
+Received: from conssluserg-03.nifty.com ([210.131.2.82])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1deZ4Z-00081x-GD
- for linux-mtd@lists.infradead.org; Mon, 07 Aug 2017 03:51:21 +0000
-From: <Wenyou.Yang@microchip.com>
-To: <boris.brezillon@free-electrons.com>, <richard@nod.at>,
- <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <marek.vasut@gmail.com>, <cyrille.pitchen@wedev4u.fr>,
- <linux-mtd@lists.infradead.org>
-Subject: RE: [PATCH] mtd: nand: atmel: fix of_irq_get() error check
-Date: Mon, 7 Aug 2017 03:50:57 +0000
-Message-ID: <F9F4555C4E01D7469D37975B62D0EFBB69CFA2@CHN-SV-EXMX07.mchp-main.com>
-References: <20170805211436.181653483@cogentembedded.com>
- <244d6398-6fa9-17c2-43a4-7309fd080318@Microchip.com>
-In-Reply-To: <244d6398-6fa9-17c2-43a4-7309fd080318@Microchip.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+ id 1deZU2-0000nF-CD
+ for linux-mtd@lists.infradead.org; Mon, 07 Aug 2017 04:17:41 +0000
+Received: from mail-yw0-f173.google.com (mail-yw0-f173.google.com
+ [209.85.161.173]) (authenticated)
+ by conssluserg-03.nifty.com with ESMTP id v774Gh7w015242
+ for <linux-mtd@lists.infradead.org>; Mon, 7 Aug 2017 13:16:44 +0900
+Received: by mail-yw0-f173.google.com with SMTP id s143so36314938ywg.1
+ for <linux-mtd@lists.infradead.org>; Sun, 06 Aug 2017 21:16:44 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <1501860550-16506-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1501860550-16506-1-git-send-email-boris.brezillon@free-electrons.com>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Mon, 7 Aug 2017 13:16:42 +0900
+Message-ID: <CAK7LNAT0jpECc3qxGRxXOjd+ojp0yKhTia=RC9n72jLLp4p_og@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: Rename nand.h into rawnand.h
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,15 +27,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-U29ycnksIG5vaXNlLCBwbGVhc2UgaWdub3JlLg0KDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdl
-LS0tLS0NCj4gRnJvbTogV2VueW91IFlhbmcgLSBBNDE1MzUNCj4gU2VudDogMjAxN8TqONTCN8jV
-IDExOjM5DQo+IFRvOiBXZW55b3UgWWFuZyAtIEE0MTUzNSA8V2VueW91LllhbmdAbWljcm9jaGlw
-LmNvbT47IEJvcmlzIEJyZXppbGxvbg0KPiA8Ym9yaXMuYnJlemlsbG9uQGZyZWUtZWxlY3Ryb25z
-LmNvbT47IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+Ow0KPiBEYXZpZCBXb29k
-aG91c2UgPGR3bXcyQGluZnJhZGVhZC5vcmc+OyBCcmlhbiBOb3JyaXMNCj4gPGNvbXB1dGVyc2Zv
-cnBlYWNlQGdtYWlsLmNvbT47IE1hcmVrIFZhc3V0IDxtYXJlay52YXN1dEBnbWFpbC5jb20+Ow0K
-PiBDeXJpbGxlIFBpdGNoZW4gPGN5cmlsbGUucGl0Y2hlbkB3ZWRldjR1LmZyPjsgbGludXgtbXRk
-QGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSF0gbXRkOiBuYW5kOiBh
-dG1lbDogZml4IG9mX2lycV9nZXQoKSBlcnJvciBjaGVjaw0KPiANCj4gdGVzdGVkDQo+IA0KPiAN
-Cj4gT24gMjAxNy84LzYgNToxNCwgU2VyZ2VpIFNodHlseW92IHdyb3RlOg0KDQpCZXN0IFJlZ2Fy
-ZHMsDQpXZW55b3UgWWFuZw0KDQo=
+Hi.
+
+2017-08-05 0:29 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> We are planning to share more code between different NAND based
+> devices (SPI NAND, OneNAND and raw NANDs), but before doing that
+> we need to move the existing include/linux/mtd/nand.h file into
+> include/linux/mtd/rawnand.h so we can later create a nand.h header
+> containing all common structure and function prototypes.
+>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Signed-off-by: Peter Pan <peterpandong@micron.com>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Sekhar Nori <nsekhar@ti.com>
+> Cc: Kevin Hilman <khilman@kernel.org>
+> Cc: Jason Cooper <jason@lakedaemon.net>
+> Cc: Andrew Lunn <andrew@lunn.ch>
+> Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+> Cc: Gregory Clement <gregory.clement@free-electrons.com>
+> Cc: Hartley Sweeten <hsweeten@visionengravers.com>
+> Cc: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+> Cc: Shawn Guo <shawnguo@kernel.org>
+> Cc: Sascha Hauer <kernel@pengutronix.de>
+> Cc: Fabio Estevam <fabio.estevam@nxp.com>
+> Cc: Imre Kaloz <kaloz@openwrt.org>
+> Cc: Krzysztof Halasa <khalasa@piap.pl>
+> Cc: Eric Miao <eric.y.miao@gmail.com>
+> Cc: Haojian Zhuang <haojian.zhuang@gmail.com>
+> Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
+> Cc: Tony Lindgren <tony@atomide.com>
+> Cc: Alexander Clouter <alex@digriz.org.uk>
+> Cc: Daniel Mack <daniel@zonque.org>
+> Cc: Robert Jarzmik <robert.jarzmik@free.fr>
+> Cc: Marek Vasut <marek.vasut@gmail.com>
+> Cc: Kukjin Kim <kgene@kernel.org>
+> Cc: Krzysztof Kozlowski <krzk@kernel.org>
+> Cc: Simtec Linux Team <linux@simtec.co.uk>
+> Cc: Steven Miao <realmz6@gmail.com>
+> Cc: Mikael Starvik <starvik@axis.com>
+> Cc: Jesper Nilsson <jesper.nilsson@axis.com>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+> Cc: Rich Felker <dalias@libc.org>
+> Cc: Wenyou Yang <wenyou.yang@atmel.com>
+> Cc: Josh Wu <rainyfeeling@outlook.com>
+> Cc: Kamal Dasu <kdasu.kdev@gmail.com>
+> Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+> Cc: Han Xu <han.xu@nxp.com>
+> Cc: Harvey Hunt <harveyhuntnexus@gmail.com>
+> Cc: Vladimir Zapolskiy <vz@mleia.com>
+> Cc: Sylvain Lemieux <slemieux.tyco@gmail.com>
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Cc: Wan ZongShun <mcuos.com@gmail.com>
+> Cc: Neil Armstrong <narmstrong@baylibre.com>
+> Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> Cc: Maxim Levitsky <maximlevitsky@gmail.com>
+> Cc: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+> Cc: Stefan Agner <stefan@agner.ch>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: linux-doc@vger.kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-omap@vger.kernel.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> Cc: adi-buildroot-devel@lists.sourceforge.net
+> Cc: linux-cris-kernel@axis.com
+> Cc: linux-mips@linux-mips.org
+> Cc: linux-sh@vger.kernel.org
+> Cc: bcm-kernel-feedback-list@broadcom.com
+> Cc: linux-mediatek@lists.infradead.org
+> Cc: linux-oxnas@lists.tuxfamily.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: devel@driverdev.osuosl.org
+> ---
+> Hi All,
+>
+> Sorry for the huge Cc list, but I'd like to collect as much acks as
+> possible for this patch which is actually part of a bigger series [1].
+>
+> Note that there's nothing complicated here, it's just a mechanical
+> s/nand\.h/rawnand\.h/ replacement, but it impacts several architectures,
+> the doc and staging directories.
+>
+> Regards,
+>
+> Boris
+>
+> [1]https://lwn.net/Articles/723694/
+> ---
+
+[snip]
+
+>  drivers/mtd/nand/denali.h                       | 2 +-
+
+
+For Denali,
+
+Acked-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
