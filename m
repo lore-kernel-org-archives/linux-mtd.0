@@ -1,58 +1,22 @@
-Subject: Re: [PATCH] mtd: nand: Rename nand.h into rawnand.h
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Peter Pan <peterpandong@micron.com>, Jonathan Corbet <corbet@lwn.net>,
- Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>,
- Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Hartley Sweeten <hsweeten@visionengravers.com>,
- Alexander Sverdlin <alexander.sverdlin@gmail.com>,
- Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <kernel@pengutronix.de>,
- Fabio Estevam <fabio.estevam@nxp.com>, Imre Kaloz <kaloz@openwrt.org>,
- Krzysztof Halasa <khalasa@piap.pl>, Eric Miao <eric.y.miao@gmail.com>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>,
- Alexander Clouter <alex@digriz.org.uk>, Daniel Mack <daniel@zonque.org>,
- Robert Jarzmik <robert.jarzmik@free.fr>, Kukjin Kim <kgene@kernel.org>,
- Krzysztof Kozlowski <krzk@kernel.org>, Simtec Linux Team
- <linux@simtec.co.uk>, Steven Miao <realmz6@gmail.com>,
- Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>,
- Ralf Baechle <ralf@linux-mips.org>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>, Han Xu <han.xu@nxp.com>,
- Vladimir Zapolskiy <vz@mleia.com>, Sylvain Lemieux
- <slemieux.tyco@gmail.com>, Matthias Brugger <matthias.bgg@gmail.com>,
- Wan ZongShun <mcuos.com@gmail.com>, Neil Armstrong
- <narmstrong@baylibre.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Maxim Levitsky <maximlevitsky@gmail.com>,
- Marc Gonzalez <marc_gonzalez@sigmadesigns.com>,
- Stefan Agner <stefan@agner.ch>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, linux-doc@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-samsung-soc@vger.kernel.org,
- adi-buildroot-devel@lists.sourceforge.net, linux-cris-kernel@axis.com,
- linux-mips@linux-mips.org, linux-sh@vger.kernel.org,
- bcm-kernel-feedback-list@broadcom.com, linux-mediatek@lists.infradead.org,
- linux-oxnas@lists.tuxfamily.org, linuxppc-dev@lists.ozlabs.org,
- devel@driverdev.osuosl.org
-References: <1501860550-16506-1-git-send-email-boris.brezillon@free-electrons.com>
-From: Harvey Hunt <harveyhuntnexus@gmail.com>
-Message-ID: <8fa469f8-63d6-9305-db8e-88416ea2c6cc@gmail.com>
-Date: Mon, 7 Aug 2017 20:58:43 +0100
+Date: Mon, 7 Aug 2017 23:28:13 +0200
+From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+To: Lee Jones <lee.jones@linaro.org>
+Cc: Ludovic Desroches <ludovic.desroches@microchip.com>,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ nicolas.ferre@microchip.com, boris.brezillon@free-electrons.com,
+ computersforpeace@gmail.com, romain.izard.pro@gmail.com
+Subject: Re: [PATCH v2 3/3] ARM: dts: at91: sama5d2: use sama5d2 compatible
+ string for SMC
+Message-ID: <20170807212813.hj5pfmlh4wl2mh47@piout.net>
+References: <20170718132220.25018-1-ludovic.desroches@microchip.com>
+ <20170718132220.25018-4-ludovic.desroches@microchip.com>
+ <20170807154100.hvl5ua3vdqttghfj@dell>
 MIME-Version: 1.0
-In-Reply-To: <1501860550-16506-1-git-send-email-boris.brezillon@free-electrons.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20170807154100.hvl5ua3vdqttghfj@dell>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -62,13 +26,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hi Lee,
 
-On 08/04/2017 04:29 PM, Boris Brezillon wrote:
-[...]
->   drivers/mtd/nand/jz4780_nand.c                  | 2 +-
-[...]
+On 07/08/2017 at 16:41:00 +0100, Lee Jones wrote:
+> On Tue, 18 Jul 2017, Ludovic Desroches wrote:
+> 
+> > A new compatible string has been introduced for sama5d2 SMC to allow to
+> > manage the registers mapping change.
+> > 
+> > Signed-off-by: Ludovic Desroches <ludovic.desroches@microchip.com>
+> > ---
+> >  arch/arm/boot/dts/sama5d2.dtsi | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> Applied, thanks.
+> 
 
-For JZ4780,
+I've already applied that one and sent it to arm-soc as a fix for 4.13
+(I think we agreed on that).
 
-Acked-By: Harvey Hunt <harveyhuntnexus@gmail.com>
+> > diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
+> > index cc06da394366..3e6e2dbc2595 100644
+> > --- a/arch/arm/boot/dts/sama5d2.dtsi
+> > +++ b/arch/arm/boot/dts/sama5d2.dtsi
+> > @@ -1048,7 +1048,7 @@
+> >  			};
+> >  
+> >  			hsmc: hsmc@f8014000 {
+> > -				compatible = "atmel,sama5d3-smc", "syscon", "simple-mfd";
+> > +				compatible = "atmel,sama5d2-smc", "syscon", "simple-mfd";
+> >  				reg = <0xf8014000 0x1000>;
+> >  				interrupts = <5 IRQ_TYPE_LEVEL_HIGH 6>;
+> >  				clocks = <&hsmc_clk>;
+> 
+> -- 
+> Lee Jones
+> Linaro STMicroelectronics Landing Team Lead
+> Linaro.org │ Open source software for ARM SoCs
+> Follow Linaro: Facebook | Twitter | Blog
+
+-- 
+Alexandre Belloni, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
