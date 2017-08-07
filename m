@@ -1,18 +1,18 @@
-Received: from esa6.microchip.iphmx.com ([216.71.154.253])
+Received: from esa4.microchip.iphmx.com ([68.232.154.123])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1deYz6-0005ua-0f
- for linux-mtd@lists.infradead.org; Mon, 07 Aug 2017 03:45:41 +0000
+ id 1deZ4Z-00081x-GD
+ for linux-mtd@lists.infradead.org; Mon, 07 Aug 2017 03:51:21 +0000
 From: <Wenyou.Yang@microchip.com>
-To: <sergei.shtylyov@cogentembedded.com>, <rainyfeeling@outlook.com>,
- <boris.brezillon@free-electrons.com>, <richard@nod.at>,
+To: <boris.brezillon@free-electrons.com>, <richard@nod.at>,
  <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <marek.vasut@gmail.com>, <cyrille.pitchen@wedev4u.fr>,
  <linux-mtd@lists.infradead.org>
 Subject: RE: [PATCH] mtd: nand: atmel: fix of_irq_get() error check
-Date: Mon, 7 Aug 2017 03:45:09 +0000
-Message-ID: <F9F4555C4E01D7469D37975B62D0EFBB69CF86@CHN-SV-EXMX07.mchp-main.com>
+Date: Mon, 7 Aug 2017 03:50:57 +0000
+Message-ID: <F9F4555C4E01D7469D37975B62D0EFBB69CFA2@CHN-SV-EXMX07.mchp-main.com>
 References: <20170805211436.181653483@cogentembedded.com>
-In-Reply-To: <20170805211436.181653483@cogentembedded.com>
+ <244d6398-6fa9-17c2-43a4-7309fd080318@Microchip.com>
+In-Reply-To: <244d6398-6fa9-17c2-43a4-7309fd080318@Microchip.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="gb2312"
 Content-Transfer-Encoding: base64
@@ -26,26 +26,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogU2VyZ2VpIFNodHlseW92
-IFttYWlsdG86c2VyZ2VpLnNodHlseW92QGNvZ2VudGVtYmVkZGVkLmNvbV0NCj4gU2VudDogMjAx
-N8TqONTCNsjVIDU6MTQNCj4gVG86IFdlbnlvdSBZYW5nIC0gQTQxNTM1IDxXZW55b3UuWWFuZ0Bt
-aWNyb2NoaXAuY29tPjsgSm9zaCBXdQ0KPiA8cmFpbnlmZWVsaW5nQG91dGxvb2suY29tPjsgQm9y
-aXMgQnJlemlsbG9uIDxib3Jpcy5icmV6aWxsb25AZnJlZS0NCj4gZWxlY3Ryb25zLmNvbT47IFJp
-Y2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+OyBEYXZpZCBXb29kaG91c2UNCj4gPGR3
-bXcyQGluZnJhZGVhZC5vcmc+OyBCcmlhbiBOb3JyaXMgPGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWls
-LmNvbT47IE1hcmVrDQo+IFZhc3V0IDxtYXJlay52YXN1dEBnbWFpbC5jb20+OyBDeXJpbGxlIFBp
-dGNoZW4gPGN5cmlsbGUucGl0Y2hlbkB3ZWRldjR1LmZyPjsNCj4gbGludXgtbXRkQGxpc3RzLmlu
-ZnJhZGVhZC5vcmcNCj4gQ2M6IFNlcmdlaSBTaHR5bHlvdiA8c2VyZ2VpLnNodHlseW92QGNvZ2Vu
-dGVtYmVkZGVkLmNvbT4NCj4gU3ViamVjdDogW1BBVENIXSBtdGQ6IG5hbmQ6IGF0bWVsOiBmaXgg
-b2ZfaXJxX2dldCgpIGVycm9yIGNoZWNrDQo+IA0KPiBvZl9pcnFfZ2V0KCkgbWF5IHJldHVybiAw
-IGFzIHdlbGwgYXMgbmVnYXRpdmUgZXJyb3IgbnVtYmVyIG9uIGZhaWx1cmUsIHdoaWxlIHRoZQ0K
-PiBkcml2ZXIgb25seSBjaGVja3MgZm9yIHRoZSBuZWdhdGl2ZSB2YWx1ZXMuICBUaGUgZHJpdmVy
-IHdvdWxkIHRoZW4gY2FsbA0KPiBkZXZtX3JlcXVlc3RfaXJxKCkgZm9yIElSUTAgIGluIGl0cyBw
-cm9iZSBtZXRob2QgYW5kIG5ldmVyIGdldCBhIHZhbGlkIGludGVycnVwdC4NCj4gDQo+IENoZWNr
-IGZvciAnbmMtPmlycSA8PSAwJyBpbnN0ZWFkIGFuZCByZXR1cm4gLUVOWElPIGZyb20gdGhlIGRy
-aXZlcidzIHByb2JlIGlmZg0KPiBvZl9pcnFfZ2V0KCkgcmV0dXJuZWQgMC4NCj4gDQo+IEZpeGVz
-OiBmODhmYzEyMmNjMzQgKCJtdGQ6IG5hbmQ6IENsZWFudXAvcmV3b3JrIHRoZSBhdG1lbF9uYW5k
-IGRyaXZlciIpDQo+IFNpZ25lZC1vZmYtYnk6IFNlcmdlaSBTaHR5bHlvdiA8c2VyZ2VpLnNodHls
-eW92QGNvZ2VudGVtYmVkZGVkLmNvbT4NCj4gDQoNCkluZGVlZC4NCg0KQWNrZWQtYnk6IFdlbnlv
-dSBZYW5nIDxXZW55b3UueWFuZ0BtaWNyb2NoaXAuY29tPg0KDQoNCkJlc3QgUmVnYXJkcywNCldl
-bnlvdSBZYW5nDQo=
+U29ycnksIG5vaXNlLCBwbGVhc2UgaWdub3JlLg0KDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdl
+LS0tLS0NCj4gRnJvbTogV2VueW91IFlhbmcgLSBBNDE1MzUNCj4gU2VudDogMjAxN8TqONTCN8jV
+IDExOjM5DQo+IFRvOiBXZW55b3UgWWFuZyAtIEE0MTUzNSA8V2VueW91LllhbmdAbWljcm9jaGlw
+LmNvbT47IEJvcmlzIEJyZXppbGxvbg0KPiA8Ym9yaXMuYnJlemlsbG9uQGZyZWUtZWxlY3Ryb25z
+LmNvbT47IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+Ow0KPiBEYXZpZCBXb29k
+aG91c2UgPGR3bXcyQGluZnJhZGVhZC5vcmc+OyBCcmlhbiBOb3JyaXMNCj4gPGNvbXB1dGVyc2Zv
+cnBlYWNlQGdtYWlsLmNvbT47IE1hcmVrIFZhc3V0IDxtYXJlay52YXN1dEBnbWFpbC5jb20+Ow0K
+PiBDeXJpbGxlIFBpdGNoZW4gPGN5cmlsbGUucGl0Y2hlbkB3ZWRldjR1LmZyPjsgbGludXgtbXRk
+QGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSF0gbXRkOiBuYW5kOiBh
+dG1lbDogZml4IG9mX2lycV9nZXQoKSBlcnJvciBjaGVjaw0KPiANCj4gdGVzdGVkDQo+IA0KPiAN
+Cj4gT24gMjAxNy84LzYgNToxNCwgU2VyZ2VpIFNodHlseW92IHdyb3RlOg0KDQpCZXN0IFJlZ2Fy
+ZHMsDQpXZW55b3UgWWFuZw0KDQo=
