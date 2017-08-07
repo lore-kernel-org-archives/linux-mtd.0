@@ -1,39 +1,26 @@
-Received: from mail.kernel.org ([198.145.29.99])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dekGz-0001rE-9E
- for linux-mtd@lists.infradead.org; Mon, 07 Aug 2017 15:48:55 +0000
-Received: from mail-ua0-f180.google.com (mail-ua0-f180.google.com
- [209.85.217.180])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 3C1EE2392C
- for <linux-mtd@lists.infradead.org>; Mon,  7 Aug 2017 15:48:32 +0000 (UTC)
-Received: by mail-ua0-f180.google.com with SMTP id 80so3687383uas.0
- for <linux-mtd@lists.infradead.org>; Mon, 07 Aug 2017 08:48:32 -0700 (PDT)
+Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dekA9-00077C-3y
+ for linux-mtd@lists.infradead.org; Mon, 07 Aug 2017 15:41:51 +0000
+Received: by mail-wm0-x22e.google.com with SMTP id m85so10367901wma.0
+ for <linux-mtd@lists.infradead.org>; Mon, 07 Aug 2017 08:41:28 -0700 (PDT)
+Date: Mon, 7 Aug 2017 16:41:24 +0100
+From: Lee Jones <lee.jones@linaro.org>
+To: Ludovic Desroches <ludovic.desroches@microchip.com>
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ nicolas.ferre@microchip.com, alexandre.belloni@free-electrons.com,
+ boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
+ romain.izard.pro@gmail.com
+Subject: Re: [PATCH v2 1/3] mfd: syscon: update Atmel SMC binding doc
+Message-ID: <20170807154124.norjlxavx4u75yzs@dell>
+References: <20170718132220.25018-1-ludovic.desroches@microchip.com>
+ <20170718132220.25018-2-ludovic.desroches@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <1502043844-3626-4-git-send-email-matthew.gerlach@linux.intel.com>
-References: <1502043844-3626-1-git-send-email-matthew.gerlach@linux.intel.com>
- <1502043844-3626-4-git-send-email-matthew.gerlach@linux.intel.com>
-From: Alan Tull <atull@kernel.org>
-Date: Mon, 7 Aug 2017 10:47:50 -0500
-Message-ID: <CANk1AXQmRi9UA6xP9YbyeOLynXET_t1CyZMHK76-CaunfZexAA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] fpga: intel: Add QSPI FPGA Management Entity Feature
-To: matthew.gerlach@linux.intel.com
-Cc: vndao@altera.com, David Woodhouse <dwmw2@infradead.org>,
- computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, linux-mtd@lists.infradead.org,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "David S. Miller" <davem@davemloft.net>, mchehab@kernel.org,
- linux-fpga@vger.kernel.org, Wu Hao <hao.wu@intel.com>,
- Tim Whisonant <tim.whisonant@intel.com>,
- Enno Luebbers <enno.luebbers@intel.com>, Shiva Rao <shiva.rao@intel.com>,
- Christopher Rauer <christopher.rauer@intel.com>,
- Kang Luwei <luwei.kang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20170718132220.25018-2-ludovic.desroches@microchip.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -43,252 +30,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Aug 6, 2017 at 1:24 PM,  <matthew.gerlach@linux.intel.com> wrote:
+Enjoy!
 
-+ Wu Hao and the people who signed off on the Intel feature-dev stuff.
+The following changes since commit 5771a8c08880cdca3bfb4a3fc6d309d6bba20877:
 
-Hi Matthew,
+  Linux v4.13-rc1 (2017-07-15 15:22:10 -0700)
 
-By the way, this patch is against v1 of their patchset.  They have v2 out.
+are available in the git repository at:
 
-You could submit your next version with more conventional numbering
-and just note that the last patch is dependent on the Intel fpga
-patchset.
+  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-arm-v4.14
 
-> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->
-> Add FPGA Management Entity Feature to support Atera
-> ASMI Parallel 2 IP core. This feature allows
-> the flash used to configure the FPGA at power up
-> to be updated over PCIe using mtd-utils.
->
-> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> ---
->  drivers/fpga/intel/feature-dev.h |   6 ++-
->  drivers/fpga/intel/fme-main.c    | 100 +++++++++++++++++++++++++++++++++++++++
->  drivers/fpga/intel/pcie.c        |   7 +++
->  drivers/fpga/intel/pcie_check.c  |   6 +++
->  4 files changed, 117 insertions(+), 2 deletions(-)
+for you to fetch changes up to 5df46ec0f4cf3b2cb0791abe5c68821a4f7ffffe:
 
-The Intel patchset creates a new way to enumerate generic devices on
-fpga's and not just FME's and ports.  But it involves touching 4 files
-and adding 100 lines to fme-main.c.  Is there a way that adding a new
-device could just mean adding a struct in the device driver itself and
-registering it with that framework?
+  ARM: dts: at91: sama5d2: Use sama5d2 compatible string for SMC (2017-08-07 16:38:30 +0100)
 
-Alan
+----------------------------------------------------------------
+Immutable branch between MFD and ARM due for the v4.14 merge window
 
->
-> diff --git a/drivers/fpga/intel/feature-dev.h b/drivers/fpga/intel/feature-dev.h
-> index 9303828..5ae799b 100644
-> --- a/drivers/fpga/intel/feature-dev.h
-> +++ b/drivers/fpga/intel/feature-dev.h
-> @@ -40,6 +40,7 @@
->  #define FME_FEATURE_GLOBAL_PERF     "fme_gperf"
->  #define FME_FEATURE_GLOBAL_ERR      "fme_error"
->  #define FME_FEATURE_PR_MGMT         "fme_pr"
-> +#define FME_FEATURE_QSPI_FLASH     "fme_qspi_flash"
->
->  #define PORT_FEATURE_HEADER         "port_hdr"
->  #define PORT_FEATURE_UAFU           "port_uafu"
-> @@ -60,6 +61,7 @@
->  #define FME_GLOBAL_PERF_REVISION       0
->  #define FME_GLOBAL_ERR_REVISION        0
->  #define FME_PR_MGMT_REVISION           1
-> +#define FME_QSPI_REVISION 0
->
->  #define PORT_HEADER_REVISION           0
->  /* UAFU's header info depends on the downloaded GBS */
-> @@ -1225,9 +1227,9 @@ enum fme_feature_id {
->         FME_FEATURE_ID_GLOBAL_PERF = 0x3,
->         FME_FEATURE_ID_GLOBAL_ERR = 0x4,
->         FME_FEATURE_ID_PR_MGMT = 0x5,
-> -
-> +       FME_FEATURE_ID_QSPI_FLASH = 0x6,
->         /* one for fme header. */
-> -       FME_FEATURE_ID_MAX = 0x6,
-> +       FME_FEATURE_ID_MAX = 0x7,
->  };
->
->  enum port_feature_id {
-> diff --git a/drivers/fpga/intel/fme-main.c b/drivers/fpga/intel/fme-main.c
-> index 776fe36..03aacb3 100644
-> --- a/drivers/fpga/intel/fme-main.c
-> +++ b/drivers/fpga/intel/fme-main.c
-> @@ -27,6 +27,7 @@
->  #include <linux/uaccess.h>
->  #include <linux/intel-fpga.h>
->  #include <linux/fpga/fpga-mgr.h>
-> +#include <linux/mtd/altera-asmip2.h>
->
->  #include "feature-dev.h"
->  #include "fme.h"
-> @@ -659,6 +660,101 @@ struct feature_ops power_mgmt_ops = {
->         .uinit = power_mgmt_uinit,
->  };
->
-> +#define FLASH_CAPABILITY_OFT 8
-> +
-> +static int qspi_flash_init(struct platform_device *pdev,
-> +                          struct feature *feature)
-> +{
-> +       u64 reg;
-> +       struct altera_asmip2_plat_data qdata;
-> +       struct platform_device *cdev;
-> +       int ret = 0;
-> +       char name[40];
-> +
-> +       scnprintf(name, sizeof(name), "%s-%p", feature->name, feature->ioaddr);
-> +
-> +       reg = readq(feature->ioaddr + FLASH_CAPABILITY_OFT);
-> +       dev_info(&pdev->dev, "%s %s %d 0x%llx 0x%x 0x%x\n",
-> +                __func__, name, feature->resource_index,
-> +                reg, readl(feature->ioaddr + FLASH_CAPABILITY_OFT),
-> +                readl(feature->ioaddr + FLASH_CAPABILITY_OFT + 4));
-> +
-> +
-> +       cdev = platform_device_alloc(name, PLATFORM_DEVID_NONE);
-> +
-> +       if (!cdev) {
-> +               dev_err(&pdev->dev, "platform_device_alloc failed in %s\n",
-> +                       __func__);
-> +               return -ENOMEM;
-> +       }
-> +
-> +       cdev->dev.parent = &pdev->dev;
-> +
-> +       memset(&qdata, 0, sizeof(qdata));
-> +       qdata.csr_base = feature->ioaddr + FLASH_CAPABILITY_OFT;
-> +       qdata.num_chip_sel = 1;
-> +
-> +       ret = platform_device_add_data(cdev, &qdata, sizeof(qdata));
-> +
-> +       if (ret) {
-> +               dev_err(&pdev->dev, "platform_device_add_data in %s\n",
-> +                       __func__);
-> +               goto error;
-> +       }
-> +
-> +       cdev->driver_override = kstrdup(ALTERA_ASMIP2_DRV_NAME, GFP_KERNEL);
-> +
-> +       ret = platform_device_add(cdev);
-> +
-> +       if (ret) {
-> +               dev_err(&pdev->dev, "platform_device_add failed with %d\n",
-> +                       ret);
-> +               goto error;
-> +       }
-> +       return ret;
-> +
-> +error:
-> +       platform_device_put(cdev);
-> +       return ret;
-> +}
-> +
-> +static int qspi_match(struct device *dev, void *data)
-> +{
-> +       return !strcmp(dev_name(dev), data);
-> +}
-> +
-> +static void qspi_flash_uinit(struct platform_device *pdev,
-> +                            struct feature *feature)
-> +{
-> +       struct device *parent = &pdev->dev;
-> +       struct device *dev;
-> +       struct platform_device *cdev;
-> +       char name[40];
-> +
-> +       scnprintf(name, sizeof(name), "%s-%p", feature->name, feature->ioaddr);
-> +
-> +       dev = device_find_child(parent, name, qspi_match);
-> +
-> +       if (!dev) {
-> +               dev_err(&pdev->dev, "%s NOT found\n", ALTERA_ASMIP2_DRV_NAME);
-> +               return;
-> +       }
-> +
-> +       cdev = to_platform_device(dev);
-> +
-> +       if (!cdev) {
-> +               dev_err(&pdev->dev, "no platform container\n");
-> +               return;
-> +       }
-> +
-> +       platform_device_unregister(cdev);
-> +}
-> +
-> +struct feature_ops qspi_flash_ops = {
-> +       .init = qspi_flash_init,
-> +       .uinit = qspi_flash_uinit,
-> +};
-> +
->  static struct feature_driver fme_feature_drvs[] = {
->         {
->                 .name = FME_FEATURE_HEADER,
-> @@ -685,6 +781,10 @@ static struct feature_driver fme_feature_drvs[] = {
->                 .ops = &global_perf_ops,
->         },
->         {
-> +               .name = FME_FEATURE_QSPI_FLASH,
-> +               .ops = &qspi_flash_ops,
-> +       },
-> +       {
->                 .ops = NULL,
->         },
->  };
-> diff --git a/drivers/fpga/intel/pcie.c b/drivers/fpga/intel/pcie.c
-> index a64151a..8f4f3e0 100644
-> --- a/drivers/fpga/intel/pcie.c
-> +++ b/drivers/fpga/intel/pcie.c
-> @@ -28,6 +28,7 @@
->  #include <linux/uuid.h>
->  #include <linux/kdev_t.h>
->  #include <linux/mfd/core.h>
-> +#include <linux/mtd/altera-asmip2.h>
->
->  #include "feature-dev.h"
->
-> @@ -617,6 +618,12 @@ static struct feature_info fme_features[] = {
->                 .resource_size = sizeof(struct feature_fme_pr),
->                 .feature_index = FME_FEATURE_ID_PR_MGMT,
->                 .revision_id = FME_PR_MGMT_REVISION
-> +       },
-> +       {
-> +               .name = FME_FEATURE_QSPI_FLASH,
-> +               .resource_size = ALTERA_ASMIP2_RESOURCE_SIZE,
-> +               .feature_index = FME_FEATURE_ID_QSPI_FLASH,
-> +               .revision_id = FME_QSPI_REVISION
->         }
->  };
->
-> diff --git a/drivers/fpga/intel/pcie_check.c b/drivers/fpga/intel/pcie_check.c
-> index e707d72..f0027e1 100644
-> --- a/drivers/fpga/intel/pcie_check.c
-> +++ b/drivers/fpga/intel/pcie_check.c
-> @@ -51,6 +51,11 @@
->  #define FME_FEATURE_PR_MGMT_ID                 0x5
->  #define FME_FEATURE_PR_MGMT_VERSION            0x0
->
-> +#define FME_FEATURE_QSPI_FLASH_TYPE            DFH_TYPE_PRIVATE
-> +#define FME_FEATURE_QSPI_FLASH_NEXT_OFFSET     0x2000
-> +#define FME_FEATURE_QSPI_FLASH_ID              FME_FEATURE_ID_QSPI_FLASH
-> +#define FME_FEATURE_QSPI_FLASH_VERSION         FME_QSPI_REVISION
-> +
->  #define PORT_FEATURE_HEADER_TYPE               DFH_TYPE_AFU
->  #define PORT_FEATURE_HEADER_NEXT_OFFSET                0x1000
->  #define PORT_FEATURE_HEADER_ID                 DFH_CCI_VERSION
-> @@ -91,6 +96,7 @@ static struct feature_header default_fme_feature_hdr[] = {
->         DEFAULT_REG(FME_FEATURE_GLOBAL_PERF),
->         DEFAULT_REG(FME_FEATURE_GLOBAL_ERR),
->         DEFAULT_REG(FME_FEATURE_PR_MGMT),
-> +       DEFAULT_REG(FME_FEATURE_QSPI_FLASH),
->  };
->
->  void check_features_header(struct pci_dev *pdev, struct feature_header *hdr,
-> --
-> 2.7.4
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe devicetree" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+----------------------------------------------------------------
+Ludovic Desroches (3):
+      mfd: syscon: Update Atmel SMC binding doc
+      mfd: syscon: atmel-smc: Add helper to retrieve register layout
+      ARM: dts: at91: sama5d2: Use sama5d2 compatible string for SMC
+
+ .../devicetree/bindings/mfd/atmel-smc.txt          |  1 +
+ arch/arm/boot/dts/sama5d2.dtsi                     |  2 +-
+ drivers/memory/atmel-ebi.c                         | 13 +++--
+ drivers/mfd/atmel-smc.c                            | 67 +++++++++++++++++-----
+ drivers/mtd/nand/atmel/nand-controller.c           | 10 +++-
+ include/linux/mfd/syscon/atmel-smc.h               | 32 ++++++++---
+ 
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
