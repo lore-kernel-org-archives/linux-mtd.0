@@ -1,18 +1,15 @@
-Received: from m12-11.163.com ([220.181.12.11])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1df5dB-0001j4-0v
- for linux-mtd@lists.infradead.org; Tue, 08 Aug 2017 14:37:17 +0000
-From: Pan Bian <bianpan2016@163.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Pan Bian <bianpan2016@163.com>
-Subject: mtd: nand: use dma_mapping_error to check map errors
-Date: Tue,  8 Aug 2017 22:35:42 +0800
-Message-Id: <1502202942-23984-1-git-send-email-bianpan2016@163.com>
+Received: from mout.gmx.net ([212.227.15.18])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1df6Dd-00066B-Ak
+ for linux-mtd@lists.infradead.org; Tue, 08 Aug 2017 15:15:00 +0000
+MIME-Version: 1.0
+Message-ID: <trinity-0c4f2d97-c691-4876-8810-8dd1eb933043-1502205267920@3capp-gmx-bs12>
+From: "Andreas Eipeldauer" <andi.eipeldauer@gmx.at>
+To: linux-mtd@lists.infradead.org
+Subject: error -5 occurred during torturing
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 8 Aug 2017 17:14:27 +0200
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,27 +19,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The return value of dma_map_single() should be checked by
-dma_mapping_error(). However, in function flctl_dma_fifo0_transfer(), its
-return value is checked against NULL, which could result in failures.
+Hello everyone,
+=C2=A0
+I try to verify the proper functionality of a nand chip Cypress S34ML01G1 =
+which should substitute the obsolete
+Samsung K9F1G08U0E-SIB0000=2E Therefore I also use the mtd test tools=2E W=
+ithin the mtdtests especially when running the mtd_torturetest an error -5 =
+occurred during torturing=2E
 
-Signed-off-by: Pan Bian <bianpan2016@163.com>
----
- drivers/mtd/nand/sh_flctl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+insmod mtd_torturetest=2Eko dev=3D1 check=3D1 cycles_count=3D100 gran=3D10=
+ ebcnt=3D761 eb=3D0
 
-diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-index 891ac7b..2404d66 100644
---- a/drivers/mtd/nand/sh_flctl.c
-+++ b/drivers/mtd/nand/sh_flctl.c
-@@ -411,7 +411,7 @@ static int flctl_dma_fifo0_transfer(struct sh_flctl *flctl, unsigned long *buf,
- 
- 	dma_addr = dma_map_single(chan->device->dev, buf, len, dir);
- 
--	if (dma_addr)
-+	if (!dma_mapping_error(chan->device->dev, dma_addr))
- 		desc = dmaengine_prep_slave_single(chan, dma_addr, len,
- 			tr_dir, DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
- 
--- 
-1.9.1
+mtd_torturetest: Warning: this program is trying to wear out your flash, s=
+top it if this is not wanted=2E
+mtd_torturetest: MTD device: 1
+mtd_torturetest: torture 761 eraseblocks (0-760) of mtd1
+mtd_torturetest: write verify enabled
+mtd_torturetest: error -5 while writing EB 731, written 102400 bytes
+mtd_torturetest: finished after 0 erase cycles
+mtd_torturetest: error -5 occurred during torturing
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+insmod: error inserting 'mtd_torturetest=2Eko': -1 Input/output error
+
+The mtd1 partition is not mounted and Linux is running with a initram fs=
+=2E So there should not be any other access to this partition=2E
+
+I ran these tests also with the old Samsung chip and the -5 errors also ap=
+pear but not in that high rate=2E
+
+Any clue what causes this error? =20
+
+Best regards, Andy
