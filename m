@@ -1,7 +1,7 @@
 Received: from mx1.mailbox.org ([80.241.60.212])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dfDNZ-0000yJ-FD
- for linux-mtd@lists.infradead.org; Tue, 08 Aug 2017 22:53:39 +0000
+ id 1dfDNZ-0000xv-FG
+ for linux-mtd@lists.infradead.org; Tue, 08 Aug 2017 22:53:41 +0000
 From: Hauke Mehrtens <hauke@hauke-m.de>
 To: ralf@linux-mips.org
 Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
@@ -9,11 +9,11 @@ Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
  martin.blumenstingl@googlemail.com, john@phrozen.org,
  linux-spi@vger.kernel.org, hauke.mehrtens@intel.com, robh@kernel.org,
  andy.shevchenko@gmail.com, p.zabel@pengutronix.de, kishon@ti.com,
- mark.rutland@arm.com, Hauke Mehrtens <hauke@hauke-m.de>,
- Mark Brown <broonie@kernel.org>
-Subject: [PATCH v9 03/16] mtd: spi-falcon: drop check of boot select
-Date: Wed,  9 Aug 2017 00:52:34 +0200
-Message-Id: <20170808225247.32266-4-hauke@hauke-m.de>
+ mark.rutland@arm.com, Hauke Mehrtens <hauke@hauke-m.de>
+Subject: [PATCH v9 01/16] MIPS: lantiq: Use of_platform_default_populate
+ instead of __dt_register_buses
+Date: Wed,  9 Aug 2017 00:52:32 +0200
+Message-Id: <20170808225247.32266-2-hauke@hauke-m.de>
 In-Reply-To: <20170808225247.32266-1-hauke@hauke-m.de>
 References: <20170808225247.32266-1-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,34 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Do not check which flash type the SoC was booted from before
-using this driver. Assume that the device tree is correct and use this
-driver when it was added to device tree. This also removes a build
-dependency to the SoC code.
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+
+This allows populating syscon devices which are using "simple-mfd"
+instead of "simple-bus".
 
 Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
-
-Cc: Mark Brown <broonie@kernel.org>
-Cc: linux-spi@vger.kernel.org
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 ---
- drivers/spi/spi-falcon.c | 5 -----
- 1 file changed, 5 deletions(-)
+ arch/mips/lantiq/prom.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-falcon.c b/drivers/spi/spi-falcon.c
-index 286b2c81fc6b..f8638e82e5db 100644
---- a/drivers/spi/spi-falcon.c
-+++ b/drivers/spi/spi-falcon.c
-@@ -395,11 +395,6 @@ static int falcon_sflash_probe(struct platform_device *pdev)
- 	struct spi_master *master;
- 	int ret;
+diff --git a/arch/mips/lantiq/prom.c b/arch/mips/lantiq/prom.c
+index 96773bed8a8a..9ff7ccde9de0 100644
+--- a/arch/mips/lantiq/prom.c
++++ b/arch/mips/lantiq/prom.c
+@@ -117,7 +117,7 @@ void __init prom_init(void)
  
--	if (ltq_boot_select() != BS_SPI) {
--		dev_err(&pdev->dev, "invalid bootstrap options\n");
--		return -ENODEV;
--	}
--
- 	master = spi_alloc_master(&pdev->dev, sizeof(*priv));
- 	if (!master)
- 		return -ENOMEM;
+ int __init plat_of_setup(void)
+ {
+-	return __dt_register_buses(soc_info.compatible, "simple-bus");
++	return of_platform_default_populate(NULL, NULL, NULL);
+ }
+ 
+ arch_initcall(plat_of_setup);
 -- 
 2.11.0
