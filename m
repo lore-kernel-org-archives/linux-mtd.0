@@ -1,15 +1,20 @@
-Received: from mout.gmx.net ([212.227.15.18])
+Received: from mail-lf0-x22d.google.com ([2a00:1450:4010:c07::22d])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1df6Dd-00066B-Ak
- for linux-mtd@lists.infradead.org; Tue, 08 Aug 2017 15:15:00 +0000
-MIME-Version: 1.0
-Message-ID: <trinity-0c4f2d97-c691-4876-8810-8dd1eb933043-1502205267920@3capp-gmx-bs12>
-From: "Andreas Eipeldauer" <andi.eipeldauer@gmx.at>
-To: linux-mtd@lists.infradead.org
-Subject: error -5 occurred during torturing
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 8 Aug 2017 17:14:27 +0200
-Content-Transfer-Encoding: quoted-printable
+ id 1df9p4-0004mc-Og
+ for linux-mtd@lists.infradead.org; Tue, 08 Aug 2017 19:05:49 +0000
+Received: by mail-lf0-x22d.google.com with SMTP id y15so18799534lfd.5
+ for <linux-mtd@lists.infradead.org>; Tue, 08 Aug 2017 12:05:25 -0700 (PDT)
+From: Linus Walleij <linus.walleij@linaro.org>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org,
+ Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH] mtd: physmap_of: Retire Gemini pad control
+Date: Tue,  8 Aug 2017 21:05:10 +0200
+Message-Id: <20170808190510.11496-1-linus.walleij@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,35 +24,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello everyone,
-=C2=A0
-I try to verify the proper functionality of a nand chip Cypress S34ML01G1 =
-which should substitute the obsolete
-Samsung K9F1G08U0E-SIB0000=2E Therefore I also use the mtd test tools=2E W=
-ithin the mtdtests especially when running the mtd_torturetest an error -5 =
-occurred during torturing=2E
+I wrote a proper pin control driver for the Gemini. Retire this
+SoC-specific pad control and rely on the pin controller to manage
+this.
 
-insmod mtd_torturetest=2Eko dev=3D1 check=3D1 cycles_count=3D100 gran=3D10=
- ebcnt=3D761 eb=3D0
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ drivers/mtd/maps/physmap_of_gemini.c | 16 ----------------
+ 1 file changed, 16 deletions(-)
 
-mtd_torturetest: Warning: this program is trying to wear out your flash, s=
-top it if this is not wanted=2E
-mtd_torturetest: MTD device: 1
-mtd_torturetest: torture 761 eraseblocks (0-760) of mtd1
-mtd_torturetest: write verify enabled
-mtd_torturetest: error -5 while writing EB 731, written 102400 bytes
-mtd_torturetest: finished after 0 erase cycles
-mtd_torturetest: error -5 occurred during torturing
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-insmod: error inserting 'mtd_torturetest=2Eko': -1 Input/output error
-
-The mtd1 partition is not mounted and Linux is running with a initram fs=
-=2E So there should not be any other access to this partition=2E
-
-I ran these tests also with the old Samsung chip and the -5 errors also ap=
-pear but not in that high rate=2E
-
-Any clue what causes this error? =20
-
-Best regards, Andy
+diff --git a/drivers/mtd/maps/physmap_of_gemini.c b/drivers/mtd/maps/physmap_of_gemini.c
+index 05b286b5289f..4ed1a6bb4d3c 100644
+--- a/drivers/mtd/maps/physmap_of_gemini.c
++++ b/drivers/mtd/maps/physmap_of_gemini.c
+@@ -43,13 +43,6 @@
+ 
+ #define FLASH_PARALLEL_HIGH_PIN_CNT	(1 << 20)	/* else low pin cnt */
+ 
+-/* Miscellaneous Control Register */
+-#define GLOBAL_MISC_CTRL		0x30
+-#define FLASH_PADS_MASK			0x07
+-#define NAND_PADS_DISABLE		BIT(2)
+-#define PFLASH_PADS_DISABLE		BIT(1)
+-#define SFLASH_PADS_DISABLE		BIT(0)
+-
+ static const struct of_device_id syscon_match[] = {
+ 	{ .compatible = "cortina,gemini-syscon" },
+ 	{ },
+@@ -102,15 +95,6 @@ int of_flash_probe_gemini(struct platform_device *pdev,
+ 				 map->bankwidth * 8);
+ 	}
+ 
+-	/* Activate parallel (NOR flash) mode */
+-	ret = regmap_update_bits(rmap, GLOBAL_MISC_CTRL,
+-				 FLASH_PADS_MASK,
+-				 SFLASH_PADS_DISABLE | NAND_PADS_DISABLE);
+-	if (ret) {
+-		dev_err(dev, "unable to set up physmap pads\n");
+-		return -ENODEV;
+-	}
+-
+ 	dev_info(&pdev->dev, "initialized Gemini-specific physmap control\n");
+ 
+ 	return 0;
+-- 
+2.9.4
