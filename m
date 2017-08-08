@@ -1,21 +1,29 @@
-Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
+Received: from mail-wr0-x22c.google.com ([2a00:1450:400c:c0c::22c])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1deqM5-0001kf-HA
- for linux-mtd@lists.infradead.org; Mon, 07 Aug 2017 22:18:35 +0000
-Received: by mail-pf0-x243.google.com with SMTP id j68so1568942pfc.2
- for <linux-mtd@lists.infradead.org>; Mon, 07 Aug 2017 15:18:12 -0700 (PDT)
-Date: Mon, 7 Aug 2017 15:18:09 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
-Subject: [GIT PULL] MTD fixes for 4.13-rc5
-Message-ID: <20170807221809.GA84674@google.com>
+ id 1deycV-0004y1-W0
+ for linux-mtd@lists.infradead.org; Tue, 08 Aug 2017 07:08:06 +0000
+Received: by mail-wr0-x22c.google.com with SMTP id k71so9334696wrc.2
+ for <linux-mtd@lists.infradead.org>; Tue, 08 Aug 2017 00:07:43 -0700 (PDT)
+Date: Tue, 8 Aug 2017 08:07:38 +0100
+From: Lee Jones <lee.jones@linaro.org>
+To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Cc: Ludovic Desroches <ludovic.desroches@microchip.com>,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ nicolas.ferre@microchip.com, boris.brezillon@free-electrons.com,
+ computersforpeace@gmail.com, romain.izard.pro@gmail.com
+Subject: Re: [PATCH v2 3/3] ARM: dts: at91: sama5d2: use sama5d2 compatible
+ string for SMC
+Message-ID: <20170808070738.cd5esjyz6m35rj2b@dell>
+References: <20170718132220.25018-1-ludovic.desroches@microchip.com>
+ <20170718132220.25018-4-ludovic.desroches@microchip.com>
+ <20170807154100.hvl5ua3vdqttghfj@dell>
+ <20170807212813.hj5pfmlh4wl2mh47@piout.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20170807212813.hj5pfmlh4wl2mh47@piout.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,64 +33,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Linus,
+On Mon, 07 Aug 2017, Alexandre Belloni wrote:
 
-I missed getting these out for rc4, but here are some MTD fixes.
+> Hi Lee,
+> 
+> On 07/08/2017 at 16:41:00 +0100, Lee Jones wrote:
+> > On Tue, 18 Jul 2017, Ludovic Desroches wrote:
+> > 
+> > > A new compatible string has been introduced for sama5d2 SMC to allow to
+> > > manage the registers mapping change.
+> > > 
+> > > Signed-off-by: Ludovic Desroches <ludovic.desroches@microchip.com>
+> > > ---
+> > >  arch/arm/boot/dts/sama5d2.dtsi | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > Applied, thanks.
+> > 
+> 
+> I've already applied that one and sent it to arm-soc as a fix for 4.13
+> (I think we agreed on that).
 
-The following changes since commit 5771a8c08880cdca3bfb4a3fc6d309d6bba20877:
+Okay, I just looked through my mail and remember the conversation.
 
-  Linux v4.13-rc1 (2017-07-15 15:22:10 -0700)
+So the question remains; why was the patch re-sent as part of this
+set *after* it had already been applied?
 
-are available in the git repository at:
+Patch unapplied, thanks.
 
-  git://git.infradead.org/linux-mtd.git tags/for-linus-20170807
+> > > diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
+> > > index cc06da394366..3e6e2dbc2595 100644
+> > > --- a/arch/arm/boot/dts/sama5d2.dtsi
+> > > +++ b/arch/arm/boot/dts/sama5d2.dtsi
+> > > @@ -1048,7 +1048,7 @@
+> > >  			};
+> > >  
+> > >  			hsmc: hsmc@f8014000 {
+> > > -				compatible = "atmel,sama5d3-smc", "syscon", "simple-mfd";
+> > > +				compatible = "atmel,sama5d2-smc", "syscon", "simple-mfd";
+> > >  				reg = <0xf8014000 0x1000>;
+> > >  				interrupts = <5 IRQ_TYPE_LEVEL_HIGH 6>;
+> > >  				clocks = <&hsmc_clk>;
+> > 
+> 
 
-for you to fetch changes up to 33983675fbd5b2447430c3dd4c205e879576b475:
-
-  Merge tag 'nand/fixes-for-4.13-rc4' of git://git.infradead.org/l2-mtd into MTD (2017-08-04 18:42:37 -0700)
-
-----------------------------------------------------------------
-MTD fixes for 4.13-rc5:
-
-Just NAND fixes (in both the core handling, and a few drivers). Notes stolen
-from Boris:
-
-Core fixes:
-- Fix data interface setup for ONFI NANDs that do not support the SET
-  FEATURES command
-- Fix a kernel doc header
-- Fix potential integer overflow when retrieving timing information
-  from the parameter page
-- Fix wrong OOB layout for small page NANDs
-
-Driver fixes:
-- Fix potential division-by-zero bug
-- Fix backward compat with old atmel-nand DT bindings
-- Fix ->setup_data_interface() in the atmel NAND driver
-
-----------------------------------------------------------------
-Boris Brezillon (4):
-      mtd: nand: atmel: Fix DT backward compatibility in pmecc.c
-      mtd: nand: Fix timing setup for NANDs that do not support SET FEATURES
-      mtd: nand: Declare tBERS, tR and tPROG as u64 to avoid integer overflow
-      mtd: nand: atmel: Fix EDO mode check
-
-Brian Norris (1):
-      Merge tag 'nand/fixes-for-4.13-rc4' of git://git.infradead.org/l2-mtd into MTD
-
-Bryan O'Donoghue (1):
-      mtd: nand: sunxi: fix potential divide-by-zero error
-
-Jonathan Corbet (1):
-      mtd: nand: Fix a docs build warning
-
-Miquel Raynal (1):
-      nand: fix wrong default oob layout for small pages using soft ecc
-
- drivers/mtd/nand/atmel/nand-controller.c |  2 +-
- drivers/mtd/nand/atmel/pmecc.c           | 21 ++++++---------------
- drivers/mtd/nand/nand_base.c             | 13 ++++++++++---
- drivers/mtd/nand/nand_timings.c          |  6 +++---
- drivers/mtd/nand/sunxi_nand.c            |  4 ++++
- include/linux/mtd/nand.h                 |  6 +++---
- 6 files changed, 27 insertions(+), 25 deletions(-)
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
