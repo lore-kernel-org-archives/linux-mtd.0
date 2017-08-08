@@ -1,20 +1,20 @@
-Subject: Re: [PATCH] mtd: physmap_of: Retire Gemini pad control
-To: Linus Walleij <linus.walleij@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Cc: linux-arm-kernel@lists.infradead.org
-References: <20170808190510.11496-1-linus.walleij@linaro.org>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <4afc385a-688c-6dff-eabf-7f90ea92ca12@gmail.com>
-Date: Tue, 8 Aug 2017 23:44:39 +0200
-MIME-Version: 1.0
-In-Reply-To: <20170808190510.11496-1-linus.walleij@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: from mx1.mailbox.org ([80.241.60.212])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dfDNZ-0000xz-FG
+ for linux-mtd@lists.infradead.org; Tue, 08 Aug 2017 22:53:39 +0000
+From: Hauke Mehrtens <hauke@hauke-m.de>
+To: ralf@linux-mips.org
+Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
+ linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+ martin.blumenstingl@googlemail.com, john@phrozen.org,
+ linux-spi@vger.kernel.org, hauke.mehrtens@intel.com, robh@kernel.org,
+ andy.shevchenko@gmail.com, p.zabel@pengutronix.de, kishon@ti.com,
+ mark.rutland@arm.com, Hauke Mehrtens <hauke@hauke-m.de>
+Subject: [PATCH v9 02/16] mtd: lantiq-flash: drop check of boot select
+Date: Wed,  9 Aug 2017 00:52:33 +0200
+Message-Id: <20170808225247.32266-3-hauke@hauke-m.de>
+In-Reply-To: <20170808225247.32266-1-hauke@hauke-m.de>
+References: <20170808225247.32266-1-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,58 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/08/2017 09:05 PM, Linus Walleij wrote:
-> I wrote a proper pin control driver for the Gemini. Retire this
-> SoC-specific pad control and rely on the pin controller to manage
-> this.
-> 
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Do not check which flash type the SoC was booted from before
+using this driver. Assume that the device tree is correct and use this
+driver when it was added to device tree. This also removes a build
+dependency to the SoC code.
 
-Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
+Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+Acked-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/maps/lantiq-flash.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-Thanks!
-
-> ---
->  drivers/mtd/maps/physmap_of_gemini.c | 16 ----------------
->  1 file changed, 16 deletions(-)
-> 
-> diff --git a/drivers/mtd/maps/physmap_of_gemini.c b/drivers/mtd/maps/physmap_of_gemini.c
-> index 05b286b5289f..4ed1a6bb4d3c 100644
-> --- a/drivers/mtd/maps/physmap_of_gemini.c
-> +++ b/drivers/mtd/maps/physmap_of_gemini.c
-> @@ -43,13 +43,6 @@
->  
->  #define FLASH_PARALLEL_HIGH_PIN_CNT	(1 << 20)	/* else low pin cnt */
->  
-> -/* Miscellaneous Control Register */
-> -#define GLOBAL_MISC_CTRL		0x30
-> -#define FLASH_PADS_MASK			0x07
-> -#define NAND_PADS_DISABLE		BIT(2)
-> -#define PFLASH_PADS_DISABLE		BIT(1)
-> -#define SFLASH_PADS_DISABLE		BIT(0)
-> -
->  static const struct of_device_id syscon_match[] = {
->  	{ .compatible = "cortina,gemini-syscon" },
->  	{ },
-> @@ -102,15 +95,6 @@ int of_flash_probe_gemini(struct platform_device *pdev,
->  				 map->bankwidth * 8);
->  	}
->  
-> -	/* Activate parallel (NOR flash) mode */
-> -	ret = regmap_update_bits(rmap, GLOBAL_MISC_CTRL,
-> -				 FLASH_PADS_MASK,
-> -				 SFLASH_PADS_DISABLE | NAND_PADS_DISABLE);
-> -	if (ret) {
-> -		dev_err(dev, "unable to set up physmap pads\n");
-> -		return -ENODEV;
-> -	}
-> -
->  	dev_info(&pdev->dev, "initialized Gemini-specific physmap control\n");
->  
->  	return 0;
-> 
-
-
+diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
+index 3e33ab66eb24..77b1d8013295 100644
+--- a/drivers/mtd/maps/lantiq-flash.c
++++ b/drivers/mtd/maps/lantiq-flash.c
+@@ -114,12 +114,6 @@ ltq_mtd_probe(struct platform_device *pdev)
+ 	struct cfi_private *cfi;
+ 	int err;
+ 
+-	if (of_machine_is_compatible("lantiq,falcon") &&
+-			(ltq_boot_select() != BS_FLASH)) {
+-		dev_err(&pdev->dev, "invalid bootstrap options\n");
+-		return -ENODEV;
+-	}
+-
+ 	ltq_mtd = devm_kzalloc(&pdev->dev, sizeof(struct ltq_mtd), GFP_KERNEL);
+ 	if (!ltq_mtd)
+ 		return -ENOMEM;
 -- 
-Best regards,
-Marek Vasut
+2.11.0
