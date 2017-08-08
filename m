@@ -1,6 +1,6 @@
 Received: from mx1.mailbox.org ([80.241.60.212])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dfDNZ-0000xz-FG
+ id 1dfDNZ-0000yJ-FD
  for linux-mtd@lists.infradead.org; Tue, 08 Aug 2017 22:53:39 +0000
 From: Hauke Mehrtens <hauke@hauke-m.de>
 To: ralf@linux-mips.org
@@ -9,10 +9,11 @@ Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
  martin.blumenstingl@googlemail.com, john@phrozen.org,
  linux-spi@vger.kernel.org, hauke.mehrtens@intel.com, robh@kernel.org,
  andy.shevchenko@gmail.com, p.zabel@pengutronix.de, kishon@ti.com,
- mark.rutland@arm.com, Hauke Mehrtens <hauke@hauke-m.de>
-Subject: [PATCH v9 02/16] mtd: lantiq-flash: drop check of boot select
-Date: Wed,  9 Aug 2017 00:52:33 +0200
-Message-Id: <20170808225247.32266-3-hauke@hauke-m.de>
+ mark.rutland@arm.com, Hauke Mehrtens <hauke@hauke-m.de>,
+ Mark Brown <broonie@kernel.org>
+Subject: [PATCH v9 03/16] mtd: spi-falcon: drop check of boot select
+Date: Wed,  9 Aug 2017 00:52:34 +0200
+Message-Id: <20170808225247.32266-4-hauke@hauke-m.de>
 In-Reply-To: <20170808225247.32266-1-hauke@hauke-m.de>
 References: <20170808225247.32266-1-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,27 +31,28 @@ driver when it was added to device tree. This also removes a build
 dependency to the SoC code.
 
 Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
-Acked-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/maps/lantiq-flash.c | 6 ------
- 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
-index 3e33ab66eb24..77b1d8013295 100644
---- a/drivers/mtd/maps/lantiq-flash.c
-+++ b/drivers/mtd/maps/lantiq-flash.c
-@@ -114,12 +114,6 @@ ltq_mtd_probe(struct platform_device *pdev)
- 	struct cfi_private *cfi;
- 	int err;
+Cc: Mark Brown <broonie@kernel.org>
+Cc: linux-spi@vger.kernel.org
+---
+ drivers/spi/spi-falcon.c | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/drivers/spi/spi-falcon.c b/drivers/spi/spi-falcon.c
+index 286b2c81fc6b..f8638e82e5db 100644
+--- a/drivers/spi/spi-falcon.c
++++ b/drivers/spi/spi-falcon.c
+@@ -395,11 +395,6 @@ static int falcon_sflash_probe(struct platform_device *pdev)
+ 	struct spi_master *master;
+ 	int ret;
  
--	if (of_machine_is_compatible("lantiq,falcon") &&
--			(ltq_boot_select() != BS_FLASH)) {
+-	if (ltq_boot_select() != BS_SPI) {
 -		dev_err(&pdev->dev, "invalid bootstrap options\n");
 -		return -ENODEV;
 -	}
 -
- 	ltq_mtd = devm_kzalloc(&pdev->dev, sizeof(struct ltq_mtd), GFP_KERNEL);
- 	if (!ltq_mtd)
+ 	master = spi_alloc_master(&pdev->dev, sizeof(*priv));
+ 	if (!master)
  		return -ENOMEM;
 -- 
 2.11.0
