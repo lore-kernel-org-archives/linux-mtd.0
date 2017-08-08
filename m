@@ -1,16 +1,16 @@
 Received: from oxygenium.servers.drkhsh.at ([5.9.5.62])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1df26I-0007qH-4q
- for linux-mtd@lists.infradead.org; Tue, 08 Aug 2017 10:51:03 +0000
-Received: by oxygenium.servers.drkhsh.at (OpenSMTPD) with ESMTP id cb791cd0
+ id 1df295-0000FI-0Q
+ for linux-mtd@lists.infradead.org; Tue, 08 Aug 2017 10:53:56 +0000
+Received: by oxygenium.servers.drkhsh.at (OpenSMTPD) with ESMTP id 9ee81ca2
  for <linux-mtd@lists.infradead.org>;
- Tue, 8 Aug 2017 12:50:28 +0200 (CEST)
+ Tue, 8 Aug 2017 12:53:33 +0200 (CEST)
 From: Aaron Marcher <me@drkhsh.at>
 To: linux-mtd@lists.infradead.org
-Cc: aaron marcher <me@drkhsh.at>
-Subject: [PATCH] mtd-utils: ubinfo, add parameter check
-Date: Tue,  8 Aug 2017 12:50:28 +0200
-Message-Id: <20170808105028.11758-1-me@drkhsh.at>
+Cc: Aaron Marcher <me@drkhsh.at>
+Subject: [PATCH v2] mtd-utils: ubinfo: add parameter check
+Date: Tue,  8 Aug 2017 12:53:27 +0200
+Message-Id: <20170808105327.11905-1-me@drkhsh.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,13 +20,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: aaron marcher <me@drkhsh.at>
+Adds a check if the UBI device number is specified when passing a volume
+name as parameter.
 
-without specifying the UBI device number, ubinfo with the volume name
-parameter returns an error that it cannot find the specified volume on
-ubi-1. -1 comes from the default value of devn used for internal checks.
-i added a check to fix this behaviour and print out an error message
-instead.
+This fixes an issue, where by default an inexistent UBI device named
+"ubi-1" is selected because of missing checks.
+
+Signed-off-by: Aaron Marcher <me@drkhsh.at>
 ---
  ubi-utils/ubinfo.c | 6 ++++++
  1 file changed, 6 insertions(+)
