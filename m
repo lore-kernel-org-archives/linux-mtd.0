@@ -1,31 +1,23 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dfRZf-0005Pw-JD
- for linux-mtd@lists.infradead.org; Wed, 09 Aug 2017 14:03:06 +0000
-From: "Langer, Thomas" <thomas.langer@intel.com>
-To: Mark Brown <broonie@kernel.org>, Hauke Mehrtens <hauke@hauke-m.de>
-CC: "ralf@linux-mips.org" <ralf@linux-mips.org>, "linux-mips@linux-mips.org"
- <linux-mips@linux-mips.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-watchdog@vger.kernel.org"
- <linux-watchdog@vger.kernel.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, "martin.blumenstingl@googlemail.com"
- <martin.blumenstingl@googlemail.com>, "john@phrozen.org" <john@phrozen.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, "Mehrtens, Hauke"
- <hauke.mehrtens@intel.com>, "robh@kernel.org" <robh@kernel.org>,
- "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
- "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, "kishon@ti.com"
- <kishon@ti.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>
-Subject: RE: [PATCH v9 03/16] mtd: spi-falcon: drop check of boot select
-Date: Wed, 9 Aug 2017 14:02:16 +0000
-Message-ID: <0DAF21CFE1B20740AE23D6AF6E54843F1EA0A385@IRSMSX101.ger.corp.intel.com>
-References: <20170808225247.32266-1-hauke@hauke-m.de>
- <20170808225247.32266-4-hauke@hauke-m.de>
- <20170809114421.oo2bunardgw3p4tk@sirena.org.uk>
-In-Reply-To: <20170809114421.oo2bunardgw3p4tk@sirena.org.uk>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1dfSqG-00026A-DM
+ for linux-mtd@lists.infradead.org; Wed, 09 Aug 2017 15:24:17 +0000
+Subject: Re: Regarding UBI/UBIFS corruptions during random power-cuts.
+From: Ritesh Harjani <riteshh@codeaurora.org>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, bhuvanchandra.dv@toradex.com
+References: <c44fc096-c994-5b63-2647-1774e8406c0c@codeaurora.org>
+ <1ad7c77f-98e3-5d70-aa62-b72431000415@nod.at>
+ <cd3ca825-82b4-857d-b5bd-d9f8947a434a@codeaurora.org>
+ <f832b55f-a914-efae-6292-431959edf414@nod.at>
+ <bc9517c3-b0c7-b971-75ab-0b17a2ce8af9@codeaurora.org>
+Message-ID: <16715a18-6a98-5add-f744-d2c356ce17be@codeaurora.org>
+Date: Wed, 9 Aug 2017 20:53:49 +0530
 MIME-Version: 1.0
+In-Reply-To: <bc9517c3-b0c7-b971-75ab-0b17a2ce8af9@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,29 +27,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Richard,
 
+On 8/7/2017 11:39 PM, Ritesh Harjani wrote:
+> Hi Richard,
+> 
+> On 8/6/2017 2:35 PM, Richard Weinberger wrote:
+>> Ritesh,
+>>
+>> Am 27.07.2017 um 16:11 schrieb Ritesh Harjani:
+>>>> The error you're facing is rather generic.
+>>>> In our case we can reproduce the issue very reliable when we enable 
+>>>> the UBIFS /sys/kernel/debug/ubifs/chk_fs debugfs knob.
+>>>> Can you please also try? Please note that chk_fs will make mounting 
+>>>> UBIFS very slow.
+>>>>
+>>>> I'm very interested in your results, maybe it helps tracking down 
+>>>> the root cause.
+>>> Sure, I will give this a shot and let you know the outcome.
+>>
+>> Have you been able to trigger it again on your target?
+> Yes, we tried reproducing with chk_fs enabled. But could not reproduce 
+> it yet (earlier we were trying without chk_fs enabled). We will continue 
+> to retry for more time. Is there anything specific scenario you think I 
+> should include in power on/off to reproduce this issue. The test(with 
+> chk_fs enabled) is still running since 6-7 hours.
 
-> -----Original Message-----
-> From: linux-spi-owner@vger.kernel.org [mailto:linux-spi-
-> owner@vger.kernel.org] On Behalf Of Mark Brown
-> Sent: Wednesday, August 9, 2017 1:44 PM
-> To: Hauke Mehrtens <hauke@hauke-m.de>
-> Cc: ralf@linux-mips.org; linux-mips@linux-mips.org; linux-
-> mtd@lists.infradead.org; linux-watchdog@vger.kernel.org;
-> devicetree@vger.kernel.org; martin.blumenstingl@googlemail.com;
-> john@phrozen.org; linux-spi@vger.kernel.org; Mehrtens, Hauke
-> <hauke.mehrtens@intel.com>; robh@kernel.org; andy.shevchenko@gmail.com;
-> p.zabel@pengutronix.de; kishon@ti.com; mark.rutland@arm.com
-> Subject: Re: [PATCH v9 03/16] mtd: spi-falcon: drop check of boot select
->=20
-> On Wed, Aug 09, 2017 at 12:52:34AM +0200, Hauke Mehrtens wrote:
->=20
-> > Do not check which flash type the SoC was booted from before
-> > using this driver. Assume that the device tree is correct and use this
-> > driver when it was added to device tree. This also removes a build
-> > dependency to the SoC code.
->=20
-> Why?  Is this assumption reliably true?
+This could not be reproduced yet. Ran tests for overnight.
+Do you have anything else for us to try? Also kindly loops us in 
+whenever you have any updates on the fix of this issue :)
 
-Yes. We only have one type of flash interface in the device tree, as they=20
-are connected to the shared EBU (External Bus Unit).
+Thanks
+Ritesh
+
+> 
+>>
+>> Thanks,
+>> //richard
+>>
+> 
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
