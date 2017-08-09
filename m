@@ -1,26 +1,26 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dfMPr-00064q-4G
- for linux-mtd@lists.infradead.org; Wed, 09 Aug 2017 08:32:37 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date: Wed, 09 Aug 2017 14:02:13 +0530
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: dwmw2@infradead.org, boris.brezillon@free-electrons.com,
- computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
+ id 1dfPQ7-0003E2-C1
+ for linux-mtd@lists.infradead.org; Wed, 09 Aug 2017 11:45:05 +0000
+Date: Wed, 9 Aug 2017 12:44:21 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Cc: ralf@linux-mips.org, linux-mips@linux-mips.org,
+ linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
+ devicetree@vger.kernel.org, martin.blumenstingl@googlemail.com,
+ john@phrozen.org, linux-spi@vger.kernel.org,
+ hauke.mehrtens@intel.com, robh@kernel.org,
+ andy.shevchenko@gmail.com, p.zabel@pengutronix.de, kishon@ti.com,
  mark.rutland@arm.com
-Cc: richard@nod.at, cyrille.pitchen@wedev4u.fr, devicetree@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, andy.gross@linaro.org,
- architt@codeaurora.org, sricharan@codeaurora.org
-Subject: Re: [PATCH v3 15/20] mtd: nand: qcom: support for command descriptor
- formation
-In-Reply-To: <1501949998-29859-16-git-send-email-absahu@codeaurora.org>
-References: <1501949998-29859-1-git-send-email-absahu@codeaurora.org>
- <1501949998-29859-16-git-send-email-absahu@codeaurora.org>
-Message-ID: <31e5eb288696717589631d2be46720ae@codeaurora.org>
+Message-ID: <20170809114421.oo2bunardgw3p4tk@sirena.org.uk>
+References: <20170808225247.32266-1-hauke@hauke-m.de>
+ <20170808225247.32266-4-hauke@hauke-m.de>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="76oohoz2fusi4hjt"
+Content-Disposition: inline
+In-Reply-To: <20170808225247.32266-4-hauke@hauke-m.de>
+Subject: Re: [PATCH v9 03/16] mtd: spi-falcon: drop check of boot select
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,220 +30,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2017-08-05 21:49, Abhishek Sahu wrote:
-> 1. Add the function for command descriptor preparation which will
->    be used only by BAM DMA and it will form the DMA descriptors
->    containing command elements
-> 2. DMA_PREP_CMD flag should be used for forming command DMA
->    descriptors
-> 
-> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 
-  This patch has build dependency on
-  http://www.spinics.net/lists/dmaengine/msg13665.html
+--76oohoz2fusi4hjt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> ---
->  drivers/mtd/nand/qcom_nandc.c | 108 
-> +++++++++++++++++++++++++++++++++++-------
->  1 file changed, 92 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/qcom_nandc.c 
-> b/drivers/mtd/nand/qcom_nandc.c
-> index 9c12404..16463ac 100644
-> --- a/drivers/mtd/nand/qcom_nandc.c
-> +++ b/drivers/mtd/nand/qcom_nandc.c
-> @@ -196,6 +196,14 @@
->  	      ((size) << READ_LOCATION_SIZE) |			\
->  	      ((is_last) << READ_LOCATION_LAST))
-> 
-> +/* Returns the NAND register physical address */
-> +#define nandc_reg_phys(chip, offset) ((chip)->base_phys + (offset))
-> +
-> +/* Returns the dma address for reg read buffer */
-> +#define reg_buf_dma_addr(chip, vaddr) \
-> +	((chip)->reg_read_dma + \
-> +	((uint8_t *)(vaddr) - (uint8_t *)(chip)->reg_read_buf))
-> +
->  /* Returns the actual register address for NAND_FLASH_DEV_* */
->  #define nandc_dev_addr(nandc, reg) ((nandc)->props->flash_dev_offset + 
-> (reg))
-> 
-> @@ -313,7 +321,8 @@ struct nandc_regs {
->   *				controller
->   * @dev:			parent device
->   * @base:			MMIO base
-> - * @base_dma:			physical base address of controller registers
-> + * @base_phys:			physical base address of controller registers
-> + * @base_dma:			dma base address of controller registers
->   * @core_clk:			controller clock
->   * @aon_clk:			another controller clock
->   *
-> @@ -346,6 +355,7 @@ struct qcom_nand_controller {
->  	struct device *dev;
-> 
->  	void __iomem *base;
-> +	phys_addr_t base_phys;
->  	dma_addr_t base_dma;
-> 
->  	struct clk *core_clk;
-> @@ -747,6 +757,66 @@ static int prepare_bam_async_desc(struct
-> qcom_nand_controller *nandc,
->  }
-> 
->  /*
-> + * Prepares the command descriptor for BAM DMA which will be used for 
-> NAND
-> + * register reads and writes. The command descriptor requires the 
-> command
-> + * to be formed in command element type so this function uses the 
-> command
-> + * element from bam transaction ce array and fills the same with 
-> required
-> + * data. A single SGL can contain multiple command elements so
-> + * NAND_BAM_NEXT_SGL will be used for starting the separate SGL
-> + * after the current command element.
-> + */
-> +static int prep_bam_dma_desc_cmd(struct qcom_nand_controller *nandc, 
-> bool read,
-> +				 int reg_off, const void *vaddr,
-> +				 int size, unsigned int flags)
-> +{
-> +	int bam_ce_size;
-> +	int i, ret;
-> +	struct bam_cmd_element *bam_ce_buffer;
-> +	struct bam_transaction *bam_txn = nandc->bam_txn;
-> +
-> +	bam_ce_buffer = &bam_txn->bam_ce[bam_txn->bam_ce_pos];
-> +
-> +	/* fill the command desc */
-> +	for (i = 0; i < size; i++) {
-> +		if (read)
-> +			bam_prep_ce(&bam_ce_buffer[i],
-> +				    nandc_reg_phys(nandc, reg_off + 4 * i),
-> +				    BAM_READ_COMMAND,
-> +				    reg_buf_dma_addr(nandc,
-> +						     (__le32 *)vaddr + i));
-> +		else
-> +			bam_prep_ce_le32(&bam_ce_buffer[i],
-> +					 nandc_reg_phys(nandc, reg_off + 4 * i),
-> +					 BAM_WRITE_COMMAND,
-> +					 *((__le32 *)vaddr + i));
-> +	}
-> +
-> +	bam_txn->bam_ce_pos += size;
-> +
-> +	/* use the separate sgl after this command */
-> +	if (flags & NAND_BAM_NEXT_SGL) {
-> +		bam_ce_buffer = &bam_txn->bam_ce[bam_txn->bam_ce_start];
-> +		bam_ce_size = (bam_txn->bam_ce_pos -
-> +				bam_txn->bam_ce_start) *
-> +				sizeof(struct bam_cmd_element);
-> +		sg_set_buf(&bam_txn->cmd_sgl[bam_txn->cmd_sgl_pos],
-> +			   bam_ce_buffer, bam_ce_size);
-> +		bam_txn->cmd_sgl_pos++;
-> +		bam_txn->bam_ce_start = bam_txn->bam_ce_pos;
-> +
-> +		if (flags & NAND_BAM_NWD) {
-> +			ret = prepare_bam_async_desc(nandc, nandc->cmd_chan,
-> +						     DMA_PREP_FENCE |
-> +						     DMA_PREP_CMD);
-> +			if (ret)
-> +				return ret;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +/*
->   * Prepares the data descriptor for BAM DMA which will be used for 
-> NAND
->   * data reads and writes.
->   */
-> @@ -863,19 +933,22 @@ static int read_reg_dma(struct
-> qcom_nand_controller *nandc, int first,
->  {
->  	bool flow_control = false;
->  	void *vaddr;
-> -	int size;
-> 
-> -	if (first == NAND_READ_ID || first == NAND_FLASH_STATUS)
-> -		flow_control = true;
-> +	vaddr = nandc->reg_read_buf + nandc->reg_read_pos;
-> +	nandc->reg_read_pos += num_regs;
-> 
->  	if (first == NAND_DEV_CMD_VLD || first == NAND_DEV_CMD1)
->  		first = nandc_dev_addr(nandc, first);
-> 
-> -	size = num_regs * sizeof(u32);
-> -	vaddr = nandc->reg_read_buf + nandc->reg_read_pos;
-> -	nandc->reg_read_pos += num_regs;
-> +	if (nandc->props->is_bam)
-> +		return prep_bam_dma_desc_cmd(nandc, true, first, vaddr,
-> +					     num_regs, flags);
-> 
-> -	return prep_adm_dma_desc(nandc, true, first, vaddr, size, 
-> flow_control);
-> +	if (first == NAND_READ_ID || first == NAND_FLASH_STATUS)
-> +		flow_control = true;
-> +
-> +	return prep_adm_dma_desc(nandc, true, first, vaddr,
-> +				 num_regs * sizeof(u32), flow_control);
->  }
-> 
->  /*
-> @@ -891,13 +964,9 @@ static int write_reg_dma(struct
-> qcom_nand_controller *nandc, int first,
->  	bool flow_control = false;
->  	struct nandc_regs *regs = nandc->regs;
->  	void *vaddr;
-> -	int size;
-> 
->  	vaddr = offset_to_nandc_reg(regs, first);
-> 
-> -	if (first == NAND_FLASH_CMD)
-> -		flow_control = true;
-> -
->  	if (first == NAND_ERASED_CW_DETECT_CFG) {
->  		if (flags & NAND_ERASED_CW_SET)
->  			vaddr = &regs->erased_cw_detect_cfg_set;
-> @@ -914,10 +983,15 @@ static int write_reg_dma(struct
-> qcom_nand_controller *nandc, int first,
->  	if (first == NAND_DEV_CMD_VLD_RESTORE || first == NAND_DEV_CMD_VLD)
->  		first = nandc_dev_addr(nandc, NAND_DEV_CMD_VLD);
-> 
-> -	size = num_regs * sizeof(u32);
-> +	if (nandc->props->is_bam)
-> +		return prep_bam_dma_desc_cmd(nandc, false, first, vaddr,
-> +					     num_regs, flags);
-> +
-> +	if (first == NAND_FLASH_CMD)
-> +		flow_control = true;
-> 
-> -	return prep_adm_dma_desc(nandc, false, first, vaddr, size,
-> -				 flow_control);
-> +	return prep_adm_dma_desc(nandc, false, first, vaddr,
-> +				 num_regs * sizeof(u32), flow_control);
->  }
-> 
->  /*
-> @@ -1180,7 +1254,8 @@ static int submit_descs(struct
-> qcom_nand_controller *nandc)
->  		}
-> 
->  		if (bam_txn->cmd_sgl_pos > bam_txn->cmd_sgl_start) {
-> -			r = prepare_bam_async_desc(nandc, nandc->cmd_chan, 0);
-> +			r = prepare_bam_async_desc(nandc, nandc->cmd_chan,
-> +						   DMA_PREP_CMD);
->  			if (r)
->  				return r;
->  		}
-> @@ -2716,6 +2791,7 @@ static int qcom_nandc_probe(struct 
-> platform_device *pdev)
->  	if (IS_ERR(nandc->base))
->  		return PTR_ERR(nandc->base);
-> 
-> +	nandc->base_phys = res->start;
->  	nandc->base_dma = phys_to_dma(dev, (phys_addr_t)res->start);
-> 
->  	nandc->core_clk = devm_clk_get(dev, "core");
+On Wed, Aug 09, 2017 at 12:52:34AM +0200, Hauke Mehrtens wrote:
+
+> Do not check which flash type the SoC was booted from before
+> using this driver. Assume that the device tree is correct and use this
+> driver when it was added to device tree. This also removes a build
+> dependency to the SoC code.
+
+Why?  Is this assumption reliably true?
+
+--76oohoz2fusi4hjt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmK9ZQACgkQJNaLcl1U
+h9AHSwf9Fq1OGMyZ9pNQve/uU1k7zR3YCjYuG4FAiLJ7uyu52Gbu6Jhy2kZNIn4Z
+CthKUBdR/SdY6Qfhm0kk82z5Q2Jg6gc0FNzVPjXHe0nRL6oFvGyO8Zs8UL0hfJsn
+8TMv7S+ApJMSjM7Aayj/Gx1bCq1GBG2s9LLhllMVfOgY0JVh5ofTzy4Egt1cfY26
+SK/DTBgpOJc66xrLAOV7Z6GluBSvyOpFvoobbH8YvKEM+iV+QALKZ4u4UjKI8UJG
+BNUTEqnljsgLIL8wvoEHFSwh9DSenQbKdzI1sUNkFF0cA7MnrrSez3vfuigi0nZo
+Cwhde95F1WGQNdz3R2Cf83JlTMrOBw==
+=fsAd
+-----END PGP SIGNATURE-----
+
+--76oohoz2fusi4hjt--
