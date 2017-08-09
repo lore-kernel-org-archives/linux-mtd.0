@@ -1,23 +1,24 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from gateway31.websitewelcome.com ([192.185.143.47])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dfSqG-00026A-DM
- for linux-mtd@lists.infradead.org; Wed, 09 Aug 2017 15:24:17 +0000
-Subject: Re: Regarding UBI/UBIFS corruptions during random power-cuts.
-From: Ritesh Harjani <riteshh@codeaurora.org>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, bhuvanchandra.dv@toradex.com
-References: <c44fc096-c994-5b63-2647-1774e8406c0c@codeaurora.org>
- <1ad7c77f-98e3-5d70-aa62-b72431000415@nod.at>
- <cd3ca825-82b4-857d-b5bd-d9f8947a434a@codeaurora.org>
- <f832b55f-a914-efae-6292-431959edf414@nod.at>
- <bc9517c3-b0c7-b971-75ab-0b17a2ce8af9@codeaurora.org>
-Message-ID: <16715a18-6a98-5add-f744-d2c356ce17be@codeaurora.org>
-Date: Wed, 9 Aug 2017 20:53:49 +0530
+ id 1dfTkl-0001Nf-Mq
+ for linux-mtd@lists.infradead.org; Wed, 09 Aug 2017 16:22:41 +0000
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+ by gateway31.websitewelcome.com (Postfix) with ESMTP id 4EBA81C223
+ for <linux-mtd@lists.infradead.org>; Wed,  9 Aug 2017 11:22:05 -0500 (CDT)
+Date: Wed, 9 Aug 2017 11:22:04 -0500
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] mtd: spi-nor: cqspi: fix error return code in cqspi_probe()
+Message-ID: <20170809162204.GA370@embeddedgus>
 MIME-Version: 1.0
-In-Reply-To: <bc9517c3-b0c7-b971-75ab-0b17a2ce8af9@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,46 +28,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
+platform_get_irq() returns an error code, but the cadence-quadspi
+driver ignores it and always returns -ENXIO. This is not correct
+and, prevents -EPROBE_DEFER from being propagated properly.
 
-On 8/7/2017 11:39 PM, Ritesh Harjani wrote:
-> Hi Richard,
-> 
-> On 8/6/2017 2:35 PM, Richard Weinberger wrote:
->> Ritesh,
->>
->> Am 27.07.2017 um 16:11 schrieb Ritesh Harjani:
->>>> The error you're facing is rather generic.
->>>> In our case we can reproduce the issue very reliable when we enable 
->>>> the UBIFS /sys/kernel/debug/ubifs/chk_fs debugfs knob.
->>>> Can you please also try? Please note that chk_fs will make mounting 
->>>> UBIFS very slow.
->>>>
->>>> I'm very interested in your results, maybe it helps tracking down 
->>>> the root cause.
->>> Sure, I will give this a shot and let you know the outcome.
->>
->> Have you been able to trigger it again on your target?
-> Yes, we tried reproducing with chk_fs enabled. But could not reproduce 
-> it yet (earlier we were trying without chk_fs enabled). We will continue 
-> to retry for more time. Is there anything specific scenario you think I 
-> should include in power on/off to reproduce this issue. The test(with 
-> chk_fs enabled) is still running since 6-7 hours.
+Print and propagate the return value of platform_get_irq on failure.
 
-This could not be reproduced yet. Ran tests for overnight.
-Do you have anything else for us to try? Also kindly loops us in 
-whenever you have any updates on the fix of this issue :)
+This issue was detected with the help of Coccinelle.
 
-Thanks
-Ritesh
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ drivers/mtd/spi-nor/cadence-quadspi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> 
->>
->> Thanks,
->> //richard
->>
-> 
-
+diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+index 53c7d8e..15dacf5 100644
+--- a/drivers/mtd/spi-nor/cadence-quadspi.c
++++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+@@ -1202,8 +1202,8 @@ static int cqspi_probe(struct platform_device *pdev)
+ 	/* Obtain IRQ line. */
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0) {
+-		dev_err(dev, "Cannot obtain IRQ.\n");
+-		return -ENXIO;
++		dev_err(dev, "Cannot obtain IRQ: %d\n", irq);
++		return irq;
+ 	}
+ 
+ 	ret = clk_prepare_enable(cqspi->clk);
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.5.0
