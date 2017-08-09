@@ -1,26 +1,27 @@
-Received: from gateway30.websitewelcome.com ([192.185.160.12])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dfTxu-0003Es-Mn
- for linux-mtd@lists.infradead.org; Wed, 09 Aug 2017 16:36:16 +0000
-Received: from cm15.websitewelcome.com (cm15.websitewelcome.com [100.42.49.9])
- by gateway30.websitewelcome.com (Postfix) with ESMTP id 094BB32A0
- for <linux-mtd@lists.infradead.org>; Wed,  9 Aug 2017 11:35:23 -0500 (CDT)
-Date: Wed, 9 Aug 2017 11:35:21 -0500
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
+Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dfV1n-0002Po-MH
+ for linux-mtd@lists.infradead.org; Wed, 09 Aug 2017 17:44:21 +0000
+Received: by mail-wr0-x244.google.com with SMTP id y43so4941171wrd.0
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Aug 2017 10:43:59 -0700 (PDT)
+Subject: Re: [PATCH] mtd: spi-nor: cqspi: fix error return code in
+ cqspi_probe()
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Matthias Brugger <matthias.bgg@gmail.com>
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
- "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] mtd: nand: mtk: fix error return code in mtk_ecc_probe()
-Message-ID: <20170809163521.GA4941@embeddedgus>
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20170809162204.GA370@embeddedgus>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <63cb3b21-f6cb-ae5c-f349-d21c3208e66e@gmail.com>
+Date: Wed, 9 Aug 2017 19:16:03 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20170809162204.GA370@embeddedgus>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,33 +31,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-platform_get_irq() returns an error code, but the mtk_ecc driver
-ignores it and always returns -EINVAL. This is not correct and,
-prevents -EPROBE_DEFER from being propagated properly.
+On 08/09/2017 06:22 PM, Gustavo A. R. Silva wrote:
+> platform_get_irq() returns an error code, but the cadence-quadspi
+> driver ignores it and always returns -ENXIO. This is not correct
+> and, prevents -EPROBE_DEFER from being propagated properly.
+> 
+> Print and propagate the return value of platform_get_irq on failure.
+> 
+> This issue was detected with the help of Coccinelle.
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+> ---
+>  drivers/mtd/spi-nor/cadence-quadspi.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+> index 53c7d8e..15dacf5 100644
+> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
+> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+> @@ -1202,8 +1202,8 @@ static int cqspi_probe(struct platform_device *pdev)
+>  	/* Obtain IRQ line. */
+>  	irq = platform_get_irq(pdev, 0);
+>  	if (irq < 0) {
+> -		dev_err(dev, "Cannot obtain IRQ.\n");
+> -		return -ENXIO;
+> +		dev_err(dev, "Cannot obtain IRQ: %d\n", irq);
 
-Print and propagate the return value of platform_get_irq on failure.
+"Cannot obtain IRQ, ret=%i\n" please . It's inobvious what the value
+means otherwise.
 
-This issue was detected with the help of Coccinelle.
+> +		return irq;
+>  	}
+>  
+>  	ret = clk_prepare_enable(cqspi->clk);
+> 
 
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
- drivers/mtd/nand/mtk_ecc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/mtk_ecc.c b/drivers/mtd/nand/mtk_ecc.c
-index 6c3a4aa..7f3b065 100644
---- a/drivers/mtd/nand/mtk_ecc.c
-+++ b/drivers/mtd/nand/mtk_ecc.c
-@@ -464,8 +464,8 @@ static int mtk_ecc_probe(struct platform_device *pdev)
- 
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq < 0) {
--		dev_err(dev, "failed to get irq\n");
--		return -EINVAL;
-+		dev_err(dev, "failed to get irq: %d\n", irq);
-+		return irq;
- 	}
- 
- 	ret = dma_set_mask(dev, DMA_BIT_MASK(32));
 -- 
-2.5.0
+Best regards,
+Marek Vasut
