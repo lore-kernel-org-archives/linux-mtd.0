@@ -1,62 +1,32 @@
-Date: Wed, 9 Aug 2017 14:41:03 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Peter Pan <peterpandong@micron.com>,
- Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
- Kevin Hilman <khilman@kernel.org>,
- Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Hartley Sweeten <hsweeten@visionengravers.com>,
- Alexander Sverdlin <alexander.sverdlin@gmail.com>,
- Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <kernel@pengutronix.de>,
- Fabio Estevam <fabio.estevam@nxp.com>,
- Imre Kaloz <kaloz@openwrt.org>, Krzysztof Halasa <khalasa@piap.pl>,
- Eric Miao <eric.y.miao@gmail.com>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>,
- Alexander Clouter <alex@digriz.org.uk>, Daniel Mack <daniel@zonque.org>,
- Robert Jarzmik <robert.jarzmik@free.fr>, Kukjin Kim <kgene@kernel.org>,
- Krzysztof Kozlowski <krzk@kernel.org>,
- Simtec Linux Team <linux@simtec.co.uk>,
- Steven Miao <realmz6@gmail.com>, Mikael Starvik <starvik@axis.com>,
- Jesper Nilsson <jesper.nilsson@axis.com>,
- Ralf Baechle <ralf@linux-mips.org>,
- Yoshinori Sato <ysato@users.sourceforge.jp>,
- Rich Felker <dalias@libc.org>, Wenyou Yang <wenyou.yang@atmel.com>,
- Josh Wu <rainyfeeling@outlook.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- Han Xu <han.xu@nxp.com>, Harvey Hunt <harveyhuntnexus@gmail.com>,
- Vladimir Zapolskiy <vz@mleia.com>,
- Sylvain Lemieux <slemieux.tyco@gmail.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Wan ZongShun <mcuos.com@gmail.com>,
- Neil Armstrong <narmstrong@baylibre.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Maxim Levitsky <maximlevitsky@gmail.com>,
- Marc Gonzalez <marc_gonzalez@sigmadesigns.com>,
- Stefan Agner <stefan@agner.ch>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-omap@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
- adi-buildroot-devel@lists.sourceforge.net,
- linux-cris-kernel@axis.com, linux-mips@linux-mips.org,
- linux-sh@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
- linux-mediatek@lists.infradead.org, linux-oxnas@lists.tuxfamily.org,
- linuxppc-dev@lists.ozlabs.org, devel@driverdev.osuosl.org
-Subject: Re: [PATCH] mtd: nand: Rename nand.h into rawnand.h
-Message-ID: <20170809214101.GG3934@atomide.com>
-References: <1501860550-16506-1-git-send-email-boris.brezillon@free-electrons.com>
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dfZHA-00005D-4E
+ for linux-mtd@lists.infradead.org; Wed, 09 Aug 2017 22:16:29 +0000
+Received: from mail-qk0-f170.google.com (mail-qk0-f170.google.com
+ [209.85.220.170])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 89DDE22B5D
+ for <linux-mtd@lists.infradead.org>; Wed,  9 Aug 2017 22:16:07 +0000 (UTC)
+Received: by mail-qk0-f170.google.com with SMTP id x191so43882554qka.5
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Aug 2017 15:16:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1501860550-16506-1-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <20170719214447.228f13d2@bbrezillon>
+References: <20170718214339.7774-37-robh@kernel.org>
+ <20170719214447.228f13d2@bbrezillon>
+From: Rob Herring <robh@kernel.org>
+Date: Wed, 9 Aug 2017 17:15:46 -0500
+Message-ID: <CAL_JsqL19zdtGxV49C+OHtZOf2jrEUJ0BVU1=jXghrYhWgcQmg@mail.gmail.com>
+Subject: Re: [PATCH] mtd: Convert to using %pOF instead of full_name
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -66,13 +36,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Boris Brezillon <boris.brezillon@free-electrons.com> [170804 08:30]:
-> We are planning to share more code between different NAND based
-> devices (SPI NAND, OneNAND and raw NANDs), but before doing that
-> we need to move the existing include/linux/mtd/nand.h file into
-> include/linux/mtd/rawnand.h so we can later create a nand.h header
-> containing all common structure and function prototypes.
+On Wed, Jul 19, 2017 at 2:44 PM, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> On Tue, 18 Jul 2017 16:43:17 -0500
+> Rob Herring <robh@kernel.org> wrote:
+>
+>> Now that we have a custom printf format specifier, convert users of
+>> full_name to use %pOF instead. This is preparation to remove storing
+>> of the full path string for each node.
+>>
+>> Signed-off-by: Rob Herring <robh@kernel.org>
+>> Cc: David Woodhouse <dwmw2@infradead.org>
+>> Cc: Brian Norris <computersforpeace@gmail.com>
+>> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+>
+> Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-For omap:
+Thanks. Please take this thru the mtd tree.
 
-Acked-by: Tony Lindgren <tony@atomide.com>
+Rob
