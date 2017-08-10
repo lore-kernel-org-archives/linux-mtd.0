@@ -1,26 +1,27 @@
-Received: from mail-lf0-x229.google.com ([2a00:1450:4010:c07::229])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dfkSB-00060E-7Q
- for linux-mtd@lists.infradead.org; Thu, 10 Aug 2017 10:12:36 +0000
-Received: by mail-lf0-x229.google.com with SMTP id t128so1345097lff.2
- for <linux-mtd@lists.infradead.org>; Thu, 10 Aug 2017 03:12:13 -0700 (PDT)
-Subject: Re: [PATCH] mtd: nand: atmel: fix of_irq_get() error check
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
-References: <20170805211436.181653483@cogentembedded.com>
- <20170810115920.7cbb16f2@bbrezillon>
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Message-ID: <5be5f380-1117-3dec-9fe4-d3520a8f0e60@cogentembedded.com>
-Date: Thu, 10 Aug 2017 13:12:09 +0300
+ id 1dfkkd-0004XO-Sz
+ for linux-mtd@lists.infradead.org; Thu, 10 Aug 2017 10:31:41 +0000
 MIME-Version: 1.0
-In-Reply-To: <20170810115920.7cbb16f2@bbrezillon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date: Thu, 10 Aug 2017 16:01:17 +0530
+From: Abhishek Sahu <absahu@codeaurora.org>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
+ robh+dt@kernel.org, mark.rutland@arm.com, richard@nod.at,
+ cyrille.pitchen@wedev4u.fr, devicetree@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, andy.gross@linaro.org,
+ architt@codeaurora.org, sricharan@codeaurora.org, stable@vger.kernel.org
+Subject: Re: [PATCH v3 01/20] mtd: nand: qcom: program NAND_DEV_CMD_VLD
+ register
+In-Reply-To: <20170810114250.6663a6b0@bbrezillon>
+References: <1501949998-29859-1-git-send-email-absahu@codeaurora.org>
+ <1501949998-29859-2-git-send-email-absahu@codeaurora.org>
+ <20170810114250.6663a6b0@bbrezillon>
+Message-ID: <4b66fe6b922115781c67f1555f21fee5@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,59 +31,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 8/10/2017 12:59 PM, Boris Brezillon wrote:
-
->> of_irq_get() may return 0 as well as negative error number on failure,
->> while the driver only checks for the negative values.  The driver would
->> then call devm_request_irq() for IRQ0  in its probe method and never get
->> a valid interrupt.
->>
->> Check for 'nc->irq <= 0' instead and return -ENXIO from the driver's probe
->> iff of_irq_get() returned 0.
->>
->> Fixes: f88fc122cc34 ("mtd: nand: Cleanup/rework the atmel_nand driver")
->> Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
->>
+On 2017-08-10 15:12, Boris Brezillon wrote:
+> Le Sat,  5 Aug 2017 21:49:39 +0530,
+> Abhishek Sahu <absahu@codeaurora.org> a écrit :
+> 
+>> The NAND page read fails without complete boot chain since
+>> NAND_DEV_CMD_VLD value is not proper. The default power on reset
+>> value for this register is
+>> 
+>>     0xe - ERASE_START_VALID | WRITE_START_VALID | READ_STOP_VALID
+>> 
+>> The READ_START_VALID should be enabled for sending PAGE_READ
+>> command. READ_STOP_VALID should be cleared since normal NAND
+>> page read does not require READ_STOP command.
+>> 
+>> Fixes: c76b78d8ec05a ("mtd: nand: Qualcomm NAND controller driver")
+>> Cc: stable@vger.kernel.org
+>> Reviewed-by: Archit Taneja <architt@codeaurora.org>
+>> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 >> ---
->> The patch is against the 'master' branch of the 'linux-mtd.git' repo --
->> the 'nand/fixes'  branch seems too old...
->>
->>   drivers/mtd/nand/atmel/nand-controller.c |   12 ++++++------
->>   1 file changed, 6 insertions(+), 6 deletions(-)
->>
->> Index: linux-mtd/drivers/mtd/nand/atmel/nand-controller.c
->> ===================================================================
->> --- linux-mtd.orig/drivers/mtd/nand/atmel/nand-controller.c
->> +++ linux-mtd/drivers/mtd/nand/atmel/nand-controller.c
->> @@ -2078,11 +2078,11 @@ atmel_hsmc_nand_controller_legacy_init(s
->>   	}
->>   
->>   	nc->irq = of_irq_get(nand_np, 0);
->> -	if (nc->irq < 0) {
->> -		ret = nc->irq;
->> -		if (ret != -EPROBE_DEFER)
->> +	if (nc->irq <= 0) {
->> +		if (nc->irq != -EPROBE_DEFER)
->>   			dev_err(dev, "Failed to get IRQ number (err = %d)\n",
->> -				ret);
->> +				nc->irq);
+>>  drivers/mtd/nand/qcom_nandc.c | 13 ++++++++++++-
+>>  1 file changed, 12 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/drivers/mtd/nand/qcom_nandc.c 
+>> b/drivers/mtd/nand/qcom_nandc.c
+>> index 0289f09..7406019 100644
+>> --- a/drivers/mtd/nand/qcom_nandc.c
+>> +++ b/drivers/mtd/nand/qcom_nandc.c
+>> @@ -110,6 +110,10 @@
+>> 
+>>  /* NAND_DEV_CMD_VLD bits */
+>>  #define	READ_START_VLD			0
+>> +#define	READ_STOP_VALID			1
+>> +#define	WRITE_START_VALID		2
+>> +#define	ERASE_START_VALID		3
+>> +#define	SEQ_READ_START_VLD		4
 > 
-> nc->irq can be 0 here which doesn't make any sense for an error return
-> code, so I'd suggest to still use ret and move the 'ret = nc->irq ?:
-> -ENXIO' line before doing the != -EPROBE_DEFER test.
-
-    I tried to keep reporting the original of_irq_get() result. Can change it 
-if you prefer it another way...
-
->> +		ret = nc->irq ?: -ENXIO;
+> Why not
 > 
-> Why ENXIO and not EINVAL?
+> #define	READ_START_VLD				BIT(0)
+> #define	READ_STOP_VALID				BIT(1)
+> #define	WRITE_START_VALID			BIT(2)
+> #define	ERASE_START_VALID			BIT(3)
+> #define	SEQ_READ_START_VLD			BIT(4)
+> 
 
-    That's what platform_get_irq() (another of_irq_get() user) returns if it 
-doesn't find the IRQ resource.
+  Sure. we can change to use BIT macro.
 
->>   		goto out;
->>   	}
->>   
-[...]
-MBR, Sergei
+  We are using READ_START_VLD only at one place so will replace in
+  current code from
+
+  /* configure CMD1 and VLD for ONFI param probing */
+         nandc_set_reg(nandc, NAND_DEV_CMD_VLD,
+                       (nandc->vld & ~(1 << READ_START_VLD))
+                       | 0 << READ_START_VLD);
+  to
+
+  nandc_set_reg(nandc, NAND_DEV_CMD_VLD, nandc->vld & ~READ_START_VLD)
+
+>> 
+>>  /* NAND_EBI2_ECC_BUF_CFG bits */
+>>  #define	NUM_STEPS			0
+>> @@ -148,6 +152,12 @@
+>>  #define	FETCH_ID			0xb
+>>  #define	RESET_DEVICE			0xd
+>> 
+>> +/* Default Value for NAND_DEV_CMD_VLD */
+>> +#define NAND_DEV_CMD_VLD_VAL		(BIT(READ_START_VLD)	| \
+>> +					 BIT(WRITE_START_VALID)	| \
+>> +					 BIT(ERASE_START_VALID)	| \
+>> +					 BIT(SEQ_READ_START_VLD))
+>> +
+> 
+> and then:
+> 
+> #define NAND_DEV_CMD_VLD_VAL	(READ_START_VLD	| \
+> 				 WRITE_START_VALID | \
+> 				 ERASE_START_VALID | \
+> 				 SEQ_READ_START_VLD)
+> 
+> BTW, can you use consistent suffixes? Sometime definitions are suffixed
+> with _VLD and others are suffixed with _VALID.
+> 
+
+  Sure. I will change all the names to _VLD.
+
+>>  /*
+>>   * the NAND controller performs reads/writes with ECC in 516 byte 
+>> chunks.
+>>   * the driver calls the chunks 'step' or 'codeword' interchangeably
+>> @@ -1995,13 +2005,14 @@ static int qcom_nandc_setup(struct 
+>> qcom_nand_controller *nandc)
+>>  {
+>>  	/* kill onenand */
+>>  	nandc_write(nandc, SFLASHC_BURST_CFG, 0);
+>> +	nandc_write(nandc, NAND_DEV_CMD_VLD, NAND_DEV_CMD_VLD_VAL);
+>> 
+>>  	/* enable ADM DMA */
+>>  	nandc_write(nandc, NAND_FLASH_CHIP_SELECT, DM_EN);
+>> 
+>>  	/* save the original values of these registers */
+>>  	nandc->cmd1 = nandc_read(nandc, NAND_DEV_CMD1);
+>> -	nandc->vld = nandc_read(nandc, NAND_DEV_CMD_VLD);
+>> +	nandc->vld = NAND_DEV_CMD_VLD_VAL;
+>> 
+>>  	return 0;
+>>  }
