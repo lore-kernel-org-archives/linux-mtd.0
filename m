@@ -1,16 +1,23 @@
-Received: from mail-qt0-x22e.google.com ([2607:f8b0:400d:c0d::22e])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dfpbZ-0005Ec-1g
- for linux-mtd@lists.infradead.org; Thu, 10 Aug 2017 15:42:38 +0000
-Received: by mail-qt0-x22e.google.com with SMTP id 16so6534788qtz.4
- for <linux-mtd@lists.infradead.org>; Thu, 10 Aug 2017 08:42:15 -0700 (PDT)
+Date: Thu, 10 Aug 2017 13:21:46 -0500
+From: Rob Herring <robh@kernel.org>
+To: Guochun Mao <guochun.mao@mediatek.com>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Richard Weinberger <richard@nod.at>, Mark Rutland <mark.rutland@arm.com>,
+ Russell King <linux@armlinux.org.uk>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/1] dt-bindings: mtd: add new compatible strings and
+ improve description
+Message-ID: <20170810182146.glmikeqpqwe66dwt@rob-hp-laptop>
+References: <1501834239-25581-1-git-send-email-guochun.mao@mediatek.com>
+ <1501834239-25581-2-git-send-email-guochun.mao@mediatek.com>
 MIME-Version: 1.0
-From: Matthew Stanger <matthew_stanger@trimble.com>
-Date: Thu, 10 Aug 2017 09:42:14 -0600
-Message-ID: <CANr77M27AkvoKo8_WGstSOC9Lw89FuDi0bzwf0ddrkr8=G7NnA@mail.gmail.com>
-Subject: Correct way to flash an MTD partition using mtd-utils
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1501834239-25581-2-git-send-email-guochun.mao@mediatek.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,19 +27,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+On Fri, Aug 04, 2017 at 04:10:39PM +0800, Guochun Mao wrote:
+> Add "mediatek,mt2712-nor" and "mediatek,mt7622-nor"
+> for nor flash node's compatible strings.
+> Explicate the fallback compatible.
+> 
+> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
+> ---
+>  .../devicetree/bindings/mtd/mtk-quadspi.txt        |   15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
 
-I'm hoping someone would be able to tell me the correct way to backup
-a mtd partition. Right now I'm cleaning up some code that would run
-nanddump and pipe it to ubiformat, to dump a RFS from one primary
-partition to an identically sized backup partition. The overlaying
-filesystem being UBIFS. The issue is if the backup partition has an
-extra badblock, than the source, then there isn't enough room. I'm not
-an expert in this space so I'm hoping someone can clarify what the
-correct way is to do this; I'm pretty sure this method isn't right? Is
-using 'mkfs.ubifs' to copy the RFS at the UBIFS layer they way to go
-and then restore it with 'ubinize'? Is there a better, faster way?
-Thanks for any tips.
-
-Cheers,
-Matt
+Acked-by: Rob Herring <robh@kernel.org>
