@@ -1,27 +1,36 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dfkkd-0004XO-Sz
- for linux-mtd@lists.infradead.org; Thu, 10 Aug 2017 10:31:41 +0000
+ id 1dfp2A-0007Xc-OS
+ for linux-mtd@lists.infradead.org; Thu, 10 Aug 2017 15:06:06 +0000
+Date: Thu, 10 Aug 2017 16:05:15 +0100
+From: Mark Brown <broonie@kernel.org>
+To: "Langer, Thomas" <thomas.langer@intel.com>
+Cc: Hauke Mehrtens <hauke@hauke-m.de>,
+ "ralf@linux-mips.org" <ralf@linux-mips.org>,
+ "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "martin.blumenstingl@googlemail.com" <martin.blumenstingl@googlemail.com>,
+ "john@phrozen.org" <john@phrozen.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "Mehrtens, Hauke" <hauke.mehrtens@intel.com>,
+ "robh@kernel.org" <robh@kernel.org>,
+ "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
+ "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+ "kishon@ti.com" <kishon@ti.com>,
+ "mark.rutland@arm.com" <mark.rutland@arm.com>
+Message-ID: <20170810150515.w66ksbfexbcegy6z@sirena.org.uk>
+References: <20170808225247.32266-1-hauke@hauke-m.de>
+ <20170808225247.32266-4-hauke@hauke-m.de>
+ <20170809114421.oo2bunardgw3p4tk@sirena.org.uk>
+ <0DAF21CFE1B20740AE23D6AF6E54843F1EA0A385@IRSMSX101.ger.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date: Thu, 10 Aug 2017 16:01:17 +0530
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- robh+dt@kernel.org, mark.rutland@arm.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr, devicetree@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, andy.gross@linaro.org,
- architt@codeaurora.org, sricharan@codeaurora.org, stable@vger.kernel.org
-Subject: Re: [PATCH v3 01/20] mtd: nand: qcom: program NAND_DEV_CMD_VLD
- register
-In-Reply-To: <20170810114250.6663a6b0@bbrezillon>
-References: <1501949998-29859-1-git-send-email-absahu@codeaurora.org>
- <1501949998-29859-2-git-send-email-absahu@codeaurora.org>
- <20170810114250.6663a6b0@bbrezillon>
-Message-ID: <4b66fe6b922115781c67f1555f21fee5@codeaurora.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="s6uae5i4hoypg7dc"
+Content-Disposition: inline
+In-Reply-To: <0DAF21CFE1B20740AE23D6AF6E54843F1EA0A385@IRSMSX101.ger.corp.intel.com>
+Subject: Re: [PATCH v9 03/16] mtd: spi-falcon: drop check of boot select
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,109 +40,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2017-08-10 15:12, Boris Brezillon wrote:
-> Le Sat,  5 Aug 2017 21:49:39 +0530,
-> Abhishek Sahu <absahu@codeaurora.org> a écrit :
-> 
->> The NAND page read fails without complete boot chain since
->> NAND_DEV_CMD_VLD value is not proper. The default power on reset
->> value for this register is
->> 
->>     0xe - ERASE_START_VALID | WRITE_START_VALID | READ_STOP_VALID
->> 
->> The READ_START_VALID should be enabled for sending PAGE_READ
->> command. READ_STOP_VALID should be cleared since normal NAND
->> page read does not require READ_STOP command.
->> 
->> Fixes: c76b78d8ec05a ("mtd: nand: Qualcomm NAND controller driver")
->> Cc: stable@vger.kernel.org
->> Reviewed-by: Archit Taneja <architt@codeaurora.org>
->> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
->> ---
->>  drivers/mtd/nand/qcom_nandc.c | 13 ++++++++++++-
->>  1 file changed, 12 insertions(+), 1 deletion(-)
->> 
->> diff --git a/drivers/mtd/nand/qcom_nandc.c 
->> b/drivers/mtd/nand/qcom_nandc.c
->> index 0289f09..7406019 100644
->> --- a/drivers/mtd/nand/qcom_nandc.c
->> +++ b/drivers/mtd/nand/qcom_nandc.c
->> @@ -110,6 +110,10 @@
->> 
->>  /* NAND_DEV_CMD_VLD bits */
->>  #define	READ_START_VLD			0
->> +#define	READ_STOP_VALID			1
->> +#define	WRITE_START_VALID		2
->> +#define	ERASE_START_VALID		3
->> +#define	SEQ_READ_START_VLD		4
-> 
-> Why not
-> 
-> #define	READ_START_VLD				BIT(0)
-> #define	READ_STOP_VALID				BIT(1)
-> #define	WRITE_START_VALID			BIT(2)
-> #define	ERASE_START_VALID			BIT(3)
-> #define	SEQ_READ_START_VLD			BIT(4)
-> 
 
-  Sure. we can change to use BIT macro.
+--s6uae5i4hoypg7dc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-  We are using READ_START_VLD only at one place so will replace in
-  current code from
+On Wed, Aug 09, 2017 at 02:02:16PM +0000, Langer, Thomas wrote:
+> > On Wed, Aug 09, 2017 at 12:52:34AM +0200, Hauke Mehrtens wrote:
 
-  /* configure CMD1 and VLD for ONFI param probing */
-         nandc_set_reg(nandc, NAND_DEV_CMD_VLD,
-                       (nandc->vld & ~(1 << READ_START_VLD))
-                       | 0 << READ_START_VLD);
-  to
+> > > Do not check which flash type the SoC was booted from before
+> > > using this driver. Assume that the device tree is correct and use this
+> > > driver when it was added to device tree. This also removes a build
+> > > dependency to the SoC code.
 
-  nandc_set_reg(nandc, NAND_DEV_CMD_VLD, nandc->vld & ~READ_START_VLD)
+> > Why?  Is this assumption reliably true?
 
->> 
->>  /* NAND_EBI2_ECC_BUF_CFG bits */
->>  #define	NUM_STEPS			0
->> @@ -148,6 +152,12 @@
->>  #define	FETCH_ID			0xb
->>  #define	RESET_DEVICE			0xd
->> 
->> +/* Default Value for NAND_DEV_CMD_VLD */
->> +#define NAND_DEV_CMD_VLD_VAL		(BIT(READ_START_VLD)	| \
->> +					 BIT(WRITE_START_VALID)	| \
->> +					 BIT(ERASE_START_VALID)	| \
->> +					 BIT(SEQ_READ_START_VLD))
->> +
-> 
-> and then:
-> 
-> #define NAND_DEV_CMD_VLD_VAL	(READ_START_VLD	| \
-> 				 WRITE_START_VALID | \
-> 				 ERASE_START_VALID | \
-> 				 SEQ_READ_START_VLD)
-> 
-> BTW, can you use consistent suffixes? Sometime definitions are suffixed
-> with _VLD and others are suffixed with _VALID.
-> 
+> Yes. We only have one type of flash interface in the device tree, as they=
+=20
+> are connected to the shared EBU (External Bus Unit).
 
-  Sure. I will change all the names to _VLD.
+That sounds board specific but this is a driver for a SoC?  In any case
+this needs to end up in the commit log.
 
->>  /*
->>   * the NAND controller performs reads/writes with ECC in 516 byte 
->> chunks.
->>   * the driver calls the chunks 'step' or 'codeword' interchangeably
->> @@ -1995,13 +2005,14 @@ static int qcom_nandc_setup(struct 
->> qcom_nand_controller *nandc)
->>  {
->>  	/* kill onenand */
->>  	nandc_write(nandc, SFLASHC_BURST_CFG, 0);
->> +	nandc_write(nandc, NAND_DEV_CMD_VLD, NAND_DEV_CMD_VLD_VAL);
->> 
->>  	/* enable ADM DMA */
->>  	nandc_write(nandc, NAND_FLASH_CHIP_SELECT, DM_EN);
->> 
->>  	/* save the original values of these registers */
->>  	nandc->cmd1 = nandc_read(nandc, NAND_DEV_CMD1);
->> -	nandc->vld = nandc_read(nandc, NAND_DEV_CMD_VLD);
->> +	nandc->vld = NAND_DEV_CMD_VLD_VAL;
->> 
->>  	return 0;
->>  }
+--s6uae5i4hoypg7dc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmMdioACgkQJNaLcl1U
+h9BYlAgAgCDu3huZzBs6oYvZZ+POaY/GV5Cs55enzpxuT8F87rnOrYbTGQw66HzP
++4Foc1xogiJOKDNSs+BpPiuFTo/zvwu+ApKkEE8OeaDOQh4gVhCag/OUKz9z5hAZ
+ZvSHQud2xiO1FjFZeLFB1KGEA9jb9ltOjWdJxqdiv1S9mV4ITiVho//mhTNf6HcL
+RMiKTeDmSz37Q3X1vgrnQehpTYgqUHYCzr/NjUjsJ3nATLZpr8bLbLhh4YKalxqj
+Elnt3lXSauR4/LfcfwpSqRYfeMP/LhWAHMRRJpSMLqFVAyWgndZP9IXm9mP4fXia
+R3yhSmQxzNY7qhWMoY1vQAfNsr4hwA==
+=HdUK
+-----END PGP SIGNATURE-----
+
+--s6uae5i4hoypg7dc--
