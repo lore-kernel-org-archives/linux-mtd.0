@@ -1,23 +1,19 @@
-Subject: Re: [PATCH 1/7] mtd: spi-nor: cadence-quadspi: add a delay in write
- sequence
-To: Rob Herring <robh@kernel.org>
-CC: Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Santosh Shilimkar <ssantosh@kernel.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-References: <20170801045434.8733-1-vigneshr@ti.com>
- <20170801045434.8733-2-vigneshr@ti.com>
- <20170810000831.mtj5w4sgwa56ja24@rob-hp-laptop>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <f756daf8-7880-2c0e-f182-1748b65e5c79@ti.com>
-Date: Thu, 10 Aug 2017 10:58:13 +0530
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dfjoV-0005KW-Vp
+ for linux-mtd@lists.infradead.org; Thu, 10 Aug 2017 09:31:37 +0000
+Date: Thu, 10 Aug 2017 11:31:08 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Mathias Thore <mathias.thore@infinera.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: cfi_cmdset_0002: PPB locking support for larger
+ capacity devices
+Message-ID: <20170810113108.5ad33278@bbrezillon>
+In-Reply-To: <20170405115743.27441-1-mathias.thore@infinera.com>
+References: <20170405115743.27441-1-mathias.thore@infinera.com>
 MIME-Version: 1.0
-In-Reply-To: <20170810000831.mtj5w4sgwa56ja24@rob-hp-laptop>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,41 +23,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Matthias,
 
+Le Wed,  5 Apr 2017 13:57:43 +0200,
+Mathias Thore <mathias.thore@infinera.com> a =C3=A9crit :
 
-On Thursday 10 August 2017 05:38 AM, Rob Herring wrote:
-> On Tue, Aug 01, 2017 at 10:24:28AM +0530, Vignesh R wrote:
->> As per 66AK2G02 TRM[1] SPRUHY8F section 11.15.5.3 Indirect Access
->> Controller programming sequence, a delay equal to couple QSPI master
->> clock(~5ns) is required after setting CQSPI_REG_INDIRECTWR_START bit and
->> writing data to the flash. Add a new compatible to handle the couple of
->> cycles of delay required in the indirect write sequence, since this
->> delay is specific to TI 66AK2G SoC.
->>
->> [1]http://www.ti.com/lit/ug/spruhy8f/spruhy8f.pdf
->>
->> Signed-off-by: Vignesh R <vigneshr@ti.com>
->> ---
->>  Documentation/devicetree/bindings/mtd/cadence-quadspi.txt |  1 +
->>  drivers/mtd/spi-nor/cadence-quadspi.c                     | 13 +++++++++++++
->>  2 files changed, 14 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
->> index f248056da24c..fdd511a83511 100644
->> --- a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
->> +++ b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
->> @@ -2,6 +2,7 @@
->>  
->>  Required properties:
->>  - compatible : Should be "cdns,qspi-nor".
->> +	       Should be "ti,k2g-qspi" for TI 66AK2G platform.
-> 
-> Also, this doesn't indicate that "cdns,qspi-nor" is a fallback as you 
-> have in the dts files. Reformat to 1 valid combination per line.
-> 
+> Currently cfi_cmdset_0002.c supports advanced sector protection scheme
+> for devices with 512 or fewer sectors. This patch increases the limit
+> to enable advanced sector protection on devices with larger capacity.
 
-Agreed, will fix it in v2.
+Can't we fix the implementation to determine at runtime how many
+sectors the flash has instead of changing MAX_SECTORS value every time
+a new flash comes in?
+This would also have the benefit of keeping the ppb_lock array
+(allocated in cfi_ppb_unlock()) small on setup that have a flash with a
+limited number of sectors.
 
--- 
-Regards
-Vignesh
+Regards,
+
+Boris
+
+>=20
+> Signed-off-by: Mathias Thore <mathias.thore@infinera.com>
+> ---
+>  drivers/mtd/chips/cfi_cmdset_0002.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_=
+cmdset_0002.c
+> index 9dca881..4966f12 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+> @@ -2532,7 +2532,7 @@ struct ppb_lock {
+>  	int locked;
+>  };
+> =20
+> -#define MAX_SECTORS			512
+> +#define MAX_SECTORS			1024
+> =20
+>  #define DO_XXLOCK_ONEBLOCK_LOCK		((void *)1)
+>  #define DO_XXLOCK_ONEBLOCK_UNLOCK	((void *)2)
