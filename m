@@ -1,63 +1,19 @@
-Date: Thu, 10 Aug 2017 08:58:05 +0800
-From: Shawn Guo <shawnguo@kernel.org>
+Received: from ni.piap.pl ([195.187.100.4])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dfffh-00044h-MK
+ for linux-mtd@lists.infradead.org; Thu, 10 Aug 2017 05:06:15 +0000
+From: khalasa@piap.pl (Krzysztof =?utf-8?Q?Ha=C5=82asa?=)
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Peter Pan <peterpandong@micron.com>,
- Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
- Kevin Hilman <khilman@kernel.org>,
- Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Hartley Sweeten <hsweeten@visionengravers.com>,
- Alexander Sverdlin <alexander.sverdlin@gmail.com>,
- Sascha Hauer <kernel@pengutronix.de>,
- Fabio Estevam <fabio.estevam@nxp.com>,
- Imre Kaloz <kaloz@openwrt.org>, Krzysztof Halasa <khalasa@piap.pl>,
- Eric Miao <eric.y.miao@gmail.com>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>,
- Alexander Clouter <alex@digriz.org.uk>, Daniel Mack <daniel@zonque.org>,
- Robert Jarzmik <robert.jarzmik@free.fr>, Kukjin Kim <kgene@kernel.org>,
- Krzysztof Kozlowski <krzk@kernel.org>,
- Simtec Linux Team <linux@simtec.co.uk>,
- Steven Miao <realmz6@gmail.com>, Mikael Starvik <starvik@axis.com>,
- Jesper Nilsson <jesper.nilsson@axis.com>,
- Ralf Baechle <ralf@linux-mips.org>,
- Yoshinori Sato <ysato@users.sourceforge.jp>,
- Rich Felker <dalias@libc.org>, Wenyou Yang <wenyou.yang@atmel.com>,
- Josh Wu <rainyfeeling@outlook.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- Han Xu <han.xu@nxp.com>, Harvey Hunt <harveyhuntnexus@gmail.com>,
- Vladimir Zapolskiy <vz@mleia.com>,
- Sylvain Lemieux <slemieux.tyco@gmail.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Wan ZongShun <mcuos.com@gmail.com>,
- Neil Armstrong <narmstrong@baylibre.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Maxim Levitsky <maximlevitsky@gmail.com>,
- Marc Gonzalez <marc_gonzalez@sigmadesigns.com>,
- Stefan Agner <stefan@agner.ch>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-omap@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
- adi-buildroot-devel@lists.sourceforge.net,
- linux-cris-kernel@axis.com, linux-mips@linux-mips.org,
- linux-sh@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
- linux-mediatek@lists.infradead.org, linux-oxnas@lists.tuxfamily.org,
- linuxppc-dev@lists.ozlabs.org, devel@driverdev.osuosl.org
+Cc: linux-mtd@lists.infradead.org
 Subject: Re: [PATCH] mtd: nand: Rename nand.h into rawnand.h
-Message-ID: <20170810005804.GB31819@dragon>
 References: <1501860550-16506-1-git-send-email-boris.brezillon@free-electrons.com>
- <1501860550-16506-2-git-send-email-boris.brezillon@free-electrons.com>
+Sender: khalasa@piap.pl
+Date: Thu, 10 Aug 2017 07:05:45 +0200
+In-Reply-To: <1501860550-16506-1-git-send-email-boris.brezillon@free-electrons.com>
+ (Boris Brezillon's message of "Fri, 4 Aug 2017 17:29:09 +0200")
+Message-ID: <m38tisf1w6.fsf@t19.piap.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1501860550-16506-2-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -67,16 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 04, 2017 at 05:29:10PM +0200, Boris Brezillon wrote:
-> We are planning to share more code between different NAND based
-> devices (SPI NAND, OneNAND and raw NANDs), but before doing that
-> we need to move the existing include/linux/mtd/nand.h file into
-> include/linux/mtd/rawnand.h so we can later create a nand.h header
-> containing all common structure and function prototypes.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Signed-off-by: Peter Pan <peterpandong@micron.com>
-...
->  arch/arm/mach-imx/mach-qong.c                   | 2 +-
+Boris Brezillon <boris.brezillon@free-electrons.com> writes:
 
-Acked-by: Shawn Guo <shawnguo@kernel.org>
+> --- a/arch/arm/mach-ixp4xx/ixdp425-setup.c
+> +++ b/arch/arm/mach-ixp4xx/ixdp425-setup.c
+> @@ -17,7 +17,7 @@
+>  #include <linux/i2c-gpio.h>
+>  #include <linux/io.h>
+>  #include <linux/mtd/mtd.h>
+> -#include <linux/mtd/nand.h>
+> +#include <linux/mtd/rawnand.h>
+>  #include <linux/mtd/partitions.h>
+>  #include <linux/delay.h>
+>  #include <linux/gpio.h>
+
+Acked-by: Krzysztof Halasa <khalasa@piap.pl>
+-- 
+Krzysztof Halasa
+
+Industrial Research Institute for Automation and Measurements PIAP
+Al. Jerozolimskie 202, 02-486 Warsaw, Poland
