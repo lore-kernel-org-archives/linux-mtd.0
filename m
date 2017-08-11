@@ -1,19 +1,20 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dg8JP-00007G-LP
- for linux-mtd@lists.infradead.org; Fri, 11 Aug 2017 11:41:08 +0000
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: boris.brezillon@free-electrons.com
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- richard@nod.at, cyrille.pitchen@wedev4u.fr, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, andy.gross@linaro.org, architt@codeaurora.org,
- sricharan@codeaurora.org, Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH v4 11/20] mtd: nand: qcom: enable BAM or ADM mode
-Date: Fri, 11 Aug 2017 17:09:26 +0530
-Message-Id: <1502451575-15712-12-git-send-email-absahu@codeaurora.org>
-In-Reply-To: <1502451575-15712-1-git-send-email-absahu@codeaurora.org>
-References: <1502451575-15712-1-git-send-email-absahu@codeaurora.org>
+Received: from bran.ispras.ru ([83.149.199.196] helo=smtp.ispras.ru)
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dg9TV-0003ul-8X
+ for linux-mtd@lists.infradead.org; Fri, 11 Aug 2017 12:55:39 +0000
+From: Anton Vasilyev <vasilyev@ispras.ru>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: Anton Vasilyev <vasilyev@ispras.ru>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ ldv-project@linuxtesting.org
+Subject: [PATCH] mtd: plat-ram: use release_mem_region instead of
+ release_resource
+Date: Fri, 11 Aug 2017 15:55:03 +0300
+Message-Id: <1502456103-1576-1-git-send-email-vasilyev@ispras.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,60 +24,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-1. DM_EN is only required for EBI2 NAND controller which uses ADM
-2. BAM mode will be disabled after power on reset which needs to
-   be enabled before starting any BAM transfers.
+Use api pair of request_mem_region and release_mem_region
+instead of release_resource.
 
-Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+Found by Linux Driver Verification project (linuxtesting.
+
+Signed-off-by: Anton Vasilyev <vasilyev@ispras.ru>
 ---
- drivers/mtd/nand/qcom_nandc.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ drivers/mtd/maps/plat-ram.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-index 3d9fd7f..ae873d3 100644
---- a/drivers/mtd/nand/qcom_nandc.c
-+++ b/drivers/mtd/nand/qcom_nandc.c
-@@ -163,6 +163,9 @@
- #define NAND_DEV_CMD_VLD_VAL		(READ_START_VLD | WRITE_START_VLD | \
- 					 ERASE_START_VLD | SEQ_READ_START_VLD)
- 
-+/* NAND_CTRL bits */
-+#define	BAM_MODE_EN			BIT(0)
-+
- /*
-  * the NAND controller performs reads/writes with ECC in 516 byte chunks.
-  * the driver calls the chunks 'step' or 'codeword' interchangeably
-@@ -1035,7 +1038,8 @@ static int read_id(struct qcom_nand_host *host, int column)
- 	nandc_set_reg(nandc, NAND_FLASH_CMD, FETCH_ID);
- 	nandc_set_reg(nandc, NAND_ADDR0, column);
- 	nandc_set_reg(nandc, NAND_ADDR1, 0);
--	nandc_set_reg(nandc, NAND_FLASH_CHIP_SELECT, DM_EN);
-+	nandc_set_reg(nandc, NAND_FLASH_CHIP_SELECT,
-+		      nandc->props->is_bam ? 0 : DM_EN);
- 	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
- 
- 	write_reg_dma(nandc, NAND_FLASH_CMD, 4, NAND_BAM_NEXT_SGL);
-@@ -2408,12 +2412,19 @@ static void qcom_nandc_unalloc(struct qcom_nand_controller *nandc)
- /* one time setup of a few nand controller registers */
- static int qcom_nandc_setup(struct qcom_nand_controller *nandc)
+diff --git a/drivers/mtd/maps/plat-ram.c b/drivers/mtd/maps/plat-ram.c
+index 5157289..baaf146 100644
+--- a/drivers/mtd/maps/plat-ram.c
++++ b/drivers/mtd/maps/plat-ram.c
+@@ -82,6 +82,7 @@ static inline void platram_setrw(struct platram_info *info, int to)
+ static int platram_remove(struct platform_device *pdev)
  {
-+	u32 nand_ctrl;
-+
- 	/* kill onenand */
- 	nandc_write(nandc, SFLASHC_BURST_CFG, 0);
- 	nandc_write(nandc, NAND_DEV_CMD_VLD, NAND_DEV_CMD_VLD_VAL);
+ 	struct platram_info *info = to_platram_info(pdev);
++	resource_size_t res_size;
  
--	/* enable ADM DMA */
--	nandc_write(nandc, NAND_FLASH_CHIP_SELECT, DM_EN);
-+	/* enable ADM or BAM DMA */
-+	if (nandc->props->is_bam) {
-+		nand_ctrl = nandc_read(nandc, NAND_CTRL);
-+		nandc_write(nandc, NAND_CTRL, nand_ctrl | BAM_MODE_EN);
-+	} else {
-+		nandc_write(nandc, NAND_FLASH_CHIP_SELECT, DM_EN);
-+	}
+ 	dev_dbg(&pdev->dev, "removing device\n");
  
- 	/* save the original values of these registers */
- 	nandc->cmd1 = nandc_read(nandc, NAND_DEV_CMD1);
+@@ -100,8 +101,8 @@ static int platram_remove(struct platform_device *pdev)
+ 	/* release resources */
+ 
+ 	if (info->area) {
+-		release_resource(info->area);
+-		kfree(info->area);
++		res_size = resource_size(info->area)
++		release_mem_region(info->area->start, res_size);
+ 	}
+ 
+ 	if (info->map.virt != NULL)
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+2.7.4
