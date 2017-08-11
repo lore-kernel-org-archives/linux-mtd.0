@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dg8IR-0007fD-PG
- for linux-mtd@lists.infradead.org; Fri, 11 Aug 2017 11:40:09 +0000
+ id 1dg8IW-0007fp-Ex
+ for linux-mtd@lists.infradead.org; Fri, 11 Aug 2017 11:40:18 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: boris.brezillon@free-electrons.com
 Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
@@ -9,12 +9,12 @@ Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  devicetree@vger.kernel.org, andy.gross@linaro.org, architt@codeaurora.org,
  sricharan@codeaurora.org, Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH v4 00/20] Add QCOM QPIC NAND support
-Date: Fri, 11 Aug 2017 17:09:15 +0530
-Message-Id: <1502451575-15712-1-git-send-email-absahu@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH v4 02/20] mtd: nand: qcom: support for NAND controller
+ properties
+Date: Fri, 11 Aug 2017 17:09:17 +0530
+Message-Id: <1502451575-15712-3-git-send-email-absahu@codeaurora.org>
+In-Reply-To: <1502451575-15712-1-git-send-email-absahu@codeaurora.org>
+References: <1502451575-15712-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,74 +24,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* v4:
+Currently driver data is being assigned directly with ECC modes.
+Now, the plan is to add more NAND controller versions which will
+have different properties. This patch reorganizes the current driver
+data assignment by creating NAND controller properties structure
+which will contain all properties specific to NAND controller.
 
-1. Added Acked-by from Rob for DT documentation patches
-2. Removed ipq8074 compatible string from ipq4019 DT example.
-2. Used the BIT macro for NAND_CMD_VLD bits and consistent names
-   as suggested by Boris in v3.
+Reviewed-by: Archit Taneja <architt@codeaurora.org>
+Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+---
+ drivers/mtd/nand/qcom_nandc.c | 26 +++++++++++++++++++-------
+ 1 file changed, 19 insertions(+), 7 deletions(-)
 
-* v3:
-
-1. Removed the patches already applied to linux-next and
-   rebased the remaining patches on [1]
-2. Reordered the patches and put the BAM DMA changes [2]
-   dependent patches and compatible string patches in last
-3. Removed the register offsets array and used the dev_cmd offsets
-4. Changed some macro names to small letters for better code readability
-5. Changed the compatible string to SoC specific
-6. Did minor code changes for adding comment, error handling, structure names
-7. Combined raw write (patch#18) and passing flag parameter (patch#22) patch
-   into one
-8. Made separate patch for compatible string and NAND properties
-9. Made separate patch for BAM command descriptor and data descriptors handling
-10. Changed commit message for some of the patches
-11. Addressed review comments given in v2
-12. Added Reviewed-by of Archit for some of the patches from v2
-13. All the MTD tests are working fine for IPQ8064 AP148, IPQ4019 DK04 and
-    IPQ8074 HK01 boards for v3 patches
-
-[1] http://git.infradead.org/l2-mtd.git/shortlog/refs/heads/nand/next
-[2] http://www.spinics.net/lists/dmaengine/msg13662.html
-
-* v2:
-
-1. Addressed the review comments given in v1
-2. Removed the DMA coherent buffer for register read and used
-   streaming DMA API’s
-3. Reorganized the NAND read and write functions
-4. Separated patch for driver and documentation changes
-5. Changed the compatible string for EBI2
-
-* v1:
-
-http://www.spinics.net/lists/devicetree/msg183706.html
-
-Abhishek Sahu (20):
-  mtd: nand: qcom: fix read failure without complete bootchain
-  mtd: nand: qcom: support for NAND controller properties
-  mtd: nand: qcom: add bam property for QPIC NAND controller
-  mtd: nand: qcom: add and initialize QPIC DMA resources
-  mtd: nand: qcom: DMA mapping support for register read buffer
-  mtd: nand: qcom: allocate BAM transaction
-  mtd: nand: qcom: add BAM DMA descriptor handling
-  mtd: nand: qcom: support for passing flags in transfer functions
-  mtd: nand: qcom: support for read location registers
-  mtd: nand: qcom: erased codeword detection configuration
-  mtd: nand: qcom: enable BAM or ADM mode
-  mtd: nand: qcom: QPIC data descriptors handling
-  mtd: nand: qcom: support for different DEV_CMD register offsets
-  mtd: nand: qcom: add command elements in BAM transaction
-  mtd: nand: qcom: support for command descriptor formation
-  dt-bindings: qcom_nandc: fix the ipq806x device tree example
-  dt-bindings: qcom_nandc: IPQ4019 QPIC NAND documentation
-  dt-bindings: qcom_nandc: IPQ8074 QPIC NAND documentation
-  mtd: nand: qcom: support for IPQ4019 QPIC NAND controller
-  mtd: nand: qcom: support for IPQ8074 QPIC NAND controller
-
- .../devicetree/bindings/mtd/qcom_nandc.txt         |  63 +-
- drivers/mtd/nand/qcom_nandc.c                      | 866 ++++++++++++++++++---
- 2 files changed, 814 insertions(+), 115 deletions(-)
-
+diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
+index e5cb8f1..79f7de8 100644
+--- a/drivers/mtd/nand/qcom_nandc.c
++++ b/drivers/mtd/nand/qcom_nandc.c
+@@ -240,7 +240,7 @@ struct nandc_regs {
+  *				writes. contains the register values to be
+  *				written to controller
+  * @cmd1/vld:			some fixed controller register values
+- * @ecc_modes:			supported ECC modes by the current controller,
++ * @props:			properties of current NAND controller,
+  *				initialized via DT match data
+  */
+ struct qcom_nand_controller {
+@@ -271,7 +271,7 @@ struct qcom_nand_controller {
+ 	struct nandc_regs *regs;
+ 
+ 	u32 cmd1, vld;
+-	u32 ecc_modes;
++	const struct qcom_nandc_props *props;
+ };
+ 
+ /*
+@@ -324,6 +324,15 @@ struct qcom_nand_host {
+ 	u32 clrreadstatus;
+ };
+ 
++/*
++ * This data type corresponds to the NAND controller properties which varies
++ * among different NAND controllers.
++ * @ecc_modes - ecc mode for NAND
++ */
++struct qcom_nandc_props {
++	u32 ecc_modes;
++};
++
+ static inline struct qcom_nand_host *to_qcom_nand_host(struct nand_chip *chip)
+ {
+ 	return container_of(chip, struct qcom_nand_host, chip);
+@@ -1824,7 +1833,7 @@ static int qcom_nand_host_setup(struct qcom_nand_host *host)
+ 		 * uses lesser bytes for ECC. If RS is used, the ECC bytes is
+ 		 * always 10 bytes
+ 		 */
+-		if (nandc->ecc_modes & ECC_BCH_4BIT) {
++		if (nandc->props->ecc_modes & ECC_BCH_4BIT) {
+ 			/* BCH */
+ 			host->bch_enabled = true;
+ 			ecc_mode = 0;
+@@ -2171,7 +2180,7 @@ static int qcom_nandc_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
+ 
+-	nandc->ecc_modes = (unsigned long)dev_data;
++	nandc->props = dev_data;
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	nandc->base = devm_ioremap_resource(dev, res);
+@@ -2240,15 +2249,18 @@ static int qcom_nandc_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-#define EBI2_NANDC_ECC_MODES	(ECC_RS_4BIT | ECC_BCH_8BIT)
++static const struct qcom_nandc_props ipq806x_nandc_props = {
++	.ecc_modes = (ECC_RS_4BIT | ECC_BCH_8BIT),
++};
+ 
+ /*
+  * data will hold a struct pointer containing more differences once we support
+  * more controller variants
+  */
+ static const struct of_device_id qcom_nandc_of_match[] = {
+-	{	.compatible = "qcom,ipq806x-nand",
+-		.data = (void *)EBI2_NANDC_ECC_MODES,
++	{
++		.compatible = "qcom,ipq806x-nand",
++		.data = &ipq806x_nandc_props,
+ 	},
+ 	{}
+ };
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
