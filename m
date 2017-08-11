@@ -1,32 +1,23 @@
-Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dgCfa-0001s9-6B
- for linux-mtd@lists.infradead.org; Fri, 11 Aug 2017 16:20:20 +0000
-Received: by mail-pf0-x244.google.com with SMTP id c65so3868780pfl.0
- for <linux-mtd@lists.infradead.org>; Fri, 11 Aug 2017 09:19:55 -0700 (PDT)
-Date: Fri, 11 Aug 2017 09:19:50 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Frank Rowand <frowand.list@gmail.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Jonas Gorski <jonas.gorski@gmail.com>,
- Florian Fainelli <f.fainelli@gmail.com>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH V4 1/2] mtd: partitions: add of_match_table parser matching
-Message-ID: <20170811161950.GC77953@google.com>
-References: <20170624231025.23292-1-zajec5@gmail.com>
+Received: from smtpimr.rockwellcollins.com ([205.175.226.29]
+ helo=ch3vs02.rockwellcollins.com)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dgD9J-0008K6-LL
+ for linux-mtd@lists.infradead.org; Fri, 11 Aug 2017 16:51:03 +0000
+Received: by mail-yw0-f199.google.com with SMTP id l82so65853184ywc.1
+ for <linux-mtd@lists.infradead.org>; Fri, 11 Aug 2017 09:50:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20170624231025.23292-1-zajec5@gmail.com>
+In-Reply-To: <20170809201047.57fd6976@bbrezillon>
+References: <1501851740-14125-1-git-send-email-matthew.weber@rockwellcollins.com>
+ <20170809201047.57fd6976@bbrezillon>
+From: Sanjay Tandel <sanjay.tandel@rockwellcollins.com>
+Date: Fri, 11 Aug 2017 11:50:37 -0500
+Message-ID: <CAB0kKmyHPXhv4ovmj00JgB9gow0Qi3OHm2Gh4STJFNV4S3o_Ag@mail.gmail.com>
+Subject: Re: [PATCH] map-ram chip driver: 16-bit block transfer
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Matt Weber <matthew.weber@rockwellcollins.com>,
+ linux-mtd@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,167 +27,243 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Boris,
 
-On Sun, Jun 25, 2017 at 01:10:24AM +0200, Rafał Miłecki wrote:
-> From: Brian Norris <computersforpeace@gmail.com>
-> 
-> Partition parsers can now provide an of_match_table to enable
-> flash<-->parser matching via device tree.
-> 
-> This support is currently limited to built-in parsers as it uses
-> request_module() and friends. This should be sufficient for most cases
-> though as compiling parsers as modules isn't a common choice.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-> ---
-> This is based on Brian's patches:
-> [RFC PATCH 4/7] mtd: add of_match_mtd_parser() and of_mtd_match_mtd_parser() helpers
-> [RFC PATCH 6/7] RFC: mtd: partitions: enable of_match_table matching
-> 
-> V1: Put helpers in mtdpart.c instead of drivers/of/of_mtd.c
->     Merge helpers into a single of_mtd_match_mtd_parser
-> V3: Add a simple comment to note we will need the best match in the future
-> V4: Rework new functions to pick parser with the best match
->     Move new code in parse_mtd_partitions up so it has precedence over flash
->     driver defaults and MTD defaults
-> ---
->  drivers/mtd/mtdpart.c          | 65 ++++++++++++++++++++++++++++++++++++++++++
->  include/linux/mtd/partitions.h |  1 +
->  2 files changed, 66 insertions(+)
-> 
-> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-> index 2ad9493703f9..239d5e6e62ed 100644
-> --- a/drivers/mtd/mtdpart.c
-> +++ b/drivers/mtd/mtdpart.c
-> @@ -30,6 +30,7 @@
->  #include <linux/mtd/mtd.h>
->  #include <linux/mtd/partitions.h>
->  #include <linux/err.h>
-> +#include <linux/of.h>
->  
->  #include "mtdcore.h"
->  
-> @@ -885,6 +886,60 @@ static int mtd_part_do_parse(struct mtd_part_parser *parser,
->  	return ret;
->  }
->  
-> +static int of_mtd_match_mtd_parser(struct mtd_info *mtd,
-> +				   struct mtd_part_parser *parser)
-> +{
-> +	const struct of_device_id *matches;
-> +	struct device_node *np;
-> +	int score = 0;
-> +
-> +	matches = parser->of_match_table;
-> +	if (!matches)
-> +		return false;
-> +
-> +	np = mtd_get_of_node(mtd);
-> +	np = of_get_child_by_name(np, "partitions");
-> +	if (!np)
-> +		return false;
+On Wed, Aug 9, 2017 at 1:10 PM, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> +Arnd for the memcpy_to/fromio aspects.
+>
+> Hi Matt,
+>
+> Subject should be something like "mtd: map: support 16-bit block
+> transfers"
+>
+> Le Fri,  4 Aug 2017 08:02:20 -0500,
+> Matt Weber <matthew.weber@rockwellcollins.com> a =C3=A9crit :
+>
+>> From: sgtandel <sanjay.tandel@rockwellcollins.com>
+>>
+>> This patch adds 16-bit I/O memory write function (map_copy_to16) in map-=
+ram
+>> driver. map-ram driver's block write function(i.e map_copy_to) uses
+>> memcpy_toio() function for block transfer. memcpy_toio() is limited to d=
+o
+>> single byte write, irrespective of bankwidth.
+>
+> That's not true. Depending on the platform (+ config options)
+> memcpy_to/fromio() can be a simple redirection to memcpy, and
+> memcpy is likely to be optimized to do 32bit or 64bit accesses when
+> possible (IOW, when alignment allows it).
+>
+Agree with you on memcpy_toio/_fromio.
+but map-ram driver's map_copy_to/map_copy_from aren't based on bank-width
+provided for specific chip.It relies on memcpy_toio, which is dependent on =
+arch,
+alignment and size.For example - like in our case of accessing 16-bit
+flash, despite
+of chip's bank-width being 16-bit, map_copy_to ends up accessing 8-bit usin=
+g
+memcpy_toio, because memcpy_toio for ARM arch always does 8-bit accesses.
 
-This function returns int, but you're returning 'false'. Should probably
-be 0, or negative.
+Single entity read/write function (like map_read/map_write), on the other h=
+and,
+seems to be doing that correctly by checking the bank-width.
 
-> +
-> +	for (; matches->name[0] || matches->type[0] || matches->compatible[0];
-> +	     matches++) {
-> +		if (!matches->compatible[0])
-> +			continue;
-> +		score = max(score,
-> +			    of_device_is_compatible(np, matches->compatible));
-> +	}
-> +
-> +	of_node_put(np);
-> +
-> +	return score;
-> +}
-> +
-> +static struct mtd_part_parser *mtd_part_get_parser_by_of(struct mtd_info *mtd)
-> +{
-> +	struct mtd_part_parser *p, *ret = NULL;
-> +	struct mtd_part_parser *best_parser = NULL;
-> +	int best_score = 0;
-> +
-> +	spin_lock(&part_parser_lock);
-> +
-> +	list_for_each_entry(p, &part_parsers, list) {
-> +		int score = of_mtd_match_mtd_parser(mtd, p);
-> +
-> +		if (score > best_score) {
-> +			best_score = score;
-> +			best_parser = p;
-> +		}
-> +	}
-> +
-> +	if (best_parser && try_module_get(best_parser->owner))
-> +		ret = best_parser;
+>> Therefore,
+>> added map_copy_to16() function to be used by map-ram driver for block
+>> transfers for chips that only supports word(16-bit) transfers. map-ram
+>> driver's single entity read/write functions (such as map_read and
+>> map_write) use bankwidth property(provided by DTS entry) and calls
+>> appropriate readb/readw/readq function. For block write, there was no su=
+ch
+>> implementation found in map-ram driver. So map_copy_to() calls memcpy_to=
+io
+>> (which in turn calls writeb) for all block write, irrespective of
+>> bankwidth.
+>
+> You're kind of repeating what was said above.
+>
 
-Unfortunately, this only tries a single parser (the "best" in the
-compatible list). But what if that parser doesn't match? I thought the
-idea was to fall back to the others. e.g., if this was like a block
-device, we might have something like 'compatible = "gpt", "mbr";', and
-if we don't find a GPT descriptor, we fall back to MBR.
+agree. lot of repeating!
 
-I believe the correct algorithm for this is:
+>> So wrong or corrupted data might be written into flash memory in
+>> case chips that does not support 8-bit write.
+>
+> It's likely to be arch and buffer alignment dependent (see my
+> explanation about memcpy_to/fromio() being a simple redirection to
+> memcpy on some architectures).
+>
 
- for each c in compatible: // in order
-   for each p in parsers:
-     if p matches c:
-       ret = do_parse(p)
-       if ret > 0:
-         terminate(success)
+That's correct and calling memcpy_toio (and not checking chip's bank-width)
+could lead to corrupt data.
 
-Which is essentially "try parsers that match each compatible property,
-starting with the first". (You could also do this by sorting the parser
-list, but that would just be extra complex.)
+>> This patch adds a condition
+>> in block write function (map_copy_to) to call map_copy_to16(), if bankwi=
+dth
+>> is 2. This patch also adds map_copy_from16() function to be used for 16-=
+bit
+>> block read operation. map-ram driver's block read function
+>> (i.e map_copy_from) uses memcpy_fromio() function for all block read,
+>> irrespective of bankwidth. memcpy_fromio is limited to do single byte re=
+ad.
+>> Therefore, Added map_copy_from16() function to be used by map-ram driver
+>> for block read for chips that only supports word(16-bit) transfers.
+>> map-ram driver's single entity read/write functions (such as map_read an=
+d
+>> map_write) already use bankwidth property(provided by DTS entry) and cal=
+ls
+>> appropriate readb/readw/readq function. For block read, there was no suc=
+h
+>> implementation found in map-ram driver. So map_copy_from() calls
+>> memcpy_fromio() (which in turn calls writeb) for all block write,
+>> irrespective of bankwidth. This patch adds a condition in block read
+>> function (i.e map_copy_from) to call map_copy_from16(), if bankwidth is =
+2.
+>
+> Come on! You repeat the same thing again but for the other direction.
+> I'm sure you can shrink the commit message and make it clearer.
+>
+> Also, while you're at it, can you please re-format the commit message
+> to make it readable. Right now it's a huge block of text without any
+> blank line or line break.
+>
 
-If I understand right, yours is like sorting the parser list and only
-trying the first one (i.e., the "max score").
+How about below description? :)
 
-Brian
+"Unlike single entity access functions(map_read/map_write) in map-ram,
+block access functions (map_copy_to/map_copy_from) aren't based on
+bank-width provided for specific chip. It relies on memcpy_toio, which is
+dependent on arch, buffer size and alignment.
 
-> +
-> +	spin_unlock(&part_parser_lock);
-> +
-> +	return ret;
-> +}
-> +
->  /**
->   * parse_mtd_partitions - parse MTD partitions
->   * @master: the master partition (describes whole MTD device)
-> @@ -913,6 +968,16 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
->  	struct mtd_part_parser *parser;
->  	int ret, err = 0;
->  
-> +	parser = mtd_part_get_parser_by_of(master);
-> +	if (parser) {
-> +		ret = mtd_part_do_parse(parser, master, pparts, data);
-> +		if (ret > 0)
-> +			return 0;
-> +		mtd_part_parser_put(parser);
-> +		if (ret < 0)
-> +			err = ret;
-> +	}
-> +
->  	if (!types)
->  		types = default_mtd_part_types;
->  
-> diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
-> index c4beb70dacbd..11cb0c50cd84 100644
-> --- a/include/linux/mtd/partitions.h
-> +++ b/include/linux/mtd/partitions.h
-> @@ -77,6 +77,7 @@ struct mtd_part_parser {
->  	struct list_head list;
->  	struct module *owner;
->  	const char *name;
-> +	const struct of_device_id *of_match_table;
->  	int (*parse_fn)(struct mtd_info *, const struct mtd_partition **,
->  			struct mtd_part_parser_data *);
->  	void (*cleanup)(const struct mtd_partition *pparts, int nr_parts);
-> -- 
-> 2.11.0
-> 
+So add support for block access based on bank-width."
+
+
+>>
+>> Signed-off-by: Sanjay Tandel <sanjay.tandel@rockwellcollins.com>
+>> Signed-off-by: Matt Weber <matthew.weber@rockwellcollins.com>
+>> ---
+>>  include/linux/mtd/map.h | 62 ++++++++++++++++++++++++++++++++++++++++++=
+++++++-
+>>  1 file changed, 61 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
+>> index 3aa56e3..3d7a296 100644
+>> --- a/include/linux/mtd/map.h
+>> +++ b/include/linux/mtd/map.h
+>> @@ -449,17 +449,77 @@ static inline void inline_map_write(struct map_inf=
+o *map, const map_word datum,
+>>       mb();
+>>  }
+>>
+>> +static void map_copy_from16(void *to, void __iomem *from, size_t count)
+>
+> You're in a source header and you define a function. If 2 source files
+> include the same header you'll face a duplicate symbol at link time.
+> This function should be inlined.
+>
+
+Okay. I will fix this.
+
+>> +{
+>> +     const unsigned char *t =3D to;
+>> +
+>> +     if (!(IS_ALIGNED((u32)from, sizeof(u16)))) {
+>> +             from =3D (void __iomem *)ALIGN((u32)from, sizeof(u16))
+>> +                                                     - sizeof(u16);
+>> +             *(u8 *)t =3D (u8)((readw(from) & 0xff00) >> 8);
+>> +             count--;
+>> +             t++;
+>> +             from +=3D 2;
+>> +     }
+>> +     while (count >=3D 2) {
+>> +             *(u16 *)t =3D readw(from);
+>> +             count -=3D 2;
+>> +             t +=3D 2;
+>> +             from +=3D 2;
+>> +     };
+>> +     while (count > 0) {
+>> +             *(u8 *)t =3D (u8)(readw(from) & 0x00ff);
+>> +             count--;
+>> +             t++;
+>> +             from++;
+>> +     }
+>> +}
+>> +
+>>  static inline void inline_map_copy_from(struct map_info *map, void *to,=
+ unsigned long from, ssize_t len)
+>>  {
+>>       if (map->cached)
+>>               memcpy(to, (char *)map->cached + from, len);
+>> +     else if (map_bankwidth_is_2(map))
+>> +             map_copy_from16(to, map->virt + from, len);
+>>       else
+>>               memcpy_fromio(to, map->virt + from, len);
+>
+> We're likely to face the same problem with map_bankwidth_is_4()
+> (AKA 32bit busses), right? Why not patching the code to handler this
+> case?
+>
+> BTW, I'm not sure what kind of guarantees are provided by
+> memcpy_to/fromio(), but I'd expect them to optimize things when they
+> can, so they might use 32bit or 64bit accesses when alignment
+> authorizes it. Will that work correctly even on 8bit chips?
+>
+
+32-bit access for 8-bit chip may not work. I am working for 32-bit and
+8-bit accesses based on bank-width.
+
+>>  }
+>>
+>> +static void map_copy_to16(void __iomem *to, const void *from, size_t co=
+unt)
+>
+> Ditto -> static inline void
+>
+
+agree.
+
+>
+>> +{
+>> +     const unsigned char *f =3D from;
+>> +     u16 d;
+>> +
+>> +     if (!(IS_ALIGNED((u32)to, sizeof(u16)))) {
+>> +             to =3D (void __iomem *)ALIGN((u32)to, sizeof(u16))
+>> +                                                     - sizeof(u16);
+>> +             d =3D (readw(to) & 0x00ff) | ((u16)(*(const u8 *)f) << 8);
+>> +             writew(d, to);
+>> +             count--;
+>> +             to +=3D 2;
+>> +             f++;
+>> +     }
+>> +     while (count >=3D 2) {
+>> +             writew(*(const u16 *)f, to);
+>> +             count -=3D 2;
+>> +             to +=3D 2;
+>> +             f +=3D 2;
+>> +     };
+>> +     while (count > 0) {
+>> +             d =3D (readw(to) & 0xff00) | (u16)(*(const u8 *)f);
+>> +             writew(d, to);
+>> +             count--;
+>> +             to++;
+>> +             f++;
+>> +     }
+>> +}
+>> +
+>>  static inline void inline_map_copy_to(struct map_info *map, unsigned lo=
+ng to, const void *from, ssize_t len)
+>>  {
+>> -     memcpy_toio(map->virt + to, from, len);
+>> +     if (map_bankwidth_is_2(map))
+>> +             map_copy_to16(map->virt + to, from, len);
+>> +     else
+>> +             memcpy_toio(map->virt + to, from, len);
+>>  }
+>>
+>>  #ifdef CONFIG_MTD_COMPLEX_MAPPINGS
+>
+
+
+Thanks,
+Sanjay
