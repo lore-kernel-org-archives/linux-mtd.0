@@ -1,19 +1,20 @@
-Received: from mail-pg0-x22a.google.com ([2607:f8b0:400e:c05::22a])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dg8Wb-0000Xt-4G
- for linux-mtd@lists.infradead.org; Fri, 11 Aug 2017 11:54:46 +0000
-Received: by mail-pg0-x22a.google.com with SMTP id v189so14754656pgd.2
- for <linux-mtd@lists.infradead.org>; Fri, 11 Aug 2017 04:54:24 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CANr77M27AkvoKo8_WGstSOC9Lw89FuDi0bzwf0ddrkr8=G7NnA@mail.gmail.com>
-References: <CANr77M27AkvoKo8_WGstSOC9Lw89FuDi0bzwf0ddrkr8=G7NnA@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Fri, 11 Aug 2017 13:54:23 +0200
-Message-ID: <CAFLxGvyWTYj_8Kj0Fpww5B93P=eNDox1srgcmvx4XjVO-q+BKw@mail.gmail.com>
-Subject: Re: Correct way to flash an MTD partition using mtd-utils
-To: Matthew Stanger <matthew_stanger@trimble.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dg8K5-0005aq-II
+ for linux-mtd@lists.infradead.org; Fri, 11 Aug 2017 11:41:51 +0000
+From: Abhishek Sahu <absahu@codeaurora.org>
+To: boris.brezillon@free-electrons.com
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
+ richard@nod.at, cyrille.pitchen@wedev4u.fr, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, andy.gross@linaro.org, architt@codeaurora.org,
+ sricharan@codeaurora.org, Abhishek Sahu <absahu@codeaurora.org>
+Subject: [PATCH v4 20/20] mtd: nand: qcom: support for IPQ8074 QPIC NAND
+ controller
+Date: Fri, 11 Aug 2017 17:09:35 +0530
+Message-Id: <1502451575-15712-21-git-send-email-absahu@codeaurora.org>
+In-Reply-To: <1502451575-15712-1-git-send-email-absahu@codeaurora.org>
+References: <1502451575-15712-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +24,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Matthew,
+Add the compatible string for IPQ8074 QPIC NAND controller
+version 1.5.0 which uses BAM DMA and its FLASH_DEV_CMD registers
+starting offset is 0x7000.
 
-On Thu, Aug 10, 2017 at 5:42 PM, Matthew Stanger
-<matthew_stanger@trimble.com> wrote:
-> Hi all,
->
-> I'm hoping someone would be able to tell me the correct way to backup
-> a mtd partition. Right now I'm cleaning up some code that would run
-> nanddump and pipe it to ubiformat, to dump a RFS from one primary
-> partition to an identically sized backup partition. The overlaying
-> filesystem being UBIFS. The issue is if the backup partition has an
-> extra badblock, than the source, then there isn't enough room. I'm not
-> an expert in this space so I'm hoping someone can clarify what the
-> correct way is to do this; I'm pretty sure this method isn't right? Is
-> using 'mkfs.ubifs' to copy the RFS at the UBIFS layer they way to go
-> and then restore it with 'ubinize'? Is there a better, faster way?
-> Thanks for any tips.
+Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+---
+ drivers/mtd/nand/qcom_nandc.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-What exactly do you want to backup?
-If you want to backup/restore UBIFS, dd from /dev/ubiX_Y and restore using
-ubiupdatevol.
-
+diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
+index 03e671e..1484fb4 100644
+--- a/drivers/mtd/nand/qcom_nandc.c
++++ b/drivers/mtd/nand/qcom_nandc.c
+@@ -2863,6 +2863,12 @@ static int qcom_nandc_remove(struct platform_device *pdev)
+ 	.flash_dev_offset = 0x0,
+ };
+ 
++static const struct qcom_nandc_props ipq8074_nandc_props = {
++	.ecc_modes = (ECC_BCH_4BIT | ECC_BCH_8BIT),
++	.is_bam = true,
++	.flash_dev_offset = 0x7000,
++};
++
+ /*
+  * data will hold a struct pointer containing more differences once we support
+  * more controller variants
+@@ -2876,6 +2882,10 @@ static int qcom_nandc_remove(struct platform_device *pdev)
+ 		.compatible = "qcom,ipq4019-nand",
+ 		.data = &ipq4019_nandc_props,
+ 	},
++	{
++		.compatible = "qcom,ipq8074-nand",
++		.data = &ipq8074_nandc_props,
++	},
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, qcom_nandc_of_match);
 -- 
-Thanks,
-//richard
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
