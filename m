@@ -1,20 +1,17 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dg8Jv-000088-Fo
- for linux-mtd@lists.infradead.org; Fri, 11 Aug 2017 11:41:40 +0000
+ id 1dg8JP-00007G-LP
+ for linux-mtd@lists.infradead.org; Fri, 11 Aug 2017 11:41:08 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
-To: boris.brezillon@free-electrons.com,
-	robh+dt@kernel.org
+To: boris.brezillon@free-electrons.com
 Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
  richard@nod.at, cyrille.pitchen@wedev4u.fr, linux-arm-msm@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  devicetree@vger.kernel.org, andy.gross@linaro.org, architt@codeaurora.org,
- sricharan@codeaurora.org, Abhishek Sahu <absahu@codeaurora.org>,
- mark.rutland@arm.com
-Subject: [PATCH v4 18/20] dt-bindings: qcom_nandc: IPQ8074 QPIC NAND
- documentation
-Date: Fri, 11 Aug 2017 17:09:33 +0530
-Message-Id: <1502451575-15712-19-git-send-email-absahu@codeaurora.org>
+ sricharan@codeaurora.org, Abhishek Sahu <absahu@codeaurora.org>
+Subject: [PATCH v4 11/20] mtd: nand: qcom: enable BAM or ADM mode
+Date: Fri, 11 Aug 2017 17:09:26 +0530
+Message-Id: <1502451575-15712-12-git-send-email-absahu@codeaurora.org>
 In-Reply-To: <1502451575-15712-1-git-send-email-absahu@codeaurora.org>
 References: <1502451575-15712-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,26 +23,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Qualcom IPQ8074 SoC uses QPIC NAND controller version 1.5.0
-which uses BAM DMA Engine.
+1. DM_EN is only required for EBI2 NAND controller which uses ADM
+2. BAM mode will be disabled after power on reset which needs to
+   be enabled before starting any BAM transfers.
 
 Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 ---
- Documentation/devicetree/bindings/mtd/qcom_nandc.txt | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/mtd/nand/qcom_nandc.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-index d93b952..73d336be 100644
---- a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-+++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-@@ -6,6 +6,8 @@ Required properties:
- 			    SoC and it uses ADM DMA
-     * "qcom,ipq4019-nand" - for QPIC NAND controller v1.4.0 being used in
-                             IPQ4019 SoC and it uses BAM DMA
-+    * "qcom,ipq8074-nand" - for QPIC NAND controller v1.5.0 being used in
-+                            IPQ8074 SoC and it uses BAM DMA
+diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
+index 3d9fd7f..ae873d3 100644
+--- a/drivers/mtd/nand/qcom_nandc.c
++++ b/drivers/mtd/nand/qcom_nandc.c
+@@ -163,6 +163,9 @@
+ #define NAND_DEV_CMD_VLD_VAL		(READ_START_VLD | WRITE_START_VLD | \
+ 					 ERASE_START_VLD | SEQ_READ_START_VLD)
  
- - reg:			MMIO address range
- - clocks:		must contain core clock and always on clock
++/* NAND_CTRL bits */
++#define	BAM_MODE_EN			BIT(0)
++
+ /*
+  * the NAND controller performs reads/writes with ECC in 516 byte chunks.
+  * the driver calls the chunks 'step' or 'codeword' interchangeably
+@@ -1035,7 +1038,8 @@ static int read_id(struct qcom_nand_host *host, int column)
+ 	nandc_set_reg(nandc, NAND_FLASH_CMD, FETCH_ID);
+ 	nandc_set_reg(nandc, NAND_ADDR0, column);
+ 	nandc_set_reg(nandc, NAND_ADDR1, 0);
+-	nandc_set_reg(nandc, NAND_FLASH_CHIP_SELECT, DM_EN);
++	nandc_set_reg(nandc, NAND_FLASH_CHIP_SELECT,
++		      nandc->props->is_bam ? 0 : DM_EN);
+ 	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
+ 
+ 	write_reg_dma(nandc, NAND_FLASH_CMD, 4, NAND_BAM_NEXT_SGL);
+@@ -2408,12 +2412,19 @@ static void qcom_nandc_unalloc(struct qcom_nand_controller *nandc)
+ /* one time setup of a few nand controller registers */
+ static int qcom_nandc_setup(struct qcom_nand_controller *nandc)
+ {
++	u32 nand_ctrl;
++
+ 	/* kill onenand */
+ 	nandc_write(nandc, SFLASHC_BURST_CFG, 0);
+ 	nandc_write(nandc, NAND_DEV_CMD_VLD, NAND_DEV_CMD_VLD_VAL);
+ 
+-	/* enable ADM DMA */
+-	nandc_write(nandc, NAND_FLASH_CHIP_SELECT, DM_EN);
++	/* enable ADM or BAM DMA */
++	if (nandc->props->is_bam) {
++		nand_ctrl = nandc_read(nandc, NAND_CTRL);
++		nandc_write(nandc, NAND_CTRL, nand_ctrl | BAM_MODE_EN);
++	} else {
++		nandc_write(nandc, NAND_FLASH_CHIP_SELECT, DM_EN);
++	}
+ 
+ 	/* save the original values of these registers */
+ 	nandc->cmd1 = nandc_read(nandc, NAND_DEV_CMD1);
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
