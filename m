@@ -1,20 +1,19 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-pg0-x22a.google.com ([2607:f8b0:400e:c05::22a])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dg8Jo-0001Oh-GR
- for linux-mtd@lists.infradead.org; Fri, 11 Aug 2017 11:42:34 +0000
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: boris.brezillon@free-electrons.com
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- richard@nod.at, cyrille.pitchen@wedev4u.fr, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, andy.gross@linaro.org, architt@codeaurora.org,
- sricharan@codeaurora.org, Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH v4 17/20] dt-bindings: qcom_nandc: IPQ4019 QPIC NAND
- documentation
-Date: Fri, 11 Aug 2017 17:09:32 +0530
-Message-Id: <1502451575-15712-18-git-send-email-absahu@codeaurora.org>
-In-Reply-To: <1502451575-15712-1-git-send-email-absahu@codeaurora.org>
-References: <1502451575-15712-1-git-send-email-absahu@codeaurora.org>
+ id 1dg8Wb-0000Xt-4G
+ for linux-mtd@lists.infradead.org; Fri, 11 Aug 2017 11:54:46 +0000
+Received: by mail-pg0-x22a.google.com with SMTP id v189so14754656pgd.2
+ for <linux-mtd@lists.infradead.org>; Fri, 11 Aug 2017 04:54:24 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <CANr77M27AkvoKo8_WGstSOC9Lw89FuDi0bzwf0ddrkr8=G7NnA@mail.gmail.com>
+References: <CANr77M27AkvoKo8_WGstSOC9Lw89FuDi0bzwf0ddrkr8=G7NnA@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Fri, 11 Aug 2017 13:54:23 +0200
+Message-ID: <CAFLxGvyWTYj_8Kj0Fpww5B93P=eNDox1srgcmvx4XjVO-q+BKw@mail.gmail.com>
+Subject: Re: Correct way to flash an MTD partition using mtd-utils
+To: Matthew Stanger <matthew_stanger@trimble.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,100 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-1. Qualcom IPQ4019 SoC uses QPIC NAND controller version 1.4.0
-   which uses BAM DMA Engine while IPQ806x uses EBI2 NAND
-   which uses ADM DMA Engine.
-2. QPIC NAND will 3 BAM channels: command, data tx and data rx
-   while EBI2 NAND uses only single ADM channel.
-3. CRCI is only required for ADM DMA and its not required for
-   BAM DMA.
+Matthew,
 
-Acked-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
----
- .../devicetree/bindings/mtd/qcom_nandc.txt         | 55 +++++++++++++++++++++-
- 1 file changed, 54 insertions(+), 1 deletion(-)
+On Thu, Aug 10, 2017 at 5:42 PM, Matthew Stanger
+<matthew_stanger@trimble.com> wrote:
+> Hi all,
+>
+> I'm hoping someone would be able to tell me the correct way to backup
+> a mtd partition. Right now I'm cleaning up some code that would run
+> nanddump and pipe it to ubiformat, to dump a RFS from one primary
+> partition to an identically sized backup partition. The overlaying
+> filesystem being UBIFS. The issue is if the backup partition has an
+> extra badblock, than the source, then there isn't enough room. I'm not
+> an expert in this space so I'm hoping someone can clarify what the
+> correct way is to do this; I'm pretty sure this method isn't right? Is
+> using 'mkfs.ubifs' to copy the RFS at the UBIFS layer they way to go
+> and then restore it with 'ubinize'? Is there a better, faster way?
+> Thanks for any tips.
 
-diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-index f475b65..d93b952 100644
---- a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-+++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-@@ -1,11 +1,18 @@
- * Qualcomm NAND controller
- 
- Required properties:
--- compatible:		should be "qcom,ipq806x-nand"
-+- compatible:		must be one of the following:
-+    * "qcom,ipq806x-nand" - for EBI2 NAND controller being used in IPQ806x
-+			    SoC and it uses ADM DMA
-+    * "qcom,ipq4019-nand" - for QPIC NAND controller v1.4.0 being used in
-+                            IPQ4019 SoC and it uses BAM DMA
-+
- - reg:			MMIO address range
- - clocks:		must contain core clock and always on clock
- - clock-names:		must contain "core" for the core clock and "aon" for the
- 			always on clock
-+
-+EBI2 specific properties:
- - dmas:			DMA specifier, consisting of a phandle to the ADM DMA
- 			controller node and the channel number to be used for
- 			NAND. Refer to dma.txt and qcom_adm.txt for more details
-@@ -16,6 +23,12 @@ Required properties:
- - qcom,data-crci:	must contain the ADM data type CRCI block instance
- 			number specified for the NAND controller on the given
- 			platform
-+
-+QPIC specific properties:
-+- dmas:			DMA specifier, consisting of a phandle to the BAM DMA
-+			and the channel number to be used for NAND. Refer to
-+			dma.txt, qcom_bam_dma.txt for more details
-+- dma-names:		must contain all 3 channel names : "tx", "rx", "cmd"
- - #address-cells:	<1> - subnodes give the chip-select number
- - #size-cells:		<0>
- 
-@@ -82,3 +95,43 @@ nand-controller@1ac00000 {
- 		};
- 	};
- };
-+
-+nand-controller@79b0000 {
-+	compatible = "qcom,ipq4019-nand";
-+	reg = <0x79b0000 0x1000>;
-+
-+	clocks = <&gcc GCC_QPIC_CLK>,
-+		<&gcc GCC_QPIC_AHB_CLK>;
-+	clock-names = "core", "aon";
-+
-+	dmas = <&qpicbam 0>,
-+		<&qpicbam 1>,
-+		<&qpicbam 2>;
-+	dma-names = "tx", "rx", "cmd";
-+
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	nand@0 {
-+		reg = <0>;
-+		nand-ecc-strength = <4>;
-+		nand-ecc-step-size = <512>;
-+		nand-bus-width = <8>;
-+
-+		partitions {
-+			compatible = "fixed-partitions";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			partition@0 {
-+				label = "boot-nand";
-+				reg = <0 0x58a0000>;
-+			};
-+
-+			partition@58a0000 {
-+				label = "fs-nand";
-+				reg = <0x58a0000 0x4000000>;
-+			};
-+		};
-+	};
-+};
+What exactly do you want to backup?
+If you want to backup/restore UBIFS, dd from /dev/ubiX_Y and restore using
+ubiupdatevol.
+
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+Thanks,
+//richard
