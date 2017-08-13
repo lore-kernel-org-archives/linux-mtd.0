@@ -1,22 +1,25 @@
-Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dgeam-0002SJ-Bw
- for linux-mtd@lists.infradead.org; Sat, 12 Aug 2017 22:09:14 +0000
-Received: by mail-pg0-x242.google.com with SMTP id u185so5801163pgb.0
- for <linux-mtd@lists.infradead.org>; Sat, 12 Aug 2017 15:08:50 -0700 (PDT)
-Date: Sat, 12 Aug 2017 15:08:27 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Abhishek Sahu <absahu@codeaurora.org>
-Subject: [GIT PULL] Another MTD fix for v4.13-rc5
-Message-ID: <20170812220827.GA28868@brian-ubuntu>
+Date: Sun, 13 Aug 2017 09:40:19 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Andrea Adami <andrea.adami@gmail.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, Wolfram Sang
+ <wsa+renesas@sang-engineering.com>, Lee Jones <lee.jones@linaro.org>,
+ Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, Robert Jarzmik
+ <robert.jarzmik@free.fr>, Linus Walleij <linus.walleij@linaro.org>, Russell
+ King <linux@armlinux.org.uk>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 2/9] mtd: nand: sharpsl.h: support partition parser
+ types
+Message-ID: <20170813094019.2fced1d1@bbrezillon>
+In-Reply-To: <1498681836-3765-3-git-send-email-andrea.adami@gmail.com>
+References: <1498681836-3765-1-git-send-email-andrea.adami@gmail.com>
+ <1498681836-3765-3-git-send-email-andrea.adami@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,30 +29,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Linus,
+Le Wed, 28 Jun 2017 22:30:29 +0200,
+Andrea Adami <andrea.adami@gmail.com> a =C3=A9crit :
 
-The following changes since commit 33983675fbd5b2447430c3dd4c205e879576b475:
+Please add a commit message explaining why you're doing that.
 
-  Merge tag 'nand/fixes-for-4.13-rc4' of git://git.infradead.org/l2-mtd into MTD (2017-08-04 18:42:37 -0700)
+> Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
+> ---
+>  include/linux/mtd/sharpsl.h | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/include/linux/mtd/sharpsl.h b/include/linux/mtd/sharpsl.h
+> index 65e91d0..c0e0be2 100644
+> --- a/include/linux/mtd/sharpsl.h
+> +++ b/include/linux/mtd/sharpsl.h
+> @@ -17,4 +17,5 @@ struct sharpsl_nand_platform_data {
+>  	const struct mtd_ooblayout_ops *ecc_layout;
+>  	struct mtd_partition	*partitions;
+>  	unsigned int		nr_partitions;
+> +	const char *const	*types;	/* names of parsers to use if any */
 
-are available in the git repository at:
+types is not really descriptive here. How about 'part_parsers' or
+something clearly reflecting the purpose of this field.
 
-  git://git.infradead.org/linux-mtd.git tags/for-linus-20170812
+BTW, try to avoid putting comments on the same line.
 
-for you to fetch changes up to 9a51544774a57fcb94994a61860a17f9e63a8d7b:
-
-  mtd: blkdevs: Fix mtd block write failure (2017-08-12 14:53:24 -0700)
-
-----------------------------------------------------------------
-Another MTD fix for v4.13-rc5:
-
-An mtdblock regression occurred in -rc1 (all writes were broken!), in the
-process of some block subsystem refactoring. Noticed and fixed last week, but
-I'm a little slow on the uptake.
-
-----------------------------------------------------------------
-Abhishek Sahu (1):
-      mtd: blkdevs: Fix mtd block write failure
-
- drivers/mtd/mtd_blkdevs.c | 1 +
- 1 file changed, 1 insertion(+)
+>  };
