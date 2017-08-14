@@ -1,30 +1,24 @@
-Received: from da1vs02.rockwellcollins.com ([205.175.227.29])
+Received: from mga14.intel.com ([192.55.52.115])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dhIJg-0008Cv-8h
- for linux-mtd@lists.infradead.org; Mon, 14 Aug 2017 16:34:43 +0000
-Received: by mail-yw0-f198.google.com with SMTP id o192so191478158ywd.8
- for <linux-mtd@lists.infradead.org>; Mon, 14 Aug 2017 09:33:48 -0700 (PDT)
+ id 1dhIOD-0002gx-1G
+ for linux-mtd@lists.infradead.org; Mon, 14 Aug 2017 16:38:54 +0000
+Date: Mon, 14 Aug 2017 09:38:30 -0700 (PDT)
+From: matthew.gerlach@linux.intel.com
+To: Rob Herring <robh@kernel.org>
+cc: vndao@altera.com, dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
+ cyrille.pitchen@wedev4u.fr, mark.rutland@arm.com,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+ davem@davemloft.net, mchehab@kernel.org, linux-fpga@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: mtd: Altera ASMI Parallel II IP Core
+In-Reply-To: <20170810203502.5s2evtamkbolluae@rob-hp-laptop>
+Message-ID: <alpine.DEB.2.20.1708140931290.11426@mgerlach-VirtualBox>
+References: <1502043844-3626-1-git-send-email-matthew.gerlach@linux.intel.com>
+ <1502043844-3626-2-git-send-email-matthew.gerlach@linux.intel.com>
+ <20170810203502.5s2evtamkbolluae@rob-hp-laptop>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a2pOtoug30CUe7sgB4CnQmRJSJMWmpniMyOHvV1w0nd9A@mail.gmail.com>
-References: <1501851740-14125-1-git-send-email-matthew.weber@rockwellcollins.com>
- <20170809201047.57fd6976@bbrezillon>
- <CAB0kKmyHPXhv4ovmj00JgB9gow0Qi3OHm2Gh4STJFNV4S3o_Ag@mail.gmail.com>
- <CAK8P3a3W2Dw_CHDbBXPaX9=mNA1kPXdFDR1F4HLbtuLUVHjUKw@mail.gmail.com>
- <CAB0kKmyBEVWXvNBiFsFXSxz21mEFu8WVW69DWoes9oKsYEM0Vw@mail.gmail.com>
- <CAK8P3a1ooJja=P1e+m-fd0_wR_QdmWgwRWDwOWJfXpDR5ZcSjg@mail.gmail.com>
- <CAB0kKmxXvm5=ryR2nAJ76=ecmOWXLQXNYfRs8zrwinfMOMDzRQ@mail.gmail.com>
- <20170812193947.046dafd1@bbrezillon>
- <CAK8P3a2pOtoug30CUe7sgB4CnQmRJSJMWmpniMyOHvV1w0nd9A@mail.gmail.com>
-From: Sanjay Tandel <sanjay.tandel@rockwellcollins.com>
-Date: Mon, 14 Aug 2017 11:33:27 -0500
-Message-ID: <CAB0kKmzcf4pVHUWS6Rk+fb3umgN6ttmdNv7QmfeUik2vAFEijA@mail.gmail.com>
-Subject: Re: [PATCH] map-ram chip driver: 16-bit block transfer
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Matt Weber <matthew.weber@rockwellcollins.com>,
- linux-mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,56 +28,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 14, 2017 at 3:08 AM, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Sat, Aug 12, 2017 at 7:39 PM, Boris Brezillon
-> <boris.brezillon@free-electrons.com> wrote:
->> Le Fri, 11 Aug 2017 18:42:44 -0500,
->> Sanjay Tandel <sanjay.tandel@rockwellcollins.com> a =C3=A9crit :
->>> On Fri, Aug 11, 2017 at 4:30 PM, Arnd Bergmann <arnd@arndb.de> wrote:
->>> > On Fri, Aug 11, 2017 at 11:03 PM, Sanjay Tandel
->>> > <sanjay.tandel@rockwellcollins.com> wrote:
->
->>> Before, it used to corrupt every 2nd byte(2nd,4rth,6th ... upto N) in m=
-emory,
->>> with memcpy_toio() using 8-bit accesses for our 16-bit chip.
->>>
->>> Now, with backporting 7ddfe625cbc1/1bd46782d08b, it corrupts (N + 1)th =
-byte
->>> in memory, when I tried to write N number of bytes (where N is not alig=
-ned to
->>> 4-byte boundary).That means, it still tries 8-bit access for last odd b=
-yte and
->>> ends up corrupting next byte.
->>
->> Yes, that's expected as the size is not 16bit aligned.
->>
->> Anyway, I read the whole thread again and AFAIU memcpy_to/fromio() is
->> only appropriate if the bus controller the device is connected to is
->> smart enough to hide all alignment problems to its users.
->>
->> Don't know what controller is causing trouble here, but you should
->> probably have a dedicated driver (if that's not already the case) that
->> overloads the ->copy_from()/->copy_to() methods to do the right thing
->> for your memory controller.
->
-> Right, I think that is a good conclusion. My understanding from the discu=
-ssion
-> so far is that the existing code in the core mtd layer works efficiently =
-and
-> correctly on most bus interfaces, so we should keep that but have
-> workarounds in the controller driver for any bus interface where this is
-> not the case.
->
-> I think it would be different if this was a regression and the core MTD s=
-upport
-> worked correctly in the past, but from what I read, it always behaved lik=
-e
-> this.
->
 
-Okay. I will try to create dedicated driver. Thanks!
+Hi Rob,
 
->        Arnd
+Thanks for the feedback.  Please see my comments in line.
 
-Regards,
-Sanjay
+Matthew Gerlach
+
+On Thu, 10 Aug 2017, Rob Herring wrote:
+
+> On Sun, Aug 06, 2017 at 11:24:02AM -0700, matthew.gerlach@linux.intel.com wrote:
+>> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+>>
+>> Device Tree bindinds for Altera ASMI Parallel II IP Core.
+>
+> s/bindinds/bindings/
+>
+>>
+>> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+>> ---
+>>  .../devicetree/bindings/mtd/altera-asmip2.txt      | 22 ++++++++++++++++++++++
+>>  1 file changed, 22 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/mtd/altera-asmip2.txt
+>>
+>> diff --git a/Documentation/devicetree/bindings/mtd/altera-asmip2.txt b/Documentation/devicetree/bindings/mtd/altera-asmip2.txt
+>> new file mode 100644
+>> index 0000000..3380366
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/mtd/altera-asmip2.txt
+>> @@ -0,0 +1,22 @@
+>> +* Altera ASMI Parallel II IP Core
+>> +
+>> +Required properties:
+>> +- compatible : Should be "altr,asmi_parallel2".
+>
+> s/_/-/
+>
+>> +- reg : A tuple consisting of a physical address and length.
+>> +
+>> +Optional subnodes:
+>> +Subnodes of the Altera ASMI Paralllel II IP Core are spi slave nodes.
+>
+> But this is not a general purpose SPI controller?
+
+
+The component is a general pupose SPI controller, but this driver
+expects a spi-nor device to be connected to it.  As such I wonder if the
+compatible string should be "altr,asmi-parallel2-spi-nor".
+
+
+>
+>> +- reg : chip select value
+>> +- label : optional user friendly label
+>> +
+>> +Example:
+>> +
+>> +qspi: spi@a0001000 {
+>> +	compatible = "altr,asmi_parallel2";
+>> +	reg = <0xa0001000 0x10>;
+>> +
+>> +	flash@0 {
+>
+> This should have a compatible.
+>
+>> +		reg = <0>;
+>> +		label = "FPGA Image";
+>> +	};
+
+Since I have no way to test multiple flash chips, it might
+be simpler to not specify any subnodes.
+
+>> +};
+>> --
+>> 2.7.4
+>>
+>
