@@ -1,20 +1,21 @@
 Received: from smtp3-g21.free.fr ([212.27.42.3])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dhHIE-0004k3-D0
- for linux-mtd@lists.infradead.org; Mon, 14 Aug 2017 15:30:39 +0000
-Subject: Re: [PATCH] mtd: spi-nor: aspeed: set 4B setting for all chips
-To: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
- linux-mtd@lists.infradead.org
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-References: <1501663911-26532-1-git-send-email-clg@kaod.org>
+ id 1dhHqo-0005xQ-8b
+ for linux-mtd@lists.infradead.org; Mon, 14 Aug 2017 16:04:30 +0000
+Subject: Re: [PATCH] mtd: spi-nor: add support for Microchip sst26vf064b QSPI
+ memory
+To: Claudiu Beznea <claudiu.beznea@microchip.com>, marek.vasut@gmail.com,
+ dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, richard@nod.at
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ nicolas.ferre@microchip.com
+References: <1501234898-13171-1-git-send-email-claudiu.beznea@microchip.com>
+ <46bc0f6f-30ad-6367-a960-08cf7262e741@wedev4u.fr>
 From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <42e4f852-5a94-8c21-fe78-08ec494a1a50@wedev4u.fr>
-Date: Mon, 14 Aug 2017 17:28:05 +0200
+Message-ID: <0d275df5-9eba-d18a-c007-a2c76e68c1d1@wedev4u.fr>
+Date: Mon, 14 Aug 2017 18:03:58 +0200
 MIME-Version: 1.0
-In-Reply-To: <1501663911-26532-1-git-send-email-clg@kaod.org>
+In-Reply-To: <46bc0f6f-30ad-6367-a960-08cf7262e741@wedev4u.fr>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -27,48 +28,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 02/08/2017 à 10:51, Cédric Le Goater a écrit :
-> The driver made the wrong assumption that the 4B setting was
-> autodetected for all chips of the AST2500 FMC flash controller. This
-> is only the case for the CS0.
+Le 01/08/2017 à 23:57, Cyrille Pitchen a écrit :
+> Hi Claudiu,
 > 
-> Signed-off-by: Cédric Le Goater <clg@kaod.org>
+> Le 28/07/2017 à 11:41, Claudiu Beznea a écrit :
+>> Add support for Microchip sst26vf064b QSPI memory.
+>>
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+>> ---
+>>  drivers/mtd/spi-nor/spi-nor.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>> index 196b52f..796aac4 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -1081,6 +1081,7 @@ static const struct flash_info spi_nor_ids[] = {
+>>  	{ "sst25wf040b", INFO(0x621613, 0, 64 * 1024,  8, SECT_4K) },
+>>  	{ "sst25wf040",  INFO(0xbf2504, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
+>>  	{ "sst25wf080",  INFO(0xbf2505, 0, 64 * 1024, 16, SECT_4K | SST_WRITE) },
+>> +	{ "sst26vf064b", INFO(0xbf2643, 0,  4 * 1024, 2048, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>
 
-Applied to the spi-nor/next branch of l2-mtd
+Looking at the erase sector map in the SST26VF064B datasheet, the
+info->sector_size should be set to 64 * 1024 instead of 4 * 1024.
 
-Thanks!
-> ---
->  drivers/mtd/spi-nor/aspeed-smc.c | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
+The 20h op code is supported uniformly to erase 4K sectors so the
+SECT_4K flag will work just as expected with
+CONFIG_MTD_SPI_NOR_USE_4K_SECTORS defined.
+
+On the other hand, when CONFIG_MTD_SPI_NOR_USE_4K_SECTORS is undefined,
+the D8h op code is used instead of the 20h op code for erase operations.
+Then, for this op code, the memory layout of SST26 memories is:
+
++------------+
+|     8K     |
++------------+
+|     8K     |
++------------+
+|     8K     |
++------------+
+|     8K     |
++------------+
+|    32K     |
++------------+
+|    64K     |
++------------+
+|    64K     |
++------------+
+|    ...     |
++------------+
+|    64K     |
++------------+
+|    64K     |
++------------+
+|    32K     |
++------------+
+|     8K     |
++------------+
+|     8K     |
++------------+
+|     8K     |
++------------+
+|     8K     |
++------------+
+
+Hence if we set info->sector_size to 64K, the D8h op code would work as
+expected for all but the first and last 64K blocks.
+For now, we would fail to properly erase the whole first and last 64
+blocks but I think this issue should be fixed later when adding support
+to the erase sector map provided by some SFDP table.
+Indeed, it would be possible to erase the first and last 64K blocks and
+pretend the memory is also uniform for 64K sector size since
+4 * 8 + 32 == 64
+
+So please, just resend your patch with 64 * 1024 instead of 4 * 1024 :)
+
+I think this is currently the best we can reach without support of non
+uniform erase map.
+
+Best regards,
+
+Cyrille
+
+
+> I don't know what to do in this case; Marek any advice?
 > 
-> diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
-> index 23622bf62b6b..1b76fe14a435 100644
-> --- a/drivers/mtd/spi-nor/aspeed-smc.c
-> +++ b/drivers/mtd/spi-nor/aspeed-smc.c
-> @@ -794,19 +794,18 @@ static void aspeed_smc_chip_set_type(struct aspeed_smc_chip *chip, int type)
->  }
->  
->  /*
-> - * The AST2500 FMC flash controller should be strapped by hardware, or
-> - * autodetected, but the AST2500 SPI flash needs to be set.
-> + * The first chip of the AST2500 FMC flash controller is strapped by
-> + * hardware, or autodetected, but other chips need to be set. Enforce
-> + * the 4B setting for all chips.
->   */
->  static void aspeed_smc_chip_set_4b(struct aspeed_smc_chip *chip)
->  {
->  	struct aspeed_smc_controller *controller = chip->controller;
->  	u32 reg;
->  
-> -	if (chip->controller->info == &spi_2500_info) {
-> -		reg = readl(controller->regs + CE_CONTROL_REG);
-> -		reg |= 1 << chip->cs;
-> -		writel(reg, controller->regs + CE_CONTROL_REG);
-> -	}
-> +	reg = readl(controller->regs + CE_CONTROL_REG);
-> +	reg |= 1 << chip->cs;
-> +	writel(reg, controller->regs + CE_CONTROL_REG);
->  }
->  
->  /*
+> The issue is that Microchip SST26 memories are uniform for the 4K erase
+> sector size but not uniform for other sector sizes (32K, 64K, ...).
+> 
+> Like this, erase operations would work if
+> CONFIG_MTD_SPI_NOR_USE_4K_SECTOR is defined because then the 20h/21h
+> opcodes would be used in any case.
+> 
+> However when the former macro is undefined, the D8h/DCh opcodes would be
+> used instead. Hence erasing sectors in the middle of the memory would
+> not work as expected because nor->mtd.erasesize == 4 * 1024 but the
+> actual erase size of middle erase blocks/sectors is bigger: you may
+> erase more than expected.
+> 
+> Marek, do you think we could take this patch as is, with the known
+> limitations, and wait for a later patch dealing with non-uniform erase
+> sector map to fix them?
+> 
+> Also, nor->mtd.erasesize is used by above mtd layer like UBIFS to decide
+> the size of the Physical and Logical Erase Bloc size. Not sure if this
+> is still true now but I had troubles the last time I've tried to create
+> a UBI file-system with a spi-nor memory using a 4K erase sector size
+> 
+> http://lists.infradead.org/pipermail/linux-mtd/2013-July/047665.html
+> 
+> Best regards,
+> 
+> Cyrille
+> 
+> 
+>>  
+>>  	/* ST Microelectronics -- newer production may have feature updates */
+>>  	{ "m25p05",  INFO(0x202010,  0,  32 * 1024,   2, 0) },
+>>
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 > 
