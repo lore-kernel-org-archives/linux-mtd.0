@@ -13,10 +13,9 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Linus Walleij <linus.walleij@linaro.org>,
  Russell King <linux@armlinux.org.uk>, linux-mmc@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v5 4/9] mtd: nand: sharpsl: Register partitions using the
- parsers
-Date: Mon, 14 Aug 2017 22:48:35 +0200
-Message-Id: <1502743720-28672-5-git-send-email-andrea.adami@gmail.com>
+Subject: [PATCH v5 2/9] mtd: nand: sharpsl: Add partition parsers platform data
+Date: Mon, 14 Aug 2017 22:48:33 +0200
+Message-Id: <1502743720-28672-3-git-send-email-andrea.adami@gmail.com>
 In-Reply-To: <1502743720-28672-1-git-send-email-andrea.adami@gmail.com>
 References: <1502743720-28672-1-git-send-email-andrea.adami@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,25 +32,23 @@ offsets from NAND: we specify the list of the parsers as platform data, with
 cmdlinepart and ofpart parsers first allowing to override the part. table
 written in NAND. This is done in the board files using this driver.
 
-Use now these parsers.
+Thus, we need to extend sharpsl_nand_platform_data to consider the partition
+parsers.
 
 Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
 ---
- drivers/mtd/nand/sharpsl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/mtd/sharpsl.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/nand/sharpsl.c b/drivers/mtd/nand/sharpsl.c
-index 064ca17..9859546 100644
---- a/drivers/mtd/nand/sharpsl.c
-+++ b/drivers/mtd/nand/sharpsl.c
-@@ -183,7 +183,7 @@ static int sharpsl_nand_probe(struct platform_device *pdev)
- 	/* Register the partitions */
- 	mtd->name = "sharpsl-nand";
- 
--	err = mtd_device_parse_register(mtd, NULL, NULL,
-+	err = mtd_device_parse_register(mtd, data->part_parsers, NULL,
- 					data->partitions, data->nr_partitions);
- 	if (err)
- 		goto err_add;
+diff --git a/include/linux/mtd/sharpsl.h b/include/linux/mtd/sharpsl.h
+index 65e91d0..6381a7d 100644
+--- a/include/linux/mtd/sharpsl.h
++++ b/include/linux/mtd/sharpsl.h
+@@ -17,4 +17,5 @@ struct sharpsl_nand_platform_data {
+ 	const struct mtd_ooblayout_ops *ecc_layout;
+ 	struct mtd_partition	*partitions;
+ 	unsigned int		nr_partitions;
++	const char *const	*part_parsers;
+ };
 -- 
 2.7.4
