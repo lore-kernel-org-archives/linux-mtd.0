@@ -1,37 +1,27 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dhFSe-00089r-9K
- for linux-mtd@lists.infradead.org; Mon, 14 Aug 2017 13:31:19 +0000
-From: "Wu, Hao" <hao.wu@intel.com>
-To: Alan Tull <atull@kernel.org>, "matthew.gerlach@linux.intel.com"
- <matthew.gerlach@linux.intel.com>
-CC: "vndao@altera.com" <vndao@altera.com>, David Woodhouse
- <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "boris.brezillon@free-electrons.com"
- <boris.brezillon@free-electrons.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
- "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>, Rob Herring
- <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, linux-kernel
- <linux-kernel@vger.kernel.org>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, "David S. Miller" <davem@davemloft.net>,
- "mchehab@kernel.org" <mchehab@kernel.org>, "linux-fpga@vger.kernel.org"
- <linux-fpga@vger.kernel.org>, "Whisonant, Tim" <tim.whisonant@intel.com>,
- "Luebbers, Enno" <enno.luebbers@intel.com>, "Rao, Shiva"
- <shiva.rao@intel.com>, "Rauer, Christopher" <christopher.rauer@intel.com>,
- "Kang, Luwei" <luwei.kang@intel.com>
-Subject: RE: [PATCH 3/3] fpga: intel: Add QSPI FPGA Management Entity Feature
-Date: Mon, 14 Aug 2017 13:30:48 +0000
-Message-ID: <BE8371DA886269458E0220A16DC1F8277E07D637@SHSMSX104.ccr.corp.intel.com>
-References: <1502043844-3626-1-git-send-email-matthew.gerlach@linux.intel.com>
- <1502043844-3626-4-git-send-email-matthew.gerlach@linux.intel.com>
- <CANk1AXQmRi9UA6xP9YbyeOLynXET_t1CyZMHK76-CaunfZexAA@mail.gmail.com>
-In-Reply-To: <CANk1AXQmRi9UA6xP9YbyeOLynXET_t1CyZMHK76-CaunfZexAA@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 MIME-Version: 1.0
+In-Reply-To: <20170812213504.GA90795@google.com>
+References: <1498681836-3765-1-git-send-email-andrea.adami@gmail.com>
+ <1498681836-3765-2-git-send-email-andrea.adami@gmail.com>
+ <20170812213504.GA90795@google.com>
+From: Andrea Adami <andrea.adami@gmail.com>
+Date: Mon, 14 Aug 2017 15:33:33 +0200
+Message-ID: <CAAQYJAvgDvRQNcVa=LwTUwr2+hy6-_c+vTZ_qYRegWSog_ku6A@mail.gmail.com>
+Subject: Re: [PATCH v4 1/9] mtd: sharpslpart: add sharpslpart MTD partition
+ parser
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Lee Jones <lee.jones@linaro.org>,
+ Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Linus Walleij <linus.walleij@linaro.org>, Russell King <linux@armlinux.org.uk>,
+ linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,174 +31,619 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBPbiBTdW4sIEF1ZyA2LCAyMDE3IGF0IDE6MjQgUE0sICA8bWF0dGhldy5nZXJsYWNoQGxpbnV4
-LmludGVsLmNvbT4gd3JvdGU6DQo+IA0KPiArIFd1IEhhbyBhbmQgdGhlIHBlb3BsZSB3aG8gc2ln
-bmVkIG9mZiBvbiB0aGUgSW50ZWwgZmVhdHVyZS1kZXYgc3R1ZmYuDQo+IA0KPiBIaSBNYXR0aGV3
-LA0KPiANCj4gQnkgdGhlIHdheSwgdGhpcyBwYXRjaCBpcyBhZ2FpbnN0IHYxIG9mIHRoZWlyIHBh
-dGNoc2V0LiAgVGhleSBoYXZlIHYyIG91dC4NCj4gDQo+IFlvdSBjb3VsZCBzdWJtaXQgeW91ciBu
-ZXh0IHZlcnNpb24gd2l0aCBtb3JlIGNvbnZlbnRpb25hbCBudW1iZXJpbmcNCj4gYW5kIGp1c3Qg
-bm90ZSB0aGF0IHRoZSBsYXN0IHBhdGNoIGlzIGRlcGVuZGVudCBvbiB0aGUgSW50ZWwgZnBnYQ0K
-PiBwYXRjaHNldC4NCj4gDQo+ID4gRnJvbTogTWF0dGhldyBHZXJsYWNoIDxtYXR0aGV3Lmdlcmxh
-Y2hAbGludXguaW50ZWwuY29tPg0KPiA+DQo+ID4gQWRkIEZQR0EgTWFuYWdlbWVudCBFbnRpdHkg
-RmVhdHVyZSB0byBzdXBwb3J0IEF0ZXJhDQo+ID4gQVNNSSBQYXJhbGxlbCAyIElQIGNvcmUuIFRo
-aXMgZmVhdHVyZSBhbGxvd3MNCj4gPiB0aGUgZmxhc2ggdXNlZCB0byBjb25maWd1cmUgdGhlIEZQ
-R0EgYXQgcG93ZXIgdXANCj4gPiB0byBiZSB1cGRhdGVkIG92ZXIgUENJZSB1c2luZyBtdGQtdXRp
-bHMuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBNYXR0aGV3IEdlcmxhY2ggPG1hdHRoZXcuZ2Vy
-bGFjaEBsaW51eC5pbnRlbC5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvZnBnYS9pbnRlbC9m
-ZWF0dXJlLWRldi5oIHwgICA2ICsrLQ0KPiA+ICBkcml2ZXJzL2ZwZ2EvaW50ZWwvZm1lLW1haW4u
-YyAgICB8IDEwMA0KPiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysNCj4g
-PiAgZHJpdmVycy9mcGdhL2ludGVsL3BjaWUuYyAgICAgICAgfCAgIDcgKysrDQo+ID4gIGRyaXZl
-cnMvZnBnYS9pbnRlbC9wY2llX2NoZWNrLmMgIHwgICA2ICsrKw0KPiA+ICA0IGZpbGVzIGNoYW5n
-ZWQsIDExNyBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPiANCj4gVGhlIEludGVsIHBh
-dGNoc2V0IGNyZWF0ZXMgYSBuZXcgd2F5IHRvIGVudW1lcmF0ZSBnZW5lcmljIGRldmljZXMgb24N
-Cj4gZnBnYSdzIGFuZCBub3QganVzdCBGTUUncyBhbmQgcG9ydHMuICBCdXQgaXQgaW52b2x2ZXMg
-dG91Y2hpbmcgNCBmaWxlcw0KPiBhbmQgYWRkaW5nIDEwMCBsaW5lcyB0byBmbWUtbWFpbi5jLiAg
-SXMgdGhlcmUgYSB3YXkgdGhhdCBhZGRpbmcgYSBuZXcNCj4gZGV2aWNlIGNvdWxkIGp1c3QgbWVh
-biBhZGRpbmcgYSBzdHJ1Y3QgaW4gdGhlIGRldmljZSBkcml2ZXIgaXRzZWxmIGFuZA0KPiByZWdp
-c3RlcmluZyBpdCB3aXRoIHRoYXQgZnJhbWV3b3JrPw0KDQpJIHRoaW5rIHRoaXMgaXMgYSBzdWIg
-ZmVhdHVyZSBvZiBGTUUgbW9kdWxlIGltcGxlbWVudGVkIGluIEJCUyAoc3RhdGljIHJlZ2lvbiks
-DQpzbyBpdCBmb2xsb3dzIHRoZSBzYW1lIHdheSBhcyBvdGhlciBzdWIgZmVhdHVyZSAoZS5nIHBh
-cnRpYWwgcmVjb25maWd1cmF0aW9uIC0NCmludGVsLWZtZS1wciksIGFuZCBpdCBuZWVkcyB0byBt
-b2RpZnkgdGhlIGZtZSBkcml2ZXIgbW9kdWxlLiBUaGUgb25seSBkaWZmZXJlbmNlDQpoZXJlIGlz
-IGl0IGRvZXNuJ3QgcHV0IGl0cyBvd24gY29kZSB0byBhIHNlcGFyYXRlZCBmaWxlIGxpa2UgaW50
-ZWwtZm1lLXByLmMgZm9yIEZNRQ0KUGFydGlhbCBSZWNvbmZpZ3VyYXRpb24gc3ViIGZlYXR1cmUs
-IHNvIHlvdSBzZWUgaXQgYWRkcyBtb3JlIGxpbmVzIHRvIGZtZS1tYWluLmMuDQoNClRoYW5rcw0K
-SGFvDQoNCj4gDQo+IEFsYW4NCj4gDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9mcGdh
-L2ludGVsL2ZlYXR1cmUtZGV2LmggYi9kcml2ZXJzL2ZwZ2EvaW50ZWwvZmVhdHVyZS1kZXYuaA0K
-PiA+IGluZGV4IDkzMDM4MjguLjVhZTc5OWIgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9mcGdh
-L2ludGVsL2ZlYXR1cmUtZGV2LmgNCj4gPiArKysgYi9kcml2ZXJzL2ZwZ2EvaW50ZWwvZmVhdHVy
-ZS1kZXYuaA0KPiA+IEBAIC00MCw2ICs0MCw3IEBADQo+ID4gICNkZWZpbmUgRk1FX0ZFQVRVUkVf
-R0xPQkFMX1BFUkYgICAgICJmbWVfZ3BlcmYiDQo+ID4gICNkZWZpbmUgRk1FX0ZFQVRVUkVfR0xP
-QkFMX0VSUiAgICAgICJmbWVfZXJyb3IiDQo+ID4gICNkZWZpbmUgRk1FX0ZFQVRVUkVfUFJfTUdN
-VCAgICAgICAgICJmbWVfcHIiDQo+ID4gKyNkZWZpbmUgRk1FX0ZFQVRVUkVfUVNQSV9GTEFTSCAg
-ICAgImZtZV9xc3BpX2ZsYXNoIg0KPiA+DQo+ID4gICNkZWZpbmUgUE9SVF9GRUFUVVJFX0hFQURF
-UiAgICAgICAgICJwb3J0X2hkciINCj4gPiAgI2RlZmluZSBQT1JUX0ZFQVRVUkVfVUFGVSAgICAg
-ICAgICAgInBvcnRfdWFmdSINCj4gPiBAQCAtNjAsNiArNjEsNyBAQA0KPiA+ICAjZGVmaW5lIEZN
-RV9HTE9CQUxfUEVSRl9SRVZJU0lPTiAgICAgICAwDQo+ID4gICNkZWZpbmUgRk1FX0dMT0JBTF9F
-UlJfUkVWSVNJT04gICAgICAgIDANCj4gPiAgI2RlZmluZSBGTUVfUFJfTUdNVF9SRVZJU0lPTiAg
-ICAgICAgICAgMQ0KPiA+ICsjZGVmaW5lIEZNRV9RU1BJX1JFVklTSU9OIDANCj4gPg0KPiA+ICAj
-ZGVmaW5lIFBPUlRfSEVBREVSX1JFVklTSU9OICAgICAgICAgICAwDQo+ID4gIC8qIFVBRlUncyBo
-ZWFkZXIgaW5mbyBkZXBlbmRzIG9uIHRoZSBkb3dubG9hZGVkIEdCUyAqLw0KPiA+IEBAIC0xMjI1
-LDkgKzEyMjcsOSBAQCBlbnVtIGZtZV9mZWF0dXJlX2lkIHsNCj4gPiAgICAgICAgIEZNRV9GRUFU
-VVJFX0lEX0dMT0JBTF9QRVJGID0gMHgzLA0KPiA+ICAgICAgICAgRk1FX0ZFQVRVUkVfSURfR0xP
-QkFMX0VSUiA9IDB4NCwNCj4gPiAgICAgICAgIEZNRV9GRUFUVVJFX0lEX1BSX01HTVQgPSAweDUs
-DQo+ID4gLQ0KPiA+ICsgICAgICAgRk1FX0ZFQVRVUkVfSURfUVNQSV9GTEFTSCA9IDB4NiwNCj4g
-PiAgICAgICAgIC8qIG9uZSBmb3IgZm1lIGhlYWRlci4gKi8NCj4gPiAtICAgICAgIEZNRV9GRUFU
-VVJFX0lEX01BWCA9IDB4NiwNCj4gPiArICAgICAgIEZNRV9GRUFUVVJFX0lEX01BWCA9IDB4NywN
-Cj4gPiAgfTsNCj4gPg0KPiA+ICBlbnVtIHBvcnRfZmVhdHVyZV9pZCB7DQo+ID4gZGlmZiAtLWdp
-dCBhL2RyaXZlcnMvZnBnYS9pbnRlbC9mbWUtbWFpbi5jIGIvZHJpdmVycy9mcGdhL2ludGVsL2Zt
-ZS1tYWluLmMNCj4gPiBpbmRleCA3NzZmZTM2Li4wM2FhY2IzIDEwMDY0NA0KPiA+IC0tLSBhL2Ry
-aXZlcnMvZnBnYS9pbnRlbC9mbWUtbWFpbi5jDQo+ID4gKysrIGIvZHJpdmVycy9mcGdhL2ludGVs
-L2ZtZS1tYWluLmMNCj4gPiBAQCAtMjcsNiArMjcsNyBAQA0KPiA+ICAjaW5jbHVkZSA8bGludXgv
-dWFjY2Vzcy5oPg0KPiA+ICAjaW5jbHVkZSA8bGludXgvaW50ZWwtZnBnYS5oPg0KPiA+ICAjaW5j
-bHVkZSA8bGludXgvZnBnYS9mcGdhLW1nci5oPg0KPiA+ICsjaW5jbHVkZSA8bGludXgvbXRkL2Fs
-dGVyYS1hc21pcDIuaD4NCj4gPg0KPiA+ICAjaW5jbHVkZSAiZmVhdHVyZS1kZXYuaCINCj4gPiAg
-I2luY2x1ZGUgImZtZS5oIg0KPiA+IEBAIC02NTksNiArNjYwLDEwMSBAQCBzdHJ1Y3QgZmVhdHVy
-ZV9vcHMgcG93ZXJfbWdtdF9vcHMgPSB7DQo+ID4gICAgICAgICAudWluaXQgPSBwb3dlcl9tZ210
-X3Vpbml0LA0KPiA+ICB9Ow0KPiA+DQo+ID4gKyNkZWZpbmUgRkxBU0hfQ0FQQUJJTElUWV9PRlQg
-OA0KPiA+ICsNCj4gPiArc3RhdGljIGludCBxc3BpX2ZsYXNoX2luaXQoc3RydWN0IHBsYXRmb3Jt
-X2RldmljZSAqcGRldiwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3QgZmVh
-dHVyZSAqZmVhdHVyZSkNCj4gPiArew0KPiA+ICsgICAgICAgdTY0IHJlZzsNCj4gPiArICAgICAg
-IHN0cnVjdCBhbHRlcmFfYXNtaXAyX3BsYXRfZGF0YSBxZGF0YTsNCj4gPiArICAgICAgIHN0cnVj
-dCBwbGF0Zm9ybV9kZXZpY2UgKmNkZXY7DQo+ID4gKyAgICAgICBpbnQgcmV0ID0gMDsNCj4gPiAr
-ICAgICAgIGNoYXIgbmFtZVs0MF07DQo+ID4gKw0KPiA+ICsgICAgICAgc2NucHJpbnRmKG5hbWUs
-IHNpemVvZihuYW1lKSwgIiVzLSVwIiwgZmVhdHVyZS0+bmFtZSwgZmVhdHVyZS0+aW9hZGRyKTsN
-Cj4gPiArDQo+ID4gKyAgICAgICByZWcgPSByZWFkcShmZWF0dXJlLT5pb2FkZHIgKyBGTEFTSF9D
-QVBBQklMSVRZX09GVCk7DQo+ID4gKyAgICAgICBkZXZfaW5mbygmcGRldi0+ZGV2LCAiJXMgJXMg
-JWQgMHglbGx4IDB4JXggMHgleFxuIiwNCj4gPiArICAgICAgICAgICAgICAgIF9fZnVuY19fLCBu
-YW1lLCBmZWF0dXJlLT5yZXNvdXJjZV9pbmRleCwNCj4gPiArICAgICAgICAgICAgICAgIHJlZywg
-cmVhZGwoZmVhdHVyZS0+aW9hZGRyICsgRkxBU0hfQ0FQQUJJTElUWV9PRlQpLA0KPiA+ICsgICAg
-ICAgICAgICAgICAgcmVhZGwoZmVhdHVyZS0+aW9hZGRyICsgRkxBU0hfQ0FQQUJJTElUWV9PRlQg
-KyA0KSk7DQo+ID4gKw0KPiA+ICsNCj4gPiArICAgICAgIGNkZXYgPSBwbGF0Zm9ybV9kZXZpY2Vf
-YWxsb2MobmFtZSwgUExBVEZPUk1fREVWSURfTk9ORSk7DQo+ID4gKw0KPiA+ICsgICAgICAgaWYg
-KCFjZGV2KSB7DQo+ID4gKyAgICAgICAgICAgICAgIGRldl9lcnIoJnBkZXYtPmRldiwgInBsYXRm
-b3JtX2RldmljZV9hbGxvYyBmYWlsZWQgaW4gJXNcbiIsDQo+ID4gKyAgICAgICAgICAgICAgICAg
-ICAgICAgX19mdW5jX18pOw0KPiA+ICsgICAgICAgICAgICAgICByZXR1cm4gLUVOT01FTTsNCj4g
-PiArICAgICAgIH0NCj4gPiArDQo+ID4gKyAgICAgICBjZGV2LT5kZXYucGFyZW50ID0gJnBkZXYt
-PmRldjsNCj4gPiArDQo+ID4gKyAgICAgICBtZW1zZXQoJnFkYXRhLCAwLCBzaXplb2YocWRhdGEp
-KTsNCj4gPiArICAgICAgIHFkYXRhLmNzcl9iYXNlID0gZmVhdHVyZS0+aW9hZGRyICsgRkxBU0hf
-Q0FQQUJJTElUWV9PRlQ7DQo+ID4gKyAgICAgICBxZGF0YS5udW1fY2hpcF9zZWwgPSAxOw0KPiA+
-ICsNCj4gPiArICAgICAgIHJldCA9IHBsYXRmb3JtX2RldmljZV9hZGRfZGF0YShjZGV2LCAmcWRh
-dGEsIHNpemVvZihxZGF0YSkpOw0KPiA+ICsNCj4gPiArICAgICAgIGlmIChyZXQpIHsNCj4gPiAr
-ICAgICAgICAgICAgICAgZGV2X2VycigmcGRldi0+ZGV2LCAicGxhdGZvcm1fZGV2aWNlX2FkZF9k
-YXRhIGluICVzXG4iLA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIF9fZnVuY19fKTsNCj4g
-PiArICAgICAgICAgICAgICAgZ290byBlcnJvcjsNCj4gPiArICAgICAgIH0NCj4gPiArDQo+ID4g
-KyAgICAgICBjZGV2LT5kcml2ZXJfb3ZlcnJpZGUgPSBrc3RyZHVwKEFMVEVSQV9BU01JUDJfRFJW
-X05BTUUsDQo+IEdGUF9LRVJORUwpOw0KPiA+ICsNCj4gPiArICAgICAgIHJldCA9IHBsYXRmb3Jt
-X2RldmljZV9hZGQoY2Rldik7DQo+ID4gKw0KPiA+ICsgICAgICAgaWYgKHJldCkgew0KPiA+ICsg
-ICAgICAgICAgICAgICBkZXZfZXJyKCZwZGV2LT5kZXYsICJwbGF0Zm9ybV9kZXZpY2VfYWRkIGZh
-aWxlZCB3aXRoICVkXG4iLA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIHJldCk7DQo+ID4g
-KyAgICAgICAgICAgICAgIGdvdG8gZXJyb3I7DQo+ID4gKyAgICAgICB9DQo+ID4gKyAgICAgICBy
-ZXR1cm4gcmV0Ow0KPiA+ICsNCj4gPiArZXJyb3I6DQo+ID4gKyAgICAgICBwbGF0Zm9ybV9kZXZp
-Y2VfcHV0KGNkZXYpOw0KPiA+ICsgICAgICAgcmV0dXJuIHJldDsNCj4gPiArfQ0KPiA+ICsNCj4g
-PiArc3RhdGljIGludCBxc3BpX21hdGNoKHN0cnVjdCBkZXZpY2UgKmRldiwgdm9pZCAqZGF0YSkN
-Cj4gPiArew0KPiA+ICsgICAgICAgcmV0dXJuICFzdHJjbXAoZGV2X25hbWUoZGV2KSwgZGF0YSk7
-DQo+ID4gK30NCj4gPiArDQo+ID4gK3N0YXRpYyB2b2lkIHFzcGlfZmxhc2hfdWluaXQoc3RydWN0
-IHBsYXRmb3JtX2RldmljZSAqcGRldiwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHN0cnVjdCBmZWF0dXJlICpmZWF0dXJlKQ0KPiA+ICt7DQo+ID4gKyAgICAgICBzdHJ1Y3QgZGV2
-aWNlICpwYXJlbnQgPSAmcGRldi0+ZGV2Ow0KPiA+ICsgICAgICAgc3RydWN0IGRldmljZSAqZGV2
-Ow0KPiA+ICsgICAgICAgc3RydWN0IHBsYXRmb3JtX2RldmljZSAqY2RldjsNCj4gPiArICAgICAg
-IGNoYXIgbmFtZVs0MF07DQo+ID4gKw0KPiA+ICsgICAgICAgc2NucHJpbnRmKG5hbWUsIHNpemVv
-ZihuYW1lKSwgIiVzLSVwIiwgZmVhdHVyZS0+bmFtZSwgZmVhdHVyZS0+aW9hZGRyKTsNCj4gPiAr
-DQo+ID4gKyAgICAgICBkZXYgPSBkZXZpY2VfZmluZF9jaGlsZChwYXJlbnQsIG5hbWUsIHFzcGlf
-bWF0Y2gpOw0KPiA+ICsNCj4gPiArICAgICAgIGlmICghZGV2KSB7DQo+ID4gKyAgICAgICAgICAg
-ICAgIGRldl9lcnIoJnBkZXYtPmRldiwgIiVzIE5PVCBmb3VuZFxuIiwNCj4gQUxURVJBX0FTTUlQ
-Ml9EUlZfTkFNRSk7DQo+ID4gKyAgICAgICAgICAgICAgIHJldHVybjsNCj4gPiArICAgICAgIH0N
-Cj4gPiArDQo+ID4gKyAgICAgICBjZGV2ID0gdG9fcGxhdGZvcm1fZGV2aWNlKGRldik7DQo+ID4g
-Kw0KPiA+ICsgICAgICAgaWYgKCFjZGV2KSB7DQo+ID4gKyAgICAgICAgICAgICAgIGRldl9lcnIo
-JnBkZXYtPmRldiwgIm5vIHBsYXRmb3JtIGNvbnRhaW5lclxuIik7DQo+ID4gKyAgICAgICAgICAg
-ICAgIHJldHVybjsNCj4gPiArICAgICAgIH0NCj4gPiArDQo+ID4gKyAgICAgICBwbGF0Zm9ybV9k
-ZXZpY2VfdW5yZWdpc3RlcihjZGV2KTsNCj4gPiArfQ0KPiA+ICsNCj4gPiArc3RydWN0IGZlYXR1
-cmVfb3BzIHFzcGlfZmxhc2hfb3BzID0gew0KPiA+ICsgICAgICAgLmluaXQgPSBxc3BpX2ZsYXNo
-X2luaXQsDQo+ID4gKyAgICAgICAudWluaXQgPSBxc3BpX2ZsYXNoX3Vpbml0LA0KPiA+ICt9Ow0K
-PiA+ICsNCj4gPiAgc3RhdGljIHN0cnVjdCBmZWF0dXJlX2RyaXZlciBmbWVfZmVhdHVyZV9kcnZz
-W10gPSB7DQo+ID4gICAgICAgICB7DQo+ID4gICAgICAgICAgICAgICAgIC5uYW1lID0gRk1FX0ZF
-QVRVUkVfSEVBREVSLA0KPiA+IEBAIC02ODUsNiArNzgxLDEwIEBAIHN0YXRpYyBzdHJ1Y3QgZmVh
-dHVyZV9kcml2ZXIgZm1lX2ZlYXR1cmVfZHJ2c1tdID0gew0KPiA+ICAgICAgICAgICAgICAgICAu
-b3BzID0gJmdsb2JhbF9wZXJmX29wcywNCj4gPiAgICAgICAgIH0sDQo+ID4gICAgICAgICB7DQo+
-ID4gKyAgICAgICAgICAgICAgIC5uYW1lID0gRk1FX0ZFQVRVUkVfUVNQSV9GTEFTSCwNCj4gPiAr
-ICAgICAgICAgICAgICAgLm9wcyA9ICZxc3BpX2ZsYXNoX29wcywNCj4gPiArICAgICAgIH0sDQo+
-ID4gKyAgICAgICB7DQo+ID4gICAgICAgICAgICAgICAgIC5vcHMgPSBOVUxMLA0KPiA+ICAgICAg
-ICAgfSwNCj4gPiAgfTsNCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9mcGdhL2ludGVsL3BjaWUu
-YyBiL2RyaXZlcnMvZnBnYS9pbnRlbC9wY2llLmMNCj4gPiBpbmRleCBhNjQxNTFhLi44ZjRmM2Uw
-IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvZnBnYS9pbnRlbC9wY2llLmMNCj4gPiArKysgYi9k
-cml2ZXJzL2ZwZ2EvaW50ZWwvcGNpZS5jDQo+ID4gQEAgLTI4LDYgKzI4LDcgQEANCj4gPiAgI2lu
-Y2x1ZGUgPGxpbnV4L3V1aWQuaD4NCj4gPiAgI2luY2x1ZGUgPGxpbnV4L2tkZXZfdC5oPg0KPiA+
-ICAjaW5jbHVkZSA8bGludXgvbWZkL2NvcmUuaD4NCj4gPiArI2luY2x1ZGUgPGxpbnV4L210ZC9h
-bHRlcmEtYXNtaXAyLmg+DQo+ID4NCj4gPiAgI2luY2x1ZGUgImZlYXR1cmUtZGV2LmgiDQo+ID4N
-Cj4gPiBAQCAtNjE3LDYgKzYxOCwxMiBAQCBzdGF0aWMgc3RydWN0IGZlYXR1cmVfaW5mbyBmbWVf
-ZmVhdHVyZXNbXSA9IHsNCj4gPiAgICAgICAgICAgICAgICAgLnJlc291cmNlX3NpemUgPSBzaXpl
-b2Yoc3RydWN0IGZlYXR1cmVfZm1lX3ByKSwNCj4gPiAgICAgICAgICAgICAgICAgLmZlYXR1cmVf
-aW5kZXggPSBGTUVfRkVBVFVSRV9JRF9QUl9NR01ULA0KPiA+ICAgICAgICAgICAgICAgICAucmV2
-aXNpb25faWQgPSBGTUVfUFJfTUdNVF9SRVZJU0lPTg0KPiA+ICsgICAgICAgfSwNCj4gPiArICAg
-ICAgIHsNCj4gPiArICAgICAgICAgICAgICAgLm5hbWUgPSBGTUVfRkVBVFVSRV9RU1BJX0ZMQVNI
-LA0KPiA+ICsgICAgICAgICAgICAgICAucmVzb3VyY2Vfc2l6ZSA9IEFMVEVSQV9BU01JUDJfUkVT
-T1VSQ0VfU0laRSwNCj4gPiArICAgICAgICAgICAgICAgLmZlYXR1cmVfaW5kZXggPSBGTUVfRkVB
-VFVSRV9JRF9RU1BJX0ZMQVNILA0KPiA+ICsgICAgICAgICAgICAgICAucmV2aXNpb25faWQgPSBG
-TUVfUVNQSV9SRVZJU0lPTg0KPiA+ICAgICAgICAgfQ0KPiA+ICB9Ow0KPiA+DQo+ID4gZGlmZiAt
-LWdpdCBhL2RyaXZlcnMvZnBnYS9pbnRlbC9wY2llX2NoZWNrLmMgYi9kcml2ZXJzL2ZwZ2EvaW50
-ZWwvcGNpZV9jaGVjay5jDQo+ID4gaW5kZXggZTcwN2Q3Mi4uZjAwMjdlMSAxMDA2NDQNCj4gPiAt
-LS0gYS9kcml2ZXJzL2ZwZ2EvaW50ZWwvcGNpZV9jaGVjay5jDQo+ID4gKysrIGIvZHJpdmVycy9m
-cGdhL2ludGVsL3BjaWVfY2hlY2suYw0KPiA+IEBAIC01MSw2ICs1MSwxMSBAQA0KPiA+ICAjZGVm
-aW5lIEZNRV9GRUFUVVJFX1BSX01HTVRfSUQgICAgICAgICAgICAgICAgIDB4NQ0KPiA+ICAjZGVm
-aW5lIEZNRV9GRUFUVVJFX1BSX01HTVRfVkVSU0lPTiAgICAgICAgICAgIDB4MA0KPiA+DQo+ID4g
-KyNkZWZpbmUgRk1FX0ZFQVRVUkVfUVNQSV9GTEFTSF9UWVBFICAgICAgICAgICAgREZIX1RZUEVf
-UFJJVkFURQ0KPiA+ICsjZGVmaW5lIEZNRV9GRUFUVVJFX1FTUElfRkxBU0hfTkVYVF9PRkZTRVQg
-ICAgIDB4MjAwMA0KPiA+ICsjZGVmaW5lIEZNRV9GRUFUVVJFX1FTUElfRkxBU0hfSUQNCj4gRk1F
-X0ZFQVRVUkVfSURfUVNQSV9GTEFTSA0KPiA+ICsjZGVmaW5lIEZNRV9GRUFUVVJFX1FTUElfRkxB
-U0hfVkVSU0lPTiAgICAgICAgIEZNRV9RU1BJX1JFVklTSU9ODQo+ID4gKw0KPiA+ICAjZGVmaW5l
-IFBPUlRfRkVBVFVSRV9IRUFERVJfVFlQRSAgICAgICAgICAgICAgIERGSF9UWVBFX0FGVQ0KPiA+
-ICAjZGVmaW5lIFBPUlRfRkVBVFVSRV9IRUFERVJfTkVYVF9PRkZTRVQgICAgICAgICAgICAgICAg
-MHgxMDAwDQo+ID4gICNkZWZpbmUgUE9SVF9GRUFUVVJFX0hFQURFUl9JRCAgICAgICAgICAgICAg
-ICAgREZIX0NDSV9WRVJTSU9ODQo+ID4gQEAgLTkxLDYgKzk2LDcgQEAgc3RhdGljIHN0cnVjdCBm
-ZWF0dXJlX2hlYWRlciBkZWZhdWx0X2ZtZV9mZWF0dXJlX2hkcltdDQo+ID0gew0KPiA+ICAgICAg
-ICAgREVGQVVMVF9SRUcoRk1FX0ZFQVRVUkVfR0xPQkFMX1BFUkYpLA0KPiA+ICAgICAgICAgREVG
-QVVMVF9SRUcoRk1FX0ZFQVRVUkVfR0xPQkFMX0VSUiksDQo+ID4gICAgICAgICBERUZBVUxUX1JF
-RyhGTUVfRkVBVFVSRV9QUl9NR01UKSwNCj4gPiArICAgICAgIERFRkFVTFRfUkVHKEZNRV9GRUFU
-VVJFX1FTUElfRkxBU0gpLA0KPiA+ICB9Ow0KPiA+DQo+ID4gIHZvaWQgY2hlY2tfZmVhdHVyZXNf
-aGVhZGVyKHN0cnVjdCBwY2lfZGV2ICpwZGV2LCBzdHJ1Y3QgZmVhdHVyZV9oZWFkZXIgKmhkciwN
-Cj4gPiAtLQ0KPiA+IDIuNy40DQo+ID4NCj4gPiAtLQ0KPiA+IFRvIHVuc3Vic2NyaWJlIGZyb20g
-dGhpcyBsaXN0OiBzZW5kIHRoZSBsaW5lICJ1bnN1YnNjcmliZSBkZXZpY2V0cmVlIiBpbg0KPiA+
-IHRoZSBib2R5IG9mIGEgbWVzc2FnZSB0byBtYWpvcmRvbW9Admdlci5rZXJuZWwub3JnDQo+ID4g
-TW9yZSBtYWpvcmRvbW8gaW5mbyBhdCAgaHR0cDovL3ZnZXIua2VybmVsLm9yZy9tYWpvcmRvbW8t
-aW5mby5odG1sDQo=
+On Sat, Aug 12, 2017 at 11:35 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> Hi Andrea,
+>
+> I'm sorry this had to wait so long, but then...you didn't actually
+> address several of my comments from the last time :(
+>
+> This does look better, but still quite a few smaller notes. Hopefully
+> next one will be merge-able...
+>
+
+Brian,
+
+thank you again for the time spent reviewing this patch and for the guidance.
+
+I did not dare to send all the changes together in the v4 so I kept
+the management of the structure as last step (remember this code is
+coming from 2.4 sources and it was supposed to keep the logical to
+physical table in memory).
+
+So I will send v5 very soon without the global structure and with
+these last refinements you're suggesting.
+
+I was really awaiting your comments about the many changes done and my
+implementation (see macros...).
+
+I'll comment briefly but substantially I agree with your observations.
+
+> On Wed, Jun 28, 2017 at 10:30:28PM +0200, Andrea Adami wrote:
+>> The Sharp SL Series (Zaurus) PXA handhelds have 16/64/128M of NAND flash
+>> and share the same layout of the first 7M partition, managed by Sharp FTL.
+>>
+>> The purpose of this self-contained patch is to add a common parser and
+>> remove the hardcoded sizes in the board files (these devices are not yet
+>> converted to devicetree).
+>> Users will have benefits because the mtdparts= tag will not be necessary
+>> anymore and they will be free to repartition the little sized flash.
+>>
+>> The obsolete bootloader can not pass the partitioning info to modern
+>> kernels anymore so it has to be read from flash at known logical addresses.
+>> (see http://www.h5.dion.ne.jp/~rimemoon/zaurus/memo_006.htm )
+>>
+>> In kernel, under arch/arm/mach-pxa we have already 8 machines:
+>> MACH_POODLE, MACH_CORGI, MACH_SHEPERD, MACH_HUSKY, MACH_AKITA, MACH_SPITZ,
+>> MACH_BORZOI, MACH_TOSA.
+>> Lost after the 2.4 vendor kernel are MACH_BOXER and MACH_TERRIER.
+>>
+>> Almost every model has different factory partitioning: add to this the
+>> units can be repartitioned by users with userspace tools (nandlogical)
+>> and installers for popular (back then) linux distributions.
+>>
+>> The Parameter Area in the first (boot) partition extends from 0x00040000 to
+>> 0x0007bfff (176k) and contains two copies of the partition table:
+>> ...
+>> 0x00060000: Partition Info1     16k
+>> 0x00064000: Partition Info2     16k
+>> 0x00668000: Model               16k
+>> ...
+>>
+>> The first 7M partition is managed by the Sharp FTL reserving 5% + 1 blocks
+>> for wear-leveling: some blocks are remapped and one layer of translation
+>> (logical to physical) is necessary.
+>>
+>> There isn't much documentation about this FTL in the 2.4 sources, just the
+>> MTD methods for reading and writing using logical addresses and the block
+>> management (wear-leveling, use counter).
+>> For the purpose of the MTD parser only the read part of the code was taken.
+>>
+>> The NAND drivers that can use this parser are sharpsl.c and tmio_nand.c.
+>>
+>> Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
+>> ---
+>>  drivers/mtd/Kconfig       |   8 +
+>>  drivers/mtd/Makefile      |   1 +
+>>  drivers/mtd/sharpslpart.c | 391 ++++++++++++++++++++++++++++++++++++++++++++++
+>>  3 files changed, 400 insertions(+)
+>>  create mode 100644 drivers/mtd/sharpslpart.c
+>>
+>> diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+>> index e83a279..b196a69 100644
+>> --- a/drivers/mtd/Kconfig
+>> +++ b/drivers/mtd/Kconfig
+>> @@ -155,6 +155,14 @@ config MTD_BCM47XX_PARTS
+>>         This provides partitions parser for devices based on BCM47xx
+>>         boards.
+>>
+>> +config MTD_SHARPSL_PARTS
+>> +     tristate "Sharp SL Series NAND flash partition parser"
+>> +     depends on MTD_NAND_SHARPSL || MTD_NAND_TMIO || COMPILE_TEST
+>> +     help
+>> +       This provides the read-only FTL logic necessary to read the partition
+>> +       table from the NAND flash of Sharp SL Series (Zaurus) and the MTD
+>> +       partition parser using this code.
+>> +
+>
+> This has conflicts now; probably should go in
+> drivers/mtd/parsers/Kconfig now. We should also probably move the other
+> parsers there, but that's not your problem.
+>
+Ok, I'll move the parser there.
+
+>>  comment "User Modules And Translation Layers"
+>>
+>>  #
+>> diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
+>> index 99bb9a1..e5ef07f 100644
+>> --- a/drivers/mtd/Makefile
+>> +++ b/drivers/mtd/Makefile
+>> @@ -13,6 +13,7 @@ obj-$(CONFIG_MTD_AFS_PARTS) += afs.o
+>>  obj-$(CONFIG_MTD_AR7_PARTS)  += ar7part.o
+>>  obj-$(CONFIG_MTD_BCM63XX_PARTS)      += bcm63xxpart.o
+>>  obj-$(CONFIG_MTD_BCM47XX_PARTS)      += bcm47xxpart.o
+>> +obj-$(CONFIG_MTD_SHARPSL_PARTS)      += sharpslpart.o
+>
+> Also has conflicts now. Might as well move to drivers/mtd/parsers/?
+
+Sure
+
+>
+>>
+>>  # 'Users' - code which presents functionality to userspace.
+>>  obj-$(CONFIG_MTD_BLKDEVS)    += mtd_blkdevs.o
+>> diff --git a/drivers/mtd/sharpslpart.c b/drivers/mtd/sharpslpart.c
+>> new file mode 100644
+>> index 0000000..02b721b
+>> --- /dev/null
+>> +++ b/drivers/mtd/sharpslpart.c
+>> @@ -0,0 +1,391 @@
+>> +/*
+>> + * sharpslpart.c - MTD partition parser for NAND flash using the SHARP FTL
+>> + * for logical addressing, as used on the PXA models of the SHARP SL Series.
+>> + *
+>> + * Copyright (C) 2017 Andrea Adami <andrea.adami@gmail.com>
+>> + *
+>> + * Based on 2.4 sources:
+>> + *  drivers/mtd/nand/sharp_sl_logical.c
+>> + *  linux/include/asm-arm/sharp_nand_logical.h
+>> + *
+>> + * Copyright (C) 2002 SHARP
+>> + *
+>> + * This program is free software; you can redistribute it and/or modify
+>> + * it under the terms of the GNU General Public License as published by
+>> + * the Free Software Foundation; either version 2 of the License, or
+>> + * (at your option) any later version.
+>> + *
+>> + * This program is distributed in the hope that it will be useful,
+>> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>> + * GNU General Public License for more details.
+>> + *
+>> + */
+>> +
+>> +#include <linux/kernel.h>
+>> +#include <linux/slab.h>
+>> +#include <linux/module.h>
+>> +#include <linux/types.h>
+>> +#include <linux/mtd/mtd.h>
+>> +#include <linux/mtd/partitions.h>
+>> +
+>> +/* oob structure */
+>> +#define NAND_NOOB_LOGADDR_00         8
+>> +#define NAND_NOOB_LOGADDR_01         9
+>> +#define NAND_NOOB_LOGADDR_10         10
+>> +#define NAND_NOOB_LOGADDR_11         11
+>> +#define NAND_NOOB_LOGADDR_20         12
+>> +#define NAND_NOOB_LOGADDR_21         13
+>> +
+>> +#define BLOCK_IS_RESERVED            0xffff
+>> +#define BLOCK_UNMASK                 0x07fe
+>> +#define BLOCK_UNMASK_COMPLEMENT              1
+>> +
+>> +/* factory defaults */
+>> +#define SHARPSL_NAND_PARTS           3
+>> +#define SHARPSL_FTL_PARTITION_SIZE   (7 * 1024 * 1024)
+>> +#define PARAM_BLOCK_PARTITIONINFO1   0x00060000
+>> +#define PARAM_BLOCK_PARTITIONINFO2   0x00064000
+>> +
+>> +#define buf_start(x)                 le32_to_cpu(buf1[x].start)
+>> +#define buf_end(x)                   le32_to_cpu(buf1[x].end)
+>> +#define buf_magic(x)                 be32_to_cpu(buf1[x].magic)
+>
+> Sorry, these aren't good macros; they implicitly rely on a 'buf1'
+> variable, without using it as an argument to the macro. That hurts
+> readability. If you want this macro, give it 2 args.
+
+Ok, I thought that was better than a bunch of le32_to_cpu() but
+finally is just a preprocessor thing. Macro removed.
+
+>
+>> +
+>> +#define BOOT_MAGIC                   0x424f4f54   /* BOOT */
+>> +#define FSRO_MAGIC                   0x4653524f   /* FSRO */
+>> +#define FSRW_MAGIC                   0x46535257   /* FSRW */
+>> +
+>> +/* Logical Table */
+>> +struct mtd_logical {
+>> +     u32 size;               /* size of the handled partition */
+>> +     int index;              /* mtd->index */
+>> +     u_int phymax;           /* physical blocks */
+>> +     u_int logmax;           /* logical blocks */
+>> +     u_int *log2phy;         /* the logical-to-physical table */
+>> +};
+>> +
+>> +struct mtd_logical *sharpsl_mtd_logical;
+>
+> I asked you not to avoid making this variable static...and I suppose
+> technically you did this. But global is even worse! And you really don't
+> need to do this; just make sharpsl_nand_init_logical() return struct
+> mtd_logical, and then you don't need any global/static reference at all.
+>
+
+Done, please see v5.
+
+
+>> +
+>> +/*
+>> + * SHARP SL FTL ancillary functions
+>> + *
+>> + */
+>> +
+>> +static int sharpsl_nand_read_oob(struct mtd_info *mtd, loff_t offs, size_t len,
+>> +                              uint8_t *buf)
+>> +{
+>> +     loff_t mask = mtd->writesize - 1;
+>> +     struct mtd_oob_ops ops;
+>> +     int ret;
+>> +
+>> +     ops.mode = MTD_OPS_PLACE_OOB;
+>> +     ops.ooboffs = offs & mask;
+>> +     ops.ooblen = len;
+>> +     ops.oobbuf = buf;
+>> +     ops.datbuf = NULL;
+>> +
+>> +     ret = mtd_read_oob(mtd, offs & ~mask, &ops);
+>> +     if (ret != 0 || len != ops.oobretlen)
+>> +             return -1;
+>> +
+>> +     return 0;
+>> +}
+>> +
+>> +/*
+>> + * The logical block number assigned to a physical block is stored in the OOB
+>> + * of the first page, in 3 16-bit copies with the following layout:
+>> + *
+>> + * 01234567 89abcdef
+>> + * -------- --------
+>> + * ECC BB   xyxyxy
+>> + *
+>> + * When reading we check that the first two copies agree.
+>> + * In case of error, matching is tried using the following pairs.
+>> + * Reserved values 0xffff mean the block is kept for wear leveling.
+>> + *
+>> + * 01234567 89abcdef
+>> + * -------- --------
+>> + * ECC BB   xyxy    oob[8]==oob[10] && oob[9]==oob[11]   -> byte0=8   byte1=9
+>> + * ECC BB     xyxy  oob[10]==oob[12] && oob[11]==oob[13] -> byte0=10  byte1=11
+>> + * ECC BB   xy  xy  oob[12]==oob[8] && oob[13]==oob[9]   -> byte0=12  byte1=13
+>> + *
+>> + */
+>
+> Thanks for this. Much nicer.
+>
+Ok, I should maybe have done it little endian ;)
+
+>> +
+>> +static u_int sharpsl_nand_get_logical_num(u_char *oob)
+>> +{
+>> +     u16 us;
+>> +     int good0, good1;
+>> +
+>> +     if (oob[NAND_NOOB_LOGADDR_00] == oob[NAND_NOOB_LOGADDR_10] &&
+>> +         oob[NAND_NOOB_LOGADDR_01] == oob[NAND_NOOB_LOGADDR_11]) {
+>> +             good0 = NAND_NOOB_LOGADDR_00;
+>> +             good1 = NAND_NOOB_LOGADDR_01;
+>> +     } else if (oob[NAND_NOOB_LOGADDR_10] == oob[NAND_NOOB_LOGADDR_20] &&
+>> +                oob[NAND_NOOB_LOGADDR_11] == oob[NAND_NOOB_LOGADDR_21]) {
+>> +             good0 = NAND_NOOB_LOGADDR_10;
+>> +             good1 = NAND_NOOB_LOGADDR_11;
+>> +     } else if (oob[NAND_NOOB_LOGADDR_20] == oob[NAND_NOOB_LOGADDR_00] &&
+>> +                oob[NAND_NOOB_LOGADDR_21] == oob[NAND_NOOB_LOGADDR_01]) {
+>> +             good0 = NAND_NOOB_LOGADDR_20;
+>> +             good1 = NAND_NOOB_LOGADDR_21;
+>> +     } else {
+>> +             /* wrong oob fingerprint, maybe here by mistake? */
+>> +             return UINT_MAX;
+>> +     }
+>> +
+>> +     us = oob[good0] | oob[good1] << 8;
+>> +
+>> +     /* parity check */
+>> +     if (hweight16(us) & BLOCK_UNMASK_COMPLEMENT)
+>> +             return (UINT_MAX - 1);
+>> +
+>> +     /* reserved */
+>> +     if (us == BLOCK_IS_RESERVED)
+>> +             return BLOCK_IS_RESERVED;
+>> +     else
+>> +             return (us & BLOCK_UNMASK) >> 1;
+>> +}
+>> +
+>> +int sharpsl_nand_init_logical(struct mtd_info *mtd, u32 partition_size)
+>
+> static?
+>
+Yes, the parser is a single file now
+
+>> +{
+>> +     struct mtd_logical *logical;
+>> +     u_int block_num, log_num;
+>> +     loff_t block_adr;
+>> +     u_char *oob;
+>> +     int i;
+>> +
+>> +     logical = kzalloc(sizeof(*logical), GFP_KERNEL);
+>> +     if (!logical)
+>> +             return -ENOMEM;
+>> +
+>> +     oob = kzalloc(mtd->oobsize, GFP_KERNEL);
+>> +     if (!oob) {
+>> +             kfree(logical);
+>> +             return -ENOMEM;
+>> +     }
+>> +
+>> +     /* initialize management structure */
+>> +     logical->size = partition_size;
+>> +     logical->index = mtd->index;
+>> +     logical->phymax = (partition_size / mtd->erasesize);
+>> +
+>> +     /* FTL reserves 5% of the blocks + 1 spare  */
+>> +     logical->logmax = ((logical->phymax * 95) / 100) - 1;
+>> +
+>> +     logical->log2phy = NULL;
+>
+> What's this for? You're re-assigning it immediately following.
+>
+Remnant from 2.4? Unnecessary, removed.
+
+>> +     logical->log2phy = kmalloc_array(logical->logmax, sizeof(u_int),
+>> +                                      GFP_KERNEL);
+>> +     if (!logical->log2phy) {
+>> +             kfree(logical);
+>> +             kfree(oob);
+>> +             return -ENOMEM;
+>> +     }
+>> +
+>> +     /* initialize logical->log2phy */
+>> +     for (i = 0; i < logical->logmax; i++)
+>> +             logical->log2phy[i] = UINT_MAX;
+>> +
+>> +     /* create physical-logical table */
+>> +     for (block_num = 0; block_num < logical->phymax; block_num++) {
+>> +             block_adr = block_num * mtd->erasesize;
+>> +
+>> +             if (mtd_block_isbad(mtd, block_adr))
+>> +                     continue;
+>> +
+>> +             if (sharpsl_nand_read_oob(mtd, block_adr, mtd->oobsize, oob))
+>> +                     continue;
+>> +
+>> +             /* get logical block */
+>> +             log_num = sharpsl_nand_get_logical_num(oob);
+>> +
+>> +             /* FTL is not used? Exit here if the oob fingerprint is wrong */
+>> +             if (log_num == UINT_MAX) {
+>> +                     pr_info("sharpslpart: Sharp SL FTL not found. Quit parser.\n");
+>> +                     kfree(logical->log2phy);
+>> +                     kfree(logical);
+>> +                     kfree(oob);
+>> +                     return -EINVAL;
+>> +             }
+>> +
+>> +             /* skip out of range and not unique values */
+>> +             if (log_num < logical->logmax) {
+>> +                     if (logical->log2phy[log_num] == UINT_MAX)
+>> +                             logical->log2phy[log_num] = block_num;
+>> +             }
+>> +     }
+>> +     kfree(oob);
+>> +     sharpsl_mtd_logical = logical;
+>> +
+>> +     pr_info("Sharp SL FTL: %d blocks used (%d logical, %d reserved)\n",
+>> +             logical->phymax, logical->logmax,
+>> +             logical->phymax - logical->logmax);
+>> +
+>> +     return 0;
+>> +}
+>> +
+>> +void sharpsl_nand_cleanup_logical(struct mtd_logical *sharpsl_mtd_logical)
+>
+> static?
+>
+Yes, the parser is a single file now
+
+> And why don't you just name the arg 'logical' and...
+>
+
+Yes, I dropped the cleanup function.
+
+>> +{
+>> +     struct mtd_logical *logical = sharpsl_mtd_logical;
+>
+> ...drop this?
+>
+>> +
+>> +     sharpsl_mtd_logical = NULL;
+>
+> If you kill the global, you don't need this.
+>
+>> +
+>> +     kfree(logical->log2phy);
+>> +     logical->log2phy = NULL;
+>
+> Not necessary.
+>
+>> +     kfree(logical);
+>> +     logical = NULL;
+>
+> Not necessary.
+>
+>> +}
+>> +
+>> +int sharpsl_nand_read_laddr(struct mtd_info *mtd,
+>
+> static?
+>
+Yes, the parser is a single file now
+
+>> +                         loff_t from,
+>> +                         size_t len,
+>> +                         u_char *buf)
+>> +{
+>> +     struct mtd_logical *logical;
+>
+> Make 'logical' a parameter, so you don't need the global.
+>
+Done in v5
+
+>> +     u_int log_num, log_new;
+>> +     u_int block_num;
+>> +     loff_t block_adr;
+>> +     loff_t block_ofs;
+>> +     size_t retlen;
+>> +     int err;
+>> +
+>> +     logical = sharpsl_mtd_logical;
+>> +     log_num = (u32)from / mtd->erasesize;
+>> +     log_new = ((u32)from + len - 1) / mtd->erasesize;
+>> +
+>> +     if (len <= 0 || log_num >= logical->logmax || log_new > log_num)
+>> +             return -EINVAL;
+>> +
+>> +     block_num = logical->log2phy[log_num];
+>> +     block_adr = block_num * mtd->erasesize;
+>> +     block_ofs = (u32)from % mtd->erasesize;
+>> +
+>> +     err = mtd_read(mtd, block_adr + block_ofs, len, &retlen, buf);
+>> +     /* Ignore corrected ECC errors */
+>> +     if (mtd_is_bitflip(err))
+>> +             err = 0;
+>> +     if (!err && retlen != len)
+>> +             err = -EIO;
+>> +     if (err)
+>> +             pr_err("sharpslpart: error, read failed at %#llx\n",
+>> +                    block_adr + block_ofs);
+>> +
+>> +     return err;
+>> +}
+>> +
+>> +/*
+>> + * MTD Partition Parser
+>> + *
+>> + */
+>> +
+>> +struct sharpsl_nand_partitioninfo {
+>> +     u32 start;
+>> +     u32 end;
+>
+> Should the above 2 be '__le32'?
+>
+>> +     u32 magic;
+>
+> It's a little odd that the same on-flash structure would have both BE
+> and LE elements, but I guess judging by usage...this should be '__be32'.
+>
+
+Ok, modified the struct.
+
+>> +     u32 reserved;
+>> +};
+>> +
+>> +/*
+>> + * Sample values read from SL-C860
+>> + *
+>> + * # cat /proc/mtd
+>> + * dev:    size   erasesize  name
+>> + * mtd0: 006d0000 00020000 "Filesystem"
+>> + * mtd1: 00700000 00004000 "smf"
+>> + * mtd2: 03500000 00004000 "root"
+>> + * mtd3: 04400000 00004000 "home"
+>> + *
+>> + * PARTITIONINFO1
+>> + * 0x00060000: 00 00 00 00 00 00 70 00 42 4f 4f 54 00 00 00 00  ......p.BOOT....
+>> + * 0x00060010: 00 00 70 00 00 00 c0 03 46 53 52 4f 00 00 00 00  ..p.....FSRO....
+>> + * 0x00060020: 00 00 c0 03 00 00 00 04 46 53 52 57 00 00 00 00  ........FSRW....
+>> + * 0x00060030: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+>> + *
+>> + */
+>> +
+>> +static int sharpsl_parse_mtd_partitions(struct mtd_info *master,
+>> +                                     const struct mtd_partition **pparts,
+>> +                                     struct mtd_part_parser_data *data)
+>> +{
+>> +     struct sharpsl_nand_partitioninfo buf1[SHARPSL_NAND_PARTS];
+>> +     struct sharpsl_nand_partitioninfo buf2[SHARPSL_NAND_PARTS];
+>> +     struct mtd_partition *sharpsl_nand_parts;
+>> +     int err;
+>> +
+>> +     /* init logical mgmt (FTL) */
+>> +     if (sharpsl_nand_init_logical(master, SHARPSL_FTL_PARTITION_SIZE))
+>> +             return -EINVAL;
+>
+> Please propagate the error...
+>
+Ok, done.
+
+>> +
+>> +     /* read the two partition tables */
+>> +     err = sharpsl_nand_read_laddr(master,
+>> +                                   PARAM_BLOCK_PARTITIONINFO1,
+>> +                                   sizeof(buf1), (u_char *)&buf1);
+>> +     if (!err) {
+>> +             sharpsl_nand_read_laddr(master,
+>> +                                     PARAM_BLOCK_PARTITIONINFO2,
+>> +                                     sizeof(buf2), (u_char *)&buf2);
+>
+> You don't really need this block under the 'if'. You can just invert
+> this to 'if (err)', since the second block will return early.
+>
+
+I have removed it and added and OR for the second read, then check is
+if (err) as you said.
+
+Then I have removed the cleanup and kfree'd before returning. Please check v5.
+Thanks in advance.
+
+> Brian
+>
+>> +     } else {
+>> +             sharpsl_nand_cleanup_logical(sharpsl_mtd_logical);
+>> +             return err;
+>> +     }
+>> +
+>> +     /* cleanup logical mgmt (FTL) */
+>> +     sharpsl_nand_cleanup_logical(sharpsl_mtd_logical);
+>> +
+>> +     /* compare the two buffers */
+>> +     if (memcmp(&buf1, &buf2, sizeof(buf1))) {
+>> +             pr_err("sharpslpart: PARTITIONINFO 1,2 differ. Quit parser.\n");
+>> +             return -EINVAL;
+>> +     }
+>> +
+>> +     /* check for magics (just in the first) */
+>> +     if (buf_magic(0) != BOOT_MAGIC ||
+>> +         buf_magic(1) != FSRO_MAGIC ||
+>> +         buf_magic(2) != FSRW_MAGIC) {
+>> +             pr_err("sharpslpart: magic values mismatch. Quit parser.\n");
+>> +             return -EINVAL;
+>> +     }
+>> +
+>> +     /* fixup for hardcoded value 64 MiB (for older models) */
+>> +     buf1[2].end = cpu_to_le32(master->size);
+>> +
+>> +     /* extra sanity check */
+>> +     if (buf_end(0) <= buf_start(0) ||
+>> +         buf_start(1) < buf_end(0) ||
+>> +         buf_end(1) <= buf_start(1) ||
+>> +         buf_start(2) < buf_end(1) ||
+>> +         buf_end(2) <= buf_start(2)) {
+>> +             pr_err("sharpslpart: partition sizes mismatch. Quit parser.\n");
+>> +             return -EINVAL;
+>> +     }
+>> +
+>> +     sharpsl_nand_parts = kzalloc(sizeof(*sharpsl_nand_parts) *
+>> +                                  SHARPSL_NAND_PARTS, GFP_KERNEL);
+>> +     if (!sharpsl_nand_parts)
+>> +             return -ENOMEM;
+>> +
+>> +     /* original names */
+>> +     sharpsl_nand_parts[0].name = "smf";
+>> +     sharpsl_nand_parts[0].offset = buf_start(0);
+>> +     sharpsl_nand_parts[0].size = buf_end(0) - buf_start(0);
+>> +
+>> +     sharpsl_nand_parts[1].name = "root";
+>> +     sharpsl_nand_parts[1].offset = buf_start(1);
+>> +     sharpsl_nand_parts[1].size = buf_end(1) - buf_start(1);
+>> +
+>> +     sharpsl_nand_parts[2].name = "home";
+>> +     sharpsl_nand_parts[2].offset = buf_start(2);
+>> +     sharpsl_nand_parts[2].size = buf_end(2) - buf_start(2);
+>> +
+>> +     *pparts = sharpsl_nand_parts;
+>> +     return SHARPSL_NAND_PARTS;
+>> +}
+>> +
+>> +static struct mtd_part_parser sharpsl_mtd_parser = {
+>> +     .parse_fn = sharpsl_parse_mtd_partitions,
+>> +     .name = "sharpslpart",
+>> +};
+>> +module_mtd_part_parser(sharpsl_mtd_parser);
+>> +
+>> +MODULE_LICENSE("GPL");
+>> +MODULE_AUTHOR("Andrea Adami <andrea.adami@gmail.com>");
+>> +MODULE_DESCRIPTION("MTD partitioning for NAND flash on Sharp SL Series");
+>> --
+>> 2.7.4
+>>
