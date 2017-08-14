@@ -1,28 +1,23 @@
+Received: from smtp3-g21.free.fr ([212.27.42.3])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dhHIE-0004k3-D0
+ for linux-mtd@lists.infradead.org; Mon, 14 Aug 2017 15:30:39 +0000
+Subject: Re: [PATCH] mtd: spi-nor: aspeed: set 4B setting for all chips
+To: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
+ linux-mtd@lists.infradead.org
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+References: <1501663911-26532-1-git-send-email-clg@kaod.org>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <42e4f852-5a94-8c21-fe78-08ec494a1a50@wedev4u.fr>
+Date: Mon, 14 Aug 2017 17:28:05 +0200
 MIME-Version: 1.0
-In-Reply-To: <20170813094019.2fced1d1@bbrezillon>
-References: <1498681836-3765-1-git-send-email-andrea.adami@gmail.com>
- <1498681836-3765-3-git-send-email-andrea.adami@gmail.com>
- <20170813094019.2fced1d1@bbrezillon>
-From: Andrea Adami <andrea.adami@gmail.com>
-Date: Mon, 14 Aug 2017 15:40:58 +0200
-Message-ID: <CAAQYJAsYNUB5G4jw7-P2jFq3i0PdUejpvwA9XC-Wyv4nVDPVMA@mail.gmail.com>
-Subject: Re: [PATCH v4 2/9] mtd: nand: sharpsl.h: support partition parser
- types
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Lee Jones <lee.jones@linaro.org>,
- Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Linus Walleij <linus.walleij@linaro.org>, Russell King <linux@armlinux.org.uk>,
- linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1501663911-26532-1-git-send-email-clg@kaod.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,46 +27,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Aug 13, 2017 at 9:40 AM, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-> Le Wed, 28 Jun 2017 22:30:29 +0200,
-> Andrea Adami <andrea.adami@gmail.com> a =C3=A9crit :
->
-> Please add a commit message explaining why you're doing that.
->
-Sure, I have added a short text.
+Le 02/08/2017 à 10:51, Cédric Le Goater a écrit :
+> The driver made the wrong assumption that the 4B setting was
+> autodetected for all chips of the AST2500 FMC flash controller. This
+> is only the case for the CS0.
+> 
+> Signed-off-by: Cédric Le Goater <clg@kaod.org>
 
->> Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
->> ---
->>  include/linux/mtd/sharpsl.h | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/include/linux/mtd/sharpsl.h b/include/linux/mtd/sharpsl.h
->> index 65e91d0..c0e0be2 100644
->> --- a/include/linux/mtd/sharpsl.h
->> +++ b/include/linux/mtd/sharpsl.h
->> @@ -17,4 +17,5 @@ struct sharpsl_nand_platform_data {
->>       const struct mtd_ooblayout_ops *ecc_layout;
->>       struct mtd_partition    *partitions;
->>       unsigned int            nr_partitions;
->> +     const char *const       *types; /* names of parsers to use if any =
-*/
->
-> types is not really descriptive here. How about 'part_parsers' or
-> something clearly reflecting the purpose of this field.
+Applied to the spi-nor/next branch of l2-mtd
 
-I took this line somewhere from a pending mtd patch.
-I wasn't convinced of the name and   part_parsers   is better.
-
->
-> BTW, try to avoid putting comments on the same line.
-Yeah, we talked about these janitoring needs. Removed.
-
->
->>  };
->
-
-Please review v5 (coming soon).
-
-Thanks
-Andrea
+Thanks!
+> ---
+>  drivers/mtd/spi-nor/aspeed-smc.c | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/aspeed-smc.c b/drivers/mtd/spi-nor/aspeed-smc.c
+> index 23622bf62b6b..1b76fe14a435 100644
+> --- a/drivers/mtd/spi-nor/aspeed-smc.c
+> +++ b/drivers/mtd/spi-nor/aspeed-smc.c
+> @@ -794,19 +794,18 @@ static void aspeed_smc_chip_set_type(struct aspeed_smc_chip *chip, int type)
+>  }
+>  
+>  /*
+> - * The AST2500 FMC flash controller should be strapped by hardware, or
+> - * autodetected, but the AST2500 SPI flash needs to be set.
+> + * The first chip of the AST2500 FMC flash controller is strapped by
+> + * hardware, or autodetected, but other chips need to be set. Enforce
+> + * the 4B setting for all chips.
+>   */
+>  static void aspeed_smc_chip_set_4b(struct aspeed_smc_chip *chip)
+>  {
+>  	struct aspeed_smc_controller *controller = chip->controller;
+>  	u32 reg;
+>  
+> -	if (chip->controller->info == &spi_2500_info) {
+> -		reg = readl(controller->regs + CE_CONTROL_REG);
+> -		reg |= 1 << chip->cs;
+> -		writel(reg, controller->regs + CE_CONTROL_REG);
+> -	}
+> +	reg = readl(controller->regs + CE_CONTROL_REG);
+> +	reg |= 1 << chip->cs;
+> +	writel(reg, controller->regs + CE_CONTROL_REG);
+>  }
+>  
+>  /*
+> 
