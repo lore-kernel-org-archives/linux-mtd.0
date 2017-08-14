@@ -13,9 +13,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Linus Walleij <linus.walleij@linaro.org>,
  Russell King <linux@armlinux.org.uk>, linux-mmc@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v5 5/9] mtd: nand: tmio: Register partitions using the parsers
-Date: Mon, 14 Aug 2017 22:48:36 +0200
-Message-Id: <1502743720-28672-6-git-send-email-andrea.adami@gmail.com>
+Subject: [PATCH v5 9/9] ARM: pxa/poodle: Remove hardcoded partitioning,
+ use sharpslpart parser
+Date: Mon, 14 Aug 2017 22:48:40 +0200
+Message-Id: <1502743720-28672-10-git-send-email-andrea.adami@gmail.com>
 In-Reply-To: <1502743720-28672-1-git-send-email-andrea.adami@gmail.com>
 References: <1502743720-28672-1-git-send-email-andrea.adami@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,29 +31,60 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 With the introduction of sharpslpart partition parser we can now read the
 offsets from NAND: we specify the list of the parsers as platform data, with
 cmdlinepart and ofpart parsers first allowing to override the part. table
-written in NAND. This is done in the board files using this driver.
-
-Use now these parsers.
+written in NAND. This is done here in the board file.
 
 Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
 ---
- drivers/mtd/nand/tmio_nand.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arm/mach-pxa/poodle.c | 28 ++++++++--------------------
+ 1 file changed, 8 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
-index fc5e773..47f439f 100644
---- a/drivers/mtd/nand/tmio_nand.c
-+++ b/drivers/mtd/nand/tmio_nand.c
-@@ -440,7 +440,9 @@ static int tmio_probe(struct platform_device *dev)
- 		goto err_irq;
+diff --git a/arch/arm/mach-pxa/poodle.c b/arch/arm/mach-pxa/poodle.c
+index 62a1191..fd01d6b 100644
+--- a/arch/arm/mach-pxa/poodle.c
++++ b/arch/arm/mach-pxa/poodle.c
+@@ -333,24 +333,6 @@ static struct pxafb_mach_info poodle_fb_info = {
+ 	.lcd_conn	= LCD_COLOR_TFT_16BPP,
+ };
  
- 	/* Register the partitions */
--	retval = mtd_device_parse_register(mtd, NULL, NULL,
-+	retval = mtd_device_parse_register(mtd,
-+					   data ? data->part_parsers : NULL,
-+					   NULL,
- 					   data ? data->partition : NULL,
- 					   data ? data->num_partitions : 0);
- 	if (!retval)
+-static struct mtd_partition sharpsl_nand_partitions[] = {
+-	{
+-		.name = "System Area",
+-		.offset = 0,
+-		.size = 7 * 1024 * 1024,
+-	},
+-	{
+-		.name = "Root Filesystem",
+-		.offset = 7 * 1024 * 1024,
+-		.size = 22 * 1024 * 1024,
+-	},
+-	{
+-		.name = "Home Filesystem",
+-		.offset = MTDPART_OFS_APPEND,
+-		.size = MTDPART_SIZ_FULL,
+-	},
+-};
+-
+ static uint8_t scan_ff_pattern[] = { 0xff, 0xff };
+ 
+ static struct nand_bbt_descr sharpsl_bbt = {
+@@ -360,10 +342,16 @@ static struct nand_bbt_descr sharpsl_bbt = {
+ 	.pattern = scan_ff_pattern
+ };
+ 
++static const char * const probes[] = {
++	"cmdlinepart",
++	"ofpart",
++	"sharpslpart",
++	NULL,
++};
++
+ static struct sharpsl_nand_platform_data sharpsl_nand_platform_data = {
+ 	.badblock_pattern	= &sharpsl_bbt,
+-	.partitions		= sharpsl_nand_partitions,
+-	.nr_partitions		= ARRAY_SIZE(sharpsl_nand_partitions),
++	.part_parsers		= probes,
+ };
+ 
+ static struct resource sharpsl_nand_resources[] = {
 -- 
 2.7.4
