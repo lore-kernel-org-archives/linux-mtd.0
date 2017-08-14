@@ -1,21 +1,30 @@
-Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
+Received: from da1vs02.rockwellcollins.com ([205.175.227.29])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dhHyX-0002fe-Gu
- for linux-mtd@lists.infradead.org; Mon, 14 Aug 2017 16:12:23 +0000
-Subject: Re: [PATCH] mtd: spi-nor: fix "No newline at end of file"
-To: matthew.gerlach@linux.intel.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
- marek.vasut@gmail.com, richard@nod.at, linux-mtd@lists.infradead.org,
- ludovic.barre@st.com, linux-kernel@vger.kernel.org
-References: <1502233106-24777-1-git-send-email-matthew.gerlach@linux.intel.com>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <9e1ad8af-ae3f-f23d-e3ba-4629473e8654@wedev4u.fr>
-Date: Mon, 14 Aug 2017 18:11:57 +0200
+ id 1dhIJg-0008Cv-8h
+ for linux-mtd@lists.infradead.org; Mon, 14 Aug 2017 16:34:43 +0000
+Received: by mail-yw0-f198.google.com with SMTP id o192so191478158ywd.8
+ for <linux-mtd@lists.infradead.org>; Mon, 14 Aug 2017 09:33:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1502233106-24777-1-git-send-email-matthew.gerlach@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK8P3a2pOtoug30CUe7sgB4CnQmRJSJMWmpniMyOHvV1w0nd9A@mail.gmail.com>
+References: <1501851740-14125-1-git-send-email-matthew.weber@rockwellcollins.com>
+ <20170809201047.57fd6976@bbrezillon>
+ <CAB0kKmyHPXhv4ovmj00JgB9gow0Qi3OHm2Gh4STJFNV4S3o_Ag@mail.gmail.com>
+ <CAK8P3a3W2Dw_CHDbBXPaX9=mNA1kPXdFDR1F4HLbtuLUVHjUKw@mail.gmail.com>
+ <CAB0kKmyBEVWXvNBiFsFXSxz21mEFu8WVW69DWoes9oKsYEM0Vw@mail.gmail.com>
+ <CAK8P3a1ooJja=P1e+m-fd0_wR_QdmWgwRWDwOWJfXpDR5ZcSjg@mail.gmail.com>
+ <CAB0kKmxXvm5=ryR2nAJ76=ecmOWXLQXNYfRs8zrwinfMOMDzRQ@mail.gmail.com>
+ <20170812193947.046dafd1@bbrezillon>
+ <CAK8P3a2pOtoug30CUe7sgB4CnQmRJSJMWmpniMyOHvV1w0nd9A@mail.gmail.com>
+From: Sanjay Tandel <sanjay.tandel@rockwellcollins.com>
+Date: Mon, 14 Aug 2017 11:33:27 -0500
+Message-ID: <CAB0kKmzcf4pVHUWS6Rk+fb3umgN6ttmdNv7QmfeUik2vAFEijA@mail.gmail.com>
+Subject: Re: [PATCH] map-ram chip driver: 16-bit block transfer
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Matt Weber <matthew.weber@rockwellcollins.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,31 +34,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 09/08/2017 à 00:58, matthew.gerlach@linux.intel.com a écrit :
-> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> 
-> Add a newline to the end of drivers/spi-nor/Makefile to get rid the message,
-> "No newline at end of file", produced by git.  This fix will allow subsequent
-> changes to the file to be able to produce clean patches.
-> 
-> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+On Mon, Aug 14, 2017 at 3:08 AM, Arnd Bergmann <arnd@arndb.de> wrote:
+> On Sat, Aug 12, 2017 at 7:39 PM, Boris Brezillon
+> <boris.brezillon@free-electrons.com> wrote:
+>> Le Fri, 11 Aug 2017 18:42:44 -0500,
+>> Sanjay Tandel <sanjay.tandel@rockwellcollins.com> a =C3=A9crit :
+>>> On Fri, Aug 11, 2017 at 4:30 PM, Arnd Bergmann <arnd@arndb.de> wrote:
+>>> > On Fri, Aug 11, 2017 at 11:03 PM, Sanjay Tandel
+>>> > <sanjay.tandel@rockwellcollins.com> wrote:
+>
+>>> Before, it used to corrupt every 2nd byte(2nd,4rth,6th ... upto N) in m=
+emory,
+>>> with memcpy_toio() using 8-bit accesses for our 16-bit chip.
+>>>
+>>> Now, with backporting 7ddfe625cbc1/1bd46782d08b, it corrupts (N + 1)th =
+byte
+>>> in memory, when I tried to write N number of bytes (where N is not alig=
+ned to
+>>> 4-byte boundary).That means, it still tries 8-bit access for last odd b=
+yte and
+>>> ends up corrupting next byte.
+>>
+>> Yes, that's expected as the size is not 16bit aligned.
+>>
+>> Anyway, I read the whole thread again and AFAIU memcpy_to/fromio() is
+>> only appropriate if the bus controller the device is connected to is
+>> smart enough to hide all alignment problems to its users.
+>>
+>> Don't know what controller is causing trouble here, but you should
+>> probably have a dedicated driver (if that's not already the case) that
+>> overloads the ->copy_from()/->copy_to() methods to do the right thing
+>> for your memory controller.
+>
+> Right, I think that is a good conclusion. My understanding from the discu=
+ssion
+> so far is that the existing code in the core mtd layer works efficiently =
+and
+> correctly on most bus interfaces, so we should keep that but have
+> workarounds in the controller driver for any bus interface where this is
+> not the case.
+>
+> I think it would be different if this was a regression and the core MTD s=
+upport
+> worked correctly in the past, but from what I read, it always behaved lik=
+e
+> this.
+>
 
-Applied to the spi-nor/next branch of l2-mtd
+Okay. I will try to create dedicated driver. Thanks!
 
-Thanks!
-> ---
->  drivers/mtd/spi-nor/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-> index c5f171d..7d84c51 100644
-> --- a/drivers/mtd/spi-nor/Makefile
-> +++ b/drivers/mtd/spi-nor/Makefile
-> @@ -9,4 +9,4 @@ obj-$(CONFIG_SPI_NXP_SPIFI)	+= nxp-spifi.o
->  obj-$(CONFIG_SPI_INTEL_SPI)	+= intel-spi.o
->  obj-$(CONFIG_SPI_INTEL_SPI_PCI)	+= intel-spi-pci.o
->  obj-$(CONFIG_SPI_INTEL_SPI_PLATFORM)	+= intel-spi-platform.o
-> -obj-$(CONFIG_SPI_STM32_QUADSPI)	+= stm32-quadspi.o
-> \ No newline at end of file
-> +obj-$(CONFIG_SPI_STM32_QUADSPI)	+= stm32-quadspi.o
-> 
+>        Arnd
+
+Regards,
+Sanjay
