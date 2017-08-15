@@ -1,33 +1,23 @@
-Received: from mail-wr0-x234.google.com ([2a00:1450:400c:c0c::234])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dhVob-0003h4-Mw
- for linux-mtd@lists.infradead.org; Tue, 15 Aug 2017 06:59:03 +0000
-Received: by mail-wr0-x234.google.com with SMTP id m57so421210wrm.5
- for <linux-mtd@lists.infradead.org>; Mon, 14 Aug 2017 23:58:39 -0700 (PDT)
-Date: Tue, 15 Aug 2017 07:58:35 +0100
-From: Lee Jones <lee.jones@linaro.org>
-To: Andrea Adami <andrea.adami@gmail.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Linus Walleij <linus.walleij@linaro.org>,
- Russell King <linux@armlinux.org.uk>, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v5 3/9] mfd: tmio: Add partition parsers platform data
-Message-ID: <20170815065835.jcuweb377lqioddc@dell>
-References: <1502743720-28672-1-git-send-email-andrea.adami@gmail.com>
- <1502743720-28672-4-git-send-email-andrea.adami@gmail.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dhXjy-0001ja-UF
+ for linux-mtd@lists.infradead.org; Tue, 15 Aug 2017 09:02:26 +0000
+Date: Tue, 15 Aug 2017 11:01:59 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Anton Vasilyev <vasilyev@ispras.ru>
+Cc: David Woodhouse <dwmw2@infradead.org>, ldv-project@linuxtesting.org,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, Marek
+ Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, Brian Norris
+ <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: plat-ram: use release_mem_region instead of
+ release_resource
+Message-ID: <20170815110159.39ebdeb6@bbrezillon>
+In-Reply-To: <1502456103-1576-1-git-send-email-vasilyev@ispras.ru>
+References: <1502456103-1576-1-git-send-email-vasilyev@ispras.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1502743720-28672-4-git-send-email-andrea.adami@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,24 +27,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 14 Aug 2017, Andrea Adami wrote:
+Le Fri, 11 Aug 2017 15:55:03 +0300,
+Anton Vasilyev <vasilyev@ispras.ru> a =C3=A9crit :
 
-> With the introduction of sharpslpart partition parser we can now read the
-> offsets from NAND: we specify the list of the parsers as platform data, with
-> cmdlinepart and ofpart parsers first allowing to override the part. table
-> written in NAND. This is done in the board files using this driver.
-> 
-> Thus, we need to extend tmio_nand_data to consider the partition parsers.
-> 
-> Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
+> Use api pair of request_mem_region and release_mem_region
+> instead of release_resource.
+>=20
+> Found by Linux Driver Verification project (linuxtesting.
+>=20
+> Signed-off-by: Anton Vasilyev <vasilyev@ispras.ru>
 > ---
->  include/linux/mfd/tmio.h | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/mtd/maps/plat-ram.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/mtd/maps/plat-ram.c b/drivers/mtd/maps/plat-ram.c
+> index 5157289..baaf146 100644
+> --- a/drivers/mtd/maps/plat-ram.c
+> +++ b/drivers/mtd/maps/plat-ram.c
+> @@ -82,6 +82,7 @@ static inline void platram_setrw(struct platram_info *i=
+nfo, int to)
+>  static int platram_remove(struct platform_device *pdev)
+>  {
+>  	struct platram_info *info =3D to_platram_info(pdev);
+> +	resource_size_t res_size;
+> =20
+>  	dev_dbg(&pdev->dev, "removing device\n");
+> =20
+> @@ -100,8 +101,8 @@ static int platram_remove(struct platform_device *pde=
+v)
+>  	/* release resources */
+> =20
+>  	if (info->area) {
+> -		release_resource(info->area);
+> -		kfree(info->area);
+> +		res_size =3D resource_size(info->area)
 
-Acked-by: Lee Jones <lee.jones@linaro.org>
+Missing semi-colon here, which means you did not even compile-test your
+changes :P.
 
--- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> +		release_mem_region(info->area->start, res_size);
+
+Why adding a res_size variable instead of doing
+
+		release_mem_region(info->area->start,
+				   resource_size(info->area);
+
+?
+
+>  	}
+> =20
+>  	if (info->map.virt !=3D NULL)
