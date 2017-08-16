@@ -1,26 +1,18 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dhsrB-0000ZP-4I
- for linux-mtd@lists.infradead.org; Wed, 16 Aug 2017 07:35:15 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date: Wed, 16 Aug 2017 13:04:51 +0530
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: Archit Taneja <architt@codeaurora.org>
-Cc: boris.brezillon@free-electrons.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, andy.gross@linaro.org, sricharan@codeaurora.org
-Subject: Re: [PATCH v4 09/20] mtd: nand: qcom: support for read location
- registers
-In-Reply-To: <0ab9136e-bd50-54b0-116d-d52e7fc59756@codeaurora.org>
-References: <1502451575-15712-1-git-send-email-absahu@codeaurora.org>
- <1502451575-15712-10-git-send-email-absahu@codeaurora.org>
- <0ab9136e-bd50-54b0-116d-d52e7fc59756@codeaurora.org>
-Message-ID: <f08ada1166fe5446ea0f6d679eb3cdae@codeaurora.org>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dhsvm-00033b-Es
+ for linux-mtd@lists.infradead.org; Wed, 16 Aug 2017 07:40:01 +0000
+From: Miquel Raynal <miquel.raynal@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
+ Miquel Raynal <miquel.raynal@free-electrons.com>
+Subject: [PATCH v3] MTD: NAND: add OOB layout without ECC bytes
+Date: Wed, 16 Aug 2017 09:39:06 +0200
+Message-Id: <20170816073906.5819-1-miquel.raynal@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,197 +22,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2017-08-16 10:04, Archit Taneja wrote:
-> On 08/11/2017 05:09 PM, Abhishek Sahu wrote:
->> In EBI2, all codeword data will be read in FLASH_BUF_ACC buffer
->> and ADM will copy the data from source (FLASH_BUF_ACC) to
->> destination (memory for data read).
->> 
->> In QPIC, there is no FLASH_BUF_ACC and all the codeword data will
->> held in QPIC BAM FIFO buffers. It provides multiple READ_LOCATION
->> registers which will be used for copying the data from FIFO to
->> memory. The READ_LOCATION register will be used to read a
->> specific amount of data from a specific offset within the flash
->> buffer. It supports sequential offset requests. Each request is
->> composed of the following fields:
->> 
->> a. Offset within the flash buffer from which data should be
->>     read
->> b. Amount of data to be read
->> c. Flag bit specifying the last read request from the flash
->>     buffer. Following the last read request the NANDc refers to the
->>     buffer as empty.
->> 
->> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
->> ---
->>   drivers/mtd/nand/qcom_nandc.c | 64 
->> +++++++++++++++++++++++++++++++++++++++++++
->>   1 file changed, 64 insertions(+)
->> 
->> diff --git a/drivers/mtd/nand/qcom_nandc.c 
->> b/drivers/mtd/nand/qcom_nandc.c
->> index d9c8a6b..b452cfb 100644
->> --- a/drivers/mtd/nand/qcom_nandc.c
->> +++ b/drivers/mtd/nand/qcom_nandc.c
->> @@ -53,6 +53,8 @@
->>   #define	NAND_VERSION			0xf08
->>   #define	NAND_READ_LOCATION_0		0xf20
->>   #define	NAND_READ_LOCATION_1		0xf24
->> +#define	NAND_READ_LOCATION_2		0xf28
->> +#define	NAND_READ_LOCATION_3		0xf2c
->>     /* dummy register offsets, used by write_reg_dma */
->>   #define	NAND_DEV_CMD1_RESTORE		0xdead
->> @@ -135,6 +137,11 @@
->>   #define	ERASED_PAGE			(PAGE_ALL_ERASED | PAGE_ERASED)
->>   #define	ERASED_CW			(CODEWORD_ALL_ERASED | CODEWORD_ERASED)
->>   +/* NAND_READ_LOCATION_n bits */
->> +#define READ_LOCATION_OFFSET		0
->> +#define READ_LOCATION_SIZE		16
->> +#define READ_LOCATION_LAST		31
->> +
->>   /* Version Mask */
->>   #define	NAND_VERSION_MAJOR_MASK		0xf0000000
->>   #define	NAND_VERSION_MAJOR_SHIFT	28
->> @@ -177,6 +184,12 @@
->>   #define	ECC_BCH_4BIT	BIT(2)
->>   #define	ECC_BCH_8BIT	BIT(3)
->>   +#define nandc_set_readl(nandc, reg, offset, size, is_last)	\
-> 
-> Minor nit, readl makes one think it's 'read long'. If it isn't too
-> much effort, could you s/nandc_set_readl/nandc_set_read_loc ?
-> 
+Add layout functions for small and large pages with mainly free bytes
+plus reserved space for Bad Block Markers. This may be useful for
+specific chip that use on-die ECC feature, ie. the TOSHIBA BENAND
+(Built-in ECC NAND). The ECC bytes are stored in an isolated area
+inaccessible by the driver and thus the OOB layout must only reserve
+space for Bad Block Markers.
 
-  Thanks Archit.
-  Yes that would be better. I will change the name.
+Bad Block Markers position was extracted from the existing OOB layouts
+by assigning as free all the bytes marked as ECC.
 
->> +nandc_set_reg(nandc, NAND_READ_LOCATION_##reg,			\
->> +	      ((offset) << READ_LOCATION_OFFSET) |		\
->> +	      ((size) << READ_LOCATION_SIZE) |			\
->> +	      ((is_last) << READ_LOCATION_LAST))
->> +
->>   #define QPIC_PER_CW_CMD_SGL		32
->>   #define QPIC_PER_CW_DATA_SGL		8
->>   @@ -260,6 +273,11 @@ struct nandc_regs {
->>   	__le32 orig_vld;
->>     	__le32 ecc_buf_cfg;
->> +	__le32 read_location0;
->> +	__le32 read_location1;
->> +	__le32 read_location2;
->> +	__le32 read_location3;
->> +
->>   };
->>     /*
->> @@ -516,6 +534,14 @@ static __le32 *offset_to_nandc_reg(struct 
->> nandc_regs *regs, int offset)
->>   		return &regs->orig_vld;
->>   	case NAND_EBI2_ECC_BUF_CFG:
->>   		return &regs->ecc_buf_cfg;
->> +	case NAND_READ_LOCATION_0:
->> +		return &regs->read_location0;
->> +	case NAND_READ_LOCATION_1:
->> +		return &regs->read_location1;
->> +	case NAND_READ_LOCATION_2:
->> +		return &regs->read_location2;
->> +	case NAND_READ_LOCATION_3:
->> +		return &regs->read_location3;
->>   	default:
->>   		return NULL;
->>   	}
->> @@ -590,6 +616,10 @@ static void update_rw_regs(struct qcom_nand_host 
->> *host, int num_cw, bool read)
->>   	nandc_set_reg(nandc, NAND_FLASH_STATUS, host->clrflashstatus);
->>   	nandc_set_reg(nandc, NAND_READ_STATUS, host->clrreadstatus);
->>   	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
->> +
->> +	if (read)
->> +		nandc_set_readl(nandc, 0, 0, host->use_ecc ?
->> +				host->cw_data : host->cw_size, 1);
->>   }
->>     /*
->> @@ -835,6 +865,10 @@ static void config_nand_page_read(struct 
->> qcom_nand_controller *nandc)
->>    */
->>   static void config_nand_cw_read(struct qcom_nand_controller *nandc)
->>   {
->> +	if (nandc->props->is_bam)
->> +		write_reg_dma(nandc, NAND_READ_LOCATION_0, 4,
->> +			      NAND_BAM_NEXT_SGL);
->> +
->>   	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
->>   	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
->>   @@ -923,6 +957,7 @@ static int nandc_param(struct qcom_nand_host 
->> *host)
->>     	nandc_set_reg(nandc, NAND_DEV_CMD1_RESTORE, nandc->cmd1);
->>   	nandc_set_reg(nandc, NAND_DEV_CMD_VLD_RESTORE, nandc->vld);
->> +	nandc_set_readl(nandc, 0, 0, 512, 1);
->>     	write_reg_dma(nandc, NAND_DEV_CMD_VLD, 1, 0);
->>   	write_reg_dma(nandc, NAND_DEV_CMD1, 1, NAND_BAM_NEXT_SGL);
->> @@ -1398,6 +1433,19 @@ static int read_page_ecc(struct qcom_nand_host 
->> *host, u8 *data_buf,
->>   			oob_size = host->ecc_bytes_hw + host->spare_bytes;
->>   		}
->>   +		if (nandc->props->is_bam) {
->> +			if (data_buf && oob_buf) {
->> +				nandc_set_readl(nandc, 0, 0, data_size, 0);
->> +				nandc_set_readl(nandc, 1, data_size,
->> +						oob_size, 1);
->> +			} else if (data_buf) {
->> +				nandc_set_readl(nandc, 0, 0, data_size, 1);
->> +			} else {
->> +				nandc_set_readl(nandc, 0, data_size,
->> +						oob_size, 1);
->> +			}
->> +		}
->> +
->>   		config_nand_cw_read(nandc);
->>     		if (data_buf)
->> @@ -1457,6 +1505,7 @@ static int copy_last_cw(struct qcom_nand_host 
->> *host, int page)
->>     	set_address(host, host->cw_size * (ecc->steps - 1), page);
->>   	update_rw_regs(host, 1, true);
->> +	nandc_set_readl(nandc, 0, 0, size, 1);
-> 
-> The READ_LOC reg should already be set up in update_rw_regs, right? If
-> so, we could
-> drop this line.
+The layout functions added by this patch were supposed to be used with
+ECC_NONE mode but it would break existing drivers that do not rely on
+an implementation of this layout by the core, so set it as a fallthrough
+when no other layout matches.
 
-  Yes. this line is redundant. I will remove the same.
+Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+---
+ drivers/mtd/nand/nand_base.c | 65 ++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 60 insertions(+), 5 deletions(-)
 
-> 
-> With that,
-> 
-> Reviewed-by: Archit Taneja <architt@codeaurora.org>
-> 
-> Thanks,
-> Archit
-> 
->>     	config_nand_single_cw_page_read(nandc);
->>   @@ -1502,6 +1551,7 @@ static int qcom_nandc_read_page_raw(struct 
->> mtd_info *mtd,
->>   	u8 *data_buf, *oob_buf;
->>   	struct nand_ecc_ctrl *ecc = &chip->ecc;
->>   	int i, ret;
->> +	int read_loc;
->>     	data_buf = buf;
->>   	oob_buf = chip->oob_poi;
->> @@ -1527,6 +1577,20 @@ static int qcom_nandc_read_page_raw(struct 
->> mtd_info *mtd,
->>   			oob_size2 = host->ecc_bytes_hw + host->spare_bytes;
->>   		}
->>   +		if (nandc->props->is_bam) {
->> +			read_loc = 0;
->> +			nandc_set_readl(nandc, 0, read_loc, data_size1, 0);
->> +			read_loc += data_size1;
->> +
->> +			nandc_set_readl(nandc, 1, read_loc, oob_size1, 0);
->> +			read_loc += oob_size1;
->> +
->> +			nandc_set_readl(nandc, 2, read_loc, data_size2, 0);
->> +			read_loc += data_size2;
->> +
->> +			nandc_set_readl(nandc, 3, read_loc, oob_size2, 1);
->> +		}
->> +
->>   		config_nand_cw_read(nandc);
->>     		read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
->> 
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index c5221795a1e8..7c0ae674e50a 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -53,7 +53,38 @@ static int nand_get_device(struct mtd_info *mtd, int new_state);
+ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
+ 			     struct mtd_oob_ops *ops);
+ 
+-/* Define default oob placement schemes for large and small page devices */
++/*
++ * Define default OOB placement schemes for:
++ *   - no ECC or software ECC
++ *   - small or large page devices
++ */
++static int nand_ooblayout_free_sp_no_ecc(struct mtd_info *mtd, int section,
++					   struct mtd_oob_region *oobregion)
++{
++	if (section > 1)
++		return -ERANGE;
++
++	if (!section) {
++		if (mtd->oobsize == 16) {
++			oobregion->offset = 0;
++			oobregion->length = 4;
++		} else {
++			oobregion->offset = 0;
++			oobregion->length = 5;
++		}
++	} else {
++		oobregion->offset = 6;
++		oobregion->length = mtd->oobsize - oobregion->offset;
++	}
++
++	return 0;
++}
++
++const struct mtd_ooblayout_ops nand_ooblayout_sp_no_ecc_ops = {
++	.free = nand_ooblayout_free_sp_no_ecc,
++};
++EXPORT_SYMBOL_GPL(nand_ooblayout_sp_no_ecc_ops);
++
+ static int nand_ooblayout_ecc_sp(struct mtd_info *mtd, int section,
+ 				 struct mtd_oob_region *oobregion)
+ {
+@@ -109,6 +140,23 @@ const struct mtd_ooblayout_ops nand_ooblayout_sp_ops = {
+ };
+ EXPORT_SYMBOL_GPL(nand_ooblayout_sp_ops);
+ 
++static int nand_ooblayout_free_lp_no_ecc(struct mtd_info *mtd, int section,
++					   struct mtd_oob_region *oobregion)
++{
++	if (section)
++		return -ERANGE;
++
++	oobregion->offset = 2;
++	oobregion->length = mtd->oobsize - oobregion->offset;
++
++	return 0;
++}
++
++const struct mtd_ooblayout_ops nand_ooblayout_lp_no_ecc_ops = {
++	.free = nand_ooblayout_free_lp_no_ecc,
++};
++EXPORT_SYMBOL_GPL(nand_ooblayout_lp_no_ecc_ops);
++
+ static int nand_ooblayout_ecc_lp(struct mtd_info *mtd, int section,
+ 				 struct mtd_oob_region *oobregion)
+ {
+@@ -4649,10 +4697,17 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 			mtd_set_ooblayout(mtd, &nand_ooblayout_lp_hamming_ops);
+ 			break;
+ 		default:
+-			WARN(1, "No oob scheme defined for oobsize %d\n",
+-				mtd->oobsize);
+-			ret = -EINVAL;
+-			goto err_free;
++			/*
++			 * In the case of on-die ECC (when ECC are stored in an
++			 * isolated area inaccessible by the driver), the OOB
++			 * layout must only reserve space for Bad Block Markers.
++			 */
++			if (mtd->writesize <= 512)
++				mtd_set_ooblayout(mtd,
++						&nand_ooblayout_sp_no_ecc_ops);
++			else
++				mtd_set_ooblayout(mtd,
++						&nand_ooblayout_lp_no_ecc_ops);
+ 		}
+ 	}
+ 
+-- 
+2.11.0
