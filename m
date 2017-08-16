@@ -1,23 +1,22 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from regular1.263xmail.com ([211.150.99.134])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dhpCF-0001AO-B5
- for linux-mtd@lists.infradead.org; Wed, 16 Aug 2017 03:40:45 +0000
-Subject: Re: [PATCH v4 06/20] mtd: nand: qcom: allocate BAM transaction
-To: Abhishek Sahu <absahu@codeaurora.org>, boris.brezillon@free-electrons.com
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- richard@nod.at, cyrille.pitchen@wedev4u.fr, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, andy.gross@linaro.org, sricharan@codeaurora.org
-References: <1502451575-15712-1-git-send-email-absahu@codeaurora.org>
- <1502451575-15712-7-git-send-email-absahu@codeaurora.org>
-From: Archit Taneja <architt@codeaurora.org>
-Message-ID: <f4bbb4cf-91b5-bb61-920e-a94db99f5a93@codeaurora.org>
-Date: Wed, 16 Aug 2017 09:10:16 +0530
+ id 1dhpCT-0001Ak-Fk
+ for linux-mtd@lists.infradead.org; Wed, 16 Aug 2017 03:41:01 +0000
+Subject: Re: [PATCH v4] mtd: spi-nor: add support for GD25Q256
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
+ computersforpeace@gmail.com, richard@nod.at, dwmw2@infradead.org
+References: <1500977574-15915-1-git-send-email-andy.yan@rock-chips.com>
+ <fea093e4-9e62-8a36-3801-4cb81520f295@wedev4u.fr>
+From: Andy Yan <andy.yan@rock-chips.com>
+Message-ID: <fb0f8c6b-279d-3b43-82e1-f97c948b81b6@rock-chips.com>
+Date: Wed, 16 Aug 2017 11:40:27 +0800
 MIME-Version: 1.0
-In-Reply-To: <1502451575-15712-7-git-send-email-absahu@codeaurora.org>
+In-Reply-To: <fea093e4-9e62-8a36-3801-4cb81520f295@wedev4u.fr>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,191 +26,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Cyrille:
 
 
-On 08/11/2017 05:09 PM, Abhishek Sahu wrote:
-> - The BAM transaction is the core data structure which will be used
->    for all the data transfers in QPIC NAND. Since the core framework
->    in nand_base.c is serializing all the NAND requests so allocating
->    BAM transaction before every transfer will be overhead. The memory
->    for it be allocated during probe time and before every transfer,
->    it will be cleared.
-> 
-> - The BAM transaction contains the array of
->    command and data scatter gather list and indexes. For
->    every transfer, all the resource will be taken from BAM
->    transaction.
-> 
-> - The size of the buffer used for BAM transactions
->    is calculated based on the NAND device with the maximum page size,
->    among all the devices connected to the
->    controller.
+On 2017年08月16日 00:04, Cyrille Pitchen wrote:
+> Hi Andy,
+>
+> Le 25/07/2017 à 12:12, Andy Yan a écrit :
+>> Add support for GD25Q256, a 32MiB SPI Nor
+>> flash from Gigadevice.
+>>
+>> Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
+>>
+>> ---
+>>
+>> Changes in v4:
+>> - add SPI_NOR_HAS_LOCK and SPI_NOR_HAS_TB
+> Between v3 and v4, I see that you've also changed the procedure to the
+> the Quad Enable bit on all Gigadevice memories with QSPI capabilities.
+> This is not a detail and should have been reported here.
 
-Reviewed-by: Archit Taneja <architt@codeaurora.org>
+  Sorry, I will keep this in mind.
+>
+>> Changes in v3:
+>> - rebase on top of spi-nor tree
+>> - add SPI_NOR_4B_OPCODES flag
+>>
+>> Changes in v2:
+>> - drop one line unnecessary modification
+>>
+>>   drivers/mtd/spi-nor/spi-nor.c | 6 ++++++
+>>   1 file changed, 6 insertions(+)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>> index 196b52f..e4145cd 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -986,6 +986,11 @@ static const struct flash_info spi_nor_ids[] = {
+>>   			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+>>   			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+>>   	},
+>> +	{
+>> +		"gd25q256", INFO(0xc84019, 0, 64 * 1024, 512,
+>> +			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+>> +			SPI_NOR_4B_OPCODES | SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+>> +	},
+>>   
+>>   	/* Intel/Numonyx -- xxxs33b */
+>>   	{ "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, 0) },
+>> @@ -2365,6 +2370,7 @@ static int spi_nor_init_params(struct spi_nor *nor,
+>>   				   SNOR_HWCAPS_PP_QUAD)) {
+>>   		switch (JEDEC_MFR(info)) {
+>>   		case SNOR_MFR_MACRONIX:
+>> +		case SNOR_MFR_GIGADEVICE:
+>>   			params->quad_enable = macronix_quad_enable;
+> Here, you've have changed the Quad Enable requirement for *all*
+> Gigadevice memories with Quad SPI capabilities.
+>
+> However, I'm reading the GD25Q128 datasheet and it claims that the QE
+> bit is BIT(1) of the Status Register 2. Hence some
+> spansion*_quad_enable() should be used, as before your patch.
+>
+> Then, still according to the datasheet, the GD25Q128 memory is compliant
+> with the JESD216 specification (minor 0) but neither with rev A (minor
+> 5) nor rev B (minor 6).
+> So its Basic Flash Parameter Table is limited to 9 DWORDs instead of 16
+> DWORDs, hence doesn't provide the Quad Enable requirements. It means
+> that the SFDP tables would not help to select the right _quad_enable()
+> function by overriding the choice made by the switch() statement above.
+>
+> tl;dr
+> This chunk would introduce a regression with some already supported
+> Gigadevice memories. So I reject this patch, sorry.
 
-Thanks,
-Archit
-
-> 
-> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
-> ---
->   drivers/mtd/nand/qcom_nandc.c | 94 +++++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 94 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-> index 590fc1d..4f8306e 100644
-> --- a/drivers/mtd/nand/qcom_nandc.c
-> +++ b/drivers/mtd/nand/qcom_nandc.c
-> @@ -177,6 +177,32 @@
->   #define	ECC_BCH_4BIT	BIT(2)
->   #define	ECC_BCH_8BIT	BIT(3)
->   
-> +#define QPIC_PER_CW_CMD_SGL		32
-> +#define QPIC_PER_CW_DATA_SGL		8
-> +
-> +/*
-> + * This data type corresponds to the BAM transaction which will be used for all
-> + * NAND transfers.
-> + * @cmd_sgl - sgl for NAND BAM command pipe
-> + * @data_sgl - sgl for NAND BAM consumer/producer pipe
-> + * @cmd_sgl_pos - current index in command sgl.
-> + * @cmd_sgl_start - start index in command sgl.
-> + * @tx_sgl_pos - current index in data sgl for tx.
-> + * @tx_sgl_start - start index in data sgl for tx.
-> + * @rx_sgl_pos - current index in data sgl for rx.
-> + * @rx_sgl_start - start index in data sgl for rx.
-> + */
-> +struct bam_transaction {
-> +	struct scatterlist *cmd_sgl;
-> +	struct scatterlist *data_sgl;
-> +	u32 cmd_sgl_pos;
-> +	u32 cmd_sgl_start;
-> +	u32 tx_sgl_pos;
-> +	u32 tx_sgl_start;
-> +	u32 rx_sgl_pos;
-> +	u32 rx_sgl_start;
-> +};
-> +
->   struct desc_info {
->   	struct list_head node;
->   
-> @@ -243,6 +269,8 @@ struct nandc_regs {
->    * @cmd1/vld:			some fixed controller register values
->    * @props:			properties of current NAND controller,
->    *				initialized via DT match data
-> + * @max_cwperpage:		maximum QPIC codewords required. calculated
-> + *				from all connected NAND devices pagesize
->    */
->   struct qcom_nand_controller {
->   	struct nand_hw_control controller;
-> @@ -273,11 +301,13 @@ struct qcom_nand_controller {
->   	};
->   
->   	struct list_head desc_list;
-> +	struct bam_transaction *bam_txn;
->   
->   	u8		*data_buffer;
->   	int		buf_size;
->   	int		buf_count;
->   	int		buf_start;
-> +	unsigned int	max_cwperpage;
->   
->   	__le32 *reg_read_buf;
->   	dma_addr_t reg_read_dma;
-> @@ -350,6 +380,44 @@ struct qcom_nandc_props {
->   	bool is_bam;
->   };
->   
-> +/* Frees the BAM transaction memory */
-> +static void free_bam_transaction(struct qcom_nand_controller *nandc)
-> +{
-> +	struct bam_transaction *bam_txn = nandc->bam_txn;
-> +
-> +	devm_kfree(nandc->dev, bam_txn);
-> +}
-> +
-> +/* Allocates and Initializes the BAM transaction */
-> +static struct bam_transaction *
-> +alloc_bam_transaction(struct qcom_nand_controller *nandc)
-> +{
-> +	struct bam_transaction *bam_txn;
-> +	size_t bam_txn_size;
-> +	unsigned int num_cw = nandc->max_cwperpage;
-> +	void *bam_txn_buf;
-> +
-> +	bam_txn_size =
-> +		sizeof(*bam_txn) + num_cw *
-> +		((sizeof(*bam_txn->cmd_sgl) * QPIC_PER_CW_CMD_SGL) +
-> +		(sizeof(*bam_txn->data_sgl) * QPIC_PER_CW_DATA_SGL));
-> +
-> +	bam_txn_buf = devm_kzalloc(nandc->dev, bam_txn_size, GFP_KERNEL);
-> +	if (!bam_txn_buf)
-> +		return NULL;
-> +
-> +	bam_txn = bam_txn_buf;
-> +	bam_txn_buf += sizeof(*bam_txn);
-> +
-> +	bam_txn->cmd_sgl = bam_txn_buf;
-> +	bam_txn_buf +=
-> +		sizeof(*bam_txn->cmd_sgl) * QPIC_PER_CW_CMD_SGL * num_cw;
-> +
-> +	bam_txn->data_sgl = bam_txn_buf;
-> +
-> +	return bam_txn;
-> +}
-> +
->   static inline struct qcom_nand_host *to_qcom_nand_host(struct nand_chip *chip)
->   {
->   	return container_of(chip, struct qcom_nand_host, chip);
-> @@ -1920,6 +1988,8 @@ static int qcom_nand_host_setup(struct qcom_nand_host *host)
->   	mtd_set_ooblayout(mtd, &qcom_nand_ooblayout_ops);
->   
->   	cwperpage = mtd->writesize / ecc->size;
-> +	nandc->max_cwperpage = max_t(unsigned int, nandc->max_cwperpage,
-> +				     cwperpage);
->   
->   	/*
->   	 * DATA_UD_BYTES varies based on whether the read/write command protects
-> @@ -2054,6 +2124,20 @@ static int qcom_nandc_alloc(struct qcom_nand_controller *nandc)
->   			dev_err(nandc->dev, "failed to request cmd channel\n");
->   			return -ENODEV;
->   		}
-> +
-> +		/*
-> +		 * Initially allocate BAM transaction to read ONFI param page.
-> +		 * After detecting all the devices, this BAM transaction will
-> +		 * be freed and the next BAM tranasction will be allocated with
-> +		 * maximum codeword size
-> +		 */
-> +		nandc->max_cwperpage = 1;
-> +		nandc->bam_txn = alloc_bam_transaction(nandc);
-> +		if (!nandc->bam_txn) {
-> +			dev_err(nandc->dev,
-> +				"failed to allocate bam transaction\n");
-> +			return -ENOMEM;
-> +		}
->   	} else {
->   		nandc->chan = dma_request_slave_channel(nandc->dev, "rxtx");
->   		if (!nandc->chan) {
-> @@ -2211,6 +2295,16 @@ static int qcom_probe_nand_devices(struct qcom_nand_controller *nandc)
->   	if (list_empty(&nandc->host_list))
->   		return -ENODEV;
->   
-> +	if (nandc->props->is_bam) {
-> +		free_bam_transaction(nandc);
-> +		nandc->bam_txn = alloc_bam_transaction(nandc);
-> +		if (!nandc->bam_txn) {
-> +			dev_err(nandc->dev,
-> +				"failed to allocate bam transaction\n");
-> +			return -ENOMEM;
-> +		}
-> +	}
-> +
->   	list_for_each_entry_safe(host, tmp, &nandc->host_list, node) {
->   		ret = qcom_nand_mtd_register(nandc, host, child);
->   		if (ret) {
-> 
-
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+     After check some other Gigadevice memories, I found it's true as 
+you mentioned.
+Some memories use S9 as the QE bit, but some use S6.
+     Do you have some ideas for this case? Add a check for the full 
+jedec_id or encode
+the QE bit in the flash_info?
+     I am a new bee in the flash failed, very appreciate for your advice.
+>
+> Best regards,
+>
+> Cyrille
+>
+>>   			break;
+>>   
+>>
+>
+>
+>
