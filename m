@@ -1,17 +1,26 @@
-Received: from szxga05-in.huawei.com ([45.249.212.191])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dhskl-0007yy-Gq
- for linux-mtd@lists.infradead.org; Wed, 16 Aug 2017 07:28:38 +0000
-From: Kefeng Wang <wangkefeng.wang@huawei.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-CC: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <guohanjun@huawei.com>, Kefeng Wang
- <wangkefeng.wang@huawei.com>
-Subject: [PATCH] mtd: nand: convert to unified device property interface
-Date: Wed, 16 Aug 2017 15:29:05 +0800
-Message-ID: <1502868545-124616-1-git-send-email-wangkefeng.wang@huawei.com>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dhsrB-0000ZP-4I
+ for linux-mtd@lists.infradead.org; Wed, 16 Aug 2017 07:35:15 +0000
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Wed, 16 Aug 2017 13:04:51 +0530
+From: Abhishek Sahu <absahu@codeaurora.org>
+To: Archit Taneja <architt@codeaurora.org>
+Cc: boris.brezillon@free-electrons.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com, richard@nod.at,
+ cyrille.pitchen@wedev4u.fr, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, andy.gross@linaro.org, sricharan@codeaurora.org
+Subject: Re: [PATCH v4 09/20] mtd: nand: qcom: support for read location
+ registers
+In-Reply-To: <0ab9136e-bd50-54b0-116d-d52e7fc59756@codeaurora.org>
+References: <1502451575-15712-1-git-send-email-absahu@codeaurora.org>
+ <1502451575-15712-10-git-send-email-absahu@codeaurora.org>
+ <0ab9136e-bd50-54b0-116d-d52e7fc59756@codeaurora.org>
+Message-ID: <f08ada1166fe5446ea0f6d679eb3cdae@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,172 +30,197 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Changing from of_* to device_* interface, then we can also extract
-the properties from ACPI tables as well as from DT.
+On 2017-08-16 10:04, Archit Taneja wrote:
+> On 08/11/2017 05:09 PM, Abhishek Sahu wrote:
+>> In EBI2, all codeword data will be read in FLASH_BUF_ACC buffer
+>> and ADM will copy the data from source (FLASH_BUF_ACC) to
+>> destination (memory for data read).
+>> 
+>> In QPIC, there is no FLASH_BUF_ACC and all the codeword data will
+>> held in QPIC BAM FIFO buffers. It provides multiple READ_LOCATION
+>> registers which will be used for copying the data from FIFO to
+>> memory. The READ_LOCATION register will be used to read a
+>> specific amount of data from a specific offset within the flash
+>> buffer. It supports sequential offset requests. Each request is
+>> composed of the following fields:
+>> 
+>> a. Offset within the flash buffer from which data should be
+>>     read
+>> b. Amount of data to be read
+>> c. Flag bit specifying the last read request from the flash
+>>     buffer. Following the last read request the NANDc refers to the
+>>     buffer as empty.
+>> 
+>> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+>> ---
+>>   drivers/mtd/nand/qcom_nandc.c | 64 
+>> +++++++++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 64 insertions(+)
+>> 
+>> diff --git a/drivers/mtd/nand/qcom_nandc.c 
+>> b/drivers/mtd/nand/qcom_nandc.c
+>> index d9c8a6b..b452cfb 100644
+>> --- a/drivers/mtd/nand/qcom_nandc.c
+>> +++ b/drivers/mtd/nand/qcom_nandc.c
+>> @@ -53,6 +53,8 @@
+>>   #define	NAND_VERSION			0xf08
+>>   #define	NAND_READ_LOCATION_0		0xf20
+>>   #define	NAND_READ_LOCATION_1		0xf24
+>> +#define	NAND_READ_LOCATION_2		0xf28
+>> +#define	NAND_READ_LOCATION_3		0xf2c
+>>     /* dummy register offsets, used by write_reg_dma */
+>>   #define	NAND_DEV_CMD1_RESTORE		0xdead
+>> @@ -135,6 +137,11 @@
+>>   #define	ERASED_PAGE			(PAGE_ALL_ERASED | PAGE_ERASED)
+>>   #define	ERASED_CW			(CODEWORD_ALL_ERASED | CODEWORD_ERASED)
+>>   +/* NAND_READ_LOCATION_n bits */
+>> +#define READ_LOCATION_OFFSET		0
+>> +#define READ_LOCATION_SIZE		16
+>> +#define READ_LOCATION_LAST		31
+>> +
+>>   /* Version Mask */
+>>   #define	NAND_VERSION_MAJOR_MASK		0xf0000000
+>>   #define	NAND_VERSION_MAJOR_SHIFT	28
+>> @@ -177,6 +184,12 @@
+>>   #define	ECC_BCH_4BIT	BIT(2)
+>>   #define	ECC_BCH_8BIT	BIT(3)
+>>   +#define nandc_set_readl(nandc, reg, offset, size, is_last)	\
+> 
+> Minor nit, readl makes one think it's 'read long'. If it isn't too
+> much effort, could you s/nandc_set_readl/nandc_set_read_loc ?
+> 
 
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
+  Thanks Archit.
+  Yes that would be better. I will change the name.
 
-- APCI will be supported in hisi504_nand.c, and it will use nand_scan_ident().
+>> +nandc_set_reg(nandc, NAND_READ_LOCATION_##reg,			\
+>> +	      ((offset) << READ_LOCATION_OFFSET) |		\
+>> +	      ((size) << READ_LOCATION_SIZE) |			\
+>> +	      ((is_last) << READ_LOCATION_LAST))
+>> +
+>>   #define QPIC_PER_CW_CMD_SGL		32
+>>   #define QPIC_PER_CW_DATA_SGL		8
+>>   @@ -260,6 +273,11 @@ struct nandc_regs {
+>>   	__le32 orig_vld;
+>>     	__le32 ecc_buf_cfg;
+>> +	__le32 read_location0;
+>> +	__le32 read_location1;
+>> +	__le32 read_location2;
+>> +	__le32 read_location3;
+>> +
+>>   };
+>>     /*
+>> @@ -516,6 +534,14 @@ static __le32 *offset_to_nandc_reg(struct 
+>> nandc_regs *regs, int offset)
+>>   		return &regs->orig_vld;
+>>   	case NAND_EBI2_ECC_BUF_CFG:
+>>   		return &regs->ecc_buf_cfg;
+>> +	case NAND_READ_LOCATION_0:
+>> +		return &regs->read_location0;
+>> +	case NAND_READ_LOCATION_1:
+>> +		return &regs->read_location1;
+>> +	case NAND_READ_LOCATION_2:
+>> +		return &regs->read_location2;
+>> +	case NAND_READ_LOCATION_3:
+>> +		return &regs->read_location3;
+>>   	default:
+>>   		return NULL;
+>>   	}
+>> @@ -590,6 +616,10 @@ static void update_rw_regs(struct qcom_nand_host 
+>> *host, int num_cw, bool read)
+>>   	nandc_set_reg(nandc, NAND_FLASH_STATUS, host->clrflashstatus);
+>>   	nandc_set_reg(nandc, NAND_READ_STATUS, host->clrreadstatus);
+>>   	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
+>> +
+>> +	if (read)
+>> +		nandc_set_readl(nandc, 0, 0, host->use_ecc ?
+>> +				host->cw_data : host->cw_size, 1);
+>>   }
+>>     /*
+>> @@ -835,6 +865,10 @@ static void config_nand_page_read(struct 
+>> qcom_nand_controller *nandc)
+>>    */
+>>   static void config_nand_cw_read(struct qcom_nand_controller *nandc)
+>>   {
+>> +	if (nandc->props->is_bam)
+>> +		write_reg_dma(nandc, NAND_READ_LOCATION_0, 4,
+>> +			      NAND_BAM_NEXT_SGL);
+>> +
+>>   	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
+>>   	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
+>>   @@ -923,6 +957,7 @@ static int nandc_param(struct qcom_nand_host 
+>> *host)
+>>     	nandc_set_reg(nandc, NAND_DEV_CMD1_RESTORE, nandc->cmd1);
+>>   	nandc_set_reg(nandc, NAND_DEV_CMD_VLD_RESTORE, nandc->vld);
+>> +	nandc_set_readl(nandc, 0, 0, 512, 1);
+>>     	write_reg_dma(nandc, NAND_DEV_CMD_VLD, 1, 0);
+>>   	write_reg_dma(nandc, NAND_DEV_CMD1, 1, NAND_BAM_NEXT_SGL);
+>> @@ -1398,6 +1433,19 @@ static int read_page_ecc(struct qcom_nand_host 
+>> *host, u8 *data_buf,
+>>   			oob_size = host->ecc_bytes_hw + host->spare_bytes;
+>>   		}
+>>   +		if (nandc->props->is_bam) {
+>> +			if (data_buf && oob_buf) {
+>> +				nandc_set_readl(nandc, 0, 0, data_size, 0);
+>> +				nandc_set_readl(nandc, 1, data_size,
+>> +						oob_size, 1);
+>> +			} else if (data_buf) {
+>> +				nandc_set_readl(nandc, 0, 0, data_size, 1);
+>> +			} else {
+>> +				nandc_set_readl(nandc, 0, data_size,
+>> +						oob_size, 1);
+>> +			}
+>> +		}
+>> +
+>>   		config_nand_cw_read(nandc);
+>>     		if (data_buf)
+>> @@ -1457,6 +1505,7 @@ static int copy_last_cw(struct qcom_nand_host 
+>> *host, int page)
+>>     	set_address(host, host->cw_size * (ecc->steps - 1), page);
+>>   	update_rw_regs(host, 1, true);
+>> +	nandc_set_readl(nandc, 0, 0, size, 1);
+> 
+> The READ_LOC reg should already be set up in update_rw_regs, right? If
+> so, we could
+> drop this line.
 
- drivers/mtd/nand/nand_base.c | 54 ++++++++++++++++++++++----------------------
- 1 file changed, 27 insertions(+), 27 deletions(-)
+  Yes. this line is redundant. I will remove the same.
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index c6c18b8..27a0947 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -46,7 +46,7 @@
- #include <linux/bitops.h>
- #include <linux/io.h>
- #include <linux/mtd/partitions.h>
--#include <linux/of.h>
-+#include <linux/property.h>
- 
- static int nand_get_device(struct mtd_info *mtd, int new_state);
- 
-@@ -4209,12 +4209,12 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
- 	[NAND_ECC_ON_DIE]	= "on-die",
- };
- 
--static int of_get_nand_ecc_mode(struct device_node *np)
-+static int device_get_nand_ecc_mode(struct device *dev)
- {
- 	const char *pm;
- 	int err, i;
- 
--	err = of_property_read_string(np, "nand-ecc-mode", &pm);
-+	err = device_property_read_string(dev, "nand-ecc-mode", &pm);
- 	if (err < 0)
- 		return err;
- 
-@@ -4238,12 +4238,12 @@ static int of_get_nand_ecc_mode(struct device_node *np)
- 	[NAND_ECC_BCH]		= "bch",
- };
- 
--static int of_get_nand_ecc_algo(struct device_node *np)
-+static int device_get_nand_ecc_algo(struct device *dev)
- {
- 	const char *pm;
- 	int err, i;
- 
--	err = of_property_read_string(np, "nand-ecc-algo", &pm);
-+	err = device_property_read_string(dev, "nand-ecc-algo", &pm);
- 	if (!err) {
- 		for (i = NAND_ECC_HAMMING; i < ARRAY_SIZE(nand_ecc_algos); i++)
- 			if (!strcasecmp(pm, nand_ecc_algos[i]))
-@@ -4255,7 +4255,7 @@ static int of_get_nand_ecc_algo(struct device_node *np)
- 	 * For backward compatibility we also read "nand-ecc-mode" checking
- 	 * for some obsoleted values that were specifying ECC algorithm.
- 	 */
--	err = of_property_read_string(np, "nand-ecc-mode", &pm);
-+	err = device_property_read_string(dev, "nand-ecc-mode", &pm);
- 	if (err < 0)
- 		return err;
- 
-@@ -4267,29 +4267,29 @@ static int of_get_nand_ecc_algo(struct device_node *np)
- 	return -ENODEV;
- }
- 
--static int of_get_nand_ecc_step_size(struct device_node *np)
-+static int device_get_nand_ecc_step_size(struct device *dev)
- {
- 	int ret;
- 	u32 val;
- 
--	ret = of_property_read_u32(np, "nand-ecc-step-size", &val);
-+	ret = device_property_read_u32(dev, "nand-ecc-step-size", &val);
- 	return ret ? ret : val;
- }
- 
--static int of_get_nand_ecc_strength(struct device_node *np)
-+static int device_get_nand_ecc_strength(struct device *dev)
- {
- 	int ret;
- 	u32 val;
- 
--	ret = of_property_read_u32(np, "nand-ecc-strength", &val);
-+	ret = device_property_read_u32(dev, "nand-ecc-strength", &val);
- 	return ret ? ret : val;
- }
- 
--static int of_get_nand_bus_width(struct device_node *np)
-+static int device_get_nand_bus_width(struct device *dev)
- {
- 	u32 val;
- 
--	if (of_property_read_u32(np, "nand-bus-width", &val))
-+	if (device_property_read_u32(dev, "nand-bus-width", &val))
- 		return 8;
- 
- 	switch (val) {
-@@ -4301,29 +4301,28 @@ static int of_get_nand_bus_width(struct device_node *np)
- 	}
- }
- 
--static bool of_get_nand_on_flash_bbt(struct device_node *np)
-+static bool device_get_nand_on_flash_bbt(struct device *dev)
- {
--	return of_property_read_bool(np, "nand-on-flash-bbt");
-+	return device_property_read_bool(dev, "nand-on-flash-bbt");
- }
- 
--static int nand_dt_init(struct nand_chip *chip)
-+static int nand_chip_init(struct nand_chip *chip, struct device *dev)
- {
--	struct device_node *dn = nand_get_flash_node(chip);
- 	int ecc_mode, ecc_algo, ecc_strength, ecc_step;
- 
--	if (!dn)
-+	if (!dev)
- 		return 0;
- 
--	if (of_get_nand_bus_width(dn) == 16)
-+	if (device_get_nand_bus_width(dev) == 16)
- 		chip->options |= NAND_BUSWIDTH_16;
- 
--	if (of_get_nand_on_flash_bbt(dn))
-+	if (device_get_nand_on_flash_bbt(dev))
- 		chip->bbt_options |= NAND_BBT_USE_FLASH;
- 
--	ecc_mode = of_get_nand_ecc_mode(dn);
--	ecc_algo = of_get_nand_ecc_algo(dn);
--	ecc_strength = of_get_nand_ecc_strength(dn);
--	ecc_step = of_get_nand_ecc_step_size(dn);
-+	ecc_mode = device_get_nand_ecc_mode(dev);
-+	ecc_algo = device_get_nand_ecc_algo(dev);
-+	ecc_strength = device_get_nand_ecc_strength(dev);
-+	ecc_step = device_get_nand_ecc_step_size(dev);
- 
- 	if (ecc_mode >= 0)
- 		chip->ecc.mode = ecc_mode;
-@@ -4337,7 +4336,7 @@ static int nand_dt_init(struct nand_chip *chip)
- 	if (ecc_step > 0)
- 		chip->ecc.size = ecc_step;
- 
--	if (of_property_read_bool(dn, "nand-ecc-maximize"))
-+	if (device_property_read_bool(dev, "nand-ecc-maximize"))
- 		chip->ecc.options |= NAND_ECC_MAXIMIZE;
- 
- 	return 0;
-@@ -4358,14 +4357,15 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
- {
- 	int i, nand_maf_id, nand_dev_id;
- 	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct device *dev = mtd->dev.parent;
- 	int ret;
- 
--	ret = nand_dt_init(chip);
-+	ret = nand_chip_init(chip, dev);
- 	if (ret)
- 		return ret;
- 
--	if (!mtd->name && mtd->dev.parent)
--		mtd->name = dev_name(mtd->dev.parent);
-+	if (!mtd->name && dev)
-+		mtd->name = dev_name(dev);
- 
- 	if ((!chip->cmdfunc || !chip->select_chip) && !chip->cmd_ctrl) {
- 		/*
--- 
-1.8.3.1
+> 
+> With that,
+> 
+> Reviewed-by: Archit Taneja <architt@codeaurora.org>
+> 
+> Thanks,
+> Archit
+> 
+>>     	config_nand_single_cw_page_read(nandc);
+>>   @@ -1502,6 +1551,7 @@ static int qcom_nandc_read_page_raw(struct 
+>> mtd_info *mtd,
+>>   	u8 *data_buf, *oob_buf;
+>>   	struct nand_ecc_ctrl *ecc = &chip->ecc;
+>>   	int i, ret;
+>> +	int read_loc;
+>>     	data_buf = buf;
+>>   	oob_buf = chip->oob_poi;
+>> @@ -1527,6 +1577,20 @@ static int qcom_nandc_read_page_raw(struct 
+>> mtd_info *mtd,
+>>   			oob_size2 = host->ecc_bytes_hw + host->spare_bytes;
+>>   		}
+>>   +		if (nandc->props->is_bam) {
+>> +			read_loc = 0;
+>> +			nandc_set_readl(nandc, 0, read_loc, data_size1, 0);
+>> +			read_loc += data_size1;
+>> +
+>> +			nandc_set_readl(nandc, 1, read_loc, oob_size1, 0);
+>> +			read_loc += oob_size1;
+>> +
+>> +			nandc_set_readl(nandc, 2, read_loc, data_size2, 0);
+>> +			read_loc += data_size2;
+>> +
+>> +			nandc_set_readl(nandc, 3, read_loc, oob_size2, 1);
+>> +		}
+>> +
+>>   		config_nand_cw_read(nandc);
+>>     		read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
+>> 
