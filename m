@@ -1,23 +1,21 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dhqHy-0008CY-Hs
- for linux-mtd@lists.infradead.org; Wed, 16 Aug 2017 04:50:44 +0000
-Subject: Re: [PATCH v4 11/20] mtd: nand: qcom: enable BAM or ADM mode
-To: Abhishek Sahu <absahu@codeaurora.org>, boris.brezillon@free-electrons.com
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- richard@nod.at, cyrille.pitchen@wedev4u.fr, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, andy.gross@linaro.org, sricharan@codeaurora.org
-References: <1502451575-15712-1-git-send-email-absahu@codeaurora.org>
- <1502451575-15712-12-git-send-email-absahu@codeaurora.org>
-From: Archit Taneja <architt@codeaurora.org>
-Message-ID: <db662967-2f73-bcfe-aef1-8b9cc860c743@codeaurora.org>
-Date: Wed, 16 Aug 2017 10:20:15 +0530
+From: Vignesh R <vigneshr@ti.com>
+To: Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Rob Herring <robh+dt@kernel.org>
+CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ Vignesh R <vigneshr@ti.com>, linux-arm-kernel
+ <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v2 1/5] mtd: spi-nor: cadence-quadspi: Add TI 66AK2G SoC
+ specific compatible
+Date: Wed, 16 Aug 2017 10:20:49 +0530
+Message-ID: <20170816045053.15492-2-vigneshr@ti.com>
+In-Reply-To: <20170816045053.15492-1-vigneshr@ti.com>
+References: <20170816045053.15492-1-vigneshr@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <1502451575-15712-12-git-send-email-absahu@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,77 +25,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Update binding documentation to add a new compatible for TI 66AK2G SoC,
+to handle TI SoC specific quirks in the driver.
 
+Signed-off-by: Vignesh R <vigneshr@ti.com>
+---
+ Documentation/devicetree/bindings/mtd/cadence-quadspi.txt | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-On 08/11/2017 05:09 PM, Abhishek Sahu wrote:
-> 1. DM_EN is only required for EBI2 NAND controller which uses ADM
-> 2. BAM mode will be disabled after power on reset which needs to
->     be enabled before starting any BAM transfers.
-> 
-> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
-> ---
->   drivers/mtd/nand/qcom_nandc.c | 17 ++++++++++++++---
->   1 file changed, 14 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-> index 3d9fd7f..ae873d3 100644
-> --- a/drivers/mtd/nand/qcom_nandc.c
-> +++ b/drivers/mtd/nand/qcom_nandc.c
-> @@ -163,6 +163,9 @@
->   #define NAND_DEV_CMD_VLD_VAL		(READ_START_VLD | WRITE_START_VLD | \
->   					 ERASE_START_VLD | SEQ_READ_START_VLD)
->   
-> +/* NAND_CTRL bits */
-> +#define	BAM_MODE_EN			BIT(0)
-> +
->   /*
->    * the NAND controller performs reads/writes with ECC in 516 byte chunks.
->    * the driver calls the chunks 'step' or 'codeword' interchangeably
-> @@ -1035,7 +1038,8 @@ static int read_id(struct qcom_nand_host *host, int column)
->   	nandc_set_reg(nandc, NAND_FLASH_CMD, FETCH_ID);
->   	nandc_set_reg(nandc, NAND_ADDR0, column);
->   	nandc_set_reg(nandc, NAND_ADDR1, 0);
-> -	nandc_set_reg(nandc, NAND_FLASH_CHIP_SELECT, DM_EN);
-> +	nandc_set_reg(nandc, NAND_FLASH_CHIP_SELECT,
-> +		      nandc->props->is_bam ? 0 : DM_EN);
-
-I'm not sure why the above register was configured in read_id in the first place. Would
-it be required later if we want the controller to support multiple NAND chips? If not,
-then we could consider dropping this. Anyway, that can be posted as a separate patch
-later.
-
-Reviewed-by: Archit Taneja <architt@codeaurora.org>
-
-Thanks,
-Archit
-
->   	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
->   
->   	write_reg_dma(nandc, NAND_FLASH_CMD, 4, NAND_BAM_NEXT_SGL);
-> @@ -2408,12 +2412,19 @@ static void qcom_nandc_unalloc(struct qcom_nand_controller *nandc)
->   /* one time setup of a few nand controller registers */
->   static int qcom_nandc_setup(struct qcom_nand_controller *nandc)
->   {
-> +	u32 nand_ctrl;
-> +
->   	/* kill onenand */
->   	nandc_write(nandc, SFLASHC_BURST_CFG, 0);
->   	nandc_write(nandc, NAND_DEV_CMD_VLD, NAND_DEV_CMD_VLD_VAL);
->   
-> -	/* enable ADM DMA */
-> -	nandc_write(nandc, NAND_FLASH_CHIP_SELECT, DM_EN);
-> +	/* enable ADM or BAM DMA */
-> +	if (nandc->props->is_bam) {
-> +		nand_ctrl = nandc_read(nandc, NAND_CTRL);
-> +		nandc_write(nandc, NAND_CTRL, nand_ctrl | BAM_MODE_EN);
-> +	} else {
-> +		nandc_write(nandc, NAND_FLASH_CHIP_SELECT, DM_EN);
-> +	}
->   
->   	/* save the original values of these registers */
->   	nandc->cmd1 = nandc_read(nandc, NAND_DEV_CMD1);
-> 
-
+diff --git a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
+index f248056da24c..7dbe3bd9ac56 100644
+--- a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
++++ b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
+@@ -1,7 +1,9 @@
+ * Cadence Quad SPI controller
+ 
+ Required properties:
+-- compatible : Should be "cdns,qspi-nor".
++- compatible : should be one of the following:
++	Generic default - "cdns,qspi-nor".
++	For TI 66AK2G SoC - "ti,k2g-qspi", "cdns,qspi-nor".
+ - reg : Contains two entries, each of which is a tuple consisting of a
+ 	physical address and length. The first entry is the address and
+ 	length of the controller register set. The second entry is the
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.14.1
