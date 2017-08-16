@@ -1,22 +1,24 @@
-Received: from regular1.263xmail.com ([211.150.99.134])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dhpCT-0001Ak-Fk
- for linux-mtd@lists.infradead.org; Wed, 16 Aug 2017 03:41:01 +0000
-Subject: Re: [PATCH v4] mtd: spi-nor: add support for GD25Q256
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
- computersforpeace@gmail.com, richard@nod.at, dwmw2@infradead.org
-References: <1500977574-15915-1-git-send-email-andy.yan@rock-chips.com>
- <fea093e4-9e62-8a36-3801-4cb81520f295@wedev4u.fr>
-From: Andy Yan <andy.yan@rock-chips.com>
-Message-ID: <fb0f8c6b-279d-3b43-82e1-f97c948b81b6@rock-chips.com>
-Date: Wed, 16 Aug 2017 11:40:27 +0800
+ id 1dhpnJ-0000gW-U5
+ for linux-mtd@lists.infradead.org; Wed, 16 Aug 2017 04:19:05 +0000
+Subject: Re: [PATCH v4 08/20] mtd: nand: qcom: support for passing flags in
+ transfer functions
+To: Abhishek Sahu <absahu@codeaurora.org>, boris.brezillon@free-electrons.com
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
+ richard@nod.at, cyrille.pitchen@wedev4u.fr, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, andy.gross@linaro.org, sricharan@codeaurora.org
+References: <1502451575-15712-1-git-send-email-absahu@codeaurora.org>
+ <1502451575-15712-9-git-send-email-absahu@codeaurora.org>
+From: Archit Taneja <architt@codeaurora.org>
+Message-ID: <0d002cd6-17b7-f015-1af6-a53150e7ea0c@codeaurora.org>
+Date: Wed, 16 Aug 2017 09:48:34 +0530
 MIME-Version: 1.0
-In-Reply-To: <fea093e4-9e62-8a36-3801-4cb81520f295@wedev4u.fr>
+In-Reply-To: <1502451575-15712-9-git-send-email-absahu@codeaurora.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,94 +28,364 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Cyrille:
 
 
-On 2017年08月16日 00:04, Cyrille Pitchen wrote:
-> Hi Andy,
->
-> Le 25/07/2017 à 12:12, Andy Yan a écrit :
->> Add support for GD25Q256, a 32MiB SPI Nor
->> flash from Gigadevice.
->>
->> Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
->>
->> ---
->>
->> Changes in v4:
->> - add SPI_NOR_HAS_LOCK and SPI_NOR_HAS_TB
-> Between v3 and v4, I see that you've also changed the procedure to the
-> the Quad Enable bit on all Gigadevice memories with QSPI capabilities.
-> This is not a detail and should have been reported here.
+On 08/11/2017 05:09 PM, Abhishek Sahu wrote:
+> The BAM has multiple flags to control the transfer. This patch
+> adds flags parameter in register and data transfer functions and
+> modifies all these functions call with appropriate flags using
+> following rule
+> 
+> 1. Read and write can’t go in single command descriptor so
+>     separate SGL should be used.
+> 2. For some of the requests, NWD flag should be set in BAM
+>     DMA descriptor.
+> 3. For Data write, the BAM has internal buffer for each codeword.
+>     All write request will modify the data in internal buffer and
+>     this buffer will be flushed to NAND device once EOT flag is set.
+>     So for all the write requests in single codeword, the EOT should
+>     be cleared for all tx data descriptors except the last one.
+> 
+> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+> ---
+>   drivers/mtd/nand/qcom_nandc.c | 122 ++++++++++++++++++++++++------------------
+>   1 file changed, 70 insertions(+), 52 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
+> index f52a692..d9c8a6b 100644
+> --- a/drivers/mtd/nand/qcom_nandc.c
+> +++ b/drivers/mtd/nand/qcom_nandc.c
+> @@ -180,6 +180,14 @@
+>   #define QPIC_PER_CW_CMD_SGL		32
+>   #define QPIC_PER_CW_DATA_SGL		8
+>   
+> +/* Flags used for BAM DMA desc preparation*/
+> +/* Don't set the EOT in current tx sgl */
+> +#define NAND_BAM_NO_EOT			BIT(0)
+> +/* Set the NWD flag in current sgl */
+> +#define NAND_BAM_NWD			BIT(1)
+> +/* Finish writing in the current sgl and start writing in another sgl */
+> +#define NAND_BAM_NEXT_SGL		BIT(2)
+> +
+>   /*
+>    * This data type corresponds to the BAM transaction which will be used for all
+>    * NAND transfers.
+> @@ -731,7 +739,7 @@ static int prep_adm_dma_desc(struct qcom_nand_controller *nandc, bool read,
+>    * @num_regs:		number of registers to read
 
-  Sorry, I will keep this in mind.
->
->> Changes in v3:
->> - rebase on top of spi-nor tree
->> - add SPI_NOR_4B_OPCODES flag
->>
->> Changes in v2:
->> - drop one line unnecessary modification
->>
->>   drivers/mtd/spi-nor/spi-nor.c | 6 ++++++
->>   1 file changed, 6 insertions(+)
->>
->> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->> index 196b52f..e4145cd 100644
->> --- a/drivers/mtd/spi-nor/spi-nor.c
->> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> @@ -986,6 +986,11 @@ static const struct flash_info spi_nor_ids[] = {
->>   			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
->>   			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
->>   	},
->> +	{
->> +		"gd25q256", INFO(0xc84019, 0, 64 * 1024, 512,
->> +			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
->> +			SPI_NOR_4B_OPCODES | SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
->> +	},
->>   
->>   	/* Intel/Numonyx -- xxxs33b */
->>   	{ "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, 0) },
->> @@ -2365,6 +2370,7 @@ static int spi_nor_init_params(struct spi_nor *nor,
->>   				   SNOR_HWCAPS_PP_QUAD)) {
->>   		switch (JEDEC_MFR(info)) {
->>   		case SNOR_MFR_MACRONIX:
->> +		case SNOR_MFR_GIGADEVICE:
->>   			params->quad_enable = macronix_quad_enable;
-> Here, you've have changed the Quad Enable requirement for *all*
-> Gigadevice memories with Quad SPI capabilities.
->
-> However, I'm reading the GD25Q128 datasheet and it claims that the QE
-> bit is BIT(1) of the Status Register 2. Hence some
-> spansion*_quad_enable() should be used, as before your patch.
->
-> Then, still according to the datasheet, the GD25Q128 memory is compliant
-> with the JESD216 specification (minor 0) but neither with rev A (minor
-> 5) nor rev B (minor 6).
-> So its Basic Flash Parameter Table is limited to 9 DWORDs instead of 16
-> DWORDs, hence doesn't provide the Quad Enable requirements. It means
-> that the SFDP tables would not help to select the right _quad_enable()
-> function by overriding the choice made by the switch() statement above.
->
-> tl;dr
-> This chunk would introduce a regression with some already supported
-> Gigadevice memories. So I reject this patch, sorry.
+Minor comment: the read_reg_dma/write_reg/read_data/write_data_dma funcs add a new arg, so it
+would be nice to update the comment describing the function and its arguments. It would also
+be nice to mention that the flags are presently used only for controllers using BAM.
 
-     After check some other Gigadevice memories, I found it's true as 
-you mentioned.
-Some memories use S9 as the QE bit, but some use S6.
-     Do you have some ideas for this case? Add a check for the full 
-jedec_id or encode
-the QE bit in the flash_info?
-     I am a new bee in the flash failed, very appreciate for your advice.
->
-> Best regards,
->
-> Cyrille
->
->>   			break;
->>   
->>
->
->
->
+With that,
+
+Reviewed-by: Archit Taneja <architt@codeaurora.org>
+
+Thanks,
+Archit
+
+>    */
+>   static int read_reg_dma(struct qcom_nand_controller *nandc, int first,
+> -			int num_regs)
+> +			int num_regs, unsigned int flags)
+>   {
+>   	bool flow_control = false;
+>   	void *vaddr;
+> @@ -755,7 +763,7 @@ static int read_reg_dma(struct qcom_nand_controller *nandc, int first,
+>    * @num_regs:		number of registers to write
+>    */
+>   static int write_reg_dma(struct qcom_nand_controller *nandc, int first,
+> -			 int num_regs)
+> +			 int num_regs, unsigned int flags)
+>   {
+>   	bool flow_control = false;
+>   	struct nandc_regs *regs = nandc->regs;
+> @@ -767,6 +775,9 @@ static int write_reg_dma(struct qcom_nand_controller *nandc, int first,
+>   	if (first == NAND_FLASH_CMD)
+>   		flow_control = true;
+>   
+> +	if (first == NAND_EXEC_CMD)
+> +		flags |= NAND_BAM_NWD;
+> +
+>   	if (first == NAND_DEV_CMD1_RESTORE)
+>   		first = NAND_DEV_CMD1;
+>   
+> @@ -788,7 +799,7 @@ static int write_reg_dma(struct qcom_nand_controller *nandc, int first,
+>    * @size:		DMA transaction size in bytes
+>    */
+>   static int read_data_dma(struct qcom_nand_controller *nandc, int reg_off,
+> -			 const u8 *vaddr, int size)
+> +			 const u8 *vaddr, int size, unsigned int flags)
+>   {
+>   	return prep_adm_dma_desc(nandc, true, reg_off, vaddr, size, false);
+>   }
+> @@ -802,7 +813,7 @@ static int read_data_dma(struct qcom_nand_controller *nandc, int reg_off,
+>    * @size:		DMA transaction size in bytes
+>    */
+>   static int write_data_dma(struct qcom_nand_controller *nandc, int reg_off,
+> -			  const u8 *vaddr, int size)
+> +			  const u8 *vaddr, int size, unsigned int flags)
+>   {
+>   	return prep_adm_dma_desc(nandc, false, reg_off, vaddr, size, false);
+>   }
+> @@ -813,9 +824,9 @@ static int write_data_dma(struct qcom_nand_controller *nandc, int reg_off,
+>    */
+>   static void config_nand_page_read(struct qcom_nand_controller *nandc)
+>   {
+> -	write_reg_dma(nandc, NAND_ADDR0, 2);
+> -	write_reg_dma(nandc, NAND_DEV0_CFG0, 3);
+> -	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1);
+> +	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
+> +	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
+> +	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
+>   }
+>   
+>   /*
+> @@ -824,11 +835,12 @@ static void config_nand_page_read(struct qcom_nand_controller *nandc)
+>    */
+>   static void config_nand_cw_read(struct qcom_nand_controller *nandc)
+>   {
+> -	write_reg_dma(nandc, NAND_FLASH_CMD, 1);
+> -	write_reg_dma(nandc, NAND_EXEC_CMD, 1);
+> +	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
+> +	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
+>   
+> -	read_reg_dma(nandc, NAND_FLASH_STATUS, 2);
+> -	read_reg_dma(nandc, NAND_ERASED_CW_DETECT_STATUS, 1);
+> +	read_reg_dma(nandc, NAND_FLASH_STATUS, 2, 0);
+> +	read_reg_dma(nandc, NAND_ERASED_CW_DETECT_STATUS, 1,
+> +		     NAND_BAM_NEXT_SGL);
+>   }
+>   
+>   /*
+> @@ -847,9 +859,10 @@ static void config_nand_single_cw_page_read(struct qcom_nand_controller *nandc)
+>    */
+>   static void config_nand_page_write(struct qcom_nand_controller *nandc)
+>   {
+> -	write_reg_dma(nandc, NAND_ADDR0, 2);
+> -	write_reg_dma(nandc, NAND_DEV0_CFG0, 3);
+> -	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1);
+> +	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
+> +	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
+> +	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1,
+> +		      NAND_BAM_NEXT_SGL);
+>   }
+>   
+>   /*
+> @@ -858,13 +871,13 @@ static void config_nand_page_write(struct qcom_nand_controller *nandc)
+>    */
+>   static void config_nand_cw_write(struct qcom_nand_controller *nandc)
+>   {
+> -	write_reg_dma(nandc, NAND_FLASH_CMD, 1);
+> -	write_reg_dma(nandc, NAND_EXEC_CMD, 1);
+> +	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
+> +	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
+>   
+> -	read_reg_dma(nandc, NAND_FLASH_STATUS, 1);
+> +	read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
+>   
+> -	write_reg_dma(nandc, NAND_FLASH_STATUS, 1);
+> -	write_reg_dma(nandc, NAND_READ_STATUS, 1);
+> +	write_reg_dma(nandc, NAND_FLASH_STATUS, 1, 0);
+> +	write_reg_dma(nandc, NAND_READ_STATUS, 1, NAND_BAM_NEXT_SGL);
+>   }
+>   
+>   /*
+> @@ -911,8 +924,8 @@ static int nandc_param(struct qcom_nand_host *host)
+>   	nandc_set_reg(nandc, NAND_DEV_CMD1_RESTORE, nandc->cmd1);
+>   	nandc_set_reg(nandc, NAND_DEV_CMD_VLD_RESTORE, nandc->vld);
+>   
+> -	write_reg_dma(nandc, NAND_DEV_CMD_VLD, 1);
+> -	write_reg_dma(nandc, NAND_DEV_CMD1, 1);
+> +	write_reg_dma(nandc, NAND_DEV_CMD_VLD, 1, 0);
+> +	write_reg_dma(nandc, NAND_DEV_CMD1, 1, NAND_BAM_NEXT_SGL);
+>   
+>   	nandc->buf_count = 512;
+>   	memset(nandc->data_buffer, 0xff, nandc->buf_count);
+> @@ -920,11 +933,11 @@ static int nandc_param(struct qcom_nand_host *host)
+>   	config_nand_single_cw_page_read(nandc);
+>   
+>   	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer,
+> -		      nandc->buf_count);
+> +		      nandc->buf_count, 0);
+>   
+>   	/* restore CMD1 and VLD regs */
+> -	write_reg_dma(nandc, NAND_DEV_CMD1_RESTORE, 1);
+> -	write_reg_dma(nandc, NAND_DEV_CMD_VLD_RESTORE, 1);
+> +	write_reg_dma(nandc, NAND_DEV_CMD1_RESTORE, 1, 0);
+> +	write_reg_dma(nandc, NAND_DEV_CMD_VLD_RESTORE, 1, NAND_BAM_NEXT_SGL);
+>   
+>   	return 0;
+>   }
+> @@ -946,14 +959,14 @@ static int erase_block(struct qcom_nand_host *host, int page_addr)
+>   	nandc_set_reg(nandc, NAND_FLASH_STATUS, host->clrflashstatus);
+>   	nandc_set_reg(nandc, NAND_READ_STATUS, host->clrreadstatus);
+>   
+> -	write_reg_dma(nandc, NAND_FLASH_CMD, 3);
+> -	write_reg_dma(nandc, NAND_DEV0_CFG0, 2);
+> -	write_reg_dma(nandc, NAND_EXEC_CMD, 1);
+> +	write_reg_dma(nandc, NAND_FLASH_CMD, 3, NAND_BAM_NEXT_SGL);
+> +	write_reg_dma(nandc, NAND_DEV0_CFG0, 2, NAND_BAM_NEXT_SGL);
+> +	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
+>   
+> -	read_reg_dma(nandc, NAND_FLASH_STATUS, 1);
+> +	read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
+>   
+> -	write_reg_dma(nandc, NAND_FLASH_STATUS, 1);
+> -	write_reg_dma(nandc, NAND_READ_STATUS, 1);
+> +	write_reg_dma(nandc, NAND_FLASH_STATUS, 1, 0);
+> +	write_reg_dma(nandc, NAND_READ_STATUS, 1, NAND_BAM_NEXT_SGL);
+>   
+>   	return 0;
+>   }
+> @@ -973,10 +986,10 @@ static int read_id(struct qcom_nand_host *host, int column)
+>   	nandc_set_reg(nandc, NAND_FLASH_CHIP_SELECT, DM_EN);
+>   	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
+>   
+> -	write_reg_dma(nandc, NAND_FLASH_CMD, 4);
+> -	write_reg_dma(nandc, NAND_EXEC_CMD, 1);
+> +	write_reg_dma(nandc, NAND_FLASH_CMD, 4, NAND_BAM_NEXT_SGL);
+> +	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
+>   
+> -	read_reg_dma(nandc, NAND_READ_ID, 1);
+> +	read_reg_dma(nandc, NAND_READ_ID, 1, NAND_BAM_NEXT_SGL);
+>   
+>   	return 0;
+>   }
+> @@ -990,10 +1003,10 @@ static int reset(struct qcom_nand_host *host)
+>   	nandc_set_reg(nandc, NAND_FLASH_CMD, RESET_DEVICE);
+>   	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
+>   
+> -	write_reg_dma(nandc, NAND_FLASH_CMD, 1);
+> -	write_reg_dma(nandc, NAND_EXEC_CMD, 1);
+> +	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
+> +	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
+>   
+> -	read_reg_dma(nandc, NAND_FLASH_STATUS, 1);
+> +	read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
+>   
+>   	return 0;
+>   }
+> @@ -1389,7 +1402,7 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
+>   
+>   		if (data_buf)
+>   			read_data_dma(nandc, FLASH_BUF_ACC, data_buf,
+> -				      data_size);
+> +				      data_size, 0);
+>   
+>   		/*
+>   		 * when ecc is enabled, the controller doesn't read the real
+> @@ -1405,7 +1418,7 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
+>   				*oob_buf++ = 0xff;
+>   
+>   			read_data_dma(nandc, FLASH_BUF_ACC + data_size,
+> -				      oob_buf, oob_size);
+> +				      oob_buf, oob_size, 0);
+>   		}
+>   
+>   		if (data_buf)
+> @@ -1447,7 +1460,7 @@ static int copy_last_cw(struct qcom_nand_host *host, int page)
+>   
+>   	config_nand_single_cw_page_read(nandc);
+>   
+> -	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer, size);
+> +	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer, size, 0);
+>   
+>   	ret = submit_descs(nandc);
+>   	if (ret)
+> @@ -1516,19 +1529,19 @@ static int qcom_nandc_read_page_raw(struct mtd_info *mtd,
+>   
+>   		config_nand_cw_read(nandc);
+>   
+> -		read_data_dma(nandc, reg_off, data_buf, data_size1);
+> +		read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
+>   		reg_off += data_size1;
+>   		data_buf += data_size1;
+>   
+> -		read_data_dma(nandc, reg_off, oob_buf, oob_size1);
+> +		read_data_dma(nandc, reg_off, oob_buf, oob_size1, 0);
+>   		reg_off += oob_size1;
+>   		oob_buf += oob_size1;
+>   
+> -		read_data_dma(nandc, reg_off, data_buf, data_size2);
+> +		read_data_dma(nandc, reg_off, data_buf, data_size2, 0);
+>   		reg_off += data_size2;
+>   		data_buf += data_size2;
+>   
+> -		read_data_dma(nandc, reg_off, oob_buf, oob_size2);
+> +		read_data_dma(nandc, reg_off, oob_buf, oob_size2, 0);
+>   		oob_buf += oob_size2;
+>   	}
+>   
+> @@ -1595,7 +1608,8 @@ static int qcom_nandc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+>   		}
+>   
+>   
+> -		write_data_dma(nandc, FLASH_BUF_ACC, data_buf, data_size);
+> +		write_data_dma(nandc, FLASH_BUF_ACC, data_buf, data_size,
+> +			       i == (ecc->steps - 1) ? NAND_BAM_NO_EOT : 0);
+>   
+>   		/*
+>   		 * when ECC is enabled, we don't really need to write anything
+> @@ -1608,7 +1622,7 @@ static int qcom_nandc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+>   			oob_buf += host->bbm_size;
+>   
+>   			write_data_dma(nandc, FLASH_BUF_ACC + data_size,
+> -				       oob_buf, oob_size);
+> +				       oob_buf, oob_size, 0);
+>   		}
+>   
+>   		config_nand_cw_write(nandc);
+> @@ -1663,19 +1677,22 @@ static int qcom_nandc_write_page_raw(struct mtd_info *mtd,
+>   			oob_size2 = host->ecc_bytes_hw + host->spare_bytes;
+>   		}
+>   
+> -		write_data_dma(nandc, reg_off, data_buf, data_size1);
+> +		write_data_dma(nandc, reg_off, data_buf, data_size1,
+> +			       NAND_BAM_NO_EOT);
+>   		reg_off += data_size1;
+>   		data_buf += data_size1;
+>   
+> -		write_data_dma(nandc, reg_off, oob_buf, oob_size1);
+> +		write_data_dma(nandc, reg_off, oob_buf, oob_size1,
+> +			       NAND_BAM_NO_EOT);
+>   		reg_off += oob_size1;
+>   		oob_buf += oob_size1;
+>   
+> -		write_data_dma(nandc, reg_off, data_buf, data_size2);
+> +		write_data_dma(nandc, reg_off, data_buf, data_size2,
+> +			       NAND_BAM_NO_EOT);
+>   		reg_off += data_size2;
+>   		data_buf += data_size2;
+>   
+> -		write_data_dma(nandc, reg_off, oob_buf, oob_size2);
+> +		write_data_dma(nandc, reg_off, oob_buf, oob_size2, 0);
+>   		oob_buf += oob_size2;
+>   
+>   		config_nand_cw_write(nandc);
+> @@ -1729,8 +1746,8 @@ static int qcom_nandc_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
+>   	update_rw_regs(host, 1, false);
+>   
+>   	config_nand_page_write(nandc);
+> -	write_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer,
+> -		       data_size + oob_size);
+> +	write_data_dma(nandc, FLASH_BUF_ACC,
+> +		       nandc->data_buffer, data_size + oob_size, 0);
+>   	config_nand_cw_write(nandc);
+>   
+>   	ret = submit_descs(nandc);
+> @@ -1814,7 +1831,8 @@ static int qcom_nandc_block_markbad(struct mtd_info *mtd, loff_t ofs)
+>   	update_rw_regs(host, 1, false);
+>   
+>   	config_nand_page_write(nandc);
+> -	write_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer, host->cw_size);
+> +	write_data_dma(nandc, FLASH_BUF_ACC,
+> +		       nandc->data_buffer, host->cw_size, 0);
+>   	config_nand_cw_write(nandc);
+>   
+>   	ret = submit_descs(nandc);
+> 
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
