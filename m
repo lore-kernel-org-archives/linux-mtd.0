@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1diJbj-0007HZ-3y
- for linux-mtd@lists.infradead.org; Thu, 17 Aug 2017 12:09:53 +0000
+ id 1diJbt-0007Tl-42
+ for linux-mtd@lists.infradead.org; Thu, 17 Aug 2017 12:10:06 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -12,15 +12,14 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>,
  Archit Taneja <architt@codeaurora.org>,
  Sricharan R <sricharan@codeaurora.org>,
- Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH v5 08/16] mtd: nand: qcom: QPIC data descriptors handling
-Date: Thu, 17 Aug 2017 17:37:46 +0530
-Message-Id: <1502971674-13810-9-git-send-email-absahu@codeaurora.org>
+ Abhishek Sahu <absahu@codeaurora.org>, Vinod Koul <vinod.koul@intel.com>,
+ dmaengine@vger.kernel.org
+Subject: [PATCH v5 10/16] mtd: nand: qcom: add command elements in BAM
+ transaction
+Date: Thu, 17 Aug 2017 17:37:48 +0530
+Message-Id: <1502971674-13810-11-git-send-email-absahu@codeaurora.org>
 In-Reply-To: <1502971674-13810-1-git-send-email-absahu@codeaurora.org>
 References: <1502971674-13810-1-git-send-email-absahu@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,11 +29,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-1. Add the data descriptor preparation function which will be used
-   only by BAM DMA for forming the data SGL’s
-2. Add clear BAM transaction and call it before every new request
-3. Check DMA mode for ADM or BAM and call the appropriate
-   descriptor formation function.
+All the QPIC register read/write through BAM DMA requires
+command descriptor which contains the array of command elements.
 
 Reviewed-by: Archit Taneja <architt@codeaurora.org>
 Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
@@ -42,184 +38,91 @@ Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 
 * Changes from v4: None
 
- drivers/mtd/nand/qcom_nandc.c | 76 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 76 insertions(+)
+* BUILD DEPENDENCY:
+
+  This PATCH has build dependency over following BAM command descriptor
+  patch posted in DMA engine mailing list
+
+  http://www.spinics.net/lists/dmaengine/msg13665.html
+
+ drivers/mtd/nand/qcom_nandc.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-index fd77d59..1ff5daf 100644
+index 7977a70..b0a4734 100644
 --- a/drivers/mtd/nand/qcom_nandc.c
 +++ b/drivers/mtd/nand/qcom_nandc.c
-@@ -473,6 +473,27 @@ static void free_bam_transaction(struct qcom_nand_controller *nandc)
- 	return bam_txn;
- }
+@@ -22,6 +22,7 @@
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <linux/delay.h>
++#include <linux/dma/qcom_bam_dma.h>
  
-+/* Clears the BAM transaction indexes */
-+static void clear_bam_transaction(struct qcom_nand_controller *nandc)
-+{
-+	struct bam_transaction *bam_txn = nandc->bam_txn;
-+
-+	if (!nandc->props->is_bam)
-+		return;
-+
-+	bam_txn->cmd_sgl_pos = 0;
-+	bam_txn->cmd_sgl_start = 0;
-+	bam_txn->tx_sgl_pos = 0;
-+	bam_txn->tx_sgl_start = 0;
-+	bam_txn->rx_sgl_pos = 0;
-+	bam_txn->rx_sgl_start = 0;
-+
-+	sg_init_table(bam_txn->cmd_sgl, nandc->max_cwperpage *
-+		      QPIC_PER_CW_CMD_SGL);
-+	sg_init_table(bam_txn->data_sgl, nandc->max_cwperpage *
-+		      QPIC_PER_CW_DATA_SGL);
-+}
-+
- static inline struct qcom_nand_host *to_qcom_nand_host(struct nand_chip *chip)
- {
- 	return container_of(chip, struct qcom_nand_host, chip);
-@@ -704,6 +725,41 @@ static int prepare_bam_async_desc(struct qcom_nand_controller *nandc,
- 	return 0;
- }
+ /* NANDc reg offsets */
+ #define	NAND_FLASH_CMD			0x00
+@@ -199,6 +200,7 @@
+  */
+ #define dev_cmd_reg_addr(nandc, reg) ((nandc)->props->dev_cmd_reg_start + (reg))
  
-+/*
-+ * Prepares the data descriptor for BAM DMA which will be used for NAND
-+ * data reads and writes.
-+ */
-+static int prep_bam_dma_desc_data(struct qcom_nand_controller *nandc, bool read,
-+				  const void *vaddr,
-+				  int size, unsigned int flags)
-+{
-+	int ret;
-+	struct bam_transaction *bam_txn = nandc->bam_txn;
-+
-+	if (read) {
-+		sg_set_buf(&bam_txn->data_sgl[bam_txn->rx_sgl_pos],
-+			   vaddr, size);
-+		bam_txn->rx_sgl_pos++;
-+	} else {
-+		sg_set_buf(&bam_txn->data_sgl[bam_txn->tx_sgl_pos],
-+			   vaddr, size);
-+		bam_txn->tx_sgl_pos++;
-+
-+		/*
-+		 * BAM will only set EOT for DMA_PREP_INTERRUPT so if this flag
-+		 * is not set, form the DMA descriptor
-+		 */
-+		if (!(flags & NAND_BAM_NO_EOT)) {
-+			ret = prepare_bam_async_desc(nandc, nandc->tx_chan,
-+						     DMA_PREP_INTERRUPT);
-+			if (ret)
-+				return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static int prep_adm_dma_desc(struct qcom_nand_controller *nandc, bool read,
- 			     int reg_off, const void *vaddr, int size,
- 			     bool flow_control)
-@@ -854,6 +910,9 @@ static int write_reg_dma(struct qcom_nand_controller *nandc, int first,
- static int read_data_dma(struct qcom_nand_controller *nandc, int reg_off,
- 			 const u8 *vaddr, int size, unsigned int flags)
- {
-+	if (nandc->props->is_bam)
-+		return prep_bam_dma_desc_data(nandc, true, vaddr, size, flags);
-+
- 	return prep_adm_dma_desc(nandc, true, reg_off, vaddr, size, false);
- }
++#define QPIC_PER_CW_CMD_ELEMENTS	32
+ #define QPIC_PER_CW_CMD_SGL		32
+ #define QPIC_PER_CW_DATA_SGL		8
  
-@@ -869,6 +928,9 @@ static int read_data_dma(struct qcom_nand_controller *nandc, int reg_off,
- static int write_data_dma(struct qcom_nand_controller *nandc, int reg_off,
- 			  const u8 *vaddr, int size, unsigned int flags)
- {
-+	if (nandc->props->is_bam)
-+		return prep_bam_dma_desc_data(nandc, false, vaddr, size, flags);
-+
- 	return prep_adm_dma_desc(nandc, false, reg_off, vaddr, size, false);
- }
- 
-@@ -1156,6 +1218,10 @@ static void pre_command(struct qcom_nand_host *host, int command)
- 	host->last_command = command;
- 
- 	clear_read_regs(nandc);
-+
-+	if (command == NAND_CMD_RESET || command == NAND_CMD_READID ||
-+	    command == NAND_CMD_PARAM || command == NAND_CMD_ERASE1)
-+		clear_bam_transaction(nandc);
- }
- 
+@@ -221,8 +223,13 @@
  /*
-@@ -1559,6 +1625,7 @@ static int qcom_nandc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	data_buf = buf;
- 	oob_buf = oob_required ? chip->oob_poi : NULL;
+  * This data type corresponds to the BAM transaction which will be used for all
+  * NAND transfers.
++ * @bam_ce - the array of BAM command elements
+  * @cmd_sgl - sgl for NAND BAM command pipe
+  * @data_sgl - sgl for NAND BAM consumer/producer pipe
++ * @bam_ce_pos - the index in bam_ce which is available for next sgl
++ * @bam_ce_start - the index in bam_ce which marks the start position ce
++ *		   for current sgl. It will be used for size calculation
++ *		   for current sgl
+  * @cmd_sgl_pos - current index in command sgl.
+  * @cmd_sgl_start - start index in command sgl.
+  * @tx_sgl_pos - current index in data sgl for tx.
+@@ -231,8 +238,11 @@
+  * @rx_sgl_start - start index in data sgl for rx.
+  */
+ struct bam_transaction {
++	struct bam_cmd_element *bam_ce;
+ 	struct scatterlist *cmd_sgl;
+ 	struct scatterlist *data_sgl;
++	u32 bam_ce_pos;
++	u32 bam_ce_start;
+ 	u32 cmd_sgl_pos;
+ 	u32 cmd_sgl_start;
+ 	u32 tx_sgl_pos;
+@@ -462,7 +472,8 @@ static void free_bam_transaction(struct qcom_nand_controller *nandc)
  
-+	clear_bam_transaction(nandc);
- 	ret = read_page_ecc(host, data_buf, oob_buf);
- 	if (ret) {
- 		dev_err(nandc->dev, "failure to read page\n");
-@@ -1584,6 +1651,8 @@ static int qcom_nandc_read_page_raw(struct mtd_info *mtd,
- 	oob_buf = chip->oob_poi;
+ 	bam_txn_size =
+ 		sizeof(*bam_txn) + num_cw *
+-		((sizeof(*bam_txn->cmd_sgl) * QPIC_PER_CW_CMD_SGL) +
++		((sizeof(*bam_txn->bam_ce) * QPIC_PER_CW_CMD_ELEMENTS) +
++		(sizeof(*bam_txn->cmd_sgl) * QPIC_PER_CW_CMD_SGL) +
+ 		(sizeof(*bam_txn->data_sgl) * QPIC_PER_CW_DATA_SGL));
  
- 	host->use_ecc = false;
+ 	bam_txn_buf = devm_kzalloc(nandc->dev, bam_txn_size, GFP_KERNEL);
+@@ -472,6 +483,10 @@ static void free_bam_transaction(struct qcom_nand_controller *nandc)
+ 	bam_txn = bam_txn_buf;
+ 	bam_txn_buf += sizeof(*bam_txn);
+ 
++	bam_txn->bam_ce = bam_txn_buf;
++	bam_txn_buf +=
++		sizeof(*bam_txn->bam_ce) * QPIC_PER_CW_CMD_ELEMENTS * num_cw;
 +
-+	clear_bam_transaction(nandc);
- 	update_rw_regs(host, ecc->steps, true);
- 	config_nand_page_read(nandc);
+ 	bam_txn->cmd_sgl = bam_txn_buf;
+ 	bam_txn_buf +=
+ 		sizeof(*bam_txn->cmd_sgl) * QPIC_PER_CW_CMD_SGL * num_cw;
+@@ -489,6 +504,8 @@ static void clear_bam_transaction(struct qcom_nand_controller *nandc)
+ 	if (!nandc->props->is_bam)
+ 		return;
  
-@@ -1655,6 +1724,7 @@ static int qcom_nandc_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
- 	int ret;
- 
- 	clear_read_regs(nandc);
-+	clear_bam_transaction(nandc);
- 
- 	host->use_ecc = true;
- 	set_address(host, 0, page);
-@@ -1678,6 +1748,7 @@ static int qcom_nandc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	int i, ret;
- 
- 	clear_read_regs(nandc);
-+	clear_bam_transaction(nandc);
- 
- 	data_buf = (u8 *)buf;
- 	oob_buf = chip->oob_poi;
-@@ -1743,6 +1814,7 @@ static int qcom_nandc_write_page_raw(struct mtd_info *mtd,
- 	int i, ret;
- 
- 	clear_read_regs(nandc);
-+	clear_bam_transaction(nandc);
- 
- 	data_buf = (u8 *)buf;
- 	oob_buf = chip->oob_poi;
-@@ -1819,11 +1891,13 @@ static int qcom_nandc_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
- 
- 	host->use_ecc = true;
- 
-+	clear_bam_transaction(nandc);
- 	ret = copy_last_cw(host, page);
- 	if (ret)
- 		return ret;
- 
- 	clear_read_regs(nandc);
-+	clear_bam_transaction(nandc);
- 
- 	/* calculate the data and oob size for the last codeword/step */
- 	data_size = ecc->size - ((ecc->steps - 1) << 2);
-@@ -1876,6 +1950,7 @@ static int qcom_nandc_block_bad(struct mtd_info *mtd, loff_t ofs)
- 	 */
- 	host->use_ecc = false;
- 
-+	clear_bam_transaction(nandc);
- 	ret = copy_last_cw(host, page);
- 	if (ret)
- 		goto err;
-@@ -1906,6 +1981,7 @@ static int qcom_nandc_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 	int page, ret, status = 0;
- 
- 	clear_read_regs(nandc);
-+	clear_bam_transaction(nandc);
- 
- 	/*
- 	 * to mark the BBM as bad, we flash the entire last codeword with 0s.
++	bam_txn->bam_ce_pos = 0;
++	bam_txn->bam_ce_start = 0;
+ 	bam_txn->cmd_sgl_pos = 0;
+ 	bam_txn->cmd_sgl_start = 0;
+ 	bam_txn->tx_sgl_pos = 0;
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
