@@ -1,24 +1,22 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1diJcN-0006Wb-8f
- for linux-mtd@lists.infradead.org; Thu, 17 Aug 2017 12:09:43 +0000
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>,
- Archit Taneja <architt@codeaurora.org>,
- Sricharan R <sricharan@codeaurora.org>,
- Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH v5 16/16] mtd: nand: qcom: Support for IPQ8074 QPIC NAND
- controller
-Date: Thu, 17 Aug 2017 17:37:54 +0530
-Message-Id: <1502971674-13810-17-git-send-email-absahu@codeaurora.org>
-In-Reply-To: <1502971674-13810-1-git-send-email-absahu@codeaurora.org>
-References: <1502971674-13810-1-git-send-email-absahu@codeaurora.org>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1diKNW-0000Az-CE
+ for linux-mtd@lists.infradead.org; Thu, 17 Aug 2017 12:58:28 +0000
+Date: Thu, 17 Aug 2017 14:57:51 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: spear_smi: add NULL check on devm_kzalloc() return
+ value
+Message-ID: <20170817145751.2715eba4@bbrezillon>
+In-Reply-To: <20170706222550.GA30998@embeddedgus>
+References: <20170706222550.GA30998@embeddedgus>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,46 +26,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add the compatible string for IPQ8074 QPIC NAND controller
-version 1.5.0 which uses BAM DMA and its FLASH_DEV_CMD registers
-starting offset is 0x7000.
+Le Thu, 6 Jul 2017 17:25:50 -0500,
+"Gustavo A. R. Silva" <garsilva@embeddedor.com> a =C3=A9crit :
 
-Reviewed-by: Archit Taneja <architt@codeaurora.org>
-Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
----
+> Check return value from call to devm_kzalloc()
+> in order to prevent a NULL pointer dereference.
+>=20
+> This issue was detected using Coccinelle and the following semantic patch:
+>=20
+> @@
+> expression x;
+> identifier fld;
+> @@
+>=20
+> * x =3D devm_kzalloc(...);
+>   ... when !=3D x =3D=3D NULL
+>   x->fld
+>=20
 
-* Changes from v4: None
+Applied to l2-mtd/master.
 
- drivers/mtd/nand/qcom_nandc.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Thanks,
 
-diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-index 84fcdb3..97ce16a 100644
---- a/drivers/mtd/nand/qcom_nandc.c
-+++ b/drivers/mtd/nand/qcom_nandc.c
-@@ -2872,6 +2872,12 @@ static int qcom_nandc_remove(struct platform_device *pdev)
- 	.dev_cmd_reg_start = 0x0,
- };
- 
-+static const struct qcom_nandc_props ipq8074_nandc_props = {
-+	.ecc_modes = (ECC_BCH_4BIT | ECC_BCH_8BIT),
-+	.is_bam = true,
-+	.dev_cmd_reg_start = 0x7000,
-+};
-+
- /*
-  * data will hold a struct pointer containing more differences once we support
-  * more controller variants
-@@ -2885,6 +2891,10 @@ static int qcom_nandc_remove(struct platform_device *pdev)
- 		.compatible = "qcom,ipq4019-nand",
- 		.data = &ipq4019_nandc_props,
- 	},
-+	{
-+		.compatible = "qcom,ipq8074-nand",
-+		.data = &ipq8074_nandc_props,
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, qcom_nandc_of_match);
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+Boris
+
+> Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
+> ---
+>  drivers/mtd/devices/spear_smi.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spear_=
+smi.c
+> index dd50698..ddf4789 100644
+> --- a/drivers/mtd/devices/spear_smi.c
+> +++ b/drivers/mtd/devices/spear_smi.c
+> @@ -775,6 +775,8 @@ static int spear_smi_probe_config_dt(struct platform_=
+device *pdev,
+>  	pdata->board_flash_info =3D devm_kzalloc(&pdev->dev,
+>  					       sizeof(*pdata->board_flash_info),
+>  					       GFP_KERNEL);
+> +	if (!pdata->board_flash_info)
+> +		return -ENOMEM;
+> =20
+>  	/* Fill structs for each subnode (flash device) */
+>  	while ((pp =3D of_get_next_child(np, pp))) {
