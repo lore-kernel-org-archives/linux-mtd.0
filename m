@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1diJcN-0007xT-44
- for linux-mtd@lists.infradead.org; Thu, 17 Aug 2017 12:10:53 +0000
+ by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1diJc8-0006W0-8V
+ for linux-mtd@lists.infradead.org; Thu, 17 Aug 2017 12:09:28 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -13,10 +13,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Archit Taneja <architt@codeaurora.org>,
  Sricharan R <sricharan@codeaurora.org>,
  Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH v5 15/16] mtd: nand: qcom: support for IPQ4019 QPIC NAND
- controller
-Date: Thu, 17 Aug 2017 17:37:53 +0530
-Message-Id: <1502971674-13810-16-git-send-email-absahu@codeaurora.org>
+Subject: [PATCH v5 12/16] dt-bindings: qcom_nandc: fix the ipq806x device tree
+ example
+Date: Thu, 17 Aug 2017 17:37:50 +0530
+Message-Id: <1502971674-13810-13-git-send-email-absahu@codeaurora.org>
 In-Reply-To: <1502971674-13810-1-git-send-email-absahu@codeaurora.org>
 References: <1502971674-13810-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,45 +28,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add the compatible string for IPQ4019 QPIC NAND controller
-version 1.4.0 which uses BAM DMA.
+1. Correct the compatible string for IPQ806x
+2. Change the NAND controller and NAND chip nodes name
+   for more clarity.
 
-Reviewed-by: Archit Taneja <architt@codeaurora.org>
+Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 ---
 
 * Changes from v4: None
 
- drivers/mtd/nand/qcom_nandc.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ Documentation/devicetree/bindings/mtd/qcom_nandc.txt | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-index 52d9fae..84fcdb3 100644
---- a/drivers/mtd/nand/qcom_nandc.c
-+++ b/drivers/mtd/nand/qcom_nandc.c
-@@ -2866,6 +2866,12 @@ static int qcom_nandc_remove(struct platform_device *pdev)
- 	.dev_cmd_reg_start = 0x0,
- };
+diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+index 26360fe..f475b65 100644
+--- a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
++++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+@@ -42,8 +42,8 @@ partition.txt for more detail.
  
-+static const struct qcom_nandc_props ipq4019_nandc_props = {
-+	.ecc_modes = (ECC_BCH_4BIT | ECC_BCH_8BIT),
-+	.is_bam = true,
-+	.dev_cmd_reg_start = 0x0,
-+};
-+
- /*
-  * data will hold a struct pointer containing more differences once we support
-  * more controller variants
-@@ -2875,6 +2881,10 @@ static int qcom_nandc_remove(struct platform_device *pdev)
- 		.compatible = "qcom,ipq806x-nand",
- 		.data = &ipq806x_nandc_props,
- 	},
-+	{
-+		.compatible = "qcom,ipq4019-nand",
-+		.data = &ipq4019_nandc_props,
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, qcom_nandc_of_match);
+ Example:
+ 
+-nand@1ac00000 {
+-	compatible = "qcom,ebi2-nandc";
++nand-controller@1ac00000 {
++	compatible = "qcom,ipq806x-nand";
+ 	reg = <0x1ac00000 0x800>;
+ 
+ 	clocks = <&gcc EBI2_CLK>,
+@@ -58,7 +58,7 @@ nand@1ac00000 {
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
+ 
+-	nandcs@0 {
++	nand@0 {
+ 		reg = <0>;
+ 
+ 		nand-ecc-strength = <4>;
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
