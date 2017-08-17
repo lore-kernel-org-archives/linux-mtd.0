@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1diJbe-0007Fh-3u
- for linux-mtd@lists.infradead.org; Thu, 17 Aug 2017 12:09:42 +0000
+ id 1diJbo-0007Ok-3w
+ for linux-mtd@lists.infradead.org; Thu, 17 Aug 2017 12:10:02 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -13,9 +13,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Archit Taneja <architt@codeaurora.org>,
  Sricharan R <sricharan@codeaurora.org>,
  Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH v5 07/16] mtd: nand: qcom: enable BAM or ADM mode
-Date: Thu, 17 Aug 2017 17:37:45 +0530
-Message-Id: <1502971674-13810-8-git-send-email-absahu@codeaurora.org>
+Subject: [PATCH v5 09/16] mtd: nand: qcom: support for different DEV_CMD
+ register offsets
+Date: Thu, 17 Aug 2017 17:37:47 +0530
+Message-Id: <1502971674-13810-10-git-send-email-absahu@codeaurora.org>
 In-Reply-To: <1502971674-13810-1-git-send-email-absahu@codeaurora.org>
 References: <1502971674-13810-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,64 +28,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-1. DM_EN is only required for EBI2 NAND controller which uses ADM
-2. BAM mode will be disabled after power on reset which needs to
-   be enabled before starting any BAM transfers.
+The FLASH_DEV_CMD registers starting offset is not same in
+different QPIC NAND controller versions. This patch adds
+the starting offset in NAND controller properties and uses
+the same for calculating the actual offset of these registers.
 
 Reviewed-by: Archit Taneja <architt@codeaurora.org>
 Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 ---
 
-* Changes from v4: None
+* Changes from v4:
 
- drivers/mtd/nand/qcom_nandc.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+1. Changed macro name from nandc_dev_addr to dev_cmd_reg_addr
+2. Modified comment for nandc_dev_addr
+3. Changed new property variable name from flash_dev_offset to
+   dev_cmd_reg_start
+
+ drivers/mtd/nand/qcom_nandc.c | 25 +++++++++++++++++++------
+ 1 file changed, 19 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-index 81cfce7..fd77d59 100644
+index 1ff5daf..7977a70 100644
 --- a/drivers/mtd/nand/qcom_nandc.c
 +++ b/drivers/mtd/nand/qcom_nandc.c
-@@ -163,6 +163,9 @@
- #define NAND_DEV_CMD_VLD_VAL		(READ_START_VLD | WRITE_START_VLD | \
- 					 ERASE_START_VLD | SEQ_READ_START_VLD)
+@@ -193,6 +193,12 @@
+ 	      ((size) << READ_LOCATION_SIZE) |			\
+ 	      ((is_last) << READ_LOCATION_LAST))
  
-+/* NAND_CTRL bits */
-+#define	BAM_MODE_EN			BIT(0)
++/*
++ * Returns the actual register address for all NAND_DEV_ registers
++ * (i.e. NAND_DEV_CMD0, NAND_DEV_CMD1, NAND_DEV_CMD2 and NAND_DEV_CMD_VLD)
++ */
++#define dev_cmd_reg_addr(nandc, reg) ((nandc)->props->dev_cmd_reg_start + (reg))
 +
- /*
-  * the NAND controller performs reads/writes with ECC in 516 byte chunks.
-  * the driver calls the chunks 'step' or 'codeword' interchangeably
-@@ -1042,7 +1045,8 @@ static int read_id(struct qcom_nand_host *host, int column)
- 	nandc_set_reg(nandc, NAND_FLASH_CMD, FETCH_ID);
- 	nandc_set_reg(nandc, NAND_ADDR0, column);
- 	nandc_set_reg(nandc, NAND_ADDR1, 0);
--	nandc_set_reg(nandc, NAND_FLASH_CHIP_SELECT, DM_EN);
-+	nandc_set_reg(nandc, NAND_FLASH_CHIP_SELECT,
-+		      nandc->props->is_bam ? 0 : DM_EN);
- 	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
+ #define QPIC_PER_CW_CMD_SGL		32
+ #define QPIC_PER_CW_DATA_SGL		8
  
- 	write_reg_dma(nandc, NAND_FLASH_CMD, 4, NAND_BAM_NEXT_SGL);
-@@ -2414,12 +2418,19 @@ static void qcom_nandc_unalloc(struct qcom_nand_controller *nandc)
- /* one time setup of a few nand controller registers */
- static int qcom_nandc_setup(struct qcom_nand_controller *nandc)
- {
-+	u32 nand_ctrl;
+@@ -429,10 +435,12 @@ struct qcom_nand_host {
+  * among different NAND controllers.
+  * @ecc_modes - ecc mode for NAND
+  * @is_bam - whether NAND controller is using BAM
++ * @dev_cmd_reg_start - NAND_DEV_CMD_* registers starting offset
+  */
+ struct qcom_nandc_props {
+ 	u32 ecc_modes;
+ 	bool is_bam;
++	u32 dev_cmd_reg_start;
+ };
+ 
+ /* Frees the BAM transaction memory */
+@@ -848,6 +856,9 @@ static int read_reg_dma(struct qcom_nand_controller *nandc, int first,
+ 	if (first == NAND_READ_ID || first == NAND_FLASH_STATUS)
+ 		flow_control = true;
+ 
++	if (first == NAND_DEV_CMD_VLD || first == NAND_DEV_CMD1)
++		first = dev_cmd_reg_addr(nandc, first);
 +
+ 	size = num_regs * sizeof(u32);
+ 	vaddr = nandc->reg_read_buf + nandc->reg_read_pos;
+ 	nandc->reg_read_pos += num_regs;
+@@ -886,11 +897,11 @@ static int write_reg_dma(struct qcom_nand_controller *nandc, int first,
+ 	if (first == NAND_EXEC_CMD)
+ 		flags |= NAND_BAM_NWD;
+ 
+-	if (first == NAND_DEV_CMD1_RESTORE)
+-		first = NAND_DEV_CMD1;
++	if (first == NAND_DEV_CMD1_RESTORE || first == NAND_DEV_CMD1)
++		first = dev_cmd_reg_addr(nandc, NAND_DEV_CMD1);
+ 
+-	if (first == NAND_DEV_CMD_VLD_RESTORE)
+-		first = NAND_DEV_CMD_VLD;
++	if (first == NAND_DEV_CMD_VLD_RESTORE || first == NAND_DEV_CMD_VLD)
++		first = dev_cmd_reg_addr(nandc, NAND_DEV_CMD_VLD);
+ 
+ 	size = num_regs * sizeof(u32);
+ 
+@@ -2498,7 +2509,8 @@ static int qcom_nandc_setup(struct qcom_nand_controller *nandc)
+ 
  	/* kill onenand */
  	nandc_write(nandc, SFLASHC_BURST_CFG, 0);
- 	nandc_write(nandc, NAND_DEV_CMD_VLD, NAND_DEV_CMD_VLD_VAL);
+-	nandc_write(nandc, NAND_DEV_CMD_VLD, NAND_DEV_CMD_VLD_VAL);
++	nandc_write(nandc, dev_cmd_reg_addr(nandc, NAND_DEV_CMD_VLD),
++		    NAND_DEV_CMD_VLD_VAL);
  
--	/* enable ADM DMA */
--	nandc_write(nandc, NAND_FLASH_CHIP_SELECT, DM_EN);
-+	/* enable ADM or BAM DMA */
-+	if (nandc->props->is_bam) {
-+		nand_ctrl = nandc_read(nandc, NAND_CTRL);
-+		nandc_write(nandc, NAND_CTRL, nand_ctrl | BAM_MODE_EN);
-+	} else {
-+		nandc_write(nandc, NAND_FLASH_CHIP_SELECT, DM_EN);
-+	}
+ 	/* enable ADM or BAM DMA */
+ 	if (nandc->props->is_bam) {
+@@ -2509,7 +2521,7 @@ static int qcom_nandc_setup(struct qcom_nand_controller *nandc)
+ 	}
  
  	/* save the original values of these registers */
- 	nandc->cmd1 = nandc_read(nandc, NAND_DEV_CMD1);
+-	nandc->cmd1 = nandc_read(nandc, NAND_DEV_CMD1);
++	nandc->cmd1 = nandc_read(nandc, dev_cmd_reg_addr(nandc, NAND_DEV_CMD1));
+ 	nandc->vld = NAND_DEV_CMD_VLD_VAL;
+ 
+ 	return 0;
+@@ -2758,6 +2770,7 @@ static int qcom_nandc_remove(struct platform_device *pdev)
+ static const struct qcom_nandc_props ipq806x_nandc_props = {
+ 	.ecc_modes = (ECC_RS_4BIT | ECC_BCH_8BIT),
+ 	.is_bam = false,
++	.dev_cmd_reg_start = 0x0,
+ };
+ 
+ /*
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
