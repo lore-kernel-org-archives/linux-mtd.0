@@ -1,14 +1,17 @@
-Date: Thu, 17 Aug 2017 15:04:08 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by casper.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1diKTg-0006Yl-Vn
+ for linux-mtd@lists.infradead.org; Thu, 17 Aug 2017 13:04:51 +0000
+Date: Thu, 17 Aug 2017 15:03:54 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] mtd: physmap_of: Retire Gemini pad control
-Message-ID: <20170817150408.79d16349@bbrezillon>
-In-Reply-To: <20170808190510.11496-1-linus.walleij@linaro.org>
-References: <20170808190510.11496-1-linus.walleij@linaro.org>
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
+ richard@nod.at, cyrille.pitchen@wedev4u.fr, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] mtd: physmap_of: Fix resources leak in 'of_flash_probe()'
+Message-ID: <20170817150354.56cdd114@bbrezillon>
+In-Reply-To: <20170806125501.10368-1-christophe.jaillet@wanadoo.fr>
+References: <20170806125501.10368-1-christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -21,13 +24,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le Tue,  8 Aug 2017 21:05:10 +0200,
-Linus Walleij <linus.walleij@linaro.org> a =C3=A9crit :
+Le Sun,  6 Aug 2017 14:55:01 +0200,
+Christophe JAILLET <christophe.jaillet@wanadoo.fr> a =C3=A9crit :
 
-> I wrote a proper pin control driver for the Gemini. Retire this
-> SoC-specific pad control and rely on the pin controller to manage
-> this.
->=20
+> If 'of_flash_probe_gemini()' or 'of_flash_probe_versatile()' fail, we must
+> reslease some resources, as already done in all error handling paths in
+> this function.
 
 Applied to l2-mtd/master.
 
@@ -35,44 +37,28 @@ Thanks,
 
 Boris
 
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
->  drivers/mtd/maps/physmap_of_gemini.c | 16 ----------------
->  1 file changed, 16 deletions(-)
 >=20
-> diff --git a/drivers/mtd/maps/physmap_of_gemini.c b/drivers/mtd/maps/phys=
-map_of_gemini.c
-> index 05b286b5289f..4ed1a6bb4d3c 100644
-> --- a/drivers/mtd/maps/physmap_of_gemini.c
-> +++ b/drivers/mtd/maps/physmap_of_gemini.c
-> @@ -43,13 +43,6 @@
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  drivers/mtd/maps/physmap_of_core.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/mtd/maps/physmap_of_core.c b/drivers/mtd/maps/physma=
+p_of_core.c
+> index 62fa6836f218..2c8cc97ce019 100644
+> --- a/drivers/mtd/maps/physmap_of_core.c
+> +++ b/drivers/mtd/maps/physmap_of_core.c
+> @@ -235,10 +235,10 @@ static int of_flash_probe(struct platform_device *d=
+ev)
 > =20
->  #define FLASH_PARALLEL_HIGH_PIN_CNT	(1 << 20)	/* else low pin cnt */
+>  		err =3D of_flash_probe_gemini(dev, dp, &info->list[i].map);
+>  		if (err)
+> -			return err;
+> +			goto err_out;
+>  		err =3D of_flash_probe_versatile(dev, dp, &info->list[i].map);
+>  		if (err)
+> -			return err;
+> +			goto err_out;
 > =20
-> -/* Miscellaneous Control Register */
-> -#define GLOBAL_MISC_CTRL		0x30
-> -#define FLASH_PADS_MASK			0x07
-> -#define NAND_PADS_DISABLE		BIT(2)
-> -#define PFLASH_PADS_DISABLE		BIT(1)
-> -#define SFLASH_PADS_DISABLE		BIT(0)
-> -
->  static const struct of_device_id syscon_match[] =3D {
->  	{ .compatible =3D "cortina,gemini-syscon" },
->  	{ },
-> @@ -102,15 +95,6 @@ int of_flash_probe_gemini(struct platform_device *pde=
-v,
->  				 map->bankwidth * 8);
->  	}
-> =20
-> -	/* Activate parallel (NOR flash) mode */
-> -	ret =3D regmap_update_bits(rmap, GLOBAL_MISC_CTRL,
-> -				 FLASH_PADS_MASK,
-> -				 SFLASH_PADS_DISABLE | NAND_PADS_DISABLE);
-> -	if (ret) {
-> -		dev_err(dev, "unable to set up physmap pads\n");
-> -		return -ENODEV;
-> -	}
-> -
->  	dev_info(&pdev->dev, "initialized Gemini-specific physmap control\n");
-> =20
->  	return 0;
+>  		err =3D -ENOMEM;
+>  		info->list[i].map.virt =3D ioremap(info->list[i].map.phys,
