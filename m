@@ -1,27 +1,19 @@
-Received: from mail-pg0-f66.google.com ([74.125.83.66])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1diMRV-0003FI-LB
- for linux-mtd@lists.infradead.org; Thu, 17 Aug 2017 15:10:43 +0000
-Received: by mail-pg0-f66.google.com with SMTP id y129so10335272pgy.3
- for <linux-mtd@lists.infradead.org>; Thu, 17 Aug 2017 08:10:21 -0700 (PDT)
-Date: Thu, 17 Aug 2017 10:10:16 -0500
-From: Rob Herring <robh@kernel.org>
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: ralf@linux-mips.org, linux-mips@linux-mips.org,
- linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
- devicetree@vger.kernel.org, martin.blumenstingl@googlemail.com,
- john@phrozen.org, linux-spi@vger.kernel.org,
- hauke.mehrtens@intel.com, andy.shevchenko@gmail.com,
- p.zabel@pengutronix.de, kishon@ti.com, mark.rutland@arm.com
-Subject: Re: [PATCH v9 14/16] phy: Add an USB PHY driver for the Lantiq SoCs
- using the RCU module
-Message-ID: <20170817151016.2ujg6v4n7dstydo2@rob-hp-laptop>
-References: <20170808225247.32266-1-hauke@hauke-m.de>
- <20170808225247.32266-15-hauke@hauke-m.de>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1diSlM-0003sn-AF
+ for linux-mtd@lists.infradead.org; Thu, 17 Aug 2017 21:55:40 +0000
+Date: Thu, 17 Aug 2017 23:55:02 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, guohanjun@huawei.com
+Subject: Re: [PATCH] mtd: nand: convert to unified device property interface
+Message-ID: <20170817235502.6c0e8804@bbrezillon>
+In-Reply-To: <1502868545-124616-1-git-send-email-wangkefeng.wang@huawei.com>
+References: <1502868545-124616-1-git-send-email-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170808225247.32266-15-hauke@hauke-m.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,43 +23,201 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Aug 09, 2017 at 12:52:45AM +0200, Hauke Mehrtens wrote:
-> This driver starts the DWC2 core(s) built into the XWAY SoCs and provides
-> the PHY interfaces for each core. The phy instances can be passed to the
-> dwc2 driver, which already supports the generic phy interface.
-> 
-> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
-> Cc: Kishon Vijay Abraham I <kishon@ti.com>
+Le Wed, 16 Aug 2017 15:29:05 +0800,
+Kefeng Wang <wangkefeng.wang@huawei.com> a =C3=A9crit :
+
+> Changing from of_* to device_* interface, then we can also extract
+> the properties from ACPI tables as well as from DT.
+>=20
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 > ---
->  .../bindings/phy/phy-lantiq-rcu-usb2.txt           |  40 ++++
->  arch/mips/lantiq/xway/sysctrl.c                    |  36 +--
->  drivers/phy/Kconfig                                |   1 +
->  drivers/phy/Makefile                               |   2 +-
->  drivers/phy/lantiq/Kconfig                         |   9 +
->  drivers/phy/lantiq/Makefile                        |   1 +
->  drivers/phy/lantiq/phy-lantiq-rcu-usb2.c           | 254 +++++++++++++++++++++
->  7 files changed, 324 insertions(+), 19 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/phy/phy-lantiq-rcu-usb2.txt
->  create mode 100644 drivers/phy/lantiq/Kconfig
->  create mode 100644 drivers/phy/lantiq/Makefile
->  create mode 100644 drivers/phy/lantiq/phy-lantiq-rcu-usb2.c
-> 
-> diff --git a/Documentation/devicetree/bindings/phy/phy-lantiq-rcu-usb2.txt b/Documentation/devicetree/bindings/phy/phy-lantiq-rcu-usb2.txt
-> new file mode 100644
-> index 000000000000..d8d25063dd5d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/phy/phy-lantiq-rcu-usb2.txt
-> @@ -0,0 +1,40 @@
-> +Lantiq XWAY SoC RCU USB 1.1/2.0 PHY binding
-> +===========================================
-> +
-> +This binding describes the USB PHY hardware provided by the RCU module on the
-> +Lantiq XWAY SoCs.
-> +
-> +This driver has to be a sub node of the Lantiq RCU block.
+>=20
+> - APCI will be supported in hisi504_nand.c, and it will use nand_scan_ide=
+nt().
+>=20
+>  drivers/mtd/nand/nand_base.c | 54 ++++++++++++++++++++++----------------=
+------
+>  1 file changed, 27 insertions(+), 27 deletions(-)
+>=20
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index c6c18b8..27a0947 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -46,7 +46,7 @@
+>  #include <linux/bitops.h>
+>  #include <linux/io.h>
+>  #include <linux/mtd/partitions.h>
+> -#include <linux/of.h>
+> +#include <linux/property.h>
+> =20
+>  static int nand_get_device(struct mtd_info *mtd, int new_state);
+> =20
+> @@ -4209,12 +4209,12 @@ static int nand_detect(struct nand_chip *chip, st=
+ruct nand_flash_dev *type)
+>  	[NAND_ECC_ON_DIE]	=3D "on-die",
+>  };
+> =20
+> -static int of_get_nand_ecc_mode(struct device_node *np)
+> +static int device_get_nand_ecc_mode(struct device *dev)
+>  {
+>  	const char *pm;
+>  	int err, i;
+> =20
+> -	err =3D of_property_read_string(np, "nand-ecc-mode", &pm);
+> +	err =3D device_property_read_string(dev, "nand-ecc-mode", &pm);
+>  	if (err < 0)
+>  		return err;
+> =20
+> @@ -4238,12 +4238,12 @@ static int of_get_nand_ecc_mode(struct device_nod=
+e *np)
+>  	[NAND_ECC_BCH]		=3D "bch",
+>  };
+> =20
+> -static int of_get_nand_ecc_algo(struct device_node *np)
+> +static int device_get_nand_ecc_algo(struct device *dev)
+>  {
+>  	const char *pm;
+>  	int err, i;
+> =20
+> -	err =3D of_property_read_string(np, "nand-ecc-algo", &pm);
+> +	err =3D device_property_read_string(dev, "nand-ecc-algo", &pm);
+>  	if (!err) {
+>  		for (i =3D NAND_ECC_HAMMING; i < ARRAY_SIZE(nand_ecc_algos); i++)
+>  			if (!strcasecmp(pm, nand_ecc_algos[i]))
+> @@ -4255,7 +4255,7 @@ static int of_get_nand_ecc_algo(struct device_node =
+*np)
+>  	 * For backward compatibility we also read "nand-ecc-mode" checking
+>  	 * for some obsoleted values that were specifying ECC algorithm.
+>  	 */
+> -	err =3D of_property_read_string(np, "nand-ecc-mode", &pm);
+> +	err =3D device_property_read_string(dev, "nand-ecc-mode", &pm);
+>  	if (err < 0)
+>  		return err;
+> =20
+> @@ -4267,29 +4267,29 @@ static int of_get_nand_ecc_algo(struct device_nod=
+e *np)
+>  	return -ENODEV;
+>  }
+> =20
+> -static int of_get_nand_ecc_step_size(struct device_node *np)
+> +static int device_get_nand_ecc_step_size(struct device *dev)
+>  {
+>  	int ret;
+>  	u32 val;
+> =20
+> -	ret =3D of_property_read_u32(np, "nand-ecc-step-size", &val);
+> +	ret =3D device_property_read_u32(dev, "nand-ecc-step-size", &val);
+>  	return ret ? ret : val;
+>  }
+> =20
+> -static int of_get_nand_ecc_strength(struct device_node *np)
+> +static int device_get_nand_ecc_strength(struct device *dev)
+>  {
+>  	int ret;
+>  	u32 val;
+> =20
+> -	ret =3D of_property_read_u32(np, "nand-ecc-strength", &val);
+> +	ret =3D device_property_read_u32(dev, "nand-ecc-strength", &val);
+>  	return ret ? ret : val;
+>  }
+> =20
+> -static int of_get_nand_bus_width(struct device_node *np)
+> +static int device_get_nand_bus_width(struct device *dev)
+>  {
+>  	u32 val;
+> =20
+> -	if (of_property_read_u32(np, "nand-bus-width", &val))
+> +	if (device_property_read_u32(dev, "nand-bus-width", &val))
+>  		return 8;
+> =20
+>  	switch (val) {
+> @@ -4301,29 +4301,28 @@ static int of_get_nand_bus_width(struct device_no=
+de *np)
+>  	}
+>  }
+> =20
+> -static bool of_get_nand_on_flash_bbt(struct device_node *np)
+> +static bool device_get_nand_on_flash_bbt(struct device *dev)
 
-s/driver/node/
+Not sure I like the device prefix, for the same reason I don't like
+nand_chip_init(). How about fw_ or fwnode_?
 
-With that,
+>  {
+> -	return of_property_read_bool(np, "nand-on-flash-bbt");
+> +	return device_property_read_bool(dev, "nand-on-flash-bbt");
+>  }
+> =20
+> -static int nand_dt_init(struct nand_chip *chip)
+> +static int nand_chip_init(struct nand_chip *chip, struct device *dev)
 
-Acked-by: Rob Herring <robh@kernel.org>
+Hm, nand_chip_init() is confusing. How about nand_fwnode_init() or
+nand_get_fw_props()?
+
+>  {
+> -	struct device_node *dn =3D nand_get_flash_node(chip);
+>  	int ecc_mode, ecc_algo, ecc_strength, ecc_step;
+> =20
+> -	if (!dn)
+> +	if (!dev)
+>  		return 0;
+> =20
+> -	if (of_get_nand_bus_width(dn) =3D=3D 16)
+> +	if (device_get_nand_bus_width(dev) =3D=3D 16)
+>  		chip->options |=3D NAND_BUSWIDTH_16;
+> =20
+> -	if (of_get_nand_on_flash_bbt(dn))
+> +	if (device_get_nand_on_flash_bbt(dev))
+>  		chip->bbt_options |=3D NAND_BBT_USE_FLASH;
+> =20
+> -	ecc_mode =3D of_get_nand_ecc_mode(dn);
+> -	ecc_algo =3D of_get_nand_ecc_algo(dn);
+> -	ecc_strength =3D of_get_nand_ecc_strength(dn);
+> -	ecc_step =3D of_get_nand_ecc_step_size(dn);
+> +	ecc_mode =3D device_get_nand_ecc_mode(dev);
+> +	ecc_algo =3D device_get_nand_ecc_algo(dev);
+> +	ecc_strength =3D device_get_nand_ecc_strength(dev);
+> +	ecc_step =3D device_get_nand_ecc_step_size(dev);
+> =20
+>  	if (ecc_mode >=3D 0)
+>  		chip->ecc.mode =3D ecc_mode;
+> @@ -4337,7 +4336,7 @@ static int nand_dt_init(struct nand_chip *chip)
+>  	if (ecc_step > 0)
+>  		chip->ecc.size =3D ecc_step;
+> =20
+> -	if (of_property_read_bool(dn, "nand-ecc-maximize"))
+> +	if (device_property_read_bool(dev, "nand-ecc-maximize"))
+>  		chip->ecc.options |=3D NAND_ECC_MAXIMIZE;
+> =20
+>  	return 0;
+> @@ -4358,14 +4357,15 @@ int nand_scan_ident(struct mtd_info *mtd, int max=
+chips,
+>  {
+>  	int i, nand_maf_id, nand_dev_id;
+>  	struct nand_chip *chip =3D mtd_to_nand(mtd);
+> +	struct device *dev =3D mtd->dev.parent;
+
+Sorry but this is wrong. If you do that you break all drivers that have
+NAND devices represented as children nodes of the NAND controller.
+
+If you want to support ACPI, you'll have to use &mtd->dev as the
+reference dev, and make sure its ->fwnode is correctly set (just patch
+nand_get_flash_node() to do the right thing).
+
+>  	int ret;
+> =20
+> -	ret =3D nand_dt_init(chip);
+> +	ret =3D nand_chip_init(chip, dev);
+
+No need to pass dev as a second argument here (can be extracted inside
+the function).
+
+>  	if (ret)
+>  		return ret;
+> =20
+> -	if (!mtd->name && mtd->dev.parent)
+> -		mtd->name =3D dev_name(mtd->dev.parent);
+> +	if (!mtd->name && dev)
+> +		mtd->name =3D dev_name(dev);
+> =20
+>  	if ((!chip->cmdfunc || !chip->select_chip) && !chip->cmd_ctrl) {
+>  		/*
