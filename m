@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1diJbA-0006Te-GW
- for linux-mtd@lists.infradead.org; Thu, 17 Aug 2017 12:08:29 +0000
+ id 1diJcN-0006Wb-8f
+ for linux-mtd@lists.infradead.org; Thu, 17 Aug 2017 12:09:43 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -13,12 +13,12 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Archit Taneja <architt@codeaurora.org>,
  Sricharan R <sricharan@codeaurora.org>,
  Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH v5 00/16] Add QCOM QPIC NAND support
-Date: Thu, 17 Aug 2017 17:37:38 +0530
-Message-Id: <1502971674-13810-1-git-send-email-absahu@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH v5 16/16] mtd: nand: qcom: Support for IPQ8074 QPIC NAND
+ controller
+Date: Thu, 17 Aug 2017 17:37:54 +0530
+Message-Id: <1502971674-13810-17-git-send-email-absahu@codeaurora.org>
+In-Reply-To: <1502971674-13810-1-git-send-email-absahu@codeaurora.org>
+References: <1502971674-13810-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,80 +28,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* v5:
+Add the compatible string for IPQ8074 QPIC NAND controller
+version 1.5.0 which uses BAM DMA and its FLASH_DEV_CMD registers
+starting offset is 0x7000.
 
-1. Removed the patches already applied to linux-next and rebased the
-   remaining patches on [3]
-2. Addressed the review comments in v4 and Added Archit Reviewed
-   by tag.
+Reviewed-by: Archit Taneja <architt@codeaurora.org>
+Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+---
 
-[3] http://git.infradead.org/l2-mtd.git/shortlog/refs/heads/nand/next
+* Changes from v4: None
 
-* v4:
+ drivers/mtd/nand/qcom_nandc.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-1. Added Acked-by from Rob for DT documentation patches
-2. Removed ipq8074 compatible string from ipq4019 DT example.
-2. Used the BIT macro for NAND_CMD_VLD bits and consistent names
-   as suggested by Boris in v3.
-
-* v3:
-
-1. Removed the patches already applied to linux-next and
-   rebased the remaining patches on [1]
-2. Reordered the patches and put the BAM DMA changes [2]
-   dependent patches and compatible string patches in last
-3. Removed the register offsets array and used the dev_cmd offsets
-4. Changed some macro names to small letters for better code readability
-5. Changed the compatible string to SoC specific
-6. Did minor code changes for adding comment, error handling, structure names
-7. Combined raw write (patch#18) and passing flag parameter (patch#22) patch
-   into one
-8. Made separate patch for compatible string and NAND properties
-9. Made separate patch for BAM command descriptor and data descriptors handling
-10. Changed commit message for some of the patches
-11. Addressed review comments given in v2
-12. Added Reviewed-by of Archit for some of the patches from v2
-13. All the MTD tests are working fine for IPQ8064 AP148, IPQ4019 DK04 and
-    IPQ8074 HK01 boards for v3 patches
-
-[1] http://git.infradead.org/l2-mtd.git/shortlog/refs/heads/nand/next
-[2] http://www.spinics.net/lists/dmaengine/msg13662.html
-
-* v2:
-
-1. Addressed the review comments given in v1
-2. Removed the DMA coherent buffer for register read and used
-   streaming DMA API’s
-3. Reorganized the NAND read and write functions
-4. Separated patch for driver and documentation changes
-5. Changed the compatible string for EBI2
-
-* v1:
-
-http://www.spinics.net/lists/devicetree/msg183706.html
-
-
-Abhishek Sahu (16):
-  mtd: nand: qcom: DMA mapping support for register read buffer
-  mtd: nand: qcom: allocate BAM transaction
-  mtd: nand: qcom: add BAM DMA descriptor handling
-  mtd: nand: qcom: support for passing flags in DMA helper functions
-  mtd: nand: qcom: support for read location registers
-  mtd: nand: qcom: erased codeword detection configuration
-  mtd: nand: qcom: enable BAM or ADM mode
-  mtd: nand: qcom: QPIC data descriptors handling
-  mtd: nand: qcom: support for different DEV_CMD register offsets
-  mtd: nand: qcom: add command elements in BAM transaction
-  mtd: nand: qcom: support for command descriptor formation
-  dt-bindings: qcom_nandc: fix the ipq806x device tree example
-  dt-bindings: qcom_nandc: IPQ4019 QPIC NAND documentation
-  dt-bindings: qcom_nandc: IPQ8074 QPIC NAND documentation
-  mtd: nand: qcom: support for IPQ4019 QPIC NAND controller
-  mtd: nand: qcom: Support for IPQ8074 QPIC NAND controller
-
- .../devicetree/bindings/mtd/qcom_nandc.txt         |  63 +-
- drivers/mtd/nand/qcom_nandc.c                      | 746 ++++++++++++++++++---
- 2 files changed, 722 insertions(+), 87 deletions(-)
-
+diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
+index 84fcdb3..97ce16a 100644
+--- a/drivers/mtd/nand/qcom_nandc.c
++++ b/drivers/mtd/nand/qcom_nandc.c
+@@ -2872,6 +2872,12 @@ static int qcom_nandc_remove(struct platform_device *pdev)
+ 	.dev_cmd_reg_start = 0x0,
+ };
+ 
++static const struct qcom_nandc_props ipq8074_nandc_props = {
++	.ecc_modes = (ECC_BCH_4BIT | ECC_BCH_8BIT),
++	.is_bam = true,
++	.dev_cmd_reg_start = 0x7000,
++};
++
+ /*
+  * data will hold a struct pointer containing more differences once we support
+  * more controller variants
+@@ -2885,6 +2891,10 @@ static int qcom_nandc_remove(struct platform_device *pdev)
+ 		.compatible = "qcom,ipq4019-nand",
+ 		.data = &ipq4019_nandc_props,
+ 	},
++	{
++		.compatible = "qcom,ipq8074-nand",
++		.data = &ipq8074_nandc_props,
++	},
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, qcom_nandc_of_match);
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
