@@ -1,9 +1,9 @@
-Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1diz4m-0001uR-0h
- for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 08:26:18 +0000
-Received: by mail-pg0-x244.google.com with SMTP id i12so2623988pgr.1
- for <linux-mtd@lists.infradead.org>; Sat, 19 Aug 2017 01:25:30 -0700 (PDT)
+ id 1diz5R-0002RO-VT
+ for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 08:27:10 +0000
+Received: by mail-pf0-x242.google.com with SMTP id t83so2597493pfj.3
+ for <linux-mtd@lists.infradead.org>; Sat, 19 Aug 2017 01:26:09 -0700 (PDT)
 From: Bhumika Goyal <bhumirks@gmail.com>
 To: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
  daniel.vetter@intel.com, jani.nikula@linux.intel.com,
@@ -27,9 +27,9 @@ To: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
  greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
  linux-usb@vger.kernel.org
 Cc: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH 08/15] PCI: make device_type const
-Date: Sat, 19 Aug 2017 13:52:19 +0530
-Message-Id: <1503130946-2854-9-git-send-email-bhumirks@gmail.com>
+Subject: [PATCH 10/15] platform/x86: wmi: make device_type const
+Date: Sat, 19 Aug 2017 13:52:21 +0530
+Message-Id: <1503130946-2854-11-git-send-email-bhumirks@gmail.com>
 In-Reply-To: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
 References: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -41,36 +41,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Make this const as it is only stored in the type field of a device
+Make these const as they are only stored in the type field of a device
 structure, which is const.
 Done using Coccinelle.
 
 Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
- drivers/pci/endpoint/pci-epf-core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/platform/x86/wmi.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pci/endpoint/pci-epf-core.c b/drivers/pci/endpoint/pci-epf-core.c
-index 6877d6a..9d0de12 100644
---- a/drivers/pci/endpoint/pci-epf-core.c
-+++ b/drivers/pci/endpoint/pci-epf-core.c
-@@ -27,7 +27,7 @@
- #include <linux/pci-ep-cfs.h>
- 
- static struct bus_type pci_epf_bus_type;
--static struct device_type pci_epf_type;
-+static const struct device_type pci_epf_type;
- 
- /**
-  * pci_epf_linkup() - Notify the function driver that EPC device has
-@@ -275,7 +275,7 @@ static void pci_epf_dev_release(struct device *dev)
- 	kfree(epf);
- }
- 
--static struct device_type pci_epf_type = {
-+static const struct device_type pci_epf_type = {
- 	.release	= pci_epf_dev_release,
+diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
+index e32ba57..a37c253 100644
+--- a/drivers/platform/x86/wmi.c
++++ b/drivers/platform/x86/wmi.c
+@@ -810,19 +810,19 @@ static int wmi_dev_remove(struct device *dev)
+ 	.remove = wmi_dev_remove,
  };
  
+-static struct device_type wmi_type_event = {
++static const struct device_type wmi_type_event = {
+ 	.name = "event",
+ 	.groups = wmi_event_groups,
+ 	.release = wmi_dev_release,
+ };
+ 
+-static struct device_type wmi_type_method = {
++static const struct device_type wmi_type_method = {
+ 	.name = "method",
+ 	.groups = wmi_method_groups,
+ 	.release = wmi_dev_release,
+ };
+ 
+-static struct device_type wmi_type_data = {
++static const struct device_type wmi_type_data = {
+ 	.name = "data",
+ 	.groups = wmi_data_groups,
+ 	.release = wmi_dev_release,
 -- 
 1.9.1
