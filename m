@@ -1,37 +1,26 @@
-Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1diz2w-0001eB-Ib
- for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 08:23:56 +0000
-Received: by mail-pf0-x243.google.com with SMTP id r62so200678pfj.4
- for <linux-mtd@lists.infradead.org>; Sat, 19 Aug 2017 01:23:34 -0700 (PDT)
-From: Bhumika Goyal <bhumirks@gmail.com>
-To: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
- daniel.vetter@intel.com, jani.nikula@linux.intel.com,
- seanpaul@chromium.org, airlied@linux.ie, g.liakhovetski@gmx.de,
- tomas.winkler@intel.com, dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr, peda@axentia.se, kishon@ti.com,
- bhelgaas@google.com, thierry.reding@gmail.com, jonathanh@nvidia.com,
- dvhart@infradead.org, andy@infradead.org, ohad@wizery.com,
- bjorn.andersson@linaro.org, freude@de.ibm.com, schwidefsky@de.ibm.com,
- heiko.carstens@de.ibm.com, jth@kernel.org, jejb@linux.vnet.ibm.com,
- martin.petersen@oracle.com, lduncan@suse.com, cleech@redhat.com,
- johan@kernel.org, elder@kernel.org, gregkh@linuxfoundation.org,
- heikki.krogerus@linux.intel.com, linux-edac@vger.kernel.org,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
- platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org,
- linux-s390@vger.kernel.org, fcoe-devel@open-fcoe.org,
- linux-scsi@vger.kernel.org, open-iscsi@googlegroups.com,
- greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
- linux-usb@vger.kernel.org
-Cc: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH 02/15] drm: make device_type const
-Date: Sat, 19 Aug 2017 13:52:13 +0530
-Message-Id: <1503130946-2854-3-git-send-email-bhumirks@gmail.com>
-In-Reply-To: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
-References: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
+Date: Sat, 19 Aug 2017 11:21:24 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Lee Jones <lee.jones@linaro.org>
+Cc: Andrea Adami <andrea.adami@gmail.com>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>, Daniel Mack
+ <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Dmitry
+ Eremin-Solenikov <dbaryshkov@gmail.com>, Robert Jarzmik
+ <robert.jarzmik@free.fr>, Linus Walleij <linus.walleij@linaro.org>, Russell
+ King <linux@armlinux.org.uk>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 3/9] mfd: tmio: Add partition parsers platform data
+Message-ID: <20170819112124.59854507@bbrezillon>
+In-Reply-To: <20170819092603.1c919b4b@bbrezillon>
+References: <1502743720-28672-1-git-send-email-andrea.adami@gmail.com>
+ <1502743720-28672-4-git-send-email-andrea.adami@gmail.com>
+ <20170815065835.jcuweb377lqioddc@dell>
+ <20170819092603.1c919b4b@bbrezillon>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,39 +30,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Make these const as they are only stored in the type field of a device
-structure, which is const.
-Done using Coccinelle.
----
- drivers/gpu/drm/drm_sysfs.c      | 2 +-
- drivers/gpu/drm/ttm/ttm_module.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Le Sat, 19 Aug 2017 09:26:03 +0200,
+Boris Brezillon <boris.brezillon@free-electrons.com> a =C3=A9crit :
 
-diff --git a/drivers/gpu/drm/drm_sysfs.c b/drivers/gpu/drm/drm_sysfs.c
-index 1c5b5ce..84e4ebe 100644
---- a/drivers/gpu/drm/drm_sysfs.c
-+++ b/drivers/gpu/drm/drm_sysfs.c
-@@ -39,7 +39,7 @@
-  * drm_connector_unregister().
-  */
- 
--static struct device_type drm_sysfs_device_minor = {
-+static const struct device_type drm_sysfs_device_minor = {
- 	.name = "drm_minor"
- };
- 
-diff --git a/drivers/gpu/drm/ttm/ttm_module.c b/drivers/gpu/drm/ttm/ttm_module.c
-index 66fc639..e6604e0 100644
---- a/drivers/gpu/drm/ttm/ttm_module.c
-+++ b/drivers/gpu/drm/ttm/ttm_module.c
-@@ -37,7 +37,7 @@
- static DECLARE_WAIT_QUEUE_HEAD(exit_q);
- static atomic_t device_released;
- 
--static struct device_type ttm_drm_class_type = {
-+static const struct device_type ttm_drm_class_type = {
- 	.name = "ttm",
- 	/**
- 	 * Add pm ops here.
--- 
-1.9.1
+> Hi Lee,
+>=20
+> Le Tue, 15 Aug 2017 07:58:35 +0100,
+> Lee Jones <lee.jones@linaro.org> a =C3=A9crit :
+>=20
+> > On Mon, 14 Aug 2017, Andrea Adami wrote:
+> >  =20
+> > > With the introduction of sharpslpart partition parser we can now read=
+ the
+> > > offsets from NAND: we specify the list of the parsers as platform dat=
+a, with
+> > > cmdlinepart and ofpart parsers first allowing to override the part. t=
+able
+> > > written in NAND. This is done in the board files using this driver.
+> > >=20
+> > > Thus, we need to extend tmio_nand_data to consider the partition pars=
+ers.
+> > >=20
+> > > Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
+> > > ---
+> > >  include/linux/mfd/tmio.h | 1 +
+> > >  1 file changed, 1 insertion(+)   =20
+> >=20
+> > Acked-by: Lee Jones <lee.jones@linaro.org>
+> >  =20
+>=20
+> I'm about to apply patches 1 to 5 of this series to the nand/next
+
+I meant patches 2 to 5, patch 1 still requires a few adjustments.
+
+> branch. Do you want me to create an immutable branch with this patch?
+>=20
+> Regards,
+>=20
+> Boris
