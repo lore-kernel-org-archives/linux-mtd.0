@@ -1,33 +1,35 @@
-Received: from www.zeus03.de ([194.117.254.33] helo=mail.zeus03.de)
+Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1diz29-0007HY-Tz
- for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 08:23:08 +0000
-Date: Sat, 19 Aug 2017 10:22:37 +0200
-From: Wolfram Sang <wsa@the-dreams.de>
-To: Andrea Adami <andrea.adami@gmail.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Lee Jones <lee.jones@linaro.org>, Daniel Mack <daniel@zonque.org>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Linus Walleij <linus.walleij@linaro.org>,
- Russell King <linux@armlinux.org.uk>, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v5 5/9] mtd: nand: tmio: Register partitions using the
- parsers
-Message-ID: <20170819082236.GA1460@katana>
-References: <1502743720-28672-1-git-send-email-andrea.adami@gmail.com>
- <1502743720-28672-6-git-send-email-andrea.adami@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="UugvWAfsgieZRqgk"
-Content-Disposition: inline
-In-Reply-To: <1502743720-28672-6-git-send-email-andrea.adami@gmail.com>
+ id 1diz2F-0007Ic-HQ
+ for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 08:23:15 +0000
+Received: by mail-pf0-x244.google.com with SMTP id t83so2593422pfj.3
+ for <linux-mtd@lists.infradead.org>; Sat, 19 Aug 2017 01:22:51 -0700 (PDT)
+From: Bhumika Goyal <bhumirks@gmail.com>
+To: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
+ daniel.vetter@intel.com, jani.nikula@linux.intel.com,
+ seanpaul@chromium.org, airlied@linux.ie, g.liakhovetski@gmx.de,
+ tomas.winkler@intel.com, dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
+ cyrille.pitchen@wedev4u.fr, peda@axentia.se, kishon@ti.com,
+ bhelgaas@google.com, thierry.reding@gmail.com, jonathanh@nvidia.com,
+ dvhart@infradead.org, andy@infradead.org, ohad@wizery.com,
+ bjorn.andersson@linaro.org, freude@de.ibm.com, schwidefsky@de.ibm.com,
+ heiko.carstens@de.ibm.com, jth@kernel.org, jejb@linux.vnet.ibm.com,
+ martin.petersen@oracle.com, lduncan@suse.com, cleech@redhat.com,
+ johan@kernel.org, elder@kernel.org, gregkh@linuxfoundation.org,
+ heikki.krogerus@linux.intel.com, linux-edac@vger.kernel.org,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
+ platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+ linux-s390@vger.kernel.org, fcoe-devel@open-fcoe.org,
+ linux-scsi@vger.kernel.org, open-iscsi@googlegroups.com,
+ greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
+ linux-usb@vger.kernel.org
+Cc: Bhumika Goyal <bhumirks@gmail.com>
+Subject: [PATCH 00/15] drivers: make device_type const
+Date: Sat, 19 Aug 2017 13:52:11 +0530
+Message-Id: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,44 +39,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Make device_type const. Done using Coccinelle.
 
---UugvWAfsgieZRqgk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Bhumika Goyal (15):
+  EDAC: make device_type const
+  drm: make device_type const
+  [media] i2c: make device_type const
+  [media] rc: make device_type const
+  mei: make device_type const
+  mtd:  make device_type const
+  mux: make device_type const
+  PCI: make device_type const
+  phy: tegra: make device_type const
+  platform/x86: wmi: make device_type const
+  remoteproc: make device_type const
+  s390/zcrypt: make device_type const
+  scsi: make device_type const
+  staging: greybus: make device_type const
+  usb: make device_type const
 
-On Mon, Aug 14, 2017 at 10:48:36PM +0200, Andrea Adami wrote:
-> With the introduction of sharpslpart partition parser we can now read the
-> offsets from NAND: we specify the list of the parsers as platform data, w=
-ith
-> cmdlinepart and ofpart parsers first allowing to override the part. table
-> written in NAND. This is done in the board files using this driver.
->=20
-> Use now these parsers.
->=20
-> Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
+ drivers/edac/edac_mc_sysfs.c           | 8 ++++----
+ drivers/edac/i7core_edac.c             | 4 ++--
+ drivers/gpu/drm/drm_sysfs.c            | 2 +-
+ drivers/gpu/drm/ttm/ttm_module.c       | 2 +-
+ drivers/media/i2c/soc_camera/mt9t031.c | 2 +-
+ drivers/media/rc/rc-main.c             | 2 +-
+ drivers/misc/mei/bus.c                 | 2 +-
+ drivers/mtd/mtdcore.c                  | 2 +-
+ drivers/mux/mux-core.c                 | 2 +-
+ drivers/pci/endpoint/pci-epf-core.c    | 4 ++--
+ drivers/phy/tegra/xusb.c               | 4 ++--
+ drivers/platform/x86/wmi.c             | 6 +++---
+ drivers/remoteproc/remoteproc_core.c   | 2 +-
+ drivers/s390/crypto/ap_card.c          | 2 +-
+ drivers/s390/crypto/ap_queue.c         | 2 +-
+ drivers/scsi/fcoe/fcoe_sysfs.c         | 4 ++--
+ drivers/scsi/scsi_transport_iscsi.c    | 4 ++--
+ drivers/staging/greybus/gbphy.c        | 2 +-
+ drivers/usb/common/ulpi.c              | 2 +-
+ 19 files changed, 29 insertions(+), 29 deletions(-)
 
-Acked-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-
-
---UugvWAfsgieZRqgk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAlmX9UkACgkQFA3kzBSg
-KbYMMQ//f4ysg7YVairVcHrQl7UJWFHvdXyYGRd7DDZbRWiUv4JLpSbuT6C7YlIp
-mnJ0q2h+fy07/kqPemEq9wZa/GMtjausBZIohz/zIG/+qH2IFq0s1dunT826f+2E
-vUZf83J5ZX7TFdG4FfB2YcsUPXMOX1TJHImhAi4ckftpCgc6qYCWVK2IUY/11zRi
-2+sJPolBFBUO/7SP36KGtnl8g9UM0qQHtlwQ5ohCW0DDsRv88tU1ny/Yf/11mjLX
-iAf76Iuy8Tahf4yye6DFHeEWbW3QFF59e4U3InmnJNrHBu6aJJFCsfYGIsNVqd7B
-erU9S/6UImDM+7GETI7TFOA06H0D96O3SmQtRauIhGAW17OUnuBKGFAgYZfO5rNN
-WgfudhxNtepjqure8Zp3HxSu+/Ul2lkBcQWvNgTIdS413UMe8gtJbkx14nSDydFk
-jFdjHo9twUxBuX3tKgz2YhchcPuEVn3R/5VNS1ISTa/cuRw22lIHU/q8vGtNn9Co
-+PI+XZ2Gonv4NgB6IWmDpIRiGRhCNcfd3QsuIePOs9SN2T+pN5AbF9HM3U42aArd
-VWXcNLvvAAhvBYnbLXet2KJuriXMnnRlPdRPDzJldeMB56g/yJQT30ZLiJX0DIxd
-TNqSpW8Wbymf4G+zjsKjfu7FHSl8bqmRQiwfL6XfhvW4vau7/Co=
-=kb0v
------END PGP SIGNATURE-----
-
---UugvWAfsgieZRqgk--
+-- 
+1.9.1
