@@ -1,9 +1,9 @@
-Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
+Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1diz3Z-0008Ay-5C
- for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 08:25:37 +0000
-Received: by mail-pf0-x244.google.com with SMTP id h75so2596809pfh.5
- for <linux-mtd@lists.infradead.org>; Sat, 19 Aug 2017 01:24:13 -0700 (PDT)
+ id 1diz4Y-000121-Be
+ for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 08:26:18 +0000
+Received: by mail-pg0-x242.google.com with SMTP id y129so17929724pgy.3
+ for <linux-mtd@lists.infradead.org>; Sat, 19 Aug 2017 01:25:11 -0700 (PDT)
 From: Bhumika Goyal <bhumirks@gmail.com>
 To: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
  daniel.vetter@intel.com, jani.nikula@linux.intel.com,
@@ -27,9 +27,9 @@ To: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
  greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
  linux-usb@vger.kernel.org
 Cc: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH 04/15] [media] rc: make device_type const
-Date: Sat, 19 Aug 2017 13:52:15 +0530
-Message-Id: <1503130946-2854-5-git-send-email-bhumirks@gmail.com>
+Subject: [PATCH 07/15] mux: make device_type const
+Date: Sat, 19 Aug 2017 13:52:18 +0530
+Message-Id: <1503130946-2854-8-git-send-email-bhumirks@gmail.com>
 In-Reply-To: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
 References: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -47,21 +47,21 @@ Done using Coccinelle.
 
 Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
- drivers/media/rc/rc-main.c | 2 +-
+ drivers/mux/mux-core.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/rc/rc-main.c b/drivers/media/rc/rc-main.c
-index a9eba00..ea3da3e 100644
---- a/drivers/media/rc/rc-main.c
-+++ b/drivers/media/rc/rc-main.c
-@@ -1532,7 +1532,7 @@ static RC_FILTER_ATTR(wakeup_filter_mask, S_IRUGO|S_IWUSR,
- 	.attrs	= rc_dev_wakeup_filter_attrs,
- };
+diff --git a/drivers/mux/mux-core.c b/drivers/mux/mux-core.c
+index 2fe96c4..68bd16d 100644
+--- a/drivers/mux/mux-core.c
++++ b/drivers/mux/mux-core.c
+@@ -58,7 +58,7 @@ static void mux_chip_release(struct device *dev)
+ 	kfree(mux_chip);
+ }
  
--static struct device_type rc_dev_type = {
-+static const struct device_type rc_dev_type = {
- 	.release	= rc_dev_release,
- 	.uevent		= rc_dev_uevent,
+-static struct device_type mux_type = {
++static const struct device_type mux_type = {
+ 	.name = "mux-chip",
+ 	.release = mux_chip_release,
  };
 -- 
 1.9.1
