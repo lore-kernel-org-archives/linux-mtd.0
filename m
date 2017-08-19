@@ -1,9 +1,9 @@
-Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
+Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1diz6P-00037Q-DN
- for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 08:28:05 +0000
-Received: by mail-pg0-x243.google.com with SMTP id y129so17932873pgy.3
- for <linux-mtd@lists.infradead.org>; Sat, 19 Aug 2017 01:27:08 -0700 (PDT)
+ id 1diz72-0003Xd-5J
+ for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 08:28:41 +0000
+Received: by mail-pf0-x244.google.com with SMTP id j68so2600900pfc.2
+ for <linux-mtd@lists.infradead.org>; Sat, 19 Aug 2017 01:27:47 -0700 (PDT)
 From: Bhumika Goyal <bhumirks@gmail.com>
 To: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
  daniel.vetter@intel.com, jani.nikula@linux.intel.com,
@@ -27,9 +27,9 @@ To: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
  greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
  linux-usb@vger.kernel.org
 Cc: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH 13/15] scsi: make device_type const
-Date: Sat, 19 Aug 2017 13:52:24 +0530
-Message-Id: <1503130946-2854-14-git-send-email-bhumirks@gmail.com>
+Subject: [PATCH 15/15] usb: make device_type const
+Date: Sat, 19 Aug 2017 13:52:26 +0530
+Message-Id: <1503130946-2854-16-git-send-email-bhumirks@gmail.com>
 In-Reply-To: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
 References: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -41,57 +41,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Make these const as they are only stored in the type field of a device
+Make this const as it is only stored in the type field of a device
 structure, which is const.
 Done using Coccinelle.
 
 Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
- drivers/scsi/fcoe/fcoe_sysfs.c      | 4 ++--
- drivers/scsi/scsi_transport_iscsi.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/usb/common/ulpi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/fcoe/fcoe_sysfs.c b/drivers/scsi/fcoe/fcoe_sysfs.c
-index 9cf3d56..5c8310b 100644
---- a/drivers/scsi/fcoe/fcoe_sysfs.c
-+++ b/drivers/scsi/fcoe/fcoe_sysfs.c
-@@ -659,13 +659,13 @@ static void fcoe_fcf_device_release(struct device *dev)
- 	kfree(fcf);
+diff --git a/drivers/usb/common/ulpi.c b/drivers/usb/common/ulpi.c
+index 930e8f3..4aa5195 100644
+--- a/drivers/usb/common/ulpi.c
++++ b/drivers/usb/common/ulpi.c
+@@ -135,7 +135,7 @@ static void ulpi_dev_release(struct device *dev)
+ 	kfree(to_ulpi_dev(dev));
  }
  
--static struct device_type fcoe_ctlr_device_type = {
-+static const struct device_type fcoe_ctlr_device_type = {
- 	.name = "fcoe_ctlr",
- 	.groups = fcoe_ctlr_attr_groups,
- 	.release = fcoe_ctlr_device_release,
- };
- 
--static struct device_type fcoe_fcf_device_type = {
-+static const struct device_type fcoe_fcf_device_type = {
- 	.name = "fcoe_fcf",
- 	.groups = fcoe_fcf_attr_groups,
- 	.release = fcoe_fcf_device_release,
-diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
-index a424eae..b9513f8 100644
---- a/drivers/scsi/scsi_transport_iscsi.c
-+++ b/drivers/scsi/scsi_transport_iscsi.c
-@@ -1009,7 +1009,7 @@ static void iscsi_flashnode_sess_release(struct device *dev)
- 	kfree(fnode_sess);
- }
- 
--static struct device_type iscsi_flashnode_sess_dev_type = {
-+static const struct device_type iscsi_flashnode_sess_dev_type = {
- 	.name = "iscsi_flashnode_sess_dev_type",
- 	.groups = iscsi_flashnode_sess_attr_groups,
- 	.release = iscsi_flashnode_sess_release,
-@@ -1195,7 +1195,7 @@ static void iscsi_flashnode_conn_release(struct device *dev)
- 	kfree(fnode_conn);
- }
- 
--static struct device_type iscsi_flashnode_conn_dev_type = {
-+static const struct device_type iscsi_flashnode_conn_dev_type = {
- 	.name = "iscsi_flashnode_conn_dev_type",
- 	.groups = iscsi_flashnode_conn_attr_groups,
- 	.release = iscsi_flashnode_conn_release,
+-static struct device_type ulpi_dev_type = {
++static const struct device_type ulpi_dev_type = {
+ 	.name = "ulpi_device",
+ 	.groups = ulpi_dev_attr_groups,
+ 	.release = ulpi_dev_release,
 -- 
 1.9.1
