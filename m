@@ -1,9 +1,9 @@
-Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
+Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1diz4Y-000121-Be
+ id 1diz4m-0001uR-0h
  for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 08:26:18 +0000
-Received: by mail-pg0-x242.google.com with SMTP id y129so17929724pgy.3
- for <linux-mtd@lists.infradead.org>; Sat, 19 Aug 2017 01:25:11 -0700 (PDT)
+Received: by mail-pg0-x244.google.com with SMTP id i12so2623988pgr.1
+ for <linux-mtd@lists.infradead.org>; Sat, 19 Aug 2017 01:25:30 -0700 (PDT)
 From: Bhumika Goyal <bhumirks@gmail.com>
 To: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
  daniel.vetter@intel.com, jani.nikula@linux.intel.com,
@@ -27,9 +27,9 @@ To: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
  greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
  linux-usb@vger.kernel.org
 Cc: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH 07/15] mux: make device_type const
-Date: Sat, 19 Aug 2017 13:52:18 +0530
-Message-Id: <1503130946-2854-8-git-send-email-bhumirks@gmail.com>
+Subject: [PATCH 08/15] PCI: make device_type const
+Date: Sat, 19 Aug 2017 13:52:19 +0530
+Message-Id: <1503130946-2854-9-git-send-email-bhumirks@gmail.com>
 In-Reply-To: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
 References: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -47,21 +47,30 @@ Done using Coccinelle.
 
 Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
- drivers/mux/mux-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pci/endpoint/pci-epf-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mux/mux-core.c b/drivers/mux/mux-core.c
-index 2fe96c4..68bd16d 100644
---- a/drivers/mux/mux-core.c
-+++ b/drivers/mux/mux-core.c
-@@ -58,7 +58,7 @@ static void mux_chip_release(struct device *dev)
- 	kfree(mux_chip);
+diff --git a/drivers/pci/endpoint/pci-epf-core.c b/drivers/pci/endpoint/pci-epf-core.c
+index 6877d6a..9d0de12 100644
+--- a/drivers/pci/endpoint/pci-epf-core.c
++++ b/drivers/pci/endpoint/pci-epf-core.c
+@@ -27,7 +27,7 @@
+ #include <linux/pci-ep-cfs.h>
+ 
+ static struct bus_type pci_epf_bus_type;
+-static struct device_type pci_epf_type;
++static const struct device_type pci_epf_type;
+ 
+ /**
+  * pci_epf_linkup() - Notify the function driver that EPC device has
+@@ -275,7 +275,7 @@ static void pci_epf_dev_release(struct device *dev)
+ 	kfree(epf);
  }
  
--static struct device_type mux_type = {
-+static const struct device_type mux_type = {
- 	.name = "mux-chip",
- 	.release = mux_chip_release,
+-static struct device_type pci_epf_type = {
++static const struct device_type pci_epf_type = {
+ 	.release	= pci_epf_dev_release,
  };
+ 
 -- 
 1.9.1
