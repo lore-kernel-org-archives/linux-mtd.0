@@ -1,9 +1,9 @@
-Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1diz72-0003Xd-5J
- for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 08:28:41 +0000
-Received: by mail-pf0-x244.google.com with SMTP id j68so2600900pfc.2
- for <linux-mtd@lists.infradead.org>; Sat, 19 Aug 2017 01:27:47 -0700 (PDT)
+Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1diz6j-00024j-CB
+ for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 08:27:50 +0000
+Received: by mail-pg0-x241.google.com with SMTP id t80so11810130pgb.2
+ for <linux-mtd@lists.infradead.org>; Sat, 19 Aug 2017 01:27:29 -0700 (PDT)
 From: Bhumika Goyal <bhumirks@gmail.com>
 To: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
  daniel.vetter@intel.com, jani.nikula@linux.intel.com,
@@ -27,9 +27,9 @@ To: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
  greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
  linux-usb@vger.kernel.org
 Cc: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH 15/15] usb: make device_type const
-Date: Sat, 19 Aug 2017 13:52:26 +0530
-Message-Id: <1503130946-2854-16-git-send-email-bhumirks@gmail.com>
+Subject: [PATCH 14/15] staging: greybus: make device_type const
+Date: Sat, 19 Aug 2017 13:52:25 +0530
+Message-Id: <1503130946-2854-15-git-send-email-bhumirks@gmail.com>
 In-Reply-To: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
 References: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -47,21 +47,21 @@ Done using Coccinelle.
 
 Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
- drivers/usb/common/ulpi.c | 2 +-
+ drivers/staging/greybus/gbphy.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/common/ulpi.c b/drivers/usb/common/ulpi.c
-index 930e8f3..4aa5195 100644
---- a/drivers/usb/common/ulpi.c
-+++ b/drivers/usb/common/ulpi.c
-@@ -135,7 +135,7 @@ static void ulpi_dev_release(struct device *dev)
- 	kfree(to_ulpi_dev(dev));
- }
+diff --git a/drivers/staging/greybus/gbphy.c b/drivers/staging/greybus/gbphy.c
+index 603de6f..80c1da8 100644
+--- a/drivers/staging/greybus/gbphy.c
++++ b/drivers/staging/greybus/gbphy.c
+@@ -66,7 +66,7 @@ static int gb_gbphy_idle(struct device *dev)
+ 			   gb_gbphy_idle)
+ };
  
--static struct device_type ulpi_dev_type = {
-+static const struct device_type ulpi_dev_type = {
- 	.name = "ulpi_device",
- 	.groups = ulpi_dev_attr_groups,
- 	.release = ulpi_dev_release,
+-static struct device_type greybus_gbphy_dev_type = {
++static const struct device_type greybus_gbphy_dev_type = {
+ 	.name	 =	"gbphy_device",
+ 	.release =	gbphy_dev_release,
+ 	.pm	=	&gb_gbphy_pm_ops,
 -- 
 1.9.1
