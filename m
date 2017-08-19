@@ -1,9 +1,9 @@
-Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
+Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1diz65-0002sz-Pq
- for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 08:27:43 +0000
-Received: by mail-pf0-x242.google.com with SMTP id j68so2599657pfc.2
- for <linux-mtd@lists.infradead.org>; Sat, 19 Aug 2017 01:26:49 -0700 (PDT)
+ id 1diz6P-00037Q-DN
+ for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 08:28:05 +0000
+Received: by mail-pg0-x243.google.com with SMTP id y129so17932873pgy.3
+ for <linux-mtd@lists.infradead.org>; Sat, 19 Aug 2017 01:27:08 -0700 (PDT)
 From: Bhumika Goyal <bhumirks@gmail.com>
 To: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
  daniel.vetter@intel.com, jani.nikula@linux.intel.com,
@@ -27,9 +27,9 @@ To: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
  greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
  linux-usb@vger.kernel.org
 Cc: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH 12/15] s390/zcrypt: make device_type const
-Date: Sat, 19 Aug 2017 13:52:23 +0530
-Message-Id: <1503130946-2854-13-git-send-email-bhumirks@gmail.com>
+Subject: [PATCH 13/15] scsi: make device_type const
+Date: Sat, 19 Aug 2017 13:52:24 +0530
+Message-Id: <1503130946-2854-14-git-send-email-bhumirks@gmail.com>
 In-Reply-To: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
 References: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -47,35 +47,51 @@ Done using Coccinelle.
 
 Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
- drivers/s390/crypto/ap_card.c  | 2 +-
- drivers/s390/crypto/ap_queue.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/scsi/fcoe/fcoe_sysfs.c      | 4 ++--
+ drivers/scsi/scsi_transport_iscsi.c | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/s390/crypto/ap_card.c b/drivers/s390/crypto/ap_card.c
-index 836efac9..0329148 100644
---- a/drivers/s390/crypto/ap_card.c
-+++ b/drivers/s390/crypto/ap_card.c
-@@ -153,7 +153,7 @@ static ssize_t ap_modalias_show(struct device *dev,
- 	NULL
+diff --git a/drivers/scsi/fcoe/fcoe_sysfs.c b/drivers/scsi/fcoe/fcoe_sysfs.c
+index 9cf3d56..5c8310b 100644
+--- a/drivers/scsi/fcoe/fcoe_sysfs.c
++++ b/drivers/scsi/fcoe/fcoe_sysfs.c
+@@ -659,13 +659,13 @@ static void fcoe_fcf_device_release(struct device *dev)
+ 	kfree(fcf);
+ }
+ 
+-static struct device_type fcoe_ctlr_device_type = {
++static const struct device_type fcoe_ctlr_device_type = {
+ 	.name = "fcoe_ctlr",
+ 	.groups = fcoe_ctlr_attr_groups,
+ 	.release = fcoe_ctlr_device_release,
  };
  
--static struct device_type ap_card_type = {
-+static const struct device_type ap_card_type = {
- 	.name = "ap_card",
- 	.groups = ap_card_dev_attr_groups,
- };
-diff --git a/drivers/s390/crypto/ap_queue.c b/drivers/s390/crypto/ap_queue.c
-index 0f1a5d0..e2a85c26 100644
---- a/drivers/s390/crypto/ap_queue.c
-+++ b/drivers/s390/crypto/ap_queue.c
-@@ -577,7 +577,7 @@ static ssize_t ap_interrupt_show(struct device *dev,
- 	NULL
- };
+-static struct device_type fcoe_fcf_device_type = {
++static const struct device_type fcoe_fcf_device_type = {
+ 	.name = "fcoe_fcf",
+ 	.groups = fcoe_fcf_attr_groups,
+ 	.release = fcoe_fcf_device_release,
+diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
+index a424eae..b9513f8 100644
+--- a/drivers/scsi/scsi_transport_iscsi.c
++++ b/drivers/scsi/scsi_transport_iscsi.c
+@@ -1009,7 +1009,7 @@ static void iscsi_flashnode_sess_release(struct device *dev)
+ 	kfree(fnode_sess);
+ }
  
--static struct device_type ap_queue_type = {
-+static const struct device_type ap_queue_type = {
- 	.name = "ap_queue",
- 	.groups = ap_queue_dev_attr_groups,
- };
+-static struct device_type iscsi_flashnode_sess_dev_type = {
++static const struct device_type iscsi_flashnode_sess_dev_type = {
+ 	.name = "iscsi_flashnode_sess_dev_type",
+ 	.groups = iscsi_flashnode_sess_attr_groups,
+ 	.release = iscsi_flashnode_sess_release,
+@@ -1195,7 +1195,7 @@ static void iscsi_flashnode_conn_release(struct device *dev)
+ 	kfree(fnode_conn);
+ }
+ 
+-static struct device_type iscsi_flashnode_conn_dev_type = {
++static const struct device_type iscsi_flashnode_conn_dev_type = {
+ 	.name = "iscsi_flashnode_conn_dev_type",
+ 	.groups = iscsi_flashnode_conn_attr_groups,
+ 	.release = iscsi_flashnode_conn_release,
 -- 
 1.9.1
