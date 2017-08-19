@@ -1,19 +1,25 @@
-Received: from mout.web.de ([212.227.15.4])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dimdm-0004v2-8J
- for linux-mtd@lists.infradead.org; Fri, 18 Aug 2017 19:09:08 +0000
-Subject: [PATCH 3/3] jffs2: Adjust a null pointer check in two functions
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-To: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
-References: <ec91fdb9-9107-f1a3-3530-b3272ca51da7@users.sourceforge.net>
-Message-ID: <7be00642-75c6-f774-49f8-51a264b3404d@users.sourceforge.net>
-Date: Fri, 18 Aug 2017 21:08:42 +0200
+Date: Sat, 19 Aug 2017 09:26:03 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Lee Jones <lee.jones@linaro.org>
+Cc: Andrea Adami <andrea.adami@gmail.com>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>, Daniel Mack
+ <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Dmitry
+ Eremin-Solenikov <dbaryshkov@gmail.com>, Robert Jarzmik
+ <robert.jarzmik@free.fr>, Linus Walleij <linus.walleij@linaro.org>, Russell
+ King <linux@armlinux.org.uk>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 3/9] mfd: tmio: Add partition parsers platform data
+Message-ID: <20170819092603.1c919b4b@bbrezillon>
+In-Reply-To: <20170815065835.jcuweb377lqioddc@dell>
+References: <1502743720-28672-1-git-send-email-andrea.adami@gmail.com>
+ <1502743720-28672-4-git-send-email-andrea.adami@gmail.com>
+ <20170815065835.jcuweb377lqioddc@dell>
 MIME-Version: 1.0
-In-Reply-To: <ec91fdb9-9107-f1a3-3530-b3272ca51da7@users.sourceforge.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,50 +29,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Fri, 18 Aug 2017 20:40:35 +0200
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Hi Lee,
 
-The script “checkpatch.pl” pointed information out like the following.
+Le Tue, 15 Aug 2017 07:58:35 +0100,
+Lee Jones <lee.jones@linaro.org> a =C3=A9crit :
 
-Comparison to NULL could be written …
+> On Mon, 14 Aug 2017, Andrea Adami wrote:
+>=20
+> > With the introduction of sharpslpart partition parser we can now read t=
+he
+> > offsets from NAND: we specify the list of the parsers as platform data,=
+ with
+> > cmdlinepart and ofpart parsers first allowing to override the part. tab=
+le
+> > written in NAND. This is done in the board files using this driver.
+> >=20
+> > Thus, we need to extend tmio_nand_data to consider the partition parser=
+s.
+> >=20
+> > Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
+> > ---
+> >  include/linux/mfd/tmio.h | 1 +
+> >  1 file changed, 1 insertion(+) =20
+>=20
+> Acked-by: Lee Jones <lee.jones@linaro.org>
+>=20
 
-Thus fix the affected source code places.
+I'm about to apply patches 1 to 5 of this series to the nand/next
+branch. Do you want me to create an immutable branch with this patch?
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- fs/jffs2/nodemgmt.c | 3 +--
- fs/jffs2/security.c | 2 +-
- 2 files changed, 2 insertions(+), 3 deletions(-)
+Regards,
 
-diff --git a/fs/jffs2/nodemgmt.c b/fs/jffs2/nodemgmt.c
-index a7bbe879cfc3..d5346ba782f7 100644
---- a/fs/jffs2/nodemgmt.c
-+++ b/fs/jffs2/nodemgmt.c
-@@ -242,8 +242,7 @@ int jffs2_reserve_space_gc(struct jffs2_sb_info *c, uint32_t minsize,
- 
- static void jffs2_close_nextblock(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb)
- {
--
--	if (c->nextblock == NULL) {
-+	if (!c->nextblock) {
- 		jffs2_dbg(1, "%s(): Erase block at 0x%08x has already been placed in a list\n",
- 			  __func__, jeb->offset);
- 		return;
-diff --git a/fs/jffs2/security.c b/fs/jffs2/security.c
-index c2332e30f218..9859b522721f 100644
---- a/fs/jffs2/security.c
-+++ b/fs/jffs2/security.c
-@@ -29,7 +29,7 @@ static int jffs2_initxattrs(struct inode *inode,
- 	const struct xattr *xattr;
- 	int err = 0;
- 
--	for (xattr = xattr_array; xattr->name != NULL; xattr++) {
-+	for (xattr = xattr_array; xattr->name; xattr++) {
- 		err = do_jffs2_setxattr(inode, JFFS2_XPREFIX_SECURITY,
- 					xattr->name, xattr->value,
- 					xattr->value_len, 0);
--- 
-2.14.0
+Boris
