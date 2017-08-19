@@ -1,27 +1,20 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1djAWS-0006C8-Nm
- for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 20:39:11 +0000
-Date: Sat, 19 Aug 2017 22:38:44 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Abhishek Sahu <absahu@codeaurora.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>, Archit
- Taneja <architt@codeaurora.org>, Sricharan R <sricharan@codeaurora.org>,
- Vinod Koul <vinod.koul@intel.com>, dmaengine@vger.kernel.org
-Subject: Re: [PATCH v5 11/16] mtd: nand: qcom: support for command
- descriptor formation
-Message-ID: <20170819223844.6068e615@bbrezillon>
-In-Reply-To: <a14f38a2391be690474271933611d8a8@codeaurora.org>
-References: <1502971674-13810-1-git-send-email-absahu@codeaurora.org>
- <1502971674-13810-11-git-send-email-absahu@codeaurora.org>
- <a14f38a2391be690474271933611d8a8@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from mx2.mailbox.org ([80.241.60.215])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1djC6H-0007Qy-6e
+ for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 22:20:15 +0000
+From: Hauke Mehrtens <hauke@hauke-m.de>
+To: ralf@linux-mips.org
+Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
+ linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+ martin.blumenstingl@googlemail.com, john@phrozen.org,
+ linux-spi@vger.kernel.org, hauke.mehrtens@intel.com, robh@kernel.org,
+ andy.shevchenko@gmail.com, p.zabel@pengutronix.de, kishon@ti.com,
+ mark.rutland@arm.com, Hauke Mehrtens <hauke@hauke-m.de>
+Subject: [PATCH v10 02/16] mtd: lantiq-flash: drop check of boot select
+Date: Sun, 20 Aug 2017 00:18:09 +0200
+Message-Id: <20170819221823.13850-3-hauke@hauke-m.de>
+In-Reply-To: <20170819221823.13850-1-hauke@hauke-m.de>
+References: <20170819221823.13850-1-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,49 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le Sat, 19 Aug 2017 15:17:13 +0530,
-Abhishek Sahu <absahu@codeaurora.org> a =C3=A9crit :
+Do not check which flash type the SoC was booted from before
+using this driver. Assume that the device tree is correct and use this
+driver when it was added to device tree. This also removes a build
+dependency to the SoC code.
 
-> On 2017-08-17 17:37, Abhishek Sahu wrote:
-> > 1. Add the function for command descriptor preparation which will
-> >    be used only by BAM DMA and it will form the DMA descriptors
-> >    containing command elements
-> > 2. DMA_PREP_CMD flag should be used for forming command DMA
-> >    descriptors
-> >=20
-> > Reviewed-by: Archit Taneja <architt@codeaurora.org>
-> > Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
-> > ---
-> >=20
-> > * Changes from v4: None
-> >=20
-> > * BUILD DEPENDENCY:
-> >=20
-> >  This PATCH has build dependency over following BAM command descriptor
-> >  patch posted in DMA engine mailing list
-> >=20
-> >  http://www.spinics.net/lists/dmaengine/msg13665.html
-> >  =20
->=20
->   Hi Boris,
->=20
->   These patch has build dependency over DMA engine patch
->   http://www.spinics.net/lists/dmaengine/msg13665.html
->=20
->   but this patch has been applied in your github
->   https://github.com/bbrezillon/linux-0day/commits/nand/next
->=20
->   The DMA change has not merged yet so could we drop this and
->   previous patch alone till the the DMA change is merged to prevent
->   build error.
+Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+Acked-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/maps/lantiq-flash.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-Oops. I saw this note when reviewing previous version of this and
-completely forgot when applying v5. I dropped it from my nand/next
-branch.
-;
-Note that the linux-0day repo is just a personal repo I use to let
-Fenguang's robots test things before I push then to l2-mtd/nand/next.
-
-Anyway, thanks for the heads up.
-
-Boris
+diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
+index 3e33ab66eb24..77b1d8013295 100644
+--- a/drivers/mtd/maps/lantiq-flash.c
++++ b/drivers/mtd/maps/lantiq-flash.c
+@@ -114,12 +114,6 @@ ltq_mtd_probe(struct platform_device *pdev)
+ 	struct cfi_private *cfi;
+ 	int err;
+ 
+-	if (of_machine_is_compatible("lantiq,falcon") &&
+-			(ltq_boot_select() != BS_FLASH)) {
+-		dev_err(&pdev->dev, "invalid bootstrap options\n");
+-		return -ENODEV;
+-	}
+-
+ 	ltq_mtd = devm_kzalloc(&pdev->dev, sizeof(struct ltq_mtd), GFP_KERNEL);
+ 	if (!ltq_mtd)
+ 		return -ENOMEM;
+-- 
+2.11.0
