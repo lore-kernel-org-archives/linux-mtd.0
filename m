@@ -1,25 +1,33 @@
-Date: Sat, 19 Aug 2017 09:26:03 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Lee Jones <lee.jones@linaro.org>
-Cc: Andrea Adami <andrea.adami@gmail.com>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>, Daniel Mack
- <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Dmitry
- Eremin-Solenikov <dbaryshkov@gmail.com>, Robert Jarzmik
- <robert.jarzmik@free.fr>, Linus Walleij <linus.walleij@linaro.org>, Russell
- King <linux@armlinux.org.uk>, linux-mmc@vger.kernel.org,
+Received: from www.zeus03.de ([194.117.254.33] helo=mail.zeus03.de)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1diz29-0007HY-Tz
+ for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 08:23:08 +0000
+Date: Sat, 19 Aug 2017 10:22:37 +0200
+From: Wolfram Sang <wsa@the-dreams.de>
+To: Andrea Adami <andrea.adami@gmail.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Lee Jones <lee.jones@linaro.org>, Daniel Mack <daniel@zonque.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Russell King <linux@armlinux.org.uk>, linux-mmc@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v5 3/9] mfd: tmio: Add partition parsers platform data
-Message-ID: <20170819092603.1c919b4b@bbrezillon>
-In-Reply-To: <20170815065835.jcuweb377lqioddc@dell>
+Subject: Re: [PATCH v5 5/9] mtd: nand: tmio: Register partitions using the
+ parsers
+Message-ID: <20170819082236.GA1460@katana>
 References: <1502743720-28672-1-git-send-email-andrea.adami@gmail.com>
- <1502743720-28672-4-git-send-email-andrea.adami@gmail.com>
- <20170815065835.jcuweb377lqioddc@dell>
+ <1502743720-28672-6-git-send-email-andrea.adami@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="UugvWAfsgieZRqgk"
+Content-Disposition: inline
+In-Reply-To: <1502743720-28672-6-git-send-email-andrea.adami@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,35 +37,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Lee,
 
-Le Tue, 15 Aug 2017 07:58:35 +0100,
-Lee Jones <lee.jones@linaro.org> a =C3=A9crit :
+--UugvWAfsgieZRqgk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> On Mon, 14 Aug 2017, Andrea Adami wrote:
+On Mon, Aug 14, 2017 at 10:48:36PM +0200, Andrea Adami wrote:
+> With the introduction of sharpslpart partition parser we can now read the
+> offsets from NAND: we specify the list of the parsers as platform data, w=
+ith
+> cmdlinepart and ofpart parsers first allowing to override the part. table
+> written in NAND. This is done in the board files using this driver.
 >=20
-> > With the introduction of sharpslpart partition parser we can now read t=
-he
-> > offsets from NAND: we specify the list of the parsers as platform data,=
- with
-> > cmdlinepart and ofpart parsers first allowing to override the part. tab=
-le
-> > written in NAND. This is done in the board files using this driver.
-> >=20
-> > Thus, we need to extend tmio_nand_data to consider the partition parser=
-s.
-> >=20
-> > Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
-> > ---
-> >  include/linux/mfd/tmio.h | 1 +
-> >  1 file changed, 1 insertion(+) =20
+> Use now these parsers.
 >=20
-> Acked-by: Lee Jones <lee.jones@linaro.org>
->=20
+> Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
 
-I'm about to apply patches 1 to 5 of this series to the nand/next
-branch. Do you want me to create an immutable branch with this patch?
+Acked-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-Regards,
 
-Boris
+--UugvWAfsgieZRqgk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAlmX9UkACgkQFA3kzBSg
+KbYMMQ//f4ysg7YVairVcHrQl7UJWFHvdXyYGRd7DDZbRWiUv4JLpSbuT6C7YlIp
+mnJ0q2h+fy07/kqPemEq9wZa/GMtjausBZIohz/zIG/+qH2IFq0s1dunT826f+2E
+vUZf83J5ZX7TFdG4FfB2YcsUPXMOX1TJHImhAi4ckftpCgc6qYCWVK2IUY/11zRi
+2+sJPolBFBUO/7SP36KGtnl8g9UM0qQHtlwQ5ohCW0DDsRv88tU1ny/Yf/11mjLX
+iAf76Iuy8Tahf4yye6DFHeEWbW3QFF59e4U3InmnJNrHBu6aJJFCsfYGIsNVqd7B
+erU9S/6UImDM+7GETI7TFOA06H0D96O3SmQtRauIhGAW17OUnuBKGFAgYZfO5rNN
+WgfudhxNtepjqure8Zp3HxSu+/Ul2lkBcQWvNgTIdS413UMe8gtJbkx14nSDydFk
+jFdjHo9twUxBuX3tKgz2YhchcPuEVn3R/5VNS1ISTa/cuRw22lIHU/q8vGtNn9Co
++PI+XZ2Gonv4NgB6IWmDpIRiGRhCNcfd3QsuIePOs9SN2T+pN5AbF9HM3U42aArd
+VWXcNLvvAAhvBYnbLXet2KJuriXMnnRlPdRPDzJldeMB56g/yJQT30ZLiJX0DIxd
+TNqSpW8Wbymf4G+zjsKjfu7FHSl8bqmRQiwfL6XfhvW4vau7/Co=
+=kb0v
+-----END PGP SIGNATURE-----
+
+--UugvWAfsgieZRqgk--
