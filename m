@@ -1,9 +1,9 @@
 Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1diz5R-0002RO-VT
- for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 08:27:10 +0000
-Received: by mail-pf0-x242.google.com with SMTP id t83so2597493pfj.3
- for <linux-mtd@lists.infradead.org>; Sat, 19 Aug 2017 01:26:09 -0700 (PDT)
+ id 1diz65-0002sz-Pq
+ for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 08:27:43 +0000
+Received: by mail-pf0-x242.google.com with SMTP id j68so2599657pfc.2
+ for <linux-mtd@lists.infradead.org>; Sat, 19 Aug 2017 01:26:49 -0700 (PDT)
 From: Bhumika Goyal <bhumirks@gmail.com>
 To: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
  daniel.vetter@intel.com, jani.nikula@linux.intel.com,
@@ -27,9 +27,9 @@ To: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
  greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
  linux-usb@vger.kernel.org
 Cc: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH 10/15] platform/x86: wmi: make device_type const
-Date: Sat, 19 Aug 2017 13:52:21 +0530
-Message-Id: <1503130946-2854-11-git-send-email-bhumirks@gmail.com>
+Subject: [PATCH 12/15] s390/zcrypt: make device_type const
+Date: Sat, 19 Aug 2017 13:52:23 +0530
+Message-Id: <1503130946-2854-13-git-send-email-bhumirks@gmail.com>
 In-Reply-To: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
 References: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -47,35 +47,35 @@ Done using Coccinelle.
 
 Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
- drivers/platform/x86/wmi.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/s390/crypto/ap_card.c  | 2 +-
+ drivers/s390/crypto/ap_queue.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-index e32ba57..a37c253 100644
---- a/drivers/platform/x86/wmi.c
-+++ b/drivers/platform/x86/wmi.c
-@@ -810,19 +810,19 @@ static int wmi_dev_remove(struct device *dev)
- 	.remove = wmi_dev_remove,
+diff --git a/drivers/s390/crypto/ap_card.c b/drivers/s390/crypto/ap_card.c
+index 836efac9..0329148 100644
+--- a/drivers/s390/crypto/ap_card.c
++++ b/drivers/s390/crypto/ap_card.c
+@@ -153,7 +153,7 @@ static ssize_t ap_modalias_show(struct device *dev,
+ 	NULL
  };
  
--static struct device_type wmi_type_event = {
-+static const struct device_type wmi_type_event = {
- 	.name = "event",
- 	.groups = wmi_event_groups,
- 	.release = wmi_dev_release,
+-static struct device_type ap_card_type = {
++static const struct device_type ap_card_type = {
+ 	.name = "ap_card",
+ 	.groups = ap_card_dev_attr_groups,
+ };
+diff --git a/drivers/s390/crypto/ap_queue.c b/drivers/s390/crypto/ap_queue.c
+index 0f1a5d0..e2a85c26 100644
+--- a/drivers/s390/crypto/ap_queue.c
++++ b/drivers/s390/crypto/ap_queue.c
+@@ -577,7 +577,7 @@ static ssize_t ap_interrupt_show(struct device *dev,
+ 	NULL
  };
  
--static struct device_type wmi_type_method = {
-+static const struct device_type wmi_type_method = {
- 	.name = "method",
- 	.groups = wmi_method_groups,
- 	.release = wmi_dev_release,
+-static struct device_type ap_queue_type = {
++static const struct device_type ap_queue_type = {
+ 	.name = "ap_queue",
+ 	.groups = ap_queue_dev_attr_groups,
  };
- 
--static struct device_type wmi_type_data = {
-+static const struct device_type wmi_type_data = {
- 	.name = "data",
- 	.groups = wmi_data_groups,
- 	.release = wmi_dev_release,
 -- 
 1.9.1
