@@ -1,27 +1,59 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mga09.intel.com ([134.134.136.24])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dj0M0-0003a9-2l
- for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 09:47:42 +0000
+ id 1dj6vp-0002u5-DX
+ for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 16:49:07 +0000
+From: "Winkler, Tomas" <tomas.winkler@intel.com>
+To: Bhumika Goyal <bhumirks@gmail.com>, "julia.lawall@lip6.fr"
+ <julia.lawall@lip6.fr>, "bp@alien8.de" <bp@alien8.de>, "mchehab@kernel.org"
+ <mchehab@kernel.org>, "Vetter, Daniel" <daniel.vetter@intel.com>,
+ "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
+ "seanpaul@chromium.org" <seanpaul@chromium.org>, "airlied@linux.ie"
+ <airlied@linux.ie>, "g.liakhovetski@gmx.de" <g.liakhovetski@gmx.de>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "boris.brezillon@free-electrons.com"
+ <boris.brezillon@free-electrons.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
+ "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>, "peda@axentia.se"
+ <peda@axentia.se>, "kishon@ti.com" <kishon@ti.com>, "bhelgaas@google.com"
+ <bhelgaas@google.com>, "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+ "jonathanh@nvidia.com" <jonathanh@nvidia.com>, "dvhart@infradead.org"
+ <dvhart@infradead.org>, "andy@infradead.org" <andy@infradead.org>,
+ "ohad@wizery.com" <ohad@wizery.com>, "bjorn.andersson@linaro.org"
+ <bjorn.andersson@linaro.org>, "freude@de.ibm.com" <freude@de.ibm.com>,
+ "schwidefsky@de.ibm.com" <schwidefsky@de.ibm.com>,
+ "heiko.carstens@de.ibm.com" <heiko.carstens@de.ibm.com>, "jth@kernel.org"
+ <jth@kernel.org>, "jejb@linux.vnet.ibm.com" <jejb@linux.vnet.ibm.com>,
+ "martin.petersen@oracle.com" <martin.petersen@oracle.com>, "lduncan@suse.com"
+ <lduncan@suse.com>, "cleech@redhat.com" <cleech@redhat.com>,
+ "johan@kernel.org" <johan@kernel.org>, "elder@kernel.org" <elder@kernel.org>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+ "heikki.krogerus@linux.intel.com" <heikki.krogerus@linux.intel.com>,
+ "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+ "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+ "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>,
+ "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+ "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+ "fcoe-devel@open-fcoe.org" <fcoe-devel@open-fcoe.org>,
+ "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+ "open-iscsi@googlegroups.com" <open-iscsi@googlegroups.com>,
+ "greybus-dev@lists.linaro.org" <greybus-dev@lists.linaro.org>,
+ "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
+ "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+Subject: RE: [PATCH 05/15] mei: make device_type const
+Date: Sat, 19 Aug 2017 16:48:37 +0000
+Message-ID: <5B8DA87D05A7694D9FA63FD143655C1B749EFDE4@hasmsx108.ger.corp.intel.com>
+References: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
+ <1503130946-2854-6-git-send-email-bhumirks@gmail.com>
+In-Reply-To: <1503130946-2854-6-git-send-email-bhumirks@gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date: Sat, 19 Aug 2017 15:17:13 +0530
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>, Archit
- Taneja <architt@codeaurora.org>, Sricharan R <sricharan@codeaurora.org>,
- vinod.koul@intel.com, dmaengine@vger.kernel.org
-Subject: Re: [PATCH v5 11/16] mtd: nand: qcom: support for command descriptor
- formation
-In-Reply-To: <1502971674-13810-12-git-send-email-absahu@codeaurora.org>
-References: <1502971674-13810-1-git-send-email-absahu@codeaurora.org>
- <1502971674-13810-12-git-send-email-absahu@codeaurora.org>
-Message-ID: <a14f38a2391be690474271933611d8a8@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,243 +63,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2017-08-17 17:37, Abhishek Sahu wrote:
-> 1. Add the function for command descriptor preparation which will
->    be used only by BAM DMA and it will form the DMA descriptors
->    containing command elements
-> 2. DMA_PREP_CMD flag should be used for forming command DMA
->    descriptors
-> 
-> Reviewed-by: Archit Taneja <architt@codeaurora.org>
-> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+
+> Subject: [PATCH 05/15] mei: make device_type const
+>=20
+> Make this const as it is only stored in the type field of a device struct=
+ure,
+> which is const.
+> Done using Coccinelle.
+>=20
+> Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 > ---
-> 
-> * Changes from v4: None
-> 
-> * BUILD DEPENDENCY:
-> 
->  This PATCH has build dependency over following BAM command descriptor
->  patch posted in DMA engine mailing list
-> 
->  http://www.spinics.net/lists/dmaengine/msg13665.html
-> 
-
-  Hi Boris,
-
-  These patch has build dependency over DMA engine patch
-  http://www.spinics.net/lists/dmaengine/msg13665.html
-
-  but this patch has been applied in your github
-  https://github.com/bbrezillon/linux-0day/commits/nand/next
-
-  The DMA change has not merged yet so could we drop this and
-  previous patch alone till the the DMA change is merged to prevent
-  build error.
-
-  Rest of the patch can go without any build or functionality
-  failure.
-
->  drivers/mtd/nand/qcom_nandc.c | 108 
-> +++++++++++++++++++++++++++++++++++-------
->  1 file changed, 92 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/qcom_nandc.c 
-> b/drivers/mtd/nand/qcom_nandc.c
-> index b0a4734..52d9fae 100644
-> --- a/drivers/mtd/nand/qcom_nandc.c
-> +++ b/drivers/mtd/nand/qcom_nandc.c
-> @@ -200,6 +200,14 @@
->   */
->  #define dev_cmd_reg_addr(nandc, reg)
-> ((nandc)->props->dev_cmd_reg_start + (reg))
-> 
-> +/* Returns the NAND register physical address */
-> +#define nandc_reg_phys(chip, offset) ((chip)->base_phys + (offset))
-> +
-> +/* Returns the dma address for reg read buffer */
-> +#define reg_buf_dma_addr(chip, vaddr) \
-> +	((chip)->reg_read_dma + \
-> +	((uint8_t *)(vaddr) - (uint8_t *)(chip)->reg_read_buf))
-> +
->  #define QPIC_PER_CW_CMD_ELEMENTS	32
->  #define QPIC_PER_CW_CMD_SGL		32
->  #define QPIC_PER_CW_DATA_SGL		8
-> @@ -317,7 +325,8 @@ struct nandc_regs {
->   *				controller
->   * @dev:			parent device
->   * @base:			MMIO base
-> - * @base_dma:			physical base address of controller registers
-> + * @base_phys:			physical base address of controller registers
-> + * @base_dma:			dma base address of controller registers
->   * @core_clk:			controller clock
->   * @aon_clk:			another controller clock
->   *
-> @@ -350,6 +359,7 @@ struct qcom_nand_controller {
->  	struct device *dev;
-> 
->  	void __iomem *base;
-> +	phys_addr_t base_phys;
->  	dma_addr_t base_dma;
-> 
->  	struct clk *core_clk;
-> @@ -751,6 +761,66 @@ static int prepare_bam_async_desc(struct
-> qcom_nand_controller *nandc,
+>  drivers/misc/mei/bus.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/misc/mei/bus.c b/drivers/misc/mei/bus.c index
+> 40c7908..1ac10cb 100644
+> --- a/drivers/misc/mei/bus.c
+> +++ b/drivers/misc/mei/bus.c
+> @@ -845,7 +845,7 @@ static void mei_cl_bus_dev_release(struct device
+> *dev)
+>  	kfree(cldev);
 >  }
-> 
->  /*
-> + * Prepares the command descriptor for BAM DMA which will be used for 
-> NAND
-> + * register reads and writes. The command descriptor requires the 
-> command
-> + * to be formed in command element type so this function uses the 
-> command
-> + * element from bam transaction ce array and fills the same with 
-> required
-> + * data. A single SGL can contain multiple command elements so
-> + * NAND_BAM_NEXT_SGL will be used for starting the separate SGL
-> + * after the current command element.
-> + */
-> +static int prep_bam_dma_desc_cmd(struct qcom_nand_controller *nandc, 
-> bool read,
-> +				 int reg_off, const void *vaddr,
-> +				 int size, unsigned int flags)
-> +{
-> +	int bam_ce_size;
-> +	int i, ret;
-> +	struct bam_cmd_element *bam_ce_buffer;
-> +	struct bam_transaction *bam_txn = nandc->bam_txn;
-> +
-> +	bam_ce_buffer = &bam_txn->bam_ce[bam_txn->bam_ce_pos];
-> +
-> +	/* fill the command desc */
-> +	for (i = 0; i < size; i++) {
-> +		if (read)
-> +			bam_prep_ce(&bam_ce_buffer[i],
-> +				    nandc_reg_phys(nandc, reg_off + 4 * i),
-> +				    BAM_READ_COMMAND,
-> +				    reg_buf_dma_addr(nandc,
-> +						     (__le32 *)vaddr + i));
-> +		else
-> +			bam_prep_ce_le32(&bam_ce_buffer[i],
-> +					 nandc_reg_phys(nandc, reg_off + 4 * i),
-> +					 BAM_WRITE_COMMAND,
-> +					 *((__le32 *)vaddr + i));
-> +	}
-> +
-> +	bam_txn->bam_ce_pos += size;
-> +
-> +	/* use the separate sgl after this command */
-> +	if (flags & NAND_BAM_NEXT_SGL) {
-> +		bam_ce_buffer = &bam_txn->bam_ce[bam_txn->bam_ce_start];
-> +		bam_ce_size = (bam_txn->bam_ce_pos -
-> +				bam_txn->bam_ce_start) *
-> +				sizeof(struct bam_cmd_element);
-> +		sg_set_buf(&bam_txn->cmd_sgl[bam_txn->cmd_sgl_pos],
-> +			   bam_ce_buffer, bam_ce_size);
-> +		bam_txn->cmd_sgl_pos++;
-> +		bam_txn->bam_ce_start = bam_txn->bam_ce_pos;
-> +
-> +		if (flags & NAND_BAM_NWD) {
-> +			ret = prepare_bam_async_desc(nandc, nandc->cmd_chan,
-> +						     DMA_PREP_FENCE |
-> +						     DMA_PREP_CMD);
-> +			if (ret)
-> +				return ret;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +/*
->   * Prepares the data descriptor for BAM DMA which will be used for 
-> NAND
->   * data reads and writes.
->   */
-> @@ -868,19 +938,22 @@ static int read_reg_dma(struct
-> qcom_nand_controller *nandc, int first,
->  {
->  	bool flow_control = false;
->  	void *vaddr;
-> -	int size;
-> 
-> -	if (first == NAND_READ_ID || first == NAND_FLASH_STATUS)
-> -		flow_control = true;
-> +	vaddr = nandc->reg_read_buf + nandc->reg_read_pos;
-> +	nandc->reg_read_pos += num_regs;
-> 
->  	if (first == NAND_DEV_CMD_VLD || first == NAND_DEV_CMD1)
->  		first = dev_cmd_reg_addr(nandc, first);
-> 
-> -	size = num_regs * sizeof(u32);
-> -	vaddr = nandc->reg_read_buf + nandc->reg_read_pos;
-> -	nandc->reg_read_pos += num_regs;
-> +	if (nandc->props->is_bam)
-> +		return prep_bam_dma_desc_cmd(nandc, true, first, vaddr,
-> +					     num_regs, flags);
-> 
-> -	return prep_adm_dma_desc(nandc, true, first, vaddr, size, 
-> flow_control);
-> +	if (first == NAND_READ_ID || first == NAND_FLASH_STATUS)
-> +		flow_control = true;
-> +
-> +	return prep_adm_dma_desc(nandc, true, first, vaddr,
-> +				 num_regs * sizeof(u32), flow_control);
->  }
-> 
->  /*
-> @@ -897,13 +970,9 @@ static int write_reg_dma(struct
-> qcom_nand_controller *nandc, int first,
->  	bool flow_control = false;
->  	struct nandc_regs *regs = nandc->regs;
->  	void *vaddr;
-> -	int size;
-> 
->  	vaddr = offset_to_nandc_reg(regs, first);
-> 
-> -	if (first == NAND_FLASH_CMD)
-> -		flow_control = true;
-> -
->  	if (first == NAND_ERASED_CW_DETECT_CFG) {
->  		if (flags & NAND_ERASED_CW_SET)
->  			vaddr = &regs->erased_cw_detect_cfg_set;
-> @@ -920,10 +989,15 @@ static int write_reg_dma(struct
-> qcom_nand_controller *nandc, int first,
->  	if (first == NAND_DEV_CMD_VLD_RESTORE || first == NAND_DEV_CMD_VLD)
->  		first = dev_cmd_reg_addr(nandc, NAND_DEV_CMD_VLD);
-> 
-> -	size = num_regs * sizeof(u32);
-> +	if (nandc->props->is_bam)
-> +		return prep_bam_dma_desc_cmd(nandc, false, first, vaddr,
-> +					     num_regs, flags);
-> +
-> +	if (first == NAND_FLASH_CMD)
-> +		flow_control = true;
-> 
-> -	return prep_adm_dma_desc(nandc, false, first, vaddr, size,
-> -				 flow_control);
-> +	return prep_adm_dma_desc(nandc, false, first, vaddr,
-> +				 num_regs * sizeof(u32), flow_control);
->  }
-> 
->  /*
-> @@ -1187,7 +1261,8 @@ static int submit_descs(struct
-> qcom_nand_controller *nandc)
->  		}
-> 
->  		if (bam_txn->cmd_sgl_pos > bam_txn->cmd_sgl_start) {
-> -			r = prepare_bam_async_desc(nandc, nandc->cmd_chan, 0);
-> +			r = prepare_bam_async_desc(nandc, nandc->cmd_chan,
-> +						   DMA_PREP_CMD);
->  			if (r)
->  				return r;
->  		}
-> @@ -2722,6 +2797,7 @@ static int qcom_nandc_probe(struct 
-> platform_device *pdev)
->  	if (IS_ERR(nandc->base))
->  		return PTR_ERR(nandc->base);
-> 
-> +	nandc->base_phys = res->start;
->  	nandc->base_dma = phys_to_dma(dev, (phys_addr_t)res->start);
-> 
->  	nandc->core_clk = devm_clk_get(dev, "core");
+>=20
+> -static struct device_type mei_cl_device_type =3D {
+> +static const struct device_type mei_cl_device_type =3D {
+>  	.release	=3D mei_cl_bus_dev_release,
+>  };
+>=20
+LGTM
+Thanks
+Tomas=20
