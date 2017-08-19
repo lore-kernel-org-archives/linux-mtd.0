@@ -1,9 +1,9 @@
-Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1diz3F-0007uy-J8
- for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 08:25:12 +0000
-Received: by mail-pg0-x241.google.com with SMTP id i12so2621614pgr.1
- for <linux-mtd@lists.infradead.org>; Sat, 19 Aug 2017 01:23:53 -0700 (PDT)
+Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
+ by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1diz4H-00007r-2e
+ for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 08:25:17 +0000
+Received: by mail-pg0-x244.google.com with SMTP id 83so17943843pgb.4
+ for <linux-mtd@lists.infradead.org>; Sat, 19 Aug 2017 01:24:54 -0700 (PDT)
 From: Bhumika Goyal <bhumirks@gmail.com>
 To: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
  daniel.vetter@intel.com, jani.nikula@linux.intel.com,
@@ -27,9 +27,9 @@ To: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
  greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
  linux-usb@vger.kernel.org
 Cc: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH 03/15] [media] i2c: make device_type const
-Date: Sat, 19 Aug 2017 13:52:14 +0530
-Message-Id: <1503130946-2854-4-git-send-email-bhumirks@gmail.com>
+Subject: [PATCH 06/15] mtd:  make device_type const
+Date: Sat, 19 Aug 2017 13:52:17 +0530
+Message-Id: <1503130946-2854-7-git-send-email-bhumirks@gmail.com>
 In-Reply-To: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
 References: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -47,21 +47,21 @@ Done using Coccinelle.
 
 Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
- drivers/media/i2c/soc_camera/mt9t031.c | 2 +-
+ drivers/mtd/mtdcore.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/i2c/soc_camera/mt9t031.c b/drivers/media/i2c/soc_camera/mt9t031.c
-index 714fb35..4802d30 100644
---- a/drivers/media/i2c/soc_camera/mt9t031.c
-+++ b/drivers/media/i2c/soc_camera/mt9t031.c
-@@ -592,7 +592,7 @@ static int mt9t031_runtime_resume(struct device *dev)
- 	.runtime_resume		= mt9t031_runtime_resume,
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index f872a99..e7ea842 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -340,7 +340,7 @@ static ssize_t mtd_bbtblocks_show(struct device *dev,
  };
+ ATTRIBUTE_GROUPS(mtd);
  
--static struct device_type mt9t031_dev_type = {
-+static const struct device_type mt9t031_dev_type = {
- 	.name	= "MT9T031",
- 	.pm	= &mt9t031_dev_pm_ops,
- };
+-static struct device_type mtd_devtype = {
++static const struct device_type mtd_devtype = {
+ 	.name		= "mtd",
+ 	.groups		= mtd_groups,
+ 	.release	= mtd_release,
 -- 
 1.9.1
