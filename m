@@ -1,9 +1,9 @@
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1diz2b-0007NN-9L
- for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 08:23:45 +0000
-Received: by mail-pf0-x241.google.com with SMTP id j68so2595419pfc.2
- for <linux-mtd@lists.infradead.org>; Sat, 19 Aug 2017 01:23:13 -0700 (PDT)
+ id 1diz3F-0007uy-J8
+ for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 08:25:12 +0000
+Received: by mail-pg0-x241.google.com with SMTP id i12so2621614pgr.1
+ for <linux-mtd@lists.infradead.org>; Sat, 19 Aug 2017 01:23:53 -0700 (PDT)
 From: Bhumika Goyal <bhumirks@gmail.com>
 To: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
  daniel.vetter@intel.com, jani.nikula@linux.intel.com,
@@ -27,9 +27,9 @@ To: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
  greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
  linux-usb@vger.kernel.org
 Cc: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH 01/15] EDAC: make device_type const
-Date: Sat, 19 Aug 2017 13:52:12 +0530
-Message-Id: <1503130946-2854-2-git-send-email-bhumirks@gmail.com>
+Subject: [PATCH 03/15] [media] i2c: make device_type const
+Date: Sat, 19 Aug 2017 13:52:14 +0530
+Message-Id: <1503130946-2854-4-git-send-email-bhumirks@gmail.com>
 In-Reply-To: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
 References: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -41,77 +41,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Make these const as they are only stored in the type field of a device
+Make this const as it is only stored in the type field of a device
 structure, which is const.
 Done using Coccinelle.
 
 Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
- drivers/edac/edac_mc_sysfs.c | 8 ++++----
- drivers/edac/i7core_edac.c   | 4 ++--
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ drivers/media/i2c/soc_camera/mt9t031.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/edac/edac_mc_sysfs.c b/drivers/edac/edac_mc_sysfs.c
-index dbc6446..e4fcfa8 100644
---- a/drivers/edac/edac_mc_sysfs.c
-+++ b/drivers/edac/edac_mc_sysfs.c
-@@ -304,7 +304,7 @@ static void csrow_attr_release(struct device *dev)
- 	kfree(csrow);
- }
- 
--static struct device_type csrow_attr_type = {
-+static const struct device_type csrow_attr_type = {
- 	.groups		= csrow_attr_groups,
- 	.release	= csrow_attr_release,
+diff --git a/drivers/media/i2c/soc_camera/mt9t031.c b/drivers/media/i2c/soc_camera/mt9t031.c
+index 714fb35..4802d30 100644
+--- a/drivers/media/i2c/soc_camera/mt9t031.c
++++ b/drivers/media/i2c/soc_camera/mt9t031.c
+@@ -592,7 +592,7 @@ static int mt9t031_runtime_resume(struct device *dev)
+ 	.runtime_resume		= mt9t031_runtime_resume,
  };
-@@ -644,7 +644,7 @@ static void dimm_attr_release(struct device *dev)
- 	kfree(dimm);
- }
  
--static struct device_type dimm_attr_type = {
-+static const struct device_type dimm_attr_type = {
- 	.groups		= dimm_attr_groups,
- 	.release	= dimm_attr_release,
- };
-@@ -920,7 +920,7 @@ static void mci_attr_release(struct device *dev)
- 	kfree(mci);
- }
- 
--static struct device_type mci_attr_type = {
-+static const struct device_type mci_attr_type = {
- 	.groups		= mci_attr_groups,
- 	.release	= mci_attr_release,
- };
-@@ -1074,7 +1074,7 @@ static void mc_attr_release(struct device *dev)
- 	kfree(dev);
- }
- 
--static struct device_type mc_attr_type = {
-+static const struct device_type mc_attr_type = {
- 	.release	= mc_attr_release,
- };
- /*
-diff --git a/drivers/edac/i7core_edac.c b/drivers/edac/i7core_edac.c
-index d36cc84..c16c3b9 100644
---- a/drivers/edac/i7core_edac.c
-+++ b/drivers/edac/i7core_edac.c
-@@ -1094,7 +1094,7 @@ static void addrmatch_release(struct device *device)
- 	kfree(device);
- }
- 
--static struct device_type addrmatch_type = {
-+static const struct device_type addrmatch_type = {
- 	.groups		= addrmatch_groups,
- 	.release	= addrmatch_release,
- };
-@@ -1125,7 +1125,7 @@ static void all_channel_counts_release(struct device *device)
- 	kfree(device);
- }
- 
--static struct device_type all_channel_counts_type = {
-+static const struct device_type all_channel_counts_type = {
- 	.groups		= all_channel_counts_groups,
- 	.release	= all_channel_counts_release,
+-static struct device_type mt9t031_dev_type = {
++static const struct device_type mt9t031_dev_type = {
+ 	.name	= "MT9T031",
+ 	.pm	= &mt9t031_dev_pm_ops,
  };
 -- 
 1.9.1
