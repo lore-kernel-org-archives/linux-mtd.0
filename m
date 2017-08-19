@@ -1,59 +1,27 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dj6vp-0002u5-DX
- for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 16:49:07 +0000
-From: "Winkler, Tomas" <tomas.winkler@intel.com>
-To: Bhumika Goyal <bhumirks@gmail.com>, "julia.lawall@lip6.fr"
- <julia.lawall@lip6.fr>, "bp@alien8.de" <bp@alien8.de>, "mchehab@kernel.org"
- <mchehab@kernel.org>, "Vetter, Daniel" <daniel.vetter@intel.com>,
- "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
- "seanpaul@chromium.org" <seanpaul@chromium.org>, "airlied@linux.ie"
- <airlied@linux.ie>, "g.liakhovetski@gmx.de" <g.liakhovetski@gmx.de>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "boris.brezillon@free-electrons.com"
- <boris.brezillon@free-electrons.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
- "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>, "peda@axentia.se"
- <peda@axentia.se>, "kishon@ti.com" <kishon@ti.com>, "bhelgaas@google.com"
- <bhelgaas@google.com>, "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
- "jonathanh@nvidia.com" <jonathanh@nvidia.com>, "dvhart@infradead.org"
- <dvhart@infradead.org>, "andy@infradead.org" <andy@infradead.org>,
- "ohad@wizery.com" <ohad@wizery.com>, "bjorn.andersson@linaro.org"
- <bjorn.andersson@linaro.org>, "freude@de.ibm.com" <freude@de.ibm.com>,
- "schwidefsky@de.ibm.com" <schwidefsky@de.ibm.com>,
- "heiko.carstens@de.ibm.com" <heiko.carstens@de.ibm.com>, "jth@kernel.org"
- <jth@kernel.org>, "jejb@linux.vnet.ibm.com" <jejb@linux.vnet.ibm.com>,
- "martin.petersen@oracle.com" <martin.petersen@oracle.com>, "lduncan@suse.com"
- <lduncan@suse.com>, "cleech@redhat.com" <cleech@redhat.com>,
- "johan@kernel.org" <johan@kernel.org>, "elder@kernel.org" <elder@kernel.org>,
- "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
- "heikki.krogerus@linux.intel.com" <heikki.krogerus@linux.intel.com>,
- "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
- "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
- "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>,
- "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
- "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
- "fcoe-devel@open-fcoe.org" <fcoe-devel@open-fcoe.org>,
- "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
- "open-iscsi@googlegroups.com" <open-iscsi@googlegroups.com>,
- "greybus-dev@lists.linaro.org" <greybus-dev@lists.linaro.org>,
- "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
- "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-Subject: RE: [PATCH 05/15] mei: make device_type const
-Date: Sat, 19 Aug 2017 16:48:37 +0000
-Message-ID: <5B8DA87D05A7694D9FA63FD143655C1B749EFDE4@hasmsx108.ger.corp.intel.com>
-References: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
- <1503130946-2854-6-git-send-email-bhumirks@gmail.com>
-In-Reply-To: <1503130946-2854-6-git-send-email-bhumirks@gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1djAWS-0006C8-Nm
+ for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 20:39:11 +0000
+Date: Sat, 19 Aug 2017 22:38:44 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Abhishek Sahu <absahu@codeaurora.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>, Archit
+ Taneja <architt@codeaurora.org>, Sricharan R <sricharan@codeaurora.org>,
+ Vinod Koul <vinod.koul@intel.com>, dmaengine@vger.kernel.org
+Subject: Re: [PATCH v5 11/16] mtd: nand: qcom: support for command
+ descriptor formation
+Message-ID: <20170819223844.6068e615@bbrezillon>
+In-Reply-To: <a14f38a2391be690474271933611d8a8@codeaurora.org>
+References: <1502971674-13810-1-git-send-email-absahu@codeaurora.org>
+ <1502971674-13810-11-git-send-email-absahu@codeaurora.org>
+ <a14f38a2391be690474271933611d8a8@codeaurora.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -63,33 +31,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Le Sat, 19 Aug 2017 15:17:13 +0530,
+Abhishek Sahu <absahu@codeaurora.org> a =C3=A9crit :
 
-> Subject: [PATCH 05/15] mei: make device_type const
+> On 2017-08-17 17:37, Abhishek Sahu wrote:
+> > 1. Add the function for command descriptor preparation which will
+> >    be used only by BAM DMA and it will form the DMA descriptors
+> >    containing command elements
+> > 2. DMA_PREP_CMD flag should be used for forming command DMA
+> >    descriptors
+> >=20
+> > Reviewed-by: Archit Taneja <architt@codeaurora.org>
+> > Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+> > ---
+> >=20
+> > * Changes from v4: None
+> >=20
+> > * BUILD DEPENDENCY:
+> >=20
+> >  This PATCH has build dependency over following BAM command descriptor
+> >  patch posted in DMA engine mailing list
+> >=20
+> >  http://www.spinics.net/lists/dmaengine/msg13665.html
+> >  =20
 >=20
-> Make this const as it is only stored in the type field of a device struct=
-ure,
-> which is const.
-> Done using Coccinelle.
+>   Hi Boris,
 >=20
-> Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
-> ---
->  drivers/misc/mei/bus.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>   These patch has build dependency over DMA engine patch
+>   http://www.spinics.net/lists/dmaengine/msg13665.html
 >=20
-> diff --git a/drivers/misc/mei/bus.c b/drivers/misc/mei/bus.c index
-> 40c7908..1ac10cb 100644
-> --- a/drivers/misc/mei/bus.c
-> +++ b/drivers/misc/mei/bus.c
-> @@ -845,7 +845,7 @@ static void mei_cl_bus_dev_release(struct device
-> *dev)
->  	kfree(cldev);
->  }
+>   but this patch has been applied in your github
+>   https://github.com/bbrezillon/linux-0day/commits/nand/next
 >=20
-> -static struct device_type mei_cl_device_type =3D {
-> +static const struct device_type mei_cl_device_type =3D {
->  	.release	=3D mei_cl_bus_dev_release,
->  };
->=20
-LGTM
-Thanks
-Tomas=20
+>   The DMA change has not merged yet so could we drop this and
+>   previous patch alone till the the DMA change is merged to prevent
+>   build error.
+
+Oops. I saw this note when reviewing previous version of this and
+completely forgot when applying v5. I dropped it from my nand/next
+branch.
+;
+Note that the linux-0day repo is just a personal repo I use to let
+Fenguang's robots test things before I push then to l2-mtd/nand/next.
+
+Anyway, thanks for the heads up.
+
+Boris
