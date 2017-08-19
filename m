@@ -1,27 +1,23 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dj07K-0007sZ-9s
- for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 09:32:32 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date: Sat, 19 Aug 2017 15:02:04 +0530
-From: Abhishek Sahu <absahu@codeaurora.org>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dj0Gu-0007v5-3a
+ for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 09:42:26 +0000
+Date: Sat, 19 Aug 2017 11:41:59 +0200
+From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>, Archit
- Taneja <architt@codeaurora.org>, Sricharan R <sricharan@codeaurora.org>,
- Vinod Koul <vinod.koul@intel.com>, dmaengine@vger.kernel.org
-Subject: Re: [PATCH v5 10/16] mtd: nand: qcom: add command elements in BAM
- transaction
-In-Reply-To: <1502971674-13810-11-git-send-email-absahu@codeaurora.org>
-References: <1502971674-13810-1-git-send-email-absahu@codeaurora.org>
- <1502971674-13810-11-git-send-email-absahu@codeaurora.org>
-Message-ID: <f8ff7b141b725ed938a9a28457614716@codeaurora.org>
+Cc: Richard Weinberger <richard@nod.at>, KOBAYASHI Yoshitake
+ <yoshitake.kobayashi@toshiba.co.jp>, linux-kernel@vger.kernel.org, Marek
+ Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH v3] MTD: NAND: add OOB layout without ECC bytes
+Message-ID: <20170819114159.77076761@xps13>
+In-Reply-To: <20170818001542.01d5aa95@bbrezillon>
+References: <20170816073906.5819-1-miquel.raynal@free-electrons.com>
+ <20170818001542.01d5aa95@bbrezillon>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,125 +27,223 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2017-08-17 17:37, Abhishek Sahu wrote:
-> All the QPIC register read/write through BAM DMA requires
-> command descriptor which contains the array of command elements.
-> 
-> Reviewed-by: Archit Taneja <architt@codeaurora.org>
-> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
-> ---
-> 
-> * Changes from v4: None
-> 
-> * BUILD DEPENDENCY:
-> 
->   This PATCH has build dependency over following BAM command descriptor
->   patch posted in DMA engine mailing list
-> 
->   http://www.spinics.net/lists/dmaengine/msg13665.html
+Hello Boris,
 
-  Hi Boris,
+On Fri, 18 Aug 2017 00:15:42 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-  These patch has build dependency over DMA engine patch
-  http://www.spinics.net/lists/dmaengine/msg13665.html
+> +Yoshi
+>=20
+> Hi Miquel,
+>=20
+> Subject prefix should be "mtd: nand: " in lowercase.
 
-  but this patch has been applied in your github
-  https://github.com/bbrezillon/linux-0day/commits/nand/next
+I was not aware of that kind of rule, next time I'll be careful.
 
-  The DMA change has not merged yet so could we drop this and
-  next patch alone till the the DMA change is merged to prevent
-  build error.
+>=20
+> Le Wed, 16 Aug 2017 09:39:06 +0200,
+> Miquel Raynal <miquel.raynal@free-electrons.com> a =C3=A9crit :
+>=20
+> > Add layout functions for small and large pages with mainly free
+> > bytes plus reserved space for Bad Block Markers. This may be useful
+> > for specific chip that use on-die ECC feature, ie. the TOSHIBA
+> > BENAND (Built-in ECC NAND). The ECC bytes are stored in an isolated
+> > area inaccessible by the driver and thus the OOB layout must only
+> > reserve space for Bad Block Markers. =20
+>=20
+> Yes, that's true, but as said below, I expect the toshiba driver to
+> explicitly set this layout.
 
-  Rest of the patch can go without any build or functionality
-  failure.
+I will change:
+-for specific chips that use on-die ECC feature, ie. the [...].
++for configurations that does set ECC_NONE. Specific chips that use
+on-die ECC feature, ie. the [...], might also take advantage of it.
 
-  Thanks,
-  Abhishek
+>=20
+> >=20
+> > Bad Block Markers position was extracted from the existing OOB
+> > layouts by assigning as free all the bytes marked as ECC.
+> >=20
+> > The layout functions added by this patch were supposed to be used
+> > with ECC_NONE mode but it would break existing drivers that do not
+> > rely on an implementation of this layout by the core, so set it as
+> > a fallthrough when no other layout matches. =20
+>=20
+> Well, it's still supposed to be used when ECC_NONE is set, except we
+> can only use it for cases that were not already falling in the
+> supported large/small page with ECC cases.
 
-> 
->  drivers/mtd/nand/qcom_nandc.c | 19 ++++++++++++++++++-
->  1 file changed, 18 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/qcom_nandc.c 
-> b/drivers/mtd/nand/qcom_nandc.c
-> index 7977a70..b0a4734 100644
-> --- a/drivers/mtd/nand/qcom_nandc.c
-> +++ b/drivers/mtd/nand/qcom_nandc.c
-> @@ -22,6 +22,7 @@
->  #include <linux/of.h>
->  #include <linux/of_device.h>
->  #include <linux/delay.h>
-> +#include <linux/dma/qcom_bam_dma.h>
-> 
->  /* NANDc reg offsets */
->  #define	NAND_FLASH_CMD			0x00
-> @@ -199,6 +200,7 @@
->   */
->  #define dev_cmd_reg_addr(nandc, reg)
-> ((nandc)->props->dev_cmd_reg_start + (reg))
-> 
-> +#define QPIC_PER_CW_CMD_ELEMENTS	32
->  #define QPIC_PER_CW_CMD_SGL		32
->  #define QPIC_PER_CW_DATA_SGL		8
-> 
-> @@ -221,8 +223,13 @@
->  /*
->   * This data type corresponds to the BAM transaction which will be 
-> used for all
->   * NAND transfers.
-> + * @bam_ce - the array of BAM command elements
->   * @cmd_sgl - sgl for NAND BAM command pipe
->   * @data_sgl - sgl for NAND BAM consumer/producer pipe
-> + * @bam_ce_pos - the index in bam_ce which is available for next sgl
-> + * @bam_ce_start - the index in bam_ce which marks the start position 
-> ce
-> + *		   for current sgl. It will be used for size calculation
-> + *		   for current sgl
->   * @cmd_sgl_pos - current index in command sgl.
->   * @cmd_sgl_start - start index in command sgl.
->   * @tx_sgl_pos - current index in data sgl for tx.
-> @@ -231,8 +238,11 @@
->   * @rx_sgl_start - start index in data sgl for rx.
->   */
->  struct bam_transaction {
-> +	struct bam_cmd_element *bam_ce;
->  	struct scatterlist *cmd_sgl;
->  	struct scatterlist *data_sgl;
-> +	u32 bam_ce_pos;
-> +	u32 bam_ce_start;
->  	u32 cmd_sgl_pos;
->  	u32 cmd_sgl_start;
->  	u32 tx_sgl_pos;
-> @@ -462,7 +472,8 @@ static void free_bam_transaction(struct
-> qcom_nand_controller *nandc)
-> 
->  	bam_txn_size =
->  		sizeof(*bam_txn) + num_cw *
-> -		((sizeof(*bam_txn->cmd_sgl) * QPIC_PER_CW_CMD_SGL) +
-> +		((sizeof(*bam_txn->bam_ce) * QPIC_PER_CW_CMD_ELEMENTS) +
-> +		(sizeof(*bam_txn->cmd_sgl) * QPIC_PER_CW_CMD_SGL) +
->  		(sizeof(*bam_txn->data_sgl) * QPIC_PER_CW_DATA_SGL));
-> 
->  	bam_txn_buf = devm_kzalloc(nandc->dev, bam_txn_size, GFP_KERNEL);
-> @@ -472,6 +483,10 @@ static void free_bam_transaction(struct
-> qcom_nand_controller *nandc)
->  	bam_txn = bam_txn_buf;
->  	bam_txn_buf += sizeof(*bam_txn);
-> 
-> +	bam_txn->bam_ce = bam_txn_buf;
-> +	bam_txn_buf +=
-> +		sizeof(*bam_txn->bam_ce) * QPIC_PER_CW_CMD_ELEMENTS * num_cw;
-> +
->  	bam_txn->cmd_sgl = bam_txn_buf;
->  	bam_txn_buf +=
->  		sizeof(*bam_txn->cmd_sgl) * QPIC_PER_CW_CMD_SGL * num_cw;
-> @@ -489,6 +504,8 @@ static void clear_bam_transaction(struct
-> qcom_nand_controller *nandc)
->  	if (!nandc->props->is_bam)
->  		return;
-> 
-> +	bam_txn->bam_ce_pos = 0;
-> +	bam_txn->bam_ce_start = 0;
->  	bam_txn->cmd_sgl_pos = 0;
->  	bam_txn->cmd_sgl_start = 0;
->  	bam_txn->tx_sgl_pos = 0;
+I'll edit the commit message, what about:
+
+The layout functions added by this patch intend to be used when ECC_NONE
+is set, except it is only usable for cases that were not already falling
+in the supported large/small page with ECC cases. Not breaking
+existing drivers needs these functions to be set as a fallthrough when
+no other layout matches and ECC_NONE is actually set.
+
+>=20
+> >=20
+> > Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+> > ---
+> >  drivers/mtd/nand/nand_base.c | 65
+> > ++++++++++++++++++++++++++++++++++++++++---- 1 file changed, 60
+> > insertions(+), 5 deletions(-)
+> >=20
+> > diff --git a/drivers/mtd/nand/nand_base.c
+> > b/drivers/mtd/nand/nand_base.c index c5221795a1e8..7c0ae674e50a
+> > 100644 --- a/drivers/mtd/nand/nand_base.c
+> > +++ b/drivers/mtd/nand/nand_base.c
+> > @@ -53,7 +53,38 @@ static int nand_get_device(struct mtd_info *mtd,
+> > int new_state); static int nand_do_write_oob(struct mtd_info *mtd,
+> > loff_t to, struct mtd_oob_ops *ops);
+> > =20
+> > -/* Define default oob placement schemes for large and small page
+> > devices */ +/*
+> > + * Define default OOB placement schemes for:
+> > + *   - no ECC or software ECC
+> > + *   - small or large page devices
+> > + */
+> > +static int nand_ooblayout_free_sp_no_ecc(struct mtd_info *mtd, int
+> > section,
+> > +					   struct mtd_oob_region
+> > *oobregion) +{
+> > +	if (section > 1)
+> > +		return -ERANGE;
+> > +
+> > +	if (!section) {
+> > +		if (mtd->oobsize =3D=3D 16) {
+> > +			oobregion->offset =3D 0;
+> > +			oobregion->length =3D 4;
+> > +		} else {
+> > +			oobregion->offset =3D 0;
+> > +			oobregion->length =3D 5;
+> > +		}
+> > +	} else {
+> > +		oobregion->offset =3D 6;
+> > +		oobregion->length =3D mtd->oobsize -
+> > oobregion->offset;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +const struct mtd_ooblayout_ops nand_ooblayout_sp_no_ecc_ops =3D {
+> > +	.free =3D nand_ooblayout_free_sp_no_ecc,
+> > +};
+> > +EXPORT_SYMBOL_GPL(nand_ooblayout_sp_no_ecc_ops);
+> > +
+> >  static int nand_ooblayout_ecc_sp(struct mtd_info *mtd, int section,
+> >  				 struct mtd_oob_region *oobregion)
+> >  {
+> > @@ -109,6 +140,23 @@ const struct mtd_ooblayout_ops
+> > nand_ooblayout_sp_ops =3D { };
+> >  EXPORT_SYMBOL_GPL(nand_ooblayout_sp_ops);
+> > =20
+> > +static int nand_ooblayout_free_lp_no_ecc(struct mtd_info *mtd, int
+> > section,
+> > +					   struct mtd_oob_region
+> > *oobregion) +{
+> > +	if (section)
+> > +		return -ERANGE;
+> > +
+> > +	oobregion->offset =3D 2;
+> > +	oobregion->length =3D mtd->oobsize - oobregion->offset;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +const struct mtd_ooblayout_ops nand_ooblayout_lp_no_ecc_ops =3D {
+> > +	.free =3D nand_ooblayout_free_lp_no_ecc,
+> > +};
+> > +EXPORT_SYMBOL_GPL(nand_ooblayout_lp_no_ecc_ops); =20
+>=20
+> No need to export those symbols until someone really needs them.
+> BTW, they are exported but not declared in nand.h, so right now
+> nobody can use them.
+
+I though the EXPORT_* was expected as it was below every layout
+function. I'll remove both of the exports, but as you said, while
+nobody use them, I won't add the prototypes in nand.h neither, right ?
+
+>=20
+> > +
+> >  static int nand_ooblayout_ecc_lp(struct mtd_info *mtd, int section,
+> >  				 struct mtd_oob_region *oobregion)
+> >  {
+> > @@ -4649,10 +4697,17 @@ int nand_scan_tail(struct mtd_info *mtd)
+> >  			mtd_set_ooblayout(mtd,
+> > &nand_ooblayout_lp_hamming_ops); break;
+> >  		default:
+> > -			WARN(1, "No oob scheme defined for oobsize
+> > %d\n",
+> > -				mtd->oobsize);
+> > -			ret =3D -EINVAL;
+> > -			goto err_free;
+> > +			/*
+> > +			 * In the case of on-die ECC (when ECC are
+> > stored in an
+> > +			 * isolated area inaccessible by the
+> > driver), the OOB
+> > +			 * layout must only reserve space for Bad
+> > Block Markers.
+> > +			 */ =20
+>=20
+> This kind of on-die ECC is not yet supported and I'd expect NAND
+> manufacturer drivers to set the appropriate layout before reaching
+> this point, so that's not really relevant here.
+
+To be removed then.
+
+>=20
+> > +			if (mtd->writesize <=3D 512)
+> > +				mtd_set_ooblayout(mtd,
+> > +
+> > &nand_ooblayout_sp_no_ecc_ops);
+> > +			else
+> > +				mtd_set_ooblayout(mtd,
+> > +
+> > &nand_ooblayout_lp_no_ecc_ops); =20
+>=20
+> That's not exactly what I was suggesting. What I had in mind was:
+>=20
+> 			if (ecc->mode =3D=3D NAND_ECC_NONE) {
+> 				/*
+> 				 * Expose the whole OOB area to users
+> if ECC_NONE
+> 				 * is passed. We could do that for
+> all kind of
+> 				 * ->oobsize, but we must keep the old
+> 				 * large/small page with ECC layout
+> for
+> 				 * compatibility reasons.
+> 				 */
+> 				if (mtd->writesize <=3D 512)
+> 					mtd_set_ooblayout(mtd,
+> 							  &nand_ooblayout_sp_no_ecc_ops);
+> 				else
+> 					mtd_set_ooblayout(mtd,
+> 							  &nand_ooblayout_lp_no_ecc_ops);
+>=20
+> 				break;
+> 			}
+>=20
+> 			WARN(1, "No oob scheme defined for oobsize
+> %d\n", mtd->oobsize);
+> 			ret =3D -EINVAL;
+> 			goto err_free;
+
+Ok, I clearly misunderstood your previous explanation, sorry about
+that. I'll use your version as is.
+
+> >  		}
+> >  	}
+> >   =20
+>=20
+>=20
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+
+Thank you,
+Miqu=C3=A8l
