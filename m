@@ -1,9 +1,9 @@
-Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
+Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
  by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1diz6j-00024j-CB
- for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 08:27:50 +0000
-Received: by mail-pg0-x241.google.com with SMTP id t80so11810130pgb.2
- for <linux-mtd@lists.infradead.org>; Sat, 19 Aug 2017 01:27:29 -0700 (PDT)
+ id 1diz5m-0001yW-Te
+ for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 08:26:53 +0000
+Received: by mail-pg0-x244.google.com with SMTP id i12so2625637pgr.1
+ for <linux-mtd@lists.infradead.org>; Sat, 19 Aug 2017 01:26:31 -0700 (PDT)
 From: Bhumika Goyal <bhumirks@gmail.com>
 To: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
  daniel.vetter@intel.com, jani.nikula@linux.intel.com,
@@ -27,9 +27,9 @@ To: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
  greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
  linux-usb@vger.kernel.org
 Cc: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH 14/15] staging: greybus: make device_type const
-Date: Sat, 19 Aug 2017 13:52:25 +0530
-Message-Id: <1503130946-2854-15-git-send-email-bhumirks@gmail.com>
+Subject: [PATCH 11/15] remoteproc: make device_type const
+Date: Sat, 19 Aug 2017 13:52:22 +0530
+Message-Id: <1503130946-2854-12-git-send-email-bhumirks@gmail.com>
 In-Reply-To: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
 References: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -47,21 +47,21 @@ Done using Coccinelle.
 
 Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
- drivers/staging/greybus/gbphy.c | 2 +-
+ drivers/remoteproc/remoteproc_core.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/greybus/gbphy.c b/drivers/staging/greybus/gbphy.c
-index 603de6f..80c1da8 100644
---- a/drivers/staging/greybus/gbphy.c
-+++ b/drivers/staging/greybus/gbphy.c
-@@ -66,7 +66,7 @@ static int gb_gbphy_idle(struct device *dev)
- 			   gb_gbphy_idle)
- };
+diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+index 364ef28..48b2c5d 100644
+--- a/drivers/remoteproc/remoteproc_core.c
++++ b/drivers/remoteproc/remoteproc_core.c
+@@ -1360,7 +1360,7 @@ static void rproc_type_release(struct device *dev)
+ 	kfree(rproc);
+ }
  
--static struct device_type greybus_gbphy_dev_type = {
-+static const struct device_type greybus_gbphy_dev_type = {
- 	.name	 =	"gbphy_device",
- 	.release =	gbphy_dev_release,
- 	.pm	=	&gb_gbphy_pm_ops,
+-static struct device_type rproc_type = {
++static const struct device_type rproc_type = {
+ 	.name		= "remoteproc",
+ 	.release	= rproc_type_release,
+ };
 -- 
 1.9.1
