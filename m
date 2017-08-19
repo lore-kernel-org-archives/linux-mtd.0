@@ -1,9 +1,9 @@
-Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
+Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
  by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1diz3u-0001kc-3X
- for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 08:24:55 +0000
-Received: by mail-pg0-x243.google.com with SMTP id 123so17909003pga.5
- for <linux-mtd@lists.infradead.org>; Sat, 19 Aug 2017 01:24:34 -0700 (PDT)
+ id 1diz2w-0001eB-Ib
+ for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 08:23:56 +0000
+Received: by mail-pf0-x243.google.com with SMTP id r62so200678pfj.4
+ for <linux-mtd@lists.infradead.org>; Sat, 19 Aug 2017 01:23:34 -0700 (PDT)
 From: Bhumika Goyal <bhumirks@gmail.com>
 To: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
  daniel.vetter@intel.com, jani.nikula@linux.intel.com,
@@ -27,9 +27,9 @@ To: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
  greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
  linux-usb@vger.kernel.org
 Cc: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH 05/15] mei: make device_type const
-Date: Sat, 19 Aug 2017 13:52:16 +0530
-Message-Id: <1503130946-2854-6-git-send-email-bhumirks@gmail.com>
+Subject: [PATCH 02/15] drm: make device_type const
+Date: Sat, 19 Aug 2017 13:52:13 +0530
+Message-Id: <1503130946-2854-3-git-send-email-bhumirks@gmail.com>
 In-Reply-To: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
 References: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -41,27 +41,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Make this const as it is only stored in the type field of a device
+Make these const as they are only stored in the type field of a device
 structure, which is const.
 Done using Coccinelle.
-
-Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
- drivers/misc/mei/bus.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/drm_sysfs.c      | 2 +-
+ drivers/gpu/drm/ttm/ttm_module.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/misc/mei/bus.c b/drivers/misc/mei/bus.c
-index 40c7908..1ac10cb 100644
---- a/drivers/misc/mei/bus.c
-+++ b/drivers/misc/mei/bus.c
-@@ -845,7 +845,7 @@ static void mei_cl_bus_dev_release(struct device *dev)
- 	kfree(cldev);
- }
+diff --git a/drivers/gpu/drm/drm_sysfs.c b/drivers/gpu/drm/drm_sysfs.c
+index 1c5b5ce..84e4ebe 100644
+--- a/drivers/gpu/drm/drm_sysfs.c
++++ b/drivers/gpu/drm/drm_sysfs.c
+@@ -39,7 +39,7 @@
+  * drm_connector_unregister().
+  */
  
--static struct device_type mei_cl_device_type = {
-+static const struct device_type mei_cl_device_type = {
- 	.release	= mei_cl_bus_dev_release,
+-static struct device_type drm_sysfs_device_minor = {
++static const struct device_type drm_sysfs_device_minor = {
+ 	.name = "drm_minor"
  };
  
+diff --git a/drivers/gpu/drm/ttm/ttm_module.c b/drivers/gpu/drm/ttm/ttm_module.c
+index 66fc639..e6604e0 100644
+--- a/drivers/gpu/drm/ttm/ttm_module.c
++++ b/drivers/gpu/drm/ttm/ttm_module.c
+@@ -37,7 +37,7 @@
+ static DECLARE_WAIT_QUEUE_HEAD(exit_q);
+ static atomic_t device_released;
+ 
+-static struct device_type ttm_drm_class_type = {
++static const struct device_type ttm_drm_class_type = {
+ 	.name = "ttm",
+ 	/**
+ 	 * Add pm ops here.
 -- 
 1.9.1
