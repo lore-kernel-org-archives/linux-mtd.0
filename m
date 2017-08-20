@@ -1,20 +1,40 @@
-Received: from mx1.mailbox.org ([80.241.60.212])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1djC6f-0000FE-Uv
- for linux-mtd@lists.infradead.org; Sat, 19 Aug 2017 22:20:57 +0000
-From: Hauke Mehrtens <hauke@hauke-m.de>
-To: ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
- linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
- martin.blumenstingl@googlemail.com, john@phrozen.org,
- linux-spi@vger.kernel.org, hauke.mehrtens@intel.com, robh@kernel.org,
- andy.shevchenko@gmail.com, p.zabel@pengutronix.de, kishon@ti.com,
- mark.rutland@arm.com, Hauke Mehrtens <hauke@hauke-m.de>
-Subject: [PATCH v10 15/16] MIPS: lantiq: remove old USB PHY initialisation
-Date: Sun, 20 Aug 2017 00:18:22 +0200
-Message-Id: <20170819221823.13850-16-hauke@hauke-m.de>
-In-Reply-To: <20170819221823.13850-1-hauke@hauke-m.de>
-References: <20170819221823.13850-1-hauke@hauke-m.de>
+Received: from mail.skyhub.de ([2a01:4f8:190:11c2::b:1457])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1djOmQ-00045Y-ID
+ for linux-mtd@lists.infradead.org; Sun, 20 Aug 2017 11:52:36 +0000
+Date: Sun, 20 Aug 2017 13:29:55 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Bhumika Goyal <bhumirks@gmail.com>
+Cc: julia.lawall@lip6.fr, mchehab@kernel.org, daniel.vetter@intel.com,
+ jani.nikula@linux.intel.com, seanpaul@chromium.org,
+ airlied@linux.ie, g.liakhovetski@gmx.de, tomas.winkler@intel.com,
+ dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
+ richard@nod.at, cyrille.pitchen@wedev4u.fr, peda@axentia.se,
+ kishon@ti.com, bhelgaas@google.com, thierry.reding@gmail.com,
+ jonathanh@nvidia.com, dvhart@infradead.org, andy@infradead.org,
+ ohad@wizery.com, bjorn.andersson@linaro.org, freude@de.ibm.com,
+ schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, jth@kernel.org,
+ jejb@linux.vnet.ibm.com, martin.petersen@oracle.com,
+ lduncan@suse.com, cleech@redhat.com, johan@kernel.org,
+ elder@kernel.org, gregkh@linuxfoundation.org,
+ heikki.krogerus@linux.intel.com, linux-edac@vger.kernel.org,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
+ platform-driver-x86@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+ fcoe-devel@open-fcoe.org, linux-scsi@vger.kernel.org,
+ open-iscsi@googlegroups.com, greybus-dev@lists.linaro.org,
+ devel@driverdev.osuosl.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH 01/15] EDAC: make device_type const
+Message-ID: <20170820112954.bi5oiebbm3i4gtru@pd.tnic>
+References: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
+ <1503130946-2854-2-git-send-email-bhumirks@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1503130946-2854-2-git-send-email-bhumirks@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,73 +44,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is now done in a PHY driver.
+On Sat, Aug 19, 2017 at 01:52:12PM +0530, Bhumika Goyal wrote:
+> Make these const as they are only stored in the type field of a device
+> structure, which is const.
+> Done using Coccinelle.
+> 
+> Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+> ---
+>  drivers/edac/edac_mc_sysfs.c | 8 ++++----
+>  drivers/edac/i7core_edac.c   | 4 ++--
+>  2 files changed, 6 insertions(+), 6 deletions(-)
 
-Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
----
- arch/mips/lantiq/xway/reset.c | 43 -------------------------------------------
- 1 file changed, 43 deletions(-)
+Applied, thanks.
 
-diff --git a/arch/mips/lantiq/xway/reset.c b/arch/mips/lantiq/xway/reset.c
-index be5fd29de523..04cd9a7c04a3 100644
---- a/arch/mips/lantiq/xway/reset.c
-+++ b/arch/mips/lantiq/xway/reset.c
-@@ -114,45 +114,6 @@ static void ltq_machine_power_off(void)
- 	unreachable();
- }
- 
--static void ltq_usb_init(void)
--{
--	/* Power for USB cores 1 & 2 */
--	ltq_pmu_enable(PMU_AHBM);
--	ltq_pmu_enable(PMU_USB0);
--	ltq_pmu_enable(PMU_USB1);
--
--	ltq_rcu_w32(ltq_rcu_r32(RCU_CFG1A) | BIT(0), RCU_CFG1A);
--	ltq_rcu_w32(ltq_rcu_r32(RCU_CFG1B) | BIT(0), RCU_CFG1B);
--
--	/* Enable USB PHY power for cores 1 & 2 */
--	ltq_pmu_enable(PMU_USB0_P);
--	ltq_pmu_enable(PMU_USB1_P);
--
--	/* Configure cores to host mode */
--	ltq_rcu_w32(ltq_rcu_r32(RCU_USB1CFG) & ~RCU_USBCFG_HDSEL_BIT,
--		RCU_USB1CFG);
--	ltq_rcu_w32(ltq_rcu_r32(RCU_USB2CFG) & ~RCU_USBCFG_HDSEL_BIT,
--		RCU_USB2CFG);
--
--	/* Select DMA endianness (Host-endian: big-endian) */
--	ltq_rcu_w32((ltq_rcu_r32(RCU_USB1CFG) & ~RCU_USBCFG_SLV_END_BIT)
--		| RCU_USBCFG_HOST_END_BIT, RCU_USB1CFG);
--	ltq_rcu_w32(ltq_rcu_r32((RCU_USB2CFG) & ~RCU_USBCFG_SLV_END_BIT)
--		| RCU_USBCFG_HOST_END_BIT, RCU_USB2CFG);
--
--	/* Hard reset USB state machines */
--	ltq_rcu_w32(ltq_rcu_r32(RCU_USBRESET) | USBRESET_BIT, RCU_USBRESET);
--	udelay(50 * 1000);
--	ltq_rcu_w32(ltq_rcu_r32(RCU_USBRESET) & ~USBRESET_BIT, RCU_USBRESET);
--
--	/* Soft reset USB state machines */
--	ltq_rcu_w32(ltq_rcu_r32(RCU_USBRESET2)
--		| USB1RESET_BIT | USB2RESET_BIT, RCU_USBRESET2);
--	udelay(50 * 1000);
--	ltq_rcu_w32(ltq_rcu_r32(RCU_USBRESET2)
--		& ~(USB1RESET_BIT | USB2RESET_BIT), RCU_USBRESET2);
--}
--
- static int __init mips_reboot_setup(void)
- {
- 	struct resource res;
-@@ -176,10 +137,6 @@ static int __init mips_reboot_setup(void)
- 	if (!ltq_rcu_membase)
- 		panic("Failed to remap core memory");
- 
--	if (of_machine_is_compatible("lantiq,ar9") ||
--	    of_machine_is_compatible("lantiq,vr9"))
--		ltq_usb_init();
--
- 	_machine_restart = ltq_machine_restart;
- 	_machine_halt = ltq_machine_halt;
- 	pm_power_off = ltq_machine_power_off;
 -- 
-2.11.0
+Regards/Gruss,
+    Boris.
+
+Good mailing practices for 400: avoid top-posting and trim the reply.
