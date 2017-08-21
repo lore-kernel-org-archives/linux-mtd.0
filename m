@@ -1,21 +1,35 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1djmdK-0004jz-3Z
- for linux-mtd@lists.infradead.org; Mon, 21 Aug 2017 13:20:48 +0000
-Date: Mon, 21 Aug 2017 15:20:20 +0200
+ id 1djt43-0005Gz-0p
+ for linux-mtd@lists.infradead.org; Mon, 21 Aug 2017 20:12:48 +0000
+Date: Mon, 21 Aug 2017 22:12:23 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>, KOBAYASHI Yoshitake
- <yoshitake.kobayashi@toshiba.co.jp>, linux-kernel@vger.kernel.org, Marek
- Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v3] MTD: NAND: add OOB layout without ECC bytes
-Message-ID: <20170821152020.3640adb9@bbrezillon>
-In-Reply-To: <20170819114159.77076761@xps13>
-References: <20170816073906.5819-1-miquel.raynal@free-electrons.com>
- <20170818001542.01d5aa95@bbrezillon>
- <20170819114159.77076761@xps13>
+To: Bhumika Goyal <bhumirks@gmail.com>
+Cc: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
+ daniel.vetter@intel.com, jani.nikula@linux.intel.com,
+ seanpaul@chromium.org, airlied@linux.ie, g.liakhovetski@gmx.de,
+ tomas.winkler@intel.com, dwmw2@infradead.org, computersforpeace@gmail.com,
+ marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr,
+ peda@axentia.se, kishon@ti.com, bhelgaas@google.com,
+ thierry.reding@gmail.com, jonathanh@nvidia.com, dvhart@infradead.org,
+ andy@infradead.org, ohad@wizery.com, bjorn.andersson@linaro.org,
+ freude@de.ibm.com, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com,
+ jth@kernel.org, jejb@linux.vnet.ibm.com, martin.petersen@oracle.com,
+ lduncan@suse.com, cleech@redhat.com, johan@kernel.org, elder@kernel.org,
+ gregkh@linuxfoundation.org, heikki.krogerus@linux.intel.com,
+ linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-pci@vger.kernel.org,
+ linux-tegra@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+ fcoe-devel@open-fcoe.org, linux-scsi@vger.kernel.org,
+ open-iscsi@googlegroups.com, greybus-dev@lists.linaro.org,
+ devel@driverdev.osuosl.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH 06/15] mtd:  make device_type const
+Message-ID: <20170821221223.0a44fe32@bbrezillon>
+In-Reply-To: <1503130946-2854-7-git-send-email-bhumirks@gmail.com>
+References: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
+ <1503130946-2854-7-git-send-email-bhumirks@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -28,240 +42,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le Sat, 19 Aug 2017 11:41:59 +0200,
-Miquel RAYNAL <miquel.raynal@free-electrons.com> a =C3=A9crit :
+Le Sat, 19 Aug 2017 13:52:17 +0530,
+Bhumika Goyal <bhumirks@gmail.com> a =C3=A9crit :
 
-> >=20
-> > Le Wed, 16 Aug 2017 09:39:06 +0200,
-> > Miquel Raynal <miquel.raynal@free-electrons.com> a =C3=A9crit :
-> >  =20
-> > > Add layout functions for small and large pages with mainly free
-> > > bytes plus reserved space for Bad Block Markers. This may be useful
-> > > for specific chip that use on-die ECC feature, ie. the TOSHIBA
-> > > BENAND (Built-in ECC NAND). The ECC bytes are stored in an isolated
-> > > area inaccessible by the driver and thus the OOB layout must only
-> > > reserve space for Bad Block Markers.   =20
-> >=20
-> > Yes, that's true, but as said below, I expect the toshiba driver to
-> > explicitly set this layout. =20
+> Make this const as it is only stored in the type field of a device
+> structure, which is const.
+> Done using Coccinelle.
 >=20
-> I will change:
-> -for specific chips that use on-die ECC feature, ie. the [...].
-> +for configurations that does set ECC_NONE. Specific chips that use
-> on-die ECC feature, ie. the [...], might also take advantage of it.
 
-Sounds better.
+Applied to l2-mtd/master.
 
->=20
-> >  =20
-> > >=20
-> > > Bad Block Markers position was extracted from the existing OOB
-> > > layouts by assigning as free all the bytes marked as ECC.
-> > >=20
-> > > The layout functions added by this patch were supposed to be used
-> > > with ECC_NONE mode but it would break existing drivers that do not
-> > > rely on an implementation of this layout by the core, so set it as
-> > > a fallthrough when no other layout matches.   =20
-> >=20
-> > Well, it's still supposed to be used when ECC_NONE is set, except we
-> > can only use it for cases that were not already falling in the
-> > supported large/small page with ECC cases. =20
->=20
-> I'll edit the commit message, what about:
->=20
-> The layout functions added by this patch intend to be used when ECC_NONE
-> is set, except it is only usable for cases that were not already falling
-> in the supported large/small page with ECC cases. Not breaking
-> existing drivers needs these functions to be set as a fallthrough when
-> no other layout matches and ECC_NONE is actually set.
-
-Hm, still a bit hard to follow. How about:
-
-"
-Normally, if NAND_ECC_NONE is chosen the MTD user can use the whole OOB
-area (except the bytes reserved for the bad block markers) to store
-private data, but the NAND framework has been using the same OOB layout
-(the one reserving ECC bytes) no matter whether ECC is enabled or not.
-In order to not break existing MTD users which may rely on this layout
-to work properly, we keep things unchanged and only use the 'no_ecc'
-layouts for previously unsupported configurations.
-"
-
->=20
-> >  =20
-> > >=20
-> > > Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
-> > > ---
-> > >  drivers/mtd/nand/nand_base.c | 65
-> > > ++++++++++++++++++++++++++++++++++++++++---- 1 file changed, 60
-> > > insertions(+), 5 deletions(-)
-> > >=20
-> > > diff --git a/drivers/mtd/nand/nand_base.c
-> > > b/drivers/mtd/nand/nand_base.c index c5221795a1e8..7c0ae674e50a
-> > > 100644 --- a/drivers/mtd/nand/nand_base.c
-> > > +++ b/drivers/mtd/nand/nand_base.c
-> > > @@ -53,7 +53,38 @@ static int nand_get_device(struct mtd_info *mtd,
-> > > int new_state); static int nand_do_write_oob(struct mtd_info *mtd,
-> > > loff_t to, struct mtd_oob_ops *ops);
-> > > =20
-> > > -/* Define default oob placement schemes for large and small page
-> > > devices */ +/*
-> > > + * Define default OOB placement schemes for:
-> > > + *   - no ECC or software ECC
-> > > + *   - small or large page devices
-> > > + */
-> > > +static int nand_ooblayout_free_sp_no_ecc(struct mtd_info *mtd, int
-> > > section,
-> > > +					   struct mtd_oob_region
-> > > *oobregion) +{
-> > > +	if (section > 1)
-> > > +		return -ERANGE;
-> > > +
-> > > +	if (!section) {
-> > > +		if (mtd->oobsize =3D=3D 16) {
-> > > +			oobregion->offset =3D 0;
-> > > +			oobregion->length =3D 4;
-> > > +		} else {
-> > > +			oobregion->offset =3D 0;
-> > > +			oobregion->length =3D 5;
-> > > +		}
-> > > +	} else {
-> > > +		oobregion->offset =3D 6;
-> > > +		oobregion->length =3D mtd->oobsize -
-> > > oobregion->offset;
-> > > +	}
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +const struct mtd_ooblayout_ops nand_ooblayout_sp_no_ecc_ops =3D {
-> > > +	.free =3D nand_ooblayout_free_sp_no_ecc,
-> > > +};
-> > > +EXPORT_SYMBOL_GPL(nand_ooblayout_sp_no_ecc_ops);
-> > > +
-> > >  static int nand_ooblayout_ecc_sp(struct mtd_info *mtd, int section,
-> > >  				 struct mtd_oob_region *oobregion)
-> > >  {
-> > > @@ -109,6 +140,23 @@ const struct mtd_ooblayout_ops
-> > > nand_ooblayout_sp_ops =3D { };
-> > >  EXPORT_SYMBOL_GPL(nand_ooblayout_sp_ops);
-> > > =20
-> > > +static int nand_ooblayout_free_lp_no_ecc(struct mtd_info *mtd, int
-> > > section,
-> > > +					   struct mtd_oob_region
-> > > *oobregion) +{
-> > > +	if (section)
-> > > +		return -ERANGE;
-> > > +
-> > > +	oobregion->offset =3D 2;
-> > > +	oobregion->length =3D mtd->oobsize - oobregion->offset;
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +const struct mtd_ooblayout_ops nand_ooblayout_lp_no_ecc_ops =3D {
-> > > +	.free =3D nand_ooblayout_free_lp_no_ecc,
-> > > +};
-> > > +EXPORT_SYMBOL_GPL(nand_ooblayout_lp_no_ecc_ops);   =20
-> >=20
-> > No need to export those symbols until someone really needs them.
-> > BTW, they are exported but not declared in nand.h, so right now
-> > nobody can use them. =20
->=20
-> I though the EXPORT_* was expected as it was below every layout
-> function. I'll remove both of the exports, but as you said, while
-> nobody use them, I won't add the prototypes in nand.h neither, right ?
-
-Right.
-
->=20
-> >  =20
-> > > +
-> > >  static int nand_ooblayout_ecc_lp(struct mtd_info *mtd, int section,
-> > >  				 struct mtd_oob_region *oobregion)
-> > >  {
-> > > @@ -4649,10 +4697,17 @@ int nand_scan_tail(struct mtd_info *mtd)
-> > >  			mtd_set_ooblayout(mtd,
-> > > &nand_ooblayout_lp_hamming_ops); break;
-> > >  		default:
-> > > -			WARN(1, "No oob scheme defined for oobsize
-> > > %d\n",
-> > > -				mtd->oobsize);
-> > > -			ret =3D -EINVAL;
-> > > -			goto err_free;
-> > > +			/*
-> > > +			 * In the case of on-die ECC (when ECC are
-> > > stored in an
-> > > +			 * isolated area inaccessible by the
-> > > driver), the OOB
-> > > +			 * layout must only reserve space for Bad
-> > > Block Markers.
-> > > +			 */   =20
-> >=20
-> > This kind of on-die ECC is not yet supported and I'd expect NAND
-> > manufacturer drivers to set the appropriate layout before reaching
-> > this point, so that's not really relevant here. =20
->=20
-> To be removed then.
->=20
-> >  =20
-> > > +			if (mtd->writesize <=3D 512)
-> > > +				mtd_set_ooblayout(mtd,
-> > > +
-> > > &nand_ooblayout_sp_no_ecc_ops);
-> > > +			else
-> > > +				mtd_set_ooblayout(mtd,
-> > > +
-> > > &nand_ooblayout_lp_no_ecc_ops);   =20
-> >=20
-> > That's not exactly what I was suggesting. What I had in mind was:
-> >=20
-> > 			if (ecc->mode =3D=3D NAND_ECC_NONE) {
-> > 				/*
-> > 				 * Expose the whole OOB area to users
-> > if ECC_NONE
-> > 				 * is passed. We could do that for
-> > all kind of
-> > 				 * ->oobsize, but we must keep the old
-> > 				 * large/small page with ECC layout
-> > for
-> > 				 * compatibility reasons.
-> > 				 */
-> > 				if (mtd->writesize <=3D 512)
-> > 					ze(mtd,
-> > 							  &nand_ooblayout_sp_no_ecc_ops);
-> > 				else
-> > 					mtd_set_ooblayout(mtd,
-> > 							  &nand_ooblayout_lp_no_ecc_ops);
-> >=20
-> > 				break;
-> > 			}
-> >=20
-> > 			WARN(1, "No oob scheme defined for oobsize
-> > %d\n", mtd->oobsize);
-> > 			ret =3D -EINVAL;
-> > 			goto err_free; =20
->=20
-> Ok, I clearly misunderstood your previous explanation, sorry about
-> that. I'll use your version as is.
-
-Hm, I also realize nand_ooblayout_sp_no_ecc_ops will actually never
-be used because small page NANDs always have ->oobsize set to 8 or
-16 bytes, and these settings are already using nand_ooblayout_sp_ops.
-
-You can just simplify the code like this:
-
-			/*
-			 * Expose the whole OOB area to users if ECC_NONE
-			 * is passed. We could do that for all kind of
-			 * ->oobsize, but we must keep the old large/small
-			 * page with ECC layout when ->oobsize <=3D 128 for
-			 * compatibility reasons.
-			 */
-			if (ecc->mode =3D=3D NAND_ECC_NONE)
-				mtd_set_ooblayout(mtd,
-						  &nand_ooblayout_lp_no_ecc_ops);
-
-Regards,
+Thanks,
 
 Boris
+
+> Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+> ---
+>  drivers/mtd/mtdcore.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index f872a99..e7ea842 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -340,7 +340,7 @@ static ssize_t mtd_bbtblocks_show(struct device *dev,
+>  };
+>  ATTRIBUTE_GROUPS(mtd);
+> =20
+> -static struct device_type mtd_devtype =3D {
+> +static const struct device_type mtd_devtype =3D {
+>  	.name		=3D "mtd",
+>  	.groups		=3D mtd_groups,
+>  	.release	=3D mtd_release,
