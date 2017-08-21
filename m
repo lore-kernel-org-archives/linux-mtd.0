@@ -1,40 +1,25 @@
-Received: from mail.skyhub.de ([2a01:4f8:190:11c2::b:1457])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1djOmQ-00045Y-ID
- for linux-mtd@lists.infradead.org; Sun, 20 Aug 2017 11:52:36 +0000
-Date: Sun, 20 Aug 2017 13:29:55 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Bhumika Goyal <bhumirks@gmail.com>
-Cc: julia.lawall@lip6.fr, mchehab@kernel.org, daniel.vetter@intel.com,
- jani.nikula@linux.intel.com, seanpaul@chromium.org,
- airlied@linux.ie, g.liakhovetski@gmx.de, tomas.winkler@intel.com,
- dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
- richard@nod.at, cyrille.pitchen@wedev4u.fr, peda@axentia.se,
- kishon@ti.com, bhelgaas@google.com, thierry.reding@gmail.com,
- jonathanh@nvidia.com, dvhart@infradead.org, andy@infradead.org,
- ohad@wizery.com, bjorn.andersson@linaro.org, freude@de.ibm.com,
- schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, jth@kernel.org,
- jejb@linux.vnet.ibm.com, martin.petersen@oracle.com,
- lduncan@suse.com, cleech@redhat.com, johan@kernel.org,
- elder@kernel.org, gregkh@linuxfoundation.org,
- heikki.krogerus@linux.intel.com, linux-edac@vger.kernel.org,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
- platform-driver-x86@vger.kernel.org,
- linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
- fcoe-devel@open-fcoe.org, linux-scsi@vger.kernel.org,
- open-iscsi@googlegroups.com, greybus-dev@lists.linaro.org,
- devel@driverdev.osuosl.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH 01/15] EDAC: make device_type const
-Message-ID: <20170820112954.bi5oiebbm3i4gtru@pd.tnic>
-References: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
- <1503130946-2854-2-git-send-email-bhumirks@gmail.com>
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dje4B-0007VH-0H
+ for linux-mtd@lists.infradead.org; Mon, 21 Aug 2017 04:11:57 +0000
+Subject: Re: "UBIFS error (pid 396): dbg_check_space_info: free space changed
+ from" + ecryptfs
+To: Richard Weinberger <richard.weinberger@gmail.com>,
+ Richard Weinberger <richard@nod.at>
+Cc: kernel@pengutronix.de,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+References: <dbc5bc9f-6c38-a0c3-e776-050a70382814@rempel-privat.de>
+ <20170802140642.kpsdh3jfow2azevm@pengutronix.de>
+ <2d11efa2-dda2-7810-dd22-965b295bbff9@nod.at>
+ <CAFLxGvwK=J0zMyNa6zYG9jHXz3yTb_TFfEQBkMy0sqJyw7K73g@mail.gmail.com>
+From: Oleksij Rempel <ore@pengutronix.de>
+Message-ID: <7ba72b1b-faaf-a324-1b4b-934ec9f7cf81@pengutronix.de>
+Date: Mon, 21 Aug 2017 06:11:27 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1503130946-2854-2-git-send-email-bhumirks@gmail.com>
+In-Reply-To: <CAFLxGvwK=J0zMyNa6zYG9jHXz3yTb_TFfEQBkMy0sqJyw7K73g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,21 +29,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Aug 19, 2017 at 01:52:12PM +0530, Bhumika Goyal wrote:
-> Make these const as they are only stored in the type field of a device
-> structure, which is const.
-> Done using Coccinelle.
+Hi,
+
+On 18.08.2017 12:59, Richard Weinberger wrote:
+> On Sun, Aug 6, 2017 at 11:25 AM, Richard Weinberger <richard@nod.at> wrote:
+>> Oleksij,
+>>
+>> Am 02.08.2017 um 16:06 schrieb Oleksij Rempel:
+>>> Hallo all,
+>>>
+>>> Initial issue was detected on kernel 4.0.9 and is still reproducible
+>>> with same kernel version + most of back ported ubi/ubifs patches till
+>>> the kernel v4.12. UBIfs encryption patches was not backported.
+>>>
+>>> To reproduce it I needed:
+>>> - system with fresh flashed ubi image.
+>>> - on first start it should run following script:
+>>>> mount -o remount,rw /
+>>>> mount -t ecryptfs ... /dst
+>>>> ... do some work and mv some files to /dst
+>>>> umount /dst
+>>>> mount -o remount,ro / <--  UBIFS error (pid 396): dbg_check_space_info:
+>>
+>> Does this also happen on mainline?
+>> Also please try in nandsim to rule out chip specific issues.
+>>
+>> Can you please share the ecryptfs configuration?
+>> i.e. are file names encrypted or not?
 > 
-> Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
-> ---
->  drivers/edac/edac_mc_sysfs.c | 8 ++++----
->  drivers/edac/i7core_edac.c   | 4 ++--
->  2 files changed, 6 insertions(+), 6 deletions(-)
+> Ping?
 
-Applied, thanks.
-
--- 
-Regards/Gruss,
-    Boris.
-
-Good mailing practices for 400: avoid top-posting and trim the reply.
+thank you for your attention. It is on TODO, just need a bit more time :)
