@@ -1,25 +1,35 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+Received: from mail-wr0-x22c.google.com ([2a00:1450:400c:c0c::22c])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dje4B-0007VH-0H
- for linux-mtd@lists.infradead.org; Mon, 21 Aug 2017 04:11:57 +0000
-Subject: Re: "UBIFS error (pid 396): dbg_check_space_info: free space changed
- from" + ecryptfs
-To: Richard Weinberger <richard.weinberger@gmail.com>,
- Richard Weinberger <richard@nod.at>
-Cc: kernel@pengutronix.de,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-References: <dbc5bc9f-6c38-a0c3-e776-050a70382814@rempel-privat.de>
- <20170802140642.kpsdh3jfow2azevm@pengutronix.de>
- <2d11efa2-dda2-7810-dd22-965b295bbff9@nod.at>
- <CAFLxGvwK=J0zMyNa6zYG9jHXz3yTb_TFfEQBkMy0sqJyw7K73g@mail.gmail.com>
-From: Oleksij Rempel <ore@pengutronix.de>
-Message-ID: <7ba72b1b-faaf-a324-1b4b-934ec9f7cf81@pengutronix.de>
-Date: Mon, 21 Aug 2017 06:11:27 +0200
+ id 1djh7Q-0001tt-Px
+ for linux-mtd@lists.infradead.org; Mon, 21 Aug 2017 07:27:31 +0000
+Received: by mail-wr0-x22c.google.com with SMTP id p8so26792176wrf.5
+ for <linux-mtd@lists.infradead.org>; Mon, 21 Aug 2017 00:27:08 -0700 (PDT)
+Date: Mon, 21 Aug 2017 08:27:03 +0100
+From: Lee Jones <lee.jones@linaro.org>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Andrea Adami <andrea.adami@gmail.com>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Russell King <linux@armlinux.org.uk>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 3/9] mfd: tmio: Add partition parsers platform data
+Message-ID: <20170821072703.nmzarvksj6l7omrg@dell>
+References: <1502743720-28672-1-git-send-email-andrea.adami@gmail.com>
+ <1502743720-28672-4-git-send-email-andrea.adami@gmail.com>
+ <20170815065835.jcuweb377lqioddc@dell>
+ <20170819092603.1c919b4b@bbrezillon>
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvwK=J0zMyNa6zYG9jHXz3yTb_TFfEQBkMy0sqJyw7K73g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20170819092603.1c919b4b@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,34 +39,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Sat, 19 Aug 2017, Boris Brezillon wrote:
 
-On 18.08.2017 12:59, Richard Weinberger wrote:
-> On Sun, Aug 6, 2017 at 11:25 AM, Richard Weinberger <richard@nod.at> wrote:
->> Oleksij,
->>
->> Am 02.08.2017 um 16:06 schrieb Oleksij Rempel:
->>> Hallo all,
->>>
->>> Initial issue was detected on kernel 4.0.9 and is still reproducible
->>> with same kernel version + most of back ported ubi/ubifs patches till
->>> the kernel v4.12. UBIfs encryption patches was not backported.
->>>
->>> To reproduce it I needed:
->>> - system with fresh flashed ubi image.
->>> - on first start it should run following script:
->>>> mount -o remount,rw /
->>>> mount -t ecryptfs ... /dst
->>>> ... do some work and mv some files to /dst
->>>> umount /dst
->>>> mount -o remount,ro / <--  UBIFS error (pid 396): dbg_check_space_info:
->>
->> Does this also happen on mainline?
->> Also please try in nandsim to rule out chip specific issues.
->>
->> Can you please share the ecryptfs configuration?
->> i.e. are file names encrypted or not?
+> Hi Lee,
 > 
-> Ping?
+> Le Tue, 15 Aug 2017 07:58:35 +0100,
+> Lee Jones <lee.jones@linaro.org> a écrit :
+> 
+> > On Mon, 14 Aug 2017, Andrea Adami wrote:
+> > 
+> > > With the introduction of sharpslpart partition parser we can now read the
+> > > offsets from NAND: we specify the list of the parsers as platform data, with
+> > > cmdlinepart and ofpart parsers first allowing to override the part. table
+> > > written in NAND. This is done in the board files using this driver.
+> > > 
+> > > Thus, we need to extend tmio_nand_data to consider the partition parsers.
+> > > 
+> > > Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
+> > > ---
+> > >  include/linux/mfd/tmio.h | 1 +
+> > >  1 file changed, 1 insertion(+)  
+> > 
+> > Acked-by: Lee Jones <lee.jones@linaro.org>
+> > 
+> 
+> I'm about to apply patches 1 to 5 of this series to the nand/next
+> branch. Do you want me to create an immutable branch with this patch?
 
-thank you for your attention. It is on TODO, just need a bit more time :)
+No, not for a single line change.  Git should figure that out.
+
+Thanks for asking though.
+
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
