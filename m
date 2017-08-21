@@ -1,35 +1,21 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1djt43-0005Gz-0p
- for linux-mtd@lists.infradead.org; Mon, 21 Aug 2017 20:12:48 +0000
-Date: Mon, 21 Aug 2017 22:12:23 +0200
+Date: Mon, 21 Aug 2017 22:13:39 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Bhumika Goyal <bhumirks@gmail.com>
-Cc: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
- daniel.vetter@intel.com, jani.nikula@linux.intel.com,
- seanpaul@chromium.org, airlied@linux.ie, g.liakhovetski@gmx.de,
- tomas.winkler@intel.com, dwmw2@infradead.org, computersforpeace@gmail.com,
- marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr,
- peda@axentia.se, kishon@ti.com, bhelgaas@google.com,
- thierry.reding@gmail.com, jonathanh@nvidia.com, dvhart@infradead.org,
- andy@infradead.org, ohad@wizery.com, bjorn.andersson@linaro.org,
- freude@de.ibm.com, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com,
- jth@kernel.org, jejb@linux.vnet.ibm.com, martin.petersen@oracle.com,
- lduncan@suse.com, cleech@redhat.com, johan@kernel.org, elder@kernel.org,
- gregkh@linuxfoundation.org, heikki.krogerus@linux.intel.com,
- linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-pci@vger.kernel.org,
- linux-tegra@vger.kernel.org, platform-driver-x86@vger.kernel.org,
- linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
- fcoe-devel@open-fcoe.org, linux-scsi@vger.kernel.org,
- open-iscsi@googlegroups.com, greybus-dev@lists.linaro.org,
- devel@driverdev.osuosl.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH 06/15] mtd:  make device_type const
-Message-ID: <20170821221223.0a44fe32@bbrezillon>
-In-Reply-To: <1503130946-2854-7-git-send-email-bhumirks@gmail.com>
-References: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
- <1503130946-2854-7-git-send-email-bhumirks@gmail.com>
+To: Andrea Adami <andrea.adami@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Wolfram Sang
+ <wsa+renesas@sang-engineering.com>, Dmitry Eremin-Solenikov
+ <dbaryshkov@gmail.com>, Richard Weinberger <richard@nod.at>, Robert Jarzmik
+ <robert.jarzmik@free.fr>, linux-mmc@vger.kernel.org, Russell King
+ <linux@armlinux.org.uk>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ linux-arm-kernel@lists.infradead.org, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Lee Jones <lee.jones@linaro.org>, Brian
+ Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Linus Walleij <linus.walleij@linaro.org>, Daniel
+ Mack <daniel@zonque.org>
+Subject: Re: [PATCH v5 0/9] mtd: sharpslpart partition parser
+Message-ID: <20170821221339.70cfcfb7@bbrezillon>
+In-Reply-To: <1502743720-28672-1-git-send-email-andrea.adami@gmail.com>
+References: <1502743720-28672-1-git-send-email-andrea.adami@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -42,35 +28,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le Sat, 19 Aug 2017 13:52:17 +0530,
-Bhumika Goyal <bhumirks@gmail.com> a =C3=A9crit :
+Le Mon, 14 Aug 2017 22:48:31 +0200,
+Andrea Adami <andrea.adami@gmail.com> a =C3=A9crit :
 
-> Make this const as it is only stored in the type field of a device
-> structure, which is const.
-> Done using Coccinelle.
+> This patchset introduces a simple partition parser for the Sharp SL
+> Series PXA handhelds. More details in the commit text.
 >=20
+> I have set in cc the ARM PXA maintainers because this is the MTD part of
+> a planned wider patchset cleaning the Zaurus board files. The MFD maintai=
+ners
+> are also in cc (tmio.h change).
+>=20
+> Changelog:
+> v1 firt version, initial import of 2.4 sources
+> v2 refactor applying many suggested fixes
+> v3 put the partition parser types in the platform data
+> v4 refactor after ML review
+> v5 fix commit messages and subject texts, remove global, fixes after v4 r=
+eview
+>=20
+> GPL sources: http://support.ezaurus.com/developer/source/source_dl.asp
+>=20
+> Andrea Adami (9):
+>   mtd: sharpslpart: Add sharpslpart partition parser
+>   mtd: nand: sharpsl: Add partition parsers platform data
+>   mfd: tmio: Add partition parsers platform data
+>   mtd: nand: sharpsl: Register partitions using the parsers
+>   mtd: nand: tmio: Register partitions using the parsers
 
-Applied to l2-mtd/master.
+Applied patches 2, to 5 to nand/next.
 
 Thanks,
 
 Boris
 
-> Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
-> ---
->  drivers/mtd/mtdcore.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>   ARM: pxa/corgi: Remove hardcoded partitioning, use sharpslpart parser
+>   ARM: pxa/tosa: Remove hardcoded partitioning, use sharpslpart parser
+>   ARM: pxa/spitz: Remove hardcoded partitioning, use sharpslpart parser
+>   ARM: pxa/poodle: Remove hardcoded partitioning, use sharpslpart parser
 >=20
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index f872a99..e7ea842 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -340,7 +340,7 @@ static ssize_t mtd_bbtblocks_show(struct device *dev,
->  };
->  ATTRIBUTE_GROUPS(mtd);
-> =20
-> -static struct device_type mtd_devtype =3D {
-> +static const struct device_type mtd_devtype =3D {
->  	.name		=3D "mtd",
->  	.groups		=3D mtd_groups,
->  	.release	=3D mtd_release,
+>  arch/arm/mach-pxa/corgi.c         |  31 +---
+>  arch/arm/mach-pxa/poodle.c        |  28 +--
+>  arch/arm/mach-pxa/spitz.c         |  34 +---
+>  arch/arm/mach-pxa/tosa.c          |  28 +--
+>  drivers/mtd/nand/sharpsl.c        |   2 +-
+>  drivers/mtd/nand/tmio_nand.c      |   4 +-
+>  drivers/mtd/parsers/Kconfig       |   8 +
+>  drivers/mtd/parsers/Makefile      |   1 +
+>  drivers/mtd/parsers/sharpslpart.c | 376 ++++++++++++++++++++++++++++++++=
+++++++
+>  include/linux/mfd/tmio.h          |   1 +
+>  include/linux/mtd/sharpsl.h       |   1 +
+>  11 files changed, 424 insertions(+), 90 deletions(-)
+>  create mode 100644 drivers/mtd/parsers/sharpslpart.c
+>=20
