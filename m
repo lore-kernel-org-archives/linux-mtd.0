@@ -1,24 +1,40 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dk8hy-0003im-W5
- for linux-mtd@lists.infradead.org; Tue, 22 Aug 2017 12:55:10 +0000
-Date: Tue, 22 Aug 2017 14:54:24 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Andrea Adami <andrea.adami@gmail.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>, Haojian Zhuang <haojian.zhuang@gmail.com>, Dmitry
- Eremin-Solenikov <dbaryshkov@gmail.com>, Robert Jarzmik
- <robert.jarzmik@free.fr>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6] mtd: sharpslpart: Add sharpslpart partition parser
-Message-ID: <20170822145424.54e57b94@bbrezillon>
-In-Reply-To: <1503394972-12541-1-git-send-email-andrea.adami@gmail.com>
-References: <1503394972-12541-1-git-send-email-andrea.adami@gmail.com>
+Received: from mga02.intel.com ([134.134.136.20])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dk8pe-0000lS-JN
+ for linux-mtd@lists.infradead.org; Tue, 22 Aug 2017 13:03:05 +0000
+Date: Tue, 22 Aug 2017 15:55:17 +0300
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To: Bhumika Goyal <bhumirks@gmail.com>
+Cc: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
+ daniel.vetter@intel.com, jani.nikula@linux.intel.com,
+ seanpaul@chromium.org, airlied@linux.ie, g.liakhovetski@gmx.de,
+ tomas.winkler@intel.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
+ marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr,
+ peda@axentia.se, kishon@ti.com, bhelgaas@google.com,
+ thierry.reding@gmail.com, jonathanh@nvidia.com,
+ dvhart@infradead.org, andy@infradead.org, ohad@wizery.com,
+ bjorn.andersson@linaro.org, freude@de.ibm.com,
+ schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, jth@kernel.org,
+ jejb@linux.vnet.ibm.com, martin.petersen@oracle.com,
+ lduncan@suse.com, cleech@redhat.com, johan@kernel.org,
+ elder@kernel.org, gregkh@linuxfoundation.org,
+ linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-pci@vger.kernel.org,
+ linux-tegra@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+ fcoe-devel@open-fcoe.org, linux-scsi@vger.kernel.org,
+ open-iscsi@googlegroups.com, greybus-dev@lists.linaro.org,
+ devel@driverdev.osuosl.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH 15/15] usb: make device_type const
+Message-ID: <20170822125517.GA27604@kuha.fi.intel.com>
+References: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
+ <1503130946-2854-16-git-send-email-bhumirks@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1503130946-2854-16-git-send-email-bhumirks@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,638 +44,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Andrea,
+On Sat, Aug 19, 2017 at 01:52:26PM +0530, Bhumika Goyal wrote:
+> Make this const as it is only stored in the type field of a device
+> structure, which is const.
+> Done using Coccinelle.
+> 
+> Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 
-Le Tue, 22 Aug 2017 11:42:52 +0200,
-Andrea Adami <andrea.adami@gmail.com> a =C3=A9crit :
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-> The Sharp SL Series (Zaurus) PXA handhelds have 16/64/128M of NAND flash
-> and share the same layout of the first 7M partition, managed by Sharp FTL.
->=20
-> The purpose of this self-contained patch is to add a common parser and
-> remove the hardcoded sizes in the board files (these devices are not yet
-> converted to devicetree).
-> Users will have benefits because the mtdparts=3D tag will not be necessary
-> anymore and they will be free to repartition the little sized flash.
->=20
-> The obsolete bootloader can not pass the partitioning info to modern
-> kernels anymore so it has to be read from flash at known logical addresse=
-s.
-> (see http://www.h5.dion.ne.jp/~rimemoon/zaurus/memo_006.htm )
->=20
-> In kernel, under arch/arm/mach-pxa we have already 8 machines:
-> MACH_POODLE, MACH_CORGI, MACH_SHEPERD, MACH_HUSKY, MACH_AKITA, MACH_SPITZ,
-> MACH_BORZOI, MACH_TOSA.
-> Lost after the 2.4 vendor kernel are MACH_BOXER and MACH_TERRIER.
->=20
-> Almost every model has different factory partitioning: add to this the
-> units can be repartitioned by users with userspace tools (nandlogical)
-> and installers for popular (back then) linux distributions.
->=20
-> The Parameter Area in the first (boot) partition extends from 0x00040000 =
-to
-> 0x0007bfff (176k) and contains two copies of the partition table:
-> ...
-> 0x00060000: Partition Info1     16k
-> 0x00064000: Partition Info2     16k
-> 0x00668000: Model               16k
-> ...
->=20
-> The first 7M partition is managed by the Sharp FTL reserving 5% + 1 blocks
-> for wear-leveling: some blocks are remapped and one layer of translation
-> (logical to physical) is necessary.
->=20
-> There isn't much documentation about this FTL in the 2.4 sources, just the
-> MTD methods for reading and writing using logical addresses and the block
-> management (wear-leveling, use counter).
-> For the purpose of the MTD parser only the read part of the code was take=
-n.
->=20
-> The NAND drivers that can use this parser are sharpsl.c and tmio_nand.c.
->=20
-> Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
 > ---
-
-Please put a changelog here.
-
->  drivers/mtd/parsers/Kconfig       |   7 +
->  drivers/mtd/parsers/Makefile      |   1 +
->  drivers/mtd/parsers/sharpslpart.c | 382 ++++++++++++++++++++++++++++++++=
-++++++
->  3 files changed, 390 insertions(+)
->  create mode 100644 drivers/mtd/parsers/sharpslpart.c
->=20
-> diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
-> index d206b3c..f371022 100644
-> --- a/drivers/mtd/parsers/Kconfig
-> +++ b/drivers/mtd/parsers/Kconfig
-> @@ -6,3 +6,10 @@ config MTD_PARSER_TRX
->  	  may contain up to 3/4 partitions (depending on the version).
->  	  This driver will parse TRX header and report at least two partitions:
->  	  kernel and rootfs.
-
-Missing blank line.
-
-> +config MTD_SHARPSL_PARTS
-> +	tristate "Sharp SL Series NAND flash partition parser"
-> +	depends on MTD_NAND_SHARPSL || MTD_NAND_TMIO || COMPILE_TEST
-> +	help
-> +	  This provides the read-only FTL logic necessary to read the partition
-> +	  table from the NAND flash of Sharp SL Series (Zaurus) and the MTD
-> +	  partition parser using this code.
-> diff --git a/drivers/mtd/parsers/Makefile b/drivers/mtd/parsers/Makefile
-> index 4d9024e..5b1bcc3 100644
-> --- a/drivers/mtd/parsers/Makefile
-> +++ b/drivers/mtd/parsers/Makefile
-> @@ -1 +1,2 @@
->  obj-$(CONFIG_MTD_PARSER_TRX)		+=3D parser_trx.o
-> +obj-$(CONFIG_MTD_SHARPSL_PARTS)		+=3D sharpslpart.o
-> diff --git a/drivers/mtd/parsers/sharpslpart.c b/drivers/mtd/parsers/shar=
-pslpart.c
-> new file mode 100644
-> index 0000000..b2333ae
-> --- /dev/null
-> +++ b/drivers/mtd/parsers/sharpslpart.c
-> @@ -0,0 +1,382 @@
-> +/*
-> + * sharpslpart.c - MTD partition parser for NAND flash using the SHARP F=
-TL
-> + * for logical addressing, as used on the PXA models of the SHARP SL Ser=
-ies.
-> + *
-> + * Copyright (C) 2017 Andrea Adami <andrea.adami@gmail.com>
-> + *
-> + * Based on 2.4 sources:
-> + *  drivers/mtd/nand/sharp_sl_logical.c
-> + *  linux/include/asm-arm/sharp_nand_logical.h
-> + *
-> + * Copyright (C) 2002 SHARP
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/slab.h>
-> +#include <linux/module.h>
-> +#include <linux/types.h>
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/mtd/partitions.h>
-> +
-> +/* oob structure */
-> +#define NAND_NOOB_LOGADDR_00		8
-> +#define NAND_NOOB_LOGADDR_01		9
-> +#define NAND_NOOB_LOGADDR_10		10
-> +#define NAND_NOOB_LOGADDR_11		11
-> +#define NAND_NOOB_LOGADDR_20		12
-> +#define NAND_NOOB_LOGADDR_21		13
-> +
-> +#define BLOCK_IS_RESERVED		0xffff
-> +#define BLOCK_UNMASK			0x07fe
-> +#define BLOCK_UNMASK_COMPLEMENT		1
-> +
-> +/* factory defaults */
-> +#define SHARPSL_NAND_PARTS		3
-> +#define SHARPSL_FTL_PART_SIZE		(7 * 1024 * 1024)
-
-Nit: s/7 * 1024 * 1024/7 * SZ_1M/
-
-> +#define PARAM_BLOCK_PARTITIONINFO1	0x00060000
-> +#define PARAM_BLOCK_PARTITIONINFO2	0x00064000
-
-I'd rename the macro differently. The term block is a bit confusing
-here since AFAIU the Param Area does not necessarily fit in a single
-eraseblock.
-
-How about:
-
-#define PARAM_AREA_PARTINFO1_LADDR	0x60000
-#define PARAM_AREA_PARTINFO2_LADDR	0x64000
-
-or simply
-
-#define SHARPSL_PARTINFO1_LADDR		0x60000
-#define SHARPSL_PARTINFO2_LADDR		0x64000
-
-> +
-> +#define BOOT_MAGIC			0x424f4f54
-> +#define FSRO_MAGIC			0x4653524f
-> +#define FSRW_MAGIC			0x46535257
-> +
-> +/**
-> + * struct sharpsl_ftl - Sharp FTL Logical Table
-> + * @logmax:		number of logical blocks
-> + * @log2phy:		the logical-to-physical table
-> + *
-> + * Stripped down from 2.4 sources for read-only purposes.
-
-Not sure this information is really useful, especially since you don't
-provide a link to the 2.4 sources (or maybe I missed it).
-
-You'd better describe what this struct is used for here.
-
-> + */
-> +struct sharpsl_ftl {
-> +	u_int logmax;
-> +	u_int *log2phy;
-
-Can you replace u_int by unsigned int and u_char by u8? That goes for
-the whole file.
-
-> +};
-> +
-> +static int sharpsl_nand_read_oob(struct mtd_info *mtd, loff_t offs, size=
-_t len,
-
-AFAICT, len is always set to mtd->oobsize. You can just drop this
-parameter and set ops->ooblen to mtd->oobsize.
-
-> +				 uint8_t *buf)
-> +{
-> +	loff_t mask =3D mtd->writesize - 1;
-
-mask is equivalent to mtd->writesize_mask.
-
-> +	struct mtd_oob_ops ops;
-
-	struct mtd_oob_ops ops =3D { };
-
-so that you don't have to initialize all fields if they are set to 0 or
-NULL.
-
-You could also directly fill this object when declaring it:
-
-	struct mtd_oob_ops ops =3D {
-		.mode =3D MTD_OPS_PLACE_OOB,
-		.ooblen =3D mtd->oobsize,
-		.oobbuf =3D buf,
-	};
-
-> +	int ret;
-> +
-> +	ops.mode =3D MTD_OPS_PLACE_OOB;
-> +	ops.ooboffs =3D offs & mask;
-
-Hm, I'm pretty sure this is wrong. mask is a page mask, not the oob
-area mask. It works because offs is always aligned on a page, but you
-can directly assign ops.ooboffs to 0 and you should be good.=20
-
-> +	ops.ooblen =3D len;
-> +	ops.oobbuf =3D buf;
-> +	ops.datbuf =3D NULL;
-> +
-> +	ret =3D mtd_read_oob(mtd, offs & ~mask, &ops);
-> +	if (ret !=3D 0 || len !=3D ops.oobretlen)
-> +		return -1;
-> +
-> +	return 0;
-> +}
-> +
-> +/*
-> + * The logical block number assigned to a physical block is stored in th=
-e OOB
-> + * of the first page, in 3 16-bit copies with the following layout:
-> + *
-> + * 01234567 89abcdef
-> + * -------- --------
-> + * ECC BB   xyxyxy
-> + *
-> + * When reading we check that the first two copies agree.
-> + * In case of error, matching is tried using the following pairs.
-> + * Reserved values 0xffff mean the block is kept for wear leveling.
-> + *
-> + * 01234567 89abcdef
-> + * -------- --------
-> + * ECC BB   xyxy    oob[8]=3D=3Doob[10] && oob[9]=3D=3Doob[11]   -> byte=
-0=3D8   byte1=3D9
-> + * ECC BB     xyxy  oob[10]=3D=3Doob[12] && oob[11]=3D=3Doob[13] -> byte=
-0=3D10  byte1=3D11
-> + * ECC BB   xy  xy  oob[12]=3D=3Doob[8] && oob[13]=3D=3Doob[9]   -> byte=
-0=3D12  byte1=3D13
-> + *
-> + */
-> +static u_int sharpsl_nand_get_logical_num(u_char *oob)
-> +{
-> +	u16 us;
-> +	int good0, good1;
-> +
-> +	if (oob[NAND_NOOB_LOGADDR_00] =3D=3D oob[NAND_NOOB_LOGADDR_10] &&
-> +	    oob[NAND_NOOB_LOGADDR_01] =3D=3D oob[NAND_NOOB_LOGADDR_11]) {
-> +		good0 =3D NAND_NOOB_LOGADDR_00;
-> +		good1 =3D NAND_NOOB_LOGADDR_01;
-> +	} else if (oob[NAND_NOOB_LOGADDR_10] =3D=3D oob[NAND_NOOB_LOGADDR_20] &&
-> +		   oob[NAND_NOOB_LOGADDR_11] =3D=3D oob[NAND_NOOB_LOGADDR_21]) {
-> +		good0 =3D NAND_NOOB_LOGADDR_10;
-> +		good1 =3D NAND_NOOB_LOGADDR_11;
-> +	} else if (oob[NAND_NOOB_LOGADDR_20] =3D=3D oob[NAND_NOOB_LOGADDR_00] &&
-> +		   oob[NAND_NOOB_LOGADDR_21] =3D=3D oob[NAND_NOOB_LOGADDR_01]) {
-> +		good0 =3D NAND_NOOB_LOGADDR_20;
-> +		good1 =3D NAND_NOOB_LOGADDR_21;
-> +	} else {
-> +		/* wrong oob fingerprint, maybe here by mistake? */
-> +		return UINT_MAX;
-> +	}
-> +
-> +	us =3D oob[good0] | oob[good1] << 8;
-> +
-> +	/* parity check */
-> +	if (hweight16(us) & BLOCK_UNMASK_COMPLEMENT)
-> +		return (UINT_MAX - 1);
-
-Why not making this function return an int and use regular error codes
-for the parity and wrong fingerprint errors?
-
-> +
-> +	/* reserved */
-> +	if (us =3D=3D BLOCK_IS_RESERVED)
-> +		return BLOCK_IS_RESERVED;
-> +	else
-
-You can drop the 'else' here.
-
-> +		return (us & BLOCK_UNMASK) >> 1;
-
-So, this is a 10bit value, right? Why not doing the >> 1 first so that
-your BLOCK_UNMASK mask really looks like a valid mask (0x3ff, which can
-also be defined as GENMASK(9, 0)).=20
-
-> +}
-> +
-> +static int sharpsl_nand_init_logical(struct mtd_info *mtd, u32 partition=
-_size,
-
-s/sharpsl_nand_init_logical/sharpsl_nand_init_ftl/
-
-partition_size is always set to SHARPSL_FTL_PART_SIZE. Please drop this
-argument.
-
-> +				     struct sharpsl_ftl *ftl)
-> +{
-> +	u_int block_num, log_num, phymax;
-> +	loff_t block_adr;
-> +	u_char *oob;
-> +	int i, ret;
-> +
-> +	oob =3D kzalloc(mtd->oobsize, GFP_KERNEL);
-> +	if (!oob)
-> +		return -ENOMEM;
-> +
-> +	/* initialize management structure */
-> +	phymax =3D (partition_size / mtd->erasesize);
-
-You can use mtd_div_by_eb() here.
-
-> +
-> +	/* FTL reserves 5% of the blocks + 1 spare  */
-> +	ftl->logmax =3D ((phymax * 95) / 100) - 1;
-> +
-> +	ftl->log2phy =3D kmalloc_array(ftl->logmax, sizeof(u_int),
-
-						  sizeof(*ftl->log2phy)
-
-> +				     GFP_KERNEL);
-> +	if (!ftl->log2phy) {
-> +		ret =3D -ENOMEM;
-> +		goto exit;
-> +	}
-> +
-> +	/* initialize ftl->log2phy */
-> +	for (i =3D 0; i < ftl->logmax; i++)
-> +		ftl->log2phy[i] =3D UINT_MAX;
-> +
-> +	/* create physical-logical table */
-> +	for (block_num =3D 0; block_num < phymax; block_num++) {
-> +		block_adr =3D block_num * mtd->erasesize;
-> +
-> +		if (mtd_block_isbad(mtd, block_adr))
-> +			continue;
-> +
-> +		if (sharpsl_nand_read_oob(mtd, block_adr, mtd->oobsize, oob))
-> +			continue;
-> +
-> +		/* get logical block */
-> +		log_num =3D sharpsl_nand_get_logical_num(oob);
-> +
-> +		/* FTL is not used? Exit here if the oob fingerprint is wrong */
-> +		if (log_num =3D=3D UINT_MAX) {
-> +			pr_info("sharpslpart: Sharp SL FTL not found.\n");
-> +			ret =3D -EINVAL;
-> +			goto exit;
-> +		}
-> +
-> +		/* skip out of range and not unique values */
-> +		if (log_num < ftl->logmax) {
-> +			if (ftl->log2phy[log_num] =3D=3D UINT_MAX)
-> +				ftl->log2phy[log_num] =3D block_num;
-> +		}
-> +	}
-> +
-> +	pr_info("Sharp SL FTL: %d blocks used (%d logical, %d reserved)\n",
-> +		phymax, ftl->logmax,
-> +		phymax - ftl->logmax);
-> +
-> +	ret =3D 0;
-> +exit:
-> +	kfree(oob);
-> +	return ret;
-> +}
-> +
-> +void sharpsl_nand_cleanup_logical(struct sharpsl_ftl *ftl)
-
-s/sharpsl_nand_cleanup_logical/sharpsl_nand_cleanup_ftl/
-
-> +{
-> +	kfree(ftl->log2phy);
-> +}
-> +
-> +static int sharpsl_nand_read_laddr(struct mtd_info *mtd,
-> +				   loff_t from,
-> +				   size_t len,
-> +				   u_char *buf,
-> +				   struct sharpsl_ftl *ftl)
-> +{
-> +	u_int log_num, log_new;
-> +	u_int block_num;
-> +	loff_t block_adr;
-> +	loff_t block_ofs;
-> +	size_t retlen;
-> +	int err;
-> +
-> +	log_num =3D (u32)from / mtd->erasesize;
-
-Please use mtd_div_by_eb().
-
-> +	log_new =3D ((u32)from + len - 1) / mtd->erasesize;
-
-Ditto.
-
-And I'm not sure log_new is a good name for this variable. Could be
-last_log_num or something like that.
-
-> +
-> +	if (len <=3D 0 || log_num >=3D ftl->logmax || log_new > log_num)
-> +		return -EINVAL;
-> +
-> +	block_num =3D ftl->log2phy[log_num];
-> +	block_adr =3D block_num * mtd->erasesize;
-> +	block_ofs =3D (u32)from % mtd->erasesize;
-
-mtd_mod_by_eb().
-
-> +
-> +	err =3D mtd_read(mtd, block_adr + block_ofs, len, &retlen, buf);
-> +	/* Ignore corrected ECC errors */
-> +	if (mtd_is_bitflip(err))
-> +		err =3D 0;
-
-Please add a blank line here
-
-> +	if (!err && retlen !=3D len)
-> +		err =3D -EIO;
-
-and here.
-
-> +	if (err)
-> +		pr_err("sharpslpart: error, read failed at %#llx\n",
-> +		       block_adr + block_ofs);
-> +
-> +	return err;
-> +}
-> +
-> +/*
-> + * MTD Partition Parser
-> + *
-> + * Sample values read from SL-C860
-> + *
-> + * # cat /proc/mtd
-> + * dev:    size   erasesize  name
-> + * mtd0: 006d0000 00020000 "Filesystem"
-> + * mtd1: 00700000 00004000 "smf"
-> + * mtd2: 03500000 00004000 "root"
-> + * mtd3: 04400000 00004000 "home"
-> + *
-> + * PARTITIONINFO1
-> + * 0x00060000: 00 00 00 00 00 00 70 00 42 4f 4f 54 00 00 00 00  ......p.=
-BOOT....
-> + * 0x00060010: 00 00 70 00 00 00 c0 03 46 53 52 4f 00 00 00 00  ..p.....=
-FSRO....
-> + * 0x00060020: 00 00 c0 03 00 00 00 04 46 53 52 57 00 00 00 00  ........=
-FSRW....
-> + * 0x00060030: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ........=
-........
-> + *
-
-You can drop this extra empty line.
-
-> + */
-> +struct sharpsl_nand_partinfo {
-> +	__le32 start;
-> +	__le32 end;
-> +	__be32 magic;
-> +	u32 reserved;
-> +};
-> +
-> +static int sharpsl_nand_read_partinfo(struct mtd_info *master,
-> +				      loff_t from,
-> +				      size_t len,
-> +				      struct sharpsl_nand_partinfo *buf,
-> +				      struct sharpsl_ftl *ftl)
-> +{
-> +	int ret;
-> +
-> +	ret =3D sharpsl_nand_read_laddr(master, (u32)from, len, (u_char *)buf,
-
-The u32 cast is unneeded here, and I'd suggest to change the
-sharpsl_nand_read_laddr() prototype to take a 'void *' instead of a
-'u_char *', so that you can also get rid of this cast.=20
-
-> +				      ftl);
-> +	if (ret)
-> +		goto exit;
-
-Well, you have nothing to cleanup in the exit path, so you can return
-directly here.
-
-> +
-> +	/* check for magics */
-> +	if (be32_to_cpu(buf[0].magic) !=3D BOOT_MAGIC ||
-> +	    be32_to_cpu(buf[1].magic) !=3D FSRO_MAGIC ||
-> +	    be32_to_cpu(buf[2].magic) !=3D FSRW_MAGIC) {
-> +		pr_err("sharpslpart: magic values mismatch\n");
-> +		ret =3D -EINVAL;
-> +		goto exit;
-
-Ditto.
-
-> +	}
-> +
-> +	/* fixup for hardcoded value 64 MiB (for older models) */
-> +	buf[2].end =3D cpu_to_le32(master->size);
-> +
-> +	/* extra sanity check */
-> +	if (le32_to_cpu(buf[0].end) <=3D le32_to_cpu(buf[0].start) ||
-> +	    le32_to_cpu(buf[1].start) < le32_to_cpu(buf[0].end) ||
-> +	    le32_to_cpu(buf[1].end) <=3D le32_to_cpu(buf[1].start) ||
-> +	    le32_to_cpu(buf[2].start) < le32_to_cpu(buf[1].end) ||
-> +	    le32_to_cpu(buf[2].end) <=3D le32_to_cpu(buf[2].start)) {
-> +		pr_err("sharpslpart: partition sizes mismatch\n");
-> +		ret =3D -EINVAL;
-> +		goto exit;
-
-Ditto.
-
-> +	}
-> +
-> +	ret =3D 0;
-> +exit:
-> +	return ret;
-> +}
-> +
-> +static int sharpsl_parse_mtd_partitions(struct mtd_info *master,
-> +					const struct mtd_partition **pparts,
-> +					struct mtd_part_parser_data *data)
-> +{
-> +	struct sharpsl_ftl ftl;
-> +	struct sharpsl_nand_partinfo buf[SHARPSL_NAND_PARTS];
-> +	struct mtd_partition *sharpsl_nand_parts;
-> +	int err, ret;
-> +
-> +	/* init logical mgmt (FTL) */
-> +	err =3D sharpsl_nand_init_logical(master, SHARPSL_FTL_PART_SIZE, &ftl);
-> +	if (err)
-> +		return err;
-> +
-> +	/* read and validate first partition table */
-> +	pr_info("sharpslpart: using first partition table\n");
-> +	err =3D sharpsl_nand_read_partinfo(master,
-> +					 PARAM_BLOCK_PARTITIONINFO1,
-> +					 sizeof(buf), buf, &ftl);
-> +	if (err) {
-> +		/* fallback: read second partition table */
-> +		pr_warn("sharpslpart: retry using second partition table\n");
-> +		ret =3D sharpsl_nand_read_partinfo(master,
-> +						 PARAM_BLOCK_PARTITIONINFO2,
-> +						 sizeof(buf), buf, &ftl);
-
-Why do you need a different variable to store the second
-sharpsl_nand_read_partinfo() return code?
-
-> +		if (ret) {
-> +			pr_err("sharpslpart: partition tables are invalid\n");
-> +			sharpsl_nand_cleanup_logical(&ftl);
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	/* cleanup logical mgmt (FTL) */
-> +	sharpsl_nand_cleanup_logical(&ftl);
-
-
-How about:
-
-	pr_info("sharpslpart: try reading first partition table\n");
-	err =3D sharpsl_nand_read_partinfo(master,
-					 PARAM_BLOCK_PARTITIONINFO1,
-					 sizeof(buf), buf, &ftl);
-	if (err) {
-		/* fallback: read second partition table */
-		pr_warn("sharpslpart: first partition table is invalid, retry using secon=
-d partition table\n");
-		err =3D sharpsl_nand_read_partinfo(master,
-						 PARAM_BLOCK_PARTITIONINFO2,
-						 sizeof(buf), buf, &ftl);
-	}
-
-	/* cleanup logical mgmt (FTL) */
-	sharpsl_nand_cleanup_logical(&ftl);
-
-	if (err) {
-		pr_err("sharpslpart: both partition tables are invalid\n");
-		return ret;
-	}
-
-so that you have a single place where you cleanup the FTL.
-
-> +
-> +	sharpsl_nand_parts =3D kzalloc(sizeof(*sharpsl_nand_parts) *
-> +				     SHARPSL_NAND_PARTS, GFP_KERNEL);
-> +	if (!sharpsl_nand_parts)
-> +		return -ENOMEM;
-> +
-> +	/* original names */
-> +	sharpsl_nand_parts[0].name =3D "smf";
-> +	sharpsl_nand_parts[0].offset =3D le32_to_cpu(buf[0].start);
-> +	sharpsl_nand_parts[0].size =3D le32_to_cpu(buf[0].end) -
-> +				     le32_to_cpu(buf[0].start);
-> +
-> +	sharpsl_nand_parts[1].name =3D "root";
-> +	sharpsl_nand_parts[1].offset =3D le32_to_cpu(buf[1].start);
-> +	sharpsl_nand_parts[1].size =3D le32_to_cpu(buf[1].end) -
-> +				     le32_to_cpu(buf[1].start);
-> +
-> +	sharpsl_nand_parts[2].name =3D "home";
-> +	sharpsl_nand_parts[2].offset =3D le32_to_cpu(buf[2].start);
-> +	sharpsl_nand_parts[2].size =3D le32_to_cpu(buf[2].end) -
-> +				     le32_to_cpu(buf[2].start);
-> +
-> +	*pparts =3D sharpsl_nand_parts;
-> +	return SHARPSL_NAND_PARTS;
-> +}
-> +
-> +static struct mtd_part_parser sharpsl_mtd_parser =3D {
-> +	.parse_fn =3D sharpsl_parse_mtd_partitions,
-> +	.name =3D "sharpslpart",
-> +};
-> +module_mtd_part_parser(sharpsl_mtd_parser);
-> +
-> +MODULE_LICENSE("GPL");
-> +MODULE_AUTHOR("Andrea Adami <andrea.adami@gmail.com>");
-> +MODULE_DESCRIPTION("MTD partitioning for NAND flash on Sharp SL Series");
+>  drivers/usb/common/ulpi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/common/ulpi.c b/drivers/usb/common/ulpi.c
+> index 930e8f3..4aa5195 100644
+> --- a/drivers/usb/common/ulpi.c
+> +++ b/drivers/usb/common/ulpi.c
+> @@ -135,7 +135,7 @@ static void ulpi_dev_release(struct device *dev)
+>  	kfree(to_ulpi_dev(dev));
+>  }
+>  
+> -static struct device_type ulpi_dev_type = {
+> +static const struct device_type ulpi_dev_type = {
+>  	.name = "ulpi_device",
+>  	.groups = ulpi_dev_attr_groups,
+>  	.release = ulpi_dev_release,
+
+Thanks,
+
+-- 
+heikki
