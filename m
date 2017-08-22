@@ -1,40 +1,19 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dk8pe-0000lS-JN
- for linux-mtd@lists.infradead.org; Tue, 22 Aug 2017 13:03:05 +0000
-Date: Tue, 22 Aug 2017 15:55:17 +0300
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To: Bhumika Goyal <bhumirks@gmail.com>
-Cc: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
- daniel.vetter@intel.com, jani.nikula@linux.intel.com,
- seanpaul@chromium.org, airlied@linux.ie, g.liakhovetski@gmx.de,
- tomas.winkler@intel.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
- marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr,
- peda@axentia.se, kishon@ti.com, bhelgaas@google.com,
- thierry.reding@gmail.com, jonathanh@nvidia.com,
- dvhart@infradead.org, andy@infradead.org, ohad@wizery.com,
- bjorn.andersson@linaro.org, freude@de.ibm.com,
- schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, jth@kernel.org,
- jejb@linux.vnet.ibm.com, martin.petersen@oracle.com,
- lduncan@suse.com, cleech@redhat.com, johan@kernel.org,
- elder@kernel.org, gregkh@linuxfoundation.org,
- linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-pci@vger.kernel.org,
- linux-tegra@vger.kernel.org, platform-driver-x86@vger.kernel.org,
- linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
- fcoe-devel@open-fcoe.org, linux-scsi@vger.kernel.org,
- open-iscsi@googlegroups.com, greybus-dev@lists.linaro.org,
- devel@driverdev.osuosl.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH 15/15] usb: make device_type const
-Message-ID: <20170822125517.GA27604@kuha.fi.intel.com>
-References: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
- <1503130946-2854-16-git-send-email-bhumirks@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1503130946-2854-16-git-send-email-bhumirks@gmail.com>
+Received: from bran.ispras.ru ([83.149.199.196] helo=smtp.ispras.ru)
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dk9BH-0007ad-Iy
+ for linux-mtd@lists.infradead.org; Tue, 22 Aug 2017 13:25:22 +0000
+From: Anton Vasilyev <vasilyev@ispras.ru>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Anton Vasilyev <vasilyev@ispras.ru>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ ldv-project@linuxtesting.org
+Subject: [PATCH v3] mtd: plat-ram: Replace manual resource management by devm
+Date: Tue, 22 Aug 2017 16:24:11 +0300
+Message-Id: <1503408251-6931-1-git-send-email-vasilyev@ispras.ru>
+In-Reply-To: <20170817152910.4f133e52@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,34 +23,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Aug 19, 2017 at 01:52:26PM +0530, Bhumika Goyal wrote:
-> Make this const as it is only stored in the type field of a device
-> structure, which is const.
-> Done using Coccinelle.
-> 
-> Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+Driver contains unsuitable request_mem_region() and
+release_resource() calls.
 
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+The patch switches manual resource management by devm interface for
+readability and error-free simplification.
 
-> ---
->  drivers/usb/common/ulpi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/common/ulpi.c b/drivers/usb/common/ulpi.c
-> index 930e8f3..4aa5195 100644
-> --- a/drivers/usb/common/ulpi.c
-> +++ b/drivers/usb/common/ulpi.c
-> @@ -135,7 +135,7 @@ static void ulpi_dev_release(struct device *dev)
->  	kfree(to_ulpi_dev(dev));
->  }
->  
-> -static struct device_type ulpi_dev_type = {
-> +static const struct device_type ulpi_dev_type = {
->  	.name = "ulpi_device",
->  	.groups = ulpi_dev_attr_groups,
->  	.release = ulpi_dev_release,
+Found by Linux Driver Verification project (linuxtesting.org).
 
-Thanks,
+Signed-off-by: Anton Vasilyev <vasilyev@ispras.ru>
+Suggested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+v1: Fix commit based on Boris Brezillon review
+---
+v2: Change commit by Boris Brezillon solution
+---
+v3: Change description with title
+---
+ drivers/mtd/maps/plat-ram.c | 38 ++++----------------------------------
+ 1 file changed, 4 insertions(+), 34 deletions(-)
 
+diff --git a/drivers/mtd/maps/plat-ram.c b/drivers/mtd/maps/plat-ram.c
+index 5157289..6d9a4d6 100644
+--- a/drivers/mtd/maps/plat-ram.c
++++ b/drivers/mtd/maps/plat-ram.c
+@@ -43,7 +43,6 @@ struct platram_info {
+ 	struct device		*dev;
+ 	struct mtd_info		*mtd;
+ 	struct map_info		 map;
+-	struct resource		*area;
+ 	struct platdata_mtd_ram	*pdata;
+ };
+ 
+@@ -97,16 +96,6 @@ static int platram_remove(struct platform_device *pdev)
+ 
+ 	platram_setrw(info, PLATRAM_RO);
+ 
+-	/* release resources */
+-
+-	if (info->area) {
+-		release_resource(info->area);
+-		kfree(info->area);
+-	}
+-
+-	if (info->map.virt != NULL)
+-		iounmap(info->map.virt);
+-
+ 	kfree(info);
+ 
+ 	return 0;
+@@ -147,12 +136,11 @@ static int platram_probe(struct platform_device *pdev)
+ 	info->pdata = pdata;
+ 
+ 	/* get the resource for the memory mapping */
+-
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-
+-	if (res == NULL) {
+-		dev_err(&pdev->dev, "no memory resource specified\n");
+-		err = -ENOENT;
++	info->map.virt = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(info->map.virt)) {
++		err = PTR_ERR(info->map.virt);
++		dev_err(&pdev->dev, "failed to ioremap() region\n");
+ 		goto exit_free;
+ 	}
+ 
+@@ -167,26 +155,8 @@ static int platram_probe(struct platform_device *pdev)
+ 			(char *)pdata->mapname : (char *)pdev->name;
+ 	info->map.bankwidth = pdata->bankwidth;
+ 
+-	/* register our usage of the memory area */
+-
+-	info->area = request_mem_region(res->start, info->map.size, pdev->name);
+-	if (info->area == NULL) {
+-		dev_err(&pdev->dev, "failed to request memory region\n");
+-		err = -EIO;
+-		goto exit_free;
+-	}
+-
+-	/* remap the memory area */
+-
+-	info->map.virt = ioremap(res->start, info->map.size);
+ 	dev_dbg(&pdev->dev, "virt %p, %lu bytes\n", info->map.virt, info->map.size);
+ 
+-	if (info->map.virt == NULL) {
+-		dev_err(&pdev->dev, "failed to ioremap() region\n");
+-		err = -EIO;
+-		goto exit_free;
+-	}
+-
+ 	simple_map_init(&info->map);
+ 
+ 	dev_dbg(&pdev->dev, "initialised map, probing for mtd\n");
 -- 
-heikki
+2.7.4
