@@ -1,19 +1,29 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dkaei-0005sf-3h
- for linux-mtd@lists.infradead.org; Wed, 23 Aug 2017 18:45:33 +0000
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
+Received: from smtp03.smtpout.orange.fr ([80.12.242.125]
+ helo=smtp.smtpout.orange.fr)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dkbPh-0004mR-E5
+ for linux-mtd@lists.infradead.org; Wed, 23 Aug 2017 19:34:11 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
+ Andrea Adami <andrea.adami@gmail.com>
+Cc: linux-mtd@lists.infradead.org,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mmc@vger.kernel.org,
+ Russell King <linux@armlinux.org.uk>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>, linux-kernel@vger.kernel.org,
+ Marek Vasut <marek.vasut@gmail.com>, linux-arm-kernel@lists.infradead.org,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Lee Jones <lee.jones@linaro.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Subject: [PATCH] mtd: nand: atmel: Relax tADL_min constraint
-Date: Wed, 23 Aug 2017 20:45:01 +0200
-Message-Id: <20170823184501.7665-1-boris.brezillon@free-electrons.com>
+ David Woodhouse <dwmw2@infradead.org>,
+ Linus Walleij <linus.walleij@linaro.org>, Daniel Mack <daniel@zonque.org>
+Subject: Re: [PATCH v5 0/9] mtd: sharpslpart partition parser
+References: <1502743720-28672-1-git-send-email-andrea.adami@gmail.com>
+ <20170821221339.70cfcfb7@bbrezillon>
+Date: Wed, 23 Aug 2017 21:33:44 +0200
+Message-ID: <87pobmoz8n.fsf@belgarion.home>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,45 +33,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Version 4 of the ONFI spec mandates that tADL be at least 400 nanoseconds,
-but, depending on the master clock rate, 400 ns may not fit in the tADL
-field of the SMC reg. We need to relax the check and accept the -ERANGE
-return code.
+Boris Brezillon <boris.brezillon@free-electrons.com> writes:
 
-Note that previous versions of the ONFI spec had a lower tADL_min (100 or
-200 ns). It's not clear why this timing constraint got increased but it
-seems most NANDs are fine with values lower than 400ns, so we should be
-safe.
+> Le Mon, 14 Aug 2017 22:48:31 +0200,
+>> Andrea Adami (9):
+>>   mtd: sharpslpart: Add sharpslpart partition parser
+>>   mtd: nand: sharpsl: Add partition parsers platform data
+>>   mfd: tmio: Add partition parsers platform data
+>>   mtd: nand: sharpsl: Register partitions using the parsers
+>>   mtd: nand: tmio: Register partitions using the parsers
+>
+> Applied patches 2, to 5 to nand/next.
+>>   ARM: pxa/corgi: Remove hardcoded partitioning, use sharpslpart parser
+>>   ARM: pxa/tosa: Remove hardcoded partitioning, use sharpslpart parser
+>>   ARM: pxa/spitz: Remove hardcoded partitioning, use sharpslpart parser
+>>   ARM: pxa/poodle: Remove hardcoded partitioning, use sharpslpart parser
 
-Fixes: f9ce2eddf176 ("mtd: nand: atmel: Add ->setup_data_interface() hooks")
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
- drivers/mtd/nand/atmel/nand-controller.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+I'm quite happy with patches 6 to 9 except for the subject title length.
 
-diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/atmel/nand-controller.c
-index 2c8baa0c2c4e..ceec21bd30c4 100644
---- a/drivers/mtd/nand/atmel/nand-controller.c
-+++ b/drivers/mtd/nand/atmel/nand-controller.c
-@@ -1364,7 +1364,18 @@ static int atmel_smc_nand_prepare_smcconf(struct atmel_nand *nand,
- 	ret = atmel_smc_cs_conf_set_timing(smcconf,
- 					   ATMEL_HSMC_TIMINGS_TADL_SHIFT,
- 					   ncycles);
--	if (ret)
-+	/*
-+	 * Version 4 of the ONFI spec mandates that tADL be at least 400
-+	 * nanoseconds, but, depending on the master clock rate, 400 ns may not
-+	 * fit in the tADL field of the SMC reg. We need to relax the check and
-+	 * accept the -ERANGE return code.
-+	 *
-+	 * Note that previous versions of the ONFI spec had a lower tADL_min
-+	 * (100 or 200 ns). It's not clear why this timing constraint got
-+	 * increased but it seems most NANDs are fine with values lower than
-+	 * 400ns, so we should be safe.
-+	 */
-+	if (ret && ret != -ERANGE)
- 		return ret;
- 
- 	ncycles = DIV_ROUND_UP(conf->timings.sdr.tAR_min, mckperiodps);
+Andrea, if you give me an idea of change, I'll modify the titles myself before
+applying, no need to resend a serie.
+
+For example, you could propose :
+ARM: pxa: corgi: use sharpslpart parser instead of hardcoded one
+
+
+Then I'll take them into pxa/for-next if there are no objections.
+
+Cheers.
+
 -- 
-2.11.0
+Robert
