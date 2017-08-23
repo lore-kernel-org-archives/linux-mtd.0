@@ -1,14 +1,19 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dkWAf-0002nD-0P
- for linux-mtd@lists.infradead.org; Wed, 23 Aug 2017 13:58:23 +0000
-From: Miquel Raynal <miquel.raynal@free-electrons.com>
-To: linux-mtd@lists.infradead.org
-Cc: David Oberhollenzer <david.oberhollenzer@sigma-star.at>,
- Miquel Raynal <miquel.raynal@free-electrons.com>
-Subject: [PATCH] mtd-utils: tests: avoid using only one block in nandpagetest
-Date: Wed, 23 Aug 2017 15:57:32 +0200
-Message-Id: <20170823135732.12899-1-miquel.raynal@free-electrons.com>
+ id 1dkaei-0005sf-3h
+ for linux-mtd@lists.infradead.org; Wed, 23 Aug 2017 18:45:33 +0000
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Subject: [PATCH] mtd: nand: atmel: Relax tADL_min constraint
+Date: Wed, 23 Aug 2017 20:45:01 +0200
+Message-Id: <20170823184501.7665-1-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,42 +23,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Forbid the use of -c1 in nandpagetest which limits the number of blocks
-to use at one. In that case, get_first_and_last_block() will return the
-same id for both the first and the last blocks. In erasecrosstest(),
-the logic is:
-- erase/write/read/verify first block
-- erase/write again first block
-- erase *last* block
-- read/verify first block
-The case 'first == last' leads to erasing the block before reading it.
-Hence the test will fail with no actual reason.
+Version 4 of the ONFI spec mandates that tADL be at least 400 nanoseconds,
+but, depending on the master clock rate, 400 ns may not fit in the tADL
+field of the SMC reg. We need to relax the check and accept the -ERANGE
+return code.
 
-The patch does not forbid the use of -c1 as it could do it in
-process_options() with a errmsg_die(). Instead, it warns the user and
-uses a second block in order to avoid risking to break existing scripts.
+Note that previous versions of the ONFI spec had a lower tADL_min (100 or
+200 ns). It's not clear why this timing constraint got increased but it
+seems most NANDs are fine with values lower than 400ns, so we should be
+safe.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+Fixes: f9ce2eddf176 ("mtd: nand: atmel: Add ->setup_data_interface() hooks")
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- tests/mtd-tests/nandpagetest.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/mtd/nand/atmel/nand-controller.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/tests/mtd-tests/nandpagetest.c b/tests/mtd-tests/nandpagetest.c
-index 4145ef7..ef6c126 100644
---- a/tests/mtd-tests/nandpagetest.c
-+++ b/tests/mtd-tests/nandpagetest.c
-@@ -452,6 +452,12 @@ int main(int argc, char **argv)
- 	if (ebcnt < 0)
- 		ebcnt = (mtd.eb_cnt - peb) / (skip + 1);
+diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/atmel/nand-controller.c
+index 2c8baa0c2c4e..ceec21bd30c4 100644
+--- a/drivers/mtd/nand/atmel/nand-controller.c
++++ b/drivers/mtd/nand/atmel/nand-controller.c
+@@ -1364,7 +1364,18 @@ static int atmel_smc_nand_prepare_smcconf(struct atmel_nand *nand,
+ 	ret = atmel_smc_cs_conf_set_timing(smcconf,
+ 					   ATMEL_HSMC_TIMINGS_TADL_SHIFT,
+ 					   ncycles);
+-	if (ret)
++	/*
++	 * Version 4 of the ONFI spec mandates that tADL be at least 400
++	 * nanoseconds, but, depending on the master clock rate, 400 ns may not
++	 * fit in the tADL field of the SMC reg. We need to relax the check and
++	 * accept the -ERANGE return code.
++	 *
++	 * Note that previous versions of the ONFI spec had a lower tADL_min
++	 * (100 or 200 ns). It's not clear why this timing constraint got
++	 * increased but it seems most NANDs are fine with values lower than
++	 * 400ns, so we should be safe.
++	 */
++	if (ret && ret != -ERANGE)
+ 		return ret;
  
-+	if (ebcnt == 1) {
-+		fprintf(stderr,	PROGRAM_NAME
-+			" cannot run on a single block, will use 2 instead.\n");
-+		ebcnt = 2;
-+	}
-+
- 	if (peb >= mtd.eb_cnt)
- 		return errmsg("physical erase block %d is out of range!", peb);
- 
+ 	ncycles = DIV_ROUND_UP(conf->timings.sdr.tAR_min, mckperiodps);
 -- 
 2.11.0
