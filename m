@@ -1,24 +1,14 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dkW9x-0005Ca-43
- for linux-mtd@lists.infradead.org; Wed, 23 Aug 2017 13:57:30 +0000
-Date: Wed, 23 Aug 2017 15:57:03 +0200
-From: Oleksij Rempel <ore@pengutronix.de>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- kernel@pengutronix.de
-Subject: Re: "UBIFS error (pid 396): dbg_check_space_info: free space changed
- from" + ecryptfs
-Message-ID: <20170823135702.7qrbhlyzk54rua3h@pengutronix.de>
-References: <dbc5bc9f-6c38-a0c3-e776-050a70382814@rempel-privat.de>
- <20170802140642.kpsdh3jfow2azevm@pengutronix.de>
- <2d11efa2-dda2-7810-dd22-965b295bbff9@nod.at>
- <CAFLxGvwK=J0zMyNa6zYG9jHXz3yTb_TFfEQBkMy0sqJyw7K73g@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFLxGvwK=J0zMyNa6zYG9jHXz3yTb_TFfEQBkMy0sqJyw7K73g@mail.gmail.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dkWAf-0002nD-0P
+ for linux-mtd@lists.infradead.org; Wed, 23 Aug 2017 13:58:23 +0000
+From: Miquel Raynal <miquel.raynal@free-electrons.com>
+To: linux-mtd@lists.infradead.org
+Cc: David Oberhollenzer <david.oberhollenzer@sigma-star.at>,
+ Miquel Raynal <miquel.raynal@free-electrons.com>
+Subject: [PATCH] mtd-utils: tests: avoid using only one block in nandpagetest
+Date: Wed, 23 Aug 2017 15:57:32 +0200
+Message-Id: <20170823135732.12899-1-miquel.raynal@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,41 +18,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 18, 2017 at 12:59:02PM +0200, Richard Weinberger wrote:
-> On Sun, Aug 6, 2017 at 11:25 AM, Richard Weinberger <richard@nod.at> wrote:
-> > Oleksij,
-> >
-> > Am 02.08.2017 um 16:06 schrieb Oleksij Rempel:
-> >> Hallo all,
-> >>
-> >> Initial issue was detected on kernel 4.0.9 and is still reproducible
-> >> with same kernel version + most of back ported ubi/ubifs patches till
-> >> the kernel v4.12. UBIfs encryption patches was not backported.
-> >>
-> >> To reproduce it I needed:
-> >> - system with fresh flashed ubi image.
-> >> - on first start it should run following script:
-> >>> mount -o remount,rw /
-> >>> mount -t ecryptfs ... /dst
-> >>> ... do some work and mv some files to /dst
-> >>> umount /dst
-> >>> mount -o remount,ro / <--  UBIFS error (pid 396): dbg_check_space_info:
-> >
-> > Does this also happen on mainline?
-> > Also please try in nandsim to rule out chip specific issues.
-> >
-> > Can you please share the ecryptfs configuration?
-> > i.e. are file names encrypted or not?
+Forbid the use of -c1 in nandpagetest which limits the number of blocks
+to use at one. In that case, get_first_and_last_block() will return the
+same id for both the first and the last blocks. In erasecrosstest(),
+the logic is:
+- erase/write/read/verify first block
+- erase/write again first block
+- erase *last* block
+- read/verify first block
+The case 'first == last' leads to erasing the block before reading it.
+Hence the test will fail with no actual reason.
 
-File name should be encrypted. The mount option is:
-mount -t ecryptfs -o
-ecryptfs_sig=${SIG},ecryptfs_fnek_sig=${SIG},ecryptfs_unlink_sigs,ecryptfs_key_bytes=32,ecryptfs_cipher=aes
-/$dst /$dst
+The patch does not forbid the use of -c1 as it could do it in
+process_options() with a errmsg_die(). Instead, it warns the user and
+uses a second block in order to avoid risking to break existing scripts.
 
-I'll try to reproduce it tomorrow with mainline kernel.
+Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+---
+ tests/mtd-tests/nandpagetest.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
+diff --git a/tests/mtd-tests/nandpagetest.c b/tests/mtd-tests/nandpagetest.c
+index 4145ef7..ef6c126 100644
+--- a/tests/mtd-tests/nandpagetest.c
++++ b/tests/mtd-tests/nandpagetest.c
+@@ -452,6 +452,12 @@ int main(int argc, char **argv)
+ 	if (ebcnt < 0)
+ 		ebcnt = (mtd.eb_cnt - peb) / (skip + 1);
+ 
++	if (ebcnt == 1) {
++		fprintf(stderr,	PROGRAM_NAME
++			" cannot run on a single block, will use 2 instead.\n");
++		ebcnt = 2;
++	}
++
+ 	if (peb >= mtd.eb_cnt)
+ 		return errmsg("physical erase block %d is out of range!", peb);
+ 
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.11.0
