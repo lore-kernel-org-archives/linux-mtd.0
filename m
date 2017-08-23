@@ -1,16 +1,24 @@
-Received: from regular1.263xmail.com ([211.150.99.133])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dkSTq-0003tS-42
- for linux-mtd@lists.infradead.org; Wed, 23 Aug 2017 10:01:49 +0000
-From: Andy Yan <andy.yan@rock-chips.com>
-To: cyrille.pitchen@wedev4u.fr
-Cc: boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
- computersforpeace@gmail.com, richard@nod.at, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org,
- Andy Yan <andy.yan@rock-chips.com>
-Subject: [PATCH v5] mtd: spi-nor: add support for GD25Q256
-Date: Wed, 23 Aug 2017 18:01:06 +0800
-Message-Id: <1503482466-27310-1-git-send-email-andy.yan@rock-chips.com>
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+ by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dkW9x-0005Ca-43
+ for linux-mtd@lists.infradead.org; Wed, 23 Aug 2017 13:57:30 +0000
+Date: Wed, 23 Aug 2017 15:57:03 +0200
+From: Oleksij Rempel <ore@pengutronix.de>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ kernel@pengutronix.de
+Subject: Re: "UBIFS error (pid 396): dbg_check_space_info: free space changed
+ from" + ecryptfs
+Message-ID: <20170823135702.7qrbhlyzk54rua3h@pengutronix.de>
+References: <dbc5bc9f-6c38-a0c3-e776-050a70382814@rempel-privat.de>
+ <20170802140642.kpsdh3jfow2azevm@pengutronix.de>
+ <2d11efa2-dda2-7810-dd22-965b295bbff9@nod.at>
+ <CAFLxGvwK=J0zMyNa6zYG9jHXz3yTb_TFfEQBkMy0sqJyw7K73g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFLxGvwK=J0zMyNa6zYG9jHXz3yTb_TFfEQBkMy0sqJyw7K73g@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,85 +28,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add support for GD25Q256, a 32MiB SPI Nor
-flash from GigaDevice.
+On Fri, Aug 18, 2017 at 12:59:02PM +0200, Richard Weinberger wrote:
+> On Sun, Aug 6, 2017 at 11:25 AM, Richard Weinberger <richard@nod.at> wrote:
+> > Oleksij,
+> >
+> > Am 02.08.2017 um 16:06 schrieb Oleksij Rempel:
+> >> Hallo all,
+> >>
+> >> Initial issue was detected on kernel 4.0.9 and is still reproducible
+> >> with same kernel version + most of back ported ubi/ubifs patches till
+> >> the kernel v4.12. UBIfs encryption patches was not backported.
+> >>
+> >> To reproduce it I needed:
+> >> - system with fresh flashed ubi image.
+> >> - on first start it should run following script:
+> >>> mount -o remount,rw /
+> >>> mount -t ecryptfs ... /dst
+> >>> ... do some work and mv some files to /dst
+> >>> umount /dst
+> >>> mount -o remount,ro / <--  UBIFS error (pid 396): dbg_check_space_info:
+> >
+> > Does this also happen on mainline?
+> > Also please try in nandsim to rule out chip specific issues.
+> >
+> > Can you please share the ecryptfs configuration?
+> > i.e. are file names encrypted or not?
 
-The GD25Q256 uses S6 to set QE, which is
-different with other supported memories
-from GigaDevice that use S9. So we introduce
-a quad_enable function which can be set per
-memory in the flash_info list.
+File name should be encrypted. The mount option is:
+mount -t ecryptfs -o
+ecryptfs_sig=${SIG},ecryptfs_fnek_sig=${SIG},ecryptfs_unlink_sigs,ecryptfs_key_bytes=32,ecryptfs_cipher=aes
+/$dst /$dst
 
-Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
+I'll try to reproduce it tomorrow with mainline kernel.
 
----
-
-Changes in v5:
-- set quad_enable in flash_info list, thanks the guidance by Cyrille.
-
-Changes in v4:
-- add SPI_NOR_HAS_LOCK and SPI_NOR_HAS_TB
-
-Changes in v3:
-- rebase on top of spi-nor tree
-- add SPI_NOR_4B_OPCODES flag
-
-Changes in v2:
-- drop one line unnecessary modification
-
- drivers/mtd/spi-nor/spi-nor.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index cf1d4a1..dc89ef2 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -89,6 +89,8 @@ struct flash_info {
- #define NO_CHIP_ERASE		BIT(12) /* Chip does not support chip erase */
- #define SPI_NOR_SKIP_SFDP	BIT(13)	/* Skip parsing of SFDP tables */
- #define USE_CLSR		BIT(14)	/* use CLSR command */
-+
-+	int	(*quad_enable)(struct spi_nor *nor);
- };
- 
- #define JEDEC_MFR(info)	((info)->id[0])
-@@ -870,6 +872,8 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 	return ret;
- }
- 
-+static int macronix_quad_enable(struct spi_nor *nor);
-+
- /* Used when the "_ext_id" is two bytes at most */
- #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
- 		.id = {							\
-@@ -997,6 +1001,12 @@ static const struct flash_info spi_nor_ids[] = {
- 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
- 			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
- 	},
-+	{
-+		"gd25q256", INFO(0xc84019, 0, 64 * 1024, 512,
-+			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+			SPI_NOR_4B_OPCODES | SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-+			.quad_enable = macronix_quad_enable,
-+	},
- 
- 	/* Intel/Numonyx -- xxxs33b */
- 	{ "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, 0) },
-@@ -2388,6 +2398,15 @@ static int spi_nor_init_params(struct spi_nor *nor,
- 			params->quad_enable = spansion_quad_enable;
- 			break;
- 		}
-+
-+		/*
-+		 * Some manufacturer like GigaDevice may use different
-+		 * bit to set QE on different memories, so the MFR can't
-+		 * indicate the quad_enable method for this case, we need
-+		 * set it in flash info list.
-+		 */
-+		if (info->quad_enable)
-+			params->quad_enable = info->quad_enable;
- 	}
- 
- 	/* Override the parameters with data read from SFDP tables. */
 -- 
-2.7.4
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
