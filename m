@@ -1,29 +1,21 @@
-Received: from smtp03.smtpout.orange.fr ([80.12.242.125]
- helo=smtp.smtpout.orange.fr)
+Received: from mail.linuxfoundation.org ([140.211.169.12])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dkbPh-0004mR-E5
- for linux-mtd@lists.infradead.org; Wed, 23 Aug 2017 19:34:11 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Andrea Adami <andrea.adami@gmail.com>
-Cc: linux-mtd@lists.infradead.org,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mmc@vger.kernel.org,
- Russell King <linux@armlinux.org.uk>,
- Haojian Zhuang <haojian.zhuang@gmail.com>, linux-kernel@vger.kernel.org,
- Marek Vasut <marek.vasut@gmail.com>, linux-arm-kernel@lists.infradead.org,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Lee Jones <lee.jones@linaro.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Linus Walleij <linus.walleij@linaro.org>, Daniel Mack <daniel@zonque.org>
-Subject: Re: [PATCH v5 0/9] mtd: sharpslpart partition parser
-References: <1502743720-28672-1-git-send-email-andrea.adami@gmail.com>
- <20170821221339.70cfcfb7@bbrezillon>
-Date: Wed, 23 Aug 2017 21:33:44 +0200
-Message-ID: <87pobmoz8n.fsf@belgarion.home>
+ id 1dkest-0005hs-HZ
+ for linux-mtd@lists.infradead.org; Wed, 23 Aug 2017 23:16:29 +0000
+Date: Wed, 23 Aug 2017 16:16:11 -0700
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Arun Nagendran <arunrasppi@gmail.com>
+Cc: kamlakant.patel@broadcom.com, manonuevo@micron.com,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 4.13.0-rc6 1] mt29f_spinand: Fix to Enable the ECC for
+ page read on program
+Message-ID: <20170823231611.GD5193@kroah.com>
+References: <CAMx9D-4=n1iDoJA5sVt3CCOgRjieYJ0rkcKL+c+S53tygs84TQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMx9D-4=n1iDoJA5sVt3CCOgRjieYJ0rkcKL+c+S53tygs84TQ@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,34 +25,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Boris Brezillon <boris.brezillon@free-electrons.com> writes:
+On Wed, Aug 23, 2017 at 05:08:54PM -0400, Arun Nagendran wrote:
+> staging:mt29f_spinand: Enable the ECC for page read on program.
 
-> Le Mon, 14 Aug 2017 22:48:31 +0200,
->> Andrea Adami (9):
->>   mtd: sharpslpart: Add sharpslpart partition parser
->>   mtd: nand: sharpsl: Add partition parsers platform data
->>   mfd: tmio: Add partition parsers platform data
->>   mtd: nand: sharpsl: Register partitions using the parsers
->>   mtd: nand: tmio: Register partitions using the parsers
->
-> Applied patches 2, to 5 to nand/next.
->>   ARM: pxa/corgi: Remove hardcoded partitioning, use sharpslpart parser
->>   ARM: pxa/tosa: Remove hardcoded partitioning, use sharpslpart parser
->>   ARM: pxa/spitz: Remove hardcoded partitioning, use sharpslpart parser
->>   ARM: pxa/poodle: Remove hardcoded partitioning, use sharpslpart parser
+Why is this line here?
 
-I'm quite happy with patches 6 to 9 except for the subject title length.
+> 
+> we have to enable the ECC during page read in spinand_program_page function,
+> because program page is over-writing only the specific data in the read page.
+> at same time, if you turn off the ECC and read the page, we may read corrupted
+> data with potential bit flips error.
+> I verified this logic with GiGa Device part GD5F2GQ4RCYI, found this data
+> corruption problem.
+> 
+> 
+> --- a/drivers/staging/mt29f_spinand/mt29f_spinand.c
+> +++ b/drivers/staging/mt29f_spinand/mt29f_spinand.c
+> @@ -496,8 +496,12 @@ static int spinand_program_page(struct spi_device
+> *spi_nand,
+>         if (!wbuf)
+>                 return -ENOMEM;
+>  
+> -       enable_read_hw_ecc = 0;
+> -       spinand_read_page(spi_nand, page_id, 0, CACHE_BUF, wbuf);
+> +       enable_read_hw_ecc = 1;
+> +       retval = spinand_read_page(spi_nand, page_id, 0, CACHE_BUF, wbuf);
+> +       {
 
-Andrea, if you give me an idea of change, I'll modify the titles myself before
-applying, no need to resend a serie.
+Why the { here?
 
-For example, you could propose :
-ARM: pxa: corgi: use sharpslpart parser instead of hardcoded one
+> +               dev_err(&spi_nand->dev, "ecc error on read page!!!\n");
+> +               return retval;
+
+So now you always fail no matter what happens?
+
+Please always test your patches :(
+
+> +       }
+>  
+>         for (i = offset, j = 0; i < len; i++, j++)
+>                 wbuf[i] &= buf[j];
+> 
+> 
+> Signed-off-by: Arun Nagendran <arunrasppi@gmail.com>
 
 
-Then I'll take them into pxa/for-next if there are no objections.
+This has to go up in the changelog area for it to work properly.
 
-Cheers.
+thanks,
 
--- 
-Robert
+greg k-h
