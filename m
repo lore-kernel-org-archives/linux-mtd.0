@@ -1,13 +1,13 @@
-Received: from arcturus.kleine-koenig.org ([78.47.169.190])
+Received: from arcturus.kleine-koenig.org ([2a01:4f8:d12:1f44::2])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dktyF-0003Ob-Oo
- for linux-mtd@lists.infradead.org; Thu, 24 Aug 2017 15:23:01 +0000
+ id 1dktyN-0003YP-5f
+ for linux-mtd@lists.infradead.org; Thu, 24 Aug 2017 15:23:14 +0000
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <ukleinek@debian.org>
 To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 Cc: linux-mtd@lists.infradead.org
-Subject: [PATCH mtd-utils] nandmarkbad: new util to mark blocks as bad
-Date: Thu, 24 Aug 2017 17:22:27 +0200
-Message-Id: <20170824152227.30394-1-ukleinek@debian.org>
+Subject: [PATCH mtd-utils] Add ctags files to .gitignore
+Date: Thu, 24 Aug 2017 17:22:38 +0200
+Message-Id: <20170824152238.30448-1-ukleinek@debian.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,147 +18,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 ---
- .gitignore               |  1 +
- nand-utils/Makemodule.am |  5 ++-
- nand-utils/nandmarkbad.c | 95 ++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 100 insertions(+), 1 deletion(-)
- create mode 100644 nand-utils/nandmarkbad.c
+ .gitignore | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/.gitignore b/.gitignore
-index 38bd04deb34e..754da97b43bf 100644
+index a5547d5d4578..38bd04deb34e 100644
 --- a/.gitignore
 +++ b/.gitignore
-@@ -36,6 +36,7 @@ mkfs.jffs2
- mtd_debug
- mtdpart
- nanddump
-+nandmarkbad
- nandtest
- nandwrite
- nftl_format
-diff --git a/nand-utils/Makemodule.am b/nand-utils/Makemodule.am
-index d75b0cb3e36c..c31dcb01f06e 100644
---- a/nand-utils/Makemodule.am
-+++ b/nand-utils/Makemodule.am
-@@ -7,6 +7,9 @@ nandwrite_LDADD = libmtd.a
- nandtest_SOURCES = nand-utils/nandtest.c
- nandtest_LDADD = libmtd.a
+@@ -141,6 +141,8 @@ tests/ubi-tests/ubi-stress-test.sh
+ patches-*
+ *.patch
  
-+nandmarkbad_SOURCES = nand-utils/nandmarkbad.c
-+nandmarkbad_LDADD = libmtd.a
-+
- nftldump_SOURCES = nand-utils/nftldump.c
- nftldump_LDADD = libmtd.a
- 
-@@ -14,7 +17,7 @@ nftl_format_SOURCES = nand-utils/nftl_format.c
- nftl_format_LDADD = libmtd.a
- 
- NAND_BINS = \
--	nanddump nandwrite nandtest nftldump nftl_format
-+	nanddump nandwrite nandtest nandmarkbad nftldump nftl_format
- 
- NAND_SH = \
- 	nand-utils/load_nandsim.sh
-diff --git a/nand-utils/nandmarkbad.c b/nand-utils/nandmarkbad.c
-new file mode 100644
-index 000000000000..023bdbe50c4d
---- /dev/null
-+++ b/nand-utils/nandmarkbad.c
-@@ -0,0 +1,95 @@
-+#define PROGRAM_NAME "nandmarkbad"
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <getopt.h>
-+
-+#include "common.h"
-+#include <libmtd.h>
-+
-+void usage(int status)
-+{
-+	fprintf(status ? stderr : stdout,
-+		"usage: %s [OPTIONS] <device>\n\n"
-+		"  -b, --markbad=blockno        Mark block bad\n"
-+		PROGRAM_NAME);
-+	exit(status);
-+}
-+
-+/*
-+ * Main program
-+ */
-+int main(int argc, char **argv)
-+{
-+	loff_t mark_bad[32];
-+	unsigned cnt_bad = 0;
-+	struct mtd_dev_info mtd;
-+	libmtd_t mtd_desc;
-+	int fd;
-+	int error = 0;
-+	int ret;
-+	unsigned int i;
-+
-+	for (;;) {
-+		static const char short_options[] = "b:h";
-+		static const struct option long_options[] = {
-+			{ "markbad", required_argument, 0, 'b' },
-+			{0, 0, 0, 0},
-+		};
-+		int option_index = 0;
-+		int c = getopt_long(argc, argv, short_options, long_options,
-+				    &option_index);
-+		if (c == EOF)
-+			break;
-+
-+		switch (c) {
-+		case 'h':
-+			usage(EXIT_SUCCESS);
-+			break;
-+		case '?':
-+			usage(EXIT_FAILURE);
-+			break;
-+
-+		case 'b':
-+			if (cnt_bad < ARRAY_SIZE(mark_bad)) {
-+				mark_bad[cnt_bad] =
-+					simple_strtoll(optarg, &error);
-+				++cnt_bad;
-+			} else {
-+				errmsg_die("Can't handle so many bad blocks\n");
-+			}
-+
-+			break;
-+		}
-+	}
-+
-+	argc -= optind;
-+	argv += optind;
-+
-+	if (argc != 1 || error)
-+		usage(EXIT_FAILURE);
-+
-+	if (!cnt_bad)
-+		errmsg_die("You must specify at least one block to mark bad\n");
-+
-+	fd = open(argv[0], O_RDWR);
-+	if (fd < 0)
-+		sys_errmsg_die("Failed to open mtd device\n");
-+
-+	mtd_desc = libmtd_open();
-+	if (!mtd_desc)
-+		errmsg_die("Can't initialize libmtd");
-+
-+	if (mtd_get_dev_info(mtd_desc, argv[0], &mtd) < 0)
-+		errmsg_die("mtd_get_dev_info failed");
-+
-+	for (i = 0; i < cnt_bad; ++i) {
-+		ret = mtd_mark_bad(&mtd, fd, mark_bad[i]);
-+		if (ret)
-+			sys_errmsg_die("%s: MTD Mark bad block failure",
-+				       argv[0]);
-+	}
-+
-+	return EXIT_SUCCESS;
-+}
+-# cscope files
++# cscope and ctag files
+ cscope.*
+ ncscope.*
++/TAGS
++/tags
 -- 
 2.14.1
