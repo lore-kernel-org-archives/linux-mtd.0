@@ -1,27 +1,20 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dknj0-0003YS-He
- for linux-mtd@lists.infradead.org; Thu, 24 Aug 2017 08:43:14 +0000
-Subject: Re: [PATCH] mtd: nand: atmel: Relax tADL_min constraint
-To: Boris Brezillon "(by" way of Boris Brezillon
- "<boris.brezillon@free-electrons.com>)"
- <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-References: <20170823184501.7665-1-boris.brezillon@free-electrons.com>
-From: Quentin Schulz <quentin.schulz@free-electrons.com>
-Message-ID: <b19139c2-ee66-06a8-fa07-0e3b8b3997ef@free-electrons.com>
-Date: Thu, 24 Aug 2017 10:42:17 +0200
+ id 1dko1A-0000l1-7I
+ for linux-mtd@lists.infradead.org; Thu, 24 Aug 2017 09:01:42 +0000
+Date: Thu, 24 Aug 2017 11:01:04 +0200
+From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd-utils: tests: avoid using only one block in
+ nandpagetest
+Message-ID: <20170824110104.5740cfb1@xps13>
+In-Reply-To: <e5fc2f53-738f-037b-6bd6-c1aa18d363f7@sigma-star.at>
+References: <20170823135732.12899-1-miquel.raynal@free-electrons.com>
+ <e5fc2f53-738f-037b-6bd6-c1aa18d363f7@sigma-star.at>
 MIME-Version: 1.0
-In-Reply-To: <20170823184501.7665-1-boris.brezillon@free-electrons.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,58 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hi David,
 
-On 23/08/2017 20:45, Boris Brezillon (by way of Boris Brezillon
-<boris.brezillon@free-electrons.com>) wrote:
-> Version 4 of the ONFI spec mandates that tADL be at least 400 nanoseconds,
-> but, depending on the master clock rate, 400 ns may not fit in the tADL
-> field of the SMC reg. We need to relax the check and accept the -ERANGE
-> return code.
-> 
-> Note that previous versions of the ONFI spec had a lower tADL_min (100 or
-> 200 ns). It's not clear why this timing constraint got increased but it
-> seems most NANDs are fine with values lower than 400ns, so we should be
-> safe.
-> 
-> Fixes: f9ce2eddf176 ("mtd: nand: atmel: Add ->setup_data_interface() hooks")
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-Tested-by: Quentin Schulz <quentin.schulz@free-electrons.com>
+> > The case 'first =3D=3D last' leads to erasing the block before reading
+> > it. Hence the test will fail with no actual reason.
+> >  =20
+> So if some existing automated test setup were to use this, it would
+> (as of right now) *always* fail and terminate with EXIT_FAILURE.
+>=20
+> > The patch does not forbid the use of -c1 as it could do it in
+> > process_options() with a errmsg_die(). Instead, it warns the user
+> > and uses a second block in order to avoid risking to break existing
+> > scripts.=20
+> But wouldn't exactly that change the behavior of such a setup by
+> suddenly having all tests succeed?
+>=20
+> If this combination of options always fails anyway, wouldn't it be
+> more appropriate to terminate with an error message in
+> process_options instead?
 
-Thanks,
-Quentin
+I though you would prefer to do not exit with an error but I it is ok
+for me, I will resend the patch, with an error thrown in
+process_options().
 
-> ---
->  drivers/mtd/nand/atmel/nand-controller.c | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/atmel/nand-controller.c
-> index 2c8baa0c2c4e..ceec21bd30c4 100644
-> --- a/drivers/mtd/nand/atmel/nand-controller.c
-> +++ b/drivers/mtd/nand/atmel/nand-controller.c
-> @@ -1364,7 +1364,18 @@ static int atmel_smc_nand_prepare_smcconf(struct atmel_nand *nand,
->  	ret = atmel_smc_cs_conf_set_timing(smcconf,
->  					   ATMEL_HSMC_TIMINGS_TADL_SHIFT,
->  					   ncycles);
-> -	if (ret)
-> +	/*
-> +	 * Version 4 of the ONFI spec mandates that tADL be at least 400
-> +	 * nanoseconds, but, depending on the master clock rate, 400 ns may not
-> +	 * fit in the tADL field of the SMC reg. We need to relax the check and
-> +	 * accept the -ERANGE return code.
-> +	 *
-> +	 * Note that previous versions of the ONFI spec had a lower tADL_min
-> +	 * (100 or 200 ns). It's not clear why this timing constraint got
-> +	 * increased but it seems most NANDs are fine with values lower than
-> +	 * 400ns, so we should be safe.
-> +	 */
-> +	if (ret && ret != -ERANGE)
->  		return ret;
->  
->  	ncycles = DIV_ROUND_UP(conf->timings.sdr.tAR_min, mckperiodps);
-> 
-
--- 
-Quentin Schulz, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Regards,
+Miqu=C3=A8l
