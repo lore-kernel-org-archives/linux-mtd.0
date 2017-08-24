@@ -1,19 +1,22 @@
-Received: from mout.gmx.net ([212.227.17.22])
+Received: from mail-pg0-x231.google.com ([2607:f8b0:400e:c05::231])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dkv77-0003ww-Ae
- for linux-mtd@lists.infradead.org; Thu, 24 Aug 2017 16:36:15 +0000
-Date: Thu, 24 Aug 2017 18:31:19 +0200 (CEST)
-From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+ id 1dkvts-0001h8-0V
+ for linux-mtd@lists.infradead.org; Thu, 24 Aug 2017 17:26:38 +0000
+Received: by mail-pg0-x231.google.com with SMTP id t3so696767pgt.0
+ for <linux-mtd@lists.infradead.org>; Thu, 24 Aug 2017 10:26:15 -0700 (PDT)
+Date: Thu, 24 Aug 2017 10:26:09 -0700
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
 To: Bhumika Goyal <bhumirks@gmail.com>
-cc: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
+Cc: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
  daniel.vetter@intel.com, jani.nikula@linux.intel.com,
- seanpaul@chromium.org, airlied@linux.ie, tomas.winkler@intel.com,
- dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr, peda@axentia.se, kishon@ti.com,
- bhelgaas@google.com, thierry.reding@gmail.com, jonathanh@nvidia.com,
+ seanpaul@chromium.org, airlied@linux.ie, g.liakhovetski@gmx.de,
+ tomas.winkler@intel.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
+ marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr,
+ peda@axentia.se, kishon@ti.com, bhelgaas@google.com,
+ thierry.reding@gmail.com, jonathanh@nvidia.com,
  dvhart@infradead.org, andy@infradead.org, ohad@wizery.com,
- bjorn.andersson@linaro.org, freude@de.ibm.com, schwidefsky@de.ibm.com,
+ freude@de.ibm.com, schwidefsky@de.ibm.com,
  heiko.carstens@de.ibm.com, jth@kernel.org, jejb@linux.vnet.ibm.com,
  martin.petersen@oracle.com, lduncan@suse.com, cleech@redhat.com,
  johan@kernel.org, elder@kernel.org, gregkh@linuxfoundation.org,
@@ -21,18 +24,19 @@ cc: julia.lawall@lip6.fr, bp@alien8.de, mchehab@kernel.org,
  linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
  linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
- platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org,
- linux-s390@vger.kernel.org, fcoe-devel@open-fcoe.org,
- linux-scsi@vger.kernel.org, open-iscsi@googlegroups.com,
- greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
- linux-usb@vger.kernel.org
-Subject: Re: [PATCH 03/15] [media] i2c: make device_type const
-In-Reply-To: <1503130946-2854-4-git-send-email-bhumirks@gmail.com>
-Message-ID: <Pine.LNX.4.64.1708241830240.3709@axis700.grange>
+ platform-driver-x86@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+ fcoe-devel@open-fcoe.org, linux-scsi@vger.kernel.org,
+ open-iscsi@googlegroups.com, greybus-dev@lists.linaro.org,
+ devel@driverdev.osuosl.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH 11/15] remoteproc: make device_type const
+Message-ID: <20170824172609.GF20643@builder>
 References: <1503130946-2854-1-git-send-email-bhumirks@gmail.com>
- <1503130946-2854-4-git-send-email-bhumirks@gmail.com>
+ <1503130946-2854-12-git-send-email-bhumirks@gmail.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1503130946-2854-12-git-send-email-bhumirks@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,7 +46,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 19 Aug 2017, Bhumika Goyal wrote:
+On Sat 19 Aug 01:22 PDT 2017, Bhumika Goyal wrote:
 
 > Make this const as it is only stored in the type field of a device
 > structure, which is const.
@@ -50,27 +54,27 @@ On Sat, 19 Aug 2017, Bhumika Goyal wrote:
 > 
 > Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 
-Acked-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Applied, thanks.
 
-Thanks
-Guennadi
+Regards,
+Bjorn
 
 > ---
->  drivers/media/i2c/soc_camera/mt9t031.c | 2 +-
+>  drivers/remoteproc/remoteproc_core.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/media/i2c/soc_camera/mt9t031.c b/drivers/media/i2c/soc_camera/mt9t031.c
-> index 714fb35..4802d30 100644
-> --- a/drivers/media/i2c/soc_camera/mt9t031.c
-> +++ b/drivers/media/i2c/soc_camera/mt9t031.c
-> @@ -592,7 +592,7 @@ static int mt9t031_runtime_resume(struct device *dev)
->  	.runtime_resume		= mt9t031_runtime_resume,
->  };
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index 364ef28..48b2c5d 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -1360,7 +1360,7 @@ static void rproc_type_release(struct device *dev)
+>  	kfree(rproc);
+>  }
 >  
-> -static struct device_type mt9t031_dev_type = {
-> +static const struct device_type mt9t031_dev_type = {
->  	.name	= "MT9T031",
->  	.pm	= &mt9t031_dev_pm_ops,
+> -static struct device_type rproc_type = {
+> +static const struct device_type rproc_type = {
+>  	.name		= "remoteproc",
+>  	.release	= rproc_type_release,
 >  };
 > -- 
 > 1.9.1
