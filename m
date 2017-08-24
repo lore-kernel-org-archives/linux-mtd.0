@@ -1,18 +1,18 @@
-Received: from regular1.263xmail.com ([211.150.99.131])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dklwJ-0002ju-RP
- for linux-mtd@lists.infradead.org; Thu, 24 Aug 2017 06:48:29 +0000
-From: Andy Yan <andy.yan@rock-chips.com>
-To: cyrille.pitchen@wedev4u.fr
-Cc: boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
- computersforpeace@gmail.com, richard@nod.at, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org,
- Andy Yan <andy.yan@rock-chips.com>
-Subject: [PATCH v6 2/2] mtd: spi-nor: add support for GD25Q256
-Date: Thu, 24 Aug 2017 14:47:55 +0800
-Message-Id: <1503557275-11316-1-git-send-email-andy.yan@rock-chips.com>
-In-Reply-To: <1503557179-11261-1-git-send-email-andy.yan@rock-chips.com>
-References: <1503557179-11261-1-git-send-email-andy.yan@rock-chips.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dkncV-00068j-T3
+ for linux-mtd@lists.infradead.org; Thu, 24 Aug 2017 08:36:09 +0000
+From: Miquel Raynal <miquel.raynal@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
+ Miquel Raynal <miquel.raynal@free-electrons.com>
+Subject: [PATCH v4] mtd: nand: Add OOB layout without ECC bytes
+Date: Thu, 24 Aug 2017 10:35:38 +0200
+Message-Id: <20170824083538.3009-1-miquel.raynal@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,46 +22,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add support for GD25Q256, a 32MiB SPI Nor flash
-from GigaDevice.
+Add layout functions for large pages with mainly free bytes
+plus reserved space for Bad Block Markers. This may be useful for
+configurations that does set ECC_NONE. Specific chips that use
+on-die ECC feature, ie. the TOSHIBA BENAND (Built-in ECC NAND),
+might also take advantage of it: the ECC bytes are stored in an
+isolated area inaccessible by the driver and thus the OOB layout must
+only reserve space for bad block markers.
 
-Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
+Bad block markers position was extracted from the existing OOB layouts
+by assigning as free all the bytes marked as ECC.
+
+Normally, if NAND_ECC_NONE is chosen, the MTD user can use the whole OOB
+area (except the bytes reserved for the bad block markers) to store
+private data, but the NAND framework has been using the same OOB layout
+(the one reserving ECC bytes) no matter whether ECC is enabled or not.
+In order to not break existing MTD users which may rely on this layout
+to work properly, we keep things unchanged and only use the 'no_ecc'
+layouts for previously unsupported configurations.
+
+Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
 ---
+ drivers/mtd/nand/nand_base.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-Changes in v6: None
-Changes in v5: None
-Changes in v4: None
-Changes in v3: None
-Changes in v2: None
-
- drivers/mtd/spi-nor/spi-nor.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 3b94308..dc89ef2 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -872,6 +872,8 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 	return ret;
- }
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index c5221795a1e8..ef40866d3435 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -109,6 +109,22 @@ const struct mtd_ooblayout_ops nand_ooblayout_sp_ops = {
+ };
+ EXPORT_SYMBOL_GPL(nand_ooblayout_sp_ops);
  
-+static int macronix_quad_enable(struct spi_nor *nor);
++static int nand_ooblayout_free_lp_no_ecc(struct mtd_info *mtd, int section,
++					   struct mtd_oob_region *oobregion)
++{
++	if (section)
++		return -ERANGE;
 +
- /* Used when the "_ext_id" is two bytes at most */
- #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
- 		.id = {							\
-@@ -999,6 +1001,12 @@ static const struct flash_info spi_nor_ids[] = {
- 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
- 			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
- 	},
-+	{
-+		"gd25q256", INFO(0xc84019, 0, 64 * 1024, 512,
-+			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+			SPI_NOR_4B_OPCODES | SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-+			.quad_enable = macronix_quad_enable,
-+	},
- 
- 	/* Intel/Numonyx -- xxxs33b */
- 	{ "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, 0) },
++	oobregion->offset = 2;
++	oobregion->length = mtd->oobsize - oobregion->offset;
++
++	return 0;
++}
++
++const struct mtd_ooblayout_ops nand_ooblayout_lp_no_ecc_ops = {
++	.free = nand_ooblayout_free_lp_no_ecc,
++};
++
+ static int nand_ooblayout_ecc_lp(struct mtd_info *mtd, int section,
+ 				 struct mtd_oob_region *oobregion)
+ {
+@@ -4649,6 +4665,19 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 			mtd_set_ooblayout(mtd, &nand_ooblayout_lp_hamming_ops);
+ 			break;
+ 		default:
++			/*
++			 * Expose the whole OOB area to users if ECC_NONE
++			 * is passed. We could do that for all kind of
++			 * ->oobsize, but we must keep the old large/small
++			 * page with ECC layout when ->oobsize <= 128 for
++			 * compatibility reasons.
++			 */
++			if (ecc->mode == NAND_ECC_NONE) {
++				mtd_set_ooblayout(mtd,
++						&nand_ooblayout_lp_no_ecc_ops);
++				break;
++			}
++
+ 			WARN(1, "No oob scheme defined for oobsize %d\n",
+ 				mtd->oobsize);
+ 			ret = -EINVAL;
 -- 
-2.7.4
+2.11.0
