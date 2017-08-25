@@ -1,22 +1,23 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dl7Nc-0004Hz-S8
- for linux-mtd@lists.infradead.org; Fri, 25 Aug 2017 05:42:07 +0000
-Date: Fri, 25 Aug 2017 07:41:40 +0200
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dl81j-0003dl-IC
+ for linux-mtd@lists.infradead.org; Fri, 25 Aug 2017 06:23:35 +0000
+Date: Fri, 25 Aug 2017 08:23:06 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de
-Subject: Re: [PATCH] mtd: nandsim: remove debugfs entries in error path
-Message-ID: <20170825054140.zxixpikbbt4zvif7@pengutronix.de>
-References: <20170823070304.1336-1-u.kleine-koenig@pengutronix.de>
- <20170825042203.GB68252@google.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Nicolas Ferre <nicolas.ferre@atmel.com>, Alexandre Belloni
+ <alexandre.belloni@free-electrons.com>, David Woodhouse
+ <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>
+Subject: Re: [PATCH] mtd: nand: atmel: Relax tADL_min constraint
+Message-ID: <20170825082306.3df4941e@bbrezillon>
+In-Reply-To: <20170825040913.GA68252@google.com>
+References: <20170823184501.7665-1-boris.brezillon@free-electrons.com>
+ <20170825040913.GA68252@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20170825042203.GB68252@google.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,56 +27,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Brian,
+On Thu, 24 Aug 2017 21:09:13 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
 
-On Thu, Aug 24, 2017 at 09:22:03PM -0700, Brian Norris wrote:
-> On Wed, Aug 23, 2017 at 09:03:04AM +0200, Uwe Kleine-König wrote:
-> > The debugfs entries must be removed before an error is returned in the
-> > probe function. Otherwise another try to load the module fails and when
-> > the debugfs files are accessed without the module loaded, the kernel
-> > still tries to call a function in that module.
-> > 
-> > Fixes: 5346c27c5fed ("mtd: nandsim: Introduce debugfs infrastructure")
-> > Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> > ---
-> >  drivers/mtd/nand/nandsim.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-> > index 03a0d057bf2f..e4211c3cc49b 100644
-> > --- a/drivers/mtd/nand/nandsim.c
-> > +++ b/drivers/mtd/nand/nandsim.c
-> > @@ -2373,6 +2373,7 @@ static int __init ns_init_module(void)
-> >          return 0;
-> >  
-> >  err_exit:
-> > +	nandsim_debugfs_remove(nand);
+> Hi,
 > 
-> The 'err_exit' label is used by error paths that occur before the
-> debugfs entries are registered. But I guess that's OK, since
-> debugfs_remove_recursive() handles NULL arguments fine?
+> On Wed, Aug 23, 2017 at 08:45:01PM +0200, Boris Brezillon wrote:
+> > Version 4 of the ONFI spec mandates that tADL be at least 400 nanoseconds,
+> > but, depending on the master clock rate, 400 ns may not fit in the tADL
+> > field of the SMC reg. We need to relax the check and accept the -ERANGE
+> > return code.
+> > 
+> > Note that previous versions of the ONFI spec had a lower tADL_min (100 or
+> > 200 ns). It's not clear why this timing constraint got increased but it
+> > seems most NANDs are fine with values lower than 400ns, so we should be
+> > safe.
+> > 
+> > Fixes: f9ce2eddf176 ("mtd: nand: atmel: Add ->setup_data_interface() hooks")
+> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > ---
+> >  drivers/mtd/nand/atmel/nand-controller.c | 13 ++++++++++++-
+> >  1 file changed, 12 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/atmel/nand-controller.c
+> > index 2c8baa0c2c4e..ceec21bd30c4 100644
+> > --- a/drivers/mtd/nand/atmel/nand-controller.c
+> > +++ b/drivers/mtd/nand/atmel/nand-controller.c
+> > @@ -1364,7 +1364,18 @@ static int atmel_smc_nand_prepare_smcconf(struct atmel_nand *nand,
+> >  	ret = atmel_smc_cs_conf_set_timing(smcconf,
+> >  					   ATMEL_HSMC_TIMINGS_TADL_SHIFT,
+> >  					   ncycles);
+> > -	if (ret)
+> > +	/*
+> > +	 * Version 4 of the ONFI spec mandates that tADL be at least 400
+> > +	 * nanoseconds, but, depending on the master clock rate, 400 ns may not
+> > +	 * fit in the tADL field of the SMC reg. We need to relax the check and
+> > +	 * accept the -ERANGE return code.
+> > +	 *
+> > +	 * Note that previous versions of the ONFI spec had a lower tADL_min
+> > +	 * (100 or 200 ns). It's not clear why this timing constraint got
+> > +	 * increased but it seems most NANDs are fine with values lower than
+> > +	 * 400ns, so we should be safe.
+> > +	 */
+> > +	if (ret && ret != -ERANGE)
+> >  		return ret;  
+> 
+> So I take it you're fine with falling back to this case, where you just
+> get the "max" (and "max" is not quite 400ns)?
 
-Yes. 
- 
-> We also have the same mismatch with init_nandsim()/free_nandsim(), which
-> is also similarly safe because of the nature of kfree(), vfree(), and
-> the fact that most of those are guarded with NULL checks anyway... So
-> it's just confusing and potentially dangerous for future developers --
-> but not wrong.
+Right, max in this specific case is 71, and AFAIK the maximum master
+clock frequency we have on atmel boards is 200MHz (cycle = 5ns), so
+we'll actually get 5 * 71 = 355ns. Given that all atmel platforms I
+know have at most ONFI 2 compliant NANDs connected on it, and
+ONFI 2 says tADL_min should be 200ns, we should be good.
 
-Ack, I took me some time to find a right place for
-nandsim_debugfs_remove because I had problems to match the cleanup
-functions in the error path to the setup functions. I then stopped
-checking the already existing code for correctness and just put
-nandsim_debugfs_remove to a place that works.
+BTW, I think it would be good to handle timing differences between ONFI
+versions. Right now I took the most constraining timing among all ONFI
+versions and put it in the nand_timings table, but it might be better
+to adjust some timings based on chip->onfi_version to avoid problems
+like the one I'm fixing here.
 
-> I'll look to queue this up and send to Linus within a day.
+> 
+>         /*
+>          * Let's just put the maximum we can if the requested setting does
+>          * not fit in the register field.
+>          * We still return -ERANGE in case the caller cares.
+>          */
+> 
+> Could be nice if there was some kind of sanity check still (e.g., don't
+> allow 1ns when we requested 1000ns), but I'm not sure what that would
+> be.
 
-\o/
+I can add a min_cycles argument to the atmel_smc_cs_conf_set_timing()
+function to let the caller decide what is appropriate.
 
-Best regards
-Uwe
+> 
+> Unless I hear screaming, I'll queue this up and send it out within a
+> day.
 
--- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Thanks a lot.
