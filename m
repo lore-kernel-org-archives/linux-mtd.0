@@ -1,18 +1,24 @@
-Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dmFMf-0003uR-50
- for linux-mtd@lists.infradead.org; Mon, 28 Aug 2017 08:25:47 +0000
-Received: by mail-pg0-x242.google.com with SMTP id r133so5841523pgr.2
- for <linux-mtd@lists.infradead.org>; Mon, 28 Aug 2017 01:25:23 -0700 (PDT)
-From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-To: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr
-Cc: linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: constify mtd_partition
-Date: Mon, 28 Aug 2017 13:54:57 +0530
-Message-Id: <4039663983bf372bd802549ef313ff1e466ed18a.1503908316.git.arvind.yadav.cs@gmail.com>
+Message-ID: <1503910079.11585.3.camel@mhfsdcap03>
+Subject: Re: [PATCH v5 1/1] dt-bindings: mtd: add new compatible strings and
+ improve description
+From: Guochun Mao <guochun.mao@mediatek.com>
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+CC: Matthias Brugger <matthias.bgg@gmail.com>, Rob Herring <robh@kernel.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut
+ <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Richard
+ Weinberger <richard@nod.at>, Mark Rutland <mark.rutland@arm.com>, Russell
+ King <linux@armlinux.org.uk>, <linux-mtd@lists.infradead.org>,
+ <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Date: Mon, 28 Aug 2017 16:47:59 +0800
+In-Reply-To: <1502934695.1128.11.camel@mhfsdcap03>
+References: <1501834239-25581-1-git-send-email-guochun.mao@mediatek.com>
+ <1501834239-25581-2-git-send-email-guochun.mao@mediatek.com>
+ <20170810182146.glmikeqpqwe66dwt@rob-hp-laptop>
+ <1502934695.1128.11.camel@mhfsdcap03>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,153 +28,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-mtd_partition are not supposed to change at runtime.
-Functions 'mtd_device_parse_register' working with const mtd_partition
-provided by <linux/mtd/mtd.h>. So mark the non-const structs as const.
+Hi Cyrille,
 
-Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
----
- drivers/mtd/devices/lart.c      | 2 +-
- drivers/mtd/maps/cfi_flagadm.c  | 2 +-
- drivers/mtd/maps/impa7.c        | 2 +-
- drivers/mtd/maps/netsc520.c     | 2 +-
- drivers/mtd/maps/nettel.c       | 2 +-
- drivers/mtd/maps/sbc_gxx.c      | 2 +-
- drivers/mtd/maps/ts5500_flash.c | 2 +-
- drivers/mtd/maps/uclinux.c      | 2 +-
- drivers/mtd/nand/ams-delta.c    | 2 +-
- drivers/mtd/nand/cmx270_nand.c  | 2 +-
- 10 files changed, 10 insertions(+), 10 deletions(-)
+It seems that I sent mail to wrong email-address ;)
+Please help to review this patch.
 
-diff --git a/drivers/mtd/devices/lart.c b/drivers/mtd/devices/lart.c
-index 268aae4..555b944 100644
---- a/drivers/mtd/devices/lart.c
-+++ b/drivers/mtd/devices/lart.c
-@@ -583,7 +583,7 @@ static int flash_write (struct mtd_info *mtd,loff_t to,size_t len,size_t *retlen
- 	}
- };
- 
--static struct mtd_partition lart_partitions[] = {
-+static const struct mtd_partition lart_partitions[] = {
- 	/* blob */
- 	{
- 		.name	= "blob",
-diff --git a/drivers/mtd/maps/cfi_flagadm.c b/drivers/mtd/maps/cfi_flagadm.c
-index d504b3d..70f4886 100644
---- a/drivers/mtd/maps/cfi_flagadm.c
-+++ b/drivers/mtd/maps/cfi_flagadm.c
-@@ -61,7 +61,7 @@
- 		.bankwidth =	2,
- };
- 
--static struct mtd_partition flagadm_parts[] = {
-+static const struct mtd_partition flagadm_parts[] = {
- 	{
- 		.name =		"Bootloader",
- 		.offset	=	FLASH_PARTITION0_ADDR,
-diff --git a/drivers/mtd/maps/impa7.c b/drivers/mtd/maps/impa7.c
-index 15bbda0..a0b8fa7 100644
---- a/drivers/mtd/maps/impa7.c
-+++ b/drivers/mtd/maps/impa7.c
-@@ -47,7 +47,7 @@
- /*
-  * MTD partitioning stuff
-  */
--static struct mtd_partition partitions[] =
-+static const struct mtd_partition partitions[] =
- {
- 	{
- 		.name = "FileSystem",
-diff --git a/drivers/mtd/maps/netsc520.c b/drivers/mtd/maps/netsc520.c
-index 81dc259..b0517b1 100644
---- a/drivers/mtd/maps/netsc520.c
-+++ b/drivers/mtd/maps/netsc520.c
-@@ -52,7 +52,7 @@
- /* partition_info gives details on the logical partitions that the split the
-  * single flash device into. If the size if zero we use up to the end of the
-  * device. */
--static struct mtd_partition partition_info[]={
-+static const struct mtd_partition partition_info[] = {
-     {
- 	    .name = "NetSc520 boot kernel",
- 	    .offset = 0,
-diff --git a/drivers/mtd/maps/nettel.c b/drivers/mtd/maps/nettel.c
-index a577ef8..729579f 100644
---- a/drivers/mtd/maps/nettel.c
-+++ b/drivers/mtd/maps/nettel.c
-@@ -107,7 +107,7 @@
- 	.bankwidth = AMD_BUSWIDTH,
- };
- 
--static struct mtd_partition nettel_amd_partitions[] = {
-+static const struct mtd_partition nettel_amd_partitions[] = {
- 	{
- 		.name = "SnapGear BIOS config",
- 		.offset = 0x000e0000,
-diff --git a/drivers/mtd/maps/sbc_gxx.c b/drivers/mtd/maps/sbc_gxx.c
-index 556a2df..8df181f 100644
---- a/drivers/mtd/maps/sbc_gxx.c
-+++ b/drivers/mtd/maps/sbc_gxx.c
-@@ -87,7 +87,7 @@ Intel StrataFlash (28F320/28F640) in x8 mode.
- /* partition_info gives details on the logical partitions that the split the
-  * single flash device into. If the size if zero we use up to the end of the
-  * device. */
--static struct mtd_partition partition_info[]={
-+static const struct mtd_partition partition_info[] = {
-     { .name = "SBC-GXx flash boot partition",
-       .offset = 0,
-       .size =   BOOT_PARTITION_SIZE_KiB*1024 },
-diff --git a/drivers/mtd/maps/ts5500_flash.c b/drivers/mtd/maps/ts5500_flash.c
-index 9969fed..8f177e0 100644
---- a/drivers/mtd/maps/ts5500_flash.c
-+++ b/drivers/mtd/maps/ts5500_flash.c
-@@ -43,7 +43,7 @@
- 	.phys = WINDOW_ADDR
- };
- 
--static struct mtd_partition ts5500_partitions[] = {
-+static const struct mtd_partition ts5500_partitions[] = {
- 	{
- 		.name = "Drive A",
- 		.offset = 0,
-diff --git a/drivers/mtd/maps/uclinux.c b/drivers/mtd/maps/uclinux.c
-index 00a8190..aef030c 100644
---- a/drivers/mtd/maps/uclinux.c
-+++ b/drivers/mtd/maps/uclinux.c
-@@ -49,7 +49,7 @@ struct map_info uclinux_ram_map = {
- 
- /****************************************************************************/
- 
--static struct mtd_partition uclinux_romfs[] = {
-+static const struct mtd_partition uclinux_romfs[] = {
- 	{ .name = "ROMfs" }
- };
- 
-diff --git a/drivers/mtd/nand/ams-delta.c b/drivers/mtd/nand/ams-delta.c
-index 5d6c26f..6cba2e4 100644
---- a/drivers/mtd/nand/ams-delta.c
-+++ b/drivers/mtd/nand/ams-delta.c
-@@ -41,7 +41,7 @@
-  * Define partitions for flash devices
-  */
- 
--static struct mtd_partition partition_info[] = {
-+static const struct mtd_partition partition_info[] = {
- 	{ .name		= "Kernel",
- 	  .offset	= 0,
- 	  .size		= 3 * SZ_1M + SZ_512K },
-diff --git a/drivers/mtd/nand/cmx270_nand.c b/drivers/mtd/nand/cmx270_nand.c
-index 949b940..12a92b3 100644
---- a/drivers/mtd/nand/cmx270_nand.c
-+++ b/drivers/mtd/nand/cmx270_nand.c
-@@ -42,7 +42,7 @@
- /*
-  * Define static partitions for flash device
-  */
--static struct mtd_partition partition_info[] = {
-+static const struct mtd_partition partition_info[] = {
- 	[0] = {
- 		.name	= "cmx270-0",
- 		.offset	= 0,
--- 
-1.9.1
+Thanks a lot.
+
+Guochun
+
+On Thu, 2017-08-17 at 09:51 +0800, Guochun Mao wrote:
+> On Thu, 2017-08-10 at 13:21 -0500, Rob Herring wrote:
+> > On Fri, Aug 04, 2017 at 04:10:39PM +0800, Guochun Mao wrote:
+> > > Add "mediatek,mt2712-nor" and "mediatek,mt7622-nor"
+> > > for nor flash node's compatible strings.
+> > > Explicate the fallback compatible.
+> > > 
+> > > Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
+> > > ---
+> > >  .../devicetree/bindings/mtd/mtk-quadspi.txt        |   15 +++++++++------
+> > >  1 file changed, 9 insertions(+), 6 deletions(-)
+> > 
+> > Acked-by: Rob Herring <robh@kernel.org>
+> 
+> Hi Rob,
+> Thank you very much!
+> 
+> Hi Matthias, Cyrille,
+> Thanks a lot for your efforts in reviewing the patch.
+> 
+> Is there any comment about the patch this version?
+> I appreciate your suggestion.
+> 
+> BR,
+> Guochun
