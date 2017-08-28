@@ -1,12 +1,20 @@
-Received: from clnet-p099-196.ikbnet.co.at ([83.175.99.196] helo=localhost)
- by bombadil.infradead.org with esmtpsa (Exim 4.87 #1 (Red Hat Linux))
- id 1dmNz6-0006FJ-34
- for linux-mtd@lists.infradead.org; Mon, 28 Aug 2017 17:38:00 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: linux-mtd@lists.infradead.org
-Subject: ALPSS: reminder and submission deadline
-Date: Mon, 28 Aug 2017 19:37:57 +0200
-Message-Id: <20170828173757.25891-1-hch@lst.de>
+Received: from mail-lf0-x236.google.com ([2a00:1450:4010:c07::236])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dmRJ9-0005FR-Tp
+ for linux-mtd@lists.infradead.org; Mon, 28 Aug 2017 21:10:57 +0000
+Received: by mail-lf0-x236.google.com with SMTP id k186so6611635lfe.2
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Aug 2017 14:10:34 -0700 (PDT)
+From: Marcin Wojtas <mw@semihalf.com>
+To: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
+Cc: robh+dt@kernel.org, mark.rutland@arm.com, will.deacon@arm.com,
+ cyrille.pitchen@wedev4u.fr, marek.vasut@gmail.com, broonie@kernel.org,
+ thomas.petazzoni@free-electrons.com, gregory.clement@free-electrons.com,
+ nadavh@marvell.com, neta@marvell.com, omrii@marvell.com,
+ hannah@marvell.com, mw@semihalf.com, jaz@semihalf.com, tn@semihalf.com
+Subject: [PATCH 0/2] SPI NOR - force 3byte addressing mode
+Date: Mon, 28 Aug 2017 23:14:12 +0200
+Message-Id: <1503954854-30963-1-git-send-email-mw@semihalf.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,30 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Just one more month to go until the Alpine Linux Persistence and Storage
-Summit (ALPSS) will be held from September 27-29 at the Lizumerhuette
-in Austria!
+Hi,
 
-If you want to submit a 30-minute talk please do so until Sep 1st, as we
-plan to finalize our schedule.  BOFs and team meetings will be scheduled
-ad-hoc in the available meeting rooms or outside with a beautiful mountain
-panorama.
+This very short patchset introduces optional forcing via DT
+3byte addressing mode for accessing the SPI flash, whose
+size exceeds 16MiB.
 
-If you only want to attend you can do so until last minute as long as
-space doesn't run.
+It can be used in case the device does not support
+SPI_NOR_4B_OPCODES and helps overcome an issue, when
+the Boot ROM cannot handle non-default settings
+that could be enabled in the kernel and remain after soft reset.
 
-To submit a talk or request attendance please send a mail to:
+I'm looking forward to any comments or remarks.
 
-	alpss-pc@lists.infradead.org
+Best regards,
+Marcin
 
-More details are available on our website:
+Marcin Wojtas (2):
+  mtd: spi-nor: add an option to force 3byte adressing mode
+  arm64: dts: marvell: Force 3byte addressing mode for SPI on A7040 DB
 
-	http://www.alpss.at/
+ Documentation/devicetree/bindings/spi/spi-bus.txt |  2 ++
+ arch/arm64/boot/dts/marvell/armada-7040-db.dts    |  1 +
+ drivers/mtd/spi-nor/spi-nor.c                     | 12 +++++++++++-
+ 3 files changed, 14 insertions(+), 1 deletion(-)
 
-Thank you on behalf of the program committee:
-
-    Stephen Bates
-    Sagi Grimberg
-    Christoph Hellwig
-    Johannes Thumshirn
-    Richard Weinberger
+-- 
+1.8.3.1
