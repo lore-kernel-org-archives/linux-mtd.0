@@ -1,34 +1,25 @@
-Received: from mail-io0-x232.google.com ([2607:f8b0:4001:c06::232])
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dmRzF-00010W-Gl
- for linux-mtd@lists.infradead.org; Mon, 28 Aug 2017 21:54:27 +0000
-Received: by mail-io0-x232.google.com with SMTP id 81so8354500ioj.5
- for <linux-mtd@lists.infradead.org>; Mon, 28 Aug 2017 14:54:05 -0700 (PDT)
+ id 1dmSBi-0001rV-Us
+ for linux-mtd@lists.infradead.org; Mon, 28 Aug 2017 22:07:21 +0000
+Received: by mail-pf0-x242.google.com with SMTP id r187so1084319pfr.5
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Aug 2017 15:06:58 -0700 (PDT)
+Date: Mon, 28 Aug 2017 15:06:54 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Linux-Next Mailing List <linux-next@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Mario Rugiero <mrugiero@gmail.com>,
+ Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+ linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: Re: linux-next: build failure after merge of the l2-mtd tree
+Message-ID: <20170828220654.GA141992@google.com>
+References: <20170828121905.36ff8a63@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdX0b=J9AuPAvdRXGGVXvc7f9n7TJ0_VKR13P05toq9REw@mail.gmail.com>
-References: <1503954854-30963-1-git-send-email-mw@semihalf.com>
- <1503954854-30963-2-git-send-email-mw@semihalf.com>
- <CAMuHMdX0b=J9AuPAvdRXGGVXvc7f9n7TJ0_VKR13P05toq9REw@mail.gmail.com>
-From: Marcin Wojtas <mw@semihalf.com>
-Date: Mon, 28 Aug 2017 23:54:03 +0200
-Message-ID: <CAPv3WKf3ra5tiK2gjQYUaTpiiM=kg=UGqceVesinqtjjk=RUnA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mtd: spi-nor: add an option to force 3byte adressing
- mode
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- linux-spi <linux-spi@vger.kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Will Deacon <will.deacon@arm.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Marek Vasut <marek.vasut@gmail.com>, Mark Brown <broonie@kernel.org>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Nadav Haklai <nadavh@marvell.com>,
- Neta Zur Hershkovits <neta@marvell.com>, Omri Itach <omrii@marvell.com>,
- Hanna Hawa <hannah@marvell.com>,
- Grzegorz Jaszczyk <jaz@semihalf.com>, Tomasz Nowicki <tn@semihalf.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170828121905.36ff8a63@canb.auug.org.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,69 +29,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Geert,
+On Mon, Aug 28, 2017 at 12:19:05PM +1000, Stephen Rothwell wrote:
+> Hi Brian,
 
->> +- spi-3byte-addressing - Empty property indicating device access to be done
->> +                   only in 3byte addressing mode.
->
-> spi-force-3byte-addressing?
+Hi Stephen,
 
-I can change it, no problem. I thought of this, but was affraid if the
-property wouldn't be too long.
+> After merging the l2-mtd tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+> 
+> drivers/mtd/nand/nandsim.c: In function 'ns_init_module':
+> drivers/mtd/nand/nandsim.c:2353:2: error: implicit declaration of function 'nandsim_debugfs_remove' [-Werror=implicit-function-declaration]
+>   nandsim_debugfs_remove(nand);
+>   ^
+> 
+> Caused by commit
+> 
+>   e8e3edb95ce6 ("mtd: create per-device and module-scope debugfs entries")
+> 
+> interacting with commit
+> 
+>   b974696da1cf ("mtd: nandsim: remove debugfs entries in error path")
+> 
+> from Linus' tree.
 
->
->>  Some SPI controllers and devices support Dual and Quad SPI transfer mode.
->>  It allows data in the SPI system to be transferred using 2 wires (DUAL) or 4
->> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->> index 1413828..029c87d 100644
->> --- a/drivers/mtd/spi-nor/spi-nor.c
->> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> @@ -2002,7 +2002,17 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
->>                 if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
->>                     info->flags & SPI_NOR_4B_OPCODES)
->>                         spi_nor_set_4byte_opcodes(nor, info);
->> -               else
->> +               else if (of_property_read_bool(np, "spi-3byte-addressing")) {
->> +                       /*
->> +                        * Do not enter 4byte mode in order to prevent
->> +                        * the early bootloader to come up on non-default
->> +                        * SPI NOR memory during boot. Limit accessible
->> +                        * size to 16MiB.
->> +                        */
->> +                       nor->addr_width = 3;
->> +                       mtd->size = 0x1000000;
->
-> What if the device is smaller than 16 MiB?
->
-> mtd->size = min(mtd->size, 0x1000000);
+Yes, this was expected in the divergence between a bugfix merge	for 4.13
+vs. a feature change in 4.14. I think Boris has fixed the conflict in
+his merges and is uploading that to l2-mtd/master (he's handling MTD for
+4.14).
 
-Not needed - this code is executed only for mtd->size > 0x1000000. See
-bigger context:
+Good to know you catch this too :)
 
-        if (info->addr_width)
-                nor->addr_width = info->addr_width;
-        else if (mtd->size > 0x1000000) {
-                /* enable 4-byte addressing if the device exceeds 16MiB */
-                nor->addr_width = 4;
-                if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
-                    info->flags & SPI_NOR_4B_OPCODES)
-                        spi_nor_set_4byte_opcodes(nor, info);
-                else if (of_property_read_bool(np, "spi-3byte-addressing")) {
-                        /*
-                         * Do not enter 4byte mode in order to prevent
-                         * the early bootloader to come up on non-default
-                         * SPI NOR memory during boot. Limit accessible
-                         * size to 16MiB.
-                         */
-                        nor->addr_width = 3;
-                        mtd->size = 0x1000000;
-                        dev_info(dev, "Force 3B addressing mode\n");
-                } else
-                        set_4byte(nor, info, 1);
-        } else {
-                nor->addr_width = 3;
-        }
+> I applied the following merge fix patch ... please check.
+> 
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Mon, 28 Aug 2017 12:13:42 +1000
+> Subject: [PATCH] fix merge of l2-mtd tree
+> 
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  drivers/mtd/nand/nandsim.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+> index 00635fd738f6..1ddf0b73c246 100644
+> --- a/drivers/mtd/nand/nandsim.c
+> +++ b/drivers/mtd/nand/nandsim.c
+> @@ -2350,7 +2350,6 @@ static int __init ns_init_module(void)
+>          return 0;
+>  
+>  err_exit:
+> -	nandsim_debugfs_remove(nand);
+>  	free_nandsim(nand);
+>  	nand_release(nsmtd);
+>  	for (i = 0;i < ARRAY_SIZE(nand->partitions); ++i)
 
+I think this is right, and it matches what Boris is pushing.
 
-Best regards,
-Marcin
+Regards,
+Brian
