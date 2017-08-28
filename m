@@ -1,17 +1,12 @@
-Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dmJpc-0004QC-A6
- for linux-mtd@lists.infradead.org; Mon, 28 Aug 2017 13:11:58 +0000
-Received: by mail-wm0-x233.google.com with SMTP id b14so12988562wme.0
- for <linux-mtd@lists.infradead.org>; Mon, 28 Aug 2017 06:11:35 -0700 (PDT)
-From: Neil Armstrong <narmstrong@baylibre.com>
-To: cyrille.pitchen@wedev4u.fr,
-	marek.vasut@gmail.com
-Cc: Neil Armstrong <narmstrong@baylibre.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: spi-nor: Add support for Winbond w25q16dw
-Date: Mon, 28 Aug 2017 15:11:33 +0200
-Message-Id: <1503925893-17116-1-git-send-email-narmstrong@baylibre.com>
+Received: from clnet-p099-196.ikbnet.co.at ([83.175.99.196] helo=localhost)
+ by bombadil.infradead.org with esmtpsa (Exim 4.87 #1 (Red Hat Linux))
+ id 1dmNz6-0006FJ-34
+ for linux-mtd@lists.infradead.org; Mon, 28 Aug 2017 17:38:00 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: linux-mtd@lists.infradead.org
+Subject: ALPSS: reminder and submission deadline
+Date: Mon, 28 Aug 2017 19:37:57 +0200
+Message-Id: <20170828173757.25891-1-hch@lst.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,31 +16,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add JEDEC entry for the Winbond w25q16fw/w25q16dw with similar
-flags and format than the Winbond w25q32dw entry.
+Just one more month to go until the Alpine Linux Persistence and Storage
+Summit (ALPSS) will be held from September 27-29 at the Lizumerhuette
+in Austria!
 
-Tested on a Khadas VIM2 SBC board with an Amlogic S912 SoC.
+If you want to submit a 30-minute talk please do so until Sep 1st, as we
+plan to finalize our schedule.  BOFs and team meetings will be scheduled
+ad-hoc in the available meeting rooms or outside with a beautiful mountain
+panorama.
 
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 5 +++++
- 1 file changed, 5 insertions(+)
+If you only want to attend you can do so until last minute as long as
+space doesn't run.
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index cf1d4a1..2f74583 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1137,6 +1137,11 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 	{ "w25x40", INFO(0xef3013, 0, 64 * 1024,  8,  SECT_4K) },
- 	{ "w25x80", INFO(0xef3014, 0, 64 * 1024,  16, SECT_4K) },
- 	{ "w25x16", INFO(0xef3015, 0, 64 * 1024,  32, SECT_4K) },
-+	{
-+		"w25q16dw", INFO(0xef6015, 0, 64 * 1024,  32,
-+			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-+	},
- 	{ "w25x32", INFO(0xef3016, 0, 64 * 1024,  64, SECT_4K) },
- 	{ "w25q20cl", INFO(0xef4012, 0, 64 * 1024,  4, SECT_4K) },
- 	{ "w25q20bw", INFO(0xef5012, 0, 64 * 1024,  4, SECT_4K) },
--- 
-1.9.1
+To submit a talk or request attendance please send a mail to:
+
+	alpss-pc@lists.infradead.org
+
+More details are available on our website:
+
+	http://www.alpss.at/
+
+Thank you on behalf of the program committee:
+
+    Stephen Bates
+    Sagi Grimberg
+    Christoph Hellwig
+    Johannes Thumshirn
+    Richard Weinberger
