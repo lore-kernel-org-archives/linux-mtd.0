@@ -1,23 +1,27 @@
-Received: from mail-lf0-x232.google.com ([2a00:1450:4010:c07::232])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dmRJC-0005Fk-Bt
- for linux-mtd@lists.infradead.org; Mon, 28 Aug 2017 21:11:00 +0000
-Received: by mail-lf0-x232.google.com with SMTP id k186so6612007lfe.2
- for <linux-mtd@lists.infradead.org>; Mon, 28 Aug 2017 14:10:38 -0700 (PDT)
-From: Marcin Wojtas <mw@semihalf.com>
-To: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
-Cc: robh+dt@kernel.org, mark.rutland@arm.com, will.deacon@arm.com,
- cyrille.pitchen@wedev4u.fr, marek.vasut@gmail.com, broonie@kernel.org,
- thomas.petazzoni@free-electrons.com, gregory.clement@free-electrons.com,
- nadavh@marvell.com, neta@marvell.com, omrii@marvell.com,
- hannah@marvell.com, mw@semihalf.com, jaz@semihalf.com, tn@semihalf.com
-Subject: [PATCH 2/2] arm64: dts: marvell: Force 3byte addressing mode for SPI
- on A7040 DB
-Date: Mon, 28 Aug 2017 23:14:14 +0200
-Message-Id: <1503954854-30963-3-git-send-email-mw@semihalf.com>
-In-Reply-To: <1503954854-30963-1-git-send-email-mw@semihalf.com>
+MIME-Version: 1.0
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <1503954854-30963-2-git-send-email-mw@semihalf.com>
 References: <1503954854-30963-1-git-send-email-mw@semihalf.com>
+ <1503954854-30963-2-git-send-email-mw@semihalf.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 28 Aug 2017 23:18:25 +0200
+Message-ID: <CAMuHMdX0b=J9AuPAvdRXGGVXvc7f9n7TJ0_VKR13P05toq9REw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mtd: spi-nor: add an option to force 3byte adressing
+ mode
+To: Marcin Wojtas <mw@semihalf.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Will Deacon <will.deacon@arm.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Marek Vasut <marek.vasut@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Nadav Haklai <nadavh@marvell.com>,
+ neta@marvell.com, omrii@marvell.com, Hanna Hawa <hannah@marvell.com>,
+ Grzegorz Jaszczyk <jaz@semihalf.com>, tn@semihalf.com
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,32 +31,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Armada 7040 DB boards can be shipped with various models of
-boot SPI flash devices. An issue can emerge, when their size
-exceeds 16MB - in such case the kernel driver will switch automatically
-to 4B addressing mode. Later, in case of soft reset, the Boot ROM
-will fail to fetch the firmware during the board initialization.
+On Mon, Aug 28, 2017 at 11:14 PM, Marcin Wojtas <mw@semihalf.com> wrote:
+> Hitherto code set 4B addressing mode for all SPI flashes whose
+> size exceeds 16MB. However, changing the default 3B access
+> in some cases may be harmful - it may happen that the Boot ROM
+> is not capable of handling non-default state of the SPI NOR
+> (e.g. after soft reset). Some flash devices allow to access the
+> memory above 128Mib without changing mode to 4byte thanks
+> to special op codes (see SPI_NOR_4B_OPCODES flag). Unfortunately
+> for those which don't support them, the problem persists.
+>
+> This patch adds optional property that can be added to the
+> SPI flash node and which will force to use 3B addressing mode,
+> limiting the accessible memory size to 16MiB.
+> Binding documentation is updated accordingly.
+>
+> Signed-off-by: Marcin Wojtas <mw@semihalf.com>
+> ---
+>  Documentation/devicetree/bindings/spi/spi-bus.txt |  2 ++
+>  drivers/mtd/spi-nor/spi-nor.c                     | 12 +++++++++++-
+>  2 files changed, 13 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/spi/spi-bus.txt b/Documentation/devicetree/bindings/spi/spi-bus.txt
+> index 1f6e86f..f13b773 100644
+> --- a/Documentation/devicetree/bindings/spi/spi-bus.txt
+> +++ b/Documentation/devicetree/bindings/spi/spi-bus.txt
+> @@ -77,6 +77,8 @@ All slave nodes can contain the following optional properties:
+>                     Defaults to 1 if not present.
+>  - spi-rx-delay-us - Microsecond delay after a read transfer.
+>  - spi-tx-delay-us - Microsecond delay after a write transfer.
+> +- spi-3byte-addressing - Empty property indicating device access to be done
+> +                   only in 3byte addressing mode.
 
-In order to prevent such behavior, this patch forces 3B addressing
-mode used on affected boards by adding newly introduced
-'spi-3byte-addressing' property to the SPI flash nodes.
+spi-force-3byte-addressing?
 
-Signed-off-by: Marcin Wojtas <mw@semihalf.com>
----
- arch/arm64/boot/dts/marvell/armada-7040-db.dts | 1 +
- 1 file changed, 1 insertion(+)
+>  Some SPI controllers and devices support Dual and Quad SPI transfer mode.
+>  It allows data in the SPI system to be transferred using 2 wires (DUAL) or 4
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 1413828..029c87d 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -2002,7 +2002,17 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+>                 if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
+>                     info->flags & SPI_NOR_4B_OPCODES)
+>                         spi_nor_set_4byte_opcodes(nor, info);
+> -               else
+> +               else if (of_property_read_bool(np, "spi-3byte-addressing")) {
+> +                       /*
+> +                        * Do not enter 4byte mode in order to prevent
+> +                        * the early bootloader to come up on non-default
+> +                        * SPI NOR memory during boot. Limit accessible
+> +                        * size to 16MiB.
+> +                        */
+> +                       nor->addr_width = 3;
+> +                       mtd->size = 0x1000000;
 
-diff --git a/arch/arm64/boot/dts/marvell/armada-7040-db.dts b/arch/arm64/boot/dts/marvell/armada-7040-db.dts
-index 92c761c..d0bd296 100644
---- a/arch/arm64/boot/dts/marvell/armada-7040-db.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-7040-db.dts
-@@ -116,6 +116,7 @@
- 		compatible = "jedec,spi-nor";
- 		reg = <0x0>;
- 		spi-max-frequency = <20000000>;
-+		spi-3byte-addressing;
- 
- 		partitions {
- 			compatible = "fixed-partitions";
--- 
-1.8.3.1
+What if the device is smaller than 16 MiB?
+
+mtd->size = min(mtd->size, 0x1000000);
+
+> +                       dev_info(dev, "Force 3B addressing mode\n");
+> +               } else
+>                         set_4byte(nor, info, 1);
+>         } else {
+>                 nor->addr_width = 3;
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
