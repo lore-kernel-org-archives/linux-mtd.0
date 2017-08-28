@@ -1,9 +1,9 @@
-Received: from mail-lf0-x236.google.com ([2a00:1450:4010:c07::236])
+Received: from mail-lf0-x22e.google.com ([2a00:1450:4010:c07::22e])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dmRJ9-0005FR-Tp
- for linux-mtd@lists.infradead.org; Mon, 28 Aug 2017 21:10:57 +0000
-Received: by mail-lf0-x236.google.com with SMTP id k186so6611635lfe.2
- for <linux-mtd@lists.infradead.org>; Mon, 28 Aug 2017 14:10:34 -0700 (PDT)
+ id 1dmRJA-0005Fa-Qd
+ for linux-mtd@lists.infradead.org; Mon, 28 Aug 2017 21:10:59 +0000
+Received: by mail-lf0-x22e.google.com with SMTP id k186so6611821lfe.2
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Aug 2017 14:10:36 -0700 (PDT)
 From: Marcin Wojtas <mw@semihalf.com>
 To: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
@@ -12,9 +12,11 @@ Cc: robh+dt@kernel.org, mark.rutland@arm.com, will.deacon@arm.com,
  thomas.petazzoni@free-electrons.com, gregory.clement@free-electrons.com,
  nadavh@marvell.com, neta@marvell.com, omrii@marvell.com,
  hannah@marvell.com, mw@semihalf.com, jaz@semihalf.com, tn@semihalf.com
-Subject: [PATCH 0/2] SPI NOR - force 3byte addressing mode
-Date: Mon, 28 Aug 2017 23:14:12 +0200
-Message-Id: <1503954854-30963-1-git-send-email-mw@semihalf.com>
+Subject: [PATCH 1/2] mtd: spi-nor: add an option to force 3byte adressing mode
+Date: Mon, 28 Aug 2017 23:14:13 +0200
+Message-Id: <1503954854-30963-2-git-send-email-mw@semihalf.com>
+In-Reply-To: <1503954854-30963-1-git-send-email-mw@semihalf.com>
+References: <1503954854-30963-1-git-send-email-mw@semihalf.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +26,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hitherto code set 4B addressing mode for all SPI flashes whose
+size exceeds 16MB. However, changing the default 3B access
+in some cases may be harmful - it may happen that the Boot ROM
+is not capable of handling non-default state of the SPI NOR
+(e.g. after soft reset). Some flash devices allow to access the
+memory above 128Mib without changing mode to 4byte thanks
+to special op codes (see SPI_NOR_4B_OPCODES flag). Unfortunately
+for those which don't support them, the problem persists.
 
-This very short patchset introduces optional forcing via DT
-3byte addressing mode for accessing the SPI flash, whose
-size exceeds 16MiB.
+This patch adds optional property that can be added to the
+SPI flash node and which will force to use 3B addressing mode,
+limiting the accessible memory size to 16MiB.
+Binding documentation is updated accordingly.
 
-It can be used in case the device does not support
-SPI_NOR_4B_OPCODES and helps overcome an issue, when
-the Boot ROM cannot handle non-default settings
-that could be enabled in the kernel and remain after soft reset.
-
-I'm looking forward to any comments or remarks.
-
-Best regards,
-Marcin
-
-Marcin Wojtas (2):
-  mtd: spi-nor: add an option to force 3byte adressing mode
-  arm64: dts: marvell: Force 3byte addressing mode for SPI on A7040 DB
-
+Signed-off-by: Marcin Wojtas <mw@semihalf.com>
+---
  Documentation/devicetree/bindings/spi/spi-bus.txt |  2 ++
- arch/arm64/boot/dts/marvell/armada-7040-db.dts    |  1 +
  drivers/mtd/spi-nor/spi-nor.c                     | 12 +++++++++++-
- 3 files changed, 14 insertions(+), 1 deletion(-)
+ 2 files changed, 13 insertions(+), 1 deletion(-)
 
+diff --git a/Documentation/devicetree/bindings/spi/spi-bus.txt b/Documentation/devicetree/bindings/spi/spi-bus.txt
+index 1f6e86f..f13b773 100644
+--- a/Documentation/devicetree/bindings/spi/spi-bus.txt
++++ b/Documentation/devicetree/bindings/spi/spi-bus.txt
+@@ -77,6 +77,8 @@ All slave nodes can contain the following optional properties:
+ 		    Defaults to 1 if not present.
+ - spi-rx-delay-us - Microsecond delay after a read transfer.
+ - spi-tx-delay-us - Microsecond delay after a write transfer.
++- spi-3byte-addressing - Empty property indicating device access to be done
++		    only in 3byte addressing mode.
+ 
+ Some SPI controllers and devices support Dual and Quad SPI transfer mode.
+ It allows data in the SPI system to be transferred using 2 wires (DUAL) or 4
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 1413828..029c87d 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -2002,7 +2002,17 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
+ 		    info->flags & SPI_NOR_4B_OPCODES)
+ 			spi_nor_set_4byte_opcodes(nor, info);
+-		else
++		else if (of_property_read_bool(np, "spi-3byte-addressing")) {
++			/*
++			 * Do not enter 4byte mode in order to prevent
++			 * the early bootloader to come up on non-default
++			 * SPI NOR memory during boot. Limit accessible
++			 * size to 16MiB.
++			 */
++			nor->addr_width = 3;
++			mtd->size = 0x1000000;
++			dev_info(dev, "Force 3B addressing mode\n");
++		} else
+ 			set_4byte(nor, info, 1);
+ 	} else {
+ 		nor->addr_width = 3;
 -- 
 1.8.3.1
