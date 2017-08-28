@@ -1,26 +1,17 @@
-Received: from mx2.mailbox.org ([80.241.60.215])
+Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dmIF5-0002db-3F
- for linux-mtd@lists.infradead.org; Mon, 28 Aug 2017 11:30:10 +0000
-Subject: Re: [PATCH v10 03/16] spi: spi-falcon: drop check of boot select
-To: Ralf Baechle <ralf@linux-mips.org>, Mark Brown <broonie@kernel.org>
-Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
- linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
- martin.blumenstingl@googlemail.com, john@phrozen.org,
- linux-spi@vger.kernel.org, hauke.mehrtens@intel.com, robh@kernel.org,
- andy.shevchenko@gmail.com, p.zabel@pengutronix.de, kishon@ti.com,
- mark.rutland@arm.com
-References: <20170819221823.13850-1-hauke@hauke-m.de>
- <20170819221823.13850-4-hauke@hauke-m.de>
- <20170828112327.GA15640@linux-mips.org>
-From: Hauke Mehrtens <hauke@hauke-m.de>
-Message-ID: <40428f8d-f781-7952-30c6-41f65ec1096b@hauke-m.de>
-Date: Mon, 28 Aug 2017 13:29:33 +0200
-MIME-Version: 1.0
-In-Reply-To: <20170828112327.GA15640@linux-mips.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+ id 1dmJpc-0004QC-A6
+ for linux-mtd@lists.infradead.org; Mon, 28 Aug 2017 13:11:58 +0000
+Received: by mail-wm0-x233.google.com with SMTP id b14so12988562wme.0
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Aug 2017 06:11:35 -0700 (PDT)
+From: Neil Armstrong <narmstrong@baylibre.com>
+To: cyrille.pitchen@wedev4u.fr,
+	marek.vasut@gmail.com
+Cc: Neil Armstrong <narmstrong@baylibre.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: spi-nor: Add support for Winbond w25q16dw
+Date: Mon, 28 Aug 2017 15:11:33 +0200
+Message-Id: <1503925893-17116-1-git-send-email-narmstrong@baylibre.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,35 +21,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/28/2017 01:23 PM, Ralf Baechle wrote:
-> On Sun, Aug 20, 2017 at 12:18:10AM +0200, Hauke Mehrtens wrote:
-> 
->> Do not check which flash type the SoC was booted from before
->> using this driver. Assume that the device tree is correct and use this
->> driver when it was added to device tree. This also removes a build
->> dependency to the SoC code.
->>
->> All device trees I am aware of only have one correct flash device entry
->> in it. The device tree is anyway bundled with the kernel in all systems
->> using device tree I know of.
->>
->> The boot mode can be specified with some pin straps and will select the
->> flash type the rom code will boot from. One SPI, NOR or NAND flash chip
->> can be connect to the EBU and used to load the first stage boot loader
->> from.
-> 
-> I think other than this patch we finally have all the acks necessary so
-> I merged the series except this patch which shouldn't be strictly necessary.
-> 
->   Ralf
-> 
+Add JEDEC entry for the Winbond w25q16fw/w25q16dw with similar
+flags and format than the Winbond w25q32dw entry.
 
-Hi Ralf and Mark,
+Tested on a Khadas VIM2 SBC board with an Amlogic S912 SoC.
 
-this driver will not build any more without this patch, because
-ltq_boot_select() gets removed in "[PATCH v10 09/16] MIPS: lantiq:
-remove ltq_reset_cause() and ltq_boot_select()"
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Mark could you please have a look at the commit message if it is better now.
-
-Hauke
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index cf1d4a1..2f74583 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1137,6 +1137,11 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 	{ "w25x40", INFO(0xef3013, 0, 64 * 1024,  8,  SECT_4K) },
+ 	{ "w25x80", INFO(0xef3014, 0, 64 * 1024,  16, SECT_4K) },
+ 	{ "w25x16", INFO(0xef3015, 0, 64 * 1024,  32, SECT_4K) },
++	{
++		"w25q16dw", INFO(0xef6015, 0, 64 * 1024,  32,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
++	},
+ 	{ "w25x32", INFO(0xef3016, 0, 64 * 1024,  64, SECT_4K) },
+ 	{ "w25q20cl", INFO(0xef4012, 0, 64 * 1024,  4, SECT_4K) },
+ 	{ "w25q20bw", INFO(0xef5012, 0, 64 * 1024,  4, SECT_4K) },
+-- 
+1.9.1
