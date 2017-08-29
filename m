@@ -1,29 +1,34 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dmaiA-0006Lx-P3
- for linux-mtd@lists.infradead.org; Tue, 29 Aug 2017 07:13:24 +0000
-Date: Tue, 29 Aug 2017 09:12:58 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Matthew Weber <matthew.weber@rockwellcollins.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Sanjay Tandel
- <sanjay.tandel@rockwellcollins.com>, linux-mtd
- <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] map-ram chip driver: 16-bit block transfer
-Message-ID: <20170829091258.131cfc82@bbrezillon>
-In-Reply-To: <CANQCQpbG=uBDUdKvq41x7HDJ9ft=rA4DE7eAeVnZoHrLSHDOog@mail.gmail.com>
-References: <1501851740-14125-1-git-send-email-matthew.weber@rockwellcollins.com>
- <20170809201047.57fd6976@bbrezillon>
- <CAB0kKmyHPXhv4ovmj00JgB9gow0Qi3OHm2Gh4STJFNV4S3o_Ag@mail.gmail.com>
- <CAK8P3a3W2Dw_CHDbBXPaX9=mNA1kPXdFDR1F4HLbtuLUVHjUKw@mail.gmail.com>
- <CAB0kKmyBEVWXvNBiFsFXSxz21mEFu8WVW69DWoes9oKsYEM0Vw@mail.gmail.com>
- <CAK8P3a1ooJja=P1e+m-fd0_wR_QdmWgwRWDwOWJfXpDR5ZcSjg@mail.gmail.com>
- <CAB0kKmxXvm5=ryR2nAJ76=ecmOWXLQXNYfRs8zrwinfMOMDzRQ@mail.gmail.com>
- <20170812193947.046dafd1@bbrezillon>
- <CAK8P3a2pOtoug30CUe7sgB4CnQmRJSJMWmpniMyOHvV1w0nd9A@mail.gmail.com>
- <CANQCQpbG=uBDUdKvq41x7HDJ9ft=rA4DE7eAeVnZoHrLSHDOog@mail.gmail.com>
+Received: from mail-io0-x22a.google.com ([2607:f8b0:4001:c06::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dmb8O-0002RQ-9w
+ for linux-mtd@lists.infradead.org; Tue, 29 Aug 2017 07:40:30 +0000
+Received: by mail-io0-x22a.google.com with SMTP id 81so14196021ioj.5
+ for <linux-mtd@lists.infradead.org>; Tue, 29 Aug 2017 00:40:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <37be90e4-c43b-26f8-7551-45ab107e2a4d@gmail.com>
+References: <1503954854-30963-1-git-send-email-mw@semihalf.com>
+ <1503954854-30963-2-git-send-email-mw@semihalf.com>
+ <37be90e4-c43b-26f8-7551-45ab107e2a4d@gmail.com>
+From: Marcin Wojtas <mw@semihalf.com>
+Date: Tue, 29 Aug 2017 09:40:06 +0200
+Message-ID: <CAPv3WKcL4wNseCrG5=2q51=6Xs1jERoB=50ar6T58nDK8aM9vw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mtd: spi-nor: add an option to force 3byte adressing
+ mode
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: linux-kernel@vger.kernel.org,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Will Deacon <will.deacon@arm.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Mark Brown <broonie@kernel.org>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ =?UTF-8?Q?Gregory_Cl=C3=A9ment?= <gregory.clement@free-electrons.com>,
+ nadavh@marvell.com, Neta Zur Hershkovits <neta@marvell.com>,
+ Omri Itach <omrii@marvell.com>,
+ Hanna Hawa <hannah@marvell.com>, "jaz@semihalf.com" <jaz@semihalf.com>,
+ Tomasz Nowicki <tn@semihalf.com>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,88 +38,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Matt,
+Hi Marek,
 
-On Mon, 28 Aug 2017 21:23:41 -0500
-Matthew Weber <matthew.weber@rockwellcollins.com> wrote:
+2017-08-29 1:24 GMT+02:00 Marek Vasut <marek.vasut@gmail.com>:
+> On 08/28/2017 11:14 PM, Marcin Wojtas wrote:
+>> Hitherto code set 4B addressing mode for all SPI flashes whose
+>> size exceeds 16MB. However, changing the default 3B access
+>> in some cases may be harmful - it may happen that the Boot ROM
+>> is not capable of handling non-default state of the SPI NOR
+>> (e.g. after soft reset).
+>
+> No, this happens when your hardware is broken and does NOT reset the
+> flash while reseting the CPU as well. If the flash is in some funny
+> state (ie. middle of page program or erase cycle, which takes long OR
+> 4byte addressing mode) and the CPU resets , then if the SPI NOR is not
+> reset, your system will still get stuck . You need to fix your hardware
+> such that you use the reset output of your CPU to detect when the CPU
+> restarted and add logic to reset your storage as well.
+>
+> This stuff below is a poor workaround and has it's known problems which
+> can only be solved by fixing the hardware. This problem keeps coming up
+> repeatedly, just skim through the Linux MTD and U-Boot lists for other
+> victims of bad HW design. I don't think I want to see it in the kernel
+> as that would motivate people to use it rather than fixing their HW .
+>
 
-> All,
->=20
-> On Mon, Aug 14, 2017 at 3:08 AM, Arnd Bergmann <arnd@arndb.de> wrote:
-> > On Sat, Aug 12, 2017 at 7:39 PM, Boris Brezillon
-> > <boris.brezillon@free-electrons.com> wrote: =20
-> >> Le Fri, 11 Aug 2017 18:42:44 -0500,
-> >> Sanjay Tandel <sanjay.tandel@rockwellcollins.com> a =C3=A9crit : =20
-> >>> On Fri, Aug 11, 2017 at 4:30 PM, Arnd Bergmann <arnd@arndb.de> wrote:=
- =20
-> >>> > On Fri, Aug 11, 2017 at 11:03 PM, Sanjay Tandel
-> >>> > <sanjay.tandel@rockwellcollins.com> wrote: =20
-> > =20
-> >>> Before, it used to corrupt every 2nd byte(2nd,4rth,6th ... upto N) in=
- memory,
-> >>> with memcpy_toio() using 8-bit accesses for our 16-bit chip.
-> >>>
-> >>> Now, with backporting 7ddfe625cbc1/1bd46782d08b, it corrupts (N + 1)t=
-h byte
-> >>> in memory, when I tried to write N number of bytes (where N is not al=
-igned to
-> >>> 4-byte boundary).That means, it still tries 8-bit access for last odd=
- byte and
-> >>> ends up corrupting next byte. =20
-> >>
-> >> Yes, that's expected as the size is not 16bit aligned.
-> >>
-> >> Anyway, I read the whole thread again and AFAIU memcpy_to/fromio() is
-> >> only appropriate if the bus controller the device is connected to is
-> >> smart enough to hide all alignment problems to its users.
-> >>
-> >> Don't know what controller is causing trouble here, but you should
-> >> probably have a dedicated driver (if that's not already the case) that
-> >> overloads the ->copy_from()/->copy_to() methods to do the right thing
-> >> for your memory controller. =20
-> >
-> > Right, I think that is a good conclusion. My understanding from the dis=
-cussion
-> > so far is that the existing code in the core mtd layer works efficientl=
-y and
-> > correctly on most bus interfaces, so we should keep that but have
-> > workarounds in the controller driver for any bus interface where this is
-> > not the case.
-> >
-> > I think it would be different if this was a regression and the core MTD=
- support
-> > worked correctly in the past, but from what I read, it always behaved l=
-ike
-> > this.
-> > =20
->=20
-> Related to a dedicated driver, we've reworked the proposed patches
-> with the following description and file list.
->=20
-> This patch adds map driver for parallel flash chips interfaced over a
-> NXP Integrated
-> Flash Controller (IFC). This driver allows either 8-bit or 16-bit accesse=
-s,
-> depending on bank-width, to parallel flash chips(like Everspin MR0A16A),
-> which are physically mapped to CPU's memory space. For unaligned accesses,
-> it performs read-modify-write operations to keep access size same as
-> bank-width.
->=20
->  Documentation/devicetree/bindings/mtd/ifc-mram.txt |  34 ++
->  drivers/mtd/maps/Kconfig                           |  13 +
->  drivers/mtd/maps/Makefile                          |   1 +
->  drivers/mtd/maps/ifc_mram.c                        | 343 +++++++++++++++=
-++++++
->=20
->=20
-> Thanks for taking a look before we submit,
+Understood. I just only got impression that attempts to overcome the
+HW design faults in terms of keeping SPI NOR default state during boot
+can be added - introducing SPI_NOR_4B_OPCODES seems to have no other
+reason, however it favors only a group of devices that support it.
 
-The code is missing (we only the diffstat) :-)
-
-> we'd like to prevent another version.
-
-What's the problem with sending a new version the proper way?
-
-Regards,
-
-Boris
+Best regards,
+Marcin
