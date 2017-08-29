@@ -1,34 +1,32 @@
-Received: from mail-io0-x22a.google.com ([2607:f8b0:4001:c06::22a])
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]
+ helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dmb8O-0002RQ-9w
- for linux-mtd@lists.infradead.org; Tue, 29 Aug 2017 07:40:30 +0000
-Received: by mail-io0-x22a.google.com with SMTP id 81so14196021ioj.5
- for <linux-mtd@lists.infradead.org>; Tue, 29 Aug 2017 00:40:08 -0700 (PDT)
+ id 1dmcft-0003dD-9h
+ for linux-mtd@lists.infradead.org; Tue, 29 Aug 2017 09:19:12 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Andrea Adami <andrea.adami@gmail.com>, linux-mtd@lists.infradead.org,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mmc@vger.kernel.org,
+ Russell King <linux@armlinux.org.uk>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>, linux-kernel@vger.kernel.org,
+ Marek Vasut <marek.vasut@gmail.com>, linux-arm-kernel@lists.infradead.org,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Lee Jones <lee.jones@linaro.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Linus Walleij <linus.walleij@linaro.org>, Daniel Mack <daniel@zonque.org>
+Subject: Re: [PATCH v5 0/9] mtd: sharpslpart partition parser
+In-Reply-To: <20170824114631.089d2628@bbrezillon> (Boris Brezillon's message
+ of "Thu, 24 Aug 2017 11:46:31 +0200")
+References: <1502743720-28672-1-git-send-email-andrea.adami@gmail.com>
+ <20170821221339.70cfcfb7@bbrezillon> <87pobmoz8n.fsf@belgarion.home>
+ <CAAQYJAv8bNrxJ_ESgC0fOAdry7i5mstzgQ3P74q1D=C-xsJprg@mail.gmail.com>
+ <20170824114631.089d2628@bbrezillon>
+Date: Tue, 29 Aug 2017 11:18:37 +0200
+Message-ID: <87inh6pw9e.fsf@belgarion.home>
 MIME-Version: 1.0
-In-Reply-To: <37be90e4-c43b-26f8-7551-45ab107e2a4d@gmail.com>
-References: <1503954854-30963-1-git-send-email-mw@semihalf.com>
- <1503954854-30963-2-git-send-email-mw@semihalf.com>
- <37be90e4-c43b-26f8-7551-45ab107e2a4d@gmail.com>
-From: Marcin Wojtas <mw@semihalf.com>
-Date: Tue, 29 Aug 2017 09:40:06 +0200
-Message-ID: <CAPv3WKcL4wNseCrG5=2q51=6Xs1jERoB=50ar6T58nDK8aM9vw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mtd: spi-nor: add an option to force 3byte adressing
- mode
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: linux-kernel@vger.kernel.org,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- linux-spi <linux-spi@vger.kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Will Deacon <will.deacon@arm.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Mark Brown <broonie@kernel.org>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- =?UTF-8?Q?Gregory_Cl=C3=A9ment?= <gregory.clement@free-electrons.com>,
- nadavh@marvell.com, Neta Zur Hershkovits <neta@marvell.com>,
- Omri Itach <omrii@marvell.com>,
- Hanna Hawa <hannah@marvell.com>, "jaz@semihalf.com" <jaz@semihalf.com>,
- Tomasz Nowicki <tn@semihalf.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,35 +36,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marek,
+Boris Brezillon <boris.brezillon@free-electrons.com> writes:
 
-2017-08-29 1:24 GMT+02:00 Marek Vasut <marek.vasut@gmail.com>:
-> On 08/28/2017 11:14 PM, Marcin Wojtas wrote:
->> Hitherto code set 4B addressing mode for all SPI flashes whose
->> size exceeds 16MB. However, changing the default 3B access
->> in some cases may be harmful - it may happen that the Boot ROM
->> is not capable of handling non-default state of the SPI NOR
->> (e.g. after soft reset).
->
-> No, this happens when your hardware is broken and does NOT reset the
-> flash while reseting the CPU as well. If the flash is in some funny
-> state (ie. middle of page program or erase cycle, which takes long OR
-> 4byte addressing mode) and the CPU resets , then if the SPI NOR is not
-> reset, your system will still get stuck . You need to fix your hardware
-> such that you use the reset output of your CPU to detect when the CPU
-> restarted and add logic to reset your storage as well.
->
-> This stuff below is a poor workaround and has it's known problems which
-> can only be solved by fixing the hardware. This problem keeps coming up
-> repeatedly, just skim through the Linux MTD and U-Boot lists for other
-> victims of bad HW design. I don't think I want to see it in the kernel
-> as that would motivate people to use it rather than fixing their HW .
->
+> Hi Robert,
+> Wait a bit before applying. I think patches 6 to 9 have a dependency on
+> patch 1 (it's not a build dependency, but NAND partitioning might be
+> wrong if you apply them), so we need to sync. What release is
+> pxa/for-next targeting? If it's 4.15 I can apply patch 1 just after
+> 4.14-rc1 is out and provide an immutable branch for you to pull in
+> pxa/for-next.
 
-Understood. I just only got impression that attempts to overcome the
-HW design faults in terms of keeping SPI NOR default state during boot
-can be added - introducing SPI_NOR_4B_OPCODES seems to have no other
-reason, however it favors only a group of devices that support it.
+Hi Boris,
 
-Best regards,
-Marcin
+It's targeting 4.15 right now. And we can do as you like, either an immutable
+branch, or I wait to include these patches into my pxa/for-next until you give
+me your go, it's as you like.
+
+Cheers.
+
+-- 
+Robert
