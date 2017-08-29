@@ -1,32 +1,21 @@
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]
- helo=smtp.smtpout.orange.fr)
+Received: from smtprelay01.ispgateway.de ([80.67.18.13])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dmcft-0003dD-9h
- for linux-mtd@lists.infradead.org; Tue, 29 Aug 2017 09:19:12 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Andrea Adami <andrea.adami@gmail.com>, linux-mtd@lists.infradead.org,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mmc@vger.kernel.org,
- Russell King <linux@armlinux.org.uk>,
- Haojian Zhuang <haojian.zhuang@gmail.com>, linux-kernel@vger.kernel.org,
- Marek Vasut <marek.vasut@gmail.com>, linux-arm-kernel@lists.infradead.org,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Lee Jones <lee.jones@linaro.org>,
+ id 1dmdas-000257-Hy
+ for linux-mtd@lists.infradead.org; Tue, 29 Aug 2017 10:18:07 +0000
+From: =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Linus Walleij <linus.walleij@linaro.org>, Daniel Mack <daniel@zonque.org>
-Subject: Re: [PATCH v5 0/9] mtd: sharpslpart partition parser
-In-Reply-To: <20170824114631.089d2628@bbrezillon> (Boris Brezillon's message
- of "Thu, 24 Aug 2017 11:46:31 +0200")
-References: <1502743720-28672-1-git-send-email-andrea.adami@gmail.com>
- <20170821221339.70cfcfb7@bbrezillon> <87pobmoz8n.fsf@belgarion.home>
- <CAAQYJAv8bNrxJ_ESgC0fOAdry7i5mstzgQ3P74q1D=C-xsJprg@mail.gmail.com>
- <20170824114631.089d2628@bbrezillon>
-Date: Tue, 29 Aug 2017 11:18:37 +0200
-Message-ID: <87inh6pw9e.fsf@belgarion.home>
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Subject: [PATCH 0/2] mtd: nand: fix regression introduced by splitting off
+ manufacturer dependent code
+Date: Tue, 29 Aug 2017 12:17:11 +0200
+Message-Id: <1504001833-18097-1-git-send-email-LW@KARO-electronics.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,23 +25,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Boris Brezillon <boris.brezillon@free-electrons.com> writes:
+commit c51d0ac59f24 ("mtd: nand: Move Samsung specific init/detection
+logic in nand_samsung.c") introduced a regression for Samsung SLC NAND
+chips by skipping the initialization of chip->bits_per_cell that is
+done in nand_decode_ext_id() from which the manufacturer dependent
+code was extracted.
+The regression should also affect Hynix and Macronix chips whose code
+was separated out in further commits but which I cannot test.
+AMD/Spansion and Toshiba NAND are not affected, since they are calling 
+nand_decode_ext_id() (which initializes bhip->bits_per_cell) in their
+.detect function.
 
-> Hi Robert,
-> Wait a bit before applying. I think patches 6 to 9 have a dependency on
-> patch 1 (it's not a build dependency, but NAND partitioning might be
-> wrong if you apply them), so we need to sync. What release is
-> pxa/for-next targeting? If it's 4.15 I can apply patch 1 just after
-> 4.14-rc1 is out and provide an immutable branch for you to pull in
-> pxa/for-next.
-
-Hi Boris,
-
-It's targeting 4.15 right now. And we can do as you like, either an immutable
-branch, or I wait to include these patches into my pxa/for-next until you give
-me your go, it's as you like.
-
-Cheers.
-
--- 
-Robert
+Fix the regression and add a warning to nand_is_slc() to prevent
+further regressions of this kind.
