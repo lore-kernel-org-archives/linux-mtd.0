@@ -1,16 +1,19 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dn1EM-0008Qo-TE
- for linux-mtd@lists.infradead.org; Wed, 30 Aug 2017 11:32:25 +0000
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Cc: Richard Weinberger <richard@nod.at>, kernel@pengutronix.de,
- linux-mtd@lists.infradead.org
-Subject: [PATCH mtd-utils v3] nandmarkbad: new util to mark blocks as bad
-Date: Wed, 30 Aug 2017 13:31:46 +0200
-Message-Id: <20170830113146.26929-1-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <20170824152227.30394-1-ukleinek@debian.org>
-References: <20170824152227.30394-1-ukleinek@debian.org>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dn7ni-0001GW-ER
+ for linux-mtd@lists.infradead.org; Wed, 30 Aug 2017 18:33:20 +0000
+Date: Wed, 30 Aug 2017 20:32:53 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Marek Vasut <marex@denx.de>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Richard Weinberger <richard@nod.at>, David
+ Woodhouse <dwmw2@infradead.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: [GIT PULL v2] mtd: nand: Changes for 4.14
+Message-ID: <20170830203253.389e8038@bbrezillon>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,185 +23,271 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
----
-changes since v2, sent with Message-Id: 20170830112145.26586-1-u.kleine-koenig@pengutronix.de:
- - actually committed the changes advertised for v2 (sigh)
+Hello Brian,
 
-changes since (implicit) v1 sent with Message-Id: 20170824152227.30394-1-ukleinek@debian.org:
+Here is a new version of my PR for 4.14. This only difference with the
+first PR is the addition of 2 patches sent by Lothar and fixing a bug
+introduced in 4.12.
 
- - fix printf format resulting in crash
-   (suggested by gcc and David Oberhollenzer)
- - add options --help, --version, -V (suggested by David Oberhollenzer)
- - add options --i-know-what-i-do, -y (suggested by Richard Weinberger)
- - add an error message if no device was given
- - make usage static
- - use right author email address
+Can you please have a look and let me know if you notice something wrong.
 
- .gitignore               |   1 +
- nand-utils/Makemodule.am |   5 +-
- nand-utils/nandmarkbad.c | 119 +++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 124 insertions(+), 1 deletion(-)
- create mode 100644 nand-utils/nandmarkbad.c
+Note that I plan to merge both spi-nor and nand PR by the end of the week.
 
-diff --git a/.gitignore b/.gitignore
-index 38bd04deb34e..754da97b43bf 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -36,6 +36,7 @@ mkfs.jffs2
- mtd_debug
- mtdpart
- nanddump
-+nandmarkbad
- nandtest
- nandwrite
- nftl_format
-diff --git a/nand-utils/Makemodule.am b/nand-utils/Makemodule.am
-index d75b0cb3e36c..c31dcb01f06e 100644
---- a/nand-utils/Makemodule.am
-+++ b/nand-utils/Makemodule.am
-@@ -7,6 +7,9 @@ nandwrite_LDADD = libmtd.a
- nandtest_SOURCES = nand-utils/nandtest.c
- nandtest_LDADD = libmtd.a
- 
-+nandmarkbad_SOURCES = nand-utils/nandmarkbad.c
-+nandmarkbad_LDADD = libmtd.a
-+
- nftldump_SOURCES = nand-utils/nftldump.c
- nftldump_LDADD = libmtd.a
- 
-@@ -14,7 +17,7 @@ nftl_format_SOURCES = nand-utils/nftl_format.c
- nftl_format_LDADD = libmtd.a
- 
- NAND_BINS = \
--	nanddump nandwrite nandtest nftldump nftl_format
-+	nanddump nandwrite nandtest nandmarkbad nftldump nftl_format
- 
- NAND_SH = \
- 	nand-utils/load_nandsim.sh
-diff --git a/nand-utils/nandmarkbad.c b/nand-utils/nandmarkbad.c
-new file mode 100644
-index 000000000000..cf05698c3609
---- /dev/null
-+++ b/nand-utils/nandmarkbad.c
-@@ -0,0 +1,119 @@
-+#define PROGRAM_NAME "nandmarkbad"
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <getopt.h>
-+
-+#include "common.h"
-+#include <libmtd.h>
-+
-+static void usage(int status)
-+{
-+	fprintf(status ? stderr : stdout,
-+		"usage: %s [OPTIONS] <device>\n\n"
-+		"  -b, --markbad=blockno        Mark block bad\n"
-+		"  -h, --help                   Display this help and exit\n"
-+		"  -V, --version                Output version information and exit\n"
-+		"  -y, --i-know-what-i-do       really do mark blocks as bad\n",
-+		PROGRAM_NAME);
-+	exit(status);
-+}
-+
-+/*
-+ * Main program
-+ */
-+int main(int argc, char **argv)
-+{
-+	loff_t mark_bad[32];
-+	unsigned cnt_bad = 0;
-+	struct mtd_dev_info mtd;
-+	libmtd_t mtd_desc;
-+	int fd;
-+	int error = 0;
-+	int ret;
-+	unsigned int i;
-+	int iknowwhatido = 0;
-+
-+	for (;;) {
-+		static const char short_options[] = "b:hVy";
-+		static const struct option long_options[] = {
-+			{ "help", no_argument, 0, 'h' },
-+			{ "markbad", required_argument, 0, 'b' },
-+			{ "version", no_argument, 0, 'V'},
-+			{ "i-know-what-i-do", no_argument, 0, 'y' },
-+			{0, 0, 0, 0},
-+		};
-+		int option_index = 0;
-+		int c = getopt_long(argc, argv, short_options, long_options,
-+				    &option_index);
-+		if (c == EOF)
-+			break;
-+
-+		switch (c) {
-+		case '?':
-+			usage(EXIT_FAILURE);
-+			break;
-+
-+		case 'b':
-+			if (cnt_bad < ARRAY_SIZE(mark_bad)) {
-+				mark_bad[cnt_bad] =
-+					simple_strtoll(optarg, &error);
-+				++cnt_bad;
-+			} else {
-+				errmsg_die("Can't handle so many bad blocks\n");
-+			}
-+
-+			break;
-+
-+		case 'h':
-+			usage(EXIT_SUCCESS);
-+			break;
-+
-+		case 'V':
-+			common_print_version();
-+			return EXIT_SUCCESS;
-+
-+		case 'y':
-+			iknowwhatido = 1;
-+			break;
-+		}
-+	}
-+
-+	argc -= optind;
-+	argv += optind;
-+
-+	if (error)
-+		usage(EXIT_FAILURE);
-+
-+	if (argc != 1)
-+		errmsg_die("You must specify a device to operate on\n");
-+
-+	if (!cnt_bad)
-+		errmsg_die("You must specify at least one block to mark bad\n");
-+
-+	if (!iknowwhatido)
-+		errmsg_die(PROGRAM_NAME " does things that are hard to undo.\n"
-+			   "\tPlease convince yourself you understand the risks,\n"
-+			   "\tthen add --i-know-what-i-do to the options.\n");
-+
-+	fd = open(argv[0], O_RDWR);
-+	if (fd < 0)
-+		sys_errmsg_die("Failed to open mtd device\n");
-+
-+	mtd_desc = libmtd_open();
-+	if (!mtd_desc)
-+		errmsg_die("Can't initialize libmtd");
-+
-+	if (mtd_get_dev_info(mtd_desc, argv[0], &mtd) < 0)
-+		errmsg_die("mtd_get_dev_info failed");
-+
-+	for (i = 0; i < cnt_bad; ++i) {
-+		ret = mtd_mark_bad(&mtd, fd, mark_bad[i]);
-+		if (ret)
-+			sys_errmsg_die("%s: MTD Mark bad block failure",
-+				       argv[0]);
-+	}
-+
-+	return EXIT_SUCCESS;
-+}
--- 
-2.14.1
+Thanks,
+
+Boris
+
+The following changes since commit 5771a8c08880cdca3bfb4a3fc6d309d6bba20877:
+
+  Linux v4.13-rc1 (2017-07-15 15:22:10 -0700)
+
+are available in the git repository at:
+
+  git://git.infradead.org/l2-mtd.git tags/nand/for-4.14
+
+for you to fetch changes up to 2d2a2b8c080ad8feab7ca87769dedb3c7a83a375:
+
+  mtd: nand: complain loudly when chip->bits_per_cell is not correctly init=
+ialized (2017-08-29 18:23:50 +0200)
+
+----------------------------------------------------------------
+This pull request contains the following core changes:
+
+* Fix memory leaks in the core
+* Remove unused NAND locking support
+* Rename nand.h into rawnand.h (preparing support for spi NANDs)
+* Use NAND_MAX_ID_LEN where appropriate
+* Fix support for 20nm Hynix chips
+* Fix support for Samsung and Hynix SLC NANDs
+
+and the following driver changes:
+
+* Various cleanup, improvements and fixes in the qcom driver
+* Fixes for bugs detected by various static code analysis tools
+* Fix mxc ooblayout definition
+* Add a new part_parsers to tmio and sharpsl platform data in order to
+  define a custom list of partition parsers
+* Request the reset line in exclusive mode in the sunxi driver
+* Fix a build error in the orion-nand driver when compiled for ARMv4
+* Allow 64-bit mvebu platforms to select the PXA3XX driver
+
+----------------------------------------------------------------
+Abhishek Sahu (25):
+      mtd: nand: qcom: fix config error for BCH
+      mtd: nand: qcom: remove redundant chip select compatible string
+      dt-bindings: qcom_nandc: remove chip select compatible string
+      mtd: nand: qcom: reorganize nand page read
+      mtd: nand: qcom: reorganize nand page write
+      mtd: nand: qcom: remove memset for clearing read register buffer
+      mtd: nand: qcom: reorganize nand devices probing
+      mtd: nand: qcom: fix read failure without complete bootchain
+      mtd: nand: qcom: support for NAND controller properties
+      mtd: nand: qcom: add bam property for QPIC NAND controller
+      mtd: nand: qcom: add and initialize QPIC DMA resources
+      mtd: nand: qcom: DMA mapping support for register read buffer
+      mtd: nand: qcom: allocate BAM transaction
+      mtd: nand: qcom: add BAM DMA descriptor handling
+      mtd: nand: qcom: support for passing flags in DMA helper functions
+      mtd: nand: qcom: support for read location registers
+      mtd: nand: qcom: erased codeword detection configuration
+      mtd: nand: qcom: enable BAM or ADM mode
+      mtd: nand: qcom: QPIC data descriptors handling
+      mtd: nand: qcom: support for different DEV_CMD register offsets
+      dt-bindings: qcom_nandc: fix the ipq806x device tree example
+      dt-bindings: qcom_nandc: IPQ4019 QPIC NAND documentation
+      dt-bindings: qcom_nandc: IPQ8074 QPIC NAND documentation
+      mtd: nand: qcom: support for IPQ4019 QPIC NAND controller
+      mtd: nand: qcom: Support for IPQ8074 QPIC NAND controller
+
+Andrea Adami (4):
+      mtd: nand: sharpsl: Add partition parsers platform data
+      mtd: nand: sharpsl: Register partitions using the parsers
+      mfd: tmio: Add partition parsers platform data
+      mtd: nand: tmio: Register partitions using the parsers
+
+Arnd Bergmann (1):
+      mtd: orion-nand: fix build error with ARMv4
+
+Arvind Yadav (5):
+      mtd: nand: denali: Handle return value of clk_prepare_enable.
+      mtd: oxnas_nand: Handle clk_prepare_enable/clk_disable_unprepare.
+      mtd: nand: lpc32xx_slc: Handle return value of clk_prepare_enable.
+      mtd: nand: lpc32xx_mlc: Handle return value of clk_prepare_enable.
+      mtd: st_spi_fsm: Handle clk_prepare_enable/clk_disable_unprepare.
+
+Boris Brezillon (5):
+      mtd: nand: Remove support for block locking/unlocking
+      mtd: nand: Rename nand.h into rawnand.h
+      mtd: nand: Fix various memory leaks in core
+      mtd: nand: mxc: Fix mxc_v1 ooblayout
+      Merge branch 'nand/rename-header-file' of git://git.infradead.org/l2-=
+mtd into nand/next
+
+Fabio Estevam (2):
+      mtd: nand: vf610: Check the return value from clk_prepare_enable()
+      mtd: nand: vf610: Remove unneeded pinctrl_pm_select_default_state()
+
+Gregory CLEMENT (1):
+      mtd: nand: pxa3xx_nand: enable building on mvebu 64-bit platforms
+
+Gustavo A. R. Silva (2):
+      mtd: nand: sh_flctl: fix error return code in flctl_probe()
+      mtd: nand: mtk: fix error return code in mtk_ecc_probe()
+
+Jean-Louis Thekekara (1):
+      mtd: nand: remove hard-coded NAND ids length
+
+Lothar Wa=C3=9Fmann (2):
+      mtd: nand: make Samsung SLC NAND usable again
+      mtd: nand: complain loudly when chip->bits_per_cell is not correctly =
+initialized
+
+Martin Blumenstingl (1):
+      mtd: nand: hynix: add support for 20nm NAND chips
+
+Pan Bian (1):
+      mtd: nand: sh_flctl: use dma_mapping_error to check map errors
+
+Philipp Zabel (1):
+      mtd: nand: sunxi: explicitly request exclusive reset control
+
+Sergei Shtylyov (1):
+      mtd: nand: atmel: fix of_irq_get() error check
+
+ Documentation/devicetree/bindings/mtd/qcom_nandc.txt |  65 +++-
+ Documentation/driver-api/mtdnand.rst                 |   8 +-
+ MAINTAINERS                                          |   2 +-
+ arch/arm/mach-davinci/board-da850-evm.c              |   2 +-
+ arch/arm/mach-davinci/board-dm355-evm.c              |   2 +-
+ arch/arm/mach-davinci/board-dm355-leopard.c          |   2 +-
+ arch/arm/mach-davinci/board-dm365-evm.c              |   2 +-
+ arch/arm/mach-davinci/board-dm644x-evm.c             |   2 +-
+ arch/arm/mach-davinci/board-dm646x-evm.c             |   2 +-
+ arch/arm/mach-davinci/board-sffsdr.c                 |   2 +-
+ arch/arm/mach-dove/dove-db-setup.c                   |   2 +-
+ arch/arm/mach-ep93xx/snappercl15.c                   |   2 +-
+ arch/arm/mach-ep93xx/ts72xx.c                        |   2 +-
+ arch/arm/mach-imx/mach-qong.c                        |   2 +-
+ arch/arm/mach-ixp4xx/ixdp425-setup.c                 |   2 +-
+ arch/arm/mach-mmp/aspenite.c                         |   2 +-
+ arch/arm/mach-omap1/board-fsample.c                  |   2 +-
+ arch/arm/mach-omap1/board-h2.c                       |   2 +-
+ arch/arm/mach-omap1/board-h3.c                       |   2 +-
+ arch/arm/mach-omap1/board-nand.c                     |   2 +-
+ arch/arm/mach-omap1/board-perseus2.c                 |   2 +-
+ arch/arm/mach-orion5x/db88f5281-setup.c              |   2 +-
+ arch/arm/mach-orion5x/kurobox_pro-setup.c            |   2 +-
+ arch/arm/mach-orion5x/ts209-setup.c                  |   2 +-
+ arch/arm/mach-orion5x/ts78xx-setup.c                 |   2 +-
+ arch/arm/mach-pxa/balloon3.c                         |   2 +-
+ arch/arm/mach-pxa/em-x270.c                          |   2 +-
+ arch/arm/mach-pxa/eseries.c                          |   2 +-
+ arch/arm/mach-pxa/palmtx.c                           |   2 +-
+ arch/arm/mach-pxa/tosa.c                             |   2 +-
+ arch/arm/mach-s3c24xx/common-smdk.c                  |   2 +-
+ arch/arm/mach-s3c24xx/mach-anubis.c                  |   2 +-
+ arch/arm/mach-s3c24xx/mach-at2440evb.c               |   2 +-
+ arch/arm/mach-s3c24xx/mach-bast.c                    |   2 +-
+ arch/arm/mach-s3c24xx/mach-gta02.c                   |   2 +-
+ arch/arm/mach-s3c24xx/mach-jive.c                    |   2 +-
+ arch/arm/mach-s3c24xx/mach-mini2440.c                |   2 +-
+ arch/arm/mach-s3c24xx/mach-osiris.c                  |   2 +-
+ arch/arm/mach-s3c24xx/mach-qt2410.c                  |   2 +-
+ arch/arm/mach-s3c24xx/mach-rx3715.c                  |   2 +-
+ arch/arm/mach-s3c24xx/mach-vstms.c                   |   2 +-
+ arch/blackfin/mach-bf537/boards/dnp5370.c            |   2 +-
+ arch/blackfin/mach-bf537/boards/stamp.c              |   2 +-
+ arch/blackfin/mach-bf561/boards/acvilon.c            |   2 +-
+ arch/cris/arch-v32/drivers/mach-a3/nandflash.c       |   2 +-
+ arch/cris/arch-v32/drivers/mach-fs/nandflash.c       |   2 +-
+ arch/mips/alchemy/devboards/db1200.c                 |   2 +-
+ arch/mips/alchemy/devboards/db1300.c                 |   2 +-
+ arch/mips/alchemy/devboards/db1550.c                 |   2 +-
+ arch/mips/include/asm/mach-jz4740/jz4740_nand.h      |   2 +-
+ arch/mips/netlogic/xlr/platform-flash.c              |   2 +-
+ arch/mips/pnx833x/common/platform.c                  |   2 +-
+ arch/mips/rb532/devices.c                            |   2 +-
+ arch/sh/boards/mach-migor/setup.c                    |   2 +-
+ drivers/mtd/devices/st_spi_fsm.c                     |  20 +-
+ drivers/mtd/inftlcore.c                              |   2 +-
+ drivers/mtd/nand/Kconfig                             |   2 +-
+ drivers/mtd/nand/ams-delta.c                         |   2 +-
+ drivers/mtd/nand/atmel/nand-controller.c             |  15 +-
+ drivers/mtd/nand/atmel/pmecc.c                       |   2 +-
+ drivers/mtd/nand/au1550nd.c                          |   2 +-
+ drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h       |   2 +-
+ drivers/mtd/nand/bf5xx_nand.c                        |   2 +-
+ drivers/mtd/nand/brcmnand/brcmnand.c                 |   2 +-
+ drivers/mtd/nand/cafe_nand.c                         |   2 +-
+ drivers/mtd/nand/cmx270_nand.c                       |   2 +-
+ drivers/mtd/nand/cs553x_nand.c                       |   2 +-
+ drivers/mtd/nand/davinci_nand.c                      |   2 +-
+ drivers/mtd/nand/denali.h                            |   2 +-
+ drivers/mtd/nand/denali_dt.c                         |   4 +-
+ drivers/mtd/nand/diskonchip.c                        |   2 +-
+ drivers/mtd/nand/docg4.c                             |   2 +-
+ drivers/mtd/nand/fsl_elbc_nand.c                     |   2 +-
+ drivers/mtd/nand/fsl_ifc_nand.c                      |   2 +-
+ drivers/mtd/nand/fsl_upm.c                           |   2 +-
+ drivers/mtd/nand/fsmc_nand.c                         |   2 +-
+ drivers/mtd/nand/gpio.c                              |   2 +-
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h               |   2 +-
+ drivers/mtd/nand/hisi504_nand.c                      |   2 +-
+ drivers/mtd/nand/jz4740_nand.c                       |   2 +-
+ drivers/mtd/nand/jz4780_nand.c                       |   2 +-
+ drivers/mtd/nand/lpc32xx_mlc.c                       |  11 +-
+ drivers/mtd/nand/lpc32xx_slc.c                       |  11 +-
+ drivers/mtd/nand/mpc5121_nfc.c                       |   2 +-
+ drivers/mtd/nand/mtk_ecc.c                           |   4 +-
+ drivers/mtd/nand/mtk_nand.c                          |   2 +-
+ drivers/mtd/nand/mxc_nand.c                          |   9 +-
+ drivers/mtd/nand/nand_amd.c                          |   2 +-
+ drivers/mtd/nand/nand_base.c                         | 304 +++------------
+ drivers/mtd/nand/nand_bbt.c                          |   2 +-
+ drivers/mtd/nand/nand_bch.c                          |   2 +-
+ drivers/mtd/nand/nand_ecc.c                          |   2 +-
+ drivers/mtd/nand/nand_hynix.c                        |   6 +-
+ drivers/mtd/nand/nand_ids.c                          |   2 +-
+ drivers/mtd/nand/nand_macronix.c                     |   2 +-
+ drivers/mtd/nand/nand_micron.c                       |   2 +-
+ drivers/mtd/nand/nand_samsung.c                      |   2 +-
+ drivers/mtd/nand/nand_timings.c                      |   2 +-
+ drivers/mtd/nand/nand_toshiba.c                      |   2 +-
+ drivers/mtd/nand/nandsim.c                           |   2 +-
+ drivers/mtd/nand/ndfc.c                              |   2 +-
+ drivers/mtd/nand/nuc900_nand.c                       |   2 +-
+ drivers/mtd/nand/omap2.c                             |   2 +-
+ drivers/mtd/nand/orion_nand.c                        |   9 +-
+ drivers/mtd/nand/oxnas_nand.c                        |  27 +-
+ drivers/mtd/nand/pasemi_nand.c                       |   2 +-
+ drivers/mtd/nand/plat_nand.c                         |   2 +-
+ drivers/mtd/nand/pxa3xx_nand.c                       |   2 +-
+ drivers/mtd/nand/qcom_nandc.c                        | 919 +++++++++++++++=
++++++++++++++++++++++--------
+ drivers/mtd/nand/r852.h                              |   2 +-
+ drivers/mtd/nand/s3c2410.c                           |   2 +-
+ drivers/mtd/nand/sh_flctl.c                          |   8 +-
+ drivers/mtd/nand/sharpsl.c                           |   4 +-
+ drivers/mtd/nand/sm_common.c                         |   2 +-
+ drivers/mtd/nand/socrates_nand.c                     |   2 +-
+ drivers/mtd/nand/sunxi_nand.c                        |   4 +-
+ drivers/mtd/nand/tango_nand.c                        |   2 +-
+ drivers/mtd/nand/tmio_nand.c                         |   6 +-
+ drivers/mtd/nand/txx9ndfmc.c                         |   2 +-
+ drivers/mtd/nand/vf610_nfc.c                         |  11 +-
+ drivers/mtd/nand/xway_nand.c                         |   2 +-
+ drivers/mtd/nftlcore.c                               |   2 +-
+ drivers/mtd/nftlmount.c                              |   2 +-
+ drivers/mtd/ssfdc.c                                  |   2 +-
+ drivers/mtd/tests/nandbiterrs.c                      |   2 +-
+ drivers/staging/mt29f_spinand/mt29f_spinand.c        |   2 +-
+ fs/jffs2/wbuf.c                                      |   2 +-
+ include/linux/mfd/tmio.h                             |   1 +
+ include/linux/mtd/nand-gpio.h                        |   2 +-
+ include/linux/mtd/{nand.h =3D> rawnand.h}              |  30 +-
+ include/linux/mtd/sh_flctl.h                         |   2 +-
+ include/linux/mtd/sharpsl.h                          |   3 +-
+ include/linux/platform_data/mtd-davinci.h            |   2 +-
+ include/linux/platform_data/mtd-nand-s3c2410.h       |   2 +-
+ 134 files changed, 1111 insertions(+), 592 deletions(-)
+ rename include/linux/mtd/{nand.h =3D> rawnand.h} (98%)
