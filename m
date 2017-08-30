@@ -1,14 +1,14 @@
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dn14x-0003PL-K1
- for linux-mtd@lists.infradead.org; Wed, 30 Aug 2017 11:22:43 +0000
+ id 1dn1EM-0008Qo-TE
+ for linux-mtd@lists.infradead.org; Wed, 30 Aug 2017 11:32:25 +0000
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 Cc: Richard Weinberger <richard@nod.at>, kernel@pengutronix.de,
  linux-mtd@lists.infradead.org
-Subject: [PATCH mtd-utils v2] nandmarkbad: new util to mark blocks as bad
-Date: Wed, 30 Aug 2017 13:21:45 +0200
-Message-Id: <20170830112145.26586-1-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH mtd-utils v3] nandmarkbad: new util to mark blocks as bad
+Date: Wed, 30 Aug 2017 13:31:46 +0200
+Message-Id: <20170830113146.26929-1-u.kleine-koenig@pengutronix.de>
 In-Reply-To: <20170824152227.30394-1-ukleinek@debian.org>
 References: <20170824152227.30394-1-ukleinek@debian.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,6 +21,9 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 ---
+changes since v2, sent with Message-Id: 20170830112145.26586-1-u.kleine-koenig@pengutronix.de:
+ - actually committed the changes advertised for v2 (sigh)
+
 changes since (implicit) v1 sent with Message-Id: 20170824152227.30394-1-ukleinek@debian.org:
 
  - fix printf format resulting in crash
@@ -31,10 +34,10 @@ changes since (implicit) v1 sent with Message-Id: 20170824152227.30394-1-ukleine
  - make usage static
  - use right author email address
 
- .gitignore               |  1 +
- nand-utils/Makemodule.am |  5 ++-
- nand-utils/nandmarkbad.c | 95 ++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 100 insertions(+), 1 deletion(-)
+ .gitignore               |   1 +
+ nand-utils/Makemodule.am |   5 +-
+ nand-utils/nandmarkbad.c | 119 +++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 124 insertions(+), 1 deletion(-)
  create mode 100644 nand-utils/nandmarkbad.c
 
 diff --git a/.gitignore b/.gitignore
@@ -74,10 +77,10 @@ index d75b0cb3e36c..c31dcb01f06e 100644
  	nand-utils/load_nandsim.sh
 diff --git a/nand-utils/nandmarkbad.c b/nand-utils/nandmarkbad.c
 new file mode 100644
-index 000000000000..023bdbe50c4d
+index 000000000000..cf05698c3609
 --- /dev/null
 +++ b/nand-utils/nandmarkbad.c
-@@ -0,0 +1,95 @@
+@@ -0,0 +1,119 @@
 +#define PROGRAM_NAME "nandmarkbad"
 +
 +#include <stdio.h>
@@ -88,11 +91,14 @@ index 000000000000..023bdbe50c4d
 +#include "common.h"
 +#include <libmtd.h>
 +
-+void usage(int status)
++static void usage(int status)
 +{
 +	fprintf(status ? stderr : stdout,
 +		"usage: %s [OPTIONS] <device>\n\n"
 +		"  -b, --markbad=blockno        Mark block bad\n"
++		"  -h, --help                   Display this help and exit\n"
++		"  -V, --version                Output version information and exit\n"
++		"  -y, --i-know-what-i-do       really do mark blocks as bad\n",
 +		PROGRAM_NAME);
 +	exit(status);
 +}
@@ -110,11 +116,15 @@ index 000000000000..023bdbe50c4d
 +	int error = 0;
 +	int ret;
 +	unsigned int i;
++	int iknowwhatido = 0;
 +
 +	for (;;) {
-+		static const char short_options[] = "b:h";
++		static const char short_options[] = "b:hVy";
 +		static const struct option long_options[] = {
++			{ "help", no_argument, 0, 'h' },
 +			{ "markbad", required_argument, 0, 'b' },
++			{ "version", no_argument, 0, 'V'},
++			{ "i-know-what-i-do", no_argument, 0, 'y' },
 +			{0, 0, 0, 0},
 +		};
 +		int option_index = 0;
@@ -124,9 +134,6 @@ index 000000000000..023bdbe50c4d
 +			break;
 +
 +		switch (c) {
-+		case 'h':
-+			usage(EXIT_SUCCESS);
-+			break;
 +		case '?':
 +			usage(EXIT_FAILURE);
 +			break;
@@ -141,17 +148,37 @@ index 000000000000..023bdbe50c4d
 +			}
 +
 +			break;
++
++		case 'h':
++			usage(EXIT_SUCCESS);
++			break;
++
++		case 'V':
++			common_print_version();
++			return EXIT_SUCCESS;
++
++		case 'y':
++			iknowwhatido = 1;
++			break;
 +		}
 +	}
 +
 +	argc -= optind;
 +	argv += optind;
 +
-+	if (argc != 1 || error)
++	if (error)
 +		usage(EXIT_FAILURE);
++
++	if (argc != 1)
++		errmsg_die("You must specify a device to operate on\n");
 +
 +	if (!cnt_bad)
 +		errmsg_die("You must specify at least one block to mark bad\n");
++
++	if (!iknowwhatido)
++		errmsg_die(PROGRAM_NAME " does things that are hard to undo.\n"
++			   "\tPlease convince yourself you understand the risks,\n"
++			   "\tthen add --i-know-what-i-do to the options.\n");
 +
 +	fd = open(argv[0], O_RDWR);
 +	if (fd < 0)
