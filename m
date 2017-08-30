@@ -1,23 +1,15 @@
-Received: from da1vs04.rockwellcollins.com ([205.175.227.52])
+Received: from mail02.prevas.se ([62.95.78.10])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dn82x-0008Rn-Mf
- for linux-mtd@lists.infradead.org; Wed, 30 Aug 2017 18:49:05 +0000
-Received: by mail-yw0-f200.google.com with SMTP id e9so13151724ywh.8
- for <linux-mtd@lists.infradead.org>; Wed, 30 Aug 2017 11:48:42 -0700 (PDT)
+ id 1dn8kg-000323-CV
+ for linux-mtd@lists.infradead.org; Wed, 30 Aug 2017 19:34:16 +0000
+From: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
+To: <linux-mtd@lists.infradead.org>
+CC: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
+Subject: [PATCH] mtd: spi-nor: add support for is25lp032
+Date: Wed, 30 Aug 2017 21:33:23 +0200
+Message-ID: <20170830193323.14478-1-sean.nyekjaer@prevas.dk>
 MIME-Version: 1.0
-In-Reply-To: <HE1PR04MB124123999DA6E9CEE905F890979C0@HE1PR04MB1241.eurprd04.prod.outlook.com>
-References: <1504036047-38848-1-git-send-email-matthew.weber@rockwellcollins.com>
- <HE1PR04MB124123999DA6E9CEE905F890979C0@HE1PR04MB1241.eurprd04.prod.outlook.com>
-From: Sanjay Tandel <sanjay.tandel@rockwellcollins.com>
-Date: Wed, 30 Aug 2017 13:48:20 -0500
-Message-ID: <CAB0kKmzppQu7i8gqp_Q-5NYoPLoEbBJy2Bgdawv7Ek6OgWav2w@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd: map: new driver for NXP IFC
-To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-Cc: Matt Weber <matthew.weber@rockwellcollins.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
- "arnd@arndb.de" <arnd@arndb.de>, Scott Wood <oss@buserror.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,51 +19,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Prabhakar,
+Signed-off-by: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On Tue, Aug 29, 2017 at 7:37 PM, Prabhakar Kushwaha
-<prabhakar.kushwaha@nxp.com> wrote:
-> Dear Matt,
->
->> -----Original Message-----
->> From: linux-mtd [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of
->> Matt Weber
->> Sent: Wednesday, August 30, 2017 1:17 AM
->> To: linux-mtd@lists.infradead.org
->> Cc: Matt Weber <matthew.weber@rockwellcollins.com>; boris.brezillon@free-
->> electrons.com; Sanjay Tandel <sanjay.tandel@rockwellcollins.com>;
->> arnd@arndb.de
->> Subject: [PATCH v2] mtd: map: new driver for NXP IFC
->>
->> From: Sanjay Tandel <sanjay.tandel@rockwellcollins.com>
->>
->> This patch adds map driver for parallel flash chips interfaced over
->> a NXP Integrated Flash Controller (IFC). This driver allows either
->> 8-bit or 16-bit accesses, depending on bank-width, to parallel flash
->> chips(like Everspin MR0A16A), which are physically mapped to CPU's
->> memory space. For unaligned accesses, it performs read-modify-write
->> operations to keep access size same as bank-width.
->>
->
->
-> IFC is configured as per Flash's width per Chip select via boot-loader.
-
-That's right. We are configuring IFC from boot-loader.
-
->
-> Can you please share more details about the driver requirement.
-> What is not working with NXP IFC?
-
-8-bit accesses to 16-bit MRAM (through IFC) , using MTD map driver,
-seem to corrupt the data.
-We need this driver to limit all accesses to be bank-width size,
-
-For more details, please refer the discussion on following thread:
-https://patchwork.ozlabs.org/patch/797787/
-
->
-> --prabhakar
->
-
-Regards,
-Sanjay
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index cf1d4a15e10a..a764fe67b59c 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1005,6 +1005,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 
+ 	/* ISSI */
+ 	{ "is25cd512", INFO(0x7f9d20, 0, 32 * 1024,   2, SECT_4K) },
++	{ "is25lp032", INFO(0x9d4013, 0, 64 * 1024,  64, SECT_4K) },
+ 
+ 	/* Macronix */
+ 	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
+-- 
+2.14.1
