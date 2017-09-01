@@ -1,24 +1,19 @@
-Received: from mga07.intel.com ([134.134.136.100])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dnitU-0004n4-9G
- for linux-mtd@lists.infradead.org; Fri, 01 Sep 2017 10:09:46 +0000
-Date: Fri, 1 Sep 2017 13:09:19 +0300
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Bin Meng <bmeng.cn@gmail.com>
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Marek Vasut <marek.vasut@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- linux-kernel <linux-kernel@vger.kernel.org>, Stefan Roese <sr@denx.de>
-Subject: Re: [PATCH 00/10] spi-nor: intel-spi: Various fixes and enhancements
-Message-ID: <20170901100919.GZ2598@lahna.fi.intel.com>
-References: <1504252841-2445-1-git-send-email-bmeng.cn@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1504252841-2445-1-git-send-email-bmeng.cn@gmail.com>
+Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
+ by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dnjVP-0002xz-0i
+ for linux-mtd@lists.infradead.org; Fri, 01 Sep 2017 10:48:56 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Cc: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, ralf@linux-mips.org,
+ linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
+ linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+ martin.blumenstingl@googlemail.com, john@phrozen.org,
+ linux-spi@vger.kernel.org, hauke.mehrtens@intel.com, linux-spi@vger.kernel.org
+Subject: Applied "spi: spi-falcon: drop check of boot select" to the spi tree
+In-Reply-To: <20170417192942.32219-4-hauke@hauke-m.de>
+Message-Id: <E1dnjTy-0006AD-Ox@debutante>
+Date: Fri, 01 Sep 2017 11:47:26 +0100
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,41 +23,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Sep 01, 2017 at 01:00:31AM -0700, Bin Meng wrote:
-> This series does several bug fixes and clean ups against the intel-spi
-> spi-nor driver, as well as enhancements to make the driver independent
-> on the underlying BIOS/bootloader.
-> 
-> At present the driver uses the HW sequencer for the read/write/erase on
-> all supported platforms, read_reg/write_reg for BXT, and the SW sequencer
-> for read_reg/write_reg for BYT/LPT. The way the driver uses the HW and SW
-> sequencer relies on some programmed register settings and hence creates
-> unneeded dependencies with the underlying BIOS/bootloader. For example,
-> the driver unfortunately does not work as expected when booting from
-> Intel Baytrail FSP based bootloaders like U-Boot, as the Baytrail FSP
-> does not set up some SPI controller settings to make the driver happy.
-> Now such limitation has been removed with this series.
-> 
-> 
-> Bin Meng (10):
->   spi-nor: intel-spi: Fix number of protected range registers for
->     BYT/LPT
->   spi-nor: intel-spi: Remove useless 'buf' parameter in the HW/SW cycle
->   spi-nor: intel-spi: Fix broken software sequencing codes
->   spi-nor: intel-spi: Check transfer length in the HW/SW cycle
->   spi-nor: intel-spi: Use SW sequencer for BYT/LPT
->   spi-nor: intel-spi: Remove 'Atomic Cycle Sequence' in
->     intel_spi_write()
->   spi-nor: intel-spi: Don't assume OPMENU0/1 to be programmed by BIOS
->   spi-nor: intel-spi: Remove the unnecessary HSFSTS register RW
->   spi-nor: intel-spi: Rename swseq to swseq_reg in 'struct intel_spi'
->   spi-nor: intel-spi: Fall back to use SW sequencer to erase
-> 
->  drivers/mtd/spi-nor/intel-spi.c | 209 +++++++++++++++++++++++++++++-----------
->  1 file changed, 151 insertions(+), 58 deletions(-)
+The patch
 
-Nice work!
+   spi: spi-falcon: drop check of boot select
 
-For the whole series,
+has been applied to the spi tree at
 
-Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 1a41aa1376df9e24d0c760df1a6f59765316c457 Mon Sep 17 00:00:00 2001
+From: Hauke Mehrtens <hauke@hauke-m.de>
+Date: Sun, 20 Aug 2017 00:18:10 +0200
+Subject: [PATCH] spi: spi-falcon: drop check of boot select
+
+Do not check which flash type the SoC was booted from before
+using this driver. Assume that the device tree is correct and use this
+driver when it was added to device tree. This also removes a build
+dependency to the SoC code.
+
+All device trees I am aware of only have one correct flash device entry
+in it. The device tree is anyway bundled with the kernel in all systems
+using device tree I know of.
+
+The boot mode can be specified with some pin straps and will select the
+flash type the rom code will boot from. One SPI, NOR or NAND flash chip
+can be connect to the EBU and used to load the first stage boot loader
+from.
+
+Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: linux-spi@vger.kernel.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ drivers/spi/spi-falcon.c | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/drivers/spi/spi-falcon.c b/drivers/spi/spi-falcon.c
+index 286b2c81fc6b..f8638e82e5db 100644
+--- a/drivers/spi/spi-falcon.c
++++ b/drivers/spi/spi-falcon.c
+@@ -395,11 +395,6 @@ static int falcon_sflash_probe(struct platform_device *pdev)
+ 	struct spi_master *master;
+ 	int ret;
+ 
+-	if (ltq_boot_select() != BS_SPI) {
+-		dev_err(&pdev->dev, "invalid bootstrap options\n");
+-		return -ENODEV;
+-	}
+-
+ 	master = spi_alloc_master(&pdev->dev, sizeof(*priv));
+ 	if (!master)
+ 		return -ENOMEM;
+-- 
+2.14.1
