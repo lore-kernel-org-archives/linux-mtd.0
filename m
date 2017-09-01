@@ -1,9 +1,9 @@
-Received: from mail-io0-x244.google.com ([2607:f8b0:4001:c06::244])
+Received: from mail-io0-x243.google.com ([2607:f8b0:4001:c06::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dngox-0001aQ-CS
+ id 1dngox-0001Z1-TA
  for linux-mtd@lists.infradead.org; Fri, 01 Sep 2017 07:56:57 +0000
-Received: by mail-io0-x244.google.com with SMTP id z67so339682iof.1
- for <linux-mtd@lists.infradead.org>; Fri, 01 Sep 2017 00:56:38 -0700 (PDT)
+Received: by mail-io0-x243.google.com with SMTP id 2so2154610ion.3
+ for <linux-mtd@lists.infradead.org>; Fri, 01 Sep 2017 00:56:36 -0700 (PDT)
 From: Bin Meng <bmeng.cn@gmail.com>
 To: Mika Westerberg <mika.westerberg@linux.intel.com>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
@@ -14,10 +14,10 @@ To: Mika Westerberg <mika.westerberg@linux.intel.com>,
  linux-mtd <linux-mtd@lists.infradead.org>,
  linux-kernel <linux-kernel@vger.kernel.org>
 Cc: Stefan Roese <sr@denx.de>
-Subject: [PATCH 10/10] spi-nor: intel-spi: Fall back to use SW sequencer to
- erase
-Date: Fri,  1 Sep 2017 01:00:41 -0700
-Message-Id: <1504252841-2445-11-git-send-email-bmeng.cn@gmail.com>
+Subject: [PATCH 09/10] spi-nor: intel-spi: Rename swseq to swseq_reg in
+ 'struct intel_spi'
+Date: Fri,  1 Sep 2017 01:00:40 -0700
+Message-Id: <1504252841-2445-10-git-send-email-bmeng.cn@gmail.com>
 In-Reply-To: <1504252841-2445-1-git-send-email-bmeng.cn@gmail.com>
 References: <1504252841-2445-1-git-send-email-bmeng.cn@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,132 +29,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-According to the datasheet, the HW sequencer has a predefined list
-of opcodes, with only the erase opcode being programmable in LVSCC
-and UVSCC registers. If these registers don't contain a valid erase
-opcode (eg: BIOS does not program it), erase cannot be done using
-the HW sequencer, even though the erase operation does not report
-any error, the flash remains not erased.
-
-If such register setting is detected, let's fall back to use the SW
-sequencer to erase instead.
+The ispi->swseq is used for register access. Let's rename it to
+swseq_reg to better describe its usage.
 
 Signed-off-by: Bin Meng <bmeng.cn@gmail.com>
-
 ---
 
- drivers/mtd/spi-nor/intel-spi.c | 50 ++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 49 insertions(+), 1 deletion(-)
+ drivers/mtd/spi-nor/intel-spi.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
-index 5e7a389..f1e2c5f 100644
+index 91ceef7..5e7a389 100644
 --- a/drivers/mtd/spi-nor/intel-spi.c
 +++ b/drivers/mtd/spi-nor/intel-spi.c
-@@ -111,6 +111,13 @@
- #define BXT_FREG_NUM			12
- #define BXT_PR_NUM			6
- 
-+#define LVSCC				0xc4
-+#define UVSCC				0xc8
-+#define ERASE_OPCODE_SHIFT		8
-+#define ERASE_OPCODE_MASK		(0xff << ERASE_OPCODE_SHIFT)
-+#define ERASE_64K_OPCODE_SHIFT		16
-+#define ERASE_64K_OPCODE_MASK		(0xff << ERASE_OPCODE_SHIFT)
-+
- #define INTEL_SPI_TIMEOUT		5000 /* ms */
- #define INTEL_SPI_FIFO_SZ		64
- 
-@@ -127,6 +134,7 @@
+@@ -126,7 +126,7 @@
+  * @pr_num: Maximum number of protected range registers
   * @writeable: Is the chip writeable
   * @locked: Is SPI setting locked
-  * @swseq_reg: Use SW sequencer in register reads/writes
-+ * @swseq_erase: Use SW sequencer in erase operation
+- * @swseq: Use SW sequencer in register reads/writes
++ * @swseq_reg: Use SW sequencer in register reads/writes
   * @erase_64k: 64k erase supported
   * @opcodes: Opcodes which are supported. This are programmed by BIOS
   *           before it locks down the controller.
-@@ -144,6 +152,7 @@ struct intel_spi {
+@@ -143,7 +143,7 @@ struct intel_spi {
+ 	size_t pr_num;
  	bool writeable;
  	bool locked;
- 	bool swseq_reg;
-+	bool swseq_erase;
+-	bool swseq;
++	bool swseq_reg;
  	bool erase_64k;
  	u8 opcodes[8];
  	u8 preopcodes[2];
-@@ -191,6 +200,9 @@ static void intel_spi_dump_regs(struct intel_spi *ispi)
- 	if (ispi->info->type == INTEL_SPI_BYT)
- 		dev_dbg(ispi->dev, "BCR=0x%08x\n", readl(ispi->base + BYT_BCR));
- 
-+	dev_dbg(ispi->dev, "LVSCC=0x%08x\n", readl(ispi->base + LVSCC));
-+	dev_dbg(ispi->dev, "UVSCC=0x%08x\n", readl(ispi->base + UVSCC));
-+
- 	dev_dbg(ispi->dev, "Protected regions:\n");
- 	for (i = 0; i < ispi->pr_num; i++) {
- 		u32 base, limit;
-@@ -225,6 +237,8 @@ static void intel_spi_dump_regs(struct intel_spi *ispi)
+@@ -224,7 +224,7 @@ static void intel_spi_dump_regs(struct intel_spi *ispi)
+ 	}
  
  	dev_dbg(ispi->dev, "Using %cW sequencer for register access\n",
- 		ispi->swseq_reg ? 'S' : 'H');
-+	dev_dbg(ispi->dev, "Using %cW sequencer for erase operation\n",
-+		ispi->swseq_erase ? 'S' : 'H');
+-		ispi->swseq ? 'S' : 'H');
++		ispi->swseq_reg ? 'S' : 'H');
  }
  
  /* Reads max INTEL_SPI_FIFO_SZ bytes from the device fifo */
-@@ -288,7 +302,7 @@ static int intel_spi_wait_sw_busy(struct intel_spi *ispi)
+@@ -297,7 +297,7 @@ static int intel_spi_init(struct intel_spi *ispi)
+ 		ispi->pregs = ispi->base + BYT_PR;
+ 		ispi->nregions = BYT_FREG_NUM;
+ 		ispi->pr_num = BYT_PR_NUM;
+-		ispi->swseq = true;
++		ispi->swseq_reg = true;
  
- static int intel_spi_init(struct intel_spi *ispi)
- {
--	u32 opmenu0, opmenu1, val;
-+	u32 opmenu0, opmenu1, lvscc, uvscc, val;
- 	int i;
+ 		if (writeable) {
+ 			/* Disable write protection */
+@@ -318,7 +318,7 @@ static int intel_spi_init(struct intel_spi *ispi)
+ 		ispi->pregs = ispi->base + LPT_PR;
+ 		ispi->nregions = LPT_FREG_NUM;
+ 		ispi->pr_num = LPT_PR_NUM;
+-		ispi->swseq = true;
++		ispi->swseq_reg = true;
+ 		break;
  
- 	switch (ispi->info->type) {
-@@ -339,6 +353,24 @@ static int intel_spi_init(struct intel_spi *ispi)
- 	writel(val, ispi->base + HSFSTS_CTL);
- 
- 	/*
-+	 * Determine whether erase operatoin should use HW or SW sequencer.
-+	 *
-+	 * The HW sequencer has a predefined list of opcodes, with only the
-+	 * erase opcode being programmable in LVSCC and UVSCC registers.
-+	 * If these registers don't contain a valid erase opcode, erase
-+	 * cannot be done using HW sequencer.
-+	 */
-+	lvscc = readl(ispi->base + LVSCC);
-+	uvscc = readl(ispi->base + UVSCC);
-+	if (!(lvscc & ERASE_OPCODE_MASK) || !(uvscc & ERASE_OPCODE_MASK))
-+		ispi->swseq_erase = true;
-+	/* SPI controller on Intel BXT supports 64K erase opcode */
-+	if (ispi->info->type == INTEL_SPI_BXT && !ispi->swseq_erase)
-+		if (!(lvscc & ERASE_64K_OPCODE_MASK) ||
-+		    !(uvscc & ERASE_64K_OPCODE_MASK))
-+			ispi->erase_64k = false;
-+
-+	/*
- 	 * Some controllers can only do basic operations using hardware
+ 	case INTEL_SPI_BXT:
+@@ -343,7 +343,7 @@ static int intel_spi_init(struct intel_spi *ispi)
  	 * sequencer. All other operations are supposed to be carried out
  	 * using software sequencer.
-@@ -665,6 +697,22 @@ static int intel_spi_erase(struct spi_nor *nor, loff_t offs)
- 		erase_size = SZ_4K;
- 	}
+ 	 */
+-	if (ispi->swseq) {
++	if (ispi->swseq_reg) {
+ 		/* Disable #SMI generation from SW sequencer */
+ 		val = readl(ispi->sregs + SSFSTS_CTL);
+ 		val &= ~SSFSTS_CTL_FSMIE;
+@@ -493,7 +493,7 @@ static int intel_spi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
+ 	/* Address of the first chip */
+ 	writel(0, ispi->base + FADDR);
  
-+	if (ispi->swseq_erase) {
-+		while (len > 0) {
-+			writel(offs, ispi->base + FADDR);
-+
-+			ret = intel_spi_sw_cycle(ispi, nor->erase_opcode,
-+						 0, OPTYPE_WRITE_WITH_ADDR);
-+			if (ret)
-+				return ret;
-+
-+			offs += erase_size;
-+			len -= erase_size;
-+		}
-+
-+		return 0;
-+	}
-+
- 	while (len > 0) {
- 		writel(offs, ispi->base + FADDR);
+-	if (ispi->swseq)
++	if (ispi->swseq_reg)
+ 		ret = intel_spi_sw_cycle(ispi, opcode, len,
+ 					 OPTYPE_READ_NO_ADDR);
+ 	else
+@@ -529,7 +529,7 @@ static int intel_spi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
+ 	if (ret)
+ 		return ret;
  
+-	if (ispi->swseq)
++	if (ispi->swseq_reg)
+ 		return intel_spi_sw_cycle(ispi, opcode, len,
+ 					  OPTYPE_WRITE_NO_ADDR);
+ 	return intel_spi_hw_cycle(ispi, opcode, len);
 -- 
 2.9.2
