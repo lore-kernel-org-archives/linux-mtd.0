@@ -1,23 +1,18 @@
-Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dnWec-00012p-QA
- for linux-mtd@lists.infradead.org; Thu, 31 Aug 2017 21:05:37 +0000
-Received: by mail-wr0-x242.google.com with SMTP id 40so378226wrv.3
- for <linux-mtd@lists.infradead.org>; Thu, 31 Aug 2017 14:05:11 -0700 (PDT)
-From: Andrea Adami <andrea.adami@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>, linux-kernel@vger.kernel.org
-Subject: [PATCH v9] mtd: sharpslpart: Add sharpslpart partition parser
-Date: Thu, 31 Aug 2017 23:05:07 +0200
-Message-Id: <1504213507-4598-1-git-send-email-andrea.adami@gmail.com>
+Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dnZZ8-0000nf-2G
+ for linux-mtd@lists.infradead.org; Fri, 01 Sep 2017 00:12:10 +0000
+Received: by mail-pg0-x241.google.com with SMTP id m15so716379pgc.0
+ for <linux-mtd@lists.infradead.org>; Thu, 31 Aug 2017 17:11:45 -0700 (PDT)
+From: Eric Biggers <ebiggers3@gmail.com>
+To: linux-fscrypt@vger.kernel.org
+Cc: linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
+Subject: [PATCH v2] fscrypt: add a documentation file for filesystem-level
+ encryption
+Date: Thu, 31 Aug 2017 17:02:17 -0700
+Message-Id: <20170901000217.36965-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,502 +22,675 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Sharp SL Series (Zaurus) PXA handhelds have 16/64/128M of NAND flash
-and share the same layout of the first 7M partition, managed by Sharp FTL.
+From: Eric Biggers <ebiggers@google.com>
 
-GPL 2.4 sources: http://support.ezaurus.com/developer/source/source_dl.asp
+Perhaps long overdue, add a documentation file for filesystem-level
+encryption, a.k.a. fscrypt or fs/crypto/, to the Documentation
+directory.  The new file is based loosely on the latest version of the
+"EXT4 Encryption Design Document (public version)" Google Doc, but with
+many improvements made, including:
 
-The purpose of this self-contained patch is to add a common parser and
-remove the hardcoded sizes in the board files (these devices are not yet
-converted to devicetree).
-Users will have benefits because the mtdparts= tag will not be necessary
-anymore and they will be free to repartition the little sized flash.
+- Reflect the reality that it is not specific to ext4 anymore.
+- More thoroughly document the design and user-visible API/behavior.
+- Replace outdated information, such as the outdated explanation of how
+  encrypted filenames are hashed for indexed directories and how
+  encrypted filenames are presented to userspace without the key.
+  (This was changed just before release.)
 
-The obsolete bootloader can not pass the partitioning info to modern
-kernels anymore so it has to be read from flash at known logical addresses.
-(see http://www.h5.dion.ne.jp/~rimemoon/zaurus/memo_006.htm )
+For now the focus is on the design and user-visible API/behavior, not on
+how to add encryption support to a filesystem --- since the internal API
+is still pretty messy and any standalone documentation for it would
+become outdated as things get refactored over time.
 
-In kernel, under arch/arm/mach-pxa we have already 8 machines:
-MACH_POODLE, MACH_CORGI, MACH_SHEPERD, MACH_HUSKY, MACH_AKITA, MACH_SPITZ,
-MACH_BORZOI, MACH_TOSA.
-Lost after the 2.4 vendor kernel are MACH_BOXER and MACH_TERRIER.
-
-Almost every model has different factory partitioning: add to this the
-units can be repartitioned by users with userspace tools (nandlogical)
-and installers for popular (back then) linux distributions.
-
-The Parameter Area in the first (boot) partition extends from 0x00040000 to
-0x0007bfff (176k) and contains two copies of the partition table:
-...
-0x00060000: Partition Info1     16k
-0x00064000: Partition Info2     16k
-0x00668000: Model               16k
-...
-
-The first 7M partition is managed by the Sharp FTL reserving 5% + 1 blocks
-for wear-leveling: some blocks are remapped and one layer of translation
-(logical to physical) is necessary.
-
-There isn't much documentation about this FTL in the 2.4 sources, just the
-MTD methods for reading and writing using logical addresses and the block
-management (wear-leveling, use counter).
-It seems this FTL was tailored with 16KiB eraesize in mind so to fit one
-param block exactly, to have two copies of the partition table on two
-blocks.
-Later pxa27x devices have same size but 128KiB erasesize and less blocks
-(56 vs. 448) but the same schema was adopted, even if the two tables are
-now in the same eraseblock.
-
-For the purpose of the MTD parser only the read part of the code was taken.
-
-The NAND drivers that can use this parser are sharpsl.c and tmio_nand.c.
-
-Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
-Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
-Changelog:
-v1 firt version, initial import of 2.4 sources
-v2 refactor applying many suggested fixes
-v3 put the partition parser types in the platform data
-v4 refactor after ML review
-v5 fix commit messages and texts, remove global, fixes after v4 review
-v6 refactor memory mgmt passing pointer to the FTL, fixes after v5 review
-v7 verify the oob are free for the FTL, renamings, fixes after v6 review
-v8 remove blank lines, use u8 instead of uint8_t, fixes after v7 review
-v9 fix kbuild failure explicitly including <linux/sizes.h> (for SZ_1M)
+Changes since v1:
+- Mention that using existing userspace tools is preferred
+- Don't start an argument about the best way to get random numbers
+- Make it clear that backup/restore of encrypted files without key is
+  not supported yet
+- Mention a reason why the encryption xattr should not be exposed
+  via the xattr system calls
 
- drivers/mtd/parsers/Kconfig       |   8 +
- drivers/mtd/parsers/Makefile      |   1 +
- drivers/mtd/parsers/sharpslpart.c | 398 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 407 insertions(+)
- create mode 100644 drivers/mtd/parsers/sharpslpart.c
+ Documentation/filesystems/fscrypt.rst | 597 ++++++++++++++++++++++++++++++++++
+ Documentation/filesystems/index.rst   |  11 +
+ MAINTAINERS                           |   1 +
+ 3 files changed, 609 insertions(+)
+ create mode 100644 Documentation/filesystems/fscrypt.rst
 
-diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
-index d206b3c..ee5ab99 100644
---- a/drivers/mtd/parsers/Kconfig
-+++ b/drivers/mtd/parsers/Kconfig
-@@ -6,3 +6,11 @@ config MTD_PARSER_TRX
- 	  may contain up to 3/4 partitions (depending on the version).
- 	  This driver will parse TRX header and report at least two partitions:
- 	  kernel and rootfs.
-+
-+config MTD_SHARPSL_PARTS
-+	tristate "Sharp SL Series NAND flash partition parser"
-+	depends on MTD_NAND_SHARPSL || MTD_NAND_TMIO || COMPILE_TEST
-+	help
-+	  This provides the read-only FTL logic necessary to read the partition
-+	  table from the NAND flash of Sharp SL Series (Zaurus) and the MTD
-+	  partition parser using this code.
-diff --git a/drivers/mtd/parsers/Makefile b/drivers/mtd/parsers/Makefile
-index 4d9024e..5b1bcc3 100644
---- a/drivers/mtd/parsers/Makefile
-+++ b/drivers/mtd/parsers/Makefile
-@@ -1 +1,2 @@
- obj-$(CONFIG_MTD_PARSER_TRX)		+= parser_trx.o
-+obj-$(CONFIG_MTD_SHARPSL_PARTS)		+= sharpslpart.o
-diff --git a/drivers/mtd/parsers/sharpslpart.c b/drivers/mtd/parsers/sharpslpart.c
+diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
 new file mode 100644
-index 0000000..5fe0079
+index 000000000000..ec4cad049dde
 --- /dev/null
-+++ b/drivers/mtd/parsers/sharpslpart.c
-@@ -0,0 +1,398 @@
-+/*
-+ * sharpslpart.c - MTD partition parser for NAND flash using the SHARP FTL
-+ * for logical addressing, as used on the PXA models of the SHARP SL Series.
-+ *
-+ * Copyright (C) 2017 Andrea Adami <andrea.adami@gmail.com>
-+ *
-+ * Based on SHARP GPL 2.4 sources:
-+ *   http://support.ezaurus.com/developer/source/source_dl.asp
-+ *     drivers/mtd/nand/sharp_sl_logical.c
-+ *     linux/include/asm-arm/sharp_nand_logical.h
-+ *
-+ * Copyright (C) 2002 SHARP
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/slab.h>
-+#include <linux/module.h>
-+#include <linux/types.h>
-+#include <linux/bitops.h>
-+#include <linux/sizes.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/partitions.h>
-+
-+/* oob structure */
-+#define NAND_NOOB_LOGADDR_00		8
-+#define NAND_NOOB_LOGADDR_01		9
-+#define NAND_NOOB_LOGADDR_10		10
-+#define NAND_NOOB_LOGADDR_11		11
-+#define NAND_NOOB_LOGADDR_20		12
-+#define NAND_NOOB_LOGADDR_21		13
-+
-+#define BLOCK_IS_RESERVED		0xffff
-+#define BLOCK_UNMASK_COMPLEMENT		1
-+
-+/* factory defaults */
-+#define SHARPSL_NAND_PARTS		3
-+#define SHARPSL_FTL_PART_SIZE		(7 * SZ_1M)
-+#define SHARPSL_PARTINFO1_LADDR		0x00060000
-+#define SHARPSL_PARTINFO2_LADDR		0x00064000
-+
-+#define BOOT_MAGIC			0x424f4f54
-+#define FSRO_MAGIC			0x4653524f
-+#define FSRW_MAGIC			0x46535257
-+
-+/**
-+ * struct sharpsl_ftl - Sharp FTL Logical Table
-+ * @logmax:		number of logical blocks
-+ * @log2phy:		the logical-to-physical table
-+ *
-+ * Structure containing the logical-to-physical translation table
-+ * used by the SHARP SL FTL.
-+ */
-+struct sharpsl_ftl {
-+	unsigned int logmax;
-+	unsigned int *log2phy;
-+};
-+
-+/* verify that the OOB bytes 8 to 15 are free and available for the FTL */
-+static int sharpsl_nand_check_ooblayout(struct mtd_info *mtd)
-+{
-+	u8 freebytes = 0;
-+	int section = 0;
-+
-+	while (true) {
-+		struct mtd_oob_region oobfree = { };
-+		int ret, i;
-+
-+		ret = mtd_ooblayout_free(mtd, section++, &oobfree);
-+		if (ret)
-+			break;
-+
-+		if (!oobfree.length || oobfree.offset > 15 ||
-+		    (oobfree.offset + oobfree.length) < 8)
-+			continue;
-+
-+		i = oobfree.offset >= 8 ? oobfree.offset : 8;
-+		for (; i < oobfree.offset + oobfree.length && i < 16; i++)
-+			freebytes |= BIT(i - 8);
-+
-+		if (freebytes == 0xff)
-+			return 0;
-+	}
-+
-+	return -ENOTSUPP;
-+}
-+
-+static int sharpsl_nand_read_oob(struct mtd_info *mtd, loff_t offs, u8 *buf)
-+{
-+	struct mtd_oob_ops ops = { };
-+	int ret;
-+
-+	ops.mode = MTD_OPS_PLACE_OOB;
-+	ops.ooblen = mtd->oobsize;
-+	ops.oobbuf = buf;
-+
-+	ret = mtd_read_oob(mtd, offs, &ops);
-+	if (ret != 0 || mtd->oobsize != ops.oobretlen)
-+		return -1;
-+
-+	return 0;
-+}
-+
-+/*
-+ * The logical block number assigned to a physical block is stored in the OOB
-+ * of the first page, in 3 16-bit copies with the following layout:
-+ *
-+ * 01234567 89abcdef
-+ * -------- --------
-+ * ECC BB   xyxyxy
-+ *
-+ * When reading we check that the first two copies agree.
-+ * In case of error, matching is tried using the following pairs.
-+ * Reserved values 0xffff mean the block is kept for wear leveling.
-+ *
-+ * 01234567 89abcdef
-+ * -------- --------
-+ * ECC BB   xyxy    oob[8]==oob[10] && oob[9]==oob[11]   -> byte0=8   byte1=9
-+ * ECC BB     xyxy  oob[10]==oob[12] && oob[11]==oob[13] -> byte0=10  byte1=11
-+ * ECC BB   xy  xy  oob[12]==oob[8] && oob[13]==oob[9]   -> byte0=12  byte1=13
-+ */
-+static int sharpsl_nand_get_logical_num(u8 *oob)
-+{
-+	u16 us;
-+	int good0, good1;
-+
-+	if (oob[NAND_NOOB_LOGADDR_00] == oob[NAND_NOOB_LOGADDR_10] &&
-+	    oob[NAND_NOOB_LOGADDR_01] == oob[NAND_NOOB_LOGADDR_11]) {
-+		good0 = NAND_NOOB_LOGADDR_00;
-+		good1 = NAND_NOOB_LOGADDR_01;
-+	} else if (oob[NAND_NOOB_LOGADDR_10] == oob[NAND_NOOB_LOGADDR_20] &&
-+		   oob[NAND_NOOB_LOGADDR_11] == oob[NAND_NOOB_LOGADDR_21]) {
-+		good0 = NAND_NOOB_LOGADDR_10;
-+		good1 = NAND_NOOB_LOGADDR_11;
-+	} else if (oob[NAND_NOOB_LOGADDR_20] == oob[NAND_NOOB_LOGADDR_00] &&
-+		   oob[NAND_NOOB_LOGADDR_21] == oob[NAND_NOOB_LOGADDR_01]) {
-+		good0 = NAND_NOOB_LOGADDR_20;
-+		good1 = NAND_NOOB_LOGADDR_21;
-+	} else {
-+		return -EINVAL;
-+	}
-+
-+	us = oob[good0] | oob[good1] << 8;
-+
-+	/* parity check */
-+	if (hweight16(us) & BLOCK_UNMASK_COMPLEMENT)
-+		return -EINVAL;
-+
-+	/* reserved */
-+	if (us == BLOCK_IS_RESERVED)
-+		return BLOCK_IS_RESERVED;
-+
-+	return (us >> 1) & GENMASK(9, 0);
-+}
-+
-+static int sharpsl_nand_init_ftl(struct mtd_info *mtd, struct sharpsl_ftl *ftl)
-+{
-+	unsigned int block_num, log_num, phymax;
-+	loff_t block_adr;
-+	u8 *oob;
-+	int i, ret;
-+
-+	oob = kzalloc(mtd->oobsize, GFP_KERNEL);
-+	if (!oob)
-+		return -ENOMEM;
-+
-+	phymax = mtd_div_by_eb(SHARPSL_FTL_PART_SIZE, mtd);
-+
-+	/* FTL reserves 5% of the blocks + 1 spare  */
-+	ftl->logmax = ((phymax * 95) / 100) - 1;
-+
-+	ftl->log2phy = kmalloc_array(ftl->logmax, sizeof(*ftl->log2phy),
-+				     GFP_KERNEL);
-+	if (!ftl->log2phy) {
-+		ret = -ENOMEM;
-+		goto exit;
-+	}
-+
-+	/* initialize ftl->log2phy */
-+	for (i = 0; i < ftl->logmax; i++)
-+		ftl->log2phy[i] = UINT_MAX;
-+
-+	/* create physical-logical table */
-+	for (block_num = 0; block_num < phymax; block_num++) {
-+		block_adr = block_num * mtd->erasesize;
-+
-+		if (mtd_block_isbad(mtd, block_adr))
-+			continue;
-+
-+		if (sharpsl_nand_read_oob(mtd, block_adr, oob))
-+			continue;
-+
-+		/* get logical block */
-+		log_num = sharpsl_nand_get_logical_num(oob);
-+
-+		/* cut-off errors and skip the out-of-range values */
-+		if (log_num > 0 && log_num < ftl->logmax) {
-+			if (ftl->log2phy[log_num] == UINT_MAX)
-+				ftl->log2phy[log_num] = block_num;
-+		}
-+	}
-+
-+	pr_info("Sharp SL FTL: %d blocks used (%d logical, %d reserved)\n",
-+		phymax, ftl->logmax, phymax - ftl->logmax);
-+
-+	ret = 0;
-+exit:
-+	kfree(oob);
-+	return ret;
-+}
-+
-+void sharpsl_nand_cleanup_ftl(struct sharpsl_ftl *ftl)
-+{
-+	kfree(ftl->log2phy);
-+}
-+
-+static int sharpsl_nand_read_laddr(struct mtd_info *mtd,
-+				   loff_t from,
-+				   size_t len,
-+				   void *buf,
-+				   struct sharpsl_ftl *ftl)
-+{
-+	unsigned int log_num, final_log_num;
-+	unsigned int block_num;
-+	loff_t block_adr;
-+	loff_t block_ofs;
-+	size_t retlen;
-+	int err;
-+
-+	log_num = mtd_div_by_eb((u32)from, mtd);
-+	final_log_num = mtd_div_by_eb(((u32)from + len - 1), mtd);
-+
-+	if (len <= 0 || log_num >= ftl->logmax || final_log_num > log_num)
-+		return -EINVAL;
-+
-+	block_num = ftl->log2phy[log_num];
-+	block_adr = block_num * mtd->erasesize;
-+	block_ofs = mtd_mod_by_eb((u32)from, mtd);
-+
-+	err = mtd_read(mtd, block_adr + block_ofs, len, &retlen, buf);
-+	/* Ignore corrected ECC errors */
-+	if (mtd_is_bitflip(err))
-+		err = 0;
-+
-+	if (!err && retlen != len)
-+		err = -EIO;
-+
-+	if (err)
-+		pr_err("sharpslpart: error, read failed at %#llx\n",
-+		       block_adr + block_ofs);
-+
-+	return err;
-+}
-+
-+/*
-+ * MTD Partition Parser
-+ *
-+ * Sample values read from SL-C860
-+ *
-+ * # cat /proc/mtd
-+ * dev:    size   erasesize  name
-+ * mtd0: 006d0000 00020000 "Filesystem"
-+ * mtd1: 00700000 00004000 "smf"
-+ * mtd2: 03500000 00004000 "root"
-+ * mtd3: 04400000 00004000 "home"
-+ *
-+ * PARTITIONINFO1
-+ * 0x00060000: 00 00 00 00 00 00 70 00 42 4f 4f 54 00 00 00 00  ......p.BOOT....
-+ * 0x00060010: 00 00 70 00 00 00 c0 03 46 53 52 4f 00 00 00 00  ..p.....FSRO....
-+ * 0x00060020: 00 00 c0 03 00 00 00 04 46 53 52 57 00 00 00 00  ........FSRW....
-+ */
-+struct sharpsl_nand_partinfo {
-+	__le32 start;
-+	__le32 end;
-+	__be32 magic;
-+	u32 reserved;
-+};
-+
-+static int sharpsl_nand_read_partinfo(struct mtd_info *master,
-+				      loff_t from,
-+				      size_t len,
-+				      struct sharpsl_nand_partinfo *buf,
-+				      struct sharpsl_ftl *ftl)
-+{
-+	int ret;
-+
-+	ret = sharpsl_nand_read_laddr(master, from, len, buf, ftl);
-+	if (ret)
-+		return ret;
-+
-+	/* check for magics */
-+	if (be32_to_cpu(buf[0].magic) != BOOT_MAGIC ||
-+	    be32_to_cpu(buf[1].magic) != FSRO_MAGIC ||
-+	    be32_to_cpu(buf[2].magic) != FSRW_MAGIC) {
-+		pr_err("sharpslpart: magic values mismatch\n");
-+		return -EINVAL;
-+	}
-+
-+	/* fixup for hardcoded value 64 MiB (for older models) */
-+	buf[2].end = cpu_to_le32(master->size);
-+
-+	/* extra sanity check */
-+	if (le32_to_cpu(buf[0].end) <= le32_to_cpu(buf[0].start) ||
-+	    le32_to_cpu(buf[1].start) < le32_to_cpu(buf[0].end) ||
-+	    le32_to_cpu(buf[1].end) <= le32_to_cpu(buf[1].start) ||
-+	    le32_to_cpu(buf[2].start) < le32_to_cpu(buf[1].end) ||
-+	    le32_to_cpu(buf[2].end) <= le32_to_cpu(buf[2].start)) {
-+		pr_err("sharpslpart: partition sizes mismatch\n");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int sharpsl_parse_mtd_partitions(struct mtd_info *master,
-+					const struct mtd_partition **pparts,
-+					struct mtd_part_parser_data *data)
-+{
-+	struct sharpsl_ftl ftl;
-+	struct sharpsl_nand_partinfo buf[SHARPSL_NAND_PARTS];
-+	struct mtd_partition *sharpsl_nand_parts;
-+	int err;
-+
-+	/* check that OOB bytes 8 to 15 used by the FTL are actually free */
-+	err = sharpsl_nand_check_ooblayout(master);
-+	if (err)
-+		return err;
-+
-+	/* init logical mgmt (FTL) */
-+	err = sharpsl_nand_init_ftl(master, &ftl);
-+	if (err)
-+		return err;
-+
-+	/* read and validate first partition table */
-+	pr_info("sharpslpart: try reading first partition table\n");
-+	err = sharpsl_nand_read_partinfo(master,
-+					 SHARPSL_PARTINFO1_LADDR,
-+					 sizeof(buf), buf, &ftl);
-+	if (err) {
-+		/* fallback: read second partition table */
-+		pr_warn("sharpslpart: first partition table is invalid, retry using the second\n");
-+		err = sharpsl_nand_read_partinfo(master,
-+						 SHARPSL_PARTINFO2_LADDR,
-+						 sizeof(buf), buf, &ftl);
-+	}
-+
-+	/* cleanup logical mgmt (FTL) */
-+	sharpsl_nand_cleanup_ftl(&ftl);
-+
-+	if (err) {
-+		pr_err("sharpslpart: both partition tables are invalid\n");
-+		return err;
-+	}
-+
-+	sharpsl_nand_parts = kzalloc(sizeof(*sharpsl_nand_parts) *
-+				     SHARPSL_NAND_PARTS, GFP_KERNEL);
-+	if (!sharpsl_nand_parts)
-+		return -ENOMEM;
-+
-+	/* original names */
-+	sharpsl_nand_parts[0].name = "smf";
-+	sharpsl_nand_parts[0].offset = le32_to_cpu(buf[0].start);
-+	sharpsl_nand_parts[0].size = le32_to_cpu(buf[0].end) -
-+				     le32_to_cpu(buf[0].start);
-+
-+	sharpsl_nand_parts[1].name = "root";
-+	sharpsl_nand_parts[1].offset = le32_to_cpu(buf[1].start);
-+	sharpsl_nand_parts[1].size = le32_to_cpu(buf[1].end) -
-+				     le32_to_cpu(buf[1].start);
-+
-+	sharpsl_nand_parts[2].name = "home";
-+	sharpsl_nand_parts[2].offset = le32_to_cpu(buf[2].start);
-+	sharpsl_nand_parts[2].size = le32_to_cpu(buf[2].end) -
-+				     le32_to_cpu(buf[2].start);
-+
-+	*pparts = sharpsl_nand_parts;
-+	return SHARPSL_NAND_PARTS;
-+}
-+
-+static struct mtd_part_parser sharpsl_mtd_parser = {
-+	.parse_fn = sharpsl_parse_mtd_partitions,
-+	.name = "sharpslpart",
-+};
-+module_mtd_part_parser(sharpsl_mtd_parser);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Andrea Adami <andrea.adami@gmail.com>");
-+MODULE_DESCRIPTION("MTD partitioning for NAND flash on Sharp SL Series");
++++ b/Documentation/filesystems/fscrypt.rst
+@@ -0,0 +1,597 @@
++=====================================
++Filesystem-level encryption (fscrypt)
++=====================================
++
++Introduction
++============
++
++fscrypt is a library which filesystems can hook into to support
++transparent encryption of files and directories.
++
++Note: "fscrypt" in this document refers to the kernel-level portion,
++implemented in ``fs/crypto/``, as opposed to the userspace tool
++`fscrypt <https://github.com/google/fscrypt>`_.  This document only
++covers the kernel-level portion.  For command-line examples of how to
++use encryption, see the documentation for the userspace tool `fscrypt
++<https://github.com/google/fscrypt>`_.  Also, it is strongly
++recommended to use the fscrypt userspace tool, or other existing
++userspace tools such as Android's key management system, over using
++the kernel's API directly.  Using existing tools reduces the chance of
++introducing your own security bugs.  (Nevertheless, for completeness
++this documentation covers the kernel's API anyway.)
++
++Unlike dm-crypt, fscrypt operates at the filesystem level rather than
++at the block device level.  This allows it to encrypt different files
++with different keys and to have unencrypted files on the same
++filesystem.  This is useful for multi-user systems where each user's
++data-at-rest needs to be cryptographically isolated from the others.
++However, except for filenames, fscrypt does not encrypt filesystem
++metadata.
++
++Unlike eCryptfs, which is a stacked filesystem, fscrypt is integrated
++directly into supported filesystems --- currently ext4, F2FS, and
++UBIFS.  This allows encrypted files to be read and written without
++caching both the decrypted and encrypted pages in the pagecache,
++thereby halving the memory used and bringing it in line with
++unencrypted files.  Similarly, half as many dentries and inodes are
++needed.  eCryptfs also limits filenames to 143 bytes, causing
++application compatibility issues; fscrypt allows the full 255 bytes
++(NAME_MAX).  Finally, unlike eCryptfs, the fscrypt API can be used by
++unprivileged users, with no need to mount anything.
++
++fscrypt does not support encrypting files in-place.  Instead, it
++supports marking an empty directory as encrypted.  Then, after
++userspace provides the key, all regular files, directories, and
++symbolic links created in that directory tree are transparently
++encrypted.
++
++Threat model
++============
++
++Offline attacks
++---------------
++
++Provided that userspace chooses a strong encryption key, fscrypt
++protects the confidentiality of file contents and filenames in the
++event of a single point-in-time permanent offline compromise of the
++block device content.  fscrypt does not protect the confidentiality of
++non-filename metadata, e.g. file sizes, file permissions, file
++timestamps, and extended attributes.  Also, the existence and location
++of holes (unallocated blocks which logically contain all zeroes) in
++files is not protected.
++
++fscrypt is not guaranteed to protect confidentiality or authenticity
++if an attacker is able to manipulate the filesystem offline prior to
++an authorized user later accessing the filesystem.
++
++Online attacks
++--------------
++
++fscrypt (and storage encryption in general) can only provide limited
++protection, if any at all, against online attacks.  In detail:
++
++fscrypt is only resistant to side-channel attacks, such as timing or
++electromagnetic attacks, to the extent that the underlying Linux
++Cryptographic API algorithms are.  If a vulnerable algorithm is used,
++such as a table-based implementation of AES, it may be possible for an
++attacker to mount a side channel attack against the online system.
++
++After an encryption key has been provided, fscrypt is not designed to
++hide the plaintext file contents or filenames from other users on the
++same system, regardless of the visibility of the keyring key.
++Instead, existing access control mechanisms such as file mode bits,
++POSIX ACLs, or SELinux should be used for this purpose.  Also note
++that as long as the encryption keys are *anywhere* in memory, an
++online attacker can necessarily compromise them by mounting a physical
++attack or by exploiting any kernel security vulnerability which
++provides an arbitrary memory read primitive.
++
++While it is ostensibly possible to "evict" keys from the system,
++recently accessed encrypted files will remain accessible at least
++until the filesystem is unmounted or the VFS caches are dropped, e.g.
++using ``echo 2 > /proc/sys/vm/drop_caches``.  Even after that, if the
++RAM is compromised before being powered off, it will likely still be
++possible to recover portions of the plaintext file contents, if not
++some of the encryption keys as well.  (Since Linux v4.12, all
++in-kernel keys related to fscrypt are sanitized before being freed.
++However, userspace would need to do its part as well.)
++
++Currently, fscrypt does not prevent a user from maliciously providing
++an incorrect key for another user's existing encrypted files.  A
++protection against this is planned.
++
++Key hierarchy
++=============
++
++Master Keys
++-----------
++
++Each encrypted directory tree is protected by a *master key*.  Master
++keys can be up to 64 bytes long, and must be at least as long as the
++greater of the key length needed by the contents and filenames
++encryption modes being used.  For example, if AES-256-XTS is used for
++contents encryption, the master key must be 64 bytes (512 bits).  Note
++that the XTS mode is defined to require a key twice as long as that
++required by the underlying block cipher.
++
++To "unlock" an encrypted directory tree, userspace must provide the
++appropriate master key.  There can be any number of master keys, each
++of which protects any number of directory trees on any number of
++filesystems.
++
++Userspace should generate master keys either using a cryptographically
++secure random number generator, or by using a KDF (Key Derivation
++Function).  Note that whenever a KDF is used to "stretch" a
++lower-entropy secret such as a passphrase, it is critical that a KDF
++designed for this purpose be used, such as scrypt, PBKDF2, or Argon2.
++
++Per-file keys
++-------------
++
++Master keys are not used to encrypt file contents or names directly.
++Instead, a unique key is derived for each encrypted file, including
++each regular file, directory, and symbolic link.  This has several
++advantages:
++
++- In cryptosystems, the same key material should never be used for
++  different purposes.  Using the master key as both an XTS key for
++  contents encryption and as a CTS-CBC key for filenames encryption
++  would violate this rule.
++- Per-file keys simplify the choice of IVs (Initialization Vectors)
++  for contents encryption.  Without per-file keys, to ensure IV
++  uniqueness both the inode and logical block number would need to be
++  encoded in the IVs.  This would make it impossible to renumber
++  inodes, which e.g. ``resize2fs`` can do when resizing an ext4
++  filesystem.  With per-file keys, it is sufficient to encode just the
++  logical block number in the IVs.
++- Per-file keys strengthen the encryption of filenames, where IVs are
++  reused out of necessity.  With a unique key per directory, IV reuse
++  is limited to within a single directory.
++- Per-file keys allow individual files to be securely erased simply by
++  securely erasing their keys.  (Not yet implemented.)
++
++A KDF (Key Derivation Function) is used to derive per-file keys from
++the master key.  This is done instead of wrapping a randomly-generated
++key for each file because it reduces the size of the encryption xattr,
++which for some filesystems makes the xattr more likely to fit in-line
++in the filesystem's inode table.  With a KDF, only a 16-byte nonce is
++required --- long enough to make key reuse extremely unlikely.  A
++wrapped key, on the other hand, would need to be up to 64 bytes ---
++the length of an AES-256-XTS key.  Furthermore, currently there is no
++requirement to support unlocking a file with multiple alternative
++master keys or to support rotating master keys.  Instead, the master
++keys may be wrapped in userspace, e.g. as done by the `fscrypt
++<https://github.com/google/fscrypt>`_ tool.
++
++The current KDF encrypts the master key using the 16-byte nonce as an
++AES-128-ECB key.  The output is used as the derived key.  If the
++output is longer than needed, then it is truncated to the needed
++length.  Truncation is the norm for directories and symlinks, since
++those use the CTS-CBC encryption mode which requires a key half as
++long as that required by the XTS encryption mode.
++
++Note: this KDF meets the primary security requirement, which is to
++produce unique derived keys that preserve the entropy of the master
++key, assuming that the master key is already a good pseudorandom key.
++However, it is nonstandard and has some theoretical problems such as
++being reversible, so it is generally considered to be a mistake!  It
++may be replaced with HKDF or another more standard KDF in the future.
++
++Encryption modes and usage
++==========================
++
++fscrypt allows one encryption mode to be specified for file contents
++and one encryption mode to be specified for filenames.  Different
++directory trees are permitted to use different encryption modes.
++Currently, the following pairs of encryption modes are supported:
++
++- AES-256-XTS for contents and AES-256-CTS-CBC for filenames
++- AES-128-CBC for contents and AES-128-CTS-CBC for filenames
++
++It is strongly recommended to use AES-256-XTS for contents encryption.
++AES-128-CBC was added only for low-powered embedded devices with
++crypto accelerators such as CAAM or CESA that do not support XTS.
++
++New encryption modes can be added relatively easily, without changes
++to individual filesystems.  However, authenticated encryption (AE)
++modes are not currently supported because of the difficulty of dealing
++with ciphertext expansion.
++
++For file contents, each filesystem block is encrypted independently.
++Currently, only the case where the filesystem block size is equal to
++the system's page size (usually 4096 bytes) is supported.  With the
++XTS mode of operation (recommended), the logical block number within
++the file is used as the IV.  With the CBC mode of operation (not
++recommended), ESSIV is used; specifically, the IV for CBC is the
++logical block number encrypted with AES-256, where the AES-256 key is
++the SHA-256 hash of the inode's data encryption key.
++
++For filenames, the full filename is encrypted at once.  Because of the
++requirements to retain support for efficient directory lookups and
++filenames of up to 255 bytes, a constant initialization vector (IV) is
++used.  However, each encrypted directory uses a unique key, which
++limits IV reuse to within a single directory.
++
++Since filenames are encrypted with the CTS-CBC mode of operation, the
++plaintext and ciphertext filenames need not be multiples of the AES
++block size, i.e. 16 bytes.  However, the minimum size that can be
++encrypted is 16 bytes, so shorter filenames are NUL-padded to 16 bytes
++before being encrypted.  In addition, to reduce leakage of filename
++lengths via their ciphertexts, all filenames are NUL-padded to the
++next 4, 8, 16, or 32-byte boundary (configurable).  32 is recommended
++since this provides the best confidentiality, at the cost of making
++directory entries consume slightly more space.  Note that since NUL
++(``\0``) is not otherwise a valid character in filenames, the padding
++will never produce duplicate plaintexts.
++
++Symbolic link targets are considered a type of filename and are
++encrypted in the same way as filenames in directory entries.  Each
++symlink also uses a unique key; hence, the hardcoded IV is not a
++problem for symlinks.
++
++User API
++========
++
++Setting an encryption policy
++----------------------------
++
++The FS_IOC_SET_ENCRYPTION_POLICY ioctl sets an encryption policy on an
++empty directory or verifies that a directory or regular file already
++has the specified encryption policy.  It takes in a pointer to a
++:c:type:`struct fscrypt_policy`, defined as follows::
++
++    #define FS_KEY_DESCRIPTOR_SIZE  8
++
++    struct fscrypt_policy {
++            __u8 version;
++            __u8 contents_encryption_mode;
++            __u8 filenames_encryption_mode;
++            __u8 flags;
++            __u8 master_key_descriptor[FS_KEY_DESCRIPTOR_SIZE];
++    };
++
++This structure must be initialized as follows:
++
++- ``version`` must be 0.
++
++- ``contents_encryption_mode`` and ``filenames_encryption_mode`` must
++  be set to constants from ``<linux/fs.h>`` which identify the
++  encryption modes to use.  If unsure, use
++  FS_ENCRYPTION_MODE_AES_256_XTS (1) for ``contents_encryption_mode``
++  and FS_ENCRYPTION_MODE_AES_256_CTS (4) for
++  ``filenames_encryption_mode``.
++
++- ``flags`` must be set to a value from ``<linux/fs.h>`` which
++  identifies the amount of NUL-padding to use when encrypting
++  filenames.  If unsure, use FS_POLICY_FLAGS_PAD_32 (0x3).
++
++- ``master_key_descriptor`` specifies how to find the master key in
++  the keyring; see `Adding keys`_.  It is up to userspace to choose a
++  unique ``master_key_descriptor`` for each master key.  The e4crypt
++  and fscrypt tools use the first 8 bytes of
++  ``SHA-512(SHA-512(master_key))``, but this particular scheme is not
++  required.  Also, the master key need not be in the keyring yet when
++  FS_IOC_SET_ENCRYPTION_POLICY is executed.  However, it must be added
++  before any files can be created in the encrypted directory.
++
++If the file is not yet encrypted, then FS_IOC_SET_ENCRYPTION_POLICY
++verifies that the file is an empty directory.  If so, the specified
++encryption policy is assigned to the directory, turning it into an
++encrypted directory.  After that, and after providing the
++corresponding master key as described in `Adding keys`_, all regular
++files, directories (recursively), and symlinks created in the
++directory will be encrypted, inheriting the same encryption policy.
++The filenames in the directory's entries will be encrypted as well.
++
++Alternatively, if the file is already encrypted, then
++FS_IOC_SET_ENCRYPTION_POLICY validates that the specified encryption
++policy exactly matches the actual one.  If they match, then the ioctl
++returns 0.  Otherwise, it fails with EEXIST.  This works on both
++regular files and directories, including nonempty directories.
++
++Note that the ext4 filesystem does not allow the root directory to be
++encrypted, even if it is empty.  Users who want to encrypt an entire
++filesystem with one key should consider using dm-crypt instead.
++
++FS_IOC_SET_ENCRYPTION_POLICY can fail with the following errors:
++
++- ``EACCES``: the file is not owned by the process's uid, nor does the
++  process have the CAP_FOWNER capability in a namespace with the file
++  owner's uid mapped
++- ``EEXIST``: the file is already encrypted with an encryption policy
++  different from the one specified
++- ``EINVAL``: an invalid encryption policy was specified (invalid
++  version, mode(s), or flags)
++- ``ENOTDIR``: the file is unencrypted and is a regular file, not a
++  directory
++- ``ENOTEMPTY``: the file is unencrypted and is a nonempty directory
++- ``ENOTTY``: this type of filesystem does not implement encryption
++- ``EOPNOTSUPP``: the kernel was not configured with encryption
++  support for this filesystem, or the filesystem superblock has not
++  had encryption enabled on it.  (For example, to use encryption on an
++  ext4 filesystem, CONFIG_EXT4_ENCRYPTION must be enabled in the
++  kernel config, and the superblock must have had the "encrypt"
++  feature flag enabled using ``tune2fs -O encrypt`` or ``mkfs.ext4 -O
++  encrypt``.)
++- ``EPERM``: this directory may not be encrypted, e.g. because it is
++  the root directory of an ext4 filesystem
++- ``EROFS``: the filesystem is readonly
++
++Getting an encryption policy
++----------------------------
++
++The FS_IOC_GET_ENCRYPTION_POLICY ioctl retrieves the :c:type:`struct
++fscrypt_policy`, if any, for a directory or regular file.  See above
++for the struct definition.  No additional permissions are required
++beyond the ability to open the file.
++
++FS_IOC_GET_ENCRYPTION_POLICY can fail with the following errors:
++
++- ``EINVAL``: the file is encrypted, but it uses an unrecognized
++  encryption context format
++- ``ENODATA``: the file is not encrypted
++- ``ENOTTY``: this type of filesystem does not implement encryption
++- ``EOPNOTSUPP``: the kernel was not configured with encryption
++  support for this filesystem
++
++Note: if you only need to know whether a file is encrypted or not, on
++most filesystems it is also possible to use the FS_IOC_GETFLAGS ioctl
++and check for FS_ENCRYPT_FL, or to use the statx() system call and
++check for STATX_ATTR_ENCRYPTED in stx_attributes.
++
++Getting the per-filesystem salt
++-------------------------------
++
++Some filesystems, such as ext4 and F2FS, also support the deprecated
++ioctl FS_IOC_GET_ENCRYPTION_PWSALT.  This ioctl retrieves a randomly
++generated 16-byte value stored in the filesystem superblock.  This
++value is intended to used as a salt when deriving an encryption key
++from a passphrase or other low-entropy user credential.
++
++FS_IOC_GET_ENCRYPTION_PWSALT is deprecated.  Instead, prefer to
++generate and manage any needed salt(s) in userspace.
++
++Adding keys
++-----------
++
++To provide a master key, userspace must add it to an appropriate
++keyring using the add_key() system call (see:
++``Documentation/security/keys/core.rst``).  The key type must be
++"logon"; keys of this type are kept in kernel memory and cannot be
++read back by userspace.  The key description must be "fscrypt:"
++followed by the 16-character lower case hex representation of the
++``master_key_descriptor`` that was set in the encryption policy.  The
++key payload must conform to the following structure::
++
++    #define FS_MAX_KEY_SIZE 64
++
++    struct fscrypt_key {
++            u32 mode;
++            u8 raw[FS_MAX_KEY_SIZE];
++            u32 size;
++    };
++
++``mode`` is ignored; just set it to 0.  The actual key is provided in
++``raw`` with ``size`` indicating its size in bytes.  That is, the
++bytes ``raw[0..size-1]`` (inclusive) are the actual key.
++
++The key description prefix "fscrypt:" may alternatively be replaced
++with a filesystem-specific prefix such as "ext4:".  However, the
++filesystem-specific prefixes are deprecated and should not be used in
++new programs.
++
++There are several different types of keyrings in which encryption keys
++may be placed, such as a session keyring, a user session keyring, or a
++user keyring.  Each key must be placed in a keyring that is "attached"
++to all processes that might need to access files encrypted with it, in
++the sense that request_key() will find the key.  Generally, if only
++processes belonging to a specific user need to access a given
++encrypted directory and no session keyring has been installed, then
++that directory's key should be placed in that user's user session
++keyring or user keyring.  Otherwise, a session keyring should be
++installed if needed, and the key should be linked into that session
++keyring, or in a keyring linked into that session keyring.
++
++Note: introducing the complex visibility semantics of keyrings here
++was arguably a mistake --- especially given that by design, after any
++process successfully opens an encrypted file (thereby setting up the
++per-file key), possessing the keyring key is not actually required for
++any process to read/write the file until its in-memory inode is
++evicted.  In the future there probably should be a way to provide keys
++directly to the filesystem instead, which would make the intended
++semantics clearer.
++
++Access semantics
++================
++
++With the key
++------------
++
++With the encryption key, encrypted regular files, directories, and
++symlinks behave very similarly to their unencrypted counterparts ---
++after all, the encryption is intended to be transparent.  However,
++astute users may notice some differences in behavior:
++
++- Unencrypted files, or files encrypted with a different encryption
++  policy (i.e. different key, modes, or flags), cannot be renamed or
++  linked into an encrypted directory; see `Encryption policy
++  enforcement`_.  Attempts to do so will fail with EPERM.  However,
++  encrypted files can be renamed within an encrypted directory, or
++  into an unencrypted directory.
++
++- Direct I/O is not supported on encrypted files.  Attempts to use
++  direct I/O on such files will fall back to buffered I/O.
++
++- The fallocate operations FALLOC_FL_COLLAPSE_RANGE,
++  FALLOC_FL_INSERT_RANGE, and FALLOC_FL_ZERO_RANGE are not supported
++  on encrypted files and will fail with EOPNOTSUPP.
++
++- Online defragmentation of encrypted files is not supported.  The
++  EXT4_IOC_MOVE_EXT and F2FS_IOC_MOVE_RANGE ioctls will fail with
++  EOPNOTSUPP.
++
++- The ext4 filesystem does not support data journaling with encrypted
++  regular files.  It will fall back to ordered data mode instead.
++
++- DAX (Direct Access) is not supported on encrypted files.
++
++- The st_size of an encrypted symlink will not necessarily give the
++  length of the symlink target as required by POSIX.  It will actually
++  give the length of the ciphertext, which may be slightly longer than
++  the plaintext due to the NUL-padding.
++
++Note that mmap *is* supported.  This is possible because the pagecache
++for an encrypted file contains the plaintext, not the ciphertext.
++
++Without the key
++---------------
++
++Some filesystem operations may be performed on encrypted regular
++files, directories, and symlinks even before their encryption key has
++been provided:
++
++- File metadata may be read, e.g. using stat().
++
++- Directories may be listed, in which case the filenames will be
++  listed in an encoded form derived from their ciphertext.  The
++  current encoding algorithm is described in `Filename hashing and
++  encoding`_.  The algorithm is subject to change, but it is
++  guaranteed that the presented filenames will be no longer than
++  NAME_MAX bytes, will not contain the ``/`` or ``\0`` characters, and
++  will uniquely identify directory entries.
++
++  The ``.`` and ``..`` directory entries are special.  They are always
++  present and are not encrypted or encoded.
++
++- Files may be deleted.  That is, nondirectory files may be deleted
++  with unlink() as usual, and empty directories may be deleted with
++  rmdir() as usual.  Therefore, ``rm`` and ``rm -r`` will work as
++  expected.
++
++- Symlink targets may be read and followed, but they will be presented
++  in encrypted form, similar to filenames in directories.  Hence, they
++  are unlikely to point to anywhere useful.
++
++Without the key, regular files cannot be opened or truncated.
++Attempts to do so will fail with ENOKEY.  This implies that any
++regular file operations that require a file descriptor, such as
++read(), write(), mmap(), fallocate(), and ioctl(), are also forbidden.
++
++Also without the key, files of any type (including directories) cannot
++be created or linked into an encrypted directory, nor can a name in an
++encrypted directory be the source or target of a rename, nor can an
++O_TMPFILE temporary file be created in an encrypted directory.  All
++such operations will fail with ENOKEY.
++
++It is not currently possible to backup and restore encrypted files
++without the encryption key.  This would require special APIs which
++have not yet been implemented.
++
++Encryption policy enforcement
++=============================
++
++After an encryption policy has been set on a directory, all regular
++files, directories, and symbolic links created in that directory
++(recursively) will inherit that encryption policy.  Special files ---
++that is, named pipes, device nodes, and UNIX domain sockets --- will
++not be encrypted.
++
++Except for those special files, it is forbidden to have unencrypted
++files, or files encrypted with a different encryption policy, in an
++encrypted directory tree.  Attempts to link or rename such a file into
++an encrypted directory will fail with EPERM.  This is also enforced
++during ->lookup() to provide limited protection against offline
++attacks that try to disable or downgrade encryption in known locations
++where applications may later write sensitive data.
++
++Implementation details
++======================
++
++Encryption context
++------------------
++
++An encryption policy is represented on-disk by a :c:type:`struct
++fscrypt_context`.  It is up to individual filesystems to decide where
++to store it, but normally it would be stored in a hidden extended
++attribute.  It should *not* be exposed by the xattr-related system
++calls such as getxattr() and setxattr() because of the special
++semantics of the encryption xattr.  (In particular, there would be
++much confusion if an encryption policy were to be added to or removed
++from anything other than an empty directory.)  The struct is defined
++as follows::
++
++    #define FS_KEY_DESCRIPTOR_SIZE  8
++    #define FS_KEY_DERIVATION_NONCE_SIZE 16
++
++    struct fscrypt_context {
++            u8 format;
++            u8 contents_encryption_mode;
++            u8 filenames_encryption_mode;
++            u8 flags;
++            u8 master_key_descriptor[FS_KEY_DESCRIPTOR_SIZE];
++            u8 nonce[FS_KEY_DERIVATION_NONCE_SIZE];
++    };
++
++Note that :c:type:`struct fscrypt_context` contains the same
++information as :c:type:`struct fscrypt_policy` (see `Setting an
++encryption policy`_), except that :c:type:`struct fscrypt_context`
++also contains a nonce.  The nonce is randomly generated by the kernel
++and is used to derive the inode's encryption key as described in
++`Per-file keys`_.
++
++Data path changes
++-----------------
++
++For the read path (->readpage()) of regular files, filesystems can
++read the ciphertext into the page cache and decrypt it in-place.  The
++page lock must be held until decryption has finished, to prevent the
++page from becoming visible to userspace prematurely.
++
++For the write path (->writepage()) of regular files, filesystems
++cannot encrypt data in-place in the page cache, since the cached
++plaintext must be preserved.  Instead, filesystems must encrypt into a
++temporary buffer or "bounce page", then write out the temporary
++buffer.  Some filesystems, such as UBIFS, already use temporary
++buffers regardless of encryption.  Other filesystems, such as ext4 and
++F2FS, have to allocate bounce pages specially for encryption.
++
++Filename hashing and encoding
++-----------------------------
++
++Modern filesystems accelerate directory lookups by using indexed
++directories.  An indexed directory is organized as a tree keyed by
++filename hashes.  When a ->lookup() is requested, the filesystem
++normally hashes the filename being looked up so that it can quickly
++find the corresponding directory entry, if any.
++
++With encryption, lookups must be supported and efficient both with and
++without the encryption key.  Clearly, it would not work to hash the
++plaintext filenames, since the plaintext filenames are unavailable
++without the key.  (Hashing the plaintext filenames would also make it
++impossible for the filesystem's fsck tool to optimize encrypted
++directories.)  Instead, filesystems hash the ciphertext filenames,
++i.e. the bytes actually stored on-disk in the directory entries.  When
++asked to do a ->lookup() with the key, the filesystem just encrypts
++the user-supplied name to get the ciphertext.
++
++Lookups without the key are more complicated.  The raw ciphertext may
++contain the ``\0`` and ``/`` characters, which are illegal in
++filenames.  Therefore, readdir() must base64-encode the ciphertext for
++presentation.  For most filenames, this works fine; on ->lookup(), the
++filesystem just base64-decodes the user-supplied name to get back to
++the raw ciphertext.
++
++However, for very long filenames, base64 encoding would cause the
++filename length to exceed NAME_MAX.  To prevent this, readdir()
++actually presents long filenames in an abbreviated form which encodes
++a strong "hash" of the ciphertext filename, along with the optional
++filesystem-specific hash(es) needed for directory lookups.  This
++allows the filesystem to still, with a high degree of confidence, map
++the filename given in ->lookup() back to a particular directory entry
++that was previously listed by readdir().  See :c:type:`struct
++fscrypt_digested_name` in the source for more details.
++
++Note that the precise way that filenames are presented to userspace
++without the key is subject to change in the future.  It is only meant
++as a way to temporarily present valid filenames so that commands like
++``rm -r`` work as expected on encrypted directories.
+diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
+index 256e10eedba4..53b89d0edc15 100644
+--- a/Documentation/filesystems/index.rst
++++ b/Documentation/filesystems/index.rst
+@@ -315,3 +315,14 @@ exported for use by modules.
+    :internal:
+ 
+ .. kernel-doc:: fs/pipe.c
++
++Encryption API
++==============
++
++A library which filesystems can hook into to support transparent
++encryption of files and directories.
++
++.. toctree::
++    :maxdepth: 2
++
++    fscrypt
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 1c3feffb1c1c..beee181ec84e 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5558,6 +5558,7 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tytso/fscrypt.git
+ S:	Supported
+ F:	fs/crypto/
+ F:	include/linux/fscrypt*.h
++F:	Documentation/filesystems/fscrypt.rst
+ 
+ FUJITSU FR-V (FRV) PORT
+ S:	Orphan
 -- 
-2.7.4
+2.14.1.581.gf28d330327-goog
