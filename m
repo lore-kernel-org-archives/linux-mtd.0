@@ -1,9 +1,9 @@
-Received: from mail-io0-x243.google.com ([2607:f8b0:4001:c06::243])
+Received: from mail-io0-x242.google.com ([2607:f8b0:4001:c06::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dngoo-0001X8-7O
- for linux-mtd@lists.infradead.org; Fri, 01 Sep 2017 07:56:47 +0000
-Received: by mail-io0-x243.google.com with SMTP id f99so2172716ioi.0
- for <linux-mtd@lists.infradead.org>; Fri, 01 Sep 2017 00:56:25 -0700 (PDT)
+ id 1dngop-0001Xz-64
+ for linux-mtd@lists.infradead.org; Fri, 01 Sep 2017 07:56:48 +0000
+Received: by mail-io0-x242.google.com with SMTP id z67so339458iof.1
+ for <linux-mtd@lists.infradead.org>; Fri, 01 Sep 2017 00:56:31 -0700 (PDT)
 From: Bin Meng <bmeng.cn@gmail.com>
 To: Mika Westerberg <mika.westerberg@linux.intel.com>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
@@ -14,9 +14,10 @@ To: Mika Westerberg <mika.westerberg@linux.intel.com>,
  linux-mtd <linux-mtd@lists.infradead.org>,
  linux-kernel <linux-kernel@vger.kernel.org>
 Cc: Stefan Roese <sr@denx.de>
-Subject: [PATCH 03/10] spi-nor: intel-spi: Fix broken software sequencing codes
-Date: Fri,  1 Sep 2017 01:00:34 -0700
-Message-Id: <1504252841-2445-4-git-send-email-bmeng.cn@gmail.com>
+Subject: [PATCH 06/10] spi-nor: intel-spi: Remove 'Atomic Cycle Sequence' in
+ intel_spi_write()
+Date: Fri,  1 Sep 2017 01:00:37 -0700
+Message-Id: <1504252841-2445-7-git-send-email-bmeng.cn@gmail.com>
 In-Reply-To: <1504252841-2445-1-git-send-email-bmeng.cn@gmail.com>
 References: <1504252841-2445-1-git-send-email-bmeng.cn@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,39 +29,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There are two bugs in current intel_spi_sw_cycle():
-
-- The 'data byte count' field should be the number of bytes
-  transferred minus 1
-- SSFSTS_CTL is the offset from ispi->sregs, not ispi->base
+So far intel_spi_write() uses the HW sequencer to do the write. But
+the HW sequencer register HSFSTS_CTL does not have such a field for
+'Atomic Cycle Sequence', remove it.
 
 Signed-off-by: Bin Meng <bmeng.cn@gmail.com>
 ---
 
- drivers/mtd/spi-nor/intel-spi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/spi-nor/intel-spi.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
-index 07626ca..263c6ab 100644
+index d0237fe..757b9f1 100644
 --- a/drivers/mtd/spi-nor/intel-spi.c
 +++ b/drivers/mtd/spi-nor/intel-spi.c
-@@ -426,7 +426,7 @@ static int intel_spi_sw_cycle(struct intel_spi *ispi, u8 opcode, int len)
- 	if (ret < 0)
- 		return ret;
+@@ -572,11 +572,6 @@ static ssize_t intel_spi_write(struct spi_nor *nor, loff_t to, size_t len,
+ 		val |= HSFSTS_CTL_AEL | HSFSTS_CTL_FCERR | HSFSTS_CTL_FDONE;
+ 		val |= (block_size - 1) << HSFSTS_CTL_FDBC_SHIFT;
+ 		val |= HSFSTS_CTL_FCYCLE_WRITE;
+-
+-		/* Write enable */
+-		if (ispi->preopcodes[1] == SPINOR_OP_WREN)
+-			val |= SSFSTS_CTL_SPOP;
+-		val |= SSFSTS_CTL_ACS;
+ 		writel(val, ispi->base + HSFSTS_CTL);
  
--	val = (len << SSFSTS_CTL_DBC_SHIFT) | SSFSTS_CTL_DS;
-+	val = ((len - 1) << SSFSTS_CTL_DBC_SHIFT) | SSFSTS_CTL_DS;
- 	val |= ret << SSFSTS_CTL_COP_SHIFT;
- 	val |= SSFSTS_CTL_FCERR | SSFSTS_CTL_FDONE;
- 	val |= SSFSTS_CTL_SCGO;
-@@ -436,7 +436,7 @@ static int intel_spi_sw_cycle(struct intel_spi *ispi, u8 opcode, int len)
- 	if (ret)
- 		return ret;
- 
--	status = readl(ispi->base + SSFSTS_CTL);
-+	status = readl(ispi->sregs + SSFSTS_CTL);
- 	if (status & SSFSTS_CTL_FCERR)
- 		return -EIO;
- 	else if (status & SSFSTS_CTL_AEL)
+ 		ret = intel_spi_write_block(ispi, write_buf, block_size);
 -- 
 2.9.2
