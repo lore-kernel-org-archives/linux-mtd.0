@@ -1,9 +1,9 @@
-Received: from mail-io0-x242.google.com ([2607:f8b0:4001:c06::242])
+Received: from mail-io0-x244.google.com ([2607:f8b0:4001:c06::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dngok-0001Wp-GI
- for linux-mtd@lists.infradead.org; Fri, 01 Sep 2017 07:56:44 +0000
-Received: by mail-io0-x242.google.com with SMTP id z67so339074iof.1
- for <linux-mtd@lists.infradead.org>; Fri, 01 Sep 2017 00:56:22 -0700 (PDT)
+ id 1dngon-0001Xo-CP
+ for linux-mtd@lists.infradead.org; Fri, 01 Sep 2017 07:56:47 +0000
+Received: by mail-io0-x244.google.com with SMTP id 2so2154335ion.3
+ for <linux-mtd@lists.infradead.org>; Fri, 01 Sep 2017 00:56:29 -0700 (PDT)
 From: Bin Meng <bmeng.cn@gmail.com>
 To: Mika Westerberg <mika.westerberg@linux.intel.com>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
@@ -14,10 +14,9 @@ To: Mika Westerberg <mika.westerberg@linux.intel.com>,
  linux-mtd <linux-mtd@lists.infradead.org>,
  linux-kernel <linux-kernel@vger.kernel.org>
 Cc: Stefan Roese <sr@denx.de>
-Subject: [PATCH 01/10] spi-nor: intel-spi: Fix number of protected range
- registers for BYT/LPT
-Date: Fri,  1 Sep 2017 01:00:32 -0700
-Message-Id: <1504252841-2445-2-git-send-email-bmeng.cn@gmail.com>
+Subject: [PATCH 05/10] spi-nor: intel-spi: Use SW sequencer for BYT/LPT
+Date: Fri,  1 Sep 2017 01:00:36 -0700
+Message-Id: <1504252841-2445-6-git-send-email-bmeng.cn@gmail.com>
 In-Reply-To: <1504252841-2445-1-git-send-email-bmeng.cn@gmail.com>
 References: <1504252841-2445-1-git-send-email-bmeng.cn@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,112 +28,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The number of protected range registers is not the same on BYT/LPT/
-BXT. GPR0 only exists on Apollo Lake and its offset is reserved on
-other platforms.
+Baytrail/Lynx Point SPI controller's HW sequencer only supports basic
+operations. This is determined by the chipset design, however current
+codes try to use register values in OPMENU0/OPMENU1 to see whether SW
+sequencer should be used, which is wrong. In fact OPMENU0/OPMENU1 can
+remain unprogrammed by some bootloaders.
 
 Signed-off-by: Bin Meng <bmeng.cn@gmail.com>
 ---
 
- drivers/mtd/spi-nor/intel-spi.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ drivers/mtd/spi-nor/intel-spi.c | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
-index 8a596bf..e5b52e8 100644
+index c4a9de6..d0237fe 100644
 --- a/drivers/mtd/spi-nor/intel-spi.c
 +++ b/drivers/mtd/spi-nor/intel-spi.c
-@@ -67,8 +67,6 @@
- #define PR_LIMIT_MASK			(0x3fff << PR_LIMIT_SHIFT)
- #define PR_RPE				BIT(15)
- #define PR_BASE_MASK			0x3fff
--/* Last PR is GPR0 */
--#define PR_NUM				(5 + 1)
- 
- /* Offsets are from @ispi->sregs */
- #define SSFSTS_CTL			0x00
-@@ -96,14 +94,17 @@
- #define BYT_BCR				0xfc
- #define BYT_BCR_WPD			BIT(0)
- #define BYT_FREG_NUM			5
-+#define BYT_PR_NUM			5
- 
- #define LPT_PR				0x74
- #define LPT_SSFSTS_CTL			0x90
- #define LPT_FREG_NUM			5
-+#define LPT_PR_NUM			5
- 
- #define BXT_PR				0x84
- #define BXT_SSFSTS_CTL			0xa0
- #define BXT_FREG_NUM			12
-+#define BXT_PR_NUM			6
- 
- #define INTEL_SPI_TIMEOUT		5000 /* ms */
- #define INTEL_SPI_FIFO_SZ		64
-@@ -117,6 +118,7 @@
-  * @pregs: Start of protection registers
-  * @sregs: Start of software sequencer registers
-  * @nregions: Maximum number of regions
-+ * @pr_num: Maximum number of protected range registers
-  * @writeable: Is the chip writeable
-  * @swseq: Use SW sequencer in register reads/writes
-  * @erase_64k: 64k erase supported
-@@ -132,6 +134,7 @@ struct intel_spi {
- 	void __iomem *pregs;
- 	void __iomem *sregs;
- 	size_t nregions;
-+	size_t pr_num;
- 	bool writeable;
- 	bool swseq;
- 	bool erase_64k;
-@@ -167,7 +170,7 @@ static void intel_spi_dump_regs(struct intel_spi *ispi)
- 	for (i = 0; i < ispi->nregions; i++)
- 		dev_dbg(ispi->dev, "FREG(%d)=0x%08x\n", i,
- 			readl(ispi->base + FREG(i)));
--	for (i = 0; i < PR_NUM; i++)
-+	for (i = 0; i < ispi->pr_num; i++)
- 		dev_dbg(ispi->dev, "PR(%d)=0x%08x\n", i,
- 			readl(ispi->pregs + PR(i)));
- 
-@@ -182,7 +185,7 @@ static void intel_spi_dump_regs(struct intel_spi *ispi)
- 		dev_dbg(ispi->dev, "BCR=0x%08x\n", readl(ispi->base + BYT_BCR));
- 
- 	dev_dbg(ispi->dev, "Protected regions:\n");
--	for (i = 0; i < PR_NUM; i++) {
-+	for (i = 0; i < ispi->pr_num; i++) {
- 		u32 base, limit;
- 
- 		value = readl(ispi->pregs + PR(i));
-@@ -286,6 +289,7 @@ static int intel_spi_init(struct intel_spi *ispi)
- 		ispi->sregs = ispi->base + BYT_SSFSTS_CTL;
+@@ -290,6 +290,7 @@ static int intel_spi_init(struct intel_spi *ispi)
  		ispi->pregs = ispi->base + BYT_PR;
  		ispi->nregions = BYT_FREG_NUM;
-+		ispi->pr_num = BYT_PR_NUM;
+ 		ispi->pr_num = BYT_PR_NUM;
++		ispi->swseq = true;
  
  		if (writeable) {
  			/* Disable write protection */
-@@ -305,12 +309,14 @@ static int intel_spi_init(struct intel_spi *ispi)
- 		ispi->sregs = ispi->base + LPT_SSFSTS_CTL;
+@@ -310,6 +311,7 @@ static int intel_spi_init(struct intel_spi *ispi)
  		ispi->pregs = ispi->base + LPT_PR;
  		ispi->nregions = LPT_FREG_NUM;
-+		ispi->pr_num = LPT_PR_NUM;
+ 		ispi->pr_num = LPT_PR_NUM;
++		ispi->swseq = true;
  		break;
  
  	case INTEL_SPI_BXT:
- 		ispi->sregs = ispi->base + BXT_SSFSTS_CTL;
- 		ispi->pregs = ispi->base + BXT_PR;
- 		ispi->nregions = BXT_FREG_NUM;
-+		ispi->pr_num = BXT_PR_NUM;
- 		ispi->erase_64k = true;
- 		break;
+@@ -324,12 +326,24 @@ static int intel_spi_init(struct intel_spi *ispi)
+ 		return -EINVAL;
+ 	}
  
-@@ -652,7 +658,7 @@ static bool intel_spi_is_protected(const struct intel_spi *ispi,
- {
- 	int i;
+-	/* Disable #SMI generation */
++	/* Disable #SMI generation from HW sequencer */
+ 	val = readl(ispi->base + HSFSTS_CTL);
+ 	val &= ~HSFSTS_CTL_FSMIE;
+ 	writel(val, ispi->base + HSFSTS_CTL);
  
--	for (i = 0; i < PR_NUM; i++) {
-+	for (i = 0; i < ispi->pr_num; i++) {
- 		u32 pr_base, pr_limit, pr_value;
+ 	/*
++	 * Some controllers can only do basic operations using hardware
++	 * sequencer. All other operations are supposed to be carried out
++	 * using software sequencer.
++	 */
++	if (ispi->swseq) {
++		/* Disable #SMI generation from SW sequencer */
++		val = readl(ispi->sregs + SSFSTS_CTL);
++		val &= ~SSFSTS_CTL_FSMIE;
++		writel(val, ispi->sregs + SSFSTS_CTL);
++	}
++
++	/*
+ 	 * BIOS programs allowed opcodes and then locks down the register.
+ 	 * So read back what opcodes it decided to support. That's the set
+ 	 * we are going to support as well.
+@@ -337,13 +351,6 @@ static int intel_spi_init(struct intel_spi *ispi)
+ 	opmenu0 = readl(ispi->sregs + OPMENU0);
+ 	opmenu1 = readl(ispi->sregs + OPMENU1);
  
- 		pr_value = readl(ispi->pregs + PR(i));
+-	/*
+-	 * Some controllers can only do basic operations using hardware
+-	 * sequencer. All other operations are supposed to be carried out
+-	 * using software sequencer. If we find that BIOS has programmed
+-	 * opcodes for the software sequencer we use that over the hardware
+-	 * sequencer.
+-	 */
+ 	if (opmenu0 && opmenu1) {
+ 		for (i = 0; i < ARRAY_SIZE(ispi->opcodes) / 2; i++) {
+ 			ispi->opcodes[i] = opmenu0 >> i * 8;
+@@ -353,13 +360,6 @@ static int intel_spi_init(struct intel_spi *ispi)
+ 		val = readl(ispi->sregs + PREOP_OPTYPE);
+ 		ispi->preopcodes[0] = val;
+ 		ispi->preopcodes[1] = val >> 8;
+-
+-		/* Disable #SMI generation from SW sequencer */
+-		val = readl(ispi->sregs + SSFSTS_CTL);
+-		val &= ~SSFSTS_CTL_FSMIE;
+-		writel(val, ispi->sregs + SSFSTS_CTL);
+-
+-		ispi->swseq = true;
+ 	}
+ 
+ 	intel_spi_dump_regs(ispi);
 -- 
 2.9.2
