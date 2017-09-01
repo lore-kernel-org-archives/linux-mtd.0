@@ -1,9 +1,9 @@
-Received: from mail-io0-x244.google.com ([2607:f8b0:4001:c06::244])
+Received: from mail-io0-x243.google.com ([2607:f8b0:4001:c06::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dngon-0001Xo-CP
+ id 1dngoo-0001X8-7O
  for linux-mtd@lists.infradead.org; Fri, 01 Sep 2017 07:56:47 +0000
-Received: by mail-io0-x244.google.com with SMTP id 2so2154335ion.3
- for <linux-mtd@lists.infradead.org>; Fri, 01 Sep 2017 00:56:29 -0700 (PDT)
+Received: by mail-io0-x243.google.com with SMTP id f99so2172716ioi.0
+ for <linux-mtd@lists.infradead.org>; Fri, 01 Sep 2017 00:56:25 -0700 (PDT)
 From: Bin Meng <bmeng.cn@gmail.com>
 To: Mika Westerberg <mika.westerberg@linux.intel.com>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
@@ -14,9 +14,9 @@ To: Mika Westerberg <mika.westerberg@linux.intel.com>,
  linux-mtd <linux-mtd@lists.infradead.org>,
  linux-kernel <linux-kernel@vger.kernel.org>
 Cc: Stefan Roese <sr@denx.de>
-Subject: [PATCH 05/10] spi-nor: intel-spi: Use SW sequencer for BYT/LPT
-Date: Fri,  1 Sep 2017 01:00:36 -0700
-Message-Id: <1504252841-2445-6-git-send-email-bmeng.cn@gmail.com>
+Subject: [PATCH 03/10] spi-nor: intel-spi: Fix broken software sequencing codes
+Date: Fri,  1 Sep 2017 01:00:34 -0700
+Message-Id: <1504252841-2445-4-git-send-email-bmeng.cn@gmail.com>
 In-Reply-To: <1504252841-2445-1-git-send-email-bmeng.cn@gmail.com>
 References: <1504252841-2445-1-git-send-email-bmeng.cn@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,91 +28,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Baytrail/Lynx Point SPI controller's HW sequencer only supports basic
-operations. This is determined by the chipset design, however current
-codes try to use register values in OPMENU0/OPMENU1 to see whether SW
-sequencer should be used, which is wrong. In fact OPMENU0/OPMENU1 can
-remain unprogrammed by some bootloaders.
+There are two bugs in current intel_spi_sw_cycle():
+
+- The 'data byte count' field should be the number of bytes
+  transferred minus 1
+- SSFSTS_CTL is the offset from ispi->sregs, not ispi->base
 
 Signed-off-by: Bin Meng <bmeng.cn@gmail.com>
 ---
 
- drivers/mtd/spi-nor/intel-spi.c | 30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+ drivers/mtd/spi-nor/intel-spi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
-index c4a9de6..d0237fe 100644
+index 07626ca..263c6ab 100644
 --- a/drivers/mtd/spi-nor/intel-spi.c
 +++ b/drivers/mtd/spi-nor/intel-spi.c
-@@ -290,6 +290,7 @@ static int intel_spi_init(struct intel_spi *ispi)
- 		ispi->pregs = ispi->base + BYT_PR;
- 		ispi->nregions = BYT_FREG_NUM;
- 		ispi->pr_num = BYT_PR_NUM;
-+		ispi->swseq = true;
+@@ -426,7 +426,7 @@ static int intel_spi_sw_cycle(struct intel_spi *ispi, u8 opcode, int len)
+ 	if (ret < 0)
+ 		return ret;
  
- 		if (writeable) {
- 			/* Disable write protection */
-@@ -310,6 +311,7 @@ static int intel_spi_init(struct intel_spi *ispi)
- 		ispi->pregs = ispi->base + LPT_PR;
- 		ispi->nregions = LPT_FREG_NUM;
- 		ispi->pr_num = LPT_PR_NUM;
-+		ispi->swseq = true;
- 		break;
+-	val = (len << SSFSTS_CTL_DBC_SHIFT) | SSFSTS_CTL_DS;
++	val = ((len - 1) << SSFSTS_CTL_DBC_SHIFT) | SSFSTS_CTL_DS;
+ 	val |= ret << SSFSTS_CTL_COP_SHIFT;
+ 	val |= SSFSTS_CTL_FCERR | SSFSTS_CTL_FDONE;
+ 	val |= SSFSTS_CTL_SCGO;
+@@ -436,7 +436,7 @@ static int intel_spi_sw_cycle(struct intel_spi *ispi, u8 opcode, int len)
+ 	if (ret)
+ 		return ret;
  
- 	case INTEL_SPI_BXT:
-@@ -324,12 +326,24 @@ static int intel_spi_init(struct intel_spi *ispi)
- 		return -EINVAL;
- 	}
- 
--	/* Disable #SMI generation */
-+	/* Disable #SMI generation from HW sequencer */
- 	val = readl(ispi->base + HSFSTS_CTL);
- 	val &= ~HSFSTS_CTL_FSMIE;
- 	writel(val, ispi->base + HSFSTS_CTL);
- 
- 	/*
-+	 * Some controllers can only do basic operations using hardware
-+	 * sequencer. All other operations are supposed to be carried out
-+	 * using software sequencer.
-+	 */
-+	if (ispi->swseq) {
-+		/* Disable #SMI generation from SW sequencer */
-+		val = readl(ispi->sregs + SSFSTS_CTL);
-+		val &= ~SSFSTS_CTL_FSMIE;
-+		writel(val, ispi->sregs + SSFSTS_CTL);
-+	}
-+
-+	/*
- 	 * BIOS programs allowed opcodes and then locks down the register.
- 	 * So read back what opcodes it decided to support. That's the set
- 	 * we are going to support as well.
-@@ -337,13 +351,6 @@ static int intel_spi_init(struct intel_spi *ispi)
- 	opmenu0 = readl(ispi->sregs + OPMENU0);
- 	opmenu1 = readl(ispi->sregs + OPMENU1);
- 
--	/*
--	 * Some controllers can only do basic operations using hardware
--	 * sequencer. All other operations are supposed to be carried out
--	 * using software sequencer. If we find that BIOS has programmed
--	 * opcodes for the software sequencer we use that over the hardware
--	 * sequencer.
--	 */
- 	if (opmenu0 && opmenu1) {
- 		for (i = 0; i < ARRAY_SIZE(ispi->opcodes) / 2; i++) {
- 			ispi->opcodes[i] = opmenu0 >> i * 8;
-@@ -353,13 +360,6 @@ static int intel_spi_init(struct intel_spi *ispi)
- 		val = readl(ispi->sregs + PREOP_OPTYPE);
- 		ispi->preopcodes[0] = val;
- 		ispi->preopcodes[1] = val >> 8;
--
--		/* Disable #SMI generation from SW sequencer */
--		val = readl(ispi->sregs + SSFSTS_CTL);
--		val &= ~SSFSTS_CTL_FSMIE;
--		writel(val, ispi->sregs + SSFSTS_CTL);
--
--		ispi->swseq = true;
- 	}
- 
- 	intel_spi_dump_regs(ispi);
+-	status = readl(ispi->base + SSFSTS_CTL);
++	status = readl(ispi->sregs + SSFSTS_CTL);
+ 	if (status & SSFSTS_CTL_FCERR)
+ 		return -EIO;
+ 	else if (status & SSFSTS_CTL_AEL)
 -- 
 2.9.2
