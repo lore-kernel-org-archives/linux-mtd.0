@@ -1,25 +1,26 @@
-Received: from mail-io0-x243.google.com ([2607:f8b0:4001:c06::243])
+Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dngox-0001Z1-TA
- for linux-mtd@lists.infradead.org; Fri, 01 Sep 2017 07:56:57 +0000
-Received: by mail-io0-x243.google.com with SMTP id 2so2154610ion.3
- for <linux-mtd@lists.infradead.org>; Fri, 01 Sep 2017 00:56:36 -0700 (PDT)
-From: Bin Meng <bmeng.cn@gmail.com>
-To: Mika Westerberg <mika.westerberg@linux.intel.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ id 1dnib7-0002sJ-MJ
+ for linux-mtd@lists.infradead.org; Fri, 01 Sep 2017 09:50:47 +0000
+Date: Fri, 1 Sep 2017 12:45:53 +0300
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Bin Meng <bmeng.cn@gmail.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
  Marek Vasut <marek.vasut@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  linux-mtd <linux-mtd@lists.infradead.org>,
- linux-kernel <linux-kernel@vger.kernel.org>
-Cc: Stefan Roese <sr@denx.de>
-Subject: [PATCH 09/10] spi-nor: intel-spi: Rename swseq to swseq_reg in
- 'struct intel_spi'
-Date: Fri,  1 Sep 2017 01:00:40 -0700
-Message-Id: <1504252841-2445-10-git-send-email-bmeng.cn@gmail.com>
-In-Reply-To: <1504252841-2445-1-git-send-email-bmeng.cn@gmail.com>
+ linux-kernel <linux-kernel@vger.kernel.org>, Stefan Roese <sr@denx.de>
+Subject: Re: [PATCH 03/10] spi-nor: intel-spi: Fix broken software sequencing
+ codes
+Message-ID: <20170901094553.GX2598@lahna.fi.intel.com>
 References: <1504252841-2445-1-git-send-email-bmeng.cn@gmail.com>
+ <1504252841-2445-4-git-send-email-bmeng.cn@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1504252841-2445-4-git-send-email-bmeng.cn@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,90 +30,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The ispi->swseq is used for register access. Let's rename it to
-swseq_reg to better describe its usage.
+On Fri, Sep 01, 2017 at 01:00:34AM -0700, Bin Meng wrote:
+> There are two bugs in current intel_spi_sw_cycle():
+> 
+> - The 'data byte count' field should be the number of bytes
+>   transferred minus 1
+> - SSFSTS_CTL is the offset from ispi->sregs, not ispi->base
+> 
+> Signed-off-by: Bin Meng <bmeng.cn@gmail.com>
 
-Signed-off-by: Bin Meng <bmeng.cn@gmail.com>
----
-
- drivers/mtd/spi-nor/intel-spi.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
-index 91ceef7..5e7a389 100644
---- a/drivers/mtd/spi-nor/intel-spi.c
-+++ b/drivers/mtd/spi-nor/intel-spi.c
-@@ -126,7 +126,7 @@
-  * @pr_num: Maximum number of protected range registers
-  * @writeable: Is the chip writeable
-  * @locked: Is SPI setting locked
-- * @swseq: Use SW sequencer in register reads/writes
-+ * @swseq_reg: Use SW sequencer in register reads/writes
-  * @erase_64k: 64k erase supported
-  * @opcodes: Opcodes which are supported. This are programmed by BIOS
-  *           before it locks down the controller.
-@@ -143,7 +143,7 @@ struct intel_spi {
- 	size_t pr_num;
- 	bool writeable;
- 	bool locked;
--	bool swseq;
-+	bool swseq_reg;
- 	bool erase_64k;
- 	u8 opcodes[8];
- 	u8 preopcodes[2];
-@@ -224,7 +224,7 @@ static void intel_spi_dump_regs(struct intel_spi *ispi)
- 	}
- 
- 	dev_dbg(ispi->dev, "Using %cW sequencer for register access\n",
--		ispi->swseq ? 'S' : 'H');
-+		ispi->swseq_reg ? 'S' : 'H');
- }
- 
- /* Reads max INTEL_SPI_FIFO_SZ bytes from the device fifo */
-@@ -297,7 +297,7 @@ static int intel_spi_init(struct intel_spi *ispi)
- 		ispi->pregs = ispi->base + BYT_PR;
- 		ispi->nregions = BYT_FREG_NUM;
- 		ispi->pr_num = BYT_PR_NUM;
--		ispi->swseq = true;
-+		ispi->swseq_reg = true;
- 
- 		if (writeable) {
- 			/* Disable write protection */
-@@ -318,7 +318,7 @@ static int intel_spi_init(struct intel_spi *ispi)
- 		ispi->pregs = ispi->base + LPT_PR;
- 		ispi->nregions = LPT_FREG_NUM;
- 		ispi->pr_num = LPT_PR_NUM;
--		ispi->swseq = true;
-+		ispi->swseq_reg = true;
- 		break;
- 
- 	case INTEL_SPI_BXT:
-@@ -343,7 +343,7 @@ static int intel_spi_init(struct intel_spi *ispi)
- 	 * sequencer. All other operations are supposed to be carried out
- 	 * using software sequencer.
- 	 */
--	if (ispi->swseq) {
-+	if (ispi->swseq_reg) {
- 		/* Disable #SMI generation from SW sequencer */
- 		val = readl(ispi->sregs + SSFSTS_CTL);
- 		val &= ~SSFSTS_CTL_FSMIE;
-@@ -493,7 +493,7 @@ static int intel_spi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
- 	/* Address of the first chip */
- 	writel(0, ispi->base + FADDR);
- 
--	if (ispi->swseq)
-+	if (ispi->swseq_reg)
- 		ret = intel_spi_sw_cycle(ispi, opcode, len,
- 					 OPTYPE_READ_NO_ADDR);
- 	else
-@@ -529,7 +529,7 @@ static int intel_spi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
- 	if (ret)
- 		return ret;
- 
--	if (ispi->swseq)
-+	if (ispi->swseq_reg)
- 		return intel_spi_sw_cycle(ispi, opcode, len,
- 					  OPTYPE_WRITE_NO_ADDR);
- 	return intel_spi_hw_cycle(ispi, opcode, len);
--- 
-2.9.2
+This should be tagged for stable inclusion as well.
