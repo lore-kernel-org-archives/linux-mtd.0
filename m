@@ -1,9 +1,9 @@
 Received: from mail-io0-x244.google.com ([2607:f8b0:4001:c06::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dngoj-0001Ws-5p
+ id 1dngoj-0001Wi-46
  for linux-mtd@lists.infradead.org; Fri, 01 Sep 2017 07:56:42 +0000
-Received: by mail-io0-x244.google.com with SMTP id f99so2172668ioi.0
- for <linux-mtd@lists.infradead.org>; Fri, 01 Sep 2017 00:56:23 -0700 (PDT)
+Received: by mail-io0-x244.google.com with SMTP id 2so2153941ion.3
+ for <linux-mtd@lists.infradead.org>; Fri, 01 Sep 2017 00:56:20 -0700 (PDT)
 From: Bin Meng <bmeng.cn@gmail.com>
 To: Mika Westerberg <mika.westerberg@linux.intel.com>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
@@ -14,12 +14,9 @@ To: Mika Westerberg <mika.westerberg@linux.intel.com>,
  linux-mtd <linux-mtd@lists.infradead.org>,
  linux-kernel <linux-kernel@vger.kernel.org>
 Cc: Stefan Roese <sr@denx.de>
-Subject: [PATCH 02/10] spi-nor: intel-spi: Remove useless 'buf' parameter in
- the HW/SW cycle
-Date: Fri,  1 Sep 2017 01:00:33 -0700
-Message-Id: <1504252841-2445-3-git-send-email-bmeng.cn@gmail.com>
-In-Reply-To: <1504252841-2445-1-git-send-email-bmeng.cn@gmail.com>
-References: <1504252841-2445-1-git-send-email-bmeng.cn@gmail.com>
+Subject: [PATCH 00/10] spi-nor: intel-spi: Various fixes and enhancements
+Date: Fri,  1 Sep 2017 01:00:31 -0700
+Message-Id: <1504252841-2445-1-git-send-email-bmeng.cn@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,61 +26,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-intel_spi_hw_cycle() and intel_spi_sw_cycle() don't use the parameter
-'buf' at all. Remove it.
+This series does several bug fixes and clean ups against the intel-spi
+spi-nor driver, as well as enhancements to make the driver independent
+on the underlying BIOS/bootloader.
 
-Signed-off-by: Bin Meng <bmeng.cn@gmail.com>
----
+At present the driver uses the HW sequencer for the read/write/erase on
+all supported platforms, read_reg/write_reg for BXT, and the SW sequencer
+for read_reg/write_reg for BYT/LPT. The way the driver uses the HW and SW
+sequencer relies on some programmed register settings and hence creates
+unneeded dependencies with the underlying BIOS/bootloader. For example,
+the driver unfortunately does not work as expected when booting from
+Intel Baytrail FSP based bootloaders like U-Boot, as the Baytrail FSP
+does not set up some SPI controller settings to make the driver happy.
+Now such limitation has been removed with this series.
 
- drivers/mtd/spi-nor/intel-spi.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
-index e5b52e8..07626ca 100644
---- a/drivers/mtd/spi-nor/intel-spi.c
-+++ b/drivers/mtd/spi-nor/intel-spi.c
-@@ -377,8 +377,7 @@ static int intel_spi_opcode_index(struct intel_spi *ispi, u8 opcode)
- 	return -EINVAL;
- }
- 
--static int intel_spi_hw_cycle(struct intel_spi *ispi, u8 opcode, u8 *buf,
--			      int len)
-+static int intel_spi_hw_cycle(struct intel_spi *ispi, u8 opcode, int len)
- {
- 	u32 val, status;
- 	int ret;
-@@ -418,8 +417,7 @@ static int intel_spi_hw_cycle(struct intel_spi *ispi, u8 opcode, u8 *buf,
- 	return 0;
- }
- 
--static int intel_spi_sw_cycle(struct intel_spi *ispi, u8 opcode, u8 *buf,
--			      int len)
-+static int intel_spi_sw_cycle(struct intel_spi *ispi, u8 opcode, int len)
- {
- 	u32 val, status;
- 	int ret;
-@@ -456,9 +454,9 @@ static int intel_spi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
- 	writel(0, ispi->base + FADDR);
- 
- 	if (ispi->swseq)
--		ret = intel_spi_sw_cycle(ispi, opcode, buf, len);
-+		ret = intel_spi_sw_cycle(ispi, opcode, len);
- 	else
--		ret = intel_spi_hw_cycle(ispi, opcode, buf, len);
-+		ret = intel_spi_hw_cycle(ispi, opcode, len);
- 
- 	if (ret)
- 		return ret;
-@@ -486,8 +484,8 @@ static int intel_spi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
- 		return ret;
- 
- 	if (ispi->swseq)
--		return intel_spi_sw_cycle(ispi, opcode, buf, len);
--	return intel_spi_hw_cycle(ispi, opcode, buf, len);
-+		return intel_spi_sw_cycle(ispi, opcode, len);
-+	return intel_spi_hw_cycle(ispi, opcode, len);
- }
- 
- static ssize_t intel_spi_read(struct spi_nor *nor, loff_t from, size_t len,
+Bin Meng (10):
+  spi-nor: intel-spi: Fix number of protected range registers for
+    BYT/LPT
+  spi-nor: intel-spi: Remove useless 'buf' parameter in the HW/SW cycle
+  spi-nor: intel-spi: Fix broken software sequencing codes
+  spi-nor: intel-spi: Check transfer length in the HW/SW cycle
+  spi-nor: intel-spi: Use SW sequencer for BYT/LPT
+  spi-nor: intel-spi: Remove 'Atomic Cycle Sequence' in
+    intel_spi_write()
+  spi-nor: intel-spi: Don't assume OPMENU0/1 to be programmed by BIOS
+  spi-nor: intel-spi: Remove the unnecessary HSFSTS register RW
+  spi-nor: intel-spi: Rename swseq to swseq_reg in 'struct intel_spi'
+  spi-nor: intel-spi: Fall back to use SW sequencer to erase
+
+ drivers/mtd/spi-nor/intel-spi.c | 209 +++++++++++++++++++++++++++++-----------
+ 1 file changed, 151 insertions(+), 58 deletions(-)
+
 -- 
 2.9.2
