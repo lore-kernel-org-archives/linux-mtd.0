@@ -1,24 +1,25 @@
-Date: Mon, 4 Sep 2017 18:26:02 +0200
-From: Pavel Machek <pavel@ucw.cz>
-To: Marcin Wojtas <mw@semihalf.com>
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
- robh+dt@kernel.org, mark.rutland@arm.com, will.deacon@arm.com,
- cyrille.pitchen@wedev4u.fr, marek.vasut@gmail.com,
- broonie@kernel.org, thomas.petazzoni@free-electrons.com,
- gregory.clement@free-electrons.com, nadavh@marvell.com,
- neta@marvell.com, omrii@marvell.com, hannah@marvell.com,
- jaz@semihalf.com, tn@semihalf.com
-Subject: Re: [PATCH 1/2] mtd: spi-nor: add an option to force 3byte adressing
- mode
-Message-ID: <20170904162602.GC21849@amd>
-References: <1503954854-30963-1-git-send-email-mw@semihalf.com>
- <1503954854-30963-2-git-send-email-mw@semihalf.com>
+Received: from mail-io0-x242.google.com ([2607:f8b0:4001:c06::242])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dovIl-0002A7-UF
+ for linux-mtd@lists.infradead.org; Mon, 04 Sep 2017 17:36:49 +0000
+Received: by mail-io0-x242.google.com with SMTP id y123so595228iod.0
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Sep 2017 10:36:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="hOcCNbCCxyk/YU74"
-Content-Disposition: inline
-In-Reply-To: <1503954854-30963-2-git-send-email-mw@semihalf.com>
+In-Reply-To: <20170819221823.13850-7-hauke@hauke-m.de>
+References: <20170819221823.13850-1-hauke@hauke-m.de>
+ <20170819221823.13850-7-hauke@hauke-m.de>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date: Mon, 4 Sep 2017 19:36:06 +0200
+Message-ID: <CAFBinCACuJ8gs+k4hu+JqpbfS2oJyu2di_2rqqyAFxh8kDOivw@mail.gmail.com>
+Subject: Re: [PATCH v10 06/16] MIPS: lantiq: Enable MFD_SYSCON to be able to
+ use it for the RCU MFD
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Cc: ralf@linux-mips.org, linux-mips@linux-mips.org,
+ linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
+ devicetree@vger.kernel.org, john@phrozen.org, linux-spi@vger.kernel.org,
+ hauke.mehrtens@intel.com, robh@kernel.org, andy.shevchenko@gmail.com,
+ p.zabel@pengutronix.de, kishon@ti.com, mark.rutland@arm.com
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,52 +29,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Sun, Aug 20, 2017 at 12:18 AM, Hauke Mehrtens <hauke@hauke-m.de> wrote:
+> From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+>
+> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
---hOcCNbCCxyk/YU74
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-> index 1413828..029c87d 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -2002,7 +2002,17 @@ int spi_nor_scan(struct spi_nor *nor, const char *=
-name,
->  		if (JEDEC_MFR(info) =3D=3D SNOR_MFR_SPANSION ||
->  		    info->flags & SPI_NOR_4B_OPCODES)
->  			spi_nor_set_4byte_opcodes(nor, info);
-> -		else
-> +		else if (of_property_read_bool(np, "spi-3byte-addressing")) {
-> +			/*
-> +			 * Do not enter 4byte mode in order to prevent
-> +			 * the early bootloader to come up on non-default
-> +			 * SPI NOR memory during boot. Limit accessible
-> +			 * size to 16MiB.
-> +			 */
-> +			nor->addr_width =3D 3;
-> +			mtd->size =3D 0x1000000;
-> +			dev_info(dev, "Force 3B addressing mode\n");
-
-I'd append "limiting access to first 16MiB" .. because otherwise
-people will wonder where their flash went.
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---hOcCNbCCxyk/YU74
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlmtfpoACgkQMOfwapXb+vIroACffO9X/PgTB78Lap7a67L4ktNh
-Um4AoLYdOzK2KItNHTvYmMsBVuX3624u
-=Bpyw
------END PGP SIGNATURE-----
-
---hOcCNbCCxyk/YU74--
+> ---
+>  arch/mips/lantiq/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/mips/lantiq/Kconfig b/arch/mips/lantiq/Kconfig
+> index 177769dbb0e8..f5db4a426568 100644
+> --- a/arch/mips/lantiq/Kconfig
+> +++ b/arch/mips/lantiq/Kconfig
+> @@ -17,6 +17,7 @@ config SOC_XWAY
+>         bool "XWAY"
+>         select SOC_TYPE_XWAY
+>         select HW_HAS_PCI
+> +       select MFD_SYSCON
+>
+>  config SOC_FALCON
+>         bool "FALCON"
+> --
+> 2.11.0
+>
