@@ -1,19 +1,24 @@
-Received: from smtp10.smtpout.orange.fr ([80.12.242.132]
- helo=smtp.smtpout.orange.fr)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1doTZu-0007SU-L4
- for linux-mtd@lists.infradead.org; Sun, 03 Sep 2017 12:00:40 +0000
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: boris.brezillon@free-electrons.com, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com,
- cyrille.pitchen@wedev4u.fr, vz@mleia.com, slemieux.tyco@gmail.com
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] mtd: nand: lpc32xx_mlc: Fix an error handling path in
- lpc32xx_nand_probe()
-Date: Sun,  3 Sep 2017 13:58:31 +0200
-Message-Id: <20170903115831.1326-1-christophe.jaillet@wanadoo.fr>
+Date: Mon, 4 Sep 2017 18:26:02 +0200
+From: Pavel Machek <pavel@ucw.cz>
+To: Marcin Wojtas <mw@semihalf.com>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+ robh+dt@kernel.org, mark.rutland@arm.com, will.deacon@arm.com,
+ cyrille.pitchen@wedev4u.fr, marek.vasut@gmail.com,
+ broonie@kernel.org, thomas.petazzoni@free-electrons.com,
+ gregory.clement@free-electrons.com, nadavh@marvell.com,
+ neta@marvell.com, omrii@marvell.com, hannah@marvell.com,
+ jaz@semihalf.com, tn@semihalf.com
+Subject: Re: [PATCH 1/2] mtd: spi-nor: add an option to force 3byte adressing
+ mode
+Message-ID: <20170904162602.GC21849@amd>
+References: <1503954854-30963-1-git-send-email-mw@semihalf.com>
+ <1503954854-30963-2-git-send-email-mw@semihalf.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="hOcCNbCCxyk/YU74"
+Content-Disposition: inline
+In-Reply-To: <1503954854-30963-2-git-send-email-mw@semihalf.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,37 +28,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If 'clk_prepare_enable()' fails, we must 'put' the corresponding clock.
 
-Fixes: 4d26f012ab59 ("mtd: nand: lpc32xx_mlc: Handle return value of clk_prepare_enable.")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-Labels in the error handling path could be renamed, but it does not worth
-the effort, IMHO.
----
- drivers/mtd/nand/lpc32xx_mlc.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+--hOcCNbCCxyk/YU74
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/mtd/nand/lpc32xx_mlc.c b/drivers/mtd/nand/lpc32xx_mlc.c
-index c3bb358ef01e..5f72a824e67d 100644
---- a/drivers/mtd/nand/lpc32xx_mlc.c
-+++ b/drivers/mtd/nand/lpc32xx_mlc.c
-@@ -707,7 +707,7 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 	}
- 	res = clk_prepare_enable(host->clk);
- 	if (res)
--		goto err_exit1;
-+		goto err_put_clk;
- 
- 	nand_chip->cmd_ctrl = lpc32xx_nand_cmd_ctrl;
- 	nand_chip->dev_ready = lpc32xx_nand_device_ready;
-@@ -814,6 +814,7 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 		dma_release_channel(host->dma_chan);
- err_exit2:
- 	clk_disable_unprepare(host->clk);
-+err_put_clk:
- 	clk_put(host->clk);
- err_exit1:
- 	lpc32xx_wp_enable(host);
--- 
-2.11.0
+Hi!
+
+> index 1413828..029c87d 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -2002,7 +2002,17 @@ int spi_nor_scan(struct spi_nor *nor, const char *=
+name,
+>  		if (JEDEC_MFR(info) =3D=3D SNOR_MFR_SPANSION ||
+>  		    info->flags & SPI_NOR_4B_OPCODES)
+>  			spi_nor_set_4byte_opcodes(nor, info);
+> -		else
+> +		else if (of_property_read_bool(np, "spi-3byte-addressing")) {
+> +			/*
+> +			 * Do not enter 4byte mode in order to prevent
+> +			 * the early bootloader to come up on non-default
+> +			 * SPI NOR memory during boot. Limit accessible
+> +			 * size to 16MiB.
+> +			 */
+> +			nor->addr_width =3D 3;
+> +			mtd->size =3D 0x1000000;
+> +			dev_info(dev, "Force 3B addressing mode\n");
+
+I'd append "limiting access to first 16MiB" .. because otherwise
+people will wonder where their flash went.
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--hOcCNbCCxyk/YU74
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlmtfpoACgkQMOfwapXb+vIroACffO9X/PgTB78Lap7a67L4ktNh
+Um4AoLYdOzK2KItNHTvYmMsBVuX3624u
+=Bpyw
+-----END PGP SIGNATURE-----
+
+--hOcCNbCCxyk/YU74--
