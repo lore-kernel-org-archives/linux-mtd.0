@@ -1,30 +1,20 @@
-Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dpvEm-000682-1M
- for linux-mtd@lists.infradead.org; Thu, 07 Sep 2017 11:44:48 +0000
-Received: by mail-pf0-x243.google.com with SMTP id a2so4396232pfj.4
- for <linux-mtd@lists.infradead.org>; Thu, 07 Sep 2017 04:44:25 -0700 (PDT)
-MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <20170907133756.6c1f02f6@bbrezillon>
-References: <20170906214502.26748-1-cyrille.pitchen@wedev4u.fr>
- <CAMuHMdXKpheF5whZi2Ot2Pm8t3Lu+ramNV==sXBo87u_HerZxQ@mail.gmail.com>
- <20170907133756.6c1f02f6@bbrezillon>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 7 Sep 2017 13:44:22 +0200
-Message-ID: <CAMuHMdVGnrwgcoXuRSy+A7O5+_fKQyH1XHGKrm0WSWAEw3SorA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: fix DMA unsafe buffer issue in
- spi_nor_read_sfdp()
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Marek Vasut <marek.vasut@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Received: from 11.mo5.mail-out.ovh.net ([46.105.47.167])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dq1xb-000682-Ne
+ for linux-mtd@lists.infradead.org; Thu, 07 Sep 2017 18:55:34 +0000
+Received: from player786.ha.ovh.net (b6.ovh.net [213.186.33.56])
+ by mo5.mail-out.ovh.net (Postfix) with ESMTP id D7BDA1258DB
+ for <linux-mtd@lists.infradead.org>; Thu,  7 Sep 2017 20:55:07 +0200 (CEST)
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+To: marek.vasut@gmail.com, linux-mtd@lists.infradead.org, geert@linux-m68k.org
+Cc: computersforpeace@gmail.com, dwmw2@infradead.org,
+ boris.brezillon@free-electrons.com, richard@nod.at,
+ linux-kernel@vger.kernel.org, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Subject: [DEBUG] mtd: spi-nor: dump DWORDs of the Basic Flash Parameter Table
+Date: Thu,  7 Sep 2017 20:54:56 +0200
+Message-Id: <20170907185456.4631-1-cyrille.pitchen@wedev4u.fr>
+In-Reply-To: <CAMuHMdXKpheF5whZi2Ot2Pm8t3Lu+ramNV==sXBo87u_HerZxQ@mail.gmail.com>
+References: <CAMuHMdXKpheF5whZi2Ot2Pm8t3Lu+ramNV==sXBo87u_HerZxQ@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,34 +24,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+debug purpose only, should not be merged!
 
-On Thu, Sep 7, 2017 at 1:37 PM, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-> On Thu, 7 Sep 2017 10:00:50 +0200
-> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->> Instead of having buffers on the stack, passing them around through multiple
->> call levels, and then kmalloc()ing a buffer, what about using the helpers in
->> <linux/spi/spi.h> instead, which take care of the issue through the
->> static bounce
->> buffer or kmalloc() themselves?
->
-> Are you referring to spi_write_then_read()? If this is the case, I'm not
+Signed-off-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+---
 
-For example. There are more of them.
+Hi Geert,
 
-> sure we can use this because m25p80_read/write() can have more than 2
-> transfers.
+Can you apply this patch on your tree then report me what was printed, please?
+I have an idea of the root cause of your issue then a potential work-around
+but I first need to validate my assumption to confirm that the work-around
+would actually work.
 
-OK.More than two transfers may need special handling.
+For instance, here is what I get with a Macronix MX25L25673G (same JEDEC ID as
+MX25L25635E):
 
-Gr{oetje,eeting}s,
+[    0.700000] atmel_qspi f0020000.spi: DWORD1 = 0xfffb20e5
+[    0.710000] atmel_qspi f0020000.spi: DWORD2 = 0x0fffffff
+[    0.710000] atmel_qspi f0020000.spi: DWORD3 = 0x6b08eb44
+[    0.720000] atmel_qspi f0020000.spi: DWORD4 = 0xbb043b08
+[    0.720000] atmel_qspi f0020000.spi: DWORD5 = 0xfffffffe
+[    0.720000] atmel_qspi f0020000.spi: DWORD6 = 0xff00ffff
+[    0.730000] atmel_qspi f0020000.spi: DWORD7 = 0xeb44ffff
+[    0.730000] atmel_qspi f0020000.spi: DWORD8 = 0x520f200c
+[    0.740000] atmel_qspi f0020000.spi: DWORD9 = 0xff00d810
+[    0.740000] atmel_qspi f0020000.spi: DWORD10 = 0x00dd59d6
+[    0.740000] atmel_qspi f0020000.spi: DWORD11 = 0xdb039f82
+[    0.750000] atmel_qspi f0020000.spi: DWORD12 = 0x38670344
+[    0.750000] atmel_qspi f0020000.spi: DWORD13 = 0xb030b030
+[    0.760000] atmel_qspi f0020000.spi: DWORD14 = 0x5cd5bdf7
+[    0.760000] atmel_qspi f0020000.spi: DWORD15 = 0xff299e4a
+[    0.760000] atmel_qspi f0020000.spi: DWORD16 = 0x85f950f0
+[    0.770000] atmel_qspi f0020000.spi: BFPT version 1.6 (length = 16)
+[    0.770000] atmel_qspi f0020000.spi: mx25l25635e (32768 Kbytes)
 
-                        Geert
+Best regards,
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Cyrille
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+ drivers/mtd/spi-nor/spi-nor.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 05254dd6a4a0..5066d99b9f50 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -2136,8 +2136,14 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+ 		return err;
+ 
+ 	/* Fix endianness of the BFPT DWORDs. */
+-	for (i = 0; i < BFPT_DWORD_MAX; i++)
++	for (i = 0; i < BFPT_DWORD_MAX; i++) {
+ 		bfpt.dwords[i] = le32_to_cpu(bfpt.dwords[i]);
++		dev_info(nor->dev, "DWORD%d = 0x%08x\n", i + 1, bfpt.dwords[i]);
++	}
++	dev_info(nor->dev, "BFPT version %d.%d (length = %u)\n",
++		 bfpt_header->major,
++		 bfpt_header->minor,
++		 bfpt_header->length);
+ 
+ 	/* Number of address bytes. */
+ 	switch (bfpt.dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) {
+-- 
+2.11.0
