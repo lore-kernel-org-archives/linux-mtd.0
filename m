@@ -1,22 +1,21 @@
-Received: from smtp3-g21.free.fr ([212.27.42.3])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dpj9a-0003W6-OP
- for linux-mtd@lists.infradead.org; Wed, 06 Sep 2017 22:50:41 +0000
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dpquO-0006tQ-Rt
+ for linux-mtd@lists.infradead.org; Thu, 07 Sep 2017 07:07:32 +0000
+Date: Thu, 7 Sep 2017 09:07:02 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
+ geert@linux-m68k.org, computersforpeace@gmail.com, dwmw2@infradead.org,
+ richard@nod.at, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] mtd: spi-nor: fix DMA unsafe buffer issue in
  spi_nor_read_sfdp()
-To: marek.vasut@gmail.com, linux-mtd@lists.infradead.org, geert@linux-m68k.org
-Cc: computersforpeace@gmail.com, dwmw2@infradead.org,
- boris.brezillon@free-electrons.com, richard@nod.at,
- linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>
-References: <20170906214502.26748-1-cyrille.pitchen@wedev4u.fr>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <fea3df8e-87b1-b0b3-c84d-671116129c55@wedev4u.fr>
-Date: Thu, 7 Sep 2017 00:50:12 +0200
-MIME-Version: 1.0
+Message-ID: <20170907090702.257d30a2@bbrezillon>
 In-Reply-To: <20170906214502.26748-1-cyrille.pitchen@wedev4u.fr>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20170906214502.26748-1-cyrille.pitchen@wedev4u.fr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,7 +25,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 06/09/2017 à 23:45, Cyrille Pitchen a écrit :
+On Wed,  6 Sep 2017 23:45:02 +0200
+Cyrille Pitchen <cyrille.pitchen@wedev4u.fr> wrote:
+
 > spi_nor_read_sfdp() calls nor->read() to read the SFDP data.
 > When the m25p80 driver is used (pretty common case), nor->read() is then
 > implemented by the m25p80_read() function, which is likely to initialize a
@@ -46,21 +47,15 @@ Le 06/09/2017 à 23:45, Cyrille Pitchen a écrit :
 > buffer.
 > 
 > Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Missing
+
+Fixes: f384b352cbf0310f ("mtd: spi-nor: parse Serial Flash Discoverable Parameters (SFDP) tables")
+
 > Signed-off-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
 > ---
 > 
 > Compiled but not tested yet!
-
-tested on a sama5d2 xplained board with:
-- an Adesto at25df321a on spi0 (using the m25p80.c driver)
-- a Macronix mx25l25673g on qspi0 (using the atmel-quadspi.c driver)
-
-applied on the spi-nor/next branch of l2-mtd
-
-should be quickly sent as a fix to the MTD pull-request for 4.14
-
-Sorry for that!
-
 > 
 >  drivers/mtd/spi-nor/spi-nor.c | 36 +++++++++++++++++++++++++++++++++---
 >  1 file changed, 33 insertions(+), 3 deletions(-)
@@ -111,6 +106,20 @@ Sorry for that!
 > +
 > +	return ret;
 > +}
+
+Hm, do we really need to add this function? I would just kmalloc the bfpt
+and header objects in spi_nor_parse_bfpt(), which would avoid the extra
+heap-to-stack copy and also simplify this patch.
+
+I understand that you want to generically address the problem, but AFAICT
+this patch is not doing that since the user has to explicitly call
+spi_nor_read_sfdp_dma_unsafe(), and I'm not even sure
+spi_nor_read_sfdp_dma_unsafe() can/will be re-used in the generic solution
+you envision.
+
+Let's try to keep the fix as simple as possible and think about a better
+approach afterwards.
+
 > +
 >  struct sfdp_parameter_header {
 >  	u8		id_lsb;
@@ -133,4 +142,3 @@ Sorry for that!
 >  	if (err < 0)
 >  		return err;
 >  
-> 
