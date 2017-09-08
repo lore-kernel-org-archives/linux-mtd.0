@@ -1,13 +1,23 @@
-From: Alexey Khoroshilov <khoroshilov@ispras.ru>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Neil Armstrong <narmstrong@baylibre.com>
-Cc: Alexey Khoroshilov <khoroshilov@ispras.ru>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-oxnas@lists.tuxfamily.org,
- linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
-Subject: [PATCH] mtd: oxnas_nand: Fix error handling in oxnas_nand_probe()
-Date: Sat,  9 Sep 2017 01:00:38 +0300
-Message-Id: <1504908038-26285-1-git-send-email-khoroshilov@ispras.ru>
+Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dqSS7-0000h6-4s
+ for linux-mtd@lists.infradead.org; Fri, 08 Sep 2017 23:12:48 +0000
+Received: by mail-pf0-x241.google.com with SMTP id f84so2058056pfj.3
+ for <linux-mtd@lists.infradead.org>; Fri, 08 Sep 2017 16:12:26 -0700 (PDT)
+Date: Fri, 8 Sep 2017 16:12:23 -0700
+From: Eric Biggers <ebiggers3@gmail.com>
+To: Michael Halcrow <mhalcrow@google.com>
+Cc: linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-ext4@vger.kernel.org, tytso@mit.edu,
+ linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 0/3] fscrypto: Return -EXDEV for link, rename, and
+ cross-rename between incompat contexts
+Message-ID: <20170908231223.GA71686@gmail.com>
+References: <20170908001204.18174-1-mhalcrow@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170908001204.18174-1-mhalcrow@google.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,60 +27,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-oxnas_nand_probe() does not disable clock on error paths.
-The patch adds disabling using devm interface.
+Hi Michael,
 
-Found by Linux Driver Verification project (linuxtesting.org).
+On Thu, Sep 07, 2017 at 05:12:01PM -0700, Michael Halcrow wrote:
+> Currently file systems support fscrypto will return -EPERM when the
+> user attempts to link, rename, or cross-rename between two directories
+> that have incompatible encryption policy contexts.  User space tools
+> will fail the operation when receiving this errno.  With -EXDEV, user
+> space tools will typically fall back to copy-and-delete instead.
 
-Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
----
- drivers/mtd/nand/oxnas_nand.c | 22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
+Mention 'mv' as an example to make it more concrete?
 
-diff --git a/drivers/mtd/nand/oxnas_nand.c b/drivers/mtd/nand/oxnas_nand.c
-index 1b207aac840c..8abc69a285dd 100644
---- a/drivers/mtd/nand/oxnas_nand.c
-+++ b/drivers/mtd/nand/oxnas_nand.c
-@@ -103,16 +103,26 @@ static int oxnas_nand_probe(struct platform_device *pdev)
- 	if (IS_ERR(oxnas->io_base))
- 		return PTR_ERR(oxnas->io_base);
- 
--	oxnas->clk = devm_clk_get(&pdev->dev, NULL);
--	if (IS_ERR(oxnas->clk))
--		oxnas->clk = NULL;
--
- 	/* Only a single chip node is supported */
- 	count = of_get_child_count(np);
- 	if (count > 1)
- 		return -EINVAL;
- 
--	clk_prepare_enable(oxnas->clk);
-+	oxnas->clk = devm_clk_get(&pdev->dev, NULL);
-+	if (IS_ERR(oxnas->clk)) {
-+		oxnas->clk = NULL;
-+	} else {
-+		err = clk_prepare_enable(oxnas->clk);
-+		if (err)
-+			return err;
-+
-+		err = devm_add_action_or_reset(&pdev->dev,
-+				(void(*)(void *))clk_disable_unprepare,
-+				oxnas->clk);
-+		if (err)
-+			return err;
-+	}
-+
- 	device_reset_optional(&pdev->dev);
- 
- 	for_each_child_of_node(np, nand_np) {
-@@ -167,8 +177,6 @@ static int oxnas_nand_remove(struct platform_device *pdev)
- 	if (oxnas->chips[0])
- 		nand_release(nand_to_mtd(oxnas->chips[0]));
- 
--	clk_disable_unprepare(oxnas->clk);
--
- 	return 0;
- }
- 
--- 
-2.7.4
+> Our original motivation for returning -EPERM was to force users to try
+> harder when doing these operations, hopefully making them think more
+> carefully about whether what they're doing is secure.  One security
+> concern is that when moving files between unencrypted locations into
+> encrypted locations, the data in the unencrypted location will remain
+> in the clear on the storage device until the freed blocks are
+> overwritten at some arbitrary point in the future (if ever).  Moving
+> files from encrypted locations into unencrypted locations is also
+> (perhaps more obviously) problematic.
+> 
+> Whether making things fail will have the intended effect on users is
+> up for debate.  Meanwhile I've had at least one person tell me their
+> userspace tools are failing and that they would prefer seeing the same
+> sort of behavior that they see when (for example) moving files from
+> one project quota hierarchy to another (ext4 returns -EXDEV).
+
+There are arguments in favor of this, but I'm worried that people will think
+they can encrypt their files by "moving" them into an encrypted directory.  In
+fact, the unencrypted data will still be on-disk in the free blocks.  When
+people say they want 'mv' to work, do they actually understand that it usually
+defeats the purpose of encryption?  Or are they naively assuming that deleting a
+file means its data is gone forever?
+
+In any case, if we actually do this we'd need to document that mv-ing files into
+an encrypted directory is a bad idea, although it would be of limited use since
+users rarely read documentation.
+
+> Michael Halcrow (3):
+>   ext4 crypto: Return -EXDEV for link, rename, and cross-rename between
+>     incompat contexts
+>   F2FS crypto: Return -EXDEV for link, rename, and cross-rename between
+>     incompat contexts
+>   UBIFS crypto: Return -EXDEV for link, rename, and cross-rename between
+>     incompat contexts
+
+Nits for if we do end up doing this: remove "cross-rename" from the subjects to
+shorten them a bit (cross-rename is a type of rename), then add more detail to
+the patch descriptions, even if that requires duplicating some text.  The cover
+letter doesn't get recorded in the commit history, only the actual commits do.
+
+Note: I'm also working on a patchset which adds helper functions
+fscrypt_prepare_link() and fscrypt_prepare_rename().  After that, this error
+will be chosen by the shared code, rather than individual filesystems.
+
+Eric
