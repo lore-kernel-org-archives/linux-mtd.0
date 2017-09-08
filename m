@@ -1,40 +1,13 @@
-Received: from mail-qt0-x22e.google.com ([2607:f8b0:400d:c0d::22e])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dqM2p-0008MP-P1
- for linux-mtd@lists.infradead.org; Fri, 08 Sep 2017 16:22:19 +0000
-Received: by mail-qt0-x22e.google.com with SMTP id h15so7600826qta.4
- for <linux-mtd@lists.infradead.org>; Fri, 08 Sep 2017 09:21:54 -0700 (PDT)
-MIME-Version: 1.0
-Sender: romain.izard@mobile-devices.fr
-In-Reply-To: <760d7c25-afa4-2242-a278-e0989bca5478@microchip.com>
-References: <20170908153604.28383-1-romain.izard.pro@gmail.com>
- <20170908153604.28383-8-romain.izard.pro@gmail.com>
- <760d7c25-afa4-2242-a278-e0989bca5478@microchip.com>
-From: Romain Izard <romain.izard.pro@gmail.com>
-Date: Fri, 8 Sep 2017 18:21:33 +0200
-Message-ID: <CAGkQfmNgo9kp90eOrrez70f2-kMSD5EzxRjxWi=THBCE9EL4YA@mail.gmail.com>
-Subject: Re: [PATCH v1 07/10] iio:adc:at91-sama5d2: Support backup mode
-To: Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@codeaurora.org>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Jonathan Cameron <jic23@kernel.org>,
- Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
- David Woodhouse <dwmw2@infradead.org>,
+From: Alexey Khoroshilov <khoroshilov@ispras.ru>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Thierry Reding <thierry.reding@gmail.com>,
- Richard Genoud <richard.genoud@gmail.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Alan Stern <stern@rowland.harvard.edu>,
- Eugen Hristev <Eugen.Hristev@microchip.com>, linux-clk@vger.kernel.org,
- LKML <linux-kernel@vger.kernel.org>, linux-iio@vger.kernel.org,
- linux-mtd <linux-mtd@lists.infradead.org>, linux-pwm@vger.kernel.org,
- linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+ Neil Armstrong <narmstrong@baylibre.com>
+Cc: Alexey Khoroshilov <khoroshilov@ispras.ru>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-oxnas@lists.tuxfamily.org,
+ linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
+Subject: [PATCH] mtd: oxnas_nand: Fix error handling in oxnas_nand_probe()
+Date: Sat,  9 Sep 2017 01:00:38 +0300
+Message-Id: <1504908038-26285-1-git-send-email-khoroshilov@ispras.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,159 +17,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2017-09-08 18:03 GMT+02:00 Nicolas Ferre <nicolas.ferre@microchip.com>:
-> On 08/09/2017 at 17:36, Romain Izard wrote:
->> Support the backup mode for platform suspend, by restoring the hardware
->> registers on resume.
->>
->> Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
->
-> Romain,
->
-> Thanks for your series: definitively some of your patches need to be
-> integrated (I've merged some of them in our current linux-4.9-at91 branch.
-> However, It seems that some of your additions have already been
-> submitted and/or accepted by maintainers.
-> For instance an equivalent of this one seems already in Linus' tree:
-> 500a2eefd6b16ba141a8fb777ea6962d2eb65e3b ("iio: adc: at91-sama5d2_adc:
-> add support for suspend/resume functionality").
->
-> Please tell us if it fits what your observed on this driver (or others).
->
-> Regards,
->
->> ---
->>  drivers/iio/adc/at91-sama5d2_adc.c | 71 ++++++++++++++++++++++++++++++++------
->>  1 file changed, 61 insertions(+), 10 deletions(-)
->>
->> diff --git a/drivers/iio/adc/at91-sama5d2_adc.c b/drivers/iio/adc/at91-sama5d2_adc.c
->> index e10dca3ed74b..f9718c863363 100644
->> --- a/drivers/iio/adc/at91-sama5d2_adc.c
->> +++ b/drivers/iio/adc/at91-sama5d2_adc.c
->> @@ -200,6 +200,7 @@ struct at91_adc_state {
->>       u32                             conversion_value;
->>       struct at91_adc_soc_info        soc_info;
->>       wait_queue_head_t               wq_data_available;
->> +     unsigned int                    current_rate;
->>       /*
->>        * lock to prevent concurrent 'single conversion' requests through
->>        * sysfs.
->> @@ -269,6 +270,8 @@ static void at91_adc_setup_samp_freq(struct at91_adc_state *st, unsigned freq)
->>       mr |= AT91_SAMA5D2_MR_PRESCAL(prescal);
->>       at91_adc_writel(st, AT91_SAMA5D2_MR, mr);
->>
->> +     st->current_rate = freq;
->> +
->>       dev_dbg(&indio_dev->dev, "freq: %u, startup: %u, prescal: %u\n",
->>               freq, startup, prescal);
->>  }
->> @@ -375,7 +378,9 @@ static int at91_adc_write_raw(struct iio_dev *indio_dev,
->>           val > st->soc_info.max_sample_rate)
->>               return -EINVAL;
->>
->> +     mutex_lock(&st->lock);
->>       at91_adc_setup_samp_freq(st, val);
->> +     mutex_unlock(&st->lock);
->>
->>       return 0;
->>  }
->> @@ -386,6 +391,21 @@ static const struct iio_info at91_adc_info = {
->>       .driver_module = THIS_MODULE,
->>  };
->>
->> +static void at91_adc_init_hw(struct at91_adc_state *st, unsigned int freq)
->> +{
->> +     at91_adc_writel(st, AT91_SAMA5D2_CR, AT91_SAMA5D2_CR_SWRST);
->> +     at91_adc_writel(st, AT91_SAMA5D2_IDR, 0xffffffff);
->> +     /*
->> +      * Transfer field must be set to 2 according to the datasheet and
->> +      * allows different analog settings for each channel.
->> +      */
->> +     at91_adc_writel(st, AT91_SAMA5D2_MR,
->> +                     AT91_SAMA5D2_MR_TRANSFER(2) | AT91_SAMA5D2_MR_ANACH);
->> +
->> +     at91_adc_setup_samp_freq(st, freq);
->> +
->> +}
->> +
->>  static int at91_adc_probe(struct platform_device *pdev)
->>  {
->>       struct iio_dev *indio_dev;
->> @@ -482,16 +502,7 @@ static int at91_adc_probe(struct platform_device *pdev)
->>               goto vref_disable;
->>       }
->>
->> -     at91_adc_writel(st, AT91_SAMA5D2_CR, AT91_SAMA5D2_CR_SWRST);
->> -     at91_adc_writel(st, AT91_SAMA5D2_IDR, 0xffffffff);
->> -     /*
->> -      * Transfer field must be set to 2 according to the datasheet and
->> -      * allows different analog settings for each channel.
->> -      */
->> -     at91_adc_writel(st, AT91_SAMA5D2_MR,
->> -                     AT91_SAMA5D2_MR_TRANSFER(2) | AT91_SAMA5D2_MR_ANACH);
->> -
->> -     at91_adc_setup_samp_freq(st, st->soc_info.min_sample_rate);
->> +     at91_adc_init_hw(st, st->soc_info.min_sample_rate);
->>
->>       ret = clk_prepare_enable(st->per_clk);
->>       if (ret)
->> @@ -541,12 +552,52 @@ static const struct of_device_id at91_adc_dt_match[] = {
->>  };
->>  MODULE_DEVICE_TABLE(of, at91_adc_dt_match);
->>
->> +#ifdef CONFIG_PM_SLEEP
->> +static int at91_adc_suspend(struct device *dev)
->> +{
->> +     struct platform_device *pdev = to_platform_device(dev);
->> +     struct iio_dev *indio_dev = platform_get_drvdata(pdev);
->> +     struct at91_adc_state *st = iio_priv(indio_dev);
->> +
->> +     clk_disable_unprepare(st->per_clk);
->> +
->> +     regulator_disable(st->vref);
->> +     regulator_disable(st->reg);
->> +
->> +     return 0;
->> +}
->> +
->> +static int at91_adc_resume(struct device *dev)
->> +{
->> +     struct platform_device *pdev = to_platform_device(dev);
->> +     struct iio_dev *indio_dev = platform_get_drvdata(pdev);
->> +     struct at91_adc_state *st = iio_priv(indio_dev);
->> +     int err;
->> +
->> +     err = regulator_enable(st->reg);
->> +     if (err)
->> +             return err;
->> +
->> +     err = regulator_enable(st->vref);
->> +     if (err)
->> +             return err;
->> +
->> +     at91_adc_init_hw(st, st->current_rate);
->> +
->> +     err = clk_prepare_enable(st->per_clk);
->> +     return err;
->> +}
->> +#endif
->> +
->> +static SIMPLE_DEV_PM_OPS(at91_adc_pm_ops, at91_adc_suspend, at91_adc_resume);
->> +
->>  static struct platform_driver at91_adc_driver = {
->>       .probe = at91_adc_probe,
->>       .remove = at91_adc_remove,
->>       .driver = {
->>               .name = "at91-sama5d2_adc",
->>               .of_match_table = at91_adc_dt_match,
->> +             .pm = &at91_adc_pm_ops,
->>       },
->>  };
->>  module_platform_driver(at91_adc_driver)
->>
+oxnas_nand_probe() does not disable clock on error paths.
+The patch adds disabling using devm interface.
 
-Please ignore this patch. The existing merged patch is better.
+Found by Linux Driver Verification project (linuxtesting.org).
 
-Best regards,
+Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
+---
+ drivers/mtd/nand/oxnas_nand.c | 22 +++++++++++++++-------
+ 1 file changed, 15 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/mtd/nand/oxnas_nand.c b/drivers/mtd/nand/oxnas_nand.c
+index 1b207aac840c..8abc69a285dd 100644
+--- a/drivers/mtd/nand/oxnas_nand.c
++++ b/drivers/mtd/nand/oxnas_nand.c
+@@ -103,16 +103,26 @@ static int oxnas_nand_probe(struct platform_device *pdev)
+ 	if (IS_ERR(oxnas->io_base))
+ 		return PTR_ERR(oxnas->io_base);
+ 
+-	oxnas->clk = devm_clk_get(&pdev->dev, NULL);
+-	if (IS_ERR(oxnas->clk))
+-		oxnas->clk = NULL;
+-
+ 	/* Only a single chip node is supported */
+ 	count = of_get_child_count(np);
+ 	if (count > 1)
+ 		return -EINVAL;
+ 
+-	clk_prepare_enable(oxnas->clk);
++	oxnas->clk = devm_clk_get(&pdev->dev, NULL);
++	if (IS_ERR(oxnas->clk)) {
++		oxnas->clk = NULL;
++	} else {
++		err = clk_prepare_enable(oxnas->clk);
++		if (err)
++			return err;
++
++		err = devm_add_action_or_reset(&pdev->dev,
++				(void(*)(void *))clk_disable_unprepare,
++				oxnas->clk);
++		if (err)
++			return err;
++	}
++
+ 	device_reset_optional(&pdev->dev);
+ 
+ 	for_each_child_of_node(np, nand_np) {
+@@ -167,8 +177,6 @@ static int oxnas_nand_remove(struct platform_device *pdev)
+ 	if (oxnas->chips[0])
+ 		nand_release(nand_to_mtd(oxnas->chips[0]));
+ 
+-	clk_disable_unprepare(oxnas->clk);
+-
+ 	return 0;
+ }
+ 
 -- 
-Romain Izard
+2.7.4
