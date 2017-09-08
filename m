@@ -1,23 +1,17 @@
-Received: from smtp3-g21.free.fr ([212.27.42.3])
+Received: from mail-pg0-x22e.google.com ([2607:f8b0:400e:c05::22e])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dq2U5-0002zo-Gy
- for linux-mtd@lists.infradead.org; Thu, 07 Sep 2017 19:29:07 +0000
-Subject: Re: [DEBUG] mtd: spi-nor: dump DWORDs of the Basic Flash Parameter
- Table
-To: marek.vasut@gmail.com, linux-mtd@lists.infradead.org, geert@linux-m68k.org
-Cc: computersforpeace@gmail.com, dwmw2@infradead.org,
- boris.brezillon@free-electrons.com, richard@nod.at,
- linux-kernel@vger.kernel.org
-References: <CAMuHMdXKpheF5whZi2Ot2Pm8t3Lu+ramNV==sXBo87u_HerZxQ@mail.gmail.com>
- <20170907185456.4631-1-cyrille.pitchen@wedev4u.fr>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <e9e925ab-e543-23fd-a738-a9ce433de713@wedev4u.fr>
-Date: Thu, 7 Sep 2017 21:28:40 +0200
-MIME-Version: 1.0
-In-Reply-To: <20170907185456.4631-1-cyrille.pitchen@wedev4u.fr>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+ id 1dq6uZ-0006aX-1Q
+ for linux-mtd@lists.infradead.org; Fri, 08 Sep 2017 00:12:45 +0000
+Received: by mail-pg0-x22e.google.com with SMTP id v66so2086026pgb.5
+ for <linux-mtd@lists.infradead.org>; Thu, 07 Sep 2017 17:12:21 -0700 (PDT)
+From: Michael Halcrow <mhalcrow@google.com>
+To: linux-fscrypt@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, tytso@mit.edu,
+ linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org
+Subject: [PATCH 0/3] fscrypto: Return -EXDEV for link, rename,
+ and cross-rename between incompat contexts
+Date: Thu,  7 Sep 2017 17:12:01 -0700
+Message-Id: <20170908001204.18174-1-mhalcrow@google.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,76 +21,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi again,
+Currently file systems support fscrypto will return -EPERM when the
+user attempts to link, rename, or cross-rename between two directories
+that have incompatible encryption policy contexts.  User space tools
+will fail the operation when receiving this errno.  With -EXDEV, user
+space tools will typically fall back to copy-and-delete instead.
 
-Le 07/09/2017 à 20:54, Cyrille Pitchen a écrit :
-> debug purpose only, should not be merged!
-> 
-> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-> ---
-> 
-> Hi Geert,
-> 
-> Can you apply this patch on your tree then report me what was printed, please?
-> I have an idea of the root cause of your issue then a potential work-around
-> but I first need to validate my assumption to confirm that the work-around
-> would actually work.
->
+Our original motivation for returning -EPERM was to force users to try
+harder when doing these operations, hopefully making them think more
+carefully about whether what they're doing is secure.  One security
+concern is that when moving files between unencrypted locations into
+encrypted locations, the data in the unencrypted location will remain
+in the clear on the storage device until the freed blocks are
+overwritten at some arbitrary point in the future (if ever).  Moving
+files from encrypted locations into unencrypted locations is also
+(perhaps more obviously) problematic.
 
-If you could also dump the value of the 'addr' argument of
-spi_nor_read_sfdp_dma_unsafe() just before the for () loop below in the
-very same function. Actually, I suspect the SFDP tables of your SPI NOR
-memory sample to have been programmed with invalid values, neither
-compliant with the JEDEC JESD216 specification nor with the Cypress
-datasheet for this memory part.
+Whether making things fail will have the intended effect on users is
+up for debate.  Meanwhile I've had at least one person tell me their
+userspace tools are failing and that they would prefer seeing the same
+sort of behavior that they see when (for example) moving files from
+one project quota hierarchy to another (ext4 returns -EXDEV).
 
-> For instance, here is what I get with a Macronix MX25L25673G (same JEDEC ID as
-> MX25L25635E):
-> 
-> [    0.700000] atmel_qspi f0020000.spi: DWORD1 = 0xfffb20e5
-> [    0.710000] atmel_qspi f0020000.spi: DWORD2 = 0x0fffffff
-> [    0.710000] atmel_qspi f0020000.spi: DWORD3 = 0x6b08eb44
-> [    0.720000] atmel_qspi f0020000.spi: DWORD4 = 0xbb043b08
-> [    0.720000] atmel_qspi f0020000.spi: DWORD5 = 0xfffffffe
-> [    0.720000] atmel_qspi f0020000.spi: DWORD6 = 0xff00ffff
-> [    0.730000] atmel_qspi f0020000.spi: DWORD7 = 0xeb44ffff
-> [    0.730000] atmel_qspi f0020000.spi: DWORD8 = 0x520f200c
-> [    0.740000] atmel_qspi f0020000.spi: DWORD9 = 0xff00d810
-> [    0.740000] atmel_qspi f0020000.spi: DWORD10 = 0x00dd59d6
-> [    0.740000] atmel_qspi f0020000.spi: DWORD11 = 0xdb039f82
-> [    0.750000] atmel_qspi f0020000.spi: DWORD12 = 0x38670344
-> [    0.750000] atmel_qspi f0020000.spi: DWORD13 = 0xb030b030
-> [    0.760000] atmel_qspi f0020000.spi: DWORD14 = 0x5cd5bdf7
-> [    0.760000] atmel_qspi f0020000.spi: DWORD15 = 0xff299e4a
-> [    0.760000] atmel_qspi f0020000.spi: DWORD16 = 0x85f950f0
-> [    0.770000] atmel_qspi f0020000.spi: BFPT version 1.6 (length = 16)
-> [    0.770000] atmel_qspi f0020000.spi: mx25l25635e (32768 Kbytes)
-> 
-> Best regards,
-> 
-> Cyrille
-> 
->  drivers/mtd/spi-nor/spi-nor.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 05254dd6a4a0..5066d99b9f50 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -2136,8 +2136,14 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
->  		return err;
->  
->  	/* Fix endianness of the BFPT DWORDs. */
-> -	for (i = 0; i < BFPT_DWORD_MAX; i++)
-> +	for (i = 0; i < BFPT_DWORD_MAX; i++) {
->  		bfpt.dwords[i] = le32_to_cpu(bfpt.dwords[i]);
-> +		dev_info(nor->dev, "DWORD%d = 0x%08x\n", i + 1, bfpt.dwords[i]);
-> +	}
-> +	dev_info(nor->dev, "BFPT version %d.%d (length = %u)\n",
-> +		 bfpt_header->major,
-> +		 bfpt_header->minor,
-> +		 bfpt_header->length);
->  
->  	/* Number of address bytes. */
->  	switch (bfpt.dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) {
-> 
+Note that xfstests generic/398 will require an update with this
+change.
+
+Michael Halcrow (3):
+  ext4 crypto: Return -EXDEV for link, rename, and cross-rename between
+    incompat contexts
+  F2FS crypto: Return -EXDEV for link, rename, and cross-rename between
+    incompat contexts
+  UBIFS crypto: Return -EXDEV for link, rename, and cross-rename between
+    incompat contexts
+
+ fs/ext4/namei.c | 6 +++---
+ fs/f2fs/namei.c | 6 +++---
+ fs/ubifs/dir.c  | 6 +++---
+ 3 files changed, 9 insertions(+), 9 deletions(-)
+
+-- 
+2.14.1.581.gf28d330327-goog
