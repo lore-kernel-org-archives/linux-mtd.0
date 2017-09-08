@@ -1,19 +1,28 @@
-Received: from mail-pg0-x234.google.com ([2607:f8b0:400e:c05::234])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dq6un-0006qy-DU
- for linux-mtd@lists.infradead.org; Fri, 08 Sep 2017 00:13:00 +0000
-Received: by mail-pg0-x234.google.com with SMTP id m9so2117094pgd.3
- for <linux-mtd@lists.infradead.org>; Thu, 07 Sep 2017 17:12:37 -0700 (PDT)
-From: Michael Halcrow <mhalcrow@google.com>
-To: linux-fscrypt@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, tytso@mit.edu,
- linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org
-Subject: [PATCH 3/3] UBIFS crypto: Return -EXDEV for link, rename,
- and cross-rename between incompat contexts
-Date: Thu,  7 Sep 2017 17:12:04 -0700
-Message-Id: <20170908001204.18174-4-mhalcrow@google.com>
-In-Reply-To: <20170908001204.18174-1-mhalcrow@google.com>
-References: <20170908001204.18174-1-mhalcrow@google.com>
+From: Romain Izard <romain.izard.pro@gmail.com>
+To: Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@codeaurora.org>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ Jonathan Cameron <jic23@kernel.org>, Wenyou Yang <wenyou.yang@atmel.com>,
+ Josh Wu <rainyfeeling@outlook.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Richard Genoud <richard.genoud@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Alan Stern <stern@rowland.harvard.edu>
+Cc: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
+ linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Romain Izard <romain.izard.pro@gmail.com>
+Subject: [PATCH v1 02/10] clk: at91: pmc: Save SCSR during suspend
+Date: Fri,  8 Sep 2017 17:35:56 +0200
+Message-Id: <20170908153604.28383-3-romain.izard.pro@gmail.com>
+In-Reply-To: <20170908153604.28383-1-romain.izard.pro@gmail.com>
+References: <20170908153604.28383-1-romain.izard.pro@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,43 +32,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Gives user space the opportunity to fall back to copy-and-delete.
+The contents of the System Clock Status Register (SCSR) needs to be
+restored into the System Clock Enable Register (SCER).
 
-Signed-off-by: Michael Halcrow <mhalcrow@google.com>
+As the bootloader will restore some clocks by itself, the issue can be
+missed as only the USB controller, the LCD controller, the Image Sensor
+controller and the programmable clocks will be impacted.
+
+Fix the obvious typo in the suspend/resume code, as the IMR register
+does not need to be saved twice.
+
+Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
 ---
- fs/ubifs/dir.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/clk/at91/pmc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 417fe0b29f23..6c5753a2f79f 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -745,7 +745,7 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
+diff --git a/drivers/clk/at91/pmc.c b/drivers/clk/at91/pmc.c
+index 5c2b26de303e..07dc2861ad3f 100644
+--- a/drivers/clk/at91/pmc.c
++++ b/drivers/clk/at91/pmc.c
+@@ -86,7 +86,7 @@ static int pmc_suspend(void)
+ {
+ 	int i;
  
- 	if (ubifs_crypt_is_encrypted(dir) &&
- 	    !fscrypt_has_permitted_context(dir, inode))
--		return -EPERM;
-+		return -EXDEV;
+-	regmap_read(pmcreg, AT91_PMC_IMR, &pmc_cache.scsr);
++	regmap_read(pmcreg, AT91_PMC_SCSR, &pmc_cache.scsr);
+ 	regmap_read(pmcreg, AT91_PMC_PCSR, &pmc_cache.pcsr0);
+ 	regmap_read(pmcreg, AT91_CKGR_UCKR, &pmc_cache.uckr);
+ 	regmap_read(pmcreg, AT91_CKGR_MOR, &pmc_cache.mor);
+@@ -129,7 +129,7 @@ static void pmc_resume(void)
+ 	if (pmc_cache.pllar != tmp)
+ 		pr_warn("PLLAR was not configured properly by the firmware\n");
  
- 	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &nm);
- 	if (err)
-@@ -1356,7 +1356,7 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 	if (old_dir != new_dir) {
- 		if (ubifs_crypt_is_encrypted(new_dir) &&
- 		    !fscrypt_has_permitted_context(new_dir, old_inode))
--			return -EPERM;
-+			return -EXDEV;
- 	}
- 
- 	if (unlink && is_dir) {
-@@ -1578,7 +1578,7 @@ static int ubifs_xrename(struct inode *old_dir, struct dentry *old_dentry,
- 	    (old_dir != new_dir) &&
- 	    (!fscrypt_has_permitted_context(new_dir, fst_inode) ||
- 	     !fscrypt_has_permitted_context(old_dir, snd_inode)))
--		return -EPERM;
-+		return -EXDEV;
- 
- 	err = fscrypt_setup_filename(old_dir, &old_dentry->d_name, 0, &fst_nm);
- 	if (err)
+-	regmap_write(pmcreg, AT91_PMC_IMR, pmc_cache.scsr);
++	regmap_write(pmcreg, AT91_PMC_SCER, pmc_cache.scsr);
+ 	regmap_write(pmcreg, AT91_PMC_PCER, pmc_cache.pcsr0);
+ 	regmap_write(pmcreg, AT91_CKGR_UCKR, pmc_cache.uckr);
+ 	regmap_write(pmcreg, AT91_CKGR_MOR, pmc_cache.mor);
 -- 
-2.14.1.581.gf28d330327-goog
+2.11.0
