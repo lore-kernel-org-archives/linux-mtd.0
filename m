@@ -17,10 +17,12 @@ Cc: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-iio@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
  linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Romain Izard <romain.izard@mobile-devices.fr>,
  Romain Izard <romain.izard.pro@gmail.com>
-Subject: [PATCH v1 06/10] ehci-atmel: Power down during suspend is normal
-Date: Fri,  8 Sep 2017 17:36:00 +0200
-Message-Id: <20170908153604.28383-7-romain.izard.pro@gmail.com>
+Subject: [PATCH v1 03/10] clk: at91: pmc: Support backup for programmable
+ clocks
+Date: Fri,  8 Sep 2017 17:35:57 +0200
+Message-Id: <20170908153604.28383-4-romain.izard.pro@gmail.com>
 In-Reply-To: <20170908153604.28383-1-romain.izard.pro@gmail.com>
 References: <20170908153604.28383-1-romain.izard.pro@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,28 +34,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When an Atmel SoC is suspended with the backup mode, the USB bus will be
-powered down. As this is expected, do not return an error to the driver
-core when ehci_resume detects it.
+From: Romain Izard <romain.izard@mobile-devices.fr>
+
+Save and restore the System Clock and Programmable Clock register for
+the backup use case.
 
 Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
 ---
- drivers/usb/host/ehci-atmel.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/clk/at91/pmc.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/usb/host/ehci-atmel.c b/drivers/usb/host/ehci-atmel.c
-index 7440722bfbf0..2a8b9bdc0e57 100644
---- a/drivers/usb/host/ehci-atmel.c
-+++ b/drivers/usb/host/ehci-atmel.c
-@@ -205,7 +205,8 @@ static int __maybe_unused ehci_atmel_drv_resume(struct device *dev)
- 	struct atmel_ehci_priv *atmel_ehci = hcd_to_atmel_ehci_priv(hcd);
+diff --git a/drivers/clk/at91/pmc.c b/drivers/clk/at91/pmc.c
+index 07dc2861ad3f..5421b03553ec 100644
+--- a/drivers/clk/at91/pmc.c
++++ b/drivers/clk/at91/pmc.c
+@@ -66,6 +66,7 @@ static struct
+ 	u32 pcr[PMC_MAX_IDS];
+ 	u32 audio_pll0;
+ 	u32 audio_pll1;
++	u32 pckr[3];
+ } pmc_cache;
  
- 	atmel_start_clock(atmel_ehci);
--	return ehci_resume(hcd, false);
-+	ehci_resume(hcd, false);
-+	return 0;
+ void pmc_register_id(u8 id)
+@@ -103,6 +104,8 @@ static int pmc_suspend(void)
+ 		regmap_read(pmcreg, AT91_PMC_PCR,
+ 			    &pmc_cache.pcr[registered_ids[i]]);
+ 	}
++	for (i = 0; i < 3; i++)
++		regmap_read(pmcreg, AT91_PMC_PCKR(i), &pmc_cache.pckr[i]);
+ 
+ 	return 0;
  }
+@@ -143,6 +146,8 @@ static void pmc_resume(void)
+ 			     pmc_cache.pcr[registered_ids[i]] |
+ 			     AT91_PMC_PCR_CMD);
+ 	}
++	for (i = 0; i < 3; i++)
++		regmap_write(pmcreg, AT91_PMC_PCKR(i), pmc_cache.pckr[i]);
  
- #ifdef CONFIG_OF
+ 	if (pmc_cache.uckr & AT91_PMC_UPLLEN)
+ 		mask |= AT91_PMC_LOCKU;
 -- 
 2.11.0
