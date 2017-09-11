@@ -1,23 +1,30 @@
-Received: from mga03.intel.com ([134.134.136.65])
+Received: from mail-dm3nam03on0059.outbound.protection.outlook.com
+ ([104.47.41.59] helo=NAM03-DM3-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1drQsz-0000Ji-Uk
- for linux-mtd@lists.infradead.org; Mon, 11 Sep 2017 15:44:35 +0000
-Message-ID: <1505144649.14367.85.camel@gmail.com>
-Subject: Re: Actual usage of files in ubifs
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>, Richard Weinberger
- <richard.weinberger@gmail.com>
-Cc: Jonas Holmberg <jonashg@axis.com>, Linux mtd
- <linux-mtd@lists.infradead.org>,  Cristian Ionescu-Idbohrn <cii@axis.com>
-Date: Mon, 11 Sep 2017 18:44:09 +0300
-In-Reply-To: <alpine.DEB.2.11.1709111711400.14549@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.11.1709111143420.14549@lnxricardw1.se.axis.com>
- <CAFLxGvz+_m0u6naPErkYMH2o53muj5TxNVSH82uKF-_FX9SesA@mail.gmail.com>
- <alpine.DEB.2.11.1709111711400.14549@lnxricardw1.se.axis.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+ id 1drSlU-0004KB-QN
+ for linux-mtd@lists.infradead.org; Mon, 11 Sep 2017 17:44:58 +0000
+From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "bmeng.cn@gmail.com" <bmeng.cn@gmail.com>, "mika.westerberg@linux.intel.com"
+ <mika.westerberg@linux.intel.com>, "cyrille.pitchen@wedev4u.fr"
+ <cyrille.pitchen@wedev4u.fr>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "richard@nod.at"
+ <richard@nod.at>
+CC: "sr@denx.de" <sr@denx.de>
+Subject: Re: [PATCH v2 00/10] spi-nor: intel-spi: Various fixes and
+ enhancements
+Date: Mon, 11 Sep 2017 17:44:31 +0000
+Message-ID: <1505151868.31322.98.camel@infinera.com>
+References: <1505122921-5534-1-git-send-email-bmeng.cn@gmail.com>
+In-Reply-To: <1505122921-5534-1-git-send-email-bmeng.cn@gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-15"
+Content-ID: <282A0314ABD70E4AB250F062F884B4C5@infinera.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,47 +34,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2017-09-11 at 17:18 +0200, Ricard Wanderlof wrote:
-> On Mon, 11 Sep 2017, Richard Weinberger wrote:
-> 
-> > On Mon, Sep 11, 2017 at 11:47 AM, Ricard Wanderlof
-> > <ricard.wanderlof@axis.com> wrote:
-> > > 
-> > > Is there a (simple) way to find out exactly how much space each
-> > > specific
-> > > file uses in an ubifs fils system?
-> > > 
-> > > I looked into running mkfs.ubifs with some form of option to give
-> > > me the
-> > > info, the closest I got was -g 3 which output a lot of sizes but
-> > > it was
-> > > not obvious exactly what they meant.
-> > > 
-> > > I suppose it would be fully possible to add code to mkfs.ubifs to
-> > > output
-> > > this information, as it surely must be there at some point, since
-> > > it
-> > > selects the compression algorithm on a file per file basis,
-> > > debending on
-> > > the amount of compression acheived for each algorithm.
-> > 
-> > Well, how exactly should it be?
-> > I guess you want more than the compressed size on flash.
-> > Do you also want to know how much bytes a file occupies in the
-> > index
-> > tree and the inode itself?
-> > This is non-trivial.
-> 
-> Good point. I was solely thinking along the lines of how much space
-> the 
-> actual file occupied, not considering metadata. That would be a good 
-> starting point. I'm guessing that for moderate file sizes the
-> metadata 
-> would be relatively small compared to the file itself?
+On Mon, 2017-09-11 at 02:41 -0700, Bin Meng wrote:
+> This series does several bug fixes and clean ups against the intel-spi
+> spi-nor driver, as well as enhancements to make the driver independent
+> on the underlying BIOS/bootloader.
+>=20
+> At present the driver uses the HW sequencer for the read/write/erase on
+> all supported platforms, read_reg/write_reg for BXT, and the SW sequencer
+> for read_reg/write_reg for BYT/LPT. The way the driver uses the HW and SW
+> sequencer relies on some programmed register settings and hence creates
+> unneeded dependencies with the underlying BIOS/bootloader. For example,
+> the driver unfortunately does not work as expected when booting from
+> Intel Baytrail FSP based bootloaders like U-Boot, as the Baytrail FSP
+> does not set up some SPI controller settings to make the driver happy.
+> Now such limitation has been removed with this series.
 
-I would think a "slow" version of this would not be that hard to
-implement - walk the index and sum up node sizes. Subtract header sizes
-if you do not want metadata.
+Hi Bin
 
-I am not sure what would be the API? Do other FSes implement something
-like this?
+Just starting to test these on Rangeley and got a question: We have two SPI=
+ flashes on CS0 resp. CS1=20
+and the mtd driver seems to only map the first of those flashes. Is this in=
+tentional or
+are we missing something?
+
+ Jocke
+
+>=20
+> Changes in v2:
+> - Add stable kernel tags in the commit message (patch [03/10])
+> - Fix typo of 'operatoin' (patch [10/10])
+> - Add Mika Westerberg's 'Acked-by' tag
+>=20
+> Bin Meng (10):
+>   spi-nor: intel-spi: Fix number of protected range registers for
+>     BYT/LPT
+>   spi-nor: intel-spi: Remove useless 'buf' parameter in the HW/SW cycle
+>   spi-nor: intel-spi: Fix broken software sequencing codes
+>   spi-nor: intel-spi: Check transfer length in the HW/SW cycle
+>   spi-nor: intel-spi: Use SW sequencer for BYT/LPT
+>   spi-nor: intel-spi: Remove 'Atomic Cycle Sequence' in
+>     intel_spi_write()
+>   spi-nor: intel-spi: Don't assume OPMENU0/1 to be programmed by BIOS
+>   spi-nor: intel-spi: Remove the unnecessary HSFSTS register RW
+>   spi-nor: intel-spi: Rename swseq to swseq_reg in 'struct intel_spi'
+>   spi-nor: intel-spi: Fall back to use SW sequencer to erase
+>=20
+>  drivers/mtd/spi-nor/intel-spi.c | 209 +++++++++++++++++++++++++++++-----=
+------
+>  1 file changed, 151 insertions(+), 58 deletions(-)
+>=20
