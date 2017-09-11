@@ -1,29 +1,22 @@
-Received: from mail-pg0-x232.google.com ([2607:f8b0:400e:c05::232])
+Received: from mail-it0-x244.google.com ([2607:f8b0:4001:c0b::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1drKYV-00027a-GH
- for linux-mtd@lists.infradead.org; Mon, 11 Sep 2017 08:59:02 +0000
-Received: by mail-pg0-x232.google.com with SMTP id v66so14194901pgb.5
- for <linux-mtd@lists.infradead.org>; Mon, 11 Sep 2017 01:58:38 -0700 (PDT)
-MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <e9e925ab-e543-23fd-a738-a9ce433de713@wedev4u.fr>
-References: <CAMuHMdXKpheF5whZi2Ot2Pm8t3Lu+ramNV==sXBo87u_HerZxQ@mail.gmail.com>
- <20170907185456.4631-1-cyrille.pitchen@wedev4u.fr>
- <e9e925ab-e543-23fd-a738-a9ce433de713@wedev4u.fr>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 11 Sep 2017 10:58:36 +0200
-Message-ID: <CAMuHMdVgdLt5yhgJnDamcMDUv+-JhLEuO9Gj3trmXZwPhhP2tg@mail.gmail.com>
-Subject: Re: [DEBUG] mtd: spi-nor: dump DWORDs of the Basic Flash Parameter
- Table
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: Marek Vasut <marek.vasut@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
+ id 1drLAF-00067z-P9
+ for linux-mtd@lists.infradead.org; Mon, 11 Sep 2017 09:38:01 +0000
+Received: by mail-it0-x244.google.com with SMTP id z81so3846636itb.5
+ for <linux-mtd@lists.infradead.org>; Mon, 11 Sep 2017 02:37:39 -0700 (PDT)
+From: Bin Meng <bmeng.cn@gmail.com>
+To: Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris BREZILLON <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>
+Cc: Stefan Roese <sr@denx.de>
+Subject: [PATCH v2 00/10] spi-nor: intel-spi: Various fixes and enhancements
+Date: Mon, 11 Sep 2017 02:41:50 -0700
+Message-Id: <1505122921-5534-1-git-send-email-bmeng.cn@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,56 +26,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Cyrille,
+This series does several bug fixes and clean ups against the intel-spi
+spi-nor driver, as well as enhancements to make the driver independent
+on the underlying BIOS/bootloader.
 
-On Thu, Sep 7, 2017 at 9:28 PM, Cyrille Pitchen
-<cyrille.pitchen@wedev4u.fr> wrote:
->> Can you apply this patch on your tree then report me what was printed, please?
->> I have an idea of the root cause of your issue then a potential work-around
->> but I first need to validate my assumption to confirm that the work-around
->> would actually work.
+At present the driver uses the HW sequencer for the read/write/erase on
+all supported platforms, read_reg/write_reg for BXT, and the SW sequencer
+for read_reg/write_reg for BYT/LPT. The way the driver uses the HW and SW
+sequencer relies on some programmed register settings and hence creates
+unneeded dependencies with the underlying BIOS/bootloader. For example,
+the driver unfortunately does not work as expected when booting from
+Intel Baytrail FSP based bootloaders like U-Boot, as the Baytrail FSP
+does not set up some SPI controller settings to make the driver happy.
+Now such limitation has been removed with this series.
 
-+m25p80 spi0.0: DWORD1 = 0xffffffff
-+m25p80 spi0.0: DWORD2 = 0xffffffff
-+m25p80 spi0.0: DWORD3 = 0xffffffff
-+m25p80 spi0.0: DWORD4 = 0xffffffff
-+m25p80 spi0.0: DWORD5 = 0xffffffff
-+m25p80 spi0.0: DWORD6 = 0xffffffff
-+m25p80 spi0.0: DWORD7 = 0xffffffff
-+m25p80 spi0.0: DWORD8 = 0xffffffff
-+m25p80 spi0.0: DWORD9 = 0xffffffff
-+m25p80 spi0.0: DWORD10 = 0x00000000
-+m25p80 spi0.0: DWORD11 = 0x00000000
-+m25p80 spi0.0: DWORD12 = 0x00000000
-+m25p80 spi0.0: DWORD13 = 0x00000000
-+m25p80 spi0.0: DWORD14 = 0x00000000
-+m25p80 spi0.0: DWORD15 = 0x00000000
-+m25p80 spi0.0: DWORD16 = 0x00000000
-+m25p80 spi0.0: BFPT version 1.0 (length = 9)
+Changes in v2:
+- Add stable kernel tags in the commit message (patch [03/10])
+- Fix typo of 'operatoin' (patch [10/10])
+- Add Mika Westerberg's 'Acked-by' tag
 
-> If you could also dump the value of the 'addr' argument of
-> spi_nor_read_sfdp_dma_unsafe() just before the for () loop below in the
-> very same function. Actually, I suspect the SFDP tables of your SPI NOR
+Bin Meng (10):
+  spi-nor: intel-spi: Fix number of protected range registers for
+    BYT/LPT
+  spi-nor: intel-spi: Remove useless 'buf' parameter in the HW/SW cycle
+  spi-nor: intel-spi: Fix broken software sequencing codes
+  spi-nor: intel-spi: Check transfer length in the HW/SW cycle
+  spi-nor: intel-spi: Use SW sequencer for BYT/LPT
+  spi-nor: intel-spi: Remove 'Atomic Cycle Sequence' in
+    intel_spi_write()
+  spi-nor: intel-spi: Don't assume OPMENU0/1 to be programmed by BIOS
+  spi-nor: intel-spi: Remove the unnecessary HSFSTS register RW
+  spi-nor: intel-spi: Rename swseq to swseq_reg in 'struct intel_spi'
+  spi-nor: intel-spi: Fall back to use SW sequencer to erase
 
-+m25p80 spi0.0: addr = 0x448
+ drivers/mtd/spi-nor/intel-spi.c | 209 +++++++++++++++++++++++++++++-----------
+ 1 file changed, 151 insertions(+), 58 deletions(-)
 
-> memory sample to have been programmed with invalid values, neither
-> compliant with the JEDEC JESD216 specification nor with the Cypress
-> datasheet for this memory part.
-
-Sounds plausible.
-I get the same values when disabling DMA, so it's not due to bad DMA handling.
-All Renesas boards I have local or remote access to have spansion,s25fl512s.
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+2.9.2
