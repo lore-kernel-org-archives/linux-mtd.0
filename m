@@ -1,25 +1,38 @@
-Received: from mail-io0-x243.google.com ([2607:f8b0:4001:c06::243])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1drLAX-0006DN-6u
- for linux-mtd@lists.infradead.org; Mon, 11 Sep 2017 09:38:19 +0000
-Received: by mail-io0-x243.google.com with SMTP id j141so4119570ioj.5
- for <linux-mtd@lists.infradead.org>; Mon, 11 Sep 2017 02:37:59 -0700 (PDT)
-From: Bin Meng <bmeng.cn@gmail.com>
-To: Mika Westerberg <mika.westerberg@linux.intel.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Marek Vasut <marek.vasut@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- linux-kernel <linux-kernel@vger.kernel.org>
-Cc: Stefan Roese <sr@denx.de>
-Subject: [PATCH v2 10/10] spi-nor: intel-spi: Fall back to use SW sequencer to
- erase
-Date: Mon, 11 Sep 2017 02:42:00 -0700
-Message-Id: <1505122921-5534-11-git-send-email-bmeng.cn@gmail.com>
-In-Reply-To: <1505122921-5534-1-git-send-email-bmeng.cn@gmail.com>
-References: <1505122921-5534-1-git-send-email-bmeng.cn@gmail.com>
+Received: from bes.se.axis.com ([195.60.68.10])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1drLK7-00058X-SQ
+ for linux-mtd@lists.infradead.org; Mon, 11 Sep 2017 09:48:17 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by bes.se.axis.com (Postfix) with ESMTP id 3E1872E085
+ for <linux-mtd@lists.infradead.org>; Mon, 11 Sep 2017 11:47:47 +0200 (CEST)
+Received: from bes.se.axis.com ([IPv6:::ffff:127.0.0.1])
+ by localhost (bes.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
+ with LMTP id 3qtO9_XxNYt4 for <linux-mtd@lists.infradead.org>;
+ Mon, 11 Sep 2017 11:47:46 +0200 (CEST)
+Received: from boulder03.se.axis.com (boulder03.se.axis.com [10.0.8.17])
+ by bes.se.axis.com (Postfix) with ESMTPS id 572442E07D
+ for <linux-mtd@lists.infradead.org>; Mon, 11 Sep 2017 11:47:46 +0200 (CEST)
+Received: from boulder03.se.axis.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id E0E1F1E07B
+ for <linux-mtd@lists.infradead.org>; Mon, 11 Sep 2017 11:47:45 +0200 (CEST)
+Received: from boulder03.se.axis.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id D5EF61E079
+ for <linux-mtd@lists.infradead.org>; Mon, 11 Sep 2017 11:47:45 +0200 (CEST)
+Received: from thoth.se.axis.com (unknown [10.0.2.173])
+ by boulder03.se.axis.com (Postfix) with ESMTP
+ for <linux-mtd@lists.infradead.org>; Mon, 11 Sep 2017 11:47:45 +0200 (CEST)
+Received: from XBOX03.axis.com (xbox03.axis.com [10.0.5.17])
+ by thoth.se.axis.com (Postfix) with ESMTP id C8BC72F10
+ for <linux-mtd@lists.infradead.org>; Mon, 11 Sep 2017 11:47:45 +0200 (CEST)
+Date: Mon, 11 Sep 2017 11:47:40 +0200
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Linux mtd <linux-mtd@lists.infradead.org>
+CC: Cristian Ionescu-Idbohrn <cii@axis.com>, Jonas Holmberg <jonashg@axis.com>
+Subject: Actual usage of files in ubifs
+Message-ID: <alpine.DEB.2.11.1709111143420.14549@lnxricardw1.se.axis.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: 8BIT
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,136 +42,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-According to the datasheet, the HW sequencer has a predefined list
-of opcodes, with only the erase opcode being programmable in LVSCC
-and UVSCC registers. If these registers don't contain a valid erase
-opcode (eg: BIOS does not program it), erase cannot be done using
-the HW sequencer, even though the erase operation does not report
-any error, the flash remains not erased.
 
-If such register setting is detected, let's fall back to use the SW
-sequencer to erase instead.
+Is there a (simple) way to find out exactly how much space each specific 
+file uses in an ubifs fils system?
 
-Signed-off-by: Bin Meng <bmeng.cn@gmail.com>
-Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+I looked into running mkfs.ubifs with some form of option to give me the 
+info, the closest I got was -g 3 which output a lot of sizes but it was 
+not obvious exactly what they meant.
 
----
+I suppose it would be fully possible to add code to mkfs.ubifs to output 
+this information, as it surely must be there at some point, since it 
+selects the compression algorithm on a file per file basis, debending on 
+the amount of compression acheived for each algorithm.
 
-Changes in v2:
-- Fix typo of 'operatoin'
-
- drivers/mtd/spi-nor/intel-spi.c | 50 ++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 49 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
-index 5e7a389..ef034d8 100644
---- a/drivers/mtd/spi-nor/intel-spi.c
-+++ b/drivers/mtd/spi-nor/intel-spi.c
-@@ -111,6 +111,13 @@
- #define BXT_FREG_NUM			12
- #define BXT_PR_NUM			6
- 
-+#define LVSCC				0xc4
-+#define UVSCC				0xc8
-+#define ERASE_OPCODE_SHIFT		8
-+#define ERASE_OPCODE_MASK		(0xff << ERASE_OPCODE_SHIFT)
-+#define ERASE_64K_OPCODE_SHIFT		16
-+#define ERASE_64K_OPCODE_MASK		(0xff << ERASE_OPCODE_SHIFT)
-+
- #define INTEL_SPI_TIMEOUT		5000 /* ms */
- #define INTEL_SPI_FIFO_SZ		64
- 
-@@ -127,6 +134,7 @@
-  * @writeable: Is the chip writeable
-  * @locked: Is SPI setting locked
-  * @swseq_reg: Use SW sequencer in register reads/writes
-+ * @swseq_erase: Use SW sequencer in erase operation
-  * @erase_64k: 64k erase supported
-  * @opcodes: Opcodes which are supported. This are programmed by BIOS
-  *           before it locks down the controller.
-@@ -144,6 +152,7 @@ struct intel_spi {
- 	bool writeable;
- 	bool locked;
- 	bool swseq_reg;
-+	bool swseq_erase;
- 	bool erase_64k;
- 	u8 opcodes[8];
- 	u8 preopcodes[2];
-@@ -191,6 +200,9 @@ static void intel_spi_dump_regs(struct intel_spi *ispi)
- 	if (ispi->info->type == INTEL_SPI_BYT)
- 		dev_dbg(ispi->dev, "BCR=0x%08x\n", readl(ispi->base + BYT_BCR));
- 
-+	dev_dbg(ispi->dev, "LVSCC=0x%08x\n", readl(ispi->base + LVSCC));
-+	dev_dbg(ispi->dev, "UVSCC=0x%08x\n", readl(ispi->base + UVSCC));
-+
- 	dev_dbg(ispi->dev, "Protected regions:\n");
- 	for (i = 0; i < ispi->pr_num; i++) {
- 		u32 base, limit;
-@@ -225,6 +237,8 @@ static void intel_spi_dump_regs(struct intel_spi *ispi)
- 
- 	dev_dbg(ispi->dev, "Using %cW sequencer for register access\n",
- 		ispi->swseq_reg ? 'S' : 'H');
-+	dev_dbg(ispi->dev, "Using %cW sequencer for erase operation\n",
-+		ispi->swseq_erase ? 'S' : 'H');
- }
- 
- /* Reads max INTEL_SPI_FIFO_SZ bytes from the device fifo */
-@@ -288,7 +302,7 @@ static int intel_spi_wait_sw_busy(struct intel_spi *ispi)
- 
- static int intel_spi_init(struct intel_spi *ispi)
- {
--	u32 opmenu0, opmenu1, val;
-+	u32 opmenu0, opmenu1, lvscc, uvscc, val;
- 	int i;
- 
- 	switch (ispi->info->type) {
-@@ -339,6 +353,24 @@ static int intel_spi_init(struct intel_spi *ispi)
- 	writel(val, ispi->base + HSFSTS_CTL);
- 
- 	/*
-+	 * Determine whether erase operation should use HW or SW sequencer.
-+	 *
-+	 * The HW sequencer has a predefined list of opcodes, with only the
-+	 * erase opcode being programmable in LVSCC and UVSCC registers.
-+	 * If these registers don't contain a valid erase opcode, erase
-+	 * cannot be done using HW sequencer.
-+	 */
-+	lvscc = readl(ispi->base + LVSCC);
-+	uvscc = readl(ispi->base + UVSCC);
-+	if (!(lvscc & ERASE_OPCODE_MASK) || !(uvscc & ERASE_OPCODE_MASK))
-+		ispi->swseq_erase = true;
-+	/* SPI controller on Intel BXT supports 64K erase opcode */
-+	if (ispi->info->type == INTEL_SPI_BXT && !ispi->swseq_erase)
-+		if (!(lvscc & ERASE_64K_OPCODE_MASK) ||
-+		    !(uvscc & ERASE_64K_OPCODE_MASK))
-+			ispi->erase_64k = false;
-+
-+	/*
- 	 * Some controllers can only do basic operations using hardware
- 	 * sequencer. All other operations are supposed to be carried out
- 	 * using software sequencer.
-@@ -665,6 +697,22 @@ static int intel_spi_erase(struct spi_nor *nor, loff_t offs)
- 		erase_size = SZ_4K;
- 	}
- 
-+	if (ispi->swseq_erase) {
-+		while (len > 0) {
-+			writel(offs, ispi->base + FADDR);
-+
-+			ret = intel_spi_sw_cycle(ispi, nor->erase_opcode,
-+						 0, OPTYPE_WRITE_WITH_ADDR);
-+			if (ret)
-+				return ret;
-+
-+			offs += erase_size;
-+			len -= erase_size;
-+		}
-+
-+		return 0;
-+	}
-+
- 	while (len > 0) {
- 		writel(offs, ispi->base + FADDR);
- 
+/Ricard
 -- 
-2.9.2
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
