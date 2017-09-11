@@ -1,9 +1,9 @@
 Received: from mail-io0-x243.google.com ([2607:f8b0:4001:c06::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1drLAS-0006Bk-89
- for linux-mtd@lists.infradead.org; Mon, 11 Sep 2017 09:38:18 +0000
-Received: by mail-io0-x243.google.com with SMTP id n69so617328ioi.3
- for <linux-mtd@lists.infradead.org>; Mon, 11 Sep 2017 02:37:53 -0700 (PDT)
+ id 1drLAX-0006DN-6u
+ for linux-mtd@lists.infradead.org; Mon, 11 Sep 2017 09:38:19 +0000
+Received: by mail-io0-x243.google.com with SMTP id j141so4119570ioj.5
+ for <linux-mtd@lists.infradead.org>; Mon, 11 Sep 2017 02:37:59 -0700 (PDT)
 From: Bin Meng <bmeng.cn@gmail.com>
 To: Mika Westerberg <mika.westerberg@linux.intel.com>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
@@ -14,10 +14,10 @@ To: Mika Westerberg <mika.westerberg@linux.intel.com>,
  linux-mtd <linux-mtd@lists.infradead.org>,
  linux-kernel <linux-kernel@vger.kernel.org>
 Cc: Stefan Roese <sr@denx.de>
-Subject: [PATCH v2 07/10] spi-nor: intel-spi: Don't assume OPMENU0/1 to be
- programmed by BIOS
-Date: Mon, 11 Sep 2017 02:41:57 -0700
-Message-Id: <1505122921-5534-8-git-send-email-bmeng.cn@gmail.com>
+Subject: [PATCH v2 10/10] spi-nor: intel-spi: Fall back to use SW sequencer to
+ erase
+Date: Mon, 11 Sep 2017 02:42:00 -0700
+Message-Id: <1505122921-5534-11-git-send-email-bmeng.cn@gmail.com>
 In-Reply-To: <1505122921-5534-1-git-send-email-bmeng.cn@gmail.com>
 References: <1505122921-5534-1-git-send-email-bmeng.cn@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,211 +29,136 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-At present the driver relies on valid OPMENU0/OPMENU1 register values
-that are programmed by BIOS to function correctly. However in a real
-world it's absolutely legitimate for a bootloader to leave these two
-registers untouched. Intel FSP for Baytrail exactly does like this.
-When we are booting from any Intel FSP based bootloaders like U-Boot,
-the driver refuses to work.
+According to the datasheet, the HW sequencer has a predefined list
+of opcodes, with only the erase opcode being programmable in LVSCC
+and UVSCC registers. If these registers don't contain a valid erase
+opcode (eg: BIOS does not program it), erase cannot be done using
+the HW sequencer, even though the erase operation does not report
+any error, the flash remains not erased.
 
-We can of course program various flash opcodes in the OPMENU0/OPMENU1
-registers, and such workaround can be added in either the bootloader
-codes, or the kernel driver itself.
-
-But a graceful solution would be to update the kernel driver to remove
-such limitation of OPMENU0/1 register dependency. The SPI controller
-settings are not locked under such configuration. So we can first check
-the controller locking status, and if it is not locked that means the
-driver job can be fulfilled by using a chosen OPMENU index to set up
-the flash opcode every time.
-
-While we are here, the missing 'Atomic Cycle Sequence' handling in the
-SW sequencer codes is also added.
+If such register setting is detected, let's fall back to use the SW
+sequencer to erase instead.
 
 Signed-off-by: Bin Meng <bmeng.cn@gmail.com>
 Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+
 ---
 
-Changes in v2: None
+Changes in v2:
+- Fix typo of 'operatoin'
 
- drivers/mtd/spi-nor/intel-spi.c | 91 +++++++++++++++++++++++++++++------------
- 1 file changed, 65 insertions(+), 26 deletions(-)
+ drivers/mtd/spi-nor/intel-spi.c | 50 ++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 49 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
-index 757b9f1..07146ab 100644
+index 5e7a389..ef034d8 100644
 --- a/drivers/mtd/spi-nor/intel-spi.c
 +++ b/drivers/mtd/spi-nor/intel-spi.c
-@@ -88,6 +88,11 @@
- #define OPMENU0				0x08
- #define OPMENU1				0x0c
+@@ -111,6 +111,13 @@
+ #define BXT_FREG_NUM			12
+ #define BXT_PR_NUM			6
  
-+#define OPTYPE_READ_NO_ADDR		0
-+#define OPTYPE_WRITE_NO_ADDR		1
-+#define OPTYPE_READ_WITH_ADDR		2
-+#define OPTYPE_WRITE_WITH_ADDR		3
++#define LVSCC				0xc4
++#define UVSCC				0xc8
++#define ERASE_OPCODE_SHIFT		8
++#define ERASE_OPCODE_MASK		(0xff << ERASE_OPCODE_SHIFT)
++#define ERASE_64K_OPCODE_SHIFT		16
++#define ERASE_64K_OPCODE_MASK		(0xff << ERASE_OPCODE_SHIFT)
 +
- /* CPU specifics */
- #define BYT_PR				0x74
- #define BYT_SSFSTS_CTL			0x90
-@@ -120,6 +125,7 @@
-  * @nregions: Maximum number of regions
-  * @pr_num: Maximum number of protected range registers
+ #define INTEL_SPI_TIMEOUT		5000 /* ms */
+ #define INTEL_SPI_FIFO_SZ		64
+ 
+@@ -127,6 +134,7 @@
   * @writeable: Is the chip writeable
-+ * @locked: Is SPI setting locked
-  * @swseq: Use SW sequencer in register reads/writes
+  * @locked: Is SPI setting locked
+  * @swseq_reg: Use SW sequencer in register reads/writes
++ * @swseq_erase: Use SW sequencer in erase operation
   * @erase_64k: 64k erase supported
   * @opcodes: Opcodes which are supported. This are programmed by BIOS
-@@ -136,6 +142,7 @@ struct intel_spi {
- 	size_t nregions;
- 	size_t pr_num;
+  *           before it locks down the controller.
+@@ -144,6 +152,7 @@ struct intel_spi {
  	bool writeable;
-+	bool locked;
- 	bool swseq;
+ 	bool locked;
+ 	bool swseq_reg;
++	bool swseq_erase;
  	bool erase_64k;
  	u8 opcodes[8];
-@@ -343,23 +350,29 @@ static int intel_spi_init(struct intel_spi *ispi)
- 		writel(val, ispi->sregs + SSFSTS_CTL);
- 	}
+ 	u8 preopcodes[2];
+@@ -191,6 +200,9 @@ static void intel_spi_dump_regs(struct intel_spi *ispi)
+ 	if (ispi->info->type == INTEL_SPI_BYT)
+ 		dev_dbg(ispi->dev, "BCR=0x%08x\n", readl(ispi->base + BYT_BCR));
  
--	/*
--	 * BIOS programs allowed opcodes and then locks down the register.
--	 * So read back what opcodes it decided to support. That's the set
--	 * we are going to support as well.
--	 */
--	opmenu0 = readl(ispi->sregs + OPMENU0);
--	opmenu1 = readl(ispi->sregs + OPMENU1);
-+	/* Check controller's lock status */
-+	val = readl(ispi->base + HSFSTS_CTL);
-+	ispi->locked = !!(val & HSFSTS_CTL_FLOCKDN);
- 
--	if (opmenu0 && opmenu1) {
--		for (i = 0; i < ARRAY_SIZE(ispi->opcodes) / 2; i++) {
--			ispi->opcodes[i] = opmenu0 >> i * 8;
--			ispi->opcodes[i + 4] = opmenu1 >> i * 8;
--		}
-+	if (ispi->locked) {
-+		/*
-+		 * BIOS programs allowed opcodes and then locks down the
-+		 * register. So read back what opcodes it decided to support.
-+		 * That's the set we are going to support as well.
-+		 */
-+		opmenu0 = readl(ispi->sregs + OPMENU0);
-+		opmenu1 = readl(ispi->sregs + OPMENU1);
- 
--		val = readl(ispi->sregs + PREOP_OPTYPE);
--		ispi->preopcodes[0] = val;
--		ispi->preopcodes[1] = val >> 8;
-+		if (opmenu0 && opmenu1) {
-+			for (i = 0; i < ARRAY_SIZE(ispi->opcodes) / 2; i++) {
-+				ispi->opcodes[i] = opmenu0 >> i * 8;
-+				ispi->opcodes[i + 4] = opmenu1 >> i * 8;
-+			}
++	dev_dbg(ispi->dev, "LVSCC=0x%08x\n", readl(ispi->base + LVSCC));
++	dev_dbg(ispi->dev, "UVSCC=0x%08x\n", readl(ispi->base + UVSCC));
 +
-+			val = readl(ispi->sregs + PREOP_OPTYPE);
-+			ispi->preopcodes[0] = val;
-+			ispi->preopcodes[1] = val >> 8;
-+		}
- 	}
+ 	dev_dbg(ispi->dev, "Protected regions:\n");
+ 	for (i = 0; i < ispi->pr_num; i++) {
+ 		u32 base, limit;
+@@ -225,6 +237,8 @@ static void intel_spi_dump_regs(struct intel_spi *ispi)
  
- 	intel_spi_dump_regs(ispi);
-@@ -367,14 +380,25 @@ static int intel_spi_init(struct intel_spi *ispi)
- 	return 0;
+ 	dev_dbg(ispi->dev, "Using %cW sequencer for register access\n",
+ 		ispi->swseq_reg ? 'S' : 'H');
++	dev_dbg(ispi->dev, "Using %cW sequencer for erase operation\n",
++		ispi->swseq_erase ? 'S' : 'H');
  }
  
--static int intel_spi_opcode_index(struct intel_spi *ispi, u8 opcode)
-+static int intel_spi_opcode_index(struct intel_spi *ispi, u8 opcode, int optype)
+ /* Reads max INTEL_SPI_FIFO_SZ bytes from the device fifo */
+@@ -288,7 +302,7 @@ static int intel_spi_wait_sw_busy(struct intel_spi *ispi)
+ 
+ static int intel_spi_init(struct intel_spi *ispi)
  {
+-	u32 opmenu0, opmenu1, val;
++	u32 opmenu0, opmenu1, lvscc, uvscc, val;
  	int i;
-+	int preop;
  
--	for (i = 0; i < ARRAY_SIZE(ispi->opcodes); i++)
--		if (ispi->opcodes[i] == opcode)
--			return i;
--	return -EINVAL;
-+	if (ispi->locked) {
-+		for (i = 0; i < ARRAY_SIZE(ispi->opcodes); i++)
-+			if (ispi->opcodes[i] == opcode)
-+				return i;
-+
-+		return -EINVAL;
-+	}
-+
-+	/* The lock is off, so just use index 0 */
-+	writel(opcode, ispi->sregs + OPMENU0);
-+	preop = readw(ispi->sregs + PREOP_OPTYPE);
-+	writel(optype << 16 | preop, ispi->sregs + PREOP_OPTYPE);
-+
-+	return 0;
- }
- 
- static int intel_spi_hw_cycle(struct intel_spi *ispi, u8 opcode, int len)
-@@ -420,12 +444,14 @@ static int intel_spi_hw_cycle(struct intel_spi *ispi, u8 opcode, int len)
- 	return 0;
- }
- 
--static int intel_spi_sw_cycle(struct intel_spi *ispi, u8 opcode, int len)
-+static int intel_spi_sw_cycle(struct intel_spi *ispi, u8 opcode, int len,
-+			      int optype)
- {
- 	u32 val = 0, status;
-+	u16 preop;
- 	int ret;
- 
--	ret = intel_spi_opcode_index(ispi, opcode);
-+	ret = intel_spi_opcode_index(ispi, opcode, optype);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -438,6 +464,12 @@ static int intel_spi_sw_cycle(struct intel_spi *ispi, u8 opcode, int len)
- 	val |= ret << SSFSTS_CTL_COP_SHIFT;
- 	val |= SSFSTS_CTL_FCERR | SSFSTS_CTL_FDONE;
- 	val |= SSFSTS_CTL_SCGO;
-+	preop = readw(ispi->sregs + PREOP_OPTYPE);
-+	if (preop) {
-+		val |= SSFSTS_CTL_ACS;
-+		if (preop >> 8)
-+			val |= SSFSTS_CTL_SPOP;
-+	}
- 	writel(val, ispi->sregs + SSFSTS_CTL);
- 
- 	ret = intel_spi_wait_sw_busy(ispi);
-@@ -462,7 +494,8 @@ static int intel_spi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
- 	writel(0, ispi->base + FADDR);
- 
- 	if (ispi->swseq)
--		ret = intel_spi_sw_cycle(ispi, opcode, len);
-+		ret = intel_spi_sw_cycle(ispi, opcode, len,
-+					 OPTYPE_READ_NO_ADDR);
- 	else
- 		ret = intel_spi_hw_cycle(ispi, opcode, len);
- 
-@@ -479,10 +512,15 @@ static int intel_spi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
+ 	switch (ispi->info->type) {
+@@ -339,6 +353,24 @@ static int intel_spi_init(struct intel_spi *ispi)
+ 	writel(val, ispi->base + HSFSTS_CTL);
  
  	/*
- 	 * This is handled with atomic operation and preop code in Intel
--	 * controller so skip it here now.
-+	 * controller so skip it here now. If the controller is not locked,
-+	 * program the opcode to the PREOP register for later use.
- 	 */
--	if (opcode == SPINOR_OP_WREN)
-+	if (opcode == SPINOR_OP_WREN) {
-+		if (!ispi->locked)
-+			writel(opcode, ispi->sregs + PREOP_OPTYPE);
++	 * Determine whether erase operation should use HW or SW sequencer.
++	 *
++	 * The HW sequencer has a predefined list of opcodes, with only the
++	 * erase opcode being programmable in LVSCC and UVSCC registers.
++	 * If these registers don't contain a valid erase opcode, erase
++	 * cannot be done using HW sequencer.
++	 */
++	lvscc = readl(ispi->base + LVSCC);
++	uvscc = readl(ispi->base + UVSCC);
++	if (!(lvscc & ERASE_OPCODE_MASK) || !(uvscc & ERASE_OPCODE_MASK))
++		ispi->swseq_erase = true;
++	/* SPI controller on Intel BXT supports 64K erase opcode */
++	if (ispi->info->type == INTEL_SPI_BXT && !ispi->swseq_erase)
++		if (!(lvscc & ERASE_64K_OPCODE_MASK) ||
++		    !(uvscc & ERASE_64K_OPCODE_MASK))
++			ispi->erase_64k = false;
 +
- 		return 0;
++	/*
+ 	 * Some controllers can only do basic operations using hardware
+ 	 * sequencer. All other operations are supposed to be carried out
+ 	 * using software sequencer.
+@@ -665,6 +697,22 @@ static int intel_spi_erase(struct spi_nor *nor, loff_t offs)
+ 		erase_size = SZ_4K;
+ 	}
+ 
++	if (ispi->swseq_erase) {
++		while (len > 0) {
++			writel(offs, ispi->base + FADDR);
++
++			ret = intel_spi_sw_cycle(ispi, nor->erase_opcode,
++						 0, OPTYPE_WRITE_WITH_ADDR);
++			if (ret)
++				return ret;
++
++			offs += erase_size;
++			len -= erase_size;
++		}
++
++		return 0;
 +	}
- 
- 	writel(0, ispi->base + FADDR);
- 
-@@ -492,7 +530,8 @@ static int intel_spi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
- 		return ret;
- 
- 	if (ispi->swseq)
--		return intel_spi_sw_cycle(ispi, opcode, len);
-+		return intel_spi_sw_cycle(ispi, opcode, len,
-+					  OPTYPE_WRITE_NO_ADDR);
- 	return intel_spi_hw_cycle(ispi, opcode, len);
- }
++
+ 	while (len > 0) {
+ 		writel(offs, ispi->base + FADDR);
  
 -- 
 2.9.2
