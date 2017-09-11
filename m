@@ -1,9 +1,9 @@
-Received: from mail-it0-x241.google.com ([2607:f8b0:4001:c0b::241])
+Received: from mail-it0-x242.google.com ([2607:f8b0:4001:c0b::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1drLAH-00068R-M2
- for linux-mtd@lists.infradead.org; Mon, 11 Sep 2017 09:38:04 +0000
-Received: by mail-it0-x241.google.com with SMTP id d6so3842516itc.4
- for <linux-mtd@lists.infradead.org>; Mon, 11 Sep 2017 02:37:41 -0700 (PDT)
+ id 1drLAJ-000692-Ih
+ for linux-mtd@lists.infradead.org; Mon, 11 Sep 2017 09:38:05 +0000
+Received: by mail-it0-x242.google.com with SMTP id b76so3843407itb.2
+ for <linux-mtd@lists.infradead.org>; Mon, 11 Sep 2017 02:37:43 -0700 (PDT)
 From: Bin Meng <bmeng.cn@gmail.com>
 To: Mika Westerberg <mika.westerberg@linux.intel.com>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
@@ -14,10 +14,10 @@ To: Mika Westerberg <mika.westerberg@linux.intel.com>,
  linux-mtd <linux-mtd@lists.infradead.org>,
  linux-kernel <linux-kernel@vger.kernel.org>
 Cc: Stefan Roese <sr@denx.de>
-Subject: [PATCH v2 01/10] spi-nor: intel-spi: Fix number of protected range
- registers for BYT/LPT
-Date: Mon, 11 Sep 2017 02:41:51 -0700
-Message-Id: <1505122921-5534-2-git-send-email-bmeng.cn@gmail.com>
+Subject: [PATCH v2 02/10] spi-nor: intel-spi: Remove useless 'buf' parameter
+ in the HW/SW cycle
+Date: Mon, 11 Sep 2017 02:41:52 -0700
+Message-Id: <1505122921-5534-3-git-send-email-bmeng.cn@gmail.com>
 In-Reply-To: <1505122921-5534-1-git-send-email-bmeng.cn@gmail.com>
 References: <1505122921-5534-1-git-send-email-bmeng.cn@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,9 +29,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The number of protected range registers is not the same on BYT/LPT/
-BXT. GPR0 only exists on Apollo Lake and its offset is reserved on
-other platforms.
+intel_spi_hw_cycle() and intel_spi_sw_cycle() don't use the parameter
+'buf' at all. Remove it.
 
 Signed-off-by: Bin Meng <bmeng.cn@gmail.com>
 Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
@@ -39,105 +38,55 @@ Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 
 Changes in v2: None
 
- drivers/mtd/spi-nor/intel-spi.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ drivers/mtd/spi-nor/intel-spi.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
-index 8a596bf..e5b52e8 100644
+index e5b52e8..07626ca 100644
 --- a/drivers/mtd/spi-nor/intel-spi.c
 +++ b/drivers/mtd/spi-nor/intel-spi.c
-@@ -67,8 +67,6 @@
- #define PR_LIMIT_MASK			(0x3fff << PR_LIMIT_SHIFT)
- #define PR_RPE				BIT(15)
- #define PR_BASE_MASK			0x3fff
--/* Last PR is GPR0 */
--#define PR_NUM				(5 + 1)
+@@ -377,8 +377,7 @@ static int intel_spi_opcode_index(struct intel_spi *ispi, u8 opcode)
+ 	return -EINVAL;
+ }
  
- /* Offsets are from @ispi->sregs */
- #define SSFSTS_CTL			0x00
-@@ -96,14 +94,17 @@
- #define BYT_BCR				0xfc
- #define BYT_BCR_WPD			BIT(0)
- #define BYT_FREG_NUM			5
-+#define BYT_PR_NUM			5
- 
- #define LPT_PR				0x74
- #define LPT_SSFSTS_CTL			0x90
- #define LPT_FREG_NUM			5
-+#define LPT_PR_NUM			5
- 
- #define BXT_PR				0x84
- #define BXT_SSFSTS_CTL			0xa0
- #define BXT_FREG_NUM			12
-+#define BXT_PR_NUM			6
- 
- #define INTEL_SPI_TIMEOUT		5000 /* ms */
- #define INTEL_SPI_FIFO_SZ		64
-@@ -117,6 +118,7 @@
-  * @pregs: Start of protection registers
-  * @sregs: Start of software sequencer registers
-  * @nregions: Maximum number of regions
-+ * @pr_num: Maximum number of protected range registers
-  * @writeable: Is the chip writeable
-  * @swseq: Use SW sequencer in register reads/writes
-  * @erase_64k: 64k erase supported
-@@ -132,6 +134,7 @@ struct intel_spi {
- 	void __iomem *pregs;
- 	void __iomem *sregs;
- 	size_t nregions;
-+	size_t pr_num;
- 	bool writeable;
- 	bool swseq;
- 	bool erase_64k;
-@@ -167,7 +170,7 @@ static void intel_spi_dump_regs(struct intel_spi *ispi)
- 	for (i = 0; i < ispi->nregions; i++)
- 		dev_dbg(ispi->dev, "FREG(%d)=0x%08x\n", i,
- 			readl(ispi->base + FREG(i)));
--	for (i = 0; i < PR_NUM; i++)
-+	for (i = 0; i < ispi->pr_num; i++)
- 		dev_dbg(ispi->dev, "PR(%d)=0x%08x\n", i,
- 			readl(ispi->pregs + PR(i)));
- 
-@@ -182,7 +185,7 @@ static void intel_spi_dump_regs(struct intel_spi *ispi)
- 		dev_dbg(ispi->dev, "BCR=0x%08x\n", readl(ispi->base + BYT_BCR));
- 
- 	dev_dbg(ispi->dev, "Protected regions:\n");
--	for (i = 0; i < PR_NUM; i++) {
-+	for (i = 0; i < ispi->pr_num; i++) {
- 		u32 base, limit;
- 
- 		value = readl(ispi->pregs + PR(i));
-@@ -286,6 +289,7 @@ static int intel_spi_init(struct intel_spi *ispi)
- 		ispi->sregs = ispi->base + BYT_SSFSTS_CTL;
- 		ispi->pregs = ispi->base + BYT_PR;
- 		ispi->nregions = BYT_FREG_NUM;
-+		ispi->pr_num = BYT_PR_NUM;
- 
- 		if (writeable) {
- 			/* Disable write protection */
-@@ -305,12 +309,14 @@ static int intel_spi_init(struct intel_spi *ispi)
- 		ispi->sregs = ispi->base + LPT_SSFSTS_CTL;
- 		ispi->pregs = ispi->base + LPT_PR;
- 		ispi->nregions = LPT_FREG_NUM;
-+		ispi->pr_num = LPT_PR_NUM;
- 		break;
- 
- 	case INTEL_SPI_BXT:
- 		ispi->sregs = ispi->base + BXT_SSFSTS_CTL;
- 		ispi->pregs = ispi->base + BXT_PR;
- 		ispi->nregions = BXT_FREG_NUM;
-+		ispi->pr_num = BXT_PR_NUM;
- 		ispi->erase_64k = true;
- 		break;
- 
-@@ -652,7 +658,7 @@ static bool intel_spi_is_protected(const struct intel_spi *ispi,
+-static int intel_spi_hw_cycle(struct intel_spi *ispi, u8 opcode, u8 *buf,
+-			      int len)
++static int intel_spi_hw_cycle(struct intel_spi *ispi, u8 opcode, int len)
  {
- 	int i;
+ 	u32 val, status;
+ 	int ret;
+@@ -418,8 +417,7 @@ static int intel_spi_hw_cycle(struct intel_spi *ispi, u8 opcode, u8 *buf,
+ 	return 0;
+ }
  
--	for (i = 0; i < PR_NUM; i++) {
-+	for (i = 0; i < ispi->pr_num; i++) {
- 		u32 pr_base, pr_limit, pr_value;
+-static int intel_spi_sw_cycle(struct intel_spi *ispi, u8 opcode, u8 *buf,
+-			      int len)
++static int intel_spi_sw_cycle(struct intel_spi *ispi, u8 opcode, int len)
+ {
+ 	u32 val, status;
+ 	int ret;
+@@ -456,9 +454,9 @@ static int intel_spi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
+ 	writel(0, ispi->base + FADDR);
  
- 		pr_value = readl(ispi->pregs + PR(i));
+ 	if (ispi->swseq)
+-		ret = intel_spi_sw_cycle(ispi, opcode, buf, len);
++		ret = intel_spi_sw_cycle(ispi, opcode, len);
+ 	else
+-		ret = intel_spi_hw_cycle(ispi, opcode, buf, len);
++		ret = intel_spi_hw_cycle(ispi, opcode, len);
+ 
+ 	if (ret)
+ 		return ret;
+@@ -486,8 +484,8 @@ static int intel_spi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
+ 		return ret;
+ 
+ 	if (ispi->swseq)
+-		return intel_spi_sw_cycle(ispi, opcode, buf, len);
+-	return intel_spi_hw_cycle(ispi, opcode, buf, len);
++		return intel_spi_sw_cycle(ispi, opcode, len);
++	return intel_spi_hw_cycle(ispi, opcode, len);
+ }
+ 
+ static ssize_t intel_spi_read(struct spi_nor *nor, loff_t from, size_t len,
 -- 
 2.9.2
