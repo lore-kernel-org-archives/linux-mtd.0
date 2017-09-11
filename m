@@ -1,9 +1,9 @@
 Received: from mail-io0-x243.google.com ([2607:f8b0:4001:c06::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1drLAN-0006AX-Ic
- for linux-mtd@lists.infradead.org; Mon, 11 Sep 2017 09:38:10 +0000
-Received: by mail-io0-x243.google.com with SMTP id 93so3203455iol.4
- for <linux-mtd@lists.infradead.org>; Mon, 11 Sep 2017 02:37:49 -0700 (PDT)
+ id 1drLAN-0006A3-If
+ for linux-mtd@lists.infradead.org; Mon, 11 Sep 2017 09:38:09 +0000
+Received: by mail-io0-x243.google.com with SMTP id g32so2092146ioj.1
+ for <linux-mtd@lists.infradead.org>; Mon, 11 Sep 2017 02:37:47 -0700 (PDT)
 From: Bin Meng <bmeng.cn@gmail.com>
 To: Mika Westerberg <mika.westerberg@linux.intel.com>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
@@ -14,9 +14,10 @@ To: Mika Westerberg <mika.westerberg@linux.intel.com>,
  linux-mtd <linux-mtd@lists.infradead.org>,
  linux-kernel <linux-kernel@vger.kernel.org>
 Cc: Stefan Roese <sr@denx.de>
-Subject: [PATCH v2 05/10] spi-nor: intel-spi: Use SW sequencer for BYT/LPT
-Date: Mon, 11 Sep 2017 02:41:55 -0700
-Message-Id: <1505122921-5534-6-git-send-email-bmeng.cn@gmail.com>
+Subject: [PATCH v2 04/10] spi-nor: intel-spi: Check transfer length in the
+ HW/SW cycle
+Date: Mon, 11 Sep 2017 02:41:54 -0700
+Message-Id: <1505122921-5534-5-git-send-email-bmeng.cn@gmail.com>
 In-Reply-To: <1505122921-5534-1-git-send-email-bmeng.cn@gmail.com>
 References: <1505122921-5534-1-git-send-email-bmeng.cn@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,11 +29,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Baytrail/Lynx Point SPI controller's HW sequencer only supports basic
-operations. This is determined by the chipset design, however current
-codes try to use register values in OPMENU0/OPMENU1 to see whether SW
-sequencer should be used, which is wrong. In fact OPMENU0/OPMENU1 can
-remain unprogrammed by some bootloaders.
+Intel SPI controller only has a 64 bytes FIFO. This adds a sanity
+check before triggering any HW/SW sequencer work.
+
+Additionally for the SW sequencer, if given data length is zero,
+we should not mark the 'Data Cycle' bit.
 
 Signed-off-by: Bin Meng <bmeng.cn@gmail.com>
 Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
@@ -40,82 +41,44 @@ Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 
 Changes in v2: None
 
- drivers/mtd/spi-nor/intel-spi.c | 30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+ drivers/mtd/spi-nor/intel-spi.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
-index c4a9de6..d0237fe 100644
+index 263c6ab..c4a9de6 100644
 --- a/drivers/mtd/spi-nor/intel-spi.c
 +++ b/drivers/mtd/spi-nor/intel-spi.c
-@@ -290,6 +290,7 @@ static int intel_spi_init(struct intel_spi *ispi)
- 		ispi->pregs = ispi->base + BYT_PR;
- 		ispi->nregions = BYT_FREG_NUM;
- 		ispi->pr_num = BYT_PR_NUM;
-+		ispi->swseq = true;
- 
- 		if (writeable) {
- 			/* Disable write protection */
-@@ -310,6 +311,7 @@ static int intel_spi_init(struct intel_spi *ispi)
- 		ispi->pregs = ispi->base + LPT_PR;
- 		ispi->nregions = LPT_FREG_NUM;
- 		ispi->pr_num = LPT_PR_NUM;
-+		ispi->swseq = true;
- 		break;
- 
- 	case INTEL_SPI_BXT:
-@@ -324,12 +326,24 @@ static int intel_spi_init(struct intel_spi *ispi)
+@@ -399,6 +399,9 @@ static int intel_spi_hw_cycle(struct intel_spi *ispi, u8 opcode, int len)
  		return -EINVAL;
  	}
  
--	/* Disable #SMI generation */
-+	/* Disable #SMI generation from HW sequencer */
- 	val = readl(ispi->base + HSFSTS_CTL);
- 	val &= ~HSFSTS_CTL_FSMIE;
- 	writel(val, ispi->base + HSFSTS_CTL);
- 
- 	/*
-+	 * Some controllers can only do basic operations using hardware
-+	 * sequencer. All other operations are supposed to be carried out
-+	 * using software sequencer.
-+	 */
-+	if (ispi->swseq) {
-+		/* Disable #SMI generation from SW sequencer */
-+		val = readl(ispi->sregs + SSFSTS_CTL);
-+		val &= ~SSFSTS_CTL_FSMIE;
-+		writel(val, ispi->sregs + SSFSTS_CTL);
-+	}
++	if (len > INTEL_SPI_FIFO_SZ)
++		return -EINVAL;
 +
-+	/*
- 	 * BIOS programs allowed opcodes and then locks down the register.
- 	 * So read back what opcodes it decided to support. That's the set
- 	 * we are going to support as well.
-@@ -337,13 +351,6 @@ static int intel_spi_init(struct intel_spi *ispi)
- 	opmenu0 = readl(ispi->sregs + OPMENU0);
- 	opmenu1 = readl(ispi->sregs + OPMENU1);
+ 	val |= (len - 1) << HSFSTS_CTL_FDBC_SHIFT;
+ 	val |= HSFSTS_CTL_FCERR | HSFSTS_CTL_FDONE;
+ 	val |= HSFSTS_CTL_FGO;
+@@ -419,14 +422,19 @@ static int intel_spi_hw_cycle(struct intel_spi *ispi, u8 opcode, int len)
  
--	/*
--	 * Some controllers can only do basic operations using hardware
--	 * sequencer. All other operations are supposed to be carried out
--	 * using software sequencer. If we find that BIOS has programmed
--	 * opcodes for the software sequencer we use that over the hardware
--	 * sequencer.
--	 */
- 	if (opmenu0 && opmenu1) {
- 		for (i = 0; i < ARRAY_SIZE(ispi->opcodes) / 2; i++) {
- 			ispi->opcodes[i] = opmenu0 >> i * 8;
-@@ -353,13 +360,6 @@ static int intel_spi_init(struct intel_spi *ispi)
- 		val = readl(ispi->sregs + PREOP_OPTYPE);
- 		ispi->preopcodes[0] = val;
- 		ispi->preopcodes[1] = val >> 8;
--
--		/* Disable #SMI generation from SW sequencer */
--		val = readl(ispi->sregs + SSFSTS_CTL);
--		val &= ~SSFSTS_CTL_FSMIE;
--		writel(val, ispi->sregs + SSFSTS_CTL);
--
--		ispi->swseq = true;
- 	}
+ static int intel_spi_sw_cycle(struct intel_spi *ispi, u8 opcode, int len)
+ {
+-	u32 val, status;
++	u32 val = 0, status;
+ 	int ret;
  
- 	intel_spi_dump_regs(ispi);
+ 	ret = intel_spi_opcode_index(ispi, opcode);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	val = ((len - 1) << SSFSTS_CTL_DBC_SHIFT) | SSFSTS_CTL_DS;
++	if (len > INTEL_SPI_FIFO_SZ)
++		return -EINVAL;
++
++	/* Only mark 'Data Cycle' bit when there is data to be transferred */
++	if (len > 0)
++		val = ((len - 1) << SSFSTS_CTL_DBC_SHIFT) | SSFSTS_CTL_DS;
+ 	val |= ret << SSFSTS_CTL_COP_SHIFT;
+ 	val |= SSFSTS_CTL_FCERR | SSFSTS_CTL_FDONE;
+ 	val |= SSFSTS_CTL_SCGO;
 -- 
 2.9.2
