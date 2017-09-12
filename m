@@ -1,26 +1,21 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1drd3o-0005Kc-Ot
- for linux-mtd@lists.infradead.org; Tue, 12 Sep 2017 04:44:34 +0000
-Subject: Re: "UBIFS error (pid 396): dbg_check_space_info: free space changed
- from" + ecryptfs
-From: Oleksij Rempel <ore@pengutronix.de>
-To: Richard Weinberger <richard.weinberger@gmail.com>,
- Richard Weinberger <richard@nod.at>
-Cc: kernel@pengutronix.de,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-References: <dbc5bc9f-6c38-a0c3-e776-050a70382814@rempel-privat.de>
- <20170802140642.kpsdh3jfow2azevm@pengutronix.de>
- <2d11efa2-dda2-7810-dd22-965b295bbff9@nod.at>
- <CAFLxGvwK=J0zMyNa6zYG9jHXz3yTb_TFfEQBkMy0sqJyw7K73g@mail.gmail.com>
- <7ba72b1b-faaf-a324-1b4b-934ec9f7cf81@pengutronix.de>
-Message-ID: <9adb951d-06dc-2860-c645-2d787497033d@pengutronix.de>
-Date: Tue, 12 Sep 2017 06:44:07 +0200
+Received: from bastet.se.axis.com ([195.60.68.11])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1drhIU-00040k-Ks
+ for linux-mtd@lists.infradead.org; Tue, 12 Sep 2017 09:16:13 +0000
+Date: Tue, 12 Sep 2017 11:15:25 +0200
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Richard Weinberger <richard@sigma-star.at>
+CC: <dedekind1@gmail.com>, Jonas Holmberg <jonashg@axis.com>, Linux mtd
+ <linux-mtd@lists.infradead.org>, Cristian Ionescu-Idbohrn <cii@axis.com>
+Subject: Re: Actual usage of files in ubifs
+In-Reply-To: <1682206.lC8nDS1gi7@blindfold>
+Message-ID: <alpine.DEB.2.11.1709121106370.14549@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.11.1709111143420.14549@lnxricardw1.se.axis.com>
+ <alpine.DEB.2.11.1709111711400.14549@lnxricardw1.se.axis.com>
+ <1505144649.14367.85.camel@gmail.com> <1682206.lC8nDS1gi7@blindfold>
 MIME-Version: 1.0
-In-Reply-To: <7ba72b1b-faaf-a324-1b4b-934ec9f7cf81@pengutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: 8BIT
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,43 +25,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 21.08.2017 06:11, Oleksij Rempel wrote:
-> Hi,
-> 
-> On 18.08.2017 12:59, Richard Weinberger wrote:
->> On Sun, Aug 6, 2017 at 11:25 AM, Richard Weinberger <richard@nod.at> 
->> wrote:
->>> Oleksij,
->>>
->>> Am 02.08.2017 um 16:06 schrieb Oleksij Rempel:
->>>> Hallo all,
->>>>
->>>> Initial issue was detected on kernel 4.0.9 and is still reproducible
->>>> with same kernel version + most of back ported ubi/ubifs patches till
->>>> the kernel v4.12. UBIfs encryption patches was not backported.
->>>>
->>>> To reproduce it I needed:
->>>> - system with fresh flashed ubi image.
->>>> - on first start it should run following script:
->>>>> mount -o remount,rw /
->>>>> mount -t ecryptfs ... /dst
->>>>> ... do some work and mv some files to /dst
->>>>> umount /dst
->>>>> mount -o remount,ro / <--  UBIFS error (pid 396): 
->>>>> dbg_check_space_info:
->>>
->>> Does this also happen on mainline?
->>> Also please try in nandsim to rule out chip specific issues.
->>>
->>> Can you please share the ecryptfs configuration?
->>> i.e. are file names encrypted or not?
->>
->> Ping?
-> 
-> thank you for your attention. It is on TODO, just need a bit more time :)
 
-Not reproducible with mainline kernel or may be need more components 
-from BSP or kernel to reproduce it.
-Close it for now.
+On Mon, 11 Sep 2017, Richard Weinberger wrote:
 
-Thank you for your attention! :)
+> Am Montag, 11. September 2017, 17:44:09 CEST schrieb Artem Bityutskiy:
+> > > Good point. I was solely thinking along the lines of how much space
+> > > the
+> > > actual file occupied, not considering metadata. That would be a good
+> > > starting point. I'm guessing that for moderate file sizes the
+> > > metadata
+> > > would be relatively small compared to the file itself?
+> > 
+> > I would think a "slow" version of this would not be that hard to
+> > implement - walk the index and sum up node sizes. Subtract header sizes
+> > if you do not want metadata.
+> > 
+> > I am not sure what would be the API? Do other FSes implement something
+> > like this?
+> 
+> I think a "show MTD usage by inode" should be implementable via debugfs.
+> Maybe, after a discussion on linux-fsdevel a per-file ioctl().
+> 
+> But first I'd like to know more about the use-case and where to draw the 
+> border. e.g. If a file as xattrs, do you also account them? UBIFS 
+> modules xattrs via inodes. So, they have a rather huge space overhead.
+
+In our specific situation the use case is basically that given a specific 
+set files (in the root file system), how much flash is actually needed, 
+also considering that different types of files have different compression 
+ratios depending on the content. I.e. a large text file might not hurt as 
+much as a large binary since the former compresses better.
+
+So primarily it is the total amount needed for the whole file system, but 
+it quickly comes down how much individual files consume. In our case it's 
+not necessary to do the operation on a running file system, but in the 
+more general case that might be more useful.
+
+I would think that this is something that is known somewhere inside 
+mkfs.ubifs, or is the information too convoluted to be easily extractable?
+
+/Ricard
+-- 
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
