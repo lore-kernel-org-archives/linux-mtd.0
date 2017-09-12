@@ -1,21 +1,26 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1drkSH-0006fE-1Z
- for linux-mtd@lists.infradead.org; Tue, 12 Sep 2017 12:38:20 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
- kernel@pengutronix.de, Mimi Zohar <zohar@linux.vnet.ibm.com>,
- Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
- linux-ima-devel@lists.sourceforge.net
-Subject: Re: [PATCH] fs: ubifs: Add i_version support
-Date: Tue, 12 Sep 2017 14:38:02 +0200
-Message-ID: <2829618.duEmFAOaoQ@blindfold>
-In-Reply-To: <20170912103900.8629-1-s.hauer@pengutronix.de>
-References: <20170912103900.8629-1-s.hauer@pengutronix.de>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1drkzy-0004PG-Ks
+ for linux-mtd@lists.infradead.org; Tue, 12 Sep 2017 13:13:09 +0000
+Date: Tue, 12 Sep 2017 15:12:36 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Marek Vasut
+ <marek.vasut@gmail.com>, MTD Maling List <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [DEBUG] mtd: spi-nor: dump DWORDs of the Basic Flash Parameter
+ Table
+Message-ID: <20170912151236.33c5ad8f@bbrezillon>
+In-Reply-To: <CAMuHMdVgdLt5yhgJnDamcMDUv+-JhLEuO9Gj3trmXZwPhhP2tg@mail.gmail.com>
+References: <CAMuHMdXKpheF5whZi2Ot2Pm8t3Lu+ramNV==sXBo87u_HerZxQ@mail.gmail.com>
+ <20170907185456.4631-1-cyrille.pitchen@wedev4u.fr>
+ <e9e925ab-e543-23fd-a738-a9ce433de713@wedev4u.fr>
+ <CAMuHMdVgdLt5yhgJnDamcMDUv+-JhLEuO9Gj3trmXZwPhhP2tg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,48 +30,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sascha,
+Hi Geert,
 
-Am Dienstag, 12. September 2017, 12:39:00 CEST schrieb Sascha Hauer:
-> This adds i_version support to UBIFS. The inodes i_version is used by
-> IMA to detect changes to an inode and thus necessary to support IMA on
-> UBIFS. The i_version is stored in the previously unused space in the
-> UBIFS inode struct. Unlike in ext4 i_version support is unconditionally
-> enabled in UBIFS as I saw no reason to make it optional.
+On Mon, 11 Sep 2017 10:58:36 +0200
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 
-But we need a new UBIFS feature flag to indicate that this filesystem has 
-valid i_version fields.
+> Hi Cyrille,
+>=20
+> On Thu, Sep 7, 2017 at 9:28 PM, Cyrille Pitchen
+> <cyrille.pitchen@wedev4u.fr> wrote:
+> >> Can you apply this patch on your tree then report me what was printed,=
+ please?
+> >> I have an idea of the root cause of your issue then a potential work-a=
+round
+> >> but I first need to validate my assumption to confirm that the work-ar=
+ound
+> >> would actually work. =20
+>=20
+> +m25p80 spi0.0: DWORD1 =3D 0xffffffff
+> +m25p80 spi0.0: DWORD2 =3D 0xffffffff
+> +m25p80 spi0.0: DWORD3 =3D 0xffffffff
+> +m25p80 spi0.0: DWORD4 =3D 0xffffffff
+> +m25p80 spi0.0: DWORD5 =3D 0xffffffff
+> +m25p80 spi0.0: DWORD6 =3D 0xffffffff
+> +m25p80 spi0.0: DWORD7 =3D 0xffffffff
+> +m25p80 spi0.0: DWORD8 =3D 0xffffffff
+> +m25p80 spi0.0: DWORD9 =3D 0xffffffff
+> +m25p80 spi0.0: DWORD10 =3D 0x00000000
+> +m25p80 spi0.0: DWORD11 =3D 0x00000000
+> +m25p80 spi0.0: DWORD12 =3D 0x00000000
+> +m25p80 spi0.0: DWORD13 =3D 0x00000000
+> +m25p80 spi0.0: DWORD14 =3D 0x00000000
+> +m25p80 spi0.0: DWORD15 =3D 0x00000000
+> +m25p80 spi0.0: DWORD16 =3D 0x00000000
+> +m25p80 spi0.0: BFPT version 1.0 (length =3D 9)
+>=20
+> > If you could also dump the value of the 'addr' argument of
+> > spi_nor_read_sfdp_dma_unsafe() just before the for () loop below in the
+> > very same function. Actually, I suspect the SFDP tables of your SPI NOR=
+ =20
+>=20
+> +m25p80 spi0.0: addr =3D 0x448
+>=20
+> > memory sample to have been programmed with invalid values, neither
+> > compliant with the JEDEC JESD216 specification nor with the Cypress
+> > datasheet for this memory part. =20
+>=20
+> Sounds plausible.
+> I get the same values when disabling DMA, so it's not due to bad DMA hand=
+ling.
+> All Renesas boards I have local or remote access to have spansion,s25fl51=
+2s.
 
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
->  fs/ubifs/dir.c         | 30 +++++++++++++++++++-----------
->  fs/ubifs/file.c        |  5 +++++
->  fs/ubifs/journal.c     |  3 ++-
->  fs/ubifs/super.c       |  2 ++
->  fs/ubifs/ubifs-media.h |  3 ++-
->  5 files changed, 30 insertions(+), 13 deletions(-)
-> 
-> I did this patch exclusively to support IMA on UBIFS. IMA uses the inode's
-> i_version field to detect changes on inodes. A proper i_version support
-> needs to make the i_version persistent on disk, although IMA itself doesn't
-> need a persistent i_version. Last time an earlier version of this patch
-> 
-> was sent by Oleksij Rempel Richard said:
-> > What about making i_version persistent?
-> > We still have some empty fields in UBIFS' inode data structure.
-> > But first we have to be very sure that we need it.
-> 
-> This patch exactly implements this suggestion, leaving the question if we
-> really need it. I added the IMA maintainers to Cc in the hope that Mimi or
-> Dmitry can give a good reason why there's no alternative to i_version for
-> IMA.
-
-Yes, it would be good to know more about the user, IMA. Does IMA store the 
-version somewhere?
-Are there requirements on ordering? i.e. What if UBIFS faces a power-cut
-and the UBIFS i_version is behind IMA's version.
-Maybe we have to teach UBIFS to update an inode less lazy that it currently 
-does...
+Can you try with the following patch?
 
 Thanks,
-//richard
+
+Boris
+
+--->8---
+=46rom 000ff63fdb149d87d755483f5edc0aba010da6b4 Mon Sep 17 00:00:00 2001
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+Date: Tue, 12 Sep 2017 15:10:35 +0200
+Subject: [PATCH] mtd: spi-nor: Check consistency of the memory size extract=
+ed
+ from the SFDP
+
+One field of the flash parameter table contains information about the
+flash device size.
+Most of the time the data extracted from this field is valid, but
+sometimes the BFPT section of the SFDP table is corrupted or invalid and
+this field is set to 0xffffffff, thus resulting in an integer overflow
+when setting params->size.
+
+Since NOR devices are anayway always smaller than 2^64 bytes, we can
+easily stop the BFPT parsing if the size reported in this table is
+invalid.
+
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index cf1d4a15e10a..665ccae1d090 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -2127,6 +2127,15 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+ 	params->size =3D bfpt.dwords[BFPT_DWORD(2)];
+ 	if (params->size & BIT(31)) {
+ 		params->size &=3D ~BIT(31);
++
++		/*
++		 * Prevent overflows on params->size. Anyway, a NOR of 1^64
++		 * bytes is unlikely to exist so this error probably means
++		 * the BFPT we are reading is corrupted/wrong.
++		 */
++		if (params->size > 63)
++			return -EINVAL;
++
+ 		params->size =3D 1ULL << params->size;
+ 	} else {
+ 		params->size++;
