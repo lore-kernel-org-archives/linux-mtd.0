@@ -1,17 +1,20 @@
-Received: from mail-dm3nam03on0094.outbound.protection.outlook.com
- ([104.47.41.94] helo=NAM03-DM3-obe.outbound.protection.outlook.com)
+Received: from conuserg-12.nifty.com ([210.131.2.79])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1drX4M-0005vg-KC
- for linux-mtd@lists.infradead.org; Mon, 11 Sep 2017 22:20:45 +0000
-From: Brian Niebuhr <BNiebuhr@efji.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: do_write_buffer() unexpected timeout
-Date: Mon, 11 Sep 2017 22:20:08 +0000
-Message-ID: <2588C357BB271A4CA8E86BCFF043FA92339B949D@EFJDFWMB01.EFJDFW.local>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+ id 1drb62-00050W-9S
+ for linux-mtd@lists.infradead.org; Tue, 12 Sep 2017 02:38:44 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH 2/2] mtd: nand: denali: support two row address cycle devices
+Date: Tue, 12 Sep 2017 11:37:31 +0900
+Message-Id: <1505183851-29355-3-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <1505183851-29355-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1505183851-29355-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,64 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-All -
+The register TWO_ROW_ADDR_CYCLES specifies the number of row address
+cycles of the device, but it is fixed to 0 in the driver init code
+(i.e. always 3 row address cycles).
 
-I am using a 16-bit S29GL-S flash on a 3.3 kernel and I am experiencing an =
-occasional "software timeout" in do_write_buffer() in cfi_cmdset_0002.c.   =
- I am aware of the do_write_buffer() timeout patch that was made later on a=
-nd I have applied it to my kernel, but that patch doesn't solve my problem =
-because the amount of time that is elapsing is much longer than the flash p=
-rogramming time.   I have verified that the amount of time that elapses is =
-indeed longer than the timeout, usually about 11-15 ms, which is also signi=
-ficantly longer than the buffered program operation on this flash part.  I =
-verified that the kernel is not spending a huge amount of time in the polli=
-ng loop - the loop runs about 20 times during that 11-15 ms.  So what I bel=
-ieve is happening is that since the CPU is pretty busy at that point, some =
-other threads are running while the flash part is programming, and when the=
- thread running do_write_buffer() executes again the timeout has expired.
+Reflect the result of nand_scan_ident() to the register setting
+in order to support 2 row address cycle devices.
 
-What I would expect to happen at that point would be that the time_after() =
-check would indicate timeout, but chip_ready() would be true so the operati=
-on will complete.  Instead I find that chip_ready() is false and I get the =
-timeout error instead.   At that point I wanted to know why chip_ready() wa=
-s false, so after the time_after() call indicates that the time limit has b=
-een exceeded, I added code to read the flash data poll value three times an=
-d print it out.  In cases where the time limit has been exceeded, most of t=
-he time the those three reads yield the same value, which is equivalent to =
-the last word programmed (as expected).  However every once in a while the =
-three reads of the data poll value come out as follows:
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
 
-A B B
+ drivers/mtd/nand/denali.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Where 'B' is the value of the last word written to the programming buffer, =
-as in the normal case.  The value of 'A' is different though, and the value=
- of 'A' is as follows (in binary):
-
-yyyyyyyyyyyZyZyy
-
-Where the 'y' bits are the same as the last value written to the programmin=
-g buffer ('B'), but one or both of the bits marked 'Z' will be 'zero' inste=
-ad of being 'one' bits as they are in 'B'.  In my understanding, these two =
-bits are DQ4 and DQ2 according to the flash specification.  I can't underst=
-and why the first read of the data poll value would have DQ4 and/or DQ2 set=
- to zero while DQ7 is valid and DQ6 isn't toggling.  Subsequent reads at th=
-at address continue to yield the value 'B', so it's just the first read tha=
-t's wrong.
-
-Can anyone explain what might be going on here?  I'm not sure why my flash =
-part is behaving this way, and how to fix it.
-
-Thanks,
-
-Brian
-
-
-This e-mail transmission, and any documents, files or previous e-mail messa=
-ges attached to it, may contain confidential information. If you are not th=
-e intended recipient, or a person responsible for delivering it to the inte=
-nded recipient, you are hereby notified that any disclosure, distribution, =
-review, copy or use of any of the information contained in or attached to t=
-his message is STRICTLY PROHIBITED. If you have received this transmission =
-in error, please immediately notify us by reply e-mail, and destroy the ori=
-ginal transmission and its attachments without reading them or saving them =
-to disk. Thank you.
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 3087b0b..aefdc83 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -1137,8 +1137,6 @@ static void denali_hw_init(struct denali_nand_info *denali)
+ 
+ 	iowrite32(0xffff, denali->reg + SPARE_AREA_MARKER);
+ 
+-	/* Should set value for these registers when init */
+-	iowrite32(0, denali->reg + TWO_ROW_ADDR_CYCLES);
+ 	iowrite32(1, denali->reg + ECC_ENABLE);
+ }
+ 
+@@ -1379,6 +1377,8 @@ int denali_init(struct denali_nand_info *denali)
+ 		  denali->reg + PAGES_PER_BLOCK);
+ 	iowrite32(chip->options & NAND_BUSWIDTH_16 ? 1 : 0,
+ 		  denali->reg + DEVICE_WIDTH);
++	iowrite32(chip->options & NAND_ROW_ADDR_3 ? 0 : TWO_ROW_ADDR_CYCLES__FLAG,
++		  denali->reg + TWO_ROW_ADDR_CYCLES);
+ 	iowrite32(mtd->writesize, denali->reg + DEVICE_MAIN_AREA_SIZE);
+ 	iowrite32(mtd->oobsize, denali->reg + DEVICE_SPARE_AREA_SIZE);
+ 
+-- 
+2.7.4
