@@ -1,6 +1,6 @@
 Received: from conuserg-12.nifty.com ([210.131.2.79])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ds07J-0006Xp-NJ
+ id 1ds07J-0006Xn-NM
  for linux-mtd@lists.infradead.org; Wed, 13 Sep 2017 05:21:51 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -10,10 +10,10 @@ Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 4/9] mtd: nand: denali: squash denali_enable_dma() helper into
- caller
-Date: Wed, 13 Sep 2017 14:20:41 +0900
-Message-Id: <1505280046-16608-5-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH 7/9] mtd: nand: denali: use more FIELD_PREP / FIELD_GET where
+ appropriate
+Date: Wed, 13 Sep 2017 14:20:44 +0900
+Message-Id: <1505280046-16608-8-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1505280046-16608-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1505280046-16608-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,54 +25,121 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This helper just sets/clears a flag of DMA_ENABLE register (with
-register read-back, I do not know why it is necessary).
+In several places in this driver, the register fields are retrieved
+as follows:
 
-Move the register write code to the caller, and remove the helper.
-It works for me without the register read-back.
+  val = reg & FOO_MASK;
+
+Then, modified as follows:
+
+  reg &= ~FOO_MASK;
+  reg |= val;
+
+This code relies on its shift is 0, which we will never know until
+we check the definition of FOO_MASK.  Use FIELD_PREP / FIELD_GET
+where appropriate.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
- drivers/mtd/nand/denali.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/denali.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 4daeb7f..e7b25de 100644
+index 1525c4e..ca98015 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -465,13 +465,6 @@ static int denali_sw_ecc_fixup(struct mtd_info *mtd,
- 	return max_bitflips;
- }
- 
--/* programs the controller to either enable/disable DMA transfers */
--static void denali_enable_dma(struct denali_nand_info *denali, bool en)
--{
--	iowrite32(en ? DMA_ENABLE__FLAG : 0, denali->reg + DMA_ENABLE);
--	ioread32(denali->reg + DMA_ENABLE);
--}
--
- static void denali_setup_dma64(struct denali_nand_info *denali,
- 			       dma_addr_t dma_addr, int page, int write)
+@@ -88,7 +88,7 @@ static void denali_detect_max_banks(struct denali_nand_info *denali)
  {
-@@ -619,7 +612,7 @@ static int denali_dma_xfer(struct denali_nand_info *denali, void *buf,
- 		ecc_err_mask = INTR__ECC_ERR;
+ 	uint32_t features = ioread32(denali->reg + FEATURES);
+ 
+-	denali->max_banks = 1 << (features & FEATURES__N_BANKS);
++	denali->max_banks = 1 << FIELD_GET(FEATURES__N_BANKS, features);
+ 
+ 	/* the encoding changed from rev 5.0 to 5.1 */
+ 	if (denali->revision < 0x0501)
+@@ -374,7 +374,7 @@ static int denali_hw_ecc_fixup(struct mtd_info *mtd,
+ 		return 0;
  	}
  
--	denali_enable_dma(denali, true);
-+	iowrite32(DMA_ENABLE__FLAG, denali->reg + DMA_ENABLE);
+-	max_bitflips = ecc_cor & ECC_COR_INFO__MAX_ERRORS;
++	max_bitflips = FIELD_GET(ECC_COR_INFO__MAX_ERRORS, ecc_cor);
  
- 	denali_reset_irq(denali);
- 	denali_setup_dma(denali, dma_addr, page, write);
-@@ -631,7 +624,8 @@ static int denali_dma_xfer(struct denali_nand_info *denali, void *buf,
- 	else if (irq_status & ecc_err_mask)
- 		ret = -EBADMSG;
+ 	/*
+ 	 * The register holds the maximum of per-sector corrected bitflips.
+@@ -985,7 +985,7 @@ static int denali_setup_data_interface(struct mtd_info *mtd, int chipnr,
  
--	denali_enable_dma(denali, false);
-+	iowrite32(0, denali->reg + DMA_ENABLE);
-+
- 	dma_unmap_single(denali->dev, dma_addr, size, dir);
+ 	tmp = ioread32(denali->reg + ACC_CLKS);
+ 	tmp &= ~ACC_CLKS__VALUE;
+-	tmp |= acc_clks;
++	tmp |= FIELD_PREP(ACC_CLKS__VALUE, acc_clks);
+ 	iowrite32(tmp, denali->reg + ACC_CLKS);
  
- 	if (irq_status & INTR__ERASED_PAGE)
+ 	/* tRWH -> RE_2_WE */
+@@ -994,7 +994,7 @@ static int denali_setup_data_interface(struct mtd_info *mtd, int chipnr,
+ 
+ 	tmp = ioread32(denali->reg + RE_2_WE);
+ 	tmp &= ~RE_2_WE__VALUE;
+-	tmp |= re_2_we;
++	tmp |= FIELD_PREP(RE_2_WE__VALUE, re_2_we);
+ 	iowrite32(tmp, denali->reg + RE_2_WE);
+ 
+ 	/* tRHZ -> RE_2_RE */
+@@ -1003,7 +1003,7 @@ static int denali_setup_data_interface(struct mtd_info *mtd, int chipnr,
+ 
+ 	tmp = ioread32(denali->reg + RE_2_RE);
+ 	tmp &= ~RE_2_RE__VALUE;
+-	tmp |= re_2_re;
++	tmp |= FIELD_PREP(RE_2_RE__VALUE, re_2_re);
+ 	iowrite32(tmp, denali->reg + RE_2_RE);
+ 
+ 	/* tWHR -> WE_2_RE */
+@@ -1012,7 +1012,7 @@ static int denali_setup_data_interface(struct mtd_info *mtd, int chipnr,
+ 
+ 	tmp = ioread32(denali->reg + TWHR2_AND_WE_2_RE);
+ 	tmp &= ~TWHR2_AND_WE_2_RE__WE_2_RE;
+-	tmp |= we_2_re;
++	tmp |= FIELD_PREP(TWHR2_AND_WE_2_RE__WE_2_RE, we_2_re);
+ 	iowrite32(tmp, denali->reg + TWHR2_AND_WE_2_RE);
+ 
+ 	/* tADL -> ADDR_2_DATA */
+@@ -1026,8 +1026,8 @@ static int denali_setup_data_interface(struct mtd_info *mtd, int chipnr,
+ 	addr_2_data = min_t(int, addr_2_data, addr_2_data_mask);
+ 
+ 	tmp = ioread32(denali->reg + TCWAW_AND_ADDR_2_DATA);
+-	tmp &= ~addr_2_data_mask;
+-	tmp |= addr_2_data;
++	tmp &= ~TCWAW_AND_ADDR_2_DATA__ADDR_2_DATA;
++	tmp |= FIELD_PREP(TCWAW_AND_ADDR_2_DATA__ADDR_2_DATA, addr_2_data);
+ 	iowrite32(tmp, denali->reg + TCWAW_AND_ADDR_2_DATA);
+ 
+ 	/* tREH, tWH -> RDWR_EN_HI_CNT */
+@@ -1037,7 +1037,7 @@ static int denali_setup_data_interface(struct mtd_info *mtd, int chipnr,
+ 
+ 	tmp = ioread32(denali->reg + RDWR_EN_HI_CNT);
+ 	tmp &= ~RDWR_EN_HI_CNT__VALUE;
+-	tmp |= rdwr_en_hi;
++	tmp |= FIELD_PREP(RDWR_EN_HI_CNT__VALUE, rdwr_en_hi);
+ 	iowrite32(tmp, denali->reg + RDWR_EN_HI_CNT);
+ 
+ 	/* tRP, tWP -> RDWR_EN_LO_CNT */
+@@ -1051,7 +1051,7 @@ static int denali_setup_data_interface(struct mtd_info *mtd, int chipnr,
+ 
+ 	tmp = ioread32(denali->reg + RDWR_EN_LO_CNT);
+ 	tmp &= ~RDWR_EN_LO_CNT__VALUE;
+-	tmp |= rdwr_en_lo;
++	tmp |= FIELD_PREP(RDWR_EN_LO_CNT__VALUE, rdwr_en_lo);
+ 	iowrite32(tmp, denali->reg + RDWR_EN_LO_CNT);
+ 
+ 	/* tCS, tCEA -> CS_SETUP_CNT */
+@@ -1062,7 +1062,7 @@ static int denali_setup_data_interface(struct mtd_info *mtd, int chipnr,
+ 
+ 	tmp = ioread32(denali->reg + CS_SETUP_CNT);
+ 	tmp &= ~CS_SETUP_CNT__VALUE;
+-	tmp |= cs_setup;
++	tmp |= FIELD_PREP(CS_SETUP_CNT__VALUE, cs_setup);
+ 	iowrite32(tmp, denali->reg + CS_SETUP_CNT);
+ 
+ 	return 0;
 -- 
 2.7.4
