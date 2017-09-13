@@ -1,19 +1,22 @@
-Received: from vegas.theobroma-systems.com ([144.76.126.164]
- helo=mail.theobroma-systems.com)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ds2zh-0006RI-T3
- for linux-mtd@lists.infradead.org; Wed, 13 Sep 2017 08:26:03 +0000
-From: Klaus Goger <klaus.goger@theobroma-systems.com>
-To: linux-mtd@lists.infradead.org
-Cc: Klaus Goger <klaus.goger@theobroma-systems.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH v2] mtd: spi-nor: add support for Gigadevice GD25LQ32
-Date: Wed, 13 Sep 2017 10:25:35 +0200
-Message-Id: <20170913082535.64261-1-klaus.goger@theobroma-systems.com>
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1ds49G-0000BN-WE
+ for linux-mtd@lists.infradead.org; Wed, 13 Sep 2017 09:40:01 +0000
+Subject: Re: [PATCH mtd-utils v3] nandmarkbad: new util to mark blocks as bad
+To: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Richard Weinberger <richard@nod.at>, kernel@pengutronix.de,
+ linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <20170824152227.30394-1-ukleinek@debian.org>
+ <20170830113146.26929-1-u.kleine-koenig@pengutronix.de>
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Message-ID: <184ab056-4ef0-706a-c8df-fa5b0b5998f1@sigma-star.at>
+Date: Wed, 13 Sep 2017 11:39:31 +0200
+MIME-Version: 1.0
+In-Reply-To: <20170830113146.26929-1-u.kleine-koenig@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +26,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Tested against GD25LQ32D but the GD25LQ32C datasheet seems to be
-identically feature-wise. Therefore dropping the suffix as it's
-probably only indicating the die revision.
+Hi,
 
-Signed-off-by: Klaus Goger <klaus.goger@theobroma-systems.com>
 
----
+sorry for the late reply. After requesting the initial changes, I caught up on
+the IRC discussion and came under the impression that it was pretty clear to
+everyone that there are a few major issues with this kind of tool.
 
-Changes in v2:
-- noticed a typo in the actual patch after hitting send
+First of all, marking a block bad can currently not be undone. The changes this
+tool makes are thus both destructive and irreversible.
 
- drivers/mtd/spi-nor/spi-nor.c | 5 +++++
- 1 file changed, 5 insertions(+)
+If the MTD contains UBI data, UBI has no way of moving the data somewhere else
+if a block just randomly goes bad completely out of the blue.
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index cf1d4a15e10a..e5416374d9d6 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -983,6 +983,11 @@ static const struct flash_info spi_nor_ids[] = {
- 			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
- 	},
- 	{
-+		"gd25lq32", INFO(0xc86016, 0, 64 * 1024, 64,
-+			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-+	},
-+	{
- 		"gd25q64", INFO(0xc84017, 0, 64 * 1024, 128,
- 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
- 			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
--- 
-2.11.0
+Besides, if the MTD is attached to an UBI device, UBI already takes care of
+detecting blocks that go bad *over time* and takes care of marking them as
+bad after moving the data somewhere else.
+
+It might be interesting to have such a tool if nand scrub functionality was
+added to the kernel (such as in [1]), allowing the changes done by the tool
+to be undone. But even then, what would be the practical use case for
+such a tool?
+
+
+Thanks,
+
+David
+
+
+[1] http://patchwork.ozlabs.org/patch/764978/
