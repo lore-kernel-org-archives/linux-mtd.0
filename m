@@ -1,16 +1,15 @@
-Received: from mail-qk0-x243.google.com ([2607:f8b0:400d:c09::243])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dsCHt-0005Pb-9y
- for linux-mtd@lists.infradead.org; Wed, 13 Sep 2017 18:21:26 +0000
-Received: by mail-qk0-x243.google.com with SMTP id i14so618022qke.3
- for <linux-mtd@lists.infradead.org>; Wed, 13 Sep 2017 11:21:02 -0700 (PDT)
-Message-ID: <59b97707.c38b370a.3fa1c.ac86@mx.google.com>
-Date: Wed, 13 Sep 2017 14:20:55 -0400
+Received: from mail-ua0-x241.google.com ([2607:f8b0:400c:c08::241])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dsCVI-0007VZ-RM
+ for linux-mtd@lists.infradead.org; Wed, 13 Sep 2017 18:35:22 +0000
+Received: by mail-ua0-x241.google.com with SMTP id g47so299490uad.2
+ for <linux-mtd@lists.infradead.org>; Wed, 13 Sep 2017 11:34:56 -0700 (PDT)
+Message-ID: <59b97a4e.cf02b00a.d8b82.a310@mx.google.com>
+Date: Wed, 13 Sep 2017 14:34:53 -0400
 From: Arun Nagendran <arunrasppi@gmail.com>
-To: kamlakant.patel@broadcom.com
-Cc: gregkh@linuxfoundation.org, manonuevo@micron.com,
- linux-mtd@lists.infradead.org
-Subject: [PATCH] Enable the read ECC before program the page.
+To: gregkh@linuxfoundation.org
+Cc: manonuevo@micron.com, linux-mtd@lists.infradead.org
+Subject: [PATCH] Enable the read ECC before program the page
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -39,14 +38,14 @@ Verify this logic with GIGA DEVICE Part(GD5F2GQ4RCFIG):
 we see this in-conststency problem wit Giga Device and fix on
 this patch resovle that issue.
 ---
- drivers/staging/mt29f_spinand/mt29f_spinand.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/staging/mt29f_spinand/mt29f_spinand.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/staging/mt29f_spinand/mt29f_spinand.c b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-index a4e3ae8..2b03cc9 100644
+index a4e3ae8..202d222 100644
 --- a/drivers/staging/mt29f_spinand/mt29f_spinand.c
 +++ b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-@@ -496,8 +496,12 @@ static int spinand_program_page(struct spi_device *spi_nand,
+@@ -496,8 +496,13 @@ static int spinand_program_page(struct spi_device *spi_nand,
  	if (!wbuf)
  		return -ENOMEM;
  
@@ -54,6 +53,7 @@ index a4e3ae8..2b03cc9 100644
 -	spinand_read_page(spi_nand, page_id, 0, CACHE_BUF, wbuf);
 +	enable_read_hw_ecc = 1;
 +	retval = spinand_read_page(spi_nand, page_id, 0, CACHE_BUF, wbuf);
++	if( retval < 0 )
 +	{
 +		dev_err(&spi_nand->dev, "ecc error on read page!!!\n");
 +		return retval;
