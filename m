@@ -1,18 +1,18 @@
-Received: from mail-qk0-x244.google.com ([2607:f8b0:400d:c09::244])
+Received: from mail.linuxfoundation.org ([140.211.169.12])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dsD8b-0001s5-Cx
- for linux-mtd@lists.infradead.org; Wed, 13 Sep 2017 19:15:56 +0000
-Received: by mail-qk0-x244.google.com with SMTP id r66so699449qke.4
- for <linux-mtd@lists.infradead.org>; Wed, 13 Sep 2017 12:15:28 -0700 (PDT)
-Message-ID: <59b983ce.82b8370a.04a2.b72a@mx.google.com>
-Date: Wed, 13 Sep 2017 15:15:26 -0400
-From: Arun Nagendran <arunrasppi@gmail.com>
-To: gregkh@linuxfoundation.org
+ id 1dsFGc-0006yz-EY
+ for linux-mtd@lists.infradead.org; Wed, 13 Sep 2017 21:32:20 +0000
+Date: Wed, 13 Sep 2017 14:31:54 -0700
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Arun Nagendran <arunrasppi@gmail.com>
 Cc: manonuevo@micron.com, linux-mtd@lists.infradead.org
-Subject: [PATCH] Enable the read ECC before program the page
+Subject: Re: [PATCH] Enable the read ECC before program the page
+Message-ID: <20170913213154.GF9288@kroah.com>
+References: <59b983ce.82b8370a.04a2.b72a@mx.google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <59b983ce.82b8370a.04a2.b72a@mx.google.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,45 +22,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Current program_page function did following operation:
+On Wed, Sep 13, 2017 at 03:15:26PM -0400, Arun Nagendran wrote:
+> Current program_page function did following operation:
+> 
+> 1. read page (with ECC OFF)
+> 2. modify the page
+> 3. write the page (with ECC ON)
+> 
+> For some case(buggy flash Chip), while read the page without ECC ON,
+> we may read the page with bit flip error and modify that bad page without
+> knowing the bit flip error on that page.
+> also we re-calculate the hash for bad page and write it.
+> This could bring potential in-consistency problem with Flash data.
+> 
+> Verify this logic with GIGA DEVICE Part(GD5F2GQ4RCFIG):
+> we see this in-conststency problem wit Giga Device and fix on
+> this patch resovle that issue.
+> 
+> Signed-off-by: Arun Nagendran <arunrasppi@gmail.com>
 
-1. read page (with ECC OFF)
-2. modify the page
-3. write the page (with ECC ON)
+Please read Documentation/SubmittingPatches for how to properly version
+your patches so we know what is going on and which one to accept/review.
 
-For some case(buggy flash Chip), while read the page without ECC ON,
-we may read the page with bit flip error and modify that bad page without
-knowing the bit flip error on that page.
-also we re-calculate the hash for bad page and write it.
-This could bring potential in-consistency problem with Flash data.
+Also your subject line needs some work, look at the other subjects for
+patches that have been accepted for this driver/subsystem for examples
+of what needs to be done.
 
-Verify this logic with GIGA DEVICE Part(GD5F2GQ4RCFIG):
-we see this in-conststency problem wit Giga Device and fix on
-this patch resovle that issue.
+thanks,
 
-Signed-off-by: Arun Nagendran <arunrasppi@gmail.com>
----
- drivers/staging/mt29f_spinand/mt29f_spinand.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/staging/mt29f_spinand/mt29f_spinand.c b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-index 13eaf16..87595c5 100644
---- a/drivers/staging/mt29f_spinand/mt29f_spinand.c
-+++ b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-@@ -496,8 +496,12 @@ static int spinand_program_page(struct spi_device *spi_nand,
- 	if (!wbuf)
- 		return -ENOMEM;
- 
--	enable_read_hw_ecc = 0;
--	spinand_read_page(spi_nand, page_id, 0, CACHE_BUF, wbuf);
-+	enable_read_hw_ecc = 1;
-+	retval = spinand_read_page(spi_nand, page_id, 0, CACHE_BUF, wbuf);
-+	if (retval < 0) {
-+		dev_err(&spi_nand->dev, "ecc error on read page!!!\n");
-+		return retval;
-+	}
- 
- 	for (i = offset, j = 0; i < len; i++, j++)
- 		wbuf[i] &= buf[j];
--- 
-2.7.4
+greg k-h
