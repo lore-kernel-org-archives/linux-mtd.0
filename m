@@ -1,35 +1,19 @@
-Date: Wed, 13 Sep 2017 19:03:10 +0200
-From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-To: Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc: Romain Izard <romain.izard.pro@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@codeaurora.org>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Jonathan Cameron <jic23@kernel.org>, Wenyou Yang <wenyou.yang@atmel.com>,
- Josh Wu <rainyfeeling@outlook.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Thierry Reding <thierry.reding@gmail.com>,
- Richard Genoud <richard.genoud@gmail.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Alan Stern <stern@rowland.harvard.edu>, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-pwm@vger.kernel.org,
- linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- Romain Izard <romain.izard@mobile-devices.fr>
-Subject: Re: [PATCH v1 03/10] clk: at91: pmc: Support backup for programmable
- clocks
-Message-ID: <20170913170310.grfv7j5xvh7chjdo@piout.net>
-References: <20170908153604.28383-1-romain.izard.pro@gmail.com>
- <20170908153604.28383-4-romain.izard.pro@gmail.com>
- <b0c7e816-4a7c-609d-2bc7-281fc6ca751d@microchip.com>
+Received: from mail-qk0-x243.google.com ([2607:f8b0:400d:c09::243])
+ by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dsCHt-0005Pb-9y
+ for linux-mtd@lists.infradead.org; Wed, 13 Sep 2017 18:21:26 +0000
+Received: by mail-qk0-x243.google.com with SMTP id i14so618022qke.3
+ for <linux-mtd@lists.infradead.org>; Wed, 13 Sep 2017 11:21:02 -0700 (PDT)
+Message-ID: <59b97707.c38b370a.3fa1c.ac86@mx.google.com>
+Date: Wed, 13 Sep 2017 14:20:55 -0400
+From: Arun Nagendran <arunrasppi@gmail.com>
+To: kamlakant.patel@broadcom.com
+Cc: gregkh@linuxfoundation.org, manonuevo@micron.com,
+ linux-mtd@lists.infradead.org
+Subject: [PATCH] Enable the read ECC before program the page.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b0c7e816-4a7c-609d-2bc7-281fc6ca751d@microchip.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,39 +23,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 13/09/2017 at 14:29:35 +0200, Nicolas Ferre wrote:
-> On 08/09/2017 at 17:35, Romain Izard wrote:
-> > From: Romain Izard <romain.izard@mobile-devices.fr>
-> > 
-> > Save and restore the System Clock and Programmable Clock register for
-> > the backup use case.
-> 
-> "System Clock" seems to be handled in another patch.
-> 
-> > Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
-> > ---
-> >  drivers/clk/at91/pmc.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> > 
-> > diff --git a/drivers/clk/at91/pmc.c b/drivers/clk/at91/pmc.c
-> > index 07dc2861ad3f..5421b03553ec 100644
-> > --- a/drivers/clk/at91/pmc.c
-> > +++ b/drivers/clk/at91/pmc.c
-> > @@ -66,6 +66,7 @@ static struct
-> >  	u32 pcr[PMC_MAX_IDS];
-> >  	u32 audio_pll0;
-> >  	u32 audio_pll1;
-> > +	u32 pckr[3];
-> 
-> Some products have different numbers of PCK (only 2 on at91sam9x5 for
-> instance)...
-> 
+Current program_page function did following operation:
 
-My opinion is that it will be time to change that when multiple SoCs
-will need to save their registers.
+1. read page (with ECC OFF)
+2. modify the page
+3. write the page (with ECC ON)
 
+For some case(buggy flash Chip), while read the page without ECC ON,
+we may read the page with bit flip error and modify that bad page without
+knowing the bit flip error on that page.
+also we re-calculate the hash for bad page and write it.
+This could bring potential in-consistency problem with Flash data.
 
+Verify this logic with GIGA DEVICE Part(GD5F2GQ4RCFIG):
+we see this in-conststency problem wit Giga Device and fix on
+this patch resovle that issue.
+---
+ drivers/staging/mt29f_spinand/mt29f_spinand.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/staging/mt29f_spinand/mt29f_spinand.c b/drivers/staging/mt29f_spinand/mt29f_spinand.c
+index a4e3ae8..2b03cc9 100644
+--- a/drivers/staging/mt29f_spinand/mt29f_spinand.c
++++ b/drivers/staging/mt29f_spinand/mt29f_spinand.c
+@@ -496,8 +496,12 @@ static int spinand_program_page(struct spi_device *spi_nand,
+ 	if (!wbuf)
+ 		return -ENOMEM;
+ 
+-	enable_read_hw_ecc = 0;
+-	spinand_read_page(spi_nand, page_id, 0, CACHE_BUF, wbuf);
++	enable_read_hw_ecc = 1;
++	retval = spinand_read_page(spi_nand, page_id, 0, CACHE_BUF, wbuf);
++	{
++		dev_err(&spi_nand->dev, "ecc error on read page!!!\n");
++		return retval;
++	}
+ 
+ 	for (i = offset, j = 0; i < len; i++, j++)
+ 		wbuf[i] &= buf[j];
 -- 
-Alexandre Belloni, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+2.7.4
