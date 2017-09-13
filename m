@@ -1,6 +1,6 @@
 Received: from conuserg-12.nifty.com ([210.131.2.79])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ds07J-0006Xn-NM
+ id 1ds07J-0006Xu-NI
  for linux-mtd@lists.infradead.org; Wed, 13 Sep 2017 05:21:51 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -10,10 +10,10 @@ Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 7/9] mtd: nand: denali: use more FIELD_PREP / FIELD_GET where
- appropriate
-Date: Wed, 13 Sep 2017 14:20:44 +0900
-Message-Id: <1505280046-16608-8-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH 1/9] mtd: nand: denali: squash setup_ecc_for_xfer() helper
+ into caller
+Date: Wed, 13 Sep 2017 14:20:38 +0900
+Message-Id: <1505280046-16608-2-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1505280046-16608-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1505280046-16608-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,121 +25,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In several places in this driver, the register fields are retrieved
-as follows:
-
-  val = reg & FOO_MASK;
-
-Then, modified as follows:
-
-  reg &= ~FOO_MASK;
-  reg |= val;
-
-This code relies on its shift is 0, which we will never know until
-we check the definition of FOO_MASK.  Use FIELD_PREP / FIELD_GET
-where appropriate.
+The setup_ecc_for_xfer() is only called from denali_data_xfer().
+This helper is small enough, so squash it into the caller.
+This looks cleaner to me.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
- drivers/mtd/nand/denali.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ drivers/mtd/nand/denali.c | 22 +++-------------------
+ 1 file changed, 3 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 1525c4e..ca98015 100644
+index aefdc83..d847ae4 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -88,7 +88,7 @@ static void denali_detect_max_banks(struct denali_nand_info *denali)
+@@ -208,24 +208,6 @@ static uint32_t denali_check_irq(struct denali_nand_info *denali)
+ 	return irq_status;
+ }
+ 
+-/*
+- * This helper function setups the registers for ECC and whether or not
+- * the spare area will be transferred.
+- */
+-static void setup_ecc_for_xfer(struct denali_nand_info *denali, bool ecc_en,
+-				bool transfer_spare)
+-{
+-	int ecc_en_flag, transfer_spare_flag;
+-
+-	/* set ECC, transfer spare bits if needed */
+-	ecc_en_flag = ecc_en ? ECC_ENABLE__FLAG : 0;
+-	transfer_spare_flag = transfer_spare ? TRANSFER_SPARE_REG__FLAG : 0;
+-
+-	/* Enable spare area/ECC per user's request. */
+-	iowrite32(ecc_en_flag, denali->reg + ECC_ENABLE);
+-	iowrite32(transfer_spare_flag, denali->reg + TRANSFER_SPARE_REG);
+-}
+-
+ static void denali_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
  {
- 	uint32_t features = ioread32(denali->reg + FEATURES);
+ 	struct denali_nand_info *denali = mtd_to_denali(mtd);
+@@ -659,7 +641,9 @@ static int denali_dma_xfer(struct denali_nand_info *denali, void *buf,
+ static int denali_data_xfer(struct denali_nand_info *denali, void *buf,
+ 			    size_t size, int page, int raw, int write)
+ {
+-	setup_ecc_for_xfer(denali, !raw, raw);
++	iowrite32(raw ? 0 : ECC_ENABLE__FLAG, denali->reg + ECC_ENABLE);
++	iowrite32(raw ? TRANSFER_SPARE_REG__FLAG : 0,
++		  denali->reg + TRANSFER_SPARE_REG);
  
--	denali->max_banks = 1 << (features & FEATURES__N_BANKS);
-+	denali->max_banks = 1 << FIELD_GET(FEATURES__N_BANKS, features);
- 
- 	/* the encoding changed from rev 5.0 to 5.1 */
- 	if (denali->revision < 0x0501)
-@@ -374,7 +374,7 @@ static int denali_hw_ecc_fixup(struct mtd_info *mtd,
- 		return 0;
- 	}
- 
--	max_bitflips = ecc_cor & ECC_COR_INFO__MAX_ERRORS;
-+	max_bitflips = FIELD_GET(ECC_COR_INFO__MAX_ERRORS, ecc_cor);
- 
- 	/*
- 	 * The register holds the maximum of per-sector corrected bitflips.
-@@ -985,7 +985,7 @@ static int denali_setup_data_interface(struct mtd_info *mtd, int chipnr,
- 
- 	tmp = ioread32(denali->reg + ACC_CLKS);
- 	tmp &= ~ACC_CLKS__VALUE;
--	tmp |= acc_clks;
-+	tmp |= FIELD_PREP(ACC_CLKS__VALUE, acc_clks);
- 	iowrite32(tmp, denali->reg + ACC_CLKS);
- 
- 	/* tRWH -> RE_2_WE */
-@@ -994,7 +994,7 @@ static int denali_setup_data_interface(struct mtd_info *mtd, int chipnr,
- 
- 	tmp = ioread32(denali->reg + RE_2_WE);
- 	tmp &= ~RE_2_WE__VALUE;
--	tmp |= re_2_we;
-+	tmp |= FIELD_PREP(RE_2_WE__VALUE, re_2_we);
- 	iowrite32(tmp, denali->reg + RE_2_WE);
- 
- 	/* tRHZ -> RE_2_RE */
-@@ -1003,7 +1003,7 @@ static int denali_setup_data_interface(struct mtd_info *mtd, int chipnr,
- 
- 	tmp = ioread32(denali->reg + RE_2_RE);
- 	tmp &= ~RE_2_RE__VALUE;
--	tmp |= re_2_re;
-+	tmp |= FIELD_PREP(RE_2_RE__VALUE, re_2_re);
- 	iowrite32(tmp, denali->reg + RE_2_RE);
- 
- 	/* tWHR -> WE_2_RE */
-@@ -1012,7 +1012,7 @@ static int denali_setup_data_interface(struct mtd_info *mtd, int chipnr,
- 
- 	tmp = ioread32(denali->reg + TWHR2_AND_WE_2_RE);
- 	tmp &= ~TWHR2_AND_WE_2_RE__WE_2_RE;
--	tmp |= we_2_re;
-+	tmp |= FIELD_PREP(TWHR2_AND_WE_2_RE__WE_2_RE, we_2_re);
- 	iowrite32(tmp, denali->reg + TWHR2_AND_WE_2_RE);
- 
- 	/* tADL -> ADDR_2_DATA */
-@@ -1026,8 +1026,8 @@ static int denali_setup_data_interface(struct mtd_info *mtd, int chipnr,
- 	addr_2_data = min_t(int, addr_2_data, addr_2_data_mask);
- 
- 	tmp = ioread32(denali->reg + TCWAW_AND_ADDR_2_DATA);
--	tmp &= ~addr_2_data_mask;
--	tmp |= addr_2_data;
-+	tmp &= ~TCWAW_AND_ADDR_2_DATA__ADDR_2_DATA;
-+	tmp |= FIELD_PREP(TCWAW_AND_ADDR_2_DATA__ADDR_2_DATA, addr_2_data);
- 	iowrite32(tmp, denali->reg + TCWAW_AND_ADDR_2_DATA);
- 
- 	/* tREH, tWH -> RDWR_EN_HI_CNT */
-@@ -1037,7 +1037,7 @@ static int denali_setup_data_interface(struct mtd_info *mtd, int chipnr,
- 
- 	tmp = ioread32(denali->reg + RDWR_EN_HI_CNT);
- 	tmp &= ~RDWR_EN_HI_CNT__VALUE;
--	tmp |= rdwr_en_hi;
-+	tmp |= FIELD_PREP(RDWR_EN_HI_CNT__VALUE, rdwr_en_hi);
- 	iowrite32(tmp, denali->reg + RDWR_EN_HI_CNT);
- 
- 	/* tRP, tWP -> RDWR_EN_LO_CNT */
-@@ -1051,7 +1051,7 @@ static int denali_setup_data_interface(struct mtd_info *mtd, int chipnr,
- 
- 	tmp = ioread32(denali->reg + RDWR_EN_LO_CNT);
- 	tmp &= ~RDWR_EN_LO_CNT__VALUE;
--	tmp |= rdwr_en_lo;
-+	tmp |= FIELD_PREP(RDWR_EN_LO_CNT__VALUE, rdwr_en_lo);
- 	iowrite32(tmp, denali->reg + RDWR_EN_LO_CNT);
- 
- 	/* tCS, tCEA -> CS_SETUP_CNT */
-@@ -1062,7 +1062,7 @@ static int denali_setup_data_interface(struct mtd_info *mtd, int chipnr,
- 
- 	tmp = ioread32(denali->reg + CS_SETUP_CNT);
- 	tmp &= ~CS_SETUP_CNT__VALUE;
--	tmp |= cs_setup;
-+	tmp |= FIELD_PREP(CS_SETUP_CNT__VALUE, cs_setup);
- 	iowrite32(tmp, denali->reg + CS_SETUP_CNT);
- 
- 	return 0;
+ 	if (denali->dma_avail)
+ 		return denali_dma_xfer(denali, buf, size, page, raw, write);
 -- 
 2.7.4
