@@ -1,31 +1,26 @@
-Subject: Re: [PATCH v1 03/10] clk: at91: pmc: Support backup for programmable
- clocks
-To: Romain Izard <romain.izard.pro@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Michael Turquette
- <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>, Ludovic
- Desroches <ludovic.desroches@microchip.com>, Jonathan Cameron
- <jic23@kernel.org>, Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu
- <rainyfeeling@outlook.com>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Thierry Reding
- <thierry.reding@gmail.com>, Richard Genoud <richard.genoud@gmail.com>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, Alan Stern
- <stern@rowland.harvard.edu>, Alexandre Belloni
- <alexandre.belloni@free-electrons.com>
-CC: <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-iio@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- <linux-pwm@vger.kernel.org>, <linux-serial@vger.kernel.org>,
- <linux-usb@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>, Romain
- Izard <romain.izard@mobile-devices.fr>
-References: <20170908153604.28383-1-romain.izard.pro@gmail.com>
- <20170908153604.28383-4-romain.izard.pro@gmail.com>
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
-Message-ID: <b0c7e816-4a7c-609d-2bc7-281fc6ca751d@microchip.com>
-Date: Wed, 13 Sep 2017 14:29:35 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1ds7nX-0001G9-Nb
+ for linux-mtd@lists.infradead.org; Wed, 13 Sep 2017 13:33:50 +0000
+Date: Wed, 13 Sep 2017 15:33:05 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Marek Vasut <marex@denx.de>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Richard
+ Weinberger <richard@nod.at>
+Subject: Re: [DEBUG] mtd: spi-nor: dump DWORDs of the Basic Flash Parameter
+ Table
+Message-ID: <20170913153305.6cf50c4f@bbrezillon>
+In-Reply-To: <CAMuHMdXu4zWRev4nTnAfnAqwrZwDRwF3cuC_qEYr96q=C6osZw@mail.gmail.com>
+References: <CAMuHMdXKpheF5whZi2Ot2Pm8t3Lu+ramNV==sXBo87u_HerZxQ@mail.gmail.com>
+ <20170907185456.4631-1-cyrille.pitchen@wedev4u.fr>
+ <e9e925ab-e543-23fd-a738-a9ce433de713@wedev4u.fr>
+ <CAMuHMdVgdLt5yhgJnDamcMDUv+-JhLEuO9Gj3trmXZwPhhP2tg@mail.gmail.com>
+ <20170912151236.33c5ad8f@bbrezillon>
+ <CAMuHMdXu4zWRev4nTnAfnAqwrZwDRwF3cuC_qEYr96q=C6osZw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20170908153604.28383-4-romain.izard.pro@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -36,63 +31,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/09/2017 at 17:35, Romain Izard wrote:
-> From: Romain Izard <romain.izard@mobile-devices.fr>
+Adding back original recipients (you seem to have trimmed the Cc-list).
+
+Hi Geert,
+
+On Tue, 12 Sep 2017 15:29:23 +0200
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+
+> Hi Boris,
 > 
-> Save and restore the System Clock and Programmable Clock register for
-> the backup use case.
-
-"System Clock" seems to be handled in another patch.
-
-> Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
-> ---
->  drivers/clk/at91/pmc.c | 5 +++++
->  1 file changed, 5 insertions(+)
+> On Tue, Sep 12, 2017 at 3:12 PM, Boris Brezillon
+> <boris.brezillon@free-electrons.com> wrote:
+> > On Mon, 11 Sep 2017 10:58:36 +0200
+> > Geert Uytterhoeven <geert@linux-m68k.org> wrote:  
+> >> On Thu, Sep 7, 2017 at 9:28 PM, Cyrille Pitchen
+> >> <cyrille.pitchen@wedev4u.fr> wrote:  
+> >> >> Can you apply this patch on your tree then report me what was printed, please?
+> >> >> I have an idea of the root cause of your issue then a potential work-around
+> >> >> but I first need to validate my assumption to confirm that the work-around
+> >> >> would actually work.  
+> >>
+> >> +m25p80 spi0.0: DWORD1 = 0xffffffff
+> >> +m25p80 spi0.0: DWORD2 = 0xffffffff
+> >> +m25p80 spi0.0: DWORD3 = 0xffffffff
+> >> +m25p80 spi0.0: DWORD4 = 0xffffffff
+> >> +m25p80 spi0.0: DWORD5 = 0xffffffff
+> >> +m25p80 spi0.0: DWORD6 = 0xffffffff
+> >> +m25p80 spi0.0: DWORD7 = 0xffffffff
+> >> +m25p80 spi0.0: DWORD8 = 0xffffffff
+> >> +m25p80 spi0.0: DWORD9 = 0xffffffff
+> >> +m25p80 spi0.0: DWORD10 = 0x00000000
+> >> +m25p80 spi0.0: DWORD11 = 0x00000000
+> >> +m25p80 spi0.0: DWORD12 = 0x00000000
+> >> +m25p80 spi0.0: DWORD13 = 0x00000000
+> >> +m25p80 spi0.0: DWORD14 = 0x00000000
+> >> +m25p80 spi0.0: DWORD15 = 0x00000000
+> >> +m25p80 spi0.0: DWORD16 = 0x00000000
+> >> +m25p80 spi0.0: BFPT version 1.0 (length = 9)
+> >>  
+> >> > If you could also dump the value of the 'addr' argument of
+> >> > spi_nor_read_sfdp_dma_unsafe() just before the for () loop below in the
+> >> > very same function. Actually, I suspect the SFDP tables of your SPI NOR  
+> >>
+> >> +m25p80 spi0.0: addr = 0x448
+> >>  
+> >> > memory sample to have been programmed with invalid values, neither
+> >> > compliant with the JEDEC JESD216 specification nor with the Cypress
+> >> > datasheet for this memory part.  
+> >>
+> >> Sounds plausible.
+> >> I get the same values when disabling DMA, so it's not due to bad DMA handling.
+> >> All Renesas boards I have local or remote access to have spansion,s25fl512s.  
+> >
+> > Can you try with the following patch?  
 > 
-> diff --git a/drivers/clk/at91/pmc.c b/drivers/clk/at91/pmc.c
-> index 07dc2861ad3f..5421b03553ec 100644
-> --- a/drivers/clk/at91/pmc.c
-> +++ b/drivers/clk/at91/pmc.c
-> @@ -66,6 +66,7 @@ static struct
->  	u32 pcr[PMC_MAX_IDS];
->  	u32 audio_pll0;
->  	u32 audio_pll1;
-> +	u32 pckr[3];
+> Thanks, that fixes it:
+> 
+> -m25p80 spi0.0: s25fl512s (0 Kbytes)
+> +m25p80 spi0.0: s25fl512s (65536 Kbytes)
+>  3 ofpart partitions found on MTD device spi0.0
+>  Creating 3 MTD partitions on "spi0.0":
+>  0x000000000000-0x000000080000 : "loader"
+> -mtd: partition "loader" is out of reach -- disabled
+>  0x000000080000-0x000000600000 : "user"
+> -mtd: partition "user" is out of reach -- disabled
+>  0x000000600000-0x000004000000 : "flash"
+> -mtd: partition "flash" is out of reach -- disabled
+> 
+> BTW, perhaps the driver should print a warning, so the user knows his
+> FLASH isn't SFDP compliant?
 
-Some products have different numbers of PCK (only 2 on at91sam9x5 for
-instance)...
+Yep, but I'll let Cyrille fix this aspect in a follow-up patch since
+I'm not sure how specific the error message should be (a generic
+"failed to read/decode SFDP" error or something more specific for each
+error case).
 
->  } pmc_cache;
->  
->  void pmc_register_id(u8 id)
-> @@ -103,6 +104,8 @@ static int pmc_suspend(void)
->  		regmap_read(pmcreg, AT91_PMC_PCR,
->  			    &pmc_cache.pcr[registered_ids[i]]);
->  	}
-> +	for (i = 0; i < 3; i++)
+> 
+> > --->8---  
+> > From 000ff63fdb149d87d755483f5edc0aba010da6b4 Mon Sep 17 00:00:00 2001
+> > From: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > Date: Tue, 12 Sep 2017 15:10:35 +0200
+> > Subject: [PATCH] mtd: spi-nor: Check consistency of the memory size extracted
+> >  from the SFDP
+> >
+> > One field of the flash parameter table contains information about the
+> > flash device size.
+> > Most of the time the data extracted from this field is valid, but
+> > sometimes the BFPT section of the SFDP table is corrupted or invalid and
+> > this field is set to 0xffffffff, thus resulting in an integer overflow
+> > when setting params->size.
+> >
+> > Since NOR devices are anayway always smaller than 2^64 bytes, we can
+> > easily stop the BFPT parsing if the size reported in this table is
+> > invalid.
+> >
+> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>  
+> 
+> Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-And it might be a good practice to have this constant value in a #define.
-We have "#define PROG_ID_MAX  7" defined in
-drivers/clk/at91/clk-programmable.c.
+I'm just waiting for a review from Cyrille or Marek and if they are okay
+I'll queue both patches to l2-mtd and send a PR to Linus (hopefully
+before -rc1 is out).
+
+Thanks for your help with this bug.
 
 Regards,
 
-
-> +		regmap_read(pmcreg, AT91_PMC_PCKR(i), &pmc_cache.pckr[i]);
->  
->  	return 0;
->  }
-> @@ -143,6 +146,8 @@ static void pmc_resume(void)
->  			     pmc_cache.pcr[registered_ids[i]] |
->  			     AT91_PMC_PCR_CMD);
->  	}
-> +	for (i = 0; i < 3; i++)
-> +		regmap_write(pmcreg, AT91_PMC_PCKR(i), pmc_cache.pckr[i]);
->  
->  	if (pmc_cache.uckr & AT91_PMC_UPLLEN)
->  		mask |= AT91_PMC_LOCKU;
-> 
-
-
--- 
-Nicolas Ferre
+Boris
