@@ -1,25 +1,22 @@
-MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <20170914110709.3591691-1-arnd@arndb.de>
-References: <20170914110709.3591691-1-arnd@arndb.de>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 14 Sep 2017 15:38:41 +0200
-Message-ID: <CAMuHMdU3AqGkvwDQ+hE2=3PhgCKUh1HvBx8Hkvba6XsLHAuBbg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: stm32-quadspi: avoid unintialized return
- code
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Marek Vasut <marek.vasut@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Alexandre Torgue <alexandre.torgue@st.com>, Richard Weinberger <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+Received: from m50-132.163.com ([123.125.50.132])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dsUga-0002Qp-Ek
+ for linux-mtd@lists.infradead.org; Thu, 14 Sep 2017 14:00:15 +0000
+From: Chen Bin <chenbin5635@163.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Ludovic Barre <ludovic.barre@st.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Joe Perches <joe@perches.com>, chenbin5635@163.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: cfi_cmdset_0002: fix Cypress S29GL flash erase suspend
+Date: Thu, 14 Sep 2017 21:58:11 +0800
+Message-Id: <1505397491-4493-1-git-send-email-chenbin5635@163.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,59 +26,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Arnd,
+On UBIFS, Cypress S29GL01GT flash is failed to access occasionally
+, and throw below error information and call trace:
+MTD get_chip(): chip not ready after erase suspend
+UBI error: ubi_io_write: error -5 while writing 512 bytes to
+PEB 932:36992, written 0 bytes
+Call Trace: [jiffies: 0x10000ad9b]
+[<ffffffffc0be76cc>] dump_stack+0x8/0x34
+[<ffffffffc0a0b624>] ubi_io_write+0x52c/0x670
+[<ffffffffc0a079e8>] ubi_eba_write_leb+0xd8/0x758
+[<ffffffffc0897470>] ubifs_leb_write+0xd0/0x178
+[<ffffffffc0898cd0>] ubifs_wbuf_write_nolock+0x430/0x798
+[<ffffffffc088b16c>] ubifs_jnl_write_data+0x1e4/0x348
+[<ffffffffc088e5a8>] do_writepage+0xc8/0x258
+[<ffffffffc0714d70>] __writepage+0x18/0x78
+[<ffffffffc0715ab8>] write_cache_pages+0x1e0/0x4c8
+[<ffffffffc0715de0>] generic_writepages+0x40/0x78
+[<ffffffffc0784620>] __writeback_single_inode+0x58/0x370
+[<ffffffffc0785b84>] writeback_sb_inodes+0x2e4/0x498
+[<ffffffffc0785df8>] __writeback_inodes_wb+0xc0/0x118
+[<ffffffffc07862fc>] wb_writeback+0x234/0x3c0
+[<ffffffffc0786918>] wb_do_writeback+0x230/0x2b0
+[<ffffffffc0786a1c>] bdi_writeback_workfn+0x84/0x268
+[<ffffffffc0670300>] process_one_work+0x180/0x4d0
+[<ffffffffc0671848>] worker_thread+0x158/0x420
+[<ffffffffc06786c0>] kthread+0xa8/0xb0
+[<ffffffffc06204c8>] ret_from_kernel_thread+0x10/0x18
 
-On Thu, Sep 14, 2017 at 1:06 PM, Arnd Bergmann <arnd@arndb.de> wrote:
-> If we send zero-length data to stm32_qspi_tx_poll() on older
-> compiler versions such as gcc-4.6, we get warned that the
-> return code is uninitialized:
->
-> drivers/mtd/spi-nor/stm32-quadspi.c:248:2: error: =E2=80=98ret=E2=80=99 m=
-ay be used uninitialized in this function [-Werror=3Duninitialized]
->
-> On newer compiler versions, the return code is always zero
-> in this case, as the local variable gets optimized away and
-> is assumed to be zero after the loop completes without error.
->
-> This changes the function to instead return -EINVAL if it
-> ever gets called with a zero length buffer.
->
-> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D82203
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/mtd/spi-nor/stm32-quadspi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mtd/spi-nor/stm32-quadspi.c b/drivers/mtd/spi-nor/st=
-m32-quadspi.c
-> index 86c0931543c5..711cfe7aa4bf 100644
-> --- a/drivers/mtd/spi-nor/stm32-quadspi.c
-> +++ b/drivers/mtd/spi-nor/stm32-quadspi.c
-> @@ -227,7 +227,7 @@ static int stm32_qspi_tx_poll(struct stm32_qspi *qspi=
-,
->         void (*tx_fifo)(u8 *, void __iomem *);
->         u32 len =3D cmd->len, sr;
->         u8 *buf =3D cmd->buf;
-> -       int ret;
-> +       int ret =3D -EINVAL;
->
->         if (cmd->qspimode =3D=3D CCR_FMODE_INDW)
->                 tx_fifo =3D stm32_qspi_write_fifo;
+After issue erase suspend command, flash don't go to ready state,
+and fail to access consequently.
+In Cypress S29GL01GT/S29GL512T flash datasheet, the type value of
+Erase Resume to next Erase suspend(tERS) is 100 µs.
+If Erase Suspend followed Erase Resume without enough delay time,
+Erase Suspend would fail to work.
+500 μs is chosen because it works well and the latency is acceptable.
 
-See also "[PATCH] mtd: spi-nor: stm32-quadspi: Fix uninitialized error
-return code"
-(https://patchwork.kernel.org/patch/9842173/)
+Signed-off-by: Chen Bin <chenbin5635@163.com>
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 56aa6b7..c7d18ec 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -513,6 +513,22 @@ static void cfi_fixup_m29ew_delay_after_resume(struct cfi_private *cfi)
+ 		cfi_udelay(500);
+ }
+ 
++static void cfi_fixup_delay_after_resume(struct cfi_private *cfi)
++{
++	cfi_fixup_m29ew_delay_after_resume(cfi);
++
++	/*
++	 * For Cypress S29GL01GT/S29GL512T flash, the type value of
++	 * Erase Resume to next Erase suspend(tERS) is 100 µs.
++	 * If Erase Suspend followed Erase Resume without enough delay time,
++	 * Erase Suspend would fail to work.
++	 * 500 μs is chosen because it works well and the latency
++	 * is acceptable.
++	 */
++	if (cfi->mfr == CFI_MFR_AMD && (cfi->id == 0x2801 || cfi->id == 0x2301))
++		cfi_udelay(500);
++}
++
+ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
+ {
+ 	struct cfi_private *cfi = map->fldrv_priv;
+@@ -890,7 +906,7 @@ static void put_chip(struct map_info *map, struct flchip *chip, unsigned long ad
+ 		cfi_fixup_m29ew_erase_suspend(map,
+ 			chip->in_progress_block_addr);
+ 		map_write(map, cfi->sector_erase_cmd, chip->in_progress_block_addr);
+-		cfi_fixup_m29ew_delay_after_resume(cfi);
++		cfi_fixup_delay_after_resume(cfi);
+ 		chip->oldstate = FL_READY;
+ 		chip->state = FL_ERASING;
+ 		break;
+-- 
+2.7.4
