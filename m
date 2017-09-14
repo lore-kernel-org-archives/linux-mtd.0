@@ -1,27 +1,26 @@
-Received: from smtp3-g21.free.fr ([212.27.42.3])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dsXGH-0005gJ-Kd
- for linux-mtd@lists.infradead.org; Thu, 14 Sep 2017 16:45:12 +0000
-Subject: Re: [DEBUG] mtd: spi-nor: dump DWORDs of the Basic Flash Parameter
- Table
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Marek Vasut <marek.vasut@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <CAMuHMdXKpheF5whZi2Ot2Pm8t3Lu+ramNV==sXBo87u_HerZxQ@mail.gmail.com>
- <20170907185456.4631-1-cyrille.pitchen@wedev4u.fr>
- <e9e925ab-e543-23fd-a738-a9ce433de713@wedev4u.fr>
- <CAMuHMdVgdLt5yhgJnDamcMDUv+-JhLEuO9Gj3trmXZwPhhP2tg@mail.gmail.com>
- <20170912151236.33c5ad8f@bbrezillon>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <80dd3940-c09d-f246-fbe7-c5533c2640c8@wedev4u.fr>
-Date: Thu, 14 Sep 2017 18:44:31 +0200
+Subject: Re: [PATCH] mtd: spi-nor: stm32-quadspi: avoid unintialized return
+ code
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+CC: Arnd Bergmann <arnd@arndb.de>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Marek Vasut <marek.vasut@gmail.com>, Boris
+ Brezillon <boris.brezillon@free-electrons.com>, Alexandre Torgue
+ <alexandre.torgue@st.com>, Richard Weinberger <richard@nod.at>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, MTD Maling
+ List <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, Maxime Coquelin
+ <mcoquelin.stm32@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+References: <20170914110709.3591691-1-arnd@arndb.de>
+ <CAMuHMdU3AqGkvwDQ+hE2=3PhgCKUh1HvBx8Hkvba6XsLHAuBbg@mail.gmail.com>
+ <feb9b51e-7b77-d184-2ed6-f0d33a06bbcf@st.com>
+ <CAMuHMdV6G8WeWgjPcYrMYiSiu=atOSkFZHxwvSsvcwmsv9J+oA@mail.gmail.com>
+From: Ludovic BARRE <ludovic.barre@st.com>
+Message-ID: <f372a1cb-e255-b5de-510d-77ca944903b3@st.com>
+Date: Thu, 14 Sep 2017 18:55:55 +0200
 MIME-Version: 1.0
-In-Reply-To: <20170912151236.33c5ad8f@bbrezillon>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAMuHMdV6G8WeWgjPcYrMYiSiu=atOSkFZHxwvSsvcwmsv9J+oA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,107 +32,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 12/09/2017 à 15:12, Boris Brezillon a écrit :
-> Hi Geert,
-> 
-> On Mon, 11 Sep 2017 10:58:36 +0200
-> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> 
->> Hi Cyrille,
->>
->> On Thu, Sep 7, 2017 at 9:28 PM, Cyrille Pitchen
->> <cyrille.pitchen@wedev4u.fr> wrote:
->>>> Can you apply this patch on your tree then report me what was printed, please?
->>>> I have an idea of the root cause of your issue then a potential work-around
->>>> but I first need to validate my assumption to confirm that the work-around
->>>> would actually work.  
->>
->> +m25p80 spi0.0: DWORD1 = 0xffffffff
->> +m25p80 spi0.0: DWORD2 = 0xffffffff
->> +m25p80 spi0.0: DWORD3 = 0xffffffff
->> +m25p80 spi0.0: DWORD4 = 0xffffffff
->> +m25p80 spi0.0: DWORD5 = 0xffffffff
->> +m25p80 spi0.0: DWORD6 = 0xffffffff
->> +m25p80 spi0.0: DWORD7 = 0xffffffff
->> +m25p80 spi0.0: DWORD8 = 0xffffffff
->> +m25p80 spi0.0: DWORD9 = 0xffffffff
->> +m25p80 spi0.0: DWORD10 = 0x00000000
->> +m25p80 spi0.0: DWORD11 = 0x00000000
->> +m25p80 spi0.0: DWORD12 = 0x00000000
->> +m25p80 spi0.0: DWORD13 = 0x00000000
->> +m25p80 spi0.0: DWORD14 = 0x00000000
->> +m25p80 spi0.0: DWORD15 = 0x00000000
->> +m25p80 spi0.0: DWORD16 = 0x00000000
->> +m25p80 spi0.0: BFPT version 1.0 (length = 9)
->>
->>> If you could also dump the value of the 'addr' argument of
->>> spi_nor_read_sfdp_dma_unsafe() just before the for () loop below in the
->>> very same function. Actually, I suspect the SFDP tables of your SPI NOR  
->>
->> +m25p80 spi0.0: addr = 0x448
->>
->>> memory sample to have been programmed with invalid values, neither
->>> compliant with the JEDEC JESD216 specification nor with the Cypress
->>> datasheet for this memory part.  
->>
->> Sounds plausible.
->> I get the same values when disabling DMA, so it's not due to bad DMA handling.
->> All Renesas boards I have local or remote access to have spansion,s25fl512s.
-> 
-> Can you try with the following patch?
-> 
-> Thanks,
-> 
-> Boris
-> 
-> --->8---
-> From 000ff63fdb149d87d755483f5edc0aba010da6b4 Mon Sep 17 00:00:00 2001
-> From: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Date: Tue, 12 Sep 2017 15:10:35 +0200
-> Subject: [PATCH] mtd: spi-nor: Check consistency of the memory size extracted
->  from the SFDP
-> 
-> One field of the flash parameter table contains information about the
-> flash device size.
-> Most of the time the data extracted from this field is valid, but
-> sometimes the BFPT section of the SFDP table is corrupted or invalid and
-> this field is set to 0xffffffff, thus resulting in an integer overflow
-> when setting params->size.
-> 
-> Since NOR devices are anayway always smaller than 2^64 bytes, we can
-> easily stop the BFPT parsing if the size reported in this table is
-> invalid.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-Acked-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.com>
 
-with few comments below:
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index cf1d4a15e10a..665ccae1d090 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -2127,6 +2127,15 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
->  	params->size = bfpt.dwords[BFPT_DWORD(2)];
->  	if (params->size & BIT(31)) {
->  		params->size &= ~BIT(31);
-> +
-> +		/*
-> +		 * Prevent overflows on params->size. Anyway, a NOR of 1^64
-typo: should be 2^64
-> +		 * bytes is unlikely to exist so this error probably means
 
-Here the size is still expressed in bits, not yet in byte, the
-conversion is done right after this chunk.
-> +		 * the BFPT we are reading is corrupted/wrong.
-> +		 */
-> +		if (params->size > 63)
-> +			return -EINVAL;
-> +
->  		params->size = 1ULL << params->size;
->  	} else {
->  		params->size++;
+On 09/14/2017 05:24 PM, Geert Uytterhoeven wrote:
+> Hi Ludovic,
+> 
+> On Thu, Sep 14, 2017 at 5:13 PM, Ludovic BARRE <ludovic.barre@st.com> wrote:
+>> On 09/14/2017 03:38 PM, Geert Uytterhoeven wrote:
+>>> On Thu, Sep 14, 2017 at 1:06 PM, Arnd Bergmann <arnd@arndb.de> wrote:
+>>>> If we send zero-length data to stm32_qspi_tx_poll() on older
+>>>> compiler versions such as gcc-4.6, we get warned that the
+>>>> return code is uninitialized:
+>>>>
+>>>> drivers/mtd/spi-nor/stm32-quadspi.c:248:2: error: ‘ret’ may be used
+>>>> uninitialized in this function [-Werror=uninitialized]
+>>>>
+>>>> On newer compiler versions, the return code is always zero
+>>>> in this case, as the local variable gets optimized away and
+>>>> is assumed to be zero after the loop completes without error.
+>>>>
+>>>> This changes the function to instead return -EINVAL if it
+>>>> ever gets called with a zero length buffer.
+>>>>
+>>>> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=82203
+>>>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>>>> ---
+>>>>    drivers/mtd/spi-nor/stm32-quadspi.c | 2 +-
+>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/mtd/spi-nor/stm32-quadspi.c
+>>>> b/drivers/mtd/spi-nor/stm32-quadspi.c
+>>>> index 86c0931543c5..711cfe7aa4bf 100644
+>>>> --- a/drivers/mtd/spi-nor/stm32-quadspi.c
+>>>> +++ b/drivers/mtd/spi-nor/stm32-quadspi.c
+>>>> @@ -227,7 +227,7 @@ static int stm32_qspi_tx_poll(struct stm32_qspi
+>>>> *qspi,
+>>>>           void (*tx_fifo)(u8 *, void __iomem *);
+>>>>           u32 len = cmd->len, sr;
+>>>>           u8 *buf = cmd->buf;
+>>>> -       int ret;
+>>>> +       int ret = -EINVAL;
+>>>>
+>>>>           if (cmd->qspimode == CCR_FMODE_INDW)
+>>>>                   tx_fifo = stm32_qspi_write_fifo;
+>>>
+>>>
+>>> See also "[PATCH] mtd: spi-nor: stm32-quadspi: Fix uninitialized error
+>>> return code"
+>>> (https://patchwork.kernel.org/patch/9842173/)
+>>
+>> hi Arnd, Geert
+>>
+>> sorry, I was forgot this thread while my holidays
+>>
+>> Geert: what do you mean like "similar bugs in the future" in "If you
+>> initialized ret at the beginning, you lose the ability to catch newly
+>> introduced similar bugs in the future."
+> 
+> If you pre-initialize ret at the top, you loose the ability of the compiler
+> to detect at compile-time if ret is never written to later. It will just return
+> -EINVAL at runtime.
+> 
+> With my version, if the code is modified later and another "return ret" is
+> added, the compiler will detect if there's a code path that forgets
+> to assign a value to ret.
+Ok, it's clear for me.
+I favor geert's solution.
+Arnd what do you think ?
+
+> 
+> Gr{oetje,eeting}s,
+> 
+>                          Geert
+> 
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                  -- Linus Torvalds
 > 
