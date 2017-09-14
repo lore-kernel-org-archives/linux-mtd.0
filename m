@@ -1,34 +1,20 @@
-Subject: Re: [PATCH v1 03/10] clk: at91: pmc: Support backup for programmable
- clocks
-To: romain izard <romain.izard@mobile-devices.fr>, Alexandre Belloni
- <alexandre.belloni@free-electrons.com>
-CC: Boris Brezillon <boris.brezillon@free-electrons.com>, Michael Turquette
- <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>, Ludovic
- Desroches <ludovic.desroches@microchip.com>, Jonathan Cameron
- <jic23@kernel.org>, Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu
- <rainyfeeling@outlook.com>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Thierry Reding
- <thierry.reding@gmail.com>, Richard Genoud <richard.genoud@gmail.com>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, Alan Stern
- <stern@rowland.harvard.edu>, <linux-clk@vger.kernel.org>, LKML
- <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>, linux-mtd
- <linux-mtd@lists.infradead.org>, <linux-pwm@vger.kernel.org>,
- <linux-serial@vger.kernel.org>, <linux-usb@vger.kernel.org>, linux-arm-kernel
- <linux-arm-kernel@lists.infradead.org>
-References: <20170908153604.28383-1-romain.izard.pro@gmail.com>
- <20170908153604.28383-4-romain.izard.pro@gmail.com>
- <b0c7e816-4a7c-609d-2bc7-281fc6ca751d@microchip.com>
- <20170913170310.grfv7j5xvh7chjdo@piout.net>
- <CAGkQfmOZBi4tzUSEAD7J+w_v+pZ_yFgPRBaYaLnW-ptFZO0rvg@mail.gmail.com>
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
-Message-ID: <dc318434-cf3e-6cb9-2072-7b8ec45aed97@microchip.com>
-Date: Thu, 14 Sep 2017 11:38:45 +0200
+From: Arnd Bergmann <arnd@arndb.de>
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Marek Vasut <marek.vasut@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@st.com>,
+ Ludovic Barre <ludovic.barre@st.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: spi-nor: stm32-quadspi: avoid unintialized return code
+Date: Thu, 14 Sep 2017 13:06:59 +0200
+Message-Id: <20170914110709.3591691-1-arnd@arndb.de>
 MIME-Version: 1.0
-In-Reply-To: <CAGkQfmOZBi4tzUSEAD7J+w_v+pZ_yFgPRBaYaLnW-ptFZO0rvg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,46 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 14/09/2017 at 09:41, romain izard wrote:
-> 2017-09-13 19:03 GMT+02:00 Alexandre Belloni
-> <alexandre.belloni@free-electrons.com>:
->> On 13/09/2017 at 14:29:35 +0200, Nicolas Ferre wrote:
->>> On 08/09/2017 at 17:35, Romain Izard wrote:
->>>> From: Romain Izard <romain.izard@mobile-devices.fr>
->>>>
->>>> Save and restore the System Clock and Programmable Clock register for
->>>> the backup use case.
->>>
->>> "System Clock" seems to be handled in another patch.
->>>
->>>> Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
->>>> ---
->>>>  drivers/clk/at91/pmc.c | 5 +++++
->>>>  1 file changed, 5 insertions(+)
->>>>
->>>> diff --git a/drivers/clk/at91/pmc.c b/drivers/clk/at91/pmc.c
->>>> index 07dc2861ad3f..5421b03553ec 100644
->>>> --- a/drivers/clk/at91/pmc.c
->>>> +++ b/drivers/clk/at91/pmc.c
->>>> @@ -66,6 +66,7 @@ static struct
->>>>     u32 pcr[PMC_MAX_IDS];
->>>>     u32 audio_pll0;
->>>>     u32 audio_pll1;
->>>> +   u32 pckr[3];
->>>
->>> Some products have different numbers of PCK (only 2 on at91sam9x5 for
->>> instance)...
->>>
->>
->> My opinion is that it will be time to change that when multiple SoCs will
->> need to save their registers.
->>
-> For the next version, I'll add a #define. But as this code requires a
-> device tree node with the compatible string "atmel,sama5d2-pmc", I believe
-> that we can ignore other chips for now.
+If we send zero-length data to stm32_qspi_tx_poll() on older
+compiler versions such as gcc-4.6, we get warned that the
+return code is uninitialized:
 
-Fair enough, let's go for this.
+drivers/mtd/spi-nor/stm32-quadspi.c:248:2: error: ‘ret’ may be used uninitialized in this function [-Werror=uninitialized]
 
-Bye,
+On newer compiler versions, the return code is always zero
+in this case, as the local variable gets optimized away and
+is assumed to be zero after the loop completes without error.
+
+This changes the function to instead return -EINVAL if it
+ever gets called with a zero length buffer.
+
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=82203
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/mtd/spi-nor/stm32-quadspi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/spi-nor/stm32-quadspi.c b/drivers/mtd/spi-nor/stm32-quadspi.c
+index 86c0931543c5..711cfe7aa4bf 100644
+--- a/drivers/mtd/spi-nor/stm32-quadspi.c
++++ b/drivers/mtd/spi-nor/stm32-quadspi.c
+@@ -227,7 +227,7 @@ static int stm32_qspi_tx_poll(struct stm32_qspi *qspi,
+ 	void (*tx_fifo)(u8 *, void __iomem *);
+ 	u32 len = cmd->len, sr;
+ 	u8 *buf = cmd->buf;
+-	int ret;
++	int ret = -EINVAL;
+ 
+ 	if (cmd->qspimode == CCR_FMODE_INDW)
+ 		tx_fifo = stm32_qspi_write_fifo;
 -- 
-Nicolas Ferre
+2.9.0
