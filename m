@@ -1,27 +1,21 @@
+Received: from mail-vk0-x244.google.com ([2607:f8b0:400c:c05::244])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dsWVs-0005nu-B7
+ for linux-mtd@lists.infradead.org; Thu, 14 Sep 2017 15:57:14 +0000
+Received: by mail-vk0-x244.google.com with SMTP id w23so349846vkw.3
+ for <linux-mtd@lists.infradead.org>; Thu, 14 Sep 2017 08:56:52 -0700 (PDT)
+Message-ID: <59baa6c2.52399f0a.2a6b6.e8b6@mx.google.com>
+Date: Thu, 14 Sep 2017 11:56:49 -0400
+From: Arun Nagendran <arunrasppi@gmail.com>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: manonuevo@micron.com, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] Enable the read ECC before program the page
+References: <59b983ce.82b8370a.04a2.b72a@mx.google.com>
+ <20170913213154.GF9288@kroah.com>
 MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <feb9b51e-7b77-d184-2ed6-f0d33a06bbcf@st.com>
-References: <20170914110709.3591691-1-arnd@arndb.de>
- <CAMuHMdU3AqGkvwDQ+hE2=3PhgCKUh1HvBx8Hkvba6XsLHAuBbg@mail.gmail.com>
- <feb9b51e-7b77-d184-2ed6-f0d33a06bbcf@st.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 14 Sep 2017 17:24:33 +0200
-Message-ID: <CAMuHMdV6G8WeWgjPcYrMYiSiu=atOSkFZHxwvSsvcwmsv9J+oA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: stm32-quadspi: avoid unintialized return
- code
-To: Ludovic BARRE <ludovic.barre@st.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Marek Vasut <marek.vasut@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Alexandre Torgue <alexandre.torgue@st.com>, Richard Weinberger <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170913213154.GF9288@kroah.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,81 +25,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ludovic,
+On Wed, Sep 13, 2017 at 02:31:54PM -0700, Greg KH wrote:
+> On Wed, Sep 13, 2017 at 03:15:26PM -0400, Arun Nagendran wrote:
+> > Current program_page function did following operation:
+> > 
+> > 1. read page (with ECC OFF)
+> > 2. modify the page
+> > 3. write the page (with ECC ON)
+> > 
+> > For some case(buggy flash Chip), while read the page without ECC ON,
+> > we may read the page with bit flip error and modify that bad page without
+> > knowing the bit flip error on that page.
+> > also we re-calculate the hash for bad page and write it.
+> > This could bring potential in-consistency problem with Flash data.
+> > 
+> > Verify this logic with GIGA DEVICE Part(GD5F2GQ4RCFIG):
+> > we see this in-conststency problem wit Giga Device and fix on
+> > this patch resovle that issue.
+> > 
+> > Signed-off-by: Arun Nagendran <arunrasppi@gmail.com>
+> 
+> Please read Documentation/SubmittingPatches for how to properly version
+> your patches so we know what is going on and which one to accept/review.
+> 
+> Also your subject line needs some work, look at the other subjects for
+> patches that have been accepted for this driver/subsystem for examples
+> of what needs to be done.
+> 
+> thanks,
+> 
+> greg k-h
 
-On Thu, Sep 14, 2017 at 5:13 PM, Ludovic BARRE <ludovic.barre@st.com> wrote=
-:
-> On 09/14/2017 03:38 PM, Geert Uytterhoeven wrote:
->> On Thu, Sep 14, 2017 at 1:06 PM, Arnd Bergmann <arnd@arndb.de> wrote:
->>> If we send zero-length data to stm32_qspi_tx_poll() on older
->>> compiler versions such as gcc-4.6, we get warned that the
->>> return code is uninitialized:
->>>
->>> drivers/mtd/spi-nor/stm32-quadspi.c:248:2: error: =E2=80=98ret=E2=80=99=
- may be used
->>> uninitialized in this function [-Werror=3Duninitialized]
->>>
->>> On newer compiler versions, the return code is always zero
->>> in this case, as the local variable gets optimized away and
->>> is assumed to be zero after the loop completes without error.
->>>
->>> This changes the function to instead return -EINVAL if it
->>> ever gets called with a zero length buffer.
->>>
->>> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D82203
->>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->>> ---
->>>   drivers/mtd/spi-nor/stm32-quadspi.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/mtd/spi-nor/stm32-quadspi.c
->>> b/drivers/mtd/spi-nor/stm32-quadspi.c
->>> index 86c0931543c5..711cfe7aa4bf 100644
->>> --- a/drivers/mtd/spi-nor/stm32-quadspi.c
->>> +++ b/drivers/mtd/spi-nor/stm32-quadspi.c
->>> @@ -227,7 +227,7 @@ static int stm32_qspi_tx_poll(struct stm32_qspi
->>> *qspi,
->>>          void (*tx_fifo)(u8 *, void __iomem *);
->>>          u32 len =3D cmd->len, sr;
->>>          u8 *buf =3D cmd->buf;
->>> -       int ret;
->>> +       int ret =3D -EINVAL;
->>>
->>>          if (cmd->qspimode =3D=3D CCR_FMODE_INDW)
->>>                  tx_fifo =3D stm32_qspi_write_fifo;
->>
->>
->> See also "[PATCH] mtd: spi-nor: stm32-quadspi: Fix uninitialized error
->> return code"
->> (https://patchwork.kernel.org/patch/9842173/)
->
-> hi Arnd, Geert
->
-> sorry, I was forgot this thread while my holidays
->
-> Geert: what do you mean like "similar bugs in the future" in "If you
-> initialized ret at the beginning, you lose the ability to catch newly
-> introduced similar bugs in the future."
+Thank you Greg on your review comments, I am working on 
+your suggestion.
 
-If you pre-initialize ret at the top, you loose the ability of the compiler
-to detect at compile-time if ret is never written to later. It will just re=
-turn
--EINVAL at runtime.
-
-With my version, if the code is modified later and another "return ret" is
-added, the compiler will detect if there's a code path that forgets
-to assign a value to ret.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Thanks,
+-Arun
