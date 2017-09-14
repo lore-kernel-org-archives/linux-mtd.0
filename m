@@ -1,40 +1,29 @@
-Received: from mail-qk0-x233.google.com ([2607:f8b0:400d:c09::233])
+Received: from smtp3-g21.free.fr ([212.27.42.3])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dsWog-0005uR-HO
- for linux-mtd@lists.infradead.org; Thu, 14 Sep 2017 16:16:41 +0000
-Received: by mail-qk0-x233.google.com with SMTP id u73so838461qkl.12
- for <linux-mtd@lists.infradead.org>; Thu, 14 Sep 2017 09:16:17 -0700 (PDT)
-MIME-Version: 1.0
-Sender: romain.izard@mobile-devices.fr
-In-Reply-To: <14fb5261-bb03-a6bd-6653-2a2c655b04ee@microchip.com>
-References: <20170908153604.28383-1-romain.izard.pro@gmail.com>
- <20170908153604.28383-2-romain.izard.pro@gmail.com>
- <14fb5261-bb03-a6bd-6653-2a2c655b04ee@microchip.com>
-From: Romain Izard <romain.izard.pro@gmail.com>
-Date: Thu, 14 Sep 2017 18:15:56 +0200
-Message-ID: <CAGkQfmPB8b38=hJrtuKJ-Hiqdfx9dt5SQ5R7EBL9cJV5_eRmXQ@mail.gmail.com>
-Subject: Re: [PATCH v1 01/10] clk: at91: pmc: Wait for clocks when resuming
-To: Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@codeaurora.org>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Jonathan Cameron <jic23@kernel.org>,
- Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
- David Woodhouse <dwmw2@infradead.org>,
+ id 1dsXGH-0005gJ-Kd
+ for linux-mtd@lists.infradead.org; Thu, 14 Sep 2017 16:45:12 +0000
+Subject: Re: [DEBUG] mtd: spi-nor: dump DWORDs of the Basic Flash Parameter
+ Table
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Marek Vasut <marek.vasut@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Thierry Reding <thierry.reding@gmail.com>,
- Richard Genoud <richard.genoud@gmail.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Alan Stern <stern@rowland.harvard.edu>,
- linux-clk@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- linux-iio@vger.kernel.org, linux-mtd <linux-mtd@lists.infradead.org>,
- linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-usb@vger.kernel.org,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+ David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <CAMuHMdXKpheF5whZi2Ot2Pm8t3Lu+ramNV==sXBo87u_HerZxQ@mail.gmail.com>
+ <20170907185456.4631-1-cyrille.pitchen@wedev4u.fr>
+ <e9e925ab-e543-23fd-a738-a9ce433de713@wedev4u.fr>
+ <CAMuHMdVgdLt5yhgJnDamcMDUv+-JhLEuO9Gj3trmXZwPhhP2tg@mail.gmail.com>
+ <20170912151236.33c5ad8f@bbrezillon>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <80dd3940-c09d-f246-fbe7-c5533c2640c8@wedev4u.fr>
+Date: Thu, 14 Sep 2017 18:44:31 +0200
+MIME-Version: 1.0
+In-Reply-To: <20170912151236.33c5ad8f@bbrezillon>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,86 +33,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2017-09-13 14:15 GMT+02:00 Nicolas Ferre <nicolas.ferre@microchip.com>:
-> On 08/09/2017 at 17:35, Romain Izard wrote:
->> Wait for the syncronization of all clocks when resuming, not only the
->> UPLL clock. Do not use regmap_read_poll_timeout, as it will call BUG()
->> when interrupts are masked, which is the case in here.
+Le 12/09/2017 à 15:12, Boris Brezillon a écrit :
+> Hi Geert,
+> 
+> On Mon, 11 Sep 2017 10:58:36 +0200
+> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> 
+>> Hi Cyrille,
 >>
->> Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
->> ---
->>  drivers/clk/at91/pmc.c | 24 ++++++++++++++++--------
->>  1 file changed, 16 insertions(+), 8 deletions(-)
+>> On Thu, Sep 7, 2017 at 9:28 PM, Cyrille Pitchen
+>> <cyrille.pitchen@wedev4u.fr> wrote:
+>>>> Can you apply this patch on your tree then report me what was printed, please?
+>>>> I have an idea of the root cause of your issue then a potential work-around
+>>>> but I first need to validate my assumption to confirm that the work-around
+>>>> would actually work.  
 >>
->> diff --git a/drivers/clk/at91/pmc.c b/drivers/clk/at91/pmc.c
->> index 775af473fe11..5c2b26de303e 100644
->> --- a/drivers/clk/at91/pmc.c
->> +++ b/drivers/clk/at91/pmc.c
->> @@ -107,10 +107,20 @@ static int pmc_suspend(void)
->>       return 0;
->>  }
+>> +m25p80 spi0.0: DWORD1 = 0xffffffff
+>> +m25p80 spi0.0: DWORD2 = 0xffffffff
+>> +m25p80 spi0.0: DWORD3 = 0xffffffff
+>> +m25p80 spi0.0: DWORD4 = 0xffffffff
+>> +m25p80 spi0.0: DWORD5 = 0xffffffff
+>> +m25p80 spi0.0: DWORD6 = 0xffffffff
+>> +m25p80 spi0.0: DWORD7 = 0xffffffff
+>> +m25p80 spi0.0: DWORD8 = 0xffffffff
+>> +m25p80 spi0.0: DWORD9 = 0xffffffff
+>> +m25p80 spi0.0: DWORD10 = 0x00000000
+>> +m25p80 spi0.0: DWORD11 = 0x00000000
+>> +m25p80 spi0.0: DWORD12 = 0x00000000
+>> +m25p80 spi0.0: DWORD13 = 0x00000000
+>> +m25p80 spi0.0: DWORD14 = 0x00000000
+>> +m25p80 spi0.0: DWORD15 = 0x00000000
+>> +m25p80 spi0.0: DWORD16 = 0x00000000
+>> +m25p80 spi0.0: BFPT version 1.0 (length = 9)
 >>
->> +static bool pmc_ready(unsigned int mask)
->> +{
->> +     unsigned int status;
->> +
->> +     regmap_read(pmcreg, AT91_PMC_SR, &status);
->> +
->> +     return ((status & mask) == mask) ? 1 : 0;
->> +}
->> +
->>  static void pmc_resume(void)
->>  {
->> -     int i, ret = 0;
->> +     int i;
->>       u32 tmp;
->> +     u32 mask = AT91_PMC_MCKRDY | AT91_PMC_LOCKA;
+>>> If you could also dump the value of the 'addr' argument of
+>>> spi_nor_read_sfdp_dma_unsafe() just before the for () loop below in the
+>>> very same function. Actually, I suspect the SFDP tables of your SPI NOR  
 >>
->>       regmap_read(pmcreg, AT91_PMC_MCKR, &tmp);
->>       if (pmc_cache.mckr != tmp)
->> @@ -134,13 +144,11 @@ static void pmc_resume(void)
->>                            AT91_PMC_PCR_CMD);
->>       }
+>> +m25p80 spi0.0: addr = 0x448
 >>
->> -     if (pmc_cache.uckr & AT91_PMC_UPLLEN) {
->> -             ret = regmap_read_poll_timeout(pmcreg, AT91_PMC_SR, tmp,
->> -                                            !(tmp & AT91_PMC_LOCKU),
->> -                                            10, 5000);
->> -             if (ret)
->> -                     pr_crit("USB PLL didn't lock when resuming\n");
->> -     }
->> +     if (pmc_cache.uckr & AT91_PMC_UPLLEN)
->> +             mask |= AT91_PMC_LOCKU;
->> +
->> +     while (!pmc_ready(mask))
->> +             cpu_relax();
->
-> Okay, but I would prefer to keep the timeout property in it. So we may
-> need to re-implement a timeout way-out here.
->
+>>> memory sample to have been programmed with invalid values, neither
+>>> compliant with the JEDEC JESD216 specification nor with the Cypress
+>>> datasheet for this memory part.  
+>>
+>> Sounds plausible.
+>> I get the same values when disabling DMA, so it's not due to bad DMA handling.
+>> All Renesas boards I have local or remote access to have spansion,s25fl512s.
+> 
+> Can you try with the following patch?
+> 
+> Thanks,
+> 
+> Boris
+> 
+> --->8---
+> From 000ff63fdb149d87d755483f5edc0aba010da6b4 Mon Sep 17 00:00:00 2001
+> From: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Date: Tue, 12 Sep 2017 15:10:35 +0200
+> Subject: [PATCH] mtd: spi-nor: Check consistency of the memory size extracted
+>  from the SFDP
+> 
+> One field of the flash parameter table contains information about the
+> flash device size.
+> Most of the time the data extracted from this field is valid, but
+> sometimes the BFPT section of the SFDP table is corrupted or invalid and
+> this field is set to 0xffffffff, thus resulting in an integer overflow
+> when setting params->size.
+> 
+> Since NOR devices are anayway always smaller than 2^64 bytes, we can
+> easily stop the BFPT parsing if the size reported in this table is
+> invalid.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Acked-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.com>
 
-We need to have a reference clock to measure the timeout delay. If we use
-the kernel's timekeeping, it relies on the clocks that we are configuring in
-this code. Moreover, my experience with the mainline code is that when
-something goes wrong, nothing will work. No oops or panic will be reported,
-the device will just stop working.
+with few comments below:
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index cf1d4a15e10a..665ccae1d090 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -2127,6 +2127,15 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+>  	params->size = bfpt.dwords[BFPT_DWORD(2)];
+>  	if (params->size & BIT(31)) {
+>  		params->size &= ~BIT(31);
+> +
+> +		/*
+> +		 * Prevent overflows on params->size. Anyway, a NOR of 1^64
+typo: should be 2^64
+> +		 * bytes is unlikely to exist so this error probably means
 
-In my case, I had obvious failures (it just stopped working unless I removed
-USB wakeup or activated the console during suspend) but also very rare
-failures, that occurred in the bootloader. Those issues were detected when
-testing repeated suspend cycles for a night: the memory controller would
-never enter the self-refresh mode during the resume sequence.
-
-This led me to question the bootloader's code first, and I set up 4 boards
-with the backup prototype code on v4.9 to verify that it was stable on
-suspend. I've reached 1.5 million sleep cycles over 3 weeks without
-failure, so this hinted towards the difference between the prototype and the
-backup code provided for v4.12 (which contained the patch that got in
-v4.13). Once I integrated this patch, I've run the v4.12 code for 2 weeks
-without issue as well.
-
-In the end, I don't want to touch this code if I do not have to, as checking
-that it does not regress is really cumbersome.
-
--- 
-Romain Izard
+Here the size is still expressed in bits, not yet in byte, the
+conversion is done right after this chunk.
+> +		 * the BFPT we are reading is corrupted/wrong.
+> +		 */
+> +		if (params->size > 63)
+> +			return -EINVAL;
+> +
+>  		params->size = 1ULL << params->size;
+>  	} else {
+>  		params->size++;
+> 
