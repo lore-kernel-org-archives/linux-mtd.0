@@ -1,26 +1,27 @@
-Subject: Re: [PATCH] mtd: spi-nor: stm32-quadspi: Fix uninitialized error
- return code
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-CC: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Marek Vasut
- <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue
- <alexandre.torgue@st.com>, Arnd Bergmann <arnd@arndb.de>, MTD Maling List
- <linux-mtd@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-References: <1500105641-14161-1-git-send-email-geert@linux-m68k.org>
- <1962615c-d606-2e93-d256-47f15e1b1035@st.com>
- <CAMuHMdUv69s21werL07ScowwPyjJ_V_D=QHkrnmkJM2aq-Pj4Q@mail.gmail.com>
-From: Ludovic BARRE <ludovic.barre@st.com>
-Message-ID: <ca80511a-794f-eb74-38a9-be15d48f9e20@st.com>
-Date: Fri, 15 Sep 2017 12:06:39 +0200
-MIME-Version: 1.0
-In-Reply-To: <CAMuHMdUv69s21werL07ScowwPyjJ_V_D=QHkrnmkJM2aq-Pj4Q@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+From: Romain Izard <romain.izard.pro@gmail.com>
+To: Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@codeaurora.org>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Richard Genoud <richard.genoud@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Alan Stern <stern@rowland.harvard.edu>
+Cc: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-pwm@vger.kernel.org,
+ linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ Romain Izard <romain.izard.pro@gmail.com>
+Subject: [PATCH v2 0/9] Various patches for SAMA5D2 backup mode
+Date: Fri, 15 Sep 2017 16:04:02 +0200
+Message-Id: <20170915140411.31716-1-romain.izard.pro@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,112 +31,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+While the core of the backup mode for SAMA5D2 has been integrated in
+v4.13, it is far from complete. Individual controllers in the chip have
+drivers that do not support the reset of the registers during suspend,
+and they need to be adapted to handle it.
 
+The first patch uses the clock wakeup code from the prototype backup
+mode instead of the version integrated in the mainline, as the mainline
+version is not stable. During a test loop with two-second backup
+suspend, the mainline version will hang in less than one day, whereas
+the prototype version has been running the same test for more than a
+week without hanging.
 
-On 07/17/2017 12:22 PM, Geert Uytterhoeven wrote:
-> Hi Ludovic,
-> 
-> On Mon, Jul 17, 2017 at 11:56 AM, Ludovic BARRE <ludovic.barre@st.com> wrote:
->> Today only write_reg could be call with len=0 (spi-nor.c:
->> write_enable/disable, set_4byte, erase_chip)
->>
->> But your remark make sense to prevent: gcc warning and framework evolution
->> ...
->>
->>
->> -In stm32-quadspi.c transfer data is enabled if tx_data is true (some
->> actions under this bool)
->>
->> stm32_qspi_write_reg has already this protection with "!!(buf && len > 0);"
->>
->> but we could extend this protection
->>
->> -    cmd.tx_data = true;
->> +    cmd.tx_data = !!(len > 0);
->>
->> In : stm32_qspi_read, stm32_qspi_write, stm32_qspi_read_reg
-> 
-> Ah, I missed the check for !cmd->tx_data at the top of stm32_qspi_tx()
-> 
->> -And to avoid gcc warning: I prefer initialize "ret" in the beginning of
->> function
->>
->> -    int ret;
->> +    int ret = 0;
->>
->> I tested this changes, and it's ok for me.
->>
->> Geert could you resend a new version, or do you prefer that I take care of
->> it
-> 
-> If you initialized ret at the beginning, you lose the ability to catch newly
-> introduced similar bugs in the future.
-like discuss in thread https://patchwork.kernel.org/patch/9952849/ with 
-Arnd and Geert
+Changes in v2:
+* drop the IIO patch duplicating existing code
+* determine the number of programmable clocks to save dynamically
+* declare a required local variable in the tty/serial patch
 
-Cyrille, Marek: could you take geert patch and abandon
-https://patchwork.kernel.org/patch/9952849/
-thanks
+Romain Izard (9):
+  clk: at91: pmc: Wait for clocks when resuming
+  clk: at91: pmc: Save SCSR during suspend
+  clk: at91: pmc: Support backup for programmable clocks
+  mtd: nand: atmel: Avoid ECC errors when leaving backup mode
+  mtd: nand: atmel: Report PMECC failures as errors
+  ehci-atmel: Power down during suspend is normal
+  pwm: atmel-tcb: Support backup mode
+  atmel_flexcom: Support backup mode
+  tty/serial: atmel: Prevent a warning on suspend
 
-Acked-by: Ludovic Barre <ludovic.barre@st.com>
+ drivers/clk/at91/clk-programmable.c |  2 ++
+ drivers/clk/at91/pmc.c              | 55 +++++++++++++++++++++++++------
+ drivers/clk/at91/pmc.h              |  2 ++
+ drivers/mfd/atmel-flexcom.c         | 65 ++++++++++++++++++++++++++++---------
+ drivers/mtd/nand/atmel/pmecc.c      | 15 ++++-----
+ drivers/pwm/pwm-atmel-tcb.c         | 63 +++++++++++++++++++++++++++++++++--
+ drivers/tty/serial/atmel_serial.c   | 14 ++++++++
+ drivers/usb/host/ehci-atmel.c       |  3 +-
+ 8 files changed, 182 insertions(+), 37 deletions(-)
 
-> 
->> On 07/15/2017 10:00 AM, Geert Uytterhoeven wrote:
->>>
->>> With gcc 4.1.2:
->>>
->>>       drivers/mtd/spi-nor/stm32-quadspi.c: In function
->>> ‘stm32_qspi_tx_poll’:
->>>       drivers/mtd/spi-nor/stm32-quadspi.c:230: warning: ‘ret’ may be used
->>> uninitialized in this function
->>>
->>> Indeed, if stm32_qspi_cmd.len is zero, ret will be uninitialized.
->>> This length is passed from outside the driver using the
->>> spi_nor.{read,write}{,_reg}() callbacks.
->>>
->>> Several functions in drivers/mtd/spi-nor/spi-nor.c (e.g. write_enable(),
->>> write_disable(), and erase_chip()) call spi_nor.write_reg() with a zero
->>> length.
->>>
->>> Fix this by returning an explicit zero on success.
->>>
->>> Fixes: 0d43d7ab277a048c ("mtd: spi-nor: add driver for STM32 quad spi
->>> flash controller")
->>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->>> ---
->>>    drivers/mtd/spi-nor/stm32-quadspi.c | 4 ++--
->>>    1 file changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/mtd/spi-nor/stm32-quadspi.c
->>> b/drivers/mtd/spi-nor/stm32-quadspi.c
->>> index 86c0931543c538c3..ad6a3e1844cbe5ec 100644
->>> --- a/drivers/mtd/spi-nor/stm32-quadspi.c
->>> +++ b/drivers/mtd/spi-nor/stm32-quadspi.c
->>> @@ -240,12 +240,12 @@ static int stm32_qspi_tx_poll(struct stm32_qspi
->>> *qspi,
->>>
->>> STM32_QSPI_FIFO_TIMEOUT_US);
->>>                  if (ret) {
->>>                          dev_err(qspi->dev, "fifo timeout (stat:%#x)\n",
->>> sr);
->>> -                       break;
->>> +                       return ret;
->>>                  }
->>>                  tx_fifo(buf++, qspi->io_base + QUADSPI_DR);
->>>          }
->>>    -     return ret;
->>> +       return 0;
->>>    }
->>>      static int stm32_qspi_tx_mm(struct stm32_qspi *qspi,
-> 
-> Gr{oetje,eeting}s,
-> 
->                          Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                  -- Linus Torvalds
-> 
+-- 
+2.11.0
