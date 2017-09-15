@@ -1,30 +1,26 @@
-Subject: Re: [PATCH] mtd: spi-nor: stm32-quadspi: avoid unintialized return
- code
-To: Arnd Bergmann <arnd@arndb.de>
-CC: Geert Uytterhoeven <geert@linux-m68k.org>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Marek Vasut <marek.vasut@gmail.com>, Boris
- Brezillon <boris.brezillon@free-electrons.com>, Alexandre Torgue
- <alexandre.torgue@st.com>, Richard Weinberger <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, MTD Maling
- List <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Maxime Coquelin
- <mcoquelin.stm32@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-References: <20170914110709.3591691-1-arnd@arndb.de>
- <CAMuHMdU3AqGkvwDQ+hE2=3PhgCKUh1HvBx8Hkvba6XsLHAuBbg@mail.gmail.com>
- <feb9b51e-7b77-d184-2ed6-f0d33a06bbcf@st.com>
- <CAMuHMdV6G8WeWgjPcYrMYiSiu=atOSkFZHxwvSsvcwmsv9J+oA@mail.gmail.com>
- <f372a1cb-e255-b5de-510d-77ca944903b3@st.com>
- <CAK8P3a3WoUdxpaXAiMsC3MTWSyxyUK793R+igaQjTxdO7t+a6g@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: stm32-quadspi: Fix uninitialized error
+ return code
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+CC: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Marek Vasut
+ <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue
+ <alexandre.torgue@st.com>, Arnd Bergmann <arnd@arndb.de>, MTD Maling List
+ <linux-mtd@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+References: <1500105641-14161-1-git-send-email-geert@linux-m68k.org>
+ <1962615c-d606-2e93-d256-47f15e1b1035@st.com>
+ <CAMuHMdUv69s21werL07ScowwPyjJ_V_D=QHkrnmkJM2aq-Pj4Q@mail.gmail.com>
 From: Ludovic BARRE <ludovic.barre@st.com>
-Message-ID: <fd0da95e-8e82-7293-4b6b-644f5ae1fefb@st.com>
-Date: Fri, 15 Sep 2017 09:59:05 +0200
+Message-ID: <ca80511a-794f-eb74-38a9-be15d48f9e20@st.com>
+Date: Fri, 15 Sep 2017 12:06:39 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a3WoUdxpaXAiMsC3MTWSyxyUK793R+igaQjTxdO7t+a6g@mail.gmail.com>
+In-Reply-To: <CAMuHMdUv69s21werL07ScowwPyjJ_V_D=QHkrnmkJM2aq-Pj4Q@mail.gmail.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,56 +32,110 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 
 
-On 09/14/2017 11:38 PM, Arnd Bergmann wrote:
-> On Thu, Sep 14, 2017 at 6:55 PM, Ludovic BARRE <ludovic.barre@st.com> wrote:
+On 07/17/2017 12:22 PM, Geert Uytterhoeven wrote:
+> Hi Ludovic,
+> 
+> On Mon, Jul 17, 2017 at 11:56 AM, Ludovic BARRE <ludovic.barre@st.com> wrote:
+>> Today only write_reg could be call with len=0 (spi-nor.c:
+>> write_enable/disable, set_4byte, erase_chip)
+>>
+>> But your remark make sense to prevent: gcc warning and framework evolution
+>> ...
 >>
 >>
->> On 09/14/2017 05:24 PM, Geert Uytterhoeven wrote:
->>>
->>> Hi Ludovic,
->>>
->>> On Thu, Sep 14, 2017 at 5:13 PM, Ludovic BARRE <ludovic.barre@st.com>
->>> wrote:
->>>>
->>>> On 09/14/2017 03:38 PM, Geert Uytterhoeven wrote:
->>>>
->>>> hi Arnd, Geert
->>>>
->>>> sorry, I was forgot this thread while my holidays
->>>>
->>>> Geert: what do you mean like "similar bugs in the future" in "If you
->>>> initialized ret at the beginning, you lose the ability to catch newly
->>>> introduced similar bugs in the future."
->>>
->>>
->>> If you pre-initialize ret at the top, you loose the ability of the
->>> compiler
->>> to detect at compile-time if ret is never written to later. It will just
->>> return
->>> -EINVAL at runtime.
->>>
->>> With my version, if the code is modified later and another "return ret" is
->>> added, the compiler will detect if there's a code path that forgets
->>> to assign a value to ret.
+>> -In stm32-quadspi.c transfer data is enabled if tx_data is true (some
+>> actions under this bool)
 >>
->> Ok, it's clear for me.
->> I favor geert's solution.
->> Arnd what do you think ?
+>> stm32_qspi_write_reg has already this protection with "!!(buf && len > 0);"
+>>
+>> but we could extend this protection
+>>
+>> -    cmd.tx_data = true;
+>> +    cmd.tx_data = !!(len > 0);
+>>
+>> In : stm32_qspi_read, stm32_qspi_write, stm32_qspi_read_reg
 > 
-> I usually follow the same rule that Geert explained (and quote
-> https://rusty.ozlabs.org/?p=232 when I do so). In this case, there
-> did not seem to be much value as the variable is not used
-> afterwards, and I kept the 'single return statement' guideline.
+> Ah, I missed the check for !cmd->tx_data at the top of stm32_qspi_tx()
 > 
-> In the end, either version seems totally fine to me here, so
-> please use Geert's if you prefer that.
-
-thank Arnd for your answer, great link :-)
-we take geert's patch.
-
-Geert: I will acked your patch.
-
-thanks everybody
+>> -And to avoid gcc warning: I prefer initialize "ret" in the beginning of
+>> function
+>>
+>> -    int ret;
+>> +    int ret = 0;
+>>
+>> I tested this changes, and it's ok for me.
+>>
+>> Geert could you resend a new version, or do you prefer that I take care of
+>> it
 > 
->          Arnd
+> If you initialized ret at the beginning, you lose the ability to catch newly
+> introduced similar bugs in the future.
+like discuss in thread https://patchwork.kernel.org/patch/9952849/ with 
+Arnd and Geert
+
+Cyrille, Marek: could you take geert patch and abandon
+https://patchwork.kernel.org/patch/9952849/
+thanks
+
+Acked-by: Ludovic Barre <ludovic.barre@st.com>
+
+> 
+>> On 07/15/2017 10:00 AM, Geert Uytterhoeven wrote:
+>>>
+>>> With gcc 4.1.2:
+>>>
+>>>       drivers/mtd/spi-nor/stm32-quadspi.c: In function
+>>> ‘stm32_qspi_tx_poll’:
+>>>       drivers/mtd/spi-nor/stm32-quadspi.c:230: warning: ‘ret’ may be used
+>>> uninitialized in this function
+>>>
+>>> Indeed, if stm32_qspi_cmd.len is zero, ret will be uninitialized.
+>>> This length is passed from outside the driver using the
+>>> spi_nor.{read,write}{,_reg}() callbacks.
+>>>
+>>> Several functions in drivers/mtd/spi-nor/spi-nor.c (e.g. write_enable(),
+>>> write_disable(), and erase_chip()) call spi_nor.write_reg() with a zero
+>>> length.
+>>>
+>>> Fix this by returning an explicit zero on success.
+>>>
+>>> Fixes: 0d43d7ab277a048c ("mtd: spi-nor: add driver for STM32 quad spi
+>>> flash controller")
+>>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>>> ---
+>>>    drivers/mtd/spi-nor/stm32-quadspi.c | 4 ++--
+>>>    1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/mtd/spi-nor/stm32-quadspi.c
+>>> b/drivers/mtd/spi-nor/stm32-quadspi.c
+>>> index 86c0931543c538c3..ad6a3e1844cbe5ec 100644
+>>> --- a/drivers/mtd/spi-nor/stm32-quadspi.c
+>>> +++ b/drivers/mtd/spi-nor/stm32-quadspi.c
+>>> @@ -240,12 +240,12 @@ static int stm32_qspi_tx_poll(struct stm32_qspi
+>>> *qspi,
+>>>
+>>> STM32_QSPI_FIFO_TIMEOUT_US);
+>>>                  if (ret) {
+>>>                          dev_err(qspi->dev, "fifo timeout (stat:%#x)\n",
+>>> sr);
+>>> -                       break;
+>>> +                       return ret;
+>>>                  }
+>>>                  tx_fifo(buf++, qspi->io_base + QUADSPI_DR);
+>>>          }
+>>>    -     return ret;
+>>> +       return 0;
+>>>    }
+>>>      static int stm32_qspi_tx_mm(struct stm32_qspi *qspi,
+> 
+> Gr{oetje,eeting}s,
+> 
+>                          Geert
+> 
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                  -- Linus Torvalds
 > 
