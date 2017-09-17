@@ -1,15 +1,21 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dtaKf-0000UB-Iz
- for linux-mtd@lists.infradead.org; Sun, 17 Sep 2017 14:14:05 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, boris.brezillon@free-electrons.com,
- computersforpeace@gmail.com, dwmw2@infradead.org, marek.vasut@gmail.com,
- cyrille.pitchen@wedev4u.fr, Richard Weinberger <richard@nod.at>
-Subject: [PATCH] mtd: spi-nor: Kill check with no effect
-Date: Sun, 17 Sep 2017 16:13:52 +0200
-Message-Id: <20170917141352.23691-1-richard@nod.at>
+Received: from albert.telenet-ops.be ([2a02:1800:110:4::f00:1a])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dtchO-0005KN-Tk
+ for linux-mtd@lists.infradead.org; Sun, 17 Sep 2017 16:45:43 +0000
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Richard Weinberger <richard@nod.at>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>
+Cc: Hyunchul Lee <hyc.lee@gmail.com>,
+ Colin Ian King <colin.king@canonical.com>,
+ Dan Carpenter <dan.carpenter@oracle.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] ubifs: Fix uninitialized variable in search_dh_cookie()
+Date: Sun, 17 Sep 2017 10:32:20 +0200
+Message-Id: <1505637141-4700-1-git-send-email-geert@linux-m68k.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,38 +25,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-header.major is of type u8 and cannot be negative.
+fs/ubifs/tnc.c: In function ‘search_dh_cookie’:
+fs/ubifs/tnc.c:1893: warning: ‘err’ is used uninitialized in this function
 
-Detected by CoverityScan CID#1417858 ("Integer handling issues")
+Indeed, err is always used uninitialized.
 
-Fixes: f384b352cbf0 ("mtd: spi-nor: parse Serial Flash Discoverable
-Parameters (SFDP) tables")
-Signed-off-by: Richard Weinberger <richard@nod.at>
+According to an original review comment from Hyunchul, acknowledged by
+Richard, err should be initialized to -ENOENT to avoid the first call to
+tnc_next().  But we can achieve the same by reordering the code.
+
+Reported-by: Hyunchul Lee <hyc.lee@gmail.com>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
-Cyrille,
+Compile-tested only.
 
-I'm not sure what exactly you wanted to test.
-Maybe it makes sense casting header.major to s8 before checking against < 0?
-
-Thanks,
-//richard
+Still needed in v4.14-rc1, so I'm sending out the patch I wrote in July.
+This avoids initializing err at the top, so we don't loose the ability to
+catch future uninitialized use.
 ---
- drivers/mtd/spi-nor/spi-nor.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/ubifs/tnc.c | 21 +++++++--------------
+ 1 file changed, 7 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index d71765739a93..4b86decdf13e 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -2252,8 +2252,7 @@ static int spi_nor_parse_sfdp(struct spi_nor *nor,
+diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
+index 0a213dcba2a1f0f5..ba3d0e0f86151e53 100644
+--- a/fs/ubifs/tnc.c
++++ b/fs/ubifs/tnc.c
+@@ -1890,35 +1890,28 @@ static int search_dh_cookie(struct ubifs_info *c, const union ubifs_key *key,
+ 	union ubifs_key *dkey;
  
- 	/* Check the SFDP header version. */
- 	if (le32_to_cpu(header.signature) != SFDP_SIGNATURE ||
--	    header.major != SFDP_JESD216_MAJOR ||
--	    header.minor < SFDP_JESD216_MINOR)
-+	    header.major != SFDP_JESD216_MAJOR)
- 		return -EINVAL;
+ 	for (;;) {
+-		if (!err) {
+-			err = tnc_next(c, &znode, n);
+-			if (err)
+-				goto out;
+-		}
+-
+ 		zbr = &znode->zbranch[*n];
+ 		dkey = &zbr->key;
  
- 	/*
+ 		if (key_inum(c, dkey) != key_inum(c, key) ||
+ 		    key_type(c, dkey) != key_type(c, key)) {
+-			err = -ENOENT;
+-			goto out;
++			return -ENOENT;
+ 		}
+ 
+ 		err = tnc_read_hashed_node(c, zbr, dent);
+ 		if (err)
+-			goto out;
++			return err;
+ 
+ 		if (key_hash(c, key) == key_hash(c, dkey) &&
+ 		    le32_to_cpu(dent->cookie) == cookie) {
+ 			*zn = znode;
+-			goto out;
++			return 0;
+ 		}
+-	}
+-
+-out:
+ 
+-	return err;
++		err = tnc_next(c, &znode, n);
++		if (err)
++			return err;
++	}
+ }
+ 
+ static int do_lookup_dh(struct ubifs_info *c, const union ubifs_key *key,
 -- 
-2.13.5
+2.7.4
