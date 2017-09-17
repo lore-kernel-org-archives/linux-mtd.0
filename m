@@ -1,22 +1,19 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dtcp4-0002Ih-QO
- for linux-mtd@lists.infradead.org; Sun, 17 Sep 2017 16:53:38 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, Hyunchul Lee <hyc.lee@gmail.com>,
- Colin Ian King <colin.king@canonical.com>,
- Dan Carpenter <dan.carpenter@oracle.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ubifs: Fix uninitialized variable in search_dh_cookie()
-Date: Sun, 17 Sep 2017 18:53:28 +0200
-Message-ID: <3629896.LZWARU6us7@blindfold>
-In-Reply-To: <1505637141-4700-1-git-send-email-geert@linux-m68k.org>
-References: <1505637141-4700-1-git-send-email-geert@linux-m68k.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dthWu-0005A4-9b
+ for linux-mtd@lists.infradead.org; Sun, 17 Sep 2017 21:55:12 +0000
+Received: by mail-lf0-x242.google.com with SMTP id h80so3625031lfe.1
+ for <linux-mtd@lists.infradead.org>; Sun, 17 Sep 2017 14:54:45 -0700 (PDT)
+Received: from localhost.localdomain ([213.175.92.61])
+ by smtp.googlemail.com with ESMTPSA id g12sm1173140lfd.64.2017.09.17.14.54.41
+ for <linux-mtd@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+ Sun, 17 Sep 2017 14:54:42 -0700 (PDT)
+From: Roman Yeryomin <leroi.lists@gmail.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/2] mtd: spi-nor: enable 4B opcodes for mx66l51235l
+Date: Mon, 18 Sep 2017 00:54:16 +0300
+Message-Id: <1505685256-4992-1-git-send-email-roman@advem.lv>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,28 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Sonntag, 17. September 2017, 10:32:20 CEST schrieb Geert Uytterhoeven:
-> fs/ubifs/tnc.c: In function =E2=80=98search_dh_cookie=E2=80=99:
-> fs/ubifs/tnc.c:1893: warning: =E2=80=98err=E2=80=99 is used uninitialized=
- in this function
->=20
-> Indeed, err is always used uninitialized.
->=20
-> According to an original review comment from Hyunchul, acknowledged by
-> Richard, err should be initialized to -ENOENT to avoid the first call to
-> tnc_next().  But we can achieve the same by reordering the code.
->=20
-> Reported-by: Hyunchul Lee <hyc.lee@gmail.com>
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
-> Compile-tested only.
->=20
-> Still needed in v4.14-rc1, so I'm sending out the patch I wrote in July.
-> This avoids initializing err at the top, so we don't loose the ability to
-> catch future uninitialized use.
+Signed-off-by: Roman Yeryomin <roman@advem.lv>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Geez. ;-\
-Applied for 4.14-rc2.
-
-Thanks,
-//richard
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 1413828..1d0e114 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1011,7 +1011,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_4B_OPCODES) },
+ 	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
+-	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+ 	{ "mx66u51235f", INFO(0xc2253a, 0, 64 * 1024, 1024, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+ 	{ "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
+-- 
+2.7.4
