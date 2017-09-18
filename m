@@ -1,22 +1,20 @@
-Received: from bastet.se.axis.com ([195.60.68.11])
+Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dtpgn-000310-Hq
- for linux-mtd@lists.infradead.org; Mon, 18 Sep 2017 06:37:56 +0000
-Date: Mon, 18 Sep 2017 08:37:22 +0200
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Richard Weinberger <richard@sigma-star.at>
-CC: <dedekind1@gmail.com>, Jonas Holmberg <jonashg@axis.com>, Linux mtd
- <linux-mtd@lists.infradead.org>, Cristian Ionescu-Idbohrn <cii@axis.com>
-Subject: Re: Actual usage of files in ubifs
-In-Reply-To: <3225645.EuKae9rOcH@blindfold>
-Message-ID: <alpine.DEB.2.11.1709180831100.14549@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.11.1709111143420.14549@lnxricardw1.se.axis.com>
- <5426894.QDpU4CeFDX@blindfold>
- <alpine.DEB.2.11.1709160007540.31066@lnxricardw1.se.axis.com>
- <3225645.EuKae9rOcH@blindfold>
+ id 1dtq8c-0003DO-A3
+ for linux-mtd@lists.infradead.org; Mon, 18 Sep 2017 07:06:40 +0000
+From: Richard Weinberger <richard@sigma-star.at>
+To: Jaap de Jong <jaap.dejong@nedap.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: ubi resize shrink volume
+Date: Mon, 18 Sep 2017 09:06:34 +0200
+Message-ID: <2434284.gX760p0sQM@blindfold>
+In-Reply-To: <14138f20-e173-aa12-fcb2-65839de513f0@nedap.com>
+References: <f91150f4-8aff-1069-afaf-d602c4494fdc@nedap.com>
+ <CAFLxGvzz0zvvvVuEJzmzHJH_z-5QzHGEETh6v2HUzLqpB6pJaQ@mail.gmail.com>
+ <14138f20-e173-aa12-fcb2-65839de513f0@nedap.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-On Sat, 16 Sep 2017, Richard Weinberger wrote:
-
-> Am Samstag, 16. September 2017, 00:08:53 CEST schrieb Ricard Wanderlof:
-> > > Do you want to send me a patch? :)
+Am Montag, 18. September 2017, 08:34:34 CEST schrieb Jaap de Jong:
+> On 15-09-17 20:30, Richard Weinberger wrote:
+> > On Fri, Sep 15, 2017 at 8:34 AM, Jaap de Jong <jaap.dejong@nedap.com> 
+wrote:
+> >> Hi All!
+> >> 
+> >> I've seen a several (old) posts regarding this subject and I was
+> >> wondering
+> >> what the status at this moment is.
+> >> 
+> >> Is there any implementation available that is able to shrink a ubi
+> >> volume,
+> >> so that it will move used blocks at the end to the front?
 > > 
-> > Yes, that would be very much appreciated!
+> > Not sure if I got your use case, but you can do this in userspace.
+> > 
+> > If you're asking whether it is possible to shrink UBIFS, no, this is
+> > not possible.
 > 
-> Uhh, sorry. Mad bad English tricked you.
-> I meant whether you want to create a patch and send it to me. :-)
+> Sorry for the confusion.
+> Yes, I want to shrink of a not-mounted UBIFS preferably in u-boot.
+> In the posts I read it should not be that hard to do, so I was wondering
+> if anyone had taken the effort to implement this...
 
-Sorry, my mistake, it's not your English at all, it's completely fine, 
-it's rather that I shouldn't be responding to mtd list posts on a Saturday 
-morning when I'm not really awake and not reading clearly. :-)
+Nope. So far nobody cared enough about this feature.
+Please note that many other major filesystems alos don't support this.
+Such das XFS.
 
-/Ricard
--- 
-Ricard Wolf Wanderlöf                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Thanks,
+//richard
