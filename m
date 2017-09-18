@@ -1,20 +1,21 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
+Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dtq8c-0003DO-A3
- for linux-mtd@lists.infradead.org; Mon, 18 Sep 2017 07:06:40 +0000
-From: Richard Weinberger <richard@sigma-star.at>
-To: Jaap de Jong <jaap.dejong@nedap.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: ubi resize shrink volume
-Date: Mon, 18 Sep 2017 09:06:34 +0200
-Message-ID: <2434284.gX760p0sQM@blindfold>
-In-Reply-To: <14138f20-e173-aa12-fcb2-65839de513f0@nedap.com>
-References: <f91150f4-8aff-1069-afaf-d602c4494fdc@nedap.com>
- <CAFLxGvzz0zvvvVuEJzmzHJH_z-5QzHGEETh6v2HUzLqpB6pJaQ@mail.gmail.com>
- <14138f20-e173-aa12-fcb2-65839de513f0@nedap.com>
+ id 1dtsXL-0001G4-7W
+ for linux-mtd@lists.infradead.org; Mon, 18 Sep 2017 09:40:20 +0000
+Date: Mon, 18 Sep 2017 11:39:45 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
+ computersforpeace@gmail.com, dwmw2@infradead.org
+Subject: Re: [PATCH] mtd: spi-nor: Check for spi_nor_hwcaps_read2cmd()
+ return value
+Message-ID: <20170918113945.1549571f@bbrezillon>
+In-Reply-To: <20170917095750.14059-1-richard@nod.at>
+References: <20170917095750.14059-1-richard@nod.at>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,33 +25,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Montag, 18. September 2017, 08:34:34 CEST schrieb Jaap de Jong:
-> On 15-09-17 20:30, Richard Weinberger wrote:
-> > On Fri, Sep 15, 2017 at 8:34 AM, Jaap de Jong <jaap.dejong@nedap.com> 
-wrote:
-> >> Hi All!
-> >> 
-> >> I've seen a several (old) posts regarding this subject and I was
-> >> wondering
-> >> what the status at this moment is.
-> >> 
-> >> Is there any implementation available that is able to shrink a ubi
-> >> volume,
-> >> so that it will move used blocks at the end to the front?
-> > 
-> > Not sure if I got your use case, but you can do this in userspace.
-> > 
-> > If you're asking whether it is possible to shrink UBIFS, no, this is
-> > not possible.
+On Sun, 17 Sep 2017 11:57:50 +0200
+Richard Weinberger <richard@nod.at> wrote:
+
+> The function can return a negativ value in case of errors,
+> don't use it blindly as array index.
 > 
-> Sorry for the confusion.
-> Yes, I want to shrink of a not-mounted UBIFS preferably in u-boot.
-> In the posts I read it should not be that hard to do, so I was wondering
-> if anyone had taken the effort to implement this...
+> Detected by CoverityScan CID#1418067 ("Memory - illegal accesses")
+> Fixes: f384b352cbf0 ("mtd: spi-nor: parse Serial Flash Discoverable
+> Parameters (SFDP) tables")
 
-Nope. So far nobody cared enough about this feature.
-Please note that many other major filesystems alos don't support this.
-Such das XFS.
+Hm, not sure but I think "Fixes:" should not be wrapped.
 
-Thanks,
-//richard
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index cf1d4a15e10a..d71765739a93 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -2145,6 +2145,9 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+>  
+>  		params->hwcaps.mask |= rd->hwcaps;
+>  		cmd = spi_nor_hwcaps_read2cmd(rd->hwcaps);
+> +		if (cmd < 0)
+> +			return -EINVAL;
+
+Why not returning cmd directly?
+
+> +
+>  		read = &params->reads[cmd];
+>  		half = bfpt.dwords[rd->settings_dword] >> rd->settings_shift;
+>  		spi_nor_set_read_settings_from_bfpt(read, half, rd->proto);
