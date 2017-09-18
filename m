@@ -1,25 +1,14 @@
-Date: Mon, 18 Sep 2017 12:00:51 +0200
+Date: Mon, 18 Sep 2017 12:14:09 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Romain Izard <romain.izard.pro@gmail.com>
-Cc: Nicolas Ferre <nicolas.ferre@microchip.com>, Alexandre Belloni
- <alexandre.belloni@free-electrons.com>, Michael Turquette
- <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>, Ludovic
- Desroches <ludovic.desroches@microchip.com>, Wenyou Yang
- <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>, David
- Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, Thierry Reding
- <thierry.reding@gmail.com>, Richard Genoud <richard.genoud@gmail.com>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, Alan Stern
- <stern@rowland.harvard.edu>, linux-pwm@vger.kernel.org,
- linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-serial@vger.kernel.org,
- linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 5/9] mtd: nand: atmel: Report PMECC failures as errors
-Message-ID: <20170918120051.298bdabf@bbrezillon>
-In-Reply-To: <20170915140411.31716-6-romain.izard.pro@gmail.com>
-References: <20170915140411.31716-1-romain.izard.pro@gmail.com>
- <20170915140411.31716-6-romain.izard.pro@gmail.com>
+To: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Cc: Brian Norris <computersforpeace@gmail.com>, Neil Armstrong
+ <narmstrong@baylibre.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-oxnas@lists.tuxfamily.org,
+ linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
+Subject: Re: [PATCH] mtd: oxnas_nand: Fix error handling in oxnas_nand_probe()
+Message-ID: <20170918121409.03e4b978@bbrezillon>
+In-Reply-To: <1504908038-26285-1-git-send-email-khoroshilov@ispras.ru>
+References: <1504908038-26285-1-git-send-email-khoroshilov@ispras.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -32,54 +21,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Romain,
+Hi Alexey,
 
-On Fri, 15 Sep 2017 16:04:07 +0200
-Romain Izard <romain.izard.pro@gmail.com> wrote:
+On Sat,  9 Sep 2017 01:00:38 +0300
+Alexey Khoroshilov <khoroshilov@ispras.ru> wrote:
 
-> It is not normal for the PMECC to fail when trying to fix ECC errors.
-> Report these cases as errors.
-
-I'm not sure we want to have ECC error messages at this level. ECC
-errors are rather unusual but not impossible, and sometimes it's even
-not a real error (I'm thinking of bitflips in erased pages for
-example, which are not necessarily detected/fixed in hardware).
-
-If we decide to print error messages when unfixable bitflips are
-detected, it should be done in the nand-controller driver (somewhere
-along those lines [1]).
-
-Regards,
-
-Boris
-
-[1]http://elixir.free-electrons.com/linux/latest/source/drivers/mtd/nand/atmel/nand-controller.c#L827
-
+> oxnas_nand_probe() does not disable clock on error paths.
+> The patch adds disabling using devm interface.
 > 
-> Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
+> Found by Linux Driver Verification project (linuxtesting.org).
+> 
+> Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
 > ---
->  drivers/mtd/nand/atmel/pmecc.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>  drivers/mtd/nand/oxnas_nand.c | 22 +++++++++++++++-------
+>  1 file changed, 15 insertions(+), 7 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/atmel/pmecc.c b/drivers/mtd/nand/atmel/pmecc.c
-> index 8d1208f38025..2a23f1ff945f 100644
-> --- a/drivers/mtd/nand/atmel/pmecc.c
-> +++ b/drivers/mtd/nand/atmel/pmecc.c
-> @@ -687,6 +687,8 @@ static int atmel_pmecc_err_location(struct atmel_pmecc_user *user)
->  	 * Number of roots does not match the degree of smu
->  	 * unable to correct error.
->  	 */
-> +	dev_err(pmecc->dev,
-> +		"PMECC: Impossible to calculate error location.\n");
->  	return -EBADMSG;
+> diff --git a/drivers/mtd/nand/oxnas_nand.c b/drivers/mtd/nand/oxnas_nand.c
+> index 1b207aac840c..8abc69a285dd 100644
+> --- a/drivers/mtd/nand/oxnas_nand.c
+> +++ b/drivers/mtd/nand/oxnas_nand.c
+> @@ -103,16 +103,26 @@ static int oxnas_nand_probe(struct platform_device *pdev)
+>  	if (IS_ERR(oxnas->io_base))
+>  		return PTR_ERR(oxnas->io_base);
+>  
+> -	oxnas->clk = devm_clk_get(&pdev->dev, NULL);
+> -	if (IS_ERR(oxnas->clk))
+> -		oxnas->clk = NULL;
+> -
+>  	/* Only a single chip node is supported */
+>  	count = of_get_child_count(np);
+>  	if (count > 1)
+>  		return -EINVAL;
+>  
+> -	clk_prepare_enable(oxnas->clk);
+> +	oxnas->clk = devm_clk_get(&pdev->dev, NULL);
+> +	if (IS_ERR(oxnas->clk)) {
+> +		oxnas->clk = NULL;
+> +	} else {
+> +		err = clk_prepare_enable(oxnas->clk);
+> +		if (err)
+> +			return err;
+> +
+> +		err = devm_add_action_or_reset(&pdev->dev,
+> +				(void(*)(void *))clk_disable_unprepare,
+> +				oxnas->clk);
+> +		if (err)
+> +			return err;
+> +	}
+> +
+
+Looks like something that should be made available at the CCF level
+either with a devm_clk_get_prepare_enable() or with a
+devm_clk_prepare_enable() helper. Would you care proposing this change
+to the CCF ML?
+
+In the meantime can you provide a simpler fix that just adds the
+missing clk_disable_unprepare() call in the error path?
+
+>  	device_reset_optional(&pdev->dev);
+>  
+>  	for_each_child_of_node(np, nand_np) {
+> @@ -167,8 +177,6 @@ static int oxnas_nand_remove(struct platform_device *pdev)
+>  	if (oxnas->chips[0])
+>  		nand_release(nand_to_mtd(oxnas->chips[0]));
+>  
+> -	clk_disable_unprepare(oxnas->clk);
+> -
+>  	return 0;
 >  }
 >  
-> @@ -729,7 +731,7 @@ int atmel_pmecc_correct_sector(struct atmel_pmecc_user *user, int sector,
->  			ptr = ecc + byte - sectorsize;
->  			area = "ECC";
->  		} else {
-> -			dev_dbg(pmecc->dev,
-> +			dev_err(pmecc->dev,
->  				"Invalid errpos value (%d, max is %d)\n",
->  				errpos, (sectorsize + eccbytes) * 8);
->  			return -EINVAL;
