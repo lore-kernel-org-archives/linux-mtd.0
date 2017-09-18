@@ -1,18 +1,17 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dtsXL-0001G4-7W
- for linux-mtd@lists.infradead.org; Mon, 18 Sep 2017 09:40:20 +0000
-Date: Mon, 18 Sep 2017 11:39:45 +0200
+ id 1dtscE-0004pf-UC
+ for linux-mtd@lists.infradead.org; Mon, 18 Sep 2017 09:45:25 +0000
+Date: Mon, 18 Sep 2017 11:44:51 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Richard Weinberger <richard@nod.at>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
- computersforpeace@gmail.com, dwmw2@infradead.org
-Subject: Re: [PATCH] mtd: spi-nor: Check for spi_nor_hwcaps_read2cmd()
- return value
-Message-ID: <20170918113945.1549571f@bbrezillon>
-In-Reply-To: <20170917095750.14059-1-richard@nod.at>
-References: <20170917095750.14059-1-richard@nod.at>
+ cyrille.pitchen@wedev4u.fr, computersforpeace@gmail.com,
+ dwmw2@infradead.org
+Subject: Re: [PATCH] mtd: spi-nor: Kill check with no effect
+Message-ID: <20170918114451.74e6fe68@bbrezillon>
+In-Reply-To: <20170917141352.23691-1-richard@nod.at>
+References: <20170917141352.23691-1-richard@nod.at>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,37 +24,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 17 Sep 2017 11:57:50 +0200
+On Sun, 17 Sep 2017 16:13:52 +0200
 Richard Weinberger <richard@nod.at> wrote:
 
-> The function can return a negativ value in case of errors,
-> don't use it blindly as array index.
+> header.major is of type u8 and cannot be negative.
+
+I guess you meant header.minor here.
+
 > 
-> Detected by CoverityScan CID#1418067 ("Memory - illegal accesses")
+> Detected by CoverityScan CID#1417858 ("Integer handling issues")
+> 
 > Fixes: f384b352cbf0 ("mtd: spi-nor: parse Serial Flash Discoverable
 > Parameters (SFDP) tables")
-
-Hm, not sure but I think "Fixes:" should not be wrapped.
-
 > Signed-off-by: Richard Weinberger <richard@nod.at>
 > ---
->  drivers/mtd/spi-nor/spi-nor.c | 3 +++
->  1 file changed, 3 insertions(+)
+> Cyrille,
+> 
+> I'm not sure what exactly you wanted to test.
+> Maybe it makes sense casting header.major to s8 before checking against < 0?
+> 
+> Thanks,
+> //richard
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
 > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index cf1d4a15e10a..d71765739a93 100644
+> index d71765739a93..4b86decdf13e 100644
 > --- a/drivers/mtd/spi-nor/spi-nor.c
 > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -2145,6 +2145,9 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+> @@ -2252,8 +2252,7 @@ static int spi_nor_parse_sfdp(struct spi_nor *nor,
 >  
->  		params->hwcaps.mask |= rd->hwcaps;
->  		cmd = spi_nor_hwcaps_read2cmd(rd->hwcaps);
-> +		if (cmd < 0)
-> +			return -EINVAL;
-
-Why not returning cmd directly?
-
-> +
->  		read = &params->reads[cmd];
->  		half = bfpt.dwords[rd->settings_dword] >> rd->settings_shift;
->  		spi_nor_set_read_settings_from_bfpt(read, half, rd->proto);
+>  	/* Check the SFDP header version. */
+>  	if (le32_to_cpu(header.signature) != SFDP_SIGNATURE ||
+> -	    header.major != SFDP_JESD216_MAJOR ||
+> -	    header.minor < SFDP_JESD216_MINOR)
+> +	    header.major != SFDP_JESD216_MAJOR)
+>  		return -EINVAL;
+>  
+>  	/*
