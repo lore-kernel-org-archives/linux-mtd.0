@@ -8,12 +8,9 @@ CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
  <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
  Vignesh R <vigneshr@ti.com>, linux-arm-kernel
  <linux-arm-kernel@lists.infradead.org>
-Subject: [RESEND PATCH v2 4/5] mtd: spi-nor: cadence-quadspi: Add support to
- enable loop-back clock circuit
-Date: Tue, 19 Sep 2017 16:26:04 +0530
-Message-ID: <20170919105605.18533-5-vigneshr@ti.com>
-In-Reply-To: <20170919105605.18533-1-vigneshr@ti.com>
-References: <20170919105605.18533-1-vigneshr@ti.com>
+Subject: [RESEND PATCH v2 0/5] K2G: Add QSPI support
+Date: Tue, 19 Sep 2017 16:26:00 +0530
+Message-ID: <20170919105605.18533-1-vigneshr@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,61 +22,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Cadence QSPI IP has a adapted loop-back circuit which can be enabled by
-setting BYPASS field to 0 in READCAPTURE register. It enables use of
-QSPI return clock to latch the data rather than the internal QSPI
-reference clock. For high speed operations, adapted loop-back circuit
-using QSPI return clock helps to increase data valid window.
+This series adds support for Cadence QSPI IP present in TI's 66AK2G SoC.
+The patches enhance the existing cadence-quadspi driver to support
+loopback clock circuit, pm_runtime support and tweaks for 66AK2G SoC.
 
-Based on DT parameter cdns,rclk-en enable adapted loop-back circuit
-for boards which do have QSPI return clock provided.
-This patch also modifies cqspi_readdata_capture() function's bypass
-parameter to bool to match how its used in the function.
+Change log:
 
-Signed-off-by: Vignesh R <vigneshr@ti.com>
----
- drivers/mtd/spi-nor/cadence-quadspi.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Resend:
+* Rebase to latest linux-next.
+* Collect Acked-bys
 
-diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
-index bb0cb02a6938..c11ced529ddd 100644
---- a/drivers/mtd/spi-nor/cadence-quadspi.c
-+++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-@@ -78,6 +78,7 @@ struct cqspi_st {
- 	bool			is_decoded_cs;
- 	u32			fifo_depth;
- 	u32			fifo_width;
-+	bool			rclk_en;
- 	u32			trigger_address;
- 	u32			wr_delay;
- 	struct cqspi_flash_pdata f_pdata[CQSPI_MAX_CHIPSELECT];
-@@ -788,7 +789,7 @@ static void cqspi_config_baudrate_div(struct cqspi_st *cqspi)
- }
- 
- static void cqspi_readdata_capture(struct cqspi_st *cqspi,
--				   const unsigned int bypass,
-+				   const bool bypass,
- 				   const unsigned int delay)
- {
- 	void __iomem *reg_base = cqspi->iobase;
-@@ -852,7 +853,8 @@ static void cqspi_configure(struct spi_nor *nor)
- 		cqspi->sclk = sclk;
- 		cqspi_config_baudrate_div(cqspi);
- 		cqspi_delay(nor);
--		cqspi_readdata_capture(cqspi, 1, f_pdata->read_delay);
-+		cqspi_readdata_capture(cqspi, !cqspi->rclk_en,
-+				       f_pdata->read_delay);
- 	}
- 
- 	if (switch_cs || switch_ck)
-@@ -1049,6 +1051,8 @@ static int cqspi_of_get_pdata(struct platform_device *pdev)
- 		return -ENXIO;
- 	}
- 
-+	cqspi->rclk_en = of_property_read_bool(np, "cdns,rclk-en");
-+
- 	return 0;
- }
- 
+v2:
+* Drop DT patches. Will be sent as separate series as requested by
+ maintainer.
+* Split binding docs into separate patches.
+* Address comments by Rob Herring.
+
+
+Vignesh R (5):
+  mtd: spi-nor: cadence-quadspi: Add TI 66AK2G SoC specific compatible
+  mtd: spi-nor: cadence-quadspi: add a delay in write sequence
+  mtd: spi-nor: cadence-quadspi: Add new binding to enable loop-back
+    circuit
+  mtd: spi-nor: cadence-quadspi: Add support to enable loop-back clock
+    circuit
+  mtd: spi-nor: cadence-quadspi: Add runtime PM support
+
+ .../devicetree/bindings/mtd/cadence-quadspi.txt    |  7 +++-
+ drivers/mtd/spi-nor/cadence-quadspi.c              | 46 ++++++++++++++++++++--
+ 2 files changed, 49 insertions(+), 4 deletions(-)
+
 -- 
 2.14.1
