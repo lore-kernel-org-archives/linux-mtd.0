@@ -1,19 +1,18 @@
 Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1duM3G-0007Cy-T0
- for linux-mtd@lists.infradead.org; Tue, 19 Sep 2017 17:11:17 +0000
-Subject: Re: [PATCH] mtd: spi-nor: Kill check with no effect
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- computersforpeace@gmail.com, dwmw2@infradead.org
-References: <20170917141352.23691-1-richard@nod.at>
- <20170918114451.74e6fe68@bbrezillon>
+ id 1duMP0-0007WP-FP
+ for linux-mtd@lists.infradead.org; Tue, 19 Sep 2017 17:33:44 +0000
+Subject: Re: [PATCH] mtd: spi-nor: Check for spi_nor_hwcaps_read2cmd() return
+ value
+To: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: boris.brezillon@free-electrons.com, linux-kernel@vger.kernel.org,
+ marek.vasut@gmail.com, computersforpeace@gmail.com, dwmw2@infradead.org
+References: <20170917095750.14059-1-richard@nod.at>
 From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <45983c6e-6fff-0712-b84d-5ae18c830872@wedev4u.fr>
-Date: Tue, 19 Sep 2017 19:10:35 +0200
+Message-ID: <b11b9813-00ef-2595-d6e0-7f713bc727d5@wedev4u.fr>
+Date: Tue, 19 Sep 2017 19:33:15 +0200
 MIME-Version: 1.0
-In-Reply-To: <20170918114451.74e6fe68@bbrezillon>
+In-Reply-To: <20170917095750.14059-1-richard@nod.at>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -28,71 +27,74 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Richard,
 
-Le 18/09/2017 à 11:44, Boris Brezillon a écrit :
-> On Sun, 17 Sep 2017 16:13:52 +0200
-> Richard Weinberger <richard@nod.at> wrote:
+Le 17/09/2017 à 11:57, Richard Weinberger a écrit :
+> The function can return a negativ value in case of errors,
+> don't use it blindly as array index.
 > 
->> header.major is of type u8 and cannot be negative.
+> Detected by CoverityScan CID#1418067 ("Memory - illegal accesses")
+> Fixes: f384b352cbf0 ("mtd: spi-nor: parse Serial Flash Discoverable
+> Parameters (SFDP) tables")
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> I guess you meant header.minor here.
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index cf1d4a15e10a..d71765739a93 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -2145,6 +2145,9 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+>  
+>  		params->hwcaps.mask |= rd->hwcaps;
+>  		cmd = spi_nor_hwcaps_read2cmd(rd->hwcaps);
+> +		if (cmd < 0)
+> +			return -EINVAL;
+> +
+>  		read = &params->reads[cmd];
+>  		half = bfpt.dwords[rd->settings_dword] >> rd->settings_shift;
+>  		spi_nor_set_read_settings_from_bfpt(read, half, rd->proto);
 > 
->>
->> Detected by CoverityScan CID#1417858 ("Integer handling issues")
->>
->> Fixes: f384b352cbf0 ("mtd: spi-nor: parse Serial Flash Discoverable
->> Parameters (SFDP) tables")
->> Signed-off-by: Richard Weinberger <richard@nod.at>
->> ---
->> Cyrille,
->>
->> I'm not sure what exactly you wanted to test.
->> Maybe it makes sense casting header.major to s8 before checking against < 0?
->>
 
-Actually I hesitated between checking the exact match with one of the 3
-major.minor pairs defined for each version of the JESD216 specification:
+This one is a false positive:
 
-JESD216: 1.0
-JESD216 rev A: 1.5
-JESD216 rev B (the latest one): 1.6
+static const struct sfdp_bfpt_read sfdp_bfpt_reads[] = {
+	/* Fast Read 1-1-2 */
+	{
+		SNOR_HWCAPS_READ_1_1_2,
+		BFPT_DWORD(1), BIT(16),	/* Supported bit */
+		BFPT_DWORD(4), 0,	/* Settings */
+		SNOR_PROTO_1_1_2,
+	},
+	[...]
+};
 
-I was wondering whether I should accept 1.1, 1.2, 1.3 and 1.4
-(unofficial) pairs too and also later versions, which should be backward
-compatible with JESD216 rev B, like rev B is backward compatible with
-rev A and so on...
+static int spi_nor_parse_bfpt(...)
+{
+	[...]
+	for (i = 0; i < ARRAY_SIZE(sfdp_bfpt_reads); i++) {
+		const struct sfdp_bfpt_read *rd = &sfdp_bfpt_reads[i];
+		[...]
+		cmd = spi_nor_hwcaps_read2cmd(rd->hwcaps);
+		read = &params->reads[cmd];
+		[...]
+	}
+	[...]
+}
 
-Finally I've chosen to accept everything after 1.0 to give a chance to
-next revisions to be supported as much as possible by the current code.
-The major number should not change but actually the test upon the minor
-value is useless as every unsigned number is greater than or equal to 0 ;)
+sfdp_bfpt_reads[] is a static const array where each element has a valid
+.hwcaps value so spi_nor_hwcaps_read2cmd() can actually never return an
+out of range 'cmd' result here.
 
-So once Boris comment taken into account:
 
-Acked-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+However in spi_nor_select_read(), spi_nor_hwcaps_read2cmd() is called
+too but this time its input argument now comes from the spi_nor_scan()
+caller so in this later case the code already checks the output of
+spi_nor_hwcaps_read2cmd() as it could be -EINVAL.
+
+
+Do you want us to take this patch anyway to please the code checker ?
+I don't think it is mandatory as a fix for 4.14-rc2.
 
 Best regards,
 
 Cyrille
-
->> Thanks,
->> //richard
->> ---
->>  drivers/mtd/spi-nor/spi-nor.c | 3 +--
->>  1 file changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->> index d71765739a93..4b86decdf13e 100644
->> --- a/drivers/mtd/spi-nor/spi-nor.c
->> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> @@ -2252,8 +2252,7 @@ static int spi_nor_parse_sfdp(struct spi_nor *nor,
->>  
->>  	/* Check the SFDP header version. */
->>  	if (le32_to_cpu(header.signature) != SFDP_SIGNATURE ||
->> -	    header.major != SFDP_JESD216_MAJOR ||
->> -	    header.minor < SFDP_JESD216_MINOR)
->> +	    header.major != SFDP_JESD216_MAJOR)
->>  		return -EINVAL;
->>  
->>  	/*
-> 
-> 
