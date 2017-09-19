@@ -1,20 +1,19 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1duOtT-0008IE-Dv
- for linux-mtd@lists.infradead.org; Tue, 19 Sep 2017 20:13:38 +0000
-Date: Tue, 19 Sep 2017 22:12:46 +0200
+Date: Tue, 19 Sep 2017 22:13:15 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Corentin Labbe <clabbe.montjoie@gmail.com>
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
- marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: remove unused blockmask variable
-Message-ID: <20170919221246.4e46cb9e@bbrezillon>
-In-Reply-To: <20170902084938.15942-1-clabbe.montjoie@gmail.com>
-References: <20170902084938.15942-1-clabbe.montjoie@gmail.com>
+ marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr, vz@mleia.com,
+ slemieux.tyco@gmail.com, kernel-janitors@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] mtd: nand: lpc32xx_mlc: Fix an error handling path in
+ lpc32xx_nand_probe()
+Message-ID: <20170919221315.11d94426@bbrezillon>
+In-Reply-To: <20170903115831.1326-1-christophe.jaillet@wanadoo.fr>
+References: <20170903115831.1326-1-christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,12 +23,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat,  2 Sep 2017 10:49:38 +0200
-Corentin Labbe <clabbe.montjoie@gmail.com> wrote:
+On Sun,  3 Sep 2017 13:58:31 +0200
+Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
 
-> This patch fix the following build warning:
-> drivers/mtd/nand/nand_base.c:2671:30: attention : variable =E2=80=98block=
-mask=E2=80=99 set but not used [-Wunused-but-set-variable]
+> If 'clk_prepare_enable()' fails, we must 'put' the corresponding clock.
+> 
+> Fixes: 4d26f012ab59 ("mtd: nand: lpc32xx_mlc: Handle return value of clk_prepare_enable.")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
 Applied.
 
@@ -37,32 +37,31 @@ Thanks,
 
 Boris
 
->=20
-> Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
 > ---
->  drivers/mtd/nand/nand_base.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->=20
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 9900476a0afe..b875fd365084 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -2668,7 +2668,7 @@ static uint8_t *nand_fill_oob(struct mtd_info *mtd,=
- uint8_t *oob, size_t len,
->  static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
->  			     struct mtd_oob_ops *ops)
->  {
-> -	int chipnr, realpage, page, blockmask, column;
-> +	int chipnr, realpage, page, column;
->  	struct nand_chip *chip =3D mtd_to_nand(mtd);
->  	uint32_t writelen =3D ops->len;
-> =20
-> @@ -2704,7 +2704,6 @@ static int nand_do_write_ops(struct mtd_info *mtd, =
-loff_t to,
-> =20
->  	realpage =3D (int)(to >> chip->page_shift);
->  	page =3D realpage & chip->pagemask;
-> -	blockmask =3D (1 << (chip->phys_erase_shift - chip->page_shift)) - 1;
-> =20
->  	/* Invalidate the page cache, when we write to the cached page */
->  	if (to <=3D ((loff_t)chip->pagebuf << chip->page_shift) &&
+> Labels in the error handling path could be renamed, but it does not worth
+> the effort, IMHO.
+> ---
+>  drivers/mtd/nand/lpc32xx_mlc.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/lpc32xx_mlc.c b/drivers/mtd/nand/lpc32xx_mlc.c
+> index c3bb358ef01e..5f72a824e67d 100644
+> --- a/drivers/mtd/nand/lpc32xx_mlc.c
+> +++ b/drivers/mtd/nand/lpc32xx_mlc.c
+> @@ -707,7 +707,7 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+>  	}
+>  	res = clk_prepare_enable(host->clk);
+>  	if (res)
+> -		goto err_exit1;
+> +		goto err_put_clk;
+>  
+>  	nand_chip->cmd_ctrl = lpc32xx_nand_cmd_ctrl;
+>  	nand_chip->dev_ready = lpc32xx_nand_device_ready;
+> @@ -814,6 +814,7 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+>  		dma_release_channel(host->dma_chan);
+>  err_exit2:
+>  	clk_disable_unprepare(host->clk);
+> +err_put_clk:
+>  	clk_put(host->clk);
+>  err_exit1:
+>  	lpc32xx_wp_enable(host);
