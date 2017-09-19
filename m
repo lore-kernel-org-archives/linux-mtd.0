@@ -1,28 +1,21 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1duOsS-0007bI-2B
- for linux-mtd@lists.infradead.org; Tue, 19 Sep 2017 20:12:22 +0000
-Date: Tue, 19 Sep 2017 22:11:40 +0200
+ id 1duOsy-00082b-FG
+ for linux-mtd@lists.infradead.org; Tue, 19 Sep 2017 20:13:07 +0000
+Date: Tue, 19 Sep 2017 22:12:15 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Richard Weinberger
- <richard@nod.at>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>, MTD
- Maling List <linux-mtd@lists.infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [DEBUG] mtd: spi-nor: dump DWORDs of the Basic Flash Parameter
- Table
-Message-ID: <20170919221140.384e988a@bbrezillon>
-In-Reply-To: <80dd3940-c09d-f246-fbe7-c5533c2640c8@wedev4u.fr>
-References: <CAMuHMdXKpheF5whZi2Ot2Pm8t3Lu+ramNV==sXBo87u_HerZxQ@mail.gmail.com>
- <20170907185456.4631-1-cyrille.pitchen@wedev4u.fr>
- <e9e925ab-e543-23fd-a738-a9ce433de713@wedev4u.fr>
- <CAMuHMdVgdLt5yhgJnDamcMDUv+-JhLEuO9Gj3trmXZwPhhP2tg@mail.gmail.com>
- <20170912151236.33c5ad8f@bbrezillon>
- <80dd3940-c09d-f246-fbe7-c5533c2640c8@wedev4u.fr>
+Cc: marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
+ geert@linux-m68k.org, richard@nod.at, linux-kernel@vger.kernel.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org
+Subject: Re: [PATCH] mtd: spi-nor: fix DMA unsafe buffer issue in
+ spi_nor_read_sfdp()
+Message-ID: <20170919221215.46625560@bbrezillon>
+In-Reply-To: <20170906214502.26748-1-cyrille.pitchen@wedev4u.fr>
+References: <20170906214502.26748-1-cyrille.pitchen@wedev4u.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,128 +25,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 14 Sep 2017 18:44:31 +0200
+On Wed,  6 Sep 2017 23:45:02 +0200
 Cyrille Pitchen <cyrille.pitchen@wedev4u.fr> wrote:
 
-> Le 12/09/2017 =C3=A0 15:12, Boris Brezillon a =C3=A9crit :
-> > Hi Geert,
-> >=20
-> > On Mon, 11 Sep 2017 10:58:36 +0200
-> > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> >  =20
-> >> Hi Cyrille,
-> >>
-> >> On Thu, Sep 7, 2017 at 9:28 PM, Cyrille Pitchen
-> >> <cyrille.pitchen@wedev4u.fr> wrote: =20
-> >>>> Can you apply this patch on your tree then report me what was printe=
-d, please?
-> >>>> I have an idea of the root cause of your issue then a potential work=
--around
-> >>>> but I first need to validate my assumption to confirm that the work-=
-around
-> >>>> would actually work.   =20
-> >>
-> >> +m25p80 spi0.0: DWORD1 =3D 0xffffffff
-> >> +m25p80 spi0.0: DWORD2 =3D 0xffffffff
-> >> +m25p80 spi0.0: DWORD3 =3D 0xffffffff
-> >> +m25p80 spi0.0: DWORD4 =3D 0xffffffff
-> >> +m25p80 spi0.0: DWORD5 =3D 0xffffffff
-> >> +m25p80 spi0.0: DWORD6 =3D 0xffffffff
-> >> +m25p80 spi0.0: DWORD7 =3D 0xffffffff
-> >> +m25p80 spi0.0: DWORD8 =3D 0xffffffff
-> >> +m25p80 spi0.0: DWORD9 =3D 0xffffffff
-> >> +m25p80 spi0.0: DWORD10 =3D 0x00000000
-> >> +m25p80 spi0.0: DWORD11 =3D 0x00000000
-> >> +m25p80 spi0.0: DWORD12 =3D 0x00000000
-> >> +m25p80 spi0.0: DWORD13 =3D 0x00000000
-> >> +m25p80 spi0.0: DWORD14 =3D 0x00000000
-> >> +m25p80 spi0.0: DWORD15 =3D 0x00000000
-> >> +m25p80 spi0.0: DWORD16 =3D 0x00000000
-> >> +m25p80 spi0.0: BFPT version 1.0 (length =3D 9)
-> >> =20
-> >>> If you could also dump the value of the 'addr' argument of
-> >>> spi_nor_read_sfdp_dma_unsafe() just before the for () loop below in t=
-he
-> >>> very same function. Actually, I suspect the SFDP tables of your SPI N=
-OR   =20
-> >>
-> >> +m25p80 spi0.0: addr =3D 0x448
-> >> =20
-> >>> memory sample to have been programmed with invalid values, neither
-> >>> compliant with the JEDEC JESD216 specification nor with the Cypress
-> >>> datasheet for this memory part.   =20
-> >>
-> >> Sounds plausible.
-> >> I get the same values when disabling DMA, so it's not due to bad DMA h=
-andling.
-> >> All Renesas boards I have local or remote access to have spansion,s25f=
-l512s. =20
-> >=20
-> > Can you try with the following patch?
-> >=20
-> > Thanks,
-> >=20
-> > Boris
-> >  =20
-> > --->8--- =20
-> > From 000ff63fdb149d87d755483f5edc0aba010da6b4 Mon Sep 17 00:00:00 2001
-> > From: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > Date: Tue, 12 Sep 2017 15:10:35 +0200
-> > Subject: [PATCH] mtd: spi-nor: Check consistency of the memory size ext=
-racted
-> >  from the SFDP
-> >=20
-> > One field of the flash parameter table contains information about the
-> > flash device size.
-> > Most of the time the data extracted from this field is valid, but
-> > sometimes the BFPT section of the SFDP table is corrupted or invalid and
-> > this field is set to 0xffffffff, thus resulting in an integer overflow
-> > when setting params->size.
-> >=20
-> > Since NOR devices are anayway always smaller than 2^64 bytes, we can
-> > easily stop the BFPT parsing if the size reported in this table is
-> > invalid.
-> >=20
-> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com> =20
-> Acked-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.com>
+> spi_nor_read_sfdp() calls nor->read() to read the SFDP data.
+> When the m25p80 driver is used (pretty common case), nor->read() is then
+> implemented by the m25p80_read() function, which is likely to initialize a
+> 'struct spi_transfer' from its buf argument before appending this
+> structure inside the 'struct spi_message' argument of spi_sync().
+> 
+> Besides the SPI sub-system states that both .tx_buf and .rx_buf members of
+> 'struct spi_transfer' must point into dma-safe memory. However, two of the
+> three calls of spi_nor_read_sfdp() were given pointers to stack allocated
+> memory as buf argument, hence not in a dma-safe area.
+> Hopefully, the third and last call of spi_nor_read_sfdp() was already
+> given a kmalloc'ed buffer argument, hence dma-safe.
+> 
+> So this patch fixes this issue by introducing a
+> spi_nor_read_sfdp_dma_unsafe() function which simply wraps the existing
+> spi_nor_read_sfdp() function and uses some kmalloc'ed memory as a bounce
+> buffer.
+> 
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
 
-Applied after fixing the things you pointed below.
+Applied.
 
->=20
-> with few comments below:
-> > ---
-> >  drivers/mtd/spi-nor/spi-nor.c | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> >=20
-> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-no=
-r.c
-> > index cf1d4a15e10a..665ccae1d090 100644
-> > --- a/drivers/mtd/spi-nor/spi-nor.c
-> > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> > @@ -2127,6 +2127,15 @@ static int spi_nor_parse_bfpt(struct spi_nor *no=
-r,
-> >  	params->size =3D bfpt.dwords[BFPT_DWORD(2)];
-> >  	if (params->size & BIT(31)) {
-> >  		params->size &=3D ~BIT(31);
-> > +
-> > +		/*
-> > +		 * Prevent overflows on params->size. Anyway, a NOR of 1^64 =20
-> typo: should be 2^64
-> > +		 * bytes is unlikely to exist so this error probably means =20
->=20
-> Here the size is still expressed in bits, not yet in byte, the
-> conversion is done right after this chunk.
-> > +		 * the BFPT we are reading is corrupted/wrong.
-> > +		 */
-> > +		if (params->size > 63)
-> > +			return -EINVAL;
-> > +
-> >  		params->size =3D 1ULL << params->size;
-> >  	} else {
-> >  		params->size++;
-> >  =20
->=20
->=20
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Thanks,
+
+Boris
+
+> ---
+> 
+> Compiled but not tested yet!
+> 
+>  drivers/mtd/spi-nor/spi-nor.c | 36 +++++++++++++++++++++++++++++++++---
+>  1 file changed, 33 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index cf1d4a15e10a..05254dd6a4a0 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1784,7 +1784,7 @@ spi_nor_set_pp_settings(struct spi_nor_pp_command *pp,
+>   * @nor:	pointer to a 'struct spi_nor'
+>   * @addr:	offset in the SFDP area to start reading data from
+>   * @len:	number of bytes to read
+> - * @buf:	buffer where the SFDP data are copied into
+> + * @buf:	buffer where the SFDP data are copied into (dma-safe memory)
+>   *
+>   * Whatever the actual numbers of bytes for address and dummy cycles are
+>   * for (Fast) Read commands, the Read SFDP (5Ah) instruction is always
+> @@ -1829,6 +1829,36 @@ static int spi_nor_read_sfdp(struct spi_nor *nor, u32 addr,
+>  	return ret;
+>  }
+>  
+> +/**
+> + * spi_nor_read_sfdp_dma_unsafe() - read Serial Flash Discoverable Parameters.
+> + * @nor:	pointer to a 'struct spi_nor'
+> + * @addr:	offset in the SFDP area to start reading data from
+> + * @len:	number of bytes to read
+> + * @buf:	buffer where the SFDP data are copied into
+> + *
+> + * Wrap spi_nor_read_sfdp() using a kmalloc'ed bounce buffer as @buf is now not
+> + * guaranteed to be dma-safe.
+> + *
+> + * Return: -ENOMEM if kmalloc() fails, the return code of spi_nor_read_sfdp()
+> + *          otherwise.
+> + */
+> +static int spi_nor_read_sfdp_dma_unsafe(struct spi_nor *nor, u32 addr,
+> +					size_t len, void *buf)
+> +{
+> +	void *dma_safe_buf;
+> +	int ret;
+> +
+> +	dma_safe_buf = kmalloc(len, GFP_KERNEL);
+> +	if (!dma_safe_buf)
+> +		return -ENOMEM;
+> +
+> +	ret = spi_nor_read_sfdp(nor, addr, len, dma_safe_buf);
+> +	memcpy(buf, dma_safe_buf, len);
+> +	kfree(dma_safe_buf);
+> +
+> +	return ret;
+> +}
+> +
+>  struct sfdp_parameter_header {
+>  	u8		id_lsb;
+>  	u8		minor;
+> @@ -2101,7 +2131,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+>  		    bfpt_header->length * sizeof(u32));
+>  	addr = SFDP_PARAM_HEADER_PTP(bfpt_header);
+>  	memset(&bfpt, 0, sizeof(bfpt));
+> -	err = spi_nor_read_sfdp(nor,  addr, len, &bfpt);
+> +	err = spi_nor_read_sfdp_dma_unsafe(nor,  addr, len, &bfpt);
+>  	if (err < 0)
+>  		return err;
+>  
+> @@ -2243,7 +2273,7 @@ static int spi_nor_parse_sfdp(struct spi_nor *nor,
+>  	int i, err;
+>  
+>  	/* Get the SFDP header. */
+> -	err = spi_nor_read_sfdp(nor, 0, sizeof(header), &header);
+> +	err = spi_nor_read_sfdp_dma_unsafe(nor, 0, sizeof(header), &header);
+>  	if (err < 0)
+>  		return err;
+>  
