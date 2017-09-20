@@ -1,18 +1,18 @@
 Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
  by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dunmA-0004sn-61
- for linux-mtd@lists.infradead.org; Wed, 20 Sep 2017 22:47:29 +0000
-Received: by mail-pg0-x243.google.com with SMTP id j16so2375917pga.2
- for <linux-mtd@lists.infradead.org>; Wed, 20 Sep 2017 15:47:08 -0700 (PDT)
+ id 1dunmA-0004sj-62
+ for linux-mtd@lists.infradead.org; Wed, 20 Sep 2017 22:47:27 +0000
+Received: by mail-pg0-x243.google.com with SMTP id d8so2372837pgt.3
+ for <linux-mtd@lists.infradead.org>; Wed, 20 Sep 2017 15:47:05 -0700 (PDT)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org
 Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
  linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
  "Theodore Y . Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
  Michael Halcrow <mhalcrow@google.com>, Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 14/25] ext4: switch to fscrypt_prepare_lookup()
-Date: Wed, 20 Sep 2017 15:45:54 -0700
-Message-Id: <20170920224605.22030-15-ebiggers3@gmail.com>
+Subject: [PATCH 12/25] ext4: switch to fscrypt_prepare_link()
+Date: Wed, 20 Sep 2017 15:45:52 -0700
+Message-Id: <20170920224605.22030-13-ebiggers3@gmail.com>
 In-Reply-To: <20170920224605.22030-1-ebiggers3@gmail.com>
 References: <20170920224605.22030-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,43 +28,26 @@ From: Eric Biggers <ebiggers@google.com>
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/ext4/namei.c | 22 ++++++----------------
- 1 file changed, 6 insertions(+), 16 deletions(-)
+ fs/ext4/namei.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index b2fbc2b87bcf..a6b6f09e0a88 100644
+index c1cf020d1889..b2058500f1dc 100644
 --- a/fs/ext4/namei.c
 +++ b/fs/ext4/namei.c
-@@ -1538,24 +1538,14 @@ static struct dentry *ext4_lookup(struct inode *dir, struct dentry *dentry, unsi
- 	struct inode *inode;
- 	struct ext4_dir_entry_2 *de;
- 	struct buffer_head *bh;
-+	int err;
+@@ -3221,9 +3221,10 @@ static int ext4_link(struct dentry *old_dentry,
  
--	if (ext4_encrypted_inode(dir)) {
--		int res = fscrypt_get_encryption_info(dir);
--
--		/*
--		 * DCACHE_ENCRYPTED_WITH_KEY is set if the dentry is
--		 * created while the directory was encrypted and we
--		 * have access to the key.
--		 */
--		if (fscrypt_has_encryption_key(dir))
--			fscrypt_set_encrypted_dentry(dentry);
--		fscrypt_set_d_op(dentry);
--		if (res && res != -ENOKEY)
--			return ERR_PTR(res);
--	}
-+	err = fscrypt_prepare_lookup(dir, dentry, flags);
+ 	if (inode->i_nlink >= EXT4_LINK_MAX)
+ 		return -EMLINK;
+-	if (ext4_encrypted_inode(dir) &&
+-			!fscrypt_has_permitted_context(dir, inode))
+-		return -EPERM;
++
++	err = fscrypt_prepare_link(old_dentry, dir, dentry);
 +	if (err)
-+		return ERR_PTR(err);
++		return err;
  
--       if (dentry->d_name.len > EXT4_NAME_LEN)
--	       return ERR_PTR(-ENAMETOOLONG);
-+	if (dentry->d_name.len > EXT4_NAME_LEN)
-+		return ERR_PTR(-ENAMETOOLONG);
- 
- 	bh = ext4_find_entry(dir, &dentry->d_name, &de, NULL);
- 	if (IS_ERR(bh))
+        if ((ext4_test_inode_flag(dir, EXT4_INODE_PROJINHERIT)) &&
+ 	   (!projid_eq(EXT4_I(dir)->i_projid,
 -- 
 2.14.1.821.g8fa685d3b7-goog
