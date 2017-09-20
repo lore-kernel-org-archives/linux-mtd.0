@@ -1,18 +1,18 @@
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dunm1-0004xc-IW
- for linux-mtd@lists.infradead.org; Wed, 20 Sep 2017 22:47:28 +0000
-Received: by mail-pf0-x241.google.com with SMTP id g65so1725710pfe.1
- for <linux-mtd@lists.infradead.org>; Wed, 20 Sep 2017 15:47:00 -0700 (PDT)
+ id 1dunm2-0004xq-PY
+ for linux-mtd@lists.infradead.org; Wed, 20 Sep 2017 22:47:36 +0000
+Received: by mail-pg0-x241.google.com with SMTP id u18so2378849pgo.1
+ for <linux-mtd@lists.infradead.org>; Wed, 20 Sep 2017 15:47:01 -0700 (PDT)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org
 Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
  linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
  "Theodore Y . Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
  Michael Halcrow <mhalcrow@google.com>, Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 08/25] fscrypt: new helper function - fscrypt_prepare_rename()
-Date: Wed, 20 Sep 2017 15:45:48 -0700
-Message-Id: <20170920224605.22030-9-ebiggers3@gmail.com>
+Subject: [PATCH 09/25] fscrypt: new helper function - fscrypt_prepare_lookup()
+Date: Wed, 20 Sep 2017 15:45:49 -0700
+Message-Id: <20170920224605.22030-10-ebiggers3@gmail.com>
 In-Reply-To: <20170920224605.22030-1-ebiggers3@gmail.com>
 References: <20170920224605.22030-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,122 +26,101 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Eric Biggers <ebiggers@google.com>
 
-Introduce a helper function which prepares to rename a file into a
-possibly encrypted directory.  It handles loading the encryption keys
-for the source and target directories if needed, and it handles
-enforcing that if the target directory (and the source directory for a
-cross-rename) is encrypted, then the file being moved into the directory
-has the same encryption policy as its containing directory.
+Introduce a helper function which prepares to look up the given dentry
+in the given directory.  If the directory is encrypted, it handles
+loading the directory's encryption key, setting the dentry's ->d_op to
+fscrypt_d_ops, and setting DCACHE_ENCRYPTED_WITH_KEY if the directory's
+encryption key is available.
+
+Note: once all filesystems switch over to this, we'll be able to move
+fscrypt_d_ops and fscrypt_set_encrypted_dentry() to fscrypt_private.h.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/hooks.c               | 30 ++++++++++++++++++++++++++++++
- include/linux/fscrypt_notsupp.h | 11 +++++++++++
- include/linux/fscrypt_supp.h    | 39 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 80 insertions(+)
+ fs/crypto/hooks.c               | 18 ++++++++++++++++++
+ include/linux/fscrypt_notsupp.h |  9 +++++++++
+ include/linux/fscrypt_supp.h    | 30 ++++++++++++++++++++++++++++++
+ 3 files changed, 57 insertions(+)
 
 diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
-index 8b90217320dd..822cb78f9b45 100644
+index 822cb78f9b45..9f5fb2eb9cf7 100644
 --- a/fs/crypto/hooks.c
 +++ b/fs/crypto/hooks.c
-@@ -62,3 +62,33 @@ int __fscrypt_prepare_link(struct inode *inode, struct inode *dir)
+@@ -92,3 +92,21 @@ int __fscrypt_prepare_rename(struct inode *old_dir, struct dentry *old_dentry,
  	return 0;
  }
- EXPORT_SYMBOL_GPL(__fscrypt_prepare_link);
+ EXPORT_SYMBOL_GPL(__fscrypt_prepare_rename);
 +
-+int __fscrypt_prepare_rename(struct inode *old_dir, struct dentry *old_dentry,
-+			     struct inode *new_dir, struct dentry *new_dentry,
-+			     unsigned int flags)
++int __fscrypt_prepare_lookup(struct inode *dir, struct dentry *dentry)
 +{
-+	int err;
++	int err = fscrypt_get_encryption_info(dir);
 +
-+	err = fscrypt_require_key(old_dir);
 +	if (err)
 +		return err;
 +
-+	err = fscrypt_require_key(new_dir);
-+	if (err)
-+		return err;
-+
-+	if (old_dir != new_dir) {
-+		if (IS_ENCRYPTED(new_dir) &&
-+		    !fscrypt_has_permitted_context(new_dir,
-+						   d_inode(old_dentry)))
-+			return -EPERM;
-+
-+		if ((flags & RENAME_EXCHANGE) &&
-+		    IS_ENCRYPTED(old_dir) &&
-+		    !fscrypt_has_permitted_context(old_dir,
-+						   d_inode(new_dentry)))
-+			return -EPERM;
++	if (fscrypt_has_encryption_key(dir)) {
++		spin_lock(&dentry->d_lock);
++		dentry->d_flags |= DCACHE_ENCRYPTED_WITH_KEY;
++		spin_unlock(&dentry->d_lock);
 +	}
++
++	d_set_d_op(dentry, &fscrypt_d_ops);
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(__fscrypt_prepare_rename);
++EXPORT_SYMBOL_GPL(__fscrypt_prepare_lookup);
 diff --git a/include/linux/fscrypt_notsupp.h b/include/linux/fscrypt_notsupp.h
-index 2cb400440be3..a88a2959cd8c 100644
+index a88a2959cd8c..e9b437605f9c 100644
 --- a/include/linux/fscrypt_notsupp.h
 +++ b/include/linux/fscrypt_notsupp.h
-@@ -198,4 +198,15 @@ static inline int fscrypt_prepare_link(struct dentry *old_dentry,
+@@ -209,4 +209,13 @@ static inline int fscrypt_prepare_rename(struct inode *old_dir,
  	return 0;
  }
  
-+static inline int fscrypt_prepare_rename(struct inode *old_dir,
-+					 struct dentry *old_dentry,
-+					 struct inode *new_dir,
-+					 struct dentry *new_dentry,
++static inline int fscrypt_prepare_lookup(struct inode *dir,
++					 struct dentry *dentry,
 +					 unsigned int flags)
 +{
-+	if (IS_ENCRYPTED(old_dir) || IS_ENCRYPTED(new_dir))
++	if (IS_ENCRYPTED(dir))
 +		return -EOPNOTSUPP;
 +	return 0;
 +}
 +
  #endif	/* _LINUX_FSCRYPT_NOTSUPP_H */
 diff --git a/include/linux/fscrypt_supp.h b/include/linux/fscrypt_supp.h
-index ebc0cc41aaf9..fa062d41b39a 100644
+index fa062d41b39a..2b99bc01c59b 100644
 --- a/include/linux/fscrypt_supp.h
 +++ b/include/linux/fscrypt_supp.h
-@@ -201,4 +201,43 @@ static inline int fscrypt_prepare_link(struct dentry *old_dentry,
+@@ -240,4 +240,34 @@ static inline int fscrypt_prepare_rename(struct inode *old_dir,
  	return 0;
  }
  
-+extern int __fscrypt_prepare_rename(struct inode *old_dir,
-+				    struct dentry *old_dentry,
-+				    struct inode *new_dir,
-+				    struct dentry *new_dentry,
-+				    unsigned int flags);
++extern int __fscrypt_prepare_lookup(struct inode *dir, struct dentry *dentry);
 +
 +/**
-+ * fscrypt_prepare_rename - prepare for a rename between possibly-encrypted directories
-+ * @old_dir: source directory
-+ * @old_dentry: dentry for source file
-+ * @new_dir: target directory
-+ * @new_dentry: dentry for target location (may be negative unless exchanging)
-+ * @flags: rename flags (we care at least about %RENAME_EXCHANGE)
++ * fscrypt_prepare_lookup - prepare to lookup a name in a possibly-encrypted directory
++ * @dir: directory being searched
++ * @dentry: filename being looked up
++ * @flags: lookup flags
 + *
-+ * Prepare for ->rename() where the source and/or target directories may be
-+ * encrypted.  A new link can only be added to an encrypted directory if the
-+ * directory's encryption key is available --- since otherwise we'd have no way
-+ * to encrypt the filename.  A rename to an existing name, on the other hand,
-+ * *is* cryptographically possible without the key.  However, we take the more
-+ * conservative approach and just forbid all no-key renames.
++ * Prepare for ->lookup() in a directory which may be encrypted.  Lookups can be
++ * done with or without the directory's encryption key; without the key,
++ * filenames are presented in encrypted form.  Therefore, we'll try to set up
++ * the directory's encryption key, but even without it the lookup can continue.
 + *
-+ * We also verify that the rename will not violate the constraint that all files
-+ * in an encrypted directory tree use the same encryption policy.
++ * To allow invalidating stale dentries if the directory's encryption key is
++ * added later, we also install a custom ->d_revalidate() method and use the
++ * DCACHE_ENCRYPTED_WITH_KEY flag to indicate whether a given dentry is a
++ * plaintext name (flag set) or a ciphertext name (flag cleared).
 + *
-+ * Return: 0 on success, -ENOKEY if an encryption key is missing, -EPERM if the
-+ * rename would cause inconsistent encryption policies, or another -errno code.
++ * Return: 0 on success, -errno if a problem occurred while setting up the
++ * encryption key
 + */
-+static inline int fscrypt_prepare_rename(struct inode *old_dir,
-+					 struct dentry *old_dentry,
-+					 struct inode *new_dir,
-+					 struct dentry *new_dentry,
++static inline int fscrypt_prepare_lookup(struct inode *dir,
++					 struct dentry *dentry,
 +					 unsigned int flags)
 +{
-+	if (IS_ENCRYPTED(old_dir) || IS_ENCRYPTED(new_dir))
-+		return __fscrypt_prepare_rename(old_dir, old_dentry,
-+						new_dir, new_dentry, flags);
++	if (IS_ENCRYPTED(dir))
++		return __fscrypt_prepare_lookup(dir, dentry);
 +	return 0;
 +}
 +
