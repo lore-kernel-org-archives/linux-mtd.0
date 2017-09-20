@@ -1,18 +1,18 @@
-Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
+Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dunm2-0004xq-PY
- for linux-mtd@lists.infradead.org; Wed, 20 Sep 2017 22:47:36 +0000
-Received: by mail-pg0-x241.google.com with SMTP id u18so2378849pgo.1
- for <linux-mtd@lists.infradead.org>; Wed, 20 Sep 2017 15:47:01 -0700 (PDT)
+ id 1dunm2-0004x7-Cx
+ for linux-mtd@lists.infradead.org; Wed, 20 Sep 2017 22:47:32 +0000
+Received: by mail-pf0-x243.google.com with SMTP id a7so1717656pfj.5
+ for <linux-mtd@lists.infradead.org>; Wed, 20 Sep 2017 15:46:58 -0700 (PDT)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org
 Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
  linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
  "Theodore Y . Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
  Michael Halcrow <mhalcrow@google.com>, Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 09/25] fscrypt: new helper function - fscrypt_prepare_lookup()
-Date: Wed, 20 Sep 2017 15:45:49 -0700
-Message-Id: <20170920224605.22030-10-ebiggers3@gmail.com>
+Subject: [PATCH 06/25] fscrypt: new helper function - fscrypt_file_open()
+Date: Wed, 20 Sep 2017 15:45:46 -0700
+Message-Id: <20170920224605.22030-7-ebiggers3@gmail.com>
 In-Reply-To: <20170920224605.22030-1-ebiggers3@gmail.com>
 References: <20170920224605.22030-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,103 +26,111 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Eric Biggers <ebiggers@google.com>
 
-Introduce a helper function which prepares to look up the given dentry
-in the given directory.  If the directory is encrypted, it handles
-loading the directory's encryption key, setting the dentry's ->d_op to
-fscrypt_d_ops, and setting DCACHE_ENCRYPTED_WITH_KEY if the directory's
-encryption key is available.
-
-Note: once all filesystems switch over to this, we'll be able to move
-fscrypt_d_ops and fscrypt_set_encrypted_dentry() to fscrypt_private.h.
+Add a helper function which prepares to open a regular file which may be
+encrypted.  It handles setting up the file's encryption key, then
+checking that the file's encryption policy matches that of its parent
+directory (if the parent directory is encrypted).  It may be set as the
+->open() method or it can be called from another ->open() method.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/hooks.c               | 18 ++++++++++++++++++
- include/linux/fscrypt_notsupp.h |  9 +++++++++
- include/linux/fscrypt_supp.h    | 30 ++++++++++++++++++++++++++++++
- 3 files changed, 57 insertions(+)
+ fs/crypto/Makefile              |  2 +-
+ fs/crypto/hooks.c               | 49 +++++++++++++++++++++++++++++++++++++++++
+ include/linux/fscrypt_notsupp.h |  7 ++++++
+ include/linux/fscrypt_supp.h    |  2 ++
+ 4 files changed, 59 insertions(+), 1 deletion(-)
+ create mode 100644 fs/crypto/hooks.c
 
+diff --git a/fs/crypto/Makefile b/fs/crypto/Makefile
+index 9f6607f17b53..cb496989a6b6 100644
+--- a/fs/crypto/Makefile
++++ b/fs/crypto/Makefile
+@@ -1,4 +1,4 @@
+ obj-$(CONFIG_FS_ENCRYPTION)	+= fscrypto.o
+ 
+-fscrypto-y := crypto.o fname.o policy.o keyinfo.o
++fscrypto-y := crypto.o fname.o hooks.o keyinfo.o policy.o
+ fscrypto-$(CONFIG_BLOCK) += bio.o
 diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
-index 822cb78f9b45..9f5fb2eb9cf7 100644
---- a/fs/crypto/hooks.c
+new file mode 100644
+index 000000000000..069088e91ea9
+--- /dev/null
 +++ b/fs/crypto/hooks.c
-@@ -92,3 +92,21 @@ int __fscrypt_prepare_rename(struct inode *old_dir, struct dentry *old_dentry,
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(__fscrypt_prepare_rename);
+@@ -0,0 +1,49 @@
++/*
++ * fs/crypto/hooks.c
++ *
++ * Encryption hooks for higher-level filesystem operations.
++ */
 +
-+int __fscrypt_prepare_lookup(struct inode *dir, struct dentry *dentry)
++#include <linux/ratelimit.h>
++#include "fscrypt_private.h"
++
++/**
++ * fscrypt_file_open - prepare to open a possibly-encrypted regular file
++ * @inode: the inode being opened
++ * @filp: the struct file being set up
++ *
++ * Currently, an encrypted regular file can only be opened if its encryption key
++ * is available; access to the raw encrypted contents is not supported.
++ * Therefore, we first set up the inode's encryption key (if not already done)
++ * and return an error if it's unavailable.
++ *
++ * We also verify that if the parent directory (from the path via which the file
++ * is being opened) is encrypted, then the inode being opened uses the same
++ * encryption policy.  This is needed as part of the enforcement that all files
++ * in an encrypted directory tree use the same encryption policy, as a
++ * protection against certain types of offline attacks.  Note that this check is
++ * needed even when opening an *unencrypted* file, since it's forbidden to have
++ * an unencrypted file in an encrypted directory.
++ *
++ * Return: 0 on success, -ENOKEY if the key is missing, or another -errno code
++ */
++int fscrypt_file_open(struct inode *inode, struct file *filp)
 +{
-+	int err = fscrypt_get_encryption_info(dir);
++	int err;
++	struct dentry *dir;
 +
++	err = fscrypt_require_key(inode);
 +	if (err)
 +		return err;
 +
-+	if (fscrypt_has_encryption_key(dir)) {
-+		spin_lock(&dentry->d_lock);
-+		dentry->d_flags |= DCACHE_ENCRYPTED_WITH_KEY;
-+		spin_unlock(&dentry->d_lock);
++	dir = dget_parent(file_dentry(filp));
++	if (IS_ENCRYPTED(d_inode(dir)) &&
++	    !fscrypt_has_permitted_context(d_inode(dir), inode)) {
++		pr_warn_ratelimited("fscrypt: inconsistent encryption contexts: %lu/%lu",
++				    d_inode(dir)->i_ino, inode->i_ino);
++		err = -EPERM;
 +	}
-+
-+	d_set_d_op(dentry, &fscrypt_d_ops);
-+	return 0;
++	dput(dir);
++	return err;
 +}
-+EXPORT_SYMBOL_GPL(__fscrypt_prepare_lookup);
++EXPORT_SYMBOL_GPL(fscrypt_file_open);
 diff --git a/include/linux/fscrypt_notsupp.h b/include/linux/fscrypt_notsupp.h
-index a88a2959cd8c..e9b437605f9c 100644
+index 3cfc953fef71..99e8ee6f2ce4 100644
 --- a/include/linux/fscrypt_notsupp.h
 +++ b/include/linux/fscrypt_notsupp.h
-@@ -209,4 +209,13 @@ static inline int fscrypt_prepare_rename(struct inode *old_dir,
+@@ -182,4 +182,11 @@ static inline int fscrypt_require_key(struct inode *inode)
  	return 0;
  }
  
-+static inline int fscrypt_prepare_lookup(struct inode *dir,
-+					 struct dentry *dentry,
-+					 unsigned int flags)
++static inline int fscrypt_file_open(struct inode *inode, struct file *filp)
 +{
-+	if (IS_ENCRYPTED(dir))
++	if (IS_ENCRYPTED(inode))
 +		return -EOPNOTSUPP;
 +	return 0;
 +}
 +
  #endif	/* _LINUX_FSCRYPT_NOTSUPP_H */
 diff --git a/include/linux/fscrypt_supp.h b/include/linux/fscrypt_supp.h
-index fa062d41b39a..2b99bc01c59b 100644
+index b6d4b5d303a3..521f15adf83c 100644
 --- a/include/linux/fscrypt_supp.h
 +++ b/include/linux/fscrypt_supp.h
-@@ -240,4 +240,34 @@ static inline int fscrypt_prepare_rename(struct inode *old_dir,
+@@ -170,4 +170,6 @@ static inline int fscrypt_require_key(struct inode *inode)
  	return 0;
  }
  
-+extern int __fscrypt_prepare_lookup(struct inode *dir, struct dentry *dentry);
-+
-+/**
-+ * fscrypt_prepare_lookup - prepare to lookup a name in a possibly-encrypted directory
-+ * @dir: directory being searched
-+ * @dentry: filename being looked up
-+ * @flags: lookup flags
-+ *
-+ * Prepare for ->lookup() in a directory which may be encrypted.  Lookups can be
-+ * done with or without the directory's encryption key; without the key,
-+ * filenames are presented in encrypted form.  Therefore, we'll try to set up
-+ * the directory's encryption key, but even without it the lookup can continue.
-+ *
-+ * To allow invalidating stale dentries if the directory's encryption key is
-+ * added later, we also install a custom ->d_revalidate() method and use the
-+ * DCACHE_ENCRYPTED_WITH_KEY flag to indicate whether a given dentry is a
-+ * plaintext name (flag set) or a ciphertext name (flag cleared).
-+ *
-+ * Return: 0 on success, -errno if a problem occurred while setting up the
-+ * encryption key
-+ */
-+static inline int fscrypt_prepare_lookup(struct inode *dir,
-+					 struct dentry *dentry,
-+					 unsigned int flags)
-+{
-+	if (IS_ENCRYPTED(dir))
-+		return __fscrypt_prepare_lookup(dir, dentry);
-+	return 0;
-+}
++extern int fscrypt_file_open(struct inode *inode, struct file *filp);
 +
  #endif	/* _LINUX_FSCRYPT_SUPP_H */
 -- 
