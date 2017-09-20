@@ -1,18 +1,18 @@
-Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
+Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
  by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dunmI-0004t1-9i
- for linux-mtd@lists.infradead.org; Wed, 20 Sep 2017 22:47:35 +0000
-Received: by mail-pg0-x244.google.com with SMTP id i130so2381602pgc.0
- for <linux-mtd@lists.infradead.org>; Wed, 20 Sep 2017 15:47:14 -0700 (PDT)
+ id 1dunmE-0004sw-3Q
+ for linux-mtd@lists.infradead.org; Wed, 20 Sep 2017 22:47:31 +0000
+Received: by mail-pf0-x244.google.com with SMTP id g65so1725834pfe.1
+ for <linux-mtd@lists.infradead.org>; Wed, 20 Sep 2017 15:47:09 -0700 (PDT)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org
 Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
  linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
  "Theodore Y . Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
  Michael Halcrow <mhalcrow@google.com>, Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 20/25] f2fs: switch to fscrypt_prepare_setattr()
-Date: Wed, 20 Sep 2017 15:46:00 -0700
-Message-Id: <20170920224605.22030-21-ebiggers3@gmail.com>
+Subject: [PATCH 16/25] f2fs: switch to fscrypt_file_open()
+Date: Wed, 20 Sep 2017 15:45:56 -0700
+Message-Id: <20170920224605.22030-17-ebiggers3@gmail.com>
 In-Reply-To: <20170920224605.22030-1-ebiggers3@gmail.com>
 References: <20170920224605.22030-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,38 +28,38 @@ From: Eric Biggers <ebiggers@google.com>
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/f2fs/file.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ fs/f2fs/file.c | 18 +++---------------
+ 1 file changed, 3 insertions(+), 15 deletions(-)
 
 diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 8cef3931a00b..629bb91fa44e 100644
+index 517e112c8a9a..8cef3931a00b 100644
 --- a/fs/f2fs/file.c
 +++ b/fs/f2fs/file.c
-@@ -714,6 +714,10 @@ int f2fs_setattr(struct dentry *dentry, struct iattr *attr)
- 	if (err)
- 		return err;
+@@ -455,22 +455,10 @@ static int f2fs_file_mmap(struct file *file, struct vm_area_struct *vma)
  
-+	err = fscrypt_prepare_setattr(dentry, attr);
+ static int f2fs_file_open(struct inode *inode, struct file *filp)
+ {
+-	struct dentry *dir;
++	int err = fscrypt_file_open(inode, filp);
+ 
+-	if (f2fs_encrypted_inode(inode)) {
+-		int ret = fscrypt_get_encryption_info(inode);
+-		if (ret)
+-			return -EACCES;
+-		if (!fscrypt_has_encryption_key(inode))
+-			return -ENOKEY;
+-	}
+-	dir = dget_parent(file_dentry(filp));
+-	if (f2fs_encrypted_inode(d_inode(dir)) &&
+-			!fscrypt_has_permitted_context(d_inode(dir), inode)) {
+-		dput(dir);
+-		return -EPERM;
+-	}
+-	dput(dir);
 +	if (err)
 +		return err;
-+
- 	if (is_quota_modification(inode, attr)) {
- 		err = dquot_initialize(inode);
- 		if (err)
-@@ -729,14 +733,6 @@ int f2fs_setattr(struct dentry *dentry, struct iattr *attr)
- 	}
+ 	return dquot_file_open(inode, filp);
+ }
  
- 	if (attr->ia_valid & ATTR_SIZE) {
--		if (f2fs_encrypted_inode(inode)) {
--			err = fscrypt_get_encryption_info(inode);
--			if (err)
--				return err;
--			if (!fscrypt_has_encryption_key(inode))
--				return -ENOKEY;
--		}
--
- 		if (attr->ia_size <= i_size_read(inode)) {
- 			down_write(&F2FS_I(inode)->i_mmap_sem);
- 			truncate_setsize(inode, attr->ia_size);
 -- 
 2.14.1.821.g8fa685d3b7-goog
