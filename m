@@ -1,18 +1,18 @@
-Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
+Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
  by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dunmE-0004sw-3Q
- for linux-mtd@lists.infradead.org; Wed, 20 Sep 2017 22:47:31 +0000
-Received: by mail-pf0-x244.google.com with SMTP id g65so1725834pfe.1
- for <linux-mtd@lists.infradead.org>; Wed, 20 Sep 2017 15:47:09 -0700 (PDT)
+ id 1dunmA-0004sn-61
+ for linux-mtd@lists.infradead.org; Wed, 20 Sep 2017 22:47:29 +0000
+Received: by mail-pg0-x243.google.com with SMTP id j16so2375917pga.2
+ for <linux-mtd@lists.infradead.org>; Wed, 20 Sep 2017 15:47:08 -0700 (PDT)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org
 Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
  linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
  "Theodore Y . Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
  Michael Halcrow <mhalcrow@google.com>, Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 16/25] f2fs: switch to fscrypt_file_open()
-Date: Wed, 20 Sep 2017 15:45:56 -0700
-Message-Id: <20170920224605.22030-17-ebiggers3@gmail.com>
+Subject: [PATCH 14/25] ext4: switch to fscrypt_prepare_lookup()
+Date: Wed, 20 Sep 2017 15:45:54 -0700
+Message-Id: <20170920224605.22030-15-ebiggers3@gmail.com>
 In-Reply-To: <20170920224605.22030-1-ebiggers3@gmail.com>
 References: <20170920224605.22030-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,38 +28,43 @@ From: Eric Biggers <ebiggers@google.com>
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/f2fs/file.c | 18 +++---------------
- 1 file changed, 3 insertions(+), 15 deletions(-)
+ fs/ext4/namei.c | 22 ++++++----------------
+ 1 file changed, 6 insertions(+), 16 deletions(-)
 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 517e112c8a9a..8cef3931a00b 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -455,22 +455,10 @@ static int f2fs_file_mmap(struct file *file, struct vm_area_struct *vma)
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index b2fbc2b87bcf..a6b6f09e0a88 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -1538,24 +1538,14 @@ static struct dentry *ext4_lookup(struct inode *dir, struct dentry *dentry, unsi
+ 	struct inode *inode;
+ 	struct ext4_dir_entry_2 *de;
+ 	struct buffer_head *bh;
++	int err;
  
- static int f2fs_file_open(struct inode *inode, struct file *filp)
- {
--	struct dentry *dir;
-+	int err = fscrypt_file_open(inode, filp);
- 
--	if (f2fs_encrypted_inode(inode)) {
--		int ret = fscrypt_get_encryption_info(inode);
--		if (ret)
--			return -EACCES;
--		if (!fscrypt_has_encryption_key(inode))
--			return -ENOKEY;
+-	if (ext4_encrypted_inode(dir)) {
+-		int res = fscrypt_get_encryption_info(dir);
+-
+-		/*
+-		 * DCACHE_ENCRYPTED_WITH_KEY is set if the dentry is
+-		 * created while the directory was encrypted and we
+-		 * have access to the key.
+-		 */
+-		if (fscrypt_has_encryption_key(dir))
+-			fscrypt_set_encrypted_dentry(dentry);
+-		fscrypt_set_d_op(dentry);
+-		if (res && res != -ENOKEY)
+-			return ERR_PTR(res);
 -	}
--	dir = dget_parent(file_dentry(filp));
--	if (f2fs_encrypted_inode(d_inode(dir)) &&
--			!fscrypt_has_permitted_context(d_inode(dir), inode)) {
--		dput(dir);
--		return -EPERM;
--	}
--	dput(dir);
++	err = fscrypt_prepare_lookup(dir, dentry, flags);
 +	if (err)
-+		return err;
- 	return dquot_file_open(inode, filp);
- }
++		return ERR_PTR(err);
  
+-       if (dentry->d_name.len > EXT4_NAME_LEN)
+-	       return ERR_PTR(-ENAMETOOLONG);
++	if (dentry->d_name.len > EXT4_NAME_LEN)
++		return ERR_PTR(-ENAMETOOLONG);
+ 
+ 	bh = ext4_find_entry(dir, &dentry->d_name, &de, NULL);
+ 	if (IS_ERR(bh))
 -- 
 2.14.1.821.g8fa685d3b7-goog
