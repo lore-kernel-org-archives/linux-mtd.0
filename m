@@ -1,21 +1,38 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1duwgd-0005iK-UB
- for linux-mtd@lists.infradead.org; Thu, 21 Sep 2017 08:18:22 +0000
-Date: Thu, 21 Sep 2017 10:17:44 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>, Linus Torvalds
- <torvalds@linux-foundation.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Richard Weinberger
- <richard@nod.at>, Marek Vasut <marex@denx.de>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: [GIT PULL] mtd: Fixes for 4.14-rc2
-Message-ID: <20170921101744.0903215d@bbrezillon>
+Received: from mail-qt0-x22e.google.com ([2607:f8b0:400d:c0d::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1duxhd-0002zd-MM
+ for linux-mtd@lists.infradead.org; Thu, 21 Sep 2017 09:23:29 +0000
+Received: by mail-qt0-x22e.google.com with SMTP id o52so5285639qtc.9
+ for <linux-mtd@lists.infradead.org>; Thu, 21 Sep 2017 02:23:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Sender: romain.izard@mobile-devices.fr
+In-Reply-To: <20170918120051.298bdabf@bbrezillon>
+References: <20170915140411.31716-1-romain.izard.pro@gmail.com>
+ <20170915140411.31716-6-romain.izard.pro@gmail.com>
+ <20170918120051.298bdabf@bbrezillon>
+From: Romain Izard <romain.izard.pro@gmail.com>
+Date: Thu, 21 Sep 2017 11:22:42 +0200
+Message-ID: <CAGkQfmNg_oatA27xjZ57CsbntwPD893K=5bFb1gF1yp-wH-L1A@mail.gmail.com>
+Subject: Re: [PATCH v2 5/9] mtd: nand: atmel: Report PMECC failures as errors
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@codeaurora.org>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ Wenyou Yang <wenyou.yang@atmel.com>,
+ Josh Wu <rainyfeeling@outlook.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Richard Genoud <richard.genoud@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Alan Stern <stern@rowland.harvard.edu>, linux-pwm@vger.kernel.org,
+ linux-usb@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>, linux-serial@vger.kernel.org,
+ linux-clk@vger.kernel.org,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,48 +42,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Linus,
+2017-09-18 12:00 GMT+02:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> Hi Romain,
+>
+> On Fri, 15 Sep 2017 16:04:07 +0200
+> Romain Izard <romain.izard.pro@gmail.com> wrote:
+>
+>> It is not normal for the PMECC to fail when trying to fix ECC errors.
+>> Report these cases as errors.
+>
+> I'm not sure we want to have ECC error messages at this level. ECC
+> errors are rather unusual but not impossible, and sometimes it's even
+> not a real error (I'm thinking of bitflips in erased pages for
+> example, which are not necessarily detected/fixed in hardware).
+>
+> If we decide to print error messages when unfixable bitflips are
+> detected, it should be done in the nand-controller driver (somewhere
+> along those lines [1]).
+>
+> Regards,
+>
+> Boris
+>
+> [1]http://elixir.free-electrons.com/linux/latest/source/drivers/mtd/nand/atmel/nand-controller.c#L827
+>
+>>
+>> Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
+>> ---
+>>  drivers/mtd/nand/atmel/pmecc.c | 4 +++-
+>>  1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mtd/nand/atmel/pmecc.c b/drivers/mtd/nand/atmel/pmecc.c
+>> index 8d1208f38025..2a23f1ff945f 100644
+>> --- a/drivers/mtd/nand/atmel/pmecc.c
+>> +++ b/drivers/mtd/nand/atmel/pmecc.c
+>> @@ -687,6 +687,8 @@ static int atmel_pmecc_err_location(struct atmel_pmecc_user *user)
+>>        * Number of roots does not match the degree of smu
+>>        * unable to correct error.
+>>        */
+>> +     dev_err(pmecc->dev,
+>> +             "PMECC: Impossible to calculate error location.\n");
+>>       return -EBADMSG;
+>>  }
+>>
+>> @@ -729,7 +731,7 @@ int atmel_pmecc_correct_sector(struct atmel_pmecc_user *user, int sector,
+>>                       ptr = ecc + byte - sectorsize;
+>>                       area = "ECC";
+>>               } else {
+>> -                     dev_dbg(pmecc->dev,
+>> +                     dev_err(pmecc->dev,
+>>                               "Invalid errpos value (%d, max is %d)\n",
+>>                               errpos, (sectorsize + eccbytes) * 8);
+>>                       return -EINVAL;
+>
 
-Here is my fixes PR for 4.14-rc2.
-
-Regards,
-
-Boris
-
-The following changes since commit 2bd6bf03f4c1c59381d62c61d03f6cc3fe71f66e:
-
-  Linux 4.14-rc1 (2017-09-16 15:47:51 -0700)
-
-are available in the git repository at:
-
-  git://git.infradead.org/linux-mtd.git tags/mtd/fixes-for-4.14-rc2
-
-for you to fetch changes up to 73600b619bf8b9803a0610624a0e11f5ed8f761e:
-
-  mtd: nand: remove unused blockmask variable (2017-09-18 14:51:02 +0200)
-
-----------------------------------------------------------------
-SPI NOR:
- * Fix the SFDP parsing code (bugs reported by Geert Uytterhoeven)
-
-NAND:
- * Fix a resource leak in the lpc32xx_mlc driver
- * Fix a build warning in the core
-
-----------------------------------------------------------------
-Boris Brezillon (1):
-      mtd: spi-nor: Check consistency of the memory size extracted from the SFDP
-
-Christophe JAILLET (1):
-      mtd: nand: lpc32xx_mlc: Fix an error handling path in lpc32xx_nand_probe()
-
-Corentin Labbe (1):
-      mtd: nand: remove unused blockmask variable
-
-Cyrille Pitchen (1):
-      mtd: spi-nor: fix DMA unsafe buffer issue in spi_nor_read_sfdp()
-
- drivers/mtd/nand/lpc32xx_mlc.c |  3 ++-
- drivers/mtd/nand/nand_base.c   |  3 +--
- drivers/mtd/spi-nor/spi-nor.c  | 45 ++++++++++++++++++++++++++++++++++++++++++---
- 3 files changed, 45 insertions(+), 6 deletions(-)
+Ok, I will drop this patch.
