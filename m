@@ -1,35 +1,18 @@
-Received: from conssluserg-03.nifty.com ([210.131.2.82])
+Received: from mo1501.tsb.2iij.net ([210.149.48.173] helo=mo.tsb.2iij.net)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1duu21-00058V-2s
- for linux-mtd@lists.infradead.org; Thu, 21 Sep 2017 05:28:15 +0000
-Received: from mail-yw0-f180.google.com (mail-yw0-f180.google.com
- [209.85.161.180]) (authenticated)
- by conssluserg-03.nifty.com with ESMTP id v8L5Ral1012820
- for <linux-mtd@lists.infradead.org>; Thu, 21 Sep 2017 14:27:37 +0900
-Received: by mail-yw0-f180.google.com with SMTP id l4so3344212ywa.6
- for <linux-mtd@lists.infradead.org>; Wed, 20 Sep 2017 22:27:36 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <630e651e-3d38-7a39-0327-e9b398d97e2d@pengutronix.de>
-References: <1505373456-24047-1-git-send-email-yamada.masahiro@socionext.com>
- <3c17c272-40ec-4eeb-0dc3-59a64400e6f8@pengutronix.de>
- <CAK7LNAS9PZM49HJJRegQ9C+nrHKJntvHeURqO5Y07L5_dJpTeQ@mail.gmail.com>
- <630e651e-3d38-7a39-0327-e9b398d97e2d@pengutronix.de>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Thu, 21 Sep 2017 14:26:55 +0900
-Message-ID: <CAK7LNATRT4NYShu9MHPwfnxFC8k-rTak_bS-PrBmS+m5TUA72g@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: nand: denali: reduce the register space in
- the example
-To: Oleksij Rempel <ore@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, Oleksij Rempel <o.rempel@pengutronix.de>,
- Dinh Nguyen <dinguyen@kernel.org>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, devicetree@vger.kernel.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+ id 1duu8c-0007sK-He
+ for linux-mtd@lists.infradead.org; Thu, 21 Sep 2017 05:35:06 +0000
+Content-Transfer-Encoding: 7bit
+From: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+To: boris.brezillon@free-electrons.com, richard@nod.at, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com,
+ cyrille.pitchen@wedev4u.fr, linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org,
+ KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+Subject: [PATCH -next v2] mtd: nand: Add support for Toshiba BENAND (Built-in
+ ECC NAND)
+Date: Thu, 21 Sep 2017 14:32:02 +0900
+Message-Id: <1505971922-4994-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,121 +22,144 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi.
+This patch enables support for Toshiba BENAND.
+The current implementation does not support vondor specific command
+TOSHIBA_NAND_CMD_ECC_STATUS. I would like to add the command, when
+the exec_op() [1] infrastructure is implemented.
 
+[1] https://github.com/bbrezillon/linux/commits/nand/exec_op1
 
-2017-09-14 18:06 GMT+09:00 Oleksij Rempel <ore@pengutronix.de>:
-> On 14.09.2017 10:16, Masahiro Yamada wrote:
->>
->> Hi.
->>
->>
->> 2017-09-14 17:04 GMT+09:00 Oleksij Rempel <ore@pengutronix.de>:
->>>
->>> Hi,
->>>
->>> i assume arch/arm/boot/dts/socfpga.dtsi should be update as well. Right?
->>
->>
->> I think so.
->> (also arch/arm/boot/dts/socfpga_arria10.dtsi in the same way)
->
->
-> Hm.. according to
-> https://www.altera.com/en_US/pdfs/literature/hb/cyclone-v/cyclone5_handbook.pdf
-> Table 13-18: NAND Controller Module Data Space Address Range
->
-> Module Instance       Start Address        End Address
-> NAND_DATA             0xFF900000           0xFF9FFFFF
->
-> So <0xff900000 0x100000> seems to be a proper value.
->
+Changelog[v2]:
+    Rewrite to adapt the mtd "separate vendor specific code from
+    core" cleanup process that based on comments from the following
+    discussion.
+    http://patchwork.ozlabs.org/patch/767191/
 
-The Alrera's SOCFPGA document describes so.
-It is up to each SoC vendor how to describe the register space.
+Signed-off-by: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+---
+ drivers/mtd/nand/nand_toshiba.c | 100 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 100 insertions(+)
 
-I am focusing on the Denali IP
-because this IP is used among several SoCs.
-
-
-
-You can see the peripheral region map
-starting at page 1-18 of the document you referred to:
-
-Slave ID      Description                  Base Addr      Size
----------------------------------------------------------------
-L3REGS        L3 interconnect GPV          0xFF800000      1 MB
-NANDDATA      NAND flash controller data   0xFF900000     64 KB
-QSPIDATA      Quad SPI flash data          0xFFA00000      1 MB
-
-(In the doc, the base is described as 0xFFB900000, but this is
-apparently a typo.)
-
-
-The rationale of the "End Address 0xFF9FFFFF" of NAND_DATA
-is the fact that the base address of the next peripheral (QSPIDATA) is
-0xFFA00000.
-
-
-
-
-One more, if you look at the next page,
-
-Slave ID      Description                      Base Addr     Size
----------------------------------------------------------------
-NANDREGS      NAND flash controller registers   0xFFB80000   64 KB
-FPGAMGRDATA   FPGA manager configuration data   0xFFB90000    4 KB
-
-
-The size of NAND register space is described as 64KB,
-but the rationale is just the start of the next peripheral is 0xFFB90000.
-
-(0xFFB90000 - 0xFFB80000 = 0x10000 = 64KB)
-
-
-
-Altera apparently reserved address space just for the purpose
-of matching the end address to the base address of the next peripheral.
-
-
-That means, this document specifies address region
-much bigger than the IP actually provides.
-
-
-If you look at page 13-6, there are only two registers
-in NANDDATA space.
-
-Table 13-4: Register Map for Indexed Addressing
-Control   0x0
-Data      0x10
-
-
-
-For NANDREGS, in page 13-106, the following is the last register
-in the NANDREGS space.
-
-lun_status_cmd
-Offset 0x7A0
-
-Obviously, 0x1000 (4KB) is enough for NANDREGS.
-
-
-
-
-
-To conclude this, this binding document was written
-based on the Altera's SOCFPGA specification.
-
-Altera specifies the region size
-so that end address matches to the base of the next peripheral.
-This is just a matter of SOCFPGA address mapping.
-
-In my opinion, the binding document should not be oriented
-to a particular SoC, which is not true for other SoCs.
-
-
-
-
+diff --git a/drivers/mtd/nand/nand_toshiba.c b/drivers/mtd/nand/nand_toshiba.c
+index 57df857..7a99bbe 100644
+--- a/drivers/mtd/nand/nand_toshiba.c
++++ b/drivers/mtd/nand/nand_toshiba.c
+@@ -17,6 +17,72 @@
+ 
+ #include <linux/mtd/rawnand.h>
+ 
++/* ECC Status Read Command for BENAND */
++#define TOSHIBA_NAND_CMD_ECC_STATUS	0x7A
++
++/* Recommended to rewrite for BENAND */
++#define TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED	BIT(3)
++
++static int toshiba_nand_benand_status_chk(struct mtd_info *mtd,
++					  struct nand_chip *chip)
++{
++	unsigned int max_bitflips = 0;
++	u8 status;
++
++	/* Check Read Status */
++	chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
++	status = chip->read_byte(mtd);
++
++	/*
++	 * TOSHIBA_NAND_CMD_ECC_STATUS is vendor specific command.
++	 * We will rewrite this code, after the ->exec_op() infrastructure
++	 * is implemented
++	 * Now, we set max_bitflips mtd->bitflip_threshold.
++	 */
++	if (status & NAND_STATUS_FAIL) {
++		/* uncorrectable */
++		mtd->ecc_stats.failed++;
++	} else if (status & TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED) {
++		/* correctable */
++		max_bitflips = mtd->bitflip_threshold;
++		mtd->ecc_stats.corrected += max_bitflips;
++	}
++
++	return max_bitflips;
++}
++
++static int
++toshiba_nand_read_page_benand(struct mtd_info *mtd,
++			      struct nand_chip *chip, uint8_t *buf,
++			      int oob_required, int page)
++{
++	unsigned int max_bitflips = 0;
++
++	chip->ecc.read_page_raw(mtd, chip, buf, oob_required, page);
++	max_bitflips = toshiba_nand_benand_status_chk(mtd, chip);
++
++	return max_bitflips;
++}
++
++static int
++toshiba_nand_read_subpage_benand(struct mtd_info *mtd,
++				 struct nand_chip *chip, uint32_t data_offs,
++				 uint32_t readlen, uint8_t *bufpoi, int page)
++{
++	uint8_t *p;
++	unsigned int max_bitflips = 0;
++
++	if (data_offs != 0)
++		chip->cmdfunc(mtd, NAND_CMD_RNDOUT, data_offs, -1);
++
++	p = bufpoi + data_offs;
++	chip->read_buf(mtd, p, readlen);
++
++	max_bitflips = toshiba_nand_benand_status_chk(mtd, chip);
++
++	return max_bitflips;
++}
++
+ static void toshiba_nand_decode_id(struct nand_chip *chip)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+@@ -39,9 +105,43 @@ static void toshiba_nand_decode_id(struct nand_chip *chip)
+ 
+ static int toshiba_nand_init(struct nand_chip *chip)
+ {
++	struct mtd_info *mtd = nand_to_mtd(chip);
++
+ 	if (nand_is_slc(chip))
+ 		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
+ 
++	if (nand_is_slc(chip) && (chip->id.data[4] & 0x80)) {
++		/* BENAND */
++
++		/*
++		 * We can't disable the internal ECC engine, the user
++		 * has to use on-die ECC, there is no alternative.
++		 */
++		if (chip->ecc.mode != NAND_ECC_ON_DIE) {
++			pr_err("On-die ECC should be selected.\n");
++			return -EINVAL;
++		}
++
++		/*
++		 * On BENAND, all OOB reginon can be used by user (driver).
++		 * The calculated ECC bytes are stored into other isolated
++		 * area which is ubable to access from user.
++		 * This is why chip->ecc.bytes = 0.
++		 */
++		chip->ecc.bytes = 0;
++		chip->ecc.size = 512;
++		chip->ecc.strength = 8;
++		chip->ecc.read_page = toshiba_nand_read_page_benand;
++		chip->ecc.read_subpage = toshiba_nand_read_subpage_benand;
++		chip->ecc.write_page = nand_write_page_raw;
++		chip->ecc.read_page_raw = nand_read_page_raw;
++		chip->ecc.write_page_raw = nand_write_page_raw;
++
++		chip->options |= NAND_SUBPAGE_READ;
++
++		mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
++	}
++
+ 	return 0;
+ }
+ 
 -- 
-Best Regards
-Masahiro Yamada
+2.7.4
