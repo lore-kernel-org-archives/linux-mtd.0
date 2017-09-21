@@ -1,24 +1,17 @@
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dv2LS-0001BL-I5
- for linux-mtd@lists.infradead.org; Thu, 21 Sep 2017 14:20:52 +0000
-Subject: Re: [f2fs-dev] [PATCH 00/25] fscrypt: add some higher-level helper
- functions
-To: Eric Biggers <ebiggers3@gmail.com>, linux-fscrypt@vger.kernel.org
-Cc: "Theodore Y . Ts'o" <tytso@mit.edu>, Eric Biggers <ebiggers@google.com>,
- Michael Halcrow <mhalcrow@google.com>,
- linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
- linux-ext4@vger.kernel.org
-References: <20170920224605.22030-1-ebiggers3@gmail.com>
-From: Chao Yu <chao@kernel.org>
-Message-ID: <d7d91976-65b9-63d9-f34e-b322a9d0c472@kernel.org>
-Date: Thu, 21 Sep 2017 22:19:49 +0800
-MIME-Version: 1.0
-In-Reply-To: <20170920224605.22030-1-ebiggers3@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+ id 1dv3uQ-0001X3-Q1
+ for linux-mtd@lists.infradead.org; Thu, 21 Sep 2017 16:01:05 +0000
+Received: by mail-pg0-x244.google.com with SMTP id j16so3655222pga.2
+ for <linux-mtd@lists.infradead.org>; Thu, 21 Sep 2017 09:00:41 -0700 (PDT)
+From: Jake Daryll Obina <jake.obina@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: dwmw2@infradead.org, linux-kernel@vger.kernel.org,
+ Jake Daryll Obina <jake.obina@gmail.com>
+Subject: [PATCH] jffs2: Fix use-after-free bug in jffs2_iget()'s error
+ handling path
+Date: Fri, 22 Sep 2017 00:00:14 +0800
+Message-Id: <1506009614-3277-1-git-send-email-jake.obina@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,86 +21,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2017/9/21 6:45, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> This series reduces code duplication among ext4, f2fs, and ubifs by
-> introducing a S_ENCRYPTED inode flag (so we don't have to call back into
-> the filesystem to test the filesystem-specific inode flag), then
-> introducing new helper functions that are called at the beginning of the
-> open, link, rename, lookup, and setattr operations.
-> 
-> In the future we maybe should even call these new helpers from the VFS
-> so that each individual filesystem doesn't have to do it.  But that's
-> not possible currently because fs/crypto/ can be built as a module.
-> 
-> Making changes like this is a bit challenging due to interdependencies
-> between fscrypt and the individual filesystems, all of which have
-> different maintainers.  For now my intent is that patches 1-10 be taken
-> through the fscrypt tree --- though it's not perfect since patches 1-4
-> do make some changes to each filesystem, as everyone must set
-> S_ENCRYPTED before we can use it everywhere in the shared code.  But
-> afterwards, patches 11-25 can be picked up by the individual filesystems
-> to switch to the new helpers.
+If jffs2_iget() fails for a newly-allocated inode, jffs2_do_clear_inode()
+can get called twice in the error handling path, the first call in
+jffs2_iget() itself and the second through iget_failed(). This can result
+to a use-after-free error in the second jffs2_do_clear_inode() call, such
+as shown by the oops below wherein the second jffs2_do_clear_inode() call
+was trying to free node fragments that were already freed in the first
+jffs2_do_clear_inode() call.
 
-For all patches touching f2fs, looks good to me, feel free to add:
+[   78.178860] jffs2: error: (1904) jffs2_do_read_inode_internal: CRC failed for read_inode of inode 24 at physical location 0x1fc00c
+[   78.178914] Unable to handle kernel paging request at virtual address 6b6b6b6b6b6b6b7b
+[   78.185871] pgd = ffffffc03a567000
+[   78.188794] [6b6b6b6b6b6b6b7b] *pgd=0000000000000000, *pud=0000000000000000
+[   78.194968] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+...
+[   78.513147] PC is at rb_first_postorder+0xc/0x28
+[   78.516503] LR is at jffs2_kill_fragtree+0x28/0x90 [jffs2]
+[   78.520672] pc : [<ffffff8008323d28>] lr : [<ffffff8000eb1cc8>] pstate: 60000105
+[   78.526757] sp : ffffff800cea38f0
+[   78.528753] x29: ffffff800cea38f0 x28: ffffffc01f3f8e80
+[   78.532754] x27: 0000000000000000 x26: ffffff800cea3c70
+[   78.536756] x25: 00000000dc67c8ae x24: ffffffc033d6945d
+[   78.540759] x23: ffffffc036811740 x22: ffffff800891a5b8
+[   78.544760] x21: 0000000000000000 x20: 0000000000000000
+[   78.548762] x19: ffffffc037d48910 x18: ffffff800891a588
+[   78.552764] x17: 0000000000000800 x16: 0000000000000c00
+[   78.556766] x15: 0000000000000010 x14: 6f2065646f6e695f
+[   78.560767] x13: 6461657220726f66 x12: 2064656c69616620
+[   78.564769] x11: 435243203a6c616e x10: 7265746e695f6564
+[   78.568771] x9 : 6f6e695f64616572 x8 : ffffffc037974038
+[   78.572774] x7 : bbbbbbbbbbbbbbbb x6 : 0000000000000008
+[   78.576775] x5 : 002f91d85bd44a2f x4 : 0000000000000000
+[   78.580777] x3 : 0000000000000000 x2 : 000000403755e000
+[   78.584779] x1 : 6b6b6b6b6b6b6b6b x0 : 6b6b6b6b6b6b6b6b
+...
+[   79.038551] [<ffffff8008323d28>] rb_first_postorder+0xc/0x28
+[   79.042962] [<ffffff8000eb5578>] jffs2_do_clear_inode+0x88/0x100 [jffs2]
+[   79.048395] [<ffffff8000eb9ddc>] jffs2_evict_inode+0x3c/0x48 [jffs2]
+[   79.053443] [<ffffff8008201ca8>] evict+0xb0/0x168
+[   79.056835] [<ffffff8008202650>] iput+0x1c0/0x200
+[   79.060228] [<ffffff800820408c>] iget_failed+0x30/0x3c
+[   79.064097] [<ffffff8000eba0c0>] jffs2_iget+0x2d8/0x360 [jffs2]
+[   79.068740] [<ffffff8000eb0a60>] jffs2_lookup+0xe8/0x130 [jffs2]
+[   79.073434] [<ffffff80081f1a28>] lookup_slow+0x118/0x190
+[   79.077435] [<ffffff80081f4708>] walk_component+0xfc/0x28c
+[   79.081610] [<ffffff80081f4dd0>] path_lookupat+0x84/0x108
+[   79.085699] [<ffffff80081f5578>] filename_lookup+0x88/0x100
+[   79.089960] [<ffffff80081f572c>] user_path_at_empty+0x58/0x6c
+[   79.094396] [<ffffff80081ebe14>] vfs_statx+0xa4/0x114
+[   79.098138] [<ffffff80081ec44c>] SyS_newfstatat+0x58/0x98
+[   79.102227] [<ffffff800808354c>] __sys_trace_return+0x0/0x4
+[   79.106489] Code: d65f03c0 f9400001 b40000e1 aa0103e0 (f9400821)
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
+The jffs2_do_clear_inode() call in jffs2_iget() is unnecessary since
+iget_failed() will eventually call jffs2_do_clear_inode() if needed, so
+just remove it.
 
-> 
-> Eric Biggers (25):
->   fs, fscrypt: add an S_ENCRYPTED inode flag
->   fscrypt: switch from ->is_encrypted() to IS_ENCRYPTED()
->   fscrypt: remove ->is_encrypted()
->   fscrypt: remove unneeded empty fscrypt_operations structs
->   fscrypt: new helper function - fscrypt_require_key()
->   fscrypt: new helper function - fscrypt_file_open()
->   fscrypt: new helper function - fscrypt_prepare_link()
->   fscrypt: new helper function - fscrypt_prepare_rename()
->   fscrypt: new helper function - fscrypt_prepare_lookup()
->   fscrypt: new helper function - fscrypt_prepare_setattr()
->   ext4: switch to fscrypt_file_open()
->   ext4: switch to fscrypt_prepare_link()
->   ext4: switch to fscrypt_prepare_rename()
->   ext4: switch to fscrypt_prepare_lookup()
->   ext4: switch to fscrypt_prepare_setattr()
->   f2fs: switch to fscrypt_file_open()
->   f2fs: switch to fscrypt_prepare_link()
->   f2fs: switch to fscrypt_prepare_rename()
->   f2fs: switch to fscrypt_prepare_lookup()
->   f2fs: switch to fscrypt_prepare_setattr()
->   ubifs: switch to fscrypt_file_open()
->   ubifs: switch to fscrypt_prepare_link()
->   ubifs: switch to fscrypt_prepare_rename()
->   ubifs: switch to fscrypt_prepare_lookup()
->   ubifs: switch to fscrypt_prepare_setattr()
-> 
->  fs/crypto/Makefile              |   2 +-
->  fs/crypto/crypto.c              |   2 +-
->  fs/crypto/fname.c               |   3 +-
->  fs/crypto/hooks.c               | 112 +++++++++++++++++++++++++++++
->  fs/crypto/keyinfo.c             |   2 +-
->  fs/crypto/policy.c              |   6 +-
->  fs/ext4/file.c                  |  23 ++----
->  fs/ext4/inode.c                 |  19 +++--
->  fs/ext4/namei.c                 |  62 +++++-----------
->  fs/ext4/super.c                 |  15 ++--
->  fs/f2fs/f2fs.h                  |   1 +
->  fs/f2fs/file.c                  |  30 ++------
->  fs/f2fs/inode.c                 |   5 +-
->  fs/f2fs/namei.c                 |  54 ++++----------
->  fs/f2fs/super.c                 |   7 +-
->  fs/ubifs/crypto.c               |   1 -
->  fs/ubifs/dir.c                  |  43 ++++-------
->  fs/ubifs/file.c                 |  41 ++---------
->  fs/ubifs/ioctl.c                |   5 +-
->  fs/ubifs/super.c                |   8 +--
->  fs/ubifs/ubifs.h                |   9 +--
->  fs/ubifs/xattr.c                |   1 +
->  include/linux/fs.h              |   2 +
->  include/linux/fscrypt_common.h  |   1 -
->  include/linux/fscrypt_notsupp.h |  54 +++++++++++++-
->  include/linux/fscrypt_supp.h    | 153 ++++++++++++++++++++++++++++++++++++++++
->  26 files changed, 418 insertions(+), 243 deletions(-)
->  create mode 100644 fs/crypto/hooks.c
-> 
+Signed-off-by: Jake Daryll Obina <jake.obina@gmail.com>
+---
+ fs/jffs2/fs.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
+index e96c6b0..3c96f4b 100644
+--- a/fs/jffs2/fs.c
++++ b/fs/jffs2/fs.c
+@@ -362,7 +362,6 @@ struct inode *jffs2_iget(struct super_block *sb, unsigned long ino)
+ 	ret = -EIO;
+ error:
+ 	mutex_unlock(&f->sem);
+-	jffs2_do_clear_inode(c, f);
+ 	iget_failed(inode);
+ 	return ERR_PTR(ret);
+ }
+-- 
+2.7.4
