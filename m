@@ -1,16 +1,18 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1duwOv-0003op-RK
- for linux-mtd@lists.infradead.org; Thu, 21 Sep 2017 08:00:08 +0000
-Date: Thu, 21 Sep 2017 09:59:30 +0200
+ id 1duwgd-0005iK-UB
+ for linux-mtd@lists.infradead.org; Thu, 21 Sep 2017 08:18:22 +0000
+Date: Thu, 21 Sep 2017 10:17:44 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: "William A. Kennington III" <wak@google.com>
-Cc: linux-mtd@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, Mark
- Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org
-Subject: Re: [PATCH] mtd: powernv: Support MTD_NO_ERASE
-Message-ID: <20170921095930.4b473f91@bbrezillon>
-In-Reply-To: <20170905202339.20732-1-wak@google.com>
-References: <20170905202339.20732-1-wak@google.com>
+To: Brian Norris <computersforpeace@gmail.com>, Linus Torvalds
+ <torvalds@linux-foundation.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Richard Weinberger
+ <richard@nod.at>, Marek Vasut <marex@denx.de>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: [GIT PULL] mtd: Fixes for 4.14-rc2
+Message-ID: <20170921101744.0903215d@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -23,39 +25,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+the DT maintainers
+Hello Linus,
 
-On Tue,  5 Sep 2017 13:23:39 -0700
-"William A. Kennington III" <wak@google.com> wrote:
+Here is my fixes PR for 4.14-rc2.
 
-> As of skiboot@ba99af9b149d02438347b055e6e7d6bd15e33551, we now support
+Regards,
 
-I didn't find this commit in mainline.
+Boris
 
-> adding a device tree entry which marks a flash device as not needing
-> erase. This patch adds support for setting MTD_NO_ERASE on powernvflash
-> devices which have the property no-erase.
-> 
-> Signed-off-by: William A. Kennington III <wak@google.com>
-> ---
->  drivers/mtd/devices/powernv_flash.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/mtd/devices/powernv_flash.c b/drivers/mtd/devices/powernv_flash.c
-> index f5396f26ddb4..fab9f9121b4c 100644
-> --- a/drivers/mtd/devices/powernv_flash.c
-> +++ b/drivers/mtd/devices/powernv_flash.c
-> @@ -196,6 +196,8 @@ static int powernv_flash_set_driver_info(struct device *dev,
->  	mtd->name = of_get_property(dev->of_node, "name", NULL);
->  	mtd->type = MTD_NORFLASH;
->  	mtd->flags = MTD_WRITEABLE;
-> +	if (of_property_read_bool(dev->of_node, "no-erase"))
-> +		mtd->flags |= MTD_NO_ERASE;
+The following changes since commit 2bd6bf03f4c1c59381d62c61d03f6cc3fe71f66e:
 
-I don't see this property document in a DT binding doc, which is
-mandatory. Actually, there's no DT bindings doc at all for the
-'ibm,opal-flash' device in mainline, is this normal?
+  Linux 4.14-rc1 (2017-09-16 15:47:51 -0700)
 
->  	mtd->size = size;
->  	mtd->erasesize = erase_size;
->  	mtd->writebufsize = mtd->writesize = 1;
+are available in the git repository at:
+
+  git://git.infradead.org/linux-mtd.git tags/mtd/fixes-for-4.14-rc2
+
+for you to fetch changes up to 73600b619bf8b9803a0610624a0e11f5ed8f761e:
+
+  mtd: nand: remove unused blockmask variable (2017-09-18 14:51:02 +0200)
+
+----------------------------------------------------------------
+SPI NOR:
+ * Fix the SFDP parsing code (bugs reported by Geert Uytterhoeven)
+
+NAND:
+ * Fix a resource leak in the lpc32xx_mlc driver
+ * Fix a build warning in the core
+
+----------------------------------------------------------------
+Boris Brezillon (1):
+      mtd: spi-nor: Check consistency of the memory size extracted from the SFDP
+
+Christophe JAILLET (1):
+      mtd: nand: lpc32xx_mlc: Fix an error handling path in lpc32xx_nand_probe()
+
+Corentin Labbe (1):
+      mtd: nand: remove unused blockmask variable
+
+Cyrille Pitchen (1):
+      mtd: spi-nor: fix DMA unsafe buffer issue in spi_nor_read_sfdp()
+
+ drivers/mtd/nand/lpc32xx_mlc.c |  3 ++-
+ drivers/mtd/nand/nand_base.c   |  3 +--
+ drivers/mtd/spi-nor/spi-nor.c  | 45 ++++++++++++++++++++++++++++++++++++++++++---
+ 3 files changed, 45 insertions(+), 6 deletions(-)
