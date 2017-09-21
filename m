@@ -1,23 +1,29 @@
-Received: from ipmail01.adl2.internode.on.net ([150.101.137.133])
+Received: from mail-pf0-f195.google.com ([209.85.192.195])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dv8Ot-00046O-Nc
- for linux-mtd@lists.infradead.org; Thu, 21 Sep 2017 20:48:50 +0000
-Date: Fri, 22 Sep 2017 06:48:14 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Eric Biggers <ebiggers3@gmail.com>
-Cc: linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, "Theodore Y . Ts'o" <tytso@mit.edu>,
- Jaegeuk Kim <jaegeuk@kernel.org>, Michael Halcrow <mhalcrow@google.com>,
- Eric Biggers <ebiggers@google.com>
-Subject: Re: [PATCH 00/25] fscrypt: add some higher-level helper functions
-Message-ID: <20170921204814.GA7716@dastard>
-References: <20170920224605.22030-1-ebiggers3@gmail.com>
- <20170921064502.GR10621@dastard> <20170921174705.GA29643@gmail.com>
+ id 1dvANY-0006U0-4Y
+ for linux-mtd@lists.infradead.org; Thu, 21 Sep 2017 22:55:34 +0000
+Received: by mail-pf0-f195.google.com with SMTP id h4so3028688pfk.0
+ for <linux-mtd@lists.infradead.org>; Thu, 21 Sep 2017 15:55:11 -0700 (PDT)
+Date: Thu, 21 Sep 2017 17:55:09 -0500
+From: Rob Herring <robh@kernel.org>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, Oleksij Rempel <o.rempel@pengutronix.de>,
+ Dinh Nguyen <dinguyen@kernel.org>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH] dt-bindings: nand: denali: reduce the register space in
+ the example
+Message-ID: <20170921225509.u5x7sxenxzx3lndm@rob-hp-laptop>
+References: <1505373456-24047-1-git-send-email-yamada.masahiro@socionext.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20170921174705.GA29643@gmail.com>
+In-Reply-To: <1505373456-24047-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,54 +33,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 21, 2017 at 10:47:05AM -0700, Eric Biggers wrote:
-> Hi Dave,
+On Thu, Sep 14, 2017 at 04:17:36PM +0900, Masahiro Yamada wrote:
+> This example allocates too much for register regions.  Especially,
+> there are only two registers in the "nand_data" interface of this
+> hardware (ADDR: 0x00, DATA: 0x10).
 > 
-> On Thu, Sep 21, 2017 at 04:45:02PM +1000, Dave Chinner wrote:
-> > fscrypto: clean up include file mess
-> > 
-> > From: Dave Chinner <dchinner@redhat.com>
-> > 
-> > Filesystems have to include different header files based on whether
-> > they are compiled with encryption support or not. That's nasty and
-> > messy.
-> > 
-> > Instead, rationalise the headers so we have a single include
-> > fscrypt.h and let it decide what internal implementation to include
-> > based on the __FS_HAS_ENCRYPTION define. Filesystems set
-> > __FS_HAS_ENCRYPTION before including linux/fscrypt.h if they are
-> > built with encryption support.
-> > 
-> > Add guards to prevent fscrypt_supp.h and fscrypt_notsupp.h from
-> > being directly included by filesystems.
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> ---
 > 
-> This looks good; we probably should have done it that way originally.  This will
-> allow us to have the inline functions like fscrypt_prepare_rename() defined in
-> fscrypt.h, and then have supp/notsupp versions of __fscrypt_prepare_rename()
-> instead --- so common checks like for IS_ENCRYPTED() will be in one place only.
+>  Documentation/devicetree/bindings/mtd/denali-nand.txt | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-*nod*
-
-> One nit:
-> 
-> > +#ifdef CONFIG_EXT4_FS_ENCRYPTION
-> > +#define __FS_HAS_ENCRYPTION 1
-> > +#endif
-> > +#include <linux/fscrypt.h>
-> 
-> How about doing
-> 
-> 	#define __FS_HAS_ENCRYPTION IS_ENABLED(CONFIG_EXT4_FS_ENCRYPTION)
-> 
-> (and likewise for f2fs and ubifs), then checking '#if __FS_HAS_ENCRYPTION'
-> rather than '#ifdef __FS_HAS_ENCRYPTION'?
-
-Yeah, that's cleaner. I'll modify it and resend as a standalone
-patch.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Acked-by: Rob Herring <robh@kernel.org>
