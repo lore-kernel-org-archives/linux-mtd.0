@@ -1,22 +1,21 @@
-Received: from ipmail06.adl6.internode.on.net ([150.101.137.145])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1duvEt-00083w-2i
- for linux-mtd@lists.infradead.org; Thu, 21 Sep 2017 06:45:38 +0000
-Date: Thu, 21 Sep 2017 16:45:02 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Eric Biggers <ebiggers3@gmail.com>
-Cc: linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, "Theodore Y . Ts'o" <tytso@mit.edu>,
- Jaegeuk Kim <jaegeuk@kernel.org>, Michael Halcrow <mhalcrow@google.com>,
- Eric Biggers <ebiggers@google.com>
-Subject: Re: [PATCH 00/25] fscrypt: add some higher-level helper functions
-Message-ID: <20170921064502.GR10621@dastard>
-References: <20170920224605.22030-1-ebiggers3@gmail.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1duvv8-0003CM-Dw
+ for linux-mtd@lists.infradead.org; Thu, 21 Sep 2017 07:29:17 +0000
+Date: Thu, 21 Sep 2017 09:28:49 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
+ marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next v2] mtd: nand: Add support for Toshiba BENAND
+ (Built-in ECC NAND)
+Message-ID: <20170921092849.6f1ba4b8@bbrezillon>
+In-Reply-To: <1505971922-4994-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
+References: <1505971922-4994-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170920224605.22030-1-ebiggers3@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,275 +25,208 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 20, 2017 at 03:45:40PM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Thu, 21 Sep 2017 14:32:02 +0900
+KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:
+
+> This patch enables support for Toshiba BENAND.
+> The current implementation does not support vondor specific command
+
+					       ^ vendor
+
+> TOSHIBA_NAND_CMD_ECC_STATUS. I would like to add the command, when
+> the exec_op() [1] infrastructure is implemented.
+
+It's not a good idea to reference a branch that is likely to disappear
+in a commit message. Just say that you can't properly support the
+TOSHIBA_NAND_CMD_ECC_STATUS operation right and that it might be
+addressed in the future.
+
 > 
-> This series reduces code duplication among ext4, f2fs, and ubifs by
-> introducing a S_ENCRYPTED inode flag (so we don't have to call back into
-> the filesystem to test the filesystem-specific inode flag), then
-> introducing new helper functions that are called at the beginning of the
-> open, link, rename, lookup, and setattr operations.
+> [1] https://github.com/bbrezillon/linux/commits/nand/exec_op1
 > 
-> In the future we maybe should even call these new helpers from the VFS
-> so that each individual filesystem doesn't have to do it.  But that's
-> not possible currently because fs/crypto/ can be built as a module.
+> Changelog[v2]:
+>     Rewrite to adapt the mtd "separate vendor specific code from
+>     core" cleanup process that based on comments from the following
+>     discussion.
+>     http://patchwork.ozlabs.org/patch/767191/
+
+I know it's different for each subsystem, but for MTD, we don't put
+changelogs in the commit message.
+
 > 
-> Making changes like this is a bit challenging due to interdependencies
-> between fscrypt and the individual filesystems, all of which have
-> different maintainers.  For now my intent is that patches 1-10 be taken
-> through the fscrypt tree --- though it's not perfect since patches 1-4
-> do make some changes to each filesystem, as everyone must set
-> S_ENCRYPTED before we can use it everywhere in the shared code.  But
-> afterwards, patches 11-25 can be picked up by the individual filesystems
-> to switch to the new helpers.
+> Signed-off-by: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+> ---
 
-This all looks much nicer. Having just been looking at this stuff,
-it makes the code much simpler to understand. So:
+Move the changelog here.
 
-Acked-by: Dave Chinner <dchinner@redhat.com>
+>  drivers/mtd/nand/nand_toshiba.c | 100 ++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 100 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/nand_toshiba.c b/drivers/mtd/nand/nand_toshiba.c
+> index 57df857..7a99bbe 100644
+> --- a/drivers/mtd/nand/nand_toshiba.c
+> +++ b/drivers/mtd/nand/nand_toshiba.c
+> @@ -17,6 +17,72 @@
+>  
+>  #include <linux/mtd/rawnand.h>
+>  
+> +/* ECC Status Read Command for BENAND */
+> +#define TOSHIBA_NAND_CMD_ECC_STATUS	0x7A
+> +
+> +/* Recommended to rewrite for BENAND */
+> +#define TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED	BIT(3)
+> +
+> +static int toshiba_nand_benand_status_chk(struct mtd_info *mtd,
+> +					  struct nand_chip *chip)
+> +{
+> +	unsigned int max_bitflips = 0;
+> +	u8 status;
+> +
+> +	/* Check Read Status */
+> +	chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
+> +	status = chip->read_byte(mtd);
+> +
+> +	/*
+> +	 * TOSHIBA_NAND_CMD_ECC_STATUS is vendor specific command.
+> +	 * We will rewrite this code, after the ->exec_op() infrastructure
+> +	 * is implemented
 
-While I'm here, the fscrypt header file includes are clunky and
-nasty. I worte a quick patch a couple of days ago to clean it up.
-See below....
+Missing period at the end of your sentence. And again, I would not name
+the future stuff here. Just say that currently you have no way to send
+arbitrary sequences of CMD+ADDR+DATA cycles and thus cannot support this
+custom TOSHIBA_NAND_CMD_ECC_STATUS operation. 
 
-Cheers,
+> +	 * Now, we set max_bitflips mtd->bitflip_threshold.
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+	   For now,
 
+> +	 */
+> +	if (status & NAND_STATUS_FAIL) {
+> +		/* uncorrectable */
+> +		mtd->ecc_stats.failed++;
+> +	} else if (status & TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED) {
+> +		/* correctable */
+> +		max_bitflips = mtd->bitflip_threshold;
+> +		mtd->ecc_stats.corrected += max_bitflips;
+> +	}
 
-fscrypto: clean up include file mess
+Is this working correctly when you read more than one ECC chunk? The
+ECC step size is 512 bytes and the page is bigger than that, which means
+you have more than one ECC chunk per page. What happens to the
+NAND_STATUS_FAIL flag if the first chunk is uncorrectable but
+following ones are correctable (or do not contain bitflips at all)? 
 
-From: Dave Chinner <dchinner@redhat.com>
+> +
+> +	return max_bitflips;
+> +}
+> +
+> +static int
+> +toshiba_nand_read_page_benand(struct mtd_info *mtd,
+> +			      struct nand_chip *chip, uint8_t *buf,
+> +			      int oob_required, int page)
+> +{
+> +	unsigned int max_bitflips = 0;
+> +
+> +	chip->ecc.read_page_raw(mtd, chip, buf, oob_required, page);
 
-Filesystems have to include different header files based on whether
-they are compiled with encryption support or not. That's nasty and
-messy.
+Call nand_read_page_raw() directly.
 
-Instead, rationalise the headers so we have a single include
-fscrypt.h and let it decide what internal implementation to include
-based on the __FS_HAS_ENCRYPTION define. Filesystems set
-__FS_HAS_ENCRYPTION before including linux/fscrypt.h if they are
-built with encryption support.
+> +	max_bitflips = toshiba_nand_benand_status_chk(mtd, chip);
 
-Add guards to prevent fscrypt_supp.h and fscrypt_notsupp.h from
-being directly included by filesystems.
+	return toshiba_nand_benand_status_chk(mtd, chip);
 
-Signed-Off-By: Dave Chinner <dchinner@redhat.com>
----
- fs/crypto/fscrypt_private.h                   |  3 +-
- fs/ext4/ext4.h                                | 11 +++----
- fs/f2fs/f2fs.h                                |  8 +++---
- fs/ubifs/ubifs.h                              |  9 +++---
- include/linux/{fscrypt_common.h => fscrypt.h} | 41 ++++++++++++++++++---------
- include/linux/fscrypt_notsupp.h               |  7 +++--
- include/linux/fscrypt_supp.h                  |  7 +++--
- 7 files changed, 54 insertions(+), 32 deletions(-)
+> +
+> +	return max_bitflips;
+> +}
+> +
+> +static int
+> +toshiba_nand_read_subpage_benand(struct mtd_info *mtd,
+> +				 struct nand_chip *chip, uint32_t data_offs,
+> +				 uint32_t readlen, uint8_t *bufpoi, int page)
+> +{
+> +	uint8_t *p;
+> +	unsigned int max_bitflips = 0;
+> +
+> +	if (data_offs != 0)
+> +		chip->cmdfunc(mtd, NAND_CMD_RNDOUT, data_offs, -1);
+> +
+> +	p = bufpoi + data_offs;
+> +	chip->read_buf(mtd, p, readlen);
+> +
+> +	max_bitflips = toshiba_nand_benand_status_chk(mtd, chip);
 
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index a1d5021c31ef..a180981ee6d7 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -11,7 +11,8 @@
- #ifndef _FSCRYPT_PRIVATE_H
- #define _FSCRYPT_PRIVATE_H
- 
--#include <linux/fscrypt_supp.h>
-+#define __FS_HAS_ENCRYPTION 1
-+#include <linux/fscrypt.h>
- #include <crypto/hash.h>
- 
- /* Encryption parameters */
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index e2abe01c8c6b..900ac79879b3 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -33,17 +33,18 @@
- #include <linux/percpu_counter.h>
- #include <linux/ratelimit.h>
- #include <crypto/hash.h>
--#ifdef CONFIG_EXT4_FS_ENCRYPTION
--#include <linux/fscrypt_supp.h>
--#else
--#include <linux/fscrypt_notsupp.h>
--#endif
-+
- #include <linux/falloc.h>
- #include <linux/percpu-rwsem.h>
- #ifdef __KERNEL__
- #include <linux/compat.h>
- #endif
- 
-+#ifdef CONFIG_EXT4_FS_ENCRYPTION
-+#define __FS_HAS_ENCRYPTION 1
-+#endif
-+#include <linux/fscrypt.h>
-+
- /*
-  * The fourth extended filesystem constants/structures
-  */
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 9a7c90386947..66502c5f7d67 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -23,12 +23,12 @@
- #include <linux/bio.h>
- #include <linux/blkdev.h>
- #include <linux/quotaops.h>
-+#include <crypto/hash.h>
-+
- #ifdef CONFIG_F2FS_FS_ENCRYPTION
--#include <linux/fscrypt_supp.h>
--#else
--#include <linux/fscrypt_notsupp.h>
-+#define __FS_HAS_ENCRYPTION 1
- #endif
--#include <crypto/hash.h>
-+#include <linux/fscrypt.h>
- 
- #ifdef CONFIG_F2FS_CHECK_FS
- #define f2fs_bug_on(sbi, condition)	BUG_ON(condition)
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index cd43651f1731..e5b6c8f02133 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -38,12 +38,13 @@
- #include <linux/backing-dev.h>
- #include <linux/security.h>
- #include <linux/xattr.h>
-+#include <linux/random.h>
-+
- #ifdef CONFIG_UBIFS_FS_ENCRYPTION
--#include <linux/fscrypt_supp.h>
--#else
--#include <linux/fscrypt_notsupp.h>
-+#define __FS_HAS_ENCRYPTION 1
- #endif
--#include <linux/random.h>
-+#include <linux/fscrypt.h>
-+
- #include "ubifs-media.h"
- 
- /* Version of this UBIFS implementation */
-diff --git a/include/linux/fscrypt_common.h b/include/linux/fscrypt.h
-similarity index 79%
-rename from include/linux/fscrypt_common.h
-rename to include/linux/fscrypt.h
-index 97f738628b36..4db0a7ec26d9 100644
---- a/include/linux/fscrypt_common.h
-+++ b/include/linux/fscrypt.h
-@@ -1,14 +1,17 @@
- /*
-- * fscrypt_common.h: common declarations for per-file encryption
-+ * fscrypt.h: declarations for per-file encryption
-+ *
-+ * Filesystems that implement per-file encryption include this header
-+ * file with the __FS_HAS_ENCRYPTION set according to whether that filesystem
-+ * is being built with encryption support or not.
-  *
-  * Copyright (C) 2015, Google, Inc.
-  *
-  * Written by Michael Halcrow, 2015.
-  * Modified by Jaegeuk Kim, 2015.
-  */
--
--#ifndef _LINUX_FSCRYPT_COMMON_H
--#define _LINUX_FSCRYPT_COMMON_H
-+#ifndef _LINUX_FSCRYPT_H
-+#define _LINUX_FSCRYPT_H
- 
- #include <linux/key.h>
- #include <linux/fs.h>
-@@ -119,23 +122,35 @@ static inline bool fscrypt_is_dot_dotdot(const struct qstr *str)
- 	return false;
- }
- 
-+#ifdef __FS_HAS_ENCRYPTION
-+
- static inline struct page *fscrypt_control_page(struct page *page)
- {
--#if IS_ENABLED(CONFIG_FS_ENCRYPTION)
- 	return ((struct fscrypt_ctx *)page_private(page))->w.control_page;
--#else
-+}
-+
-+static inline bool fscrypt_has_encryption_key(const struct inode *inode)
-+{
-+	return (inode->i_crypt_info != NULL);
-+}
-+
-+#include <linux/fscrypt_supp.h>
-+
-+#else /* !__FS_HAS_ENCRYPTION */
-+
-+static inline struct page *fscrypt_control_page(struct page *page)
-+{
- 	WARN_ON_ONCE(1);
- 	return ERR_PTR(-EINVAL);
--#endif
- }
- 
--static inline int fscrypt_has_encryption_key(const struct inode *inode)
-+static inline bool fscrypt_has_encryption_key(const struct inode *inode)
- {
--#if IS_ENABLED(CONFIG_FS_ENCRYPTION)
--	return (inode->i_crypt_info != NULL);
--#else
- 	return 0;
--#endif
- }
- 
--#endif	/* _LINUX_FSCRYPT_COMMON_H */
-+#include <linux/fscrypt_notsupp.h>
-+#endif	/* __FS_HAS_ENCRYPTION */
-+
-+
-+#endif	/* _LINUX_FSCRYPT_H */
-diff --git a/include/linux/fscrypt_notsupp.h b/include/linux/fscrypt_notsupp.h
-index ec406aed2f2f..2d0b6960831e 100644
---- a/include/linux/fscrypt_notsupp.h
-+++ b/include/linux/fscrypt_notsupp.h
-@@ -3,13 +3,16 @@
-  *
-  * This stubs out the fscrypt functions for filesystems configured without
-  * encryption support.
-+ *
-+ * Do not include this file directly. Use fscrypt.h instead!
-  */
-+#ifndef _LINUX_FSCRYPT_H
-+#error "Incorrect include of linux/fscrypt_notsupp.h!"
-+#endif
- 
- #ifndef _LINUX_FSCRYPT_NOTSUPP_H
- #define _LINUX_FSCRYPT_NOTSUPP_H
- 
--#include <linux/fscrypt_common.h>
--
- /* crypto.c */
- static inline struct fscrypt_ctx *fscrypt_get_ctx(const struct inode *inode,
- 						  gfp_t gfp_flags)
-diff --git a/include/linux/fscrypt_supp.h b/include/linux/fscrypt_supp.h
-index 32e2fcf13b01..5a90e5ef4687 100644
---- a/include/linux/fscrypt_supp.h
-+++ b/include/linux/fscrypt_supp.h
-@@ -1,14 +1,15 @@
- /*
-  * fscrypt_supp.h
-  *
-- * This is included by filesystems configured with encryption support.
-+ * Do not include this file directly. Use fscrypt.h instead!
-  */
-+#ifndef _LINUX_FSCRYPT_H
-+#error "Incorrect include of linux/fscrypt_supp.h!"
-+#endif
- 
- #ifndef _LINUX_FSCRYPT_SUPP_H
- #define _LINUX_FSCRYPT_SUPP_H
- 
--#include <linux/fscrypt_common.h>
--
- /* crypto.c */
- extern struct kmem_cache *fscrypt_info_cachep;
- extern struct fscrypt_ctx *fscrypt_get_ctx(const struct inode *, gfp_t);
+	return toshiba_nand_benand_status_chk(mtd, chip);
+
+> +
+> +	return max_bitflips;
+> +}
+> +
+>  static void toshiba_nand_decode_id(struct nand_chip *chip)
+>  {
+>  	struct mtd_info *mtd = nand_to_mtd(chip);
+> @@ -39,9 +105,43 @@ static void toshiba_nand_decode_id(struct nand_chip *chip)
+>  
+>  static int toshiba_nand_init(struct nand_chip *chip)
+>  {
+> +	struct mtd_info *mtd = nand_to_mtd(chip);
+> +
+>  	if (nand_is_slc(chip))
+>  		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
+>  
+> +	if (nand_is_slc(chip) && (chip->id.data[4] & 0x80)) {
+> +		/* BENAND */
+> +
+> +		/*
+> +		 * We can't disable the internal ECC engine, the user
+> +		 * has to use on-die ECC, there is no alternative.
+> +		 */
+> +		if (chip->ecc.mode != NAND_ECC_ON_DIE) {
+> +			pr_err("On-die ECC should be selected.\n");
+> +			return -EINVAL;
+> +		}
+
+According to your previous explanation that's not exactly true. Since
+ECC bytes are stored in a separate area, the user can decide to use
+another mode without trouble. Just skip the BENAND initialization when
+mode != NAND_ECC_ON_DIE and we should be good, or am I missing something?
+
+> +
+> +		/*
+> +		 * On BENAND, all OOB reginon can be used by user (driver).
+
+			      the entire OOB region can be used by the
+		   MTD user.
+
+I'd drop the '(driver)' part since it's not really clear what the
+driver is. If you're talking about the NAND controller driver then it's
+wrong (at least most of the time), the real users of free OOB bytes are
+upper layers (like JFFS2).
+
+> +		 * The calculated ECC bytes are stored into other isolated
+> +		 * area which is ubable to access from user.
+
+			which is not accessible to users.
+
+> +		 * This is why chip->ecc.bytes = 0.
+> +		 */
+> +		chip->ecc.bytes = 0;
+> +		chip->ecc.size = 512;
+> +		chip->ecc.strength = 8;
+> +		chip->ecc.read_page = toshiba_nand_read_page_benand;
+> +		chip->ecc.read_subpage = toshiba_nand_read_subpage_benand;
+> +		chip->ecc.write_page = nand_write_page_raw;
+> +		chip->ecc.read_page_raw = nand_read_page_raw;
+> +		chip->ecc.write_page_raw = nand_write_page_raw;
+> +
+> +		chip->options |= NAND_SUBPAGE_READ;
+> +
+> +		mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
+
+Can you please move this code block in a separate toshiba_benand_init()
+function in order to keep the toshiba_nand_init() small/readable.
+
+> +	}
+> +
+>  	return 0;
+>  }
+>  
