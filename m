@@ -1,19 +1,24 @@
-Received: from mga06.intel.com ([134.134.136.31])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dv1Om-0005qw-G0
- for linux-mtd@lists.infradead.org; Thu, 21 Sep 2017 13:20:20 +0000
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: linux-mtd@lists.infradead.org
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: [PATCH 1/2] mtd: spi-nor: intel-spi: Add support for Intel Lewisburg
- SPI serial flash
-Date: Thu, 21 Sep 2017 16:19:45 +0300
-Message-Id: <20170921131946.70719-1-mika.westerberg@linux.intel.com>
+ id 1dv2LS-0001BL-I5
+ for linux-mtd@lists.infradead.org; Thu, 21 Sep 2017 14:20:52 +0000
+Subject: Re: [f2fs-dev] [PATCH 00/25] fscrypt: add some higher-level helper
+ functions
+To: Eric Biggers <ebiggers3@gmail.com>, linux-fscrypt@vger.kernel.org
+Cc: "Theodore Y . Ts'o" <tytso@mit.edu>, Eric Biggers <ebiggers@google.com>,
+ Michael Halcrow <mhalcrow@google.com>,
+ linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+ linux-ext4@vger.kernel.org
+References: <20170920224605.22030-1-ebiggers3@gmail.com>
+From: Chao Yu <chao@kernel.org>
+Message-ID: <d7d91976-65b9-63d9-f34e-b322a9d0c472@kernel.org>
+Date: Thu, 21 Sep 2017 22:19:49 +0800
+MIME-Version: 1.0
+In-Reply-To: <20170920224605.22030-1-ebiggers3@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +28,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Intel Lewisburg chipset exposes the SPI serial flash controller as a PCI
-device in the same way than Intel Denverton. Add Intel Lewisburg SPI
-serial flash PCI ID to the driver list of supported devices.
+On 2017/9/21 6:45, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> This series reduces code duplication among ext4, f2fs, and ubifs by
+> introducing a S_ENCRYPTED inode flag (so we don't have to call back into
+> the filesystem to test the filesystem-specific inode flag), then
+> introducing new helper functions that are called at the beginning of the
+> open, link, rename, lookup, and setattr operations.
+> 
+> In the future we maybe should even call these new helpers from the VFS
+> so that each individual filesystem doesn't have to do it.  But that's
+> not possible currently because fs/crypto/ can be built as a module.
+> 
+> Making changes like this is a bit challenging due to interdependencies
+> between fscrypt and the individual filesystems, all of which have
+> different maintainers.  For now my intent is that patches 1-10 be taken
+> through the fscrypt tree --- though it's not perfect since patches 1-4
+> do make some changes to each filesystem, as everyone must set
+> S_ENCRYPTED before we can use it everywhere in the shared code.  But
+> afterwards, patches 11-25 can be picked up by the individual filesystems
+> to switch to the new helpers.
 
-Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
----
- drivers/mtd/spi-nor/intel-spi-pci.c | 1 +
- 1 file changed, 1 insertion(+)
+For all patches touching f2fs, looks good to me, feel free to add:
 
-diff --git a/drivers/mtd/spi-nor/intel-spi-pci.c b/drivers/mtd/spi-nor/intel-spi-pci.c
-index e82652335ede..7fa5b81b0d88 100644
---- a/drivers/mtd/spi-nor/intel-spi-pci.c
-+++ b/drivers/mtd/spi-nor/intel-spi-pci.c
-@@ -64,6 +64,7 @@ static void intel_spi_pci_remove(struct pci_dev *pdev)
- 
- static const struct pci_device_id intel_spi_pci_ids[] = {
- 	{ PCI_VDEVICE(INTEL, 0x19e0), (unsigned long)&bxt_info },
-+	{ PCI_VDEVICE(INTEL, 0xa1a4), (unsigned long)&bxt_info },
- 	{ },
- };
- MODULE_DEVICE_TABLE(pci, intel_spi_pci_ids);
--- 
-2.14.1
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+
+> 
+> Eric Biggers (25):
+>   fs, fscrypt: add an S_ENCRYPTED inode flag
+>   fscrypt: switch from ->is_encrypted() to IS_ENCRYPTED()
+>   fscrypt: remove ->is_encrypted()
+>   fscrypt: remove unneeded empty fscrypt_operations structs
+>   fscrypt: new helper function - fscrypt_require_key()
+>   fscrypt: new helper function - fscrypt_file_open()
+>   fscrypt: new helper function - fscrypt_prepare_link()
+>   fscrypt: new helper function - fscrypt_prepare_rename()
+>   fscrypt: new helper function - fscrypt_prepare_lookup()
+>   fscrypt: new helper function - fscrypt_prepare_setattr()
+>   ext4: switch to fscrypt_file_open()
+>   ext4: switch to fscrypt_prepare_link()
+>   ext4: switch to fscrypt_prepare_rename()
+>   ext4: switch to fscrypt_prepare_lookup()
+>   ext4: switch to fscrypt_prepare_setattr()
+>   f2fs: switch to fscrypt_file_open()
+>   f2fs: switch to fscrypt_prepare_link()
+>   f2fs: switch to fscrypt_prepare_rename()
+>   f2fs: switch to fscrypt_prepare_lookup()
+>   f2fs: switch to fscrypt_prepare_setattr()
+>   ubifs: switch to fscrypt_file_open()
+>   ubifs: switch to fscrypt_prepare_link()
+>   ubifs: switch to fscrypt_prepare_rename()
+>   ubifs: switch to fscrypt_prepare_lookup()
+>   ubifs: switch to fscrypt_prepare_setattr()
+> 
+>  fs/crypto/Makefile              |   2 +-
+>  fs/crypto/crypto.c              |   2 +-
+>  fs/crypto/fname.c               |   3 +-
+>  fs/crypto/hooks.c               | 112 +++++++++++++++++++++++++++++
+>  fs/crypto/keyinfo.c             |   2 +-
+>  fs/crypto/policy.c              |   6 +-
+>  fs/ext4/file.c                  |  23 ++----
+>  fs/ext4/inode.c                 |  19 +++--
+>  fs/ext4/namei.c                 |  62 +++++-----------
+>  fs/ext4/super.c                 |  15 ++--
+>  fs/f2fs/f2fs.h                  |   1 +
+>  fs/f2fs/file.c                  |  30 ++------
+>  fs/f2fs/inode.c                 |   5 +-
+>  fs/f2fs/namei.c                 |  54 ++++----------
+>  fs/f2fs/super.c                 |   7 +-
+>  fs/ubifs/crypto.c               |   1 -
+>  fs/ubifs/dir.c                  |  43 ++++-------
+>  fs/ubifs/file.c                 |  41 ++---------
+>  fs/ubifs/ioctl.c                |   5 +-
+>  fs/ubifs/super.c                |   8 +--
+>  fs/ubifs/ubifs.h                |   9 +--
+>  fs/ubifs/xattr.c                |   1 +
+>  include/linux/fs.h              |   2 +
+>  include/linux/fscrypt_common.h  |   1 -
+>  include/linux/fscrypt_notsupp.h |  54 +++++++++++++-
+>  include/linux/fscrypt_supp.h    | 153 ++++++++++++++++++++++++++++++++++++++++
+>  26 files changed, 418 insertions(+), 243 deletions(-)
+>  create mode 100644 fs/crypto/hooks.c
+> 
