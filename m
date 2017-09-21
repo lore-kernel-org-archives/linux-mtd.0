@@ -1,20 +1,21 @@
-From: Guochun Mao <guochun.mao@mediatek.com>
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Matthias Brugger
- <matthias.bgg@gmail.com>, Rob Herring <robh+dt@kernel.org>, Boris Brezillon
- <boris.brezillon@free-electrons.com>
-CC: Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Richard
- Weinberger <richard@nod.at>, Mark Rutland <mark.rutland@arm.com>,
- <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, Guochun Mao <guochun.mao@mediatek.com>
-Subject: [PATCH v1 2/2] mtd: mtk-nor: add suspend/resume support
-Date: Thu, 21 Sep 2017 20:45:06 +0800
-Message-ID: <1505997906-30921-3-git-send-email-guochun.mao@mediatek.com>
-In-Reply-To: <1505997906-30921-1-git-send-email-guochun.mao@mediatek.com>
-References: <1505997906-30921-1-git-send-email-guochun.mao@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+Received: from mga09.intel.com ([134.134.136.24])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dv1Om-0005qy-SH
+ for linux-mtd@lists.infradead.org; Thu, 21 Sep 2017 13:20:16 +0000
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: linux-mtd@lists.infradead.org
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: [PATCH 2/2] mtd: spi-nor: intel-spi: Add support for Intel Cedar Fork
+ SPI serial flash
+Date: Thu, 21 Sep 2017 16:19:46 +0300
+Message-Id: <20170921131946.70719-2-mika.westerberg@linux.intel.com>
+In-Reply-To: <20170921131946.70719-1-mika.westerberg@linux.intel.com>
+References: <20170921131946.70719-1-mika.westerberg@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,129 +25,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Abstract functions of clock setting, to avoid duplicated code,
-these functions been used in new feature.
-Implement suspend/resume functions.
+Intel Cedar Fork has the same SPI serial flash controller than Intel
+Denverton. Add the Intel Cedar Fork PCI ID to the driver list of
+supported devices.
 
-Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
+Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 ---
- drivers/mtd/spi-nor/mtk-quadspi.c |   70 ++++++++++++++++++++++++++++++-------
- 1 file changed, 58 insertions(+), 12 deletions(-)
+ drivers/mtd/spi-nor/intel-spi-pci.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-quadspi.c
-index c258c7a..abe455c 100644
---- a/drivers/mtd/spi-nor/mtk-quadspi.c
-+++ b/drivers/mtd/spi-nor/mtk-quadspi.c
-@@ -404,6 +404,29 @@ static int mt8173_nor_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
- 	return ret;
+diff --git a/drivers/mtd/spi-nor/intel-spi-pci.c b/drivers/mtd/spi-nor/intel-spi-pci.c
+index 7fa5b81b0d88..a5a5c5897aad 100644
+--- a/drivers/mtd/spi-nor/intel-spi-pci.c
++++ b/drivers/mtd/spi-nor/intel-spi-pci.c
+@@ -63,6 +63,7 @@ static void intel_spi_pci_remove(struct pci_dev *pdev)
  }
  
-+static void mt8173_nor_disable_clk(struct mt8173_nor *mt8173_nor)
-+{
-+	clk_disable_unprepare(mt8173_nor->spi_clk);
-+	clk_disable_unprepare(mt8173_nor->nor_clk);
-+}
-+
-+static int mt8173_nor_enable_clk(struct mt8173_nor *mt8173_nor)
-+{
-+	int ret;
-+
-+	ret = clk_prepare_enable(mt8173_nor->spi_clk);
-+	if (ret)
-+		return ret;
-+
-+	ret = clk_prepare_enable(mt8173_nor->nor_clk);
-+	if (ret) {
-+		clk_disable_unprepare(mt8173_nor->spi_clk);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- static int mtk_nor_init(struct mt8173_nor *mt8173_nor,
- 			struct device_node *flash_node)
- {
-@@ -468,15 +491,11 @@ static int mtk_nor_drv_probe(struct platform_device *pdev)
- 		return PTR_ERR(mt8173_nor->nor_clk);
- 
- 	mt8173_nor->dev = &pdev->dev;
--	ret = clk_prepare_enable(mt8173_nor->spi_clk);
-+
-+	ret = mt8173_nor_enable_clk(mt8173_nor);
- 	if (ret)
- 		return ret;
- 
--	ret = clk_prepare_enable(mt8173_nor->nor_clk);
--	if (ret) {
--		clk_disable_unprepare(mt8173_nor->spi_clk);
--		return ret;
--	}
- 	/* only support one attached flash */
- 	flash_np = of_get_next_available_child(pdev->dev.of_node, NULL);
- 	if (!flash_np) {
-@@ -487,10 +506,9 @@ static int mtk_nor_drv_probe(struct platform_device *pdev)
- 	ret = mtk_nor_init(mt8173_nor, flash_np);
- 
- nor_free:
--	if (ret) {
--		clk_disable_unprepare(mt8173_nor->spi_clk);
--		clk_disable_unprepare(mt8173_nor->nor_clk);
--	}
-+	if (ret)
-+		mt8173_nor_disable_clk(mt8173_nor);
-+
- 	return ret;
- }
- 
-@@ -498,11 +516,38 @@ static int mtk_nor_drv_remove(struct platform_device *pdev)
- {
- 	struct mt8173_nor *mt8173_nor = platform_get_drvdata(pdev);
- 
--	clk_disable_unprepare(mt8173_nor->spi_clk);
--	clk_disable_unprepare(mt8173_nor->nor_clk);
-+	mt8173_nor_disable_clk(mt8173_nor);
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM_SLEEP
-+static int mtk_nor_suspend(struct device *dev)
-+{
-+	struct mt8173_nor *mt8173_nor = dev_get_drvdata(dev);
-+
-+	mt8173_nor_disable_clk(mt8173_nor);
-+
- 	return 0;
- }
- 
-+static int mtk_nor_resume(struct device *dev)
-+{
-+	struct mt8173_nor *mt8173_nor = dev_get_drvdata(dev);
-+
-+	return mt8173_nor_enable_clk(mt8173_nor);
-+}
-+
-+static const struct dev_pm_ops mtk_nor_dev_pm_ops = {
-+	.suspend = mtk_nor_suspend,
-+	.resume = mtk_nor_resume,
-+};
-+
-+#define MTK_NOR_DEV_PM_OPS	(&mtk_nor_dev_pm_ops)
-+#else
-+#define MTK_NOR_DEV_PM_OPS	NULL
-+#endif
-+
- static const struct of_device_id mtk_nor_of_ids[] = {
- 	{ .compatible = "mediatek,mt8173-nor"},
- 	{ /* sentinel */ }
-@@ -514,6 +559,7 @@ static int mtk_nor_drv_remove(struct platform_device *pdev)
- 	.remove = mtk_nor_drv_remove,
- 	.driver = {
- 		.name = "mtk-nor",
-+		.pm = MTK_NOR_DEV_PM_OPS,
- 		.of_match_table = mtk_nor_of_ids,
- 	},
- };
+ static const struct pci_device_id intel_spi_pci_ids[] = {
++	{ PCI_VDEVICE(INTEL, 0x18e0), (unsigned long)&bxt_info },
+ 	{ PCI_VDEVICE(INTEL, 0x19e0), (unsigned long)&bxt_info },
+ 	{ PCI_VDEVICE(INTEL, 0xa1a4), (unsigned long)&bxt_info },
+ 	{ },
 -- 
-1.7.9.5
+2.14.1
