@@ -1,7 +1,7 @@
 Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dvEwJ-0004Ff-3I
- for linux-mtd@lists.infradead.org; Fri, 22 Sep 2017 03:47:45 +0000
+ id 1dvEwJ-0004FV-3N
+ for linux-mtd@lists.infradead.org; Fri, 22 Sep 2017 03:47:48 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
@@ -10,10 +10,10 @@ Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH v2 10/12] mtd: nand: denali: remove unneeded init of
- ECC_ENABLE register
-Date: Fri, 22 Sep 2017 12:46:47 +0900
-Message-Id: <1506052009-8285-11-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v2 02/12] mtd: nand: denali: prefix detect_max_banks() with
+ denali_
+Date: Fri, 22 Sep 2017 12:46:39 +0900
+Message-Id: <1506052009-8285-3-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1506052009-8285-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1506052009-8285-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,35 +25,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The ECC correction is properly enabled/disabled before the page
-read/write.  There is no need to set up this at the beginning of
-the probe.
+All functions in this driver are prefixed with denali_
+except detect_max_banks().  Rename it for consistency.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-This patch may cause a conflict
-unless  http://patchwork.ozlabs.org/patch/813125/ is applied first.
+Changes in v2: None
 
-
-Changes in v2:
-  - Newly added
-
- drivers/mtd/nand/denali.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/mtd/nand/denali.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index e567ad9..ee688e0 100644
+index d847ae4..48193f9 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -1101,8 +1101,6 @@ static void denali_hw_init(struct denali_nand_info *denali)
+@@ -81,7 +81,7 @@ static void denali_host_write(struct denali_nand_info *denali,
+  * Use the configuration feature register to determine the maximum number of
+  * banks that the hardware supports.
+  */
+-static void detect_max_banks(struct denali_nand_info *denali)
++static void denali_detect_max_banks(struct denali_nand_info *denali)
+ {
+ 	uint32_t features = ioread32(denali->reg + FEATURES);
+ 
+@@ -1115,7 +1115,7 @@ static void denali_hw_init(struct denali_nand_info *denali)
+ 	 * if this value is 0, just let it be.
+ 	 */
+ 	denali->oob_skip_bytes = ioread32(denali->reg + SPARE_AREA_SKIP_BYTES);
+-	detect_max_banks(denali);
++	denali_detect_max_banks(denali);
+ 	iowrite32(0x0F, denali->reg + RB_PIN_ENABLED);
  	iowrite32(CHIP_EN_DONT_CARE__FLAG, denali->reg + CHIP_ENABLE_DONT_CARE);
  
- 	iowrite32(0xffff, denali->reg + SPARE_AREA_MARKER);
--
--	iowrite32(1, denali->reg + ECC_ENABLE);
- }
- 
- int denali_calc_ecc_bytes(int step_size, int strength)
 -- 
 2.7.4
