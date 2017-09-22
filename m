@@ -1,7 +1,7 @@
 Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dvEwN-0004Fh-KM
- for linux-mtd@lists.infradead.org; Fri, 22 Sep 2017 03:47:57 +0000
+ id 1dvEwJ-0004Fj-3H
+ for linux-mtd@lists.infradead.org; Fri, 22 Sep 2017 03:47:51 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
@@ -10,10 +10,10 @@ Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH v2 04/12] mtd: nand: denali: squash denali_enable_dma() helper
- into caller
-Date: Fri, 22 Sep 2017 12:46:41 +0900
-Message-Id: <1506052009-8285-5-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v2 05/12] mtd: nand: denali: slight clean up of
+ denali_wait_for_irq()
+Date: Fri, 22 Sep 2017 12:46:42 +0900
+Message-Id: <1506052009-8285-6-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1506052009-8285-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1506052009-8285-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,56 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This helper just sets/clears a flag of DMA_ENABLE register (with
-register read-back, I do not know why it is necessary).
-
-Move the register write code to the caller, and remove the helper.
-It works for me without the register read-back.
+This function has a local variable "irq_mask" and its value is
+the same as denali->irq_mask.  Clean up the code a little.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
 Changes in v2: None
 
- drivers/mtd/nand/denali.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/denali.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 4daeb7f..e7b25de 100644
+index e7b25de..3cc56de 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -465,13 +465,6 @@ static int denali_sw_ecc_fixup(struct mtd_info *mtd,
- 	return max_bitflips;
- }
- 
--/* programs the controller to either enable/disable DMA transfers */
--static void denali_enable_dma(struct denali_nand_info *denali, bool en)
--{
--	iowrite32(en ? DMA_ENABLE__FLAG : 0, denali->reg + DMA_ENABLE);
--	ioread32(denali->reg + DMA_ENABLE);
--}
--
- static void denali_setup_dma64(struct denali_nand_info *denali,
- 			       dma_addr_t dma_addr, int page, int write)
- {
-@@ -619,7 +612,7 @@ static int denali_dma_xfer(struct denali_nand_info *denali, void *buf,
- 		ecc_err_mask = INTR__ECC_ERR;
+@@ -191,7 +191,7 @@ static uint32_t denali_wait_for_irq(struct denali_nand_info *denali,
+ 						msecs_to_jiffies(1000));
+ 	if (!time_left) {
+ 		dev_err(denali->dev, "timeout while waiting for irq 0x%x\n",
+-			denali->irq_mask);
++			irq_mask);
+ 		return 0;
  	}
  
--	denali_enable_dma(denali, true);
-+	iowrite32(DMA_ENABLE__FLAG, denali->reg + DMA_ENABLE);
- 
- 	denali_reset_irq(denali);
- 	denali_setup_dma(denali, dma_addr, page, write);
-@@ -631,7 +624,8 @@ static int denali_dma_xfer(struct denali_nand_info *denali, void *buf,
- 	else if (irq_status & ecc_err_mask)
- 		ret = -EBADMSG;
- 
--	denali_enable_dma(denali, false);
-+	iowrite32(0, denali->reg + DMA_ENABLE);
-+
- 	dma_unmap_single(denali->dev, dma_addr, size, dir);
- 
- 	if (irq_status & INTR__ERASED_PAGE)
 -- 
 2.7.4
