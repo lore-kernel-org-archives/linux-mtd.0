@@ -1,20 +1,22 @@
-Received: from conuserg-09.nifty.com ([210.131.2.76])
+Received: from ozlabs.org ([2401:3900:2:1::2])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dvEwJ-0004Fe-3M
- for linux-mtd@lists.infradead.org; Fri, 22 Sep 2017 03:47:57 +0000
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: linux-mtd@lists.infradead.org
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH v2 03/12] mtd: nand: denali: consolidate include directives
-Date: Fri, 22 Sep 2017 12:46:40 +0900
-Message-Id: <1506052009-8285-4-git-send-email-yamada.masahiro@socionext.com>
-In-Reply-To: <1506052009-8285-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1506052009-8285-1-git-send-email-yamada.masahiro@socionext.com>
+ id 1dvFM2-0002E5-D5
+ for linux-mtd@lists.infradead.org; Fri, 22 Sep 2017 04:14:23 +0000
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: William Kennington <wak@google.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Cyril Bur <cyrilbur@gmail.com>, Stewart Smith  <stewart@linux.vnet.ibm.com>
+Subject: Re: [PATCH] mtd: powernv: Support MTD_NO_ERASE
+In-Reply-To: <CAPnigKmBujCoKdtXwnK6YsU=YvXM+MaDvDvKpUXEVgHzOC-VEw@mail.gmail.com>
+References: <20170905202339.20732-1-wak@google.com>
+ <20170921095930.4b473f91@bbrezillon>
+ <CAPnigKmBujCoKdtXwnK6YsU=YvXM+MaDvDvKpUXEVgHzOC-VEw@mail.gmail.com>
+Date: Fri, 22 Sep 2017 14:13:47 +1000
+Message-ID: <8760cbv090.fsf@concordia.ellerman.id.au>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,99 +26,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Include necessary headers explicitly without relying on indirect
-header inclusion.  Also, sort them alphabetically.
+William Kennington <wak@google.com> writes:
 
-<linux/delay.h>, <linux/wait.h>, <linux/mutex.h> turned out bogus,
-so removed.
+> +Cyril Bur and
+>
+> Not sure what you mean by mainline, but the commit is in the master branch
+> at
+> https://github.com/open-power/skiboot/commit/ba99af9b149d02438347b055e6e7d6bd15e33551
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
+I suspect Boris missed that you were referring to a skiboot commit and
+looked in Linux?
 
-Changes in v2: None
+> I'm unsure about the documentation of the properties as I'm not really the
+> maintainer of any of the code on either side. I just added this DT property
+> for plumbing through the NO_ERASE flag. I added Cyril and Michael as they
+> both work closely with this driver and could comment better than I could.
+>
+> - William
+>
+> On Thu, Sep 21, 2017 at 12:59 AM Boris Brezillon <
+> boris.brezillon@free-electrons.com> wrote:
+>
+>> +the DT maintainers
+>>
+>> On Tue,  5 Sep 2017 13:23:39 -0700
+>> "William A. Kennington III" <wak@google.com> wrote:
+>>
+>> > As of skiboot@ba99af9b149d02438347b055e6e7d6bd15e33551, we now support
+>>
+>> I didn't find this commit in mainline.
+>>
+>> > adding a device tree entry which marks a flash device as not needing
+>> > erase. This patch adds support for setting MTD_NO_ERASE on powernvflash
+>> > devices which have the property no-erase.
+>> >
+>> > Signed-off-by: William A. Kennington III <wak@google.com>
+>> > ---
+>> >  drivers/mtd/devices/powernv_flash.c | 2 ++
+>> >  1 file changed, 2 insertions(+)
+>> >
+>> > diff --git a/drivers/mtd/devices/powernv_flash.c
+>> b/drivers/mtd/devices/powernv_flash.c
+>> > index f5396f26ddb4..fab9f9121b4c 100644
+>> > --- a/drivers/mtd/devices/powernv_flash.c
+>> > +++ b/drivers/mtd/devices/powernv_flash.c
+>> > @@ -196,6 +196,8 @@ static int powernv_flash_set_driver_info(struct
+>> device *dev,
+>> >       mtd->name = of_get_property(dev->of_node, "name", NULL);
+>> >       mtd->type = MTD_NORFLASH;
+>> >       mtd->flags = MTD_WRITEABLE;
+>> > +     if (of_property_read_bool(dev->of_node, "no-erase"))
+>> > +             mtd->flags |= MTD_NO_ERASE;
+>>
+>> I don't see this property document in a DT binding doc, which is
+>> mandatory. Actually, there's no DT bindings doc at all for the
+>> 'ibm,opal-flash' device in mainline, is this normal?
 
- drivers/mtd/nand/denali.c     | 12 +++++++-----
- drivers/mtd/nand/denali.h     |  3 +++
- drivers/mtd/nand/denali_dt.c  |  3 ++-
- drivers/mtd/nand/denali_pci.c |  3 +++
- 4 files changed, 15 insertions(+), 6 deletions(-)
+The binding doc is here:
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 48193f9..4daeb7f 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -16,14 +16,16 @@
-  * 51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
-  *
-  */
--#include <linux/interrupt.h>
--#include <linux/delay.h>
-+
-+#include <linux/completion.h>
- #include <linux/dma-mapping.h>
--#include <linux/wait.h>
--#include <linux/mutex.h>
--#include <linux/mtd/mtd.h>
-+#include <linux/interrupt.h>
-+#include <linux/io.h>
- #include <linux/module.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/rawnand.h>
- #include <linux/slab.h>
-+#include <linux/spinlock.h>
- 
- #include "denali.h"
- 
-diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index 9239e67..dc3f970 100644
---- a/drivers/mtd/nand/denali.h
-+++ b/drivers/mtd/nand/denali.h
-@@ -21,7 +21,10 @@
- #define __DENALI_H__
- 
- #include <linux/bitops.h>
-+#include <linux/completion.h>
- #include <linux/mtd/rawnand.h>
-+#include <linux/spinlock_types.h>
-+#include <linux/types.h>
- 
- #define DEVICE_RESET				0x0
- #define     DEVICE_RESET__BANK(bank)			BIT(bank)
-diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
-index 56e2e17..01e0100 100644
---- a/drivers/mtd/nand/denali_dt.c
-+++ b/drivers/mtd/nand/denali_dt.c
-@@ -12,15 +12,16 @@
-  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-  * more details.
-  */
-+
- #include <linux/clk.h>
- #include <linux/err.h>
- #include <linux/io.h>
- #include <linux/ioport.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
--#include <linux/platform_device.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
-+#include <linux/platform_device.h>
- 
- #include "denali.h"
- 
-diff --git a/drivers/mtd/nand/denali_pci.c b/drivers/mtd/nand/denali_pci.c
-index 81370c7..7d5600b 100644
---- a/drivers/mtd/nand/denali_pci.c
-+++ b/drivers/mtd/nand/denali_pci.c
-@@ -11,6 +11,9 @@
-  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-  * more details.
-  */
-+
-+#include <linux/errno.h>
-+#include <linux/io.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/pci.h>
--- 
-2.7.4
+  https://github.com/open-power/skiboot/blob/master/doc/device-tree/ibm%2Copal/flash.rst
+
+But that property is not documented :(
+
+We have some of the skiboot bindings also in the kernel tree, but there
+was talk of moving all the binding docs *out* of the kernel, so we never
+made an effort to put more in. I've lost track of whether there are
+still plans to move the binding docs out or not.
+
+cheers
