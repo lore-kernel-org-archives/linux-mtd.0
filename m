@@ -1,6 +1,6 @@
 Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dvEwJ-0004Fa-3K
+ id 1dvEwJ-0004Ff-3I
  for linux-mtd@lists.infradead.org; Fri, 22 Sep 2017 03:47:45 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -10,10 +10,10 @@ Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH v2 09/12] mtd: nand: denali: use upper/lower_32_bits() macro
- for clean-up
-Date: Fri, 22 Sep 2017 12:46:46 +0900
-Message-Id: <1506052009-8285-10-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v2 10/12] mtd: nand: denali: remove unneeded init of
+ ECC_ENABLE register
+Date: Fri, 22 Sep 2017 12:46:47 +0900
+Message-Id: <1506052009-8285-11-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1506052009-8285-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1506052009-8285-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,35 +25,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I used (uint64_t) cast to avoid "right shift count >= width of type"
-warning.  <linux/kernel.h> provides nice helpers to cater to it.
-The code will be cleaner, and easier to understand.
+The ECC correction is properly enabled/disabled before the page
+read/write.  There is no need to set up this at the beginning of
+the probe.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
+This patch may cause a conflict
+unless  http://patchwork.ozlabs.org/patch/813125/ is applied first.
+
+
 Changes in v2:
   - Newly added
 
- drivers/mtd/nand/denali.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/denali.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 02ce310..e567ad9 100644
+index e567ad9..ee688e0 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -469,10 +469,10 @@ static void denali_setup_dma64(struct denali_nand_info *denali,
- 			  0x01002000 | (64 << 16) | (write << 8) | page_count);
+@@ -1101,8 +1101,6 @@ static void denali_hw_init(struct denali_nand_info *denali)
+ 	iowrite32(CHIP_EN_DONT_CARE__FLAG, denali->reg + CHIP_ENABLE_DONT_CARE);
  
- 	/* 2. set memory low address */
--	denali_host_write(denali, mode, dma_addr);
-+	denali_host_write(denali, mode, lower_32_bits(dma_addr));
- 
- 	/* 3. set memory high address */
--	denali_host_write(denali, mode, (uint64_t)dma_addr >> 32);
-+	denali_host_write(denali, mode, upper_32_bits(dma_addr));
+ 	iowrite32(0xffff, denali->reg + SPARE_AREA_MARKER);
+-
+-	iowrite32(1, denali->reg + ECC_ENABLE);
  }
  
- static void denali_setup_dma32(struct denali_nand_info *denali,
+ int denali_calc_ecc_bytes(int step_size, int strength)
 -- 
 2.7.4
