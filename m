@@ -1,22 +1,23 @@
-Received: from ozlabs.org ([2401:3900:2:1::2])
+Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dvFM2-0002E5-D5
- for linux-mtd@lists.infradead.org; Fri, 22 Sep 2017 04:14:23 +0000
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: William Kennington <wak@google.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: linux-mtd@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Cyril Bur <cyrilbur@gmail.com>, Stewart Smith  <stewart@linux.vnet.ibm.com>
-Subject: Re: [PATCH] mtd: powernv: Support MTD_NO_ERASE
-In-Reply-To: <CAPnigKmBujCoKdtXwnK6YsU=YvXM+MaDvDvKpUXEVgHzOC-VEw@mail.gmail.com>
-References: <20170905202339.20732-1-wak@google.com>
- <20170921095930.4b473f91@bbrezillon>
- <CAPnigKmBujCoKdtXwnK6YsU=YvXM+MaDvDvKpUXEVgHzOC-VEw@mail.gmail.com>
-Date: Fri, 22 Sep 2017 14:13:47 +1000
-Message-ID: <8760cbv090.fsf@concordia.ellerman.id.au>
-MIME-Version: 1.0
-Content-Type: text/plain
+ id 1dvGzi-0002iN-1o
+ for linux-mtd@lists.infradead.org; Fri, 22 Sep 2017 05:59:24 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
+ Dinh Nguyen <dinguyen@kernel.org>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH v2] dt-bindings: nand: denali: reduce the register space in
+ the example
+Date: Fri, 22 Sep 2017 14:58:23 +0900
+Message-Id: <1506059903-15552-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,71 +27,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-William Kennington <wak@google.com> writes:
+This example allocates much more than needed for address regions.
 
-> +Cyril Bur and
->
-> Not sure what you mean by mainline, but the commit is in the master branch
-> at
-> https://github.com/open-power/skiboot/commit/ba99af9b149d02438347b055e6e7d6bd15e33551
+As for "denali_reg", as you see in drivers/mtd/nand/denali.h, all
+registers fit in 0x1000.
 
-I suspect Boris missed that you were referring to a skiboot commit and
-looked in Linux?
+As for "nand_data", this IP is generally configured to use Indexed
+Addressing mode, where there are only two registers in the address
+translation module (CTRL: 0x00, DATA: 0x10).  Altera SOCFPGA is
+also this case.  So, 0x20 is enough.
 
-> I'm unsure about the documentation of the properties as I'm not really the
-> maintainer of any of the code on either side. I just added this DT property
-> for plumbing through the NO_ERASE flag. I added Cyril and Michael as they
-> both work closely with this driver and could comment better than I could.
->
-> - William
->
-> On Thu, Sep 21, 2017 at 12:59 AM Boris Brezillon <
-> boris.brezillon@free-electrons.com> wrote:
->
->> +the DT maintainers
->>
->> On Tue,  5 Sep 2017 13:23:39 -0700
->> "William A. Kennington III" <wak@google.com> wrote:
->>
->> > As of skiboot@ba99af9b149d02438347b055e6e7d6bd15e33551, we now support
->>
->> I didn't find this commit in mainline.
->>
->> > adding a device tree entry which marks a flash device as not needing
->> > erase. This patch adds support for setting MTD_NO_ERASE on powernvflash
->> > devices which have the property no-erase.
->> >
->> > Signed-off-by: William A. Kennington III <wak@google.com>
->> > ---
->> >  drivers/mtd/devices/powernv_flash.c | 2 ++
->> >  1 file changed, 2 insertions(+)
->> >
->> > diff --git a/drivers/mtd/devices/powernv_flash.c
->> b/drivers/mtd/devices/powernv_flash.c
->> > index f5396f26ddb4..fab9f9121b4c 100644
->> > --- a/drivers/mtd/devices/powernv_flash.c
->> > +++ b/drivers/mtd/devices/powernv_flash.c
->> > @@ -196,6 +196,8 @@ static int powernv_flash_set_driver_info(struct
->> device *dev,
->> >       mtd->name = of_get_property(dev->of_node, "name", NULL);
->> >       mtd->type = MTD_NORFLASH;
->> >       mtd->flags = MTD_WRITEABLE;
->> > +     if (of_property_read_bool(dev->of_node, "no-erase"))
->> > +             mtd->flags |= MTD_NO_ERASE;
->>
->> I don't see this property document in a DT binding doc, which is
->> mandatory. Actually, there's no DT bindings doc at all for the
->> 'ibm,opal-flash' device in mainline, is this normal?
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
 
-The binding doc is here:
+Changes in v2:
+  - Add a little more explanation for rationale of this patch
 
-  https://github.com/open-power/skiboot/blob/master/doc/device-tree/ibm%2Copal/flash.rst
+ Documentation/devicetree/bindings/mtd/denali-nand.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-But that property is not documented :(
-
-We have some of the skiboot bindings also in the kernel tree, but there
-was talk of moving all the binding docs *out* of the kernel, so we never
-made an effort to put more in. I've lost track of whether there are
-still plans to move the binding docs out or not.
-
-cheers
+diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+index 504291d..0ee8edb 100644
+--- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+@@ -29,7 +29,7 @@ nand: nand@ff900000 {
+ 	#address-cells = <1>;
+ 	#size-cells = <1>;
+ 	compatible = "altr,socfpga-denali-nand";
+-	reg = <0xff900000 0x100000>, <0xffb80000 0x10000>;
++	reg = <0xff900000 0x20>, <0xffb80000 0x1000>;
+ 	reg-names = "nand_data", "denali_reg";
+ 	interrupts = <0 144 4>;
+ };
+-- 
+2.7.4
