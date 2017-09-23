@@ -1,20 +1,26 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dvUCO-0008Ek-AM
- for linux-mtd@lists.infradead.org; Fri, 22 Sep 2017 20:05:22 +0000
-Date: Fri, 22 Sep 2017 22:04:55 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc: Mathias Thore <Mathias.Thore@infinera.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: Regression for NOR flash with multiple erase block regions
-Message-ID: <20170922220455.04f89f08@bbrezillon>
-In-Reply-To: <74af973f5ae542c3b53240c95949628c@svr-chch-ex1.atlnz.lc>
-References: <4762f230bbd3437990b9f5baa61ab095@sv-ex13-prd1.infinera.com>
- <74af973f5ae542c3b53240c95949628c@svr-chch-ex1.atlnz.lc>
+Received: from conssluserg-05.nifty.com ([210.131.2.90])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dvoWp-0007V8-6n
+ for linux-mtd@lists.infradead.org; Sat, 23 Sep 2017 17:47:49 +0000
+Received: from mail-yw0-f174.google.com (mail-yw0-f174.google.com
+ [209.85.161.174]) (authenticated)
+ by conssluserg-05.nifty.com with ESMTP id v8NHl4ej029835
+ for <linux-mtd@lists.infradead.org>; Sun, 24 Sep 2017 02:47:05 +0900
+Received: by mail-yw0-f174.google.com with SMTP id p10so2534567ywh.8
+ for <linux-mtd@lists.infradead.org>; Sat, 23 Sep 2017 10:47:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20170922073456.t25jl34k4irl7g6w@pengutronix.de>
+References: <25edd455-ad6c-f222-f552-2aa3d807112a@pengutronix.de>
+ <CAK7LNASR_1OsR+Dp3J7=Mtii_Ysp72DhWFXSYoeFVLiFPXu2AA@mail.gmail.com>
+ <20170922073456.t25jl34k4irl7g6w@pengutronix.de>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Sun, 24 Sep 2017 02:46:23 +0900
+Message-ID: <CAK7LNARgSZkah=NO2CyiynrxjdBue2pGjkhv=rPqYr1-VKFp3Q@mail.gmail.com>
+Subject: Re: nand: denali: issue with 4.13
+To: Oleksij Rempel <ore@pengutronix.de>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Sascha Hauer <kernel@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,39 +30,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 22 Sep 2017 18:27:42 +0000
-Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
+2017-09-22 16:34 GMT+09:00 Oleksij Rempel <ore@pengutronix.de>:
+> Hi,
+>
+> On Thu, Sep 21, 2017 at 08:00:34PM +0900, Masahiro Yamada wrote:
+>> Hi.
+>>
+>> 2017-09-21 15:44 GMT+09:00 Oleksij Rempel <ore@pengutronix.de>:
+>> > Hi Masahiro,
+>> >
+>> > you are probably the expert of denali nand driver.
+>> > With kernel v4.13 i have following issue, it works on FPGASoC 5CSEBA5U...
+>> > but is now working on FPGASoC 5CSXFC6C6U... both of them have same NAND
+>> > chip, and seems to have similar IP core.
+>> >
+>> > FPGASoC 5CSXFC6C6U...:
+>> > ====================================================================
+>> > [    0.095899] console [ttyS0] disabled
+>> > [    0.095941] ffc02000.serial0: ttyS0 at MMIO 0xffc02000 (irq = 38,
+>> > base_baud = 6250000) is a 16550A
+>> > [    0.702041] console [ttyS0] enabled
+>> > [    0.706986] brd: module loaded
+>> > [    0.716232] loop: module loaded
+>> > [    0.720074] nand: device found, Manufacturer ID: 0x00, Chip ID: 0x2c
+>>
+>>
+>> This line is strange.  It failed to read Manufacturer ID.
+>> The 0x2c should be Manufacturer ID, not Chip ID.
+>>
+>>
+>> I am guessing we need to wait a bit
+>> after the NAND_CMD_READID.
+>>
+>> Please try the following ugly patch.
+>
+> Suddenly this patch makes no difference.
 
-> Hi Mathias,
-> 
-> On 23/09/17 01:12, Mathias Thore wrote:
-> > Hello,
-> > 
-> > Commit 1eeef2d7483a7e3f8d2dd2a5b9939b3b814dc549 included in Linux 4.13 ( 
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/drivers/mtd/mtdpart.c?h=v4.13&id=1eeef2d7483a7e3f8d2dd2a5b9939b3b814dc549 
-> > ) introduces a regression for NOR flash with multiple erase block 
-> > regions of different sizes.
-> > 
-> > Only the largest erase block size seems to be considered when 
-> > determining if partitions are aligned. Partitions in smaller regions 
-> > will be mounted as read-only. With Linux 4.12 and earlier, read/write 
-> > access was available for these partitions.
 
-I don't understand how this could work before this patch? I mean, we
-were previously using mtd_mod_by_eb() to check part alignment and
-this functions is just returning the remainder of the off / erasesize
-division. So, assuming the erasesize of your NOR did not change
-between 4.12 and 4.13, I don't see how this commit could cause the
-regression you're describing here.
 
-Maybe MTD_NO_ERASE is set on your NOR, and ->writesize is used in place
-of ->erasesize to check the alignment, but ->writesize is normally set
-to 1 on NOR devices, so again, no real reasons for this failure.
+Does the following make difference?
 
-> 
-> Sorry about that. I think a fix would be to re-calculate the 
-> wr_alignment as we're looking at each erase block. Unfortunately I'm 
-> about to get on a plane for 13 hours so I'm pretty much a write off for 
-> the next couple of days.
-> 
-> I'll take a look when I get back on-line unless Boris beats me to it.
+
+@@ -3876,6 +3876,8 @@ static int nand_detect(struct nand_chip *chip,
+struct nand_flash_dev *type)
+        /* Select the device */
+        chip->select_chip(mtd, 0);
+
++       udelay(1);
++
+        /* Send the command for reading device ID */
+        chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1);
+
+
+
+
+
+
+> the initial patch was describing an issue with interrupts:
+> ============================================================================
+> FogBugz #163905: Support Denali NAND driver on socfpga platform
+>
+> This patch addresses a few bugs and features in the Denali NAND
+> driver on the socfpga platform.
+>
+> First the bugs:
+>
+> - Reading ONFI parameters would cause a timeout, because
+> the code sent the wrong commands to the controller/device.  That was
+> fixed, and in the process, code was added to wait for the appropriate interrupt.
+> ============================================================================
+>
+
+I see nothing about time-out error in the log you sent.
+
+
+I do not know what Altera guys did
+in their local repositories.
+
+The Denali NAND on SOCFPGA never worked
+(even on _any_ SoCs)
+with the mainline kernel before my re-work,
+so "git bisect" is useless here.
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
