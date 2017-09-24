@@ -1,23 +1,18 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dw2CG-0002xy-TG
- for linux-mtd@lists.infradead.org; Sun, 24 Sep 2017 08:23:31 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>, Pavel Machek <pavel@ucw.cz>,
- dwmw2@infradead.org, computersforpeace@gmail.com, cyrille.pitchen@wedev4u.fr,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- trivial@kernel.org
-Subject: Re: [PATCH] Fix C++ kernel in include/linux/mtd/mtd.h
-Date: Sun, 24 Sep 2017 10:23:25 +0200
-Message-ID: <9307201.RrdVcHfbLZ@blindfold>
-In-Reply-To: <20170924102006.5aa42982@bbrezillon>
-References: <20170923201314.GA14742@amd>
- <b45f83d5-6a0b-64f2-2a3a-708e1a1e7f90@gmail.com>
- <20170924102006.5aa42982@bbrezillon>
+From: Vignesh R <vigneshr@ti.com>
+To: Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>
+CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>,
+ Rob Herring <robh+dt@kernel.org>, <linux-mtd@lists.infradead.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ Vignesh R <vigneshr@ti.com>, linux-arm-kernel
+ <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v3 0/5] K2G: Add QSPI support
+Date: Sun, 24 Sep 2017 16:29:19 +0530
+Message-ID: <20170924105924.23923-1-vigneshr@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +22,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Sonntag, 24. September 2017, 10:20:06 CEST schrieb Boris Brezillon:
-> On Sat, 23 Sep 2017 23:10:26 +0200
-> 
-> Marek Vasut <marek.vasut@gmail.com> wrote:
-> > On 09/23/2017 10:13 PM, Pavel Machek wrote:
-> > > C++ comments look wrong in kernel tree. Fix one.
-> > 
-> > AFAIR they are now (sadly) accepted, but this patch works for me.
-> 
-> Works for me too. Here is my
-> 
-> Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> 
-> > Would be nice if trivial could pick it.
-> 
-> Hm, I'd recommend not doing that, otherwise we might end up with a
-> conflict if a patch modify something in this area.
+This series adds support for Cadence QSPI IP present in TI's 66AK2G SoC.
+The patches enhance the existing cadence-quadspi driver to support
+loopback clock circuit, pm_runtime support and tweaks for 66AK2G SoC.
 
-Let's carry it via MTD.
-BTW: Shouldn't it be s/kernel/comment/ in the subject line?
+Change log:
 
-Thanks,
-//richard
+v3:
+* Fix build warnings reported by kbuild test bot.
+
+Resend:
+* Rebase to latest linux-next.
+* Collect Acked-bys
+
+v2:
+* Drop DT patches. Will be sent as separate series as requested by
+ maintainer.
+* Split binding docs into separate patches.
+* Address comments by Rob Herring.
+
+
+Vignesh R (5):
+  mtd: spi-nor: cadence-quadspi: Add TI 66AK2G SoC specific compatible
+  mtd: spi-nor: cadence-quadspi: add a delay in write sequence
+  mtd: spi-nor: cadence-quadspi: Add new binding to enable loop-back
+    circuit
+  mtd: spi-nor: cadence-quadspi: Add support to enable loop-back clock
+    circuit
+  mtd: spi-nor: cadence-quadspi: Add runtime PM support
+
+ .../devicetree/bindings/mtd/cadence-quadspi.txt    |  7 +++-
+ drivers/mtd/spi-nor/cadence-quadspi.c              | 46 ++++++++++++++++++++--
+ 2 files changed, 49 insertions(+), 4 deletions(-)
+
+-- 
+2.14.1
