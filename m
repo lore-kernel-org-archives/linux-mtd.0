@@ -1,20 +1,22 @@
-From: Vignesh R <vigneshr@ti.com>
-To: Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>
-CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>,
- Rob Herring <robh+dt@kernel.org>, <linux-mtd@lists.infradead.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- Vignesh R <vigneshr@ti.com>, linux-arm-kernel
- <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v3 5/5] mtd: spi-nor: cadence-quadspi: Add runtime PM support
-Date: Sun, 24 Sep 2017 16:29:24 +0530
-Message-ID: <20170924105924.23923-6-vigneshr@ti.com>
-In-Reply-To: <20170924105924.23923-1-vigneshr@ti.com>
+Subject: Re: [PATCH v3 5/5] mtd: spi-nor: cadence-quadspi: Add runtime PM
+ support
+To: Vignesh R <vigneshr@ti.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 References: <20170924105924.23923-1-vigneshr@ti.com>
+ <20170924105924.23923-6-vigneshr@ti.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <3a1160f9-a0ae-c84c-d209-af97c3c3b0f6@gmail.com>
+Date: Sun, 24 Sep 2017 14:01:03 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20170924105924.23923-6-vigneshr@ti.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,49 +26,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add pm_runtime* calls to cadence-quadspi driver. This is required to
-switch on QSPI power domain on TI 66AK2G SoC during probe.
+On 09/24/2017 12:59 PM, Vignesh R wrote:
+> Add pm_runtime* calls to cadence-quadspi driver. This is required to
+> switch on QSPI power domain on TI 66AK2G SoC during probe.
+> 
+> Signed-off-by: Vignesh R <vigneshr@ti.com>
 
-Signed-off-by: Vignesh R <vigneshr@ti.com>
----
- drivers/mtd/spi-nor/cadence-quadspi.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Are you planning to add some more fine-grained PM control later?
 
-diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
-index d9629e8f4798..2c8e6226d267 100644
---- a/drivers/mtd/spi-nor/cadence-quadspi.c
-+++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-@@ -31,6 +31,7 @@
- #include <linux/of_device.h>
- #include <linux/of.h>
- #include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
- #include <linux/sched.h>
- #include <linux/spi/spi.h>
- #include <linux/timer.h>
-@@ -1224,6 +1225,13 @@ static int cqspi_probe(struct platform_device *pdev)
- 		return -ENXIO;
- 	}
- 
-+	pm_runtime_enable(&pdev->dev);
-+	ret = pm_runtime_get_sync(&pdev->dev);
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(&pdev->dev);
-+		return ret;
-+	}
-+
- 	ret = clk_prepare_enable(cqspi->clk);
- 	if (ret) {
- 		dev_err(dev, "Cannot enable QSPI clock.\n");
-@@ -1275,6 +1283,9 @@ static int cqspi_remove(struct platform_device *pdev)
- 
- 	clk_disable_unprepare(cqspi->clk);
- 
-+	pm_runtime_put_sync(&pdev->dev);
-+	pm_runtime_disable(&pdev->dev);
-+
- 	return 0;
- }
- 
+> ---
+>  drivers/mtd/spi-nor/cadence-quadspi.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+> index d9629e8f4798..2c8e6226d267 100644
+> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
+> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+> @@ -31,6 +31,7 @@
+>  #include <linux/of_device.h>
+>  #include <linux/of.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/pm_runtime.h>
+>  #include <linux/sched.h>
+>  #include <linux/spi/spi.h>
+>  #include <linux/timer.h>
+> @@ -1224,6 +1225,13 @@ static int cqspi_probe(struct platform_device *pdev)
+>  		return -ENXIO;
+>  	}
+>  
+> +	pm_runtime_enable(&pdev->dev);
+> +	ret = pm_runtime_get_sync(&pdev->dev);
+> +	if (ret < 0) {
+> +		pm_runtime_put_noidle(&pdev->dev);
+> +		return ret;
+> +	}
+> +
+>  	ret = clk_prepare_enable(cqspi->clk);
+>  	if (ret) {
+>  		dev_err(dev, "Cannot enable QSPI clock.\n");
+> @@ -1275,6 +1283,9 @@ static int cqspi_remove(struct platform_device *pdev)
+>  
+>  	clk_disable_unprepare(cqspi->clk);
+>  
+> +	pm_runtime_put_sync(&pdev->dev);
+> +	pm_runtime_disable(&pdev->dev);
+> +
+>  	return 0;
+>  }
+>  
+> 
+
+
 -- 
-2.14.1
+Best regards,
+Marek Vasut
