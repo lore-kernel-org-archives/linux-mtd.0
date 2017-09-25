@@ -1,24 +1,26 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-cys01nam02on061d.outbound.protection.outlook.com
+ ([2a01:111:f400:fe45::61d]
+ helo=NAM02-CY1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dwOBO-00039E-VY
- for linux-mtd@lists.infradead.org; Mon, 25 Sep 2017 07:52:06 +0000
-From: Abhishek Sahu <absahu@codeaurora.org>
+ id 1dwOOR-0008Ew-Ix
+ for linux-mtd@lists.infradead.org; Mon, 25 Sep 2017 08:05:34 +0000
+From: Mathias Thore <Mathias.Thore@infinera.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>,
- Archit Taneja <architt@codeaurora.org>,
- Sricharan R <sricharan@codeaurora.org>,
- Abhishek Sahu <absahu@codeaurora.org>
-Subject: [RESEND PATCH v5 11/16] mtd: nand: qcom: support for command
- descriptor formation
-Date: Mon, 25 Sep 2017 13:21:26 +0530
-Message-Id: <1506325886-23347-2-git-send-email-absahu@codeaurora.org>
-In-Reply-To: <1506325886-23347-1-git-send-email-absahu@codeaurora.org>
-References: <1506325886-23347-1-git-send-email-absahu@codeaurora.org>
+CC: Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: RE: Regression for NOR flash with multiple erase block regions
+Date: Mon, 25 Sep 2017 08:05:03 +0000
+Message-ID: <f00b3228ec334c1baaff72c6dec25728@sv-ex13-prd1.infinera.com>
+References: <4762f230bbd3437990b9f5baa61ab095@sv-ex13-prd1.infinera.com>
+ <74af973f5ae542c3b53240c95949628c@svr-chch-ex1.atlnz.lc>
+ <20170922220455.04f89f08@bbrezillon>
+ <a1416ffa136946f4bc6006324315ffb1@sv-ex13-prd1.infinera.com>
+ <20170925093004.0e0af91e@bbrezillon>
+In-Reply-To: <20170925093004.0e0af91e@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,211 +30,119 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-1. Add the function for command descriptor preparation which will
-   be used only by BAM DMA and it will form the DMA descriptors
-   containing command elements
-2. DMA_PREP_CMD flag should be used for forming command DMA
-   descriptors
+> -----Original Message-----
+> From: Boris Brezillon [mailto:boris.brezillon@free-electrons.com]
+> Sent: den 25 september 2017 09:30
+>=20
+> On Mon, 25 Sep 2017 06:28:18 +0000
+> Mathias Thore <Mathias.Thore@infinera.com> wrote:
+>=20
+> > > From: Boris Brezillon [mailto:boris.brezillon@free-electrons.com]
+> > > Sent: den 22 september 2017 22:05
+> > >
+> > > On Fri, 22 Sep 2017 18:27:42 +0000
+> > > Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
+> > >
+> > > > Hi Mathias,
+> > > >
+> > > > On 23/09/17 01:12, Mathias Thore wrote:
+> > > > > Hello,
+> > > > >
+> > > > > Commit 1eeef2d7483a7e3f8d2dd2a5b9939b3b814dc549 included in
+> > > > > Linux
+> > > 4.13 (
+> > > > >
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/c
+> > > ommit/d
+> > >
+> rivers/mtd/mtdpart.c?h=3Dv4.13&id=3D1eeef2d7483a7e3f8d2dd2a5b9939b3b814
+> > > dc549
+> > > > > ) introduces a regression for NOR flash with multiple erase
+> > > > > block regions of different sizes.
+> > > > >
+> > > > > Only the largest erase block size seems to be considered when
+> > > > > determining if partitions are aligned. Partitions in smaller
+> > > > > regions will be mounted as read-only. With Linux 4.12 and
+> > > > > earlier, read/write access was available for these partitions.
+> > >
+> > > I don't understand how this could work before this patch? I mean, we
+> > > were previously using mtd_mod_by_eb() to check part alignment and
+> > > this functions is just returning the remainder of the off /
+> > > erasesize division. So, assuming the erasesize of your NOR did not
+> > > change between 4.12 and 4.13, I don't see how this commit could
+> > > cause the regression you're describing here.
+> >
+> > Looking at the earlier code, in the call to mtd_mod_by_eb, the paramete=
+r
+> is slave->mtd. The slave mtd struct holds the correct erase size. The new
+> code uses wr_alignment for all alignment tests, which comes from
+> master/parent, and seems to always hold the largest possible erase size.
+>=20
+> Oh indeed! I didn't notice that the initial mtd_mod_by_eb() test was done
+> against the slave dev and not the master one.
+>=20
+> Can you test the following patch and let me know it it solves your proble=
+m?
 
-Reviewed-by: Archit Taneja <architt@codeaurora.org>
-Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
----
+The patch does not compile in my 4.13 tree. However,
 
-* Changes from v4: None
+	if (!(slave->mtd.flags & MTD_NO_ERASE))
+		wr_alignment =3D slave->mtd.erasesize;
+or
+	if (!(master->flags & MTD_NO_ERASE))
+		wr_alignment =3D slave->mtd.erasesize;
 
-The BAM DMA patches [1] got merged in 4.14-rc1 so now all the build
-dependencies are solved and this patch can be merged.
-This patch can be cleanly applied over v4.14-rc1.
+do, and both work equally well to solve my problem.
 
-[1] http://www.spinics.net/lists/dmaengine/msg13665.html
-
- drivers/mtd/nand/qcom_nandc.c | 108 +++++++++++++++++++++++++++++++++++-------
- 1 file changed, 92 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-index b0a4734..52d9fae 100644
---- a/drivers/mtd/nand/qcom_nandc.c
-+++ b/drivers/mtd/nand/qcom_nandc.c
-@@ -200,6 +200,14 @@
-  */
- #define dev_cmd_reg_addr(nandc, reg) ((nandc)->props->dev_cmd_reg_start + (reg))
- 
-+/* Returns the NAND register physical address */
-+#define nandc_reg_phys(chip, offset) ((chip)->base_phys + (offset))
-+
-+/* Returns the dma address for reg read buffer */
-+#define reg_buf_dma_addr(chip, vaddr) \
-+	((chip)->reg_read_dma + \
-+	((uint8_t *)(vaddr) - (uint8_t *)(chip)->reg_read_buf))
-+
- #define QPIC_PER_CW_CMD_ELEMENTS	32
- #define QPIC_PER_CW_CMD_SGL		32
- #define QPIC_PER_CW_DATA_SGL		8
-@@ -317,7 +325,8 @@ struct nandc_regs {
-  *				controller
-  * @dev:			parent device
-  * @base:			MMIO base
-- * @base_dma:			physical base address of controller registers
-+ * @base_phys:			physical base address of controller registers
-+ * @base_dma:			dma base address of controller registers
-  * @core_clk:			controller clock
-  * @aon_clk:			another controller clock
-  *
-@@ -350,6 +359,7 @@ struct qcom_nand_controller {
- 	struct device *dev;
- 
- 	void __iomem *base;
-+	phys_addr_t base_phys;
- 	dma_addr_t base_dma;
- 
- 	struct clk *core_clk;
-@@ -751,6 +761,66 @@ static int prepare_bam_async_desc(struct qcom_nand_controller *nandc,
- }
- 
- /*
-+ * Prepares the command descriptor for BAM DMA which will be used for NAND
-+ * register reads and writes. The command descriptor requires the command
-+ * to be formed in command element type so this function uses the command
-+ * element from bam transaction ce array and fills the same with required
-+ * data. A single SGL can contain multiple command elements so
-+ * NAND_BAM_NEXT_SGL will be used for starting the separate SGL
-+ * after the current command element.
-+ */
-+static int prep_bam_dma_desc_cmd(struct qcom_nand_controller *nandc, bool read,
-+				 int reg_off, const void *vaddr,
-+				 int size, unsigned int flags)
-+{
-+	int bam_ce_size;
-+	int i, ret;
-+	struct bam_cmd_element *bam_ce_buffer;
-+	struct bam_transaction *bam_txn = nandc->bam_txn;
-+
-+	bam_ce_buffer = &bam_txn->bam_ce[bam_txn->bam_ce_pos];
-+
-+	/* fill the command desc */
-+	for (i = 0; i < size; i++) {
-+		if (read)
-+			bam_prep_ce(&bam_ce_buffer[i],
-+				    nandc_reg_phys(nandc, reg_off + 4 * i),
-+				    BAM_READ_COMMAND,
-+				    reg_buf_dma_addr(nandc,
-+						     (__le32 *)vaddr + i));
-+		else
-+			bam_prep_ce_le32(&bam_ce_buffer[i],
-+					 nandc_reg_phys(nandc, reg_off + 4 * i),
-+					 BAM_WRITE_COMMAND,
-+					 *((__le32 *)vaddr + i));
-+	}
-+
-+	bam_txn->bam_ce_pos += size;
-+
-+	/* use the separate sgl after this command */
-+	if (flags & NAND_BAM_NEXT_SGL) {
-+		bam_ce_buffer = &bam_txn->bam_ce[bam_txn->bam_ce_start];
-+		bam_ce_size = (bam_txn->bam_ce_pos -
-+				bam_txn->bam_ce_start) *
-+				sizeof(struct bam_cmd_element);
-+		sg_set_buf(&bam_txn->cmd_sgl[bam_txn->cmd_sgl_pos],
-+			   bam_ce_buffer, bam_ce_size);
-+		bam_txn->cmd_sgl_pos++;
-+		bam_txn->bam_ce_start = bam_txn->bam_ce_pos;
-+
-+		if (flags & NAND_BAM_NWD) {
-+			ret = prepare_bam_async_desc(nandc, nandc->cmd_chan,
-+						     DMA_PREP_FENCE |
-+						     DMA_PREP_CMD);
-+			if (ret)
-+				return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-  * Prepares the data descriptor for BAM DMA which will be used for NAND
-  * data reads and writes.
-  */
-@@ -868,19 +938,22 @@ static int read_reg_dma(struct qcom_nand_controller *nandc, int first,
- {
- 	bool flow_control = false;
- 	void *vaddr;
--	int size;
- 
--	if (first == NAND_READ_ID || first == NAND_FLASH_STATUS)
--		flow_control = true;
-+	vaddr = nandc->reg_read_buf + nandc->reg_read_pos;
-+	nandc->reg_read_pos += num_regs;
- 
- 	if (first == NAND_DEV_CMD_VLD || first == NAND_DEV_CMD1)
- 		first = dev_cmd_reg_addr(nandc, first);
- 
--	size = num_regs * sizeof(u32);
--	vaddr = nandc->reg_read_buf + nandc->reg_read_pos;
--	nandc->reg_read_pos += num_regs;
-+	if (nandc->props->is_bam)
-+		return prep_bam_dma_desc_cmd(nandc, true, first, vaddr,
-+					     num_regs, flags);
- 
--	return prep_adm_dma_desc(nandc, true, first, vaddr, size, flow_control);
-+	if (first == NAND_READ_ID || first == NAND_FLASH_STATUS)
-+		flow_control = true;
-+
-+	return prep_adm_dma_desc(nandc, true, first, vaddr,
-+				 num_regs * sizeof(u32), flow_control);
- }
- 
- /*
-@@ -897,13 +970,9 @@ static int write_reg_dma(struct qcom_nand_controller *nandc, int first,
- 	bool flow_control = false;
- 	struct nandc_regs *regs = nandc->regs;
- 	void *vaddr;
--	int size;
- 
- 	vaddr = offset_to_nandc_reg(regs, first);
- 
--	if (first == NAND_FLASH_CMD)
--		flow_control = true;
--
- 	if (first == NAND_ERASED_CW_DETECT_CFG) {
- 		if (flags & NAND_ERASED_CW_SET)
- 			vaddr = &regs->erased_cw_detect_cfg_set;
-@@ -920,10 +989,15 @@ static int write_reg_dma(struct qcom_nand_controller *nandc, int first,
- 	if (first == NAND_DEV_CMD_VLD_RESTORE || first == NAND_DEV_CMD_VLD)
- 		first = dev_cmd_reg_addr(nandc, NAND_DEV_CMD_VLD);
- 
--	size = num_regs * sizeof(u32);
-+	if (nandc->props->is_bam)
-+		return prep_bam_dma_desc_cmd(nandc, false, first, vaddr,
-+					     num_regs, flags);
-+
-+	if (first == NAND_FLASH_CMD)
-+		flow_control = true;
- 
--	return prep_adm_dma_desc(nandc, false, first, vaddr, size,
--				 flow_control);
-+	return prep_adm_dma_desc(nandc, false, first, vaddr,
-+				 num_regs * sizeof(u32), flow_control);
- }
- 
- /*
-@@ -1187,7 +1261,8 @@ static int submit_descs(struct qcom_nand_controller *nandc)
- 		}
- 
- 		if (bam_txn->cmd_sgl_pos > bam_txn->cmd_sgl_start) {
--			r = prepare_bam_async_desc(nandc, nandc->cmd_chan, 0);
-+			r = prepare_bam_async_desc(nandc, nandc->cmd_chan,
-+						   DMA_PREP_CMD);
- 			if (r)
- 				return r;
- 		}
-@@ -2722,6 +2797,7 @@ static int qcom_nandc_probe(struct platform_device *pdev)
- 	if (IS_ERR(nandc->base))
- 		return PTR_ERR(nandc->base);
- 
-+	nandc->base_phys = res->start;
- 	nandc->base_dma = phys_to_dma(dev, (phys_addr_t)res->start);
- 
- 	nandc->core_clk = devm_clk_get(dev, "core");
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+>=20
+> --->8---
+> From cdc8a5078ee330a645d1076a8289b411cffc4257 Mon Sep 17 00:00:00
+> 2001
+> From: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Date: Mon, 25 Sep 2017 09:14:00 +0200
+> Subject: [PATCH] mtd: Fix partition alignment check on multi-erasesize
+> devices
+>=20
+> Commit 1eeef2d7483a ("mtd: handle partitioning on devices with 0
+> erasesize") introduced a regression on heterogeneous erase region devices=
+.
+> Alignment of the partition was tested against the master eraseblock size
+> which can be bigger than the slave one, thus leading to some partitions b=
+eing
+> marked as read-only.
+>=20
+> Update wr_alignment to match this slave erasesize after this erasesize ha=
+s
+> been determined by picking the biggest erasesize of all the regions
+> embedded in the MTD partition.
+>=20
+> Reported-by: Mathias Thore <Mathias.Thore@infinera.com>
+> Fixes: 1eeef2d7483a ("mtd: handle partitioning on devices with 0 erasesiz=
+e")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>  drivers/mtd/mtdpart.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>=20
+> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c index
+> 5736b0c90b33..8802185b7729 100644
+> --- a/drivers/mtd/mtdpart.c
+> +++ b/drivers/mtd/mtdpart.c
+> @@ -581,6 +581,14 @@ static struct mtd_part *allocate_partition(struct
+> mtd_info *parent,
+>  		slave->mtd.erasesize =3D parent->erasesize;
+>  	}
+>=20
+> +	/*
+> +	 * Slave erasesize might differ from the master one if the
+> master
+> +	 * exposes several regions with different erasesize. Adjust
+> +	 * wr_alignment accordingly.
+> +	 */
+> +	if (!(slave->flags & MTD_NO_ERASE))
+> +		wr_alignment =3D slave->erasesize;
+> +
+>  	tmp =3D slave->offset;
+>  	remainder =3D do_div(tmp, wr_alignment);
+>  	if ((slave->mtd.flags & MTD_WRITEABLE) && remainder) {
