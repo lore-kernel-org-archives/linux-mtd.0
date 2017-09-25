@@ -14,12 +14,9 @@ Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Antoine Tenart <antoine.tenart@free-electrons.com>,
  Nadav Haklai <nadavh@marvell.com>,
  Miquel Raynal <miquel.raynal@free-electrons.com>
-Subject: [PATCH 1/3] Documentation: devicetree: add pxa3xx compatible and
- syscon property
-Date: Mon, 25 Sep 2017 16:53:50 +0200
-Message-Id: <20170925145352.13145-2-miquel.raynal@free-electrons.com>
-In-Reply-To: <20170925145352.13145-1-miquel.raynal@free-electrons.com>
-References: <20170925145352.13145-1-miquel.raynal@free-electrons.com>
+Subject: [PATCH 0/3] Enable NAND on Armada-7040-DB board
+Date: Mon, 25 Sep 2017 16:53:49 +0200
+Message-Id: <20170925145352.13145-1-miquel.raynal@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,33 +26,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Document the new pxa3xx_nand driver compatible string for A7k/A8k SoCs
-that need to access system controller registers in order to enable the
-NAND controller through the use of a phandle pointed to by the
-'marvell,system-controller' property.
+Hi,
 
-Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
----
- Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt | 4 ++++
- 1 file changed, 4 insertions(+)
+This series adds support for NAND on Armada-7040-DB board.
 
-diff --git a/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt b/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
-index d9b655f11048..d4ee4da58463 100644
---- a/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
-@@ -5,9 +5,13 @@ Required properties:
-  - compatible:		Should be set to one of the following:
- 			marvell,pxa3xx-nand
- 			marvell,armada370-nand
-+			marvell,armada-8k-nand
-  - reg: 		The register base for the controller
-  - interrupts:		The interrupt to map
-  - #address-cells:	Set to <1> if the node includes partitions
-+ - marvell,system-controller: Set to retrieve the syscon node that handles
-+			NAND controller related registers (only required
-+			with marvell,armada-8k-nand compatible).
- 
- Optional properties:
- 
+Besides standard NAND node addition, it also introduces a new compatible
+string for the pxa3xx_nand driver to support the subitilities of A7k/A8k
+SoCs, as well as a new property used by the pxa3xx_nand driver to grab a
+phandle on the system control node in order to enable the NAND
+controller itself.
+
+Regards,
+Miquel
+
+
+Gregory CLEMENT (1):
+  arm64: dts: marvell: add NAND support on the 7040-DB board
+
+Miquel Raynal (2):
+  Documentation: devicetree: add pxa3xx compatible and syscon property
+  mtd: nand: pxa3xx: enable NAND controller if the SoC needs it
+
+ .../devicetree/bindings/mtd/pxa3xx-nand.txt        |  4 +++
+ arch/arm64/boot/dts/marvell/armada-7040-db.dts     | 24 +++++++++++++
+ arch/arm64/boot/dts/marvell/armada-70x0.dtsi       | 14 ++++++++
+ .../boot/dts/marvell/armada-cp110-master.dtsi      |  3 +-
+ drivers/mtd/nand/pxa3xx_nand.c                     | 41 +++++++++++++++++++---
+ 5 files changed, 81 insertions(+), 5 deletions(-)
+
 -- 
 2.11.0
