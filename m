@@ -1,27 +1,24 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dwOSW-0003IP-Us
- for linux-mtd@lists.infradead.org; Mon, 25 Sep 2017 08:09:47 +0000
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dwOXg-0007Wf-Ry
+ for linux-mtd@lists.infradead.org; Mon, 25 Sep 2017 08:15:08 +0000
+Date: Mon, 25 Sep 2017 10:14:25 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Mathias Thore <Mathias.Thore@infinera.com>
+Cc: Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: Regression for NOR flash with multiple erase block regions
+Message-ID: <20170925101425.4389f713@bbrezillon>
+In-Reply-To: <f00b3228ec334c1baaff72c6dec25728@sv-ex13-prd1.infinera.com>
+References: <4762f230bbd3437990b9f5baa61ab095@sv-ex13-prd1.infinera.com>
+ <74af973f5ae542c3b53240c95949628c@svr-chch-ex1.atlnz.lc>
+ <20170922220455.04f89f08@bbrezillon>
+ <a1416ffa136946f4bc6006324315ffb1@sv-ex13-prd1.infinera.com>
+ <20170925093004.0e0af91e@bbrezillon>
+ <f00b3228ec334c1baaff72c6dec25728@sv-ex13-prd1.infinera.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date: Mon, 25 Sep 2017 13:39:23 +0530
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Archit Taneja <architt@codeaurora.org>, Richard Weinberger
- <richard@nod.at>, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Andy Gross <andy.gross@linaro.org>, Sricharan R <sricharan@codeaurora.org>,
- Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>
-Subject: Re: [PATCH v5 00/16] Add QCOM QPIC NAND support
-In-Reply-To: <067bcd2f3a653427be0b31fc1425a047@codeaurora.org>
-References: <1502971674-13810-1-git-send-email-absahu@codeaurora.org>
- <20170821221504.0d4d8d00@bbrezillon>
- <067bcd2f3a653427be0b31fc1425a047@codeaurora.org>
-Message-ID: <5b57ffb23496c8d94ab99bab918f2e29@codeaurora.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,62 +28,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2017-08-22 12:02, Abhishek Sahu wrote:
-> On 2017-08-22 01:45, Boris Brezillon wrote:
->> Le Thu, 17 Aug 2017 17:37:38 +0530,
->> Abhishek Sahu <absahu@codeaurora.org> a écrit :
->> 
->>> * v5:
->>> 
->>> 1. Removed the patches already applied to linux-next and rebased the
->>>    remaining patches on [3]
->>> 2. Addressed the review comments in v4 and Added Archit Reviewed
->>>    by tag.
->>> 
->>> [3] http://git.infradead.org/l2-mtd.git/shortlog/refs/heads/nand/next
->>> 
+On Mon, 25 Sep 2017 08:05:03 +0000
+Mathias Thore <Mathias.Thore@infinera.com> wrote:
+
+> > -----Original Message-----
+> > From: Boris Brezillon [mailto:boris.brezillon@free-electrons.com]
+> > Sent: den 25 september 2017 09:30
+> > 
+> > On Mon, 25 Sep 2017 06:28:18 +0000
+> > Mathias Thore <Mathias.Thore@infinera.com> wrote:
+> >   
+> > > > From: Boris Brezillon [mailto:boris.brezillon@free-electrons.com]
+> > > > Sent: den 22 september 2017 22:05
+> > > >
+> > > > On Fri, 22 Sep 2017 18:27:42 +0000
+> > > > Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
+> > > >  
+> > > > > Hi Mathias,
+> > > > >
+> > > > > On 23/09/17 01:12, Mathias Thore wrote:  
+> > > > > > Hello,
+> > > > > >
+> > > > > > Commit 1eeef2d7483a7e3f8d2dd2a5b9939b3b814dc549 included in
+> > > > > > Linux  
+> > > > 4.13 (  
+> > > > > >  
+> > > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/c
+> > > > ommit/d
+> > > >  
+> > rivers/mtd/mtdpart.c?h=v4.13&id=1eeef2d7483a7e3f8d2dd2a5b9939b3b814  
+> > > > dc549  
+> > > > > > ) introduces a regression for NOR flash with multiple erase
+> > > > > > block regions of different sizes.
+> > > > > >
+> > > > > > Only the largest erase block size seems to be considered when
+> > > > > > determining if partitions are aligned. Partitions in smaller
+> > > > > > regions will be mounted as read-only. With Linux 4.12 and
+> > > > > > earlier, read/write access was available for these partitions.  
+> > > >
+> > > > I don't understand how this could work before this patch? I mean, we
+> > > > were previously using mtd_mod_by_eb() to check part alignment and
+> > > > this functions is just returning the remainder of the off /
+> > > > erasesize division. So, assuming the erasesize of your NOR did not
+> > > > change between 4.12 and 4.13, I don't see how this commit could
+> > > > cause the regression you're describing here.  
+> > >
+> > > Looking at the earlier code, in the call to mtd_mod_by_eb, the parameter  
+> > is slave->mtd. The slave mtd struct holds the correct erase size. The new
+> > code uses wr_alignment for all alignment tests, which comes from
+> > master/parent, and seems to always hold the largest possible erase size.
+> > 
+> > Oh indeed! I didn't notice that the initial mtd_mod_by_eb() test was done
+> > against the slave dev and not the master one.
+> > 
+> > Can you test the following patch and let me know it it solves your problem?  
 > 
->  <snip>
+> The patch does not compile in my 4.13 tree. However,
 > 
->>> 
->>> Abhishek Sahu (16):
->>>   mtd: nand: qcom: DMA mapping support for register read buffer
->>>   mtd: nand: qcom: allocate BAM transaction
->>>   mtd: nand: qcom: add BAM DMA descriptor handling
->>>   mtd: nand: qcom: support for passing flags in DMA helper functions
->>>   mtd: nand: qcom: support for read location registers
->>>   mtd: nand: qcom: erased codeword detection configuration
->>>   mtd: nand: qcom: enable BAM or ADM mode
->>>   mtd: nand: qcom: QPIC data descriptors handling
->>>   mtd: nand: qcom: support for different DEV_CMD register offsets
->>>   mtd: nand: qcom: add command elements in BAM transaction
->>>   mtd: nand: qcom: support for command descriptor formation
->>>   dt-bindings: qcom_nandc: fix the ipq806x device tree example
->>>   dt-bindings: qcom_nandc: IPQ4019 QPIC NAND documentation
->>>   dt-bindings: qcom_nandc: IPQ8074 QPIC NAND documentation
->>>   mtd: nand: qcom: support for IPQ4019 QPIC NAND controller
->>>   mtd: nand: qcom: Support for IPQ8074 QPIC NAND controller
->> 
->> Applied everything to nand/next except patch 10 and 11. Let me know
->> when the dmaengine dependency is merged and I'll take the remaining
->> patches.
->> 
+> 	if (!(slave->mtd.flags & MTD_NO_ERASE))
+> 		wr_alignment = slave->mtd.erasesize;
+> or
+> 	if (!(master->flags & MTD_NO_ERASE))
+> 		wr_alignment = slave->mtd.erasesize;
+> 
+> do, and both work equally well to solve my problem.
 
-  Hi Boris,
+Oops. I'll fix that and send a new version.
 
-  The dmaengine dependencies are merged in 4.14-rc1 so you can take 
-remaining 2
-  patches. I have resent those 2 patches again and it can be cleanly
-  applied over 4.14-rc1.
+Thanks,
 
-  Thanks,
-  Abhishek
+Boris
 
 > 
->> 
->>> 
->>>  .../devicetree/bindings/mtd/qcom_nandc.txt         |  63 +-
->>>  drivers/mtd/nand/qcom_nandc.c                      | 746 
->>> ++++++++++++++++++---
->>>  2 files changed, 722 insertions(+), 87 deletions(-)
->>> 
+> >   
+> > --->8---  
+> > From cdc8a5078ee330a645d1076a8289b411cffc4257 Mon Sep 17 00:00:00
+> > 2001
+> > From: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > Date: Mon, 25 Sep 2017 09:14:00 +0200
+> > Subject: [PATCH] mtd: Fix partition alignment check on multi-erasesize
+> > devices
+> > 
+> > Commit 1eeef2d7483a ("mtd: handle partitioning on devices with 0
+> > erasesize") introduced a regression on heterogeneous erase region devices.
+> > Alignment of the partition was tested against the master eraseblock size
+> > which can be bigger than the slave one, thus leading to some partitions being
+> > marked as read-only.
+> > 
+> > Update wr_alignment to match this slave erasesize after this erasesize has
+> > been determined by picking the biggest erasesize of all the regions
+> > embedded in the MTD partition.
+> > 
+> > Reported-by: Mathias Thore <Mathias.Thore@infinera.com>
+> > Fixes: 1eeef2d7483a ("mtd: handle partitioning on devices with 0 erasesize")
+> > Cc: <stable@vger.kernel.org>
+> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > ---
+> >  drivers/mtd/mtdpart.c | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> > 
+> > diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c index
+> > 5736b0c90b33..8802185b7729 100644
+> > --- a/drivers/mtd/mtdpart.c
+> > +++ b/drivers/mtd/mtdpart.c
+> > @@ -581,6 +581,14 @@ static struct mtd_part *allocate_partition(struct
+> > mtd_info *parent,
+> >  		slave->mtd.erasesize = parent->erasesize;
+> >  	}
+> > 
+> > +	/*
+> > +	 * Slave erasesize might differ from the master one if the
+> > master
+> > +	 * exposes several regions with different erasesize. Adjust
+> > +	 * wr_alignment accordingly.
+> > +	 */
+> > +	if (!(slave->flags & MTD_NO_ERASE))
+> > +		wr_alignment = slave->erasesize;
+> > +
+> >  	tmp = slave->offset;
+> >  	remainder = do_div(tmp, wr_alignment);
+> >  	if ((slave->mtd.flags & MTD_WRITEABLE) && remainder) {  
