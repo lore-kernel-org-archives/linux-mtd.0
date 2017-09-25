@@ -1,22 +1,22 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dwNqQ-0000YA-7c
- for linux-mtd@lists.infradead.org; Mon, 25 Sep 2017 07:30:26 +0000
-Date: Mon, 25 Sep 2017 09:30:04 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Mathias Thore <Mathias.Thore@infinera.com>
-Cc: Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: Regression for NOR flash with multiple erase block regions
-Message-ID: <20170925093004.0e0af91e@bbrezillon>
-In-Reply-To: <a1416ffa136946f4bc6006324315ffb1@sv-ex13-prd1.infinera.com>
-References: <4762f230bbd3437990b9f5baa61ab095@sv-ex13-prd1.infinera.com>
- <74af973f5ae542c3b53240c95949628c@svr-chch-ex1.atlnz.lc>
- <20170922220455.04f89f08@bbrezillon>
- <a1416ffa136946f4bc6006324315ffb1@sv-ex13-prd1.infinera.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dwOBO-00036a-VX
+ for linux-mtd@lists.infradead.org; Mon, 25 Sep 2017 07:52:05 +0000
+From: Abhishek Sahu <absahu@codeaurora.org>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>,
+ Archit Taneja <architt@codeaurora.org>,
+ Sricharan R <sricharan@codeaurora.org>,
+ Abhishek Sahu <absahu@codeaurora.org>
+Subject: [RESEND PATCH v5 10/16] mtd: nand: qcom: add command elements in BAM
+ transaction
+Date: Mon, 25 Sep 2017 13:21:25 +0530
+Message-Id: <1506325886-23347-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,97 +26,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 25 Sep 2017 06:28:18 +0000
-Mathias Thore <Mathias.Thore@infinera.com> wrote:
+All the QPIC register read/write through BAM DMA requires
+command descriptor which contains the array of command elements.
 
-> > From: Boris Brezillon [mailto:boris.brezillon@free-electrons.com]
-> > Sent: den 22 september 2017 22:05
-> >=20
-> > On Fri, 22 Sep 2017 18:27:42 +0000
-> > Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
-> >  =20
-> > > Hi Mathias,
-> > >
-> > > On 23/09/17 01:12, Mathias Thore wrote: =20
-> > > > Hello,
-> > > >
-> > > > Commit 1eeef2d7483a7e3f8d2dd2a5b9939b3b814dc549 included in Linux =
-=20
-> > 4.13 ( =20
-> > > > =20
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/comm=
-it/d
-> > rivers/mtd/mtdpart.c?h=3Dv4.13&id=3D1eeef2d7483a7e3f8d2dd2a5b9939b3b814
-> > dc549 =20
-> > > > ) introduces a regression for NOR flash with multiple erase block
-> > > > regions of different sizes.
-> > > >
-> > > > Only the largest erase block size seems to be considered when
-> > > > determining if partitions are aligned. Partitions in smaller regions
-> > > > will be mounted as read-only. With Linux 4.12 and earlier, read/wri=
-te
-> > > > access was available for these partitions. =20
-> >=20
-> > I don't understand how this could work before this patch? I mean, we
-> > were previously using mtd_mod_by_eb() to check part alignment and
-> > this functions is just returning the remainder of the off / erasesize
-> > division. So, assuming the erasesize of your NOR did not change
-> > between 4.12 and 4.13, I don't see how this commit could cause the
-> > regression you're describing here. =20
->=20
-> Looking at the earlier code, in the call to mtd_mod_by_eb, the parameter =
-is slave->mtd. The slave mtd struct holds the correct erase size. The new c=
-ode uses wr_alignment for all alignment tests, which comes from master/pare=
-nt, and seems to always hold the largest possible erase size.
-
-Oh indeed! I didn't notice that the initial mtd_mod_by_eb() test was done
-against the slave dev and not the master one.
-
-Can you test the following patch and let me know it it solves your
-problem?
-
---->8---
-=46rom cdc8a5078ee330a645d1076a8289b411cffc4257 Mon Sep 17 00:00:00 2001
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-Date: Mon, 25 Sep 2017 09:14:00 +0200
-Subject: [PATCH] mtd: Fix partition alignment check on multi-erasesize devi=
-ces
-
-Commit 1eeef2d7483a ("mtd: handle partitioning on devices with 0
-erasesize") introduced a regression on heterogeneous erase region
-devices. Alignment of the partition was tested against the master
-eraseblock size which can be bigger than the slave one, thus leading
-to some partitions being marked as read-only.
-
-Update wr_alignment to match this slave erasesize after this erasesize
-has been determined by picking the biggest erasesize of all the regions
-embedded in the MTD partition.
-
-Reported-by: Mathias Thore <Mathias.Thore@infinera.com>
-Fixes: 1eeef2d7483a ("mtd: handle partitioning on devices with 0 erasesize")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Reviewed-by: Archit Taneja <architt@codeaurora.org>
+Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 ---
- drivers/mtd/mtdpart.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 5736b0c90b33..8802185b7729 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -581,6 +581,14 @@ static struct mtd_part *allocate_partition(struct mtd_=
-info *parent,
- 		slave->mtd.erasesize =3D parent->erasesize;
- 	}
-=20
-+	/*
-+	 * Slave erasesize might differ from the master one if the master
-+	 * exposes several regions with different erasesize. Adjust
-+	 * wr_alignment accordingly.
-+	 */
-+	if (!(slave->flags & MTD_NO_ERASE))
-+		wr_alignment =3D slave->erasesize;
+* Changes from v4: None
+
+The BAM DMA patches [1] got merged in 4.14-rc1 so now all the build
+dependencies are solved and this patch can be merged.
+This patch can be cleanly applied over v4.14-rc1.
+
+[1] http://www.spinics.net/lists/dmaengine/msg13665.html
+
+ drivers/mtd/nand/qcom_nandc.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
+index 7977a70..b0a4734 100644
+--- a/drivers/mtd/nand/qcom_nandc.c
++++ b/drivers/mtd/nand/qcom_nandc.c
+@@ -22,6 +22,7 @@
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <linux/delay.h>
++#include <linux/dma/qcom_bam_dma.h>
+ 
+ /* NANDc reg offsets */
+ #define	NAND_FLASH_CMD			0x00
+@@ -199,6 +200,7 @@
+  */
+ #define dev_cmd_reg_addr(nandc, reg) ((nandc)->props->dev_cmd_reg_start + (reg))
+ 
++#define QPIC_PER_CW_CMD_ELEMENTS	32
+ #define QPIC_PER_CW_CMD_SGL		32
+ #define QPIC_PER_CW_DATA_SGL		8
+ 
+@@ -221,8 +223,13 @@
+ /*
+  * This data type corresponds to the BAM transaction which will be used for all
+  * NAND transfers.
++ * @bam_ce - the array of BAM command elements
+  * @cmd_sgl - sgl for NAND BAM command pipe
+  * @data_sgl - sgl for NAND BAM consumer/producer pipe
++ * @bam_ce_pos - the index in bam_ce which is available for next sgl
++ * @bam_ce_start - the index in bam_ce which marks the start position ce
++ *		   for current sgl. It will be used for size calculation
++ *		   for current sgl
+  * @cmd_sgl_pos - current index in command sgl.
+  * @cmd_sgl_start - start index in command sgl.
+  * @tx_sgl_pos - current index in data sgl for tx.
+@@ -231,8 +238,11 @@
+  * @rx_sgl_start - start index in data sgl for rx.
+  */
+ struct bam_transaction {
++	struct bam_cmd_element *bam_ce;
+ 	struct scatterlist *cmd_sgl;
+ 	struct scatterlist *data_sgl;
++	u32 bam_ce_pos;
++	u32 bam_ce_start;
+ 	u32 cmd_sgl_pos;
+ 	u32 cmd_sgl_start;
+ 	u32 tx_sgl_pos;
+@@ -462,7 +472,8 @@ static void free_bam_transaction(struct qcom_nand_controller *nandc)
+ 
+ 	bam_txn_size =
+ 		sizeof(*bam_txn) + num_cw *
+-		((sizeof(*bam_txn->cmd_sgl) * QPIC_PER_CW_CMD_SGL) +
++		((sizeof(*bam_txn->bam_ce) * QPIC_PER_CW_CMD_ELEMENTS) +
++		(sizeof(*bam_txn->cmd_sgl) * QPIC_PER_CW_CMD_SGL) +
+ 		(sizeof(*bam_txn->data_sgl) * QPIC_PER_CW_DATA_SGL));
+ 
+ 	bam_txn_buf = devm_kzalloc(nandc->dev, bam_txn_size, GFP_KERNEL);
+@@ -472,6 +483,10 @@ static void free_bam_transaction(struct qcom_nand_controller *nandc)
+ 	bam_txn = bam_txn_buf;
+ 	bam_txn_buf += sizeof(*bam_txn);
+ 
++	bam_txn->bam_ce = bam_txn_buf;
++	bam_txn_buf +=
++		sizeof(*bam_txn->bam_ce) * QPIC_PER_CW_CMD_ELEMENTS * num_cw;
 +
- 	tmp =3D slave->offset;
- 	remainder =3D do_div(tmp, wr_alignment);
- 	if ((slave->mtd.flags & MTD_WRITEABLE) && remainder) {
+ 	bam_txn->cmd_sgl = bam_txn_buf;
+ 	bam_txn_buf +=
+ 		sizeof(*bam_txn->cmd_sgl) * QPIC_PER_CW_CMD_SGL * num_cw;
+@@ -489,6 +504,8 @@ static void clear_bam_transaction(struct qcom_nand_controller *nandc)
+ 	if (!nandc->props->is_bam)
+ 		return;
+ 
++	bam_txn->bam_ce_pos = 0;
++	bam_txn->bam_ce_start = 0;
+ 	bam_txn->cmd_sgl_pos = 0;
+ 	bam_txn->cmd_sgl_start = 0;
+ 	bam_txn->tx_sgl_pos = 0;
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
