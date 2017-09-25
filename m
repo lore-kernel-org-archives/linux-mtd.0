@@ -1,25 +1,22 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dwPxp-0003om-PK
- for linux-mtd@lists.infradead.org; Mon, 25 Sep 2017 09:46:12 +0000
-Date: Mon, 25 Sep 2017 11:45:36 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Mathias Thore <Mathias.Thore@infinera.com>
-Cc: Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: Regression for NOR flash with multiple erase block regions
-Message-ID: <20170925114536.16ed16aa@bbrezillon>
-In-Reply-To: <e30ea1c1d62348bb80cb7eb5d4c8d71a@sv-ex13-prd1.infinera.com>
-References: <4762f230bbd3437990b9f5baa61ab095@sv-ex13-prd1.infinera.com>
- <74af973f5ae542c3b53240c95949628c@svr-chch-ex1.atlnz.lc>
- <20170922220455.04f89f08@bbrezillon>
- <a1416ffa136946f4bc6006324315ffb1@sv-ex13-prd1.infinera.com>
- <20170925093004.0e0af91e@bbrezillon>
- <f00b3228ec334c1baaff72c6dec25728@sv-ex13-prd1.infinera.com>
- <20170925101425.4389f713@bbrezillon>
- <e30ea1c1d62348bb80cb7eb5d4c8d71a@sv-ex13-prd1.infinera.com>
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dwQX9-0005Ne-2j
+ for linux-mtd@lists.infradead.org; Mon, 25 Sep 2017 10:22:40 +0000
+Subject: Re: nand: denali: issue with 4.13
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Sascha Hauer <kernel@pengutronix.de>
+References: <25edd455-ad6c-f222-f552-2aa3d807112a@pengutronix.de>
+ <CAK7LNASR_1OsR+Dp3J7=Mtii_Ysp72DhWFXSYoeFVLiFPXu2AA@mail.gmail.com>
+ <20170922073456.t25jl34k4irl7g6w@pengutronix.de>
+ <CAK7LNARgSZkah=NO2CyiynrxjdBue2pGjkhv=rPqYr1-VKFp3Q@mail.gmail.com>
+From: Oleksij Rempel <ore@pengutronix.de>
+Message-ID: <f4a13cee-4f03-f4a2-6322-df76538a9c0b@pengutronix.de>
+Date: Mon, 25 Sep 2017 12:22:16 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAK7LNARgSZkah=NO2CyiynrxjdBue2pGjkhv=rPqYr1-VKFp3Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,100 +27,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 25 Sep 2017 08:57:24 +0000
-Mathias Thore <Mathias.Thore@infinera.com> wrote:
+Hi,
 
-> > -----Original Message-----
-> > From: Boris Brezillon [mailto:boris.brezillon@free-electrons.com]
-> > Sent: den 25 september 2017 10:14
-> > 
-> > On Mon, 25 Sep 2017 08:05:03 +0000
-> > Mathias Thore <Mathias.Thore@infinera.com> wrote:
-> >   
-> > > > -----Original Message-----
-> > > > From: Boris Brezillon [mailto:boris.brezillon@free-electrons.com]
-> > > > Sent: den 25 september 2017 09:30
-> > > >
-> > > > On Mon, 25 Sep 2017 06:28:18 +0000
-> > > > Mathias Thore <Mathias.Thore@infinera.com> wrote:
-> > > >  
-> > > > > > From: Boris Brezillon
-> > > > > > [mailto:boris.brezillon@free-electrons.com]
-> > > > > > Sent: den 22 september 2017 22:05
-> > > > > >
-> > > > > > On Fri, 22 Sep 2017 18:27:42 +0000 Chris Packham
-> > > > > > <Chris.Packham@alliedtelesis.co.nz> wrote:
-> > > > > >  
-> > > > > > > Hi Mathias,
-> > > > > > >
-> > > > > > > On 23/09/17 01:12, Mathias Thore wrote:  
-> > > > > > > > Hello,
-> > > > > > > >
-> > > > > > > > Commit 1eeef2d7483a7e3f8d2dd2a5b9939b3b814dc549 included  
-> > in  
-> > > > > > > > Linux  
-> > > > > > 4.13 (  
-> > > > > > > >  
-> > > > > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.g
-> > > > > > it/c
-> > > > > > ommit/d
-> > > > > >  
-> > > >  
-> > rivers/mtd/mtdpart.c?h=v4.13&id=1eeef2d7483a7e3f8d2dd2a5b9939b3b814  
-> > > > > > dc549  
-> > > > > > > > ) introduces a regression for NOR flash with multiple erase
-> > > > > > > > block regions of different sizes.
-> > > > > > > >
-> > > > > > > > Only the largest erase block size seems to be considered
-> > > > > > > > when determining if partitions are aligned. Partitions in
-> > > > > > > > smaller regions will be mounted as read-only. With Linux
-> > > > > > > > 4.12 and earlier, read/write access was available for these  
-> > partitions.  
-> > > > > >
-> > > > > > I don't understand how this could work before this patch? I
-> > > > > > mean, we were previously using mtd_mod_by_eb() to check part
-> > > > > > alignment and this functions is just returning the remainder of
-> > > > > > the off / erasesize division. So, assuming the erasesize of your
-> > > > > > NOR did not change between 4.12 and 4.13, I don't see how this
-> > > > > > commit could cause the regression you're describing here.  
-> > > > >
-> > > > > Looking at the earlier code, in the call to mtd_mod_by_eb, the
-> > > > > parameter  
-> > > > is slave->mtd. The slave mtd struct holds the correct erase size.
-> > > > The new code uses wr_alignment for all alignment tests, which comes
-> > > > from master/parent, and seems to always hold the largest possible erase  
-> > size.  
-> > > >
-> > > > Oh indeed! I didn't notice that the initial mtd_mod_by_eb() test was
-> > > > done against the slave dev and not the master one.
-> > > >
-> > > > Can you test the following patch and let me know it it solves your  
-> > problem?  
-> > >
-> > > The patch does not compile in my 4.13 tree. However,
-> > >
-> > > 	if (!(slave->mtd.flags & MTD_NO_ERASE))
-> > > 		wr_alignment = slave->mtd.erasesize; or
-> > > 	if (!(master->flags & MTD_NO_ERASE))
-> > > 		wr_alignment = slave->mtd.erasesize;
-> > >
-> > > do, and both work equally well to solve my problem.  
-> > 
-> > Oops. I'll fix that and send a new version.
-> > 
-> > Thanks,
-> > 
-> > Boris
-> >   
+On 23.09.2017 19:46, Masahiro Yamada wrote:
+> 2017-09-22 16:34 GMT+09:00 Oleksij Rempel <ore@pengutronix.de>:
+>> Hi,
+>>
+>> On Thu, Sep 21, 2017 at 08:00:34PM +0900, Masahiro Yamada wrote:
+>>> Hi.
+>>>
+>>> 2017-09-21 15:44 GMT+09:00 Oleksij Rempel <ore@pengutronix.de>:
+>>>> Hi Masahiro,
+>>>>
+>>>> you are probably the expert of denali nand driver.
+>>>> With kernel v4.13 i have following issue, it works on FPGASoC 5CSEBA5U...
+>>>> but is now working on FPGASoC 5CSXFC6C6U... both of them have same NAND
+>>>> chip, and seems to have similar IP core.
+>>>>
+>>>> FPGASoC 5CSXFC6C6U...:
+>>>> ====================================================================
+>>>> [    0.095899] console [ttyS0] disabled
+>>>> [    0.095941] ffc02000.serial0: ttyS0 at MMIO 0xffc02000 (irq = 38,
+>>>> base_baud = 6250000) is a 16550A
+>>>> [    0.702041] console [ttyS0] enabled
+>>>> [    0.706986] brd: module loaded
+>>>> [    0.716232] loop: module loaded
+>>>> [    0.720074] nand: device found, Manufacturer ID: 0x00, Chip ID: 0x2c
+>>>
+>>>
+>>> This line is strange.  It failed to read Manufacturer ID.
+>>> The 0x2c should be Manufacturer ID, not Chip ID.
+>>>
+>>>
+>>> I am guessing we need to wait a bit
+>>> after the NAND_CMD_READID.
+>>>
+>>> Please try the following ugly patch.
+>>
+>> Suddenly this patch makes no difference.
 > 
-> Thank you for solving this problem!
+> 
+> 
+> Does the following make difference?
+> 
+> 
+> @@ -3876,6 +3876,8 @@ static int nand_detect(struct nand_chip *chip,
+> struct nand_flash_dev *type)
+>          /* Select the device */
+>          chip->select_chip(mtd, 0);
+> 
+> +       udelay(1);
+> +
+>          /* Send the command for reading device ID */
+>          chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1);
+> 
 
-No problem. Actually you're the one who found the bug and reported it
-(and almost fixed it), so you're the one we should thank.
+No, no difference.
 
-BTW, can you add your Tested-by/Reviewed-by on the last version? I'll
-queue it for the next -rc.
-
-Thanks,
-
-Boris
+Right now i noticed that NAND controller on not working setup is 
+configured to different frequency as NAND on working board.
+It will take some time until we test it, if setting different freq will 
+have any difference.
