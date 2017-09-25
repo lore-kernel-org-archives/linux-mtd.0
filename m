@@ -1,40 +1,24 @@
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]
- helo=mx0a-001b2d01.pphosted.com)
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dwBjc-0003Jb-OG
- for linux-mtd@lists.infradead.org; Sun, 24 Sep 2017 18:34:33 +0000
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
- by mx0b-001b2d01.pphosted.com (8.16.0.21/8.16.0.21) with SMTP id
- v8OITQhx101880
- for <linux-mtd@lists.infradead.org>; Sun, 24 Sep 2017 14:34:08 -0400
-Received: from e06smtp14.uk.ibm.com (e06smtp14.uk.ibm.com [195.75.94.110])
- by mx0b-001b2d01.pphosted.com with ESMTP id 2d6bk7d7xu-1
- (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=NOT)
- for <linux-mtd@lists.infradead.org>; Sun, 24 Sep 2017 14:34:08 -0400
-Received: from localhost
- by e06smtp14.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <linux-mtd@lists.infradead.org> from <rppt@linux.vnet.ibm.com>;
- Sun, 24 Sep 2017 19:34:05 +0100
-Date: Sun, 24 Sep 2017 21:33:56 +0300
-From: Mike Rapoport <rppt@linux.vnet.ibm.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- arm@kernel.org, Frans Klaver <fransklaver@gmail.com>,
- Gerhard Sittig <gsi@denx.de>, Jamie Iles <jamie.iles@oracle.com>,
- Igor Grinberg <grinberg@compulab.co.il>
-Subject: Re: [PATCH] mtd: nand: gpio: Convert to use GPIO descriptors
-References: <20170924173912.9199-1-linus.walleij@linaro.org>
+Received: from mail-co1nam03on0628.outbound.protection.outlook.com
+ ([2a01:111:f400:fe48::628]
+ helo=NAM03-CO1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dwMso-0007RP-LH
+ for linux-mtd@lists.infradead.org; Mon, 25 Sep 2017 06:28:49 +0000
+From: Mathias Thore <Mathias.Thore@infinera.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Chris Packham
+ <Chris.Packham@alliedtelesis.co.nz>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: RE: Regression for NOR flash with multiple erase block regions
+Date: Mon, 25 Sep 2017 06:28:18 +0000
+Message-ID: <a1416ffa136946f4bc6006324315ffb1@sv-ex13-prd1.infinera.com>
+References: <4762f230bbd3437990b9f5baa61ab095@sv-ex13-prd1.infinera.com>
+ <74af973f5ae542c3b53240c95949628c@svr-chch-ex1.atlnz.lc>
+ <20170922220455.04f89f08@bbrezillon>
+In-Reply-To: <20170922220455.04f89f08@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170924173912.9199-1-linus.walleij@linaro.org>
-Message-Id: <20170924183355.GA27375@rapoport-lnx>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,332 +28,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Sep 24, 2017 at 07:39:12PM +0200, Linus Walleij wrote:
-> There is exactly one board in the kernel that defines platform data
-> for the GPIO NAND driver.
-> 
-> Use the feature to provide a lookup table for the GPIOs in the board
-> file so we can convert the driver as a whole to just use GPIO
-> descriptors.
-> 
-> After this we can cut the use of <linux/of_gpio.h> and use the GPIO
-> descriptor management from <linux/gpio/consumer.h> alone to grab and use
-> the GPIOs used in the driver.
-> 
-> I also created a local struct device *dev in the probe() function
-> because I was getting annoyed with all the &pdev->dev dereferencing.
-> 
-> Cc: arm@kernel.org
-> Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
-> Cc: Frans Klaver <fransklaver@gmail.com>
-> Cc: Gerhard Sittig <gsi@denx.de>
-> Cc: Jamie Iles <jamie.iles@oracle.com>
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
-> ARM SoC folks: Please ACK this so it can be merged through the MTD
-> subsystem.
-> 
-> Everyone else on CC: can you test and/or ACK this?
-> 
-> I don't have this PXA board, and all device tree users seem to be
-> out-of-tree so I rely on third parties to test this.
+> From: Boris Brezillon [mailto:boris.brezillon@free-electrons.com]
+> Sent: den 22 september 2017 22:05
+>=20
+> On Fri, 22 Sep 2017 18:27:42 +0000
+> Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
+>=20
+> > Hi Mathias,
+> >
+> > On 23/09/17 01:12, Mathias Thore wrote:
+> > > Hello,
+> > >
+> > > Commit 1eeef2d7483a7e3f8d2dd2a5b9939b3b814dc549 included in Linux
+> 4.13 (
+> > >
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
+/d
+> rivers/mtd/mtdpart.c?h=3Dv4.13&id=3D1eeef2d7483a7e3f8d2dd2a5b9939b3b814
+> dc549
+> > > ) introduces a regression for NOR flash with multiple erase block
+> > > regions of different sizes.
+> > >
+> > > Only the largest erase block size seems to be considered when
+> > > determining if partitions are aligned. Partitions in smaller regions
+> > > will be mounted as read-only. With Linux 4.12 and earlier, read/write
+> > > access was available for these partitions.
+>=20
+> I don't understand how this could work before this patch? I mean, we
+> were previously using mtd_mod_by_eb() to check part alignment and
+> this functions is just returning the remainder of the off / erasesize
+> division. So, assuming the erasesize of your NOR did not change
+> between 4.12 and 4.13, I don't see how this commit could cause the
+> regression you're describing here.
 
-Mine is long time dead and I'm doubt even somebody in CompuLab has one
-working ;-)
-Let's see, maybe somebody there will respond anyway.
+Looking at the earlier code, in the call to mtd_mod_by_eb, the parameter is=
+ slave->mtd. The slave mtd struct holds the correct erase size. The new cod=
+e uses wr_alignment for all alignment tests, which comes from master/parent=
+, and seems to always hold the largest possible erase size.
 
-> ---
->  arch/arm/mach-pxa/cm-x255.c   |  19 ++++---
->  drivers/mtd/nand/gpio.c       | 112 +++++++++++++++++++++---------------------
->  include/linux/mtd/nand-gpio.h |   5 --
->  3 files changed, 70 insertions(+), 66 deletions(-)
-> 
-> diff --git a/arch/arm/mach-pxa/cm-x255.c b/arch/arm/mach-pxa/cm-x255.c
-> index b592f79a1742..f8d67acb7194 100644
-> --- a/arch/arm/mach-pxa/cm-x255.c
-> +++ b/arch/arm/mach-pxa/cm-x255.c
-> @@ -14,7 +14,7 @@
->  #include <linux/mtd/partitions.h>
->  #include <linux/mtd/physmap.h>
->  #include <linux/mtd/nand-gpio.h>
-> -
-> +#include <linux/gpio/machine.h>
->  #include <linux/spi/spi.h>
->  #include <linux/spi/pxa2xx_spi.h>
-> 
-> @@ -176,6 +176,17 @@ static inline void cmx255_init_nor(void) {}
->  #endif
-> 
->  #if defined(CONFIG_MTD_NAND_GPIO) || defined(CONFIG_MTD_NAND_GPIO_MODULE)
-> +
-> +static struct gpiod_lookup_table cmx255_nand_gpiod_table = {
-> +	.dev_id         = "cmx255-nand",
-> +	.table          = {
-> +		GPIO_LOOKUP("gpio-pxa", GPIO_NAND_CS, "nce", GPIO_ACTIVE_HIGH),
-> +		GPIO_LOOKUP("gpio-pxa", GPIO_NAND_CLE, "cle", GPIO_ACTIVE_HIGH),
-> +		GPIO_LOOKUP("gpio-pxa", GPIO_NAND_ALE, "ale", GPIO_ACTIVE_HIGH),
-> +		GPIO_LOOKUP("gpio-pxa", GPIO_NAND_RB, "rdy", GPIO_ACTIVE_HIGH),
-> +	},
-> +};
-> +
->  static struct resource cmx255_nand_resource[] = {
->  	[0] = {
->  		.start = PXA_CS1_PHYS,
-> @@ -198,11 +209,6 @@ static struct mtd_partition cmx255_nand_parts[] = {
->  };
-> 
->  static struct gpio_nand_platdata cmx255_nand_platdata = {
-> -	.gpio_nce = GPIO_NAND_CS,
-> -	.gpio_cle = GPIO_NAND_CLE,
-> -	.gpio_ale = GPIO_NAND_ALE,
-> -	.gpio_rdy = GPIO_NAND_RB,
-> -	.gpio_nwp = -1,
->  	.parts = cmx255_nand_parts,
->  	.num_parts = ARRAY_SIZE(cmx255_nand_parts),
->  	.chip_delay = 25,
-> @@ -220,6 +226,7 @@ static struct platform_device cmx255_nand = {
-> 
->  static void __init cmx255_init_nand(void)
->  {
-> +	gpiod_add_lookup_table(&cmx255_nand_gpiod_table);
->  	platform_device_register(&cmx255_nand);
->  }
->  #else
-> diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
-> index fd3648952b5a..484f7fbc3f7d 100644
-> --- a/drivers/mtd/nand/gpio.c
-> +++ b/drivers/mtd/nand/gpio.c
-> @@ -23,7 +23,7 @@
->  #include <linux/slab.h>
->  #include <linux/module.h>
->  #include <linux/platform_device.h>
-> -#include <linux/gpio.h>
-> +#include <linux/gpio/consumer.h>
->  #include <linux/io.h>
->  #include <linux/mtd/mtd.h>
->  #include <linux/mtd/rawnand.h>
-> @@ -31,12 +31,16 @@
->  #include <linux/mtd/nand-gpio.h>
->  #include <linux/of.h>
->  #include <linux/of_address.h>
-> -#include <linux/of_gpio.h>
-> 
->  struct gpiomtd {
->  	void __iomem		*io_sync;
->  	struct nand_chip	nand_chip;
->  	struct gpio_nand_platdata plat;
-> +	struct gpio_desc *nce; /* Optional chip enable */
-> +	struct gpio_desc *cle;
-> +	struct gpio_desc *ale;
-> +	struct gpio_desc *rdy;
-> +	struct gpio_desc *nwp; /* Optional write protection */
->  };
-> 
->  static inline struct gpiomtd *gpio_nand_getpriv(struct mtd_info *mtd)
-> @@ -78,11 +82,10 @@ static void gpio_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
->  	gpio_nand_dosync(gpiomtd);
-> 
->  	if (ctrl & NAND_CTRL_CHANGE) {
-> -		if (gpio_is_valid(gpiomtd->plat.gpio_nce))
-> -			gpio_set_value(gpiomtd->plat.gpio_nce,
-> -				       !(ctrl & NAND_NCE));
-> -		gpio_set_value(gpiomtd->plat.gpio_cle, !!(ctrl & NAND_CLE));
-> -		gpio_set_value(gpiomtd->plat.gpio_ale, !!(ctrl & NAND_ALE));
-> +		if (gpiomtd->nce)
-> +			gpiod_set_value(gpiomtd->nce, !(ctrl & NAND_NCE));
-> +		gpiod_set_value(gpiomtd->cle, !!(ctrl & NAND_CLE));
-> +		gpiod_set_value(gpiomtd->ale, !!(ctrl & NAND_ALE));
->  		gpio_nand_dosync(gpiomtd);
->  	}
->  	if (cmd == NAND_CMD_NONE)
-> @@ -96,7 +99,7 @@ static int gpio_nand_devready(struct mtd_info *mtd)
->  {
->  	struct gpiomtd *gpiomtd = gpio_nand_getpriv(mtd);
-> 
-> -	return gpio_get_value(gpiomtd->plat.gpio_rdy);
-> +	return gpiod_get_value(gpiomtd->rdy);
->  }
-> 
->  #ifdef CONFIG_OF
-> @@ -123,12 +126,6 @@ static int gpio_nand_get_config_of(const struct device *dev,
->  		}
->  	}
-> 
-> -	plat->gpio_rdy = of_get_gpio(dev->of_node, 0);
-> -	plat->gpio_nce = of_get_gpio(dev->of_node, 1);
-> -	plat->gpio_ale = of_get_gpio(dev->of_node, 2);
-> -	plat->gpio_cle = of_get_gpio(dev->of_node, 3);
-> -	plat->gpio_nwp = of_get_gpio(dev->of_node, 4);
-> -
->  	if (!of_property_read_u32(dev->of_node, "chip-delay", &val))
->  		plat->chip_delay = val;
-> 
-> @@ -201,10 +198,11 @@ static int gpio_nand_remove(struct platform_device *pdev)
-> 
->  	nand_release(nand_to_mtd(&gpiomtd->nand_chip));
-> 
-> -	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
-> -		gpio_set_value(gpiomtd->plat.gpio_nwp, 0);
-> -	if (gpio_is_valid(gpiomtd->plat.gpio_nce))
-> -		gpio_set_value(gpiomtd->plat.gpio_nce, 1);
-> +	/* Enable write protection and disable the chip */
-> +	if (gpiomtd->nwp && !IS_ERR(gpiomtd->nwp))
-> +		gpiod_set_value(gpiomtd->nwp, 0);
-> +	if (gpiomtd->nce && !IS_ERR(gpiomtd->nce))
-> +		gpiod_set_value(gpiomtd->nce, 0);
-> 
->  	return 0;
->  }
-> @@ -215,66 +213,66 @@ static int gpio_nand_probe(struct platform_device *pdev)
->  	struct nand_chip *chip;
->  	struct mtd_info *mtd;
->  	struct resource *res;
-> +	struct device *dev = &pdev->dev;
->  	int ret = 0;
-> 
-> -	if (!pdev->dev.of_node && !dev_get_platdata(&pdev->dev))
-> +	if (!dev->of_node && !dev_get_platdata(dev))
->  		return -EINVAL;
-> 
-> -	gpiomtd = devm_kzalloc(&pdev->dev, sizeof(*gpiomtd), GFP_KERNEL);
-> +	gpiomtd = devm_kzalloc(dev, sizeof(*gpiomtd), GFP_KERNEL);
->  	if (!gpiomtd)
->  		return -ENOMEM;
-> 
->  	chip = &gpiomtd->nand_chip;
-> 
->  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -	chip->IO_ADDR_R = devm_ioremap_resource(&pdev->dev, res);
-> +	chip->IO_ADDR_R = devm_ioremap_resource(dev, res);
->  	if (IS_ERR(chip->IO_ADDR_R))
->  		return PTR_ERR(chip->IO_ADDR_R);
-> 
->  	res = gpio_nand_get_io_sync(pdev);
->  	if (res) {
-> -		gpiomtd->io_sync = devm_ioremap_resource(&pdev->dev, res);
-> +		gpiomtd->io_sync = devm_ioremap_resource(dev, res);
->  		if (IS_ERR(gpiomtd->io_sync))
->  			return PTR_ERR(gpiomtd->io_sync);
->  	}
-> 
-> -	ret = gpio_nand_get_config(&pdev->dev, &gpiomtd->plat);
-> +	ret = gpio_nand_get_config(dev, &gpiomtd->plat);
->  	if (ret)
->  		return ret;
-> 
-> -	if (gpio_is_valid(gpiomtd->plat.gpio_nce)) {
-> -		ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nce,
-> -					"NAND NCE");
-> -		if (ret)
-> -			return ret;
-> -		gpio_direction_output(gpiomtd->plat.gpio_nce, 1);
-> +	/* Just enable the chip */
-> +	gpiomtd->nce = devm_gpiod_get_optional(dev, "nce", GPIOD_OUT_HIGH);
-> +	if (IS_ERR(gpiomtd->nce))
-> +		return PTR_ERR(gpiomtd->nce);
-> +
-> +	/* We disable write protection once we know probe() will succeed */
-> +	gpiomtd->nwp = devm_gpiod_get_optional(dev, "nwp", GPIOD_OUT_LOW);
-> +	if (IS_ERR(gpiomtd->nwp)) {
-> +		ret = PTR_ERR(gpiomtd->nwp);
-> +		goto out_ce;
->  	}
-> 
-> -	if (gpio_is_valid(gpiomtd->plat.gpio_nwp)) {
-> -		ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nwp,
-> -					"NAND NWP");
-> -		if (ret)
-> -			return ret;
-> +	gpiomtd->nwp = devm_gpiod_get(dev, "ale", GPIOD_OUT_LOW);
-> +	if (IS_ERR(gpiomtd->nwp)) {
-> +		ret = PTR_ERR(gpiomtd->nwp);
-> +		goto out_ce;
->  	}
-> 
-> -	ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_ale, "NAND ALE");
-> -	if (ret)
-> -		return ret;
-> -	gpio_direction_output(gpiomtd->plat.gpio_ale, 0);
-> +	gpiomtd->cle = devm_gpiod_get(dev, "cle", GPIOD_OUT_LOW);
-> +	if (IS_ERR(gpiomtd->cle)) {
-> +		ret = PTR_ERR(gpiomtd->cle);
-> +		goto out_ce;
-> +	}
-> 
-> -	ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_cle, "NAND CLE");
-> -	if (ret)
-> -		return ret;
-> -	gpio_direction_output(gpiomtd->plat.gpio_cle, 0);
-> -
-> -	if (gpio_is_valid(gpiomtd->plat.gpio_rdy)) {
-> -		ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_rdy,
-> -					"NAND RDY");
-> -		if (ret)
-> -			return ret;
-> -		gpio_direction_input(gpiomtd->plat.gpio_rdy);
-> -		chip->dev_ready = gpio_nand_devready;
-> +	gpiomtd->rdy = devm_gpiod_get_optional(dev, "rdy", GPIOD_IN);
-> +	if (IS_ERR(gpiomtd->rdy)) {
-> +		ret = PTR_ERR(gpiomtd->rdy);
-> +		goto out_ce;
->  	}
-> +	/* Using RDY pin */
-> +	if (gpiomtd->rdy)
-> +		chip->dev_ready = gpio_nand_devready;
-> 
->  	nand_set_flash_node(chip, pdev->dev.of_node);
->  	chip->IO_ADDR_W		= chip->IO_ADDR_R;
-> @@ -285,12 +283,13 @@ static int gpio_nand_probe(struct platform_device *pdev)
->  	chip->cmd_ctrl		= gpio_nand_cmd_ctrl;
-> 
->  	mtd			= nand_to_mtd(chip);
-> -	mtd->dev.parent		= &pdev->dev;
-> +	mtd->dev.parent		= dev;
-> 
->  	platform_set_drvdata(pdev, gpiomtd);
-> 
-> -	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
-> -		gpio_direction_output(gpiomtd->plat.gpio_nwp, 1);
-> +	/* Disable write protection, if wired up */
-> +	if (gpiomtd->nwp && !IS_ERR(gpiomtd->nwp))
-> +		gpiod_direction_output(gpiomtd->nwp, 1);
-> 
->  	ret = nand_scan(mtd, 1);
->  	if (ret)
-> @@ -305,8 +304,11 @@ static int gpio_nand_probe(struct platform_device *pdev)
->  		return 0;
-> 
->  err_wp:
-> -	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
-> -		gpio_set_value(gpiomtd->plat.gpio_nwp, 0);
-> +	if (gpiomtd->nwp && !IS_ERR(gpiomtd->nwp))
-> +		gpiod_set_value(gpiomtd->nwp, 0);
-> +out_ce:
-> +	if (gpiomtd->nce && !IS_ERR(gpiomtd->nce))
-> +		gpiod_set_value(gpiomtd->nce, 0);
-> 
->  	return ret;
->  }
-> diff --git a/include/linux/mtd/nand-gpio.h b/include/linux/mtd/nand-gpio.h
-> index be4f45d89be2..98f71908212d 100644
-> --- a/include/linux/mtd/nand-gpio.h
-> +++ b/include/linux/mtd/nand-gpio.h
-> @@ -4,11 +4,6 @@
->  #include <linux/mtd/rawnand.h>
-> 
->  struct gpio_nand_platdata {
-> -	int	gpio_nce;
-> -	int	gpio_nwp;
-> -	int	gpio_cle;
-> -	int	gpio_ale;
-> -	int	gpio_rdy;
->  	void	(*adjust_parts)(struct gpio_nand_platdata *, size_t);
->  	struct mtd_partition *parts;
->  	unsigned int num_parts;
-> -- 
-> 2.13.5
-> 
+The flash in question has 4 erase blocks of size 0x8000 at the start, and t=
+hen the rest of the erase blocks are size 0x20000. Here is some data from t=
+races I added around the point of failure:
 
--- 
-Sincerely yours,
-Mike.
+0x000000000000-0x000000008000 : "XYZ"
+dbg: wr_alignment 0x00020000
+dbg: parent->flags & MTD_NO_ERASE =3D 0
+dbg: parent->writesize 0x00000001
+dbg: parent->erasesize 0x00020000
+dbg: slave->mtd.writesize 0x00000001
+dbg: slave->mtd.erasesize 0x00008000
+dbg: slave->offset 0x0000000000000000
+dbg: slave->mtd.size 0x0000000000008000
+dbg: remainder (start) 0x00000000
+dbg: remainder (end) 0x00008000
+mtd: partition "XYZ" doesn't end on an erase/write block -- force read-only
+
+>=20
+> Maybe MTD_NO_ERASE is set on your NOR, and ->writesize is used in place
+> of ->erasesize to check the alignment, but ->writesize is normally set
+> to 1 on NOR devices, so again, no real reasons for this failure.
+> >
+> > Sorry about that. I think a fix would be to re-calculate the
+> > wr_alignment as we're looking at each erase block. Unfortunately I'm
+> > about to get on a plane for 13 hours so I'm pretty much a write off for
+> > the next couple of days.
+> >
+> > I'll take a look when I get back on-line unless Boris beats me to it.
