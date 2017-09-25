@@ -1,23 +1,26 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+Received: from mail-sn1nam02on0058.outbound.protection.outlook.com
+ ([104.47.36.58] helo=NAM02-SN1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dwQX9-0005Ne-2j
- for linux-mtd@lists.infradead.org; Mon, 25 Sep 2017 10:22:40 +0000
-Subject: Re: nand: denali: issue with 4.13
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Sascha Hauer <kernel@pengutronix.de>
-References: <25edd455-ad6c-f222-f552-2aa3d807112a@pengutronix.de>
- <CAK7LNASR_1OsR+Dp3J7=Mtii_Ysp72DhWFXSYoeFVLiFPXu2AA@mail.gmail.com>
- <20170922073456.t25jl34k4irl7g6w@pengutronix.de>
- <CAK7LNARgSZkah=NO2CyiynrxjdBue2pGjkhv=rPqYr1-VKFp3Q@mail.gmail.com>
-From: Oleksij Rempel <ore@pengutronix.de>
-Message-ID: <f4a13cee-4f03-f4a2-6322-df76538a9c0b@pengutronix.de>
-Date: Mon, 25 Sep 2017 12:22:16 +0200
-MIME-Version: 1.0
-In-Reply-To: <CAK7LNARgSZkah=NO2CyiynrxjdBue2pGjkhv=rPqYr1-VKFp3Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ id 1dwRMI-0003M0-Of
+ for linux-mtd@lists.infradead.org; Mon, 25 Sep 2017 11:15:32 +0000
+From: Mathias Thore <Mathias.Thore@infinera.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, "Marek
+ Vasut" <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, "Cyrille
+ Pitchen" <cyrille.pitchen@wedev4u.fr>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+CC: Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
+ "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH v2] mtd: Fix partition alignment check on multi-erasesize
+ devices
+Date: Mon, 25 Sep 2017 11:15:01 +0000
+Message-ID: <e06c750712f04878ad5f40f2df1ccfbb@sv-ex13-prd1.infinera.com>
+References: <20170925081957.19177-1-boris.brezillon@free-electrons.com>
+In-Reply-To: <20170925081957.19177-1-boris.brezillon@free-electrons.com>
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,64 +30,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
 
-On 23.09.2017 19:46, Masahiro Yamada wrote:
-> 2017-09-22 16:34 GMT+09:00 Oleksij Rempel <ore@pengutronix.de>:
->> Hi,
->>
->> On Thu, Sep 21, 2017 at 08:00:34PM +0900, Masahiro Yamada wrote:
->>> Hi.
->>>
->>> 2017-09-21 15:44 GMT+09:00 Oleksij Rempel <ore@pengutronix.de>:
->>>> Hi Masahiro,
->>>>
->>>> you are probably the expert of denali nand driver.
->>>> With kernel v4.13 i have following issue, it works on FPGASoC 5CSEBA5U...
->>>> but is now working on FPGASoC 5CSXFC6C6U... both of them have same NAND
->>>> chip, and seems to have similar IP core.
->>>>
->>>> FPGASoC 5CSXFC6C6U...:
->>>> ====================================================================
->>>> [    0.095899] console [ttyS0] disabled
->>>> [    0.095941] ffc02000.serial0: ttyS0 at MMIO 0xffc02000 (irq = 38,
->>>> base_baud = 6250000) is a 16550A
->>>> [    0.702041] console [ttyS0] enabled
->>>> [    0.706986] brd: module loaded
->>>> [    0.716232] loop: module loaded
->>>> [    0.720074] nand: device found, Manufacturer ID: 0x00, Chip ID: 0x2c
->>>
->>>
->>> This line is strange.  It failed to read Manufacturer ID.
->>> The 0x2c should be Manufacturer ID, not Chip ID.
->>>
->>>
->>> I am guessing we need to wait a bit
->>> after the NAND_CMD_READID.
->>>
->>> Please try the following ugly patch.
->>
->> Suddenly this patch makes no difference.
-> 
-> 
-> 
-> Does the following make difference?
-> 
-> 
-> @@ -3876,6 +3876,8 @@ static int nand_detect(struct nand_chip *chip,
-> struct nand_flash_dev *type)
->          /* Select the device */
->          chip->select_chip(mtd, 0);
-> 
-> +       udelay(1);
+> -----Original Message-----
+> From: Boris Brezillon [mailto:boris.brezillon@free-electrons.com]
+> Sent: den 25 september 2017 10:20
+> To: David Woodhouse; Brian Norris; Boris Brezillon; Marek Vasut; Richard
+> Weinberger; Cyrille Pitchen; linux-mtd@lists.infradead.org
+> Cc: Mathias Thore; Chris Packham; stable@vger.kernel.org
+> Subject: [PATCH v2] mtd: Fix partition alignment check on multi-erasesize
+> devices
+>=20
+> Commit 1eeef2d7483a ("mtd: handle partitioning on devices with 0
+> erasesize") introduced a regression on heterogeneous erase region devices=
+.
+> Alignment of the partition was tested against the master eraseblock size
+> which can be bigger than the slave one, thus leading to some partitions b=
+eing
+> marked as read-only.
+>=20
+> Update wr_alignment to match this slave erasesize after this erasesize ha=
+s
+> been determined by picking the biggest erasesize of all the regions
+> embedded in the MTD partition.
+>=20
+> Reported-by: Mathias Thore <Mathias.Thore@infinera.com>
+> Fixes: 1eeef2d7483a ("mtd: handle partitioning on devices with 0 erasesiz=
+e")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
+Tested-by: Mathias Thore <Mathias.Thore@infinera.com>
+Reviewed-by: Mathias Thore <Mathias.Thore@infinera.com>
+
+> ---
+> Changes in v2:
+> - Fix build error reported by Mathias
+> ---
+>  drivers/mtd/mtdpart.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>=20
+> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c index
+> 5736b0c90b33..a308e707392d 100644
+> --- a/drivers/mtd/mtdpart.c
+> +++ b/drivers/mtd/mtdpart.c
+> @@ -581,6 +581,14 @@ static struct mtd_part *allocate_partition(struct
+> mtd_info *parent,
+>  		slave->mtd.erasesize =3D parent->erasesize;
+>  	}
+>=20
+> +	/*
+> +	 * Slave erasesize might differ from the master one if the
+> master
+> +	 * exposes several regions with different erasesize. Adjust
+> +	 * wr_alignment accordingly.
+> +	 */
+> +	if (!(slave->mtd.flags & MTD_NO_ERASE))
+> +		wr_alignment =3D slave->mtd.erasesize;
 > +
->          /* Send the command for reading device ID */
->          chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1);
-> 
-
-No, no difference.
-
-Right now i noticed that NAND controller on not working setup is 
-configured to different frequency as NAND on working board.
-It will take some time until we test it, if setting different freq will 
-have any difference.
+>  	tmp =3D slave->offset;
+>  	remainder =3D do_div(tmp, wr_alignment);
+>  	if ((slave->mtd.flags & MTD_WRITEABLE) && remainder) {
+> --
+> 2.11.0
