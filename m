@@ -1,39 +1,27 @@
-Received: from mail-qk0-x229.google.com ([2607:f8b0:400d:c09::229])
+Received: from mail-dm3nam03on0086.outbound.protection.outlook.com
+ ([104.47.41.86] helo=NAM03-DM3-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dwOiY-0001qD-6a
- for linux-mtd@lists.infradead.org; Mon, 25 Sep 2017 08:26:22 +0000
-Received: by mail-qk0-x229.google.com with SMTP id z143so5903213qkb.3
- for <linux-mtd@lists.infradead.org>; Mon, 25 Sep 2017 01:25:56 -0700 (PDT)
+ id 1dwPD2-0002kT-PS
+ for linux-mtd@lists.infradead.org; Mon, 25 Sep 2017 08:57:52 +0000
+From: Mathias Thore <Mathias.Thore@infinera.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+CC: Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: RE: Regression for NOR flash with multiple erase block regions
+Date: Mon, 25 Sep 2017 08:57:24 +0000
+Message-ID: <e30ea1c1d62348bb80cb7eb5d4c8d71a@sv-ex13-prd1.infinera.com>
+References: <4762f230bbd3437990b9f5baa61ab095@sv-ex13-prd1.infinera.com>
+ <74af973f5ae542c3b53240c95949628c@svr-chch-ex1.atlnz.lc>
+ <20170922220455.04f89f08@bbrezillon>
+ <a1416ffa136946f4bc6006324315ffb1@sv-ex13-prd1.infinera.com>
+ <20170925093004.0e0af91e@bbrezillon>
+ <f00b3228ec334c1baaff72c6dec25728@sv-ex13-prd1.infinera.com>
+ <20170925101425.4389f713@bbrezillon>
+In-Reply-To: <20170925101425.4389f713@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Sender: romain.izard@mobile-devices.fr
-In-Reply-To: <d6359e89-7c78-fdec-fbab-eb885017ec58@microchip.com>
-References: <20170915140411.31716-1-romain.izard.pro@gmail.com>
- <20170915140411.31716-4-romain.izard.pro@gmail.com>
- <d6359e89-7c78-fdec-fbab-eb885017ec58@microchip.com>
-From: Romain Izard <romain.izard.pro@gmail.com>
-Date: Mon, 25 Sep 2017 10:25:35 +0200
-Message-ID: <CAGkQfmOQ_5hb-OKWQxjboPS1V0v-jCPxyyDZyCyZLFYFoeXWbA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/9] clk: at91: pmc: Support backup for programmable
- clocks
-To: Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@codeaurora.org>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Wenyou Yang <wenyou.yang@atmel.com>,
- Josh Wu <rainyfeeling@outlook.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Thierry Reding <thierry.reding@gmail.com>,
- Richard Genoud <richard.genoud@gmail.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Alan Stern <stern@rowland.harvard.edu>, linux-clk@vger.kernel.org,
- LKML <linux-kernel@vger.kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>,
- linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-usb@vger.kernel.org,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -43,170 +31,142 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2017-09-22 12:31 GMT+02:00 Nicolas Ferre <nicolas.ferre@microchip.com>:
-> On 15/09/2017 at 16:04, Romain Izard wrote:
->> From: Romain Izard <romain.izard@mobile-devices.fr>
->>
->> When an AT91 programmable clock is declared in the device tree, register
->> it into the Power Management Controller driver. On entering suspend mode,
->> the driver saves and restores the Programmable Clock registers to support
->> the backup mode for these clocks.
->>
->> Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
->
-> Romain,
->
-> Some nitpicking and one comment. But on the overall patch, here is my:
-> Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
->
-> See below:
->
->> ---
->> Changes in v2:
->> * register PCKs on clock startup
->>
->>  drivers/clk/at91/clk-programmable.c |  2 ++
->>  drivers/clk/at91/pmc.c              | 27 +++++++++++++++++++++++++++
->>  drivers/clk/at91/pmc.h              |  2 ++
->>  3 files changed, 31 insertions(+)
->>
->> diff --git a/drivers/clk/at91/clk-programmable.c b/drivers/clk/at91/clk-programmable.c
->> index 85a449cf61e3..0e6aab1252fc 100644
->> --- a/drivers/clk/at91/clk-programmable.c
->> +++ b/drivers/clk/at91/clk-programmable.c
->> @@ -204,6 +204,8 @@ at91_clk_register_programmable(struct regmap *regmap,
->>       if (ret) {
->>               kfree(prog);
->>               hw = ERR_PTR(ret);
->
-> Nit: "else" not needed.
->
-This is a shared idiom in all the atmel clock drivers, so I prefer to keep
-it this way.
+> -----Original Message-----
+> From: Boris Brezillon [mailto:boris.brezillon@free-electrons.com]
+> Sent: den 25 september 2017 10:14
+>=20
+> On Mon, 25 Sep 2017 08:05:03 +0000
+> Mathias Thore <Mathias.Thore@infinera.com> wrote:
+>=20
+> > > -----Original Message-----
+> > > From: Boris Brezillon [mailto:boris.brezillon@free-electrons.com]
+> > > Sent: den 25 september 2017 09:30
+> > >
+> > > On Mon, 25 Sep 2017 06:28:18 +0000
+> > > Mathias Thore <Mathias.Thore@infinera.com> wrote:
+> > >
+> > > > > From: Boris Brezillon
+> > > > > [mailto:boris.brezillon@free-electrons.com]
+> > > > > Sent: den 22 september 2017 22:05
+> > > > >
+> > > > > On Fri, 22 Sep 2017 18:27:42 +0000 Chris Packham
+> > > > > <Chris.Packham@alliedtelesis.co.nz> wrote:
+> > > > >
+> > > > > > Hi Mathias,
+> > > > > >
+> > > > > > On 23/09/17 01:12, Mathias Thore wrote:
+> > > > > > > Hello,
+> > > > > > >
+> > > > > > > Commit 1eeef2d7483a7e3f8d2dd2a5b9939b3b814dc549 included
+> in
+> > > > > > > Linux
+> > > > > 4.13 (
+> > > > > > >
+> > > > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.g
+> > > > > it/c
+> > > > > ommit/d
+> > > > >
+> > >
+> rivers/mtd/mtdpart.c?h=3Dv4.13&id=3D1eeef2d7483a7e3f8d2dd2a5b9939b3b814
+> > > > > dc549
+> > > > > > > ) introduces a regression for NOR flash with multiple erase
+> > > > > > > block regions of different sizes.
+> > > > > > >
+> > > > > > > Only the largest erase block size seems to be considered
+> > > > > > > when determining if partitions are aligned. Partitions in
+> > > > > > > smaller regions will be mounted as read-only. With Linux
+> > > > > > > 4.12 and earlier, read/write access was available for these
+> partitions.
+> > > > >
+> > > > > I don't understand how this could work before this patch? I
+> > > > > mean, we were previously using mtd_mod_by_eb() to check part
+> > > > > alignment and this functions is just returning the remainder of
+> > > > > the off / erasesize division. So, assuming the erasesize of your
+> > > > > NOR did not change between 4.12 and 4.13, I don't see how this
+> > > > > commit could cause the regression you're describing here.
+> > > >
+> > > > Looking at the earlier code, in the call to mtd_mod_by_eb, the
+> > > > parameter
+> > > is slave->mtd. The slave mtd struct holds the correct erase size.
+> > > The new code uses wr_alignment for all alignment tests, which comes
+> > > from master/parent, and seems to always hold the largest possible era=
+se
+> size.
+> > >
+> > > Oh indeed! I didn't notice that the initial mtd_mod_by_eb() test was
+> > > done against the slave dev and not the master one.
+> > >
+> > > Can you test the following patch and let me know it it solves your
+> problem?
+> >
+> > The patch does not compile in my 4.13 tree. However,
+> >
+> > 	if (!(slave->mtd.flags & MTD_NO_ERASE))
+> > 		wr_alignment =3D slave->mtd.erasesize; or
+> > 	if (!(master->flags & MTD_NO_ERASE))
+> > 		wr_alignment =3D slave->mtd.erasesize;
+> >
+> > do, and both work equally well to solve my problem.
+>=20
+> Oops. I'll fix that and send a new version.
+>=20
+> Thanks,
+>=20
+> Boris
+>=20
 
->> +     } else {
->> +             pmc_register_pck(id);
->>       }
->>
->>       return hw;
->> diff --git a/drivers/clk/at91/pmc.c b/drivers/clk/at91/pmc.c
->> index 07dc2861ad3f..3910b7537152 100644
->> --- a/drivers/clk/at91/pmc.c
->> +++ b/drivers/clk/at91/pmc.c
->> @@ -22,6 +22,7 @@
->>  #include "pmc.h"
->>
->>  #define PMC_MAX_IDS 128
->> +#define PMC_MAX_PCKS 8
->>
->>  int of_at91_get_clk_range(struct device_node *np, const char *propname,
->>                         struct clk_range *range)
->> @@ -50,6 +51,7 @@ EXPORT_SYMBOL_GPL(of_at91_get_clk_range);
->>  static struct regmap *pmcreg;
->>
->>  static u8 registered_ids[PMC_MAX_IDS];
->> +static u8 registered_pcks[PMC_MAX_PCKS];
->>
->>  static struct
->>  {
->> @@ -66,8 +68,10 @@ static struct
->>       u32 pcr[PMC_MAX_IDS];
->>       u32 audio_pll0;
->>       u32 audio_pll1;
->> +     u32 pckr[PMC_MAX_PCKS];
->>  } pmc_cache;
->>
->> +/* Clock ID 0 is invalid */
->
-> (read: so we can use the 0 value as an indicator that this place in the
-> table hasn't been filled, so unused)
->
->>  void pmc_register_id(u8 id)
->>  {
->>       int i;
->> @@ -82,6 +86,21 @@ void pmc_register_id(u8 id)
->>       }
->>  }
->>
->> +/* Programmable Clock 0 is valid */
->
-> I understand the rationale behind these ^^ two comments, but I would
-> like that it's more explicit. Saying that you will store the pck id as
-> (id + 1) and that you would have to invert this operation while using
-> the stored id.
-> Maybe add a comment about this transformation to the struct definition
-> as well...
->
+Thank you for solving this problem!
+/Mathias
 
-I will improve the comments for the next revision.
 
->
->> +void pmc_register_pck(u8 pck)
->> +{
->> +     int i;
->> +
->> +     for (i = 0; i < PMC_MAX_PCKS; i++) {
->> +             if (registered_pcks[i] == 0) {
->> +                     registered_pcks[i] = pck + 1;
->> +                     break;
->> +             }
->> +             if (registered_pcks[i] == (pck + 1))
->> +                     break;
->> +     }
->> +}
->> +
->>  static int pmc_suspend(void)
->>  {
->>       int i;
->> @@ -103,6 +122,10 @@ static int pmc_suspend(void)
->>               regmap_read(pmcreg, AT91_PMC_PCR,
->>                           &pmc_cache.pcr[registered_ids[i]]);
->>       }
->> +     for (i = 0; registered_pcks[i]; i++) {
->> +             u8 num = registered_pcks[i] - 1;
->
-> Nit: declaration are better made at the beginning of the function. This
-> lead to a checkpatch warning:
-> "WARNING: Missing a blank line after declarations"
->
-
-I'll fix this as well.
-
->> +             regmap_read(pmcreg, AT91_PMC_PCKR(num), &pmc_cache.pckr[num]);
->> +     }
->>
->>       return 0;
->>  }
->> @@ -143,6 +166,10 @@ static void pmc_resume(void)
->>                            pmc_cache.pcr[registered_ids[i]] |
->>                            AT91_PMC_PCR_CMD);
->>       }
->> +     for (i = 0; registered_pcks[i]; i++) {
->> +             u8 num = registered_pcks[i] - 1;
->
-> Ditto
->
->> +             regmap_write(pmcreg, AT91_PMC_PCKR(num), pmc_cache.pckr[num]);
->> +     }
->>
->>       if (pmc_cache.uckr & AT91_PMC_UPLLEN)
->>               mask |= AT91_PMC_LOCKU;
->> diff --git a/drivers/clk/at91/pmc.h b/drivers/clk/at91/pmc.h
->> index 858e8ef7e8db..d22b1fa9ecdc 100644
->> --- a/drivers/clk/at91/pmc.h
->> +++ b/drivers/clk/at91/pmc.h
->> @@ -31,8 +31,10 @@ int of_at91_get_clk_range(struct device_node *np, const char *propname,
->>
->>  #ifdef CONFIG_PM
->>  void pmc_register_id(u8 id);
->> +void pmc_register_pck(u8 pck);
->>  #else
->>  static inline void pmc_register_id(u8 id) {}
->> +static inline void pmc_register_pck(u8 pck) {}
->>  #endif
->>
->>  #endif /* __PMC_H_ */
->>
-
--- 
-Romain Izard
+> >
+> > >
+> > > --->8---
+> > > From cdc8a5078ee330a645d1076a8289b411cffc4257 Mon Sep 17 00:00:00
+> > > 2001
+> > > From: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > > Date: Mon, 25 Sep 2017 09:14:00 +0200
+> > > Subject: [PATCH] mtd: Fix partition alignment check on
+> > > multi-erasesize devices
+> > >
+> > > Commit 1eeef2d7483a ("mtd: handle partitioning on devices with 0
+> > > erasesize") introduced a regression on heterogeneous erase region
+> devices.
+> > > Alignment of the partition was tested against the master eraseblock
+> > > size which can be bigger than the slave one, thus leading to some
+> > > partitions being marked as read-only.
+> > >
+> > > Update wr_alignment to match this slave erasesize after this
+> > > erasesize has been determined by picking the biggest erasesize of
+> > > all the regions embedded in the MTD partition.
+> > >
+> > > Reported-by: Mathias Thore <Mathias.Thore@infinera.com>
+> > > Fixes: 1eeef2d7483a ("mtd: handle partitioning on devices with 0
+> > > erasesize")
+> > > Cc: <stable@vger.kernel.org>
+> > > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > > ---
+> > >  drivers/mtd/mtdpart.c | 8 ++++++++
+> > >  1 file changed, 8 insertions(+)
+> > >
+> > > diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c index
+> > > 5736b0c90b33..8802185b7729 100644
+> > > --- a/drivers/mtd/mtdpart.c
+> > > +++ b/drivers/mtd/mtdpart.c
+> > > @@ -581,6 +581,14 @@ static struct mtd_part
+> > > *allocate_partition(struct mtd_info *parent,
+> > >  		slave->mtd.erasesize =3D parent->erasesize;
+> > >  	}
+> > >
+> > > +	/*
+> > > +	 * Slave erasesize might differ from the master one if the
+> > > master
+> > > +	 * exposes several regions with different erasesize. Adjust
+> > > +	 * wr_alignment accordingly.
+> > > +	 */
+> > > +	if (!(slave->flags & MTD_NO_ERASE))
+> > > +		wr_alignment =3D slave->erasesize;
+> > > +
+> > >  	tmp =3D slave->offset;
+> > >  	remainder =3D do_div(tmp, wr_alignment);
+> > >  	if ((slave->mtd.flags & MTD_WRITEABLE) && remainder) {
