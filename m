@@ -1,23 +1,23 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dwmIZ-0007Ss-Ix
- for linux-mtd@lists.infradead.org; Tue, 26 Sep 2017 09:37:10 +0000
-Subject: Re: nand: denali: issue with 4.13
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Sascha Hauer <kernel@pengutronix.de>
-References: <25edd455-ad6c-f222-f552-2aa3d807112a@pengutronix.de>
- <CAK7LNASR_1OsR+Dp3J7=Mtii_Ysp72DhWFXSYoeFVLiFPXu2AA@mail.gmail.com>
- <20170922073456.t25jl34k4irl7g6w@pengutronix.de>
- <CAK7LNARgSZkah=NO2CyiynrxjdBue2pGjkhv=rPqYr1-VKFp3Q@mail.gmail.com>
-From: Oleksij Rempel <ore@pengutronix.de>
-Message-ID: <1ef95752-f9eb-14f3-e131-825fb7ffce25@pengutronix.de>
-Date: Tue, 26 Sep 2017 11:36:40 +0200
-MIME-Version: 1.0
-In-Reply-To: <CAK7LNARgSZkah=NO2CyiynrxjdBue2pGjkhv=rPqYr1-VKFp3Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+ id 1dwr7Z-0005BD-Dn
+ for linux-mtd@lists.infradead.org; Tue, 26 Sep 2017 14:46:03 +0000
+Received: by mail-wm0-x242.google.com with SMTP id m72so8779970wmc.1
+ for <linux-mtd@lists.infradead.org>; Tue, 26 Sep 2017 07:45:40 -0700 (PDT)
+Content-Type: text/plain; charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: Issue with Micron QSPI flash in 4.14-rc1
+From: Andras Szemzo <szemzo.andras@gmail.com>
+In-Reply-To: <51b9af85-1712-7386-293d-1cfb69510f4f@wedev4u.fr>
+Date: Tue, 26 Sep 2017 16:45:36 +0200
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
+ marek.vasut@gmail.com, Richard Weinberger <richard@nod.at>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <D05CE75F-8724-42A4-8A75-86A4B8358088@gmail.com>
+References: <E36A7C66-EC4D-46FF-A6E1-835E1C466E55@gmail.com>
+ <51b9af85-1712-7386-293d-1cfb69510f4f@wedev4u.fr>
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,65 +29,49 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-On 23.09.2017 19:46, Masahiro Yamada wrote:
-> 2017-09-22 16:34 GMT+09:00 Oleksij Rempel <ore@pengutronix.de>:
->> Hi,
->>
->> On Thu, Sep 21, 2017 at 08:00:34PM +0900, Masahiro Yamada wrote:
->>> Hi.
->>>
->>> 2017-09-21 15:44 GMT+09:00 Oleksij Rempel <ore@pengutronix.de>:
->>>> Hi Masahiro,
->>>>
->>>> you are probably the expert of denali nand driver.
->>>> With kernel v4.13 i have following issue, it works on FPGASoC 5CSEBA5U...
->>>> but is now working on FPGASoC 5CSXFC6C6U... both of them have same NAND
->>>> chip, and seems to have similar IP core.
->>>>
->>>> FPGASoC 5CSXFC6C6U...:
->>>> ====================================================================
->>>> [    0.095899] console [ttyS0] disabled
->>>> [    0.095941] ffc02000.serial0: ttyS0 at MMIO 0xffc02000 (irq = 38,
->>>> base_baud = 6250000) is a 16550A
->>>> [    0.702041] console [ttyS0] enabled
->>>> [    0.706986] brd: module loaded
->>>> [    0.716232] loop: module loaded
->>>> [    0.720074] nand: device found, Manufacturer ID: 0x00, Chip ID: 0x2c
->>>
->>>
->>> This line is strange.  It failed to read Manufacturer ID.
->>> The 0x2c should be Manufacturer ID, not Chip ID.
->>>
->>>
->>> I am guessing we need to wait a bit
->>> after the NAND_CMD_READID.
->>>
->>> Please try the following ugly patch.
->>
->> Suddenly this patch makes no difference.
-> 
-> 
-> 
-> Does the following make difference?
-> 
-> 
-> @@ -3876,6 +3876,8 @@ static int nand_detect(struct nand_chip *chip,
-> struct nand_flash_dev *type)
->          /* Select the device */
->          chip->select_chip(mtd, 0);
-> 
-> +       udelay(1);
-> +
->          /* Send the command for reading device ID */
->          chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1);
+>=20
+> This driver was developed and tested for the QSPI controller of =
+SAMA5D2
+> and I think the controller (IP version) is not quite the same on =
+SAMV7.
+>=20
+> I would be surprised that SPI 1-4-4 doesn't work with the Atmel QSPI
+> controller of SAMV7 but let's verify it.
+>=20
 
-We did more tests, so now i can confirm that issue was caused but not 
-properly configured clock for NAND controller.
-After fixing the configuration provided with altera handoff files for 
-bootloader, the NAND on Altera 5CSXFC6C6U seems to work properly with 
-mainline kernel v4.13.
+One more addition, I quickly ported the new ASF driver to my bootloader, =
+which also use
+SFDP and shares some logic. Seems it works with SPI 1-4-4 mode on SAMV7 =
+too:
 
-Masahiro Yamada, thank you for work and time! :)
+xboot v1.0
+QSPI boot selected
+SPI 4-4-4 opcode=3D66h=20
+SPI 4-4-4 opcode=3D99h=20
+SPI 1-1-1 opcode=3D66h=20
+qspi_exec timeout reached
+SPI 1-1-1 opcode=3D9Fh RX (6 bytes): 0x20 0xBA 0x20 0x10 ...=20
+SF: Got Manufacturer and Device ID: 20ba20
+SPI 1-1-1 opcode=3D5Ah address=3D0x00000000 (3-bytes) dummy=3D8 RX (16 =
+bytes): 0x53 0x46 0x44 0x50 ...=20
+SPI 1-1-1 opcode=3D5Ah address=3D0x00000030 (3-bytes) dummy=3D8 RX (36 =
+bytes): 0xE5 0x20 0xFB 0xFF ...=20
+SF: WARNING: can't read above 16MiB
+SPI 1-4-4 opcode=3DEBh address=3D0x00400000 (3-bytes) mode=3D1 (FFh) =
+dummy=3D9 RX (40 bytes): 0xD0 0x0D 0xFE 0xED ...=20
+QSPI: dt blob: Read from 0x400000 to 0x71000000 size: 24572 bytes
+SPI 1-4-4 opcode=3DEBh address=3D0x00400000 (3-bytes) mode=3D1 (FFh) =
+dummy=3D9 RX (24572 bytes): 0xD0 0x0D 0xFE 0xED ...=20
+SPI 1-4-4 opcode=3DEBh address=3D0x00000000 (3-bytes) mode=3D1 (FFh) =
+dummy=3D9 RX (64 bytes): 0x27 0x05 0x19 0x56 ...=20
+QSPI: Image: Read from 0x00 to 0x70007FC0, size: 3252864 bytes
+SPI 1-4-4 opcode=3DEBh address=3D0x00000000 (3-bytes) mode=3D1 (FFh) =
+dummy=3D9 RX (3252864 bytes): 0x27 0x05 0x19 0x56 ...=20
+starting kernel 0x70008001
 
-Regards,
-Oleksij
+Booting Linux on physical CPU 0x0
+Linux version 4.14.0-rc1 (root@devel) (gcc version 4.9.2 ( 4.9.2-10)) =
+#49 Tue Sep 26 15:24:42 CEST 2017
+CPU: ARMv7-M [410fc271] revision 1 (ARMv7M), cr=3D00000000
+CPU: PIPT / VIPT nonaliasing data cache, PIPT instruction cache
+...=
