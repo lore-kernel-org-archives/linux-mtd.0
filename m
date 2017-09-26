@@ -1,29 +1,19 @@
-Subject: Re: [PATCH v3 5/5] mtd: spi-nor: cadence-quadspi: Add runtime PM
- support
-To: matthew.gerlach@linux.intel.com
-Cc: Vignesh R <vigneshr@ti.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
+Received: from conuserg-09.nifty.com ([210.131.2.76])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dwgjR-0000Vc-71
+ for linux-mtd@lists.infradead.org; Tue, 26 Sep 2017 03:40:27 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-References: <20170924105924.23923-1-vigneshr@ti.com>
- <20170924105924.23923-6-vigneshr@ti.com>
- <3a1160f9-a0ae-c84c-d209-af97c3c3b0f6@gmail.com>
- <4ee69ea4-14cc-4305-bf3f-8fe76d43bf6b@ti.com>
- <fa700cdf-f0b5-779b-4f38-3138a7612cc2@gmail.com>
- <038919d3-ff32-d0a7-4c0a-3be16436052d@ti.com>
- <e4ad5d80-9093-b667-f0a5-d3105be4e8cf@gmail.com>
- <alpine.DEB.2.20.1709251538420.2472@mgerlach-VirtualBox>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <fdfe29bf-ff46-7542-8e36-e8e45e1ca85f@gmail.com>
-Date: Tue, 26 Sep 2017 01:49:46 +0200
-MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.20.1709251538420.2472@mgerlach-VirtualBox>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+ Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd: nand: wait for tWHR after NAND_CMD_STATUS /
+ NAND_CMD_READID
+Date: Tue, 26 Sep 2017 12:39:24 +0900
+Message-Id: <1506397164-3648-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,56 +23,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/26/2017 12:41 AM, matthew.gerlach@linux.intel.com wrote:
-> 
-> 
-> On Sun, 24 Sep 2017, Marek Vasut wrote:
-> 
->> On 09/24/2017 03:27 PM, Vignesh R wrote:
->>>
->>>
->>> On 9/24/2017 6:42 PM, Marek Vasut wrote:
->>>> On 09/24/2017 03:08 PM, Vignesh R wrote:
->>>>>
->>>>>
->>>>> On 9/24/2017 5:31 PM, Marek Vasut wrote:
->>>>>> On 09/24/2017 12:59 PM, Vignesh R wrote:
->>>>>>> Add pm_runtime* calls to cadence-quadspi driver. This is required to
->>>>>>> switch on QSPI power domain on TI 66AK2G SoC during probe.
->>>>>>>
->>>>>>> Signed-off-by: Vignesh R <vigneshr@ti.com>
->>>>>>
->>>>>> Are you planning to add some more fine-grained PM control later?
->>>>>
->>>>> Yes, I will need to add fine-grained PM control at some point. But,
->>>>> for
->>>>> now SoC does not really support low power mode or runtime power saving
->>>>> option.
->>>>> The fact that driver still uses clk_prepare_*() calls to
->>>>> enable/disable
->>>>> clocks instead of pm_*() calls makes it a bit tricky though.
->>>>>
->>>>> Just figured out I forgot to add cleanup code in error handling
->>>>> path of
->>>>> probe(). Will fix that and send a v4.
->>>>
->>>> OK, fine. Cleanups are welcome. The SoCFPGA doesn't do much runtime PM
->>>> either, so it's fine for now.
->>>>
->>>
->>> Ok thanks! Do you know if pm_runtime_get_sync() can enable clocks for
->>> QSPI on SoCFPGA or if clk_prepare_enable() is needed? Just trying to see
->>> if its possible to get rid of clk_*() calls in favor of pm_*() calls.
->>
->> Not of the top of my head, sorry. +CC Matthew, he should know.
-> 
-> I am not an expert at the clock framework nor the power management, but I
-> did ask around a bit.  No one I asked was planning to change the clk_*()
-> calls to pm_*() call, but the feedback was that it would be a good idea.
+Read Status and Read ID require tWHR before reading the first data.
+Insert a very short wait to make sure to meet the spec.
 
-The question is, if we do the replacement, will it break on socfpga ?
-A quick test might be useful.
+I have not seen any problem report for now, but nand_command() and
+nand_command_lP() are generic hooks, so it makes sense to implement
+fail-safe code here.
 
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
+
+ drivers/mtd/nand/nand_base.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index b1cf32c..55c0ba5 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -742,9 +742,12 @@ static void nand_command(struct mtd_info *mtd, unsigned int command,
+ 	case NAND_CMD_ERASE1:
+ 	case NAND_CMD_ERASE2:
+ 	case NAND_CMD_SEQIN:
++	case NAND_CMD_SET_FEATURES:
++		return;
++
+ 	case NAND_CMD_STATUS:
+ 	case NAND_CMD_READID:
+-	case NAND_CMD_SET_FEATURES:
++		ndelay(200);	/* tWHR */
+ 		return;
+ 
+ 	case NAND_CMD_RESET:
+@@ -871,9 +874,12 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
+ 	case NAND_CMD_ERASE1:
+ 	case NAND_CMD_ERASE2:
+ 	case NAND_CMD_SEQIN:
++	case NAND_CMD_SET_FEATURES:
++		return;
++
+ 	case NAND_CMD_STATUS:
+ 	case NAND_CMD_READID:
+-	case NAND_CMD_SET_FEATURES:
++		ndelay(200);	/* tWHR */
+ 		return;
+ 
+ 	case NAND_CMD_RNDIN:
 -- 
-Best regards,
-Marek Vasut
+2.7.4
