@@ -1,21 +1,14 @@
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dwhJO-0007k1-Jw
- for linux-mtd@lists.infradead.org; Tue, 26 Sep 2017 04:17:40 +0000
-From: Kalyan Kinthada <kalyan.kinthada@alliedtelesis.co.nz>
-To: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org, mark.rutland@arm.com,
- ezequiel.garcia@free-electrons.com, devicetree@vger.kernel.org
+Received: from lgeamrelo13.lge.com ([156.147.23.53])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dwhuK-0007z2-Fw
+ for linux-mtd@lists.infradead.org; Tue, 26 Sep 2017 04:55:47 +0000
+From: Hyunchul Lee <hyc.lee@gmail.com>
+To: Richard Weinberger <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- chris.packham@alliedtelesis.co.nz,
- Kalyan Kinthada <kalyan.kinthada@alliedtelesis.co.nz>
-Subject: [PATCH 2/2] mtd: nand: pxa3xx: Handle "marvell,
- nand-force-csx" compatible string
-Date: Tue, 26 Sep 2017 17:17:00 +1300
-Message-Id: <20170926041700.22663-3-kalyan.kinthada@alliedtelesis.co.nz>
-In-Reply-To: <20170926041700.22663-1-kalyan.kinthada@alliedtelesis.co.nz>
-References: <20170926041700.22663-1-kalyan.kinthada@alliedtelesis.co.nz>
+ kernel-team@lge.com, Hyunchul Lee <cheol.lee@lge.com>
+Subject: [PATCH] ubi: Remove ubi_io_is_bad call from scan_peb
+Date: Tue, 26 Sep 2017 13:54:57 +0900
+Message-Id: <1506401697-449-1-git-send-email-hyc.lee@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,71 +18,126 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When the arbitration between NOR and NAND flash is enabled
-the <FORCE_CSX> field bit[21] in the Data Flash Control Register
-needs to be set to 1 according to guidleine GL-5830741.
+From: Hyunchul Lee <cheol.lee@lge.com>
 
-This commit sets the FORCE_CSX bit to 1 if the compatible
-string "marvell,nand-force-csx" is enabled in the device tree
-of the corresponding boards.
+When erase count and volume identifier headers are read,
+ubi_io_is_bad is called. So instead of calling ubi_io_is_bad
+from scan_peb, use the result.
 
-Signed-off-by: Kalyan Kinthada <kalyan.kinthada@alliedtelesis.co.nz>
+this patch reduces the attach time by about 15% in my
+environment.
+
+ARMv7 1GHZ based board, 66.8MiB MTD partition
+                before          after
+attach time     308.365 usec    257.100 usec
+
+Signed-off-by: Hyunchul Lee <cheol.lee@lge.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c                | 6 ++++++
- include/linux/platform_data/mtd-nand-pxa3xx.h | 3 +++
- 2 files changed, 9 insertions(+)
+ drivers/mtd/ubi/attach.c | 15 ++++++---------
+ drivers/mtd/ubi/io.c     |  9 ++++++---
+ drivers/mtd/ubi/ubi.h    |  2 ++
+ 3 files changed, 14 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 85cff68643e0..4ad1f0601930 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -68,6 +68,7 @@
- #define NDCR_PAGE_SZ		(0x1 << 24)
- #define NDCR_NCSX		(0x1 << 23)
- #define NDCR_ND_MODE		(0x3 << 21)
-+#define NDCR_FORCE_CSX		(0x1 << 21)
- #define NDCR_NAND_MODE   	(0x0)
- #define NDCR_CLR_PG_CNT		(0x1 << 20)
- #define NFCV1_NDCR_ARB_CNTL	(0x1 << 19)
-@@ -1464,6 +1465,7 @@ static int pxa3xx_nand_config_ident(struct pxa3xx_nand_info *info)
- 	info->chunk_size = PAGE_CHUNK_SIZE;
- 	info->reg_ndcr = 0x0; /* enable all interrupts */
- 	info->reg_ndcr |= (pdata->enable_arbiter) ? NDCR_ND_ARB_EN : 0;
-+	info->reg_ndcr |= (pdata->force_csx) ? NDCR_FORCE_CSX : 0;
- 	info->reg_ndcr |= NDCR_RD_ID_CNT(READ_ID_BYTES);
- 	info->reg_ndcr |= NDCR_SPARE_EN;
+diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
+index 93ceea4..07b9162 100644
+--- a/drivers/mtd/ubi/attach.c
++++ b/drivers/mtd/ubi/attach.c
+@@ -962,15 +962,6 @@ static int scan_peb(struct ubi_device *ubi, struct ubi_attach_info *ai,
  
-@@ -1498,6 +1500,7 @@ static void pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
- 	info->reg_ndcr = ndcr &
- 		~(NDCR_INT_MASK | NDCR_ND_ARB_EN | NFCV1_NDCR_ARB_CNTL);
- 	info->reg_ndcr |= (pdata->enable_arbiter) ? NDCR_ND_ARB_EN : 0;
-+	info->reg_ndcr |= (pdata->force_csx) ? NDCR_FORCE_CSX : 0;
- 	info->ndtr0cs0 = nand_readl(info, NDTR0CS0);
- 	info->ndtr1cs0 = nand_readl(info, NDTR1CS0);
+ 	dbg_bld("scan PEB %d", pnum);
+ 
+-	/* Skip bad physical eraseblocks */
+-	err = ubi_io_is_bad(ubi, pnum);
+-	if (err < 0)
+-		return err;
+-	else if (err) {
+-		ai->bad_peb_count += 1;
+-		return 0;
+-	}
+-
+ 	err = ubi_io_read_ec_hdr(ubi, pnum, ech, 0);
+ 	if (err < 0)
+ 		return err;
+@@ -999,6 +990,9 @@ static int scan_peb(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 		ec = UBI_UNKNOWN;
+ 		bitflips = 1;
+ 		break;
++	case UBI_IO_BAD_BLK:
++		ai->bad_peb_count += 1;
++		return 0;
+ 	default:
+ 		ubi_err(ubi, "'ubi_io_read_ec_hdr()' returned unknown code %d",
+ 			err);
+@@ -1136,6 +1130,9 @@ static int scan_peb(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 		if (err)
+ 			return err;
+ 		goto adjust_mean_ec;
++	case UBI_IO_BAD_BLK:
++		ai->bad_peb_count += 1;
++		return 0;
+ 	default:
+ 		ubi_err(ubi, "'ubi_io_read_vid_hdr()' returned unknown code %d",
+ 			err);
+diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
+index 8290432..ae52e7e 100644
+--- a/drivers/mtd/ubi/io.c
++++ b/drivers/mtd/ubi/io.c
+@@ -117,6 +117,7 @@ static int self_check_write(struct ubi_device *ubi, const void *buf, int pnum,
+  * o %UBI_IO_BITFLIPS if all the requested data were successfully read, but
+  *   correctable bit-flips were detected; this is harmless but may indicate
+  *   that this eraseblock may become bad soon (but do not have to);
++ * o %UBI_IO_BAD_BLK if the erabse block is bad
+  * o %-EBADMSG if the MTD subsystem reported about data integrity problems, for
+  *   example it can be an ECC error in case of NAND; this most probably means
+  *   that the data is corrupted;
+@@ -137,7 +138,9 @@ int ubi_io_read(const struct ubi_device *ubi, void *buf, int pnum, int offset,
+ 	ubi_assert(len > 0);
+ 
+ 	err = self_check_not_bad(ubi, pnum);
+-	if (err)
++	if (err == -EBADSLT)
++		return UBI_IO_BAD_BLK;
++	else if (err)
+ 		return err;
+ 
+ 	/*
+@@ -1131,7 +1134,7 @@ int ubi_io_write_vid_hdr(struct ubi_device *ubi, int pnum,
+  * @ubi: UBI device description object
+  * @pnum: physical eraseblock number to check
+  *
+- * This function returns zero if the physical eraseblock is good, %-EINVAL if
++ * This function returns zero if the physical eraseblock is good, %-EBADSLT if
+  * it is bad and a negative error code if an error occurred.
+  */
+ static int self_check_not_bad(const struct ubi_device *ubi, int pnum)
+@@ -1147,7 +1150,7 @@ static int self_check_not_bad(const struct ubi_device *ubi, int pnum)
+ 
+ 	ubi_err(ubi, "self-check failed for PEB %d", pnum);
+ 	dump_stack();
+-	return err > 0 ? -EINVAL : err;
++	return err > 0 ? -EBADSLT : err;
  }
-@@ -1936,6 +1939,9 @@ static int pxa3xx_nand_probe_dt(struct platform_device *pdev)
- 		pdata->enable_arbiter = 1;
- 	if (of_get_property(np, "marvell,nand-keep-config", NULL))
- 		pdata->keep_config = 1;
-+	if (of_get_property(np, "marvell,nand-force-csx", NULL))
-+		/* Ref#: GL-5830741 */
-+		pdata->force_csx = 1;
- 	of_property_read_u32(np, "num-cs", &pdata->num_cs);
  
- 	pdev->dev.platform_data = pdata;
-diff --git a/include/linux/platform_data/mtd-nand-pxa3xx.h b/include/linux/platform_data/mtd-nand-pxa3xx.h
-index 394d15597dc7..e7f2c8647c0e 100644
---- a/include/linux/platform_data/mtd-nand-pxa3xx.h
-+++ b/include/linux/platform_data/mtd-nand-pxa3xx.h
-@@ -28,6 +28,9 @@ struct pxa3xx_nand_platform_data {
- 	/* allow platform code to keep OBM/bootloader defined NFC config */
- 	int	keep_config;
+ /**
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index 5fe6265..5c5207d 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -107,6 +107,7 @@
+  *                         data integrity error reported by the MTD driver
+  *                         (uncorrectable ECC error in case of NAND)
+  * UBI_IO_BITFLIPS: bit-flips were detected and corrected
++ * UBI_IO_BAD_BLK: bad erase block
+  *
+  * Note, it is probably better to have bit-flip and ebadmsg as flags which can
+  * be or'ed with other error code. But this is a big change because there are
+@@ -118,6 +119,7 @@ enum {
+ 	UBI_IO_BAD_HDR,
+ 	UBI_IO_BAD_HDR_EBADMSG,
+ 	UBI_IO_BITFLIPS,
++	UBI_IO_BAD_BLK,
+ };
  
-+	/* Force chip select false on busy */
-+	int	force_csx;
-+
- 	/* indicate how many chip selects will be used */
- 	int	num_cs;
- 
+ /*
 -- 
-2.14.1
+1.9.1
