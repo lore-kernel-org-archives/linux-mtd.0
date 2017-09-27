@@ -1,9 +1,9 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dx7pg-0002mB-AB
- for linux-mtd@lists.infradead.org; Wed, 27 Sep 2017 08:36:50 +0000
-Received: by mail-wm0-x244.google.com with SMTP id r136so10793366wmf.3
- for <linux-mtd@lists.infradead.org>; Wed, 27 Sep 2017 01:36:19 -0700 (PDT)
+ id 1dx7pi-0002nw-H3
+ for linux-mtd@lists.infradead.org; Wed, 27 Sep 2017 08:36:52 +0000
+Received: by mail-wr0-x242.google.com with SMTP id z1so960049wre.1
+ for <linux-mtd@lists.infradead.org>; Wed, 27 Sep 2017 01:36:21 -0700 (PDT)
 From: Romain Izard <romain.izard.pro@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Michael Turquette <mturquette@baylibre.com>,
@@ -24,9 +24,9 @@ Cc: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-pwm@vger.kernel.org,
  linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
  Romain Izard <romain.izard.pro@gmail.com>
-Subject: [PATCH v3 6/8] pwm: atmel-tcb: Support backup mode
-Date: Wed, 27 Sep 2017 10:35:53 +0200
-Message-Id: <20170927083555.16580-7-romain.izard.pro@gmail.com>
+Subject: [PATCH v3 8/8] tty/serial: atmel: Prevent a warning on suspend
+Date: Wed, 27 Sep 2017 10:35:55 +0200
+Message-Id: <20170927083555.16580-9-romain.izard.pro@gmail.com>
 In-Reply-To: <20170927083555.16580-1-romain.izard.pro@gmail.com>
 References: <20170927083555.16580-1-romain.izard.pro@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -38,122 +38,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Save and restore registers for the PWM on suspend and resume, which
-makes hibernation and backup modes possible.
+The atmel serial port driver reported the following warning on suspend:
+atmel_usart f8020000.serial: ttyS1: Unable to drain transmitter
+
+As the ATMEL_US_TXEMPTY status bit in ATMEL_US_CSR is always cleared
+when the transmitter is disabled, we need to know the transmitter's
+state to return the real fifo state. And as ATMEL_US_CR is write-only,
+it is necessary to save the state of the transmitter in a local
+variable, and update the variable when TXEN and TXDIS is written in
+ATMEL_US_CR.
+
+After those changes, atmel_tx_empty can return "empty" on suspend, the
+warning in uart_suspend_port disappears, and suspending is 20ms shorter
+for each enabled Atmel serial port.
 
 Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
+Tested-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Acked-by: Richard Genoud <richard.genoud@gmail.com>
 ---
- drivers/pwm/pwm-atmel-tcb.c | 63 +++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 61 insertions(+), 2 deletions(-)
+ drivers/tty/serial/atmel_serial.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/drivers/pwm/pwm-atmel-tcb.c b/drivers/pwm/pwm-atmel-tcb.c
-index 75db585a2a94..acd3ce8ecf3f 100644
---- a/drivers/pwm/pwm-atmel-tcb.c
-+++ b/drivers/pwm/pwm-atmel-tcb.c
-@@ -37,11 +37,20 @@ struct atmel_tcb_pwm_device {
- 	unsigned period;		/* PWM period expressed in clk cycles */
- };
+diff --git a/drivers/tty/serial/atmel_serial.c b/drivers/tty/serial/atmel_serial.c
+index 7551cab438ff..ce45b4ada0bf 100644
+--- a/drivers/tty/serial/atmel_serial.c
++++ b/drivers/tty/serial/atmel_serial.c
+@@ -171,6 +171,7 @@ struct atmel_uart_port {
+ 	bool			has_hw_timer;
+ 	struct timer_list	uart_timer;
  
-+struct atmel_tcb_channel {
-+	u32 enabled;
-+	u32 cmr;
-+	u32 ra;
-+	u32 rb;
-+	u32 rc;
-+};
++	bool			tx_stopped;
+ 	bool			suspended;
+ 	unsigned int		pending;
+ 	unsigned int		pending_status;
+@@ -380,6 +381,10 @@ static int atmel_config_rs485(struct uart_port *port,
+  */
+ static u_int atmel_tx_empty(struct uart_port *port)
+ {
++	struct atmel_uart_port *atmel_port = to_atmel_uart_port(port);
 +
- struct atmel_tcb_pwm_chip {
- 	struct pwm_chip chip;
- 	spinlock_t lock;
- 	struct atmel_tc *tc;
- 	struct atmel_tcb_pwm_device *pwms[NPWM];
-+	struct atmel_tcb_channel bkup[NPWM / 2];
- };
- 
- static inline struct atmel_tcb_pwm_chip *to_tcb_chip(struct pwm_chip *chip)
-@@ -175,12 +184,15 @@ static void atmel_tcb_pwm_disable(struct pwm_chip *chip, struct pwm_device *pwm)
- 	 * Use software trigger to apply the new setting.
- 	 * If both PWM devices in this group are disabled we stop the clock.
++	if (atmel_port->tx_stopped)
++		return TIOCSER_TEMT;
+ 	return (atmel_uart_readl(port, ATMEL_US_CSR) & ATMEL_US_TXEMPTY) ?
+ 		TIOCSER_TEMT :
+ 		0;
+@@ -485,6 +490,7 @@ static void atmel_stop_tx(struct uart_port *port)
+ 	 * is fully transmitted.
  	 */
--	if (!(cmr & (ATMEL_TC_ACPC | ATMEL_TC_BCPC)))
-+	if (!(cmr & (ATMEL_TC_ACPC | ATMEL_TC_BCPC))) {
- 		__raw_writel(ATMEL_TC_SWTRG | ATMEL_TC_CLKDIS,
- 			     regs + ATMEL_TC_REG(group, CCR));
--	else
-+		tcbpwmc->bkup[group].enabled = 1;
-+	} else {
- 		__raw_writel(ATMEL_TC_SWTRG, regs +
- 			     ATMEL_TC_REG(group, CCR));
-+		tcbpwmc->bkup[group].enabled = 0;
-+	}
+ 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_TXDIS);
++	atmel_port->tx_stopped = true;
  
- 	spin_unlock(&tcbpwmc->lock);
- }
-@@ -263,6 +275,7 @@ static int atmel_tcb_pwm_enable(struct pwm_chip *chip, struct pwm_device *pwm)
- 	/* Use software trigger to apply the new setting */
- 	__raw_writel(ATMEL_TC_CLKEN | ATMEL_TC_SWTRG,
- 		     regs + ATMEL_TC_REG(group, CCR));
-+	tcbpwmc->bkup[group].enabled = 1;
- 	spin_unlock(&tcbpwmc->lock);
- 	return 0;
- }
-@@ -445,10 +458,56 @@ static const struct of_device_id atmel_tcb_pwm_dt_ids[] = {
- };
- MODULE_DEVICE_TABLE(of, atmel_tcb_pwm_dt_ids);
+ 	/* Disable interrupts */
+ 	atmel_uart_writel(port, ATMEL_US_IDR, atmel_port->tx_done_mask);
+@@ -521,6 +527,7 @@ static void atmel_start_tx(struct uart_port *port)
  
-+#ifdef CONFIG_PM_SLEEP
-+static int atmel_tcb_pwm_suspend(struct device *dev)
-+{
-+	struct platform_device *pdev = to_platform_device(dev);
-+	struct atmel_tcb_pwm_chip *tcbpwm = platform_get_drvdata(pdev);
-+	void __iomem *base = tcbpwm->tc->regs;
-+	int i;
-+
-+	for (i = 0; i < (NPWM / 2); i++) {
-+		struct atmel_tcb_channel *chan = &tcbpwm->bkup[i];
-+
-+		chan->cmr = readl(base + ATMEL_TC_REG(i, CMR));
-+		chan->ra = readl(base + ATMEL_TC_REG(i, RA));
-+		chan->rb = readl(base + ATMEL_TC_REG(i, RB));
-+		chan->rc = readl(base + ATMEL_TC_REG(i, RC));
-+	}
-+	return 0;
-+}
-+
-+static int atmel_tcb_pwm_resume(struct device *dev)
-+{
-+	struct platform_device *pdev = to_platform_device(dev);
-+	struct atmel_tcb_pwm_chip *tcbpwm = platform_get_drvdata(pdev);
-+	void __iomem *base = tcbpwm->tc->regs;
-+	int i;
-+
-+	for (i = 0; i < (NPWM / 2); i++) {
-+		struct atmel_tcb_channel *chan = &tcbpwm->bkup[i];
-+
-+		writel(chan->cmr, base + ATMEL_TC_REG(i, CMR));
-+		writel(chan->ra, base + ATMEL_TC_REG(i, RA));
-+		writel(chan->rb, base + ATMEL_TC_REG(i, RB));
-+		writel(chan->rc, base + ATMEL_TC_REG(i, RC));
-+		if (chan->enabled) {
-+			writel(ATMEL_TC_CLKEN | ATMEL_TC_SWTRG,
-+				base + ATMEL_TC_REG(i, CCR));
-+		}
-+	}
-+	return 0;
-+}
-+#endif
-+
-+static SIMPLE_DEV_PM_OPS(atmel_tcb_pwm_pm_ops, atmel_tcb_pwm_suspend,
-+			 atmel_tcb_pwm_resume);
-+
- static struct platform_driver atmel_tcb_pwm_driver = {
- 	.driver = {
- 		.name = "atmel-tcb-pwm",
- 		.of_match_table = atmel_tcb_pwm_dt_ids,
-+		.pm = &atmel_tcb_pwm_pm_ops,
- 	},
- 	.probe = atmel_tcb_pwm_probe,
- 	.remove = atmel_tcb_pwm_remove,
+ 	/* re-enable the transmitter */
+ 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_TXEN);
++	atmel_port->tx_stopped = false;
+ }
+ 
+ /*
+@@ -1866,6 +1873,7 @@ static int atmel_startup(struct uart_port *port)
+ 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_RSTSTA | ATMEL_US_RSTRX);
+ 	/* enable xmit & rcvr */
+ 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_TXEN | ATMEL_US_RXEN);
++	atmel_port->tx_stopped = false;
+ 
+ 	setup_timer(&atmel_port->uart_timer,
+ 			atmel_uart_timer_callback,
+@@ -2122,6 +2130,7 @@ static void atmel_set_termios(struct uart_port *port, struct ktermios *termios,
+ 
+ 	/* disable receiver and transmitter */
+ 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_TXDIS | ATMEL_US_RXDIS);
++	atmel_port->tx_stopped = true;
+ 
+ 	/* mode */
+ 	if (port->rs485.flags & SER_RS485_ENABLED) {
+@@ -2207,6 +2216,7 @@ static void atmel_set_termios(struct uart_port *port, struct ktermios *termios,
+ 	atmel_uart_writel(port, ATMEL_US_BRGR, quot);
+ 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_RSTSTA | ATMEL_US_RSTRX);
+ 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_TXEN | ATMEL_US_RXEN);
++	atmel_port->tx_stopped = false;
+ 
+ 	/* restore interrupts */
+ 	atmel_uart_writel(port, ATMEL_US_IER, imr);
+@@ -2450,6 +2460,7 @@ static void atmel_console_write(struct console *co, const char *s, u_int count)
+ 
+ 	/* Make sure that tx path is actually able to send characters */
+ 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_TXEN);
++	atmel_port->tx_stopped = false;
+ 
+ 	uart_console_write(port, s, count, atmel_console_putchar);
+ 
+@@ -2511,6 +2522,7 @@ static int __init atmel_console_setup(struct console *co, char *options)
+ {
+ 	int ret;
+ 	struct uart_port *port = &atmel_ports[co->index].uart;
++	struct atmel_uart_port *atmel_port = to_atmel_uart_port(port);
+ 	int baud = 115200;
+ 	int bits = 8;
+ 	int parity = 'n';
+@@ -2528,6 +2540,7 @@ static int __init atmel_console_setup(struct console *co, char *options)
+ 	atmel_uart_writel(port, ATMEL_US_IDR, -1);
+ 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_RSTSTA | ATMEL_US_RSTRX);
+ 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_TXEN | ATMEL_US_RXEN);
++	atmel_port->tx_stopped = false;
+ 
+ 	if (options)
+ 		uart_parse_options(options, &baud, &parity, &bits, &flow);
 -- 
 2.11.0
