@@ -1,34 +1,19 @@
-Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
+Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dx7pi-0002nw-H3
- for linux-mtd@lists.infradead.org; Wed, 27 Sep 2017 08:36:52 +0000
-Received: by mail-wr0-x242.google.com with SMTP id z1so960049wre.1
- for <linux-mtd@lists.infradead.org>; Wed, 27 Sep 2017 01:36:21 -0700 (PDT)
-From: Romain Izard <romain.izard.pro@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@codeaurora.org>, Lee Jones <lee.jones@linaro.org>,
- Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Thierry Reding <thierry.reding@gmail.com>,
- Richard Genoud <richard.genoud@gmail.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jiri Slaby <jslaby@suse.com>, Alan Stern <stern@rowland.harvard.edu>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Cc: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-pwm@vger.kernel.org,
- linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
- Romain Izard <romain.izard.pro@gmail.com>
-Subject: [PATCH v3 8/8] tty/serial: atmel: Prevent a warning on suspend
-Date: Wed, 27 Sep 2017 10:35:55 +0200
-Message-Id: <20170927083555.16580-9-romain.izard.pro@gmail.com>
-In-Reply-To: <20170927083555.16580-1-romain.izard.pro@gmail.com>
-References: <20170927083555.16580-1-romain.izard.pro@gmail.com>
+ id 1dx8IQ-0002KZ-1y
+ for linux-mtd@lists.infradead.org; Wed, 27 Sep 2017 09:06:25 +0000
+Received: by mail-wm0-x22e.google.com with SMTP id r136so15715130wmf.2
+ for <linux-mtd@lists.infradead.org>; Wed, 27 Sep 2017 02:06:00 -0700 (PDT)
+Message-ID: <1506503157.3016.5.camel@gmail.com>
+Subject: atmel_nand: kernel panic when ecc_strength==4
+From: Richard Genoud <richard.genoud@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Nicolas Ferre
+ <nicolas.ferre@microchip.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, Linux Kernel
+ <linux-kernel@vger.kernel.org>
+Date: Wed, 27 Sep 2017 11:05:57 +0200
+Content-Type: multipart/mixed; boundary="=-IKKCrjYZdyDDYFaL98Ee"
+Mime-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,114 +23,246 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The atmel serial port driver reported the following warning on suspend:
-atmel_usart f8020000.serial: ttyS1: Unable to drain transmitter
 
-As the ATMEL_US_TXEMPTY status bit in ATMEL_US_CSR is always cleared
-when the transmitter is disabled, we need to know the transmitter's
-state to return the real fifo state. And as ATMEL_US_CR is write-only,
-it is necessary to save the state of the transmitter in a local
-variable, and update the variable when TXEN and TXDIS is written in
-ATMEL_US_CR.
+--=-IKKCrjYZdyDDYFaL98Ee
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 
-After those changes, atmel_tx_empty can return "empty" on suspend, the
-warning in uart_suspend_port disappears, and suspending is 20ms shorter
-for each enabled Atmel serial port.
+Hi Boris, Nicolas !
 
-Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
-Tested-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Acked-by: Richard Genoud <richard.genoud@gmail.com>
----
- drivers/tty/serial/atmel_serial.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+Since commit f88fc122cc34 ("mtd: nand: Cleanup/rework the atmel_nand driver")
+strange things happen when nand-ecc-strength = <4>; (previously atmel,pmecc-cap).
 
-diff --git a/drivers/tty/serial/atmel_serial.c b/drivers/tty/serial/atmel_serial.c
-index 7551cab438ff..ce45b4ada0bf 100644
---- a/drivers/tty/serial/atmel_serial.c
-+++ b/drivers/tty/serial/atmel_serial.c
-@@ -171,6 +171,7 @@ struct atmel_uart_port {
- 	bool			has_hw_timer;
- 	struct timer_list	uart_timer;
- 
-+	bool			tx_stopped;
- 	bool			suspended;
- 	unsigned int		pending;
- 	unsigned int		pending_status;
-@@ -380,6 +381,10 @@ static int atmel_config_rs485(struct uart_port *port,
-  */
- static u_int atmel_tx_empty(struct uart_port *port)
- {
-+	struct atmel_uart_port *atmel_port = to_atmel_uart_port(port);
-+
-+	if (atmel_port->tx_stopped)
-+		return TIOCSER_TEMT;
- 	return (atmel_uart_readl(port, ATMEL_US_CSR) & ATMEL_US_TXEMPTY) ?
- 		TIOCSER_TEMT :
- 		0;
-@@ -485,6 +490,7 @@ static void atmel_stop_tx(struct uart_port *port)
- 	 * is fully transmitted.
- 	 */
- 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_TXDIS);
-+	atmel_port->tx_stopped = true;
- 
- 	/* Disable interrupts */
- 	atmel_uart_writel(port, ATMEL_US_IDR, atmel_port->tx_done_mask);
-@@ -521,6 +527,7 @@ static void atmel_start_tx(struct uart_port *port)
- 
- 	/* re-enable the transmitter */
- 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_TXEN);
-+	atmel_port->tx_stopped = false;
- }
- 
- /*
-@@ -1866,6 +1873,7 @@ static int atmel_startup(struct uart_port *port)
- 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_RSTSTA | ATMEL_US_RSTRX);
- 	/* enable xmit & rcvr */
- 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_TXEN | ATMEL_US_RXEN);
-+	atmel_port->tx_stopped = false;
- 
- 	setup_timer(&atmel_port->uart_timer,
- 			atmel_uart_timer_callback,
-@@ -2122,6 +2130,7 @@ static void atmel_set_termios(struct uart_port *port, struct ktermios *termios,
- 
- 	/* disable receiver and transmitter */
- 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_TXDIS | ATMEL_US_RXDIS);
-+	atmel_port->tx_stopped = true;
- 
- 	/* mode */
- 	if (port->rs485.flags & SER_RS485_ENABLED) {
-@@ -2207,6 +2216,7 @@ static void atmel_set_termios(struct uart_port *port, struct ktermios *termios,
- 	atmel_uart_writel(port, ATMEL_US_BRGR, quot);
- 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_RSTSTA | ATMEL_US_RSTRX);
- 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_TXEN | ATMEL_US_RXEN);
-+	atmel_port->tx_stopped = false;
- 
- 	/* restore interrupts */
- 	atmel_uart_writel(port, ATMEL_US_IER, imr);
-@@ -2450,6 +2460,7 @@ static void atmel_console_write(struct console *co, const char *s, u_int count)
- 
- 	/* Make sure that tx path is actually able to send characters */
- 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_TXEN);
-+	atmel_port->tx_stopped = false;
- 
- 	uart_console_write(port, s, count, atmel_console_putchar);
- 
-@@ -2511,6 +2522,7 @@ static int __init atmel_console_setup(struct console *co, char *options)
- {
- 	int ret;
- 	struct uart_port *port = &atmel_ports[co->index].uart;
-+	struct atmel_uart_port *atmel_port = to_atmel_uart_port(port);
- 	int baud = 115200;
- 	int bits = 8;
- 	int parity = 'n';
-@@ -2528,6 +2540,7 @@ static int __init atmel_console_setup(struct console *co, char *options)
- 	atmel_uart_writel(port, ATMEL_US_IDR, -1);
- 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_RSTSTA | ATMEL_US_RSTRX);
- 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_TXEN | ATMEL_US_RXEN);
-+	atmel_port->tx_stopped = false;
- 
- 	if (options)
- 		uart_parse_options(options, &baud, &parity, &bits, &flow);
--- 
-2.11.0
+I first saw that a NULL pointer dereference happened when "udevadm trigger" was launched.
+With strace, I nailed it down to :
+
+sh-4.3# echo change > /sys/devices/virtual/bdi/mtd-1/uevent 
+[   86.696275] Unable to handle kernel NULL pointer dereference at virtual address 00000001
+[   86.704285] pgd = c717c000
+[   86.707072] [00000001] *pgd=c06d9a7000000000, *pte=00000000, *ppte=00000000
+[   86.713979] Internal error: Oops: 17 [#3] ARM
+[   86.718306] CPU: 0 PID: 1 Comm: sh Tainted: G      D W       4.11.0-rc1-00056-gf88fc122cc34-dirty #75
+[   86.727443] Hardware name: Atmel AT91SAM9
+[   86.731424] task: c7880b60 task.stack: c7884000
+[   86.735926] PC is at strlen+0x14/0x2c
+[   86.739556] LR is at kobject_get_path+0x34/0xac
+[   86.744046] pc : [<c023bc08>]    lr : [<c0235020>]    psr: 20000013
+[   86.744046] sp : c7885dc0  ip : c7885dd0  fp : c7885dcc
+[   86.755439] r10: 00000002  r9 : 00000000  r8 : c7885f78
+[   86.760627] r7 : 014000c0  r6 : c7ab2308  r5 : 00000001  r4 : c7ab2308
+[   86.767106] r3 : 00000001  r2 : 00000001  r1 : 014000c0  r0 : 00000001
+[   86.773588] Flags: nzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+[   86.780672] Control: 0005317f  Table: 2717c000  DAC: 00000051
+[   86.786372] Process sh (pid: 1, stack limit = 0xc7884190)
+[   86.791730] Stack: (0xc7885dc0 to 0xc7886000)
+[   86.796075] 5dc0: c7885df4 c7885dd0 c0235020 c023bc04 c0728bf8 c79f1000 c7ab2308 c78c2b00
+[   86.804195] 5de0: c04f4610 c7885f78 c7885e44 c7885df8 c0236244 c0234ffc c00a53b4 00000074
+[   86.812315] 5e00: 00107000 c7885ea8 c7885e64 c05d604b c717b420 c05b4aa8 0000081f 00000007
+[   86.820438] 5e20: c7ab2300 c7199ea0 c79baae0 c7885f78 c7199eb0 00000007 c7885e54 c7885e48
+[   86.828559] 5e40: c0236640 c0236188 c7885e74 c7885e58 c02a5834 c023663c c7885e9c 00000002
+[   86.836681] 5e60: c7bf1f50 c79baae0 c7885e84 c7885e78 c02a37b8 c02a5800 c7885e9c c7885e88
+[   86.844801] 5e80: c0128fc8 c02a37a0 00000000 00000000 c7885ed4 c7885ea0 c01281e4 c0128f8c
+[   86.852922] 5ea0: 00000000 00000000 c7880b60 c01280b8 00106cf8 c7215c20 c7885f78 00000007
+[   86.861045] 5ec0: c7884000 00106cf8 c7885f44 c7885ed8 c00caec0 c01280c8 0000081f 00107d00
+[   86.869167] 5ee0: c06d0f7c c7885fb0 00053177 00001180 00000178 c7885fac c7885f04 c00091e4
+[   86.877288] 5f00: c001128c c000e088 00000158 c00cb114 000012bc 00000000 bec504d0 b6e8bbec
+[   86.885409] 5f20: c7215c20 c7215c20 00000000 00000007 00106cf8 c7885f78 c7885f74 c7885f48
+[   86.893531] 5f40: c00cb160 c00cae94 c00e6e04 c00e6568 00000000 00000000 c7215c20 c7215c20
+[   86.901652] 5f60: 00000007 00106cf8 c7885fa4 c7885f78 c00cb2dc c00cb0b0 00000000 00000000
+[   86.909773] 5f80: 00000007 00106cf8 b6e8dd50 00000004 c000a544 00000000 00000000 c7885fa8
+[   86.917895] 5fa0: c000a3a0 c00cb2a0 00000007 00106cf8 00000001 00106cf8 00000007 00000000
+[   86.926015] 5fc0: 00000007 00106cf8 b6e8dd50 00000004 00000007 00000004 00000000 000e9124
+[   86.934139] 5fe0: 00000000 bec50a3c b6db63d0 b6e107ac 60000010 00000001 ffffffff ffffffff
+[   86.942277] [<c023bc08>] (strlen) from [<c0235020>] (kobject_get_path+0x34/0xac)
+[   86.949620] [<c0235020>] (kobject_get_path) from [<c0236244>] (kobject_uevent_env+0xcc/0x4b4)
+[   86.958083] [<c0236244>] (kobject_uevent_env) from [<c0236640>] (kobject_uevent+0x14/0x18)
+[   86.966287] [<c0236640>] (kobject_uevent) from [<c02a5834>] (uevent_store+0x44/0x64)
+[   86.973987] [<c02a5834>] (uevent_store) from [<c02a37b8>] (dev_attr_store+0x28/0x34)
+[   86.981672] [<c02a37b8>] (dev_attr_store) from [<c0128fc8>] (sysfs_kf_write+0x4c/0x58)
+[   86.989525] [<c0128fc8>] (sysfs_kf_write) from [<c01281e4>] (kernfs_fop_write+0x12c/0x1c4)
+[   86.997737] [<c01281e4>] (kernfs_fop_write) from [<c00caec0>] (__vfs_write+0x3c/0x11c)
+[   87.005596] [<c00caec0>] (__vfs_write) from [<c00cb160>] (vfs_write+0xc0/0x164)
+[   87.012855] [<c00cb160>] (vfs_write) from [<c00cb2dc>] (SyS_write+0x4c/0x8c)
+[   87.019854] [<c00cb2dc>] (SyS_write) from [<c000a3a0>] (ret_fast_syscall+0x0/0x38)
+[   87.027364] Code: e92dd800 e24cb004 e1a03000 e1a02003 (e5d21000) 
+[   87.033544] ---[ end trace 29af93c3c072b1f4 ]---
+[   87.039277] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+
+This is fun because it really doesn't seem to have anything to do with atmel-nand...
+
+I first found that on my custom board, built around an at91sam9g35-cm, but I managed to trigger it
+on an at91sam9g35-ek board, with a 4.13.3 kernel.
+
+NB: I couldn't trigger this with ecc-strength = 2
+
+So, here is my configuration:
+- at91sam9g35-ek board with the image ftp://www.at91.com/pub/demo/linux4sam_5.6/linux4sam-poky-at91sam9x5ek-5.6.zip
+I flashed this image a first time as is, and then I flashed only the rfs with eccType 0xc0902405.
+
+- Kernel 4.13.3 with the quick'n dirty patch:
+--- a/arch/arm/boot/dts/at91sam9x5cm.dtsi
++++ b/arch/arm/boot/dts/at91sam9x5cm.dtsi
+@@ -56,7 +56,7 @@
+ 					cs-gpios = <&pioD 4 GPIO_ACTIVE_HIGH>;
+ 					nand-bus-width = <8>;
+ 					nand-ecc-mode = "hw";
+-					nand-ecc-strength = <2>;
++					nand-ecc-strength = <4>;
+ 					nand-ecc-step-size = <512>;
+ 					nand-on-flash-bbt;
+ 					label = "atmel_nand";
+
+A minimal defconfig (attached)
+
+To trigger the kernel panic on a 4.13.3 kernel:
+
+At uboot:
+setenv bootargs $bootargs init=/bin/sh
+tftpboot 0x22000000 zImage ; tftpboot 0x21000000 at91sam9g35ek.dtb
+bootz 0x22000000 - 0x21000000
+
+mount -tsysfs none /sys
+mount -tproc none /proc
+
+echo "change" > /sys/devices/platform/leds/leds/pd21/uevent
+[   21.130000] Unable to handle kernel NULL pointer dereference at virtual address 00000001
+[   21.140000] pgd = c7170000
+[   21.140000] [00000001] *pgd=c06f780000000000, *pte=60000013, *ppte=60000013
+[   21.150000] Internal error: Oops: 17 [#1] ARM
+[   21.150000] CPU: 0 PID: 1 Comm: sh Not tainted 4.13.3-dirty #77
+[   21.150000] Hardware name: Atmel AT91SAM9
+[   21.150000] task: c787c800 task.stack: c78c2000
+[   21.150000] PC is at strlen+0x14/0x2c
+[   21.150000] LR is at kobject_get_path+0x34/0xac
+[   21.150000] pc : [<c04d172c>]    lr : [<c04c7444>]    psr: 20000013
+[   21.150000] sp : c78c3d90  ip : c78c3da0  fp : c78c3d9c
+[   21.150000] r10: 00000002  r9 : c78c3e28  r8 : c7bdd408
+[   21.150000] r7 : 014000c0  r6 : c7bdd408  r5 : 00000001  r4 : c7bdd408
+[   21.150000] r3 : 00000001  r2 : 00000001  r1 : 014000c0  r0 : 00000001
+[   21.150000] Flags: nzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+[   21.150000] Control: 0005317f  Table: 27170000  DAC: 00000051
+[   21.150000] Process sh (pid: 1, stack limit = 0xc78c2190)
+[   21.150000] Stack: (0xc78c3d90 to 0xc78c4000)
+[   21.150000] 3d80:                                     c78c3dc4 c78c3da0 c04c7444 c04d1728
+[   21.150000] 3da0: c0747de8 c7995000 c7bdd408 c787fac0 c05087c4 c7bdd408 c78c3e14 c78c3dc8
+[   21.150000] 3dc0: c04c8630 c04c7420 c00b0ad8 c78c3e4c 0007c000 c78c3e28 c78c3e4c c05ee954
+[   21.150000] 3de0: 27e1718f c05fbcf7 00000000 00000000 00000007 00000006 00000002 c7bdd408
+[   21.150000] 3e00: c05ee954 c713d0c0 c78c3e5c c78c3e18 c04c8b08 c04c8574 c00c5d58 c00c5600
+[   21.150000] 3e20: c78c3e2c c0521e9c c060f2f7 00000000 c00b6168 00000007 c7bdd400 c7160320
+[   21.150000] 3e40: c713d0c0 c78c3f78 c7160330 00000007 c78c3e74 c78c3e60 c02a102c c04c8a44
+[   21.150000] 3e60: c7034dc0 c713d0c0 c78c3e84 c78c3e78 c029efb8 c02a1010 c78c3e9c c78c3e88
+[   21.150000] 3e80: c012b194 c029efa0 00000000 00000000 c78c3ed4 c78c3ea0 c012a3c8 c012b158
+[   21.150000] 3ea0: 00000000 00000000 0000000f c012a27c 00100f40 c7b82ea0 c78c3f78 00000007
+[   21.150000] 3ec0: c78c2000 00100f40 c78c3f44 c78c3ed8 c00cca24 c012a28c 00001000 00000000
+[   21.150000] 3ee0: 00001000 00000000 00000000 00000000 00000015 07d4a7e8 00000015 0727b420
+[   21.150000] 3f00: 00000015 0727b420 0000148c c00ccc8c be9854d0 b6f74bec c78c3fa4 c78c3f28
+[   21.150000] 3f20: c7b82ea0 c7b82ea0 00000000 00000007 00100f40 c78c3f78 c78c3f74 c78c3f48
+[   21.150000] 3f40: c00cccd8 c00cc9f8 c00e8e48 c00e85ac 00000000 00000000 c7b82ea0 c7b82ea0
+[   21.150000] 3f60: 00000007 00100f40 c78c3fa4 c78c3f78 c00cce54 c00ccc28 00000000 00000000
+[   21.150000] 3f80: 00000007 00100f40 b6f76d50 00000004 c000a544 00000000 00000000 c78c3fa8
+[   21.150000] 3fa0: c000a3a0 c00cce18 00000007 00100f40 00000001 00100f40 00000007 00000000
+[   21.150000] 3fc0: 00000007 00100f40 b6f76d50 00000004 00000007 00000004 00000000 000e9124
+[   21.150000] 3fe0: 00000000 be985a3c b6e9f3d0 b6ef97ac 60000010 00000001 00000000 01010000
+[   21.150000] [<c04d172c>] (strlen) from [<c04c7444>] (kobject_get_path+0x34/0xac)
+[   21.150000] [<c04c7444>] (kobject_get_path) from [<c04c8630>] (kobject_uevent_env+0xcc/0x4b8)
+[   21.150000] [<c04c8630>] (kobject_uevent_env) from [<c04c8b08>] (kobject_synth_uevent+0xd4/0x33c)
+[   21.150000] [<c04c8b08>] (kobject_synth_uevent) from [<c02a102c>] (uevent_store+0x2c/0x4c)
+[   21.150000] [<c02a102c>] (uevent_store) from [<c029efb8>] (dev_attr_store+0x28/0x34)
+[   21.150000] [<c029efb8>] (dev_attr_store) from [<c012b194>] (sysfs_kf_write+0x4c/0x58)
+[   21.150000] [<c012b194>] (sysfs_kf_write) from [<c012a3c8>] (kernfs_fop_write+0x14c/0x1bc)
+[   21.150000] [<c012a3c8>] (kernfs_fop_write) from [<c00cca24>] (__vfs_write+0x3c/0x130)
+[   21.150000] [<c00cca24>] (__vfs_write) from [<c00cccd8>] (vfs_write+0xc0/0x164)
+[   21.150000] [<c00cccd8>] (vfs_write) from [<c00cce54>] (SyS_write+0x4c/0x8c)
+[   21.150000] [<c00cce54>] (SyS_write) from [<c000a3a0>] (ret_fast_syscall+0x0/0x38)
+[   21.150000] Code: e92dd800 e24cb004 e1a03000 e1a02003 (e5d21000) 
+[   21.480000] ---[ end trace 3cc39b52c074a44c ]---
+[   21.490000] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+
+
+Or, we can just launch udev:
+udevd -d
+udevadm trigger 
+(udevadm actually writes "changes" in uevent files).
+
+Now, a fun fact: If we add CONFIG_PM, there's no more kernel panic. (wtf?!)
+
+I also tried to boot with a nfs-root, echo changed > ".../uevent", no kernel panic.
+Then, ubiattach the mtd partition, echo changed > ".../uevent" => PANIC !
+
+So, it really seems to be nand-related.
+
+Any idea ?
+
+
+Richard.
+
+--=-IKKCrjYZdyDDYFaL98Ee
+Content-Disposition: attachment; filename="defconfig"
+Content-Type: text/plain; name="defconfig"; charset="UTF-8"
+Content-Transfer-Encoding: base64
+
+Q09ORklHX0tFUk5FTF9MWk89eQpDT05GSUdfREVGQVVMVF9IT1NUTkFNRT0iIgojIENPTkZJR19T
+V0FQIGlzIG5vdCBzZXQKQ09ORklHX1NZU1ZJUEM9eQpDT05GSUdfTk9fSFpfSURMRT15CkNPTkZJ
+R19CU0RfUFJPQ0VTU19BQ0NUPXkKQ09ORklHX0JTRF9QUk9DRVNTX0FDQ1RfVjM9eQpDT05GSUdf
+SUtDT05GSUc9eQpDT05GSUdfSUtDT05GSUdfUFJPQz15CkNPTkZJR19DQ19PUFRJTUlaRV9GT1Jf
+U0laRT15CkNPTkZJR19LQUxMU1lNU19BTEw9eQpDT05GSUdfRU1CRURERUQ9eQpDT05GSUdfU0xB
+Qj15CiMgQ09ORklHX0lPU0NIRURfREVBRExJTkUgaXMgbm90IHNldAojIENPTkZJR19JT1NDSEVE
+X0NGUSBpcyBub3Qgc2V0CiMgQ09ORklHX01RX0lPU0NIRURfREVBRExJTkUgaXMgbm90IHNldAoj
+IENPTkZJR19NUV9JT1NDSEVEX0tZQkVSIGlzIG5vdCBzZXQKIyBDT05GSUdfQVJDSF9NVUxUSV9W
+NyBpcyBub3Qgc2V0CkNPTkZJR19BUkNIX0FUOTE9eQpDT05GSUdfU09DX0FUOTFTQU05PXkKQ09O
+RklHX0FFQUJJPXkKQ09ORklHX1VBQ0NFU1NfV0lUSF9NRU1DUFk9eQojIENPTkZJR19BVEFHUyBp
+cyBub3Qgc2V0CiMgQ09ORklHX0NPUkVEVU1QIGlzIG5vdCBzZXQKIyBDT05GSUdfU1VTUEVORCBp
+cyBub3Qgc2V0CkNPTkZJR19ORVQ9eQpDT05GSUdfUEFDS0VUPXkKQ09ORklHX1BBQ0tFVF9ESUFH
+PXkKQ09ORklHX1VOSVg9eQpDT05GSUdfVU5JWF9ESUFHPXkKQ09ORklHX1hGUk1fVVNFUj15CkNP
+TkZJR19ORVRfS0VZPXkKQ09ORklHX0lORVQ9eQpDT05GSUdfSVBfQURWQU5DRURfUk9VVEVSPXkK
+Q09ORklHX0lQX01VTFRJUExFX1RBQkxFUz15CkNPTkZJR19JUF9ST1VURV9WRVJCT1NFPXkKQ09O
+RklHX0lQX1BOUD15CkNPTkZJR19JUF9QTlBfREhDUD15CkNPTkZJR19JTkVUX0FIPXkKQ09ORklH
+X0lORVRfRVNQPXkKQ09ORklHX0lORVRfSVBDT01QPXkKQ09ORklHX0lORVRfVURQX0RJQUc9eQoj
+IENPTkZJR19JUFY2IGlzIG5vdCBzZXQKQ09ORklHX05FVExJTktfRElBRz15CiMgQ09ORklHX1dJ
+UkVMRVNTIGlzIG5vdCBzZXQKQ09ORklHX1VFVkVOVF9IRUxQRVJfUEFUSD0iL3NiaW4vaG90cGx1
+ZyIKQ09ORklHX0RFVlRNUEZTPXkKQ09ORklHX0RFVlRNUEZTX01PVU5UPXkKIyBDT05GSUdfRklS
+TVdBUkVfSU5fS0VSTkVMIGlzIG5vdCBzZXQKQ09ORklHX01URD15CkNPTkZJR19NVERfQ01ETElO
+RV9QQVJUUz15CkNPTkZJR19NVERfTkFORD15CkNPTkZJR19NVERfTkFORF9BVE1FTD15CkNPTkZJ
+R19NVERfVUJJPXkKQ09ORklHX01URF9VQklfRkFTVE1BUD15CkNPTkZJR19CTEtfREVWX0xPT1A9
+eQpDT05GSUdfQkxLX0RFVl9SQU09eQpDT05GSUdfQkxLX0RFVl9SQU1fQ09VTlQ9NApDT05GSUdf
+QkxLX0RFVl9SQU1fU0laRT04MTkyCkNPTkZJR19ORVRERVZJQ0VTPXkKIyBDT05GSUdfTkVUX1ZF
+TkRPUl9BTEFDUklURUNIIGlzIG5vdCBzZXQKIyBDT05GSUdfTkVUX1ZFTkRPUl9BTUFaT04gaXMg
+bm90IHNldAojIENPTkZJR19ORVRfVkVORE9SX0FRVUFOVElBIGlzIG5vdCBzZXQKIyBDT05GSUdf
+TkVUX1ZFTkRPUl9BUkMgaXMgbm90IHNldApDT05GSUdfTUFDQj15CiMgQ09ORklHX05FVF9WRU5E
+T1JfQlJPQURDT00gaXMgbm90IHNldAojIENPTkZJR19ORVRfVkVORE9SX0NJUlJVUyBpcyBub3Qg
+c2V0CiMgQ09ORklHX05FVF9WRU5ET1JfRVpDSElQIGlzIG5vdCBzZXQKIyBDT05GSUdfTkVUX1ZF
+TkRPUl9GQVJBREFZIGlzIG5vdCBzZXQKIyBDT05GSUdfTkVUX1ZFTkRPUl9ISVNJTElDT04gaXMg
+bm90IHNldAojIENPTkZJR19ORVRfVkVORE9SX0lOVEVMIGlzIG5vdCBzZXQKIyBDT05GSUdfTkVU
+X1ZFTkRPUl9NQVJWRUxMIGlzIG5vdCBzZXQKIyBDT05GSUdfTkVUX1ZFTkRPUl9NSUNSRUwgaXMg
+bm90IHNldAojIENPTkZJR19ORVRfVkVORE9SX05BVFNFTUkgaXMgbm90IHNldAojIENPTkZJR19O
+RVRfVkVORE9SX05FVFJPTk9NRSBpcyBub3Qgc2V0CiMgQ09ORklHX05FVF9WRU5ET1JfUVVBTENP
+TU0gaXMgbm90IHNldAojIENPTkZJR19ORVRfVkVORE9SX1JFTkVTQVMgaXMgbm90IHNldAojIENP
+TkZJR19ORVRfVkVORE9SX1JPQ0tFUiBpcyBub3Qgc2V0CiMgQ09ORklHX05FVF9WRU5ET1JfU0FN
+U1VORyBpcyBub3Qgc2V0CiMgQ09ORklHX05FVF9WRU5ET1JfU0VFUSBpcyBub3Qgc2V0CiMgQ09O
+RklHX05FVF9WRU5ET1JfU09MQVJGTEFSRSBpcyBub3Qgc2V0CiMgQ09ORklHX05FVF9WRU5ET1Jf
+U01TQyBpcyBub3Qgc2V0CiMgQ09ORklHX05FVF9WRU5ET1JfU1RNSUNSTyBpcyBub3Qgc2V0CiMg
+Q09ORklHX05FVF9WRU5ET1JfVklBIGlzIG5vdCBzZXQKIyBDT05GSUdfTkVUX1ZFTkRPUl9XSVpO
+RVQgaXMgbm90IHNldAojIENPTkZJR19ORVRfVkVORE9SX1NZTk9QU1lTIGlzIG5vdCBzZXQKQ09O
+RklHX0RBVklDT01fUEhZPXkKIyBDT05GSUdfV0xBTiBpcyBub3Qgc2V0CiMgQ09ORklHX0lOUFVU
+X0tFWUJPQVJEIGlzIG5vdCBzZXQKIyBDT05GSUdfSU5QVVRfTU9VU0UgaXMgbm90IHNldAojIENP
+TkZJR19TRVJJTyBpcyBub3Qgc2V0CkNPTkZJR19WVF9IV19DT05TT0xFX0JJTkRJTkc9eQojIENP
+TkZJR19MRUdBQ1lfUFRZUyBpcyBub3Qgc2V0CkNPTkZJR19TRVJJQUxfQVRNRUw9eQpDT05GSUdf
+U0VSSUFMX0FUTUVMX0NPTlNPTEU9eQojIENPTkZJR19TRVJJQUxfQVRNRUxfUERDIGlzIG5vdCBz
+ZXQKIyBDT05GSUdfSFdfUkFORE9NIGlzIG5vdCBzZXQKIyBDT05GSUdfUFRQXzE1ODhfQ0xPQ0sg
+aXMgbm90IHNldApDT05GSUdfR1BJT19TWVNGUz15CiMgQ09ORklHX0hXTU9OIGlzIG5vdCBzZXQK
+IyBDT05GSUdfSElEIGlzIG5vdCBzZXQKIyBDT05GSUdfVVNCX1NVUFBPUlQgaXMgbm90IHNldApD
+T05GSUdfTkVXX0xFRFM9eQpDT05GSUdfTEVEU19DTEFTUz15CkNPTkZJR19MRURTX0dQSU89eQoj
+IENPTkZJR19JT01NVV9TVVBQT1JUIGlzIG5vdCBzZXQKQ09ORklHX0ZBTk9USUZZPXkKQ09ORklH
+X1RNUEZTPXkKQ09ORklHX0NPTkZJR0ZTX0ZTPXkKQ09ORklHX1VCSUZTX0ZTPXkKQ09ORklHX1VC
+SUZTX0ZTX0FEVkFOQ0VEX0NPTVBSPXkKIyBDT05GSUdfVUJJRlNfRlNfWkxJQiBpcyBub3Qgc2V0
+CiMgQ09ORklHX1VCSUZTX0ZTX1NFQ1VSSVRZIGlzIG5vdCBzZXQKQ09ORklHX05GU19GUz15CiMg
+Q09ORklHX05GU19WMiBpcyBub3Qgc2V0CkNPTkZJR19ST09UX05GUz15CkNPTkZJR19QUklOVEtf
+VElNRT15CkNPTkZJR19DT05TT0xFX0xPR0xFVkVMX0RFRkFVTFQ9OApDT05GSUdfU1RSSVBfQVNN
+X1NZTVM9eQpDT05GSUdfREVCVUdfU0VDVElPTl9NSVNNQVRDSD15CkNPTkZJR19NQUdJQ19TWVNS
+UT15CiMgQ09ORklHX1NDSEVEX0RFQlVHIGlzIG5vdCBzZXQKIyBDT05GSUdfREVCVUdfQlVHVkVS
+Qk9TRSBpcyBub3Qgc2V0CkNPTkZJR19GVU5DVElPTl9UUkFDRVI9eQpDT05GSUdfRlRSQUNFX1NZ
+U0NBTExTPXkKQ09ORklHX1RSQUNFUl9TTkFQU0hPVD15CiMgQ09ORklHX0NSWVBUT19NQU5BR0VS
+X0RJU0FCTEVfVEVTVFMgaXMgbm90IHNldAojIENPTkZJR19DUllQVE9fSFcgaXMgbm90IHNldAo=
+
+
+--=-IKKCrjYZdyDDYFaL98Ee--
