@@ -1,9 +1,9 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dx7pa-0002k5-1j
- for linux-mtd@lists.infradead.org; Wed, 27 Sep 2017 08:36:40 +0000
-Received: by mail-wm0-x243.google.com with SMTP id q124so15384010wmb.0
- for <linux-mtd@lists.infradead.org>; Wed, 27 Sep 2017 01:36:16 -0700 (PDT)
+ id 1dx7pa-0002jJ-Ou
+ for linux-mtd@lists.infradead.org; Wed, 27 Sep 2017 08:36:41 +0000
+Received: by mail-wm0-x242.google.com with SMTP id m72so15481192wmc.1
+ for <linux-mtd@lists.infradead.org>; Wed, 27 Sep 2017 01:36:14 -0700 (PDT)
 From: Romain Izard <romain.izard.pro@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Michael Turquette <mturquette@baylibre.com>,
@@ -23,11 +23,10 @@ To: Boris Brezillon <boris.brezillon@free-electrons.com>,
 Cc: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-pwm@vger.kernel.org,
  linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
- Romain Izard <romain.izard@mobile-devices.fr>,
  Romain Izard <romain.izard.pro@gmail.com>
-Subject: [PATCH v3 3/8] clk: at91: pmc: Support backup for programmable clocks
-Date: Wed, 27 Sep 2017 10:35:50 +0200
-Message-Id: <20170927083555.16580-4-romain.izard.pro@gmail.com>
+Subject: [PATCH v3 1/8] clk: at91: pmc: Wait for clocks when resuming
+Date: Wed, 27 Sep 2017 10:35:48 +0200
+Message-Id: <20170927083555.16580-2-romain.izard.pro@gmail.com>
 In-Reply-To: <20170927083555.16580-1-romain.izard.pro@gmail.com>
 References: <20170927083555.16580-1-romain.izard.pro@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -39,147 +38,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Romain Izard <romain.izard@mobile-devices.fr>
-
-When an AT91 programmable clock is declared in the device tree, register
-it into the Power Management Controller driver. On entering suspend mode,
-the driver saves and restores the Programmable Clock registers to support
-the backup mode for these clocks.
+Wait for the syncronization of all clocks when resuming, not only the
+UPLL clock. Do not use regmap_read_poll_timeout, as it will call BUG()
+when interrupts are masked, which is the case in here.
 
 Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
+Acked-by: Ludovic Desroches <ludovic.desroches@microchip.com>
 Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 ---
-Changes in v2:
-* register PCKs on clock startup
-Chnages in v3:
-* improve comments on hanling 0 in pmc_register_id and pmc_register_pck
-* declare local variables earlier for checkpatch
+ drivers/clk/at91/pmc.c | 24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
- drivers/clk/at91/clk-programmable.c |  2 ++
- drivers/clk/at91/pmc.c              | 35 +++++++++++++++++++++++++++++++++++
- drivers/clk/at91/pmc.h              |  2 ++
- 3 files changed, 39 insertions(+)
-
-diff --git a/drivers/clk/at91/clk-programmable.c b/drivers/clk/at91/clk-programmable.c
-index 85a449cf61e3..0e6aab1252fc 100644
---- a/drivers/clk/at91/clk-programmable.c
-+++ b/drivers/clk/at91/clk-programmable.c
-@@ -204,6 +204,8 @@ at91_clk_register_programmable(struct regmap *regmap,
- 	if (ret) {
- 		kfree(prog);
- 		hw = ERR_PTR(ret);
-+	} else {
-+		pmc_register_pck(id);
- 	}
- 
- 	return hw;
 diff --git a/drivers/clk/at91/pmc.c b/drivers/clk/at91/pmc.c
-index 07dc2861ad3f..1fa27f4ea538 100644
+index 775af473fe11..5c2b26de303e 100644
 --- a/drivers/clk/at91/pmc.c
 +++ b/drivers/clk/at91/pmc.c
-@@ -22,6 +22,7 @@
- #include "pmc.h"
- 
- #define PMC_MAX_IDS 128
-+#define PMC_MAX_PCKS 8
- 
- int of_at91_get_clk_range(struct device_node *np, const char *propname,
- 			  struct clk_range *range)
-@@ -50,6 +51,7 @@ EXPORT_SYMBOL_GPL(of_at91_get_clk_range);
- static struct regmap *pmcreg;
- 
- static u8 registered_ids[PMC_MAX_IDS];
-+static u8 registered_pcks[PMC_MAX_PCKS];
- 
- static struct
- {
-@@ -66,8 +68,13 @@ static struct
- 	u32 pcr[PMC_MAX_IDS];
- 	u32 audio_pll0;
- 	u32 audio_pll1;
-+	u32 pckr[PMC_MAX_PCKS];
- } pmc_cache;
- 
-+/*
-+ * As Peripheral ID 0 is invalid on AT91 chips, the identifier is stored
-+ * without alteration in the table, and 0 is for unused clocks.
-+ */
- void pmc_register_id(u8 id)
- {
- 	int i;
-@@ -82,9 +89,28 @@ void pmc_register_id(u8 id)
- 	}
- }
- 
-+/*
-+ * As Programmable Clock 0 is valid on AT91 chips, there is an offset
-+ * of 1 between the stored value and the real clock ID.
-+ */
-+void pmc_register_pck(u8 pck)
-+{
-+	int i;
-+
-+	for (i = 0; i < PMC_MAX_PCKS; i++) {
-+		if (registered_pcks[i] == 0) {
-+			registered_pcks[i] = pck + 1;
-+			break;
-+		}
-+		if (registered_pcks[i] == (pck + 1))
-+			break;
-+	}
-+}
-+
- static int pmc_suspend(void)
- {
- 	int i;
-+	u8 num;
- 
- 	regmap_read(pmcreg, AT91_PMC_SCSR, &pmc_cache.scsr);
- 	regmap_read(pmcreg, AT91_PMC_PCSR, &pmc_cache.pcsr0);
-@@ -103,6 +129,10 @@ static int pmc_suspend(void)
- 		regmap_read(pmcreg, AT91_PMC_PCR,
- 			    &pmc_cache.pcr[registered_ids[i]]);
- 	}
-+	for (i = 0; registered_pcks[i]; i++) {
-+		num = registered_pcks[i] - 1;
-+		regmap_read(pmcreg, AT91_PMC_PCKR(num), &pmc_cache.pckr[num]);
-+	}
- 
+@@ -107,10 +107,20 @@ static int pmc_suspend(void)
  	return 0;
  }
-@@ -119,6 +149,7 @@ static bool pmc_ready(unsigned int mask)
+ 
++static bool pmc_ready(unsigned int mask)
++{
++	unsigned int status;
++
++	regmap_read(pmcreg, AT91_PMC_SR, &status);
++
++	return ((status & mask) == mask) ? 1 : 0;
++}
++
  static void pmc_resume(void)
  {
- 	int i;
-+	u8 num;
+-	int i, ret = 0;
++	int i;
  	u32 tmp;
- 	u32 mask = AT91_PMC_MCKRDY | AT91_PMC_LOCKA;
++	u32 mask = AT91_PMC_MCKRDY | AT91_PMC_LOCKA;
  
-@@ -143,6 +174,10 @@ static void pmc_resume(void)
- 			     pmc_cache.pcr[registered_ids[i]] |
+ 	regmap_read(pmcreg, AT91_PMC_MCKR, &tmp);
+ 	if (pmc_cache.mckr != tmp)
+@@ -134,13 +144,11 @@ static void pmc_resume(void)
  			     AT91_PMC_PCR_CMD);
  	}
-+	for (i = 0; registered_pcks[i]; i++) {
-+		num = registered_pcks[i] - 1;
-+		regmap_write(pmcreg, AT91_PMC_PCKR(num), pmc_cache.pckr[num]);
-+	}
  
- 	if (pmc_cache.uckr & AT91_PMC_UPLLEN)
- 		mask |= AT91_PMC_LOCKU;
-diff --git a/drivers/clk/at91/pmc.h b/drivers/clk/at91/pmc.h
-index 858e8ef7e8db..d22b1fa9ecdc 100644
---- a/drivers/clk/at91/pmc.h
-+++ b/drivers/clk/at91/pmc.h
-@@ -31,8 +31,10 @@ int of_at91_get_clk_range(struct device_node *np, const char *propname,
+-	if (pmc_cache.uckr & AT91_PMC_UPLLEN) {
+-		ret = regmap_read_poll_timeout(pmcreg, AT91_PMC_SR, tmp,
+-					       !(tmp & AT91_PMC_LOCKU),
+-					       10, 5000);
+-		if (ret)
+-			pr_crit("USB PLL didn't lock when resuming\n");
+-	}
++	if (pmc_cache.uckr & AT91_PMC_UPLLEN)
++		mask |= AT91_PMC_LOCKU;
++
++	while (!pmc_ready(mask))
++		cpu_relax();
+ }
  
- #ifdef CONFIG_PM
- void pmc_register_id(u8 id);
-+void pmc_register_pck(u8 pck);
- #else
- static inline void pmc_register_id(u8 id) {}
-+static inline void pmc_register_pck(u8 pck) {}
- #endif
- 
- #endif /* __PMC_H_ */
+ static struct syscore_ops pmc_syscore_ops = {
 -- 
 2.11.0
