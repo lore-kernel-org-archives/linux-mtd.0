@@ -1,23 +1,34 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dwxDB-0006ZO-EN
- for linux-mtd@lists.infradead.org; Tue, 26 Sep 2017 21:16:16 +0000
-Date: Tue, 26 Sep 2017 23:15:49 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
-Cc: richard@nod.at, linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, cyrille.pitchen@wedev4u.fr,
- computersforpeace@gmail.com, dwmw2@infradead.org
-Subject: Re: [PATCH -next v2] mtd: nand: Add support for Toshiba BENAND
- (Built-in ECC NAND)
-Message-ID: <20170926231549.40c09c5d@bbrezillon>
-In-Reply-To: <34d612f6-a479-21e7-f0aa-734e647d5942@toshiba.co.jp>
-References: <1505971922-4994-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
- <20170921092849.6f1ba4b8@bbrezillon>
- <34d612f6-a479-21e7-f0aa-734e647d5942@toshiba.co.jp>
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dx0cT-00015j-NS
+ for linux-mtd@lists.infradead.org; Wed, 27 Sep 2017 00:54:36 +0000
+From: Kalyan Kinthada <Kalyan.Kinthada@alliedtelesis.co.nz>
+To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "boris.brezillon@free-electrons.com"
+ <boris.brezillon@free-electrons.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
+ "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>, "mark.rutland@arm.com"
+ <mark.rutland@arm.com>, "ezequiel.garcia@free-electrons.com"
+ <ezequiel.garcia@free-electrons.com>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, Chris Packham
+ <Chris.Packham@alliedtelesis.co.nz>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] mtd: nand: pxa3xx: Handle "marvell, nand-force-csx"
+ compatible string
+Date: Wed, 27 Sep 2017 00:54:05 +0000
+Message-ID: <7493494e-23f6-feed-73e7-59d6819d98db@alliedtelesis.co.nz>
+References: <20170926041700.22663-1-kalyan.kinthada@alliedtelesis.co.nz>
+ <20170926041700.22663-3-kalyan.kinthada@alliedtelesis.co.nz>
+ <20170926091852.196f647d@xps13>
+In-Reply-To: <20170926091852.196f647d@xps13>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <0EAFB8CA9420604E849428CD69FC511A@atlnz.lc>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,129 +38,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 26 Sep 2017 18:18:04 +0900
-KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:
-
-> On 2017/09/21 16:28, Boris Brezillon wrote:
-> > On Thu, 21 Sep 2017 14:32:02 +0900
-> > KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:
-> >   
-> >> This patch enables support for Toshiba BENAND.
-> >> The current implementation does not support vondor specific command  
-> > 
-> > 					       ^ vendor
-> >   
-> >> TOSHIBA_NAND_CMD_ECC_STATUS. I would like to add the command, when
-> >> the exec_op() [1] infrastructure is implemented.  
-> > 
-> > It's not a good idea to reference a branch that is likely to disappear
-> > in a commit message. Just say that you can't properly support the
-> > TOSHIBA_NAND_CMD_ECC_STATUS operation right and that it might be
-> > addressed in the future.  
-> 
-> Thanks. I'll change the comment.
-> 
-> >> +	 */
-> >> +	if (status & NAND_STATUS_FAIL) {
-> >> +		/* uncorrectable */
-> >> +		mtd->ecc_stats.failed++;
-> >> +	} else if (status & TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED) {
-> >> +		/* correctable */
-> >> +		max_bitflips = mtd->bitflip_threshold;
-> >> +		mtd->ecc_stats.corrected += max_bitflips;
-> >> +	}  
-> > 
-> > Is this working correctly when you read more than one ECC chunk? The
-> > ECC step size is 512 bytes and the page is bigger than that, which means
-> > you have more than one ECC chunk per page. What happens to the
-> > NAND_STATUS_FAIL flag if the first chunk is uncorrectable but
-> > following ones are correctable (or do not contain bitflips at all)?   
-> 
-> As you mentioned, the ECC step size is 512 byte. But when 0x70 command is used
-> a simplified ECC status per page is generated.
-
-I'm fine with that as long as uncorrectable errors are detected
-correctly and TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED is set as soon as
-one of the ECC chunk exposes too many bitflips.
-
-> In case the first chunk is uncorrectable but the following ones are correctable,
-> the 0x70 command can only check the status of the uncorrectable one.
-
-Sounds good.
-
-> Each ECC chunk status can be checked by using the 0x7A command.
-> 
-> >> @@ -39,9 +105,43 @@ static void toshiba_nand_decode_id(struct nand_chip *chip)
-> >>  
-> >>  static int toshiba_nand_init(struct nand_chip *chip)
-> >>  {
-> >> +	struct mtd_info *mtd = nand_to_mtd(chip);
-> >> +
-> >>  	if (nand_is_slc(chip))
-> >>  		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
-> >>  
-> >> +	if (nand_is_slc(chip) && (chip->id.data[4] & 0x80)) {
-> >> +		/* BENAND */
-> >> +
-> >> +		/*
-> >> +		 * We can't disable the internal ECC engine, the user
-> >> +		 * has to use on-die ECC, there is no alternative.
-> >> +		 */
-> >> +		if (chip->ecc.mode != NAND_ECC_ON_DIE) {
-> >> +			pr_err("On-die ECC should be selected.\n");
-> >> +			return -EINVAL;
-> >> +		}  
-> > 
-> > According to your previous explanation that's not exactly true. Since
-> > ECC bytes are stored in a separate area, the user can decide to use
-> > another mode without trouble. Just skip the BENAND initialization when
-> > mode != NAND_ECC_ON_DIE and we should be good, or am I missing something?  
-> 
-> I am asking to product department to confirm it.
-
-I'm almost sure this is the case ;-).
-
-> 
-> >> +
-> >> +		/*
-> >> +		 * On BENAND, all OOB reginon can be used by user (driver).  
-> > 
-> > 			      the entire OOB region can be used by the
-> > 		   MTD user.
-> > 
-> > I'd drop the '(driver)' part since it's not really clear what the
-> > driver is. If you're talking about the NAND controller driver then it's
-> > wrong (at least most of the time), the real users of free OOB bytes are
-> > upper layers (like JFFS2).
-> >   
-> >> +		 * The calculated ECC bytes are stored into other isolated
-> >> +		 * area which is ubable to access from user.  
-> > 
-> > 			which is not accessible to users.
-> >   
-> >> +		 * This is why chip->ecc.bytes = 0.
-> >> +		 */
-> >> +		chip->ecc.bytes = 0;
-> >> +		chip->ecc.size = 512;
-> >> +		chip->ecc.strength = 8;
-> >> +		chip->ecc.read_page = toshiba_nand_read_page_benand;
-> >> +		chip->ecc.read_subpage = toshiba_nand_read_subpage_benand;
-> >> +		chip->ecc.write_page = nand_write_page_raw;
-> >> +		chip->ecc.read_page_raw = nand_read_page_raw;
-> >> +		chip->ecc.write_page_raw = nand_write_page_raw;
-> >> +
-> >> +		chip->options |= NAND_SUBPAGE_READ;
-> >> +
-> >> +		mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);  
-> > 
-> > Can you please move this code block in a separate toshiba_benand_init()
-> > function in order to keep the toshiba_nand_init() small/readable.  
-> 
-> Sure. I will resend.
-> 
-> -- Yoshi
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMjYvMDkvMTcgMjA6MTgsIE1pcXVlbCBSQVlOQUwgd3JvdGU6DQo+IEhpIEthbHlhbiwNCj4N
+Cj4gT24gVHVlLCAyNiBTZXAgMjAxNyAxNzoxNzowMCArMTMwMA0KPiBLYWx5YW4gS2ludGhhZGEg
+PGthbHlhbi5raW50aGFkYUBhbGxpZWR0ZWxlc2lzLmNvLm56PiB3cm90ZToNCj4NCj4+IFdoZW4g
+dGhlIGFyYml0cmF0aW9uIGJldHdlZW4gTk9SIGFuZCBOQU5EIGZsYXNoIGlzIGVuYWJsZWQNCj4+
+IHRoZSA8Rk9SQ0VfQ1NYPiBmaWVsZCBiaXRbMjFdIGluIHRoZSBEYXRhIEZsYXNoIENvbnRyb2wg
+UmVnaXN0ZXINCj4+IG5lZWRzIHRvIGJlIHNldCB0byAxIGFjY29yZGluZyB0byBndWlkbGVpbmUg
+R0wtNTgzMDc0MS4NCj4gSSBkbyBhZ3JlZSwgdGhlIGRyaXZlciBsYWNrcyB0aGUgc3VwcG9ydCBv
+ZiB0aGlzIGJpdCwgd2hpY2gNCj4gbG9va3MgaW1wb3J0YW50IHdoZW4geW91IGVmZmVjdGl2ZWx5
+IHVzZSB0aGUgYXJiaXRlci4NCj4gTmV2ZXJ0aGVsZXNzOg0KPg0KPiAtIE9uIFBYQSAobWFydmVs
+bCxweGEzeHgtbmFuZCBjb21wYXRpYmxlKSwgdGhlcmUgaXMgYSBORF9BUkJfRU4gYml0IHRvDQo+
+ICAgIGVuYWJsZSBvciBkaXNhYmxlIHRoZSBhcmJpdGVyLCBidXQgdGhlcmUgaXMgbm8gRk9SQ0Vf
+Q1NYIGJpdCAoYml0IDIxDQo+ICAgIG9mIE5EQ1IsIHRoZSBzbyBjYWxsZWQgQ29udHJvbCBSZWdp
+c3RlciwgaXMgcmVzZXJ2ZWQpLg0KPiAtIE9uIEFybWFkYSAobWFydmVsbCxhcm1hZGEzNzAtbmFu
+ZCksIHRoZXJlIGlzIGEgRk9SQ0VfQ1NYIGJpdCwgYnV0DQo+ICAgIHRoZXJlIGlzIG5vIE5EX0FS
+Ql9FTiBiaXQgaW4gdGhlIE5EQ1IgKG1vdmVkIHRvIHN5c3RlbSByZWdpc3RlcnMpIGFuZA0KPiAg
+ICB0aGUgYXJiaXRyYXRpb24gaXMgYWx3YXlzIGVuYWJsZWQgYnkgZGVmYXVsdC4NCj4NCj4gSSBn
+dWVzcyB5b3Ugc2hvdWxkIGFsd2F5cyBzZXQgdGhlIEZPUkNFX0NTWCBiaXQgd2hlbiB1c2luZyB0
+aGUgYXJtYWRhDQo+IGNvbXBhdGlibGUsIGJlY2F1c2UgaXQgaXMgaGFybWxlc3MsIHJpZ2h0PyBU
+aHVzLCB5b3UgY291bGQgZ2V0IHJpZA0KPiBvZiB0aGUgbmV3IERUIHByb3BlcnR5Lg0KT2suIEkg
+d2lsbCBtYWtlIGNoYW5nZXMgdG8gdGhlIGRyaXZlciB0byBzZXQgRk9SQ0VfQ1NYIGJpdCBmb3Ig
+YWxsDQp2YXJpYW50cyBvZiBBUk1BREEzNzAgdmFyaWFudHMgaW5zdGVhZCBvZiBjcmVhdGluZyBh
+IG5ldyBjb21wYXRpYmxlDQpzdHJpbmcuDQoNCkkgd2lsbCBzZW5kIGEgbmV3IHBhdGNoLiBLaW5k
+bHkgaWdub3JlIHRoZXNlIGNoYW5nZXMuDQpUaGFua3MgZm9yIHlvdXIgdGltZSBNaXF1ZWwuDQoN
+ClRoYW5rIFlvdSwNCkthbHlhbg0KPg0KPiBUaGFuayB5b3UsDQo+IE1pcXXDqGwNCj4NCj4+IFRo
+aXMgY29tbWl0IHNldHMgdGhlIEZPUkNFX0NTWCBiaXQgdG8gMSBpZiB0aGUgY29tcGF0aWJsZQ0K
+Pj4gc3RyaW5nICJtYXJ2ZWxsLG5hbmQtZm9yY2UtY3N4IiBpcyBlbmFibGVkIGluIHRoZSBkZXZp
+Y2UgdHJlZQ0KPj4gb2YgdGhlIGNvcnJlc3BvbmRpbmcgYm9hcmRzLg0KPj4NCj4+IFNpZ25lZC1v
+ZmYtYnk6IEthbHlhbiBLaW50aGFkYSA8a2FseWFuLmtpbnRoYWRhQGFsbGllZHRlbGVzaXMuY28u
+bno+DQo+PiAtLS0NCj4+ICAgZHJpdmVycy9tdGQvbmFuZC9weGEzeHhfbmFuZC5jICAgICAgICAg
+ICAgICAgIHwgNiArKysrKysNCj4+ICAgaW5jbHVkZS9saW51eC9wbGF0Zm9ybV9kYXRhL210ZC1u
+YW5kLXB4YTN4eC5oIHwgMyArKysNCj4+ICAgMiBmaWxlcyBjaGFuZ2VkLCA5IGluc2VydGlvbnMo
+KykNCj4+DQo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9weGEzeHhfbmFuZC5jDQo+
+PiBiL2RyaXZlcnMvbXRkL25hbmQvcHhhM3h4X25hbmQuYyBpbmRleCA4NWNmZjY4NjQzZTAuLjRh
+ZDFmMDYwMTkzMA0KPj4gMTAwNjQ0IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcHhhM3h4X25hbmQu
+Yw0KPj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9weGEzeHhfbmFuZC5jDQo+PiBAQCAtNjgsNiAr
+NjgsNyBAQA0KPj4gICAjZGVmaW5lIE5EQ1JfUEFHRV9TWgkJKDB4MSA8PCAyNCkNCj4+ICAgI2Rl
+ZmluZSBORENSX05DU1gJCSgweDEgPDwgMjMpDQo+PiAgICNkZWZpbmUgTkRDUl9ORF9NT0RFCQko
+MHgzIDw8IDIxKQ0KPj4gKyNkZWZpbmUgTkRDUl9GT1JDRV9DU1gJCSgweDEgPDwgMjEpDQo+PiAg
+ICNkZWZpbmUgTkRDUl9OQU5EX01PREUgICAJKDB4MCkNCj4+ICAgI2RlZmluZSBORENSX0NMUl9Q
+R19DTlQJCSgweDEgPDwgMjApDQo+PiAgICNkZWZpbmUgTkZDVjFfTkRDUl9BUkJfQ05UTAkoMHgx
+IDw8IDE5KQ0KPj4gQEAgLTE0NjQsNiArMTQ2NSw3IEBAIHN0YXRpYyBpbnQgcHhhM3h4X25hbmRf
+Y29uZmlnX2lkZW50KHN0cnVjdA0KPj4gcHhhM3h4X25hbmRfaW5mbyAqaW5mbykgaW5mby0+Y2h1
+bmtfc2l6ZSA9IFBBR0VfQ0hVTktfU0laRTsNCj4+ICAgCWluZm8tPnJlZ19uZGNyID0gMHgwOyAv
+KiBlbmFibGUgYWxsIGludGVycnVwdHMgKi8NCj4+ICAgCWluZm8tPnJlZ19uZGNyIHw9IChwZGF0
+YS0+ZW5hYmxlX2FyYml0ZXIpID8gTkRDUl9ORF9BUkJfRU4gOg0KPj4gMDsNCj4+ICsJaW5mby0+
+cmVnX25kY3IgfD0gKHBkYXRhLT5mb3JjZV9jc3gpID8gTkRDUl9GT1JDRV9DU1ggOiAwOw0KPj4g
+ICAJaW5mby0+cmVnX25kY3IgfD0gTkRDUl9SRF9JRF9DTlQoUkVBRF9JRF9CWVRFUyk7DQo+PiAg
+IAlpbmZvLT5yZWdfbmRjciB8PSBORENSX1NQQVJFX0VOOw0KPj4gICANCj4+IEBAIC0xNDk4LDYg
+KzE1MDAsNyBAQCBzdGF0aWMgdm9pZCBweGEzeHhfbmFuZF9kZXRlY3RfY29uZmlnKHN0cnVjdA0K
+Pj4gcHhhM3h4X25hbmRfaW5mbyAqaW5mbykgaW5mby0+cmVnX25kY3IgPSBuZGNyICYNCj4+ICAg
+CQl+KE5EQ1JfSU5UX01BU0sgfCBORENSX05EX0FSQl9FTiB8DQo+PiBORkNWMV9ORENSX0FSQl9D
+TlRMKTsgaW5mby0+cmVnX25kY3IgfD0gKHBkYXRhLT5lbmFibGVfYXJiaXRlcikgPw0KPj4gTkRD
+Ul9ORF9BUkJfRU4gOiAwOw0KPj4gKwlpbmZvLT5yZWdfbmRjciB8PSAocGRhdGEtPmZvcmNlX2Nz
+eCkgPyBORENSX0ZPUkNFX0NTWCA6IDA7DQo+PiAgIAlpbmZvLT5uZHRyMGNzMCA9IG5hbmRfcmVh
+ZGwoaW5mbywgTkRUUjBDUzApOw0KPj4gICAJaW5mby0+bmR0cjFjczAgPSBuYW5kX3JlYWRsKGlu
+Zm8sIE5EVFIxQ1MwKTsNCj4+ICAgfQ0KPj4gQEAgLTE5MzYsNiArMTkzOSw5IEBAIHN0YXRpYyBp
+bnQgcHhhM3h4X25hbmRfcHJvYmVfZHQoc3RydWN0DQo+PiBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYp
+IHBkYXRhLT5lbmFibGVfYXJiaXRlciA9IDE7DQo+PiAgIAlpZiAob2ZfZ2V0X3Byb3BlcnR5KG5w
+LCAibWFydmVsbCxuYW5kLWtlZXAtY29uZmlnIiwgTlVMTCkpDQo+PiAgIAkJcGRhdGEtPmtlZXBf
+Y29uZmlnID0gMTsNCj4+ICsJaWYgKG9mX2dldF9wcm9wZXJ0eShucCwgIm1hcnZlbGwsbmFuZC1m
+b3JjZS1jc3giLCBOVUxMKSkNCj4+ICsJCS8qIFJlZiM6IEdMLTU4MzA3NDEgKi8NCj4+ICsJCXBk
+YXRhLT5mb3JjZV9jc3ggPSAxOw0KPj4gICAJb2ZfcHJvcGVydHlfcmVhZF91MzIobnAsICJudW0t
+Y3MiLCAmcGRhdGEtPm51bV9jcyk7DQo+PiAgIA0KPj4gICAJcGRldi0+ZGV2LnBsYXRmb3JtX2Rh
+dGEgPSBwZGF0YTsNCj4+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L3BsYXRmb3JtX2RhdGEv
+bXRkLW5hbmQtcHhhM3h4LmgNCj4+IGIvaW5jbHVkZS9saW51eC9wbGF0Zm9ybV9kYXRhL210ZC1u
+YW5kLXB4YTN4eC5oIGluZGV4DQo+PiAzOTRkMTU1OTdkYzcuLmU3ZjJjODY0N2MwZSAxMDA2NDQg
+LS0tDQo+PiBhL2luY2x1ZGUvbGludXgvcGxhdGZvcm1fZGF0YS9tdGQtbmFuZC1weGEzeHguaCAr
+KysNCj4+IGIvaW5jbHVkZS9saW51eC9wbGF0Zm9ybV9kYXRhL210ZC1uYW5kLXB4YTN4eC5oIEBA
+IC0yOCw2ICsyOCw5IEBADQo+PiBzdHJ1Y3QgcHhhM3h4X25hbmRfcGxhdGZvcm1fZGF0YSB7IC8q
+IGFsbG93IHBsYXRmb3JtIGNvZGUgdG8ga2VlcA0KPj4gT0JNL2Jvb3Rsb2FkZXIgZGVmaW5lZCBO
+RkMgY29uZmlnICovIGludAlrZWVwX2NvbmZpZzsNCj4+ICAgDQo+PiArCS8qIEZvcmNlIGNoaXAg
+c2VsZWN0IGZhbHNlIG9uIGJ1c3kgKi8NCj4+ICsJaW50CWZvcmNlX2NzeDsNCj4+ICsNCj4+ICAg
+CS8qIGluZGljYXRlIGhvdyBtYW55IGNoaXAgc2VsZWN0cyB3aWxsIGJlIHVzZWQgKi8NCj4+ICAg
+CWludAludW1fY3M7DQo+PiAgIA0KPg0KPg0K
