@@ -1,41 +1,27 @@
-Received: from mail-qk0-x231.google.com ([2607:f8b0:400d:c09::231])
+Received: from mail-pg0-f68.google.com ([74.125.83.68])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dxEKS-00073O-NR
- for linux-mtd@lists.infradead.org; Wed, 27 Sep 2017 15:32:55 +0000
-Received: by mail-qk0-x231.google.com with SMTP id b82so13671671qkc.4
- for <linux-mtd@lists.infradead.org>; Wed, 27 Sep 2017 08:32:31 -0700 (PDT)
+ id 1dxKG9-0004m4-5u
+ for linux-mtd@lists.infradead.org; Wed, 27 Sep 2017 21:52:51 +0000
+Received: by mail-pg0-f68.google.com with SMTP id v5so10464062pgn.4
+ for <linux-mtd@lists.infradead.org>; Wed, 27 Sep 2017 14:52:28 -0700 (PDT)
+Date: Wed, 27 Sep 2017 16:52:26 -0500
+From: Rob Herring <robh@kernel.org>
+To: matthew.gerlach@linux.intel.com
+Cc: vndao@altera.com, dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
+ richard@nod.at, cyrille.pitchen@wedev4u.fr, mark.rutland@arm.com,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+ davem@davemloft.net, mchehab@kernel.org, linux-fpga@vger.kernel.org,
+ tien.hock.loh@intel.com, hean.loong.ong@intel.com
+Subject: Re: [PATCH v2 1/3] dt-bindings: mtd: Altera ASMI Parallel II IP Core
+Message-ID: <20170927215226.ogcewa22dqc2jf3f@rob-hp-laptop>
+References: <1505932139-2905-1-git-send-email-matthew.gerlach@linux.intel.com>
+ <1505932139-2905-2-git-send-email-matthew.gerlach@linux.intel.com>
 MIME-Version: 1.0
-Sender: romain.izard@mobile-devices.fr
-In-Reply-To: <20170927170811.57830c1f@bbrezillon>
-References: <20170927083555.16580-1-romain.izard.pro@gmail.com>
- <20170927083555.16580-5-romain.izard.pro@gmail.com>
- <20170927170811.57830c1f@bbrezillon>
-From: Romain Izard <romain.izard.pro@gmail.com>
-Date: Wed, 27 Sep 2017 17:32:10 +0200
-Message-ID: <CAGkQfmOYg6Usyd++KuGqMjDnaWaP77U5jfOL++3nN7PTcAhh9A@mail.gmail.com>
-Subject: Re: [PATCH v3 4/8] mtd: nand: atmel: Avoid ECC errors when leaving
- backup mode
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@codeaurora.org>,
- Lee Jones <lee.jones@linaro.org>, Wenyou Yang <wenyou.yang@atmel.com>,
- Josh Wu <rainyfeeling@outlook.com>, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Thierry Reding <thierry.reding@gmail.com>,
- Richard Genoud <richard.genoud@gmail.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.com>,
- Alan Stern <stern@rowland.harvard.edu>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- linux-pwm@vger.kernel.org,
- linux-usb@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>, linux-serial@vger.kernel.org,
- linux-clk@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1505932139-2905-2-git-send-email-matthew.gerlach@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -45,76 +31,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2017-09-27 17:08 GMT+02:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
-> On Wed, 27 Sep 2017 10:35:51 +0200
-> Romain Izard <romain.izard.pro@gmail.com> wrote:
->
->> During backup mode, the contents of all registers will be cleared as the
->> SoC will be completely powered down. For a product that boots on NAND
->> Flash memory, the bootloader will obviously use the related controller
->> to read the Flash and correct any detected error in the memory, before
->> handling back control to the kernel's resuming entry point.
->>
->> But it does not clean the NAND controller registers after use and on its
->> side the kernel driver expects the error locator to be powered down and
->> in a clean state. Add a resume hook for the PMECC error locator, and
->> reset its registers.
->>
->> Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
->> ---
->> Change in v3:
->> * keep the PMECC disabled when not in use, and use atmel_pmecc_resume to
->>   reset the controller after the bootloader has left it enabled.
->>
->>  drivers/mtd/nand/atmel/nand-controller.c |  3 +++
->>  drivers/mtd/nand/atmel/pmecc.c           | 22 ++++++++++++++--------
->>  drivers/mtd/nand/atmel/pmecc.h           |  1 +
->>  3 files changed, 18 insertions(+), 8 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/atmel/nand-controller.c
->> index f25eca79f4e5..86c2199380c2 100644
->> --- a/drivers/mtd/nand/atmel/nand-controller.c
->> +++ b/drivers/mtd/nand/atmel/nand-controller.c
->> @@ -2530,6 +2530,9 @@ static __maybe_unused int atmel_nand_controller_resume(struct device *dev)
->>       struct atmel_nand_controller *nc = dev_get_drvdata(dev);
->>       struct atmel_nand *nand;
->>
->> +     if (nand->pmecc)
->> +             atmel_pmecc_resume(nand->pmecc);
->> +
->
-> nand is used uninitialized here, and atmel_pmecc_resume() should be
-> passed a atmel_pmecc object not a atmel_pmecc_user.
->
->         if (nc->pmecc)
->                 atmel_pmecc_resume(nc->pmecc);
->
-And yet I thought I correctly tested this code...
+On Wed, Sep 20, 2017 at 11:28:57AM -0700, matthew.gerlach@linux.intel.com wrote:
+> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> 
+> Device Tree bindings for Altera ASMI Parallel II IP Core
+> connected to a flash chip.
+> 
+> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> ---
+> v2:
+>     Made substitutions suggested by Rob Herring.
+>     Emphasize driver expects controller is connected to spi-nor flash.
+> ---
+>  Documentation/devicetree/bindings/mtd/altera-asmip2.txt | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/altera-asmip2.txt
 
-:(
-
->>       list_for_each_entry(nand, &nc->chips, node) {
->>               int i;
->>
->> diff --git a/drivers/mtd/nand/atmel/pmecc.c b/drivers/mtd/nand/atmel/pmecc.c
->> index 146af8218314..ff09c0f25dd4 100644
->> --- a/drivers/mtd/nand/atmel/pmecc.c
->> +++ b/drivers/mtd/nand/atmel/pmecc.c
->> @@ -765,6 +765,12 @@ void atmel_pmecc_get_generated_eccbytes(struct atmel_pmecc_user *user,
->>  }
->>  EXPORT_SYMBOL_GPL(atmel_pmecc_get_generated_eccbytes);
->>
->> +void atmel_pmecc_reset(struct atmel_pmecc *pmecc)
->> +{
->> +     writel(PMECC_CTRL_RST, pmecc->regs.base + ATMEL_PMECC_CTRL);
->> +     writel(PMECC_CTRL_DISABLE, pmecc->regs.base + ATMEL_PMECC_CTRL);
->> +}
->
-> It's not used outside of this file, so it should have a static
-> specifier. Anyway, I wonder why you don't expose atmel_pmecc_reset()
-> directly instead of creating this atmel_pmecc_resume() wrapper.
-
-I will fix this...
-
--- 
-Romain Izard
+Acked-by: Rob Herring <robh@kernel.org>
