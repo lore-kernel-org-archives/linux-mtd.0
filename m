@@ -1,9 +1,9 @@
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dx7pa-0002jJ-Ou
- for linux-mtd@lists.infradead.org; Wed, 27 Sep 2017 08:36:41 +0000
-Received: by mail-wm0-x242.google.com with SMTP id m72so15481192wmc.1
- for <linux-mtd@lists.infradead.org>; Wed, 27 Sep 2017 01:36:14 -0700 (PDT)
+ id 1dx7pd-0002kg-Tf
+ for linux-mtd@lists.infradead.org; Wed, 27 Sep 2017 08:36:48 +0000
+Received: by mail-wm0-x241.google.com with SMTP id m72so15481667wmc.1
+ for <linux-mtd@lists.infradead.org>; Wed, 27 Sep 2017 01:36:17 -0700 (PDT)
 From: Romain Izard <romain.izard.pro@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Michael Turquette <mturquette@baylibre.com>,
@@ -24,9 +24,10 @@ Cc: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-pwm@vger.kernel.org,
  linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
  Romain Izard <romain.izard.pro@gmail.com>
-Subject: [PATCH v3 1/8] clk: at91: pmc: Wait for clocks when resuming
-Date: Wed, 27 Sep 2017 10:35:48 +0200
-Message-Id: <20170927083555.16580-2-romain.izard.pro@gmail.com>
+Subject: [PATCH v3 4/8] mtd: nand: atmel: Avoid ECC errors when leaving backup
+ mode
+Date: Wed, 27 Sep 2017 10:35:51 +0200
+Message-Id: <20170927083555.16580-5-romain.izard.pro@gmail.com>
 In-Reply-To: <20170927083555.16580-1-romain.izard.pro@gmail.com>
 References: <20170927083555.16580-1-romain.izard.pro@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -38,61 +39,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Wait for the syncronization of all clocks when resuming, not only the
-UPLL clock. Do not use regmap_read_poll_timeout, as it will call BUG()
-when interrupts are masked, which is the case in here.
+During backup mode, the contents of all registers will be cleared as the
+SoC will be completely powered down. For a product that boots on NAND
+Flash memory, the bootloader will obviously use the related controller
+to read the Flash and correct any detected error in the memory, before
+handling back control to the kernel's resuming entry point.
+
+But it does not clean the NAND controller registers after use and on its
+side the kernel driver expects the error locator to be powered down and
+in a clean state. Add a resume hook for the PMECC error locator, and
+reset its registers.
 
 Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
-Acked-by: Ludovic Desroches <ludovic.desroches@microchip.com>
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 ---
- drivers/clk/at91/pmc.c | 24 ++++++++++++++++--------
- 1 file changed, 16 insertions(+), 8 deletions(-)
+Change in v3:
+* keep the PMECC disabled when not in use, and use atmel_pmecc_resume to
+  reset the controller after the bootloader has left it enabled.
 
-diff --git a/drivers/clk/at91/pmc.c b/drivers/clk/at91/pmc.c
-index 775af473fe11..5c2b26de303e 100644
---- a/drivers/clk/at91/pmc.c
-+++ b/drivers/clk/at91/pmc.c
-@@ -107,10 +107,20 @@ static int pmc_suspend(void)
- 	return 0;
- }
+ drivers/mtd/nand/atmel/nand-controller.c |  3 +++
+ drivers/mtd/nand/atmel/pmecc.c           | 22 ++++++++++++++--------
+ drivers/mtd/nand/atmel/pmecc.h           |  1 +
+ 3 files changed, 18 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/atmel/nand-controller.c
+index f25eca79f4e5..86c2199380c2 100644
+--- a/drivers/mtd/nand/atmel/nand-controller.c
++++ b/drivers/mtd/nand/atmel/nand-controller.c
+@@ -2530,6 +2530,9 @@ static __maybe_unused int atmel_nand_controller_resume(struct device *dev)
+ 	struct atmel_nand_controller *nc = dev_get_drvdata(dev);
+ 	struct atmel_nand *nand;
  
-+static bool pmc_ready(unsigned int mask)
++	if (nand->pmecc)
++		atmel_pmecc_resume(nand->pmecc);
++
+ 	list_for_each_entry(nand, &nc->chips, node) {
+ 		int i;
+ 
+diff --git a/drivers/mtd/nand/atmel/pmecc.c b/drivers/mtd/nand/atmel/pmecc.c
+index 146af8218314..ff09c0f25dd4 100644
+--- a/drivers/mtd/nand/atmel/pmecc.c
++++ b/drivers/mtd/nand/atmel/pmecc.c
+@@ -765,6 +765,12 @@ void atmel_pmecc_get_generated_eccbytes(struct atmel_pmecc_user *user,
+ }
+ EXPORT_SYMBOL_GPL(atmel_pmecc_get_generated_eccbytes);
+ 
++void atmel_pmecc_reset(struct atmel_pmecc *pmecc)
 +{
-+	unsigned int status;
-+
-+	regmap_read(pmcreg, AT91_PMC_SR, &status);
-+
-+	return ((status & mask) == mask) ? 1 : 0;
++	writel(PMECC_CTRL_RST, pmecc->regs.base + ATMEL_PMECC_CTRL);
++	writel(PMECC_CTRL_DISABLE, pmecc->regs.base + ATMEL_PMECC_CTRL);
 +}
 +
- static void pmc_resume(void)
+ int atmel_pmecc_enable(struct atmel_pmecc_user *user, int op)
  {
--	int i, ret = 0;
-+	int i;
- 	u32 tmp;
-+	u32 mask = AT91_PMC_MCKRDY | AT91_PMC_LOCKA;
+ 	struct atmel_pmecc *pmecc = user->pmecc;
+@@ -797,14 +803,17 @@ EXPORT_SYMBOL_GPL(atmel_pmecc_enable);
  
- 	regmap_read(pmcreg, AT91_PMC_MCKR, &tmp);
- 	if (pmc_cache.mckr != tmp)
-@@ -134,13 +144,11 @@ static void pmc_resume(void)
- 			     AT91_PMC_PCR_CMD);
- 	}
- 
--	if (pmc_cache.uckr & AT91_PMC_UPLLEN) {
--		ret = regmap_read_poll_timeout(pmcreg, AT91_PMC_SR, tmp,
--					       !(tmp & AT91_PMC_LOCKU),
--					       10, 5000);
--		if (ret)
--			pr_crit("USB PLL didn't lock when resuming\n");
--	}
-+	if (pmc_cache.uckr & AT91_PMC_UPLLEN)
-+		mask |= AT91_PMC_LOCKU;
-+
-+	while (!pmc_ready(mask))
-+		cpu_relax();
+ void atmel_pmecc_disable(struct atmel_pmecc_user *user)
+ {
+-	struct atmel_pmecc *pmecc = user->pmecc;
+-
+-	writel(PMECC_CTRL_RST, pmecc->regs.base + ATMEL_PMECC_CTRL);
+-	writel(PMECC_CTRL_DISABLE, pmecc->regs.base + ATMEL_PMECC_CTRL);
++	atmel_pmecc_reset(user->pmecc);
+ 	mutex_unlock(&user->pmecc->lock);
  }
+ EXPORT_SYMBOL_GPL(atmel_pmecc_disable);
  
- static struct syscore_ops pmc_syscore_ops = {
++void atmel_pmecc_resume(struct atmel_pmecc_user *user)
++{
++	atmel_pmecc_reset(user->pmecc);
++}
++EXPORT_SYMBOL_GPL(atmel_pmecc_resume);
++
+ int atmel_pmecc_wait_rdy(struct atmel_pmecc_user *user)
+ {
+ 	struct atmel_pmecc *pmecc = user->pmecc;
+@@ -855,10 +864,7 @@ static struct atmel_pmecc *atmel_pmecc_create(struct platform_device *pdev,
+ 
+ 	/* Disable all interrupts before registering the PMECC handler. */
+ 	writel(0xffffffff, pmecc->regs.base + ATMEL_PMECC_IDR);
+-
+-	/* Reset the ECC engine */
+-	writel(PMECC_CTRL_RST, pmecc->regs.base + ATMEL_PMECC_CTRL);
+-	writel(PMECC_CTRL_DISABLE, pmecc->regs.base + ATMEL_PMECC_CTRL);
++	atmel_pmecc_reset(pmecc);
+ 
+ 	return pmecc;
+ }
+diff --git a/drivers/mtd/nand/atmel/pmecc.h b/drivers/mtd/nand/atmel/pmecc.h
+index a8ddbfca2ea5..488a90f1965d 100644
+--- a/drivers/mtd/nand/atmel/pmecc.h
++++ b/drivers/mtd/nand/atmel/pmecc.h
+@@ -63,6 +63,7 @@ void atmel_pmecc_destroy_user(struct atmel_pmecc_user *user);
+ 
+ int atmel_pmecc_enable(struct atmel_pmecc_user *user, int op);
+ void atmel_pmecc_disable(struct atmel_pmecc_user *user);
++void atmel_pmecc_resume(struct atmel_pmecc_user *user);
+ int atmel_pmecc_wait_rdy(struct atmel_pmecc_user *user);
+ int atmel_pmecc_correct_sector(struct atmel_pmecc_user *user, int sector,
+ 			       void *data, void *ecc);
 -- 
 2.11.0
