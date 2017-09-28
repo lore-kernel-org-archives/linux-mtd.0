@@ -1,19 +1,35 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dxVP5-0002L7-4p
- for linux-mtd@lists.infradead.org; Thu, 28 Sep 2017 09:46:49 +0000
-Date: Thu, 28 Sep 2017 11:46:13 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Richard Genoud <richard.genoud@gmail.com>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, Nicolas Ferre
- <nicolas.ferre@microchip.com>, Linux Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mtd: nand: atmel: fix buffer overflow in atmel_pmecc_user
-Message-ID: <20170928114613.653a4d50@bbrezillon>
-In-Reply-To: <1506516557.19393.5.camel@gmail.com>
-References: <1506516557.19393.5.camel@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dxVPK-0002S3-3L
+ for linux-mtd@lists.infradead.org; Thu, 28 Sep 2017 09:47:05 +0000
+Received: by mail-wm0-x243.google.com with SMTP id m72so1067471wmc.1
+ for <linux-mtd@lists.infradead.org>; Thu, 28 Sep 2017 02:46:45 -0700 (PDT)
+From: Romain Izard <romain.izard.pro@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@codeaurora.org>, Lee Jones <lee.jones@linaro.org>,
+ Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Richard Genoud <richard.genoud@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jiri Slaby <jslaby@suse.com>, Alan Stern <stern@rowland.harvard.edu>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Cc: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-pwm@vger.kernel.org,
+ linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+ Romain Izard <romain.izard.pro@gmail.com>
+Subject: [PATCH v4 4/8] mtd: nand: atmel: Avoid ECC errors when leaving backup
+ mode
+Date: Thu, 28 Sep 2017 11:46:23 +0200
+Message-Id: <20170928094627.31017-5-romain.izard.pro@gmail.com>
+In-Reply-To: <20170928094627.31017-1-romain.izard.pro@gmail.com>
+References: <20170928094627.31017-1-romain.izard.pro@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,45 +39,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 27 Sep 2017 14:49:17 +0200
-Richard Genoud <richard.genoud@gmail.com> wrote:
+During backup mode, the contents of all registers will be cleared as the
+SoC will be completely powered down. For a product that boots on NAND
+Flash memory, the bootloader will obviously use the related controller
+to read the Flash and correct any detected error in the memory, before
+handling back control to the kernel's resuming entry point.
 
-> When calculating the size needed by struct atmel_pmecc_user *user,
-> the dmu and delta buffer sizes were forgotten.
-> This lead to a memory corruption (especially with a large ecc_strength).
-> 
-> Link: http://lkml.kernel.org/r/1506503157.3016.5.camel@gmail.com
-> Fixes: f88fc122cc34 ("mtd: nand: Cleanup/rework the atmel_nand driver")
-> Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-> Cc: stable@vger.kernel.org
-> Reported-by: Richard Genoud <richard.genoud@gmail.com>
-> Pointed-at-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
+But it does not clean the NAND controller registers after use and on its
+side the kernel driver expects the error locator to be powered down and
+in a clean state. Add a resume hook for the PMECC error locator, and
+reset its registers.
 
-Applied.
+Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
+---
+Changes in v3:
+* keep the PMECC disabled when not in use, and use atmel_pmecc_resume to
+  reset the controller after the bootloader has left it enabled.
 
-Thanks,
+Changes in v4:
+* export atmel_pmecc_reset instead of atmel_pmecc_resume
+* use the correct pointer in atmel_nand_controller_resume
 
-Boris
+ drivers/mtd/nand/atmel/nand-controller.c |  3 +++
+ drivers/mtd/nand/atmel/pmecc.c           | 17 +++++++++--------
+ drivers/mtd/nand/atmel/pmecc.h           |  1 +
+ 3 files changed, 13 insertions(+), 8 deletions(-)
 
-> ---
->  drivers/mtd/nand/atmel/pmecc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/atmel/pmecc.c b/drivers/mtd/nand/atmel/pmecc.c
-> index 146af8218314..8268636675ef 100644
-> --- a/drivers/mtd/nand/atmel/pmecc.c
-> +++ b/drivers/mtd/nand/atmel/pmecc.c
-> @@ -363,7 +363,7 @@ atmel_pmecc_create_user(struct atmel_pmecc *pmecc,
->  	size += (req->ecc.strength + 1) * sizeof(u16);
->  	/* Reserve space for mu, dmu and delta. */
->  	size = ALIGN(size, sizeof(s32));
-> -	size += (req->ecc.strength + 1) * sizeof(s32);
-> +	size += (req->ecc.strength + 1) * sizeof(s32) * 3;
->  
->  	user = kzalloc(size, GFP_KERNEL);
->  	if (!user)
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/atmel/nand-controller.c
+index f25eca79f4e5..8afcff9a66ea 100644
+--- a/drivers/mtd/nand/atmel/nand-controller.c
++++ b/drivers/mtd/nand/atmel/nand-controller.c
+@@ -2530,6 +2530,9 @@ static __maybe_unused int atmel_nand_controller_resume(struct device *dev)
+ 	struct atmel_nand_controller *nc = dev_get_drvdata(dev);
+ 	struct atmel_nand *nand;
+ 
++	if (nc->pmecc)
++		atmel_pmecc_reset(nc->pmecc);
++
+ 	list_for_each_entry(nand, &nc->chips, node) {
+ 		int i;
+ 
+diff --git a/drivers/mtd/nand/atmel/pmecc.c b/drivers/mtd/nand/atmel/pmecc.c
+index 146af8218314..0a3f12141c45 100644
+--- a/drivers/mtd/nand/atmel/pmecc.c
++++ b/drivers/mtd/nand/atmel/pmecc.c
+@@ -765,6 +765,13 @@ void atmel_pmecc_get_generated_eccbytes(struct atmel_pmecc_user *user,
+ }
+ EXPORT_SYMBOL_GPL(atmel_pmecc_get_generated_eccbytes);
+ 
++void atmel_pmecc_reset(struct atmel_pmecc *pmecc)
++{
++	writel(PMECC_CTRL_RST, pmecc->regs.base + ATMEL_PMECC_CTRL);
++	writel(PMECC_CTRL_DISABLE, pmecc->regs.base + ATMEL_PMECC_CTRL);
++}
++EXPORT_SYMBOL_GPL(atmel_pmecc_reset);
++
+ int atmel_pmecc_enable(struct atmel_pmecc_user *user, int op)
+ {
+ 	struct atmel_pmecc *pmecc = user->pmecc;
+@@ -797,10 +804,7 @@ EXPORT_SYMBOL_GPL(atmel_pmecc_enable);
+ 
+ void atmel_pmecc_disable(struct atmel_pmecc_user *user)
+ {
+-	struct atmel_pmecc *pmecc = user->pmecc;
+-
+-	writel(PMECC_CTRL_RST, pmecc->regs.base + ATMEL_PMECC_CTRL);
+-	writel(PMECC_CTRL_DISABLE, pmecc->regs.base + ATMEL_PMECC_CTRL);
++	atmel_pmecc_reset(user->pmecc);
+ 	mutex_unlock(&user->pmecc->lock);
+ }
+ EXPORT_SYMBOL_GPL(atmel_pmecc_disable);
+@@ -855,10 +859,7 @@ static struct atmel_pmecc *atmel_pmecc_create(struct platform_device *pdev,
+ 
+ 	/* Disable all interrupts before registering the PMECC handler. */
+ 	writel(0xffffffff, pmecc->regs.base + ATMEL_PMECC_IDR);
+-
+-	/* Reset the ECC engine */
+-	writel(PMECC_CTRL_RST, pmecc->regs.base + ATMEL_PMECC_CTRL);
+-	writel(PMECC_CTRL_DISABLE, pmecc->regs.base + ATMEL_PMECC_CTRL);
++	atmel_pmecc_reset(pmecc);
+ 
+ 	return pmecc;
+ }
+diff --git a/drivers/mtd/nand/atmel/pmecc.h b/drivers/mtd/nand/atmel/pmecc.h
+index a8ddbfca2ea5..817e0dd9fd15 100644
+--- a/drivers/mtd/nand/atmel/pmecc.h
++++ b/drivers/mtd/nand/atmel/pmecc.h
+@@ -61,6 +61,7 @@ atmel_pmecc_create_user(struct atmel_pmecc *pmecc,
+ 			struct atmel_pmecc_user_req *req);
+ void atmel_pmecc_destroy_user(struct atmel_pmecc_user *user);
+ 
++void atmel_pmecc_reset(struct atmel_pmecc *pmecc);
+ int atmel_pmecc_enable(struct atmel_pmecc_user *user, int op);
+ void atmel_pmecc_disable(struct atmel_pmecc_user *user);
+ int atmel_pmecc_wait_rdy(struct atmel_pmecc_user *user);
+-- 
+2.11.0
