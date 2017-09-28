@@ -1,9 +1,9 @@
 Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dxVPK-0002Q5-4X
+ id 1dxVPJ-0002Q8-Ux
  for linux-mtd@lists.infradead.org; Thu, 28 Sep 2017 09:47:08 +0000
-Received: by mail-wm0-x243.google.com with SMTP id q124so1073310wmb.0
- for <linux-mtd@lists.infradead.org>; Thu, 28 Sep 2017 02:46:40 -0700 (PDT)
+Received: by mail-wm0-x243.google.com with SMTP id r74so1045169wme.4
+ for <linux-mtd@lists.infradead.org>; Thu, 28 Sep 2017 02:46:41 -0700 (PDT)
 From: Romain Izard <romain.izard.pro@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Michael Turquette <mturquette@baylibre.com>,
@@ -24,9 +24,11 @@ Cc: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-pwm@vger.kernel.org,
  linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
  Romain Izard <romain.izard.pro@gmail.com>
-Subject: [PATCH v4 0/8] Various patches for SAMA5D2 backup mode
-Date: Thu, 28 Sep 2017 11:46:19 +0200
-Message-Id: <20170928094627.31017-1-romain.izard.pro@gmail.com>
+Subject: [PATCH v4 1/8] clk: at91: pmc: Wait for clocks when resuming
+Date: Thu, 28 Sep 2017 11:46:20 +0200
+Message-Id: <20170928094627.31017-2-romain.izard.pro@gmail.com>
+In-Reply-To: <20170928094627.31017-1-romain.izard.pro@gmail.com>
+References: <20170928094627.31017-1-romain.izard.pro@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,55 +38,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-While the core of the backup mode for SAMA5D2 has been integrated in
-v4.13, it is far from complete. Individual controllers in the chip have
-drivers that do not support the reset of the registers during suspend,
-and they need to be adapted to handle it.
+Wait for the syncronization of all clocks when resuming, not only the
+UPLL clock. Do not use regmap_read_poll_timeout, as it will call BUG()
+when interrupts are masked, which is the case in here.
 
-The first patch uses the clock wakeup code from the prototype backup
-mode instead of the version integrated in the mainline, as the mainline
-version is not stable. During a test loop with two-second backup
-suspend, the mainline version will hang in less than one day, whereas
-the prototype version has been running the same test for more than a
-week without hanging.
+Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
+Acked-by: Ludovic Desroches <ludovic.desroches@microchip.com>
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+---
+ drivers/clk/at91/pmc.c | 24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
-While all these patches are provided in a series, the clock, mtd,
-usb, pwm and mfd patch do not depend on each other.
-
-Changes in v2:
-* drop the IIO patch duplicating existing code
-* determine the number of programmable clocks to save dynamically
-* declare a required local variable in the tty/serial patch
-
-Changes in v3:
-* drop dev_printk changes for PMECC
-* rework the resume code for PMECC
-* improve comments on PMC clock handling
-
-Changes in v4:
-* fix a bug in the PMECC resume code
-
-Romain Izard (8):
-  clk: at91: pmc: Wait for clocks when resuming
-  clk: at91: pmc: Save SCSR during suspend
-  clk: at91: pmc: Support backup for programmable clocks
-  mtd: nand: atmel: Avoid ECC errors when leaving backup mode
-  ehci-atmel: Power down during suspend is normal
-  pwm: atmel-tcb: Support backup mode
-  atmel_flexcom: Support backup mode
-  tty/serial: atmel: Prevent a warning on suspend
-
- drivers/clk/at91/clk-programmable.c      |  2 +
- drivers/clk/at91/pmc.c                   | 63 ++++++++++++++++++++++++++-----
- drivers/clk/at91/pmc.h                   |  2 +
- drivers/mfd/atmel-flexcom.c              | 65 ++++++++++++++++++++++++--------
- drivers/mtd/nand/atmel/nand-controller.c |  3 ++
- drivers/mtd/nand/atmel/pmecc.c           | 17 +++++----
- drivers/mtd/nand/atmel/pmecc.h           |  1 +
- drivers/pwm/pwm-atmel-tcb.c              | 63 ++++++++++++++++++++++++++++++-
- drivers/tty/serial/atmel_serial.c        | 13 +++++++
- drivers/usb/host/ehci-atmel.c            |  3 +-
- 10 files changed, 196 insertions(+), 36 deletions(-)
-
+diff --git a/drivers/clk/at91/pmc.c b/drivers/clk/at91/pmc.c
+index 775af473fe11..5c2b26de303e 100644
+--- a/drivers/clk/at91/pmc.c
++++ b/drivers/clk/at91/pmc.c
+@@ -107,10 +107,20 @@ static int pmc_suspend(void)
+ 	return 0;
+ }
+ 
++static bool pmc_ready(unsigned int mask)
++{
++	unsigned int status;
++
++	regmap_read(pmcreg, AT91_PMC_SR, &status);
++
++	return ((status & mask) == mask) ? 1 : 0;
++}
++
+ static void pmc_resume(void)
+ {
+-	int i, ret = 0;
++	int i;
+ 	u32 tmp;
++	u32 mask = AT91_PMC_MCKRDY | AT91_PMC_LOCKA;
+ 
+ 	regmap_read(pmcreg, AT91_PMC_MCKR, &tmp);
+ 	if (pmc_cache.mckr != tmp)
+@@ -134,13 +144,11 @@ static void pmc_resume(void)
+ 			     AT91_PMC_PCR_CMD);
+ 	}
+ 
+-	if (pmc_cache.uckr & AT91_PMC_UPLLEN) {
+-		ret = regmap_read_poll_timeout(pmcreg, AT91_PMC_SR, tmp,
+-					       !(tmp & AT91_PMC_LOCKU),
+-					       10, 5000);
+-		if (ret)
+-			pr_crit("USB PLL didn't lock when resuming\n");
+-	}
++	if (pmc_cache.uckr & AT91_PMC_UPLLEN)
++		mask |= AT91_PMC_LOCKU;
++
++	while (!pmc_ready(mask))
++		cpu_relax();
+ }
+ 
+ static struct syscore_ops pmc_syscore_ops = {
 -- 
 2.11.0
