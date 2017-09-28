@@ -1,34 +1,24 @@
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dxVPS-0002V1-G7
- for linux-mtd@lists.infradead.org; Thu, 28 Sep 2017 09:47:21 +0000
-Received: by mail-wm0-x242.google.com with SMTP id m127so1045965wmm.3
- for <linux-mtd@lists.infradead.org>; Thu, 28 Sep 2017 02:46:49 -0700 (PDT)
-From: Romain Izard <romain.izard.pro@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@codeaurora.org>, Lee Jones <lee.jones@linaro.org>,
- Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Thierry Reding <thierry.reding@gmail.com>,
- Richard Genoud <richard.genoud@gmail.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jiri Slaby <jslaby@suse.com>, Alan Stern <stern@rowland.harvard.edu>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Cc: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-pwm@vger.kernel.org,
- linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
- Romain Izard <romain.izard.pro@gmail.com>
-Subject: [PATCH v4 8/8] tty/serial: atmel: Prevent a warning on suspend
-Date: Thu, 28 Sep 2017 11:46:27 +0200
-Message-Id: <20170928094627.31017-9-romain.izard.pro@gmail.com>
-In-Reply-To: <20170928094627.31017-1-romain.izard.pro@gmail.com>
-References: <20170928094627.31017-1-romain.izard.pro@gmail.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dxVPa-0002dd-8x
+ for linux-mtd@lists.infradead.org; Thu, 28 Sep 2017 09:47:23 +0000
+Date: Thu, 28 Sep 2017 11:46:44 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
+Cc: Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
+ stable@vger.kernel.org, Mathias Thore <Mathias.Thore@infinera.com>
+Subject: Re: [PATCH v2] mtd: Fix partition alignment check on
+ multi-erasesize devices
+Message-ID: <20170928114644.3708886c@bbrezillon>
+In-Reply-To: <20170925081957.19177-1-boris.brezillon@free-electrons.com>
+References: <20170925081957.19177-1-boris.brezillon@free-electrons.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,114 +28,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The atmel serial port driver reported the following warning on suspend:
-atmel_usart f8020000.serial: ttyS1: Unable to drain transmitter
+On Mon, 25 Sep 2017 10:19:57 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-As the ATMEL_US_TXEMPTY status bit in ATMEL_US_CSR is always cleared
-when the transmitter is disabled, we need to know the transmitter's
-state to return the real fifo state. And as ATMEL_US_CR is write-only,
-it is necessary to save the state of the transmitter in a local
-variable, and update the variable when TXEN and TXDIS is written in
-ATMEL_US_CR.
+> Commit 1eeef2d7483a ("mtd: handle partitioning on devices with 0
+> erasesize") introduced a regression on heterogeneous erase region
+> devices. Alignment of the partition was tested against the master
+> eraseblock size which can be bigger than the slave one, thus leading
+> to some partitions being marked as read-only.
+> 
+> Update wr_alignment to match this slave erasesize after this erasesize
+> has been determined by picking the biggest erasesize of all the regions
+> embedded in the MTD partition.
+> 
+> Reported-by: Mathias Thore <Mathias.Thore@infinera.com>
+> Fixes: 1eeef2d7483a ("mtd: handle partitioning on devices with 0 erasesize")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-After those changes, atmel_tx_empty can return "empty" on suspend, the
-warning in uart_suspend_port disappears, and suspending is 20ms shorter
-for each enabled Atmel serial port.
+Applied.
 
-Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
-Tested-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Acked-by: Richard Genoud <richard.genoud@gmail.com>
----
- drivers/tty/serial/atmel_serial.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/drivers/tty/serial/atmel_serial.c b/drivers/tty/serial/atmel_serial.c
-index 7551cab438ff..ce45b4ada0bf 100644
---- a/drivers/tty/serial/atmel_serial.c
-+++ b/drivers/tty/serial/atmel_serial.c
-@@ -171,6 +171,7 @@ struct atmel_uart_port {
- 	bool			has_hw_timer;
- 	struct timer_list	uart_timer;
- 
-+	bool			tx_stopped;
- 	bool			suspended;
- 	unsigned int		pending;
- 	unsigned int		pending_status;
-@@ -380,6 +381,10 @@ static int atmel_config_rs485(struct uart_port *port,
-  */
- static u_int atmel_tx_empty(struct uart_port *port)
- {
-+	struct atmel_uart_port *atmel_port = to_atmel_uart_port(port);
-+
-+	if (atmel_port->tx_stopped)
-+		return TIOCSER_TEMT;
- 	return (atmel_uart_readl(port, ATMEL_US_CSR) & ATMEL_US_TXEMPTY) ?
- 		TIOCSER_TEMT :
- 		0;
-@@ -485,6 +490,7 @@ static void atmel_stop_tx(struct uart_port *port)
- 	 * is fully transmitted.
- 	 */
- 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_TXDIS);
-+	atmel_port->tx_stopped = true;
- 
- 	/* Disable interrupts */
- 	atmel_uart_writel(port, ATMEL_US_IDR, atmel_port->tx_done_mask);
-@@ -521,6 +527,7 @@ static void atmel_start_tx(struct uart_port *port)
- 
- 	/* re-enable the transmitter */
- 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_TXEN);
-+	atmel_port->tx_stopped = false;
- }
- 
- /*
-@@ -1866,6 +1873,7 @@ static int atmel_startup(struct uart_port *port)
- 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_RSTSTA | ATMEL_US_RSTRX);
- 	/* enable xmit & rcvr */
- 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_TXEN | ATMEL_US_RXEN);
-+	atmel_port->tx_stopped = false;
- 
- 	setup_timer(&atmel_port->uart_timer,
- 			atmel_uart_timer_callback,
-@@ -2122,6 +2130,7 @@ static void atmel_set_termios(struct uart_port *port, struct ktermios *termios,
- 
- 	/* disable receiver and transmitter */
- 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_TXDIS | ATMEL_US_RXDIS);
-+	atmel_port->tx_stopped = true;
- 
- 	/* mode */
- 	if (port->rs485.flags & SER_RS485_ENABLED) {
-@@ -2207,6 +2216,7 @@ static void atmel_set_termios(struct uart_port *port, struct ktermios *termios,
- 	atmel_uart_writel(port, ATMEL_US_BRGR, quot);
- 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_RSTSTA | ATMEL_US_RSTRX);
- 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_TXEN | ATMEL_US_RXEN);
-+	atmel_port->tx_stopped = false;
- 
- 	/* restore interrupts */
- 	atmel_uart_writel(port, ATMEL_US_IER, imr);
-@@ -2450,6 +2460,7 @@ static void atmel_console_write(struct console *co, const char *s, u_int count)
- 
- 	/* Make sure that tx path is actually able to send characters */
- 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_TXEN);
-+	atmel_port->tx_stopped = false;
- 
- 	uart_console_write(port, s, count, atmel_console_putchar);
- 
-@@ -2511,6 +2522,7 @@ static int __init atmel_console_setup(struct console *co, char *options)
- {
- 	int ret;
- 	struct uart_port *port = &atmel_ports[co->index].uart;
-+	struct atmel_uart_port *atmel_port = to_atmel_uart_port(port);
- 	int baud = 115200;
- 	int bits = 8;
- 	int parity = 'n';
-@@ -2528,6 +2540,7 @@ static int __init atmel_console_setup(struct console *co, char *options)
- 	atmel_uart_writel(port, ATMEL_US_IDR, -1);
- 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_RSTSTA | ATMEL_US_RSTRX);
- 	atmel_uart_writel(port, ATMEL_US_CR, ATMEL_US_TXEN | ATMEL_US_RXEN);
-+	atmel_port->tx_stopped = false;
- 
- 	if (options)
- 		uart_parse_options(options, &baud, &parity, &bits, &flow);
--- 
-2.11.0
+> ---
+> Changes in v2:
+> - Fix build error reported by Mathias
+> ---
+>  drivers/mtd/mtdpart.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+> index 5736b0c90b33..a308e707392d 100644
+> --- a/drivers/mtd/mtdpart.c
+> +++ b/drivers/mtd/mtdpart.c
+> @@ -581,6 +581,14 @@ static struct mtd_part *allocate_partition(struct mtd_info *parent,
+>  		slave->mtd.erasesize = parent->erasesize;
+>  	}
+>  
+> +	/*
+> +	 * Slave erasesize might differ from the master one if the master
+> +	 * exposes several regions with different erasesize. Adjust
+> +	 * wr_alignment accordingly.
+> +	 */
+> +	if (!(slave->mtd.flags & MTD_NO_ERASE))
+> +		wr_alignment = slave->mtd.erasesize;
+> +
+>  	tmp = slave->offset;
+>  	remainder = do_div(tmp, wr_alignment);
+>  	if ((slave->mtd.flags & MTD_WRITEABLE) && remainder) {
