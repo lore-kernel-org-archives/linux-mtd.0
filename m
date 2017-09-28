@@ -1,9 +1,9 @@
 Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dxVPK-0002S3-3L
- for linux-mtd@lists.infradead.org; Thu, 28 Sep 2017 09:47:05 +0000
-Received: by mail-wm0-x243.google.com with SMTP id m72so1067471wmc.1
- for <linux-mtd@lists.infradead.org>; Thu, 28 Sep 2017 02:46:45 -0700 (PDT)
+ id 1dxVPK-0002Q5-4X
+ for linux-mtd@lists.infradead.org; Thu, 28 Sep 2017 09:47:08 +0000
+Received: by mail-wm0-x243.google.com with SMTP id q124so1073310wmb.0
+ for <linux-mtd@lists.infradead.org>; Thu, 28 Sep 2017 02:46:40 -0700 (PDT)
 From: Romain Izard <romain.izard.pro@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Michael Turquette <mturquette@baylibre.com>,
@@ -24,12 +24,9 @@ Cc: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-pwm@vger.kernel.org,
  linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
  Romain Izard <romain.izard.pro@gmail.com>
-Subject: [PATCH v4 4/8] mtd: nand: atmel: Avoid ECC errors when leaving backup
- mode
-Date: Thu, 28 Sep 2017 11:46:23 +0200
-Message-Id: <20170928094627.31017-5-romain.izard.pro@gmail.com>
-In-Reply-To: <20170928094627.31017-1-romain.izard.pro@gmail.com>
-References: <20170928094627.31017-1-romain.izard.pro@gmail.com>
+Subject: [PATCH v4 0/8] Various patches for SAMA5D2 backup mode
+Date: Thu, 28 Sep 2017 11:46:19 +0200
+Message-Id: <20170928094627.31017-1-romain.izard.pro@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,99 +36,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-During backup mode, the contents of all registers will be cleared as the
-SoC will be completely powered down. For a product that boots on NAND
-Flash memory, the bootloader will obviously use the related controller
-to read the Flash and correct any detected error in the memory, before
-handling back control to the kernel's resuming entry point.
+While the core of the backup mode for SAMA5D2 has been integrated in
+v4.13, it is far from complete. Individual controllers in the chip have
+drivers that do not support the reset of the registers during suspend,
+and they need to be adapted to handle it.
 
-But it does not clean the NAND controller registers after use and on its
-side the kernel driver expects the error locator to be powered down and
-in a clean state. Add a resume hook for the PMECC error locator, and
-reset its registers.
+The first patch uses the clock wakeup code from the prototype backup
+mode instead of the version integrated in the mainline, as the mainline
+version is not stable. During a test loop with two-second backup
+suspend, the mainline version will hang in less than one day, whereas
+the prototype version has been running the same test for more than a
+week without hanging.
 
-Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
----
+While all these patches are provided in a series, the clock, mtd,
+usb, pwm and mfd patch do not depend on each other.
+
+Changes in v2:
+* drop the IIO patch duplicating existing code
+* determine the number of programmable clocks to save dynamically
+* declare a required local variable in the tty/serial patch
+
 Changes in v3:
-* keep the PMECC disabled when not in use, and use atmel_pmecc_resume to
-  reset the controller after the bootloader has left it enabled.
+* drop dev_printk changes for PMECC
+* rework the resume code for PMECC
+* improve comments on PMC clock handling
 
 Changes in v4:
-* export atmel_pmecc_reset instead of atmel_pmecc_resume
-* use the correct pointer in atmel_nand_controller_resume
+* fix a bug in the PMECC resume code
 
- drivers/mtd/nand/atmel/nand-controller.c |  3 +++
- drivers/mtd/nand/atmel/pmecc.c           | 17 +++++++++--------
+Romain Izard (8):
+  clk: at91: pmc: Wait for clocks when resuming
+  clk: at91: pmc: Save SCSR during suspend
+  clk: at91: pmc: Support backup for programmable clocks
+  mtd: nand: atmel: Avoid ECC errors when leaving backup mode
+  ehci-atmel: Power down during suspend is normal
+  pwm: atmel-tcb: Support backup mode
+  atmel_flexcom: Support backup mode
+  tty/serial: atmel: Prevent a warning on suspend
+
+ drivers/clk/at91/clk-programmable.c      |  2 +
+ drivers/clk/at91/pmc.c                   | 63 ++++++++++++++++++++++++++-----
+ drivers/clk/at91/pmc.h                   |  2 +
+ drivers/mfd/atmel-flexcom.c              | 65 ++++++++++++++++++++++++--------
+ drivers/mtd/nand/atmel/nand-controller.c |  3 ++
+ drivers/mtd/nand/atmel/pmecc.c           | 17 +++++----
  drivers/mtd/nand/atmel/pmecc.h           |  1 +
- 3 files changed, 13 insertions(+), 8 deletions(-)
+ drivers/pwm/pwm-atmel-tcb.c              | 63 ++++++++++++++++++++++++++++++-
+ drivers/tty/serial/atmel_serial.c        | 13 +++++++
+ drivers/usb/host/ehci-atmel.c            |  3 +-
+ 10 files changed, 196 insertions(+), 36 deletions(-)
 
-diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/atmel/nand-controller.c
-index f25eca79f4e5..8afcff9a66ea 100644
---- a/drivers/mtd/nand/atmel/nand-controller.c
-+++ b/drivers/mtd/nand/atmel/nand-controller.c
-@@ -2530,6 +2530,9 @@ static __maybe_unused int atmel_nand_controller_resume(struct device *dev)
- 	struct atmel_nand_controller *nc = dev_get_drvdata(dev);
- 	struct atmel_nand *nand;
- 
-+	if (nc->pmecc)
-+		atmel_pmecc_reset(nc->pmecc);
-+
- 	list_for_each_entry(nand, &nc->chips, node) {
- 		int i;
- 
-diff --git a/drivers/mtd/nand/atmel/pmecc.c b/drivers/mtd/nand/atmel/pmecc.c
-index 146af8218314..0a3f12141c45 100644
---- a/drivers/mtd/nand/atmel/pmecc.c
-+++ b/drivers/mtd/nand/atmel/pmecc.c
-@@ -765,6 +765,13 @@ void atmel_pmecc_get_generated_eccbytes(struct atmel_pmecc_user *user,
- }
- EXPORT_SYMBOL_GPL(atmel_pmecc_get_generated_eccbytes);
- 
-+void atmel_pmecc_reset(struct atmel_pmecc *pmecc)
-+{
-+	writel(PMECC_CTRL_RST, pmecc->regs.base + ATMEL_PMECC_CTRL);
-+	writel(PMECC_CTRL_DISABLE, pmecc->regs.base + ATMEL_PMECC_CTRL);
-+}
-+EXPORT_SYMBOL_GPL(atmel_pmecc_reset);
-+
- int atmel_pmecc_enable(struct atmel_pmecc_user *user, int op)
- {
- 	struct atmel_pmecc *pmecc = user->pmecc;
-@@ -797,10 +804,7 @@ EXPORT_SYMBOL_GPL(atmel_pmecc_enable);
- 
- void atmel_pmecc_disable(struct atmel_pmecc_user *user)
- {
--	struct atmel_pmecc *pmecc = user->pmecc;
--
--	writel(PMECC_CTRL_RST, pmecc->regs.base + ATMEL_PMECC_CTRL);
--	writel(PMECC_CTRL_DISABLE, pmecc->regs.base + ATMEL_PMECC_CTRL);
-+	atmel_pmecc_reset(user->pmecc);
- 	mutex_unlock(&user->pmecc->lock);
- }
- EXPORT_SYMBOL_GPL(atmel_pmecc_disable);
-@@ -855,10 +859,7 @@ static struct atmel_pmecc *atmel_pmecc_create(struct platform_device *pdev,
- 
- 	/* Disable all interrupts before registering the PMECC handler. */
- 	writel(0xffffffff, pmecc->regs.base + ATMEL_PMECC_IDR);
--
--	/* Reset the ECC engine */
--	writel(PMECC_CTRL_RST, pmecc->regs.base + ATMEL_PMECC_CTRL);
--	writel(PMECC_CTRL_DISABLE, pmecc->regs.base + ATMEL_PMECC_CTRL);
-+	atmel_pmecc_reset(pmecc);
- 
- 	return pmecc;
- }
-diff --git a/drivers/mtd/nand/atmel/pmecc.h b/drivers/mtd/nand/atmel/pmecc.h
-index a8ddbfca2ea5..817e0dd9fd15 100644
---- a/drivers/mtd/nand/atmel/pmecc.h
-+++ b/drivers/mtd/nand/atmel/pmecc.h
-@@ -61,6 +61,7 @@ atmel_pmecc_create_user(struct atmel_pmecc *pmecc,
- 			struct atmel_pmecc_user_req *req);
- void atmel_pmecc_destroy_user(struct atmel_pmecc_user *user);
- 
-+void atmel_pmecc_reset(struct atmel_pmecc *pmecc);
- int atmel_pmecc_enable(struct atmel_pmecc_user *user, int op);
- void atmel_pmecc_disable(struct atmel_pmecc_user *user);
- int atmel_pmecc_wait_rdy(struct atmel_pmecc_user *user);
 -- 
 2.11.0
