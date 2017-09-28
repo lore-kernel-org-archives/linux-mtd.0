@@ -1,20 +1,23 @@
-Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+Received: from mail-wr0-x243.google.com ([2a00:1450:400c:c0c::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dxN9t-0001TS-80
- for linux-mtd@lists.infradead.org; Thu, 28 Sep 2017 00:58:35 +0000
-From: Kalyan Kinthada <kalyan.kinthada@alliedtelesis.co.nz>
-To: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org, mark.rutland@arm.com,
- ezequiel.garcia@free-electrons.com, miquel.raynal@free-electrons.com,
- devicetree@vger.kernel.org
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- chris.packham@alliedtelesis.co.nz,
- Kalyan Kinthada <kalyan.kinthada@alliedtelesis.co.nz>
-Subject: [PATCH v3 0/1] Set FORCE_CSX bit when arbitration between NAND and
- NOR is enabled.
-Date: Thu, 28 Sep 2017 13:57:55 +1300
-Message-Id: <20170928005756.3938-1-kalyan.kinthada@alliedtelesis.co.nz>
+ id 1dxTz9-0001xf-Tq
+ for linux-mtd@lists.infradead.org; Thu, 28 Sep 2017 08:16:01 +0000
+Received: by mail-wr0-x243.google.com with SMTP id u48so1145266wrf.4
+ for <linux-mtd@lists.infradead.org>; Thu, 28 Sep 2017 01:15:32 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: Issue with Micron QSPI flash in 4.14-rc1
+From: Andras Szemzo <szemzo.andras@gmail.com>
+In-Reply-To: <51b9af85-1712-7386-293d-1cfb69510f4f@wedev4u.fr>
+Date: Thu, 28 Sep 2017 10:15:29 +0200
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
+ marek.vasut@gmail.com, Richard Weinberger <richard@nod.at>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <8281B818-C30A-4ABE-992F-0F04AF5E4B8B@gmail.com>
+References: <E36A7C66-EC4D-46FF-A6E1-835E1C466E55@gmail.com>
+ <51b9af85-1712-7386-293d-1cfb69510f4f@wedev4u.fr>
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,46 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When the arbitration between NOR and NAND flash is enabled
-the <FORCE_CSX> field bit[21] in the Data Flash Control Register
-needs to be set to 1 according to guidleine GL-5830741
-mentioned in Marvell Errata document MV-S501377-00, Rev. D.
+Hi,
 
-Set the FORCE_CSX bit in NDCR for ARMADA370 variants as the arbitration
-is always enabled by default. This change does not apply for pxa3xx
-variants because FORCE_CSX bit does not exist/reserved on the NFCv1.
+> On 2017. Sep 26., at 1:00, Cyrille Pitchen =
+<cyrille.pitchen@wedev4u.fr> wrote:
+>=20
+> thanks for your report, I'll try to study it more closely and propose =
+a
+> fixup withing the next few days (thinking about invert the logic of
+> SKIP_SFDP to disable the parsing by default and enable it memory by
+> memory when needed) but here some comments:
+>=20
 
-Ran the "flash_speed" tool on NAND flash on a board with
-Armada-xp based SoC which uses only one NAND chip and not using
-the arbiter. There is no regression or speed penalty
-introduced due to this change.
+Summarizing my testings:
 
-Changes since v2:
-Thanks Miquel RAYNAL for the suggestion.
+- my 'old' bootloader code was working fine prior the SFDP table =
+patches, and uses quad mode 4_4_4.
+- with =E2=80=98old=E2=80=99 bootloader the SFDP table patched spi-nor =
+was not working.
+- as I replaced my bloader with new driver, which also use SFDP parsing =
+and using mode 1_4_4,
+it works fine with/without SFDP patched spi-nor.
 
-* "mtd: nand: pxa3xx: Set FORCE_CSX bit to ARMADA370 variants."
-  Modified commit message to mention that this change does not apply
-  for pxa3xx variants.
-  Fixed the missing space in comments.
-  Removed unused macros "NDCR_ND_MODE" and "NDCR_NAND_MODE".
+I=E2=80=99m still not sure what is going on exactly, but it seems this =
+is my problem only, and the SFDP patch is OK.
 
-Changes since v1:
-Thanks Miquel RAYNAL for the suggestion.
+Sorry for generating noise...
 
-* Deleted: "dt-bindings: mtd: pxa3xx: Add "marvell,nand-force-csx" compatible string"
-  Not necessary to create a new compatible string.
-
-* "mtd: nand: pxa3xx: Set FORCE_CSX bit to ARMADA370 variants."
-  Modified commit message.
-  This commit sets the FORCE_CSX bit for all ARMADA370 variants.
-
------
-
-Kalyan Kinthada (1):
-  mtd: nand: pxa3xx: Set FORCE_CSX bit to ARMADA370 variants.
-
- drivers/mtd/nand/pxa3xx_nand.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
--- 
-2.14.1
+Regards,
+Andras
