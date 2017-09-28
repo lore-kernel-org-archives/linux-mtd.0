@@ -1,9 +1,9 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dxVPM-0002Sl-ON
- for linux-mtd@lists.infradead.org; Thu, 28 Sep 2017 09:47:09 +0000
-Received: by mail-wm0-x244.google.com with SMTP id q132so1043138wmd.2
- for <linux-mtd@lists.infradead.org>; Thu, 28 Sep 2017 02:46:47 -0700 (PDT)
+ id 1dxVPL-0002QG-KM
+ for linux-mtd@lists.infradead.org; Thu, 28 Sep 2017 09:47:12 +0000
+Received: by mail-wr0-x242.google.com with SMTP id z1so1491303wre.1
+ for <linux-mtd@lists.infradead.org>; Thu, 28 Sep 2017 02:46:42 -0700 (PDT)
 From: Romain Izard <romain.izard.pro@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Michael Turquette <mturquette@baylibre.com>,
@@ -24,9 +24,9 @@ Cc: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-pwm@vger.kernel.org,
  linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
  Romain Izard <romain.izard.pro@gmail.com>
-Subject: [PATCH v4 6/8] pwm: atmel-tcb: Support backup mode
-Date: Thu, 28 Sep 2017 11:46:25 +0200
-Message-Id: <20170928094627.31017-7-romain.izard.pro@gmail.com>
+Subject: [PATCH v4 2/8] clk: at91: pmc: Save SCSR during suspend
+Date: Thu, 28 Sep 2017 11:46:21 +0200
+Message-Id: <20170928094627.31017-3-romain.izard.pro@gmail.com>
 In-Reply-To: <20170928094627.31017-1-romain.izard.pro@gmail.com>
 References: <20170928094627.31017-1-romain.izard.pro@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -38,122 +38,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Save and restore registers for the PWM on suspend and resume, which
-makes hibernation and backup modes possible.
+The contents of the System Clock Status Register (SCSR) needs to be
+restored into the System Clock Enable Register (SCER).
+
+As the bootloader will restore some clocks by itself, the issue can be
+missed as only the USB controller, the LCD controller, the Image Sensor
+controller and the programmable clocks will be impacted.
+
+Fix the obvious typo in the suspend/resume code, as the IMR register
+does not need to be saved twice.
 
 Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
 Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 ---
- drivers/pwm/pwm-atmel-tcb.c | 63 +++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 61 insertions(+), 2 deletions(-)
+ drivers/clk/at91/pmc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/pwm/pwm-atmel-tcb.c b/drivers/pwm/pwm-atmel-tcb.c
-index 75db585a2a94..acd3ce8ecf3f 100644
---- a/drivers/pwm/pwm-atmel-tcb.c
-+++ b/drivers/pwm/pwm-atmel-tcb.c
-@@ -37,11 +37,20 @@ struct atmel_tcb_pwm_device {
- 	unsigned period;		/* PWM period expressed in clk cycles */
- };
+diff --git a/drivers/clk/at91/pmc.c b/drivers/clk/at91/pmc.c
+index 5c2b26de303e..07dc2861ad3f 100644
+--- a/drivers/clk/at91/pmc.c
++++ b/drivers/clk/at91/pmc.c
+@@ -86,7 +86,7 @@ static int pmc_suspend(void)
+ {
+ 	int i;
  
-+struct atmel_tcb_channel {
-+	u32 enabled;
-+	u32 cmr;
-+	u32 ra;
-+	u32 rb;
-+	u32 rc;
-+};
-+
- struct atmel_tcb_pwm_chip {
- 	struct pwm_chip chip;
- 	spinlock_t lock;
- 	struct atmel_tc *tc;
- 	struct atmel_tcb_pwm_device *pwms[NPWM];
-+	struct atmel_tcb_channel bkup[NPWM / 2];
- };
+-	regmap_read(pmcreg, AT91_PMC_IMR, &pmc_cache.scsr);
++	regmap_read(pmcreg, AT91_PMC_SCSR, &pmc_cache.scsr);
+ 	regmap_read(pmcreg, AT91_PMC_PCSR, &pmc_cache.pcsr0);
+ 	regmap_read(pmcreg, AT91_CKGR_UCKR, &pmc_cache.uckr);
+ 	regmap_read(pmcreg, AT91_CKGR_MOR, &pmc_cache.mor);
+@@ -129,7 +129,7 @@ static void pmc_resume(void)
+ 	if (pmc_cache.pllar != tmp)
+ 		pr_warn("PLLAR was not configured properly by the firmware\n");
  
- static inline struct atmel_tcb_pwm_chip *to_tcb_chip(struct pwm_chip *chip)
-@@ -175,12 +184,15 @@ static void atmel_tcb_pwm_disable(struct pwm_chip *chip, struct pwm_device *pwm)
- 	 * Use software trigger to apply the new setting.
- 	 * If both PWM devices in this group are disabled we stop the clock.
- 	 */
--	if (!(cmr & (ATMEL_TC_ACPC | ATMEL_TC_BCPC)))
-+	if (!(cmr & (ATMEL_TC_ACPC | ATMEL_TC_BCPC))) {
- 		__raw_writel(ATMEL_TC_SWTRG | ATMEL_TC_CLKDIS,
- 			     regs + ATMEL_TC_REG(group, CCR));
--	else
-+		tcbpwmc->bkup[group].enabled = 1;
-+	} else {
- 		__raw_writel(ATMEL_TC_SWTRG, regs +
- 			     ATMEL_TC_REG(group, CCR));
-+		tcbpwmc->bkup[group].enabled = 0;
-+	}
- 
- 	spin_unlock(&tcbpwmc->lock);
- }
-@@ -263,6 +275,7 @@ static int atmel_tcb_pwm_enable(struct pwm_chip *chip, struct pwm_device *pwm)
- 	/* Use software trigger to apply the new setting */
- 	__raw_writel(ATMEL_TC_CLKEN | ATMEL_TC_SWTRG,
- 		     regs + ATMEL_TC_REG(group, CCR));
-+	tcbpwmc->bkup[group].enabled = 1;
- 	spin_unlock(&tcbpwmc->lock);
- 	return 0;
- }
-@@ -445,10 +458,56 @@ static const struct of_device_id atmel_tcb_pwm_dt_ids[] = {
- };
- MODULE_DEVICE_TABLE(of, atmel_tcb_pwm_dt_ids);
- 
-+#ifdef CONFIG_PM_SLEEP
-+static int atmel_tcb_pwm_suspend(struct device *dev)
-+{
-+	struct platform_device *pdev = to_platform_device(dev);
-+	struct atmel_tcb_pwm_chip *tcbpwm = platform_get_drvdata(pdev);
-+	void __iomem *base = tcbpwm->tc->regs;
-+	int i;
-+
-+	for (i = 0; i < (NPWM / 2); i++) {
-+		struct atmel_tcb_channel *chan = &tcbpwm->bkup[i];
-+
-+		chan->cmr = readl(base + ATMEL_TC_REG(i, CMR));
-+		chan->ra = readl(base + ATMEL_TC_REG(i, RA));
-+		chan->rb = readl(base + ATMEL_TC_REG(i, RB));
-+		chan->rc = readl(base + ATMEL_TC_REG(i, RC));
-+	}
-+	return 0;
-+}
-+
-+static int atmel_tcb_pwm_resume(struct device *dev)
-+{
-+	struct platform_device *pdev = to_platform_device(dev);
-+	struct atmel_tcb_pwm_chip *tcbpwm = platform_get_drvdata(pdev);
-+	void __iomem *base = tcbpwm->tc->regs;
-+	int i;
-+
-+	for (i = 0; i < (NPWM / 2); i++) {
-+		struct atmel_tcb_channel *chan = &tcbpwm->bkup[i];
-+
-+		writel(chan->cmr, base + ATMEL_TC_REG(i, CMR));
-+		writel(chan->ra, base + ATMEL_TC_REG(i, RA));
-+		writel(chan->rb, base + ATMEL_TC_REG(i, RB));
-+		writel(chan->rc, base + ATMEL_TC_REG(i, RC));
-+		if (chan->enabled) {
-+			writel(ATMEL_TC_CLKEN | ATMEL_TC_SWTRG,
-+				base + ATMEL_TC_REG(i, CCR));
-+		}
-+	}
-+	return 0;
-+}
-+#endif
-+
-+static SIMPLE_DEV_PM_OPS(atmel_tcb_pwm_pm_ops, atmel_tcb_pwm_suspend,
-+			 atmel_tcb_pwm_resume);
-+
- static struct platform_driver atmel_tcb_pwm_driver = {
- 	.driver = {
- 		.name = "atmel-tcb-pwm",
- 		.of_match_table = atmel_tcb_pwm_dt_ids,
-+		.pm = &atmel_tcb_pwm_pm_ops,
- 	},
- 	.probe = atmel_tcb_pwm_probe,
- 	.remove = atmel_tcb_pwm_remove,
+-	regmap_write(pmcreg, AT91_PMC_IMR, pmc_cache.scsr);
++	regmap_write(pmcreg, AT91_PMC_SCER, pmc_cache.scsr);
+ 	regmap_write(pmcreg, AT91_PMC_PCER, pmc_cache.pcsr0);
+ 	regmap_write(pmcreg, AT91_CKGR_UCKR, pmc_cache.uckr);
+ 	regmap_write(pmcreg, AT91_CKGR_MOR, pmc_cache.mor);
 -- 
 2.11.0
