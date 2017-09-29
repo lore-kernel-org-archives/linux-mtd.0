@@ -1,29 +1,19 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dxr2i-0004dg-93
- for linux-mtd@lists.infradead.org; Fri, 29 Sep 2017 08:53:10 +0000
-From: Gregory CLEMENT <gregory.clement@free-electrons.com>
-To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,  Yehuda Yitschak
- <yehuday@marvell.com>,  Omri Itach <omrii@marvell.com>,  Marcin Wojtas
- <mw@semihalf.com>,  Richard Weinberger <richard@nod.at>,  Antoine Tenart
- <antoine.tenart@free-electrons.com>,  =?utf-8?Q?Miqu=C3=A8l?= Raynal
- <miquel.raynal@free-electrons.com>,  linux-kernel@vger.kernel.org,  Nadav
- Haklai <nadavh@marvell.com>,  Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org,  Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>,  Shadi Ammouri <shadi@marvell.com>,  Brian
- Norris <computersforpeace@gmail.com>,  David Woodhouse
- <dwmw2@infradead.org>,  Hanna Hawa <hannah@marvell.com>,  Igal Liberman
- <igall@marvell.com>
-Subject: Re: [PATCH] mtd: nand: pxa3xx_nand: Update Kconfig information
-References: <20170928143657.26728-1-gregory.clement@free-electrons.com>
- <20170929105112.20a84cf3@windsurf.lan>
-Date: Fri, 29 Sep 2017 10:52:45 +0200
-In-Reply-To: <20170929105112.20a84cf3@windsurf.lan> (Thomas Petazzoni's
- message of "Fri, 29 Sep 2017 10:51:12 +0200")
-Message-ID: <87k20hhoo2.fsf@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+Received: from conuserg-12.nifty.com ([210.131.2.79])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dxshj-00074K-Au
+ for linux-mtd@lists.infradead.org; Fri, 29 Sep 2017 10:39:37 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH v2 0/2] mtd: nand: wait for tWHR,
+ and fix the setup_data_interface of Denali
+Date: Fri, 29 Sep 2017 19:38:38 +0900
+Message-Id: <1506681520-13897-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,46 +23,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Thomas,
- 
- On ven., sept. 29 2017, Thomas Petazzoni <thomas.petazzoni@free-electrons.com> wrote:
 
-> Hello,
->
-> Entering nitpick mode.
+1/2 : add NAND_WAIT_TWHR and nand_whr_delay().
+      You can set this new flag if you want nand_command(_lp)
+      to insert tWHR delay where needed.
 
-nitpick accpeted! :)
+2/2 : Fix Denali setup_data_interface.
+      Boris' suggestion in v1 was a good reminder that
+      made me realize tCCS was missing in the driver.  Fix it now.
 
-I am going to send a v2.
 
-Gregory
+Changes in v2:
+  - Add nand_whr_delay() helper
+    Wait for tWHR only for drivers that explicitly set NAND_WAIT_TWHR flag
+  - newly added
 
->
-> On Thu, 28 Sep 2017 16:36:57 +0200, Gregory CLEMENT wrote:
->
->>  	  This enables the driver for the NAND flash device found on
->> -	  PXA3xx processors (NFCv1) and also on Armada 370/XP (NFCv2).
->> +	  PXA3xx processors (NFCv1) and also on Armada 32bits(XP, 370, 375,
->
-> missing space before parenthesis.
->
->> +	  38x, 39x) and 64bits (7K, 8K) (NFCv2).
->
-> Also "Armada 32bits" isn't very good IMO, what about:
->
-> 	and also on 32-bit Armada platforms (XP, 370, 375, 38x, 39x)
-> 	and 64-bit Armada platforms (7K, 8K) (NFCv2).
->
-> Best regards,
->
-> Thomas
-> -- 
-> Thomas Petazzoni, CTO, Free Electrons
-> Embedded Linux and Kernel engineering
-> http://free-electrons.com
+Masahiro Yamada (2):
+  mtd: nand: wait for tWHR after NAND_CMD_STATUS / NAND_CMD_READID
+  mtd: nand: denali: fix setup_data_interface to meet tCCS delay
+
+ drivers/mtd/nand/denali.c    | 10 ++++++++--
+ drivers/mtd/nand/nand_base.c | 21 +++++++++++++++++++--
+ include/linux/mtd/rawnand.h  | 13 ++++++++-----
+ 3 files changed, 35 insertions(+), 9 deletions(-)
 
 -- 
-Gregory Clement, Free Electrons
-Kernel, drivers, real-time and embedded Linux
-development, consulting, training and support.
-http://free-electrons.com
+2.7.4
