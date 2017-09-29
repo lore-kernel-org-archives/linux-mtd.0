@@ -1,25 +1,30 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dxvRh-0005SF-1D
- for linux-mtd@lists.infradead.org; Fri, 29 Sep 2017 13:35:14 +0000
-From: Gregory CLEMENT <gregory.clement@free-electrons.com>
+Received: from conssluserg-03.nifty.com ([210.131.2.82])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dxvxd-00040g-7C
+ for linux-mtd@lists.infradead.org; Fri, 29 Sep 2017 14:08:15 +0000
+Received: from mail-yw0-f181.google.com (mail-yw0-f181.google.com
+ [209.85.161.181]) (authenticated)
+ by conssluserg-03.nifty.com with ESMTP id v8TE7NKD030451
+ for <linux-mtd@lists.infradead.org>; Fri, 29 Sep 2017 23:07:23 +0900
+Received: by mail-yw0-f181.google.com with SMTP id w22so912103ywa.13
+ for <linux-mtd@lists.infradead.org>; Fri, 29 Sep 2017 07:07:23 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20170929142635.07d55f77@bbrezillon>
+References: <1506681520-13897-1-git-send-email-yamada.masahiro@socionext.com>
+ <20170929142635.07d55f77@bbrezillon>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Fri, 29 Sep 2017 23:06:42 +0900
+Message-ID: <CAK7LNASh=wLuyzGQEVQaNaNi=f-imKn1ybDx36L702c9WD_zvQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] mtd: nand: wait for tWHR, and fix the
+ setup_data_interface of Denali
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
+Cc: linux-mtd@lists.infradead.org,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Antoine Tenart <antoine.tenart@free-electrons.com>,
- =?UTF-8?q?Miqu=C3=A8l=20Raynal?= <miquel.raynal@free-electrons.com>,
- Nadav Haklai <nadavh@marvell.com>, Shadi Ammouri <shadi@marvell.com>,
- Yehuda Yitschak <yehuday@marvell.com>, Omri Itach <omrii@marvell.com>,
- Hanna Hawa <hannah@marvell.com>, Igal Liberman <igall@marvell.com>,
- Marcin Wojtas <mw@semihalf.com>,
- Gregory CLEMENT <gregory.clement@free-electrons.com>
-Subject: [PATCH v2] mtd: nand: pxa3xx_nand: Update Kconfig information
-Date: Fri, 29 Sep 2017 15:34:24 +0200
-Message-Id: <20170929133424.7205-1-gregory.clement@free-electrons.com>
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,35 +34,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-More and more SoCs use the pxa3xx_nand driver for their controller but
-the list of them was not updated. This patch add the last SoCs using the
-driver.
+2017-09-29 21:26 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> On Fri, 29 Sep 2017 19:38:38 +0900
+> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>
+>> 1/2 : add NAND_WAIT_TWHR and nand_whr_delay().
+>>       You can set this new flag if you want nand_command(_lp)
+>>       to insert tWHR delay where needed.
+>>
+>> 2/2 : Fix Denali setup_data_interface.
+>>       Boris' suggestion in v1 was a good reminder that
+>>       made me realize tCCS was missing in the driver.  Fix it now.
+>>
+>>
+>> Changes in v2:
+>>   - Add nand_whr_delay() helper
+>>     Wait for tWHR only for drivers that explicitly set NAND_WAIT_TWHR flag
+>>   - newly added
+>>
+>> Masahiro Yamada (2):
+>>   mtd: nand: wait for tWHR after NAND_CMD_STATUS / NAND_CMD_READID
+>
+> Hm, I thought you were introducing this to then use it in the denali
+> driver. Sorry, but I don't want to apply something that nobody needs.
+> If someone ever complains about a missing delay I'll point him to your
+> patch, but until then I'll keep the core unchanged.
 
-Signed-off-by: Gregory CLEMENT <gregory.clement@free-electrons.com>
----
-Changelog v1->v2:
 
-- Improve wording thanks to Thomas Petazzoni
+At first, I thought this was necessary for me,
+but I realized it was my misunderstanding.
 
- drivers/mtd/nand/Kconfig | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 3f2036f31da4..bb48aafed9a2 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -317,8 +317,11 @@ config MTD_NAND_PXA3xx
- 	tristate "NAND support on PXA3xx and Armada 370/XP"
- 	depends on PXA3xx || ARCH_MMP || PLAT_ORION || ARCH_MVEBU
- 	help
-+
- 	  This enables the driver for the NAND flash device found on
--	  PXA3xx processors (NFCv1) and also on Armada 370/XP (NFCv2).
-+	  PXA3xx processors (NFCv1) and also on 32-bit Armada
-+	  platforms (XP, 370, 375, 38x, 39x) and 64-bit Armada
-+	  platforms (7K, 8K) (NFCv2).
- 
- config MTD_NAND_SLC_LPC32XX
- 	tristate "NXP LPC32xx SLC Controller"
+Please let me explain one more.
+
+See commit 3158fa0e739615769cc047d2428f30f4c3b6640e.
+
+Prior to that commit, READID waited for #R/B transition,
+it was wrong, so I fixed it.
+
+However, it dropped the delay completely.
+If somebody was implicitly relying on the delay of chip->dev_ready,
+the first byte might be read out before the valid data
+is available.
+
+This was motivation of v1, where inserted ndelay(200)
+unconditionally.
+
+
+
+
+
+>>   mtd: nand: denali: fix setup_data_interface to meet tCCS delay
+>
+> This one is valid. I'll queue it to nand/next soon.
+
+If you drop 1/2, please let me do v3.
+
+V2 mentions NAND_WAIT_TWHR, this is strange.
+
+
+
 -- 
-2.14.1
+Best Regards
+Masahiro Yamada
