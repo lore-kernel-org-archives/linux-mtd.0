@@ -1,21 +1,22 @@
-Received: from conuserg-12.nifty.com ([210.131.2.79])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dxshj-00074M-As
- for linux-mtd@lists.infradead.org; Fri, 29 Sep 2017 10:39:39 +0000
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: linux-mtd@lists.infradead.org
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dxuNf-0004MJ-Cs
+ for linux-mtd@lists.infradead.org; Fri, 29 Sep 2017 12:27:02 +0000
+Date: Fri, 29 Sep 2017 14:26:35 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org, Marek Vasut
+ <marek.vasut@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH v2 1/2] mtd: nand: wait for tWHR after NAND_CMD_STATUS /
- NAND_CMD_READID
-Date: Fri, 29 Sep 2017 19:38:39 +0900
-Message-Id: <1506681520-13897-2-git-send-email-yamada.masahiro@socionext.com>
+Subject: Re: [PATCH v2 0/2] mtd: nand: wait for tWHR, and fix the
+ setup_data_interface of Denali
+Message-ID: <20170929142635.07d55f77@bbrezillon>
 In-Reply-To: <1506681520-13897-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1506681520-13897-1-git-send-email-yamada.masahiro@socionext.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,100 +26,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-For commands such as Read Status, Read ID, etc. the controller needs
-to wait for tWHR before it reads out the first data.  If the controller
-does not take care of it, the driver has to wait explicitly to make
-sure to meet the spec.
+On Fri, 29 Sep 2017 19:38:38 +0900
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-Introduce NAND_WAIT_TWHR, which works like NAND_WAIT_TCCS.  The
-driver can set this flag to let the core to handle the tWHR delay.
+> 1/2 : add NAND_WAIT_TWHR and nand_whr_delay().
+>       You can set this new flag if you want nand_command(_lp)
+>       to insert tWHR delay where needed.
+> 
+> 2/2 : Fix Denali setup_data_interface.
+>       Boris' suggestion in v1 was a good reminder that
+>       made me realize tCCS was missing in the driver.  Fix it now.
+> 
+> 
+> Changes in v2:
+>   - Add nand_whr_delay() helper
+>     Wait for tWHR only for drivers that explicitly set NAND_WAIT_TWHR flag
+>   - newly added
+> 
+> Masahiro Yamada (2):
+>   mtd: nand: wait for tWHR after NAND_CMD_STATUS / NAND_CMD_READID
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
+Hm, I thought you were introducing this to then use it in the denali
+driver. Sorry, but I don't want to apply something that nobody needs.
+If someone ever complains about a missing delay I'll point him to your
+patch, but until then I'll keep the core unchanged.
 
-Changes in v2:
-  - Add nand_whr_delay() helper
-    Wait for tWHR only for drivers that explicitly set NAND_WAIT_TWHR flag
+>   mtd: nand: denali: fix setup_data_interface to meet tCCS delay
 
- drivers/mtd/nand/nand_base.c | 21 +++++++++++++++++++--
- include/linux/mtd/rawnand.h  | 13 ++++++++-----
- 2 files changed, 27 insertions(+), 7 deletions(-)
+This one is valid. I'll queue it to nand/next soon.
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index b1cf32c..455085d 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -676,6 +676,17 @@ static void nand_wait_status_ready(struct mtd_info *mtd, unsigned long timeo)
- 	} while (time_before(jiffies, timeo));
- };
- 
-+static void nand_whr_delay(struct nand_chip *chip)
-+{
-+	if (!(chip->options & NAND_WAIT_TWHR))
-+		return;
-+
-+	if (chip->data_interface && chip->data_interface->timings.sdr.tWHR_min)
-+		ndelay(chip->data_interface->timings.sdr.tWHR_min / 1000);
-+	else
-+		ndelay(200);
-+}
-+
- /**
-  * nand_command - [DEFAULT] Send command to NAND device
-  * @mtd: MTD device structure
-@@ -742,9 +753,12 @@ static void nand_command(struct mtd_info *mtd, unsigned int command,
- 	case NAND_CMD_ERASE1:
- 	case NAND_CMD_ERASE2:
- 	case NAND_CMD_SEQIN:
-+	case NAND_CMD_SET_FEATURES:
-+		return;
-+
- 	case NAND_CMD_STATUS:
- 	case NAND_CMD_READID:
--	case NAND_CMD_SET_FEATURES:
-+		nand_whr_delay(chip);
- 		return;
- 
- 	case NAND_CMD_RESET:
-@@ -871,9 +885,12 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
- 	case NAND_CMD_ERASE1:
- 	case NAND_CMD_ERASE2:
- 	case NAND_CMD_SEQIN:
-+	case NAND_CMD_SET_FEATURES:
-+		return;
-+
- 	case NAND_CMD_STATUS:
- 	case NAND_CMD_READID:
--	case NAND_CMD_SET_FEATURES:
-+		nand_whr_delay(chip);
- 		return;
- 
- 	case NAND_CMD_RNDIN:
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 749bb08..bb0165b 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -213,13 +213,16 @@ enum nand_ecc_algo {
- 
- /*
-  * In case your controller is implementing ->cmd_ctrl() and is relying on the
-- * default ->cmdfunc() implementation, you may want to let the core handle the
-- * tCCS delay which is required when a column change (RNDIN or RNDOUT) is
-- * requested.
-- * If your controller already takes care of this delay, you don't need to set
-- * this flag.
-+ * default ->cmdfunc() implementation, you may want to let the core handle
-+ * some delays to meet the timing specification.
-+ * If your controller already takes care of these delays, you don't need to set
-+ * the following flags.
-  */
-+
-+/* tCCS for a column change (RNDIN or RNDOUT) */
- #define NAND_WAIT_TCCS		0x00200000
-+/* tWHR for STATUS, READID, etc. */
-+#define NAND_WAIT_TWHR		0x00400000
- 
- /* Options set by nand scan */
- /* Nand scan has allocated controller struct */
--- 
-2.7.4
+Thanks,
+
+Boris
+
+> 
+>  drivers/mtd/nand/denali.c    | 10 ++++++++--
+>  drivers/mtd/nand/nand_base.c | 21 +++++++++++++++++++--
+>  include/linux/mtd/rawnand.h  | 13 ++++++++-----
+>  3 files changed, 35 insertions(+), 9 deletions(-)
+> 
