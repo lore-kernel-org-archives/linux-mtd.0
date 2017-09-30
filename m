@@ -1,19 +1,20 @@
-Received: from mail-wr0-x22e.google.com ([2a00:1450:400c:c0c::22e])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dyKUI-0004UV-KB
- for linux-mtd@lists.infradead.org; Sat, 30 Sep 2017 16:19:36 +0000
-Received: by mail-wr0-x22e.google.com with SMTP id k62so1382514wrc.9
- for <linux-mtd@lists.infradead.org>; Sat, 30 Sep 2017 09:19:11 -0700 (PDT)
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dyLxF-0000Mu-JZ
+ for linux-mtd@lists.infradead.org; Sat, 30 Sep 2017 17:53:35 +0000
+Date: Sat, 30 Sep 2017 19:53:08 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marex@denx.de>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] mtd: Fixes for 4.14-rc3
+Message-ID: <20170930195308.608737c2@bbrezillon>
 MIME-Version: 1.0
-In-Reply-To: <CAAEsGz+1T6eAHW_adm-RKHoaK6gv=ZtRdcMTum6+s1TXR0PzEQ@mail.gmail.com>
-References: <CAAEsGz+1T6eAHW_adm-RKHoaK6gv=ZtRdcMTum6+s1TXR0PzEQ@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Sat, 30 Sep 2017 18:19:09 +0200
-Message-ID: <CAFLxGvyT_meoP8rRc-gJi-Yk3VoxeJrF4L=gyo93iK9EAR=HFg@mail.gmail.com>
-Subject: Re: ubifs robustness with early power cut warning
-To: Doug Crawford <dcraw101@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Sep 30, 2017 at 1:20 AM, Doug Crawford <dcraw101@gmail.com> wrote:
-> We have an embedded system with an early power loss warning.  The
-> power supply drives a powerdown signal connected to a GPIO pin on the
-> CPU.  When AC power is switched off the power supply drives this
-> signal low for 500 milliseconds before the CPU gets held in reset.  If
-> AC power is switched back on before 500 milliseconds the powerdown
-> signal goes high again and the system is expected to continue running
-> normally.
->
-> I am wondering if there is a way to easily modify ubifs/ubi such that
-> when the powerdown gpio is low VFS or UBIFS or UBI freezes or pauses
-> further writes to the NAND.  If powerdown recovers to high again then
-> the filesystem would unfreeze and allow further writes?  Has anyone
-> implemented something like this before?  I know UBIFS/UBI is designed
-> to be very resilient to power cuts, but I am thinking this technique
-> might make the system even more resilient.  If I were to make this
-> change which file would be the right one to hook into:
-> fs/ubifs/super.c?
+Hello Linus,
 
-UBI/UBIFS is the wrong layer, this needs to happen in MTD.
+I'm a bit late, but here is a fixes PR for 4.14-rc3.
 
--- 
-Thanks,
-//richard
+Regards,
+
+Boris
+
+The following changes since commit 73600b619bf8b9803a0610624a0e11f5ed8f761e:
+
+  mtd: nand: remove unused blockmask variable (2017-09-18 14:51:02 +0200)
+
+are available in the git repository at:
+
+  git://git.infradead.org/linux-mtd.git tags/mtd/fixes-for-4.14-rc3
+
+for you to fetch changes up to 36de80740008e6a4a55115b4a92e2059e47c1cba:
+
+  mtd: nand: atmel: fix buffer overflow in atmel_pmecc_user (2017-09-27 17:33:28 +0200)
+
+----------------------------------------------------------------
+* Fix partition alignment check in mtdcore.c
+* Fix a buffer overflow in the Atmel NAND driver
+
+----------------------------------------------------------------
+Boris Brezillon (1):
+      mtd: Fix partition alignment check on multi-erasesize devices
+
+Richard Genoud (1):
+      mtd: nand: atmel: fix buffer overflow in atmel_pmecc_user
+
+ drivers/mtd/mtdpart.c          | 8 ++++++++
+ drivers/mtd/nand/atmel/pmecc.c | 2 +-
+ 2 files changed, 9 insertions(+), 1 deletion(-)
