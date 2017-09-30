@@ -1,20 +1,19 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dyLxF-0000Mu-JZ
- for linux-mtd@lists.infradead.org; Sat, 30 Sep 2017 17:53:35 +0000
-Date: Sat, 30 Sep 2017 19:53:08 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marex@denx.de>,
- Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] mtd: Fixes for 4.14-rc3
-Message-ID: <20170930195308.608737c2@bbrezillon>
+Received: from mail-wm0-x236.google.com ([2a00:1450:400c:c09::236])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dyMCp-0000Xb-D3
+ for linux-mtd@lists.infradead.org; Sat, 30 Sep 2017 18:09:44 +0000
+Received: by mail-wm0-x236.google.com with SMTP id k4so2029662wmc.1
+ for <linux-mtd@lists.infradead.org>; Sat, 30 Sep 2017 11:09:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1506598982834.31024@nedap.com>
+References: <1506598982834.31024@nedap.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Sat, 30 Sep 2017 20:09:16 +0200
+Message-ID: <CAFLxGvwoUoH6WDQsexM+H_gdfy3Wd75Oy2BdL8xbdC9TViPazA@mail.gmail.com>
+Subject: Re: Shrink UBIFS
+To: Ryan Meulenkamp <Ryan.Meulenkamp@nedap.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +23,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Linus,
+Ryan,
 
-I'm a bit late, but here is a fixes PR for 4.14-rc3.
+On Thu, Sep 28, 2017 at 1:43 PM, Ryan Meulenkamp
+<Ryan.Meulenkamp@nedap.com> wrote:
+> Hi,
+>
+>
+> I'm planning to write an ioctl for shrinking a UBIFS to be able to resize the volume its on and create another
+>
+> volume because it is essential for our upgrade/migration flow. Do you guys have any advice for me? The
+>
+> hard part is that LEB's that would fall outside the new size should be moved inside the new size. From what
+>
+> I read, the garbage collection code could be used to  accomplish this, but it is not really possible to define
+>
+> which LEB's to put where.
+>
+>
+> Thanks in advance!
 
-Regards,
+So, you want to implement _online_ shrinking?
+This is a way more complicated, think of power-cuts.
+I strongly suggest thinking about offline shrinking first.
 
-Boris
+You are right, the garbage collector might be useful, you could modify
+it in a way
+to move blocks away from to-be-removed LEBs.
+But again, do you *really* need online shrinking?
 
-The following changes since commit 73600b619bf8b9803a0610624a0e11f5ed8f761e:
-
-  mtd: nand: remove unused blockmask variable (2017-09-18 14:51:02 +0200)
-
-are available in the git repository at:
-
-  git://git.infradead.org/linux-mtd.git tags/mtd/fixes-for-4.14-rc3
-
-for you to fetch changes up to 36de80740008e6a4a55115b4a92e2059e47c1cba:
-
-  mtd: nand: atmel: fix buffer overflow in atmel_pmecc_user (2017-09-27 17:33:28 +0200)
-
-----------------------------------------------------------------
-* Fix partition alignment check in mtdcore.c
-* Fix a buffer overflow in the Atmel NAND driver
-
-----------------------------------------------------------------
-Boris Brezillon (1):
-      mtd: Fix partition alignment check on multi-erasesize devices
-
-Richard Genoud (1):
-      mtd: nand: atmel: fix buffer overflow in atmel_pmecc_user
-
- drivers/mtd/mtdpart.c          | 8 ++++++++
- drivers/mtd/nand/atmel/pmecc.c | 2 +-
- 2 files changed, 9 insertions(+), 1 deletion(-)
+-- 
+Thanks,
+//richard
