@@ -1,26 +1,20 @@
-Subject: Re: [PATCH v3 2/5] mtd: spi-nor: cadence-quadspi: add a delay in
- write sequence
-To: Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>
-CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>,
- Rob Herring <robh+dt@kernel.org>, <linux-mtd@lists.infradead.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-References: <20170924105924.23923-1-vigneshr@ti.com>
- <20170924105924.23923-3-vigneshr@ti.com>
- <94313cae-4805-0b13-a469-72aa7556b685@gmail.com>
- <8990b971-91d5-747f-905b-5e24743e090d@ti.com>
- <d35d0891-71b9-12df-9689-dc77f56453ab@gmail.com>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <07137a92-244b-e009-54ae-71f733860f28@ti.com>
-Date: Mon, 2 Oct 2017 18:16:40 +0530
+Received: from mail-lf0-x232.google.com ([2a00:1450:4010:c07::232])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dz3Mr-0002mZ-Cf
+ for linux-mtd@lists.infradead.org; Mon, 02 Oct 2017 16:14:55 +0000
+Received: by mail-lf0-x232.google.com with SMTP id n140so4344373lfn.4
+ for <linux-mtd@lists.infradead.org>; Mon, 02 Oct 2017 09:14:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <d35d0891-71b9-12df-9689-dc77f56453ab@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAFLxGvyT_meoP8rRc-gJi-Yk3VoxeJrF4L=gyo93iK9EAR=HFg@mail.gmail.com>
+References: <CAAEsGz+1T6eAHW_adm-RKHoaK6gv=ZtRdcMTum6+s1TXR0PzEQ@mail.gmail.com>
+ <CAFLxGvyT_meoP8rRc-gJi-Yk3VoxeJrF4L=gyo93iK9EAR=HFg@mail.gmail.com>
+From: Doug Crawford <dcraw101@gmail.com>
+Date: Mon, 2 Oct 2017 09:14:28 -0700
+Message-ID: <CAAEsGzKs1kM4TJVKrrsS_GjxQ3kMQa0zwmX2_z3qRpCdS-Xhag@mail.gmail.com>
+Subject: Re: ubifs robustness with early power cut warning
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,128 +24,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+I think my use case might be a little different. This 500 millisecond
+early power down warning is intended to be recoverable if the power is
+restored in that period.  The effect I am looking for is that any new
+fsync or sync commands made during this 500 ms window will pause or
+block, but if the power is restored then the sync will be successful.
 
+I am worried that if mtd_write() returns an EPERM error then any
+outstanding fsync or syncs would fail instead of block?  I don't know
+enough about the mtd layer or the locking/calling context of
+mtd_write().  But, I am guessing I can't simply sleep or block in that
+function while the powerdown gpio is low?
 
-On 9/24/2017 6:43 PM, Marek Vasut wrote:
-> On 09/24/2017 02:33 PM, Vignesh R wrote:
+On Sat, Sep 30, 2017 at 9:19 AM, Richard Weinberger
+<richard.weinberger@gmail.com> wrote:
+> On Sat, Sep 30, 2017 at 1:20 AM, Doug Crawford <dcraw101@gmail.com> wrote:
+>> We have an embedded system with an early power loss warning.  The
+>> power supply drives a powerdown signal connected to a GPIO pin on the
+>> CPU.  When AC power is switched off the power supply drives this
+>> signal low for 500 milliseconds before the CPU gets held in reset.  If
+>> AC power is switched back on before 500 milliseconds the powerdown
+>> signal goes high again and the system is expected to continue running
+>> normally.
 >>
->>
->> On 9/24/2017 5:29 PM, Marek Vasut wrote:
->>> On 09/24/2017 12:59 PM, Vignesh R wrote:
->>>> As per 66AK2G02 TRM[1] SPRUHY8F section 11.15.5.3 Indirect Access
->>>> Controller programming sequence, a delay equal to couple of QSPI master
->>>> clock(~5ns) is required after setting CQSPI_REG_INDIRECTWR_START bit and
->>>> writing data to the flash. Introduce a quirk flag CQSPI_NEEDS_WR_DELAY
->>>> to handle this and set this flag for TI 66AK2G SoC.
->>>>
->>>> [1]http://www.ti.com/lit/ug/spruhy8f/spruhy8f.pdf
->>>>
->>>> Signed-off-by: Vignesh R <vigneshr@ti.com>
->>>
->>> Is this TI specific or is this controller property ? I wouldn't be
->>> surprised of the later ...
->>
->> I am not sure, there is no generic public documentation by cadence for
->> this IP. TI TRM clearly states this delay is required and I have
->> verified it practically that this delay is indeed needed.
->> But current user of this IP, socfpga does not seem to mention anything
->> about it. So, I guess its TI specific quirk.
-> 
-> OK, let's go with that then. I didn't observe any stability issues with
-> SoCFPGA, but I didn't run the flash at 100s of MHz either. At what kind
-> of frequencies does the quirk become relevant ?
-> 
-
-Actually, delay is tied to QSPI master clk rate(not SPI bus clk rate).
-It runs at 384MHz. Changing SPI bus rate has no effect.
-
-Regards
-Vignesh
-
->>>
->>>> ---
->>>>
->>>> v3:
->>>> Fix build warnings reported by kbuild test bot.
->>>>
->>>>  drivers/mtd/spi-nor/cadence-quadspi.c | 27 ++++++++++++++++++++++++++-
->>>>  1 file changed, 26 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
->>>> index 53c7d8e0327a..5cd5d6f7303f 100644
->>>> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
->>>> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
->>>> @@ -38,6 +38,9 @@
->>>>  #define CQSPI_NAME			"cadence-qspi"
->>>>  #define CQSPI_MAX_CHIPSELECT		16
->>>>  
->>>> +/* Quirks */
->>>> +#define CQSPI_NEEDS_WR_DELAY		BIT(0)
->>>> +
->>>>  struct cqspi_st;
->>>>  
->>>>  struct cqspi_flash_pdata {
->>>> @@ -76,6 +79,7 @@ struct cqspi_st {
->>>>  	u32			fifo_depth;
->>>>  	u32			fifo_width;
->>>>  	u32			trigger_address;
->>>> +	u32			wr_delay;
->>>>  	struct cqspi_flash_pdata f_pdata[CQSPI_MAX_CHIPSELECT];
->>>>  };
->>>>  
->>>> @@ -608,6 +612,15 @@ static int cqspi_indirect_write_execute(struct spi_nor *nor,
->>>>  	reinit_completion(&cqspi->transfer_complete);
->>>>  	writel(CQSPI_REG_INDIRECTWR_START_MASK,
->>>>  	       reg_base + CQSPI_REG_INDIRECTWR);
->>>> +	/*
->>>> +	 * As per 66AK2G02 TRM SPRUHY8F section 11.15.5.3 Indirect Access
->>>> +	 * Controller programming sequence, couple of cycles of
->>>> +	 * QSPI_REF_CLK delay is required for the above bit to
->>>> +	 * be internally synchronized by the QSPI module. Provide 5
->>>> +	 * cycles of delay.
->>>> +	 */
->>>> +	if (cqspi->wr_delay)
->>>> +		ndelay(cqspi->wr_delay);
->>>>  
->>>>  	while (remaining > 0) {
->>>>  		write_bytes = remaining > page_size ? page_size : remaining;
->>>> @@ -1156,6 +1169,7 @@ static int cqspi_probe(struct platform_device *pdev)
->>>>  	struct cqspi_st *cqspi;
->>>>  	struct resource *res;
->>>>  	struct resource *res_ahb;
->>>> +	unsigned long data;
->>>>  	int ret;
->>>>  	int irq;
->>>>  
->>>> @@ -1213,6 +1227,10 @@ static int cqspi_probe(struct platform_device *pdev)
->>>>  	}
->>>>  
->>>>  	cqspi->master_ref_clk_hz = clk_get_rate(cqspi->clk);
->>>> +	data  = (unsigned long)of_device_get_match_data(dev);
->>>> +	if (data & CQSPI_NEEDS_WR_DELAY)
->>>> +		cqspi->wr_delay = 5 * DIV_ROUND_UP(NSEC_PER_SEC,
->>>> +						   cqspi->master_ref_clk_hz);
->>>>  
->>>>  	ret = devm_request_irq(dev, irq, cqspi_irq_handler, 0,
->>>>  			       pdev->name, cqspi);
->>>> @@ -1284,7 +1302,14 @@ static const struct dev_pm_ops cqspi__dev_pm_ops = {
->>>>  #endif
->>>>  
->>>>  static const struct of_device_id cqspi_dt_ids[] = {
->>>> -	{.compatible = "cdns,qspi-nor",},
->>>> +	{
->>>> +		.compatible = "cdns,qspi-nor",
->>>> +		.data = (void *)0,
->>>> +	},
->>>> +	{
->>>> +		.compatible = "ti,k2g-qspi",
->>>> +		.data = (void *)CQSPI_NEEDS_WR_DELAY,
->>>> +	},
->>>>  	{ /* end of table */ }
->>>>  };
->>>>  
->>>>
->>>
->>>
-> 
-> 
+>> I am wondering if there is a way to easily modify ubifs/ubi such that
+>> when the powerdown gpio is low VFS or UBIFS or UBI freezes or pauses
+>> further writes to the NAND.  If powerdown recovers to high again then
+>> the filesystem would unfreeze and allow further writes?  Has anyone
+>> implemented something like this before?  I know UBIFS/UBI is designed
+>> to be very resilient to power cuts, but I am thinking this technique
+>> might make the system even more resilient.  If I were to make this
+>> change which file would be the right one to hook into:
+>> fs/ubifs/super.c?
+>
+> UBI/UBIFS is the wrong layer, this needs to happen in MTD.
+>
+> --
+> Thanks,
+> //richard
