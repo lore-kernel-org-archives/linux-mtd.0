@@ -1,24 +1,44 @@
-Received: from mail-qk0-x22c.google.com ([2607:f8b0:400d:c09::22c])
+Received: from outbound01.mx-relay.com ([5.39.185.33]
+ helo=outbound01-b.mx-relay.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dymhz-0002by-8Q
- for linux-mtd@lists.infradead.org; Sun, 01 Oct 2017 22:27:38 +0000
-Received: by mail-qk0-x22c.google.com with SMTP id o187so1497922qke.7
- for <linux-mtd@lists.infradead.org>; Sun, 01 Oct 2017 15:27:14 -0700 (PDT)
-Date: Sun, 1 Oct 2017 18:27:11 -0400 (EDT)
-From: Nicolas Pitre <nicolas.pitre@linaro.org>
-To: Christoph Hellwig <hch@infradead.org>
-cc: Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
- linux-fsdevel@vger.kernel.org, linux-embedded@vger.kernel.org,
- linux-kernel@vger.kernel.org, Chris Brandt <Chris.Brandt@renesas.com>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 1/5] cramfs: direct memory access support
-In-Reply-To: <20171001082955.GA17116@infradead.org>
-Message-ID: <nycvar.YSQ.7.76.1710011659530.5407@knanqh.ubzr>
-References: <20170927233224.31676-1-nicolas.pitre@linaro.org>
- <20170927233224.31676-2-nicolas.pitre@linaro.org>
- <20171001082955.GA17116@infradead.org>
+ id 1dyvpk-00082P-2h
+ for linux-mtd@lists.infradead.org; Mon, 02 Oct 2017 08:12:15 +0000
+Received: from [145.131.171.178] (rt171bb131-145-178.routit.net
+ [145.131.171.178]) by outbound01-b.mx-relay.com with ESMTP id
+ plCAO38i0W2t2y1q (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+ for <linux-mtd@lists.infradead.org>; Mon, 02 Oct 2017 10:06:26 +0200 (CEST)
+Received: from localhost (localhost.localhost [127.0.0.1])
+ by router38.aimvalley.nl (Postfix) with ESMTP id DAFD7639F5
+ for <linux-mtd@lists.infradead.org>; Mon,  2 Oct 2017 10:06:23 +0200 (CEST)
+Received: from mail5.aimvalley.nl (mail5.aimsys.nl [10.10.0.115])
+ by router38.aimvalley.nl (Postfix) with ESMTPS id 86E6C639F1
+ for <linux-mtd@lists.infradead.org>; Mon,  2 Oct 2017 10:06:22 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by mail5.aimvalley.nl (Postfix) with ESMTP id 6C47914C4C70
+ for <linux-mtd@lists.infradead.org>; Mon,  2 Oct 2017 10:06:22 +0200 (CEST)
+Received: from mail5.aimvalley.nl ([127.0.0.1])
+ by localhost (mail5.aimvalley.nl [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id Q5ObTOvzvZgS for <linux-mtd@lists.infradead.org>;
+ Mon,  2 Oct 2017 10:06:21 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by mail5.aimvalley.nl (Postfix) with ESMTP id B1A3914C54D6
+ for <linux-mtd@lists.infradead.org>; Mon,  2 Oct 2017 10:06:21 +0200 (CEST)
+Received: from mail5.aimvalley.nl ([127.0.0.1])
+ by localhost (mail5.aimvalley.nl [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id nRg5ObOGm3Ce for <linux-mtd@lists.infradead.org>;
+ Mon,  2 Oct 2017 10:06:21 +0200 (CEST)
+Received: from linvm302.aimsys.nl (unknown [10.10.23.2])
+ by mail5.aimvalley.nl (Postfix) with ESMTPSA id 8F59714C4C70
+ for <linux-mtd@lists.infradead.org>; Mon,  2 Oct 2017 10:06:21 +0200 (CEST)
+Subject: Re: ubifs robustness with early power cut warning
+To: linux-mtd@lists.infradead.org
+References: <CAAEsGz+1T6eAHW_adm-RKHoaK6gv=ZtRdcMTum6+s1TXR0PzEQ@mail.gmail.com>
+From: Kees Trommel <ctrommel@aimvalley.nl>
+Message-ID: <740e523e-2373-0e8c-6480-ecd68fff6ef3@aimvalley.nl>
+Date: Mon, 2 Oct 2017 10:06:21 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAAEsGz+1T6eAHW_adm-RKHoaK6gv=ZtRdcMTum6+s1TXR0PzEQ@mail.gmail.com>
+Content-Type: multipart/mixed; boundary="------------F44F39A404F1E83AE3A83F5E"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,512 +48,262 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 1 Oct 2017, Christoph Hellwig wrote:
+This is a multi-part message in MIME format.
+--------------F44F39A404F1E83AE3A83F5E
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> On Wed, Sep 27, 2017 at 07:32:20PM -0400, Nicolas Pitre wrote:
-> > To distinguish between both access types, the cramfs_physmem filesystem
-> > type must be specified when using a memory accessible cramfs image, and
-> > the physaddr argument must provide the actual filesystem image's physical
-> > memory location.
-> 
-> Sorry, but this still is a complete no-go.  A physical address is not a
-> proper interface.  You still need to have some interface for your NOR nand
-> or DRAM.  - usually that would be a mtd driver, but if you have a good
-> reason why that's not suitable for you (and please explain it well)
-> we'll need a little OF or similar layer to bind a thin driver.
+Doug,
 
-The primary use case for this is to run Linux on a small microcontroller 
-with some amount of RAM and ROM on chip. And this is not theoretical -- 
-I already have it running here. The ROM is some kind of flash that 
-appears in the direct memory address space and requires no access layer 
-what so ever given it is meant to execute code from it. The flash is 
-programmed with an external programmer through some debug port. It can't 
-be programmed from the microcontroller itself, not even probed, as that 
-would make the running code unavailable (unless the probe code is copied 
-elsewhere but what would be the point?). Persistent state is typically 
-kept in NVRAM or external flash, not in _that_ flash.
+Attached a patch file with an implementation that I developed for our 
+custom board that has an early powerdown (is dying) signal (GPIO pin).
 
-The MTD subsystem provides a lot of features and flexibility, but almost 
-none of it would be usable here and constitutes only a useless kernel 
-size increase.
+The idea is that when an "I am dying" condition is detected no erase or 
+program is started by the mtd layer. It is assumed that an erase or 
+program started before the board starts to die will be completed 
+successfully.
 
-The kernel itself runs XIP from that ROM. It has to be linked for the 
-exact address where it is flashed. The link address is therefore not a 
-variable that can be changed at run time. It is the same for the 
-filesystem image: it is related to the way things are laid out in ROM, 
-and typically depends on the actual size of the kernel when ROM is 
-tight.
+Kees.
 
-You fundamentally need to know the address of the kernel _and_ the 
-address of the fs image. Those addresses are properties of your kernel 
-config. So having to specify one in Kconfig and bury the other in DT 
-doesn't make sense to me as this is just an extra file to edit and 
-compile, and an extra binary to write into flash, for something that 
-isn't a property of the hardware. The bootloader and DT should remain 
-stable as much as possible with invariant data.
-
-If you prefer, the physical address could be specified with a Kconfig 
-symbol just like the kernel link address. Personally I think it is best 
-to keep it along with the other root mount args. But going all the way 
-with a dynamic driver binding interface and a dummy intermediate name is 
-like using a sledge hammer to kill an ant: it will work of course, but 
-given the context it is prone to errors due to the added manipulations 
-mentioned previously ... and a tad overkill.
+On 09/30/17 01:20, Doug Crawford wrote:
+> We have an embedded system with an early power loss warning.  The
+> power supply drives a powerdown signal connected to a GPIO pin on the
+> CPU.  When AC power is switched off the power supply drives this
+> signal low for 500 milliseconds before the CPU gets held in reset.  If
+> AC power is switched back on before 500 milliseconds the powerdown
+> signal goes high again and the system is expected to continue running
+> normally.
+>
+> I am wondering if there is a way to easily modify ubifs/ubi such that
+> when the powerdown gpio is low VFS or UBIFS or UBI freezes or pauses
+> further writes to the NAND.  If powerdown recovers to high again then
+> the filesystem would unfreeze and allow further writes?  Has anyone
+> implemented something like this before?  I know UBIFS/UBI is designed
+> to be very resilient to power cuts, but I am thinking this technique
+> might make the system even more resilient.  If I were to make this
+> change which file would be the right one to hook into:
+> fs/ubifs/super.c?
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
 
-> > Signed-off-by: Nicolas Pitre <nico@linaro.org>
-> > Tested-by: Chris Brandt <chris.brandt@renesas.com>
-> > ---
-> >  fs/cramfs/Kconfig |  29 +++++-
-> >  fs/cramfs/inode.c | 264 +++++++++++++++++++++++++++++++++++++++++++-----------
-> >  2 files changed, 241 insertions(+), 52 deletions(-)
-> > 
-> > diff --git a/fs/cramfs/Kconfig b/fs/cramfs/Kconfig
-> > index 11b29d491b..5b4e0b7e13 100644
-> > --- a/fs/cramfs/Kconfig
-> > +++ b/fs/cramfs/Kconfig
-> > @@ -1,6 +1,5 @@
-> >  config CRAMFS
-> >  	tristate "Compressed ROM file system support (cramfs) (OBSOLETE)"
-> > -	depends on BLOCK
-> >  	select ZLIB_INFLATE
-> >  	help
-> >  	  Saying Y here includes support for CramFs (Compressed ROM File
-> > @@ -20,3 +19,31 @@ config CRAMFS
-> >  	  in terms of performance and features.
-> >  
-> >  	  If unsure, say N.
-> > +
-> > +config CRAMFS_BLOCKDEV
-> > +	bool "Support CramFs image over a regular block device" if EXPERT
-> > +	depends on CRAMFS && BLOCK
-> > +	default y
-> > +	help
-> > +	  This option allows the CramFs driver to load data from a regular
-> > +	  block device such a disk partition or a ramdisk.
-> > +
-> > +config CRAMFS_PHYSMEM
-> > +	bool "Support CramFs image directly mapped in physical memory"
-> > +	depends on CRAMFS
-> > +	default y if !CRAMFS_BLOCKDEV
-> > +	help
-> > +	  This option allows the CramFs driver to load data directly from
-> > +	  a linear adressed memory range (usually non volatile memory
-> > +	  like flash) instead of going through the block device layer.
-> > +	  This saves some memory since no intermediate buffering is
-> > +	  necessary.
-> > +
-> > +	  The filesystem type for this feature is "cramfs_physmem".
-> > +	  The location of the CramFs image in memory is board
-> > +	  dependent. Therefore, if you say Y, you must know the proper
-> > +	  physical address where to store the CramFs image and specify
-> > +	  it using the physaddr=0x******** mount option (for example:
-> > +	  "mount -t cramfs_physmem -o physaddr=0x100000 none /mnt").
-> > +
-> > +	  If unsure, say N.
-> > diff --git a/fs/cramfs/inode.c b/fs/cramfs/inode.c
-> > index 7919967488..19f464a214 100644
-> > --- a/fs/cramfs/inode.c
-> > +++ b/fs/cramfs/inode.c
-> > @@ -24,6 +24,7 @@
-> >  #include <linux/mutex.h>
-> >  #include <uapi/linux/cramfs_fs.h>
-> >  #include <linux/uaccess.h>
-> > +#include <linux/io.h>
-> >  
-> >  #include "internal.h"
-> >  
-> > @@ -36,6 +37,8 @@ struct cramfs_sb_info {
-> >  	unsigned long blocks;
-> >  	unsigned long files;
-> >  	unsigned long flags;
-> > +	void *linear_virt_addr;
-> > +	phys_addr_t linear_phys_addr;
-> >  };
-> >  
-> >  static inline struct cramfs_sb_info *CRAMFS_SB(struct super_block *sb)
-> > @@ -140,6 +143,9 @@ static struct inode *get_cramfs_inode(struct super_block *sb,
-> >   * BLKS_PER_BUF*PAGE_SIZE, so that the caller doesn't need to
-> >   * worry about end-of-buffer issues even when decompressing a full
-> >   * page cache.
-> > + *
-> > + * Note: This is all optimized away at compile time when
-> > + *       CONFIG_CRAMFS_BLOCKDEV=n.
-> >   */
-> >  #define READ_BUFFERS (2)
-> >  /* NEXT_BUFFER(): Loop over [0..(READ_BUFFERS-1)]. */
-> > @@ -160,10 +166,10 @@ static struct super_block *buffer_dev[READ_BUFFERS];
-> >  static int next_buffer;
-> >  
-> >  /*
-> > - * Returns a pointer to a buffer containing at least LEN bytes of
-> > - * filesystem starting at byte offset OFFSET into the filesystem.
-> > + * Populate our block cache and return a pointer from it.
-> >   */
-> > -static void *cramfs_read(struct super_block *sb, unsigned int offset, unsigned int len)
-> > +static void *cramfs_blkdev_read(struct super_block *sb, unsigned int offset,
-> > +				unsigned int len)
-> >  {
-> >  	struct address_space *mapping = sb->s_bdev->bd_inode->i_mapping;
-> >  	struct page *pages[BLKS_PER_BUF];
-> > @@ -239,7 +245,39 @@ static void *cramfs_read(struct super_block *sb, unsigned int offset, unsigned i
-> >  	return read_buffers[buffer] + offset;
-> >  }
-> >  
-> > -static void cramfs_kill_sb(struct super_block *sb)
-> > +/*
-> > + * Return a pointer to the linearly addressed cramfs image in memory.
-> > + */
-> > +static void *cramfs_direct_read(struct super_block *sb, unsigned int offset,
-> > +				unsigned int len)
-> > +{
-> > +	struct cramfs_sb_info *sbi = CRAMFS_SB(sb);
-> > +
-> > +	if (!len)
-> > +		return NULL;
-> > +	if (len > sbi->size || offset > sbi->size - len)
-> > +	       return page_address(ZERO_PAGE(0));
-> > +	return sbi->linear_virt_addr + offset;
-> > +}
-> > +
-> > +/*
-> > + * Returns a pointer to a buffer containing at least LEN bytes of
-> > + * filesystem starting at byte offset OFFSET into the filesystem.
-> > + */
-> > +static void *cramfs_read(struct super_block *sb, unsigned int offset,
-> > +			 unsigned int len)
-> > +{
-> > +	struct cramfs_sb_info *sbi = CRAMFS_SB(sb);
-> > +
-> > +	if (IS_ENABLED(CONFIG_CRAMFS_PHYSMEM) && sbi->linear_virt_addr)
-> > +		return cramfs_direct_read(sb, offset, len);
-> > +	else if (IS_ENABLED(CONFIG_CRAMFS_BLOCKDEV))
-> > +		return cramfs_blkdev_read(sb, offset, len);
-> > +	else
-> > +		return NULL;
-> > +}
-> > +
-> > +static void cramfs_blkdev_kill_sb(struct super_block *sb)
-> >  {
-> >  	struct cramfs_sb_info *sbi = CRAMFS_SB(sb);
-> >  
-> > @@ -247,6 +285,16 @@ static void cramfs_kill_sb(struct super_block *sb)
-> >  	kfree(sbi);
-> >  }
-> >  
-> > +static void cramfs_physmem_kill_sb(struct super_block *sb)
-> > +{
-> > +	struct cramfs_sb_info *sbi = CRAMFS_SB(sb);
-> > +
-> > +	if (sbi->linear_virt_addr)
-> > +		memunmap(sbi->linear_virt_addr);
-> > +	kill_anon_super(sb);
-> > +	kfree(sbi);
-> > +}
-> > +
-> >  static int cramfs_remount(struct super_block *sb, int *flags, char *data)
-> >  {
-> >  	sync_filesystem(sb);
-> > @@ -254,34 +302,24 @@ static int cramfs_remount(struct super_block *sb, int *flags, char *data)
-> >  	return 0;
-> >  }
-> >  
-> > -static int cramfs_fill_super(struct super_block *sb, void *data, int silent)
-> > +static int cramfs_read_super(struct super_block *sb,
-> > +			     struct cramfs_super *super, int silent)
-> >  {
-> > -	int i;
-> > -	struct cramfs_super super;
-> > +	struct cramfs_sb_info *sbi = CRAMFS_SB(sb);
-> >  	unsigned long root_offset;
-> > -	struct cramfs_sb_info *sbi;
-> > -	struct inode *root;
-> > -
-> > -	sb->s_flags |= MS_RDONLY;
-> > -
-> > -	sbi = kzalloc(sizeof(struct cramfs_sb_info), GFP_KERNEL);
-> > -	if (!sbi)
-> > -		return -ENOMEM;
-> > -	sb->s_fs_info = sbi;
-> >  
-> > -	/* Invalidate the read buffers on mount: think disk change.. */
-> > -	mutex_lock(&read_mutex);
-> > -	for (i = 0; i < READ_BUFFERS; i++)
-> > -		buffer_blocknr[i] = -1;
-> > +	/* We don't know the real size yet */
-> > +	sbi->size = PAGE_SIZE;
-> >  
-> >  	/* Read the first block and get the superblock from it */
-> > -	memcpy(&super, cramfs_read(sb, 0, sizeof(super)), sizeof(super));
-> > +	mutex_lock(&read_mutex);
-> > +	memcpy(super, cramfs_read(sb, 0, sizeof(*super)), sizeof(*super));
-> >  	mutex_unlock(&read_mutex);
-> >  
-> >  	/* Do sanity checks on the superblock */
-> > -	if (super.magic != CRAMFS_MAGIC) {
-> > +	if (super->magic != CRAMFS_MAGIC) {
-> >  		/* check for wrong endianness */
-> > -		if (super.magic == CRAMFS_MAGIC_WEND) {
-> > +		if (super->magic == CRAMFS_MAGIC_WEND) {
-> >  			if (!silent)
-> >  				pr_err("wrong endianness\n");
-> >  			return -EINVAL;
-> > @@ -289,10 +327,10 @@ static int cramfs_fill_super(struct super_block *sb, void *data, int silent)
-> >  
-> >  		/* check at 512 byte offset */
-> >  		mutex_lock(&read_mutex);
-> > -		memcpy(&super, cramfs_read(sb, 512, sizeof(super)), sizeof(super));
-> > +		memcpy(super, cramfs_read(sb, 512, sizeof(*super)), sizeof(*super));
-> >  		mutex_unlock(&read_mutex);
-> > -		if (super.magic != CRAMFS_MAGIC) {
-> > -			if (super.magic == CRAMFS_MAGIC_WEND && !silent)
-> > +		if (super->magic != CRAMFS_MAGIC) {
-> > +			if (super->magic == CRAMFS_MAGIC_WEND && !silent)
-> >  				pr_err("wrong endianness\n");
-> >  			else if (!silent)
-> >  				pr_err("wrong magic\n");
-> > @@ -301,34 +339,34 @@ static int cramfs_fill_super(struct super_block *sb, void *data, int silent)
-> >  	}
-> >  
-> >  	/* get feature flags first */
-> > -	if (super.flags & ~CRAMFS_SUPPORTED_FLAGS) {
-> > +	if (super->flags & ~CRAMFS_SUPPORTED_FLAGS) {
-> >  		pr_err("unsupported filesystem features\n");
-> >  		return -EINVAL;
-> >  	}
-> >  
-> >  	/* Check that the root inode is in a sane state */
-> > -	if (!S_ISDIR(super.root.mode)) {
-> > +	if (!S_ISDIR(super->root.mode)) {
-> >  		pr_err("root is not a directory\n");
-> >  		return -EINVAL;
-> >  	}
-> >  	/* correct strange, hard-coded permissions of mkcramfs */
-> > -	super.root.mode |= (S_IRUSR | S_IXUSR | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
-> > +	super->root.mode |= (S_IRUSR | S_IXUSR | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
-> >  
-> > -	root_offset = super.root.offset << 2;
-> > -	if (super.flags & CRAMFS_FLAG_FSID_VERSION_2) {
-> > -		sbi->size = super.size;
-> > -		sbi->blocks = super.fsid.blocks;
-> > -		sbi->files = super.fsid.files;
-> > +	root_offset = super->root.offset << 2;
-> > +	if (super->flags & CRAMFS_FLAG_FSID_VERSION_2) {
-> > +		sbi->size = super->size;
-> > +		sbi->blocks = super->fsid.blocks;
-> > +		sbi->files = super->fsid.files;
-> >  	} else {
-> >  		sbi->size = 1<<28;
-> >  		sbi->blocks = 0;
-> >  		sbi->files = 0;
-> >  	}
-> > -	sbi->magic = super.magic;
-> > -	sbi->flags = super.flags;
-> > +	sbi->magic = super->magic;
-> > +	sbi->flags = super->flags;
-> >  	if (root_offset == 0)
-> >  		pr_info("empty filesystem");
-> > -	else if (!(super.flags & CRAMFS_FLAG_SHIFTED_ROOT_OFFSET) &&
-> > +	else if (!(super->flags & CRAMFS_FLAG_SHIFTED_ROOT_OFFSET) &&
-> >  		 ((root_offset != sizeof(struct cramfs_super)) &&
-> >  		  (root_offset != 512 + sizeof(struct cramfs_super))))
-> >  	{
-> > @@ -336,9 +374,18 @@ static int cramfs_fill_super(struct super_block *sb, void *data, int silent)
-> >  		return -EINVAL;
-> >  	}
-> >  
-> > +	return 0;
-> > +}
-> > +
-> > +static int cramfs_finalize_super(struct super_block *sb,
-> > +				 struct cramfs_inode *cramfs_root)
-> > +{
-> > +	struct inode *root;
-> > +
-> >  	/* Set it all up.. */
-> > +	sb->s_flags |= MS_RDONLY;
-> >  	sb->s_op = &cramfs_ops;
-> > -	root = get_cramfs_inode(sb, &super.root, 0);
-> > +	root = get_cramfs_inode(sb, cramfs_root, 0);
-> >  	if (IS_ERR(root))
-> >  		return PTR_ERR(root);
-> >  	sb->s_root = d_make_root(root);
-> > @@ -347,6 +394,92 @@ static int cramfs_fill_super(struct super_block *sb, void *data, int silent)
-> >  	return 0;
-> >  }
-> >  
-> > +static int cramfs_blkdev_fill_super(struct super_block *sb, void *data, int silent)
-> > +{
-> > +	struct cramfs_sb_info *sbi;
-> > +	struct cramfs_super super;
-> > +	int i, err;
-> > +
-> > +	sbi = kzalloc(sizeof(struct cramfs_sb_info), GFP_KERNEL);
-> > +	if (!sbi)
-> > +		return -ENOMEM;
-> > +	sb->s_fs_info = sbi;
-> > +
-> > +	/* Invalidate the read buffers on mount: think disk change.. */
-> > +	for (i = 0; i < READ_BUFFERS; i++)
-> > +		buffer_blocknr[i] = -1;
-> > +
-> > +	err = cramfs_read_super(sb, &super, silent);
-> > +	if (err)
-> > +		return err;
-> > +	return cramfs_finalize_super(sb, &super.root);
-> > +}
-> > +
-> > +static int cramfs_physmem_fill_super(struct super_block *sb, void *data, int silent)
-> > +{
-> > +	struct cramfs_sb_info *sbi;
-> > +	struct cramfs_super super;
-> > +	char *p;
-> > +	int err;
-> > +
-> > +	sbi = kzalloc(sizeof(struct cramfs_sb_info), GFP_KERNEL);
-> > +	if (!sbi)
-> > +		return -ENOMEM;
-> > +	sb->s_fs_info = sbi;
-> > +
-> > +	/*
-> > +	 * The physical location of the cramfs image is specified as
-> > +	 * a mount parameter.  This parameter is mandatory for obvious
-> > +	 * reasons.  Some validation is made on the phys address but this
-> > +	 * is not exhaustive and we count on the fact that someone using
-> > +	 * this feature is supposed to know what he/she's doing.
-> > +	 */
-> > +	if (!data || !(p = strstr((char *)data, "physaddr="))) {
-> > +		pr_err("unknown physical address for linear cramfs image\n");
-> > +		return -EINVAL;
-> > +	}
-> > +	sbi->linear_phys_addr = memparse(p + 9, NULL);
-> > +	if (!sbi->linear_phys_addr) {
-> > +		pr_err("bad value for cramfs image physical address\n");
-> > +		return -EINVAL;
-> > +	}
-> > +	if (sbi->linear_phys_addr & (PAGE_SIZE-1)) {
-> > +		pr_err("physical address %pap for linear cramfs isn't aligned to a page boundary\n",
-> > +			&sbi->linear_phys_addr);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	/*
-> > +	 * Map only one page for now.  Will remap it when fs size is known.
-> > +	 * Although we'll only read from it, we want the CPU cache to
-> > +	 * kick in for the higher throughput it provides, hence MEMREMAP_WB.
-> > +	 */
-> > +	pr_info("checking physical address %pap for linear cramfs image\n", &sbi->linear_phys_addr);
-> > +	sbi->linear_virt_addr = memremap(sbi->linear_phys_addr, PAGE_SIZE,
-> > +					 MEMREMAP_WB);
-> > +	if (!sbi->linear_virt_addr) {
-> > +		pr_err("ioremap of the linear cramfs image failed\n");
-> > +		return -ENOMEM;
-> > +	}
-> > +
-> > +	err = cramfs_read_super(sb, &super, silent);
-> > +	if (err)
-> > +		return err;
-> > +
-> > +	/* Remap the whole filesystem now */
-> > +	pr_info("linear cramfs image appears to be %lu KB in size\n",
-> > +		sbi->size/1024);
-> > +	memunmap(sbi->linear_virt_addr);
-> > +	sbi->linear_virt_addr = memremap(sbi->linear_phys_addr, sbi->size,
-> > +					 MEMREMAP_WB);
-> > +	if (!sbi->linear_virt_addr) {
-> > +		pr_err("ioremap of the linear cramfs image failed\n");
-> > +		return -ENOMEM;
-> > +	}
-> > +
-> > +	return cramfs_finalize_super(sb, &super.root);
-> > +}
-> > +
-> >  static int cramfs_statfs(struct dentry *dentry, struct kstatfs *buf)
-> >  {
-> >  	struct super_block *sb = dentry->d_sb;
-> > @@ -573,38 +706,67 @@ static const struct super_operations cramfs_ops = {
-> >  	.statfs		= cramfs_statfs,
-> >  };
-> >  
-> > -static struct dentry *cramfs_mount(struct file_system_type *fs_type,
-> > -	int flags, const char *dev_name, void *data)
-> > +static struct dentry *cramfs_blkdev_mount(struct file_system_type *fs_type,
-> > +				int flags, const char *dev_name, void *data)
-> > +{
-> > +	return mount_bdev(fs_type, flags, dev_name, data, cramfs_blkdev_fill_super);
-> > +}
-> > +
-> > +static struct dentry *cramfs_physmem_mount(struct file_system_type *fs_type,
-> > +				int flags, const char *dev_name, void *data)
-> >  {
-> > -	return mount_bdev(fs_type, flags, dev_name, data, cramfs_fill_super);
-> > +	return mount_nodev(fs_type, flags, data, cramfs_physmem_fill_super);
-> >  }
-> >  
-> >  static struct file_system_type cramfs_fs_type = {
-> >  	.owner		= THIS_MODULE,
-> >  	.name		= "cramfs",
-> > -	.mount		= cramfs_mount,
-> > -	.kill_sb	= cramfs_kill_sb,
-> > +	.mount		= cramfs_blkdev_mount,
-> > +	.kill_sb	= cramfs_blkdev_kill_sb,
-> >  	.fs_flags	= FS_REQUIRES_DEV,
-> >  };
-> > +
-> > +static struct file_system_type cramfs_physmem_fs_type = {
-> > +	.owner		= THIS_MODULE,
-> > +	.name		= "cramfs_physmem",
-> > +	.mount		= cramfs_physmem_mount,
-> > +	.kill_sb	= cramfs_physmem_kill_sb,
-> > +};
-> > +
-> > +#ifdef CONFIG_CRAMFS_BLOCKDEV
-> >  MODULE_ALIAS_FS("cramfs");
-> > +#endif
-> > +#ifdef CONFIG_CRAMFS_PHYSMEM
-> > +MODULE_ALIAS_FS("cramfs_physmem");
-> > +#endif
-> >  
-> >  static int __init init_cramfs_fs(void)
-> >  {
-> >  	int rv;
-> >  
-> > -	rv = cramfs_uncompress_init();
-> > -	if (rv < 0)
-> > -		return rv;
-> > -	rv = register_filesystem(&cramfs_fs_type);
-> > -	if (rv < 0)
-> > -		cramfs_uncompress_exit();
-> > -	return rv;
-> > +	if ((rv = cramfs_uncompress_init()) < 0)
-> > +		goto err0;
-> > +	if (IS_ENABLED(CONFIG_CRAMFS_BLOCKDEV) &&
-> > +	    (rv = register_filesystem(&cramfs_fs_type)) < 0)
-> > +		goto err1;
-> > +	if (IS_ENABLED(CONFIG_CRAMFS_PHYSMEM) &&
-> > +	    (rv = register_filesystem(&cramfs_physmem_fs_type)) < 0)
-> > +		goto err2;
-> > +	return 0;
-> > +
-> > +err2:	if (IS_ENABLED(CONFIG_CRAMFS_BLOCKDEV))
-> > +		unregister_filesystem(&cramfs_fs_type);
-> > +err1:	cramfs_uncompress_exit();
-> > +err0:	return rv;
-> >  }
-> >  
-> >  static void __exit exit_cramfs_fs(void)
-> >  {
-> >  	cramfs_uncompress_exit();
-> > -	unregister_filesystem(&cramfs_fs_type);
-> > +	if (IS_ENABLED(CONFIG_CRAMFS_BLOCKDEV))
-> > +		unregister_filesystem(&cramfs_fs_type);
-> > +	if (IS_ENABLED(CONFIG_CRAMFS_PHYSMEM))
-> > +		unregister_filesystem(&cramfs_physmem_fs_type);
-> >  }
-> >  
-> >  module_init(init_cramfs_fs)
-> > -- 
-> > 2.9.5
-> > 
-> ---end quoted text---
-> 
+
+--------------F44F39A404F1E83AE3A83F5E
+Content-Type: text/x-patch;
+ name="mtd_dying.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="mtd_dying.patch"
+
+diff -urN mtd_dying.org/arch/arm/configs/ls1021a_defconfig mtd_dying.new/arch/arm/configs/ls1021a_defconfig
+--- mtd_dying.org/arch/arm/configs/ls1021a_defconfig	2017-10-02 09:49:04.866784219 +0200
++++ mtd_dying.new/arch/arm/configs/ls1021a_defconfig	2017-10-02 09:40:59.346787515 +0200
+@@ -26,6 +26,7 @@
+ CONFIG_ARCH_VIRT=y
+ CONFIG_ARCH_MXC=y
+ CONFIG_SOC_LS1021A=y
++CONFIG_BOARD_PSD=y
+ CONFIG_ARM_LPAE=y
+ # CONFIG_CACHE_L2X0 is not set
+ CONFIG_PCI=y
+diff -urN mtd_dying.org/arch/arm/mach-imx/Kconfig mtd_dying.new/arch/arm/mach-imx/Kconfig
+--- mtd_dying.org/arch/arm/mach-imx/Kconfig	2017-10-02 09:39:36.812537914 +0200
++++ mtd_dying.new/arch/arm/mach-imx/Kconfig	2017-10-02 09:40:59.360156438 +0200
+@@ -626,6 +626,14 @@
+ 	help
+ 	  This enables support for Freescale LS1021A processor.
+ 
++config BOARD_PSD
++	bool "AimValley PSD support"
++	depends on SOC_LS1021A
++	select CONSOLE_POLL
++
++	help
++	  This enables support for the AimValley PSD board.
++
+ endif
+ 
+ source "arch/arm/mach-imx/devices/Kconfig"
+diff -urN mtd_dying.org/arch/arm/mach-imx/Makefile mtd_dying.new/arch/arm/mach-imx/Makefile
+--- mtd_dying.org/arch/arm/mach-imx/Makefile	2017-10-02 09:39:36.827457495 +0200
++++ mtd_dying.new/arch/arm/mach-imx/Makefile	2017-10-02 09:40:59.374071091 +0200
+@@ -109,4 +109,6 @@
+ 
+ obj-$(CONFIG_SOC_LS1021A) += mach-ls1021a.o
+ 
++obj-$(CONFIG_BOARD_PSD) += board-psd.o
++
+ obj-y += devices/
+diff -urN mtd_dying.org/arch/arm/mach-imx/board-psd.c mtd_dying.new/arch/arm/mach-imx/board-psd.c
+--- mtd_dying.org/arch/arm/mach-imx/board-psd.c	1970-01-01 01:00:00.000000000 +0100
++++ mtd_dying.new/arch/arm/mach-imx/board-psd.c	2017-10-02 09:43:40.170792532 +0200
+@@ -0,0 +1,87 @@
++/*
++ * PSD specific kernel customizations
++ *
++ * Copyright (c) 2016 AimValley B.V., the Netherlands
++ * You may only use or distribute this file if you have a valid license agreement with AimValley B.V.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * as published by the Free Software Foundation; either version 2
++ * of the License, or (at your option) any later version.
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
++ * MA 02110-1301, USA.
++ */
++
++#include "linux/printk.h"
++#include <linux/kmsg_dump.h>
++#include "linux/reboot.h"
++#include "linux/gpio.h"
++#include "linux/mtd/mtd.h"
++#include "linux/interrupt.h"
++#include "linux/tty_driver.h"
++
++#define DYING_GASP_GPIO     447
++#define CPU_SELF_RESET_GPIO 391
++
++struct tty_driver *tty = NULL;
++int tty_line = 0;
++
++static void psd_power_off_handler(void)
++{
++	pr_emerg("Cold restart\n");
++	kmsg_dump(KMSG_DUMP_POWEROFF);
++	gpio_set_value(CPU_SELF_RESET_GPIO, 1);
++}
++
++static int psd_is_dying(void)
++{
++	return gpio_get_value(DYING_GASP_GPIO);
++}
++
++static irqreturn_t psd_is_dying_irq(int irq, void* data)
++{
++	u8* s;
++
++	(void) data;
++	(void) irq;
++
++        s = "I am dying ....";
++
++	while (*s) {
++		tty->ops->poll_put_char(tty, tty_line, *s);
++		s++;
++	}
++
++	return IRQ_HANDLED;
++}
++
++static int __init psd_board_init(void)
++{
++	gpio_request(CPU_SELF_RESET_GPIO, "reset");
++	gpio_direction_output(CPU_SELF_RESET_GPIO, 0);
++	gpio_export(CPU_SELF_RESET_GPIO, false);
++
++	kernel_power_off_handler(psd_power_off_handler);
++
++	gpio_request(DYING_GASP_GPIO, "dying gasp");
++	gpio_direction_input(DYING_GASP_GPIO);
++	gpio_export(DYING_GASP_GPIO, false);
++
++	mtd_register_is_dying(psd_is_dying);
++
++	tty = tty_find_polling_driver("ttyS0", &tty_line);
++
++	return request_irq(gpio_to_irq(DYING_GASP_GPIO),
++                           psd_is_dying_irq,
++                           IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING | IRQF_ONESHOT,
++                           "dying gasp",
++                           NULL);
++}
++late_initcall(psd_board_init);
+diff -urN mtd_dying.org/drivers/mtd/mtdcore.c mtd_dying.new/drivers/mtd/mtdcore.c
+--- mtd_dying.org/drivers/mtd/mtdcore.c	2017-10-02 09:39:36.738676605 +0200
++++ mtd_dying.new/drivers/mtd/mtdcore.c	2017-10-02 09:40:59.286219059 +0200
+@@ -73,6 +73,7 @@
+ 
+ static LIST_HEAD(mtd_notifiers);
+ 
++static int (*mtd_is_dying)(void) = NULL;
+ 
+ #define MTD_DEVT(index) MKDEV(MTD_CHAR_MAJOR, (index)*2)
+ 
+@@ -806,6 +807,8 @@
+ 		return -EINVAL;
+ 	if (!(mtd->flags & MTD_WRITEABLE))
+ 		return -EROFS;
++	if (mtd_is_dying && mtd_is_dying())
++		return -EPERM;
+ 	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+ 	if (!instr->len) {
+ 		instr->state = MTD_ERASE_DONE;
+@@ -897,6 +900,8 @@
+ 		return -EINVAL;
+ 	if (!mtd->_write || !(mtd->flags & MTD_WRITEABLE))
+ 		return -EROFS;
++	if (mtd_is_dying && mtd_is_dying())
++		return -EPERM;
+ 	if (!len)
+ 		return 0;
+ 	return mtd->_write(mtd, to, len, retlen, buf);
+@@ -1204,6 +1209,27 @@
+ }
+ EXPORT_SYMBOL_GPL(mtd_kmalloc_up_to);
+ 
++/**
++ * mtd_register_is_dying - register an "is dying" callback function
++ * @is_dying: pointer to a function that returns whether the board 
++ *            "is dying" or not
++ *
++ * This routine registers an "is dying" callback function. The callback 
++ * function returns 1 if the board is dying. The board is supposed to be dying 
++ * if the board supply voltage drops below a certain voltage and soon (in few 
++ * milli seconds) will be completely powered down. This function is called in
++ * each mtd_write and mtd_erase and if the board is dying the write or erase
++ * will fail.
++ *
++ * Note: It assumes that a write or erase started before the board starts dying
++ *       can be finished before the CPU and NAND device runs out of power.
++ */
++void mtd_register_is_dying(int (*is_dying)(void))
++{
++    mtd_is_dying = is_dying;
++}
++EXPORT_SYMBOL_GPL(mtd_register_is_dying);
++
+ #ifdef CONFIG_PROC_FS
+ 
+ /*====================================================================*/
+diff -urN mtd_dying.org/include/linux/mtd/mtd.h mtd_dying.new/include/linux/mtd/mtd.h
+--- mtd_dying.org/include/linux/mtd/mtd.h	2017-10-02 09:39:36.766934179 +0200
++++ mtd_dying.new/include/linux/mtd/mtd.h	2017-10-02 09:40:59.314882784 +0200
+@@ -422,4 +422,6 @@
+ 
+ unsigned mtd_mmap_capabilities(struct mtd_info *mtd);
+ 
++void mtd_register_is_dying(int (*is_dying)(void));
++
+ #endif /* __MTD_MTD_H__ */
+diff -urN mtd_dying.org/include/linux/reboot.h mtd_dying.new/include/linux/reboot.h
+--- mtd_dying.org/include/linux/reboot.h	2017-10-02 09:39:36.757224289 +0200
++++ mtd_dying.new/include/linux/reboot.h	2017-10-02 09:40:59.298836982 +0200
+@@ -63,6 +63,7 @@
+ extern void kernel_restart(char *cmd);
+ extern void kernel_halt(void);
+ extern void kernel_power_off(void);
++extern void kernel_power_off_handler(void (*power_off)(void));
+ 
+ extern int C_A_D; /* for sysctl */
+ void ctrl_alt_del(void);
+
+--------------F44F39A404F1E83AE3A83F5E--
