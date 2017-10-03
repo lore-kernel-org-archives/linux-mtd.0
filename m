@@ -1,20 +1,16 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dzHaw-00039p-2u
- for linux-mtd@lists.infradead.org; Tue, 03 Oct 2017 07:26:24 +0000
-From: Richard Weinberger <richard@sigma-star.at>
-To: Kees Trommel <ctrommel@aimvalley.nl>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: ubifs robustness with early power cut warning
-Date: Tue, 03 Oct 2017 09:26:29 +0200
-Message-ID: <1964048.Gvr1Jm0yVx@blindfold>
-In-Reply-To: <7b89bbfe-8503-a50a-0271-09d69a99eeec@aimvalley.nl>
-References: <CAAEsGz+1T6eAHW_adm-RKHoaK6gv=ZtRdcMTum6+s1TXR0PzEQ@mail.gmail.com>
- <CAFLxGvwwjFwn1hyme=jgkUQsBJcyK0gXqSNdoXa9WbCB0U4NBQ@mail.gmail.com>
- <7b89bbfe-8503-a50a-0271-09d69a99eeec@aimvalley.nl>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dzIv4-0005jN-0z
+ for linux-mtd@lists.infradead.org; Tue, 03 Oct 2017 08:51:15 +0000
+Received: by mail-wr0-x244.google.com with SMTP id v38so2455241wrc.4
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Oct 2017 01:50:52 -0700 (PDT)
+From: Romain Izard <romain.izard.pro@gmail.com>
+To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org, Romain Izard <romain.izard.pro@gmail.com>
+Subject: [PATCH] mkfs.ubifs: Apply squash-uids to the root node
+Date: Tue,  3 Oct 2017 10:50:28 +0200
+Message-Id: <20171003085028.31779-1-romain.izard.pro@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,22 +20,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Dienstag, 3. Oktober 2017, 08:53:13 CEST schrieb Kees Trommel:
-> Richard,
-> 
-> > Out of curiosity, did you also try to freeze or schedule the calling task?
-> 
-> No I did not. When the GPIO gets active the board will die (power off) so no
-> need to freeze/block the calling task because it soon will die too. 
+The root node of the file system needs to be handled as a special case
+when removing the owner information from the input.
 
-I just wondered whether the calling task does not do something stupid after 
-being flooded with -EPERM upon every filesystem access.
-Think of a larger software stack that communicates over a bus with other 
-systems.
+Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
+---
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Thanks,
-//richard
-
+diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+index 9e69a4f..d432dfe 100644
+--- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
++++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+@@ -1831,6 +1831,8 @@ static int write_data(void)
+ 		if (err)
+ 			return sys_err_msg("bad root file-system directory '%s'",
+ 					   root);
++		if (squash_owner)
++			root_st.st_uid = root_st.st_gid = 0;
+ 	} else {
+ 		root_st.st_mtime = time(NULL);
+ 		root_st.st_atime = root_st.st_ctime = root_st.st_mtime;
 -- 
-sigma star gmbh - Eduard-Bodem-Gasse 6 - 6020 Innsbruck - Austria
-ATU66964118 - FN 374287y
+2.11.0
