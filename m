@@ -1,29 +1,34 @@
-Received: from relmlor2.renesas.com ([210.160.252.172]
- helo=relmlie1.idc.renesas.com)
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dzOfK-00037i-K8
- for linux-mtd@lists.infradead.org; Tue, 03 Oct 2017 14:59:30 +0000
-From: Chris Brandt <Chris.Brandt@renesas.com>
-To: Rob Herring <robh@kernel.org>, Christoph Hellwig <hch@infradead.org>
-CC: Nicolas Pitre <nicolas.pitre@linaro.org>, Alexander Viro
- <viro@zeniv.linux.org.uk>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
- "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
- "linux-embedded@vger.kernel.org" <linux-embedded@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: RE: [PATCH v4 1/5] cramfs: direct memory access support
-Date: Tue, 3 Oct 2017 14:58:57 +0000
-Message-ID: <SG2PR06MB1165AEAAF88684C9CDBB37738A720@SG2PR06MB1165.apcprd06.prod.outlook.com>
+Received: from mail.kernel.org ([198.145.29.99])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dzOR1-0007h3-MQ
+ for linux-mtd@lists.infradead.org; Tue, 03 Oct 2017 14:44:42 +0000
+Received: from mail-qt0-f180.google.com (mail-qt0-f180.google.com
+ [209.85.216.180])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 1FDB5218CC
+ for <linux-mtd@lists.infradead.org>; Tue,  3 Oct 2017 14:44:12 +0000 (UTC)
+Received: by mail-qt0-f180.google.com with SMTP id o3so13377157qte.6
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Oct 2017 07:44:12 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20171001082955.GA17116@infradead.org>
 References: <20170927233224.31676-1-nicolas.pitre@linaro.org>
  <20170927233224.31676-2-nicolas.pitre@linaro.org>
  <20171001082955.GA17116@infradead.org>
- <CAL_JsqK1FhN7f55ZDinX+PKaO_e7m7bxCgBeHg=hzCRn+TSwSA@mail.gmail.com>
-In-Reply-To: <CAL_JsqK1FhN7f55ZDinX+PKaO_e7m7bxCgBeHg=hzCRn+TSwSA@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+From: Rob Herring <robh@kernel.org>
+Date: Tue, 3 Oct 2017 09:43:50 -0500
+Message-ID: <CAL_JsqK1FhN7f55ZDinX+PKaO_e7m7bxCgBeHg=hzCRn+TSwSA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/5] cramfs: direct memory access support
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Nicolas Pitre <nicolas.pitre@linaro.org>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ "linux-mm@kvack.org" <linux-mm@kvack.org>, linux-fsdevel@vger.kernel.org,
+ linux-embedded@vger.kernel.org,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Chris Brandt <Chris.Brandt@renesas.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,51 +38,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gVHVlc2RheSwgT2N0b2JlciAwMywgMjAxNyAxLCBSb2IgSGVycmluZyB3cm90ZToNCj4gT24g
-U3VuLCBPY3QgMSwgMjAxNyBhdCAzOjI5IEFNLCBDaHJpc3RvcGggSGVsbHdpZyA8aGNoQGluZnJh
-ZGVhZC5vcmc+DQo+IHdyb3RlOg0KPiA+IE9uIFdlZCwgU2VwIDI3LCAyMDE3IGF0IDA3OjMyOjIw
-UE0gLTA0MDAsIE5pY29sYXMgUGl0cmUgd3JvdGU6DQo+ID4+IFRvIGRpc3Rpbmd1aXNoIGJldHdl
-ZW4gYm90aCBhY2Nlc3MgdHlwZXMsIHRoZSBjcmFtZnNfcGh5c21lbSBmaWxlc3lzdGVtDQo+ID4+
-IHR5cGUgbXVzdCBiZSBzcGVjaWZpZWQgd2hlbiB1c2luZyBhIG1lbW9yeSBhY2Nlc3NpYmxlIGNy
-YW1mcyBpbWFnZSwgYW5kDQo+ID4+IHRoZSBwaHlzYWRkciBhcmd1bWVudCBtdXN0IHByb3ZpZGUg
-dGhlIGFjdHVhbCBmaWxlc3lzdGVtIGltYWdlJ3MNCj4gcGh5c2ljYWwNCj4gPj4gbWVtb3J5IGxv
-Y2F0aW9uLg0KPiA+DQo+ID4gU29ycnksIGJ1dCB0aGlzIHN0aWxsIGlzIGEgY29tcGxldGUgbm8t
-Z28uICBBIHBoeXNpY2FsIGFkZHJlc3MgaXMgbm90IGENCj4gPiBwcm9wZXIgaW50ZXJmYWNlLiAg
-WW91IHN0aWxsIG5lZWQgdG8gaGF2ZSBzb21lIGludGVyZmFjZSBmb3IgeW91ciBOT1INCj4gbmFu
-ZA0KPiA+IG9yIERSQU0uICAtIHVzdWFsbHkgdGhhdCB3b3VsZCBiZSBhIG10ZCBkcml2ZXIsIGJ1
-dCBpZiB5b3UgaGF2ZSBhIGdvb2QNCj4gPiByZWFzb24gd2h5IHRoYXQncyBub3Qgc3VpdGFibGUg
-Zm9yIHlvdSAoYW5kIHBsZWFzZSBleHBsYWluIGl0IHdlbGwpDQo+ID4gd2UnbGwgbmVlZCBhIGxp
-dHRsZSBPRiBvciBzaW1pbGFyIGxheWVyIHRvIGJpbmQgYSB0aGluIGRyaXZlci4NCj4gDQo+IEkg
-ZG9uJ3QgZGlzYWdyZWUgdGhhdCB3ZSBtYXkgbmVlZCBEVCBiaW5kaW5nIGhlcmUsIGJ1dCBEVCBi
-aW5kaW5ncyBhcmUNCj4gaC93IGRlc2NyaXB0aW9uIGFuZCBub3QgYSBtZWNoYW5pc20gYmluZCBM
-aW51eCBrZXJuZWwgZHJpdmVycy4gSXQgY2FuDQo+IGJlIGEgc3VidGxlIGRpc3RpbmN0aW9uLCBi
-dXQgaXQgaXMgYW4gaW1wb3J0YW50IG9uZS4NCj4gDQo+IEkgY2FuIHNlZSB0aGUgY2FzZSB3aGVy
-ZSB3ZSBoYXZlIG5vIGRyaXZlci4gRm9yIFJBTSB3ZSBkb24ndCBoYXZlIGENCj4gZHJpdmVyLCB5
-ZXQgcHJldHR5IG11Y2ggYWxsIGhhcmR3YXJlIGhhcyBhIERSQU0gY29udHJvbGxlciB3aGljaCB3
-ZQ0KPiBqdXN0IHJlbHkgb24gdGhlIGZpcm13YXJlIHRvIHNldHVwLiBJIGNvdWxkIGFsc28gZW52
-aXNpb24gdGhhdCB3ZSBoYXZlDQo+IGhhcmR3YXJlIHdlIGRvIG5lZWQgdG8gY29uZmlndXJlIGlu
-IHRoZSBrZXJuZWwuIFBlcmhhcHMgdGhlIGJvb3QNCj4gc2V0dGluZ3MgYXJlIG5vdCBvcHRpbWFs
-IG9yIHdlIHdhbnQvbmVlZCB0byBtYW5hZ2UgdGhlIGNsb2Nrcy4gVGhhdA0KPiBzZWVtcyBzb21l
-d2hhdCB1bmxpa2VseSBpZiB0aGUga2VybmVsIGlzIGFsc28gWElQIGZyb20gdGhlIHNhbWUgZmxh
-c2gNCj4gYXMgaXQgaXMgaW4gTmljbydzIGNhc2UuDQo+IA0KPiBXZSBkbyBvZnRlbiBkZXNjcmli
-ZSB0aGUgZmxhc2ggbGF5b3V0IGluIERUIHdoZW4gcGFydGl0aW9ucyBhcmUgbm90DQo+IGRpc2Nv
-dmVyYWJsZS4gSSBkb24ndCBrbm93IGlmIHRoYXQgd291bGQgYmUgbmVlZGVkIGhlcmUuIFdvdWxk
-IHRoZSBST00NCj4gaGVyZSBldmVyIGJlIHVwZGF0ZWFibGUgZnJvbSB3aXRoaW4gTGludXg/IElm
-IHdlJ3JlIHRhbGtpbmcgYWJvdXQgYQ0KPiBzaW5nbGUgYWRkcmVzcyB0byBwYXNzIHRoZSBrZXJu
-ZWwsIERUIHNlZW1zIGxpa2UgYW4gb3ZlcmtpbGwgYW5kDQo+IGtlcm5lbCBjbWRsaW5lIGlzIHBl
-cmZlY3RseSB2YWxpZCBJTU8uDQoNCg0KQXMgc29tZW9uZSB0aGF0J3MgYmVlbiB1c2luZyBhbiBY
-SVAgRmlsZSBzeXN0ZW0gZm9yIGEgd2hpbGUgbm93IChBWEZTLCANCm9idmlvdXNseSBub3QgeGlw
-LWNyYW1mcyksIHRoZXJlIGlzIGEgd2F5IChpbiBteSBzeXN0ZW0gYXQgbGVhc3QpIHRvIA0Kd3Jp
-dGUgdG8gdGhlIHNhbWUgRmxhc2ggdGhhdCB0aGUga2VybmVsIGFuZCBmaWxlIHN5c3RlbSBhcmUg
-Y3VycmVudGx5IFhJUCANCmV4ZWN1dGluZyAodGhpbmsganVtcGluZyB0byBSQU0sIGRvaW5nIGEg
-c21hbGwgZmxhc2ggb3BlcmF0aW9uLCB0aGVuIA0KanVtcGluZyBiYWNrIHRvIEZsYXNoKS4NCg0K
-VGhlIHVzZSBjYXNlIGlzIGlmIHlvdSd2ZSBsb2dpY2FsbHkgcGFydGl0aW9uZWQgeW91ciBmbGFz
-aCBzdWNoIHRoYXQgeW91DQprZWVwIHlvdXIgYXBwbGljYXRpb24gaW4gYSBzZXBhcmF0ZSBmaWxl
-IFhJUCBmaWxlc3lzdGVtIGltYWdlLCB5b3UgDQpyZW1vdGVseSBkb3dubG9hZCBhbiB1cGRhdGVk
-IHZlcnNpb24gdG8gc29tZSB1bnVzZWQgcG9ydGlvbiBvZiBGbGFzaCwgdGhlbiANCnNpbXBseSB1
-bm1vdW50IHdoYXQgeW91IGhhdmUgYmVlbiB1c2luZyBhbmQgbW91bnQgdGhlIG5ldyBpbWFnZSBz
-aW5jZSB5b3UNCmNhbiBwYXNzIGluIHRoZSBwaHlzaWNhbCBhZGRyZXNzIG9mIHdoZXJlIHlvdSB3
-cm90ZSB5b3VyIG5ldyBpbWFnZSB0by4NCg0KU28gaW4gdGhhdCBjYXNlLCBJIGd1ZXNzIHlvdSBj
-YW4gZG8gc29tZSB0eXBlIG9mIERUIG92ZXJsYXkgb3IgDQpzb21ldGhpbmcsIGJ1dCBhdCB0aGUg
-bW9tZW50LCBqdXN0IGhhdmluZyB0aGUgcGh5c2ljYWwgYWRkcmVzcyBhcyBhIHBhcmFtZXRlciBp
-biANCm1vdW50IGNvbW1hbmQgbWFrZXMgaXQgcHJldHR5IGRhcm4gZWFzeS4NCg0KQ2hyaXMNCg0K
+On Sun, Oct 1, 2017 at 3:29 AM, Christoph Hellwig <hch@infradead.org> wrote:
+> On Wed, Sep 27, 2017 at 07:32:20PM -0400, Nicolas Pitre wrote:
+>> To distinguish between both access types, the cramfs_physmem filesystem
+>> type must be specified when using a memory accessible cramfs image, and
+>> the physaddr argument must provide the actual filesystem image's physical
+>> memory location.
+>
+> Sorry, but this still is a complete no-go.  A physical address is not a
+> proper interface.  You still need to have some interface for your NOR nand
+> or DRAM.  - usually that would be a mtd driver, but if you have a good
+> reason why that's not suitable for you (and please explain it well)
+> we'll need a little OF or similar layer to bind a thin driver.
+
+I don't disagree that we may need DT binding here, but DT bindings are
+h/w description and not a mechanism bind Linux kernel drivers. It can
+be a subtle distinction, but it is an important one.
+
+I can see the case where we have no driver. For RAM we don't have a
+driver, yet pretty much all hardware has a DRAM controller which we
+just rely on the firmware to setup. I could also envision that we have
+hardware we do need to configure in the kernel. Perhaps the boot
+settings are not optimal or we want/need to manage the clocks. That
+seems somewhat unlikely if the kernel is also XIP from the same flash
+as it is in Nico's case.
+
+We do often describe the flash layout in DT when partitions are not
+discoverable. I don't know if that would be needed here. Would the ROM
+here ever be updateable from within Linux? If we're talking about a
+single address to pass the kernel, DT seems like an overkill and
+kernel cmdline is perfectly valid IMO.
+
+Rob
