@@ -1,21 +1,20 @@
-Received: from outbound01.mx-relay.com ([5.39.185.33]
- helo=outbound01-c.mx-relay.com)
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dzH9N-0007cO-BO
- for linux-mtd@lists.infradead.org; Tue, 03 Oct 2017 06:57:54 +0000
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dzHaw-00039p-2u
+ for linux-mtd@lists.infradead.org; Tue, 03 Oct 2017 07:26:24 +0000
+From: Richard Weinberger <richard@sigma-star.at>
+To: Kees Trommel <ctrommel@aimvalley.nl>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Subject: Re: ubifs robustness with early power cut warning
-To: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Tue, 03 Oct 2017 09:26:29 +0200
+Message-ID: <1964048.Gvr1Jm0yVx@blindfold>
+In-Reply-To: <7b89bbfe-8503-a50a-0271-09d69a99eeec@aimvalley.nl>
 References: <CAAEsGz+1T6eAHW_adm-RKHoaK6gv=ZtRdcMTum6+s1TXR0PzEQ@mail.gmail.com>
- <740e523e-2373-0e8c-6480-ecd68fff6ef3@aimvalley.nl>
  <CAFLxGvwwjFwn1hyme=jgkUQsBJcyK0gXqSNdoXa9WbCB0U4NBQ@mail.gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-From: Kees Trommel <ctrommel@aimvalley.nl>
-Message-ID: <67c51db1-2492-a1df-e576-bd4b78a1e2e8@aimvalley.nl>
-Date: Tue, 3 Oct 2017 08:57:29 +0200
+ <7b89bbfe-8503-a50a-0271-09d69a99eeec@aimvalley.nl>
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvwwjFwn1hyme=jgkUQsBJcyK0gXqSNdoXa9WbCB0U4NBQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,31 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Richard,
+Am Dienstag, 3. Oktober 2017, 08:53:13 CEST schrieb Kees Trommel:
+> Richard,
+> 
+> > Out of curiosity, did you also try to freeze or schedule the calling task?
+> 
+> No I did not. When the GPIO gets active the board will die (power off) so no
+> need to freeze/block the calling task because it soon will die too. 
 
- > Out of curiosity, did you also try to freeze or schedule the calling 
-task?
+I just wondered whether the calling task does not do something stupid after 
+being flooded with -EPERM upon every filesystem access.
+Think of a larger software stack that communicates over a bus with other 
+systems.
 
-No I did not. When the GPIO gets active the board will die (power off) 
-soon, so no need to freeze/block the calling task because it soon will 
-die too.
+Thanks,
+//richard
 
-Kees.
-
-On 10/02/17 13:35, Richard Weinberger wrote:
-> Kees,
->
-> On Mon, Oct 2, 2017 at 10:06 AM, Kees Trommel <ctrommel@aimvalley.nl> wrote:
->> Doug,
->>
->> Attached a patch file with an implementation that I developed for our custom
->> board that has an early powerdown (is dying) signal (GPIO pin).
->>
->> The idea is that when an "I am dying" condition is detected no erase or
->> program is started by the mtd layer. It is assumed that an erase or program
->> started before the board starts to die will be completed successfully.
-> Out of curiosity, did you also try to freeze or schedule the calling task?
->
-> Maybe we should add something like that to MTD as generic interface.
-> I saw such hacks in all variants in vendor/customer kernels.
->
+-- 
+sigma star gmbh - Eduard-Bodem-Gasse 6 - 6020 Innsbruck - Austria
+ATU66964118 - FN 374287y
