@@ -1,26 +1,19 @@
-Received: from mail-qt0-x230.google.com ([2607:f8b0:400d:c0d::230])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1dzOmc-0008QR-6p
- for linux-mtd@lists.infradead.org; Tue, 03 Oct 2017 15:07:01 +0000
-Received: by mail-qt0-x230.google.com with SMTP id e19so9626949qta.13
- for <linux-mtd@lists.infradead.org>; Tue, 03 Oct 2017 08:06:33 -0700 (PDT)
-Date: Tue, 3 Oct 2017 11:06:30 -0400 (EDT)
-From: Nicolas Pitre <nicolas.pitre@linaro.org>
-To: Christoph Hellwig <hch@infradead.org>
-cc: Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
- linux-fsdevel@vger.kernel.org, linux-embedded@vger.kernel.org,
- linux-kernel@vger.kernel.org, Chris Brandt <Chris.Brandt@renesas.com>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 1/5] cramfs: direct memory access support
-In-Reply-To: <20171003145921.GA9954@infradead.org>
-Message-ID: <nycvar.YSQ.7.76.1710031101500.5407@knanqh.ubzr>
-References: <20170927233224.31676-1-nicolas.pitre@linaro.org>
- <20170927233224.31676-2-nicolas.pitre@linaro.org>
- <20171001082955.GA17116@infradead.org>
- <nycvar.YSQ.7.76.1710011659530.5407@knanqh.ubzr>
- <20171003145921.GA9954@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1dzPLF-0004U7-Rt
+ for linux-mtd@lists.infradead.org; Tue, 03 Oct 2017 15:42:44 +0000
+Content-Type: text/plain; charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: Issue with encrypted filenames on UBIFS
+From: David Gstir <david@sigma-star.at>
+In-Reply-To: <CAFadFHRqVe5SmQBZAaFHt2d6+GY5p1mbE9_G40AApfK29oHh8Q@mail.gmail.com>
+Date: Tue, 3 Oct 2017 17:42:18 +0200
+Cc: linux-mtd@lists.infradead.org,
+ linux-fscrypt@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <34D12043-D369-458C-BEEA-B0B7463B3242@sigma-star.at>
+References: <CAFadFHRqVe5SmQBZAaFHt2d6+GY5p1mbE9_G40AApfK29oHh8Q@mail.gmail.com>
+To: Nicolas Feignon <nicolas.feignon@mobile-devices.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,30 +23,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 3 Oct 2017, Christoph Hellwig wrote:
+Hi Nicolas,
 
-> On Sun, Oct 01, 2017 at 06:27:11PM -0400, Nicolas Pitre wrote:
-> > If you prefer, the physical address could be specified with a Kconfig 
-> > symbol just like the kernel link address. Personally I think it is best 
-> > to keep it along with the other root mount args. But going all the way 
-> > with a dynamic driver binding interface and a dummy intermediate name is 
-> > like using a sledge hammer to kill an ant: it will work of course, but 
-> > given the context it is prone to errors due to the added manipulations 
-> > mentioned previously ... and a tad overkill.
-> 
-> As soon as a kernel enables CRAMFS_PHYSMEM this mount option is
-> available, so you don't just need to think of your use case.
+> On 3 Oct 2017, at 15:01, Nicolas Feignon =
+<nicolas.feignon@mobile-devices.fr> wrote:
+>=20
+> Hi,
+>=20
+> I'm encountering an issue with filesystem encryption on UBIFS. I'm =
+using Kernel
+> 4.13.3.
+>=20
+> The encryption of filenames does not work correctly for filenames of =
+more that
+> 16 characters. It works fine if the names are shorter. Here's what I =
+get:
+>=20
+> [~/writeDir]# touch aaaaaaaaaaaaaaaa # 16 characters
+> [~/writeDir]# ls
+> ls: cannot access aaaaaaaaaaaaaaaa>*0=D1=90L9: No such file or =
+directory
+> aaaaaaaaaaaaaaaa?>??*0?????n??L9
+>=20
+> I set the policy with:
+> [~]# openssl rand 64 > key
+> [~]# fscryptctl insert_key < key
+> a5bb6bff407f6f67
+> [~]# fscryptctl set_policy a5bb6bff407f6f67 writeDir/
+>=20
+> I get the issue for all encryption modes and padding values altough =
+the length
+> of filenames at which it doesn't work varies.
+> With the default padding of 32 and AES-256-CTS encryption mode, it =
+does not
+> work for length >=3D 16 and <=3D 32, length >=3D 48 and <=3D 64...
+>=20
+> I took a look at fs/crypto/fname.c but I can't figure out the problem. =
+It seems
+> like it's an overflow somewhere.
 
-What other use cases do you have in mind?
+Do you use a hardware crypto accelerator for AES? I saw the same issue =
+with the CAAM driver (see issue 1 here [1]) some time ago.
 
-> The normal way for doings this would be to specify it in the device
-> tree.
+Specifically, the blockcipher driver code is required to update ->iv of =
+skcipher_request after encryption/decryption. This is used by the =
+CTS-mode code. Here's the fix that got merged for the CAAM driver [2].
 
-And specify it how? Creating a pseudo device and passing that instead of 
-the actual physical address? What is the advantage?
+- David
 
-And what about targets that don't use DT? Yes, there are still quite a 
-few out there.
-
-
-Nicolas
+[1] https://marc.info/?l=3Dlinux-crypto-vger&m=3D149640631518134&w=3D2
+[2] https://marc.info/?l=3Dlinux-crypto-vger&m=3D149865646825902&w=3D2=
