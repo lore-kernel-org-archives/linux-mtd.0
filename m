@@ -1,19 +1,28 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1dzPLF-0004U7-Rt
- for linux-mtd@lists.infradead.org; Tue, 03 Oct 2017 15:42:44 +0000
-Content-Type: text/plain; charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: Issue with encrypted filenames on UBIFS
-From: David Gstir <david@sigma-star.at>
-In-Reply-To: <CAFadFHRqVe5SmQBZAaFHt2d6+GY5p1mbE9_G40AApfK29oHh8Q@mail.gmail.com>
-Date: Tue, 3 Oct 2017 17:42:18 +0200
-Cc: linux-mtd@lists.infradead.org,
- linux-fscrypt@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <34D12043-D369-458C-BEEA-B0B7463B3242@sigma-star.at>
-References: <CAFadFHRqVe5SmQBZAaFHt2d6+GY5p1mbE9_G40AApfK29oHh8Q@mail.gmail.com>
-To: Nicolas Feignon <nicolas.feignon@mobile-devices.fr>
+Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1dzYW9-0002Ml-3H
+ for linux-mtd@lists.infradead.org; Wed, 04 Oct 2017 01:31:05 +0000
+Received: by mail-lf0-x243.google.com with SMTP id o125so7100595lfe.0
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Oct 2017 18:30:15 -0700 (PDT)
+Date: Tue, 3 Oct 2017 18:13:11 -0700
+From: Olof Johansson <olof@lixom.net>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ arm@kernel.org, Mike Rapoport <rppt@linux.vnet.ibm.com>,
+ Frans Klaver <fransklaver@gmail.com>, Gerhard Sittig <gsi@denx.de>,
+ Jamie Iles <jamie.iles@oracle.com>
+Subject: Re: [PATCH] mtd: nand: gpio: Convert to use GPIO descriptors
+Message-ID: <20171004011311.rn3plqb4es5hcupa@localhost>
+References: <20170924173912.9199-1-linus.walleij@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170924173912.9199-1-linus.walleij@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,53 +32,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Nicolas,
+On Sun, Sep 24, 2017 at 07:39:12PM +0200, Linus Walleij wrote:
+> There is exactly one board in the kernel that defines platform data
+> for the GPIO NAND driver.
+> 
+> Use the feature to provide a lookup table for the GPIOs in the board
+> file so we can convert the driver as a whole to just use GPIO
+> descriptors.
+> 
+> After this we can cut the use of <linux/of_gpio.h> and use the GPIO
+> descriptor management from <linux/gpio/consumer.h> alone to grab and use
+> the GPIOs used in the driver.
+> 
+> I also created a local struct device *dev in the probe() function
+> because I was getting annoyed with all the &pdev->dev dereferencing.
+> 
+> Cc: arm@kernel.org
+> Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+> Cc: Frans Klaver <fransklaver@gmail.com>
+> Cc: Gerhard Sittig <gsi@denx.de>
+> Cc: Jamie Iles <jamie.iles@oracle.com>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+> ARM SoC folks: Please ACK this so it can be merged through the MTD
+> subsystem.
 
-> On 3 Oct 2017, at 15:01, Nicolas Feignon =
-<nicolas.feignon@mobile-devices.fr> wrote:
->=20
-> Hi,
->=20
-> I'm encountering an issue with filesystem encryption on UBIFS. I'm =
-using Kernel
-> 4.13.3.
->=20
-> The encryption of filenames does not work correctly for filenames of =
-more that
-> 16 characters. It works fine if the names are shorter. Here's what I =
-get:
->=20
-> [~/writeDir]# touch aaaaaaaaaaaaaaaa # 16 characters
-> [~/writeDir]# ls
-> ls: cannot access aaaaaaaaaaaaaaaa>*0=D1=90L9: No such file or =
-directory
-> aaaaaaaaaaaaaaaa?>??*0?????n??L9
->=20
-> I set the policy with:
-> [~]# openssl rand 64 > key
-> [~]# fscryptctl insert_key < key
-> a5bb6bff407f6f67
-> [~]# fscryptctl set_policy a5bb6bff407f6f67 writeDir/
->=20
-> I get the issue for all encryption modes and padding values altough =
-the length
-> of filenames at which it doesn't work varies.
-> With the default padding of 32 and AES-256-CTS encryption mode, it =
-does not
-> work for length >=3D 16 and <=3D 32, length >=3D 48 and <=3D 64...
->=20
-> I took a look at fs/crypto/fname.c but I can't figure out the problem. =
-It seems
-> like it's an overflow somewhere.
+Acked-by: Olof Johansson <olof@lixom.net>
 
-Do you use a hardware crypto accelerator for AES? I saw the same issue =
-with the CAAM driver (see issue 1 here [1]) some time ago.
 
-Specifically, the blockcipher driver code is required to update ->iv of =
-skcipher_request after encryption/decryption. This is used by the =
-CTS-mode code. Here's the fix that got merged for the CAAM driver [2].
-
-- David
-
-[1] https://marc.info/?l=3Dlinux-crypto-vger&m=3D149640631518134&w=3D2
-[2] https://marc.info/?l=3Dlinux-crypto-vger&m=3D149865646825902&w=3D2=
+-Olof
