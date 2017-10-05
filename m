@@ -1,21 +1,31 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by merlin.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e00UK-0008Hr-9A
- for linux-mtd@lists.infradead.org; Thu, 05 Oct 2017 07:22:34 +0000
-Date: Thu, 5 Oct 2017 09:22:07 +0200
+ id 1e00Ux-0008IE-V9
+ for linux-mtd@lists.infradead.org; Thu, 05 Oct 2017 07:23:13 +0000
+Date: Thu, 5 Oct 2017 09:22:49 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Abhishek Sahu <absahu@codeaurora.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>, Archit
- Taneja <architt@codeaurora.org>, Sricharan R <sricharan@codeaurora.org>
-Subject: Re: [RESEND PATCH v5 10/16] mtd: nand: qcom: add command elements
- in BAM transaction
-Message-ID: <20171005092207.63f2c18f@bbrezillon>
-In-Reply-To: <1506325886-23347-1-git-send-email-absahu@codeaurora.org>
-References: <1506325886-23347-1-git-send-email-absahu@codeaurora.org>
+To: Romain Izard <romain.izard.pro@gmail.com>
+Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@codeaurora.org>, Lee Jones <lee.jones@linaro.org>, Wenyou Yang
+ <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>, Richard
+ Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Thierry Reding
+ <thierry.reding@gmail.com>, Richard Genoud <richard.genoud@gmail.com>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.com>,
+ Alan Stern <stern@rowland.harvard.edu>, Ludovic Desroches
+ <ludovic.desroches@microchip.com>, Nicolas Ferre
+ <nicolas.ferre@microchip.com>, Alexandre Belloni
+ <alexandre.belloni@free-electrons.com>, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
+ linux-usb@vger.kernel.org
+Subject: Re: [PATCH v4 4/8] mtd: nand: atmel: Avoid ECC errors when leaving
+ backup mode
+Message-ID: <20171005092249.103518f8@bbrezillon>
+In-Reply-To: <20170928094627.31017-5-romain.izard.pro@gmail.com>
+References: <20170928094627.31017-1-romain.izard.pro@gmail.com>
+ <20170928094627.31017-5-romain.izard.pro@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,107 +38,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 25 Sep 2017 13:21:25 +0530
-Abhishek Sahu <absahu@codeaurora.org> wrote:
+On Thu, 28 Sep 2017 11:46:23 +0200
+Romain Izard <romain.izard.pro@gmail.com> wrote:
 
-> All the QPIC register read/write through BAM DMA requires
-> command descriptor which contains the array of command elements.
+> During backup mode, the contents of all registers will be cleared as the
+> SoC will be completely powered down. For a product that boots on NAND
+> Flash memory, the bootloader will obviously use the related controller
+> to read the Flash and correct any detected error in the memory, before
+> handling back control to the kernel's resuming entry point.
 > 
-> Reviewed-by: Archit Taneja <architt@codeaurora.org>
-> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+> But it does not clean the NAND controller registers after use and on its
+> side the kernel driver expects the error locator to be powered down and
+> in a clean state. Add a resume hook for the PMECC error locator, and
+> reset its registers.
+> 
+> Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
 
-Applied both.
+Applied.
 
 Thanks,
 
 Boris
 
 > ---
+> Changes in v3:
+> * keep the PMECC disabled when not in use, and use atmel_pmecc_resume to
+>   reset the controller after the bootloader has left it enabled.
 > 
-> * Changes from v4: None
+> Changes in v4:
+> * export atmel_pmecc_reset instead of atmel_pmecc_resume
+> * use the correct pointer in atmel_nand_controller_resume
 > 
-> The BAM DMA patches [1] got merged in 4.14-rc1 so now all the build
-> dependencies are solved and this patch can be merged.
-> This patch can be cleanly applied over v4.14-rc1.
+>  drivers/mtd/nand/atmel/nand-controller.c |  3 +++
+>  drivers/mtd/nand/atmel/pmecc.c           | 17 +++++++++--------
+>  drivers/mtd/nand/atmel/pmecc.h           |  1 +
+>  3 files changed, 13 insertions(+), 8 deletions(-)
 > 
-> [1] http://www.spinics.net/lists/dmaengine/msg13665.html
-> 
->  drivers/mtd/nand/qcom_nandc.c | 19 ++++++++++++++++++-
->  1 file changed, 18 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-> index 7977a70..b0a4734 100644
-> --- a/drivers/mtd/nand/qcom_nandc.c
-> +++ b/drivers/mtd/nand/qcom_nandc.c
-> @@ -22,6 +22,7 @@
->  #include <linux/of.h>
->  #include <linux/of_device.h>
->  #include <linux/delay.h>
-> +#include <linux/dma/qcom_bam_dma.h>
+> diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/atmel/nand-controller.c
+> index f25eca79f4e5..8afcff9a66ea 100644
+> --- a/drivers/mtd/nand/atmel/nand-controller.c
+> +++ b/drivers/mtd/nand/atmel/nand-controller.c
+> @@ -2530,6 +2530,9 @@ static __maybe_unused int atmel_nand_controller_resume(struct device *dev)
+>  	struct atmel_nand_controller *nc = dev_get_drvdata(dev);
+>  	struct atmel_nand *nand;
 >  
->  /* NANDc reg offsets */
->  #define	NAND_FLASH_CMD			0x00
-> @@ -199,6 +200,7 @@
->   */
->  #define dev_cmd_reg_addr(nandc, reg) ((nandc)->props->dev_cmd_reg_start + (reg))
->  
-> +#define QPIC_PER_CW_CMD_ELEMENTS	32
->  #define QPIC_PER_CW_CMD_SGL		32
->  #define QPIC_PER_CW_DATA_SGL		8
->  
-> @@ -221,8 +223,13 @@
->  /*
->   * This data type corresponds to the BAM transaction which will be used for all
->   * NAND transfers.
-> + * @bam_ce - the array of BAM command elements
->   * @cmd_sgl - sgl for NAND BAM command pipe
->   * @data_sgl - sgl for NAND BAM consumer/producer pipe
-> + * @bam_ce_pos - the index in bam_ce which is available for next sgl
-> + * @bam_ce_start - the index in bam_ce which marks the start position ce
-> + *		   for current sgl. It will be used for size calculation
-> + *		   for current sgl
->   * @cmd_sgl_pos - current index in command sgl.
->   * @cmd_sgl_start - start index in command sgl.
->   * @tx_sgl_pos - current index in data sgl for tx.
-> @@ -231,8 +238,11 @@
->   * @rx_sgl_start - start index in data sgl for rx.
->   */
->  struct bam_transaction {
-> +	struct bam_cmd_element *bam_ce;
->  	struct scatterlist *cmd_sgl;
->  	struct scatterlist *data_sgl;
-> +	u32 bam_ce_pos;
-> +	u32 bam_ce_start;
->  	u32 cmd_sgl_pos;
->  	u32 cmd_sgl_start;
->  	u32 tx_sgl_pos;
-> @@ -462,7 +472,8 @@ static void free_bam_transaction(struct qcom_nand_controller *nandc)
->  
->  	bam_txn_size =
->  		sizeof(*bam_txn) + num_cw *
-> -		((sizeof(*bam_txn->cmd_sgl) * QPIC_PER_CW_CMD_SGL) +
-> +		((sizeof(*bam_txn->bam_ce) * QPIC_PER_CW_CMD_ELEMENTS) +
-> +		(sizeof(*bam_txn->cmd_sgl) * QPIC_PER_CW_CMD_SGL) +
->  		(sizeof(*bam_txn->data_sgl) * QPIC_PER_CW_DATA_SGL));
->  
->  	bam_txn_buf = devm_kzalloc(nandc->dev, bam_txn_size, GFP_KERNEL);
-> @@ -472,6 +483,10 @@ static void free_bam_transaction(struct qcom_nand_controller *nandc)
->  	bam_txn = bam_txn_buf;
->  	bam_txn_buf += sizeof(*bam_txn);
->  
-> +	bam_txn->bam_ce = bam_txn_buf;
-> +	bam_txn_buf +=
-> +		sizeof(*bam_txn->bam_ce) * QPIC_PER_CW_CMD_ELEMENTS * num_cw;
+> +	if (nc->pmecc)
+> +		atmel_pmecc_reset(nc->pmecc);
 > +
->  	bam_txn->cmd_sgl = bam_txn_buf;
->  	bam_txn_buf +=
->  		sizeof(*bam_txn->cmd_sgl) * QPIC_PER_CW_CMD_SGL * num_cw;
-> @@ -489,6 +504,8 @@ static void clear_bam_transaction(struct qcom_nand_controller *nandc)
->  	if (!nandc->props->is_bam)
->  		return;
+>  	list_for_each_entry(nand, &nc->chips, node) {
+>  		int i;
 >  
-> +	bam_txn->bam_ce_pos = 0;
-> +	bam_txn->bam_ce_start = 0;
->  	bam_txn->cmd_sgl_pos = 0;
->  	bam_txn->cmd_sgl_start = 0;
->  	bam_txn->tx_sgl_pos = 0;
+> diff --git a/drivers/mtd/nand/atmel/pmecc.c b/drivers/mtd/nand/atmel/pmecc.c
+> index 146af8218314..0a3f12141c45 100644
+> --- a/drivers/mtd/nand/atmel/pmecc.c
+> +++ b/drivers/mtd/nand/atmel/pmecc.c
+> @@ -765,6 +765,13 @@ void atmel_pmecc_get_generated_eccbytes(struct atmel_pmecc_user *user,
+>  }
+>  EXPORT_SYMBOL_GPL(atmel_pmecc_get_generated_eccbytes);
+>  
+> +void atmel_pmecc_reset(struct atmel_pmecc *pmecc)
+> +{
+> +	writel(PMECC_CTRL_RST, pmecc->regs.base + ATMEL_PMECC_CTRL);
+> +	writel(PMECC_CTRL_DISABLE, pmecc->regs.base + ATMEL_PMECC_CTRL);
+> +}
+> +EXPORT_SYMBOL_GPL(atmel_pmecc_reset);
+> +
+>  int atmel_pmecc_enable(struct atmel_pmecc_user *user, int op)
+>  {
+>  	struct atmel_pmecc *pmecc = user->pmecc;
+> @@ -797,10 +804,7 @@ EXPORT_SYMBOL_GPL(atmel_pmecc_enable);
+>  
+>  void atmel_pmecc_disable(struct atmel_pmecc_user *user)
+>  {
+> -	struct atmel_pmecc *pmecc = user->pmecc;
+> -
+> -	writel(PMECC_CTRL_RST, pmecc->regs.base + ATMEL_PMECC_CTRL);
+> -	writel(PMECC_CTRL_DISABLE, pmecc->regs.base + ATMEL_PMECC_CTRL);
+> +	atmel_pmecc_reset(user->pmecc);
+>  	mutex_unlock(&user->pmecc->lock);
+>  }
+>  EXPORT_SYMBOL_GPL(atmel_pmecc_disable);
+> @@ -855,10 +859,7 @@ static struct atmel_pmecc *atmel_pmecc_create(struct platform_device *pdev,
+>  
+>  	/* Disable all interrupts before registering the PMECC handler. */
+>  	writel(0xffffffff, pmecc->regs.base + ATMEL_PMECC_IDR);
+> -
+> -	/* Reset the ECC engine */
+> -	writel(PMECC_CTRL_RST, pmecc->regs.base + ATMEL_PMECC_CTRL);
+> -	writel(PMECC_CTRL_DISABLE, pmecc->regs.base + ATMEL_PMECC_CTRL);
+> +	atmel_pmecc_reset(pmecc);
+>  
+>  	return pmecc;
+>  }
+> diff --git a/drivers/mtd/nand/atmel/pmecc.h b/drivers/mtd/nand/atmel/pmecc.h
+> index a8ddbfca2ea5..817e0dd9fd15 100644
+> --- a/drivers/mtd/nand/atmel/pmecc.h
+> +++ b/drivers/mtd/nand/atmel/pmecc.h
+> @@ -61,6 +61,7 @@ atmel_pmecc_create_user(struct atmel_pmecc *pmecc,
+>  			struct atmel_pmecc_user_req *req);
+>  void atmel_pmecc_destroy_user(struct atmel_pmecc_user *user);
+>  
+> +void atmel_pmecc_reset(struct atmel_pmecc *pmecc);
+>  int atmel_pmecc_enable(struct atmel_pmecc_user *user, int op);
+>  void atmel_pmecc_disable(struct atmel_pmecc_user *user);
+>  int atmel_pmecc_wait_rdy(struct atmel_pmecc_user *user);
