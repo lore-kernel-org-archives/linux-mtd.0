@@ -1,19 +1,22 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e00Wl-0001Y8-Rw
- for linux-mtd@lists.infradead.org; Thu, 05 Oct 2017 07:25:16 +0000
-Date: Thu, 5 Oct 2017 09:24:42 +0200
+ id 1e00dI-0005lR-Kf
+ for linux-mtd@lists.infradead.org; Thu, 05 Oct 2017 07:31:50 +0000
+Date: Thu, 5 Oct 2017 09:31:26 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
- linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: sh_flctl: Use of_device_get_match_data() helper
-Message-ID: <20171005092442.5126afcb@bbrezillon>
-In-Reply-To: <1507119543-12723-1-git-send-email-geert+renesas@glider.be>
-References: <1507119543-12723-1-git-send-email-geert+renesas@glider.be>
+To: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+Cc: richard@nod.at, linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, cyrille.pitchen@wedev4u.fr,
+ computersforpeace@gmail.com, dwmw2@infradead.org
+Subject: Re: [PATCH -next v2] mtd: nand: Add support for Toshiba BENAND
+ (Built-in ECC NAND)
+Message-ID: <20171005093126.78616d74@bbrezillon>
+In-Reply-To: <fa307950-6085-acf9-aae3-725b9c2a60af@toshiba.co.jp>
+References: <1505971922-4994-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
+ <20170921092849.6f1ba4b8@bbrezillon>
+ <34d612f6-a479-21e7-f0aa-734e647d5942@toshiba.co.jp>
+ <20170926231549.40c09c5d@bbrezillon>
+ <fa307950-6085-acf9-aae3-725b9c2a60af@toshiba.co.jp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,43 +29,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed,  4 Oct 2017 14:19:03 +0200
-Geert Uytterhoeven <geert+renesas@glider.be> wrote:
+On Thu, 5 Oct 2017 16:24:08 +0900
+KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:
 
-> Use the of_device_get_match_data() helper instead of open coding.
-> While at it, make config const so the cast can be dropped.
+> On 2017/09/27 6:15, Boris Brezillon wrote:
+> > On Tue, 26 Sep 2017 18:18:04 +0900
+> > KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:
+> >   
+> >> On 2017/09/21 16:28, Boris Brezillon wrote:  
+> >>> On Thu, 21 Sep 2017 14:32:02 +0900
+> >>> KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:
+> >>>     
+> >>>> This patch enables support for Toshiba BENAND.
+> >>>> The current implementation does not support vondor specific command    
+> >>>
+> >>> 					       ^ vendor
+> >>>     
+> >>>> TOSHIBA_NAND_CMD_ECC_STATUS. I would like to add the command, when
+> >>>> the exec_op() [1] infrastructure is implemented.    
+> >>>
+> >>> It's not a good idea to reference a branch that is likely to disappear
+> >>> in a commit message. Just say that you can't properly support the
+> >>> TOSHIBA_NAND_CMD_ECC_STATUS operation right and that it might be
+> >>> addressed in the future.    
+> >>
+> >> Thanks. I'll change the comment.
+> >>  
+> >>>> +	 */
+> >>>> +	if (status & NAND_STATUS_FAIL) {
+> >>>> +		/* uncorrectable */
+> >>>> +		mtd->ecc_stats.failed++;
+> >>>> +	} else if (status & TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED) {
+> >>>> +		/* correctable */
+> >>>> +		max_bitflips = mtd->bitflip_threshold;
+> >>>> +		mtd->ecc_stats.corrected += max_bitflips;
+> >>>> +	}    
+> >>>
+> >>> Is this working correctly when you read more than one ECC chunk? The
+> >>> ECC step size is 512 bytes and the page is bigger than that, which means
+> >>> you have more than one ECC chunk per page. What happens to the
+> >>> NAND_STATUS_FAIL flag if the first chunk is uncorrectable but
+> >>> following ones are correctable (or do not contain bitflips at all)?     
+> >>
+> >> As you mentioned, the ECC step size is 512 byte. But when 0x70 command is used
+> >> a simplified ECC status per page is generated.  
+> > 
+> > I'm fine with that as long as uncorrectable errors are detected
+> > correctly and TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED is set as soon as
+> > one of the ECC chunk exposes too many bitflips.
+> >   
+> >> In case the first chunk is uncorrectable but the following ones are correctable,
+> >> the 0x70 command can only check the status of the uncorrectable one.  
+> > 
+> > Sounds good.
+> >   
+> >> Each ECC chunk status can be checked by using the 0x7A command.
+> >>  
+> >>>> @@ -39,9 +105,43 @@ static void toshiba_nand_decode_id(struct nand_chip *chip)
+> >>>>  
+> >>>>  static int toshiba_nand_init(struct nand_chip *chip)
+> >>>>  {
+> >>>> +	struct mtd_info *mtd = nand_to_mtd(chip);
+> >>>> +
+> >>>>  	if (nand_is_slc(chip))
+> >>>>  		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
+> >>>>  
+> >>>> +	if (nand_is_slc(chip) && (chip->id.data[4] & 0x80)) {
+> >>>> +		/* BENAND */
+> >>>> +
+> >>>> +		/*
+> >>>> +		 * We can't disable the internal ECC engine, the user
+> >>>> +		 * has to use on-die ECC, there is no alternative.
+> >>>> +		 */
+> >>>> +		if (chip->ecc.mode != NAND_ECC_ON_DIE) {
+> >>>> +			pr_err("On-die ECC should be selected.\n");
+> >>>> +			return -EINVAL;
+> >>>> +		}    
+> >>>
+> >>> According to your previous explanation that's not exactly true. Since
+> >>> ECC bytes are stored in a separate area, the user can decide to use
+> >>> another mode without trouble. Just skip the BENAND initialization when
+> >>> mode != NAND_ECC_ON_DIE and we should be good, or am I missing something?    
+> >>
+> >> I am asking to product department to confirm it.  
+> > 
+> > I'm almost sure this is the case ;-).  
 > 
+> According to the command sequence written in BENAND's datasheet, the status
+> of the internal ECC must be checked after reading. To do that, ecc.mode has been
+> set to NAND_ECC_ON_DIE and the status of the internal ECC is checked through 
+> the 0x70 or 0x7A command. That's the reason we are returning EINVAL here.
 
-Applied.
+But the status will anyway be retrieved, and what's the point of
+checking the ECC flags if the user wants to use its own ECC engine? I
+mean, since you have the whole OOB area exposed why would you prevent
+existing setup from working (by existing setup I mean those that already
+have a BENAND but haven't modified their driver to accept ON_DIE_ECC).
 
-Thanks,
-
-Boris
-
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->  drivers/mtd/nand/sh_flctl.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-> index e7f3c98487e620bc..3c5008a4f5f33acc 100644
-> --- a/drivers/mtd/nand/sh_flctl.c
-> +++ b/drivers/mtd/nand/sh_flctl.c
-> @@ -1094,14 +1094,11 @@ MODULE_DEVICE_TABLE(of, of_flctl_match);
->  
->  static struct sh_flctl_platform_data *flctl_parse_dt(struct device *dev)
->  {
-> -	const struct of_device_id *match;
-> -	struct flctl_soc_config *config;
-> +	const struct flctl_soc_config *config;
->  	struct sh_flctl_platform_data *pdata;
->  
-> -	match = of_match_device(of_flctl_match, dev);
-> -	if (match)
-> -		config = (struct flctl_soc_config *)match->data;
-> -	else {
-> +	config = of_device_get_match_data(dev);
-> +	if (!config) {
->  		dev_err(dev, "%s: no OF configuration attached\n", __func__);
->  		return NULL;
->  	}
+Maybe I'm missing something, but AFAICT it's safe to allow users to
+completely ignore the on-die ECC engine and use their own, even if
+that means duplicating the work since on-die ECC cannot be disabled on
+BENAND devices.
