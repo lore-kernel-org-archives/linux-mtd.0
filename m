@@ -1,23 +1,17 @@
-Date: Thu, 5 Oct 2017 14:53:43 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1e09P8-00033v-M2
+ for linux-mtd@lists.infradead.org; Thu, 05 Oct 2017 16:53:48 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Miquel Raynal <miquel.raynal@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>, Gregory
- Clement <gregory.clement@free-electrons.com>, Sebastian Hesselbarth
- <sebastian.hesselbarth@gmail.com>, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Thomas
- Petazzoni <thomas.petazzoni@free-electrons.com>, Antoine Tenart
- <antoine.tenart@free-electrons.com>, Nadav Haklai <nadavh@marvell.com>
-Subject: Re: [PATCH 0/3] Enable NAND on Armada-7040-DB board
-Message-ID: <20171005145343.1ba59fb7@bbrezillon>
-In-Reply-To: <20170925145352.13145-1-miquel.raynal@free-electrons.com>
-References: <20170925145352.13145-1-miquel.raynal@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, stable@vger.kernel.org
+Subject: [PATCH] mtd: nand: Export nand_reset() symbol
+Date: Thu,  5 Oct 2017 18:53:19 +0200
+Message-Id: <20171005165319.30391-1-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,41 +21,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 25 Sep 2017 16:53:49 +0200
-Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
+Commit 6e532afaca8e ("mtd: nand: atmel: Add PM ops") started to use the
+nand_reset() function which was not yet exported by the NAND framework
+(because it was only used internally before that). Export this symbol
+to avoid build errors when the driver is enabled as a module.
 
-> Hi,
-> 
-> This series adds support for NAND on Armada-7040-DB board.
-> 
-> Besides standard NAND node addition, it also introduces a new compatible
-> string for the pxa3xx_nand driver to support the subitilities of A7k/A8k
-> SoCs, as well as a new property used by the pxa3xx_nand driver to grab a
-> phandle on the system control node in order to enable the NAND
-> controller itself.
-> 
-> Regards,
-> Miquel
-> 
-> 
-> Gregory CLEMENT (1):
->   arm64: dts: marvell: add NAND support on the 7040-DB board
-> 
-> Miquel Raynal (2):
->   Documentation: devicetree: add pxa3xx compatible and syscon property
->   mtd: nand: pxa3xx: enable NAND controller if the SoC needs it
+Fixes: 6e532afaca8e ("mtd: nand: atmel: Add PM ops")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/nand/nand_base.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Applied patch 1 and 2.
-
-Thanks,
-
-Boris
-
-> 
->  .../devicetree/bindings/mtd/pxa3xx-nand.txt        |  4 +++
->  arch/arm64/boot/dts/marvell/armada-7040-db.dts     | 24 +++++++++++++
->  arch/arm64/boot/dts/marvell/armada-70x0.dtsi       | 14 ++++++++
->  .../boot/dts/marvell/armada-cp110-master.dtsi      |  3 +-
->  drivers/mtd/nand/pxa3xx_nand.c                     | 41 +++++++++++++++++++---
->  5 files changed, 81 insertions(+), 5 deletions(-)
-> 
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index c63e4a88a653..4c867115c53b 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1244,6 +1244,7 @@ int nand_reset(struct nand_chip *chip, int chipnr)
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(nand_reset);
+ 
+ /**
+  * nand_check_erased_buf - check if a buffer contains (almost) only 0xff data
+-- 
+2.11.0
