@@ -1,25 +1,23 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e00nC-0003Ow-1r
- for linux-mtd@lists.infradead.org; Thu, 05 Oct 2017 07:42:04 +0000
-Date: Thu, 5 Oct 2017 09:41:38 +0200
-From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-To: Kalyan Kinthada <kalyan.kinthada@alliedtelesis.co.nz>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org, mark.rutland@arm.com,
- ezequiel.garcia@free-electrons.com, devicetree@vger.kernel.org,
- chris.packham@alliedtelesis.co.nz, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/1] mtd: nand: pxa3xx: Set FORCE_CSX bit to
- ARMADA370 variants.
-Message-ID: <20171005094138.11b73a0e@xps13>
-In-Reply-To: <20170928005756.3938-2-kalyan.kinthada@alliedtelesis.co.nz>
-References: <20170928005756.3938-1-kalyan.kinthada@alliedtelesis.co.nz>
- <20170928005756.3938-2-kalyan.kinthada@alliedtelesis.co.nz>
+Date: Thu, 5 Oct 2017 14:53:43 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Miquel Raynal <miquel.raynal@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>, Gregory
+ Clement <gregory.clement@free-electrons.com>, Sebastian Hesselbarth
+ <sebastian.hesselbarth@gmail.com>, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Thomas
+ Petazzoni <thomas.petazzoni@free-electrons.com>, Antoine Tenart
+ <antoine.tenart@free-electrons.com>, Nadav Haklai <nadavh@marvell.com>
+Subject: Re: [PATCH 0/3] Enable NAND on Armada-7040-DB board
+Message-ID: <20171005145343.1ba59fb7@bbrezillon>
+In-Reply-To: <20170925145352.13145-1-miquel.raynal@free-electrons.com>
+References: <20170925145352.13145-1-miquel.raynal@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,96 +27,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Kalyan,
+On Mon, 25 Sep 2017 16:53:49 +0200
+Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
 
-On Thu, 28 Sep 2017 13:57:56 +1300
-Kalyan Kinthada <kalyan.kinthada@alliedtelesis.co.nz> wrote:
+> Hi,
+> 
+> This series adds support for NAND on Armada-7040-DB board.
+> 
+> Besides standard NAND node addition, it also introduces a new compatible
+> string for the pxa3xx_nand driver to support the subitilities of A7k/A8k
+> SoCs, as well as a new property used by the pxa3xx_nand driver to grab a
+> phandle on the system control node in order to enable the NAND
+> controller itself.
+> 
+> Regards,
+> Miquel
+> 
+> 
+> Gregory CLEMENT (1):
+>   arm64: dts: marvell: add NAND support on the 7040-DB board
+> 
+> Miquel Raynal (2):
+>   Documentation: devicetree: add pxa3xx compatible and syscon property
+>   mtd: nand: pxa3xx: enable NAND controller if the SoC needs it
 
-> When the arbitration between NOR and NAND flash is enabled
-> the <FORCE_CSX> field bit[21] in the Data Flash Control Register
-> needs to be set to 1 according to guidleine GL-5830741 mentioned
+Applied patch 1 and 2.
 
-Typo: guideline ^
+Thanks,
 
-> in Marvell Errata document MV-S501377-00, Rev. D.
+Boris
 
-Thanks for that, I checked it.
-
->=20
-> This commit sets the FORCE_CSX bit to 1 for all
-> ARMADA370 variants as the arbitration is always enabled by default.
-> This change does not apply for pxa3xx variants because the FORCE_CSX
-> bit does not exist/reserved on the NFCv1.
-
-Sorry to bother you again but I am reworking the pxa3xx_nand driver and
-so I would like to deeply understand why this is needed because I will
-have to integrate it in my work too.
-
-So please tell me what is your setup, do you really use NAND/NOR
-arbitration? Do you have not-Don't Care CS NAND chips? I have some
-doubts because even if the spec precises in the NAND controller chapter
-that arbitration is always enabled by default, the bit 27 (NfArbiterEn)
-in the SoC Device Multiplex Register at offset 0x00018208 is actually
-at 0 by default (disabled). Did you enable this bit manually ? I
-checked with devmem on my setup and this bit was unset.
-
-Thank you for your time,
-Miqu=C3=A8l
-
->=20
-> The NDCR_ND_MODE conflicts with the new NDCR_FORCE_CSX but is unused
-> so remove it along with NDCR_NAND_MODE.
->=20
-> Signed-off-by: Kalyan Kinthada <kalyan.kinthada@alliedtelesis.co.nz>
-> ---
-
-
-
->  drivers/mtd/nand/pxa3xx_nand.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c
-> b/drivers/mtd/nand/pxa3xx_nand.c index 85cff68643e0..a6a7a5af7bed
-> 100644 --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -67,8 +67,7 @@
->  #define NDCR_DWIDTH_M		(0x1 << 26)
->  #define NDCR_PAGE_SZ		(0x1 << 24)
->  #define NDCR_NCSX		(0x1 << 23)
-> -#define NDCR_ND_MODE		(0x3 << 21)
-> -#define NDCR_NAND_MODE   	(0x0)
-> +#define NDCR_FORCE_CSX		(0x1 << 21)
->  #define NDCR_CLR_PG_CNT		(0x1 << 20)
->  #define NFCV1_NDCR_ARB_CNTL	(0x1 << 19)
->  #define NFCV2_NDCR_STOP_ON_UNCOR	(0x1 << 19)
-> @@ -1464,6 +1463,9 @@ static int pxa3xx_nand_config_ident(struct
-> pxa3xx_nand_info *info) info->chunk_size =3D PAGE_CHUNK_SIZE;
->  	info->reg_ndcr =3D 0x0; /* enable all interrupts */
->  	info->reg_ndcr |=3D (pdata->enable_arbiter) ? NDCR_ND_ARB_EN :
-> 0;
-> +	/* Set FORCE_CSX bit for all ARMADA370 Variants. Ref#:
-> GL-5830741 */
-> +	if (info->variant =3D=3D PXA3XX_NAND_VARIANT_ARMADA370)
-> +		info->reg_ndcr |=3D NDCR_FORCE_CSX;
->  	info->reg_ndcr |=3D NDCR_RD_ID_CNT(READ_ID_BYTES);
->  	info->reg_ndcr |=3D NDCR_SPARE_EN;
-> =20
-> @@ -1498,6 +1500,9 @@ static void pxa3xx_nand_detect_config(struct
-> pxa3xx_nand_info *info) info->reg_ndcr =3D ndcr &
->  		~(NDCR_INT_MASK | NDCR_ND_ARB_EN |
-> NFCV1_NDCR_ARB_CNTL); info->reg_ndcr |=3D (pdata->enable_arbiter) ?
-> NDCR_ND_ARB_EN : 0;
-> +	/* Set FORCE_CSX bit for all ARMADA370 Variants. Ref#:
-> GL-5830741 */
-> +	if (info->variant =3D=3D PXA3XX_NAND_VARIANT_ARMADA370)
-> +		info->reg_ndcr |=3D NDCR_FORCE_CSX;
->  	info->ndtr0cs0 =3D nand_readl(info, NDTR0CS0);
->  	info->ndtr1cs0 =3D nand_readl(info, NDTR1CS0);
->  }
-
-
-
---=20
-Miquel Raynal, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+> 
+>  .../devicetree/bindings/mtd/pxa3xx-nand.txt        |  4 +++
+>  arch/arm64/boot/dts/marvell/armada-7040-db.dts     | 24 +++++++++++++
+>  arch/arm64/boot/dts/marvell/armada-70x0.dtsi       | 14 ++++++++
+>  .../boot/dts/marvell/armada-cp110-master.dtsi      |  3 +-
+>  drivers/mtd/nand/pxa3xx_nand.c                     | 41 +++++++++++++++++++---
+>  5 files changed, 81 insertions(+), 5 deletions(-)
+> 
