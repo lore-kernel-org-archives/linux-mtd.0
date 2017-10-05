@@ -1,28 +1,25 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
- by casper.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e00VQ-00029q-NL
- for linux-mtd@lists.infradead.org; Thu, 05 Oct 2017 07:23:42 +0000
-Date: Thu, 5 Oct 2017 09:23:19 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Gregory CLEMENT <gregory.clement@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Thomas Petazzoni
- <thomas.petazzoni@free-electrons.com>, Antoine Tenart
- <antoine.tenart@free-electrons.com>, =?UTF-8?B?TWlxdcOobA==?= Raynal
- <miquel.raynal@free-electrons.com>, Nadav Haklai <nadavh@marvell.com>,
- Shadi Ammouri <shadi@marvell.com>, Yehuda Yitschak <yehuday@marvell.com>,
- Omri Itach <omrii@marvell.com>, Hanna Hawa <hannah@marvell.com>, Igal
- Liberman <igall@marvell.com>, Marcin Wojtas <mw@semihalf.com>
-Subject: Re: [PATCH v2] mtd: nand: pxa3xx_nand: Update Kconfig information
-Message-ID: <20171005092319.48231d15@bbrezillon>
-In-Reply-To: <20170929133424.7205-1-gregory.clement@free-electrons.com>
-References: <20170929133424.7205-1-gregory.clement@free-electrons.com>
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1e00nC-0003Ow-1r
+ for linux-mtd@lists.infradead.org; Thu, 05 Oct 2017 07:42:04 +0000
+Date: Thu, 5 Oct 2017 09:41:38 +0200
+From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+To: Kalyan Kinthada <kalyan.kinthada@alliedtelesis.co.nz>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
+ cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org, mark.rutland@arm.com,
+ ezequiel.garcia@free-electrons.com, devicetree@vger.kernel.org,
+ chris.packham@alliedtelesis.co.nz, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/1] mtd: nand: pxa3xx: Set FORCE_CSX bit to
+ ARMADA370 variants.
+Message-ID: <20171005094138.11b73a0e@xps13>
+In-Reply-To: <20170928005756.3938-2-kalyan.kinthada@alliedtelesis.co.nz>
+References: <20170928005756.3938-1-kalyan.kinthada@alliedtelesis.co.nz>
+ <20170928005756.3938-2-kalyan.kinthada@alliedtelesis.co.nz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,43 +29,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 29 Sep 2017 15:34:24 +0200
-Gregory CLEMENT <gregory.clement@free-electrons.com> wrote:
+Hello Kalyan,
 
-> More and more SoCs use the pxa3xx_nand driver for their controller but
-> the list of them was not updated. This patch add the last SoCs using the
-> driver.
-> 
+On Thu, 28 Sep 2017 13:57:56 +1300
+Kalyan Kinthada <kalyan.kinthada@alliedtelesis.co.nz> wrote:
 
-Applied.
+> When the arbitration between NOR and NAND flash is enabled
+> the <FORCE_CSX> field bit[21] in the Data Flash Control Register
+> needs to be set to 1 according to guidleine GL-5830741 mentioned
 
-Thanks,
+Typo: guideline ^
 
-Boris
+> in Marvell Errata document MV-S501377-00, Rev. D.
 
-> Signed-off-by: Gregory CLEMENT <gregory.clement@free-electrons.com>
+Thanks for that, I checked it.
+
+>=20
+> This commit sets the FORCE_CSX bit to 1 for all
+> ARMADA370 variants as the arbitration is always enabled by default.
+> This change does not apply for pxa3xx variants because the FORCE_CSX
+> bit does not exist/reserved on the NFCv1.
+
+Sorry to bother you again but I am reworking the pxa3xx_nand driver and
+so I would like to deeply understand why this is needed because I will
+have to integrate it in my work too.
+
+So please tell me what is your setup, do you really use NAND/NOR
+arbitration? Do you have not-Don't Care CS NAND chips? I have some
+doubts because even if the spec precises in the NAND controller chapter
+that arbitration is always enabled by default, the bit 27 (NfArbiterEn)
+in the SoC Device Multiplex Register at offset 0x00018208 is actually
+at 0 by default (disabled). Did you enable this bit manually ? I
+checked with devmem on my setup and this bit was unset.
+
+Thank you for your time,
+Miqu=C3=A8l
+
+>=20
+> The NDCR_ND_MODE conflicts with the new NDCR_FORCE_CSX but is unused
+> so remove it along with NDCR_NAND_MODE.
+>=20
+> Signed-off-by: Kalyan Kinthada <kalyan.kinthada@alliedtelesis.co.nz>
 > ---
-> Changelog v1->v2:
-> 
-> - Improve wording thanks to Thomas Petazzoni
-> 
->  drivers/mtd/nand/Kconfig | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index 3f2036f31da4..bb48aafed9a2 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -317,8 +317,11 @@ config MTD_NAND_PXA3xx
->  	tristate "NAND support on PXA3xx and Armada 370/XP"
->  	depends on PXA3xx || ARCH_MMP || PLAT_ORION || ARCH_MVEBU
->  	help
-> +
->  	  This enables the driver for the NAND flash device found on
-> -	  PXA3xx processors (NFCv1) and also on Armada 370/XP (NFCv2).
-> +	  PXA3xx processors (NFCv1) and also on 32-bit Armada
-> +	  platforms (XP, 370, 375, 38x, 39x) and 64-bit Armada
-> +	  platforms (7K, 8K) (NFCv2).
->  
->  config MTD_NAND_SLC_LPC32XX
->  	tristate "NXP LPC32xx SLC Controller"
+
+
+
+>  drivers/mtd/nand/pxa3xx_nand.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/mtd/nand/pxa3xx_nand.c
+> b/drivers/mtd/nand/pxa3xx_nand.c index 85cff68643e0..a6a7a5af7bed
+> 100644 --- a/drivers/mtd/nand/pxa3xx_nand.c
+> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> @@ -67,8 +67,7 @@
+>  #define NDCR_DWIDTH_M		(0x1 << 26)
+>  #define NDCR_PAGE_SZ		(0x1 << 24)
+>  #define NDCR_NCSX		(0x1 << 23)
+> -#define NDCR_ND_MODE		(0x3 << 21)
+> -#define NDCR_NAND_MODE   	(0x0)
+> +#define NDCR_FORCE_CSX		(0x1 << 21)
+>  #define NDCR_CLR_PG_CNT		(0x1 << 20)
+>  #define NFCV1_NDCR_ARB_CNTL	(0x1 << 19)
+>  #define NFCV2_NDCR_STOP_ON_UNCOR	(0x1 << 19)
+> @@ -1464,6 +1463,9 @@ static int pxa3xx_nand_config_ident(struct
+> pxa3xx_nand_info *info) info->chunk_size =3D PAGE_CHUNK_SIZE;
+>  	info->reg_ndcr =3D 0x0; /* enable all interrupts */
+>  	info->reg_ndcr |=3D (pdata->enable_arbiter) ? NDCR_ND_ARB_EN :
+> 0;
+> +	/* Set FORCE_CSX bit for all ARMADA370 Variants. Ref#:
+> GL-5830741 */
+> +	if (info->variant =3D=3D PXA3XX_NAND_VARIANT_ARMADA370)
+> +		info->reg_ndcr |=3D NDCR_FORCE_CSX;
+>  	info->reg_ndcr |=3D NDCR_RD_ID_CNT(READ_ID_BYTES);
+>  	info->reg_ndcr |=3D NDCR_SPARE_EN;
+> =20
+> @@ -1498,6 +1500,9 @@ static void pxa3xx_nand_detect_config(struct
+> pxa3xx_nand_info *info) info->reg_ndcr =3D ndcr &
+>  		~(NDCR_INT_MASK | NDCR_ND_ARB_EN |
+> NFCV1_NDCR_ARB_CNTL); info->reg_ndcr |=3D (pdata->enable_arbiter) ?
+> NDCR_ND_ARB_EN : 0;
+> +	/* Set FORCE_CSX bit for all ARMADA370 Variants. Ref#:
+> GL-5830741 */
+> +	if (info->variant =3D=3D PXA3XX_NAND_VARIANT_ARMADA370)
+> +		info->reg_ndcr |=3D NDCR_FORCE_CSX;
+>  	info->ndtr0cs0 =3D nand_readl(info, NDTR0CS0);
+>  	info->ndtr1cs0 =3D nand_readl(info, NDTR1CS0);
+>  }
+
+
+
+--=20
+Miquel Raynal, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
