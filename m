@@ -1,17 +1,21 @@
-Received: from sysam.it ([5.39.81.93])
+Received: from mail-wm0-x236.google.com ([2a00:1450:400c:c09::236])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e0ZoA-0003Oz-9O
- for linux-mtd@lists.infradead.org; Fri, 06 Oct 2017 21:05:24 +0000
-To: linux-mtd@lists.infradead.org
-From: Angelo Dureghello <angelo@sysam.it>
-Cc: Greg Ungerer <gregungerer@westnet.com.au>
-Subject: support for ISSI is25lp128
-Message-ID: <972ea98a-cc59-4fea-1358-ce096bc937c5@sysam.it>
-Date: Fri, 6 Oct 2017 23:04:59 +0200
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+ id 1e0aXb-0000EX-Tg
+ for linux-mtd@lists.infradead.org; Fri, 06 Oct 2017 21:52:22 +0000
+Received: by mail-wm0-x236.google.com with SMTP id t69so10010101wmt.2
+ for <linux-mtd@lists.infradead.org>; Fri, 06 Oct 2017 14:51:58 -0700 (PDT)
+From: Linus Walleij <linus.walleij@linaro.org>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Linus Walleij <linus.walleij@linaro.org>, arm@kernel.org
+Subject: [PATCH] ARM: pxa: cm-x255: Fix up GPIO NAND device name in table
+Date: Fri,  6 Oct 2017 23:51:44 +0200
+Message-Id: <20171006215144.18039-1-linus.walleij@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,72 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+My patch set the device name wrong because I confused the
+device name for a partition name. Sorry.
 
-i have a coldfire mcf54415-based board with a is25lp128 SPI flash and
-i was trolling into:
+Cc: arm@kernel.org
+Fixes: ("mtd: nand: gpio: Convert to use GPIO descriptors")
+Reported-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+This can be squashed into the commit or applied on top
+as a fix. The original patch was ACKed by the ARM SoC
+maintainers so I believe this is fine to apply.
+---
+ arch/arm/mach-pxa/cm-x255.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-http://lists.infradead.org/pipermail/linux-mtd/2016-March/066042.html
-
-I applied the same patch into spi-nor.c and tested, the patch seems
-to work great.
-
-
-  	/* ISSI */
-  	{ "is25cd512", INFO(0x7f9d20, 0, 32 * 1024,   2, SECT_4K) },
-+	{ "is25lp128", INFO(0x9d6018, 0, 32 * 1024,   512, SECT_4K) },
-
-
-At boot into dmesg i get
-
-[    0.000000] Linux version 4.13.0-rc7stmark2-001-00035-g815951bfbc2e-dirty (angelo@jerusalem) (gcc version 5.2.0 (crosstools-sysam-2016.04.16)) #158 Fri Oct 6 22:52:28 CEST 2017
-[    0.000000] uClinux with CPU COLDFIRE(m5441x)
-[    0.000000] COLDFIRE port done by Greg Ungerer, gerg@snapgear.com
-.....
-[    8.260000] m25p80 spi0.1: is25lp128 (16384 Kbytes)
-[    8.270000] Creating 3 MTD partitions on "is25lp128":
-[    8.270000] 0x000000000000-0x000000100000 : "U-Boot (1024K)"
-[    8.350000] 0x000000100000-0x000000800000 : "Kernel+initramfs (7168K)"
-[    8.410000] 0x000000800000-0x000001000000 : "Flash Free Space (8192K)"
-[    8.520000] Freeing unused kernel memory: 264K
-
-/ # cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 00100000 00001000 "U-Boot (1024K)"
-mtd1: 00700000 00001000 "Kernel+initramfs (7168K)"
-mtd2: 00800000 00001000 "Flash Free Space (8192K)"
-
-/ # hexdump /dev/mtd0 -C -n256
-00000000  00 00 20 61 00 0f 01 00  00 00 00 80 00 00 8c 47  |.. a...........G|
-00000010  e0 04 b6 47 e0 04 b6 47  e0 04 b6 47 e0 04 b6 47  |...G...G...G...G|
-*
-00000080  e0 04 b6 47 e0 04 b6 00  00 00 00 00 04 00 00 47  |...G...........G|
-00000090  e0 00 00 46 fc 27 00 20  3c 80 00 00 00 4e 7b 08  |...F.'. <....N{.|
-000000a0  01 20 3c 80 00 02 21 4e  7b 0c 05 70 00 22 7c 80  |. <...!N{..p."|.|
-000000b0  00 ff f8 24 7c 80 00 ff  fc 22 80 24 80 20 3c 01  |...$|....".$. <.|
-000000c0  04 01 00 4e 7b 00 02 70  00 4e 7b 00 04 4e 7b 00  |...N{..p.N{..N{.|
-000000d0  05 4e 7b 00 06 4e 7b 00  07 2e 7c 80 00 ff 50 42  |.N{..N{...|...PB|
-000000e0  a7 22 7c fc 04 00 2d 12  bc 00 17 61 00 04 62 22  |."|...-....a..b"|
-000000f0  7c ec 09 40 4e 24 7c ec  09 40 4f 12 bc 00 ff 14  ||..@N$|..@O.....|
-00000100
-/ #
-
-It is proper code of the primary partition
-
-/ # hexdump /dev/mtd1 -C -n256
-00000000  27 05 19 56 fe 2e de 03  59 d7 ed 0d 00 1c 50 00  |'..V....Y.....P.|
-00000010  40 00 10 00 40 00 10 00  ab e3 60 35 05 0c 02 00  |@...@.....`5....|
-00000020  6d 61 69 6e 6c 69 6e 65  20 6b 65 72 6e 65 6c 00  |mainline kernel.|
-00000030  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-00000040  4e 71 46 fc 27 00 20 3c  01 04 01 00 4e 7b 00 02  |NqF.'. <....N{..|
-00000050  4e 71 2e 7c 40 00 00 00  4e 7b f8 01 23 cf 40 16  |Nq.|@...N{..#.@.|
-00000060  b0 04 2e 7c 40 00 00 00  23 cf 40 16 b0 00 20 3c  |...|@...#.@... <|
-
-It is proper code of the second partition
-
-
-Let me know in case what kind of test you would need.
-Would help to have that patch accepted into mainline.
-
-Best regards,
-Angelo Dureghello
+diff --git a/arch/arm/mach-pxa/cm-x255.c b/arch/arm/mach-pxa/cm-x255.c
+index f8d67acb7194..fa8e7dd4d898 100644
+--- a/arch/arm/mach-pxa/cm-x255.c
++++ b/arch/arm/mach-pxa/cm-x255.c
+@@ -178,7 +178,7 @@ static inline void cmx255_init_nor(void) {}
+ #if defined(CONFIG_MTD_NAND_GPIO) || defined(CONFIG_MTD_NAND_GPIO_MODULE)
+ 
+ static struct gpiod_lookup_table cmx255_nand_gpiod_table = {
+-	.dev_id         = "cmx255-nand",
++	.dev_id         = "gpio-nand",
+ 	.table          = {
+ 		GPIO_LOOKUP("gpio-pxa", GPIO_NAND_CS, "nce", GPIO_ACTIVE_HIGH),
+ 		GPIO_LOOKUP("gpio-pxa", GPIO_NAND_CLE, "cle", GPIO_ACTIVE_HIGH),
+-- 
+2.13.5
