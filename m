@@ -1,23 +1,25 @@
-Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e0PzG-0006bP-Ge
- for linux-mtd@lists.infradead.org; Fri, 06 Oct 2017 10:36:13 +0000
-Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
- (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23990398AbdJFKfpv2hmG (ORCPT
- <rfc822;linux-mtd@lists.infradead.org>);
- Fri, 6 Oct 2017 12:35:45 +0200
-Date: Fri, 6 Oct 2017 12:35:43 +0200
-Sender: Ladislav Michl <ladis@linux-mips.org>
-From: Ladislav Michl <ladis@linux-mips.org>
-To: linux-mtd@lists.infradead.org
+Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1e0REB-0002iz-Ct
+ for linux-mtd@lists.infradead.org; Fri, 06 Oct 2017 11:55:41 +0000
+Date: Fri, 6 Oct 2017 13:55:14 +0200
+From: Pavel Machek <pavel@ucw.cz>
+To: Richard Weinberger <richard@nod.at>
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, linux-omap@vger.kernel.org
-Subject: [RESEND PATCH] mtd: nand: omap2: Remove omap_nand_platform_data
-Message-ID: <20171006103543.gnb2hxq7msallyzl@lenoch>
+ Marek Vasut <marek.vasut@gmail.com>, dwmw2@infradead.org,
+ computersforpeace@gmail.com, cyrille.pitchen@wedev4u.fr,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ trivial@kernel.org
+Subject: Re: [PATCH] Fix C++ kernel in include/linux/mtd/mtd.h
+Message-ID: <20171006115514.GF9497@amd>
+References: <20170923201314.GA14742@amd>
+ <b45f83d5-6a0b-64f2-2a3a-708e1a1e7f90@gmail.com>
+ <20170924102006.5aa42982@bbrezillon> <9307201.RrdVcHfbLZ@blindfold>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="f61P+fpdnY2FZS1u"
 Content-Disposition: inline
+In-Reply-To: <9307201.RrdVcHfbLZ@blindfold>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,128 +29,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As driver is now configured using DT, omap_nand_platform_data structure
-is no longer needed.
 
-Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
----
- Resend to linux-mtd as other part this patch was depending on
- was merged months ago via linux-omap tree...
+--f61P+fpdnY2FZS1u
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- drivers/mtd/nand/omap2.c                     | 40 +++++++---------------------
- include/linux/platform_data/mtd-nand-omap2.h | 17 ------------
- 2 files changed, 10 insertions(+), 47 deletions(-)
+On Sun 2017-09-24 10:23:25, Richard Weinberger wrote:
+> Am Sonntag, 24. September 2017, 10:20:06 CEST schrieb Boris Brezillon:
+> > On Sat, 23 Sep 2017 23:10:26 +0200
+> >=20
+> > Marek Vasut <marek.vasut@gmail.com> wrote:
+> > > On 09/23/2017 10:13 PM, Pavel Machek wrote:
+> > > > C++ comments look wrong in kernel tree. Fix one.
+> > >=20
+> > > AFAIR they are now (sadly) accepted, but this patch works for me.
+> >=20
+> > Works for me too. Here is my
+> >=20
+> > Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> >=20
+> > > Would be nice if trivial could pick it.
+> >=20
+> > Hm, I'd recommend not doing that, otherwise we might end up with a
+> > conflict if a patch modify something in this area.
+>=20
+> Let's carry it via MTD.
+> BTW: Shouldn't it be s/kernel/comment/ in the subject line?
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 54540c8fa1a2..b1fc070c8279 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -1588,8 +1588,7 @@ static bool is_elm_present(struct omap_nand_info *info,
- 	return true;
- }
- 
--static bool omap2_nand_ecc_check(struct omap_nand_info *info,
--				 struct omap_nand_platform_data	*pdata)
-+static bool omap2_nand_ecc_check(struct omap_nand_info *info)
- {
- 	bool ecc_needs_bch, ecc_needs_omap_bch, ecc_needs_elm;
- 
-@@ -1804,7 +1803,6 @@ static const struct mtd_ooblayout_ops omap_sw_ooblayout_ops = {
- static int omap_nand_probe(struct platform_device *pdev)
- {
- 	struct omap_nand_info		*info;
--	struct omap_nand_platform_data	*pdata = NULL;
- 	struct mtd_info			*mtd;
- 	struct nand_chip		*nand_chip;
- 	int				err;
-@@ -1814,6 +1812,9 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	int				min_oobbytes = BADBLOCK_MARKER_LENGTH;
- 	int				oobbytes_per_step;
- 
-+	if (!dev->of_node)
-+		return -EINVAL;
-+
- 	info = devm_kzalloc(&pdev->dev, sizeof(struct omap_nand_info),
- 				GFP_KERNEL);
- 	if (!info)
-@@ -1821,29 +1822,9 @@ static int omap_nand_probe(struct platform_device *pdev)
- 
- 	info->pdev = pdev;
- 
--	if (dev->of_node) {
--		if (omap_get_dt_info(dev, info))
--			return -EINVAL;
--	} else {
--		pdata = dev_get_platdata(&pdev->dev);
--		if (!pdata) {
--			dev_err(&pdev->dev, "platform data missing\n");
--			return -EINVAL;
--		}
--
--		info->gpmc_cs = pdata->cs;
--		info->reg = pdata->reg;
--		info->ecc_opt = pdata->ecc_opt;
--		if (pdata->dev_ready)
--			dev_info(&pdev->dev, "pdata->dev_ready is deprecated\n");
--
--		info->xfer_type = pdata->xfer_type;
--		info->devsize = pdata->devsize;
--		info->elm_of_node = pdata->elm_of_node;
--		info->flash_bbt = pdata->flash_bbt;
--	}
-+	if (omap_get_dt_info(dev, info))
-+		return -EINVAL;
- 
--	platform_set_drvdata(pdev, info);
- 	info->ops = gpmc_omap_get_nand_ops(&info->reg, info->gpmc_cs);
- 	if (!info->ops) {
- 		dev_err(&pdev->dev, "Failed to get GPMC->NAND interface\n");
-@@ -2002,7 +1983,7 @@ static int omap_nand_probe(struct platform_device *pdev)
- 		goto return_error;
- 	}
- 
--	if (!omap2_nand_ecc_check(info, pdata)) {
-+	if (!omap2_nand_ecc_check(info)) {
- 		err = -EINVAL;
- 		goto return_error;
- 	}
-@@ -2167,10 +2148,9 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	if (err)
- 		goto return_error;
- 
--	if (dev->of_node)
--		mtd_device_register(mtd, NULL, 0);
--	else
--		mtd_device_register(mtd, pdata->parts, pdata->nr_parts);
-+	err = mtd_device_register(mtd, NULL, 0);
-+	if (err)
-+		goto return_error;
- 
- 	platform_set_drvdata(pdev, mtd);
- 
-diff --git a/include/linux/platform_data/mtd-nand-omap2.h b/include/linux/platform_data/mtd-nand-omap2.h
-index 25e267f1970c..619df2431e75 100644
---- a/include/linux/platform_data/mtd-nand-omap2.h
-+++ b/include/linux/platform_data/mtd-nand-omap2.h
-@@ -64,21 +64,4 @@ struct gpmc_nand_regs {
- 	void __iomem	*gpmc_bch_result5[GPMC_BCH_NUM_REMAINDER];
- 	void __iomem	*gpmc_bch_result6[GPMC_BCH_NUM_REMAINDER];
- };
--
--struct omap_nand_platform_data {
--	int			cs;
--	struct mtd_partition	*parts;
--	int			nr_parts;
--	bool			flash_bbt;
--	enum nand_io		xfer_type;
--	int			devsize;
--	enum omap_ecc           ecc_opt;
--
--	struct device_node	*elm_of_node;
--
--	/* deprecated */
--	struct gpmc_nand_regs	reg;
--	struct device_node	*of_node;
--	bool			dev_ready;
--};
- #endif
+Yes, it should. Can it be fixed while applying?
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--f61P+fpdnY2FZS1u
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlnXbyIACgkQMOfwapXb+vKmbwCfbw1rP8Zi3VcitdeQ6jx5nhi/
+O4wAn3rEQ6Z6Udpin4DnckSixmrnvLwT
+=3I55
+-----END PGP SIGNATURE-----
+
+--f61P+fpdnY2FZS1u--
