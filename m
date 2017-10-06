@@ -1,24 +1,16 @@
-Received: from mga03.intel.com ([134.134.136.65])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e0U8F-0005Df-QR
- for linux-mtd@lists.infradead.org; Fri, 06 Oct 2017 15:01:45 +0000
-Reply-To: thor.thayer@linux.intel.com
-Subject: Re: [PATCH] mtd: spi-nor: Allow Cadence QSPI support for ARM64
-To: Marek Vasut <marek.vasut@gmail.com>, cyrille.pitchen@wedev4u.fr,
- dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, richard@nod.at
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <1506701269-29652-1-git-send-email-thor.thayer@linux.intel.com>
- <6f21cd6f-4ad7-b611-c22f-45f4ec0232ab@linux.intel.com>
- <d7b8e1f7-b007-c6d1-bcb3-ea096f288a7c@gmail.com>
-From: Thor Thayer <thor.thayer@linux.intel.com>
-Message-ID: <d40be7de-0235-a11a-bb0a-899e3e410779@linux.intel.com>
-Date: Fri, 6 Oct 2017 10:04:25 -0500
-MIME-Version: 1.0
-In-Reply-To: <d7b8e1f7-b007-c6d1-bcb3-ea096f288a7c@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+From: Romain Izard <romain.izard.pro@gmail.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>,
+ "David S . Miller" <davem@davemloft.net>
+Cc: David Gstir <david@sigma-star.at>,
+ Nicolas Feignon <nicolas.feignon@mobile-devices.fr>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@microchip.com>,
+ linux-crypto@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Romain Izard <romain.izard.pro@gmail.com>
+Subject: [PATCH] crypto: atmel-aes - properly set IV after {en,de}crypt
+Date: Fri,  6 Oct 2017 17:51:08 +0200
+Message-Id: <20171006155108.6581-1-romain.izard.pro@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,42 +20,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/06/2017 10:00 AM, Marek Vasut wrote:
-> On 10/06/2017 04:56 PM, Thor Thayer wrote:
->> gentle ping...
->>
->>
->> On 09/29/2017 11:07 AM, thor.thayer@linux.intel.com wrote:
->>> From: Thor Thayer <thor.thayer@linux.intel.com>
->>>
->>> Allow ARM64 support for the Cadence QSPI interface by
->>> adding ARM64 as a dependency.
->>>
->>> Signed-off-by: Thor Thayer <thor.thayer@linux.intel.com>
-> 
-> Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
-> 
-> I presume it was tested on Stratix 10 ?
-> 
+Certain cipher modes like CTS expect the IV (req->info) of
+ablkcipher_request (or equivalently req->iv of skcipher_request) to
+contain the last ciphertext block when the {en,de}crypt operation is done.
 
-Yes, that is correct. Thanks for the review!
+Fix this issue for the Atmel AES hardware engine. The tcrypt test
+case for cts(cbc(aes)) is now correctly passed.
 
->>> ---
->>>    drivers/mtd/spi-nor/Kconfig | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
->>> index 69c638dd0484..f26aaa6d1430 100644
->>> --- a/drivers/mtd/spi-nor/Kconfig
->>> +++ b/drivers/mtd/spi-nor/Kconfig
->>> @@ -50,7 +50,7 @@ config SPI_ATMEL_QUADSPI
->>>      config SPI_CADENCE_QUADSPI
->>>        tristate "Cadence Quad SPI controller"
->>> -    depends on OF && (ARM || COMPILE_TEST)
->>> +    depends on OF && (ARM || ARM64 || COMPILE_TEST)
->>>        help
->>>          Enable support for the Cadence Quad SPI Flash controller.
->>>   
->>
-> 
-> 
+To handle the case of in-place decryption, copy the ciphertext in an
+intermediate buffer before decryption.
+
+Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
+---
+ drivers/crypto/atmel-aes.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
+
+diff --git a/drivers/crypto/atmel-aes.c b/drivers/crypto/atmel-aes.c
+index 29e20c37f3a6..f22300babb45 100644
+--- a/drivers/crypto/atmel-aes.c
++++ b/drivers/crypto/atmel-aes.c
+@@ -156,6 +156,7 @@ struct atmel_aes_authenc_ctx {
+ 
+ struct atmel_aes_reqctx {
+ 	unsigned long		mode;
++	u8			*backup_info;
+ };
+ 
+ #ifdef CONFIG_CRYPTO_DEV_ATMEL_AUTHENC
+@@ -496,6 +497,12 @@ static void atmel_aes_authenc_complete(struct atmel_aes_dev *dd, int err);
+ 
+ static inline int atmel_aes_complete(struct atmel_aes_dev *dd, int err)
+ {
++	struct ablkcipher_request *req = ablkcipher_request_cast(dd->areq);
++	struct crypto_ablkcipher *ablkcipher = crypto_ablkcipher_reqtfm(req);
++	struct atmel_aes_reqctx *rctx = ablkcipher_request_ctx(req);
++	int ivsize = crypto_ablkcipher_ivsize(ablkcipher);
++	bool enc = atmel_aes_is_encrypt(dd);
++
+ #ifdef CONFIG_CRYPTO_DEV_ATMEL_AUTHENC
+ 	atmel_aes_authenc_complete(dd, err);
+ #endif
+@@ -503,6 +510,15 @@ static inline int atmel_aes_complete(struct atmel_aes_dev *dd, int err)
+ 	clk_disable(dd->iclk);
+ 	dd->flags &= ~AES_FLAGS_BUSY;
+ 
++	if (enc) {
++		scatterwalk_map_and_copy(req->info, req->dst,
++					 req->nbytes - ivsize, ivsize, 0);
++	} else if (rctx->backup_info) {
++		memcpy(req->info, rctx->backup_info, ivsize);
++		kfree(rctx->backup_info);
++		rctx->backup_info = NULL;
++	}
++
+ 	if (dd->is_async)
+ 		dd->areq->complete(dd->areq, err);
+ 
+@@ -959,13 +975,25 @@ static int atmel_aes_transfer_complete(struct atmel_aes_dev *dd)
+ static int atmel_aes_start(struct atmel_aes_dev *dd)
+ {
+ 	struct ablkcipher_request *req = ablkcipher_request_cast(dd->areq);
++	struct crypto_ablkcipher *ablkcipher = crypto_ablkcipher_reqtfm(req);
+ 	struct atmel_aes_reqctx *rctx = ablkcipher_request_ctx(req);
++	int ivsize = crypto_ablkcipher_ivsize(ablkcipher);
++	bool enc = atmel_aes_is_encrypt(dd);
+ 	bool use_dma = (req->nbytes >= ATMEL_AES_DMA_THRESHOLD ||
+ 			dd->ctx->block_size != AES_BLOCK_SIZE);
+ 	int err;
+ 
+ 	atmel_aes_set_mode(dd, rctx);
+ 
++	if (!enc) {
++		rctx->backup_info = kzalloc(ivsize, GFP_KERNEL);
++		if (rctx->backup_info == NULL)
++			return atmel_aes_complete(dd, -ENOMEM);
++
++		scatterwalk_map_and_copy(rctx->backup_info, req->src,
++				 (req->nbytes - ivsize), ivsize, 0);
++	}
++
+ 	err = atmel_aes_hw_init(dd);
+ 	if (err)
+ 		return atmel_aes_complete(dd, err);
+-- 
+2.11.0
