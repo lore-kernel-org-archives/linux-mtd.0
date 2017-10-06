@@ -1,20 +1,23 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
+Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e09T2-00061B-Pr
- for linux-mtd@lists.infradead.org; Thu, 05 Oct 2017 16:57:50 +0000
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, stable@vger.kernel.org,
- Romain Izard <romain.izard.pro@gmail.com>
-Subject: [PATCH] mtd: nand: atmel: Actually use the PM ops
-Date: Thu,  5 Oct 2017 18:57:24 +0200
-Message-Id: <20171005165724.30516-1-boris.brezillon@free-electrons.com>
+ id 1e0PzG-0006bP-Ge
+ for linux-mtd@lists.infradead.org; Fri, 06 Oct 2017 10:36:13 +0000
+Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
+ (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
+ id S23990398AbdJFKfpv2hmG (ORCPT
+ <rfc822;linux-mtd@lists.infradead.org>);
+ Fri, 6 Oct 2017 12:35:45 +0200
+Date: Fri, 6 Oct 2017 12:35:43 +0200
+Sender: Ladislav Michl <ladis@linux-mips.org>
+From: Ladislav Michl <ladis@linux-mips.org>
+To: linux-mtd@lists.infradead.org
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-omap@vger.kernel.org
+Subject: [RESEND PATCH] mtd: nand: omap2: Remove omap_nand_platform_data
+Message-ID: <20171006103543.gnb2hxq7msallyzl@lenoch>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +27,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-commit 6e532afaca8e ("mtd: nand: atmel: Add PM ops") was defining PM
-ops but nothing was using/referencing those PM ops.
+As driver is now configured using DT, omap_nand_platform_data structure
+is no longer needed.
 
-Fixes: 6e532afaca8e ("mtd: nand: atmel: Add PM ops")
-Cc: <stable@vger.kernel.org>
-Cc: Romain Izard <romain.izard.pro@gmail.com>
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
 ---
- drivers/mtd/nand/atmel/nand-controller.c | 1 +
- 1 file changed, 1 insertion(+)
+ Resend to linux-mtd as other part this patch was depending on
+ was merged months ago via linux-omap tree...
 
-diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/atmel/nand-controller.c
-index 29182160bb5f..90a71a56bc23 100644
---- a/drivers/mtd/nand/atmel/nand-controller.c
-+++ b/drivers/mtd/nand/atmel/nand-controller.c
-@@ -2549,6 +2549,7 @@ static struct platform_driver atmel_nand_controller_driver = {
- 	.driver = {
- 		.name = "atmel-nand-controller",
- 		.of_match_table = of_match_ptr(atmel_nand_controller_of_ids),
-+		.pm = &atmel_nand_controller_pm_ops,
- 	},
- 	.probe = atmel_nand_controller_probe,
- 	.remove = atmel_nand_controller_remove,
--- 
-2.11.0
+ drivers/mtd/nand/omap2.c                     | 40 +++++++---------------------
+ include/linux/platform_data/mtd-nand-omap2.h | 17 ------------
+ 2 files changed, 10 insertions(+), 47 deletions(-)
+
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 54540c8fa1a2..b1fc070c8279 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -1588,8 +1588,7 @@ static bool is_elm_present(struct omap_nand_info *info,
+ 	return true;
+ }
+ 
+-static bool omap2_nand_ecc_check(struct omap_nand_info *info,
+-				 struct omap_nand_platform_data	*pdata)
++static bool omap2_nand_ecc_check(struct omap_nand_info *info)
+ {
+ 	bool ecc_needs_bch, ecc_needs_omap_bch, ecc_needs_elm;
+ 
+@@ -1804,7 +1803,6 @@ static const struct mtd_ooblayout_ops omap_sw_ooblayout_ops = {
+ static int omap_nand_probe(struct platform_device *pdev)
+ {
+ 	struct omap_nand_info		*info;
+-	struct omap_nand_platform_data	*pdata = NULL;
+ 	struct mtd_info			*mtd;
+ 	struct nand_chip		*nand_chip;
+ 	int				err;
+@@ -1814,6 +1812,9 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 	int				min_oobbytes = BADBLOCK_MARKER_LENGTH;
+ 	int				oobbytes_per_step;
+ 
++	if (!dev->of_node)
++		return -EINVAL;
++
+ 	info = devm_kzalloc(&pdev->dev, sizeof(struct omap_nand_info),
+ 				GFP_KERNEL);
+ 	if (!info)
+@@ -1821,29 +1822,9 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 
+ 	info->pdev = pdev;
+ 
+-	if (dev->of_node) {
+-		if (omap_get_dt_info(dev, info))
+-			return -EINVAL;
+-	} else {
+-		pdata = dev_get_platdata(&pdev->dev);
+-		if (!pdata) {
+-			dev_err(&pdev->dev, "platform data missing\n");
+-			return -EINVAL;
+-		}
+-
+-		info->gpmc_cs = pdata->cs;
+-		info->reg = pdata->reg;
+-		info->ecc_opt = pdata->ecc_opt;
+-		if (pdata->dev_ready)
+-			dev_info(&pdev->dev, "pdata->dev_ready is deprecated\n");
+-
+-		info->xfer_type = pdata->xfer_type;
+-		info->devsize = pdata->devsize;
+-		info->elm_of_node = pdata->elm_of_node;
+-		info->flash_bbt = pdata->flash_bbt;
+-	}
++	if (omap_get_dt_info(dev, info))
++		return -EINVAL;
+ 
+-	platform_set_drvdata(pdev, info);
+ 	info->ops = gpmc_omap_get_nand_ops(&info->reg, info->gpmc_cs);
+ 	if (!info->ops) {
+ 		dev_err(&pdev->dev, "Failed to get GPMC->NAND interface\n");
+@@ -2002,7 +1983,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 		goto return_error;
+ 	}
+ 
+-	if (!omap2_nand_ecc_check(info, pdata)) {
++	if (!omap2_nand_ecc_check(info)) {
+ 		err = -EINVAL;
+ 		goto return_error;
+ 	}
+@@ -2167,10 +2148,9 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 	if (err)
+ 		goto return_error;
+ 
+-	if (dev->of_node)
+-		mtd_device_register(mtd, NULL, 0);
+-	else
+-		mtd_device_register(mtd, pdata->parts, pdata->nr_parts);
++	err = mtd_device_register(mtd, NULL, 0);
++	if (err)
++		goto return_error;
+ 
+ 	platform_set_drvdata(pdev, mtd);
+ 
+diff --git a/include/linux/platform_data/mtd-nand-omap2.h b/include/linux/platform_data/mtd-nand-omap2.h
+index 25e267f1970c..619df2431e75 100644
+--- a/include/linux/platform_data/mtd-nand-omap2.h
++++ b/include/linux/platform_data/mtd-nand-omap2.h
+@@ -64,21 +64,4 @@ struct gpmc_nand_regs {
+ 	void __iomem	*gpmc_bch_result5[GPMC_BCH_NUM_REMAINDER];
+ 	void __iomem	*gpmc_bch_result6[GPMC_BCH_NUM_REMAINDER];
+ };
+-
+-struct omap_nand_platform_data {
+-	int			cs;
+-	struct mtd_partition	*parts;
+-	int			nr_parts;
+-	bool			flash_bbt;
+-	enum nand_io		xfer_type;
+-	int			devsize;
+-	enum omap_ecc           ecc_opt;
+-
+-	struct device_node	*elm_of_node;
+-
+-	/* deprecated */
+-	struct gpmc_nand_regs	reg;
+-	struct device_node	*of_node;
+-	bool			dev_ready;
+-};
+ #endif
