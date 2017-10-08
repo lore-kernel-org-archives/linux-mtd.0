@@ -1,20 +1,32 @@
-Date: Sat, 7 Oct 2017 11:22:52 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Linus Walleij <linus.walleij@linaro.org>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
- Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, arm@kernel.org
-Subject: Re: [PATCH] ARM: pxa: cm-x255: Fix up GPIO NAND device name in table
-Message-ID: <20171007112252.37db396b@bbrezillon>
-In-Reply-To: <877ew7fkvj.fsf@belgarion.home>
-References: <20171006215144.18039-1-linus.walleij@linaro.org>
- <20171007074939.516ae693@bbrezillon>
- <877ew7fkvj.fsf@belgarion.home>
+Received: from smtp04.smtpout.orange.fr ([80.12.242.126]
+ helo=smtp.smtpout.orange.fr)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1e18HD-00044B-EI
+ for linux-mtd@lists.infradead.org; Sun, 08 Oct 2017 09:53:41 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Andrea Adami <andrea.adami@gmail.com>, linux-mtd@lists.infradead.org,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mmc@vger.kernel.org,
+ Russell King <linux@armlinux.org.uk>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>, linux-kernel@vger.kernel.org,
+ Marek Vasut <marek.vasut@gmail.com>, linux-arm-kernel@lists.infradead.org,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Lee Jones <lee.jones@linaro.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Linus Walleij <linus.walleij@linaro.org>, Daniel Mack <daniel@zonque.org>
+Subject: Re: [PATCH v5 0/9] mtd: sharpslpart partition parser
+References: <1502743720-28672-1-git-send-email-andrea.adami@gmail.com>
+ <20170821221339.70cfcfb7@bbrezillon> <87pobmoz8n.fsf@belgarion.home>
+ <CAAQYJAv8bNrxJ_ESgC0fOAdry7i5mstzgQ3P74q1D=C-xsJprg@mail.gmail.com>
+ <20170824114631.089d2628@bbrezillon> <87inh6pw9e.fsf@belgarion.home>
+Date: Sun, 08 Oct 2017 11:53:11 +0200
+In-Reply-To: <87inh6pw9e.fsf@belgarion.home> (Robert Jarzmik's message of
+ "Tue, 29 Aug 2017 11:18:37 +0200")
+Message-ID: <87376uezjs.fsf@belgarion.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,62 +36,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 07 Oct 2017 10:00:16 +0200
-Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+Robert Jarzmik <robert.jarzmik@free.fr> writes:
 
 > Boris Brezillon <boris.brezillon@free-electrons.com> writes:
-> 
-> > On Fri,  6 Oct 2017 23:51:44 +0200
-> > Linus Walleij <linus.walleij@linaro.org> wrote:
-> >  
-> >> My patch set the device name wrong because I confused the
-> >> device name for a partition name. Sorry.
-> >> 
-> >> Cc: arm@kernel.org
-> >> Fixes: ("mtd: nand: gpio: Convert to use GPIO descriptors")
-> >> Reported-by: Robert Jarzmik <robert.jarzmik@free.fr>
-> >> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> >> ---
-> >> This can be squashed into the commit or applied on top
-> >> as a fix. The original patch was ACKed by the ARM SoC
-> >> maintainers so I believe this is fine to apply.
-> >> ---
-> >>  arch/arm/mach-pxa/cm-x255.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >> 
-> >> diff --git a/arch/arm/mach-pxa/cm-x255.c b/arch/arm/mach-pxa/cm-x255.c
-> >> index f8d67acb7194..fa8e7dd4d898 100644
-> >> --- a/arch/arm/mach-pxa/cm-x255.c
-> >> +++ b/arch/arm/mach-pxa/cm-x255.c
-> >> @@ -178,7 +178,7 @@ static inline void cmx255_init_nor(void) {}
-> >>  #if defined(CONFIG_MTD_NAND_GPIO) || defined(CONFIG_MTD_NAND_GPIO_MODULE)
-> >>  
-> >>  static struct gpiod_lookup_table cmx255_nand_gpiod_table = {
-> >> -	.dev_id         = "cmx255-nand",
-> >> +	.dev_id         = "gpio-nand",  
-> >
-> > Are you sure it works? AFAIR, you have to set "<driver-name>.<dev-id>"
-> > here, which, assuming there's only one gpio-nand dev, would give
-> >
-> > 	.dev_id		= "gpio-nand.0",  
-> I'm sure Linus is correct this time.
-> This is because :
-> static struct platform_device cmx255_nand = {
-> ...
-> 	.id		= -1,
-> ...
-> 
-> This -1 is the reason it will be "gpio-nand".
+>
+>> Hi Robert,
+>> Wait a bit before applying. I think patches 6 to 9 have a dependency on
+>> patch 1 (it's not a build dependency, but NAND partitioning might be
+>> wrong if you apply them), so we need to sync. What release is
+>> pxa/for-next targeting? If it's 4.15 I can apply patch 1 just after
+>> 4.14-rc1 is out and provide an immutable branch for you to pull in
+>> pxa/for-next.
+>
+> Hi Boris,
+>
+> It's targeting 4.15 right now. And we can do as you like, either an immutable
+> branch, or I wait to include these patches into my pxa/for-next until you give
+> me your go, it's as you like.
 
-Right. I thought -1 was PLATFORM_DEVID_AUTO, but it's
-PLATFORM_DEVID_NONE.
+Hi Boris,
 
-I'll squash the change in the initial commit.
+So what's the status about the sync, should I pick the patches, and have the
+others make it to your for-next branch ?
 
-Thanks,
+Cheers.
 
-Boris
-
-> 
-> Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
-> 
+-- 
+Robert
