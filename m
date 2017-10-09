@@ -1,34 +1,25 @@
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
+Received: from esa4.microchip.iphmx.com ([68.232.154.123])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e1NrY-00040W-HN
- for linux-mtd@lists.infradead.org; Mon, 09 Oct 2017 02:32:15 +0000
-From: Kalyan Kinthada <Kalyan.Kinthada@alliedtelesis.co.nz>
-To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "boris.brezillon@free-electrons.com"
- <boris.brezillon@free-electrons.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
- "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "ezequiel.garcia@free-electrons.com"
- <ezequiel.garcia@free-electrons.com>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, Chris Packham
- <Chris.Packham@alliedtelesis.co.nz>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/1] mtd: nand: pxa3xx: Set FORCE_CSX bit to ARMADA370
- variants.
-Date: Mon, 9 Oct 2017 02:31:30 +0000
-Message-ID: <c6832720-7c58-4afe-2d1b-76bb9397299e@alliedtelesis.co.nz>
-References: <20170928005756.3938-1-kalyan.kinthada@alliedtelesis.co.nz>
- <20170928005756.3938-2-kalyan.kinthada@alliedtelesis.co.nz>
- <20171005094138.11b73a0e@xps13>
-In-Reply-To: <20171005094138.11b73a0e@xps13>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <CF144C5A9632314282AEAB507F2DF333@atlnz.lc>
-Content-Transfer-Encoding: base64
+ id 1e1OS0-0006IB-S6
+ for linux-mtd@lists.infradead.org; Mon, 09 Oct 2017 03:09:55 +0000
+Subject: Re: [PATCH] mtd: nand: atmel: Actually use the PM ops
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, <linux-mtd@lists.infradead.org>
+CC: Nicolas Ferre <nicolas.ferre@atmel.com>, <stable@vger.kernel.org>, Marek
+ Vasut <marek.vasut@gmail.com>, Alexandre Belloni
+ <alexandre.belloni@free-electrons.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Romain Izard <romain.izard.pro@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>
+References: <20171005165724.30516-1-boris.brezillon@free-electrons.com>
+From: "Yang, Wenyou" <Wenyou.Yang@Microchip.com>
+Message-ID: <7f1dc747-b32f-9bd5-c01a-e3d5bb29b11b@Microchip.com>
+Date: Mon, 9 Oct 2017 11:09:23 +0800
 MIME-Version: 1.0
+In-Reply-To: <20171005165724.30516-1-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,71 +29,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gMDUvMTAvMTcgMjA6NDEsIE1pcXVlbCBSQVlOQUwgd3JvdGU6DQo+IEhlbGxvIEthbHlhbiwN
-Cj4NCj4gT24gVGh1LCAyOCBTZXAgMjAxNyAxMzo1Nzo1NiArMTMwMA0KPiBLYWx5YW4gS2ludGhh
-ZGEgPGthbHlhbi5raW50aGFkYUBhbGxpZWR0ZWxlc2lzLmNvLm56PiB3cm90ZToNCj4NCj4+IFdo
-ZW4gdGhlIGFyYml0cmF0aW9uIGJldHdlZW4gTk9SIGFuZCBOQU5EIGZsYXNoIGlzIGVuYWJsZWQN
-Cj4+IHRoZSA8Rk9SQ0VfQ1NYPiBmaWVsZCBiaXRbMjFdIGluIHRoZSBEYXRhIEZsYXNoIENvbnRy
-b2wgUmVnaXN0ZXINCj4+IG5lZWRzIHRvIGJlIHNldCB0byAxIGFjY29yZGluZyB0byBndWlkbGVp
-bmUgR0wtNTgzMDc0MSBtZW50aW9uZWQNCj4gVHlwbzogZ3VpZGVsaW5lIF4NCkkgd2lsbCBjb3Jy
-ZWN0IHRoaXMgdHlwbyBpbiB0aGUgbmV4dCBwYXRjaCB2ZXJzaW9uLg0KPj4gaW4gTWFydmVsbCBF
-cnJhdGEgZG9jdW1lbnQgTVYtUzUwMTM3Ny0wMCwgUmV2LiBELg0KPiBUaGFua3MgZm9yIHRoYXQs
-IEkgY2hlY2tlZCBpdC4NCj4NCj4+IFRoaXMgY29tbWl0IHNldHMgdGhlIEZPUkNFX0NTWCBiaXQg
-dG8gMSBmb3IgYWxsDQo+PiBBUk1BREEzNzAgdmFyaWFudHMgYXMgdGhlIGFyYml0cmF0aW9uIGlz
-IGFsd2F5cyBlbmFibGVkIGJ5IGRlZmF1bHQuDQo+PiBUaGlzIGNoYW5nZSBkb2VzIG5vdCBhcHBs
-eSBmb3IgcHhhM3h4IHZhcmlhbnRzIGJlY2F1c2UgdGhlIEZPUkNFX0NTWA0KPj4gYml0IGRvZXMg
-bm90IGV4aXN0L3Jlc2VydmVkIG9uIHRoZSBORkN2MS4NCj4gU29ycnkgdG8gYm90aGVyIHlvdSBh
-Z2FpbiBidXQgSSBhbSByZXdvcmtpbmcgdGhlIHB4YTN4eF9uYW5kIGRyaXZlciBhbmQNCj4gc28g
-SSB3b3VsZCBsaWtlIHRvIGRlZXBseSB1bmRlcnN0YW5kIHdoeSB0aGlzIGlzIG5lZWRlZCBiZWNh
-dXNlIEkgd2lsbA0KPiBoYXZlIHRvIGludGVncmF0ZSBpdCBpbiBteSB3b3JrIHRvby4NCj4NCj4g
-U28gcGxlYXNlIHRlbGwgbWUgd2hhdCBpcyB5b3VyIHNldHVwLCBkbyB5b3UgcmVhbGx5IHVzZSBO
-QU5EL05PUg0KPiBhcmJpdHJhdGlvbj8gRG8geW91IGhhdmUgbm90LURvbid0IENhcmUgQ1MgTkFO
-RCBjaGlwcz8gSSBoYXZlIHNvbWUNCj4gZG91YnRzIGJlY2F1c2UgZXZlbiBpZiB0aGUgc3BlYyBw
-cmVjaXNlcyBpbiB0aGUgTkFORCBjb250cm9sbGVyIGNoYXB0ZXINCj4gdGhhdCBhcmJpdHJhdGlv
-biBpcyBhbHdheXMgZW5hYmxlZCBieSBkZWZhdWx0LCB0aGUgYml0IDI3IChOZkFyYml0ZXJFbikN
-Cj4gaW4gdGhlIFNvQyBEZXZpY2UgTXVsdGlwbGV4IFJlZ2lzdGVyIGF0IG9mZnNldCAweDAwMDE4
-MjA4IGlzIGFjdHVhbGx5DQo+IGF0IDAgYnkgZGVmYXVsdCAoZGlzYWJsZWQpLiBEaWQgeW91IGVu
-YWJsZSB0aGlzIGJpdCBtYW51YWxseSA/IEkNCj4gY2hlY2tlZCB3aXRoIGRldm1lbSBvbiBteSBz
-ZXR1cCBhbmQgdGhpcyBiaXQgd2FzIHVuc2V0Lg0KWWVzLCBteSBzZXR1cCB1c2UgTkFORC9OT1Ig
-YXJiaXRyYXRpb24gYW5kIHVzZSBhIERvbid0DQpjYXJlIENTIE5hbmQgQ2hpcC4gVGhlIGJpdCAy
-NyBhdCBvZmZzZXQgMHgwMDAxODIwOCBpcyBzZXQgdG8gMQ0KYnkgZGVmYXVsdCBpbiBteSBjYXNl
-LiBJIGRpZCBub3QgbWFudWFsbHkgc2V0IHRoZSBiaXQgMjcgdG8gMS4NCg0KUGxlYXNlIGxldCBt
-ZSBub3cgaWYgeW91IGhhdmUgYW55IG90aGVyIHF1ZXN0aW9uIG9yIGRvIHlvdSB3YW50IG1lDQp0
-byBzZW5kIHRoZSB1cGRhdGVkIHBhdGNoIHZlcnNpb24gd2l0aCB0aGUgdHlwbyBmaXhlZC4NCg0K
-VGhhbmsgWW91LA0KS2FseWFuDQoNCj4NCj4gVGhhbmsgeW91IGZvciB5b3VyIHRpbWUsDQo+IE1p
-cXXDqGwNCj4NCj4+IFRoZSBORENSX05EX01PREUgY29uZmxpY3RzIHdpdGggdGhlIG5ldyBORENS
-X0ZPUkNFX0NTWCBidXQgaXMgdW51c2VkDQo+PiBzbyByZW1vdmUgaXQgYWxvbmcgd2l0aCBORENS
-X05BTkRfTU9ERS4NCj4+DQo+PiBTaWduZWQtb2ZmLWJ5OiBLYWx5YW4gS2ludGhhZGEgPGthbHlh
-bi5raW50aGFkYUBhbGxpZWR0ZWxlc2lzLmNvLm56Pg0KPj4gLS0tDQo+DQo+DQo+PiAgIGRyaXZl
-cnMvbXRkL25hbmQvcHhhM3h4X25hbmQuYyB8IDkgKysrKysrKy0tDQo+PiAgIDEgZmlsZSBjaGFu
-Z2VkLCA3IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+Pg0KPj4gZGlmZiAtLWdpdCBh
-L2RyaXZlcnMvbXRkL25hbmQvcHhhM3h4X25hbmQuYw0KPj4gYi9kcml2ZXJzL210ZC9uYW5kL3B4
-YTN4eF9uYW5kLmMgaW5kZXggODVjZmY2ODY0M2UwLi5hNmE3YTVhZjdiZWQNCj4+IDEwMDY0NCAt
-LS0gYS9kcml2ZXJzL210ZC9uYW5kL3B4YTN4eF9uYW5kLmMNCj4+ICsrKyBiL2RyaXZlcnMvbXRk
-L25hbmQvcHhhM3h4X25hbmQuYw0KPj4gQEAgLTY3LDggKzY3LDcgQEANCj4+ICAgI2RlZmluZSBO
-RENSX0RXSURUSF9NCQkoMHgxIDw8IDI2KQ0KPj4gICAjZGVmaW5lIE5EQ1JfUEFHRV9TWgkJKDB4
-MSA8PCAyNCkNCj4+ICAgI2RlZmluZSBORENSX05DU1gJCSgweDEgPDwgMjMpDQo+PiAtI2RlZmlu
-ZSBORENSX05EX01PREUJCSgweDMgPDwgMjEpDQo+PiAtI2RlZmluZSBORENSX05BTkRfTU9ERSAg
-IAkoMHgwKQ0KPj4gKyNkZWZpbmUgTkRDUl9GT1JDRV9DU1gJCSgweDEgPDwgMjEpDQo+PiAgICNk
-ZWZpbmUgTkRDUl9DTFJfUEdfQ05UCQkoMHgxIDw8IDIwKQ0KPj4gICAjZGVmaW5lIE5GQ1YxX05E
-Q1JfQVJCX0NOVEwJKDB4MSA8PCAxOSkNCj4+ICAgI2RlZmluZSBORkNWMl9ORENSX1NUT1BfT05f
-VU5DT1IJKDB4MSA8PCAxOSkNCj4+IEBAIC0xNDY0LDYgKzE0NjMsOSBAQCBzdGF0aWMgaW50IHB4
-YTN4eF9uYW5kX2NvbmZpZ19pZGVudChzdHJ1Y3QNCj4+IHB4YTN4eF9uYW5kX2luZm8gKmluZm8p
-IGluZm8tPmNodW5rX3NpemUgPSBQQUdFX0NIVU5LX1NJWkU7DQo+PiAgIAlpbmZvLT5yZWdfbmRj
-ciA9IDB4MDsgLyogZW5hYmxlIGFsbCBpbnRlcnJ1cHRzICovDQo+PiAgIAlpbmZvLT5yZWdfbmRj
-ciB8PSAocGRhdGEtPmVuYWJsZV9hcmJpdGVyKSA/IE5EQ1JfTkRfQVJCX0VOIDoNCj4+IDA7DQo+
-PiArCS8qIFNldCBGT1JDRV9DU1ggYml0IGZvciBhbGwgQVJNQURBMzcwIFZhcmlhbnRzLiBSZWYj
-Og0KPj4gR0wtNTgzMDc0MSAqLw0KPj4gKwlpZiAoaW5mby0+dmFyaWFudCA9PSBQWEEzWFhfTkFO
-RF9WQVJJQU5UX0FSTUFEQTM3MCkNCj4+ICsJCWluZm8tPnJlZ19uZGNyIHw9IE5EQ1JfRk9SQ0Vf
-Q1NYOw0KPj4gICAJaW5mby0+cmVnX25kY3IgfD0gTkRDUl9SRF9JRF9DTlQoUkVBRF9JRF9CWVRF
-Uyk7DQo+PiAgIAlpbmZvLT5yZWdfbmRjciB8PSBORENSX1NQQVJFX0VOOw0KPj4gICANCj4+IEBA
-IC0xNDk4LDYgKzE1MDAsOSBAQCBzdGF0aWMgdm9pZCBweGEzeHhfbmFuZF9kZXRlY3RfY29uZmln
-KHN0cnVjdA0KPj4gcHhhM3h4X25hbmRfaW5mbyAqaW5mbykgaW5mby0+cmVnX25kY3IgPSBuZGNy
-ICYNCj4+ICAgCQl+KE5EQ1JfSU5UX01BU0sgfCBORENSX05EX0FSQl9FTiB8DQo+PiBORkNWMV9O
-RENSX0FSQl9DTlRMKTsgaW5mby0+cmVnX25kY3IgfD0gKHBkYXRhLT5lbmFibGVfYXJiaXRlcikg
-Pw0KPj4gTkRDUl9ORF9BUkJfRU4gOiAwOw0KPj4gKwkvKiBTZXQgRk9SQ0VfQ1NYIGJpdCBmb3Ig
-YWxsIEFSTUFEQTM3MCBWYXJpYW50cy4gUmVmIzoNCj4+IEdMLTU4MzA3NDEgKi8NCj4+ICsJaWYg
-KGluZm8tPnZhcmlhbnQgPT0gUFhBM1hYX05BTkRfVkFSSUFOVF9BUk1BREEzNzApDQo+PiArCQlp
-bmZvLT5yZWdfbmRjciB8PSBORENSX0ZPUkNFX0NTWDsNCj4+ICAgCWluZm8tPm5kdHIwY3MwID0g
-bmFuZF9yZWFkbChpbmZvLCBORFRSMENTMCk7DQo+PiAgIAlpbmZvLT5uZHRyMWNzMCA9IG5hbmRf
-cmVhZGwoaW5mbywgTkRUUjFDUzApOw0KPj4gICB9DQo+DQo+DQo=
+
+
+On 2017/10/6 0:57, Boris Brezillon wrote:
+> commit 6e532afaca8e ("mtd: nand: atmel: Add PM ops") was defining PM
+> ops but nothing was using/referencing those PM ops.
+>
+> Fixes: 6e532afaca8e ("mtd: nand: atmel: Add PM ops")
+> Cc: <stable@vger.kernel.org>
+> Cc: Romain Izard <romain.izard.pro@gmail.com>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>   drivers/mtd/nand/atmel/nand-controller.c | 1 +
+>   1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/atmel/nand-controller.c
+> index 29182160bb5f..90a71a56bc23 100644
+> --- a/drivers/mtd/nand/atmel/nand-controller.c
+> +++ b/drivers/mtd/nand/atmel/nand-controller.c
+> @@ -2549,6 +2549,7 @@ static struct platform_driver atmel_nand_controller_driver = {
+>   	.driver = {
+>   		.name = "atmel-nand-controller",
+>   		.of_match_table = of_match_ptr(atmel_nand_controller_of_ids),
+> +		.pm = &atmel_nand_controller_pm_ops,
+>   	},
+>   	.probe = atmel_nand_controller_probe,
+>   	.remove = atmel_nand_controller_remove,
+
+Acked-by: Wenyou Yang <wenyou.yang@microchip.com>
