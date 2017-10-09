@@ -1,19 +1,19 @@
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e1daC-0000EM-AG
- for linux-mtd@lists.infradead.org; Mon, 09 Oct 2017 19:19:28 +0000
-Received: by mail-pf0-x241.google.com with SMTP id b85so9514885pfj.1
- for <linux-mtd@lists.infradead.org>; Mon, 09 Oct 2017 12:19:04 -0700 (PDT)
+ id 1e1daD-0000DK-8G
+ for linux-mtd@lists.infradead.org; Mon, 09 Oct 2017 19:19:34 +0000
+Received: by mail-pf0-x242.google.com with SMTP id m28so29745756pfi.0
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Oct 2017 12:19:01 -0700 (PDT)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org,
 	"Theodore Y . Ts'o" <tytso@mit.edu>
 Cc: Jaegeuk Kim <jaegeuk@kernel.org>, linux-fsdevel@vger.kernel.org,
  linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
  linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
-Subject: [PATCH v2 05/11] fscrypt: remove unneeded empty fscrypt_operations
- structs
-Date: Mon,  9 Oct 2017 12:15:38 -0700
-Message-Id: <20171009191544.43656-6-ebiggers3@gmail.com>
+Subject: [PATCH v2 03/11] fscrypt: switch from ->is_encrypted() to
+ IS_ENCRYPTED()
+Date: Mon,  9 Oct 2017 12:15:36 -0700
+Message-Id: <20171009191544.43656-4-ebiggers3@gmail.com>
 In-Reply-To: <20171009191544.43656-1-ebiggers3@gmail.com>
 References: <20171009191544.43656-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,92 +27,100 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Eric Biggers <ebiggers@google.com>
 
-In the case where a filesystem has been configured without encryption
-support, there is no longer any need to initialize ->s_cop at all, since
-none of the methods are ever called.
+IS_ENCRYPTED() now gives the same information as
+i_sb->s_cop->is_encrypted() but is more efficient, since IS_ENCRYPTED()
+is just a simple flag check.  Prepare to remove ->is_encrypted() by
+switching all callers to IS_ENCRYPTED().
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
 Acked-by: Dave Chinner <dchinner@redhat.com>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/ext4/super.c  | 5 ++---
- fs/f2fs/super.c  | 5 ++---
- fs/ubifs/super.c | 7 ++-----
- 3 files changed, 6 insertions(+), 11 deletions(-)
+ fs/crypto/crypto.c              | 2 +-
+ fs/crypto/fname.c               | 3 +--
+ fs/crypto/keyinfo.c             | 2 +-
+ fs/crypto/policy.c              | 6 +++---
+ include/linux/fscrypt_notsupp.h | 2 +-
+ 5 files changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index bc63cdf194e3..04f3670748e7 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1244,9 +1244,6 @@ static const struct fscrypt_operations ext4_cryptops = {
- 	.empty_dir		= ext4_empty_dir,
- 	.max_namelen		= ext4_max_namelen,
- };
--#else
--static const struct fscrypt_operations ext4_cryptops = {
--};
- #endif
+diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
+index c7835df7e7b8..608f6bbe0f31 100644
+--- a/fs/crypto/crypto.c
++++ b/fs/crypto/crypto.c
+@@ -340,7 +340,7 @@ static int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags)
+ 		return -ECHILD;
  
- #ifdef CONFIG_QUOTA
-@@ -3998,7 +3995,9 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 	sb->s_op = &ext4_sops;
- 	sb->s_export_op = &ext4_export_ops;
- 	sb->s_xattr = ext4_xattr_handlers;
-+#ifdef CONFIG_EXT4_FS_ENCRYPTION
- 	sb->s_cop = &ext4_cryptops;
-+#endif
- #ifdef CONFIG_QUOTA
- 	sb->dq_op = &ext4_quota_operations;
- 	if (ext4_has_feature_quota(sb))
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 1cb41f711ab8..c1c7183b3527 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -1597,9 +1597,6 @@ static const struct fscrypt_operations f2fs_cryptops = {
- 	.empty_dir	= f2fs_empty_dir,
- 	.max_namelen	= f2fs_max_namelen,
- };
--#else
--static const struct fscrypt_operations f2fs_cryptops = {
--};
- #endif
+ 	dir = dget_parent(dentry);
+-	if (!d_inode(dir)->i_sb->s_cop->is_encrypted(d_inode(dir))) {
++	if (!IS_ENCRYPTED(d_inode(dir))) {
+ 		dput(dir);
+ 		return 0;
+ 	}
+diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
+index ad9f814fdead..2878289b3ed2 100644
+--- a/fs/crypto/fname.c
++++ b/fs/crypto/fname.c
+@@ -382,8 +382,7 @@ int fscrypt_setup_filename(struct inode *dir, const struct qstr *iname,
+ 	memset(fname, 0, sizeof(struct fscrypt_name));
+ 	fname->usr_fname = iname;
  
- static struct inode *f2fs_nfs_get_inode(struct super_block *sb,
-@@ -2318,7 +2315,9 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
- #endif
+-	if (!dir->i_sb->s_cop->is_encrypted(dir) ||
+-				fscrypt_is_dot_dotdot(iname)) {
++	if (!IS_ENCRYPTED(dir) || fscrypt_is_dot_dotdot(iname)) {
+ 		fname->disk_name.name = (unsigned char *)iname->name;
+ 		fname->disk_name.len = iname->len;
+ 		return 0;
+diff --git a/fs/crypto/keyinfo.c b/fs/crypto/keyinfo.c
+index 018c588c7ac3..236a68d4ea72 100644
+--- a/fs/crypto/keyinfo.c
++++ b/fs/crypto/keyinfo.c
+@@ -268,7 +268,7 @@ int fscrypt_get_encryption_info(struct inode *inode)
+ 	res = inode->i_sb->s_cop->get_context(inode, &ctx, sizeof(ctx));
+ 	if (res < 0) {
+ 		if (!fscrypt_dummy_context_enabled(inode) ||
+-		    inode->i_sb->s_cop->is_encrypted(inode))
++		    IS_ENCRYPTED(inode))
+ 			return res;
+ 		/* Fake up a context for an unencrypted directory */
+ 		memset(&ctx, 0, sizeof(ctx));
+diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
+index ce07a86200f3..6a63b8a0d46c 100644
+--- a/fs/crypto/policy.c
++++ b/fs/crypto/policy.c
+@@ -109,7 +109,7 @@ int fscrypt_ioctl_get_policy(struct file *filp, void __user *arg)
+ 	struct fscrypt_policy policy;
+ 	int res;
  
- 	sb->s_op = &f2fs_sops;
-+#ifdef CONFIG_F2FS_FS_ENCRYPTION
- 	sb->s_cop = &f2fs_cryptops;
-+#endif
- 	sb->s_xattr = f2fs_xattr_handlers;
- 	sb->s_export_op = &f2fs_export_ops;
- 	sb->s_magic = F2FS_SUPER_MAGIC;
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index adaca6088836..7503e7cdf870 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -2007,11 +2007,6 @@ static struct ubifs_info *alloc_ubifs_info(struct ubi_volume_desc *ubi)
- 	return c;
- }
+-	if (!inode->i_sb->s_cop->is_encrypted(inode))
++	if (!IS_ENCRYPTED(inode))
+ 		return -ENODATA;
  
--#ifndef CONFIG_UBIFS_FS_ENCRYPTION
--const struct fscrypt_operations ubifs_crypt_operations = {
--};
--#endif
--
- static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
+ 	res = inode->i_sb->s_cop->get_context(inode, &ctx, sizeof(ctx));
+@@ -166,11 +166,11 @@ int fscrypt_has_permitted_context(struct inode *parent, struct inode *child)
+ 		return 1;
+ 
+ 	/* No restrictions if the parent directory is unencrypted */
+-	if (!cops->is_encrypted(parent))
++	if (!IS_ENCRYPTED(parent))
+ 		return 1;
+ 
+ 	/* Encrypted directories must not contain unencrypted files */
+-	if (!cops->is_encrypted(child))
++	if (!IS_ENCRYPTED(child))
+ 		return 0;
+ 
+ 	/*
+diff --git a/include/linux/fscrypt_notsupp.h b/include/linux/fscrypt_notsupp.h
+index 2d0b6960831e..7b390e356f7f 100644
+--- a/include/linux/fscrypt_notsupp.h
++++ b/include/linux/fscrypt_notsupp.h
+@@ -100,7 +100,7 @@ static inline int fscrypt_setup_filename(struct inode *dir,
+ 					 const struct qstr *iname,
+ 					 int lookup, struct fscrypt_name *fname)
  {
- 	struct ubifs_info *c = sb->s_fs_info;
-@@ -2054,7 +2049,9 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
- 		sb->s_maxbytes = c->max_inode_sz = MAX_LFS_FILESIZE;
- 	sb->s_op = &ubifs_super_operations;
- 	sb->s_xattr = ubifs_xattr_handlers;
-+#ifdef CONFIG_UBIFS_FS_ENCRYPTION
- 	sb->s_cop = &ubifs_crypt_operations;
-+#endif
+-	if (dir->i_sb->s_cop->is_encrypted(dir))
++	if (IS_ENCRYPTED(dir))
+ 		return -EOPNOTSUPP;
  
- 	mutex_lock(&c->umount_mutex);
- 	err = mount_ubifs(c);
+ 	memset(fname, 0, sizeof(struct fscrypt_name));
 -- 
 2.14.2.920.gcf0c67979c-goog
