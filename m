@@ -1,21 +1,23 @@
-Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
+Received: from mail-pf0-x232.google.com ([2607:f8b0:400e:c00::232])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e1daK-0000Fm-S1
- for linux-mtd@lists.infradead.org; Mon, 09 Oct 2017 19:19:47 +0000
-Received: by mail-pf0-x244.google.com with SMTP id a7so29879833pfj.5
- for <linux-mtd@lists.infradead.org>; Mon, 09 Oct 2017 12:19:10 -0700 (PDT)
+ id 1e1ekR-0008Tt-BH
+ for linux-mtd@lists.infradead.org; Mon, 09 Oct 2017 20:34:06 +0000
+Received: by mail-pf0-x232.google.com with SMTP id 17so6564801pfn.12
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Oct 2017 13:33:35 -0700 (PDT)
+Date: Mon, 9 Oct 2017 13:33:33 -0700
 From: Eric Biggers <ebiggers3@gmail.com>
-To: linux-fscrypt@vger.kernel.org,
-	"Theodore Y . Ts'o" <tytso@mit.edu>
-Cc: Jaegeuk Kim <jaegeuk@kernel.org>, linux-fsdevel@vger.kernel.org,
+To: Theodore Ts'o <tytso@mit.edu>, linux-fscrypt@vger.kernel.org
+Cc: linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
  linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
-Subject: [PATCH v2 10/11] fscrypt: new helper function -
- fscrypt_prepare_lookup()
-Date: Mon,  9 Oct 2017 12:15:43 -0700
-Message-Id: <20171009191544.43656-11-ebiggers3@gmail.com>
-In-Reply-To: <20171009191544.43656-1-ebiggers3@gmail.com>
-References: <20171009191544.43656-1-ebiggers3@gmail.com>
+Subject: Re: [PATCH v3] fscrypt: add a documentation file for
+ filesystem-level encryption
+Message-ID: <20171009203333.GC67463@gmail.com>
+References: <20170909001512.72431-1-ebiggers3@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170909001512.72431-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,114 +27,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Eric Biggers <ebiggers@google.com>
+On Fri, Sep 08, 2017 at 05:15:12PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Perhaps long overdue, add a documentation file for filesystem-level
+> encryption, a.k.a. fscrypt or fs/crypto/, to the Documentation
+> directory.  The new file is based loosely on the latest version of the
+> "EXT4 Encryption Design Document (public version)" Google Doc, but with
+> many improvements made, including:
+> 
+> - Reflect the reality that it is not specific to ext4 anymore.
+> - More thoroughly document the design and user-visible API/behavior.
+> - Replace outdated information, such as the outdated explanation of how
+>   encrypted filenames are hashed for indexed directories and how
+>   encrypted filenames are presented to userspace without the key.
+>   (This was changed just before release.)
+> 
+> For now the focus is on the design and user-visible API/behavior, not on
+> how to add encryption support to a filesystem --- since the internal API
+> is still pretty messy and any standalone documentation for it would
+> become outdated as things get refactored over time.
+> 
+> Reviewed-by: Michael Halcrow <mhalcrow@google.com>
 
-Introduce a helper function which prepares to look up the given dentry
-in the given directory.  If the directory is encrypted, it handles
-loading the directory's encryption key, setting the dentry's ->d_op to
-fscrypt_d_ops, and setting DCACHE_ENCRYPTED_WITH_KEY if the directory's
-encryption key is available.
+Ted, are you interested in taking this through the fscrypt tree for v4.15?
 
-Note: once all filesystems switch over to this, we'll be able to move
-fscrypt_d_ops and fscrypt_set_encrypted_dentry() to fscrypt_private.h.
-
-Acked-by: Dave Chinner <dchinner@redhat.com>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/crypto/hooks.c               | 18 ++++++++++++++++++
- include/linux/fscrypt.h         | 28 ++++++++++++++++++++++++++++
- include/linux/fscrypt_notsupp.h |  6 ++++++
- include/linux/fscrypt_supp.h    |  1 +
- 4 files changed, 53 insertions(+)
-
-diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
-index 822cb78f9b45..9f5fb2eb9cf7 100644
---- a/fs/crypto/hooks.c
-+++ b/fs/crypto/hooks.c
-@@ -92,3 +92,21 @@ int __fscrypt_prepare_rename(struct inode *old_dir, struct dentry *old_dentry,
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(__fscrypt_prepare_rename);
-+
-+int __fscrypt_prepare_lookup(struct inode *dir, struct dentry *dentry)
-+{
-+	int err = fscrypt_get_encryption_info(dir);
-+
-+	if (err)
-+		return err;
-+
-+	if (fscrypt_has_encryption_key(dir)) {
-+		spin_lock(&dentry->d_lock);
-+		dentry->d_flags |= DCACHE_ENCRYPTED_WITH_KEY;
-+		spin_unlock(&dentry->d_lock);
-+	}
-+
-+	d_set_d_op(dentry, &fscrypt_d_ops);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(__fscrypt_prepare_lookup);
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index c422367baed9..2327859c8cd2 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -237,4 +237,32 @@ static inline int fscrypt_prepare_rename(struct inode *old_dir,
- 	return 0;
- }
- 
-+/**
-+ * fscrypt_prepare_lookup - prepare to lookup a name in a possibly-encrypted directory
-+ * @dir: directory being searched
-+ * @dentry: filename being looked up
-+ * @flags: lookup flags
-+ *
-+ * Prepare for ->lookup() in a directory which may be encrypted.  Lookups can be
-+ * done with or without the directory's encryption key; without the key,
-+ * filenames are presented in encrypted form.  Therefore, we'll try to set up
-+ * the directory's encryption key, but even without it the lookup can continue.
-+ *
-+ * To allow invalidating stale dentries if the directory's encryption key is
-+ * added later, we also install a custom ->d_revalidate() method and use the
-+ * DCACHE_ENCRYPTED_WITH_KEY flag to indicate whether a given dentry is a
-+ * plaintext name (flag set) or a ciphertext name (flag cleared).
-+ *
-+ * Return: 0 on success, -errno if a problem occurred while setting up the
-+ * encryption key
-+ */
-+static inline int fscrypt_prepare_lookup(struct inode *dir,
-+					 struct dentry *dentry,
-+					 unsigned int flags)
-+{
-+	if (IS_ENCRYPTED(dir))
-+		return __fscrypt_prepare_lookup(dir, dentry);
-+	return 0;
-+}
-+
- #endif	/* _LINUX_FSCRYPT_H */
-diff --git a/include/linux/fscrypt_notsupp.h b/include/linux/fscrypt_notsupp.h
-index 6af378d8126e..c4c6bf2c390e 100644
---- a/include/linux/fscrypt_notsupp.h
-+++ b/include/linux/fscrypt_notsupp.h
-@@ -201,4 +201,10 @@ static inline int __fscrypt_prepare_rename(struct inode *old_dir,
- 	return -EOPNOTSUPP;
- }
- 
-+static inline int __fscrypt_prepare_lookup(struct inode *dir,
-+					   struct dentry *dentry)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- #endif	/* _LINUX_FSCRYPT_NOTSUPP_H */
-diff --git a/include/linux/fscrypt_supp.h b/include/linux/fscrypt_supp.h
-index 40f35073145f..2db5e9706f60 100644
---- a/include/linux/fscrypt_supp.h
-+++ b/include/linux/fscrypt_supp.h
-@@ -151,5 +151,6 @@ extern int __fscrypt_prepare_rename(struct inode *old_dir,
- 				    struct inode *new_dir,
- 				    struct dentry *new_dentry,
- 				    unsigned int flags);
-+extern int __fscrypt_prepare_lookup(struct inode *dir, struct dentry *dentry);
- 
- #endif	/* _LINUX_FSCRYPT_SUPP_H */
--- 
-2.14.2.920.gcf0c67979c-goog
+Eric
