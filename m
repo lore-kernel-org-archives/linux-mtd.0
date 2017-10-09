@@ -1,18 +1,19 @@
-Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
+Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e1daH-0000EY-JB
- for linux-mtd@lists.infradead.org; Mon, 09 Oct 2017 19:19:36 +0000
-Received: by mail-pf0-x243.google.com with SMTP id z11so12491317pfk.3
- for <linux-mtd@lists.infradead.org>; Mon, 09 Oct 2017 12:19:05 -0700 (PDT)
+ id 1e1daH-0000FR-7S
+ for linux-mtd@lists.infradead.org; Mon, 09 Oct 2017 19:19:37 +0000
+Received: by mail-pf0-x241.google.com with SMTP id z11so12491790pfk.3
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Oct 2017 12:19:09 -0700 (PDT)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org,
 	"Theodore Y . Ts'o" <tytso@mit.edu>
 Cc: Jaegeuk Kim <jaegeuk@kernel.org>, linux-fsdevel@vger.kernel.org,
  linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
  linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
-Subject: [PATCH v2 06/11] fscrypt: new helper function - fscrypt_require_key()
-Date: Mon,  9 Oct 2017 12:15:39 -0700
-Message-Id: <20171009191544.43656-7-ebiggers3@gmail.com>
+Subject: [PATCH v2 09/11] fscrypt: new helper function -
+ fscrypt_prepare_rename()
+Date: Mon,  9 Oct 2017 12:15:42 -0700
+Message-Id: <20171009191544.43656-10-ebiggers3@gmail.com>
 In-Reply-To: <20171009191544.43656-1-ebiggers3@gmail.com>
 References: <20171009191544.43656-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,51 +27,134 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Eric Biggers <ebiggers@google.com>
 
-Add a helper function which checks if an inode is encrypted, and if so,
-tries to set up its encryption key.  This is a pattern which is
-duplicated in multiple places in each of ext4, f2fs, and ubifs --- for
-example, when a regular file is asked to be opened or truncated.
+Introduce a helper function which prepares to rename a file into a
+possibly encrypted directory.  It handles loading the encryption keys
+for the source and target directories if needed, and it handles
+enforcing that if the target directory (and the source directory for a
+cross-rename) is encrypted, then the file being moved into the directory
+has the same encryption policy as its containing directory.
 
 Acked-by: Dave Chinner <dchinner@redhat.com>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- include/linux/fscrypt.h | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+ fs/crypto/hooks.c               | 30 ++++++++++++++++++++++++++++++
+ include/linux/fscrypt.h         | 33 +++++++++++++++++++++++++++++++++
+ include/linux/fscrypt_notsupp.h |  9 +++++++++
+ include/linux/fscrypt_supp.h    |  5 +++++
+ 4 files changed, 77 insertions(+)
 
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index d58e6a90cfe4..b3e2a5f93415 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -151,5 +151,30 @@ static inline bool fscrypt_has_encryption_key(const struct inode *inode)
- #include <linux/fscrypt_notsupp.h>
- #endif /* __FS_HAS_ENCRYPTION */
- 
-+/**
-+ * fscrypt_require_key - require an inode's encryption key
-+ * @inode: the inode we need the key for
-+ *
-+ * If the inode is encrypted, set up its encryption key if not already done.
-+ * Then require that the key be present and return -ENOKEY otherwise.
-+ *
-+ * No locks are needed, and the key will live as long as the struct inode --- so
-+ * it won't go away from under you.
-+ *
-+ * Return: 0 on success, -ENOKEY if the key is missing, or another -errno code
-+ * if a problem occurred while setting up the encryption key.
-+ */
-+static inline int fscrypt_require_key(struct inode *inode)
-+{
-+	if (IS_ENCRYPTED(inode)) {
-+		int err = fscrypt_get_encryption_info(inode);
+diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
+index 8b90217320dd..822cb78f9b45 100644
+--- a/fs/crypto/hooks.c
++++ b/fs/crypto/hooks.c
+@@ -62,3 +62,33 @@ int __fscrypt_prepare_link(struct inode *inode, struct inode *dir)
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(__fscrypt_prepare_link);
 +
-+		if (err)
-+			return err;
-+		if (!fscrypt_has_encryption_key(inode))
-+			return -ENOKEY;
++int __fscrypt_prepare_rename(struct inode *old_dir, struct dentry *old_dentry,
++			     struct inode *new_dir, struct dentry *new_dentry,
++			     unsigned int flags)
++{
++	int err;
++
++	err = fscrypt_require_key(old_dir);
++	if (err)
++		return err;
++
++	err = fscrypt_require_key(new_dir);
++	if (err)
++		return err;
++
++	if (old_dir != new_dir) {
++		if (IS_ENCRYPTED(new_dir) &&
++		    !fscrypt_has_permitted_context(new_dir,
++						   d_inode(old_dentry)))
++			return -EPERM;
++
++		if ((flags & RENAME_EXCHANGE) &&
++		    IS_ENCRYPTED(old_dir) &&
++		    !fscrypt_has_permitted_context(old_dir,
++						   d_inode(new_dentry)))
++			return -EPERM;
 +	}
 +	return 0;
 +}
++EXPORT_SYMBOL_GPL(__fscrypt_prepare_rename);
+diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+index 9c9a53f99327..c422367baed9 100644
+--- a/include/linux/fscrypt.h
++++ b/include/linux/fscrypt.h
+@@ -204,4 +204,37 @@ static inline int fscrypt_prepare_link(struct dentry *old_dentry,
+ 	return 0;
+ }
  
++/**
++ * fscrypt_prepare_rename - prepare for a rename between possibly-encrypted directories
++ * @old_dir: source directory
++ * @old_dentry: dentry for source file
++ * @new_dir: target directory
++ * @new_dentry: dentry for target location (may be negative unless exchanging)
++ * @flags: rename flags (we care at least about %RENAME_EXCHANGE)
++ *
++ * Prepare for ->rename() where the source and/or target directories may be
++ * encrypted.  A new link can only be added to an encrypted directory if the
++ * directory's encryption key is available --- since otherwise we'd have no way
++ * to encrypt the filename.  A rename to an existing name, on the other hand,
++ * *is* cryptographically possible without the key.  However, we take the more
++ * conservative approach and just forbid all no-key renames.
++ *
++ * We also verify that the rename will not violate the constraint that all files
++ * in an encrypted directory tree use the same encryption policy.
++ *
++ * Return: 0 on success, -ENOKEY if an encryption key is missing, -EPERM if the
++ * rename would cause inconsistent encryption policies, or another -errno code.
++ */
++static inline int fscrypt_prepare_rename(struct inode *old_dir,
++					 struct dentry *old_dentry,
++					 struct inode *new_dir,
++					 struct dentry *new_dentry,
++					 unsigned int flags)
++{
++	if (IS_ENCRYPTED(old_dir) || IS_ENCRYPTED(new_dir))
++		return __fscrypt_prepare_rename(old_dir, old_dentry,
++						new_dir, new_dentry, flags);
++	return 0;
++}
++
  #endif	/* _LINUX_FSCRYPT_H */
+diff --git a/include/linux/fscrypt_notsupp.h b/include/linux/fscrypt_notsupp.h
+index d7d1039eb6b5..6af378d8126e 100644
+--- a/include/linux/fscrypt_notsupp.h
++++ b/include/linux/fscrypt_notsupp.h
+@@ -192,4 +192,13 @@ static inline int __fscrypt_prepare_link(struct inode *inode,
+ 	return -EOPNOTSUPP;
+ }
+ 
++static inline int __fscrypt_prepare_rename(struct inode *old_dir,
++					   struct dentry *old_dentry,
++					   struct inode *new_dir,
++					   struct dentry *new_dentry,
++					   unsigned int flags)
++{
++	return -EOPNOTSUPP;
++}
++
+ #endif	/* _LINUX_FSCRYPT_NOTSUPP_H */
+diff --git a/include/linux/fscrypt_supp.h b/include/linux/fscrypt_supp.h
+index 80706283da75..40f35073145f 100644
+--- a/include/linux/fscrypt_supp.h
++++ b/include/linux/fscrypt_supp.h
+@@ -146,5 +146,10 @@ extern int fscrypt_zeroout_range(const struct inode *, pgoff_t, sector_t,
+ /* hooks.c */
+ extern int fscrypt_file_open(struct inode *inode, struct file *filp);
+ extern int __fscrypt_prepare_link(struct inode *inode, struct inode *dir);
++extern int __fscrypt_prepare_rename(struct inode *old_dir,
++				    struct dentry *old_dentry,
++				    struct inode *new_dir,
++				    struct dentry *new_dentry,
++				    unsigned int flags);
+ 
+ #endif	/* _LINUX_FSCRYPT_SUPP_H */
 -- 
 2.14.2.920.gcf0c67979c-goog
