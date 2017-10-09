@@ -1,18 +1,19 @@
-Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
+Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e1daI-0000El-7z
- for linux-mtd@lists.infradead.org; Mon, 09 Oct 2017 19:19:44 +0000
-Received: by mail-pf0-x242.google.com with SMTP id m28so29746267pfi.0
- for <linux-mtd@lists.infradead.org>; Mon, 09 Oct 2017 12:19:06 -0700 (PDT)
+ id 1e1daM-0000GE-Gu
+ for linux-mtd@lists.infradead.org; Mon, 09 Oct 2017 19:19:46 +0000
+Received: by mail-pf0-x243.google.com with SMTP id m28so29746826pfi.0
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Oct 2017 12:19:12 -0700 (PDT)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org,
 	"Theodore Y . Ts'o" <tytso@mit.edu>
 Cc: Jaegeuk Kim <jaegeuk@kernel.org>, linux-fsdevel@vger.kernel.org,
  linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
  linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
-Subject: [PATCH v2 07/11] fscrypt: new helper function - fscrypt_file_open()
-Date: Mon,  9 Oct 2017 12:15:40 -0700
-Message-Id: <20171009191544.43656-8-ebiggers3@gmail.com>
+Subject: [PATCH v2 11/11] fscrypt: new helper function -
+ fscrypt_prepare_setattr()
+Date: Mon,  9 Oct 2017 12:15:44 -0700
+Message-Id: <20171009191544.43656-12-ebiggers3@gmail.com>
 In-Reply-To: <20171009191544.43656-1-ebiggers3@gmail.com>
 References: <20171009191544.43656-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,116 +27,49 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Eric Biggers <ebiggers@google.com>
 
-Add a helper function which prepares to open a regular file which may be
-encrypted.  It handles setting up the file's encryption key, then
-checking that the file's encryption policy matches that of its parent
-directory (if the parent directory is encrypted).  It may be set as the
-->open() method or it can be called from another ->open() method.
+Introduce a helper function for filesystems to call when processing
+->setattr() on a possibly-encrypted inode.  It handles enforcing that an
+encrypted file can only be truncated if its encryption key is available.
 
 Acked-by: Dave Chinner <dchinner@redhat.com>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/Makefile              |  2 +-
- fs/crypto/hooks.c               | 49 +++++++++++++++++++++++++++++++++++++++++
- include/linux/fscrypt_notsupp.h |  9 ++++++++
- include/linux/fscrypt_supp.h    |  3 +++
- 4 files changed, 62 insertions(+), 1 deletion(-)
- create mode 100644 fs/crypto/hooks.c
+ include/linux/fscrypt.h | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-diff --git a/fs/crypto/Makefile b/fs/crypto/Makefile
-index 9f6607f17b53..cb496989a6b6 100644
---- a/fs/crypto/Makefile
-+++ b/fs/crypto/Makefile
-@@ -1,4 +1,4 @@
- obj-$(CONFIG_FS_ENCRYPTION)	+= fscrypto.o
- 
--fscrypto-y := crypto.o fname.o policy.o keyinfo.o
-+fscrypto-y := crypto.o fname.o hooks.o keyinfo.o policy.o
- fscrypto-$(CONFIG_BLOCK) += bio.o
-diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
-new file mode 100644
-index 000000000000..069088e91ea9
---- /dev/null
-+++ b/fs/crypto/hooks.c
-@@ -0,0 +1,49 @@
-+/*
-+ * fs/crypto/hooks.c
-+ *
-+ * Encryption hooks for higher-level filesystem operations.
-+ */
-+
-+#include <linux/ratelimit.h>
-+#include "fscrypt_private.h"
-+
-+/**
-+ * fscrypt_file_open - prepare to open a possibly-encrypted regular file
-+ * @inode: the inode being opened
-+ * @filp: the struct file being set up
-+ *
-+ * Currently, an encrypted regular file can only be opened if its encryption key
-+ * is available; access to the raw encrypted contents is not supported.
-+ * Therefore, we first set up the inode's encryption key (if not already done)
-+ * and return an error if it's unavailable.
-+ *
-+ * We also verify that if the parent directory (from the path via which the file
-+ * is being opened) is encrypted, then the inode being opened uses the same
-+ * encryption policy.  This is needed as part of the enforcement that all files
-+ * in an encrypted directory tree use the same encryption policy, as a
-+ * protection against certain types of offline attacks.  Note that this check is
-+ * needed even when opening an *unencrypted* file, since it's forbidden to have
-+ * an unencrypted file in an encrypted directory.
-+ *
-+ * Return: 0 on success, -ENOKEY if the key is missing, or another -errno code
-+ */
-+int fscrypt_file_open(struct inode *inode, struct file *filp)
-+{
-+	int err;
-+	struct dentry *dir;
-+
-+	err = fscrypt_require_key(inode);
-+	if (err)
-+		return err;
-+
-+	dir = dget_parent(file_dentry(filp));
-+	if (IS_ENCRYPTED(d_inode(dir)) &&
-+	    !fscrypt_has_permitted_context(d_inode(dir), inode)) {
-+		pr_warn_ratelimited("fscrypt: inconsistent encryption contexts: %lu/%lu",
-+				    d_inode(dir)->i_ino, inode->i_ino);
-+		err = -EPERM;
-+	}
-+	dput(dir);
-+	return err;
-+}
-+EXPORT_SYMBOL_GPL(fscrypt_file_open);
-diff --git a/include/linux/fscrypt_notsupp.h b/include/linux/fscrypt_notsupp.h
-index 7b390e356f7f..162da6517ac4 100644
---- a/include/linux/fscrypt_notsupp.h
-+++ b/include/linux/fscrypt_notsupp.h
-@@ -177,4 +177,13 @@ static inline int fscrypt_zeroout_range(const struct inode *inode, pgoff_t lblk,
- 	return -EOPNOTSUPP;
+diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+index 2327859c8cd2..53437bfdfcbc 100644
+--- a/include/linux/fscrypt.h
++++ b/include/linux/fscrypt.h
+@@ -265,4 +265,29 @@ static inline int fscrypt_prepare_lookup(struct inode *dir,
+ 	return 0;
  }
  
-+/* hooks.c */
-+
-+static inline int fscrypt_file_open(struct inode *inode, struct file *filp)
++/**
++ * fscrypt_prepare_setattr - prepare to change a possibly-encrypted inode's attributes
++ * @dentry: dentry through which the inode is being changed
++ * @attr: attributes to change
++ *
++ * Prepare for ->setattr() on a possibly-encrypted inode.  On an encrypted file,
++ * most attribute changes are allowed even without the encryption key.  However,
++ * without the encryption key we do have to forbid truncates.  This is needed
++ * because the size being truncated to may not be a multiple of the filesystem
++ * block size, and in that case we'd have to decrypt the final block, zero the
++ * portion past i_size, and re-encrypt it.  (We *could* allow truncating to a
++ * filesystem block boundary, but it's simpler to just forbid all truncates ---
++ * and we already forbid all other contents modifications without the key.)
++ *
++ * Return: 0 on success, -ENOKEY if the key is missing, or another -errno code
++ * if a problem occurred while setting up the encryption key.
++ */
++static inline int fscrypt_prepare_setattr(struct dentry *dentry,
++					  struct iattr *attr)
 +{
-+	if (IS_ENCRYPTED(inode))
-+		return -EOPNOTSUPP;
++	if (attr->ia_valid & ATTR_SIZE)
++		return fscrypt_require_key(d_inode(dentry));
 +	return 0;
 +}
 +
- #endif	/* _LINUX_FSCRYPT_NOTSUPP_H */
-diff --git a/include/linux/fscrypt_supp.h b/include/linux/fscrypt_supp.h
-index 5a90e5ef4687..fd2f6decaee4 100644
---- a/include/linux/fscrypt_supp.h
-+++ b/include/linux/fscrypt_supp.h
-@@ -143,4 +143,7 @@ extern void fscrypt_pullback_bio_page(struct page **, bool);
- extern int fscrypt_zeroout_range(const struct inode *, pgoff_t, sector_t,
- 				 unsigned int);
- 
-+/* hooks.c */
-+extern int fscrypt_file_open(struct inode *inode, struct file *filp);
-+
- #endif	/* _LINUX_FSCRYPT_SUPP_H */
+ #endif	/* _LINUX_FSCRYPT_H */
 -- 
 2.14.2.920.gcf0c67979c-goog
