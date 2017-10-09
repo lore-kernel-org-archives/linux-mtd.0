@@ -1,19 +1,19 @@
-Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
+Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e1daA-0000D8-UV
- for linux-mtd@lists.infradead.org; Mon, 09 Oct 2017 19:19:20 +0000
-Received: by mail-pf0-x244.google.com with SMTP id a7so29878555pfj.5
- for <linux-mtd@lists.infradead.org>; Mon, 09 Oct 2017 12:18:58 -0700 (PDT)
+ id 1e1daC-0000EM-AG
+ for linux-mtd@lists.infradead.org; Mon, 09 Oct 2017 19:19:28 +0000
+Received: by mail-pf0-x241.google.com with SMTP id b85so9514885pfj.1
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Oct 2017 12:19:04 -0700 (PDT)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org,
 	"Theodore Y . Ts'o" <tytso@mit.edu>
 Cc: Jaegeuk Kim <jaegeuk@kernel.org>, linux-fsdevel@vger.kernel.org,
  linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, Dave Chinner <dchinner@redhat.com>,
- Eric Biggers <ebiggers@google.com>
-Subject: [PATCH v2 01/11] fscrypt: clean up include file mess
-Date: Mon,  9 Oct 2017 12:15:34 -0700
-Message-Id: <20171009191544.43656-2-ebiggers3@gmail.com>
+ linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
+Subject: [PATCH v2 05/11] fscrypt: remove unneeded empty fscrypt_operations
+ structs
+Date: Mon,  9 Oct 2017 12:15:38 -0700
+Message-Id: <20171009191544.43656-6-ebiggers3@gmail.com>
 In-Reply-To: <20171009191544.43656-1-ebiggers3@gmail.com>
 References: <20171009191544.43656-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,234 +25,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Dave Chinner <dchinner@redhat.com>
+From: Eric Biggers <ebiggers@google.com>
 
-Filesystems have to include different header files based on whether they
-are compiled with encryption support or not. That's nasty and messy.
+In the case where a filesystem has been configured without encryption
+support, there is no longer any need to initialize ->s_cop at all, since
+none of the methods are ever called.
 
-Instead, rationalise the headers so we have a single include fscrypt.h
-and let it decide what internal implementation to include based on the
-__FS_HAS_ENCRYPTION define.  Filesystems set __FS_HAS_ENCRYPTION to 1
-before including linux/fscrypt.h if they are built with encryption
-support.  Otherwise, they must set __FS_HAS_ENCRYPTION to 0.
-
-Add guards to prevent fscrypt_supp.h and fscrypt_notsupp.h from being
-directly included by filesystems.
-
-Signed-off-by: Dave Chinner <dchinner@redhat.com>
-[EB: use 1 and 0 rather than defined/undefined]
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Acked-by: Dave Chinner <dchinner@redhat.com>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/fscrypt_private.h                   |  3 +-
- fs/ext4/ext4.h                                |  8 ++----
- fs/f2fs/f2fs.h                                |  8 ++----
- fs/ubifs/ubifs.h                              |  9 +++---
- include/linux/{fscrypt_common.h => fscrypt.h} | 41 ++++++++++++++++++---------
- include/linux/fscrypt_notsupp.h               |  7 +++--
- include/linux/fscrypt_supp.h                  |  7 +++--
- 7 files changed, 49 insertions(+), 34 deletions(-)
- rename include/linux/{fscrypt_common.h => fscrypt.h} (80%)
+ fs/ext4/super.c  | 5 ++---
+ fs/f2fs/super.c  | 5 ++---
+ fs/ubifs/super.c | 7 ++-----
+ 3 files changed, 6 insertions(+), 11 deletions(-)
 
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index a1d5021c31ef..a180981ee6d7 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -11,7 +11,8 @@
- #ifndef _FSCRYPT_PRIVATE_H
- #define _FSCRYPT_PRIVATE_H
- 
--#include <linux/fscrypt_supp.h>
-+#define __FS_HAS_ENCRYPTION 1
-+#include <linux/fscrypt.h>
- #include <crypto/hash.h>
- 
- /* Encryption parameters */
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index e2abe01c8c6b..ca6d6166b85c 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -33,17 +33,15 @@
- #include <linux/percpu_counter.h>
- #include <linux/ratelimit.h>
- #include <crypto/hash.h>
--#ifdef CONFIG_EXT4_FS_ENCRYPTION
--#include <linux/fscrypt_supp.h>
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index bc63cdf194e3..04f3670748e7 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1244,9 +1244,6 @@ static const struct fscrypt_operations ext4_cryptops = {
+ 	.empty_dir		= ext4_empty_dir,
+ 	.max_namelen		= ext4_max_namelen,
+ };
 -#else
--#include <linux/fscrypt_notsupp.h>
--#endif
- #include <linux/falloc.h>
- #include <linux/percpu-rwsem.h>
- #ifdef __KERNEL__
- #include <linux/compat.h>
+-static const struct fscrypt_operations ext4_cryptops = {
+-};
  #endif
  
-+#define __FS_HAS_ENCRYPTION IS_ENABLED(CONFIG_EXT4_FS_ENCRYPTION)
-+#include <linux/fscrypt.h>
-+
- /*
-  * The fourth extended filesystem constants/structures
-  */
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 9a7c90386947..fc53aebaf3ae 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -23,13 +23,11 @@
- #include <linux/bio.h>
- #include <linux/blkdev.h>
- #include <linux/quotaops.h>
--#ifdef CONFIG_F2FS_FS_ENCRYPTION
--#include <linux/fscrypt_supp.h>
+ #ifdef CONFIG_QUOTA
+@@ -3998,7 +3995,9 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 	sb->s_op = &ext4_sops;
+ 	sb->s_export_op = &ext4_export_ops;
+ 	sb->s_xattr = ext4_xattr_handlers;
++#ifdef CONFIG_EXT4_FS_ENCRYPTION
+ 	sb->s_cop = &ext4_cryptops;
++#endif
+ #ifdef CONFIG_QUOTA
+ 	sb->dq_op = &ext4_quota_operations;
+ 	if (ext4_has_feature_quota(sb))
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 1cb41f711ab8..c1c7183b3527 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -1597,9 +1597,6 @@ static const struct fscrypt_operations f2fs_cryptops = {
+ 	.empty_dir	= f2fs_empty_dir,
+ 	.max_namelen	= f2fs_max_namelen,
+ };
 -#else
--#include <linux/fscrypt_notsupp.h>
--#endif
- #include <crypto/hash.h>
+-static const struct fscrypt_operations f2fs_cryptops = {
+-};
+ #endif
  
-+#define __FS_HAS_ENCRYPTION IS_ENABLED(CONFIG_F2FS_FS_ENCRYPTION)
-+#include <linux/fscrypt.h>
-+
- #ifdef CONFIG_F2FS_CHECK_FS
- #define f2fs_bug_on(sbi, condition)	BUG_ON(condition)
- #else
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index cd43651f1731..6a346d4af98f 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -38,12 +38,11 @@
- #include <linux/backing-dev.h>
- #include <linux/security.h>
- #include <linux/xattr.h>
--#ifdef CONFIG_UBIFS_FS_ENCRYPTION
--#include <linux/fscrypt_supp.h>
--#else
--#include <linux/fscrypt_notsupp.h>
--#endif
- #include <linux/random.h>
-+
-+#define __FS_HAS_ENCRYPTION IS_ENABLED(CONFIG_UBIFS_FS_ENCRYPTION)
-+#include <linux/fscrypt.h>
-+
- #include "ubifs-media.h"
+ static struct inode *f2fs_nfs_get_inode(struct super_block *sb,
+@@ -2318,7 +2315,9 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+ #endif
  
- /* Version of this UBIFS implementation */
-diff --git a/include/linux/fscrypt_common.h b/include/linux/fscrypt.h
-similarity index 80%
-rename from include/linux/fscrypt_common.h
-rename to include/linux/fscrypt.h
-index 97f738628b36..bfc962e62078 100644
---- a/include/linux/fscrypt_common.h
-+++ b/include/linux/fscrypt.h
-@@ -1,14 +1,17 @@
- /*
-- * fscrypt_common.h: common declarations for per-file encryption
-+ * fscrypt.h: declarations for per-file encryption
-+ *
-+ * Filesystems that implement per-file encryption include this header
-+ * file with the __FS_HAS_ENCRYPTION set according to whether that filesystem
-+ * is being built with encryption support or not.
-  *
-  * Copyright (C) 2015, Google, Inc.
-  *
-  * Written by Michael Halcrow, 2015.
-  * Modified by Jaegeuk Kim, 2015.
-  */
+ 	sb->s_op = &f2fs_sops;
++#ifdef CONFIG_F2FS_FS_ENCRYPTION
+ 	sb->s_cop = &f2fs_cryptops;
++#endif
+ 	sb->s_xattr = f2fs_xattr_handlers;
+ 	sb->s_export_op = &f2fs_export_ops;
+ 	sb->s_magic = F2FS_SUPER_MAGIC;
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index adaca6088836..7503e7cdf870 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -2007,11 +2007,6 @@ static struct ubifs_info *alloc_ubifs_info(struct ubi_volume_desc *ubi)
+ 	return c;
+ }
+ 
+-#ifndef CONFIG_UBIFS_FS_ENCRYPTION
+-const struct fscrypt_operations ubifs_crypt_operations = {
+-};
+-#endif
 -
--#ifndef _LINUX_FSCRYPT_COMMON_H
--#define _LINUX_FSCRYPT_COMMON_H
-+#ifndef _LINUX_FSCRYPT_H
-+#define _LINUX_FSCRYPT_H
- 
- #include <linux/key.h>
- #include <linux/fs.h>
-@@ -119,23 +122,35 @@ static inline bool fscrypt_is_dot_dotdot(const struct qstr *str)
- 	return false;
- }
- 
-+#if __FS_HAS_ENCRYPTION
-+
- static inline struct page *fscrypt_control_page(struct page *page)
+ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
  {
--#if IS_ENABLED(CONFIG_FS_ENCRYPTION)
- 	return ((struct fscrypt_ctx *)page_private(page))->w.control_page;
--#else
-+}
-+
-+static inline bool fscrypt_has_encryption_key(const struct inode *inode)
-+{
-+	return (inode->i_crypt_info != NULL);
-+}
-+
-+#include <linux/fscrypt_supp.h>
-+
-+#else /* !__FS_HAS_ENCRYPTION */
-+
-+static inline struct page *fscrypt_control_page(struct page *page)
-+{
- 	WARN_ON_ONCE(1);
- 	return ERR_PTR(-EINVAL);
--#endif
- }
- 
--static inline int fscrypt_has_encryption_key(const struct inode *inode)
-+static inline bool fscrypt_has_encryption_key(const struct inode *inode)
- {
--#if IS_ENABLED(CONFIG_FS_ENCRYPTION)
--	return (inode->i_crypt_info != NULL);
--#else
- 	return 0;
--#endif
- }
- 
--#endif	/* _LINUX_FSCRYPT_COMMON_H */
-+#include <linux/fscrypt_notsupp.h>
-+#endif /* __FS_HAS_ENCRYPTION */
-+
-+
-+#endif	/* _LINUX_FSCRYPT_H */
-diff --git a/include/linux/fscrypt_notsupp.h b/include/linux/fscrypt_notsupp.h
-index ec406aed2f2f..2d0b6960831e 100644
---- a/include/linux/fscrypt_notsupp.h
-+++ b/include/linux/fscrypt_notsupp.h
-@@ -3,13 +3,16 @@
-  *
-  * This stubs out the fscrypt functions for filesystems configured without
-  * encryption support.
-+ *
-+ * Do not include this file directly. Use fscrypt.h instead!
-  */
-+#ifndef _LINUX_FSCRYPT_H
-+#error "Incorrect include of linux/fscrypt_notsupp.h!"
+ 	struct ubifs_info *c = sb->s_fs_info;
+@@ -2054,7 +2049,9 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
+ 		sb->s_maxbytes = c->max_inode_sz = MAX_LFS_FILESIZE;
+ 	sb->s_op = &ubifs_super_operations;
+ 	sb->s_xattr = ubifs_xattr_handlers;
++#ifdef CONFIG_UBIFS_FS_ENCRYPTION
+ 	sb->s_cop = &ubifs_crypt_operations;
 +#endif
  
- #ifndef _LINUX_FSCRYPT_NOTSUPP_H
- #define _LINUX_FSCRYPT_NOTSUPP_H
- 
--#include <linux/fscrypt_common.h>
--
- /* crypto.c */
- static inline struct fscrypt_ctx *fscrypt_get_ctx(const struct inode *inode,
- 						  gfp_t gfp_flags)
-diff --git a/include/linux/fscrypt_supp.h b/include/linux/fscrypt_supp.h
-index 32e2fcf13b01..5a90e5ef4687 100644
---- a/include/linux/fscrypt_supp.h
-+++ b/include/linux/fscrypt_supp.h
-@@ -1,14 +1,15 @@
- /*
-  * fscrypt_supp.h
-  *
-- * This is included by filesystems configured with encryption support.
-+ * Do not include this file directly. Use fscrypt.h instead!
-  */
-+#ifndef _LINUX_FSCRYPT_H
-+#error "Incorrect include of linux/fscrypt_supp.h!"
-+#endif
- 
- #ifndef _LINUX_FSCRYPT_SUPP_H
- #define _LINUX_FSCRYPT_SUPP_H
- 
--#include <linux/fscrypt_common.h>
--
- /* crypto.c */
- extern struct kmem_cache *fscrypt_info_cachep;
- extern struct fscrypt_ctx *fscrypt_get_ctx(const struct inode *, gfp_t);
+ 	mutex_lock(&c->umount_mutex);
+ 	err = mount_ubifs(c);
 -- 
 2.14.2.920.gcf0c67979c-goog
