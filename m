@@ -1,18 +1,21 @@
-Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
+Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e1da8-0000Co-SS
- for linux-mtd@lists.infradead.org; Mon, 09 Oct 2017 19:19:18 +0000
-Received: by mail-pf0-x242.google.com with SMTP id z11so12490450pfk.3
- for <linux-mtd@lists.infradead.org>; Mon, 09 Oct 2017 12:18:56 -0700 (PDT)
+ id 1e1daA-0000D8-UV
+ for linux-mtd@lists.infradead.org; Mon, 09 Oct 2017 19:19:20 +0000
+Received: by mail-pf0-x244.google.com with SMTP id a7so29878555pfj.5
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Oct 2017 12:18:58 -0700 (PDT)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org,
 	"Theodore Y . Ts'o" <tytso@mit.edu>
 Cc: Jaegeuk Kim <jaegeuk@kernel.org>, linux-fsdevel@vger.kernel.org,
  linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
-Subject: [PATCH v2 00/11] fscrypt: add some higher-level helper functions
-Date: Mon,  9 Oct 2017 12:15:33 -0700
-Message-Id: <20171009191544.43656-1-ebiggers3@gmail.com>
+ linux-mtd@lists.infradead.org, Dave Chinner <dchinner@redhat.com>,
+ Eric Biggers <ebiggers@google.com>
+Subject: [PATCH v2 01/11] fscrypt: clean up include file mess
+Date: Mon,  9 Oct 2017 12:15:34 -0700
+Message-Id: <20171009191544.43656-2-ebiggers3@gmail.com>
+In-Reply-To: <20171009191544.43656-1-ebiggers3@gmail.com>
+References: <20171009191544.43656-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,72 +25,234 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Eric Biggers <ebiggers@google.com>
+From: Dave Chinner <dchinner@redhat.com>
 
-This series prepares to reduce code duplication among ext4, f2fs, and
-ubifs by introducing a S_ENCRYPTED inode flag (so we don't have to call
-back into the filesystem to test the filesystem-specific inode flag),
-then introducing new helper functions that are called at the beginning
-of the open, link, rename, lookup, and setattr operations.
+Filesystems have to include different header files based on whether they
+are compiled with encryption support or not. That's nasty and messy.
 
-In the future we maybe should even call these new helpers from the VFS
-so that each individual filesystem doesn't have to do it.  But that's
-not possible currently because fs/crypto/ can be built as a module.
+Instead, rationalise the headers so we have a single include fscrypt.h
+and let it decide what internal implementation to include based on the
+__FS_HAS_ENCRYPTION define.  Filesystems set __FS_HAS_ENCRYPTION to 1
+before including linux/fscrypt.h if they are built with encryption
+support.  Otherwise, they must set __FS_HAS_ENCRYPTION to 0.
 
-The patches to switch the filesystems over to use the helper functions
-were included in v1 of this patchset.  They are not included now since
-I'm planning to get them picked up by the individual filesystem
-maintainers after this goes in.
+Add guards to prevent fscrypt_supp.h and fscrypt_notsupp.h from being
+directly included by filesystems.
 
-Changes since v1:
-    - Added Dave Chinner's patch to make fscrypt.h include
-      fscrypt_supp.h or fscrypt_notsupp.h, then reorganized the helpers
-      so that most are defined in fscrypt.h.
-    - As noted above, for now omitted the patches to switch the
-      individual filesystems over to the new helpers.
+Signed-off-by: Dave Chinner <dchinner@redhat.com>
+[EB: use 1 and 0 rather than defined/undefined]
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/crypto/fscrypt_private.h                   |  3 +-
+ fs/ext4/ext4.h                                |  8 ++----
+ fs/f2fs/f2fs.h                                |  8 ++----
+ fs/ubifs/ubifs.h                              |  9 +++---
+ include/linux/{fscrypt_common.h => fscrypt.h} | 41 ++++++++++++++++++---------
+ include/linux/fscrypt_notsupp.h               |  7 +++--
+ include/linux/fscrypt_supp.h                  |  7 +++--
+ 7 files changed, 49 insertions(+), 34 deletions(-)
+ rename include/linux/{fscrypt_common.h => fscrypt.h} (80%)
 
-Dave Chinner (1):
-  fscrypt: clean up include file mess
-
-Eric Biggers (10):
-  fs, fscrypt: add an S_ENCRYPTED inode flag
-  fscrypt: switch from ->is_encrypted() to IS_ENCRYPTED()
-  fscrypt: remove ->is_encrypted()
-  fscrypt: remove unneeded empty fscrypt_operations structs
-  fscrypt: new helper function - fscrypt_require_key()
-  fscrypt: new helper function - fscrypt_file_open()
-  fscrypt: new helper function - fscrypt_prepare_link()
-  fscrypt: new helper function - fscrypt_prepare_rename()
-  fscrypt: new helper function - fscrypt_prepare_lookup()
-  fscrypt: new helper function - fscrypt_prepare_setattr()
-
- fs/crypto/Makefile              |   2 +-
- fs/crypto/crypto.c              |   2 +-
- fs/crypto/fname.c               |   3 +-
- fs/crypto/fscrypt_private.h     |   3 +-
- fs/crypto/hooks.c               | 112 +++++++++++++++
- fs/crypto/keyinfo.c             |   2 +-
- fs/crypto/policy.c              |   6 +-
- fs/ext4/ext4.h                  |   8 +-
- fs/ext4/inode.c                 |   7 +-
- fs/ext4/super.c                 |  15 +-
- fs/f2fs/f2fs.h                  |   9 +-
- fs/f2fs/inode.c                 |   5 +-
- fs/f2fs/super.c                 |   7 +-
- fs/ubifs/crypto.c               |   1 -
- fs/ubifs/ioctl.c                |   5 +-
- fs/ubifs/super.c                |   8 +-
- fs/ubifs/ubifs.h                |  18 +--
- fs/ubifs/xattr.c                |   1 +
- include/linux/fs.h              |   2 +
- include/linux/fscrypt.h         | 293 ++++++++++++++++++++++++++++++++++++++++
- include/linux/fscrypt_common.h  | 141 -------------------
- include/linux/fscrypt_notsupp.h |  39 +++++-
- include/linux/fscrypt_supp.h    |  17 ++-
- 23 files changed, 505 insertions(+), 201 deletions(-)
- create mode 100644 fs/crypto/hooks.c
- create mode 100644 include/linux/fscrypt.h
- delete mode 100644 include/linux/fscrypt_common.h
-
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index a1d5021c31ef..a180981ee6d7 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -11,7 +11,8 @@
+ #ifndef _FSCRYPT_PRIVATE_H
+ #define _FSCRYPT_PRIVATE_H
+ 
+-#include <linux/fscrypt_supp.h>
++#define __FS_HAS_ENCRYPTION 1
++#include <linux/fscrypt.h>
+ #include <crypto/hash.h>
+ 
+ /* Encryption parameters */
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index e2abe01c8c6b..ca6d6166b85c 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -33,17 +33,15 @@
+ #include <linux/percpu_counter.h>
+ #include <linux/ratelimit.h>
+ #include <crypto/hash.h>
+-#ifdef CONFIG_EXT4_FS_ENCRYPTION
+-#include <linux/fscrypt_supp.h>
+-#else
+-#include <linux/fscrypt_notsupp.h>
+-#endif
+ #include <linux/falloc.h>
+ #include <linux/percpu-rwsem.h>
+ #ifdef __KERNEL__
+ #include <linux/compat.h>
+ #endif
+ 
++#define __FS_HAS_ENCRYPTION IS_ENABLED(CONFIG_EXT4_FS_ENCRYPTION)
++#include <linux/fscrypt.h>
++
+ /*
+  * The fourth extended filesystem constants/structures
+  */
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 9a7c90386947..fc53aebaf3ae 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -23,13 +23,11 @@
+ #include <linux/bio.h>
+ #include <linux/blkdev.h>
+ #include <linux/quotaops.h>
+-#ifdef CONFIG_F2FS_FS_ENCRYPTION
+-#include <linux/fscrypt_supp.h>
+-#else
+-#include <linux/fscrypt_notsupp.h>
+-#endif
+ #include <crypto/hash.h>
+ 
++#define __FS_HAS_ENCRYPTION IS_ENABLED(CONFIG_F2FS_FS_ENCRYPTION)
++#include <linux/fscrypt.h>
++
+ #ifdef CONFIG_F2FS_CHECK_FS
+ #define f2fs_bug_on(sbi, condition)	BUG_ON(condition)
+ #else
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index cd43651f1731..6a346d4af98f 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -38,12 +38,11 @@
+ #include <linux/backing-dev.h>
+ #include <linux/security.h>
+ #include <linux/xattr.h>
+-#ifdef CONFIG_UBIFS_FS_ENCRYPTION
+-#include <linux/fscrypt_supp.h>
+-#else
+-#include <linux/fscrypt_notsupp.h>
+-#endif
+ #include <linux/random.h>
++
++#define __FS_HAS_ENCRYPTION IS_ENABLED(CONFIG_UBIFS_FS_ENCRYPTION)
++#include <linux/fscrypt.h>
++
+ #include "ubifs-media.h"
+ 
+ /* Version of this UBIFS implementation */
+diff --git a/include/linux/fscrypt_common.h b/include/linux/fscrypt.h
+similarity index 80%
+rename from include/linux/fscrypt_common.h
+rename to include/linux/fscrypt.h
+index 97f738628b36..bfc962e62078 100644
+--- a/include/linux/fscrypt_common.h
++++ b/include/linux/fscrypt.h
+@@ -1,14 +1,17 @@
+ /*
+- * fscrypt_common.h: common declarations for per-file encryption
++ * fscrypt.h: declarations for per-file encryption
++ *
++ * Filesystems that implement per-file encryption include this header
++ * file with the __FS_HAS_ENCRYPTION set according to whether that filesystem
++ * is being built with encryption support or not.
+  *
+  * Copyright (C) 2015, Google, Inc.
+  *
+  * Written by Michael Halcrow, 2015.
+  * Modified by Jaegeuk Kim, 2015.
+  */
+-
+-#ifndef _LINUX_FSCRYPT_COMMON_H
+-#define _LINUX_FSCRYPT_COMMON_H
++#ifndef _LINUX_FSCRYPT_H
++#define _LINUX_FSCRYPT_H
+ 
+ #include <linux/key.h>
+ #include <linux/fs.h>
+@@ -119,23 +122,35 @@ static inline bool fscrypt_is_dot_dotdot(const struct qstr *str)
+ 	return false;
+ }
+ 
++#if __FS_HAS_ENCRYPTION
++
+ static inline struct page *fscrypt_control_page(struct page *page)
+ {
+-#if IS_ENABLED(CONFIG_FS_ENCRYPTION)
+ 	return ((struct fscrypt_ctx *)page_private(page))->w.control_page;
+-#else
++}
++
++static inline bool fscrypt_has_encryption_key(const struct inode *inode)
++{
++	return (inode->i_crypt_info != NULL);
++}
++
++#include <linux/fscrypt_supp.h>
++
++#else /* !__FS_HAS_ENCRYPTION */
++
++static inline struct page *fscrypt_control_page(struct page *page)
++{
+ 	WARN_ON_ONCE(1);
+ 	return ERR_PTR(-EINVAL);
+-#endif
+ }
+ 
+-static inline int fscrypt_has_encryption_key(const struct inode *inode)
++static inline bool fscrypt_has_encryption_key(const struct inode *inode)
+ {
+-#if IS_ENABLED(CONFIG_FS_ENCRYPTION)
+-	return (inode->i_crypt_info != NULL);
+-#else
+ 	return 0;
+-#endif
+ }
+ 
+-#endif	/* _LINUX_FSCRYPT_COMMON_H */
++#include <linux/fscrypt_notsupp.h>
++#endif /* __FS_HAS_ENCRYPTION */
++
++
++#endif	/* _LINUX_FSCRYPT_H */
+diff --git a/include/linux/fscrypt_notsupp.h b/include/linux/fscrypt_notsupp.h
+index ec406aed2f2f..2d0b6960831e 100644
+--- a/include/linux/fscrypt_notsupp.h
++++ b/include/linux/fscrypt_notsupp.h
+@@ -3,13 +3,16 @@
+  *
+  * This stubs out the fscrypt functions for filesystems configured without
+  * encryption support.
++ *
++ * Do not include this file directly. Use fscrypt.h instead!
+  */
++#ifndef _LINUX_FSCRYPT_H
++#error "Incorrect include of linux/fscrypt_notsupp.h!"
++#endif
+ 
+ #ifndef _LINUX_FSCRYPT_NOTSUPP_H
+ #define _LINUX_FSCRYPT_NOTSUPP_H
+ 
+-#include <linux/fscrypt_common.h>
+-
+ /* crypto.c */
+ static inline struct fscrypt_ctx *fscrypt_get_ctx(const struct inode *inode,
+ 						  gfp_t gfp_flags)
+diff --git a/include/linux/fscrypt_supp.h b/include/linux/fscrypt_supp.h
+index 32e2fcf13b01..5a90e5ef4687 100644
+--- a/include/linux/fscrypt_supp.h
++++ b/include/linux/fscrypt_supp.h
+@@ -1,14 +1,15 @@
+ /*
+  * fscrypt_supp.h
+  *
+- * This is included by filesystems configured with encryption support.
++ * Do not include this file directly. Use fscrypt.h instead!
+  */
++#ifndef _LINUX_FSCRYPT_H
++#error "Incorrect include of linux/fscrypt_supp.h!"
++#endif
+ 
+ #ifndef _LINUX_FSCRYPT_SUPP_H
+ #define _LINUX_FSCRYPT_SUPP_H
+ 
+-#include <linux/fscrypt_common.h>
+-
+ /* crypto.c */
+ extern struct kmem_cache *fscrypt_info_cachep;
+ extern struct fscrypt_ctx *fscrypt_get_ctx(const struct inode *, gfp_t);
 -- 
 2.14.2.920.gcf0c67979c-goog
