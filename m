@@ -1,26 +1,36 @@
-Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e2088-00022p-N5
- for linux-mtd@lists.infradead.org; Tue, 10 Oct 2017 19:23:58 +0000
-Subject: Re: [PATCH v2 3/3] mtd: spi-nor: add flag for reading dummy cycles
- from nv cfg reg
-To: matthew.gerlach@linux.intel.com, vndao@altera.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
- marek.vasut@gmail.com, richard@nod.at, robh+dt@kernel.org,
- mark.rutland@arm.com, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- gregkh@linuxfoundation.org, davem@davemloft.net, mchehab@kernel.org,
- linux-fpga@vger.kernel.org, tien.hock.loh@intel.com, hean.loong.ong@intel.com
-References: <1505932139-2905-1-git-send-email-matthew.gerlach@linux.intel.com>
- <1505932139-2905-4-git-send-email-matthew.gerlach@linux.intel.com>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <28c32a9c-1fd8-3af4-abc6-f4938e138daa@wedev4u.fr>
-Date: Tue, 10 Oct 2017 21:23:25 +0200
-MIME-Version: 1.0
-In-Reply-To: <1505932139-2905-4-git-send-email-matthew.gerlach@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
+ id 1e216w-0004Z0-Lu
+ for linux-mtd@lists.infradead.org; Tue, 10 Oct 2017 20:26:45 +0000
+From: Kalyan Kinthada <Kalyan.Kinthada@alliedtelesis.co.nz>
+To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "boris.brezillon@free-electrons.com"
+ <boris.brezillon@free-electrons.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
+ "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>, "mark.rutland@arm.com"
+ <mark.rutland@arm.com>, "ezequiel.garcia@free-electrons.com"
+ <ezequiel.garcia@free-electrons.com>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, Chris Packham
+ <Chris.Packham@alliedtelesis.co.nz>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/1] mtd: nand: pxa3xx: Set FORCE_CSX bit to ARMADA370
+ variants.
+Date: Tue, 10 Oct 2017 20:26:07 +0000
+Message-ID: <0a9cf087-63de-19db-f695-ca8f3796fad0@alliedtelesis.co.nz>
+References: <20170928005756.3938-1-kalyan.kinthada@alliedtelesis.co.nz>
+ <20170928005756.3938-2-kalyan.kinthada@alliedtelesis.co.nz>
+ <20171005094138.11b73a0e@xps13>
+ <c6832720-7c58-4afe-2d1b-76bb9397299e@alliedtelesis.co.nz>
+ <20171009081848.49681975@xps13>
+In-Reply-To: <20171009081848.49681975@xps13>
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <312455A69AFC9D49B538D78BE1DD05BD@atlnz.lc>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,223 +40,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Matthew
-
-NAK for this patch
-
-Le 20/09/2017 à 20:28, matthew.gerlach@linux.intel.com a écrit :
-> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> 
-> This patch is a work around for some non-standard behavior
-> of EPCQ flash parts:
-> 
-> https://www.altera.com/documentation/wtw1396921531042.html#wtw1396921651224
->
-
->From the above documentation:
-"""
-Write Non-Volatile Configuration Register Operation
-
-You need to write the non-volatile configuration registers for EPCQ-L
-devices for different configuration schemes. If you are using the .jic
-file, the Quartus® Prime programmer sets the number of dummy clock
-cycles and address bytes. If you are using an external programmer tools
-(3rd party programmer tools), you must set the non-volatile
-configuration registers.
-
-To set the non-volatile configuration register, follow these steps:
-
-    Execute the write enable operation.
-    Execute the write non-volatile configuration register operation.
-    Set the 16-bit register value.
-
-Set the 16-bit register value as b'1110 1110 xxxx 1111 where xxxx is the
-dummy clock value. When the xxxx value is from 0001 to 1110, the dummy
-clock value is from 1 to 14. When xxxx is 0000 or 1111, the dummy clock
-value is at the default value, which is 8 for standard fast read (AS x1)
-mode and 10 for extended quad input fast read (AS x4) mode.
-"""
-
-AFAIU, it is stated that you can set the number of dummy cycle to either
-0000b or 1111b, the default value. There is no valid reason to use any
-other value, like there is no valid reason to tune the number of dummy
-clock cycles. Just keep the default settings, please!
-
-If we start to play changing the number of dummy cycles it would be real
-mess to maintain.
-
-First, should we read the value to be used from some register or should
-we force this value instead by writing that register ?
-Some would prefer reading whereas other would prefer updating...
-
-Moreover, the method to read or write the number of dummy cycles is not
-standard and is manufacturer specific:
-
-- Micron uses 2 registers: the Volatile Configuration Register and the
-Non-Volatile configuration Register.
-
-- Macronix uses another register but doesn't store the number of dummy
-cycles directly: instead this manufacturer uses codes. So we would have
-to store tables mapping codes <-> number dummy clock cycles
-
-- Spansion/Cypress also uses code tables and I already know that
-depending on the memory part number the code is either 2bit or 4bit and
-stored in different registers. Damned!
-
-If I allow you to tune the number of dummy clock cycles for Micron
-memory it would be fair that I allow other people to tune this number
-for other memory manufacturers. However it would be a real pain to
-maintain because there is no standard for that hence manufacturers just
-do what they want and change things when they want. Far too
-unpredictable, IMHO.
-
-So to avoid a messy situation, the rule is simple: SPI-NOR memory MUST
-be configured in their default factory settings when spi_nor_scan() is
-called. Your memory has the very same JEDEC ID as some Micron memory,
-then it should behave the exact same way: in this case the value for the
-number of dummy clock cycles should be set to 0000b or 1111b in the NVCR
-(and VCR too).
-
-
-> These flash parts are generally used to configure Intel/Altera FPGAs
-> on power up.  These parts report a JEDEC id of the Micron part at the core,
-> but have a different number of dummy cycles than specified in the Micron
-> data sheet.  The number of required dummy cycles can be read from the
-> Non-Volatile Configuration register.
-> 
-> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> ---
->  drivers/mtd/spi-nor/altera-asmip2.c | 31 ++++++++++++++++++++++++++-----
->  include/linux/mtd/altera-asmip2.h   |  3 +++
->  2 files changed, 29 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/altera-asmip2.c b/drivers/mtd/spi-nor/altera-asmip2.c
-> index a977765..d9cd807 100644
-> --- a/drivers/mtd/spi-nor/altera-asmip2.c
-> +++ b/drivers/mtd/spi-nor/altera-asmip2.c
-> @@ -40,6 +40,10 @@
->  #define QSPI_POLL_TIMEOUT_US		10000000
->  #define QSPI_POLL_INTERVAL_US		5
->  
-> +#define SPINOR_OP_RD_NVCFG		0xb5
-> +#define NVCFG_DUMMY_SFT			12
-> +#define NVCFG_DUMMY_MASK		0xf
-> +
->  struct altera_asmip2 {
->  	void __iomem *csr_base;
->  	u32 num_flashes;
-> @@ -231,7 +235,8 @@ static void altera_asmip2_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
->  }
->  
->  static int altera_asmip2_setup_banks(struct device *dev,
-> -				      u32 bank, struct device_node *np)
-> +				     u32 bank, struct device_node *np,
-> +				     u32 flags)
->  {
->  	const struct spi_nor_hwcaps hwcaps = {
->  		.mask = SNOR_HWCAPS_READ |
-> @@ -241,6 +246,7 @@ static int altera_asmip2_setup_banks(struct device *dev,
->  	struct altera_asmip2 *q = dev_get_drvdata(dev);
->  	struct altera_asmip2_flash *flash;
->  	struct spi_nor *nor;
-> +	u16 nvcfg;
->  	int ret = 0;
->  
->  	if (bank > q->num_flashes - 1)
-> @@ -273,6 +279,20 @@ static int altera_asmip2_setup_banks(struct device *dev,
->  		return ret;
->  	}
->  
-> +	if (flags & ALTERA_ASMIP2_FLASH_FLG_RD_NVCFG) {
-> +		ret = altera_asmip2_read_reg(nor, SPINOR_OP_RD_NVCFG,
-> +		 			     (u8*)&nvcfg, sizeof(nvcfg));
-> +
-> +		if (ret) {
-> +			dev_err(nor->dev,
-> +				"failed to read NV Configuration register\n");
-> +			return ret;
-> +		}
-> +
-> +		nor->read_dummy = (nvcfg >> NVCFG_DUMMY_SFT) & NVCFG_DUMMY_MASK;
-> +		dev_info(nor->dev, "%s dummy %d\n", __func__, nor->read_dummy);
-> +	}
-> +
-
-You have forgotten the special case for values 0000b and 1111b (default
-settings). For those 2 values, the actual number of dummy clock cycles is:
-- 0 for Read (03h/13h)
-- 8 for Fast Read 1-1-1 (0Bh/0Ch)
-- 8 for Fast Read 1-1-2 (3Bh/3Ch)
-- 8 for Fast Read 1-2-2 (BBh/BCh)
-- 8 for Fast Read 1-1-4 (6Bh/6Ch)
-- 10 for Fast Read 1-4-4 (EBh/ECh)
-
-Besides, the value read from the Non-Volatile Configuration Register is
-the value loaded into the Volatile Configuration Register at power-up.
-The actual number of dummy clock cycles to be used by Fast Read commands
-should be read from the Volatile Configuration Register.
-
-Anyway, this not the way to go.
-
-Best regards,
-
-Cyrille
-
->  	ret =  mtd_device_register(&nor->mtd, NULL, 0);
->  
->  	return ret;
-> @@ -308,7 +328,7 @@ static int altera_asmip2_create(struct device *dev, void __iomem *csr_base)
->  }
->  
->  static int altera_asmip2_add_bank(struct device *dev,
-> -			 u32 bank, struct device_node *np)
-> +			 u32 bank, struct device_node *np, u32 flags)
->  {
->  	struct altera_asmip2 *q = dev_get_drvdata(dev);
->  
-> @@ -317,7 +337,7 @@ static int altera_asmip2_add_bank(struct device *dev,
->  
->  	q->num_flashes++;
->  
-> -	return altera_asmip2_setup_banks(dev, bank, np);
-> +	return altera_asmip2_setup_banks(dev, bank, np, flags);
->  }
->  
->  static int altera_asmip2_remove_banks(struct device *dev)
-> @@ -361,7 +381,8 @@ static int altera_asmip2_probe_with_pdata(struct platform_device *pdev,
->  	}
->  
->  	for (i = 0; i < qdata->num_chip_sel; i++) {
-> -		ret = altera_asmip2_add_bank(dev, i, NULL);
-> +		ret = altera_asmip2_add_bank(dev, i, NULL,
-> +					     qdata->flash_flags[i]);
->  		if (ret) {
->  			dev_err(dev, "failed to add qspi bank %d\n", ret);
->  			break;
-> @@ -414,7 +435,7 @@ static int altera_asmip2_probe(struct platform_device *pdev)
->  			goto error;
->  		}
->  
-> -		if (altera_asmip2_add_bank(dev, bank, pp)) {
-> +		if (altera_asmip2_add_bank(dev, bank, pp, 0)) {
->  			dev_err(dev, "failed to add bank %u\n", bank);
->  			goto error;
->  		}
-> diff --git a/include/linux/mtd/altera-asmip2.h b/include/linux/mtd/altera-asmip2.h
-> index 580c43c..185a9b2 100644
-> --- a/include/linux/mtd/altera-asmip2.h
-> +++ b/include/linux/mtd/altera-asmip2.h
-> @@ -16,9 +16,12 @@
->  #define ALTERA_ASMIP2_MAX_NUM_FLASH_CHIP 3
->  #define ALTERA_ASMIP2_RESOURCE_SIZE 0x10
->  
-> +#define ALTERA_ASMIP2_FLASH_FLG_RD_NVCFG	BIT(0)
-> +
->  struct altera_asmip2_plat_data {
->  	void __iomem *csr_base;
->  	u32 num_chip_sel;
-> +	u32 flash_flags[ALTERA_ASMIP2_MAX_NUM_FLASH_CHIP];
->  };
->  
->  #endif
-> 
+SGVsbG8gTWlxdWVsLA0KT24gMDkvMTAvMTcgMTk6MTgsIE1pcXVlbCBSQVlOQUwgd3JvdGU6DQo+
+IEhlbGxvIEthbHlhbiwNCj4NCj4gT24gTW9uLCA5IE9jdCAyMDE3IDAyOjMxOjMwICswMDAwDQo+
+IEthbHlhbiBLaW50aGFkYSA8S2FseWFuLktpbnRoYWRhQGFsbGllZHRlbGVzaXMuY28ubno+IHdy
+b3RlOg0KPg0KPj4gT24gMDUvMTAvMTcgMjA6NDEsIE1pcXVlbCBSQVlOQUwgd3JvdGU6DQo+Pj4g
+SGVsbG8gS2FseWFuLA0KPj4+DQo+Pj4gT24gVGh1LCAyOCBTZXAgMjAxNyAxMzo1Nzo1NiArMTMw
+MA0KPj4+IEthbHlhbiBLaW50aGFkYSA8a2FseWFuLmtpbnRoYWRhQGFsbGllZHRlbGVzaXMuY28u
+bno+IHdyb3RlOg0KPj4+ICAgDQo+Pj4+IFdoZW4gdGhlIGFyYml0cmF0aW9uIGJldHdlZW4gTk9S
+IGFuZCBOQU5EIGZsYXNoIGlzIGVuYWJsZWQNCj4+Pj4gdGhlIDxGT1JDRV9DU1g+IGZpZWxkIGJp
+dFsyMV0gaW4gdGhlIERhdGEgRmxhc2ggQ29udHJvbCBSZWdpc3Rlcg0KPj4+PiBuZWVkcyB0byBi
+ZSBzZXQgdG8gMSBhY2NvcmRpbmcgdG8gZ3VpZGxlaW5lIEdMLTU4MzA3NDEgbWVudGlvbmVkDQo+
+Pj4gVHlwbzogZ3VpZGVsaW5lIF4NCj4+IEkgd2lsbCBjb3JyZWN0IHRoaXMgdHlwbyBpbiB0aGUg
+bmV4dCBwYXRjaCB2ZXJzaW9uLg0KPj4+PiBpbiBNYXJ2ZWxsIEVycmF0YSBkb2N1bWVudCBNVi1T
+NTAxMzc3LTAwLCBSZXYuIEQuDQo+Pj4gVGhhbmtzIGZvciB0aGF0LCBJIGNoZWNrZWQgaXQuDQo+
+Pj4gICANCj4+Pj4gVGhpcyBjb21taXQgc2V0cyB0aGUgRk9SQ0VfQ1NYIGJpdCB0byAxIGZvciBh
+bGwNCj4+Pj4gQVJNQURBMzcwIHZhcmlhbnRzIGFzIHRoZSBhcmJpdHJhdGlvbiBpcyBhbHdheXMg
+ZW5hYmxlZCBieSBkZWZhdWx0Lg0KPj4+PiBUaGlzIGNoYW5nZSBkb2VzIG5vdCBhcHBseSBmb3Ig
+cHhhM3h4IHZhcmlhbnRzIGJlY2F1c2UgdGhlDQo+Pj4+IEZPUkNFX0NTWCBiaXQgZG9lcyBub3Qg
+ZXhpc3QvcmVzZXJ2ZWQgb24gdGhlIE5GQ3YxLg0KPj4+IFNvcnJ5IHRvIGJvdGhlciB5b3UgYWdh
+aW4gYnV0IEkgYW0gcmV3b3JraW5nIHRoZSBweGEzeHhfbmFuZCBkcml2ZXINCj4+PiBhbmQgc28g
+SSB3b3VsZCBsaWtlIHRvIGRlZXBseSB1bmRlcnN0YW5kIHdoeSB0aGlzIGlzIG5lZWRlZCBiZWNh
+dXNlDQo+Pj4gSSB3aWxsIGhhdmUgdG8gaW50ZWdyYXRlIGl0IGluIG15IHdvcmsgdG9vLg0KPj4+
+DQo+Pj4gU28gcGxlYXNlIHRlbGwgbWUgd2hhdCBpcyB5b3VyIHNldHVwLCBkbyB5b3UgcmVhbGx5
+IHVzZSBOQU5EL05PUg0KPj4+IGFyYml0cmF0aW9uPyBEbyB5b3UgaGF2ZSBub3QtRG9uJ3QgQ2Fy
+ZSBDUyBOQU5EIGNoaXBzPyBJIGhhdmUgc29tZQ0KPj4+IGRvdWJ0cyBiZWNhdXNlIGV2ZW4gaWYg
+dGhlIHNwZWMgcHJlY2lzZXMgaW4gdGhlIE5BTkQgY29udHJvbGxlcg0KPj4+IGNoYXB0ZXIgdGhh
+dCBhcmJpdHJhdGlvbiBpcyBhbHdheXMgZW5hYmxlZCBieSBkZWZhdWx0LCB0aGUgYml0IDI3DQo+
+Pj4gKE5mQXJiaXRlckVuKSBpbiB0aGUgU29DIERldmljZSBNdWx0aXBsZXggUmVnaXN0ZXIgYXQg
+b2Zmc2V0DQo+Pj4gMHgwMDAxODIwOCBpcyBhY3R1YWxseSBhdCAwIGJ5IGRlZmF1bHQgKGRpc2Fi
+bGVkKS4gRGlkIHlvdSBlbmFibGUNCj4+PiB0aGlzIGJpdCBtYW51YWxseSA/IEkgY2hlY2tlZCB3
+aXRoIGRldm1lbSBvbiBteSBzZXR1cCBhbmQgdGhpcyBiaXQNCj4+PiB3YXMgdW5zZXQuDQo+PiBZ
+ZXMsIG15IHNldHVwIHVzZSBOQU5EL05PUiBhcmJpdHJhdGlvbiBhbmQgdXNlIGEgRG9uJ3QNCj4+
+IGNhcmUgQ1MgTmFuZCBDaGlwLiBUaGUgYml0IDI3IGF0IG9mZnNldCAweDAwMDE4MjA4IGlzIHNl
+dCB0byAxDQo+PiBieSBkZWZhdWx0IGluIG15IGNhc2UuIEkgZGlkIG5vdCBtYW51YWxseSBzZXQg
+dGhlIGJpdCAyNyB0byAxLg0KPiBBY3R1YWxseSBpZiB5b3UgdXNlIERvbid0IENhcmUgQ1MgTkFO
+RCBjaGlwcyB5b3Ugc2hvdWxkIG5vdCBuZWVkIHRoZQ0KPiBmb3JjZSBDUyBiaXQsIGFzIGl0IGlz
+IG1lbnRpb25lZCBpbiB0aGUgZ3VpZGVsaW5lcyB5b3UgcG9pbnRlZCwgdGhpcw0KPiBiaXQgaXMg
+b25seSB1c2VmdWwgZm9yICpub3QqIGRvbid0IGNhcmUgQ1MgTkFORCBjaGlwcyAoYW5kIHRoZSBu
+YW1lDQo+ICJmb3JjZSBDUyIgaXMgcHJldHR5IHN0cmFpZ2h0IGZvcndhcmQgdG9vISkuDQpPay4g
+SSB1bmRlcnN0YW5kIG5vdy4gVGhhbmsgeW91Lg0KPg0KPiBPdGhlcndpc2Ugd2hhdCBib290bG9h
+ZGVyIGFuZCBrZXJuZWwgZG8geW91IHVzZSB0byBoYXZlIHRoaXMNCj4gYml0IHNldCBieSBkZWZh
+dWx0PyBZb3UgbWF5IGFsc28gd2FudCB0byBjaGVjayBpZiB0aGlzIGJpdCBpcyBzZXQgYnkNCj4g
+eW91ciBib290bG9hZGVyIGJ5IHN0b3BwaW5nIGl0IGJlZm9yZSBpdCBsb2FkcyBMaW51eCBhbmQg
+Y2hlY2sgbWFudWFsbHkNCj4gdGhlIHZhbHVlIG9mIHRoaXMgYml0IHdpdGggJ21kJyAob24gVS1C
+b290KS4NClRoZSBiaXQyNyBhdCBvZmZzZXQgMHgwMDAxODIwOCBpcyBzZXQgaW4gYm9vdGxvYWRl
+ci4NClVib290IHZlcnNpb24gMjAxNi4xMQ0KTGludXggS2VybmVsIDQuNC42DQoNClRoYW5rcywN
+CkthbHlhbg0KPg0KPiBUaGFuayB5b3UsDQo+IE1pcXXDqGwNCj4NCj4+IFBsZWFzZSBsZXQgbWUg
+bm93IGlmIHlvdSBoYXZlIGFueSBvdGhlciBxdWVzdGlvbiBvciBkbyB5b3Ugd2FudCBtZQ0KPj4g
+dG8gc2VuZCB0aGUgdXBkYXRlZCBwYXRjaCB2ZXJzaW9uIHdpdGggdGhlIHR5cG8gZml4ZWQuDQo+
+Pg0KPj4gVGhhbmsgWW91LA0KPj4gS2FseWFuDQo+Pg0KPj4+IFRoYW5rIHlvdSBmb3IgeW91ciB0
+aW1lLA0KPj4+IE1pcXXDqGwNCj4+PiAgIA0KPj4+PiBUaGUgTkRDUl9ORF9NT0RFIGNvbmZsaWN0
+cyB3aXRoIHRoZSBuZXcgTkRDUl9GT1JDRV9DU1ggYnV0IGlzDQo+Pj4+IHVudXNlZCBzbyByZW1v
+dmUgaXQgYWxvbmcgd2l0aCBORENSX05BTkRfTU9ERS4NCj4+Pj4NCj4+Pj4gU2lnbmVkLW9mZi1i
+eTogS2FseWFuIEtpbnRoYWRhDQo+Pj4+IDxrYWx5YW4ua2ludGhhZGFAYWxsaWVkdGVsZXNpcy5j
+by5uej4gLS0tDQo+Pj4gICANCj4+Pj4gICAgZHJpdmVycy9tdGQvbmFuZC9weGEzeHhfbmFuZC5j
+IHwgOSArKysrKysrLS0NCj4+Pj4gICAgMSBmaWxlIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygrKSwg
+MiBkZWxldGlvbnMoLSkNCj4+Pj4NCj4+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQv
+cHhhM3h4X25hbmQuYw0KPj4+PiBiL2RyaXZlcnMvbXRkL25hbmQvcHhhM3h4X25hbmQuYyBpbmRl
+eCA4NWNmZjY4NjQzZTAuLmE2YTdhNWFmN2JlZA0KPj4+PiAxMDA2NDQgLS0tIGEvZHJpdmVycy9t
+dGQvbmFuZC9weGEzeHhfbmFuZC5jDQo+Pj4+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcHhhM3h4
+X25hbmQuYw0KPj4+PiBAQCAtNjcsOCArNjcsNyBAQA0KPj4+PiAgICAjZGVmaW5lIE5EQ1JfRFdJ
+RFRIX00JCSgweDEgPDwgMjYpDQo+Pj4+ICAgICNkZWZpbmUgTkRDUl9QQUdFX1NaCQkoMHgxIDw8
+IDI0KQ0KPj4+PiAgICAjZGVmaW5lIE5EQ1JfTkNTWAkJKDB4MSA8PCAyMykNCj4+Pj4gLSNkZWZp
+bmUgTkRDUl9ORF9NT0RFCQkoMHgzIDw8IDIxKQ0KPj4+PiAtI2RlZmluZSBORENSX05BTkRfTU9E
+RSAgIAkoMHgwKQ0KPj4+PiArI2RlZmluZSBORENSX0ZPUkNFX0NTWAkJKDB4MSA8PCAyMSkNCj4+
+Pj4gICAgI2RlZmluZSBORENSX0NMUl9QR19DTlQJCSgweDEgPDwgMjApDQo+Pj4+ICAgICNkZWZp
+bmUgTkZDVjFfTkRDUl9BUkJfQ05UTAkoMHgxIDw8IDE5KQ0KPj4+PiAgICAjZGVmaW5lIE5GQ1Yy
+X05EQ1JfU1RPUF9PTl9VTkNPUgkoMHgxIDw8IDE5KQ0KPj4+PiBAQCAtMTQ2NCw2ICsxNDYzLDkg
+QEAgc3RhdGljIGludCBweGEzeHhfbmFuZF9jb25maWdfaWRlbnQoc3RydWN0DQo+Pj4+IHB4YTN4
+eF9uYW5kX2luZm8gKmluZm8pIGluZm8tPmNodW5rX3NpemUgPSBQQUdFX0NIVU5LX1NJWkU7DQo+
+Pj4+ICAgIAlpbmZvLT5yZWdfbmRjciA9IDB4MDsgLyogZW5hYmxlIGFsbCBpbnRlcnJ1cHRzICov
+DQo+Pj4+ICAgIAlpbmZvLT5yZWdfbmRjciB8PSAocGRhdGEtPmVuYWJsZV9hcmJpdGVyKSA/DQo+
+Pj4+IE5EQ1JfTkRfQVJCX0VOIDogMDsNCj4+Pj4gKwkvKiBTZXQgRk9SQ0VfQ1NYIGJpdCBmb3Ig
+YWxsIEFSTUFEQTM3MCBWYXJpYW50cy4gUmVmIzoNCj4+Pj4gR0wtNTgzMDc0MSAqLw0KPj4+PiAr
+CWlmIChpbmZvLT52YXJpYW50ID09IFBYQTNYWF9OQU5EX1ZBUklBTlRfQVJNQURBMzcwKQ0KPj4+
+PiArCQlpbmZvLT5yZWdfbmRjciB8PSBORENSX0ZPUkNFX0NTWDsNCj4+Pj4gICAgCWluZm8tPnJl
+Z19uZGNyIHw9IE5EQ1JfUkRfSURfQ05UKFJFQURfSURfQllURVMpOw0KPj4+PiAgICAJaW5mby0+
+cmVnX25kY3IgfD0gTkRDUl9TUEFSRV9FTjsNCj4+Pj4gICAgDQo+Pj4+IEBAIC0xNDk4LDYgKzE1
+MDAsOSBAQCBzdGF0aWMgdm9pZCBweGEzeHhfbmFuZF9kZXRlY3RfY29uZmlnKHN0cnVjdA0KPj4+
+PiBweGEzeHhfbmFuZF9pbmZvICppbmZvKSBpbmZvLT5yZWdfbmRjciA9IG5kY3IgJg0KPj4+PiAg
+ICAJCX4oTkRDUl9JTlRfTUFTSyB8IE5EQ1JfTkRfQVJCX0VOIHwNCj4+Pj4gTkZDVjFfTkRDUl9B
+UkJfQ05UTCk7IGluZm8tPnJlZ19uZGNyIHw9IChwZGF0YS0+ZW5hYmxlX2FyYml0ZXIpID8NCj4+
+Pj4gTkRDUl9ORF9BUkJfRU4gOiAwOw0KPj4+PiArCS8qIFNldCBGT1JDRV9DU1ggYml0IGZvciBh
+bGwgQVJNQURBMzcwIFZhcmlhbnRzLiBSZWYjOg0KPj4+PiBHTC01ODMwNzQxICovDQo+Pj4+ICsJ
+aWYgKGluZm8tPnZhcmlhbnQgPT0gUFhBM1hYX05BTkRfVkFSSUFOVF9BUk1BREEzNzApDQo+Pj4+
+ICsJCWluZm8tPnJlZ19uZGNyIHw9IE5EQ1JfRk9SQ0VfQ1NYOw0KPj4+PiAgICAJaW5mby0+bmR0
+cjBjczAgPSBuYW5kX3JlYWRsKGluZm8sIE5EVFIwQ1MwKTsNCj4+Pj4gICAgCWluZm8tPm5kdHIx
+Y3MwID0gbmFuZF9yZWFkbChpbmZvLCBORFRSMUNTMCk7DQo+Pj4+ICAgIH0NCj4+PiAgIA0KPg0K
+Pg0K
