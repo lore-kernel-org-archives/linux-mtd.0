@@ -1,26 +1,18 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e1qm6-000378-Ag
- for linux-mtd@lists.infradead.org; Tue, 10 Oct 2017 09:24:32 +0000
-Received: by mail-wm0-x241.google.com with SMTP id q132so3321375wmd.2
- for <linux-mtd@lists.infradead.org>; Tue, 10 Oct 2017 02:24:09 -0700 (PDT)
-Subject: Re: [PATCH v2 2/3] mtd: spi-nor: Altera ASMI Parallel II IP Core
-To: matthew.gerlach@linux.intel.com, vndao@altera.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
- richard@nod.at, cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org,
- mark.rutland@arm.com, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- gregkh@linuxfoundation.org, davem@davemloft.net, mchehab@kernel.org,
- linux-fpga@vger.kernel.org, tien.hock.loh@intel.com, hean.loong.ong@intel.com
-References: <1505932139-2905-1-git-send-email-matthew.gerlach@linux.intel.com>
- <1505932139-2905-3-git-send-email-matthew.gerlach@linux.intel.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <deae5a9f-4301-c7de-b265-b09292f8da15@gmail.com>
-Date: Tue, 10 Oct 2017 11:24:03 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1e1r2I-0007L0-56
+ for linux-mtd@lists.infradead.org; Tue, 10 Oct 2017 09:41:20 +0000
+Date: Tue, 10 Oct 2017 11:40:47 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Ladislav Michl <ladis@linux-mips.org>
+Cc: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org, Richard
+ Weinberger <richard@nod.at>
+Subject: Re: [RESEND PATCH] mtd: nand: omap2: Remove omap_nand_platform_data
+Message-ID: <20171010114047.202d7d44@bbrezillon>
+In-Reply-To: <20171006103543.gnb2hxq7msallyzl@lenoch>
+References: <20171006103543.gnb2hxq7msallyzl@lenoch>
 MIME-Version: 1.0
-In-Reply-To: <1505932139-2905-3-git-send-email-matthew.gerlach@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,54 +23,144 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/20/2017 08:28 PM, matthew.gerlach@linux.intel.com wrote:
-> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+On Fri, 6 Oct 2017 12:35:43 +0200
+Ladislav Michl <ladis@linux-mips.org> wrote:
+
+> As driver is now configured using DT, omap_nand_platform_data structure
+> is no longer needed.
 > 
-> This patch adds support for a spi-nor, platform driver for the
-> Altera ASMI Parallel II IP Core.  The intended use case is to be able
-> to update the flash used to load a FPGA at power up with mtd-utils.
-> 
-> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
 > ---
-> v2:
->     minor checkpatch fixing by Wu Hao <hao.wu@intel.com>
->     Use read_dummy value as suggested by Cyrille Pitchen.
->     Don't assume 4 byte addressing (Cryille Pichecn and Marek Vasut).
->     Fixed #define indenting as suggested by Marek Vasut.
->     Added units to timer values as suggested by Marek Vasut.
->     Use io(read|write)8_rep() as suggested by Marek Vasut.
->     Renamed function prefixed with __ as suggested by Marek Vasut.
-
-[...]
-
-> +#define QSPI_ACTION_REG			0
-> +#define QSPI_ACTION_RST			BIT(0)
-> +#define QSPI_ACTION_EN			BIT(1)
-> +#define QSPI_ACTION_SC			BIT(2)
-> +#define QSPI_ACTION_CHIP_SEL_SFT	4
-> +#define QSPI_ACTION_DUMMY_SFT		8
-> +#define QSPI_ACTION_READ_BACK_SFT	16
+>  Resend to linux-mtd as other part this patch was depending on
+>  was merged months ago via linux-omap tree...
+> 
+>  drivers/mtd/nand/omap2.c                     | 40 +++++++---------------------
+>  include/linux/platform_data/mtd-nand-omap2.h | 17 ------------
+>  2 files changed, 10 insertions(+), 47 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> index 54540c8fa1a2..b1fc070c8279 100644
+> --- a/drivers/mtd/nand/omap2.c
+> +++ b/drivers/mtd/nand/omap2.c
+> @@ -1588,8 +1588,7 @@ static bool is_elm_present(struct omap_nand_info *info,
+>  	return true;
+>  }
+>  
+> -static bool omap2_nand_ecc_check(struct omap_nand_info *info,
+> -				 struct omap_nand_platform_data	*pdata)
+> +static bool omap2_nand_ecc_check(struct omap_nand_info *info)
+>  {
+>  	bool ecc_needs_bch, ecc_needs_omap_bch, ecc_needs_elm;
+>  
+> @@ -1804,7 +1803,6 @@ static const struct mtd_ooblayout_ops omap_sw_ooblayout_ops = {
+>  static int omap_nand_probe(struct platform_device *pdev)
+>  {
+>  	struct omap_nand_info		*info;
+> -	struct omap_nand_platform_data	*pdata = NULL;
+>  	struct mtd_info			*mtd;
+>  	struct nand_chip		*nand_chip;
+>  	int				err;
+> @@ -1814,6 +1812,9 @@ static int omap_nand_probe(struct platform_device *pdev)
+>  	int				min_oobbytes = BADBLOCK_MARKER_LENGTH;
+>  	int				oobbytes_per_step;
+>  
+> +	if (!dev->of_node)
+> +		return -EINVAL;
 > +
-> +#define QSPI_FIFO_CNT_REG		4
-> +#define QSPI_FIFO_DEPTH			0x200
-> +#define QSPI_FIFO_CNT_MSK		0x3ff
-> +#define QSPI_FIFO_CNT_RX_SFT		0
-> +#define QSPI_FIFO_CNT_TX_SFT		12
-> +
-> +#define QSPI_DATA_REG			0x8
-> +
-> +#define QSPI_POLL_TIMEOUT_US		10000000
 
-10 s poll timeout ? :)
+Is this really needed? I expect omap_get_dt_info() to return an error
+when dev->of_node is NULL.
 
-> +#define QSPI_POLL_INTERVAL_US		5
-> +
-> +struct altera_asmip2 {
+>  	info = devm_kzalloc(&pdev->dev, sizeof(struct omap_nand_info),
+>  				GFP_KERNEL);
+>  	if (!info)
+> @@ -1821,29 +1822,9 @@ static int omap_nand_probe(struct platform_device *pdev)
+>  
+>  	info->pdev = pdev;
+>  
+> -	if (dev->of_node) {
+> -		if (omap_get_dt_info(dev, info))
+> -			return -EINVAL;
+> -	} else {
+> -		pdata = dev_get_platdata(&pdev->dev);
+> -		if (!pdata) {
+> -			dev_err(&pdev->dev, "platform data missing\n");
+> -			return -EINVAL;
+> -		}
+> -
+> -		info->gpmc_cs = pdata->cs;
+> -		info->reg = pdata->reg;
+> -		info->ecc_opt = pdata->ecc_opt;
+> -		if (pdata->dev_ready)
+> -			dev_info(&pdev->dev, "pdata->dev_ready is deprecated\n");
+> -
+> -		info->xfer_type = pdata->xfer_type;
+> -		info->devsize = pdata->devsize;
+> -		info->elm_of_node = pdata->elm_of_node;
+> -		info->flash_bbt = pdata->flash_bbt;
+> -	}
+> +	if (omap_get_dt_info(dev, info))
+> +		return -EINVAL;
+>  
+> -	platform_set_drvdata(pdev, info);
 
-[...]
+This removal seems unrelated to the change you're describing in the
+commit log. I'm not saying we should keep this platform_set_drvdata()
+if it's useless, but it should be done in a separate patch.
 
-Otherwise looks good
-
--- 
-Best regards,
-Marek Vasut
+>  	info->ops = gpmc_omap_get_nand_ops(&info->reg, info->gpmc_cs);
+>  	if (!info->ops) {
+>  		dev_err(&pdev->dev, "Failed to get GPMC->NAND interface\n");
+> @@ -2002,7 +1983,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+>  		goto return_error;
+>  	}
+>  
+> -	if (!omap2_nand_ecc_check(info, pdata)) {
+> +	if (!omap2_nand_ecc_check(info)) {
+>  		err = -EINVAL;
+>  		goto return_error;
+>  	}
+> @@ -2167,10 +2148,9 @@ static int omap_nand_probe(struct platform_device *pdev)
+>  	if (err)
+>  		goto return_error;
+>  
+> -	if (dev->of_node)
+> -		mtd_device_register(mtd, NULL, 0);
+> -	else
+> -		mtd_device_register(mtd, pdata->parts, pdata->nr_parts);
+> +	err = mtd_device_register(mtd, NULL, 0);
+> +	if (err)
+> +		goto return_error;
+>  
+>  	platform_set_drvdata(pdev, mtd);
+>  
+> diff --git a/include/linux/platform_data/mtd-nand-omap2.h b/include/linux/platform_data/mtd-nand-omap2.h
+> index 25e267f1970c..619df2431e75 100644
+> --- a/include/linux/platform_data/mtd-nand-omap2.h
+> +++ b/include/linux/platform_data/mtd-nand-omap2.h
+> @@ -64,21 +64,4 @@ struct gpmc_nand_regs {
+>  	void __iomem	*gpmc_bch_result5[GPMC_BCH_NUM_REMAINDER];
+>  	void __iomem	*gpmc_bch_result6[GPMC_BCH_NUM_REMAINDER];
+>  };
+> -
+> -struct omap_nand_platform_data {
+> -	int			cs;
+> -	struct mtd_partition	*parts;
+> -	int			nr_parts;
+> -	bool			flash_bbt;
+> -	enum nand_io		xfer_type;
+> -	int			devsize;
+> -	enum omap_ecc           ecc_opt;
+> -
+> -	struct device_node	*elm_of_node;
+> -
+> -	/* deprecated */
+> -	struct gpmc_nand_regs	reg;
+> -	struct device_node	*of_node;
+> -	bool			dev_ready;
+> -};
+>  #endif
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
