@@ -1,29 +1,20 @@
-Received: from mail-qt0-x22a.google.com ([2607:f8b0:400d:c0d::22a])
+Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e1w1X-000126-Do
- for linux-mtd@lists.infradead.org; Tue, 10 Oct 2017 15:00:53 +0000
-Received: by mail-qt0-x22a.google.com with SMTP id p1so14730354qtg.2
- for <linux-mtd@lists.infradead.org>; Tue, 10 Oct 2017 08:00:26 -0700 (PDT)
+ id 1e1w63-0002bU-NZ
+ for linux-mtd@lists.infradead.org; Tue, 10 Oct 2017 15:05:32 +0000
+Subject: Re: [PATCH] mtd: spi-nor: Kill check with no effect
+To: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: boris.brezillon@free-electrons.com, linux-kernel@vger.kernel.org,
+ marek.vasut@gmail.com, computersforpeace@gmail.com, dwmw2@infradead.org
+References: <20170917141352.23691-1-richard@nod.at>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <7d982c3b-4629-faf6-387f-667cc61ef74c@wedev4u.fr>
+Date: Tue, 10 Oct 2017 17:04:55 +0200
 MIME-Version: 1.0
-Sender: romain.izard@mobile-devices.fr
-In-Reply-To: <20171010161659.4117677c@bbrezillon>
-References: <20171006155108.6581-1-romain.izard.pro@gmail.com>
- <20171010161659.4117677c@bbrezillon>
-From: Romain Izard <romain.izard.pro@gmail.com>
-Date: Tue, 10 Oct 2017 17:00:05 +0200
-Message-ID: <CAGkQfmPTC60A3W0YNJKU61NweSxmfC0xaR7BoT6CG6t7BEEDrw@mail.gmail.com>
-Subject: Re: [PATCH] crypto: atmel-aes - properly set IV after {en,de}crypt
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>,
- "David S . Miller" <davem@davemloft.net>,
- David Gstir <david@sigma-star.at>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- LKML <linux-kernel@vger.kernel.org>,
- Cyrille Pitchen <cyrille.pitchen@microchip.com>,
- linux-mtd <linux-mtd@lists.infradead.org>, linux-crypto@vger.kernel.org,
- Nicolas Feignon <nicolas.feignon@mobile-devices.fr>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20170917141352.23691-1-richard@nod.at>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,24 +24,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2017-10-10 16:16 GMT+02:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
-> Hi Romain,
->
-> May I ask why you're sending this patch to the MTD ML?
->
-This is related to an issue reported by Nicolas Feignon with UBIFS and
-fscrypt, which was reported on both mtd and fscrypt mailing lists.
+Le 17/09/2017 à 16:13, Richard Weinberger a écrit :
+> header.major is of type u8 and cannot be negative.
+> 
+> Detected by CoverityScan CID#1417858 ("Integer handling issues")
+> 
+> Fixes: f384b352cbf0 ("mtd: spi-nor: parse Serial Flash Discoverable
+> Parameters (SFDP) tables")
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 
-The file names are encrypted with cts(cbc(aes)), and this patch tried to
-fix a SAMA5D2 issue where the file names are not correctly encrypted
-when hardware acceleration is enabled.
+Applied to the spi-nor/next branch of l2-mtd
 
-> While I'm here, can you have a look at this patch [1] and add you
-> Reviewed-by/Tested-by?
->
-> [1]http://patchwork.ozlabs.org/patch/821959/
+I've replaced header.major by header.minor in the commit message as
+reported by Boris.
 
-I'll try it.
+Thanks!
 
--- 
-Romain Izard
+> ---
+> Cyrille,
+> 
+> I'm not sure what exactly you wanted to test.
+> Maybe it makes sense casting header.major to s8 before checking against < 0?
+> 
+> Thanks,
+> //richard
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index d71765739a93..4b86decdf13e 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -2252,8 +2252,7 @@ static int spi_nor_parse_sfdp(struct spi_nor *nor,
+>  
+>  	/* Check the SFDP header version. */
+>  	if (le32_to_cpu(header.signature) != SFDP_SIGNATURE ||
+> -	    header.major != SFDP_JESD216_MAJOR ||
+> -	    header.minor < SFDP_JESD216_MINOR)
+> +	    header.major != SFDP_JESD216_MAJOR)
+>  		return -EINVAL;
+>  
+>  	/*
+> 
