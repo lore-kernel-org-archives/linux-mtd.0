@@ -1,22 +1,20 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mail-qt0-x22f.google.com ([2607:f8b0:400d:c0d::22f])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e1ikV-0005Qb-RW
- for linux-mtd@lists.infradead.org; Tue, 10 Oct 2017 00:50:21 +0000
-Date: Mon, 9 Oct 2017 17:49:54 -0700 (PDT)
-From: matthew.gerlach@linux.intel.com
-To: vndao@altera.com, dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org, mark.rutland@arm.com,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
- davem@davemloft.net, mchehab@kernel.org, linux-fpga@vger.kernel.org,
- tien.hock.loh@intel.com, hean.loong.ong@intel.com
-Subject: Re: [PATCH v2 0/3] Altera ASMI Parallel II IP Core
-In-Reply-To: <1505932139-2905-1-git-send-email-matthew.gerlach@linux.intel.com>
-Message-ID: <alpine.DEB.2.20.1710091748430.24764@mgerlach-VirtualBox>
-References: <1505932139-2905-1-git-send-email-matthew.gerlach@linux.intel.com>
+ id 1e1jsN-0004LW-TQ
+ for linux-mtd@lists.infradead.org; Tue, 10 Oct 2017 02:02:33 +0000
+Received: by mail-qt0-x22f.google.com with SMTP id q4so47132308qtq.8
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Oct 2017 19:02:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+In-Reply-To: <CAFLxGvxs4fWDS8YiEO90s6HSuEHVgZJV0TSAGH2SPD0FHB-f+Q@mail.gmail.com>
+References: <CAL-1w2vUkw05Lrhbd99RV+R0+Uxtphn_qjLAfWLMrQ6z4srqgg@mail.gmail.com>
+ <CAFLxGvxs4fWDS8YiEO90s6HSuEHVgZJV0TSAGH2SPD0FHB-f+Q@mail.gmail.com>
+From: Rock Lee <rockdotlee@gmail.com>
+Date: Tue, 10 Oct 2017 10:02:09 +0800
+Message-ID: <CAL-1w2vC4-fesPcjKHTtn3N9xNOA7Xa7PZ-O0Pu8VD5mg-t2NA@mail.gmail.com>
+Subject: Re: Detach the ubi device of rootfs
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,61 +24,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+> Why do you think you need to detach upon reboot?
+> UBI and UBIFS are designed to face power-cuts at any time.
+> Although, sane setups with initramfs/systemd unmount also the rootfs
+> upon reboot.
+>
 
-Hi Everyone,
+When reboot, UBIFS will be remount as read-only, from the filesystem
+part, it is safe, because there is no data write to it.  I see ubi
+background thread will exit when ubi detach, and there would no
+scrubing anymore, I am sure reboot after detach is safe enough in UBI
+layer. I am just curious what will happen when reboot the system while
+ubi is scrubing. Will it damage the flash if this situation happens a
+lot?
 
-Thanks to Rob Herring for Acking the device tree bindings part of the 
-patch.  Does anyone have any feedback for the rest of the patch set?
-
-Thanks,
-
-Matthew Gerlach
-
-On Wed, 20 Sep 2017, matthew.gerlach@linux.intel.com wrote:
-
-> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->
-> This patch set adds a spi-nor flash driver for the Altera ASMI Parallel II
-> IP Core.  This driver was created based on feedback from Marek Vasut,
-> Cyrill Pitchen, and Michal Suchanek regarding Version 2 of the Altera
-> Quadspi Controller: https://lkml.org/lkml/2017/6/26/518
->
-> The overall problem with Version 2 of the Altera Quadspi Controller and
-> its driver was the fact that there was much duplication of code and logic
-> with the spi-nor framework.  This new combination of fpga hardware and
-> software "gets out of the way" of the spi-nor framework.  The result is a
-> much simpler driver with the spi-nor framework performing the bulk of the work.
->
-> Patch 1 contains the device tree bindings for the driver for
-> the Altera ASMI-Parallel II IP Core.
->
-> Patch 2 contains the driver code for the Altera ASMI-Parallel II IP Core.
-> This driver supports being configured via a device tree or with platform
-> data.  In the later case, the memory for the registers has been remapped.
->
-> Patch 3 contains a work around for some non-standard behavior of EPCQ flash.
->
-> Matthew Gerlach (3):
->  dt-bindings: mtd: Altera ASMI Parallel II IP Core
->  mtd: spi-nor: Altera ASMI Parallel II IP Core
->  mtd: spi-nor: add flag for reading dummy cycles from nv cfg reg
->
-> .../devicetree/bindings/mtd/altera-asmip2.txt      |  15 +
-> MAINTAINERS                                        |   7 +
-> drivers/mtd/spi-nor/Kconfig                        |   6 +
-> drivers/mtd/spi-nor/Makefile                       |   1 +
-> drivers/mtd/spi-nor/altera-asmip2.c                | 478 +++++++++++++++++++++
-> include/linux/mtd/altera-asmip2.h                  |  27 ++
-> 6 files changed, 534 insertions(+)
-> create mode 100644 Documentation/devicetree/bindings/mtd/altera-asmip2.txt
-> create mode 100644 drivers/mtd/spi-nor/altera-asmip2.c
-> create mode 100644 include/linux/mtd/altera-asmip2.h
->
-> -- 
-> 2.7.4
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-fpga" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
+Thanks
+-- 
+Cheers,
+Rock
