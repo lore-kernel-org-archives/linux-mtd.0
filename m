@@ -1,24 +1,20 @@
-Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e1uel-00083Q-0G
- for linux-mtd@lists.infradead.org; Tue, 10 Oct 2017 13:33:16 +0000
-Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
- (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23992338AbdJJNcqTgAAm (ORCPT
- <rfc822;linux-mtd@lists.infradead.org>);
- Tue, 10 Oct 2017 15:32:46 +0200
-Date: Tue, 10 Oct 2017 15:32:45 +0200
-Sender: Ladislav Michl <ladis@linux-mips.org>
-From: Ladislav Michl <ladis@linux-mips.org>
-To: linux-mtd@lists.infradead.org
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, linux-omap@vger.kernel.org
-Subject: [PATCH] mtd: nand: omap2: Do not assign omap_nand_info to platform
- drvdata
-Message-ID: <20171010133245.jlwto3gpmin5bmtw@lenoch>
+Date: Tue, 10 Oct 2017 16:16:59 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Romain Izard <romain.izard.pro@gmail.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>, "David S . Miller"
+ <davem@davemloft.net>, David Gstir <david@sigma-star.at>, Richard
+ Weinberger <richard.weinberger@gmail.com>, linux-kernel@vger.kernel.org,
+ Cyrille Pitchen <cyrille.pitchen@microchip.com>,
+ linux-mtd@lists.infradead.org, linux-crypto@vger.kernel.org, Nicolas
+ Feignon <nicolas.feignon@mobile-devices.fr>,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] crypto: atmel-aes - properly set IV after {en,de}crypt
+Message-ID: <20171010161659.4117677c@bbrezillon>
+In-Reply-To: <20171006155108.6581-1-romain.izard.pro@gmail.com>
+References: <20171006155108.6581-1-romain.izard.pro@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,27 +24,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-commit 67ce04bf2746 ("mtd: nand: add OMAP2/OMAP3 NAND driver") assigned
-pointer to omap_nand_info to the platform drvdata in probe function
-just to be reasigned later to the pointer to mtd_info, which is
-what remove function expects it to be. Remove useless assignment.
+Hi Romain,
 
-Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
----
- drivers/mtd/nand/omap2.c | 1 -
- 1 file changed, 1 deletion(-)
+May I ask why you're sending this patch to the MTD ML?
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 01368a8f9e3f..a97c1aeed55e 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -1823,7 +1823,6 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	if (err)
- 		return err;
- 
--	platform_set_drvdata(pdev, info);
- 	info->ops = gpmc_omap_get_nand_ops(&info->reg, info->gpmc_cs);
- 	if (!info->ops) {
- 		dev_err(&pdev->dev, "Failed to get GPMC->NAND interface\n");
--- 
-2.11.0
+While I'm here, can you have a look at this patch [1] and add you
+Reviewed-by/Tested-by?
+
+Thanks,
+
+Boris
+
+[1]http://patchwork.ozlabs.org/patch/821959/
+
+On Fri,  6 Oct 2017 17:51:08 +0200
+Romain Izard <romain.izard.pro@gmail.com> wrote:
+
+> Certain cipher modes like CTS expect the IV (req->info) of
+> ablkcipher_request (or equivalently req->iv of skcipher_request) to
+> contain the last ciphertext block when the {en,de}crypt operation is done.
+> 
+> Fix this issue for the Atmel AES hardware engine. The tcrypt test
+> case for cts(cbc(aes)) is now correctly passed.
+> 
+> To handle the case of in-place decryption, copy the ciphertext in an
+> intermediate buffer before decryption.
+> 
+> Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
+> ---
+>  drivers/crypto/atmel-aes.c | 28 ++++++++++++++++++++++++++++
+>  1 file changed, 28 insertions(+)
+> 
+> diff --git a/drivers/crypto/atmel-aes.c b/drivers/crypto/atmel-aes.c
+> index 29e20c37f3a6..f22300babb45 100644
+> --- a/drivers/crypto/atmel-aes.c
+> +++ b/drivers/crypto/atmel-aes.c
+> @@ -156,6 +156,7 @@ struct atmel_aes_authenc_ctx {
+>  
+>  struct atmel_aes_reqctx {
+>  	unsigned long		mode;
+> +	u8			*backup_info;
+>  };
+>  
+>  #ifdef CONFIG_CRYPTO_DEV_ATMEL_AUTHENC
+> @@ -496,6 +497,12 @@ static void atmel_aes_authenc_complete(struct atmel_aes_dev *dd, int err);
+>  
+>  static inline int atmel_aes_complete(struct atmel_aes_dev *dd, int err)
+>  {
+> +	struct ablkcipher_request *req = ablkcipher_request_cast(dd->areq);
+> +	struct crypto_ablkcipher *ablkcipher = crypto_ablkcipher_reqtfm(req);
+> +	struct atmel_aes_reqctx *rctx = ablkcipher_request_ctx(req);
+> +	int ivsize = crypto_ablkcipher_ivsize(ablkcipher);
+> +	bool enc = atmel_aes_is_encrypt(dd);
+> +
+>  #ifdef CONFIG_CRYPTO_DEV_ATMEL_AUTHENC
+>  	atmel_aes_authenc_complete(dd, err);
+>  #endif
+> @@ -503,6 +510,15 @@ static inline int atmel_aes_complete(struct atmel_aes_dev *dd, int err)
+>  	clk_disable(dd->iclk);
+>  	dd->flags &= ~AES_FLAGS_BUSY;
+>  
+> +	if (enc) {
+> +		scatterwalk_map_and_copy(req->info, req->dst,
+> +					 req->nbytes - ivsize, ivsize, 0);
+> +	} else if (rctx->backup_info) {
+> +		memcpy(req->info, rctx->backup_info, ivsize);
+> +		kfree(rctx->backup_info);
+> +		rctx->backup_info = NULL;
+> +	}
+> +
+>  	if (dd->is_async)
+>  		dd->areq->complete(dd->areq, err);
+>  
+> @@ -959,13 +975,25 @@ static int atmel_aes_transfer_complete(struct atmel_aes_dev *dd)
+>  static int atmel_aes_start(struct atmel_aes_dev *dd)
+>  {
+>  	struct ablkcipher_request *req = ablkcipher_request_cast(dd->areq);
+> +	struct crypto_ablkcipher *ablkcipher = crypto_ablkcipher_reqtfm(req);
+>  	struct atmel_aes_reqctx *rctx = ablkcipher_request_ctx(req);
+> +	int ivsize = crypto_ablkcipher_ivsize(ablkcipher);
+> +	bool enc = atmel_aes_is_encrypt(dd);
+>  	bool use_dma = (req->nbytes >= ATMEL_AES_DMA_THRESHOLD ||
+>  			dd->ctx->block_size != AES_BLOCK_SIZE);
+>  	int err;
+>  
+>  	atmel_aes_set_mode(dd, rctx);
+>  
+> +	if (!enc) {
+> +		rctx->backup_info = kzalloc(ivsize, GFP_KERNEL);
+> +		if (rctx->backup_info == NULL)
+> +			return atmel_aes_complete(dd, -ENOMEM);
+> +
+> +		scatterwalk_map_and_copy(rctx->backup_info, req->src,
+> +				 (req->nbytes - ivsize), ivsize, 0);
+> +	}
+> +
+>  	err = atmel_aes_hw_init(dd);
+>  	if (err)
+>  		return atmel_aes_complete(dd, err);
