@@ -1,18 +1,22 @@
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e2MVF-0002my-S9
- for linux-mtd@lists.infradead.org; Wed, 11 Oct 2017 19:17:16 +0000
-Received: by mail-pf0-x241.google.com with SMTP id z11so3087496pfk.3
- for <linux-mtd@lists.infradead.org>; Wed, 11 Oct 2017 12:16:53 -0700 (PDT)
+ id 1e2Nue-0003up-D7
+ for linux-mtd@lists.infradead.org; Wed, 11 Oct 2017 20:47:34 +0000
+Received: by mail-wm0-x243.google.com with SMTP id k4so8210137wmc.1
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Oct 2017 13:47:11 -0700 (PDT)
 MIME-Version: 1.0
-Reply-To: mrs.rahabali01@gmail.com
-From: "Mrs.Ali Rahab" <djk2146@gmail.com>
-Date: Wed, 11 Oct 2017 12:16:52 -0700
-Message-ID: <CANn2QQWAn=z4q-_xLdFJYjC85KH-_LnZw35AGmvTAENnWCUt2w@mail.gmail.com>
-Subject: Dear Beloved,
-To: undisclosed-recipients:;
+In-Reply-To: <20171011032621.26979-2-nicolas.pitre@linaro.org>
+References: <20171011032621.26979-1-nicolas.pitre@linaro.org>
+ <20171011032621.26979-2-nicolas.pitre@linaro.org>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Wed, 11 Oct 2017 22:47:09 +0200
+Message-ID: <CAFLxGvynd+dtgPUbXAm7PZVw85=RoR+LfJEghAZLVmfAOVNjQA@mail.gmail.com>
+Subject: Re: [PATCH 1/5] MTD: mtdram: properly handle the phys argument in the
+ point method
+To: Nicolas Pitre <nicolas.pitre@linaro.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +26,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Beloved,
+On Wed, Oct 11, 2017 at 5:26 AM, Nicolas Pitre <nicolas.pitre@linaro.org> wrote:
+> When the phys pointer is non null, the point method is expected to return
+> the physical address for the pointed area. In the case of the mtdram
+> driver we have to retrieve the physical address for the corresponding
+> vmalloc area. However, there is no guarantee that the vmalloc area is
+> made of physically contiguous pages. In that case we simply limit retlen
+> to the actually contiguous pages.
+>
+> Signed-off-by: Nicolas Pitre <nico@linaro.org>
+> ---
+>  drivers/mtd/devices/mtdram.c | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+>
+> diff --git a/drivers/mtd/devices/mtdram.c b/drivers/mtd/devices/mtdram.c
+> index cbd8547d7a..7dbee8e62f 100644
+> --- a/drivers/mtd/devices/mtdram.c
+> +++ b/drivers/mtd/devices/mtdram.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/ioport.h>
+>  #include <linux/vmalloc.h>
+> +#include <linux/mm.h>
+>  #include <linux/init.h>
+>  #include <linux/mtd/mtd.h>
+>  #include <linux/mtd/mtdram.h>
+> @@ -69,6 +70,27 @@ static int ram_point(struct mtd_info *mtd, loff_t from, size_t len,
+>  {
+>         *virt = mtd->priv + from;
+>         *retlen = len;
+> +
+> +       if (phys) {
+> +               /* limit retlen to the number of contiguous physical pages */
+> +               unsigned long page_ofs = offset_in_page(*virt);
+> +               void *addr = *virt - page_ofs;
+> +               unsigned long pfn1, pfn0 = vmalloc_to_pfn(addr);
+> +
+> +               *phys = __pfn_to_phys(pfn0) + page_ofs;
+> +               len += page_ofs;
+> +               while (len > PAGE_SIZE) {
+> +                       len -= PAGE_SIZE;
+> +                       addr += PAGE_SIZE;
+> +                       pfn0++;
+> +                       pfn1 = vmalloc_to_pfn(addr);
+> +                       if (pfn1 != pfn0) {
+> +                               *retlen = *virt - addr;
+> +                               break;
+> +                       }
+> +               }
+> +       }
+> +
+>         return 0;
+>  }
 
-Greetings in the name of our Lord . I=E2=80=99m Mrs.Rahab Ali the widow of
-late Mr Abdul Ali , I=E2=80=99m 74 years old. I am a Christian convert,
-suffering from prolonged cancer of the breast, from all medical
-indications my condition has really deteriorated and it=E2=80=99s pretty
-obvious that i may not live for more than six months owning to the
-rapid growth by stage and the excruciating pain that accrues to it.
+Reviewed-by: Richard Weinberger <richard@nod.at>
 
-My husband was killed during the Gulf War,and our long years of
-marriage was not blessed with children. My husband was very
-wealthy.After his death I inherited all his business and funds. My
-doctor has diagnosed and told me privately what i should expect,
-building my spirit for the inevitable .He says i may not last for more
-than six months,based on this i have taken the decision to share part
-of my funds and wealth in contribution to the development of the
-Church and society with major focus on the poor, needy and victims of
-HIV/AIDS.
-
-I selected you after visiting the website having prayed over it, I am
-willing to donate the sum of $4.300,000USD for your work to help the
-poor, needy,and less privileged among your congregations/society.
-Please note that this fund is deposited in a bank in the country where
-my husband worked, .
-
-The grace of our Lord , the love of God and the fellowship of the Holy
-Spirit be with you. finally i honestly employ you to make sure that
-these funds are put to use only for this purpose, a good one you can
-agree with me,and remember these are the demands of a dieing woman who
-has a life in the lord. I now realize that wealth without life in
-Christ is vanity and non-sense.Always remember that.
-
-May the grace and blessings of God be and remain with you.
-
-I shall be awaiting for your response.
-
-Regards,
-Mrs.Ali Rahab
+-- 
+Thanks,
+//richard
