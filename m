@@ -1,17 +1,17 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e2Nvb-0004It-Rc
- for linux-mtd@lists.infradead.org; Wed, 11 Oct 2017 20:48:33 +0000
-Received: by mail-wm0-x241.google.com with SMTP id 196so21350807wma.1
- for <linux-mtd@lists.infradead.org>; Wed, 11 Oct 2017 13:48:10 -0700 (PDT)
+ id 1e2Nwh-0004qg-Q7
+ for linux-mtd@lists.infradead.org; Wed, 11 Oct 2017 20:49:42 +0000
+Received: by mail-wm0-x244.google.com with SMTP id q124so2890717wmb.5
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Oct 2017 13:49:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20171011032621.26979-3-nicolas.pitre@linaro.org>
+In-Reply-To: <20171011032621.26979-4-nicolas.pitre@linaro.org>
 References: <20171011032621.26979-1-nicolas.pitre@linaro.org>
- <20171011032621.26979-3-nicolas.pitre@linaro.org>
+ <20171011032621.26979-4-nicolas.pitre@linaro.org>
 From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Wed, 11 Oct 2017 22:48:08 +0200
-Message-ID: <CAFLxGvx0o+qwD5S+YiHo2GtDjauPVZpiQ8TxEF-fifUS=JcSDg@mail.gmail.com>
-Subject: Re: [PATCH 2/5] MTD: chips/map_ram.c: implement point and unpoint
+Date: Wed, 11 Oct 2017 22:49:17 +0200
+Message-ID: <CAFLxGvzPBU-HM8nwP+0Or14XrheB3LSj9_4iKE4mUU+xJNAn7A@mail.gmail.com>
+Subject: Re: [PATCH 3/5] MTD: chips/map_rom.c: implement point and unpoint
  methods
 To: Nicolas Pitre <nicolas.pitre@linaro.org>
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -29,38 +29,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 On Wed, Oct 11, 2017 at 5:26 AM, Nicolas Pitre <nicolas.pitre@linaro.org> wrote:
 > Signed-off-by: Nicolas Pitre <nico@linaro.org>
 > ---
->  drivers/mtd/chips/map_ram.c | 24 ++++++++++++++++++++++++
+>  drivers/mtd/chips/map_rom.c | 24 ++++++++++++++++++++++++
 >  1 file changed, 24 insertions(+)
 >
-> diff --git a/drivers/mtd/chips/map_ram.c b/drivers/mtd/chips/map_ram.c
-> index afb43d5e17..c3939dd230 100644
-> --- a/drivers/mtd/chips/map_ram.c
-> +++ b/drivers/mtd/chips/map_ram.c
-> @@ -22,6 +22,9 @@ static void mapram_nop (struct mtd_info *);
->  static struct mtd_info *map_ram_probe(struct map_info *map);
->  static unsigned long mapram_unmapped_area(struct mtd_info *, unsigned long,
+> diff --git a/drivers/mtd/chips/map_rom.c b/drivers/mtd/chips/map_rom.c
+> index e67f73ab44..722afb1cf4 100644
+> --- a/drivers/mtd/chips/map_rom.c
+> +++ b/drivers/mtd/chips/map_rom.c
+> @@ -22,6 +22,10 @@ static struct mtd_info *map_rom_probe(struct map_info *map);
+>  static int maprom_erase (struct mtd_info *mtd, struct erase_info *info);
+>  static unsigned long maprom_unmapped_area(struct mtd_info *, unsigned long,
 >                                           unsigned long, unsigned long);
-> +static int mapram_point (struct mtd_info *mtd, loff_t from, size_t len,
+> +static int maprom_point (struct mtd_info *mtd, loff_t from, size_t len,
 > +                        size_t *retlen, void **virt, resource_size_t *phys);
-> +static int mapram_unpoint(struct mtd_info *mtd, loff_t from, size_t len);
+> +static int maprom_unpoint(struct mtd_info *mtd, loff_t from, size_t len);
+> +
 >
->
->  static struct mtd_chip_driver mapram_chipdrv = {
-> @@ -69,7 +72,9 @@ static struct mtd_info *map_ram_probe(struct map_info *map)
->         mtd->_read = mapram_read;
->         mtd->_write = mapram_write;
->         mtd->_panic_write = mapram_write;
-> +       mtd->_point = mapram_point;
->         mtd->_sync = mapram_nop;
-> +       mtd->_unpoint = mapram_unpoint;
->         mtd->flags = MTD_CAP_RAM;
->         mtd->writesize = 1;
->
-> @@ -96,6 +101,25 @@ static unsigned long mapram_unmapped_area(struct mtd_info *mtd,
+>  static struct mtd_chip_driver maprom_chipdrv = {
+>         .probe  = map_rom_probe,
+> @@ -52,6 +56,8 @@ static struct mtd_info *map_rom_probe(struct map_info *map)
+>         mtd->type = MTD_ROM;
+>         mtd->size = map->size;
+>         mtd->_get_unmapped_area = maprom_unmapped_area;
+> +       mtd->_point = maprom_point;
+> +       mtd->_unpoint = maprom_unpoint;
+>         mtd->_read = maprom_read;
+>         mtd->_write = maprom_write;
+>         mtd->_sync = maprom_nop;
+> @@ -78,6 +84,24 @@ static unsigned long maprom_unmapped_area(struct mtd_info *mtd,
+>  {
+>         struct map_info *map = mtd->priv;
 >         return (unsigned long) map->virt + offset;
->  }
->
-> +static int mapram_point(struct mtd_info *mtd, loff_t from, size_t len,
+> +
+> +static int maprom_point(struct mtd_info *mtd, loff_t from, size_t len,
 > +                       size_t *retlen, void **virt, resource_size_t *phys)
 > +{
 > +       struct map_info *map = mtd->priv;
@@ -74,13 +75,13 @@ On Wed, Oct 11, 2017 at 5:26 AM, Nicolas Pitre <nicolas.pitre@linaro.org> wrote:
 > +       return 0;
 > +}
 > +
-> +static int mapram_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
+> +static int maprom_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
 > +{
 > +       return 0;
-> +}
-> +
+>  }
 
-Reviewed-by: Richard Weinberger <richard@nod.at>
+Can we please have a generic helper function for un/point instead of
+copy&pasting?
 
 -- 
 Thanks,
