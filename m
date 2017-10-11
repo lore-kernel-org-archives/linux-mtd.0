@@ -1,13 +1,13 @@
 Received: from pb-smtp2.pobox.com ([64.147.108.71] helo=sasl.smtp.pobox.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e27fZ-0002Lr-0G
+ id 1e27fZ-0002Lq-0F
  for linux-mtd@lists.infradead.org; Wed, 11 Oct 2017 03:26:58 +0000
 From: Nicolas Pitre <nicolas.pitre@linaro.org>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: linux-mtd@lists.infradead.org
-Subject: [PATCH 3/5] MTD: chips/map_rom.c: implement point and unpoint methods
-Date: Tue, 10 Oct 2017 23:26:19 -0400
-Message-Id: <20171011032621.26979-4-nicolas.pitre@linaro.org>
+Subject: [PATCH 2/5] MTD: chips/map_ram.c: implement point and unpoint methods
+Date: Tue, 10 Oct 2017 23:26:18 -0400
+Message-Id: <20171011032621.26979-3-nicolas.pitre@linaro.org>
 In-Reply-To: <20171011032621.26979-1-nicolas.pitre@linaro.org>
 References: <20171011032621.26979-1-nicolas.pitre@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,39 +21,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Signed-off-by: Nicolas Pitre <nico@linaro.org>
 ---
- drivers/mtd/chips/map_rom.c | 24 ++++++++++++++++++++++++
+ drivers/mtd/chips/map_ram.c | 24 ++++++++++++++++++++++++
  1 file changed, 24 insertions(+)
 
-diff --git a/drivers/mtd/chips/map_rom.c b/drivers/mtd/chips/map_rom.c
-index e67f73ab44..722afb1cf4 100644
---- a/drivers/mtd/chips/map_rom.c
-+++ b/drivers/mtd/chips/map_rom.c
-@@ -22,6 +22,10 @@ static struct mtd_info *map_rom_probe(struct map_info *map);
- static int maprom_erase (struct mtd_info *mtd, struct erase_info *info);
- static unsigned long maprom_unmapped_area(struct mtd_info *, unsigned long,
+diff --git a/drivers/mtd/chips/map_ram.c b/drivers/mtd/chips/map_ram.c
+index afb43d5e17..c3939dd230 100644
+--- a/drivers/mtd/chips/map_ram.c
++++ b/drivers/mtd/chips/map_ram.c
+@@ -22,6 +22,9 @@ static void mapram_nop (struct mtd_info *);
+ static struct mtd_info *map_ram_probe(struct map_info *map);
+ static unsigned long mapram_unmapped_area(struct mtd_info *, unsigned long,
  					  unsigned long, unsigned long);
-+static int maprom_point (struct mtd_info *mtd, loff_t from, size_t len,
++static int mapram_point (struct mtd_info *mtd, loff_t from, size_t len,
 +			 size_t *retlen, void **virt, resource_size_t *phys);
-+static int maprom_unpoint(struct mtd_info *mtd, loff_t from, size_t len);
-+
++static int mapram_unpoint(struct mtd_info *mtd, loff_t from, size_t len);
  
- static struct mtd_chip_driver maprom_chipdrv = {
- 	.probe	= map_rom_probe,
-@@ -52,6 +56,8 @@ static struct mtd_info *map_rom_probe(struct map_info *map)
- 	mtd->type = MTD_ROM;
- 	mtd->size = map->size;
- 	mtd->_get_unmapped_area = maprom_unmapped_area;
-+	mtd->_point = maprom_point;
-+	mtd->_unpoint = maprom_unpoint;
- 	mtd->_read = maprom_read;
- 	mtd->_write = maprom_write;
- 	mtd->_sync = maprom_nop;
-@@ -78,6 +84,24 @@ static unsigned long maprom_unmapped_area(struct mtd_info *mtd,
- {
- 	struct map_info *map = mtd->priv;
+ 
+ static struct mtd_chip_driver mapram_chipdrv = {
+@@ -69,7 +72,9 @@ static struct mtd_info *map_ram_probe(struct map_info *map)
+ 	mtd->_read = mapram_read;
+ 	mtd->_write = mapram_write;
+ 	mtd->_panic_write = mapram_write;
++	mtd->_point = mapram_point;
+ 	mtd->_sync = mapram_nop;
++	mtd->_unpoint = mapram_unpoint;
+ 	mtd->flags = MTD_CAP_RAM;
+ 	mtd->writesize = 1;
+ 
+@@ -96,6 +101,25 @@ static unsigned long mapram_unmapped_area(struct mtd_info *mtd,
  	return (unsigned long) map->virt + offset;
-+
-+static int maprom_point(struct mtd_info *mtd, loff_t from, size_t len,
+ }
+ 
++static int mapram_point(struct mtd_info *mtd, loff_t from, size_t len,
 +			size_t *retlen, void **virt, resource_size_t *phys)
 +{
 +	struct map_info *map = mtd->priv;
@@ -67,11 +66,13 @@ index e67f73ab44..722afb1cf4 100644
 +	return 0;
 +}
 +
-+static int maprom_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
++static int mapram_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
 +{
 +	return 0;
- }
- 
- static int maprom_read (struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char *buf)
++}
++
+ static int mapram_read (struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char *buf)
+ {
+ 	struct map_info *map = mtd->priv;
 -- 
 2.9.5
