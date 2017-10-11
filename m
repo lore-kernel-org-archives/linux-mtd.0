@@ -1,36 +1,22 @@
-Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+Received: from mail-qt0-x22e.google.com ([2607:f8b0:400d:c0d::22e])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e216w-0004Z0-Lu
- for linux-mtd@lists.infradead.org; Tue, 10 Oct 2017 20:26:45 +0000
-From: Kalyan Kinthada <Kalyan.Kinthada@alliedtelesis.co.nz>
-To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "boris.brezillon@free-electrons.com"
- <boris.brezillon@free-electrons.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
- "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "ezequiel.garcia@free-electrons.com"
- <ezequiel.garcia@free-electrons.com>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, Chris Packham
- <Chris.Packham@alliedtelesis.co.nz>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/1] mtd: nand: pxa3xx: Set FORCE_CSX bit to ARMADA370
- variants.
-Date: Tue, 10 Oct 2017 20:26:07 +0000
-Message-ID: <0a9cf087-63de-19db-f695-ca8f3796fad0@alliedtelesis.co.nz>
-References: <20170928005756.3938-1-kalyan.kinthada@alliedtelesis.co.nz>
- <20170928005756.3938-2-kalyan.kinthada@alliedtelesis.co.nz>
- <20171005094138.11b73a0e@xps13>
- <c6832720-7c58-4afe-2d1b-76bb9397299e@alliedtelesis.co.nz>
- <20171009081848.49681975@xps13>
-In-Reply-To: <20171009081848.49681975@xps13>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <312455A69AFC9D49B538D78BE1DD05BD@atlnz.lc>
-Content-Transfer-Encoding: base64
+ id 1e26CR-0003kr-0k
+ for linux-mtd@lists.infradead.org; Wed, 11 Oct 2017 01:52:44 +0000
+Received: by mail-qt0-x22e.google.com with SMTP id 8so1103862qtv.1
+ for <linux-mtd@lists.infradead.org>; Tue, 10 Oct 2017 18:52:21 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <2001363.51LN5LPS4v@blindfold>
+References: <CAL-1w2vUkw05Lrhbd99RV+R0+Uxtphn_qjLAfWLMrQ6z4srqgg@mail.gmail.com>
+ <CAFLxGvxs4fWDS8YiEO90s6HSuEHVgZJV0TSAGH2SPD0FHB-f+Q@mail.gmail.com>
+ <CAL-1w2vC4-fesPcjKHTtn3N9xNOA7Xa7PZ-O0Pu8VD5mg-t2NA@mail.gmail.com>
+ <2001363.51LN5LPS4v@blindfold>
+From: Rock Lee <rockdotlee@gmail.com>
+Date: Wed, 11 Oct 2017 09:52:20 +0800
+Message-ID: <CAL-1w2s3pk732+Ku0qBXNLnFJvRDzM=rcqGSZUKEJ0n_cn4e+g@mail.gmail.com>
+Subject: Re: Detach the ubi device of rootfs
+To: Richard Weinberger <richard@sigma-star.at>
+Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,91 +26,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8gTWlxdWVsLA0KT24gMDkvMTAvMTcgMTk6MTgsIE1pcXVlbCBSQVlOQUwgd3JvdGU6DQo+
-IEhlbGxvIEthbHlhbiwNCj4NCj4gT24gTW9uLCA5IE9jdCAyMDE3IDAyOjMxOjMwICswMDAwDQo+
-IEthbHlhbiBLaW50aGFkYSA8S2FseWFuLktpbnRoYWRhQGFsbGllZHRlbGVzaXMuY28ubno+IHdy
-b3RlOg0KPg0KPj4gT24gMDUvMTAvMTcgMjA6NDEsIE1pcXVlbCBSQVlOQUwgd3JvdGU6DQo+Pj4g
-SGVsbG8gS2FseWFuLA0KPj4+DQo+Pj4gT24gVGh1LCAyOCBTZXAgMjAxNyAxMzo1Nzo1NiArMTMw
-MA0KPj4+IEthbHlhbiBLaW50aGFkYSA8a2FseWFuLmtpbnRoYWRhQGFsbGllZHRlbGVzaXMuY28u
-bno+IHdyb3RlOg0KPj4+ICAgDQo+Pj4+IFdoZW4gdGhlIGFyYml0cmF0aW9uIGJldHdlZW4gTk9S
-IGFuZCBOQU5EIGZsYXNoIGlzIGVuYWJsZWQNCj4+Pj4gdGhlIDxGT1JDRV9DU1g+IGZpZWxkIGJp
-dFsyMV0gaW4gdGhlIERhdGEgRmxhc2ggQ29udHJvbCBSZWdpc3Rlcg0KPj4+PiBuZWVkcyB0byBi
-ZSBzZXQgdG8gMSBhY2NvcmRpbmcgdG8gZ3VpZGxlaW5lIEdMLTU4MzA3NDEgbWVudGlvbmVkDQo+
-Pj4gVHlwbzogZ3VpZGVsaW5lIF4NCj4+IEkgd2lsbCBjb3JyZWN0IHRoaXMgdHlwbyBpbiB0aGUg
-bmV4dCBwYXRjaCB2ZXJzaW9uLg0KPj4+PiBpbiBNYXJ2ZWxsIEVycmF0YSBkb2N1bWVudCBNVi1T
-NTAxMzc3LTAwLCBSZXYuIEQuDQo+Pj4gVGhhbmtzIGZvciB0aGF0LCBJIGNoZWNrZWQgaXQuDQo+
-Pj4gICANCj4+Pj4gVGhpcyBjb21taXQgc2V0cyB0aGUgRk9SQ0VfQ1NYIGJpdCB0byAxIGZvciBh
-bGwNCj4+Pj4gQVJNQURBMzcwIHZhcmlhbnRzIGFzIHRoZSBhcmJpdHJhdGlvbiBpcyBhbHdheXMg
-ZW5hYmxlZCBieSBkZWZhdWx0Lg0KPj4+PiBUaGlzIGNoYW5nZSBkb2VzIG5vdCBhcHBseSBmb3Ig
-cHhhM3h4IHZhcmlhbnRzIGJlY2F1c2UgdGhlDQo+Pj4+IEZPUkNFX0NTWCBiaXQgZG9lcyBub3Qg
-ZXhpc3QvcmVzZXJ2ZWQgb24gdGhlIE5GQ3YxLg0KPj4+IFNvcnJ5IHRvIGJvdGhlciB5b3UgYWdh
-aW4gYnV0IEkgYW0gcmV3b3JraW5nIHRoZSBweGEzeHhfbmFuZCBkcml2ZXINCj4+PiBhbmQgc28g
-SSB3b3VsZCBsaWtlIHRvIGRlZXBseSB1bmRlcnN0YW5kIHdoeSB0aGlzIGlzIG5lZWRlZCBiZWNh
-dXNlDQo+Pj4gSSB3aWxsIGhhdmUgdG8gaW50ZWdyYXRlIGl0IGluIG15IHdvcmsgdG9vLg0KPj4+
-DQo+Pj4gU28gcGxlYXNlIHRlbGwgbWUgd2hhdCBpcyB5b3VyIHNldHVwLCBkbyB5b3UgcmVhbGx5
-IHVzZSBOQU5EL05PUg0KPj4+IGFyYml0cmF0aW9uPyBEbyB5b3UgaGF2ZSBub3QtRG9uJ3QgQ2Fy
-ZSBDUyBOQU5EIGNoaXBzPyBJIGhhdmUgc29tZQ0KPj4+IGRvdWJ0cyBiZWNhdXNlIGV2ZW4gaWYg
-dGhlIHNwZWMgcHJlY2lzZXMgaW4gdGhlIE5BTkQgY29udHJvbGxlcg0KPj4+IGNoYXB0ZXIgdGhh
-dCBhcmJpdHJhdGlvbiBpcyBhbHdheXMgZW5hYmxlZCBieSBkZWZhdWx0LCB0aGUgYml0IDI3DQo+
-Pj4gKE5mQXJiaXRlckVuKSBpbiB0aGUgU29DIERldmljZSBNdWx0aXBsZXggUmVnaXN0ZXIgYXQg
-b2Zmc2V0DQo+Pj4gMHgwMDAxODIwOCBpcyBhY3R1YWxseSBhdCAwIGJ5IGRlZmF1bHQgKGRpc2Fi
-bGVkKS4gRGlkIHlvdSBlbmFibGUNCj4+PiB0aGlzIGJpdCBtYW51YWxseSA/IEkgY2hlY2tlZCB3
-aXRoIGRldm1lbSBvbiBteSBzZXR1cCBhbmQgdGhpcyBiaXQNCj4+PiB3YXMgdW5zZXQuDQo+PiBZ
-ZXMsIG15IHNldHVwIHVzZSBOQU5EL05PUiBhcmJpdHJhdGlvbiBhbmQgdXNlIGEgRG9uJ3QNCj4+
-IGNhcmUgQ1MgTmFuZCBDaGlwLiBUaGUgYml0IDI3IGF0IG9mZnNldCAweDAwMDE4MjA4IGlzIHNl
-dCB0byAxDQo+PiBieSBkZWZhdWx0IGluIG15IGNhc2UuIEkgZGlkIG5vdCBtYW51YWxseSBzZXQg
-dGhlIGJpdCAyNyB0byAxLg0KPiBBY3R1YWxseSBpZiB5b3UgdXNlIERvbid0IENhcmUgQ1MgTkFO
-RCBjaGlwcyB5b3Ugc2hvdWxkIG5vdCBuZWVkIHRoZQ0KPiBmb3JjZSBDUyBiaXQsIGFzIGl0IGlz
-IG1lbnRpb25lZCBpbiB0aGUgZ3VpZGVsaW5lcyB5b3UgcG9pbnRlZCwgdGhpcw0KPiBiaXQgaXMg
-b25seSB1c2VmdWwgZm9yICpub3QqIGRvbid0IGNhcmUgQ1MgTkFORCBjaGlwcyAoYW5kIHRoZSBu
-YW1lDQo+ICJmb3JjZSBDUyIgaXMgcHJldHR5IHN0cmFpZ2h0IGZvcndhcmQgdG9vISkuDQpPay4g
-SSB1bmRlcnN0YW5kIG5vdy4gVGhhbmsgeW91Lg0KPg0KPiBPdGhlcndpc2Ugd2hhdCBib290bG9h
-ZGVyIGFuZCBrZXJuZWwgZG8geW91IHVzZSB0byBoYXZlIHRoaXMNCj4gYml0IHNldCBieSBkZWZh
-dWx0PyBZb3UgbWF5IGFsc28gd2FudCB0byBjaGVjayBpZiB0aGlzIGJpdCBpcyBzZXQgYnkNCj4g
-eW91ciBib290bG9hZGVyIGJ5IHN0b3BwaW5nIGl0IGJlZm9yZSBpdCBsb2FkcyBMaW51eCBhbmQg
-Y2hlY2sgbWFudWFsbHkNCj4gdGhlIHZhbHVlIG9mIHRoaXMgYml0IHdpdGggJ21kJyAob24gVS1C
-b290KS4NClRoZSBiaXQyNyBhdCBvZmZzZXQgMHgwMDAxODIwOCBpcyBzZXQgaW4gYm9vdGxvYWRl
-ci4NClVib290IHZlcnNpb24gMjAxNi4xMQ0KTGludXggS2VybmVsIDQuNC42DQoNClRoYW5rcywN
-CkthbHlhbg0KPg0KPiBUaGFuayB5b3UsDQo+IE1pcXXDqGwNCj4NCj4+IFBsZWFzZSBsZXQgbWUg
-bm93IGlmIHlvdSBoYXZlIGFueSBvdGhlciBxdWVzdGlvbiBvciBkbyB5b3Ugd2FudCBtZQ0KPj4g
-dG8gc2VuZCB0aGUgdXBkYXRlZCBwYXRjaCB2ZXJzaW9uIHdpdGggdGhlIHR5cG8gZml4ZWQuDQo+
-Pg0KPj4gVGhhbmsgWW91LA0KPj4gS2FseWFuDQo+Pg0KPj4+IFRoYW5rIHlvdSBmb3IgeW91ciB0
-aW1lLA0KPj4+IE1pcXXDqGwNCj4+PiAgIA0KPj4+PiBUaGUgTkRDUl9ORF9NT0RFIGNvbmZsaWN0
-cyB3aXRoIHRoZSBuZXcgTkRDUl9GT1JDRV9DU1ggYnV0IGlzDQo+Pj4+IHVudXNlZCBzbyByZW1v
-dmUgaXQgYWxvbmcgd2l0aCBORENSX05BTkRfTU9ERS4NCj4+Pj4NCj4+Pj4gU2lnbmVkLW9mZi1i
-eTogS2FseWFuIEtpbnRoYWRhDQo+Pj4+IDxrYWx5YW4ua2ludGhhZGFAYWxsaWVkdGVsZXNpcy5j
-by5uej4gLS0tDQo+Pj4gICANCj4+Pj4gICAgZHJpdmVycy9tdGQvbmFuZC9weGEzeHhfbmFuZC5j
-IHwgOSArKysrKysrLS0NCj4+Pj4gICAgMSBmaWxlIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygrKSwg
-MiBkZWxldGlvbnMoLSkNCj4+Pj4NCj4+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQv
-cHhhM3h4X25hbmQuYw0KPj4+PiBiL2RyaXZlcnMvbXRkL25hbmQvcHhhM3h4X25hbmQuYyBpbmRl
-eCA4NWNmZjY4NjQzZTAuLmE2YTdhNWFmN2JlZA0KPj4+PiAxMDA2NDQgLS0tIGEvZHJpdmVycy9t
-dGQvbmFuZC9weGEzeHhfbmFuZC5jDQo+Pj4+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcHhhM3h4
-X25hbmQuYw0KPj4+PiBAQCAtNjcsOCArNjcsNyBAQA0KPj4+PiAgICAjZGVmaW5lIE5EQ1JfRFdJ
-RFRIX00JCSgweDEgPDwgMjYpDQo+Pj4+ICAgICNkZWZpbmUgTkRDUl9QQUdFX1NaCQkoMHgxIDw8
-IDI0KQ0KPj4+PiAgICAjZGVmaW5lIE5EQ1JfTkNTWAkJKDB4MSA8PCAyMykNCj4+Pj4gLSNkZWZp
-bmUgTkRDUl9ORF9NT0RFCQkoMHgzIDw8IDIxKQ0KPj4+PiAtI2RlZmluZSBORENSX05BTkRfTU9E
-RSAgIAkoMHgwKQ0KPj4+PiArI2RlZmluZSBORENSX0ZPUkNFX0NTWAkJKDB4MSA8PCAyMSkNCj4+
-Pj4gICAgI2RlZmluZSBORENSX0NMUl9QR19DTlQJCSgweDEgPDwgMjApDQo+Pj4+ICAgICNkZWZp
-bmUgTkZDVjFfTkRDUl9BUkJfQ05UTAkoMHgxIDw8IDE5KQ0KPj4+PiAgICAjZGVmaW5lIE5GQ1Yy
-X05EQ1JfU1RPUF9PTl9VTkNPUgkoMHgxIDw8IDE5KQ0KPj4+PiBAQCAtMTQ2NCw2ICsxNDYzLDkg
-QEAgc3RhdGljIGludCBweGEzeHhfbmFuZF9jb25maWdfaWRlbnQoc3RydWN0DQo+Pj4+IHB4YTN4
-eF9uYW5kX2luZm8gKmluZm8pIGluZm8tPmNodW5rX3NpemUgPSBQQUdFX0NIVU5LX1NJWkU7DQo+
-Pj4+ICAgIAlpbmZvLT5yZWdfbmRjciA9IDB4MDsgLyogZW5hYmxlIGFsbCBpbnRlcnJ1cHRzICov
-DQo+Pj4+ICAgIAlpbmZvLT5yZWdfbmRjciB8PSAocGRhdGEtPmVuYWJsZV9hcmJpdGVyKSA/DQo+
-Pj4+IE5EQ1JfTkRfQVJCX0VOIDogMDsNCj4+Pj4gKwkvKiBTZXQgRk9SQ0VfQ1NYIGJpdCBmb3Ig
-YWxsIEFSTUFEQTM3MCBWYXJpYW50cy4gUmVmIzoNCj4+Pj4gR0wtNTgzMDc0MSAqLw0KPj4+PiAr
-CWlmIChpbmZvLT52YXJpYW50ID09IFBYQTNYWF9OQU5EX1ZBUklBTlRfQVJNQURBMzcwKQ0KPj4+
-PiArCQlpbmZvLT5yZWdfbmRjciB8PSBORENSX0ZPUkNFX0NTWDsNCj4+Pj4gICAgCWluZm8tPnJl
-Z19uZGNyIHw9IE5EQ1JfUkRfSURfQ05UKFJFQURfSURfQllURVMpOw0KPj4+PiAgICAJaW5mby0+
-cmVnX25kY3IgfD0gTkRDUl9TUEFSRV9FTjsNCj4+Pj4gICAgDQo+Pj4+IEBAIC0xNDk4LDYgKzE1
-MDAsOSBAQCBzdGF0aWMgdm9pZCBweGEzeHhfbmFuZF9kZXRlY3RfY29uZmlnKHN0cnVjdA0KPj4+
-PiBweGEzeHhfbmFuZF9pbmZvICppbmZvKSBpbmZvLT5yZWdfbmRjciA9IG5kY3IgJg0KPj4+PiAg
-ICAJCX4oTkRDUl9JTlRfTUFTSyB8IE5EQ1JfTkRfQVJCX0VOIHwNCj4+Pj4gTkZDVjFfTkRDUl9B
-UkJfQ05UTCk7IGluZm8tPnJlZ19uZGNyIHw9IChwZGF0YS0+ZW5hYmxlX2FyYml0ZXIpID8NCj4+
-Pj4gTkRDUl9ORF9BUkJfRU4gOiAwOw0KPj4+PiArCS8qIFNldCBGT1JDRV9DU1ggYml0IGZvciBh
-bGwgQVJNQURBMzcwIFZhcmlhbnRzLiBSZWYjOg0KPj4+PiBHTC01ODMwNzQxICovDQo+Pj4+ICsJ
-aWYgKGluZm8tPnZhcmlhbnQgPT0gUFhBM1hYX05BTkRfVkFSSUFOVF9BUk1BREEzNzApDQo+Pj4+
-ICsJCWluZm8tPnJlZ19uZGNyIHw9IE5EQ1JfRk9SQ0VfQ1NYOw0KPj4+PiAgICAJaW5mby0+bmR0
-cjBjczAgPSBuYW5kX3JlYWRsKGluZm8sIE5EVFIwQ1MwKTsNCj4+Pj4gICAgCWluZm8tPm5kdHIx
-Y3MwID0gbmFuZF9yZWFkbChpbmZvLCBORFRSMUNTMCk7DQo+Pj4+ICAgIH0NCj4+PiAgIA0KPg0K
-Pg0K
+> Scrubbing is an atomic operation, just like copying a LEB.
+> What problem do you have in mind?
+>
+Since scrubbing is an atomic operation, I have nothing to worry about :-)
+
+Thanks
+-- 
+Cheers,
+Rock
