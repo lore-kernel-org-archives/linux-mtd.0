@@ -1,25 +1,18 @@
-Received: from mga14.intel.com ([192.55.52.115])
+Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e2KNS-0004MH-TY
- for linux-mtd@lists.infradead.org; Wed, 11 Oct 2017 17:01:10 +0000
-Date: Wed, 11 Oct 2017 10:00:37 -0700 (PDT)
-From: matthew.gerlach@linux.intel.com
-To: Marek Vasut <marek.vasut@gmail.com>
-cc: vndao@altera.com, dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org, mark.rutland@arm.com,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
- davem@davemloft.net, mchehab@kernel.org, linux-fpga@vger.kernel.org,
- tien.hock.loh@intel.com, hean.loong.ong@intel.com
-Subject: Re: [PATCH v2 2/3] mtd: spi-nor: Altera ASMI Parallel II IP Core
-In-Reply-To: <deae5a9f-4301-c7de-b265-b09292f8da15@gmail.com>
-Message-ID: <alpine.DEB.2.20.1710110956260.2194@mgerlach-VirtualBox>
-References: <1505932139-2905-1-git-send-email-matthew.gerlach@linux.intel.com>
- <1505932139-2905-3-git-send-email-matthew.gerlach@linux.intel.com>
- <deae5a9f-4301-c7de-b265-b09292f8da15@gmail.com>
+ id 1e2MVF-0002my-S9
+ for linux-mtd@lists.infradead.org; Wed, 11 Oct 2017 19:17:16 +0000
+Received: by mail-pf0-x241.google.com with SMTP id z11so3087496pfk.3
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Oct 2017 12:16:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Reply-To: mrs.rahabali01@gmail.com
+From: "Mrs.Ali Rahab" <djk2146@gmail.com>
+Date: Wed, 11 Oct 2017 12:16:52 -0700
+Message-ID: <CANn2QQWAn=z4q-_xLdFJYjC85KH-_LnZw35AGmvTAENnWCUt2w@mail.gmail.com>
+Subject: Dear Beloved,
+To: undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,71 +22,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Dear Beloved,
 
+Greetings in the name of our Lord . I=E2=80=99m Mrs.Rahab Ali the widow of
+late Mr Abdul Ali , I=E2=80=99m 74 years old. I am a Christian convert,
+suffering from prolonged cancer of the breast, from all medical
+indications my condition has really deteriorated and it=E2=80=99s pretty
+obvious that i may not live for more than six months owning to the
+rapid growth by stage and the excruciating pain that accrues to it.
 
-On Tue, 10 Oct 2017, Marek Vasut wrote:
+My husband was killed during the Gulf War,and our long years of
+marriage was not blessed with children. My husband was very
+wealthy.After his death I inherited all his business and funds. My
+doctor has diagnosed and told me privately what i should expect,
+building my spirit for the inevitable .He says i may not last for more
+than six months,based on this i have taken the decision to share part
+of my funds and wealth in contribution to the development of the
+Church and society with major focus on the poor, needy and victims of
+HIV/AIDS.
 
-> On 09/20/2017 08:28 PM, matthew.gerlach@linux.intel.com wrote:
->> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->>
->> This patch adds support for a spi-nor, platform driver for the
->> Altera ASMI Parallel II IP Core.  The intended use case is to be able
->> to update the flash used to load a FPGA at power up with mtd-utils.
->>
->> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->> ---
->> v2:
->>     minor checkpatch fixing by Wu Hao <hao.wu@intel.com>
->>     Use read_dummy value as suggested by Cyrille Pitchen.
->>     Don't assume 4 byte addressing (Cryille Pichecn and Marek Vasut).
->>     Fixed #define indenting as suggested by Marek Vasut.
->>     Added units to timer values as suggested by Marek Vasut.
->>     Use io(read|write)8_rep() as suggested by Marek Vasut.
->>     Renamed function prefixed with __ as suggested by Marek Vasut.
->
-> [...]
->
->> +#define QSPI_ACTION_REG			0
->> +#define QSPI_ACTION_RST			BIT(0)
->> +#define QSPI_ACTION_EN			BIT(1)
->> +#define QSPI_ACTION_SC			BIT(2)
->> +#define QSPI_ACTION_CHIP_SEL_SFT	4
->> +#define QSPI_ACTION_DUMMY_SFT		8
->> +#define QSPI_ACTION_READ_BACK_SFT	16
->> +
->> +#define QSPI_FIFO_CNT_REG		4
->> +#define QSPI_FIFO_DEPTH			0x200
->> +#define QSPI_FIFO_CNT_MSK		0x3ff
->> +#define QSPI_FIFO_CNT_RX_SFT		0
->> +#define QSPI_FIFO_CNT_TX_SFT		12
->> +
->> +#define QSPI_DATA_REG			0x8
->> +
->> +#define QSPI_POLL_TIMEOUT_US		10000000
->
-> 10 s poll timeout ? :)
+I selected you after visiting the website having prayed over it, I am
+willing to donate the sum of $4.300,000USD for your work to help the
+poor, needy,and less privileged among your congregations/society.
+Please note that this fund is deposited in a bank in the country where
+my husband worked, .
 
-Hi Marek,
+The grace of our Lord , the love of God and the fellowship of the Holy
+Spirit be with you. finally i honestly employ you to make sure that
+these funds are put to use only for this purpose, a good one you can
+agree with me,and remember these are the demands of a dieing woman who
+has a life in the lord. I now realize that wealth without life in
+Christ is vanity and non-sense.Always remember that.
 
-The 10s timeout is fairly arbitrary.  In other words, I pulled it out of 
-thin air.  Can you suggest a better timeout?  From a practical standpoint 10s 
-seemed to be much better than no timeout when I was debugging bad FPGA 
-images.  Without a timeout I was hanging the system when the FPGA image 
-failed.  With this timeout, we get a nice message and Linux keeps running 
-happily.
+May the grace and blessings of God be and remain with you.
 
-Thanks for the feedback,
+I shall be awaiting for your response.
 
-Matthew Gerlach
-
->
->> +#define QSPI_POLL_INTERVAL_US		 5 >> + >> +struct 
-altera_asmip2 { >
-> [...]
->
-> Otherwise looks good
->
-> -- 
-> Best regards,
-> Marek Vasut
->
+Regards,
+Mrs.Ali Rahab
