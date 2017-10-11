@@ -1,23 +1,18 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e2HBN-0005Zs-CQ
- for linux-mtd@lists.infradead.org; Wed, 11 Oct 2017 13:36:23 +0000
-Date: Wed, 11 Oct 2017 15:35:59 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Peter Pan <peterpandong@micron.com>
-Cc: <richard@nod.at>, <computersforpeace@gmail.com>,
- <arnaud.mouiche@gmail.com>, <thomas.petazzoni@free-electrons.com>,
- <marex@denx.de>, <cyrille.pitchen@wedev4u.fr>,
- <linux-mtd@lists.infradead.org>, <peterpansjtu@gmail.com>,
- <linshunquan1@hisilicon.com>
-Subject: Re: [PATCH v6 11/15] nand: spi: add basic operations support
-Message-ID: <20171011153559.0b1efb28@bbrezillon>
-In-Reply-To: <1495609631-18880-12-git-send-email-peterpandong@micron.com>
-References: <1495609631-18880-1-git-send-email-peterpandong@micron.com>
- <1495609631-18880-12-git-send-email-peterpandong@micron.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mout.kundenserver.de ([217.72.192.73])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1e2HTF-0008L3-Lq
+ for linux-mtd@lists.infradead.org; Wed, 11 Oct 2017 13:54:52 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: Arnd Bergmann <arnd@arndb.de>, stable@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: cfi: convert inline functions to macros
+Date: Wed, 11 Oct 2017 15:54:10 +0200
+Message-Id: <20171011135419.3492681-1-arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,55 +22,180 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Peter,
+The map_word_() functions, dating back to linux-2.6.8, try to perform
+bitwise operations on a 'map_word' structure. This may have worked
+with compilers that were current then (gcc-3.4 or earlier), but end
+up being rather inefficient on any version I could try now (gcc-4.4 or
+higher). Specifically we hit a problem analyzed in gcc PR81715 where we
+fail to reuse the stack space for local variables.
 
-I'm resurrecting this series, and I still have on question on this
-patch (probably not my last question ;-)).
+This can be seen immediately in the stack consumption for
+cfi_staa_erase_varsize() and other functions that (with CONFIG_KASAN)
+can be up to 2200 bytes. Changing the inline functions into macros brings
+this down to 1280 bytes.  Without KASAN, the same problem exists, but
+the stack consumption is lower to start with, my patch shrinks it from
+920 to 496 bytes on with arm-linux-gnueabi-gcc-5.4, and saves around
+1KB in .text size for cfi_cmdset_0020.c, as it avoids copying map_word
+structures for each call to one of these helpers.
 
-On Wed, 24 May 2017 15:07:07 +0800
-Peter Pan <peterpandong@micron.com> wrote:
+With the latest gcc-8 snapshot, the problem is fixed in upstream gcc,
+but nobody uses that yet, so we should still work around it in mainline
+kernels and probably backport the workaround to stable kernels as well.
+We had a couple of other functions that suffered from the same gcc bug,
+and all of those had a simpler workaround involving dummy variables
+in the inline function. Unfortunately that did not work here, the
+macro hack was the best I could come up with.
 
+It would also be helpful to have someone to a little performance testing
+on the patch, to see how much it helps in terms of CPU utilitzation.
 
+Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81715
+Cc: stable@vger.kernel.org
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ include/linux/mtd/map.h | 130 +++++++++++++++++++++++-------------------------
+ 1 file changed, 61 insertions(+), 69 deletions(-)
 
-> +/**
-> + * spinand_do_write_ops - write data from buffer to device
-> + * @mtd: MTD device structure
-> + * @to: offset to write to
-> + * @ops: oob operations description structure
-> + */
-> +static int spinand_do_write_ops(struct mtd_info *mtd, loff_t to,
-> +				struct mtd_oob_ops *ops)
-> +{
-> +	struct spinand_device *spinand = mtd_to_spinand(mtd);
-> +	struct nand_device *nand = mtd_to_nand(mtd);
-> +	int ret = 0;
-> +
-> +	ret = nand_check_address(nand, to);
-> +	if (ret) {
-> +		dev_err(spinand->dev, "%s: invalid write address\n", __func__);
-> +		return ret;
-> +	}
-> +
-> +	ret = nand_check_oob_ops(nand, to, ops);
-> +	if (ret) {
-> +		dev_err(spinand->dev,
-> +			"%s: invalid oob operation input\n", __func__);
-> +		return ret;
-> +	}
-> +
-> +	if (nand_oob_ops_across_page(mtd_to_nand(mtd), ops)) {
-> +		dev_err(spinand->dev,
-> +			"%s: try to across page when writing with OOB\n",
-> +			__func__);
-> +		return -EINVAL;
-> +	}
-
-Why do you prevent writing more than one OOB region?
-
-> +
-> +	mutex_lock(&spinand->lock);
-> +	ret = spinand_write_pages(mtd, to, ops);
-> +	mutex_unlock(&spinand->lock);
-> +
-> +	return ret;
-> +}
+diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
+index 3aa56e3104bb..b5b43f94f311 100644
+--- a/include/linux/mtd/map.h
++++ b/include/linux/mtd/map.h
+@@ -270,75 +270,67 @@ void map_destroy(struct mtd_info *mtd);
+ #define INVALIDATE_CACHED_RANGE(map, from, size) \
+ 	do { if (map->inval_cache) map->inval_cache(map, from, size); } while (0)
+ 
+-
+-static inline int map_word_equal(struct map_info *map, map_word val1, map_word val2)
+-{
+-	int i;
+-
+-	for (i = 0; i < map_words(map); i++) {
+-		if (val1.x[i] != val2.x[i])
+-			return 0;
+-	}
+-
+-	return 1;
+-}
+-
+-static inline map_word map_word_and(struct map_info *map, map_word val1, map_word val2)
+-{
+-	map_word r;
+-	int i;
+-
+-	for (i = 0; i < map_words(map); i++)
+-		r.x[i] = val1.x[i] & val2.x[i];
+-
+-	return r;
+-}
+-
+-static inline map_word map_word_clr(struct map_info *map, map_word val1, map_word val2)
+-{
+-	map_word r;
+-	int i;
+-
+-	for (i = 0; i < map_words(map); i++)
+-		r.x[i] = val1.x[i] & ~val2.x[i];
+-
+-	return r;
+-}
+-
+-static inline map_word map_word_or(struct map_info *map, map_word val1, map_word val2)
+-{
+-	map_word r;
+-	int i;
+-
+-	for (i = 0; i < map_words(map); i++)
+-		r.x[i] = val1.x[i] | val2.x[i];
+-
+-	return r;
+-}
+-
+-static inline int map_word_andequal(struct map_info *map, map_word val1, map_word val2, map_word val3)
+-{
+-	int i;
+-
+-	for (i = 0; i < map_words(map); i++) {
+-		if ((val1.x[i] & val2.x[i]) != val3.x[i])
+-			return 0;
+-	}
+-
+-	return 1;
+-}
+-
+-static inline int map_word_bitsset(struct map_info *map, map_word val1, map_word val2)
+-{
+-	int i;
+-
+-	for (i = 0; i < map_words(map); i++) {
+-		if (val1.x[i] & val2.x[i])
+-			return 1;
+-	}
+-
+-	return 0;
+-}
++#define map_word_equal(map, val1, val2)					\
++({									\
++	int i, ret = 1;							\
++	for (i = 0; i < map_words(map); i++)				\
++		if ((val1).x[i] != (val2).x[i]) {			\
++			ret = 0;					\
++			break;						\
++		}							\
++	ret;								\
++})
++
++#define map_word_and(map, val1, val2)					\
++({									\
++	map_word r;							\
++	int i;								\
++	for (i = 0; i < map_words(map); i++)				\
++		r.x[i] = (val1).x[i] & (val2).x[i];			\
++	r;								\
++})
++
++#define map_word_clr(map, val1, val2)					\
++({									\
++	map_word r;							\
++	int i;								\
++	for (i = 0; i < map_words(map); i++)				\
++		r.x[i] = (val1).x[i] & ~(val2).x[i];			\
++	r;								\
++})
++
++#define map_word_or(map, val1, val2)					\
++({									\
++	map_word r;							\
++	int i;								\
++	for (i = 0; i < map_words(map); i++)				\
++		r.x[i] = (val1).x[i] | (val2).x[i];			\
++	r;								\
++})
++
++#define map_word_andequal(map, val1, val2, val3)			\
++({									\
++	int i, ret = 1;							\
++	for (i = 0; i < map_words(map); i++) {				\
++		if (((val1).x[i] & (val2).x[i]) != (val2).x[i]) {	\
++			ret = 0;					\
++			break;						\
++		}							\
++	}								\
++	ret;								\
++})
++
++#define map_word_bitsset(map, val1, val2)				\
++({									\
++	int i, ret = 0;							\
++	for (i = 0; i < map_words(map); i++) {				\
++		if ((val1).x[i] & (val2).x[i]) {			\
++			ret = 1;					\
++			break;						\
++		}							\
++	}								\
++	ret;								\
++})
+ 
+ static inline map_word map_word_load(struct map_info *map, const void *ptr)
+ {
+-- 
+2.9.0
