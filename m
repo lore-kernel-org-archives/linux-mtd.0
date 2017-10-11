@@ -1,22 +1,23 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+Received: from mail-qt0-x22e.google.com ([2607:f8b0:400d:c0d::22e])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e2Nz3-0006yE-9U
- for linux-mtd@lists.infradead.org; Wed, 11 Oct 2017 20:52:07 +0000
-Received: by mail-wm0-x241.google.com with SMTP id m72so21454368wmc.0
- for <linux-mtd@lists.infradead.org>; Wed, 11 Oct 2017 13:51:44 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20171011032621.26979-5-nicolas.pitre@linaro.org>
-References: <20171011032621.26979-1-nicolas.pitre@linaro.org>
- <20171011032621.26979-5-nicolas.pitre@linaro.org>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Wed, 11 Oct 2017 22:51:43 +0200
-Message-ID: <CAFLxGvwURAc=x1Feka+ArMGv5OCC8SGuXeNac1jDowp1jV4jbQ@mail.gmail.com>
-Subject: Re: [PATCH 4/5] MTD: implement mtd_get_unmapped_area() using the
- point method
-To: Nicolas Pitre <nicolas.pitre@linaro.org>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ id 1e2O3J-00014Y-SO
+ for linux-mtd@lists.infradead.org; Wed, 11 Oct 2017 20:56:31 +0000
+Received: by mail-qt0-x22e.google.com with SMTP id z19so9271731qtg.11
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Oct 2017 13:56:09 -0700 (PDT)
+Date: Wed, 11 Oct 2017 16:56:07 -0400 (EDT)
+From: Nicolas Pitre <nicolas.pitre@linaro.org>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH 3/5] MTD: chips/map_rom.c: implement point and unpoint
+ methods
+In-Reply-To: <CAFLxGvzPBU-HM8nwP+0Or14XrheB3LSj9_4iKE4mUU+xJNAn7A@mail.gmail.com>
+Message-ID: <nycvar.YSQ.7.76.1710111650040.6870@knanqh.ubzr>
+References: <20171011032621.26979-1-nicolas.pitre@linaro.org>
+ <20171011032621.26979-4-nicolas.pitre@linaro.org>
+ <CAFLxGvzPBU-HM8nwP+0Or14XrheB3LSj9_4iKE4mUU+xJNAn7A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,51 +27,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 11, 2017 at 5:26 AM, Nicolas Pitre <nicolas.pitre@linaro.org> wrote:
-> The mtd->_point method is a superset of mtd->_get_unmapped_area.
-> Especially in the NOR flash case, the point method ensures the flash
-> memory is in array (data) mode and that it will stay that way which
-> is precisely what callers of mtd_get_unmapped_area() would expect.
->
-> Implement mtd_get_unmapped_area() in terms of mtd->_point now that all
-> drivers that provided a _get_unmapped_area method also have the _point
-> method implemented.
->
-> Signed-off-by: Nicolas Pitre <nico@linaro.org>
-> ---
->  drivers/mtd/mtdcore.c | 17 ++++++++++++-----
->  1 file changed, 12 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index e7ea842ba3..ecb0380158 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -1022,11 +1022,18 @@ EXPORT_SYMBOL_GPL(mtd_unpoint);
->  unsigned long mtd_get_unmapped_area(struct mtd_info *mtd, unsigned long len,
->                                     unsigned long offset, unsigned long flags)
->  {
-> -       if (!mtd->_get_unmapped_area)
-> -               return -EOPNOTSUPP;
-> -       if (offset >= mtd->size || len > mtd->size - offset)
-> -               return -EINVAL;
-> -       return mtd->_get_unmapped_area(mtd, len, offset, flags);
-> +       size_t retlen;
-> +       void *virt;
-> +       int ret;
-> +
-> +       ret = mtd_point(mtd, offset, len, &retlen, &virt, NULL);
-> +       if (ret)
-> +               return ret;
-> +       if (retlen != len) {
-> +               mtd_unpoint(mtd, offset, retlen);
-> +               return -ENOSYS;
-> +       }
-> +       return (unsigned long)virt;
->  }
->  EXPORT_SYMBOL_GPL(mtd_get_unmapped_area);
+On Wed, 11 Oct 2017, Richard Weinberger wrote:
 
-Reviewed-by: Richard Weinberger <richard@nod.at>
+> On Wed, Oct 11, 2017 at 5:26 AM, Nicolas Pitre <nicolas.pitre@linaro.org> wrote:
+> > Signed-off-by: Nicolas Pitre <nico@linaro.org>
+> > ---
+> >  drivers/mtd/chips/map_rom.c | 24 ++++++++++++++++++++++++
+> >  1 file changed, 24 insertions(+)
+> >
+> > diff --git a/drivers/mtd/chips/map_rom.c b/drivers/mtd/chips/map_rom.c
+> > index e67f73ab44..722afb1cf4 100644
+> > --- a/drivers/mtd/chips/map_rom.c
+> > +++ b/drivers/mtd/chips/map_rom.c
+> > @@ -22,6 +22,10 @@ static struct mtd_info *map_rom_probe(struct map_info *map);
+> >  static int maprom_erase (struct mtd_info *mtd, struct erase_info *info);
+> >  static unsigned long maprom_unmapped_area(struct mtd_info *, unsigned long,
+> >                                           unsigned long, unsigned long);
+> > +static int maprom_point (struct mtd_info *mtd, loff_t from, size_t len,
+> > +                        size_t *retlen, void **virt, resource_size_t *phys);
+> > +static int maprom_unpoint(struct mtd_info *mtd, loff_t from, size_t len);
+> > +
+> >
+> >  static struct mtd_chip_driver maprom_chipdrv = {
+> >         .probe  = map_rom_probe,
+> > @@ -52,6 +56,8 @@ static struct mtd_info *map_rom_probe(struct map_info *map)
+> >         mtd->type = MTD_ROM;
+> >         mtd->size = map->size;
+> >         mtd->_get_unmapped_area = maprom_unmapped_area;
+> > +       mtd->_point = maprom_point;
+> > +       mtd->_unpoint = maprom_unpoint;
+> >         mtd->_read = maprom_read;
+> >         mtd->_write = maprom_write;
+> >         mtd->_sync = maprom_nop;
+> > @@ -78,6 +84,24 @@ static unsigned long maprom_unmapped_area(struct mtd_info *mtd,
+> >  {
+> >         struct map_info *map = mtd->priv;
+> >         return (unsigned long) map->virt + offset;
+> > +
+> > +static int maprom_point(struct mtd_info *mtd, loff_t from, size_t len,
+> > +                       size_t *retlen, void **virt, resource_size_t *phys)
+> > +{
+> > +       struct map_info *map = mtd->priv;
+> > +
+> > +       if (!map->virt)
+> > +               return -EINVAL;
+> > +       *virt = map->virt + from;
+> > +       if (phys)
+> > +               *phys = map->phys + from;
+> > +       *retlen = len;
+> > +       return 0;
+> > +}
+> > +
+> > +static int maprom_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
+> > +{
+> > +       return 0;
+> >  }
+> 
+> Can we please have a generic helper function for un/point instead of
+> copy&pasting?
 
--- 
-Thanks,
-//richard
+I'd prefer not. In this case (and the mapram case) the point/unpoint 
+code is unusuably simple.  I don't want people to think that such 
+simpleness is expected by making this into a common or generic function. 
+Normally this ought to be more involved (see cfi_cmdset_0001 for 
+a real example).
+
+
+Nicolas
