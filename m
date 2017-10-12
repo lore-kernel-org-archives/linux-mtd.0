@@ -1,27 +1,23 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e2dWD-0005bJ-MF
- for linux-mtd@lists.infradead.org; Thu, 12 Oct 2017 13:27:23 +0000
-Date: Thu, 12 Oct 2017 15:26:47 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
-Cc: richard@nod.at, linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, cyrille.pitchen@wedev4u.fr,
- computersforpeace@gmail.com, dwmw2@infradead.org
-Subject: Re: [PATCH -next v2] mtd: nand: Add support for Toshiba BENAND
- (Built-in ECC NAND)
-Message-ID: <20171012152647.0208fb88@bbrezillon>
-In-Reply-To: <484831d8-1bd7-f714-7934-863f2ad0b200@toshiba.co.jp>
-References: <1505971922-4994-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
- <20170921092849.6f1ba4b8@bbrezillon>
- <34d612f6-a479-21e7-f0aa-734e647d5942@toshiba.co.jp>
- <20170926231549.40c09c5d@bbrezillon>
- <fa307950-6085-acf9-aae3-725b9c2a60af@toshiba.co.jp>
- <20171005093126.78616d74@bbrezillon>
- <484831d8-1bd7-f714-7934-863f2ad0b200@toshiba.co.jp>
+Received: from fllnx209.ext.ti.com ([198.47.19.16])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1e2eCD-0000xU-8i
+ for linux-mtd@lists.infradead.org; Thu, 12 Oct 2017 14:10:47 +0000
+Subject: Re: [RESEND PATCH] mtd: nand: omap2: Remove omap_nand_platform_data
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+CC: Ladislav Michl <ladis@linux-mips.org>, <linux-mtd@lists.infradead.org>,
+ <linux-omap@vger.kernel.org>, Richard Weinberger <richard@nod.at>
+References: <20171006103543.gnb2hxq7msallyzl@lenoch>
+ <20171010114047.202d7d44@bbrezillon>
+ <2cd668a5-1c53-ea90-b7d3-47ddad71c23a@ti.com>
+ <20171012133837.13bfe1e4@bbrezillon>
+From: Roger Quadros <rogerq@ti.com>
+Message-ID: <97596107-9b96-f8eb-bf44-466aff99e943@ti.com>
+Date: Thu, 12 Oct 2017 17:09:26 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20171012133837.13bfe1e4@bbrezillon>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,96 +27,138 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 12 Oct 2017 22:03:23 +0900
-KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:
+=EF=BB=BF
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Bu=
+siness ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
-> On 2017/10/05 16:31, Boris Brezillon wrote:
-> > On Thu, 5 Oct 2017 16:24:08 +0900
-> > KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:  
-> >>>>>> @@ -39,9 +105,43 @@ static void toshiba_nand_decode_id(struct nand_chip *chip)
-> >>>>>>  
-> >>>>>>  static int toshiba_nand_init(struct nand_chip *chip)
-> >>>>>>  {
-> >>>>>> +	struct mtd_info *mtd = nand_to_mtd(chip);
-> >>>>>> +
-> >>>>>>  	if (nand_is_slc(chip))
-> >>>>>>  		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
-> >>>>>>  
-> >>>>>> +	if (nand_is_slc(chip) && (chip->id.data[4] & 0x80)) {
-> >>>>>> +		/* BENAND */
-> >>>>>> +
-> >>>>>> +		/*
-> >>>>>> +		 * We can't disable the internal ECC engine, the user
-> >>>>>> +		 * has to use on-die ECC, there is no alternative.
-> >>>>>> +		 */
-> >>>>>> +		if (chip->ecc.mode != NAND_ECC_ON_DIE) {
-> >>>>>> +			pr_err("On-die ECC should be selected.\n");
-> >>>>>> +			return -EINVAL;
-> >>>>>> +		}      
-> >>>>>
-> >>>>> According to your previous explanation that's not exactly true. Since
-> >>>>> ECC bytes are stored in a separate area, the user can decide to use
-> >>>>> another mode without trouble. Just skip the BENAND initialization when
-> >>>>> mode != NAND_ECC_ON_DIE and we should be good, or am I missing something?      
-> >>>>
-> >>>> I am asking to product department to confirm it.    
-> >>>
-> >>> I'm almost sure this is the case ;-).    
-> >>
-> >> According to the command sequence written in BENAND's datasheet, the status
-> >> of the internal ECC must be checked after reading. To do that, ecc.mode has been
-> >> set to NAND_ECC_ON_DIE and the status of the internal ECC is checked through 
-> >> the 0x70 or 0x7A command. That's the reason we are returning EINVAL here.  
-> > 
-> > But the status will anyway be retrieved, and what's the point of
-> > checking the ECC flags if the user wants to use its own ECC engine? I
-> > mean, since you have the whole OOB area exposed why would you prevent
-> > existing setup from working (by existing setup I mean those that already
-> > have a BENAND but haven't modified their driver to accept ON_DIE_ECC).
-> > 
-> > Maybe I'm missing something, but AFAICT it's safe to allow users to
-> > completely ignore the on-die ECC engine and use their own, even if
-> > that means duplicating the work since on-die ECC cannot be disabled on
-> > BENAND devices.  
-> 
-> If user host controller ECC engine can support 8bit ECC or more ,
-> Toshiba offers 24nm SLC NAND products (not BENAND).  If user host
-> controller ECC engine is less that 8bit ECC (for example: 1bit or
-> 4bit ECC) Toshiba offers BENAND.  When using BENAND, checking
-> BENAND own ECC status (ECC flag) is required as per BENAND
-> product datasheet. Ignoring BENAND on-die ECC operation status,
-> and rely only on host 1 bit ECC or 4 bit ECC status, is not
-> recommended because the host ECC capability is inferior to BENAND
-> 8bit ECC and data refresh or other operations may not work
-> properly.
+On 12/10/17 14:38, Boris Brezillon wrote:
+> On Thu, 12 Oct 2017 14:28:45 +0300
+> Roger Quadros <rogerq@ti.com> wrote:
+>=20
+>> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus=
+/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+>>
+>> On 10/10/17 12:40, Boris Brezillon wrote:
+>>> On Fri, 6 Oct 2017 12:35:43 +0200
+>>> Ladislav Michl <ladis@linux-mips.org> wrote:
+>>> =20
+>>>> As driver is now configured using DT, omap_nand_platform_data structur=
+e
+>>>> is no longer needed.
+>>>>
+>>>> Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+>>>> ---
+>>>>  Resend to linux-mtd as other part this patch was depending on
+>>>>  was merged months ago via linux-omap tree...
+>>>>
+>>>>  drivers/mtd/nand/omap2.c                     | 40 +++++++------------=
+---------
+>>>>  include/linux/platform_data/mtd-nand-omap2.h | 17 ------------
+>>>>  2 files changed, 10 insertions(+), 47 deletions(-)
+>>>>
+>>>> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+>>>> index 54540c8fa1a2..b1fc070c8279 100644
+>>>> --- a/drivers/mtd/nand/omap2.c
+>>>> +++ b/drivers/mtd/nand/omap2.c
+>>>> @@ -1588,8 +1588,7 @@ static bool is_elm_present(struct omap_nand_info=
+ *info,
+>>>>      return true;
+>>>>  }
+>>>>
+>>>> -static bool omap2_nand_ecc_check(struct omap_nand_info *info,
+>>>> -                             struct omap_nand_platform_data *pdata)
+>>>> +static bool omap2_nand_ecc_check(struct omap_nand_info *info)
+>>>>  {
+>>>>      bool ecc_needs_bch, ecc_needs_omap_bch, ecc_needs_elm;
+>>>>
+>>>> @@ -1804,7 +1803,6 @@ static const struct mtd_ooblayout_ops omap_sw_oo=
+blayout_ops =3D {
+>>>>  static int omap_nand_probe(struct platform_device *pdev)
+>>>>  {
+>>>>      struct omap_nand_info           *info;
+>>>> -    struct omap_nand_platform_data  *pdata =3D NULL;
+>>>>      struct mtd_info                 *mtd;
+>>>>      struct nand_chip                *nand_chip;
+>>>>      int                             err;
+>>>> @@ -1814,6 +1812,9 @@ static int omap_nand_probe(struct platform_devic=
+e *pdev)
+>>>>      int                             min_oobbytes =3D BADBLOCK_MARKER_=
+LENGTH;
+>>>>      int                             oobbytes_per_step;
+>>>>
+>>>> +    if (!dev->of_node)
+>>>> +            return -EINVAL;
+>>>> + =20
+>>>
+>>> Is this really needed? I expect omap_get_dt_info() to return an error
+>>> when dev->of_node is NULL.
+>>> =20
+>>>>      info =3D devm_kzalloc(&pdev->dev, sizeof(struct omap_nand_info),
+>>>>                              GFP_KERNEL);
+>>>>      if (!info)
+>>>> @@ -1821,29 +1822,9 @@ static int omap_nand_probe(struct platform_devi=
+ce *pdev)
+>>>>
+>>>>      info->pdev =3D pdev;
+>>>>
+>>>> -    if (dev->of_node) {
+>>>> -            if (omap_get_dt_info(dev, info))
+>>>> -                    return -EINVAL;
+>>>> -    } else {
+>>>> -            pdata =3D dev_get_platdata(&pdev->dev);
+>>>> -            if (!pdata) {
+>>>> -                    dev_err(&pdev->dev, "platform data missing\n");
+>>>> -                    return -EINVAL;
+>>>> -            }
+>>>> -
+>>>> -            info->gpmc_cs =3D pdata->cs;
+>>>> -            info->reg =3D pdata->reg;
+>>>> -            info->ecc_opt =3D pdata->ecc_opt;
+>>>> -            if (pdata->dev_ready)
+>>>> -                    dev_info(&pdev->dev, "pdata->dev_ready is depreca=
+ted\n");
+>>>> -
+>>>> -            info->xfer_type =3D pdata->xfer_type;
+>>>> -            info->devsize =3D pdata->devsize;
+>>>> -            info->elm_of_node =3D pdata->elm_of_node;
+>>>> -            info->flash_bbt =3D pdata->flash_bbt;
+>>>> -    }
+>>>> +    if (omap_get_dt_info(dev, info))
+>>>> +            return -EINVAL; =20
+>>
+>> how about
+>>
+>>         err =3D omap_get_dt_info(dev, info);
+>>         if (err)
+>>                 return err;
+>=20
+> Already done like that in v2 [1]
+>=20
+>>
+>>>>
+>>>> -    platform_set_drvdata(pdev, info); =20
+>>>
+>>> This removal seems unrelated to the change you're describing in the
+>>> commit log. I'm not saying we should keep this platform_set_drvdata()
+>>> if it's useless, but it should be done in a separate patch. =20
+>>
+>> we do use platform_get_drvdata() in omap_nand_remove() so I suppose
+>> we can't get rid of platorm_set_drvdata()
+>=20
+> There's another platform_set_drvdata() later in the probe function, I
+> think this one is indeed useless (see patch [2])
 
-Well, that's not really your problem. The framework already complains
-if someone tries to use an ECC that is weaker than the chip
-requirement. On the other hand, it's perfectly valid to use on
-host-side ECC engine that meets NAND requirements (8bit/xxxbytes).
+I agree.
 
-The use case I'm trying to gracefully handle here is: your NAND
-controller refuses to use anything but the host-side ECC engine and you
-have a BENAND connected to this controller.
-Before your patch this use case worked just fine, and the user didn't
-even notice it was using a NAND chip that was capable of correcting
-bitflips. After your patch it fails to probe the NAND chip and users
-will have to patch their controller driver to make it work again. Sorry
-but this is not really an option: we have to keep existing setup in a
-working state, and that means allowing people to use their BENAND in a
-degraded state where they'll just ignore the on-die ECC and use their
-own ECC engine instead.
+>=20
+> [1]http://patchwork.ozlabs.org/patch/823820/
+> [2]http://patchwork.ozlabs.org/patch/823839/
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>=20
 
-I really don't see the problem here. It's not worse than it was before
-your patch, and those wanting to activate on-die ECC support will have
-to patch their controller driver anyway.
-
-> Also when using BENAND, turning off Host ECC is
-> recommended because this can eliminate the latency due to double
-> ECC operation(by both host & BENAND).
-
-I thought you were not able to turn it off.
-
-> 
-> -- YOSHI
-> 
+--=20
+cheers,
+-roger
