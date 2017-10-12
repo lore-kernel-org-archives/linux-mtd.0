@@ -1,25 +1,14 @@
-Received: from mail-qt0-x231.google.com ([2607:f8b0:400d:c0d::231])
+Received: from out1.zte.com.cn ([202.103.147.172] helo=mxct.zte.com.cn)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e2Owi-0005gF-Tu
- for linux-mtd@lists.infradead.org; Wed, 11 Oct 2017 21:53:47 +0000
-Received: by mail-qt0-x231.google.com with SMTP id k31so9692807qta.6
- for <linux-mtd@lists.infradead.org>; Wed, 11 Oct 2017 14:53:24 -0700 (PDT)
-Date: Wed, 11 Oct 2017 17:53:22 -0400 (EDT)
-From: Nicolas Pitre <nicolas.pitre@linaro.org>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 1/5] MTD: mtdram: properly handle the phys argument in
- the point method
-In-Reply-To: <CAFLxGvzM8rW4T484Z3YEG6H8=PmdwrS_Xj+ZbxC+OQ707++2mw@mail.gmail.com>
-Message-ID: <nycvar.YSQ.7.76.1710111748330.6870@knanqh.ubzr>
-References: <20171011032621.26979-1-nicolas.pitre@linaro.org>
- <20171011032621.26979-2-nicolas.pitre@linaro.org>
- <CAFLxGvynd+dtgPUbXAm7PZVw85=RoR+LfJEghAZLVmfAOVNjQA@mail.gmail.com>
- <nycvar.YSQ.7.76.1710111729390.6870@knanqh.ubzr>
- <CAFLxGvzM8rW4T484Z3YEG6H8=PmdwrS_Xj+ZbxC+OQ707++2mw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+ id 1e2RqC-0004Do-4T
+ for linux-mtd@lists.infradead.org; Thu, 12 Oct 2017 00:59:16 +0000
+From: Liu Song <liu.song11@zte.com.cn>
+To: dwmw2@infradead.org
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ liu.song11@zte.com.cn, jiang.biao2@zte.com.cn, zhong.weidong@zte.com.cn
+Subject: [PATCH] jffs2: fix potential deadlock in jffs2_do_setattr
+Date: Thu, 12 Oct 2017 08:56:05 +0800
+Message-Id: <1507769765-13478-1-git-send-email-liu.song11@zte.com.cn>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,25 +18,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 11 Oct 2017, Richard Weinberger wrote:
+In jffs2_do_setattr, we hold two mutexes which are 
+A) c->alloc_sem 
+B) f->sem 
+If new_metadata is error, then we release mutexes in bad sequence 
+which could cause ABAB deadlock. 
+This patch adjusts release sequence which could avoid deadlock. 
 
-> On Wed, Oct 11, 2017 at 11:32 PM, Nicolas Pitre
-> <nicolas.pitre@linaro.org> wrote:
-> > In fact the above should be: *retlen = addr - *virt;
-> 
-> Hmm, yes.
-> 
-> While we are here, how did you test that code?
+Signed-off-by: Liu Song <liu.song11@zte.com.cn>
+Reviewed-by: Jiang Biao <jiang.biao2@zte.com.cn>
+---
+ fs/jffs2/fs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I didn't actually manage to trigger it as physical pages were always 
-contiguous in my testing. So this is from inspection i.e. I just re-read 
-the code from your reply.
-
-> > Let me know if I should repost.
-> 
-> Yes, please. But wait a few days, hopefully we get more reviews.
-
-Sure.
-
-
-Nicolas
+diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
+index 76fa814..f998126 100644
+--- a/fs/jffs2/fs.c
++++ b/fs/jffs2/fs.c
+@@ -140,9 +140,9 @@ int jffs2_do_setattr (struct inode *inode, struct iattr *iattr)
+ 		kfree(mdata);
+ 
+ 	if (IS_ERR(new_metadata)) {
+-		jffs2_complete_reservation(c);
+ 		jffs2_free_raw_inode(ri);
+ 		mutex_unlock(&f->sem);
++		jffs2_complete_reservation(c);
+ 		return PTR_ERR(new_metadata);
+ 	}
+ 	/* It worked. Update the inode */
+-- 
+2.1.0.GIT
