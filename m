@@ -1,23 +1,28 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e2eH1-0004SV-6C
- for linux-mtd@lists.infradead.org; Thu, 12 Oct 2017 14:15:46 +0000
-Date: Thu, 12 Oct 2017 16:15:10 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Roger Quadros <rogerq@ti.com>
-Cc: Ladislav Michl <ladis@linux-mips.org>, <linux-mtd@lists.infradead.org>,
- <linux-omap@vger.kernel.org>, Richard Weinberger <richard@nod.at>
-Subject: Re: [RESEND PATCH] mtd: nand: omap2: Remove omap_nand_platform_data
-Message-ID: <20171012161510.5930308b@bbrezillon>
-In-Reply-To: <97596107-9b96-f8eb-bf44-466aff99e943@ti.com>
-References: <20171006103543.gnb2hxq7msallyzl@lenoch>
- <20171010114047.202d7d44@bbrezillon>
- <2cd668a5-1c53-ea90-b7d3-47ddad71c23a@ti.com>
- <20171012133837.13bfe1e4@bbrezillon>
- <97596107-9b96-f8eb-bf44-466aff99e943@ti.com>
+From: Gregory CLEMENT <gregory.clement@free-electrons.com>
+To: Miquel Raynal <miquel.raynal@free-electrons.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
+ Richard Weinberger <richard@nod.at>,
+ Antoine Tenart <antoine.tenart@free-electrons.com>,
+ Nadav Haklai <nadavh@marvell.com>, Marek Vasut <marek.vasut@gmail.com>,
+ devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Subject: Re: [PATCH 3/3] arm64: dts: marvell: add NAND support on the 7040-DB
+ board
+References: <20170925145352.13145-1-miquel.raynal@free-electrons.com>
+ <20170925145352.13145-4-miquel.raynal@free-electrons.com>
+ <874lrqkebi.fsf@free-electrons.com>
+Date: Thu, 12 Oct 2017 16:30:19 +0200
+In-Reply-To: <874lrqkebi.fsf@free-electrons.com> (Gregory CLEMENT's message of
+ "Mon, 25 Sep 2017 17:06:41 +0200")
+Message-ID: <87sheoa16s.fsf@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,141 +32,165 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 12 Oct 2017 17:09:26 +0300
-Roger Quadros <rogerq@ti.com> wrote:
+Hi Miquel,
+ 
+ On lun., sept. 25 2017, Gregory CLEMENT <gregory.clement@free-electrons.com> wrote:
 
-> =EF=BB=BF
-> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/=
-Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
->=20
-> On 12/10/17 14:38, Boris Brezillon wrote:
-> > On Thu, 12 Oct 2017 14:28:45 +0300
-> > Roger Quadros <rogerq@ti.com> wrote:
-> >  =20
-> >> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunn=
-us/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-> >>
-> >> On 10/10/17 12:40, Boris Brezillon wrote: =20
-> >>> On Fri, 6 Oct 2017 12:35:43 +0200
-> >>> Ladislav Michl <ladis@linux-mips.org> wrote:
-> >>>   =20
-> >>>> As driver is now configured using DT, omap_nand_platform_data struct=
-ure
-> >>>> is no longer needed.
-> >>>>
-> >>>> Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
-> >>>> ---
-> >>>>  Resend to linux-mtd as other part this patch was depending on
-> >>>>  was merged months ago via linux-omap tree...
-> >>>>
-> >>>>  drivers/mtd/nand/omap2.c                     | 40 +++++++----------=
------------
-> >>>>  include/linux/platform_data/mtd-nand-omap2.h | 17 ------------
-> >>>>  2 files changed, 10 insertions(+), 47 deletions(-)
-> >>>>
-> >>>> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> >>>> index 54540c8fa1a2..b1fc070c8279 100644
-> >>>> --- a/drivers/mtd/nand/omap2.c
-> >>>> +++ b/drivers/mtd/nand/omap2.c
-> >>>> @@ -1588,8 +1588,7 @@ static bool is_elm_present(struct omap_nand_in=
-fo *info,
-> >>>>      return true;
-> >>>>  }
-> >>>>
-> >>>> -static bool omap2_nand_ecc_check(struct omap_nand_info *info,
-> >>>> -                             struct omap_nand_platform_data *pdata)
-> >>>> +static bool omap2_nand_ecc_check(struct omap_nand_info *info)
-> >>>>  {
-> >>>>      bool ecc_needs_bch, ecc_needs_omap_bch, ecc_needs_elm;
-> >>>>
-> >>>> @@ -1804,7 +1803,6 @@ static const struct mtd_ooblayout_ops omap_sw_=
-ooblayout_ops =3D {
-> >>>>  static int omap_nand_probe(struct platform_device *pdev)
-> >>>>  {
-> >>>>      struct omap_nand_info           *info;
-> >>>> -    struct omap_nand_platform_data  *pdata =3D NULL;
-> >>>>      struct mtd_info                 *mtd;
-> >>>>      struct nand_chip                *nand_chip;
-> >>>>      int                             err;
-> >>>> @@ -1814,6 +1812,9 @@ static int omap_nand_probe(struct platform_dev=
-ice *pdev)
-> >>>>      int                             min_oobbytes =3D BADBLOCK_MARKE=
-R_LENGTH;
-> >>>>      int                             oobbytes_per_step;
-> >>>>
-> >>>> +    if (!dev->of_node)
-> >>>> +            return -EINVAL;
-> >>>> +   =20
-> >>>
-> >>> Is this really needed? I expect omap_get_dt_info() to return an error
-> >>> when dev->of_node is NULL.
-> >>>   =20
-> >>>>      info =3D devm_kzalloc(&pdev->dev, sizeof(struct omap_nand_info),
-> >>>>                              GFP_KERNEL);
-> >>>>      if (!info)
-> >>>> @@ -1821,29 +1822,9 @@ static int omap_nand_probe(struct platform_de=
-vice *pdev)
-> >>>>
-> >>>>      info->pdev =3D pdev;
-> >>>>
-> >>>> -    if (dev->of_node) {
-> >>>> -            if (omap_get_dt_info(dev, info))
-> >>>> -                    return -EINVAL;
-> >>>> -    } else {
-> >>>> -            pdata =3D dev_get_platdata(&pdev->dev);
-> >>>> -            if (!pdata) {
-> >>>> -                    dev_err(&pdev->dev, "platform data missing\n");
-> >>>> -                    return -EINVAL;
-> >>>> -            }
-> >>>> -
-> >>>> -            info->gpmc_cs =3D pdata->cs;
-> >>>> -            info->reg =3D pdata->reg;
-> >>>> -            info->ecc_opt =3D pdata->ecc_opt;
-> >>>> -            if (pdata->dev_ready)
-> >>>> -                    dev_info(&pdev->dev, "pdata->dev_ready is depre=
-cated\n");
-> >>>> -
-> >>>> -            info->xfer_type =3D pdata->xfer_type;
-> >>>> -            info->devsize =3D pdata->devsize;
-> >>>> -            info->elm_of_node =3D pdata->elm_of_node;
-> >>>> -            info->flash_bbt =3D pdata->flash_bbt;
-> >>>> -    }
-> >>>> +    if (omap_get_dt_info(dev, info))
-> >>>> +            return -EINVAL;   =20
-> >>
-> >> how about
-> >>
-> >>         err =3D omap_get_dt_info(dev, info);
-> >>         if (err)
-> >>                 return err; =20
-> >=20
-> > Already done like that in v2 [1]
-> >  =20
-> >> =20
-> >>>>
-> >>>> -    platform_set_drvdata(pdev, info);   =20
-> >>>
-> >>> This removal seems unrelated to the change you're describing in the
-> >>> commit log. I'm not saying we should keep this platform_set_drvdata()
-> >>> if it's useless, but it should be done in a separate patch.   =20
-> >>
-> >> we do use platform_get_drvdata() in omap_nand_remove() so I suppose
-> >> we can't get rid of platorm_set_drvdata() =20
-> >=20
-> > There's another platform_set_drvdata() later in the probe function, I
-> > think this one is indeed useless (see patch [2]) =20
->=20
-> I agree.
->=20
-> >=20
-> > [1]http://patchwork.ozlabs.org/patch/823820/
-> > [2]http://patchwork.ozlabs.org/patch/823839/
+> Hi Miquel,
+>  
+>  On lun., sept. 25 2017, Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
+>
+>> From: Gregory CLEMENT <gregory.clement@free-electrons.com>
+>>
+>> The NAND controller used in A7K/A8K is present on the CP110 master part.
+>> It is compatible with the pxa3xx_nand driver but requires the use of the
+>> marvell,armada-8k-nand compatible string due to the need to first enable
+>> the NAND controller.
+>>
+>> Add properties to the NAND node to fit the bindings constraints of the
+>> pxa3xx_nand driver and enable the NAND controller.
+>>
+>> Add the 'marvell,system-controller' property to the cp110 master NAND
+>> node with a reference to the syscon node. This is new compared to other
+>> boards using the pxa3xx_nand driver and it is needed to be bootloader
+>> independent and enable the NAND controller from the NAND controller
+>> driver itself by writing in these syscon registers.
+>>
+>> Signed-off-by: Gregory CLEMENT <gregory.clement@free-electrons.com>
+>> [miquel.raynal@free-electrons.com: add NAND ready/busy MPP subnode,
+>> change compatible string to fit the needs of the A7k/A8k SoCs and add
+>> the system controller property]
+>> Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+>> ---
+>>  arch/arm64/boot/dts/marvell/armada-7040-db.dts     | 24 ++++++++++++++++++++++
+>>  arch/arm64/boot/dts/marvell/armada-70x0.dtsi       | 14 +++++++++++++
+>>  .../boot/dts/marvell/armada-cp110-master.dtsi      |  3 ++-
+>>  3 files changed, 40 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/arm64/boot/dts/marvell/armada-7040-db.dts b/arch/arm64/boot/dts/marvell/armada-7040-db.dts
+>> index 9c3bdf87e543..b98cf265bae5 100644
+>> --- a/arch/arm64/boot/dts/marvell/armada-7040-db.dts
+>> +++ b/arch/arm64/boot/dts/marvell/armada-7040-db.dts
+>> @@ -144,6 +144,30 @@
+>>  	};
+>>  };
+>>  
+>> +&cpm_nand {
+>> +	status = "okay";
+>> +	num-cs = <1>;
+>> +	pinctrl-0 = <&nand_pins>, <&nand_rb>;
+>> +	pinctrl-names = "default";
+>> +	nand-ecc-strength = <4>;
+>> +	nand-ecc-step-size = <512>;
+>> +	marvell,nand-enable-arbiter;
+>> +	nand-on-flash-bbt;
+>> +
+>> +	partition@0 {
+>> +		label = "U-Boot";
+>> +		reg = <0 0x200000>;
+>> +	};
+>> +	partition@200000 {
+>> +		label = "Linux";
+>> +		reg = <0x200000 0xe00000>;
+>> +	};
+>> +	partition@1000000 {
+>> +		label = "Filesystem";
+>> +		reg = <0x1000000 0x3f000000>;
+>> +	};
+>> +};
+>> +
+>>  &cpm_spi1 {
+>>  	status = "okay";
+>>  
+>> diff --git a/arch/arm64/boot/dts/marvell/armada-70x0.dtsi b/arch/arm64/boot/dts/marvell/armada-70x0.dtsi
+>> index 860b6ae9dcc5..0e1a1e5be399 100644
+>> --- a/arch/arm64/boot/dts/marvell/armada-70x0.dtsi
+>> +++ b/arch/arm64/boot/dts/marvell/armada-70x0.dtsi
+>> @@ -64,5 +64,19 @@
+>>  &cpm_syscon0 {
+>>  	cpm_pinctrl: pinctrl {
+>>  		compatible = "marvell,armada-7k-pinctrl";
+>> +
+>> +		nand_pins: nand-pins {
+>> +			marvell,pins =
+>> +			"mpp15", "mpp16", "mpp17", "mpp18",
+>> +			"mpp19", "mpp20", "mpp21", "mpp22",
+>> +			"mpp23", "mpp24", "mpp25", "mpp26",
+>> +			"mpp27";
+>> +			marvell,function = "dev";
+>> +		};
+>> +
+>> +		nand_rb: nand-rb {
+>> +			marvell,pins = "mpp13";
+>> +			marvell,function = "nf";
+>> +		};
+>>  	};
+>>  };
+>> diff --git a/arch/arm64/boot/dts/marvell/armada-cp110-master.dtsi b/arch/arm64/boot/dts/marvell/armada-cp110-master.dtsi
+>> index 8263a8a504a8..d41b41b613ec 100644
+>> --- a/arch/arm64/boot/dts/marvell/armada-cp110-master.dtsi
+>> +++ b/arch/arm64/boot/dts/marvell/armada-cp110-master.dtsi
+>> @@ -274,12 +274,13 @@
+>>  				 * this controller is only usable on the CPM
+>>  				 * for A7K and on the CPS for A8K.
+>>  				 */
+>> -				compatible = "marvell,armada370-nand";
+>> +				compatible = "marvell,armada-8k-nand";
+>
+> the controller on cp110 remains compatible with the one on Armada 370
+> (even if it needs more initialization steps), so we should keep it also
+> and having instead the following line:
+>
+> compatible = "marvell,armada-8k-nand", "marvell,armada370-nand";
+>
+> You don't have to send a new version, unless someone is against it, I
+> will amend it when applying on the mvebu branches.
 
-Feel free to add your Acked-by/Tested-by on these patches.
 
-> > --
-> > To unsubscribe from this list: send the line "unsubscribe linux-omap" in
-> > the body of a message to majordomo@vger.kernel.org
-> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> >  =20
->=20
+Now applied on mvebu/dt64 with the changes I mentioned,
+
+Thanks,
+
+Gregory
+
+
+>
+> Thanks,
+>
+> Gregory
+>
+>
+>>  				reg = <0x720000 0x54>;
+>>  				#address-cells = <1>;
+>>  				#size-cells = <1>;
+>>  				interrupts = <ICU_GRP_NSR 115 IRQ_TYPE_LEVEL_HIGH>;
+>>  				clocks = <&cpm_clk 1 2>;
+>> +				marvell,system-controller = <&cpm_syscon0>;
+>>  				status = "disabled";
+>>  			};
+>>  
+>> -- 
+>> 2.11.0
+>>
+>>
+>> _______________________________________________
+>> linux-arm-kernel mailing list
+>> linux-arm-kernel@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>
+> -- 
+> Gregory Clement, Free Electrons
+> Kernel, drivers, real-time and embedded Linux
+> development, consulting, training and support.
+> http://free-electrons.com
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+-- 
+Gregory Clement, Free Electrons
+Kernel, drivers, real-time and embedded Linux
+development, consulting, training and support.
+http://free-electrons.com
