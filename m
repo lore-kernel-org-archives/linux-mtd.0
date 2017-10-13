@@ -1,27 +1,21 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e35Zm-0005rd-I0
- for linux-mtd@lists.infradead.org; Fri, 13 Oct 2017 19:24:56 +0000
-Date: Fri, 13 Oct 2017 12:24:29 -0700 (PDT)
-From: matthew.gerlach@linux.intel.com
-To: Marek Vasut <marek.vasut@gmail.com>
-cc: vndao@altera.com, dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org, mark.rutland@arm.com,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
- davem@davemloft.net, mchehab@kernel.org, linux-fpga@vger.kernel.org,
- tien.hock.loh@intel.com, hean.loong.ong@intel.com
-Subject: Re: [PATCH v2 2/3] mtd: spi-nor: Altera ASMI Parallel II IP Core
-In-Reply-To: <ca36c177-0e7c-647d-f821-ab4bb7d85b10@gmail.com>
-Message-ID: <alpine.DEB.2.20.1710131215370.1541@mgerlach-VirtualBox>
-References: <1505932139-2905-1-git-send-email-matthew.gerlach@linux.intel.com>
- <1505932139-2905-3-git-send-email-matthew.gerlach@linux.intel.com>
- <deae5a9f-4301-c7de-b265-b09292f8da15@gmail.com>
- <alpine.DEB.2.20.1710110956260.2194@mgerlach-VirtualBox>
- <ca36c177-0e7c-647d-f821-ab4bb7d85b10@gmail.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1e36WI-0000Lq-NL
+ for linux-mtd@lists.infradead.org; Fri, 13 Oct 2017 20:25:25 +0000
+Date: Fri, 13 Oct 2017 22:24:58 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Roger Quadros <rogerq@ti.com>
+Cc: Tony Lindgren <tony@atomide.com>, linux-omap
+ <linux-omap@vger.kernel.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "Cooper Jr., Franklin" <fcooper@ti.com>
+Subject: Re: gpmc-nand broken since v4.12
+Message-ID: <20171013222458.3f4c103e@bbrezillon>
+In-Reply-To: <20171013145033.5d1d9647@bbrezillon>
+References: <7eae9266-558f-6578-66d7-7ab0eb659a81@ti.com>
+ <20171013145033.5d1d9647@bbrezillon>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323329-241464664-1507922672=:1541"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,99 +25,191 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Fri, 13 Oct 2017 14:50:33 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
---8323329-241464664-1507922672=:1541
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+> On Fri, 13 Oct 2017 14:57:29 +0300
+> Roger Quadros <rogerq@ti.com> wrote:
+>=20
+> > =EF=BB=BFHi Boris,
+> >=20
+> > NAND on gpmc-omap breaks for me while doing a unmount of a ubi volume s=
+ince v4.12
+> >=20
+> > Behaviour follows through in v4.13 and v4.14-rc as well.
+> >=20
+> > Do you have any idea about this?
 
+More info on what has changed in 4.12: we no longer allocate the
+nand_buffer struct + its internal buffer using a single big kmalloc
+call, which means the nand_buffer struct is now likely to be allocated
+in a small object slab (sizeof(nand_buffers) =3D 12). If you have a
+use-after-free bug somewhere in the kernel, it might corrupt the
+nand_buffers object, which might explain the bug you see here.
 
-
-On Wed, 11 Oct 2017, Marek Vasut wrote:
-
-> On 10/11/2017 07:00 PM, matthew.gerlach@linux.intel.com wrote:
->>
->>
->> On Tue, 10 Oct 2017, Marek Vasut wrote:
->>
->>> On 09/20/2017 08:28 PM, matthew.gerlach@linux.intel.com wrote:
->>>> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->>>>
->>>> This patch adds support for a spi-nor, platform driver for the
->>>> Altera ASMI Parallel II IP Core.  The intended use case is to be able
->>>> to update the flash used to load a FPGA at power up with mtd-utils.
->>>>
->>>> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->>>> ---
->>>> v2:
->>>>     minor checkpatch fixing by Wu Hao <hao.wu@intel.com>
->>>>     Use read_dummy value as suggested by Cyrille Pitchen.
->>>>     Don't assume 4 byte addressing (Cryille Pichecn and Marek Vasut).
->>>>     Fixed #define indenting as suggested by Marek Vasut.
->>>>     Added units to timer values as suggested by Marek Vasut.
->>>>     Use io(read|write)8_rep() as suggested by Marek Vasut.
->>>>     Renamed function prefixed with __ as suggested by Marek Vasut.
->>>
->>> [...]
->>>
->>>> +#define QSPI_ACTION_REG            0
->>>> +#define QSPI_ACTION_RST            BIT(0)
->>>> +#define QSPI_ACTION_EN            BIT(1)
->>>> +#define QSPI_ACTION_SC            BIT(2)
->>>> +#define QSPI_ACTION_CHIP_SEL_SFT    4
->>>> +#define QSPI_ACTION_DUMMY_SFT        8
->>>> +#define QSPI_ACTION_READ_BACK_SFT    16
->>>> +
->>>> +#define QSPI_FIFO_CNT_REG        4
->>>> +#define QSPI_FIFO_DEPTH            0x200
->>>> +#define QSPI_FIFO_CNT_MSK        0x3ff
->>>> +#define QSPI_FIFO_CNT_RX_SFT        0
->>>> +#define QSPI_FIFO_CNT_TX_SFT        12
->>>> +
->>>> +#define QSPI_DATA_REG            0x8
->>>> +
->>>> +#define QSPI_POLL_TIMEOUT_US        10000000
->>>
->>> 10 s poll timeout ? :)
->>
->> Hi Marek,
->>
->> The 10s timeout is fairly arbitrary.  In other words, I pulled it out of
->> thin air.  Can you suggest a better timeout?  From a practical
->> standpoint 10s seemed to be much better than no timeout when I was
->> debugging bad FPGA images.  Without a timeout I was hanging the system
->> when the FPGA image failed.  With this timeout, we get a nice message
->> and Linux keeps running happily.
-> AFAIK the SPI subsystem has a timeout which is adaptive to the bus
-> clock, maybe that's what you want to use here ?
-
-Hi Marek,
-
-I looked in spi-nor.c, and I see the following two macros:
-#define DEFAULT_READY_WAIT_JIFFIES		(40UL * HZ)
-#define CHIP_ERASE_2MB_READY_WAIT_JIFFIES	(40UL * HZ)
-
-These timers values are used at the spi-nor layer for waiting for an
-operation to complete.  It is the time spent waiting for Work In Progress
-to clear.
-
-The timer value I'm using, QSPI_POLL_TIMEOUT_US, is used at a lower layer.
-This timer value is used for the time it takes to send the opcode and tx 
-data and receive any bytes from the flash.  While 10 seconds may seem 
-long, I am just trying to avoid a system hang when there is a catastrophic
-failure with the flash controller in the FPGA or the flash part itself.
-
-I certainly could be missing something with regards to the timeouts, but I 
-think 10s for QSPI_POLL_TIMEOUT_US doesn't hurt, and it definately helps 
-when something goes wrong.
-
-Thanks for the feedback,
-Matthew Gerlach
-
->
-> -- 
-> Best regards,
-> Marek Vasut
->
---8323329-241464664-1507922672=:1541--
+>=20
+> Can you try with this patch [1] applied and paste me the values printed
+> just before the crash?
+>=20
+> [1]http://code.bulix.org/lc8xk0-209746
+>=20
+> >=20
+> > =3D=3D unmounting volume
+> > [   30.128584] Unable to handle kernel NULL pointer dereference at virt=
+ual address 00000000
+> > [   30.137234] pgd =3D ed3d0000
+> > [   30.140079] [00000000] *pgd=3Dfd67a835
+> > [   30.143843] Internal error: Oops: 17 [#1] SMP ARM
+> > [   30.148781] Modules linked in: snd_soc_davinci_mcasp xhci_plat_hcd s=
+nd_soc_edma xhci_hcd snd_soc_tlv320aic3x snd_soc_simple_card snd_soc_omap s=
+nd_soc_simple_card_utils snd_soc_core usbcoe
+> > [   30.193881] CPU: 1 PID: 2149 Comm: umount Not tainted 4.12.0-00001-g=
+2c09531 #1440
+> > [   30.201734] Hardware name: Generic DRA74X (Flattened Device Tree)
+> > [   30.208130] task: ec870140 task.stack: ed406000
+> > [   30.212889] PC is at memcpy+0xe8/0x330
+> > [   30.216833] LR is at mtd_ooblayout_set_bytes+0x7c/0xa4
+> > [   30.222231] pc : [<c04abe68>]    lr : [<c05d7490>]    psr: 60000013
+> > [   30.222231] sp : ed407b74  ip : 00000002  fp : 00000200
+> > [   30.234276] r10: ed082800  r9 : 00000000  r8 : ed079010
+> > [   30.239761] r7 : c05d76d8  r6 : 00000000  r5 : 00000038  r4 : 000000=
+38
+> > [   30.246614] r3 : 00000038  r2 : 00000034  r1 : 00000000  r0 : ed0828=
+02
+> > [   30.253468] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Seg=
+ment none
+> > [   30.260957] Control: 10c5387d  Table: ad3d006a  DAC: 00000051
+> > [   30.266986] Process umount (pid: 2149, stack limit =3D 0xed406218)
+> > [   30.273296] Stack: (0xed407b74 to 0xed408000)
+> > [   30.277868] 7b60:                                              ed082=
+802 00000038 c05d7490
+> > [   30.286458] 7b80: c05d76d8 ed082600 0000ffff 00000000 00000002 00000=
+038 00000004 ed082800
+> > [   30.295047] 7ba0: ed079010 00000000 00000000 ed082800 ed079010 c05d7=
+4fc 00000038 c05d76d8
+> > [   30.303635] 7bc0: ed0e8f6a c05e8388 00000038 00000000 c0dc60f0 00000=
+001 00000010 0000000e
+> > [   30.312216] 7be0: 00000004 00000001 00000001 00000001 c05f2668 ed079=
+010 00000200 00000200
+> > [   30.320806] 7c00: 000095c0 00000200 ed082000 ed312200 000095c0 c05e9=
+658 ed082000 00000000
+> > [   30.329392] 7c20: 000095c0 00000002 00000200 00000000 ed082000 ed407=
+c80 00000000 00000000
+> > [   30.337975] 7c40: 00000000 00000001 00000040 00000000 00000000 04ae0=
+200 00000000 ed079010
+> > [   30.346563] 7c60: ed407c80 ed407d30 00000200 ed312200 ed312200 c05e9=
+994 ed407c80 c0191f70
+> > [   30.355150] 7c80: 00000000 00000200 00000000 00000000 00000000 00000=
+000 ed312200 00000000
+> > [   30.363738] 7ca0: 00a00000 00000000 00000200 00000000 0f600000 00000=
+000 ed407d30 c05d9fbc
+> > [   30.372328] 7cc0: 00000200 ed407d30 ed312200 00000000 9188fed8 c05d9=
+f7c 00000000 c05d6c7c
+> > [   30.380917] 7ce0: 00000200 ed407d30 ed312200 ed312200 040e0200 00000=
+000 ed628000 00000200
+> > [   30.389509] 7d00: 00000200 00000207 00000000 c0604cd0 00000200 ed407=
+d30 ed312200 60000013
+> > [   30.398097] 7d20: 00000200 00000000 ed208040 c019269c 00000000 00000=
+004 ed628dd8 ed312200
+> > [   30.406676] 7d40: ed628000 00000207 ed312200 00000800 00000207 00000=
+000 ffffffff c060536c
+> > [   30.415267] 7d60: 00000200 c0607fb8 ed18c800 ed628000 ed2a0800 00000=
+008 00000000 c0601178
+> > [   30.423851] 7d80: ed312200 ed628550 00000000 ed628000 ed312200 ed18c=
+800 ed2a0800 ed628000
+> > [   30.432437] 7da0: ed312200 00000008 00000004 ed18c800 ed2a0800 00001=
+014 ed208040 c0601cf0
+> > [   30.441020] 7dc0: 00000000 00000800 00000000 ec870140 00000003 60000=
+013 c1568e2c c060154c
+> > [   30.449605] 7de0: ed18c800 c019269c 00000000 00000002 ed628000 00000=
+800 ed628000 00000000
+> > [   30.458191] 7e00: 00000008 ed18c800 00000000 00000088 ed18c800 c0600=
+538 00000000 00000800
+> > [   30.466779] 7e20: ed18c800 ed770000 00000000 00000008 ed770000 c0426=
+a90 00000800 00000000
+> > [   30.475366] 7e40: 00000088 00000000 00000800 000000a0 ed770000 c0430=
+904 00000800 c08002e8
+> > [   30.483952] 7e60: 00000000 00000000 000000d8 00000000 00000000 00000=
+000 00000000 00000000
+> > [   30.492545] 7e80: ed18c800 ed407eb4 00000001 ed770000 00000000 00000=
+288 00000003 ed51b5d4
+> > [   30.501126] 7ea0: ed406000 00000000 00000000 c0431880 ed77014c 76ecb=
+30e 5c265a59 ec870140
+> > [   30.509709] 7ec0: 00000003 60000013 c1568e2c c0431f38 00000000 c0192=
+69c ed77014c 00000002
+> > [   30.518301] 7ee0: ed51b5d4 ed77014c ed77014c ed770104 ed51b5d4 ed770=
+000 ed406000 00000000
+> > [   30.526886] 7f00: ed77014c c08039c8 00000000 00000288 00000003 ed51b=
+5d4 ed770000 c042201c
+> > [   30.535471] 7f20: ed1cb000 00000000 c0dcbbe0 00000534 ec870140 c02e6=
+324 edf88a10 ed1cb000
+> > [   30.544056] 7f40: c0926528 c02afaf4 c0421714 00000015 c0d823cc c02af=
+c40 ed770000 c0421720
+> > [   30.552643] 7f60: ed1cb000 c02b0288 ec870140 ed61a600 00000000 c02d0=
+950 ec870634 c0159b34
+> > [   30.561220] 7f80: ed61a61c 00000000 ed407fb0 c0107ae4 00000034 c0107=
+ae4 00000000 c010b09c
+> > [   30.569803] 7fa0: 00021cb8 0001e320 00021cb8 c0107968 00000000 00000=
+000 00000000 00000000
+> > [   30.578392] 7fc0: 00021cb8 0001e320 00021cb8 00000034 00021ca8 00000=
+000 00000000 00000000
+> > [   30.586973] 7fe0: 00021ce8 bec06600 b6e11dbc b6e11ddc 60000010 00021=
+cb8 afffd861 afffdc61
+> > [   30.595558] [<c04abe68>] (memcpy) from [<c05d7490>] (mtd_ooblayout_s=
+et_bytes+0x7c/0xa4)
+> > [   30.603968] [<c05d7490>] (mtd_ooblayout_set_bytes) from [<c05d74fc>]=
+ (mtd_ooblayout_set_eccbytes+0x1c/0x28)
+> > [   30.614207] [<c05d74fc>] (mtd_ooblayout_set_eccbytes) from [<c05e838=
+8>] (nand_write_subpage_hwecc+0x1a8/0x1d0)
+> > [   30.624707] [<c05e8388>] (nand_write_subpage_hwecc) from [<c05e9658>=
+] (nand_do_write_ops+0x22c/0x50c)
+> > [   30.634397] [<c05e9658>] (nand_do_write_ops) from [<c05e9994>] (nand=
+_write+0x5c/0x7c)
+> > [   30.642621] [<c05e9994>] (nand_write) from [<c05d9fbc>] (part_write+=
+0x40/0x48)
+> > [   30.650211] [<c05d9fbc>] (part_write) from [<c05d6c7c>] (mtd_write+0=
+x90/0xa8)
+> > [   30.657718] [<c05d6c7c>] (mtd_write) from [<c0604cd0>] (ubi_io_write=
++0x114/0x6b8)
+> > [   30.665573] [<c0604cd0>] (ubi_io_write) from [<c060536c>] (ubi_io_wr=
+ite_vid_hdr+0xf8/0x148)
+> > [   30.674342] [<c060536c>] (ubi_io_write_vid_hdr) from [<c0601178>] (t=
+ry_write_vid_and_data+0x54/0x1a4)
+> > [   30.684030] [<c0601178>] (try_write_vid_and_data) from [<c0601cf0>] =
+(ubi_eba_write_leb+0x1f8/0x7bc)
+> > [   30.693525] [<c0601cf0>] (ubi_eba_write_leb) from [<c0600538>] (ubi_=
+leb_write+0xbc/0xdc)
+> > [   30.702021] [<c0600538>] (ubi_leb_write) from [<c0426a90>] (ubifs_le=
+b_write+0x9c/0x11c)
+> > [   30.710426] [<c0426a90>] (ubifs_leb_write) from [<c0430904>] (ubifs_=
+log_start_commit+0x27c/0x444)
+> > [   30.719743] [<c0430904>] (ubifs_log_start_commit) from [<c0431880>] =
+(do_commit+0x1b8/0x7e8)
+> > [   30.728521] [<c0431880>] (do_commit) from [<c042201c>] (ubifs_sync_f=
+s+0x8c/0xa0)
+> > [   30.736292] [<c042201c>] (ubifs_sync_fs) from [<c02e6324>] (sync_fil=
+esystem+0x88/0xac)
+> > [   30.744616] [<c02e6324>] (sync_filesystem) from [<c02afaf4>] (generi=
+c_shutdown_super+0x24/0xf8)
+> > [   30.753754] [<c02afaf4>] (generic_shutdown_super) from [<c02afc40>] =
+(kill_anon_super+0xc/0x18)
+> > [   30.762807] [<c02afc40>] (kill_anon_super) from [<c0421720>] (kill_u=
+bifs_super+0xc/0x18)
+> > [   30.771308] [<c0421720>] (kill_ubifs_super) from [<c02b0288>] (deact=
+ivate_locked_super+0x5c/0x80)
+> > [   30.780627] [<c02b0288>] (deactivate_locked_super) from [<c02d0950>]=
+ (cleanup_mnt+0x38/0x78)
+> > [   30.789492] [<c02d0950>] (cleanup_mnt) from [<c0159b34>] (task_work_=
+run+0xc0/0xe8)
+> > [   30.797444] [<c0159b34>] (task_work_run) from [<c010b09c>] (do_work_=
+pending+0xd4/0xd8)
+> > [   30.805759] [<c010b09c>] (do_work_pending) from [<c0107968>] (slow_w=
+ork_pending+0xc/0x20)
+> > [   30.814345] Code: e8bd8011 e26cc004 e35c0002 c4d13001 (a4d14001)=20
+> > [   30.820843] ---[ end trace bc240a5a583e6e02 ]---
+> >  =20
+>=20
+>=20
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
