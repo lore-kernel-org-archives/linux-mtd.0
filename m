@@ -1,28 +1,18 @@
-Received: from mail-oi0-x241.google.com ([2607:f8b0:4003:c06::241])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e2xwR-0001ru-PJ
- for linux-mtd@lists.infradead.org; Fri, 13 Oct 2017 11:15:49 +0000
-Received: by mail-oi0-x241.google.com with SMTP id j126so13600399oia.10
- for <linux-mtd@lists.infradead.org>; Fri, 13 Oct 2017 04:15:27 -0700 (PDT)
+Received: from fllnx209.ext.ti.com ([198.47.19.16])
+ by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1e2yc8-00010q-5f
+ for linux-mtd@lists.infradead.org; Fri, 13 Oct 2017 11:58:53 +0000
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ linux-omap <linux-omap@vger.kernel.org>, Tony Lindgren <tony@atomide.com>,
+ "Cooper Jr., Franklin" <fcooper@ti.com>
+From: Roger Quadros <rogerq@ti.com>
+Subject: gpmc-nand broken since v4.12
+Message-ID: <7eae9266-558f-6578-66d7-7ab0eb659a81@ti.com>
+Date: Fri, 13 Oct 2017 14:57:29 +0300
 MIME-Version: 1.0
-Sender: arndbergmann@gmail.com
-In-Reply-To: <3af38787-4542-7a2b-36be-56c11b1b81f2@wedev4u.fr>
-References: <1503648771-17514-1-git-send-email-bmeng.cn@gmail.com>
- <3af38787-4542-7a2b-36be-56c11b1b81f2@wedev4u.fr>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Fri, 13 Oct 2017 13:15:26 +0200
-Message-ID: <CAK8P3a3kdJiug1MaUaTzQxqayGuEGQvox-RX+NOtw0EFO7nkag@mail.gmail.com>
-Subject: Re: [PATCH] spi-nor: intel-spi: Fix Kconfig dependency to LPC_ICH
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: Bin Meng <bmeng.cn@gmail.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- linux-kernel <linux-kernel@vger.kernel.org>, Stefan Roese <sr@denx.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-GB
 Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,62 +23,170 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 11, 2017 at 10:03 AM, Cyrille Pitchen
-<cyrille.pitchen@wedev4u.fr> wrote:
-> Le 25/08/2017 =C3=A0 10:12, Bin Meng a =C3=A9crit :
->> The Intel SPI-NOR driver is dependent on LPC_ICH to get the platform
->> data. Select it in the Kconfig.
->>
->> Signed-off-by: Bin Meng <bmeng.cn@gmail.com>
->
-> Applied to the spi-nor/next branch of l2-mtd
+=EF=BB=BFHi Boris,
 
-This causes a build error now:
+NAND on gpmc-omap breaks for me while doing a unmount of a ubi volume since=
+ v4.12
 
-warning: (SPI_INTEL_SPI_PLATFORM && ITCO_WDT) selects LPC_ICH which
-has unmet direct dependencies (HAS_IOMEM && PCI)
-drivers/mfd/lpc_ich.c: In function 'lpc_ich_init_spi':
-drivers/mfd/lpc_ich.c:1137:3: error: implicit declaration of function
-'pci_bus_write_config_byte'; did you mean 'pci_write_config_byte'?
-[-Werror=3Dimplicit-function-declaration]
+Behaviour follows through in v4.13 and v4.14-rc as well.
 
-Generally speaking, using 'select' to force-enable another
-driver is a bad idea and causes endless problems, but if you
-insist on doing that, please make sure you get the right
-dependencies.
+Do you have any idea about this?
 
-Also, the 'depends on EXPERT' statement looks misplaced,
-enabling EXPERT should only be there to allow you to turn
-extra things *off*, not to hide device drivers.
+=3D=3D unmounting volume
+[   30.128584] Unable to handle kernel NULL pointer dereference at virtual =
+address 00000000
+[   30.137234] pgd =3D ed3d0000
+[   30.140079] [00000000] *pgd=3Dfd67a835
+[   30.143843] Internal error: Oops: 17 [#1] SMP ARM
+[   30.148781] Modules linked in: snd_soc_davinci_mcasp xhci_plat_hcd snd_s=
+oc_edma xhci_hcd snd_soc_tlv320aic3x snd_soc_simple_card snd_soc_omap snd_s=
+oc_simple_card_utils snd_soc_core usbcoe
+[   30.193881] CPU: 1 PID: 2149 Comm: umount Not tainted 4.12.0-00001-g2c09=
+531 #1440
+[   30.201734] Hardware name: Generic DRA74X (Flattened Device Tree)
+[   30.208130] task: ec870140 task.stack: ed406000
+[   30.212889] PC is at memcpy+0xe8/0x330
+[   30.216833] LR is at mtd_ooblayout_set_bytes+0x7c/0xa4
+[   30.222231] pc : [<c04abe68>]    lr : [<c05d7490>]    psr: 60000013
+[   30.222231] sp : ed407b74  ip : 00000002  fp : 00000200
+[   30.234276] r10: ed082800  r9 : 00000000  r8 : ed079010
+[   30.239761] r7 : c05d76d8  r6 : 00000000  r5 : 00000038  r4 : 00000038
+[   30.246614] r3 : 00000038  r2 : 00000034  r1 : 00000000  r0 : ed082802
+[   30.253468] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment=
+ none
+[   30.260957] Control: 10c5387d  Table: ad3d006a  DAC: 00000051
+[   30.266986] Process umount (pid: 2149, stack limit =3D 0xed406218)
+[   30.273296] Stack: (0xed407b74 to 0xed408000)
+[   30.277868] 7b60:                                              ed082802 =
+00000038 c05d7490
+[   30.286458] 7b80: c05d76d8 ed082600 0000ffff 00000000 00000002 00000038 =
+00000004 ed082800
+[   30.295047] 7ba0: ed079010 00000000 00000000 ed082800 ed079010 c05d74fc =
+00000038 c05d76d8
+[   30.303635] 7bc0: ed0e8f6a c05e8388 00000038 00000000 c0dc60f0 00000001 =
+00000010 0000000e
+[   30.312216] 7be0: 00000004 00000001 00000001 00000001 c05f2668 ed079010 =
+00000200 00000200
+[   30.320806] 7c00: 000095c0 00000200 ed082000 ed312200 000095c0 c05e9658 =
+ed082000 00000000
+[   30.329392] 7c20: 000095c0 00000002 00000200 00000000 ed082000 ed407c80 =
+00000000 00000000
+[   30.337975] 7c40: 00000000 00000001 00000040 00000000 00000000 04ae0200 =
+00000000 ed079010
+[   30.346563] 7c60: ed407c80 ed407d30 00000200 ed312200 ed312200 c05e9994 =
+ed407c80 c0191f70
+[   30.355150] 7c80: 00000000 00000200 00000000 00000000 00000000 00000000 =
+ed312200 00000000
+[   30.363738] 7ca0: 00a00000 00000000 00000200 00000000 0f600000 00000000 =
+ed407d30 c05d9fbc
+[   30.372328] 7cc0: 00000200 ed407d30 ed312200 00000000 9188fed8 c05d9f7c =
+00000000 c05d6c7c
+[   30.380917] 7ce0: 00000200 ed407d30 ed312200 ed312200 040e0200 00000000 =
+ed628000 00000200
+[   30.389509] 7d00: 00000200 00000207 00000000 c0604cd0 00000200 ed407d30 =
+ed312200 60000013
+[   30.398097] 7d20: 00000200 00000000 ed208040 c019269c 00000000 00000004 =
+ed628dd8 ed312200
+[   30.406676] 7d40: ed628000 00000207 ed312200 00000800 00000207 00000000 =
+ffffffff c060536c
+[   30.415267] 7d60: 00000200 c0607fb8 ed18c800 ed628000 ed2a0800 00000008 =
+00000000 c0601178
+[   30.423851] 7d80: ed312200 ed628550 00000000 ed628000 ed312200 ed18c800 =
+ed2a0800 ed628000
+[   30.432437] 7da0: ed312200 00000008 00000004 ed18c800 ed2a0800 00001014 =
+ed208040 c0601cf0
+[   30.441020] 7dc0: 00000000 00000800 00000000 ec870140 00000003 60000013 =
+c1568e2c c060154c
+[   30.449605] 7de0: ed18c800 c019269c 00000000 00000002 ed628000 00000800 =
+ed628000 00000000
+[   30.458191] 7e00: 00000008 ed18c800 00000000 00000088 ed18c800 c0600538 =
+00000000 00000800
+[   30.466779] 7e20: ed18c800 ed770000 00000000 00000008 ed770000 c0426a90 =
+00000800 00000000
+[   30.475366] 7e40: 00000088 00000000 00000800 000000a0 ed770000 c0430904 =
+00000800 c08002e8
+[   30.483952] 7e60: 00000000 00000000 000000d8 00000000 00000000 00000000 =
+00000000 00000000
+[   30.492545] 7e80: ed18c800 ed407eb4 00000001 ed770000 00000000 00000288 =
+00000003 ed51b5d4
+[   30.501126] 7ea0: ed406000 00000000 00000000 c0431880 ed77014c 76ecb30e =
+5c265a59 ec870140
+[   30.509709] 7ec0: 00000003 60000013 c1568e2c c0431f38 00000000 c019269c =
+ed77014c 00000002
+[   30.518301] 7ee0: ed51b5d4 ed77014c ed77014c ed770104 ed51b5d4 ed770000 =
+ed406000 00000000
+[   30.526886] 7f00: ed77014c c08039c8 00000000 00000288 00000003 ed51b5d4 =
+ed770000 c042201c
+[   30.535471] 7f20: ed1cb000 00000000 c0dcbbe0 00000534 ec870140 c02e6324 =
+edf88a10 ed1cb000
+[   30.544056] 7f40: c0926528 c02afaf4 c0421714 00000015 c0d823cc c02afc40 =
+ed770000 c0421720
+[   30.552643] 7f60: ed1cb000 c02b0288 ec870140 ed61a600 00000000 c02d0950 =
+ec870634 c0159b34
+[   30.561220] 7f80: ed61a61c 00000000 ed407fb0 c0107ae4 00000034 c0107ae4 =
+00000000 c010b09c
+[   30.569803] 7fa0: 00021cb8 0001e320 00021cb8 c0107968 00000000 00000000 =
+00000000 00000000
+[   30.578392] 7fc0: 00021cb8 0001e320 00021cb8 00000034 00021ca8 00000000 =
+00000000 00000000
+[   30.586973] 7fe0: 00021ce8 bec06600 b6e11dbc b6e11ddc 60000010 00021cb8 =
+afffd861 afffdc61
+[   30.595558] [<c04abe68>] (memcpy) from [<c05d7490>] (mtd_ooblayout_set_b=
+ytes+0x7c/0xa4)
+[   30.603968] [<c05d7490>] (mtd_ooblayout_set_bytes) from [<c05d74fc>] (mt=
+d_ooblayout_set_eccbytes+0x1c/0x28)
+[   30.614207] [<c05d74fc>] (mtd_ooblayout_set_eccbytes) from [<c05e8388>] =
+(nand_write_subpage_hwecc+0x1a8/0x1d0)
+[   30.624707] [<c05e8388>] (nand_write_subpage_hwecc) from [<c05e9658>] (n=
+and_do_write_ops+0x22c/0x50c)
+[   30.634397] [<c05e9658>] (nand_do_write_ops) from [<c05e9994>] (nand_wri=
+te+0x5c/0x7c)
+[   30.642621] [<c05e9994>] (nand_write) from [<c05d9fbc>] (part_write+0x40=
+/0x48)
+[   30.650211] [<c05d9fbc>] (part_write) from [<c05d6c7c>] (mtd_write+0x90/=
+0xa8)
+[   30.657718] [<c05d6c7c>] (mtd_write) from [<c0604cd0>] (ubi_io_write+0x1=
+14/0x6b8)
+[   30.665573] [<c0604cd0>] (ubi_io_write) from [<c060536c>] (ubi_io_write_=
+vid_hdr+0xf8/0x148)
+[   30.674342] [<c060536c>] (ubi_io_write_vid_hdr) from [<c0601178>] (try_w=
+rite_vid_and_data+0x54/0x1a4)
+[   30.684030] [<c0601178>] (try_write_vid_and_data) from [<c0601cf0>] (ubi=
+_eba_write_leb+0x1f8/0x7bc)
+[   30.693525] [<c0601cf0>] (ubi_eba_write_leb) from [<c0600538>] (ubi_leb_=
+write+0xbc/0xdc)
+[   30.702021] [<c0600538>] (ubi_leb_write) from [<c0426a90>] (ubifs_leb_wr=
+ite+0x9c/0x11c)
+[   30.710426] [<c0426a90>] (ubifs_leb_write) from [<c0430904>] (ubifs_log_=
+start_commit+0x27c/0x444)
+[   30.719743] [<c0430904>] (ubifs_log_start_commit) from [<c0431880>] (do_=
+commit+0x1b8/0x7e8)
+[   30.728521] [<c0431880>] (do_commit) from [<c042201c>] (ubifs_sync_fs+0x=
+8c/0xa0)
+[   30.736292] [<c042201c>] (ubifs_sync_fs) from [<c02e6324>] (sync_filesys=
+tem+0x88/0xac)
+[   30.744616] [<c02e6324>] (sync_filesystem) from [<c02afaf4>] (generic_sh=
+utdown_super+0x24/0xf8)
+[   30.753754] [<c02afaf4>] (generic_shutdown_super) from [<c02afc40>] (kil=
+l_anon_super+0xc/0x18)
+[   30.762807] [<c02afc40>] (kill_anon_super) from [<c0421720>] (kill_ubifs=
+_super+0xc/0x18)
+[   30.771308] [<c0421720>] (kill_ubifs_super) from [<c02b0288>] (deactivat=
+e_locked_super+0x5c/0x80)
+[   30.780627] [<c02b0288>] (deactivate_locked_super) from [<c02d0950>] (cl=
+eanup_mnt+0x38/0x78)
+[   30.789492] [<c02d0950>] (cleanup_mnt) from [<c0159b34>] (task_work_run+=
+0xc0/0xe8)
+[   30.797444] [<c0159b34>] (task_work_run) from [<c010b09c>] (do_work_pend=
+ing+0xd4/0xd8)
+[   30.805759] [<c010b09c>] (do_work_pending) from [<c0107968>] (slow_work_=
+pending+0xc/0x20)
+[   30.814345] Code: e8bd8011 e26cc004 e35c0002 c4d13001 (a4d14001)=20
+[   30.820843] ---[ end trace bc240a5a583e6e02 ]---
 
-How about this:
+--=20
+cheers,
+-roger
 
-diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-index 19bcb63a1ce7..b81d9b4dae7b 100644
---- a/drivers/mtd/spi-nor/Kconfig
-+++ b/drivers/mtd/spi-nor/Kconfig
-@@ -90,7 +90,7 @@ config SPI_INTEL_SPI
-        tristate
-
- config SPI_INTEL_SPI_PCI
--       tristate "Intel PCH/PCU SPI flash PCI driver" if EXPERT
-+       tristate "Intel PCH/PCU SPI flash PCI driver"
-        depends on X86 && PCI
-        select SPI_INTEL_SPI
-        help
-@@ -106,10 +106,10 @@ config SPI_INTEL_SPI_PCI
-          will be called intel-spi-pci.
-
- config SPI_INTEL_SPI_PLATFORM
--       tristate "Intel PCH/PCU SPI flash platform driver" if EXPERT
--       depends on X86
-+       tristate "Intel PCH/PCU SPI flash platform driver"
-+       depends on X86 && (PCI || COMPILE_TEST)
-        select SPI_INTEL_SPI
--       select LPC_ICH
-+       select LPC_ICH if PCI
-        help
-          This enables platform support for the Intel PCH/PCU SPI
-          controller in master mode. This controller is present in modern
-
-       Arnd
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Bu=
+siness ID: 0615521-4. Kotipaikka/Domicile: Helsinki
