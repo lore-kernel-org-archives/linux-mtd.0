@@ -1,33 +1,29 @@
-Received: from conssluserg-01.nifty.com ([210.131.2.80])
+Received: from mail-oi0-x241.google.com ([2607:f8b0:4003:c06::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e2vRz-0007Ik-P8
- for linux-mtd@lists.infradead.org; Fri, 13 Oct 2017 08:36:14 +0000
-Received: from mail-qk0-f169.google.com (mail-qk0-f169.google.com
- [209.85.220.169]) (authenticated)
- by conssluserg-01.nifty.com with ESMTP id v9D8ZBgE012099
- for <linux-mtd@lists.infradead.org>; Fri, 13 Oct 2017 17:35:12 +0900
-Received: by mail-qk0-f169.google.com with SMTP id x82so4143211qkb.12
- for <linux-mtd@lists.infradead.org>; Fri, 13 Oct 2017 01:35:12 -0700 (PDT)
+ id 1e2xwR-0001ru-PJ
+ for linux-mtd@lists.infradead.org; Fri, 13 Oct 2017 11:15:49 +0000
+Received: by mail-oi0-x241.google.com with SMTP id j126so13600399oia.10
+ for <linux-mtd@lists.infradead.org>; Fri, 13 Oct 2017 04:15:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <e96ba107-9636-715d-7d53-fa79e0890a3d@sigmadesigns.com>
-References: <1506681520-13897-1-git-send-email-yamada.masahiro@socionext.com>
- <20170929142635.07d55f77@bbrezillon>
- <CAK7LNASiker+1_uHXyhdkSJVMCX-TwXLhxD_ibQFLXWR9u0p6w@mail.gmail.com>
- <e96ba107-9636-715d-7d53-fa79e0890a3d@sigmadesigns.com>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Fri, 13 Oct 2017 17:34:30 +0900
-Message-ID: <CAK7LNAR0xNm9PVxrsqvHHTMDHYwBuP+1MDmAr7=jDBMg1Qi6UQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] mtd: nand: wait for tWHR, and fix the
- setup_data_interface of Denali
-To: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Mason <slash.tmp@free.fr>, Richard Weinberger <richard@nod.at>,
- LKML <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
+Sender: arndbergmann@gmail.com
+In-Reply-To: <3af38787-4542-7a2b-36be-56c11b1b81f2@wedev4u.fr>
+References: <1503648771-17514-1-git-send-email-bmeng.cn@gmail.com>
+ <3af38787-4542-7a2b-36be-56c11b1b81f2@wedev4u.fr>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Fri, 13 Oct 2017 13:15:26 +0200
+Message-ID: <CAK8P3a3kdJiug1MaUaTzQxqayGuEGQvox-RX+NOtw0EFO7nkag@mail.gmail.com>
+Subject: Re: [PATCH] spi-nor: intel-spi: Fix Kconfig dependency to LPC_ICH
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: Bin Meng <bmeng.cn@gmail.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>,
  linux-mtd <linux-mtd@lists.infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+ linux-kernel <linux-kernel@vger.kernel.org>, Stefan Roese <sr@denx.de>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,82 +33,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marc,
-
-2017-10-04 20:05 GMT+09:00 Marc Gonzalez <marc_gonzalez@sigmadesigns.com>:
-> On 29/09/2017 16:33, Masahiro Yamada wrote:
+On Wed, Oct 11, 2017 at 10:03 AM, Cyrille Pitchen
+<cyrille.pitchen@wedev4u.fr> wrote:
+> Le 25/08/2017 =C3=A0 10:12, Bin Meng a =C3=A9crit :
+>> The Intel SPI-NOR driver is dependent on LPC_ICH to get the platform
+>> data. Select it in the Kconfig.
+>>
+>> Signed-off-by: Bin Meng <bmeng.cn@gmail.com>
 >
->> (+CC Marc Gonzalez)
->>
->> 2017-09-29 21:26 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
->>> On Fri, 29 Sep 2017 19:38:38 +0900
->>> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
->>>
->>>> 1/2 : add NAND_WAIT_TWHR and nand_whr_delay().
->>>>       You can set this new flag if you want nand_command(_lp)
->>>>       to insert tWHR delay where needed.
->>>>
->>>> 2/2 : Fix Denali setup_data_interface.
->>>>       Boris' suggestion in v1 was a good reminder that
->>>>       made me realize tCCS was missing in the driver.  Fix it now.
->>>>
->>>>
->>>> Changes in v2:
->>>>   - Add nand_whr_delay() helper
->>>>     Wait for tWHR only for drivers that explicitly set NAND_WAIT_TWHR flag
->>>>   - newly added
->>>>
->>>> Masahiro Yamada (2):
->>>>   mtd: nand: wait for tWHR after NAND_CMD_STATUS / NAND_CMD_READID
->>>
->>> Hm, I thought you were introducing this to then use it in the denali
->>> driver. Sorry, but I don't want to apply something that nobody needs.
->>> If someone ever complains about a missing delay I'll point him to your
->>> patch, but until then I'll keep the core unchanged.
->>
->> Perhaps, Marc Gonzalez is the person.
->>
->>
->> tango_nand.c is the only driver that sets NAND_WAIT_TCCS.
->>
->> Now, there is completely no delay when reading out the ID.
->>
->>
->> One safe change might be apply this patch,
->> then set NAND_WAIT_TWHR to tango_nand.c
->>
->>
->> I am guessing NAND_WAIT_TCCS was added for it.
->> Theoretically, I do not see logical difference between tCCS and tWHR.
->>
->> I am CCing Marc Gonzalez, the author of tango_nand.c
->
-> Hello Masahiro,
->
-> I remember having issues reading the ONFI ID when I was writing
-> the driver, a year ago. Sometimes, the first few bytes appeared
-> to be missing. This looked like a timing issue.
->
-> Adding the dev_ready call-back solved the problem. Do you think
-> that was by accident?
+> Applied to the spi-nor/next branch of l2-mtd
 
-It is odd to use dev_ready() hook to insert delay for the READ ID command.
-READ ID command never toggles the device's Ready/Busy# pin.
+This causes a build error now:
 
+warning: (SPI_INTEL_SPI_PLATFORM && ITCO_WDT) selects LPC_ICH which
+has unmet direct dependencies (HAS_IOMEM && PCI)
+drivers/mfd/lpc_ich.c: In function 'lpc_ich_init_spi':
+drivers/mfd/lpc_ich.c:1137:3: error: implicit declaration of function
+'pci_bus_write_config_byte'; did you mean 'pci_write_config_byte'?
+[-Werror=3Dimplicit-function-declaration]
 
-> When I have more time, I will test the 4.14
-> branch, to see if there are any issues with the current driver.
+Generally speaking, using 'select' to force-enable another
+driver is a bad idea and causes endless problems, but if you
+insist on doing that, please make sure you get the right
+dependencies.
 
+Also, the 'depends on EXPERT' statement looks misplaced,
+enabling EXPERT should only be there to allow you to turn
+extra things *off*, not to hide device drivers.
 
-Yeah, I highly recommend you to test your driver on the latest kernel.
-I suspect it is broken because READ ID command in the generic hook
-has absolutely zero delay.
+How about this:
 
-As I proposed already, the correct fix it to wait for tWHR.
+diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+index 19bcb63a1ce7..b81d9b4dae7b 100644
+--- a/drivers/mtd/spi-nor/Kconfig
++++ b/drivers/mtd/spi-nor/Kconfig
+@@ -90,7 +90,7 @@ config SPI_INTEL_SPI
+        tristate
 
+ config SPI_INTEL_SPI_PCI
+-       tristate "Intel PCH/PCU SPI flash PCI driver" if EXPERT
++       tristate "Intel PCH/PCU SPI flash PCI driver"
+        depends on X86 && PCI
+        select SPI_INTEL_SPI
+        help
+@@ -106,10 +106,10 @@ config SPI_INTEL_SPI_PCI
+          will be called intel-spi-pci.
 
+ config SPI_INTEL_SPI_PLATFORM
+-       tristate "Intel PCH/PCU SPI flash platform driver" if EXPERT
+-       depends on X86
++       tristate "Intel PCH/PCU SPI flash platform driver"
++       depends on X86 && (PCI || COMPILE_TEST)
+        select SPI_INTEL_SPI
+-       select LPC_ICH
++       select LPC_ICH if PCI
+        help
+          This enables platform support for the Intel PCH/PCU SPI
+          controller in master mode. This controller is present in modern
 
-
--- 
-Best Regards
-Masahiro Yamada
+       Arnd
