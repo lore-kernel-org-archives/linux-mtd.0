@@ -1,26 +1,25 @@
-Received: from mail-wm0-x232.google.com ([2a00:1450:400c:c09::232])
+Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e36fT-0004sa-JB
- for linux-mtd@lists.infradead.org; Fri, 13 Oct 2017 20:34:53 +0000
-Received: by mail-wm0-x232.google.com with SMTP id 196so29198617wma.1
- for <linux-mtd@lists.infradead.org>; Fri, 13 Oct 2017 13:34:30 -0700 (PDT)
-Subject: Re: [PATCH v2 2/3] mtd: spi-nor: Altera ASMI Parallel II IP Core
-To: matthew.gerlach@linux.intel.com
-Cc: vndao@altera.com, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, richard@nod.at,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org
-References: <1505932139-2905-1-git-send-email-matthew.gerlach@linux.intel.com>
- <1505932139-2905-3-git-send-email-matthew.gerlach@linux.intel.com>
- <deae5a9f-4301-c7de-b265-b09292f8da15@gmail.com>
- <alpine.DEB.2.20.1710110956260.2194@mgerlach-VirtualBox>
- <ca36c177-0e7c-647d-f821-ab4bb7d85b10@gmail.com>
- <alpine.DEB.2.20.1710131215370.1541@mgerlach-VirtualBox>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <089bb472-f824-26d7-0d72-66e64c2f24c4@gmail.com>
-Date: Fri, 13 Oct 2017 22:34:27 +0200
+ id 1e3FeD-0002Ke-II
+ for linux-mtd@lists.infradead.org; Sat, 14 Oct 2017 06:10:12 +0000
+Subject: Re: [PATCH] spi-nor: intel-spi: Fix Kconfig dependency to LPC_ICH
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Bin Meng <bmeng.cn@gmail.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>, Stefan Roese <sr@denx.de>
+References: <1503648771-17514-1-git-send-email-bmeng.cn@gmail.com>
+ <3af38787-4542-7a2b-36be-56c11b1b81f2@wedev4u.fr>
+ <CAK8P3a3kdJiug1MaUaTzQxqayGuEGQvox-RX+NOtw0EFO7nkag@mail.gmail.com>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <3b73e4fc-c361-6bc8-55e6-567d203192e6@wedev4u.fr>
+Date: Sat, 14 Oct 2017 08:09:37 +0200
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.20.1710131215370.1541@mgerlach-VirtualBox>
+In-Reply-To: <CAK8P3a3kdJiug1MaUaTzQxqayGuEGQvox-RX+NOtw0EFO7nkag@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -33,116 +32,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/13/2017 09:24 PM, matthew.gerlach@linux.intel.com wrote:
+Hi Arnd,
 
-[ culling the ridiculous cc list ]
-
-> On Wed, 11 Oct 2017, Marek Vasut wrote:
-> 
->> On 10/11/2017 07:00 PM, matthew.gerlach@linux.intel.com wrote:
+Le 13/10/2017 à 13:15, Arnd Bergmann a écrit :
+> On Wed, Oct 11, 2017 at 10:03 AM, Cyrille Pitchen
+> <cyrille.pitchen@wedev4u.fr> wrote:
+>> Le 25/08/2017 à 10:12, Bin Meng a écrit :
+>>> The Intel SPI-NOR driver is dependent on LPC_ICH to get the platform
+>>> data. Select it in the Kconfig.
 >>>
->>>
->>> On Tue, 10 Oct 2017, Marek Vasut wrote:
->>>
->>>> On 09/20/2017 08:28 PM, matthew.gerlach@linux.intel.com wrote:
->>>>> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->>>>>
->>>>> This patch adds support for a spi-nor, platform driver for the
->>>>> Altera ASMI Parallel II IP Core.  The intended use case is to be able
->>>>> to update the flash used to load a FPGA at power up with mtd-utils.
->>>>>
->>>>> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->>>>> ---
->>>>> v2:
->>>>>     minor checkpatch fixing by Wu Hao <hao.wu@intel.com>
->>>>>     Use read_dummy value as suggested by Cyrille Pitchen.
->>>>>     Don't assume 4 byte addressing (Cryille Pichecn and Marek Vasut).
->>>>>     Fixed #define indenting as suggested by Marek Vasut.
->>>>>     Added units to timer values as suggested by Marek Vasut.
->>>>>     Use io(read|write)8_rep() as suggested by Marek Vasut.
->>>>>     Renamed function prefixed with __ as suggested by Marek Vasut.
->>>>
->>>> [...]
->>>>
->>>>> +#define QSPI_ACTION_REG            0
->>>>> +#define QSPI_ACTION_RST            BIT(0)
->>>>> +#define QSPI_ACTION_EN            BIT(1)
->>>>> +#define QSPI_ACTION_SC            BIT(2)
->>>>> +#define QSPI_ACTION_CHIP_SEL_SFT    4
->>>>> +#define QSPI_ACTION_DUMMY_SFT        8
->>>>> +#define QSPI_ACTION_READ_BACK_SFT    16
->>>>> +
->>>>> +#define QSPI_FIFO_CNT_REG        4
->>>>> +#define QSPI_FIFO_DEPTH            0x200
->>>>> +#define QSPI_FIFO_CNT_MSK        0x3ff
->>>>> +#define QSPI_FIFO_CNT_RX_SFT        0
->>>>> +#define QSPI_FIFO_CNT_TX_SFT        12
->>>>> +
->>>>> +#define QSPI_DATA_REG            0x8
->>>>> +
->>>>> +#define QSPI_POLL_TIMEOUT_US        10000000
->>>>
->>>> 10 s poll timeout ? :)
->>>
->>> Hi Marek,
->>>
->>> The 10s timeout is fairly arbitrary.  In other words, I pulled it out of
->>> thin air.  Can you suggest a better timeout?  From a practical
->>> standpoint 10s seemed to be much better than no timeout when I was
->>> debugging bad FPGA images.  Without a timeout I was hanging the system
->>> when the FPGA image failed.  With this timeout, we get a nice message
->>> and Linux keeps running happily.
->> AFAIK the SPI subsystem has a timeout which is adaptive to the bus
->> clock, maybe that's what you want to use here ?
-> 
-> Hi Marek,
-> 
-> I looked in spi-nor.c, and I see the following two macros:
-> #define DEFAULT_READY_WAIT_JIFFIES        (40UL * HZ)
-> #define CHIP_ERASE_2MB_READY_WAIT_JIFFIES    (40UL * HZ)
-> 
-> These timers values are used at the spi-nor layer for waiting for an
-> operation to complete.  It is the time spent waiting for Work In Progress
-> to clear.
-> 
-> The timer value I'm using, QSPI_POLL_TIMEOUT_US, is used at a lower layer.
-> This timer value is used for the time it takes to send the opcode and tx
-> data and receive any bytes from the flash.  While 10 seconds may seem
-> long, I am just trying to avoid a system hang when there is a catastrophic
-> failure with the flash controller in the FPGA or the flash part itself.
-
-It takes 10s to detect catastrophic failure ? I'd expect you can scale
-that timeout value by the bus clock speed.
-
-We have ie. this in drivers/spi/spi.c:
-
-9                                 ret = 0;
-1040                                 ms = 8LL * 1000LL * xfer->len;
-1041                                 do_div(ms, xfer->speed_hz);
-1042                                 ms += ms + 200; /* some tolerance */
-1043
-1044                                 if (ms > UINT_MAX)
-1045                                         ms = UINT_MAX;
-1046
-1047                                 ms =
-wait_for_completion_timeout(&master->xfer_completion,
-1048
-msecs_to_jiffies(ms));
-
-> I certainly could be missing something with regards to the timeouts, but
-> I think 10s for QSPI_POLL_TIMEOUT_US doesn't hurt, and it definately
-> helps when something goes wrong.
-> 
-> Thanks for the feedback,
-> Matthew Gerlach
-> 
+>>> Signed-off-by: Bin Meng <bmeng.cn@gmail.com>
 >>
->> -- 
->> Best regards,
->> Marek Vasut
->>
+>> Applied to the spi-nor/next branch of l2-mtd
+> 
+> This causes a build error now:
+> 
+> warning: (SPI_INTEL_SPI_PLATFORM && ITCO_WDT) selects LPC_ICH which
+> has unmet direct dependencies (HAS_IOMEM && PCI)
+> drivers/mfd/lpc_ich.c: In function 'lpc_ich_init_spi':
+> drivers/mfd/lpc_ich.c:1137:3: error: implicit declaration of function
+> 'pci_bus_write_config_byte'; did you mean 'pci_write_config_byte'?
+> [-Werror=implicit-function-declaration]
+> 
+> Generally speaking, using 'select' to force-enable another
+> driver is a bad idea and causes endless problems, but if you
+> insist on doing that, please make sure you get the right
+> dependencies.
+> 
+> Also, the 'depends on EXPERT' statement looks misplaced,
+> enabling EXPERT should only be there to allow you to turn
+> extra things *off*, not to hide device drivers.
+> 
+> How about this:
+> 
+> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+> index 19bcb63a1ce7..b81d9b4dae7b 100644
+> --- a/drivers/mtd/spi-nor/Kconfig
+> +++ b/drivers/mtd/spi-nor/Kconfig
+> @@ -90,7 +90,7 @@ config SPI_INTEL_SPI
+>         tristate
+> 
+>  config SPI_INTEL_SPI_PCI
+> -       tristate "Intel PCH/PCU SPI flash PCI driver" if EXPERT
+> +       tristate "Intel PCH/PCU SPI flash PCI driver"
+>         depends on X86 && PCI
+>         select SPI_INTEL_SPI
+>         help
+> @@ -106,10 +106,10 @@ config SPI_INTEL_SPI_PCI
+>           will be called intel-spi-pci.
+> 
+>  config SPI_INTEL_SPI_PLATFORM
+> -       tristate "Intel PCH/PCU SPI flash platform driver" if EXPERT
+> -       depends on X86
+> +       tristate "Intel PCH/PCU SPI flash platform driver"
+> +       depends on X86 && (PCI || COMPILE_TEST)
+>         select SPI_INTEL_SPI
+> -       select LPC_ICH
+> +       select LPC_ICH if PCI
+>         help
+>           This enables platform support for the Intel PCH/PCU SPI
+>           controller in master mode. This controller is present in modern
+> 
+>        Arnd
+> 
 
+The patch has been removed from spi-nor/next and updated to 'Rejected'
+in patchwork.
 
--- 
+Thanks for your report.
+
+Bin, you may have to submit another patch with the correct dependencies
+or maybe adopt the "depends LPC_ICH" approach as suggested by Mika.
+
 Best regards,
-Marek Vasut
+
+Cyrille
