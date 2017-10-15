@@ -1,29 +1,32 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e3j8V-0004VM-4G
- for linux-mtd@lists.infradead.org; Sun, 15 Oct 2017 13:39:25 +0000
-Received: by mail-wm0-x241.google.com with SMTP id b189so5768122wmd.2
- for <linux-mtd@lists.infradead.org>; Sun, 15 Oct 2017 06:38:59 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CAK8P3a3kdJiug1MaUaTzQxqayGuEGQvox-RX+NOtw0EFO7nkag@mail.gmail.com>
-References: <1503648771-17514-1-git-send-email-bmeng.cn@gmail.com>
- <3af38787-4542-7a2b-36be-56c11b1b81f2@wedev4u.fr>
- <CAK8P3a3kdJiug1MaUaTzQxqayGuEGQvox-RX+NOtw0EFO7nkag@mail.gmail.com>
-From: Bin Meng <bmeng.cn@gmail.com>
-Date: Sun, 15 Oct 2017 21:38:57 +0800
-Message-ID: <CAEUhbmXmw9uGwnAQBd2bRYvGfmCAyJFAswp33Y5LvJREB7pjmA@mail.gmail.com>
-Subject: Re: [PATCH] spi-nor: intel-spi: Fix Kconfig dependency to LPC_ICH
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- linux-kernel <linux-kernel@vger.kernel.org>, Stefan Roese <sr@denx.de>
-Content-Type: text/plain; charset="UTF-8"
+ id 1e3pxJ-0000HM-Hh
+ for linux-mtd@lists.infradead.org; Sun, 15 Oct 2017 20:56:23 +0000
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Kalyan Kinthada
+ <Kalyan.Kinthada@alliedtelesis.co.nz>
+CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
+ "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>, "mark.rutland@arm.com"
+ <mark.rutland@arm.com>, "ezequiel.garcia@free-electrons.com"
+ <ezequiel.garcia@free-electrons.com>, "miquel.raynal@free-electrons.com"
+ <miquel.raynal@free-electrons.com>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/1] mtd: nand: pxa3xx: Set FORCE_CSX bit to ARMADA370
+ variants.
+Date: Sun, 15 Oct 2017 20:55:43 +0000
+Message-ID: <5d708701612f48cf958da5feeb68365f@svr-chch-ex1.atlnz.lc>
+References: <20170928005756.3938-1-kalyan.kinthada@alliedtelesis.co.nz>
+ <20170928005756.3938-2-kalyan.kinthada@alliedtelesis.co.nz>
+ <20171014151233.4e9ff319@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,89 +36,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Arnd,
-
-On Fri, Oct 13, 2017 at 7:15 PM, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Wed, Oct 11, 2017 at 10:03 AM, Cyrille Pitchen
-> <cyrille.pitchen@wedev4u.fr> wrote:
->> Le 25/08/2017 =C3=A0 10:12, Bin Meng a =C3=A9crit :
->>> The Intel SPI-NOR driver is dependent on LPC_ICH to get the platform
->>> data. Select it in the Kconfig.
->>>
->>> Signed-off-by: Bin Meng <bmeng.cn@gmail.com>
->>
->> Applied to the spi-nor/next branch of l2-mtd
->
-> This causes a build error now:
->
-> warning: (SPI_INTEL_SPI_PLATFORM && ITCO_WDT) selects LPC_ICH which
-> has unmet direct dependencies (HAS_IOMEM && PCI)
-> drivers/mfd/lpc_ich.c: In function 'lpc_ich_init_spi':
-> drivers/mfd/lpc_ich.c:1137:3: error: implicit declaration of function
-> 'pci_bus_write_config_byte'; did you mean 'pci_write_config_byte'?
-> [-Werror=3Dimplicit-function-declaration]
->
-
-Thanks for your testing. However, I believe this build error cannot be
-seen in a real system due to x86 always has PCI on. But I see you were
-doing build testing with COMPILE_TEST.
-
-> Generally speaking, using 'select' to force-enable another
-> driver is a bad idea and causes endless problems, but if you
-> insist on doing that, please make sure you get the right
-> dependencies.
->
-
-Sure.
-
-> Also, the 'depends on EXPERT' statement looks misplaced,
-> enabling EXPERT should only be there to allow you to turn
-> extra things *off*, not to hide device drivers.
->
-
-I will leave this to Mika to comment the "EXPERT" usage. If we remove
-this, I think that should be another patch and the documentation of
-this driver should be updated too.
-
-> How about this:
->
-> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-> index 19bcb63a1ce7..b81d9b4dae7b 100644
-> --- a/drivers/mtd/spi-nor/Kconfig
-> +++ b/drivers/mtd/spi-nor/Kconfig
-> @@ -90,7 +90,7 @@ config SPI_INTEL_SPI
->         tristate
->
->  config SPI_INTEL_SPI_PCI
-> -       tristate "Intel PCH/PCU SPI flash PCI driver" if EXPERT
-> +       tristate "Intel PCH/PCU SPI flash PCI driver"
->         depends on X86 && PCI
->         select SPI_INTEL_SPI
->         help
-> @@ -106,10 +106,10 @@ config SPI_INTEL_SPI_PCI
->           will be called intel-spi-pci.
->
->  config SPI_INTEL_SPI_PLATFORM
-> -       tristate "Intel PCH/PCU SPI flash platform driver" if EXPERT
-> -       depends on X86
-> +       tristate "Intel PCH/PCU SPI flash platform driver"
-> +       depends on X86 && (PCI || COMPILE_TEST)
->         select SPI_INTEL_SPI
-> -       select LPC_ICH
-> +       select LPC_ICH if PCI
-
-I think we just need do:
-
-depends on X86 && PCI
-
-then
-
-select LPC_ICH
-
->         help
->           This enables platform support for the Intel PCH/PCU SPI
->           controller in master mode. This controller is present in modern
->
-
-Regards,
-Bin
+Hi Boris,=0A=
+=0A=
+On 15/10/17 02:13, Boris Brezillon wrote:=0A=
+> Hi Kalyan,=0A=
+> =0A=
+> On Thu, 28 Sep 2017 13:57:56 +1300=0A=
+> Kalyan Kinthada <kalyan.kinthada@alliedtelesis.co.nz> wrote:=0A=
+> =0A=
+>> When the arbitration between NOR and NAND flash is enabled=0A=
+>> the <FORCE_CSX> field bit[21] in the Data Flash Control Register=0A=
+>> needs to be set to 1 according to guidleine GL-5830741 mentioned=0A=
+>> in Marvell Errata document MV-S501377-00, Rev. D.=0A=
+> =0A=
+> The real question is, is this patch fixing a real bug or are you just=0A=
+> setting this bit because a guideline says it should be set?=0A=
+=0A=
+Yes that's a fair summary. It is in a document called "Functional =0A=
+Errata" so there is some feeling here that we (allied telesis) should =0A=
+follow up things in these kinds of documents.=0A=
+=0A=
+> As far as I=0A=
+> understand, noone fully understands what this bit does and why it needs=
+=0A=
+> to be set, so if you're not fixing a real bug, I'd prefer keeping the=0A=
+> code unchanged code until someone complains for a good reason.=0A=
+=0A=
+Agreed. We've certainly not noticed a change in behaviour on our boards. =
+=0A=
+I've requested more information from Marvell through their support =0A=
+channels. I'll share what I can if/when they come back with something =0A=
+useful.=0A=
+=0A=
+> =0A=
+> Regards,=0A=
+> =0A=
+> Boris=0A=
+> =0A=
+>>=0A=
+>> This commit sets the FORCE_CSX bit to 1 for all=0A=
+>> ARMADA370 variants as the arbitration is always enabled by default.=0A=
+>> This change does not apply for pxa3xx variants because the FORCE_CSX=0A=
+>> bit does not exist/reserved on the NFCv1.=0A=
+>>=0A=
+>> The NDCR_ND_MODE conflicts with the new NDCR_FORCE_CSX but is unused so=
+=0A=
+>> remove it along with NDCR_NAND_MODE.=0A=
+>>=0A=
+>> Signed-off-by: Kalyan Kinthada <kalyan.kinthada@alliedtelesis.co.nz>=0A=
+>> ---=0A=
+>>   drivers/mtd/nand/pxa3xx_nand.c | 9 +++++++--=0A=
+>>   1 file changed, 7 insertions(+), 2 deletions(-)=0A=
+>>=0A=
+>> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_na=
+nd.c=0A=
+>> index 85cff68643e0..a6a7a5af7bed 100644=0A=
+>> --- a/drivers/mtd/nand/pxa3xx_nand.c=0A=
+>> +++ b/drivers/mtd/nand/pxa3xx_nand.c=0A=
+>> @@ -67,8 +67,7 @@=0A=
+>>   #define NDCR_DWIDTH_M		(0x1 << 26)=0A=
+>>   #define NDCR_PAGE_SZ		(0x1 << 24)=0A=
+>>   #define NDCR_NCSX		(0x1 << 23)=0A=
+>> -#define NDCR_ND_MODE		(0x3 << 21)=0A=
+>> -#define NDCR_NAND_MODE   	(0x0)=0A=
+>> +#define NDCR_FORCE_CSX		(0x1 << 21)=0A=
+>>   #define NDCR_CLR_PG_CNT		(0x1 << 20)=0A=
+>>   #define NFCV1_NDCR_ARB_CNTL	(0x1 << 19)=0A=
+>>   #define NFCV2_NDCR_STOP_ON_UNCOR	(0x1 << 19)=0A=
+>> @@ -1464,6 +1463,9 @@ static int pxa3xx_nand_config_ident(struct pxa3xx_=
+nand_info *info)=0A=
+>>   	info->chunk_size =3D PAGE_CHUNK_SIZE;=0A=
+>>   	info->reg_ndcr =3D 0x0; /* enable all interrupts */=0A=
+>>   	info->reg_ndcr |=3D (pdata->enable_arbiter) ? NDCR_ND_ARB_EN : 0;=0A=
+>> +	/* Set FORCE_CSX bit for all ARMADA370 Variants. Ref#: GL-5830741 */=
+=0A=
+>> +	if (info->variant =3D=3D PXA3XX_NAND_VARIANT_ARMADA370)=0A=
+>> +		info->reg_ndcr |=3D NDCR_FORCE_CSX;=0A=
+>>   	info->reg_ndcr |=3D NDCR_RD_ID_CNT(READ_ID_BYTES);=0A=
+>>   	info->reg_ndcr |=3D NDCR_SPARE_EN;=0A=
+>>   =0A=
+>> @@ -1498,6 +1500,9 @@ static void pxa3xx_nand_detect_config(struct pxa3x=
+x_nand_info *info)=0A=
+>>   	info->reg_ndcr =3D ndcr &=0A=
+>>   		~(NDCR_INT_MASK | NDCR_ND_ARB_EN | NFCV1_NDCR_ARB_CNTL);=0A=
+>>   	info->reg_ndcr |=3D (pdata->enable_arbiter) ? NDCR_ND_ARB_EN : 0;=0A=
+>> +	/* Set FORCE_CSX bit for all ARMADA370 Variants. Ref#: GL-5830741 */=
+=0A=
+>> +	if (info->variant =3D=3D PXA3XX_NAND_VARIANT_ARMADA370)=0A=
+>> +		info->reg_ndcr |=3D NDCR_FORCE_CSX;=0A=
+>>   	info->ndtr0cs0 =3D nand_readl(info, NDTR0CS0);=0A=
+>>   	info->ndtr1cs0 =3D nand_readl(info, NDTR1CS0);=0A=
+>>   }=0A=
+> =0A=
+> =0A=
+=0A=
