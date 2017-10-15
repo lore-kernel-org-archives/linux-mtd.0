@@ -1,21 +1,14 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e3O7b-0002IC-2s
- for linux-mtd@lists.infradead.org; Sat, 14 Oct 2017 15:13:28 +0000
-Date: Sat, 14 Oct 2017 17:12:45 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, linux-mtd@lists.infradead.org
-Cc: Marek Vasut <marek.vasut@gmail.com>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- stable@vger.kernel.org, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Subject: Re: [PATCH] mtd: nand: Export nand_reset() symbol
-Message-ID: <20171014171245.2522f9f7@bbrezillon>
-In-Reply-To: <20171005165319.30391-1-boris.brezillon@free-electrons.com>
-References: <20171005165319.30391-1-boris.brezillon@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1e3gzu-0004Qq-Ce
+ for linux-mtd@lists.infradead.org; Sun, 15 Oct 2017 11:22:24 +0000
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH] UBI: attach: check_corruption(): add missing newline at end
+ of pr_err()
+Date: Sun, 15 Oct 2017 13:21:57 +0200
+Message-Id: <20171015112157.5803-1-mkl@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +18,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu,  5 Oct 2017 18:53:19 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+This patch adds the missing newline at the end of the pr_err()
+statement, otherwise the first line of the PEB's hexdump will be
+displayed in the line of the error message.
 
-> Commit 6e532afaca8e ("mtd: nand: atmel: Add PM ops") started to use the
-> nand_reset() function which was not yet exported by the NAND framework
-> (because it was only used internally before that). Export this symbol
-> to avoid build errors when the driver is enabled as a module.
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/mtd/ubi/attach.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Applied.
-
-> 
-> Fixes: 6e532afaca8e ("mtd: nand: atmel: Add PM ops")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> ---
->  drivers/mtd/nand/nand_base.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index c63e4a88a653..4c867115c53b 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -1244,6 +1244,7 @@ int nand_reset(struct nand_chip *chip, int chipnr)
->  
->  	return 0;
->  }
-> +EXPORT_SYMBOL_GPL(nand_reset);
->  
->  /**
->   * nand_check_erased_buf - check if a buffer contains (almost) only 0xff data
+diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
+index 93ceea4f27d5..76d010445ba1 100644
+--- a/drivers/mtd/ubi/attach.c
++++ b/drivers/mtd/ubi/attach.c
+@@ -914,7 +914,7 @@ static int check_corruption(struct ubi_device *ubi, struct ubi_vid_hdr *vid_hdr,
+ 		pnum);
+ 	ubi_err(ubi, "this may be a non-UBI PEB or a severe VID header corruption which requires manual inspection");
+ 	ubi_dump_vid_hdr(vid_hdr);
+-	pr_err("hexdump of PEB %d offset %d, length %d",
++	pr_err("hexdump of PEB %d offset %d, length %d\n",
+ 	       pnum, ubi->leb_start, ubi->leb_size);
+ 	ubi_dbg_print_hex_dump(KERN_DEBUG, "", DUMP_PREFIX_OFFSET, 32, 1,
+ 			       ubi->peb_buf, ubi->leb_size, 1);
+-- 
+2.14.2
