@@ -1,25 +1,22 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e4DnK-0007d5-4L
- for linux-mtd@lists.infradead.org; Mon, 16 Oct 2017 22:23:36 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Rob Herring <robh@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>,
- David Woodhouse <dwmw2@infradead.org>,
+Subject: Re: [PATCH v4 0/6] K2G: Add QSPI support
+To: Marek Vasut <marek.vasut@gmail.com>, Vignesh R <vigneshr@ti.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
  Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- user-mode-linux-devel@lists.sourceforge.net,
- user-mode-linux-user@lists.sourceforge.net, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] kconfig: kill off GENERIC_IO option
-Date: Tue, 17 Oct 2017 00:23:44 +0200
-Message-ID: <1670220.TrXKNt6kix@blindfold>
-In-Reply-To: <20171016221631.23472-1-robh@kernel.org>
-References: <20171016221631.23472-1-robh@kernel.org>
+ David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+References: <20171003051925.8821-1-vigneshr@ti.com>
+ <09cc0a61-3f73-4a10-2d67-32515a7da861@ti.com>
+ <6f507813-388a-13e5-31ba-736b419744fa@gmail.com>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <69beca0c-68a2-2d2c-d4a8-6f05a1fbc957@wedev4u.fr>
+Date: Tue, 17 Oct 2017 00:29:42 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <6f507813-388a-13e5-31ba-736b419744fa@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,30 +26,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Dienstag, 17. Oktober 2017, 00:16:31 CEST schrieb Rob Herring:
-> The GENERIC_IO option is set for every architecture except tile and score
-> as those define NO_IOMEM. The option only controls visibility of
-> CONFIG_MTD which doesn't appear to be necessary for any reason, so let's
-> just remove GENERIC_IO.
+Hi all,
+
+Le 16/10/2017 à 11:28, Marek Vasut a écrit :
+> On 10/16/2017 08:15 AM, Vignesh R wrote:
+>>
+>>
+>> On Tuesday 03 October 2017 10:49 AM, Vignesh R wrote:
+>>>
+>>>
+>>> This series adds support for Cadence QSPI IP present in TI's 66AK2G SoC.
+>>> The patches enhance the existing cadence-quadspi driver to support
+>>> loopback clock circuit, pm_runtime support and tweaks for 66AK2G SoC.
+>>
+>> Gentle ping on the series...
 > 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> Cc: Jeff Dike <jdike@addtoit.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Cc: Marek Vasut <marek.vasut@gmail.com>
-> Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-> Cc: user-mode-linux-devel@lists.sourceforge.net
-> Cc: user-mode-linux-user@lists.sourceforge.net
-> Cc: linux-mtd@lists.infradead.org
-> ---
->  arch/um/Kconfig.common | 1 -
->  drivers/mtd/Kconfig    | 1 -
->  lib/Kconfig            | 4 ----
->  3 files changed, 6 deletions(-)
+> It's IMO OK, Cyrille, can you pick it ?
+>
 
-Acked-by: Richard Weinberger <richard@nod.at>
+The series looks good to me too.
 
-Thanks,
-//richard
+Marek, could you please add you "Acked-by" or "Reviewed-by" tag for the
+record in patchwork ? It will be automatically added when I use
+"pwclient git-am -s" to merge the patches into the spi-nor/next branch.
+
+Best regards,
+
+Cyrille
+
+
+>>>
+>>> Change log:
+>>>
+>>> v4:
+>>> * New patch to fix error handling sequence in probe.
+>>>
+>>> v3:
+>>> * Fix build warnings reported by kbuild test bot.
+>>>
+>>> Resend:
+>>> * Rebase to latest linux-next.
+>>> * Collect Acked-bys
+>>>
+>>> v2:
+>>> * Drop DT patches. Will be sent as separate series as requested by
+>>>  maintainer.
+>>> * Split binding docs into separate patches.
+>>> * Address comments by Rob Herring.
+>>>
+>>> Vignesh R (6):
+>>>   mtd: spi-nor: cadence-quadspi: Add TI 66AK2G SoC specific compatible
+>>>   mtd: spi-nor: cadence-quadspi: add a delay in write sequence
+>>>   mtd: spi-nor: cadence-quadspi: Add new binding to enable loop-back
+>>>     circuit
+>>>   mtd: spi-nor: cadence-quadspi: Add support to enable loop-back clock
+>>>     circuit
+>>>   mtd: spi-nor: cadence-quadspi: Fix error path in probe
+>>>   mtd: spi-nor: cadence-quadspi: Add runtime PM support
+>>>
+>>>  .../devicetree/bindings/mtd/cadence-quadspi.txt    |  7 ++-
+>>>  drivers/mtd/spi-nor/cadence-quadspi.c              | 55 +++++++++++++++++++---
+>>>  2 files changed, 55 insertions(+), 7 deletions(-)
+>>>
+>>
+> 
+> 
