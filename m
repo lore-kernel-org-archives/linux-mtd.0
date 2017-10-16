@@ -1,25 +1,30 @@
-Received: from mail-he1eur01on0126.outbound.protection.outlook.com
- ([104.47.0.126] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
+Received: from mail-oi0-x241.google.com ([2607:f8b0:4003:c06::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e44UA-0005m4-Fy
- for linux-mtd@lists.infradead.org; Mon, 16 Oct 2017 12:27:12 +0000
-Subject: Re: [PATCH] mtd: spi-nor: Enable stateless 4-byte opcodes for
- N25Q256A/N25Q512A/N25Q00
-To: Marek Vasut <marek.vasut@gmail.com>, <linux-mtd@lists.infradead.org>
-CC: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
- Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>
-References: <20171016111712.16783-1-alexander.sverdlin@nokia.com>
- <bdf7c1fa-3c9f-0457-4658-632ad0fcd59c@gmail.com>
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Message-ID: <9a710d91-eca0-7859-7c67-e25782412272@nokia.com>
-Date: Mon, 16 Oct 2017 14:25:47 +0200
+ id 1e44be-0002TJ-LH
+ for linux-mtd@lists.infradead.org; Mon, 16 Oct 2017 12:35:00 +0000
+Received: by mail-oi0-x241.google.com with SMTP id h6so4492666oia.10
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Oct 2017 05:34:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <bdf7c1fa-3c9f-0457-4658-632ad0fcd59c@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Sender: arndbergmann@gmail.com
+In-Reply-To: <CAEUhbmXmw9uGwnAQBd2bRYvGfmCAyJFAswp33Y5LvJREB7pjmA@mail.gmail.com>
+References: <1503648771-17514-1-git-send-email-bmeng.cn@gmail.com>
+ <3af38787-4542-7a2b-36be-56c11b1b81f2@wedev4u.fr>
+ <CAK8P3a3kdJiug1MaUaTzQxqayGuEGQvox-RX+NOtw0EFO7nkag@mail.gmail.com>
+ <CAEUhbmXmw9uGwnAQBd2bRYvGfmCAyJFAswp33Y5LvJREB7pjmA@mail.gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Mon, 16 Oct 2017 14:34:33 +0200
+Message-ID: <CAK8P3a1R=K5c7e9c72b4j612YVUoFzPs_+v8jN4FfBfWs+Ut-A@mail.gmail.com>
+Subject: Re: [PATCH] spi-nor: intel-spi: Fix Kconfig dependency to LPC_ICH
+To: Bin Meng <bmeng.cn@gmail.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>, Stefan Roese <sr@denx.de>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,31 +34,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Marek,
-
-On 16/10/17 13:35, Marek Vasut wrote:
->> The datasheets explicitly state that the stateless opcodes are supported
->> and that they "do not need to be set up in the addressing mode".
+On Sun, Oct 15, 2017 at 3:38 PM, Bin Meng <bmeng.cn@gmail.com> wrote:
+> On Fri, Oct 13, 2017 at 7:15 PM, Arnd Bergmann <arnd@arndb.de> wrote:>> On Wed, Oct 11, 2017 at 10:03 AM, Cyrille Pitchen
+>> warning: (SPI_INTEL_SPI_PLATFORM && ITCO_WDT) selects LPC_ICH which
+>> has unmet direct dependencies (HAS_IOMEM && PCI)
+>> drivers/mfd/lpc_ich.c: In function 'lpc_ich_init_spi':
+>> drivers/mfd/lpc_ich.c:1137:3: error: implicit declaration of function
+>> 'pci_bus_write_config_byte'; did you mean 'pci_write_config_byte'?
+>> [-Werror=implicit-function-declaration]
 >>
->> The stateless mode is clearly more beneficial, because there are boot
->> ROM code versions not able to cope with the chip left in 4-byte state.
+>
+> Thanks for your testing. However, I believe this build error cannot be
+> seen in a real system due to x86 always has PCI on. But I see you were
+> doing build testing with COMPILE_TEST.
+
+I don't think there is a general dependency on PCI for x86, other
+than the fact that most device drivers require it and you'd normally
+want to enable it.
+
+>> Also, the 'depends on EXPERT' statement looks misplaced,
+>> enabling EXPERT should only be there to allow you to turn
+>> extra things *off*, not to hide device drivers.
 >>
->> Tested with Micron N25Q512A.
+>
+> I will leave this to Mika to comment the "EXPERT" usage. If we remove
+> this, I think that should be another patch and the documentation of
+> this driver should be updated too.
+
+Ok.
+
+>> How about this:
 >>
->> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-> Can SFDP help here ?
+>> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+>> index 19bcb63a1ce7..b81d9b4dae7b 100644
+>> --- a/drivers/mtd/spi-nor/Kconfig
+>> +++ b/drivers/mtd/spi-nor/Kconfig
+>> @@ -90,7 +90,7 @@ config SPI_INTEL_SPI
+>>         tristate
+>>
+>>  config SPI_INTEL_SPI_PCI
+>> -       tristate "Intel PCH/PCU SPI flash PCI driver" if EXPERT
+>> +       tristate "Intel PCH/PCU SPI flash PCI driver"
+>>         depends on X86 && PCI
+>>         select SPI_INTEL_SPI
+>>         help
+>> @@ -106,10 +106,10 @@ config SPI_INTEL_SPI_PCI
+>>           will be called intel-spi-pci.
+>>
+>>  config SPI_INTEL_SPI_PLATFORM
+>> -       tristate "Intel PCH/PCU SPI flash platform driver" if EXPERT
+>> -       depends on X86
+>> +       tristate "Intel PCH/PCU SPI flash platform driver"
+>> +       depends on X86 && (PCI || COMPILE_TEST)
+>>         select SPI_INTEL_SPI
+>> -       select LPC_ICH
+>> +       select LPC_ICH if PCI
+>
+> I think we just need do:
+>
+> depends on X86 && PCI
+>
+> then
+>
+> select LPC_ICH
 
-it would be nice, but I've just checked
-- JESD216
-- "TN-25-06: Serial Flash Discovery Parameters for MT25Q Family"
-- N25Q512A "Serial Flash Discovery Parameter Data Structure"
+Right, that would solve this particular build issue, just not
+allow the compile-test alternative.
 
-seems, such flag is not provided in the standard. There is a way
-to figure out if the chip supports entering 4-bytes mode and what
-is the command to enter such a mode, but nothing for the stateless commands.
+We could also try to fix this more broadly, to allow compile-testing
+independent of X86: It is bad style to have a 'select' statement for
+a user-visible symbol (both in my version above, and yours).
 
-I would be glad to be wrong in this particular case.
+The only connection I see between LPC_ICH and
+SPI_INTEL_SPI_PCI is that at the moment that MFD driver is the
+only thing that provides a platform device named "intel-spi", but I
+see no reason why the spi-nor driver needs to know about this.
 
--- 
-Best regards,
-Alexander Sverdlin.
+In similar cases on ARM, I tend to recommend something like
+
+config SPI_INTEL_SPI_PLATFORM
+       tristate "Intel PCH/PCU SPI flash platform driver" if LPC_ICH
+|| COMPILE_TEST
+       select SPI_INTEL_SPI
+
+and then change all the other 'select LPC_ICH' to 'depends on
+as well. If we leave the 'select' in place here, it might be good to
+remove the prompt from the LPC_ICH option and have it only
+selected by the other drivers.
+
+       Arnd
