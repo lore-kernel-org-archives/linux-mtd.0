@@ -1,27 +1,33 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from mail-oi0-x244.google.com ([2607:f8b0:4003:c06::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e43g7-0007hv-IR
- for linux-mtd@lists.infradead.org; Mon, 16 Oct 2017 11:35:29 +0000
-Received: by mail-wm0-x244.google.com with SMTP id f4so2266670wme.0
- for <linux-mtd@lists.infradead.org>; Mon, 16 Oct 2017 04:35:06 -0700 (PDT)
-Subject: Re: [PATCH] mtd: spi-nor: Enable stateless 4-byte opcodes for
- N25Q256A/N25Q512A/N25Q00
-To: Alexander Sverdlin <alexander.sverdlin@nokia.com>,
- linux-mtd@lists.infradead.org
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- David Woodhouse <dwmw2@infradead.org>,
+ id 1e43yP-0001ca-W5
+ for linux-mtd@lists.infradead.org; Mon, 16 Oct 2017 11:54:23 +0000
+Received: by mail-oi0-x244.google.com with SMTP id c202so24486729oih.9
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Oct 2017 04:54:01 -0700 (PDT)
+MIME-Version: 1.0
+Sender: arndbergmann@gmail.com
+In-Reply-To: <63b33705-6e03-08b3-5d1e-6d07e73d32cf@wedev4u.fr>
+References: <20170721222204.3402340-1-arnd@arndb.de>
+ <fa857ef2-0ae6-5383-c178-3a86fa557332@wedev4u.fr>
+ <CAK8P3a27xzszjbfP4KdAMFOa2iqfH7vvUOBcT39Ychn0kw39KA@mail.gmail.com>
+ <63b33705-6e03-08b3-5d1e-6d07e73d32cf@wedev4u.fr>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Mon, 16 Oct 2017 13:53:59 +0200
+Message-ID: <CAK8P3a3AYjk5SpX_UsNzJQNVugJe4o2v-aMn1o_bzz8Qynfycg@mail.gmail.com>
+Subject: Re: [PATCH] [RFC] mtd: atmel-quadspi: fix build issues
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>
-References: <20171016111712.16783-1-alexander.sverdlin@nokia.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <bdf7c1fa-3c9f-0457-4658-632ad0fcd59c@gmail.com>
-Date: Mon, 16 Oct 2017 13:35:04 +0200
-MIME-Version: 1.0
-In-Reply-To: <20171016111712.16783-1-alexander.sverdlin@nokia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+ Richard Weinberger <richard@nod.at>,
+ Joel Stanley <joel@jms.id.au>, =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>,
+ Ludovic Barre <ludovic.barre@st.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,49 +37,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/16/2017 01:17 PM, Alexander Sverdlin wrote:
-> The datasheets explicitly state that the stateless opcodes are supported
-> and that they "do not need to be set up in the addressing mode".
-> 
-> The stateless mode is clearly more beneficial, because there are boot
-> ROM code versions not able to cope with the chip left in 4-byte state.
-> 
-> Tested with Micron N25Q512A.
-> 
-> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+On Fri, Oct 13, 2017 at 10:28 PM, Cyrille Pitchen
+<cyrille.pitchen@wedev4u.fr> wrote:
+> Hi Arnd,
+>
+> + Nicolas Ferre
+>
+> Le 01/08/2017 =C3=A0 22:10, Arnd Bergmann a =C3=A9crit :
+>> On Tue, Aug 1, 2017 at 9:41 PM, Cyrille Pitchen
+>> <cyrille.pitchen@wedev4u.fr> wrote:
+>>> Le 22/07/2017 =C3=A0 00:21, Arnd Bergmann a =C3=A9crit :
+>>
+>>>> --- a/drivers/mtd/spi-nor/atmel-quadspi.c
+>>>> +++ b/drivers/mtd/spi-nor/atmel-quadspi.c
+>>>> @@ -208,9 +208,9 @@ static int atmel_qspi_run_transfer(struct atmel_qs=
+pi *aq,
+>>>>       if (cmd->enable.bits.address)
+>>>>               ahb_mem +=3D cmd->address;
+>>>>       if (cmd->tx_buf)
+>>>> -             _memcpy_toio(ahb_mem, cmd->tx_buf, cmd->buf_len);
+>>>> +             memcpy_toio(ahb_mem, cmd->tx_buf, cmd->buf_len);
+>>>>       else
+>>>> -             _memcpy_fromio(cmd->rx_buf, ahb_mem, cmd->buf_len);
+>>>> +             memcpy_fromio(cmd->rx_buf, ahb_mem, cmd->buf_len);
+>>>>
+>>>
+>>> At least on AT91 platforms and likely on most ARM boards,
+>>> memcpy_fromio =3D=3D memcpy_toio =3D=3D memcpy.
+>>
+>> Just to give more background, it's a bit more complicated than this:
+>>
+>> On big-endian kernels, memcpy_fromio/memcpy_toio are
+>> always defined as _memcpy_fromio/_memcpy_toio so we
+>> do byte load/store operations in the correct order, while
+>> little-endian kernels have the optimized mmiocpy() that redirects
+>> to memcpy(). This is true for all ARM platforms other than EBSA110
+>> IIRC.
+>>
+>> Also, mmiocpy is an exported symbol that aliases to the external
+>> memcpy definition, but we can't call memcpy directly, because gcc
+>> knows how to inline calls to memcpy() and replace them by direct
+>> load/store instructions that might be unaligned and trap on uncached
+>> mmio areas.
+>>
+>>> I got some sama5d2 hardware last week, so I'll try to test your patch
+>>> within few days because as you said maybe memcpy() was broken when I
+>>> developed this driver at first but now memcpy() is likely to have been
+>>> fixed so it might be interesting to get rid of _memcpy_fromio() and
+>>> _memcpy_toio() because this is not the first time those 2 functions hav=
+e
+>>> created issues when building the Atmel Quad SPI driver on other platfor=
+ms.
+>>>
+>>> So thanks for you're patch, I'll give it a try :)
+>>
+>
+> Bad news:
+>
+> I've just tested this patch, applied onto the spi-nor/next branch of
+> l2-mtd (based on 4.14.0-rc4), with a sama5d2 xplained board + Macronix
+> MX25L25673G Quad SPI memory but it fails on the very first SPI command,
+> Read JEDEC ID (9Fh):
+>
+> atmel_qspi f0020000.spi: unrecognized JEDEC id bytes: c2, 20, 20
+> atmel_qspi: probe of f0020000.spi failed with error -2
 
-Can SFDP help here ?
+Ah, too bad. Should we just add the !ARCH_EBSA110 dependency
+then?
 
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 3128d8c..85670b1b 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -1052,12 +1052,12 @@ static const struct flash_info spi_nor_ids[] = {
->  	{ "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
->  	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
->  	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
-> -	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> -	{ "n25q256ax1",  INFO(0x20bb19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
-> -	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
-> -	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
-> -	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
-> -	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
-> +	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-> +	{ "n25q256ax1",  INFO(0x20bb19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-> +	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-> +	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-> +	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE | SPI_NOR_4B_OPCODES) },
-> +	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE | SPI_NOR_4B_OPCODES) },
->  
->  	/* PMC */
->  	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
-> 
-
-
--- 
-Best regards,
-Marek Vasut
+       Arnd
