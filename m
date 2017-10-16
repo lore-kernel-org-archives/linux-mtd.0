@@ -1,26 +1,25 @@
-Received: from mga05.intel.com ([192.55.52.43])
+Received: from smtp3-g21.free.fr ([212.27.42.3])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e4AKq-0004Ac-1z
- for linux-mtd@lists.infradead.org; Mon, 16 Oct 2017 18:41:59 +0000
-Date: Mon, 16 Oct 2017 11:41:31 -0700 (PDT)
-From: matthew.gerlach@linux.intel.com
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-cc: vndao@altera.com, dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
- robh+dt@kernel.org, mark.rutland@arm.com, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- gregkh@linuxfoundation.org, davem@davemloft.net, mchehab@kernel.org,
- linux-fpga@vger.kernel.org, tien.hock.loh@intel.com,
- hean.loong.ong@intel.com
-Subject: Re: [PATCH v2 3/3] mtd: spi-nor: add flag for reading dummy cycles
- from nv cfg reg
-In-Reply-To: <28c32a9c-1fd8-3af4-abc6-f4938e138daa@wedev4u.fr>
-Message-ID: <alpine.DEB.2.20.1710161141020.19479@mgerlach-VirtualBox>
-References: <1505932139-2905-1-git-send-email-matthew.gerlach@linux.intel.com>
- <1505932139-2905-4-git-send-email-matthew.gerlach@linux.intel.com>
- <28c32a9c-1fd8-3af4-abc6-f4938e138daa@wedev4u.fr>
+ id 1e4CvS-0003E3-AB
+ for linux-mtd@lists.infradead.org; Mon, 16 Oct 2017 21:27:56 +0000
+Subject: Re: [PATCH] mtd: spi-nor: Enable stateless 4-byte opcodes for
+ N25Q256A/N25Q512A/N25Q00
+To: Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>
+References: <20171016111712.16783-1-alexander.sverdlin@nokia.com>
+ <bdf7c1fa-3c9f-0457-4658-632ad0fcd59c@gmail.com>
+ <9a710d91-eca0-7859-7c67-e25782412272@nokia.com>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <faa85df9-bc05-89db-386e-80a9c08526d4@wedev4u.fr>
+Date: Mon, 16 Oct 2017 23:27:19 +0200
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323329-231588532-1508179293=:19479"
+In-Reply-To: <9a710d91-eca0-7859-7c67-e25782412272@nokia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,278 +29,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hi Alexander,
 
---8323329-231588532-1508179293=:19479
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+Le 16/10/2017 à 14:25, Alexander Sverdlin a écrit :
+> Hello Marek,
+> 
+> On 16/10/17 13:35, Marek Vasut wrote:
+>>> The datasheets explicitly state that the stateless opcodes are supported
+>>> and that they "do not need to be set up in the addressing mode".
+>>>
 
+I don't totally agree. Micron memories have a little quirk: if you look
+closely at their datasheets (currently reading the N25Q512A datasheet)
+the 12h op code doesn't always work as expected.
 
-Hi Cyrille,
+For some memory parts, the 12h op code is used for 4-byte address Page
+Program 1-1-1 (as it should) whereas for other memory parts, this very
+same op code means 3-byte address Page Program x-4-4 (non standard
+usage, should have been 38h/3Eh).
 
-Thanks for the feedback.  See my comments in line below.
+See note 18:
+"""
+The code 38h is valid only for part numbers N25Q512A83GSF40x,
+N25Q512A83G1240x,
+N25Q512A83GSFA0x, N25Q512A83G12A0x and N25Q512A83G12H0x; the code 12h is
+valid for the other part numbers
+"""
 
-Matthew Gerlach
+Also about the 4-byte address Page Program 1-1-1 and 1-1-4, see note 17:
+"""
+Only available for part numbers N25Q512A83GSF40x, N25Q512A83G1240x,
+N25Q512A83GSFA0x, N25Q512A83G12A0x and N25Q512A83G12H0x
+"""
 
+So even with the basic Page Program 1-1-1, this patch would introduce
+regressions with some memory parts.
 
-On Tue, 10 Oct 2017, Cyrille Pitchen wrote:
+This is a known issue of Micron memories and this is why the
+SPI_NOR_4B_OPCODES flag was not set before for those memories!
 
-> Hi Matthew
->
-> NAK for this patch
->
-> Le 20/09/2017 à 20:28, matthew.gerlach@linux.intel.com a écrit :
->> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->>
->> This patch is a work around for some non-standard behavior
->> of EPCQ flash parts:
->>
->> https://www.altera.com/documentation/wtw1396921531042.html#wtw1396921651224
->>
->
-> From the above documentation:
-> """
-> Write Non-Volatile Configuration Register Operation
->
-> You need to write the non-volatile configuration registers for EPCQ-L
-> devices for different configuration schemes. If you are using the .jic
-> file, the Quartus® Prime programmer sets the number of dummy clock
-> cycles and address bytes. If you are using an external programmer tools
-> (3rd party programmer tools), you must set the non-volatile
-> configuration registers.
->
-> To set the non-volatile configuration register, follow these steps:
->
->    Execute the write enable operation.
->    Execute the write non-volatile configuration register operation.
->    Set the 16-bit register value.
->
+>>> The stateless mode is clearly more beneficial, because there are boot
+>>> ROM code versions not able to cope with the chip left in 4-byte state.
+>>>
 
-This documentation does not match my experience with the flash.  No where
-am I setting the non-volatile configuration register.  After power up, I 
-just read the register and observe 10 dummy clock cycles, which is the 
-only value that results in successfully reading correct data from the 
-flash.  I suspect the FPGA is doing the same at power up.
-
-> Set the 16-bit register value as b'1110 1110 xxxx 1111 where xxxx is the
-> dummy clock value. When the xxxx value is from 0001 to 1110, the dummy
-> clock value is from 1 to 14. When xxxx is 0000 or 1111, the dummy clock
-> value is at the default value, which is 8 for standard fast read (AS x1)
-> mode and 10 for extended quad input fast read (AS x4) mode.
-> """
->
-> AFAIU, it is stated that you can set the number of dummy cycle to either
-> 0000b or 1111b, the default value. There is no valid reason to use any
-> other value, like there is no valid reason to tune the number of dummy
-> clock cycles. Just keep the default settings, please!
-
-The default Micron setting simply does not work.
-
->
-> If we start to play changing the number of dummy cycles it would be real
-> mess to maintain.
-
-I completely understand the maintainance issue.
-
->
-> First, should we read the value to be used from some register or should
-> we force this value instead by writing that register ?
-> Some would prefer reading whereas other would prefer updating...
->
-> Moreover, the method to read or write the number of dummy cycles is not
-> standard and is manufacturer specific:
-
-Yes I get it that is manufacturer specific, and this would be another 
-example of yet a different manufacturer's approach.
-
->
-> - Micron uses 2 registers: the Volatile Configuration Register and the
-> Non-Volatile configuration Register.
->
-> - Macronix uses another register but doesn't store the number of dummy
-> cycles directly: instead this manufacturer uses codes. So we would have
-> to store tables mapping codes <-> number dummy clock cycles
->
-> - Spansion/Cypress also uses code tables and I already know that
-> depending on the memory part number the code is either 2bit or 4bit and
-> stored in different registers. Damned!
->
-> If I allow you to tune the number of dummy clock cycles for Micron
-> memory it would be fair that I allow other people to tune this number
-> for other memory manufacturers. However it would be a real pain to
-> maintain because there is no standard for that hence manufacturers just
-> do what they want and change things when they want. Far too
-> unpredictable, IMHO.
->
-> So to avoid a messy situation, the rule is simple: SPI-NOR memory MUST
-> be configured in their default factory settings when spi_nor_scan() is
-> called. Your memory has the very same JEDEC ID as some Micron memory,
-> then it should behave the exact same way: in this case the value for the
-> number of dummy clock cycles should be set to 0000b or 1111b in the NVCR
-> (and VCR too).
-
-I think this is crux of the problem.  The flash chip is essentially lying 
-about what kind of chip it is.  It says it is a Micron memory, but it 
-certainly is not behaving like a Micron chip.  I believe the purpose of 
-these EPCQ chips is somehow make it easier for the FPGA to configure 
-itself on power up, but it is doing it in a very non-standard and 
-non-maintainable way.  I believe the FPGA is reading dummy cycles from the
-NVCR on power up.  How else would it know how many dummy cycles to use?
+I agree with you on that: it was the purpose of patch adding support to
+the 4-byte address instruction set ;)
 
 
-The good news is that these chips are on path to 
-end of life, and moving forward we will be using standard flash parts. 
-The bad news is that there are a lot of these chips already in the wild, 
-and I suspect more are in the pipeline.
+>>> Tested with Micron N25Q512A.
+>>>
+>>> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+>> Can SFDP help here ?
+> 
+> it would be nice, but I've just checked
+> - JESD216
+> - "TN-25-06: Serial Flash Discovery Parameters for MT25Q Family"
+> - N25Q512A "Serial Flash Discovery Parameter Data Structure"
+> 
+> seems, such flag is not provided in the standard. There is a way
+> to figure out if the chip supports entering 4-bytes mode and what
+> is the command to enter such a mode, but nothing for the stateless commands.
+> 
+> I would be glad to be wrong in this particular case.
+> 
 
-At this point I see no path forward to being able to upstream support for 
-these EPCQ chips.
+The "4-byte address instruction set" is an optional SFDP table. It is
+supported by latest Macronix memories but not by the Micron N25Q* memories.
 
->
->
->> These flash parts are generally used to configure Intel/Altera FPGAs
->> on power up.  These parts report a JEDEC id of the Micron part at the core,
->> but have a different number of dummy cycles than specified in the Micron
->> data sheet.  The number of required dummy cycles can be read from the
->> Non-Volatile Configuration register.
->>
->> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->> ---
->>  drivers/mtd/spi-nor/altera-asmip2.c | 31 ++++++++++++++++++++++++++-----
->>  include/linux/mtd/altera-asmip2.h   |  3 +++
->>  2 files changed, 29 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/mtd/spi-nor/altera-asmip2.c b/drivers/mtd/spi-nor/altera-asmip2.c
->> index a977765..d9cd807 100644
->> --- a/drivers/mtd/spi-nor/altera-asmip2.c
->> +++ b/drivers/mtd/spi-nor/altera-asmip2.c
->> @@ -40,6 +40,10 @@
->>  #define QSPI_POLL_TIMEOUT_US		10000000
->>  #define QSPI_POLL_INTERVAL_US		5
->>
->> +#define SPINOR_OP_RD_NVCFG		0xb5
->> +#define NVCFG_DUMMY_SFT			12
->> +#define NVCFG_DUMMY_MASK		0xf
->> +
->>  struct altera_asmip2 {
->>  	void __iomem *csr_base;
->>  	u32 num_flashes;
->> @@ -231,7 +235,8 @@ static void altera_asmip2_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
->>  }
->>
->>  static int altera_asmip2_setup_banks(struct device *dev,
->> -				      u32 bank, struct device_node *np)
->> +				     u32 bank, struct device_node *np,
->> +				     u32 flags)
->>  {
->>  	const struct spi_nor_hwcaps hwcaps = {
->>  		.mask = SNOR_HWCAPS_READ |
->> @@ -241,6 +246,7 @@ static int altera_asmip2_setup_banks(struct device *dev,
->>  	struct altera_asmip2 *q = dev_get_drvdata(dev);
->>  	struct altera_asmip2_flash *flash;
->>  	struct spi_nor *nor;
->> +	u16 nvcfg;
->>  	int ret = 0;
->>
->>  	if (bank > q->num_flashes - 1)
->> @@ -273,6 +279,20 @@ static int altera_asmip2_setup_banks(struct device *dev,
->>  		return ret;
->>  	}
->>
->> +	if (flags & ALTERA_ASMIP2_FLASH_FLG_RD_NVCFG) {
->> +		ret = altera_asmip2_read_reg(nor, SPINOR_OP_RD_NVCFG,
->> +		 			     (u8*)&nvcfg, sizeof(nvcfg));
->> +
->> +		if (ret) {
->> +			dev_err(nor->dev,
->> +				"failed to read NV Configuration register\n");
->> +			return ret;
->> +		}
->> +
->> +		nor->read_dummy = (nvcfg >> NVCFG_DUMMY_SFT) & NVCFG_DUMMY_MASK;
->> +		dev_info(nor->dev, "%s dummy %d\n", __func__, nor->read_dummy);
->> +	}
->> +
->
-> You have forgotten the special case for values 0000b and 1111b (default
-> settings). For those 2 values, the actual number of dummy clock cycles is:
-> - 0 for Read (03h/13h)
-> - 8 for Fast Read 1-1-1 (0Bh/0Ch)
-> - 8 for Fast Read 1-1-2 (3Bh/3Ch)
-> - 8 for Fast Read 1-2-2 (BBh/BCh)
-> - 8 for Fast Read 1-1-4 (6Bh/6Ch)
-> - 10 for Fast Read 1-4-4 (EBh/ECh)
->
-> Besides, the value read from the Non-Volatile Configuration Register is
-> the value loaded into the Volatile Configuration Register at power-up.
-> The actual number of dummy clock cycles to be used by Fast Read commands
-> should be read from the Volatile Configuration Register.
->
-> Anyway, this not the way to go.
->
-> Best regards,
->
-> Cyrille
->
->>  	ret =  mtd_device_register(&nor->mtd, NULL, 0);
->>
->>  	return ret;
->> @@ -308,7 +328,7 @@ static int altera_asmip2_create(struct device *dev, void __iomem *csr_base)
->>  }
->>
->>  static int altera_asmip2_add_bank(struct device *dev,
->> -			 u32 bank, struct device_node *np)
->> +			 u32 bank, struct device_node *np, u32 flags)
->>  {
->>  	struct altera_asmip2 *q = dev_get_drvdata(dev);
->>
->> @@ -317,7 +337,7 @@ static int altera_asmip2_add_bank(struct device *dev,
->>
->>  	q->num_flashes++;
->>
->> -	return altera_asmip2_setup_banks(dev, bank, np);
->> +	return altera_asmip2_setup_banks(dev, bank, np, flags);
->>  }
->>
->>  static int altera_asmip2_remove_banks(struct device *dev)
->> @@ -361,7 +381,8 @@ static int altera_asmip2_probe_with_pdata(struct platform_device *pdev,
->>  	}
->>
->>  	for (i = 0; i < qdata->num_chip_sel; i++) {
->> -		ret = altera_asmip2_add_bank(dev, i, NULL);
->> +		ret = altera_asmip2_add_bank(dev, i, NULL,
->> +					     qdata->flash_flags[i]);
->>  		if (ret) {
->>  			dev_err(dev, "failed to add qspi bank %d\n", ret);
->>  			break;
->> @@ -414,7 +435,7 @@ static int altera_asmip2_probe(struct platform_device *pdev)
->>  			goto error;
->>  		}
->>
->> -		if (altera_asmip2_add_bank(dev, bank, pp)) {
->> +		if (altera_asmip2_add_bank(dev, bank, pp, 0)) {
->>  			dev_err(dev, "failed to add bank %u\n", bank);
->>  			goto error;
->>  		}
->> diff --git a/include/linux/mtd/altera-asmip2.h b/include/linux/mtd/altera-asmip2.h
->> index 580c43c..185a9b2 100644
->> --- a/include/linux/mtd/altera-asmip2.h
->> +++ b/include/linux/mtd/altera-asmip2.h
->> @@ -16,9 +16,12 @@
->>  #define ALTERA_ASMIP2_MAX_NUM_FLASH_CHIP 3
->>  #define ALTERA_ASMIP2_RESOURCE_SIZE 0x10
->>
->> +#define ALTERA_ASMIP2_FLASH_FLG_RD_NVCFG	BIT(0)
->> +
->>  struct altera_asmip2_plat_data {
->>  	void __iomem *csr_base;
->>  	u32 num_chip_sel;
->> +	u32 flash_flags[ALTERA_ASMIP2_MAX_NUM_FLASH_CHIP];
->>  };
->>
->>  #endif
->>
->
->
---8323329-231588532-1508179293=:19479--
+Best regards,
+
+Cyrille
