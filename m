@@ -1,12 +1,10 @@
-Received: from mail-oi0-f67.google.com ([209.85.218.67])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e4Dgt-0004Rr-P3
- for linux-mtd@lists.infradead.org; Mon, 16 Oct 2017 22:16:58 +0000
-Received: by mail-oi0-f67.google.com with SMTP id g125so27902857oib.12
- for <linux-mtd@lists.infradead.org>; Mon, 16 Oct 2017 15:16:35 -0700 (PDT)
-From: Rob Herring <robh@kernel.org>
-To: linux-kernel@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1e4DnK-0007d5-4L
+ for linux-mtd@lists.infradead.org; Mon, 16 Oct 2017 22:23:36 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Rob Herring <robh@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>,
  David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -14,9 +12,14 @@ Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
  user-mode-linux-devel@lists.sourceforge.net,
  user-mode-linux-user@lists.sourceforge.net, linux-mtd@lists.infradead.org
-Subject: [PATCH] kconfig: kill off GENERIC_IO option
-Date: Mon, 16 Oct 2017 17:16:31 -0500
-Message-Id: <20171016221631.23472-1-robh@kernel.org>
+Subject: Re: [PATCH] kconfig: kill off GENERIC_IO option
+Date: Tue, 17 Oct 2017 00:23:44 +0200
+Message-ID: <1670220.TrXKNt6kix@blindfold>
+In-Reply-To: <20171016221631.23472-1-robh@kernel.org>
+References: <20171016221631.23472-1-robh@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,65 +29,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The GENERIC_IO option is set for every architecture except tile and score
-as those define NO_IOMEM. The option only controls visibility of
-CONFIG_MTD which doesn't appear to be necessary for any reason, so let's
-just remove GENERIC_IO.
+Am Dienstag, 17. Oktober 2017, 00:16:31 CEST schrieb Rob Herring:
+> The GENERIC_IO option is set for every architecture except tile and score
+> as those define NO_IOMEM. The option only controls visibility of
+> CONFIG_MTD which doesn't appear to be necessary for any reason, so let's
+> just remove GENERIC_IO.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> Cc: Jeff Dike <jdike@addtoit.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Cc: Marek Vasut <marek.vasut@gmail.com>
+> Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+> Cc: user-mode-linux-devel@lists.sourceforge.net
+> Cc: user-mode-linux-user@lists.sourceforge.net
+> Cc: linux-mtd@lists.infradead.org
+> ---
+>  arch/um/Kconfig.common | 1 -
+>  drivers/mtd/Kconfig    | 1 -
+>  lib/Kconfig            | 4 ----
+>  3 files changed, 6 deletions(-)
 
-Signed-off-by: Rob Herring <robh@kernel.org>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: user-mode-linux-devel@lists.sourceforge.net
-Cc: user-mode-linux-user@lists.sourceforge.net
-Cc: linux-mtd@lists.infradead.org
----
- arch/um/Kconfig.common | 1 -
- drivers/mtd/Kconfig    | 1 -
- lib/Kconfig            | 4 ----
- 3 files changed, 6 deletions(-)
+Acked-by: Richard Weinberger <richard@nod.at>
 
-diff --git a/arch/um/Kconfig.common b/arch/um/Kconfig.common
-index 85f6dd204ab6..5514ec52108f 100644
---- a/arch/um/Kconfig.common
-+++ b/arch/um/Kconfig.common
-@@ -9,7 +9,6 @@ config UML
- 	select HAVE_DEBUG_KMEMLEAK
- 	select GENERIC_IRQ_SHOW
- 	select GENERIC_CPU_DEVICES
--	select GENERIC_IO
- 	select GENERIC_CLOCKEVENTS
- 	select HAVE_GCC_PLUGINS
- 	select TTY # Needed for line.c
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index 5a2d71729b9a..2a8ac6829d42 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -1,6 +1,5 @@
- menuconfig MTD
- 	tristate "Memory Technology Device (MTD) support"
--	depends on GENERIC_IO
- 	help
- 	  Memory Technology Devices are flash, RAM and similar chips, often
- 	  used for solid state file systems on embedded devices. This option
-diff --git a/lib/Kconfig b/lib/Kconfig
-index b1445b22a6de..994fa37a1d96 100644
---- a/lib/Kconfig
-+++ b/lib/Kconfig
-@@ -46,10 +46,6 @@ config GENERIC_IOMAP
- 	bool
- 	select GENERIC_PCI_IOMAP
- 
--config GENERIC_IO
--	bool
--	default n
--
- config STMP_DEVICE
- 	bool
- 
--- 
-2.11.0
+Thanks,
+//richard
