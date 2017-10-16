@@ -1,22 +1,17 @@
 Received: from smtp3-g21.free.fr ([212.27.42.3])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e4CvS-0003E3-AB
- for linux-mtd@lists.infradead.org; Mon, 16 Oct 2017 21:27:56 +0000
-Subject: Re: [PATCH] mtd: spi-nor: Enable stateless 4-byte opcodes for
- N25Q256A/N25Q512A/N25Q00
-To: Alexander Sverdlin <alexander.sverdlin@nokia.com>,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>
-References: <20171016111712.16783-1-alexander.sverdlin@nokia.com>
- <bdf7c1fa-3c9f-0457-4658-632ad0fcd59c@gmail.com>
- <9a710d91-eca0-7859-7c67-e25782412272@nokia.com>
+ id 1e4DIM-0000HX-Ou
+ for linux-mtd@lists.infradead.org; Mon, 16 Oct 2017 21:51:37 +0000
+Subject: Re: support for ISSI is25lp128
+To: Angelo Dureghello <angelo@sysam.it>, linux-mtd@lists.infradead.org
+Cc: nnazarenko@radiofid.com
+References: <972ea98a-cc59-4fea-1358-ce096bc937c5@sysam.it>
+ <0708ec5b-130d-0a53-da89-2dae502d056e@sysam.it>
 From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <faa85df9-bc05-89db-386e-80a9c08526d4@wedev4u.fr>
-Date: Mon, 16 Oct 2017 23:27:19 +0200
+Message-ID: <cdd70f9e-fa09-dc70-226b-a380a8341e01@wedev4u.fr>
+Date: Mon, 16 Oct 2017 23:51:11 +0200
 MIME-Version: 1.0
-In-Reply-To: <9a710d91-eca0-7859-7c67-e25782412272@nokia.com>
+In-Reply-To: <0708ec5b-130d-0a53-da89-2dae502d056e@sysam.it>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -29,73 +24,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Alexander,
+Hi Angelo,
 
-Le 16/10/2017 à 14:25, Alexander Sverdlin a écrit :
-> Hello Marek,
+Le 13/10/2017 à 00:07, Angelo Dureghello a écrit :
+> Hi,
 > 
-> On 16/10/17 13:35, Marek Vasut wrote:
->>> The datasheets explicitly state that the stateless opcodes are supported
->>> and that they "do not need to be set up in the addressing mode".
->>>
+> again, please let me know if there is a wat to contribute for
+> is25lp128.
+>
 
-I don't totally agree. Micron memories have a little quirk: if you look
-closely at their datasheets (currently reading the N25Q512A datasheet)
-the 12h op code doesn't always work as expected.
+Please read Documentation/process/submitting-patches.rst
 
-For some memory parts, the 12h op code is used for 4-byte address Page
-Program 1-1-1 (as it should) whereas for other memory parts, this very
-same op code means 3-byte address Page Program x-4-4 (non standard
-usage, should have been 38h/3Eh).
-
-See note 18:
-"""
-The code 38h is valid only for part numbers N25Q512A83GSF40x,
-N25Q512A83G1240x,
-N25Q512A83GSFA0x, N25Q512A83G12A0x and N25Q512A83G12H0x; the code 12h is
-valid for the other part numbers
-"""
-
-Also about the 4-byte address Page Program 1-1-1 and 1-1-4, see note 17:
-"""
-Only available for part numbers N25Q512A83GSF40x, N25Q512A83G1240x,
-N25Q512A83GSFA0x, N25Q512A83G12A0x and N25Q512A83G12H0x
-"""
-
-So even with the basic Page Program 1-1-1, this patch would introduce
-regressions with some memory parts.
-
-This is a known issue of Micron memories and this is why the
-SPI_NOR_4B_OPCODES flag was not set before for those memories!
-
->>> The stateless mode is clearly more beneficial, because there are boot
->>> ROM code versions not able to cope with the chip left in 4-byte state.
->>>
-
-I agree with you on that: it was the purpose of patch adding support to
-the 4-byte address instruction set ;)
-
-
->>> Tested with Micron N25Q512A.
->>>
->>> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
->> Can SFDP help here ?
-> 
-> it would be nice, but I've just checked
-> - JESD216
-> - "TN-25-06: Serial Flash Discovery Parameters for MT25Q Family"
-> - N25Q512A "Serial Flash Discovery Parameter Data Structure"
-> 
-> seems, such flag is not provided in the standard. There is a way
-> to figure out if the chip supports entering 4-bytes mode and what
-> is the command to enter such a mode, but nothing for the stateless commands.
-> 
-> I would be glad to be wrong in this particular case.
-> 
-
-The "4-byte address instruction set" is an optional SFDP table. It is
-supported by latest Macronix memories but not by the Micron N25Q* memories.
+It is mandatory to follow this process and for instance to respect the
+format of the subject otherwise your mail would be filtered by patchwork.
 
 Best regards,
 
 Cyrille
+
+
+> I tested the Nikita patch, it works, i can read and write partitions
+> properly.
+> 
+> I am interested to have this chip available into mainline, and can
+> contribute for any test you need on this chip.
+> 
+> Regards,
+> Angelo
+> 
+> On 06/10/2017 23:04, Angelo Dureghello wrote:
+>> Hi all,
+>>
+>> i have a coldfire mcf54415-based board with a is25lp128 SPI flash and
+>> i was trolling into:
+>>
+>> http://lists.infradead.org/pipermail/linux-mtd/2016-March/066042.html
+>>
+>> I applied the same patch into spi-nor.c and tested, the patch seems
+>> to work great.
+>>
+>>
+>>       /* ISSI */
+>>       { "is25cd512", INFO(0x7f9d20, 0, 32 * 1024,   2, SECT_4K) },
+>> +    { "is25lp128", INFO(0x9d6018, 0, 32 * 1024,   512, SECT_4K) },
+>>
+>>
+>> At boot into dmesg i get
+>>
+>> [    0.000000] Linux version
+>> 4.13.0-rc7stmark2-001-00035-g815951bfbc2e-dirty (angelo@jerusalem)
+>> (gcc version 5.2.0 (crosstools-sysam-2016.04.16)) #158 Fri Oct 6
+>> 22:52:28 CEST 2017
+>> [    0.000000] uClinux with CPU COLDFIRE(m5441x)
+>> [    0.000000] COLDFIRE port done by Greg Ungerer, gerg@snapgear.com
+>> .....
+>> [    8.260000] m25p80 spi0.1: is25lp128 (16384 Kbytes)
+>> [    8.270000] Creating 3 MTD partitions on "is25lp128":
+>> [    8.270000] 0x000000000000-0x000000100000 : "U-Boot (1024K)"
+>> [    8.350000] 0x000000100000-0x000000800000 : "Kernel+initramfs (7168K)"
+>> [    8.410000] 0x000000800000-0x000001000000 : "Flash Free Space (8192K)"
+>> [    8.520000] Freeing unused kernel memory: 264K
+>>
+>> / # cat /proc/mtd
+>> dev:    size   erasesize  name
+>> mtd0: 00100000 00001000 "U-Boot (1024K)"
+>> mtd1: 00700000 00001000 "Kernel+initramfs (7168K)"
+>> mtd2: 00800000 00001000 "Flash Free Space (8192K)"
+>>
+>> / # hexdump /dev/mtd0 -C -n256
+>> 00000000  00 00 20 61 00 0f 01 00  00 00 00 80 00 00 8c 47  |..
+>> a...........G|
+>> 00000010  e0 04 b6 47 e0 04 b6 47  e0 04 b6 47 e0 04 b6 47 
+>> |...G...G...G...G|
+>> *
+>> 00000080  e0 04 b6 47 e0 04 b6 00  00 00 00 00 04 00 00 47 
+>> |...G...........G|
+>> 00000090  e0 00 00 46 fc 27 00 20  3c 80 00 00 00 4e 7b 08  |...F.'.
+>> <....N{.|
+>> 000000a0  01 20 3c 80 00 02 21 4e  7b 0c 05 70 00 22 7c 80  |.
+>> <...!N{..p."|.|
+>> 000000b0  00 ff f8 24 7c 80 00 ff  fc 22 80 24 80 20 3c 01 
+>> |...$|....".$. <.|
+>> 000000c0  04 01 00 4e 7b 00 02 70  00 4e 7b 00 04 4e 7b 00 
+>> |...N{..p.N{..N{.|
+>> 000000d0  05 4e 7b 00 06 4e 7b 00  07 2e 7c 80 00 ff 50 42 
+>> |.N{..N{...|...PB|
+>> 000000e0  a7 22 7c fc 04 00 2d 12  bc 00 17 61 00 04 62 22 
+>> |."|...-....a..b"|
+>> 000000f0  7c ec 09 40 4e 24 7c ec  09 40 4f 12 bc 00 ff 14 
+>> ||..@N$|..@O.....|
+>> 00000100
+>> / #
+>>
+>> It is proper code of the primary partition
+>>
+>> / # hexdump /dev/mtd1 -C -n256
+>> 00000000  27 05 19 56 fe 2e de 03  59 d7 ed 0d 00 1c 50 00 
+>> |'..V....Y.....P.|
+>> 00000010  40 00 10 00 40 00 10 00  ab e3 60 35 05 0c 02 00 
+>> |@...@.....`5....|
+>> 00000020  6d 61 69 6e 6c 69 6e 65  20 6b 65 72 6e 65 6c 00  |mainline
+>> kernel.|
+>> 00000030  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 
+>> |................|
+>> 00000040  4e 71 46 fc 27 00 20 3c  01 04 01 00 4e 7b 00 02  |NqF.'.
+>> <....N{..|
+>> 00000050  4e 71 2e 7c 40 00 00 00  4e 7b f8 01 23 cf 40 16 
+>> |Nq.|@...N{..#.@.|
+>> 00000060  b0 04 2e 7c 40 00 00 00  23 cf 40 16 b0 00 20 3c 
+>> |...|@...#.@... <|
+>>
+>> It is proper code of the second partition
+>>
+>>
+>> Let me know in case what kind of test you would need.
+>> Would help to have that patch accepted into mainline.
+>>
+>> Best regards,
+>> Angelo Dureghello
+>>
+>>
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
