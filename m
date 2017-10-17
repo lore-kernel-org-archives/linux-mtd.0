@@ -1,28 +1,32 @@
-Received: from mail-ve1eur02on0710.outbound.protection.outlook.com
- ([2a01:111:f400:fe06::710]
- helo=EUR02-VE1-obe.outbound.protection.outlook.com)
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e4RCX-0001B6-ER
- for linux-mtd@lists.infradead.org; Tue, 17 Oct 2017 12:42:31 +0000
-Subject: Re: [PATCH] mtd: spi-nor: Enable stateless 4-byte opcodes for
- N25Q256A/N25Q512A/N25Q00
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Marek Vasut
- <marek.vasut@gmail.com>, <linux-mtd@lists.infradead.org>
-CC: Boris Brezillon <boris.brezillon@free-electrons.com>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Richard
- Weinberger <richard@nod.at>
-References: <20171016111712.16783-1-alexander.sverdlin@nokia.com>
- <bdf7c1fa-3c9f-0457-4658-632ad0fcd59c@gmail.com>
- <9a710d91-eca0-7859-7c67-e25782412272@nokia.com>
- <faa85df9-bc05-89db-386e-80a9c08526d4@wedev4u.fr>
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Message-ID: <df114cd0-1ff0-4449-537f-5ab82f6ae6f2@nokia.com>
-Date: Tue, 17 Oct 2017 14:40:54 +0200
+ id 1e4RoU-0000mW-8K
+ for linux-mtd@lists.infradead.org; Tue, 17 Oct 2017 13:21:44 +0000
+Received: from mail-qk0-f176.google.com (mail-qk0-f176.google.com
+ [209.85.220.176])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id A921721868
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Oct 2017 13:21:21 +0000 (UTC)
+Received: by mail-qk0-f176.google.com with SMTP id k123so1951279qke.3
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Oct 2017 06:21:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <faa85df9-bc05-89db-386e-80a9c08526d4@wedev4u.fr>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20171016175517.264e710a@bbrezillon>
+References: <20170905202339.20732-1-wak@google.com>
+ <20170921095930.4b473f91@bbrezillon>
+ <CAPnigKmBujCoKdtXwnK6YsU=YvXM+MaDvDvKpUXEVgHzOC-VEw@mail.gmail.com>
+ <8760cbv090.fsf@concordia.ellerman.id.au> <20171016175517.264e710a@bbrezillon>
+From: Rob Herring <robh+dt@kernel.org>
+Date: Tue, 17 Oct 2017 08:21:00 -0500
+Message-ID: <CAL_JsqLBkU9habdOhoQ8ZiM=x87eLmuLrS6ujx32UOv8LHc=EA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: powernv: Support MTD_NO_ERASE
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>, William Kennington <wak@google.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Cyril Bur <cyrilbur@gmail.com>, Stewart Smith <stewart@linux.vnet.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,54 +36,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Cyrille,
-
-On 16/10/17 23:27, Cyrille Pitchen wrote:
-> Hi Alexander,
-> 
-> Le 16/10/2017 à 14:25, Alexander Sverdlin a écrit :
->> Hello Marek,
+On Mon, Oct 16, 2017 at 10:55 AM, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> Hi Michael,
+>
+> Sorry for the late reply.
+>
+> On Fri, 22 Sep 2017 14:13:47 +1000
+> Michael Ellerman <mpe@ellerman.id.au> wrote:
+>
+>> William Kennington <wak@google.com> writes:
 >>
->> On 16/10/17 13:35, Marek Vasut wrote:
->>>> The datasheets explicitly state that the stateless opcodes are supported
->>>> and that they "do not need to be set up in the addressing mode".
->>>>
-> 
-> I don't totally agree. Micron memories have a little quirk: if you look
-> closely at their datasheets (currently reading the N25Q512A datasheet)
-> the 12h op code doesn't always work as expected.
-> 
-> For some memory parts, the 12h op code is used for 4-byte address Page
-> Program 1-1-1 (as it should) whereas for other memory parts, this very
-> same op code means 3-byte address Page Program x-4-4 (non standard
-> usage, should have been 38h/3Eh).
-> 
-> See note 18:
-> """
-> The code 38h is valid only for part numbers N25Q512A83GSF40x,
-> N25Q512A83G1240x,
-> N25Q512A83GSFA0x, N25Q512A83G12A0x and N25Q512A83G12H0x; the code 12h is
-> valid for the other part numbers
-> """
-> 
-> Also about the 4-byte address Page Program 1-1-1 and 1-1-4, see note 17:
-> """
-> Only available for part numbers N25Q512A83GSF40x, N25Q512A83G1240x,
-> N25Q512A83GSFA0x, N25Q512A83G12A0x and N25Q512A83G12H0x
-> """
-> 
-> So even with the basic Page Program 1-1-1, this patch would introduce
-> regressions with some memory parts.
-> 
-> This is a known issue of Micron memories and this is why the
-> SPI_NOR_4B_OPCODES flag was not set before for those memories!
+>> > +Cyril Bur and
+>> >
+>> > Not sure what you mean by mainline, but the commit is in the master branch
+>> > at
+>> > https://github.com/open-power/skiboot/commit/ba99af9b149d02438347b055e6e7d6bd15e33551
+>>
+>> I suspect Boris missed that you were referring to a skiboot commit and
+>> looked in Linux?
+>>
+>> > I'm unsure about the documentation of the properties as I'm not really the
+>> > maintainer of any of the code on either side. I just added this DT property
+>> > for plumbing through the NO_ERASE flag. I added Cyril and Michael as they
+>> > both work closely with this driver and could comment better than I could.
+>> >
+>> > - William
+>> >
+>> > On Thu, Sep 21, 2017 at 12:59 AM Boris Brezillon <
+>> > boris.brezillon@free-electrons.com> wrote:
+>> >
+>> >> +the DT maintainers
+>> >>
+>> >> On Tue,  5 Sep 2017 13:23:39 -0700
+>> >> "William A. Kennington III" <wak@google.com> wrote:
+>> >>
+>> >> > As of skiboot@ba99af9b149d02438347b055e6e7d6bd15e33551, we now support
+>> >>
+>> >> I didn't find this commit in mainline.
+>> >>
+>> >> > adding a device tree entry which marks a flash device as not needing
+>> >> > erase. This patch adds support for setting MTD_NO_ERASE on powernvflash
+>> >> > devices which have the property no-erase.
+>> >> >
+>> >> > Signed-off-by: William A. Kennington III <wak@google.com>
+>> >> > ---
+>> >> >  drivers/mtd/devices/powernv_flash.c | 2 ++
+>> >> >  1 file changed, 2 insertions(+)
+>> >> >
+>> >> > diff --git a/drivers/mtd/devices/powernv_flash.c
+>> >> b/drivers/mtd/devices/powernv_flash.c
+>> >> > index f5396f26ddb4..fab9f9121b4c 100644
+>> >> > --- a/drivers/mtd/devices/powernv_flash.c
+>> >> > +++ b/drivers/mtd/devices/powernv_flash.c
+>> >> > @@ -196,6 +196,8 @@ static int powernv_flash_set_driver_info(struct
+>> >> device *dev,
+>> >> >       mtd->name = of_get_property(dev->of_node, "name", NULL);
+>> >> >       mtd->type = MTD_NORFLASH;
+>> >> >       mtd->flags = MTD_WRITEABLE;
+>> >> > +     if (of_property_read_bool(dev->of_node, "no-erase"))
+>> >> > +             mtd->flags |= MTD_NO_ERASE;
+>> >>
+>> >> I don't see this property document in a DT binding doc, which is
+>> >> mandatory. Actually, there's no DT bindings doc at all for the
+>> >> 'ibm,opal-flash' device in mainline, is this normal?
+>>
+>> The binding doc is here:
+>>
+>>   https://github.com/open-power/skiboot/blob/master/doc/device-tree/ibm%2Copal/flash.rst
+>>
+>> But that property is not documented :(
+>
+> Would be good to update the doc then :-).
+>
+>>
+>> We have some of the skiboot bindings also in the kernel tree, but there
+>> was talk of moving all the binding docs *out* of the kernel, so we never
+>> made an effort to put more in. I've lost track of whether there are
+>> still plans to move the binding docs out or not.
 
-yes, you are right, while 256/512Mbit variants just potentially have some
-non-standard variations, in N25Q00AA series 12h command has non-standard
-mapping in all parts. 
+Whether bindings are moved out or not, what's in the kernel will be
+the starting point. I wouldn't hold your breath for them to move out
+any time soon.
 
-Seems, we have to just scrap this patch.
+> Okay, I don't know what's the policy for external DT bindings doc, but
+> maybe you can add a file in Document/devicetree/bindings/mtd pointing
+> to the skiboot doc.
+>
+> Rob, what's your opinion?
 
--- 
-Best regards,
-Alexander Sverdlin.
+I'd prefer they be documented in the kernel especially if they are
+used by the kernel. Of course, there's IBM bindings covered by various
+?PAPR specs which wouldn't make sense to duplicate, but I'm guessing
+what's documented in skiboot are not covered by those specs.
+
+Rob
