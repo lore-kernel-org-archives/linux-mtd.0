@@ -1,24 +1,19 @@
-Subject: Re: [PATCH v4 0/6] K2G: Add QSPI support
-To: Marek Vasut <marek.vasut@gmail.com>, Vignesh R <vigneshr@ti.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-References: <20171003051925.8821-1-vigneshr@ti.com>
- <09cc0a61-3f73-4a10-2d67-32515a7da861@ti.com>
- <6f507813-388a-13e5-31ba-736b419744fa@gmail.com>
- <69beca0c-68a2-2d2c-d4a8-6f05a1fbc957@wedev4u.fr>
- <ebd85d99-431b-3f6d-4bdf-e7d47b81567c@gmail.com>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <012e14f4-1eb0-2641-feaa-5fc8f9028810@wedev4u.fr>
-Date: Tue, 17 Oct 2017 20:50:51 +0200
-MIME-Version: 1.0
-In-Reply-To: <ebd85d99-431b-3f6d-4bdf-e7d47b81567c@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: from mail-pf0-x22e.google.com ([2607:f8b0:400e:c00::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1e4YwU-0007bG-Bi
+ for linux-mtd@lists.infradead.org; Tue, 17 Oct 2017 20:58:30 +0000
+Received: by mail-pf0-x22e.google.com with SMTP id b79so2233831pfk.5
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Oct 2017 13:57:54 -0700 (PDT)
+From: Roy Franz <rfranz@cavium.com>
+To: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
+ cyrille.pitchen@wedev4u.fr
+Cc: roy.franz@cavium.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ ddaney@cavium.com
+Subject: [PATCH] mdt: slram: use memremap() instead of ioremap()
+Date: Tue, 17 Oct 2017 13:56:42 -0700
+Message-Id: <20171017205642.1791-1-roy.franz@cavium.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,36 +23,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 17/10/2017 à 00:34, Marek Vasut a écrit :
-> On 10/17/2017 12:29 AM, Cyrille Pitchen wrote:
->> Hi all,
->>
->> Le 16/10/2017 à 11:28, Marek Vasut a écrit :
->>> On 10/16/2017 08:15 AM, Vignesh R wrote:
->>>>
->>>>
->>>> On Tuesday 03 October 2017 10:49 AM, Vignesh R wrote:
->>>>>
->>>>>
->>>>> This series adds support for Cadence QSPI IP present in TI's 66AK2G SoC.
->>>>> The patches enhance the existing cadence-quadspi driver to support
->>>>> loopback clock circuit, pm_runtime support and tweaks for 66AK2G SoC.
->>>>
->>>> Gentle ping on the series...
->>>
->>> It's IMO OK, Cyrille, can you pick it ?
->>>
->>
->> The series looks good to me too.
->>
->> Marek, could you please add you "Acked-by" or "Reviewed-by" tag for the
->> record in patchwork ? It will be automatically added when I use
->> "pwclient git-am -s" to merge the patches into the spi-nor/next branch.
-> 
-> Acked-by: Marek Vasut <marek.vasut@gmail.com>
-> 
+Convert slram to use memremap() to map the memory it uses to back an MTD
+device, as this is the proper interface for mapping memory. This change
+enables normal memory to be used to back an MTD device on arm64, as arm64
+prevents ioremap() being used on normal memory.
 
-added Marek's "Acked-by" tags on the whole series and applied it into
-the spi-nor/next branch of l2-mtd
+Signed-off-by: Roy Franz <roy.franz@cavium.com>
+---
+Tested on arm64 simulation, using simulator to preload filesystem image into RAM,
+and also tested on x86_64 using video card memory.  This is useful for speeding
+up booting on (very slow) emulation environments by avoiding any processing of
+an initramfs.
 
-Thanks!
+ drivers/mtd/devices/slram.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/devices/slram.c b/drivers/mtd/devices/slram.c
+index 8087c36dc693..0ec85f316d24 100644
+--- a/drivers/mtd/devices/slram.c
++++ b/drivers/mtd/devices/slram.c
+@@ -163,8 +163,9 @@ static int register_device(char *name, unsigned long start, unsigned long length
+ 	}
+ 
+ 	if (!(((slram_priv_t *)(*curmtd)->mtdinfo->priv)->start =
+-				ioremap(start, length))) {
+-		E("slram: ioremap failed\n");
++		memremap(start, length,
++			 MEMREMAP_WB | MEMREMAP_WT | MEMREMAP_WC))) {
++		E("slram: memremap failed\n");
+ 		return -EIO;
+ 	}
+ 	((slram_priv_t *)(*curmtd)->mtdinfo->priv)->end =
+@@ -186,7 +187,7 @@ static int register_device(char *name, unsigned long start, unsigned long length
+ 
+ 	if (mtd_device_register((*curmtd)->mtdinfo, NULL, 0))	{
+ 		E("slram: Failed to register new device\n");
+-		iounmap(((slram_priv_t *)(*curmtd)->mtdinfo->priv)->start);
++		memunmap(((slram_priv_t *)(*curmtd)->mtdinfo->priv)->start);
+ 		kfree((*curmtd)->mtdinfo->priv);
+ 		kfree((*curmtd)->mtdinfo);
+ 		return(-EAGAIN);
+@@ -206,7 +207,7 @@ static void unregister_devices(void)
+ 	while (slram_mtdlist) {
+ 		nextitem = slram_mtdlist->next;
+ 		mtd_device_unregister(slram_mtdlist->mtdinfo);
+-		iounmap(((slram_priv_t *)slram_mtdlist->mtdinfo->priv)->start);
++		memunmap(((slram_priv_t *)slram_mtdlist->mtdinfo->priv)->start);
+ 		kfree(slram_mtdlist->mtdinfo->priv);
+ 		kfree(slram_mtdlist->mtdinfo);
+ 		kfree(slram_mtdlist);
+-- 
+2.11.0
