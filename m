@@ -1,16 +1,16 @@
 Received: from pb-smtp1.pobox.com ([64.147.108.70] helo=sasl.smtp.pobox.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e4Tnc-0004BY-LI
+ id 1e4Tnc-0004BX-L2
  for linux-mtd@lists.infradead.org; Tue, 17 Oct 2017 15:29:02 +0000
 From: Nicolas Pitre <nicolas.pitre@linaro.org>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>
 Cc: Chris Brandt <chris.brandt@renesas.com>,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH v2 4/5] MTD: implement mtd_get_unmapped_area() using the point
- method
-Date: Tue, 17 Oct 2017 11:28:25 -0400
-Message-Id: <20171017152826.11658-5-nicolas.pitre@linaro.org>
+Subject: [PATCH v2 2/5] MTD: chips/map_ram.c: implement point and unpoint
+ methods
+Date: Tue, 17 Oct 2017 11:28:23 -0400
+Message-Id: <20171017152826.11658-3-nicolas.pitre@linaro.org>
 In-Reply-To: <20171017152826.11658-1-nicolas.pitre@linaro.org>
 References: <20171017152826.11658-1-nicolas.pitre@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,48 +22,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The mtd->_point method is a superset of mtd->_get_unmapped_area.
-Especially in the NOR flash case, the point method ensures the flash
-memory is in array (data) mode and that it will stay that way which
-is precisely what callers of mtd_get_unmapped_area() would expect.
-
-Implement mtd_get_unmapped_area() in terms of mtd->_point now that all
-drivers that provided a _get_unmapped_area method also have the _point
-method implemented.
-
 Signed-off-by: Nicolas Pitre <nico@linaro.org>
 Reviewed-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/mtdcore.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ drivers/mtd/chips/map_ram.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index e7ea842ba3..ecb0380158 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -1022,11 +1022,18 @@ EXPORT_SYMBOL_GPL(mtd_unpoint);
- unsigned long mtd_get_unmapped_area(struct mtd_info *mtd, unsigned long len,
- 				    unsigned long offset, unsigned long flags)
- {
--	if (!mtd->_get_unmapped_area)
--		return -EOPNOTSUPP;
--	if (offset >= mtd->size || len > mtd->size - offset)
--		return -EINVAL;
--	return mtd->_get_unmapped_area(mtd, len, offset, flags);
-+	size_t retlen;
-+	void *virt;
-+	int ret;
-+
-+	ret = mtd_point(mtd, offset, len, &retlen, &virt, NULL);
-+	if (ret)
-+		return ret;
-+	if (retlen != len) {
-+		mtd_unpoint(mtd, offset, retlen);
-+		return -ENOSYS;
-+	}
-+	return (unsigned long)virt;
- }
- EXPORT_SYMBOL_GPL(mtd_get_unmapped_area);
+diff --git a/drivers/mtd/chips/map_ram.c b/drivers/mtd/chips/map_ram.c
+index afb43d5e17..c3939dd230 100644
+--- a/drivers/mtd/chips/map_ram.c
++++ b/drivers/mtd/chips/map_ram.c
+@@ -22,6 +22,9 @@ static void mapram_nop (struct mtd_info *);
+ static struct mtd_info *map_ram_probe(struct map_info *map);
+ static unsigned long mapram_unmapped_area(struct mtd_info *, unsigned long,
+ 					  unsigned long, unsigned long);
++static int mapram_point (struct mtd_info *mtd, loff_t from, size_t len,
++			 size_t *retlen, void **virt, resource_size_t *phys);
++static int mapram_unpoint(struct mtd_info *mtd, loff_t from, size_t len);
  
+ 
+ static struct mtd_chip_driver mapram_chipdrv = {
+@@ -69,7 +72,9 @@ static struct mtd_info *map_ram_probe(struct map_info *map)
+ 	mtd->_read = mapram_read;
+ 	mtd->_write = mapram_write;
+ 	mtd->_panic_write = mapram_write;
++	mtd->_point = mapram_point;
+ 	mtd->_sync = mapram_nop;
++	mtd->_unpoint = mapram_unpoint;
+ 	mtd->flags = MTD_CAP_RAM;
+ 	mtd->writesize = 1;
+ 
+@@ -96,6 +101,25 @@ static unsigned long mapram_unmapped_area(struct mtd_info *mtd,
+ 	return (unsigned long) map->virt + offset;
+ }
+ 
++static int mapram_point(struct mtd_info *mtd, loff_t from, size_t len,
++			size_t *retlen, void **virt, resource_size_t *phys)
++{
++	struct map_info *map = mtd->priv;
++
++	if (!map->virt)
++		return -EINVAL;
++	*virt = map->virt + from;
++	if (phys)
++		*phys = map->phys + from;
++	*retlen = len;
++	return 0;
++}
++
++static int mapram_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
++{
++	return 0;
++}
++
+ static int mapram_read (struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char *buf)
+ {
+ 	struct map_info *map = mtd->priv;
 -- 
 2.9.5
