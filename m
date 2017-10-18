@@ -1,44 +1,44 @@
-From: Miquel Raynal <miquel.raynal@free-electrons.com>
-To: Andrew Lunn <andrew@lunn.ch>, bcm-kernel-feedback-list@broadcom.com,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Chen-Yu Tsai <wens@csie.org>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Daniel Mack <daniel@zonque.org>, David Woodhouse <dwmw2@infradead.org>,
- devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Han Xu <han.xu@nxp.com>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Jason Cooper <jason@lakedaemon.net>, Josh Wu <rainyfeeling@outlook.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
- linux-mtd@lists.infradead.org,
- Marc Gonzalez <marc_gonzalez@sigmadesigns.com>,
- Marek Vasut <marek.vasut@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Maxim Levitsky <maximlevitsky@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- Robert Jarzmik <robert.jarzmik@free.fr>, Rob Herring <robh+dt@kernel.org>,
- Russell King <linux@armlinux.org.uk>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Stefan Agner <stefan@agner.ch>, Sylvain Lemieux <slemieux.tyco@gmail.com>,
- Vladimir Zapolskiy <vz@mleia.com>, Wenyou Yang <wenyou.yang@atmel.com>,
- Will Deacon <will.deacon@arm.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Antoine Tenart <antoine.tenart@free-electrons.com>,
- Miquel Raynal <miquel.raynal@free-electrons.com>,
- Igor Grinberg <grinberg@compulab.co.il>, Nadav Haklai <nadavh@marvell.com>,
- Ofer Heifetz <oferh@marvell.com>, Neta Zur Hershkovits <neta@marvell.com>,
- Hanna Hawa <hannah@marvell.com>
-Subject: [RFC 07/12] ARM: dts: armada-370-xp: use reworked NAND controller
- driver
-Date: Wed, 18 Oct 2017 16:36:24 +0200
-Message-Id: <20171018143629.29302-8-miquel.raynal@free-electrons.com>
-In-Reply-To: <20171018143629.29302-1-miquel.raynal@free-electrons.com>
+Date: Wed, 18 Oct 2017 19:02:55 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Miquel Raynal <miquel.raynal@free-electrons.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, bcm-kernel-feedback-list@broadcom.com,
+ Brian Norris <computersforpeace@gmail.com>, Catalin Marinas
+ <catalin.marinas@arm.com>, Chen-Yu Tsai <wens@csie.org>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Daniel Mack <daniel@zonque.org>, David
+ Woodhouse <dwmw2@infradead.org>, devel@driverdev.osuosl.org,
+ devicetree@vger.kernel.org, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Gregory Clement
+ <gregory.clement@free-electrons.com>, Han Xu <han.xu@nxp.com>, Haojian
+ Zhuang <haojian.zhuang@gmail.com>, Jason Cooper <jason@lakedaemon.net>,
+ Josh Wu <rainyfeeling@outlook.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, linux-mtd@lists.infradead.org, Marc
+ Gonzalez <marc_gonzalez@sigmadesigns.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Mark Rutland <mark.rutland@arm.com>, Masahiro
+ Yamada <yamada.masahiro@socionext.com>, Matthias Brugger
+ <matthias.bgg@gmail.com>, Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Maxim Levitsky <maximlevitsky@gmail.com>, Richard Weinberger
+ <richard@nod.at>, Robert Jarzmik <robert.jarzmik@free.fr>, Rob Herring
+ <robh+dt@kernel.org>, Russell King <linux@armlinux.org.uk>, Sebastian
+ Hesselbarth <sebastian.hesselbarth@gmail.com>, Stefan Agner
+ <stefan@agner.ch>, Sylvain Lemieux <slemieux.tyco@gmail.com>, Vladimir
+ Zapolskiy <vz@mleia.com>, Wenyou Yang <wenyou.yang@atmel.com>, Will Deacon
+ <will.deacon@arm.com>, Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>, Antoine Tenart
+ <antoine.tenart@free-electrons.com>, Igor Grinberg
+ <grinberg@compulab.co.il>, Nadav Haklai <nadavh@marvell.com>, Ofer Heifetz
+ <oferh@marvell.com>, Neta Zur Hershkovits <neta@marvell.com>, Hanna Hawa
+ <hannah@marvell.com>
+Subject: Re: [RFC 03/12] mtd: nand: use a static data_interface in the
+ nand_chip structure
+Message-ID: <20171018190255.3b223d7e@bbrezillon>
+In-Reply-To: <20171018143629.29302-4-miquel.raynal@free-electrons.com>
 References: <20171018143629.29302-1-miquel.raynal@free-electrons.com>
+ <20171018143629.29302-4-miquel.raynal@free-electrons.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -48,1007 +48,267 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Change the bindings to use the reworked Marvell NAND controller driver.
-Also adapt the nand controller node organization to distinguish which
-property is relevant for the controller, and which one is NAND chip
-specific. Expose the partitions as a subnode of the NAND chip.
+On Wed, 18 Oct 2017 16:36:20 +0200
+Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
 
-Remove the 'marvell,nand-enable-arbiter' property, inefective with
-Armada boards.
+> Change the data_interface field from the nand_chip structure, convert
+> the pointer to a static structure.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
----
- arch/arm/boot/dts/armada-370-db.dts                |  56 ++++----
- arch/arm/boot/dts/armada-370-dlink-dns327l.dts     | 119 ++++++++--------
- arch/arm/boot/dts/armada-370-mirabox.dts           |  50 ++++---
- arch/arm/boot/dts/armada-370-netgear-rn102.dts     |  89 ++++++------
- arch/arm/boot/dts/armada-370-netgear-rn104.dts     |  89 ++++++------
- arch/arm/boot/dts/armada-370-rd.dts                |  51 ++++---
- arch/arm/boot/dts/armada-370-seagate-nas-xbay.dtsi |  63 +++++----
- arch/arm/boot/dts/armada-370-xp.dtsi               |   6 +-
- arch/arm/boot/dts/armada-xp-db-dxbc2.dts           |   1 -
- arch/arm/boot/dts/armada-xp-db-xc3-24g4xg.dts      |   1 -
- arch/arm/boot/dts/armada-xp-db.dts                 |   1 -
- arch/arm/boot/dts/armada-xp-gp.dts                 |   1 -
- arch/arm/boot/dts/armada-xp-lenovo-ix4-300d.dts    |   1 -
- arch/arm/boot/dts/armada-xp-linksys-mamba.dts      | 155 +++++++++++----------
- arch/arm/boot/dts/armada-xp-netgear-rn2120.dts     |  89 ++++++------
- 15 files changed, 420 insertions(+), 352 deletions(-)
+You mean "embed a nand_data_interface object". Not sure the static
+specifier can be used to describe what you do.
 
-diff --git a/arch/arm/boot/dts/armada-370-db.dts b/arch/arm/boot/dts/armada-370-db.dts
-index c4eef7323367..76c433c29731 100644
---- a/arch/arm/boot/dts/armada-370-db.dts
-+++ b/arch/arm/boot/dts/armada-370-db.dts
-@@ -142,33 +142,6 @@
- 			usb@51000 {
- 				status = "okay";
- 			};
--
--			nand@d0000 {
--				status = "okay";
--				num-cs = <1>;
--				marvell,nand-keep-config;
--				marvell,nand-enable-arbiter;
--				nand-on-flash-bbt;
--
--				partitions {
--					compatible = "fixed-partitions";
--					#address-cells = <1>;
--					#size-cells = <1>;
--
--					partition@0 {
--						label = "U-Boot";
--						reg = <0 0x800000>;
--					};
--					partition@800000 {
--						label = "Linux";
--						reg = <0x800000 0x800000>;
--					};
--					partition@1000000 {
--						label = "Filesystem";
--						reg = <0x1000000 0x3f000000>;
--					};
--				};
--			};
- 		};
- 	};
- 
-@@ -276,3 +249,32 @@
- 	};
- };
- 
-+&nand_controller {
-+	status = "okay";
-+
-+	nand@0 {
-+		reg = <0>;
-+		marvell,rb = <0>;
-+		marvell,nand-keep-config;
-+		nand-on-flash-bbt;
-+
-+		partitions {
-+			compatible = "fixed-partitions";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			partition@0 {
-+				label = "U-Boot";
-+				reg = <0 0x800000>;
-+			};
-+			partition@800000 {
-+				label = "Linux";
-+				reg = <0x800000 0x800000>;
-+			};
-+			partition@1000000 {
-+				label = "Filesystem";
-+				reg = <0x1000000 0x3f000000>;
-+			};
-+		};
-+	};
-+};
-diff --git a/arch/arm/boot/dts/armada-370-dlink-dns327l.dts b/arch/arm/boot/dts/armada-370-dlink-dns327l.dts
-index db7f3aa38670..0cc3285a40b3 100644
---- a/arch/arm/boot/dts/armada-370-dlink-dns327l.dts
-+++ b/arch/arm/boot/dts/armada-370-dlink-dns327l.dts
-@@ -81,61 +81,6 @@
- 			usb@50000 {
- 				status = "okay";
- 			};
--
--			nand@d0000 {
--				status = "okay";
--				num-cs = <1>;
--				marvell,nand-keep-config;
--				marvell,nand-enable-arbiter;
--				nand-on-flash-bbt;
--				nand-ecc-strength = <4>;
--				nand-ecc-step-size = <512>;
--
--				partition@0 {
--					label = "u-boot";
--					/* 1.0 MiB */
--					reg = <0x0000000 0x100000>;
--					read-only;
--				};
--
--				partition@100000 {
--					label = "u-boot-env";
--					/* 128 KiB */
--					reg = <0x100000 0x20000>;
--					read-only;
--				};
--
--				partition@120000 {
--					label = "uImage";
--					/* 7 MiB */
--					reg = <0x120000 0x700000>;
--				};
--
--				partition@820000 {
--					label = "ubifs";
--					/* ~ 84 MiB */
--					reg = <0x820000 0x54e0000>;
--				};
--
--				/* Hardcoded into stock bootloader */
--				partition@5d00000 {
--					label = "failsafe-uImage";
--					/* 5 MiB */
--					reg = <0x5d00000 0x500000>;
--				};
--
--				partition@6200000 {
--					label = "failsafe-fs";
--					/* 29 MiB */
--					reg = <0x6200000 0x1d00000>;
--				};
--
--				partition@7f00000 {
--					label = "bbt";
--					/* 1 MiB for BBT */
--					reg = <0x7f00000 0x100000>;
--				};
--			};
- 		};
- 	};
- 
-@@ -356,3 +301,67 @@
- 	clock-frequency = <100000>;
- 	status = "okay";
- };
-+
-+&nand_controller {
-+	status = "okay";
-+
-+	nand@0 {
-+		reg = <0>;
-+		marvell,rb = <0>;
-+		marvell,nand-keep-config;
-+		nand-on-flash-bbt;
-+		nand-ecc-strength = <4>;
-+		nand-ecc-step-size = <512>;
-+
-+		partitions {
-+			compatible = "fixed-partitions";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			partition@0 {
-+				label = "u-boot";
-+				/* 1.0 MiB */
-+				reg = <0x0000000 0x100000>;
-+				read-only;
-+			};
-+
-+			partition@100000 {
-+				label = "u-boot-env";
-+				/* 128 KiB */
-+				reg = <0x100000 0x20000>;
-+				read-only;
-+			};
-+
-+			partition@120000 {
-+				label = "uImage";
-+				/* 7 MiB */
-+				reg = <0x120000 0x700000>;
-+			};
-+
-+			partition@820000 {
-+				label = "ubifs";
-+				/* ~ 84 MiB */
-+				reg = <0x820000 0x54e0000>;
-+			};
-+
-+			/* Hardcoded into stock bootloader */
-+			partition@5d00000 {
-+				label = "failsafe-uImage";
-+				/* 5 MiB */
-+				reg = <0x5d00000 0x500000>;
-+			};
-+
-+			partition@6200000 {
-+				label = "failsafe-fs";
-+				/* 29 MiB */
-+				reg = <0x6200000 0x1d00000>;
-+			};
-+
-+			partition@7f00000 {
-+				label = "bbt";
-+				/* 1 MiB for BBT */
-+				reg = <0x7f00000 0x100000>;
-+			};
-+		};
-+	};
-+};
-diff --git a/arch/arm/boot/dts/armada-370-mirabox.dts b/arch/arm/boot/dts/armada-370-mirabox.dts
-index 702f58c9642d..9e13a83cf057 100644
---- a/arch/arm/boot/dts/armada-370-mirabox.dts
-+++ b/arch/arm/boot/dts/armada-370-mirabox.dts
-@@ -145,27 +145,6 @@
- 					reg = <0x25>;
- 				};
- 			};
--
--			nand@d0000 {
--				status = "okay";
--				num-cs = <1>;
--				marvell,nand-keep-config;
--				marvell,nand-enable-arbiter;
--				nand-on-flash-bbt;
--
--				partition@0 {
--					label = "U-Boot";
--					reg = <0 0x400000>;
--				};
--				partition@400000 {
--					label = "Linux";
--					reg = <0x400000 0x400000>;
--				};
--				partition@800000 {
--					label = "Filesystem";
--					reg = <0x800000 0x3f800000>;
--				};
--			};
- 		};
- 	};
- };
-@@ -210,3 +189,32 @@
- 	};
- };
- 
-+&nand_controller {
-+	status = "okay";
-+
-+	nand@0 {
-+		reg = <0>;
-+		marvell,rb = <0>;
-+		marvell,nand-keep-config;
-+		nand-on-flash-bbt;
-+
-+		partitions {
-+			compatible = "fixed-partitions";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			partition@0 {
-+				label = "U-Boot";
-+				reg = <0 0x400000>;
-+			};
-+			partition@400000 {
-+				label = "Linux";
-+				reg = <0x400000 0x400000>;
-+			};
-+			partition@800000 {
-+				label = "Filesystem";
-+				reg = <0x800000 0x3f800000>;
-+			};
-+		};
-+	};
-+};
-diff --git a/arch/arm/boot/dts/armada-370-netgear-rn102.dts b/arch/arm/boot/dts/armada-370-netgear-rn102.dts
-index b1a96e95e921..e4fb1d7cf009 100644
---- a/arch/arm/boot/dts/armada-370-netgear-rn102.dts
-+++ b/arch/arm/boot/dts/armada-370-netgear-rn102.dts
-@@ -118,46 +118,6 @@
- 					pwm_polarity = <0>;
- 				};
- 			};
--
--			nand@d0000 {
--				status = "okay";
--				num-cs = <1>;
--				marvell,nand-keep-config;
--				marvell,nand-enable-arbiter;
--				nand-on-flash-bbt;
--
--				/* Use Hardware BCH ECC */
--				nand-ecc-strength = <4>;
--				nand-ecc-step-size = <512>;
--
--				partition@0 {
--					label = "u-boot";
--					reg = <0x0000000 0x180000>;  /* 1.5MB */
--					read-only;
--				};
--
--				partition@180000 {
--					label = "u-boot-env";
--					reg = <0x180000 0x20000>;    /* 128KB */
--					read-only;
--				};
--
--				partition@200000 {
--					label = "uImage";
--					reg = <0x0200000 0x600000>;    /* 6MB */
--				};
--
--				partition@800000 {
--					label = "minirootfs";
--					reg = <0x0800000 0x400000>;    /* 4MB */
--				};
--
--				/* Last MB is for the BBT, i.e. not writable */
--				partition@c00000 {
--					label = "ubifs";
--					reg = <0x0c00000 0x7400000>; /* 116MB */
--				};
--			};
- 		};
- 	};
- 
-@@ -301,3 +261,52 @@
- 		marvell,function = "gpio";
- 	};
- };
-+
-+&nand_controller {
-+	status = "okay";
-+
-+	nand@0 {
-+		reg = <0>;
-+		marvell,rb = <0>;
-+		marvell,nand-keep-config;
-+		nand-on-flash-bbt;
-+
-+		/* Use Hardware BCH ECC */
-+		nand-ecc-strength = <4>;
-+		nand-ecc-step-size = <512>;
-+
-+		partitions {
-+			compatible = "fixed-partitions";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			partition@0 {
-+				label = "u-boot";
-+				reg = <0x0000000 0x180000>;  /* 1.5MB */
-+				read-only;
-+			};
-+
-+			partition@180000 {
-+				label = "u-boot-env";
-+				reg = <0x180000 0x20000>;    /* 128KB */
-+				read-only;
-+			};
-+
-+			partition@200000 {
-+				label = "uImage";
-+				reg = <0x0200000 0x600000>;    /* 6MB */
-+			};
-+
-+			partition@800000 {
-+				label = "minirootfs";
-+				reg = <0x0800000 0x400000>;    /* 4MB */
-+			};
-+
-+			/* Last MB is for the BBT, i.e. not writable */
-+			partition@c00000 {
-+				label = "ubifs";
-+				reg = <0x0c00000 0x7400000>; /* 116MB */
-+			};
-+		};
-+	};
-+};
-diff --git a/arch/arm/boot/dts/armada-370-netgear-rn104.dts b/arch/arm/boot/dts/armada-370-netgear-rn104.dts
-index d67e7aa42b54..f639838ce27d 100644
---- a/arch/arm/boot/dts/armada-370-netgear-rn104.dts
-+++ b/arch/arm/boot/dts/armada-370-netgear-rn104.dts
-@@ -127,46 +127,6 @@
- 					reg = <0x23>;
- 				};
- 			};
--
--			nand@d0000 {
--				status = "okay";
--				num-cs = <1>;
--				marvell,nand-keep-config;
--				marvell,nand-enable-arbiter;
--				nand-on-flash-bbt;
--
--				/* Use Hardware BCH ECC */
--				nand-ecc-strength = <4>;
--				nand-ecc-step-size = <512>;
--
--				partition@0 {
--					label = "u-boot";
--					reg = <0x0000000 0x180000>;  /* 1.5MB */
--					read-only;
--				};
--
--				partition@180000 {
--					label = "u-boot-env";
--					reg = <0x180000 0x20000>;    /* 128KB */
--					read-only;
--				};
--
--				partition@200000 {
--					label = "uImage";
--					reg = <0x0200000 0x600000>;    /* 6MB */
--				};
--
--				partition@800000 {
--					label = "minirootfs";
--					reg = <0x0800000 0x400000>;    /* 4MB */
--				};
--
--				/* Last MB is for the BBT, i.e. not writable */
--				partition@c00000 {
--					label = "ubifs";
--					reg = <0x0c00000 0x7400000>; /* 116MB */
--				};
--			};
- 		};
- 	};
- 
-@@ -313,3 +273,52 @@
- 		marvell,function = "gpio";
- 	};
- };
-+
-+&nand_controller {
-+	status = "okay";
-+
-+	nand@0 {
-+		reg = <0>;
-+		marvell,rb = <0>;
-+		marvell,nand-keep-config;
-+		nand-on-flash-bbt;
-+
-+		/* Use Hardware BCH ECC */
-+		nand-ecc-strength = <4>;
-+		nand-ecc-step-size = <512>;
-+
-+		partitions {
-+			compatible = "fixed-partitions";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			partition@0 {
-+				label = "u-boot";
-+				reg = <0x0000000 0x180000>;  /* 1.5MB */
-+				read-only;
-+			};
-+
-+			partition@180000 {
-+				label = "u-boot-env";
-+				reg = <0x180000 0x20000>;    /* 128KB */
-+				read-only;
-+			};
-+
-+			partition@200000 {
-+				label = "uImage";
-+				reg = <0x0200000 0x600000>;    /* 6MB */
-+			};
-+
-+			partition@800000 {
-+				label = "minirootfs";
-+				reg = <0x0800000 0x400000>;    /* 4MB */
-+			};
-+
-+			/* Last MB is for the BBT, i.e. not writable */
-+			partition@c00000 {
-+				label = "ubifs";
-+				reg = <0x0c00000 0x7400000>; /* 116MB */
-+			};
-+		};
-+	};
-+};
-diff --git a/arch/arm/boot/dts/armada-370-rd.dts b/arch/arm/boot/dts/armada-370-rd.dts
-index 8b2fa9a49967..d949cc6da1d6 100644
---- a/arch/arm/boot/dts/armada-370-rd.dts
-+++ b/arch/arm/boot/dts/armada-370-rd.dts
-@@ -148,27 +148,6 @@
- 					default-state = "keep";
- 				};
- 			};
--
--			nand@d0000 {
--				status = "okay";
--				num-cs = <1>;
--				marvell,nand-keep-config;
--				marvell,nand-enable-arbiter;
--				nand-on-flash-bbt;
--
--				partition@0 {
--					label = "U-Boot";
--					reg = <0 0x800000>;
--				};
--				partition@800000 {
--					label = "Linux";
--					reg = <0x800000 0x800000>;
--				};
--				partition@1000000 {
--					label = "Filesystem";
--					reg = <0x1000000 0x3f000000>;
--				};
--			};
- 		};
- 	};
- 
-@@ -293,3 +272,33 @@
- 		marvell,function = "gpio";
- 	};
- };
-+
-+&nand_controller {
-+	status = "okay";
-+
-+	nand@0 {
-+		reg = <0>;
-+		marvell,rb = <0>;
-+		marvell,nand-keep-config;
-+		nand-on-flash-bbt;
-+
-+		partitions {
-+			compatible = "fixed-partitions";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			partition@0 {
-+				label = "U-Boot";
-+				reg = <0 0x800000>;
-+			};
-+			partition@800000 {
-+				label = "Linux";
-+				reg = <0x800000 0x800000>;
-+			};
-+			partition@1000000 {
-+				label = "Filesystem";
-+				reg = <0x1000000 0x3f000000>;
-+			};
-+		};
-+	};
-+};
-diff --git a/arch/arm/boot/dts/armada-370-seagate-nas-xbay.dtsi b/arch/arm/boot/dts/armada-370-seagate-nas-xbay.dtsi
-index e9a5b952afc0..8f4b556e8fbf 100644
---- a/arch/arm/boot/dts/armada-370-seagate-nas-xbay.dtsi
-+++ b/arch/arm/boot/dts/armada-370-seagate-nas-xbay.dtsi
-@@ -69,33 +69,6 @@
- 					interrupts = <110>;
- 				};
- 			};
--
--			nand@d0000 {
--				status = "okay";
--				num-cs = <1>;
--				marvell,nand-keep-config;
--				marvell,nand-enable-arbiter;
--				nand-on-flash-bbt;
--				nand-ecc-strength = <4>;
--				nand-ecc-step-size = <512>;
--
--				partition@0 {
--					label = "u-boot";
--					reg = <0x0 0x300000>;
--				};
--				partition@300000 {
--					label = "device-tree";
--					reg = <0x300000 0x20000>;
--				};
--				partition@320000 {
--					label = "linux";
--					reg = <0x320000 0x2000000>;
--				};
--				partition@2320000 {
--					label = "rootfs";
--					reg = <0x2320000 0xdce0000>;
--				};
--			};
- 		};
- 
- 	};
-@@ -230,3 +203,39 @@
- 		marvell,function = "gpio";
- 	};
- };
-+
-+&nand_controller {
-+	status = "okay";
-+
-+	nand@0 {
-+		reg = <0>;
-+		marvell,rb = <0>;
-+		marvell,nand-keep-config;
-+		nand-on-flash-bbt;
-+		nand-ecc-strength = <4>;
-+		nand-ecc-step-size = <512>;
-+
-+		partitions {
-+			compatible = "fixed-partitions";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			partition@0 {
-+				label = "u-boot";
-+				reg = <0x0 0x300000>;
-+			};
-+			partition@300000 {
-+				label = "device-tree";
-+				reg = <0x300000 0x20000>;
-+			};
-+			partition@320000 {
-+				label = "linux";
-+				reg = <0x320000 0x2000000>;
-+			};
-+			partition@2320000 {
-+				label = "rootfs";
-+				reg = <0x2320000 0xdce0000>;
-+			};
-+		};
-+	};
-+};
-diff --git a/arch/arm/boot/dts/armada-370-xp.dtsi b/arch/arm/boot/dts/armada-370-xp.dtsi
-index 09495e87b038..b6bead81c438 100644
---- a/arch/arm/boot/dts/armada-370-xp.dtsi
-+++ b/arch/arm/boot/dts/armada-370-xp.dtsi
-@@ -281,11 +281,11 @@
- 				status = "disabled";
- 			};
- 
--			nand: nand@d0000 {
--				compatible = "marvell,armada370-nand";
-+			nand_controller: nand-controller@d0000 {
-+				compatible = "marvell,armada370-nand-controller";
- 				reg = <0xd0000 0x54>;
- 				#address-cells = <1>;
--				#size-cells = <1>;
-+				#size-cells = <0>;
- 				interrupts = <113>;
- 				clocks = <&coredivclk 0>;
- 				status = "disabled";
-diff --git a/arch/arm/boot/dts/armada-xp-db-dxbc2.dts b/arch/arm/boot/dts/armada-xp-db-dxbc2.dts
-index 1b1ff17fdd9c..ba3ecf3d2481 100644
---- a/arch/arm/boot/dts/armada-xp-db-dxbc2.dts
-+++ b/arch/arm/boot/dts/armada-xp-db-dxbc2.dts
-@@ -109,7 +109,6 @@
- 	status = "okay";
- 	num-cs = <1>;
- 	marvell,nand-keep-config;
--	marvell,nand-enable-arbiter;
- 	nand-on-flash-bbt;
- 	nand-ecc-strength = <4>;
- 	nand-ecc-step-size = <512>;
-diff --git a/arch/arm/boot/dts/armada-xp-db-xc3-24g4xg.dts b/arch/arm/boot/dts/armada-xp-db-xc3-24g4xg.dts
-index 06fce35d7491..42f939dd9fdc 100644
---- a/arch/arm/boot/dts/armada-xp-db-xc3-24g4xg.dts
-+++ b/arch/arm/boot/dts/armada-xp-db-xc3-24g4xg.dts
-@@ -108,7 +108,6 @@
- 	status = "okay";
- 	num-cs = <1>;
- 	marvell,nand-keep-config;
--	marvell,nand-enable-arbiter;
- 	nand-on-flash-bbt;
- 	nand-ecc-strength = <4>;
- 	nand-ecc-step-size = <512>;
-diff --git a/arch/arm/boot/dts/armada-xp-db.dts b/arch/arm/boot/dts/armada-xp-db.dts
-index 065282c21789..311d6af25118 100644
---- a/arch/arm/boot/dts/armada-xp-db.dts
-+++ b/arch/arm/boot/dts/armada-xp-db.dts
-@@ -184,7 +184,6 @@
- 				status = "okay";
- 				num-cs = <1>;
- 				marvell,nand-keep-config;
--				marvell,nand-enable-arbiter;
- 				nand-on-flash-bbt;
- 
- 				partitions {
-diff --git a/arch/arm/boot/dts/armada-xp-gp.dts b/arch/arm/boot/dts/armada-xp-gp.dts
-index ac9eab8ac186..a3053d176262 100644
---- a/arch/arm/boot/dts/armada-xp-gp.dts
-+++ b/arch/arm/boot/dts/armada-xp-gp.dts
-@@ -201,7 +201,6 @@
- 				status = "okay";
- 				num-cs = <1>;
- 				marvell,nand-keep-config;
--				marvell,nand-enable-arbiter;
- 				nand-on-flash-bbt;
- 			};
- 		};
-diff --git a/arch/arm/boot/dts/armada-xp-lenovo-ix4-300d.dts b/arch/arm/boot/dts/armada-xp-lenovo-ix4-300d.dts
-index ce0afba1ce58..a0ace4c92a8d 100644
---- a/arch/arm/boot/dts/armada-xp-lenovo-ix4-300d.dts
-+++ b/arch/arm/boot/dts/armada-xp-lenovo-ix4-300d.dts
-@@ -122,7 +122,6 @@
- 				status = "okay";
- 				num-cs = <1>;
- 				marvell,nand-keep-config;
--				marvell,nand-enable-arbiter;
- 				nand-on-flash-bbt;
- 
- 				partitions {
-diff --git a/arch/arm/boot/dts/armada-xp-linksys-mamba.dts b/arch/arm/boot/dts/armada-xp-linksys-mamba.dts
-index 6d705f518254..3ec10054d5a3 100644
---- a/arch/arm/boot/dts/armada-xp-linksys-mamba.dts
-+++ b/arch/arm/boot/dts/armada-xp-linksys-mamba.dts
-@@ -196,79 +196,6 @@
- 			bm@c8000 {
- 				status = "okay";
- 			};
--
--			nand@d0000 {
--				status = "okay";
--				num-cs = <1>;
--				marvell,nand-keep-config;
--				marvell,nand-enable-arbiter;
--				nand-on-flash-bbt;
--				nand-ecc-strength = <4>;
--				nand-ecc-step-size = <512>;
--
--				partition@0 {
--					label = "u-boot";
--					reg = <0x0000000 0x100000>;  /* 1MB */
--					read-only;
--				};
--
--				partition@100000 {
--					label = "u_env";
--					reg = <0x100000 0x40000>;    /* 256KB */
--				};
--
--				partition@140000 {
--					label = "s_env";
--					reg = <0x140000 0x40000>;    /* 256KB */
--				};
--
--				partition@900000 {
--					label = "devinfo";
--					reg = <0x900000 0x100000>;   /* 1MB */
--					read-only;
--				};
--
--				/* kernel1 overlaps with rootfs1 by design */
--				partition@a00000 {
--					label = "kernel1";
--					reg = <0xa00000 0x2800000>;  /* 40MB */
--				};
--
--				partition@d00000 {
--					label = "rootfs1";
--					reg = <0xd00000 0x2500000>;  /* 37MB */
--				};
--
--				/* kernel2 overlaps with rootfs2 by design */
--				partition@3200000 {
--					label = "kernel2";
--					reg = <0x3200000 0x2800000>; /* 40MB */
--				};
--
--				partition@3500000 {
--					label = "rootfs2";
--					reg = <0x3500000 0x2500000>; /* 37MB */
--				};
--
--				/*
--				 * 38MB, last MB is for the BBT, not writable
--				 */
--				partition@5a00000 {
--					label = "syscfg";
--					reg = <0x5a00000 0x2600000>;
--				};
--
--				/*
--				 * Unused area between "s_env" and "devinfo".
--				 * Moved here because otherwise the renumbered
--				 * partitions would break the bootloader
--				 * supplied bootargs
--				 */
--				partition@180000 {
--					label = "unused_area";
--					reg = <0x180000 0x780000>;   /* 7.5MB */
--				};
--			};
- 		};
- 
- 		bm-bppi {
-@@ -465,3 +392,85 @@
- 		};
- 	};
- };
-+
-+&nand_controller {
-+	status = "okay";
-+
-+	nand@0 {
-+		reg = <0>;
-+		marvell,rb = <0>;
-+		marvell,nand-keep-config;
-+		nand-on-flash-bbt;
-+		nand-ecc-strength = <4>;
-+		nand-ecc-step-size = <512>;
-+
-+		partitions {
-+			compatible = "fixed-partitions";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			partition@0 {
-+				label = "u-boot";
-+				reg = <0x0000000 0x100000>;  /* 1MB */
-+				read-only;
-+			};
-+
-+			partition@100000 {
-+				label = "u_env";
-+				reg = <0x100000 0x40000>;    /* 256KB */
-+			};
-+
-+			partition@140000 {
-+				label = "s_env";
-+				reg = <0x140000 0x40000>;    /* 256KB */
-+			};
-+
-+			partition@900000 {
-+				label = "devinfo";
-+				reg = <0x900000 0x100000>;   /* 1MB */
-+				read-only;
-+			};
-+
-+			/* kernel1 overlaps with rootfs1 by design */
-+			partition@a00000 {
-+				label = "kernel1";
-+				reg = <0xa00000 0x2800000>;  /* 40MB */
-+			};
-+
-+			partition@d00000 {
-+				label = "rootfs1";
-+				reg = <0xd00000 0x2500000>;  /* 37MB */
-+			};
-+
-+			/* kernel2 overlaps with rootfs2 by design */
-+			partition@3200000 {
-+				label = "kernel2";
-+				reg = <0x3200000 0x2800000>; /* 40MB */
-+			};
-+
-+			partition@3500000 {
-+				label = "rootfs2";
-+				reg = <0x3500000 0x2500000>; /* 37MB */
-+			};
-+
-+			/*
-+			 * 38MB, last MB is for the BBT, not writable
-+			 */
-+			partition@5a00000 {
-+				label = "syscfg";
-+				reg = <0x5a00000 0x2600000>;
-+			};
-+
-+			/*
-+			 * Unused area between "s_env" and "devinfo".
-+			 * Moved here because otherwise the renumbered
-+			 * partitions would break the bootloader
-+			 * supplied bootargs
-+			 */
-+			partition@180000 {
-+				label = "unused_area";
-+				reg = <0x180000 0x780000>;   /* 7.5MB */
-+			};
-+		};
-+	};
-+};
-diff --git a/arch/arm/boot/dts/armada-xp-netgear-rn2120.dts b/arch/arm/boot/dts/armada-xp-netgear-rn2120.dts
-index 40c6fe21e720..0027f34b3666 100644
---- a/arch/arm/boot/dts/armada-xp-netgear-rn2120.dts
-+++ b/arch/arm/boot/dts/armada-xp-netgear-rn2120.dts
-@@ -154,46 +154,6 @@
- 				nr-ports = <2>;
- 				status = "okay";
- 			};
--
--			nand@d0000 {
--				status = "okay";
--				num-cs = <1>;
--				marvell,nand-keep-config;
--				marvell,nand-enable-arbiter;
--				nand-on-flash-bbt;
--
--				/* Use Hardware BCH ECC */
--				nand-ecc-strength = <4>;
--				nand-ecc-step-size = <512>;
--
--				partition@0 {
--					label = "u-boot";
--					reg = <0x0000000 0x180000>;  /* 1.5MB */
--					read-only;
--				};
--
--				partition@180000 {
--					label = "u-boot-env";
--					reg = <0x180000 0x20000>;    /* 128KB */
--					read-only;
--				};
--
--				partition@200000 {
--					label = "uImage";
--					reg = <0x0200000 0x600000>;    /* 6MB */
--				};
--
--				partition@800000 {
--					label = "minirootfs";
--					reg = <0x0800000 0x400000>;    /* 4MB */
--				};
--
--				/* Last MB is for the BBT, i.e. not writable */
--				partition@c00000 {
--					label = "ubifs";
--					reg = <0x0c00000 0x7400000>; /* 116MB */
--				};
--			};
- 		};
- 	};
- 
-@@ -382,3 +342,52 @@
- 		marvell,function = "gpio";
- 	};
- };
-+
-+&nand_controller {
-+	status = "okay";
-+
-+	nand@0 {
-+		reg = <0>;
-+		marvell,rb = <0>;
-+		marvell,nand-keep-config;
-+		nand-on-flash-bbt;
-+
-+		/* Use Hardware BCH ECC */
-+		nand-ecc-strength = <4>;
-+		nand-ecc-step-size = <512>;
-+
-+		partitions {
-+			compatible = "fixed-partitions";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			partition@0 {
-+				label = "u-boot";
-+				reg = <0x0000000 0x180000>;  /* 1.5MB */
-+				read-only;
-+			};
-+
-+			partition@180000 {
-+				label = "u-boot-env";
-+				reg = <0x180000 0x20000>;    /* 128KB */
-+				read-only;
-+			};
-+
-+			partition@200000 {
-+				label = "uImage";
-+				reg = <0x0200000 0x600000>;    /* 6MB */
-+			};
-+
-+			partition@800000 {
-+				label = "minirootfs";
-+				reg = <0x0800000 0x400000>;    /* 4MB */
-+			};
-+
-+			/* Last MB is for the BBT, i.e. not writable */
-+			partition@c00000 {
-+				label = "ubifs";
-+				reg = <0x0c00000 0x7400000>; /* 116MB */
-+			};
-+		};
-+	};
-+};
--- 
-2.11.0
+> 
+> Also remove the nand_get_default_data_interface() function that become
+> useless and rename the onfi_init_data_interface() by
+> nand_fill_data_interface(),
+
+I know I'm the one who suggested to rename this function, but I'm not
+so sure it's a good idea in the end, and I don't like the new prototype
+where you drop the iface_type parameter.
+
+> which is a more appropriate name because
+> applied timings are ONFI, no matter if the NAND actually is one.
+
+Well, this is actually a good reason to keep the onfi_ prefix. A NAND
+driver can decide that its NAND is close to an existing timing mode and
+re-use this onfi_init_data_interface(), but maybe someday we'll have
+drivers filling the nand_data_interface object with their own
+(non-ONFI) timings.
+
+> 
+> This is needed before passing to ->exec_op() to avoid any race that
+
+It's not really a race, it's just that you need some timings during
+NAND detection, and the core is currently creating the
+nand_data_interface object after the detection step (in
+nand_scan_tail()).
+
+> could lead to a panic (null pointer dereference) on the initialization
+> of the timings structure that will be used from the first reset
+> operation if the pointer to data_interface was not referenced yet.
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+> ---
+>  drivers/mtd/nand/nand_base.c    | 35 ++++++++++-------------------------
+>  drivers/mtd/nand/nand_timings.c | 23 ++++++-----------------
+>  include/linux/mtd/rawnand.h     |  9 ++-------
+>  3 files changed, 18 insertions(+), 49 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 318595c29053..bef20e06f0db 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -814,8 +814,8 @@ static void nand_ccs_delay(struct nand_chip *chip)
+>  	 * Wait tCCS_min if it is correctly defined, otherwise wait 500ns
+>  	 * (which should be safe for all NANDs).
+>  	 */
+> -	if (chip->data_interface && chip->data_interface->timings.sdr.tCCS_min)
+> -		ndelay(chip->data_interface->timings.sdr.tCCS_min / 1000);
+> +	if (chip->data_interface.timings.sdr.tCCS_min)
+> +		ndelay(chip->data_interface.timings.sdr.tCCS_min / 1000);
+>  	else
+>  		ndelay(500);
+>  }
+> @@ -1107,7 +1107,6 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
+>  static int nand_reset_data_interface(struct nand_chip *chip, int chipnr)
+>  {
+>  	struct mtd_info *mtd = nand_to_mtd(chip);
+> -	const struct nand_data_interface *conf;
+>  	int ret;
+>  
+>  	if (!chip->setup_data_interface)
+> @@ -1127,8 +1126,8 @@ static int nand_reset_data_interface(struct nand_chip *chip, int chipnr)
+>  	 * timings to timing mode 0.
+>  	 */
+>  
+> -	conf = nand_get_default_data_interface();
+> -	ret = chip->setup_data_interface(mtd, chipnr, conf);
+> +	nand_fill_data_interface(chip, 0);
+> +	ret = chip->setup_data_interface(mtd, chipnr, &chip->data_interface);
+>  	if (ret)
+>  		pr_err("Failed to configure data interface to SDR timing mode 0\n");
+>  
+
+So now you're stuck in timing mode 0 as soon as you have nand_reset()
+called.
+
+Actually, what we should do is:
+
+1/ at the beginning of nand_scan_ident(), call
+   onfi_init_data_interface(chip, &chip->data_interface, NAND_SDR_IFACE, 0)
+   (or a wrapper that does that) so that data_interface is initialized with
+   the appropriate timings for reset/detection operations
+2/ after detection, find the best iface type and timing mode we can use
+   (what's currently done in nand_init_data_interface())
+3/ in nand_reset(), you should save what's in chip->data_interface, in a
+   local variable, then apply SDR+timing-mode-0 and finally restore the
+   previous settings (the one you stored in your local variable) after
+   the RESET op.
+
+This way you're guaranteed to always end up with the best data iface
+settings after a RESET.
+
+> @@ -1153,7 +1152,7 @@ static int nand_setup_data_interface(struct nand_chip *chip, int chipnr)
+>  	struct mtd_info *mtd = nand_to_mtd(chip);
+>  	int ret;
+>  
+> -	if (!chip->setup_data_interface || !chip->data_interface)
+> +	if (!chip->setup_data_interface)
+>  		return 0;
+>  
+>  	/*
+> @@ -1174,7 +1173,7 @@ static int nand_setup_data_interface(struct nand_chip *chip, int chipnr)
+>  			goto err;
+>  	}
+>  
+> -	ret = chip->setup_data_interface(mtd, chipnr, chip->data_interface);
+> +	ret = chip->setup_data_interface(mtd, chipnr, &chip->data_interface);
+>  err:
+>  	return ret;
+>  }
+> @@ -1214,21 +1213,16 @@ static int nand_init_data_interface(struct nand_chip *chip)
+>  		modes = GENMASK(chip->onfi_timing_mode_default, 0);
+>  	}
+>  
+> -	chip->data_interface = kzalloc(sizeof(*chip->data_interface),
+> -				       GFP_KERNEL);
+> -	if (!chip->data_interface)
+> -		return -ENOMEM;
+>  
+>  	for (mode = fls(modes) - 1; mode >= 0; mode--) {
+> -		ret = onfi_init_data_interface(chip, chip->data_interface,
+> -					       NAND_SDR_IFACE, mode);
+> +		ret = nand_fill_data_interface(chip, mode);
+>  		if (ret)
+>  			continue;
+>  
+>  		/* Pass -1 to only */
+>  		ret = chip->setup_data_interface(mtd,
+>  						 NAND_DATA_IFACE_CHECK_ONLY,
+> -						 chip->data_interface);
+> +						 &chip->data_interface);
+>  		if (!ret) {
+>  			chip->onfi_timing_mode_default = mode;
+>  			break;
+> @@ -1238,11 +1232,6 @@ static int nand_init_data_interface(struct nand_chip *chip)
+>  	return 0;
+>  }
+>  
+> -static void nand_release_data_interface(struct nand_chip *chip)
+> -{
+> -	kfree(chip->data_interface);
+> -}
+> -
+>  /**
+>   * nand_read_page_op - Do a READ PAGE operation
+>   * @chip: The NAND chip
+> @@ -5567,7 +5556,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+>  		chip->select_chip(mtd, -1);
+>  
+>  		if (ret)
+> -			goto err_nand_data_iface_cleanup;
+> +			goto err_nand_manuf_cleanup;
+>  	}
+>  
+>  	/* Check, if we should skip the bad block table scan */
+> @@ -5577,12 +5566,10 @@ int nand_scan_tail(struct mtd_info *mtd)
+>  	/* Build bad block table */
+>  	ret = chip->scan_bbt(mtd);
+>  	if (ret)
+> -		goto err_nand_data_iface_cleanup;
+> +		goto err_nand_manuf_cleanup;
+>  
+>  	return 0;
+>  
+> -err_nand_data_iface_cleanup:
+> -	nand_release_data_interface(chip);
+>  
+>  err_nand_manuf_cleanup:
+>  	nand_manufacturer_cleanup(chip);
+> @@ -5641,8 +5628,6 @@ void nand_cleanup(struct nand_chip *chip)
+>  	    chip->ecc.algo == NAND_ECC_BCH)
+>  		nand_bch_free((struct nand_bch_control *)chip->ecc.priv);
+>  
+> -	nand_release_data_interface(chip);
+> -
+>  	/* Free bad block table memory */
+>  	kfree(chip->bbt);
+>  	if (!(chip->options & NAND_OWN_BUFFERS) && chip->buffers) {
+> diff --git a/drivers/mtd/nand/nand_timings.c b/drivers/mtd/nand/nand_timings.c
+> index 5d1533bcc5bd..745b6404c901 100644
+> --- a/drivers/mtd/nand/nand_timings.c
+> +++ b/drivers/mtd/nand/nand_timings.c
+> @@ -283,17 +283,17 @@ const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode)
+>  EXPORT_SYMBOL(onfi_async_timing_mode_to_sdr_timings);
+>  
+>  /**
+> - * onfi_init_data_interface - [NAND Interface] Initialize a data interface from
+> + * nand_fill_data_interface - [NAND Interface] Initialize a data interface from
+>   * given ONFI mode
+>   * @iface: The data interface to be initialized
+>   * @mode: The ONFI timing mode
+>   */
+> -int onfi_init_data_interface(struct nand_chip *chip,
+> -			     struct nand_data_interface *iface,
+> -			     enum nand_data_interface_type type,
+> +int nand_fill_data_interface(struct nand_chip *chip,
+>  			     int timing_mode)
+>  {
+> -	if (type != NAND_SDR_IFACE)
+> +	struct nand_data_interface *iface = &chip->data_interface;
+> +
+> +	if (iface->type != NAND_SDR_IFACE)
+>  		return -EINVAL;
+>  
+>  	if (timing_mode < 0 || timing_mode >= ARRAY_SIZE(onfi_sdr_timings))
+> @@ -321,15 +321,4 @@ int onfi_init_data_interface(struct nand_chip *chip,
+>  
+>  	return 0;
+>  }
+> -EXPORT_SYMBOL(onfi_init_data_interface);
+> -
+> -/**
+> - * nand_get_default_data_interface - [NAND Interface] Retrieve NAND
+> - * data interface for mode 0. This is used as default timing after
+> - * reset.
+> - */
+> -const struct nand_data_interface *nand_get_default_data_interface(void)
+> -{
+> -	return &onfi_sdr_timings[0];
+> -}
+> -EXPORT_SYMBOL(nand_get_default_data_interface);
+> +EXPORT_SYMBOL(nand_fill_data_interface);
+> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> index 04f4cfbe6c09..1acc26ed0e91 100644
+> --- a/include/linux/mtd/rawnand.h
+> +++ b/include/linux/mtd/rawnand.h
+> @@ -917,7 +917,7 @@ struct nand_chip {
+>  	u16 max_bb_per_die;
+>  	u32 blocks_per_die;
+>  
+> -	struct nand_data_interface *data_interface;
+> +	struct nand_data_interface data_interface;
+>  
+>  	int read_retries;
+>  
+> @@ -1214,10 +1214,7 @@ static inline int onfi_get_sync_timing_mode(struct nand_chip *chip)
+>  	return le16_to_cpu(chip->onfi_params.src_sync_timing_mode);
+>  }
+>  
+> -int onfi_init_data_interface(struct nand_chip *chip,
+> -			     struct nand_data_interface *iface,
+> -			     enum nand_data_interface_type type,
+> -			     int timing_mode);
+> +int nand_fill_data_interface(struct nand_chip *chip, int timing_mode);
+>  
+>  /*
+>   * Check if it is a SLC nand.
+> @@ -1258,8 +1255,6 @@ static inline int jedec_feature(struct nand_chip *chip)
+>  
+>  /* get timing characteristics from ONFI timing mode. */
+>  const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode);
+> -/* get data interface from ONFI timing mode 0, used after reset. */
+> -const struct nand_data_interface *nand_get_default_data_interface(void);
+>  
+>  int nand_check_erased_ecc_chunk(void *data, int datalen,
+>  				void *ecc, int ecclen,
