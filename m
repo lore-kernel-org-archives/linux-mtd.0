@@ -1,40 +1,44 @@
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e4geM-0002jY-1N
- for linux-mtd@lists.infradead.org; Wed, 18 Oct 2017 05:12:15 +0000
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.16.0.21/8.16.0.21) with SMTP id
- v9I5BYcM043645
- for <linux-mtd@lists.infradead.org>; Wed, 18 Oct 2017 01:11:52 -0400
-Received: from e16.ny.us.ibm.com (e16.ny.us.ibm.com [129.33.205.206])
- by mx0a-001b2d01.pphosted.com with ESMTP id 2dnya9axty-1
- (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=NOT)
- for <linux-mtd@lists.infradead.org>; Wed, 18 Oct 2017 01:11:52 -0400
-Received: from localhost
- by e16.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <linux-mtd@lists.infradead.org> from <stewart@linux.vnet.ibm.com>;
- Wed, 18 Oct 2017 01:11:50 -0400
-From: Stewart Smith <stewart@linux.vnet.ibm.com>
-To: Rob Herring <robh+dt@kernel.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>, William Kennington <wak@google.com>,
- Mark Rutland <mark.rutland@arm.com>,
- "devicetree\@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-mtd\@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Cyril Bur <cyrilbur@gmail.com>
-Subject: Re: [PATCH] mtd: powernv: Support MTD_NO_ERASE
-In-Reply-To: <CAL_JsqLBkU9habdOhoQ8ZiM=x87eLmuLrS6ujx32UOv8LHc=EA@mail.gmail.com>
-References: <20170905202339.20732-1-wak@google.com>
- <20170921095930.4b473f91@bbrezillon>
- <CAPnigKmBujCoKdtXwnK6YsU=YvXM+MaDvDvKpUXEVgHzOC-VEw@mail.gmail.com>
- <8760cbv090.fsf@concordia.ellerman.id.au>
- <20171016175517.264e710a@bbrezillon>
- <CAL_JsqLBkU9habdOhoQ8ZiM=x87eLmuLrS6ujx32UOv8LHc=EA@mail.gmail.com>
-Date: Wed, 18 Oct 2017 16:11:33 +1100
+From: Miquel Raynal <miquel.raynal@free-electrons.com>
+To: Andrew Lunn <andrew@lunn.ch>, bcm-kernel-feedback-list@broadcom.com,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Chen-Yu Tsai <wens@csie.org>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Daniel Mack <daniel@zonque.org>, David Woodhouse <dwmw2@infradead.org>,
+ devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Han Xu <han.xu@nxp.com>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Jason Cooper <jason@lakedaemon.net>, Josh Wu <rainyfeeling@outlook.com>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+ linux-mtd@lists.infradead.org,
+ Marc Gonzalez <marc_gonzalez@sigmadesigns.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Maxim Levitsky <maximlevitsky@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ Robert Jarzmik <robert.jarzmik@free.fr>, Rob Herring <robh+dt@kernel.org>,
+ Russell King <linux@armlinux.org.uk>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Stefan Agner <stefan@agner.ch>, Sylvain Lemieux <slemieux.tyco@gmail.com>,
+ Vladimir Zapolskiy <vz@mleia.com>, Wenyou Yang <wenyou.yang@atmel.com>,
+ Will Deacon <will.deacon@arm.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Antoine Tenart <antoine.tenart@free-electrons.com>,
+ Miquel Raynal <miquel.raynal@free-electrons.com>,
+ Igor Grinberg <grinberg@compulab.co.il>, Nadav Haklai <nadavh@marvell.com>,
+ Ofer Heifetz <oferh@marvell.com>, Neta Zur Hershkovits <neta@marvell.com>,
+ Hanna Hawa <hannah@marvell.com>
+Subject: [RFC 00/12] Marvell NAND controller rework with ->exec_op()
+Date: Wed, 18 Oct 2017 16:36:17 +0200
+Message-Id: <20171018143629.29302-1-miquel.raynal@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Message-Id: <87k1zt82gq.fsf@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,25 +48,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Rob Herring <robh+dt@kernel.org> writes:
-> I'd prefer they be documented in the kernel especially if they are
-> used by the kernel. Of course, there's IBM bindings covered by various
-> ?PAPR specs which wouldn't make sense to duplicate, but I'm guessing
-> what's documented in skiboot are not covered by those specs.
+Hi,
 
-Correct.
+This series adds the implementation of the NAND framework ->exec_op()
+interface with all the related hooks and helpers. The reasons for adding
+it are explained in details in the commit log "mtd: nand: add
+ ->exec_op() implementation", but mostly it will ease later expansion of
+the framework, as well as the implementation of new vendor specific
+commands, and should also ease driver development.
 
-I don't have an objection to docs being in both places, as long as we
-could keep both in sync. Would suitable comments in the RST doc files
-pointing to the skiboot repo as the canonical copy work?
+The series contains as well the reworked NAND controller driver from
+Marvell.
 
-I'd like to be able to just diff a subtree of kernel and skiboot to see
-if the docs have diverged.
+A lot of comments are written to explain how to use the new API and the
+Marvell driver shows how to implement it. A proper external
+documentation is being written and will later be submitted.
 
-We may also need to think of a way to ensure that any of that moving
-back/forth of edits is done in a way that makes licensing sense too
-(skiboot is Apache 2.0)
+It also changes the device tree NAND node definition for all platforms
+referring to the Marvell driver to use the new bindings. They are more
+hierarchical and fit the real organization of the hardware, by having
+NAND partitions that are part of NAND chip nodes, themselves part of
+the NAND controller node.
+
+See the commit log of "mtd: nand: add reworked Marvell NAND controller
+driver" for details about why a completely new driver is needed.
+
+As this series changes several core functions and also directly touches
+multiple controller drivers, it would be great to have reviews and tests
+from the concerned maintainers. Only PXA3xx SoCs are not supported yet
+(explaining the RFC) as having a local board to test is really needed.
+
+Thank you,
+Miquèl
+
+
+Boris Brezillon (2):
+  mtd: nand: provide several helpers to do common NAND operations
+  mtd: nand: force drivers to explicitly send READ/PROG commands
+
+Miquel Raynal (10):
+  mtd: nand: use a static data_interface in the nand_chip structure
+  mtd: nand: add ->exec_op() implementation
+  dt-bindings: mtd: add Marvell NAND controller documentation
+  mtd: nand: add reworked Marvell NAND controller driver
+  ARM: dts: armada-370-xp: use reworked NAND controller driver
+  ARM: dts: armada-375: use reworked NAND controller driver
+  ARM: dts: armada-38x: use reworked NAND controller driver
+  ARM: dts: armada-39x: use reworked NAND controller driver
+  ARM: dts: pxa: use reworked NAND controller driver
+  ARM64: dts: marvell: use reworked NAND controller driver on Armada
+    7K/8K
+
+ .../devicetree/bindings/mtd/marvell-nand.txt       |   95 +
+ arch/arm/boot/dts/armada-370-db.dts                |   56 +-
+ arch/arm/boot/dts/armada-370-dlink-dns327l.dts     |  119 +-
+ arch/arm/boot/dts/armada-370-mirabox.dts           |   50 +-
+ arch/arm/boot/dts/armada-370-netgear-rn102.dts     |   89 +-
+ arch/arm/boot/dts/armada-370-netgear-rn104.dts     |   89 +-
+ arch/arm/boot/dts/armada-370-rd.dts                |   51 +-
+ arch/arm/boot/dts/armada-370-seagate-nas-xbay.dtsi |   63 +-
+ arch/arm/boot/dts/armada-370-xp.dtsi               |    6 +-
+ arch/arm/boot/dts/armada-375-db.dts                |   49 +-
+ arch/arm/boot/dts/armada-375.dtsi                  |    6 +-
+ arch/arm/boot/dts/armada-385-db-ap.dts             |   68 +-
+ arch/arm/boot/dts/armada-385-linksys-caiman.dts    |  129 +-
+ arch/arm/boot/dts/armada-385-linksys-cobra.dts     |  129 +-
+ arch/arm/boot/dts/armada-385-linksys-rango.dts     |  141 +-
+ arch/arm/boot/dts/armada-385-linksys-shelby.dts    |  129 +-
+ arch/arm/boot/dts/armada-385-linksys.dtsi          |   15 +-
+ arch/arm/boot/dts/armada-388-db.dts                |   54 +-
+ arch/arm/boot/dts/armada-38x.dtsi                  |    6 +-
+ arch/arm/boot/dts/armada-390-db.dts                |   65 +-
+ arch/arm/boot/dts/armada-395-gp.dts                |   73 +-
+ arch/arm/boot/dts/armada-398-db.dts                |   59 +-
+ arch/arm/boot/dts/armada-39x.dtsi                  |    6 +-
+ arch/arm/boot/dts/armada-xp-db-dxbc2.dts           |    1 -
+ arch/arm/boot/dts/armada-xp-db-xc3-24g4xg.dts      |    1 -
+ arch/arm/boot/dts/armada-xp-db.dts                 |    1 -
+ arch/arm/boot/dts/armada-xp-gp.dts                 |    1 -
+ arch/arm/boot/dts/armada-xp-lenovo-ix4-300d.dts    |    1 -
+ arch/arm/boot/dts/armada-xp-linksys-mamba.dts      |  155 +-
+ arch/arm/boot/dts/armada-xp-netgear-rn2120.dts     |   89 +-
+ arch/arm/boot/dts/pxa3xx.dtsi                      |    6 +-
+ arch/arm64/boot/dts/marvell/armada-7040-db.dts     |   47 +-
+ .../boot/dts/marvell/armada-cp110-master.dtsi      |    6 +-
+ .../arm64/boot/dts/marvell/armada-cp110-slave.dtsi |    6 +-
+ drivers/mtd/nand/Kconfig                           |   11 +
+ drivers/mtd/nand/Makefile                          |    1 +
+ drivers/mtd/nand/atmel/nand-controller.c           |    9 +-
+ drivers/mtd/nand/bf5xx_nand.c                      |    6 +-
+ drivers/mtd/nand/brcmnand/brcmnand.c               |   20 +-
+ drivers/mtd/nand/cafe_nand.c                       |   20 +-
+ drivers/mtd/nand/denali.c                          |  109 +-
+ drivers/mtd/nand/diskonchip.c                      |    4 +-
+ drivers/mtd/nand/docg4.c                           |   19 +-
+ drivers/mtd/nand/fsl_elbc_nand.c                   |    6 +-
+ drivers/mtd/nand/fsl_ifc_nand.c                    |    6 +-
+ drivers/mtd/nand/fsmc_nand.c                       |    5 +-
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c             |   76 +-
+ drivers/mtd/nand/hisi504_nand.c                    |    9 +-
+ drivers/mtd/nand/jz4740_nand.c                     |   16 +-
+ drivers/mtd/nand/lpc32xx_mlc.c                     |    7 +-
+ drivers/mtd/nand/lpc32xx_slc.c                     |   33 +-
+ drivers/mtd/nand/marvell_nand.c                    | 2384 ++++++++++++++++++++
+ drivers/mtd/nand/mtk_nand.c                        |   21 +-
+ drivers/mtd/nand/nand_base.c                       | 2020 ++++++++++++++---
+ drivers/mtd/nand/nand_hynix.c                      |  106 +-
+ drivers/mtd/nand/nand_micron.c                     |   50 +-
+ drivers/mtd/nand/nand_timings.c                    |   23 +-
+ drivers/mtd/nand/omap2.c                           |    8 +-
+ drivers/mtd/nand/pxa3xx_nand.c                     |    8 +-
+ drivers/mtd/nand/qcom_nandc.c                      |   16 +-
+ drivers/mtd/nand/r852.c                            |   11 +-
+ drivers/mtd/nand/sh_flctl.c                        |    6 +-
+ drivers/mtd/nand/sunxi_nand.c                      |   97 +-
+ drivers/mtd/nand/tango_nand.c                      |   27 +-
+ drivers/mtd/nand/tmio_nand.c                       |    5 +-
+ drivers/mtd/nand/vf610_nfc.c                       |    6 +-
+ drivers/staging/mt29f_spinand/mt29f_spinand.c      |    7 +-
+ include/linux/mtd/rawnand.h                        |  391 +++-
+ 68 files changed, 5980 insertions(+), 1424 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/marvell-nand.txt
+ create mode 100644 drivers/mtd/nand/marvell_nand.c
 
 -- 
-Stewart Smith
-OPAL Architect, IBM.
+2.11.0
