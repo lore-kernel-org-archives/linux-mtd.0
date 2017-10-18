@@ -1,44 +1,20 @@
-Date: Wed, 18 Oct 2017 19:02:55 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Miquel Raynal <miquel.raynal@free-electrons.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, bcm-kernel-feedback-list@broadcom.com,
- Brian Norris <computersforpeace@gmail.com>, Catalin Marinas
- <catalin.marinas@arm.com>, Chen-Yu Tsai <wens@csie.org>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Daniel Mack <daniel@zonque.org>, David
- Woodhouse <dwmw2@infradead.org>, devel@driverdev.osuosl.org,
- devicetree@vger.kernel.org, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Gregory Clement
- <gregory.clement@free-electrons.com>, Han Xu <han.xu@nxp.com>, Haojian
- Zhuang <haojian.zhuang@gmail.com>, Jason Cooper <jason@lakedaemon.net>,
- Josh Wu <rainyfeeling@outlook.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-mediatek@lists.infradead.org, linux-mtd@lists.infradead.org, Marc
- Gonzalez <marc_gonzalez@sigmadesigns.com>, Marek Vasut
- <marek.vasut@gmail.com>, Mark Rutland <mark.rutland@arm.com>, Masahiro
- Yamada <yamada.masahiro@socionext.com>, Matthias Brugger
- <matthias.bgg@gmail.com>, Maxime Ripard <maxime.ripard@free-electrons.com>,
- Maxim Levitsky <maximlevitsky@gmail.com>, Richard Weinberger
- <richard@nod.at>, Robert Jarzmik <robert.jarzmik@free.fr>, Rob Herring
- <robh+dt@kernel.org>, Russell King <linux@armlinux.org.uk>, Sebastian
- Hesselbarth <sebastian.hesselbarth@gmail.com>, Stefan Agner
- <stefan@agner.ch>, Sylvain Lemieux <slemieux.tyco@gmail.com>, Vladimir
- Zapolskiy <vz@mleia.com>, Wenyou Yang <wenyou.yang@atmel.com>, Will Deacon
- <will.deacon@arm.com>, Thomas Petazzoni
- <thomas.petazzoni@free-electrons.com>, Antoine Tenart
- <antoine.tenart@free-electrons.com>, Igor Grinberg
- <grinberg@compulab.co.il>, Nadav Haklai <nadavh@marvell.com>, Ofer Heifetz
- <oferh@marvell.com>, Neta Zur Hershkovits <neta@marvell.com>, Hanna Hawa
- <hannah@marvell.com>
-Subject: Re: [RFC 03/12] mtd: nand: use a static data_interface in the
- nand_chip structure
-Message-ID: <20171018190255.3b223d7e@bbrezillon>
-In-Reply-To: <20171018143629.29302-4-miquel.raynal@free-electrons.com>
-References: <20171018143629.29302-1-miquel.raynal@free-electrons.com>
- <20171018143629.29302-4-miquel.raynal@free-electrons.com>
+Received: from sysam.it ([5.39.81.93])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1e4ur0-0001cl-00
+ for linux-mtd@lists.infradead.org; Wed, 18 Oct 2017 20:22:16 +0000
+Subject: Re: [PATCH] mtd: spi-nor: Add support for ISSI is25lp128
+To: Nikita Nazarenko <nnazarenko@radiofid.com>, linux-mtd@lists.infradead.org
+References: <1455041563-12483-1-git-send-email-nnazarenko@radiofid.com>
+ <1f9be30c-8042-f067-6667-8afc48d9ac96@gmail.com>
+ <e61e305b-4ff4-a89c-bc60-7604526bbb0f@radiofid.com>
+From: Angelo Dureghello <angelo@sysam.it>
+Message-ID: <db5e7a5f-b87b-643c-0bcd-b4a08f7cedd0@sysam.it>
+Date: Wed, 18 Oct 2017 22:21:48 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <e61e305b-4ff4-a89c-bc60-7604526bbb0f@radiofid.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -48,267 +24,235 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 18 Oct 2017 16:36:20 +0200
-Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
+Hi Nikita,
 
-> Change the data_interface field from the nand_chip structure, convert
-> the pointer to a static structure.
+On 18/10/2017 12:33, Nikita Nazarenko wrote:
+> Hello Angelo.
+>
+> I almost forgot about that patch, and in my tree it little different:
+>
+> + { "is25lp128", INFO(0x9d6018, 0, 64 * 1024,   256, 0) },
+>
+> I don't remember on which board that flash were used and why i did that change, so i can't test it again properly.
+>
+> Maybe that will help you.
+>
+>
 
-You mean "embed a nand_data_interface object". Not sure the static
-specifier can be used to describe what you do.
+many thanks for clarifying,
 
-> 
-> Also remove the nand_get_default_data_interface() function that become
-> useless and rename the onfi_init_data_interface() by
-> nand_fill_data_interface(),
+ok, looks like 64K granularity should be better in any case
+for this chip.
+Also,  this driver uses SPINOR_OP_SE <https://elixir.free-electrons.com/linux/latest/ident/SPINOR_OP_SE> (0xd8) so the size should be set
+to 64k.
 
-I know I'm the one who suggested to rename this function, but I'm not
-so sure it's a good idea in the end, and I don't like the new prototype
-where you drop the iface_type parameter.
+The SECT_4K can be used since the flash accepts it.
+Clause 8.10 "SECTOR ERASE OPERATION (SER, D7h/20h)", so
+both commands are valid.
 
-> which is a more appropriate name because
-> applied timings are ONFI, no matter if the NAND actually is one.
+This is my last tuning:
 
-Well, this is actually a good reason to keep the onfi_ prefix. A NAND
-driver can decide that its NAND is close to an existing timing mode and
-re-use this onfi_init_data_interface(), but maybe someday we'll have
-drivers filling the nand_data_interface object with their own
-(non-ONFI) timings.
+{ "is25lp128", INFO(0x9d6018, 0, 64 * 1024,   256, SECT_4K) },
 
-> 
-> This is needed before passing to ->exec_op() to avoid any race that
 
-It's not really a race, it's just that you need some timings during
-NAND detection, and the core is currently creating the
-nand_data_interface object after the detection step (in
-nand_scan_tail()).
+Did some more tests on this entry above:
 
-> could lead to a panic (null pointer dereference) on the initialization
-> of the timings structure that will be used from the first reset
-> operation if the pointer to data_interface was not referenced yet.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
-> ---
->  drivers/mtd/nand/nand_base.c    | 35 ++++++++++-------------------------
->  drivers/mtd/nand/nand_timings.c | 23 ++++++-----------------
->  include/linux/mtd/rawnand.h     |  9 ++-------
->  3 files changed, 18 insertions(+), 49 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 318595c29053..bef20e06f0db 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -814,8 +814,8 @@ static void nand_ccs_delay(struct nand_chip *chip)
->  	 * Wait tCCS_min if it is correctly defined, otherwise wait 500ns
->  	 * (which should be safe for all NANDs).
->  	 */
-> -	if (chip->data_interface && chip->data_interface->timings.sdr.tCCS_min)
-> -		ndelay(chip->data_interface->timings.sdr.tCCS_min / 1000);
-> +	if (chip->data_interface.timings.sdr.tCCS_min)
-> +		ndelay(chip->data_interface.timings.sdr.tCCS_min / 1000);
->  	else
->  		ndelay(500);
->  }
-> @@ -1107,7 +1107,6 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
->  static int nand_reset_data_interface(struct nand_chip *chip, int chipnr)
->  {
->  	struct mtd_info *mtd = nand_to_mtd(chip);
-> -	const struct nand_data_interface *conf;
->  	int ret;
->  
->  	if (!chip->setup_data_interface)
-> @@ -1127,8 +1126,8 @@ static int nand_reset_data_interface(struct nand_chip *chip, int chipnr)
->  	 * timings to timing mode 0.
->  	 */
->  
-> -	conf = nand_get_default_data_interface();
-> -	ret = chip->setup_data_interface(mtd, chipnr, conf);
-> +	nand_fill_data_interface(chip, 0);
-> +	ret = chip->setup_data_interface(mtd, chipnr, &chip->data_interface);
->  	if (ret)
->  		pr_err("Failed to configure data interface to SDR timing mode 0\n");
->  
+TEST 1)
 
-So now you're stuck in timing mode 0 as soon as you have nand_reset()
-called.
+With  MTD_SPI_NOR_USE_4K_SECTORS set:
 
-Actually, what we should do is:
+/ # flash_eraseall /dev/mtd2
+flash_eraseall has been replaced by `flash_erase <mtddev> 0 0`; please use it
+Erasing 4 Kibyte @ 7ff000 -- 100 % complete
 
-1/ at the beginning of nand_scan_ident(), call
-   onfi_init_data_interface(chip, &chip->data_interface, NAND_SDR_IFACE, 0)
-   (or a wrapper that does that) so that data_interface is initialized with
-   the appropriate timings for reset/detection operations
-2/ after detection, find the best iface type and timing mode we can use
-   (what's currently done in nand_init_data_interface())
-3/ in nand_reset(), you should save what's in chip->data_interface, in a
-   local variable, then apply SDR+timing-mode-0 and finally restore the
-   previous settings (the one you stored in your local variable) after
-   the RESET op.
+Checked all the flash has been properly erased:
 
-This way you're guaranteed to always end up with the best data iface
-settings after a RESET.
 
-> @@ -1153,7 +1152,7 @@ static int nand_setup_data_interface(struct nand_chip *chip, int chipnr)
->  	struct mtd_info *mtd = nand_to_mtd(chip);
->  	int ret;
->  
-> -	if (!chip->setup_data_interface || !chip->data_interface)
-> +	if (!chip->setup_data_interface)
->  		return 0;
->  
->  	/*
-> @@ -1174,7 +1173,7 @@ static int nand_setup_data_interface(struct nand_chip *chip, int chipnr)
->  			goto err;
->  	}
->  
-> -	ret = chip->setup_data_interface(mtd, chipnr, chip->data_interface);
-> +	ret = chip->setup_data_interface(mtd, chipnr, &chip->data_interface);
->  err:
->  	return ret;
->  }
-> @@ -1214,21 +1213,16 @@ static int nand_init_data_interface(struct nand_chip *chip)
->  		modes = GENMASK(chip->onfi_timing_mode_default, 0);
->  	}
->  
-> -	chip->data_interface = kzalloc(sizeof(*chip->data_interface),
-> -				       GFP_KERNEL);
-> -	if (!chip->data_interface)
-> -		return -ENOMEM;
->  
->  	for (mode = fls(modes) - 1; mode >= 0; mode--) {
-> -		ret = onfi_init_data_interface(chip, chip->data_interface,
-> -					       NAND_SDR_IFACE, mode);
-> +		ret = nand_fill_data_interface(chip, mode);
->  		if (ret)
->  			continue;
->  
->  		/* Pass -1 to only */
->  		ret = chip->setup_data_interface(mtd,
->  						 NAND_DATA_IFACE_CHECK_ONLY,
-> -						 chip->data_interface);
-> +						 &chip->data_interface);
->  		if (!ret) {
->  			chip->onfi_timing_mode_default = mode;
->  			break;
-> @@ -1238,11 +1232,6 @@ static int nand_init_data_interface(struct nand_chip *chip)
->  	return 0;
->  }
->  
-> -static void nand_release_data_interface(struct nand_chip *chip)
-> -{
-> -	kfree(chip->data_interface);
-> -}
-> -
->  /**
->   * nand_read_page_op - Do a READ PAGE operation
->   * @chip: The NAND chip
-> @@ -5567,7 +5556,7 @@ int nand_scan_tail(struct mtd_info *mtd)
->  		chip->select_chip(mtd, -1);
->  
->  		if (ret)
-> -			goto err_nand_data_iface_cleanup;
-> +			goto err_nand_manuf_cleanup;
->  	}
->  
->  	/* Check, if we should skip the bad block table scan */
-> @@ -5577,12 +5566,10 @@ int nand_scan_tail(struct mtd_info *mtd)
->  	/* Build bad block table */
->  	ret = chip->scan_bbt(mtd);
->  	if (ret)
-> -		goto err_nand_data_iface_cleanup;
-> +		goto err_nand_manuf_cleanup;
->  
->  	return 0;
->  
-> -err_nand_data_iface_cleanup:
-> -	nand_release_data_interface(chip);
->  
->  err_nand_manuf_cleanup:
->  	nand_manufacturer_cleanup(chip);
-> @@ -5641,8 +5628,6 @@ void nand_cleanup(struct nand_chip *chip)
->  	    chip->ecc.algo == NAND_ECC_BCH)
->  		nand_bch_free((struct nand_bch_control *)chip->ecc.priv);
->  
-> -	nand_release_data_interface(chip);
-> -
->  	/* Free bad block table memory */
->  	kfree(chip->bbt);
->  	if (!(chip->options & NAND_OWN_BUFFERS) && chip->buffers) {
-> diff --git a/drivers/mtd/nand/nand_timings.c b/drivers/mtd/nand/nand_timings.c
-> index 5d1533bcc5bd..745b6404c901 100644
-> --- a/drivers/mtd/nand/nand_timings.c
-> +++ b/drivers/mtd/nand/nand_timings.c
-> @@ -283,17 +283,17 @@ const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode)
->  EXPORT_SYMBOL(onfi_async_timing_mode_to_sdr_timings);
->  
->  /**
-> - * onfi_init_data_interface - [NAND Interface] Initialize a data interface from
-> + * nand_fill_data_interface - [NAND Interface] Initialize a data interface from
->   * given ONFI mode
->   * @iface: The data interface to be initialized
->   * @mode: The ONFI timing mode
->   */
-> -int onfi_init_data_interface(struct nand_chip *chip,
-> -			     struct nand_data_interface *iface,
-> -			     enum nand_data_interface_type type,
-> +int nand_fill_data_interface(struct nand_chip *chip,
->  			     int timing_mode)
->  {
-> -	if (type != NAND_SDR_IFACE)
-> +	struct nand_data_interface *iface = &chip->data_interface;
-> +
-> +	if (iface->type != NAND_SDR_IFACE)
->  		return -EINVAL;
->  
->  	if (timing_mode < 0 || timing_mode >= ARRAY_SIZE(onfi_sdr_timings))
-> @@ -321,15 +321,4 @@ int onfi_init_data_interface(struct nand_chip *chip,
->  
->  	return 0;
->  }
-> -EXPORT_SYMBOL(onfi_init_data_interface);
-> -
-> -/**
-> - * nand_get_default_data_interface - [NAND Interface] Retrieve NAND
-> - * data interface for mode 0. This is used as default timing after
-> - * reset.
-> - */
-> -const struct nand_data_interface *nand_get_default_data_interface(void)
-> -{
-> -	return &onfi_sdr_timings[0];
-> -}
-> -EXPORT_SYMBOL(nand_get_default_data_interface);
-> +EXPORT_SYMBOL(nand_fill_data_interface);
-> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> index 04f4cfbe6c09..1acc26ed0e91 100644
-> --- a/include/linux/mtd/rawnand.h
-> +++ b/include/linux/mtd/rawnand.h
-> @@ -917,7 +917,7 @@ struct nand_chip {
->  	u16 max_bb_per_die;
->  	u32 blocks_per_die;
->  
-> -	struct nand_data_interface *data_interface;
-> +	struct nand_data_interface data_interface;
->  
->  	int read_retries;
->  
-> @@ -1214,10 +1214,7 @@ static inline int onfi_get_sync_timing_mode(struct nand_chip *chip)
->  	return le16_to_cpu(chip->onfi_params.src_sync_timing_mode);
->  }
->  
-> -int onfi_init_data_interface(struct nand_chip *chip,
-> -			     struct nand_data_interface *iface,
-> -			     enum nand_data_interface_type type,
-> -			     int timing_mode);
-> +int nand_fill_data_interface(struct nand_chip *chip, int timing_mode);
->  
->  /*
->   * Check if it is a SLC nand.
-> @@ -1258,8 +1255,6 @@ static inline int jedec_feature(struct nand_chip *chip)
->  
->  /* get timing characteristics from ONFI timing mode. */
->  const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode);
-> -/* get data interface from ONFI timing mode 0, used after reset. */
-> -const struct nand_data_interface *nand_get_default_data_interface(void);
->  
->  int nand_check_erased_ecc_chunk(void *data, int datalen,
->  				void *ecc, int ecclen,
+TEST 2)
+
+Removed MTD_SPI_NOR_USE_4K_SECTORS set:
+
+I written 2 blocks full of 0, at begin and at the end of the
+8KB partition:
+
+/ # hexdump -C -n 8192 /dev/mtd2
+00000000  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 |................|
+*
+00001000  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff |................|
+*
+00002000
+
+/ # hexdump -C -n 8192 -s 8380416 /dev/mtd2
+007fe000  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff |................|
+*
+007ff000  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 |................|
+*
+00800000
+/ #
+
+Doing now flash erase at 64K blocks:
+
+/ # flash_eraseall /dev/mtd2
+flash_eraseall has been replaced by `flash_erase <mtddev> 0 0`; please use it
+Erasing 64 Kibyte @ 7f0000 -- 100 % complete
+
+All erased properly.
+
+/ # hexdump -C -n 8192 /dev/mtd2
+00000000  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff |................|
+*
+00002000
+/ # hexdump -C -n 8192 -s 8380416 /dev/mtd2
+007fe000  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff |................|
+*
+00800000
+/ #
+
+So the new line above is well working for me. Let me know how we
+could proceed, i am very interested to have this chip supported into
+mainline, mainly for my open hw called stmark2.
+Do you want to send the patch ? Or, if it's not a problem for you, i can
+send it, or maybe i can be able to keep your name and adding a tested-by
+from me.
+
+Many thanks,
+
+Best regards,
+Angelo Dureghello
+
+
+> Best regards
+>
+> Nikita Nazarenko
+>
+>
+> On 18.10.2017 02:14, angelo wrote:
+>> Hi Nikita and Gabor,
+>>
+>> Tested-by: Angelo Dureghello <angelo@sysam.it>
+>>
+>>
+>> On 09/02/2016 19:12, Nikita Nazarenko wrote:
+>>> Hi Gabor,
+>>>
+>>> On Tue, Mar 08, 2016 at 06:26:41PM +0100, Gabor Juhos wrote:
+>>>>> On Tue, Feb 09, 2016 at 09:12:43PM +0300, Nikita Nazarenko wrote:
+>>>>>> Signed-off-by: Nikita Nazarenko <nnazarenko at radiofid.com>
+>>>>>> ---
+>>>>>>   drivers/mtd/spi-nor/spi-nor.c | 1 +
+>>>>>>   1 file changed, 1 insertion(+)
+>>>>>>
+>>>>>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>>>>>> index ed0c19c..e0bb151 100644
+>>>>>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>>>>>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>>>>>> @@ -739,6 +739,7 @@ static const struct flash_info spi_nor_ids[] = {
+>>>>>>
+>>>>>>       /* ISSI */
+>>>>> Both of these ISSI entries look wrong.
+>>>>>
+>>>>>>       { "is25cd512", INFO(0x7f9d20, 0, 32 * 1024,   2, SECT_4K) },
+>>>>> Looking at the datasheet for this part [1], shouldn't the ID be
+>>>>> 0x9d7f20 (i.e., the MFR ID is 0x9d, not 0x7f)? That would match the
+>>>>> existing CFI definition for "PMC". And IIUC, PMC got bought by ISSI? Or
+>>>>> some kind of merger, I don't follow these things.
+>>>> The ID is definitely 0x7d9d20, the m28p80 driver detects the device correctly
+>>>> with that:
+>>>>
+>>>>    m25p80 spi0.0: found is25cd512, expected m25p80
+>>>>    m25p80 spi0.0: is25cd512 (64 Kbytes)
+>>>>    Creating 4 MTD partitions on "spi0.0":
+>>>>    0x000000000000-0x00000000c000 : "routerboot"
+>>>>    0x00000000c000-0x00000000d000 : "hard_config"
+>>>>    0x00000000d000-0x00000000e000 : "bios"
+>>>>    0x00000000e000-0x00000000f000 : "soft_config"
+>>>>
+>>>> The first byte of the manufacturer ID is indeed 0x9d, but the device returns
+>>>> that as the second byte throught the JEDEC ID READ command. Even though it is a
+>>>> weird behaviour, it is described on page 11 of the datasheet.
+>>> What a stupid implementation. And they changed it to the sane
+>>> implementation for is25lp128 it seems?
+>>>
+>>>>>> +    { "is25lp128", INFO(0x9d6018, 0, 32 * 1024,   512, SECT_4K) },
+>>>>> This datasheet [1] says that for SPI mode (not QPI mode), 4K erase is
+>>>>> done with opcode 0xD7 (i.e., SPINOR_OP_BE_4K_PMC) not 0x20
+>>>>> (SPINOR_OP_BE_4K). So we would need the SECT_4K_PMC, not the SECT_4K
+>>>>> flag.
+>>>> I don't have a board with such flash device, but Table 8.1 "Instruction Set" is
+>>>> misleading a bit. In my understanding, erasing 4K sectors should work with both
+>>>> commands. Look at Clause 8.10 "SECTOR ERASE OPERATION (SER, D7h/20h)" on page 33
+>>>> in the datasheet. Both Figure 8.12 "Sector Erase Sequence" and Figure 8.13
+>>>> "Sector Erase Sequence (QPI) " says 'D7h/20h'.
+>>> Ah, I could see how the table could be read either way. I expect that
+>>> the submitter (Nikita) should be able to confirm this through testing.
+>>>
+>> it happen i mounted the same spi nor (is25lp128) here on a custom Coldfire board running Linux,
+>> so i appliedthe line
+>>
+>> { "is25lp128", INFO(0x9d6018, 0, 32 * 1024, 512, SECT_4K) },
+>>
+>> and preformed some testing, the 4k erase works.
+>>
+>> [    8.260000] Creating 3 MTD partitions on "is25lp128":
+>> [    8.260000] 0x000000000000-0x000000100000 : "U-Boot (1024K)"
+>> [    8.330000] 0x000000100000-0x000000800000 : "Kernel+initramfs (7168K)"
+>> [    8.400000] 0x000000800000-0x000001000000 : "Flash Free Space (8192K)"
+>>
+>>
+>> /bin # cat /proc/mtd
+>> dev:    size   erasesize  name
+>> mtd0: 00100000 00001000 "U-Boot (1024K)"
+>> mtd1: 00700000 00001000 "Kernel+initramfs (7168K)"
+>> mtd2: 00800000 00001000 "Flash Free Space (8192K)"
+>>
+>> # flash_eraseall /dev/mtd2
+>>
+>> / # hexdump -C -n 8192 /dev/mtd2
+>> 00000000  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff |................|
+>> *
+>> 00002000
+>> / #
+>>
+>> / # dd if=/dev/zero of=/dev/mtd2 bs=4096 count=1
+>> 1+0 records in
+>> 1+0 records out
+>> 4096 bytes (4.0KB) copied, 0.228499 seconds, 17.5KB/s
+>>
+>>
+>> / # hexdump -C -n 8192 /dev/mtd2
+>> 00000000  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 |................|
+>> *
+>> 00001000  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff |................|
+>> *
+>> 00002000
+>> / #
+>>
+>>
+>> / # flash_erase /dev/mtd2 0 1
+>> Erasing 4 Kibyte @ 0 -- 100 % complete
+>> / #
+>>
+>> / # hexdump -C -n 8192 /dev/mtd2
+>> 00000000  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff |................|
+>> *
+>> 00002000
+>> / #
+>>
+>>
+>>
+>>>>> Also, the datasheet for this device says it supports 64K sectors, and
+>>>>> the 32K sectors require a different erase command (SPINOR_OP_BE_32K; not
+>>>>> currently supported in this driver). Did you test erase to be sure it
+>>>>> worked as expected? Or are one or more datasheets wrong?
+>>>> It seems that you are correct about this.
+>>> To be clear, it looks like your submission (is25cd512) does use D8h for
+>>> 32K erase blocks, since it's such a tiny device. But Nikita's device
+>>> appears to use 64K erase blocks.
+>>>
+>>> I expect Nikita can test and resubmit a revised entry here.
+>>>
+>>> Regards,
+>>> Brian
+>> Regards,
+>> Angelo Dureghello
+>
