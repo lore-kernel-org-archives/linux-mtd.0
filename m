@@ -1,19 +1,19 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e5J7z-0001Jz-Ib
- for linux-mtd@lists.infradead.org; Thu, 19 Oct 2017 22:17:25 +0000
-From: matthew.gerlach@linux.intel.com
-To: vndao@altera.com, dwmw2@infradead.org, computersforpeace@gmail.com,
+ id 1e5Jkc-00025c-6O
+ for linux-mtd@lists.infradead.org; Thu, 19 Oct 2017 22:57:20 +0000
+Received: by mail-pf0-x242.google.com with SMTP id e64so8133026pfk.9
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Oct 2017 15:56:58 -0700 (PDT)
+From: Roy Franz <rfranz@cavium.com>
+To: dwmw2@infradead.org, computersforpeace@gmail.com,
  boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr, robh+dt@kernel.org, mark.rutland@arm.com,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
- davem@davemloft.net, mchehab@kernel.org, linux-fpga@vger.kernel.org,
- tien.hock.loh@intel.com, hean.loong.ong@intel.com
-Cc: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-Subject: [PATCH v3 0/2] Altera ASMI Parallel II IP Core
-Date: Thu, 19 Oct 2017 15:14:48 -0700
-Message-Id: <1508451290-26426-1-git-send-email-matthew.gerlach@linux.intel.com>
+ cyrille.pitchen@wedev4u.fr
+Cc: roy.franz@cavium.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ ddaney@cavium.com, hch@infradead.org
+Subject: [PATCH v2] mtd: slram: use memremap() instead of ioremap()
+Date: Thu, 19 Oct 2017 15:55:49 -0700
+Message-Id: <20171019225549.11422-1-roy.franz@cavium.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,40 +23,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+Convert slram to use memremap() to map the memory it uses to back an MTD
+device, as this is the proper interface for mapping memory. This change
+enables normal memory to be used to back an MTD device on arm64, as arm64
+prevents ioremap() being used on normal memory.
 
-This patch set adds a spi-nor flash driver for the Altera ASMI Parallel II 
-IP Core.  This driver was created based on feedback from Marek Vasut,
-Cyrill Pitchen, and Michal Suchanek regarding Version 2 of the Altera
-Quadspi Controller: https://lkml.org/lkml/2017/6/26/518
+Signed-off-by: Roy Franz <roy.franz@cavium.com>
+Acked-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Tested-by: David Daney <david.daney@cavium.com>
+---
+Tested on arm64 simulation, using simulator to preload filesystem image into RAM,
+and also tested on x86_64 using video card memory.  This is useful for speeding
+up booting on (very slow) emulation environments by avoiding any processing of
+an initramfs.
+David Daney tested on MIPS64.
 
-The overall problem with Version 2 of the Altera Quadspi Controller and 
-its driver was the fact that there was much duplication of code and logic
-with the spi-nor framework.  This new combination of fpga hardware and 
-software "gets out of the way" of the spi-nor framework.  The result is a
-much simpler driver with the spi-nor framework performing the bulk of the work.
+v2: Fix typo in subject line, s/mdt/mtd/
+    added acked-by/tested-by
 
-Patch 1 contains the device tree bindings for the driver for
-the Altera ASMI-Parallel II IP Core.
+ drivers/mtd/devices/slram.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-Patch 2 contains the driver code for the Altera ASMI-Parallel II IP Core.
-This driver supports being configured via a device tree or with platform
-data.  In the later case, the memory for the registers has been remapped.
-
-Matthew Gerlach (2):
-  dt-bindings: mtd: Altera ASMI Parallel II IP Core
-  mtd: spi-nor: Altera ASMI Parallel II IP Core
-
- .../devicetree/bindings/mtd/altera-asmip2.txt      |  15 +
- MAINTAINERS                                        |   7 +
- drivers/mtd/spi-nor/Kconfig                        |   6 +
- drivers/mtd/spi-nor/Makefile                       |   1 +
- drivers/mtd/spi-nor/altera-asmip2.c                | 494 +++++++++++++++++++++
- include/linux/mtd/altera-asmip2.h                  |  25 ++
- 6 files changed, 548 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/altera-asmip2.txt
- create mode 100644 drivers/mtd/spi-nor/altera-asmip2.c
- create mode 100644 include/linux/mtd/altera-asmip2.h
-
+diff --git a/drivers/mtd/devices/slram.c b/drivers/mtd/devices/slram.c
+index 8087c36dc693..0ec85f316d24 100644
+--- a/drivers/mtd/devices/slram.c
++++ b/drivers/mtd/devices/slram.c
+@@ -163,8 +163,9 @@ static int register_device(char *name, unsigned long start, unsigned long length
+ 	}
+ 
+ 	if (!(((slram_priv_t *)(*curmtd)->mtdinfo->priv)->start =
+-				ioremap(start, length))) {
+-		E("slram: ioremap failed\n");
++		memremap(start, length,
++			 MEMREMAP_WB | MEMREMAP_WT | MEMREMAP_WC))) {
++		E("slram: memremap failed\n");
+ 		return -EIO;
+ 	}
+ 	((slram_priv_t *)(*curmtd)->mtdinfo->priv)->end =
+@@ -186,7 +187,7 @@ static int register_device(char *name, unsigned long start, unsigned long length
+ 
+ 	if (mtd_device_register((*curmtd)->mtdinfo, NULL, 0))	{
+ 		E("slram: Failed to register new device\n");
+-		iounmap(((slram_priv_t *)(*curmtd)->mtdinfo->priv)->start);
++		memunmap(((slram_priv_t *)(*curmtd)->mtdinfo->priv)->start);
+ 		kfree((*curmtd)->mtdinfo->priv);
+ 		kfree((*curmtd)->mtdinfo);
+ 		return(-EAGAIN);
+@@ -206,7 +207,7 @@ static void unregister_devices(void)
+ 	while (slram_mtdlist) {
+ 		nextitem = slram_mtdlist->next;
+ 		mtd_device_unregister(slram_mtdlist->mtdinfo);
+-		iounmap(((slram_priv_t *)slram_mtdlist->mtdinfo->priv)->start);
++		memunmap(((slram_priv_t *)slram_mtdlist->mtdinfo->priv)->start);
+ 		kfree(slram_mtdlist->mtdinfo->priv);
+ 		kfree(slram_mtdlist->mtdinfo);
+ 		kfree(slram_mtdlist);
 -- 
-2.7.4
+2.11.0
