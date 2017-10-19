@@ -1,43 +1,18 @@
-Date: Thu, 19 Oct 2017 09:18:10 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Miquel Raynal <miquel.raynal@free-electrons.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, bcm-kernel-feedback-list@broadcom.com,
- Brian Norris <computersforpeace@gmail.com>, Catalin Marinas
- <catalin.marinas@arm.com>, Chen-Yu Tsai <wens@csie.org>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Daniel Mack <daniel@zonque.org>, David
- Woodhouse <dwmw2@infradead.org>, devel@driverdev.osuosl.org,
- devicetree@vger.kernel.org, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Gregory Clement
- <gregory.clement@free-electrons.com>, Han Xu <han.xu@nxp.com>, Haojian
- Zhuang <haojian.zhuang@gmail.com>, Jason Cooper <jason@lakedaemon.net>,
- Josh Wu <rainyfeeling@outlook.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-mediatek@lists.infradead.org, linux-mtd@lists.infradead.org, Marc
- Gonzalez <marc_gonzalez@sigmadesigns.com>, Marek Vasut
- <marek.vasut@gmail.com>, Mark Rutland <mark.rutland@arm.com>, Masahiro
- Yamada <yamada.masahiro@socionext.com>, Matthias Brugger
- <matthias.bgg@gmail.com>, Maxime Ripard <maxime.ripard@free-electrons.com>,
- Maxim Levitsky <maximlevitsky@gmail.com>, Richard Weinberger
- <richard@nod.at>, Robert Jarzmik <robert.jarzmik@free.fr>, Rob Herring
- <robh+dt@kernel.org>, Russell King <linux@armlinux.org.uk>, Sebastian
- Hesselbarth <sebastian.hesselbarth@gmail.com>, Stefan Agner
- <stefan@agner.ch>, Sylvain Lemieux <slemieux.tyco@gmail.com>, Vladimir
- Zapolskiy <vz@mleia.com>, Wenyou Yang <wenyou.yang@atmel.com>, Will Deacon
- <will.deacon@arm.com>, Thomas Petazzoni
- <thomas.petazzoni@free-electrons.com>, Antoine Tenart
- <antoine.tenart@free-electrons.com>, Igor Grinberg
- <grinberg@compulab.co.il>, Nadav Haklai <nadavh@marvell.com>, Ofer Heifetz
- <oferh@marvell.com>, Neta Zur Hershkovits <neta@marvell.com>, Hanna Hawa
- <hannah@marvell.com>
-Subject: Re: [RFC 06/12] mtd: nand: add reworked Marvell NAND controller driver
-Message-ID: <20171019091810.13f54c78@bbrezillon>
-In-Reply-To: <20171018143629.29302-7-miquel.raynal@free-electrons.com>
-References: <20171018143629.29302-1-miquel.raynal@free-electrons.com>
- <20171018143629.29302-7-miquel.raynal@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mx1.emlix.com ([46.4.235.150])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1e55wu-0007KJ-Gk
+ for linux-mtd@lists.infradead.org; Thu, 19 Oct 2017 08:13:09 +0000
+Received: from mailer.emlix.com (unknown [80.150.94.234])
+ (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ by mx1.emlix.com (Postfix) with ESMTPS id 79B1525F3EA
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Oct 2017 10:12:40 +0200 (CEST)
+From: Philipp Puschmann <pp@emlix.com>
+To: linux-mtd@lists.infradead.org
+Cc: pp@emlix.com
+Subject: [PATCH 1/2] mtd: spi-nor: fix style issue
+Date: Thu, 19 Oct 2017 10:12:31 +0200
+Message-Id: <20171019081231.5394-1-pp@emlix.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -47,39 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 18 Oct 2017 16:36:23 +0200
-Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
+Fixed a space coding style issue, found via checkpatch.
 
+Signed-off-by: Philipp Puschmann <pp@emlix.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +
-> +enum marvell_nfc_variant {
-> +	MARVELL_NFC_VARIANT_PXA3XX,
-> +	MARVELL_NFC_VARIANT_ARMADA370,
-> +	MARVELL_NFC_VARIANT_ARMADA_8K,
-> +};
-> +
-> +/*
-> + * NAND controller capabilities for distinction between compatible strings
-> + *
-> + * @variant:		Board type
-> + * @max_cs_nb:		Number of Chip Select lines available
-> + * @max_rb_nb:		Number of Ready/Busy lines available
-> + * @legacy_of_bindings	Indicates if DT parsing must be done using the old
-> + *			fashion way
-> + */
-> +struct marvell_nfc_caps {
-> +	enum marvell_nfc_variant variant;
-
-Do you really need this variant field. It seems you're only using it to
-detect if you should MUX the NAND pins using the Special Function
-registers on armada8k. Maybe you should just have:
-
-	bool need_system_controller;
-
-and set it to true for the "armada8k" compatible.
-
-> +	unsigned int max_cs_nb;
-> +	unsigned int max_rb_nb;
-> +	bool legacy_of_bindings;
-> +};
-> +
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 19c000722cbc..386de64e5a86 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -964,7 +964,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "f25l64qa", INFO(0x8c4117, 0, 64 * 1024, 128, SECT_4K | SPI_NOR_HAS_LOCK) },
+ 
+ 	/* Everspin */
+-	{ "mr25h256", CAT25_INFO( 32 * 1024, 1, 256, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
++	{ "mr25h256", CAT25_INFO(32 * 1024, 1, 256, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+ 	{ "mr25h10",  CAT25_INFO(128 * 1024, 1, 256, 3, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+ 	{ "mr25h40",  CAT25_INFO(512 * 1024, 1, 256, 3, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+ 
+-- 
+2.14.1
