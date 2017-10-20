@@ -1,29 +1,43 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e5RRO-0006Bb-OK
- for linux-mtd@lists.infradead.org; Fri, 20 Oct 2017 07:10:05 +0000
-Date: Fri, 20 Oct 2017 09:09:25 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
-Cc: richard@nod.at, linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, cyrille.pitchen@wedev4u.fr,
- computersforpeace@gmail.com, dwmw2@infradead.org
-Subject: Re: [PATCH -next v2] mtd: nand: Add support for Toshiba BENAND
- (Built-in ECC NAND)
-Message-ID: <20171020090925.48e3a30a@bbrezillon>
-In-Reply-To: <4b71d1b1-b4a5-bfe0-2d6e-451815eb9c46@toshiba.co.jp>
-References: <1505971922-4994-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
- <20170921092849.6f1ba4b8@bbrezillon>
- <34d612f6-a479-21e7-f0aa-734e647d5942@toshiba.co.jp>
- <20170926231549.40c09c5d@bbrezillon>
- <fa307950-6085-acf9-aae3-725b9c2a60af@toshiba.co.jp>
- <20171005093126.78616d74@bbrezillon>
- <484831d8-1bd7-f714-7934-863f2ad0b200@toshiba.co.jp>
- <20171012152647.0208fb88@bbrezillon>
- <4b71d1b1-b4a5-bfe0-2d6e-451815eb9c46@toshiba.co.jp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+Date: Fri, 20 Oct 2017 11:29:18 +0200
+From: Stefan Agner <stefan@agner.ch>
+To: Miquel Raynal <miquel.raynal@free-electrons.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, bcm-kernel-feedback-list@broadcom.com,
+ Boris Brezillon <boris.brezillon@free-electrons.com>, Brian Norris
+ <computersforpeace@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>,
+ Chen-Yu Tsai <wens@csie.org>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Daniel Mack <daniel@zonque.org>, David Woodhouse <dwmw2@infradead.org>,
+ devel@driverdev.osuosl.org, devicetree@vger.kernel.org, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Gregory Clement
+ <gregory.clement@free-electrons.com>, Han Xu <han.xu@nxp.com>, Haojian
+ Zhuang <haojian.zhuang@gmail.com>, Jason Cooper <jason@lakedaemon.net>, Josh
+ Wu <rainyfeeling@outlook.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, linux-mtd@lists.infradead.org, Marc
+ Gonzalez <marc_gonzalez@sigmadesigns.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Mark Rutland <mark.rutland@arm.com>, Masahiro
+ Yamada <yamada.masahiro@socionext.com>, Matthias Brugger
+ <matthias.bgg@gmail.com>, Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Maxim Levitsky <maximlevitsky@gmail.com>, Richard Weinberger
+ <richard@nod.at>, Robert Jarzmik <robert.jarzmik@free.fr>, Rob Herring
+ <robh+dt@kernel.org>, Russell King <linux@armlinux.org.uk>, Sebastian
+ Hesselbarth <sebastian.hesselbarth@gmail.com>, Sylvain Lemieux
+ <slemieux.tyco@gmail.com>, Vladimir Zapolskiy <vz@mleia.com>, Wenyou Yang
+ <wenyou.yang@atmel.com>, Will Deacon <will.deacon@arm.com>, Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>, Antoine Tenart
+ <antoine.tenart@free-electrons.com>, Igor Grinberg
+ <grinberg@compulab.co.il>, Nadav Haklai <nadavh@marvell.com>, Ofer Heifetz
+ <oferh@marvell.com>, Neta Zur Hershkovits <neta@marvell.com>, Hanna Hawa
+ <hannah@marvell.com>
+Subject: Re: [RFC 02/12] mtd: nand: force drivers to explicitly send READ/PROG
+ commands
+In-Reply-To: <20171018143629.29302-3-miquel.raynal@free-electrons.com>
+References: <20171018143629.29302-1-miquel.raynal@free-electrons.com>
+ <20171018143629.29302-3-miquel.raynal@free-electrons.com>
+Message-ID: <af6a28eeafc9379c3f4e8bb03ff60fc7@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,109 +47,224 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 20 Oct 2017 13:52:32 +0900
-KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:
+Hi Miquel,
 
-> On 2017/10/12 22:26, Boris Brezillon wrote:
-> > On Thu, 12 Oct 2017 22:03:23 +0900
-> > KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:
-> >   
-> >> On 2017/10/05 16:31, Boris Brezillon wrote:  
-> >>> On Thu, 5 Oct 2017 16:24:08 +0900
-> >>> KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:    
-> >>>>>>>> @@ -39,9 +105,43 @@ static void toshiba_nand_decode_id(struct nand_chip *chip)
-> >>>>>>>>  
-> >>>>>>>>  static int toshiba_nand_init(struct nand_chip *chip)
-> >>>>>>>>  {
-> >>>>>>>> +	struct mtd_info *mtd = nand_to_mtd(chip);
-> >>>>>>>> +
-> >>>>>>>>  	if (nand_is_slc(chip))
-> >>>>>>>>  		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
-> >>>>>>>>  
-> >>>>>>>> +	if (nand_is_slc(chip) && (chip->id.data[4] & 0x80)) {
-> >>>>>>>> +		/* BENAND */
-> >>>>>>>> +
-> >>>>>>>> +		/*
-> >>>>>>>> +		 * We can't disable the internal ECC engine, the user
-> >>>>>>>> +		 * has to use on-die ECC, there is no alternative.
-> >>>>>>>> +		 */
-> >>>>>>>> +		if (chip->ecc.mode != NAND_ECC_ON_DIE) {
-> >>>>>>>> +			pr_err("On-die ECC should be selected.\n");
-> >>>>>>>> +			return -EINVAL;
-> >>>>>>>> +		}        
-> >>>>>>>
-> >>>>>>> According to your previous explanation that's not exactly true. Since
-> >>>>>>> ECC bytes are stored in a separate area, the user can decide to use
-> >>>>>>> another mode without trouble. Just skip the BENAND initialization when
-> >>>>>>> mode != NAND_ECC_ON_DIE and we should be good, or am I missing something?        
-> >>>>>>
-> >>>>>> I am asking to product department to confirm it.      
-> >>>>>
-> >>>>> I'm almost sure this is the case ;-).      
-> >>>>
-> >>>> According to the command sequence written in BENAND's datasheet, the status
-> >>>> of the internal ECC must be checked after reading. To do that, ecc.mode has been
-> >>>> set to NAND_ECC_ON_DIE and the status of the internal ECC is checked through 
-> >>>> the 0x70 or 0x7A command. That's the reason we are returning EINVAL here.    
-> >>>
-> >>> But the status will anyway be retrieved, and what's the point of
-> >>> checking the ECC flags if the user wants to use its own ECC engine? I
-> >>> mean, since you have the whole OOB area exposed why would you prevent
-> >>> existing setup from working (by existing setup I mean those that already
-> >>> have a BENAND but haven't modified their driver to accept ON_DIE_ECC).
-> >>>
-> >>> Maybe I'm missing something, but AFAICT it's safe to allow users to
-> >>> completely ignore the on-die ECC engine and use their own, even if
-> >>> that means duplicating the work since on-die ECC cannot be disabled on
-> >>> BENAND devices.    
-> >>
-> >> If user host controller ECC engine can support 8bit ECC or more ,
-> >> Toshiba offers 24nm SLC NAND products (not BENAND).  If user host
-> >> controller ECC engine is less that 8bit ECC (for example: 1bit or
-> >> 4bit ECC) Toshiba offers BENAND.  When using BENAND, checking
-> >> BENAND own ECC status (ECC flag) is required as per BENAND
-> >> product datasheet. Ignoring BENAND on-die ECC operation status,
-> >> and rely only on host 1 bit ECC or 4 bit ECC status, is not
-> >> recommended because the host ECC capability is inferior to BENAND
-> >> 8bit ECC and data refresh or other operations may not work
-> >> properly.  
-> > 
-> > Well, that's not really your problem. The framework already complains
-> > if someone tries to use an ECC that is weaker than the chip
-> > requirement. On the other hand, it's perfectly valid to use on
-> > host-side ECC engine that meets NAND requirements (8bit/xxxbytes).  
+Thanks for the work on this, happy to see the new interface is moving
+forward. Some comments below.
+
+On 2017-10-18 16:36, Miquel Raynal wrote:
+> From: Boris Brezillon <boris.brezillon@free-electrons.com>
 > 
-> I have assumed to specify the ecc strength and size by devicetree.
-> Before BENAND patch updated, I would like to submit a patch which read
-> the ECC strength and size from the nand using extended-id like the
-> Samsung nand patch[1].
-
-Sure.
-
->  [1] https://patchwork.ozlabs.org/patch/712549/
+> The core currently send the READ0 and SEQIN+PAGEPROG commands in
+> nand_do_read/write_ops(). This is inconsistent with
+> ->read/write_oob[_raw]() hooks behavior which are expected to send
+> these commands.
 > 
-> > The use case I'm trying to gracefully handle here is: your NAND
-> > controller refuses to use anything but the host-side ECC engine and you
-> > have a BENAND connected to this controller.
-> > Before your patch this use case worked just fine, and the user didn't
-> > even notice it was using a NAND chip that was capable of correcting
-> > bitflips. After your patch it fails to probe the NAND chip and users
-> > will have to patch their controller driver to make it work again. Sorry
-> > but this is not really an option: we have to keep existing setup in a
-> > working state, and that means allowing people to use their BENAND in a
-> > degraded state where they'll just ignore the on-die ECC and use their
-> > own ECC engine instead.
-> > 
-> > I really don't see the problem here. It's not worse than it was before
-> > your patch, and those wanting to activate on-die ECC support will have
-> > to patch their controller driver anyway.  
+> There's already a flag (NAND_ECC_CUSTOM_PAGE_ACCESS) to inform the core
+> that a specific controller wants to send the READ/SEQIN+PAGEPROG
+> commands on its own, but it's an opt-in flag, and existing drivers are
+> unlikely to be updated to pass it.
 > 
-> If the above approach is acceptable, I will update BENAND patch according to
-> your idea.
+> Moreover, some controllers cannot dissociate the READ/PAGEPROG commands
+> from the associated data transfer and ECC engine activation, and
+> developers have to hack things in their ->cmdfunc() implementation to
+> handle such complex cases, or have to accept the perf penalty of sending
+> twice the same command.
+> To address this problem we are planning on adding a new interface which
+> is passed all information about a NAND operation (including the amount
+> of data to transfer) and replacing all calls to ->cmdfunc() to calls to
+> this new ->exec_op() hook. But, in order to do that, we need to have all
+> ->cmdfunc() calls placed near their associated ->read/write_buf/byte()
+> calls.
+> 
+> Modify the core and relevant drivers to make NAND_ECC_CUSTOM_PAGE_ACCESS
+> the default case, and remove this flag.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> [miquel.raynal@free-electrons.com: rebased and fixed some conflicts]
+> Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+> ---
+>  drivers/mtd/nand/atmel/nand-controller.c      |  7 ++-
+>  drivers/mtd/nand/bf5xx_nand.c                 |  6 ++-
+>  drivers/mtd/nand/brcmnand/brcmnand.c          | 13 +++--
+>  drivers/mtd/nand/cafe_nand.c                  |  6 +--
+>  drivers/mtd/nand/denali.c                     | 14 +++++-
+>  drivers/mtd/nand/docg4.c                      | 12 +++--
+>  drivers/mtd/nand/fsl_elbc_nand.c              |  6 +--
+>  drivers/mtd/nand/fsl_ifc_nand.c               |  6 +--
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c        | 30 ++++++------
+>  drivers/mtd/nand/hisi504_nand.c               |  6 +--
+>  drivers/mtd/nand/lpc32xx_mlc.c                |  5 +-
+>  drivers/mtd/nand/lpc32xx_slc.c                | 11 +++--
+>  drivers/mtd/nand/mtk_nand.c                   | 10 ++--
+>  drivers/mtd/nand/nand_base.c                  | 68 +++++++++------------------
+>  drivers/mtd/nand/nand_micron.c                |  1 -
+>  drivers/mtd/nand/sh_flctl.c                   |  6 +--
+>  drivers/mtd/nand/sunxi_nand.c                 | 34 +++++++++-----
+>  drivers/mtd/nand/tango_nand.c                 |  1 -
+>  drivers/mtd/nand/vf610_nfc.c                  |  6 +--
+>  drivers/staging/mt29f_spinand/mt29f_spinand.c |  7 ++-
+>  include/linux/mtd/rawnand.h                   | 11 -----
+>  21 files changed, 142 insertions(+), 124 deletions(-)
+> 
 
-Okay. BTW, an ->exec_op() implementation has been posted earlier
-this week [1], and since you are depending on it to support your custom
-TOSHIBA_NAND_CMD_ECC_STATUS command, that'd be great to have a review
-from you.
+<snip>
 
-[1]http://patchwork.ozlabs.org/project/linux-mtd/list/?series=8923
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index c8ceaecd8065..3f2b903158c1 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -1043,6 +1043,8 @@ static int gpmi_ecc_read_page(struct mtd_info
+> *mtd, struct nand_chip *chip,
+>  	unsigned int  max_bitflips = 0;
+>  	int           ret;
+>  
+> +	nand_read_page_op(chip, page, 0, NULL, 0);
+> +
+>  	dev_dbg(this->dev, "page number is : %d\n", page);
+>  	ret = read_page_prepare(this, buf, nfc_geo->payload_size,
+>  					this->payload_virt, this->payload_phys,
+> @@ -1220,12 +1222,13 @@ static int gpmi_ecc_read_subpage(struct
+> mtd_info *mtd, struct nand_chip *chip,
+>  	meta = geo->metadata_size;
+>  	if (first) {
+>  		col = meta + (size + ecc_parity_size) * first;
+> -		chip->cmdfunc(mtd, NAND_CMD_RNDOUT, col, -1);
+
+Shouldn't we add nand_change_read_column_op here?
+
+
+>  
+>  		meta = 0;
+>  		buf = buf + first * size;
+>  	}
+>  
+> +	nand_read_page_op(chip, page, col, NULL, 0);
+> +
+>  	/* Save the old environment */
+>  	r1_old = r1_new = readl(bch_regs + HW_BCH_FLASH0LAYOUT0);
+>  	r2_old = r2_new = readl(bch_regs + HW_BCH_FLASH0LAYOUT1);
+> @@ -1277,6 +1280,9 @@ static int gpmi_ecc_write_page(struct mtd_info
+> *mtd, struct nand_chip *chip,
+>  	int        ret;
+>  
+>  	dev_dbg(this->dev, "ecc write page.\n");
+> +
+> +	nand_prog_page_begin_op(chip, page, 0, NULL, 0);
+> +
+>  	if (this->swap_block_mark) {
+>  		/*
+>  		 * If control arrives here, we're doing block mark swapping.
+> @@ -1338,7 +1344,10 @@ static int gpmi_ecc_write_page(struct mtd_info
+> *mtd, struct nand_chip *chip,
+>  				payload_virt, payload_phys);
+>  	}
+>  
+> -	return 0;
+> +	if (ret)
+> +		return ret;
+> +
+> +	return nand_prog_page_end_op(chip);
+>  }
+>  
+>  /*
+> @@ -1472,8 +1481,8 @@ static int gpmi_ecc_read_page_raw(struct mtd_info *mtd,
+>  	uint8_t *oob = chip->oob_poi;
+>  	int step;
+>  
+> -	chip->read_buf(mtd, tmp_buf,
+> -		       mtd->writesize + mtd->oobsize);
+> +	nand_read_page_op(chip, page, 0, tmp_buf,
+> +			  mtd->writesize + mtd->oobsize);
+>  
+>  	/*
+>  	 * If required, swap the bad block marker and the data stored in the
+> @@ -1617,24 +1626,19 @@ static int gpmi_ecc_write_page_raw(struct mtd_info *mtd,
+>  		tmp_buf[mtd->writesize] = swap;
+>  	}
+>  
+> -	chip->write_buf(mtd, tmp_buf, mtd->writesize + mtd->oobsize);
+> -
+> -	return 0;
+> +	return nand_prog_page_op(chip, page, 0, tmp_buf,
+> +				 mtd->writesize + mtd->oobsize);
+>  }
+>  
+>  static int gpmi_ecc_read_oob_raw(struct mtd_info *mtd, struct nand_chip *chip,
+>  				 int page)
+>  {
+> -	nand_read_page_op(chip, page, 0, NULL, 0);
+> -
+>  	return gpmi_ecc_read_page_raw(mtd, chip, NULL, 1, page);
+>  }
+>  
+>  static int gpmi_ecc_write_oob_raw(struct mtd_info *mtd, struct nand_chip *chip,
+>  				 int page)
+>  {
+> -	nand_prog_page_begin_op(chip, page, 0, NULL, 0);
+> -
+>  	return gpmi_ecc_write_page_raw(mtd, chip, NULL, 1, page);
+>  }
+>  
+> @@ -1806,9 +1810,7 @@ static int mx23_write_transcription_stamp(struct
+> gpmi_nand_data *this)
+>  		/* Write the first page of the current stride. */
+>  		dev_dbg(dev, "Writing an NCB fingerprint in page 0x%x\n", page);
+>  
+> -		nand_prog_page_begin_op(chip, page, 0, NULL, 0);
+> -		chip->ecc.write_page_raw(mtd, chip, buffer, 0, page);
+> -		status = nand_prog_page_end_op(chip);
+> +		status = chip->ecc.write_page_raw(mtd, chip, buffer, 0, page);
+>  		if (status)
+>  			dev_err(dev, "[%s] Write failed.\n", __func__);
+>  	}
+
+<snip>
+
+> diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
+> index 8037d4b48a05..80d31a58e558 100644
+> --- a/drivers/mtd/nand/vf610_nfc.c
+> +++ b/drivers/mtd/nand/vf610_nfc.c
+> @@ -560,7 +560,7 @@ static int vf610_nfc_read_page(struct mtd_info
+> *mtd, struct nand_chip *chip,
+>  	int eccsize = chip->ecc.size;
+>  	int stat;
+>  
+> -	vf610_nfc_read_buf(mtd, buf, eccsize);
+> +	nand_read_page_op(chip, page, 0, buf, eccsize);
+>  	if (oob_required)
+>  		vf610_nfc_read_buf(mtd, chip->oob_poi, mtd->oobsize);
+>  
+> @@ -580,7 +580,7 @@ static int vf610_nfc_write_page(struct mtd_info
+> *mtd, struct nand_chip *chip,
+>  {
+>  	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
+>  
+> -	vf610_nfc_write_buf(mtd, buf, mtd->writesize);
+
+We currently ignore NAND_CMD_SEQIN in ->cmdfunc anyway, so I think this
+change would not even be necessary here.
+
+This is a NAND controller which will benefit from the new interface. I
+plan to convert the driver to the new interface, maybe I manage to do
+that soon so we have a second driver making use of the new interface.
+
+
+> +	nand_prog_page_begin_op(chip, page, 0, buf, mtd->writesize);
+>  	if (oob_required)
+>  		vf610_nfc_write_buf(mtd, chip->oob_poi, mtd->oobsize);
+>  
+> @@ -588,7 +588,7 @@ static int vf610_nfc_write_page(struct mtd_info
+> *mtd, struct nand_chip *chip,
+>  	nfc->use_hw_ecc = true;
+>  	nfc->write_sz = mtd->writesize + mtd->oobsize;
+>  
+> -	return 0;
+> +	return nand_prog_page_end_op(chip);
+>  }
+>  
+>  static const struct of_device_id vf610_nfc_dt_ids[] = {
+
+--
+Stefan
