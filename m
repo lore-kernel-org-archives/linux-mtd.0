@@ -1,21 +1,21 @@
-Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
+Received: from imap.thunk.org ([2600:3c02::f03c:91ff:fe96:be03])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e5cyF-00088G-TU
- for linux-mtd@lists.infradead.org; Fri, 20 Oct 2017 19:28:41 +0000
-Received: by mail-pf0-x244.google.com with SMTP id n14so12384025pfh.8
- for <linux-mtd@lists.infradead.org>; Fri, 20 Oct 2017 12:28:19 -0700 (PDT)
-Received: from roskinp-7510.office.thespaceshipcompany.com ([74.100.234.187])
- by smtp.gmail.com with ESMTPSA id
- k20sm2955814pfg.141.2017.10.20.12.28.18
- for <linux-mtd@lists.infradead.org>
- (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
- Fri, 20 Oct 2017 12:28:18 -0700 (PDT)
-From: Pavel Roskin <plroskin@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mkfs.ubifs: make failure to list extended attributes quiet
- and non-fatal
-Date: Fri, 20 Oct 2017 12:28:07 -0700
-Message-Id: <20171020192807.25761-1-plroskin@gmail.com>
+ id 1e5dEE-0007GP-QI
+ for linux-mtd@lists.infradead.org; Fri, 20 Oct 2017 19:45:13 +0000
+Date: Fri, 20 Oct 2017 15:44:45 -0400
+From: Theodore Ts'o <tytso@mit.edu>
+To: Eric Biggers <ebiggers3@gmail.com>
+Cc: linux-fscrypt@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+ linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net,
+ linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH v2 00/11] fscrypt: add some higher-level helper functions
+Message-ID: <20171020194445.dirxpfu2nk2n7a6b@thunk.org>
+References: <20171009191544.43656-1-ebiggers3@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20171009191544.43656-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,73 +25,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-mkfs.ubifs treats all errors returned by llistxattr() except ENOENT as
-fatal. In particular, if the host system doesn't support extended
-attributes, mkfs.ubifs would fail. It happens even without any flags that
-would explicitly request extended attribute support.
+On Mon, Oct 09, 2017 at 12:15:33PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> This series prepares to reduce code duplication among ext4, f2fs, and
+> ubifs by introducing a S_ENCRYPTED inode flag (so we don't have to call
+> back into the filesystem to test the filesystem-specific inode flag),
+> then introducing new helper functions that are called at the beginning
+> of the open, link, rename, lookup, and setattr operations.
+> 
+> In the future we maybe should even call these new helpers from the VFS
+> so that each individual filesystem doesn't have to do it.  But that's
+> not possible currently because fs/crypto/ can be built as a module.
+> 
+> The patches to switch the filesystems over to use the helper functions
+> were included in v1 of this patchset.  They are not included now since
+> I'm planning to get them picked up by the individual filesystem
+> maintainers after this goes in.
 
-As a result, it's impossible to build an OpenEmbedded based UBI image on
-a system without extended attribute support if the xattr feature is
-enabled in DISTRO_FEATURES.
+Thanks, I've applied these patches plus the ones for ext4 on the
+fscrypt.git tree.
 
-Take a clue from mkfs.jffs2, which treats llistxattr() errors as
-non-fatal and doesn't report them by default. Report the error at the
-debug level 1 and higher.
+The only concern I have is that in fscrypt_file_name() the warning
+prints just the inode numbers, but not the block device (it replaced
+an ext4_warning() call which automatically printed the block device).
+I'll add a patch to fix that up in the next day or two.
 
-The second llistxattr() error remains fatal, as it indicates unexpected
-behavior.
-
-Don't use goto before the buffer is allocated. Don't initialize buf with
-NULL, it should not be used before the xmalloc() call.
-
-Signed-off-by: Pavel Roskin <plroskin@gmail.com>
----
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 21 ++++++---------------
- 1 file changed, 6 insertions(+), 15 deletions(-)
-
-diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-index d432dfe..e390b5a 100644
---- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-+++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -1122,22 +1122,17 @@ static int inode_add_xattr(struct ubifs_ino_node *host_ino,
- {
- 	int ret;
- 	struct qstr nm;
--	void *buf = NULL;
-+	void *buf;
- 	ssize_t len;
- 	ssize_t pos = 0;
- 
- 	len = llistxattr(path_name, NULL, 0);
--	if (len < 0) {
--		if (errno == ENOENT)
--			return 0;
--
--		sys_err_msg("llistxattr failed on %s", path_name);
--
--		return len;
--	}
-+	if (len < 0)
-+		dbg_msg(1, "llistxattr('%s') = %d : %s\n", path_name,
-+			errno, strerror(errno));
- 
--	if (len == 0)
--		goto noxattr;
-+	if (len <= 0)
-+		return 0;
- 
- 	buf = xmalloc(len);
- 
-@@ -1191,10 +1186,6 @@ static int inode_add_xattr(struct ubifs_ino_node *host_ino,
- 			goto out_free;
- 	}
- 
--noxattr:
--	free(buf);
--	return 0;
--
- out_free:
- 	free(buf);
- 
--- 
-2.14.2
+     	   	    	     	- Ted
