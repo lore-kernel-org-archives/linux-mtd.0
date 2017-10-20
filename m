@@ -1,7 +1,7 @@
-Received: from fllnx210.ext.ti.com ([198.47.19.17])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e5Vsq-0003js-2W
- for linux-mtd@lists.infradead.org; Fri, 20 Oct 2017 11:54:37 +0000
+Received: from lelnx194.ext.ti.com ([198.47.27.80])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1e5Xyf-0000NZ-Lj
+ for linux-mtd@lists.infradead.org; Fri, 20 Oct 2017 14:08:48 +0000
 Subject: Re: [PATCH v2] mtd: nand: omap2: Fix subpage write
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 CC: <richard@nod.at>, <tony@atomide.com>, <linux-mtd@lists.infradead.org>,
@@ -11,8 +11,8 @@ References: <1508402489-7436-1-git-send-email-rogerq@ti.com>
  <76f4dd14-7cc8-4990-23e6-4caa1fee71df@ti.com>
  <20171020132503.229b821b@bbrezillon>
 From: Roger Quadros <rogerq@ti.com>
-Message-ID: <8af9b5b8-87c2-f9dc-1ede-01493aef46a0@ti.com>
-Date: Fri, 20 Oct 2017 14:54:07 +0300
+Message-ID: <2bef9d3a-93a9-10c2-e852-41847d5aaf59@ti.com>
+Date: Fri, 20 Oct 2017 14:56:18 +0300
 MIME-Version: 1.0
 In-Reply-To: <20171020132503.229b821b@bbrezillon>
 Content-Type: text/plain; charset="utf-8"
@@ -26,6 +26,8 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+
+
 
 On 20/10/17 14:25, Boris Brezillon wrote:
 > On Fri, 20 Oct 2017 12:59:31 +0300
@@ -52,18 +54,12 @@ On 20/10/17 14:25, Boris Brezillon wrote:
 > 
 > xxx being the commit that introduced the omap_calculate_ecc_bch() and
 > assign chip->ecc.calculate to it.
-
-got it.
-
 > 
 >> cc: <stable@vger.kernel.org> # v4.12+
 > 
 > Shouldn't we try to backport the patch to pre-4.12 versions? I mean,
 > the buffer overflow exist there as well, and we don't know what it
 > corrupts exactly, but it's potentially harmful.
-
-I agree. I'll remove the "# v4.12+"
-
 > 
 >> Signed-off-by: Roger Quadros <rogerq@ti.com>
 >> ---
@@ -453,6 +449,9 @@ I agree. I'll remove the "# v4.12+"
 > It's still wrong. Didn't you say you would leave ecc->calculate
 > unassigned in this case?
 > 
+
+Ah, I forgot to commit :P. sorry.
+
 >>  		nand_chip->ecc.read_page	= omap_read_page_bch;
 >>  		nand_chip->ecc.write_page	= omap_write_page_bch;
 >> +		nand_chip->ecc.write_subpage	= omap_write_subpage_bch;
