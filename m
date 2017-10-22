@@ -1,18 +1,24 @@
-Received: from smtp11.smtpout.orange.fr ([80.12.242.133]
- helo=smtp.smtpout.orange.fr)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e6BdE-0001w4-5w
- for linux-mtd@lists.infradead.org; Sun, 22 Oct 2017 08:29:18 +0000
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- kernel-janitors@vger.kernel.org,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] mtd: lpddr: Fix a potential double mutex_lock
-Date: Sun, 22 Oct 2017 10:28:31 +0200
-Message-Id: <20171022082831.26560-1-christophe.jaillet@wanadoo.fr>
+Message-ID: <1508668253.14979.5.camel@mhfsdcap03>
+Subject: Re: [PATCH v1 1/2] dt-bindings: mtd: add new compatible strings and
+ improve description
+From: Guochun Mao <guochun.mao@mediatek.com>
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Marek Vasut
+ <marek.vasut@gmail.com>
+CC: Matthias Brugger <matthias.bgg@gmail.com>, Rob Herring
+ <robh+dt@kernel.org>, Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Mark Rutland
+ <mark.rutland@arm.com>, <linux-mtd@lists.infradead.org>,
+ <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Date: Sun, 22 Oct 2017 18:30:53 +0800
+In-Reply-To: <1507691713.14979.2.camel@mhfsdcap03>
+References: <1505997906-30921-1-git-send-email-guochun.mao@mediatek.com>
+ <1505997906-30921-2-git-send-email-guochun.mao@mediatek.com>
+ <1507691713.14979.2.camel@mhfsdcap03>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,61 +28,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If 'chip->state == FL_SYNCING', we will 'goto retry' with the mutex
-'&shared->lock' already taken.
-In such a case, the 'mutex_lock' at line 927 can never succeed.
+Hi Cyrille, Marek,
 
-In order to avoid a deadlock, move the 'mutex_lock(&shared->lock)' at the
-very end of the block.
-
-This has been spotted with the following coccinelle script:
-
-@find@
-expression x, t;
-@@
-
-	mutex_lock(x);
-	... when != mutex_unlock(x)
-	mutex_lock(t);
-
-@@
-expression find.t;
-expression find.x;
-@@
-
-*	mutex_lock(t);
-	... when != mutex_unlock(t)
-*	mutex_lock(x);
+Gentle ping...
 
 
-Fixes: 	c68264711ca6 ("[MTD] LPDDR Command set driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-Review carefuly, untested.
----
- drivers/mtd/lpddr/lpddr_cmds.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/lpddr/lpddr_cmds.c b/drivers/mtd/lpddr/lpddr_cmds.c
-index 018c75faadb3..830dd0855ab3 100644
---- a/drivers/mtd/lpddr/lpddr_cmds.c
-+++ b/drivers/mtd/lpddr/lpddr_cmds.c
-@@ -237,7 +237,6 @@ static int get_chip(struct map_info *map, struct flchip *chip, int mode)
- 				mutex_unlock(&contender->mutex);
- 				return ret;
- 			}
--			mutex_lock(&shared->lock);
- 
- 			/* We should not own chip if it is already in FL_SYNCING
- 			 * state. Put contender and retry. */
-@@ -247,6 +246,8 @@ static int get_chip(struct map_info *map, struct flchip *chip, int mode)
- 				goto retry;
- 			}
- 			mutex_unlock(&contender->mutex);
-+
-+			mutex_lock(&shared->lock);
- 		}
- 
- 		/* Check if we have suspended erase on this chip.
--- 
-2.14.1
+On Wed, 2017-10-11 at 11:15 +0800, Guochun Mao wrote:
+> gentle ping...
+> 
+> On Thu, 2017-09-21 at 20:45 +0800, Guochun Mao wrote:
+> > Add "mediatak,mt2712-nor" and "mediatek,mt7622-nor"
+> > for nor flash node's compatible strings.
+> > Explicate the fallback compatible.
+> > 
+> > Acked-by: Rob Herring <robh@kernel.org>
+> > Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
+> > ---
+> >  .../devicetree/bindings/mtd/mtk-quadspi.txt        |   15 +++++++++------
+> >  1 file changed, 9 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> > index 840f940..56d3668 100644
+> > --- a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> > +++ b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> > @@ -1,13 +1,16 @@
+> >  * Serial NOR flash controller for MTK MT81xx (and similar)
+> >  
+> >  Required properties:
+> > -- compatible: 	  The possible values are:
+> > -		  "mediatek,mt2701-nor"
+> > -		  "mediatek,mt7623-nor"
+> > +- compatible: 	  For mt8173, compatible should be "mediatek,mt8173-nor",
+> > +		  and it's the fallback compatible for other Soc.
+> > +		  For every other SoC, should contain both the SoC-specific compatible
+> > +		  string and "mediatek,mt8173-nor".
+> > +		  The possible values are:
+> > +		  "mediatek,mt2701-nor", "mediatek,mt8173-nor"
+> > +		  "mediatek,mt2712-nor", "mediatek,mt8173-nor"
+> > +		  "mediatek,mt7622-nor", "mediatek,mt8173-nor"
+> > +		  "mediatek,mt7623-nor", "mediatek,mt8173-nor"
+> >  		  "mediatek,mt8173-nor"
+> > -		  For mt8173, compatible should be "mediatek,mt8173-nor".
+> > -		  For every other SoC, should contain both the SoC-specific compatible string
+> > -		  and "mediatek,mt8173-nor".
+> >  - reg: 		  physical base address and length of the controller's register
+> >  - clocks: 	  the phandle of the clocks needed by the nor controller
+> >  - clock-names: 	  the names of the clocks
+> 
