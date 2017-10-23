@@ -1,24 +1,19 @@
-Message-ID: <1508668253.14979.5.camel@mhfsdcap03>
-Subject: Re: [PATCH v1 1/2] dt-bindings: mtd: add new compatible strings and
- improve description
-From: Guochun Mao <guochun.mao@mediatek.com>
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Marek Vasut
- <marek.vasut@gmail.com>
-CC: Matthias Brugger <matthias.bgg@gmail.com>, Rob Herring
- <robh+dt@kernel.org>, Boris Brezillon <boris.brezillon@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Mark Rutland
- <mark.rutland@arm.com>, <linux-mtd@lists.infradead.org>,
- <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Date: Sun, 22 Oct 2017 18:30:53 +0800
-In-Reply-To: <1507691713.14979.2.camel@mhfsdcap03>
-References: <1505997906-30921-1-git-send-email-guochun.mao@mediatek.com>
- <1505997906-30921-2-git-send-email-guochun.mao@mediatek.com>
- <1507691713.14979.2.camel@mhfsdcap03>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1e6XZl-00050n-P4
+ for linux-mtd@lists.infradead.org; Mon, 23 Oct 2017 07:55:12 +0000
+Subject: Re: [PATCH] mtd: spi-nor: Add support for Winbond w25q16dw
+To: Neil Armstrong <narmstrong@baylibre.com>, marek.vasut@gmail.com
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1503925893-17116-1-git-send-email-narmstrong@baylibre.com>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <5bd1d86b-8b2c-a1ca-b5b5-9175569ffb36@wedev4u.fr>
+Date: Mon, 23 Oct 2017 09:54:34 +0200
 MIME-Version: 1.0
+In-Reply-To: <1503925893-17116-1-git-send-email-narmstrong@baylibre.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,50 +23,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Cyrille, Marek,
-
-Gentle ping...
-
-
-On Wed, 2017-10-11 at 11:15 +0800, Guochun Mao wrote:
-> gentle ping...
+Le 28/08/2017 à 15:11, Neil Armstrong a écrit :
+> Add JEDEC entry for the Winbond w25q16fw/w25q16dw with similar
+> flags and format than the Winbond w25q32dw entry.
 > 
-> On Thu, 2017-09-21 at 20:45 +0800, Guochun Mao wrote:
-> > Add "mediatak,mt2712-nor" and "mediatek,mt7622-nor"
-> > for nor flash node's compatible strings.
-> > Explicate the fallback compatible.
-> > 
-> > Acked-by: Rob Herring <robh@kernel.org>
-> > Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
-> > ---
-> >  .../devicetree/bindings/mtd/mtk-quadspi.txt        |   15 +++++++++------
-> >  1 file changed, 9 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> > index 840f940..56d3668 100644
-> > --- a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> > +++ b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> > @@ -1,13 +1,16 @@
-> >  * Serial NOR flash controller for MTK MT81xx (and similar)
-> >  
-> >  Required properties:
-> > -- compatible: 	  The possible values are:
-> > -		  "mediatek,mt2701-nor"
-> > -		  "mediatek,mt7623-nor"
-> > +- compatible: 	  For mt8173, compatible should be "mediatek,mt8173-nor",
-> > +		  and it's the fallback compatible for other Soc.
-> > +		  For every other SoC, should contain both the SoC-specific compatible
-> > +		  string and "mediatek,mt8173-nor".
-> > +		  The possible values are:
-> > +		  "mediatek,mt2701-nor", "mediatek,mt8173-nor"
-> > +		  "mediatek,mt2712-nor", "mediatek,mt8173-nor"
-> > +		  "mediatek,mt7622-nor", "mediatek,mt8173-nor"
-> > +		  "mediatek,mt7623-nor", "mediatek,mt8173-nor"
-> >  		  "mediatek,mt8173-nor"
-> > -		  For mt8173, compatible should be "mediatek,mt8173-nor".
-> > -		  For every other SoC, should contain both the SoC-specific compatible string
-> > -		  and "mediatek,mt8173-nor".
-> >  - reg: 		  physical base address and length of the controller's register
-> >  - clocks: 	  the phandle of the clocks needed by the nor controller
-> >  - clock-names: 	  the names of the clocks
+> Tested on a Khadas VIM2 SBC board with an Amlogic S912 SoC.
+> 
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+
+Applied to the spi-nor/next branch of l2-mtd
+
+Thanks!
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index cf1d4a1..2f74583 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1137,6 +1137,11 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  	{ "w25x40", INFO(0xef3013, 0, 64 * 1024,  8,  SECT_4K) },
+>  	{ "w25x80", INFO(0xef3014, 0, 64 * 1024,  16, SECT_4K) },
+>  	{ "w25x16", INFO(0xef3015, 0, 64 * 1024,  32, SECT_4K) },
+> +	{
+> +		"w25q16dw", INFO(0xef6015, 0, 64 * 1024,  32,
+> +			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+> +			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+> +	},
+>  	{ "w25x32", INFO(0xef3016, 0, 64 * 1024,  64, SECT_4K) },
+>  	{ "w25q20cl", INFO(0xef4012, 0, 64 * 1024,  4, SECT_4K) },
+>  	{ "w25q20bw", INFO(0xef5012, 0, 64 * 1024,  4, SECT_4K) },
 > 
