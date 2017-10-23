@@ -1,9 +1,9 @@
 Received: from mail-it0-x242.google.com ([2607:f8b0:4001:c0b::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e6kUb-0004gH-9N
- for linux-mtd@lists.infradead.org; Mon, 23 Oct 2017 21:42:48 +0000
-Received: by mail-it0-x242.google.com with SMTP id k70so6822012itk.0
- for <linux-mtd@lists.infradead.org>; Mon, 23 Oct 2017 14:42:20 -0700 (PDT)
+ id 1e6kUb-0004gW-9Q
+ for linux-mtd@lists.infradead.org; Mon, 23 Oct 2017 21:42:49 +0000
+Received: by mail-it0-x242.google.com with SMTP id o135so7706444itb.0
+ for <linux-mtd@lists.infradead.org>; Mon, 23 Oct 2017 14:42:25 -0700 (PDT)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org
 Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
@@ -15,9 +15,10 @@ Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
  Sarthak Kukreti <sarthakkukreti@chromium.org>,
  Nick Desaulniers <ndesaulniers@google.com>,
  Michael Halcrow <mhalcrow@google.com>, Eric Biggers <ebiggers@google.com>
-Subject: [RFC PATCH 08/25] fs/inode.c: rename and export dispose_list()
-Date: Mon, 23 Oct 2017 14:40:41 -0700
-Message-Id: <20171023214058.128121-9-ebiggers3@gmail.com>
+Subject: [RFC PATCH 12/25] ext4 crypto: wire up new ioctls for managing
+ encryption keys
+Date: Mon, 23 Oct 2017 14:40:45 -0700
+Message-Id: <20171023214058.128121-13-ebiggers3@gmail.com>
 In-Reply-To: <20171023214058.128121-1-ebiggers3@gmail.com>
 References: <20171023214058.128121-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,105 +32,46 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Eric Biggers <ebiggers@google.com>
 
-When a filesystem encryption key is removed, we need all files which had
-been "unlocked" (had ->i_crypt_info set up) with it to appear "locked"
-again.  This is most easily done by evicting the inodes.  This can
-currently be done using 'echo 2 > /proc/sys/vm/drop_caches'; however,
-that is overkill and not usable by non-root users.  In preparation for
-allowing fs/crypto/ to evict just the needed inodes, export
-dispose_list() to modules.  For clarity also rename it to
-evict_inode_list().
-
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/inode.c         | 19 ++++++++++---------
- include/linux/fs.h |  1 +
- 2 files changed, 11 insertions(+), 9 deletions(-)
+ fs/ext4/ioctl.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/fs/inode.c b/fs/inode.c
-index 30ce98956801..fe47930835c0 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -570,13 +570,13 @@ static void evict(struct inode *inode)
- }
+diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+index afb66d4ab5cf..b8a6765a556f 100644
+--- a/fs/ext4/ioctl.c
++++ b/fs/ext4/ioctl.c
+@@ -978,6 +978,21 @@ long ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ 	case EXT4_IOC_GET_ENCRYPTION_POLICY:
+ 		return fscrypt_ioctl_get_policy(filp, (void __user *)arg);
  
- /*
-- * dispose_list - dispose of the contents of a local list
-- * @head: the head of the list to free
-+ * evict_inode_list - evict each inode in a local list of inodes
-+ * @head: the head of the list
-  *
-- * Dispose-list gets a local list with local inodes in it, so it doesn't
-+ * This gets a local list with local inodes in it, so it doesn't
-  * need to worry about list corruption and SMP locks.
-  */
--static void dispose_list(struct list_head *head)
-+void evict_inode_list(struct list_head *head)
- {
- 	while (!list_empty(head)) {
- 		struct inode *inode;
-@@ -588,6 +588,7 @@ static void dispose_list(struct list_head *head)
- 		cond_resched();
- 	}
- }
-+EXPORT_SYMBOL_GPL(evict_inode_list);
- 
- /**
-  * evict_inodes	- evict all evictable inodes for a superblock
-@@ -628,13 +629,13 @@ void evict_inodes(struct super_block *sb)
- 		if (need_resched()) {
- 			spin_unlock(&sb->s_inode_list_lock);
- 			cond_resched();
--			dispose_list(&dispose);
-+			evict_inode_list(&dispose);
- 			goto again;
- 		}
- 	}
- 	spin_unlock(&sb->s_inode_list_lock);
- 
--	dispose_list(&dispose);
-+	evict_inode_list(&dispose);
- }
- EXPORT_SYMBOL_GPL(evict_inodes);
- 
-@@ -679,7 +680,7 @@ int invalidate_inodes(struct super_block *sb, bool kill_dirty)
- 	}
- 	spin_unlock(&sb->s_inode_list_lock);
- 
--	dispose_list(&dispose);
-+	evict_inode_list(&dispose);
- 
- 	return busy;
- }
-@@ -763,7 +764,7 @@ static enum lru_status inode_lru_isolate(struct list_head *item,
-  * Walk the superblock inode LRU for freeable inodes and attempt to free them.
-  * This is called from the superblock shrinker function with a number of inodes
-  * to trim from the LRU. Inodes to be freed are moved to a temporary list and
-- * then are freed outside inode_lock by dispose_list().
-+ * then are freed outside inode_lock by evict_inode_list().
-  */
- long prune_icache_sb(struct super_block *sb, struct shrink_control *sc)
- {
-@@ -772,7 +773,7 @@ long prune_icache_sb(struct super_block *sb, struct shrink_control *sc)
- 
- 	freed = list_lru_shrink_walk(&sb->s_inode_lru, sc,
- 				     inode_lru_isolate, &freeable);
--	dispose_list(&freeable);
-+	evict_inode_list(&freeable);
- 	return freed;
- }
- 
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 2833ace2f01d..e0a8dae5f9dc 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -2880,6 +2880,7 @@ extern void unlock_new_inode(struct inode *);
- extern unsigned int get_next_ino(void);
- extern void evict_inodes(struct super_block *sb);
- extern void inode_lru_list_del(struct inode *inode);
-+extern void evict_inode_list(struct list_head *head);
- 
- extern void __iget(struct inode * inode);
- extern void iget_failed(struct inode *);
++	case FS_IOC_ADD_ENCRYPTION_KEY:
++		if (!ext4_has_feature_encrypt(sb))
++			return -EOPNOTSUPP;
++		return fscrypt_ioctl_add_key(filp, (void __user *)arg);
++
++	case FS_IOC_REMOVE_ENCRYPTION_KEY:
++		if (!ext4_has_feature_encrypt(sb))
++			return -EOPNOTSUPP;
++		return fscrypt_ioctl_remove_key(filp, (const void __user *)arg);
++
++	case FS_IOC_GET_ENCRYPTION_KEY_STATUS:
++		if (!ext4_has_feature_encrypt(sb))
++			return -EOPNOTSUPP;
++		return fscrypt_ioctl_get_key_status(filp, (void __user *)arg);
++
+ 	case EXT4_IOC_FSGETXATTR:
+ 	{
+ 		struct fsxattr fa;
+@@ -1102,6 +1117,9 @@ long ext4_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	case EXT4_IOC_SET_ENCRYPTION_POLICY:
+ 	case EXT4_IOC_GET_ENCRYPTION_PWSALT:
+ 	case EXT4_IOC_GET_ENCRYPTION_POLICY:
++	case FS_IOC_ADD_ENCRYPTION_KEY:
++	case FS_IOC_REMOVE_ENCRYPTION_KEY:
++	case FS_IOC_GET_ENCRYPTION_KEY_STATUS:
+ 	case EXT4_IOC_SHUTDOWN:
+ 	case FS_IOC_GETFSMAP:
+ 		break;
 -- 
 2.15.0.rc0.271.g36b669edcc-goog
