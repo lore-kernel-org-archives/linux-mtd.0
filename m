@@ -1,13 +1,28 @@
-From: Xiaolei Li <xiaolei.li@mediatek.com>
-To: <boris.brezillon@free-electrons.com>, <computersforpeace@gmail.com>
-CC: <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>, <rogercc.lin@mediatek.com>,
- <srv_heupstream@mediatek.com>, <xiaolei.li@mediatek.com>
-Subject: [PATCH v1 0/2] Improve MTK ECC Engine driver
-Date: Mon, 23 Oct 2017 16:21:35 +0800
-Message-ID: <1508746897-62291-1-git-send-email-xiaolei.li@mediatek.com>
+Received: from mga11.intel.com ([192.55.52.93])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1e6bhj-0001CX-Q5
+ for linux-mtd@lists.infradead.org; Mon, 23 Oct 2017 12:19:41 +0000
+Date: Mon, 23 Oct 2017 15:12:40 +0300
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Bin Meng <bmeng.cn@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>, Stefan Roese <sr@denx.de>
+Subject: Re: [PATCH] spi-nor: intel-spi: Fix Kconfig dependency to LPC_ICH
+Message-ID: <20171023121240.GE29656@lahna.fi.intel.com>
+References: <1503648771-17514-1-git-send-email-bmeng.cn@gmail.com>
+ <3af38787-4542-7a2b-36be-56c11b1b81f2@wedev4u.fr>
+ <CAK8P3a3kdJiug1MaUaTzQxqayGuEGQvox-RX+NOtw0EFO7nkag@mail.gmail.com>
+ <CAEUhbmXmw9uGwnAQBd2bRYvGfmCAyJFAswp33Y5LvJREB7pjmA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEUhbmXmw9uGwnAQBd2bRYvGfmCAyJFAswp33Y5LvJREB7pjmA@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,33 +32,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch-set is mainly to improve MTK ECC Engine driver, include
-- remove dummy ECC IRQ disable setting
-- fix infinite ECC decode IRQ issue
+On Sun, Oct 15, 2017 at 09:38:57PM +0800, Bin Meng wrote:
+> > Also, the 'depends on EXPERT' statement looks misplaced,
+> > enabling EXPERT should only be there to allow you to turn
+> > extra things *off*, not to hide device drivers.
+> >
+> 
+> I will leave this to Mika to comment the "EXPERT" usage. If we remove
+> this, I think that should be another patch and the documentation of
+> this driver should be updated too.
 
-Changes relative to:
---------------------
-
-tree    : https://github.com/bbrezillon/linux-0day
-branch  : nand/next
-commit  :
-        'commit 1f3df4dc088d927683b292118cd8b4eaaf1af573
-        Author: Sascha Hauer <s.hauer@pengutronix.de>
-        Date:   Mon Oct 16 11:51:55 2017 +0200'
-
-Tests:
-------
-
-* ubifs and jffs2 are validated on NAND device MT29F16G08ADBCA
-  by 'dd' command.
-* all drivers/mtd/tests/* pass.
-
-Xiaolei Li (2):
-  mtd: nand: mtk: do not disable ECC IRQ in the function mtk_ecc_disable
-  mtd: nand: mtk: fix infinite ECC decode IRQ issue
-
- drivers/mtd/nand/mtk_ecc.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
---
-1.9.1
+Yeah, I guess we can remove that EXPERT dependency. It was added there
+exactly because I did not want ordinary users playing with the device
+and inadvertently overwrite their BIOSes (if it is not protected). I
+also agree it should be a separate patch. Do you want to do that or
+should I?
