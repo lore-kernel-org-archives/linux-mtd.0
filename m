@@ -1,9 +1,9 @@
-Received: from mail-io0-x244.google.com ([2607:f8b0:4001:c06::244])
+Received: from mail-io0-x243.google.com ([2607:f8b0:4001:c06::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e6kUS-0004fz-OO
- for linux-mtd@lists.infradead.org; Mon, 23 Oct 2017 21:42:36 +0000
-Received: by mail-io0-x244.google.com with SMTP id n137so21760814iod.6
- for <linux-mtd@lists.infradead.org>; Mon, 23 Oct 2017 14:42:16 -0700 (PDT)
+ id 1e6kUT-0004fN-0j
+ for linux-mtd@lists.infradead.org; Mon, 23 Oct 2017 21:42:37 +0000
+Received: by mail-io0-x243.google.com with SMTP id 97so21700437iok.7
+ for <linux-mtd@lists.infradead.org>; Mon, 23 Oct 2017 14:42:12 -0700 (PDT)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org
 Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
@@ -15,9 +15,9 @@ Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
  Sarthak Kukreti <sarthakkukreti@chromium.org>,
  Nick Desaulniers <ndesaulniers@google.com>,
  Michael Halcrow <mhalcrow@google.com>, Eric Biggers <ebiggers@google.com>
-Subject: [RFC PATCH 05/25] fs: add ->s_master_keys to struct super_block
-Date: Mon, 23 Oct 2017 14:40:38 -0700
-Message-Id: <20171023214058.128121-6-ebiggers3@gmail.com>
+Subject: [RFC PATCH 02/25] fscrypt: use FSCRYPT_ prefix for uapi constants
+Date: Mon, 23 Oct 2017 14:40:35 -0700
+Message-Id: <20171023214058.128121-3-ebiggers3@gmail.com>
 In-Reply-To: <20171023214058.128121-1-ebiggers3@gmail.com>
 References: <20171023214058.128121-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,67 +31,183 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Eric Biggers <ebiggers@google.com>
 
-Add an ->s_master_keys keyring to 'struct super_block' for holding
-encryption keys which have been added to the filesystem.  This keyring
-will be populated using a new fscrypt ioctl.
+Prefix all filesystem encryption UAPI constants except the ioctl numbers
+with "FSCRYPT_" rather than with "FS_".  This namespaces the constants
+more appropriately and makes it clear that they are related specifically
+to the filesystem encryption feature, and to the 'fscrypt_*' structures.
+With some of the old names like "FS_POLICY_FLAGS_VALID", it was not
+immediately clear that the constant had anything to do with encryption.
 
-This is needed for several reasons, including:
+This is also useful because we'll be adding more encryption-related
+constants, e.g. for the policy version, and we'd otherwise have to
+choose whether to use unclear names like FS_POLICY_VERSION_* or
+inconsistent names like FS_ENCRYPTION_POLICY_VERSION_*.
 
-- To solve the visibility problems of having filesystem encryption keys
-  stored in process-subscribed keyrings, while the VFS state of the
-  filesystem is actually global.
-
-- To implement a proper API for removing keys, which among other things
-  will require maintaining the list of inodes that are using each master
-  key so that we can evict the inodes when the key is removed.
-
-- To allow caching a crypto transform for each master key so that we
-  don't have to repeatedly allocate one over and over.
-
-See later patches for full details, including why it wouldn't be enough
-to add the concept of a "global keyring" to the keyrings API instead.
-
-->s_master_keys will only be allocated when someone tries to add a key
-for the first time.  Otherwise it will stay NULL.
-
-Note that this could go in the filesystem-specific superblocks instead.
-However, we already have three filesystems using fs/crypto/, so it's
-useful to have it in the VFS.
+For source compatibility with older userspace programs, keep the old
+names defined as aliases to the new ones.  (It's debatable whether we
+really need this, though; the filesystem encryption API is new enough
+that most if not all programs that are using it have to declare it
+themselves anyway.)
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/super.c         | 3 +++
- include/linux/fs.h | 4 ++++
- 2 files changed, 7 insertions(+)
+ Documentation/filesystems/fscrypt.rst | 14 ++++-----
+ include/uapi/linux/fscrypt.h          | 59 ++++++++++++++++++++++++-----------
+ 2 files changed, 47 insertions(+), 26 deletions(-)
 
-diff --git a/fs/super.c b/fs/super.c
-index 166c4ee0d0ed..161a9d05aa9f 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -168,6 +168,9 @@ static void destroy_super(struct super_block *s)
- 	WARN_ON(!list_empty(&s->s_mounts));
- 	put_user_ns(s->s_user_ns);
- 	kfree(s->s_subtype);
-+#if IS_ENABLED(CONFIG_FS_ENCRYPTION)
-+	key_put(s->s_master_keys);
-+#endif
- 	call_rcu(&s->rcu, destroy_super_rcu);
- }
+diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
+index 776ddc655f79..f12956f3f1f8 100644
+--- a/Documentation/filesystems/fscrypt.rst
++++ b/Documentation/filesystems/fscrypt.rst
+@@ -251,14 +251,14 @@ empty directory or verifies that a directory or regular file already
+ has the specified encryption policy.  It takes in a pointer to a
+ :c:type:`struct fscrypt_policy`, defined as follows::
  
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 3efd5ded21c9..8cfb0877d32c 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -1440,6 +1440,10 @@ struct super_block {
+-    #define FS_KEY_DESCRIPTOR_SIZE  8
++    #define FSCRYPT_KEY_DESCRIPTOR_SIZE  8
  
- 	spinlock_t		s_inode_wblist_lock;
- 	struct list_head	s_inodes_wb;	/* writeback inodes */
+     struct fscrypt_policy {
+             __u8 version;
+             __u8 contents_encryption_mode;
+             __u8 filenames_encryption_mode;
+             __u8 flags;
+-            __u8 master_key_descriptor[FS_KEY_DESCRIPTOR_SIZE];
++            __u8 master_key_descriptor[FSCRYPT_KEY_DESCRIPTOR_SIZE];
+     };
+ 
+ This structure must be initialized as follows:
+@@ -274,7 +274,7 @@ This structure must be initialized as follows:
+ 
+ - ``flags`` must be set to a value from ``<linux/fs.h>`` which
+   identifies the amount of NUL-padding to use when encrypting
+-  filenames.  If unsure, use FS_POLICY_FLAGS_PAD_32 (0x3).
++  filenames.  If unsure, use FSCRYPT_POLICY_FLAGS_PAD_32 (0x3).
+ 
+ - ``master_key_descriptor`` specifies how to find the master key in
+   the keyring; see `Adding keys`_.  It is up to userspace to choose a
+@@ -374,11 +374,11 @@ followed by the 16-character lower case hex representation of the
+ ``master_key_descriptor`` that was set in the encryption policy.  The
+ key payload must conform to the following structure::
+ 
+-    #define FS_MAX_KEY_SIZE 64
++    #define FSCRYPT_MAX_KEY_SIZE 64
+ 
+     struct fscrypt_key {
+             u32 mode;
+-            u8 raw[FS_MAX_KEY_SIZE];
++            u8 raw[FSCRYPT_MAX_KEY_SIZE];
+             u32 size;
+     };
+ 
+@@ -533,7 +533,7 @@ much confusion if an encryption policy were to be added to or removed
+ from anything other than an empty directory.)  The struct is defined
+ as follows::
+ 
+-    #define FS_KEY_DESCRIPTOR_SIZE  8
++    #define FSCRYPT_KEY_DESCRIPTOR_SIZE  8
+     #define FS_KEY_DERIVATION_NONCE_SIZE 16
+ 
+     struct fscrypt_context {
+@@ -541,7 +541,7 @@ as follows::
+             u8 contents_encryption_mode;
+             u8 filenames_encryption_mode;
+             u8 flags;
+-            u8 master_key_descriptor[FS_KEY_DESCRIPTOR_SIZE];
++            u8 master_key_descriptor[FSCRYPT_KEY_DESCRIPTOR_SIZE];
+             u8 nonce[FS_KEY_DERIVATION_NONCE_SIZE];
+     };
+ 
+diff --git a/include/uapi/linux/fscrypt.h b/include/uapi/linux/fscrypt.h
+index c09209fc42ea..26c381a40279 100644
+--- a/include/uapi/linux/fscrypt.h
++++ b/include/uapi/linux/fscrypt.h
+@@ -7,30 +7,31 @@
+  * File system encryption support
+  */
+ /* Policy provided via an ioctl on the topmost directory */
+-#define FS_KEY_DESCRIPTOR_SIZE	8
++#define FSCRYPT_KEY_DESCRIPTOR_SIZE	8
+ 
+-#define FS_POLICY_FLAGS_PAD_4		0x00
+-#define FS_POLICY_FLAGS_PAD_8		0x01
+-#define FS_POLICY_FLAGS_PAD_16		0x02
+-#define FS_POLICY_FLAGS_PAD_32		0x03
+-#define FS_POLICY_FLAGS_PAD_MASK	0x03
+-#define FS_POLICY_FLAGS_VALID		0x03
++/* Encryption policy flags */
++#define FSCRYPT_POLICY_FLAGS_PAD_4	0x00
++#define FSCRYPT_POLICY_FLAGS_PAD_8	0x01
++#define FSCRYPT_POLICY_FLAGS_PAD_16	0x02
++#define FSCRYPT_POLICY_FLAGS_PAD_32	0x03
++#define FSCRYPT_POLICY_FLAGS_PAD_MASK	0x03
++#define FSCRYPT_POLICY_FLAGS_VALID	0x03
+ 
+ /* Encryption algorithms */
+-#define FS_ENCRYPTION_MODE_INVALID		0
+-#define FS_ENCRYPTION_MODE_AES_256_XTS		1
+-#define FS_ENCRYPTION_MODE_AES_256_GCM		2
+-#define FS_ENCRYPTION_MODE_AES_256_CBC		3
+-#define FS_ENCRYPTION_MODE_AES_256_CTS		4
+-#define FS_ENCRYPTION_MODE_AES_128_CBC		5
+-#define FS_ENCRYPTION_MODE_AES_128_CTS		6
++#define FSCRYPT_MODE_INVALID		0
++#define FSCRYPT_MODE_AES_256_XTS	1
++#define FSCRYPT_MODE_AES_256_GCM	2
++#define FSCRYPT_MODE_AES_256_CBC	3
++#define FSCRYPT_MODE_AES_256_CTS	4
++#define FSCRYPT_MODE_AES_128_CBC	5
++#define FSCRYPT_MODE_AES_128_CTS	6
+ 
+ struct fscrypt_policy {
+ 	__u8 version;
+ 	__u8 contents_encryption_mode;
+ 	__u8 filenames_encryption_mode;
+ 	__u8 flags;
+-	__u8 master_key_descriptor[FS_KEY_DESCRIPTOR_SIZE];
++	__u8 master_key_descriptor[FSCRYPT_KEY_DESCRIPTOR_SIZE];
+ };
+ 
+ #define FS_IOC_SET_ENCRYPTION_POLICY	_IOR('f', 19, struct fscrypt_policy)
+@@ -38,16 +39,36 @@ struct fscrypt_policy {
+ #define FS_IOC_GET_ENCRYPTION_POLICY	_IOW('f', 21, struct fscrypt_policy)
+ 
+ /* Parameters for passing an encryption key into the kernel keyring */
+-#define FS_KEY_DESC_PREFIX		"fscrypt:"
+-#define FS_KEY_DESC_PREFIX_SIZE		8
++#define FSCRYPT_KEY_DESC_PREFIX		"fscrypt:"
++#define FSCRYPT_KEY_DESC_PREFIX_SIZE		8
+ 
+ /* Structure that userspace passes to the kernel keyring */
+-#define FS_MAX_KEY_SIZE			64
++#define FSCRYPT_MAX_KEY_SIZE			64
+ 
+ struct fscrypt_key {
+ 	__u32 mode;
+-	__u8 raw[FS_MAX_KEY_SIZE];
++	__u8 raw[FSCRYPT_MAX_KEY_SIZE];
+ 	__u32 size;
+ };
++/**********************************************************************/
 +
-+#if IS_ENABLED(CONFIG_FS_ENCRYPTION)
-+	struct key		*s_master_keys; /* master crypto keys in use */
-+#endif
- } __randomize_layout;
++/* old names; don't add anything new here! */
++#define FS_POLICY_FLAGS_PAD_4		FSCRYPT_POLICY_FLAGS_PAD_4
++#define FS_POLICY_FLAGS_PAD_8		FSCRYPT_POLICY_FLAGS_PAD_8
++#define FS_POLICY_FLAGS_PAD_16		FSCRYPT_POLICY_FLAGS_PAD_16
++#define FS_POLICY_FLAGS_PAD_32		FSCRYPT_POLICY_FLAGS_PAD_32
++#define FS_POLICY_FLAGS_PAD_MASK	FSCRYPT_POLICY_FLAGS_PAD_MASK
++#define FS_POLICY_FLAGS_VALID		FSCRYPT_POLICY_FLAGS_VALID
++#define FS_KEY_DESCRIPTOR_SIZE		FSCRYPT_KEY_DESCRIPTOR_SIZE
++#define FS_ENCRYPTION_MODE_INVALID	FSCRYPT_MODE_INVALID
++#define FS_ENCRYPTION_MODE_AES_256_XTS	FSCRYPT_MODE_AES_256_XTS
++#define FS_ENCRYPTION_MODE_AES_256_GCM	FSCRYPT_MODE_AES_256_GCM
++#define FS_ENCRYPTION_MODE_AES_256_CBC	FSCRYPT_MODE_AES_256_CBC
++#define FS_ENCRYPTION_MODE_AES_256_CTS	FSCRYPT_MODE_AES_256_CTS
++#define FS_ENCRYPTION_MODE_AES_128_CBC	FSCRYPT_MODE_AES_128_CBC
++#define FS_ENCRYPTION_MODE_AES_128_CTS	FSCRYPT_MODE_AES_128_CTS
++#define FS_KEY_DESC_PREFIX		FSCRYPT_KEY_DESC_PREFIX
++#define FS_KEY_DESC_PREFIX_SIZE		FSCRYPT_KEY_DESC_PREFIX_SIZE
++#define FS_MAX_KEY_SIZE			FSCRYPT_MAX_KEY_SIZE
  
- /* Helper functions so that in most cases filesystems will
+ #endif /* _UAPI_LINUX_FSCRYPT_H */
 -- 
 2.15.0.rc0.271.g36b669edcc-goog
