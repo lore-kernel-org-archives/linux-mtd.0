@@ -1,9 +1,9 @@
 Received: from mail-io0-x242.google.com ([2607:f8b0:4001:c06::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e6kUg-0004h8-HV
- for linux-mtd@lists.infradead.org; Mon, 23 Oct 2017 21:43:04 +0000
-Received: by mail-io0-x242.google.com with SMTP id 97so21701090iok.7
- for <linux-mtd@lists.infradead.org>; Mon, 23 Oct 2017 14:42:29 -0700 (PDT)
+ id 1e6kUl-0004kH-GO
+ for linux-mtd@lists.infradead.org; Mon, 23 Oct 2017 21:43:08 +0000
+Received: by mail-io0-x242.google.com with SMTP id e89so21712717ioi.11
+ for <linux-mtd@lists.infradead.org>; Mon, 23 Oct 2017 14:42:35 -0700 (PDT)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org
 Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
@@ -15,10 +15,10 @@ Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
  Sarthak Kukreti <sarthakkukreti@chromium.org>,
  Nick Desaulniers <ndesaulniers@google.com>,
  Michael Halcrow <mhalcrow@google.com>, Eric Biggers <ebiggers@google.com>
-Subject: [RFC PATCH 15/25] fscrypt: add UAPI definitions to get/set v2
- encryption policies
-Date: Mon, 23 Oct 2017 14:40:48 -0700
-Message-Id: <20171023214058.128121-16-ebiggers3@gmail.com>
+Subject: [RFC PATCH 19/25] fscrypt: use HKDF-SHA512 to derive the per-file
+ keys for v2 policies
+Date: Mon, 23 Oct 2017 14:40:52 -0700
+Message-Id: <20171023214058.128121-20-ebiggers3@gmail.com>
 In-Reply-To: <20171023214058.128121-1-ebiggers3@gmail.com>
 References: <20171023214058.128121-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,119 +32,186 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Eric Biggers <ebiggers@google.com>
 
-Currently, fscrypt policies and xattrs identify the master key by
-master_key_descriptor, which is an arbitrary 8-byte value used to form
-the description of the keyring key.  However, there is no verification
-that the key descriptor in any way corresponds with the key payload.
-Since ->i_crypt_info by necessity gets set up on a "first come, first
-serve" basis, this flaw allows a process with only read-only access to
-an encrypted file or directory to provide the wrong key, causing the
-file contents or directory listing to be corrupted.  This is a bug with
-security implications which must be fixed.
+The AES-ECB-based method we're using to derive the per-inode encryption
+keys is nonstandard and has a number of problems, such as being
+trivially reversible.  Fix these problems for v2 encryption policies by
+deriving the keys using HKDF-SHA512 instead.  The inode's nonce prefixed
+with a context byte is used as the application-specific info string.
 
-To fix this bug without simply locking down adding keys to root, we must
-replace master_key_descriptor with a cryptographic hash of the key.  We
-name the replacement master_key_identifier and make it 16 bytes long,
-which should provide enough collision resistance, and more importantly
-preimage resistance, without bloating the size of the encryption xattr
-too much.
+Supposedly, one of the reasons that HKDF wasn't used originally was
+because of performance concerns.  However, we actually can derive on the
+order of 1 million keys per second, so it's likely not a bottleneck in
+practice.  Moreover, although HKDF-SHA512 can require a bit more actual
+crypto work per key derivation than the old KDF, the real world
+performance is actually just as good or even better than the old KDF.
+This is because the old KDF has to allocate and key a new "ecb(aes)"
+transform for every key derivation (since it's keyed with the nonce
+rather than the master key), whereas with HKDF we simply use a cached,
+pre-keyed "hmac(sha512)" transform.  And the old KDF often spends more
+time allocating its crypto transform than doing actual crypto work.
 
-This will be both an on-disk format and API change, since we'll need to
-define new versions of both the fscrypt_context and fscrypt_policy.
-This patch begins this process by defining the UAPI changes to manage v2
-policies.  (Note: we jump to version 2 even though the previous policy
-version number was 0 because the fscrypt_context was actually already
-using version 1, not version 0.  It would be really confusing to have
-them always be 1 off from each other.)
-
-The existing FS_IOC_SET_ENCRYPTION_POLICY will be used to set a v2
-policy, as the kernel will be able to examine the 'version' field.
-
-However, a new ioctl FS_IOC_GET_ENCRYPTION_POLICY_EX is needed to get a
-v2 policy, since the returned struct needs to be larger.  This ioctl
-includes a size field as input, so that it can be used for both v1 and
-v2 policies as well as any new policy versions that may get added in the
-future.
+Another benefit to switching to HKDF is that we no longer need to hold
+the raw master key in memory, but rather only an HMAC transform keyed by
+a pseudorandom key extracted from the master key.  Of course, for the
+software HMAC implementation there is no security benefit, since
+compromising the state of the HMAC transform is equivalent to
+compromising the raw master key.  However, there could be a security
+benefit if used with an HMAC implementation that holds the secret in
+crypto accelerator hardware rather than in main memory.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- include/uapi/linux/fscrypt.h | 37 +++++++++++++++++++++++++++++++++++--
- 1 file changed, 35 insertions(+), 2 deletions(-)
+ fs/crypto/fscrypt_private.h |  4 ++--
+ fs/crypto/keyinfo.c         | 58 ++++++++++++++++++++++++++++++++++-----------
+ 2 files changed, 46 insertions(+), 16 deletions(-)
 
-diff --git a/include/uapi/linux/fscrypt.h b/include/uapi/linux/fscrypt.h
-index 9da153df238a..065060b20a34 100644
---- a/include/uapi/linux/fscrypt.h
-+++ b/include/uapi/linux/fscrypt.h
-@@ -7,7 +7,6 @@
-  * File system encryption support
-  */
- /* Policy provided via an ioctl on the topmost directory */
--#define FSCRYPT_KEY_DESCRIPTOR_SIZE	8
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index dec85c4b14a8..6d420c9a85bd 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -49,7 +49,7 @@ struct fscrypt_context_v1 {
  
- /* Encryption policy flags */
- #define FSCRYPT_POLICY_FLAGS_PAD_4	0x00
-@@ -26,13 +25,22 @@
- #define FSCRYPT_MODE_AES_128_CBC	5
- #define FSCRYPT_MODE_AES_128_CTS	6
- 
--struct fscrypt_policy {
-+/*
-+ * Legacy policy version; no key verification (potentially insecure).
-+ * For new encrypted directories, use fscrypt_policy_v2 instead.
-+ *
-+ * Careful: the .version field for this is actually 0, not 1.
-+ */
-+#define FSCRYPT_POLICY_VERSION_LEGACY	0
-+#define FSCRYPT_KEY_DESCRIPTOR_SIZE	8
-+struct fscrypt_policy_v1 {
- 	__u8 version;
- 	__u8 contents_encryption_mode;
- 	__u8 filenames_encryption_mode;
- 	__u8 flags;
- 	__u8 master_key_descriptor[FSCRYPT_KEY_DESCRIPTOR_SIZE];
+ 	/*
+ 	 * A unique value used in combination with the master key to derive the
+-	 * file's actual encryption key
++	 * file's actual encryption key, using the AES-ECB-based KDF.
+ 	 */
+ 	u8 nonce[FS_KEY_DERIVATION_NONCE_SIZE];
  };
-+#define fscrypt_policy	fscrypt_policy_v1
+@@ -78,7 +78,7 @@ struct fscrypt_context_v2 {
+ 
+ 	/*
+ 	 * A unique value used in combination with the master key to derive the
+-	 * file's actual encryption key
++	 * file's actual encryption key, using HKDF-SHA512.
+ 	 */
+ 	u8 nonce[FS_KEY_DERIVATION_NONCE_SIZE];
+ };
+diff --git a/fs/crypto/keyinfo.c b/fs/crypto/keyinfo.c
+index c9e7b2b262d2..ec181c4eca56 100644
+--- a/fs/crypto/keyinfo.c
++++ b/fs/crypto/keyinfo.c
+@@ -44,6 +44,7 @@
+  * "key identifier", as that is stored in the clear.)
+  */
+ #define HKDF_CONTEXT_KEY_IDENTIFIER	1
++#define HKDF_CONTEXT_PER_FILE_KEY	2
  
  /*
-  * Process-subscribed "logon" key description prefix and payload format.
-@@ -47,6 +55,30 @@ struct fscrypt_key {
- 	__u32 size;
+  * HKDF consists of two steps:
+@@ -213,10 +214,18 @@ static struct crypto_shash *allocate_hmac_tfm(const u8 *master_key, u32 size)
+  */
+ struct fscrypt_master_key_secret {
+ 
+-	/* Size of the raw key in bytes */
++	/*
++	 * For v2 policy keys: an HMAC transform keyed by the pseudorandom key
++	 * generated by computing HKDF-Extract with the raw master key as the
++	 * input key material.  This is used to efficiently derive the per-inode
++	 * encryption keys using HKDF-Expand later.
++	 */
++	struct crypto_shash	*hmac_tfm;
++
++	/* Size of the raw key in bytes.  Set even if ->raw isn't set. */
+ 	u32			size;
+ 
+-	/* The raw key */
++	/* For v1 policy keys: the raw key. */
+ 	u8			raw[FSCRYPT_MAX_KEY_SIZE];
  };
  
-+/*
-+ * New policy version with HKDF and key verification (recommended).
-+ */
-+#define FSCRYPT_POLICY_VERSION_2	2
-+#define FSCRYPT_KEY_IDENTIFIER_SIZE	16
-+struct fscrypt_policy_v2 {
-+	__u8 version;
-+	__u8 contents_encryption_mode;
-+	__u8 filenames_encryption_mode;
-+	__u8 flags;
-+	__u8 reserved[4];
-+	__u8 master_key_identifier[FSCRYPT_KEY_IDENTIFIER_SIZE];
-+};
+@@ -291,6 +300,7 @@ is_master_key_secret_present(const struct fscrypt_master_key_secret *secret)
+ 
+ static void wipe_master_key_secret(struct fscrypt_master_key_secret *secret)
+ {
++	crypto_free_shash(secret->hmac_tfm);
+ 	memzero_explicit(secret, sizeof(*secret));
+ }
+ 
+@@ -571,14 +581,17 @@ int fscrypt_ioctl_add_key(struct file *filp, void __user *_uarg)
+ 		goto out_wipe_secret;
+ 
+ 	if (arg.key_spec.type == FSCRYPT_KEY_SPEC_TYPE_IDENTIFIER) {
+-		struct crypto_shash *hmac_tfm;
+ 
+-		hmac_tfm = allocate_hmac_tfm(secret.raw, secret.size);
+-		if (IS_ERR(hmac_tfm)) {
+-			err = PTR_ERR(hmac_tfm);
++		secret.hmac_tfm = allocate_hmac_tfm(secret.raw, secret.size);
++		if (IS_ERR(secret.hmac_tfm)) {
++			err = PTR_ERR(secret.hmac_tfm);
++			secret.hmac_tfm = NULL;
+ 			goto out_wipe_secret;
+ 		}
+ 
++		/* The raw key is no longer needed */
++		memzero_explicit(secret.raw, sizeof(secret.raw));
 +
-+/* Struct passed to FS_IOC_GET_ENCRYPTION_POLICY_EX */
-+struct fscrypt_get_policy_ex_args {
-+	__u64 size; /* input/output */
-+	union {
-+		__u8 version;
-+		struct fscrypt_policy_v1 v1;
-+		struct fscrypt_policy_v2 v2;
-+	} policy; /* output */
-+};
-+
- struct fscrypt_key_specifier {
- 	__u32 type;
- #define FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR	1
-@@ -91,6 +123,7 @@ struct fscrypt_get_key_status_args {
- #define FS_IOC_SET_ENCRYPTION_POLICY	_IOR( 'f', 19, struct fscrypt_policy)
- #define FS_IOC_GET_ENCRYPTION_PWSALT	_IOW( 'f', 20, __u8[16])
- #define FS_IOC_GET_ENCRYPTION_POLICY	_IOW( 'f', 21, struct fscrypt_policy)
-+#define FS_IOC_GET_ENCRYPTION_POLICY_EX	_IOWR('f', 21, __u8[9]) /* size + version */
- #define FS_IOC_ADD_ENCRYPTION_KEY	_IOWR('f', 22, struct fscrypt_add_key_args)
- #define FS_IOC_REMOVE_ENCRYPTION_KEY	_IOR( 'f', 23, struct fscrypt_remove_key_args)
- #define FS_IOC_GET_ENCRYPTION_KEY_STATUS _IOWR('f',24, struct fscrypt_get_key_status_args)
+ 		/*
+ 		 * Hash the master key to get the key identifier, then return it
+ 		 * to userspace.  Specifically, we derive the key identifier
+@@ -589,10 +602,9 @@ int fscrypt_ioctl_add_key(struct file *filp, void __user *_uarg)
+ 		 * rather than two (HKDF-SHA512 and SHA512).  It *maybe* would
+ 		 * be okay, but cryptographically it would be bad practice.
+ 		 */
+-		err = hkdf_expand(hmac_tfm, HKDF_CONTEXT_KEY_IDENTIFIER,
++		err = hkdf_expand(secret.hmac_tfm, HKDF_CONTEXT_KEY_IDENTIFIER,
+ 				  NULL, 0, arg.key_spec.identifier,
+ 				  FSCRYPT_KEY_IDENTIFIER_SIZE);
+-		crypto_free_shash(hmac_tfm);
+ 		if (err)
+ 			goto out_wipe_secret;
+ 
+@@ -871,8 +883,13 @@ static void derive_crypt_complete(struct crypto_async_request *req, int rc)
+ }
+ 
+ /*
+- * Key derivation function.  This generates the derived key by encrypting the
+- * master key with AES-128-ECB using the nonce as the AES key.
++ * Legacy key derivation function.  This generates the derived key by encrypting
++ * the master key with AES-128-ECB using the nonce as the AES key.  This
++ * provides a unique derived key with sufficient entropy for each inode.
++ * However, it's nonstandard, non-extensible, doesn't evenly distribute the
++ * entropy from the master key, and is trivially reversible: an attacker who
++ * compromises a derived key can "decrypt" it to get back to the master key,
++ * then derive any other key.  For all new code, use HKDF instead.
+  *
+  * The master key must be at least as long as the derived key.  If the master
+  * key is longer, then only the first 'derived_keysize' bytes are used.
+@@ -1078,8 +1095,21 @@ static int find_and_derive_key(const struct inode *inode,
+ 		goto out_release_key;
+ 	}
+ 
+-	err = derive_key_aes(mk->mk_secret.raw, &ctx->v1,
+-			     derived_key, derived_keysize);
++	/*
++	 * Derive the inode's encryption key, given the master key and the nonce
++	 * from the inode's fscrypt_context.  v1 policies used an AES-ECB-based
++	 * KDF (Key Derivation Function).  Newer policies use HKDF-SHA512, which
++	 * fixes a number of problems with the AES-ECB-based KDF.
++	 */
++	if (ctx->v1.version == FSCRYPT_CONTEXT_V1) {
++		err = derive_key_aes(mk->mk_secret.raw, &ctx->v1,
++				     derived_key, derived_keysize);
++	} else {
++		err = hkdf_expand(mk->mk_secret.hmac_tfm,
++				  HKDF_CONTEXT_PER_FILE_KEY,
++				  ctx->v2.nonce, sizeof(ctx->v2.nonce),
++				  derived_key, derived_keysize);
++	}
+ 	if (err)
+ 		goto out_release_key;
+ 
+@@ -1275,8 +1305,8 @@ int fscrypt_get_encryption_info(struct inode *inode)
+ 		goto out;
+ 
+ 	/*
+-	 * This cannot be a stack buffer because it is passed to the scatterlist
+-	 * crypto API as part of key derivation.
++	 * This cannot be a stack buffer because it may be passed to the
++	 * scatterlist crypto API during key derivation.
+ 	 */
+ 	res = -ENOMEM;
+ 	derived_key = kmalloc(FS_MAX_KEY_SIZE, GFP_NOFS);
 -- 
 2.15.0.rc0.271.g36b669edcc-goog
