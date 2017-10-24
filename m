@@ -1,19 +1,29 @@
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e6t7c-000759-Qd
- for linux-mtd@lists.infradead.org; Tue, 24 Oct 2017 06:55:34 +0000
-Received: by mail-pf0-x241.google.com with SMTP id x7so18999125pfa.1
- for <linux-mtd@lists.infradead.org>; Mon, 23 Oct 2017 23:55:11 -0700 (PDT)
+ id 1e6tKM-00056P-Ll
+ for linux-mtd@lists.infradead.org; Tue, 24 Oct 2017 07:08:44 +0000
+Received: by mail-wm0-x244.google.com with SMTP id r196so1106014wmf.2
+ for <linux-mtd@lists.infradead.org>; Tue, 24 Oct 2017 00:08:22 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20171023121240.GE29656@lahna.fi.intel.com>
+References: <1503648771-17514-1-git-send-email-bmeng.cn@gmail.com>
+ <3af38787-4542-7a2b-36be-56c11b1b81f2@wedev4u.fr>
+ <CAK8P3a3kdJiug1MaUaTzQxqayGuEGQvox-RX+NOtw0EFO7nkag@mail.gmail.com>
+ <CAEUhbmXmw9uGwnAQBd2bRYvGfmCAyJFAswp33Y5LvJREB7pjmA@mail.gmail.com>
+ <20171023121240.GE29656@lahna.fi.intel.com>
 From: Bin Meng <bmeng.cn@gmail.com>
-To: Mika Westerberg <mika.westerberg@linux.intel.com>,
- Arnd Bergmann <arnd@arndb.de>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+Date: Tue, 24 Oct 2017 15:08:20 +0800
+Message-ID: <CAEUhbmXfN1VG8n=z4Ck-UCFqG8oT2ffaxb410v+j6OiibV2_ag@mail.gmail.com>
+Subject: Re: [PATCH] spi-nor: intel-spi: Fix Kconfig dependency to LPC_ICH
+To: Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>,
  linux-mtd <linux-mtd@lists.infradead.org>,
- linux-kernel <linux-kernel@vger.kernel.org>
-Cc: Stefan Roese <sr@denx.de>
-Subject: [PATCH v2] spi-nor: intel-spi: Fix Kconfig dependency to LPC_ICH
-Date: Mon, 23 Oct 2017 23:59:39 -0700
-Message-Id: <1508828379-3479-1-git-send-email-bmeng.cn@gmail.com>
+ linux-kernel <linux-kernel@vger.kernel.org>, Stefan Roese <sr@denx.de>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,33 +33,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Intel SPI-NOR driver is dependent on LPC_ICH to get the platform
-data. Select it in the Kconfig.
+Hi Mika,
 
-Signed-off-by: Bin Meng <bmeng.cn@gmail.com>
+On Mon, Oct 23, 2017 at 8:12 PM, Mika Westerberg
+<mika.westerberg@linux.intel.com> wrote:
+> On Sun, Oct 15, 2017 at 09:38:57PM +0800, Bin Meng wrote:
+>> > Also, the 'depends on EXPERT' statement looks misplaced,
+>> > enabling EXPERT should only be there to allow you to turn
+>> > extra things *off*, not to hide device drivers.
+>> >
+>>
+>> I will leave this to Mika to comment the "EXPERT" usage. If we remove
+>> this, I think that should be another patch and the documentation of
+>> this driver should be updated too.
+>
+> Yeah, I guess we can remove that EXPERT dependency. It was added there
+> exactly because I did not want ordinary users playing with the device
+> and inadvertently overwrite their BIOSes (if it is not protected). I
+> also agree it should be a separate patch. Do you want to do that or
+> should I?
 
----
+Thanks. I can prepare a patch to remove EXPERT.
 
-Changes in v2:
-- Enforce dependency on PCI
-
- drivers/mtd/spi-nor/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-index f26aaa6..abf453a 100644
---- a/drivers/mtd/spi-nor/Kconfig
-+++ b/drivers/mtd/spi-nor/Kconfig
-@@ -107,8 +107,9 @@ config SPI_INTEL_SPI_PCI
- 
- config SPI_INTEL_SPI_PLATFORM
- 	tristate "Intel PCH/PCU SPI flash platform driver" if EXPERT
--	depends on X86
-+	depends on X86 && PCI
- 	select SPI_INTEL_SPI
-+	select LPC_ICH
- 	help
- 	  This enables platform support for the Intel PCH/PCU SPI
- 	  controller in master mode. This controller is present in modern
--- 
-2.7.4
+Regards,
+Bin
