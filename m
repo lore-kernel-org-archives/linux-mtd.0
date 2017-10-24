@@ -1,25 +1,15 @@
-Received: from relmlor4.renesas.com ([210.160.252.174]
- helo=relmlie3.idc.renesas.com)
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e6zbj-0002hc-Hc
- for linux-mtd@lists.infradead.org; Tue, 24 Oct 2017 13:51:05 +0000
-From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Cc: Fabrizio Castro <fabrizio.castro@bp.renesas.com>,
- devicetree@vger.kernel.org, Chris Paterson <Chris.Paterson2@renesas.com>,
- linux-kernel@vger.kernel.org, Biju Das <biju.das@bp.renesas.com>,
- linux-mtd@lists.infradead.org
-Subject: [PATCH v2] dt-bindings: mtd: Add sst25vf016b to the list of supported
- chip names
-Date: Tue, 24 Oct 2017 14:50:32 +0100
-Message-Id: <1508853032-25229-1-git-send-email-fabrizio.castro@bp.renesas.com>
-In-Reply-To: <1505118928-3987-1-git-send-email-fabrizio.castro@bp.renesas.com>
-References: <1505118928-3987-1-git-send-email-fabrizio.castro@bp.renesas.com>
+Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1e70o9-0003IK-9z
+ for linux-mtd@lists.infradead.org; Tue, 24 Oct 2017 15:07:58 +0000
+Received: by mail-pg0-x243.google.com with SMTP id y5so6933087pgq.7
+ for <linux-mtd@lists.infradead.org>; Tue, 24 Oct 2017 08:07:36 -0700 (PDT)
+From: Pavel Roskin <plroskin@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Subject: [PATCH] mkfs.ubifs: ignore EOPNOTSUPP when listing extended attributes
+Date: Tue, 24 Oct 2017 08:07:30 -0700
+Message-Id: <20171024150730.5787-1-plroskin@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,37 +19,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There are a few DT files that make use of sst25vf016b in their
-compatible strings, and the driver supports this chip already.
-This patch improves the documentation and therefore the result
-of ./scripts/checkpatch.pl.
+Systems that don't support extended attributes should still be able to
+create ubifs images.
 
-Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Signed-off-by: Chris Paterson <Chris.Paterson2@renesas.com>
-Acked-by: Rob Herring <robh@kernel.org>
-Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Pavel Roskin <plroskin@gmail.com>
 ---
-Thank you Rob, thank you Geert, and sorry for the delay on this one.
-Here is v2.
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Changes in v2:
-* fixed subject prefix
-* added changelog
-
- Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
-index 4cab5d8..bf56d77 100644
---- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
-+++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
-@@ -31,6 +31,7 @@ Required properties:
-                  s25sl12801
-                  s25fl008k
-                  s25fl064k
-+                 sst25vf016b
-                  sst25vf040b
-                  sst25wf040b
-                  m25p40
+diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+index d432dfe..c916f48 100644
+--- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
++++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+@@ -1128,7 +1128,7 @@ static int inode_add_xattr(struct ubifs_ino_node *host_ino,
+ 
+ 	len = llistxattr(path_name, NULL, 0);
+ 	if (len < 0) {
+-		if (errno == ENOENT)
++		if (errno == ENOENT || errno == EOPNOTSUPP)
+ 			return 0;
+ 
+ 		sys_err_msg("llistxattr failed on %s", path_name);
 -- 
-2.7.4
+2.14.2
