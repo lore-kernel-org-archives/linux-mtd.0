@@ -1,19 +1,21 @@
-Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e6tld-0004kn-R4
- for linux-mtd@lists.infradead.org; Tue, 24 Oct 2017 07:36:55 +0000
-Received: by mail-pg0-x244.google.com with SMTP id a192so13833715pge.9
- for <linux-mtd@lists.infradead.org>; Tue, 24 Oct 2017 00:36:33 -0700 (PDT)
-From: Bin Meng <bmeng.cn@gmail.com>
-To: Mika Westerberg <mika.westerberg@linux.intel.com>,
- Arnd Bergmann <arnd@arndb.de>,
+ id 1e6vPE-0006nn-AU
+ for linux-mtd@lists.infradead.org; Tue, 24 Oct 2017 09:21:53 +0000
+Date: Tue, 24 Oct 2017 12:21:27 +0300
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Bin Meng <bmeng.cn@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
  linux-mtd <linux-mtd@lists.infradead.org>,
- linux-kernel <linux-kernel@vger.kernel.org>
-Cc: Stefan Roese <sr@denx.de>
-Subject: [PATCH] spi-nor: intel-spi: Remove EXPERT dependency
-Date: Tue, 24 Oct 2017 00:40:53 -0700
-Message-Id: <1508830853-4924-1-git-send-email-bmeng.cn@gmail.com>
+ linux-kernel <linux-kernel@vger.kernel.org>, Stefan Roese <sr@denx.de>
+Subject: Re: [PATCH v2] spi-nor: intel-spi: Fix Kconfig dependency to LPC_ICH
+Message-ID: <20171024092127.GB29656@lahna.fi.intel.com>
+References: <1508828379-3479-1-git-send-email-bmeng.cn@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1508828379-3479-1-git-send-email-bmeng.cn@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,39 +25,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The idea to have the intel-spi driver dependent on EXPERT was exactly
-because we did not want ordinary users playing with the device and
-inadvertently overwrite their BIOSes (if it is not protected). This
-seems to be superfluous hence remove it.
+On Mon, Oct 23, 2017 at 11:59:39PM -0700, Bin Meng wrote:
+> The Intel SPI-NOR driver is dependent on LPC_ICH to get the platform
+> data. Select it in the Kconfig.
+> 
+> Signed-off-by: Bin Meng <bmeng.cn@gmail.com>
+> 
+> ---
+> 
+> Changes in v2:
+> - Enforce dependency on PCI
+> 
+>  drivers/mtd/spi-nor/Kconfig | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+> index f26aaa6..abf453a 100644
+> --- a/drivers/mtd/spi-nor/Kconfig
+> +++ b/drivers/mtd/spi-nor/Kconfig
+> @@ -107,8 +107,9 @@ config SPI_INTEL_SPI_PCI
+>  
+>  config SPI_INTEL_SPI_PLATFORM
+>  	tristate "Intel PCH/PCU SPI flash platform driver" if EXPERT
+> -	depends on X86
+> +	depends on X86 && PCI
 
-Suggested-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Bin Meng <bmeng.cn@gmail.com>
----
+It is kind of weird to depend on PCI if we want to enable *platform*
+driver but whatever. I would still prefer to have dependency for LPC_ICH
+instead.
 
- drivers/mtd/spi-nor/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+No strong feelings though - as long as it builds and works fine :-)
 
-diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-index abf453a..be7cfb9 100644
---- a/drivers/mtd/spi-nor/Kconfig
-+++ b/drivers/mtd/spi-nor/Kconfig
-@@ -90,7 +90,7 @@ config SPI_INTEL_SPI
- 	tristate
- 
- config SPI_INTEL_SPI_PCI
--	tristate "Intel PCH/PCU SPI flash PCI driver" if EXPERT
-+	tristate "Intel PCH/PCU SPI flash PCI driver"
- 	depends on X86 && PCI
- 	select SPI_INTEL_SPI
- 	help
-@@ -106,7 +106,7 @@ config SPI_INTEL_SPI_PCI
- 	  will be called intel-spi-pci.
- 
- config SPI_INTEL_SPI_PLATFORM
--	tristate "Intel PCH/PCU SPI flash platform driver" if EXPERT
-+	tristate "Intel PCH/PCU SPI flash platform driver"
- 	depends on X86 && PCI
- 	select SPI_INTEL_SPI
- 	select LPC_ICH
--- 
-2.7.4
+>  	select SPI_INTEL_SPI
+> +	select LPC_ICH
+>  	help
+>  	  This enables platform support for the Intel PCH/PCU SPI
+>  	  controller in master mode. This controller is present in modern
+> -- 
+> 2.7.4
