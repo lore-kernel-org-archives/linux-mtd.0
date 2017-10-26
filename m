@@ -1,5 +1,5 @@
 From: Ludovic Barre <ludovic.Barre@st.com>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, Marek Vasut
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Marek Vasut
  <marek.vasut@gmail.com>
 CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
  <computersforpeace@gmail.com>, Boris Brezillon
@@ -9,12 +9,12 @@ CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
  <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
  <linux-arm-kernel@lists.infradead.org>, "Geert
  Uytterhoeven" <geert@linux-m68k.org>, Ludovic Barre <ludovic.barre@st.com>
-Subject: [PATCH 1/3] mtd: spi-nor: stm32-quadspi: Fix uninitialized error
+Subject: [PATCH v2 1/3] mtd: spi-nor: stm32-quadspi: Fix uninitialized error
  return code
-Date: Thu, 26 Oct 2017 13:54:52 +0200
-Message-ID: <1509018894-15111-2-git-send-email-ludovic.Barre@st.com>
-In-Reply-To: <1509018894-15111-1-git-send-email-ludovic.Barre@st.com>
-References: <1509018894-15111-1-git-send-email-ludovic.Barre@st.com>
+Date: Thu, 26 Oct 2017 17:12:33 +0200
+Message-ID: <1509030755-19044-2-git-send-email-ludovic.Barre@st.com>
+In-Reply-To: <1509030755-19044-1-git-send-email-ludovic.Barre@st.com>
+References: <1509030755-19044-1-git-send-email-ludovic.Barre@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
