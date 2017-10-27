@@ -1,17 +1,14 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e83Q1-0005jN-1l
- for linux-mtd@lists.infradead.org; Fri, 27 Oct 2017 12:07:23 +0000
-Date: Fri, 27 Oct 2017 14:06:51 +0200
+Date: Fri, 27 Oct 2017 14:44:16 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Nicolas Pitre <nicolas.pitre@linaro.org>
-Cc: Richard Weinberger <richard@nod.at>, Chris Brandt
- <chris.brandt@renesas.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 0/5] unconfuse get_unmapped_area and point/unpoint
- driver methods
-Message-ID: <20171027140651.4032744b@bbrezillon>
-In-Reply-To: <20171017152826.11658-1-nicolas.pitre@linaro.org>
-References: <20171017152826.11658-1-nicolas.pitre@linaro.org>
+To: Xiaolei Li <xiaolei.li@mediatek.com>
+Cc: <computersforpeace@gmail.com>, srv_heupstream@mediatek.com,
+ linux-mtd@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ dwmw2@infradead.org, rogercc.lin@mediatek.com
+Subject: Re: [PATCH v1 2/2] mtd: nand: mtk: fix infinite ECC decode IRQ issue
+Message-ID: <20171027144416.2e2294a7@bbrezillon>
+In-Reply-To: <1508746897-62291-3-git-send-email-xiaolei.li@mediatek.com>
+References: <1508746897-62291-1-git-send-email-xiaolei.li@mediatek.com>
+ <1508746897-62291-3-git-send-email-xiaolei.li@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,55 +21,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Nicolas,
+Hi Xiaolei,
 
-Some of your commits do not have commit messages (just a subject and
-that's all). I know you're an experimented kernel developer and you
-might find this superfluous, but we try to push all MTD contributors to
-write a commit message, even if it's just a one line description that
-basically repeats what the subject line says. Would you mind adding a
-short description to patch 2 and 3.
+On Mon, 23 Oct 2017 16:21:37 +0800
+Xiaolei Li <xiaolei.li@mediatek.com> wrote:
 
-Other than that, the changes look good to me, so
+> For MT2701 NAND Controller, there may generate infinite ECC decode IRQ
+> during long time burn test on some platforms. Once this issue occurred,
+> the ECC decode IRQ status cannot be cleared in the IRQ handler function,
+> and threads cannot be scheduled.
+> 
+> ECC HW generates decode IRQ each sector, so there will have more than one
+> decode IRQ if read one page of large page NAND.
+> 
+> Currently, ECC IRQ handle flow is that we will check whether it is decode
+> IRQ at first by reading the register ECC_DECIRQ_STA. This is a read-clear
+> type register. If this IRQ is decode IRQ, then the ECC IRQ signal will be
+> cleared at the same time.
+> Secondly, we will check whether all sectors are decoded by reading the
+> register ECC_DECDONE. This is because the current IRQ may be not dealed
+> in time, and the next sectors have been decoded before reading the
+> register ECC_DECIRQ_STA. Then, the next sectors's decode IRQs will not
+> be generated.
+> Thirdly, if all sectors are decoded by comparing with ecc->sectors, then we
+> will complete ecc->done, set ecc->sectors as 0, and disable ECC IRQ by
+> programming the register ECC_IRQ_REG(op) as 0. Otherwise, wait for the
+> next ECC IRQ.
+> 
+> But, there is a timing issue between step one and two. When we read the
+> reigster ECC_DECIRQ_STA, all sectors are decoded except the last sector,
+> and the ECC IRQ signal is cleared. But the last sector is decoded before
+> reading ECC_DECDONE, so the ECC IRQ signal is enabled again by ECC HW, and
+> it means we will receive one extra ECC IRQ later. In step three, we will
+> find that all sectors were decoded, then disable ECC IRQ and return.
+> When deal with the extra ECC IRQ, the ECC IRQ status cannot be cleared
+> anymore. That is because the register ECC_DECIRQ_STA can only be cleared
+> when the register ECC_IRQ_REG(op) is enabled. But actually we have
+> disabled ECC IRQ in the previous ECC IRQ handle. So, there will
+> keep receiving ECC decode IRQ.
+> 
+> Now, we read the register ECC_DECIRQ_STA once again before completing the
+> ecc done event. This ensures that there will be no extra ECC decode IRQ.
 
-Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Why don't you remove the
 
-On Tue, 17 Oct 2017 11:28:21 -0400
-Nicolas Pitre <nicolas.pitre@linaro.org> wrote:
+	writel(0, ecc->regs + ECC_IRQ_REG(op));
 
-> This series improves or implements the point and unpoint driver methods
-> and reimplements mtd_get_unmapped_area() in terms of those. Because
-> mtd->_point() provides a superset of what mtd->_get_unmapped_area() does
-> then there is no reason for having both. Or worse: having one but not
-> the other.
+line in the irq handler and add
+
+	readw(ecc->regs + ECC_DECIRQ_STA);
+
+just before disabling the irq in mtk_ecc_disable().
+
+It really looks weird to have the IRQ handler disable the IRQ on its
+own. It's usually the caller who decides when the IRQ (or set of IRQs)
+should be enabled/disabled. Moreover, I'm not sure you're guaranteed
+that no new interrupts will come in between the ECC_DECIRQ_STA read
+and the ECC_IRQ_REG() write you're doing in your irq handler, while,
+doing that after the engine has been disabled (in mtk_ecc_disable())
+should guarantee that nothing can happen after you have read the status
+reg.
+
 > 
-> This is motivated by my work on XIP cramfs for both MMU and !MMU systems
-> where I do need the more complete point functionality. And it just looks
-> like the right thing to do.
+> MT2712 ECC HW is designed to generate only one decode IRQ each page, so
+> there is no this problem on MT2712 platforms.
 > 
-> This is also available on top of Linux v4.14-rc3 via git here:
+> Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
+
+You miss a Fixes tag, and you might want to add a Cc-stable tag to
+backport the fix.
+
+Regards,
+
+Boris
+
+> ---
+>  drivers/mtd/nand/mtk_ecc.c | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
->   http://git.linaro.org/people/nicolas.pitre/linux mtd_point
-> 
-> 
-> Changes from v1:
-> 
-> - Fix retlen computation in mtdram.c:ram_point().
-> 
-> - Added Richard Weinberger's REviewd-by tags.
-> 
-> 
-> diffstat:
-> 
->  drivers/mtd/chips/map_ram.c  | 34 ++++++++++++++++++++--------------
->  drivers/mtd/chips/map_rom.c  | 34 +++++++++++++++++++++-------------
->  drivers/mtd/devices/mtdram.c | 36 ++++++++++++++++++++++--------------
->  drivers/mtd/mtdconcat.c      | 27 ---------------------------
->  drivers/mtd/mtdcore.c        | 17 ++++++++++++-----
->  drivers/mtd/mtdpart.c        | 14 --------------
->  include/linux/mtd/mtd.h      |  4 ----
->  7 files changed, 75 insertions(+), 91 deletions(-)
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> diff --git a/drivers/mtd/nand/mtk_ecc.c b/drivers/mtd/nand/mtk_ecc.c
+> index 82aa6f2..0e04323 100644
+> --- a/drivers/mtd/nand/mtk_ecc.c
+> +++ b/drivers/mtd/nand/mtk_ecc.c
+> @@ -115,6 +115,11 @@ static irqreturn_t mtk_ecc_irq(int irq, void *id)
+>  		op = ECC_DECODE;
+>  		dec = readw(ecc->regs + ECC_DECDONE);
+>  		if (dec & ecc->sectors) {
+> +			/**
+> +			 * Clear decode IRQ status once again to ensure that
+> +			 * there will be no extra IRQ.
+> +			 */
+> +			dec = readw(ecc->regs + ECC_DECIRQ_STA);
+>  			ecc->sectors = 0;
+>  			complete(&ecc->done);
+>  		} else {
