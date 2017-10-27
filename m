@@ -1,10 +1,10 @@
 Received: from mail-io0-x244.google.com ([2607:f8b0:4001:c06::244])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e89LM-00018c-Ol
- for linux-mtd@lists.infradead.org; Fri, 27 Oct 2017 18:26:58 +0000
-Received: by mail-io0-x244.google.com with SMTP id b186so14585456iof.8
- for <linux-mtd@lists.infradead.org>; Fri, 27 Oct 2017 11:26:36 -0700 (PDT)
-Date: Fri, 27 Oct 2017 11:26:33 -0700
+ id 1e8B25-0001Am-Ln
+ for linux-mtd@lists.infradead.org; Fri, 27 Oct 2017 20:15:12 +0000
+Received: by mail-io0-x244.google.com with SMTP id h70so15170035ioi.4
+ for <linux-mtd@lists.infradead.org>; Fri, 27 Oct 2017 13:14:48 -0700 (PDT)
+Date: Fri, 27 Oct 2017 13:14:46 -0700
 From: Michael Halcrow <mhalcrow@google.com>
 To: Eric Biggers <ebiggers3@gmail.com>
 Cc: linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
@@ -16,14 +16,14 @@ Cc: linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  Sarthak Kukreti <sarthakkukreti@chromium.org>,
  Nick Desaulniers <ndesaulniers@google.com>,
  Eric Biggers <ebiggers@google.com>
-Subject: Re: [RFC PATCH 05/25] fs: add ->s_master_keys to struct super_block
-Message-ID: <20171027182633.GE10611@google.com>
+Subject: Re: [RFC PATCH 06/25] fscrypt: add FS_IOC_ADD_ENCRYPTION_KEY ioctl
+Message-ID: <20171027201446.GF10611@google.com>
 References: <20171023214058.128121-1-ebiggers3@gmail.com>
- <20171023214058.128121-6-ebiggers3@gmail.com>
+ <20171023214058.128121-7-ebiggers3@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20171023214058.128121-6-ebiggers3@gmail.com>
+In-Reply-To: <20171023214058.128121-7-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,74 +33,169 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 23, 2017 at 02:40:38PM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> Add an ->s_master_keys keyring to 'struct super_block' for holding
-> encryption keys which have been added to the filesystem.  This keyring
-> will be populated using a new fscrypt ioctl.
-> 
-> This is needed for several reasons, including:
-> 
-> - To solve the visibility problems of having filesystem encryption keys
->   stored in process-subscribed keyrings, while the VFS state of the
->   filesystem is actually global.
-> 
-> - To implement a proper API for removing keys, which among other things
->   will require maintaining the list of inodes that are using each master
->   key so that we can evict the inodes when the key is removed.
-> 
-> - To allow caching a crypto transform for each master key so that we
->   don't have to repeatedly allocate one over and over.
-> 
-> See later patches for full details, including why it wouldn't be enough
-> to add the concept of a "global keyring" to the keyrings API instead.
-> 
-> ->s_master_keys will only be allocated when someone tries to add a key
-> for the first time.  Otherwise it will stay NULL.
-> 
-> Note that this could go in the filesystem-specific superblocks instead.
-> However, we already have three filesystems using fs/crypto/, so it's
-> useful to have it in the VFS.
-> 
+On Mon, Oct 23, 2017 at 02:40:39PM -0700, Eric Biggers wrote:
+> By having an API to add a key to the *filesystem* we'll be able to
+> eliminate all the above hacks and better express the intended semantics:
+> the "locked/unlocked" status of an encrypted directory is global.  And
+> orthogonally to encryption, existing mechanisms such as file permissions
+> and LSMs can and should continue to be used for the purpose of *access
+> control*.
+
+At some point I'd like to try to tackle the problem of making the
+encryption policy somehow *reflect* the access control policy.
+
+For now this change cleans up a real mess and makes things much more
+manageable and predictable.
+
 > Signed-off-by: Eric Biggers <ebiggers@google.com>
 
 Reviewed-by: Michael Halcrow <mhalcrow@google.com>
 
 > ---
->  fs/super.c         | 3 +++
->  include/linux/fs.h | 4 ++++
->  2 files changed, 7 insertions(+)
+>  fs/crypto/crypto.c              |  12 +-
+>  fs/crypto/fscrypt_private.h     |   3 +
+>  fs/crypto/keyinfo.c             | 351 +++++++++++++++++++++++++++++++++++++++-
+>  include/linux/fscrypt_notsupp.h |   5 +
+>  include/linux/fscrypt_supp.h    |   1 +
+>  include/uapi/linux/fscrypt.h    |  41 +++--
+>  6 files changed, 397 insertions(+), 16 deletions(-)
 > 
-> diff --git a/fs/super.c b/fs/super.c
-> index 166c4ee0d0ed..161a9d05aa9f 100644
-> --- a/fs/super.c
-> +++ b/fs/super.c
-> @@ -168,6 +168,9 @@ static void destroy_super(struct super_block *s)
->  	WARN_ON(!list_empty(&s->s_mounts));
->  	put_user_ns(s->s_user_ns);
->  	kfree(s->s_subtype);
-> +#if IS_ENABLED(CONFIG_FS_ENCRYPTION)
-> +	key_put(s->s_master_keys);
-> +#endif
->  	call_rcu(&s->rcu, destroy_super_rcu);
->  }
->  
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 3efd5ded21c9..8cfb0877d32c 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -1440,6 +1440,10 @@ struct super_block {
->  
->  	spinlock_t		s_inode_wblist_lock;
->  	struct list_head	s_inodes_wb;	/* writeback inodes */
+> diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
+> index 608f6bbe0f31..489c504ac20d 100644
+> --- a/fs/crypto/crypto.c
+> +++ b/fs/crypto/crypto.c
+> @@ -24,6 +24,7 @@
+>  #include <linux/module.h>
+>  #include <linux/scatterlist.h>
+>  #include <linux/ratelimit.h>
+> +#include <linux/key-type.h>
+>  #include <linux/dcache.h>
+>  #include <linux/namei.h>
+>  #include <crypto/aes.h>
+> @@ -449,6 +450,8 @@ int fscrypt_initialize(unsigned int cop_flags)
+>   */
+>  static int __init fscrypt_init(void)
+>  {
+> +	int err = -ENOMEM;
 > +
-> +#if IS_ENABLED(CONFIG_FS_ENCRYPTION)
-> +	struct key		*s_master_keys; /* master crypto keys in use */
-> +#endif
->  } __randomize_layout;
+>  	fscrypt_read_workqueue = alloc_workqueue("fscrypt_read_queue",
+>  							WQ_HIGHPRI, 0);
+>  	if (!fscrypt_read_workqueue)
+> @@ -462,14 +465,20 @@ static int __init fscrypt_init(void)
+>  	if (!fscrypt_info_cachep)
+>  		goto fail_free_ctx;
 >  
->  /* Helper functions so that in most cases filesystems will
-> -- 
-> 2.15.0.rc0.271.g36b669edcc-goog
-> 
+> +	err = register_key_type(&key_type_fscrypt_mk);
+> +	if (err)
+> +		goto fail_free_info;
+> +
+>  	return 0;
+>  
+> +fail_free_info:
+> +	kmem_cache_destroy(fscrypt_info_cachep);
+>  fail_free_ctx:
+>  	kmem_cache_destroy(fscrypt_ctx_cachep);
+>  fail_free_queue:
+>  	destroy_workqueue(fscrypt_read_workqueue);
+>  fail:
+> -	return -ENOMEM;
+> +	return err;
+>  }
+>  module_init(fscrypt_init)
+>  
+> @@ -484,6 +493,7 @@ static void __exit fscrypt_exit(void)
+>  		destroy_workqueue(fscrypt_read_workqueue);
+>  	kmem_cache_destroy(fscrypt_ctx_cachep);
+>  	kmem_cache_destroy(fscrypt_info_cachep);
+> +	unregister_key_type(&key_type_fscrypt_mk);
+>  
+>  	fscrypt_essiv_cleanup();
+>  }
+> diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+> index 5cb80a2d39ea..b2fad12eeedb 100644
+> --- a/fs/crypto/fscrypt_private.h
+> +++ b/fs/crypto/fscrypt_private.h
+> @@ -27,6 +27,8 @@
+>  
+>  #define FS_KEY_DERIVATION_NONCE_SIZE		16
+>  
+> +#define FSCRYPT_MIN_KEY_SIZE		16
+> +
+>  /**
+>   * Encryption context for inode
+>   *
+> @@ -93,6 +95,7 @@ extern struct page *fscrypt_alloc_bounce_page(struct fscrypt_ctx *ctx,
+>  					      gfp_t gfp_flags);
+>  
+>  /* keyinfo.c */
+> +extern struct key_type key_type_fscrypt_mk;
+>  extern void __exit fscrypt_essiv_cleanup(void);
+>  
+>  #endif /* _FSCRYPT_PRIVATE_H */
+> diff --git a/fs/crypto/keyinfo.c b/fs/crypto/keyinfo.c
+> index d3a97c2cd4dd..3f1cb8bbc1e5 100644
+> --- a/fs/crypto/keyinfo.c
+> +++ b/fs/crypto/keyinfo.c
+> @@ -9,14 +9,307 @@
+>   */
+>  
+>  #include <keys/user-type.h>
+> -#include <linux/scatterlist.h>
+> +#include <linux/key-type.h>
+>  #include <linux/ratelimit.h>
+> +#include <linux/scatterlist.h>
+> +#include <linux/seq_file.h>
+>  #include <crypto/aes.h>
+>  #include <crypto/sha.h>
+>  #include "fscrypt_private.h"
+>  
+>  static struct crypto_shash *essiv_hash_tfm;
+>  
+> +/*
+> + * fscrypt_master_key_secret - secret key material of an in-use master key
+> + */
+> +struct fscrypt_master_key_secret {
+> +
+> +	/* Size of the raw key in bytes */
+> +	u32			size;
+> +
+> +	/* The raw key */
+> +	u8			raw[FSCRYPT_MAX_KEY_SIZE];
+> +};
+
+With structs fscrypt introduces, I suggest __randomize_layout wherever
+feasible.
+
+> +#define FSCRYPT_FS_KEYRING_DESCRIPTION_SIZE	\
+> +	(sizeof("fscrypt-") - 1 + sizeof(((struct super_block
+> *)0)->s_id) + 1)
+
+What function do the " - 1" and " + 1" parts serve here?  Readability?
+
+> +	key = find_master_key(inode->i_sb, &mk_spec);
+> +	if (IS_ERR(key)) {
+> +		if (key != ERR_PTR(-ENOKEY))
+> +			return PTR_ERR(key);
+> +		/*
+> +		 * As a legacy fallback, we search the current task's subscribed
+> +		 * keyrings in addition to ->s_master_keys.
+
+Please add an explicit comment that it's important for security that
+the ordering of these two searches be preserved.
+
+> +		 */
+> +		return find_and_derive_key_legacy(inode, ctx, derived_key,
+> +						  derived_keysize);
+> +	}
+> +	mk = key->payload.data[0];
+> +
+> +	/*
+> +	 * Require that the master key be at least as long as the derived key.
+> +	 * Otherwise, the derived key cannot possibly contain as much entropy as
+> +	 * that required by the encryption mode it will be used for.
+> +	 */
+> +	if (mk->mk_secret.size < derived_keysize) {
+
+As I've mentioned in a previous patch in this set, if we're going to
+get opinionated about source entropy, there's more we could
+measure/estimate than just the length.
