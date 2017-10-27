@@ -1,21 +1,20 @@
-From: Ludovic Barre <ludovic.Barre@st.com>
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Marek Vasut
- <marek.vasut@gmail.com>
-CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
- Alexandre Torgue <alexandre.torgue@st.com>,
- Rob Herring <robh+dt@kernel.org>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>,
- "Ludovic Barre" <ludovic.barre@st.com>
-Subject: [PATCH v2 3/3] mtd: spi-nor: stm32-quadspi: change license text
-Date: Thu, 26 Oct 2017 17:12:35 +0200
-Message-ID: <1509030755-19044-4-git-send-email-ludovic.Barre@st.com>
-In-Reply-To: <1509030755-19044-1-git-send-email-ludovic.Barre@st.com>
-References: <1509030755-19044-1-git-send-email-ludovic.Barre@st.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1e83Q1-0005jN-1l
+ for linux-mtd@lists.infradead.org; Fri, 27 Oct 2017 12:07:23 +0000
+Date: Fri, 27 Oct 2017 14:06:51 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Nicolas Pitre <nicolas.pitre@linaro.org>
+Cc: Richard Weinberger <richard@nod.at>, Chris Brandt
+ <chris.brandt@renesas.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 0/5] unconfuse get_unmapped_area and point/unpoint
+ driver methods
+Message-ID: <20171027140651.4032744b@bbrezillon>
+In-Reply-To: <20171017152826.11658-1-nicolas.pitre@linaro.org>
+References: <20171017152826.11658-1-nicolas.pitre@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,45 +24,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Ludovic Barre <ludovic.barre@st.com>
+Hi Nicolas,
 
--Change the license text with long template.
--Change Copyright to STMicroelectronics.
+Some of your commits do not have commit messages (just a subject and
+that's all). I know you're an experimented kernel developer and you
+might find this superfluous, but we try to push all MTD contributors to
+write a commit message, even if it's just a one line description that
+basically repeats what the subject line says. Would you mind adding a
+short description to patch 2 and 3.
 
-Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
----
- drivers/mtd/spi-nor/stm32-quadspi.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+Other than that, the changes look good to me, so
 
-diff --git a/drivers/mtd/spi-nor/stm32-quadspi.c b/drivers/mtd/spi-nor/stm32-quadspi.c
-index 70710be..b3c7f6a 100644
---- a/drivers/mtd/spi-nor/stm32-quadspi.c
-+++ b/drivers/mtd/spi-nor/stm32-quadspi.c
-@@ -1,9 +1,22 @@
- /*
-- * stm32_quadspi.c
-+ * Driver for stm32 quadspi controller
-  *
-- * Copyright (C) 2017, Ludovic Barre
-+ * Copyright (C) 2017, STMicroelectronics - All Rights Reserved
-+ * Author(s): Ludovic Barre author <ludovic.barre@st.com>.
-  *
-- * License terms: GNU General Public License (GPL), version 2
-+ * License terms: GPL V2.0.
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of the GNU General Public License version 2 as published by
-+ * the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
-+ * details.
-+ *
-+ * You should have received a copy of the GNU General Public License along with
-+ * This program. If not, see <http://www.gnu.org/licenses/>.
-  */
- #include <linux/clk.h>
- #include <linux/errno.h>
--- 
-2.7.4
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
+On Tue, 17 Oct 2017 11:28:21 -0400
+Nicolas Pitre <nicolas.pitre@linaro.org> wrote:
+
+> This series improves or implements the point and unpoint driver methods
+> and reimplements mtd_get_unmapped_area() in terms of those. Because
+> mtd->_point() provides a superset of what mtd->_get_unmapped_area() does
+> then there is no reason for having both. Or worse: having one but not
+> the other.
+> 
+> This is motivated by my work on XIP cramfs for both MMU and !MMU systems
+> where I do need the more complete point functionality. And it just looks
+> like the right thing to do.
+> 
+> This is also available on top of Linux v4.14-rc3 via git here:
+> 
+>   http://git.linaro.org/people/nicolas.pitre/linux mtd_point
+> 
+> 
+> Changes from v1:
+> 
+> - Fix retlen computation in mtdram.c:ram_point().
+> 
+> - Added Richard Weinberger's REviewd-by tags.
+> 
+> 
+> diffstat:
+> 
+>  drivers/mtd/chips/map_ram.c  | 34 ++++++++++++++++++++--------------
+>  drivers/mtd/chips/map_rom.c  | 34 +++++++++++++++++++++-------------
+>  drivers/mtd/devices/mtdram.c | 36 ++++++++++++++++++++++--------------
+>  drivers/mtd/mtdconcat.c      | 27 ---------------------------
+>  drivers/mtd/mtdcore.c        | 17 ++++++++++++-----
+>  drivers/mtd/mtdpart.c        | 14 --------------
+>  include/linux/mtd/mtd.h      |  4 ----
+>  7 files changed, 75 insertions(+), 91 deletions(-)
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
