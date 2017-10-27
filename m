@@ -1,14 +1,15 @@
-Date: Fri, 27 Oct 2017 14:44:16 +0200
+Date: Fri, 27 Oct 2017 14:45:38 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Xiaolei Li <xiaolei.li@mediatek.com>
 Cc: <computersforpeace@gmail.com>, srv_heupstream@mediatek.com,
  linux-mtd@lists.infradead.org, linux-mediatek@lists.infradead.org,
  dwmw2@infradead.org, rogercc.lin@mediatek.com
-Subject: Re: [PATCH v1 2/2] mtd: nand: mtk: fix infinite ECC decode IRQ issue
-Message-ID: <20171027144416.2e2294a7@bbrezillon>
-In-Reply-To: <1508746897-62291-3-git-send-email-xiaolei.li@mediatek.com>
+Subject: Re: [PATCH v1 1/2] mtd: nand: mtk: do not disable ECC IRQ in the
+ function mtk_ecc_disable
+Message-ID: <20171027144538.4875953f@bbrezillon>
+In-Reply-To: <1508746897-62291-2-git-send-email-xiaolei.li@mediatek.com>
 References: <1508746897-62291-1-git-send-email-xiaolei.li@mediatek.com>
- <1508746897-62291-3-git-send-email-xiaolei.li@mediatek.com>
+ <1508746897-62291-2-git-send-email-xiaolei.li@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -21,97 +22,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Xiaolei,
-
-On Mon, 23 Oct 2017 16:21:37 +0800
+On Mon, 23 Oct 2017 16:21:36 +0800
 Xiaolei Li <xiaolei.li@mediatek.com> wrote:
 
-> For MT2701 NAND Controller, there may generate infinite ECC decode IRQ
-> during long time burn test on some platforms. Once this issue occurred,
-> the ECC decode IRQ status cannot be cleared in the IRQ handler function,
-> and threads cannot be scheduled.
-> 
-> ECC HW generates decode IRQ each sector, so there will have more than one
-> decode IRQ if read one page of large page NAND.
-> 
-> Currently, ECC IRQ handle flow is that we will check whether it is decode
-> IRQ at first by reading the register ECC_DECIRQ_STA. This is a read-clear
-> type register. If this IRQ is decode IRQ, then the ECC IRQ signal will be
-> cleared at the same time.
-> Secondly, we will check whether all sectors are decoded by reading the
-> register ECC_DECDONE. This is because the current IRQ may be not dealed
-> in time, and the next sectors have been decoded before reading the
-> register ECC_DECIRQ_STA. Then, the next sectors's decode IRQs will not
-> be generated.
-> Thirdly, if all sectors are decoded by comparing with ecc->sectors, then we
-> will complete ecc->done, set ecc->sectors as 0, and disable ECC IRQ by
-> programming the register ECC_IRQ_REG(op) as 0. Otherwise, wait for the
-> next ECC IRQ.
-> 
-> But, there is a timing issue between step one and two. When we read the
-> reigster ECC_DECIRQ_STA, all sectors are decoded except the last sector,
-> and the ECC IRQ signal is cleared. But the last sector is decoded before
-> reading ECC_DECDONE, so the ECC IRQ signal is enabled again by ECC HW, and
-> it means we will receive one extra ECC IRQ later. In step three, we will
-> find that all sectors were decoded, then disable ECC IRQ and return.
-> When deal with the extra ECC IRQ, the ECC IRQ status cannot be cleared
-> anymore. That is because the register ECC_DECIRQ_STA can only be cleared
-> when the register ECC_IRQ_REG(op) is enabled. But actually we have
-> disabled ECC IRQ in the previous ECC IRQ handle. So, there will
-> keep receiving ECC decode IRQ.
-> 
-> Now, we read the register ECC_DECIRQ_STA once again before completing the
-> ecc done event. This ensures that there will be no extra ECC decode IRQ.
-
-Why don't you remove the
-
-	writel(0, ecc->regs + ECC_IRQ_REG(op));
-
-line in the irq handler and add
-
-	readw(ecc->regs + ECC_DECIRQ_STA);
-
-just before disabling the irq in mtk_ecc_disable().
-
-It really looks weird to have the IRQ handler disable the IRQ on its
-own. It's usually the caller who decides when the IRQ (or set of IRQs)
-should be enabled/disabled. Moreover, I'm not sure you're guaranteed
-that no new interrupts will come in between the ECC_DECIRQ_STA read
-and the ECC_IRQ_REG() write you're doing in your irq handler, while,
-doing that after the engine has been disabled (in mtk_ecc_disable())
-should guarantee that nothing can happen after you have read the status
-reg.
-
-> 
-> MT2712 ECC HW is designed to generate only one decode IRQ each page, so
-> there is no this problem on MT2712 platforms.
+> There will disable ECC IRQ in ECC IRQ handle function, so no need to
+> disable it again in the function mtk_ecc_disable.
 > 
 > Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
-
-You miss a Fixes tag, and you might want to add a Cc-stable tag to
-backport the fix.
-
-Regards,
-
-Boris
-
 > ---
->  drivers/mtd/nand/mtk_ecc.c | 5 +++++
->  1 file changed, 5 insertions(+)
+>  drivers/mtd/nand/mtk_ecc.c | 1 -
+>  1 file changed, 1 deletion(-)
 > 
 > diff --git a/drivers/mtd/nand/mtk_ecc.c b/drivers/mtd/nand/mtk_ecc.c
-> index 82aa6f2..0e04323 100644
+> index 7f3b065..82aa6f2 100644
 > --- a/drivers/mtd/nand/mtk_ecc.c
 > +++ b/drivers/mtd/nand/mtk_ecc.c
-> @@ -115,6 +115,11 @@ static irqreturn_t mtk_ecc_irq(int irq, void *id)
->  		op = ECC_DECODE;
->  		dec = readw(ecc->regs + ECC_DECDONE);
->  		if (dec & ecc->sectors) {
-> +			/**
-> +			 * Clear decode IRQ status once again to ensure that
-> +			 * there will be no extra IRQ.
-> +			 */
-> +			dec = readw(ecc->regs + ECC_DECIRQ_STA);
->  			ecc->sectors = 0;
->  			complete(&ecc->done);
->  		} else {
+> @@ -307,7 +307,6 @@ void mtk_ecc_disable(struct mtk_ecc *ecc)
+>  
+>  	/* disable it */
+>  	mtk_ecc_wait_idle(ecc, op);
+> -	writew(0, ecc->regs + ECC_IRQ_REG(op));
+
+As explained in my review of patch 2, I would do it the other way
+around: remove this write from the irq handler and keep it here.
+
+>  	writew(ECC_OP_DISABLE, ecc->regs + ECC_CTL_REG(op));
+>  
+>  	mutex_unlock(&ecc->lock);
