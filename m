@@ -1,29 +1,18 @@
-Received: from mail-io0-x244.google.com ([2607:f8b0:4001:c06::244])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e8BFO-0000Du-TM
- for linux-mtd@lists.infradead.org; Fri, 27 Oct 2017 20:28:56 +0000
-Received: by mail-io0-x244.google.com with SMTP id b186so15239652iof.8
- for <linux-mtd@lists.infradead.org>; Fri, 27 Oct 2017 13:28:32 -0700 (PDT)
-Date: Fri, 27 Oct 2017 13:28:28 -0700
-From: Michael Halcrow <mhalcrow@google.com>
-To: Eric Biggers <ebiggers3@gmail.com>
-Cc: linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
- keyrings@vger.kernel.org, "Theodore Y . Ts'o" <tytso@mit.edu>,
- Jaegeuk Kim <jaegeuk@kernel.org>, Gwendal Grignou <gwendal@chromium.org>,
- Ryo Hashimoto <hashimoto@chromium.org>,
- Sarthak Kukreti <sarthakkukreti@chromium.org>,
- Nick Desaulniers <ndesaulniers@google.com>,
- Eric Biggers <ebiggers@google.com>
-Subject: Re: [RFC PATCH 07/25] fs/inode.c: export inode_lru_list_del()
-Message-ID: <20171027202828.GA10022@google.com>
-References: <20171023214058.128121-1-ebiggers3@gmail.com>
- <20171023214058.128121-8-ebiggers3@gmail.com>
+Message-ID: <1509163557.19864.38.camel@mhfsdcap03>
+Subject: Re: [PATCH v1 2/2] mtd: nand: mtk: fix infinite ECC decode IRQ issue
+From: xiaolei li <xiaolei.li@mediatek.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+CC: <computersforpeace@gmail.com>, <srv_heupstream@mediatek.com>,
+ <linux-mtd@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
+ <dwmw2@infradead.org>, <rogercc.lin@mediatek.com>
+Date: Sat, 28 Oct 2017 12:05:57 +0800
+In-Reply-To: <20171027144416.2e2294a7@bbrezillon>
+References: <1508746897-62291-1-git-send-email-xiaolei.li@mediatek.com>
+ <1508746897-62291-3-git-send-email-xiaolei.li@mediatek.com>
+ <20171027144416.2e2294a7@bbrezillon>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20171023214058.128121-8-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,58 +22,133 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 23, 2017 at 02:40:40PM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> When a filesystem encryption key is removed, we need all files which had
-> been "unlocked" (had ->i_crypt_info set up) with it to appear "locked"
-> again.  This is most easily done by evicting the inodes.  This can
-> currently be done using 'echo 2 > /proc/sys/vm/drop_caches'; however,
-> that is overkill and not usable by non-root users.  In preparation for
-> allowing fs/crypto/ to evict just the needed inodes, export
-> inode_lru_list_del() to modules.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+Hi Boris,
 
-Reviewed-by: Michael Halcrow <mhalcrow@google.com>
-
-> ---
->  fs/inode.c         | 5 ++---
->  include/linux/fs.h | 1 +
->  2 files changed, 3 insertions(+), 3 deletions(-)
+On Fri, 2017-10-27 at 14:44 +0200, Boris Brezillon wrote:
+> Hi Xiaolei,
 > 
-> diff --git a/fs/inode.c b/fs/inode.c
-> index d1e35b53bb23..30ce98956801 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -420,13 +420,12 @@ void inode_add_lru(struct inode *inode)
->  		inode_lru_list_add(inode);
->  }
->  
-> -
-> -static void inode_lru_list_del(struct inode *inode)
-> +void inode_lru_list_del(struct inode *inode)
->  {
-> -
->  	if (list_lru_del(&inode->i_sb->s_inode_lru, &inode->i_lru))
->  		this_cpu_dec(nr_unused);
->  }
-> +EXPORT_SYMBOL_GPL(inode_lru_list_del);
->  
->  /**
->   * inode_sb_list_add - add inode to the superblock list of inodes
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 8cfb0877d32c..2833ace2f01d 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -2879,6 +2879,7 @@ static inline void lockdep_annotate_inode_mutex_key(struct inode *inode) { };
->  extern void unlock_new_inode(struct inode *);
->  extern unsigned int get_next_ino(void);
->  extern void evict_inodes(struct super_block *sb);
-> +extern void inode_lru_list_del(struct inode *inode);
->  
->  extern void __iget(struct inode * inode);
->  extern void iget_failed(struct inode *);
-> -- 
-> 2.15.0.rc0.271.g36b669edcc-goog
+> On Mon, 23 Oct 2017 16:21:37 +0800
+> Xiaolei Li <xiaolei.li@mediatek.com> wrote:
+> 
+> > For MT2701 NAND Controller, there may generate infinite ECC decode IRQ
+> > during long time burn test on some platforms. Once this issue occurred,
+> > the ECC decode IRQ status cannot be cleared in the IRQ handler function,
+> > and threads cannot be scheduled.
+> > 
+> > ECC HW generates decode IRQ each sector, so there will have more than one
+> > decode IRQ if read one page of large page NAND.
+> > 
+> > Currently, ECC IRQ handle flow is that we will check whether it is decode
+> > IRQ at first by reading the register ECC_DECIRQ_STA. This is a read-clear
+> > type register. If this IRQ is decode IRQ, then the ECC IRQ signal will be
+> > cleared at the same time.
+> > Secondly, we will check whether all sectors are decoded by reading the
+> > register ECC_DECDONE. This is because the current IRQ may be not dealed
+> > in time, and the next sectors have been decoded before reading the
+> > register ECC_DECIRQ_STA. Then, the next sectors's decode IRQs will not
+> > be generated.
+> > Thirdly, if all sectors are decoded by comparing with ecc->sectors, then we
+> > will complete ecc->done, set ecc->sectors as 0, and disable ECC IRQ by
+> > programming the register ECC_IRQ_REG(op) as 0. Otherwise, wait for the
+> > next ECC IRQ.
+> > 
+> > But, there is a timing issue between step one and two. When we read the
+> > reigster ECC_DECIRQ_STA, all sectors are decoded except the last sector,
+> > and the ECC IRQ signal is cleared. But the last sector is decoded before
+> > reading ECC_DECDONE, so the ECC IRQ signal is enabled again by ECC HW, and
+> > it means we will receive one extra ECC IRQ later. In step three, we will
+> > find that all sectors were decoded, then disable ECC IRQ and return.
+> > When deal with the extra ECC IRQ, the ECC IRQ status cannot be cleared
+> > anymore. That is because the register ECC_DECIRQ_STA can only be cleared
+> > when the register ECC_IRQ_REG(op) is enabled. But actually we have
+> > disabled ECC IRQ in the previous ECC IRQ handle. So, there will
+> > keep receiving ECC decode IRQ.
+> > 
+> > Now, we read the register ECC_DECIRQ_STA once again before completing the
+> > ecc done event. This ensures that there will be no extra ECC decode IRQ.
+> 
+> Why don't you remove the
+> 
+> 	writel(0, ecc->regs + ECC_IRQ_REG(op));
+> 
+> line in the irq handler and add
+> 
+> 	readw(ecc->regs + ECC_DECIRQ_STA);
+> 
+> just before disabling the irq in mtk_ecc_disable().
+> 
+> It really looks weird to have the IRQ handler disable the IRQ on its
+> own. It's usually the caller who decides when the IRQ (or set of IRQs)
+> should be enabled/disabled. 
+
+It is reasonable. I will remove
+ writel(0, ecc->regs + ECC_IRQ_REG(op));
+from irq handler, and keep it in mtk_ecc_disable().
+
+But I thinks it is better to add
+ readw(ecc->regs + ECC_DECIRQ_STA);
+before completing ecc done event in the irq handler than in
+mtk_ecc_disable().
+
+Please let me show some backgrounds at first:
+1. ECC irq signal is low level vaild.
+2. Reading ECC_DECIRQ_STA can pull ecc irq signal high, but it is just
+valid if ECC_IRQ_REG(op) is enabled.
+
+At the beginning of irq handler, I read ECC_DECIRQ_STA and this pulls
+ecc irq signal high. But ecc irq signal may be pulled down again between
+ECC_DECIRQ_STA read and ECC_DECDONE read, if one sector is decoded done
+between them. And this means that one IRQ will come in later. But if all
+sectors are decoded done now, we will complete ecc done event, and there
+is really no need to deal with this extra IRQ.
+So, read ECC_DECIRQ_STA before completing ecc done event, this can
+guarantee that ecc irq signal is always high and no extra IRQ later.
+
+We can keep mtk_ecc_disable() the same. Because all irqs have been
+handled.
+
+I am not sure whether this explanation is clear?
+
+> Moreover, I'm not sure you're guaranteed
+> that no new interrupts will come in between the ECC_DECIRQ_STA read
+> and the ECC_IRQ_REG() write you're doing in your irq handler, while,
+> doing that after the engine has been disabled (in mtk_ecc_disable())
+> should guarantee that nothing can happen after you have read the status
+> reg.
+> 
+> > 
+> > MT2712 ECC HW is designed to generate only one decode IRQ each page, so
+> > there is no this problem on MT2712 platforms.
+> > 
+> > Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
+> 
+> You miss a Fixes tag, and you might want to add a Cc-stable tag to
+> backport the fix.
+> 
+OK. Thanks.
+
+> Regards,
+> 
+> Boris
+> 
+> > ---
+> >  drivers/mtd/nand/mtk_ecc.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/drivers/mtd/nand/mtk_ecc.c b/drivers/mtd/nand/mtk_ecc.c
+> > index 82aa6f2..0e04323 100644
+> > --- a/drivers/mtd/nand/mtk_ecc.c
+> > +++ b/drivers/mtd/nand/mtk_ecc.c
+> > @@ -115,6 +115,11 @@ static irqreturn_t mtk_ecc_irq(int irq, void *id)
+> >  		op = ECC_DECODE;
+> >  		dec = readw(ecc->regs + ECC_DECDONE);
+> >  		if (dec & ecc->sectors) {
+> > +			/**
+> > +			 * Clear decode IRQ status once again to ensure that
+> > +			 * there will be no extra IRQ.
+> > +			 */
+> > +			dec = readw(ecc->regs + ECC_DECIRQ_STA);
+> >  			ecc->sectors = 0;
+> >  			complete(&ecc->done);
+> >  		} else {
 > 
