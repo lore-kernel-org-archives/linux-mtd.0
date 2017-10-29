@@ -1,22 +1,26 @@
-Received: from imap.thunk.org ([2600:3c02::f03c:91ff:fe96:be03])
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e8kld-0008Bm-Nf
- for linux-mtd@lists.infradead.org; Sun, 29 Oct 2017 10:24:35 +0000
-Date: Sun, 29 Oct 2017 06:24:06 -0400
-From: Theodore Ts'o <tytso@mit.edu>
-To: Eric Biggers <ebiggers3@gmail.com>
-Cc: linux-fscrypt@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
-Subject: Re: [PATCH v3] fscrypt: add a documentation file for
- filesystem-level encryption
-Message-ID: <20171029102406.hc6zzeepgbntwesx@thunk.org>
-References: <20170909001512.72431-1-ebiggers3@gmail.com>
+ id 1e8kvI-0003mP-MC
+ for linux-mtd@lists.infradead.org; Sun, 29 Oct 2017 10:34:34 +0000
+Received: by mail-wm0-x242.google.com with SMTP id b9so10933723wmh.0
+ for <linux-mtd@lists.infradead.org>; Sun, 29 Oct 2017 03:34:10 -0700 (PDT)
+Subject: Re: [PATCH v1 1/1] mtd: intel-spi: Add support for Intel Lewisburg
+ SPI serial flash controller
+To: Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: sathyanarayanan.kuppuswamy@linux.intel.com, cyrille.pitchen@wedev4u.fr,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ sathyaosid@gmail.com
+References: <9da18c4fbcb55130164735352b5ce9ba11b9a63c.1509270992.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <630c7d49-c0cc-4d4e-27d9-5e60b797d9f7@gmail.com>
+ <20171029101603.GF29656@lahna.fi.intel.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <bf02ff14-838b-4710-172b-2e789ba521c9@gmail.com>
+Date: Sun, 29 Oct 2017 11:34:07 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170909001512.72431-1-ebiggers3@gmail.com>
+In-Reply-To: <20171029101603.GF29656@lahna.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,30 +30,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Sep 08, 2017 at 05:15:12PM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On 10/29/2017 11:16 AM, Mika Westerberg wrote:
+> On Sun, Oct 29, 2017 at 11:09:50AM +0100, Marek Vasut wrote:
+>> On 10/29/2017 10:57 AM, sathyanarayanan.kuppuswamy@linux.intel.com wrote:
+>>> From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>>>
+>>> This patch adds PCI IDs for Intel Lewisburg PCH SPI serial flash controller.
+>>>
+>>> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>>
+>> Culling the CC list and adding relevant people.
+>> Patch looks IMO OK, but I'd like RB from Mika.
 > 
-> Perhaps long overdue, add a documentation file for filesystem-level
-> encryption, a.k.a. fscrypt or fs/crypto/, to the Documentation
-> directory.  The new file is based loosely on the latest version of the
-> "EXT4 Encryption Design Document (public version)" Google Doc, but with
-> many improvements made, including:
+> There is already a patch for Lewisburg queued for v4.15 here:
 > 
-> - Reflect the reality that it is not specific to ext4 anymore.
-> - More thoroughly document the design and user-visible API/behavior.
-> - Replace outdated information, such as the outdated explanation of how
->   encrypted filenames are hashed for indexed directories and how
->   encrypted filenames are presented to userspace without the key.
->   (This was changed just before release.)
-> 
-> For now the focus is on the design and user-visible API/behavior, not on
-> how to add encryption support to a filesystem --- since the internal API
-> is still pretty messy and any standalone documentation for it would
-> become outdated as things get refactored over time.
-> 
-> Reviewed-by: Michael Halcrow <mhalcrow@google.com>
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> http://git.infradead.org/l2-mtd.git/commitdiff/d92b0f18a2039ff736b4296ad3cf3d505512051e
 
-Applied, thanks.
+Heh, even better. Why does this patch add another ID ?
 
-					- Ted
+-- 
+Best regards,
+Marek Vasut
