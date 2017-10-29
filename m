@@ -1,22 +1,22 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from imap.thunk.org ([2600:3c02::f03c:91ff:fe96:be03])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e8kkA-0007sY-Ge
- for linux-mtd@lists.infradead.org; Sun, 29 Oct 2017 10:23:04 +0000
-Date: Sun, 29 Oct 2017 12:16:03 +0200
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: sathyanarayanan.kuppuswamy@linux.intel.com, cyrille.pitchen@wedev4u.fr,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- sathyaosid@gmail.com
-Subject: Re: [PATCH v1 1/1] mtd: intel-spi: Add support for Intel Lewisburg
- SPI serial flash controller
-Message-ID: <20171029101603.GF29656@lahna.fi.intel.com>
-References: <9da18c4fbcb55130164735352b5ce9ba11b9a63c.1509270992.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <630c7d49-c0cc-4d4e-27d9-5e60b797d9f7@gmail.com>
+ id 1e8kld-0008Bm-Nf
+ for linux-mtd@lists.infradead.org; Sun, 29 Oct 2017 10:24:35 +0000
+Date: Sun, 29 Oct 2017 06:24:06 -0400
+From: Theodore Ts'o <tytso@mit.edu>
+To: Eric Biggers <ebiggers3@gmail.com>
+Cc: linux-fscrypt@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net,
+ linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH v3] fscrypt: add a documentation file for
+ filesystem-level encryption
+Message-ID: <20171029102406.hc6zzeepgbntwesx@thunk.org>
+References: <20170909001512.72431-1-ebiggers3@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <630c7d49-c0cc-4d4e-27d9-5e60b797d9f7@gmail.com>
+In-Reply-To: <20170909001512.72431-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,17 +26,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Oct 29, 2017 at 11:09:50AM +0100, Marek Vasut wrote:
-> On 10/29/2017 10:57 AM, sathyanarayanan.kuppuswamy@linux.intel.com wrote:
-> > From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> > 
-> > This patch adds PCI IDs for Intel Lewisburg PCH SPI serial flash controller.
-> > 
-> > Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+On Fri, Sep 08, 2017 at 05:15:12PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Culling the CC list and adding relevant people.
-> Patch looks IMO OK, but I'd like RB from Mika.
+> Perhaps long overdue, add a documentation file for filesystem-level
+> encryption, a.k.a. fscrypt or fs/crypto/, to the Documentation
+> directory.  The new file is based loosely on the latest version of the
+> "EXT4 Encryption Design Document (public version)" Google Doc, but with
+> many improvements made, including:
+> 
+> - Reflect the reality that it is not specific to ext4 anymore.
+> - More thoroughly document the design and user-visible API/behavior.
+> - Replace outdated information, such as the outdated explanation of how
+>   encrypted filenames are hashed for indexed directories and how
+>   encrypted filenames are presented to userspace without the key.
+>   (This was changed just before release.)
+> 
+> For now the focus is on the design and user-visible API/behavior, not on
+> how to add encryption support to a filesystem --- since the internal API
+> is still pretty messy and any standalone documentation for it would
+> become outdated as things get refactored over time.
+> 
+> Reviewed-by: Michael Halcrow <mhalcrow@google.com>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-There is already a patch for Lewisburg queued for v4.15 here:
+Applied, thanks.
 
-http://git.infradead.org/l2-mtd.git/commitdiff/d92b0f18a2039ff736b4296ad3cf3d505512051e
+					- Ted
