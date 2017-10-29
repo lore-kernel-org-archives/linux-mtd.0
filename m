@@ -1,18 +1,21 @@
-Subject: Re: [PATCH v2 3/3] mtd: spi-nor: stm32-quadspi: change license text
+Subject: Re: [PATCH v2 2/3] mtd: spi-nor: stm32-quadspi: fix prefetching
+ outside fsize
 To: Ludovic Barre <ludovic.Barre@st.com>, Marek Vasut <marek.vasut@gmail.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Alexandre Torgue <alexandre.torgue@st.com>, devicetree@vger.kernel.org,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
+Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Alexandre Torgue <alexandre.torgue@st.com>, Rob Herring
+ <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
 References: <1509030755-19044-1-git-send-email-ludovic.Barre@st.com>
- <1509030755-19044-4-git-send-email-ludovic.Barre@st.com>
+ <1509030755-19044-3-git-send-email-ludovic.Barre@st.com>
 From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <6d132904-bea7-2ecc-f9d9-73c7cc5f0c3d@wedev4u.fr>
-Date: Sun, 29 Oct 2017 18:51:25 +0100
+Message-ID: <d438795f-b5a5-b275-2058-ef48bc68fc2d@wedev4u.fr>
+Date: Sun, 29 Oct 2017 18:57:37 +0100
 MIME-Version: 1.0
-In-Reply-To: <1509030755-19044-4-git-send-email-ludovic.Barre@st.com>
+In-Reply-To: <1509030755-19044-3-git-send-email-ludovic.Barre@st.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -28,46 +31,17 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Le 26/10/2017 à 17:12, Ludovic Barre a écrit :
 > From: Ludovic Barre <ludovic.barre@st.com>
 > 
-> -Change the license text with long template.
-> -Change Copyright to STMicroelectronics.
+> When memory-mapped mode is used, a prefetching mechanism fully
+> managed by the hardware allows to optimize the read from external
+> the QSPI memory. A 32-bytes FIFO is used for prefetching.
+> When the limit of flash size - fifo size is reached the prefetching
+> mechanism tries to read outside the fsize.
+> The stm32 quadspi hardware become busy and should be aborted.
 > 
 > Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
+> Reported-by: Bruno Herrera <bruherrera@gmail.com>
+> Tested-by: Bruno Herrera <bruherrera@gmail.com>
 
 Applied to the spi-nor/next branch of l2-mtd
 
 Thanks!
-> ---
->  drivers/mtd/spi-nor/stm32-quadspi.c | 19 ++++++++++++++++---
->  1 file changed, 16 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/stm32-quadspi.c b/drivers/mtd/spi-nor/stm32-quadspi.c
-> index 70710be..b3c7f6a 100644
-> --- a/drivers/mtd/spi-nor/stm32-quadspi.c
-> +++ b/drivers/mtd/spi-nor/stm32-quadspi.c
-> @@ -1,9 +1,22 @@
->  /*
-> - * stm32_quadspi.c
-> + * Driver for stm32 quadspi controller
->   *
-> - * Copyright (C) 2017, Ludovic Barre
-> + * Copyright (C) 2017, STMicroelectronics - All Rights Reserved
-> + * Author(s): Ludovic Barre author <ludovic.barre@st.com>.
->   *
-> - * License terms: GNU General Public License (GPL), version 2
-> + * License terms: GPL V2.0.
-> + *
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of the GNU General Public License version 2 as published by
-> + * the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it will be useful, but
-> + * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-> + * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
-> + * details.
-> + *
-> + * You should have received a copy of the GNU General Public License along with
-> + * This program. If not, see <http://www.gnu.org/licenses/>.
->   */
->  #include <linux/clk.h>
->  #include <linux/errno.h>
-> 
