@@ -1,19 +1,22 @@
-Received: from m12-15.163.com ([220.181.12.15])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e8mu6-0006aS-0P
- for linux-mtd@lists.infradead.org; Sun, 29 Oct 2017 12:41:28 +0000
-From: Pan Bian <bianpan2016@163.com>
+Received: from youngberry.canonical.com ([91.189.89.112])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1e8nQZ-0000Om-3q
+ for linux-mtd@lists.infradead.org; Sun, 29 Oct 2017 13:15:01 +0000
+From: Colin King <colin.king@canonical.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Pan Bian <bianpan2016@163.com>
-Subject: ubi: fastmap: use kmem_cache_free to deallocate memory
-Date: Sun, 29 Oct 2017 20:40:02 +0800
-Message-Id: <1509280802-14620-1-git-send-email-bianpan2016@163.com>
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ubi: fastmap: clean up the initialization of pointer p
+Date: Sun, 29 Oct 2017 13:14:26 +0000
+Message-Id: <20171029131426.6205-1-colin.king@canonical.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +26,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Memory allocated by kmem_cache_alloc() should not be deallocated with
-kfree(). Use kmem_cache_free() instead.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Pan Bian <bianpan2016@163.com>
+The pointer p is being initialized with one value and a few lines
+later being set to a newer replacement value. Clean up the code by
+using the latter assignment to p as the initial value. Cleans up
+clang warning:
+
+drivers/mtd/ubi/fastmap.c:217:19: warning: Value stored to 'p'
+during its initialization is never read
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/mtd/ubi/fastmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/ubi/fastmap.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 5a832bc..717db749 100644
+index 5a832bc79b1b..9be4b94e83ad 100644
 --- a/drivers/mtd/ubi/fastmap.c
 +++ b/drivers/mtd/ubi/fastmap.c
-@@ -1063,7 +1063,7 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 		e = kmem_cache_alloc(ubi_wl_entry_slab, GFP_KERNEL);
- 		if (!e) {
- 			while (i--)
--				kfree(fm->e[i]);
-+				kmem_cache_free(ubi_wl_entry_slab, fm->e[i]);
+@@ -214,9 +214,8 @@ static void assign_aeb_to_av(struct ubi_attach_info *ai,
+ 			     struct ubi_ainf_volume *av)
+ {
+ 	struct ubi_ainf_peb *tmp_aeb;
+-	struct rb_node **p = &ai->volumes.rb_node, *parent = NULL;
++	struct rb_node **p = &av->root.rb_node, *parent = NULL;
  
- 			ret = -ENOMEM;
- 			goto free_hdr;
+-	p = &av->root.rb_node;
+ 	while (*p) {
+ 		parent = *p;
+ 
 -- 
-1.9.1
+2.14.1
