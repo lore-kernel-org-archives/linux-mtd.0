@@ -1,18 +1,18 @@
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e8h5H-0005JW-8i
- for linux-mtd@lists.infradead.org; Sun, 29 Oct 2017 06:28:36 +0000
-Received: by mail-pf0-x241.google.com with SMTP id x7so8097728pfa.1
- for <linux-mtd@lists.infradead.org>; Sat, 28 Oct 2017 23:28:13 -0700 (PDT)
-From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-To: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr
-Cc: linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: mtdswap: fix spelling mistake: 'TRESHOLD' -> 'THRESHOLD'
-Date: Sun, 29 Oct 2017 11:58:00 +0530
-Message-Id: <a8a84a48c54dd741405ff20f5275910910f8020a.1509258323.git.arvind.yadav.cs@gmail.com>
+ id 1e8kMi-0006Yc-RX
+ for linux-mtd@lists.infradead.org; Sun, 29 Oct 2017 09:58:50 +0000
+From: sathyanarayanan.kuppuswamy@linux.intel.com
+To: boris.brezillon@free-electrons.com, richard@nod.at, marek.vasut@gmail.com,
+ cyrille.pitchen@wedev4u.fr, computersforpeace@gmail.com,
+ dwmw2@infradead.org
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ sathyaosid@gmail.com,
+ Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [PATCH v1 1/1] mtd: intel-spi: Add support for Intel Lewisburg SPI
+ serial flash controller
+Date: Sun, 29 Oct 2017 02:57:51 -0700
+Message-Id: <9da18c4fbcb55130164735352b5ce9ba11b9a63c.1509270992.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,34 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Trivial fix to spelling mistakes.
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 
-Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+This patch adds PCI IDs for Intel Lewisburg PCH SPI serial flash controller.
+
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 ---
- drivers/mtd/mtdswap.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/spi-nor/intel-spi-pci.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
-index 7d9080e..f07492c 100644
---- a/drivers/mtd/mtdswap.c
-+++ b/drivers/mtd/mtdswap.c
-@@ -50,7 +50,7 @@
-  * Number of free eraseblocks below which GC can also collect low frag
-  * blocks.
-  */
--#define LOW_FRAG_GC_TRESHOLD	5
-+#define LOW_FRAG_GC_THRESHOLD	5
+diff --git a/drivers/mtd/spi-nor/intel-spi-pci.c b/drivers/mtd/spi-nor/intel-spi-pci.c
+index e826523..048c007 100644
+--- a/drivers/mtd/spi-nor/intel-spi-pci.c
++++ b/drivers/mtd/spi-nor/intel-spi-pci.c
+@@ -64,6 +64,8 @@ static void intel_spi_pci_remove(struct pci_dev *pdev)
  
- /*
-  * Wear level cost amortization. We want to do wear leveling on the background
-@@ -805,7 +805,7 @@ static int __mtdswap_choose_gc_tree(struct mtdswap_dev *d)
- {
- 	int idx, stopat;
- 
--	if (TREE_COUNT(d, CLEAN) < LOW_FRAG_GC_TRESHOLD)
-+	if (TREE_COUNT(d, CLEAN) < LOW_FRAG_GC_THRESHOLD)
- 		stopat = MTDSWAP_LOWFRAG;
- 	else
- 		stopat = MTDSWAP_HIFRAG;
+ static const struct pci_device_id intel_spi_pci_ids[] = {
+ 	{ PCI_VDEVICE(INTEL, 0x19e0), (unsigned long)&bxt_info },
++	{ PCI_VDEVICE(INTEL, 0xa1a4), (unsigned long)&bxt_info },
++	{ PCI_VDEVICE(INTEL, 0xa224), (unsigned long)&bxt_info },
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(pci, intel_spi_pci_ids);
 -- 
 2.7.4
