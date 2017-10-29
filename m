@@ -1,29 +1,15 @@
 Received: from smtp3-g21.free.fr ([212.27.42.3])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e8tal-0003mg-Op
- for linux-mtd@lists.infradead.org; Sun, 29 Oct 2017 19:49:58 +0000
-Subject: Re: [PATCH] [RFC] mtd: atmel-quadspi: fix build issues
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, Joel Stanley <joel@jms.id.au>,
- =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
- Ludovic Barre <ludovic.barre@st.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Nicolas Ferre <nicolas.ferre@microchip.com>
-References: <20170721222204.3402340-1-arnd@arndb.de>
- <fa857ef2-0ae6-5383-c178-3a86fa557332@wedev4u.fr>
- <CAK8P3a27xzszjbfP4KdAMFOa2iqfH7vvUOBcT39Ychn0kw39KA@mail.gmail.com>
- <63b33705-6e03-08b3-5d1e-6d07e73d32cf@wedev4u.fr>
- <CAK8P3a3AYjk5SpX_UsNzJQNVugJe4o2v-aMn1o_bzz8Qynfycg@mail.gmail.com>
+ id 1e8tf9-0005wx-NE
+ for linux-mtd@lists.infradead.org; Sun, 29 Oct 2017 19:54:29 +0000
+Subject: Re: [PATCH 1/2] mtd: spi-nor: fix style issue
+To: Philipp Puschmann <pp@emlix.com>, linux-mtd@lists.infradead.org
+References: <20171019081231.5394-1-pp@emlix.com>
 From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <020801cc-9ac3-454b-3e31-25f9279ed7e8@wedev4u.fr>
-Date: Sun, 29 Oct 2017 20:49:26 +0100
+Message-ID: <a2490f9c-a85f-e294-61d1-4e37ff81cc1b@wedev4u.fr>
+Date: Sun, 29 Oct 2017 20:54:04 +0100
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a3AYjk5SpX_UsNzJQNVugJe4o2v-aMn1o_bzz8Qynfycg@mail.gmail.com>
+In-Reply-To: <20171019081231.5394-1-pp@emlix.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -36,79 +22,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Arnd,
+Hi Philipp
 
-Le 16/10/2017 à 13:53, Arnd Bergmann a écrit :
-> On Fri, Oct 13, 2017 at 10:28 PM, Cyrille Pitchen
-> <cyrille.pitchen@wedev4u.fr> wrote:
->> Hi Arnd,
->>
->> + Nicolas Ferre
->>
->> Le 01/08/2017 à 22:10, Arnd Bergmann a écrit :
->>> On Tue, Aug 1, 2017 at 9:41 PM, Cyrille Pitchen
->>> <cyrille.pitchen@wedev4u.fr> wrote:
->>>> Le 22/07/2017 à 00:21, Arnd Bergmann a écrit :
->>>
->>>>> --- a/drivers/mtd/spi-nor/atmel-quadspi.c
->>>>> +++ b/drivers/mtd/spi-nor/atmel-quadspi.c
->>>>> @@ -208,9 +208,9 @@ static int atmel_qspi_run_transfer(struct atmel_qspi *aq,
->>>>>       if (cmd->enable.bits.address)
->>>>>               ahb_mem += cmd->address;
->>>>>       if (cmd->tx_buf)
->>>>> -             _memcpy_toio(ahb_mem, cmd->tx_buf, cmd->buf_len);
->>>>> +             memcpy_toio(ahb_mem, cmd->tx_buf, cmd->buf_len);
->>>>>       else
->>>>> -             _memcpy_fromio(cmd->rx_buf, ahb_mem, cmd->buf_len);
->>>>> +             memcpy_fromio(cmd->rx_buf, ahb_mem, cmd->buf_len);
->>>>>
->>>>
->>>> At least on AT91 platforms and likely on most ARM boards,
->>>> memcpy_fromio == memcpy_toio == memcpy.
->>>
->>> Just to give more background, it's a bit more complicated than this:
->>>
->>> On big-endian kernels, memcpy_fromio/memcpy_toio are
->>> always defined as _memcpy_fromio/_memcpy_toio so we
->>> do byte load/store operations in the correct order, while
->>> little-endian kernels have the optimized mmiocpy() that redirects
->>> to memcpy(). This is true for all ARM platforms other than EBSA110
->>> IIRC.
->>>
->>> Also, mmiocpy is an exported symbol that aliases to the external
->>> memcpy definition, but we can't call memcpy directly, because gcc
->>> knows how to inline calls to memcpy() and replace them by direct
->>> load/store instructions that might be unaligned and trap on uncached
->>> mmio areas.
->>>
->>>> I got some sama5d2 hardware last week, so I'll try to test your patch
->>>> within few days because as you said maybe memcpy() was broken when I
->>>> developed this driver at first but now memcpy() is likely to have been
->>>> fixed so it might be interesting to get rid of _memcpy_fromio() and
->>>> _memcpy_toio() because this is not the first time those 2 functions have
->>>> created issues when building the Atmel Quad SPI driver on other platforms.
->>>>
->>>> So thanks for you're patch, I'll give it a try :)
->>>
->>
->> Bad news:
->>
->> I've just tested this patch, applied onto the spi-nor/next branch of
->> l2-mtd (based on 4.14.0-rc4), with a sama5d2 xplained board + Macronix
->> MX25L25673G Quad SPI memory but it fails on the very first SPI command,
->> Read JEDEC ID (9Fh):
->>
->> atmel_qspi f0020000.spi: unrecognized JEDEC id bytes: c2, 20, 20
->> atmel_qspi: probe of f0020000.spi failed with error -2
+Le 19/10/2017 à 10:12, Philipp Puschmann a écrit :
+> Fixed a space coding style issue, found via checkpatch.
 > 
-> Ah, too bad. Should we just add the !ARCH_EBSA110 dependency
-> then?
+> Signed-off-by: Philipp Puschmann <pp@emlix.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 19c000722cbc..386de64e5a86 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -964,7 +964,7 @@ static const struct flash_info spi_nor_ids[] = {
+>  	{ "f25l64qa", INFO(0x8c4117, 0, 64 * 1024, 128, SECT_4K | SPI_NOR_HAS_LOCK) },
+>  
+>  	/* Everspin */
+> -	{ "mr25h256", CAT25_INFO( 32 * 1024, 1, 256, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+> +	{ "mr25h256", CAT25_INFO(32 * 1024, 1, 256, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
 
-If it fixes the issue then I'm fine with this proposal.
+Indeed, submitted patches should always pass the checkpatch test but
+let's say entries of the spi_nor_ids[] are are exceptions here: it is
+more easy to read if data are aligned hence I won't apply this patch.
 
 Best regards,
 
 Cyrille
-> 
->        Arnd
+
+>  	{ "mr25h10",  CAT25_INFO(128 * 1024, 1, 256, 3, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+>  	{ "mr25h40",  CAT25_INFO(512 * 1024, 1, 256, 3, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+>  
 > 
