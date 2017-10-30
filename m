@@ -1,19 +1,17 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e95Rh-0005Mb-3c
- for linux-mtd@lists.infradead.org; Mon, 30 Oct 2017 08:29:26 +0000
-Date: Mon, 30 Oct 2017 09:28:58 +0100
+ id 1e95Wz-00006m-Ko
+ for linux-mtd@lists.infradead.org; Mon, 30 Oct 2017 08:34:52 +0000
+Date: Mon, 30 Oct 2017 09:34:26 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Colin King <colin.king@canonical.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
- kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ubi: fastmap: clean up the initialization of pointer p
-Message-ID: <20171030092858.11100194@bbrezillon>
-In-Reply-To: <20171029131426.6205-1-colin.king@canonical.com>
-References: <20171029131426.6205-1-colin.king@canonical.com>
+To: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
+ cyrille.pitchen@wedev4u.fr, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [RFC] NAND: Optimize NAND_ECC_HW_OOB_FIRST read
+Message-ID: <20171030093426.30827ef5@bbrezillon>
+In-Reply-To: <20171028074351.13118-1-prasannatsmkumar@gmail.com>
+References: <20171028074351.13118-1-prasannatsmkumar@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,39 +24,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 29 Oct 2017 13:14:26 +0000
-Colin King <colin.king@canonical.com> wrote:
+Hi PrasannaKumar,
 
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The pointer p is being initialized with one value and a few lines
-> later being set to a newer replacement value. Clean up the code by
-> using the latter assignment to p as the initial value. Cleans up
-> clang warning:
-> 
-> drivers/mtd/ubi/fastmap.c:217:19: warning: Value stored to 'p'
-> during its initialization is never read
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+On Sat, 28 Oct 2017 13:13:51 +0530
+PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com> wrote:
 
-Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-
+> From: Lars-Peter Clausen <lars@metafoo.de>
+> 
+> Avoid sending unnecessary READ commands to the chip.
+> 
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> Signed-off-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
 > ---
->  drivers/mtd/ubi/fastmap.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+> This patch is taken from git://projects.qi-hardware.com/qi-kernel.git
+> branch jz-3.16. From [1] and [2] it can be seen that the patch author
+> thinks this can be sent upstream but it never happened so far. This
+> patch is used in OpenWRT as seen from [3].
+
+Sounds reasonable, but it's likely to conflict with something I'd like
+to queue for 4.16 [1]. I'll rebase this patch on nand/next once the
+->exec_op() series is merged. Don't hesitate to ping me if I forget.
+
+Regards,
+
+Boris
+
+[1]http://patchwork.ozlabs.org/project/linux-mtd/list/?series=8923
+
 > 
-> diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-> index 5a832bc79b1b..9be4b94e83ad 100644
-> --- a/drivers/mtd/ubi/fastmap.c
-> +++ b/drivers/mtd/ubi/fastmap.c
-> @@ -214,9 +214,8 @@ static void assign_aeb_to_av(struct ubi_attach_info *ai,
->  			     struct ubi_ainf_volume *av)
->  {
->  	struct ubi_ainf_peb *tmp_aeb;
-> -	struct rb_node **p = &ai->volumes.rb_node, *parent = NULL;
-> +	struct rb_node **p = &av->root.rb_node, *parent = NULL;
+> I have only compile tested the patch.
+> 
+> 1. https://www.mail-archive.com/discussion@lists.en.qi-hardware.com/msg04635.html
+> 2. https://www.mail-archive.com/discussion@lists.en.qi-hardware.com/msg04639.html
+> 3. https://git.lede-project.org/?p=source.git;a=blob;f=target/linux/xburst/patches-3.18/002-NAND-Optimize-NAND_ECC_HW_OOB_FIRST-read.patch;h=046da51912de3cd4444779df5de13d2c1999719a;hb=c03d4317a6bc891cb4a5e89cbdd77f37c23aff86
+> 
+>  drivers/mtd/nand/nand_base.c | 16 ++++++++++++----
+>  1 file changed, 12 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 12edaae..4bf3bdb 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -1680,9 +1680,15 @@ static int nand_read_page_hwecc_oob_first(struct mtd_info *mtd,
+>  	unsigned int max_bitflips = 0;
 >  
-> -	p = &av->root.rb_node;
->  	while (*p) {
->  		parent = *p;
+>  	/* Read the OOB area first */
+> -	chip->cmdfunc(mtd, NAND_CMD_READOOB, 0, page);
+> -	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
+> -	chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
+> +	if (mtd->writesize > 512) {
+> +		chip->cmdfunc(mtd, NAND_CMD_READ0, mtd->writesize, page);
+> +		chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
+> +		chip->cmdfunc(mtd, NAND_CMD_RNDOUT, 0, -1);
+> +	} else {
+> +		chip->cmdfunc(mtd, NAND_CMD_READOOB, 0, page);
+> +		chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
+> +		chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
+> +	}
 >  
+>  	ret = mtd_ooblayout_get_eccbytes(mtd, ecc_code, chip->oob_poi, 0,
+>  					 chip->ecc.total);
+> @@ -1902,8 +1908,10 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+>  						 __func__, buf);
+>  
+>  read_retry:
+> -			if (nand_standard_page_accessors(&chip->ecc))
+> +			if (nand_standard_page_accessors(&chip->ecc) &&
+> +			    chip->ecc.mode != NAND_ECC_HW_OOB_FIRST) {
+>  				chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
+> +			}
+>  
+>  			/*
+>  			 * Now read the page into the buffer.  Absent an error,
