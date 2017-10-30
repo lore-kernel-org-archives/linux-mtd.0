@@ -1,25 +1,18 @@
-Received: from relmlor4.renesas.com ([210.160.252.174]
- helo=relmlie3.idc.renesas.com)
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e9F0g-0006Ee-U5
- for linux-mtd@lists.infradead.org; Mon, 30 Oct 2017 18:42:08 +0000
-From: Chris Brandt <Chris.Brandt@renesas.com>
-To: Nicolas Pitre <nicolas.pitre@linaro.org>
-CC: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: RE: [PATCH v2 0/5] unconfuse get_unmapped_area and point/unpoint
- driver methods
-Date: Mon, 30 Oct 2017 18:41:43 +0000
-Message-ID: <SG2PR06MB11653D3E9472DEB222F11C5C8A590@SG2PR06MB1165.apcprd06.prod.outlook.com>
-References: <20171017152826.11658-1-nicolas.pitre@linaro.org>
- <SG2PR06MB1165A4668E066DAC5E810CD08A590@SG2PR06MB1165.apcprd06.prod.outlook.com>
- <nycvar.YSQ.7.76.1710301432220.3238@knanqh.ubzr>
-In-Reply-To: <nycvar.YSQ.7.76.1710301432220.3238@knanqh.ubzr>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+Received: from pb-smtp1.pobox.com ([64.147.108.70] helo=sasl.smtp.pobox.com)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1e9F7M-0000Mc-Dh
+ for linux-mtd@lists.infradead.org; Mon, 30 Oct 2017 18:49:03 +0000
+From: Nicolas Pitre <nicolas.pitre@linaro.org>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>
+Cc: Chris Brandt <chris.brandt@renesas.com>,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH v3 4/5] MTD: implement mtd_get_unmapped_area() using the point
+ method
+Date: Mon, 30 Oct 2017 14:48:32 -0400
+Message-Id: <20171030184833.20709-5-nicolas.pitre@linaro.org>
+In-Reply-To: <20171030184833.20709-1-nicolas.pitre@linaro.org>
+References: <20171030184833.20709-1-nicolas.pitre@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,36 +22,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, October 30, 2017, Nicolas Pitre wrote:
-> On Mon, 30 Oct 2017, Chris Brandt wrote:
->=20
-> > I was able to boot my system with the following kernel options:
-> >
-> >   "rootfstype=3Dcramfs root=3Dmtd:rootfs_xipcramfs"
-> >
-> > This meant the cramfs image was one where the executable code pages
-> > remained in flash.
-> >
-> >
-> > Therefore, for this MTD series, applied on top of the file system serie=
-s
-> > "[PATCH v6 0/4] cramfs refresh for embedded usage":
-> >
-> > Tested-by: Chris Brandt <chris.brandt@renesas.com>
->=20
-> Thanks for testing!
->=20
->=20
-> Nicolas
+The mtd->_point method is a superset of mtd->_get_unmapped_area.
+Especially in the NOR flash case, the point method ensures the flash
+memory is in array (data) mode and that it will stay that way which
+is precisely what callers of mtd_get_unmapped_area() would expect.
 
+Implement mtd_get_unmapped_area() in terms of mtd->_point now that all
+drivers that provided a _get_unmapped_area method also have the _point
+method implemented.
 
-Thank you for implementing!
+Signed-off-by: Nicolas Pitre <nico@linaro.org>
+Reviewed-by: Richard Weinberger <richard@nod.at>
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/mtdcore.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-
-I've been trying to keep AXFS up to date with recent kernels since it=20
-was my only solution for an XIP file system, but now that we'll have an=20
-in-kernel solution, it's not as critical anymore if/when AXFS breaks=20
-again.
-
-
-Chris
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index e7ea842ba3..ecb0380158 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -1022,11 +1022,18 @@ EXPORT_SYMBOL_GPL(mtd_unpoint);
+ unsigned long mtd_get_unmapped_area(struct mtd_info *mtd, unsigned long len,
+ 				    unsigned long offset, unsigned long flags)
+ {
+-	if (!mtd->_get_unmapped_area)
+-		return -EOPNOTSUPP;
+-	if (offset >= mtd->size || len > mtd->size - offset)
+-		return -EINVAL;
+-	return mtd->_get_unmapped_area(mtd, len, offset, flags);
++	size_t retlen;
++	void *virt;
++	int ret;
++
++	ret = mtd_point(mtd, offset, len, &retlen, &virt, NULL);
++	if (ret)
++		return ret;
++	if (retlen != len) {
++		mtd_unpoint(mtd, offset, retlen);
++		return -ENOSYS;
++	}
++	return (unsigned long)virt;
+ }
+ EXPORT_SYMBOL_GPL(mtd_get_unmapped_area);
+ 
+-- 
+2.9.5
