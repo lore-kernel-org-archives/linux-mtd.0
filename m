@@ -1,25 +1,19 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e95kk-0005fs-Ed
- for linux-mtd@lists.infradead.org; Mon, 30 Oct 2017 08:49:04 +0000
-Date: Mon, 30 Oct 2017 09:48:29 +0100
+ id 1e95la-0005y2-D1
+ for linux-mtd@lists.infradead.org; Mon, 30 Oct 2017 08:49:57 +0000
+Date: Mon, 30 Oct 2017 09:49:23 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Stewart Smith <stewart@linux.vnet.ibm.com>, Rob Herring
- <robh+dt@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Cyril Bur
- <cyrilbur@gmail.com>, William Kennington <wak@google.com>
-Subject: Re: [PATCH] mtd: powernv: Support MTD_NO_ERASE
-Message-ID: <20171030094829.63730a19@bbrezillon>
-In-Reply-To: <87k1zt82gq.fsf@linux.vnet.ibm.com>
-References: <20170905202339.20732-1-wak@google.com>
- <20170921095930.4b473f91@bbrezillon>
- <CAPnigKmBujCoKdtXwnK6YsU=YvXM+MaDvDvKpUXEVgHzOC-VEw@mail.gmail.com>
- <8760cbv090.fsf@concordia.ellerman.id.au>
- <20171016175517.264e710a@bbrezillon>
- <CAL_JsqLBkU9habdOhoQ8ZiM=x87eLmuLrS6ujx32UOv8LHc=EA@mail.gmail.com>
- <87k1zt82gq.fsf@linux.vnet.ibm.com>
+To: Cyril Bur <cyrilbur@gmail.com>
+Cc: linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+ stewart@linux.vnet.ibm.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org, sjitindarsingh@gmail.com
+Subject: Re: [PATCH v4 01/10] mtd: powernv_flash: Use WARN_ON_ONCE() rather
+ than BUG_ON()
+Message-ID: <20171030094923.42f8aa20@bbrezillon>
+In-Reply-To: <20171010033302.20854-2-cyrilbur@gmail.com>
+References: <20171010033302.20854-1-cyrilbur@gmail.com>
+ <20171010033302.20854-2-cyrilbur@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -32,28 +26,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 18 Oct 2017 16:11:33 +1100
-Stewart Smith <stewart@linux.vnet.ibm.com> wrote:
+On Tue, 10 Oct 2017 14:32:53 +1100
+Cyril Bur <cyrilbur@gmail.com> wrote:
 
-> Rob Herring <robh+dt@kernel.org> writes:
-> > I'd prefer they be documented in the kernel especially if they are
-> > used by the kernel. Of course, there's IBM bindings covered by various
-> > ?PAPR specs which wouldn't make sense to duplicate, but I'm guessing
-> > what's documented in skiboot are not covered by those specs.  
+> BUG_ON() should be reserved in situations where we can not longer
+> guarantee the integrity of the system. In the case where
+> powernv_flash_async_op() receives an impossible op, we can still
+> guarantee the integrity of the system.
 > 
-> Correct.
-> 
-> I don't have an objection to docs being in both places, as long as we
-> could keep both in sync. Would suitable comments in the RST doc files
-> pointing to the skiboot repo as the canonical copy work?
+> Signed-off-by: Cyril Bur <cyrilbur@gmail.com>
 
-Rob, any opinion on that?
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
+> ---
+>  drivers/mtd/devices/powernv_flash.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> I'd like to be able to just diff a subtree of kernel and skiboot to see
-> if the docs have diverged.
-> 
-> We may also need to think of a way to ensure that any of that moving
-> back/forth of edits is done in a way that makes licensing sense too
-> (skiboot is Apache 2.0)
-> 
+> diff --git a/drivers/mtd/devices/powernv_flash.c b/drivers/mtd/devices/powernv_flash.c
+> index f5396f26ddb4..f9ec38281ff2 100644
+> --- a/drivers/mtd/devices/powernv_flash.c
+> +++ b/drivers/mtd/devices/powernv_flash.c
+> @@ -78,7 +78,9 @@ static int powernv_flash_async_op(struct mtd_info *mtd, enum flash_op op,
+>  		rc = opal_flash_erase(info->id, offset, len, token);
+>  		break;
+>  	default:
+> -		BUG_ON(1);
+> +		WARN_ON_ONCE(1);
+> +		opal_async_release_token(token);
+> +		return -EIO;
+>  	}
+>  
+>  	if (rc != OPAL_ASYNC_COMPLETION) {
