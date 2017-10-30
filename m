@@ -1,20 +1,22 @@
-Received: from mail-io0-x243.google.com ([2607:f8b0:4001:c06::243])
+Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e91cQ-0005OO-HD
- for linux-mtd@lists.infradead.org; Mon, 30 Oct 2017 04:24:12 +0000
-Received: by mail-io0-x243.google.com with SMTP id j17so24237601iod.5
- for <linux-mtd@lists.infradead.org>; Sun, 29 Oct 2017 21:23:49 -0700 (PDT)
-From: motobud@gmail.com
-To: boris.brezillon@free-electrons.com
-Cc: Brent Taylor <motobud@gmail.com>, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Fix writing mtdoops to nand flash.
-Date: Sun, 29 Oct 2017 23:23:43 -0500
-Message-Id: <20171030042343.24551-1-motobud@gmail.com>
+ id 1e94ZN-0004O5-Hu
+ for linux-mtd@lists.infradead.org; Mon, 30 Oct 2017 07:33:15 +0000
+Date: Mon, 30 Oct 2017 09:32:41 +0200
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: sathyanarayanan.kuppuswamy@linux.intel.com
+Cc: marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ sathyaosid@gmail.com
+Subject: Re: [PATCH v2 1/1] mtd: intel-spi: Add Intel Lewisburg PCH SPI super
+ SKU PCI ID
+Message-ID: <20171030073241.GI29656@lahna.fi.intel.com>
+References: <20171029195809.GH29656@lahna.fi.intel.com>
+ <77788f0c0cf55ee9fc0087364827da28c6951180.1509315023.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <77788f0c0cf55ee9fc0087364827da28c6951180.1509315023.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,39 +26,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Brent Taylor <motobud@gmail.com>
+On Sun, Oct 29, 2017 at 03:17:35PM -0700, sathyanarayanan.kuppuswamy@linux.intel.com wrote:
+> From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> 
+> This patch adds Intel Lewisburg PCH SPI serial flash controller super
+> SKU PCI ID.
+> 
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 
-When mtdoops calls mtd_panic_write, it eventually calls
-panic_nand_write in nand_base.c.  In order to properly
-wait for the nand chip to be ready in panic_nand_wait,
-the chip must first be selected.
-
-When using the atmel nand flash controller, a panic
-would occur due to a NULL pointer exception.
-
-Signed-off-by: Brent Taylor <motobud@gmail.com>
----
- drivers/mtd/nand/nand_base.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 12edaae17d81..0a8058a66d93 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2802,9 +2802,14 @@ static int panic_nand_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	struct mtd_oob_ops ops;
- 	int ret;
- 
-+	int chipnr = (int)(to >> chip->chip_shift);
-+	chip->select_chip(mtd, chipnr);
-+
- 	/* Wait for the device to get ready */
- 	panic_nand_wait(mtd, chip, 400);
- 
-+	chip->select_chip(mtd, -1);
-+
- 	/* Grab the device */
- 	panic_nand_get_device(chip, mtd, FL_WRITING);
- 
--- 
-2.14.2
+Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
