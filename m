@@ -1,15 +1,16 @@
-Date: Mon, 30 Oct 2017 10:27:46 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1e96cT-0001D1-5v
+ for linux-mtd@lists.infradead.org; Mon, 30 Oct 2017 09:44:35 +0000
+Date: Mon, 30 Oct 2017 10:44:01 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Xiaolei Li <xiaolei.li@mediatek.com>
-Cc: <computersforpeace@gmail.com>, <dwmw2@infradead.org>,
- <linux-mtd@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
- <rogercc.lin@mediatek.com>, <srv_heupstream@mediatek.com>,
- <stable@vger.kernel.org>
-Subject: Re: [PATCH v2] mtd: nand: mtk: fix infinite ECC decode IRQ issue
-Message-ID: <20171030102746.19d18860@bbrezillon>
-In-Reply-To: <1509331196-29412-2-git-send-email-xiaolei.li@mediatek.com>
-References: <1509331196-29412-1-git-send-email-xiaolei.li@mediatek.com>
- <1509331196-29412-2-git-send-email-xiaolei.li@mediatek.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marex@denx.de>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, David Woodhouse
+ <dwmw2@infradead.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: [GIT PULL] mtd: nand: Changes for 4.15
+Message-ID: <20171030104401.7ef06ede@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -22,99 +23,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 30 Oct 2017 10:39:56 +0800
-Xiaolei Li <xiaolei.li@mediatek.com> wrote:
+Hi Richard,
 
-> For MT2701 NAND Controller, there may generate infinite ECC decode IRQ
-> during long time burn test on some platforms. Once this issue occurred,
-> the ECC decode IRQ status cannot be cleared in the IRQ handler function,
-> and threads cannot be scheduled.
-> 
-> ECC HW generates decode IRQ each sector, so there will have more than one
-> decode IRQ if read one page of large page NAND.
-> 
-> Currently, ECC IRQ handle flow is that we will check whether it is decode
-> IRQ at first by reading the register ECC_DECIRQ_STA. This is a read-clear
-> type register. If this IRQ is decode IRQ, then the ECC IRQ signal will be
-> cleared at the same time.
-> Secondly, we will check whether all sectors are decoded by reading the
-> register ECC_DECDONE. This is because the current IRQ may be not dealed
-> in time, and the next sectors have been decoded before reading the
-> register ECC_DECIRQ_STA. Then, the next sectors's decode IRQs will not
-> be generated.
-> Thirdly, if all sectors are decoded by comparing with ecc->sectors, then we
-> will complete ecc->done, set ecc->sectors as 0, and disable ECC IRQ by
-> programming the register ECC_IRQ_REG(op) as 0. Otherwise, wait for the
-> next ECC IRQ.
-> 
-> But, there is a timing issue between step one and two. When we read the
-> reigster ECC_DECIRQ_STA, all sectors are decoded except the last sector,
-> and the ECC IRQ signal is cleared. But the last sector is decoded before
-> reading ECC_DECDONE, so the ECC IRQ signal is enabled again by ECC HW, and
-> it means we will receive one extra ECC IRQ later. In step three, we will
-> find that all sectors were decoded, then disable ECC IRQ and return.
-> When deal with the extra ECC IRQ, the ECC IRQ status cannot be cleared
-> anymore. That is because the register ECC_DECIRQ_STA can only be cleared
-> when the register ECC_IRQ_REG(op) is enabled. But actually we have
-> disabled ECC IRQ in the previous ECC IRQ handle. So, there will
-> keep receiving ECC decode IRQ.
-> 
-> Now, we read the register ECC_DECIRQ_STA once again before completing the
-> ecc done event. This ensures that there will be no extra ECC decode IRQ.
-> 
-> Also, remove writel(0, ecc->regs + ECC_IRQ_REG(op)) from irq handler,
-> because ECC IRQ is disabled in mtk_ecc_disable(). And clear ECC_DECIRQ_STA
-> in mtk_ecc_disable() in case there is a timeout to wait decode IRQ.
-> 
-> Fixes: 1d6b1e464950 ("mtd: mediatek: driver for MTK Smart Device")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
-
-Applied.
+Here is the NAND PR for 4.15. As usual, let me know if you spot anything
+weird in there.
 
 Thanks,
 
 Boris
 
-> ---
->  drivers/mtd/nand/mtk_ecc.c | 13 +++++++++++--
->  1 file changed, 11 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/mtk_ecc.c b/drivers/mtd/nand/mtk_ecc.c
-> index 7f3b065..c51d214 100644
-> --- a/drivers/mtd/nand/mtk_ecc.c
-> +++ b/drivers/mtd/nand/mtk_ecc.c
-> @@ -115,6 +115,11 @@ static irqreturn_t mtk_ecc_irq(int irq, void *id)
->  		op = ECC_DECODE;
->  		dec = readw(ecc->regs + ECC_DECDONE);
->  		if (dec & ecc->sectors) {
-> +			/*
-> +			 * Clear decode IRQ status once again to ensure that
-> +			 * there will be no extra IRQ.
-> +			 */
-> +			readw(ecc->regs + ECC_DECIRQ_STA);
->  			ecc->sectors = 0;
->  			complete(&ecc->done);
->  		} else {
-> @@ -130,8 +135,6 @@ static irqreturn_t mtk_ecc_irq(int irq, void *id)
->  		}
->  	}
->  
-> -	writel(0, ecc->regs + ECC_IRQ_REG(op));
-> -
->  	return IRQ_HANDLED;
->  }
->  
-> @@ -307,6 +310,12 @@ void mtk_ecc_disable(struct mtk_ecc *ecc)
->  
->  	/* disable it */
->  	mtk_ecc_wait_idle(ecc, op);
-> +	if (op == ECC_DECODE)
-> +		/*
-> +		 * Clear decode IRQ status in case there is a timeout to wait
-> +		 * decode IRQ.
-> +		 */
-> +		readw(ecc->regs + ECC_DECIRQ_STA);
->  	writew(0, ecc->regs + ECC_IRQ_REG(op));
->  	writew(ECC_OP_DISABLE, ecc->regs + ECC_CTL_REG(op));
->  
+The following changes since commit 2bd6bf03f4c1c59381d62c61d03f6cc3fe71f66e:
+
+  Linux 4.14-rc1 (2017-09-16 15:47:51 -0700)
+
+are available in the git repository at:
+
+  git://git.infradead.org/l2-mtd.git tags/nand/for-4.15
+
+for you to fetch changes up to 1d2fcdcf33339c7c8016243de0f7f31cf6845e8d:
+
+  mtd: nand: mtk: fix infinite ECC decode IRQ issue (2017-10-30 09:35:04 +0100)
+
+----------------------------------------------------------------
+Core changes:
+* Add a flag to mark NANDs that require 3 address cycles to encode a
+  page address
+* Set a default ECC/free layout when NAND_ECC_NONE is requested
+
+Driver changes:
+* Another batch of cleanups for the denali driver
+* Fix PM support in the atmel driver
+* Remove support for platform data in the omap driver
+* Fix subpage write in the omap driver
+* Fix irq handling in the mtk driver
+* Change link order of mtk_ecc and mtk_nand drivers to speed up boot
+  time
+* Change log level of ECC error messages in the mxc driver
+* Patch the pxa3xx driver to support Armada 8k platforms
+* Add BAM DMA support to the qcom driver
+* Convert gpio-nand to the GPIO desc API
+* Fix ECC handling in the mt29f driver
+
+----------------------------------------------------------------
+Abhishek Sahu (2):
+      mtd: nand: qcom: add command elements in BAM transaction
+      mtd: nand: qcom: support for command descriptor formation
+
+Arun Nagendran (1):
+      staging: mt29f_spinand: Enable the read ECC before program the page
+
+Boris Brezillon (2):
+      mtd: nand: Export nand_reset() symbol
+      mtd: nand: atmel: Actually use the PM ops
+
+Geert Uytterhoeven (1):
+      mtd: nand: sh_flctl: Use of_device_get_match_data() helper
+
+Gregory CLEMENT (1):
+      mtd: nand: pxa3xx_nand: Update Kconfig information
+
+Ladislav Michl (2):
+      mtd: nand: omap2: Remove omap_nand_platform_data
+      mtd: nand: omap2: Do not assign omap_nand_info to platform drvdata
+
+Linus Walleij (1):
+      mtd: nand: gpio: Convert to use GPIO descriptors
+
+Masahiro Yamada (16):
+      mtd: nand: introduce NAND_ROW_ADDR_3 flag
+      mtd: nand: denali: support two row address cycle devices
+      mtd: nand: denali: squash setup_ecc_for_xfer() helper into caller
+      mtd: nand: denali: prefix detect_max_banks() with denali_
+      mtd: nand: denali: consolidate include directives
+      mtd: nand: denali: squash denali_enable_dma() helper into caller
+      mtd: nand: denali: slight clean up of denali_wait_for_irq()
+      mtd: nand: denali: clean up macros with <linux/bitfield.h>
+      mtd: nand: denali: use more FIELD_PREP / FIELD_GET where appropriate
+      mtd: nand: denali: clean up comments
+      mtd: nand: denali: use upper/lower_32_bits() macro for clean-up
+      mtd: nand: denali: remove unneeded init of ECC_ENABLE register
+      mtd: nand: denali: support direct addressing mode
+      mtd: nand: denali: change the setup_dma choice into hook
+      dt-bindings: nand: denali: reduce the register space in the example
+      mtd: nand: denali: fix setup_data_interface to meet tCCS delay
+
+Miquel Raynal (3):
+      mtd: nand: Use standard large page OOB layout when using NAND_ECC_NONE
+      Documentation: devicetree: add pxa3xx compatible and syscon property
+      mtd: nand: pxa3xx: enable NAND controller if the SoC needs it
+
+Roger Quadros (1):
+      mtd: nand: omap2: Fix subpage write
+
+Romain Izard (1):
+      mtd: nand: atmel: Avoid ECC errors when leaving backup mode
+
+Sascha Hauer (2):
+      mtd: nand: mxc: lower ECC failed message priority to debug level
+      mtd: nand: mxc: use dev_dbg to print debug messages
+
+Xiaolei Li (2):
+      mtd: nand: mtk: change the compile sequence of mtk_nand.o and mtk_ecc.o
+      mtd: nand: mtk: fix infinite ECC decode IRQ issue
+
+ Documentation/devicetree/bindings/mtd/denali-nand.txt |   2 +-
+ Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt |   4 +
+ arch/arm/mach-pxa/cm-x255.c                           |  19 ++-
+ drivers/mtd/nand/Kconfig                              |   5 +-
+ drivers/mtd/nand/Makefile                             |   2 +-
+ drivers/mtd/nand/atmel/nand-controller.c              |   7 +-
+ drivers/mtd/nand/atmel/pmecc.c                        |  17 +-
+ drivers/mtd/nand/atmel/pmecc.h                        |   1 +
+ drivers/mtd/nand/au1550nd.c                           |   3 +-
+ drivers/mtd/nand/denali.c                             | 291 +++++++++++++++------------------
+ drivers/mtd/nand/denali.h                             |  44 +++--
+ drivers/mtd/nand/denali_dt.c                          |   4 +-
+ drivers/mtd/nand/denali_pci.c                         |   5 +-
+ drivers/mtd/nand/diskonchip.c                         |   3 +-
+ drivers/mtd/nand/gpio.c                               | 112 ++++++-------
+ drivers/mtd/nand/hisi504_nand.c                       |   3 +-
+ drivers/mtd/nand/mtk_ecc.c                            |  13 +-
+ drivers/mtd/nand/mxc_nand.c                           |  19 ++-
+ drivers/mtd/nand/nand_base.c                          |  25 ++-
+ drivers/mtd/nand/nuc900_nand.c                        |   2 +-
+ drivers/mtd/nand/omap2.c                              | 377 ++++++++++++++++++++++++++-----------------
+ drivers/mtd/nand/pxa3xx_nand.c                        |  41 ++++-
+ drivers/mtd/nand/qcom_nandc.c                         | 127 +++++++++++++--
+ drivers/mtd/nand/sh_flctl.c                           |   9 +-
+ drivers/staging/mt29f_spinand/mt29f_spinand.c         |   8 +-
+ include/linux/mtd/nand-gpio.h                         |   5 -
+ include/linux/mtd/rawnand.h                           |   3 +
+ include/linux/platform_data/mtd-nand-omap2.h          |  17 --
+ 28 files changed, 681 insertions(+), 487 deletions(-)
