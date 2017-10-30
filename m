@@ -1,17 +1,25 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e95Wz-00006m-Ko
- for linux-mtd@lists.infradead.org; Mon, 30 Oct 2017 08:34:52 +0000
-Date: Mon, 30 Oct 2017 09:34:26 +0100
+ id 1e95kk-0005fs-Ed
+ for linux-mtd@lists.infradead.org; Mon, 30 Oct 2017 08:49:04 +0000
+Date: Mon, 30 Oct 2017 09:48:29 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- cyrille.pitchen@wedev4u.fr, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [RFC] NAND: Optimize NAND_ECC_HW_OOB_FIRST read
-Message-ID: <20171030093426.30827ef5@bbrezillon>
-In-Reply-To: <20171028074351.13118-1-prasannatsmkumar@gmail.com>
-References: <20171028074351.13118-1-prasannatsmkumar@gmail.com>
+To: Stewart Smith <stewart@linux.vnet.ibm.com>, Rob Herring
+ <robh+dt@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Cyril Bur
+ <cyrilbur@gmail.com>, William Kennington <wak@google.com>
+Subject: Re: [PATCH] mtd: powernv: Support MTD_NO_ERASE
+Message-ID: <20171030094829.63730a19@bbrezillon>
+In-Reply-To: <87k1zt82gq.fsf@linux.vnet.ibm.com>
+References: <20170905202339.20732-1-wak@google.com>
+ <20170921095930.4b473f91@bbrezillon>
+ <CAPnigKmBujCoKdtXwnK6YsU=YvXM+MaDvDvKpUXEVgHzOC-VEw@mail.gmail.com>
+ <8760cbv090.fsf@concordia.ellerman.id.au>
+ <20171016175517.264e710a@bbrezillon>
+ <CAL_JsqLBkU9habdOhoQ8ZiM=x87eLmuLrS6ujx32UOv8LHc=EA@mail.gmail.com>
+ <87k1zt82gq.fsf@linux.vnet.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,75 +32,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi PrasannaKumar,
+On Wed, 18 Oct 2017 16:11:33 +1100
+Stewart Smith <stewart@linux.vnet.ibm.com> wrote:
 
-On Sat, 28 Oct 2017 13:13:51 +0530
-PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com> wrote:
-
-> From: Lars-Peter Clausen <lars@metafoo.de>
+> Rob Herring <robh+dt@kernel.org> writes:
+> > I'd prefer they be documented in the kernel especially if they are
+> > used by the kernel. Of course, there's IBM bindings covered by various
+> > ?PAPR specs which wouldn't make sense to duplicate, but I'm guessing
+> > what's documented in skiboot are not covered by those specs.  
 > 
-> Avoid sending unnecessary READ commands to the chip.
+> Correct.
 > 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> Signed-off-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
-> ---
-> This patch is taken from git://projects.qi-hardware.com/qi-kernel.git
-> branch jz-3.16. From [1] and [2] it can be seen that the patch author
-> thinks this can be sent upstream but it never happened so far. This
-> patch is used in OpenWRT as seen from [3].
+> I don't have an objection to docs being in both places, as long as we
+> could keep both in sync. Would suitable comments in the RST doc files
+> pointing to the skiboot repo as the canonical copy work?
 
-Sounds reasonable, but it's likely to conflict with something I'd like
-to queue for 4.16 [1]. I'll rebase this patch on nand/next once the
-->exec_op() series is merged. Don't hesitate to ping me if I forget.
-
-Regards,
-
-Boris
-
-[1]http://patchwork.ozlabs.org/project/linux-mtd/list/?series=8923
+Rob, any opinion on that?
 
 > 
-> I have only compile tested the patch.
+> I'd like to be able to just diff a subtree of kernel and skiboot to see
+> if the docs have diverged.
 > 
-> 1. https://www.mail-archive.com/discussion@lists.en.qi-hardware.com/msg04635.html
-> 2. https://www.mail-archive.com/discussion@lists.en.qi-hardware.com/msg04639.html
-> 3. https://git.lede-project.org/?p=source.git;a=blob;f=target/linux/xburst/patches-3.18/002-NAND-Optimize-NAND_ECC_HW_OOB_FIRST-read.patch;h=046da51912de3cd4444779df5de13d2c1999719a;hb=c03d4317a6bc891cb4a5e89cbdd77f37c23aff86
+> We may also need to think of a way to ensure that any of that moving
+> back/forth of edits is done in a way that makes licensing sense too
+> (skiboot is Apache 2.0)
 > 
->  drivers/mtd/nand/nand_base.c | 16 ++++++++++++----
->  1 file changed, 12 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 12edaae..4bf3bdb 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -1680,9 +1680,15 @@ static int nand_read_page_hwecc_oob_first(struct mtd_info *mtd,
->  	unsigned int max_bitflips = 0;
->  
->  	/* Read the OOB area first */
-> -	chip->cmdfunc(mtd, NAND_CMD_READOOB, 0, page);
-> -	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
-> -	chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
-> +	if (mtd->writesize > 512) {
-> +		chip->cmdfunc(mtd, NAND_CMD_READ0, mtd->writesize, page);
-> +		chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
-> +		chip->cmdfunc(mtd, NAND_CMD_RNDOUT, 0, -1);
-> +	} else {
-> +		chip->cmdfunc(mtd, NAND_CMD_READOOB, 0, page);
-> +		chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
-> +		chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
-> +	}
->  
->  	ret = mtd_ooblayout_get_eccbytes(mtd, ecc_code, chip->oob_poi, 0,
->  					 chip->ecc.total);
-> @@ -1902,8 +1908,10 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
->  						 __func__, buf);
->  
->  read_retry:
-> -			if (nand_standard_page_accessors(&chip->ecc))
-> +			if (nand_standard_page_accessors(&chip->ecc) &&
-> +			    chip->ecc.mode != NAND_ECC_HW_OOB_FIRST) {
->  				chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
-> +			}
->  
->  			/*
->  			 * Now read the page into the buffer.  Absent an error,
