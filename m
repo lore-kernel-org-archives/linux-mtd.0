@@ -1,16 +1,18 @@
-Received: from pb-smtp1.pobox.com ([64.147.108.70] helo=sasl.smtp.pobox.com)
+Received: from pb-smtp2.pobox.com ([64.147.108.71] helo=sasl.smtp.pobox.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e9F7M-0000Mb-Dg
- for linux-mtd@lists.infradead.org; Mon, 30 Oct 2017 18:49:03 +0000
+ id 1e9F7M-0000MZ-DK
+ for linux-mtd@lists.infradead.org; Mon, 30 Oct 2017 18:49:05 +0000
 From: Nicolas Pitre <nicolas.pitre@linaro.org>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>
 Cc: Chris Brandt <chris.brandt@renesas.com>,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH v3 0/5] unconfuse get_unmapped_area and point/unpoint driver
+Subject: [PATCH v3 2/5] MTD: chips/map_ram.c: implement point and unpoint
  methods
-Date: Mon, 30 Oct 2017 14:48:28 -0400
-Message-Id: <20171030184833.20709-1-nicolas.pitre@linaro.org>
+Date: Mon, 30 Oct 2017 14:48:30 -0400
+Message-Id: <20171030184833.20709-3-nicolas.pitre@linaro.org>
+In-Reply-To: <20171030184833.20709-1-nicolas.pitre@linaro.org>
+References: <20171030184833.20709-1-nicolas.pitre@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,40 +22,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This series improves or implements the point and unpoint driver methods
-and reimplements mtd_get_unmapped_area() in terms of those. Because
-mtd->_point() provides a superset of what mtd->_get_unmapped_area() does
-then there is no reason for having both. Or worse: having one but not
-the other.
+This will allow for the removal of the get_unmapped_area method later.
 
-This is motivated by my work on XIP cramfs for both MMU and !MMU systems
-where I do need the more complete point functionality. And it just looks
-like the right thing to do.
+Signed-off-by: Nicolas Pitre <nico@linaro.org>
+Reviewed-by: Richard Weinberger <richard@nod.at>
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/chips/map_ram.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-This is also available on top of Linux v4.14-rc3 via git here:
-
-  http://git.linaro.org/people/nicolas.pitre/linux mtd_point
-
-
-Changes from v2:
-
-- Minor commit log additions to patch 2 and 3.
-- Added Boris Brezillon's ACK tags.
-- Added Chris Brandt's Tested-by tags.
-
-Changes from v1:
-
-- Fix retlen computation in mtdram.c:ram_point().
-- Added Richard Weinberger's REviewd-by tags.
-
-
-diffstat:
-
- drivers/mtd/chips/map_ram.c  | 34 ++++++++++++++++++++--------------
- drivers/mtd/chips/map_rom.c  | 34 +++++++++++++++++++++-------------
- drivers/mtd/devices/mtdram.c | 36 ++++++++++++++++++++++--------------
- drivers/mtd/mtdconcat.c      | 27 ---------------------------
- drivers/mtd/mtdcore.c        | 17 ++++++++++++-----
- drivers/mtd/mtdpart.c        | 14 --------------
- include/linux/mtd/mtd.h      |  4 ----
- 7 files changed, 75 insertions(+), 91 deletions(-)
+diff --git a/drivers/mtd/chips/map_ram.c b/drivers/mtd/chips/map_ram.c
+index afb43d5e17..c3939dd230 100644
+--- a/drivers/mtd/chips/map_ram.c
++++ b/drivers/mtd/chips/map_ram.c
+@@ -22,6 +22,9 @@ static void mapram_nop (struct mtd_info *);
+ static struct mtd_info *map_ram_probe(struct map_info *map);
+ static unsigned long mapram_unmapped_area(struct mtd_info *, unsigned long,
+ 					  unsigned long, unsigned long);
++static int mapram_point (struct mtd_info *mtd, loff_t from, size_t len,
++			 size_t *retlen, void **virt, resource_size_t *phys);
++static int mapram_unpoint(struct mtd_info *mtd, loff_t from, size_t len);
+ 
+ 
+ static struct mtd_chip_driver mapram_chipdrv = {
+@@ -69,7 +72,9 @@ static struct mtd_info *map_ram_probe(struct map_info *map)
+ 	mtd->_read = mapram_read;
+ 	mtd->_write = mapram_write;
+ 	mtd->_panic_write = mapram_write;
++	mtd->_point = mapram_point;
+ 	mtd->_sync = mapram_nop;
++	mtd->_unpoint = mapram_unpoint;
+ 	mtd->flags = MTD_CAP_RAM;
+ 	mtd->writesize = 1;
+ 
+@@ -96,6 +101,25 @@ static unsigned long mapram_unmapped_area(struct mtd_info *mtd,
+ 	return (unsigned long) map->virt + offset;
+ }
+ 
++static int mapram_point(struct mtd_info *mtd, loff_t from, size_t len,
++			size_t *retlen, void **virt, resource_size_t *phys)
++{
++	struct map_info *map = mtd->priv;
++
++	if (!map->virt)
++		return -EINVAL;
++	*virt = map->virt + from;
++	if (phys)
++		*phys = map->phys + from;
++	*retlen = len;
++	return 0;
++}
++
++static int mapram_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
++{
++	return 0;
++}
++
+ static int mapram_read (struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char *buf)
+ {
+ 	struct map_info *map = mtd->priv;
+-- 
+2.9.5
