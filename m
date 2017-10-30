@@ -1,19 +1,19 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e95o6-00089R-GU
- for linux-mtd@lists.infradead.org; Mon, 30 Oct 2017 08:52:32 +0000
-Date: Mon, 30 Oct 2017 09:51:59 +0100
+ id 1e95v3-0002ya-Fc
+ for linux-mtd@lists.infradead.org; Mon, 30 Oct 2017 08:59:43 +0000
+Date: Mon, 30 Oct 2017 09:58:53 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Cyril Bur <cyrilbur@gmail.com>
-Cc: linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
- stewart@linux.vnet.ibm.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, sjitindarsingh@gmail.com
-Subject: Re: [PATCH v4 04/10] mtd: powernv_flash: Don't return -ERESTARTSYS
- on interrupted token acquisition
-Message-ID: <20171030095159.143fecaa@bbrezillon>
-In-Reply-To: <20171010033302.20854-5-cyrilbur@gmail.com>
-References: <20171010033302.20854-1-cyrilbur@gmail.com>
- <20171010033302.20854-5-cyrilbur@gmail.com>
+To: Nicolas Pitre <nicolas.pitre@linaro.org>
+Cc: Richard Weinberger <richard@nod.at>, Chris Brandt
+ <chris.brandt@renesas.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 0/5] unconfuse get_unmapped_area and point/unpoint
+ driver methods
+Message-ID: <20171030095853.230d800f@bbrezillon>
+In-Reply-To: <nycvar.YSQ.7.76.1710271120070.3238@knanqh.ubzr>
+References: <20171017152826.11658-1-nicolas.pitre@linaro.org>
+ <20171027140651.4032744b@bbrezillon>
+ <nycvar.YSQ.7.76.1710271120070.3238@knanqh.ubzr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,44 +26,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 10 Oct 2017 14:32:56 +1100
-Cyril Bur <cyrilbur@gmail.com> wrote:
+Hi Nicolas,
 
-> Because the MTD core might split up a read() or write() from userspace
-> into several calls to the driver, we may fail to get a token but already
-> have done some work, best to return -EINTR back to userspace and have
-> them decide what to do.
+On Fri, 27 Oct 2017 11:27:46 -0400 (EDT)
+Nicolas Pitre <nicolas.pitre@linaro.org> wrote:
+
+> On Fri, 27 Oct 2017, Boris Brezillon wrote:
 > 
-> Signed-off-by: Cyril Bur <cyrilbur@gmail.com>
-
-Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-
-> ---
->  drivers/mtd/devices/powernv_flash.c | 7 +++++++
->  1 file changed, 7 insertions(+)
+> > Hi Nicolas,
+> > 
+> > Some of your commits do not have commit messages (just a subject and
+> > that's all). I know you're an experimented kernel developer and you
+> > might find this superfluous, but we try to push all MTD contributors to
+> > write a commit message, even if it's just a one line description that
+> > basically repeats what the subject line says. Would you mind adding a
+> > short description to patch 2 and 3.
+> > 
+> > Other than that, the changes look good to me, so
+> > 
+> > Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>  
 > 
-> diff --git a/drivers/mtd/devices/powernv_flash.c b/drivers/mtd/devices/powernv_flash.c
-> index 4dd3b5d2feb2..3343d4f5c4f3 100644
-> --- a/drivers/mtd/devices/powernv_flash.c
-> +++ b/drivers/mtd/devices/powernv_flash.c
-> @@ -47,6 +47,11 @@ enum flash_op {
->  	FLASH_OP_ERASE,
->  };
->  
-> +/*
-> + * Don't return -ERESTARTSYS if we can't get a token, the MTD core
-> + * might have split up the call from userspace and called into the
-> + * driver more than once, we'll already have done some amount of work.
-> + */
->  static int powernv_flash_async_op(struct mtd_info *mtd, enum flash_op op,
->  		loff_t offset, size_t len, size_t *retlen, u_char *buf)
->  {
-> @@ -63,6 +68,8 @@ static int powernv_flash_async_op(struct mtd_info *mtd, enum flash_op op,
->  	if (token < 0) {
->  		if (token != -ERESTARTSYS)
->  			dev_err(dev, "Failed to get an async token\n");
-> +		else
-> +			token = -EINTR;
->  		return token;
->  	}
->  
+> No problem.
+> 
+> I added a one-liner justification to those commits, and your ACK to the 
+> series.
+> 
+> This has been pushed here if you wish to pull it:
+> 
+>   http://git.linaro.org/people/nicolas.pitre/linux mtd_point
+> 
+> Or if you prefer that I repost the whole thing just say so and I'll 
+> oblige.
+
+It's easier for us if you repost the whole series (we use patchwork to
+track MTD patches, and I like to have the version that hits mainline
+available on patchwork too).
+
+Thanks,
+
+Boris
