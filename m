@@ -1,26 +1,21 @@
-Subject: Re: [PATCH v2 1/3] mtd: spi-nor: stm32-quadspi: Fix uninitialized
- error return code
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Marek Vasut
- <marek.vasut@gmail.com>
-CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
- Alexandre Torgue <alexandre.torgue@st.com>,
- Rob Herring <robh+dt@kernel.org>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, Geert
- Uytterhoeven <geert@linux-m68k.org>
-References: <1509030755-19044-1-git-send-email-ludovic.Barre@st.com>
- <1509030755-19044-2-git-send-email-ludovic.Barre@st.com>
- <ed1ca205-830e-3f5b-e251-8d863a512eda@wedev4u.fr>
-From: Ludovic BARRE <ludovic.barre@st.com>
-Message-ID: <3dc4ff33-77a3-be2e-c20f-675b800dca2c@st.com>
-Date: Mon, 30 Oct 2017 09:05:03 +0100
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by casper.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1e950T-0003pi-Vq
+ for linux-mtd@lists.infradead.org; Mon, 30 Oct 2017 08:01:48 +0000
+Received: from localhost (localhost.localdomain [127.0.0.1])
+ by mail.sigma-star.at (Postfix) with ESMTP id 30C3324E0011
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Oct 2017 09:00:42 +0100 (CET)
+Received: from blindfold.localnet (richard.vpn.sigmapriv.at [10.3.0.5])
+ by mail.sigma-star.at (Postfix) with ESMTPSA id 7A28024E0010
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Oct 2017 09:00:41 +0100 (CET)
+From: Richard Weinberger <richard@sigma-star.at>
+To: linux-mtd@lists.infradead.org
+Subject: Slides on my UBIFS Security Features talk
+Date: Mon, 30 Oct 2017 09:00:59 +0100
+Message-ID: <2105901.avKtK3Z2Ko@blindfold>
 MIME-Version: 1.0
-In-Reply-To: <ed1ca205-830e-3f5b-e251-8d863a512eda@wedev4u.fr>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,66 +25,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-thanks Cyrille
+Hi!
 
-indeed, the "Signed-off" on Geert'commit was a mistake
+Since the upload of my ELCE 2017 slides didn't work as expected and multiple 
+people complained, here you can find them too:
+http://git.infradead.org/~rw/elce2017_ubifs_security_features.pdf
 
-BR
-Ludo
-On 10/29/2017 06:50 PM, Cyrille Pitchen wrote:
-> Hi Ludovic,
-> 
-> Le 26/10/2017 à 17:12, Ludovic Barre a écrit :
->> From: Geert Uytterhoeven <geert@linux-m68k.org>
->>
->> With gcc 4.1.2:
->>
->>      drivers/mtd/spi-nor/stm32-quadspi.c: In function ‘stm32_qspi_tx_poll’:
->>      drivers/mtd/spi-nor/stm32-quadspi.c:230: warning: ‘ret’ may be used uninitialized in this function
->>
->> Indeed, if stm32_qspi_cmd.len is zero, ret will be uninitialized.
->> This length is passed from outside the driver using the
->> spi_nor.{read,write}{,_reg}() callbacks.
->>
->> Several functions in drivers/mtd/spi-nor/spi-nor.c (e.g. write_enable(),
->> write_disable(), and erase_chip()) call spi_nor.write_reg() with a zero
->> length.
->>
->> Fix this by returning an explicit zero on success.
->>
->> Fixes: 0d43d7ab277a048c ("mtd: spi-nor: add driver for STM32 quad spi flash controller")
->> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->> Acked-by: Ludovic Barre <ludovic.barre@st.com>
->> Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
-> I removed your "Signed-off" because I think this is a mistake but kept
-> your "Acked-by" tag.
-> 
-> Applied to the spi-nor/next branch of l2-mtd.
-> 
-> Thanks!
-> 
->> ---
->>   drivers/mtd/spi-nor/stm32-quadspi.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/mtd/spi-nor/stm32-quadspi.c b/drivers/mtd/spi-nor/stm32-quadspi.c
->> index 86c0931..ad6a3e1 100644
->> --- a/drivers/mtd/spi-nor/stm32-quadspi.c
->> +++ b/drivers/mtd/spi-nor/stm32-quadspi.c
->> @@ -240,12 +240,12 @@ static int stm32_qspi_tx_poll(struct stm32_qspi *qspi,
->>   						 STM32_QSPI_FIFO_TIMEOUT_US);
->>   		if (ret) {
->>   			dev_err(qspi->dev, "fifo timeout (stat:%#x)\n", sr);
->> -			break;
->> +			return ret;
->>   		}
->>   		tx_fifo(buf++, qspi->io_base + QUADSPI_DR);
->>   	}
->>   
->> -	return ret;
->> +	return 0;
->>   }
->>   
->>   static int stm32_qspi_tx_mm(struct stm32_qspi *qspi,
->>
-> 
+Thanks,
+//richard
+
+-- 
+sigma star gmbh - Eduard-Bodem-Gasse 6 - 6020 Innsbruck - Austria
+ATU66964118 - FN 374287y
