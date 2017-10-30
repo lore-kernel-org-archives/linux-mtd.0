@@ -1,21 +1,22 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by casper.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e950T-0003pi-Vq
- for linux-mtd@lists.infradead.org; Mon, 30 Oct 2017 08:01:48 +0000
-Received: from localhost (localhost.localdomain [127.0.0.1])
- by mail.sigma-star.at (Postfix) with ESMTP id 30C3324E0011
- for <linux-mtd@lists.infradead.org>; Mon, 30 Oct 2017 09:00:42 +0100 (CET)
-Received: from blindfold.localnet (richard.vpn.sigmapriv.at [10.3.0.5])
- by mail.sigma-star.at (Postfix) with ESMTPSA id 7A28024E0010
- for <linux-mtd@lists.infradead.org>; Mon, 30 Oct 2017 09:00:41 +0100 (CET)
-From: Richard Weinberger <richard@sigma-star.at>
-To: linux-mtd@lists.infradead.org
-Subject: Slides on my UBIFS Security Features talk
-Date: Mon, 30 Oct 2017 09:00:59 +0100
-Message-ID: <2105901.avKtK3Z2Ko@blindfold>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1e95Ly-0002uR-Lc
+ for linux-mtd@lists.infradead.org; Mon, 30 Oct 2017 08:23:28 +0000
+Date: Mon, 30 Oct 2017 09:23:03 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: motobud@gmail.com
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Fix writing mtdoops to nand flash.
+Message-ID: <20171030092303.42383c59@bbrezillon>
+In-Reply-To: <20171030042343.24551-1-motobud@gmail.com>
+References: <20171030042343.24551-1-motobud@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,15 +26,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+Hi Brent,
 
-Since the upload of my ELCE 2017 slides didn't work as expected and multiple 
-people complained, here you can find them too:
-http://git.infradead.org/~rw/elce2017_ubifs_security_features.pdf
+Subject should be prefixed by "mtd: nand: ", so
 
-Thanks,
-//richard
+"mtd: nand: Fix writing mtdoops to nand flash"
 
--- 
-sigma star gmbh - Eduard-Bodem-Gasse 6 - 6020 Innsbruck - Austria
-ATU66964118 - FN 374287y
+On Sun, 29 Oct 2017 23:23:43 -0500
+motobud@gmail.com wrote:
+
+> From: Brent Taylor <motobud@gmail.com>
+> 
+> When mtdoops calls mtd_panic_write, it eventually calls
+> panic_nand_write in nand_base.c.  In order to properly
+> wait for the nand chip to be ready in panic_nand_wait,
+> the chip must first be selected.
+> 
+> When using the atmel nand flash controller, a panic
+> would occur due to a NULL pointer exception.
+> 
+> Signed-off-by: Brent Taylor <motobud@gmail.com>
+> ---
+>  drivers/mtd/nand/nand_base.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 12edaae17d81..0a8058a66d93 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -2802,9 +2802,14 @@ static int panic_nand_write(struct mtd_info *mtd, loff_t to, size_t len,
+>  	struct mtd_oob_ops ops;
+>  	int ret;
+>  
+> +	int chipnr = (int)(to >> chip->chip_shift);
+> +	chip->select_chip(mtd, chipnr);
+> +
+>  	/* Wait for the device to get ready */
+>  	panic_nand_wait(mtd, chip, 400);
+>  
+> +	chip->select_chip(mtd, -1);
+> +
+
+Duh! Looks like a piece of code that is never tested. Did you face the
+problem or did you find out by inspecting the code?
+
+Anyway, I fear the atmel driver is not the only one to rely on the chip
+to be selected when ->dev_ready() is called so this should definitely
+be fixed. Also, we should probably move the ->select_chip() and
+panic_nand_wait() calls after panic_nand_get_device(), and I don't
+think we need to unselect the chip (it will be taken care of by
+nand_do_write_ops()).
+
+>  	/* Grab the device */
+>  	panic_nand_get_device(chip, mtd, FL_WRITING);
+>  
