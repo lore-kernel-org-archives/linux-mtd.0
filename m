@@ -1,19 +1,16 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e8vue-0003sX-TW
- for linux-mtd@lists.infradead.org; Sun, 29 Oct 2017 22:18:38 +0000
-From: sathyanarayanan.kuppuswamy@linux.intel.com
-To: marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
- mika.westerberg@linux.intel.com
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- sathyaosid@gmail.com,
- Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: [PATCH v2 1/1] mtd: intel-spi: Add Intel Lewisburg PCH SPI super SKU
- PCI ID
-Date: Sun, 29 Oct 2017 15:17:35 -0700
-Message-Id: <77788f0c0cf55ee9fc0087364827da28c6951180.1509315023.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20171029195809.GH29656@lahna.fi.intel.com>
-References: <20171029195809.GH29656@lahna.fi.intel.com>
+From: Xiaolei Li <xiaolei.li@mediatek.com>
+To: <boris.brezillon@free-electrons.com>, <computersforpeace@gmail.com>
+CC: <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, <rogercc.lin@mediatek.com>,
+ <srv_heupstream@mediatek.com>, <xiaolei.li@mediatek.com>,
+ <stable@vger.kernel.org>
+Subject: [PATCH v2] mtd: nand: mtk: fix infinite ECC decode IRQ issue
+Date: Mon, 30 Oct 2017 10:39:56 +0800
+Message-ID: <1509331196-29412-2-git-send-email-xiaolei.li@mediatek.com>
+In-Reply-To: <1509331196-29412-1-git-send-email-xiaolei.li@mediatek.com>
+References: <1509331196-29412-1-git-send-email-xiaolei.li@mediatek.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +20,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+For MT2701 NAND Controller, there may generate infinite ECC decode IRQ
+during long time burn test on some platforms. Once this issue occurred,
+the ECC decode IRQ status cannot be cleared in the IRQ handler function,
+and threads cannot be scheduled.
 
-This patch adds Intel Lewisburg PCH SPI serial flash controller super
-SKU PCI ID.
+ECC HW generates decode IRQ each sector, so there will have more than one
+decode IRQ if read one page of large page NAND.
 
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Currently, ECC IRQ handle flow is that we will check whether it is decode
+IRQ at first by reading the register ECC_DECIRQ_STA. This is a read-clear
+type register. If this IRQ is decode IRQ, then the ECC IRQ signal will be
+cleared at the same time.
+Secondly, we will check whether all sectors are decoded by reading the
+register ECC_DECDONE. This is because the current IRQ may be not dealed
+in time, and the next sectors have been decoded before reading the
+register ECC_DECIRQ_STA. Then, the next sectors's decode IRQs will not
+be generated.
+Thirdly, if all sectors are decoded by comparing with ecc->sectors, then we
+will complete ecc->done, set ecc->sectors as 0, and disable ECC IRQ by
+programming the register ECC_IRQ_REG(op) as 0. Otherwise, wait for the
+next ECC IRQ.
+
+But, there is a timing issue between step one and two. When we read the
+reigster ECC_DECIRQ_STA, all sectors are decoded except the last sector,
+and the ECC IRQ signal is cleared. But the last sector is decoded before
+reading ECC_DECDONE, so the ECC IRQ signal is enabled again by ECC HW, and
+it means we will receive one extra ECC IRQ later. In step three, we will
+find that all sectors were decoded, then disable ECC IRQ and return.
+When deal with the extra ECC IRQ, the ECC IRQ status cannot be cleared
+anymore. That is because the register ECC_DECIRQ_STA can only be cleared
+when the register ECC_IRQ_REG(op) is enabled. But actually we have
+disabled ECC IRQ in the previous ECC IRQ handle. So, there will
+keep receiving ECC decode IRQ.
+
+Now, we read the register ECC_DECIRQ_STA once again before completing the
+ecc done event. This ensures that there will be no extra ECC decode IRQ.
+
+Also, remove writel(0, ecc->regs + ECC_IRQ_REG(op)) from irq handler,
+because ECC IRQ is disabled in mtk_ecc_disable(). And clear ECC_DECIRQ_STA
+in mtk_ecc_disable() in case there is a timeout to wait decode IRQ.
+
+Fixes: 1d6b1e464950 ("mtd: mediatek: driver for MTK Smart Device")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
 ---
- drivers/mtd/spi-nor/intel-spi-pci.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/nand/mtk_ecc.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-Changes since v1:
- * Rebased on top of Mika's SPI support patch.
- * Fixed the commit header to reflect the changes made.
-
-diff --git a/drivers/mtd/spi-nor/intel-spi-pci.c b/drivers/mtd/spi-nor/intel-spi-pci.c
-index 7fa5b81..048c007 100644
---- a/drivers/mtd/spi-nor/intel-spi-pci.c
-+++ b/drivers/mtd/spi-nor/intel-spi-pci.c
-@@ -65,6 +65,7 @@ static void intel_spi_pci_remove(struct pci_dev *pdev)
- static const struct pci_device_id intel_spi_pci_ids[] = {
- 	{ PCI_VDEVICE(INTEL, 0x19e0), (unsigned long)&bxt_info },
- 	{ PCI_VDEVICE(INTEL, 0xa1a4), (unsigned long)&bxt_info },
-+	{ PCI_VDEVICE(INTEL, 0xa224), (unsigned long)&bxt_info },
- 	{ },
- };
- MODULE_DEVICE_TABLE(pci, intel_spi_pci_ids);
+diff --git a/drivers/mtd/nand/mtk_ecc.c b/drivers/mtd/nand/mtk_ecc.c
+index 7f3b065..c51d214 100644
+--- a/drivers/mtd/nand/mtk_ecc.c
++++ b/drivers/mtd/nand/mtk_ecc.c
+@@ -115,6 +115,11 @@ static irqreturn_t mtk_ecc_irq(int irq, void *id)
+ 		op = ECC_DECODE;
+ 		dec = readw(ecc->regs + ECC_DECDONE);
+ 		if (dec & ecc->sectors) {
++			/*
++			 * Clear decode IRQ status once again to ensure that
++			 * there will be no extra IRQ.
++			 */
++			readw(ecc->regs + ECC_DECIRQ_STA);
+ 			ecc->sectors = 0;
+ 			complete(&ecc->done);
+ 		} else {
+@@ -130,8 +135,6 @@ static irqreturn_t mtk_ecc_irq(int irq, void *id)
+ 		}
+ 	}
+ 
+-	writel(0, ecc->regs + ECC_IRQ_REG(op));
+-
+ 	return IRQ_HANDLED;
+ }
+ 
+@@ -307,6 +310,12 @@ void mtk_ecc_disable(struct mtk_ecc *ecc)
+ 
+ 	/* disable it */
+ 	mtk_ecc_wait_idle(ecc, op);
++	if (op == ECC_DECODE)
++		/*
++		 * Clear decode IRQ status in case there is a timeout to wait
++		 * decode IRQ.
++		 */
++		readw(ecc->regs + ECC_DECIRQ_STA);
+ 	writew(0, ecc->regs + ECC_IRQ_REG(op));
+ 	writew(ECC_OP_DISABLE, ecc->regs + ECC_CTL_REG(op));
+ 
 -- 
-2.7.4
+1.9.1
