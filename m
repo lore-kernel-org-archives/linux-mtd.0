@@ -1,13 +1,20 @@
-From: Xiaolei Li <xiaolei.li@mediatek.com>
-To: <boris.brezillon@free-electrons.com>, <computersforpeace@gmail.com>
-CC: <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>, <rogercc.lin@mediatek.com>,
- <srv_heupstream@mediatek.com>, <xiaolei.li@mediatek.com>
-Subject: [PATCH v2] Improve MTK ECC Engine driver
-Date: Mon, 30 Oct 2017 10:39:55 +0800
-Message-ID: <1509331196-29412-1-git-send-email-xiaolei.li@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+Received: from mail-io0-x243.google.com ([2607:f8b0:4001:c06::243])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1e91cQ-0005OO-HD
+ for linux-mtd@lists.infradead.org; Mon, 30 Oct 2017 04:24:12 +0000
+Received: by mail-io0-x243.google.com with SMTP id j17so24237601iod.5
+ for <linux-mtd@lists.infradead.org>; Sun, 29 Oct 2017 21:23:49 -0700 (PDT)
+From: motobud@gmail.com
+To: boris.brezillon@free-electrons.com
+Cc: Brent Taylor <motobud@gmail.com>, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Fix writing mtdoops to nand flash.
+Date: Sun, 29 Oct 2017 23:23:43 -0500
+Message-Id: <20171030042343.24551-1-motobud@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,40 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch-set is mainly to improve MTK ECC Engine driver, include
-- remove dummy ECC IRQ disable setting
-- fix infinite ECC decode IRQ issue
+From: Brent Taylor <motobud@gmail.com>
 
-Changes on v2 relative to:
---------------------
+When mtdoops calls mtd_panic_write, it eventually calls
+panic_nand_write in nand_base.c.  In order to properly
+wait for the nand chip to be ready in panic_nand_wait,
+the chip must first be selected.
 
-tree    : https://github.com/bbrezillon/linux-0day
-branch  : nand/next
-commit  :
-        'commit 1f3df4dc088d927683b292118cd8b4eaaf1af573
-        Author: Sascha Hauer <s.hauer@pengutronix.de>
-        Date:   Mon Oct 16 11:51:55 2017 +0200'
+When using the atmel nand flash controller, a panic
+would occur due to a NULL pointer exception.
 
-Patch v2:
----------
-- keep writel(0, ecc->regs + ECC_IRQ_REG(op)) in mtk_ecc_disable(), and
-  remove writel(0, ecc->regs + ECC_IRQ_REG(op)) from irq handler. It's
-  usually the caller who decides when the IRQ should be enabled/disable.
-- add readw(ecc->regs + ECC_DECIRQ_STA) in mtk_ecc_disable() in case there
-  is a timeout to wait decode IRQ.
+Signed-off-by: Brent Taylor <motobud@gmail.com>
+---
+ drivers/mtd/nand/nand_base.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Tests:
-------
-
-* ubifs and jffs2 are validated on NAND device MT29F16G08ADBCA
-  by 'dd' command.
-* all drivers/mtd/tests/* pass.
-
-Xiaolei Li (1):
-  mtd: nand: mtk: fix infinite ECC decode IRQ issue
-
- drivers/mtd/nand/mtk_ecc.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
-
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 12edaae17d81..0a8058a66d93 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2802,9 +2802,14 @@ static int panic_nand_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	struct mtd_oob_ops ops;
+ 	int ret;
+ 
++	int chipnr = (int)(to >> chip->chip_shift);
++	chip->select_chip(mtd, chipnr);
++
+ 	/* Wait for the device to get ready */
+ 	panic_nand_wait(mtd, chip, 400);
+ 
++	chip->select_chip(mtd, -1);
++
+ 	/* Grab the device */
+ 	panic_nand_get_device(chip, mtd, FL_WRITING);
+ 
 -- 
-1.9.1
+2.14.2
