@@ -1,21 +1,22 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e99jh-0003Ec-QM
- for linux-mtd@lists.infradead.org; Mon, 30 Oct 2017 13:04:19 +0000
-Date: Mon, 30 Oct 2017 14:03:51 +0100
+ id 1e99ua-00027r-T0
+ for linux-mtd@lists.infradead.org; Mon, 30 Oct 2017 13:15:31 +0000
+Date: Mon, 30 Oct 2017 14:15:06 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek =?UTF-8?B?VmHFoXV0?=
- <marek.vasut@gmail.com>, cyrille.pitchen@wedev4u.fr,
- linux-mtd@lists.infradead.org, open list <linux-kernel@vger.kernel.org>,
- Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [RFC] NAND: Optimize NAND_ECC_HW_OOB_FIRST read
-Message-ID: <20171030140351.16cb4461@bbrezillon>
-In-Reply-To: <CANc+2y4U+BbOnWZzEZ4+2dNfJNEA0Was+ySuJRJwyakm-GxYiA@mail.gmail.com>
-References: <20171028074351.13118-1-prasannatsmkumar@gmail.com>
- <20171030093426.30827ef5@bbrezillon>
- <CANc+2y4U+BbOnWZzEZ4+2dNfJNEA0Was+ySuJRJwyakm-GxYiA@mail.gmail.com>
+To: Brent Taylor <motobud@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Fix writing mtdoops to nand flash.
+Message-ID: <20171030141506.7aa40b87@bbrezillon>
+In-Reply-To: <CAP+RiCCHV3V82695WPv9nQ18Ascx_WeCB+=3er4S0Zn4YK+K4g@mail.gmail.com>
+References: <20171030042343.24551-1-motobud@gmail.com>
+ <20171030092303.42383c59@bbrezillon>
+ <CAP+RiCCHV3V82695WPv9nQ18Ascx_WeCB+=3er4S0Zn4YK+K4g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,56 +29,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 30 Oct 2017 18:17:50 +0530
-PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com> wrote:
+On Mon, 30 Oct 2017 07:46:18 -0500
+Brent Taylor <motobud@gmail.com> wrote:
 
-> Hi Boris,
+> Hi Bors, thanks for your quick reply.
 > 
-> On 30 October 2017 at 14:04, Boris Brezillon
+> On Mon, Oct 30, 2017 at 3:23 AM, Boris Brezillon
 > <boris.brezillon@free-electrons.com> wrote:
-> > Hi PrasannaKumar,
+> > Hi Brent,
 > >
-> > On Sat, 28 Oct 2017 13:13:51 +0530
-> > PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com> wrote:
+> > Subject should be prefixed by "mtd: nand: ", so
+> >
+> > "mtd: nand: Fix writing mtdoops to nand flash"  
+> 
+> Oops, yes, will fix.
+> 
+> >
+> > On Sun, 29 Oct 2017 23:23:43 -0500
+> > motobud@gmail.com wrote:
 > >  
-> >> From: Lars-Peter Clausen <lars@metafoo.de>
+> >> From: Brent Taylor <motobud@gmail.com>
 > >>
-> >> Avoid sending unnecessary READ commands to the chip.
+> >> When mtdoops calls mtd_panic_write, it eventually calls
+> >> panic_nand_write in nand_base.c.  In order to properly
+> >> wait for the nand chip to be ready in panic_nand_wait,
+> >> the chip must first be selected.
 > >>
-> >> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> >> Signed-off-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+> >> When using the atmel nand flash controller, a panic
+> >> would occur due to a NULL pointer exception.
+> >>
+> >> Signed-off-by: Brent Taylor <motobud@gmail.com>
 > >> ---
-> >> This patch is taken from git://projects.qi-hardware.com/qi-kernel.git
-> >> branch jz-3.16. From [1] and [2] it can be seen that the patch author
-> >> thinks this can be sent upstream but it never happened so far. This
-> >> patch is used in OpenWRT as seen from [3].  
+> >>  drivers/mtd/nand/nand_base.c | 5 +++++
+> >>  1 file changed, 5 insertions(+)
+> >>
+> >> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> >> index 12edaae17d81..0a8058a66d93 100644
+> >> --- a/drivers/mtd/nand/nand_base.c
+> >> +++ b/drivers/mtd/nand/nand_base.c
+> >> @@ -2802,9 +2802,14 @@ static int panic_nand_write(struct mtd_info *mtd, loff_t to, size_t len,
+> >>       struct mtd_oob_ops ops;
+> >>       int ret;
+> >>
+> >> +     int chipnr = (int)(to >> chip->chip_shift);
+> >> +     chip->select_chip(mtd, chipnr);
+> >> +
+> >>       /* Wait for the device to get ready */
+> >>       panic_nand_wait(mtd, chip, 400);
+> >>
+> >> +     chip->select_chip(mtd, -1);
+> >> +  
 > >
-> > Sounds reasonable, but it's likely to conflict with something I'd like
-> > to queue for 4.16 [1]. I'll rebase this patch on nand/next once the  
-> > ->exec_op() series is merged. Don't hesitate to ping me if I forget.  
-> >
-> > Regards,
-> >
-> > Boris
-> >
-> > [1]http://patchwork.ozlabs.org/project/linux-mtd/list/?series=8923  
+> > Duh! Looks like a piece of code that is never tested. Did you face the
+> > problem or did you find out by inspecting the code?  
 > 
-> Okay. I will remind you if required.
+> I was playing with another driver on an atmel development board
+> (at91sam9m10g45ek) and caused a panic with mtdoops enabled.  While
+> writing the mtdoops to nand, another panic occurred which caused a
+> storm of panics to generated.
 > 
-> There is another patch used in OpenWRT at [1]. Do you mind to have a
-> look at it and take that if it is useful? I don't see a point in me
-> sending it as a RFC as I am not contributing anything to it other than
-> noticing its existence.
+> >
+> > Anyway, I fear the atmel driver is not the only one to rely on the chip
+> > to be selected when ->dev_ready() is called so this should definitely
+> > be fixed. Also, we should probably move the ->select_chip() and
+> > panic_nand_wait() calls after panic_nand_get_device(), and I don't
+> > think we need to unselect the chip (it will be taken care of by
+> > nand_do_write_ops()).
+> >  
+> >>       /* Grab the device */
+> >>       panic_nand_get_device(chip, mtd, FL_WRITING);
+> >>  
+> >  
+> 
+> After looking at this closer, a panic could happen at any point correct?
 
-Yep, it makes sense to have that one applied too, but this is pretty
-much the same problem: it will conflict with the ->exec_op() rework.
+Yes.
 
-Can you please send it to the ML so I can track it in patchwork and
-respin it when ->exec_op() is out. I'll also need someone owning a HW
-using NAND_ECC_HW_OOB_FIRST to test the changes. Do you have such HW?
+> If
+> that's the case, the kernel could have been in the middle of a nand read/write
+> operation (which may or may not be on the same chip).  Would the chip the
+> mtdoops is being written to need to be reset?
 
-> 
-> 1. https://git.lede-project.org/?p=source.git;a=blob;f=target/linux/xburst/patches-3.18/003-NAND-Add-support-for-subpage-reads-for-NAND_ECC_HW_O.patch;h=974eb7a5db9a09347fa6137461f030575f9a4328;hb=c03d4317a6bc891cb4a5e89cbdd77f37c23aff86
-> 
-> Thanks,
-> PrasannaKumar
+I'd prefer not. Actually, the code calls panic_nand_wait() to let the
+NAND finish the operation it's currently doing, and most of the time it
+will relax the busy pin within 400ms (the timeout passed to
+panic_nand_wait()). If we do a RESET in the middle of a write operation
+we'll just corrupt the data that is being written, and I'm not sure we
+want that to happen.
+
+> I haven't drilled down into the
+> nand_reset function yet, but can that be called in a "panic" state?
+
+Maybe, but I'm not sure we want to do that (see above).
+
+Anyway, the write-on-panic path is fragile, and I'm not sure all
+controllers will play well in this situation: just because the NAND is
+ready does not mean the controller is, and there's nothing ensuring
+that in the NAND framework.
+
+Regards,
+
+Boris
