@@ -1,22 +1,25 @@
-Received: from mail-io0-x243.google.com ([2607:f8b0:4001:c06::243])
+Received: from mga04.intel.com ([192.55.52.120])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1e9NJK-0001Ok-9o
- for linux-mtd@lists.infradead.org; Tue, 31 Oct 2017 03:33:56 +0000
-Received: by mail-io0-x243.google.com with SMTP id 97so32009343iok.7
- for <linux-mtd@lists.infradead.org>; Mon, 30 Oct 2017 20:33:31 -0700 (PDT)
-From: motobud@gmail.com
-To: boris.brezillon@free-electrons.com
-Cc: Brent Taylor <motobud@gmail.com>, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] mtd: nand: Fix writing mtdoops to nand flash.
-Date: Mon, 30 Oct 2017 22:32:45 -0500
-Message-Id: <20171031033246.8576-1-motobud@gmail.com>
-In-Reply-To: <20171030042343.24551-1-motobud@gmail.com>
-References: <20171030042343.24551-1-motobud@gmail.com>
+ id 1e9RJt-0006GV-Q3
+ for linux-mtd@lists.infradead.org; Tue, 31 Oct 2017 07:50:47 +0000
+Date: Tue, 31 Oct 2017 09:48:08 +0200
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: sathyanarayanan kuppuswamy <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ sathyaosid@gmail.com
+Subject: Re: [PATCH v2 1/1] mtd: intel-spi: Add Intel Lewisburg PCH SPI super
+ SKU PCI ID
+Message-ID: <20171031074808.GJ2283@lahna.fi.intel.com>
+References: <20171029195809.GH29656@lahna.fi.intel.com>
+ <77788f0c0cf55ee9fc0087364827da28c6951180.1509315023.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20171030073241.GI29656@lahna.fi.intel.com>
+ <ae3620ec-293e-458e-76b1-5c13e0cdc992@wedev4u.fr>
+ <754005b2-fea7-91f3-b526-c325de2ad6bf@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <754005b2-fea7-91f3-b526-c325de2ad6bf@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,47 +29,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Brent Taylor <motobud@gmail.com>
+On Mon, Oct 30, 2017 at 03:28:46PM -0700, sathyanarayanan kuppuswamy wrote:
+> Hi,
+> 
+> 
+> On 10/30/2017 03:58 AM, Cyrille Pitchen wrote:
+> > Applied to the spi-nor/next branch of l2-mtd
+> > 
+> > Just for info, this patch didn't apply directly, it misses a line in the list of
+> > PCI IDS:
+> > 
+> >   	{ PCI_VDEVICE(INTEL, 0x18e0), (unsigned long)&bxt_info },
+> I re-based my patch on top of Mika's SPI support patch. And it applied
+> cleanly on top of 4.14-rc6 kernel. Not sure where the problem was?
+> 
+> http://git.infradead.org/l2-mtd.git/commitdiff/d92b0f18a2039ff736b4296ad3cf3d505512051e
 
-When mtdoops calls mtd_panic_write, it eventually calls
-panic_nand_write in nand_base.c.  In order to properly
-wait for the nand chip to be ready in panic_nand_wait,
-the chip must first be selected.
-
-When using the atmel nand flash controller, a panic
-would occur due to a NULL pointer exception.
-
-Signed-off-by: Brent Taylor <motobud@gmail.com>
----
-Changes in v2:
-  - drop deselecting the chip
-  - move select_chip and panic_nand_wait after panic_nand_get_device
-
- drivers/mtd/nand/nand_base.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 12edaae17d81..2093667e2bcb 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2802,12 +2802,16 @@ static int panic_nand_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	struct mtd_oob_ops ops;
- 	int ret;
- 
--	/* Wait for the device to get ready */
--	panic_nand_wait(mtd, chip, 400);
-+	int chipnr = (int)(to >> chip->chip_shift);
- 
- 	/* Grab the device */
- 	panic_nand_get_device(chip, mtd, FL_WRITING);
- 
-+	chip->select_chip(mtd, chipnr);
-+
-+	/* Wait for the device to get ready */
-+	panic_nand_wait(mtd, chip, 400);
-+
- 	memset(&ops, 0, sizeof(ops));
- 	ops.len = len;
- 	ops.datbuf = (uint8_t *)buf;
--- 
-2.14.2
+There is another patch adding Cedar Fork PCI ID in the l2-mtd tree. You
+rebased only on top of Lewisburg patch so you missed that. Anyway,
+Cyrille applied this patch already so everything should be fine :-)
