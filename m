@@ -1,20 +1,20 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e9Tdc-0005nx-47
- for linux-mtd@lists.infradead.org; Tue, 31 Oct 2017 10:19:17 +0000
-Date: Tue, 31 Oct 2017 11:18:42 +0100
+ id 1e9U2b-0003e3-7r
+ for linux-mtd@lists.infradead.org; Tue, 31 Oct 2017 10:45:07 +0000
+Date: Tue, 31 Oct 2017 11:44:33 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: motobud@gmail.com
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: nand: Fix writing mtdoops to nand flash.
-Message-ID: <20171031111842.6b42ed23@bbrezillon>
-In-Reply-To: <20171031033246.8576-1-motobud@gmail.com>
-References: <20171030042343.24551-1-motobud@gmail.com>
- <20171031033246.8576-1-motobud@gmail.com>
+To: Rob Herring <robh@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard
+ Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ user-mode-linux-devel@lists.sourceforge.net,
+ user-mode-linux-user@lists.sourceforge.net, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] kconfig: kill off GENERIC_IO option
+Message-ID: <20171031114433.14fcc904@bbrezillon>
+In-Reply-To: <20171016221631.23472-1-robh@kernel.org>
+References: <20171016221631.23472-1-robh@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,60 +27,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 30 Oct 2017 22:32:45 -0500
-motobud@gmail.com wrote:
+On Mon, 16 Oct 2017 17:16:31 -0500
+Rob Herring <robh@kernel.org> wrote:
 
-> From: Brent Taylor <motobud@gmail.com>
+> The GENERIC_IO option is set for every architecture except tile and score
+> as those define NO_IOMEM. The option only controls visibility of
+> CONFIG_MTD which doesn't appear to be necessary for any reason, so let's
+> just remove GENERIC_IO.
 > 
-> When mtdoops calls mtd_panic_write, it eventually calls
-> panic_nand_write in nand_base.c.  In order to properly
-> wait for the nand chip to be ready in panic_nand_wait,
-> the chip must first be selected.
-> 
-> When using the atmel nand flash controller, a panic
-> would occur due to a NULL pointer exception.
-> 
-> Signed-off-by: Brent Taylor <motobud@gmail.com>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> Cc: Jeff Dike <jdike@addtoit.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-I'll add
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Fixes: 2af7c6539931 ("mtd: Add panic_write for NAND flashes")
-Cc: <stable@vger.kernel.org>
-
-when applying the patch.
-
-Thanks,
-
-Boris
-
+> Cc: Marek Vasut <marek.vasut@gmail.com>
+> Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+> Cc: user-mode-linux-devel@lists.sourceforge.net
+> Cc: user-mode-linux-user@lists.sourceforge.net
+> Cc: linux-mtd@lists.infradead.org
 > ---
-> Changes in v2:
->   - drop deselecting the chip
->   - move select_chip and panic_nand_wait after panic_nand_get_device
+>  arch/um/Kconfig.common | 1 -
+>  drivers/mtd/Kconfig    | 1 -
+>  lib/Kconfig            | 4 ----
+>  3 files changed, 6 deletions(-)
 > 
->  drivers/mtd/nand/nand_base.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 12edaae17d81..2093667e2bcb 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -2802,12 +2802,16 @@ static int panic_nand_write(struct mtd_info *mtd, loff_t to, size_t len,
->  	struct mtd_oob_ops ops;
->  	int ret;
+> diff --git a/arch/um/Kconfig.common b/arch/um/Kconfig.common
+> index 85f6dd204ab6..5514ec52108f 100644
+> --- a/arch/um/Kconfig.common
+> +++ b/arch/um/Kconfig.common
+> @@ -9,7 +9,6 @@ config UML
+>  	select HAVE_DEBUG_KMEMLEAK
+>  	select GENERIC_IRQ_SHOW
+>  	select GENERIC_CPU_DEVICES
+> -	select GENERIC_IO
+>  	select GENERIC_CLOCKEVENTS
+>  	select HAVE_GCC_PLUGINS
+>  	select TTY # Needed for line.c
+> diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+> index 5a2d71729b9a..2a8ac6829d42 100644
+> --- a/drivers/mtd/Kconfig
+> +++ b/drivers/mtd/Kconfig
+> @@ -1,6 +1,5 @@
+>  menuconfig MTD
+>  	tristate "Memory Technology Device (MTD) support"
+> -	depends on GENERIC_IO
+>  	help
+>  	  Memory Technology Devices are flash, RAM and similar chips, often
+>  	  used for solid state file systems on embedded devices. This option
+> diff --git a/lib/Kconfig b/lib/Kconfig
+> index b1445b22a6de..994fa37a1d96 100644
+> --- a/lib/Kconfig
+> +++ b/lib/Kconfig
+> @@ -46,10 +46,6 @@ config GENERIC_IOMAP
+>  	bool
+>  	select GENERIC_PCI_IOMAP
 >  
-> -	/* Wait for the device to get ready */
-> -	panic_nand_wait(mtd, chip, 400);
-> +	int chipnr = (int)(to >> chip->chip_shift);
+> -config GENERIC_IO
+> -	bool
+> -	default n
+> -
+>  config STMP_DEVICE
+>  	bool
 >  
->  	/* Grab the device */
->  	panic_nand_get_device(chip, mtd, FL_WRITING);
->  
-> +	chip->select_chip(mtd, chipnr);
-> +
-> +	/* Wait for the device to get ready */
-> +	panic_nand_wait(mtd, chip, 400);
-> +
->  	memset(&ops, 0, sizeof(ops));
->  	ops.len = len;
->  	ops.datbuf = (uint8_t *)buf;
