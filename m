@@ -1,28 +1,15 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1e9d5r-0003mJ-3H
- for linux-mtd@lists.infradead.org; Tue, 31 Oct 2017 20:25:05 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Rob Herring <robh@kernel.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Jeff Dike <jdike@addtoit.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- uml-devel <user-mode-linux-devel@lists.sourceforge.net>,
- user-mode-linux-user@lists.sourceforge.net,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] kconfig: kill off GENERIC_IO option
-Date: Tue, 31 Oct 2017 21:24:45 +0100
-Message-ID: <2622270.9EZoQM9MUq@blindfold>
-In-Reply-To: <CAL_JsqKECkQbBVhRdYEq57iR1wh7W0vn1j1cEDE16sNydpy9Bw@mail.gmail.com>
-References: <20171016221631.23472-1-robh@kernel.org>
- <CAL_JsqKECkQbBVhRdYEq57iR1wh7W0vn1j1cEDE16sNydpy9Bw@mail.gmail.com>
+From: <xiaolei.li@mediatek.com>
+To: <boris.brezillon@free-electrons.com>, <computersforpeace@gmail.com>
+CC: <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, <rogercc.lin@mediatek.com>,
+ <srv_heupstream@mediatek.com>, <xiaolei.li@mediatek.com>,
+ <bayi.cheng@mediatek.com>
+Subject: [PATCH] mtd: nand: mtk: deselect the chip that was selected in resume
+ function
+Date: Wed, 1 Nov 2017 14:19:57 +0800
+Message-ID: <1509517197-60350-1-git-send-email-xiaolei.li@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,16 +19,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Dienstag, 31. Oktober 2017, 20:34:35 CET schrieb Rob Herring:
-> On Mon, Oct 16, 2017 at 5:16 PM, Rob Herring <robh@kernel.org> wrote:
-> > The GENERIC_IO option is set for every architecture except tile and score
-> > as those define NO_IOMEM. The option only controls visibility of
-> > CONFIG_MTD which doesn't appear to be necessary for any reason, so let's
-> > just remove GENERIC_IO.
-> 
-> Andrew, there's no clear owner for this, can you take it?
+From: Xiaolei Li <xiaolei.li@mediatek.com>
 
-Well, I can take it via the UML since I maintain UML and MTD. :)
+It is necessary to deselect the chip if it was selected before.
+But now we only select chips when resume nand driver.
+So, deselect the chip after doing nand reset.
 
-Thanks,
-//richard
+Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
+---
+ drivers/mtd/nand/mtk_nand.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/mtd/nand/mtk_nand.c b/drivers/mtd/nand/mtk_nand.c
+index d86a7d1..a8bf61a 100644
+--- a/drivers/mtd/nand/mtk_nand.c
++++ b/drivers/mtd/nand/mtk_nand.c
+@@ -1557,6 +1557,7 @@ static int mtk_nfc_resume(struct device *dev)
+ 		for (i = 0; i < chip->nsels; i++) {
+ 			nand->select_chip(mtd, i);
+ 			nand->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
++			nand->select_chip(mtd, -1);
+ 		}
+ 	}
+ 
+-- 
+1.9.1
