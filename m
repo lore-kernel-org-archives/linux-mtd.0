@@ -1,15 +1,15 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eAGc0-0007S5-Oy
- for linux-mtd@lists.infradead.org; Thu, 02 Nov 2017 14:37:05 +0000
-Date: Thu, 2 Nov 2017 15:36:21 +0100
+ id 1eAH7b-0007y5-FY
+ for linux-mtd@lists.infradead.org; Thu, 02 Nov 2017 15:09:33 +0000
+Date: Thu, 2 Nov 2017 16:09:09 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Richard Genoud <richard.genoud@gmail.com>
 Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>, Peter Rosin
  <peda@axentia.se>, linux-mtd <linux-mtd@lists.infradead.org>,
  devicetree@vger.kernel.org
 Subject: Re: sam9x5: MTD numbering changed
-Message-ID: <20171102153621.677c6ae8@bbrezillon>
+Message-ID: <20171102160909.6eee6289@bbrezillon>
 In-Reply-To: <1509632027.16695.5.camel@gmail.com>
 References: <1509621436.16695.3.camel@gmail.com>
  <20171102133954.055ce285@bbrezillon>
@@ -90,9 +90,26 @@ t=C2=A0:
 >=20
 > I'll disable the ebi and switch back to the old binding in my dts for
 > now.
+> >  =20
+> > > (I tried poking around the DTS without succ=C3=A8s).
+> > >=20
+> > > any idea ? =20
+> >=20
+> > I don't have a perfect solution, but the problem you report clearly
+> > shows that relying on MTD numbering is unsafe and should be avoided. =20
+> Clearly, but who doesn't ? ;)
+>=20
 
-There's another trick you can try: move the node definition around to
-try to make the ECC and NAND controller drivers probe before the SPI
-one.
+Just had a lengthy discussion with Alexandre, and he brought a valid
+point: there has never been any guarantee on MTD numbering. Not only
+the order of DT nodes have an impact on the probe order, but also the
+order in which drivers are linked when creating the kernel image. Yes
+these things usually don't change, but I'm not sure it's a good idea
+to let user-space apps think it will never change in the future.
 
-It's ugly as hell, but should allow you to keep the new binding.
+How about fixing the scripts you were referring to instead of reverting
+the change? What's the blocking point?
+
+Regards,
+
+Boris
