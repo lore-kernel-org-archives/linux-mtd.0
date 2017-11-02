@@ -1,30 +1,15 @@
-Date: Wed, 1 Nov 2017 21:48:22 +0200
-From: Baruch Siach <baruch@tkos.co.il>
-To: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-Cc: Alan Cox <gnomes@lxorguk.ukuu.org.uk>,
- Mark Rutland <mark.rutland@arm.com>, Mason <slash.tmp@free.fr>,
- Russell King <linux@arm.linux.org.uk>,
- Jonathan Austin <jonathan.austin@arm.com>,
- Arnd Bergmann <arnd@arndb.de>, Nicolas Pitre <nico@linaro.org>,
- Peter Zijlstra <peterz@infradead.org>, Stephen Boyd <sboyd@codeaurora.org>,
- Michael Turquette <mturquette@baylibre.com>,
- Kevin Hilman <khilman@kernel.org>, Will Deacon <will.deacon@arm.com>,
- LKML <linux-kernel@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
- Douglas Anderson <dianders@chromium.org>,
- John Stultz <john.stultz@linaro.org>, Thomas Gleixner <tglx@linutronix.de>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Ingo Molnar <mingo@kernel.org>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- linux-mtd@lists.infradead.org
-Subject: Re: [RFC] Improving udelay/ndelay on platforms where that is possible
-Message-ID: <20171101194822.hd76z7zjazlqbsmy@tarshish>
-References: <d3f42f35-8175-58f6-78b7-3331efe64da2@sigmadesigns.com>
- <20171101175325.2557ce85@alans-desktop>
- <4b707ce0-6067-ab36-e167-1acf348d26bf@free.fr>
+From: <xiaolei.li@mediatek.com>
+To: <boris.brezillon@free-electrons.com>, <computersforpeace@gmail.com>
+CC: <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, <rogercc.lin@mediatek.com>,
+ <srv_heupstream@mediatek.com>, <xiaolei.li@mediatek.com>,
+ <bayi.cheng@mediatek.com>
+Subject: [PATCH v2] mtd: nand: mtk: use nand_reset() to reset NAND devices in
+ resume function
+Date: Thu, 2 Nov 2017 10:05:07 +0800
+Message-ID: <1509588307-38511-1-git-send-email-xiaolei.li@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4b707ce0-6067-ab36-e167-1acf348d26bf@free.fr>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,21 +19,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marc,
+From: Xiaolei Li <xiaolei.li@mediatek.com>
 
-On Wed, Nov 01, 2017 at 08:03:20PM +0100, Marc Gonzalez wrote:
-> On 01/11/2017 18:53, Alan Cox wrote: 
-> > For that matter given the bad blocks don't randomly change why not cache
-> > them ?
-> 
-> That's a good question, I'll ask the NAND framework maintainer.
-> Store them where, by the way? On the NAND chip itself?
+Previously, we only select chips and then send reset command to a NAND
+device during resuming nand driver. There is a lack of deselecting chips.
+It is advised to reset and initialize a NAND device using nand_reset().
 
-Yes. In the bad block table (bbt). See drivers/mtd/nand/nand_bbt.c.
+Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
+---
+ drivers/mtd/nand/mtk_nand.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-baruch
-
+diff --git a/drivers/mtd/nand/mtk_nand.c b/drivers/mtd/nand/mtk_nand.c
+index d86a7d1..6d0101e 100644
+--- a/drivers/mtd/nand/mtk_nand.c
++++ b/drivers/mtd/nand/mtk_nand.c
+@@ -1540,7 +1540,6 @@ static int mtk_nfc_resume(struct device *dev)
+ 	struct mtk_nfc *nfc = dev_get_drvdata(dev);
+ 	struct mtk_nfc_nand_chip *chip;
+ 	struct nand_chip *nand;
+-	struct mtd_info *mtd;
+ 	int ret;
+ 	u32 i;
+ 
+@@ -1553,11 +1552,8 @@ static int mtk_nfc_resume(struct device *dev)
+ 	/* reset NAND chip if VCC was powered off */
+ 	list_for_each_entry(chip, &nfc->chips, node) {
+ 		nand = &chip->nand;
+-		mtd = nand_to_mtd(nand);
+-		for (i = 0; i < chip->nsels; i++) {
+-			nand->select_chip(mtd, i);
+-			nand->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
+-		}
++		for (i = 0; i < chip->nsels; i++)
++			nand_reset(nand, i);
+ 	}
+ 
+ 	return 0;
 -- 
-     http://baruch.siach.name/blog/                  ~. .~   Tk Open Systems
-=}------------------------------------------------ooO--U--Ooo------------{=
-   - baruch@tkos.co.il - tel: +972.52.368.4656, http://www.tkos.co.il -
+1.9.1
