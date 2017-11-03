@@ -1,38 +1,31 @@
-Received: from bastet.se.axis.com ([195.60.68.11])
+Received: from mail-lf0-x233.google.com ([2a00:1450:4010:c07::233])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eAXzF-0001LL-G3
- for linux-mtd@lists.infradead.org; Fri, 03 Nov 2017 09:10:04 +0000
-Received: from localhost (localhost [127.0.0.1])
- by bastet.se.axis.com (Postfix) with ESMTP id F325918945
- for <linux-mtd@lists.infradead.org>; Fri,  3 Nov 2017 10:09:34 +0100 (CET)
-Received: from bastet.se.axis.com ([IPv6:::ffff:127.0.0.1])
- by localhost (bastet.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
- with LMTP id lD7WuaxOdKFF for <linux-mtd@lists.infradead.org>;
- Fri,  3 Nov 2017 10:09:26 +0100 (CET)
-Received: from boulder03.se.axis.com (boulder03.se.axis.com [10.0.8.17])
- by bastet.se.axis.com (Postfix) with ESMTPS id E51C41894B
- for <linux-mtd@lists.infradead.org>; Fri,  3 Nov 2017 10:09:26 +0100 (CET)
-Received: from boulder03.se.axis.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id D34931E0E1
- for <linux-mtd@lists.infradead.org>; Fri,  3 Nov 2017 10:09:26 +0100 (CET)
-Received: from boulder03.se.axis.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id C43841E0E0
- for <linux-mtd@lists.infradead.org>; Fri,  3 Nov 2017 10:09:26 +0100 (CET)
-Received: from seth.se.axis.com (unknown [10.0.2.172])
- by boulder03.se.axis.com (Postfix) with ESMTP
- for <linux-mtd@lists.infradead.org>; Fri,  3 Nov 2017 10:09:26 +0100 (CET)
-Received: from XBOX04.axis.com (xbox04.axis.com [10.0.5.18])
- by seth.se.axis.com (Postfix) with ESMTP id B81F825FB
- for <linux-mtd@lists.infradead.org>; Fri,  3 Nov 2017 10:09:26 +0100 (CET)
-From: Olle Blomgren <olle.blomgren@axis.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: jffs2: No space for garbage collection. Aborting GC thread
-Date: Fri, 3 Nov 2017 09:09:26 +0000
-Message-ID: <cf5af9b7bd0d4fdea9902b200b04d016@XBOX02.axis.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+ id 1eAY5I-0006Cq-1m
+ for linux-mtd@lists.infradead.org; Fri, 03 Nov 2017 09:16:18 +0000
+Received: by mail-lf0-x233.google.com with SMTP id r135so2371022lfe.5
+ for <linux-mtd@lists.infradead.org>; Fri, 03 Nov 2017 02:15:55 -0700 (PDT)
+Message-ID: <1509700551.6959.4.camel@gmail.com>
+Subject: Re: sam9x5: MTD numbering changed
+From: Richard Genoud <richard.genoud@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>
+Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>, Peter Rosin <peda@axentia.se>
+Date: Fri, 03 Nov 2017 10:15:51 +0100
+In-Reply-To: <20171103090655.7f767f6c@bbrezillon>
+References: <1509621436.16695.3.camel@gmail.com>
+ <20171102133954.055ce285@bbrezillon> <1509632027.16695.5.camel@gmail.com>
+ <20171102160909.6eee6289@bbrezillon> <1509636493.16695.9.camel@gmail.com>
+ <20171102164555.033dc99b@bbrezillon>
+ <CACQ1gAgBc-n_OzOOqy2rYzzRvXUXL6ezTD4FFk6ZZXMtmE4UaQ@mail.gmail.com>
+ <20171102185848.720e2ea1@bbrezillon>
+ <d3d3ff5c-b6e7-6756-ae7d-307f843e236e@wedev4u.fr>
+ <20171103090655.7f767f6c@bbrezillon>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,86 +35,269 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,=20
-=20
-I'm running load tests on an embedded device using NAND flash and jffs2. Af=
-ter 3-4 weeks of running the system under heavy load, the following occasio=
-nally occurs:
-1)
-CRC calc of a node fails.
-2)
-The daemon experiencing the write failure aborts. This is by design, nothin=
-g strange.
-3)
-JFFS2 reports ENOSPC and claims that the garbage collection is broken and a=
-borts.
-=20
-My Linux kernel version is 4.4.27.
+Le vendredi 03 novembre 2017 à 09:06 +0100, Boris Brezillon a écrit :
+> On Fri, 3 Nov 2017 00:12:17 +0100
+> Cyrille Pitchen <cyrille.pitchen@wedev4u.fr> wrote:
+> 
+> > Hi all,
+> > 
+> > Le 02/11/2017 à 18:58, Boris Brezillon a écrit :
+> > > On Thu, 2 Nov 2017 18:36:35 +0100
+> > > Richard Genoud <richard.genoud@gmail.com> wrote:
+> > >   
+> > > > 2017-11-02 16:45 GMT+01:00 Boris Brezillon <boris.brezillon@fre
+> > > > e-electrons.com>:  
+> > > > > On Thu, 02 Nov 2017 16:28:13 +0100
+> > > > > Richard Genoud <richard.genoud@gmail.com> wrote:
+> > > > >    
+> > > > > > +Nicolas
+> > > > > > [its email got lost somehow]
+> > > > > > Le jeudi 02 novembre 2017 à 16:09 +0100, Boris Brezillon a
+> > > > > > écrit :    
+> > > > > > > On Thu, 02 Nov 2017 15:13:47 +0100
+> > > > > > > Richard Genoud <richard.genoud@gmail.com> wrote:
+> > > > > > >    
+> > > > > > > > Le jeudi 02 novembre 2017 à 13:39 +0100, Boris
+> > > > > > > > Brezillon a écrit :    
+> > > > > > > > > +Nicolas
+> > > > > > > > > 
+> > > > > > > > > Hi Richard,
+> > > > > > > > > 
+> > > > > > > > > On Thu, 02 Nov 2017 12:17:16 +0100
+> > > > > > > > > Richard Genoud <richard.genoud@gmail.com> wrote:
+> > > > > > > > >    
+> > > > > > > > > > Hi,
+> > > > > > > > > > 
+> > > > > > > > > > I've got an at91sam9g35-cm based board, with 4
+> > > > > > > > > > partition on the
+> > > > > > > > > > spi-
+> > > > > > > > > > dataflas and 5 partitions on the NAND flash.
+> > > > > > > > > > Before commit 1004a2977bdc ("ARM: dts: at91: Switch
+> > > > > > > > > > to the new
+> > > > > > > > > > NAND
+> > > > > > > > > > bindings"),
+> > > > > > > > > > the NAND partitions were mtd0-4 and spi-dataflash
+> > > > > > > > > > partitions
+> > > > > > > > > > mtd5-
+> > > > > > > > > > 8.
+> > > > > > > > > > 
+> > > > > > > > > > Since commit 1004a2977bdc ("ARM: dts: at91: Switch
+> > > > > > > > > > to the new
+> > > > > > > > > > NAND
+> > > > > > > > > > bindings"),
+> > > > > > > > > > the spi-dataflash partitions are discovered before
+> > > > > > > > > > the NAND
+> > > > > > > > > > partitions.
+> > > > > > > > > > So NAND partition became mtd4-8 and spi-dataflash
+> > > > > > > > > > partition
+> > > > > > > > > > mtd0-3.
+> > > > > > > > > > 
+> > > > > > > > > > This broke some script that relied on the mtd
+> > > > > > > > > > numbering.
+> > > > > > > > > > 
+> > > > > > > > > > Updating those scripts to rely on the mtd device
+> > > > > > > > > > name instead
+> > > > > > > > > > of
+> > > > > > > > > > number is not really a problem. The real problem is
+> > > > > > > > > > when an
+> > > > > > > > > > older
+> > > > > > > > > > script using mtd numbering is run on the new system
+> > > > > > > > > > : I expect
+> > > > > > > > > > dead
+> > > > > > > > > > kittens everywhere !    
+> > > > > > > > > 
+> > > > > > > > > Crap! That was one of the thing I was afraid of when
+> > > > > > > > > changing the
+> > > > > > > > > binding: probe order has an impact on ids assigned to
+> > > > > > > > > MTD devs,
+> > > > > > > > > and
+> > > > > > > > > since things are not defined at the same place in the
+> > > > > > > > > DT, it
+> > > > > > > > > changes
+> > > > > > > > > the probe order.
+> > > > > > > > >    
+> > > > > > > > > > 
+> > > > > > > > > > So, I'd like to know if there's a way to force the
+> > > > > > > > > > older
+> > > > > > > > > > numbering
+> > > > > > > > > > ?    
+> > > > > > > > > 
+> > > > > > > > > Reverting the patches is probably the easiest way
+> > > > > > > > > (and it's
+> > > > > > > > > easily
+> > > > > > > > > backportable). Now, if we want to switch to the new
+> > > > > > > > > bindings at
+> > > > > > > > > some
+> > > > > > > > > point we'll need to support DT aliases for mtd devs:
+> > > > > > > > > 
+> > > > > > > > > aliases {
+> > > > > > > > >         mtdX = &flashpartN;
+> > > > > > > > >         mtdY = &flashdevM;
+> > > > > > > > > };
+> > > > > > > > > 
+> > > > > > > > > The problem with this solution is that it only works
+> > > > > > > > > if all
+> > > > > > > > > partitions
+> > > > > > > > > are defined in the DT, which is not always the case
+> > > > > > > > > (they can be
+> > > > > > > > > defined
+> > > > > > > > > on the command line with mtdparts=).    
+> > > > > > > > 
+> > > > > > > > Yes, and if they are different from the ones declared
+> > > > > > > > in
+> > > > > > > > at91sam9x5cm.dtsi, they are likely defined with
+> > > > > > > > mtdparts=, since
+> > > > > > > > AFAIK,
+> > > > > > > > we can't remove a declared partitionning.
+> > > > > > > > 
+> > > > > > > > I'll disable the ebi and switch back to the old binding
+> > > > > > > > in my dts
+> > > > > > > > for
+> > > > > > > > now.    
+> > > > > > > > >    
+> > > > > > > > > > (I tried poking around the DTS without succès).
+> > > > > > > > > > 
+> > > > > > > > > > any idea ?    
+> > > > > > > > > 
+> > > > > > > > > I don't have a perfect solution, but the problem you
+> > > > > > > > > report
+> > > > > > > > > clearly
+> > > > > > > > > shows that relying on MTD numbering is unsafe and
+> > > > > > > > > should be
+> > > > > > > > > avoided.    
+> > > > > > > > 
+> > > > > > > > Clearly, but who doesn't ? ;)
+> > > > > > > >    
+> > > > > > > 
+> > > > > > > Just had a lengthy discussion with Alexandre, and he
+> > > > > > > brought a valid
+> > > > > > > point: there has never been any guarantee on MTD
+> > > > > > > numbering. Not only
+> > > > > > > the order of DT nodes have an impact on the probe order,
+> > > > > > > but also the
+> > > > > > > order in which drivers are linked when creating the
+> > > > > > > kernel image. Yes
+> > > > > > > these things usually don't change, but I'm not sure it's
+> > > > > > > a good idea
+> > > > > > > to let user-space apps think it will never change in the
+> > > > > > > future.
+> > > > > > > 
+> > > > > > > How about fixing the scripts you were referring to
+> > > > > > > instead of
+> > > > > > > reverting
+> > > > > > > the change? What's the blocking point?    
+> > > > > > 
+> > > > > > I already fixed the user-space scripts (and actually, they
+> > > > > > predate the
+> > > > > > device-tree era, so at that time, relying on MTD numbering
+> > > > > > wasn't so
+> > > > > > bad :)).
+> > > > > > Anyway, here's the blocking point :
+> > > > > > 
+> > > > > > We have firmwares with an embedded script to update our
+> > > > > > boards. (more
+> > > > > > or less a FW + script in a zip file).
+> > > > > > Those old firmwares are already in the wild and rely on the
+> > > > > > old MTD
+> > > > > > numbering (yes, that's bad).
+> > > > > > 
+> > > > > > 
+> > > > > > So, even if all new scripts are corrected in the new
+> > > > > > firmwares,
+> > > > > > downgrading a board with an old firmware/old script will
+> > > > > > brick the
+> > > > > > board.
+> > > > > > So I'll have to detect that and forbid downgrading.    
+> > > > > 
+> > > > > Not sure what you refer to when you're talking about 'FW',
+> > > > > but I'd
+> > > > > expect it to contain a kernel [+ a dtb] + a rootfs, so if
+> > > > > you're using
+> > > > > an old "FW+update-script", you will still have the old
+> > > > > numbering and
+> > > > > the old script will work just fine, and if you switch to a
+> > > > > newer version
+> > > > > of the "FW+update-script" based on a 4.13 kernel+dtb you will
+> > > > > anyway
+> > > > > have the updated script. Am I missing something?    
+> > > > 
+> > > > Ok, let's have an example.
+> > > > New firmware : kernel
+> > > > 4.14+dtb+rootfs+uboot+uboot_env+at91bootstrap+new update
+> > > > script.
+> > > > Old firmware : kernel 4.11 + dtb + rootfs + uboot +
+> > > > uboot_env+at91bootstrap+old update script.
+> > > > 
+> > > > Let's suppose there's the new firmware on the board (let's call
+> > > > it
+> > > > 4.14 firmware) :
+> > > > MTD0 is the dataflash partition 0 (at91bootstrap)
+> > > > MTD1 is the dataflash part1 (uboot)
+> > > > MTD2 is the dataflash part2 (ubootenv)
+> > > > MTD3 is the dataflash part3 (free space)
+> > > > MTD4 is the NAND part 0 (dtb)
+> > > > MTD5 is the NAND part 1 (kernel)
+> > > > MTD6 is the NAND part 2 (UBI) <- in this one, there're 3 ubifs
+> > > > volumes
+> > > > : rootfs/rootfs2/data
+> > > > 
+> > > > The thing is, the update script runs in user-space and updates
+> > > > the
+> > > > kernel, dtb, uboot, bootstrap and flashes the rootfs2.
+> > > > (on next boot, the rootfs2/rootfs will be atomically swapped)
+> > > > So, when downgrading, the old update script is executed on the
+> > > > board,
+> > > > under the 4.14 firmware, thinking that MTD0 is the NAND part0
+> > > > (dtb),
+> > > > while it is actually the dataflash part0 (bootstrap).  
+> > > > => the bootstrap is erased and replaced by the dtb (well,
+> > > > actually, it    
+> > > > won't even be like that since there will be a mismatch between
+> > > > nandwrite/flash_part).  
+> > > 
+> > > Can you re-generate zip archives for old versions? If you can
+> > > maybe it
+> > > would be simpler to just embed the new update script (assuming
+> > > this
+> > > script works fine with both old and new FW) in old FW archives.
+> > >  
+> > 
+> > No sure, I've totally understand the issue, if not sorry for the
+> > noise!
+> > 
+> > Would it be possible to use some udev rules to create some symbolic
+> > links
+> > in /dev based on ATTRS{name}, the mtd partition names?
+> > 
+> > something like:
+> > /dev/mtd-at91bootstrap -> /dev/mtd0
+> > /dev/mtd-uboot -> /dev/mtd1
+> > /dev/mtd-ubootenv -> /dev/mtd2
+> > /dev/mtd-free -> /dev/mtd3
+> > /dev/mtd-dtb -> /dev/mtd4
+> > /dev/mtd-kernel -> /dev/mtd5
+> > /dev/mtd-ubi -> /dev/mtd6
+> 
+> Yep, we should definitely have a udev rule populating
+> a /dev/mtd/by-name/ directory, just like there is a /dev/disk/by-
+> uuid.
+Yes, udev rules can be a solution.
+And I agree on the /dev/mtd/by-name/ directory, that would be a nice
+thing.
 
-A system log follows:
-=20
-kernel 04 kern.warning [4927999.241539] jffs2: Data CRC 961e0790 !=3D calcu=
-lated CRC 2e43ceec for node at 020a38e0
-pacsd 0b user.err 11:20:57.793040 (0xa55800) Failed to clear table: Credent=
-ial
-kernel 06 kern.info [4927999.843684] potentially unexpected fatal signal 5.
-kernel 04 kern.warning [4927999.843741]=20
-kernel 04 kern.warning [4927999.843741] Code: 8c658bd8  240210aa  0000000c =
-<14e00003> 00000000  03e00008  00000000  7c03e83b  00602021=20
-kernel 04 kern.warning [4927999.843864] CPU: 0 PID: 984 Comm: GMain Tainted=
-: G           O    4.4.27 #1
-kernel 04 kern.warning [4927999.843911] task: 8d710248 ti: 8b15a000 task.ti=
-: 8b15a000
-kernel 04 kern.warning [4927999.843941] $ 0   : 00000000 10800108 00000000 =
-76931880
-kernel 04 kern.warning [4927999.843990] $ 4   : 000003d7 000003d8 00000005 =
-00000000
-kernel 04 kern.warning [4927999.844037] $ 8   : 7692995c 77698000 77696d24 =
-f0000000
-kernel 04 kern.warning [4927999.844085] $12   : 00000000 00000001 00000000 =
-76929878
-kernel 04 kern.warning [4927999.844134] $16   : 00000000 00000000 77116050 =
-00000004
-kernel 04 kern.warning [4927999.844180] $20   : 77116030 00000000 00000004 =
-00000006
-kernel 04 kern.warning [4927999.844230] $24   : 00000726 76fb4010          =
-       =20
-kernel 04 kern.warning [4927999.844278] $28   : 76fd1020 76929a20 00000002 =
-77029170
-kernel 04 kern.warning [4927999.844329] Hi    : 00000328
-kernel 04 kern.warning [4927999.844359] Lo    : 00001deb
-kernel 04 kern.warning [4927999.844400] epc   : 76fb4048 0x76fb4048
-kernel 04 kern.warning [4927999.844439] ra    : 77029170 0x77029170
-kernel 04 kern.warning [4927999.844465] Status: 01006313    USER EXL IE=20
-kernel 04 kern.warning [4927999.844508] Cause : 10800020 (ExcCode 08)
-kernel 04 kern.warning [4927999.844541] PrId  : 01019550 (MIPS 34Kc)
-kernel 04 kern.warning [4928006.637086] jffs2: Data CRC 961e0790 !=3D calcu=
-lated CRC 2e43ceec for node at 020a38e0
-kernel 04 kern.warning [4928006.637144] jffs2: read_cache_page() returned e=
-rror: -5
-kernel 03 kern.err [4928006.637166] jffs2: Error garbage collecting node at=
- 020a38e0!
-kernel 05 kern.notice [4928006.637577] jffs2: No space for garbage collecti=
-on. Aborting GC thread
-kernel 04 kern.warning [4928006.964636] jffs2: Data CRC 961e0790 !=3D calcu=
-lated CRC 2e43ceec for node at 020a38e0
-kernel 04 kern.warning [4928006.964694] jffs2: read_cache_page() returned e=
-rror: -5
-kernel 03 kern.err [4928006.964717] jffs2: Error garbage collecting node at=
- 020a38e0!
-kernel 04 kern.warning [4928006.967060] jffs2: Data CRC 961e0790 !=3D calcu=
-lated CRC 2e43ceec for node at 020a38e0
-kernel 04 kern.warning [4928006.967109] jffs2: read_cache_page() returned e=
-rror: -5
-kernel 03 kern.err [4928006.967132] jffs2: Error garbage collecting node at=
- 020a38e0!
-                                                               :
-                                              ...goes on forever...
-=20
-Questions:
-Has anyone seen this before?
-Does anyone have any wild guesses as to under what circumstances JFFS2 woul=
-d run out of memory?
-=20
-Thanks!
-/Olle
+> 
+> > 
+> > Then if the new update script only uses symbolic names, it should
+> > work with
+> > both linux 4.11 and 4.14 kernels.
+> > 
+> > But I think I didn't totally understand why/how the old update
+> > script would
+> > be run under the new kernel :p
+> 
+> The problem is that the update script in embedded in the archive
+> containing image(s) to flash, so old archives still have the old
+> script, which means, if you try to downgrade to an older version from
+> a
+> new version you're screwed because it will use /dev/mtdX directly
+> without checking if this is the right partition.
