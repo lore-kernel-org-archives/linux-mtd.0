@@ -1,31 +1,31 @@
 Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eARw5-0002nI-Kp
- for linux-mtd@lists.infradead.org; Fri, 03 Nov 2017 02:42:23 +0000
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+ id 1eARw5-0002nP-K5
+ for linux-mtd@lists.infradead.org; Fri, 03 Nov 2017 02:42:25 +0000
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.16.0.21/8.16.0.21) with SMTP id
- vA32crZI031794
- for <linux-mtd@lists.infradead.org>; Thu, 2 Nov 2017 22:42:00 -0400
-Received: from e06smtp13.uk.ibm.com (e06smtp13.uk.ibm.com [195.75.94.109])
- by mx0a-001b2d01.pphosted.com with ESMTP id 2e08mkm4fe-1
+ vA32cxTH136112
+ for <linux-mtd@lists.infradead.org>; Thu, 2 Nov 2017 22:42:01 -0400
+Received: from e06smtp11.uk.ibm.com (e06smtp11.uk.ibm.com [195.75.94.107])
+ by mx0a-001b2d01.pphosted.com with ESMTP id 2e06d7kbe0-1
  (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=NOT)
- for <linux-mtd@lists.infradead.org>; Thu, 02 Nov 2017 22:41:59 -0400
+ for <linux-mtd@lists.infradead.org>; Thu, 02 Nov 2017 22:42:00 -0400
 Received: from localhost
- by e06smtp13.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ by e06smtp11.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
  Violators will be prosecuted
  for <linux-mtd@lists.infradead.org> from <cyrilbur@gmail.com>;
- Fri, 3 Nov 2017 02:41:57 -0000
+ Fri, 3 Nov 2017 02:41:58 -0000
 From: Cyril Bur <cyrilbur@gmail.com>
 To: linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
  stewart@linux.vnet.ibm.com
 Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
  boris.brezillon@free-electrons.com, sjitindarsingh@gmail.com
-Subject: [PATCH v5 01/10] mtd: powernv_flash: Use WARN_ON_ONCE() rather than
- BUG_ON()
-Date: Fri,  3 Nov 2017 13:41:37 +1100
+Subject: [PATCH v5 10/10] mtd: powernv_flash: Use
+ opal_async_wait_response_interruptible()
+Date: Fri,  3 Nov 2017 13:41:46 +1100
 In-Reply-To: <20171103024146.17086-1-cyrilbur@gmail.com>
 References: <20171103024146.17086-1-cyrilbur@gmail.com>
-Message-Id: <20171103024146.17086-2-cyrilbur@gmail.com>
+Message-Id: <20171103024146.17086-11-cyrilbur@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,31 +35,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-BUG_ON() should be reserved in situations where we can not longer
-guarantee the integrity of the system. In the case where
-powernv_flash_async_op() receives an impossible op, we can still
-guarantee the integrity of the system.
+The OPAL calls performed in this driver shouldn't be using
+opal_async_wait_response() as this performs a wait_event() which, on
+long running OPAL calls could result in hung task warnings. wait_event()
+prevents timely signal delivery which is also undesirable.
+
+This patch also attempts to quieten down the use of dev_err() when
+errors haven't actually occurred and also to return better information up
+the stack rather than always -EIO.
 
 Signed-off-by: Cyril Bur <cyrilbur@gmail.com>
 Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/devices/powernv_flash.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mtd/devices/powernv_flash.c | 57 +++++++++++++++++++++++--------------
+ 1 file changed, 35 insertions(+), 22 deletions(-)
 
 diff --git a/drivers/mtd/devices/powernv_flash.c b/drivers/mtd/devices/powernv_flash.c
-index f5396f26ddb4..f9ec38281ff2 100644
+index 3343d4f5c4f3..26f9feaa5d17 100644
 --- a/drivers/mtd/devices/powernv_flash.c
 +++ b/drivers/mtd/devices/powernv_flash.c
-@@ -78,7 +78,9 @@ static int powernv_flash_async_op(struct mtd_info *mtd, enum flash_op op,
- 		rc = opal_flash_erase(info->id, offset, len, token);
- 		break;
- 	default:
--		BUG_ON(1);
-+		WARN_ON_ONCE(1);
-+		opal_async_release_token(token);
-+		return -EIO;
+@@ -89,33 +89,46 @@ static int powernv_flash_async_op(struct mtd_info *mtd, enum flash_op op,
+ 		return -EIO;
  	}
  
- 	if (rc != OPAL_ASYNC_COMPLETION) {
+-	if (rc == OPAL_SUCCESS)
+-		goto out_success;
++	if (rc == OPAL_ASYNC_COMPLETION) {
++		rc = opal_async_wait_response_interruptible(token, &msg);
++		if (rc) {
++			/*
++			 * If we return the mtd core will free the
++			 * buffer we've just passed to OPAL but OPAL
++			 * will continue to read or write from that
++			 * memory.
++			 * It may be tempting to ultimately return 0
++			 * if we're doing a read or a write since we
++			 * are going to end up waiting until OPAL is
++			 * done. However, because the MTD core sends
++			 * us the userspace request in chunks, we need
++			 * it to know we've been interrupted.
++			 */
++			rc = -EINTR;
++			if (opal_async_wait_response(token, &msg))
++				dev_err(dev, "opal_async_wait_response() failed\n");
++			goto out;
++		}
++		rc = opal_get_async_rc(msg);
++	}
+ 
+-	if (rc != OPAL_ASYNC_COMPLETION) {
++	/*
++	 * OPAL does mutual exclusion on the flash, it will return
++	 * OPAL_BUSY.
++	 * During firmware updates by the service processor OPAL may
++	 * be (temporarily) prevented from accessing the flash, in
++	 * this case OPAL will also return OPAL_BUSY.
++	 * Both cases aren't errors exactly but the flash could have
++	 * changed, userspace should be informed.
++	 */
++	if (rc != OPAL_SUCCESS && rc != OPAL_BUSY)
+ 		dev_err(dev, "opal_flash_async_op(op=%d) failed (rc %d)\n",
+ 				op, rc);
+-		rc = -EIO;
+-		goto out;
+-	}
+ 
+-	rc = opal_async_wait_response(token, &msg);
+-	if (rc) {
+-		dev_err(dev, "opal async wait failed (rc %d)\n", rc);
+-		rc = -EIO;
+-		goto out;
+-	}
+-
+-	rc = opal_get_async_rc(msg);
+-out_success:
+-	if (rc == OPAL_SUCCESS) {
+-		rc = 0;
+-		if (retlen)
+-			*retlen = len;
+-	} else {
+-		rc = -EIO;
+-	}
++	if (rc == OPAL_SUCCESS && retlen)
++		*retlen = len;
+ 
++	rc = opal_error_code(rc);
+ out:
+ 	opal_async_release_token(token);
+ 	return rc;
 -- 
 2.15.0
