@@ -1,20 +1,20 @@
-Received: from mx0.itk-engineering.de ([212.121.145.30])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eBlZI-0003V6-Sr
- for linux-mtd@lists.infradead.org; Mon, 06 Nov 2017 17:52:19 +0000
-From: Martin Hollingsworth <Martin.Hollingsworth@itk-engineering.de>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: AW: ubiupdatevol read input from stdin or similar
-Date: Mon, 6 Nov 2017 17:51:54 +0000
-Message-ID: <2ffa5c3a2d514727a5a800b720530d8c@itk-engineering.de>
-References: <f46ce07819e74170a974bb7b0b5cddf1@itk-engineering.de>
- <CAFLxGvz=3DP7BtB0=LWjGW2opMd1YuDn4A-ouQjbF9DDnMhMBw@mail.gmail.com>
-In-Reply-To: <CAFLxGvz=3DP7BtB0=LWjGW2opMd1YuDn4A-ouQjbF9DDnMhMBw@mail.gmail.com>
-Content-Language: de-DE
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eBow8-0000Id-9J
+ for linux-mtd@lists.infradead.org; Mon, 06 Nov 2017 21:28:06 +0000
+From: Richard Weinberger <richard@sigma-star.at>
+To: Ryan Meulenkamp <Ryan.Meulenkamp@nedap.com>
+Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: Shrink UBIFS
+Date: Mon, 06 Nov 2017 22:27:52 +0100
+Message-ID: <6271760.AoYFF9PDUs@blindfold>
+In-Reply-To: <1508397182265.19514@nedap.com>
+References: <1506598982834.31024@nedap.com> <12883157.QBeLzUQkuA@blindfold>
+ <1508397182265.19514@nedap.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,10 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBEaWQgeW91IHRyeSB1c2luZyAiLSIgYXMgZmlsZW5hbWU/DQoNClRoYXQgZG9lcyB0aGUgdHJp
-Y2shDQoNCkV4YW1wbGU6DQpkZCBpZj0vZGV2L3VyYW5kb20gfCB1Yml1cGRhdGV2b2wgL2Rldi91
-YmkxMV8yIC0gLS1zaXplPTY1NjczMjE2DQpXaGVyZSBzaXplIGVxdWFscyB0aGUgZXhhY3Qgc2l6
-ZSBvZiB0aGUgZGF0YSB5b3UgZXhwZWN0IHRvIGNvbWUgb3ZlciB0aGUgcGlwZSAoaGVuY2UgdGhl
-IHNpemUgb2YgdGhlIHJlYWwgc291cmNlIHRoYXQgZGQgb3IgYW55IG90aGVyIHRvb2wgd291bGQg
-cmVhZCBpbiB0aGlzIGNhc2UpLg0KDQpUaGFua3MgdG8geW91IFJpY2hhcmQgYW5kIHJlZ2FyZHMs
-DQpNYXJ0aW4gSG9sbGluZ3N3b3J0aA0K
+Ryan,
+
+Am Donnerstag, 19. Oktober 2017, 09:13:03 CET schrieb Ryan Meulenkamp:
+> Hi,
+> 
+> I've been working on something else for a while, but this is the status on
+> resizing so far:
+
+A diff is not really a good status report. ;)
+
+Can you please outline what works so far and what not?
+Is there some point where you need technical input from us?
+
+Thanks,
+//richard
+
+-- 
+sigma star gmbh - Eduard-Bodem-Gasse 6 - 6020 Innsbruck - Austria
+ATU66964118 - FN 374287y
