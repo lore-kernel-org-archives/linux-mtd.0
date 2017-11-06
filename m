@@ -1,19 +1,26 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eBpYI-0000Qv-8v
- for linux-mtd@lists.infradead.org; Mon, 06 Nov 2017 22:07:32 +0000
-From: Miquel Raynal <miquel.raynal@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eBpta-000443-Vg
+ for linux-mtd@lists.infradead.org; Mon, 06 Nov 2017 22:29:36 +0000
+Received: by mail-lf0-x242.google.com with SMTP id a2so12241985lfh.11
+ for <linux-mtd@lists.infradead.org>; Mon, 06 Nov 2017 14:29:05 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20171019225549.11422-1-roy.franz@cavium.com>
+References: <20171019225549.11422-1-roy.franz@cavium.com>
+From: Roy Franz <rfranz@cavium.com>
+Date: Mon, 6 Nov 2017 14:29:02 -0800
+Message-ID: <CAKWsp+zhqHZaUjbzeutxqE81f5orOLMd6uNVoYifjeYibhAD5w@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: slram: use memremap() instead of ioremap()
+To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@free-electrons.com>
-Subject: [PATCH] mtd: nand: fix interpretation of NAND_CMD_NONE in core
- ->cmdfunc()
-Date: Mon,  6 Nov 2017 23:07:04 +0100
-Message-Id: <20171106220704.2340-1-miquel.raynal@free-electrons.com>
+ boris.brezillon@free-electrons.com,
+ =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marek.vasut@gmail.com>,
+ richard@nod.at, cyrille.pitchen@wedev4u.fr
+Cc: "Roy Franz (roy.franz@cavium.com) (roy.franz@cavium.com)"
+ <roy.franz@cavium.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ David Daney <ddaney@cavium.com>, Christoph Hellwig <hch@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,46 +30,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some drivers (like nand_hynix.c) call ->cmdfunc() with NAND_CMD_NONE and
-an address byte in order to only send one address cycle to the flash
-chip.
+ping - is this suitable for 4.15?
 
-Fix the current implementation that actually send NAND_CMD_NONE, which
-is defined as -1 (cast in a u8), thus sending an 0xFF command to the
-chip, which is actually a reset command.
+Thanks,
+Roy
 
-Add the condition in both nand_command() and nand_command_lp() to avoid
-calling ->cmd_ctrl() in that case.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
----
- drivers/mtd/nand/nand_base.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index c63e4a88a653..851f25383622 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -710,7 +710,8 @@ static void nand_command(struct mtd_info *mtd, unsigned int command,
- 		chip->cmd_ctrl(mtd, readcmd, ctrl);
- 		ctrl &= ~NAND_CTRL_CHANGE;
- 	}
--	chip->cmd_ctrl(mtd, command, ctrl);
-+	if (command != NAND_CMD_NONE)
-+		chip->cmd_ctrl(mtd, command, ctrl);
- 
- 	/* Address cycle, when necessary */
- 	ctrl = NAND_CTRL_ALE | NAND_CTRL_CHANGE;
-@@ -831,7 +832,9 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
- 	}
- 
- 	/* Command latch cycle */
--	chip->cmd_ctrl(mtd, command, NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
-+	if (command != NAND_CMD_NONE)
-+		chip->cmd_ctrl(mtd, command,
-+			       NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
- 
- 	if (column != -1 || page_addr != -1) {
- 		int ctrl = NAND_CTRL_CHANGE | NAND_NCE | NAND_ALE;
--- 
-2.11.0
+On Thu, Oct 19, 2017 at 3:55 PM, Roy Franz <rfranz@cavium.com> wrote:
+> Convert slram to use memremap() to map the memory it uses to back an MTD
+> device, as this is the proper interface for mapping memory. This change
+> enables normal memory to be used to back an MTD device on arm64, as arm64
+> prevents ioremap() being used on normal memory.
+>
+> Signed-off-by: Roy Franz <roy.franz@cavium.com>
+> Acked-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+> Tested-by: David Daney <david.daney@cavium.com>
+> ---
+> Tested on arm64 simulation, using simulator to preload filesystem image into RAM,
+> and also tested on x86_64 using video card memory.  This is useful for speeding
+> up booting on (very slow) emulation environments by avoiding any processing of
+> an initramfs.
+> David Daney tested on MIPS64.
+>
+> v2: Fix typo in subject line, s/mdt/mtd/
+>     added acked-by/tested-by
+>
+>  drivers/mtd/devices/slram.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/mtd/devices/slram.c b/drivers/mtd/devices/slram.c
+> index 8087c36dc693..0ec85f316d24 100644
+> --- a/drivers/mtd/devices/slram.c
+> +++ b/drivers/mtd/devices/slram.c
+> @@ -163,8 +163,9 @@ static int register_device(char *name, unsigned long start, unsigned long length
+>         }
+>
+>         if (!(((slram_priv_t *)(*curmtd)->mtdinfo->priv)->start =
+> -                               ioremap(start, length))) {
+> -               E("slram: ioremap failed\n");
+> +               memremap(start, length,
+> +                        MEMREMAP_WB | MEMREMAP_WT | MEMREMAP_WC))) {
+> +               E("slram: memremap failed\n");
+>                 return -EIO;
+>         }
+>         ((slram_priv_t *)(*curmtd)->mtdinfo->priv)->end =
+> @@ -186,7 +187,7 @@ static int register_device(char *name, unsigned long start, unsigned long length
+>
+>         if (mtd_device_register((*curmtd)->mtdinfo, NULL, 0))   {
+>                 E("slram: Failed to register new device\n");
+> -               iounmap(((slram_priv_t *)(*curmtd)->mtdinfo->priv)->start);
+> +               memunmap(((slram_priv_t *)(*curmtd)->mtdinfo->priv)->start);
+>                 kfree((*curmtd)->mtdinfo->priv);
+>                 kfree((*curmtd)->mtdinfo);
+>                 return(-EAGAIN);
+> @@ -206,7 +207,7 @@ static void unregister_devices(void)
+>         while (slram_mtdlist) {
+>                 nextitem = slram_mtdlist->next;
+>                 mtd_device_unregister(slram_mtdlist->mtdinfo);
+> -               iounmap(((slram_priv_t *)slram_mtdlist->mtdinfo->priv)->start);
+> +               memunmap(((slram_priv_t *)slram_mtdlist->mtdinfo->priv)->start);
+>                 kfree(slram_mtdlist->mtdinfo->priv);
+>                 kfree(slram_mtdlist->mtdinfo);
+>                 kfree(slram_mtdlist);
+> --
+> 2.11.0
+>
