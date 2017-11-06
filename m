@@ -1,22 +1,20 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eAvCu-0000ot-1q
- for linux-mtd@lists.infradead.org; Sat, 04 Nov 2017 09:57:43 +0000
-Date: Sat, 4 Nov 2017 10:57:14 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Jean-Louis Thekekara <jeanlouis.thekekara@parrot.com>
-Cc: <linux-mtd@lists.infradead.org>, KOBAYASHI Yoshitake
- <yoshitake.kobayashi@toshiba.co.jp>
-Subject: Re: [PATCH -next] mtd: nand: Add support for Toshiba BENAND
- (Built-in ECC NAND)
-Message-ID: <20171104105714.51c12f3b@bbrezillon>
-In-Reply-To: <36cc0535-09c9-8bd0-8ff2-85ccab17f765@parrot.com>
-References: <1495761335-20535-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
- <20170526182254.6a4f98c8@bbrezillon>
- <36cc0535-09c9-8bd0-8ff2-85ccab17f765@parrot.com>
+Received: from ozlabs.org ([103.22.144.67])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eBduc-0007b9-1l
+ for linux-mtd@lists.infradead.org; Mon, 06 Nov 2017 09:41:50 +0000
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Cyril Bur <cyrilbur@gmail.com>, linux-mtd@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, stewart@linux.vnet.ibm.com
+Cc: boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org, sjitindarsingh@gmail.com
+Subject: Re: [PATCH v5 06/10] powerpc/opal: Rework the opal-async interface
+In-Reply-To: <20171103024146.17086-7-cyrilbur@gmail.com>
+References: <20171103024146.17086-1-cyrilbur@gmail.com>
+ <20171103024146.17086-7-cyrilbur@gmail.com>
+Date: Mon, 06 Nov 2017 20:41:18 +1100
+Message-ID: <87h8u7bv7l.fsf@concordia.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,131 +24,116 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+Kobayashi
+Cyril Bur <cyrilbur@gmail.com> writes:
 
-Hi Jean-Louis,
+> diff --git a/arch/powerpc/platforms/powernv/opal-async.c b/arch/powerpc/platforms/powernv/opal-async.c
+> index c43421ab2d2f..fbae8a37ce2c 100644
+> --- a/arch/powerpc/platforms/powernv/opal-async.c
+> +++ b/arch/powerpc/platforms/powernv/opal-async.c
+> @@ -23,40 +23,45 @@
+>  #include <asm/machdep.h>
+>  #include <asm/opal.h>
+>  
+> -#define N_ASYNC_COMPLETIONS	64
+> +enum opal_async_token_state {
+> +	ASYNC_TOKEN_UNALLOCATED = 0,
+> +	ASYNC_TOKEN_ALLOCATED,
+> +	ASYNC_TOKEN_COMPLETED
+> +};
+> +
+> +struct opal_async_token {
+> +	enum opal_async_token_state state;
+> +	struct opal_msg response;
+> +};
+>  
+> -static DECLARE_BITMAP(opal_async_complete_map, N_ASYNC_COMPLETIONS) = {~0UL};
+> -static DECLARE_BITMAP(opal_async_token_map, N_ASYNC_COMPLETIONS);
+>  static DECLARE_WAIT_QUEUE_HEAD(opal_async_wait);
+>  static DEFINE_SPINLOCK(opal_async_comp_lock);
+>  static struct semaphore opal_async_sem;
+> -static struct opal_msg *opal_async_responses;
+>  static unsigned int opal_max_async_tokens;
+> +static struct opal_async_token *opal_async_tokens;
+>  
+>  static int __opal_async_get_token(void)
+>  {
+>  	unsigned long flags;
+> -	int token;
+> +	int token = -EBUSY;
+>  
+>  	spin_lock_irqsave(&opal_async_comp_lock, flags);
+> -	token = find_first_bit(opal_async_complete_map, opal_max_async_tokens);
+> -	if (token >= opal_max_async_tokens) {
+> -		token = -EBUSY;
+> -		goto out;
+> +	for (token = 0; token < opal_max_async_tokens; token++) {
+> +		if (opal_async_tokens[token].state == ASYNC_TOKEN_UNALLOCATED) {
+> +			opal_async_tokens[token].state = ASYNC_TOKEN_ALLOCATED;
+> +			goto out;
+> +		}
+>  	}
+> -
+> -	if (__test_and_set_bit(token, opal_async_token_map)) {
+> -		token = -EBUSY;
+> -		goto out;
+> -	}
+> -
+> -	__clear_bit(token, opal_async_complete_map);
+> -
+>  out:
+>  	spin_unlock_irqrestore(&opal_async_comp_lock, flags);
+>  	return token;
+>  }
 
-Sorry for the late reply, I completely missed your email (try to Cc
-all participants of the discussion next time, not only the MTD ML).
+Resulting in:
 
-On Wed, 28 Jun 2017 18:45:37 +0200
-Jean-Louis Thekekara <jeanlouis.thekekara@parrot.com> wrote:
+ static int __opal_async_get_token(void)
+ {
+ 	unsigned long flags;
++	int token = -EBUSY;
+ 
+ 	spin_lock_irqsave(&opal_async_comp_lock, flags);
++	for (token = 0; token < opal_max_async_tokens; token++) {
++		if (opal_async_tokens[token].state == ASYNC_TOKEN_UNALLOCATED) {
++			opal_async_tokens[token].state = ASYNC_TOKEN_ALLOCATED;
++			goto out;
++		}
+ 	}
+ out:
+ 	spin_unlock_irqrestore(&opal_async_comp_lock, flags);
+ 	return token;
+ }
 
-> Hi Kobayashi, Boris,
-> 
-> I'm using a Toshiba BENAND for our next product and had to adapt the 
-> original patch for our custom kernel (4.9). I was about to propose a 
-> patch for linux-next until I see this update proposed by Kobayashi.
-> 
-> I have a few comments on it.
-> 
-> On 26/05/2017 18:22, boris.brezillon at free-electrons.com (Boris
-> >> +config MTD_NAND_BENAND
-> >> +	bool "Support for Toshiba BENAND (Built-in ECC NAND)"
-> >> +	default n
-> >> +	help
-> >> +	  This enables support for Toshiba BENAND.
-> >> +	  Toshiba BENAND is a SLC NAND solution that automatically
-> >> +	  generates ECC inside NAND chip.
-> >> +
-> >> +config MTD_NAND_BENAND_ECC_STATUS
-> >> +	bool "Enable ECC Status Read Command(0x7A)"
-> >> +	depends on MTD_NAND_BENAND
-> >> +	default n
-> >> +	help
-> >> +	  This enables support for ECC Status Read Command(0x7A) of BENAND.
-> >> +	  When this enables, report the real number of bitflips.
-> >> +	  In other cases, report the assumud number.
-> >> +  
-> > 
-> > Please drop the Kconfig options. The amount of code added here is quite
-> > small, and I don't think we need to compile it out. If the vendor code
-> > continues to grow we'll see how we want to deal with that, but we're
-> > not there yet.
-> >   
-> I'm interested into keeping MTD_NAND_BENAND_ECC_STATUS config for two 
-> reasons:
-> 
-> * if disabled, this can save some extra cycles. One can decide to report 
-> an arbitrary number of bitflips (= mtd->bitflip_threshold), it's fine.
+So when no unallocated token is found we return opal_max_async_tokens :(
 
-I don't get why you would report a random number of bitflips in this
-case.
+I changed it to:
 
-> * some NAND controller/driver might not support this command, as you 
-> stated later.
+static int __opal_async_get_token(void)
+{
+	unsigned long flags;
+	int i, token = -EBUSY;
 
-You can do that without adding an extra Kconfig option: just don't set
-ecc->mode to NAND_ECC_ONDIE and you should be good.
+	spin_lock_irqsave(&opal_async_comp_lock, flags);
 
-> 
-> >>   static void toshiba_nand_decode_id(struct nand_chip *chip)
-> >>   {
-> >>   	struct mtd_info *mtd = nand_to_mtd(chip);
-> >> @@ -33,15 +124,32 @@ static void toshiba_nand_decode_id(struct nand_chip *chip)
-> >>   	 */
-> >>   	if (chip->id.len >= 6 && nand_is_slc(chip) &&
-> >>   	    (chip->id.data[5] & 0x7) == 0x6 /* 24nm */ &&
-> >> -	    !(chip->id.data[4] & 0x80) /* !BENAND */)
-> >> -		mtd->oobsize = 32 * mtd->writesize >> 9;
-> >> +	    (chip->id.data[4] & 0x80) /* BENAND */) {
-> >> +		if (IS_ENABLED(CONFIG_MTD_NAND_BENAND))
-> >> +			chip->ecc.mode = NAND_ECC_BENAND;  
-> > 
-> > No, you should not set that explicitly. This choice should be left to
-> > the user. Now, since the internal ECC engine cannot be disabled here,
-> > you should fail in toshiba_nand_init() if you are dealing with a BENAND
-> > and chip->ecc.mode != NAND_ECC_ON_DIE.
-> > 
-> >   
-> >> +	} else {
-> >> +		mtd->oobsize = 32 * mtd->writesize >> 9;	/* !BENAND */
-> >> +	}  
-> > 
-> > You're changing the ID decoding logic here.
-> > 
-> > It should be:
-> > 
-> > 	if (chip->id.len >= 6 && nand_is_slc(chip) &&
-> >    	    (chip->id.data[5] & 0x7) == 0x6 /* 24nm */) {
-> > 		if (chip->id.data[4] & 0x80)
-> > 			chip->ecc.mode = NAND_ECC_BENAND;
-> > 		else
-> > 			mtd->oobsize = 32 * mtd->writesize >> 9;
-> > 	}  
-> >>   }
-> >>  
-> 
-> I have a BENAND in my hands which, according to the datasheet reports 
-> only 5 bytes, so we can't depend on chip->id.len >= 6 for selecting 
-> NAND_ECC_BENAND. Another reason: some NAND controller don't report more 
-> than 5 bytes (which is, by the way, our case).
-> 
+	for (i = 0; i < opal_max_async_tokens; i++) {
+		if (opal_async_tokens[i].state == ASYNC_TOKEN_UNALLOCATED) {
+			opal_async_tokens[i].state = ASYNC_TOKEN_ALLOCATED;
+			token = i;
+			break;
+		}
+	}
 
-Kobayashi, can you take that into account in your next iteration?
+	spin_unlock_irqrestore(&opal_async_comp_lock, flags);
+	return token;
+}
 
-> It could be something like:
-> 
-> >  if (chip->id.len >=5) {
-> >     if(chip->id.data[4] & 0x80) {
-> >       chip->ecc.mode = NAND_ECC_BENAND;
-> >     }
-> >     /*
-> >      * Toshiba 24nm raw SLC (i.e., not BENAND) have 32B OOB per
-> >      * 512B page. For Toshiba SLC, we decode the 5th/6th byte as
-> >      * follows:
-> >      * - ID byte 6, bits[2:0]: 100b -> 43nm, 101b -> 32nm,
-> >      *                         110b -> 24nm
-> >      * - ID byte 5, bit[7]:    1 -> BENAND, 0 -> raw SLC
-> >      */
-> >     else if (chip->id.len >= 6 && nand_is_slc(chip) &&
-> >              (chip->id.data[5] & 0x7) == 0x6 /* 24nm */) {
-> >       mtd->oobsize = 32 * mtd->writesize >> 9;
-> >     }
-> >   }
->     Regards,
-> Jean-Louis Thekekara.
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+>  
+> +/*
+> + * Note: If the returned token is used in an opal call and opal returns
+> + * OPAL_ASYNC_COMPLETION you MUST opal_async_wait_response() before
+                                     ^
+                                     call
+
+
+cheers
