@@ -1,26 +1,23 @@
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eBpta-000443-Vg
- for linux-mtd@lists.infradead.org; Mon, 06 Nov 2017 22:29:36 +0000
-Received: by mail-lf0-x242.google.com with SMTP id a2so12241985lfh.11
- for <linux-mtd@lists.infradead.org>; Mon, 06 Nov 2017 14:29:05 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20171019225549.11422-1-roy.franz@cavium.com>
-References: <20171019225549.11422-1-roy.franz@cavium.com>
-From: Roy Franz <rfranz@cavium.com>
-Date: Mon, 6 Nov 2017 14:29:02 -0800
-Message-ID: <CAKWsp+zhqHZaUjbzeutxqE81f5orOLMd6uNVoYifjeYibhAD5w@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd: slram: use memremap() instead of ioremap()
-To: David Woodhouse <dwmw2@infradead.org>,
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eBpwB-0006Be-9C
+ for linux-mtd@lists.infradead.org; Mon, 06 Nov 2017 22:32:13 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
- boris.brezillon@free-electrons.com,
- =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marek.vasut@gmail.com>,
- richard@nod.at, cyrille.pitchen@wedev4u.fr
-Cc: "Roy Franz (roy.franz@cavium.com) (roy.franz@cavium.com)"
- <roy.franz@cavium.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- David Daney <ddaney@cavium.com>, Christoph Hellwig <hch@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+ Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Linux MTD Development List <linux-mtd@lists.infradead.org>,
+ Shawn Guo <shawnguo@kernel.org>, Mark Brown <broonie@kernel.org>,
+ Hou Zhiqiang <Zhiqiang.Hou@nxp.com>, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [GIT PULL] mtd: spi-nor: Changes for 4.15
+Date: Mon, 06 Nov 2017 23:32:00 +0100
+Message-ID: <3158601.Dy1HGfX4Ea@blindfold>
+In-Reply-To: <b93b03df-2ab9-0c1a-dce1-461deba6fed0@wedev4u.fr>
+References: <b93b03df-2ab9-0c1a-dce1-461deba6fed0@wedev4u.fr>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,68 +27,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ping - is this suitable for 4.15?
+Am Mittwoch, 1. November 2017, 16:31:28 CET schrieb Cyrille Pitchen:
+> Hi Richard,
+> 
+> this is the spi-nor pull request for 4.15.
+> 
+> Please note that a small conflict has been reported by Mark Brown on
+> linux-next between the spi-nor and imx-mxs trees concerning the
+> Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt file.
+> 
+> More details can be found here:
+> https://lkml.org/lkml/2017/11/1/255
+> 
+> Best regards,
+> 
+> Cyrille
+> 
+> The following changes since commit 8a5776a5f49812d29fe4b2d0a2d71675c3facf3f:
+> 
+>   Linux 4.14-rc4 (2017-10-08 20:53:29 -0700)
+> 
+> are available in the git repository at:
+> 
+>   git://git.infradead.org/l2-mtd.git tags/spi-nor/for-4.15
+> 
+> for you to fetch changes up to ec0a9f62b393ed0c5bb9185a8efebb0ad00b7d0d:
+
+Pulled and pushed to l2-mtd.git!
 
 Thanks,
-Roy
-
-
-On Thu, Oct 19, 2017 at 3:55 PM, Roy Franz <rfranz@cavium.com> wrote:
-> Convert slram to use memremap() to map the memory it uses to back an MTD
-> device, as this is the proper interface for mapping memory. This change
-> enables normal memory to be used to back an MTD device on arm64, as arm64
-> prevents ioremap() being used on normal memory.
->
-> Signed-off-by: Roy Franz <roy.franz@cavium.com>
-> Acked-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-> Tested-by: David Daney <david.daney@cavium.com>
-> ---
-> Tested on arm64 simulation, using simulator to preload filesystem image into RAM,
-> and also tested on x86_64 using video card memory.  This is useful for speeding
-> up booting on (very slow) emulation environments by avoiding any processing of
-> an initramfs.
-> David Daney tested on MIPS64.
->
-> v2: Fix typo in subject line, s/mdt/mtd/
->     added acked-by/tested-by
->
->  drivers/mtd/devices/slram.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/mtd/devices/slram.c b/drivers/mtd/devices/slram.c
-> index 8087c36dc693..0ec85f316d24 100644
-> --- a/drivers/mtd/devices/slram.c
-> +++ b/drivers/mtd/devices/slram.c
-> @@ -163,8 +163,9 @@ static int register_device(char *name, unsigned long start, unsigned long length
->         }
->
->         if (!(((slram_priv_t *)(*curmtd)->mtdinfo->priv)->start =
-> -                               ioremap(start, length))) {
-> -               E("slram: ioremap failed\n");
-> +               memremap(start, length,
-> +                        MEMREMAP_WB | MEMREMAP_WT | MEMREMAP_WC))) {
-> +               E("slram: memremap failed\n");
->                 return -EIO;
->         }
->         ((slram_priv_t *)(*curmtd)->mtdinfo->priv)->end =
-> @@ -186,7 +187,7 @@ static int register_device(char *name, unsigned long start, unsigned long length
->
->         if (mtd_device_register((*curmtd)->mtdinfo, NULL, 0))   {
->                 E("slram: Failed to register new device\n");
-> -               iounmap(((slram_priv_t *)(*curmtd)->mtdinfo->priv)->start);
-> +               memunmap(((slram_priv_t *)(*curmtd)->mtdinfo->priv)->start);
->                 kfree((*curmtd)->mtdinfo->priv);
->                 kfree((*curmtd)->mtdinfo);
->                 return(-EAGAIN);
-> @@ -206,7 +207,7 @@ static void unregister_devices(void)
->         while (slram_mtdlist) {
->                 nextitem = slram_mtdlist->next;
->                 mtd_device_unregister(slram_mtdlist->mtdinfo);
-> -               iounmap(((slram_priv_t *)slram_mtdlist->mtdinfo->priv)->start);
-> +               memunmap(((slram_priv_t *)slram_mtdlist->mtdinfo->priv)->start);
->                 kfree(slram_mtdlist->mtdinfo->priv);
->                 kfree(slram_mtdlist->mtdinfo);
->                 kfree(slram_mtdlist);
-> --
-> 2.11.0
->
+//richard
