@@ -1,21 +1,22 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eBzMb-0002z7-MD
- for linux-mtd@lists.infradead.org; Tue, 07 Nov 2017 08:36:08 +0000
-Date: Tue, 7 Nov 2017 09:35:42 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Roy Franz <rfranz@cavium.com>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- richard@nod.at, cyrille.pitchen@wedev4u.fr, roy.franz@cavium.com,
- linux-mtd@lists.infradead.org
+Received: from smtp3-g21.free.fr ([212.27.42.3])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eC21o-00062J-I4
+ for linux-mtd@lists.infradead.org; Tue, 07 Nov 2017 11:27:05 +0000
 Subject: Re: [PATCH] mtd: docs: Add mention of patchwork to patch submission
  section
-Message-ID: <20171107093542.75bbbce6@bbrezillon>
-In-Reply-To: <20171107030755.17822-1-roy.franz@cavium.com>
+To: Roy Franz <rfranz@cavium.com>, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
+ marek.vasut@gmail.com, richard@nod.at
+Cc: linux-mtd@lists.infradead.org, roy.franz@cavium.com
 References: <20171107030755.17822-1-roy.franz@cavium.com>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <c58ae260-8661-0ead-a631-6f188ae9a39c@wedev4u.fr>
+Date: Tue, 7 Nov 2017 12:26:20 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20171107030755.17822-1-roy.franz@cavium.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,15 +26,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon,  6 Nov 2017 19:07:55 -0800
-Roy Franz <rfranz@cavium.com> wrote:
-
+Le 07/11/2017 à 04:07, Roy Franz a écrit :
 > Mention that patches submitted to the mailing list are tracked in
 > the MTD patchwork system.
 > 
 > Signed-off-by: Roy Franz <roy.franz@cavium.com>
-
-Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Acked-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
 
 > ---
 >  source.xml | 4 +++-
@@ -54,3 +52,4 @@ Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 >  
 >  <h3>Patch Format Guidelines</h3>
 >  <p>
+> 
