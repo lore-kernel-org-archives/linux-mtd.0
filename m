@@ -1,19 +1,21 @@
-Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
+Received: from mga07.intel.com ([134.134.136.100])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eBuH4-00067X-Kl
- for linux-mtd@lists.infradead.org; Tue, 07 Nov 2017 03:10:04 +0000
-Received: by mail-pg0-x241.google.com with SMTP id s75so9912120pgs.0
- for <linux-mtd@lists.infradead.org>; Mon, 06 Nov 2017 19:09:42 -0800 (PST)
-From: Roy Franz <rfranz@cavium.com>
-To: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr
-Cc: roy.franz@cavium.com,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: docs: Add mention of patchwork to patch submission
- section
-Date: Mon,  6 Nov 2017 19:07:55 -0800
-Message-Id: <20171107030755.17822-1-roy.franz@cavium.com>
+ id 1eBxyE-0007Gz-7a
+ for linux-mtd@lists.infradead.org; Tue, 07 Nov 2017 07:06:51 +0000
+Message-ID: <1510038385.11794.93.camel@gmail.com>
+Subject: Re: Shrink UBIFS
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Richard Weinberger <richard@sigma-star.at>, Ryan Meulenkamp
+ <Ryan.Meulenkamp@nedap.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Tue, 07 Nov 2017 09:06:25 +0200
+In-Reply-To: <6271760.AoYFF9PDUs@blindfold>
+References: <1506598982834.31024@nedap.com> <12883157.QBeLzUQkuA@blindfold>
+ <1508397182265.19514@nedap.com> <6271760.AoYFF9PDUs@blindfold>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Mention that patches submitted to the mailing list are tracked in
-the MTD patchwork system.
+On Mon, 2017-11-06 at 22:27 +0100, Richard Weinberger wrote:
+> Ryan,
+> 
+> Am Donnerstag, 19. Oktober 2017, 09:13:03 CET schrieb Ryan
+> Meulenkamp:
+> > Hi,
+> > 
+> > I've been working on something else for a while, but this is the
+> > status on
+> > resizing so far:
+> 
+> A diff is not really a good status report. ;)
+> 
+> Can you please outline what works so far and what not?
+> Is there some point where you need technical input from us?
 
-Signed-off-by: Roy Franz <roy.franz@cavium.com>
----
- source.xml | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/source.xml b/source.xml
-index a557a23..991e861 100644
---- a/source.xml
-+++ b/source.xml
-@@ -137,7 +137,9 @@ use git if you make a habit of it.</P>
- 
- <p>If you are sending patches to the <a href="mail.html">mailing list</a>,
- please remember to base them on the appropriate tree listed above, not Linus'
--tree.</p>
-+tree.  Patches submitted to the mailing list are tracked in
-+<A HREF="https://patchwork.ozlabs.org/project/linux-mtd/list/">Patchwork</A>.</p>
-+
- 
- <h3>Patch Format Guidelines</h3>
- <p>
--- 
-2.11.0
+Yeah, it would be helpful if you could invest some time writing a good
+overview. What's the goal, what's the strategy achieving it, what has
+been tried, what worked, what did not work, what are the main
+obstacles, what was achieved, what are the tradeoffs, etc.
