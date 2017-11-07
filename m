@@ -1,6 +1,6 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eC5H3-0005Ez-S3
+ id 1eC5H3-0005Fq-TC
  for linux-mtd@lists.infradead.org; Tue, 07 Nov 2017 14:54:48 +0000
 From: Miquel Raynal <miquel.raynal@free-electrons.com>
 To: Robert Jarzmik <robert.jarzmik@free.fr>,
@@ -21,12 +21,12 @@ Cc: Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Masahiro Yamada <yamada.masahiro@socionext.com>, Han Xu <han.xu@nxp.com>,
  Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
  Stefan Agner <stefan@agner.ch>
-Subject: [RFC PATCH v2 0/6] Marvell NAND controller rework with ->exec_op()
-Date: Tue,  7 Nov 2017 15:54:13 +0100
-Message-Id: <20171107145419.22717-1-miquel.raynal@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: [RFC PATCH v2 3/6] mtd: nand: use a static data_interface in the
+ nand_chip structure
+Date: Tue,  7 Nov 2017 15:54:16 +0100
+Message-Id: <20171107145419.22717-4-miquel.raynal@free-electrons.com>
+In-Reply-To: <20171107145419.22717-1-miquel.raynal@free-electrons.com>
+References: <20171107145419.22717-1-miquel.raynal@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,141 +36,250 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Change the nand_chip structure, to embed the nand_data_interface object.
 
-This is the second version of the implementation of ->exec_op() and the
-rework of the Marvell NAND controller driver, see behind for more
-details.
+Also remove the nand_get_default_data_interface() function that become
+useless but add the initialization of the data_interface at the very
+beginning of nand_scan_ident() to be sure core functions using timings
+may be used safely.
 
-Robert, we are still waiting our PXA3xx board to arrive so it would be
-great if you could test this series (applies on top of mtd-next),
-platform data support should work, only DMA is not implemented yet. If
-you can take the time to test it, please send me the result of the
-following, all binaries will be available in a recent buildroot. To
-enable the new driver, you just need to select CONFIG_MTD_NAND_MARVELL
-instead of CONFIG_MTD_NAND_PXA3xx.
+Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+---
+ drivers/mtd/nand/nand_base.c    | 44 ++++++++++++++++++-----------------------
+ drivers/mtd/nand/nand_timings.c | 23 ++++++---------------
+ include/linux/mtd/rawnand.h     |  7 ++-----
+ 3 files changed, 27 insertions(+), 47 deletions(-)
 
-dmesg
-nandbiterrs -i /dev/mtdX
-nandpagetest -c 10 /dev/mtdX
-nandsubpagetest -c 10 /dev/mtdX
-flash_speed -d -c 10 /dev/mtdX
-
-Thank you very much.
-
-
-Changes since RFCv1:
-
-* General:
-  - Typos and alignements.
-
-* mtd: nand: use a static data_interface
-  - Fix the commit message
-  - Cancel the renaming of onfi_init_data_interface()
-  - Ensure SDR timings (at least mode 0) are always set.
-
-* mtd: nand: add ->exec_op() implementation
-  - Removed ->waitfunc() calls when not useful anymore.
-  - Rephrasing as suggested.
-  - Moved ->exec_op() timings conversion to the caller of the
-    PATTERN_* macros.
-  - Fixed the inner loop and the success condition in the parser.
-
-* dt-bindings: mtd: add Marvell NAND controller documentation
-  - Corrected wrong/badly written sentences.
-  - Removed status from examples.
-  - Removed the enable-arbiter property from the new bindings and
-    adapted the code in the Marvell driver.
-  - Added the label node.
-
-* mtd: nand: add reworked Marvell NAND controller driver
-  - Removed the enable-arbiter property
-  - Removed "variant" fields from the capabilities of the
-    controller, instead use booleans to indicate for each platform
-    what is needed (system controller, arbiter, ...)
-  - Added pdata support for PXA tests.
-
-========================================================================
-
-This series adds the implementation of the NAND framework ->exec_op()
-interface with all the related hooks and helpers. The reasons for adding
-it are explained in details in the commit log "mtd: nand: add
- ->exec_op() implementation", but mostly it will ease later expansion of
-the framework, as well as the implementation of new vendor specific
-commands, and should also ease driver development.
-
-The series contains as well the reworked NAND controller driver from
-Marvell.
-
-A lot of comments are written to explain how to use the new API and the
-Marvell driver shows how to implement it. A proper external
-documentation is being written and will later be submitted.
-
-Changes on the device tree NAND node definition for all platforms
-referring to the Marvell driver were sent in the first version of the
-RFC but should not need to be resent here, thus they are not part of
-the series.
-
-See the commit log of "mtd: nand: add reworked Marvell NAND controller
-driver" for details about why a completely new driver is needed.
-
-As this series changes several core functions and also directly touches
-multiple controller drivers, it would be great to have reviews and tests
-from the concerned maintainers. Only PXA3xx SoCs are not supported yet
-(explaining the RFC) as having a local board to test is really needed.
-
-Thank you,
-Miquèl
-
-
-Boris Brezillon (2):
-  mtd: nand: provide several helpers to do common NAND operations
-  mtd: nand: force drivers to explicitly send READ/PROG commands
-
-Miquel Raynal (4):
-  mtd: nand: use a static data_interface in the nand_chip structure
-  mtd: nand: add ->exec_op() implementation
-  dt-bindings: mtd: add Marvell NAND controller documentation
-  mtd: nand: add reworked Marvell NAND controller driver
-
- .../devicetree/bindings/mtd/marvell-nand.txt       |   84 +
- drivers/mtd/nand/Kconfig                           |   11 +
- drivers/mtd/nand/Makefile                          |    1 +
- drivers/mtd/nand/atmel/nand-controller.c           |    9 +-
- drivers/mtd/nand/bf5xx_nand.c                      |    6 +-
- drivers/mtd/nand/brcmnand/brcmnand.c               |   20 +-
- drivers/mtd/nand/cafe_nand.c                       |   20 +-
- drivers/mtd/nand/denali.c                          |   53 +-
- drivers/mtd/nand/diskonchip.c                      |    4 +-
- drivers/mtd/nand/docg4.c                           |   19 +-
- drivers/mtd/nand/fsl_elbc_nand.c                   |    6 +-
- drivers/mtd/nand/fsl_ifc_nand.c                    |    6 +-
- drivers/mtd/nand/fsmc_nand.c                       |    5 +-
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c             |   76 +-
- drivers/mtd/nand/hisi504_nand.c                    |    9 +-
- drivers/mtd/nand/jz4740_nand.c                     |   16 +-
- drivers/mtd/nand/lpc32xx_mlc.c                     |    7 +-
- drivers/mtd/nand/lpc32xx_slc.c                     |   33 +-
- drivers/mtd/nand/marvell_nand.c                    | 2443 ++++++++++++++++++++
- drivers/mtd/nand/mtk_nand.c                        |   21 +-
- drivers/mtd/nand/nand_base.c                       | 2017 +++++++++++++---
- drivers/mtd/nand/nand_hynix.c                      |  128 +-
- drivers/mtd/nand/nand_micron.c                     |   51 +-
- drivers/mtd/nand/nand_timings.c                    |   23 +-
- drivers/mtd/nand/omap2.c                           |    8 +-
- drivers/mtd/nand/pxa3xx_nand.c                     |    8 +-
- drivers/mtd/nand/qcom_nandc.c                      |   16 +-
- drivers/mtd/nand/r852.c                            |   11 +-
- drivers/mtd/nand/sh_flctl.c                        |    6 +-
- drivers/mtd/nand/sunxi_nand.c                      |   97 +-
- drivers/mtd/nand/tango_nand.c                      |   27 +-
- drivers/mtd/nand/tmio_nand.c                       |    5 +-
- drivers/mtd/nand/vf610_nfc.c                       |    6 +-
- drivers/staging/mt29f_spinand/mt29f_spinand.c      |    7 +-
- include/linux/mtd/rawnand.h                        |  402 +++-
- 35 files changed, 5057 insertions(+), 604 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/marvell-nand.txt
- create mode 100644 drivers/mtd/nand/marvell_nand.c
-
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index a65b2ae645fc..13a1a378b126 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -815,8 +815,8 @@ static void nand_ccs_delay(struct nand_chip *chip)
+ 	 * Wait tCCS_min if it is correctly defined, otherwise wait 500ns
+ 	 * (which should be safe for all NANDs).
+ 	 */
+-	if (chip->data_interface && chip->data_interface->timings.sdr.tCCS_min)
+-		ndelay(chip->data_interface->timings.sdr.tCCS_min / 1000);
++	if (chip->setup_data_interface)
++		ndelay(chip->data_interface.timings.sdr.tCCS_min / 1000);
+ 	else
+ 		ndelay(500);
+ }
+@@ -1110,7 +1110,6 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
+ static int nand_reset_data_interface(struct nand_chip *chip, int chipnr)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+-	const struct nand_data_interface *conf;
+ 	int ret;
+ 
+ 	if (!chip->setup_data_interface)
+@@ -1130,8 +1129,8 @@ static int nand_reset_data_interface(struct nand_chip *chip, int chipnr)
+ 	 * timings to timing mode 0.
+ 	 */
+ 
+-	conf = nand_get_default_data_interface();
+-	ret = chip->setup_data_interface(mtd, chipnr, conf);
++	onfi_fill_data_interface(chip, NAND_SDR_IFACE, 0);
++	ret = chip->setup_data_interface(mtd, chipnr, &chip->data_interface);
+ 	if (ret)
+ 		pr_err("Failed to configure data interface to SDR timing mode 0\n");
+ 
+@@ -1156,7 +1155,7 @@ static int nand_setup_data_interface(struct nand_chip *chip, int chipnr)
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	int ret;
+ 
+-	if (!chip->setup_data_interface || !chip->data_interface)
++	if (!chip->setup_data_interface)
+ 		return 0;
+ 
+ 	/*
+@@ -1177,7 +1176,7 @@ static int nand_setup_data_interface(struct nand_chip *chip, int chipnr)
+ 			goto err;
+ 	}
+ 
+-	ret = chip->setup_data_interface(mtd, chipnr, chip->data_interface);
++	ret = chip->setup_data_interface(mtd, chipnr, &chip->data_interface);
+ err:
+ 	return ret;
+ }
+@@ -1217,21 +1216,16 @@ static int nand_init_data_interface(struct nand_chip *chip)
+ 		modes = GENMASK(chip->onfi_timing_mode_default, 0);
+ 	}
+ 
+-	chip->data_interface = kzalloc(sizeof(*chip->data_interface),
+-				       GFP_KERNEL);
+-	if (!chip->data_interface)
+-		return -ENOMEM;
+ 
+ 	for (mode = fls(modes) - 1; mode >= 0; mode--) {
+-		ret = onfi_init_data_interface(chip, chip->data_interface,
+-					       NAND_SDR_IFACE, mode);
++		ret = onfi_fill_data_interface(chip, NAND_SDR_IFACE, mode);
+ 		if (ret)
+ 			continue;
+ 
+ 		/* Pass -1 to only */
+ 		ret = chip->setup_data_interface(mtd,
+ 						 NAND_DATA_IFACE_CHECK_ONLY,
+-						 chip->data_interface);
++						 &chip->data_interface);
+ 		if (!ret) {
+ 			chip->onfi_timing_mode_default = mode;
+ 			break;
+@@ -1241,11 +1235,6 @@ static int nand_init_data_interface(struct nand_chip *chip)
+ 	return 0;
+ }
+ 
+-static void nand_release_data_interface(struct nand_chip *chip)
+-{
+-	kfree(chip->data_interface);
+-}
+-
+ /**
+  * nand_read_page_op - Do a READ PAGE operation
+  * @chip: The NAND chip
+@@ -1740,11 +1729,16 @@ EXPORT_SYMBOL_GPL(nand_write_data_op);
+  * @chip: The NAND chip
+  * @chipnr: Internal die id
+  *
++ * Save the timings data structure, then apply SDR timings mode 0 (see
++ * nand_reset_data_interface for details), do the reset operation, and
++ * apply back the previous timings.
++ *
+  * Returns 0 for success or negative error code otherwise
+  */
+ int nand_reset(struct nand_chip *chip, int chipnr)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct nand_data_interface saved_data_intf = chip->data_interface;
+ 	int ret;
+ 
+ 	ret = nand_reset_data_interface(chip, chipnr);
+@@ -1760,6 +1754,7 @@ int nand_reset(struct nand_chip *chip, int chipnr)
+ 	chip->select_chip(mtd, -1);
+ 
+ 	chip->select_chip(mtd, chipnr);
++	chip->data_interface = saved_data_intf;
+ 	ret = nand_setup_data_interface(chip, chipnr);
+ 	chip->select_chip(mtd, -1);
+ 	if (ret)
+@@ -4837,6 +4832,9 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+ 	int ret;
+ 
++	/* Enforce the right timings for reset/detection */
++	onfi_fill_data_interface(chip, NAND_SDR_IFACE, 0);
++
+ 	ret = nand_dt_init(chip);
+ 	if (ret)
+ 		return ret;
+@@ -5577,7 +5575,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		chip->select_chip(mtd, -1);
+ 
+ 		if (ret)
+-			goto err_nand_data_iface_cleanup;
++			goto err_nand_manuf_cleanup;
+ 	}
+ 
+ 	/* Check, if we should skip the bad block table scan */
+@@ -5587,12 +5585,10 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	/* Build bad block table */
+ 	ret = chip->scan_bbt(mtd);
+ 	if (ret)
+-		goto err_nand_data_iface_cleanup;
++		goto err_nand_manuf_cleanup;
+ 
+ 	return 0;
+ 
+-err_nand_data_iface_cleanup:
+-	nand_release_data_interface(chip);
+ 
+ err_nand_manuf_cleanup:
+ 	nand_manufacturer_cleanup(chip);
+@@ -5651,8 +5647,6 @@ void nand_cleanup(struct nand_chip *chip)
+ 	    chip->ecc.algo == NAND_ECC_BCH)
+ 		nand_bch_free((struct nand_bch_control *)chip->ecc.priv);
+ 
+-	nand_release_data_interface(chip);
+-
+ 	/* Free bad block table memory */
+ 	kfree(chip->bbt);
+ 	if (!(chip->options & NAND_OWN_BUFFERS) && chip->buffers) {
+diff --git a/drivers/mtd/nand/nand_timings.c b/drivers/mtd/nand/nand_timings.c
+index 5d1533bcc5bd..5eac097be7f8 100644
+--- a/drivers/mtd/nand/nand_timings.c
++++ b/drivers/mtd/nand/nand_timings.c
+@@ -283,17 +283,17 @@ const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode)
+ EXPORT_SYMBOL(onfi_async_timing_mode_to_sdr_timings);
+ 
+ /**
+- * onfi_init_data_interface - [NAND Interface] Initialize a data interface from
++ * onfi_fill_data_interface - [NAND Interface] Initialize a data interface from
+  * given ONFI mode
+- * @iface: The data interface to be initialized
+  * @mode: The ONFI timing mode
+  */
+-int onfi_init_data_interface(struct nand_chip *chip,
+-			     struct nand_data_interface *iface,
++int onfi_fill_data_interface(struct nand_chip *chip,
+ 			     enum nand_data_interface_type type,
+ 			     int timing_mode)
+ {
+-	if (type != NAND_SDR_IFACE)
++	struct nand_data_interface *iface = &chip->data_interface;
++
++	if (iface->type != NAND_SDR_IFACE)
+ 		return -EINVAL;
+ 
+ 	if (timing_mode < 0 || timing_mode >= ARRAY_SIZE(onfi_sdr_timings))
+@@ -321,15 +321,4 @@ int onfi_init_data_interface(struct nand_chip *chip,
+ 
+ 	return 0;
+ }
+-EXPORT_SYMBOL(onfi_init_data_interface);
+-
+-/**
+- * nand_get_default_data_interface - [NAND Interface] Retrieve NAND
+- * data interface for mode 0. This is used as default timing after
+- * reset.
+- */
+-const struct nand_data_interface *nand_get_default_data_interface(void)
+-{
+-	return &onfi_sdr_timings[0];
+-}
+-EXPORT_SYMBOL(nand_get_default_data_interface);
++EXPORT_SYMBOL(onfi_fill_data_interface);
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 04f4cfbe6c09..9cc03eab2ecd 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -917,7 +917,7 @@ struct nand_chip {
+ 	u16 max_bb_per_die;
+ 	u32 blocks_per_die;
+ 
+-	struct nand_data_interface *data_interface;
++	struct nand_data_interface data_interface;
+ 
+ 	int read_retries;
+ 
+@@ -1214,8 +1214,7 @@ static inline int onfi_get_sync_timing_mode(struct nand_chip *chip)
+ 	return le16_to_cpu(chip->onfi_params.src_sync_timing_mode);
+ }
+ 
+-int onfi_init_data_interface(struct nand_chip *chip,
+-			     struct nand_data_interface *iface,
++int onfi_fill_data_interface(struct nand_chip *chip,
+ 			     enum nand_data_interface_type type,
+ 			     int timing_mode);
+ 
+@@ -1258,8 +1257,6 @@ static inline int jedec_feature(struct nand_chip *chip)
+ 
+ /* get timing characteristics from ONFI timing mode. */
+ const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode);
+-/* get data interface from ONFI timing mode 0, used after reset. */
+-const struct nand_data_interface *nand_get_default_data_interface(void);
+ 
+ int nand_check_erased_ecc_chunk(void *data, int datalen,
+ 				void *ecc, int ecclen,
 -- 
 2.11.0
