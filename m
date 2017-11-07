@@ -1,16 +1,18 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eBzDf-00056X-VD
- for linux-mtd@lists.infradead.org; Tue, 07 Nov 2017 08:27:02 +0000
-Date: Tue, 7 Nov 2017 09:26:28 +0100
+ id 1eBzMb-0002z7-MD
+ for linux-mtd@lists.infradead.org; Tue, 07 Nov 2017 08:36:08 +0000
+Date: Tue, 7 Nov 2017 09:35:42 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Jeremy Kerr <jk@ozlabs.org>
-Cc: Brian Norris <computersforpeace@gmail.com>, Richard Weinberger
- <richard@nod.at>, Marek Vasut <marex@denx.de>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Enable notifications for linux-mtd
-Message-ID: <20171107092628.461ff68a@bbrezillon>
+To: Roy Franz <rfranz@cavium.com>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
+ richard@nod.at, cyrille.pitchen@wedev4u.fr, roy.franz@cavium.com,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: docs: Add mention of patchwork to patch submission
+ section
+Message-ID: <20171107093542.75bbbce6@bbrezillon>
+In-Reply-To: <20171107030755.17822-1-roy.franz@cavium.com>
+References: <20171107030755.17822-1-roy.franz@cavium.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -23,16 +25,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jeremy,
+On Mon,  6 Nov 2017 19:07:55 -0800
+Roy Franz <rfranz@cavium.com> wrote:
 
-Is there a way to send notifications to the submitter/author when the
-status of a linux-mtd patch is changed? I didn't find such an option in
-the config/profile menu, but I already received such notifications when
-contributing to other projects.
+> Mention that patches submitted to the mailing list are tracked in
+> the MTD patchwork system.
+> 
+> Signed-off-by: Roy Franz <roy.franz@cavium.com>
 
-Not sure we'll need a notification for any kind of change, but having
-one when the patch is marked as Accepted would be good.
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Thanks,
-
-Boris
+> ---
+>  source.xml | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/source.xml b/source.xml
+> index a557a23..991e861 100644
+> --- a/source.xml
+> +++ b/source.xml
+> @@ -137,7 +137,9 @@ use git if you make a habit of it.</P>
+>  
+>  <p>If you are sending patches to the <a href="mail.html">mailing list</a>,
+>  please remember to base them on the appropriate tree listed above, not Linus'
+> -tree.</p>
+> +tree.  Patches submitted to the mailing list are tracked in
+> +<A HREF="https://patchwork.ozlabs.org/project/linux-mtd/list/">Patchwork</A>.</p>
+> +
+>  
+>  <h3>Patch Format Guidelines</h3>
+>  <p>
