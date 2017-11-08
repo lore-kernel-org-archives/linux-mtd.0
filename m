@@ -1,22 +1,25 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eCSho-00080I-Cv
- for linux-mtd@lists.infradead.org; Wed, 08 Nov 2017 15:55:58 +0000
-Date: Wed, 8 Nov 2017 16:55:23 +0100
-From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: nand: fix interpretation of NAND_CMD_NONE in core
- ->cmdfunc()
-Message-ID: <20171108165523.48b02be4@xps13>
-In-Reply-To: <20171108111536.7266af29@bbrezillon>
-References: <20171106220704.2340-1-miquel.raynal@free-electrons.com>
- <20171108111536.7266af29@bbrezillon>
+Received: from youngberry.canonical.com ([91.189.89.112])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eCSk8-0000rL-7J
+ for linux-mtd@lists.infradead.org; Wed, 08 Nov 2017 15:58:23 +0000
+Subject: NAK: [PATCH][mtd-next] mtd: sharpslpart: fix overflow on block_adr
+ calculation
+From: Colin Ian King <colin.king@canonical.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Andrea Adami <andrea.adami@gmail.com>, linux-mtd@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20171108154649.30096-1-colin.king@canonical.com>
+Message-ID: <c69cae0f-0490-20b7-9706-78d2ef2d3c73@canonical.com>
+Date: Wed, 8 Nov 2017 15:57:57 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20171108154649.30096-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,55 +29,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+On 08/11/17 15:46, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> Multiplying block_num and mtd->erasesize may potentially overflow
+> as they are both unsigned ints and so the multiplication is evaluated
+> in unsigned int arithmetic .  Cast block_adr to off_t to ensure
+> multiplication is off_t sized to avoid any potential overflow.
+> 
+> Detected by CoverityScan, CID#1461264 ("Unintentional integer overflow")
+> 
+> Fixes: fff1e32a50c0 ("mtd: sharpslpart: Add sharpslpart partition parser")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/mtd/parsers/sharpslpart.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/parsers/sharpslpart.c b/drivers/mtd/parsers/sharpslpart.c
+> index 5fe0079ea5ed..b1d97aa3bac4 100644
+> --- a/drivers/mtd/parsers/sharpslpart.c
+> +++ b/drivers/mtd/parsers/sharpslpart.c
+> @@ -244,7 +244,7 @@ static int sharpsl_nand_read_laddr(struct mtd_info *mtd,
+>  		return -EINVAL;
+>  
+>  	block_num = ftl->log2phy[log_num];
+> -	block_adr = block_num * mtd->erasesize;
+> +	block_adr = (loff_t)block_num * mtd->erasesize;
+>  	block_ofs = mtd_mod_by_eb((u32)from, mtd);
+>  
+>  	err = mtd_read(mtd, block_adr + block_ofs, len, &retlen, buf);
+> 
 
-> How about rewording it like that:
->=20
-> "
-> Some drivers (like nand_hynix.c) call ->cmdfunc() with NAND_CMD_NONE
-> and a column address and expect the controller to only send address
-> cycles. Right now, the default ->cmdfunc() implementations provided by
-> the core do not filter out the command cycle in this case and forwards
-> the request to the controller driver through the ->cmd_ctrl() method.
-> The thing is, NAND controller drivers can get is wrong and send a
-> command cycle with a NAND_CMD_NONE opcode and since NAND_CMD_NONE is
-> -1, and the command field is usually casted to an u8, we end up
-> sending the 0xFF command which is actually a RESET operation.
->=20
->=20
-> Add conditions in nand_command[_lp]() functions to sending the initial
-> command cycle when command =3D=3D NAND_CMD_NONE.
-> "
-
-This is better explained. I put yours, with
-s/drivers can get is wrong/drivers can get this wrong/
-
->=20
-> >=20
-> > Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
-> > ---
-> >  drivers/mtd/nand/nand_base.c | 7 +++++--
-> >  1 file changed, 5 insertions(+), 2 deletions(-)
-> >=20
-> > diff --git a/drivers/mtd/nand/nand_base.c
-> > b/drivers/mtd/nand/nand_base.c index c63e4a88a653..851f25383622
-> > 100644 --- a/drivers/mtd/nand/nand_base.c
-> > +++ b/drivers/mtd/nand/nand_base.c
-> > @@ -710,7 +710,8 @@ static void nand_command(struct mtd_info *mtd,
-> > unsigned int command, chip->cmd_ctrl(mtd, readcmd, ctrl);
-> >  		ctrl &=3D ~NAND_CTRL_CHANGE;
-> >  	}
-> > -	chip->cmd_ctrl(mtd, command, ctrl);
-> > +	if (command !=3D NAND_CMD_NONE)
-> > +		chip->cmd_ctrl(mtd, command, ctrl);
-> > =20
-> >  	/* Address cycle, when necessary */
-> >  	ctrl =3D NAND_CTRL_ALE | NAND_CTRL_CHANGE; =20
->=20
-> You should probably also add a new case in the switch-case block to
-> bail-out when command =3D=3D NAND_CMD_NONE.
-
-Oh that is right, there is nothing to wait for in that case.
-
-Thank you,
-Miqu=C3=A8l
+Sorry, ignore this, there is another place that does this that needs
+some attention. I'll sent V2 shortly.
