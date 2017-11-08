@@ -1,17 +1,23 @@
-Received: from ozlabs.org ([103.22.144.67])
+Received: from ozlabs.org ([2401:3900:2:1::2])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eCDKR-00018k-DX
- for linux-mtd@lists.infradead.org; Tue, 07 Nov 2017 23:30:49 +0000
-In-Reply-To: <20171103024146.17086-2-cyrilbur@gmail.com>
-To: Cyril Bur <cyrilbur@gmail.com>, linux-mtd@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, stewart@linux.vnet.ibm.com
-From: Michael Ellerman <patch-notifications@ellerman.id.au>
-Cc: boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, sjitindarsingh@gmail.com
-Subject: Re: [v5,
- 01/10] mtd: powernv_flash: Use WARN_ON_ONCE() rather than BUG_ON()
-Message-Id: <3yWlz118m4z9s7C@ozlabs.org>
-Date: Wed,  8 Nov 2017 10:30:20 +1100 (AEDT)
+ id 1eCFBq-0006Kb-3j
+ for linux-mtd@lists.infradead.org; Wed, 08 Nov 2017 01:30:05 +0000
+Subject: Re: Enable notifications for linux-mtd
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Marek Vasut <marex@denx.de>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+References: <20171107092628.461ff68a@bbrezillon>
+From: Jeremy Kerr <jk@ozlabs.org>
+Message-ID: <46cc2db3-fa2d-61ab-5e78-c88d9f371584@ozlabs.org>
+Date: Wed, 8 Nov 2017 09:29:35 +0800
+MIME-Version: 1.0
+In-Reply-To: <20171107092628.461ff68a@bbrezillon>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-AU
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,17 +27,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2017-11-03 at 02:41:37 UTC, Cyril Bur wrote:
-> BUG_ON() should be reserved in situations where we can not longer
-> guarantee the integrity of the system. In the case where
-> powernv_flash_async_op() receives an impossible op, we can still
-> guarantee the integrity of the system.
-> 
-> Signed-off-by: Cyril Bur <cyrilbur@gmail.com>
-> Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Hi Boris,
 
-Series applied to powerpc next, thanks.
+> Is there a way to send notifications to the submitter/author when the
+> status of a linux-mtd patch is changed?
 
-https://git.kernel.org/powerpc/c/44e2aa2b16a872fa8aa4901b379313
+Absolutely - that's just something I can turn on in your project's
+config. I assume your co-maintainers are OK with this?
 
-cheers
+> Not sure we'll need a notification for any kind of change, but having
+> one when the patch is marked as Accepted would be good.
+
+Currently, the notifications are for all state changes (there's no
+config to do it selectively). Will this be a problem?
+
+Cheers,
+
+
+Jeremy
