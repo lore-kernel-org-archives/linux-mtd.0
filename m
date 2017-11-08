@@ -1,22 +1,20 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eCLdP-0001jp-II
- for linux-mtd@lists.infradead.org; Wed, 08 Nov 2017 08:22:57 +0000
-Date: Wed, 8 Nov 2017 09:22:33 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Jeremy Kerr <jk@ozlabs.org>
-Cc: Brian Norris <computersforpeace@gmail.com>, Richard Weinberger
- <richard@nod.at>, Marek Vasut <marex@denx.de>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: Enable notifications for linux-mtd
-Message-ID: <20171108092233.3812521a@bbrezillon>
-In-Reply-To: <46cc2db3-fa2d-61ab-5e78-c88d9f371584@ozlabs.org>
-References: <20171107092628.461ff68a@bbrezillon>
- <46cc2db3-fa2d-61ab-5e78-c88d9f371584@ozlabs.org>
+Received: from mail-wr0-x22a.google.com ([2a00:1450:400c:c0c::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eCN6r-0001gg-T9
+ for linux-mtd@lists.infradead.org; Wed, 08 Nov 2017 09:57:28 +0000
+Received: by mail-wr0-x22a.google.com with SMTP id o88so1852282wrb.6
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Nov 2017 01:57:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <697aaad0-f27a-db45-08d0-e23f6bec7873@pengutronix.de>
+References: <697aaad0-f27a-db45-08d0-e23f6bec7873@pengutronix.de>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Wed, 8 Nov 2017 10:57:02 +0100
+Message-ID: <CAFLxGvzWQaHxBdK95h=Lb9qeemcQWOsuYkVLGZwomgc1EaMoXA@mail.gmail.com>
+Subject: Re: quota support
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, dongsheng.yang@easystack.cn
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,35 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jeremy,
+Marc,
 
-On Wed, 8 Nov 2017 09:29:35 +0800
-Jeremy Kerr <jk@ozlabs.org> wrote:
+On Tue, Nov 7, 2017 at 8:16 PM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> Hello,
+>
+> as fas as I can see UBIFS doesn't support quota yet, is anyone working
+> on UBIFS quota support?
+>
+> Dongsheng Yang posted a quota patch series some time ago, is this the
+> newest series https://github.com/yangdongsheng/linux/tree/ubifs_quota_v3 ?
 
-> Hi Boris,
-> 
-> > Is there a way to send notifications to the submitter/author when the
-> > status of a linux-mtd patch is changed?  
-> 
-> Absolutely - that's just something I can turn on in your project's
-> config. I assume your co-maintainers are OK with this?
+AFAIK I was not really happy with the series because it did not
+support project quotas
+and had some issues with being power-cut tolerant.
+VFS folks also had concerns since the quota subsystem assumes a block
+device but UBIFS
+works on top of a character device. This needs to be addressed is a
+sane way too.
 
-I now for sure that Richard is fine with that. Cyrille, Marek, Brian,
-any problem with enabling notifications for linux-mtd?
-
-> 
-> > Not sure we'll need a notification for any kind of change, but having
-> > one when the patch is marked as Accepted would be good.  
-> 
-> Currently, the notifications are for all state changes (there's no
-> config to do it selectively). Will this be a problem?
-
-No, that's fine. It's just that notifying when the state moves to
-'Changes Requested' is a bit redundant, because the review would attest
-that. Same goes for 'Superseded', the user is already aware that his
-new version supersedes the old one. Anyway, it's really not a big deal,
-and I'd be happy with notifications for all state changes.
-
+-- 
 Thanks,
-
-Boris
+//richard
