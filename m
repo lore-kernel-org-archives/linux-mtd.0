@@ -1,31 +1,23 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eCRkh-0006KI-NH
- for linux-mtd@lists.infradead.org; Wed, 08 Nov 2017 14:54:53 +0000
-Date: Wed, 8 Nov 2017 15:54:29 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Miquel Raynal <miquel.raynal@free-electrons.com>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org, Thomas
- Petazzoni <thomas.petazzoni@free-electrons.com>, Gregory Clement
- <gregory.clement@free-electrons.com>, Antoine Tenart
- <antoine.tenart@free-electrons.com>, Nadav Haklai <nadavh@marvell.com>, Rob
- Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Wenyou
- Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>, Kamal
- Dasu <kdasu.kdev@gmail.com>, Masahiro Yamada
- <yamada.masahiro@socionext.com>, Han Xu <han.xu@nxp.com>, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>, Stefan Agner <stefan@agner.ch>
-Subject: Re: [RFC PATCH v2 3/6] mtd: nand: use a static data_interface in
- the nand_chip structure
-Message-ID: <20171108155429.790ede16@bbrezillon>
-In-Reply-To: <20171107145419.22717-4-miquel.raynal@free-electrons.com>
-References: <20171107145419.22717-1-miquel.raynal@free-electrons.com>
- <20171107145419.22717-4-miquel.raynal@free-electrons.com>
+Received: from youngberry.canonical.com ([91.189.89.112])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eCSZV-0001KV-SF
+ for linux-mtd@lists.infradead.org; Wed, 08 Nov 2017 15:47:23 +0000
+From: Colin King <colin.king@canonical.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Andrea Adami <andrea.adami@gmail.com>, linux-mtd@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][mtd-next] mtd: sharpslpart: fix overflow on block_adr
+ calculation
+Date: Wed,  8 Nov 2017 15:46:49 +0000
+Message-Id: <20171108154649.30096-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,32 +27,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue,  7 Nov 2017 15:54:16 +0100
-Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
+From: Colin Ian King <colin.king@canonical.com>
 
-> diff --git a/drivers/mtd/nand/nand_timings.c b/drivers/mtd/nand/nand_timings.c
-> index 5d1533bcc5bd..5eac097be7f8 100644
-> --- a/drivers/mtd/nand/nand_timings.c
-> +++ b/drivers/mtd/nand/nand_timings.c
-> @@ -283,17 +283,17 @@ const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode)
->  EXPORT_SYMBOL(onfi_async_timing_mode_to_sdr_timings);
->  
->  /**
-> - * onfi_init_data_interface - [NAND Interface] Initialize a data interface from
-> + * onfi_fill_data_interface - [NAND Interface] Initialize a data interface from
->   * given ONFI mode
-> - * @iface: The data interface to be initialized
->   * @mode: The ONFI timing mode
->   */
-> -int onfi_init_data_interface(struct nand_chip *chip,
-> -			     struct nand_data_interface *iface,
-> +int onfi_fill_data_interface(struct nand_chip *chip,
->  			     enum nand_data_interface_type type,
->  			     int timing_mode)
->  {
-> -	if (type != NAND_SDR_IFACE)
-> +	struct nand_data_interface *iface = &chip->data_interface;
-> +
-> +	if (iface->type != NAND_SDR_IFACE)
+Multiplying block_num and mtd->erasesize may potentially overflow
+as they are both unsigned ints and so the multiplication is evaluated
+in unsigned int arithmetic .  Cast block_adr to off_t to ensure
+multiplication is off_t sized to avoid any potential overflow.
 
-You should test type, not iface->type.
+Detected by CoverityScan, CID#1461264 ("Unintentional integer overflow")
+
+Fixes: fff1e32a50c0 ("mtd: sharpslpart: Add sharpslpart partition parser")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/mtd/parsers/sharpslpart.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/parsers/sharpslpart.c b/drivers/mtd/parsers/sharpslpart.c
+index 5fe0079ea5ed..b1d97aa3bac4 100644
+--- a/drivers/mtd/parsers/sharpslpart.c
++++ b/drivers/mtd/parsers/sharpslpart.c
+@@ -244,7 +244,7 @@ static int sharpsl_nand_read_laddr(struct mtd_info *mtd,
+ 		return -EINVAL;
+ 
+ 	block_num = ftl->log2phy[log_num];
+-	block_adr = block_num * mtd->erasesize;
++	block_adr = (loff_t)block_num * mtd->erasesize;
+ 	block_ofs = mtd_mod_by_eb((u32)from, mtd);
+ 
+ 	err = mtd_read(mtd, block_adr + block_ofs, len, &retlen, buf);
+-- 
+2.14.1
