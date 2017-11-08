@@ -1,18 +1,28 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eCNP1-0007PE-4g
- for linux-mtd@lists.infradead.org; Wed, 08 Nov 2017 10:16:13 +0000
-Date: Wed, 8 Nov 2017 11:15:36 +0100
+ id 1eCNuN-0000OE-4G
+ for linux-mtd@lists.infradead.org; Wed, 08 Nov 2017 10:48:37 +0000
+Date: Wed, 8 Nov 2017 11:48:03 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Miquel Raynal <miquel.raynal@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: nand: fix interpretation of NAND_CMD_NONE in core
- ->cmdfunc()
-Message-ID: <20171108111536.7266af29@bbrezillon>
-In-Reply-To: <20171106220704.2340-1-miquel.raynal@free-electrons.com>
-References: <20171106220704.2340-1-miquel.raynal@free-electrons.com>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org, Thomas
+ Petazzoni <thomas.petazzoni@free-electrons.com>, Gregory Clement
+ <gregory.clement@free-electrons.com>, Antoine Tenart
+ <antoine.tenart@free-electrons.com>, Nadav Haklai <nadavh@marvell.com>, Rob
+ Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Wenyou
+ Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>, Kamal
+ Dasu <kdasu.kdev@gmail.com>, Masahiro Yamada
+ <yamada.masahiro@socionext.com>, Han Xu <han.xu@nxp.com>, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>, Stefan Agner <stefan@agner.ch>
+Subject: Re: [RFC PATCH v2 1/6] mtd: nand: provide several helpers to do
+ common NAND operations
+Message-ID: <20171108114803.402cd5bf@bbrezillon>
+In-Reply-To: <20171107145419.22717-2-miquel.raynal@free-electrons.com>
+References: <20171107145419.22717-1-miquel.raynal@free-electrons.com>
+ <20171107145419.22717-2-miquel.raynal@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,87 +35,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Miquel,
-
-I would change the subject to:
-
-mtd: nand: fix interpretation of NAND_CMD_NONE in nand_command[_lp]()
-
-On Mon,  6 Nov 2017 23:07:04 +0100
+On Tue,  7 Nov 2017 15:54:14 +0100
 Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
 
-> Some drivers (like nand_hynix.c) call ->cmdfunc() with NAND_CMD_NONE
-> and an address byte in order to only send one address cycle to the
-> flash chip.
+> From: Boris Brezillon <boris.brezillon@free-electrons.com>
 > 
-> Fix the current implementation that actually send NAND_CMD_NONE, which
-> is defined as -1 (cast in a u8), thus sending an 0xFF command to the
-> chip, which is actually a reset command.
+> This is part of the process of removing direct calls to ->cmdfunc()
+> outside of the core in order to introduce a better interface to execute
+> NAND operations.
 
-Well, that's not exactly true, if any, the cast is done in the
-->cmd_ctrl() implementation, not in nand_command[_lp]().
+I found a few more call-sites that should be patched (see this diff
+[1]).
 
 > 
-> Add the condition in both nand_command() and nand_command_lp() to
-> avoid calling ->cmd_ctrl() in that case.
-
-How about rewording it like that:
-
-"
-Some drivers (like nand_hynix.c) call ->cmdfunc() with NAND_CMD_NONE
-and a column address and expect the controller to only send address
-cycles. Right now, the default ->cmdfunc() implementations provided by
-the core do not filter out the command cycle in this case and forwards
-the request to the controller driver through the ->cmd_ctrl() method.
-The thing is, NAND controller drivers can get is wrong and send a
-command cycle with a NAND_CMD_NONE opcode and since NAND_CMD_NONE is
--1, and the command field is usually casted to an u8, we end up sending
-the 0xFF command which is actually a RESET operation.
-
-
-Add conditions in nand_command[_lp]() functions to sending the initial
-command cycle when command == NAND_CMD_NONE.
-"
-
+> Here we provide several helpers and make use of them to remove all
+> direct calls to ->cmdfunc(). This way, we can easily modify those
+> helpers to make use of the new ->exec_op() interface when available.
 > 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> [miquel.raynal@free-electrons.com: rebased and fixed some conflicts]
 > Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
 > ---
->  drivers/mtd/nand/nand_base.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c
-> b/drivers/mtd/nand/nand_base.c index c63e4a88a653..851f25383622 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -710,7 +710,8 @@ static void nand_command(struct mtd_info *mtd,
-> unsigned int command, chip->cmd_ctrl(mtd, readcmd, ctrl);
->  		ctrl &= ~NAND_CTRL_CHANGE;
->  	}
-> -	chip->cmd_ctrl(mtd, command, ctrl);
-> +	if (command != NAND_CMD_NONE)
-> +		chip->cmd_ctrl(mtd, command, ctrl);
+
+> @@ -1143,18 +1143,17 @@ static int sunxi_nfc_hw_ecc_read_chunks_dma(struct mtd_info *mtd, uint8_t *buf,
+>  			/*
+>  			 * Re-read the data with the randomizer disabled to
+>  			 * identify bitflips in erased pages.
+> +			 * TODO: use DMA to read page in raw mode
+>  			 */
+> -			if (randomized) {
+> -				/* TODO: use DMA to read page in raw mode */
+> -				nand->cmdfunc(mtd, NAND_CMD_RNDOUT,
+> -					      data_off, -1);
+> -				nand->read_buf(mtd, data, ecc->size);
+> -			}
+> +			if (randomized)
+> +				nand_change_read_column_op(nand, data_off,
+> +							   data, ecc->size
+
+Missing comma at the end of this line.
+
+> +							   false);
 >  
->  	/* Address cycle, when necessary */
->  	ctrl = NAND_CTRL_ALE | NAND_CTRL_CHANGE;
 
-You should probably also add a new case in the switch-case block to
-bail-out when command == NAND_CMD_NONE.
-
-> @@ -831,7 +832,9 @@ static void nand_command_lp(struct mtd_info *mtd,
-> unsigned int command, }
->  
->  	/* Command latch cycle */
-> -	chip->cmd_ctrl(mtd, command, NAND_NCE | NAND_CLE |
-> NAND_CTRL_CHANGE);
-> +	if (command != NAND_CMD_NONE)
-> +		chip->cmd_ctrl(mtd, command,
-> +			       NAND_NCE | NAND_CLE |
-> NAND_CTRL_CHANGE); 
->  	if (column != -1 || page_addr != -1) {
->  		int ctrl = NAND_CTRL_CHANGE | NAND_NCE | NAND_ALE;
-
-Ditto.
-
-Thanks,
-
-Boris
+[1]http://code.bulix.org/orw2mr-224038
