@@ -1,24 +1,26 @@
 Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eCKyi-0002Kx-Mg
- for linux-mtd@lists.infradead.org; Wed, 08 Nov 2017 07:40:55 +0000
+ id 1eCL0x-0002mu-UC
+ for linux-mtd@lists.infradead.org; Wed, 08 Nov 2017 07:43:14 +0000
 Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
  (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23990424AbdKHHkZVv24o (ORCPT
+ id S23990424AbdKHHmt68Abo (ORCPT
  <rfc822;linux-mtd@lists.infradead.org>);
- Wed, 8 Nov 2017 08:40:25 +0100
-Date: Wed, 8 Nov 2017 08:40:24 +0100
+ Wed, 8 Nov 2017 08:42:49 +0100
+Date: Wed, 8 Nov 2017 08:42:49 +0100
 Sender: Ladislav Michl <ladis@linux-mips.org>
 From: Ladislav Michl <ladis@linux-mips.org>
 To: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org
 Cc: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Kyungmin Park <kyungmin.park@samsung.com>
-Subject: [PATCH v2 0/6] OMAP2+ OneNAND driver update
-Message-ID: <20171108074024.vwcfnqizvd7jajnh@lenoch>
+Subject: [PATCH v2 1/6] arm: dts: omap3-igep: Update OneNAND node
+Message-ID: <20171108074249.og32u5axaeuqojku@lenoch>
+References: <20171108074024.vwcfnqizvd7jajnh@lenoch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20171108074024.vwcfnqizvd7jajnh@lenoch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,26 +30,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi there,
+Update node timings to be compatible with actual chip used
+(gpmc_cs_show_timings utilized to dump values)
+Also specify correct compatible property for upcoming MTD driver
+DTfication.
 
-this patch serie updates OMAP2+ OneNAND driver to the present times, making
-it fully DT configurable.
+Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+---
+ Changes:
+ -v2: none
 
-Patch 1 can be applied any time, it shows onenand node example and support
-for onenand is currently broken on igeps - hence this patches.
+ arch/arm/boot/dts/omap3-igep.dtsi | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
-Patches 3, 4 and 5 and intended for 4.15 merge window via mtd-tree as they
-are cleanups only.
-
-Patches 2 and 6 are targetted for 4.16 merge window via mtd tree as it seems
-nobody tested these changes (on Nokias most importantly) so far.
-
-Please note that unlike previous driver version, which basically ignored
-DT specified timings, this one relies on it, so it is important to get
-it right in your DT (dumping it from previous kernel version).
-
-In case synchronous timings is requested, it is okay to specify timings
-for the slowest chip ever used for you board as it is evetually optimized
-after chip probe.
-
-        ladis
+diff --git a/arch/arm/boot/dts/omap3-igep.dtsi b/arch/arm/boot/dts/omap3-igep.dtsi
+index 4929ba1cb9d3..d7f060514144 100644
+--- a/arch/arm/boot/dts/omap3-igep.dtsi
++++ b/arch/arm/boot/dts/omap3-igep.dtsi
+@@ -138,38 +138,38 @@
+ 	};
+ 
+ 	onenand@0,0 {
+-		compatible = "ti,omap2-onenand";
++		compatible = "ti,omap3-onenand";
+ 		reg = <0 0 0x20000>;	/* CS0, offset 0, IO size 128K */
+ 
+ 		gpmc,sync-read;
+ 		gpmc,sync-write;
+ 		gpmc,burst-length = <16>;
+-		gpmc,burst-read;
+ 		gpmc,burst-wrap;
++		gpmc,burst-read;
+ 		gpmc,burst-write;
+ 		gpmc,device-width = <2>; /* GPMC_DEVWIDTH_16BIT */
+ 		gpmc,mux-add-data = <2>; /* GPMC_MUX_AD */
+ 		gpmc,cs-on-ns = <0>;
+-		gpmc,cs-rd-off-ns = <87>;
+-		gpmc,cs-wr-off-ns = <87>;
++		gpmc,cs-rd-off-ns = <96>;
++		gpmc,cs-wr-off-ns = <96>;
+ 		gpmc,adv-on-ns = <0>;
+-		gpmc,adv-rd-off-ns = <10>;
+-		gpmc,adv-wr-off-ns = <10>;
+-		gpmc,oe-on-ns = <15>;
+-		gpmc,oe-off-ns = <87>;
++		gpmc,adv-rd-off-ns = <12>;
++		gpmc,adv-wr-off-ns = <12>;
++		gpmc,oe-on-ns = <18>;
++		gpmc,oe-off-ns = <96>;
+ 		gpmc,we-on-ns = <0>;
+-		gpmc,we-off-ns = <87>;
+-		gpmc,rd-cycle-ns = <112>;
+-		gpmc,wr-cycle-ns = <112>;
+-		gpmc,access-ns = <81>;
+-		gpmc,page-burst-access-ns = <15>;
++		gpmc,we-off-ns = <96>;
++		gpmc,rd-cycle-ns = <114>;
++		gpmc,wr-cycle-ns = <114>;
++		gpmc,access-ns = <90>;
++		gpmc,page-burst-access-ns = <12>;
+ 		gpmc,bus-turnaround-ns = <0>;
+ 		gpmc,cycle2cycle-delay-ns = <0>;
+ 		gpmc,wait-monitoring-ns = <0>;
+-		gpmc,clk-activation-ns = <5>;
++		gpmc,clk-activation-ns = <6>;
+ 		gpmc,wr-data-mux-bus-ns = <30>;
+-		gpmc,wr-access-ns = <81>;
+-		gpmc,sync-clk-ps = <15000>;
++		gpmc,wr-access-ns = <90>;
++		gpmc,sync-clk-ps = <12000>;
+ 
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+-- 
+2.11.0
