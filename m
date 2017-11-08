@@ -1,21 +1,21 @@
 Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eCL0x-0002mu-UC
- for linux-mtd@lists.infradead.org; Wed, 08 Nov 2017 07:43:14 +0000
+ id 1eCL19-0002mu-OI
+ for linux-mtd@lists.infradead.org; Wed, 08 Nov 2017 07:43:30 +0000
 Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
  (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23990424AbdKHHmt68Abo (ORCPT
+ id S23990424AbdKHHnXaB4So (ORCPT
  <rfc822;linux-mtd@lists.infradead.org>);
- Wed, 8 Nov 2017 08:42:49 +0100
-Date: Wed, 8 Nov 2017 08:42:49 +0100
+ Wed, 8 Nov 2017 08:43:23 +0100
+Date: Wed, 8 Nov 2017 08:43:22 +0100
 Sender: Ladislav Michl <ladis@linux-mips.org>
 From: Ladislav Michl <ladis@linux-mips.org>
 To: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org
 Cc: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Kyungmin Park <kyungmin.park@samsung.com>
-Subject: [PATCH v2 1/6] arm: dts: omap3-igep: Update OneNAND node
-Message-ID: <20171108074249.og32u5axaeuqojku@lenoch>
+Subject: [PATCH v2 2/6] memory: omap-gpmc: Refactor OneNAND support
+Message-ID: <20171108074322.fyregb3vt7eqrwjh@lenoch>
 References: <20171108074024.vwcfnqizvd7jajnh@lenoch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -30,77 +30,261 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Update node timings to be compatible with actual chip used
-(gpmc_cs_show_timings utilized to dump values)
-Also specify correct compatible property for upcoming MTD driver
-DTfication.
+Use generic probe function to deal with OneNAND node and remove now useless
+gpmc_probe_onenand_child function.
+Import sync mode timing calculation function from mach-omap2/gpmc-onenand.c
+and prepare for MTD driver DTfication.
 
 Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
 ---
  Changes:
- -v2: none
+ -v2: add gpmc_omap_onenand_set_timings description
 
- arch/arm/boot/dts/omap3-igep.dtsi | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+ drivers/memory/omap-gpmc.c | 158 +++++++++++++++++++++++++++++++++------------
+ include/linux/omap-gpmc.h  |  25 +++++++
+ 2 files changed, 142 insertions(+), 41 deletions(-)
 
-diff --git a/arch/arm/boot/dts/omap3-igep.dtsi b/arch/arm/boot/dts/omap3-igep.dtsi
-index 4929ba1cb9d3..d7f060514144 100644
---- a/arch/arm/boot/dts/omap3-igep.dtsi
-+++ b/arch/arm/boot/dts/omap3-igep.dtsi
-@@ -138,38 +138,38 @@
- 	};
+diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
+index 0e30ee1c8677..90a66b3f7ae1 100644
+--- a/drivers/memory/omap-gpmc.c
++++ b/drivers/memory/omap-gpmc.c
+@@ -32,7 +32,6 @@
+ #include <linux/pm_runtime.h>
  
- 	onenand@0,0 {
--		compatible = "ti,omap2-onenand";
-+		compatible = "ti,omap3-onenand";
- 		reg = <0 0 0x20000>;	/* CS0, offset 0, IO size 128K */
+ #include <linux/platform_data/mtd-nand-omap2.h>
+-#include <linux/platform_data/mtd-onenand-omap2.h>
  
- 		gpmc,sync-read;
- 		gpmc,sync-write;
- 		gpmc,burst-length = <16>;
--		gpmc,burst-read;
- 		gpmc,burst-wrap;
-+		gpmc,burst-read;
- 		gpmc,burst-write;
- 		gpmc,device-width = <2>; /* GPMC_DEVWIDTH_16BIT */
- 		gpmc,mux-add-data = <2>; /* GPMC_MUX_AD */
- 		gpmc,cs-on-ns = <0>;
--		gpmc,cs-rd-off-ns = <87>;
--		gpmc,cs-wr-off-ns = <87>;
-+		gpmc,cs-rd-off-ns = <96>;
-+		gpmc,cs-wr-off-ns = <96>;
- 		gpmc,adv-on-ns = <0>;
--		gpmc,adv-rd-off-ns = <10>;
--		gpmc,adv-wr-off-ns = <10>;
--		gpmc,oe-on-ns = <15>;
--		gpmc,oe-off-ns = <87>;
-+		gpmc,adv-rd-off-ns = <12>;
-+		gpmc,adv-wr-off-ns = <12>;
-+		gpmc,oe-on-ns = <18>;
-+		gpmc,oe-off-ns = <96>;
- 		gpmc,we-on-ns = <0>;
--		gpmc,we-off-ns = <87>;
--		gpmc,rd-cycle-ns = <112>;
--		gpmc,wr-cycle-ns = <112>;
--		gpmc,access-ns = <81>;
--		gpmc,page-burst-access-ns = <15>;
-+		gpmc,we-off-ns = <96>;
-+		gpmc,rd-cycle-ns = <114>;
-+		gpmc,wr-cycle-ns = <114>;
-+		gpmc,access-ns = <90>;
-+		gpmc,page-burst-access-ns = <12>;
- 		gpmc,bus-turnaround-ns = <0>;
- 		gpmc,cycle2cycle-delay-ns = <0>;
- 		gpmc,wait-monitoring-ns = <0>;
--		gpmc,clk-activation-ns = <5>;
-+		gpmc,clk-activation-ns = <6>;
- 		gpmc,wr-data-mux-bus-ns = <30>;
--		gpmc,wr-access-ns = <81>;
--		gpmc,sync-clk-ps = <15000>;
-+		gpmc,wr-access-ns = <90>;
-+		gpmc,sync-clk-ps = <12000>;
+ #include <asm/mach-types.h>
  
- 		#address-cells = <1>;
- 		#size-cells = <1>;
+@@ -1138,6 +1137,112 @@ struct gpmc_nand_ops *gpmc_omap_get_nand_ops(struct gpmc_nand_regs *reg, int cs)
+ }
+ EXPORT_SYMBOL_GPL(gpmc_omap_get_nand_ops);
+ 
++static void gpmc_omap_onenand_calc_sync_timings(struct gpmc_timings *t,
++						struct gpmc_settings *s,
++						int freq, int latency)
++{
++	struct gpmc_device_timings dev_t;
++	const int t_cer  = 15;
++	const int t_avdp = 12;
++	const int t_cez  = 20; /* max of t_cez, t_oez */
++	const int t_wpl  = 40;
++	const int t_wph  = 30;
++	int min_gpmc_clk_period, t_ces, t_avds, t_avdh, t_ach, t_aavdh, t_rdyo;
++
++	switch (freq) {
++	case 104:
++		min_gpmc_clk_period = 9600; /* 104 MHz */
++		t_ces   = 3;
++		t_avds  = 4;
++		t_avdh  = 2;
++		t_ach   = 3;
++		t_aavdh = 6;
++		t_rdyo  = 6;
++		break;
++	case 83:
++		min_gpmc_clk_period = 12000; /* 83 MHz */
++		t_ces   = 5;
++		t_avds  = 4;
++		t_avdh  = 2;
++		t_ach   = 6;
++		t_aavdh = 6;
++		t_rdyo  = 9;
++		break;
++	case 66:
++		min_gpmc_clk_period = 15000; /* 66 MHz */
++		t_ces   = 6;
++		t_avds  = 5;
++		t_avdh  = 2;
++		t_ach   = 6;
++		t_aavdh = 6;
++		t_rdyo  = 11;
++		break;
++	default:
++		min_gpmc_clk_period = 18500; /* 54 MHz */
++		t_ces   = 7;
++		t_avds  = 7;
++		t_avdh  = 7;
++		t_ach   = 9;
++		t_aavdh = 7;
++		t_rdyo  = 15;
++		break;
++	}
++
++	/* Set synchronous read timings */
++	memset(&dev_t, 0, sizeof(dev_t));
++
++	if (!s->sync_write) {
++		dev_t.t_avdp_w = max(t_avdp, t_cer) * 1000;
++		dev_t.t_wpl = t_wpl * 1000;
++		dev_t.t_wph = t_wph * 1000;
++		dev_t.t_aavdh = t_aavdh * 1000;
++	}
++	dev_t.ce_xdelay = true;
++	dev_t.avd_xdelay = true;
++	dev_t.oe_xdelay = true;
++	dev_t.we_xdelay = true;
++	dev_t.clk = min_gpmc_clk_period;
++	dev_t.t_bacc = dev_t.clk;
++	dev_t.t_ces = t_ces * 1000;
++	dev_t.t_avds = t_avds * 1000;
++	dev_t.t_avdh = t_avdh * 1000;
++	dev_t.t_ach = t_ach * 1000;
++	dev_t.cyc_iaa = (latency + 1);
++	dev_t.t_cez_r = t_cez * 1000;
++	dev_t.t_cez_w = dev_t.t_cez_r;
++	dev_t.cyc_aavdh_oe = 1;
++	dev_t.t_rdyo = t_rdyo * 1000 + min_gpmc_clk_period;
++
++	gpmc_calc_timings(t, s, &dev_t);
++}
++
++int gpmc_omap_onenand_set_timings(struct device *dev, int cs, int freq,
++				  int latency,
++				  struct gpmc_onenand_info *info)
++{
++	int ret;
++	struct gpmc_timings gpmc_t;
++	struct gpmc_settings gpmc_s;
++
++	gpmc_read_settings_dt(dev->of_node, &gpmc_s);
++
++	info->sync_read = gpmc_s.sync_read;
++	info->sync_write = gpmc_s.sync_write;
++	info->burst_len = gpmc_s.burst_len;
++
++	if (!gpmc_s.sync_read && !gpmc_s.sync_write)
++		return 0;
++
++	gpmc_omap_onenand_calc_sync_timings(&gpmc_t, &gpmc_s, freq, latency);
++
++	ret = gpmc_cs_program_settings(cs, &gpmc_s);
++	if (ret < 0)
++		return ret;
++
++	return gpmc_cs_set_timings(cs, &gpmc_t, &gpmc_s);
++}
++EXPORT_SYMBOL_GPL(gpmc_omap_onenand_set_timings);
++
+ int gpmc_get_client_irq(unsigned irq_config)
+ {
+ 	if (!gpmc_irq_domain) {
+@@ -1916,41 +2021,6 @@ static void __maybe_unused gpmc_read_timings_dt(struct device_node *np,
+ 		of_property_read_bool(np, "gpmc,time-para-granularity");
+ }
+ 
+-#if IS_ENABLED(CONFIG_MTD_ONENAND)
+-static int gpmc_probe_onenand_child(struct platform_device *pdev,
+-				 struct device_node *child)
+-{
+-	u32 val;
+-	struct omap_onenand_platform_data *gpmc_onenand_data;
+-
+-	if (of_property_read_u32(child, "reg", &val) < 0) {
+-		dev_err(&pdev->dev, "%pOF has no 'reg' property\n",
+-			child);
+-		return -ENODEV;
+-	}
+-
+-	gpmc_onenand_data = devm_kzalloc(&pdev->dev, sizeof(*gpmc_onenand_data),
+-					 GFP_KERNEL);
+-	if (!gpmc_onenand_data)
+-		return -ENOMEM;
+-
+-	gpmc_onenand_data->cs = val;
+-	gpmc_onenand_data->of_node = child;
+-	gpmc_onenand_data->dma_channel = -1;
+-
+-	if (!of_property_read_u32(child, "dma-channel", &val))
+-		gpmc_onenand_data->dma_channel = val;
+-
+-	return gpmc_onenand_init(gpmc_onenand_data);
+-}
+-#else
+-static int gpmc_probe_onenand_child(struct platform_device *pdev,
+-				    struct device_node *child)
+-{
+-	return 0;
+-}
+-#endif
+-
+ /**
+  * gpmc_probe_generic_child - configures the gpmc for a child device
+  * @pdev:	pointer to gpmc platform device
+@@ -2053,6 +2123,16 @@ static int gpmc_probe_generic_child(struct platform_device *pdev,
+ 		}
+ 	}
+ 
++	if (of_node_cmp(child->name, "onenand") == 0) {
++		/* Warn about older DT blobs with no compatible property */
++		if (!of_property_read_bool(child, "compatible")) {
++			dev_warn(&pdev->dev,
++				 "Incompatible OneNAND node: missing compatible");
++			ret = -EINVAL;
++			goto err;
++		}
++	}
++
+ 	if (of_device_is_compatible(child, "ti,omap2-nand")) {
+ 		/* NAND specific setup */
+ 		val = 8;
+@@ -2189,11 +2269,7 @@ static void gpmc_probe_dt_children(struct platform_device *pdev)
+ 		if (!child->name)
+ 			continue;
+ 
+-		if (of_node_cmp(child->name, "onenand") == 0)
+-			ret = gpmc_probe_onenand_child(pdev, child);
+-		else
+-			ret = gpmc_probe_generic_child(pdev, child);
+-
++		ret = gpmc_probe_generic_child(pdev, child);
+ 		if (ret) {
+ 			dev_err(&pdev->dev, "failed to probe DT child '%s': %d\n",
+ 				child->name, ret);
+diff --git a/include/linux/omap-gpmc.h b/include/linux/omap-gpmc.h
+index edfa280c3d56..067bea5e98c4 100644
+--- a/include/linux/omap-gpmc.h
++++ b/include/linux/omap-gpmc.h
+@@ -25,15 +25,40 @@ struct gpmc_nand_ops {
+ 
+ struct gpmc_nand_regs;
+ 
++struct gpmc_onenand_info {
++	bool sync_read;
++	bool sync_write;
++	int burst_len;
++};
++
+ #if IS_ENABLED(CONFIG_OMAP_GPMC)
+ struct gpmc_nand_ops *gpmc_omap_get_nand_ops(struct gpmc_nand_regs *regs,
+ 					     int cs);
++/**
++ * gpmc_omap_onenand_set_timings - set optimized sync timings.
++ * @cs:      Chip Select Region
++ * @freq:    Chip frequency
++ * @latency: Burst latency cycle count
++ * @info:    Structure describing parameters used
++ */
++int gpmc_omap_onenand_set_timings(struct device *dev, int cs, int freq,
++				  int latency,
++				  struct gpmc_onenand_info *info);
++
+ #else
+ static inline struct gpmc_nand_ops *gpmc_omap_get_nand_ops(struct gpmc_nand_regs *regs,
+ 							   int cs)
+ {
+ 	return NULL;
+ }
++
++static inline
++int gpmc_omap_onenand_set_timings(struct device *dev, int cs, int freq,
++				  int latency,
++				  struct gpmc_onenand_info *info)
++{
++	return -EINVAL;
++}
+ #endif /* CONFIG_OMAP_GPMC */
+ 
+ extern int gpmc_calc_timings(struct gpmc_timings *gpmc_t,
 -- 
 2.11.0
