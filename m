@@ -1,23 +1,24 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
+Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eCiLV-00057A-S9
- for linux-mtd@lists.infradead.org; Thu, 09 Nov 2017 08:38:00 +0000
-Date: Thu, 9 Nov 2017 09:37:25 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marex@denx.de>
-Cc: Jeremy Kerr <jk@ozlabs.org>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, David Woodhouse
- <dwmw2@infradead.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: Re: Enable notifications for linux-mtd
-Message-ID: <20171109093725.5eb2d511@bbrezillon>
-In-Reply-To: <20171109061016.GA107426@google.com>
-References: <20171107092628.461ff68a@bbrezillon>
- <46cc2db3-fa2d-61ab-5e78-c88d9f371584@ozlabs.org>
- <20171109061016.GA107426@google.com>
+ id 1eCism-0007Iy-RZ
+ for linux-mtd@lists.infradead.org; Thu, 09 Nov 2017 09:12:23 +0000
+Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
+ (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
+ id S23990493AbdKIJL4kHsGw (ORCPT
+ <rfc822;linux-mtd@lists.infradead.org>);
+ Thu, 9 Nov 2017 10:11:56 +0100
+Date: Thu, 9 Nov 2017 10:11:55 +0100
+Sender: Ladislav Michl <ladis@linux-mips.org>
+From: Ladislav Michl <ladis@linux-mips.org>
+To: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org
+Cc: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>
+Subject: [PATCH v3 0/7] OMAP2+ OneNAND driver update
+Message-ID: <20171109091155.6a6azfvjarwvlfh2@lenoch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,42 +28,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 8 Nov 2017 22:10:16 -0800
-Brian Norris <computersforpeace@gmail.com> wrote:
+Hi there,
 
-> On Wed, Nov 08, 2017 at 09:29:35AM +0800, Jeremy Kerr wrote:
-> > Hi Boris,
-> >   
-> > > Is there a way to send notifications to the submitter/author when the
-> > > status of a linux-mtd patch is changed?  
-> > 
-> > Absolutely - that's just something I can turn on in your project's
-> > config. I assume your co-maintainers are OK with this?  
-> 
-> What does "notification to submitter/author" mean? Only to the person
-> who sent the patch? Or to everyone CC'd (including the mailing list)? If
-> it's not the latter, then I hope no maintainer starts relying on that.
-> It really obscures the process if authors are getting private
-> notifications, and nobody ever responds publicly to say things have been
-> applied.
+this patch serie updates OMAP2+ OneNAND driver to the present times, making
+it fully DT configurable.
 
-That's true. Jeremy, are notifications sent to all people in Cc of a
-patch/patch-series, or is it just sent to the submitter and author of
-the patch?
+Patches 2-6 are intended for 4.15 merge window via mtd-tree as they are
+cleanups only.
 
-> 
-> > > Not sure we'll need a notification for any kind of change, but having
-> > > one when the patch is marked as Accepted would be good.  
-> > 
-> > Currently, the notifications are for all state changes (there's no
-> > config to do it selectively). Will this be a problem?  
-> 
-> In general, mailing lists get a lot of inapplicable junk. Cross-posts,
-> at least (e.g., device tree source changes, documentation, and driver
-> patches in a single series -- we might only care about the latter 2).
-> Does that mean we notify submitters when things move to "Not
-> Applicable"? What about "Archived"? There's still non-archived stuff on
-> the tracker that's >3 years old. I guess spamming people isn't the end
-> of the world...
-> 
-> Brian
+Patches 1 and 7 are targetted for 4.16 merge window via mtd tree as it seems
+nobody tested these changes (on Nokias most importantly) so far.
+
+Please note that unlike previous driver version, which basically ignored
+DT specified timings, this one relies on it, so it is important to get
+it right in your DT (dumping it from previous kernel version).
+
+In case synchronous timings is requested, it is okay to specify timings
+for the slowest chip ever used for you board as it is evetually optimized
+after chip probe.
+
+Ladislav Michl (7):
+  memory: omap-gpmc: Refactor OneNAND support
+  mtd: onenand: omap2: Remove regulator support
+  mtd: onenand: omap2: Remove skip initial unlocking support
+  mtd: onenand: omap2: Remove partitioning support from platform data
+  mtd: onenand: omap2: Unify OMAP2 and OMAP3 DMA implementation
+  mtd: onenand: omap2: Do not make delay for GPIO OMAP3 specific
+  mtd: onenand: omap2: Configure driver from DT
+
+ drivers/memory/omap-gpmc.c  | 158 ++++++++++----
+ drivers/mtd/onenand/omap2.c | 512 ++++++++++++++++----------------------------
+ include/linux/omap-gpmc.h   |  25 +++
+ 3 files changed, 330 insertions(+), 365 deletions(-)
+
+-- 
+2.11.0
