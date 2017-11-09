@@ -1,34 +1,23 @@
-Received: from smtp12.smtpout.orange.fr ([80.12.242.134]
- helo=smtp.smtpout.orange.fr)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eChGD-0000b6-Dl
- for linux-mtd@lists.infradead.org; Thu, 09 Nov 2017 07:28:27 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Andrea Adami <andrea.adami@gmail.com>
-Cc: Andrea Adami <andrea.adami@gmail.com>, linux-mtd@lists.infradead.org,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mmc@vger.kernel.org,
- Russell King <linux@armlinux.org.uk>,
- Haojian Zhuang <haojian.zhuang@gmail.com>, linux-kernel@vger.kernel.org,
- Marek Vasut <marek.vasut@gmail.com>, linux-arm-kernel@lists.infradead.org,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Lee Jones <lee.jones@linaro.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Linus Walleij <linus.walleij@linaro.org>, Daniel Mack <daniel@zonque.org>
-Subject: Re: [PATCH v5 0/9] mtd: sharpslpart partition parser
-References: <1502743720-28672-1-git-send-email-andrea.adami@gmail.com>
- <20170821221339.70cfcfb7@bbrezillon> <87pobmoz8n.fsf@belgarion.home>
- <CAAQYJAv8bNrxJ_ESgC0fOAdry7i5mstzgQ3P74q1D=C-xsJprg@mail.gmail.com>
- <20170824114631.089d2628@bbrezillon> <87inh6pw9e.fsf@belgarion.home>
- <87376uezjs.fsf@belgarion.home> <20171108085446.718a2ff5@bbrezillon>
-Date: Thu, 09 Nov 2017 08:27:50 +0100
-In-Reply-To: <20171108085446.718a2ff5@bbrezillon> (Boris Brezillon's message
- of "Wed, 8 Nov 2017 08:54:46 +0100")
-Message-ID: <8760aj9aix.fsf@belgarion.home>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eCiLV-00057A-S9
+ for linux-mtd@lists.infradead.org; Thu, 09 Nov 2017 08:38:00 +0000
+Date: Thu, 9 Nov 2017 09:37:25 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marex@denx.de>
+Cc: Jeremy Kerr <jk@ozlabs.org>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, David Woodhouse
+ <dwmw2@infradead.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: Re: Enable notifications for linux-mtd
+Message-ID: <20171109093725.5eb2d511@bbrezillon>
+In-Reply-To: <20171109061016.GA107426@google.com>
+References: <20171107092628.461ff68a@bbrezillon>
+ <46cc2db3-fa2d-61ab-5e78-c88d9f371584@ozlabs.org>
+ <20171109061016.GA107426@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,25 +27,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Boris Brezillon <boris.brezillon@free-electrons.com> writes:
+On Wed, 8 Nov 2017 22:10:16 -0800
+Brian Norris <computersforpeace@gmail.com> wrote:
 
->> Hi Boris,
->> 
->> So what's the status about the sync, should I pick the patches, and have the
->> others make it to your for-next branch ?
->
-> It's been merged in l2-mtd/master (our -next branch) which is
-> targeting 4.15. Unfortunately we didn't create a topic branch, which
-> means you'll have to wait 4.15-rc1 before pushing patches 6 to 9 if you
-> want avoid regressions. Anyway, I guess it's already too late to send
-> PRs to arm-soc for 4.15.
+> On Wed, Nov 08, 2017 at 09:29:35AM +0800, Jeremy Kerr wrote:
+> > Hi Boris,
+> >   
+> > > Is there a way to send notifications to the submitter/author when the
+> > > status of a linux-mtd patch is changed?  
+> > 
+> > Absolutely - that's just something I can turn on in your project's
+> > config. I assume your co-maintainers are OK with this?  
+> 
+> What does "notification to submitter/author" mean? Only to the person
+> who sent the patch? Or to everyone CC'd (including the mailing list)? If
+> it's not the latter, then I hope no maintainer starts relying on that.
+> It really obscures the process if authors are getting private
+> notifications, and nobody ever responds publicly to say things have been
+> applied.
 
-Right, my next pull request is targetting v4.16.
+That's true. Jeremy, are notifications sent to all people in Cc of a
+patch/patch-series, or is it just sent to the submitter and author of
+the patch?
 
-Andrea, would you be so kind as to resend the serie (patches 6 - 9) on the
-mailing list and to me, so that I review and apply the correct version.
-
-Thanks.
-
--- 
-Robert
+> 
+> > > Not sure we'll need a notification for any kind of change, but having
+> > > one when the patch is marked as Accepted would be good.  
+> > 
+> > Currently, the notifications are for all state changes (there's no
+> > config to do it selectively). Will this be a problem?  
+> 
+> In general, mailing lists get a lot of inapplicable junk. Cross-posts,
+> at least (e.g., device tree source changes, documentation, and driver
+> patches in a single series -- we might only care about the latter 2).
+> Does that mean we notify submitters when things move to "Not
+> Applicable"? What about "Archived"? There's still non-archived stuff on
+> the tracker that's >3 years old. I guess spamming people isn't the end
+> of the world...
+> 
+> Brian
