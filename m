@@ -1,13 +1,13 @@
 Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eD5vL-0007zj-Vz
- for linux-mtd@lists.infradead.org; Fri, 10 Nov 2017 09:48:34 +0000
+ id 1eD5z0-0003Ay-Lk
+ for linux-mtd@lists.infradead.org; Fri, 10 Nov 2017 09:52:20 +0000
 Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
  (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23990595AbdKJJsHVrI0W (ORCPT
+ id S23990595AbdKJJvz6k2BW (ORCPT
  <rfc822;linux-mtd@lists.infradead.org>);
- Fri, 10 Nov 2017 10:48:07 +0100
-Date: Fri, 10 Nov 2017 10:48:06 +0100
+ Fri, 10 Nov 2017 10:51:55 +0100
+Date: Fri, 10 Nov 2017 10:51:54 +0100
 Sender: Ladislav Michl <ladis@linux-mips.org>
 From: Ladislav Michl <ladis@linux-mips.org>
 To: Roger Quadros <rogerq@ti.com>
@@ -15,16 +15,16 @@ Cc: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
  Tony Lindgren <tony@atomide.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Kyungmin Park <kyungmin.park@samsung.com>
-Subject: Re: [PATCH v3 4/7] mtd: onenand: omap2: Remove partitioning support
- from platform data
-Message-ID: <20171110094806.22i4q7jekigeozmo@lenoch>
+Subject: Re: [PATCH v3 5/7] mtd: onenand: omap2: Unify OMAP2 and OMAP3 DMA
+ implementation
+Message-ID: <20171110095154.kf34cd7h2eyfvwf3@lenoch>
 References: <20171109091155.6a6azfvjarwvlfh2@lenoch>
- <20171109091444.dxvoaaafjgkf43a2@lenoch>
- <de8a8a40-af31-01af-f523-6fa6dbca2a70@ti.com>
+ <20171109091529.x3pqqvbiywj5aulo@lenoch>
+ <4a58dfac-8cc9-101f-b079-da8925d7ab4c@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <de8a8a40-af31-01af-f523-6fa6dbca2a70@ti.com>
+In-Reply-To: <4a58dfac-8cc9-101f-b079-da8925d7ab4c@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,42 +34,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 10, 2017 at 10:19:11AM +0200, Roger Quadros wrote:
-> On 09/11/17 11:14, Ladislav Michl wrote:
-> > No platform data user setups partitioning informations, so remove.
+On Fri, Nov 10, 2017 at 10:21:51AM +0200, Roger Quadros wrote:
+> On 09/11/17 11:15, Ladislav Michl wrote:
+> > Since the very first commit (36cd4fb5d277: "[MTD] [OneNAND] Add OMAP2 / OMAP3
+> > OneNAND driver") DMA is disabled for OMAP2. Later fixes thus went only into
+> > OMAP3 specific DMA functions which turned out not to be so OMAP3 specific.
+> > Therefore replace open coded timeout waiting for completion in OMAP3
+> > functions with API call and merge those two implementations.
+> > 
+> > Note that currently the is no single DMA user, so this change is basically
+> > no-op. Those interested will have to find DMA configuration in the
+> > linux-omap.git history.
 > > 
 > > Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
-> > ---
-> >  Changes:
-> >  -v2: new patch
-> >  -v3: none
-> > 
-> >  drivers/mtd/onenand/omap2.c | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-> > index 93bd94337b35..883993bbe40b 100644
-> > --- a/drivers/mtd/onenand/omap2.c
-> > +++ b/drivers/mtd/onenand/omap2.c
-> > @@ -703,8 +703,7 @@ static int omap2_onenand_probe(struct platform_device *pdev)
-> >  	if ((r = onenand_scan(&c->mtd, 1)) < 0)
-> >  		goto err_release_dma;
-> >  
-> > -	r = mtd_device_register(&c->mtd, pdata ? pdata->parts : NULL,
-> > -				pdata ? pdata->nr_parts : 0);
-> > +	r = mtd_device_register(&c->mtd, NULL, 0);
-> >  	if (r)
-> >  		goto err_release_onenand;
-> >  
-> > 
 > 
-> Same here. Need to update platform data structure.
+> I'll be happy if there are no OMAP2 vs OMAP3 differences in code but we need to
+> be absolutely sure that we don't break DMA functionality if it ever worked.
 
-I do not want to unnecessarily extend patch as I hope no sane maintainer
-would ever allow anyone to add any new platform data dependency while
-we are moving towards DT only configured kernel.
+It probably worked at least for OMAP3 as it was enabled in legacy kernels.
 
-Platform data structure will be deleted entirely together with
-arch/arm/mach-omap2/gpmc-onenand.c once driver update gets accepted.
+> Can we somehow test OneNAND DMA on OMAP2 and OMAP3?
+> Tony?
+
+I'll prepare next version patch serie for easier testing. Of course I would
+prefer to be able to test changes myself, but I do not have any Nokias :-)
 
 	ladis
