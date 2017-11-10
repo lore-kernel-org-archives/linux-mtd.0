@@ -1,17 +1,25 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
+Received: from muru.com ([72.249.23.125])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eD7XJ-0002Am-0V
- for linux-mtd@lists.infradead.org; Fri, 10 Nov 2017 11:31:51 +0000
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-To: linux-mtd@lists.infradead.org
-Cc: ukleinek@debian.org,
- David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Subject: [PATCH] ubi-utils: ubicrc32: process command line arguments first
-Date: Fri, 10 Nov 2017 12:30:32 +0100
-Message-Id: <20171110113032.1758-1-david.oberhollenzer@sigma-star.at>
+ id 1eDBAm-0002wG-3q
+ for linux-mtd@lists.infradead.org; Fri, 10 Nov 2017 15:24:50 +0000
+Date: Fri, 10 Nov 2017 07:24:23 -0800
+From: Tony Lindgren <tony@atomide.com>
+To: Ladislav Michl <ladis@linux-mips.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org, Roger Quadros <rogerq@ti.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>
+Subject: Re: [PATCH v3 5/7] mtd: onenand: omap2: Unify OMAP2 and OMAP3 DMA
+ implementation
+Message-ID: <20171110152423.GM28152@atomide.com>
+References: <20171109091155.6a6azfvjarwvlfh2@lenoch>
+ <20171109091529.x3pqqvbiywj5aulo@lenoch>
+ <3d33265a-2520-2298-6068-f76a7257bfd0@ti.com>
+ <20171110100443.zqk7uzxoaq4eyntk@lenoch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20171110100443.zqk7uzxoaq4eyntk@lenoch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,50 +29,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When a command line option is used (e.g. --version), the tool
-tries to open it as a file first, then *uppon success* attempts
-to process the command line options (including what it assumed
-to be an input file) which is obviously broken.
+* Ladislav Michl <ladis@linux-mips.org> [171110 10:06]:
+> On Fri, Nov 10, 2017 at 10:25:24AM +0200, Peter Ujfalusi wrote:
+> > Hi,
+> > 
+> > On 2017-11-09 11:15, Ladislav Michl wrote:
+> > > Since the very first commit (36cd4fb5d277: "[MTD] [OneNAND] Add OMAP2 / OMAP3
+> > > OneNAND driver") DMA is disabled for OMAP2. Later fixes thus went only into
+> > > OMAP3 specific DMA functions which turned out not to be so OMAP3 specific.
+> > > Therefore replace open coded timeout waiting for completion in OMAP3
+> > > functions with API call and merge those two implementations.
+> > > 
+> > > Note that currently the is no single DMA user, so this change is basically
+> > > no-op. Those interested will have to find DMA configuration in the
+> > > linux-omap.git history.
+> > 
+> > fwiw I have two patches for some time to convert the omap2 onenand
+> > driver to DMAengine:
+> > https://github.com/omap-audio/linux-audio/commits/peter/linux-next-wip/drivers/mtd/onenand/omap2.c
+> 
+> That is incredible! I was thinking about it as a next step and you already
+> did all the work.
+> 
+> > I can wait for your series and rebase mine or if you have time can test
+> > them and see if they can be included in your update series.
 
-This patch moves command line processing first and then attempts
-to open *the first unprocessed* argument.
+Yeah that's great, one step closer to removing the legacy dma support!
 
-Reported-by: Uwe Kleine-König <ukleinek@debian.org>
-Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
----
- ubi-utils/ubicrc32.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+> I run out of time few days ago already, but this looks so good that it is
+> worth to delay other work. I'll include it in next version of patch serie.
+> 
+> Also it will allow us to dump 'dma-channel' and use DMA if gpio pin
+> is configured which was intended logic of original driver. 'dma-channel'
+> was introduced during mechanical conversion to DT and fortunately it is
+> not used yet, so we can safely remove it again.
 
-diff --git a/ubi-utils/ubicrc32.c b/ubi-utils/ubicrc32.c
-index 0ea255d..885f348 100644
---- a/ubi-utils/ubicrc32.c
-+++ b/ubi-utils/ubicrc32.c
-@@ -89,19 +89,18 @@ int main(int argc, char * const argv[])
- 	int err = 0;
- 	uint32_t crc = UBI_CRC32_INIT;
- 	char buf[BUFSIZE];
--	FILE *fp;
--
--	if (argc > 1) {
--		fp = fopen(argv[1], "r");
--		if (!fp)
--			return sys_errmsg("cannot open \"%s\"", argv[1]);
--	} else
--		fp = stdin;
-+	FILE *fp = stdin;
- 
- 	err = parse_opt(argc, argv);
- 	if (err)
- 		return err;
- 
-+	if (optind < argc) {
-+		fp = fopen(argv[optind], "r");
-+		if (!fp)
-+			return sys_errmsg("cannot open \"%s\"", argv[1]);
-+	}
-+
- 	while (!feof(fp)) {
- 		size_t read;
- 
--- 
-2.13.6
+FYI, the gpio pin for onenand should not be in gpio mode. It should
+be used as external dma request line to automatically trigger new
+transfers like we do for tusb6010 dma. But of course it's possible
+that onenand has other issues too preventing the dma usage.
+
+Regards,
+
+Tony
