@@ -1,22 +1,34 @@
-Received: from mail-qt0-x233.google.com ([2607:f8b0:400d:c0d::233])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eDMt6-0007Yb-Ry
- for linux-mtd@lists.infradead.org; Sat, 11 Nov 2017 03:55:23 +0000
-Received: by mail-qt0-x233.google.com with SMTP id d43so3457247qte.13
- for <linux-mtd@lists.infradead.org>; Fri, 10 Nov 2017 19:54:56 -0800 (PST)
-Received: from bear.localnet (pool-96-241-56-252.washdc.fios.verizon.net.
- [96.241.56.252])
- by smtp.gmail.com with ESMTPSA id v40sm7435414qtj.81.2017.11.10.19.54.54
- for <linux-mtd@lists.infradead.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 10 Nov 2017 19:54:54 -0800 (PST)
-Message-ID: <5a06748e.2b1ac80a.cc211.e761@mx.google.com>
-From: Frank Mori Hess <fmh6jj@gmail.com>
-Date: Fri, 10 Nov 2017 22:34:18 -0500
-Subject: [PATCH] Avoid passing uninitialized wbuf_dwork to
- cancel_delayed_work_sync during jffs2 sync.
-Resent-Message-ID: <201711102254.49989.>
+Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eDVFy-000691-D8
+ for linux-mtd@lists.infradead.org; Sat, 11 Nov 2017 12:51:33 +0000
+Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
+ (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
+ id S23990414AbdKKMu6VnAMO (ORCPT
+ <rfc822;linux-mtd@lists.infradead.org>);
+ Sat, 11 Nov 2017 13:50:58 +0100
+Date: Sat, 11 Nov 2017 13:50:54 +0100
+Sender: Ladislav Michl <ladis@linux-mips.org>
+From: Ladislav Michl <ladis@linux-mips.org>
+To: Tony Lindgren <tony@atomide.com>
+Cc: Roger Quadros <rogerq@ti.com>, linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>
+Subject: Re: [PATCH v3 5/7] mtd: onenand: omap2: Unify OMAP2 and OMAP3 DMA
+ implementation
+Message-ID: <20171111125054.4gkttjltqrgjqtwt@lenoch>
+References: <20171109091155.6a6azfvjarwvlfh2@lenoch>
+ <20171109091529.x3pqqvbiywj5aulo@lenoch>
+ <4a58dfac-8cc9-101f-b079-da8925d7ab4c@ti.com>
+ <20171110095154.kf34cd7h2eyfvwf3@lenoch>
+ <20171110152610.GN28152@atomide.com>
+ <20171110181951.siddrdubjkwwspqt@lenoch>
+ <20171110182938.GS28152@atomide.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20171110182938.GS28152@atomide.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +38,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
----
- fs/jffs2/super.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+On Fri, Nov 10, 2017 at 10:29:38AM -0800, Tony Lindgren wrote:
+> I just made sure things keep working with Peter's changes, no additional
+> patches. So the dma is barely used at all.
 
-diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index 153f1c6eb169..4da67675e7ca 100644
---- a/fs/jffs2/super.c
-+++ b/fs/jffs2/super.c
-@@ -101,7 +101,8 @@ static int jffs2_sync_fs(struct super_block *sb, int wait)
- 	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
- 
- #ifdef CONFIG_JFFS2_FS_WRITEBUFFER
--	cancel_delayed_work_sync(&c->wbuf_dwork);
-+	if (c->wbuf != NULL)
-+		cancel_delayed_work_sync(&c->wbuf_dwork);
- #endif
- 
- 	mutex_lock(&c->alloc_sem);
--- 
-2.11.0
+It seemed suspicious to me looking here:
+https://github.com/omap-audio/linux-audio/commit/52e914395afe31a7401b35814b6dabf3ef46a052#diff-1662a4cc544d322b68c547cfdc99448cR312
+as wait_for_completion_timeout is returning time remaining and zero on
+timeout :-)
+Fixed in next version and also changed to wait_for_completion_io_timeout
+to get proper sched stats.
+Btw, I think we should stop DMA on timeout as we are unmapping DMA region
+later and it might not behave nicely if we do so while DMA is eventually
+running (that's fixed too).
+
+I made Peter's patches part of next version and enabled DMA unconditionally.
+It works nicely on:
+OF: fdt: Machine model: IGEPv2 Rev. C (TI OMAP AM/DM37x)
+OMAP3630/DM3730 ES1.2 (l2cache iva sgx neon isp 192mhz_clk)
+...
+omap-gpmc 6e000000.gpmc: GPMC revision 5.0
+gpmc_mem_init: disabling cs 0 mapped at 0x0-0x1000000
+omap2-onenand 30000000.onenand: initializing on CS0 (0x30000000), va e0080000, DMA mode
+Muxed OneNAND(DDP) 512MB 1.8V 16-bit (0x58)
+OneNAND version = 0x0031
+Scanning device for bad blocks
+OneNAND eraseblock 597 is an initial bad block
+OneNAND eraseblock 1159 is an initial bad block
+OneNAND eraseblock 2812 is an initial bad block
+omap2-onenand 30000000.onenand: optimized timings for 83 MHz
+2 ofpart partitions found on MTD device 30000000.onenand
+Creating 2 MTD partitions on "30000000.onenand":
+0x000000000000-0x000000080000 : "SPL"
+0x000000080000-0x000020000000 : "UBI"
+...
+
+Based on this experiment, I'll delay v4 a bit and leave DMA enabled by
+default. We are brave enough and want some testing, right?
+It would be nice if someone could provide some benchmarks using PIO
+and DMA mode. I do not expect any dramatic change, but kernel latencies
+should decrease when doing flash I/O.
+
+Based on above I also think R/B pin should be in ordinary GPIO mode.
+Perhaps using external DMA request is somehow posible, but it is not clear
+to me how after yet another reading of SDMA, GPMC and OneNAND documentation,
+so I'll happily leave it for others.
+
+Btw, using R/B pin would elimitate latencies caused by busy looping while
+waiting for onenand command to complete. Nice todo for someone with a lot
+of spare time :-)
+
+Best regards,
+	ladis
