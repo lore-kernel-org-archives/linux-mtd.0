@@ -1,21 +1,25 @@
-Received: from mailout.micron.com ([137.201.242.129])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eDcjQ-0004Yk-UK
- for linux-mtd@lists.infradead.org; Sat, 11 Nov 2017 20:50:26 +0000
-From: "Bean Huo (beanhuo)" <beanhuo@micron.com>
-To: "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>
-CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: [PATCH V1] drivers:mtd:spi-nor:checkup FSR error bits
-Date: Sat, 11 Nov 2017 20:49:26 +0000
-Message-ID: <825c7a1bb1034369b9d592a7b358030c@SIWEX5A.sing.micron.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eDd4q-0008Ry-QU
+ for linux-mtd@lists.infradead.org; Sat, 11 Nov 2017 21:12:36 +0000
+Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
+ (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
+ id S23990829AbdKKVMImPqGo (ORCPT
+ <rfc822;linux-mtd@lists.infradead.org>);
+ Sat, 11 Nov 2017 22:12:08 +0100
+Date: Sat, 11 Nov 2017 22:12:06 +0100
+Sender: Ladislav Michl <ladis@linux-mips.org>
+From: Ladislav Michl <ladis@linux-mips.org>
+To: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org
+Cc: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>,
+ Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>
+Subject: [PATCH v4 00/16] OMAP2+ OneNAND driver update
+Message-ID: <20171111211206.465pgorrjp3eyix6@lenoch>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,78 +29,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-For the Micron SPI NOR, when the erase/program operation fails, especially,
-for the failure results from intending to modify protected space, spi-nor
-upper layers still get the return which shows the operation succeeds.
-this because spi_nor_fsr_ready() only uses bit.7 to device whether ready.
-For the most cases, even the error of erase/program occurs, SPI NOR device
-is still ready. The device ready and the error are two different cases.
-This patch is to fixup this issue and adding FSR (flag status register)
-error bits checkup.
-The FSR(flag status register) is a powerful tool to investigate the staus
-of device,checking information regarding what is actually doing the memory
-and detecting possible error conditions.
+Hi there,
 
-Signed-off-by: beanhuo <beanhuo@micron.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 19 +++++++++++++++++--
- include/linux/mtd/spi-nor.h   |  6 +++++-
- 2 files changed, 22 insertions(+), 3 deletions(-)
+this patch serie updates OMAP2+ OneNAND driver to the present times, making
+it fully DT configurable, using libgpio and dmaengine apis.
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index bc266f7..200e814 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -330,8 +330,23 @@ static inline int spi_nor_fsr_ready(struct spi_nor *no=
-r)
- 	int fsr =3D read_fsr(nor);
- 	if (fsr < 0)
- 		return fsr;
--	else
--		return fsr & FSR_READY;
-+
-+	if (fsr & (FSR_E_ERR | FSR_P_ERR)) {
-+		if (fsr & FSR_E_ERR)
-+			dev_err(nor->dev, "Erase operation failed.\n");
-+		else
-+			dev_err(nor->dev, "Program operation failed.\n");
-+
-+		if (fsr & FSR_PT_ERR)
-+			dev_err(nor->dev,
-+			"The operation has attempted to modify the protected"
-+			"sector or the locked OPT space.\n");
-+
-+		nor->write_reg(nor, SPINOR_OP_CLFSR, NULL, 0);
-+		return -EIO;
-+	}
-+
-+	return fsr & FSR_READY;
- }
-=20
- static int spi_nor_ready(struct spi_nor *nor)
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index d0c66a0..46b5608 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -61,6 +61,7 @@
- #define SPINOR_OP_RDSFDP	0x5a	/* Read SFDP */
- #define SPINOR_OP_RDCR		0x35	/* Read configuration register */
- #define SPINOR_OP_RDFSR		0x70	/* Read flag status register */
-+#define SPINOR_OP_CLFSR		0x50	/* Clear flag status register */
-=20
- /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
- #define SPINOR_OP_READ_4B	0x13	/* Read data bytes (low frequency) */
-@@ -130,7 +131,10 @@
- #define EVCR_QUAD_EN_MICRON	BIT(7)	/* Micron Quad I/O */
-=20
- /* Flag Status Register bits */
--#define FSR_READY		BIT(7)
-+#define FSR_READY		BIT(7)	/* Device status, 0 =3D Busy,1 =3D Ready */
-+#define FSR_E_ERR		BIT(5)	/* Erase operation status */
-+#define FSR_P_ERR		BIT(4)	/* Program operation status */
-+#define FSR_PT_ERR		BIT(1)	/* Protection error bit */
-=20
- /* Configuration Register bits. */
- #define CR_QUAD_EN_SPAN		BIT(1)	/* Spansion Quad I/O */
---=20
-2.7.4
+Please note that unlike previous driver version, which basically ignored
+DT specified timings, this one relies on it, so it is important to get
+it right in your DT (dumping it from previous kernel version).
+
+In case synchronous timings is requested, it is okay to specify timings
+for the slowest chip ever used for you board as it is evetually optimized
+after chip probe.
+
+Original driver used DMA only if user specified r/b gpio in platform
+data, now DMA is used unconditionally and PIO mode is used as fallback.
+
+In case anyone wants to give it a try, few DT related changes are needed:
+- onenand node needs 'ti,omap2-onenand' compatible (for mailine boards this is
+  done in patch 2)
+- to use R/B pin, rb-gpios needs to be specified (for n900 and n8x0 this is
+  done in patch 16, however patch lacks pinmux configuration.
+
+Most notable changes from previous version:
+- added dmaengine patches by Peter Ujfalusi
+- added dt bindings documentation
+- added cleanup patches
+- DMA enabled by default
+
+Also note that driver will fail probe OneNAND chip after patch 13 and start
+working again after patch 14.
+
+Testing and benchmarking very welcome.
+
+Depends on "memory: omap-gpmc: Make 'bank-width' property optional"
+https://patchwork.kernel.org/patch/10043259/
+
+Ladislav Michl (13):
+  dt-bindings: mtd: gpmc-onenand: Update properties description
+  ARM: dts: OMAP2+: Add compatible property to onenand node
+  ARM: dts: omap3-igep: Update onenand node timings
+  mtd: onenand: omap2: Remove regulator support
+  mtd: onenand: omap2: Remove skip initial unlocking support
+  mtd: onenand: omap2: Remove partitioning support from platform data
+  mtd: onenand: omap2: Account waiting time as waiting on IO
+  mtd: onenand: omap2: Unify OMAP2 and OMAP3 DMA implementation
+  mtd: onenand: omap2: Do not make delay for GPIO OMAP3 specific
+  memory: omap-gpmc: Refactor OneNAND support
+  mtd: onenand: omap2: Configure driver from DT
+  ARM: OMAP2+: Remove gpmc-onenand
+  ARM: dts: Nokia: Use R/B pin
+
+Peter Ujfalusi (2):
+  mtd: onenand: omap2: Simplify the DMA setup for various paths
+  mtd: onenand: omap2: Convert to use dmaengine for memcpy
+
+ .../devicetree/bindings/mtd/gpmc-onenand.txt       |   6 +-
+ arch/arm/boot/dts/omap2420-n8x0-common.dtsi        |   5 +-
+ arch/arm/boot/dts/omap3-igep.dtsi                  |  30 +-
+ arch/arm/boot/dts/omap3-n900.dts                   |   2 +
+ arch/arm/boot/dts/omap3-n950-n9.dtsi               |   1 +
+ arch/arm/boot/dts/omap3430-sdp.dts                 |   1 +
+ arch/arm/mach-omap2/Makefile                       |   3 -
+ arch/arm/mach-omap2/gpmc-onenand.c                 | 409 ---------------
+ drivers/memory/omap-gpmc.c                         | 158 ++++--
+ drivers/mtd/onenand/omap2.c                        | 580 ++++++++-------------
+ include/linux/omap-gpmc.h                          |  25 +
+ include/linux/platform_data/mtd-onenand-omap2.h    |  34 --
+ 12 files changed, 389 insertions(+), 865 deletions(-)
+ delete mode 100644 arch/arm/mach-omap2/gpmc-onenand.c
+ delete mode 100644 include/linux/platform_data/mtd-onenand-omap2.h
+
+-- 
+2.11.0
