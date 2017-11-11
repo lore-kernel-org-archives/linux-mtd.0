@@ -1,33 +1,22 @@
-Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eDH1j-0007OI-0W
- for linux-mtd@lists.infradead.org; Fri, 10 Nov 2017 21:39:53 +0000
-Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
- (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23992309AbdKJVj1Bpjvn (ORCPT
- <rfc822;linux-mtd@lists.infradead.org>);
- Fri, 10 Nov 2017 22:39:27 +0100
-Date: Fri, 10 Nov 2017 22:39:18 +0100
-Sender: Ladislav Michl <ladis@linux-mips.org>
-From: Ladislav Michl <ladis@linux-mips.org>
-To: Tony Lindgren <tony@atomide.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- Roger Quadros <rogerq@ti.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Kyungmin Park <kyungmin.park@samsung.com>
-Subject: Re: [PATCH v3 5/7] mtd: onenand: omap2: Unify OMAP2 and OMAP3 DMA
- implementation
-Message-ID: <20171110213918.pqq3ghblqhp2jwf2@lenoch>
-References: <20171109091155.6a6azfvjarwvlfh2@lenoch>
- <20171109091529.x3pqqvbiywj5aulo@lenoch>
- <3d33265a-2520-2298-6068-f76a7257bfd0@ti.com>
- <20171110100443.zqk7uzxoaq4eyntk@lenoch>
- <20171110152423.GM28152@atomide.com>
+Received: from mail-qt0-x233.google.com ([2607:f8b0:400d:c0d::233])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eDMt6-0007Yb-Ry
+ for linux-mtd@lists.infradead.org; Sat, 11 Nov 2017 03:55:23 +0000
+Received: by mail-qt0-x233.google.com with SMTP id d43so3457247qte.13
+ for <linux-mtd@lists.infradead.org>; Fri, 10 Nov 2017 19:54:56 -0800 (PST)
+Received: from bear.localnet (pool-96-241-56-252.washdc.fios.verizon.net.
+ [96.241.56.252])
+ by smtp.gmail.com with ESMTPSA id v40sm7435414qtj.81.2017.11.10.19.54.54
+ for <linux-mtd@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Fri, 10 Nov 2017 19:54:54 -0800 (PST)
+Message-ID: <5a06748e.2b1ac80a.cc211.e761@mx.google.com>
+From: Frank Mori Hess <fmh6jj@gmail.com>
+Date: Fri, 10 Nov 2017 22:34:18 -0500
+Subject: [PATCH] Avoid passing uninitialized wbuf_dwork to
+ cancel_delayed_work_sync during jffs2 sync.
+Resent-Message-ID: <201711102254.49989.>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20171110152423.GM28152@atomide.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,16 +26,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 10, 2017 at 07:24:23AM -0800, Tony Lindgren wrote:
-> FYI, the gpio pin for onenand should not be in gpio mode. It should
-> be used as external dma request line to automatically trigger new
-> transfers like we do for tusb6010 dma. But of course it's possible
-> that onenand has other issues too preventing the dma usage.
+---
+ fs/jffs2/super.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Now, after reading dma and interrupt related code again, I still do
-not see how the driver could be using hardware synchronized transfer.
-DMA seems to be used as a memcpy and gpio pin a ready/busy.
-Care to elaborate a bit more?
-
-Thank you,
-	ladis
+diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
+index 153f1c6eb169..4da67675e7ca 100644
+--- a/fs/jffs2/super.c
++++ b/fs/jffs2/super.c
+@@ -101,7 +101,8 @@ static int jffs2_sync_fs(struct super_block *sb, int wait)
+ 	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
+ 
+ #ifdef CONFIG_JFFS2_FS_WRITEBUFFER
+-	cancel_delayed_work_sync(&c->wbuf_dwork);
++	if (c->wbuf != NULL)
++		cancel_delayed_work_sync(&c->wbuf_dwork);
+ #endif
+ 
+ 	mutex_lock(&c->alloc_sem);
+-- 
+2.11.0
