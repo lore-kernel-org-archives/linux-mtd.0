@@ -1,8 +1,8 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eDX98-0005z3-CZ
- for linux-mtd@lists.infradead.org; Sat, 11 Nov 2017 14:52:36 +0000
-Date: Sat, 11 Nov 2017 15:52:12 +0100
+ id 1eDXIv-0002mv-HZ
+ for linux-mtd@lists.infradead.org; Sat, 11 Nov 2017 15:02:43 +0000
+Date: Sat, 11 Nov 2017 16:02:19 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
  <computersforpeace@gmail.com>, Boris Brezillon
@@ -12,7 +12,7 @@ To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
 Cc: stable@vger.kernel.org, "Mario J . Rugiero" <mrugiero@gmail.com>
 Subject: Re: [PATCH] mtd: Fix debugfs file creation when mtd->->dbg.dfs_dir
  is invalid
-Message-ID: <20171111155212.3b6c8daa@bbrezillon>
+Message-ID: <20171111160219.467842e6@bbrezillon>
 In-Reply-To: <20171111144614.5272-1-boris.brezillon@free-electrons.com>
 References: <20171111144614.5272-1-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
@@ -26,18 +26,6 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-
-Hi Richard,
-
-Hm, the subject is not accurate. Should be something like that instead:
-
-	mtd: Avoid probe failures when mtd->dbg.dfs_dir is invalid
-
-I can resend a version fixing that if you want.
-
-Regards,
-
-Boris
 
 On Sat, 11 Nov 2017 15:46:14 +0100
 Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
@@ -105,6 +93,23 @@ Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 > +	    dev->nbparts)
 > +		NS_WARN("CONFIG_MTD_PARTITIONED_MASTER must be enabled to expose debugfs stuff\n");
 >  
+
+Actually we can't rely on dev->nbparts here because partitions can be
+defined through the cmdline (using mtdpard=).
+
+I'll fix that with something similar to what is done in the docg3 driver:
+
+	/*
+	 * Just skip debugfs initialization when the debugfs directory is
+	 * missing.
+	 */
+  	if (IS_ERR_OR_NULL(root)) {
+		if (IS_ENABLED(CONFIG_DEBUG_FS) &&
+		    !IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER))
+			NS_WARN("CONFIG_MTD_PARTITIONED_MASTER must be enabled to expose debugfs stuff\n");
+		return 0;
+	}
+
 > +	/*
 > +	 * Just skip debugfs initialization when the debugfs directory is
 > +	 * missing.
