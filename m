@@ -1,27 +1,17 @@
-Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eDdLm-0003LA-O3
- for linux-mtd@lists.infradead.org; Sat, 11 Nov 2017 21:30:04 +0000
-Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
- (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23990633AbdKKV3kzij9y (ORCPT
- <rfc822;linux-mtd@lists.infradead.org>);
- Sat, 11 Nov 2017 22:29:40 +0100
-Date: Sat, 11 Nov 2017 22:29:39 +0100
-Sender: Ladislav Michl <ladis@linux-mips.org>
-From: Ladislav Michl <ladis@linux-mips.org>
-To: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org
-Cc: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>,
- Peter Ujfalusi <peter.ujfalusi@ti.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Kyungmin Park <kyungmin.park@samsung.com>
-Subject: [PATCH v4 16/16] ARM: dts: Nokia: Use R/B pin
-Message-ID: <20171111212939.jcf26v3w26bd7sn7@lenoch>
-References: <20171111211206.465pgorrjp3eyix6@lenoch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20171111211206.465pgorrjp3eyix6@lenoch>
+Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eDlou-0002Rz-2f
+ for linux-mtd@lists.infradead.org; Sun, 12 Nov 2017 06:32:42 +0000
+Received: by mail-pf0-x244.google.com with SMTP id j28so7294913pfk.8
+ for <linux-mtd@lists.infradead.org>; Sat, 11 Nov 2017 22:32:17 -0800 (PST)
+From: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+To: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
+ cyrille.pitchen@wedev4u.fr, linux-mtd@lists.infradead.org
+Cc: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+Subject: [PATCH] mtd: chips: Add PMC flash memory description
+Date: Sun, 12 Nov 2017 12:00:47 +0530
+Message-Id: <20171112063047.13797-1-prasannatsmkumar@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,49 +21,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Enable use of R/B pin. This is just experimental placeholder patch
-as it lacks pinmux settings.
+Add PMC flash memory description.
 
-Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+Signed-off-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
 ---
- Changes:
- -v4: new patch
+This patch is taken from OpenWRT [1]. This is compile tested only. As
+there is no signed off by or author info in the commit [1] I have kept
+only my signed off by line. If this is incorrect please advice what I
+should do.
 
- arch/arm/boot/dts/omap2420-n8x0-common.dtsi | 4 +---
- arch/arm/boot/dts/omap3-n900.dts            | 1 +
- 2 files changed, 2 insertions(+), 3 deletions(-)
+1. https://git.lede-project.org/?p=source.git;a=blob;f=target/linux/adm5120/patches-3.18/102-jedec_pmc_39lvxxx_chips.patch;h=00148fa602b68c25ff8cd936924b77f6c99caa07;hb=c03d4317a6bc891cb4a5e89cbdd77f37c23aff86
 
-diff --git a/arch/arm/boot/dts/omap2420-n8x0-common.dtsi b/arch/arm/boot/dts/omap2420-n8x0-common.dtsi
-index 843f6a2f5e29..cfe5d02ea0ed 100644
---- a/arch/arm/boot/dts/omap2420-n8x0-common.dtsi
-+++ b/arch/arm/boot/dts/omap2420-n8x0-common.dtsi
-@@ -42,14 +42,12 @@
+ drivers/mtd/chips/jedec_probe.c | 52 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 52 insertions(+)
+
+diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
+index 7c0b27d..d315491 100644
+--- a/drivers/mtd/chips/jedec_probe.c
++++ b/drivers/mtd/chips/jedec_probe.c
+@@ -115,6 +115,10 @@
+ #define UPD29F064115	0x221C
  
- &gpmc {
- 	ranges = <0 0 0x04000000 0x1000000>;	/* CS0: 16MB for OneNAND */
--
--	/* gpio-irq for dma: 26 */
--
- 	onenand@0,0 {
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 		compatible = "ti,omap2-onenand";
- 		reg = <0 0 0x20000>;	/* CS0, offset 0, IO size 128K */
-+		rb-gpios = <&gpio0 26 GPIO_ACTIVE_HIGH>;
- 
- 		gpmc,sync-read;
- 		gpmc,burst-length = <16>;
-diff --git a/arch/arm/boot/dts/omap3-n900.dts b/arch/arm/boot/dts/omap3-n900.dts
-index aa5b1a439564..718116d9f4ac 100644
---- a/arch/arm/boot/dts/omap3-n900.dts
-+++ b/arch/arm/boot/dts/omap3-n900.dts
-@@ -840,6 +840,7 @@
- 		#size-cells = <1>;
- 		compatible = "ti,omap2-onenand";
- 		reg = <0 0 0x20000>;	/* CS0, offset 0, IO size 128K */
-+		rb-gpios = <&gpio3 1 GPIO_ACTIVE_HIGH>;
- 
- 		gpmc,sync-read;
- 		gpmc,sync-write;
+ /* PMC */
++#define PM39LV512	0x001B
++#define PM39LV010	0x001C
++#define PM39LV020	0x003D
++#define PM39LV040	0x003E
+ #define PM49FL002	0x006D
+ #define PM49FL004	0x006E
+ #define PM49FL008	0x006A
+@@ -1261,6 +1265,54 @@ static const struct amd_flash_info jedec_table[] = {
+ 		}
+ 	}, {
+ 		.mfr_id		= CFI_MFR_PMC,
++		.dev_id		= PM39LV512,
++		.name		= "PMC Pm39LV512",
++		.devtypes	= CFI_DEVICETYPE_X8,
++		.uaddr		= MTD_UADDR_0x0555_0x02AA,
++		.dev_size	= SIZE_64KiB,
++		.cmd_set	= P_ID_AMD_STD,
++		.nr_regions	= 1,
++		.regions	= {
++			ERASEINFO(0x01000,16),
++		}
++	}, {
++		.mfr_id		= CFI_MFR_PMC,
++		.dev_id		= PM39LV010,
++		.name		= "PMC Pm39LV010",
++		.devtypes	= CFI_DEVICETYPE_X8,
++		.uaddr		= MTD_UADDR_0x0555_0x02AA,
++		.dev_size	= SIZE_128KiB,
++		.cmd_set	= P_ID_AMD_STD,
++		.nr_regions	= 1,
++		.regions	= {
++			ERASEINFO(0x01000,32),
++		}
++	}, {
++		.mfr_id		= CFI_MFR_PMC,
++		.dev_id		= PM39LV020,
++		.name		= "PMC Pm39LV020",
++		.devtypes	= CFI_DEVICETYPE_X8,
++		.uaddr		= MTD_UADDR_0x0555_0x02AA,
++		.dev_size	= SIZE_256KiB,
++		.cmd_set	= P_ID_AMD_STD,
++		.nr_regions	= 1,
++		.regions	= {
++			ERASEINFO(0x01000,64),
++		}
++	}, {
++		.mfr_id		= CFI_MFR_PMC,
++		.dev_id		= PM39LV040,
++		.name		= "PMC Pm39LV040",
++		.devtypes	= CFI_DEVICETYPE_X8,
++		.uaddr		= MTD_UADDR_0x0555_0x02AA,
++		.dev_size	= SIZE_512KiB,
++		.cmd_set	= P_ID_AMD_STD,
++		.nr_regions	= 1,
++		.regions	= {
++			ERASEINFO(0x01000,128),
++		}
++	}, {
++		.mfr_id		= CFI_MFR_PMC,
+ 		.dev_id		= PM49FL002,
+ 		.name		= "PMC Pm49FL002",
+ 		.devtypes	= CFI_DEVICETYPE_X8,
 -- 
-2.11.0
+2.10.0
