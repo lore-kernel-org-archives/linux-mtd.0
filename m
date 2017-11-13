@@ -1,25 +1,19 @@
-Received: from fllnx210.ext.ti.com ([198.47.19.17])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eEA0X-0007j6-De
- for linux-mtd@lists.infradead.org; Mon, 13 Nov 2017 08:22:20 +0000
-Subject: Re: [PATCH v3 5/7] mtd: onenand: omap2: Unify OMAP2 and OMAP3 DMA
- implementation
-To: Tony Lindgren <tony@atomide.com>, Ladislav Michl <ladis@linux-mips.org>
-References: <20171109091155.6a6azfvjarwvlfh2@lenoch>
- <20171109091529.x3pqqvbiywj5aulo@lenoch>
- <3d33265a-2520-2298-6068-f76a7257bfd0@ti.com>
- <20171110100443.zqk7uzxoaq4eyntk@lenoch> <20171110152423.GM28152@atomide.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>, Roger
- Quadros <rogerq@ti.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Kyungmin Park
- <kyungmin.park@samsung.com>
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Message-ID: <d498102d-11ff-cdd0-430e-0ea650c2a12b@ti.com>
-Date: Mon, 13 Nov 2017 10:22:12 +0200
-MIME-Version: 1.0
-In-Reply-To: <20171110152423.GM28152@atomide.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eEBWm-0008Lt-6u
+ for linux-mtd@lists.infradead.org; Mon, 13 Nov 2017 09:59:41 +0000
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Miquel Raynal <miquel.raynal@free-electrons.com>
+Subject: [PATCH] mtd: nand: hynix: Don't wait after applying new read-retry
+ params
+Date: Mon, 13 Nov 2017 10:59:01 +0100
+Message-Id: <20171113095901.24971-1-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,38 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Setting read-retry parameters has no impact on the R/B pin, so waiting
+for the chip to be ready is useless.
 
-On 2017-11-10 17:24, Tony Lindgren wrote:
->> I run out of time few days ago already, but this looks so good that it is
->> worth to delay other work. I'll include it in next version of patch serie.
->>
->> Also it will allow us to dump 'dma-channel' and use DMA if gpio pin
->> is configured which was intended logic of original driver. 'dma-channel'
->> was introduced during mechanical conversion to DT and fortunately it is
->> not used yet, so we can safely remove it again.
-> 
-> FYI, the gpio pin for onenand should not be in gpio mode. It should
-> be used as external dma request line to automatically trigger new
-> transfers like we do for tusb6010 dma. But of course it's possible
-> that onenand has other issues too preventing the dma usage.
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/nand/nand_hynix.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-My conversion to DMAengine is drop in replacement of the existing
-implementation: memcpy w/o hardware synchronization event.
-
-But I think it should be possible to use HW sync (slave DMA) with the
-src/dst_port_window in a similar way we do with the tusb6010.
-
-But that can be done in a followup series, but what to do in case of old
-DT where the dmas/dma-names properties are no there?
-
-Hmm, extending the dma_slave_map in mach-omap1/2/dma.c might work just fine.
-
-Having said that, there might have been a reason why the original
-implementation was not using DMA request to trigger the memcpy... The
-legacy omap-dma API would have allowed that as you kind of open code
-things with much flexibility.
-
-- Péter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+diff --git a/drivers/mtd/nand/nand_hynix.c b/drivers/mtd/nand/nand_hynix.c
+index 985751eda317..72d98cbff4ca 100644
+--- a/drivers/mtd/nand/nand_hynix.c
++++ b/drivers/mtd/nand/nand_hynix.c
+@@ -83,7 +83,6 @@ static int hynix_nand_setup_read_retry(struct mtd_info *mtd, int retry_mode)
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+ 	struct hynix_nand *hynix = nand_get_manufacturer_data(chip);
+ 	const u8 *values;
+-	int status;
+ 	int i;
+ 
+ 	values = hynix->read_retry->values +
+@@ -112,10 +111,6 @@ static int hynix_nand_setup_read_retry(struct mtd_info *mtd, int retry_mode)
+ 	/* Apply the new settings. */
+ 	chip->cmdfunc(mtd, NAND_HYNIX_CMD_APPLY_PARAMS, -1, -1);
+ 
+-	status = chip->waitfunc(mtd, chip);
+-	if (status & NAND_STATUS_FAIL)
+-		return -EIO;
+-
+ 	return 0;
+ }
+ 
+-- 
+2.11.0
