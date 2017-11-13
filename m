@@ -1,33 +1,23 @@
-Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eEDep-0004jB-GL
- for linux-mtd@lists.infradead.org; Mon, 13 Nov 2017 12:16:11 +0000
-Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
- (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23990425AbdKMMPmuwwWG (ORCPT
- <rfc822;linux-mtd@lists.infradead.org>);
- Mon, 13 Nov 2017 13:15:42 +0100
-Date: Mon, 13 Nov 2017 13:15:41 +0100
-Sender: Ladislav Michl <ladis@linux-mips.org>
-From: Ladislav Michl <ladis@linux-mips.org>
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Tony Lindgren <tony@atomide.com>, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, Roger Quadros <rogerq@ti.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Kyungmin Park <kyungmin.park@samsung.com>
-Subject: Re: [PATCH v3 5/7] mtd: onenand: omap2: Unify OMAP2 and OMAP3 DMA
- implementation
-Message-ID: <20171113121541.2tlezfjwk5bptakp@lenoch>
-References: <20171109091155.6a6azfvjarwvlfh2@lenoch>
- <20171109091529.x3pqqvbiywj5aulo@lenoch>
- <3d33265a-2520-2298-6068-f76a7257bfd0@ti.com>
- <20171110100443.zqk7uzxoaq4eyntk@lenoch>
- <20171110152423.GM28152@atomide.com>
- <d498102d-11ff-cdd0-430e-0ea650c2a12b@ti.com>
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eEFgF-0003YR-1b
+ for linux-mtd@lists.infradead.org; Mon, 13 Nov 2017 14:25:46 +0000
+Received: by mail-wm0-x243.google.com with SMTP id l8so9678960wmg.4
+ for <linux-mtd@lists.infradead.org>; Mon, 13 Nov 2017 06:25:22 -0800 (PST)
+Subject: Re: [PATCH] mtd: chips: Add PMC flash memory description
+To: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>,
+ dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, richard@nod.at,
+ cyrille.pitchen@wedev4u.fr, linux-mtd@lists.infradead.org
+References: <20171112063047.13797-1-prasannatsmkumar@gmail.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <60de6798-8ed1-5df7-3ff6-701727ac9b32@gmail.com>
+Date: Mon, 13 Nov 2017 15:23:33 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d498102d-11ff-cdd0-430e-0ea650c2a12b@ti.com>
+In-Reply-To: <20171112063047.13797-1-prasannatsmkumar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,39 +27,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 13, 2017 at 10:22:12AM +0200, Peter Ujfalusi wrote:
+On 11/12/2017 07:30 AM, PrasannaKumar Muralidharan wrote:
+> Add PMC flash memory description.
 > 
-> On 2017-11-10 17:24, Tony Lindgren wrote:
-> > FYI, the gpio pin for onenand should not be in gpio mode. It should
-> > be used as external dma request line to automatically trigger new
-> > transfers like we do for tusb6010 dma. But of course it's possible
-> > that onenand has other issues too preventing the dma usage.
+> Signed-off-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+> ---
+> This patch is taken from OpenWRT [1]. This is compile tested only. As
+> there is no signed off by or author info in the commit [1] I have kept
+> only my signed off by line. If this is incorrect please advice what I
+> should do.
 > 
-> My conversion to DMAengine is drop in replacement of the existing
-> implementation: memcpy w/o hardware synchronization event.
+> 1. https://git.lede-project.org/?p=source.git;a=blob;f=target/linux/adm5120/patches-3.18/102-jedec_pmc_39lvxxx_chips.patch;h=00148fa602b68c25ff8cd936924b77f6c99caa07;hb=c03d4317a6bc891cb4a5e89cbdd77f37c23aff86
+
+I'm not a big fan of adding untested stuff into the kernel.
+
+>  drivers/mtd/chips/jedec_probe.c | 52 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 52 insertions(+)
 > 
-> But I think it should be possible to use HW sync (slave DMA) with the
-> src/dst_port_window in a similar way we do with the tusb6010.
-
-How do you want to synchronize it from OneNAND side?
-
-> But that can be done in a followup series, but what to do in case of old
-> DT where the dmas/dma-names properties are no there?
-
-These will not work anyway as they do not have compatible property.
-Also note, that DMA is currently not used, yet nobody complained.
-
-> Hmm, extending the dma_slave_map in mach-omap1/2/dma.c might work just fine.
+> diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
+> index 7c0b27d..d315491 100644
+> --- a/drivers/mtd/chips/jedec_probe.c
+> +++ b/drivers/mtd/chips/jedec_probe.c
+> @@ -115,6 +115,10 @@
+>  #define UPD29F064115	0x221C
+>  
+>  /* PMC */
+> +#define PM39LV512	0x001B
+> +#define PM39LV010	0x001C
+> +#define PM39LV020	0x003D
+> +#define PM39LV040	0x003E
+>  #define PM49FL002	0x006D
+>  #define PM49FL004	0x006E
+>  #define PM49FL008	0x006A
+> @@ -1261,6 +1265,54 @@ static const struct amd_flash_info jedec_table[] = {
+>  		}
+>  	}, {
+>  		.mfr_id		= CFI_MFR_PMC,
+> +		.dev_id		= PM39LV512,
+> +		.name		= "PMC Pm39LV512",
+> +		.devtypes	= CFI_DEVICETYPE_X8,
+> +		.uaddr		= MTD_UADDR_0x0555_0x02AA,
+> +		.dev_size	= SIZE_64KiB,
+> +		.cmd_set	= P_ID_AMD_STD,
+> +		.nr_regions	= 1,
+> +		.regions	= {
+> +			ERASEINFO(0x01000,16),
+> +		}
+> +	}, {
+> +		.mfr_id		= CFI_MFR_PMC,
+> +		.dev_id		= PM39LV010,
+> +		.name		= "PMC Pm39LV010",
+> +		.devtypes	= CFI_DEVICETYPE_X8,
+> +		.uaddr		= MTD_UADDR_0x0555_0x02AA,
+> +		.dev_size	= SIZE_128KiB,
+> +		.cmd_set	= P_ID_AMD_STD,
+> +		.nr_regions	= 1,
+> +		.regions	= {
+> +			ERASEINFO(0x01000,32),
+> +		}
+> +	}, {
+> +		.mfr_id		= CFI_MFR_PMC,
+> +		.dev_id		= PM39LV020,
+> +		.name		= "PMC Pm39LV020",
+> +		.devtypes	= CFI_DEVICETYPE_X8,
+> +		.uaddr		= MTD_UADDR_0x0555_0x02AA,
+> +		.dev_size	= SIZE_256KiB,
+> +		.cmd_set	= P_ID_AMD_STD,
+> +		.nr_regions	= 1,
+> +		.regions	= {
+> +			ERASEINFO(0x01000,64),
+> +		}
+> +	}, {
+> +		.mfr_id		= CFI_MFR_PMC,
+> +		.dev_id		= PM39LV040,
+> +		.name		= "PMC Pm39LV040",
+> +		.devtypes	= CFI_DEVICETYPE_X8,
+> +		.uaddr		= MTD_UADDR_0x0555_0x02AA,
+> +		.dev_size	= SIZE_512KiB,
+> +		.cmd_set	= P_ID_AMD_STD,
+> +		.nr_regions	= 1,
+> +		.regions	= {
+> +			ERASEINFO(0x01000,128),
+> +		}
+> +	}, {
+> +		.mfr_id		= CFI_MFR_PMC,
+>  		.dev_id		= PM49FL002,
+>  		.name		= "PMC Pm49FL002",
+>  		.devtypes	= CFI_DEVICETYPE_X8,
 > 
-> Having said that, there might have been a reason why the original
-> implementation was not using DMA request to trigger the memcpy... The
-> legacy omap-dma API would have allowed that as you kind of open code
-> things with much flexibility.
 
-That's mainly problem of OneNAND driver itself, not oma-dma. But do we
-really want to invest more time to this obsolete technology?
 
-Of course, I would love to see my 10+ years old boards running faster,
-but it seems unrealistic to me to get enough manpower to finish this task.
-
-	ladis
+-- 
+Best regards,
+Marek Vasut
