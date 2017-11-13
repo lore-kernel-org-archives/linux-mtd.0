@@ -1,28 +1,20 @@
-Received: from fllnx209.ext.ti.com ([198.47.19.16])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eEL7P-0001u1-Ec
- for linux-mtd@lists.infradead.org; Mon, 13 Nov 2017 20:14:09 +0000
-Subject: Re: [PATCH v3 5/7] mtd: onenand: omap2: Unify OMAP2 and OMAP3 DMA
- implementation
-To: Ladislav Michl <ladis@linux-mips.org>, Tony Lindgren <tony@atomide.com>
-CC: Roger Quadros <rogerq@ti.com>, <linux-mtd@lists.infradead.org>,
- <linux-omap@vger.kernel.org>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Kyungmin Park
- <kyungmin.park@samsung.com>
-References: <20171109091155.6a6azfvjarwvlfh2@lenoch>
- <20171109091529.x3pqqvbiywj5aulo@lenoch>
- <4a58dfac-8cc9-101f-b079-da8925d7ab4c@ti.com>
- <20171110095154.kf34cd7h2eyfvwf3@lenoch> <20171110152610.GN28152@atomide.com>
- <20171110181951.siddrdubjkwwspqt@lenoch> <20171110182938.GS28152@atomide.com>
- <20171111125054.4gkttjltqrgjqtwt@lenoch>
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Message-ID: <e9f73904-78c6-1a52-662f-4a6ff3171ef5@ti.com>
-Date: Mon, 13 Nov 2017 22:10:49 +0200
+ id 1eELKR-00027h-2S
+ for linux-mtd@lists.infradead.org; Mon, 13 Nov 2017 20:27:37 +0000
+Date: Mon, 13 Nov 2017 21:27:01 +0100
+From: Lukasz Majewski <lukma@denx.de>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>
+Subject: [NAND] Question regarding -EIO error
+Message-ID: <20171113212701.01de0c47@jawa>
 MIME-Version: 1.0
-In-Reply-To: <20171111125054.4gkttjltqrgjqtwt@lenoch>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/VC0QQOWaPUTbKZgizdcvV=M"; protocol="application/pgp-signature"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,79 +24,119 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=EF=BB=BF
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Bu=
-siness ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+--Sig_/VC0QQOWaPUTbKZgizdcvV=M
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 11/11/2017 02:50 PM, Ladislav Michl wrote:
-> On Fri, Nov 10, 2017 at 10:29:38AM -0800, Tony Lindgren wrote:
->> I just made sure things keep working with Peter's changes, no additional
->> patches. So the dma is barely used at all.
->=20
-> It seemed suspicious to me looking here:
-> https://github.com/omap-audio/linux-audio/commit/52e914395afe31a7401b3581=
-4b6dabf3ef46a052#diff-1662a4cc544d322b68c547cfdc99448cR312
-> as wait_for_completion_timeout is returning time remaining and zero on
-> timeout :-)
+Dear All,
 
-aargh, yes, you are right...
+I was investigating the -EIO issue for page write from 2.6.26 kernel up
+till 4.14-rc7.
 
-> Fixed in next version and also changed to wait_for_completion_io_timeout
-> to get proper sched stats.
-> Btw, I think we should stop DMA on timeout as we are unmapping DMA region
-> later and it might not behave nicely if we do so while DMA is eventually
-> running (that's fixed too).
->=20
-> I made Peter's patches part of next version and enabled DMA unconditional=
-ly.
-> It works nicely on:
+A foreword:
+-----------
 
-Pretty cool! Thanks for doing it!
+Before the commit (v4.4):
+mtd: nand: increase ready wait timeout and report timeouts [1]
+b70af9bef49bd9a5f4e7a2327d9074e29653e665
 
-> OF: fdt: Machine model: IGEPv2 Rev. C (TI OMAP AM/DM37x)
-> OMAP3630/DM3730 ES1.2 (l2cache iva sgx neon isp 192mhz_clk)
-> ...
-> omap-gpmc 6e000000.gpmc: GPMC revision 5.0
-> gpmc_mem_init: disabling cs 0 mapped at 0x0-0x1000000
-> omap2-onenand 30000000.onenand: initializing on CS0 (0x30000000), va e008=
-0000, DMA mode
-> Muxed OneNAND(DDP) 512MB 1.8V 16-bit (0x58)
-> OneNAND version =3D 0x0031
-> Scanning device for bad blocks
-> OneNAND eraseblock 597 is an initial bad block
-> OneNAND eraseblock 1159 is an initial bad block
-> OneNAND eraseblock 2812 is an initial bad block
-> omap2-onenand 30000000.onenand: optimized timings for 83 MHz
-> 2 ofpart partitions found on MTD device 30000000.onenand
-> Creating 2 MTD partitions on "30000000.onenand":
-> 0x000000000000-0x000000080000 : "SPL"
-> 0x000000080000-0x000020000000 : "UBI"
-> ...
->=20
-> Based on this experiment, I'll delay v4 a bit and leave DMA enabled by
-> default. We are brave enough and want some testing, right?
-> It would be nice if someone could provide some benchmarks using PIO
-> and DMA mode. I do not expect any dramatic change, but kernel latencies
-> should decrease when doing flash I/O.
->=20
-> Based on above I also think R/B pin should be in ordinary GPIO mode.
-> Perhaps using external DMA request is somehow posible, but it is not clea=
-r
-> to me how after yet another reading of SDMA, GPMC and OneNAND documentati=
-on,
-> so I'll happily leave it for others.
->=20
-> Btw, using R/B pin would elimitate latencies caused by busy looping while
-> waiting for onenand command to complete. Nice todo for someone with a lot
-> of spare time :-)
->=20
-> Best regards,
-> 	ladis
->=20
+The timeout for nand memory write (nand_page_write()) was ignored (as
+mentioned in [1]).
+The nand_write_page() (@nand_base.c) only checks for NAND_STATUS_FAIL
+(and returns -EIO).
+
+In the old days it also used CONFIG_MTD_NAND_VERIFY_WRITE to check if
+correct data is written (if not -EIO was returned immediately).
+This was removed with [2]:
+"mtd: kill MTD_NAND_VERIFY_WRITE"
+657f28f8811c92724db10d18bbbec70d540147d6
+
+The commit:
+"mtd: nand_wait: warn if the nand is busy on exit"
+f251b8dfdd0721255ea11751cdc282834e43b74e
+
+added WARN_ON() on timeout.
+
+Setup:
+-----
+
+I've run mtd_*.ko tests on several kernels and two memories.
+
+With mtd_torture tests (and timeout set to 20ms):
+modprobe mtd_torturetest dev=3D${device} check=3D1 cycles_count=3D100 gran=
+=3D10
+
+forces both memories to timeout (at random execution place) with -EIO
+error returned.
+
+Please correct me if I'm wrong:
+-------------------------------
+
+With the new kernel (v4.14-rc7) we rely on:
+
+1. Page write timeout increased from 20ms -> 400 ms (as in [1])
+
+2. The WARN_ON() is displayed when we leave nand_wait() with ongoing
+NAND controller operation.
+
+3. As written in [2] the correctness of written data is check in upper
+layers (fs) -> when memory return no fails, but internal controller
+still writes data.
 
 
---=20
-P=C3=A9ter
+Problem:
+--------
 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Normally to exit nand_wait loop I do read RnB GPIO pin
+(chip->dev_ready).=20
+
+When we got a timeout passed status from one memory is 0x81.
+Second one returns no errors (0x80) - but the write data check fails.
+According to spec bits 5 and 6 (of status register) are 0 -> Internal
+data operation Busy and overall Busy.
+
+The problem here is that we exit nand_wait with NAND memory controller
+still being busy. Timeout change[1] from 20ms -> 400ms just 'masked'
+this issue.
+
+
+Question:
+---------
+
+Shall not we wait more (@nand_wait) for internal operations to be
+finished?
+
+
+To reproduce:
+-------------
+
+Change back the timeout value from 400ms to 20m and run mtd_*.ko tests.
+
+
+Best regards,
+
+Lukasz Majewski
+
+--
+
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
+
+--Sig_/VC0QQOWaPUTbKZgizdcvV=M
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAloKABUACgkQAR8vZIA0
+zr1cPwgA2R2b9TRnDan2Yfn7SekZxRGmb6qtn7cBE1CC+ZfpeBhGEbg3JiZf9wns
+pS/It4wFTLiOw2LuDC+iy4bqxW5KOUMWQ+xFrEgxAAzEiXBw9A7UPf4nR+kjcuAz
+/g2n0hxxFPl/SDjEMuDwR1vbwvkz5TzGGywXBORlyKsb3C8IWqqpfrOHzSlMIIKn
+ELcCuXY1Oj/Z4vNOwzhPzkZqGSCKyM4HsxkMA9itF8tbOEkKCDQRcfbVZp9jDRMK
+wIXoopRtH/Mv8ZcrB/j1IFPEFEQ1ZPji6hVs7rKazb2pXxWuE2W17qzixfaq8LIc
+5C0lHzTbLuCaNWy/p9K+YrWjR56eIw==
+=0Nf2
+-----END PGP SIGNATURE-----
+
+--Sig_/VC0QQOWaPUTbKZgizdcvV=M--
