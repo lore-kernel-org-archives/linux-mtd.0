@@ -1,24 +1,23 @@
 Received: from fllnx210.ext.ti.com ([198.47.19.17])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eEcsv-0000DP-NP
- for linux-mtd@lists.infradead.org; Tue, 14 Nov 2017 15:12:23 +0000
-Subject: Re: [PATCH v4 02/16] ARM: dts: OMAP2+: Add compatible property to
- onenand node
+ id 1eEcuo-0000lO-S4
+ for linux-mtd@lists.infradead.org; Tue, 14 Nov 2017 15:14:20 +0000
+Subject: Re: [PATCH v4 04/16] mtd: onenand: omap2: Remove regulator support
 To: Ladislav Michl <ladis@linux-mips.org>, <linux-mtd@lists.infradead.org>,
  <linux-omap@vger.kernel.org>
 CC: Tony Lindgren <tony@atomide.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>, Kyungmin Park
  <kyungmin.park@samsung.com>
 References: <20171111211206.465pgorrjp3eyix6@lenoch>
- <20171111211735.2a3q5lw4itsltjrw@lenoch>
+ <20171111211908.66xd2bw4xoeudz7g@lenoch>
 From: Roger Quadros <rogerq@ti.com>
-Message-ID: <ac576e3c-5df6-850f-c8d7-58aee395b3e9@ti.com>
-Date: Tue, 14 Nov 2017 17:11:47 +0200
+Message-ID: <72e82d4e-acd1-b91c-0379-783fd8509ebc@ti.com>
+Date: Tue, 14 Nov 2017 17:13:46 +0200
 MIME-Version: 1.0
-In-Reply-To: <20171111211735.2a3q5lw4itsltjrw@lenoch>
+In-Reply-To: <20171111211908.66xd2bw4xoeudz7g@lenoch>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,86 +27,119 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=EF=BB=BF
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Bu=
-siness ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-
-On 11/11/17 23:17, Ladislav Michl wrote:
-> OMAP onenand nodes are missing compatible property, add it.
->=20
+On 11/11/17 23:19, Ladislav Michl wrote:
+> As no platform data user sets regulator_can_sleep, regulator code is
+> no-op and can be deleted.
+> 
 > Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
 
 Acked-by: Roger Quadros <rogerq@ti.com>
 
-How about updating bindings/mtd/gpmc-onenand.txt in a separate patch?
-
 > ---
 >  Changes:
->  -v4: new patch
->=20
->  arch/arm/boot/dts/omap2420-n8x0-common.dtsi | 1 +
->  arch/arm/boot/dts/omap3-n900.dts            | 1 +
->  arch/arm/boot/dts/omap3-n950-n9.dtsi        | 1 +
->  arch/arm/boot/dts/omap3430-sdp.dts          | 1 +
->  4 files changed, 4 insertions(+)
->=20
-> diff --git a/arch/arm/boot/dts/omap2420-n8x0-common.dtsi b/arch/arm/boot/=
-dts/omap2420-n8x0-common.dtsi
-> index 1de80c7886ab..843f6a2f5e29 100644
-> --- a/arch/arm/boot/dts/omap2420-n8x0-common.dtsi
-> +++ b/arch/arm/boot/dts/omap2420-n8x0-common.dtsi
-> @@ -48,6 +48,7 @@
->  	onenand@0,0 {
->  		#address-cells =3D <1>;
->  		#size-cells =3D <1>;
-> +		compatible =3D "ti,omap2-onenand";
->  		reg =3D <0 0 0x20000>;	/* CS0, offset 0, IO size 128K */
-> =20
->  		gpmc,sync-read;
-> diff --git a/arch/arm/boot/dts/omap3-n900.dts b/arch/arm/boot/dts/omap3-n=
-900.dts
-> index 4acd32a1c4ef..aa5b1a439564 100644
-> --- a/arch/arm/boot/dts/omap3-n900.dts
-> +++ b/arch/arm/boot/dts/omap3-n900.dts
-> @@ -838,6 +838,7 @@
->  	onenand@0,0 {
->  		#address-cells =3D <1>;
->  		#size-cells =3D <1>;
-> +		compatible =3D "ti,omap2-onenand";
->  		reg =3D <0 0 0x20000>;	/* CS0, offset 0, IO size 128K */
-> =20
->  		gpmc,sync-read;
-> diff --git a/arch/arm/boot/dts/omap3-n950-n9.dtsi b/arch/arm/boot/dts/oma=
-p3-n950-n9.dtsi
-> index 1b0bd72945f2..cb3c7b2fce52 100644
-> --- a/arch/arm/boot/dts/omap3-n950-n9.dtsi
-> +++ b/arch/arm/boot/dts/omap3-n950-n9.dtsi
-> @@ -367,6 +367,7 @@
->  	onenand@0,0 {
->  		#address-cells =3D <1>;
->  		#size-cells =3D <1>;
-> +		compatible =3D "ti,omap2-onenand";
->  		reg =3D <0 0 0x20000>;	/* CS0, offset 0, IO size 128K */
-> =20
->  		gpmc,sync-read;
-> diff --git a/arch/arm/boot/dts/omap3430-sdp.dts b/arch/arm/boot/dts/omap3=
-430-sdp.dts
-> index d50a105c9dc6..ed65795ccc62 100644
-> --- a/arch/arm/boot/dts/omap3430-sdp.dts
-> +++ b/arch/arm/boot/dts/omap3430-sdp.dts
-> @@ -155,6 +155,7 @@
->  		linux,mtd-name=3D "samsung,kfm2g16q2m-deb8";
->  		#address-cells =3D <1>;
->  		#size-cells =3D <1>;
-> +		compatible =3D "ti,omap2-onenand";
->  		reg =3D <2 0 0x20000>;	/* CS2, offset 0, IO size 4 */
-> =20
->  		gpmc,device-width =3D <2>;
->=20
+>  -v2: new patch
+>  -v3: none
+>  -v4: none
+> 
+>  drivers/mtd/onenand/omap2.c | 42 +-----------------------------------------
+>  1 file changed, 1 insertion(+), 41 deletions(-)
+> 
+> diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
+> index 24a1388d3031..a03e1fe4aa48 100644
+> --- a/drivers/mtd/onenand/omap2.c
+> +++ b/drivers/mtd/onenand/omap2.c
+> @@ -34,7 +34,6 @@
+>  #include <linux/dma-mapping.h>
+>  #include <linux/io.h>
+>  #include <linux/slab.h>
+> -#include <linux/regulator/consumer.h>
+>  #include <linux/gpio.h>
+>  
+>  #include <asm/mach/flash.h>
+> @@ -59,7 +58,6 @@ struct omap2_onenand {
+>  	int dma_channel;
+>  	int freq;
+>  	int (*setup)(void __iomem *base, int *freq_ptr);
+> -	struct regulator *regulator;
+>  	u8 flags;
+>  };
+>  
+> @@ -583,30 +581,6 @@ static void omap2_onenand_shutdown(struct platform_device *pdev)
+>  	memset((__force void *)c->onenand.base, 0, ONENAND_BUFRAM_SIZE);
+>  }
+>  
+> -static int omap2_onenand_enable(struct mtd_info *mtd)
+> -{
+> -	int ret;
+> -	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
+> -
+> -	ret = regulator_enable(c->regulator);
+> -	if (ret != 0)
+> -		dev_err(&c->pdev->dev, "can't enable regulator\n");
+> -
+> -	return ret;
+> -}
+> -
+> -static int omap2_onenand_disable(struct mtd_info *mtd)
+> -{
+> -	int ret;
+> -	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
+> -
+> -	ret = regulator_disable(c->regulator);
+> -	if (ret != 0)
+> -		dev_err(&c->pdev->dev, "can't disable regulator\n");
+> -
+> -	return ret;
+> -}
+> -
+>  static int omap2_onenand_probe(struct platform_device *pdev)
+>  {
+>  	struct omap_onenand_platform_data *pdata;
+> @@ -726,22 +700,11 @@ static int omap2_onenand_probe(struct platform_device *pdev)
+>  		}
+>  	}
+>  
+> -	if (pdata->regulator_can_sleep) {
+> -		c->regulator = regulator_get(&pdev->dev, "vonenand");
+> -		if (IS_ERR(c->regulator)) {
+> -			dev_err(&pdev->dev,  "Failed to get regulator\n");
+> -			r = PTR_ERR(c->regulator);
+> -			goto err_release_dma;
+> -		}
+> -		c->onenand.enable = omap2_onenand_enable;
+> -		c->onenand.disable = omap2_onenand_disable;
+> -	}
+> -
+>  	if (pdata->skip_initial_unlocking)
+>  		this->options |= ONENAND_SKIP_INITIAL_UNLOCKING;
+>  
+>  	if ((r = onenand_scan(&c->mtd, 1)) < 0)
+> -		goto err_release_regulator;
+> +		goto err_release_dma;
+>  
+>  	r = mtd_device_register(&c->mtd, pdata ? pdata->parts : NULL,
+>  				pdata ? pdata->nr_parts : 0);
+> @@ -754,8 +717,6 @@ static int omap2_onenand_probe(struct platform_device *pdev)
+>  
+>  err_release_onenand:
+>  	onenand_release(&c->mtd);
+> -err_release_regulator:
+> -	regulator_put(c->regulator);
+>  err_release_dma:
+>  	if (c->dma_channel != -1)
+>  		omap_free_dma(c->dma_channel);
+> @@ -779,7 +740,6 @@ static int omap2_onenand_remove(struct platform_device *pdev)
+>  	struct omap2_onenand *c = dev_get_drvdata(&pdev->dev);
+>  
+>  	onenand_release(&c->mtd);
+> -	regulator_put(c->regulator);
+>  	if (c->dma_channel != -1)
+>  		omap_free_dma(c->dma_channel);
+>  	omap2_onenand_shutdown(pdev);
+> 
 
---=20
+-- 
 cheers,
 -roger
 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Bu=
-siness ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
