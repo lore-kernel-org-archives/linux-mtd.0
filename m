@@ -1,30 +1,17 @@
-Received: from relmlor1.renesas.com ([210.160.252.171]
- helo=relmlie4.idc.renesas.com)
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eEXft-0001Qq-5a
- for linux-mtd@lists.infradead.org; Tue, 14 Nov 2017 09:38:36 +0000
-From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, "Boris
- Brezillon" <boris.brezillon@free-electrons.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Rob Herring <robh+dt@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>
-CC: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Chris Paterson
- <Chris.Paterson2@renesas.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Biju Das <biju.das@bp.renesas.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: RE: [PATCH v2] dt-bindings: mtd: Add sst25vf016b to the list of
- supported chip names
-Date: Tue, 14 Nov 2017 09:38:05 +0000
-Message-ID: <TY1PR06MB089543675F2792B50910E9B0C0280@TY1PR06MB0895.apcprd06.prod.outlook.com>
-References: <1505118928-3987-1-git-send-email-fabrizio.castro@bp.renesas.com>
- <1508853032-25229-1-git-send-email-fabrizio.castro@bp.renesas.com>
-In-Reply-To: <1508853032-25229-1-git-send-email-fabrizio.castro@bp.renesas.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from poczta.cctv-instalator.pl ([94.152.193.204]
+ helo=smtp.v5304.tld.pl)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eEc4b-0003H9-T5
+ for linux-mtd@lists.infradead.org; Tue, 14 Nov 2017 14:20:24 +0000
+From: "=?iso-8859-2?Q?Jacek_Mr=B1gowski?=" <oferta@poczta.cctv-instalator.pl>
+To: <linux-mtd@lists.infradead.org>
+Subject: =?iso-8859-2?Q?Fotowoltaiczne_systemy_zasilania_do_samodzielnego_monta=BFu?=
+Message-ID: <29AC7BAC2394E0AED71C16E8203106A6@redirect.ovh.net>
+Date: Tue, 14 Nov 2017 15:19:55 +0100
 MIME-Version: 1.0
+Content-Type: text/plain; format=flowed; charset="iso-8859-2";
+ reply-type=original
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,55 +21,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear All,
+Dzieñ dobry.
 
-how does this patch look like?
+Zwracam siê do Pañstwa z zapytaniem, czy mogê przes³aæ jednorazow± ofertê cenow± na gotowe zestawy do samodzielnego monta¿u telewizji przemys³owej oraz solarnych systemów zasilania 12V/24V i 230V
 
-Thanks,
-Fabrizio
-
-> Subject: [PATCH v2] dt-bindings: mtd: Add sst25vf016b to the list of supp=
-orted chip names
->
-> There are a few DT files that make use of sst25vf016b in their
-> compatible strings, and the driver supports this chip already.
-> This patch improves the documentation and therefore the result
-> of ./scripts/checkpatch.pl.
->
-> Signed-off-by: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-> Signed-off-by: Chris Paterson <Chris.Paterson2@renesas.com>
-> Acked-by: Rob Herring <robh@kernel.org>
-> Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> Thank you Rob, thank you Geert, and sorry for the delay on this one.
-> Here is v2.
->
-> Changes in v2:
-> * fixed subject prefix
-> * added changelog
->
->  Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt b/Do=
-cumentation/devicetree/bindings/mtd/jedec,spi-nor.txt
-> index 4cab5d8..bf56d77 100644
-> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
-> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
-> @@ -31,6 +31,7 @@ Required properties:
->                   s25sl12801
->                   s25fl008k
->                   s25fl064k
-> +                 sst25vf016b
->                   sst25vf040b
->                   sst25wf040b
->                   m25p40
-> --
-> 2.7.4
+Z góry dziêkuje i pozdrawiam
 
 
-
-
-Renesas Electronics Europe Ltd, Dukes Meadow, Millboard Road, Bourne End, B=
-uckinghamshire, SL8 5FH, UK. Registered in England & Wales under Registered=
- No. 04586709.
+Jacek Mr±gowski
+CCTV TV 24
+al. Prymasa Tysi±clecia 42
+02-221 Warszawa
