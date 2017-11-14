@@ -1,24 +1,37 @@
-Received: from fllnx210.ext.ti.com ([198.47.19.17])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eEczA-0003t9-Bk
- for linux-mtd@lists.infradead.org; Tue, 14 Nov 2017 15:18:50 +0000
-Subject: Re: [PATCH v4 07/16] mtd: onenand: omap2: Account waiting time as
- waiting on IO
-To: Ladislav Michl <ladis@linux-mips.org>, <linux-mtd@lists.infradead.org>,
- <linux-omap@vger.kernel.org>
-CC: Tony Lindgren <tony@atomide.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>, Kyungmin Park
- <kyungmin.park@samsung.com>
-References: <20171111211206.465pgorrjp3eyix6@lenoch>
- <20171111212058.3xkqfw42ik6pre47@lenoch>
-From: Roger Quadros <rogerq@ti.com>
-Message-ID: <2ef8bef6-5e13-9b6a-e520-23da353d7fac@ti.com>
-Date: Tue, 14 Nov 2017 17:18:18 +0200
+Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eEd3U-0005nZ-Tr
+ for linux-mtd@lists.infradead.org; Tue, 14 Nov 2017 15:23:19 +0000
+Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
+ (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
+ id S23992334AbdKNPWxrDLcG (ORCPT
+ <rfc822;linux-mtd@lists.infradead.org>);
+ Tue, 14 Nov 2017 16:22:53 +0100
+Date: Tue, 14 Nov 2017 16:22:52 +0100
+Sender: Ladislav Michl <ladis@linux-mips.org>
+From: Ladislav Michl <ladis@linux-mips.org>
+To: Roger Quadros <rogerq@ti.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Tony Lindgren <tony@atomide.com>,
+ linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>
+Subject: Re: [PATCH v3 5/7] mtd: onenand: omap2: Unify OMAP2 and OMAP3 DMA
+ implementation
+Message-ID: <20171114152252.bekjxrovpis6xfur@lenoch>
+References: <20171109091155.6a6azfvjarwvlfh2@lenoch>
+ <20171109091529.x3pqqvbiywj5aulo@lenoch>
+ <3d33265a-2520-2298-6068-f76a7257bfd0@ti.com>
+ <20171110100443.zqk7uzxoaq4eyntk@lenoch>
+ <20171110152423.GM28152@atomide.com>
+ <d498102d-11ff-cdd0-430e-0ea650c2a12b@ti.com>
+ <20171113121541.2tlezfjwk5bptakp@lenoch>
+ <c13c503c-9435-7e88-7700-40bfcf806231@ti.com>
+ <20171113152717.fj2vgga4gzfr3q2b@lenoch>
+ <89008152-92e4-7e4a-0953-310a5240d50c@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20171111212058.3xkqfw42ik6pre47@lenoch>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <89008152-92e4-7e4a-0953-310a5240d50c@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,41 +41,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/11/17 23:20, Ladislav Michl wrote:
-> Use wait_for_completion_io_timeout, which has an impact on how the
-> task is accounted in scheduling stats.
+On Tue, Nov 14, 2017 at 05:05:20PM +0200, Roger Quadros wrote:
+> On 13/11/17 17:27, Ladislav Michl wrote:
+> > Here it would be nice to have the same documentation Nokia had at the time
+> > writing support for n8x0 as they clearly used few undocumented features.
+> > Please see section 3.9.5 of above mentioned specs. Seems DMA slave should
+> > be triggered by RDY not INT pin.
 > 
-> Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
-
-Acked-by: Roger Quadros <rogerq@ti.com>
-
-> ---
->  Changes:
->  -v4: new patch
+> Correct. For RDY pin usage See 3.7.3 Handshaking Operation
 > 
->  drivers/mtd/onenand/omap2.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-> index 883993bbe40b..0e7772e16d75 100644
-> --- a/drivers/mtd/onenand/omap2.c
-> +++ b/drivers/mtd/onenand/omap2.c
-> @@ -170,9 +170,8 @@ static int omap2_onenand_wait(struct mtd_info *mtd, int state)
->  		if (result == 0) {
->  			int retry_cnt = 0;
->  retry:
-> -			result = wait_for_completion_timeout(&c->irq_done,
-> -						    msecs_to_jiffies(20));
-> -			if (result == 0) {
-> +			if (!wait_for_completion_io_timeout(&c->irq_done,
-> +						msecs_to_jiffies(20))) {
->  				/* Timeout after 20ms */
->  				ctrl = read_reg(c, ONENAND_REG_CTRL_STATUS);
->  				if (ctrl & ONENAND_CTRL_ONGO &&
-> 
+> "The handshaking feature allows the host system to simply monitor the RDY signal from the device to determine
+> when the initial word of burst data is ready to be read."
 
--- 
-cheers,
--roger
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+To collect more documentation from Samsung, this appnote is also relevant:
+http://trendol.free.fr/SMDK6410/842440S3C6410_ApplicationNotes_rev10.pdf
+Section 7. OneNand, especially 7.5.1.3-6.
