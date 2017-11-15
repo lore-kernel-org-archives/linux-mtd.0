@@ -1,27 +1,25 @@
-Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eF0iG-0000xG-MO
- for linux-mtd@lists.infradead.org; Wed, 15 Nov 2017 16:39:03 +0000
-Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
- (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23992186AbdKOQi4OaS-T (ORCPT
- <rfc822;linux-mtd@lists.infradead.org>);
- Wed, 15 Nov 2017 17:38:56 +0100
-Date: Wed, 15 Nov 2017 17:38:52 +0100
-Sender: Ladislav Michl <ladis@linux-mips.org>
-From: Ladislav Michl <ladis@linux-mips.org>
-To: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org
-Cc: Roger Quadros <rogerq@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>
-Subject: [PATCH v5 16/16] ARM: dts: Nokia: Use OneNAND INT pin
-Message-ID: <20171115163851.wymhwtst6zbl2ra2@lenoch>
-References: <20171115162306.2o2w2yrf7wucroxd@lenoch>
+Received: from mail-wm0-x22d.google.com ([2a00:1450:400c:c09::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eF3vM-0003fM-Dm
+ for linux-mtd@lists.infradead.org; Wed, 15 Nov 2017 20:04:43 +0000
+Received: by mail-wm0-x22d.google.com with SMTP id g141so5328739wmg.2
+ for <linux-mtd@lists.infradead.org>; Wed, 15 Nov 2017 12:04:18 -0800 (PST)
+Subject: Re: UBIFS does not mount after powerfail
+From: Manfred Spraul <manfred@colorfullife.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org
+References: <195075f7-01f8-58d2-ba1c-4291e62a39cc@colorfullife.com>
+ <5883680.7ftK6mdJzr@blindfold>
+ <79c9281e-9622-7aec-b3a2-cf7cec1f1e3f@colorfullife.com>
+ <2158047.TxtlGbeyNK@blindfold>
+ <f84e49bb-a870-c519-6224-cf15dce9ce24@colorfullife.com>
+Message-ID: <4fafb954-2b57-1b7a-cfc9-85d379c0aa57@colorfullife.com>
+Date: Wed, 15 Nov 2017 21:04:14 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20171115162306.2o2w2yrf7wucroxd@lenoch>
+In-Reply-To: <f84e49bb-a870-c519-6224-cf15dce9ce24@colorfullife.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,62 +29,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Enable use of INT pin to wait for command completion. This is just
-experimental placeholder patch as it lacks pinmux settings.
+Hi,
+On 11/14/2017 07:49 PM, Manfred Spraul wrote:
+> Hi Richard,
+>
+> On 11/13/2017 10:06 PM, Richard Weinberger wrote:
+>>
+>> No, the image that contains the first logical error.
+>> UBIFS can mount even if there are many problems with the structure.
+>> Therefore I need you to enable chk_fs.
+> Done - and I even found a 2nd instance where the image got bad:
+> https://sourceforge.net/projects/calculix-rpm/files/ubifs/chk_fs/
+>
+Sorry for the self-reply, I did another test:
+I applied "ubifs: replay: Detect and kill orphaned xattrs", i.e. 
+https://patchwork.ozlabs.org/patch/780667/.
 
-Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
----
+Finding 1: It does not help
+Finding 2: I get for some images lots of "UBIFS error (ubi0:0 pid 
+13670): ubifs_replay_journal: Expected ino node, got: 1/2/3"
 
-Changes in v5:
-- pin name is INT
+The last good image is e.g. 164908, the first image with such messages 
+is 164909:
+https://sourceforge.net/projects/calculix-rpm/files/ubifs/kill_xattr/
 
-Changes in v4:
-- new patch
+And, perhaps it helps to understand the issues:
+The stress test is parallel, i.e. 4 parallel bash scripts that do 
+something like "touch a b c ;rm c; mv a b;".
 
-Changes in v3: None
-Changes in v2: None
-
- arch/arm/boot/dts/omap2420-n8x0-common.dtsi | 4 +---
- arch/arm/boot/dts/omap3-n900.dts            | 2 +-
- 2 files changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/arch/arm/boot/dts/omap2420-n8x0-common.dtsi b/arch/arm/boot/dts/omap2420-n8x0-common.dtsi
-index 843f6a2f5e29..7b1983214417 100644
---- a/arch/arm/boot/dts/omap2420-n8x0-common.dtsi
-+++ b/arch/arm/boot/dts/omap2420-n8x0-common.dtsi
-@@ -42,14 +42,12 @@
- 
- &gpmc {
- 	ranges = <0 0 0x04000000 0x1000000>;	/* CS0: 16MB for OneNAND */
--
--	/* gpio-irq for dma: 26 */
--
- 	onenand@0,0 {
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 		compatible = "ti,omap2-onenand";
- 		reg = <0 0 0x20000>;	/* CS0, offset 0, IO size 128K */
-+		int-gpios = <&gpio1 26 GPIO_ACTIVE_HIGH>; /* gpio_26 for INT */
- 
- 		gpmc,sync-read;
- 		gpmc,burst-length = <16>;
-diff --git a/arch/arm/boot/dts/omap3-n900.dts b/arch/arm/boot/dts/omap3-n900.dts
-index aa5b1a439564..4fff3c466e81 100644
---- a/arch/arm/boot/dts/omap3-n900.dts
-+++ b/arch/arm/boot/dts/omap3-n900.dts
-@@ -834,12 +834,12 @@
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&gpmc_pins>;
- 
--	/* sys_ndmareq1 could be used by the driver, not as gpio65 though */
- 	onenand@0,0 {
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 		compatible = "ti,omap2-onenand";
- 		reg = <0 0 0x20000>;	/* CS0, offset 0, IO size 128K */
-+		int-gpios = <&gpio3 1 GPIO_ACTIVE_HIGH>; /* gpio_65 for INT */
- 
- 		gpmc,sync-read;
- 		gpmc,sync-write;
--- 
-2.11.0
+--
+     Manfred
