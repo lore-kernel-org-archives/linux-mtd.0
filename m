@@ -1,25 +1,27 @@
-Received: from mail.kernel.org ([198.145.29.99])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eEyUg-0005qI-1R
- for linux-mtd@lists.infradead.org; Wed, 15 Nov 2017 14:16:49 +0000
-Date: Wed, 15 Nov 2017 15:16:23 +0100
-From: Sebastian Reichel <sre@kernel.org>
+Received: from fllnx210.ext.ti.com ([198.47.19.17])
+ by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eEytU-0005a8-54
+ for linux-mtd@lists.infradead.org; Wed, 15 Nov 2017 14:42:25 +0000
+Subject: Re: [PATCH v4 14/16] mtd: onenand: omap2: Configure driver from DT
 To: Ladislav Michl <ladis@linux-mips.org>
-Cc: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>,
- Peter Ujfalusi <peter.ujfalusi@ti.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Kyungmin Park <kyungmin.park@samsung.com>
-Subject: Re: [PATCH v4 05/16] mtd: onenand: omap2: Remove skip initial
- unlocking support
-Message-ID: <20171115141622.ayxzi7lkf2z5mlgv@earth>
+CC: <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>, Tony
+ Lindgren <tony@atomide.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Boris
+ Brezillon <boris.brezillon@free-electrons.com>, Kyungmin Park
+ <kyungmin.park@samsung.com>
 References: <20171111211206.465pgorrjp3eyix6@lenoch>
- <20171111211942.643qupch2dnopz7i@lenoch>
+ <20171111212742.m5t4rf5k47kikouu@lenoch>
+ <27bb610f-b30a-cd4c-ccd5-06c0d9e205b7@ti.com>
+ <20171115105357.3jkk5eyxst5limj3@lenoch>
+ <d9b85025-4889-106e-e346-115e7d960705@ti.com>
+ <20171115112028.b7sbjkmwnu2uzpey@lenoch>
+From: Roger Quadros <rogerq@ti.com>
+Message-ID: <d861ecb7-2212-4d8e-7d69-da4a8b9ed840@ti.com>
+Date: Wed, 15 Nov 2017 16:41:39 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="lxhwjmr4facodley"
-Content-Disposition: inline
-In-Reply-To: <20171111211942.643qupch2dnopz7i@lenoch>
+In-Reply-To: <20171115112028.b7sbjkmwnu2uzpey@lenoch>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,74 +31,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 15/11/17 13:20, Ladislav Michl wrote:
+> On Wed, Nov 15, 2017 at 01:04:22PM +0200, Roger Quadros wrote:
+>> On 15/11/17 12:53, Ladislav Michl wrote:
+> [snip]
+>>> of_property_read_u32 will fail then, so I do not think it is worth adding
+>>> explicit test for NULL here.
+>>>
+>>
+>> But the error message would be wrong in that case.
+>> I'm trying to tackle the case where driver was probed using legacy methods
+>> where device tree/node isn't present.
+> 
+> But how could we ever get there in that case? platform_device_register is
+> removed just one patch later.
+> 
+> Of course we should add:
+> depends on (OF && GPIOLIB) || COMPILE_TEST
+> to the Kconfig
+> 
 
---lxhwjmr4facodley
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+OK.
 
-Hi,
+-- 
+cheers,
+-roger
 
-On Sat, Nov 11, 2017 at 10:19:42PM +0100, Ladislav Michl wrote:
-> No platform data user sets skip_initial_unlocking, so remove test
-> for this field.
->=20
-> Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
-> ---
-
-Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
-
--- Sebastian
-
->  Changes:
->  -v2: new patch
->  -v3: none
->  -v4: none
->=20
->  drivers/mtd/onenand/omap2.c | 3 ---
->  1 file changed, 3 deletions(-)
->=20
-> diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-> index a03e1fe4aa48..93bd94337b35 100644
-> --- a/drivers/mtd/onenand/omap2.c
-> +++ b/drivers/mtd/onenand/omap2.c
-> @@ -700,9 +700,6 @@ static int omap2_onenand_probe(struct platform_device=
- *pdev)
->  		}
->  	}
-> =20
-> -	if (pdata->skip_initial_unlocking)
-> -		this->options |=3D ONENAND_SKIP_INITIAL_UNLOCKING;
-> -
->  	if ((r =3D onenand_scan(&c->mtd, 1)) < 0)
->  		goto err_release_dma;
-> =20
-> --=20
-> 2.11.0
->=20
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
---lxhwjmr4facodley
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAloMTDYACgkQ2O7X88g7
-+pps7Q/9EMaCadjiSHHtWATZ6c/WUBdT0BwJ0gCYUO5nHbA4gAkulrfJFkvpIhRj
-du5PQA9X7HE8BclUUh4wTGmCqE6wu/yf5K+FRC+eg1lv3YJ2rzK0J0orCUnDaZLm
-cGK37uUoJNpb7bActv4j6SyWZw6f3j+iVteS4ZKhmRWzQf5Ei+3xTM9w7aUUwxZ6
-wr5KIGS6/2DIXBmQ2hIZ9nhAqCgJwLn4/6drW7wk3dmhMZLcBCuteu821Ra2Yg8r
-AbOyGqLS1RKJoF59pISBs2bBaVK58XQZU3q/eeszjS5F/dTVbm0ogdz1R1wRoovL
-I9Pz1qB/u1UNt3tTwX4kL4PyXHRlTRKlVxccwNg65PvA9o/1zIOmo2rD8+WnJ8wg
-KRtP+uJMp+E7E0jg2KLsxn4RahNHtTDz9/EEF/qwRStUN9GVifd5V/o9sZ0REBDh
-sxYrCcoA3P2sfE/gDJKHLn8cCG6zl9bFcKTvsSKg2Ab2fziaBkx+rGg/jMbRpl5P
-kOsN5hWRF32g5D5/5MvfT7GoWk/99kgECD3A7KSzy7VXma0zPFgfP3yQRTv9OK/2
-NrGcLAgHTkli70jpDYKqNyq6kS3ZuFhyZE6wPlMSRdfCS56fDdmiKRb7/l3c6FLB
-zNRCDwzMc8J2FRjEbJh+XFO9uUMSpKLD1l47Awo/C1Q5Qm9/q6o=
-=a9Wj
------END PGP SIGNATURE-----
-
---lxhwjmr4facodley--
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
