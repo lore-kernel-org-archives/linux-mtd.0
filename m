@@ -1,8 +1,8 @@
 Received: from mail.kernel.org ([198.145.29.99])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eEzB0-00043D-SO
- for linux-mtd@lists.infradead.org; Wed, 15 Nov 2017 15:00:36 +0000
-Date: Wed, 15 Nov 2017 16:00:04 +0100
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eEzTp-0007Cp-IO
+ for linux-mtd@lists.infradead.org; Wed, 15 Nov 2017 15:20:11 +0000
+Date: Wed, 15 Nov 2017 16:19:34 +0100
 From: Sebastian Reichel <sre@kernel.org>
 To: Ladislav Michl <ladis@linux-mips.org>
 Cc: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
@@ -10,16 +10,16 @@ Cc: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
  Peter Ujfalusi <peter.ujfalusi@ti.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Kyungmin Park <kyungmin.park@samsung.com>
-Subject: Re: [PATCH v4 07/16] mtd: onenand: omap2: Account waiting time as
- waiting on IO
-Message-ID: <20171115150004.v2i47cjutt3bpaml@earth>
+Subject: Re: [PATCH v4 10/16] mtd: onenand: omap2: Convert to use dmaengine
+ for memcpy
+Message-ID: <20171115151933.6mfwmnwm2fxm7aes@earth>
 References: <20171111211206.465pgorrjp3eyix6@lenoch>
- <20171111212058.3xkqfw42ik6pre47@lenoch>
+ <20171111212331.46aisno37ckjc4up@lenoch>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="yckqe2bnwxotcayv"
+ protocol="application/pgp-signature"; boundary="ft3dhqnuot65zpac"
 Content-Disposition: inline
-In-Reply-To: <20171111212058.3xkqfw42ik6pre47@lenoch>
+In-Reply-To: <20171111212331.46aisno37ckjc4up@lenoch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,17 +30,20 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---yckqe2bnwxotcayv
+--ft3dhqnuot65zpac
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
 Hi,
 
-On Sat, Nov 11, 2017 at 10:20:58PM +0100, Ladislav Michl wrote:
-> Use wait_for_completion_io_timeout, which has an impact on how the
-> task is accounted in scheduling stats.
+On Sat, Nov 11, 2017 at 10:23:31PM +0100, Ladislav Michl wrote:
+> From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 >=20
+> Do not use the legacy and deprecated omap-dma interface for setting up the
+> memcpy.
+>=20
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 > Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
 > ---
 
@@ -51,26 +54,177 @@ Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
 >  Changes:
 >  -v4: new patch
 >=20
->  drivers/mtd/onenand/omap2.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+>  drivers/mtd/onenand/omap2.c | 80 +++++++++++++++++++++------------------=
+------
+>  1 file changed, 38 insertions(+), 42 deletions(-)
 >=20
 > diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-> index 883993bbe40b..0e7772e16d75 100644
+> index 36314124488d..c9ff67100ef4 100644
 > --- a/drivers/mtd/onenand/omap2.c
 > +++ b/drivers/mtd/onenand/omap2.c
-> @@ -170,9 +170,8 @@ static int omap2_onenand_wait(struct mtd_info *mtd, i=
-nt state)
->  		if (result =3D=3D 0) {
->  			int retry_cnt =3D 0;
->  retry:
-> -			result =3D wait_for_completion_timeout(&c->irq_done,
-> -						    msecs_to_jiffies(20));
-> -			if (result =3D=3D 0) {
-> +			if (!wait_for_completion_io_timeout(&c->irq_done,
-> +						msecs_to_jiffies(20))) {
->  				/* Timeout after 20ms */
->  				ctrl =3D read_reg(c, ONENAND_REG_CTRL_STATUS);
->  				if (ctrl & ONENAND_CTRL_ONGO &&
+> @@ -32,6 +32,7 @@
+>  #include <linux/interrupt.h>
+>  #include <linux/delay.h>
+>  #include <linux/dma-mapping.h>
+> +#include <linux/dmaengine.h>
+>  #include <linux/io.h>
+>  #include <linux/slab.h>
+>  #include <linux/gpio.h>
+> @@ -39,8 +40,6 @@
+>  #include <asm/mach/flash.h>
+>  #include <linux/platform_data/mtd-onenand-omap2.h>
+> =20
+> -#include <linux/omap-dma.h>
+> -
+>  #define DRIVER_NAME "omap2-onenand"
+> =20
+>  #define ONENAND_BUFRAM_SIZE	(1024 * 5)
+> @@ -55,17 +54,15 @@ struct omap2_onenand {
+>  	struct onenand_chip onenand;
+>  	struct completion irq_done;
+>  	struct completion dma_done;
+> -	int dma_channel;
+> +	struct dma_chan *dma_chan;
+>  	int freq;
+>  	int (*setup)(void __iomem *base, int *freq_ptr);
+>  	u8 flags;
+>  };
+> =20
+> -static void omap2_onenand_dma_cb(int lch, u16 ch_status, void *data)
+> +static void omap2_onenand_dma_complete_func(void *completion)
+>  {
+> -	struct omap2_onenand *c =3D data;
+> -
+> -	complete(&c->dma_done);
+> +	complete(completion);
+>  }
+> =20
+>  static irqreturn_t omap2_onenand_interrupt(int irq, void *dev_id)
+> @@ -292,23 +289,31 @@ static inline int omap2_onenand_dma_transfer(struct=
+ omap2_onenand *c,
+>  					     dma_addr_t src, dma_addr_t dst,
+>  					     size_t count)
+>  {
+> -	int data_type =3D __ffs((src | dst | count));
+> +	struct dma_async_tx_descriptor *tx;
+> +	dma_cookie_t cookie;
+> =20
+> -	if (data_type > OMAP_DMA_DATA_TYPE_S32)
+> -		data_type =3D OMAP_DMA_DATA_TYPE_S32;
+> -
+> -	omap_set_dma_transfer_params(c->dma_channel, data_type,
+> -				     count / BIT(data_type), 1, 0, 0, 0);
+> -	omap_set_dma_src_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
+> -				src, 0, 0);
+> -	omap_set_dma_dest_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
+> -				 dst, 0, 0);
+> +	tx =3D dmaengine_prep_dma_memcpy(c->dma_chan, dst, src, count, 0);
+> +	if (!tx) {
+> +		dev_err(&c->pdev->dev, "Failed to prepare DMA memcpy\n");
+> +		return -EIO;
+> +	}
+> =20
+>  	reinit_completion(&c->dma_done);
+> -	omap_start_dma(c->dma_channel);
+> +
+> +	tx->callback =3D omap2_onenand_dma_complete_func;
+> +	tx->callback_param =3D &c->dma_done;
+> +
+> +	cookie =3D tx->tx_submit(tx);
+> +	if (dma_submit_error(cookie)) {
+> +		dev_err(&c->pdev->dev, "Failed to do DMA tx_submit\n");
+> +		return -EIO;
+> +	}
+> +
+> +	dma_async_issue_pending(c->dma_chan);
+> +
+>  	if (!wait_for_completion_io_timeout(&c->dma_done,
+>  					    msecs_to_jiffies(20))) {
+> -		omap_stop_dma(c->dma_channel);
+> +		dmaengine_terminate_sync(c->dma_chan);
+>  		return -ETIMEDOUT;
+>  	}
+> =20
+> @@ -468,8 +473,7 @@ static int omap2_onenand_probe(struct platform_device=
+ *pdev)
+>  	c->flags =3D pdata->flags;
+>  	c->gpmc_cs =3D pdata->cs;
+>  	c->gpio_irq =3D pdata->gpio_irq;
+> -	c->dma_channel =3D pdata->dma_channel;
+> -	if (c->dma_channel < 0) {
+> +	if (pdata->dma_channel < 0) {
+>  		/* if -1, don't use DMA */
+>  		c->gpio_irq =3D 0;
+>  	}
+> @@ -521,25 +525,17 @@ static int omap2_onenand_probe(struct platform_devi=
+ce *pdev)
+>  		goto err_release_gpio;
+>  	}
+> =20
+> -	if (c->dma_channel >=3D 0) {
+> -		r =3D omap_request_dma(0, pdev->dev.driver->name,
+> -				     omap2_onenand_dma_cb, (void *) c,
+> -				     &c->dma_channel);
+> -		if (r =3D=3D 0) {
+> -			omap_set_dma_write_mode(c->dma_channel,
+> -						OMAP_DMA_WRITE_NON_POSTED);
+> -			omap_set_dma_src_data_pack(c->dma_channel, 1);
+> -			omap_set_dma_src_burst_mode(c->dma_channel,
+> -						    OMAP_DMA_DATA_BURST_8);
+> -			omap_set_dma_dest_data_pack(c->dma_channel, 1);
+> -			omap_set_dma_dest_burst_mode(c->dma_channel,
+> -						     OMAP_DMA_DATA_BURST_8);
+> -		} else {
+> +	if (pdata->dma_channel >=3D 0) {
+> +		dma_cap_mask_t mask;
+> +
+> +		dma_cap_zero(mask);
+> +		dma_cap_set(DMA_MEMCPY, mask);
+> +
+> +		c->dma_chan =3D dma_request_channel(mask, NULL, NULL);
+> +		if (!c->dma_chan)
+>  			dev_info(&pdev->dev,
+>  				 "failed to allocate DMA for OneNAND, "
+>  				 "using PIO instead\n");
+> -			c->dma_channel =3D -1;
+> -		}
+>  	}
+> =20
+>  	dev_info(&pdev->dev, "initializing on CS%d, phys base 0x%08lx, virtual "
+> @@ -553,7 +549,7 @@ static int omap2_onenand_probe(struct platform_device=
+ *pdev)
+>  	mtd_set_of_node(&c->mtd, pdata->of_node);
+> =20
+>  	this =3D &c->onenand;
+> -	if (c->dma_channel >=3D 0) {
+> +	if (c->dma_chan) {
+>  		this->wait =3D omap2_onenand_wait;
+>  		this->read_bufferram =3D omap2_onenand_read_bufferram;
+>  		this->write_bufferram =3D omap2_onenand_write_bufferram;
+> @@ -573,8 +569,8 @@ static int omap2_onenand_probe(struct platform_device=
+ *pdev)
+>  err_release_onenand:
+>  	onenand_release(&c->mtd);
+>  err_release_dma:
+> -	if (c->dma_channel !=3D -1)
+> -		omap_free_dma(c->dma_channel);
+> +	if (c->dma_chan)
+> +		dma_release_channel(c->dma_chan);
+>  	if (c->gpio_irq)
+>  		free_irq(gpio_to_irq(c->gpio_irq), c);
+>  err_release_gpio:
+> @@ -595,8 +591,8 @@ static int omap2_onenand_remove(struct platform_devic=
+e *pdev)
+>  	struct omap2_onenand *c =3D dev_get_drvdata(&pdev->dev);
+> =20
+>  	onenand_release(&c->mtd);
+> -	if (c->dma_channel !=3D -1)
+> -		omap_free_dma(c->dma_channel);
+> +	if (c->dma_chan)
+> +		dma_release_channel(c->dma_chan);
+>  	omap2_onenand_shutdown(pdev);
+>  	if (c->gpio_irq) {
+>  		free_irq(gpio_to_irq(c->gpio_irq), c);
 > --=20
 > 2.11.0
 >=20
@@ -79,24 +233,24 @@ nt state)
 > the body of a message to majordomo@vger.kernel.org
 > More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
---yckqe2bnwxotcayv
+--ft3dhqnuot65zpac
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAloMVnQACgkQ2O7X88g7
-+ppsoQ/9FLHI+bVyjzhtu9gBqUZ6yytFlJ+L1BfPFCVFPg14OYZUcWIjO1cbJOhk
-sRIAE7EZ/SiqT5PHRpWMF82EMiKA3ZQEUQAajNZk49l8EyqSlZQ61JAiW1okhS33
-hy7jtL2/M8P454fGRtsttAx9iNR46iHfiXG6YvjjKMDlqRN/OHAKo1fP11EJb0cK
-ijWYZsVm5yq/f9LKehBTSwftROIB6i80PbH8cNpYx0p6Nwecr1PD8xplk1PRulcz
-4/iXjXZOtZFV9kbinojL6v+jo1MYb8ssM63yuxaJ9VrpOsbpAVZ2+R1MbvURDFvQ
-U5RNI/S7QgGwcXFvnkkYll404T/vTxPUD9JmpZzDpzq536fYto+sZiWzweRXpm5V
-rr4v5OwLuApMbgOH4PxNOzAtvZRvv9TQ2IF6yaRu031guTft1t8+xHwesdaS1yd8
-WhwKlPyOD828FBiCUbT4Uk4Q059nnUSoKTdarIwuqwqS8T5fPON4mJiJMJPHYu1t
-Vz8sroQs3E+ynqeXRCFfD8ricP9iII81Sl8Vw62ELb+zHU23kHOMKiNlxTesw3qI
-WmcHfduGpk6urT169kwFEpjlqnAnVVRFww+ucu2YnX6F/WeW0HSHiyg0Q7RRQPLr
-ykPEpVO48hoUINBXw2EH6rX/8jgfxsJRBpZDWNn4r8cwCcGTWFc=
-=YIsg
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAloMWwIACgkQ2O7X88g7
++po3Vg//Qt06km+eZkvbhdf2SKoV3PUZzCZnZTqIEvVZwhnspvEjRghHVIj0VcUe
+X31/CdZmY69LUWd/wAYsA3/DAGk0xfbKLJ5ebnFEr9hgUfl3ko7dfOrV5Aia4PSY
+HNyIX+fL/TBbPdYU/TpMK8vVi/zLGpA3atgBXN3qsL8uAVGWGHxKH/oXwNoVACK4
+/YsuJTQsncPsBbp4TgmfZNqCjh3de/Cbun9fGOysXkYvLWlJ/HAqfcBZCuMQFE81
+40Uf9bJKKqX4VkCPxHOKA71OS2+aqCL+qxAnJax1ddB/z8WASACnU/8XcpiyEM7r
+DcrN0cqIHWeWWZ3vZngOMf+oTqstRJ7iJw1OFU9dfVrXDZEYra9w40jRYDjjqswW
+1b5gFcCHkKDECbwAPKvACZLGxp+zY98z+FhkPogPMQTWt4uLEIgrRnnOGTzZKcOW
+PkPOPGMFgJ9Fwdy692vl0zD7qEruOCKRiXxp+cADe4RW0vGrQJSt4J0fzOCxkwPl
+ZKOg6/DKmHm06DVMx8CTdtCyq7M90416myZZzRlfIAu5GKHAfssq7UWKl/2/sSGR
+IZTj2GjJSU5z0hamrtshEUCgGQmqexwf6BtpCaSzsKhJwYh7q0QyTi4fdw9RTL2N
+oFJjCy+7CT5F3yX4tPD0APYmHV9jWBLuITn1qcewi45tVC1+NP4=
+=h9xk
 -----END PGP SIGNATURE-----
 
---yckqe2bnwxotcayv--
+--ft3dhqnuot65zpac--
