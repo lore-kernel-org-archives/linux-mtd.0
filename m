@@ -1,17 +1,23 @@
-Received: from ec2-18-194-220-216.eu-central-1.compute.amazonaws.com
- ([18.194.220.216] helo=sysam.it)
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eFKec-0005ID-6Q
- for linux-mtd@lists.infradead.org; Thu, 16 Nov 2017 13:56:32 +0000
-Date: Thu, 16 Nov 2017 14:56:01 +0100
-From: Angelo Dureghello <angelo@sysam.it>
-To: linux-mtd@lists.infradead.org, boris.brezillon@free-electrons.com,
- cyrille.pitchen@wedev4u.fr
-Subject: [PATCH] [RESEND] mtd: spi-nor: add support for ISSI is25lp128
-Message-ID: <20171116135600.6lfrbnw5j2vckheo@jerusalem>
+Received: from mailout.micron.com ([137.201.242.129])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eFLlw-0000dr-DE
+ for linux-mtd@lists.infradead.org; Thu, 16 Nov 2017 15:08:10 +0000
+From: "Bean Huo (beanhuo)" <beanhuo@micron.com>
+To: "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>
+CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH V1] drivers:mtd:spi-nor:checkup FSR error bits
+Date: Thu, 16 Nov 2017 15:07:13 +0000
+Message-ID: <4f9053743fc94087b86e9541a3785fd2@SIWEX5A.sing.micron.com>
+References: <825c7a1bb1034369b9d592a7b358030c@SIWEX5A.sing.micron.com>
+In-Reply-To: <825c7a1bb1034369b9d592a7b358030c@SIWEX5A.sing.micron.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,22 +27,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Angelo Dureghello <angelo@sysam.it>
----
- drivers/mtd/spi-nor/spi-nor.c | 1 +
- 1 file changed, 1 insertion(+)
+Ping SPI-NOR maintainers....
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 19c000722cbc..88cd10a0ee9e 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1005,6 +1005,7 @@ static const struct flash_info spi_nor_ids[] = {
- 
- 	/* ISSI */
- 	{ "is25cd512", INFO(0x7f9d20, 0, 32 * 1024,   2, SECT_4K) },
-+	{ "is25lp128", INFO(0x9d6018, 0, 64 * 1024,   256, SECT_4K) },
- 
- 	/* Macronix */
- 	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
--- 
-2.15.0
+>-----Original Message-----
+>From: Bean Huo (beanhuo)
+>Sent: Samstag, 11. November 2017 21:49
+>To: 'cyrille.pitchen@wedev4u.fr' <cyrille.pitchen@wedev4u.fr>;
+>marek.vasut@gmail.com
+>Cc: 'dwmw2@infradead.org' <dwmw2@infradead.org>;
+>computersforpeace@gmail.com; 'linux-mtd@lists.infradead.org' <linux-
+>mtd@lists.infradead.org>; linux-kernel@vger.kernel.org
+>Subject: [PATCH V1] drivers:mtd:spi-nor:checkup FSR error bits
+>
+>For the Micron SPI NOR, when the erase/program operation fails, especially=
+,
+>for the failure results from intending to modify protected space, spi-nor
+>upper layers still get the return which shows the operation succeeds.
+>this because spi_nor_fsr_ready() only uses bit.7 to device whether ready.
+>For the most cases, even the error of erase/program occurs, SPI NOR device=
+ is
+>still ready. The device ready and the error are two different cases.
+>This patch is to fixup this issue and adding FSR (flag status register) er=
+ror bits
+>checkup.
+>The FSR(flag status register) is a powerful tool to investigate the staus =
+of
+>device,checking information regarding what is actually doing the memory an=
+d
+>detecting possible error conditions.
+>
+>Signed-off-by: beanhuo <beanhuo@micron.com>
+>---
+> drivers/mtd/spi-nor/spi-nor.c | 19 +++++++++++++++++--
+> include/linux/mtd/spi-nor.h   |  6 +++++-
+> 2 files changed, 22 insertions(+), 3 deletions(-)
+>
+>diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>index bc266f7..200e814 100644
+>--- a/drivers/mtd/spi-nor/spi-nor.c
+>+++ b/drivers/mtd/spi-nor/spi-nor.c
+>@@ -330,8 +330,23 @@ static inline int spi_nor_fsr_ready(struct spi_nor *n=
+or)
+> 	int fsr =3D read_fsr(nor);
+> 	if (fsr < 0)
+> 		return fsr;
+>-	else
+>-		return fsr & FSR_READY;
+>+
+>+	if (fsr & (FSR_E_ERR | FSR_P_ERR)) {
+>+		if (fsr & FSR_E_ERR)
+>+			dev_err(nor->dev, "Erase operation failed.\n");
+>+		else
+>+			dev_err(nor->dev, "Program operation failed.\n");
+>+
+>+		if (fsr & FSR_PT_ERR)
+>+			dev_err(nor->dev,
+>+			"The operation has attempted to modify the
+>protected"
+>+			"sector or the locked OPT space.\n");
+>+
+>+		nor->write_reg(nor, SPINOR_OP_CLFSR, NULL, 0);
+>+		return -EIO;
+>+	}
+>+
+>+	return fsr & FSR_READY;
+> }
+>
+> static int spi_nor_ready(struct spi_nor *nor) diff --git
+>a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h index
+>d0c66a0..46b5608 100644
+>--- a/include/linux/mtd/spi-nor.h
+>+++ b/include/linux/mtd/spi-nor.h
+>@@ -61,6 +61,7 @@
+> #define SPINOR_OP_RDSFDP	0x5a	/* Read SFDP */
+> #define SPINOR_OP_RDCR		0x35	/* Read configuration register
+>*/
+> #define SPINOR_OP_RDFSR		0x70	/* Read flag status register */
+>+#define SPINOR_OP_CLFSR		0x50	/* Clear flag status register */
+>
+> /* 4-byte address opcodes - used on Spansion and some Macronix flashes. *=
+/
+> #define SPINOR_OP_READ_4B	0x13	/* Read data bytes (low frequency) */
+>@@ -130,7 +131,10 @@
+> #define EVCR_QUAD_EN_MICRON	BIT(7)	/* Micron Quad I/O */
+>
+> /* Flag Status Register bits */
+>-#define FSR_READY		BIT(7)
+>+#define FSR_READY		BIT(7)	/* Device status, 0 =3D Busy,1 =3D Ready */
+>+#define FSR_E_ERR		BIT(5)	/* Erase operation status */
+>+#define FSR_P_ERR		BIT(4)	/* Program operation status */
+>+#define FSR_PT_ERR		BIT(1)	/* Protection error bit */
+>
+> /* Configuration Register bits. */
+> #define CR_QUAD_EN_SPAN		BIT(1)	/* Spansion Quad I/O */
+>--
+>2.7.4
+>
