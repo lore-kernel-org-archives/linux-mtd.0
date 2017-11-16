@@ -1,23 +1,23 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from mail-wr0-x22c.google.com ([2a00:1450:400c:c0c::22c])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eFLlw-0000dr-DE
- for linux-mtd@lists.infradead.org; Thu, 16 Nov 2017 15:08:10 +0000
-From: "Bean Huo (beanhuo)" <beanhuo@micron.com>
-To: "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>
-CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH V1] drivers:mtd:spi-nor:checkup FSR error bits
-Date: Thu, 16 Nov 2017 15:07:13 +0000
-Message-ID: <4f9053743fc94087b86e9541a3785fd2@SIWEX5A.sing.micron.com>
-References: <825c7a1bb1034369b9d592a7b358030c@SIWEX5A.sing.micron.com>
-In-Reply-To: <825c7a1bb1034369b9d592a7b358030c@SIWEX5A.sing.micron.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1eFNOI-0004Bz-Nx
+ for linux-mtd@lists.infradead.org; Thu, 16 Nov 2017 16:51:55 +0000
+Received: by mail-wr0-x22c.google.com with SMTP id y42so23425740wrd.3
+ for <linux-mtd@lists.infradead.org>; Thu, 16 Nov 2017 08:51:30 -0800 (PST)
+Subject: Re: UBIFS does not mount after powerfail
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org
+References: <195075f7-01f8-58d2-ba1c-4291e62a39cc@colorfullife.com>
+ <f84e49bb-a870-c519-6224-cf15dce9ce24@colorfullife.com>
+ <4fafb954-2b57-1b7a-cfc9-85d379c0aa57@colorfullife.com>
+ <7598033.H8v47AZKNl@blindfold>
+From: Manfred Spraul <manfred@colorfullife.com>
+Message-ID: <c0730b1f-861b-6c3d-b3aa-77825a5d4470@colorfullife.com>
+Date: Thu, 16 Nov 2017 17:51:26 +0100
 MIME-Version: 1.0
+In-Reply-To: <7598033.H8v47AZKNl@blindfold>
+Content-Type: multipart/mixed; boundary="------------6240A8F7CF8AE7CF81314891"
+Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,99 +27,132 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ping SPI-NOR maintainers....
+This is a multi-part message in MIME format.
+--------------6240A8F7CF8AE7CF81314891
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
->-----Original Message-----
->From: Bean Huo (beanhuo)
->Sent: Samstag, 11. November 2017 21:49
->To: 'cyrille.pitchen@wedev4u.fr' <cyrille.pitchen@wedev4u.fr>;
->marek.vasut@gmail.com
->Cc: 'dwmw2@infradead.org' <dwmw2@infradead.org>;
->computersforpeace@gmail.com; 'linux-mtd@lists.infradead.org' <linux-
->mtd@lists.infradead.org>; linux-kernel@vger.kernel.org
->Subject: [PATCH V1] drivers:mtd:spi-nor:checkup FSR error bits
+Hi Richard,
+
+(2nd mail, forced as non-html)
+
+On 11/15/2017 09:29 PM, Richard Weinberger wrote:
+> Manfred,
 >
->For the Micron SPI NOR, when the erase/program operation fails, especially=
-,
->for the failure results from intending to modify protected space, spi-nor
->upper layers still get the return which shows the operation succeeds.
->this because spi_nor_fsr_ready() only uses bit.7 to device whether ready.
->For the most cases, even the error of erase/program occurs, SPI NOR device=
- is
->still ready. The device ready and the error are two different cases.
->This patch is to fixup this issue and adding FSR (flag status register) er=
-ror bits
->checkup.
->The FSR(flag status register) is a powerful tool to investigate the staus =
-of
->device,checking information regarding what is actually doing the memory an=
-d
->detecting possible error conditions.
->
->Signed-off-by: beanhuo <beanhuo@micron.com>
->---
-> drivers/mtd/spi-nor/spi-nor.c | 19 +++++++++++++++++--
-> include/linux/mtd/spi-nor.h   |  6 +++++-
-> 2 files changed, 22 insertions(+), 3 deletions(-)
->
->diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->index bc266f7..200e814 100644
->--- a/drivers/mtd/spi-nor/spi-nor.c
->+++ b/drivers/mtd/spi-nor/spi-nor.c
->@@ -330,8 +330,23 @@ static inline int spi_nor_fsr_ready(struct spi_nor *n=
-or)
-> 	int fsr =3D read_fsr(nor);
-> 	if (fsr < 0)
-> 		return fsr;
->-	else
->-		return fsr & FSR_READY;
->+
->+	if (fsr & (FSR_E_ERR | FSR_P_ERR)) {
->+		if (fsr & FSR_E_ERR)
->+			dev_err(nor->dev, "Erase operation failed.\n");
->+		else
->+			dev_err(nor->dev, "Program operation failed.\n");
->+
->+		if (fsr & FSR_PT_ERR)
->+			dev_err(nor->dev,
->+			"The operation has attempted to modify the
->protected"
->+			"sector or the locked OPT space.\n");
->+
->+		nor->write_reg(nor, SPINOR_OP_CLFSR, NULL, 0);
->+		return -EIO;
->+	}
->+
->+	return fsr & FSR_READY;
-> }
->
-> static int spi_nor_ready(struct spi_nor *nor) diff --git
->a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h index
->d0c66a0..46b5608 100644
->--- a/include/linux/mtd/spi-nor.h
->+++ b/include/linux/mtd/spi-nor.h
->@@ -61,6 +61,7 @@
-> #define SPINOR_OP_RDSFDP	0x5a	/* Read SFDP */
-> #define SPINOR_OP_RDCR		0x35	/* Read configuration register
->*/
-> #define SPINOR_OP_RDFSR		0x70	/* Read flag status register */
->+#define SPINOR_OP_CLFSR		0x50	/* Clear flag status register */
->
-> /* 4-byte address opcodes - used on Spansion and some Macronix flashes. *=
-/
-> #define SPINOR_OP_READ_4B	0x13	/* Read data bytes (low frequency) */
->@@ -130,7 +131,10 @@
-> #define EVCR_QUAD_EN_MICRON	BIT(7)	/* Micron Quad I/O */
->
-> /* Flag Status Register bits */
->-#define FSR_READY		BIT(7)
->+#define FSR_READY		BIT(7)	/* Device status, 0 =3D Busy,1 =3D Ready */
->+#define FSR_E_ERR		BIT(5)	/* Erase operation status */
->+#define FSR_P_ERR		BIT(4)	/* Program operation status */
->+#define FSR_PT_ERR		BIT(1)	/* Protection error bit */
->
-> /* Configuration Register bits. */
-> #define CR_QUAD_EN_SPAN		BIT(1)	/* Spansion Quad I/O */
->--
->2.7.4
->
+> Am Mittwoch, 15. November 2017, 21:04:14 CET schrieb Manfred Spraul:
+>> Hi,
+>>
+>> On 11/14/2017 07:49 PM, Manfred Spraul wrote:
+>>> Hi Richard,
+>>>
+>>> On 11/13/2017 10:06 PM, Richard Weinberger wrote:
+>>>> No, the image that contains the first logical error.
+>>>> UBIFS can mount even if there are many problems with the structure.
+>>>> Therefore I need you to enable chk_fs.
+>>> Done - and I even found a 2nd instance where the image got bad:
+>>> https://sourceforge.net/projects/calculix-rpm/files/ubifs/chk_fs/
+>> Sorry for the self-reply, I did another test:
+>> I applied "ubifs: replay: Detect and kill orphaned xattrs", i.e.
+>> https://patchwork.ozlabs.org/patch/780667/.
+> I would be astonished if that patch would fix your issues, it is supposed
+> to fix a -ENOSPC problem.
+After enabling chk_fs, the result was
+> UBIFS error (ubi0:0 pid 5104): dbg_check_filesystem: inode 39012 nlink is 1, but calculated nlink is 0
+and link count 1 instead of 0 sounded a bit like a leak.
+
+dmesg:
+https://sourceforge.net/projects/calculix-rpm/files/ubifs/chk_fs/result-168078.txt/download
+image:
+https://sourceforge.net/projects/calculix-rpm/files/ubifs/chk_fs/image-168078.bin/download
+
+Thus I decided that it might make sense to try a patch that should 
+improve the behavior with leaks.
+And it did not take much time.
+
+>   
+>> Finding 1: It does not help
+>> Finding 2: I get for some images lots of "UBIFS error (ubi0:0 pid
+>> 13670): ubifs_replay_journal: Expected ino node, got: 1/2/3"
+> 1/2/3?
+Sorry, that was too short:
+
+https://sourceforge.net/projects/calculix-rpm/files/ubifs/kill_xattr/result-168168.txt/download
+
+> [ 1281.127396] ubi0: background thread "ubi_bgt0d" started, PID 9653
+> [ 1281.132641] UBIFS (ubi0:0): background thread "ubifs_bgt0_0" 
+> started, PID 9660
+> [ 1281.132813] UBIFS (ubi0:0): recovery needed
+> [ 1281.137769] UBIFS error (ubi0:0 pid 9658): ubifs_replay_journal: 
+> Expected ino node, got: 2
+> [ 1281.138860] UBIFS error (ubi0:0 pid 9658): ubifs_replay_journal: 
+> Expected ino node, got: 3
+> [ 1281.139898] UBIFS error (ubi0:0 pid 9658): ubifs_replay_journal: 
+> Expected ino node, got: 2
+> [ 1281.140922] UBIFS error (ubi0:0 pid 9658): ubifs_replay_journal: 
+> Expected ino node, got: 3
+> [ 1281.142023] UBIFS error (ubi0:0 pid 9658): ubifs_replay_journal: 
+> Expected ino node, got: 1
+> [...]
+
+Image:
+https://sourceforge.net/projects/calculix-rpm/files/ubifs/kill_xattr/image-168168.bin/download  
+
+
+> Is always "got 0xFF but expected something different"?
+> If so, it can be a problem with garbage collect.
+>> The last good image is e.g. 164908, the first image with such messages
+>> is 164909:
+>> https://sourceforge.net/projects/calculix-rpm/files/ubifs/kill_xattr/
+>>
+>> And, perhaps it helps to understand the issues:
+>> The stress test is parallel, i.e. 4 parallel bash scripts that do
+>> something like "touch a b c ;rm c; mv a b;".
+> Hmm, nothing fancy. No O_TMPFILE, no xattr, no encryption. :-(
+> I hope I'll find some time during the weekend to inspect your images.
+I have attached the generator:
+With xattr, due to ecryptfs with ecryptfs_xattr_metadata.
+
+Regarding the "expected ino node":
+Is it possible that it is caused by parallel operation?
+
+There are 8 threads that do parallel operations, on a 2-core (4 thread) 
+Core-I3 system.
+What prevents that another thread creates a journal entry between 
+initial UBIFS_XENT_KEY and the two UBIFS_INO_KEY?
+
+If you need something, just send me a mail
+
+--
+     Manfred
+
+--------------6240A8F7CF8AE7CF81314891
+Content-Type: application/x-shellscript;
+ name="gen.sh"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="gen.sh"
+
+IyEvYmluL2Jhc2gKCnViaWF0dGFjaCAtcCAvZGV2L210ZDAKbW91bnQgLXQgdWJpZnMgdWJp
+MDp2b2wgLi9yb290IC1vIHJ3CmNkIHJvb3QKCm1rZGlyIC1wIC4vcm9vdC9hIC4vcm9vdC9i
+CgplY2hvICJibHViIiB8IGVjcnlwdGZzLWFkZC1wYXNzcGhyYXNlIC0KbW91bnQgLWkgLXQg
+ZWNyeXB0ZnMgLi9yb290L2EgLi9yb290L2IgLW8gZWNyeXB0ZnNfc2lnPTk1OTgwNThhZjky
+NGZmODUsZWNyeXB0ZnNfY2lwaGVyPWFlcyxlY3J5cHRmc19rZXlfYnl0ZXM9MzIsZWNyeXB0
+ZnNfeGF0dHJfbWV0YWRhdGEKbWtkaXIgLXAgLi9yb290L2IveHsxLDIsMyw0LDUsNiw3LDh9
+CgpjcmVhdGVmbHMoKSB7CgljZCAkMQkKCWk9MDsKCXdoaWxlIFsgJGkgLWxlIDUwIF07ZG8K
+CQlqPWBlY2hvICRpIHwgZ2F3ayAnewoJCQkJbT0yMCtpbnQoNDAqcmFuZCgpKQoJCQkJZm9y
+IChqPTA7ajxtO2orKykgewoJCQkJCXByaW50ZigiJWQtJXMtJWQudHh0ICIsKCQxKjEzK2oq
+MjMpJTk3LCQxLGopOwoJCQkJfQoJCQl9J2AKCQllY2hvICIkaTogY3JlYXRpbmcgJGoiCgkJ
+dG91Y2ggJGoKCQlmb3IgayBpbiAkajtkbwoJCQllY2hvICIkay0kai1hYmNkZSIgPj4gJGs7
+CgkJCWVjaG8gIiRqLSRrLWFiY2RlIiA+ICRrOwoJCQllY2hvICJ0bXAtJGotJGstYWJjZGUi
+ID4gdG1wLSQkLnR4dAoJCQlzeW5jCgkJCW12IHRtcC0kJC50eHQgJGsKCQlkb25lCgkJc3lu
+YwoJCXJtIC1mID8zKi50eHQKCQlybSAtZiA/MSoudHh0CgkJc3luYwoJCXJtIC1mID82Ki50
+eHQKCQlybSAtZiA/MioudHh0CgkJcm0gLWYgPzkqLnR4dAoJCXJtIC1mID84Ki50eHQKCQlp
+PSRbJGkrMV07Cglkb25lOwoJY2QgLi4vLi4KfQoKY2Qgcm9vdAoKY3JlYXRlZmxzIGIveDEm
+CmNyZWF0ZWZscyBiL3gyJgpjcmVhdGVmbHMgYi94MyYKY3JlYXRlZmxzIGIveDQmCmNyZWF0
+ZWZscyBiL3g1JgpjcmVhdGVmbHMgYi94NiYKY3JlYXRlZmxzIGIveDcmCmNyZWF0ZWZscyBi
+L3g4JgoKd2FpdAoKcm1mbHMoKSB7CgljZCAkMQoJcm0gLWYgMyogNyo7CglzeW5jCglybSAt
+ZiAyKjsKCXN5bmMKCXJtIC1mIDQqOwoJc3luYwoJY2QgLi4vLi4KfQpybWZscyBiL3gxJgpy
+bWZscyBiL3gyJgpybWZscyBiL3gzJgpybWZscyBiL3g0JgpybWZscyBiL3g1JgpybWZscyBi
+L3g2JgpybWZscyBiL3g3JgpybWZscyBiL3g4JgoKd2FpdAoKY2QgLi4KCnVtb3VudCAuL3Jv
+b3QvYgp1bW91bnQgLi9yb290CnViaWRldGFjaCAvZGV2L3ViaV9jdHJsIC1tIDAKCg==
+--------------6240A8F7CF8AE7CF81314891--
