@@ -1,19 +1,21 @@
-Received: from smtp09.smtpout.orange.fr ([80.12.242.131]
- helo=smtp.smtpout.orange.fr)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eG3AP-0007gb-L3
- for linux-mtd@lists.infradead.org; Sat, 18 Nov 2017 13:28:19 +0000
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: kyungmin.park@samsung.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
- marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- kernel-janitors@vger.kernel.org,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] mtd: onenand: Fix an error handling path in
- 's3c_onenand_probe(()'
-Date: Sat, 18 Nov 2017 14:27:23 +0100
-Message-Id: <20171118132723.24785-1-christophe.jaillet@wanadoo.fr>
+Received: from ec2-18-194-220-216.eu-central-1.compute.amazonaws.com
+ ([18.194.220.216] helo=sysam.it)
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eGC2Y-0005Sz-1K
+ for linux-mtd@lists.infradead.org; Sat, 18 Nov 2017 22:56:48 +0000
+Date: Sat, 18 Nov 2017 23:56:15 +0100
+From: Angelo Dureghello <angelo@sysam.it>
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org, boris.brezillon@free-electrons.com
+Subject: Re: [PATCH v2] mtd: spi-nor: add support for ISSI is25lp128
+Message-ID: <20171118225615.sdvwbvii5daz664s@jerusalem>
+References: <20171116190950.odsscmakabyi26cc@jerusalem>
+ <429524c9-8534-fcef-5d5c-133eb4cb468d@wedev4u.fr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <429524c9-8534-fcef-5d5c-133eb4cb468d@wedev4u.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +25,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If 'platform_get_resource()' fails, we have to go through the error
-handling path to release some resources.
+Hi Cyrille,
 
-The unreachable 'goto ahb_resource_failed' is also wrong here and we should
-go to 'resource_failed' instead.
+On Fri, Nov 17, 2017 at 06:10:05PM +0100, Cyrille Pitchen wrote:
+> Hi Angelo,
+> 
+> Le 16/11/2017 à 20:09, Angelo Dureghello a écrit :
+> > Add support for ISSI is25lp128 spi nor flash.
+> > 
+> > Signed-off-by: Angelo Dureghello <angelo@sysam.it>
+> > ---
+> >  drivers/mtd/spi-nor/spi-nor.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> > index 19c000722cbc..88cd10a0ee9e 100644
+> > --- a/drivers/mtd/spi-nor/spi-nor.c
+> > +++ b/drivers/mtd/spi-nor/spi-nor.c
+> > @@ -1005,6 +1005,7 @@ static const struct flash_info spi_nor_ids[] = {
+> >  
+> >  	/* ISSI */
+> >  	{ "is25cd512", INFO(0x7f9d20, 0, 32 * 1024,   2, SECT_4K) },
+> > +	{ "is25lp128", INFO(0x9d6018, 0, 64 * 1024,   256, SECT_4K) },
+> 
+> I've checked both datasheets for is25cd512 and is25lp128 because I was
+> surprised to see different manufacturer IDs in the JEDEC IDs: I suspected
+> some mistake in one of the two entries above.
+> 
+> Then I found this old discussion on patchwork:
+> https://patchwork.ozlabs.org/patch/581017/
+> 
+> I looked closer at the is25cd512 datasheet and actually I confirmed that it
+> is stated that the manufacturer ID is received as the 2nd data byte after
+> the 9Fh op code. So both entries are correct and this is not a bug of the
+> is25cd512 memory part: it is documented so it is a feature, right?
+> 
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/mtd/onenand/samsung.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Yes. I believe the reason for this is that is25cd512 was originally a
+PMC-Sierra device so a different silicon design approach from ISSI.
+ISSI bought PMC so i am supposing ISSI maintained the jedec id "way"
+as it was for convenience and for back-compatibility.
 
-diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
-index af0ac1a7bf8f..164ebe2b1137 100644
---- a/drivers/mtd/onenand/samsung.c
-+++ b/drivers/mtd/onenand/samsung.c
-@@ -872,8 +872,8 @@ static int s3c_onenand_probe(struct platform_device *pdev)
- 	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (!r) {
- 		dev_err(&pdev->dev, "no memory resource defined\n");
--		return -ENOENT;
--		goto ahb_resource_failed;
-+		err = -ENOENT;
-+		goto resource_failed;
- 	}
+> Anyway, I plan to add another patch on top of yours just to add a comment
+> otherwise it might not be the last time that someone is puzzled with this
+> quirk.
+>
+Sure, fine.
  
- 	onenand->base_res = request_mem_region(r->start, resource_size(r),
--- 
-2.14.1
+> Then back to your patch, is25lp128's datasheet states that this memory
+> parts support the Fast Read 1-1-2 (Dual Output), the Fast Read 1-4-4 (Quad
+> I/O) but strangely not the Fast Read 1-1-4 (Quad Output). Also I see that
+> the Read SFDP (5Ah) op code is supported too.
+> So could you please add the SPI_NOR_DUAL_READ flag but _not_ the
+> SPI_NOR_QUAD_READ flag in your new entry for is25lp128 ?
+> 
+> Indeed, currently at least one of the two SPI_NOR_{DUAL|QUAD}_READ flags is
+> needed to enabled the parsing of SFDP tables and I would like this parsing
+> to be enabled for this memory part since its datasheet claims that SFDP is
+> supported. Right now, this is the only mean to allow using SPI 1-4-4 with
+> SPI controllers that support this SPI protocol too.
+> 
+
+Sure. Will send in short a v3 patch with SPI_NOR_DUAL_READ.
+I cannot test quad mode right now, since my hardware here (the
+mainlined arch/m68k/coldfire/stmark2 board) is wired as simple spi.
+But i believe the flag cannot harm in anyway until someone can test it.
+
+> Best regards,
+> 
+> Cyrille
+> 
+
+Thanks,
+Best regards,
+Angelo Dureghello
+
+
+> >  
+> >  	/* Macronix */
+> >  	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
+> > 
+> 
