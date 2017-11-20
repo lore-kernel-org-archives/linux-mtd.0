@@ -1,20 +1,17 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eGWaA-00013C-Qj
- for linux-mtd@lists.infradead.org; Sun, 19 Nov 2017 20:52:53 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Manfred Spraul <manfred@colorfullife.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: UBIFS does not mount after powerfail
-Date: Sun, 19 Nov 2017 21:52:44 +0100
-Message-ID: <3046677.dsXx11Gx8o@blindfold>
-In-Reply-To: <c0730b1f-861b-6c3d-b3aa-77825a5d4470@colorfullife.com>
-References: <195075f7-01f8-58d2-ba1c-4291e62a39cc@colorfullife.com>
- <7598033.H8v47AZKNl@blindfold>
- <c0730b1f-861b-6c3d-b3aa-77825a5d4470@colorfullife.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Received: from rnd-relay.smtp.broadcom.com ([192.19.229.170])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eGcja-0008Py-EC
+ for linux-mtd@lists.infradead.org; Mon, 20 Nov 2017 03:27:00 +0000
+From: Albert Hsieh <wen.hsieh@broadcom.com>
+To: computersforpeace@gmail.com
+Cc: kdasu.kdev@gmail.com, boris.brezillon@free-electrons.com, richard@nod.at,
+ dwmw2@infradead.org, marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
+ linux-mtd@lists.infradead.org, bcm-kernel-feedback-list@broadcom.com,
+ linux-kernel@vger.kernel.org, hsiehwt@gmail.com,
+ Albert Hsieh <wen.hsieh@broadcom.com>
+Subject: [PATCH 1/1] mtd: nand: brcmnand: Zero bitflip is not an error
+Date: Mon, 20 Nov 2017 11:26:26 +0800
+Message-Id: <1511148386-14573-1-git-send-email-wen.hsieh@broadcom.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,65 +21,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Manfred,
+A negative return value of brcmstb_nand_verify_erased_page() indicates a
+real bitflip error of an erased page, and other return values (>= 0) show
+the corrected bitflip number. Zero return value means no bitflip, but the
+current driver code treats it as an error, and eventually leads to
+falsely reported ECC error.
 
-Am Donnerstag, 16. November 2017, 17:51:26 CET schrieb Manfred Spraul:
-> Hi Richard,
-> 
-> (2nd mail, forced as non-html)
-> 
-> On 11/15/2017 09:29 PM, Richard Weinberger wrote:
-> > Manfred,
-> > 
-> > Am Mittwoch, 15. November 2017, 21:04:14 CET schrieb Manfred Spraul:
-> >> Hi,
-> >> 
-> >> On 11/14/2017 07:49 PM, Manfred Spraul wrote:
-> >>> Hi Richard,
-> >>> 
-> >>> On 11/13/2017 10:06 PM, Richard Weinberger wrote:
-> >>>> No, the image that contains the first logical error.
-> >>>> UBIFS can mount even if there are many problems with the structure.
-> >>>> Therefore I need you to enable chk_fs.
-> >>> 
-> >>> Done - and I even found a 2nd instance where the image got bad:
-> >>> https://sourceforge.net/projects/calculix-rpm/files/ubifs/chk_fs/
-> >> 
-> >> Sorry for the self-reply, I did another test:
-> >> I applied "ubifs: replay: Detect and kill orphaned xattrs", i.e.
-> >> https://patchwork.ozlabs.org/patch/780667/.
-> > 
-> > I would be astonished if that patch would fix your issues, it is supposed
-> > to fix a -ENOSPC problem.
-> 
-> After enabling chk_fs, the result was
-> 
-> > UBIFS error (ubi0:0 pid 5104): dbg_check_filesystem: inode 39012 nlink is
-> > 1, but calculated nlink is 0
-> and link count 1 instead of 0 sounded a bit like a leak.
-> 
-> dmesg:
-> https://sourceforge.net/projects/calculix-rpm/files/ubifs/chk_fs/result-1680
-> 78.txt/download image:
-> https://sourceforge.net/projects/calculix-rpm/files/ubifs/chk_fs/image-16807
-> 8.bin/download
-> 
-> Thus I decided that it might make sense to try a patch that should
-> improve the behavior with leaks.
-> And it did not take much time.
+Fixes: 02b88eea9f9c ("mtd: brcmnand: Add check for erased page bitflip")
+Signed-off-by: Albert Hsieh <wen.hsieh@broadcom.com>
+---
+ drivers/mtd/nand/brcmnand/brcmnand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Hmmm, maybe we confuse UBIFS that much that it fails differently in your case.
-
-Anyway, let's reconsider.
-If you're facing the problem which should be solved by the said patch, we can 
-do a check.
-
-1. Do you face the issue without ecryptfs?
-2. Does it also happen without xattrs being used at all? Hence also without 
-ecryptfs?
+diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+index e0eb51d..dd56a67 100644
+--- a/drivers/mtd/nand/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+@@ -1763,7 +1763,7 @@ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
+ 			err = brcmstb_nand_verify_erased_page(mtd, chip, buf,
+ 							      addr);
+ 			/* erased page bitflips corrected */
+-			if (err > 0)
++			if (err >= 0)
+ 				return err;
+ 		}
  
-I'm afraid that the patch has still problems (it is not merged for reasons).
-So, please keep on a stock kernel for now.
-
-Thanks,
-//richard
+-- 
+2.1.0
