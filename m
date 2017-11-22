@@ -1,22 +1,24 @@
-Received: from mail-pg0-f68.google.com ([74.125.83.68])
+Received: from mail-qk0-f181.google.com ([209.85.220.181])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eGt8N-0005w8-TW
- for linux-mtd@lists.infradead.org; Mon, 20 Nov 2017 20:57:41 +0000
-Received: by mail-pg0-f68.google.com with SMTP id k190so3676382pga.3
- for <linux-mtd@lists.infradead.org>; Mon, 20 Nov 2017 12:57:19 -0800 (PST)
-From: Jesse Chan <jc@linux.com>
-To: 
-Cc: Jesse Chan <jc@linux.com>, Masahiro Yamada <yamada.masahiro@socionext.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: nand: denali_pci: add missing
- MODULE_DESCRIPTION/AUTHOR/LICENSE
-Date: Mon, 20 Nov 2017 12:57:13 -0800
-Message-Id: <20171120205713.86952-1-jc@linux.com>
+ id 1eHRgI-0001fA-Vx
+ for linux-mtd@lists.infradead.org; Wed, 22 Nov 2017 09:51:01 +0000
+Received: by mail-qk0-f181.google.com with SMTP id a194so15920808qkc.9
+ for <linux-mtd@lists.infradead.org>; Wed, 22 Nov 2017 01:50:37 -0800 (PST)
+Received: from mail-qt0-f181.google.com (mail-qt0-f181.google.com.
+ [209.85.216.181])
+ by smtp.gmail.com with ESMTPSA id n145sm10213296qke.38.2017.11.22.01.50.36
+ for <linux-mtd@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 22 Nov 2017 01:50:36 -0800 (PST)
+Received: by mail-qt0-f181.google.com with SMTP id i40so11727566qti.8
+ for <linux-mtd@lists.infradead.org>; Wed, 22 Nov 2017 01:50:36 -0800 (PST)
+MIME-Version: 1.0
+From: "Paul HENRYS d'AUBIGNY" <paul.henrys@embconsulting.eu>
+Date: Wed, 22 Nov 2017 10:50:35 +0100
+Message-ID: <CAOTsJ7r0UHfduu4YauvqOGggdX-f7qQY6Nm-EKi7n8NBryw1oQ@mail.gmail.com>
+Subject: mtd: test: Fix check on ebcnt in nandpagetest
+To: linux-mtd@lists.infradead.org
+Content-Type: multipart/mixed; boundary="001a1139d9ce4c2adb055e8f4086"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,32 +28,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This change resolves a new compile-time warning
-when built as a loadable module:
+--001a1139d9ce4c2adb055e8f4086
+Content-Type: text/plain; charset="UTF-8"
 
-WARNING: modpost: missing MODULE_LICENSE() in drivers/mtd/nand/denali_pci.o
-see include/linux/module.h for more information
+Dear all,
 
-This adds the license as "GPL v2", which matches the header of the file.
+Commit 4458ad6481f60d9884925d5bc62a7954880d181b introduced a check on
+ebcnt to make sure nandpagetest is run on more than 2 erase blocks
+(EB). This commit omits that by default, when the number of EB to use
+is not specified, the full mtd partition should be used leading
+nandpagetest to exit with failure in that case.
+The attached patch intends to fix this.
 
-MODULE_DESCRIPTION and MODULE_AUTHOR are also added.
+Best regards,
 
-Signed-off-by: Jesse Chan <jc@linux.com>
----
- drivers/mtd/nand/denali_pci.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Paul HENRYS
 
-diff --git a/drivers/mtd/nand/denali_pci.c b/drivers/mtd/nand/denali_pci.c
-index 81370c79aa48..7ad0db65a6fa 100644
---- a/drivers/mtd/nand/denali_pci.c
-+++ b/drivers/mtd/nand/denali_pci.c
-@@ -124,3 +124,7 @@ static struct pci_driver denali_pci_driver = {
- };
- 
- module_pci_driver(denali_pci_driver);
-+
-+MODULE_DESCRIPTION("PCI driver for Denali NAND controller");
-+MODULE_AUTHOR("Intel Corporation and its suppliers");
-+MODULE_LICENSE("GPL v2");
--- 
-2.14.1
+Software Engineer - Freelance
+http://be.linkedin.com/in/phenrysd
+PGP fingerprint: 1C45 321A 7830 4DCD 8453 2CE4 DF32 6222 6747 82F7
+PGP key: https://pgp.mit.edu/pks/lookup?op=get&search=0xDF326222674782F7
+
+--001a1139d9ce4c2adb055e8f4086
+Content-Type: text/x-patch; charset="US-ASCII"; name="nandpagetest.patch"
+Content-Disposition: attachment; filename="nandpagetest.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_jaav9nt30
+
+RnJvbSBmNDllZGNmM2ExZWM2MGVjY2ZkZjgwNjIxNTRkZWE0OTY4ZjY1ZmUzIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBQYXVsIEhFTlJZUyA8cGF1bC5oZW5yeXNAZW1iY29uc3VsdGlu
+Zy5ldT4KRGF0ZTogV2VkLCAyMiBOb3YgMjAxNyAwOToxMTo0MyArMDEwMApTdWJqZWN0OiBbUEFU
+Q0hdIG10ZDogdGVzdHM6IEZpeCBjaGVjayBvbiBlYmNudCBpbiBuYW5kcGFnZXRlc3QKCklmIHRo
+ZSBudW1iZXIgb2YgZXJhc2UgYmxvY2tzIHRvIHVzZSBpcyBub3Qgc3BlY2lmaWVkLCBlYmNudCBv
+cmlnaW5hbGx5CnNldCB0byAtMSBsZWFkcyB0aGUgcHJvZ3JhbSB0byBleGl0IHdpdGg6CiAgIkNh
+bm5vdCBydW4gd2l0aCBsZXNzIHRoYW4gdHdvIGJsb2Nrcy4iCgpJZiB0aGUgbnVtYmVyIG9mIGVy
+YXNlIGJsb2NrcyB0byB1c2UgaXMgbm90IHNwZWNpZmllZCBhbmQgdGh1cyBlYmNudCBpcwplcXVh
+bCB0byAtMSwgdGhlIGV4cGVjdGVkIGJlaGF2aW91ciBpcyB0byBwZXJmb3JtIHRoZSB0ZXN0IG9u
+IGFsbCB0aGUKZXJhc2UgYmxvY2tzIG9mIHRoZSBtdGQgcGFydGl0aW9uLgoKVGhpcyBmaXhlcyB0
+aGUgY2hhbmdlIGludHJvZHVjZWQgaW4KNDQ1OGFkNjQ4MWY2MGQ5ODg0OTI1ZDViYzYyYTc5NTQ4
+ODBkMTgxYi4KLS0tCiB0ZXN0cy9tdGQtdGVzdHMvbmFuZHBhZ2V0ZXN0LmMgfCAyICstCiAxIGZp
+bGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS90
+ZXN0cy9tdGQtdGVzdHMvbmFuZHBhZ2V0ZXN0LmMgYi90ZXN0cy9tdGQtdGVzdHMvbmFuZHBhZ2V0
+ZXN0LmMKaW5kZXggMmIxNmNjOS4uYzY4MTJkZiAxMDA2NDQKLS0tIGEvdGVzdHMvbXRkLXRlc3Rz
+L25hbmRwYWdldGVzdC5jCisrKyBiL3Rlc3RzL210ZC10ZXN0cy9uYW5kcGFnZXRlc3QuYwpAQCAt
+MTQzLDcgKzE0Myw3IEBAIHN0YXRpYyB2b2lkIHByb2Nlc3Nfb3B0aW9ucyhpbnQgYXJnYywgY2hh
+ciAqKmFyZ3YpCiAKIAlpZiAob3B0aW5kIDwgYXJnYykKIAkJdXNhZ2UoRVhJVF9GQUlMVVJFKTsK
+LQlpZiAoZWJjbnQgPCAyKQorCWlmIChlYmNudCA+PSAwICYmIGViY250IDwgMikKIAkJZXJybXNn
+X2RpZSgiQ2Fubm90IHJ1biB3aXRoIGxlc3MgdGhhbiB0d28gYmxvY2tzLiIpOwogCWlmIChwZWIg
+PCAwKQogCQlwZWIgPSAwOwotLSAKMi43LjQKCg==
+--001a1139d9ce4c2adb055e8f4086--
