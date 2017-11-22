@@ -1,17 +1,18 @@
-Received: from mail-wm0-x229.google.com ([2a00:1450:400c:c09::229])
+Received: from mail-it0-x234.google.com ([2607:f8b0:4001:c0b::234])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eHYV4-0002yq-Ql
- for linux-mtd@lists.infradead.org; Wed, 22 Nov 2017 17:07:53 +0000
-Received: by mail-wm0-x229.google.com with SMTP id v186so11607362wma.2
- for <linux-mtd@lists.infradead.org>; Wed, 22 Nov 2017 09:07:29 -0800 (PST)
+ id 1eHZ0N-0000wW-7F
+ for linux-mtd@lists.infradead.org; Wed, 22 Nov 2017 17:40:12 +0000
+Received: by mail-it0-x234.google.com with SMTP id n134so7187816itg.1
+ for <linux-mtd@lists.infradead.org>; Wed, 22 Nov 2017 09:39:50 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAJz5OpfXTXzvVZxmCC1+R1AU6qqHaGoH-KJKWd_Fixt2EgAJSw@mail.gmail.com>
+In-Reply-To: <CAFLxGvwfchgz59E_bA5VEY7cQ-Pig-AaAyBfw=m9msMgP0nt9Q@mail.gmail.com>
 References: <CAJz5OpfXTXzvVZxmCC1+R1AU6qqHaGoH-KJKWd_Fixt2EgAJSw@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Wed, 22 Nov 2017 18:07:27 +0100
-Message-ID: <CAFLxGvwfchgz59E_bA5VEY7cQ-Pig-AaAyBfw=m9msMgP0nt9Q@mail.gmail.com>
+ <CAFLxGvwfchgz59E_bA5VEY7cQ-Pig-AaAyBfw=m9msMgP0nt9Q@mail.gmail.com>
+From: Frank Mori Hess <fmh6jj@gmail.com>
+Date: Wed, 22 Nov 2017 12:39:49 -0500
+Message-ID: <CAJz5OpcPp0QhzTdzg_mwFki0++M3v1F_ivZct+hsnW=crgWPQA@mail.gmail.com>
 Subject: Re: Jffs2: systemd-journald fails to open log files on jffs2
-To: Frank Mori Hess <fmh6jj@gmail.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,25 +24,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Frank,
+On Wed, Nov 22, 2017 at 12:07 PM, Richard Weinberger
+<richard.weinberger@gmail.com> wrote:
+> But I'd like to know why you are still using JFFS2.
+> Is this some super small NOR flash where UBIFS does not work?
 
-On Wed, Nov 22, 2017 at 4:12 PM, Frank Mori Hess <fmh6jj@gmail.com> wrote:
-> Hi, I have systemd-journald spewing EINVAL errors on a 4.1.33 kernel
-> when it tries to
-> open persistent journal files on jffs2, for example:
->
-> systemd-journald[766]: Failed to open system journal: Invalid argument
->
-> I traced this back to a failing mmap call which was attempting to do a
-> writable mmap with MAP_SHARED.  Are there any plans for jffs2 to
-> support such mappings, or is the answer just to dump jffs2 and move on
-> to ubifs?
-
-As UBIFS guy you can guess what my answer is. ;-)
-
-But I'd like to know why you are still using JFFS2.
-Is this some super small NOR flash where UBIFS does not work?
+No it is just historical.  The decision to use jffs2 was probably made
+before ubifs existed.
 
 -- 
-Thanks,
-//richard
+Frank
