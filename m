@@ -1,30 +1,16 @@
-Received: from conssluserg-06.nifty.com ([210.131.2.91])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eHriR-0001zb-Im
- for linux-mtd@lists.infradead.org; Thu, 23 Nov 2017 13:38:57 +0000
-Received: from mail-yw0-f171.google.com (mail-yw0-f171.google.com
- [209.85.161.171]) (authenticated)
- by conssluserg-06.nifty.com with ESMTP id vANDcCwc026036
- for <linux-mtd@lists.infradead.org>; Thu, 23 Nov 2017 22:38:13 +0900
-Received: by mail-yw0-f171.google.com with SMTP id q37so8490393ywa.12
- for <linux-mtd@lists.infradead.org>; Thu, 23 Nov 2017 05:38:13 -0800 (PST)
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by casper.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eHscf-0004wq-CC
+ for linux-mtd@lists.infradead.org; Thu, 23 Nov 2017 14:37:03 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Linus <torvalds@linux-foundation.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] UBI/UBIFS updates for 4.15-rc1
+Date: Thu, 23 Nov 2017 15:37:01 +0100
+Message-ID: <2342271.CoAPh78JdH@blindfold>
 MIME-Version: 1.0
-In-Reply-To: <20171120205713.86952-1-jc@linux.com>
-References: <20171120205713.86952-1-jc@linux.com>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Thu, 23 Nov 2017 22:37:31 +0900
-Message-ID: <CAK7LNAQxtVqcw9AvQQYKzhCYDOWVh=3OVUO9ifwG0yr6XX_K8Q@mail.gmail.com>
-Subject: Re: [PATCH] mtd: nand: denali_pci: add missing
- MODULE_DESCRIPTION/AUTHOR/LICENSE
-To: Jesse Chan <jc@linux.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,39 +20,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2017-11-21 5:57 GMT+09:00 Jesse Chan <jc@linux.com>:
-> This change resolves a new compile-time warning
-> when built as a loadable module:
->
-> WARNING: modpost: missing MODULE_LICENSE() in drivers/mtd/nand/denali_pci.o
-> see include/linux/module.h for more information
->
-> This adds the license as "GPL v2", which matches the header of the file.
->
-> MODULE_DESCRIPTION and MODULE_AUTHOR are also added.
->
-> Signed-off-by: Jesse Chan <jc@linux.com>
-> ---
->  drivers/mtd/nand/denali_pci.c | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/drivers/mtd/nand/denali_pci.c b/drivers/mtd/nand/denali_pci.c
-> index 81370c79aa48..7ad0db65a6fa 100644
-> --- a/drivers/mtd/nand/denali_pci.c
-> +++ b/drivers/mtd/nand/denali_pci.c
-> @@ -124,3 +124,7 @@ static struct pci_driver denali_pci_driver = {
->  };
->
->  module_pci_driver(denali_pci_driver);
-> +
-> +MODULE_DESCRIPTION("PCI driver for Denali NAND controller");
-> +MODULE_AUTHOR("Intel Corporation and its suppliers");
-> +MODULE_LICENSE("GPL v2");
+Linus,
 
+The following changes since commit bebc6082da0a9f5d47a1ea2edc099bf671058bd4:
 
-Acked-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+  Linux 4.14 (2017-11-12 10:46:13 -0800)
 
+are available in the git repository at:
 
--- 
-Best Regards
-Masahiro Yamada
+  git://git.infradead.org/linux-ubifs.git tags/upstream-4.15-rc1
+
+for you to fetch changes up to 15e5178339b9a95bc60c6bcfcae1b8f48afedd23:
+
+  ubi: fastmap: Clean up the initialization of pointer p (2017-11-19 21:15:14 
++0100)
+
+----------------------------------------------------------------
+This pull request contains updates for both UBI and UBIFS:
+- Minor bug fixes
+
+----------------------------------------------------------------
+Clay McClure (1):
+      ubi: Fix race condition between ubi volume creation and udev
+
+Colin Ian King (1):
+      ubi: fastmap: Clean up the initialization of pointer p
+
+Geert Uytterhoeven (1):
+      ubifs: Fix uninitialized variable in search_dh_cookie()
+
+Jeff Westfahl (1):
+      mtd: ubi: Use 'max_bad_blocks' to compute bad_peb_limit if available
+
+Pan Bian (1):
+      ubi: fastmap: Use kmem_cache_free to deallocate memory
+
+ drivers/mtd/ubi/build.c   | 13 +++++++++++--
+ drivers/mtd/ubi/fastmap.c |  5 ++---
+ drivers/mtd/ubi/vmt.c     | 15 ++++++++++-----
+ fs/ubifs/tnc.c            | 21 +++++++--------------
+ 4 files changed, 30 insertions(+), 24 deletions(-)
