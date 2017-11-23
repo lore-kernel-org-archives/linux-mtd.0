@@ -1,16 +1,24 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by casper.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eHscf-0004wq-CC
- for linux-mtd@lists.infradead.org; Thu, 23 Nov 2017 14:37:03 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Linus <torvalds@linux-foundation.org>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] UBI/UBIFS updates for 4.15-rc1
-Date: Thu, 23 Nov 2017 15:37:01 +0100
-Message-ID: <2342271.CoAPh78JdH@blindfold>
+Received: from mail-wm0-x234.google.com ([2a00:1450:400c:c09::234])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eHzb8-0003y3-1b
+ for linux-mtd@lists.infradead.org; Thu, 23 Nov 2017 22:03:56 +0000
+Received: by mail-wm0-x234.google.com with SMTP id b189so19083036wmd.5
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Nov 2017 14:03:32 -0800 (PST)
+From: Manfred Spraul <manfred@colorfullife.com>
+Subject: Re: UBIFS does not mount after powerfail
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org
+References: <195075f7-01f8-58d2-ba1c-4291e62a39cc@colorfullife.com>
+ <7598033.H8v47AZKNl@blindfold>
+ <c0730b1f-861b-6c3d-b3aa-77825a5d4470@colorfullife.com>
+ <3046677.dsXx11Gx8o@blindfold>
+Message-ID: <4b60c157-438f-4197-879c-f1a8b87cbdf8@colorfullife.com>
+Date: Thu, 23 Nov 2017 23:03:28 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <3046677.dsXx11Gx8o@blindfold>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,43 +28,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Linus,
+Hi Richard,
 
-The following changes since commit bebc6082da0a9f5d47a1ea2edc099bf671058bd4:
+I have now three datasets:
+- no xattr, no FASTMAP:
+The log consists of ~189.000 WRITE or ERASE commands.
+-- with chk_fs: 30.000 images tested, all ok.
 
-  Linux 4.14 (2017-11-12 10:46:13 -0800)
+-- with chk_fs, when splitting large writes at PAGE_SIZE: 814 images 
+tested, all ok.
 
-are available in the git repository at:
+--> no issues at all when not using xattr.
 
-  git://git.infradead.org/linux-ubifs.git tags/upstream-4.15-rc1
+- ecryptfs with ecryptfs_xattr_metadata:
+The log consists of ~188.000 WRITE or ERASE commands.
 
-for you to fetch changes up to 15e5178339b9a95bc60c6bcfcae1b8f48afedd23:
+-- without chk_fs: 23.000 images tested, 5 not mountable images, all 5 
+within garbage_collect_leb():
 
-  ubi: fastmap: Clean up the initialization of pointer p (2017-11-19 21:15:14 
-+0100)
+If I see it right, the root cause is always a node that crosses a page 
+boundary:
+the first half of the node is written, the 2nd half is not written, it 
+is still 0xff.
+These nodes cause CRC failures during scanning.
+(perhaps: output of layout_in_empty_space(), writing to a erased LEB 
+instead of changing a LEB not properly handled?)
 
-----------------------------------------------------------------
-This pull request contains updates for both UBI and UBIFS:
-- Minor bug fixes
+-- with chk_fs: 795 images tested, 62 not mountable.
+Obviously including the 5 above: chk_fs runs after recovery_completed, 
+garbage_collect_leb() is run during recovery.
 
-----------------------------------------------------------------
-Clay McClure (1):
-      ubi: Fix race condition between ubi volume creation and udev
+-- kill-orphaned-xattr, with chk_fs: 215 images tested, 156 not mountable.
+Note: This is not worse than without the patch. There are long streams 
+of images that fail during chk_fs, 200 images is not enough for good 
+statistics.
+And: I have not tested the same images as without the patch.
 
-Colin Ian King (1):
-      ubi: fastmap: Clean up the initialization of pointer p
+- ecryptfs with ecryptfs_xattr_metadata and with FASTMAP
+The log consists of ~197.000 WRITE or ERASE commands.
 
-Geert Uytterhoeven (1):
-      ubifs: Fix uninitialized variable in search_dh_cookie()
+21.000 images tested, 178 do not mount. all fail in chk_fs.
+The failure is always something like this:
+> [34802.217857] UBIFS error (ubi0:0 pid 25706): ubifs_read_node: bad 
+> node at LEB 243:74672, LEB mapping status 0
+> [34802.218965] Not a node, first 24 bytes:
+> [34802.218969] 00000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 
+> ff ff ff ff
+I have not tested with chk_fastmap.
+And: Unlike above, where I tested the last images, I have here tested 
+the first 20k images, thus a more or less empty media.
+The lower failure rate could be caused by that.
 
-Jeff Westfahl (1):
-      mtd: ubi: Use 'max_bad_blocks' to compute bad_peb_limit if available
+Did you have the time to look at the images?
+If you need more images, or if I should test a patch, just ask.
 
-Pan Bian (1):
-      ubi: fastmap: Use kmem_cache_free to deallocate memory
+I have uploaded the most interesting images to sourceforge.
+https://sourceforge.net/projects/calculix-rpm/files/ubifs/
 
- drivers/mtd/ubi/build.c   | 13 +++++++++++--
- drivers/mtd/ubi/fastmap.c |  5 ++---
- drivers/mtd/ubi/vmt.c     | 15 ++++++++++-----
- fs/ubifs/tnc.c            | 21 +++++++--------------
- 4 files changed, 30 insertions(+), 24 deletions(-)
+--
+     Manfred
