@@ -1,24 +1,21 @@
-Received: from mail-wm0-x234.google.com ([2a00:1450:400c:c09::234])
+Received: from mail-io0-x22a.google.com ([2607:f8b0:4001:c06::22a])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eHzb8-0003y3-1b
- for linux-mtd@lists.infradead.org; Thu, 23 Nov 2017 22:03:56 +0000
-Received: by mail-wm0-x234.google.com with SMTP id b189so19083036wmd.5
- for <linux-mtd@lists.infradead.org>; Thu, 23 Nov 2017 14:03:32 -0800 (PST)
-From: Manfred Spraul <manfred@colorfullife.com>
-Subject: Re: UBIFS does not mount after powerfail
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org
-References: <195075f7-01f8-58d2-ba1c-4291e62a39cc@colorfullife.com>
- <7598033.H8v47AZKNl@blindfold>
- <c0730b1f-861b-6c3d-b3aa-77825a5d4470@colorfullife.com>
- <3046677.dsXx11Gx8o@blindfold>
-Message-ID: <4b60c157-438f-4197-879c-f1a8b87cbdf8@colorfullife.com>
-Date: Thu, 23 Nov 2017 23:03:28 +0100
+ id 1eI4sL-0002AT-FK
+ for linux-mtd@lists.infradead.org; Fri, 24 Nov 2017 03:42:03 +0000
+Received: by mail-io0-x22a.google.com with SMTP id 79so20740669ioi.3
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Nov 2017 19:41:38 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <3046677.dsXx11Gx8o@blindfold>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Sender: linus971@gmail.com
+In-Reply-To: <2342271.CoAPh78JdH@blindfold>
+References: <2342271.CoAPh78JdH@blindfold>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 23 Nov 2017 17:41:37 -1000
+Message-ID: <CA+55aFw-NJXZ9O9JJigeTdK2V6y7zpQfmE3rmsB1Zi=8kMJuZA@mail.gmail.com>
+Subject: Re: [GIT PULL] UBI/UBIFS updates for 4.15-rc1
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,62 +25,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
+On Thu, Nov 23, 2017 at 4:37 AM, Richard Weinberger <richard@nod.at> wrote:
+>
+>   git://git.infradead.org/linux-ubifs.git tags/upstream-4.15-rc1
 
-I have now three datasets:
-- no xattr, no FASTMAP:
-The log consists of ~189.000 WRITE or ERASE commands.
--- with chk_fs: 30.000 images tested, all ok.
+Similarly to the arch/um case, none of this seems to have been in
+linux-next, and is sent late in the merge window, so I'm skipping it.
 
--- with chk_fs, when splitting large writes at PAGE_SIZE: 814 images 
-tested, all ok.
-
---> no issues at all when not using xattr.
-
-- ecryptfs with ecryptfs_xattr_metadata:
-The log consists of ~188.000 WRITE or ERASE commands.
-
--- without chk_fs: 23.000 images tested, 5 not mountable images, all 5 
-within garbage_collect_leb():
-
-If I see it right, the root cause is always a node that crosses a page 
-boundary:
-the first half of the node is written, the 2nd half is not written, it 
-is still 0xff.
-These nodes cause CRC failures during scanning.
-(perhaps: output of layout_in_empty_space(), writing to a erased LEB 
-instead of changing a LEB not properly handled?)
-
--- with chk_fs: 795 images tested, 62 not mountable.
-Obviously including the 5 above: chk_fs runs after recovery_completed, 
-garbage_collect_leb() is run during recovery.
-
--- kill-orphaned-xattr, with chk_fs: 215 images tested, 156 not mountable.
-Note: This is not worse than without the patch. There are long streams 
-of images that fail during chk_fs, 200 images is not enough for good 
-statistics.
-And: I have not tested the same images as without the patch.
-
-- ecryptfs with ecryptfs_xattr_metadata and with FASTMAP
-The log consists of ~197.000 WRITE or ERASE commands.
-
-21.000 images tested, 178 do not mount. all fail in chk_fs.
-The failure is always something like this:
-> [34802.217857] UBIFS error (ubi0:0 pid 25706): ubifs_read_node: bad 
-> node at LEB 243:74672, LEB mapping status 0
-> [34802.218965] Not a node, first 24 bytes:
-> [34802.218969] 00000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 
-> ff ff ff ff
-I have not tested with chk_fastmap.
-And: Unlike above, where I tested the last images, I have here tested 
-the first 20k images, thus a more or less empty media.
-The lower failure rate could be caused by that.
-
-Did you have the time to look at the images?
-If you need more images, or if I should test a patch, just ask.
-
-I have uploaded the most interesting images to sourceforge.
-https://sourceforge.net/projects/calculix-rpm/files/ubifs/
-
---
-     Manfred
+           Linus
