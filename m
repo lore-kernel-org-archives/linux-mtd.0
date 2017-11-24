@@ -1,19 +1,10 @@
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.84_2)
- (envelope-from <sha@pengutronix.de>) id 1eIBpx-0002nH-PD
- for linux-mtd@lists.infradead.org; Fri, 24 Nov 2017 12:08:01 +0100
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.84_2)
- (envelope-from <sha@pengutronix.de>) id 1eIBpx-0000iU-HN
- for linux-mtd@lists.infradead.org; Fri, 24 Nov 2017 12:08:01 +0100
-Date: Fri, 24 Nov 2017 12:08:01 +0100
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: Confusing UBI warning
-Message-ID: <20171124110801.ntr634h5tyytlsne@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ kernel@pengutronix.de, Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH] UBI: Fastmap: Fix typo
+Date: Fri, 24 Nov 2017 12:14:06 +0100
+Message-Id: <20171124111406.27451-1-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +14,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+Fix misspelling of 'available' in function name.
 
-I'm frequently asked about the meaning of the following message:
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ drivers/mtd/ubi/fastmap-wl.c | 2 +-
+ drivers/mtd/ubi/wl.c         | 2 +-
+ drivers/mtd/ubi/wl.h         | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-ubi0 warning: ubi_io_read: error -74 (ECC error) while reading 126976 bytes from PEB 1771:4096, read only 126976 bytes, retry
-
-The confusing part of this message is that UBI seems to expect a short
-read in case of an ECC error and the wording of the message seems to
-imply that all data has been read successfully.
-
-I digged into the NAND layer to see if there's any chance for a short
-read and saw that the NAND layer always reads the full amount of data,
-no chance for a short read.
-
-Now there's not only NAND of course. Are there any other mtd devices
-where a real short read can happen? Otherwise I would just patch the
-"read only xx bytes" part away.
-
-If the "read only" indeed can carry useful information then instead we
-might change the message that the part is only printed when the read
-number of bytes is actually less than the desired number of bytes.
-
-Sascha
-
+diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
+index 4f0bd6b4422a..590d967011bb 100644
+--- a/drivers/mtd/ubi/fastmap-wl.c
++++ b/drivers/mtd/ubi/fastmap-wl.c
+@@ -66,7 +66,7 @@ static void return_unused_pool_pebs(struct ubi_device *ubi,
+ 	}
+ }
+ 
+-static int anchor_pebs_avalible(struct rb_root *root)
++static int anchor_pebs_available(struct rb_root *root)
+ {
+ 	struct rb_node *p;
+ 	struct ubi_wl_entry *e;
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index b5b8cd6f481c..599495dfbd0c 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -692,7 +692,7 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
+ #ifdef CONFIG_MTD_UBI_FASTMAP
+ 	/* Check whether we need to produce an anchor PEB */
+ 	if (!anchor)
+-		anchor = !anchor_pebs_avalible(&ubi->free);
++		anchor = !anchor_pebs_available(&ubi->free);
+ 
+ 	if (anchor) {
+ 		e1 = find_anchor_wl_entry(&ubi->used);
+diff --git a/drivers/mtd/ubi/wl.h b/drivers/mtd/ubi/wl.h
+index 2aaa3f7f2ba9..a9e2d669acd8 100644
+--- a/drivers/mtd/ubi/wl.h
++++ b/drivers/mtd/ubi/wl.h
+@@ -2,7 +2,7 @@
+ #ifndef UBI_WL_H
+ #define UBI_WL_H
+ #ifdef CONFIG_MTD_UBI_FASTMAP
+-static int anchor_pebs_avalible(struct rb_root *root);
++static int anchor_pebs_available(struct rb_root *root);
+ static void update_fastmap_work_fn(struct work_struct *wrk);
+ static struct ubi_wl_entry *find_anchor_wl_entry(struct rb_root *root);
+ static struct ubi_wl_entry *get_peb_for_wl(struct ubi_device *ubi);
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.11.0
