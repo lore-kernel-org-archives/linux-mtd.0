@@ -1,17 +1,18 @@
-Received: from mail-cys01nam02on0067.outbound.protection.outlook.com
- ([104.47.37.67] helo=NAM02-CY1-obe.outbound.protection.outlook.com)
+Received: from mail-dm3nam03on0043.outbound.protection.outlook.com
+ ([104.47.41.43] helo=NAM03-DM3-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eIBD2-0001wP-0Y
- for linux-mtd@lists.infradead.org; Fri, 24 Nov 2017 10:27:49 +0000
+ id 1eIBD6-0001wf-Dd
+ for linux-mtd@lists.infradead.org; Fri, 24 Nov 2017 10:27:54 +0000
 From: Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
 To: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <computersforpeace@gmail.com>, <dwmw2@infradead.org>,
  <boris.brezillon@free-electrons.com>, <marek.vasut@gmail.com>,
  <richard@nod.at>, <cyrille.pitchen@wedev4u.fr>
 CC: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-Subject: [PATCH 1/2] mtd: spi-nor: add a API to restore the addressing mode
-Date: Fri, 24 Nov 2017 18:08:47 +0800
-Message-ID: <20171124100848.1828-2-Zhiqiang.Hou@nxp.com>
+Subject: [PATCH 2/2] mtd: m25p80: restore the addressing mode when stop using
+ the flash
+Date: Fri, 24 Nov 2017 18:08:48 +0800
+Message-ID: <20171124100848.1828-3-Zhiqiang.Hou@nxp.com>
 In-Reply-To: <20171124100848.1828-1-Zhiqiang.Hou@nxp.com>
 References: <20171124100848.1828-1-Zhiqiang.Hou@nxp.com>
 MIME-Version: 1.0
@@ -27,44 +28,43 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
 
-It's better to restore the addressing mode of the SPI flash
-whenever remove the driver or reboot the system.
+Add .shutdown function to restore the addressing mode in reboot
+process, and add the same operation to the .remove function.
 
 Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 8 ++++++++
- include/linux/mtd/spi-nor.h   | 1 +
- 2 files changed, 9 insertions(+)
+ drivers/mtd/devices/m25p80.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index bc266f70a15b..801cbe99b059 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -2713,6 +2713,14 @@ static void spi_nor_resume(struct mtd_info *mtd)
- 		dev_err(dev, "resume() failed\n");
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index dbe6a1de2bb8..867bd2d5a267 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -307,10 +307,17 @@ static int m25p_remove(struct spi_device *spi)
+ {
+ 	struct m25p	*flash = spi_get_drvdata(spi);
+ 
++	spi_nor_restore_addr_mode(&flash->spi_nor);
+ 	/* Clean up MTD stuff. */
+ 	return mtd_device_unregister(&flash->spi_nor.mtd);
  }
  
-+void spi_nor_restore_addr_mode(struct spi_nor *nor)
++static void m25p_shutdown(struct spi_device *spi)
 +{
-+	if ((nor->addr_width == 4) &&
-+	    (JEDEC_MFR(nor->info) != SNOR_MFR_SPANSION) &&
-+	    !(nor->info->flags & SPI_NOR_4B_OPCODES))
-+		set_4byte(nor, nor->info, 0);
-+}
++	struct m25p *flash = spi_get_drvdata(spi);
 +
- int spi_nor_scan(struct spi_nor *nor, const char *name,
- 		 const struct spi_nor_hwcaps *hwcaps)
- {
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index d0c66a0975cf..fe9357da2049 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -398,5 +398,6 @@ struct spi_nor_hwcaps {
-  */
- int spi_nor_scan(struct spi_nor *nor, const char *name,
- 		 const struct spi_nor_hwcaps *hwcaps);
-+void spi_nor_restore_addr_mode(struct spi_nor *nor);
++	spi_nor_restore_addr_mode(&flash->spi_nor);
++}
+ /*
+  * Do NOT add to this array without reading the following:
+  *
+@@ -386,6 +393,7 @@ static struct spi_driver m25p80_driver = {
+ 	.id_table	= m25p_ids,
+ 	.probe	= m25p_probe,
+ 	.remove	= m25p_remove,
++	.shutdown	= m25p_shutdown,
  
- #endif
+ 	/* REVISIT: many of these chips have deep power-down modes, which
+ 	 * should clearly be entered on suspend() to minimize power use.
 -- 
 2.14.1
