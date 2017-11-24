@@ -1,21 +1,21 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eIAZE-0006j4-Ox
- for linux-mtd@lists.infradead.org; Fri, 24 Nov 2017 09:46:44 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- user-mode-linux-devel@lists.sourceforge.net
-Subject: Re: [GIT PULL] UBI/UBIFS updates for 4.15-rc1
-Date: Fri, 24 Nov 2017 10:46:37 +0100
-Message-ID: <4300266.OpBMifGIty@blindfold>
-In-Reply-To: <CA+55aFw-NJXZ9O9JJigeTdK2V6y7zpQfmE3rmsB1Zi=8kMJuZA@mail.gmail.com>
-References: <2342271.CoAPh78JdH@blindfold>
- <CA+55aFw-NJXZ9O9JJigeTdK2V6y7zpQfmE3rmsB1Zi=8kMJuZA@mail.gmail.com>
+Received: from mail-by2nam01on062a.outbound.protection.outlook.com
+ ([2a01:111:f400:fe42::62a]
+ helo=NAM01-BY2-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eIBD1-0001wK-2l
+ for linux-mtd@lists.infradead.org; Fri, 24 Nov 2017 10:27:48 +0000
+From: Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
+To: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <computersforpeace@gmail.com>, <dwmw2@infradead.org>,
+ <boris.brezillon@free-electrons.com>, <marek.vasut@gmail.com>,
+ <richard@nod.at>, <cyrille.pitchen@wedev4u.fr>
+CC: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+Subject: [PATCH 0/2] mtd: m25p80: restore the addressing mode when stop using
+ the flash
+Date: Fri, 24 Nov 2017 18:08:46 +0800
+Message-ID: <20171124100848.1828-1-Zhiqiang.Hou@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,20 +25,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Linus,
+From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
 
-Am Freitag, 24. November 2017, 04:41:37 CET schrieb Linus Torvalds:
-> On Thu, Nov 23, 2017 at 4:37 AM, Richard Weinberger <richard@nod.at> wrote:
-> >   git://git.infradead.org/linux-ubifs.git tags/upstream-4.15-rc1
-> 
-> Similarly to the arch/um case, none of this seems to have been in
-> linux-next, and is sent late in the merge window, so I'm skipping it.
+To be compatible with legacy device, reset the addressing mode
+to the default mode. Such as Freescale eSPI boot, it copies the
+images from SPI flash without firing a reset signal previously,
+so the reboot command will fail without reseting the addressing
+mode of SPI flash.
 
-It is since next-20171120 in linux-next.
-I'm sorry for being late, will do a better job next time.
+Hou Zhiqiang (2):
+  mtd: spi-nor: add a API to restore the addressing mode
+  mtd: m25p80: restore the addressing mode when stop using the flash
 
-If you don't mind I'll send you a PR with bug fixes for 4.15-rc2.
-Same for UML.
+ drivers/mtd/devices/m25p80.c  | 8 ++++++++
+ drivers/mtd/spi-nor/spi-nor.c | 8 ++++++++
+ include/linux/mtd/spi-nor.h   | 1 +
+ 3 files changed, 17 insertions(+)
 
-Thanks,
-//richard
+-- 
+2.14.1
