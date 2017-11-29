@@ -1,20 +1,19 @@
-Message-ID: <1511950359.7778.2.camel@mtkswgap22>
-Subject: Re: [PATCH 2/3] mtd: nand: mtk: Support different MTK NAND flash
- controller IP
-From: RogerCC.Lin <rogercc.lin@mediatek.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-CC: <computersforpeace@gmail.com>, <srv_heupstream@mediatek.com>,
- <bayi.cheng@mediatek.com>, <linux-mtd@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>, <xiaolei.li@mediatek.com>,
- <dwmw2@infradead.org>
-Date: Wed, 29 Nov 2017 18:12:39 +0800
-In-Reply-To: <20171129110441.3c6f1e3a@bbrezillon>
-References: <1511947486-7707-1-git-send-email-rogercc.lin@mediatek.com>
- <1511947486-7707-3-git-send-email-rogercc.lin@mediatek.com>
- <20171129110441.3c6f1e3a@bbrezillon>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eK054-00043w-Lz
+ for linux-mtd@lists.infradead.org; Wed, 29 Nov 2017 10:59:12 +0000
+Subject: Re: [PATCH v3] mtd: spi-nor: add support for ISSI is25lp128
+To: Angelo Dureghello <angelo@sysam.it>, linux-mtd@lists.infradead.org,
+ boris.brezillon@free-electrons.com
+References: <20171118234822.ijchd2cmvc6elerq@jerusalem>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <3d1c7e75-21c8-ad00-58b4-ba2647bcc91e@wedev4u.fr>
+Date: Wed, 29 Nov 2017 11:58:37 +0100
 MIME-Version: 1.0
+In-Reply-To: <20171118234822.ijchd2cmvc6elerq@jerusalem>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,68 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Boris,
+Hi Angelo,
 
-On Wed, 2017-11-29 at 11:04 +0100, Boris Brezillon wrote:
-> Hi,
+Le 19/11/2017 à 00:48, Angelo Dureghello a écrit :
+> Add support for ISSI is25lp128 spi nor flash.
 > 
-> On Wed, 29 Nov 2017 17:24:45 +0800
-> RogerCC Lin <rogercc.lin@mediatek.com> wrote:
+> Signed-off-by: Angelo Dureghello <angelo@sysam.it>
+> ---
+> Changes for v2:
+>    - add commit message.
+> Changes for v3:
+>    - add SPI_NOR_DUAL_READ flag.
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> 
-> > diff --git a/drivers/mtd/nand/mtk_ecc.h b/drivers/mtd/nand/mtk_ecc.h
-> > index d245c14..764adb6 100644
-> > --- a/drivers/mtd/nand/mtk_ecc.h
-> > +++ b/drivers/mtd/nand/mtk_ecc.h
-> > @@ -14,8 +14,6 @@
-> >  
-> >  #include <linux/types.h>
-> >  
-> > -#define ECC_PARITY_BITS		(14)
-> > -
-> >  enum mtk_ecc_mode {ECC_DMA_MODE = 0, ECC_NFI_MODE = 1};
-> >  enum mtk_ecc_operation {ECC_ENCODE, ECC_DECODE};
-> >  
-> > @@ -37,6 +35,29 @@ struct mtk_ecc_config {
-> >  	u32 len;
-> >  };
-> >  
-> > +struct mtk_ecc_caps {
-> > +	u32 err_mask;
-> > +	const u8 *ecc_strength;
-> > +	const u32 *ecc_regs;
-> > +	u8 num_ecc_strength;
-> > +	u8 ecc_mode_shift;
-> > +	u8 parity_bits;
-> > +	int pg_irq_sel;
-> > +};
-> > +
-> > +struct mtk_ecc {
-> > +	struct device *dev;
-> > +	const struct mtk_ecc_caps *caps;
-> > +	void __iomem *regs;
-> > +	struct clk *clk;
-> > +
-> > +	struct completion done;
-> > +	struct mutex lock;
-> > +	u32 sectors;
-> > +
-> > +	u8 *eccdata;
-> > +};
-> 
-> Can you please keep these information private and instead provide a
-> helper to query the parity bits info, something like:
-> 
-> unsigned int mtk_ecc_get_parity_bits(struct mtk_ecc *ecc);
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 19c000722cbc..b987353440ea 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1005,6 +1005,8 @@ static const struct flash_info spi_nor_ids[] = {
+>  
+>  	/* ISSI */
+>  	{ "is25cd512", INFO(0x7f9d20, 0, 32 * 1024,   2, SECT_4K) },
+> +	{ "is25lp128", INFO(0x9d6018, 0, 64 * 1024,   256,
 
-Yes, got it, I will do this in next patch, 
+If you don't mind, I will align figures in the column for the number of
+sectors before applying your patch.
 
-thanks,
+Otherwise, it looks good.
 
-Roger
+Best regards,
 
-> Regards,
-> 
-> Boris
-> 
+Cyrille
+> +			SECT_4K | SPI_NOR_DUAL_READ) },
+>  
+>  	/* Macronix */
+>  	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
 > 
