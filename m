@@ -1,16 +1,16 @@
-Received: from mail-co1nam03on0053.outbound.protection.outlook.com
- ([104.47.40.53] helo=NAM03-CO1-obe.outbound.protection.outlook.com)
+Received: from mail-bl2nam02on0040.outbound.protection.outlook.com
+ ([104.47.38.40] helo=NAM02-BL2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eK0YQ-0004Bv-Cx
- for linux-mtd@lists.infradead.org; Wed, 29 Nov 2017 11:29:31 +0000
+ id 1eK0Yl-0004L6-6G
+ for linux-mtd@lists.infradead.org; Wed, 29 Nov 2017 11:29:51 +0000
 From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
 To: <linux-mtd@lists.infradead.org>, <devicetree-discuss@lists.ozlabs.org>
 CC: <dedekind1@gmail.com>, <oss@buserror.net>, <computersforpeace@gmail.com>,
- Jagdish Gediya <jagdish.gediya@nxp.com>, Alison Wang <alison.wang@nxp.com>,
- Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-Subject: [PATCH 1/2] arm: dts: Add big-endian for IFC on LS1021A
-Date: Wed, 29 Nov 2017 16:57:53 +0530
-Message-ID: <1511954873-8639-1-git-send-email-prabhakar.kushwaha@nxp.com>
+ Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>, Jagdish Gediya
+ <jagdish.gediya@nxp.com>
+Subject: [PATCH 2/2] arm: dts: ls1021aqds: Add nand node for ifc controller
+Date: Wed, 29 Nov 2017 16:58:11 +0530
+Message-ID: <1511954891-8695-1-git-send-email-prabhakar.kushwaha@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,30 +22,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Jagdish Gediya <jagdish.gediya@nxp.com>
+LS1021AQDS support NAND flash on IFC chip-select 2.
 
-For the patch to update struct map_info's swap field based on device
-characteristics defined in device tree, big-endian parameter is added
-for LS1021A.
+So add NAND node in device tree for IFC controller.
 
-Signed-off-by: Alison Wang <alison.wang@nxp.com>
 Signed-off-by: Jagdish Gediya <jagdish.gediya@nxp.com>
 Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
 ---
- arch/arm/boot/dts/ls1021a.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/boot/dts/ls1021a-qds.dts | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm/boot/dts/ls1021a.dtsi b/arch/arm/boot/dts/ls1021a.dtsi
-index 9319e1f..babb086 100644
---- a/arch/arm/boot/dts/ls1021a.dtsi
-+++ b/arch/arm/boot/dts/ls1021a.dtsi
-@@ -145,6 +145,7 @@
- 		ifc: ifc@1530000 {
- 			compatible = "fsl,ifc", "simple-bus";
- 			reg = <0x0 0x1530000 0x0 0x10000>;
-+			big-endian;
- 			interrupts = <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>;
- 		};
+diff --git a/arch/arm/boot/dts/ls1021a-qds.dts b/arch/arm/boot/dts/ls1021a-qds.dts
+index 9408753..2b37d04 100644
+--- a/arch/arm/boot/dts/ls1021a-qds.dts
++++ b/arch/arm/boot/dts/ls1021a-qds.dts
+@@ -239,6 +239,11 @@
+ 		device-width = <1>;
+ 	};
  
++	nand@2,0 {
++		compatible = "fsl,ifc-nand";
++		reg = <0x2 0x0 0x10000>;
++	};
++
+ 	fpga: board-control@3,0 {
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
 -- 
 1.9.1
