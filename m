@@ -1,20 +1,39 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eKRZo-0005wp-Hk
- for linux-mtd@lists.infradead.org; Thu, 30 Nov 2017 16:20:45 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Jaap de Jong <jaap.dejong@nedap.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: Mounting issue with old rootfs and new kernel
-Date: Thu, 30 Nov 2017 17:20:44 +0100
-Message-ID: <6030766.nKoDj6T6s8@blindfold>
-In-Reply-To: <e144d66c-c754-ad6d-bd0c-ef5384ae7a78@nedap.com>
-References: <d868125b-638e-4007-7a90-22937ffca9c6@nedap.com>
- <CAFLxGvwW_1ydC9XHFG+-UvY_L=h9TLQ5Eh0jgcGBPFyU9qf0-w@mail.gmail.com>
- <e144d66c-c754-ad6d-bd0c-ef5384ae7a78@nedap.com>
+From: Miquel Raynal <miquel.raynal@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org, Wenyou Yang <wenyou.yang@atmel.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Kamal Dasu <kdasu.kdev@gmail.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>, Han Xu <han.xu@nxp.com>,
+ Vladimir Zapolskiy <vz@mleia.com>,
+ Sylvain Lemieux <slemieux.tyco@gmail.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Maxim Levitsky <maximlevitsky@gmail.com>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Chen-Yu Tsai <wens@csie.org>,
+ Marc Gonzalez <marc_gonzalez@sigmadesigns.com>,
+ Stefan Agner <stefan@agner.ch>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Antoine Tenart <antoine.tenart@free-electrons.com>,
+ Nadav Haklai <nadavh@marvell.com>,
+ Miquel Raynal <miquel.raynal@free-electrons.com>,
+ Ofer Heifetz <oferh@marvell.com>, Hanna Hawa <hannah@marvell.com>,
+ linux-arm-kernel@lists.infradead.org,
+ bcm-kernel-feedback-list@broadcom.com, linux-mediatek@lists.infradead.org,
+ devel@driverdev.osuosl.org
+Subject: [PATCH 0/5] Introduce the new NAND core interface: ->exec_op()
+Date: Thu, 30 Nov 2017 18:01:27 +0100
+Message-Id: <20171130170132.27522-1-miquel.raynal@free-electrons.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,93 +43,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jaap,
+Hi,
 
-Am Donnerstag, 30. November 2017, 16:42:33 CET schrieb Jaap de Jong:
-> Hi Richard,
-> 
-> On 30-11-17 16:28, Richard Weinberger wrote:
-> > Jaap,
-> > 
-> > On Thu, Nov 30, 2017 at 4:22 PM, Jaap de Jong <jaap.dejong@nedap.com> 
-wrote:
-> >> Hi
-> >> 
-> >> I'm hoping for some pointers.
-> >> 
-> >> I have this a created with openembedded classic.
-> >> 
-> >> It works just fine when running with an old kernel (2.6.35)
-> >> 
-> >> Now with the same rootfs and a newer kernel (4.9.28) it damages the old
-> >> rootfs in such a way that it becomes unusable.
-> >> 
-> >> This is the error it shows:
-> >>                          [    1.523437] ubi0 error:
-> >>                          ubi_read_volume_table: the layout volume was
-> >>                          not found [    1.531250] ubi0 error:
-> >>                          ubi_attach_mtd_dev: failed to attach mtd3,
-> >>                          error -22> 
-> > Are these really the only erros/warnings from UBI?
-> 
-> Yes. Also ran it without 'quiet' as kernel parameter and that also does
-> not show extra errors.
+This series adds the implementation of the NAND framework ->exec_op()
+interface with all the related hooks and helpers. The reasons for adding
+it are explained in details in the commit log:
 
-Hm, but U-Boot comes first? Maybe it damaged the UBI image already.
+        "mtd: nand: add ->exec_op() implementation"
 
-> If I boot u-boot and try to mount it there, some other errors are show
-> although basically the same
-> 
->     U-Boot> ubi part rootfs
->     UBI: mtd1 is detached from ubi0
->     Creating 1 MTD partitions on "nand0":
->     0x000000100000-0x000020000000 : "mtd=3"
->     UBI: attaching mtd1 to ubi0
->     UBI: physical eraseblock size:   131072 bytes (128 KiB)
->     UBI: logical eraseblock size:    129024 bytes
->     UBI: smallest flash I/O unit:    2048
->     UBI: sub-page size:              512
->     UBI: VID header offset:          512 (aligned 512)
->     UBI: data offset:                2048
->     UBI: attached mtd1 to ubi0
->     UBI: MTD device name:            "mtd=3"
->     UBI: MTD device size:            511 MiB
->     UBI: number of good PEBs:        4088
->     UBI: number of bad PEBs:         0
->     UBI: max. allowed volumes:       128
->     UBI: wear-leveling threshold:    4096
->     UBI: number of internal volumes: 1
->     UBI: number of user volumes:     1
->     UBI: available PEBs:             40
->     UBI: total number of reserved PEBs: 4048
->     UBI: number of PEBs reserved for bad PEB handling: 40
->     UBI: max/mean erase counter: 2/0
-> 
->     U-Boot> ubifsmount rootfs
->     UBIFS error (pid 0): ubifs_read_node: bad node type (255 but expected 6)
-> UBIFS error (pid 0): ubifs_read_node: bad node at LEB 0:0
->     Error reading superblock on volume 'ubi:rootfs'!
-> 
-> >>                          [    1.539062] UBI error: cannot attach mtd3
-> >>                          [    1.546875] Kernel panic - not syncing: VFS:
-> >>                          Unable to mount root fs on unknown-block(0,0) [
-> >>                             1.546875] Rebooting in 1 seconds..RomBOOT
-> >> 
-> >> As far as I can see the kernel configuration seems to be ok.
-> >> 
-> >> Any ideas?
-> > 
-> > If the MTD layout had changed I'd expect more errors from UBI.
-> > Is this NAND?
-> 
-> Yes nandflash
-> 
-> > Did you compare the MTD partition layout and number of bad blocks?
-> 
-> Do you mean before and after?
+Long story short: it will ease later expansion of the framework, as well
+as the implementation of new vendor specific commands, and should also
+ease driver development.
 
-Yes. Something must be different.
-Page size? Sub pages? Number or erase blocks, etc...
+A lot of comments are written to explain how to use the new API. Several
+NAND controller drivers are already/almost converted to ->exec_op(), in
+particular a rework of the Marvell NAND controller driver, and will
+follow. One can have a look at them as examples to understand how to
+implement or rework NAND controller drivers. A proper external
+documentation is being written and will later be submitted.
 
-Thanks,
-//richard
+Thank you,
+Miquèl
+
+
+Boris Brezillon (2):
+  mtd: nand: provide several helpers to do common NAND operations
+  mtd: nand: force drivers to explicitly send READ/PROG commands
+
+Miquel Raynal (3):
+  mtd: nand: use usual return values for the ->erase() hook
+  mtd: nand: use a static data_interface in the nand_chip structure
+  mtd: nand: add ->exec_op() implementation
+
+ drivers/mtd/nand/atmel/nand-controller.c      |    9 +-
+ drivers/mtd/nand/bf5xx_nand.c                 |    6 +-
+ drivers/mtd/nand/brcmnand/brcmnand.c          |   20 +-
+ drivers/mtd/nand/cafe_nand.c                  |   20 +-
+ drivers/mtd/nand/denali.c                     |   40 +-
+ drivers/mtd/nand/diskonchip.c                 |    4 +-
+ drivers/mtd/nand/docg4.c                      |   21 +-
+ drivers/mtd/nand/fsl_elbc_nand.c              |   10 +-
+ drivers/mtd/nand/fsl_ifc_nand.c               |    6 +-
+ drivers/mtd/nand/fsmc_nand.c                  |    5 +-
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c        |   77 +-
+ drivers/mtd/nand/hisi504_nand.c               |    9 +-
+ drivers/mtd/nand/jz4740_nand.c                |   16 +-
+ drivers/mtd/nand/lpc32xx_mlc.c                |    7 +-
+ drivers/mtd/nand/lpc32xx_slc.c                |   33 +-
+ drivers/mtd/nand/mtk_nand.c                   |   25 +-
+ drivers/mtd/nand/nand_base.c                  | 2161 ++++++++++++++++++++++---
+ drivers/mtd/nand/nand_hynix.c                 |  124 +-
+ drivers/mtd/nand/nand_micron.c                |   83 +-
+ drivers/mtd/nand/nand_timings.c               |   21 +-
+ drivers/mtd/nand/omap2.c                      |   18 +-
+ drivers/mtd/nand/pxa3xx_nand.c                |   14 +-
+ drivers/mtd/nand/qcom_nandc.c                 |   27 +-
+ drivers/mtd/nand/r852.c                       |   11 +-
+ drivers/mtd/nand/sh_flctl.c                   |    6 +-
+ drivers/mtd/nand/sunxi_nand.c                 |   97 +-
+ drivers/mtd/nand/tango_nand.c                 |   27 +-
+ drivers/mtd/nand/tmio_nand.c                  |    5 +-
+ drivers/mtd/nand/vf610_nfc.c                  |    6 +-
+ drivers/staging/mt29f_spinand/mt29f_spinand.c |    5 +-
+ include/linux/mtd/rawnand.h                   |  414 ++++-
+ 31 files changed, 2673 insertions(+), 654 deletions(-)
+
+-- 
+2.11.0
