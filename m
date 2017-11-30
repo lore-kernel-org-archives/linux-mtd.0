@@ -1,19 +1,21 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
+Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eKLFQ-0007LY-0f
- for linux-mtd@lists.infradead.org; Thu, 30 Nov 2017 09:35:14 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
- kernel@pengutronix.de
-Subject: Re: UBI using outdated fastmaps
-Date: Thu, 30 Nov 2017 10:35:14 +0100
-Message-ID: <13270088.zH9gKJllCG@blindfold>
-In-Reply-To: <20171130085642.smi3eu2khcrnrvud@pengutronix.de>
-References: <20171130085642.smi3eu2khcrnrvud@pengutronix.de>
+ id 1eKLw3-0006Ol-VR
+ for linux-mtd@lists.infradead.org; Thu, 30 Nov 2017 10:19:18 +0000
+Date: Thu, 30 Nov 2017 11:18:40 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Ladislav Michl <ladis@linux-mips.org>
+Cc: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org, Roger Quadros
+ <rogerq@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Kyungmin Park
+ <kyungmin.park@samsung.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Tony
+ Lindgren <tony@atomide.com>
+Subject: Re: [PATCH v5 00/16] OMAP2+ OneNAND driver update
+Message-ID: <20171130111840.41c92d34@bbrezillon>
+In-Reply-To: <20171115162306.2o2w2yrf7wucroxd@lenoch>
+References: <20171115162306.2o2w2yrf7wucroxd@lenoch>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,45 +25,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sascha,
+Hello Ladislav,
 
-Am Donnerstag, 30. November 2017, 09:56:42 CET schrieb Sascha Hauer:
-> Hi All,
+On Wed, 15 Nov 2017 17:23:06 +0100
+Ladislav Michl <ladis@linux-mips.org> wrote:
+
+> this patch serie updates OMAP2+ OneNAND driver to the present times, making
+> it fully DT configurable, using libgpio and dmaengine apis - those are
+> optional, driver will work without them.
 > 
-> We are chasing problems with corrupted UBI volumes here. With an
-> excessive load of power cuts we occasionally see UBI corruptions. Most
-> of the time we see that a LEB is unmapped although it should really be
-> mapped.
+> Please note that unlike previous driver version, which basically ignored
+> DT specified timings, this one relies on it, so it is important to get
+> it right in your DT (dumping it from previous kernel version).
 > 
-> I finally found one place where such corruptions can happen. In
-> ubi_update_fastmap() the new fastmap is written. It can happen that
-> there is no free PEB to write the fastmap to. In this case the code
-> reuses the PEB where the old fastmap is. The critical place is when the
-> PEB with the old fastmap is erased but not updated with the new fastmap.
-> A power cut here can trick the fastmap attach code to use an outdated
-> fastmap during next boot. When during next boot no fastmap is found, the
-> code will fall back to scanning and everything is fine. It can, however,
-> happen that there is an even older fastmap found which is then used in
-> the lack of the more recent one which just got erased.
+> In case synchronous timings is requested, it is okay to specify timings
+> for the slowest chip ever used for you board as it is evetually optimized
+> after chip probe.
 > 
-> It is illegal to erase the PEB with the latest fastmap when there are
-> still older fastmaps on the device and this is what happens here.
+> Original driver used DMA only if user specified INT gpio in platform
+> data, now DMA is used unconditionally and PIO mode is used as fallback.
 > 
-> The problem can be reproduced relatively easily with the patch below.
-> It panics the kernel at the right point after having erased the old
-> block, but before it is written again. The ubi.fm_debug parameter during
-> next boot will then find inconsistencies in case there is an old fastmap
-> on the flash.
+> In case anyone wants to give it a try, few DT related changes are needed:
+> - onenand node needs 'ti,omap2-onenand' compatible (for mailine boards this is
+>   done in patch 2)
+> - to use INT pin, int-gpios needs to be specified (for n900 and n8x0 this is
+>   done in patch 16, however patch lacks pinmux configuration.
+> 
+> Most notable changes from v3:
+> - added dmaengine patches by Peter Ujfalusi
+> - added dt bindings documentation
+> - added cleanup patches
+> - DMA enabled by default
+> 
+> Most notable changes from v4:
+> - collected tags
+> - used INT pin name properly
+> - hopefully all comments taken into account
+> 
+> Also note that driver will fail probe OneNAND chip after patch 13 and start
+> working again after patch 14.
 
-*geeez*
+Well, breaking bisectability is never a good thing, this being said, I
+won't complain if TI maintainers are okay with that.
 
-> I haven't digged further yet, right now I have no idea how to fix this
-> properly.
+> 
+> Testing and benchmarking very welcome.
 
-Upon attach UBI schedules old fastmap PEBs for erasure.
-So, before reusing (and therefore erasing) the current anchor PEB we have to
-flush all UBI work. The we can erase the anchor. If a power cur happens in 
-between, UBI will do a full scan in worst case.
+Let me know when you think this series is ready to be merged.
 
-Thanks,
-//richard
+> 
+> Depends on "memory: omap-gpmc: Make 'bank-width' property optional"
+> https://patchwork.kernel.org/patch/10043259/
+
+Hm, I see this patch has been applied to the omap tree, so maybe it's
+simpler if everything goes through this tree. I don't plan to modify
+onenand related stuff in this release anyway.
+
+> 
+> Ladislav Michl (14):
+>   dt-bindings: mtd: gpmc-onenand: Update properties description
+>   ARM: dts: OMAP2+: Add compatible property to onenand node
+>   ARM: dts: omap3-igep: Update onenand node timings
+>   mtd: onenand: omap2: Remove regulator support
+>   mtd: onenand: omap2: Remove skip initial unlocking support
+>   mtd: onenand: omap2: Remove partitioning support from platform data
+>   mtd: onenand: omap2: Account waiting time as waiting on IO
+>   mtd: onenand: omap2: Unify OMAP2 and OMAP3 DMA implementation
+>   mtd: onenand: omap2: Do not make delay for GPIO OMAP3 specific
+>   mtd: onenand: omap2: Decouple DMA enabling from INT pin availability
+>   memory: omap-gpmc: Refactor OneNAND support
+>   mtd: onenand: omap2: Configure driver from DT
+>   ARM: OMAP2+: Remove gpmc-onenand
+>   ARM: dts: Nokia: Use OneNAND INT pin
+> 
+> Peter Ujfalusi (2):
+>   mtd: onenand: omap2: Simplify the DMA setup for various paths
+>   mtd: onenand: omap2: Convert to use dmaengine for memcpy
+> 
+>  .../devicetree/bindings/mtd/gpmc-onenand.txt       |   6 +-
+>  arch/arm/boot/dts/omap2420-n8x0-common.dtsi        |   5 +-
+>  arch/arm/boot/dts/omap3-igep.dtsi                  |  30 +-
+>  arch/arm/boot/dts/omap3-n900.dts                   |   3 +-
+>  arch/arm/boot/dts/omap3-n950-n9.dtsi               |   1 +
+>  arch/arm/boot/dts/omap3430-sdp.dts                 |   1 +
+>  arch/arm/mach-omap2/Makefile                       |   3 -
+>  arch/arm/mach-omap2/gpmc-onenand.c                 | 409 ---------------
+>  drivers/memory/omap-gpmc.c                         | 158 ++++--
+>  drivers/mtd/onenand/Kconfig                        |   3 +-
+>  drivers/mtd/onenand/omap2.c                        | 576 ++++++++-------------
+>  include/linux/omap-gpmc.h                          |  28 +
+>  include/linux/platform_data/mtd-onenand-omap2.h    |  34 --
+>  13 files changed, 387 insertions(+), 870 deletions(-)
+>  delete mode 100644 arch/arm/mach-omap2/gpmc-onenand.c
+>  delete mode 100644 include/linux/platform_data/mtd-onenand-omap2.h
+> 
