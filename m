@@ -1,15 +1,19 @@
-Date: Thu, 30 Nov 2017 22:16:02 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eKWCg-0000NH-1i
+ for linux-mtd@lists.infradead.org; Thu, 30 Nov 2017 21:17:08 +0000
+Date: Thu, 30 Nov 2017 22:16:43 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: <xiaolei.li@mediatek.com>
-Cc: <computersforpeace@gmail.com>, <dwmw2@infradead.org>,
- <linux-mtd@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
- <rogercc.lin@mediatek.com>, <srv_heupstream@mediatek.com>,
- <bayi.cheng@mediatek.com>
-Subject: Re: [PATCH v2] mtd: nand: mtk: use nand_reset() to reset NAND
- devices in resume function
-Message-ID: <20171130221602.25497316@bbrezillon>
-In-Reply-To: <1509588307-38511-1-git-send-email-xiaolei.li@mediatek.com>
-References: <1509588307-38511-1-git-send-email-xiaolei.li@mediatek.com>
+To: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
+Cc: Han Xu <han.xu@nxp.com>, Richard Weinberger <richard@nod.at>, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: nand: gpmi: replace _manual_ swap with swap macro
+Message-ID: <20171130221643.65f79c58@bbrezillon>
+In-Reply-To: <20171103203147.GA28309@embeddedor.com>
+References: <20171103203147.GA28309@embeddedor.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -22,15 +26,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2 Nov 2017 10:05:07 +0800
-<xiaolei.li@mediatek.com> wrote:
+On Fri, 3 Nov 2017 15:31:47 -0500
+"Gustavo A. R. Silva" <garsilva@embeddedor.com> wrote:
 
-> From: Xiaolei Li <xiaolei.li@mediatek.com>
+> Make use of the swap macro and remove unnecessary variables swap.
+> This makes the code easier to read and maintain.
 > 
-> Previously, we only select chips and then send reset command to a NAND
-> device during resuming nand driver. There is a lack of deselecting chips.
-> It is advised to reset and initialize a NAND device using nand_reset().
-> 
+> This code was detected with the help of Coccinelle.
 
 Applied.
 
@@ -38,34 +40,43 @@ Thanks,
 
 Boris
 
-> Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
-> ---
->  drivers/mtd/nand/mtk_nand.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/mtk_nand.c b/drivers/mtd/nand/mtk_nand.c
-> index d86a7d1..6d0101e 100644
-> --- a/drivers/mtd/nand/mtk_nand.c
-> +++ b/drivers/mtd/nand/mtk_nand.c
-> @@ -1540,7 +1540,6 @@ static int mtk_nfc_resume(struct device *dev)
->  	struct mtk_nfc *nfc = dev_get_drvdata(dev);
->  	struct mtk_nfc_nand_chip *chip;
->  	struct nand_chip *nand;
-> -	struct mtd_info *mtd;
->  	int ret;
->  	u32 i;
+> Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
+> ---
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 16 ++++------------
+>  1 file changed, 4 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index 50f8d4a..9e365d4 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -1487,12 +1487,8 @@ static int gpmi_ecc_read_page_raw(struct mtd_info *mtd,
+>  	 * See the layout description for a detailed explanation on why this
+>  	 * is needed.
+>  	 */
+> -	if (this->swap_block_mark) {
+> -		u8 swap = tmp_buf[0];
+> -
+> -		tmp_buf[0] = tmp_buf[mtd->writesize];
+> -		tmp_buf[mtd->writesize] = swap;
+> -	}
+> +	if (this->swap_block_mark)
+> +		swap(tmp_buf[0], tmp_buf[mtd->writesize]);
 >  
-> @@ -1553,11 +1552,8 @@ static int mtk_nfc_resume(struct device *dev)
->  	/* reset NAND chip if VCC was powered off */
->  	list_for_each_entry(chip, &nfc->chips, node) {
->  		nand = &chip->nand;
-> -		mtd = nand_to_mtd(nand);
-> -		for (i = 0; i < chip->nsels; i++) {
-> -			nand->select_chip(mtd, i);
-> -			nand->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
-> -		}
-> +		for (i = 0; i < chip->nsels; i++)
-> +			nand_reset(nand, i);
->  	}
+>  	/*
+>  	 * Copy the metadata section into the oob buffer (this section is
+> @@ -1615,12 +1611,8 @@ static int gpmi_ecc_write_page_raw(struct mtd_info *mtd,
+>  	 * See the layout description for a detailed explanation on why this
+>  	 * is needed.
+>  	 */
+> -	if (this->swap_block_mark) {
+> -		u8 swap = tmp_buf[0];
+> -
+> -		tmp_buf[0] = tmp_buf[mtd->writesize];
+> -		tmp_buf[mtd->writesize] = swap;
+> -	}
+> +	if (this->swap_block_mark)
+> +		swap(tmp_buf[0], tmp_buf[mtd->writesize]);
 >  
->  	return 0;
+>  	chip->write_buf(mtd, tmp_buf, mtd->writesize + mtd->oobsize);
+>  
