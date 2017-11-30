@@ -1,4 +1,4 @@
-Date: Thu, 30 Nov 2017 23:02:46 +0100
+Date: Thu, 30 Nov 2017 23:25:38 +0100
 From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
@@ -22,16 +22,15 @@ Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
  linux-arm-kernel@lists.infradead.org,
  bcm-kernel-feedback-list@broadcom.com, linux-mediatek@lists.infradead.org,
  devel@driverdev.osuosl.org
-Subject: Re: [PATCH 1/5] mtd: nand: use usual return values for the
- ->erase() hook
-Message-ID: <20171130230246.61a9ed19@xps13>
-In-Reply-To: <20171130215113.458d616f@bbrezillon>
+Subject: Re: [PATCH 5/5] mtd: nand: add ->exec_op() implementation
+Message-ID: <20171130232538.140f17b1@xps13>
+In-Reply-To: <20171130215025.67f74437@bbrezillon>
 References: <20171130170132.27522-1-miquel.raynal@free-electrons.com>
- <20171130170132.27522-2-miquel.raynal@free-electrons.com>
- <20171130215113.458d616f@bbrezillon>
+ <20171130170132.27522-6-miquel.raynal@free-electrons.com>
+ <20171130215025.67f74437@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,22 +41,108 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 > > diff --git a/drivers/mtd/nand/nand_base.c
-> > b/drivers/mtd/nand/nand_base.c index 630048f5abdc..4d1f2bda6095
+> > b/drivers/mtd/nand/nand_base.c index 52965a8aeb2c..46bf31aff909
 > > 100644 --- a/drivers/mtd/nand/nand_base.c
 > > +++ b/drivers/mtd/nand/nand_base.c
-> > @@ -3077,7 +3077,7 @@ int nand_erase_nand(struct mtd_info *mtd,
-> > struct erase_info *instr, status =3D chip->erase(mtd, page &
-> > chip->pagemask);=20
-> >  		/* See if block erase succeeded */
-> > -		if (status & NAND_STATUS_FAIL) {
-> > +		if (status) {
-> >  			pr_debug("%s: failed erase, page 0x%08x\n",
-> >  					__func__, page);
-> >  			instr->state =3D MTD_ERASE_FAILED; =20
->=20
-> You forgot to patch single_erase() accordingly.
+> > @@ -689,6 +689,59 @@ static void nand_wait_status_ready(struct
+> > mtd_info *mtd, unsigned long timeo) };
+> >  
+> >  /**
+> > + * nand_soft_waitrdy - Read the status waiting for it to be ready
+> > + * @chip: NAND chip structure
+> > + * @timeout_ms: Timeout in ms
+> > + *
+> > + * Poll the status using ->exec_op() until it is ready unless it
+> > takes too
+> > + * much time.
+> > + *
+> > + * This helper is intended to be used by drivers without R/B pin
+> > available to
+> > + * poll for the chip status until ready and may be called at any
+> > time in the
+> > + * middle of any set of instruction. The READ_STATUS just need to
+> > ask a single
+> > + * time for it and then any read will return the status. Once the
+> > READ_STATUS
+> > + * cycles are done, the function will send a READ0 command to
+> > cancel the
+> > + * "READ_STATUS state" and let the normal flow of operation to
+> > continue.
+> > + *
+> > + * This helper *cannot* send a WAITRDY command or ->exec_op()
+> > implementations  
+> 
+> 					  ^ instruction
+> 
+> > + * using it will enter an infinite loop.  
+> 
+> Hm, not sure why this would be the case, but okay. Maybe you should
+> move this comment outside the kernel doc header, since this is an
+> implementation detail, not something the caller/user should be aware
+> of.
 
-Right, sorry about that, I will fix that.
+Right.
 
-Thanks,
-Miqu=C3=A8l
+> 
+> There's another important aspect to mention here: this function can
+> only be called from an ->exec_op() implementation if this
+> implementation is re-entrant.
+
+I do not agree with this statement: this function can be called from an
+->exec_op() implementation even if it is not reentrant as long as it
+does not send a WAITRDY instruction itself. No?
+
+Or maybe you wanted to point that the entire ->exec_op()
+implementation must be reentrant in order to use this function in it?
+
+> 
+> > + *
+> > + * Return 0 if the NAND chip is ready, a negative error otherwise.
+> > + */
+> > +int nand_soft_waitrdy(struct nand_chip *chip, unsigned long
+> > timeout_ms) +{
+> > +	u8 status = 0;
+> > +	int ret;
+> > +
+> > +	if (!chip->exec_op)
+> > +		return -ENOTSUPP;
+> > +
+> > +	ret = nand_status_op(chip, NULL);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	timeout_ms = jiffies + msecs_to_jiffies(timeout_ms);
+> > +	do {
+> > +		ret = nand_read_data_op(chip, &status,
+> > sizeof(status), true);
+> > +		if (ret)
+> > +			break;
+> > +
+> > +		if (status & NAND_STATUS_READY)
+> > +			break;
+> > +
+> > +		udelay(100);  
+> 
+> Sounds a bit high, especially for a read page which takes around 20us.
+
+Well, this value is arbitrary but greping for NAND_OP_WAIT_RDY tells us
+the different timeouts with which this function is usually called, to
+get an idea of the possible wait periods: tR, tBERS, tFEAT, tPROG, tRST.
+
+While a tR_max is 200us, a tRST_max is 250000us. That is why I choose
+100us as period, which I found somehow well tuned for every timeout. But
+if you think most of the time the delay will be smaller, I will update
+the value to repeat the operation every 20us.
+
+> 
+> > +	} while	(time_before(jiffies, timeout_ms));
+> > +
+> > +	nand_exit_status_op(chip);
+> > +
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	return status & NAND_STATUS_READY ? 0 : -ETIMEDOUT;
+> > +};
+> > +EXPORT_SYMBOL_GPL(nand_soft_waitrdy);
+> > +
