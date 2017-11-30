@@ -1,17 +1,19 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eKWX7-0004oR-Hx
- for linux-mtd@lists.infradead.org; Thu, 30 Nov 2017 21:38:15 +0000
-Date: Thu, 30 Nov 2017 22:37:51 +0100
+ id 1eKWYB-00057x-DC
+ for linux-mtd@lists.infradead.org; Thu, 30 Nov 2017 21:39:21 +0000
+Date: Thu, 30 Nov 2017 22:38:57 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-Cc: <linux-mtd@lists.infradead.org>, oss@buserror.net,
- computersforpeace@gmail.com, Jagdish Gediya <jagdish.gediya@nxp.com>,
- dedekind1@gmail.com
-Subject: Re: [PATCH][v2] mtd: nand: ifc: update bufnum mask for ver >= 2.0.0
-Message-ID: <20171130223751.78f586bd@bbrezillon>
-In-Reply-To: <1511436871-15346-1-git-send-email-prabhakar.kushwaha@nxp.com>
-References: <1511436871-15346-1-git-send-email-prabhakar.kushwaha@nxp.com>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org, Han Xu
+ <han.xu@nxp.com>, Marek Vasut <marek.vasut@gmail.com>, Brian Norris
+ <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>, David
+ Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] mtd: nand: remove unnecessary extern from driver headers
+Message-ID: <20171130223857.71fb290b@bbrezillon>
+In-Reply-To: <1511443123-30525-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1511443123-30525-1-git-send-email-yamada.masahiro@socionext.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,15 +26,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 23 Nov 2017 17:04:31 +0530
-Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com> wrote:
+On Thu, 23 Nov 2017 22:18:43 +0900
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-> From: Jagdish Gediya <jagdish.gediya@nxp.com>
+> 'extern' is not necessary for function declarations.
 > 
-> Bufnum mask is used to calculate page position in the internal SRAM.
+> scripts/checkpatch.pl with --strict option reports the following:
 > 
-> As IFC version 2.0.0 has 16KB of internal SRAM as compared to older
-> versions which had 8KB. Hence bufnum mask needs to be updated.
+>   CHECK: extern prototypes should be avoided in .h files
 
 Applied.
 
@@ -41,30 +42,97 @@ Thanks,
 Boris
 
 > 
-> Signed-off-by: Jagdish Gediya <jagdish.gediya@nxp.com>
-> Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 > ---
-> Changes for v2: Incorporated review comments from Boris Brezillon
-> http://patchwork.ozlabs.org/patch/773799/
 > 
->  drivers/mtd/nand/fsl_ifc_nand.c | 7 +++++++
->  1 file changed, 7 insertions(+)
+>  drivers/mtd/nand/denali.h              |  4 +--
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.h | 46 +++++++++++++++++-----------------
+>  drivers/mtd/nand/sm_common.h           |  2 +-
+>  3 files changed, 26 insertions(+), 26 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-> index 9e03bac..bbdd68a5 100644
-> --- a/drivers/mtd/nand/fsl_ifc_nand.c
-> +++ b/drivers/mtd/nand/fsl_ifc_nand.c
-> @@ -916,6 +916,13 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
->  	if (ctrl->version >= FSL_IFC_VERSION_1_1_0)
->  		fsl_ifc_sram_init(priv);
+> diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
+> index 2911066..9ad33d2 100644
+> --- a/drivers/mtd/nand/denali.h
+> +++ b/drivers/mtd/nand/denali.h
+> @@ -329,7 +329,7 @@ struct denali_nand_info {
+>  #define DENALI_CAP_DMA_64BIT			BIT(1)
 >  
-> +	/*
-> +	 * As IFC version 2.0.0 has 16KB of internal SRAM as compared to older
-> +	 * versions which had 8KB. Hence bufnum mask needs to be updated.
-> +	 */
-> +	if (ctrl->version >= FSL_IFC_VERSION_2_0_0)
-> +		priv->bufnum_mask = (priv->bufnum_mask * 2) + 1;
-> +
->  	return 0;
->  }
+>  int denali_calc_ecc_bytes(int step_size, int strength);
+> -extern int denali_init(struct denali_nand_info *denali);
+> -extern void denali_remove(struct denali_nand_info *denali);
+> +int denali_init(struct denali_nand_info *denali);
+> +void denali_remove(struct denali_nand_info *denali);
 >  
+>  #endif /* __DENALI_H__ */
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+> index a45e4ce..06c1f99 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+> @@ -268,31 +268,31 @@ struct timing_threshold {
+>  };
+>  
+>  /* Common Services */
+> -extern int common_nfc_set_geometry(struct gpmi_nand_data *);
+> -extern struct dma_chan *get_dma_chan(struct gpmi_nand_data *);
+> -extern void prepare_data_dma(struct gpmi_nand_data *,
+> -				enum dma_data_direction dr);
+> -extern int start_dma_without_bch_irq(struct gpmi_nand_data *,
+> -				struct dma_async_tx_descriptor *);
+> -extern int start_dma_with_bch_irq(struct gpmi_nand_data *,
+> -				struct dma_async_tx_descriptor *);
+> +int common_nfc_set_geometry(struct gpmi_nand_data *);
+> +struct dma_chan *get_dma_chan(struct gpmi_nand_data *);
+> +void prepare_data_dma(struct gpmi_nand_data *,
+> +		      enum dma_data_direction dr);
+> +int start_dma_without_bch_irq(struct gpmi_nand_data *,
+> +			      struct dma_async_tx_descriptor *);
+> +int start_dma_with_bch_irq(struct gpmi_nand_data *,
+> +			   struct dma_async_tx_descriptor *);
+>  
+>  /* GPMI-NAND helper function library */
+> -extern int gpmi_init(struct gpmi_nand_data *);
+> -extern int gpmi_extra_init(struct gpmi_nand_data *);
+> -extern void gpmi_clear_bch(struct gpmi_nand_data *);
+> -extern void gpmi_dump_info(struct gpmi_nand_data *);
+> -extern int bch_set_geometry(struct gpmi_nand_data *);
+> -extern int gpmi_is_ready(struct gpmi_nand_data *, unsigned chip);
+> -extern int gpmi_send_command(struct gpmi_nand_data *);
+> -extern void gpmi_begin(struct gpmi_nand_data *);
+> -extern void gpmi_end(struct gpmi_nand_data *);
+> -extern int gpmi_read_data(struct gpmi_nand_data *);
+> -extern int gpmi_send_data(struct gpmi_nand_data *);
+> -extern int gpmi_send_page(struct gpmi_nand_data *,
+> -			dma_addr_t payload, dma_addr_t auxiliary);
+> -extern int gpmi_read_page(struct gpmi_nand_data *,
+> -			dma_addr_t payload, dma_addr_t auxiliary);
+> +int gpmi_init(struct gpmi_nand_data *);
+> +int gpmi_extra_init(struct gpmi_nand_data *);
+> +void gpmi_clear_bch(struct gpmi_nand_data *);
+> +void gpmi_dump_info(struct gpmi_nand_data *);
+> +int bch_set_geometry(struct gpmi_nand_data *);
+> +int gpmi_is_ready(struct gpmi_nand_data *, unsigned chip);
+> +int gpmi_send_command(struct gpmi_nand_data *);
+> +void gpmi_begin(struct gpmi_nand_data *);
+> +void gpmi_end(struct gpmi_nand_data *);
+> +int gpmi_read_data(struct gpmi_nand_data *);
+> +int gpmi_send_data(struct gpmi_nand_data *);
+> +int gpmi_send_page(struct gpmi_nand_data *,
+> +		   dma_addr_t payload, dma_addr_t auxiliary);
+> +int gpmi_read_page(struct gpmi_nand_data *,
+> +		   dma_addr_t payload, dma_addr_t auxiliary);
+>  
+>  void gpmi_copy_bits(u8 *dst, size_t dst_bit_off,
+>  		    const u8 *src, size_t src_bit_off,
+> diff --git a/drivers/mtd/nand/sm_common.h b/drivers/mtd/nand/sm_common.h
+> index d3e028e..1581671 100644
+> --- a/drivers/mtd/nand/sm_common.h
+> +++ b/drivers/mtd/nand/sm_common.h
+> @@ -36,7 +36,7 @@ struct sm_oob {
+>  #define SM_SMALL_OOB_SIZE	8
+>  
+>  
+> -extern int sm_register_device(struct mtd_info *mtd, int smartmedia);
+> +int sm_register_device(struct mtd_info *mtd, int smartmedia);
+>  
+>  
+>  static inline int sm_sector_valid(struct sm_oob *oob)
