@@ -1,28 +1,24 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eKSUW-0007X5-7O
- for linux-mtd@lists.infradead.org; Thu, 30 Nov 2017 17:19:18 +0000
-Date: Thu, 30 Nov 2017 18:18:47 +0100
-From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-To: Sean =?UTF-8?B?Tnlla2rDpnI=?= <sean.nyekjaer@prevas.dk>
-Cc: <ezequiel.garcia@free-electrons.com>, <linux-mtd@lists.infradead.org>,
- "Kasper Revsbech (KREV)" <krev@triax.com>, Boris Brezillon
- <Boris.Brezillon@free-electrons.com>
-Subject: Re: [BUG] pxa3xx: wait time out when scanning for bb
-Message-ID: <20171130181847.0bbc58b5@xps13>
-In-Reply-To: <aeb06060-015e-85b4-5b6d-4427dfd1e11a@prevas.dk>
-References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
- <20171128140210.34215e19@xps13>
- <dd07aafc-0d23-e00a-4996-cd233f8a9065@prevas.dk>
- <20171128143055.1ff22979@xps13>
- <2d491047-cd55-5a0a-83ec-58365f3bf3ff@prevas.dk>
- <20171128150417.17d53b5a@xps13>
- <1e2bea86-e429-e3c4-a6e4-c2c82457a061@prevas.dk>
- <20171129090305.0174246d@xps13>
- <aeb06060-015e-85b4-5b6d-4427dfd1e11a@prevas.dk>
+Received: from mail-wr0-x236.google.com ([2a00:1450:400c:c0c::236])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eKSqo-00020m-VZ
+ for linux-mtd@lists.infradead.org; Thu, 30 Nov 2017 17:42:21 +0000
+Received: by mail-wr0-x236.google.com with SMTP id l22so7434821wrc.11
+ for <linux-mtd@lists.infradead.org>; Thu, 30 Nov 2017 09:41:57 -0800 (PST)
+Subject: Re: UBIFS does not mount after powerfail
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org
+References: <195075f7-01f8-58d2-ba1c-4291e62a39cc@colorfullife.com>
+ <3046677.dsXx11Gx8o@blindfold>
+ <4b60c157-438f-4197-879c-f1a8b87cbdf8@colorfullife.com>
+ <5256290.ff6uB8SQ02@blindfold>
+From: Manfred Spraul <manfred@colorfullife.com>
+Message-ID: <10097404-fd3d-73a3-6e0a-658fe8385cd2@colorfullife.com>
+Date: Thu, 30 Nov 2017 18:41:52 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <5256290.ff6uB8SQ02@blindfold>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,49 +28,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sean,
+Hi Richard,
 
-+Boris (NAND maintainer).
+On 11/28/2017 10:00 PM, Richard Weinberger wrote:
+> Manfred,
+>
+>
+> Am Donnerstag, 23. November 2017, 23:03:28 CET schrieb Manfred Spraul:
+>
+> I tied, but TBH I'm completely lost in all the data you throwing on me.
+Understood, I generated way too much data.
+I have also confused all my coworkers :-(
 
-> >> Yes, but i don't think the arbiter have any affect in the nand
-> >> controller. Bit 12 in NDCR register is marked reserved in the
-> >> datasheet. =20
-> > Be careful with that. I recently enabled 64-bit platforms featuring
-> > this NAND controller. After hours of digging because it was not
-> > working, I set this bit by adding this property like in any other
-> > device tree and it worked. I am not telling that it will solve your
-> > issue, mostly not, but this is something you should be careful
-> > about. =20
-> I have tried with arbiter enabled, no different behaviour observed.
+Let's keep it simple and concentrate on the 
+garbage_collect_leb()/ubifs_scan issue.
 
-Ok.
+> Let's recap, you trigger a corruption that happens only(!) when xattrs are
+> used?
+Correct, I only see the corruption when xattr is used.
+> How is Fastmap involved in the game? If so, I want to know whether you can
+> trigger without Fastmap being enabled.
+Correct, I have seen the corruption without FASTMAP.
+> Which one is the image that failed first with chk_fs enabled?
+> On a vanilla kernel...
+I have used a modified MTDRAM: I have patched it so that it writes every 
+ERASE and every WRITE into a log.
+Both the addresses and the data.
+First, I have created an initial image 
+(ubiformat/ubiattach/ubimkvol/ubidetach).
+Then I did a dump of it (nanddump /dev/mtd0 > dump-before.bin)
+Then I enabled logging, and run the test load (ubiattach/mount/mount 
+ecryptfs/<many touch/write/rm/mv commands>/umount/ubidetach).
+Then I created a dump of the final image. (nanddump /dev/mtd0 > 
+dump-after.bin)
 
-> >>>> (I only see the timeouts if I remove the nand-on-flash-bbt) =20
-> >>> The nand-on-flash-bbt will read some of the last pages in you NAND
-> >>> chip where a bad block table is supposed to be and derive from
-> >>> that whether a block is bad or not. So this does only one read. I
-> >>> guess you should have at least one timeout there? =20
-> >> Maybe, but the flash is fine we are running a rootfs in the NAND
-> >> chip. =20
-> > So you can safely use the content of the NAND chip? Without any
-> > timeout neither with reads nor writes? Can you try the mtd-utils
-> > from [5]: nanddump/nandwrite or nandpagetest?
-> >
-> > Also, can you isolate the line that produces the timeouts?
-> >
-> > [5]http://www.linux-mtd.infradead.org/ =20
-> Yes the NAND chip is working fine and stores our data.
->=20
-> It is the command NAND_CMD_READOOB that causes it to timeout.
+Then the obvious cross checks:
+Initial image+apply all commands from the log is identical to the final 
+image.
 
-Ok, I had a look at the nand_cmdfunc() function which is, I suppose,
-the one that is in use (because you are using 2k pages) but I could
-not see anything obvious. Is your setup special in some way?
+Now I can use the log to create virtual power fail events:
 
-Could you enable dynamic debug by adding "#define DEBUG" *before* all
-#includes at the top of the pxa3xx_nand.c driver? It should display all
-register accesses. Also, can you read the content of NDCR and NDSR when
-it timeouts?
+What if a power failure happens after 168168 commands?
+Image:
+https://sourceforge.net/projects/calculix-rpm/files/ubifs/image-168168.bin/download
 
-Thanks,
-Miqu=C3=A8l
+Logfile of a mount without chk_fs:
+https://sourceforge.net/projects/calculix-rpm/files/ubifs/r-168168.txt/download
+
+What was the last write command?
+FUNC_WRITE_CHK(addr=0xd61000, len=0x800)
+
+What would have been the next write command:
+FUNC_WRITE_CHK(addr=0xd61800, len=0x800)
+
+Image after that command:
+https://sourceforge.net/projects/calculix-rpm/files/ubifs/image-168169.bin/download
+
+
+Just to clarify:
+I have simulated power fails.
+A bit like ubi_dbg_power_cut, but instead of stopping further 
+writes/erase commands, I created a log file.
+And now I can replay the log to an arbitrary point, and then mount the 
+result.
+I have a total of 5 logs, and from these 5 logs, I did around 100k 
+replays and mounted the results.
+
+--
+     Manfred
+
+P.S.: I'm doing final polishing of the modifications to mtdram. As soon 
+as I have the internal release, I will send it to linux-mtd.
+P.P.S.: To avoid any brown paperbag bugs: mtd->_erase and mtd->_write 
+are allowed to sleep, correct? At least, st_spi_fsm contains mutex_lock().
