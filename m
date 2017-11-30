@@ -1,40 +1,27 @@
-Received: from conssluserg-05.nifty.com ([210.131.2.90])
+Received: from mail02.prevas.se ([62.95.78.10])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eKMFu-0000K1-3L
- for linux-mtd@lists.infradead.org; Thu, 30 Nov 2017 10:39:47 +0000
-Received: from mail-vk0-f46.google.com (mail-vk0-f46.google.com
- [209.85.213.46]) (authenticated)
- by conssluserg-05.nifty.com with ESMTP id vAUAcuF8017196
- for <linux-mtd@lists.infradead.org>; Thu, 30 Nov 2017 19:38:56 +0900
-Received: by mail-vk0-f46.google.com with SMTP id s141so3091450vkb.12
- for <linux-mtd@lists.infradead.org>; Thu, 30 Nov 2017 02:38:56 -0800 (PST)
+ id 1eKNWZ-0001BH-9Q
+ for linux-mtd@lists.infradead.org; Thu, 30 Nov 2017 12:01:05 +0000
+From: =?UTF-8?Q?Sean_Nyekj=c3=a6r?= <sean.nyekjaer@prevas.dk>
+Subject: Re: [BUG] pxa3xx: wait time out when scanning for bb
+To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+CC: <ezequiel.garcia@free-electrons.com>, <linux-mtd@lists.infradead.org>,
+ "Kasper Revsbech (KREV)" <krev@triax.com>
+References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
+ <20171128140210.34215e19@xps13>
+ <dd07aafc-0d23-e00a-4996-cd233f8a9065@prevas.dk>
+ <20171128143055.1ff22979@xps13>
+ <2d491047-cd55-5a0a-83ec-58365f3bf3ff@prevas.dk>
+ <20171128150417.17d53b5a@xps13>
+ <1e2bea86-e429-e3c4-a6e4-c2c82457a061@prevas.dk>
+ <20171129090305.0174246d@xps13>
+Message-ID: <aeb06060-015e-85b4-5b6d-4427dfd1e11a@prevas.dk>
+Date: Thu, 30 Nov 2017 13:00:37 +0100
 MIME-Version: 1.0
-In-Reply-To: <20171130091831.06781ce2@bbrezillon>
-References: <20171107145419.22717-1-miquel.raynal@free-electrons.com>
- <20171107145419.22717-2-miquel.raynal@free-electrons.com>
- <CAK7LNATWXZci_M8EqeU-8KSEviWzAT7p1KSdkuqAkSAuj-Zj6w@mail.gmail.com>
- <20171130091831.06781ce2@bbrezillon>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Thu, 30 Nov 2017 19:38:15 +0900
-Message-ID: <CAK7LNARFHqg+EE6m0pxx7Pbs+p-w+W0MMtu4kgXLNBhfeycXVA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 1/6] mtd: nand: provide several helpers to do
- common NAND operations
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Mark Rutland <mark.rutland@arm.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- Antoine Tenart <antoine.tenart@free-electrons.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Stefan Agner <stefan@agner.ch>, Wenyou Yang <wenyou.yang@atmel.com>,
- Nadav Haklai <nadavh@marvell.com>, Marek Vasut <marek.vasut@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Rob Herring <robh+dt@kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Miquel Raynal <miquel.raynal@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Han Xu <han.xu@nxp.com>, Brian Norris <computersforpeace@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>, Josh Wu <rainyfeeling@outlook.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20171129090305.0174246d@xps13>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,36 +31,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
-
-2017-11-30 17:18 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
-
->>
->> Theoretically, there could be three cases:
->>   [1] INTR__ERASE_COMP interrupt is asserted
->>   [2] INTR__ERASE_FAIL interrupt is asserted
->>   [3] Nothing is asserted (bailout by timeout)
+Hi Miquel
+>> Yes, but i don't think the arbiter have any affect in the nand
+>> controller. Bit 12 in NDCR register is marked reserved in the
+>> datasheet.
+> Be careful with that. I recently enabled 64-bit platforms featuring
+> this NAND controller. After hours of digging because it was not
+> working, I set this bit by adding this property like in any other device
+> tree and it worked. I am not telling that it will solve your issue,
+> mostly not, but this is something you should be careful about.
+I have tried with arbiter enabled, no different behaviour observed.
+>>>> (I only see the timeouts if I remove the nand-on-flash-bbt)
+>>> The nand-on-flash-bbt will read some of the last pages in you NAND
+>>> chip where a bad block table is supposed to be and derive from that
+>>> whether a block is bad or not. So this does only one read. I guess
+>>> you should have at least one timeout there?
+>> Maybe, but the flash is fine we are running a rootfs in the NAND chip.
+> So you can safely use the content of the NAND chip? Without any timeout
+> neither with reads nor writes? Can you try the mtd-utils from [5]:
+> nanddump/nandwrite or nandpagetest?
 >
-> Well, ideally we should have something like:
+> Also, can you isolate the line that produces the timeouts?
 >
->         if (irq_status & INTR__ERASE_COMP)
->                 return 0;
->         else if (irq_status & INTR__ERASE_FAIL)
->                 return -EIO;
->
->         return -ETIMEDOUT;
->
-> But let's keep the existing behavior (return -EIO in case of timeout).
->
+> [5]http://www.linux-mtd.infradead.org/
+Yes the NAND chip is working fine and stores our data.
 
+It is the command NAND_CMD_READOOB that causes it to timeout.
 
-I agree with this change,
-but it should also be done in a separate work.
+Here is a dump (booting with bbt enabled):
+root@output-module:~# nanddump -oa /dev/mtd1
+ECC failed: 0
+ECC corrected: 0
+Number of bad blocks: 0
+Number of bbt blocks: 8
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x00000000 and ending at 0x0ff00000...
+[  984.580213] pxa3xx-nand f10d0000.flash: Wait time out!!!
+[  984.790195] pxa3xx-nand f10d0000.flash: Wait time out!!!
+[  985.000195] pxa3xx-nand f10d0000.flash: Wait time out!!!
 
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+/Sean
