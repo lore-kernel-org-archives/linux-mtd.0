@@ -1,28 +1,23 @@
-Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eKOeg-0005Cg-3T
- for linux-mtd@lists.infradead.org; Thu, 30 Nov 2017 13:13:32 +0000
-Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
- (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23990552AbdK3NN3i-W2h (ORCPT
- <rfc822;linux-mtd@lists.infradead.org>);
- Thu, 30 Nov 2017 14:13:29 +0100
-Date: Thu, 30 Nov 2017 14:13:28 +0100
-Sender: Ladislav Michl <ladis@linux-mips.org>
-From: Ladislav Michl <ladis@linux-mips.org>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- Roger Quadros <rogerq@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH v5 00/16] OMAP2+ OneNAND driver update
-Message-ID: <20171130131328.GB16809@lenoch>
-References: <20171115162306.2o2w2yrf7wucroxd@lenoch>
- <20171130111840.41c92d34@bbrezillon>
+Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eKOwU-0002m9-Ai
+ for linux-mtd@lists.infradead.org; Thu, 30 Nov 2017 13:31:56 +0000
+Subject: Re: [PATCH V1] drivers:mtd:spi-nor:checkup FSR error bits
+To: "Bean Huo (beanhuo)" <beanhuo@micron.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <825c7a1bb1034369b9d592a7b358030c@SIWEX5A.sing.micron.com>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <13355c72-6dd2-6431-2d0b-9b2975a8c1a4@wedev4u.fr>
+Date: Thu, 30 Nov 2017 14:31:17 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20171130111840.41c92d34@bbrezillon>
+In-Reply-To: <825c7a1bb1034369b9d592a7b358030c@SIWEX5A.sing.micron.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,105 +27,129 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hi Bean,
 
-On Thu, Nov 30, 2017 at 11:18:40AM +0100, Boris Brezillon wrote:
-> Hello Ladislav,
+Le 11/11/2017 à 21:49, Bean Huo (beanhuo) a écrit :
+> For the Micron SPI NOR, when the erase/program operation fails, especially,
+
+To be verified but I think you'd rather remove "the" words in this case:
+
+"For Micron SPI NOR memories, when erase/program operation fails, especially ..."
+
+Maybe no comma after "especially".
+
+> for the failure results from intending to modify protected space, spi-nor
+> upper layers still get the return which shows the operation succeeds.
+> this because spi_nor_fsr_ready() only uses bit.7 to device whether ready.
+
+"This": missing capital letter and maybe a verb too.
+
+> For the most cases, even the error of erase/program occurs, SPI NOR device
+> is still ready. The device ready and the error are two different cases.
+
+I don't really understand what you mean here.
+
+> This patch is to fixup this issue and adding FSR (flag status register)
+
+This patch fixes the issue by checking relevant bits in the FSR.
+
+> error bits checkup.
+> The FSR(flag status register) is a powerful tool to investigate the staus
+
+"The FSR (flag status register)": please insert a space ' '.
+
+s/staus/status/
+
+
+> of device,checking information regarding what is actually doing the memory
+
+"of device, checking": missing space 
+> and detecting possible error conditions.
+>
+
+Globally, I think you need to reword your commit message. IMHO, it is not
+clear though I think I've mostly understood what you meant reading the
+actual source code.
+
+> Signed-off-by: beanhuo <beanhuo@micron.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 19 +++++++++++++++++--
+>  include/linux/mtd/spi-nor.h   |  6 +++++-
+>  2 files changed, 22 insertions(+), 3 deletions(-)
 > 
-> On Wed, 15 Nov 2017 17:23:06 +0100
-> Ladislav Michl <ladis@linux-mips.org> wrote:
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index bc266f7..200e814 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -330,8 +330,23 @@ static inline int spi_nor_fsr_ready(struct spi_nor *nor)
+>  	int fsr = read_fsr(nor);
+>  	if (fsr < 0)
+>  		return fsr;
+> -	else
+> -		return fsr & FSR_READY;
+> +
+> +	if (fsr & (FSR_E_ERR | FSR_P_ERR)) {
+> +		if (fsr & FSR_E_ERR)
+> +			dev_err(nor->dev, "Erase operation failed.\n");
+> +		else
+> +			dev_err(nor->dev, "Program operation failed.\n");
+> +
+> +		if (fsr & FSR_PT_ERR)
+> +			dev_err(nor->dev,
+> +			"The operation has attempted to modify the protected"
+
+A space ' ' is missing after "protected".
+Also please verify next version passes the checkpatch test because this
+version doesn't.
+
+I think you should check the verb tense consistency:
+[...] operation failed. The operation attempted [...]
+
+Also maybe you should write "a protected sector" or "some protected sector":
+"the protected sector" sounds like there is only one protected sector.
+
+> +			"sector or the locked OPT space.\n");
+
+You meant OTP (One Time Programmable), didn't you ? s/OPT/OTP/
+
+> +
+> +		nor->write_reg(nor, SPINOR_OP_CLFSR, NULL, 0);
+> +		return -EIO;
+> +	}
+> +
+> +	return fsr & FSR_READY;
+>  }
+>  
+>  static int spi_nor_ready(struct spi_nor *nor)
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index d0c66a0..46b5608 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -61,6 +61,7 @@
+>  #define SPINOR_OP_RDSFDP	0x5a	/* Read SFDP */
+>  #define SPINOR_OP_RDCR		0x35	/* Read configuration register */
+>  #define SPINOR_OP_RDFSR		0x70	/* Read flag status register */
+> +#define SPINOR_OP_CLFSR		0x50	/* Clear flag status register */
+>  
+>  /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
+>  #define SPINOR_OP_READ_4B	0x13	/* Read data bytes (low frequency) */
+> @@ -130,7 +131,10 @@
+>  #define EVCR_QUAD_EN_MICRON	BIT(7)	/* Micron Quad I/O */
+>  
+>  /* Flag Status Register bits */
+> -#define FSR_READY		BIT(7)
+> +#define FSR_READY		BIT(7)	/* Device status, 0 = Busy,1 = Ready */
+
+You may insert a space ' ' between "Busy," and "1 = "
+
+Best regards,
+
+Cyrille
+
+> +#define FSR_E_ERR		BIT(5)	/* Erase operation status */
+> +#define FSR_P_ERR		BIT(4)	/* Program operation status */
+> +#define FSR_PT_ERR		BIT(1)	/* Protection error bit */
+>  
+>  /* Configuration Register bits. */
+>  #define CR_QUAD_EN_SPAN		BIT(1)	/* Spansion Quad I/O */
 > 
-> > this patch serie updates OMAP2+ OneNAND driver to the present times, making
-> > it fully DT configurable, using libgpio and dmaengine apis - those are
-> > optional, driver will work without them.
-> > 
-> > Please note that unlike previous driver version, which basically ignored
-> > DT specified timings, this one relies on it, so it is important to get
-> > it right in your DT (dumping it from previous kernel version).
-> > 
-> > In case synchronous timings is requested, it is okay to specify timings
-> > for the slowest chip ever used for you board as it is evetually optimized
-> > after chip probe.
-> > 
-> > Original driver used DMA only if user specified INT gpio in platform
-> > data, now DMA is used unconditionally and PIO mode is used as fallback.
-> > 
-> > In case anyone wants to give it a try, few DT related changes are needed:
-> > - onenand node needs 'ti,omap2-onenand' compatible (for mailine boards this is
-> >   done in patch 2)
-> > - to use INT pin, int-gpios needs to be specified (for n900 and n8x0 this is
-> >   done in patch 16, however patch lacks pinmux configuration.
-> > 
-> > Most notable changes from v3:
-> > - added dmaengine patches by Peter Ujfalusi
-> > - added dt bindings documentation
-> > - added cleanup patches
-> > - DMA enabled by default
-> > 
-> > Most notable changes from v4:
-> > - collected tags
-> > - used INT pin name properly
-> > - hopefully all comments taken into account
-> > 
-> > Also note that driver will fail probe OneNAND chip after patch 13 and start
-> > working again after patch 14.
-> 
-> Well, breaking bisectability is never a good thing, this being said, I
-> won't complain if TI maintainers are okay with that.
-
-I agree.
-
-> > Testing and benchmarking very welcome.
-> 
-> Let me know when you think this series is ready to be merged.
-
-I'm still waiting for some OMAP2 users to show up. So far it is tested
-on OMAP3 only (And I'm using this patchset in production).
-
-> > Depends on "memory: omap-gpmc: Make 'bank-width' property optional"
-> > https://patchwork.kernel.org/patch/10043259/
-> 
-> Hm, I see this patch has been applied to the omap tree, so maybe it's
-> simpler if everything goes through this tree. I don't plan to modify
-> onenand related stuff in this release anyway.
-
-It is intended for 4.16, so if Tony is fine with your proposal, I can
-modify patches not to break bisecting...
-
-> > Ladislav Michl (14):
-> >   dt-bindings: mtd: gpmc-onenand: Update properties description
-> >   ARM: dts: OMAP2+: Add compatible property to onenand node
-> >   ARM: dts: omap3-igep: Update onenand node timings
-> >   mtd: onenand: omap2: Remove regulator support
-> >   mtd: onenand: omap2: Remove skip initial unlocking support
-> >   mtd: onenand: omap2: Remove partitioning support from platform data
-> >   mtd: onenand: omap2: Account waiting time as waiting on IO
-> >   mtd: onenand: omap2: Unify OMAP2 and OMAP3 DMA implementation
-> >   mtd: onenand: omap2: Do not make delay for GPIO OMAP3 specific
-> >   mtd: onenand: omap2: Decouple DMA enabling from INT pin availability
-> >   memory: omap-gpmc: Refactor OneNAND support
-> >   mtd: onenand: omap2: Configure driver from DT
-> >   ARM: OMAP2+: Remove gpmc-onenand
-> >   ARM: dts: Nokia: Use OneNAND INT pin
-> > 
-> > Peter Ujfalusi (2):
-> >   mtd: onenand: omap2: Simplify the DMA setup for various paths
-> >   mtd: onenand: omap2: Convert to use dmaengine for memcpy
-> > 
-> >  .../devicetree/bindings/mtd/gpmc-onenand.txt       |   6 +-
-> >  arch/arm/boot/dts/omap2420-n8x0-common.dtsi        |   5 +-
-> >  arch/arm/boot/dts/omap3-igep.dtsi                  |  30 +-
-> >  arch/arm/boot/dts/omap3-n900.dts                   |   3 +-
-> >  arch/arm/boot/dts/omap3-n950-n9.dtsi               |   1 +
-> >  arch/arm/boot/dts/omap3430-sdp.dts                 |   1 +
-> >  arch/arm/mach-omap2/Makefile                       |   3 -
-> >  arch/arm/mach-omap2/gpmc-onenand.c                 | 409 ---------------
-> >  drivers/memory/omap-gpmc.c                         | 158 ++++--
-> >  drivers/mtd/onenand/Kconfig                        |   3 +-
-> >  drivers/mtd/onenand/omap2.c                        | 576 ++++++++-------------
-> >  include/linux/omap-gpmc.h                          |  28 +
-> >  include/linux/platform_data/mtd-onenand-omap2.h    |  34 --
-> >  13 files changed, 387 insertions(+), 870 deletions(-)
-> >  delete mode 100644 arch/arm/mach-omap2/gpmc-onenand.c
-> >  delete mode 100644 include/linux/platform_data/mtd-onenand-omap2.h
-> > 
