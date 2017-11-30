@@ -1,16 +1,20 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eKWUJ-0002VM-Rh
- for linux-mtd@lists.infradead.org; Thu, 30 Nov 2017 21:35:21 +0000
-Date: Thu, 30 Nov 2017 22:34:56 +0100
+ id 1eKWW0-00041Y-Oa
+ for linux-mtd@lists.infradead.org; Thu, 30 Nov 2017 21:37:10 +0000
+Date: Thu, 30 Nov 2017 22:36:42 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, Han Xu <han.xu@nxp.com>, Richard
- Weinberger <richard@nod.at>, kernel@pengutronix.de
-Subject: Re: [PATCH] mtd: nand: gpmi-nand: Remove wrong Kconfig help text
-Message-ID: <20171130223456.1c5c0db6@bbrezillon>
-In-Reply-To: <20171117110912.24305-1-s.hauer@pengutronix.de>
-References: <20171117110912.24305-1-s.hauer@pengutronix.de>
+To: Jesse Chan <jc@linux.com>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: nand: denali_pci: add missing
+ MODULE_DESCRIPTION/AUTHOR/LICENSE
+Message-ID: <20171130223642.2d845276@bbrezillon>
+In-Reply-To: <20171120205713.86952-1-jc@linux.com>
+References: <20171120205713.86952-1-jc@linux.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -23,14 +27,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 17 Nov 2017 12:09:12 +0100
-Sascha Hauer <s.hauer@pengutronix.de> wrote:
+On Mon, 20 Nov 2017 12:57:13 -0800
+Jesse Chan <jc@linux.com> wrote:
 
-> The GPMI nand Kconfig help texts mentions that the GPMI nand driver
-> might conflict with SD cards. The only conflict there might really
-> be is that both controllers use the same pins, but this is resolved
-> by the pincontroller setup in the device tree. In any way the GPMI
-> driver can safely be enabled, the text is just wrong. Remove it.
+> This change resolves a new compile-time warning
+> when built as a loadable module:
+> 
+> WARNING: modpost: missing MODULE_LICENSE() in drivers/mtd/nand/denali_pci.o
+> see include/linux/module.h for more information
+> 
+> This adds the license as "GPL v2", which matches the header of the file.
+> 
+> MODULE_DESCRIPTION and MODULE_AUTHOR are also added.
+> 
 
 Applied.
 
@@ -38,24 +47,20 @@ Thanks,
 
 Boris
 
-> 
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> Signed-off-by: Jesse Chan <jc@linux.com>
 > ---
->  drivers/mtd/nand/Kconfig | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+>  drivers/mtd/nand/denali_pci.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index 3f2036f31da4..8f4c288cf9f1 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -373,9 +373,7 @@ config MTD_NAND_GPMI_NAND
->  	 Enables NAND Flash support for IMX23, IMX28 or IMX6.
->  	 The GPMI controller is very powerful, with the help of BCH
->  	 module, it can do the hardware ECC. The GPMI supports several
-> -	 NAND flashs at the same time. The GPMI may conflicts with other
-> -	 block, such as SD card. So pay attention to it when you enable
-> -	 the GPMI.
-> +	 NAND flashs at the same time.
+> diff --git a/drivers/mtd/nand/denali_pci.c b/drivers/mtd/nand/denali_pci.c
+> index 81370c79aa48..7ad0db65a6fa 100644
+> --- a/drivers/mtd/nand/denali_pci.c
+> +++ b/drivers/mtd/nand/denali_pci.c
+> @@ -124,3 +124,7 @@ static struct pci_driver denali_pci_driver = {
+>  };
 >  
->  config MTD_NAND_BRCMNAND
->  	tristate "Broadcom STB NAND controller"
+>  module_pci_driver(denali_pci_driver);
+> +
+> +MODULE_DESCRIPTION("PCI driver for Denali NAND controller");
+> +MODULE_AUTHOR("Intel Corporation and its suppliers");
+> +MODULE_LICENSE("GPL v2");
