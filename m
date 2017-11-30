@@ -1,19 +1,23 @@
-Received: from mail-wm0-x235.google.com ([2a00:1450:400c:c09::235])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eKQlc-0003nN-9x
- for linux-mtd@lists.infradead.org; Thu, 30 Nov 2017 15:28:49 +0000
-Received: by mail-wm0-x235.google.com with SMTP id l141so13769913wmg.1
- for <linux-mtd@lists.infradead.org>; Thu, 30 Nov 2017 07:28:27 -0800 (PST)
+Received: from muru.com ([72.249.23.125])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eKRPV-0000Dx-9K
+ for linux-mtd@lists.infradead.org; Thu, 30 Nov 2017 16:10:04 +0000
+Date: Thu, 30 Nov 2017 08:09:36 -0800
+From: Tony Lindgren <tony@atomide.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Ladislav Michl <ladis@linux-mips.org>, linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org, Roger Quadros <rogerq@ti.com>,
+ Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Aaro Koskinen <aaro.koskinen@iki.fi>
+Subject: Re: [PATCH v5 00/16] OMAP2+ OneNAND driver update
+Message-ID: <20171130160936.GO28152@atomide.com>
+References: <20171115162306.2o2w2yrf7wucroxd@lenoch>
+ <20171130111840.41c92d34@bbrezillon>
 MIME-Version: 1.0
-In-Reply-To: <d868125b-638e-4007-7a90-22937ffca9c6@nedap.com>
-References: <d868125b-638e-4007-7a90-22937ffca9c6@nedap.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Thu, 30 Nov 2017 16:28:25 +0100
-Message-ID: <CAFLxGvwW_1ydC9XHFG+-UvY_L=h9TLQ5Eh0jgcGBPFyU9qf0-w@mail.gmail.com>
-Subject: Re: Mounting issue with old rootfs and new kernel
-To: Jaap de Jong <jaap.dejong@nedap.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20171130111840.41c92d34@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,43 +27,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jaap,
+* Boris Brezillon <boris.brezillon@free-electrons.com> [171130 10:21]:
+> On Wed, 15 Nov 2017 17:23:06 +0100
+> Ladislav Michl <ladis@linux-mips.org> wrote:
+> 
+> > this patch serie updates OMAP2+ OneNAND driver to the present times, making
+> > it fully DT configurable, using libgpio and dmaengine apis - those are
+> > optional, driver will work without them.
+> > 
+> > Please note that unlike previous driver version, which basically ignored
+> > DT specified timings, this one relies on it, so it is important to get
+> > it right in your DT (dumping it from previous kernel version).
+> > 
+> > In case synchronous timings is requested, it is okay to specify timings
+> > for the slowest chip ever used for you board as it is evetually optimized
+> > after chip probe.
+> > 
+> > Original driver used DMA only if user specified INT gpio in platform
+> > data, now DMA is used unconditionally and PIO mode is used as fallback.
+> > 
+> > In case anyone wants to give it a try, few DT related changes are needed:
+> > - onenand node needs 'ti,omap2-onenand' compatible (for mailine boards this is
+> >   done in patch 2)
+> > - to use INT pin, int-gpios needs to be specified (for n900 and n8x0 this is
+> >   done in patch 16, however patch lacks pinmux configuration.
+> > 
+> > Most notable changes from v3:
+> > - added dmaengine patches by Peter Ujfalusi
+> > - added dt bindings documentation
+> > - added cleanup patches
+> > - DMA enabled by default
+> > 
+> > Most notable changes from v4:
+> > - collected tags
+> > - used INT pin name properly
+> > - hopefully all comments taken into account
+> > 
+> > Also note that driver will fail probe OneNAND chip after patch 13 and start
+> > working again after patch 14.
+> 
+> Well, breaking bisectability is never a good thing, this being said, I
+> won't complain if TI maintainers are okay with that.
 
-On Thu, Nov 30, 2017 at 4:22 PM, Jaap de Jong <jaap.dejong@nedap.com> wrote:
-> Hi
->
-> I'm hoping for some pointers.
->
-> I have this a created with openembedded classic.
->
-> It works just fine when running with an old kernel (2.6.35)
->
-> Now with the same rootfs and a newer kernel (4.9.28) it damages the old
-> rootfs in such a way that it becomes unusable.
->
-> This is the error it shows:
->
->                         [    1.523437] ubi0 error: ubi_read_volume_table:
-> the layout volume was not found
->                         [    1.531250] ubi0 error: ubi_attach_mtd_dev:
-> failed to attach mtd3, error -22
+There should not be any reason to break git bisect for booting at all,
+what exactly is the issue here?
 
-Are these really the only erros/warnings from UBI?
+> > Testing and benchmarking very welcome.
+> 
+> Let me know when you think this series is ready to be merged.
 
->                         [    1.539062] UBI error: cannot attach mtd3
->                         [    1.546875] Kernel panic - not syncing: VFS:
-> Unable to mount root fs on unknown-block(0,0)
->                         [    1.546875] Rebooting in 1 seconds..RomBOOT
->
-> As far as I can see the kernel configuration seems to be ok.
->
-> Any ideas?
+Well we need Aaro to test this on n8x0 as my n800 is currently not
+booting at all.
 
-If the MTD layout had changed I'd expect more errors from UBI.
-Is this NAND?
+> > Depends on "memory: omap-gpmc: Make 'bank-width' property optional"
+> > https://patchwork.kernel.org/patch/10043259/
+> 
+> Hm, I see this patch has been applied to the omap tree, so maybe it's
+> simpler if everything goes through this tree. I don't plan to modify
+> onenand related stuff in this release anyway.
 
-Did you compare the MTD partition layout and number of bad blocks?
+Maybe Roger can provide you with an immutable commit with just that
+patch?
 
--- 
-Thanks,
-//richard
+Regards,
+
+Tony
