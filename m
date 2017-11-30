@@ -1,20 +1,16 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eKWMG-0005se-CN
- for linux-mtd@lists.infradead.org; Thu, 30 Nov 2017 21:27:02 +0000
-Date: Thu, 30 Nov 2017 22:26:32 +0100
+ id 1eKWUJ-0002VM-Rh
+ for linux-mtd@lists.infradead.org; Thu, 30 Nov 2017 21:35:21 +0000
+Date: Thu, 30 Nov 2017 22:34:56 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, Miquel Raynal
- <miquel.raynal@free-electrons.com>
-Subject: Re: [PATCH] mtd: nand: hynix: Don't wait after applying new
- read-retry params
-Message-ID: <20171130222632.5754e660@bbrezillon>
-In-Reply-To: <20171113095901.24971-1-boris.brezillon@free-electrons.com>
-References: <20171113095901.24971-1-boris.brezillon@free-electrons.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: linux-mtd@lists.infradead.org, Han Xu <han.xu@nxp.com>, Richard
+ Weinberger <richard@nod.at>, kernel@pengutronix.de
+Subject: Re: [PATCH] mtd: nand: gpmi-nand: Remove wrong Kconfig help text
+Message-ID: <20171130223456.1c5c0db6@bbrezillon>
+In-Reply-To: <20171117110912.24305-1-s.hauer@pengutronix.de>
+References: <20171117110912.24305-1-s.hauer@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,40 +23,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 13 Nov 2017 10:59:01 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+On Fri, 17 Nov 2017 12:09:12 +0100
+Sascha Hauer <s.hauer@pengutronix.de> wrote:
 
-> Setting read-retry parameters has no impact on the R/B pin, so waiting
-> for the chip to be ready is useless.
+> The GPMI nand Kconfig help texts mentions that the GPMI nand driver
+> might conflict with SD cards. The only conflict there might really
+> be is that both controllers use the same pins, but this is resolved
+> by the pincontroller setup in the device tree. In any way the GPMI
+> driver can safely be enabled, the text is just wrong. Remove it.
 
 Applied.
 
+Thanks,
+
+Boris
+
 > 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 > ---
->  drivers/mtd/nand/nand_hynix.c | 5 -----
->  1 file changed, 5 deletions(-)
+>  drivers/mtd/nand/Kconfig | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/nand_hynix.c b/drivers/mtd/nand/nand_hynix.c
-> index 985751eda317..72d98cbff4ca 100644
-> --- a/drivers/mtd/nand/nand_hynix.c
-> +++ b/drivers/mtd/nand/nand_hynix.c
-> @@ -83,7 +83,6 @@ static int hynix_nand_setup_read_retry(struct mtd_info *mtd, int retry_mode)
->  	struct nand_chip *chip = mtd_to_nand(mtd);
->  	struct hynix_nand *hynix = nand_get_manufacturer_data(chip);
->  	const u8 *values;
-> -	int status;
->  	int i;
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index 3f2036f31da4..8f4c288cf9f1 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -373,9 +373,7 @@ config MTD_NAND_GPMI_NAND
+>  	 Enables NAND Flash support for IMX23, IMX28 or IMX6.
+>  	 The GPMI controller is very powerful, with the help of BCH
+>  	 module, it can do the hardware ECC. The GPMI supports several
+> -	 NAND flashs at the same time. The GPMI may conflicts with other
+> -	 block, such as SD card. So pay attention to it when you enable
+> -	 the GPMI.
+> +	 NAND flashs at the same time.
 >  
->  	values = hynix->read_retry->values +
-> @@ -112,10 +111,6 @@ static int hynix_nand_setup_read_retry(struct mtd_info *mtd, int retry_mode)
->  	/* Apply the new settings. */
->  	chip->cmdfunc(mtd, NAND_HYNIX_CMD_APPLY_PARAMS, -1, -1);
->  
-> -	status = chip->waitfunc(mtd, chip);
-> -	if (status & NAND_STATUS_FAIL)
-> -		return -EIO;
-> -
->  	return 0;
->  }
->  
+>  config MTD_NAND_BRCMNAND
+>  	tristate "Broadcom STB NAND controller"
