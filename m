@@ -1,20 +1,17 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eKWW0-00041Y-Oa
- for linux-mtd@lists.infradead.org; Thu, 30 Nov 2017 21:37:10 +0000
-Date: Thu, 30 Nov 2017 22:36:42 +0100
+ id 1eKWX7-0004oR-Hx
+ for linux-mtd@lists.infradead.org; Thu, 30 Nov 2017 21:38:15 +0000
+Date: Thu, 30 Nov 2017 22:37:51 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Jesse Chan <jc@linux.com>
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: denali_pci: add missing
- MODULE_DESCRIPTION/AUTHOR/LICENSE
-Message-ID: <20171130223642.2d845276@bbrezillon>
-In-Reply-To: <20171120205713.86952-1-jc@linux.com>
-References: <20171120205713.86952-1-jc@linux.com>
+To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+Cc: <linux-mtd@lists.infradead.org>, oss@buserror.net,
+ computersforpeace@gmail.com, Jagdish Gediya <jagdish.gediya@nxp.com>,
+ dedekind1@gmail.com
+Subject: Re: [PATCH][v2] mtd: nand: ifc: update bufnum mask for ver >= 2.0.0
+Message-ID: <20171130223751.78f586bd@bbrezillon>
+In-Reply-To: <1511436871-15346-1-git-send-email-prabhakar.kushwaha@nxp.com>
+References: <1511436871-15346-1-git-send-email-prabhakar.kushwaha@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,19 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 20 Nov 2017 12:57:13 -0800
-Jesse Chan <jc@linux.com> wrote:
+On Thu, 23 Nov 2017 17:04:31 +0530
+Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com> wrote:
 
-> This change resolves a new compile-time warning
-> when built as a loadable module:
+> From: Jagdish Gediya <jagdish.gediya@nxp.com>
 > 
-> WARNING: modpost: missing MODULE_LICENSE() in drivers/mtd/nand/denali_pci.o
-> see include/linux/module.h for more information
+> Bufnum mask is used to calculate page position in the internal SRAM.
 > 
-> This adds the license as "GPL v2", which matches the header of the file.
-> 
-> MODULE_DESCRIPTION and MODULE_AUTHOR are also added.
-> 
+> As IFC version 2.0.0 has 16KB of internal SRAM as compared to older
+> versions which had 8KB. Hence bufnum mask needs to be updated.
 
 Applied.
 
@@ -47,20 +40,31 @@ Thanks,
 
 Boris
 
-> Signed-off-by: Jesse Chan <jc@linux.com>
-> ---
->  drivers/mtd/nand/denali_pci.c | 4 ++++
->  1 file changed, 4 insertions(+)
 > 
-> diff --git a/drivers/mtd/nand/denali_pci.c b/drivers/mtd/nand/denali_pci.c
-> index 81370c79aa48..7ad0db65a6fa 100644
-> --- a/drivers/mtd/nand/denali_pci.c
-> +++ b/drivers/mtd/nand/denali_pci.c
-> @@ -124,3 +124,7 @@ static struct pci_driver denali_pci_driver = {
->  };
+> Signed-off-by: Jagdish Gediya <jagdish.gediya@nxp.com>
+> Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+> ---
+> Changes for v2: Incorporated review comments from Boris Brezillon
+> http://patchwork.ozlabs.org/patch/773799/
+> 
+>  drivers/mtd/nand/fsl_ifc_nand.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+> index 9e03bac..bbdd68a5 100644
+> --- a/drivers/mtd/nand/fsl_ifc_nand.c
+> +++ b/drivers/mtd/nand/fsl_ifc_nand.c
+> @@ -916,6 +916,13 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
+>  	if (ctrl->version >= FSL_IFC_VERSION_1_1_0)
+>  		fsl_ifc_sram_init(priv);
 >  
->  module_pci_driver(denali_pci_driver);
+> +	/*
+> +	 * As IFC version 2.0.0 has 16KB of internal SRAM as compared to older
+> +	 * versions which had 8KB. Hence bufnum mask needs to be updated.
+> +	 */
+> +	if (ctrl->version >= FSL_IFC_VERSION_2_0_0)
+> +		priv->bufnum_mask = (priv->bufnum_mask * 2) + 1;
 > +
-> +MODULE_DESCRIPTION("PCI driver for Denali NAND controller");
-> +MODULE_AUTHOR("Intel Corporation and its suppliers");
-> +MODULE_LICENSE("GPL v2");
+>  	return 0;
+>  }
+>  
