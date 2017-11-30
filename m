@@ -1,34 +1,22 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eKPDA-00082C-5C
- for linux-mtd@lists.infradead.org; Thu, 30 Nov 2017 13:49:09 +0000
-Date: Thu, 30 Nov 2017 14:48:39 +0100
-From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Thomas Petazzoni
- <thomas.petazzoni@free-electrons.com>, Mark Rutland <mark.rutland@arm.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>, Richard Weinberger <richard@nod.at>,
- Antoine Tenart <antoine.tenart@free-electrons.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Stefan Agner <stefan@agner.ch>, Wenyou Yang
- <wenyou.yang@atmel.com>, Nadav Haklai <nadavh@marvell.com>, Marek Vasut
- <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Rob Herring
- <robh+dt@kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>, Ezequiel
- Garcia <ezequiel.garcia@free-electrons.com>, Gregory Clement
- <gregory.clement@free-electrons.com>, Han Xu <han.xu@nxp.com>, Brian Norris
- <computersforpeace@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
- Josh Wu <rainyfeeling@outlook.com>
-Subject: Re: [RFC PATCH v2 1/6] mtd: nand: provide several helpers to do
- common NAND operations
-Message-ID: <20171130144839.08b8b7ce@xps13>
-In-Reply-To: <CAK7LNARFHqg+EE6m0pxx7Pbs+p-w+W0MMtu4kgXLNBhfeycXVA@mail.gmail.com>
-References: <20171107145419.22717-1-miquel.raynal@free-electrons.com>
- <20171107145419.22717-2-miquel.raynal@free-electrons.com>
- <CAK7LNATWXZci_M8EqeU-8KSEviWzAT7p1KSdkuqAkSAuj-Zj6w@mail.gmail.com>
- <20171130091831.06781ce2@bbrezillon>
- <CAK7LNARFHqg+EE6m0pxx7Pbs+p-w+W0MMtu4kgXLNBhfeycXVA@mail.gmail.com>
+Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eKPLc-0003QF-JI
+ for linux-mtd@lists.infradead.org; Thu, 30 Nov 2017 13:57:54 +0000
+Subject: Re: [PATCH] mtd: spi-nor: Check that BP bits are set properly
+To: Aaron Sierra <asierra@xes-inc.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+References: <763349437.151011.1509293502020.JavaMail.zimbra@xes-inc.com>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <df3a31b1-d167-f3b9-f377-572695e5d2ee@wedev4u.fr>
+Date: Thu, 30 Nov 2017 14:57:27 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <763349437.151011.1509293502020.JavaMail.zimbra@xes-inc.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,34 +26,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sean, Boris,
+Hi Aaron,
 
-> >> Theoretically, there could be three cases:
-> >>   [1] INTR__ERASE_COMP interrupt is asserted
-> >>   [2] INTR__ERASE_FAIL interrupt is asserted
-> >>   [3] Nothing is asserted (bailout by timeout) =20
-> >
-> > Well, ideally we should have something like:
-> >
-> >         if (irq_status & INTR__ERASE_COMP)
-> >                 return 0;
-> >         else if (irq_status & INTR__ERASE_FAIL)
-> >                 return -EIO;
-> >
-> >         return -ETIMEDOUT;
-> >
-> > But let's keep the existing behavior (return -EIO in case of
-> > timeout).=20
->=20
->=20
-> I agree with this change,
-> but it should also be done in a separate work.
->=20
->=20
+Le 29/10/2017 à 17:11, Aaron Sierra a écrit :
+> Previously, the lock and unlock functions returned success even if the
+> BP bits were not actually updated in the status register due to
+> hardware write protection. Introduce write_sr_and_check() to write and
+> read back the status register to ensure the desired BP bits are
+> actually set as requested.
+> 
+> Signed-off-by: Joe Schultz <jschultz@xes-inc.com>
+> Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 39 +++++++++++++++++++++++++++------------
+>  1 file changed, 27 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 19c00072..8a87bd1 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -550,6 +550,31 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  	return ret;
+>  }
+>  
+> +/* Write status register and ensure bits in mask match written values */
+> +static int write_sr_and_check(struct spi_nor *nor, u8 new, u8 mask)
 
-Ok, I will stick to Boris' first solution and put this aside.
+Maybe keep the previous name 'status_new' to be consistent with stm_lock()
+and stm_unlock() and also because 'new' is a C++ reserved keyword so it might
+be better to avoid using it to name some variable (editor syntax coloring issue
+for instance).
 
-Patches will come very soon.
+> +{
+> +	int ret;
+> +
+> +	ret = spi_nor_wait_till_ready(nor);
+> +	if (ret)
+> +		return ret;
+> +
 
-Thank you both,
-Miqu=C3=A8l
+Why do you poll the status register here ?
+Based on the source code before your patch, it should not be needed.
+Do you think it is ?
+
+Otherwise, your patch looks good to me :)
+
+Best regards,
+
+Cyrille
+
+> +	write_enable(nor);
+> +	ret = write_sr(nor, new);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = spi_nor_wait_till_ready(nor);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = read_sr(nor);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return ((ret & mask) != (new & mask)) ? -EIO : 0;
+> +}
+> +
+>  static void stm_get_locked_range(struct spi_nor *nor, u8 sr, loff_t *ofs,
+>  				 uint64_t *len)
+>  {
+> @@ -648,7 +673,6 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>  	loff_t lock_len;
+>  	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
+>  	bool use_top;
+> -	int ret;
+>  
+>  	status_old = read_sr(nor);
+>  	if (status_old < 0)
+> @@ -712,11 +736,7 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>  	if ((status_new & mask) < (status_old & mask))
+>  		return -EINVAL;
+>  
+> -	write_enable(nor);
+> -	ret = write_sr(nor, status_new);
+> -	if (ret)
+> -		return ret;
+> -	return spi_nor_wait_till_ready(nor);
+> +	return write_sr_and_check(nor, status_new, mask);
+>  }
+>  
+>  /*
+> @@ -733,7 +753,6 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>  	loff_t lock_len;
+>  	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
+>  	bool use_top;
+> -	int ret;
+>  
+>  	status_old = read_sr(nor);
+>  	if (status_old < 0)
+> @@ -800,11 +819,7 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>  	if ((status_new & mask) > (status_old & mask))
+>  		return -EINVAL;
+>  
+> -	write_enable(nor);
+> -	ret = write_sr(nor, status_new);
+> -	if (ret)
+> -		return ret;
+> -	return spi_nor_wait_till_ready(nor);
+> +	return write_sr_and_check(nor, status_new, mask);
+>  }
+>  
+>  /*
+> 
