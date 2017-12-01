@@ -1,23 +1,24 @@
 MIME-Version: 1.0
-In-Reply-To: <20171130230246.61a9ed19@xps13>
+In-Reply-To: <20171130170132.27522-3-miquel.raynal@free-electrons.com>
 References: <20171130170132.27522-1-miquel.raynal@free-electrons.com>
- <20171130170132.27522-2-miquel.raynal@free-electrons.com>
- <20171130215113.458d616f@bbrezillon>
- <20171130230246.61a9ed19@xps13>
+ <20171130170132.27522-3-miquel.raynal@free-electrons.com>
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Fri, 1 Dec 2017 11:12:08 +0900
-Message-ID: <CAK7LNASxa4GCnutU4LZhVjV4sK3YLZ+RkewvyY0P4rZENpoOwQ@mail.gmail.com>
-Subject: Re: [PATCH 1/5] mtd: nand: use usual return values for the ->erase()
- hook
-To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+Date: Fri, 1 Dec 2017 11:38:36 +0900
+Message-ID: <CAK7LNAT+_vjtjuLmBGaLYbOnN=oZ99tUogWCPgvbsy53aiboxA@mail.gmail.com>
+Subject: Re: [PATCH 2/5] mtd: nand: provide several helpers to do common NAND
+ operations
+To: Miquel Raynal <miquel.raynal@free-electrons.com>
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
  Hanna Hawa <hannah@marvell.com>, Stefan Agner <stefan@agner.ch>,
  Nadav Haklai <nadavh@marvell.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
  Gregory Clement <gregory.clement@free-electrons.com>,
  devel@driverdev.osuosl.org, Maxim Levitsky <maximlevitsky@gmail.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>, Richard Weinberger <richard@nod.at>,
- Marek Vasut <marek.vasut@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
  Broadcom Kernel Feedback List <bcm-kernel-feedback-list@broadcom.com>,
  Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
  Sylvain Lemieux <slemieux.tyco@gmail.com>,
@@ -32,11 +33,8 @@ Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Antoine Tenart <antoine.tenart@free-electrons.com>,
  Nicolas Ferre <nicolas.ferre@microchip.com>,
  Wenyou Yang <wenyou.yang@atmel.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>
 Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -47,35 +45,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2017-12-01 7:02 GMT+09:00 Miquel RAYNAL <miquel.raynal@free-electrons.com>:
->> > diff --git a/drivers/mtd/nand/nand_base.c
->> > b/drivers/mtd/nand/nand_base.c index 630048f5abdc..4d1f2bda6095
->> > 100644 --- a/drivers/mtd/nand/nand_base.c
->> > +++ b/drivers/mtd/nand/nand_base.c
->> > @@ -3077,7 +3077,7 @@ int nand_erase_nand(struct mtd_info *mtd,
->> > struct erase_info *instr, status = chip->erase(mtd, page &
->> > chip->pagemask);
->> >             /* See if block erase succeeded */
->> > -           if (status & NAND_STATUS_FAIL) {
->> > +           if (status) {
->> >                     pr_debug("%s: failed erase, page 0x%08x\n",
->> >                                     __func__, page);
->> >                     instr->state = MTD_ERASE_FAILED;
->>
->> You forgot to patch single_erase() accordingly.
+2017-12-01 2:01 GMT+09:00 Miquel Raynal <miquel.raynal@free-electrons.com>:
+> From: Boris Brezillon <boris.brezillon@free-electrons.com>
 >
-> Right, sorry about that, I will fix that.
+> This is part of the process of removing direct calls to ->cmdfunc()
+> outside of the core in order to introduce a better interface to execute
+> NAND operations.
 >
-
-Assuming single_erase() will be fixed,
-
+> Here we provide several helpers and make use of them to remove all
+> direct calls to ->cmdfunc(). This way, we can easily modify those
+> helpers to make use of the new ->exec_op() interface when available.
+>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> [miquel.raynal@free-electrons.com: rebased and fixed some conflicts]
+> Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+> ---
+>  drivers/mtd/nand/atmel/nand-controller.c |    2 +-
+>  drivers/mtd/nand/brcmnand/brcmnand.c     |    9 +-
+>  drivers/mtd/nand/cafe_nand.c             |   14 +-
+>  drivers/mtd/nand/denali.c                |   37 +-
 
 For denali.c
 
 Acked-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-
-
-
 
 
 -- 
