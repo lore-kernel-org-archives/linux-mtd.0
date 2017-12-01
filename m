@@ -1,38 +1,28 @@
-Date: Fri, 1 Dec 2017 10:39:20 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org, Wenyou Yang
- <wenyou.yang@atmel.com>, Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>, Kamal Dasu
- <kdasu.kdev@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>,
- Han Xu <han.xu@nxp.com>, Vladimir Zapolskiy <vz@mleia.com>, Sylvain Lemieux
- <slemieux.tyco@gmail.com>, Matthias Brugger <matthias.bgg@gmail.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Maxim Levitsky
- <maximlevitsky@gmail.com>, Maxime Ripard
- <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>, Marc
- Gonzalez <marc_gonzalez@sigmadesigns.com>, Stefan Agner <stefan@agner.ch>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Thomas Petazzoni
- <thomas.petazzoni@free-electrons.com>, Gregory Clement
- <gregory.clement@free-electrons.com>, Antoine Tenart
- <antoine.tenart@free-electrons.com>, Nadav Haklai <nadavh@marvell.com>,
- Ofer Heifetz <oferh@marvell.com>, Hanna Hawa <hannah@marvell.com>,
- linux-arm-kernel@lists.infradead.org,
- bcm-kernel-feedback-list@broadcom.com, linux-mediatek@lists.infradead.org,
- devel@driverdev.osuosl.org
-Subject: Re: [PATCH 1/5] mtd: nand: use usual return values for the
- ->erase() hook
-Message-ID: <20171201103920.1ed36f99@bbrezillon>
-In-Reply-To: <20171130230246.61a9ed19@xps13>
-References: <20171130170132.27522-1-miquel.raynal@free-electrons.com>
- <20171130170132.27522-2-miquel.raynal@free-electrons.com>
- <20171130215113.458d616f@bbrezillon>
- <20171130230246.61a9ed19@xps13>
+Received: from mail-eopbgr00044.outbound.protection.outlook.com ([40.107.0.44]
+ helo=EUR02-AM5-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eKiDY-0006xa-GY
+ for linux-mtd@lists.infradead.org; Fri, 01 Dec 2017 10:06:50 +0000
+From: "Z.q. Hou" <zhiqiang.hou@nxp.com>
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "richard@nod.at"
+ <richard@nod.at>
+Subject: RE: [PATCH 1/2] mtd: spi-nor: add a API to restore the addressing mode
+Date: Fri, 1 Dec 2017 10:06:22 +0000
+Message-ID: <AM5PR0402MB2771FEA92608C8EAC270966B84390@AM5PR0402MB2771.eurprd04.prod.outlook.com>
+References: <20171124100848.1828-1-Zhiqiang.Hou@nxp.com>
+ <20171124100848.1828-2-Zhiqiang.Hou@nxp.com>
+ <4b25f639-e386-21b6-0d66-fda0b3093064@wedev4u.fr>
+In-Reply-To: <4b25f639-e386-21b6-0d66-fda0b3093064@wedev4u.fr>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,33 +32,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 30 Nov 2017 23:02:46 +0100
-Miquel RAYNAL <miquel.raynal@free-electrons.com> wrote:
-
-> > > diff --git a/drivers/mtd/nand/nand_base.c
-> > > b/drivers/mtd/nand/nand_base.c index 630048f5abdc..4d1f2bda6095
-> > > 100644 --- a/drivers/mtd/nand/nand_base.c
-> > > +++ b/drivers/mtd/nand/nand_base.c
-> > > @@ -3077,7 +3077,7 @@ int nand_erase_nand(struct mtd_info *mtd,
-> > > struct erase_info *instr, status =3D chip->erase(mtd, page &
-> > > chip->pagemask);=20
-> > >  		/* See if block erase succeeded */
-> > > -		if (status & NAND_STATUS_FAIL) {
-> > > +		if (status) {
-> > >  			pr_debug("%s: failed erase, page 0x%08x\n",
-> > >  					__func__, page);
-> > >  			instr->state =3D MTD_ERASE_FAILED;   =20
-> >=20
-> > You forgot to patch single_erase() accordingly. =20
->=20
-> Right, sorry about that, I will fix that.
-
-If fixed it when applying, no need to resend.
-
-Thanks,
-
-Boris
-
->=20
-> Thanks,
-> Miqu=C3=A8l
+SGkgQ3lyaWxsZSwNCg0KVGhhbmtzIGEgbG90IGZvciB5b3VyIGNvbW1lbnRzIQ0KDQo+IC0tLS0t
+T3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEN5cmlsbGUgUGl0Y2hlbiBbbWFpbHRvOmN5
+cmlsbGUucGl0Y2hlbkB3ZWRldjR1LmZyXQ0KPiBTZW50OiAyMDE35bm0MTLmnIgx5pelIDE2OjUz
+DQo+IFRvOiBaLnEuIEhvdSA8emhpcWlhbmcuaG91QG54cC5jb20+OyBsaW51eC1tdGRAbGlzdHMu
+aW5mcmFkZWFkLm9yZzsNCj4gbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgY29tcHV0ZXJz
+Zm9ycGVhY2VAZ21haWwuY29tOw0KPiBkd213MkBpbmZyYWRlYWQub3JnOyBib3Jpcy5icmV6aWxs
+b25AZnJlZS1lbGVjdHJvbnMuY29tOw0KPiBtYXJlay52YXN1dEBnbWFpbC5jb207IHJpY2hhcmRA
+bm9kLmF0DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggMS8yXSBtdGQ6IHNwaS1ub3I6IGFkZCBhIEFQ
+SSB0byByZXN0b3JlIHRoZSBhZGRyZXNzaW5nDQo+IG1vZGUNCj4gDQo+IEhpIEhvdSwNCj4gDQo+
+IExlIDI0LzExLzIwMTcgw6AgMTE6MDgsIFpoaXFpYW5nIEhvdSBhIMOpY3JpdCA6DQo+ID4gRnJv
+bTogSG91IFpoaXFpYW5nIDxaaGlxaWFuZy5Ib3VAbnhwLmNvbT4NCj4gPg0KPiA+IEl0J3MgYmV0
+dGVyIHRvIHJlc3RvcmUgdGhlIGFkZHJlc3NpbmcgbW9kZSBvZiB0aGUgU1BJIGZsYXNoIHdoZW5l
+dmVyDQo+ID4gcmVtb3ZlIHRoZSBkcml2ZXIgb3IgcmVib290IHRoZSBzeXN0ZW0uDQo+ID4NCj4g
+PiBTaWduZWQtb2ZmLWJ5OiBIb3UgWmhpcWlhbmcgPFpoaXFpYW5nLkhvdUBueHAuY29tPg0KPiA+
+IC0tLQ0KPiA+ICBkcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYyB8IDggKysrKysrKysNCj4g
+PiAgaW5jbHVkZS9saW51eC9tdGQvc3BpLW5vci5oICAgfCAxICsNCj4gPiAgMiBmaWxlcyBjaGFu
+Z2VkLCA5IGluc2VydGlvbnMoKykNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9z
+cGktbm9yL3NwaS1ub3IuYw0KPiA+IGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMgaW5k
+ZXggYmMyNjZmNzBhMTViLi44MDFjYmU5OWIwNTkNCj4gPiAxMDA2NDQNCj4gPiAtLS0gYS9kcml2
+ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYw0KPiA+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Iv
+c3BpLW5vci5jDQo+ID4gQEAgLTI3MTMsNiArMjcxMywxNCBAQCBzdGF0aWMgdm9pZCBzcGlfbm9y
+X3Jlc3VtZShzdHJ1Y3QgbXRkX2luZm8NCj4gKm10ZCkNCj4gPiAgCQlkZXZfZXJyKGRldiwgInJl
+c3VtZSgpIGZhaWxlZFxuIik7DQo+ID4gIH0NCj4gPg0KPiA+ICt2b2lkIHNwaV9ub3JfcmVzdG9y
+ZV9hZGRyX21vZGUoc3RydWN0IHNwaV9ub3IgKm5vcikgew0KPiA+ICsJaWYgKChub3ItPmFkZHJf
+d2lkdGggPT0gNCkgJiYNCj4gPiArCSAgICAoSkVERUNfTUZSKG5vci0+aW5mbykgIT0gU05PUl9N
+RlJfU1BBTlNJT04pICYmDQo+ID4gKwkgICAgIShub3ItPmluZm8tPmZsYWdzICYgU1BJX05PUl80
+Ql9PUENPREVTKSkNCj4gPiArCQlzZXRfNGJ5dGUobm9yLCBub3ItPmluZm8sIDApOw0KPiA+ICt9
+DQo+ICsgRVhQT1JUX1NZTUJPTF9HUEwoc3BpX25vcl9yZXN0b3JlX2FkZHJfbW9kZSk7DQo+IA0K
+PiBMaWtlIGZvciBzcGlfbm9yX3NjYW4oKSwgeW91IHdvdWxkIG5lZWQgdG8gZXhwb3J0IHRoZSBz
+eW1ib2wgZm9yIG1vZHVsZXMuDQoNClllcywgSSB3aWxsIGFkZCB0aGlzIGluIG5leHQgdmVyc2lv
+bi4NCg0KPiANCj4gPiArDQo+ID4gIGludCBzcGlfbm9yX3NjYW4oc3RydWN0IHNwaV9ub3IgKm5v
+ciwgY29uc3QgY2hhciAqbmFtZSwNCj4gPiAgCQkgY29uc3Qgc3RydWN0IHNwaV9ub3JfaHdjYXBz
+ICpod2NhcHMpICB7IGRpZmYgLS1naXQNCj4gPiBhL2luY2x1ZGUvbGludXgvbXRkL3NwaS1ub3Iu
+aCBiL2luY2x1ZGUvbGludXgvbXRkL3NwaS1ub3IuaCBpbmRleA0KPiA+IGQwYzY2YTA5NzVjZi4u
+ZmU5MzU3ZGEyMDQ5IDEwMDY0NA0KPiA+IC0tLSBhL2luY2x1ZGUvbGludXgvbXRkL3NwaS1ub3Iu
+aA0KPiA+ICsrKyBiL2luY2x1ZGUvbGludXgvbXRkL3NwaS1ub3IuaA0KPiA+IEBAIC0zOTgsNSAr
+Mzk4LDYgQEAgc3RydWN0IHNwaV9ub3JfaHdjYXBzIHsNCj4gPiAgICovDQo+ID4gIGludCBzcGlf
+bm9yX3NjYW4oc3RydWN0IHNwaV9ub3IgKm5vciwgY29uc3QgY2hhciAqbmFtZSwNCj4gPiAgCQkg
+Y29uc3Qgc3RydWN0IHNwaV9ub3JfaHdjYXBzICpod2NhcHMpOw0KPiA+ICt2b2lkIHNwaV9ub3Jf
+cmVzdG9yZV9hZGRyX21vZGUoc3RydWN0IHNwaV9ub3IgKm5vcik7DQo+ID4NCj4gUGxlYXNlIGFk
+ZCB0aGUgcmVsZXZhbnQga2VybmVsIGRvYy4NCg0KWWVzLCB3aWxsIGFkZCBjb21tZW50cyBmb3Ig
+dGhpcyBBUEkgaW4gbmV4dCB2ZXJzaW9uLg0KDQo+IA0KPiBCZXN0IHJlZ2FyZHMsDQo+IA0KPiBD
+eXJpbGxlDQo+IA0KPiA+ICAjZW5kaWYNCj4gPg0KDQpUaGFua3MsDQpaaGlxaWFuZw0K
