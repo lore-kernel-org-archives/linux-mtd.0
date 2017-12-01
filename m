@@ -1,23 +1,34 @@
-Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eKh9H-0000AJ-DO
- for linux-mtd@lists.infradead.org; Fri, 01 Dec 2017 08:58:20 +0000
-Subject: Re: [PATCH 2/2] mtd: m25p80: restore the addressing mode when stop
- using the flash
-To: Zhiqiang Hou <Zhiqiang.Hou@nxp.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, boris.brezillon@free-electrons.com,
- marek.vasut@gmail.com, richard@nod.at
-References: <20171124100848.1828-1-Zhiqiang.Hou@nxp.com>
- <20171124100848.1828-3-Zhiqiang.Hou@nxp.com>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <b21e0615-9a64-7dc5-cbb2-f391a640273d@wedev4u.fr>
-Date: Fri, 1 Dec 2017 09:57:44 +0100
+Date: Fri, 1 Dec 2017 10:37:48 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Miquel Raynal <miquel.raynal@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org, Wenyou Yang
+ <wenyou.yang@atmel.com>, Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>, Kamal Dasu
+ <kdasu.kdev@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Han Xu <han.xu@nxp.com>, Vladimir Zapolskiy <vz@mleia.com>, Sylvain Lemieux
+ <slemieux.tyco@gmail.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Maxim Levitsky
+ <maximlevitsky@gmail.com>, Maxime Ripard
+ <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>, Marc
+ Gonzalez <marc_gonzalez@sigmadesigns.com>, Stefan Agner <stefan@agner.ch>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>, Gregory Clement
+ <gregory.clement@free-electrons.com>, Antoine Tenart
+ <antoine.tenart@free-electrons.com>, Nadav Haklai <nadavh@marvell.com>,
+ Ofer Heifetz <oferh@marvell.com>, Hanna Hawa <hannah@marvell.com>,
+ linux-arm-kernel@lists.infradead.org,
+ bcm-kernel-feedback-list@broadcom.com, linux-mediatek@lists.infradead.org,
+ devel@driverdev.osuosl.org
+Subject: Re: [PATCH 0/5] Introduce the new NAND core interface: ->exec_op()
+Message-ID: <20171201103748.5bbd8ccc@bbrezillon>
+In-Reply-To: <20171130170132.27522-1-miquel.raynal@free-electrons.com>
+References: <20171130170132.27522-1-miquel.raynal@free-electrons.com>
 MIME-Version: 1.0
-In-Reply-To: <20171124100848.1828-3-Zhiqiang.Hou@nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,56 +38,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Hou,
+Hi all,
 
-Le 24/11/2017 à 11:08, Zhiqiang Hou a écrit :
-> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> 
-> Add .shutdown function to restore the addressing mode in reboot
-> process, and add the same operation to the .remove function.
-> 
-> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> ---
->  drivers/mtd/devices/m25p80.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index dbe6a1de2bb8..867bd2d5a267 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -307,10 +307,17 @@ static int m25p_remove(struct spi_device *spi)
->  {
->  	struct m25p	*flash = spi_get_drvdata(spi);
->  
-> +	spi_nor_restore_addr_mode(&flash->spi_nor);
+On Thu, 30 Nov 2017 18:01:27 +0100
+Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
 
-maybe add a new line here.
+> Hi,
+>=20
+> This series adds the implementation of the NAND framework ->exec_op()
+> interface with all the related hooks and helpers. The reasons for adding
+> it are explained in details in the commit log:
+>=20
+>         "mtd: nand: add ->exec_op() implementation"
+>=20
+> Long story short: it will ease later expansion of the framework, as well
+> as the implementation of new vendor specific commands, and should also
+> ease driver development.
+>=20
+> A lot of comments are written to explain how to use the new API. Several
+> NAND controller drivers are already/almost converted to ->exec_op(), in
+> particular a rework of the Marvell NAND controller driver, and will
+> follow. One can have a look at them as examples to understand how to
+> implement or rework NAND controller drivers. A proper external
+> documentation is being written and will later be submitted.
+>=20
+> Thank you,
+> Miqu=C3=A8l
+>=20
+>=20
+> Boris Brezillon (2):
+>   mtd: nand: provide several helpers to do common NAND operations
+>   mtd: nand: force drivers to explicitly send READ/PROG commands
+>=20
+> Miquel Raynal (3):
+>   mtd: nand: use usual return values for the ->erase() hook
+>   mtd: nand: use a static data_interface in the nand_chip structure
+>   mtd: nand: add ->exec_op() implementation
 
-Otherwise, this looks good :)
+Applied patches 1 to 4 (with a rewording of patch 4 commit message and
+a fix in patch 1 to make single_erase() compliant with the new
+->erase() semantic).
 
-Best regards,
+Note that I was prompt to apply those patches because I want them to
+spend as much time as possible in linux-next so that we can detect and
+fix regressions before the merge window. So please test linux-next on
+your hardware.
 
-Cyrille
+This being said, nothing is set in stone, and if the series appears to
+break existing setups and we can't fix the problems before -rc6, I'll
+drop it.
 
->  	/* Clean up MTD stuff. */
->  	return mtd_device_unregister(&flash->spi_nor.mtd);
->  }
->  
-> +static void m25p_shutdown(struct spi_device *spi)
-> +{
-> +	struct m25p *flash = spi_get_drvdata(spi);
-> +
-> +	spi_nor_restore_addr_mode(&flash->spi_nor);
-> +}
->  /*
->   * Do NOT add to this array without reading the following:
->   *
-> @@ -386,6 +393,7 @@ static struct spi_driver m25p80_driver = {
->  	.id_table	= m25p_ids,
->  	.probe	= m25p_probe,
->  	.remove	= m25p_remove,
-> +	.shutdown	= m25p_shutdown,
->  
->  	/* REVISIT: many of these chips have deep power-down modes, which
->  	 * should clearly be entered on suspend() to minimize power use.
-> 
+Thanks,
+
+Boris
+
+>=20
+>  drivers/mtd/nand/atmel/nand-controller.c      |    9 +-
+>  drivers/mtd/nand/bf5xx_nand.c                 |    6 +-
+>  drivers/mtd/nand/brcmnand/brcmnand.c          |   20 +-
+>  drivers/mtd/nand/cafe_nand.c                  |   20 +-
+>  drivers/mtd/nand/denali.c                     |   40 +-
+>  drivers/mtd/nand/diskonchip.c                 |    4 +-
+>  drivers/mtd/nand/docg4.c                      |   21 +-
+>  drivers/mtd/nand/fsl_elbc_nand.c              |   10 +-
+>  drivers/mtd/nand/fsl_ifc_nand.c               |    6 +-
+>  drivers/mtd/nand/fsmc_nand.c                  |    5 +-
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c        |   77 +-
+>  drivers/mtd/nand/hisi504_nand.c               |    9 +-
+>  drivers/mtd/nand/jz4740_nand.c                |   16 +-
+>  drivers/mtd/nand/lpc32xx_mlc.c                |    7 +-
+>  drivers/mtd/nand/lpc32xx_slc.c                |   33 +-
+>  drivers/mtd/nand/mtk_nand.c                   |   25 +-
+>  drivers/mtd/nand/nand_base.c                  | 2161 +++++++++++++++++++=
++++---
+>  drivers/mtd/nand/nand_hynix.c                 |  124 +-
+>  drivers/mtd/nand/nand_micron.c                |   83 +-
+>  drivers/mtd/nand/nand_timings.c               |   21 +-
+>  drivers/mtd/nand/omap2.c                      |   18 +-
+>  drivers/mtd/nand/pxa3xx_nand.c                |   14 +-
+>  drivers/mtd/nand/qcom_nandc.c                 |   27 +-
+>  drivers/mtd/nand/r852.c                       |   11 +-
+>  drivers/mtd/nand/sh_flctl.c                   |    6 +-
+>  drivers/mtd/nand/sunxi_nand.c                 |   97 +-
+>  drivers/mtd/nand/tango_nand.c                 |   27 +-
+>  drivers/mtd/nand/tmio_nand.c                  |    5 +-
+>  drivers/mtd/nand/vf610_nfc.c                  |    6 +-
+>  drivers/staging/mt29f_spinand/mt29f_spinand.c |    5 +-
+>  include/linux/mtd/rawnand.h                   |  414 ++++-
+>  31 files changed, 2673 insertions(+), 654 deletions(-)
+>=20
