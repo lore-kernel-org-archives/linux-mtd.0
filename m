@@ -1,24 +1,22 @@
-Received: from mail-ve1eur01on0049.outbound.protection.outlook.com
- ([104.47.1.49] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
+Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eKguL-0000w0-ED
- for linux-mtd@lists.infradead.org; Fri, 01 Dec 2017 08:42:56 +0000
-From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-To: Scott Wood <oss@buserror.net>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "devicetree-discuss@lists.ozlabs.org"
- <devicetree-discuss@lists.ozlabs.org>
-CC: "dedekind1@gmail.com" <dedekind1@gmail.com>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>
-Subject: RE: [PATCH] Documentation: binding: Update endianness usage
-Date: Fri, 1 Dec 2017 08:42:23 +0000
-Message-ID: <HE1PR04MB12414AFA5F8081730B89378497390@HE1PR04MB1241.eurprd04.prod.outlook.com>
-References: <1511954855-8593-1-git-send-email-prabhakar.kushwaha@nxp.com>
- <1512105209.10062.1.camel@buserror.net>
-In-Reply-To: <1512105209.10062.1.camel@buserror.net>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1eKh4F-0006Rt-0f
+ for linux-mtd@lists.infradead.org; Fri, 01 Dec 2017 08:53:09 +0000
+Subject: Re: [PATCH 1/2] mtd: spi-nor: add a API to restore the addressing mode
+To: Zhiqiang Hou <Zhiqiang.Hou@nxp.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, boris.brezillon@free-electrons.com,
+ marek.vasut@gmail.com, richard@nod.at
+References: <20171124100848.1828-1-Zhiqiang.Hou@nxp.com>
+ <20171124100848.1828-2-Zhiqiang.Hou@nxp.com>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <4b25f639-e386-21b6-0d66-fda0b3093064@wedev4u.fr>
+Date: Fri, 1 Dec 2017 09:52:37 +0100
 MIME-Version: 1.0
+In-Reply-To: <20171124100848.1828-2-Zhiqiang.Hou@nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,49 +26,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFNjb3R0IFdvb2QgW21haWx0
-bzpvc3NAYnVzZXJyb3IubmV0XQ0KPiBTZW50OiBGcmlkYXksIERlY2VtYmVyIDAxLCAyMDE3IDEw
-OjQzIEFNDQo+IFRvOiBQcmFiaGFrYXIgS3VzaHdhaGEgPHByYWJoYWthci5rdXNod2FoYUBueHAu
-Y29tPjsgbGludXgtDQo+IG10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBkZXZpY2V0cmVlLWRpc2N1
-c3NAbGlzdHMub3psYWJzLm9yZw0KPiBDYzogZGVkZWtpbmQxQGdtYWlsLmNvbTsgY29tcHV0ZXJz
-Zm9ycGVhY2VAZ21haWwuY29tDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIERvY3VtZW50YXRpb246
-IGJpbmRpbmc6IFVwZGF0ZSBlbmRpYW5uZXNzIHVzYWdlDQo+IA0KPiBPbiBXZWQsIDIwMTctMTEt
-MjkgYXQgMTY6NTcgKzA1MzAsIFByYWJoYWthciBLdXNod2FoYSB3cm90ZToNCj4gPiBJRkMgY29u
-dHJvbGxlciB2ZXJzaW9uIDwgMi4wIHN1cHBvcnQgSUZDIHJlZ2lzdGVyIGFjY2VzcyBhcw0KPiA+
-IGJpZyBlbmRpYW4uIFRoZXNlIGNvbnRyb2xsZXIgdmVyc2lvbiBhbHNvIHJlcXVpcmUgSUZDIE5P
-UiBzaWduYWxzIHRvDQo+ID4gYmUgY29ubmVjdGVkIGluIHJldmVyc2Ugb3JkZXIgd2l0aCBOT1Ig
-Zmxhc2guDQo+ID4NCj4gPiBJRkMgPj0gMi4wIGlzIG90aGVyIHdheSBhcm91bmQuDQo+ID4NCj4g
-PiBTbyB1cGRhdGluZyBJRkMgYmluZGluZyB0byB0YWtlIGNhcmUgb2YgYm90aCB1c2luZyBlbmRp
-YW5uZXNzIGZpZWxkLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogUHJhYmhha2FyIEt1c2h3YWhh
-IDxwcmFiaGFrYXIua3VzaHdhaGFAbnhwLmNvbT4NCj4gPiAtLS0NCj4gPiDCoERvY3VtZW50YXRp
-b24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZW1vcnktY29udHJvbGxlcnMvZnNsL2lmYy50eHQgfCA2
-ICsrKystLQ0KPiA+IMKgMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlv
-bnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
-ZGluZ3MvbWVtb3J5LQ0KPiA+IGNvbnRyb2xsZXJzL2ZzbC9pZmMudHh0IGIvRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL21lbW9yeS0NCj4gPiBjb250cm9sbGVycy9mc2wvaWZjLnR4
-dA0KPiA+IGluZGV4IDg5NDI3YjAuLjgyNGEyY2EgMTAwNjQ0DQo+ID4gLS0tIGEvRG9jdW1lbnRh
-dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21lbW9yeS1jb250cm9sbGVycy9mc2wvaWZjLnR4dA0K
-PiA+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZW1vcnktY29udHJv
-bGxlcnMvZnNsL2lmYy50eHQNCj4gPiBAQCAtMTgsOCArMTgsMTAgQEAgUHJvcGVydGllczoNCj4g
-PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpbnRlcnJ1cHQgKE5BTkRfRVZURVJfU1RB
-VCkuwqDCoElmIHRoZXJlIGlzIG9ubHkgb25lLA0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoHRoYXQgaW50ZXJydXB0IHJlcG9ydHMgYm90aCB0eXBlcyBvZiBldmVudC4NCj4gPg0K
-PiA+IC0tIGxpdHRsZS1lbmRpYW4gOiBJZiB0aGlzIHByb3BlcnR5IGlzIGFic2VudCwgdGhlIGJp
-Zy1lbmRpYW4gbW9kZSB3aWxsDQo+ID4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoGJlIGluIHVzZSBhcyBkZWZhdWx0IGZvciByZWdpc3RlcnMuDQo+ID4gKy0gbGl0dGxlLWVu
-ZGlhbiBvciBiaWctZW5kaW4gOiBJdCByZXByZXNlbnRzIGhvdyBJRkMgcmVnaXN0ZXJzwqDCoHRv
-IGJlDQo+ID4gYWNjZXNzZWQuDQo+ID4gKwkJCUl0IGFsc28gcmVwcmVzZW50cyBjb25uZWN0aW9u
-IGJldHdlZW4gY29udHJvbGxlcg0KPiA+IGFuZA0KPiA+ICsJCQlOT1IgZmxhc2guIElmIHRoaXMg
-cHJvcGVydHkgaXMgYWJzZW50LCB0aGUgYmlnLQ0KPiA+IGVuZGlhbg0KPiA+ICsJCQltb2RlIHdp
-bGwgYmUgaW4gdXNlIGFzIGRlZmF1bHQuDQo+IA0KPiAiZW5kaW4iPw0KPiANCj4gSWYgYmlnIGVu
-ZGlhbiBpcyB0aGUgZGVmYXVsdCwgaXMgdGhpcyBjaGFuZ2UgcmVhbGx5IG5lY2Vzc2FyeT8gIFBh
-cnRpY3VsYXJseQ0KPiBzaW5jZSB0aGUgYmlnIGVuZGlhbiBjaGlwcyBhcmUgb2xkZXIgYW5kIHRo
-dXMgaGF2ZSBleGlzdGluZyBkZXZpY2UgdHJlZXMuDQo+IA0KDQpFYXJsaWVyIGVuZGlhbm5lc3Mg
-aW5mb3JtYXRpb24gd2FzIG9ubHkgdXNlZCBmb3IgImhvdyB0byIgIGFjY2VzcyBJRkMtTkFORCBy
-ZWdpc3RlciBhY2Nlc3MuDQpOb3cgdGhpcyBpbmZvICB3aWxsIGFsc28gYmUgdXNlZCBmb3IgZGVm
-aW5pbmcgc3dhcCByZXF1aXJlbWVudCBvZiBOT1IgZmxhc2guIA0KDQpBcyBwZXIgbXkgdW5kZXJz
-dGFuZGluZywgdGhpcyAibmV3IHVzYWdlIHR5cGUiIHNob3VsZCBiZSB1cGRhdGVkIGluIGJpbmRp
-bmcuIA0KDQoiSWYgdGhpcyBwcm9wZXJ0eSBpcyBhYnNlbnQsICB0aGUgYmlnLSAgZW5kaWFuIG1v
-ZGUgd2lsbCBiZSBpbiB1c2UgYXMgZGVmYXVsdCAiLiBUaGlzIGxpbmUgY2FuIGJlIHJlbW92ZWQu
-IA0KUGxlYXNlIGxldCBtZSBrbm93IHlvdXIgdmlldyBvbiB0aGlzLiANCg0KLS1wcmFiaGFrYXIN
-Cg0K
+Hi Hou,
+
+Le 24/11/2017 à 11:08, Zhiqiang Hou a écrit :
+> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> 
+> It's better to restore the addressing mode of the SPI flash
+> whenever remove the driver or reboot the system.
+> 
+> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 8 ++++++++
+>  include/linux/mtd/spi-nor.h   | 1 +
+>  2 files changed, 9 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index bc266f70a15b..801cbe99b059 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -2713,6 +2713,14 @@ static void spi_nor_resume(struct mtd_info *mtd)
+>  		dev_err(dev, "resume() failed\n");
+>  }
+>  
+> +void spi_nor_restore_addr_mode(struct spi_nor *nor)
+> +{
+> +	if ((nor->addr_width == 4) &&
+> +	    (JEDEC_MFR(nor->info) != SNOR_MFR_SPANSION) &&
+> +	    !(nor->info->flags & SPI_NOR_4B_OPCODES))
+> +		set_4byte(nor, nor->info, 0);
+> +}
++ EXPORT_SYMBOL_GPL(spi_nor_restore_addr_mode);
+
+Like for spi_nor_scan(), you would need to export the symbol for modules.
+
+> +
+>  int spi_nor_scan(struct spi_nor *nor, const char *name,
+>  		 const struct spi_nor_hwcaps *hwcaps)
+>  {
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index d0c66a0975cf..fe9357da2049 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -398,5 +398,6 @@ struct spi_nor_hwcaps {
+>   */
+>  int spi_nor_scan(struct spi_nor *nor, const char *name,
+>  		 const struct spi_nor_hwcaps *hwcaps);
+> +void spi_nor_restore_addr_mode(struct spi_nor *nor);
+>
+Please add the relevant kernel doc.
+
+Best regards,
+
+Cyrille
+
+>  #endif
+> 
