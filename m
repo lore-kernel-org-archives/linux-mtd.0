@@ -1,22 +1,20 @@
-Received: from lelnx194.ext.ti.com ([198.47.27.80])
+Received: from smtp4.nedap.com ([213.160.213.85])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eKlcR-0008L4-HV
- for linux-mtd@lists.infradead.org; Fri, 01 Dec 2017 13:44:45 +0000
-Subject: Re: [PATCH v5 00/16] OMAP2+ OneNAND driver update
-To: Tony Lindgren <tony@atomide.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>
-CC: Ladislav Michl <ladis@linux-mips.org>, <linux-mtd@lists.infradead.org>,
- <linux-omap@vger.kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
- Kyungmin Park <kyungmin.park@samsung.com>, Aaro Koskinen
- <aaro.koskinen@iki.fi>
-References: <20171115162306.2o2w2yrf7wucroxd@lenoch>
- <20171130111840.41c92d34@bbrezillon> <20171130160936.GO28152@atomide.com>
-From: Roger Quadros <rogerq@ti.com>
-Message-ID: <434bd733-0ba2-6e75-9de5-017eef905fd2@ti.com>
-Date: Fri, 1 Dec 2017 15:43:55 +0200
+ id 1eKmH0-0001E8-Dw
+ for linux-mtd@lists.infradead.org; Fri, 01 Dec 2017 14:26:40 +0000
+From: Jaap de Jong <jaap.dejong@nedap.com>
+Subject: Re: Mounting issue with old rootfs and new kernel
+To: Richard Weinberger <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+References: <d868125b-638e-4007-7a90-22937ffca9c6@nedap.com>
+ <CAFLxGvwW_1ydC9XHFG+-UvY_L=h9TLQ5Eh0jgcGBPFyU9qf0-w@mail.gmail.com>
+ <e144d66c-c754-ad6d-bd0c-ef5384ae7a78@nedap.com>
+ <6030766.nKoDj6T6s8@blindfold>
+Message-ID: <a69fc400-dea4-e3e9-9b86-423fdfd8289c@nedap.com>
+Date: Fri, 1 Dec 2017 15:26:12 +0100
 MIME-Version: 1.0
-In-Reply-To: <20171130160936.GO28152@atomide.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <6030766.nKoDj6T6s8@blindfold>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,92 +26,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 30/11/17 18:09, Tony Lindgren wrote:
-> * Boris Brezillon <boris.brezillon@free-electrons.com> [171130 10:21]:
->> On Wed, 15 Nov 2017 17:23:06 +0100
->> Ladislav Michl <ladis@linux-mips.org> wrote:
+
+
+On 30-11-17 17:20, Richard Weinberger wrote:
+> Jaap,
+> 
+> Am Donnerstag, 30. November 2017, 16:42:33 CET schrieb Jaap de Jong:
+>> Hi Richard,
 >>
->>> this patch serie updates OMAP2+ OneNAND driver to the present times, making
->>> it fully DT configurable, using libgpio and dmaengine apis - those are
->>> optional, driver will work without them.
+>> On 30-11-17 16:28, Richard Weinberger wrote:
+>>> Jaap,
 >>>
->>> Please note that unlike previous driver version, which basically ignored
->>> DT specified timings, this one relies on it, so it is important to get
->>> it right in your DT (dumping it from previous kernel version).
->>>
->>> In case synchronous timings is requested, it is okay to specify timings
->>> for the slowest chip ever used for you board as it is evetually optimized
->>> after chip probe.
->>>
->>> Original driver used DMA only if user specified INT gpio in platform
->>> data, now DMA is used unconditionally and PIO mode is used as fallback.
->>>
->>> In case anyone wants to give it a try, few DT related changes are needed:
->>> - onenand node needs 'ti,omap2-onenand' compatible (for mailine boards this is
->>>   done in patch 2)
->>> - to use INT pin, int-gpios needs to be specified (for n900 and n8x0 this is
->>>   done in patch 16, however patch lacks pinmux configuration.
->>>
->>> Most notable changes from v3:
->>> - added dmaengine patches by Peter Ujfalusi
->>> - added dt bindings documentation
->>> - added cleanup patches
->>> - DMA enabled by default
->>>
->>> Most notable changes from v4:
->>> - collected tags
->>> - used INT pin name properly
->>> - hopefully all comments taken into account
->>>
->>> Also note that driver will fail probe OneNAND chip after patch 13 and start
->>> working again after patch 14.
+>>> On Thu, Nov 30, 2017 at 4:22 PM, Jaap de Jong <jaap.dejong@nedap.com>
+> wrote:
+>>>> Hi
+>>>>
+>>>> I'm hoping for some pointers.
+>>>>
+>>>> I have this a created with openembedded classic.
+>>>>
+>>>> It works just fine when running with an old kernel (2.6.35)
+>>>>
+>>>> Now with the same rootfs and a newer kernel (4.9.28) it damages the old
+>>>> rootfs in such a way that it becomes unusable.
+>>>>
+>>>> This is the error it shows:
+>>>>                           [    1.523437] ubi0 error:
+>>>>                           ubi_read_volume_table: the layout volume was
+>>>>                           not found [    1.531250] ubi0 error:
+>>>>                           ubi_attach_mtd_dev: failed to attach mtd3,
+>>>>                           error -22>
+>>> Are these really the only erros/warnings from UBI?
 >>
->> Well, breaking bisectability is never a good thing, this being said, I
->> won't complain if TI maintainers are okay with that.
+>> Yes. Also ran it without 'quiet' as kernel parameter and that also does
+>> not show extra errors.
 > 
-> There should not be any reason to break git bisect for booting at all,
-> what exactly is the issue here?
+> Hm, but U-Boot comes first? Maybe it damaged the UBI image already.
+That is the same U-Boot as before which didn't damage the rootfs.
+Also U-boot is still able to mount and read files from it even after it 
+has been damaged by the new kernel.
+
+So what do I have so far?
+1) flash a unit with uboot, old kernel and old rootfs, boot it --> fine
+2) flash a unit with uboot, new kernel and new rootfs, boot it --> fine
+3) flash a unit with uboot, new kernel and old rootfs, boot it --> fine
+4) as with 1) but afterwards boot it with new kernel --> rootfs damaged
+
 > 
->>> Testing and benchmarking very welcome.
+>> If I boot u-boot and try to mount it there, some other errors are show
+>> although basically the same
 >>
->> Let me know when you think this series is ready to be merged.
-> 
-> Well we need Aaro to test this on n8x0 as my n800 is currently not
-> booting at all.
-> 
->>> Depends on "memory: omap-gpmc: Make 'bank-width' property optional"
->>> https://patchwork.kernel.org/patch/10043259/
+>>      U-Boot> ubi part rootfs
+>>      UBI: mtd1 is detached from ubi0
+>>      Creating 1 MTD partitions on "nand0":
+>>      0x000000100000-0x000020000000 : "mtd=3"
+>>      UBI: attaching mtd1 to ubi0
+>>      UBI: physical eraseblock size:   131072 bytes (128 KiB)
+>>      UBI: logical eraseblock size:    129024 bytes
+>>      UBI: smallest flash I/O unit:    2048
+>>      UBI: sub-page size:              512
+>>      UBI: VID header offset:          512 (aligned 512)
+>>      UBI: data offset:                2048
+>>      UBI: attached mtd1 to ubi0
+>>      UBI: MTD device name:            "mtd=3"
+>>      UBI: MTD device size:            511 MiB
+>>      UBI: number of good PEBs:        4088
+>>      UBI: number of bad PEBs:         0
+>>      UBI: max. allowed volumes:       128
+>>      UBI: wear-leveling threshold:    4096
+>>      UBI: number of internal volumes: 1
+>>      UBI: number of user volumes:     1
+>>      UBI: available PEBs:             40
+>>      UBI: total number of reserved PEBs: 4048
+>>      UBI: number of PEBs reserved for bad PEB handling: 40
+>>      UBI: max/mean erase counter: 2/0
 >>
->> Hm, I see this patch has been applied to the omap tree, so maybe it's
->> simpler if everything goes through this tree. I don't plan to modify
->> onenand related stuff in this release anyway.
+>>      U-Boot> ubifsmount rootfs
+>>      UBIFS error (pid 0): ubifs_read_node: bad node type (255 but expected 6)
+>> UBIFS error (pid 0): ubifs_read_node: bad node at LEB 0:0
+>>      Error reading superblock on volume 'ubi:rootfs'!
+>>
+>>>>                           [    1.539062] UBI error: cannot attach mtd3
+>>>>                           [    1.546875] Kernel panic - not syncing: VFS:
+>>>>                           Unable to mount root fs on unknown-block(0,0) [
+>>>>                              1.546875] Rebooting in 1 seconds..RomBOOT
+>>>>
+>>>> As far as I can see the kernel configuration seems to be ok.
+>>>>
+>>>> Any ideas?
+>>>
+>>> If the MTD layout had changed I'd expect more errors from UBI.
+>>> Is this NAND?
+>>
+>> Yes nandflash
+>>
+>>> Did you compare the MTD partition layout and number of bad blocks?
+>>
+>> Do you mean before and after?
 > 
-> Maybe Roger can provide you with an immutable commit with just that
-> patch?
+> Yes. Something must be different.
+> Page size? Sub pages? Number or erase blocks, etc...
+Will come back on this, need some more time...
 
-Here you go
-
-The following changes since commit 4fbd8d194f06c8a3fd2af1ce560ddb31f7ec8323:
-
-  Linux 4.15-rc1 (2017-11-26 16:01:47 -0800)
-
-are available in the git repository at:
-
-  https://github.com/rogerq/linux.git for-v4.16/gpmc-omap-immutable
-
-for you to fetch changes up to c18a7ac3398d0cef29749f9568666db8321aa4c9:
-
-  memory: omap-gpmc: Make 'bank-width' property optional (2017-12-01 15:37:49 +0200)
-
-----------------------------------------------------------------
-Ladislav Michl (1):
-      memory: omap-gpmc: Make 'bank-width' property optional
-
- drivers/memory/omap-gpmc.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
--- 
-cheers,
--roger
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+> 
+> Thanks,
+> //richard
+> 
+> 
