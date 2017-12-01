@@ -1,6 +1,9 @@
-Date: Fri, 1 Dec 2017 10:38:44 +0100
+Date: Fri, 1 Dec 2017 10:50:53 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Miquel Raynal <miquel.raynal@free-electrons.com>
+To: Miquel RAYNAL <miquel.raynal@free-electrons.com>, Hanna Hawa
+ <hannah@marvell.com>, linux-arm-kernel@lists.infradead.org,
+ bcm-kernel-feedback-list@broadcom.com, linux-mediatek@lists.infradead.org,
+ devel@driverdev.osuosl.org
 Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
  <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
  Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
@@ -18,16 +21,14 @@ Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
  <thomas.petazzoni@free-electrons.com>, Gregory Clement
  <gregory.clement@free-electrons.com>, Antoine Tenart
  <antoine.tenart@free-electrons.com>, Nadav Haklai <nadavh@marvell.com>,
- Ofer Heifetz <oferh@marvell.com>, Hanna Hawa <hannah@marvell.com>,
- linux-arm-kernel@lists.infradead.org,
- bcm-kernel-feedback-list@broadcom.com, linux-mediatek@lists.infradead.org,
- devel@driverdev.osuosl.org
-Subject: Re: [PATCH 4/5] mtd: nand: use a static data_interface in the
- nand_chip structure
-Message-ID: <20171201103844.7e4eefd4@bbrezillon>
-In-Reply-To: <20171130170132.27522-5-miquel.raynal@free-electrons.com>
+ Ofer Heifetz <oferh@marvell.com>
+Subject: Re: [PATCH 5/5] mtd: nand: add ->exec_op() implementation
+Message-ID: <20171201105053.25af2267@bbrezillon>
+In-Reply-To: <20171130232538.140f17b1@xps13>
 References: <20171130170132.27522-1-miquel.raynal@free-electrons.com>
- <20171130170132.27522-5-miquel.raynal@free-electrons.com>
+ <20171130170132.27522-6-miquel.raynal@free-electrons.com>
+ <20171130215025.67f74437@bbrezillon>
+ <20171130232538.140f17b1@xps13>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -40,270 +41,139 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 30 Nov 2017 18:01:31 +0100
-Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
+Hi Miquel,
 
-> Change the nand_chip structure, to embed the nand_data_interface object.
+On Thu, 30 Nov 2017 23:25:38 +0100
+Miquel RAYNAL <miquel.raynal@free-electrons.com> wrote:
+
+> > > diff --git a/drivers/mtd/nand/nand_base.c
+> > > b/drivers/mtd/nand/nand_base.c index 52965a8aeb2c..46bf31aff909
+> > > 100644 --- a/drivers/mtd/nand/nand_base.c
+> > > +++ b/drivers/mtd/nand/nand_base.c
+> > > @@ -689,6 +689,59 @@ static void nand_wait_status_ready(struct
+> > > mtd_info *mtd, unsigned long timeo) };
+> > >  
+> > >  /**
+> > > + * nand_soft_waitrdy - Read the status waiting for it to be ready
+> > > + * @chip: NAND chip structure
+> > > + * @timeout_ms: Timeout in ms
+> > > + *
+> > > + * Poll the status using ->exec_op() until it is ready unless it
+> > > takes too
+> > > + * much time.
+> > > + *
+> > > + * This helper is intended to be used by drivers without R/B pin
+> > > available to
+> > > + * poll for the chip status until ready and may be called at any
+> > > time in the
+> > > + * middle of any set of instruction. The READ_STATUS just need to
+> > > ask a single
+> > > + * time for it and then any read will return the status. Once the
+> > > READ_STATUS
+> > > + * cycles are done, the function will send a READ0 command to
+> > > cancel the
+> > > + * "READ_STATUS state" and let the normal flow of operation to
+> > > continue.
+> > > + *
+> > > + * This helper *cannot* send a WAITRDY command or ->exec_op()
+> > > implementations    
+> > 
+> > 					  ^ instruction
+> >   
+> > > + * using it will enter an infinite loop.    
+> > 
+> > Hm, not sure why this would be the case, but okay. Maybe you should
+> > move this comment outside the kernel doc header, since this is an
+> > implementation detail, not something the caller/user should be aware
+> > of.  
 > 
-> Also remove the nand_get_default_data_interface() function that become
-> useless but add the initialization of the data_interface at the very
-> beginning of nand_scan_ident() to be sure core functions using timings
-> may be used safely.
+> Right.
 > 
-
-It's not really clear why you do that, so I reworded this commit log
-like that:
-
-mtd: nand: provide valid ->data_interface during NAND detection
-
-Right now, the chip->data_interface field is populated in
-nand_scan_tail(), so after the whole NAND detection has taken place.
-This is fine because these timings are not yet used by the core so
-early in the probe process, but the situation is about to change with
-the introduction of ->exec_op().
-
-Also, by convention, nand_scan_ident() is not supposed to allocate
-resources, only nand_scan_tail() can, so this prevent us from
-allocating and initializing the data_interface object in
-nand_scan_ident().
-
-In order to solve this problem, directly embed a data_interface object
-in nand_chip so that we don't have to allocate it, and initialize it to
-ONFI SDR mode 0 at the very beginning of nand_scan_ident().
-
-> Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
-> ---
->  drivers/mtd/nand/nand_base.c    | 44 ++++++++++++++++++-----------------------
->  drivers/mtd/nand/nand_timings.c | 21 +++++---------------
->  include/linux/mtd/rawnand.h     |  7 ++-----
->  3 files changed, 26 insertions(+), 46 deletions(-)
+> > 
+> > There's another important aspect to mention here: this function can
+> > only be called from an ->exec_op() implementation if this
+> > implementation is re-entrant.  
 > 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index ee9825780a6c..52965a8aeb2c 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -816,8 +816,8 @@ static void nand_ccs_delay(struct nand_chip *chip)
->  	 * Wait tCCS_min if it is correctly defined, otherwise wait 500ns
->  	 * (which should be safe for all NANDs).
->  	 */
-> -	if (chip->data_interface && chip->data_interface->timings.sdr.tCCS_min)
-> -		ndelay(chip->data_interface->timings.sdr.tCCS_min / 1000);
-> +	if (chip->setup_data_interface)
-> +		ndelay(chip->data_interface.timings.sdr.tCCS_min / 1000);
->  	else
->  		ndelay(500);
->  }
-> @@ -1112,7 +1112,6 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
->  static int nand_reset_data_interface(struct nand_chip *chip, int chipnr)
->  {
->  	struct mtd_info *mtd = nand_to_mtd(chip);
-> -	const struct nand_data_interface *conf;
->  	int ret;
->  
->  	if (!chip->setup_data_interface)
-> @@ -1132,8 +1131,8 @@ static int nand_reset_data_interface(struct nand_chip *chip, int chipnr)
->  	 * timings to timing mode 0.
->  	 */
->  
-> -	conf = nand_get_default_data_interface();
-> -	ret = chip->setup_data_interface(mtd, chipnr, conf);
-> +	onfi_fill_data_interface(chip, NAND_SDR_IFACE, 0);
-> +	ret = chip->setup_data_interface(mtd, chipnr, &chip->data_interface);
->  	if (ret)
->  		pr_err("Failed to configure data interface to SDR timing mode 0\n");
->  
-> @@ -1158,7 +1157,7 @@ static int nand_setup_data_interface(struct nand_chip *chip, int chipnr)
->  	struct mtd_info *mtd = nand_to_mtd(chip);
->  	int ret;
->  
-> -	if (!chip->setup_data_interface || !chip->data_interface)
-> +	if (!chip->setup_data_interface)
->  		return 0;
->  
->  	/*
-> @@ -1179,7 +1178,7 @@ static int nand_setup_data_interface(struct nand_chip *chip, int chipnr)
->  			goto err;
->  	}
->  
-> -	ret = chip->setup_data_interface(mtd, chipnr, chip->data_interface);
-> +	ret = chip->setup_data_interface(mtd, chipnr, &chip->data_interface);
->  err:
->  	return ret;
->  }
-> @@ -1219,21 +1218,16 @@ static int nand_init_data_interface(struct nand_chip *chip)
->  		modes = GENMASK(chip->onfi_timing_mode_default, 0);
->  	}
->  
-> -	chip->data_interface = kzalloc(sizeof(*chip->data_interface),
-> -				       GFP_KERNEL);
-> -	if (!chip->data_interface)
-> -		return -ENOMEM;
->  
->  	for (mode = fls(modes) - 1; mode >= 0; mode--) {
-> -		ret = onfi_init_data_interface(chip, chip->data_interface,
-> -					       NAND_SDR_IFACE, mode);
-> +		ret = onfi_fill_data_interface(chip, NAND_SDR_IFACE, mode);
->  		if (ret)
->  			continue;
->  
->  		/* Pass -1 to only */
->  		ret = chip->setup_data_interface(mtd,
->  						 NAND_DATA_IFACE_CHECK_ONLY,
-> -						 chip->data_interface);
-> +						 &chip->data_interface);
->  		if (!ret) {
->  			chip->onfi_timing_mode_default = mode;
->  			break;
-> @@ -1243,11 +1237,6 @@ static int nand_init_data_interface(struct nand_chip *chip)
->  	return 0;
->  }
->  
-> -static void nand_release_data_interface(struct nand_chip *chip)
-> -{
-> -	kfree(chip->data_interface);
-> -}
-> -
->  /**
->   * nand_read_page_op - Do a READ PAGE operation
->   * @chip: The NAND chip
-> @@ -1763,11 +1752,16 @@ EXPORT_SYMBOL_GPL(nand_write_data_op);
->   * @chip: The NAND chip
->   * @chipnr: Internal die id
->   *
-> + * Save the timings data structure, then apply SDR timings mode 0 (see
-> + * nand_reset_data_interface for details), do the reset operation, and
-> + * apply back the previous timings.
-> + *
->   * Returns 0 for success or negative error code otherwise
->   */
->  int nand_reset(struct nand_chip *chip, int chipnr)
->  {
->  	struct mtd_info *mtd = nand_to_mtd(chip);
-> +	struct nand_data_interface saved_data_intf = chip->data_interface;
->  	int ret;
->  
->  	ret = nand_reset_data_interface(chip, chipnr);
-> @@ -1785,6 +1779,7 @@ int nand_reset(struct nand_chip *chip, int chipnr)
->  		return ret;
->  
->  	chip->select_chip(mtd, chipnr);
-> +	chip->data_interface = saved_data_intf;
->  	ret = nand_setup_data_interface(chip, chipnr);
->  	chip->select_chip(mtd, -1);
->  	if (ret)
-> @@ -4889,6 +4884,9 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
->  	struct nand_chip *chip = mtd_to_nand(mtd);
->  	int ret;
->  
-> +	/* Enforce the right timings for reset/detection */
-> +	onfi_fill_data_interface(chip, NAND_SDR_IFACE, 0);
-> +
->  	ret = nand_dt_init(chip);
->  	if (ret)
->  		return ret;
-> @@ -5629,7 +5627,7 @@ int nand_scan_tail(struct mtd_info *mtd)
->  		chip->select_chip(mtd, -1);
->  
->  		if (ret)
-> -			goto err_nand_data_iface_cleanup;
-> +			goto err_nand_manuf_cleanup;
->  	}
->  
->  	/* Check, if we should skip the bad block table scan */
-> @@ -5639,12 +5637,10 @@ int nand_scan_tail(struct mtd_info *mtd)
->  	/* Build bad block table */
->  	ret = chip->scan_bbt(mtd);
->  	if (ret)
-> -		goto err_nand_data_iface_cleanup;
-> +		goto err_nand_manuf_cleanup;
->  
->  	return 0;
->  
-> -err_nand_data_iface_cleanup:
-> -	nand_release_data_interface(chip);
->  
->  err_nand_manuf_cleanup:
->  	nand_manufacturer_cleanup(chip);
-> @@ -5703,8 +5699,6 @@ void nand_cleanup(struct nand_chip *chip)
->  	    chip->ecc.algo == NAND_ECC_BCH)
->  		nand_bch_free((struct nand_bch_control *)chip->ecc.priv);
->  
-> -	nand_release_data_interface(chip);
-> -
->  	/* Free bad block table memory */
->  	kfree(chip->bbt);
->  	if (!(chip->options & NAND_OWN_BUFFERS) && chip->buffers) {
-> diff --git a/drivers/mtd/nand/nand_timings.c b/drivers/mtd/nand/nand_timings.c
-> index 5d1533bcc5bd..9400d039ddbd 100644
-> --- a/drivers/mtd/nand/nand_timings.c
-> +++ b/drivers/mtd/nand/nand_timings.c
-> @@ -283,16 +283,16 @@ const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode)
->  EXPORT_SYMBOL(onfi_async_timing_mode_to_sdr_timings);
->  
->  /**
-> - * onfi_init_data_interface - [NAND Interface] Initialize a data interface from
-> + * onfi_fill_data_interface - [NAND Interface] Initialize a data interface from
->   * given ONFI mode
-> - * @iface: The data interface to be initialized
->   * @mode: The ONFI timing mode
->   */
-> -int onfi_init_data_interface(struct nand_chip *chip,
-> -			     struct nand_data_interface *iface,
-> +int onfi_fill_data_interface(struct nand_chip *chip,
->  			     enum nand_data_interface_type type,
->  			     int timing_mode)
->  {
-> +	struct nand_data_interface *iface = &chip->data_interface;
-> +
->  	if (type != NAND_SDR_IFACE)
->  		return -EINVAL;
->  
-> @@ -321,15 +321,4 @@ int onfi_init_data_interface(struct nand_chip *chip,
->  
->  	return 0;
->  }
-> -EXPORT_SYMBOL(onfi_init_data_interface);
-> -
-> -/**
-> - * nand_get_default_data_interface - [NAND Interface] Retrieve NAND
-> - * data interface for mode 0. This is used as default timing after
-> - * reset.
-> - */
-> -const struct nand_data_interface *nand_get_default_data_interface(void)
-> -{
-> -	return &onfi_sdr_timings[0];
-> -}
-> -EXPORT_SYMBOL(nand_get_default_data_interface);
-> +EXPORT_SYMBOL(onfi_fill_data_interface);
-> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> index 831bf91e0c34..0be959a478db 100644
-> --- a/include/linux/mtd/rawnand.h
-> +++ b/include/linux/mtd/rawnand.h
-> @@ -917,7 +917,7 @@ struct nand_chip {
->  	u16 max_bb_per_die;
->  	u32 blocks_per_die;
->  
-> -	struct nand_data_interface *data_interface;
-> +	struct nand_data_interface data_interface;
->  
->  	int read_retries;
->  
-> @@ -1214,8 +1214,7 @@ static inline int onfi_get_sync_timing_mode(struct nand_chip *chip)
->  	return le16_to_cpu(chip->onfi_params.src_sync_timing_mode);
->  }
->  
-> -int onfi_init_data_interface(struct nand_chip *chip,
-> -			     struct nand_data_interface *iface,
-> +int onfi_fill_data_interface(struct nand_chip *chip,
->  			     enum nand_data_interface_type type,
->  			     int timing_mode);
->  
-> @@ -1258,8 +1257,6 @@ static inline int jedec_feature(struct nand_chip *chip)
->  
->  /* get timing characteristics from ONFI timing mode. */
->  const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode);
-> -/* get data interface from ONFI timing mode 0, used after reset. */
-> -const struct nand_data_interface *nand_get_default_data_interface(void);
->  
->  int nand_check_erased_ecc_chunk(void *data, int datalen,
->  				void *ecc, int ecclen,
+> I do not agree with this statement: this function can be called from an
+> ->exec_op() implementation even if it is not reentrant as long as it  
+> does not send a WAITRDY instruction itself. No?
+
+If the ->exec_op() implementation is not re-entrant, no,
+nand_soft_waitrdy() can't be called from ->exec_op(), because then
+you will re-enter ->exec_op() to execute the read_status_op(), and BOOM!
+
+> 
+> Or maybe you wanted to point that the entire ->exec_op()
+> implementation must be reentrant in order to use this function in it?
+
+Yes, what did you understand?
+
+> 
+> >   
+> > > + *
+> > > + * Return 0 if the NAND chip is ready, a negative error otherwise.
+> > > + */
+> > > +int nand_soft_waitrdy(struct nand_chip *chip, unsigned long
+> > > timeout_ms) +{
+> > > +	u8 status = 0;
+> > > +	int ret;
+> > > +
+> > > +	if (!chip->exec_op)
+> > > +		return -ENOTSUPP;
+> > > +
+> > > +	ret = nand_status_op(chip, NULL);
+> > > +	if (ret)
+> > > +		return ret;
+> > > +
+> > > +	timeout_ms = jiffies + msecs_to_jiffies(timeout_ms);
+> > > +	do {
+> > > +		ret = nand_read_data_op(chip, &status,
+> > > sizeof(status), true);
+> > > +		if (ret)
+> > > +			break;
+> > > +
+> > > +		if (status & NAND_STATUS_READY)
+> > > +			break;
+> > > +
+> > > +		udelay(100);    
+> > 
+> > Sounds a bit high, especially for a read page which takes around 20us.  
+> 
+> Well, this value is arbitrary but greping for NAND_OP_WAIT_RDY tells us
+> the different timeouts with which this function is usually called, to
+> get an idea of the possible wait periods: tR, tBERS, tFEAT, tPROG, tRST.
+> 
+> While a tR_max is 200us, a tRST_max is 250000us. That is why I choose
+> 100us as period, which I found somehow well tuned for every timeout.
+
+A timeout is different from a typical execution time. The timeout is
+here as a boundary to detect when the device/controller is not
+responding, so if you poll the status at the periodicity of the
+timeout, you're likely to wait much more than you should have.
+
+> But
+> if you think most of the time the delay will be smaller, I will update
+> the value to repeat the operation every 20us.
+
+Well, either you do something smart that calculates a polling period
+based on the timeout val (timeout / ratio), or you pick something
+close to the lowest typical value. So, in our case, something like
+10us, which should not be far from the typical tR value on most NANDs.
+
+Regards,
+
+Boris
+
+> 
+> >   
+> > > +	} while	(time_before(jiffies, timeout_ms));
+> > > +
+> > > +	nand_exit_status_op(chip);
+> > > +
+> > > +	if (ret)
+> > > +		return ret;
+> > > +
+> > > +	return status & NAND_STATUS_READY ? 0 : -ETIMEDOUT;
+> > > +};
+> > > +EXPORT_SYMBOL_GPL(nand_soft_waitrdy);
+> > > +  
