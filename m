@@ -1,17 +1,27 @@
-Received: from mail-qk0-x241.google.com ([2607:f8b0:400d:c09::241])
+Received: from mail-he1eur01on0604.outbound.protection.outlook.com
+ ([2a01:111:f400:fe1e::604]
+ helo=EUR01-HE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eLcsY-0004yc-TY
- for linux-mtd@lists.infradead.org; Sun, 03 Dec 2017 22:36:56 +0000
-Received: by mail-qk0-x241.google.com with SMTP id d141so19285706qkc.12
- for <linux-mtd@lists.infradead.org>; Sun, 03 Dec 2017 14:36:34 -0800 (PST)
-From: Fabio Estevam <festevam@gmail.com>
-To: boris.brezillon@free-electrons.com
-Cc: cyrille.pitchen@wedev4u.fr, linux-mtd@lists.infradead.org,
- robh+dt@kernel.org, devicetree@vger.kernel.org,
- Fabio Estevam <fabio.estevam@nxp.com>
-Subject: [PATCH] dt-bindings: mtd: fsl-quadspi: Pass the qspi clock names
-Date: Sun,  3 Dec 2017 20:36:24 -0200
-Message-Id: <1512340584-26894-1-git-send-email-festevam@gmail.com>
+ id 1eLiRx-00018I-34
+ for linux-mtd@lists.infradead.org; Mon, 04 Dec 2017 04:33:52 +0000
+From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+To: Scott Wood <oss@buserror.net>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "devicetree-discuss@lists.ozlabs.org"
+ <devicetree-discuss@lists.ozlabs.org>
+CC: "dedekind1@gmail.com" <dedekind1@gmail.com>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>
+Subject: RE: [PATCH] Documentation: binding: Update endianness usage
+Date: Mon, 4 Dec 2017 04:33:22 +0000
+Message-ID: <HE1PR04MB1241226CD3B7ABD6D5FA2D91973C0@HE1PR04MB1241.eurprd04.prod.outlook.com>
+References: <1511954855-8593-1-git-send-email-prabhakar.kushwaha@nxp.com>
+ <1512105209.10062.1.camel@buserror.net>
+ <HE1PR04MB12414AFA5F8081730B89378497390@HE1PR04MB1241.eurprd04.prod.outlook.com>
+ <1512165311.10062.3.camel@buserror.net>
+In-Reply-To: <1512165311.10062.3.camel@buserror.net>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,28 +31,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Fabio Estevam <fabio.estevam@nxp.com>
-
-In order to improve the bindings documentation, explicitly pass the name
-of the clocks: "qspi_en" and "qspi", which are mandatory.
-
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
----
- Documentation/devicetree/bindings/mtd/fsl-quadspi.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-index c34aa6f..cc3f579 100644
---- a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-+++ b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-@@ -12,7 +12,7 @@ Required properties:
-   - reg-names: Should contain the reg names "QuadSPI" and "QuadSPI-memory"
-   - interrupts : Should contain the interrupt for the device
-   - clocks : The clocks needed by the QuadSPI controller
--  - clock-names : the name of the clocks
-+  - clock-names : Should contain the name of the clocks: "qspi_en" and "qspi".
- 
- Optional properties:
-   - fsl,qspi-has-second-chip: The controller has two buses, bus A and bus B.
--- 
-2.7.4
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFNjb3R0IFdvb2QgW21haWx0
+bzpvc3NAYnVzZXJyb3IubmV0XQ0KPiBTZW50OiBTYXR1cmRheSwgRGVjZW1iZXIgMDIsIDIwMTcg
+MzoyNSBBTQ0KPiBUbzogUHJhYmhha2FyIEt1c2h3YWhhIDxwcmFiaGFrYXIua3VzaHdhaGFAbnhw
+LmNvbT47IGxpbnV4LQ0KPiBtdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgZGV2aWNldHJlZS1kaXNj
+dXNzQGxpc3RzLm96bGFicy5vcmcNCj4gQ2M6IGRlZGVraW5kMUBnbWFpbC5jb207IGNvbXB1dGVy
+c2ZvcnBlYWNlQGdtYWlsLmNvbQ0KPiBTdWJqZWN0OiBSZTogW1BBVENIXSBEb2N1bWVudGF0aW9u
+OiBiaW5kaW5nOiBVcGRhdGUgZW5kaWFubmVzcyB1c2FnZQ0KPiANCj4gT24gRnJpLCAyMDE3LTEy
+LTAxIGF0IDA4OjQyICswMDAwLCBQcmFiaGFrYXIgS3VzaHdhaGEgd3JvdGU6DQo+ID4gPiAtLS0t
+LU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+ID4gRnJvbTogU2NvdHQgV29vZCBbbWFpbHRvOm9z
+c0BidXNlcnJvci5uZXRdDQo+ID4gPiBTZW50OiBGcmlkYXksIERlY2VtYmVyIDAxLCAyMDE3IDEw
+OjQzIEFNDQo+ID4gPiBUbzogUHJhYmhha2FyIEt1c2h3YWhhIDxwcmFiaGFrYXIua3VzaHdhaGFA
+bnhwLmNvbT47IGxpbnV4LQ0KPiA+ID4gbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IGRldmljZXRy
+ZWUtZGlzY3Vzc0BsaXN0cy5vemxhYnMub3JnDQo+ID4gPiBDYzogZGVkZWtpbmQxQGdtYWlsLmNv
+bTsgY29tcHV0ZXJzZm9ycGVhY2VAZ21haWwuY29tDQo+ID4gPiBTdWJqZWN0OiBSZTogW1BBVENI
+XSBEb2N1bWVudGF0aW9uOiBiaW5kaW5nOiBVcGRhdGUgZW5kaWFubmVzcyB1c2FnZQ0KPiA+ID4N
+Cj4gPiA+IE9uIFdlZCwgMjAxNy0xMS0yOSBhdCAxNjo1NyArMDUzMCwgUHJhYmhha2FyIEt1c2h3
+YWhhIHdyb3RlOg0KPiA+ID4gPiBJRkMgY29udHJvbGxlciB2ZXJzaW9uIDwgMi4wIHN1cHBvcnQg
+SUZDIHJlZ2lzdGVyIGFjY2VzcyBhcw0KPiA+ID4gPiBiaWcgZW5kaWFuLiBUaGVzZSBjb250cm9s
+bGVyIHZlcnNpb24gYWxzbyByZXF1aXJlIElGQyBOT1Igc2lnbmFscyB0bw0KPiA+ID4gPiBiZSBj
+b25uZWN0ZWQgaW4gcmV2ZXJzZSBvcmRlciB3aXRoIE5PUiBmbGFzaC4NCj4gPiA+ID4NCj4gPiA+
+ID4gSUZDID49IDIuMCBpcyBvdGhlciB3YXkgYXJvdW5kLg0KPiA+ID4gPg0KPiA+ID4gPiBTbyB1
+cGRhdGluZyBJRkMgYmluZGluZyB0byB0YWtlIGNhcmUgb2YgYm90aCB1c2luZyBlbmRpYW5uZXNz
+IGZpZWxkLg0KPiA+ID4gPg0KPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBQcmFiaGFrYXIgS3VzaHdh
+aGEgPHByYWJoYWthci5rdXNod2FoYUBueHAuY29tPg0KPiA+ID4gPiAtLS0NCj4gPiA+ID4gwqBE
+b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWVtb3J5LWNvbnRyb2xsZXJzL2ZzbC9p
+ZmMudHh0IHwgNg0KPiA+ID4gPiArKysrLS0NCj4gPiA+ID4gwqAxIGZpbGUgY2hhbmdlZCwgNCBp
+bnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPiA+ID4gPg0KPiA+ID4gPiBkaWZmIC0tZ2l0
+IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21lbW9yeS0NCj4gPiA+ID4gY29u
+dHJvbGxlcnMvZnNsL2lmYy50eHQgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
+bWVtb3J5LQ0KPiA+ID4gPiBjb250cm9sbGVycy9mc2wvaWZjLnR4dA0KPiA+ID4gPiBpbmRleCA4
+OTQyN2IwLi44MjRhMmNhIDEwMDY0NA0KPiA+ID4gPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2Rldmlj
+ZXRyZWUvYmluZGluZ3MvbWVtb3J5LWNvbnRyb2xsZXJzL2ZzbC9pZmMudHh0DQo+ID4gPiA+ICsr
+KyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZW1vcnktY29udHJvbGxlcnMv
+ZnNsL2lmYy50eHQNCj4gPiA+ID4gQEAgLTE4LDggKzE4LDEwIEBAIFByb3BlcnRpZXM6DQo+ID4g
+PiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGludGVycnVwdCAoTkFORF9FVlRFUl9T
+VEFUKS7CoMKgSWYgdGhlcmUgaXMgb25seSBvbmUsDQo+ID4gPiA+IMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoHRoYXQgaW50ZXJydXB0IHJlcG9ydHMgYm90aCB0eXBlcyBvZiBldmVudC4N
+Cj4gPiA+ID4NCj4gPiA+ID4gLS0gbGl0dGxlLWVuZGlhbiA6IElmIHRoaXMgcHJvcGVydHkgaXMg
+YWJzZW50LCB0aGUgYmlnLWVuZGlhbiBtb2RlIHdpbGwNCj4gPiA+ID4gLcKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoGJlIGluIHVzZSBhcyBkZWZhdWx0IGZvciByZWdpc3RlcnMu
+DQo+ID4gPiA+ICstIGxpdHRsZS1lbmRpYW4gb3IgYmlnLWVuZGluIDogSXQgcmVwcmVzZW50cyBo
+b3cgSUZDIHJlZ2lzdGVyc8KgwqB0byBiZQ0KPiA+ID4gPiBhY2Nlc3NlZC4NCj4gPiA+ID4gKwkJ
+CUl0IGFsc28gcmVwcmVzZW50cyBjb25uZWN0aW9uIGJldHdlZW4NCj4gPiA+ID4gY29udHJvbGxl
+cg0KPiA+ID4gPiBhbmQNCj4gPiA+ID4gKwkJCU5PUiBmbGFzaC4gSWYgdGhpcyBwcm9wZXJ0eSBp
+cyBhYnNlbnQsIHRoZSBiaWctDQo+ID4gPiA+IGVuZGlhbg0KPiA+ID4gPiArCQkJbW9kZSB3aWxs
+IGJlIGluIHVzZSBhcyBkZWZhdWx0Lg0KPiA+ID4NCj4gPiA+ICJlbmRpbiI/DQo+ID4gPg0KPiA+
+ID4gSWYgYmlnIGVuZGlhbiBpcyB0aGUgZGVmYXVsdCwgaXMgdGhpcyBjaGFuZ2UgcmVhbGx5DQo+
+ID4gPiBuZWNlc3Nhcnk/wqDCoFBhcnRpY3VsYXJseQ0KPiA+ID4gc2luY2UgdGhlIGJpZyBlbmRp
+YW4gY2hpcHMgYXJlIG9sZGVyIGFuZCB0aHVzIGhhdmUgZXhpc3RpbmcgZGV2aWNlIHRyZWVzLg0K
+PiA+ID4NCj4gPg0KPiA+IEVhcmxpZXIgZW5kaWFubmVzcyBpbmZvcm1hdGlvbiB3YXMgb25seSB1
+c2VkIGZvciAiaG93IHRvIsKgwqBhY2Nlc3MgSUZDLU5BTkQNCj4gPiByZWdpc3RlciBhY2Nlc3Mu
+DQo+ID4gTm93IHRoaXMgaW5mb8KgwqB3aWxsIGFsc28gYmUgdXNlZCBmb3IgZGVmaW5pbmcgc3dh
+cCByZXF1aXJlbWVudCBvZiBOT1INCj4gPiBmbGFzaC4NCj4gDQo+IElzIHRoaXMgYSBkaWZmZXJl
+bmNlIGJldHdlZW4gTFMxMDIxQSBhbmQgUFBDLWJhc2VkIGNoaXBzPw0KPiANCg0KWWVzLiANCkNP
+TkZJR19NVERfQ0ZJX0JFX0JZVEVfU1dBUCBuZWVkcyB0byBiZSBkZWZpbmVkIEZvciBMUzEwMjFB
+LCBMUzEwNDNBLCBMUzEwNDZBICANCg0KPiA+ICJJZiB0aGlzIHByb3BlcnR5IGlzIGFic2VudCzC
+oMKgdGhlIGJpZy3CoMKgZW5kaWFuIG1vZGUgd2lsbCBiZSBpbiB1c2UgYXMNCj4gPiBkZWZhdWx0
+ICIuIFRoaXMgbGluZSBjYW4gYmUgcmVtb3ZlZC4NCj4gPiBQbGVhc2UgbGV0IG1lIGtub3cgeW91
+ciB2aWV3IG9uIHRoaXMuDQo+IA0KPiBObywgaXQgY2Fubm90IGJlIHJlbW92ZWQgYmVjYXVzZSB0
+aGVyZSBhcmUgZXhpc3RpbmcgZGV2aWNlIHRyZWVzIHdpdGggSUZDDQo+IG5vZGVzIHRoYXQgZG9u
+J3QgaGF2ZSBlaXRoZXIgcHJvcGVydHkuDQo+IA0KDQpHbyBpdC4gSSB3aWxsIG5vdCByZW1vdmUg
+aXQuIE1lYW5zIHBhdGNoIHJlbWFpbnMgc2FtZS4NCg0KLS1wcmFiaGFrYXINCg0KDQo=
