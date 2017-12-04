@@ -1,24 +1,23 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eLn4m-000327-Ew
- for linux-mtd@lists.infradead.org; Mon, 04 Dec 2017 09:30:21 +0000
-Date: Mon, 4 Dec 2017 10:29:41 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Adam Ford <aford173@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 2/3] mtd: nand: Remove support for block locking/unlocking
-Message-ID: <20171204102941.7c57ad13@bbrezillon>
-In-Reply-To: <CAHCN7xKtR=kjLLFYkQkhjKGsuU+ttRE9FA_p7aWGDWVWxf2S8Q@mail.gmail.com>
-References: <1494886663-20700-1-git-send-email-boris.brezillon@free-electrons.com>
- <1494886663-20700-3-git-send-email-boris.brezillon@free-electrons.com>
- <20170804103237.58eed266@bbrezillon>
- <CAHCN7xKtR=kjLLFYkQkhjKGsuU+ttRE9FA_p7aWGDWVWxf2S8Q@mail.gmail.com>
+Received: from mailout.micron.com ([137.201.242.129])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eLpyS-0000Xr-2v
+ for linux-mtd@lists.infradead.org; Mon, 04 Dec 2017 12:35:53 +0000
+From: "Bean Huo (beanhuo)" <beanhuo@micron.com>
+To: "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ "richard@nod.at" <richard@nod.at>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Bean Huo
+ (beanhuo)" <beanhuo@micron.com>
+Subject: [PATCH v2] drivers:mtd:spi-nor:checkup FSR error bits
+Date: Mon, 4 Dec 2017 12:34:47 +0000
+Message-ID: <c93093d3f0b94665936e6b03cc952c88@SIWEX5A.sing.micron.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,59 +27,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Adam,
+For Micron spi nor device, when erase/program operation
+fails, especially the failure results from intending to
+modify protected space, spi-nor upper layers still get
+the return which shows the operation succeeds. This is
+because current spi_nor_fsr_ready() only uses FSR bit.7
+(flag status register) to check device whether ready.
+This patch fixs this issue by checking relevant error
+bits in FSR.
+The FSR is a powerful tool to investigate the staus of
+device, checking information regarding what is actually
+doing the memory and detecting possible error conditions.
 
-On Sun, 3 Dec 2017 08:57:17 -0600
-Adam Ford <aford173@gmail.com> wrote:
+Signed-off-by: beanhuo <beanhuo@micron.com>
+---
+ v1 - v2:
+	- Changed some error comments based on Cyrille's reviews.
 
-> On Fri, Aug 4, 2017 at 3:32 AM, Boris Brezillon <
-> boris.brezillon@free-electrons.com> wrote:
-> 
-> > On Tue, 16 May 2017 00:17:42 +0200
-> > Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-> >  
-> > > Commit 7d70f334ad2b ("mtd: nand: add lock/unlock routines") introduced
-> > > support for the Micron LOCK/UNLOCK commands but no one ever used the
-> > > nand_lock/unlock() functions.
-> > >
-> > > Remove support for these vendor-specific operations from the core. If
-> > > one ever wants to add them back they should be put in nand_micron.c and
-> > > mtd->_lock/_unlock should be directly assigned from there instead of
-> > > exporting the functions.  
-> >
-> >  
-> I am running into some issues with a board using Micron Flash that cannot
-> boot from a UBIFS partition and it appears to be related the NAND being
-> locked.  I was going to investigate how to unlock the NAND and I came
-> across this.  I am attempting to do what you suggested by moving these
-> functions to the nand_micron.c file, but these functions are dependant on
-> several static functions inside nand_base.c
-> namely: check_offs_len, nand_get_device, nand_check_wp,
-> and nand_release_device.  I assume that we don't want to export all those
-> functions, but it seems redundant to copy these functions to nand_micron.c.
+ drivers/mtd/spi-nor/spi-nor.c | 18 ++++++++++++++++--
+ include/linux/mtd/spi-nor.h   |  6 +++++-
+ 2 files changed, 21 insertions(+), 3 deletions(-)
 
-I don't see a problem in exposing those symbols so that NAND vendor
-drivers can use them (note that you don't need to use EXPORT_SYMBOL()
-in this case, because nand_xxx.c files are all linked in a single
-object)?
-
-This being said, I think the check_offs_len() can be dropped since it's
-already checked in mtd_[un]lock().
-
-> 
-> Do you have any thoughts or suggestions on how to go about using these
-> functions without replicating code?
-
-I have no objection to adding this feature back in the Micron driver,
-though I'd like to wait for the ->exec_op() series [1] to be merged,
-because I'm not sure all NAND controller drivers handle the UNLOCK/LOCK
-operations properly (custom ->cmdfunc() implementations tend to only
-support basic operations). The idea is to check whether the controller
-supports the LOCK/UNLOCK operations and in this case assign the
-mtd->_lock/_unlock() hooks to micron's implementation.
-
-Regards,
-
-Boris
-
-[1]http://patchwork.ozlabs.org/project/linux-mtd/list/?series=16013&state=%2A&archive=both
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 19c00072..4423605 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -328,8 +328,22 @@ static inline int spi_nor_fsr_ready(struct spi_nor *no=
+r)
+ 	int fsr =3D read_fsr(nor);
+ 	if (fsr < 0)
+ 		return fsr;
+-	else
+-		return fsr & FSR_READY;
++
++	if (fsr & (FSR_E_ERR | FSR_P_ERR)) {
++		if (fsr & FSR_E_ERR)
++			dev_err(nor->dev, "Erase operation failed.\n");
++		else
++			dev_err(nor->dev, "Program operation failed.\n");
++
++		if (fsr & FSR_PT_ERR)
++			dev_err(nor->dev,
++			"Attempted to modify a protected sector.\n");
++
++		nor->write_reg(nor, SPINOR_OP_CLFSR, NULL, 0);
++		return -EIO;
++	}
++
++	return fsr & FSR_READY;
+ }
+=20
+ static int spi_nor_ready(struct spi_nor *nor)
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index 1f0a7fc..da8e0d5 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -61,6 +61,7 @@
+ #define SPINOR_OP_RDSFDP	0x5a	/* Read SFDP */
+ #define SPINOR_OP_RDCR		0x35	/* Read configuration register */
+ #define SPINOR_OP_RDFSR		0x70	/* Read flag status register */
++#define SPINOR_OP_CLFSR		0x50	/* Clear flag status register */
+=20
+ /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
+ #define SPINOR_OP_READ_4B	0x13	/* Read data bytes (low frequency) */
+@@ -130,7 +131,10 @@
+ #define EVCR_QUAD_EN_MICRON	BIT(7)	/* Micron Quad I/O */
+=20
+ /* Flag Status Register bits */
+-#define FSR_READY		BIT(7)
++#define FSR_READY		BIT(7)	/* Device status, 0 =3D Busy, 1 =3D Ready */
++#define FSR_E_ERR		BIT(5)	/* Erase operation status */
++#define FSR_P_ERR		BIT(4)	/* Program operation status */
++#define FSR_PT_ERR		BIT(1)	/* Protection error bit */
+=20
+ /* Configuration Register bits. */
+ #define CR_QUAD_EN_SPAN		BIT(1)	/* Spansion Quad I/O */
+--=20
+2.7.4
