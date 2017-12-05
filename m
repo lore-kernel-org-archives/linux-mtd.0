@@ -1,10 +1,30 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Cc: Richard Weinberger <richard@nod.at>, kernel@pengutronix.de,
- Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH] UBI: fastmap: Erase outdated anchor PEBs during attach
-Date: Tue,  5 Dec 2017 16:01:20 +0100
-Message-Id: <20171205150120.26045-1-s.hauer@pengutronix.de>
+Received: from conssluserg-06.nifty.com ([210.131.2.91])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eMFBB-0000RM-Ev
+ for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 15:30:43 +0000
+Received: from mail-ua0-f170.google.com (mail-ua0-f170.google.com
+ [209.85.217.170]) (authenticated)
+ by conssluserg-06.nifty.com with ESMTP id vB5FTmXN003846
+ for <linux-mtd@lists.infradead.org>; Wed, 6 Dec 2017 00:29:48 +0900
+Received: by mail-ua0-f170.google.com with SMTP id h2so462921uae.12
+ for <linux-mtd@lists.infradead.org>; Tue, 05 Dec 2017 07:29:48 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20171205110929.6820-2-boris.brezillon@free-electrons.com>
+References: <20171205110929.6820-1-boris.brezillon@free-electrons.com>
+ <20171205110929.6820-2-boris.brezillon@free-electrons.com>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Wed, 6 Dec 2017 00:29:07 +0900
+Message-ID: <CAK7LNARs1wGzE9zHHsxH81uwZREqVj-csfdt=tb8VT3ZSu5jAw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mtd: nand: Only allocate ecc->{calc, code}_buf when
+ actually needed
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -14,131 +34,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The fastmap update code might erase the current fastmap anchor PEB
-in case it doesn't find any new free PEB. When a power cut happens
-in this situation we must not have any outdated fastmap anchor PEB
-on the device, because that would be used to attach during next
-boot.
-The easiest way to make that sure is to erase all outdated fastmap
-anchor PEBs synchronously during attach.
+2017-12-05 20:09 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> The only users of the ecc->{calc,code}_buf buffers are NAND controller
+> drivers implementing ecc->calculate() and/or ecc->correct(). Since the
+> ->oobsize can be non-negligle, especially on modern NAND devices, we'd
+> better allocate it only when it is actually required.
+>
+> Make ecc->{calc,code}_buf allocation dependent on the presence of
+> ecc->calculate() or ecc->correct().
+>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>  drivers/mtd/nand/nand_base.c | 25 +++++++++++--------------
+>  1 file changed, 11 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 71e70c4964f3..e6873d10c574 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -5318,21 +5318,9 @@ int nand_scan_tail(struct mtd_info *mtd)
+>                 return -EINVAL;
+>         }
+>
+> -       ecc->calc_buf = kmalloc(mtd->oobsize, GFP_KERNEL);
+> -       if (!ecc->calc_buf)
+> -               return -ENOMEM;
+> -
+> -       ecc->code_buf = kmalloc(mtd->oobsize, GFP_KERNEL);
+> -       if (!ecc->code_buf) {
+> -               ret = -ENOMEM;
+> -               goto err_free_buf;
+> -       }
+> -
+>         chip->data_buf = kmalloc(mtd->writesize + mtd->oobsize, GFP_KERNEL);
+> -       if (!chip->data_buf) {
+> -               ret = -ENOMEM;
+> -               goto err_free_buf;
+> -       }
+> +       if (!chip->data_buf)
+> +               return -ENOMEM;
+>
+>         /*
+>          * FIXME: some NAND manufacturer drivers expect the first die to be
+> @@ -5495,6 +5483,15 @@ int nand_scan_tail(struct mtd_info *mtd)
+>                 goto err_nand_manuf_cleanup;
+>         }
+>
+> +       if (ecc->correct || ecc->calculate) {
+> +               ecc->calc_buf = kmalloc(mtd->oobsize, GFP_KERNEL);
+> +               ecc->code_buf = kmalloc(mtd->oobsize, GFP_KERNEL);
+> +               if (!ecc->calc_buf || !ecc->code_buf) {
+> +                       ret = -ENOMEM;
+> +                       goto err_nand_manuf_cleanup;
+> +               }
+> +       }
+> +
+>         /* For many systems, the standard OOB write also works for raw */
+>         if (!ecc->read_oob_raw)
+>                 ecc->read_oob_raw = ecc->read_oob;
+> --
+> 2.11.0
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- drivers/mtd/ubi/wl.c | 77 ++++++++++++++++++++++++++++++++++++++--------------
- 1 file changed, 57 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index b5b8cd6f481c..668b46202507 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -1529,6 +1529,46 @@ static void shutdown_work(struct ubi_device *ubi)
- }
- 
- /**
-+ * erase_aeb - erase a PEB given in UBI attach info PEB
-+ * @ubi: UBI device description object
-+ * @aeb: UBI attach info PEB
-+ * @sync: If true, erase synchronously. Otherwise schedule for erasure
-+ */
-+static int erase_aeb(struct ubi_device *ubi, struct ubi_ainf_peb *aeb, bool sync)
-+{
-+	struct ubi_wl_entry *e;
-+	int err;
-+
-+	e = kmem_cache_alloc(ubi_wl_entry_slab, GFP_KERNEL);
-+	if (!e)
-+		return -ENOMEM;
-+
-+	e->pnum = aeb->pnum;
-+	e->ec = aeb->ec;
-+	ubi->lookuptbl[e->pnum] = e;
-+
-+	if (sync) {
-+		err = sync_erase(ubi, e, false);
-+		if (err)
-+			goto out_free;
-+
-+		wl_tree_add(e, &ubi->free);
-+		ubi->free_count++;
-+	} else {
-+		err = schedule_erase(ubi, e, aeb->vol_id, aeb->lnum, 0, false);
-+		if (err)
-+			goto out_free;
-+	}
-+
-+	return 0;
-+
-+out_free:
-+	wl_entry_destroy(ubi, e);
-+
-+	return err;
-+}
-+
-+/**
-  * ubi_wl_init - initialize the WL sub-system using attaching information.
-  * @ubi: UBI device description object
-  * @ai: attaching information
-@@ -1566,18 +1606,10 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 	list_for_each_entry_safe(aeb, tmp, &ai->erase, u.list) {
- 		cond_resched();
- 
--		e = kmem_cache_alloc(ubi_wl_entry_slab, GFP_KERNEL);
--		if (!e)
-+		err = erase_aeb(ubi, aeb, false);
-+		if (err)
- 			goto out_free;
- 
--		e->pnum = aeb->pnum;
--		e->ec = aeb->ec;
--		ubi->lookuptbl[e->pnum] = e;
--		if (schedule_erase(ubi, e, aeb->vol_id, aeb->lnum, 0, false)) {
--			wl_entry_destroy(ubi, e);
--			goto out_free;
--		}
--
- 		found_pebs++;
- 	}
- 
-@@ -1635,6 +1667,8 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 			ubi_assert(!ubi->lookuptbl[e->pnum]);
- 			ubi->lookuptbl[e->pnum] = e;
- 		} else {
-+			bool sync = false;
-+
- 			/*
- 			 * Usually old Fastmap PEBs are scheduled for erasure
- 			 * and we don't have to care about them but if we face
-@@ -1644,18 +1678,21 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 			if (ubi->lookuptbl[aeb->pnum])
- 				continue;
- 
--			e = kmem_cache_alloc(ubi_wl_entry_slab, GFP_KERNEL);
--			if (!e)
--				goto out_free;
-+			/*
-+			 * The fastmap update code might not find a free PEB for
-+			 * writing the fastmap anchor to and then reuses the
-+			 * current fastmap anchor PEB. When this PEB gets erased
-+			 * and a power cut happens before it is written again we
-+			 * must make sure that the fastmap attach code doesn't
-+			 * find any outdated fastmap anchors, hence we erase the
-+			 * outdated fastmap anchor PEBs synchronously here.
-+			 */
-+			if (aeb->vol_id == UBI_FM_SB_VOLUME_ID)
-+				sync = true;
- 
--			e->pnum = aeb->pnum;
--			e->ec = aeb->ec;
--			ubi_assert(!ubi->lookuptbl[e->pnum]);
--			ubi->lookuptbl[e->pnum] = e;
--			if (schedule_erase(ubi, e, aeb->vol_id, aeb->lnum, 0, false)) {
--				wl_entry_destroy(ubi, e);
-+			err = erase_aeb(ubi, aeb, sync);
-+			if (err)
- 				goto out_free;
--			}
- 		}
- 
- 		found_pebs++;
+I wondered if chip->data_buf allocation could be moved as well,
+but otherwise, looks good to me.
+
+
+Reviewed-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+
+
 -- 
-2.11.0
+Best Regards
+Masahiro Yamada
