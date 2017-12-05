@@ -1,22 +1,18 @@
-Received: from mail-cys01nam02on0058.outbound.protection.outlook.com
- ([104.47.37.58] helo=NAM02-CY1-obe.outbound.protection.outlook.com)
+Received: from conuserg-08.nifty.com ([210.131.2.75])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eM69p-0007eD-RP
- for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 05:52:44 +0000
-From: Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
-To: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <computersforpeace@gmail.com>, <dwmw2@infradead.org>,
- <boris.brezillon@free-electrons.com>, <marek.vasut@gmail.com>,
- <richard@nod.at>, <cyrille.pitchen@wedev4u.fr>
-CC: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-Subject: [PATCHv2 2/2] mtd: m25p80: restore the status of SPI flash when stop
- using it
-Date: Tue, 5 Dec 2017 13:33:22 +0800
-Message-ID: <20171205053322.35823-3-Zhiqiang.Hou@nxp.com>
-In-Reply-To: <20171205053322.35823-1-Zhiqiang.Hou@nxp.com>
-References: <20171205053322.35823-1-Zhiqiang.Hou@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+ id 1eM8th-000442-BM
+ for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 08:48:15 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH v2 1/3] mtd: nand: cafe: remove use of NAND_OWN_BUFFERS
+Date: Tue,  5 Dec 2017 17:47:14 +0900
+Message-Id: <1512463636-28934-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,49 +22,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+This driver is the last/only user of NAND_OWN_BUFFERS.  Boris suggested
+to remove this flag.
 
-Implement .shutdown function to restore the status in reboot
-process, and add the same operation to the .remove function.
+Taking a closer look at this driver, it calls dma_alloc_coherent() for
+the concatenated area for the DMA bounce buffer + struct nand_buffers,
+but the latter does not need to be DMA-coherent; cafe_{write,read}_buf
+simply do memcpy() between buffers when usedma==1.
 
-Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+Let's do dma_alloc_coherent() for the DMA bounce buffer in the front,
+and leave the nand_buffers allocation to nand_scan_tail(), then rip off
+NAND_OWN_BUFFERS.
+
+The magic number, 2112, is still mysterious (hard-coded writesize +
+oobsize ?), but this is not our main interest.  I am keeping it.
+
+Suggested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
-V2:
- - Changed code format slightly.
 
- drivers/mtd/devices/m25p80.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Changes in v2:
+  - Newly added
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index dbe6a1de2bb8..a4e18f6aaa33 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -307,10 +307,18 @@ static int m25p_remove(struct spi_device *spi)
- {
- 	struct m25p	*flash = spi_get_drvdata(spi);
+ drivers/mtd/nand/cafe_nand.c | 24 ++++--------------------
+ 1 file changed, 4 insertions(+), 20 deletions(-)
+
+diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
+index bc558c4..add4613 100644
+--- a/drivers/mtd/nand/cafe_nand.c
++++ b/drivers/mtd/nand/cafe_nand.c
+@@ -613,7 +613,6 @@ static int cafe_nand_probe(struct pci_dev *pdev,
+ 	uint32_t ctrl;
+ 	int err = 0;
+ 	int old_dma;
+-	struct nand_buffers *nbuf;
  
-+	spi_nor_restore(&flash->spi_nor);
-+
- 	/* Clean up MTD stuff. */
- 	return mtd_device_unregister(&flash->spi_nor.mtd);
+ 	/* Very old versions shared the same PCI ident for all three
+ 	   functions on the chip. Verify the class too... */
+@@ -661,7 +660,6 @@ static int cafe_nand_probe(struct pci_dev *pdev,
+ 
+ 	/* Enable the following for a flash based bad block table */
+ 	cafe->nand.bbt_options = NAND_BBT_USE_FLASH;
+-	cafe->nand.options = NAND_OWN_BUFFERS;
+ 
+ 	if (skipbbt) {
+ 		cafe->nand.options |= NAND_SKIP_BBTSCAN;
+@@ -731,15 +729,12 @@ static int cafe_nand_probe(struct pci_dev *pdev,
+ 	if (err)
+ 		goto out_irq;
+ 
+-	cafe->dmabuf = dma_alloc_coherent(&cafe->pdev->dev,
+-				2112 + sizeof(struct nand_buffers) +
+-				mtd->writesize + mtd->oobsize,
+-				&cafe->dmaaddr, GFP_KERNEL);
++	cafe->dmabuf = dma_alloc_coherent(&cafe->pdev->dev, 2112,
++					  &cafe->dmaaddr, GFP_KERNEL);
+ 	if (!cafe->dmabuf) {
+ 		err = -ENOMEM;
+ 		goto out_irq;
+ 	}
+-	cafe->nand.buffers = nbuf = (void *)cafe->dmabuf + 2112;
+ 
+ 	/* Set up DMA address */
+ 	cafe_writel(cafe, cafe->dmaaddr & 0xffffffff, NAND_DMA_ADDR0);
+@@ -752,11 +747,6 @@ static int cafe_nand_probe(struct pci_dev *pdev,
+ 	cafe_dev_dbg(&cafe->pdev->dev, "Set DMA address to %x (virt %p)\n",
+ 		cafe_readl(cafe, NAND_DMA_ADDR0), cafe->dmabuf);
+ 
+-	/* this driver does not need the @ecccalc and @ecccode */
+-	nbuf->ecccalc = NULL;
+-	nbuf->ecccode = NULL;
+-	nbuf->databuf = (uint8_t *)(nbuf + 1);
+-
+ 	/* Restore the DMA flag */
+ 	usedma = old_dma;
+ 
+@@ -801,10 +791,7 @@ static int cafe_nand_probe(struct pci_dev *pdev,
+ 	goto out;
+ 
+  out_free_dma:
+-	dma_free_coherent(&cafe->pdev->dev,
+-			2112 + sizeof(struct nand_buffers) +
+-			mtd->writesize + mtd->oobsize,
+-			cafe->dmabuf, cafe->dmaaddr);
++	dma_free_coherent(&cafe->pdev->dev, 2112, cafe->dmabuf, cafe->dmaaddr);
+  out_irq:
+ 	/* Disable NAND IRQ in global IRQ mask register */
+ 	cafe_writel(cafe, ~1 & cafe_readl(cafe, GLOBAL_IRQ_MASK), GLOBAL_IRQ_MASK);
+@@ -829,10 +816,7 @@ static void cafe_nand_remove(struct pci_dev *pdev)
+ 	nand_release(mtd);
+ 	free_rs(cafe->rs);
+ 	pci_iounmap(pdev, cafe->mmio);
+-	dma_free_coherent(&cafe->pdev->dev,
+-			2112 + sizeof(struct nand_buffers) +
+-			mtd->writesize + mtd->oobsize,
+-			cafe->dmabuf, cafe->dmaaddr);
++	dma_free_coherent(&cafe->pdev->dev, 2112, cafe->dmabuf, cafe->dmaaddr);
+ 	kfree(cafe);
  }
  
-+static void m25p_shutdown(struct spi_device *spi)
-+{
-+	struct m25p *flash = spi_get_drvdata(spi);
-+
-+	spi_nor_restore(&flash->spi_nor);
-+}
- /*
-  * Do NOT add to this array without reading the following:
-  *
-@@ -386,6 +394,7 @@ static struct spi_driver m25p80_driver = {
- 	.id_table	= m25p_ids,
- 	.probe	= m25p_probe,
- 	.remove	= m25p_remove,
-+	.shutdown	= m25p_shutdown,
- 
- 	/* REVISIT: many of these chips have deep power-down modes, which
- 	 * should clearly be entered on suspend() to minimize power use.
 -- 
-2.14.1
+2.7.4
