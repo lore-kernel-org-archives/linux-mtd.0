@@ -1,19 +1,10 @@
-Subject: Re: [PATCH v2 1/3] mtd: nand: mtk: update DT bindings
-To: RogerCC Lin <rogercc.lin@mediatek.com>,
- boris.brezillon@free-electrons.com, computersforpeace@gmail.com
-Cc: srv_heupstream@mediatek.com, bayi.cheng@mediatek.com,
- linux-mtd@lists.infradead.org, linux-mediatek@lists.infradead.org,
- xiaolei.li@mediatek.com, dwmw2@infradead.org
-References: <1512051045-24026-1-git-send-email-rogercc.lin@mediatek.com>
- <1512051045-24026-2-git-send-email-rogercc.lin@mediatek.com>
-From: Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <9172e2c4-5aee-12d0-222c-c0f11e112cd7@gmail.com>
-Date: Tue, 5 Dec 2017 14:44:20 +0100
-MIME-Version: 1.0
-In-Reply-To: <1512051045-24026-2-git-send-email-rogercc.lin@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Cc: Richard Weinberger <richard@nod.at>, kernel@pengutronix.de,
+ Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH] UBI: fastmap: Erase outdated anchor PEBs during attach
+Date: Tue,  5 Dec 2017 16:01:20 +0100
+Message-Id: <20171205150120.26045-1-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,49 +14,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The fastmap update code might erase the current fastmap anchor PEB
+in case it doesn't find any new free PEB. When a power cut happens
+in this situation we must not have any outdated fastmap anchor PEB
+on the device, because that would be used to attach during next
+boot.
+The easiest way to make that sure is to erase all outdated fastmap
+anchor PEBs synchronously during attach.
 
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ drivers/mtd/ubi/wl.c | 77 ++++++++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 57 insertions(+), 20 deletions(-)
 
-On 11/30/2017 03:10 PM, RogerCC Lin wrote:
-> From: RogerCC Lin <rogercc.lin@mediatek.com>
-> 
-> Add MT7622 NAND Flash Controller dt bindings documentation.
-> 
-> Signed-off-by: RogerCC Lin <rogercc.lin@mediatek.com>
-> ---
-
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-
-
->   Documentation/devicetree/bindings/mtd/mtk-nand.txt | 11 ++++++++---
->   1 file changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/mtk-nand.txt b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
-> index dbf9e05..0025bc4 100644
-> --- a/Documentation/devicetree/bindings/mtd/mtk-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
-> @@ -12,8 +12,10 @@ tree nodes.
->   
->   The first part of NFC is NAND Controller Interface (NFI) HW.
->   Required NFI properties:
-> -- compatible:			Should be one of "mediatek,mt2701-nfc",
-> -				"mediatek,mt2712-nfc".
-> +- compatible:			Should be one of
-> +				"mediatek,mt2701-nfc",
-> +				"mediatek,mt2712-nfc",
-> +				"mediatek,mt7622-nfc".
->   - reg:				Base physical address and size of NFI.
->   - interrupts:			Interrupts of NFI.
->   - clocks:			NFI required clocks.
-> @@ -142,7 +144,10 @@ Example:
->   ==============
->   
->   Required BCH properties:
-> -- compatible:	Should be one of "mediatek,mt2701-ecc", "mediatek,mt2712-ecc".
-> +- compatible:	Should be one of
-> +		"mediatek,mt2701-ecc",
-> +		"mediatek,mt2712-ecc",
-> +		"mediatek,mt7622-ecc".
->   - reg:		Base physical address and size of ECC.
->   - interrupts:	Interrupts of ECC.
->   - clocks:	ECC required clocks.
-> 
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index b5b8cd6f481c..668b46202507 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -1529,6 +1529,46 @@ static void shutdown_work(struct ubi_device *ubi)
+ }
+ 
+ /**
++ * erase_aeb - erase a PEB given in UBI attach info PEB
++ * @ubi: UBI device description object
++ * @aeb: UBI attach info PEB
++ * @sync: If true, erase synchronously. Otherwise schedule for erasure
++ */
++static int erase_aeb(struct ubi_device *ubi, struct ubi_ainf_peb *aeb, bool sync)
++{
++	struct ubi_wl_entry *e;
++	int err;
++
++	e = kmem_cache_alloc(ubi_wl_entry_slab, GFP_KERNEL);
++	if (!e)
++		return -ENOMEM;
++
++	e->pnum = aeb->pnum;
++	e->ec = aeb->ec;
++	ubi->lookuptbl[e->pnum] = e;
++
++	if (sync) {
++		err = sync_erase(ubi, e, false);
++		if (err)
++			goto out_free;
++
++		wl_tree_add(e, &ubi->free);
++		ubi->free_count++;
++	} else {
++		err = schedule_erase(ubi, e, aeb->vol_id, aeb->lnum, 0, false);
++		if (err)
++			goto out_free;
++	}
++
++	return 0;
++
++out_free:
++	wl_entry_destroy(ubi, e);
++
++	return err;
++}
++
++/**
+  * ubi_wl_init - initialize the WL sub-system using attaching information.
+  * @ubi: UBI device description object
+  * @ai: attaching information
+@@ -1566,18 +1606,10 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
+ 	list_for_each_entry_safe(aeb, tmp, &ai->erase, u.list) {
+ 		cond_resched();
+ 
+-		e = kmem_cache_alloc(ubi_wl_entry_slab, GFP_KERNEL);
+-		if (!e)
++		err = erase_aeb(ubi, aeb, false);
++		if (err)
+ 			goto out_free;
+ 
+-		e->pnum = aeb->pnum;
+-		e->ec = aeb->ec;
+-		ubi->lookuptbl[e->pnum] = e;
+-		if (schedule_erase(ubi, e, aeb->vol_id, aeb->lnum, 0, false)) {
+-			wl_entry_destroy(ubi, e);
+-			goto out_free;
+-		}
+-
+ 		found_pebs++;
+ 	}
+ 
+@@ -1635,6 +1667,8 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
+ 			ubi_assert(!ubi->lookuptbl[e->pnum]);
+ 			ubi->lookuptbl[e->pnum] = e;
+ 		} else {
++			bool sync = false;
++
+ 			/*
+ 			 * Usually old Fastmap PEBs are scheduled for erasure
+ 			 * and we don't have to care about them but if we face
+@@ -1644,18 +1678,21 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
+ 			if (ubi->lookuptbl[aeb->pnum])
+ 				continue;
+ 
+-			e = kmem_cache_alloc(ubi_wl_entry_slab, GFP_KERNEL);
+-			if (!e)
+-				goto out_free;
++			/*
++			 * The fastmap update code might not find a free PEB for
++			 * writing the fastmap anchor to and then reuses the
++			 * current fastmap anchor PEB. When this PEB gets erased
++			 * and a power cut happens before it is written again we
++			 * must make sure that the fastmap attach code doesn't
++			 * find any outdated fastmap anchors, hence we erase the
++			 * outdated fastmap anchor PEBs synchronously here.
++			 */
++			if (aeb->vol_id == UBI_FM_SB_VOLUME_ID)
++				sync = true;
+ 
+-			e->pnum = aeb->pnum;
+-			e->ec = aeb->ec;
+-			ubi_assert(!ubi->lookuptbl[e->pnum]);
+-			ubi->lookuptbl[e->pnum] = e;
+-			if (schedule_erase(ubi, e, aeb->vol_id, aeb->lnum, 0, false)) {
+-				wl_entry_destroy(ubi, e);
++			err = erase_aeb(ubi, aeb, sync);
++			if (err)
+ 				goto out_free;
+-			}
+ 		}
+ 
+ 		found_pebs++;
+-- 
+2.11.0
