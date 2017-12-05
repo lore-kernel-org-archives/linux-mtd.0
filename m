@@ -1,18 +1,20 @@
-Received: from mail-sn1nam02on0078.outbound.protection.outlook.com
- ([104.47.36.78] helo=NAM02-SN1-obe.outbound.protection.outlook.com)
+Received: from mail-bn3nam01on0080.outbound.protection.outlook.com
+ ([104.47.33.80] helo=NAM01-BN3-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eM69h-0007SW-Ob
- for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 05:52:36 +0000
+ id 1eM69j-0007VR-GL
+ for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 05:52:37 +0000
 From: Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
 To: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <computersforpeace@gmail.com>, <dwmw2@infradead.org>,
  <boris.brezillon@free-electrons.com>, <marek.vasut@gmail.com>,
  <richard@nod.at>, <cyrille.pitchen@wedev4u.fr>
 CC: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-Subject: [PATCHv2 0/2] mtd: m25p80: restore the addressing mode when stop
- using the flash
-Date: Tue, 5 Dec 2017 13:33:20 +0800
-Message-ID: <20171205053322.35823-1-Zhiqiang.Hou@nxp.com>
+Subject: [PATCHv2 1/2] mtd: spi-nor: add an API to restore the status of SPI
+ flash chip
+Date: Tue, 5 Dec 2017 13:33:21 +0800
+Message-ID: <20171205053322.35823-2-Zhiqiang.Hou@nxp.com>
+In-Reply-To: <20171205053322.35823-1-Zhiqiang.Hou@nxp.com>
+References: <20171205053322.35823-1-Zhiqiang.Hou@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,21 +28,67 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
 
-To be compatible with legacy device, reset the addressing mode
-to the default mode. Such as Freescale eSPI boot, it copies the
-images from SPI flash without firing a reset signal previously,
-so the reboot command will fail without reseting the addressing
-mode of SPI flash.
+Add this API to restore the status of SPI flash chip to the default
+such as addressing mode, whenever detach the driver from device or
+reboot the system.
 
-Hou Zhiqiang (2):
-  mtd: spi-nor: add an API to restore the status of SPI flash chip
-  mtd: m25p80: restore the status of SPI flash when stop using it
+Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+---
+V2:
+ - Changed the API name and added the comments and kernel document for it.
+ - Export this symbol for modules.
 
  Documentation/mtd/spi-nor.txt |  3 +++
- drivers/mtd/devices/m25p80.c  |  9 +++++++++
  drivers/mtd/spi-nor/spi-nor.c | 10 ++++++++++
  include/linux/mtd/spi-nor.h   |  6 ++++++
- 4 files changed, 28 insertions(+)
+ 3 files changed, 19 insertions(+)
 
+diff --git a/Documentation/mtd/spi-nor.txt b/Documentation/mtd/spi-nor.txt
+index 548d6306ebca..da1fbff5a24c 100644
+--- a/Documentation/mtd/spi-nor.txt
++++ b/Documentation/mtd/spi-nor.txt
+@@ -60,3 +60,6 @@ The main API is spi_nor_scan(). Before you call the hook, a driver should
+ initialize the necessary fields for spi_nor{}. Please see
+ drivers/mtd/spi-nor/spi-nor.c for detail. Please also refer to fsl-quadspi.c
+ when you want to write a new driver for a SPI NOR controller.
++Another API is spi_nor_restore(), this is used to restore the status of SPI
++flash chip such as addressing mode. Call it whenever detach the driver from
++device or reboot the system.
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index bc266f70a15b..4a925378d434 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -2713,6 +2713,16 @@ static void spi_nor_resume(struct mtd_info *mtd)
+ 		dev_err(dev, "resume() failed\n");
+ }
+ 
++void spi_nor_restore(struct spi_nor *nor)
++{
++	/* restore the addressing mode */
++	if ((nor->addr_width == 4) &&
++	    (JEDEC_MFR(nor->info) != SNOR_MFR_SPANSION) &&
++	    !(nor->info->flags & SPI_NOR_4B_OPCODES))
++		set_4byte(nor, nor->info, 0);
++}
++EXPORT_SYMBOL_GPL(spi_nor_restore);
++
+ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 		 const struct spi_nor_hwcaps *hwcaps)
+ {
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index d0c66a0975cf..0a182c3d0884 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -399,4 +399,10 @@ struct spi_nor_hwcaps {
+ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 		 const struct spi_nor_hwcaps *hwcaps);
+ 
++/*
++ * spi_nor_restore_addr_mode() - restore the status of SPI NOR
++ * @nor:	the spi_nor structure
++ */
++void spi_nor_restore(struct spi_nor *nor);
++
+ #endif
 -- 
 2.14.1
