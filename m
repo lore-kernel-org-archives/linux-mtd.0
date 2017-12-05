@@ -1,24 +1,25 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from baldur.buserror.net ([165.227.176.147])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eM298-0005v4-Ip
- for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 01:35:44 +0000
-From: =?gb2312?B?UGV0ZXIgUGFuIMXLtrAgKHBldGVycGFuZG9uZyk=?=
- <peterpandong@micron.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-CC: Frieder Schrempf <frieder.schrempf@exceet.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Peter Pan
- <peterpansjtu@gmail.com>
-Subject: Re: [PATCH v6 00/15] A SPI NAND framework under generic NAND framework
-Date: Tue, 5 Dec 2017 01:35:05 +0000
-Message-ID: <A0FE66EC-7E17-43BE-9B66-896F112B92A0@micron.com>
-References: <20170529225931.226da943@bbrezillon>
- <90bcb366-c494-2dee-3bb7-d16b77e347c6@exceet.de>,
- <20171204150514.1f17671d@bbrezillon>
-In-Reply-To: <20171204150514.1f17671d@bbrezillon>
-Content-Language: zh-CN
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+ id 1eM3Hk-0005QM-Cq
+ for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 02:48:42 +0000
+Message-ID: <1512441957.10062.6.camel@buserror.net>
+From: Scott Wood <oss@buserror.net>
+To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
+ "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, devicetree@vger.kernel.org
+Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>
+Date: Mon, 04 Dec 2017 20:45:57 -0600
+In-Reply-To: <HE1PR04MB1241226CD3B7ABD6D5FA2D91973C0@HE1PR04MB1241.eurprd04.prod.outlook.com>
+References: <1511954855-8593-1-git-send-email-prabhakar.kushwaha@nxp.com>
+ <1512105209.10062.1.camel@buserror.net>
+ <HE1PR04MB12414AFA5F8081730B89378497390@HE1PR04MB1241.eurprd04.prod.outlook.com>
+ <1512165311.10062.3.camel@buserror.net>
+ <HE1PR04MB1241226CD3B7ABD6D5FA2D91973C0@HE1PR04MB1241.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] Documentation: binding: Update endianness usage
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,60 +29,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQm9yaXMsDQoNCtTaIDIwMTfE6jEy1MI0yNWjrDIyOjA1o6xCb3JpcyBCcmV6aWxsb24gPGJv
-cmlzLmJyZXppbGxvbkBmcmVlLWVsZWN0cm9ucy5jb208bWFpbHRvOmJvcmlzLmJyZXppbGxvbkBm
-cmVlLWVsZWN0cm9ucy5jb20+PiDQtLXAo7oNCg0KSGkgRnJpZWRlciwNCg0KT24gTW9uLCA0IERl
-YyAyMDE3IDE0OjMyOjE0ICswMTAwDQpGcmllZGVyIFNjaHJlbXBmIDxmcmllZGVyLnNjaHJlbXBm
-QGV4Y2VldC5kZTxtYWlsdG86ZnJpZWRlci5zY2hyZW1wZkBleGNlZXQuZGU+PiB3cm90ZToNCg0K
-SGkgQm9yaXMsDQoNCklmIGV2ZXJ5dGhpbmcgZ29lcyB3ZWxsLCB3ZSBzaG91bGQgYmUgZ29vZCBm
-b3IgNC4xNCwgYW5kIHRoZSBwYXRjaGVzDQp3aWxsIGhhdmUgc3BlbnQgZW5vdWdoIHRpbWUgaW4g
-bGludXgtbmV4dCB0byBkaXNjb3ZlciBvYnZpb3VzIGJ1Z3MuDQoNCldoYXQgaXMgdGhlIGxhdGVz
-dCBzdGF0dXMgb2YgdGhlIFNQSS1OQU5EIGZyYW1ld29yayBwYXRjaGVzPw0KDQpUaGUgcmVhc29u
-IEkgYW0gYXNraW5nIGlzLCB0aGF0IHdlIGhhdmUgaGFyZHdhcmUgYmFzZWQgb24gdGhlIE5YUA0K
-aS5NWDZVTCBTT0Mgd2l0aCBhIHNlcmlhbCBOQU5EIGNvbm5lY3RlZCB2aWEgUVNQSSBpbnRlcmZh
-Y2UuDQoNCldlIGN1cnJlbnRseSBoYXZlIGEgd29ya2luZyBpbXBsZW1lbnRhdGlvbiBiYXNlZCBv
-biBhIDMuMTQgdmVuZG9yIGtlcm5lbA0KdXNpbmcgYSBtb2RpZmllZCB2ZXJzaW9uIG9mIHRoZSAi
-bXQyOWZfc3BpbmFuZCIgc3RhZ2luZyBkcml2ZXIsIGJ1dCBmb3INCnRoZSBmdXR1cmUgd2UgcGxh
-biB0byB1c2UgYSByZWNlbnQgbWFpbmxpbmUga2VybmVsLg0KDQpXZSBhbHNvIHRoaW5rIGFib3V0
-IHBvcnRpbmcgb3VyIGltcGxlbWVudGF0aW9uIHRvIHRoZSBuZXcgZnJhbWV3b3JrIHRvDQplbmFi
-bGUgc3VwcG9ydCBmb3IgbW9yZSBTUEkgTkFORCBjaGlwcyAoV2luYm9uZCwgVG9zaGliYSkgYW5k
-IGZvciB0aGUNCk5YUCBRU1BJLWNvbnRyb2xsZXIuDQoNClRoZXJlZm9yZSB3ZSB3b3VsZCBsaWtl
-IHRvIGtub3cgYWJvdXQgdGhlIGN1cnJlbnQgc2NoZWR1bGUgZm9yIGJyaW5naW5nDQp0aGUgZnJh
-bWV3b3JrIHRvIG1haW5saW5lLg0KDQpTb3JyeSBmb3IgdGhlIHNpbGVuY2UgYW5kIHRoZSBsYWNr
-IG9mIHByb2dyZXNzIG9uIHRoaXMgZnJvbnQuIEkgZG9uJ3QNCmhhdmUgbXVjaCB0aW1lIHRvIHdv
-cmsgb24gdGhpcyBTUEktTkFORCBmcmFtZXdvcmsgKEkgZG8gaXQgb24gbXkgc3BhcmUNCnRpbWUp
-LCBhbmQgbGFzdCB0aW1lIEkgaGFkIGEgbG9vayBhbmQgdHJpZWQgdG8gYWRkcmVzcyBteSBvd24g
-Y29tbWVudHMNCm9uIFBldGVyJ3MgdmVyc2lvbiwgSSByZWFsaXplZCBJIHdhcyBub3QgcmVhbGx5
-IGhhcHB5IHdpdGggdGhlDQppbXBsZW1lbnRhdGlvbiwgbWFpbmx5IGJlY2F1c2UgaXQgY29waWVz
-IHNvbWUgb2YgdGhlIG1pc3Rha2VzIGRvbmUgaW4NCnRoZSByYXcvcGFyYWxsZWwgTkFORCBmcmFt
-ZXdvcmsuDQpTbyBJIGVuZGVkIHVwIHJld3JpdGluZyBhIGxvdCBvZiBjb2RlLCBhbmQgZGlkbid0
-IGhhdmUgdGltZSB0byB0ZXN0IHRoZQ0KbmV3IGltcGxlbWVudGF0aW9uIFsxXS4NCg0KSaGvbSBz
-dGlsbCB3YWl0aW5nIGZvciB5b3VyIGdpdCBicmFuY2ggZm9yIHNwaSBOQU5ELiBJcyB0aGlzIHRo
-ZSBicmFuY2ggSaGvbSB3YWl0aW5nIGZvcj8gSSBqdXN0IHRvb2sgYSBxdWljayBsb29rIGF0IGl0
-IGFuZCBJIGZvdW5kIHlvdSBwdXQgbW9yZSBjb21tb24gY29kZSBpbnRvIG5ldyBOYW5kIGNvcmUu
-IFRoaXMgaXMgY29vbC4gSSB0aG91Z2h0IHdlIHdpbGwgZG8gdGhpcyBqb2IgYWZ0ZXIgc3BpIE5B
-TkQgYmVpbmcgbWVyZ2VkLiBBbnl3YXksIGRvIHlvdSB3YW50IGJvdGggc3BpIGFuZCByYXcgTkFO
-RCBjb2RlIHRvIGJlIHJlYmFzZWQgb24gbmV3IE5BTkQgY29yZSBvciB3ZSBqdXN0IHB1dCBzcGkg
-TkFORCBpbj8gQW55dGhpbmcgSSBjYW4gaGVscCB0byBzcGVlZCB0aGUgc3BpIE5BTkQgbWVyZ2Ug
-dXA/DQoNClRoYW5rcw0KUGV0ZXIgUGFuDQoNCg0KTm90ZSB0aGF0IGl0J3MgbWFpbmx5IGEgcmV3
-cml0ZSBvZiB0aGUgZ2VuZXJpYyBOQU5EIGxheWVyIHRoZSBTUEktTkFORA0KZnJhbWV3b3JrIGlz
-IGJhc2VkIG9uLiBJIGFsc28gcmUtY29uc2lkZXJlZCB0aGUgb3B0aW9uIG9mIG1vdmluZw0KZXhp
-c3RpbmcgQkJUIGhhbmRsaW5nIGNvZGUgaW4gdGhlIGdlbmVyaWMgbGF5ZXIsIGJlY2F1c2UgYWdh
-aW4sIEkgdGhpbmsNCndlIHNob3VsZCB0cnkgdG8gbGlnaHRlbiB0aGUgZXhpc3RpbmcgaW1wbGVt
-ZW50YXRpb24gaW5zdGVhZCBvZg0KcXVpY2tseSBhZGFwdGluZyBpdCB0byB0aGUgZ2VuZXJpYyBO
-QU5EIGxheWVyLiBTbywgd2hhdCdzIGluIFsxXSBpcw0KYmFzaWMgU1BJLU5BTkQgc3VwcG9ydCB3
-aXRob3V0IEJCVCBhbmQgRUNDLiBPZiBjb3Vyc2UsIHRoaXMgd2lsbCBiZQ0KZXh0ZW5kZWQgbGF0
-ZXIgb24sIGJ1dCBJIHRoaW5rIHdlIHNob3VsZCBzdGFydCBzbWFsbCwgYW5kIHRha2UgdGhlIHRp
-bWUNCnRvIHRoaW5rIGFib3V0IGhvdyB3ZSB3YW50IHRvIGV4dGVuZCB0aGUgZ2VuZXJpYyBsYXll
-ciBzbyB0aGF0IHNvbWUgb2YNCnRoZSBjb2RlIGNhbiBiZSByZS11c2VkIGJ5IHRoZSBwYXJhbGxl
-bC9yYXcgTkFORCBhbmQgT25lTkFORCBmcmFtZXdvcmtzLg0KDQpJJ20gcmVhbGx5IHNvcnJ5IHRv
-IGhhdmUgYmxvY2tlZCB0aGlzIGluaXRpYXRpdmUgYnkgbm90IHJlc3BvbmRpbmcNCmFuZC9vciBu
-b3Qgc3BlbmRpbmcgdGhlIG5lY2Vzc2FyeSB0aW1lIHRvIHJld29yayB0aGUgY29kZSwgYnV0IEkN
-CnJlYWxseSB0aGluayB3ZSBzaG91bGQgaGF2ZSBhIHN0cm9uZyBiYXNlIGlmIHdlIGRvbid0IHdh
-bnQgdG8gZW5kIHVwDQp3aXRoIHdoYXQgaGUgaGF2ZSBpbiB0aGUgcGFyYWxsZWwvcmF3IE5BTkQv
-T25lTkFORCBmcmFtZXdvcmtzIChhIGNvZGUNCmJhc2UgdGhhdCBpcyBoYXJkbHkgbWFpbnRhaW5h
-YmxlLCB3aXRoIGEgbG90IG9mIGNvZGUgZHVwbGljYXRpb24pLg0KDQpBbnl3YXksIGFueSBoZWxw
-IGlzIGFwcHJlY2lhdGVkLCBzbyBpZiB5b3UgZG8gaGF2ZSB0aW1lIHRvDQpyZXZpZXcvdGVzdC9l
-bmhhbmNlIHRoaXMgY29kZSwgZmVlbCBmcmVlIHRvIGRvIGl0Lg0KDQpSZWdhcmRzLA0KDQpCb3Jp
-cw0KDQpbMV1odHRwczovL2dpdGh1Yi5jb20vYmJyZXppbGxvbi9saW51eC0wZGF5L2NvbW1pdHMv
-bmFuZC9zcGktbmFuZA0K
+On Mon, 2017-12-04 at 04:33 +0000, Prabhakar Kushwaha wrote:
+> > -----Original Message-----
+> > From: Scott Wood [mailto:oss@buserror.net]
+> > Sent: Saturday, December 02, 2017 3:25 AM
+> > To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>; linux-
+> > mtd@lists.infradead.org; devicetree-discuss@lists.ozlabs.org
+> > Cc: dedekind1@gmail.com; computersforpeace@gmail.com
+> > Subject: Re: [PATCH] Documentation: binding: Update endianness usage
+> > 
+> > On Fri, 2017-12-01 at 08:42 +0000, Prabhakar Kushwaha wrote:
+> > > > -----Original Message-----
+> > > > From: Scott Wood [mailto:oss@buserror.net]
+> > > > Sent: Friday, December 01, 2017 10:43 AM
+> > > > To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>; linux-
+> > > > mtd@lists.infradead.org; devicetree-discuss@lists.ozlabs.org
+> > > > Cc: dedekind1@gmail.com; computersforpeace@gmail.com
+> > > > Subject: Re: [PATCH] Documentation: binding: Update endianness usage
+> > > > 
+> > > > If big endian is the default, is this change really
+> > > > necessary?  Particularly
+> > > > since the big endian chips are older and thus have existing device
+> > > > trees.
+> > > > 
+> > > 
+> > > Earlier endianness information was only used for "how to"  access IFC-
+> > > NAND
+> > > register access.
+> > > Now this info  will also be used for defining swap requirement of NOR
+> > > flash.
+> > 
+> > Is this a difference between LS1021A and PPC-based chips?
+> > 
+> 
+> Yes. 
+> CONFIG_MTD_CFI_BE_BYTE_SWAP needs to be defined For LS1021A, LS1043A,
+> LS1046A  
+
+Only because you're running a little-endian kernel on those chips.  I still
+don't see why the absence of a little-endian property isn't sufficient to
+communicate that the hardware is big-endian given that that's the established
+default.
+
+I now see your patch to of_flash_probe... where is the non-IFC-specific
+binding that says the *parent* of a CFI node should be looked at for this? 
+Where in general are endian properties kept in the parent of the node with
+"reg"?  The right answer is to add endianness to mtd-physmap.txt.
+
+-Scott
