@@ -1,20 +1,27 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eMDG3-0000dw-Gz
- for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 13:27:38 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Manfred Spraul <manfred@colorfullife.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: UBIFS does not mount after powerfail
-Date: Tue, 05 Dec 2017 14:27:36 +0100
-Message-ID: <24015049.MUjmLyMSVC@blindfold>
-In-Reply-To: <df8dc8e7-cb9a-4cef-bca6-cfc40092b1d1@colorfullife.com>
-References: <195075f7-01f8-58d2-ba1c-4291e62a39cc@colorfullife.com>
- <2908877.jEbli3qftF@blindfold>
- <df8dc8e7-cb9a-4cef-bca6-cfc40092b1d1@colorfullife.com>
+Date: Tue, 5 Dec 2017 14:30:15 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Kamal Dasu <kdasu.kdev@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Han Xu <han.xu@nxp.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Chen-Yu Tsai <wens@csie.org>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Broadcom Kernel Feedback List
+ <bcm-kernel-feedback-list@broadcom.com>, Maxime Ripard
+ <maxime.ripard@free-electrons.com>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v2 3/3] mtd: nand: squash struct nand_buffers into
+ struct nand_chip
+Message-ID: <20171205143015.681a2815@bbrezillon>
+In-Reply-To: <CAK7LNAQken7cQEPJEyL107pLbVJ9rPc+zZoPh4CA8D+CiKZz4g@mail.gmail.com>
+References: <1512463636-28934-1-git-send-email-yamada.masahiro@socionext.com>
+ <1512463636-28934-3-git-send-email-yamada.masahiro@socionext.com>
+ <CAK7LNATKBO=eNHdL_P2MOh7+uRcCjkq+v8+O3DXC5UF3-NGh2Q@mail.gmail.com>
+ <20171205125711.74158b3b@bbrezillon>
+ <CAK7LNAQken7cQEPJEyL107pLbVJ9rPc+zZoPh4CA8D+CiKZz4g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,41 +31,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Manfred,
+Hi Masahiro,
 
-Am Freitag, 1. Dezember 2017, 08:41:28 CET schrieb Manfred Spraul:
-> >> Image after that command:
-> >> https://sourceforge.net/projects/calculix-rpm/files/ubifs/image-168169.bi
-> >> n/d ownload
-> > 
-> > Which file contains the MTD with chk_fs being enabled?
+On Tue, 5 Dec 2017 21:28:55 +0900
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+
+> Hi Boris,
 > 
-> I'm not sure if this help, it only adds more data that will confuse:
-> The image.bin is obviously identical, I have only enabled chk_fs for the
-> replay.
+> 2017-12-05 20:57 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> >>
+> >>
+> >> Sorry, I missed to update omap2.c
+> >>
+> >> I will send v3.  
+> >
+> > No need to send a v3, I already fixed it when applying [1].
+> >
+> > [1]https://github.com/bbrezillon/linux-0day/commit/59a7bfff7103d48713b2125c3844400301a3d028
+> >  
 > 
-> And: The mount was done using 4.14, the image was created using 4.14-rc5.
-> If you want: Here is the data (dmesg output + images)
-> https://sourceforge.net/projects/calculix-rpm/files/ubifs/chkfs_4.14/
+> Thank you for your kind help!
+> 
+> 
 
-I still don't get which Image is the right one.
-I gave image-168167.bin a try, but it contains many errors, I'm not sure
-if it contains the first error.
+No problem.
 
-So, which file do I need to download to get the image that contains the first 
-error as detected by chk_fs?
+Thanks for working on improving the NAND framework, and if you're
+looking for other things to cleanup in this area, I have a long TODO
+list, so don't hesitate to ask. Just one example: I'd like to
+dynamically allocate the onfi/jedec_params [1] struct instead of
+embedding them in the nand_chip struct, because this increases the size
+of the nand_chip object for everyone, even for those who don't have
+ONFI/JEDEC compliant chips.
 
-The mode of operation of your tool should be:
-1. Mount UBIFS
-2. Do various filesystem operations
-3. Random power-cut (in software)
-4. Dump the image to a file X
-5. Set chk_fs to 1
-6. Mount it again
-7. If mount succeeds, drop X, umount and goto 1
-   Else if, chk_fs finds a problem. Store file X.
+This should also allow us to get rid of the onfi/jedec_version fields
+(if chip->onfi_params or chip->jedec_params are NULL, the NAND is not
+ONFI or JEDEC compliant and the version has no meaning, if it's not
+NULL, the version can be directly retrieved from the ->onfi/jedec_params
+object itself).
 
-I want file X. :-)
+Regards,
 
-Thanks,
-//richard
+Boris
+
+[1]http://elixir.free-electrons.com/linux/v4.15-rc2/source/include/linux/mtd/rawnand.h#L922
