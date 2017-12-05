@@ -1,22 +1,20 @@
-Received: from smtp3-g21.free.fr ([212.27.42.3])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eMK1n-0003Kw-Pb
- for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 20:41:21 +0000
-Subject: Re: [PATCHv2 0/2] mtd: m25p80: restore the addressing mode when stop
- using the flash
-To: Zhiqiang Hou <Zhiqiang.Hou@nxp.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, boris.brezillon@free-electrons.com,
- marek.vasut@gmail.com, richard@nod.at
-References: <20171205053322.35823-1-Zhiqiang.Hou@nxp.com>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <0b8fae88-cff4-41ac-2613-09bb671ec070@wedev4u.fr>
-Date: Tue, 5 Dec 2017 21:40:53 +0100
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eMLYV-0007yB-CD
+ for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 22:19:48 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Manfred Spraul <manfred@colorfullife.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: UBIFS does not mount after powerfail
+Date: Tue, 05 Dec 2017 23:19:17 +0100
+Message-ID: <2824019.lNCXfte7Zg@blindfold>
+In-Reply-To: <1695485.xO2l5BsRhR@blindfold>
+References: <195075f7-01f8-58d2-ba1c-4291e62a39cc@colorfullife.com>
+ <aa51fb6e-61c9-1133-b2cf-f931ee7e105a@colorfullife.com>
+ <1695485.xO2l5BsRhR@blindfold>
 MIME-Version: 1.0
-In-Reply-To: <20171205053322.35823-1-Zhiqiang.Hou@nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,34 +24,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Hou,
+Manfred,
 
-Le 05/12/2017 à 06:33, Zhiqiang Hou a écrit :
-> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+Am Dienstag, 5. Dezember 2017, 21:06:28 CET schrieb Richard Weinberger:
+> Manfred,
 > 
-> To be compatible with legacy device, reset the addressing mode
-> to the default mode. Such as Freescale eSPI boot, it copies the
-> images from SPI flash without firing a reset signal previously,
-> so the reboot command will fail without reseting the addressing
-> mode of SPI flash.
->
-
-You should put this in one of the commit messages so it explains which
-issue is fixed by your patches.
-
-Otherwise, your series looks good to me :)
-
-Best regards,
-
-Cyrille
-
-> Hou Zhiqiang (2):
->   mtd: spi-nor: add an API to restore the status of SPI flash chip
->   mtd: m25p80: restore the status of SPI flash when stop using it
+> Am Dienstag, 5. Dezember 2017, 20:11:20 CET schrieb Manfred Spraul:
+> > > So, which file do I need to download to get the image that contains the
+> > > first error as detected by chk_fs?
+> > > 
+> > > The mode of operation of your tool should be:
+> > > 1. Mount UBIFS
+> > > 2. Do various filesystem operations
+> > > 3. Random power-cut (in software)
+> > > 4. Dump the image to a file X
+> > > 5. Set chk_fs to 1
+> > > 6. Mount it again
+> > > 7. If mount succeeds, drop X, umount and goto 1
+> > > 
+> > >     Else if, chk_fs finds a problem. Store file X.
+> > > 
+> > > I want file X. :-)
+> > 
+> > The tool is in release process, thus let's just wait a bit.
+> > There is no "goto 1" in my flow.
+> > 
+> > Part 1: (done 5x, i.e. with xattr, without xattr, ...)
+> > 
+> > 0. create UBI image, create empty UBIFS image.
+> > 1. Mount UBIFS
+> > 2. Do various filesystem operations.
+> > 
+> >     In the background, record nand operations and store it in a trace.
+> > 
+> > Part 2: (done ~100.000 times)
+> > 1. Create an image file X by replaying from the trace.
+> > 2. Set chk_fs to 1
+> > 3. Mount the image
+> > 7. If mount succeeds: ignore the file X
+> > 
+> >     If mount fails: remember file X
+> > 
+> > Thus every image is a first error. No image has seen multiple unclean
+> > unmounts.
 > 
->  Documentation/mtd/spi-nor.txt |  3 +++
->  drivers/mtd/devices/m25p80.c  |  9 +++++++++
->  drivers/mtd/spi-nor/spi-nor.c | 10 ++++++++++
->  include/linux/mtd/spi-nor.h   |  6 ++++++
->  4 files changed, 28 insertions(+)
-> 
+> Hmm, when does the power-cut occur in your setup?
+> i.e image-168167.bin and image-168168.bin show different errors and none of
+> them fails the chf_fs test. They fail because of other reasons.
+
+Short update, the issue in image-168168.bin seems to be a garbage collector 
+bug which is not at all related to xattrs.
+Are you 100% sure that all your tests run fine when xattrs are not used?
+
+Thanks,
+//richard
