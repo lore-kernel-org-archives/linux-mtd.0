@@ -1,22 +1,24 @@
-Received: from mail-ot0-f196.google.com ([74.125.82.196])
+Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eLzLy-0007Ef-4v
- for linux-mtd@lists.infradead.org; Mon, 04 Dec 2017 22:36:47 +0000
-Received: by mail-ot0-f196.google.com with SMTP id p3so16214904oti.5
- for <linux-mtd@lists.infradead.org>; Mon, 04 Dec 2017 14:36:25 -0800 (PST)
-Date: Mon, 4 Dec 2017 16:36:24 -0600
-From: Rob Herring <robh@kernel.org>
-To: Fabio Estevam <festevam@gmail.com>
-Cc: boris.brezillon@free-electrons.com, cyrille.pitchen@wedev4u.fr,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- Fabio Estevam <fabio.estevam@nxp.com>
-Subject: Re: [PATCH] dt-bindings: mtd: fsl-quadspi: Pass the qspi clock names
-Message-ID: <20171204223624.gd3iiha3qyr7nwxg@rob-hp-laptop>
-References: <1512340584-26894-1-git-send-email-festevam@gmail.com>
+ id 1eM298-0005v4-Ip
+ for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 01:35:44 +0000
+From: =?gb2312?B?UGV0ZXIgUGFuIMXLtrAgKHBldGVycGFuZG9uZyk=?=
+ <peterpandong@micron.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+CC: Frieder Schrempf <frieder.schrempf@exceet.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Peter Pan
+ <peterpansjtu@gmail.com>
+Subject: Re: [PATCH v6 00/15] A SPI NAND framework under generic NAND framework
+Date: Tue, 5 Dec 2017 01:35:05 +0000
+Message-ID: <A0FE66EC-7E17-43BE-9B66-896F112B92A0@micron.com>
+References: <20170529225931.226da943@bbrezillon>
+ <90bcb366-c494-2dee-3bb7-d16b77e347c6@exceet.de>,
+ <20171204150514.1f17671d@bbrezillon>
+In-Reply-To: <20171204150514.1f17671d@bbrezillon>
+Content-Language: zh-CN
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1512340584-26894-1-git-send-email-festevam@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,15 +28,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Dec 03, 2017 at 08:36:24PM -0200, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@nxp.com>
-> 
-> In order to improve the bindings documentation, explicitly pass the name
-> of the clocks: "qspi_en" and "qspi", which are mandatory.
-> 
-> Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
-> ---
->  Documentation/devicetree/bindings/mtd/fsl-quadspi.txt | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-Reviewed-by: Rob Herring <robh@kernel.org>
+SGkgQm9yaXMsDQoNCtTaIDIwMTfE6jEy1MI0yNWjrDIyOjA1o6xCb3JpcyBCcmV6aWxsb24gPGJv
+cmlzLmJyZXppbGxvbkBmcmVlLWVsZWN0cm9ucy5jb208bWFpbHRvOmJvcmlzLmJyZXppbGxvbkBm
+cmVlLWVsZWN0cm9ucy5jb20+PiDQtLXAo7oNCg0KSGkgRnJpZWRlciwNCg0KT24gTW9uLCA0IERl
+YyAyMDE3IDE0OjMyOjE0ICswMTAwDQpGcmllZGVyIFNjaHJlbXBmIDxmcmllZGVyLnNjaHJlbXBm
+QGV4Y2VldC5kZTxtYWlsdG86ZnJpZWRlci5zY2hyZW1wZkBleGNlZXQuZGU+PiB3cm90ZToNCg0K
+SGkgQm9yaXMsDQoNCklmIGV2ZXJ5dGhpbmcgZ29lcyB3ZWxsLCB3ZSBzaG91bGQgYmUgZ29vZCBm
+b3IgNC4xNCwgYW5kIHRoZSBwYXRjaGVzDQp3aWxsIGhhdmUgc3BlbnQgZW5vdWdoIHRpbWUgaW4g
+bGludXgtbmV4dCB0byBkaXNjb3ZlciBvYnZpb3VzIGJ1Z3MuDQoNCldoYXQgaXMgdGhlIGxhdGVz
+dCBzdGF0dXMgb2YgdGhlIFNQSS1OQU5EIGZyYW1ld29yayBwYXRjaGVzPw0KDQpUaGUgcmVhc29u
+IEkgYW0gYXNraW5nIGlzLCB0aGF0IHdlIGhhdmUgaGFyZHdhcmUgYmFzZWQgb24gdGhlIE5YUA0K
+aS5NWDZVTCBTT0Mgd2l0aCBhIHNlcmlhbCBOQU5EIGNvbm5lY3RlZCB2aWEgUVNQSSBpbnRlcmZh
+Y2UuDQoNCldlIGN1cnJlbnRseSBoYXZlIGEgd29ya2luZyBpbXBsZW1lbnRhdGlvbiBiYXNlZCBv
+biBhIDMuMTQgdmVuZG9yIGtlcm5lbA0KdXNpbmcgYSBtb2RpZmllZCB2ZXJzaW9uIG9mIHRoZSAi
+bXQyOWZfc3BpbmFuZCIgc3RhZ2luZyBkcml2ZXIsIGJ1dCBmb3INCnRoZSBmdXR1cmUgd2UgcGxh
+biB0byB1c2UgYSByZWNlbnQgbWFpbmxpbmUga2VybmVsLg0KDQpXZSBhbHNvIHRoaW5rIGFib3V0
+IHBvcnRpbmcgb3VyIGltcGxlbWVudGF0aW9uIHRvIHRoZSBuZXcgZnJhbWV3b3JrIHRvDQplbmFi
+bGUgc3VwcG9ydCBmb3IgbW9yZSBTUEkgTkFORCBjaGlwcyAoV2luYm9uZCwgVG9zaGliYSkgYW5k
+IGZvciB0aGUNCk5YUCBRU1BJLWNvbnRyb2xsZXIuDQoNClRoZXJlZm9yZSB3ZSB3b3VsZCBsaWtl
+IHRvIGtub3cgYWJvdXQgdGhlIGN1cnJlbnQgc2NoZWR1bGUgZm9yIGJyaW5naW5nDQp0aGUgZnJh
+bWV3b3JrIHRvIG1haW5saW5lLg0KDQpTb3JyeSBmb3IgdGhlIHNpbGVuY2UgYW5kIHRoZSBsYWNr
+IG9mIHByb2dyZXNzIG9uIHRoaXMgZnJvbnQuIEkgZG9uJ3QNCmhhdmUgbXVjaCB0aW1lIHRvIHdv
+cmsgb24gdGhpcyBTUEktTkFORCBmcmFtZXdvcmsgKEkgZG8gaXQgb24gbXkgc3BhcmUNCnRpbWUp
+LCBhbmQgbGFzdCB0aW1lIEkgaGFkIGEgbG9vayBhbmQgdHJpZWQgdG8gYWRkcmVzcyBteSBvd24g
+Y29tbWVudHMNCm9uIFBldGVyJ3MgdmVyc2lvbiwgSSByZWFsaXplZCBJIHdhcyBub3QgcmVhbGx5
+IGhhcHB5IHdpdGggdGhlDQppbXBsZW1lbnRhdGlvbiwgbWFpbmx5IGJlY2F1c2UgaXQgY29waWVz
+IHNvbWUgb2YgdGhlIG1pc3Rha2VzIGRvbmUgaW4NCnRoZSByYXcvcGFyYWxsZWwgTkFORCBmcmFt
+ZXdvcmsuDQpTbyBJIGVuZGVkIHVwIHJld3JpdGluZyBhIGxvdCBvZiBjb2RlLCBhbmQgZGlkbid0
+IGhhdmUgdGltZSB0byB0ZXN0IHRoZQ0KbmV3IGltcGxlbWVudGF0aW9uIFsxXS4NCg0KSaGvbSBz
+dGlsbCB3YWl0aW5nIGZvciB5b3VyIGdpdCBicmFuY2ggZm9yIHNwaSBOQU5ELiBJcyB0aGlzIHRo
+ZSBicmFuY2ggSaGvbSB3YWl0aW5nIGZvcj8gSSBqdXN0IHRvb2sgYSBxdWljayBsb29rIGF0IGl0
+IGFuZCBJIGZvdW5kIHlvdSBwdXQgbW9yZSBjb21tb24gY29kZSBpbnRvIG5ldyBOYW5kIGNvcmUu
+IFRoaXMgaXMgY29vbC4gSSB0aG91Z2h0IHdlIHdpbGwgZG8gdGhpcyBqb2IgYWZ0ZXIgc3BpIE5B
+TkQgYmVpbmcgbWVyZ2VkLiBBbnl3YXksIGRvIHlvdSB3YW50IGJvdGggc3BpIGFuZCByYXcgTkFO
+RCBjb2RlIHRvIGJlIHJlYmFzZWQgb24gbmV3IE5BTkQgY29yZSBvciB3ZSBqdXN0IHB1dCBzcGkg
+TkFORCBpbj8gQW55dGhpbmcgSSBjYW4gaGVscCB0byBzcGVlZCB0aGUgc3BpIE5BTkQgbWVyZ2Ug
+dXA/DQoNClRoYW5rcw0KUGV0ZXIgUGFuDQoNCg0KTm90ZSB0aGF0IGl0J3MgbWFpbmx5IGEgcmV3
+cml0ZSBvZiB0aGUgZ2VuZXJpYyBOQU5EIGxheWVyIHRoZSBTUEktTkFORA0KZnJhbWV3b3JrIGlz
+IGJhc2VkIG9uLiBJIGFsc28gcmUtY29uc2lkZXJlZCB0aGUgb3B0aW9uIG9mIG1vdmluZw0KZXhp
+c3RpbmcgQkJUIGhhbmRsaW5nIGNvZGUgaW4gdGhlIGdlbmVyaWMgbGF5ZXIsIGJlY2F1c2UgYWdh
+aW4sIEkgdGhpbmsNCndlIHNob3VsZCB0cnkgdG8gbGlnaHRlbiB0aGUgZXhpc3RpbmcgaW1wbGVt
+ZW50YXRpb24gaW5zdGVhZCBvZg0KcXVpY2tseSBhZGFwdGluZyBpdCB0byB0aGUgZ2VuZXJpYyBO
+QU5EIGxheWVyLiBTbywgd2hhdCdzIGluIFsxXSBpcw0KYmFzaWMgU1BJLU5BTkQgc3VwcG9ydCB3
+aXRob3V0IEJCVCBhbmQgRUNDLiBPZiBjb3Vyc2UsIHRoaXMgd2lsbCBiZQ0KZXh0ZW5kZWQgbGF0
+ZXIgb24sIGJ1dCBJIHRoaW5rIHdlIHNob3VsZCBzdGFydCBzbWFsbCwgYW5kIHRha2UgdGhlIHRp
+bWUNCnRvIHRoaW5rIGFib3V0IGhvdyB3ZSB3YW50IHRvIGV4dGVuZCB0aGUgZ2VuZXJpYyBsYXll
+ciBzbyB0aGF0IHNvbWUgb2YNCnRoZSBjb2RlIGNhbiBiZSByZS11c2VkIGJ5IHRoZSBwYXJhbGxl
+bC9yYXcgTkFORCBhbmQgT25lTkFORCBmcmFtZXdvcmtzLg0KDQpJJ20gcmVhbGx5IHNvcnJ5IHRv
+IGhhdmUgYmxvY2tlZCB0aGlzIGluaXRpYXRpdmUgYnkgbm90IHJlc3BvbmRpbmcNCmFuZC9vciBu
+b3Qgc3BlbmRpbmcgdGhlIG5lY2Vzc2FyeSB0aW1lIHRvIHJld29yayB0aGUgY29kZSwgYnV0IEkN
+CnJlYWxseSB0aGluayB3ZSBzaG91bGQgaGF2ZSBhIHN0cm9uZyBiYXNlIGlmIHdlIGRvbid0IHdh
+bnQgdG8gZW5kIHVwDQp3aXRoIHdoYXQgaGUgaGF2ZSBpbiB0aGUgcGFyYWxsZWwvcmF3IE5BTkQv
+T25lTkFORCBmcmFtZXdvcmtzIChhIGNvZGUNCmJhc2UgdGhhdCBpcyBoYXJkbHkgbWFpbnRhaW5h
+YmxlLCB3aXRoIGEgbG90IG9mIGNvZGUgZHVwbGljYXRpb24pLg0KDQpBbnl3YXksIGFueSBoZWxw
+IGlzIGFwcHJlY2lhdGVkLCBzbyBpZiB5b3UgZG8gaGF2ZSB0aW1lIHRvDQpyZXZpZXcvdGVzdC9l
+bmhhbmNlIHRoaXMgY29kZSwgZmVlbCBmcmVlIHRvIGRvIGl0Lg0KDQpSZWdhcmRzLA0KDQpCb3Jp
+cw0KDQpbMV1odHRwczovL2dpdGh1Yi5jb20vYmJyZXppbGxvbi9saW51eC0wZGF5L2NvbW1pdHMv
+bmFuZC9zcGktbmFuZA0K
