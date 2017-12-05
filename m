@@ -1,21 +1,20 @@
-Received: from xes-mad.com ([216.165.139.220] helo=mail.xes-mad.com)
+Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eMHjM-0003a9-Es
- for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 18:14:10 +0000
-Date: Tue, 5 Dec 2017 12:13:44 -0600 (CST)
-From: Aaron Sierra <asierra@xes-inc.com>
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>
-Cc: Joe Schultz <jschultz@xes-inc.com>,
- linux-mtd <linux-mtd@lists.infradead.org>
-Message-ID: <84804381.386644.1512497624913.JavaMail.zimbra@xes-inc.com>
-Subject: [PATCH v2] mtd: spi-nor: Check that BP bits are set properly
+ id 1eMI9A-0008G5-Qq
+ for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 18:40:51 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de,
+ Han Xu <han.xu@nxp.com>, Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH] mtd: nand: gpmi: Fix failure when a erased page has a
+ bitflip at BBM
+Date: Tue, 05 Dec 2017 19:40:54 +0100
+Message-ID: <2221916.oFKidPPRfi@blindfold>
+In-Reply-To: <20171205105140.915-1-s.hauer@pengutronix.de>
+References: <20171205105140.915-1-s.hauer@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,94 +24,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Previously, the lock and unlock functions returned success even if the
-BP bits were not actually updated in the status register due to
-hardware write protection. Introduce write_sr_and_check() to write and
-read back the status register to ensure the desired BP bits are
-actually set as requested.
+Am Dienstag, 5. Dezember 2017, 11:51:40 CET schrieb Sascha Hauer:
+> When erased subpages are read then the BCH decoder returns STATUS_ERASED
+> if they are all empty, or STATUS_UNCORRECTABLE if there are bitflips.
+> When there are bitflips, we have to set these bits again to show the
+> upper layers a completely erased page. When a bitflip happens in the
+> exact byte where the bad block marker is, then this byte is swapped
+> with another byte in block_mark_swapping(). The correction code then
+> detects a bitflip in another subpage and no longer corrects the bitflip
+> where it really happens.
+> 
+> Correct this behaviour by calling block_mark_swapping() after the
+> bitflips have been corrected.
+> 
+> In our case UBIFS failed with this bug because it expects erased
+> pages to be really empty:
+> 
+> UBIFS error (pid 187): ubifs_scan: corrupt empty space at LEB 36:118735
+> UBIFS error (pid 187): ubifs_scanned_corruption: corruption at LEB 36:118735
+> UBIFS error (pid 187): ubifs_scanned_corruption: first 8192 bytes from LEB
+> 36:118735 UBIFS error (pid 187): ubifs_scan: LEB 36 scanning failed
+> UBIFS error (pid 187): do_commit: commit failed, error -117
+> 
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> ---
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c index 50f8d4a1b983..d4d824ef64e9
+> 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -1067,9 +1067,6 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd,
+> struct nand_chip *chip, return ret;
+>  	}
+> 
+> -	/* handle the block mark swapping */
+> -	block_mark_swapping(this, payload_virt, auxiliary_virt);
+> -
+>  	/* Loop over status bytes, accumulating ECC status. */
+>  	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
+> 
+> @@ -1158,6 +1155,9 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd,
+> struct nand_chip *chip, max_bitflips = max_t(unsigned int, max_bitflips,
+> *status);
+>  	}
+> 
+> +	/* handle the block mark swapping */
+> +	block_mark_swapping(this, buf, auxiliary_virt);
+> +
+>  	if (oob_required) {
+>  		/*
+>  		 * It's time to deliver the OOB bytes. See gpmi_ecc_read_oob()
 
-Signed-off-by: Joe Schultz <jschultz@xes-inc.com>
-Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 35 +++++++++++++++++++++++------------
- 1 file changed, 23 insertions(+), 12 deletions(-)
+Fixes: bd2e778c9ee3 ("gpmi-nand: Handle ECC Errors in erased pages")
+Reviewed-by: Richard Weinberger <richard@nod.at>
 
-v2: * Removed unnecessary spi_nor_wait_till_ready() call
-    * Renamed "new" variable to "status_new"
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index bc266f7..c3ee168 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -552,6 +552,27 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
- 	return ret;
- }
- 
-+/* Write status register and ensure bits in mask match written values */
-+static int write_sr_and_check(struct spi_nor *nor, u8 status_new, u8 mask)
-+{
-+	int ret;
-+
-+	write_enable(nor);
-+	ret = write_sr(nor, status_new);
-+	if (ret)
-+		return ret;
-+
-+	ret = spi_nor_wait_till_ready(nor);
-+	if (ret)
-+		return ret;
-+
-+	ret = read_sr(nor);
-+	if (ret < 0)
-+		return ret;
-+
-+	return ((ret & mask) != (status_new & mask)) ? -EIO : 0;
-+}
-+
- static void stm_get_locked_range(struct spi_nor *nor, u8 sr, loff_t *ofs,
- 				 uint64_t *len)
- {
-@@ -650,7 +671,6 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
- 	loff_t lock_len;
- 	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
- 	bool use_top;
--	int ret;
- 
- 	status_old = read_sr(nor);
- 	if (status_old < 0)
-@@ -714,11 +734,7 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
- 	if ((status_new & mask) < (status_old & mask))
- 		return -EINVAL;
- 
--	write_enable(nor);
--	ret = write_sr(nor, status_new);
--	if (ret)
--		return ret;
--	return spi_nor_wait_till_ready(nor);
-+	return write_sr_and_check(nor, status_new, mask);
- }
- 
- /*
-@@ -735,7 +751,6 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
- 	loff_t lock_len;
- 	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
- 	bool use_top;
--	int ret;
- 
- 	status_old = read_sr(nor);
- 	if (status_old < 0)
-@@ -802,11 +817,7 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
- 	if ((status_new & mask) > (status_old & mask))
- 		return -EINVAL;
- 
--	write_enable(nor);
--	ret = write_sr(nor, status_new);
--	if (ret)
--		return ret;
--	return spi_nor_wait_till_ready(nor);
-+	return write_sr_and_check(nor, status_new, mask);
- }
- 
- /*
--- 
-2.7.4
+Thanks,
+//richard
