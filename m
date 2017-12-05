@@ -1,17 +1,24 @@
-Received: from mail-he1eur01on0131.outbound.protection.outlook.com
- ([104.47.0.131] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eMA22-0008OD-J5
- for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 10:00:59 +0000
-From: Jorge Fernandez Monteagudo <jorgefm@cirsa.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Question using a SRAM with mtdblock device driver
-Date: Tue, 5 Dec 2017 10:00:25 +0000
-Message-ID: <VI1PR07MB3408C901FF85F362C6A81596A13D0@VI1PR07MB3408.eurprd07.prod.outlook.com>
-Content-Language: es-ES
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 MIME-Version: 1.0
+In-Reply-To: <20171204101043.602ff213@bbrezillon>
+References: <1512366470-16772-1-git-send-email-yamada.masahiro@socionext.com>
+ <20171204101043.602ff213@bbrezillon>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Tue, 5 Dec 2017 19:02:26 +0900
+Message-ID: <CAK7LNATtk9=i3HkPrW=F1YtnM1vvEM3NtMZcPNi_0C5s_X1X1A@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: squash struct nand_buffers into struct
+ nand_chip
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Kamal Dasu <kdasu.kdev@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Broadcom Kernel Feedback List <bcm-kernel-feedback-list@broadcom.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Han Xu <han.xu@nxp.com>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,70 +28,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQpIaSBhbGwhIEl0J3MgbXkgZmlyc3QgbWVzc2FnZSB0byB0aGUgbWFpbGluZyBsaXN0IQ0KDQpJ
-IGRvbid0IGtub3cgdGhpcyBpcyB0aGUgcGxhY2UgdG8gYXNrIGEgcXVlc3Rpb24gYWJvdXQgYSBw
-cm9ibGVtIEknbSBoYXZpbmcgd2l0aCBhIHN0YXRpYyBSQU0NCndpdGggYSBiYXR0ZXJ5IGluIGEg
-Y3VzdG9tIGJvYXJkIGhhbmRsZWQgd2l0aCB0aGUgbXRkYmxvY2suYyBhbmQgbWFwX3JhbS5jIGZy
-b20gYQ0KbGludXggMy4xNC41MiBrZXJuZWwuIEkgaG9wZSBpdCdzIHRoZSBjb3JyZWN0IHBsYWNl
-IPCfmIoNCg0KSSd2ZSBlbmFibGVkIHRoZSBtdGRibG9jay5jIHByX2RlYnVnIHRyYWNlcyBhbmQg
-SSd2ZSBkb25lIHRoZSBuZXh0IHRlc3Q6DQoNCiMgbW91bnQgL2Rldi9tdGRibG9jazAgL3BlcnNp
-c3RlbmNlDQojIGVjaG8gIkhlbGxvIiA+IC90bXAva2sudHh0DQojIGVjaG8gIi0tLS0tLS0tLS0t
-LS0tLS0tIiA+IC9kZXYva21zZyA7IGNwIC90bXAva2sudHh0IC9wZXJzaXN0ZW5jZS8gOyBzeW5j
-OyBlY2hvICIqKioqKioqKioqKioqKioqKiIgPiAvZGV2L2ttc2cNCiMgZG1lc2cNCiANClsgODU4
-Ni43MTYwMzldIC0tLS0tLS0tLS0tLS0tLS0tDQpbIDg1ODYuNzIxNjM3XSBtdGRibG9jazogcmVh
-ZCBvbiAiODAwMDAwMC5zcmFtIiBhdCAweDI1MDAwLCBzaXplIDB4MjAwDQpbIDg1ODYuNzIxNjk1
-XSBtdGRibG9jazogcmVhZCBvbiAiODAwMDAwMC5zcmFtIiBhdCAweDI1MjAwLCBzaXplIDB4MjAw
-DQpbIDg1ODYuNzIxOTc4XSBtdGRibG9jazogcmVhZCBvbiAiODAwMDAwMC5zcmFtIiBhdCAweDRj
-MDAsIHNpemUgMHgyMDANClsgODU4Ni43MjIwMzJdIG10ZGJsb2NrOiByZWFkIG9uICI4MDAwMDAw
-LnNyYW0iIGF0IDB4NGUwMCwgc2l6ZSAweDIwMA0KWyA4NTg2LjcyMjE4Nl0gbXRkYmxvY2s6IHJl
-YWQgb24gIjgwMDAwMDAuc3JhbSIgYXQgMHg1ODAwLCBzaXplIDB4MjAwDQpbIDg1ODYuNzIyMjM3
-XSBtdGRibG9jazogcmVhZCBvbiAiODAwMDAwMC5zcmFtIiBhdCAweDVhMDAsIHNpemUgMHgyMDAN
-ClsgODU4Ni43MjI1MzldIG10ZGJsb2NrOiByZWFkIG9uICI4MDAwMDAwLnNyYW0iIGF0IDB4NDgw
-MCwgc2l6ZSAweDIwMA0KWyA4NTg2LjcyMjU5Ml0gbXRkYmxvY2s6IHJlYWQgb24gIjgwMDAwMDAu
-c3JhbSIgYXQgMHg0YTAwLCBzaXplIDB4MjAwDQpbIDg1ODYuNzI4MjE1XSBtdGRibG9jazogd3Jp
-dGUgb24gIjgwMDAwMDAuc3JhbSIgYXQgMHgxMmE4MDAsIHNpemUgMHgyMDANClsgODU4Ni43Mjgy
-NzddIG10ZGJsb2NrOiB3cml0ZSBvbiAiODAwMDAwMC5zcmFtIiBhdCAweDEyYWEwMCwgc2l6ZSAw
-eDIwMA0KWyA4NTg2LjcyODYzMl0gbXRkYmxvY2s6IHdyaXRlIG9uICI4MDAwMDAwLnNyYW0iIGF0
-IDB4Mjg4MDAsIHNpemUgMHgyMDANClsgODU4Ni43Mjg2ODddIG10ZGJsb2NrOiB3cml0ZSBvbiAi
-ODAwMDAwMC5zcmFtIiBhdCAweDI4YTAwLCBzaXplIDB4MjAwDQpbIDg1ODYuNzI4OTM4XSBtdGRi
-bG9jazogd3JpdGUgb24gIjgwMDAwMDAuc3JhbSIgYXQgMHgyOGMwMCwgc2l6ZSAweDIwMA0KWyA4
-NTg2LjcyODk5M10gbXRkYmxvY2s6IHdyaXRlIG9uICI4MDAwMDAwLnNyYW0iIGF0IDB4MjhlMDAs
-IHNpemUgMHgyMDANClsgODU4Ni43MjkwNTFdIG10ZGJsb2NrOiB3cml0ZSBvbiAiODAwMDAwMC5z
-cmFtIiBhdCAweDI5MDAwLCBzaXplIDB4MjAwDQpbIDg1ODYuNzI5MDk5XSBtdGRibG9jazogd3Jp
-dGUgb24gIjgwMDAwMDAuc3JhbSIgYXQgMHgyOTIwMCwgc2l6ZSAweDIwMA0KWyA4NTg2LjcyOTE1
-M10gbXRkYmxvY2s6IHdyaXRlIG9uICI4MDAwMDAwLnNyYW0iIGF0IDB4Mjk0MDAsIHNpemUgMHgy
-MDANClsgODU4Ni43MjkxOTldIG10ZGJsb2NrOiB3cml0ZSBvbiAiODAwMDAwMC5zcmFtIiBhdCAw
-eDI5NjAwLCBzaXplIDB4MjAwDQpbIDg1ODYuNzI5MjUyXSBtdGRibG9jazogd3JpdGUgb24gIjgw
-MDAwMDAuc3JhbSIgYXQgMHgyOTgwMCwgc2l6ZSAweDIwMA0KWyA4NTg2LjcyOTI5OF0gbXRkYmxv
-Y2s6IHdyaXRlIG9uICI4MDAwMDAwLnNyYW0iIGF0IDB4MjlhMDAsIHNpemUgMHgyMDANClsgODU4
-Ni43MjkzNTFdIG10ZGJsb2NrOiB3cml0ZSBvbiAiODAwMDAwMC5zcmFtIiBhdCAweDI5YzAwLCBz
-aXplIDB4MjAwDQpbIDg1ODYuNzI5Mzk3XSBtdGRibG9jazogd3JpdGUgb24gIjgwMDAwMDAuc3Jh
-bSIgYXQgMHgyOWUwMCwgc2l6ZSAweDIwMA0KWyA4NTg2LjcyOTQ0OF0gbXRkYmxvY2s6IHdyaXRl
-IG9uICI4MDAwMDAwLnNyYW0iIGF0IDB4MmEwMDAsIHNpemUgMHgyMDANClsgODU4Ni43Mjk0OTRd
-IG10ZGJsb2NrOiB3cml0ZSBvbiAiODAwMDAwMC5zcmFtIiBhdCAweDJhMjAwLCBzaXplIDB4MjAw
-DQpbIDg1ODYuNzI5NTQ1XSBtdGRibG9jazogd3JpdGUgb24gIjgwMDAwMDAuc3JhbSIgYXQgMHgy
-YTQwMCwgc2l6ZSAweDIwMA0KWyA4NTg2LjcyOTU5MF0gbXRkYmxvY2s6IHdyaXRlIG9uICI4MDAw
-MDAwLnNyYW0iIGF0IDB4MmE2MDAsIHNpemUgMHgyMDANClsgODU4Ni43Mjk3NzFdIG10ZGJsb2Nr
-OiB3cml0ZSBvbiAiODAwMDAwMC5zcmFtIiBhdCAweDJhODAwLCBzaXplIDB4MjAwDQpbIDg1ODYu
-NzI5ODIzXSBtdGRibG9jazogd3JpdGUgb24gIjgwMDAwMDAuc3JhbSIgYXQgMHgyYWEwMCwgc2l6
-ZSAweDIwMA0KWyA4NTg2LjczMDI5N10gbXRkYmxvY2s6IHdyaXRlIG9uICI4MDAwMDAwLnNyYW0i
-IGF0IDB4ODAwLCBzaXplIDB4MjAwDQpbIDg1ODYuNzMwMzUyXSBtdGRibG9jazogd3JpdGUgb24g
-IjgwMDAwMDAuc3JhbSIgYXQgMHhhMDAsIHNpemUgMHgyMDANClsgODU4Ni43MzA0MjJdIG10ZGJs
-b2NrOiB3cml0ZSBvbiAiODAwMDAwMC5zcmFtIiBhdCAweDQ4MDAsIHNpemUgMHgyMDANClsgODU4
-Ni43MzA0NzJdIG10ZGJsb2NrOiB3cml0ZSBvbiAiODAwMDAwMC5zcmFtIiBhdCAweDRhMDAsIHNp
-emUgMHgyMDANClsgODU4Ni43MzA1MjddIG10ZGJsb2NrOiB3cml0ZSBvbiAiODAwMDAwMC5zcmFt
-IiBhdCAweDRjMDAsIHNpemUgMHgyMDANClsgODU4Ni43MzA1NzRdIG10ZGJsb2NrOiB3cml0ZSBv
-biAiODAwMDAwMC5zcmFtIiBhdCAweDRlMDAsIHNpemUgMHgyMDANClsgODU4Ni43MzA2MzFdIG10
-ZGJsb2NrOiB3cml0ZSBvbiAiODAwMDAwMC5zcmFtIiBhdCAweDUwMDAsIHNpemUgMHgyMDANClsg
-ODU4Ni43MzA2NzldIG10ZGJsb2NrOiB3cml0ZSBvbiAiODAwMDAwMC5zcmFtIiBhdCAweDUyMDAs
-IHNpemUgMHgyMDANClsgODU4Ni43MzA3MzldIG10ZGJsb2NrOiB3cml0ZSBvbiAiODAwMDAwMC5z
-cmFtIiBhdCAweDU4MDAsIHNpemUgMHgyMDANClsgODU4Ni43MzA3ODZdIG10ZGJsb2NrOiB3cml0
-ZSBvbiAiODAwMDAwMC5zcmFtIiBhdCAweDVhMDAsIHNpemUgMHgyMDANClsgODU4Ni43MzA4NDld
-IG10ZGJsb2NrOiB3cml0ZSBvbiAiODAwMDAwMC5zcmFtIiBhdCAweDI1MDAwLCBzaXplIDB4MjAw
-DQpbIDg1ODYuNzMwODk3XSBtdGRibG9jazogd3JpdGUgb24gIjgwMDAwMDAuc3JhbSIgYXQgMHgy
-NTIwMCwgc2l6ZSAweDIwMA0KWyA4NTg2LjczMTY0NV0gKioqKioqKioqKioqKioqKioNCg0KSSBn
-dWVzcyB0aGF0IHRoZSB3cml0ZXMgYXJlIG5vdCB2ZXJpZmllZC4gSXMgdGhlcmUgc29tZSB3YXkg
-dG8gZm9yY2UgdG8gY2hlY2sNCiANCmV2ZXJ5IHdyaXRlIHRoZSBkcml2ZXIgZG8/IFdlIGFyZSBm
-YWNpbmcgc29tZSBSQU0gZGV2aWNlcyB3aXRoIGluY29ycmVjdA0KYml0cyBhbmQgSSB0aGluayB0
-aGF0IGl0IGNvdWxkIGJlIGRldGVjdGVkIHdoZW4gYSB3cml0ZSBpcyBjaGVja2VkIHJlYWRpbmcg
-dGhlDQpjb250ZW50IGJhY2suDQoNCklzIGl0IHBvc3NpYmxlPw0KDQpSZWdhcmRzDQpKb3JnZQ==
+Hi Boris,
+
+2017-12-04 18:10 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+
+>>       }
+>>
+>>       if (!(chip->options & NAND_OWN_BUFFERS)) {
+>> -             nbuf = kzalloc(sizeof(*nbuf), GFP_KERNEL);
+>> -             if (!nbuf)
+>> +             chip->ecccalc = kmalloc(mtd->oobsize, GFP_KERNEL);
+>> +             if (!chip->ecccalc)
+>>                       return -ENOMEM;
+>>
+>> -             nbuf->ecccalc = kmalloc(mtd->oobsize, GFP_KERNEL);
+>> -             if (!nbuf->ecccalc) {
+>> +             chip->ecccode = kmalloc(mtd->oobsize, GFP_KERNEL);
+>> +             if (!chip->ecccode) {
+>>                       ret = -ENOMEM;
+>>                       goto err_free_nbuf;
+>>               }
+>
+> Hm, again not directly related to this patch, but I wonder if we
+> couldn't allocate those buffers only when they are really needed. For
+> example, most NAND controllers do the ECC calculation/correct in HW and
+> simply don't need those buffers.
+
+
+The only idea I came up with is to add a new flag,
+but I am not sure if you are happy with it
+because we are removing NAND_OWN_BUFFERS.
+
+
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
