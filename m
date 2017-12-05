@@ -1,20 +1,28 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eMJTw-0002SB-9K
- for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 20:06:22 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Manfred Spraul <manfred@colorfullife.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: UBIFS does not mount after powerfail
-Date: Tue, 05 Dec 2017 21:06:28 +0100
-Message-ID: <1695485.xO2l5BsRhR@blindfold>
-In-Reply-To: <aa51fb6e-61c9-1133-b2cf-f931ee7e105a@colorfullife.com>
-References: <195075f7-01f8-58d2-ba1c-4291e62a39cc@colorfullife.com>
- <24015049.MUjmLyMSVC@blindfold>
- <aa51fb6e-61c9-1133-b2cf-f931ee7e105a@colorfullife.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Received: from baldur.buserror.net ([165.227.176.147])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eMJXi-0003IQ-1w
+ for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 20:10:15 +0000
+Message-ID: <1512504459.10062.9.camel@buserror.net>
+From: Scott Wood <oss@buserror.net>
+To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
+ "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>
+Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>
+Date: Tue, 05 Dec 2017 14:07:39 -0600
+In-Reply-To: <HE1PR04MB1241ADD02E472BA492AE1C8F973D0@HE1PR04MB1241.eurprd04.prod.outlook.com>
+References: <1511954855-8593-1-git-send-email-prabhakar.kushwaha@nxp.com>
+ <1512105209.10062.1.camel@buserror.net>
+ <HE1PR04MB12414AFA5F8081730B89378497390@HE1PR04MB1241.eurprd04.prod.outlook.com>
+ <1512165311.10062.3.camel@buserror.net>
+ <HE1PR04MB1241226CD3B7ABD6D5FA2D91973C0@HE1PR04MB1241.eurprd04.prod.outlook.com>
+ <1512441957.10062.6.camel@buserror.net>
+ <HE1PR04MB1241ADD02E472BA492AE1C8F973D0@HE1PR04MB1241.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] Documentation: binding: Update endianness usage
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,48 +32,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Manfred,
-
-Am Dienstag, 5. Dezember 2017, 20:11:20 CET schrieb Manfred Spraul:
-> > So, which file do I need to download to get the image that contains the
-> > first error as detected by chk_fs?
+On Tue, 2017-12-05 at 09:45 +0000, Prabhakar Kushwaha wrote:
+> > -----Original Message-----
+> > From: Scott Wood [mailto:oss@buserror.net]
+> > Sent: Tuesday, December 05, 2017 8:16 AM
+> > To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>; linux-
+> > mtd@lists.infradead.org; devicetree@vger.kernel.org
+> > Cc: dedekind1@gmail.com; computersforpeace@gmail.com
+> > Subject: Re: [PATCH] Documentation: binding: Update endianness usage
 > > 
-> > The mode of operation of your tool should be:
-> > 1. Mount UBIFS
-> > 2. Do various filesystem operations
-> > 3. Random power-cut (in software)
-> > 4. Dump the image to a file X
-> > 5. Set chk_fs to 1
-> > 6. Mount it again
-> > 7. If mount succeeds, drop X, umount and goto 1
+> > I now see your patch to of_flash_probe... where is the non-IFC-specific
+> > binding that says the *parent* of a CFI node should be looked at for this?
+> > Where in general are endian properties kept in the parent of the node with
+> > "reg"?  The right answer is to add endianness to mtd-physmap.txt.
 > > 
-> >     Else if, chk_fs finds a problem. Store file X.
-> > 
-> > I want file X. :-)
 > 
-> The tool is in release process, thus let's just wait a bit.
-> There is no "goto 1" in my flow.
-> 
-> Part 1: (done 5x, i.e. with xattr, without xattr, ...)
-> 
-> 0. create UBI image, create empty UBIFS image.
-> 1. Mount UBIFS
-> 2. Do various filesystem operations.
->     In the background, record nand operations and store it in a trace.
-> 
-> Part 2: (done ~100.000 times)
-> 1. Create an image file X by replaying from the trace.
-> 2. Set chk_fs to 1
-> 3. Mount the image
-> 7. If mount succeeds: ignore the file X
->     If mount fails: remember file X
-> 
-> Thus every image is a first error. No image has seen multiple unclean
-> unmounts.
+> Flashes are always littler endian. 
 
-Hmm, when does the power-cut occur in your setup?
-i.e image-168167.bin and image-168168.bin show different errors and none of 
-them fails the chf_fs test. They fail because of other reasons.
+We wouldn't be having this discussion if that were true...  This is about how
+it presents to the CPU, not about how the actual pins on the chip are
+numbered.
 
-Thanks,
-//richard
+> It is because of IFC controller behavior, endianness is required.  
+> So as per my understanding, this info should go in IFC binding. 
+
+If the info should go in the IFC binding why is the code in a non-IFC-specific 
+place?
+
+-Scott
