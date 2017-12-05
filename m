@@ -1,13 +1,19 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Cc: Richard Weinberger <richard@nod.at>, kernel@pengutronix.de,
- Han Xu <han.xu@nxp.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH] mtd: nand: gpmi: Fix failure when a erased page has a bitflip
- at BBM
-Date: Tue,  5 Dec 2017 11:51:40 +0100
-Message-Id: <20171205105140.915-1-s.hauer@pengutronix.de>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eMB6y-0000kF-Id
+ for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 11:10:07 +0000
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: [PATCH 1/2] mtd: nand: denali: Avoid using ecc->code_buf as a
+ temporary buffer
+Date: Tue,  5 Dec 2017 12:09:28 +0100
+Message-Id: <20171205110929.6820-1-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,55 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When erased subpages are read then the BCH decoder returns STATUS_ERASED
-if they are all empty, or STATUS_UNCORRECTABLE if there are bitflips.
-When there are bitflips, we have to set these bits again to show the
-upper layers a completely erased page. When a bitflip happens in the
-exact byte where the bad block marker is, then this byte is swapped
-with another byte in block_mark_swapping(). The correction code then
-detects a bitflip in another subpage and no longer corrects the bitflip
-where it really happens.
+ECC bytes are contiguous in the ->oob_poi buffer, which means we don't
+have to copy them into the ->code_buf (here used as a temporary buffer)
+before passing them to the nand_check_erased_ecc_chunk() function.
 
-Correct this behaviour by calling block_mark_swapping() after the
-bitflips have been corrected.
+This change will allow us to allocate ecc->{code,calc}_buf only when
+ecc->calculate() or ecc->correct() is specified.
 
-In our case UBIFS failed with this bug because it expects erased
-pages to be really empty:
-
-UBIFS error (pid 187): ubifs_scan: corrupt empty space at LEB 36:118735
-UBIFS error (pid 187): ubifs_scanned_corruption: corruption at LEB 36:118735
-UBIFS error (pid 187): ubifs_scanned_corruption: first 8192 bytes from LEB 36:118735
-UBIFS error (pid 187): ubifs_scan: LEB 36 scanning failed
-UBIFS error (pid 187): do_commit: commit failed, error -117
-
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/denali.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 50f8d4a1b983..d4d824ef64e9 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1067,9 +1067,6 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 		return ret;
- 	}
- 
--	/* handle the block mark swapping */
--	block_mark_swapping(this, payload_virt, auxiliary_virt);
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 00698b33cb22..313c7f50621b 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -330,16 +330,12 @@ static int denali_check_erased_page(struct mtd_info *mtd,
+ 				    unsigned long uncor_ecc_flags,
+ 				    unsigned int max_bitflips)
+ {
+-	uint8_t *ecc_code = chip->ecc.code_buf;
++	struct denali_nand_info *denali = mtd_to_denali(mtd);
++	uint8_t *ecc_code = chip->oob_poi + denali->oob_skip_bytes;
+ 	int ecc_steps = chip->ecc.steps;
+ 	int ecc_size = chip->ecc.size;
+ 	int ecc_bytes = chip->ecc.bytes;
+-	int i, ret, stat;
 -
- 	/* Loop over status bytes, accumulating ECC status. */
- 	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
+-	ret = mtd_ooblayout_get_eccbytes(mtd, ecc_code, chip->oob_poi, 0,
+-					 chip->ecc.total);
+-	if (ret)
+-		return ret;
++	int i, stat;
  
-@@ -1158,6 +1155,9 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 		max_bitflips = max_t(unsigned int, max_bitflips, *status);
- 	}
- 
-+	/* handle the block mark swapping */
-+	block_mark_swapping(this, buf, auxiliary_virt);
-+
- 	if (oob_required) {
- 		/*
- 		 * It's time to deliver the OOB bytes. See gpmi_ecc_read_oob()
+ 	for (i = 0; i < ecc_steps; i++) {
+ 		if (!(uncor_ecc_flags & BIT(i)))
 -- 
 2.11.0
