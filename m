@@ -1,30 +1,21 @@
-Received: from conssluserg-06.nifty.com ([210.131.2.91])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eMFBB-0000RM-Ev
- for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 15:30:43 +0000
-Received: from mail-ua0-f170.google.com (mail-ua0-f170.google.com
- [209.85.217.170]) (authenticated)
- by conssluserg-06.nifty.com with ESMTP id vB5FTmXN003846
- for <linux-mtd@lists.infradead.org>; Wed, 6 Dec 2017 00:29:48 +0900
-Received: by mail-ua0-f170.google.com with SMTP id h2so462921uae.12
- for <linux-mtd@lists.infradead.org>; Tue, 05 Dec 2017 07:29:48 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20171205110929.6820-2-boris.brezillon@free-electrons.com>
-References: <20171205110929.6820-1-boris.brezillon@free-electrons.com>
- <20171205110929.6820-2-boris.brezillon@free-electrons.com>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Wed, 6 Dec 2017 00:29:07 +0900
-Message-ID: <CAK7LNARs1wGzE9zHHsxH81uwZREqVj-csfdt=tb8VT3ZSu5jAw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mtd: nand: Only allocate ecc->{calc, code}_buf when
- actually needed
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
+Received: from xes-mad.com ([216.165.139.220] helo=mail.xes-mad.com)
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eMHjM-0003a9-Es
+ for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 18:14:10 +0000
+Date: Tue, 5 Dec 2017 12:13:44 -0600 (CST)
+From: Aaron Sierra <asierra@xes-inc.com>
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
  David Woodhouse <dwmw2@infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Content-Type: text/plain; charset="UTF-8"
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>
+Cc: Joe Schultz <jschultz@xes-inc.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>
+Message-ID: <84804381.386644.1512497624913.JavaMail.zimbra@xes-inc.com>
+Subject: [PATCH v2] mtd: spi-nor: Check that BP bits are set properly
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,75 +25,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2017-12-05 20:09 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
-> The only users of the ecc->{calc,code}_buf buffers are NAND controller
-> drivers implementing ecc->calculate() and/or ecc->correct(). Since the
-> ->oobsize can be non-negligle, especially on modern NAND devices, we'd
-> better allocate it only when it is actually required.
->
-> Make ecc->{calc,code}_buf allocation dependent on the presence of
-> ecc->calculate() or ecc->correct().
->
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> ---
->  drivers/mtd/nand/nand_base.c | 25 +++++++++++--------------
->  1 file changed, 11 insertions(+), 14 deletions(-)
->
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 71e70c4964f3..e6873d10c574 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -5318,21 +5318,9 @@ int nand_scan_tail(struct mtd_info *mtd)
->                 return -EINVAL;
->         }
->
-> -       ecc->calc_buf = kmalloc(mtd->oobsize, GFP_KERNEL);
-> -       if (!ecc->calc_buf)
-> -               return -ENOMEM;
-> -
-> -       ecc->code_buf = kmalloc(mtd->oobsize, GFP_KERNEL);
-> -       if (!ecc->code_buf) {
-> -               ret = -ENOMEM;
-> -               goto err_free_buf;
-> -       }
-> -
->         chip->data_buf = kmalloc(mtd->writesize + mtd->oobsize, GFP_KERNEL);
-> -       if (!chip->data_buf) {
-> -               ret = -ENOMEM;
-> -               goto err_free_buf;
-> -       }
-> +       if (!chip->data_buf)
-> +               return -ENOMEM;
->
->         /*
->          * FIXME: some NAND manufacturer drivers expect the first die to be
-> @@ -5495,6 +5483,15 @@ int nand_scan_tail(struct mtd_info *mtd)
->                 goto err_nand_manuf_cleanup;
->         }
->
-> +       if (ecc->correct || ecc->calculate) {
-> +               ecc->calc_buf = kmalloc(mtd->oobsize, GFP_KERNEL);
-> +               ecc->code_buf = kmalloc(mtd->oobsize, GFP_KERNEL);
-> +               if (!ecc->calc_buf || !ecc->code_buf) {
-> +                       ret = -ENOMEM;
-> +                       goto err_nand_manuf_cleanup;
-> +               }
-> +       }
-> +
->         /* For many systems, the standard OOB write also works for raw */
->         if (!ecc->read_oob_raw)
->                 ecc->read_oob_raw = ecc->read_oob;
-> --
-> 2.11.0
+Previously, the lock and unlock functions returned success even if the
+BP bits were not actually updated in the status register due to
+hardware write protection. Introduce write_sr_and_check() to write and
+read back the status register to ensure the desired BP bits are
+actually set as requested.
 
+Signed-off-by: Joe Schultz <jschultz@xes-inc.com>
+Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 35 +++++++++++++++++++++++------------
+ 1 file changed, 23 insertions(+), 12 deletions(-)
 
-I wondered if chip->data_buf allocation could be moved as well,
-but otherwise, looks good to me.
+v2: * Removed unnecessary spi_nor_wait_till_ready() call
+    * Renamed "new" variable to "status_new"
 
-
-Reviewed-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-
-
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index bc266f7..c3ee168 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -552,6 +552,27 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	return ret;
+ }
+ 
++/* Write status register and ensure bits in mask match written values */
++static int write_sr_and_check(struct spi_nor *nor, u8 status_new, u8 mask)
++{
++	int ret;
++
++	write_enable(nor);
++	ret = write_sr(nor, status_new);
++	if (ret)
++		return ret;
++
++	ret = spi_nor_wait_till_ready(nor);
++	if (ret)
++		return ret;
++
++	ret = read_sr(nor);
++	if (ret < 0)
++		return ret;
++
++	return ((ret & mask) != (status_new & mask)) ? -EIO : 0;
++}
++
+ static void stm_get_locked_range(struct spi_nor *nor, u8 sr, loff_t *ofs,
+ 				 uint64_t *len)
+ {
+@@ -650,7 +671,6 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 	loff_t lock_len;
+ 	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
+ 	bool use_top;
+-	int ret;
+ 
+ 	status_old = read_sr(nor);
+ 	if (status_old < 0)
+@@ -714,11 +734,7 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 	if ((status_new & mask) < (status_old & mask))
+ 		return -EINVAL;
+ 
+-	write_enable(nor);
+-	ret = write_sr(nor, status_new);
+-	if (ret)
+-		return ret;
+-	return spi_nor_wait_till_ready(nor);
++	return write_sr_and_check(nor, status_new, mask);
+ }
+ 
+ /*
+@@ -735,7 +751,6 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 	loff_t lock_len;
+ 	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
+ 	bool use_top;
+-	int ret;
+ 
+ 	status_old = read_sr(nor);
+ 	if (status_old < 0)
+@@ -802,11 +817,7 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 	if ((status_new & mask) > (status_old & mask))
+ 		return -EINVAL;
+ 
+-	write_enable(nor);
+-	ret = write_sr(nor, status_new);
+-	if (ret)
+-		return ret;
+-	return spi_nor_wait_till_ready(nor);
++	return write_sr_and_check(nor, status_new, mask);
+ }
+ 
+ /*
 -- 
-Best Regards
-Masahiro Yamada
+2.7.4
