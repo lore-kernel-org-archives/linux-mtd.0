@@ -1,6 +1,6 @@
 Received: from conuserg-08.nifty.com ([210.131.2.75])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eM8th-000442-BM
+ id 1eM8th-000443-BK
  for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 08:48:15 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org,
@@ -10,9 +10,11 @@ Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
  linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH v2 1/3] mtd: nand: cafe: remove use of NAND_OWN_BUFFERS
-Date: Tue,  5 Dec 2017 17:47:14 +0900
-Message-Id: <1512463636-28934-1-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v2 2/3] mtd: nand: remove unused NAND_OWN_BUFFERS flag
+Date: Tue,  5 Dec 2017 17:47:15 +0900
+Message-Id: <1512463636-28934-2-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <1512463636-28934-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1512463636-28934-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,20 +24,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This driver is the last/only user of NAND_OWN_BUFFERS.  Boris suggested
-to remove this flag.
-
-Taking a closer look at this driver, it calls dma_alloc_coherent() for
-the concatenated area for the DMA bounce buffer + struct nand_buffers,
-but the latter does not need to be DMA-coherent; cafe_{write,read}_buf
-simply do memcpy() between buffers when usedma==1.
-
-Let's do dma_alloc_coherent() for the DMA bounce buffer in the front,
-and leave the nand_buffers allocation to nand_scan_tail(), then rip off
-NAND_OWN_BUFFERS.
-
-The magic number, 2112, is still mysterious (hard-coded writesize +
-oobsize ?), but this is not our main interest.  I am keeping it.
+The last/only user of NAND_OWN_BUFFERS (cafe_nand.c) has been reworked.
+This flag is no longer needed.
 
 Suggested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
@@ -44,82 +34,93 @@ Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 Changes in v2:
   - Newly added
 
- drivers/mtd/nand/cafe_nand.c | 24 ++++--------------------
- 1 file changed, 4 insertions(+), 20 deletions(-)
+ drivers/mtd/nand/nand_base.c | 45 ++++++++++++++++++++------------------------
+ include/linux/mtd/rawnand.h  |  5 -----
+ 2 files changed, 20 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
-index bc558c4..add4613 100644
---- a/drivers/mtd/nand/cafe_nand.c
-+++ b/drivers/mtd/nand/cafe_nand.c
-@@ -613,7 +613,6 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 	uint32_t ctrl;
- 	int err = 0;
- 	int old_dma;
--	struct nand_buffers *nbuf;
- 
- 	/* Very old versions shared the same PCI ident for all three
- 	   functions on the chip. Verify the class too... */
-@@ -661,7 +660,6 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 
- 	/* Enable the following for a flash based bad block table */
- 	cafe->nand.bbt_options = NAND_BBT_USE_FLASH;
--	cafe->nand.options = NAND_OWN_BUFFERS;
- 
- 	if (skipbbt) {
- 		cafe->nand.options |= NAND_SKIP_BBTSCAN;
-@@ -731,15 +729,12 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 	if (err)
- 		goto out_irq;
- 
--	cafe->dmabuf = dma_alloc_coherent(&cafe->pdev->dev,
--				2112 + sizeof(struct nand_buffers) +
--				mtd->writesize + mtd->oobsize,
--				&cafe->dmaaddr, GFP_KERNEL);
-+	cafe->dmabuf = dma_alloc_coherent(&cafe->pdev->dev, 2112,
-+					  &cafe->dmaaddr, GFP_KERNEL);
- 	if (!cafe->dmabuf) {
- 		err = -ENOMEM;
- 		goto out_irq;
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 6135d00..0cc61b1 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -4646,35 +4646,30 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		return -EINVAL;
  	}
--	cafe->nand.buffers = nbuf = (void *)cafe->dmabuf + 2112;
  
- 	/* Set up DMA address */
- 	cafe_writel(cafe, cafe->dmaaddr & 0xffffffff, NAND_DMA_ADDR0);
-@@ -752,11 +747,6 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 	cafe_dev_dbg(&cafe->pdev->dev, "Set DMA address to %x (virt %p)\n",
- 		cafe_readl(cafe, NAND_DMA_ADDR0), cafe->dmabuf);
- 
--	/* this driver does not need the @ecccalc and @ecccode */
--	nbuf->ecccalc = NULL;
--	nbuf->ecccode = NULL;
--	nbuf->databuf = (uint8_t *)(nbuf + 1);
+-	if (!(chip->options & NAND_OWN_BUFFERS)) {
+-		nbuf = kzalloc(sizeof(*nbuf), GFP_KERNEL);
+-		if (!nbuf)
+-			return -ENOMEM;
 -
- 	/* Restore the DMA flag */
- 	usedma = old_dma;
+-		nbuf->ecccalc = kmalloc(mtd->oobsize, GFP_KERNEL);
+-		if (!nbuf->ecccalc) {
+-			ret = -ENOMEM;
+-			goto err_free_nbuf;
+-		}
++	nbuf = kzalloc(sizeof(*nbuf), GFP_KERNEL);
++	if (!nbuf)
++		return -ENOMEM;
  
-@@ -801,10 +791,7 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 	goto out;
+-		nbuf->ecccode = kmalloc(mtd->oobsize, GFP_KERNEL);
+-		if (!nbuf->ecccode) {
+-			ret = -ENOMEM;
+-			goto err_free_nbuf;
+-		}
++	nbuf->ecccalc = kmalloc(mtd->oobsize, GFP_KERNEL);
++	if (!nbuf->ecccalc) {
++		ret = -ENOMEM;
++		goto err_free_nbuf;
++	}
  
-  out_free_dma:
--	dma_free_coherent(&cafe->pdev->dev,
--			2112 + sizeof(struct nand_buffers) +
--			mtd->writesize + mtd->oobsize,
--			cafe->dmabuf, cafe->dmaaddr);
-+	dma_free_coherent(&cafe->pdev->dev, 2112, cafe->dmabuf, cafe->dmaaddr);
-  out_irq:
- 	/* Disable NAND IRQ in global IRQ mask register */
- 	cafe_writel(cafe, ~1 & cafe_readl(cafe, GLOBAL_IRQ_MASK), GLOBAL_IRQ_MASK);
-@@ -829,10 +816,7 @@ static void cafe_nand_remove(struct pci_dev *pdev)
- 	nand_release(mtd);
- 	free_rs(cafe->rs);
- 	pci_iounmap(pdev, cafe->mmio);
--	dma_free_coherent(&cafe->pdev->dev,
--			2112 + sizeof(struct nand_buffers) +
--			mtd->writesize + mtd->oobsize,
--			cafe->dmabuf, cafe->dmaaddr);
-+	dma_free_coherent(&cafe->pdev->dev, 2112, cafe->dmabuf, cafe->dmaaddr);
- 	kfree(cafe);
- }
+-		nbuf->databuf = kmalloc(mtd->writesize + mtd->oobsize,
+-					GFP_KERNEL);
+-		if (!nbuf->databuf) {
+-			ret = -ENOMEM;
+-			goto err_free_nbuf;
+-		}
++	nbuf->ecccode = kmalloc(mtd->oobsize, GFP_KERNEL);
++	if (!nbuf->ecccode) {
++		ret = -ENOMEM;
++		goto err_free_nbuf;
++	}
  
+-		chip->buffers = nbuf;
+-	} else if (!chip->buffers) {
+-		return -ENOMEM;
++	nbuf->databuf = kmalloc(mtd->writesize + mtd->oobsize, GFP_KERNEL);
++	if (!nbuf->databuf) {
++		ret = -ENOMEM;
++		goto err_free_nbuf;
+ 	}
+ 
++	chip->buffers = nbuf;
++
+ 	/*
+ 	 * FIXME: some NAND manufacturer drivers expect the first die to be
+ 	 * selected when manufacturer->init() is called. They should be fixed
+@@ -5032,7 +5027,7 @@ void nand_cleanup(struct nand_chip *chip)
+ 
+ 	/* Free bad block table memory */
+ 	kfree(chip->bbt);
+-	if (!(chip->options & NAND_OWN_BUFFERS) && chip->buffers) {
++	if (chip->buffers) {
+ 		kfree(chip->buffers->databuf);
+ 		kfree(chip->buffers->ecccode);
+ 		kfree(chip->buffers->ecccalc);
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 749bb08..5b24a8e 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -191,11 +191,6 @@ enum nand_ecc_algo {
+ /* Non chip related options */
+ /* This option skips the bbt scan during initialization. */
+ #define NAND_SKIP_BBTSCAN	0x00010000
+-/*
+- * This option is defined if the board driver allocates its own buffers
+- * (e.g. because it needs them DMA-coherent).
+- */
+-#define NAND_OWN_BUFFERS	0x00020000
+ /* Chip may not exist, so silence any errors in scan */
+ #define NAND_SCAN_SILENT_NODEV	0x00040000
+ /*
 -- 
 2.7.4
