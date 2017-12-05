@@ -1,18 +1,18 @@
-Received: from mail-bn3nam01on0080.outbound.protection.outlook.com
- ([104.47.33.80] helo=NAM01-BN3-obe.outbound.protection.outlook.com)
+Received: from mail-cys01nam02on0058.outbound.protection.outlook.com
+ ([104.47.37.58] helo=NAM02-CY1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eM69j-0007VR-GL
- for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 05:52:37 +0000
+ id 1eM69p-0007eD-RP
+ for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 05:52:44 +0000
 From: Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
 To: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <computersforpeace@gmail.com>, <dwmw2@infradead.org>,
  <boris.brezillon@free-electrons.com>, <marek.vasut@gmail.com>,
  <richard@nod.at>, <cyrille.pitchen@wedev4u.fr>
 CC: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-Subject: [PATCHv2 1/2] mtd: spi-nor: add an API to restore the status of SPI
- flash chip
-Date: Tue, 5 Dec 2017 13:33:21 +0800
-Message-ID: <20171205053322.35823-2-Zhiqiang.Hou@nxp.com>
+Subject: [PATCHv2 2/2] mtd: m25p80: restore the status of SPI flash when stop
+ using it
+Date: Tue, 5 Dec 2017 13:33:22 +0800
+Message-ID: <20171205053322.35823-3-Zhiqiang.Hou@nxp.com>
 In-Reply-To: <20171205053322.35823-1-Zhiqiang.Hou@nxp.com>
 References: <20171205053322.35823-1-Zhiqiang.Hou@nxp.com>
 MIME-Version: 1.0
@@ -28,67 +28,47 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
 
-Add this API to restore the status of SPI flash chip to the default
-such as addressing mode, whenever detach the driver from device or
-reboot the system.
+Implement .shutdown function to restore the status in reboot
+process, and add the same operation to the .remove function.
 
 Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
 ---
 V2:
- - Changed the API name and added the comments and kernel document for it.
- - Export this symbol for modules.
+ - Changed code format slightly.
 
- Documentation/mtd/spi-nor.txt |  3 +++
- drivers/mtd/spi-nor/spi-nor.c | 10 ++++++++++
- include/linux/mtd/spi-nor.h   |  6 ++++++
- 3 files changed, 19 insertions(+)
+ drivers/mtd/devices/m25p80.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/Documentation/mtd/spi-nor.txt b/Documentation/mtd/spi-nor.txt
-index 548d6306ebca..da1fbff5a24c 100644
---- a/Documentation/mtd/spi-nor.txt
-+++ b/Documentation/mtd/spi-nor.txt
-@@ -60,3 +60,6 @@ The main API is spi_nor_scan(). Before you call the hook, a driver should
- initialize the necessary fields for spi_nor{}. Please see
- drivers/mtd/spi-nor/spi-nor.c for detail. Please also refer to fsl-quadspi.c
- when you want to write a new driver for a SPI NOR controller.
-+Another API is spi_nor_restore(), this is used to restore the status of SPI
-+flash chip such as addressing mode. Call it whenever detach the driver from
-+device or reboot the system.
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index bc266f70a15b..4a925378d434 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -2713,6 +2713,16 @@ static void spi_nor_resume(struct mtd_info *mtd)
- 		dev_err(dev, "resume() failed\n");
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index dbe6a1de2bb8..a4e18f6aaa33 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -307,10 +307,18 @@ static int m25p_remove(struct spi_device *spi)
+ {
+ 	struct m25p	*flash = spi_get_drvdata(spi);
+ 
++	spi_nor_restore(&flash->spi_nor);
++
+ 	/* Clean up MTD stuff. */
+ 	return mtd_device_unregister(&flash->spi_nor.mtd);
  }
  
-+void spi_nor_restore(struct spi_nor *nor)
++static void m25p_shutdown(struct spi_device *spi)
 +{
-+	/* restore the addressing mode */
-+	if ((nor->addr_width == 4) &&
-+	    (JEDEC_MFR(nor->info) != SNOR_MFR_SPANSION) &&
-+	    !(nor->info->flags & SPI_NOR_4B_OPCODES))
-+		set_4byte(nor, nor->info, 0);
++	struct m25p *flash = spi_get_drvdata(spi);
++
++	spi_nor_restore(&flash->spi_nor);
 +}
-+EXPORT_SYMBOL_GPL(spi_nor_restore);
-+
- int spi_nor_scan(struct spi_nor *nor, const char *name,
- 		 const struct spi_nor_hwcaps *hwcaps)
- {
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index d0c66a0975cf..0a182c3d0884 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -399,4 +399,10 @@ struct spi_nor_hwcaps {
- int spi_nor_scan(struct spi_nor *nor, const char *name,
- 		 const struct spi_nor_hwcaps *hwcaps);
+ /*
+  * Do NOT add to this array without reading the following:
+  *
+@@ -386,6 +394,7 @@ static struct spi_driver m25p80_driver = {
+ 	.id_table	= m25p_ids,
+ 	.probe	= m25p_probe,
+ 	.remove	= m25p_remove,
++	.shutdown	= m25p_shutdown,
  
-+/*
-+ * spi_nor_restore_addr_mode() - restore the status of SPI NOR
-+ * @nor:	the spi_nor structure
-+ */
-+void spi_nor_restore(struct spi_nor *nor);
-+
- #endif
+ 	/* REVISIT: many of these chips have deep power-down modes, which
+ 	 * should clearly be entered on suspend() to minimize power use.
 -- 
 2.14.1
