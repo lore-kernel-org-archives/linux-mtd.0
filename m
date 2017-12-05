@@ -1,21 +1,28 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eM9mM-000778-M1
- for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 09:44:44 +0000
-Date: Tue, 5 Dec 2017 10:44:09 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org, Marek Vasut
- <marek.vasut@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v2 1/3] mtd: nand: cafe: remove use of NAND_OWN_BUFFERS
-Message-ID: <20171205104409.2877bbb0@bbrezillon>
-In-Reply-To: <1512463636-28934-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1512463636-28934-1-git-send-email-yamada.masahiro@socionext.com>
+Received: from mail-db5eur01on0075.outbound.protection.outlook.com
+ ([104.47.2.75] helo=EUR01-DB5-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eM9nZ-0000Tj-8y
+ for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 09:45:59 +0000
+From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+To: Scott Wood <oss@buserror.net>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>
+CC: "dedekind1@gmail.com" <dedekind1@gmail.com>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>
+Subject: RE: [PATCH] Documentation: binding: Update endianness usage
+Date: Tue, 5 Dec 2017 09:45:33 +0000
+Message-ID: <HE1PR04MB1241ADD02E472BA492AE1C8F973D0@HE1PR04MB1241.eurprd04.prod.outlook.com>
+References: <1511954855-8593-1-git-send-email-prabhakar.kushwaha@nxp.com>
+ <1512105209.10062.1.camel@buserror.net>
+ <HE1PR04MB12414AFA5F8081730B89378497390@HE1PR04MB1241.eurprd04.prod.outlook.com>
+ <1512165311.10062.3.camel@buserror.net>
+ <HE1PR04MB1241226CD3B7ABD6D5FA2D91973C0@HE1PR04MB1241.eurprd04.prod.outlook.com>
+ <1512441957.10062.6.camel@buserror.net>
+In-Reply-To: <1512441957.10062.6.camel@buserror.net>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,113 +32,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue,  5 Dec 2017 17:47:14 +0900
-Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
-
-> This driver is the last/only user of NAND_OWN_BUFFERS.  Boris suggested
-> to remove this flag.
-> 
-> Taking a closer look at this driver, it calls dma_alloc_coherent() for
-> the concatenated area for the DMA bounce buffer + struct nand_buffers,
-> but the latter does not need to be DMA-coherent; cafe_{write,read}_buf
-> simply do memcpy() between buffers when usedma==1.
-> 
-> Let's do dma_alloc_coherent() for the DMA bounce buffer in the front,
-> and leave the nand_buffers allocation to nand_scan_tail(), then rip off
-> NAND_OWN_BUFFERS.
-> 
-> The magic number, 2112, is still mysterious (hard-coded writesize +
-> oobsize ?),
-
-Yep, 2k pages usually have 64b of OOB, hence the 2112 magic number
-(2048 + 64).
-
-> but this is not our main interest.  I am keeping it.
-
-Agreed.
-
-> 
-> Suggested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> ---
-> 
-> Changes in v2:
->   - Newly added
-> 
->  drivers/mtd/nand/cafe_nand.c | 24 ++++--------------------
->  1 file changed, 4 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
-> index bc558c4..add4613 100644
-> --- a/drivers/mtd/nand/cafe_nand.c
-> +++ b/drivers/mtd/nand/cafe_nand.c
-> @@ -613,7 +613,6 @@ static int cafe_nand_probe(struct pci_dev *pdev,
->  	uint32_t ctrl;
->  	int err = 0;
->  	int old_dma;
-> -	struct nand_buffers *nbuf;
->  
->  	/* Very old versions shared the same PCI ident for all three
->  	   functions on the chip. Verify the class too... */
-> @@ -661,7 +660,6 @@ static int cafe_nand_probe(struct pci_dev *pdev,
->  
->  	/* Enable the following for a flash based bad block table */
->  	cafe->nand.bbt_options = NAND_BBT_USE_FLASH;
-> -	cafe->nand.options = NAND_OWN_BUFFERS;
->  
->  	if (skipbbt) {
->  		cafe->nand.options |= NAND_SKIP_BBTSCAN;
-> @@ -731,15 +729,12 @@ static int cafe_nand_probe(struct pci_dev *pdev,
->  	if (err)
->  		goto out_irq;
->  
-> -	cafe->dmabuf = dma_alloc_coherent(&cafe->pdev->dev,
-> -				2112 + sizeof(struct nand_buffers) +
-> -				mtd->writesize + mtd->oobsize,
-> -				&cafe->dmaaddr, GFP_KERNEL);
-> +	cafe->dmabuf = dma_alloc_coherent(&cafe->pdev->dev, 2112,
-> +					  &cafe->dmaaddr, GFP_KERNEL);
->  	if (!cafe->dmabuf) {
->  		err = -ENOMEM;
->  		goto out_irq;
->  	}
-> -	cafe->nand.buffers = nbuf = (void *)cafe->dmabuf + 2112;
->  
->  	/* Set up DMA address */
->  	cafe_writel(cafe, cafe->dmaaddr & 0xffffffff, NAND_DMA_ADDR0);
-> @@ -752,11 +747,6 @@ static int cafe_nand_probe(struct pci_dev *pdev,
->  	cafe_dev_dbg(&cafe->pdev->dev, "Set DMA address to %x (virt %p)\n",
->  		cafe_readl(cafe, NAND_DMA_ADDR0), cafe->dmabuf);
->  
-> -	/* this driver does not need the @ecccalc and @ecccode */
-> -	nbuf->ecccalc = NULL;
-> -	nbuf->ecccode = NULL;
-> -	nbuf->databuf = (uint8_t *)(nbuf + 1);
-> -
->  	/* Restore the DMA flag */
->  	usedma = old_dma;
->  
-> @@ -801,10 +791,7 @@ static int cafe_nand_probe(struct pci_dev *pdev,
->  	goto out;
->  
->   out_free_dma:
-> -	dma_free_coherent(&cafe->pdev->dev,
-> -			2112 + sizeof(struct nand_buffers) +
-> -			mtd->writesize + mtd->oobsize,
-> -			cafe->dmabuf, cafe->dmaaddr);
-> +	dma_free_coherent(&cafe->pdev->dev, 2112, cafe->dmabuf, cafe->dmaaddr);
->   out_irq:
->  	/* Disable NAND IRQ in global IRQ mask register */
->  	cafe_writel(cafe, ~1 & cafe_readl(cafe, GLOBAL_IRQ_MASK), GLOBAL_IRQ_MASK);
-> @@ -829,10 +816,7 @@ static void cafe_nand_remove(struct pci_dev *pdev)
->  	nand_release(mtd);
->  	free_rs(cafe->rs);
->  	pci_iounmap(pdev, cafe->mmio);
-> -	dma_free_coherent(&cafe->pdev->dev,
-> -			2112 + sizeof(struct nand_buffers) +
-> -			mtd->writesize + mtd->oobsize,
-> -			cafe->dmabuf, cafe->dmaaddr);
-> +	dma_free_coherent(&cafe->pdev->dev, 2112, cafe->dmabuf, cafe->dmaaddr);
->  	kfree(cafe);
->  }
->  
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFNjb3R0IFdvb2QgW21haWx0
+bzpvc3NAYnVzZXJyb3IubmV0XQ0KPiBTZW50OiBUdWVzZGF5LCBEZWNlbWJlciAwNSwgMjAxNyA4
+OjE2IEFNDQo+IFRvOiBQcmFiaGFrYXIgS3VzaHdhaGEgPHByYWJoYWthci5rdXNod2FoYUBueHAu
+Y29tPjsgbGludXgtDQo+IG10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBkZXZpY2V0cmVlQHZnZXIu
+a2VybmVsLm9yZw0KPiBDYzogZGVkZWtpbmQxQGdtYWlsLmNvbTsgY29tcHV0ZXJzZm9ycGVhY2VA
+Z21haWwuY29tDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIERvY3VtZW50YXRpb246IGJpbmRpbmc6
+IFVwZGF0ZSBlbmRpYW5uZXNzIHVzYWdlDQo+IA0KPiBPbiBNb24sIDIwMTctMTItMDQgYXQgMDQ6
+MzMgKzAwMDAsIFByYWJoYWthciBLdXNod2FoYSB3cm90ZToNCj4gPiA+IC0tLS0tT3JpZ2luYWwg
+TWVzc2FnZS0tLS0tDQo+ID4gPiBGcm9tOiBTY290dCBXb29kIFttYWlsdG86b3NzQGJ1c2Vycm9y
+Lm5ldF0NCj4gPiA+IFNlbnQ6IFNhdHVyZGF5LCBEZWNlbWJlciAwMiwgMjAxNyAzOjI1IEFNDQo+
+ID4gPiBUbzogUHJhYmhha2FyIEt1c2h3YWhhIDxwcmFiaGFrYXIua3VzaHdhaGFAbnhwLmNvbT47
+IGxpbnV4LQ0KPiA+ID4gbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IGRldmljZXRyZWUtZGlzY3Vz
+c0BsaXN0cy5vemxhYnMub3JnDQo+ID4gPiBDYzogZGVkZWtpbmQxQGdtYWlsLmNvbTsgY29tcHV0
+ZXJzZm9ycGVhY2VAZ21haWwuY29tDQo+ID4gPiBTdWJqZWN0OiBSZTogW1BBVENIXSBEb2N1bWVu
+dGF0aW9uOiBiaW5kaW5nOiBVcGRhdGUgZW5kaWFubmVzcyB1c2FnZQ0KPiA+ID4NCj4gPiA+IE9u
+IEZyaSwgMjAxNy0xMi0wMSBhdCAwODo0MiArMDAwMCwgUHJhYmhha2FyIEt1c2h3YWhhIHdyb3Rl
+Og0KPiA+ID4gPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4gPiA+ID4gRnJvbTog
+U2NvdHQgV29vZCBbbWFpbHRvOm9zc0BidXNlcnJvci5uZXRdDQo+ID4gPiA+ID4gU2VudDogRnJp
+ZGF5LCBEZWNlbWJlciAwMSwgMjAxNyAxMDo0MyBBTQ0KPiA+ID4gPiA+IFRvOiBQcmFiaGFrYXIg
+S3VzaHdhaGEgPHByYWJoYWthci5rdXNod2FoYUBueHAuY29tPjsgbGludXgtDQo+ID4gPiA+ID4g
+bXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IGRldmljZXRyZWUtZGlzY3Vzc0BsaXN0cy5vemxhYnMu
+b3JnDQo+ID4gPiA+ID4gQ2M6IGRlZGVraW5kMUBnbWFpbC5jb207IGNvbXB1dGVyc2ZvcnBlYWNl
+QGdtYWlsLmNvbQ0KPiA+ID4gPiA+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIERvY3VtZW50YXRpb246
+IGJpbmRpbmc6IFVwZGF0ZSBlbmRpYW5uZXNzIHVzYWdlDQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBJ
+ZiBiaWcgZW5kaWFuIGlzIHRoZSBkZWZhdWx0LCBpcyB0aGlzIGNoYW5nZSByZWFsbHkNCj4gPiA+
+ID4gPiBuZWNlc3Nhcnk/wqDCoFBhcnRpY3VsYXJseQ0KPiA+ID4gPiA+IHNpbmNlIHRoZSBiaWcg
+ZW5kaWFuIGNoaXBzIGFyZSBvbGRlciBhbmQgdGh1cyBoYXZlIGV4aXN0aW5nIGRldmljZQ0KPiA+
+ID4gPiA+IHRyZWVzLg0KPiA+ID4gPiA+DQo+ID4gPiA+DQo+ID4gPiA+IEVhcmxpZXIgZW5kaWFu
+bmVzcyBpbmZvcm1hdGlvbiB3YXMgb25seSB1c2VkIGZvciAiaG93IHRvIsKgwqBhY2Nlc3MgSUZD
+LQ0KPiA+ID4gPiBOQU5EDQo+ID4gPiA+IHJlZ2lzdGVyIGFjY2Vzcy4NCj4gPiA+ID4gTm93IHRo
+aXMgaW5mb8KgwqB3aWxsIGFsc28gYmUgdXNlZCBmb3IgZGVmaW5pbmcgc3dhcCByZXF1aXJlbWVu
+dCBvZiBOT1INCj4gPiA+ID4gZmxhc2guDQo+ID4gPg0KPiA+ID4gSXMgdGhpcyBhIGRpZmZlcmVu
+Y2UgYmV0d2VlbiBMUzEwMjFBIGFuZCBQUEMtYmFzZWQgY2hpcHM/DQo+ID4gPg0KPiA+DQo+ID4g
+WWVzLg0KPiA+IENPTkZJR19NVERfQ0ZJX0JFX0JZVEVfU1dBUCBuZWVkcyB0byBiZSBkZWZpbmVk
+IEZvciBMUzEwMjFBLCBMUzEwNDNBLA0KPiA+IExTMTA0NkENCj4gDQo+IE9ubHkgYmVjYXVzZSB5
+b3UncmUgcnVubmluZyBhIGxpdHRsZS1lbmRpYW4ga2VybmVsIG9uIHRob3NlIGNoaXBzLiAgSSBz
+dGlsbA0KPiBkb24ndCBzZWUgd2h5IHRoZSBhYnNlbmNlIG9mIGEgbGl0dGxlLWVuZGlhbiBwcm9w
+ZXJ0eSBpc24ndCBzdWZmaWNpZW50IHRvDQo+IGNvbW11bmljYXRlIHRoYXQgdGhlIGhhcmR3YXJl
+IGlzIGJpZy1lbmRpYW4gZ2l2ZW4gdGhhdCB0aGF0J3MgdGhlIGVzdGFibGlzaGVkDQo+IGRlZmF1
+bHQuDQo+IA0KPiBJIG5vdyBzZWUgeW91ciBwYXRjaCB0byBvZl9mbGFzaF9wcm9iZS4uLiB3aGVy
+ZSBpcyB0aGUgbm9uLUlGQy1zcGVjaWZpYw0KPiBiaW5kaW5nIHRoYXQgc2F5cyB0aGUgKnBhcmVu
+dCogb2YgYSBDRkkgbm9kZSBzaG91bGQgYmUgbG9va2VkIGF0IGZvciB0aGlzPw0KPiBXaGVyZcKg
+aW4gZ2VuZXJhbCBhcmUgZW5kaWFuIHByb3BlcnRpZXMga2VwdCBpbiB0aGUgcGFyZW50IG9mIHRo
+ZSBub2RlIHdpdGgNCj4gInJlZyI/ICBUaGUgcmlnaHQgYW5zd2VyIGlzIHRvIGFkZCBlbmRpYW5u
+ZXNzIHRvIG10ZC1waHlzbWFwLnR4dC4NCj4gDQoNCkZsYXNoZXMgYXJlIGFsd2F5cyBsaXR0bGVy
+IGVuZGlhbi4gDQpJdCBpcyBiZWNhdXNlIG9mIElGQyBjb250cm9sbGVyIGJlaGF2aW9yLCBlbmRp
+YW5uZXNzIGlzIHJlcXVpcmVkLiAgDQpTbyBhcyBwZXIgbXkgdW5kZXJzdGFuZGluZywgdGhpcyBp
+bmZvIHNob3VsZCBnbyBpbiBJRkMgYmluZGluZy4gDQoNClBsZWFzZSBoZWxwIG1lIGlmIEkgYW0g
+bm90IGFibGUgdG8gdW5kZXJzdGFuZCB5b3VyIHZpZXcuDQoNCi0tcHJhYmhha2FyDQoNCg0K
