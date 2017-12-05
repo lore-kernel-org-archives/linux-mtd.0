@@ -1,17 +1,20 @@
-Received: from smtp3-g21.free.fr ([212.27.42.3])
+Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eMJhk-0001rZ-CF
- for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 20:20:38 +0000
-Subject: Re: [PATCH v2] drivers:mtd:spi-nor:checkup FSR error bits
-To: "Bean Huo (beanhuo)" <beanhuo@micron.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <03b5686314b54957b673cdf092b11c02@SIWEX5A.sing.micron.com>
+ id 1eMJuz-0006vV-1f
+ for linux-mtd@lists.infradead.org; Tue, 05 Dec 2017 20:34:20 +0000
+Subject: Re: [PATCH v2] mtd: spi-nor: Check that BP bits are set properly
+To: Aaron Sierra <asierra@xes-inc.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>
+Cc: Joe Schultz <jschultz@xes-inc.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>
+References: <84804381.386644.1512497624913.JavaMail.zimbra@xes-inc.com>
 From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <763dca19-e290-537d-3008-66d00e796875@wedev4u.fr>
-Date: Tue, 5 Dec 2017 21:20:11 +0100
+Message-ID: <00653598-9bf7-38f2-9890-d40766e4d681@wedev4u.fr>
+Date: Tue, 5 Dec 2017 21:33:51 +0100
 MIME-Version: 1.0
-In-Reply-To: <03b5686314b54957b673cdf092b11c02@SIWEX5A.sing.micron.com>
+In-Reply-To: <84804381.386644.1512497624913.JavaMail.zimbra@xes-inc.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -24,42 +27,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 04/12/2017 à 14:27, Bean Huo (beanhuo) a écrit :
-> Hi, Cyrille
+Le 05/12/2017 à 19:13, Aaron Sierra a écrit :
+> Previously, the lock and unlock functions returned success even if the
+> BP bits were not actually updated in the status register due to
+> hardware write protection. Introduce write_sr_and_check() to write and
+> read back the status register to ensure the desired BP bits are
+> actually set as requested.
 > 
->> Hi Bean,
->>
->> Le 04/12/2017 à 13:34, Bean Huo (beanhuo) a écrit :
->>> For Micron spi nor device, when erase/program operation fails,
->>> especially the failure results from intending to modify protected
->>> space, spi-nor upper layers still get the return which shows the
->>> operation succeeds. This is because current spi_nor_fsr_ready() only
->>> uses FSR bit.7 (flag status register) to check device whether ready.
->>> This patch fixs this issue by checking relevant error
->>
->> s/fixs/fixes/
->>
->>> bits in FSR.
->>> The FSR is a powerful tool to investigate the staus of
->>
->> s/staus/status/
->>
->>> device, checking information regarding what is actually doing the
->>> memory and detecting possible error conditions.
->>>
->>> Signed-off-by: beanhuo <beanhuo@micron.com>
+> Signed-off-by: Joe Schultz <jschultz@xes-inc.com>
+> Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
 
-Applied to the spi-nor/next branch of l2-mtd after correcting few typos
-in the commit message and the subject line.
+Applied to the spi-nor/next branch of l2-mtd
 
->>
->> Otherwise,
->> Acked-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
->>
->> No need to resend, I'll fix these tiny issues myself :)
->>
+Thanks!
+
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 35 +++++++++++++++++++++++------------
+>  1 file changed, 23 insertions(+), 12 deletions(-)
 > 
-> Thanks!
+> v2: * Removed unnecessary spi_nor_wait_till_ready() call
+>     * Renamed "new" variable to "status_new"
 > 
-> // Bean Huo
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index bc266f7..c3ee168 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -552,6 +552,27 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  	return ret;
+>  }
+>  
+> +/* Write status register and ensure bits in mask match written values */
+> +static int write_sr_and_check(struct spi_nor *nor, u8 status_new, u8 mask)
+> +{
+> +	int ret;
+> +
+> +	write_enable(nor);
+> +	ret = write_sr(nor, status_new);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = spi_nor_wait_till_ready(nor);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = read_sr(nor);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return ((ret & mask) != (status_new & mask)) ? -EIO : 0;
+> +}
+> +
+>  static void stm_get_locked_range(struct spi_nor *nor, u8 sr, loff_t *ofs,
+>  				 uint64_t *len)
+>  {
+> @@ -650,7 +671,6 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>  	loff_t lock_len;
+>  	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
+>  	bool use_top;
+> -	int ret;
+>  
+>  	status_old = read_sr(nor);
+>  	if (status_old < 0)
+> @@ -714,11 +734,7 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>  	if ((status_new & mask) < (status_old & mask))
+>  		return -EINVAL;
+>  
+> -	write_enable(nor);
+> -	ret = write_sr(nor, status_new);
+> -	if (ret)
+> -		return ret;
+> -	return spi_nor_wait_till_ready(nor);
+> +	return write_sr_and_check(nor, status_new, mask);
+>  }
+>  
+>  /*
+> @@ -735,7 +751,6 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>  	loff_t lock_len;
+>  	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
+>  	bool use_top;
+> -	int ret;
+>  
+>  	status_old = read_sr(nor);
+>  	if (status_old < 0)
+> @@ -802,11 +817,7 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>  	if ((status_new & mask) > (status_old & mask))
+>  		return -EINVAL;
+>  
+> -	write_enable(nor);
+> -	ret = write_sr(nor, status_new);
+> -	if (ret)
+> -		return ret;
+> -	return spi_nor_wait_till_ready(nor);
+> +	return write_sr_and_check(nor, status_new, mask);
+>  }
+>  
+>  /*
 > 
