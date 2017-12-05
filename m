@@ -1,27 +1,13 @@
-MIME-Version: 1.0
-In-Reply-To: <20171205112815.0b59ab2d@bbrezillon>
-References: <1512366470-16772-1-git-send-email-yamada.masahiro@socionext.com>
- <20171204101043.602ff213@bbrezillon>
- <CAK7LNATtk9=i3HkPrW=F1YtnM1vvEM3NtMZcPNi_0C5s_X1X1A@mail.gmail.com>
- <20171205112815.0b59ab2d@bbrezillon>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Tue, 5 Dec 2017 19:41:45 +0900
-Message-ID: <CAK7LNASHE1qKe5m24KvZWjp4GsCmop9h+PcQD--ecgQV6mm=cg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: nand: squash struct nand_buffers into struct
- nand_chip
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Kamal Dasu <kdasu.kdev@gmail.com>, Richard Weinberger <richard@nod.at>,
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Cc: Richard Weinberger <richard@nod.at>, kernel@pengutronix.de,
  Han Xu <han.xu@nxp.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
- Broadcom Kernel Feedback List <bcm-kernel-feedback-list@broadcom.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH] mtd: nand: gpmi: Fix failure when a erased page has a bitflip
+ at BBM
+Date: Tue,  5 Dec 2017 11:51:40 +0100
+Message-Id: <20171205105140.915-1-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,61 +17,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2017-12-05 19:28 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
-> On Tue, 5 Dec 2017 19:02:26 +0900
-> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
->
->> Hi Boris,
->>
->> 2017-12-04 18:10 GMT+09:00 Boris Brezillon
->> <boris.brezillon@free-electrons.com>:
->>
->> >>       }
->> >>
->> >>       if (!(chip->options & NAND_OWN_BUFFERS)) {
->> >> -             nbuf = kzalloc(sizeof(*nbuf), GFP_KERNEL);
->> >> -             if (!nbuf)
->> >> +             chip->ecccalc = kmalloc(mtd->oobsize, GFP_KERNEL);
->> >> +             if (!chip->ecccalc)
->> >>                       return -ENOMEM;
->> >>
->> >> -             nbuf->ecccalc = kmalloc(mtd->oobsize, GFP_KERNEL);
->> >> -             if (!nbuf->ecccalc) {
->> >> +             chip->ecccode = kmalloc(mtd->oobsize, GFP_KERNEL);
->> >> +             if (!chip->ecccode) {
->> >>                       ret = -ENOMEM;
->> >>                       goto err_free_nbuf;
->> >>               }
->> >
->> > Hm, again not directly related to this patch, but I wonder if we
->> > couldn't allocate those buffers only when they are really needed.
->> > For example, most NAND controllers do the ECC calculation/correct
->> > in HW and simply don't need those buffers.
->>
->>
->> The only idea I came up with is to add a new flag,
->> but I am not sure if you are happy with it
->> because we are removing NAND_OWN_BUFFERS.
->
-> All drivers using ->calc/code_buf are providing a ->correct() and/or
-> ->calculate() method, so I thought we could make the allocation
-> dependent on the presence of one of these hooks [1].
->
-> The only exception is the denali driver, but I think we can patch it
-> to not use the ->code_buf buffer [2].
+When erased subpages are read then the BCH decoder returns STATUS_ERASED
+if they are all empty, or STATUS_UNCORRECTABLE if there are bitflips.
+When there are bitflips, we have to set these bits again to show the
+upper layers a completely erased page. When a bitflip happens in the
+exact byte where the bad block marker is, then this byte is swapped
+with another byte in block_mark_swapping(). The correction code then
+detects a bitflip in another subpage and no longer corrects the bitflip
+where it really happens.
 
-Cool!
+Correct this behaviour by calling block_mark_swapping() after the
+bitflips have been corrected.
 
+In our case UBIFS failed with this bug because it expects erased
+pages to be really empty:
 
-> [1]http://code.bulix.org/2ks7yp-236649
-> [2]http://code.bulix.org/sxqx7o-236650
->
+UBIFS error (pid 187): ubifs_scan: corrupt empty space at LEB 36:118735
+UBIFS error (pid 187): ubifs_scanned_corruption: corruption at LEB 36:118735
+UBIFS error (pid 187): ubifs_scanned_corruption: first 8192 bytes from LEB 36:118735
+UBIFS error (pid 187): ubifs_scan: LEB 36 scanning failed
+UBIFS error (pid 187): do_commit: commit failed, error -117
 
-Thanks!
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-I can issue Acked-by for [2].
-
-
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 50f8d4a1b983..d4d824ef64e9 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -1067,9 +1067,6 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 		return ret;
+ 	}
+ 
+-	/* handle the block mark swapping */
+-	block_mark_swapping(this, payload_virt, auxiliary_virt);
+-
+ 	/* Loop over status bytes, accumulating ECC status. */
+ 	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
+ 
+@@ -1158,6 +1155,9 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 		max_bitflips = max_t(unsigned int, max_bitflips, *status);
+ 	}
+ 
++	/* handle the block mark swapping */
++	block_mark_swapping(this, buf, auxiliary_virt);
++
+ 	if (oob_required) {
+ 		/*
+ 		 * It's time to deliver the OOB bytes. See gpmi_ecc_read_oob()
 -- 
-Best Regards
-Masahiro Yamada
+2.11.0
