@@ -1,25 +1,27 @@
-Date: Tue, 5 Dec 2017 11:28:15 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Kamal Dasu <kdasu.kdev@gmail.com>, Richard Weinberger <richard@nod.at>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Broadcom Kernel
- Feedback List <bcm-kernel-feedback-list@broadcom.com>, Marek Vasut
- <marek.vasut@gmail.com>, Chen-Yu Tsai <wens@csie.org>, linux-mtd
- <linux-mtd@lists.infradead.org>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Han Xu <han.xu@nxp.com>, Maxime Ripard
- <maxime.ripard@free-electrons.com>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] mtd: nand: squash struct nand_buffers into struct
- nand_chip
-Message-ID: <20171205112815.0b59ab2d@bbrezillon>
-In-Reply-To: <CAK7LNATtk9=i3HkPrW=F1YtnM1vvEM3NtMZcPNi_0C5s_X1X1A@mail.gmail.com>
+MIME-Version: 1.0
+In-Reply-To: <20171205112815.0b59ab2d@bbrezillon>
 References: <1512366470-16772-1-git-send-email-yamada.masahiro@socionext.com>
  <20171204101043.602ff213@bbrezillon>
  <CAK7LNATtk9=i3HkPrW=F1YtnM1vvEM3NtMZcPNi_0C5s_X1X1A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+ <20171205112815.0b59ab2d@bbrezillon>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Tue, 5 Dec 2017 19:41:45 +0900
+Message-ID: <CAK7LNASHE1qKe5m24KvZWjp4GsCmop9h+PcQD--ecgQV6mm=cg@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: squash struct nand_buffers into struct
+ nand_chip
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Kamal Dasu <kdasu.kdev@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Han Xu <han.xu@nxp.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
+ Broadcom Kernel Feedback List <bcm-kernel-feedback-list@broadcom.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,47 +31,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 5 Dec 2017 19:02:26 +0900
-Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+2017-12-05 19:28 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> On Tue, 5 Dec 2017 19:02:26 +0900
+> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>
+>> Hi Boris,
+>>
+>> 2017-12-04 18:10 GMT+09:00 Boris Brezillon
+>> <boris.brezillon@free-electrons.com>:
+>>
+>> >>       }
+>> >>
+>> >>       if (!(chip->options & NAND_OWN_BUFFERS)) {
+>> >> -             nbuf = kzalloc(sizeof(*nbuf), GFP_KERNEL);
+>> >> -             if (!nbuf)
+>> >> +             chip->ecccalc = kmalloc(mtd->oobsize, GFP_KERNEL);
+>> >> +             if (!chip->ecccalc)
+>> >>                       return -ENOMEM;
+>> >>
+>> >> -             nbuf->ecccalc = kmalloc(mtd->oobsize, GFP_KERNEL);
+>> >> -             if (!nbuf->ecccalc) {
+>> >> +             chip->ecccode = kmalloc(mtd->oobsize, GFP_KERNEL);
+>> >> +             if (!chip->ecccode) {
+>> >>                       ret = -ENOMEM;
+>> >>                       goto err_free_nbuf;
+>> >>               }
+>> >
+>> > Hm, again not directly related to this patch, but I wonder if we
+>> > couldn't allocate those buffers only when they are really needed.
+>> > For example, most NAND controllers do the ECC calculation/correct
+>> > in HW and simply don't need those buffers.
+>>
+>>
+>> The only idea I came up with is to add a new flag,
+>> but I am not sure if you are happy with it
+>> because we are removing NAND_OWN_BUFFERS.
+>
+> All drivers using ->calc/code_buf are providing a ->correct() and/or
+> ->calculate() method, so I thought we could make the allocation
+> dependent on the presence of one of these hooks [1].
+>
+> The only exception is the denali driver, but I think we can patch it
+> to not use the ->code_buf buffer [2].
 
-> Hi Boris,
-> 
-> 2017-12-04 18:10 GMT+09:00 Boris Brezillon
-> <boris.brezillon@free-electrons.com>:
-> 
-> >>       }
-> >>
-> >>       if (!(chip->options & NAND_OWN_BUFFERS)) {
-> >> -             nbuf = kzalloc(sizeof(*nbuf), GFP_KERNEL);
-> >> -             if (!nbuf)
-> >> +             chip->ecccalc = kmalloc(mtd->oobsize, GFP_KERNEL);
-> >> +             if (!chip->ecccalc)
-> >>                       return -ENOMEM;
-> >>
-> >> -             nbuf->ecccalc = kmalloc(mtd->oobsize, GFP_KERNEL);
-> >> -             if (!nbuf->ecccalc) {
-> >> +             chip->ecccode = kmalloc(mtd->oobsize, GFP_KERNEL);
-> >> +             if (!chip->ecccode) {
-> >>                       ret = -ENOMEM;
-> >>                       goto err_free_nbuf;
-> >>               }  
-> >
-> > Hm, again not directly related to this patch, but I wonder if we
-> > couldn't allocate those buffers only when they are really needed.
-> > For example, most NAND controllers do the ECC calculation/correct
-> > in HW and simply don't need those buffers.  
-> 
-> 
-> The only idea I came up with is to add a new flag,
-> but I am not sure if you are happy with it
-> because we are removing NAND_OWN_BUFFERS.
+Cool!
 
-All drivers using ->calc/code_buf are providing a ->correct() and/or
-->calculate() method, so I thought we could make the allocation
-dependent on the presence of one of these hooks [1].
 
-The only exception is the denali driver, but I think we can patch it
-to not use the ->code_buf buffer [2].
+> [1]http://code.bulix.org/2ks7yp-236649
+> [2]http://code.bulix.org/sxqx7o-236650
+>
 
-[1]http://code.bulix.org/2ks7yp-236649
-[2]http://code.bulix.org/sxqx7o-236650
+Thanks!
+
+I can issue Acked-by for [2].
+
+
+-- 
+Best Regards
+Masahiro Yamada
