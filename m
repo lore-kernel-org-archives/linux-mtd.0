@@ -1,31 +1,17 @@
-Received: from mail-db5eur01on0085.outbound.protection.outlook.com
- ([104.47.2.85] helo=EUR01-DB5-obe.outbound.protection.outlook.com)
+Received: from mail-lf0-x234.google.com ([2a00:1450:4010:c07::234])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eMXQ4-00055N-1k
- for linux-mtd@lists.infradead.org; Wed, 06 Dec 2017 10:59:18 +0000
-From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-To: Scott Wood <oss@buserror.net>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>
-CC: "dedekind1@gmail.com" <dedekind1@gmail.com>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>
-Subject: RE: [PATCH] Documentation: binding: Update endianness usage
-Date: Wed, 6 Dec 2017 10:58:51 +0000
-Message-ID: <HE1PR04MB124174461F845000614CDAA197320@HE1PR04MB1241.eurprd04.prod.outlook.com>
-References: <1511954855-8593-1-git-send-email-prabhakar.kushwaha@nxp.com>
- <1512105209.10062.1.camel@buserror.net>
- <HE1PR04MB12414AFA5F8081730B89378497390@HE1PR04MB1241.eurprd04.prod.outlook.com>
- <1512165311.10062.3.camel@buserror.net>
- <HE1PR04MB1241226CD3B7ABD6D5FA2D91973C0@HE1PR04MB1241.eurprd04.prod.outlook.com>
- <1512441957.10062.6.camel@buserror.net>
- <HE1PR04MB1241ADD02E472BA492AE1C8F973D0@HE1PR04MB1241.eurprd04.prod.outlook.com>
- <1512504459.10062.9.camel@buserror.net>
- <HE1PR04MB1241F1A70CDBA5A94D4D2CE597320@HE1PR04MB1241.eurprd04.prod.outlook.com>
-In-Reply-To: <HE1PR04MB1241F1A70CDBA5A94D4D2CE597320@HE1PR04MB1241.eurprd04.prod.outlook.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1eMZkn-0004Id-Pd
+ for linux-mtd@lists.infradead.org; Wed, 06 Dec 2017 13:28:51 +0000
+Received: by mail-lf0-x234.google.com with SMTP id f18so4224273lfg.8
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Dec 2017 05:28:28 -0800 (PST)
 MIME-Version: 1.0
+From: Antonio Borneo <borneo.antonio@gmail.com>
+Date: Wed, 6 Dec 2017 14:28:25 +0100
+Message-ID: <CAAj6DX0_BQjB1c1b_qyabAEEbP7BGHDawxF1C=Z7GD4eqeiS3Q@mail.gmail.com>
+Subject: Question on mtd devices with zero erasesize
+To: linux-mtd@lists.infradead.org
+Cc: Antonio Borneo <borneo.antonio@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,46 +21,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogUHJhYmhha2FyIEt1c2h3
-YWhhDQo+IFNlbnQ6IFdlZG5lc2RheSwgRGVjZW1iZXIgMDYsIDIwMTcgNDowNSBQTQ0KPiBUbzog
-J1Njb3R0IFdvb2QnIDxvc3NAYnVzZXJyb3IubmV0PjsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVh
-ZC5vcmc7DQo+IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnDQo+IENjOiBkZWRla2luZDFAZ21h
-aWwuY29tOyBjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb20NCj4gU3ViamVjdDogUkU6IFtQQVRD
-SF0gRG9jdW1lbnRhdGlvbjogYmluZGluZzogVXBkYXRlIGVuZGlhbm5lc3MgdXNhZ2UNCj4gDQo+
-IA0KPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4gRnJvbTogU2NvdHQgV29vZCBb
-bWFpbHRvOm9zc0BidXNlcnJvci5uZXRdDQo+ID4gU2VudDogV2VkbmVzZGF5LCBEZWNlbWJlciAw
-NiwgMjAxNyAxOjM4IEFNDQo+ID4gVG86IFByYWJoYWthciBLdXNod2FoYSA8cHJhYmhha2FyLmt1
-c2h3YWhhQG54cC5jb20+OyBsaW51eC0NCj4gPiBtdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgZGV2
-aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmcNCj4gPiBDYzogZGVkZWtpbmQxQGdtYWlsLmNvbTsgY29t
-cHV0ZXJzZm9ycGVhY2VAZ21haWwuY29tDQo+ID4gU3ViamVjdDogUmU6IFtQQVRDSF0gRG9jdW1l
-bnRhdGlvbjogYmluZGluZzogVXBkYXRlIGVuZGlhbm5lc3MgdXNhZ2UNCj4gPg0KPiA+IE9uIFR1
-ZSwgMjAxNy0xMi0wNSBhdCAwOTo0NSArMDAwMCwgUHJhYmhha2FyIEt1c2h3YWhhIHdyb3RlOg0K
-PiA+ID4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+ID4gPiBGcm9tOiBTY290dCBX
-b29kIFttYWlsdG86b3NzQGJ1c2Vycm9yLm5ldF0NCj4gPiA+ID4gU2VudDogVHVlc2RheSwgRGVj
-ZW1iZXIgMDUsIDIwMTcgODoxNiBBTQ0KPiA+ID4gPiBUbzogUHJhYmhha2FyIEt1c2h3YWhhIDxw
-cmFiaGFrYXIua3VzaHdhaGFAbnhwLmNvbT47IGxpbnV4LQ0KPiA+ID4gPiBtdGRAbGlzdHMuaW5m
-cmFkZWFkLm9yZzsgZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmcNCj4gPiA+ID4gQ2M6IGRlZGVr
-aW5kMUBnbWFpbC5jb207IGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbQ0KPiA+ID4gPiBTdWJq
-ZWN0OiBSZTogW1BBVENIXSBEb2N1bWVudGF0aW9uOiBiaW5kaW5nOiBVcGRhdGUgZW5kaWFubmVz
-cyB1c2FnZQ0KPiA+ID4gPg0KPiA+ID4gPiBJIG5vdyBzZWUgeW91ciBwYXRjaCB0byBvZl9mbGFz
-aF9wcm9iZS4uLiB3aGVyZSBpcyB0aGUgbm9uLUlGQy1zcGVjaWZpYw0KPiA+ID4gPiBiaW5kaW5n
-IHRoYXQgc2F5cyB0aGUgKnBhcmVudCogb2YgYSBDRkkgbm9kZSBzaG91bGQgYmUgbG9va2VkIGF0
-IGZvciB0aGlzPw0KPiA+ID4gPiBXaGVyZcKgaW4gZ2VuZXJhbCBhcmUgZW5kaWFuIHByb3BlcnRp
-ZXMga2VwdCBpbiB0aGUgcGFyZW50IG9mIHRoZSBub2RlIHdpdGgNCj4gPiA+ID4gInJlZyI/wqDC
-oFRoZSByaWdodCBhbnN3ZXIgaXMgdG8gYWRkIGVuZGlhbm5lc3MgdG8gbXRkLXBoeXNtYXAudHh0
-Lg0KPiA+ID4gPg0KPiA+ID4NCj4gPiA+IEZsYXNoZXMgYXJlIGFsd2F5cyBsaXR0bGVyIGVuZGlh
-bi4NCj4gPg0KPiA+IFdlIHdvdWxkbid0IGJlIGhhdmluZyB0aGlzIGRpc2N1c3Npb24gaWYgdGhh
-dCB3ZXJlIHRydWUuLi4gIFRoaXMgaXMgYWJvdXQgaG93DQo+ID4gaXQgcHJlc2VudHMgdG8gdGhl
-IENQVSwgbm90IGFib3V0IGhvdyB0aGUgYWN0dWFsIHBpbnMgb24gdGhlIGNoaXAgYXJlDQo+ID4g
-bnVtYmVyZWQuDQo+ID4NCj4gDQo+IEdvdCB5b3VyIHBvaW50IDopDQo+IA0KPiA+ID4gSXQgaXMg
-YmVjYXVzZSBvZiBJRkMgY29udHJvbGxlciBiZWhhdmlvciwgZW5kaWFubmVzcyBpcyByZXF1aXJl
-ZC4NCj4gPiA+IFNvIGFzIHBlciBteSB1bmRlcnN0YW5kaW5nLCB0aGlzIGluZm8gc2hvdWxkIGdv
-IGluIElGQyBiaW5kaW5nLg0KPiA+DQo+ID4gSWYgdGhlIGluZm8gc2hvdWxkIGdvIGluIHRoZSBJ
-RkMgYmluZGluZyB3aHkgaXMgdGhlIGNvZGUgaW4gYSBub24tSUZDLXNwZWNpZmljDQo+ID4gcGxh
-Y2U/DQo+ID4NCj4gDQo+IE5vdyBJIHVuZGVyc3RhbmQgeW91ciBwb2ludC4NCj4gU28gSSBzaG91
-bGQgYmUgbW92aW5nIGVuZGlhbm5lc3MgcHJvcGVydHkgZGV0YWlsIGluIG10ZC1waHlzbWFwLnR4
-dC4NCj4gDQo+IElzIG15IHVuZGVyc3RhbmRpbmcgY29ycmVjdD8NCj4gDQoNCkEgc2Vjb25kIHRo
-b3VnaHQsICANCklGQyBiaW5kaW5nIHdhcyB1cGRhdGVkIGJlY2F1c2UgdGhlcmUgaXMgbm8gSUZD
-LU5PUiBkcml2ZXIuIEl0IHVzZXMgZ2VuZXJpYyBGbGFzaCBmcmFtZXdvcmsuICANCiANCkkgYW0g
-anVzdCB0cnlpbmcgdG8gZ2V0IG1vcmUgdW5kZXJzdGFuZGluZy4gIA0KDQotLXByYWJoYWthcg0K
-DQo=
+Hi,
+I have searched in the mailing list archives but didn't found such topic.
+
+In mainline kernel there are already few RAM based mtd devices; the
+concept of "erase unit" (sector or page) does not always apply to
+them.
+At least two of such devices set the field "erasesize" to zero (or,
+better, do not set it at all and left it to zero):
+- drivers/mtd/devices/ms02-nv.c
+- drivers/mtd/devices/mchp23k256.c
+
+The following is tested with mchp23k256 only.
+Of course I read zero from /sys/class/mtd/mtdX/erasesize
+The tool mdtinfo core-dumps for division by zero when it try to
+compute the number of erase units by dividing device size by
+erasesize.
+
+What would be the proper fix?
+
+First of all, is erasesize=1 correct in this case, or for some reason
+it is better to use another value?
+
+Then, is the driver that is supposed to provide a non-zero value for erasesize?
+Or is the mtd framework that should check the value set by the driver
+and eventually replace it with a minimum erasesize?
+Or is the userland that has to accept the zero value?
+
+Thanks and Best Regards,
+Antonio Borneo
