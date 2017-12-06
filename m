@@ -1,16 +1,17 @@
-Received: from mail-co1nam03on0057.outbound.protection.outlook.com
- ([104.47.40.57] helo=NAM03-CO1-obe.outbound.protection.outlook.com)
+Received: from mail-co1nam03on0612.outbound.protection.outlook.com
+ ([2a01:111:f400:fe48::612]
+ helo=NAM03-CO1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eMUso-0001KP-Ut
- for linux-mtd@lists.infradead.org; Wed, 06 Dec 2017 08:16:48 +0000
+ id 1eMUss-0001KT-Ve
+ for linux-mtd@lists.infradead.org; Wed, 06 Dec 2017 08:16:52 +0000
 From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
 To: <linux-mtd@lists.infradead.org>
 CC: <dedekind1@gmail.com>, <computersforpeace@gmail.com>,
  <boris.brezillon@free-electrons.com>, Prabhakar Kushwaha
  <prabhakar.kushwaha@nxp.com>
-Subject: [RFC 03/10] mtd: spi-nor: Configure read latency for read commands
-Date: Wed, 6 Dec 2017 13:45:34 +0530
-Message-ID: <1512548141-3319-4-git-send-email-prabhakar.kushwaha@nxp.com>
+Subject: [RFC 04/10] mtd: spi-nor: Configure read latency for micron flashes
+Date: Wed, 6 Dec 2017 13:45:35 +0530
+Message-ID: <1512548141-3319-5-git-send-email-prabhakar.kushwaha@nxp.com>
 In-Reply-To: <1512548141-3319-1-git-send-email-prabhakar.kushwaha@nxp.com>
 References: <1512548141-3319-1-git-send-email-prabhakar.kushwaha@nxp.com>
 MIME-Version: 1.0
@@ -24,145 +25,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-All read commands have read latency (dummy cycle). It defines a
-period between the end of address or mode and the beginning of
-read data returning to the host. Flashes have default read latency.
-This default read latency may not match with the selected latency.
-
-So, selected latency needs to be programmed in flash via
-volatile configuration register. Considering flashes have different
-types of configuration registers/bits depending upon vendor/family.
-
-This patch provides a way define function pointer per flash vendor
-to configure volatile configuration register. function pointer has
-flash_info parameter to take care of difference within the family of
-a vendor.
+Volatile Configuration Register[4:7] defines Number of read latency
+i.e. dummy clock cycles. This patch program volatile configuration
+register using READ VOLATILE CONFIGURATION REGISTER(85h) and
+WRITE VOLATILE CONFIGURATION REGISTER(81h) command
 
 Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 34 +++++++++++++++++++++++++---------
- 1 file changed, 25 insertions(+), 9 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 29 +++++++++++++++++++++++++++++
+ include/linux/mtd/spi-nor.h   |  2 ++
+ 2 files changed, 31 insertions(+)
 
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 01898e1..7d94874 100644
+index 7d94874..dd1a771 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1695,6 +1695,9 @@ struct spi_nor_read_command {
- 	u8			num_wait_states;
- 	u8			opcode;
- 	enum spi_nor_protocol	proto;
-+
-+	int (*dummy_config)(struct spi_nor *nor, u8 num_wait_states,
-+			    const struct flash_info *info);
- };
- 
- struct spi_nor_pp_command {
-@@ -1760,12 +1763,19 @@ spi_nor_set_read_settings(struct spi_nor_read_command *read,
- 			  u8 num_mode_clocks,
- 			  u8 num_wait_states,
- 			  u8 opcode,
--			  enum spi_nor_protocol proto)
-+			  enum spi_nor_protocol proto,
-+			  const struct flash_info *info)
- {
- 	read->num_mode_clocks = num_mode_clocks;
- 	read->num_wait_states = num_wait_states;
- 	read->opcode = opcode;
- 	read->proto = proto;
-+
-+	switch (JEDEC_MFR(info)) {
-+	default:
-+		read->dummy_config = NULL;
-+		break;
-+	}
- }
- 
- static void
-@@ -2385,41 +2395,41 @@ static int spi_nor_init_params(struct spi_nor *nor,
- 	params->hwcaps.mask |= SNOR_HWCAPS_READ;
- 	spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ],
- 				  0, 0, SPINOR_OP_READ,
--				  SNOR_PROTO_1_1_1);
-+				  SNOR_PROTO_1_1_1, info);
- 
- 	if (!(info->flags & SPI_NOR_NO_FR)) {
- 		params->hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
- 		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_FAST],
- 					  0, 8, SPINOR_OP_READ_FAST,
--					  SNOR_PROTO_1_1_1);
-+					  SNOR_PROTO_1_1_1, info);
- 	}
- 
- 	if (info->flags & SPI_NOR_DUAL_READ) {
- 		params->hwcaps.mask |= SNOR_HWCAPS_READ_1_1_2;
- 		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_1_1_2],
- 					  0, 8, SPINOR_OP_READ_1_1_2,
--					  SNOR_PROTO_1_1_2);
-+					  SNOR_PROTO_1_1_2, info);
- 	}
- 
- 	if (info->flags & SPI_NOR_DUAL_IO_READ) {
- 		params->hwcaps.mask |= SNOR_HWCAPS_READ_1_2_2;
- 		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_1_2_2],
- 					  0, 8, SPINOR_OP_READ_1_2_2,
--					  SNOR_PROTO_1_2_2);
-+					  SNOR_PROTO_1_2_2, info);
- 	}
- 
- 	if (info->flags & SPI_NOR_QUAD_READ) {
- 		params->hwcaps.mask |= SNOR_HWCAPS_READ_1_1_4;
- 		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_1_1_4],
- 					  0, 8, SPINOR_OP_READ_1_1_4,
--					  SNOR_PROTO_1_1_4);
-+					  SNOR_PROTO_1_1_4, info);
- 	}
- 
- 	if (info->flags & SPI_NOR_QUAD_IO_READ) {
- 		params->hwcaps.mask |= SNOR_HWCAPS_READ_1_4_4;
- 		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_1_4_4],
- 					  0, 10, SPINOR_OP_READ_1_4_4,
--					  SNOR_PROTO_1_4_4);
-+					  SNOR_PROTO_1_4_4, info);
- 	}
- 
- 
-@@ -2519,7 +2529,8 @@ static int spi_nor_hwcaps_pp2cmd(u32 hwcaps)
- 
- static int spi_nor_select_read(struct spi_nor *nor,
- 			       const struct spi_nor_flash_parameter *params,
--			       u32 shared_hwcaps)
-+			       u32 shared_hwcaps,
-+			       const struct flash_info *info)
- {
- 	int cmd, best_match = ffs(shared_hwcaps & SNOR_HWCAPS_READ_MASK) - 1;
- 	const struct spi_nor_read_command *read;
-@@ -2535,6 +2546,10 @@ static int spi_nor_select_read(struct spi_nor *nor,
- 	nor->read_opcode = read->opcode;
- 	nor->read_proto = read->proto;
- 
-+	if (read->dummy_config &&
-+	    !read->dummy_config(nor, read->num_wait_states, info))
-+		return -EINVAL;
-+
- 	/*
- 	 * In the spi-nor framework, we don't need to make the difference
- 	 * between mode clock cycles and wait state clock cycles.
-@@ -2546,6 +2561,7 @@ static int spi_nor_select_read(struct spi_nor *nor,
- 	 * into the so called dummy clock cycles.
- 	 */
- 	nor->read_dummy = read->num_mode_clocks + read->num_wait_states;
-+
+@@ -1638,6 +1638,31 @@ static int sr2_bit7_quad_enable(struct spi_nor *nor)
  	return 0;
  }
  
-@@ -2622,7 +2638,7 @@ static int spi_nor_setup(struct spi_nor *nor, const struct flash_info *info,
- 	}
++static int micron_dummy_config(struct spi_nor *nor, u8 num_wait_states,
++			       const struct flash_info *info)
++{
++	int ret;
++	u8 val;
++
++	ret = nor->read_reg(nor, SPINOR_OP_RD_VCR, &val, 1);
++	if (ret < 0) {
++		dev_err(nor->dev, "error %d reading CR\n", ret);
++		return ret;
++	}
++
++	val &= 0x0F;
++	val |= num_wait_states << 4;
++
++	ret = nor->write_reg(nor, SPINOR_OP_WD_VCR, &val, 1);
++	if (ret < 0) {
++		dev_err(nor->dev,
++			"error while writing configuration register\n");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static int spi_nor_check(struct spi_nor *nor)
+ {
+ 	if (!nor->dev || !nor->read || !nor->write ||
+@@ -1772,6 +1797,10 @@ spi_nor_set_read_settings(struct spi_nor_read_command *read,
+ 	read->proto = proto;
  
- 	/* Select the (Fast) Read command. */
--	err = spi_nor_select_read(nor, params, shared_mask);
-+	err = spi_nor_select_read(nor, params, shared_mask, info);
- 	if (err) {
- 		dev_err(nor->dev,
- 			"can't select read settings supported by both the SPI controller and memory.\n");
+ 	switch (JEDEC_MFR(info)) {
++	case SNOR_MFR_MICRON:
++		read->dummy_config = micron_dummy_config;
++		break;
++
+ 	default:
+ 		read->dummy_config = NULL;
+ 		break;
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index 1f0a7fc..6c62aff 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -110,6 +110,8 @@
+ /* Used for Micron flashes only. */
+ #define SPINOR_OP_RD_EVCR      0x65    /* Read EVCR register */
+ #define SPINOR_OP_WD_EVCR      0x61    /* Write EVCR register */
++#define SPINOR_OP_RD_VCR       0x85     /* Read VCR register */
++#define SPINOR_OP_WD_VCR       0x81     /* Write VCR register */
+ 
+ /* Status Register bits. */
+ #define SR_WIP			BIT(0)	/* Write in progress */
 -- 
 2.7.4
