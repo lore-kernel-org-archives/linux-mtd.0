@@ -1,17 +1,22 @@
-Received: from mo1502.tsb.2iij.net ([210.149.48.174] helo=mo.tsb.2iij.net)
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eMaQa-00004z-Bw
- for linux-mtd@lists.infradead.org; Wed, 06 Dec 2017 14:12:02 +0000
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eMbJH-0003GS-Al
+ for linux-mtd@lists.infradead.org; Wed, 06 Dec 2017 15:08:33 +0000
+Date: Wed, 6 Dec 2017 16:08:05 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
+ marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next v3 1/2] mtd: nand: toshiba: Retrieve ECC
+ requirements from extended ID
+Message-ID: <20171206160805.2435094b@bbrezillon>
+In-Reply-To: <1512569098-30038-2-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
+References: <1512569098-30038-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
+ <1512569098-30038-2-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-From: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
-To: boris.brezillon@free-electrons.com, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com,
- cyrille.pitchen@wedev4u.fr, linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org,
- KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
-Subject: [PATCH -next v3 0/2] mtd: nand: toshiba: Add Toshiba BENAND support
-Date: Wed,  6 Dec 2017 23:04:56 +0900
-Message-Id: <1512569098-30038-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,18 +26,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch series enables to support Toshiba BENAND. The first patch
-retreive ECC requirement from extended ID for all Toshiba SLC NAND
-devices. The ECC requirement information uses to show a warning
-message in second patch.
+On Wed,  6 Dec 2017 23:04:57 +0900
+KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:
 
-KOBAYASHI Yoshitake (2):
-  mtd: nand: toshiba: Retrieve ECC requirements from extended ID
-  mtd: nand: toshiba: Add support for Toshiba Memory BENAND (Built-in
-    ECC NAND)
+> This patch enables support to read the ECC strength and size from the
+> NAND flash using Toshiba Memory SLC NAND extended-ID. This patch is
+> based on the information of the 6th ID byte of the Toshiba Memory SLC
+> NAND.
+> 
+> Signed-off-by: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+> ---
+>  drivers/mtd/nand/nand_toshiba.c | 28 ++++++++++++++++++++++++++++
+>  1 file changed, 28 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/nand_toshiba.c b/drivers/mtd/nand/nand_toshiba.c
+> index 57df857..c2c141b 100644
+> --- a/drivers/mtd/nand/nand_toshiba.c
+> +++ b/drivers/mtd/nand/nand_toshiba.c
+> @@ -35,6 +35,34 @@ static void toshiba_nand_decode_id(struct nand_chip *chip)
+>  	    (chip->id.data[5] & 0x7) == 0x6 /* 24nm */ &&
+>  	    !(chip->id.data[4] & 0x80) /* !BENAND */)
+>  		mtd->oobsize = 32 * mtd->writesize >> 9;
+> +
+> +	/*
+> +	 * Extract ECC requirements from 6th id byte.
+> +	 * For Toshiba SLC, ecc requrements are as follows:
+> +	 *  - 43nm: 1 bit ECC for each 512Byte is required.
+> +	 *  - 32nm: 4 bit ECC for each 512Byte is required.
+> +	 *  - 24nm: 8 bit ECC for each 512Byte is required.
+> +	 */
+> +	if (chip->id.len >= 6 && nand_is_slc(chip)) {
+> +		chip->ecc_step_ds = 512;
+> +		switch (chip->id.data[5] & 0x7) {
+> +		case 0x4:
+> +			chip->ecc_strength_ds = 1;
+> +			break;
+> +		case 0x5:
+> +			chip->ecc_strength_ds = 4;
+> +			break;
+> +		case 0x6:
+> +			chip->ecc_strength_ds = 8;
+> +			break;
+> +		default:
+> +			WARN(1, "Could not get ECC info");
+> +			chip->ecc_step_ds = 0;
+> +			break;
+> +		}
+> +	} else if (chip->id.len < 6 && nand_is_slc(chip)) {
+> +		WARN(1, "Could not get ECC info, 6th nand id byte does not exist.");
 
- drivers/mtd/nand/nand_toshiba.c | 117 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 117 insertions(+)
+I'm pretty sure you have old NAND chips that do not have 6bytes ids
+(see the table here [1]), and printing a huge backtrace in this case is
+probably not what you want.
 
--- 
-2.7.4
+If you're okay with dropping this else block, I'll do the change when
+applying, no need to send a new version.
+
+> +	}
+>  }
+>  
+>  static int toshiba_nand_init(struct nand_chip *chip)
