@@ -1,17 +1,16 @@
-Received: from mail-by2nam03on0067.outbound.protection.outlook.com
- ([104.47.42.67] helo=NAM03-BY2-obe.outbound.protection.outlook.com)
+Received: from mail-bl2nam02on0066.outbound.protection.outlook.com
+ ([104.47.38.66] helo=NAM02-BL2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eMUsx-0001Kg-Ht
- for linux-mtd@lists.infradead.org; Wed, 06 Dec 2017 08:16:57 +0000
+ id 1eMUsz-0001Km-R2
+ for linux-mtd@lists.infradead.org; Wed, 06 Dec 2017 08:16:59 +0000
 From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
 To: <linux-mtd@lists.infradead.org>
 CC: <dedekind1@gmail.com>, <computersforpeace@gmail.com>,
  <boris.brezillon@free-electrons.com>, Prabhakar Kushwaha
- <prabhakar.kushwaha@nxp.com>, Rajat Srivastava <rajat.srivastava@nxp.com>
-Subject: [RFC 09/10] mtd: spi-nor: Disable hybrid mode for SPANSION S25FS-S
- family
-Date: Wed, 6 Dec 2017 13:45:40 +0530
-Message-ID: <1512548141-3319-10-git-send-email-prabhakar.kushwaha@nxp.com>
+ <prabhakar.kushwaha@nxp.com>
+Subject: [RFC 06/10] mtd: spi-nor: Update hwcap based on mode of fsl-quadspi
+Date: Wed, 6 Dec 2017 13:45:37 +0530
+Message-ID: <1512548141-3319-7-git-send-email-prabhakar.kushwaha@nxp.com>
 In-Reply-To: <1512548141-3319-1-git-send-email-prabhakar.kushwaha@nxp.com>
 References: <1512548141-3319-1-git-send-email-prabhakar.kushwaha@nxp.com>
 MIME-Version: 1.0
@@ -25,102 +24,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The S25FS-S family physical sectors may be configured as a hybrid
-combination of eight 4-kB parameter sectors at the top or bottom
-of the address space with all but one of the remaining sectors
-being uniform size.
-The default status of the flash is the hybrid architecture.
-The parameter sectors and the uniform sectors have different erase
-commands.
+FSL QuadSPI controller supports Single, dual, quad modes of operation.
+Mode information is available via "spi-tx-bus-width" and
+"spi-rx-bus-width" nodes of device tree.
 
-This patch disables the hybrid sector architecture which makes the
-flash have uniform sector size and uniform erase command.
+Update read hwcap capability by reading "spi-rx-bus-width".
+1_1_1 (SNOR_HWCAPS_PP) is selected as default write hwcap capability (PP).
 
-Signed-off-by: Rajat Srivastava <rajat.srivastava@nxp.com>
 Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 49 +++++++++++++++++++++++++++++++++++++++++++
- include/linux/mtd/spi-nor.h   |  1 +
- 2 files changed, 50 insertions(+)
+ drivers/mtd/spi-nor/fsl-quadspi.c | 29 +++++++++++++++++++++++++----
+ 1 file changed, 25 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 58c37f6f..ca2ae44 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1692,6 +1692,33 @@ static int spansion_dummy_config(struct spi_nor *nor, u8 num_wait_states,
- 	return 0;
- }
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index f17d224..5477d78 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -957,9 +957,8 @@ static void fsl_qspi_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
  
-+static int spansion_s25fs_disable_hybrid_mode(struct spi_nor *nor)
-+{
-+	u8 cr3v = 0x0;
-+	int ret = 0x0;
-+
-+	ret = nor->read_anyreg(nor, SPINOR_OP_RDAR, SPANSION_CR3V_OFF,
-+			       &cr3v, 1);
-+	if (ret < 0) {
-+		dev_err(nor->dev, "error %d reading CR3V\n", ret);
-+		return ret;
-+	}
-+
-+	/* CR3V bit3: 4-KB Erase */
-+	if (cr3v & SPANSION_CR3V_4KB_ERASE_DISABLE)
-+		return 0;
-+
-+	cr3v |= SPANSION_CR3V_4KB_ERASE_DISABLE;
-+	ret = nor->write_anyreg(nor, SPINOR_OP_RDAR, SPANSION_CR3V_OFF,
-+				&cr3v, 1);
-+	if (ret < 0) {
-+		dev_err(nor->dev, "error %d writing CR3V\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- static int spi_nor_check(struct spi_nor *nor)
+ static int fsl_qspi_probe(struct platform_device *pdev)
  {
- 	if (!nor->dev || !nor->read || !nor->write ||
-@@ -2939,6 +2966,28 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 			return ret;
+-	const struct spi_nor_hwcaps hwcaps = {
+-		.mask = SNOR_HWCAPS_READ_1_1_4 |
+-			SNOR_HWCAPS_PP,
++	struct spi_nor_hwcaps hwcaps = {
++		.mask = SNOR_HWCAPS_PP,
+ 	};
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct device *dev = &pdev->dev;
+@@ -967,7 +966,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 	struct spi_nor *nor;
+ 	struct mtd_info *mtd;
+-	int ret, i = 0;
++	int ret, i = 0, value;
+ 
+ 	q = devm_kzalloc(dev, sizeof(*q), GFP_KERNEL);
+ 	if (!q)
+@@ -1015,6 +1014,28 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 		goto clk_failed;
  	}
  
-+	/*
-+	 * The S25FS-S family physical sectors may be configured as a
-+	 * hybrid combination of eight 4-kB parameter sectors
-+	 * at the top or bottom of the address space with all
-+	 * but one of the remaining sectors being uniform size.
-+	 * The Parameter Sector Erase commands (20h or 21h) must
-+	 * be used to erase the 4-kB parameter sectors individually.
-+	 * The Sector (uniform sector) Erase commands (D8h or DCh)
-+	 * must be used to erase any of the remaining
-+	 * sectors, including the portion of highest or lowest address
-+	 * sector that is not overlaid by the parameter sectors.
-+	 * The uniform sector erase command has no effect on parameter sectors.
-+	 * The following code removes the 4-kB parameter sectors from the
-+	 * address map i.e. it disables the hybrid mode so that all sectors are
-+	 * uniform size.
-+	 */
-+	if (JEDEC_EXT_ID(info) == SPINOR_S25FS_FAMILY_ID) {
-+		ret = spansion_s25fs_disable_hybrid_mode(nor);
-+		if (ret)
-+			return ret;
-+	}
++	if (!of_property_read_u32(np, "spi-rx-bus-width", &value)) {
++		switch (value) {
++		case 1:
++			hwcaps.mask |= SNOR_HWCAPS_READ | SNOR_HWCAPS_READ_FAST;
++			break;
++		case 2:
++			hwcaps.mask |= SNOR_HWCAPS_READ_1_1_2 |
++				SNOR_HWCAPS_READ_1_2_2 | SNOR_HWCAPS_READ_2_2_2;
++			break;
++		case 4:
++			hwcaps.mask |= SNOR_HWCAPS_READ_1_1_4 |
++				SNOR_HWCAPS_READ_1_4_4 | SNOR_HWCAPS_READ_4_4_4;
++			break;
++		default:
++			dev_err(dev,
++				"spi-rx-bus-width %d not supported\n",
++				value);
++			break;
++		}
++	} else
++		hwcaps.mask |= SNOR_HWCAPS_READ_1_1_4;
 +
- 	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
- 			(long long)mtd->size >> 10);
- 
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 9ff96cb..6c34e00 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -115,6 +115,7 @@
- #define SPANSION_CR1V_OFF	0x00800002 /* CR1V offset */
- #define SPANSION_CR2V_OFF	0x00800003 /* CR2V offset */
- #define SPANSION_CR3V_OFF	0x00800004 /* CR3V offset */
-+#define SPANSION_CR3V_4KB_ERASE_DISABLE	0x8
- 
- 
- /* Used for Micron flashes only. */
+ 	/* find the irq */
+ 	ret = platform_get_irq(pdev, 0);
+ 	if (ret < 0) {
 -- 
 2.7.4
