@@ -1,16 +1,16 @@
 Received: from mail-bl2nam02on0066.outbound.protection.outlook.com
  ([104.47.38.66] helo=NAM02-BL2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eMUsz-0001Km-R2
- for linux-mtd@lists.infradead.org; Wed, 06 Dec 2017 08:16:59 +0000
+ id 1eMUt2-0001Km-0d
+ for linux-mtd@lists.infradead.org; Wed, 06 Dec 2017 08:17:01 +0000
 From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
 To: <linux-mtd@lists.infradead.org>
 CC: <dedekind1@gmail.com>, <computersforpeace@gmail.com>,
  <boris.brezillon@free-electrons.com>, Prabhakar Kushwaha
  <prabhakar.kushwaha@nxp.com>
-Subject: [RFC 06/10] mtd: spi-nor: Update hwcap based on mode of fsl-quadspi
-Date: Wed, 6 Dec 2017 13:45:37 +0530
-Message-ID: <1512548141-3319-7-git-send-email-prabhakar.kushwaha@nxp.com>
+Subject: [RFC 10/10] mtd: spi-nor: Implement anyreg functions for fsl-quadspi
+Date: Wed, 6 Dec 2017 13:45:41 +0530
+Message-ID: <1512548141-3319-11-git-send-email-prabhakar.kushwaha@nxp.com>
 In-Reply-To: <1512548141-3319-1-git-send-email-prabhakar.kushwaha@nxp.com>
 References: <1512548141-3319-1-git-send-email-prabhakar.kushwaha@nxp.com>
 MIME-Version: 1.0
@@ -24,71 +24,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-FSL QuadSPI controller supports Single, dual, quad modes of operation.
-Mode information is available via "spi-tx-bus-width" and
-"spi-rx-bus-width" nodes of device tree.
+Read Any Register and Write Any Register commands provides a way to
+read or write all device registers - non-volatile and volatile.
+These commands are followed by a 3- or 4-byte address, followed by
+a number of latency (dummy) cycles set by volatile configuration
+registers. Then the selected register contents are returned or written.
 
-Update read hwcap capability by reading "spi-rx-bus-width".
-1_1_1 (SNOR_HWCAPS_PP) is selected as default write hwcap capability (PP).
+This patch update quadspi controller driver to implement above behavior.
 
 Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
 ---
- drivers/mtd/spi-nor/fsl-quadspi.c | 29 +++++++++++++++++++++++++----
- 1 file changed, 25 insertions(+), 4 deletions(-)
+ drivers/mtd/spi-nor/fsl-quadspi.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
 diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index f17d224..5477d78 100644
+index 5477d78..5164eab 100644
 --- a/drivers/mtd/spi-nor/fsl-quadspi.c
 +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -957,9 +957,8 @@ static void fsl_qspi_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
+@@ -854,6 +854,22 @@ static int fsl_qspi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
+ 	return ret;
+ }
  
- static int fsl_qspi_probe(struct platform_device *pdev)
- {
--	const struct spi_nor_hwcaps hwcaps = {
--		.mask = SNOR_HWCAPS_READ_1_1_4 |
--			SNOR_HWCAPS_PP,
-+	struct spi_nor_hwcaps hwcaps = {
-+		.mask = SNOR_HWCAPS_PP,
- 	};
- 	struct device_node *np = pdev->dev.of_node;
- 	struct device *dev = &pdev->dev;
-@@ -967,7 +966,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	struct spi_nor *nor;
- 	struct mtd_info *mtd;
--	int ret, i = 0;
-+	int ret, i = 0, value;
- 
- 	q = devm_kzalloc(dev, sizeof(*q), GFP_KERNEL);
- 	if (!q)
-@@ -1015,6 +1014,28 @@ static int fsl_qspi_probe(struct platform_device *pdev)
- 		goto clk_failed;
- 	}
- 
-+	if (!of_property_read_u32(np, "spi-rx-bus-width", &value)) {
-+		switch (value) {
-+		case 1:
-+			hwcaps.mask |= SNOR_HWCAPS_READ | SNOR_HWCAPS_READ_FAST;
-+			break;
-+		case 2:
-+			hwcaps.mask |= SNOR_HWCAPS_READ_1_1_2 |
-+				SNOR_HWCAPS_READ_1_2_2 | SNOR_HWCAPS_READ_2_2_2;
-+			break;
-+		case 4:
-+			hwcaps.mask |= SNOR_HWCAPS_READ_1_1_4 |
-+				SNOR_HWCAPS_READ_1_4_4 | SNOR_HWCAPS_READ_4_4_4;
-+			break;
-+		default:
-+			dev_err(dev,
-+				"spi-rx-bus-width %d not supported\n",
-+				value);
-+			break;
-+		}
-+	} else
-+		hwcaps.mask |= SNOR_HWCAPS_READ_1_1_4;
++static int fsl_qspi_read_anyreg(struct spi_nor *nor, u8 opcode, u32 offset,
++				u8 *buf, int len)
++{
++	/* TODO: It will be updated during controller changes*/
 +
- 	/* find the irq */
- 	ret = platform_get_irq(pdev, 0);
- 	if (ret < 0) {
++	return 0;
++}
++
++static int fsl_qspi_write_anyreg(struct spi_nor *nor, u8 opcode, u32 offset,
++				 u8 *buf, int len)
++{
++	/* TODO: It will be updated during controller changes*/
++
++	return 0;
++}
++
+ static ssize_t fsl_qspi_write(struct spi_nor *nor, loff_t to,
+ 			      size_t len, const u_char *buf)
+ {
+@@ -1075,6 +1091,8 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 		/* fill the hooks */
+ 		nor->read_reg = fsl_qspi_read_reg;
+ 		nor->write_reg = fsl_qspi_write_reg;
++		nor->read_anyreg = fsl_qspi_read_anyreg;
++		nor->write_anyreg = fsl_qspi_write_anyreg;
+ 		nor->read = fsl_qspi_read;
+ 		nor->write = fsl_qspi_write;
+ 		nor->erase = fsl_qspi_erase;
 -- 
 2.7.4
