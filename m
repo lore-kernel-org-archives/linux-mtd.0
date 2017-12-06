@@ -1,20 +1,16 @@
-Received: from mail-bl2nam02on0083.outbound.protection.outlook.com
- ([104.47.38.83] helo=NAM02-BL2-obe.outbound.protection.outlook.com)
+Received: from mail-by2nam01on0068.outbound.protection.outlook.com
+ ([104.47.34.68] helo=NAM01-BY2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eMQ8n-0006fP-Gr
- for linux-mtd@lists.infradead.org; Wed, 06 Dec 2017 03:13:03 +0000
-From: Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
-To: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <computersforpeace@gmail.com>, <dwmw2@infradead.org>,
- <boris.brezillon@free-electrons.com>, <marek.vasut@gmail.com>,
- <richard@nod.at>, <cyrille.pitchen@wedev4u.fr>
-CC: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-Subject: [PATCHv3 2/2] mtd: m25p80: restore the status of SPI flash when
- exiting
-Date: Wed, 6 Dec 2017 10:53:42 +0800
-Message-ID: <20171206025342.7266-3-Zhiqiang.Hou@nxp.com>
-In-Reply-To: <20171206025342.7266-1-Zhiqiang.Hou@nxp.com>
-References: <20171206025342.7266-1-Zhiqiang.Hou@nxp.com>
+ id 1eMUsi-0001KG-1u
+ for linux-mtd@lists.infradead.org; Wed, 06 Dec 2017 08:16:42 +0000
+From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+To: <linux-mtd@lists.infradead.org>
+CC: <dedekind1@gmail.com>, <computersforpeace@gmail.com>,
+ <boris.brezillon@free-electrons.com>, Prabhakar Kushwaha
+ <prabhakar.kushwaha@nxp.com>
+Subject: [RFC 00/10] mtd: spi-nor: Update spi-nor framework
+Date: Wed, 6 Dec 2017 13:45:31 +0530
+Message-ID: <1512548141-3319-1-git-send-email-prabhakar.kushwaha@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,55 +22,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+SPI-NOR framework currently supports-
+ - (1-1-1, 1-1-2, 1-1-4) read protocols
+ - read latency(dummy cycles) are hardcoded with the assumption
+ that the flash would support it.
+ - Number of mode cycles/bits is also hardcoded, but the mode bits
+ may be different for different Flashes and they also differ for
+ different commands.
+ - Additionally the existing framework selects the slowest read protocol
+ combination supported by the controller and the Flash.
 
-Restore the status to be compatible with legacy devices.
-Take Freescale eSPI boot for example, it copies (in 3 Byte
-addressing mode) the RCW and bootloader images from SPI flash
-without firing a reset signal previously, so the reboot command
-will fail without reseting the addressing mode of SPI flash.
-This patch implement .shutdown function to restore the status
-in reboot process, and add the same operation to the .remove
-function.
+This patch set add support of 1-2-2, 1-4-4 read protocols. 
+It choose the fastest available read protocol. It adds a provision to
+configure the read latency (dummy cycles) based on the Flash memory
+device. 
 
-Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
----
-V3:
- - Modified the commit to make this patch specific.
+This patch also adds support of S25FS-S flash family with required
+mode bits(required number of mode cycles). To allow dummy cycle
+configuration in flash, new APIs have been added to read/write any register.
 
- drivers/mtd/devices/m25p80.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Finally it update fsl-quadspi binding to support different modes
+(Single, dual, quad) of controller and update its capability
+structure. This capability register is used by spi-nor framework
+in defining right supported flash configurations.
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index dbe6a1de2bb8..a4e18f6aaa33 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -307,10 +307,18 @@ static int m25p_remove(struct spi_device *spi)
- {
- 	struct m25p	*flash = spi_get_drvdata(spi);
- 
-+	spi_nor_restore(&flash->spi_nor);
-+
- 	/* Clean up MTD stuff. */
- 	return mtd_device_unregister(&flash->spi_nor.mtd);
- }
- 
-+static void m25p_shutdown(struct spi_device *spi)
-+{
-+	struct m25p *flash = spi_get_drvdata(spi);
-+
-+	spi_nor_restore(&flash->spi_nor);
-+}
- /*
-  * Do NOT add to this array without reading the following:
-  *
-@@ -386,6 +394,7 @@ static struct spi_driver m25p80_driver = {
- 	.id_table	= m25p_ids,
- 	.probe	= m25p_probe,
- 	.remove	= m25p_remove,
-+	.shutdown	= m25p_shutdown,
- 
- 	/* REVISIT: many of these chips have deep power-down modes, which
- 	 * should clearly be entered on suspend() to minimize power use.
+
+Prabhakar Kushwaha (10):
+  mtd: spi-nor: Add support of 1-2-2, 1-4-4 IO READ protocols
+  mtd: spi-nor: Use the highest supported READ protocol
+  mtd: spi-nor: Configure read latency for read commands
+  mtd: spi-nor: Configure read latency for micron flashes
+  Documentation: binding: Update fsl-quadspi binding
+  mtd: spi-nor: Update hwcap based on mode of fsl-quadspi
+  mtd: spi-nor: Add support of read/write any reg commands
+  mtd: spi-nor: Add support of SPANSION S25FS-S flash
+  mtd: spi-nor: Disable hybrid mode for SPANSION S25FS-S family
+  mtd: spi-nor: Implement anyreg functions for fsl-quadspi
+
+ .../devicetree/bindings/mtd/fsl-quadspi.txt        |   4 +
+ drivers/mtd/spi-nor/fsl-quadspi.c                  |  47 ++++-
+ drivers/mtd/spi-nor/spi-nor.c                      | 196 +++++++++++++++++++--
+ include/linux/mtd/spi-nor.h                        |  19 ++
+ 4 files changed, 247 insertions(+), 19 deletions(-)
+
 -- 
-2.14.1
+2.7.4
