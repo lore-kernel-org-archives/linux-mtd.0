@@ -1,14 +1,19 @@
-Received: from pegase1.c-s.fr ([93.17.236.30])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eMdTx-00060F-Jo
- for linux-mtd@lists.infradead.org; Wed, 06 Dec 2017 17:27:43 +0000
-From: Christophe Leroy <christophe.leroy@c-s.fr>
-Subject: [PATCH] mtd: nand: gpio: Fix ALE gpio configuration
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, linus.walleij@linaro.org
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Message-Id: <20171206172714.ABE156C6B0@po15668-vm-win7.idsi0.si.c-s.fr>
-Date: Wed,  6 Dec 2017 18:27:14 +0100 (CET)
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eMeeQ-0002MW-G0
+ for linux-mtd@lists.infradead.org; Wed, 06 Dec 2017 18:42:37 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Manfred Spraul <manfred@colorfullife.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: UBIFS does not mount after powerfail
+Date: Wed, 06 Dec 2017 19:42:38 +0100
+Message-ID: <5066238.dipDZDtmD1@blindfold>
+In-Reply-To: <2824019.lNCXfte7Zg@blindfold>
+References: <195075f7-01f8-58d2-ba1c-4291e62a39cc@colorfullife.com>
+ <1695485.xO2l5BsRhR@blindfold> <2824019.lNCXfte7Zg@blindfold>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,32 +23,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fixes a copy/paste error in commit f3d0d8d938b4d ("mtd: nand: gpio:
-Convert to use GPIO descriptors") which breaks gpio-nand driver
+Manfred,
 
-Fixes: f3d0d8d938b4d ("mtd: nand: gpio: Convert to use GPIO descriptors")
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
----
- drivers/mtd/nand/gpio.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Am Dienstag, 5. Dezember 2017, 23:19:17 CET schrieb Richard Weinberger:
+> Manfred,
+> 
+> Am Dienstag, 5. Dezember 2017, 21:06:28 CET schrieb Richard Weinberger:
+> > Manfred,
+> > 
+> > Am Dienstag, 5. Dezember 2017, 20:11:20 CET schrieb Manfred Spraul:
+> > > > So, which file do I need to download to get the image that contains
+> > > > the
+> > > > first error as detected by chk_fs?
+> > > > 
+> > > > The mode of operation of your tool should be:
+> > > > 1. Mount UBIFS
+> > > > 2. Do various filesystem operations
+> > > > 3. Random power-cut (in software)
+> > > > 4. Dump the image to a file X
+> > > > 5. Set chk_fs to 1
+> > > > 6. Mount it again
+> > > > 7. If mount succeeds, drop X, umount and goto 1
+> > > > 
+> > > >     Else if, chk_fs finds a problem. Store file X.
+> > > > 
+> > > > I want file X. :-)
+> > > 
+> > > The tool is in release process, thus let's just wait a bit.
+> > > There is no "goto 1" in my flow.
+> > > 
+> > > Part 1: (done 5x, i.e. with xattr, without xattr, ...)
+> > > 
+> > > 0. create UBI image, create empty UBIFS image.
+> > > 1. Mount UBIFS
+> > > 2. Do various filesystem operations.
+> > > 
+> > >     In the background, record nand operations and store it in a trace.
+> > > 
+> > > Part 2: (done ~100.000 times)
+> > > 1. Create an image file X by replaying from the trace.
+> > > 2. Set chk_fs to 1
+> > > 3. Mount the image
+> > > 7. If mount succeeds: ignore the file X
+> > > 
+> > >     If mount fails: remember file X
+> > > 
+> > > Thus every image is a first error. No image has seen multiple unclean
+> > > unmounts.
+> > 
+> > Hmm, when does the power-cut occur in your setup?
+> > i.e image-168167.bin and image-168168.bin show different errors and none
+> > of
+> > them fails the chf_fs test. They fail because of other reasons.
+> 
+> Short update, the issue in image-168168.bin seems to be a garbage collector
+> bug which is not at all related to xattrs.
+> Are you 100% sure that all your tests run fine when xattrs are not used?
 
-diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
-index 484f7fbc3f7d..a8bde6665c24 100644
---- a/drivers/mtd/nand/gpio.c
-+++ b/drivers/mtd/nand/gpio.c
-@@ -253,9 +253,9 @@ static int gpio_nand_probe(struct platform_device *pdev)
- 		goto out_ce;
- 	}
- 
--	gpiomtd->nwp = devm_gpiod_get(dev, "ale", GPIOD_OUT_LOW);
--	if (IS_ERR(gpiomtd->nwp)) {
--		ret = PTR_ERR(gpiomtd->nwp);
-+	gpiomtd->ale = devm_gpiod_get(dev, "ale", GPIOD_OUT_LOW);
-+	if (IS_ERR(gpiomtd->ale)) {
-+		ret = PTR_ERR(gpiomtd->ale);
- 		goto out_ce;
- 	}
- 
--- 
-2.13.3
+Another question. Do you happen to have the full flight record file of that 
+run? Such that I can replay on my own.
+
+As it looks like we have a problem with the LEB property tree.
+But no idea so far what the root cause is.
+
+Thanks,
+//richard
