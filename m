@@ -1,19 +1,23 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eMeeQ-0002MW-G0
- for linux-mtd@lists.infradead.org; Wed, 06 Dec 2017 18:42:37 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Manfred Spraul <manfred@colorfullife.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: UBIFS does not mount after powerfail
-Date: Wed, 06 Dec 2017 19:42:38 +0100
-Message-ID: <5066238.dipDZDtmD1@blindfold>
-In-Reply-To: <2824019.lNCXfte7Zg@blindfold>
-References: <195075f7-01f8-58d2-ba1c-4291e62a39cc@colorfullife.com>
- <1695485.xO2l5BsRhR@blindfold> <2824019.lNCXfte7Zg@blindfold>
+Received: from mail-wr0-x22f.google.com ([2a00:1450:400c:c0c::22f])
+ by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eMfdC-0002Nj-Nt
+ for linux-mtd@lists.infradead.org; Wed, 06 Dec 2017 19:45:23 +0000
+Received: by mail-wr0-x22f.google.com with SMTP id x49so5092837wrb.13
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Dec 2017 11:44:58 -0800 (PST)
+Subject: Re: [PATCH 0/5] Add flight recorder to MTDRAM
+To: Richard Weinberger <richard@nod.at>, Dirk Behme <dirk.behme@de.bosch.com>
+Cc: linux-mtd@lists.infradead.org, boris.brezillon@free-electrons.com,
+ david.oberhollenzer@sigma-star.at
+References: <20171206085039.27164-1-dirk.behme@de.bosch.com>
+ <252100234.Y1JYG21Gen@blindfold>
+From: Manfred Spraul <manfred@colorfullife.com>
+Message-ID: <8663ba73-5159-d1ac-5a3b-6d158dcf9923@colorfullife.com>
+Date: Wed, 6 Dec 2017 20:44:55 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <252100234.Y1JYG21Gen@blindfold>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,68 +27,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Manfred,
+Hi Richard,
 
-Am Dienstag, 5. Dezember 2017, 23:19:17 CET schrieb Richard Weinberger:
-> Manfred,
-> 
-> Am Dienstag, 5. Dezember 2017, 21:06:28 CET schrieb Richard Weinberger:
-> > Manfred,
-> > 
-> > Am Dienstag, 5. Dezember 2017, 20:11:20 CET schrieb Manfred Spraul:
-> > > > So, which file do I need to download to get the image that contains
-> > > > the
-> > > > first error as detected by chk_fs?
-> > > > 
-> > > > The mode of operation of your tool should be:
-> > > > 1. Mount UBIFS
-> > > > 2. Do various filesystem operations
-> > > > 3. Random power-cut (in software)
-> > > > 4. Dump the image to a file X
-> > > > 5. Set chk_fs to 1
-> > > > 6. Mount it again
-> > > > 7. If mount succeeds, drop X, umount and goto 1
-> > > > 
-> > > >     Else if, chk_fs finds a problem. Store file X.
-> > > > 
-> > > > I want file X. :-)
-> > > 
-> > > The tool is in release process, thus let's just wait a bit.
-> > > There is no "goto 1" in my flow.
-> > > 
-> > > Part 1: (done 5x, i.e. with xattr, without xattr, ...)
-> > > 
-> > > 0. create UBI image, create empty UBIFS image.
-> > > 1. Mount UBIFS
-> > > 2. Do various filesystem operations.
-> > > 
-> > >     In the background, record nand operations and store it in a trace.
-> > > 
-> > > Part 2: (done ~100.000 times)
-> > > 1. Create an image file X by replaying from the trace.
-> > > 2. Set chk_fs to 1
-> > > 3. Mount the image
-> > > 7. If mount succeeds: ignore the file X
-> > > 
-> > >     If mount fails: remember file X
-> > > 
-> > > Thus every image is a first error. No image has seen multiple unclean
-> > > unmounts.
-> > 
-> > Hmm, when does the power-cut occur in your setup?
-> > i.e image-168167.bin and image-168168.bin show different errors and none
-> > of
-> > them fails the chf_fs test. They fail because of other reasons.
-> 
-> Short update, the issue in image-168168.bin seems to be a garbage collector
-> bug which is not at all related to xattrs.
-> Are you 100% sure that all your tests run fine when xattrs are not used?
+On 12/06/2017 11:41 AM, Richard Weinberger wrote:
+> Dirk, Manfred,
+>
+> Am Mittwoch, 6. Dezember 2017, 09:50:34 CET schrieb Dirk Behme:
+>> From: Manfred Spraul <manfred@colorfullife.com>
+>>
+>> Hi,
+>>
+>> The series adds a flight recorder to MTDRAM.
+> Thanks a lot for sharing your tool, this is highly appreciated.
+>
+>> This allows very efficient power fail testing:
+>>  From the flight recorder output, it is possible to recreate every image
+>> that might have existed between the start of the recording and the end.
+>>
+>> Obviously, a user space tool is required, it is attached as the last
+>> mail in the series.
+> So, to understand this approach better I need to recap.
+> The "flight recorder" logs every single MTD operation (READ, ERASE, PROGRAM)
+> to a file while the MTD is under load, right?
+Only ERASE and PROGRAM. READ is not logged.
+Would it help if READ is logged as well? (memory is cheap, ...)
 
-Another question. Do you happen to have the full flight record file of that 
-run? Such that I can replay on my own.
+What would be fairly simple is to add a backtrace for every ERASE and 
+PROGRAM. I'll try to add that.
 
-As it looks like we have a problem with the LEB property tree.
-But no idea so far what the root cause is.
+> Then you take the log, replay it to a _file_ but instead of replaying
+> all N MTD operations only N - X operations are replayed?
+Exactly.  Instead of replaying all N operations, only X operations are 
+replayed.
 
-Thanks,
-//richard
+image-168167.bin is after replaying 168167 operations.
+image-168168.bin is after replaying one additional operation.
+> The output file is later written back to MTDRAM to check how much UBIFS likes
+> it?
+Exactly.
+> While having such a tool would be awesome, we have to be very sure that it
+> behaves correctly.
+> Yesterday I spent almost the whole night with staring at some of Manfred's
+> images and I'm not sure whether what I see makes sense or can actually happen
+> on a real NAND or NOR flash. But I'm still investigating.
+ From my understand, the tool result is exactly identical to a powerfail 
+immediately after PROGRAM.
+What differs from realistic embedded systems is obviously performance:
+RAM disk+2-core I3 is probably much faster & much more parallelism happens.
+
+I have uploaded the initial image, the final image and the flight recording.
+
+https://sourceforge.net/projects/calculix-rpm/files/ubifs/xattr/
+
+--
+     Manfred
