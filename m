@@ -1,21 +1,16 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eMiSA-0008C4-8W
- for linux-mtd@lists.infradead.org; Wed, 06 Dec 2017 22:46:12 +0000
-Date: Wed, 6 Dec 2017 23:45:38 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: Christophe Leroy <christophe.leroy@c-s.fr>, linus.walleij@linaro.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: nand: gpio: Fix ALE gpio configuration
-Message-ID: <20171206234538.08a84f8a@bbrezillon>
-In-Reply-To: <20171206233927.3869372b@bbrezillon>
-References: <20171206172714.ABE156C6B0@po15668-vm-win7.idsi0.si.c-s.fr>
- <18914914.8jQtQ4ab2h@blindfold>
- <20171206233927.3869372b@bbrezillon>
+From: Vignesh R <vigneshr@ti.com>
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Marek Vasut
+ <marek.vasut@gmail.com>
+CC: Dinh Nguyen <dinguyen@kernel.org>, <matthew.gerlach@linux.intel.com>,
+ <linux-arm-kernel@lists.infradead.org>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, Vignesh R
+ <vigneshr@ti.com>
+Subject: [PATCH 0/2] CQSPI: Add direct mode support
+Date: Thu, 7 Dec 2017 12:08:02 +0530
+Message-ID: <20171207063804.29436-1-vigneshr@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,52 +20,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 6 Dec 2017 23:39:27 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+This patch series enables use Direct access controller on Cadence QSPI
+which helps in accessing QSPI flash in memory mapped mode.
 
-> On Wed, 06 Dec 2017 23:28:11 +0100
-> Richard Weinberger <richard@nod.at> wrote:
-> 
-> > Am Mittwoch, 6. Dezember 2017, 18:27:14 CET schrieb Christophe Leroy:  
-> > > Fixes a copy/paste error in commit f3d0d8d938b4d ("mtd: nand: gpio:
-> > > Convert to use GPIO descriptors") which breaks gpio-nand driver
-> > > 
-> > > Fixes: f3d0d8d938b4d ("mtd: nand: gpio: Convert to use GPIO descriptors")
-> > > Cc: Linus Walleij <linus.walleij@linaro.org>  
-> 
-> Cc: <stable@vger.kernel.org>
+On TI platforms, this mode has higher throughput compared to indirect
+access mode.
 
-Oops, forget the Cc-stable tag, f3d0d8d938b4d has been merged in
-4.15-rc1.
+Tested on TI's 66AK2G GP EVM.
 
-> Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> 
-> Richard, can you queue that one to the fixes branch?
-> 
-> > > Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
-> > > ---
-> > >  drivers/mtd/nand/gpio.c | 6 +++---
-> > >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
-> > > index 484f7fbc3f7d..a8bde6665c24 100644
-> > > --- a/drivers/mtd/nand/gpio.c
-> > > +++ b/drivers/mtd/nand/gpio.c
-> > > @@ -253,9 +253,9 @@ static int gpio_nand_probe(struct platform_device *pdev)
-> > > goto out_ce;
-> > >  	}
-> > > 
-> > > -	gpiomtd->nwp = devm_gpiod_get(dev, "ale", GPIOD_OUT_LOW);
-> > > -	if (IS_ERR(gpiomtd->nwp)) {
-> > > -		ret = PTR_ERR(gpiomtd->nwp);
-> > > +	gpiomtd->ale = devm_gpiod_get(dev, "ale", GPIOD_OUT_LOW);
-> > > +	if (IS_ERR(gpiomtd->ale)) {
-> > > +		ret = PTR_ERR(gpiomtd->ale);
-> > >  		goto out_ce;
-> > >  	}    
-> > 
-> > Reviewed-by: Richard Weinberger <richard@nod.at>
-> > 
-> > Thanks,
-> > //richard  
-> 
+It would be great if this patch series could be tested SoCFPGA as well.
+Although, this patch should have no effect on SoCFPGA platforms as driver
+continues to use indirect mode when direct access memory window is less
+than size of connected flash.
+
+Vignesh R (2):
+  mtd: spi-nor: cadence-quadspi: Refactor indirect read/write sequence.
+  mtd: spi-nor: cadence-quadspi: Add support for direct access mode
+
+ drivers/mtd/spi-nor/cadence-quadspi.c | 75 ++++++++++++++++++++++++++++-------
+ 1 file changed, 60 insertions(+), 15 deletions(-)
+
+-- 
+2.15.1
