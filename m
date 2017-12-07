@@ -1,24 +1,22 @@
-Received: from mail-wm0-x235.google.com ([2a00:1450:400c:c09::235])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eMyhK-0007Cj-Dq
- for linux-mtd@lists.infradead.org; Thu, 07 Dec 2017 16:06:56 +0000
-Received: by mail-wm0-x235.google.com with SMTP id r78so14023869wme.5
- for <linux-mtd@lists.infradead.org>; Thu, 07 Dec 2017 08:06:33 -0800 (PST)
-Subject: Re: [PATCH 0/5] Add flight recorder to MTDRAM
-To: Richard Weinberger <richard@nod.at>
-Cc: Dirk Behme <dirk.behme@de.bosch.com>, linux-mtd@lists.infradead.org,
- boris.brezillon@free-electrons.com, david.oberhollenzer@sigma-star.at
-References: <20171206085039.27164-1-dirk.behme@de.bosch.com>
- <8663ba73-5159-d1ac-5a3b-6d158dcf9923@colorfullife.com>
- <1944158.Wp3g4lm68D@blindfold> <1586330.7x2FQLeB9A@blindfold>
-From: Manfred Spraul <manfred@colorfullife.com>
-Message-ID: <971a70bc-3ef8-0e4a-74ce-e01ee7fa2116@colorfullife.com>
-Date: Thu, 7 Dec 2017 17:06:29 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eMzT6-000583-EV
+ for linux-mtd@lists.infradead.org; Thu, 07 Dec 2017 16:56:18 +0000
+Date: Thu, 7 Dec 2017 17:55:52 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: kyungmin.park@samsung.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com, richard@nod.at,
+ cyrille.pitchen@wedev4u.fr, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] mtd: onenand: Fix an error handling path in
+ 's3c_onenand_probe(()'
+Message-ID: <20171207175552.4825e642@bbrezillon>
+In-Reply-To: <20171118132723.24785-1-christophe.jaillet@wanadoo.fr>
+References: <20171118132723.24785-1-christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-In-Reply-To: <1586330.7x2FQLeB9A@blindfold>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,27 +26,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ricard,
+On Sat, 18 Nov 2017 14:27:23 +0100
+Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
 
-On 12/06/2017 09:57 PM, Richard Weinberger wrote:
-> Manfred,
->
-> Am Mittwoch, 6. Dezember 2017, 20:59:43 CET schrieb Richard Weinberger:
->>> I have uploaded the initial image, the final image and the flight
->>> recording.
->>>
->>> https://sourceforge.net/projects/calculix-rpm/files/ubifs/xattr/
->> Cool! I'll give it a try.
-> Hmm, I did:
-> ./replay -e 131072 -w 2048 dump-before.bin record.bin 168167
->   
-> This applies 168167 to dump-before.bin, right?
-> So I expect dump-before.bin to match the sha1sum of image-168167.bin.
-> But it doesn't.
-./replay dump-before.bin record.bin 168167
+> If 'platform_get_resource()' fails, we have to go through the error
+> handling path to release some resources.
+> 
+> The unreachable 'goto ahb_resource_failed' is also wrong here and we should
+> go to 'resource_failed' instead.
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  drivers/mtd/onenand/samsung.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
+> index af0ac1a7bf8f..164ebe2b1137 100644
+> --- a/drivers/mtd/onenand/samsung.c
+> +++ b/drivers/mtd/onenand/samsung.c
+> @@ -872,8 +872,8 @@ static int s3c_onenand_probe(struct platform_device *pdev)
+>  	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>  	if (!r) {
+>  		dev_err(&pdev->dev, "no memory resource defined\n");
+> -		return -ENOENT;
+> -		goto ahb_resource_failed;
+> +		err = -ENOENT;
+> +		goto resource_failed;
+>  	}
+>  
 
-If you specify "-w 2048", then replay.cpp splits large writes into 
-multiple operations.
-e.g.: there are some 126 kB writes.
-> Thanks,
-> //richard
+Sorry but I'd really prefer to convert the driver to use devm_
+functions instead of fixing a single error path.
+
+>  	onenand->base_res = request_mem_region(r->start, resource_size(r),
