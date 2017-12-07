@@ -1,19 +1,18 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eMsZf-0000qc-VW
- for linux-mtd@lists.infradead.org; Thu, 07 Dec 2017 09:34:37 +0000
-Date: Thu, 7 Dec 2017 10:34:02 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Antonio Borneo <borneo.antonio@gmail.com>
-Cc: linux-mtd@lists.infradead.org, David Oberhollenzer
- <david.oberhollenzer@sigma-star.at>
-Subject: Re: Question on mtd devices with zero erasesize
-Message-ID: <20171207103402.3b4b5b69@bbrezillon>
-In-Reply-To: <CAAj6DX0_BQjB1c1b_qyabAEEbP7BGHDawxF1C=Z7GD4eqeiS3Q@mail.gmail.com>
-References: <CAAj6DX0_BQjB1c1b_qyabAEEbP7BGHDawxF1C=Z7GD4eqeiS3Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+ id 1eMsZh-00010g-Ah
+ for linux-mtd@lists.infradead.org; Thu, 07 Dec 2017 09:34:39 +0000
+From: Miquel Raynal <miquel.raynal@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@free-electrons.com>
+Subject: [PATCH v2] mtd: nand: samsung: add ECC requirements for K9F4G08U0D
+Date: Thu,  7 Dec 2017 10:33:58 +0100
+Message-Id: <20171207093358.32234-1-miquel.raynal@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,65 +22,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+David (the mtd-utils maintainer)
+Samsung NAND chip K9F4G08U0D minimum ECC strength requirement is 1 bit
+per 512 bytes. As the chip is not ONFI nor JEDEC and because of the lack
+of these values, boards using it fail to probe the NAND controller
+driver. Fix this by setting up the default values.
 
-Hi Antonio
+Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+---
 
-On Wed, 6 Dec 2017 14:28:25 +0100
-Antonio Borneo <borneo.antonio@gmail.com> wrote:
+Changes since v1:
+  - Added the chip reference in the commit title
+  - Removed unnecessary checks.
 
-> Hi,
-> I have searched in the mailing list archives but didn't found such topic.
-> 
-> In mainline kernel there are already few RAM based mtd devices; the
-> concept of "erase unit" (sector or page) does not always apply to
-> them.
-> At least two of such devices set the field "erasesize" to zero (or,
-> better, do not set it at all and left it to zero):
-> - drivers/mtd/devices/ms02-nv.c
-> - drivers/mtd/devices/mchp23k256.c
-> 
-> The following is tested with mchp23k256 only.
-> Of course I read zero from /sys/class/mtd/mtdX/erasesize
-> The tool mdtinfo core-dumps for division by zero when it try to
-> compute the number of erase units by dividing device size by
-> erasesize.
-> 
-> What would be the proper fix?
+ drivers/mtd/nand/nand_samsung.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Fix mtd-utils to check if MTD_NO_ERASE is set
-in /sys/class/mtd/mtdX/flags. If it's not, then the device does not
-support erase, and erasesize is likely to be 0. In this case, you
-should not try to divide something by erasesize.
-
-> 
-> First of all, is erasesize=1 correct in this case, or for some reason
-> it is better to use another value?
-
-No it's not. We should fix the tools instead of declaring a fake
-erasesize.
-
-> 
-> Then, is the driver that is supposed to provide a non-zero value for erasesize?
-
-Nope.
-
-> Or is the mtd framework that should check the value set by the driver
-> and eventually replace it with a minimum erasesize?
-
-And No.
-
-> Or is the userland that has to accept the zero value?
-
-I think this is the correct answer. We'll keep drivers that were
-declaring an ->erasesize of 1, just to not break existing users, but
-new drivers for devices that simply don't support the erase operation
-should stop implementing dummy erase methods, should set erasesize to 0
-and set the MTD_NO_ERASE flag.
-
-And of course, mtd-utils should be fixed to gracefully handle the
-MTD_NO_ERASE/erasesize=0 case.
-
-Regards,
-
-Boris
+diff --git a/drivers/mtd/nand/nand_samsung.c b/drivers/mtd/nand/nand_samsung.c
+index d348f0129ae7..f6b0a63a068c 100644
+--- a/drivers/mtd/nand/nand_samsung.c
++++ b/drivers/mtd/nand/nand_samsung.c
+@@ -91,6 +91,12 @@ static void samsung_nand_decode_id(struct nand_chip *chip)
+ 		}
+ 	} else {
+ 		nand_decode_ext_id(chip);
++
++		/* Datasheet values for SLC Samsung K9F4G08U0D-S[I|C]B0(T00) */
++		if (nand_is_slc(chip) && chip->id.data[1] == 0xDC) {
++			chip->ecc_step_ds = 512;
++			chip->ecc_strength_ds = 1;
++		}
+ 	}
+ }
+ 
+-- 
+2.11.0
