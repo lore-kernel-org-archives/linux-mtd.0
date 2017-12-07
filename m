@@ -1,25 +1,24 @@
-Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eMxdh-0008J6-MN
- for linux-mtd@lists.infradead.org; Thu, 07 Dec 2017 14:59:13 +0000
-Subject: Re: [RFC 03/10] mtd: spi-nor: Configure read latency for read commands
-To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Cc: "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
-References: <1512548141-3319-1-git-send-email-prabhakar.kushwaha@nxp.com>
- <1512548141-3319-4-git-send-email-prabhakar.kushwaha@nxp.com>
- <1f97ee81-a027-c5cf-04a4-cb29bc6a7ba4@wedev4u.fr>
- <HE1PR04MB12417B07F03276B164F2DF4C97330@HE1PR04MB1241.eurprd04.prod.outlook.com>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <ccd284d2-d3a3-4bb1-3cc0-1f5a41d670b3@wedev4u.fr>
-Date: Thu, 7 Dec 2017 15:58:31 +0100
+Received: from mail-wm0-x235.google.com ([2a00:1450:400c:c09::235])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eMyhK-0007Cj-Dq
+ for linux-mtd@lists.infradead.org; Thu, 07 Dec 2017 16:06:56 +0000
+Received: by mail-wm0-x235.google.com with SMTP id r78so14023869wme.5
+ for <linux-mtd@lists.infradead.org>; Thu, 07 Dec 2017 08:06:33 -0800 (PST)
+Subject: Re: [PATCH 0/5] Add flight recorder to MTDRAM
+To: Richard Weinberger <richard@nod.at>
+Cc: Dirk Behme <dirk.behme@de.bosch.com>, linux-mtd@lists.infradead.org,
+ boris.brezillon@free-electrons.com, david.oberhollenzer@sigma-star.at
+References: <20171206085039.27164-1-dirk.behme@de.bosch.com>
+ <8663ba73-5159-d1ac-5a3b-6d158dcf9923@colorfullife.com>
+ <1944158.Wp3g4lm68D@blindfold> <1586330.7x2FQLeB9A@blindfold>
+From: Manfred Spraul <manfred@colorfullife.com>
+Message-ID: <971a70bc-3ef8-0e4a-74ce-e01ee7fa2116@colorfullife.com>
+Date: Thu, 7 Dec 2017 17:06:29 +0100
 MIME-Version: 1.0
-In-Reply-To: <HE1PR04MB12417B07F03276B164F2DF4C97330@HE1PR04MB1241.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1586330.7x2FQLeB9A@blindfold>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,71 +28,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 07/12/2017 à 10:03, Prabhakar Kushwaha a écrit :
-> Hi Cyrille,
-> 
->> -----Original Message-----
->> From: Cyrille Pitchen [mailto:cyrille.pitchen@wedev4u.fr]
->> Sent: Wednesday, December 06, 2017 4:16 PM
->> To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>; linux-
->> mtd@lists.infradead.org
->> Cc: boris.brezillon@free-electrons.com; computersforpeace@gmail.com;
->> dedekind1@gmail.com
->> Subject: Re: [RFC 03/10] mtd: spi-nor: Configure read latency for read commands
->>
->> Hi Prabhakar,
->>
->> Le 06/12/2017 à 09:15, Prabhakar Kushwaha a écrit :
->>> All read commands have read latency (dummy cycle). It defines a
->>> period between the end of address or mode and the beginning of
->>> read data returning to the host. Flashes have default read latency.
->>> This default read latency may not match with the selected latency.
->>>
->>
->> The read latency is either hard-coded (0 mode cycles and 8 wait-states)
->> for Fast Read 1-1-z operations or read from the Basic Flash Parameter
->> Table programmed as one mandatory table of the JEDEC JESD126B
->> specification when SFDP tables are supported by the memory parts.
->>
->> In all cases, those values are factory settings. I don't understand why
->> there would be a mismatch between the default read latency and the
->> selected latency if any boot-loader or flash programming tool has ever
->> changed the memory settings.
->>
->> Could you please explain in which case you found a mismatch ?
->>
-> If we only talk about 1-1-z than yes. The Default value is always "0/8". 
-> 
-> This mismatch start to come when we see 1-2-2 or 1-4-4 read protocols.
-> For eg. S25FL128S/S25FL256S default dummy latency is 00. Which is 4 for  1-2-2 or 1-4-4.
+Hi Ricard,
+
+On 12/06/2017 09:57 PM, Richard Weinberger wrote:
+> Manfred,
 >
+> Am Mittwoch, 6. Dezember 2017, 20:59:43 CET schrieb Richard Weinberger:
+>>> I have uploaded the initial image, the final image and the flight
+>>> recording.
+>>>
+>>> https://sourceforge.net/projects/calculix-rpm/files/ubifs/xattr/
+>> Cool! I'll give it a try.
+> Hmm, I did:
+> ./replay -e 131072 -w 2048 dump-before.bin record.bin 168167
+>   
+> This applies 168167 to dump-before.bin, right?
+> So I expect dump-before.bin to match the sha1sum of image-168167.bin.
+> But it doesn't.
+./replay dump-before.bin record.bin 168167
 
-If the memory is still configured to use its factory settings, for instance
-latency code 00 for Spansion memories, and if this memory is complient with
-the JEDEC JESD216 speficition, then we read from the Basic Flash Parameter
-Table (BFPT), the only always mandatory SFDP table, to retrieve the number
-of mode cycles and wait-states to be used with Fast Read 1-2-2 and 1-4-4:
-
-- Fast Read 1-2-2 settings are written in the 4th DWORD of the BFPT.
-- Fast Read 1-4-4 settings are written in the 3rd DWORD of the BFPT.
-
-Please refer to the JESD216 specification and to the sfdp_bfpt_reads[]
-array.
-
-Hence, as long as you don't change the latency code of your Spansion memory
-and keep it in its factory state, a proper value is set in nor->read_dummy
-based on what have been read from the SFDP table (BFPT).
-
-You should not have any mismatch between what was set in nor->read_dummy
-and what you memory expects.
- 
-> I saw your review comments of using SFDP for 1-2-2 and 1-4-4. 
-> Let me explore this path if we really require this patch..
-> 
-> Thanks for guidance!!
-> 
-> --pk
-> 
-> 
-> 
-> 
+If you specify "-w 2048", then replay.cpp splits large writes into 
+multiple operations.
+e.g.: there are some 126 kB writes.
+> Thanks,
+> //richard
