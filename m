@@ -1,27 +1,19 @@
-Received: from mail-eopbgr10066.outbound.protection.outlook.com ([40.107.1.66]
- helo=EUR02-HE1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eMs6k-0007lE-Vv
- for linux-mtd@lists.infradead.org; Thu, 07 Dec 2017 09:05:09 +0000
-From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-CC: "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- Rajat Srivastava
- <rajat.srivastava@nxp.com>, "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: RE: [RFC 09/10] mtd: spi-nor: Disable hybrid mode for SPANSION
- S25FS-S family
-Date: Thu, 7 Dec 2017 09:04:17 +0000
-Message-ID: <HE1PR04MB124174B958E2B0BBAC58E53697330@HE1PR04MB1241.eurprd04.prod.outlook.com>
-References: <1512548141-3319-1-git-send-email-prabhakar.kushwaha@nxp.com>
- <1512548141-3319-10-git-send-email-prabhakar.kushwaha@nxp.com>
- <c764fd31-29c4-865c-656f-23c758af0640@wedev4u.fr>
-In-Reply-To: <c764fd31-29c4-865c-656f-23c758af0640@wedev4u.fr>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eMsZf-0000qc-VW
+ for linux-mtd@lists.infradead.org; Thu, 07 Dec 2017 09:34:37 +0000
+Date: Thu, 7 Dec 2017 10:34:02 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Antonio Borneo <borneo.antonio@gmail.com>
+Cc: linux-mtd@lists.infradead.org, David Oberhollenzer
+ <david.oberhollenzer@sigma-star.at>
+Subject: Re: Question on mtd devices with zero erasesize
+Message-ID: <20171207103402.3b4b5b69@bbrezillon>
+In-Reply-To: <CAAj6DX0_BQjB1c1b_qyabAEEbP7BGHDawxF1C=Z7GD4eqeiS3Q@mail.gmail.com>
+References: <CAAj6DX0_BQjB1c1b_qyabAEEbP7BGHDawxF1C=Z7GD4eqeiS3Q@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,34 +23,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQ3lyaWxsZSBQaXRjaGVu
-IFttYWlsdG86Y3lyaWxsZS5waXRjaGVuQHdlZGV2NHUuZnJdDQo+IFNlbnQ6IFdlZG5lc2RheSwg
-RGVjZW1iZXIgMDYsIDIwMTcgNDoyOCBQTQ0KPiBUbzogUHJhYmhha2FyIEt1c2h3YWhhIDxwcmFi
-aGFrYXIua3VzaHdhaGFAbnhwLmNvbT47IGxpbnV4LQ0KPiBtdGRAbGlzdHMuaW5mcmFkZWFkLm9y
-Zw0KPiBDYzogYm9yaXMuYnJlemlsbG9uQGZyZWUtZWxlY3Ryb25zLmNvbTsgY29tcHV0ZXJzZm9y
-cGVhY2VAZ21haWwuY29tOyBSYWphdA0KPiBTcml2YXN0YXZhIDxyYWphdC5zcml2YXN0YXZhQG54
-cC5jb20+OyBkZWRla2luZDFAZ21haWwuY29tDQo+IFN1YmplY3Q6IFJlOiBbUkZDIDA5LzEwXSBt
-dGQ6IHNwaS1ub3I6IERpc2FibGUgaHlicmlkIG1vZGUgZm9yIFNQQU5TSU9OIFMyNUZTLQ0KPiBT
-IGZhbWlseQ0KPiANCj4gSGkgUHJhYmhha2FyLA0KPiANCj4gTGUgMDYvMTIvMjAxNyDDoCAwOTox
-NSwgUHJhYmhha2FyIEt1c2h3YWhhIGEgw6ljcml0wqA6DQo+ID4gVGhlIFMyNUZTLVMgZmFtaWx5
-IHBoeXNpY2FsIHNlY3RvcnMgbWF5IGJlIGNvbmZpZ3VyZWQgYXMgYSBoeWJyaWQNCj4gPiBjb21i
-aW5hdGlvbiBvZiBlaWdodCA0LWtCIHBhcmFtZXRlciBzZWN0b3JzIGF0IHRoZSB0b3Agb3IgYm90
-dG9tDQo+ID4gb2YgdGhlIGFkZHJlc3Mgc3BhY2Ugd2l0aCBhbGwgYnV0IG9uZSBvZiB0aGUgcmVt
-YWluaW5nIHNlY3RvcnMNCj4gPiBiZWluZyB1bmlmb3JtIHNpemUuDQo+ID4gVGhlIGRlZmF1bHQg
-c3RhdHVzIG9mIHRoZSBmbGFzaCBpcyB0aGUgaHlicmlkIGFyY2hpdGVjdHVyZS4NCj4gPiBUaGUg
-cGFyYW1ldGVyIHNlY3RvcnMgYW5kIHRoZSB1bmlmb3JtIHNlY3RvcnMgaGF2ZSBkaWZmZXJlbnQg
-ZXJhc2UNCj4gPiBjb21tYW5kcy4NCj4gPg0KPiA+IFRoaXMgcGF0Y2ggZGlzYWJsZXMgdGhlIGh5
-YnJpZCBzZWN0b3IgYXJjaGl0ZWN0dXJlIHdoaWNoIG1ha2VzIHRoZQ0KPiA+IGZsYXNoIGhhdmUg
-dW5pZm9ybSBzZWN0b3Igc2l6ZSBhbmQgdW5pZm9ybSBlcmFzZSBjb21tYW5kLg0KPiA+DQo+IA0K
-PiBUaGlzIGlzc3VlIHNob3VsZCBiZSBhZGRyZXNzZWQgaW4gYSBnZW5lcmljIHdheSwgbm90IFNw
-YW5zaW9uIHNwZWNpZmljLA0KPiBieSBhZGRpbmcgc3VwcG9ydCBvZiB0aGUgb3B0aW9uYWwgU2Vj
-dG9yIE1hcCBQYXJhbWV0ZXIgVGFibGUgKFNGRFApLg0KPiBJbiBjYXNlIG9mIG5vbiB1bmlmb3Jt
-IG1lbW9yaWVzLCBsaWtlIHRoaXMgU3BhbnNpb24gUzI1RlMtUyBmYW1pbHkgb3INCj4gU1NUMjYs
-IHRoZSBTZWN0b3IgTWFwIFBhcmFtZXRlciBUYWJsZSBiZWNvbWVzIG1hbmRhdG9yeSBhcyBhIFNG
-RFAgdGFibGUuDQo+IA0KPiBGcm9tIHRoZSBKRVNEMjE2QiBzcGVjaWZpY2F0aW9uLCBhYm91dCB0
-aGUgSkVERUMgU2VjdG9yIE1hcCBQYXJhbWV0ZXIgVGFibGU6DQo+ICIiIg0KPiBUaGlzIHRhYmxl
-IGlzIHJlcXVpcmVkIHdoZW4gYSBtZW1vcnkgZGV2aWNlOg0KPiAqIEhhcyBzZWN0b3JzIG9mIG1v
-cmUgdGhhbiBvbmUgc2l6ZQ0KPiAqIE9yLCBkb2VzIG5vdCBhbGxvdyBhbGwgRXJhc2UgVHlwZSBj
-b21tYW5kcyB0byBiZSBhcHBsaWVkIHRvIGFsbCBzZWN0b3JzLg0KPiAiIiINCj4gDQoNClRoYW5r
-cyBmb3IgdGhlIGd1aWRhbmNlLiBMZXQgbWUgZXhwbG9yZSBTZWN0b3IgTWFwIFBhcmFtZXRlciBU
-YWJsZSAoU0ZEUCkNCg0KLS1way4NCg0K
++David (the mtd-utils maintainer)
+
+Hi Antonio
+
+On Wed, 6 Dec 2017 14:28:25 +0100
+Antonio Borneo <borneo.antonio@gmail.com> wrote:
+
+> Hi,
+> I have searched in the mailing list archives but didn't found such topic.
+> 
+> In mainline kernel there are already few RAM based mtd devices; the
+> concept of "erase unit" (sector or page) does not always apply to
+> them.
+> At least two of such devices set the field "erasesize" to zero (or,
+> better, do not set it at all and left it to zero):
+> - drivers/mtd/devices/ms02-nv.c
+> - drivers/mtd/devices/mchp23k256.c
+> 
+> The following is tested with mchp23k256 only.
+> Of course I read zero from /sys/class/mtd/mtdX/erasesize
+> The tool mdtinfo core-dumps for division by zero when it try to
+> compute the number of erase units by dividing device size by
+> erasesize.
+> 
+> What would be the proper fix?
+
+Fix mtd-utils to check if MTD_NO_ERASE is set
+in /sys/class/mtd/mtdX/flags. If it's not, then the device does not
+support erase, and erasesize is likely to be 0. In this case, you
+should not try to divide something by erasesize.
+
+> 
+> First of all, is erasesize=1 correct in this case, or for some reason
+> it is better to use another value?
+
+No it's not. We should fix the tools instead of declaring a fake
+erasesize.
+
+> 
+> Then, is the driver that is supposed to provide a non-zero value for erasesize?
+
+Nope.
+
+> Or is the mtd framework that should check the value set by the driver
+> and eventually replace it with a minimum erasesize?
+
+And No.
+
+> Or is the userland that has to accept the zero value?
+
+I think this is the correct answer. We'll keep drivers that were
+declaring an ->erasesize of 1, just to not break existing users, but
+new drivers for devices that simply don't support the erase operation
+should stop implementing dummy erase methods, should set erasesize to 0
+and set the MTD_NO_ERASE flag.
+
+And of course, mtd-utils should be fixed to gracefully handle the
+MTD_NO_ERASE/erasesize=0 case.
+
+Regards,
+
+Boris
