@@ -1,34 +1,26 @@
-Received: from mail01.prevas.se ([62.95.78.3])
+Received: from mail-it0-x229.google.com ([2607:f8b0:4001:c0b::229])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eNEah-0003T8-68
- for linux-mtd@lists.infradead.org; Fri, 08 Dec 2017 09:05:11 +0000
-Subject: Re: [BUG] pxa3xx: wait time out when scanning for bb
-To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-CC: <ezequiel.garcia@free-electrons.com>, <linux-mtd@lists.infradead.org>,
- "Kasper Revsbech (KREV)" <krev@triax.com>, Boris Brezillon
- <Boris.Brezillon@free-electrons.com>
-References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
- <20171128140210.34215e19@xps13>
- <dd07aafc-0d23-e00a-4996-cd233f8a9065@prevas.dk>
- <20171128143055.1ff22979@xps13>
- <2d491047-cd55-5a0a-83ec-58365f3bf3ff@prevas.dk>
- <20171128150417.17d53b5a@xps13>
- <1e2bea86-e429-e3c4-a6e4-c2c82457a061@prevas.dk>
- <20171129090305.0174246d@xps13>
- <aeb06060-015e-85b4-5b6d-4427dfd1e11a@prevas.dk>
- <20171130181847.0bbc58b5@xps13>
- <5bc5d326-af1f-44d2-468a-d211212c4612@prevas.dk>
- <20171201091539.5d6b7572@xps13>
- <744e99ee-91cf-28bc-21eb-c3fa01fb0a01@prevas.dk>
- <20171207213814.4c57098f@xps13>
-From: =?UTF-8?Q?Sean_Nyekj=c3=a6r?= <sean.nyekjaer@prevas.dk>
-Message-ID: <26441ab5-8c70-4d7f-5e0d-bec3d59e2ef2@prevas.dk>
-Date: Fri, 8 Dec 2017 10:04:36 +0100
+ id 1eNEgw-0007HA-Cl
+ for linux-mtd@lists.infradead.org; Fri, 08 Dec 2017 09:11:37 +0000
+Received: by mail-it0-x229.google.com with SMTP id b5so3511232itc.3
+ for <linux-mtd@lists.infradead.org>; Fri, 08 Dec 2017 01:11:14 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20171207213814.4c57098f@xps13>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <20171208013838.105034-1-ebiggers3@gmail.com>
+References: <20171208013838.105034-1-ebiggers3@gmail.com>
+From: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Date: Fri, 8 Dec 2017 09:11:12 +0000
+Message-ID: <CAKv+Gu8Y_7GKnVnv+UgjP+K8MDXA7v72F8kCrUHt+t9_BRLn1A@mail.gmail.com>
+Subject: Re: [PATCH] fscrypt: add support for ChaCha20 contents encryption
+To: Eric Biggers <ebiggers3@gmail.com>
+Cc: linux-fscrypt@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
+ linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+ "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+ Jaegeuk Kim <jaegeuk@kernel.org>,
+ Michael Halcrow <mhalcrow@google.com>, Paul Crowley <paulcrowley@google.com>,
+ Martin Willi <martin@strongswan.org>, David Gstir <david@sigma-star.at>,
+ "Jason A . Donenfeld" <Jason@zx2c4.com>, Eric Biggers <ebiggers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,66 +30,326 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Miquel
+Hi Eric,
 
-> As you may know, I am actively working on a new interface in the NAND
-> core called ->exec_op() (see [1] and [2]) and the first driver to
-> implement this interface is a rework of pxa3xx_nand.c renamed
-> marvell_nand.c (see [3]).
+On 8 December 2017 at 01:38, Eric Biggers <ebiggers3@gmail.com> wrote:
+> From: Eric Biggers <ebiggers@google.com>
 >
-> May I suggest you to test these changes and report me if it fails? I
-> prepared a branch ready to be tested (just add your own device tree),
-> available on my Github at [4].
+> fscrypt currently only supports AES encryption.  However, many low-end
+> mobile devices still use older CPUs such as ARMv7, which do not support
+> the AES instructions (the ARMv8 Cryptography Extensions).  This results
+> in very poor AES performance, even if the NEON bit-sliced implementation
+> is used.  Roughly 20-40 MB/s is a typical number, in comparison to
+> 300-800 MB/s on CPUs that support the AES instructions.  Switching from
+> AES-256 to AES-128 only helps by about 30%.
 >
-> If you have failures, it would be great to enable dynamic debug in the
-> core (put #define DEBUG before all #includes in
-> drivers/mtd/nand/nand_core.c) and report on the mailing list what you
-> get. Otherwise, you may stack this commits on top of your branch, or
-> wait for 4.16 to be released (hopefully).
+> The result is that vendors don't enable encryption on these devices,
+> leaving users unprotected.
 >
-> Thanks,
-> Miquèl
+> A performance difference of similar magnitude can also be observed on
+> x86, between CPUs with and without the AES-NI instruction set.
 >
-> [1] https://www.spinics.net/lists/arm-kernel/msg619633.html
-> [2] http://lists.infradead.org/pipermail/linux-mtd/2017-December/077965.html
-> [3] http://lists.infradead.org/pipermail/linux-mtd/2017-December/077973.html
-> [4] https://github.com/miquelraynal/linux/tree/marvell/nand-next/nfc-rework
+> This patch provides an alternative to AES by updating fscrypt to support
+> the ChaCha20 stream cipher (RFC7539) for contents encryption.  ChaCha20
+> was designed to have a large security margin, to be efficient on
+> general-purpose CPUs without dedicated instructions, and to be
+> vectorizable.  It is already supported by the Linux crypto API,
+> including a vectorized implementation for ARM using NEON instructions,
+> and vectorized implementations for x86 using SSSE3 or AVX2 instructions.
 >
-Thanks I didn't know about that :-)
+> On 32-bit ARM processors with NEON support, ChaCha20 is about 3.2 times
+> faster than AES-128-XTS (chacha20-neon vs. xts-aes-neonbs).  Without
+> NEON support, ChaCha20 is about 1.5 times as fast (chacha20-generic vs.
+> xts(aes-asm)).  The improvement over AES-256-XTS is even greater.
+>
+> Note that stream ciphers are not an ideal choice for disk encryption,
+> since each data block has to be encrypted with the same IV each time it
+> is overwritten.  Consequently, an adversary who observes the ciphertext
+> both before and after a write can trivially recover the keystream if
+> they can guess one of the plaintexts.  Moreover, an adversary who can
+> write to the ciphertext can flip arbitrary bits in the plaintext, merely
+> by flipping the corresponding bits in the ciphertext.  A block cipher
+> operating in the XTS or CBC-ESSIV mode provides some protection against
+> these types of attacks -- albeit not full protection, which would at
+> minimum require the use an authenticated encryption mode with nonces.
+>
+> Unfortunately, we are unaware of any block cipher which performs as well
+> as ChaCha20, has a similar or greater security margin, and has been
+> subject to as much public security analysis.  We do not consider Speck
+> to be a viable alternative at this time.
+>
+> Still, a stream cipher is sufficient to protect data confidentiality in
+> the event of a single point-in-time permanent offline compromise of the
+> disk, which currently is the primary threat model for fscrypt.  Thus,
+> when the alternative is quite literally *no encryption*, we might as
+> well use a stream cipher.
+>
+> We offer ChaCha20 rather than the reduced-round variants ChaCha8 or
+> ChaCha12 because ChaCha20 has a much higher security margin, and we are
+> primarily targeting CPUs where ChaCha20 is fast enough, in particular
+> CPUs that have vector instructions such as NEON or SSSE3.  Also, the
+> crypto API currently only supports ChaCha20.  Still, if ChaCha8 and/or
+> ChaCha12 support were to be added to the crypto API, it would be
+> straightforward to support them in fscrypt too.
+>
+> Currently, stream ciphers cannot be used for filenames encryption with
+> fscrypt because all filenames in a directory have to be encrypted with
+> the same IV.  Therefore, we offer ChaCha20 for contents encryption only.
+> Filenames encryption still must use AES-256-CTS-CBC.  This is acceptable
+> because filenames encryption is not as performance-critical as contents
+> encryption.
+>
+> Reviewed-by: Michael Halcrow <mhalcrow@google.com>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  Documentation/filesystems/fscrypt.rst | 43 +++++++++++++++++++---
+>  fs/crypto/Kconfig                     |  1 +
+>  fs/crypto/crypto.c                    | 69 ++++++++++++++++++++++++++++-------
+>  fs/crypto/keyinfo.c                   |  2 +
+>  include/linux/fscrypt.h               |  6 ++-
+>  include/uapi/linux/fs.h               |  1 +
+>  6 files changed, 102 insertions(+), 20 deletions(-)
+>
+> diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
+> index 776ddc655f79..927d3c88816b 100644
+> --- a/Documentation/filesystems/fscrypt.rst
+> +++ b/Documentation/filesystems/fscrypt.rst
+> @@ -184,6 +184,9 @@ replaced with HKDF or another more standard KDF in the future.
+>  Encryption modes and usage
+>  ==========================
+>
+> +Available modes
+> +---------------
+> +
+>  fscrypt allows one encryption mode to be specified for file contents
+>  and one encryption mode to be specified for filenames.  Different
+>  directory trees are permitted to use different encryption modes.
+> @@ -191,24 +194,52 @@ Currently, the following pairs of encryption modes are supported:
+>
+>  - AES-256-XTS for contents and AES-256-CTS-CBC for filenames
+>  - AES-128-CBC for contents and AES-128-CTS-CBC for filenames
+> +- ChaCha20 for contents and AES-256-CTS-CBC for filenames
+>
+>  It is strongly recommended to use AES-256-XTS for contents encryption.
+>  AES-128-CBC was added only for low-powered embedded devices with
+>  crypto accelerators such as CAAM or CESA that do not support XTS.
+>
+> +Similarly, ChaCha20 was only added for low-end devices that have
+> +neither a CPU with AES instructions, nor a hardware crypto
+> +accelerator.  Note that since ChaCha20 is a stream cipher, it is
+> +easily broken if an attacker can view encrypted data both before and
+> +after it is overwritten.  Thus, even moreso than the other modes,
+> +ChaCha20 can protect data confidentiality *only* in the event of a
+> +single point-in-time, permanent offline compromise of the storage.
+> +Also, ChaCha20 is supported only for contents encryption, not
+> +filenames encryption, because all filenames in a directory have to be
+> +encrypted with the same IV, which would be especially inappropriate
+> +for a stream cipher.
+> +
+>  New encryption modes can be added relatively easily, without changes
+>  to individual filesystems.  However, authenticated encryption (AE)
+>  modes are not currently supported because of the difficulty of dealing
+>  with ciphertext expansion.
+>
+> +Contents encryption
+> +-------------------
+> +
+>  For file contents, each filesystem block is encrypted independently.
+>  Currently, only the case where the filesystem block size is equal to
+> -the system's page size (usually 4096 bytes) is supported.  With the
+> -XTS mode of operation (recommended), the logical block number within
+> -the file is used as the IV.  With the CBC mode of operation (not
+> -recommended), ESSIV is used; specifically, the IV for CBC is the
+> -logical block number encrypted with AES-256, where the AES-256 key is
+> -the SHA-256 hash of the inode's data encryption key.
+> +the system's page size (usually 4096 bytes) is supported.
+> +
+> +With the XTS mode of operation, the logical block number within the
+> +file is used as the IV.
+> +
+> +With the CBC mode of operation, ESSIV is used.  Specifically, the IV
+> +is the file logical block number encrypted with AES-256, where the
+> +AES-256 key is the SHA-256 hash of the inode's data encryption key.
+> +
+> +With ChaCha20, the file logical block number is also used as the IV,
+> +but it is formatted differently to ensure that it is copied into the
+> +"nonce" portion of the ChaCha20 initial state (words 14-15) rather
+> +than the "block counter" portion (words 12-13).  This detail is
+> +critical, since otherwise different portions of the file would be
+> +encrypted with the same keystream.
+> +
+> +Filenames encryption
+> +--------------------
+>
+>  For filenames, the full filename is encrypted at once.  Because of the
+>  requirements to retain support for efficient directory lookups and
+> diff --git a/fs/crypto/Kconfig b/fs/crypto/Kconfig
+> index 02b7d91c9231..44f052e9d842 100644
+> --- a/fs/crypto/Kconfig
+> +++ b/fs/crypto/Kconfig
+> @@ -3,6 +3,7 @@ config FS_ENCRYPTION
+>         select CRYPTO
+>         select CRYPTO_AES
+>         select CRYPTO_CBC
+> +       select CRYPTO_CHACHA20
+>         select CRYPTO_ECB
+>         select CRYPTO_XTS
+>         select CRYPTO_CTS
+> diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
+> index 732a786cce9d..d5c95a18db59 100644
+> --- a/fs/crypto/crypto.c
+> +++ b/fs/crypto/crypto.c
+> @@ -126,15 +126,66 @@ struct fscrypt_ctx *fscrypt_get_ctx(const struct inode *inode, gfp_t gfp_flags)
+>  }
+>  EXPORT_SYMBOL(fscrypt_get_ctx);
+>
+> +struct fscrypt_iv {
+> +       __le64 first_half;
+> +       __le64 second_half;
+> +};
+> +
+> +/*
+> + * Generate the IV for encrypting/decrypting the block at the given logical
+> + * block number within a file.
+> + */
+> +static void fscrypt_generate_iv(struct fscrypt_iv *iv, u64 lblk_num,
+> +                               const struct fscrypt_info *ci)
+> +{
+> +       BUILD_BUG_ON(sizeof(*iv) != FS_IV_SIZE);
+> +
+> +       if (ci->ci_data_mode == FS_ENCRYPTION_MODE_CHACHA20) {
+> +               /*
+> +                * ChaCha20 interprets its IV as a block counter followed by a
+> +                * nonce.  We *MUST NOT* use the file logical block number as
+> +                * the Chacha block counter because the ChaCha block counter
+> +                * counts 64-byte ChaCha blocks, which are much smaller than
+> +                * file blocks.  If we did, then portions of the keystream would
+> +                * be repeated, which would be catastrophic.
+> +                *
 
-I had a look at it and I have rebased my stuff on top of your branch.
-I have edited my devicetree to look like this:
-&nand_controller {
-     status = "okay";
-     pinctrl-names = "default";
-     pinctrl-0 = <&nand_pins>, <&nand_rb>;
+OK, so you are saying that LBA n + 1 will share its keystream with LBA
+n but shift by 64 blocks, right? Yeah, that's terrible.
 
-     nand@0 {
-         reg = <0>;
-         label = "pxa3xx_nand-0";
-         marvell,rb = <0>;
-         marvell,nand-keep-config;
-         nand-on-flash-bbt;
-         nand-ecc-strength = <4>;
-         nand-ecc-step-size = <512>;
-     };
-};
+But I severely dislike having to make the fscrypt code intimately
+aware of this. Why can't we just encrypt the IV like we do for
+AES-CBC? We already pull in that code for the filenames anyway.
+Alternatively, we could have a IV mangling wrapper around chacha20
+that moves this special handling out of fscrypt.
 
-It produces a lot of bad eraseblocks entrys
-[    2.693343] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
-[    2.699717] nand: Micron MT29F2G08ABAEAH4
-[    2.703772] nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, 
-OOB size: 64
-[    2.714286] Bad block table not found for chip 0
-[    2.721509] Bad block table not found for chip 0
-[    2.726139] Scanning device for bad blocks
-[    2.730583] Bad eraseblock 0 at 0x000000000000
-[    2.735365] Bad eraseblock 1 at 0x000000020000
-[    2.740145] Bad eraseblock 2 at 0x000000040000
-[    2.744934] Bad eraseblock 3 at 0x000000060000
-[    2.749714] Bad eraseblock 4 at 0x000000080000
-
-Is my devicetree correct?
-
-Br
-/Sean
+> +                * We could initialize the block counter with the offset in the
+> +                * file in ChaCha blocks.  But RFC7539 defines the ChaCha20
+> +                * block counter to be 32-bit, which is only enough for a 256GiB
+> +                * keystream.  Confusingly, this differs from the original
+> +                * ChaCha paper which defines the block counter to be 64-bit.
+> +                *
+> +                * To be compatible with either convention, just put the file
+> +                * logical block number in the second half of the IV, so that it
+> +                * goes into the "nonce" portion of the ChaCha initial state
+> +                * (words 14-15).  The ChaCha block counter then starts at 0 for
+> +                * each file block.  In other words, we use one keystream per
+> +                * file block instead of one keystream per file.
+> +                */
+> +               iv->first_half = 0;
+> +               iv->second_half = cpu_to_le64(lblk_num);
+> +
+> +               BUG_ON(ci->ci_essiv_tfm != NULL);
+> +       } else {
+> +               /* XTS or CBC */
+> +               iv->first_half = cpu_to_le64(lblk_num);
+> +               iv->second_half = 0;
+> +
+> +               if (ci->ci_essiv_tfm != NULL) {
+> +                       /* CBC */
+> +                       BUILD_BUG_ON(AES_BLOCK_SIZE != FS_IV_SIZE);
+> +                       crypto_cipher_encrypt_one(ci->ci_essiv_tfm,
+> +                                                 (u8 *)iv, (u8 *)iv);
+> +               }
+> +       }
+> +}
+> +
+>  int fscrypt_do_page_crypto(const struct inode *inode, fscrypt_direction_t rw,
+>                            u64 lblk_num, struct page *src_page,
+>                            struct page *dest_page, unsigned int len,
+>                            unsigned int offs, gfp_t gfp_flags)
+>  {
+> -       struct {
+> -               __le64 index;
+> -               u8 padding[FS_IV_SIZE - sizeof(__le64)];
+> -       } iv;
+> +       struct fscrypt_iv iv;
+>         struct skcipher_request *req = NULL;
+>         DECLARE_CRYPTO_WAIT(wait);
+>         struct scatterlist dst, src;
+> @@ -144,15 +195,7 @@ int fscrypt_do_page_crypto(const struct inode *inode, fscrypt_direction_t rw,
+>
+>         BUG_ON(len == 0);
+>
+> -       BUILD_BUG_ON(sizeof(iv) != FS_IV_SIZE);
+> -       BUILD_BUG_ON(AES_BLOCK_SIZE != FS_IV_SIZE);
+> -       iv.index = cpu_to_le64(lblk_num);
+> -       memset(iv.padding, 0, sizeof(iv.padding));
+> -
+> -       if (ci->ci_essiv_tfm != NULL) {
+> -               crypto_cipher_encrypt_one(ci->ci_essiv_tfm, (u8 *)&iv,
+> -                                         (u8 *)&iv);
+> -       }
+> +       fscrypt_generate_iv(&iv, lblk_num, ci);
+>
+>         req = skcipher_request_alloc(tfm, gfp_flags);
+>         if (!req) {
+> diff --git a/fs/crypto/keyinfo.c b/fs/crypto/keyinfo.c
+> index 5e6e846f5a24..bae4cce2389a 100644
+> --- a/fs/crypto/keyinfo.c
+> +++ b/fs/crypto/keyinfo.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/scatterlist.h>
+>  #include <linux/ratelimit.h>
+>  #include <crypto/aes.h>
+> +#include <crypto/chacha20.h>
+>  #include <crypto/sha.h>
+>  #include "fscrypt_private.h"
+>
+> @@ -134,6 +135,7 @@ static const struct {
+>                                              FS_AES_128_CBC_KEY_SIZE },
+>         [FS_ENCRYPTION_MODE_AES_128_CTS] = { "cts(cbc(aes))",
+>                                              FS_AES_128_CTS_KEY_SIZE },
+> +       [FS_ENCRYPTION_MODE_CHACHA20]    = { "chacha20", CHACHA20_KEY_SIZE },
+>  };
+>
+>  static int determine_cipher_type(struct fscrypt_info *ci, struct inode *inode,
+> diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+> index 08b4b40c5aa8..1cfb7950f915 100644
+> --- a/include/linux/fscrypt.h
+> +++ b/include/linux/fscrypt.h
+> @@ -100,11 +100,15 @@ static inline bool fscrypt_dummy_context_enabled(struct inode *inode)
+>  static inline bool fscrypt_valid_enc_modes(u32 contents_mode,
+>                                         u32 filenames_mode)
+>  {
+> +       if (contents_mode == FS_ENCRYPTION_MODE_AES_256_XTS &&
+> +           filenames_mode == FS_ENCRYPTION_MODE_AES_256_CTS)
+> +               return true;
+> +
+>         if (contents_mode == FS_ENCRYPTION_MODE_AES_128_CBC &&
+>             filenames_mode == FS_ENCRYPTION_MODE_AES_128_CTS)
+>                 return true;
+>
+> -       if (contents_mode == FS_ENCRYPTION_MODE_AES_256_XTS &&
+> +       if (contents_mode == FS_ENCRYPTION_MODE_CHACHA20 &&
+>             filenames_mode == FS_ENCRYPTION_MODE_AES_256_CTS)
+>                 return true;
+>
+> diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
+> index 4199f8acbce5..5a25eb2994b1 100644
+> --- a/include/uapi/linux/fs.h
+> +++ b/include/uapi/linux/fs.h
+> @@ -275,6 +275,7 @@ struct fsxattr {
+>  #define FS_ENCRYPTION_MODE_AES_256_CTS         4
+>  #define FS_ENCRYPTION_MODE_AES_128_CBC         5
+>  #define FS_ENCRYPTION_MODE_AES_128_CTS         6
+> +#define FS_ENCRYPTION_MODE_CHACHA20            7
+>
+>  struct fscrypt_policy {
+>         __u8 version;
+> --
+> 2.15.1.424.g9478a66081-goog
+>
