@@ -1,28 +1,29 @@
-Received: from mail-it0-x232.google.com ([2607:f8b0:4001:c0b::232])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eNCy2-0006I2-8G
- for linux-mtd@lists.infradead.org; Fri, 08 Dec 2017 07:21:08 +0000
-Received: by mail-it0-x232.google.com with SMTP id d137so2884179itc.2
- for <linux-mtd@lists.infradead.org>; Thu, 07 Dec 2017 23:20:44 -0800 (PST)
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eNDVH-0001uh-49
+ for linux-mtd@lists.infradead.org; Fri, 08 Dec 2017 07:55:29 +0000
+Date: Fri, 8 Dec 2017 08:54:50 +0100
+From: Antoine Tenart <antoine.tenart@free-electrons.com>
+To: Miquel Raynal <miquel.raynal@free-electrons.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Antoine Tenart <antoine.tenart@free-electrons.com>,
+ Nadav Haklai <nadavh@marvell.com>, Ofer Heifetz <oferh@marvell.com>,
+ Hanna Hawa <hannah@marvell.com>
+Subject: Re: [PATCH v2] mtd: nand: add ->exec_op() implementation
+Message-ID: <20171208075450.GA4359@kwain>
+References: <20171207145434.21586-1-miquel.raynal@free-electrons.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHmME9ob8eG1yS=jkGHFnYDq+FtiJCP38CKpzUs0Z33R8_0Msw@mail.gmail.com>
-References: <20171208013838.105034-1-ebiggers3@gmail.com>
- <CAHmME9ob8eG1yS=jkGHFnYDq+FtiJCP38CKpzUs0Z33R8_0Msw@mail.gmail.com>
-From: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Date: Fri, 8 Dec 2017 07:20:43 +0000
-Message-ID: <CAKv+Gu85X5OZWhwQxNrc8RonPL3XdRhzK=JeWcWXLu=8KUsQAg@mail.gmail.com>
-Subject: Re: [PATCH] fscrypt: add support for ChaCha20 contents encryption
-To: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc: Eric Biggers <ebiggers3@gmail.com>, linux-fscrypt@vger.kernel.org,
- "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org,
- Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
- Jaegeuk Kim <jaegeuk@kernel.org>,
- Michael Halcrow <mhalcrow@google.com>, Paul Crowley <paulcrowley@google.com>,
- Martin Willi <martin@strongswan.org>, David Gstir <david@sigma-star.at>,
- Eric Biggers <ebiggers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20171207145434.21586-1-miquel.raynal@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,31 +33,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 8 December 2017 at 02:51, Jason A. Donenfeld <Jason@zx2c4.com> wrote:
-> Hi Eric,
->
-> Nice to see more use of ChaCha20. However...
->
-> Can we skip over the "sort of worse than XTS, but not having _real_
-> authentication sucks anyway in either case, so whatever" and move
-> directly to, "linux finally supports authenticated encryption for disk
-> encryption!"?
+Hi Miquel,
 
-Ehm, it doesn't? This is plain ChaCha20, not any AEAD variant.
+Be careful when defining macros: avoid to name your arguments with a
+value used in the macro that is not meant to be replaced.
 
-> This would be a big deal and would actually be a
-> noticeable security improvement, instead of a potentially dubious step
-> sidewaysbackish.
->
+On Thu, Dec 07, 2017 at 03:54:34PM +0100, Miquel Raynal wrote:
+> +
+> +#define NAND_OP_DATA_IN(l, buf, ns)					\
+> +	{								\
+> +		.type = NAND_OP_DATA_IN_INSTR,				\
+> +		.ctx.data = {						\
+> +			.len = l,					\
+> +			.buf.in = buf,					\
 
-It is actually dubious, given the large scale reuse of IVs with a
-stream cipher. I do suppose though that using an AEAD variant would at
-least catch any attacks involving flipping ciphertext bits resulting
-in plaintext bits being flipped at the same offset (but file updates
-would still be visible in the clear)
+Here.
 
-> Bcachefs supports ChaCha20Poly1305, which is pretty neat. From what
-> I've read, performance is acceptable too.
-> http://bcachefs.org/Encryption/
->
-> Jason
+> +			.force_8bit = false,				\
+> +		},							\
+> +		.delay_ns = ns,						\
+> +	}
+> +
+> +#define NAND_OP_DATA_OUT(l, buf, ns)					\
+> +	{								\
+> +		.type = NAND_OP_DATA_OUT_INSTR,				\
+> +		.ctx.data = {						\
+> +			.len = l,					\
+> +			.buf.out = buf,					\
+
+And here.
+
+> +			.force_8bit = false,				\
+> +		},							\
+> +		.delay_ns = ns,						\
+> +	}
+
+It works in your series because these macros are always called with the
+second argument being a variable named 'buf', but that's not safe.
+
+Thanks!
+Antoine
+
+-- 
+Antoine Ténart, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
