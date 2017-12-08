@@ -1,24 +1,32 @@
-Received: from mail-wr0-x241.google.com ([2a00:1450:400c:c0c::241])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eNHFe-0004Ab-1F
- for linux-mtd@lists.infradead.org; Fri, 08 Dec 2017 11:55:37 +0000
-Received: by mail-wr0-x241.google.com with SMTP id a41so10581910wra.6
- for <linux-mtd@lists.infradead.org>; Fri, 08 Dec 2017 03:55:13 -0800 (PST)
-From: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-To: linux-crypto@vger.kernel.org
-Cc: herbert@gondor.apana.org.au, Ard Biesheuvel <ard.biesheuvel@linaro.org>,
- Eric Biggers <ebiggers@google.com>, linux-fscrypt@vger.kernel.org,
- Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
- Michael Halcrow <mhalcrow@google.com>,
- Paul Crowley <paulcrowley@google.com>,
- Martin Willi <martin@strongswan.org>, David Gstir <david@sigma-star.at>,
- "Jason A . Donenfeld" <Jason@zx2c4.com>,
- Stephan Mueller <smueller@chronox.de>
-Subject: [RFC PATCH] crypto: chacha20 - add implementation using 96-bit nonce
-Date: Fri,  8 Dec 2017 11:55:02 +0000
-Message-Id: <20171208115502.21775-1-ard.biesheuvel@linaro.org>
+Date: Fri, 8 Dec 2017 21:56:51 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Miquel Raynal <miquel.raynal@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>, Gregory
+ Clement <gregory.clement@free-electrons.com>, Sebastian Hesselbarth
+ <sebastian.hesselbarth@gmail.com>, Russell King <linux@armlinux.org.uk>,
+ Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>, Eric Miao <eric.y.miao@gmail.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
+ <will.deacon@arm.com>, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Thomas
+ Petazzoni <thomas.petazzoni@free-electrons.com>, Antoine Tenart
+ <antoine.tenart@free-electrons.com>, Nadav Haklai <nadavh@marvell.com>,
+ Ofer Heifetz <oferh@marvell.com>, Hanna Hawa <hannah@marvell.com>, Neta Zur
+ Hershkovits <neta@marvell.com>
+Subject: Re: [PATCH 01/12] dt-bindings: mtd: add Marvell NAND controller
+ documentation
+Message-ID: <20171208215651.70480178@bbrezillon>
+In-Reply-To: <20171207201814.30411-2-miquel.raynal@free-electrons.com>
+References: <20171207201814.30411-1-miquel.raynal@free-electrons.com>
+ <20171207201814.30411-2-miquel.raynal@free-electrons.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,316 +36,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As pointed out by Eric [0], the way RFC7539 was interpreted when creating
-our implementation of ChaCha20 creates a risk of IV reuse when using a
-little endian counter as the IV generator. The reason is that the low end
-bits of the counter get mapped onto the ChaCha20 block counter, which
-advances every 64 bytes. This means that the counter value that gets
-selected as IV for the next input block will collide with the ChaCha20
-block counter of the previous block, basically recreating the same
-keystream but shifted by 64 bytes.
+On Thu,  7 Dec 2017 21:18:03 +0100
+Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
 
-RFC7539 describes the inputs of the algorithm as follows:
+> Document the legacy and the new bindings for Marvell NAND controller.
+> 
+> The pxa3xx_nand.c driver does only support legacy bindings, which are
+> incomplete and inaccurate. A rework of this controller (called
+> marvell_nand.c) does support both.
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+> ---
+>  .../devicetree/bindings/mtd/marvell-nand.txt       | 84 ++++++++++++++++++++++
+>  1 file changed, 84 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/marvell-nand.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/marvell-nand.txt b/Documentation/devicetree/bindings/mtd/marvell-nand.txt
+> new file mode 100644
+> index 000000000000..0b3d5e0bab83
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/marvell-nand.txt
+> @@ -0,0 +1,84 @@
+> +Marvell NAND Flash Controller (NFC)
+> +
+> +Required properties:
+> +- compatible: can be one of the following:
+> +    * "marvell,armada-8k-nand-controller"
+> +    * "marvell,armada370-nand-controller"
+> +    * "marvell,pxa3xx-nand-controller"
+> +    * "marvell,armada-8k-nand" (deprecated)
+> +    * "marvell,armada370-nand" (deprecated)
+> +    * "marvell,pxa3xx-nand" (deprecated)
+> +- reg: NAND flash controller memory area.
+> +- #address-cells: shall be set to 1. Encode the NAND CS.
+> +- #size-cells: shall be set to 0.
+> +- interrupts: shall define the NAND controller interrupt.
+> +- clocks: shall reference the NAND controller clock.
+> +- marvell,system-controller: Set to retrieve the syscon node that handles
+> +  NAND controller related registers (only required with the
+> +  "marvell,armada-8k-nand[-controller]" compatibles).
+> +
+> +Optional properties:
+> +- label: see partition.txt. New platforms shall omit this property.
+> +- dmas: shall reference DMA channel associated to the NAND controller.
+> +- dma-names: shall be "rxtx".
+> +
+> +Optional children nodes:
+> +Children nodes represent the available NAND chips.
+> +
+> +Required properties:
+> +- reg: shall contain the native Chip Select ids (0-3)
+> +- marvell,rb: shall contain the native Ready/Busy ids (0-1)
+> +
+> +Optional properties:
+> +- marvell,nand-keep-config: orders the driver not to take the timings
+> +  from the core and leaving them completely untouched. Bootloader
+> +  timings will then be used.
+> +- nand-on-flash-bbt: see nand.txt.
+> +- nand-ecc-mode: see nand.txt. Will use hardware ECC if not specified.
+> +- nand-ecc-algo: see nand.txt. This property may be added when using
+> +  hardware ECC for clarification but will be ignored by the driver
+> +  because ECC mode is chosen depending on the page size and the strength
+> +  required by the NAND chip. This value may be overwritten with
+> +  nand-ecc-strength property.
+> +- nand-ecc-strength: see nand.txt.
+> +- nand-ecc-step-size: see nand.txt. This has no effect and will be
+> +  ignored by the driver when using hardware ECC because Marvell's NAND
+> +  flash controller does use fixed strength (1-bit for Hamming, 16-bit
+> +  for BCH), so the step size will shrink or grow in order to fit the
+> +  required strength. Step sizes are not completely random for all and
+> +  follow certain patterns described in AN-379, "Marvell SoC NFC ECC".
+> +
+> +See Documentation/devicetree/bindings/mtd/nand.txt for more details on
+> +generic bindings.
+> +
+> +
+> +Example:
+> +nand_controller: nand-controller@d0000 {
+> +	compatible = "marvell,armada370-nand-controller";
+> +	reg = <0xd0000 0x54>;
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +	interrupts = <GIC_SPI 84 IRQ_TYPE_LEVEL_HIGH>;
+> +	clocks = <&coredivclk 0>;
+> +
+> +	nand@0 {
+> +		reg = <0>;
+> +		marvell,rb = <0>;
+> +		nand-ecc-mode = "hw";
+> +		marvell,nand-keep-config;
+> +		nand-on-flash-bbt;
+> +		nand-ecc-strength = <4>;
+> +		nand-ecc-step-size = <512>;
+> +
+> +		partitions {
+> +			compatible = "fixed-partitions";
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +
+> +			partition@0 {
+> +				label = "Rootfs";
+> +				reg = <0x00000000 0x40000000>;
+> +			};
+> +		};
+> +	};
+> +};
 
-  The inputs to ChaCha20 are:
-
-     o  A 256-bit key
-
-     o  A 32-bit initial counter.  This can be set to any number, but will
-        usually be zero or one.  It makes sense to use one if we use the
-        zero block for something else, such as generating a one-time
-        authenticator key as part of an AEAD algorithm.
-
-     o  A 96-bit nonce.  In some protocols, this is known as the
-        Initialization Vector.
-
-     o  An arbitrary-length plaintext
-
-The solution is to use a fixed value of 0 for the initial counter, and
-only expose a 96-bit IV to the upper layers of the crypto API.
-
-So introduce a new ChaCha20 flavor called chacha20-iv96, which takes the
-above into account, and should become the preferred ChaCha20
-implementation going forward for general use.
-
-[0] https://marc.info/?l=linux-crypto-vger&m=151269722430848&w=2
-
-Cc: Eric Biggers <ebiggers@google.com>
-Cc: linux-fscrypt@vger.kernel.org
-Cc: Theodore Ts'o <tytso@mit.edu>
-Cc: linux-ext4@vger.kernel.org
-Cc: linux-f2fs-devel@lists.sourceforge.net
-Cc: linux-mtd@lists.infradead.org
-Cc: linux-fsdevel@vger.kernel.org
-Cc: linux-crypto@vger.kernel.org
-Cc: Jaegeuk Kim <jaegeuk@kernel.org>
-Cc: Michael Halcrow <mhalcrow@google.com>
-Cc: Paul Crowley <paulcrowley@google.com>
-Cc: Martin Willi <martin@strongswan.org>
-Cc: David Gstir <david@sigma-star.at>
-Cc: "Jason A . Donenfeld" <Jason@zx2c4.com>
-Cc: Stephan Mueller <smueller@chronox.de>
-Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
----
- arch/arm64/crypto/chacha20-neon-glue.c | 27 +++++++++++---
- arch/x86/crypto/chacha20_glue.c        | 19 +++++++++-
- crypto/chacha20_generic.c              | 38 ++++++++++++++------
- crypto/testmgr.c                       |  9 +++++
- crypto/testmgr.h                       |  2 +-
- include/crypto/chacha20.h              |  4 ++-
- 6 files changed, 81 insertions(+), 18 deletions(-)
-
-diff --git a/arch/arm64/crypto/chacha20-neon-glue.c b/arch/arm64/crypto/chacha20-neon-glue.c
-index cbdb75d15cd0..76a570058cc8 100644
---- a/arch/arm64/crypto/chacha20-neon-glue.c
-+++ b/arch/arm64/crypto/chacha20-neon-glue.c
-@@ -70,7 +70,7 @@ static int chacha20_neon(struct skcipher_request *req)
- 
- 	err = skcipher_walk_virt(&walk, req, true);
- 
--	crypto_chacha20_init(state, ctx, walk.iv);
-+	crypto_chacha20_init(state, ctx, walk.iv, crypto_skcipher_ivsize(tfm));
- 
- 	kernel_neon_begin();
- 	while (walk.nbytes > 0) {
-@@ -88,7 +88,7 @@ static int chacha20_neon(struct skcipher_request *req)
- 	return err;
- }
- 
--static struct skcipher_alg alg = {
-+static struct skcipher_alg alg[] = {{
- 	.base.cra_name		= "chacha20",
- 	.base.cra_driver_name	= "chacha20-neon",
- 	.base.cra_priority	= 300,
-@@ -104,19 +104,35 @@ static struct skcipher_alg alg = {
- 	.setkey			= crypto_chacha20_setkey,
- 	.encrypt		= chacha20_neon,
- 	.decrypt		= chacha20_neon,
--};
-+}, {
-+	.base.cra_name		= "chacha20-iv96",
-+	.base.cra_driver_name	= "chacha20-neon",
-+	.base.cra_priority	= 300,
-+	.base.cra_blocksize	= 1,
-+	.base.cra_ctxsize	= sizeof(struct chacha20_ctx),
-+	.base.cra_module	= THIS_MODULE,
-+
-+	.min_keysize		= CHACHA20_KEY_SIZE,
-+	.max_keysize		= CHACHA20_KEY_SIZE,
-+	.ivsize			= CHACHA20_NONCE_SIZE,
-+	.chunksize		= CHACHA20_BLOCK_SIZE,
-+	.walksize		= 4 * CHACHA20_BLOCK_SIZE,
-+	.setkey			= crypto_chacha20_setkey,
-+	.encrypt		= chacha20_neon,
-+	.decrypt		= chacha20_neon,
-+}};
- 
- static int __init chacha20_simd_mod_init(void)
- {
- 	if (!(elf_hwcap & HWCAP_ASIMD))
- 		return -ENODEV;
- 
--	return crypto_register_skcipher(&alg);
-+	return crypto_register_skciphers(alg, ARRAY_SIZE(alg));
- }
- 
- static void __exit chacha20_simd_mod_fini(void)
- {
--	crypto_unregister_skcipher(&alg);
-+	crypto_unregister_skciphers(alg, ARRAY_SIZE(alg));
- }
- 
- module_init(chacha20_simd_mod_init);
-@@ -125,3 +141,4 @@ module_exit(chacha20_simd_mod_fini);
- MODULE_AUTHOR("Ard Biesheuvel <ard.biesheuvel@linaro.org>");
- MODULE_LICENSE("GPL v2");
- MODULE_ALIAS_CRYPTO("chacha20");
-+MODULE_ALIAS_CRYPTO("chacha20-iv96");
-diff --git a/arch/x86/crypto/chacha20_glue.c b/arch/x86/crypto/chacha20_glue.c
-index dce7c5d39c2f..44c7fe376a1d 100644
---- a/arch/x86/crypto/chacha20_glue.c
-+++ b/arch/x86/crypto/chacha20_glue.c
-@@ -79,7 +79,7 @@ static int chacha20_simd(struct skcipher_request *req)
- 
- 	err = skcipher_walk_virt(&walk, req, true);
- 
--	crypto_chacha20_init(state, ctx, walk.iv);
-+	crypto_chacha20_init(state, ctx, walk.iv, crypto_skcipher_ivsize(tfm));
- 
- 	kernel_fpu_begin();
- 
-@@ -116,6 +116,22 @@ static struct skcipher_alg alg = {
- 	.setkey			= crypto_chacha20_setkey,
- 	.encrypt		= chacha20_simd,
- 	.decrypt		= chacha20_simd,
-+}, {
-+	.base.cra_name		= "chacha20-iv96",
-+	.base.cra_driver_name	= "chacha20-simd",
-+	.base.cra_priority	= 300,
-+	.base.cra_blocksize	= 1,
-+	.base.cra_ctxsize	= sizeof(struct chacha20_ctx),
-+	.base.cra_alignmask	= sizeof(u32) - 1,
-+	.base.cra_module	= THIS_MODULE,
-+
-+	.min_keysize		= CHACHA20_KEY_SIZE,
-+	.max_keysize		= CHACHA20_KEY_SIZE,
-+	.ivsize			= CHACHA20_NONCE_SIZE,
-+	.chunksize		= CHACHA20_BLOCK_SIZE,
-+	.setkey			= crypto_chacha20_setkey,
-+	.encrypt		= chacha20_simd,
-+	.decrypt		= chacha20_simd,
- };
- 
- static int __init chacha20_simd_mod_init(void)
-@@ -143,4 +159,5 @@ MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Martin Willi <martin@strongswan.org>");
- MODULE_DESCRIPTION("chacha20 cipher algorithm, SIMD accelerated");
- MODULE_ALIAS_CRYPTO("chacha20");
-+MODULE_ALIAS_CRYPTO("chacha20-iv96");
- MODULE_ALIAS_CRYPTO("chacha20-simd");
-diff --git a/crypto/chacha20_generic.c b/crypto/chacha20_generic.c
-index e451c3cb6a56..943acb92857e 100644
---- a/crypto/chacha20_generic.c
-+++ b/crypto/chacha20_generic.c
-@@ -35,7 +35,8 @@ static void chacha20_docrypt(u32 *state, u8 *dst, const u8 *src,
- 	}
- }
- 
--void crypto_chacha20_init(u32 *state, struct chacha20_ctx *ctx, u8 *iv)
-+void crypto_chacha20_init(u32 *state, struct chacha20_ctx *ctx, u8 *iv,
-+			  int ivsize)
- {
- 	state[0]  = 0x61707865; /* "expa" */
- 	state[1]  = 0x3320646e; /* "nd 3" */
-@@ -49,10 +50,10 @@ void crypto_chacha20_init(u32 *state, struct chacha20_ctx *ctx, u8 *iv)
- 	state[9]  = ctx->key[5];
- 	state[10] = ctx->key[6];
- 	state[11] = ctx->key[7];
--	state[12] = get_unaligned_le32(iv +  0);
--	state[13] = get_unaligned_le32(iv +  4);
--	state[14] = get_unaligned_le32(iv +  8);
--	state[15] = get_unaligned_le32(iv + 12);
-+	state[12] = (ivsize > CHACHA20_NONCE_SIZE) ? get_unaligned_le32(iv) : 0;
-+	state[13] = get_unaligned_le32(iv + ivsize - 12);
-+	state[14] = get_unaligned_le32(iv + ivsize -  8);
-+	state[15] = get_unaligned_le32(iv + ivsize -  4);
- }
- EXPORT_SYMBOL_GPL(crypto_chacha20_init);
- 
-@@ -82,7 +83,7 @@ int crypto_chacha20_crypt(struct skcipher_request *req)
- 
- 	err = skcipher_walk_virt(&walk, req, true);
- 
--	crypto_chacha20_init(state, ctx, walk.iv);
-+	crypto_chacha20_init(state, ctx, walk.iv, crypto_skcipher_ivsize(tfm));
- 
- 	while (walk.nbytes > 0) {
- 		unsigned int nbytes = walk.nbytes;
-@@ -99,7 +100,7 @@ int crypto_chacha20_crypt(struct skcipher_request *req)
- }
- EXPORT_SYMBOL_GPL(crypto_chacha20_crypt);
- 
--static struct skcipher_alg alg = {
-+static struct skcipher_alg alg[] = {{
- 	.base.cra_name		= "chacha20",
- 	.base.cra_driver_name	= "chacha20-generic",
- 	.base.cra_priority	= 100,
-@@ -114,16 +115,32 @@ static struct skcipher_alg alg = {
- 	.setkey			= crypto_chacha20_setkey,
- 	.encrypt		= crypto_chacha20_crypt,
- 	.decrypt		= crypto_chacha20_crypt,
--};
-+}, {
-+	.base.cra_name		= "chacha20-iv96",
-+	.base.cra_driver_name	= "chacha20-generic",
-+	.base.cra_priority	= 100,
-+	.base.cra_blocksize	= 1,
-+	.base.cra_ctxsize	= sizeof(struct chacha20_ctx),
-+	.base.cra_alignmask	= sizeof(u32) - 1,
-+	.base.cra_module	= THIS_MODULE,
-+
-+	.min_keysize		= CHACHA20_KEY_SIZE,
-+	.max_keysize		= CHACHA20_KEY_SIZE,
-+	.ivsize			= CHACHA20_NONCE_SIZE,
-+	.chunksize		= CHACHA20_BLOCK_SIZE,
-+	.setkey			= crypto_chacha20_setkey,
-+	.encrypt		= crypto_chacha20_crypt,
-+	.decrypt		= crypto_chacha20_crypt,
-+}};
- 
- static int __init chacha20_generic_mod_init(void)
- {
--	return crypto_register_skcipher(&alg);
-+	return crypto_register_skciphers(alg, ARRAY_SIZE(alg));
- }
- 
- static void __exit chacha20_generic_mod_fini(void)
- {
--	crypto_unregister_skcipher(&alg);
-+	crypto_unregister_skciphers(alg, ARRAY_SIZE(alg));
- }
- 
- module_init(chacha20_generic_mod_init);
-@@ -133,4 +150,5 @@ MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Martin Willi <martin@strongswan.org>");
- MODULE_DESCRIPTION("chacha20 cipher algorithm");
- MODULE_ALIAS_CRYPTO("chacha20");
-+MODULE_ALIAS_CRYPTO("chacha20-iv96");
- MODULE_ALIAS_CRYPTO("chacha20-generic");
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index 29d7020b8826..ce87cc4f81b1 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -2563,6 +2563,15 @@ static const struct alg_test_desc alg_test_descs[] = {
- 			}
- 		}
- 	}, {
-+		.alg = "chacha20-iv96",
-+		.test = alg_test_skcipher,
-+		.suite = {
-+			.cipher = {
-+				.enc = { .vecs = chacha20_enc_tv_template, .count = 1 },
-+				.dec = { .vecs = chacha20_enc_tv_template, .count = 1 },
-+			}
-+		}
-+	}, {
- 		.alg = "cmac(aes)",
- 		.fips_allowed = 1,
- 		.test = alg_test_hash,
-diff --git a/crypto/testmgr.h b/crypto/testmgr.h
-index a714b6293959..4a5e5411e12c 100644
---- a/crypto/testmgr.h
-+++ b/crypto/testmgr.h
-@@ -32612,7 +32612,7 @@ static const struct cipher_testvec salsa20_stream_enc_tv_template[] = {
- };
- 
- static const struct cipher_testvec chacha20_enc_tv_template[] = {
--	{ /* RFC7539 A.2. Test Vector #1 */
-+	{ /* RFC7539 A.2. Test Vector #1 (shared with chacha20-iv96) */
- 		.key	= "\x00\x00\x00\x00\x00\x00\x00\x00"
- 			  "\x00\x00\x00\x00\x00\x00\x00\x00"
- 			  "\x00\x00\x00\x00\x00\x00\x00\x00"
-diff --git a/include/crypto/chacha20.h b/include/crypto/chacha20.h
-index b83d66073db0..5db09213fe67 100644
---- a/include/crypto/chacha20.h
-+++ b/include/crypto/chacha20.h
-@@ -10,6 +10,7 @@
- #include <linux/types.h>
- #include <linux/crypto.h>
- 
-+#define CHACHA20_NONCE_SIZE	12
- #define CHACHA20_IV_SIZE	16
- #define CHACHA20_KEY_SIZE	32
- #define CHACHA20_BLOCK_SIZE	64
-@@ -20,7 +21,8 @@ struct chacha20_ctx {
- };
- 
- void chacha20_block(u32 *state, u32 *stream);
--void crypto_chacha20_init(u32 *state, struct chacha20_ctx *ctx, u8 *iv);
-+void crypto_chacha20_init(u32 *state, struct chacha20_ctx *ctx, u8 *iv,
-+			  int ivsize);
- int crypto_chacha20_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 			   unsigned int keysize);
- int crypto_chacha20_crypt(struct skcipher_request *req);
--- 
-2.11.0
+Maybe you should also give an example for the old bindings.
+BTW, given your properties description, it's not clear which properties
+are deprecated. Maybe you should split the doc in 2 sections: one
+describing the new bindings, and the other one describing the deprecated
+bindings.
