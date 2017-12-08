@@ -1,22 +1,24 @@
-Date: Fri, 8 Dec 2017 11:57:22 +0100
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- kernel@pengutronix.de, Han Xu <han.xu@nxp.com>
-Subject: Re: [PATCH 02/10] mtd: nand: gpmi: Utilize hardware to detect
- bitflips in erased blocks
-Message-ID: <20171208105722.hkqurrj2cwpetfe4@pengutronix.de>
-References: <20171206091925.5810-1-s.hauer@pengutronix.de>
- <20171206091925.5810-3-s.hauer@pengutronix.de>
- <20171206102713.47d2fdbe@bbrezillon>
- <20171206152804.u62dopc6mwwdz457@pengutronix.de>
- <20171206163431.5fddd6c6@bbrezillon>
- <20171208102157.vwmy3jmaoiiy6255@pengutronix.de>
- <20171208113550.3cfdf4e5@bbrezillon>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20171208113550.3cfdf4e5@bbrezillon>
+Received: from mail-wr0-x241.google.com ([2a00:1450:400c:c0c::241])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eNHFe-0004Ab-1F
+ for linux-mtd@lists.infradead.org; Fri, 08 Dec 2017 11:55:37 +0000
+Received: by mail-wr0-x241.google.com with SMTP id a41so10581910wra.6
+ for <linux-mtd@lists.infradead.org>; Fri, 08 Dec 2017 03:55:13 -0800 (PST)
+From: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+To: linux-crypto@vger.kernel.org
+Cc: herbert@gondor.apana.org.au, Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+ Eric Biggers <ebiggers@google.com>, linux-fscrypt@vger.kernel.org,
+ Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+ Michael Halcrow <mhalcrow@google.com>,
+ Paul Crowley <paulcrowley@google.com>,
+ Martin Willi <martin@strongswan.org>, David Gstir <david@sigma-star.at>,
+ "Jason A . Donenfeld" <Jason@zx2c4.com>,
+ Stephan Mueller <smueller@chronox.de>
+Subject: [RFC PATCH] crypto: chacha20 - add implementation using 96-bit nonce
+Date: Fri,  8 Dec 2017 11:55:02 +0000
+Message-Id: <20171208115502.21775-1-ard.biesheuvel@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,170 +28,316 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 08, 2017 at 11:35:50AM +0100, Boris Brezillon wrote:
-> On Fri, 8 Dec 2017 11:21:57 +0100
-> Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> 
-> > On Wed, Dec 06, 2017 at 04:34:31PM +0100, Boris Brezillon wrote:
-> > > On Wed, 6 Dec 2017 16:28:04 +0100
-> > > Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> > >   
-> > > > On Wed, Dec 06, 2017 at 10:27:13AM +0100, Boris Brezillon wrote:  
-> > > > > Hi Sascha,
-> > > > > 
-> > > > > On Wed,  6 Dec 2017 10:19:17 +0100
-> > > > > Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> > > > >     
-> > > > > > The GPMI nand has a hardware feature to ignore bitflips in erased pages.
-> > > > > > Use this feature rather than the longish code we have now.
-> > > > > > Unfortunately the bitflips in erased pages are not corrected, so we have
-> > > > > > to memset the read data before passing it to the upper layers.    
-> > > > > 
-> > > > > There's a good reason we didn't use the HW bitflip detection in the
-> > > > > first place: we currently have no way to report the number of corrected
-> > > > > bitflips in an erased page, and that's a big problem, because then UBI
-> > > > > does not know when it should re-erase the block.    
-> > > > 
-> > > > Ah, ok.
-> > > >   
-> > > > > 
-> > > > > Maybe we missed something when the initial proposal was done and
-> > > > > there's actually a way to retrieve this information, but if that's not
-> > > > > the case, I'd prefer to keep the existing implementation even if it's
-> > > > > slower and more verbose.    
-> > > > 
-> > > > I'm not so much concerned about the verbosity of the code but rather
-> > > > about the magic it has inside. I have stared at this code for some time
-> > > > now and still only vaguely know what it does.
-> > > > 
-> > > > We could do a bit better: We can still detect the number of bitflips
-> > > > using nand_check_erased_ecc_chunk() without reading the oob data.
-> > > > That would not be 100% accurate since we do not take the oob data into
-> > > > account which might have bitflips aswell, but still should be good
-> > > > enough, no?  
-> > > 
-> > > Nope, we really have to take OOB bytes into account when counting
-> > > bitflips. Say that you have almost all in-band data set to 0xff, but
-> > > all OOB bytes reserved for ECC are set to 0 because someone decided to
-> > > write this portion of the page in raw mode. In this case we can't
-> > > consider the page as empty, otherwise we'll fail to correctly write ECC
-> > > bytes next time we program the page.  
-> > 
-> > I would probably be with you if at least the current code worked correctly,
-> > but unfortunately it doesn't.
-> > 
-> > I did a test with the attached program. What it does is that it writes
-> > pages nearly full of 0xff in raw mode. In the first page the first byte
-> > is exchanged with a bitflip, in the second page the second byte is
-> > exchanged with a bitflip, and so on. What I would expect that the number
-> > of corrected bits is the same for all bitflip positions. What I get
-> > instead is this:
-> > 
-> > ./a.out /dev/mtd4 0x0f
-> > byteno: 0x00000000 corrected: 5 failed: 0
-> > byteno: 0x00000001 corrected: 4 failed: 0
-> > byteno: 0x00000002 corrected: 5 failed: 0
-> > byteno: 0x00000003 corrected: 6 failed: 0
-> > byteno: 0x00000004 corrected: 5 failed: 0
-> > byteno: 0x00000005 corrected: 5 failed: 0
-> > byteno: 0x00000006 corrected: 4 failed: 0
-> > byteno: 0x00000007 corrected: 5 failed: 0
-> > byteno: 0x00000008 corrected: 5 failed: 0
-> > byteno: 0x00000009 corrected: 4 failed: 0
-> > ...
-> > 
-> > (Read this as: byteno <x> in page has 0x0f instead of 0xff, so number
-> > of corrected bits should be 4, instead we have 5)
-> > 
-> > or:
-> > ./a.out /dev/mtd4 0xfe
-> > byteno: 0x00000000 corrected: 1 failed: 0
-> > byteno: 0x00000001 corrected: 1 failed: 0
-> > byteno: 0x00000002 corrected: 1 failed: 0
-> > byteno: 0x00000003 corrected: 1 failed: 0
-> > byteno: 0x00000004 corrected: 1 failed: 0
-> > byteno: 0x00000005 corrected: 1 failed: 0
-> > byteno: 0x00000006 corrected: 1 failed: 0
-> > byteno: 0x00000007 corrected: 1 failed: 0
-> > byteno: 0x00000008 corrected: 1 failed: 0
-> > byteno: 0x00000009 corrected: 1 failed: 0
-> > byteno: 0x0000000a corrected: 1 failed: 0
-> > byteno: 0x0000000b corrected: 1 failed: 0
-> > byteno: 0x0000000c corrected: 1 failed: 0
-> > byteno: 0x0000000d corrected: 1 failed: 0
-> > byteno: 0x0000000e corrected: 2 failed: 0
-> > byteno: 0x0000000f corrected: 1 failed: 0
-> > byteno: 0x00000010 corrected: 1 failed: 0
-> > byteno: 0x00000011 corrected: 1 failed: 0
-> > byteno: 0x00000012 corrected: 2 failed: 0
-> > byteno: 0x00000013 corrected: 1 failed: 0
-> > 
-> > When I add a print_hex_dump to the driver I really see a buffer
-> > with 5 bytes flipped instead of 4. When I do a raw read of the
-> > page (under barebox, the Linux driver doesn't print the OOB data
-> > properly), then I really see what I have written: A page with four
-> > bitflips. The results are perfectly reproducable, so I don't expect
-> > that to be any random read failures.
-> 
-> Wow, that's really weird.
-> 
-> > 
-> > I know next to nothing about BCH, but could it be that the BCH engine
-> > already starts correcting the page while it still doesn't know that
-> > it can't be corrected at all leaving spurious cleared bits in the
-> > read data?
-> 
-> Bitflips are not supposed to be fixed by the BCH engine if an
-> uncorrectable error is detected. BCH is operating on a block of data
-> (usually 512 or 1024 bytes), and before starting to fix actual errors,
-> it searches their positions, and their positions is only determined
-> after the correctable/uncorrectable check has been done, so really, I
-> doubt BCH can mess up you data.
-> 
-> Did you find out where the extra bitflip is? Is it next to the other
-> bitflips or in a totally different region?
+As pointed out by Eric [0], the way RFC7539 was interpreted when creating
+our implementation of ChaCha20 creates a risk of IV reuse when using a
+little endian counter as the IV generator. The reason is that the low end
+bits of the counter get mapped onto the ChaCha20 block counter, which
+advances every 64 bytes. This means that the counter value that gets
+selected as IV for the next input block will collide with the ChaCha20
+block counter of the previous block, basically recreating the same
+keystream but shifted by 64 bytes.
 
-It's reproducably the same place, but at arbitrary positions:
+RFC7539 describes the inputs of the algorithm as follows:
 
-See below for a one chunk. The '0xf0' is the bitflip I introduced, no idea
-where the '0xbf' and '0xf7' come from:
+  The inputs to ChaCha20 are:
 
-[   44.223908] data: 00000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.231436] data: 00000010: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.238414] data: 00000020: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.246150] data: 00000030: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.253560] data: 00000040: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.261099] data: 00000050: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.268076] data: 00000060: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.275795] data: 00000070: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.283177] data: 00000080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.290635] data: 00000090: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.297610] data: 000000a0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.305274] data: 000000b0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.312670] data: 000000c0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.319648] data: 000000d0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.327403] data: 000000e0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.334850] data: 000000f0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.342221] data: 00000100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.349197] data: 00000110: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.356878] data: 00000120: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.364258] data: 00000130: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.371704] data: 00000140: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.378678] data: 00000150: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.386335] data: 00000160: ff ff ff ff ff ff ff bf ff ff ff ff ff ff ff ff
-[   44.393767] data: 00000170: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.401211] data: 00000180: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.408187] data: 00000190: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f7
-[   44.415890] data: 000001a0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.423286] data: 000001b0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.430716] data: 000001c0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.437693] data: 000001d0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   44.445382] data: 000001e0: ff ff ff ff ff ff ff ff ff ff ff f0 ff ff ff ff
-[   44.452814] data: 000001f0: ff ff ff ff ff ff ff ff ff ff ff ff f7 ff ff ff
-[   44.459792] ecc: 00000000: ff ff ff ff ff ff ff ff ff ff ff ff ff
+     o  A 256-bit key
 
+     o  A 32-bit initial counter.  This can be set to any number, but will
+        usually be zero or one.  It makes sense to use one if we use the
+        zero block for something else, such as generating a one-time
+        authenticator key as part of an AEAD algorithm.
+
+     o  A 96-bit nonce.  In some protocols, this is known as the
+        Initialization Vector.
+
+     o  An arbitrary-length plaintext
+
+The solution is to use a fixed value of 0 for the initial counter, and
+only expose a 96-bit IV to the upper layers of the crypto API.
+
+So introduce a new ChaCha20 flavor called chacha20-iv96, which takes the
+above into account, and should become the preferred ChaCha20
+implementation going forward for general use.
+
+[0] https://marc.info/?l=linux-crypto-vger&m=151269722430848&w=2
+
+Cc: Eric Biggers <ebiggers@google.com>
+Cc: linux-fscrypt@vger.kernel.org
+Cc: Theodore Ts'o <tytso@mit.edu>
+Cc: linux-ext4@vger.kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-crypto@vger.kernel.org
+Cc: Jaegeuk Kim <jaegeuk@kernel.org>
+Cc: Michael Halcrow <mhalcrow@google.com>
+Cc: Paul Crowley <paulcrowley@google.com>
+Cc: Martin Willi <martin@strongswan.org>
+Cc: David Gstir <david@sigma-star.at>
+Cc: "Jason A . Donenfeld" <Jason@zx2c4.com>
+Cc: Stephan Mueller <smueller@chronox.de>
+Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+---
+ arch/arm64/crypto/chacha20-neon-glue.c | 27 +++++++++++---
+ arch/x86/crypto/chacha20_glue.c        | 19 +++++++++-
+ crypto/chacha20_generic.c              | 38 ++++++++++++++------
+ crypto/testmgr.c                       |  9 +++++
+ crypto/testmgr.h                       |  2 +-
+ include/crypto/chacha20.h              |  4 ++-
+ 6 files changed, 81 insertions(+), 18 deletions(-)
+
+diff --git a/arch/arm64/crypto/chacha20-neon-glue.c b/arch/arm64/crypto/chacha20-neon-glue.c
+index cbdb75d15cd0..76a570058cc8 100644
+--- a/arch/arm64/crypto/chacha20-neon-glue.c
++++ b/arch/arm64/crypto/chacha20-neon-glue.c
+@@ -70,7 +70,7 @@ static int chacha20_neon(struct skcipher_request *req)
+ 
+ 	err = skcipher_walk_virt(&walk, req, true);
+ 
+-	crypto_chacha20_init(state, ctx, walk.iv);
++	crypto_chacha20_init(state, ctx, walk.iv, crypto_skcipher_ivsize(tfm));
+ 
+ 	kernel_neon_begin();
+ 	while (walk.nbytes > 0) {
+@@ -88,7 +88,7 @@ static int chacha20_neon(struct skcipher_request *req)
+ 	return err;
+ }
+ 
+-static struct skcipher_alg alg = {
++static struct skcipher_alg alg[] = {{
+ 	.base.cra_name		= "chacha20",
+ 	.base.cra_driver_name	= "chacha20-neon",
+ 	.base.cra_priority	= 300,
+@@ -104,19 +104,35 @@ static struct skcipher_alg alg = {
+ 	.setkey			= crypto_chacha20_setkey,
+ 	.encrypt		= chacha20_neon,
+ 	.decrypt		= chacha20_neon,
+-};
++}, {
++	.base.cra_name		= "chacha20-iv96",
++	.base.cra_driver_name	= "chacha20-neon",
++	.base.cra_priority	= 300,
++	.base.cra_blocksize	= 1,
++	.base.cra_ctxsize	= sizeof(struct chacha20_ctx),
++	.base.cra_module	= THIS_MODULE,
++
++	.min_keysize		= CHACHA20_KEY_SIZE,
++	.max_keysize		= CHACHA20_KEY_SIZE,
++	.ivsize			= CHACHA20_NONCE_SIZE,
++	.chunksize		= CHACHA20_BLOCK_SIZE,
++	.walksize		= 4 * CHACHA20_BLOCK_SIZE,
++	.setkey			= crypto_chacha20_setkey,
++	.encrypt		= chacha20_neon,
++	.decrypt		= chacha20_neon,
++}};
+ 
+ static int __init chacha20_simd_mod_init(void)
+ {
+ 	if (!(elf_hwcap & HWCAP_ASIMD))
+ 		return -ENODEV;
+ 
+-	return crypto_register_skcipher(&alg);
++	return crypto_register_skciphers(alg, ARRAY_SIZE(alg));
+ }
+ 
+ static void __exit chacha20_simd_mod_fini(void)
+ {
+-	crypto_unregister_skcipher(&alg);
++	crypto_unregister_skciphers(alg, ARRAY_SIZE(alg));
+ }
+ 
+ module_init(chacha20_simd_mod_init);
+@@ -125,3 +141,4 @@ module_exit(chacha20_simd_mod_fini);
+ MODULE_AUTHOR("Ard Biesheuvel <ard.biesheuvel@linaro.org>");
+ MODULE_LICENSE("GPL v2");
+ MODULE_ALIAS_CRYPTO("chacha20");
++MODULE_ALIAS_CRYPTO("chacha20-iv96");
+diff --git a/arch/x86/crypto/chacha20_glue.c b/arch/x86/crypto/chacha20_glue.c
+index dce7c5d39c2f..44c7fe376a1d 100644
+--- a/arch/x86/crypto/chacha20_glue.c
++++ b/arch/x86/crypto/chacha20_glue.c
+@@ -79,7 +79,7 @@ static int chacha20_simd(struct skcipher_request *req)
+ 
+ 	err = skcipher_walk_virt(&walk, req, true);
+ 
+-	crypto_chacha20_init(state, ctx, walk.iv);
++	crypto_chacha20_init(state, ctx, walk.iv, crypto_skcipher_ivsize(tfm));
+ 
+ 	kernel_fpu_begin();
+ 
+@@ -116,6 +116,22 @@ static struct skcipher_alg alg = {
+ 	.setkey			= crypto_chacha20_setkey,
+ 	.encrypt		= chacha20_simd,
+ 	.decrypt		= chacha20_simd,
++}, {
++	.base.cra_name		= "chacha20-iv96",
++	.base.cra_driver_name	= "chacha20-simd",
++	.base.cra_priority	= 300,
++	.base.cra_blocksize	= 1,
++	.base.cra_ctxsize	= sizeof(struct chacha20_ctx),
++	.base.cra_alignmask	= sizeof(u32) - 1,
++	.base.cra_module	= THIS_MODULE,
++
++	.min_keysize		= CHACHA20_KEY_SIZE,
++	.max_keysize		= CHACHA20_KEY_SIZE,
++	.ivsize			= CHACHA20_NONCE_SIZE,
++	.chunksize		= CHACHA20_BLOCK_SIZE,
++	.setkey			= crypto_chacha20_setkey,
++	.encrypt		= chacha20_simd,
++	.decrypt		= chacha20_simd,
+ };
+ 
+ static int __init chacha20_simd_mod_init(void)
+@@ -143,4 +159,5 @@ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Martin Willi <martin@strongswan.org>");
+ MODULE_DESCRIPTION("chacha20 cipher algorithm, SIMD accelerated");
+ MODULE_ALIAS_CRYPTO("chacha20");
++MODULE_ALIAS_CRYPTO("chacha20-iv96");
+ MODULE_ALIAS_CRYPTO("chacha20-simd");
+diff --git a/crypto/chacha20_generic.c b/crypto/chacha20_generic.c
+index e451c3cb6a56..943acb92857e 100644
+--- a/crypto/chacha20_generic.c
++++ b/crypto/chacha20_generic.c
+@@ -35,7 +35,8 @@ static void chacha20_docrypt(u32 *state, u8 *dst, const u8 *src,
+ 	}
+ }
+ 
+-void crypto_chacha20_init(u32 *state, struct chacha20_ctx *ctx, u8 *iv)
++void crypto_chacha20_init(u32 *state, struct chacha20_ctx *ctx, u8 *iv,
++			  int ivsize)
+ {
+ 	state[0]  = 0x61707865; /* "expa" */
+ 	state[1]  = 0x3320646e; /* "nd 3" */
+@@ -49,10 +50,10 @@ void crypto_chacha20_init(u32 *state, struct chacha20_ctx *ctx, u8 *iv)
+ 	state[9]  = ctx->key[5];
+ 	state[10] = ctx->key[6];
+ 	state[11] = ctx->key[7];
+-	state[12] = get_unaligned_le32(iv +  0);
+-	state[13] = get_unaligned_le32(iv +  4);
+-	state[14] = get_unaligned_le32(iv +  8);
+-	state[15] = get_unaligned_le32(iv + 12);
++	state[12] = (ivsize > CHACHA20_NONCE_SIZE) ? get_unaligned_le32(iv) : 0;
++	state[13] = get_unaligned_le32(iv + ivsize - 12);
++	state[14] = get_unaligned_le32(iv + ivsize -  8);
++	state[15] = get_unaligned_le32(iv + ivsize -  4);
+ }
+ EXPORT_SYMBOL_GPL(crypto_chacha20_init);
+ 
+@@ -82,7 +83,7 @@ int crypto_chacha20_crypt(struct skcipher_request *req)
+ 
+ 	err = skcipher_walk_virt(&walk, req, true);
+ 
+-	crypto_chacha20_init(state, ctx, walk.iv);
++	crypto_chacha20_init(state, ctx, walk.iv, crypto_skcipher_ivsize(tfm));
+ 
+ 	while (walk.nbytes > 0) {
+ 		unsigned int nbytes = walk.nbytes;
+@@ -99,7 +100,7 @@ int crypto_chacha20_crypt(struct skcipher_request *req)
+ }
+ EXPORT_SYMBOL_GPL(crypto_chacha20_crypt);
+ 
+-static struct skcipher_alg alg = {
++static struct skcipher_alg alg[] = {{
+ 	.base.cra_name		= "chacha20",
+ 	.base.cra_driver_name	= "chacha20-generic",
+ 	.base.cra_priority	= 100,
+@@ -114,16 +115,32 @@ static struct skcipher_alg alg = {
+ 	.setkey			= crypto_chacha20_setkey,
+ 	.encrypt		= crypto_chacha20_crypt,
+ 	.decrypt		= crypto_chacha20_crypt,
+-};
++}, {
++	.base.cra_name		= "chacha20-iv96",
++	.base.cra_driver_name	= "chacha20-generic",
++	.base.cra_priority	= 100,
++	.base.cra_blocksize	= 1,
++	.base.cra_ctxsize	= sizeof(struct chacha20_ctx),
++	.base.cra_alignmask	= sizeof(u32) - 1,
++	.base.cra_module	= THIS_MODULE,
++
++	.min_keysize		= CHACHA20_KEY_SIZE,
++	.max_keysize		= CHACHA20_KEY_SIZE,
++	.ivsize			= CHACHA20_NONCE_SIZE,
++	.chunksize		= CHACHA20_BLOCK_SIZE,
++	.setkey			= crypto_chacha20_setkey,
++	.encrypt		= crypto_chacha20_crypt,
++	.decrypt		= crypto_chacha20_crypt,
++}};
+ 
+ static int __init chacha20_generic_mod_init(void)
+ {
+-	return crypto_register_skcipher(&alg);
++	return crypto_register_skciphers(alg, ARRAY_SIZE(alg));
+ }
+ 
+ static void __exit chacha20_generic_mod_fini(void)
+ {
+-	crypto_unregister_skcipher(&alg);
++	crypto_unregister_skciphers(alg, ARRAY_SIZE(alg));
+ }
+ 
+ module_init(chacha20_generic_mod_init);
+@@ -133,4 +150,5 @@ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Martin Willi <martin@strongswan.org>");
+ MODULE_DESCRIPTION("chacha20 cipher algorithm");
+ MODULE_ALIAS_CRYPTO("chacha20");
++MODULE_ALIAS_CRYPTO("chacha20-iv96");
+ MODULE_ALIAS_CRYPTO("chacha20-generic");
+diff --git a/crypto/testmgr.c b/crypto/testmgr.c
+index 29d7020b8826..ce87cc4f81b1 100644
+--- a/crypto/testmgr.c
++++ b/crypto/testmgr.c
+@@ -2563,6 +2563,15 @@ static const struct alg_test_desc alg_test_descs[] = {
+ 			}
+ 		}
+ 	}, {
++		.alg = "chacha20-iv96",
++		.test = alg_test_skcipher,
++		.suite = {
++			.cipher = {
++				.enc = { .vecs = chacha20_enc_tv_template, .count = 1 },
++				.dec = { .vecs = chacha20_enc_tv_template, .count = 1 },
++			}
++		}
++	}, {
+ 		.alg = "cmac(aes)",
+ 		.fips_allowed = 1,
+ 		.test = alg_test_hash,
+diff --git a/crypto/testmgr.h b/crypto/testmgr.h
+index a714b6293959..4a5e5411e12c 100644
+--- a/crypto/testmgr.h
++++ b/crypto/testmgr.h
+@@ -32612,7 +32612,7 @@ static const struct cipher_testvec salsa20_stream_enc_tv_template[] = {
+ };
+ 
+ static const struct cipher_testvec chacha20_enc_tv_template[] = {
+-	{ /* RFC7539 A.2. Test Vector #1 */
++	{ /* RFC7539 A.2. Test Vector #1 (shared with chacha20-iv96) */
+ 		.key	= "\x00\x00\x00\x00\x00\x00\x00\x00"
+ 			  "\x00\x00\x00\x00\x00\x00\x00\x00"
+ 			  "\x00\x00\x00\x00\x00\x00\x00\x00"
+diff --git a/include/crypto/chacha20.h b/include/crypto/chacha20.h
+index b83d66073db0..5db09213fe67 100644
+--- a/include/crypto/chacha20.h
++++ b/include/crypto/chacha20.h
+@@ -10,6 +10,7 @@
+ #include <linux/types.h>
+ #include <linux/crypto.h>
+ 
++#define CHACHA20_NONCE_SIZE	12
+ #define CHACHA20_IV_SIZE	16
+ #define CHACHA20_KEY_SIZE	32
+ #define CHACHA20_BLOCK_SIZE	64
+@@ -20,7 +21,8 @@ struct chacha20_ctx {
+ };
+ 
+ void chacha20_block(u32 *state, u32 *stream);
+-void crypto_chacha20_init(u32 *state, struct chacha20_ctx *ctx, u8 *iv);
++void crypto_chacha20_init(u32 *state, struct chacha20_ctx *ctx, u8 *iv,
++			  int ivsize);
+ int crypto_chacha20_setkey(struct crypto_skcipher *tfm, const u8 *key,
+ 			   unsigned int keysize);
+ int crypto_chacha20_crypt(struct skcipher_request *req);
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.11.0
