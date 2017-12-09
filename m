@@ -1,23 +1,28 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eNaa7-0001pF-7i
- for linux-mtd@lists.infradead.org; Sat, 09 Dec 2017 08:34:01 +0000
-Date: Sat, 9 Dec 2017 09:33:37 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: kyungmin.park@samsung.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 1/2 v2] mtd: onenand: samsung: use devm_ function to
- simplify code and fix some leaks
-Message-ID: <20171209093337.490870c7@bbrezillon>
-In-Reply-To: <21d0d9539a4479ca13d57265afca6f0d9783f5f0.1512804011.git.christophe.jaillet@wanadoo.fr>
-References: <cover.1512804011.git.christophe.jaillet@wanadoo.fr>
- <21d0d9539a4479ca13d57265afca6f0d9783f5f0.1512804011.git.christophe.jaillet@wanadoo.fr>
+Received: from mail-ve1eur01on0071.outbound.protection.outlook.com
+ ([104.47.1.71] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eNikJ-0003L5-5e
+ for linux-mtd@lists.infradead.org; Sat, 09 Dec 2017 17:17:06 +0000
+From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+CC: "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ Rajat Srivastava
+ <rajat.srivastava@nxp.com>, "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ Suresh Gupta <suresh.gupta@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>
+Subject: RE: [RFC 09/10] mtd: spi-nor: Disable hybrid mode for SPANSION
+ S25FS-S family
+Date: Sat, 9 Dec 2017 17:16:22 +0000
+Message-ID: <HE1PR04MB1241C99974A1B5A7BF7BBCFA97310@HE1PR04MB1241.eurprd04.prod.outlook.com>
+References: <1512548141-3319-1-git-send-email-prabhakar.kushwaha@nxp.com>
+ <1512548141-3319-10-git-send-email-prabhakar.kushwaha@nxp.com>
+ <c764fd31-29c4-865c-656f-23c758af0640@wedev4u.fr>
+In-Reply-To: <c764fd31-29c4-865c-656f-23c758af0640@wedev4u.fr>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,277 +32,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat,  9 Dec 2017 08:24:04 +0100
-Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
-
-> Convert all error handling code in 's3c_onenand_probe()' to
-> resource-managed alternatives in order to simplify code.
-> 
-> This fixes a resource leak if 'platform_get_resource()' fails at line 872.
-> 
-> The 'request_irq()' at line 971 was also un-balanced. It is now
-> resource-managed.
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> Compile tested-only
-> 
-> v2: use devm_ioremap_resource()
-> ---
->  drivers/mtd/onenand/samsung.c | 164 ++++++++----------------------------------
->  1 file changed, 29 insertions(+), 135 deletions(-)
-> 
-> diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
-> index af0ac1a7bf8f..2e562c224060 100644
-> --- a/drivers/mtd/onenand/samsung.c
-> +++ b/drivers/mtd/onenand/samsung.c
-> @@ -129,16 +129,13 @@ struct s3c_onenand {
->  	struct platform_device	*pdev;
->  	enum soc_type	type;
->  	void __iomem	*base;
-> -	struct resource *base_res;
->  	void __iomem	*ahb_addr;
-> -	struct resource *ahb_res;
->  	int		bootram_command;
->  	void __iomem	*page_buf;
->  	void __iomem	*oob_buf;
->  	unsigned int	(*mem_addr)(int fba, int fpa, int fsa);
->  	unsigned int	(*cmd_map)(unsigned int type, unsigned int val);
->  	void __iomem	*dma_addr;
-> -	struct resource *dma_res;
->  	unsigned long	phys_base;
->  	struct completion	complete;
->  };
-> @@ -851,15 +848,13 @@ static int s3c_onenand_probe(struct platform_device *pdev)
->  	/* No need to check pdata. the platform data is optional */
->  
->  	size = sizeof(struct mtd_info) + sizeof(struct onenand_chip);
-> -	mtd = kzalloc(size, GFP_KERNEL);
-> +	mtd = devm_kzalloc(&pdev->dev, size, GFP_KERNEL);
->  	if (!mtd)
->  		return -ENOMEM;
->  
-> -	onenand = kzalloc(sizeof(struct s3c_onenand), GFP_KERNEL);
-> -	if (!onenand) {
-> -		err = -ENOMEM;
-> -		goto onenand_fail;
-> -	}
-> +	onenand = devm_kzalloc(&pdev->dev, sizeof(struct s3c_onenand), GFP_KERNEL);
-> +	if (!onenand)
-> +		return -ENOMEM;
->  
->  	this = (struct onenand_chip *) &mtd[1];
->  	mtd->priv = this;
-> @@ -870,26 +865,10 @@ static int s3c_onenand_probe(struct platform_device *pdev)
->  	s3c_onenand_setup(mtd);
->  
->  	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -	if (!r) {
-> -		dev_err(&pdev->dev, "no memory resource defined\n");
-> -		return -ENOENT;
-> -		goto ahb_resource_failed;
-> -	}
-> +	onenand->base = devm_ioremap_resource(&pdev->dev, r);
-> +	if (IS_ERR(onenand->base))
-> +		return PTR_ERR(onenand->base);
->  
-> -	onenand->base_res = request_mem_region(r->start, resource_size(r),
-> -					       pdev->name);
-> -	if (!onenand->base_res) {
-> -		dev_err(&pdev->dev, "failed to request memory resource\n");
-> -		err = -EBUSY;
-> -		goto resource_failed;
-> -	}
-> -
-> -	onenand->base = ioremap(r->start, resource_size(r));
-> -	if (!onenand->base) {
-> -		dev_err(&pdev->dev, "failed to map memory resource\n");
-> -		err = -EFAULT;
-> -		goto ioremap_failed;
-> -	}
->  	/* Set onenand_chip also */
->  	this->base = onenand->base;
->  
-> @@ -898,40 +877,20 @@ static int s3c_onenand_probe(struct platform_device *pdev)
->  
->  	if (onenand->type != TYPE_S5PC110) {
->  		r = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-> -		if (!r) {
-> -			dev_err(&pdev->dev, "no buffer memory resource defined\n");
-> -			err = -ENOENT;
-> -			goto ahb_resource_failed;
-> -		}
-> -
-> -		onenand->ahb_res = request_mem_region(r->start, resource_size(r),
-> -						      pdev->name);
-> -		if (!onenand->ahb_res) {
-> -			dev_err(&pdev->dev, "failed to request buffer memory resource\n");
-> -			err = -EBUSY;
-> -			goto ahb_resource_failed;
-> -		}
-> -
-> -		onenand->ahb_addr = ioremap(r->start, resource_size(r));
-> -		if (!onenand->ahb_addr) {
-> -			dev_err(&pdev->dev, "failed to map buffer memory resource\n");
-> -			err = -EINVAL;
-> -			goto ahb_ioremap_failed;
-> -		}
-> +		onenand->ahb_addr = devm_ioremap_resource(&pdev->dev, r);
-> +		if (IS_ERR(onenand->ahb_addr))
-> +			return PTR_ERR(onenand->ahb_addr);
->  
->  		/* Allocate 4KiB BufferRAM */
-> -		onenand->page_buf = kzalloc(SZ_4K, GFP_KERNEL);
-> -		if (!onenand->page_buf) {
-> -			err = -ENOMEM;
-> -			goto page_buf_fail;
-> -		}
-> +		onenand->page_buf = devm_kzalloc(&pdev->dev, SZ_4K,
-> +						 GFP_KERNEL);
-> +		if (!onenand->page_buf)
-> +			return -ENOMEM;
->  
->  		/* Allocate 128 SpareRAM */
-> -		onenand->oob_buf = kzalloc(128, GFP_KERNEL);
-> -		if (!onenand->oob_buf) {
-> -			err = -ENOMEM;
-> -			goto oob_buf_fail;
-> -		}
-> +		onenand->oob_buf = devm_kzalloc(&pdev->dev, 128, GFP_KERNEL);
-> +		if (!onenand->oob_buf)
-> +			return -ENOMEM;
->  
->  		/* S3C doesn't handle subpage write */
->  		mtd->subpage_sft = 0;
-> @@ -939,28 +898,11 @@ static int s3c_onenand_probe(struct platform_device *pdev)
->  
->  	} else { /* S5PC110 */
->  		r = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-> -		if (!r) {
-> -			dev_err(&pdev->dev, "no dma memory resource defined\n");
-> -			err = -ENOENT;
-> -			goto dma_resource_failed;
-> -		}
-> -
-> -		onenand->dma_res = request_mem_region(r->start, resource_size(r),
-> -						      pdev->name);
-> -		if (!onenand->dma_res) {
-> -			dev_err(&pdev->dev, "failed to request dma memory resource\n");
-> -			err = -EBUSY;
-> -			goto dma_resource_failed;
-> -		}
-> +		onenand->dma_addr = devm_ioremap_resource(&pdev->dev, r);
-> +		if (IS_ERR(onenand->dma_addr))
-> +			return PTR_ERR(onenand->dma_addr);
->  
-> -		onenand->dma_addr = ioremap(r->start, resource_size(r));
-> -		if (!onenand->dma_addr) {
-> -			dev_err(&pdev->dev, "failed to map dma memory resource\n");
-> -			err = -EINVAL;
-> -			goto dma_ioremap_failed;
-> -		}
-> -
-> -		onenand->phys_base = onenand->base_res->start;
-> +		onenand->phys_base = r->start;
-
-This is wrong, ->phys_base should be assigned to base_res->start not
-dma_res->start (I pointed it in my previous review).
-
->  
->  		s5pc110_dma_ops = s5pc110_dma_poll;
->  		/* Interrupt support */
-> @@ -968,19 +910,19 @@ static int s3c_onenand_probe(struct platform_device *pdev)
->  		if (r) {
->  			init_completion(&onenand->complete);
->  			s5pc110_dma_ops = s5pc110_dma_irq;
-> -			err = request_irq(r->start, s5pc110_onenand_irq,
-> -					IRQF_SHARED, "onenand", &onenand);
-> +			err = devm_request_irq(&pdev->dev, r->start,
-> +					       s5pc110_onenand_irq,
-> +					       IRQF_SHARED, "onenand",
-> +					       &onenand);
->  			if (err) {
->  				dev_err(&pdev->dev, "failed to get irq\n");
-> -				goto scan_failed;
-> +				return err;
->  			}
->  		}
->  	}
->  
-> -	if (onenand_scan(mtd, 1)) {
-> -		err = -EFAULT;
-> -		goto scan_failed;
-> -	}
-> +	if (onenand_scan(mtd, 1))
-> +		return -EFAULT;
-
-Not related to this patch, but we should return the error code returned
-by onenand_scan() here instead of always returning -EFAULT.
-
->  
->  	if (onenand->type != TYPE_S5PC110) {
->  		/* S3C doesn't handle subpage write */
-> @@ -998,36 +940,6 @@ static int s3c_onenand_probe(struct platform_device *pdev)
->  	platform_set_drvdata(pdev, mtd);
->  
->  	return 0;
-> -
-> -scan_failed:
-> -	if (onenand->dma_addr)
-> -		iounmap(onenand->dma_addr);
-> -dma_ioremap_failed:
-> -	if (onenand->dma_res)
-> -		release_mem_region(onenand->dma_res->start,
-> -				   resource_size(onenand->dma_res));
-> -	kfree(onenand->oob_buf);
-> -oob_buf_fail:
-> -	kfree(onenand->page_buf);
-> -page_buf_fail:
-> -	if (onenand->ahb_addr)
-> -		iounmap(onenand->ahb_addr);
-> -ahb_ioremap_failed:
-> -	if (onenand->ahb_res)
-> -		release_mem_region(onenand->ahb_res->start,
-> -				   resource_size(onenand->ahb_res));
-> -dma_resource_failed:
-> -ahb_resource_failed:
-> -	iounmap(onenand->base);
-> -ioremap_failed:
-> -	if (onenand->base_res)
-> -		release_mem_region(onenand->base_res->start,
-> -				   resource_size(onenand->base_res));
-> -resource_failed:
-> -	kfree(onenand);
-> -onenand_fail:
-> -	kfree(mtd);
-> -	return err;
->  }
->  
->  static int s3c_onenand_remove(struct platform_device *pdev)
-> @@ -1035,25 +947,7 @@ static int s3c_onenand_remove(struct platform_device *pdev)
->  	struct mtd_info *mtd = platform_get_drvdata(pdev);
->  
->  	onenand_release(mtd);
-> -	if (onenand->ahb_addr)
-> -		iounmap(onenand->ahb_addr);
-> -	if (onenand->ahb_res)
-> -		release_mem_region(onenand->ahb_res->start,
-> -				   resource_size(onenand->ahb_res));
-> -	if (onenand->dma_addr)
-> -		iounmap(onenand->dma_addr);
-> -	if (onenand->dma_res)
-> -		release_mem_region(onenand->dma_res->start,
-> -				   resource_size(onenand->dma_res));
-> -
-> -	iounmap(onenand->base);
-> -	release_mem_region(onenand->base_res->start,
-> -			   resource_size(onenand->base_res));
-> -
-> -	kfree(onenand->oob_buf);
-> -	kfree(onenand->page_buf);
-> -	kfree(onenand);
-> -	kfree(mtd);
-> +
->  	return 0;
->  }
->  
+SGkgQ3lyaWxsZSwNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBDeXJp
+bGxlIFBpdGNoZW4gW21haWx0bzpjeXJpbGxlLnBpdGNoZW5Ad2VkZXY0dS5mcl0NCj4gU2VudDog
+V2VkbmVzZGF5LCBEZWNlbWJlciAwNiwgMjAxNyA0OjI4IFBNDQo+IFRvOiBQcmFiaGFrYXIgS3Vz
+aHdhaGEgPHByYWJoYWthci5rdXNod2FoYUBueHAuY29tPjsgbGludXgtDQo+IG10ZEBsaXN0cy5p
+bmZyYWRlYWQub3JnDQo+IENjOiBib3Jpcy5icmV6aWxsb25AZnJlZS1lbGVjdHJvbnMuY29tOyBj
+b21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb207IFJhamF0DQo+IFNyaXZhc3RhdmEgPHJhamF0LnNy
+aXZhc3RhdmFAbnhwLmNvbT47IGRlZGVraW5kMUBnbWFpbC5jb20NCj4gU3ViamVjdDogUmU6IFtS
+RkMgMDkvMTBdIG10ZDogc3BpLW5vcjogRGlzYWJsZSBoeWJyaWQgbW9kZSBmb3IgU1BBTlNJT04g
+UzI1RlMgLQ0KPiBTIGZhbWlseQ0KPiANCj4gSGkgUHJhYmhha2FyLA0KPiANCj4gTGUgMDYvMTIv
+MjAxNyDDoCAwOToxNSwgUHJhYmhha2FyIEt1c2h3YWhhIGEgw6ljcml0wqA6DQo+ID4gVGhlIFMy
+NUZTLVMgZmFtaWx5IHBoeXNpY2FsIHNlY3RvcnMgbWF5IGJlIGNvbmZpZ3VyZWQgYXMgYSBoeWJy
+aWQNCj4gPiBjb21iaW5hdGlvbiBvZiBlaWdodCA0LWtCIHBhcmFtZXRlciBzZWN0b3JzIGF0IHRo
+ZSB0b3Agb3IgYm90dG9tDQo+ID4gb2YgdGhlIGFkZHJlc3Mgc3BhY2Ugd2l0aCBhbGwgYnV0IG9u
+ZSBvZiB0aGUgcmVtYWluaW5nIHNlY3RvcnMNCj4gPiBiZWluZyB1bmlmb3JtIHNpemUuDQo+ID4g
+VGhlIGRlZmF1bHQgc3RhdHVzIG9mIHRoZSBmbGFzaCBpcyB0aGUgaHlicmlkIGFyY2hpdGVjdHVy
+ZS4NCj4gPiBUaGUgcGFyYW1ldGVyIHNlY3RvcnMgYW5kIHRoZSB1bmlmb3JtIHNlY3RvcnMgaGF2
+ZSBkaWZmZXJlbnQgZXJhc2UNCj4gPiBjb21tYW5kcy4NCj4gPg0KPiA+IFRoaXMgcGF0Y2ggZGlz
+YWJsZXMgdGhlIGh5YnJpZCBzZWN0b3IgYXJjaGl0ZWN0dXJlIHdoaWNoIG1ha2VzIHRoZQ0KPiA+
+IGZsYXNoIGhhdmUgdW5pZm9ybSBzZWN0b3Igc2l6ZSBhbmQgdW5pZm9ybSBlcmFzZSBjb21tYW5k
+Lg0KPiA+DQo+IA0KPiBUaGlzIGlzc3VlIHNob3VsZCBiZSBhZGRyZXNzZWQgaW4gYSBnZW5lcmlj
+IHdheSwgbm90IFNwYW5zaW9uIHNwZWNpZmljLA0KPiBieSBhZGRpbmcgc3VwcG9ydCBvZiB0aGUg
+b3B0aW9uYWwgU2VjdG9yIE1hcCBQYXJhbWV0ZXIgVGFibGUgKFNGRFApLg0KPiBJbiBjYXNlIG9m
+IG5vbiB1bmlmb3JtIG1lbW9yaWVzLCBsaWtlIHRoaXMgU3BhbnNpb24gUzI1RlMtUyBmYW1pbHkg
+b3INCj4gU1NUMjYsIHRoZSBTZWN0b3IgTWFwIFBhcmFtZXRlciBUYWJsZSBiZWNvbWVzIG1hbmRh
+dG9yeSBhcyBhIFNGRFAgdGFibGUuDQo+IA0KPiBGcm9tIHRoZSBKRVNEMjE2QiBzcGVjaWZpY2F0
+aW9uLCBhYm91dCB0aGUgSkVERUMgU2VjdG9yIE1hcCBQYXJhbWV0ZXIgVGFibGU6DQo+ICIiIg0K
+PiBUaGlzIHRhYmxlIGlzIHJlcXVpcmVkIHdoZW4gYSBtZW1vcnkgZGV2aWNlOg0KPiAqIEhhcyBz
+ZWN0b3JzIG9mIG1vcmUgdGhhbiBvbmUgc2l6ZQ0KPiAqIE9yLCBkb2VzIG5vdCBhbGxvdyBhbGwg
+RXJhc2UgVHlwZSBjb21tYW5kcyB0byBiZSBhcHBsaWVkIHRvIGFsbCBzZWN0b3JzLg0KPiAiIiIN
+Cj4gDQoNCkFzIEkgdW5kZXJzdGFuZCBmcm9tIFNlY3RvciBNYXAgUGFyYW1ldGVyIFRhYmxlLCBJ
+dCB0ZWxsIGFib3V0IHRoZSBmbGFzaCBsYXlvdXQgYW5kIHdoaWNoIHJlZ2lvbiBzdXBwb3J0IHdo
+aWNoIGVyYXNlIHR5cGUuDQoNCkZsYXNoIGxheW91dCBjYW4gYmUgY29uZmlndXJlZCB1c2luZyB2
+b2xhdGlsZSBvciBub24tdm9sYXRpbGUgcmVnaXN0ZXJzLiBGb3IgZS5nLiBTcGFuc2lvbiBTMjVG
+UyBoYXMgZm9sbG93aW5nIGNvbWJpbmF0aW9uDQpEZXZpY2UgICAgQ1IzTlZbM10gICAgQ1IxTlZb
+Ml0gICAgQ1IzTlZbMV0gICAgIEluZGV4IFZhbHVlICAgICAgRGVzY3JpcHRpb24NCkZTNTEyUyAg
+ICAgICAwICAgICAgICAgICAgICAgICAgMCAgICAgICAgICAgICAgICAgICAgMSAgICAgICAgICAg
+ICAgICAwMWggICAgICAgICAgICAgICAgICAgICAgNC1rQiBzZWN0b3JzIGF0IGJvdHRvbSB3aXRo
+IHJlbWFpbmRlciAyNTYta0Igc2VjdG9ycw0KICAgICAgICAgICAgICAgICAgICAwICAgICAgICAg
+ICAgICAgICAgMSAgICAgICAgICAgICAgICAgICAgMSAgICAgICAgICAgICAgICAwM2ggICAgICAg
+ICAgICAgICAgICAgICAgNC1rQiBzZWN0b3JzIGF0IHRvcCB3aXRoIHJlbWFpbmRlciAyNTYta0Ig
+c2VjdG9ycw0KICAgICAgICAgICAgICAgICAgICAxICAgICAgICAgICAgICAgICAgMCAgICAgICAg
+ICAgICAgICAgICAgMSAgICAgICAgICAgICAgICAwNWggICAgICAgICAgICAgICAgICAgICAgVW5p
+Zm9ybSAyNTYta0Igc2VjdG9ycw0KT25jZSBvbmUgb2YgdGhlIGNvbWJpbmF0aW9uIHByb2dyYW1t
+ZWQuICBTZWN0b3IgTWFwIFBhcmFtZXRlciBUYWJsZSBoZWxwIHdpdGggdHlwZSBvZiBlcmFzZSBz
+dXBwb3J0ZWQuIA0KDQpNeSByZXF1aXJlbWVudCBpcyBmb3Igc2V0dGluZyBmbGFzaCBpbiBwYXJ0
+aWN1bGFyIGNvbmZpZ3VyYXRpb24gaS5lLiAiMDUiIC0tPiBVbmlmb3JtIDI1Ni1rYi4gVGhpcyBy
+ZXF1aXJlbWVudCBpcyBnZXR0aW5nIG1ldCB3aXRoIGV4aXN0aW5nIHBhdGNoLiANCkkgZG9u4oCZ
+dCB3YW50ICJ1bmlmb3JtIDI1Ni1rYiIgYXMgZGVmYXVsdCAgaW4gc3BpLW5vci5jIGFzIGRpZmZl
+cmVudCB1c2VyIG1heSBoYXZlIGRpZmZlcmVudCByZXF1aXJlbWVudHMuIA0KSG93IHRvIGFjaGll
+dmUgdGhpcz8gRGV2aWNlIHRyZWUgPz8NCg0KLS1waw0KDQoNCg0K
