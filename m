@@ -1,21 +1,39 @@
-Received: from mail-pf0-x233.google.com ([2607:f8b0:400e:c00::233])
+Received: from mail-pl0-x236.google.com ([2607:f8b0:400e:c01::236])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eNoU5-0001FE-O3
- for linux-mtd@lists.infradead.org; Sat, 09 Dec 2017 23:24:43 +0000
-Received: by mail-pf0-x233.google.com with SMTP id j28so9263546pfk.8
- for <linux-mtd@lists.infradead.org>; Sat, 09 Dec 2017 15:24:21 -0800 (PST)
+ id 1eNoXb-00032i-DQ
+ for linux-mtd@lists.infradead.org; Sat, 09 Dec 2017 23:28:21 +0000
+Received: by mail-pl0-x236.google.com with SMTP id v41so2439746plg.4
+ for <linux-mtd@lists.infradead.org>; Sat, 09 Dec 2017 15:27:58 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAAEAJfAjd0mn7n_GqGAtsftfd_ihXjDgqR-z5BEpYjgY85RSCg@mail.gmail.com>
-References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
- <CAAEAJfAjd0mn7n_GqGAtsftfd_ihXjDgqR-z5BEpYjgY85RSCg@mail.gmail.com>
+In-Reply-To: <20171207201814.30411-1-miquel.raynal@free-electrons.com>
+References: <20171207201814.30411-1-miquel.raynal@free-electrons.com>
 From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date: Sat, 9 Dec 2017 20:24:20 -0300
-Message-ID: <CAAEAJfDY8jfbjwXoRzcAZ5DUPcPj+8dhJsr=Un+nW_gNxp=uGw@mail.gmail.com>
-Subject: Re: [BUG] pxa3xx: wait time out when scanning for bb
-To: =?UTF-8?Q?Sean_Nyekj=C3=A6r?= <sean.nyekjaer@prevas.dk>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "Kasper Revsbech (KREV)" <krev@triax.com>,
- =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@free-electrons.com>
+Date: Sat, 9 Dec 2017 20:27:57 -0300
+Message-ID: <CAAEAJfC6Ctxfuk+jv=Z7__4ME6VtDdQk-H74hiN19gcEo6HOxg@mail.gmail.com>
+Subject: Re: [PATCH 00/12] Marvell NAND controller rework with ->exec_op()
+To: Miquel Raynal <miquel.raynal@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Russell King <linux@armlinux.org.uk>,
+ Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>, Eric Miao <eric.y.miao@gmail.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Antoine Tenart <antoine.tenart@free-electrons.com>,
+ Nadav Haklai <nadavh@marvell.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Neta Zur Hershkovits <neta@marvell.com>,
+ Hanna Hawa <hannah@marvell.com>, Ofer Heifetz <oferh@marvell.com>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,56 +45,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 9 December 2017 at 20:22, Ezequiel Garcia
-<ezequiel@vanguardiasur.com.ar> wrote:
-> On 28 November 2017 at 06:12, Sean Nyekj=C3=A6r <sean.nyekjaer@prevas.dk>=
- wrote:
->> Hi Ezequiel
->>
->> I'm currently in the process of doing bringup on a custom armada 38x boa=
-rd.
->> During the firsts boots of the Linux kernel we saw that the NAND driver
->> throws a lot of timeout messages.
->>
->> Like this:
->> [ 28.321054] pxa3xx-nand f10d0000.flash: Wait time out!!!
->> [ 28.521054] pxa3xx-nand f10d0000.flash: Wait time out!!!
->> [ 28.721054] pxa3xx-nand f10d0000.flash: Wait time out!!!
->>
->> That lead me to investigate the issue and found this thread (quite old):
->> https://www.spinics.net/lists/arm-kernel/msg488581.html
->>
->> In the thread some is describing a possible race condition when the NAND
->> framework is scanning for bad blocks.
->> 1. I tried enabling PREEMPT with no success.
->> 2. I tried with commenting out the bad block scanning function, with suc=
-cess
->> but not very useful :-)
->> 3. I enabled the BBT function in uboot and the kernel, and that apparent=
-ly
->> fixes the problem.
+Miquel,
+
+On 7 December 2017 at 17:18, Miquel Raynal
+<miquel.raynal@free-electrons.com> wrote:
+> Hi,
 >
-> Which means you were not using the BBT. Any idea why?
-> Storing bad-block information in the NAND block itself,
-> is a bad idea. I suggest you use BBT.
+> After the addition of the NAND framework ->exec_op() interface (see [1]
+> for the series preparing it and [2] for the last version of the
+> core-side implementation of ->exec_op() itself), this series replaces
+> the current Marvell NAND controller driver pxa3xx_nand.c with a rework
+> called marvell_nand.c.
 >
-> To be frank, I can't recall if the driver supported OOB read/writes
-> in all modes. It should, judging from the code, but maybe
-> there is a bug somewhere.
->
-> In any case, most of the OOB is used for ECC. There are
-> some nice notes about it here [1]
 
-like I was saying...
+Nice to see this effort!
 
-some nice notes about it here [1].
+Unfortunately, I don't much time to spend reviewing this, but I'm super
+happy to see a new driver fixing all the nasty issues the current one has.
 
-Be aware that you need your bootloader and kernel to have
-matching information about the BBT.
-
-So, you say that enabling the BBT fixes the issue, so: fixed? :-)
-
-[1] Documentation/mtd/nand/pxa3xx-nand.txt
+Cheers,
 --=20
 Ezequiel Garc=C3=ADa, VanguardiaSur
 www.vanguardiasur.com.ar
