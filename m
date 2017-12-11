@@ -1,8 +1,9 @@
-Received: from mail02.prevas.se ([62.95.78.10])
+Received: from mail01.prevas.se ([62.95.78.3])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eOLCl-0002IM-IM
- for linux-mtd@lists.infradead.org; Mon, 11 Dec 2017 10:22:07 +0000
+ id 1eOMN3-0003Rn-0Q
+ for linux-mtd@lists.infradead.org; Mon, 11 Dec 2017 11:35:43 +0000
 Subject: Re: [BUG] pxa3xx: wait time out when scanning for bb
+From: =?UTF-8?Q?Sean_Nyekj=c3=a6r?= <sean.nyekjaer@prevas.dk>
 To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
 CC: <ezequiel.garcia@free-electrons.com>, <linux-mtd@lists.infradead.org>,
  "Kasper Revsbech (KREV)" <krev@triax.com>, Boris Brezillon
@@ -25,13 +26,13 @@ References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
  <20171208102148.0a2c0fbe@xps13>
  <e1f47fe9-9b05-fdcd-b7ed-10e8cbced3a4@prevas.dk>
  <20171211105359.7eb1aeb3@xps13>
-From: =?UTF-8?Q?Sean_Nyekj=c3=a6r?= <sean.nyekjaer@prevas.dk>
-Message-ID: <d0dee517-8061-5d40-aa82-6d4c5cda4fb1@prevas.dk>
-Date: Mon, 11 Dec 2017 11:20:40 +0100
+ <d0dee517-8061-5d40-aa82-6d4c5cda4fb1@prevas.dk>
+Message-ID: <a2502de6-b4c7-befb-6a08-de976be85d17@prevas.dk>
+Date: Mon, 11 Dec 2017 12:35:21 +0100
 MIME-Version: 1.0
-In-Reply-To: <20171211105359.7eb1aeb3@xps13>
+In-Reply-To: <d0dee517-8061-5d40-aa82-6d4c5cda4fb1@prevas.dk>
 Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -43,21 +44,48 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Hi Miquel,
-> Actually, if you look carefully to the trace behind, you are not using
-> the same bad block table with the bootloader ("Bad block table not
-> found for chip 0") so the core then reads the OOB area of every first
-> page for each block and looks at the first OOB bytes for the bad block
-> markers. If there was data there, the block will be declared as bad.
-With the new NFC driver, is the bad block table located elsewhere?
-I have not done any changes to my bootloader when i did the switch to 
-the new driver,
-so i guess it should work as before.
-> Can you please check that by using the configuration that actually
-> boots and use nanddump in raw mode with the OOB area (options -n and -o)
-> to show us the content of the first page of any block of the last NAND
-> MTD device?
+>> Actually, if you look carefully to the trace behind, you are not using
+>> the same bad block table with the bootloader ("Bad block table not
+>> found for chip 0") so the core then reads the OOB area of every first
+>> page for each block and looks at the first OOB bytes for the bad block
+>> markers. If there was data there, the block will be declared as bad.
+> With the new NFC driver, is the bad block table located elsewhere?
+> I have not done any changes to my bootloader when i did the switch to 
+> the new driver,
+> so i guess it should work as before.
+>> Can you please check that by using the configuration that actually
+>> boots and use nanddump in raw mode with the OOB area (options -n and -o)
+>> to show us the content of the first page of any block of the last NAND
+>> MTD device?
+>>
+>>
+> Will do
 >
->
-Will do
+Dumped from uboot:
+=> nand dump.oob 0xffc0000
+Page 0ffc0000 dump:
+OOB:
+         ff ff ff ff ff ff ff ff
+         31 74 62 42 56 4d 01 ff
+         ff ff ff ff ff ff ff ff
+         ff ff ff ff ff ff ff ff
+         ff ff ff ff ff ff ff ff
+         ff ff ff ff ff ff ff ff
+         ff ff ff ff ff ff ff ff
+         ff ff ff ff ff ff ff ff
+=> nand dump.oob 0xffe0000
+Page 0ffe0000 dump:
+OOB:
+         ff ff ff ff ff ff ff ff
+         4d 56 42 62 74 30 01 ff
+         ff ff ff ff ff ff ff ff
+         ff ff ff ff ff ff ff ff
+         ff ff ff ff ff ff ff ff
+         ff ff ff ff ff ff ff ff
+         ff ff ff ff ff ff ff ff
+         ff ff ff ff ff ff ff ff
+
+I have tried to dump some random pages, and they all contain 0xFF's.
+I'll try to trace what the NFC driver is reading from the OOBs.
 
 /Sean
