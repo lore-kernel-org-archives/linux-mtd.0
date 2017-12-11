@@ -1,25 +1,38 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eOV4j-0002yP-VT
- for linux-mtd@lists.infradead.org; Mon, 11 Dec 2017 20:53:24 +0000
-Date: Mon, 11 Dec 2017 21:52:55 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-Cc: Antoine Tenart <antoine.tenart@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org, Thomas
- Petazzoni <thomas.petazzoni@free-electrons.com>, Gregory Clement
- <gregory.clement@free-electrons.com>, Nadav Haklai <nadavh@marvell.com>,
- Ofer Heifetz <oferh@marvell.com>, Hanna Hawa <hannah@marvell.com>
-Subject: Re: [PATCH v2] mtd: nand: add ->exec_op() implementation
-Message-ID: <20171211215255.16b63eec@bbrezillon>
-In-Reply-To: <20171211211750.0e74d951@xps13>
-References: <20171207145434.21586-1-miquel.raynal@free-electrons.com>
- <20171208075450.GA4359@kwain> <20171211211750.0e74d951@xps13>
+Date: Mon, 11 Dec 2017 22:02:55 +0100
+From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Jason Cooper <jason@lakedaemon.net>,
+ Andrew Lunn <andrew@lunn.ch>, Gregory Clement
+ <gregory.clement@free-electrons.com>, Sebastian Hesselbarth
+ <sebastian.hesselbarth@gmail.com>, Russell King <linux@armlinux.org.uk>,
+ Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>, Eric Miao <eric.y.miao@gmail.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
+ <will.deacon@arm.com>, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>, Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, Antoine Tenart
+ <antoine.tenart@free-electrons.com>, Nadav Haklai <nadavh@marvell.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Neta Zur
+ Hershkovits <neta@marvell.com>, Hanna Hawa <hannah@marvell.com>, Ofer
+ Heifetz <oferh@marvell.com>, linux-arm-kernel
+ <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 02/12] mtd: nand: add reworked Marvell NAND controller
+ driver
+Message-ID: <20171211220255.0292fd8f@xps13>
+In-Reply-To: <20171211180511.1d734b37@bbrezillon>
+References: <20171207201814.30411-1-miquel.raynal@free-electrons.com>
+ <20171207201814.30411-3-miquel.raynal@free-electrons.com>
+ <CAAEAJfC89bRugBsK8jrK=6fdq76yzjThA74UCAhAaVuonLLNvg@mail.gmail.com>
+ <20171211175506.0b8ea4d1@xps13>
+ <20171211180511.1d734b37@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,38 +42,121 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Miquel,
+On Mon, 11 Dec 2017 18:05:11 +0100
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-On Mon, 11 Dec 2017 21:17:50 +0100
-Miquel RAYNAL <miquel.raynal@free-electrons.com> wrote:
+> On Mon, 11 Dec 2017 17:55:06 +0100
+> Miquel RAYNAL <miquel.raynal@free-electrons.com> wrote:
+>=20
+> > On Mon, 11 Dec 2017 13:27:30 -0300
+> > Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
+> >  =20
+> > > On 7 December 2017 at 17:18, Miquel Raynal
+> > > <miquel.raynal@free-electrons.com> wrote:   =20
+> > > > Add marvell_nand driver which aims at replacing the existing
+> > > > pxa3xx_nand driver.
+> > > >
+> > > > The new driver intends to be easier to understand and follows
+> > > > the brand new NAND framework rules by implementing hooks for
+> > > > every pattern the controller might support and referencing them
+> > > > inside a parser object that will be given to the core at each
+> > > > ->exec_op() call.
+> > > >
+> > > > Raw accessors are implemented, useful to test/debug
+> > > > memory/filesystem corruptions. Userspace binaries contained in
+> > > > the mtd-utils package may now be used and their output trusted.
+> > > >
+> > > > Timings may not be kept from the bootloader anymore, the timings
+> > > > used for instance in U-Boot were not optimal and it supposed to
+> > > > have NAND support (and initialized) in the bootloader.
+> > > >
+> > > > Thanks to the improved timings, implementation of ONFI mode 5
+> > > > support (with EDO managed by adding a delay on data sampling),
+> > > > merging the commands together and optimizing writes in the
+> > > > command registers, the new driver may achieve faster
+> > > > throughputs in both directions. Measurements show an
+> > > > improvement of about +23% read throughput and +24% write
+> > > > throughput. These measurements have been done with an
+> > > > Armada-385-DB-AP (4kiB NAND pages forced in 4-bit strength BCH
+> > > > ECC correction) using the userspace tool 'flash_speed' from the
+> > > > MTD test suite.
+> > > >
+> > > > Besides these important topics, the new driver addresses several
+> > > > unsolved known issues in the old driver which:
+> > > > - did not work with ECC soft neither with ECC none ;
+> > > > - relied on naked read/write (which is unchanged) while the
+> > > > NFCv1 embedded in the pxa3xx platforms do not implement it, so
+> > > > several NAND commands did not actually ever work without any
+> > > > notice (like reading the ONFI PARAM_PAGE or SET/GET_FEATURES) ;
+> > > > - wrote the OOB data correctly, but was not able to read it
+> > > > correctly past the first OOB data chunk ;
+> > > > - did not displayed ECC bytes ;
+> > > > - used device tree bindings that did not allow more than one
+> > > > NAND chip, and did not allow to choose the correct chip select
+> > > > if not incrementing from 0. Plus, the Ready/Busy line used had
+> > > > to be 0.
+> > > >
+> > > > Old device tree bindings are still supported but deprecated. A
+> > > > more hierarchical view has to be used to keep the controller
+> > > > and the NAND chip structures clearly separated both inside the
+> > > > device tree and also in the driver code.
+> > > >     =20
+> > >=20
+> > > So, is this driver fully compatible with the current pxa3xx-nand
+> > > driver?   =20
+> >=20
+> > It should be!
+> >  =20
+> > >=20
+> > > Have you tested with U-Boot's driver (based on the pxa3xx-nand)?
+> > >=20
+> > > I recally some subtle issues with the fact that U-Boot and Linux
+> > > had to agree about the BBT format.   =20
+> >=20
+> > I kept the pxa3xx_nand driver BBT format.
+> >=20
+> > This is something I mistakenly omitted from the commit message:
+> >=20
+> > There are 5 supported layouts in the driver (the same as withing the
+> > pxa3xx_nand driver):
+> >     1/ Page: 512B, strength 1b/512B (hamming)
+> >     2/ Page: 2kiB, strength 4b/2kiB (hamming)
+> >     3/ page: 2kiB, strength 16b/2kiB (BCH)
+> >     4/ page: 4kiB, strength 16b/2kiB (BCH)
+> >     5/ page: 4kiB, strength 32b/2kiB (BCH) =20
+>=20
+> Are you sure of #5? I thought the engine was only capable of modifying
+> the ECC block size, not the strength. If this is the case, then mode
+> #5 is actually 16b/1024kiB.
 
-> Hello Antoine,
-> 
-> On Fri, 8 Dec 2017 08:54:50 +0100
-> Antoine Tenart <antoine.tenart@free-electrons.com> wrote:
-> 
-> > Hi Miquel,
-> > 
-> > Be careful when defining macros: avoid to name your arguments with a
-> > value used in the macro that is not meant to be replaced.  
-> 
-> That is right, it could have failed the macro.
+You are right, #5 you actually be:
 
-Fixed the macro.
-Also reworded a few comments in the code, and the commit log. I also
-moved some prototype changes that belong in patch "mtd: nand: provide
-several helpers to do common NAND operations".
+    5/ page: 4kiB, strength 16b/1kiB (BCH) =20
 
-The resulting patch is applied to the nand/next branch.
+Thanks for pointing it,
+Miqu=C3=A8l
 
-Thanks a lot for the effort you've put in this new infrastructure, I
-really like the result. It's not perfect and people will probably have
-to extend the existing parser to support their controller, but it
-clearly goes in the right direction.
+>=20
+> >=20
+> > Layout 2 has been tested with CM_X300 compulab module (PXA SoC) with
+> > and without DMA.
+> > Layout 4 has been tested with an Armada 385 db, an Armada 7040 DB
+> > and an Armada 8040 DB.
+> > Layout 5 has been tested with an Armada 398 db.
+> >=20
+> > Layout 1 has been tested with the Armada 385 db with some hacks.
+> > Layout 3 has been tested with the Armada 385 db with some other
+> > hacks, that is why I am concerned about the other thread on the MTD
+> > mailing list "wait timeout when scanning for BB" where a 2kiB page
+> > with 16b/2048B strength is in use.
+> >=20
+> > Regards,
+> > Miqu=C3=A8l =20
+>=20
 
-I really hope that more controllers will be converted to this new
-interface in a near future (you already converted 2 of them).
 
-Regards,
 
-Boris
+--=20
+Miquel Raynal, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
