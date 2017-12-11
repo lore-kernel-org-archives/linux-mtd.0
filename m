@@ -1,8 +1,9 @@
 Received: from mail01.prevas.se ([62.95.78.3])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eOJPh-0008O8-G8
- for linux-mtd@lists.infradead.org; Mon, 11 Dec 2017 08:26:15 +0000
+ id 1eOJip-0000jP-SB
+ for linux-mtd@lists.infradead.org; Mon, 11 Dec 2017 08:46:01 +0000
 Subject: Re: [BUG] pxa3xx: wait time out when scanning for bb
+From: =?UTF-8?Q?Sean_Nyekj=c3=a6r?= <sean.nyekjaer@prevas.dk>
 To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
 CC: <ezequiel.garcia@free-electrons.com>, <linux-mtd@lists.infradead.org>,
  "Kasper Revsbech (KREV)" <krev@triax.com>, Boris Brezillon
@@ -23,11 +24,11 @@ References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
  <20171207213814.4c57098f@xps13>
  <26441ab5-8c70-4d7f-5e0d-bec3d59e2ef2@prevas.dk>
  <20171208102148.0a2c0fbe@xps13>
-From: =?UTF-8?Q?Sean_Nyekj=c3=a6r?= <sean.nyekjaer@prevas.dk>
-Message-ID: <e1f47fe9-9b05-fdcd-b7ed-10e8cbced3a4@prevas.dk>
-Date: Mon, 11 Dec 2017 09:25:45 +0100
+ <e1f47fe9-9b05-fdcd-b7ed-10e8cbced3a4@prevas.dk>
+Message-ID: <b8b858ef-34e2-03fa-2b03-bde761ab231d@prevas.dk>
+Date: Mon, 11 Dec 2017 09:45:33 +0100
 MIME-Version: 1.0
-In-Reply-To: <20171208102148.0a2c0fbe@xps13>
+In-Reply-To: <e1f47fe9-9b05-fdcd-b7ed-10e8cbced3a4@prevas.dk>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
@@ -41,65 +42,54 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Hi Miquel,
-> Hi Sean,
->
->> Thanks I didn't know about that :-)
->>
->> I had a look at it and I have rebased my stuff on top of your branch.
->> I have edited my devicetree to look like this:
->> &nand_controller {
->>       status = "okay";
->>       pinctrl-names = "default";
->>       pinctrl-0 = <&nand_pins>, <&nand_rb>;
->>
->>       nand@0 {
->>           reg = <0>;
->>           label = "pxa3xx_nand-0";
->>           marvell,rb = <0>;
->>           marvell,nand-keep-config;
->>           nand-on-flash-bbt;
->>           nand-ecc-strength = <4>;
->>           nand-ecc-step-size = <512>;
->>       };
->> };
->>
->> It produces a lot of bad eraseblocks entrys
->> [    2.693343] nand: device found, Manufacturer ID: 0x2c, Chip ID:
->> 0xda [    2.699717] nand: Micron MT29F2G08ABAEAH4
->> [    2.703772] nand: 256 MiB, SLC, erase size: 128 KiB, page size:
->> 2048, OOB size: 64
->> [    2.714286] Bad block table not found for chip 0
->> [    2.721509] Bad block table not found for chip 0
->> [    2.726139] Scanning device for bad blocks
->> [    2.730583] Bad eraseblock 0 at 0x000000000000
->> [    2.735365] Bad eraseblock 1 at 0x000000020000
->> [    2.740145] Bad eraseblock 2 at 0x000000040000
->> [    2.744934] Bad eraseblock 3 at 0x000000060000
->> [    2.749714] Bad eraseblock 4 at 0x000000080000
->>
->> Is my devicetree correct?
-> It depends:
->    - Did you already use bad block tables before ?
-Yes because if I don't i would get the timeouts described in this thread :-)
->    - Is your bootloader using 4b/512B ECC strength ?
-strength 4, ecc_stepsize 512, page_size 2048 but the uboot driver sets 
-it to strength 16, ecc_stepsize 512, page_size 2048,
-just like the current pxa3xx driver in the kernel does.
->
-> Besides:
->
->    - What filesystem are you booting? Is it UBIFS or JFFS2 or
-> something else?
-UBI
->    - Did you show the 5 first bad eraseblocks only or all of them?
-It continues to count to:
-Bad eraseblock 2047 at 0x00000ffe0000
->    - Do you have good blocks ?
-No
->    - Can you make use of the NAND chip after?
-No
-
-Correct me if i'm wrong, but i can't find anywhere the 
-nand-ecc-step-size is read by the new nand driver?
+>>>
+>>> It produces a lot of bad eraseblocks entrys
+>>> [    2.693343] nand: device found, Manufacturer ID: 0x2c, Chip ID:
+>>> 0xda [    2.699717] nand: Micron MT29F2G08ABAEAH4
+>>> [    2.703772] nand: 256 MiB, SLC, erase size: 128 KiB, page size:
+>>> 2048, OOB size: 64
+>>> [    2.714286] Bad block table not found for chip 0
+>>> [    2.721509] Bad block table not found for chip 0
+>>> [    2.726139] Scanning device for bad blocks
+>>> [    2.730583] Bad eraseblock 0 at 0x000000000000
+>>> [    2.735365] Bad eraseblock 1 at 0x000000020000
+>>> [    2.740145] Bad eraseblock 2 at 0x000000040000
+>>> [    2.744934] Bad eraseblock 3 at 0x000000060000
+>>> [    2.749714] Bad eraseblock 4 at 0x000000080000
+>>>
+Some more tracing, boot continues with this:
+[   12.939411] marvell-nfc f10d0000.nand-controller: NDCB0: 0x300d3000
+[   12.939411] NDCB1: 0xff400000
+[   12.939411] NDCB2: 0x00000001
+[   12.939411] NDCB3: 0x00000820
+[   12.939682] marvell-nfc f10d0000.nand-controller: NDCB0: 0x100ae005
+[   12.939682] NDCB1: 0x00000820
+[   12.939682] NDCB2: 0x00000000
+[   12.939682] NDCB3: 0x00000020
+[   12.939731] Bad eraseblock 2045 at 0x00000ffa0000
+[   12.944462] marvell-nfc f10d0000.nand-controller: NDCB0: 0x300d3000
+[   12.944462] NDCB1: 0xff800000
+[   12.944462] NDCB2: 0x00000001
+[   12.944462] NDCB3: 0x00000820
+[   12.944731] marvell-nfc f10d0000.nand-controller: NDCB0: 0x100ae005
+[   12.944731] NDCB1: 0x00000820
+[   12.944731] NDCB2: 0x00000000
+[   12.944731] NDCB3: 0x00000020
+[   12.944781] Bad eraseblock 2046 at 0x00000ffc0000
+[   12.949503] marvell-nfc f10d0000.nand-controller: NDCB0: 0x300d3000
+[   12.949503] NDCB1: 0xffc00000
+[   12.949503] NDCB2: 0x00000001
+[   12.949503] NDCB3: 0x00000820
+[   12.949771] marvell-nfc f10d0000.nand-controller: NDCB0: 0x100ae005
+[   12.949771] NDCB1: 0x00000820
+[   12.949771] NDCB2: 0x00000000
+[   12.949771] NDCB3: 0x00000020
+[   12.949821] Bad eraseblock 2047 at 0x00000ffe0000
+[   12.954547] No space left to write bad block table
+[   12.959353] nand_bbt: error while writing bad block table -28
+[   12.965126] marvell-nfc f10d0000.nand-controller: nand_scan_tail 
+failed: -28
+[   12.972244] marvell-nfc: probe of f10d0000.nand-controller failed 
+with error -28
 
 /Sean
