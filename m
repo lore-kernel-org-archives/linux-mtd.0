@@ -1,17 +1,41 @@
-To: <arm@kernel.org>
-CC: Tony Lindgren <tony@atomide.com>, Ladislav Michl <ladis@linux-mips.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, linux-omap
- <linux-omap@vger.kernel.org>, Linux ARM Mailing List
- <linux-arm-kernel@lists.infradead.org>
-From: Roger Quadros <rogerq@ti.com>
-Subject: [GIT PULL] omap-gpmc changes for v4.16 merge (immutable for mtd)
-Message-ID: <b55511ad-6d23-0356-f2d3-8e2b7c6d1ffb@ti.com>
-Date: Mon, 11 Dec 2017 16:16:27 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eOPOw-00075x-Nf
+ for linux-mtd@lists.infradead.org; Mon, 11 Dec 2017 14:49:56 +0000
+Date: Mon, 11 Dec 2017 15:49:12 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+Cc: Sean =?UTF-8?B?Tnlla2rDpnI=?= <sean.nyekjaer@prevas.dk>,
+ <ezequiel.garcia@free-electrons.com>, <linux-mtd@lists.infradead.org>,
+ "Kasper Revsbech (KREV)" <krev@triax.com>
+Subject: Re: [BUG] pxa3xx: wait time out when scanning for bb
+Message-ID: <20171211154912.04e0399e@bbrezillon>
+In-Reply-To: <20171211150929.722a361a@xps13>
+References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
+ <20171128140210.34215e19@xps13>
+ <dd07aafc-0d23-e00a-4996-cd233f8a9065@prevas.dk>
+ <20171128143055.1ff22979@xps13>
+ <2d491047-cd55-5a0a-83ec-58365f3bf3ff@prevas.dk>
+ <20171128150417.17d53b5a@xps13>
+ <1e2bea86-e429-e3c4-a6e4-c2c82457a061@prevas.dk>
+ <20171129090305.0174246d@xps13>
+ <aeb06060-015e-85b4-5b6d-4427dfd1e11a@prevas.dk>
+ <20171130181847.0bbc58b5@xps13>
+ <5bc5d326-af1f-44d2-468a-d211212c4612@prevas.dk>
+ <20171201091539.5d6b7572@xps13>
+ <744e99ee-91cf-28bc-21eb-c3fa01fb0a01@prevas.dk>
+ <20171207213814.4c57098f@xps13>
+ <26441ab5-8c70-4d7f-5e0d-bec3d59e2ef2@prevas.dk>
+ <20171208102148.0a2c0fbe@xps13>
+ <e1f47fe9-9b05-fdcd-b7ed-10e8cbced3a4@prevas.dk>
+ <20171211105359.7eb1aeb3@xps13>
+ <d0dee517-8061-5d40-aa82-6d4c5cda4fb1@prevas.dk>
+ <a2502de6-b4c7-befb-6a08-de976be85d17@prevas.dk>
+ <f70d94b8-5fc7-d091-9a5c-77597d2b7aa4@prevas.dk>
+ <20171211150200.51c7f3b4@xps13> <20171211150929.722a361a@xps13>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,33 +45,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Arnd/Olof,
+On Mon, 11 Dec 2017 15:09:29 +0100
+Miquel RAYNAL <miquel.raynal@free-electrons.com> wrote:
 
-The following changes since commit 4fbd8d194f06c8a3fd2af1ce560ddb31f7ec8323:
+> On Mon, 11 Dec 2017 15:02:00 +0100
+> Miquel RAYNAL <miquel.raynal@free-electrons.com> wrote:
+>=20
+> > On Mon, 11 Dec 2017 14:22:18 +0100
+> > Sean Nyekj=C3=A6r <sean.nyekjaer@prevas.dk> wrote:
+> >  =20
+> > > Hi Miquel,   =20
+> > > >>> Actually, if you look carefully to the trace behind, you are not
+> > > >>> using the same bad block table with the bootloader ("Bad block
+> > > >>> table not found for chip 0") so the core then reads the OOB area
+> > > >>> of every first page for each block and looks at the first OOB
+> > > >>> bytes for the bad block markers. If there was data there, the
+> > > >>> block will be declared as bad.     =20
+> > > >> With the new NFC driver, is the bad block table located
+> > > >> elsewhere? I have not done any changes to my bootloader when i
+> > > >> did the switch to the new driver,
+> > > >> so i guess it should work as before.     =20
+> > > >>> Can you please check that by using the configuration that
+> > > >>> actually boots and use nanddump in raw mode with the OOB area
+> > > >>> (options -n and -o)
+> > > >>> to show us the content of the first page of any block of the
+> > > >>> last NAND MTD device?
+> > > >>>
+> > > >>>     =20
+> > > >> Will do
+> > > >>     =20
+> > > > Dumped from uboot:     =20
+> > > > =3D> nand dump.oob 0xffc0000     =20
+> > > > Page 0ffc0000 dump:
+> > > > OOB:
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ff ff ff ff ff ff ff ff
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 31 74 62 42 56 4d 01 ff
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ff ff ff ff ff ff ff ff
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ff ff ff ff ff ff ff ff
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ff ff ff ff ff ff ff ff
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ff ff ff ff ff ff ff ff
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ff ff ff ff ff ff ff ff
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ff ff ff ff ff ff ff ff =
+    =20
+> > > > =3D> nand dump.oob 0xffe0000     =20
+> > > > Page 0ffe0000 dump:
+> > > > OOB:
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ff ff ff ff ff ff ff ff
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 4d 56 42 62 74 30 01 ff
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ff ff ff ff ff ff ff ff
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ff ff ff ff ff ff ff ff
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ff ff ff ff ff ff ff ff
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ff ff ff ff ff ff ff ff
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ff ff ff ff ff ff ff ff
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ff ff ff ff ff ff ff ff
+> > > >
+> > > > I have tried to dump some random pages, and they all contain
+> > > > 0xFF's. I'll try to trace what the NFC driver is reading from the
+> > > > OOBs.  =20
+> > > What function is called in the marvel_nand.c driver here [1].
+> > >  From my tracing i can see:
+> > > mtd->_read_oob(mtd, from, ops);   =20
+> > > ->=C2=A0=C2=A0=C2=A0 marvell_nfc_hw_ecc_bch_read_oob
+> > > ->=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 marvell_nfc_hw_ecc_bch_read_p=
+age     =20
+> > > marvell_nfc_hw_ecc_bch_read_page is returning 0 (bitflips)
+> > > But the mtd->_read_oob is returning -74.   =20
+> >=20
+> > This means the hardware detected an ECC error (and the page was not
+> > empty).
+> >  =20
+> > >=20
+> > > Some of the tracing:
+> > > [=C2=A0=C2=A0=C2=A0 2.947220] Scanning device for bad blocks
+> > > [=C2=A0=C2=A0=C2=A0 2.951334] mtd_read_oob
+> > > [=C2=A0=C2=A0=C2=A0 2.953874] marvell_nfc_hw_ecc_bch_read_oob
+> > > [=C2=A0=C2=A0=C2=A0 2.958393] marvell_nfc_hw_ecc_bch_read_page: max_b=
+itflips: 0,
+> > > page 0x0 [=C2=A0=C2=A0=C2=A0 2.965034] marvell_nfc_hw_ecc_bch_read_oo=
+b: returns 0
+> > > [=C2=A0=C2=A0=C2=A0 2.970194] mtd_read_oob: ret_code -74
+> > > [=C2=A0=C2=A0=C2=A0 2.983669] Bad eraseblock 0 at 0x000000000000   =20
+> >=20
+> > This behavior is "normal", it is because the number of failure has
+> > been incremented (probably by marvell_nfc_hw_ecc_correct()).
+> >=20
+> >=20
+> > Can you hack the code right before this line [1] and add:
+> > 1/ A dump of both the data buffer and the oob buffer (entirely)
+> > 2/ Add a memset(mtd->oob_poi, 0xff, mtd->oobsize) conditionally until
+> > the probe is finished (you may want to add a global boolean value that
+> > changes its state after the nand_scan_tail() call). =20
+>=20
+> Instead of hacking this way, to boot until you get a prompt, you may
+> add this property to the nand controller node:
 
-  Linux 4.15-rc1 (2017-11-26 16:01:47 -0800)
+I guess you mean the nand node, not the nand-controller node?
 
-are available in the git repository at:
-
-  https://github.com/rogerq/linux.git tags/gpmc-omap-for-v4.16-immutable
-
-for you to fetch changes up to c18a7ac3398d0cef29749f9568666db8321aa4c9:
-
-  memory: omap-gpmc: Make 'bank-width' property optional (2017-12-01 15:37:49 +0200)
-
-----------------------------------------------------------------
-OMAP-GPMC: driver updates for v4.16
-* Error out only if both 'bank-width' and 'gpmc,device-width' DT properties are missing.
-
-----------------------------------------------------------------
-Ladislav Michl (1):
-      memory: omap-gpmc: Make 'bank-width' property optional
-
- drivers/memory/omap-gpmc.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
--- 
-cheers,
--roger
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+>=20
+> nand-ecc-mode =3D "none";
+>=20
+> Then please use nanddump over a programmed page, including the OOB area.
+>=20
