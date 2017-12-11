@@ -1,38 +1,30 @@
-Date: Mon, 11 Dec 2017 22:02:55 +0100
-From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Jason Cooper <jason@lakedaemon.net>,
- Andrew Lunn <andrew@lunn.ch>, Gregory Clement
- <gregory.clement@free-electrons.com>, Sebastian Hesselbarth
- <sebastian.hesselbarth@gmail.com>, Russell King <linux@armlinux.org.uk>,
- Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>, Eric Miao <eric.y.miao@gmail.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
- <will.deacon@arm.com>, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>, Thomas Petazzoni
- <thomas.petazzoni@free-electrons.com>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, Antoine Tenart
- <antoine.tenart@free-electrons.com>, Nadav Haklai <nadavh@marvell.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Neta Zur
- Hershkovits <neta@marvell.com>, Hanna Hawa <hannah@marvell.com>, Ofer
- Heifetz <oferh@marvell.com>, linux-arm-kernel
- <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 02/12] mtd: nand: add reworked Marvell NAND controller
- driver
-Message-ID: <20171211220255.0292fd8f@xps13>
-In-Reply-To: <20171211180511.1d734b37@bbrezillon>
-References: <20171207201814.30411-1-miquel.raynal@free-electrons.com>
- <20171207201814.30411-3-miquel.raynal@free-electrons.com>
- <CAAEAJfC89bRugBsK8jrK=6fdq76yzjThA74UCAhAaVuonLLNvg@mail.gmail.com>
- <20171211175506.0b8ea4d1@xps13>
- <20171211180511.1d734b37@bbrezillon>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eOVR4-0003hR-6O
+ for linux-mtd@lists.infradead.org; Mon, 11 Dec 2017 21:16:28 +0000
+Date: Mon, 11 Dec 2017 22:16:03 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: Greg Cook <greg@morpheus.ws>, Sean =?UTF-8?B?Tnlla2rDpnI=?=
+ <sean.nyekjaer@prevas.dk>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "Kasper Revsbech \(KREV\)"
+ <krev@triax.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Miquel RAYNAL <miquel.raynal@free-electrons.com>
+Subject: Re: [BUG] pxa3xx: wait time out when scanning for bb
+Message-ID: <20171211221603.37fd2685@bbrezillon>
+In-Reply-To: <CAAEAJfDyn2Ud_06DyT2fb0Y+jYDMMKbTvceAyxh_hnCcHvR-EA@mail.gmail.com>
+References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
+ <20171128140210.34215e19@xps13>
+ <dd07aafc-0d23-e00a-4996-cd233f8a9065@prevas.dk>
+ <20171128143055.1ff22979@xps13>
+ <CAAEAJfBGG9wMVGnwSBfgr+tpr_E_weVBqTc=EvDGU6JUQveFQg@mail.gmail.com>
+ <20171210151734.7e1aac59@xps13>
+ <CAAEAJfCX5wakFfuPbEvyQjCu3V8Qv3O98=kF1STxDQcQ+vkgoQ@mail.gmail.com>
+ <CAL92e2W7fLjVOWFgH2PpRLRP7Tf5L1vta0jduWm+bTVm647MNQ@mail.gmail.com>
+ <CAAEAJfDyn2Ud_06DyT2fb0Y+jYDMMKbTvceAyxh_hnCcHvR-EA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,121 +34,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 11 Dec 2017 18:05:11 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+On Mon, 11 Dec 2017 13:24:56 -0300
+Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
 
-> On Mon, 11 Dec 2017 17:55:06 +0100
-> Miquel RAYNAL <miquel.raynal@free-electrons.com> wrote:
->=20
-> > On Mon, 11 Dec 2017 13:27:30 -0300
-> > Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
-> >  =20
-> > > On 7 December 2017 at 17:18, Miquel Raynal
-> > > <miquel.raynal@free-electrons.com> wrote:   =20
-> > > > Add marvell_nand driver which aims at replacing the existing
-> > > > pxa3xx_nand driver.
-> > > >
-> > > > The new driver intends to be easier to understand and follows
-> > > > the brand new NAND framework rules by implementing hooks for
-> > > > every pattern the controller might support and referencing them
-> > > > inside a parser object that will be given to the core at each
-> > > > ->exec_op() call.
-> > > >
-> > > > Raw accessors are implemented, useful to test/debug
-> > > > memory/filesystem corruptions. Userspace binaries contained in
-> > > > the mtd-utils package may now be used and their output trusted.
-> > > >
-> > > > Timings may not be kept from the bootloader anymore, the timings
-> > > > used for instance in U-Boot were not optimal and it supposed to
-> > > > have NAND support (and initialized) in the bootloader.
-> > > >
-> > > > Thanks to the improved timings, implementation of ONFI mode 5
-> > > > support (with EDO managed by adding a delay on data sampling),
-> > > > merging the commands together and optimizing writes in the
-> > > > command registers, the new driver may achieve faster
-> > > > throughputs in both directions. Measurements show an
-> > > > improvement of about +23% read throughput and +24% write
-> > > > throughput. These measurements have been done with an
-> > > > Armada-385-DB-AP (4kiB NAND pages forced in 4-bit strength BCH
-> > > > ECC correction) using the userspace tool 'flash_speed' from the
-> > > > MTD test suite.
-> > > >
-> > > > Besides these important topics, the new driver addresses several
-> > > > unsolved known issues in the old driver which:
-> > > > - did not work with ECC soft neither with ECC none ;
-> > > > - relied on naked read/write (which is unchanged) while the
-> > > > NFCv1 embedded in the pxa3xx platforms do not implement it, so
-> > > > several NAND commands did not actually ever work without any
-> > > > notice (like reading the ONFI PARAM_PAGE or SET/GET_FEATURES) ;
-> > > > - wrote the OOB data correctly, but was not able to read it
-> > > > correctly past the first OOB data chunk ;
-> > > > - did not displayed ECC bytes ;
-> > > > - used device tree bindings that did not allow more than one
-> > > > NAND chip, and did not allow to choose the correct chip select
-> > > > if not incrementing from 0. Plus, the Ready/Busy line used had
-> > > > to be 0.
-> > > >
-> > > > Old device tree bindings are still supported but deprecated. A
-> > > > more hierarchical view has to be used to keep the controller
-> > > > and the NAND chip structures clearly separated both inside the
-> > > > device tree and also in the driver code.
-> > > >     =20
-> > >=20
-> > > So, is this driver fully compatible with the current pxa3xx-nand
-> > > driver?   =20
-> >=20
-> > It should be!
-> >  =20
-> > >=20
-> > > Have you tested with U-Boot's driver (based on the pxa3xx-nand)?
-> > >=20
-> > > I recally some subtle issues with the fact that U-Boot and Linux
-> > > had to agree about the BBT format.   =20
-> >=20
-> > I kept the pxa3xx_nand driver BBT format.
-> >=20
-> > This is something I mistakenly omitted from the commit message:
-> >=20
-> > There are 5 supported layouts in the driver (the same as withing the
-> > pxa3xx_nand driver):
-> >     1/ Page: 512B, strength 1b/512B (hamming)
-> >     2/ Page: 2kiB, strength 4b/2kiB (hamming)
-> >     3/ page: 2kiB, strength 16b/2kiB (BCH)
-> >     4/ page: 4kiB, strength 16b/2kiB (BCH)
-> >     5/ page: 4kiB, strength 32b/2kiB (BCH) =20
->=20
-> Are you sure of #5? I thought the engine was only capable of modifying
-> the ECC block size, not the strength. If this is the case, then mode
-> #5 is actually 16b/1024kiB.
+> Greg,
+> 
+> On 11 December 2017 at 10:18, Greg Cook <greg@morpheus.ws> wrote:
+> > Sean,
+> >
+> > I am not completely up-to-date on this, but everything in your traces reads
+> > like the same issue I was having on bringup for Armada 385 nand (under 4.9).
+> > I've been stuck on another project, so I haven't had time to follow up
+> > further, but I just diffed against linux-stable v4.12 pxa3xx_nand.c and it
+> > looks like the problem is still there.
+> >
+> > As far as I can see, the driver is broken for OOB reads when BCH is enabled
+> > because the setup in prepare_set_command() results in drain_fifo() not
+> > reading enough words from the read fifo in the nfc2 IP block.
 
-You are right, #5 you actually be:
+May I ask how you you get to this conclusion? What makes you think
+there's still unread data in the FIFO?
 
-    5/ page: 4kiB, strength 16b/1kiB (BCH) =20
+> >  
+> 
+> Yes, this sounds just like the bug I was expecting for OOB reads.
+> 
+> > The patch we are using is below. I have the following in my DTS.
+> > nand-keep-config is commented out because I was having some issues with
+> > u-boot at the time and it may no longer be relevant:  
+> 
+> Probably.
+> 
+> > flash@d0000 {
+> > status = "okay";
+> > num-cs = <1>;
+> > //marvell,nand-keep-config;
+> > marvell,nand-enable-arbiter;
+> > nand-on-flash-bbt;
+> > nand-ecc-strength = <4>;
+> > nand-ecc-step-size = <512>;
+> > };
+> >
+> > --- /home/user/build/linux-stable/drivers/mtd/nand/pxa3xx_nand.c
+> > +++
+> > /home/user/build/beam/openwrt/build_dir/target-arm_cortex-a9+vfpv3_musl_eabi/linux-mvebu/linux-4.9.34/drivers/mtd/nand/pxa3xx_nand.c
+> > @@ -668,7 +669,7 @@
+> >
+> >  static void drain_fifo(struct pxa3xx_nand_info *info, void *data, int len)
+> >  {
+> > - if (info->ecc_bch) {
+> > + if (info->use_ecc && info->ecc_bch) {
 
-Thanks for pointing it,
-Miqu=C3=A8l
+This one might explain timeouts occurring when you drain the FIFO for
+an operation that does not enable the ECC engine (like
+READ_PARAM_PAGE).
 
->=20
-> >=20
-> > Layout 2 has been tested with CM_X300 compulab module (PXA SoC) with
-> > and without DMA.
-> > Layout 4 has been tested with an Armada 385 db, an Armada 7040 DB
-> > and an Armada 8040 DB.
-> > Layout 5 has been tested with an Armada 398 db.
-> >=20
-> > Layout 1 has been tested with the Armada 385 db with some hacks.
-> > Layout 3 has been tested with the Armada 385 db with some other
-> > hacks, that is why I am concerned about the other thread on the MTD
-> > mailing list "wait timeout when scanning for BB" where a 2kiB page
-> > with 16b/2048B strength is in use.
-> >=20
-> > Regards,
-> > Miqu=C3=A8l =20
->=20
+So this fix is indeed valid, but I'm almost sure it won't fix Sean's
+problem.
 
+> >   u32 val;
+> >   int ret;
+> >
+> > @@ -1012,7 +1014,11 @@
+> >
+> >   if (info->cur_chunk < info->nfullchunks) {
+> >   info->step_chunk_size = info->chunk_size;
+> > - info->step_spare_size = info->spare_size;
+> > + if (info->use_ecc) {
+> > + info->step_spare_size = info->spare_size;
+> > + } else {
+> > + info->step_spare_size = info->spare_size + info->ecc_size;
+> > + }
 
+The only case this change would fix is when you try to read/write pages
+in raw mode, and I'm pretty sure this driver does not support raw
+accesses.
 
---=20
-Miquel Raynal, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+> >   } else {
+> >   info->step_chunk_size = info->last_chunk_size;
+> >   info->step_spare_size = info->last_spare_size;
+> >  
+> 
+> Looks like a decent change.
+> 
+> Boris: do you think this is stable material worth backporting?
+> In other words, does it make sense to fix it, given the reworked driver?
