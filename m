@@ -1,20 +1,41 @@
 Received: from mail01.prevas.se ([62.95.78.3])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eOhaP-0006WP-7u
- for linux-mtd@lists.infradead.org; Tue, 12 Dec 2017 10:14:55 +0000
-Subject: Re: [PATCH] Fix OOB_READ bug where hardware FIFO is not drained
- completely. Fix potential bug for non-ECC operations.
-To: Greg Cook <greg@morpheus.ws>, <ezequiel.garcia@free-electrons.com>,
- <linux-mtd@lists.infradead.org>
-CC: <miquel.raynal@free-electrons.com>
-References: <20171212083826.5000-1-greg@morpheus.ws>
+ id 1eOiDs-0004Zj-8l
+ for linux-mtd@lists.infradead.org; Tue, 12 Dec 2017 10:55:42 +0000
+Subject: Re: [BUG] pxa3xx: wait time out when scanning for bb
+To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+CC: <ezequiel.garcia@free-electrons.com>, <linux-mtd@lists.infradead.org>,
+ "Kasper Revsbech (KREV)" <krev@triax.com>, Boris Brezillon
+ <Boris.Brezillon@free-electrons.com>
+References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
+ <20171128150417.17d53b5a@xps13>
+ <1e2bea86-e429-e3c4-a6e4-c2c82457a061@prevas.dk>
+ <20171129090305.0174246d@xps13>
+ <aeb06060-015e-85b4-5b6d-4427dfd1e11a@prevas.dk>
+ <20171130181847.0bbc58b5@xps13>
+ <5bc5d326-af1f-44d2-468a-d211212c4612@prevas.dk>
+ <20171201091539.5d6b7572@xps13>
+ <744e99ee-91cf-28bc-21eb-c3fa01fb0a01@prevas.dk>
+ <20171207213814.4c57098f@xps13>
+ <26441ab5-8c70-4d7f-5e0d-bec3d59e2ef2@prevas.dk>
+ <20171208102148.0a2c0fbe@xps13>
+ <e1f47fe9-9b05-fdcd-b7ed-10e8cbced3a4@prevas.dk>
+ <20171211105359.7eb1aeb3@xps13>
+ <d0dee517-8061-5d40-aa82-6d4c5cda4fb1@prevas.dk>
+ <a2502de6-b4c7-befb-6a08-de976be85d17@prevas.dk>
+ <f70d94b8-5fc7-d091-9a5c-77597d2b7aa4@prevas.dk>
+ <20171211150200.51c7f3b4@xps13> <20171211150929.722a361a@xps13>
+ <a5fc7dea-a043-370c-b18a-eeb8f1f067f4@prevas.dk>
+ <20171212095119.475de032@xps13>
+ <727489cf-d1f6-8777-c6f4-981127657c9d@prevas.dk>
+ <20171212111227.4946cc15@xps13>
 From: =?UTF-8?Q?Sean_Nyekj=c3=a6r?= <sean.nyekjaer@prevas.dk>
-Message-ID: <ad6f5d27-fdcd-1356-9f5d-5b5185979b04@prevas.dk>
-Date: Tue, 12 Dec 2017 11:14:28 +0100
+Message-ID: <e9e6bf70-918f-b750-5893-55744dc34882@prevas.dk>
+Date: Tue, 12 Dec 2017 11:55:22 +0100
 MIME-Version: 1.0
-In-Reply-To: <20171212083826.5000-1-greg@morpheus.ws>
+In-Reply-To: <20171212111227.4946cc15@xps13>
 Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,42 +46,144 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Greg
-> Signed-off-by: Greg Cook <greg@morpheus.ws>
-Tested-by: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
-> ---
->   drivers/mtd/nand/pxa3xx_nand.c | 9 +++++++--
->   1 file changed, 7 insertions(+), 2 deletions(-)
+Hi Miquel
+> Are you sure your U-Boot does actually use the BBT?
 >
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> index 021374f..cfa8c71 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -677,7 +677,7 @@ static void disable_int(struct pxa3xx_nand_info *info, uint32_t int_mask)
->   
->   static void drain_fifo(struct pxa3xx_nand_info *info, void *data, int len)
->   {
-> -	if (info->ecc_bch) {
-> +	if (info->use_ecc && info->ecc_bch) {
->   		u32 val;
->   		int ret;
->   
-> @@ -1023,7 +1023,12 @@ static int prepare_set_command(struct pxa3xx_nand_info *info, int command,
->   
->   		if (info->cur_chunk < info->nfullchunks) {
->   			info->step_chunk_size = info->chunk_size;
-> -			info->step_spare_size = info->spare_size;
-> +			if (info->use_ecc) {
-> +				info->step_spare_size = info->spare_size;
-> +			} else {
-> +				info->step_spare_size = info->spare_size
-> +							+ info->ecc_size;
-> +			}
->   		} else {
->   			info->step_chunk_size = info->last_chunk_size;
->   			info->step_spare_size = info->last_spare_size;
-Please change the subject to something shorter like:
-mtd: nand: pxa3xx: fix READOOB when hardware FIFO is not drained completely
-Fix potential bug for non-ECC operations.
+> The last two blocks (supposedly written by U-Boot) are usually declared
+> bad by Linux when it does not find the BBT. This is not the case, like
+> if the last blocks were empty.
+>
+> Could you try this, still with "ecc-none" and without the
+> "nand-keep-config" property:
+&nand_controller {
+         status = "okay";
+         pinctrl-names = "default";
+         pinctrl-0 = <&nand_pins>, <&nand_rb>;
+
+         nand@0 {
+                 reg = <0>;
+                 label = "pxa3xx_nand-0";
+                 marvell,rb = <0>;
+                 nand-ecc-mode = "none";
+                 nand-on-flash-bbt;
+     };
+};
+>
+> 1/ From U-Boot, scrub the last 4 blocks. As your NAND is 256MiB
+> wide with 128kiB blocks, this should do the trick:
+>
+>          nand scrub 0xFF80000 0x80000
+>
+> 2/ At this point, U-Boot should tell you it cannot find a bad block
+> table, a second later it will tell you that it created it twice at the
+> end of the NAND chip.
+Yes uboot is recreating the bbt and after a new reset it recognise the 
+new bbt.
+>
+> 3/ Boot Linux with ECC == none
+> 4/ Dump the first page of the 4 last blocks:
+>
+>          nanddump -nop -l 0x800 -s <adddr> /dev/mtd1
+See tracing below
+>
+> Supposedly that /dev/mtd1 is the _last_ MTD partition of your NAND
+> device and <addr> being sequentially:
+>
+>          0xFF80000
+>          0xFFA0000
+>          0xFFC0000
+>          0xFFE0000
+>
+> Please copy/paste the overall trace without any cuts (including U-Boot
+> traces, literally everything).
+>
+
+
+U-Boot 2017.11-00035-ge9282bb30b-dirty (Dec 12 2017 - 11:22:21 +0100)
+
+SoC:   MV88F6810-A0 at 1066 MHz
+DRAM:  1 GiB (533 MHz, 16-bit, ECC not enabled)
+WDT:   Enabling Armada 385 watchdog.
+NAND:  PXA3xx: strength 4, ecc_stepsize 512, page_size 2048
+256 MiB
+Bad block table found at page 131008, version 0x01
+Bad block table found at page 130944, version 0x01
+Model: Triax dvb-tc output
+Board: Triax dvb-tc output
+Net:
+Warning: ethernet@30000 (eth0) using random MAC address - 26:d3:56:98:ca:b4
+eth0: ethernet@30000
+=> nand scrub 0xFF80000 0x80000
+
+NAND scrub: device 0 offset 0xff80000, size 0x80000
+Warning: scrub option will erase all factory set bad blocks!
+          There is no reliable way to recover them.
+          Use this command only for testing purposes if you
+          are sure of what you are doing!
+
+Really scrub this NAND flash? <y/N>
+y
+Erasing at 0xffe0000 -- 100% complete.
+OK
+=> boot
+
+Starting kernel ...
+
+[    0.000000] Booting Linux on physical CPU 0x0
+[    0.000000] Linux version 4.15.0-rc1-00094-g1791eb8f2475-dirty 
+(skn@skn) (gcc version 7.2.0 (Arch Repository)) #30 SMP PREEMPT Tue Dec 
+12 09:28:30 CET 2017
+...
+[    2.692801] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
+[    2.699176] nand: Micron MT29F2G08ABAEAH4
+[    2.703232] nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, 
+OOB size: 64
+[    2.710928] nand: NAND_ECC_NONE selected by board driver. This is not 
+recommended!
+[    2.718523] nand: WARNING: pxa3xx_nand-0: the ECC used on your system 
+is too weak compared to the one required by the NAND chip
+[    2.731429] Bad block table not found for chip 0
+[    2.737384] Bad block table not found for chip 0
+[    2.742024] Scanning device for bad blocks
+[    2.891818] Bad block table written to 0x00000ffe0000, version 0x01
+[    2.898837] Bad block table written to 0x00000ffc0000, version 0x01
+[    2.905152] 2 cmdlinepart partitions found on MTD device pxa3xx_nand-0
+[    2.911708] Creating 2 MTD partitions on "pxa3xx_nand-0":
+[    2.917130] 0x000000000000-0x000000100000 : "uboot"
+[    2.922512] 0x000000100000-0x000010000000 : "ubi0"
+...
+output-module login: root
+Password:
+root@output-module:~#
+root@output-module:~# nanddump -nop -l 0x800 -s 0xFF80000 /dev/mtd1
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x0ff80000 and ending at 0x0ff80800...
+root@output-module:~# nanddump -nop -l 0x800 -s 0xFFA0000 /dev/mtd1
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x0ffa0000 and ending at 0x0ffa0800...
+root@output-module:~# nanddump -nop -l 0x800 -s 0xFFC0000 /dev/mtd1
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x0ffc0000 and ending at 0x0ffc0800...
+root@output-module:~# nanddump -nop -l 0x800 -s 0xFFE0000 /dev/mtd1
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x0ffe0000 and ending at 0x0ffe0800...
+root@output-module:~# reboot
+...
+U-Boot 2017.11-00035-ge9282bb30b-dirty (Dec 12 2017 - 11:22:21 +0100)
+
+SoC:   MV88F6810-A0 at 1066 MHz
+DRAM:  1 GiB (533 MHz, 16-bit, ECC not enabled)
+WDT:   Enabling Armada 385 watchdog.
+NAND:  PXA3xx: strength 4, ecc_stepsize 512, page_size 2048
+256 MiB
+Bad block table not found for chip 0
+Bad block table not found for chip 0
+Scanning device for bad blocks
+Bad block table written to 0x00000ffe0000, version 0x01
+Bad block table written to 0x00000ffc0000, version 0x01
+
+If I reboot uboot is unable recognise the bbt, but recreates it. But the 
+kernel is scanning on every boot.
+Am I doing anything wrong in the nanddump command?
 
 /Sean
