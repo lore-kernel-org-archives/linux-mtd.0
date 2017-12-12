@@ -1,40 +1,21 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eOkib-0000uu-W2
- for linux-mtd@lists.infradead.org; Tue, 12 Dec 2017 13:35:36 +0000
-Date: Tue, 12 Dec 2017 14:35:12 +0100
-From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-To: Sean =?UTF-8?B?Tnlla2rDpnI=?= <sean.nyekjaer@prevas.dk>
-Cc: <ezequiel.garcia@free-electrons.com>, <linux-mtd@lists.infradead.org>,
- "Kasper Revsbech (KREV)" <krev@triax.com>, Boris Brezillon
- <Boris.Brezillon@free-electrons.com>
-Subject: Re: [BUG] pxa3xx: wait time out when scanning for bb
-Message-ID: <20171212143512.3b62d3f5@xps13>
-In-Reply-To: <2f16ce90-6e00-c95f-7a81-5603d9acf574@prevas.dk>
-References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
- <20171207213814.4c57098f@xps13>
- <26441ab5-8c70-4d7f-5e0d-bec3d59e2ef2@prevas.dk>
- <20171208102148.0a2c0fbe@xps13>
- <e1f47fe9-9b05-fdcd-b7ed-10e8cbced3a4@prevas.dk>
- <20171211105359.7eb1aeb3@xps13>
- <d0dee517-8061-5d40-aa82-6d4c5cda4fb1@prevas.dk>
- <a2502de6-b4c7-befb-6a08-de976be85d17@prevas.dk>
- <f70d94b8-5fc7-d091-9a5c-77597d2b7aa4@prevas.dk>
- <20171211150200.51c7f3b4@xps13> <20171211150929.722a361a@xps13>
- <a5fc7dea-a043-370c-b18a-eeb8f1f067f4@prevas.dk>
- <20171212095119.475de032@xps13>
- <727489cf-d1f6-8777-c6f4-981127657c9d@prevas.dk>
- <20171212111227.4946cc15@xps13>
- <e9e6bf70-918f-b750-5893-55744dc34882@prevas.dk>
- <20171212120806.7c31463f@xps13>
- <a0267c71-4333-7dd4-dcf4-14aced37f8f9@prevas.dk>
- <20171212123523.48185f21@xps13>
- <75bd6b87-12ed-4003-262a-b1bd03a62cbd@prevas.dk>
- <20171212134706.49f3c57e@xps13>
- <2f16ce90-6e00-c95f-7a81-5603d9acf574@prevas.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from 6.mo4.mail-out.ovh.net ([188.165.36.253])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eOknk-0003GO-AX
+ for linux-mtd@lists.infradead.org; Tue, 12 Dec 2017 13:40:58 +0000
+Received: from player694.ha.ovh.net (b7.ovh.net [213.186.33.57])
+ by mo4.mail-out.ovh.net (Postfix) with ESMTP id 5B82A116A92
+ for <linux-mtd@lists.infradead.org>; Tue, 12 Dec 2017 14:40:26 +0100 (CET)
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+To: marek.vasut@gmail.com,
+	linux-mtd@lists.infradead.org
+Cc: computersforpeace@gmail.com, dwmw2@infradead.org,
+ boris.brezillon@free-electrons.com, richard@nod.at,
+ linux-kernel@vger.kernel.org, Zhiqiang.Hou@nxp.com, shawnguo@kernel.org,
+ robh@kernel.org, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Subject: [PATCH] Revert "dt-bindings: mtd: add sst25wf040b and en25s64 to
+ sip-nor list"
+Date: Tue, 12 Dec 2017 14:40:12 +0100
+Message-Id: <20171212134012.19949-1-cyrille.pitchen@wedev4u.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,34 +25,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Sean,
+This reverts commit b07815d4eaf658b683c345d6e643895a20d92f29.
 
+The reverted commit was merged into v4-15-rc1 by mistake: it was taken
+from the IMX tree but the patch has never been sent to linux-mtd nor
+reviewed by any spi-nor maintainers.
 
-> Without kernel bbt (nand scrubbed in uboot just before boot):
+Actually, it would have been rejected since we add new values for the
+'compatible' DT property only for SPI NOR memories that don't support
+the JEDEC READ ID op code (0x9F).
 
-[...]
+Both en25s64 and sst25wf040b support the JEDEC READ ID op code, hence
+should use the "jedec,spi-nor" string alone as 'compatible' value.
 
-> Block size 131072, page size 2048, OOB size 64
-> Dumping data starting at 0x0fec0000 and ending at 0x0fec0800...
+See the following link for more details:
+http://lists.infradead.org/pipermail/linux-mtd/2017-November/077425.html
 
-[...]
+Signed-off-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+---
+ Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt | 2 --
+ 1 file changed, 2 deletions(-)
 
->  =C2=A0 OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->  =C2=A0 OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->  =C2=A0 OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->  =C2=A0 OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-
-As you can see, your U-Boot version does not recreate the BBT
-automatically as I told you it should. Please try rebooting the board
-after scrubbing and then check U-Boot creates the BBT from U-Boot
-command line.
-
-I insist on the fact that this is something I could have spotted earlier
-if you had blindlessly copy/pasted the *entire* trace, I don't
-mind if it is big, it can be really interesting for others to get the
-full trace.
-
-This time I only need the trace without the "on-flash-bbt" property.
-
-Thank you,
-Miqu=C3=A8l
+diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
+index 376fa2f50e6b..956bb046e599 100644
+--- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
++++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
+@@ -13,7 +13,6 @@ Required properties:
+                  at25df321a
+                  at25df641
+                  at26df081a
+-                 en25s64
+                  mr25h128
+                  mr25h256
+                  mr25h10
+@@ -33,7 +32,6 @@ Required properties:
+                  s25fl008k
+                  s25fl064k
+                  sst25vf040b
+-                 sst25wf040b
+                  m25p40
+                  m25p80
+                  m25p16
+-- 
+2.11.0
