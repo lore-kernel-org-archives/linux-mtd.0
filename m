@@ -1,18 +1,42 @@
-Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eOg6D-0005dI-GZ
- for linux-mtd@lists.infradead.org; Tue, 12 Dec 2017 08:39:39 +0000
-Received: by mail-pg0-x244.google.com with SMTP id k15so12956853pgr.7
- for <linux-mtd@lists.infradead.org>; Tue, 12 Dec 2017 00:39:14 -0800 (PST)
-From: Greg Cook <greg@morpheus.ws>
-To: ezequiel.garcia@free-electrons.com,
-	linux-mtd@lists.infradead.org
-Cc: Greg Cook <greg@morpheus.ws>, miquel.raynal@free-electrons.com,
- sean.nyekjaer@prevas.dk
-Subject: [PATCH] Fix OOB_READ bug where hardware FIFO is not drained
- completely. Fix potential bug for non-ECC operations.
-Date: Tue, 12 Dec 2017 16:38:26 +0800
-Message-Id: <20171212083826.5000-1-greg@morpheus.ws>
+Received: from mail01.prevas.se ([62.95.78.3])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eOgMi-0008IW-RU
+ for linux-mtd@lists.infradead.org; Tue, 12 Dec 2017 08:56:43 +0000
+Subject: Re: [BUG] pxa3xx: wait time out when scanning for bb
+To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+CC: <ezequiel.garcia@free-electrons.com>, <linux-mtd@lists.infradead.org>,
+ "Kasper Revsbech (KREV)" <krev@triax.com>, Boris Brezillon
+ <Boris.Brezillon@free-electrons.com>
+References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
+ <20171128143055.1ff22979@xps13>
+ <2d491047-cd55-5a0a-83ec-58365f3bf3ff@prevas.dk>
+ <20171128150417.17d53b5a@xps13>
+ <1e2bea86-e429-e3c4-a6e4-c2c82457a061@prevas.dk>
+ <20171129090305.0174246d@xps13>
+ <aeb06060-015e-85b4-5b6d-4427dfd1e11a@prevas.dk>
+ <20171130181847.0bbc58b5@xps13>
+ <5bc5d326-af1f-44d2-468a-d211212c4612@prevas.dk>
+ <20171201091539.5d6b7572@xps13>
+ <744e99ee-91cf-28bc-21eb-c3fa01fb0a01@prevas.dk>
+ <20171207213814.4c57098f@xps13>
+ <26441ab5-8c70-4d7f-5e0d-bec3d59e2ef2@prevas.dk>
+ <20171208102148.0a2c0fbe@xps13>
+ <e1f47fe9-9b05-fdcd-b7ed-10e8cbced3a4@prevas.dk>
+ <20171211105359.7eb1aeb3@xps13>
+ <d0dee517-8061-5d40-aa82-6d4c5cda4fb1@prevas.dk>
+ <a2502de6-b4c7-befb-6a08-de976be85d17@prevas.dk>
+ <f70d94b8-5fc7-d091-9a5c-77597d2b7aa4@prevas.dk>
+ <20171211150200.51c7f3b4@xps13> <20171211150929.722a361a@xps13>
+ <a5fc7dea-a043-370c-b18a-eeb8f1f067f4@prevas.dk>
+ <20171212095119.475de032@xps13>
+From: =?UTF-8?Q?Sean_Nyekj=c3=a6r?= <sean.nyekjaer@prevas.dk>
+Message-ID: <727489cf-d1f6-8777-c6f4-981127657c9d@prevas.dk>
+Date: Tue, 12 Dec 2017 09:56:19 +0100
+MIME-Version: 1.0
+In-Reply-To: <20171212095119.475de032@xps13>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,37 +46,171 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Greg Cook <greg@morpheus.ws>
----
- drivers/mtd/nand/pxa3xx_nand.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+Hi Miquel,
+>> Boot log:
+>> [    2.692856] nand: device found, Manufacturer ID: 0x2c, Chip ID:
+>> 0xda [    2.699231] nand: Micron MT29F2G08ABAEAH4
+>> [    2.703286] nand: 256 MiB, SLC, erase size: 128 KiB, page size:
+>> 2048, OOB size: 64
+>> [    2.711135] nand: NAND_ECC_NONE selected by board driver. This is
+>> not recommended!
+>> [    2.718730] nand: WARNING: pxa3xx_nand-0: the ECC used on your
+>> system is too weak compared to the one required by the NAND chip
+>> [    2.732632] Bad block table not found for chip 0
+>> [    2.739609] Bad block table not found for chip 0
+>> [    2.744250] Scanning device for bad blocks
+>> [    2.985502] Bad block table written to 0x00000ffe0000, version 0x01
+>> [    2.992760] Bad block table written to 0x00000ffc0000, version 0x01
+>>
+>> Nanddump:
+>> root@output-module:~# nanddump -oa /dev/mtd1
+>> ECC failed: 0
+>> ECC corrected: 0
+>> Number of bad blocks: 0
+>> Number of bbt blocks: 0
+>> Block size 131072, page size 2048, OOB size 64
+>> Dumping data starting at 0x00000000 and ending at 0x0ff00000...
+>> UBIXS...
+>>
+>> I guess it's safe to say something is not right with ECC enabled.
+>>>> Then please do a raw dump with nanddump from Linux.
+> Thanks for testing this, but I _really_ need the entire output of
+>
+>          nanddump -o -n -p -l 0x800 /dev/mtd1
+root@output-module:~# nanddump -o -n -p -l 0x800 /dev/mtd1
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x00000000 and ending at 0x00000800...
+0x00000000: 55 42 49 23 01 00 00 00 00 00 00 00 00 00 00 01
+0x00000010: 00 00 08 00 00 00 10 00 00 00 00 00 00 00 00 00
+0x00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000030: 00 00 00 00 00 00 00 00 00 00 00 00 7f 58 53 19
+0x00000040: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000050: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000060: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000070: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000090: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000000a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000000b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000000c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000000d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000000e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000000f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000110: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000120: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000130: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000140: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000150: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000160: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000170: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000180: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000190: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000001a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000001b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000001c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000001d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000001e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000001f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000210: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000220: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000230: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000240: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000250: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000260: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000270: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000280: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000290: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000002a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000002b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000002c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000002d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000002e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000002f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000300: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000310: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000320: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000330: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000340: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000350: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000360: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000370: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000003a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000003b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000003c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000003d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000003e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000003f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000400: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000410: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000420: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000430: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000440: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000450: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000460: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000470: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000490: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000004a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000004b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000004c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000004d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000004e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000004f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000510: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000520: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000530: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000540: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000550: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000560: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000570: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000590: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000005a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000005b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000005c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000005d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000005e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000005f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000610: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000620: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000630: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000640: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000650: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000660: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000670: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000680: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000690: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000006a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000006b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000006c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000006d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000006e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000006f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000700: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000710: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000720: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000730: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000740: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000750: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000760: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000770: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000780: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000790: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000007a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000007b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000007c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000007d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000007e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000007f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+   OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+   OOB Data: c1 eb aa 03 d3 5c d8 ae fa fd ba 34 2a a5 20 38
+   OOB Data: fd 0b 22 59 c1 8c 3c a5 a4 62 df f2 d4 7e ff ff
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 021374f..cfa8c71 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -677,7 +677,7 @@ static void disable_int(struct pxa3xx_nand_info *info, uint32_t int_mask)
- 
- static void drain_fifo(struct pxa3xx_nand_info *info, void *data, int len)
- {
--	if (info->ecc_bch) {
-+	if (info->use_ecc && info->ecc_bch) {
- 		u32 val;
- 		int ret;
- 
-@@ -1023,7 +1023,12 @@ static int prepare_set_command(struct pxa3xx_nand_info *info, int command,
- 
- 		if (info->cur_chunk < info->nfullchunks) {
- 			info->step_chunk_size = info->chunk_size;
--			info->step_spare_size = info->spare_size;
-+			if (info->use_ecc) {
-+				info->step_spare_size = info->spare_size;
-+			} else {
-+				info->step_spare_size = info->spare_size
-+							+ info->ecc_size;
-+			}
- 		} else {
- 			info->step_chunk_size = info->last_chunk_size;
- 			info->step_spare_size = info->last_spare_size;
--- 
-2.9.5
+/Sean
