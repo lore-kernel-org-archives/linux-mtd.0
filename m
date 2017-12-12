@@ -1,25 +1,40 @@
-Received: from smtp.exceet.ch ([77.245.33.226])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eOhKe-0006Qw-Tx
- for linux-mtd@lists.infradead.org; Tue, 12 Dec 2017 09:58:39 +0000
-Subject: Re: [PATCH v6 00/15] A SPI NAND framework under generic NAND framework
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-CC: =?UTF-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
- <peterpandong@micron.com>, Peter Pan <peterpansjtu@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-References: <20170529225931.226da943@bbrezillon>
- <90bcb366-c494-2dee-3bb7-d16b77e347c6@exceet.de>
- <20171204150514.1f17671d@bbrezillon>
- <A0FE66EC-7E17-43BE-9B66-896F112B92A0@micron.com>
- <20171205135804.478902dc@bbrezillon> <20171205140313.40f3f17d@bbrezillon>
-From: Frieder Schrempf <frieder.schrempf@exceet.de>
-Message-ID: <256b4ab6-c104-4580-87cd-527178bde460@exceet.de>
-Date: Tue, 12 Dec 2017 10:58:10 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eOhYT-0005oM-Jm
+ for linux-mtd@lists.infradead.org; Tue, 12 Dec 2017 10:12:55 +0000
+Date: Tue, 12 Dec 2017 11:12:27 +0100
+From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+To: Sean =?UTF-8?B?Tnlla2rDpnI=?= <sean.nyekjaer@prevas.dk>
+Cc: <ezequiel.garcia@free-electrons.com>, <linux-mtd@lists.infradead.org>,
+ "Kasper Revsbech (KREV)" <krev@triax.com>, Boris Brezillon
+ <Boris.Brezillon@free-electrons.com>
+Subject: Re: [BUG] pxa3xx: wait time out when scanning for bb
+Message-ID: <20171212111227.4946cc15@xps13>
+In-Reply-To: <727489cf-d1f6-8777-c6f4-981127657c9d@prevas.dk>
+References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
+ <20171128150417.17d53b5a@xps13>
+ <1e2bea86-e429-e3c4-a6e4-c2c82457a061@prevas.dk>
+ <20171129090305.0174246d@xps13>
+ <aeb06060-015e-85b4-5b6d-4427dfd1e11a@prevas.dk>
+ <20171130181847.0bbc58b5@xps13>
+ <5bc5d326-af1f-44d2-468a-d211212c4612@prevas.dk>
+ <20171201091539.5d6b7572@xps13>
+ <744e99ee-91cf-28bc-21eb-c3fa01fb0a01@prevas.dk>
+ <20171207213814.4c57098f@xps13>
+ <26441ab5-8c70-4d7f-5e0d-bec3d59e2ef2@prevas.dk>
+ <20171208102148.0a2c0fbe@xps13>
+ <e1f47fe9-9b05-fdcd-b7ed-10e8cbced3a4@prevas.dk>
+ <20171211105359.7eb1aeb3@xps13>
+ <d0dee517-8061-5d40-aa82-6d4c5cda4fb1@prevas.dk>
+ <a2502de6-b4c7-befb-6a08-de976be85d17@prevas.dk>
+ <f70d94b8-5fc7-d091-9a5c-77597d2b7aa4@prevas.dk>
+ <20171211150200.51c7f3b4@xps13> <20171211150929.722a361a@xps13>
+ <a5fc7dea-a043-370c-b18a-eeb8f1f067f4@prevas.dk>
+ <20171212095119.475de032@xps13>
+ <727489cf-d1f6-8777-c6f4-981127657c9d@prevas.dk>
 MIME-Version: 1.0
-In-Reply-To: <20171205140313.40f3f17d@bbrezillon>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,94 +44,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hello Sean,
 
-I spent some time looking at and working with your latest SPI NAND code.
-In my previous mail I said, that we have some working code for our 3.14 
-kernel based on the "mt29f_spinand" staging driver, but that was wrong 
-as I got things mixed up in my head.
-Actually our codebase was an early version of Peter's code, so the 
-effort to port it to the latest framework code was not that big.
+On Tue, 12 Dec 2017 09:56:19 +0100
+Sean Nyekj=C3=A6r <sean.nyekjaer@prevas.dk> wrote:
 
-I forked your repo and you can find my working tree at [1].
+> Hi Miquel,
+> >> Boot log:
+> >> [=C2=A0=C2=A0=C2=A0 2.692856] nand: device found, Manufacturer ID: 0x2=
+c, Chip ID:
+> >> 0xda [=C2=A0=C2=A0=C2=A0 2.699231] nand: Micron MT29F2G08ABAEAH4
+> >> [=C2=A0=C2=A0=C2=A0 2.703286] nand: 256 MiB, SLC, erase size: 128 KiB,=
+ page size:
+> >> 2048, OOB size: 64
+> >> [=C2=A0=C2=A0=C2=A0 2.711135] nand: NAND_ECC_NONE selected by board dr=
+iver. This
+> >> is not recommended!
+> >> [=C2=A0=C2=A0=C2=A0 2.718730] nand: WARNING: pxa3xx_nand-0: the ECC us=
+ed on your
+> >> system is too weak compared to the one required by the NAND chip
+> >> [=C2=A0=C2=A0=C2=A0 2.732632] Bad block table not found for chip 0
+> >> [=C2=A0=C2=A0=C2=A0 2.739609] Bad block table not found for chip 0
+> >> [=C2=A0=C2=A0=C2=A0 2.744250] Scanning device for bad blocks
+> >> [=C2=A0=C2=A0=C2=A0 2.985502] Bad block table written to 0x00000ffe000=
+0, version
+> >> 0x01 [=C2=A0=C2=A0=C2=A0 2.992760] Bad block table written to 0x00000f=
+fc0000,
+> >> version 0x01
+> >>
+> >> Nanddump:
+> >> root@output-module:~# nanddump -oa /dev/mtd1
+> >> ECC failed: 0
+> >> ECC corrected: 0
+> >> Number of bad blocks: 0
+> >> Number of bbt blocks: 0
+> >> Block size 131072, page size 2048, OOB size 64
+> >> Dumping data starting at 0x00000000 and ending at 0x0ff00000...
+> >> UBIXS...
+> >>
+> >> I guess it's safe to say something is not right with ECC enabled. =20
+> >>>> Then please do a raw dump with nanddump from Linux. =20
+> > Thanks for testing this, but I _really_ need the entire output of
+> >
+> >          nanddump -o -n -p -l 0x800 /dev/mtd1 =20
+> root@output-module:~# nanddump -o -n -p -l 0x800 /dev/mtd1
+> Block size 131072, page size 2048, OOB size 64
+> Dumping data starting at 0x00000000 and ending at 0x00000800...
 
-What I did so far:
+[...]
 
-* Rebase your patches on latest Linux 4.14.5
+>  =C2=A0 OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>  =C2=A0 OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>  =C2=A0 OOB Data: c1 eb aa 03 d3 5c d8 ae fa fd ba 34 2a a5 20 38
+>  =C2=A0 OOB Data: fd 0b 22 59 c1 8c 3c a5 a4 62 df f2 d4 7e ff ff
 
-* Add a driver for the Winbond W25M02GV SPI NAND chip, that we have on 
-some of our boards.
+This is exactly what the driver expects, an empty spare area (free OOB)
+of 32B, 30B of ECC and 2B lost.
 
-* Add a driver for the Freescale QSPI controller, derived from the 
-existing QSPI-NOR driver at drivers/mtd/spi-nor/fsl-quadspi.c.
+Are you sure your U-Boot does actually use the BBT?
 
-* Add a setup and setup_late op to the controller layer (see [3]). I 
-don't know if that makes sense, but at least the setup_late is needed 
-for the FSL QSPI driver, as it needs to know the size of the flash to 
-setup the memory mapping for the QSPI read operations.
+The last two blocks (supposedly written by U-Boot) are usually declared
+bad by Linux when it does not find the BBT. This is not the case, like
+if the last blocks were empty.
 
-* A bit of testing and fixing two small bugs, which look like copy and 
-paste mistakes. See [2].
+Could you try this, still with "ecc-none" and without the
+"nand-keep-config" property:
 
-* Running nandtest successfully on our hardware (i.MX6UL -> FSL-QSPI -> 
-W25M02GV)
+1/ From U-Boot, scrub the last 4 blocks. As your NAND is 256MiB
+wide with 128kiB blocks, this should do the trick:
 
-I hope this is of use while moving on.
-I guess you would like to have the basic framework with Micron support 
-and generic SPI tested and stabilized first, before adding more code, 
-but to be able to test with our hardware I need Micron and FSL QSPI.
+        nand scrub 0xFF80000 0x80000
 
-Some questions/flaws that occurred to me:
+2/ At this point, U-Boot should tell you it cannot find a bad block
+table, a second later it will tell you that it created it twice at the
+end of the NAND chip.
 
-* The W25M02GV chip has two dies of 128M each. My current driver only 
-makes use of the first die. The chip expects a die-select command to 
-switch between the two dies.
-What would be the place to implement this?
-Can I just add the command and issue it in 
-winbond_spinand_adjust_cache_op if luns_per_target > 1?
+3/ Boot Linux with ECC =3D=3D none
+4/ Dump the first page of the 4 last blocks:
 
-* The FSL QSPI controller has a lookup table that needs to be filled 
-with command sequences at the time of setup. Therefore the number of 
-dummy bytes for each command is fixed and in my current implementation 
-op->dummy_bytes is ignored.
-That's not a problem if all chips need the same number of dummy bytes 
-for each command, but I guess that's not the case, as there is a 
-_spinand_get_dummy function.
+        nanddump -nop -l 0x800 -s <adddr> /dev/mtd1
 
-* What is your plan for ECC and BBT? At least enabling the onchip ECC 
-will be necessary to be able to use the flash properly (e.g. with UBI), 
-or am I wrong?
+Supposedly that /dev/mtd1 is the _last_ MTD partition of your NAND
+device and <addr> being sequentially:
 
-* Do you have any special test cases? What do you usually do to test the 
-code?
+        0xFF80000
+        0xFFA0000
+        0xFFC0000
+        0xFFE0000
 
-Thanks for your patience and best regards,
+Please copy/paste the overall trace without any cuts (including U-Boot
+traces, literally everything).
 
-Frieder
-
-[1] https://github.com/fschrempf/linux-0day/commits/spi-nand-exceet
-[2] 
-https://github.com/fschrempf/linux-0day/commit/213caf23a0467eba4002e3dd5832c48adbeee3f4
-[3] 
-https://github.com/fschrempf/linux-0day/commit/3f39780e7c7ca12aeab77963e6c7dc1c38f524b5
-
-On 05.12.2017 14:03, Boris Brezillon wrote:
-> On Tue, 5 Dec 2017 13:58:04 +0100
-> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-> 
->> Testing and reviewing, as usual. I'd really like to get the preparation
->> patches (all patches touching mtd core code) in 4.16. For the rest, it
->> really depends how much time you and other contributors (including me)
->> can spend testing/reviewing/fixing/documenting the code.
->>
->> I am totally aware that I'm the one blocking the progress on this
->> framework because of my constant hesitations on what the generic NAND
->> layer should look like, but I'm a bit more confident now that we
->> isolated the raw NAND code from the generic NAND changes (less risks of
->> breaking existing NAND users).
-> 
-> Lastest version, with fixup patches squashed in original patches is
-> available here[1].
-> 
-> [1]https://github.com/bbrezillon/linux-0day/commits/nand/spi-nand-squashed
-> 
+Thanks for your effort,
+Miqu=C3=A8l
