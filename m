@@ -1,17 +1,23 @@
-Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
+Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eOkRr-0007bC-AU
- for linux-mtd@lists.infradead.org; Tue, 12 Dec 2017 13:18:21 +0000
-Received: by mail-pg0-x244.google.com with SMTP id o2so13390830pgc.8
- for <linux-mtd@lists.infradead.org>; Tue, 12 Dec 2017 05:17:54 -0800 (PST)
-From: Greg Cook <greg@morpheus.ws>
-To: ezequiel.garcia@free-electrons.com,
-	linux-mtd@lists.infradead.org
-Cc: Greg Cook <greg@morpheus.ws>, miquel.raynal@free-electrons.com,
- sean.nyekjaer@prevas.dk
-Subject: [PATCH] mtd: nand: pxa3xx: Fix for wait time out caused by READOOB
-Date: Tue, 12 Dec 2017 21:17:35 +0800
-Message-Id: <20171212131735.7103-1-greg.cook@avi.com.au>
+ id 1eOkTV-0008FR-KC
+ for linux-mtd@lists.infradead.org; Tue, 12 Dec 2017 13:19:59 +0000
+Subject: Re: [PATCHv3 2/2] mtd: m25p80: restore the status of SPI flash when
+ exiting
+To: Zhiqiang Hou <Zhiqiang.Hou@nxp.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, boris.brezillon@free-electrons.com,
+ marek.vasut@gmail.com, richard@nod.at
+References: <20171206025342.7266-1-Zhiqiang.Hou@nxp.com>
+ <20171206025342.7266-3-Zhiqiang.Hou@nxp.com>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <f5eb3dfe-0b3e-4224-8bf2-9567918d30cc@wedev4u.fr>
+Date: Tue, 12 Dec 2017 14:19:31 +0100
+MIME-Version: 1.0
+In-Reply-To: <20171206025342.7266-3-Zhiqiang.Hou@nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,42 +27,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Greg Cook <greg@morpheus.ws>
+Le 06/12/2017 à 03:53, Zhiqiang Hou a écrit :
+> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> 
+> Restore the status to be compatible with legacy devices.
+> Take Freescale eSPI boot for example, it copies (in 3 Byte
+> addressing mode) the RCW and bootloader images from SPI flash
+> without firing a reset signal previously, so the reboot command
+> will fail without reseting the addressing mode of SPI flash.
+resetting
 
-Fix in prepare_set_command() for READOOB to ensure hardware FIFO is completely drained.
-Fix in drain_fifo() for non-ECC operations.
+> This patch implement .shutdown function to restore the status
+implements
+> in reboot process, and add the same operation to the .remove
+> function.
+> 
+> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
 
-Signed-off-by: Greg Cook <greg@morpheus.ws>
----
- drivers/mtd/nand/pxa3xx_nand.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+Applied to the spi-nor/next branch of l2-mtd
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 021374f..cfa8c71 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -677,7 +677,7 @@ static void disable_int(struct pxa3xx_nand_info *info, uint32_t int_mask)
- 
- static void drain_fifo(struct pxa3xx_nand_info *info, void *data, int len)
- {
--	if (info->ecc_bch) {
-+	if (info->use_ecc && info->ecc_bch) {
- 		u32 val;
- 		int ret;
- 
-@@ -1023,7 +1023,12 @@ static int prepare_set_command(struct pxa3xx_nand_info *info, int command,
- 
- 		if (info->cur_chunk < info->nfullchunks) {
- 			info->step_chunk_size = info->chunk_size;
--			info->step_spare_size = info->spare_size;
-+			if (info->use_ecc) {
-+				info->step_spare_size = info->spare_size;
-+			} else {
-+				info->step_spare_size = info->spare_size
-+							+ info->ecc_size;
-+			}
- 		} else {
- 			info->step_chunk_size = info->last_chunk_size;
- 			info->step_spare_size = info->last_spare_size;
--- 
-2.9.5
+Thanks!
+
+(corrected few mistakes in the commit message)
+> ---
+> V3:
+>  - Modified the commit to make this patch specific.
+> 
+>  drivers/mtd/devices/m25p80.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index dbe6a1de2bb8..a4e18f6aaa33 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -307,10 +307,18 @@ static int m25p_remove(struct spi_device *spi)
+>  {
+>  	struct m25p	*flash = spi_get_drvdata(spi);
+>  
+> +	spi_nor_restore(&flash->spi_nor);
+> +
+>  	/* Clean up MTD stuff. */
+>  	return mtd_device_unregister(&flash->spi_nor.mtd);
+>  }
+>  
+> +static void m25p_shutdown(struct spi_device *spi)
+> +{
+> +	struct m25p *flash = spi_get_drvdata(spi);
+> +
+> +	spi_nor_restore(&flash->spi_nor);
+> +}
+>  /*
+>   * Do NOT add to this array without reading the following:
+>   *
+> @@ -386,6 +394,7 @@ static struct spi_driver m25p80_driver = {
+>  	.id_table	= m25p_ids,
+>  	.probe	= m25p_probe,
+>  	.remove	= m25p_remove,
+> +	.shutdown	= m25p_shutdown,
+>  
+>  	/* REVISIT: many of these chips have deep power-down modes, which
+>  	 * should clearly be entered on suspend() to minimize power use.
+> 
