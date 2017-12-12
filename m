@@ -1,23 +1,40 @@
-Received: from mail02.prevas.se ([62.95.78.10])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eOkh7-0006ic-K5
- for linux-mtd@lists.infradead.org; Tue, 12 Dec 2017 13:34:07 +0000
-Subject: Re: [PATCH] Fix OOB_READ bug where hardware FIFO is not drained
- completely. Fix potential bug for non-ECC operations.
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Greg Cook
- <greg@morpheus.ws>
-CC: <ezequiel.garcia@free-electrons.com>, <linux-mtd@lists.infradead.org>,
- <miquel.raynal@free-electrons.com>, "Kasper Revsbech (KREV)" <krev@triax.com>
-References: <20171212083826.5000-1-greg@morpheus.ws>
- <20171212142033.5b19efec@bbrezillon>
-From: =?UTF-8?Q?Sean_Nyekj=c3=a6r?= <sean.nyekjaer@prevas.dk>
-Message-ID: <ab0ba0d5-09e9-4c9f-7798-b02fe9b54260@prevas.dk>
-Date: Tue, 12 Dec 2017 14:33:43 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eOkib-0000uu-W2
+ for linux-mtd@lists.infradead.org; Tue, 12 Dec 2017 13:35:36 +0000
+Date: Tue, 12 Dec 2017 14:35:12 +0100
+From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+To: Sean =?UTF-8?B?Tnlla2rDpnI=?= <sean.nyekjaer@prevas.dk>
+Cc: <ezequiel.garcia@free-electrons.com>, <linux-mtd@lists.infradead.org>,
+ "Kasper Revsbech (KREV)" <krev@triax.com>, Boris Brezillon
+ <Boris.Brezillon@free-electrons.com>
+Subject: Re: [BUG] pxa3xx: wait time out when scanning for bb
+Message-ID: <20171212143512.3b62d3f5@xps13>
+In-Reply-To: <2f16ce90-6e00-c95f-7a81-5603d9acf574@prevas.dk>
+References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
+ <20171207213814.4c57098f@xps13>
+ <26441ab5-8c70-4d7f-5e0d-bec3d59e2ef2@prevas.dk>
+ <20171208102148.0a2c0fbe@xps13>
+ <e1f47fe9-9b05-fdcd-b7ed-10e8cbced3a4@prevas.dk>
+ <20171211105359.7eb1aeb3@xps13>
+ <d0dee517-8061-5d40-aa82-6d4c5cda4fb1@prevas.dk>
+ <a2502de6-b4c7-befb-6a08-de976be85d17@prevas.dk>
+ <f70d94b8-5fc7-d091-9a5c-77597d2b7aa4@prevas.dk>
+ <20171211150200.51c7f3b4@xps13> <20171211150929.722a361a@xps13>
+ <a5fc7dea-a043-370c-b18a-eeb8f1f067f4@prevas.dk>
+ <20171212095119.475de032@xps13>
+ <727489cf-d1f6-8777-c6f4-981127657c9d@prevas.dk>
+ <20171212111227.4946cc15@xps13>
+ <e9e6bf70-918f-b750-5893-55744dc34882@prevas.dk>
+ <20171212120806.7c31463f@xps13>
+ <a0267c71-4333-7dd4-dcf4-14aced37f8f9@prevas.dk>
+ <20171212123523.48185f21@xps13>
+ <75bd6b87-12ed-4003-262a-b1bd03a62cbd@prevas.dk>
+ <20171212134706.49f3c57e@xps13>
+ <2f16ce90-6e00-c95f-7a81-5603d9acf574@prevas.dk>
 MIME-Version: 1.0
-In-Reply-To: <20171212142033.5b19efec@bbrezillon>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,95 +44,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris
-> Hi Greg,
->
-> Could you at least Cc the NAND maintainer when you submit something
-> related to NAND!
->
-> On Tue, 12 Dec 2017 16:38:26 +0800
-> Greg Cook <greg@morpheus.ws> wrote:
->
-> Please add a commit message explaining what your fixing.
->
->> Signed-off-by: Greg Cook <greg@morpheus.ws>
->> ---
->>   drivers/mtd/nand/pxa3xx_nand.c | 9 +++++++--
->>   1 file changed, 7 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
->> index 021374f..cfa8c71 100644
->> --- a/drivers/mtd/nand/pxa3xx_nand.c
->> +++ b/drivers/mtd/nand/pxa3xx_nand.c
->> @@ -677,7 +677,7 @@ static void disable_int(struct pxa3xx_nand_info *info, uint32_t int_mask)
->>   
->>   static void drain_fifo(struct pxa3xx_nand_info *info, void *data, int len)
->>   {
->> -	if (info->ecc_bch) {
->> +	if (info->use_ecc && info->ecc_bch) {
->>   		u32 val;
->>   		int ret;
->>   
->> @@ -1023,7 +1023,12 @@ static int prepare_set_command(struct pxa3xx_nand_info *info, int command,
->>   
->>   		if (info->cur_chunk < info->nfullchunks) {
->>   			info->step_chunk_size = info->chunk_size;
->> -			info->step_spare_size = info->spare_size;
->> +			if (info->use_ecc) {
->> +				info->step_spare_size = info->spare_size;
->> +			} else {
->> +				info->step_spare_size = info->spare_size
->> +							+ info->ecc_size;
->> +			}
-> Curly braces are unneeded, and I'd prefer to have the + operator at the
-> end of the line. Or it could be written like that:
->
-> 			info->step_spare_size = info->spare_size;
-> 			if (!info->use_ecc)
-> 				info->step_spare_size += info->ecc_size;
->
-> Anyway, I'm still not convince this is the appropriate fix. As
-> mentioned in my previous, I wonder why we're not activating ECC when
-> reading OOB bytes. There's a good reason for having 2 different hooks
-> to read/write OOBs: one is doing it in raw mode (with the ECC engine
-> disabled), the other one is doing it with the ECC engine enabled.
-> This driver not only omit raw accessors (which is already a bad news
-> for everyone that needs to debug the driver) but it also do things
-> differently for OOB and page access: OOB bytes are read in raw mode
-> while pages are always accessed with the ECC engine enabled.
->
-> OOB accesses are broken and should be fixed, I think we all agree on
-> that, but we should fix it correctly, don't you think?
-> And by correctly, I mean we should try to make things consistent at
-> least (read OOB bytes with the ECC engine enabled).
->
->>   		} else {
->>   			info->step_chunk_size = info->last_chunk_size;
->>   			info->step_spare_size = info->last_spare_size;
-> Can you try with the below patch and see if it fixes the timeout issue?
->
-> --->8---
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> index 021374fe59dc..d1979c7dbe7e 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -961,6 +961,7 @@ static void prepare_start_command(struct pxa3xx_nand_info *info, int command)
->   
->          switch (command) {
->          case NAND_CMD_READ0:
-> +       case NAND_CMD_READOOB:
->          case NAND_CMD_PAGEPROG:
->                  info->use_ecc = 1;
->                  break;
-This fixes the timeout issue :-) Also without bbt...
+Hello Sean,
 
-root@output-module:~# nanddump -oa /dev/mtd1
-ECC failed: 0
-ECC corrected: 0
-Number of bad blocks: 0
-Number of bbt blocks: 8
-Block size 131072, page size 2048, OOB size 64
-Dumping data starting at 0x00000000 and ending at 0x0ff00000...
-UBIXSUBI
 
-/Sean
+> Without kernel bbt (nand scrubbed in uboot just before boot):
+
+[...]
+
+> Block size 131072, page size 2048, OOB size 64
+> Dumping data starting at 0x0fec0000 and ending at 0x0fec0800...
+
+[...]
+
+>  =C2=A0 OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>  =C2=A0 OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>  =C2=A0 OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>  =C2=A0 OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+
+As you can see, your U-Boot version does not recreate the BBT
+automatically as I told you it should. Please try rebooting the board
+after scrubbing and then check U-Boot creates the BBT from U-Boot
+command line.
+
+I insist on the fact that this is something I could have spotted earlier
+if you had blindlessly copy/pasted the *entire* trace, I don't
+mind if it is big, it can be really interesting for others to get the
+full trace.
+
+This time I only need the trace without the "on-flash-bbt" property.
+
+Thank you,
+Miqu=C3=A8l
