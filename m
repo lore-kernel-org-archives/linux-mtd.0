@@ -1,26 +1,20 @@
-Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eOnQy-0002fd-DA
- for linux-mtd@lists.infradead.org; Tue, 12 Dec 2017 16:29:34 +0000
-Received: by mail-pg0-x242.google.com with SMTP id e14so13749398pgr.9
- for <linux-mtd@lists.infradead.org>; Tue, 12 Dec 2017 08:29:12 -0800 (PST)
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eOnR8-0002g6-7F
+ for linux-mtd@lists.infradead.org; Tue, 12 Dec 2017 16:29:47 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Jaap de Jong <jaap.dejong@nedap.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: Mounting issue with old uboot and new rootfs
+Date: Tue, 12 Dec 2017 17:29:51 +0100
+Message-ID: <2249046.8pz4TdecgU@blindfold>
+In-Reply-To: <1513004605320.75417@nedap.com>
+References: <d868125b-638e-4007-7a90-22937ffca9c6@nedap.com>
+ <c08a36e5-10ac-29ae-46d7-d598068dd897@nedap.com>
+ <1513004605320.75417@nedap.com>
 MIME-Version: 1.0
-In-Reply-To: <20171212142033.5b19efec@bbrezillon>
-References: <20171212083826.5000-1-greg@morpheus.ws>
- <20171212142033.5b19efec@bbrezillon>
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date: Tue, 12 Dec 2017 13:29:11 -0300
-Message-ID: <CAAEAJfDweETzJ-nrwV2gqsF6tr5GjPDYGeK0jxBG4zs=8k3U8Q@mail.gmail.com>
-Subject: Re: [PATCH] Fix OOB_READ bug where hardware FIFO is not drained
- completely. Fix potential bug for non-ECC operations.
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Greg Cook <greg@morpheus.ws>,
- =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@free-electrons.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- =?UTF-8?Q?Sean_Nyekj=C3=A6r?= <sean.nyekjaer@prevas.dk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,101 +24,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12 December 2017 at 10:20, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-> Hi Greg,
->
-> Could you at least Cc the NAND maintainer when you submit something
-> related to NAND!
->
-> On Tue, 12 Dec 2017 16:38:26 +0800
-> Greg Cook <greg@morpheus.ws> wrote:
->
-> Please add a commit message explaining what your fixing.
->
->> Signed-off-by: Greg Cook <greg@morpheus.ws>
->> ---
->>  drivers/mtd/nand/pxa3xx_nand.c | 9 +++++++--
->>  1 file changed, 7 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_na=
-nd.c
->> index 021374f..cfa8c71 100644
->> --- a/drivers/mtd/nand/pxa3xx_nand.c
->> +++ b/drivers/mtd/nand/pxa3xx_nand.c
->> @@ -677,7 +677,7 @@ static void disable_int(struct pxa3xx_nand_info *inf=
-o, uint32_t int_mask)
->>
->>  static void drain_fifo(struct pxa3xx_nand_info *info, void *data, int l=
-en)
->>  {
->> -     if (info->ecc_bch) {
->> +     if (info->use_ecc && info->ecc_bch) {
->>               u32 val;
->>               int ret;
->>
->> @@ -1023,7 +1023,12 @@ static int prepare_set_command(struct pxa3xx_nand=
-_info *info, int command,
->>
->>               if (info->cur_chunk < info->nfullchunks) {
->>                       info->step_chunk_size =3D info->chunk_size;
->> -                     info->step_spare_size =3D info->spare_size;
->> +                     if (info->use_ecc) {
->> +                             info->step_spare_size =3D info->spare_size=
-;
->> +                     } else {
->> +                             info->step_spare_size =3D info->spare_size
->> +                                                     + info->ecc_size;
->> +                     }
->
-> Curly braces are unneeded, and I'd prefer to have the + operator at the
-> end of the line. Or it could be written like that:
->
->                         info->step_spare_size =3D info->spare_size;
->                         if (!info->use_ecc)
->                                 info->step_spare_size +=3D info->ecc_size=
-;
->
-> Anyway, I'm still not convince this is the appropriate fix. As
-> mentioned in my previous, I wonder why we're not activating ECC when
-> reading OOB bytes. There's a good reason for having 2 different hooks
-> to read/write OOBs: one is doing it in raw mode (with the ECC engine
-> disabled), the other one is doing it with the ECC engine enabled.
-> This driver not only omit raw accessors (which is already a bad news
-> for everyone that needs to debug the driver) but it also do things
-> differently for OOB and page access: OOB bytes are read in raw mode
-> while pages are always accessed with the ECC engine enabled.
->
-> OOB accesses are broken and should be fixed, I think we all agree on
-> that, but we should fix it correctly, don't you think?
-> And by correctly, I mean we should try to make things consistent at
-> least (read OOB bytes with the ECC engine enabled).
->
->>               } else {
->>                       info->step_chunk_size =3D info->last_chunk_size;
->>                       info->step_spare_size =3D info->last_spare_size;
->
-> Can you try with the below patch and see if it fixes the timeout issue?
->
+Jaap,
 
-Well, the patch may very well fix the timeout, but it's not really
-reading any OOB.
+Am Montag, 11. Dezember 2017, 16:03:25 CET schrieb Jaap de Jong:
+> Hi All,
+> 
+> Some time ago I posted a question with a slightly different subject.
+> Now that I found out a bit more the previous subject is no longer relevant.
+> 
+> But I still have issues with mounting in a mixed environment.
+> I have this board with an older u-boot (2010.09) in combination with a more
+> recent kernel (4.9.28).
+> 
+> The parameters in uboot:
+>         root=ubi0 rw ubi.mtd=3 rootfstype=ubifs
+>        
+> mtdparts=atmel_nand:128K(bootstrap),256K(u-boot-env),640K(u-boot),-(rootfs)
+> 
+> U-boot runs `ubi part rootfs` as one of the steps in the startup process to
+> load the kernel. When doing that u-boot reports that the ubi volume is
+> resized. This is due to the fact that the rootfs is written with the u-boot
+> `nand write` command, writing a ubi formatted image.
+> 
+> When booting the unit the kernel panics:
+>         [    1.523437] ubi0 error: ubi_read_volume_table: the layout volume
+> was not found [    1.539062] ubi0 error: ubi_attach_mtd_dev: failed to
+> attach mtd3, error -22 [    1.546875] UBI error: cannot attach mtd3
+>         [    1.546875] Kernel panic - not syncing: VFS: Unable to mount root
+> fs on unknown-block(0,0) [    1.546875] Rebooting in 1 seconds..RomBOOT
+> Then u-boot restarts and tells:
+>         UBI warning: process_lvol: volume table copy #1 is corrupted
+>         UBI: create volume table (copy #1)
+>         UBI: volume table was restored
+> But is able to load the kernel and transfer control to it.
+> This second run of this kernel does not panic anymore and just starts as
+> expected! Also, new reboots don't show u-boot issues!
+> 
+> Some other combinations:
+>         u-boot        kernel        result
+>         2010.09     2.6.35        fine
+>         2010.09     4.9.28        panic
+>         2016.03     2.6.35        fine
+>         2016.03     4.9.28        fine
+> 
+> One thing that I noticed is that the newer u-boot resizes to around 40 less
+> LEBs than the older u-boot does. Related?
 
-Like I said in my previous mail, accessing the OOB doesn't
-work when ECC is enabled. This is specified in the specs,
-copying from the Armada 370 spec:
+Resize? Or missing?
+This is definitely odd and should not happen.
 
-"""
-14.4.1
-Error Checking and Correction (ECC)
-[..] When ECC is enabled, the number of spare area bytes required for use b=
-y
-ECC are shown in the middle column of Table 30. These bytes are not
-available for use by the
-system software and cannot be written to or read from.
-"""
-
-I seriously doubt you are reading valid data with this change.
---=20
-Ezequiel Garc=C3=ADa, VanguardiaSur
-www.vanguardiasur.com.ar
+Thanks,
+//richard
