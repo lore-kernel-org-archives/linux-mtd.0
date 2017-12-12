@@ -1,28 +1,42 @@
-Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
+Received: from mail02.prevas.se ([62.95.78.10])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eOnzp-0005xF-4P
- for linux-mtd@lists.infradead.org; Tue, 12 Dec 2017 17:05:35 +0000
-Received: by mail-pg0-x241.google.com with SMTP id o2so13816132pgc.8
- for <linux-mtd@lists.infradead.org>; Tue, 12 Dec 2017 09:05:12 -0800 (PST)
+ id 1eOp17-0004Uq-VV
+ for linux-mtd@lists.infradead.org; Tue, 12 Dec 2017 18:10:59 +0000
+Date: Tue, 12 Dec 2017 19:10:10 +0100
+In-Reply-To: <20171212143512.3b62d3f5@xps13>
+References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
+ <20171207213814.4c57098f@xps13>
+ <26441ab5-8c70-4d7f-5e0d-bec3d59e2ef2@prevas.dk>
+ <20171208102148.0a2c0fbe@xps13>
+ <e1f47fe9-9b05-fdcd-b7ed-10e8cbced3a4@prevas.dk>
+ <20171211105359.7eb1aeb3@xps13>
+ <d0dee517-8061-5d40-aa82-6d4c5cda4fb1@prevas.dk>
+ <a2502de6-b4c7-befb-6a08-de976be85d17@prevas.dk>
+ <f70d94b8-5fc7-d091-9a5c-77597d2b7aa4@prevas.dk>
+ <20171211150200.51c7f3b4@xps13> <20171211150929.722a361a@xps13>
+ <a5fc7dea-a043-370c-b18a-eeb8f1f067f4@prevas.dk>
+ <20171212095119.475de032@xps13>
+ <727489cf-d1f6-8777-c6f4-981127657c9d@prevas.dk>
+ <20171212111227.4946cc15@xps13>
+ <e9e6bf70-918f-b750-5893-55744dc34882@prevas.dk>
+ <20171212120806.7c31463f@xps13>
+ <a0267c71-4333-7dd4-dcf4-14aced37f8f9@prevas.dk>
+ <20171212123523.48185f21@xps13>
+ <75bd6b87-12ed-4003-262a-b1bd03a62cbd@prevas.dk>
+ <20171212134706.49f3c57e@xps13>
+ <2f16ce90-6e00-c95f-7a81-5603d9acf574@prevas.dk>
+ <20171212143512.3b62d3f5@xps13>
 MIME-Version: 1.0
-In-Reply-To: <20171212173930.2c0fab08@bbrezillon>
-References: <20171212083826.5000-1-greg@morpheus.ws>
- <20171212142033.5b19efec@bbrezillon>
- <CAAEAJfDweETzJ-nrwV2gqsF6tr5GjPDYGeK0jxBG4zs=8k3U8Q@mail.gmail.com>
- <20171212173930.2c0fab08@bbrezillon>
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date: Tue, 12 Dec 2017 14:05:11 -0300
-Message-ID: <CAAEAJfDkFVcg1r7gbS9rDKjywOZjW=bfNu1sBFBVQa7+ZSx3vQ@mail.gmail.com>
-Subject: Re: [PATCH] Fix OOB_READ bug where hardware FIFO is not drained
- completely. Fix potential bug for non-ECC operations.
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Greg Cook <greg@morpheus.ws>,
- =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@free-electrons.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- =?UTF-8?Q?Sean_Nyekj=C3=A6r?= <sean.nyekjaer@prevas.dk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
+Subject: Re: [BUG] pxa3xx: wait time out when scanning for bb
+To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+CC: ezequiel.garcia@free-electrons.com, linux-mtd@lists.infradead.org,
+ "Kasper Revsbech (KREV)" <krev@triax.com>,
+ Boris Brezillon <Boris.Brezillon@free-electrons.com>
+From: =?ISO-8859-1?Q?Sean_Nyekj=E6r?= <sean.nyekjaer@prevas.dk>
+Message-ID: <48EEEC1C-954B-42E5-92BE-A00AD97A5789@prevas.dk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,125 +46,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12 December 2017 at 13:39, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-> On Tue, 12 Dec 2017 13:29:11 -0300
-> Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
->
->> On 12 December 2017 at 10:20, Boris Brezillon
->> <boris.brezillon@free-electrons.com> wrote:
->> > Hi Greg,
->> >
->> > Could you at least Cc the NAND maintainer when you submit something
->> > related to NAND!
->> >
->> > On Tue, 12 Dec 2017 16:38:26 +0800
->> > Greg Cook <greg@morpheus.ws> wrote:
->> >
->> > Please add a commit message explaining what your fixing.
->> >
->> >> Signed-off-by: Greg Cook <greg@morpheus.ws>
->> >> ---
->> >>  drivers/mtd/nand/pxa3xx_nand.c | 9 +++++++--
->> >>  1 file changed, 7 insertions(+), 2 deletions(-)
->> >>
->> >> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx=
-_nand.c
->> >> index 021374f..cfa8c71 100644
->> >> --- a/drivers/mtd/nand/pxa3xx_nand.c
->> >> +++ b/drivers/mtd/nand/pxa3xx_nand.c
->> >> @@ -677,7 +677,7 @@ static void disable_int(struct pxa3xx_nand_info *=
-info, uint32_t int_mask)
->> >>
->> >>  static void drain_fifo(struct pxa3xx_nand_info *info, void *data, in=
-t len)
->> >>  {
->> >> -     if (info->ecc_bch) {
->> >> +     if (info->use_ecc && info->ecc_bch) {
->> >>               u32 val;
->> >>               int ret;
->> >>
->> >> @@ -1023,7 +1023,12 @@ static int prepare_set_command(struct pxa3xx_n=
-and_info *info, int command,
->> >>
->> >>               if (info->cur_chunk < info->nfullchunks) {
->> >>                       info->step_chunk_size =3D info->chunk_size;
->> >> -                     info->step_spare_size =3D info->spare_size;
->> >> +                     if (info->use_ecc) {
->> >> +                             info->step_spare_size =3D info->spare_s=
-ize;
->> >> +                     } else {
->> >> +                             info->step_spare_size =3D info->spare_s=
-ize
->> >> +                                                     + info->ecc_siz=
-e;
->> >> +                     }
->> >
->> > Curly braces are unneeded, and I'd prefer to have the + operator at th=
-e
->> > end of the line. Or it could be written like that:
->> >
->> >                         info->step_spare_size =3D info->spare_size;
->> >                         if (!info->use_ecc)
->> >                                 info->step_spare_size +=3D info->ecc_s=
-ize;
->> >
->> > Anyway, I'm still not convince this is the appropriate fix. As
->> > mentioned in my previous, I wonder why we're not activating ECC when
->> > reading OOB bytes. There's a good reason for having 2 different hooks
->> > to read/write OOBs: one is doing it in raw mode (with the ECC engine
->> > disabled), the other one is doing it with the ECC engine enabled.
->> > This driver not only omit raw accessors (which is already a bad news
->> > for everyone that needs to debug the driver) but it also do things
->> > differently for OOB and page access: OOB bytes are read in raw mode
->> > while pages are always accessed with the ECC engine enabled.
->> >
->> > OOB accesses are broken and should be fixed, I think we all agree on
->> > that, but we should fix it correctly, don't you think?
->> > And by correctly, I mean we should try to make things consistent at
->> > least (read OOB bytes with the ECC engine enabled).
->> >
->> >>               } else {
->> >>                       info->step_chunk_size =3D info->last_chunk_size=
-;
->> >>                       info->step_spare_size =3D info->last_spare_size=
-;
->> >
->> > Can you try with the below patch and see if it fixes the timeout issue=
-?
->> >
->>
->> Well, the patch may very well fix the timeout, but it's not really
->> reading any OOB.
->>
->> Like I said in my previous mail, accessing the OOB doesn't
->> work when ECC is enabled. This is specified in the specs,
->> copying from the Armada 370 spec:
->>
->> """
->> 14.4.1
->> Error Checking and Correction (ECC)
->> [..] When ECC is enabled, the number of spare area bytes required for us=
-e by
->> ECC are shown in the middle column of Table 30. These bytes are not
->> available for use by the
->> system software and cannot be written to or read from.
->> """
->>
->> I seriously doubt you are reading valid data with this change.
->
-> That's not true. Reading ECC bytes is impossible when the ECC engine
-> is enable, reading free OOB bytes is possible, and most of the time the
-> caller doesn't care about ECC bytes when asking for a non-raw OOB
-> access.
->
-> Actually, it's even better to read the free OOB bytes with ECC enabled
-> because they are ECC protected, so if you have bitflips in the free
-> OOB section they will be fixed or reported as uncorrectable.
 
-OK, then, maybe I'm wrong. We need mark some a couple blocks
-as bad in the bootloader, and then have the kernel finds them
-and builds the BBT properly, with this patch.
---=20
-Ezequiel Garc=C3=ADa, VanguardiaSur
-www.vanguardiasur.com.ar
+
+Hi Miquel
+>
+>> Without kernel bbt (nand scrubbed in uboot just before boot):
+>
+>[=2E=2E=2E]
+>
+>> Block size 131072, page size 2048, OOB size 64
+>> Dumping data starting at 0x0fec0000 and ending at 0x0fec0800=2E=2E=2E
+>
+>[=2E=2E=2E]
+>
+>>  =C2=A0 OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>>  =C2=A0 OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>>  =C2=A0 OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>>  =C2=A0 OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>
+>As you can see, your U-Boot version does not recreate the BBT
+>automatically as I told you it should=2E Please try rebooting the board
+>after scrubbing and then check U-Boot creates the BBT from U-Boot
+>command line=2E
+
+My uboot is recreating the bbt, I have been scrubbing it just before runni=
+ng the bootcmd that's why the OOB is empty :-)
+I thought that was what you needed but I guess I was wrong=2E
+
+>
+>I insist on the fact that this is something I could have spotted
+>earlier
+>if you had blindlessly copy/pasted the *entire* trace, I don't
+>mind if it is big, it can be really interesting for others to get the
+>full trace=2E
+>
+>This time I only need the trace without the "on-flash-bbt" property=2E
+
+I see what you want now, you want me to dump what uboot is writing in the =
+bbt and what the new driver is writing :-)
+Correct?
+I'm sending some tracing the first thing tomorrow=2E
+
+/Sean
