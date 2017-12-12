@@ -1,23 +1,20 @@
-Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eOkTV-0008FR-KC
- for linux-mtd@lists.infradead.org; Tue, 12 Dec 2017 13:19:59 +0000
-Subject: Re: [PATCHv3 2/2] mtd: m25p80: restore the status of SPI flash when
- exiting
-To: Zhiqiang Hou <Zhiqiang.Hou@nxp.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, boris.brezillon@free-electrons.com,
- marek.vasut@gmail.com, richard@nod.at
-References: <20171206025342.7266-1-Zhiqiang.Hou@nxp.com>
- <20171206025342.7266-3-Zhiqiang.Hou@nxp.com>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <f5eb3dfe-0b3e-4224-8bf2-9567918d30cc@wedev4u.fr>
-Date: Tue, 12 Dec 2017 14:19:31 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eOkUR-0002JH-Mv
+ for linux-mtd@lists.infradead.org; Tue, 12 Dec 2017 13:20:57 +0000
+Date: Tue, 12 Dec 2017 14:20:33 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Greg Cook <greg@morpheus.ws>
+Cc: ezequiel.garcia@free-electrons.com, linux-mtd@lists.infradead.org,
+ sean.nyekjaer@prevas.dk, miquel.raynal@free-electrons.com
+Subject: Re: [PATCH] Fix OOB_READ bug where hardware FIFO is not drained
+ completely. Fix potential bug for non-ECC operations.
+Message-ID: <20171212142033.5b19efec@bbrezillon>
+In-Reply-To: <20171212083826.5000-1-greg@morpheus.ws>
+References: <20171212083826.5000-1-greg@morpheus.ws>
 MIME-Version: 1.0
-In-Reply-To: <20171206025342.7266-3-Zhiqiang.Hou@nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,64 +24,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 06/12/2017 à 03:53, Zhiqiang Hou a écrit :
-> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> 
-> Restore the status to be compatible with legacy devices.
-> Take Freescale eSPI boot for example, it copies (in 3 Byte
-> addressing mode) the RCW and bootloader images from SPI flash
-> without firing a reset signal previously, so the reboot command
-> will fail without reseting the addressing mode of SPI flash.
-resetting
+Hi Greg,
 
-> This patch implement .shutdown function to restore the status
-implements
-> in reboot process, and add the same operation to the .remove
-> function.
-> 
-> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+Could you at least Cc the NAND maintainer when you submit something
+related to NAND!
 
-Applied to the spi-nor/next branch of l2-mtd
+On Tue, 12 Dec 2017 16:38:26 +0800
+Greg Cook <greg@morpheus.ws> wrote:
 
-Thanks!
+Please add a commit message explaining what your fixing.
 
-(corrected few mistakes in the commit message)
+> Signed-off-by: Greg Cook <greg@morpheus.ws>
 > ---
-> V3:
->  - Modified the commit to make this patch specific.
+>  drivers/mtd/nand/pxa3xx_nand.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
 > 
->  drivers/mtd/devices/m25p80.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index dbe6a1de2bb8..a4e18f6aaa33 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -307,10 +307,18 @@ static int m25p_remove(struct spi_device *spi)
+> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+> index 021374f..cfa8c71 100644
+> --- a/drivers/mtd/nand/pxa3xx_nand.c
+> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> @@ -677,7 +677,7 @@ static void disable_int(struct pxa3xx_nand_info *info, uint32_t int_mask)
+>  
+>  static void drain_fifo(struct pxa3xx_nand_info *info, void *data, int len)
 >  {
->  	struct m25p	*flash = spi_get_drvdata(spi);
+> -	if (info->ecc_bch) {
+> +	if (info->use_ecc && info->ecc_bch) {
+>  		u32 val;
+>  		int ret;
 >  
-> +	spi_nor_restore(&flash->spi_nor);
-> +
->  	/* Clean up MTD stuff. */
->  	return mtd_device_unregister(&flash->spi_nor.mtd);
->  }
+> @@ -1023,7 +1023,12 @@ static int prepare_set_command(struct pxa3xx_nand_info *info, int command,
 >  
-> +static void m25p_shutdown(struct spi_device *spi)
-> +{
-> +	struct m25p *flash = spi_get_drvdata(spi);
-> +
-> +	spi_nor_restore(&flash->spi_nor);
-> +}
->  /*
->   * Do NOT add to this array without reading the following:
->   *
-> @@ -386,6 +394,7 @@ static struct spi_driver m25p80_driver = {
->  	.id_table	= m25p_ids,
->  	.probe	= m25p_probe,
->  	.remove	= m25p_remove,
-> +	.shutdown	= m25p_shutdown,
->  
->  	/* REVISIT: many of these chips have deep power-down modes, which
->  	 * should clearly be entered on suspend() to minimize power use.
-> 
+>  		if (info->cur_chunk < info->nfullchunks) {
+>  			info->step_chunk_size = info->chunk_size;
+> -			info->step_spare_size = info->spare_size;
+> +			if (info->use_ecc) {
+> +				info->step_spare_size = info->spare_size;
+> +			} else {
+> +				info->step_spare_size = info->spare_size
+> +							+ info->ecc_size;
+> +			}
+
+Curly braces are unneeded, and I'd prefer to have the + operator at the
+end of the line. Or it could be written like that:
+
+			info->step_spare_size = info->spare_size;
+			if (!info->use_ecc)
+				info->step_spare_size += info->ecc_size;
+
+Anyway, I'm still not convince this is the appropriate fix. As
+mentioned in my previous, I wonder why we're not activating ECC when
+reading OOB bytes. There's a good reason for having 2 different hooks
+to read/write OOBs: one is doing it in raw mode (with the ECC engine
+disabled), the other one is doing it with the ECC engine enabled.
+This driver not only omit raw accessors (which is already a bad news
+for everyone that needs to debug the driver) but it also do things
+differently for OOB and page access: OOB bytes are read in raw mode
+while pages are always accessed with the ECC engine enabled.
+
+OOB accesses are broken and should be fixed, I think we all agree on
+that, but we should fix it correctly, don't you think?
+And by correctly, I mean we should try to make things consistent at
+least (read OOB bytes with the ECC engine enabled).
+
+>  		} else {
+>  			info->step_chunk_size = info->last_chunk_size;
+>  			info->step_spare_size = info->last_spare_size;
+
+Can you try with the below patch and see if it fixes the timeout issue?
+
+--->8---
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 021374fe59dc..d1979c7dbe7e 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -961,6 +961,7 @@ static void prepare_start_command(struct pxa3xx_nand_info *info, int command)
+ 
+        switch (command) {
+        case NAND_CMD_READ0:
++       case NAND_CMD_READOOB:
+        case NAND_CMD_PAGEPROG:
+                info->use_ecc = 1;
+                break;
