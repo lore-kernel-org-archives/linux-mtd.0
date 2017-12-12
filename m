@@ -1,42 +1,25 @@
-Received: from mail01.prevas.se ([62.95.78.3])
+Received: from smtp.exceet.ch ([77.245.33.226])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eOgMi-0008IW-RU
- for linux-mtd@lists.infradead.org; Tue, 12 Dec 2017 08:56:43 +0000
-Subject: Re: [BUG] pxa3xx: wait time out when scanning for bb
-To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-CC: <ezequiel.garcia@free-electrons.com>, <linux-mtd@lists.infradead.org>,
- "Kasper Revsbech (KREV)" <krev@triax.com>, Boris Brezillon
- <Boris.Brezillon@free-electrons.com>
-References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
- <20171128143055.1ff22979@xps13>
- <2d491047-cd55-5a0a-83ec-58365f3bf3ff@prevas.dk>
- <20171128150417.17d53b5a@xps13>
- <1e2bea86-e429-e3c4-a6e4-c2c82457a061@prevas.dk>
- <20171129090305.0174246d@xps13>
- <aeb06060-015e-85b4-5b6d-4427dfd1e11a@prevas.dk>
- <20171130181847.0bbc58b5@xps13>
- <5bc5d326-af1f-44d2-468a-d211212c4612@prevas.dk>
- <20171201091539.5d6b7572@xps13>
- <744e99ee-91cf-28bc-21eb-c3fa01fb0a01@prevas.dk>
- <20171207213814.4c57098f@xps13>
- <26441ab5-8c70-4d7f-5e0d-bec3d59e2ef2@prevas.dk>
- <20171208102148.0a2c0fbe@xps13>
- <e1f47fe9-9b05-fdcd-b7ed-10e8cbced3a4@prevas.dk>
- <20171211105359.7eb1aeb3@xps13>
- <d0dee517-8061-5d40-aa82-6d4c5cda4fb1@prevas.dk>
- <a2502de6-b4c7-befb-6a08-de976be85d17@prevas.dk>
- <f70d94b8-5fc7-d091-9a5c-77597d2b7aa4@prevas.dk>
- <20171211150200.51c7f3b4@xps13> <20171211150929.722a361a@xps13>
- <a5fc7dea-a043-370c-b18a-eeb8f1f067f4@prevas.dk>
- <20171212095119.475de032@xps13>
-From: =?UTF-8?Q?Sean_Nyekj=c3=a6r?= <sean.nyekjaer@prevas.dk>
-Message-ID: <727489cf-d1f6-8777-c6f4-981127657c9d@prevas.dk>
-Date: Tue, 12 Dec 2017 09:56:19 +0100
+ id 1eOhKe-0006Qw-Tx
+ for linux-mtd@lists.infradead.org; Tue, 12 Dec 2017 09:58:39 +0000
+Subject: Re: [PATCH v6 00/15] A SPI NAND framework under generic NAND framework
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+CC: =?UTF-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
+ <peterpandong@micron.com>, Peter Pan <peterpansjtu@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+References: <20170529225931.226da943@bbrezillon>
+ <90bcb366-c494-2dee-3bb7-d16b77e347c6@exceet.de>
+ <20171204150514.1f17671d@bbrezillon>
+ <A0FE66EC-7E17-43BE-9B66-896F112B92A0@micron.com>
+ <20171205135804.478902dc@bbrezillon> <20171205140313.40f3f17d@bbrezillon>
+From: Frieder Schrempf <frieder.schrempf@exceet.de>
+Message-ID: <256b4ab6-c104-4580-87cd-527178bde460@exceet.de>
+Date: Tue, 12 Dec 2017 10:58:10 +0100
 MIME-Version: 1.0
-In-Reply-To: <20171212095119.475de032@xps13>
+In-Reply-To: <20171205140313.40f3f17d@bbrezillon>
 Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -46,171 +29,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Miquel,
->> Boot log:
->> [    2.692856] nand: device found, Manufacturer ID: 0x2c, Chip ID:
->> 0xda [    2.699231] nand: Micron MT29F2G08ABAEAH4
->> [    2.703286] nand: 256 MiB, SLC, erase size: 128 KiB, page size:
->> 2048, OOB size: 64
->> [    2.711135] nand: NAND_ECC_NONE selected by board driver. This is
->> not recommended!
->> [    2.718730] nand: WARNING: pxa3xx_nand-0: the ECC used on your
->> system is too weak compared to the one required by the NAND chip
->> [    2.732632] Bad block table not found for chip 0
->> [    2.739609] Bad block table not found for chip 0
->> [    2.744250] Scanning device for bad blocks
->> [    2.985502] Bad block table written to 0x00000ffe0000, version 0x01
->> [    2.992760] Bad block table written to 0x00000ffc0000, version 0x01
->>
->> Nanddump:
->> root@output-module:~# nanddump -oa /dev/mtd1
->> ECC failed: 0
->> ECC corrected: 0
->> Number of bad blocks: 0
->> Number of bbt blocks: 0
->> Block size 131072, page size 2048, OOB size 64
->> Dumping data starting at 0x00000000 and ending at 0x0ff00000...
->> UBIXS...
->>
->> I guess it's safe to say something is not right with ECC enabled.
->>>> Then please do a raw dump with nanddump from Linux.
-> Thanks for testing this, but I _really_ need the entire output of
->
->          nanddump -o -n -p -l 0x800 /dev/mtd1
-root@output-module:~# nanddump -o -n -p -l 0x800 /dev/mtd1
-Block size 131072, page size 2048, OOB size 64
-Dumping data starting at 0x00000000 and ending at 0x00000800...
-0x00000000: 55 42 49 23 01 00 00 00 00 00 00 00 00 00 00 01
-0x00000010: 00 00 08 00 00 00 10 00 00 00 00 00 00 00 00 00
-0x00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000030: 00 00 00 00 00 00 00 00 00 00 00 00 7f 58 53 19
-0x00000040: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000050: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000060: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000070: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000090: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000000a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000000b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000000c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000000d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000000e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000000f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000110: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000120: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000130: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000140: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000150: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000160: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000170: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000180: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000190: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000001a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000001b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000001c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000001d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000001e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000001f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000210: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000220: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000230: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000240: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000250: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000260: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000270: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000280: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000290: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000002a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000002b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000002c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000002d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000002e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000002f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000300: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000310: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000320: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000330: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000340: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000350: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000360: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000370: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000003a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000003b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000003c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000003d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000003e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000003f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000400: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000410: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000420: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000430: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000440: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000450: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000460: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000470: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000490: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000004a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000004b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000004c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000004d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000004e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000004f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000510: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000520: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000530: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000540: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000550: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000560: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000570: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000590: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000005a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000005b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000005c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000005d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000005e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000005f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000610: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000620: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000630: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000640: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000650: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000660: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000670: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000680: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000690: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000006a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000006b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000006c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000006d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000006e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000006f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000700: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000710: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000720: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000730: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000740: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000750: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000760: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000770: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000780: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x00000790: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000007a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000007b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000007c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000007d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000007e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000007f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-   OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-   OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-   OOB Data: c1 eb aa 03 d3 5c d8 ae fa fd ba 34 2a a5 20 38
-   OOB Data: fd 0b 22 59 c1 8c 3c a5 a4 62 df f2 d4 7e ff ff
+Hi Boris,
 
-/Sean
+I spent some time looking at and working with your latest SPI NAND code.
+In my previous mail I said, that we have some working code for our 3.14 
+kernel based on the "mt29f_spinand" staging driver, but that was wrong 
+as I got things mixed up in my head.
+Actually our codebase was an early version of Peter's code, so the 
+effort to port it to the latest framework code was not that big.
+
+I forked your repo and you can find my working tree at [1].
+
+What I did so far:
+
+* Rebase your patches on latest Linux 4.14.5
+
+* Add a driver for the Winbond W25M02GV SPI NAND chip, that we have on 
+some of our boards.
+
+* Add a driver for the Freescale QSPI controller, derived from the 
+existing QSPI-NOR driver at drivers/mtd/spi-nor/fsl-quadspi.c.
+
+* Add a setup and setup_late op to the controller layer (see [3]). I 
+don't know if that makes sense, but at least the setup_late is needed 
+for the FSL QSPI driver, as it needs to know the size of the flash to 
+setup the memory mapping for the QSPI read operations.
+
+* A bit of testing and fixing two small bugs, which look like copy and 
+paste mistakes. See [2].
+
+* Running nandtest successfully on our hardware (i.MX6UL -> FSL-QSPI -> 
+W25M02GV)
+
+I hope this is of use while moving on.
+I guess you would like to have the basic framework with Micron support 
+and generic SPI tested and stabilized first, before adding more code, 
+but to be able to test with our hardware I need Micron and FSL QSPI.
+
+Some questions/flaws that occurred to me:
+
+* The W25M02GV chip has two dies of 128M each. My current driver only 
+makes use of the first die. The chip expects a die-select command to 
+switch between the two dies.
+What would be the place to implement this?
+Can I just add the command and issue it in 
+winbond_spinand_adjust_cache_op if luns_per_target > 1?
+
+* The FSL QSPI controller has a lookup table that needs to be filled 
+with command sequences at the time of setup. Therefore the number of 
+dummy bytes for each command is fixed and in my current implementation 
+op->dummy_bytes is ignored.
+That's not a problem if all chips need the same number of dummy bytes 
+for each command, but I guess that's not the case, as there is a 
+_spinand_get_dummy function.
+
+* What is your plan for ECC and BBT? At least enabling the onchip ECC 
+will be necessary to be able to use the flash properly (e.g. with UBI), 
+or am I wrong?
+
+* Do you have any special test cases? What do you usually do to test the 
+code?
+
+Thanks for your patience and best regards,
+
+Frieder
+
+[1] https://github.com/fschrempf/linux-0day/commits/spi-nand-exceet
+[2] 
+https://github.com/fschrempf/linux-0day/commit/213caf23a0467eba4002e3dd5832c48adbeee3f4
+[3] 
+https://github.com/fschrempf/linux-0day/commit/3f39780e7c7ca12aeab77963e6c7dc1c38f524b5
+
+On 05.12.2017 14:03, Boris Brezillon wrote:
+> On Tue, 5 Dec 2017 13:58:04 +0100
+> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+> 
+>> Testing and reviewing, as usual. I'd really like to get the preparation
+>> patches (all patches touching mtd core code) in 4.16. For the rest, it
+>> really depends how much time you and other contributors (including me)
+>> can spend testing/reviewing/fixing/documenting the code.
+>>
+>> I am totally aware that I'm the one blocking the progress on this
+>> framework because of my constant hesitations on what the generic NAND
+>> layer should look like, but I'm a bit more confident now that we
+>> isolated the raw NAND code from the generic NAND changes (less risks of
+>> breaking existing NAND users).
+> 
+> Lastest version, with fixup patches squashed in original patches is
+> available here[1].
+> 
+> [1]https://github.com/bbrezillon/linux-0day/commits/nand/spi-nand-squashed
+> 
