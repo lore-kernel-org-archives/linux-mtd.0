@@ -1,12 +1,17 @@
-Received: from mail02.prevas.se ([62.95.78.10])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eOp17-0004Uq-VV
- for linux-mtd@lists.infradead.org; Tue, 12 Dec 2017 18:10:59 +0000
-Date: Tue, 12 Dec 2017 19:10:10 +0100
-In-Reply-To: <20171212143512.3b62d3f5@xps13>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eOpDc-0002pz-6c
+ for linux-mtd@lists.infradead.org; Tue, 12 Dec 2017 18:23:54 +0000
+Date: Tue, 12 Dec 2017 19:23:27 +0100
+From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+To: Sean =?UTF-8?B?Tnlla2rDpnI=?= <sean.nyekjaer@prevas.dk>
+Cc: ezequiel.garcia@free-electrons.com, linux-mtd@lists.infradead.org,
+ "Kasper Revsbech (KREV)" <krev@triax.com>, Boris Brezillon
+ <Boris.Brezillon@free-electrons.com>
+Subject: Re: [BUG] pxa3xx: wait time out when scanning for bb
+Message-ID: <20171212192327.57b1fa80@xps13>
+In-Reply-To: <48EEEC1C-954B-42E5-92BE-A00AD97A5789@prevas.dk>
 References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
- <20171207213814.4c57098f@xps13>
- <26441ab5-8c70-4d7f-5e0d-bec3d59e2ef2@prevas.dk>
  <20171208102148.0a2c0fbe@xps13>
  <e1f47fe9-9b05-fdcd-b7ed-10e8cbced3a4@prevas.dk>
  <20171211105359.7eb1aeb3@xps13>
@@ -26,17 +31,10 @@ References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
  <20171212134706.49f3c57e@xps13>
  <2f16ce90-6e00-c95f-7a81-5603d9acf574@prevas.dk>
  <20171212143512.3b62d3f5@xps13>
+ <48EEEC1C-954B-42E5-92BE-A00AD97A5789@prevas.dk>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [BUG] pxa3xx: wait time out when scanning for bb
-To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-CC: ezequiel.garcia@free-electrons.com, linux-mtd@lists.infradead.org,
- "Kasper Revsbech (KREV)" <krev@triax.com>,
- Boris Brezillon <Boris.Brezillon@free-electrons.com>
-From: =?ISO-8859-1?Q?Sean_Nyekj=E6r?= <sean.nyekjaer@prevas.dk>
-Message-ID: <48EEEC1C-954B-42E5-92BE-A00AD97A5789@prevas.dk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -46,45 +44,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, 12 Dec 2017 19:10:10 +0100
+Sean Nyekj=C3=A6r <sean.nyekjaer@prevas.dk> wrote:
 
+> Hi Miquel
+> > =20
+> >> Without kernel bbt (nand scrubbed in uboot just before boot): =20
+> >
+> >[...]
+> > =20
+> >> Block size 131072, page size 2048, OOB size 64
+> >> Dumping data starting at 0x0fec0000 and ending at 0x0fec0800... =20
+> >
+> >[...]
+> > =20
+> >>  =C2=A0 OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+> >>  =C2=A0 OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+> >>  =C2=A0 OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+> >>  =C2=A0 OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff =20
+> >
+> >As you can see, your U-Boot version does not recreate the BBT
+> >automatically as I told you it should. Please try rebooting the board
+> >after scrubbing and then check U-Boot creates the BBT from U-Boot
+> >command line. =20
+>=20
+> My uboot is recreating the bbt, I have been scrubbing it just before
+> running the bootcmd that's why the OOB is empty :-) I thought that
+> was what you needed but I guess I was wrong.
+>=20
+> >
+> >I insist on the fact that this is something I could have spotted
+> >earlier
+> >if you had blindlessly copy/pasted the *entire* trace, I don't
+> >mind if it is big, it can be really interesting for others to get the
+> >full trace.
+> >
+> >This time I only need the trace without the "on-flash-bbt"
+> >property. =20
+>=20
+> I see what you want now, you want me to dump what uboot is writing in
+> the bbt and what the new driver is writing :-) Correct?
 
-Hi Miquel
->
->> Without kernel bbt (nand scrubbed in uboot just before boot):
->
->[=2E=2E=2E]
->
->> Block size 131072, page size 2048, OOB size 64
->> Dumping data starting at 0x0fec0000 and ending at 0x0fec0800=2E=2E=2E
->
->[=2E=2E=2E]
->
->>  =C2=A0 OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->>  =C2=A0 OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->>  =C2=A0 OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->>  =C2=A0 OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->
->As you can see, your U-Boot version does not recreate the BBT
->automatically as I told you it should=2E Please try rebooting the board
->after scrubbing and then check U-Boot creates the BBT from U-Boot
->command line=2E
+Correct :)
 
-My uboot is recreating the bbt, I have been scrubbing it just before runni=
-ng the bootcmd that's why the OOB is empty :-)
-I thought that was what you needed but I guess I was wrong=2E
+You already gave me what the driver writes (without ECC, but it does
+not matter, we know the ECC engine will be used in regular conditions),
+what I seek now is effectively what U-Boot is writing to understand
+where  the mismatch is.
 
->
->I insist on the fact that this is something I could have spotted
->earlier
->if you had blindlessly copy/pasted the *entire* trace, I don't
->mind if it is big, it can be really interesting for others to get the
->full trace=2E
->
->This time I only need the trace without the "on-flash-bbt" property=2E
+> I'm sending some tracing the first thing tomorrow.
 
-I see what you want now, you want me to dump what uboot is writing in the =
-bbt and what the new driver is writing :-)
-Correct?
-I'm sending some tracing the first thing tomorrow=2E
+Nice!
 
-/Sean
+Thanks,
+Miqu=C3=A8l
