@@ -1,22 +1,34 @@
-Received: from smtp4.nedap.com ([213.160.213.85])
+Received: from mx2.suse.de ([195.135.220.15])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eP47N-0000FM-Gp
- for linux-mtd@lists.infradead.org; Wed, 13 Dec 2017 10:18:27 +0000
-Subject: Re: Mounting issue with old uboot and new rootfs
-To: Richard Weinberger <richard@nod.at>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-References: <d868125b-638e-4007-7a90-22937ffca9c6@nedap.com>
- <2249046.8pz4TdecgU@blindfold>
- <a9bb7f99-d877-ccf8-8918-25d8ce91baa0@nedap.com>
- <5001344.Umix9c0TK6@blindfold>
-From: Jaap de Jong <jaap.dejong@nedap.com>
-Message-ID: <548ecb18-722c-f919-b245-d1b1c15c1697@nedap.com>
-Date: Wed, 13 Dec 2017 11:18:02 +0100
+ id 1eP50T-0008Ha-LT
+ for linux-mtd@lists.infradead.org; Wed, 13 Dec 2017 11:15:24 +0000
+Date: Wed, 13 Dec 2017 12:14:54 +0100
+From: Jan Kara <jack@suse.cz>
+To: Adam Borowski <kilobyte@angband.pl>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org,
+ Jan Kara <jack@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+ linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+ Andreas Dilger <adilger.kernel@dilger.ca>,
+ Eric Van Hensbergen <ericvh@gmail.com>, Ron Minnich <rminnich@sandia.gov>,
+ Latchesar Ionkov <lucho@ionkov.net>, v9fs-developer@lists.sourceforge.net,
+ David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+ "Yan, Zheng" <zyan@redhat.com>, Sage Weil <sage@redhat.com>,
+ Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
+ Steve French <sfrench@samba.org>, linux-cifs@vger.kernel.org,
+ Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
+ linux-f2fs-devel@lists.sourceforge.net,
+ David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org, Dave Kleikamp <shaggy@kernel.org>,
+ jfs-discussion@lists.sourceforge.net, reiserfs-devel@vger.kernel.org,
+ "Darrick J. Wong" <darrick.wong@oracle.com>, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH] fs/*/Kconfig: drop links to 404-compliant
+ http://acl.bestbits.at
+Message-ID: <20171213111454.GC23068@quack2.suse.cz>
+References: <20171213053825.10903-1-kilobyte@angband.pl>
 MIME-Version: 1.0
-In-Reply-To: <5001344.Umix9c0TK6@blindfold>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20171213053825.10903-1-kilobyte@angband.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,93 +38,326 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-On 13-12-17 10:43, Richard Weinberger wrote:
-> Jaap,
+On Wed 13-12-17 06:38:25, Adam Borowski wrote:
+> This link is replicated in most filesystems' config stanzas.  Referring
+> to an archived version of that site is pointless as it mostly deals with
+> patches; user documentation is available elsewhere.
 > 
-> Am Mittwoch, 13. Dezember 2017, 08:45:44 CET schrieb Jaap de Jong:
->> On 12-12-17 17:29, Richard Weinberger wrote:
->>> Jaap,
->>>
->>> Am Montag, 11. Dezember 2017, 16:03:25 CET schrieb Jaap de Jong:
->>>> Hi All,
->>>>
->>>> Some time ago I posted a question with a slightly different subject.
->>>> Now that I found out a bit more the previous subject is no longer
->>>> relevant.
->>>>
->>>> But I still have issues with mounting in a mixed environment.
->>>> I have this board with an older u-boot (2010.09) in combination with a
->>>> more
->>>> recent kernel (4.9.28).
->>>>
->>>> The parameters in uboot:
->>>>           root=ubi0 rw ubi.mtd=3 rootfstype=ubifs
->>>>
->>>> mtdparts=atmel_nand:128K(bootstrap),256K(u-boot-env),640K(u-boot),-(rootf
->>>> s)
->>>>
->>>> U-boot runs `ubi part rootfs` as one of the steps in the startup process
->>>> to
->>>> load the kernel. When doing that u-boot reports that the ubi volume is
->>>> resized. This is due to the fact that the rootfs is written with the
->>>> u-boot
->>>> `nand write` command, writing a ubi formatted image.
->>>>
->>>> When booting the unit the kernel panics:
->>>>           [    1.523437] ubi0 error: ubi_read_volume_table: the layout
->>>>           volume
->>>>
->>>> was not found [    1.539062] ubi0 error: ubi_attach_mtd_dev: failed to
->>>> attach mtd3, error -22 [    1.546875] UBI error: cannot attach mtd3
->>>>
->>>>           [    1.546875] Kernel panic - not syncing: VFS: Unable to mount
->>>>           root
->>>>
->>>> fs on unknown-block(0,0) [    1.546875] Rebooting in 1 seconds..RomBOOT
->>>>
->>>> Then u-boot restarts and tells:
->>>>           UBI warning: process_lvol: volume table copy #1 is corrupted
->>>>           UBI: create volume table (copy #1)
->>>>           UBI: volume table was restored
->>>>
->>>> But is able to load the kernel and transfer control to it.
->>>> This second run of this kernel does not panic anymore and just starts as
->>>> expected! Also, new reboots don't show u-boot issues!
->>>>
->>>> Some other combinations:
->>>>           u-boot        kernel        result
->>>>           2010.09     2.6.35        fine
->>>>           2010.09     4.9.28        panic
->>>>           2016.03     2.6.35        fine
->>>>           2016.03     4.9.28        fine
->>>>
->>>> One thing that I noticed is that the newer u-boot resizes to around 40
->>>> less
->>>> LEBs than the older u-boot does. Related?
->>>
->>> Resize? Or missing?
->>> This is definitely odd and should not happen.
->>
->> Below the output of the old uboot when doing its `ubi part rootfs` on a
->> new freshly flashed ubi root file system:
->> - resizing the volume
->>
->>       Creating 1 MTD partitions on "nand0":
->>       0x000000100000-0x000020000000 : "mtd=3"
->>       UBI: attaching mtd1 to ubi0
->>       UBI: physical eraseblock size:   131072 bytes (128 KiB)
->>       UBI: logical eraseblock size:    129024 bytes
->>       UBI: smallest flash I/O unit:    2048
->>       UBI: sub-page size:              512
->>       UBI: VID header offset:          512 (aligned 512)
->>       UBI: data offset:                2048
->>       UBI: volume 0 ("my-rootfs") re-sized from 933 to 4042 LEBs
+> Signed-off-by: Adam Borowski <kilobyte@angband.pl>
+
+Looks good to me. You can add:
+
+Acked-by: Jan Kara <jack@suse.cz>
+	
+								Honza
+
+> ---
+> Sending this as one piece; if you guys would instead prefer this chopped
+> into tiny per-filesystem bits, please say so.
 > 
-> Does everything work as expected if you don't set the resize flag in ubinize?
-> Maybe this is the culprit.
-Yes, that was my last experiment and that works. It turns off the code 
-in the old uboot that modifies the volume in such a way that the new 
-kernel is not able to deal with it.
-The strange thing is, that an old kernel doesn't mind.
+> 
+>  Documentation/filesystems/ext2.txt |  2 --
+>  Documentation/filesystems/ext4.txt |  7 +++----
+>  fs/9p/Kconfig                      |  3 ---
+>  fs/Kconfig                         |  6 +-----
+>  fs/btrfs/Kconfig                   |  3 ---
+>  fs/ceph/Kconfig                    |  3 ---
+>  fs/cifs/Kconfig                    | 15 +++++++--------
+>  fs/ext2/Kconfig                    |  6 +-----
+>  fs/ext4/Kconfig                    |  3 ---
+>  fs/f2fs/Kconfig                    |  6 +-----
+>  fs/hfsplus/Kconfig                 |  3 ---
+>  fs/jffs2/Kconfig                   |  6 +-----
+>  fs/jfs/Kconfig                     |  3 ---
+>  fs/reiserfs/Kconfig                |  6 +-----
+>  fs/xfs/Kconfig                     |  3 ---
+>  15 files changed, 15 insertions(+), 60 deletions(-)
+> 
+> diff --git a/Documentation/filesystems/ext2.txt b/Documentation/filesystems/ext2.txt
+> index 55755395d3dc..81c0becab225 100644
+> --- a/Documentation/filesystems/ext2.txt
+> +++ b/Documentation/filesystems/ext2.txt
+> @@ -49,12 +49,10 @@ sb=n				Use alternate superblock at this location.
+>  
+>  user_xattr			Enable "user." POSIX Extended Attributes
+>  				(requires CONFIG_EXT2_FS_XATTR).
+> -				See also http://acl.bestbits.at
+>  nouser_xattr			Don't support "user." extended attributes.
+>  
+>  acl				Enable POSIX Access Control Lists support
+>  				(requires CONFIG_EXT2_FS_POSIX_ACL).
+> -				See also http://acl.bestbits.at
+>  noacl				Don't support POSIX ACLs.
+>  
+>  nobh				Do not attach buffer_heads to file pagecache.
+> diff --git a/Documentation/filesystems/ext4.txt b/Documentation/filesystems/ext4.txt
+> index 75236c0c2ac2..8cd63e16f171 100644
+> --- a/Documentation/filesystems/ext4.txt
+> +++ b/Documentation/filesystems/ext4.txt
+> @@ -202,15 +202,14 @@ inode_readahead_blks=n	This tuning parameter controls the maximum
+>  			the buffer cache.  The default value is 32 blocks.
+>  
+>  nouser_xattr		Disables Extended User Attributes.  See the
+> -			attr(5) manual page and http://acl.bestbits.at/
+> -			for more information about extended attributes.
+> +			attr(5) manual page for more information about
+> +			extended attributes.
+>  
+>  noacl			This option disables POSIX Access Control List
+>  			support. If ACL support is enabled in the kernel
+>  			configuration (CONFIG_EXT4_FS_POSIX_ACL), ACL is
+>  			enabled by default on mount. See the acl(5) manual
+> -			page and http://acl.bestbits.at/ for more information
+> -			about acl.
+> +			page for more information about acl.
+>  
+>  bsddf		(*)	Make 'df' act like BSD.
+>  minixdf			Make 'df' act like Minix.
+> diff --git a/fs/9p/Kconfig b/fs/9p/Kconfig
+> index 6489e1fc1afd..11045d8e356a 100644
+> --- a/fs/9p/Kconfig
+> +++ b/fs/9p/Kconfig
+> @@ -25,9 +25,6 @@ config 9P_FS_POSIX_ACL
+>  	  POSIX Access Control Lists (ACLs) support permissions for users and
+>  	  groups beyond the owner/group/world scheme.
+>  
+> -	  To learn more about Access Control Lists, visit the POSIX ACLs for
+> -	  Linux website <http://acl.bestbits.at/>.
+> -
+>  	  If you don't know what Access Control Lists are, say N
+>  
+>  endif
+> diff --git a/fs/Kconfig b/fs/Kconfig
+> index 7aee6d699fd6..0ed56752f208 100644
+> --- a/fs/Kconfig
+> +++ b/fs/Kconfig
+> @@ -167,17 +167,13 @@ config TMPFS_POSIX_ACL
+>  	  files for sound to work properly.  In short, if you're not sure,
+>  	  say Y.
+>  
+> -	  To learn more about Access Control Lists, visit the POSIX ACLs for
+> -	  Linux website <http://acl.bestbits.at/>.
+> -
+>  config TMPFS_XATTR
+>  	bool "Tmpfs extended attributes"
+>  	depends on TMPFS
+>  	default n
+>  	help
+>  	  Extended attributes are name:value pairs associated with inodes by
+> -	  the kernel or by users (see the attr(5) manual page, or visit
+> -	  <http://acl.bestbits.at/> for details).
+> +	  the kernel or by users (see the attr(5) manual page for details).
+>  
+>  	  Currently this enables support for the trusted.* and
+>  	  security.* namespaces.
+> diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
+> index 2e558227931a..273351ee4c46 100644
+> --- a/fs/btrfs/Kconfig
+> +++ b/fs/btrfs/Kconfig
+> @@ -38,9 +38,6 @@ config BTRFS_FS_POSIX_ACL
+>  	  POSIX Access Control Lists (ACLs) support permissions for users and
+>  	  groups beyond the owner/group/world scheme.
+>  
+> -	  To learn more about Access Control Lists, visit the POSIX ACLs for
+> -	  Linux website <http://acl.bestbits.at/>.
+> -
+>  	  If you don't know what Access Control Lists are, say N
+>  
+>  config BTRFS_FS_CHECK_INTEGRITY
+> diff --git a/fs/ceph/Kconfig b/fs/ceph/Kconfig
+> index 264e9bf83ff3..52095f473464 100644
+> --- a/fs/ceph/Kconfig
+> +++ b/fs/ceph/Kconfig
+> @@ -34,7 +34,4 @@ config CEPH_FS_POSIX_ACL
+>  	  POSIX Access Control Lists (ACLs) support permissions for users and
+>  	  groups beyond the owner/group/world scheme.
+>  
+> -	  To learn more about Access Control Lists, visit the POSIX ACLs for
+> -	  Linux website <http://acl.bestbits.at/>.
+> -
+>  	  If you don't know what Access Control Lists are, say N
+> diff --git a/fs/cifs/Kconfig b/fs/cifs/Kconfig
+> index d5b2e12b5d02..e73d25f4b97a 100644
+> --- a/fs/cifs/Kconfig
+> +++ b/fs/cifs/Kconfig
+> @@ -108,14 +108,13 @@ config CIFS_XATTR
+>          depends on CIFS
+>          help
+>            Extended attributes are name:value pairs associated with inodes by
+> -          the kernel or by users (see the attr(5) manual page, or visit
+> -          <http://acl.bestbits.at/> for details).  CIFS maps the name of
+> -          extended attributes beginning with the user namespace prefix
+> -          to SMB/CIFS EAs. EAs are stored on Windows servers without the
+> -          user namespace prefix, but their names are seen by Linux cifs clients
+> -          prefaced by the user namespace prefix. The system namespace
+> -          (used by some filesystems to store ACLs) is not supported at
+> -          this time.
+> +          the kernel or by users (see the attr(5) manual page for details).
+> +          CIFS maps the name of extended attributes beginning with the user
+> +          namespace prefix to SMB/CIFS EAs.  EAs are stored on Windows
+> +          servers without the user namespace prefix, but their names are
+> +          seen by Linux cifs clients prefaced by the user namespace prefix.
+> +          The system namespace (used by some filesystems to store ACLs) is
+> +          not supported at this time.
+>  
+>            If unsure, say Y.
+>  
+> diff --git a/fs/ext2/Kconfig b/fs/ext2/Kconfig
+> index c634874e12d9..894e4c53d1d2 100644
+> --- a/fs/ext2/Kconfig
+> +++ b/fs/ext2/Kconfig
+> @@ -13,8 +13,7 @@ config EXT2_FS_XATTR
+>  	depends on EXT2_FS
+>  	help
+>  	  Extended attributes are name:value pairs associated with inodes by
+> -	  the kernel or by users (see the attr(5) manual page, or visit
+> -	  <http://acl.bestbits.at/> for details).
+> +	  the kernel or by users (see the attr(5) manual page for details).
+>  
+>  	  If unsure, say N.
+>  
+> @@ -26,9 +25,6 @@ config EXT2_FS_POSIX_ACL
+>  	  Posix Access Control Lists (ACLs) support permissions for users and
+>  	  groups beyond the owner/group/world scheme.
+>  
+> -	  To learn more about Access Control Lists, visit the Posix ACLs for
+> -	  Linux website <http://acl.bestbits.at/>.
+> -
+>  	  If you don't know what Access Control Lists are, say N
+>  
+>  config EXT2_FS_SECURITY
+> diff --git a/fs/ext4/Kconfig b/fs/ext4/Kconfig
+> index 73b850f5659c..a453cc87082b 100644
+> --- a/fs/ext4/Kconfig
+> +++ b/fs/ext4/Kconfig
+> @@ -82,9 +82,6 @@ config EXT4_FS_POSIX_ACL
+>  	  POSIX Access Control Lists (ACLs) support permissions for users and
+>  	  groups beyond the owner/group/world scheme.
+>  
+> -	  To learn more about Access Control Lists, visit the POSIX ACLs for
+> -	  Linux website <http://acl.bestbits.at/>.
+> -
+>  	  If you don't know what Access Control Lists are, say N
+>  
+>  config EXT4_FS_SECURITY
+> diff --git a/fs/f2fs/Kconfig b/fs/f2fs/Kconfig
+> index 378c221d68a9..9a20ef42fadd 100644
+> --- a/fs/f2fs/Kconfig
+> +++ b/fs/f2fs/Kconfig
+> @@ -35,8 +35,7 @@ config F2FS_FS_XATTR
+>  	default y
+>  	help
+>  	  Extended attributes are name:value pairs associated with inodes by
+> -	  the kernel or by users (see the attr(5) manual page, or visit
+> -	  <http://acl.bestbits.at/> for details).
+> +	  the kernel or by users (see the attr(5) manual page for details).
+>  
+>  	  If unsure, say N.
+>  
+> @@ -49,9 +48,6 @@ config F2FS_FS_POSIX_ACL
+>  	  Posix Access Control Lists (ACLs) support permissions for users and
+>  	  groups beyond the owner/group/world scheme.
+>  
+> -	  To learn more about Access Control Lists, visit the POSIX ACLs for
+> -	  Linux website <http://acl.bestbits.at/>.
+> -
+>  	  If you don't know what Access Control Lists are, say N
+>  
+>  config F2FS_FS_SECURITY
+> diff --git a/fs/hfsplus/Kconfig b/fs/hfsplus/Kconfig
+> index 24bc20fd42f7..7cc8b4acf66a 100644
+> --- a/fs/hfsplus/Kconfig
+> +++ b/fs/hfsplus/Kconfig
+> @@ -20,9 +20,6 @@ config HFSPLUS_FS_POSIX_ACL
+>  	  POSIX Access Control Lists (ACLs) support permissions for users and
+>  	  groups beyond the owner/group/world scheme.
+>  
+> -	  To learn more about Access Control Lists, visit the POSIX ACLs for
+> -	  Linux website <http://acl.bestbits.at/>.
+> -
+>  	  It needs to understand that POSIX ACLs are treated only under
+>  	  Linux. POSIX ACLs doesn't mean something under Mac OS X.
+>  	  Mac OS X beginning with version 10.4 ("Tiger") support NFSv4 ACLs,
+> diff --git a/fs/jffs2/Kconfig b/fs/jffs2/Kconfig
+> index d8bb6c411e96..ad850c5bf2ca 100644
+> --- a/fs/jffs2/Kconfig
+> +++ b/fs/jffs2/Kconfig
+> @@ -68,8 +68,7 @@ config JFFS2_FS_XATTR
+>  	default n
+>  	help
+>  	  Extended attributes are name:value pairs associated with inodes by
+> -	  the kernel or by users (see the attr(5) manual page, or visit
+> -	  <http://acl.bestbits.at/> for details).
+> +	  the kernel or by users (see the attr(5) manual page for details).
+>  
+>  	  If unsure, say N.
+>  
+> @@ -82,9 +81,6 @@ config JFFS2_FS_POSIX_ACL
+>  	  Posix Access Control Lists (ACLs) support permissions for users and
+>  	  groups beyond the owner/group/world scheme.
+>  
+> -	  To learn more about Access Control Lists, visit the Posix ACLs for
+> -	  Linux website <http://acl.bestbits.at/>.
+> -
+>  	  If you don't know what Access Control Lists are, say N
+>  
+>  config JFFS2_FS_SECURITY
+> diff --git a/fs/jfs/Kconfig b/fs/jfs/Kconfig
+> index 57cef19951db..851de78fdabb 100644
+> --- a/fs/jfs/Kconfig
+> +++ b/fs/jfs/Kconfig
+> @@ -16,9 +16,6 @@ config JFS_POSIX_ACL
+>  	  Posix Access Control Lists (ACLs) support permissions for users and
+>  	  groups beyond the owner/group/world scheme.
+>  
+> -	  To learn more about Access Control Lists, visit the Posix ACLs for
+> -	  Linux website <http://acl.bestbits.at/>.
+> -
+>  	  If you don't know what Access Control Lists are, say N
+>  
+>  config JFS_SECURITY
+> diff --git a/fs/reiserfs/Kconfig b/fs/reiserfs/Kconfig
+> index 7cd46666ba2c..86e71c0caf48 100644
+> --- a/fs/reiserfs/Kconfig
+> +++ b/fs/reiserfs/Kconfig
+> @@ -57,8 +57,7 @@ config REISERFS_FS_XATTR
+>  	depends on REISERFS_FS
+>  	help
+>  	  Extended attributes are name:value pairs associated with inodes by
+> -	  the kernel or by users (see the attr(5) manual page, or visit
+> -	  <http://acl.bestbits.at/> for details).
+> +	  the kernel or by users (see the attr(5) manual page for details).
+>  
+>  	  If unsure, say N.
+>  
+> @@ -70,9 +69,6 @@ config REISERFS_FS_POSIX_ACL
+>  	  Posix Access Control Lists (ACLs) support permissions for users and
+>  	  groups beyond the owner/group/world scheme.
+>  
+> -	  To learn more about Access Control Lists, visit the Posix ACLs for
+> -	  Linux website <http://acl.bestbits.at/>.
+> -
+>  	  If you don't know what Access Control Lists are, say N
+>  
+>  config REISERFS_FS_SECURITY
+> diff --git a/fs/xfs/Kconfig b/fs/xfs/Kconfig
+> index f42fcf1b5465..46bcf0e649f5 100644
+> --- a/fs/xfs/Kconfig
+> +++ b/fs/xfs/Kconfig
+> @@ -48,9 +48,6 @@ config XFS_POSIX_ACL
+>  	  POSIX Access Control Lists (ACLs) support permissions for users and
+>  	  groups beyond the owner/group/world scheme.
+>  
+> -	  To learn more about Access Control Lists, visit the POSIX ACLs for
+> -	  Linux website <http://acl.bestbits.at/>.
+> -
+>  	  If you don't know what Access Control Lists are, say N.
+>  
+>  config XFS_RT
+> -- 
+> 2.15.1
+> 
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
