@@ -1,16 +1,20 @@
-Received: from mail01.prevas.se ([62.95.78.3])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eP5Kb-0002eh-Ol
- for linux-mtd@lists.infradead.org; Wed, 13 Dec 2017 11:36:13 +0000
-From: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
-To: <linux-mtd@lists.infradead.org>, <marek.vasut@gmail.com>,
- <cyrille.pitchen@wedev4u.fr>
-CC: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
-Subject: [PATCH v2 1/2] mtd: spi-nor: add support for is25lq040b
-Date: Wed, 13 Dec 2017 12:35:29 +0100
-Message-ID: <20171213113530.6857-1-sean.nyekjaer@prevas.dk>
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1ePA73-00041c-EM
+ for linux-mtd@lists.infradead.org; Wed, 13 Dec 2017 16:42:31 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Jaap de Jong <jaap.dejong@nedap.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: Mounting issue with old uboot and new rootfs
+Date: Wed, 13 Dec 2017 17:42:37 +0100
+Message-ID: <1850520.5cNxzxR8i7@blindfold>
+In-Reply-To: <548ecb18-722c-f919-b245-d1b1c15c1697@nedap.com>
+References: <d868125b-638e-4007-7a90-22937ffca9c6@nedap.com>
+ <5001344.Umix9c0TK6@blindfold>
+ <548ecb18-722c-f919-b245-d1b1c15c1697@nedap.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,25 +24,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
----
-v2:
- - removed SECT_4K as the chip are supporting 32K and bulk erase
+Am Mittwoch, 13. Dezember 2017, 11:18:02 CET schrieb Jaap de Jong:
+> > Does everything work as expected if you don't set the resize flag in
+> > ubinize? Maybe this is the culprit.
+> 
+> Yes, that was my last experiment and that works. It turns off the code
+> in the old uboot that modifies the volume in such a way that the new
+> kernel is not able to deal with it.
+> The strange thing is, that an old kernel doesn't mind.
 
- drivers/mtd/spi-nor/spi-nor.c | 1 +
- 1 file changed, 1 insertion(+)
+Can you please rule out U-Boot first?
+IOW don't attach UBI from U-Boot and load the kernel via TFTP/NFS, etc...
+I'm still not sure whether this is a regression in Linux or U-Boot.
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 9178139a39d0..cc4328dff89a 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1048,6 +1048,7 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "is25cd512", INFO(0x7f9d20, 0, 32 * 1024,   2, SECT_4K) },
- 	{ "is25lp128", INFO(0x9d6018, 0, 64 * 1024, 256,
- 			SECT_4K | SPI_NOR_DUAL_READ) },
-+	{ "is25lq040b", INFO(0x9d4013, 0, 64 * 1024,  64, 0) },
- 
- 	/* Macronix */
- 	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
--- 
-2.15.1
+Thanks,
+//richard
