@@ -1,20 +1,19 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ePA73-00041c-EM
- for linux-mtd@lists.infradead.org; Wed, 13 Dec 2017 16:42:31 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Jaap de Jong <jaap.dejong@nedap.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: Mounting issue with old uboot and new rootfs
-Date: Wed, 13 Dec 2017 17:42:37 +0100
-Message-ID: <1850520.5cNxzxR8i7@blindfold>
-In-Reply-To: <548ecb18-722c-f919-b245-d1b1c15c1697@nedap.com>
-References: <d868125b-638e-4007-7a90-22937ffca9c6@nedap.com>
- <5001344.Umix9c0TK6@blindfold>
- <548ecb18-722c-f919-b245-d1b1c15c1697@nedap.com>
+Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ePCjS-0005Og-PS
+ for linux-mtd@lists.infradead.org; Wed, 13 Dec 2017 19:30:21 +0000
+Received: by mail-wm0-x22c.google.com with SMTP id g130so23255160wme.0
+ for <linux-mtd@lists.infradead.org>; Wed, 13 Dec 2017 11:29:57 -0800 (PST)
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org
+From: Manfred Spraul <manfred@colorfullife.com>
+Subject: UBIFS corruptions - update
+Message-ID: <8856ca52-8483-7e9d-fe43-cc7fa668517e@colorfullife.com>
+Date: Wed, 13 Dec 2017 20:29:54 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,18 +23,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Mittwoch, 13. Dezember 2017, 11:18:02 CET schrieb Jaap de Jong:
-> > Does everything work as expected if you don't set the resize flag in
-> > ubinize? Maybe this is the culprit.
-> 
-> Yes, that was my last experiment and that works. It turns off the code
-> in the old uboot that modifies the volume in such a way that the new
-> kernel is not able to deal with it.
-> The strange thing is, that an old kernel doesn't mind.
+Hi Richard,
 
-Can you please rule out U-Boot first?
-IOW don't attach UBI from U-Boot and load the kernel via TFTP/NFS, etc...
-I'm still not sure whether this is a regression in Linux or U-Boot.
+as promised I tried to add backtrace support to my mtdram modification.
 
-Thanks,
-//richard
+I don't like the result, the workflow is way to complex (good old 
+ksymoops, ...)
+
+Just dump_stack(), and then retain the output from dmesg would be simple 
+and more efficient.
+
+Thus I have abandoned the patch.
+
+
+What I have are the results:
+
+- chk_fs corruptions: With 4.15-rc2, the issue still exists.
+
+The corruptions start when the background worker thread erases a page:
+
+1st instance:
+
+https://sourceforge.net/projects/calculix-rpm/files/ubifs-2/11_xattr/image-3754.bin/download
+
+https://sourceforge.net/projects/calculix-rpm/files/ubifs-2/11_xattr/rec-syms-3753.txt/download
+
+2nd instance:
+
+https://sourceforge.net/projects/calculix-rpm/files/ubifs-2/11_xattr/image-5311.bin/download
+
+
+- the garbage_collect_leb issue:
+
+The issue happens during ubifs_tnc_end_commit(), called by sync().
+
+I'm not sure about the root cause: Should ubifs_check_node() skip the 
+index LEB? Or should the nodes never cross a page boundary?
+
+https://sourceforge.net/projects/calculix-rpm/files/ubifs-2/11_xattr/image-167836.bin/download
+
+https://sourceforge.net/projects/calculix-rpm/files/ubifs-2/11_xattr/rec-syms-167837.txt/download
+
+https://sourceforge.net/projects/calculix-rpm/files/ubifs-2/11_xattr/r-167836.txt/download
+
+
+Without xattr, the garbage_collect_leb issue did not happen, I tested 
+around 40.000 images.
+
+
+@Richard: Is there something where I could support? I fear more data 
+would just cause confusion.
+
+For me, there appears to be two reproducible issues:
+
+- garbage_collect_leb: Fairly rare
+
+- Failure with chk_fs enabled. Easy to reproduce, more common.
+
+
+--
+
+     Manfred
