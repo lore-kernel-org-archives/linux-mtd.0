@@ -1,34 +1,22 @@
-Received: from mx1.redhat.com ([209.132.183.28])
+Received: from smtp4.nedap.com ([213.160.213.85])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ePN6s-0004Jy-4M
- for linux-mtd@lists.infradead.org; Thu, 14 Dec 2017 06:35:12 +0000
-Content-Type: text/plain;
-	charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 11.1 \(3445.4.7\))
-Subject: Re: [PATCH] fs/*/Kconfig: drop links to 404-compliant
- http://acl.bestbits.at
-From: "Yan, Zheng" <zyan@redhat.com>
-In-Reply-To: <20171213053825.10903-1-kilobyte@angband.pl>
-Date: Thu, 14 Dec 2017 14:34:27 +0800
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>, Jan Kara <jack@suse.com>,
- Jonathan Corbet <corbet@lwn.net>, linux-ext4@vger.kernel.org,
- Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
- Eric Van Hensbergen <ericvh@gmail.com>, Ron Minnich <rminnich@sandia.gov>,
- Latchesar Ionkov <lucho@ionkov.net>, v9fs-developer@lists.sourceforge.net,
- David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
- Sage Weil <sage@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
- ceph-devel <ceph-devel@vger.kernel.org>, Steve French <sfrench@samba.org>,
- linux-cifs@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
- Chao Yu <yuchao0@huawei.com>, linux-f2fs-devel@lists.sourceforge.net,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Dave Kleikamp <shaggy@kernel.org>, jfs-discussion@lists.sourceforge.net,
- reiserfs-devel@vger.kernel.org,
- "Darrick J. Wong" <darrick.wong@oracle.com>, linux-xfs@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <7C5A4F68-5893-4EC7-99D6-8235C8DA1381@redhat.com>
-References: <20171213053825.10903-1-kilobyte@angband.pl>
-To: Adam Borowski <kilobyte@angband.pl>
+ id 1ePNxB-0000ZO-7s
+ for linux-mtd@lists.infradead.org; Thu, 14 Dec 2017 07:29:15 +0000
+Subject: Re: Mounting issue with old uboot and new rootfs
+To: Richard Weinberger <richard@nod.at>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+References: <d868125b-638e-4007-7a90-22937ffca9c6@nedap.com>
+ <5001344.Umix9c0TK6@blindfold>
+ <548ecb18-722c-f919-b245-d1b1c15c1697@nedap.com>
+ <1850520.5cNxzxR8i7@blindfold>
+From: Jaap de Jong <jaap.dejong@nedap.com>
+Message-ID: <6db62c4b-653d-e224-283f-288a765899c5@nedap.com>
+Date: Thu, 14 Dec 2017 08:28:48 +0100
+MIME-Version: 1.0
+In-Reply-To: <1850520.5cNxzxR8i7@blindfold>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,28 +28,21 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 
 
-> On 13 Dec 2017, at 13:38, Adam Borowski <kilobyte@angband.pl> wrote:
->=20
-> This link is replicated in most filesystems' config stanzas.  =
-Referring
-> to an archived version of that site is pointless as it mostly deals =
-with
-> patches; user documentation is available elsewhere.
->=20
-> Signed-off-by: Adam Borowski <kilobyte@angband.pl>
-> ---
-> Sending this as one piece; if you guys would instead prefer this =
-chopped
-> into tiny per-filesystem bits, please say so.
->=20
->=20
-> Documentation/filesystems/ext2.txt |  2 --
-> Documentation/filesystems/ext4.txt |  7 +++----
-> fs/9p/Kconfig                      |  3 ---
-> fs/Kconfig                         |  6 +-----
-> fs/btrfs/Kconfig                   |  3 ---
-> fs/ceph/Kconfig                    |  3 =E2=80=94
+On 13-12-17 17:42, Richard Weinberger wrote:
+> Am Mittwoch, 13. Dezember 2017, 11:18:02 CET schrieb Jaap de Jong:
+>>> Does everything work as expected if you don't set the resize flag in
+>>> ubinize? Maybe this is the culprit.
+>>
+>> Yes, that was my last experiment and that works. It turns off the code
+>> in the old uboot that modifies the volume in such a way that the new
+>> kernel is not able to deal with it.
+>> The strange thing is, that an old kernel doesn't mind.
+> 
+> Can you please rule out U-Boot first?
+> IOW don't attach UBI from U-Boot and load the kernel via TFTP/NFS, etc...
+> I'm still not sure whether this is a regression in Linux or U-Boot.
+Sure. Did that and then there is no corruption. The old version uboot 
+modifies the volume in a way that the new kernel can't handle. The old 
+kernel on the other hand is able to mount that 'mangled' volume.
 
-Ceph bits looks good.
-
-Acked-by:  Yan, Zheng" <zyan@redhat.com>
+Jaap.
