@@ -1,25 +1,23 @@
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+Received: from smtp4.nedap.com ([213.160.213.85])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ePPZl-0006Wf-VE
- for linux-mtd@lists.infradead.org; Thu, 14 Dec 2017 09:13:13 +0000
-Received: by mail-wm0-x242.google.com with SMTP id 64so9943737wme.3
- for <linux-mtd@lists.infradead.org>; Thu, 14 Dec 2017 01:12:48 -0800 (PST)
+ id 1ePQBa-0007FW-HJ
+ for linux-mtd@lists.infradead.org; Thu, 14 Dec 2017 09:52:26 +0000
+Subject: Re: Mounting issue with old uboot and new rootfs
+To: Richard Weinberger <richard@nod.at>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+References: <d868125b-638e-4007-7a90-22937ffca9c6@nedap.com>
+ <5001344.Umix9c0TK6@blindfold>
+ <548ecb18-722c-f919-b245-d1b1c15c1697@nedap.com>
+ <1850520.5cNxzxR8i7@blindfold>
+ <6db62c4b-653d-e224-283f-288a765899c5@nedap.com>
+From: Jaap de Jong <jaap.dejong@nedap.com>
+Message-ID: <015beb4d-70d3-9d0f-119b-c94ab969f702@nedap.com>
+Date: Thu, 14 Dec 2017 10:51:36 +0100
 MIME-Version: 1.0
-In-Reply-To: <20171214074906.2147-3-nagasure@xilinx.com>
-References: <20171214074906.2147-1-nagasure@xilinx.com>
- <20171214074906.2147-3-nagasure@xilinx.com>
-From: Philippe Ombredanne <pombredanne@nexb.com>
-Date: Thu, 14 Dec 2017 10:12:06 +0100
-Message-ID: <CAOFm3uFJ9MPpN=2YOsY=kr0j-s=2PvzkKTC51gqJTeaBrSMrrw@mail.gmail.com>
-Subject: Re: [PATCH v8 2/2] mtd: nand: Add support for Arasan NAND Flash
- Controller
-To: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
-Cc: boris.brezillon@free-electrons.com, richard@nod.at,
- computersforpeace@gmail.com, marek.vasut@gmail.com,
- cyrille.pitchen@wedev4u.fr, dwmw2@infradead.org,
- linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
- michals@xilinx.com, punnaia@xilinx.com, nagasuresh12@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6db62c4b-653d-e224-283f-288a765899c5@nedap.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,40 +27,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Naga,
 
-On Thu, Dec 14, 2017 at 8:49 AM, Naga Sureshkumar Relli
-<naga.sureshkumar.relli@xilinx.com> wrote:
-> Added the basic driver for Arasan NAND Flash Controller used in
-> Zynq UltraScale+ MPSoC. It supports only Hw ECC and upto 24bit
-> correction.
->
-> Signed-off-by: Naga Sureshkumar Relli <nagasure@xilinx.com>
-> Signed-off-by: Punnaiah Choudary Kalluri <punnaia@xilinx.com>
 
-<snip>
+On 14-12-17 08:28, Jaap de Jong wrote:
+> 
+> 
+> On 13-12-17 17:42, Richard Weinberger wrote:
+>> Am Mittwoch, 13. Dezember 2017, 11:18:02 CET schrieb Jaap de Jong:
+>>>> Does everything work as expected if you don't set the resize flag in
+>>>> ubinize? Maybe this is the culprit.
+>>>
+>>> Yes, that was my last experiment and that works. It turns off the code
+>>> in the old uboot that modifies the volume in such a way that the new
+>>> kernel is not able to deal with it.
+>>> The strange thing is, that an old kernel doesn't mind.
+>>
+>> Can you please rule out U-Boot first?
+>> IOW don't attach UBI from U-Boot and load the kernel via TFTP/NFS, etc...
+>> I'm still not sure whether this is a regression in Linux or U-Boot.
+> Sure. Did that and then there is no corruption. The old version uboot 
+> modifies the volume in a way that the new kernel can't handle. The old 
+> kernel on the other hand is able to mount that 'mangled' volume.
+In addition to this: In the situation where you replace the old kernel 
+with a new kernel, the filesystem is damaged by the new kernel in a way 
+that it is unusable. The way I reproduce this is by flashing a unit with 
+an old uboot/kernel/filesystem. Start it: the old uboot resizes the fs 
+and the old kernel also changes something with it. Restart with a new 
+kernel. Bricked.
+The first run of the new kernel shows:
+  ubi0 error: ubi_read_volume_table: the layout volume was not found
+  ubi0 error: ubi_attach_mtd_dev: failed to attach mtd3, error -22
+  UBI error: cannot attach mtd3
+  Kernel panic - not syncing: VFS: Unable to mount root fs on 
+unknown-block(0,0)
+  Rebooting in 1 seconds..
 
-> --- /dev/null
-> +++ b/drivers/mtd/nand/arasan_nand.c
-> @@ -0,0 +1,1020 @@
-> +/*
-> + * Arasan NAND Flash Controller Driver
-> + *
-> + * Copyright (C) 2014 - 2017 Xilinx, Inc.
-> + *
-> + * This program is free software; you can redistribute it and/or modify it under
-> + * the terms of the GNU General Public License version 2 as published by the
-> + * Free Software Foundation; either version 2 of the License, or (at your
-> + * option) any later version.
-> + */
+The last run of uboot:
+  Creating 1 MTD partitions on "nand0":
+  0x000000100000-0x000020000000 : "mtd=3"
+  UBI: attaching mtd1 to ubi0
+  UBI: physical eraseblock size:   131072 bytes (128 KiB)
+  UBI: logical eraseblock size:    129024 bytes
+  UBI: smallest flash I/O unit:    2048
+  UBI: sub-page size:              512
+  UBI: VID header offset:          512 (aligned 512)
+  UBI: data offset:                2048
+  UBI error: ubi_read_volume_table: the layout volume was not found
+  UBI error: ubi_init: cannot attach mtd1
+  UBI error: ubi_init: UBI error: cannot initialize UBI, error -22
+  UBI init error -22
+  UBIFS not mounted, use ubifs mount to mount volume first!
+  UBIFS not mounted, use ubifs mount to mount volume first!
+  UBIFS not mounted, use ubifs mount to mount volume first!
+  UBIFS not mounted, use ubifs mount to mount volume first!
 
-Could you use the new SPDX tags instead of this fine and long
-boilerplate? See Thomas doc for details [1]
+Same setup but bypassing the first uboot run: no issues.
 
-[1] https://lkml.org/lkml/2017/12/4/934
+To put my experiments in a table:
 
-Thanks!
+uboot kernel  kernel  result
+       1st run 2nd run
+-     old     old     fine
+old   old     old     fine
+new   old     old     fine
 
--- 
-Cordially
-Philippe Ombredanne
+-     old     new     fine
+old   old     new     bricked
+new   old     new     bricked
+
+-     new     new     fine
+old   new     new     bricked
+new   new     new     fine
+
+So I see 2 issues...
