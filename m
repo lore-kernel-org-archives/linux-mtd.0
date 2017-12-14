@@ -1,25 +1,25 @@
-Received: from vps0.lunn.ch ([185.16.172.187])
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ePPVt-0003ZT-Bh
- for linux-mtd@lists.infradead.org; Thu, 14 Dec 2017 09:09:11 +0000
-Date: Thu, 14 Dec 2017 10:08:24 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Antonio Borneo <borneo.antonio@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Chris Packham <chris.packham@alliedtelesis.co.nz>,
- Rob Herring <robh@kernel.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: mchp23k256: propagate return value of spi_sync()
-Message-ID: <20171214090824.GB19186@lunn.ch>
-References: <20171210151956.2053-1-borneo.antonio@gmail.com>
+ id 1ePPZl-0006Wf-VE
+ for linux-mtd@lists.infradead.org; Thu, 14 Dec 2017 09:13:13 +0000
+Received: by mail-wm0-x242.google.com with SMTP id 64so9943737wme.3
+ for <linux-mtd@lists.infradead.org>; Thu, 14 Dec 2017 01:12:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20171210151956.2053-1-borneo.antonio@gmail.com>
+In-Reply-To: <20171214074906.2147-3-nagasure@xilinx.com>
+References: <20171214074906.2147-1-nagasure@xilinx.com>
+ <20171214074906.2147-3-nagasure@xilinx.com>
+From: Philippe Ombredanne <pombredanne@nexb.com>
+Date: Thu, 14 Dec 2017 10:12:06 +0100
+Message-ID: <CAOFm3uFJ9MPpN=2YOsY=kr0j-s=2PvzkKTC51gqJTeaBrSMrrw@mail.gmail.com>
+Subject: Re: [PATCH v8 2/2] mtd: nand: Add support for Arasan NAND Flash
+ Controller
+To: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+Cc: boris.brezillon@free-electrons.com, richard@nod.at,
+ computersforpeace@gmail.com, marek.vasut@gmail.com,
+ cyrille.pitchen@wedev4u.fr, dwmw2@infradead.org,
+ linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
+ michals@xilinx.com, punnaia@xilinx.com, nagasuresh12@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,12 +29,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Dec 10, 2017 at 04:19:56PM +0100, Antonio Borneo wrote:
-> The call to spi_sync() can fail.
-> Check the return value and propagate it.
-> 
-> Signed-off-by: Antonio Borneo <borneo.antonio@gmail.com>
+Dear Naga,
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+On Thu, Dec 14, 2017 at 8:49 AM, Naga Sureshkumar Relli
+<naga.sureshkumar.relli@xilinx.com> wrote:
+> Added the basic driver for Arasan NAND Flash Controller used in
+> Zynq UltraScale+ MPSoC. It supports only Hw ECC and upto 24bit
+> correction.
+>
+> Signed-off-by: Naga Sureshkumar Relli <nagasure@xilinx.com>
+> Signed-off-by: Punnaiah Choudary Kalluri <punnaia@xilinx.com>
 
-    Andrew
+<snip>
+
+> --- /dev/null
+> +++ b/drivers/mtd/nand/arasan_nand.c
+> @@ -0,0 +1,1020 @@
+> +/*
+> + * Arasan NAND Flash Controller Driver
+> + *
+> + * Copyright (C) 2014 - 2017 Xilinx, Inc.
+> + *
+> + * This program is free software; you can redistribute it and/or modify it under
+> + * the terms of the GNU General Public License version 2 as published by the
+> + * Free Software Foundation; either version 2 of the License, or (at your
+> + * option) any later version.
+> + */
+
+Could you use the new SPDX tags instead of this fine and long
+boilerplate? See Thomas doc for details [1]
+
+[1] https://lkml.org/lkml/2017/12/4/934
+
+Thanks!
+
+-- 
+Cordially
+Philippe Ombredanne
