@@ -1,31 +1,20 @@
-Received: from mail-sn1nam01on0043.outbound.protection.outlook.com
- ([104.47.32.43] helo=NAM01-SN1-obe.outbound.protection.outlook.com)
+Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ePRkA-0005B9-2B
- for linux-mtd@lists.infradead.org; Thu, 14 Dec 2017 11:32:05 +0000
-From: Naga Sureshkumar Relli <nagasure@xilinx.com>
-To: Philippe Ombredanne <pombredanne@nexb.com>
-CC: "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
- "richard@nod.at" <richard@nod.at>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "cyrille.pitchen@wedev4u.fr"
- <cyrille.pitchen@wedev4u.fr>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, LKML
- <linux-kernel@vger.kernel.org>, Michal Simek <michals@xilinx.com>, "Punnaiah
- Choudary Kalluri" <punnaia@xilinx.com>, "nagasuresh12@gmail.com"
- <nagasuresh12@gmail.com>
-Subject: RE: [PATCH v8 2/2] mtd: nand: Add support for Arasan NAND Flash
- Controller
-Date: Thu, 14 Dec 2017 11:31:33 +0000
-Message-ID: <BY2PR02MB14116E2BD437F1CBEB38BA32AF0A0@BY2PR02MB1411.namprd02.prod.outlook.com>
-References: <20171214074906.2147-1-nagasure@xilinx.com>
- <20171214074906.2147-3-nagasure@xilinx.com>
- <CAOFm3uFJ9MPpN=2YOsY=kr0j-s=2PvzkKTC51gqJTeaBrSMrrw@mail.gmail.com>
-In-Reply-To: <CAOFm3uFJ9MPpN=2YOsY=kr0j-s=2PvzkKTC51gqJTeaBrSMrrw@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1ePSNY-00071g-BD
+ for linux-mtd@lists.infradead.org; Thu, 14 Dec 2017 12:12:47 +0000
+Subject: Re: [PATCH v2 1/2] mtd: spi-nor: add support for is25lq040b
+To: =?UTF-8?Q?Sean_Nyekj=c3=a6r?= <sean.nyekjaer@prevas.dk>
+Cc: linux-mtd@lists.infradead.org, marek.vasut@gmail.com
+References: <20171213113530.6857-1-sean.nyekjaer@prevas.dk>
+ <e85d724e-a8c8-8afb-0552-e2d5fef0208f@prevas.dk>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <a24b94d2-3781-e91e-04f0-e26675450a88@wedev4u.fr>
+Date: Thu, 14 Dec 2017 13:12:11 +0100
 MIME-Version: 1.0
+In-Reply-To: <e85d724e-a8c8-8afb-0552-e2d5fef0208f@prevas.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,37 +24,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgUGhpbGlwcGUsDQoNClRoYW5rcyBmb3IgdGhlIHJldmlldy4NCkkgd2lsbCB1cGRhdGUgaXQg
-aW4gbmV4dCB2ZXJzaW9uLg0KDQpUaGFua3MsDQpOYWdhIFN1cmVzaGt1bWFyIFJlbGxpLg0KDQo+
-IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFBoaWxpcHBlIE9tYnJlZGFubmUg
-W21haWx0bzpwb21icmVkYW5uZUBuZXhiLmNvbV0NCj4gU2VudDogVGh1cnNkYXksIERlY2VtYmVy
-IDE0LCAyMDE3IDI6NDIgUE0NCj4gVG86IE5hZ2EgU3VyZXNoa3VtYXIgUmVsbGkgPG5hZ2FzdXJl
-QHhpbGlueC5jb20+DQo+IENjOiBib3Jpcy5icmV6aWxsb25AZnJlZS1lbGVjdHJvbnMuY29tOyBy
-aWNoYXJkQG5vZC5hdDsNCj4gY29tcHV0ZXJzZm9ycGVhY2VAZ21haWwuY29tOyBtYXJlay52YXN1
-dEBnbWFpbC5jb207DQo+IGN5cmlsbGUucGl0Y2hlbkB3ZWRldjR1LmZyOyBkd213MkBpbmZyYWRl
-YWQub3JnOyBsaW51eC0NCj4gbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IExLTUwgPGxpbnV4LWtl
-cm5lbEB2Z2VyLmtlcm5lbC5vcmc+OyBNaWNoYWwgU2ltZWsNCj4gPG1pY2hhbHNAeGlsaW54LmNv
-bT47IFB1bm5haWFoIENob3VkYXJ5IEthbGx1cmkgPHB1bm5haWFAeGlsaW54LmNvbT47DQo+IG5h
-Z2FzdXJlc2gxMkBnbWFpbC5jb20NCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2OCAyLzJdIG10ZDog
-bmFuZDogQWRkIHN1cHBvcnQgZm9yIEFyYXNhbiBOQU5EIEZsYXNoDQo+IENvbnRyb2xsZXINCj4g
-DQo+IERlYXIgTmFnYSwNCj4gDQo+IE9uIFRodSwgRGVjIDE0LCAyMDE3IGF0IDg6NDkgQU0sIE5h
-Z2EgU3VyZXNoa3VtYXIgUmVsbGkNCj4gPG5hZ2Euc3VyZXNoa3VtYXIucmVsbGlAeGlsaW54LmNv
-bT4gd3JvdGU6DQo+ID4gQWRkZWQgdGhlIGJhc2ljIGRyaXZlciBmb3IgQXJhc2FuIE5BTkQgRmxh
-c2ggQ29udHJvbGxlciB1c2VkIGluIFp5bnENCj4gPiBVbHRyYVNjYWxlKyBNUFNvQy4gSXQgc3Vw
-cG9ydHMgb25seSBIdyBFQ0MgYW5kIHVwdG8gMjRiaXQgY29ycmVjdGlvbi4NCj4gPg0KPiA+IFNp
-Z25lZC1vZmYtYnk6IE5hZ2EgU3VyZXNoa3VtYXIgUmVsbGkgPG5hZ2FzdXJlQHhpbGlueC5jb20+
-DQo+ID4gU2lnbmVkLW9mZi1ieTogUHVubmFpYWggQ2hvdWRhcnkgS2FsbHVyaSA8cHVubmFpYUB4
-aWxpbnguY29tPg0KPiANCj4gPHNuaXA+DQo+IA0KPiA+IC0tLSAvZGV2L251bGwNCj4gPiArKysg
-Yi9kcml2ZXJzL210ZC9uYW5kL2FyYXNhbl9uYW5kLmMNCj4gPiBAQCAtMCwwICsxLDEwMjAgQEAN
-Cj4gPiArLyoNCj4gPiArICogQXJhc2FuIE5BTkQgRmxhc2ggQ29udHJvbGxlciBEcml2ZXINCj4g
-PiArICoNCj4gPiArICogQ29weXJpZ2h0IChDKSAyMDE0IC0gMjAxNyBYaWxpbngsIEluYy4NCj4g
-PiArICoNCj4gPiArICogVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7IHlvdSBjYW4gcmVk
-aXN0cmlidXRlIGl0IGFuZC9vcg0KPiA+ICttb2RpZnkgaXQgdW5kZXINCj4gPiArICogdGhlIHRl
-cm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSB2ZXJzaW9uIDIgYXMgcHVibGlz
-aGVkDQo+ID4gK2J5IHRoZQ0KPiA+ICsgKiBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb247IGVpdGhl
-ciB2ZXJzaW9uIDIgb2YgdGhlIExpY2Vuc2UsIG9yIChhdA0KPiA+ICt5b3VyDQo+ID4gKyAqIG9w
-dGlvbikgYW55IGxhdGVyIHZlcnNpb24uDQo+ID4gKyAqLw0KPiANCj4gQ291bGQgeW91IHVzZSB0
-aGUgbmV3IFNQRFggdGFncyBpbnN0ZWFkIG9mIHRoaXMgZmluZSBhbmQgbG9uZyBib2lsZXJwbGF0
-ZT8gU2VlDQo+IFRob21hcyBkb2MgZm9yIGRldGFpbHMgWzFdDQo+IA0KPiBbMV0gaHR0cHM6Ly9s
-a21sLm9yZy9sa21sLzIwMTcvMTIvNC85MzQNCj4gDQo+IFRoYW5rcyENCj4gDQo+IC0tDQo+IENv
-cmRpYWxseQ0KPiBQaGlsaXBwZSBPbWJyZWRhbm5lDQo=
+Hi Sean,
+
+Le 14/12/2017 à 11:21, Sean Nyekjær a écrit :
+> Hi Cyrille
+> 
+> On 2017-12-13 12:35, Sean Nyekjaer wrote:
+>> Signed-off-by: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
+>> ---
+>> v2:
+>>   - removed SECT_4K as the chip are supporting 32K and bulk erase
+>>
+>>   drivers/mtd/spi-nor/spi-nor.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>> index 9178139a39d0..cc4328dff89a 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -1048,6 +1048,7 @@ static const struct flash_info spi_nor_ids[] = {
+>>       { "is25cd512", INFO(0x7f9d20, 0, 32 * 1024,   2, SECT_4K) },
+>>       { "is25lp128", INFO(0x9d6018, 0, 64 * 1024, 256,
+>>               SECT_4K | SPI_NOR_DUAL_READ) },
+>> +    { "is25lq040b", INFO(0x9d4013, 0, 64 * 1024,  64, 0) },
+> Doh, my bad, there is only 8 blocks on the device (4Mbit not 4MB)
+> 
+> The device have the possibility to erase 4, 32, 64 Kbyte, or Chip Erase.
+> Is the SECT_4K preferred in the kernel or should i leave it off?
+
+If 4K erase is uniformly supported by the memory, then please add the
+SECT_4K flag.
+
+I'm looking at the datasheet [1]:
+- Uniform 4 Kbyte Sectors or 32/64 Kbyte Blocks: please add the SECT_4K flag
+- FAST READ QUAD OUTPUT (FRQO, 6Bh): Fast Read 1-1-4 supported, then please
+  add the SPI_NOR_QUAD_READ flag too
+- FAST READ DUAL OUTPUT (FRDO, 3Bh): Fast Read 1-1-2 supported, also add the
+  SPI_NOR_DUAL_READ flag.
+
+Besides, setting at least one the the SPI_NOR_{DUAL,QUAD}_READ flags will
+enable parsing of the SFDP tables, which are also supported by this memory:
+
+"Supports Serial Flash Discoverable Parameters (SFDP)"
+
+So you should set the 3 flags:
+SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ
+
+
+Best regards,
+
+Cyrille
+
+[1] http://www.issi.com/WW/pdf/25LQ025B-512B-010B-020B-040B.pdf
+
+>>         /* Macronix */
+>>       { "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
+> /Sean
+> 
