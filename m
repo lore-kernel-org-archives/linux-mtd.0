@@ -1,22 +1,20 @@
-Received: from smtp4.nedap.com ([213.160.213.85])
+Received: from mail-sn1nam02on0070.outbound.protection.outlook.com
+ ([104.47.36.70] helo=NAM02-SN1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ePNxB-0000ZO-7s
- for linux-mtd@lists.infradead.org; Thu, 14 Dec 2017 07:29:15 +0000
-Subject: Re: Mounting issue with old uboot and new rootfs
-To: Richard Weinberger <richard@nod.at>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-References: <d868125b-638e-4007-7a90-22937ffca9c6@nedap.com>
- <5001344.Umix9c0TK6@blindfold>
- <548ecb18-722c-f919-b245-d1b1c15c1697@nedap.com>
- <1850520.5cNxzxR8i7@blindfold>
-From: Jaap de Jong <jaap.dejong@nedap.com>
-Message-ID: <6db62c4b-653d-e224-283f-288a765899c5@nedap.com>
-Date: Thu, 14 Dec 2017 08:28:48 +0100
+ id 1ePOHY-0001JW-W6
+ for linux-mtd@lists.infradead.org; Thu, 14 Dec 2017 07:50:20 +0000
+From: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+To: <boris.brezillon@free-electrons.com>, <richard@nod.at>,
+ <computersforpeace@gmail.com>, <marek.vasut@gmail.com>,
+ <cyrille.pitchen@wedev4u.fr>
+CC: <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <michals@xilinx.com>, <punnaia@xilinx.com>,
+ <nagasuresh12@gmail.com>
+Subject: [PATCH v8 0/2] Add support for Arasan NAND Flash controller
+Date: Thu, 14 Dec 2017 13:19:04 +0530
+Message-ID: <20171214074906.2147-1-nagasure@xilinx.com>
 MIME-Version: 1.0
-In-Reply-To: <1850520.5cNxzxR8i7@blindfold>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This patch series adds the basic driver support for Arasan NAND Flash
+controller.
+We are reinitiating the patch series by fixing the comments given by
+Boris and Rob.
 
+Previous Patch reference:
+https://lkml.org/lkml/2017/1/8/245
 
-On 13-12-17 17:42, Richard Weinberger wrote:
-> Am Mittwoch, 13. Dezember 2017, 11:18:02 CET schrieb Jaap de Jong:
->>> Does everything work as expected if you don't set the resize flag in
->>> ubinize? Maybe this is the culprit.
->>
->> Yes, that was my last experiment and that works. It turns off the code
->> in the old uboot that modifies the volume in such a way that the new
->> kernel is not able to deal with it.
->> The strange thing is, that an old kernel doesn't mind.
-> 
-> Can you please rule out U-Boot first?
-> IOW don't attach UBI from U-Boot and load the kernel via TFTP/NFS, etc...
-> I'm still not sure whether this is a regression in Linux or U-Boot.
-Sure. Did that and then there is no corruption. The old version uboot 
-modifies the volume in a way that the new kernel can't handle. The old 
-kernel on the other hand is able to mount that 'mangled' volume.
+Naga Sureshkumar Relli (2):
+  mtd: arasan: Add device tree binding documentation
+  mtd: nand: Add support for Arasan NAND Flash Controller
 
-Jaap.
+ .../devicetree/bindings/mtd/arasan_nand.txt        |   38 +
+ drivers/mtd/nand/Kconfig                           |    8 +
+ drivers/mtd/nand/Makefile                          |    1 +
+ drivers/mtd/nand/arasan_nand.c                     | 1020 ++++++++++++++++++++
+ 4 files changed, 1067 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/arasan_nand.txt
+ create mode 100644 drivers/mtd/nand/arasan_nand.c
+
+-- 
+2.13.0
