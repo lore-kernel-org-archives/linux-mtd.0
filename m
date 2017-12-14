@@ -1,19 +1,34 @@
-Received: from mail01.prevas.se ([62.95.78.3])
+Received: from [45.249.212.35] (helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ePQeV-0007ZV-VM
- for linux-mtd@lists.infradead.org; Thu, 14 Dec 2017 10:22:09 +0000
-Subject: Re: [PATCH v2 1/2] mtd: spi-nor: add support for is25lq040b
-To: <cyrille.pitchen@wedev4u.fr>
-References: <20171213113530.6857-1-sean.nyekjaer@prevas.dk>
-CC: <linux-mtd@lists.infradead.org>, <marek.vasut@gmail.com>
-From: =?UTF-8?Q?Sean_Nyekj=c3=a6r?= <sean.nyekjaer@prevas.dk>
-Message-ID: <e85d724e-a8c8-8afb-0552-e2d5fef0208f@prevas.dk>
-Date: Thu, 14 Dec 2017 11:21:37 +0100
+ id 1ePQwG-0002EO-VA
+ for linux-mtd@lists.infradead.org; Thu, 14 Dec 2017 10:40:31 +0000
+Subject: Re: [PATCH] fs/*/Kconfig: drop links to 404-compliant
+ http://acl.bestbits.at
+To: Adam Borowski <kilobyte@angband.pl>, Alexander Viro
+ <viro@zeniv.linux.org.uk>, <linux-fsdevel@vger.kernel.org>, Jan Kara
+ <jack@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+ <linux-ext4@vger.kernel.org>, Theodore Ts'o <tytso@mit.edu>, Andreas Dilger
+ <adilger.kernel@dilger.ca>, Eric Van Hensbergen <ericvh@gmail.com>, "Ron
+ Minnich" <rminnich@sandia.gov>, Latchesar Ionkov <lucho@ionkov.net>,
+ <v9fs-developer@lists.sourceforge.net>, David Sterba <dsterba@suse.com>,
+ <linux-btrfs@vger.kernel.org>, "Yan, Zheng" <zyan@redhat.com>, Sage Weil
+ <sage@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
+ <ceph-devel@vger.kernel.org>, Steve French <sfrench@samba.org>,
+ <linux-cifs@vger.kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>,
+ <linux-f2fs-devel@lists.sourceforge.net>, David Woodhouse
+ <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>, Dave Kleikamp
+ <shaggy@kernel.org>, <jfs-discussion@lists.sourceforge.net>,
+ <reiserfs-devel@vger.kernel.org>, "Darrick J. Wong"
+ <darrick.wong@oracle.com>, <linux-xfs@vger.kernel.org>
+References: <20171213053825.10903-1-kilobyte@angband.pl>
+From: Chao Yu <yuchao0@huawei.com>
+Message-ID: <8b0816ac-186e-77ec-68d9-d28e90d0d5d1@huawei.com>
+Date: Thu, 14 Dec 2017 18:39:40 +0800
 MIME-Version: 1.0
-In-Reply-To: <20171213113530.6857-1-sean.nyekjaer@prevas.dk>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20171213053825.10903-1-kilobyte@angband.pl>
+Content-Type: text/plain; charset="windows-1252"
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +38,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Cyrille
+On 2017/12/13 13:38, Adam Borowski wrote:
+> This link is replicated in most filesystems' config stanzas.  Referring
+> to an archived version of that site is pointless as it mostly deals with
+> patches; user documentation is available elsewhere.
+> 
+> Signed-off-by: Adam Borowski <kilobyte@angband.pl>
 
-On 2017-12-13 12:35, Sean Nyekjaer wrote:
-> Signed-off-by: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
-> ---
-> v2:
->   - removed SECT_4K as the chip are supporting 32K and bulk erase
->
->   drivers/mtd/spi-nor/spi-nor.c | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 9178139a39d0..cc4328dff89a 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -1048,6 +1048,7 @@ static const struct flash_info spi_nor_ids[] = {
->   	{ "is25cd512", INFO(0x7f9d20, 0, 32 * 1024,   2, SECT_4K) },
->   	{ "is25lp128", INFO(0x9d6018, 0, 64 * 1024, 256,
->   			SECT_4K | SPI_NOR_DUAL_READ) },
-> +	{ "is25lq040b", INFO(0x9d4013, 0, 64 * 1024,  64, 0) },
-Doh, my bad, there is only 8 blocks on the device (4Mbit not 4MB)
+[skip]
 
-The device have the possibility to erase 4, 32, 64 Kbyte, or Chip Erase.
-Is the SECT_4K preferred in the kernel or should i leave it off?
->   
->   	/* Macronix */
->   	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
-/Sean
+> diff --git a/fs/f2fs/Kconfig b/fs/f2fs/Kconfig
+> index 378c221d68a9..9a20ef42fadd 100644
+> --- a/fs/f2fs/Kconfig
+> +++ b/fs/f2fs/Kconfig
+> @@ -35,8 +35,7 @@ config F2FS_FS_XATTR
+>  	default y
+>  	help
+>  	  Extended attributes are name:value pairs associated with inodes by
+> -	  the kernel or by users (see the attr(5) manual page, or visit
+> -	  <http://acl.bestbits.at/> for details).
+> +	  the kernel or by users (see the attr(5) manual page for details).
+>  
+>  	  If unsure, say N.
+>  
+> @@ -49,9 +48,6 @@ config F2FS_FS_POSIX_ACL
+>  	  Posix Access Control Lists (ACLs) support permissions for users and
+>  	  groups beyond the owner/group/world scheme.
+>  
+> -	  To learn more about Access Control Lists, visit the POSIX ACLs for
+> -	  Linux website <http://acl.bestbits.at/>.
+> -
+>  	  If you don't know what Access Control Lists are, say N
+>  
+>  config F2FS_FS_SECURITY
+
+Looks good to me.
+
+Acked-by: Chao Yu <yuchao0@huawei.com>
+
+Thanks,
