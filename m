@@ -1,30 +1,22 @@
-Date: Thu, 14 Dec 2017 07:09:30 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Miquel Raynal <miquel.raynal@free-electrons.com>, Robert Jarzmik
- <robert.jarzmik@free.fr>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>, Gregory
- Clement <gregory.clement@free-electrons.com>, Sebastian Hesselbarth
- <sebastian.hesselbarth@gmail.com>, Russell King <linux@armlinux.org.uk>,
- Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Eric Miao <eric.y.miao@gmail.com>, Catalin Marinas
- <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Ezequiel
- Garcia <ezequiel.garcia@free-electrons.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Thomas
- Petazzoni <thomas.petazzoni@free-electrons.com>, Antoine Tenart
- <antoine.tenart@free-electrons.com>, Nadav Haklai <nadavh@marvell.com>,
- Ofer Heifetz <oferh@marvell.com>, Hanna Hawa <hannah@marvell.com>, Neta Zur
- Hershkovits <neta@marvell.com>
-Subject: Re: [PATCH 00/12] Marvell NAND controller rework with ->exec_op()
-Message-ID: <20171214070930.0b885f6d@bbrezillon>
-In-Reply-To: <20171207201814.30411-1-miquel.raynal@free-electrons.com>
-References: <20171207201814.30411-1-miquel.raynal@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]
+ helo=smtp.smtpout.orange.fr)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ePMj1-0002Sp-3W
+ for linux-mtd@lists.infradead.org; Thu, 14 Dec 2017 06:10:57 +0000
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: kyungmin.park@samsung.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
+ marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ kernel-janitors@vger.kernel.org,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 3/4 v3] mtd: onenand: samsung: Remove a useless include
+Date: Thu, 14 Dec 2017 07:03:52 +0100
+Message-Id: <3841b40286522d07585e773fb62c4c737ebf757b.1513230484.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <cover.1513230484.git.christophe.jaillet@wanadoo.fr>
+References: <cover.1513230484.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <cover.1513230484.git.christophe.jaillet@wanadoo.fr>
+References: <cover.1513230484.git.christophe.jaillet@wanadoo.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,142 +26,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+This include is not needed, so remove it.
 
-On Thu,  7 Dec 2017 21:18:02 +0100
-Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+Cross-compiled tested-only
 
-> Hi,
->=20
-> After the addition of the NAND framework ->exec_op() interface (see [1]
-> for the series preparing it and [2] for the last version of the
-> core-side implementation of ->exec_op() itself), this series replaces
-> the current Marvell NAND controller driver pxa3xx_nand.c with a rework
-> called marvell_nand.c.
->=20
-> Aside the fact that it drops the big state machine, improves the overall
-> speed and implements raw accesses, it is the first driver-side
-> implementation of the ->exec_op() interface and may be used as reference
-> for latter reworks of the same type.
->=20
-> One may find more detail about why a completely new driver is needed in
-> the commit log of:
->=20
->     "mtd: nand: add reworked Marvell NAND controller driver"
->=20
-> The series also changes the device tree NAND node definition for all
-> platforms referring to the Marvell driver to use the new bindings. They
-> are more hierarchical and fit the real organization of the hardware, by
-> having NAND partitions that are part of NAND chip nodes, themselves part
-> of the NAND controller node.
->=20
-> These changes have been tested on:
->    - PXA3xx platform with a CM-X300 board (2kiB page NAND, 1b/512B
->      strength, Hamming ECC engine) [32 bits]
->    - Armada 385 DB AP (4kiB page NAND, 4b/512B, BCH ECC engine) [32 bits]
->    - Armada 398 DB (4kiB page NAND, 8b/512B, BCH ECC engine using a layout
->      with a last chunk different than the others) [32 bits]
->    - Armada 7040 DB and Armada 8040 DB (4kiB page NAND, 4b/512B, BCH ECC
->      engine) [64 bits]
->=20
-> Robert, it would be great if you could also do more testing on PXA and
-> validate this driver. If needed, a branch ready to be tested is
-> available at [3]. It is based on nand/next and has all the changes
-> brought by the previously mentionned series as well as this one.
+v3: new patch in the serie
+---
+ drivers/mtd/onenand/samsung.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Robert, do you think you'll have some time to test Miquel's branch on
-your PXA boards? Miquel already tested on one of these boards (CM-X300),
-but we'd like to have other testers. Also feel free to review the
-driver if have the time.
-
-Thanks,
-
-Boris
-
->=20
-> Thank you,
-> Miqu=C3=A8l
->=20
->=20
-> [1] https://www.spinics.net/lists/arm-kernel/msg619633.html
-> [2] http://lists.infradead.org/pipermail/linux-mtd/2017-December/077965.h=
-tml
-> [3] https://github.com/miquelraynal/linux/tree/marvell/nand-next/nfc-rewo=
-rk
->=20
-> Miquel Raynal (12):
->   dt-bindings: mtd: add Marvell NAND controller documentation
->   mtd: nand: add reworked Marvell NAND controller driver
->   mtd: nand: replace pxa3xx_nand driver by its rework called
->     marvell_nand
->   dt-bindings: mtd: remove pxa3xx NAND controller documentation
->   mtd: nand: remove useless fields from pxa3xx NAND platform data
->   ARM: dts: armada-370-xp: use reworked NAND controller driver
->   ARM: dts: armada-375: use reworked NAND controller driver
->   ARM: dts: armada-38x: use reworked NAND controller driver
->   ARM: dts: armada-39x: use reworked NAND controller driver
->   ARM: dts: pxa: use reworked NAND controller driver
->   ARM64: dts: marvell: use reworked NAND controller driver on Armada 7K
->   ARM64: dts: marvell: use reworked NAND controller driver on Armada 8K
->=20
->  .../devicetree/bindings/mtd/marvell-nand.txt       |   84 +
->  .../devicetree/bindings/mtd/pxa3xx-nand.txt        |   50 -
->  arch/arm/boot/dts/armada-370-db.dts                |   57 +-
->  arch/arm/boot/dts/armada-370-dlink-dns327l.dts     |  120 +-
->  arch/arm/boot/dts/armada-370-mirabox.dts           |   51 +-
->  arch/arm/boot/dts/armada-370-netgear-rn102.dts     |   90 +-
->  arch/arm/boot/dts/armada-370-netgear-rn104.dts     |   90 +-
->  arch/arm/boot/dts/armada-370-rd.dts                |   52 +-
->  arch/arm/boot/dts/armada-370-seagate-nas-xbay.dtsi |   64 +-
->  arch/arm/boot/dts/armada-370-xp.dtsi               |    6 +-
->  arch/arm/boot/dts/armada-375-db.dts                |   50 +-
->  arch/arm/boot/dts/armada-375.dtsi                  |    6 +-
->  arch/arm/boot/dts/armada-385-db-ap.dts             |   69 +-
->  arch/arm/boot/dts/armada-385-linksys-caiman.dts    |  129 +-
->  arch/arm/boot/dts/armada-385-linksys-cobra.dts     |  129 +-
->  arch/arm/boot/dts/armada-385-linksys-rango.dts     |  141 +-
->  arch/arm/boot/dts/armada-385-linksys-shelby.dts    |  129 +-
->  arch/arm/boot/dts/armada-385-linksys.dtsi          |   16 +-
->  arch/arm/boot/dts/armada-388-db.dts                |   55 +-
->  arch/arm/boot/dts/armada-38x.dtsi                  |    6 +-
->  arch/arm/boot/dts/armada-390-db.dts                |   66 +-
->  arch/arm/boot/dts/armada-395-gp.dts                |   74 +-
->  arch/arm/boot/dts/armada-398-db.dts                |   60 +-
->  arch/arm/boot/dts/armada-39x.dtsi                  |    6 +-
->  arch/arm/boot/dts/armada-xp-db-dxbc2.dts           |    2 +-
->  arch/arm/boot/dts/armada-xp-db-xc3-24g4xg.dts      |    2 +-
->  arch/arm/boot/dts/armada-xp-db.dts                 |    2 +-
->  arch/arm/boot/dts/armada-xp-gp.dts                 |    2 +-
->  arch/arm/boot/dts/armada-xp-lenovo-ix4-300d.dts    |    2 +-
->  arch/arm/boot/dts/armada-xp-linksys-mamba.dts      |  156 +-
->  arch/arm/boot/dts/armada-xp-netgear-rn2120.dts     |   90 +-
->  arch/arm/boot/dts/pxa3xx.dtsi                      |    6 +-
->  arch/arm/configs/cm_x300_defconfig                 |    2 +-
->  arch/arm/configs/mvebu_v7_defconfig                |    2 +-
->  arch/arm/configs/pxa3xx_defconfig                  |    3 +-
->  arch/arm/configs/pxa_defconfig                     |    2 +-
->  arch/arm/configs/raumfeld_defconfig                |    2 +-
->  arch/arm/mach-mmp/ttc_dkb.c                        |    4 +-
->  arch/arm/mach-pxa/cm-x300.c                        |    8 +-
->  arch/arm/mach-pxa/colibri-pxa3xx.c                 |    8 +-
->  arch/arm/mach-pxa/colibri.h                        |    2 +-
->  arch/arm/mach-pxa/littleton.c                      |   10 +-
->  arch/arm/mach-pxa/mxm8x10.c                        |   10 +-
->  arch/arm/mach-pxa/raumfeld.c                       |    6 +-
->  arch/arm/mach-pxa/zylonite.c                       |   10 +-
->  arch/arm64/boot/dts/marvell/armada-7040-db.dts     |   52 +-
->  arch/arm64/boot/dts/marvell/armada-8040-db.dts     |   46 +-
->  .../boot/dts/marvell/armada-cp110-master.dtsi      |    8 +-
->  .../arm64/boot/dts/marvell/armada-cp110-slave.dtsi |   10 +-
->  drivers/mtd/nand/Kconfig                           |   12 +
->  drivers/mtd/nand/Makefile                          |    2 +-
->  drivers/mtd/nand/marvell_nand.c                    | 2950 ++++++++++++++=
-++++++
->  drivers/mtd/nand/pxa3xx_nand.c                     | 2104 --------------
->  include/linux/platform_data/mtd-nand-pxa3xx.h      |   43 +-
->  54 files changed, 4093 insertions(+), 3065 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mtd/marvell-nand.txt
->  delete mode 100644 Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
->  create mode 100644 drivers/mtd/nand/marvell_nand.c
->  delete mode 100644 drivers/mtd/nand/pxa3xx_nand.c
->=20
+diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
+index 206aa90140c9..c21d025fee87 100644
+--- a/drivers/mtd/onenand/samsung.c
++++ b/drivers/mtd/onenand/samsung.c
+@@ -25,8 +25,6 @@
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
+ 
+-#include <asm/mach/flash.h>
+-
+ #include "samsung.h"
+ 
+ enum soc_type {
+-- 
+2.14.1
