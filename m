@@ -1,23 +1,31 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ePpHw-00045R-H2
- for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 12:40:37 +0000
+ id 1ePpJ4-0004xg-Sy
+ for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 12:42:08 +0000
+Date: Fri, 15 Dec 2017 13:41:17 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Peter Pan <peterpansjtu@gmail.com>,
- Frieder Schrempf <frieder.schrempf@exceet.de>
-Subject: [PATCH v3 3/4] mtd: Stop directly calling master ->_xxx() hooks from
- mtdpart code
-Date: Fri, 15 Dec 2017 13:39:53 +0100
-Message-Id: <20171215123954.30017-4-boris.brezillon@free-electrons.com>
-In-Reply-To: <20171215123954.30017-1-boris.brezillon@free-electrons.com>
-References: <20171215123954.30017-1-boris.brezillon@free-electrons.com>
+To: Peter Pan <peterpansjtu@gmail.com>, Frieder Schrempf
+ <frieder.schrempf@exceet.de>
+Cc: "Peter Pan =?UTF-8?B?5r2Y5qCL?= (peterpandong)"
+ <peterpandong@micron.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH v6 00/15] A SPI NAND framework under generic NAND framework
+Message-ID: <20171215134117.13e673a1@bbrezillon>
+In-Reply-To: <CAAyFOR+-5QBuYhwXBhWH73Ntu-WSVnjUKej_TMXMKz9RsQ-3pQ@mail.gmail.com>
+References: <20170529225931.226da943@bbrezillon>
+ <90bcb366-c494-2dee-3bb7-d16b77e347c6@exceet.de>
+ <20171204150514.1f17671d@bbrezillon>
+ <A0FE66EC-7E17-43BE-9B66-896F112B92A0@micron.com>
+ <20171205135804.478902dc@bbrezillon>
+ <20171205140313.40f3f17d@bbrezillon>
+ <256b4ab6-c104-4580-87cd-527178bde460@exceet.de>
+ <20171213222710.32d12514@bbrezillon>
+ <CAAyFORJcT1abbo21iA4cetLKmF0zE4akFGFryxPpwPO+730LDQ@mail.gmail.com>
+ <20171214085036.436b4fcf@bbrezillon>
+ <CAAyFOR+-5QBuYhwXBhWH73Ntu-WSVnjUKej_TMXMKz9RsQ-3pQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,355 +35,211 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The MTD layer provides several wrappers around mtd->_xxx() hooks. Call
-these wrappers instead of directly dereferencing the associated ->_xxx()
-pointer.
+On Fri, 15 Dec 2017 10:35:16 +0800
+Peter Pan <peterpansjtu@gmail.com> wrote:
 
-This change has been motivated by another rework letting the core
-handle the case where ->_read/write_oob() are implemented but not
-->_read/write(). In this case, we want mtd_read/write() to fall back to
-->_read/write_oob() when ->_read/write() are NULL. The problem is,
-mtdpart is directly calling the ->_xxx() instead of using the wrappers,
-thus leading to a NULL pointer exception.
+> Hi Boris
+> 
+> On Thu, Dec 14, 2017 at 3:50 PM, Boris Brezillon
+> <boris.brezillon@free-electrons.com> wrote:
+> > Hi Peter,
+> >
+> > On Thu, 14 Dec 2017 14:15:57 +0800
+> > Peter Pan <peterpansjtu@gmail.com> wrote:
+> >  
+> >> Hi Boris and Frieder,
+> >>
+> >> On Thu, Dec 14, 2017 at 5:27 AM, Boris Brezillon
+> >> <boris.brezillon@free-electrons.com> wrote:  
+> >> > Hi Frieder,
+> >> >
+> >> > On Tue, 12 Dec 2017 10:58:10 +0100
+> >> > Frieder Schrempf <frieder.schrempf@exceet.de> wrote:
+> >> >  
+> >> >> Hi Boris,
+> >> >>
+> >> >> I spent some time looking at and working with your latest SPI NAND code.
+> >> >> In my previous mail I said, that we have some working code for our 3.14
+> >> >> kernel based on the "mt29f_spinand" staging driver, but that was wrong
+> >> >> as I got things mixed up in my head.
+> >> >> Actually our codebase was an early version of Peter's code, so the
+> >> >> effort to port it to the latest framework code was not that big.
+> >> >>
+> >> >> I forked your repo and you can find my working tree at [1].  
+> >> >
+> >> > Great, I'll try to have a look.
+> >> >  
+> >> >>
+> >> >> What I did so far:
+> >> >>
+> >> >> * Rebase your patches on latest Linux 4.14.5  
+> >> >
+> >> > Cool, rebasing on 4.15-rc1 would be even better, but I can do that if
+> >> > you don't have the time.
+> >> >  
+> >> >>
+> >> >> * Add a driver for the Winbond W25M02GV SPI NAND chip, that we have on
+> >> >> some of our boards.  
+> >> >
+> >> > Okay, that's actually a good thing to have tested with another chip,
+> >> > This way we can make sure the framework is generic enough.
+> >> >  
+> >> >>
+> >> >> * Add a driver for the Freescale QSPI controller, derived from the
+> >> >> existing QSPI-NOR driver at drivers/mtd/spi-nor/fsl-quadspi.c.  
+> >> >
+> >> > That's an interesting case as well, the generic NAND controller is
+> >> > probably the easiest implementation, and that's a good thing to have
+> >> > another controller.
+> >> >  
+> >> >>
+> >> >> * Add a setup and setup_late op to the controller layer (see [3]). I
+> >> >> don't know if that makes sense, but at least the setup_late is needed
+> >> >> for the FSL QSPI driver, as it needs to know the size of the flash to
+> >> >> setup the memory mapping for the QSPI read operations.  
+> >> >
+> >> > Hm, not sure what ->setup_late() is for, but I'll have a look.
+> >> >  
+> >> >>
+> >> >> * A bit of testing and fixing two small bugs, which look like copy and
+> >> >> paste mistakes. See [2].  
+> >> >
+> >> > Thanks, I'll squash the fixes in the original commit.
+> >> >  
+> >> >>
+> >> >> * Running nandtest successfully on our hardware (i.MX6UL -> FSL-QSPI ->
+> >> >> W25M02GV)
+> >> >>
+> >> >> I hope this is of use while moving on.  
+> >> >
+> >> > Definitely. I'd also like to have a review on the framework code if
+> >> > possible, but that can be done when posted on the ML.
+> >> >  
+> >> >> I guess you would like to have the basic framework with Micron support
+> >> >> and generic SPI tested and stabilized first, before adding more code,
+> >> >> but to be able to test with our hardware I need Micron and FSL QSPI.  
+> >> >
+> >> > I guess you mean Winbond not Micron. That's okay if those patches are
+> >> > posted after the initial series. All I need is reviews and tests from
+> >> > different parties, so that I'm less confident in merging the code.
+> >> >  
+> >> >>
+> >> >> Some questions/flaws that occurred to me:
+> >> >>
+> >> >> * The W25M02GV chip has two dies of 128M each. My current driver only
+> >> >> makes use of the first die. The chip expects a die-select command to
+> >> >> switch between the two dies.
+> >> >> What would be the place to implement this?
+> >> >> Can I just add the command and issue it in
+> >> >> winbond_spinand_adjust_cache_op if luns_per_target > 1?  
+> >> >
+> >> > It really depends when the die selection happens. I guess it happens in
+> >> > 2 places: when preparing a program/read operation and when doing the
+> >> > transfer to the in-chip cache. Anyway, the die information is already
+> >> > passed in the nand_pos object, so all you'll have to do is create a new
+> >> > hook to customize the SPI command when needed.  
+> >>
+> >> I don't know whether we can do the the die switch in the generic NAND core
+> >> (drivers/mtd/nand/core.c). I'm not sure if chip->select_chip() in nand_base.c
+> >> does the same thing or not. If so, we can do the die switch before
+> >> read/write/erase
+> >> operation. And let spi nand core to implement a hook to support it.  
+> >
+> > Actually, I'm trying to move away from this ->select_chip() approach in
+> > the raw NAND framework, simply because the controller might be able to
+> > parallelize operations (like 2 erase on 2 different dies, or one erase
+> > on one die, and a program on the other), and having this ->select_chip()
+> > done early in the chain prevents this kind of optimization.
+> >
+> > Anyway, the controller should now have all the necessary information to
+> > know which die an operation should be executed on, and if a specific
+> > command has to be sent to the device to select a specific die, it can
+> > be done in the NAND vendor specific code.
+> >  
+> >>  
+> >> >  
+> >> >>
+> >> >> * The FSL QSPI controller has a lookup table that needs to be filled
+> >> >> with command sequences at the time of setup. Therefore the number of
+> >> >> dummy bytes for each command is fixed and in my current implementation
+> >> >> op->dummy_bytes is ignored.
+> >> >> That's not a problem if all chips need the same number of dummy bytes
+> >> >> for each command, but I guess that's not the case, as there is a
+> >> >> _spinand_get_dummy function.  
+> >> >
+> >> > We should definitely expose that in a generic way, and on a
+> >> > per-operation basis, so that, after the detection step, the NAND
+> >> > controller can query this information.
+> >> >  
+> >> >>
+> >> >> * What is your plan for ECC and BBT? At least enabling the onchip ECC
+> >> >> will be necessary to be able to use the flash properly (e.g. with UBI),
+> >> >> or am I wrong?  
+> >> >
+> >> > Well, if all SPI NAND chips are supporting ECC the same way and
+> >> > on-die ECC support is mandatory for SPI NANDs, then supporting that
+> >> > directly in the core is probably the best option. If, on the other
+> >> > hand, you have various implementations, and some SPI controllers have
+> >> > their own ECC engine that you can use with SPI NANDs, then it's
+> >> > probably a better idea to abstract ECC engine in the generic NAND layer.  
+> >>
+> >> As far as I know, all the SPI NAND supports on-die ECC (at least all
+> >> the SPI NAND
+> >> I heard). But different chips may have different ECC layout in OOB
+> >> area. But I think
+> >> this cannot be a problem, we can handle this in vendor's file.  
+> >
+> > Yep.
+> >  
+> >>  
+> >> >
+> >> > For BBTs, I'd like to have a clean version of the nand_bbt logic that
+> >> > uses all of the helpers exposed by the generic NAND layer. I'd also
+> >> > like to simplify the code if possible.
+> >> >  
+> >> >>
+> >> >> * Do you have any special test cases? What do you usually do to test the
+> >> >> code?  
+> >> >
+> >> > Well, make sure all the mtd tests are passing (drivers/mtd/tests), and
+> >> > then, the next step is to test it with UBI+UBIFS. But honestly, I'm not
+> >> > so worried, this is new code, and we've isolated from the raw NAND
+> >> > layer, so if it's buggy or instable at the beginning it's not a big
+> >> > deal, it will be noticed and fixed for the next few releases.
+> >> >  
+> >> >>
+> >> >> Thanks for your patience and best regards,  
+> >> >
+> >> > No problem. Thanks for your work, and I'll try to be more active on
+> >> > this topic (I promised that several times, and failed it :-/).  
+> >>
+> >> Boris,
+> >>
+> >> I think we need to move forward, MediaTek's engineer has already asked for
+> >> the status of the spi nand framework upstreaming, since they want to upstream
+> >> their SPI NAND controller driver. And Hisilicon also has a controller driver.
+> >> Since more and more platforms start to support SPI NAND, we'd better merge a
+> >> simple but well designed framework first. I will run your modified
+> >> version on Zedboard
+> >> with generic SPI controller this or next week.  
+> >
+> > Then why are they not spending time reviewing the SPI NAND framework?
+> > You know I'm not paid to work on SPI NAND, unlike those engineers
+> > working for SoC/NAND vendors. While I agree being a maintainer implies
+> > doing part of the work on our spare time, what I don't like is when
+> > people that did not invest time in a specific feature ask for this
+> > feature to be implemented/released. This is not your case, you invested
+> > a lot of time in it, and that's the reason I feel bad when I can't spend
+> > the necessary time to make SPI NAND code ready for inclusion.
+> >
+> > So here are the next set of things to do if you want to move forward:
+> > 1/ Re-submit the preparation patches (those touching MTD core) and
+> >    review them (or find someone to review them)  
+> 
+> I already finished the rebase of your preparation patches on l2-mtd
+> nand/next brach (v4.15-rc1). Should I send them as v3 or reset to v1?
+> I think we don't need to wait for SPI NAND code. These preparation
+> patches should be review ASAP. I'd like to review it after the sending,
+> since they are all your effort. What's your opinion?
 
-Even though we only need to do the change for part_read/write(), going
-through those wrappers for all kind of part -> master operation
-propagation is a good thing, because other wrappers might become
-smarter over time, and the duplicated check overhead (parameters will
-be checked at the partition and master level instead of only at the
-partition level) should be negligible.
-
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
-Changes in v3:
-- unconditionally assign part wrappers as suggested by Brian
-
-Changes in v2:
-- new patch needed to fix a NULL pointer dereference BUG
----
- drivers/mtd/mtdpart.c | 141 +++++++++++++++++++-------------------------------
- 1 file changed, 53 insertions(+), 88 deletions(-)
-
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index be088bccd593..e83c9d870b11 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -74,8 +74,7 @@ static int part_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	int res;
- 
- 	stats = part->parent->ecc_stats;
--	res = part->parent->_read(part->parent, from + part->offset, len,
--				  retlen, buf);
-+	res = mtd_read(part->parent, from + part->offset, len, retlen, buf);
- 	if (unlikely(mtd_is_eccerr(res)))
- 		mtd->ecc_stats.failed +=
- 			part->parent->ecc_stats.failed - stats.failed;
-@@ -90,15 +89,15 @@ static int part_point(struct mtd_info *mtd, loff_t from, size_t len,
- {
- 	struct mtd_part *part = mtd_to_part(mtd);
- 
--	return part->parent->_point(part->parent, from + part->offset, len,
--				    retlen, virt, phys);
-+	return mtd_point(part->parent, from + part->offset, len, retlen, virt,
-+			 phys);
- }
- 
- static int part_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
- {
- 	struct mtd_part *part = mtd_to_part(mtd);
- 
--	return part->parent->_unpoint(part->parent, from + part->offset, len);
-+	return mtd_unpoint(part->parent, from + part->offset, len);
- }
- 
- static int part_read_oob(struct mtd_info *mtd, loff_t from,
-@@ -126,7 +125,7 @@ static int part_read_oob(struct mtd_info *mtd, loff_t from,
- 			return -EINVAL;
- 	}
- 
--	res = part->parent->_read_oob(part->parent, from + part->offset, ops);
-+	res = mtd_read_oob(part->parent, from + part->offset, ops);
- 	if (unlikely(res)) {
- 		if (mtd_is_bitflip(res))
- 			mtd->ecc_stats.corrected++;
-@@ -140,48 +139,43 @@ static int part_read_user_prot_reg(struct mtd_info *mtd, loff_t from,
- 		size_t len, size_t *retlen, u_char *buf)
- {
- 	struct mtd_part *part = mtd_to_part(mtd);
--	return part->parent->_read_user_prot_reg(part->parent, from, len,
--						 retlen, buf);
-+	return mtd_read_user_prot_reg(part->parent, from, len, retlen, buf);
- }
- 
- static int part_get_user_prot_info(struct mtd_info *mtd, size_t len,
- 				   size_t *retlen, struct otp_info *buf)
- {
- 	struct mtd_part *part = mtd_to_part(mtd);
--	return part->parent->_get_user_prot_info(part->parent, len, retlen,
--						 buf);
-+	return mtd_get_user_prot_info(part->parent, len, retlen, buf);
- }
- 
- static int part_read_fact_prot_reg(struct mtd_info *mtd, loff_t from,
- 		size_t len, size_t *retlen, u_char *buf)
- {
- 	struct mtd_part *part = mtd_to_part(mtd);
--	return part->parent->_read_fact_prot_reg(part->parent, from, len,
--						 retlen, buf);
-+	return mtd_read_fact_prot_reg(part->parent, from, len, retlen, buf);
- }
- 
- static int part_get_fact_prot_info(struct mtd_info *mtd, size_t len,
- 				   size_t *retlen, struct otp_info *buf)
- {
- 	struct mtd_part *part = mtd_to_part(mtd);
--	return part->parent->_get_fact_prot_info(part->parent, len, retlen,
--						 buf);
-+	return mtd_get_fact_prot_info(part->parent, len, retlen, buf);
- }
- 
- static int part_write(struct mtd_info *mtd, loff_t to, size_t len,
- 		size_t *retlen, const u_char *buf)
- {
- 	struct mtd_part *part = mtd_to_part(mtd);
--	return part->parent->_write(part->parent, to + part->offset, len,
--				    retlen, buf);
-+	return mtd_write(part->parent, to + part->offset, len, retlen, buf);
- }
- 
- static int part_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
- 		size_t *retlen, const u_char *buf)
- {
- 	struct mtd_part *part = mtd_to_part(mtd);
--	return part->parent->_panic_write(part->parent, to + part->offset, len,
--					  retlen, buf);
-+	return mtd_panic_write(part->parent, to + part->offset, len, retlen,
-+			       buf);
- }
- 
- static int part_write_oob(struct mtd_info *mtd, loff_t to,
-@@ -193,30 +187,29 @@ static int part_write_oob(struct mtd_info *mtd, loff_t to,
- 		return -EINVAL;
- 	if (ops->datbuf && to + ops->len > mtd->size)
- 		return -EINVAL;
--	return part->parent->_write_oob(part->parent, to + part->offset, ops);
-+	return mtd_write_oob(part->parent, to + part->offset, ops);
- }
- 
- static int part_write_user_prot_reg(struct mtd_info *mtd, loff_t from,
- 		size_t len, size_t *retlen, u_char *buf)
- {
- 	struct mtd_part *part = mtd_to_part(mtd);
--	return part->parent->_write_user_prot_reg(part->parent, from, len,
--						  retlen, buf);
-+	return mtd_write_user_prot_reg(part->parent, from, len, retlen, buf);
- }
- 
- static int part_lock_user_prot_reg(struct mtd_info *mtd, loff_t from,
- 		size_t len)
- {
- 	struct mtd_part *part = mtd_to_part(mtd);
--	return part->parent->_lock_user_prot_reg(part->parent, from, len);
-+	return mtd_lock_user_prot_reg(part->parent, from, len);
- }
- 
- static int part_writev(struct mtd_info *mtd, const struct kvec *vecs,
- 		unsigned long count, loff_t to, size_t *retlen)
- {
- 	struct mtd_part *part = mtd_to_part(mtd);
--	return part->parent->_writev(part->parent, vecs, count,
--				     to + part->offset, retlen);
-+	return mtd_writev(part->parent, vecs, count, to + part->offset,
-+			  retlen);
- }
- 
- static int part_erase(struct mtd_info *mtd, struct erase_info *instr)
-@@ -225,7 +218,7 @@ static int part_erase(struct mtd_info *mtd, struct erase_info *instr)
- 	int ret;
- 
- 	instr->addr += part->offset;
--	ret = part->parent->_erase(part->parent, instr);
-+	ret = mtd_erase(part->parent, instr);
- 	if (ret) {
- 		if (instr->fail_addr != MTD_FAIL_ADDR_UNKNOWN)
- 			instr->fail_addr -= part->offset;
-@@ -251,51 +244,51 @@ EXPORT_SYMBOL_GPL(mtd_erase_callback);
- static int part_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- {
- 	struct mtd_part *part = mtd_to_part(mtd);
--	return part->parent->_lock(part->parent, ofs + part->offset, len);
-+	return mtd_lock(part->parent, ofs + part->offset, len);
- }
- 
- static int part_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- {
- 	struct mtd_part *part = mtd_to_part(mtd);
--	return part->parent->_unlock(part->parent, ofs + part->offset, len);
-+	return mtd_unlock(part->parent, ofs + part->offset, len);
- }
- 
- static int part_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- {
- 	struct mtd_part *part = mtd_to_part(mtd);
--	return part->parent->_is_locked(part->parent, ofs + part->offset, len);
-+	return mtd_is_locked(part->parent, ofs + part->offset, len);
- }
- 
- static void part_sync(struct mtd_info *mtd)
- {
- 	struct mtd_part *part = mtd_to_part(mtd);
--	part->parent->_sync(part->parent);
-+	mtd_sync(part->parent);
- }
- 
- static int part_suspend(struct mtd_info *mtd)
- {
- 	struct mtd_part *part = mtd_to_part(mtd);
--	return part->parent->_suspend(part->parent);
-+	return mtd_suspend(part->parent);
- }
- 
- static void part_resume(struct mtd_info *mtd)
- {
- 	struct mtd_part *part = mtd_to_part(mtd);
--	part->parent->_resume(part->parent);
-+	mtd_resume(part->parent);
- }
- 
- static int part_block_isreserved(struct mtd_info *mtd, loff_t ofs)
- {
- 	struct mtd_part *part = mtd_to_part(mtd);
- 	ofs += part->offset;
--	return part->parent->_block_isreserved(part->parent, ofs);
-+	return mtd_block_isreserved(part->parent, ofs);
- }
- 
- static int part_block_isbad(struct mtd_info *mtd, loff_t ofs)
- {
- 	struct mtd_part *part = mtd_to_part(mtd);
- 	ofs += part->offset;
--	return part->parent->_block_isbad(part->parent, ofs);
-+	return mtd_block_isbad(part->parent, ofs);
- }
- 
- static int part_block_markbad(struct mtd_info *mtd, loff_t ofs)
-@@ -304,7 +297,7 @@ static int part_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 	int res;
- 
- 	ofs += part->offset;
--	res = part->parent->_block_markbad(part->parent, ofs);
-+	res = mtd_block_markbad(part->parent, ofs);
- 	if (!res)
- 		mtd->ecc_stats.badblocks++;
- 	return res;
-@@ -313,13 +306,13 @@ static int part_block_markbad(struct mtd_info *mtd, loff_t ofs)
- static int part_get_device(struct mtd_info *mtd)
- {
- 	struct mtd_part *part = mtd_to_part(mtd);
--	return part->parent->_get_device(part->parent);
-+	return __get_mtd_device(part->parent);
- }
- 
- static void part_put_device(struct mtd_info *mtd)
- {
- 	struct mtd_part *part = mtd_to_part(mtd);
--	part->parent->_put_device(part->parent);
-+	__put_mtd_device(part->parent);
- }
- 
- static int part_ooblayout_ecc(struct mtd_info *mtd, int section,
-@@ -347,8 +340,7 @@ static int part_max_bad_blocks(struct mtd_info *mtd, loff_t ofs, size_t len)
- {
- 	struct mtd_part *part = mtd_to_part(mtd);
- 
--	return part->parent->_max_bad_blocks(part->parent,
--					     ofs + part->offset, len);
-+	return mtd_max_bad_blocks(part->parent, ofs + part->offset, len);
- }
- 
- static inline void free_partition(struct mtd_part *p)
-@@ -437,59 +429,32 @@ static struct mtd_part *allocate_partition(struct mtd_info *parent,
- 
- 	slave->mtd._read = part_read;
- 	slave->mtd._write = part_write;
--
--	if (parent->_panic_write)
--		slave->mtd._panic_write = part_panic_write;
--
--	if (parent->_point && parent->_unpoint) {
--		slave->mtd._point = part_point;
--		slave->mtd._unpoint = part_unpoint;
--	}
--
--	if (parent->_read_oob)
--		slave->mtd._read_oob = part_read_oob;
--	if (parent->_write_oob)
--		slave->mtd._write_oob = part_write_oob;
--	if (parent->_read_user_prot_reg)
--		slave->mtd._read_user_prot_reg = part_read_user_prot_reg;
--	if (parent->_read_fact_prot_reg)
--		slave->mtd._read_fact_prot_reg = part_read_fact_prot_reg;
--	if (parent->_write_user_prot_reg)
--		slave->mtd._write_user_prot_reg = part_write_user_prot_reg;
--	if (parent->_lock_user_prot_reg)
--		slave->mtd._lock_user_prot_reg = part_lock_user_prot_reg;
--	if (parent->_get_user_prot_info)
--		slave->mtd._get_user_prot_info = part_get_user_prot_info;
--	if (parent->_get_fact_prot_info)
--		slave->mtd._get_fact_prot_info = part_get_fact_prot_info;
--	if (parent->_sync)
--		slave->mtd._sync = part_sync;
--	if (!partno && !parent->dev.class && parent->_suspend &&
--	    parent->_resume) {
-+	slave->mtd._panic_write = part_panic_write;
-+	slave->mtd._point = part_point;
-+	slave->mtd._unpoint = part_unpoint;
-+	slave->mtd._read_oob = part_read_oob;
-+	slave->mtd._write_oob = part_write_oob;
-+	slave->mtd._read_user_prot_reg = part_read_user_prot_reg;
-+	slave->mtd._read_fact_prot_reg = part_read_fact_prot_reg;
-+	slave->mtd._write_user_prot_reg = part_write_user_prot_reg;
-+	slave->mtd._lock_user_prot_reg = part_lock_user_prot_reg;
-+	slave->mtd._get_user_prot_info = part_get_user_prot_info;
-+	slave->mtd._get_fact_prot_info = part_get_fact_prot_info;
-+	slave->mtd._sync = part_sync;
-+	if (!partno && !parent->dev.class) {
- 		slave->mtd._suspend = part_suspend;
- 		slave->mtd._resume = part_resume;
- 	}
--	if (parent->_writev)
--		slave->mtd._writev = part_writev;
--	if (parent->_lock)
--		slave->mtd._lock = part_lock;
--	if (parent->_unlock)
--		slave->mtd._unlock = part_unlock;
--	if (parent->_is_locked)
--		slave->mtd._is_locked = part_is_locked;
--	if (parent->_block_isreserved)
--		slave->mtd._block_isreserved = part_block_isreserved;
--	if (parent->_block_isbad)
--		slave->mtd._block_isbad = part_block_isbad;
--	if (parent->_block_markbad)
--		slave->mtd._block_markbad = part_block_markbad;
--	if (parent->_max_bad_blocks)
--		slave->mtd._max_bad_blocks = part_max_bad_blocks;
--
--	if (parent->_get_device)
--		slave->mtd._get_device = part_get_device;
--	if (parent->_put_device)
--		slave->mtd._put_device = part_put_device;
-+	slave->mtd._writev = part_writev;
-+	slave->mtd._lock = part_lock;
-+	slave->mtd._unlock = part_unlock;
-+	slave->mtd._is_locked = part_is_locked;
-+	slave->mtd._block_isreserved = part_block_isreserved;
-+	slave->mtd._block_isbad = part_block_isbad;
-+	slave->mtd._block_markbad = part_block_markbad;
-+	slave->mtd._max_bad_blocks = part_max_bad_blocks;
-+	slave->mtd._get_device = part_get_device;
-+	slave->mtd._put_device = part_put_device;
- 
- 	slave->mtd._erase = part_erase;
- 	slave->parent = parent;
--- 
-2.11.0
+I just sent them on the ML. Feel free to review.
