@@ -1,20 +1,18 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ePm6F-0006Rj-SN
- for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 09:16:15 +0000
-Date: Fri, 15 Dec 2017 10:15:40 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: venkat.prashanth2498@gmail.com
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, richard@nod.at,
- wboyer@gmail.com, linux-mtd@lists.infradead.org, cyrille.pitchen@atmel.com,
- david.oberhollenzer@sigma-star.at
-Subject: Re: [PATCH 3/8] Drivers:MTD:Nand: remove the redefinition error
-Message-ID: <20171215101540.4b0209c7@bbrezillon>
-In-Reply-To: <1513310229-2867-1-git-send-email-venkat.prashanth2498@gmail.com>
-References: <1513310229-2867-1-git-send-email-venkat.prashanth2498@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+ by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ePlmH-0004EA-4t
+ for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 08:55:34 +0000
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>, kernel@pengutronix.de,
+ Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH 3/3] mtd: nand: mxc: Drop now unnecessary correct_data function
+Date: Fri, 15 Dec 2017 09:55:04 +0100
+Message-Id: <20171215085504.32296-4-s.hauer@pengutronix.de>
+In-Reply-To: <20171215085504.32296-1-s.hauer@pengutronix.de>
+References: <20171215085504.32296-1-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,75 +22,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Venkat,
+correct_data is no longer used for v2_v3 controllers, so remove
+it.
 
-On Fri, 15 Dec 2017 09:27:09 +0530
-venkat.prashanth2498@gmail.com wrote:
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ drivers/mtd/nand/mxc_nand.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-> From: Venkat Prashanth B U <venkat.prashanth2498@gmail.com>
->=20
-> This is a patch to the omap_elm.c file which fixes the redefinition
-> error in the function=E2=80=98elm_decode_bch_error_page=E2=80=99
-
-You obviously don't know what you're doing. The symbol is not
-redefined, it's just that we have a dummy implementation when
-CONFIG_MTD_NAND_OMAP_BCH is disabled, which is perfectly valid,
-since the omap_elm.c file is not compiled is this case.
-
-And you also posted a patch without even trying to compile it, otherwise
-you would have noticed that you're breaking the build when
-CONFIG_MTD_NAND_OMAP_BCH is enabled.
-
-So please, next time, think twice before sending this kind of 'fix'.
-
-Thanks,
-
-Boris
-
->=20
-> Signed-off-by: Venkat Prashanth B U <venkat.prashanth2498@gmail.com>
-> ---
->  drivers/mtd/nand/omap_elm.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/mtd/nand/omap_elm.c b/drivers/mtd/nand/omap_elm.c
-> index 235ec79..06c24f3 100644
-> --- a/drivers/mtd/nand/omap_elm.c
-> +++ b/drivers/mtd/nand/omap_elm.c
-> @@ -335,7 +335,7 @@ static void elm_error_correction(struct elm_info *inf=
-o,
->  }
->=20
->  /**
-> - * elm_decode_bch_error_page - Locate error position
-> + * elm_decode_bch_err_pg - Locate error position
->   * @dev:	device pointer
->   * @ecc_calc:	calculated ECC bytes from GPMC
->   * @err_vec:	elm error vectors
-> @@ -343,7 +343,7 @@ static void elm_error_correction(struct elm_info *inf=
-o,
->   * Called with one or more error reported vectors & vectors with
->   * error reported is updated in err_vec[].error_reported
->   */
-> -void elm_decode_bch_error_page(struct device *dev, u8 *ecc_calc,
-> +void elm_decode_bch_err_pg(struct device *dev, u8 *ecc_calc,
->  		struct elm_errorvec *err_vec)
->  {
->  	struct elm_info *info =3D dev_get_drvdata(dev);
-> @@ -368,7 +368,7 @@ void elm_decode_bch_error_page(struct device *dev, u8=
- *ecc_calc,
->  	elm_write_reg(info, ELM_IRQENABLE, reg_val & ~INTR_EN_PAGE_MASK);
->  	elm_error_correction(info, err_vec);
->  }
-> -EXPORT_SYMBOL(elm_decode_bch_error_page);
-> +EXPORT_SYMBOL(elm_decode_bch_err_pg);
->=20
->  static irqreturn_t elm_isr(int this_irq, void *dev_id)
->  {
-> --
-> 1.9.1
->=20
->=20
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index a54804f14bb1..41838ee79bb5 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -618,12 +618,6 @@ static int mxc_nand_correct_data_v1(struct mtd_info *mtd, u_char *dat,
+ 	return 0;
+ }
+ 
+-static int mxc_nand_correct_data_v2_v3(struct mtd_info *mtd, u_char *dat,
+-				 u_char *read_ecc, u_char *calc_ecc)
+-{
+-	return 0;
+-}
+-
+ static int mxc_nand_read_page_hwecc_v2_v3(struct mtd_info *mtd,
+ 					  struct nand_chip *chip,
+ 					  uint8_t *buf, int oob_required,
+@@ -1480,7 +1474,6 @@ static const struct mxc_nand_devtype_data imx25_nand_devtype_data = {
+ 	.get_ecc_status = get_ecc_status_v2,
+ 	.ooblayout = &mxc_v2_ooblayout_ops,
+ 	.select_chip = mxc_nand_select_chip_v2,
+-	.correct_data = mxc_nand_correct_data_v2_v3,
+ 	.setup_data_interface = mxc_nand_v2_setup_data_interface,
+ 	.irqpending_quirk = 0,
+ 	.needs_ip = 0,
+@@ -1507,7 +1500,6 @@ static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
+ 	.get_ecc_status = get_ecc_status_v3,
+ 	.ooblayout = &mxc_v2_ooblayout_ops,
+ 	.select_chip = mxc_nand_select_chip_v1_v3,
+-	.correct_data = mxc_nand_correct_data_v2_v3,
+ 	.irqpending_quirk = 0,
+ 	.needs_ip = 1,
+ 	.regs_offset = 0,
+@@ -1534,7 +1526,6 @@ static const struct mxc_nand_devtype_data imx53_nand_devtype_data = {
+ 	.get_ecc_status = get_ecc_status_v3,
+ 	.ooblayout = &mxc_v2_ooblayout_ops,
+ 	.select_chip = mxc_nand_select_chip_v1_v3,
+-	.correct_data = mxc_nand_correct_data_v2_v3,
+ 	.irqpending_quirk = 0,
+ 	.needs_ip = 1,
+ 	.regs_offset = 0,
+-- 
+2.11.0
