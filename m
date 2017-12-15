@@ -1,7 +1,7 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ePpHw-00045T-H3
- for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 12:40:32 +0000
+ id 1ePpHw-00045R-H2
+ for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 12:40:37 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -12,10 +12,10 @@ Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
  Kyungmin Park <kyungmin.park@samsung.com>,
  Peter Pan <peterpansjtu@gmail.com>,
  Frieder Schrempf <frieder.schrempf@exceet.de>
-Subject: [PATCH v3 4/4] mtd: Fallback to ->_read/write_oob() when
- ->_read/write() is missing
-Date: Fri, 15 Dec 2017 13:39:54 +0100
-Message-Id: <20171215123954.30017-5-boris.brezillon@free-electrons.com>
+Subject: [PATCH v3 3/4] mtd: Stop directly calling master ->_xxx() hooks from
+ mtdpart code
+Date: Fri, 15 Dec 2017 13:39:53 +0100
+Message-Id: <20171215123954.30017-4-boris.brezillon@free-electrons.com>
 In-Reply-To: <20171215123954.30017-1-boris.brezillon@free-electrons.com>
 References: <20171215123954.30017-1-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,337 +27,355 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some MTD sublayers/drivers are implementing ->_read/write_oob() and
-provide dummy wrappers for their ->_read/write() implementations.
-Let the core handle this case instead of duplicating the logic.
+The MTD layer provides several wrappers around mtd->_xxx() hooks. Call
+these wrappers instead of directly dereferencing the associated ->_xxx()
+pointer.
+
+This change has been motivated by another rework letting the core
+handle the case where ->_read/write_oob() are implemented but not
+->_read/write(). In this case, we want mtd_read/write() to fall back to
+->_read/write_oob() when ->_read/write() are NULL. The problem is,
+mtdpart is directly calling the ->_xxx() instead of using the wrappers,
+thus leading to a NULL pointer exception.
+
+Even though we only need to do the change for part_read/write(), going
+through those wrappers for all kind of part -> master operation
+propagation is a good thing, because other wrappers might become
+smarter over time, and the duplicated check overhead (parameters will
+be checked at the partition and master level instead of only at the
+partition level) should be negligible.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
-Acked-by: Brian Norris <computersforpeace@gmail.com>
 ---
 Changes in v3:
-- none
+- unconditionally assign part wrappers as suggested by Brian
 
 Changes in v2:
-- none
+- new patch needed to fix a NULL pointer dereference BUG
 ---
- drivers/mtd/devices/docg3.c        | 65 --------------------------------------
- drivers/mtd/mtdcore.c              | 31 ++++++++++++++++--
- drivers/mtd/nand/nand_base.c       | 56 --------------------------------
- drivers/mtd/onenand/onenand_base.c | 63 ------------------------------------
- 4 files changed, 29 insertions(+), 186 deletions(-)
+ drivers/mtd/mtdpart.c | 141 +++++++++++++++++++-------------------------------
+ 1 file changed, 53 insertions(+), 88 deletions(-)
 
-diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-index 0806f72102c0..5fb5e93d1547 100644
---- a/drivers/mtd/devices/docg3.c
-+++ b/drivers/mtd/devices/docg3.c
-@@ -990,36 +990,6 @@ static int doc_read_oob(struct mtd_info *mtd, loff_t from,
- 	goto out;
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index be088bccd593..e83c9d870b11 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -74,8 +74,7 @@ static int part_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	int res;
+ 
+ 	stats = part->parent->ecc_stats;
+-	res = part->parent->_read(part->parent, from + part->offset, len,
+-				  retlen, buf);
++	res = mtd_read(part->parent, from + part->offset, len, retlen, buf);
+ 	if (unlikely(mtd_is_eccerr(res)))
+ 		mtd->ecc_stats.failed +=
+ 			part->parent->ecc_stats.failed - stats.failed;
+@@ -90,15 +89,15 @@ static int part_point(struct mtd_info *mtd, loff_t from, size_t len,
+ {
+ 	struct mtd_part *part = mtd_to_part(mtd);
+ 
+-	return part->parent->_point(part->parent, from + part->offset, len,
+-				    retlen, virt, phys);
++	return mtd_point(part->parent, from + part->offset, len, retlen, virt,
++			 phys);
  }
  
--/**
-- * doc_read - Read bytes from flash
-- * @mtd: the device
-- * @from: the offset from first block and first page, in bytes, aligned on page
-- *        size
-- * @len: the number of bytes to read (must be a multiple of 4)
-- * @retlen: the number of bytes actually read
-- * @buf: the filled in buffer
-- *
-- * Reads flash memory pages. This function does not read the OOB chunk, but only
-- * the page data.
-- *
-- * Returns 0 if read successful, of -EIO, -EINVAL if an error occurred
-- */
--static int doc_read(struct mtd_info *mtd, loff_t from, size_t len,
--	     size_t *retlen, u_char *buf)
--{
--	struct mtd_oob_ops ops;
--	size_t ret;
--
--	memset(&ops, 0, sizeof(ops));
--	ops.datbuf = buf;
--	ops.len = len;
--	ops.mode = MTD_OPS_AUTO_OOB;
--
--	ret = doc_read_oob(mtd, from, &ops);
--	*retlen = ops.retlen;
--	return ret;
--}
--
- static int doc_reload_bbt(struct docg3 *docg3)
+ static int part_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
  {
- 	int block = DOC_LAYOUT_BLOCK_BBT;
-@@ -1513,39 +1483,6 @@ static int doc_write_oob(struct mtd_info *mtd, loff_t ofs,
- 	return ret;
+ 	struct mtd_part *part = mtd_to_part(mtd);
+ 
+-	return part->parent->_unpoint(part->parent, from + part->offset, len);
++	return mtd_unpoint(part->parent, from + part->offset, len);
  }
  
--/**
-- * doc_write - Write a buffer to the chip
-- * @mtd: the device
-- * @to: the offset from first block and first page, in bytes, aligned on page
-- *      size
-- * @len: the number of bytes to write (must be a full page size, ie. 512)
-- * @retlen: the number of bytes actually written (0 or 512)
-- * @buf: the buffer to get bytes from
-- *
-- * Writes data to the chip.
-- *
-- * Returns 0 if write successful, -EIO if write error
-- */
--static int doc_write(struct mtd_info *mtd, loff_t to, size_t len,
--		     size_t *retlen, const u_char *buf)
--{
--	struct docg3 *docg3 = mtd->priv;
--	int ret;
--	struct mtd_oob_ops ops;
--
--	doc_dbg("doc_write(to=%lld, len=%zu)\n", to, len);
--	ops.datbuf = (char *)buf;
--	ops.len = len;
--	ops.mode = MTD_OPS_PLACE_OOB;
--	ops.oobbuf = NULL;
--	ops.ooblen = 0;
--	ops.ooboffs = 0;
--
--	ret = doc_write_oob(mtd, to, &ops);
--	*retlen = ops.retlen;
--	return ret;
--}
--
- static struct docg3 *sysfs_dev2docg3(struct device *dev,
- 				     struct device_attribute *attr)
+ static int part_read_oob(struct mtd_info *mtd, loff_t from,
+@@ -126,7 +125,7 @@ static int part_read_oob(struct mtd_info *mtd, loff_t from,
+ 			return -EINVAL;
+ 	}
+ 
+-	res = part->parent->_read_oob(part->parent, from + part->offset, ops);
++	res = mtd_read_oob(part->parent, from + part->offset, ops);
+ 	if (unlikely(res)) {
+ 		if (mtd_is_bitflip(res))
+ 			mtd->ecc_stats.corrected++;
+@@ -140,48 +139,43 @@ static int part_read_user_prot_reg(struct mtd_info *mtd, loff_t from,
+ 		size_t len, size_t *retlen, u_char *buf)
  {
-@@ -1866,8 +1803,6 @@ static int __init doc_set_driver_info(int chip_id, struct mtd_info *mtd)
- 	mtd->writebufsize = mtd->writesize = DOC_LAYOUT_PAGE_SIZE;
- 	mtd->oobsize = DOC_LAYOUT_OOB_SIZE;
- 	mtd->_erase = doc_erase;
--	mtd->_read = doc_read;
--	mtd->_write = doc_write;
- 	mtd->_read_oob = doc_read_oob;
- 	mtd->_write_oob = doc_write_oob;
- 	mtd->_block_isbad = doc_block_isbad;
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 642c35dde686..d7ab091b36b2 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -1058,7 +1058,20 @@ int mtd_read(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
- 	 * representing the maximum number of bitflips that were corrected on
- 	 * any one ecc region (if applicable; zero otherwise).
- 	 */
--	ret_code = mtd->_read(mtd, from, len, retlen, buf);
-+	if (mtd->_read) {
-+		ret_code = mtd->_read(mtd, from, len, retlen, buf);
-+	} else if (mtd->_read_oob) {
-+		struct mtd_oob_ops ops = {
-+			.len = len,
-+			.datbuf = buf,
-+		};
-+
-+		ret_code = mtd->_read_oob(mtd, from, &ops);
-+		*retlen = ops.retlen;
-+	} else {
-+		return -ENOTSUPP;
-+	}
-+
- 	if (unlikely(ret_code < 0))
- 		return ret_code;
- 	if (mtd->ecc_strength == 0)
-@@ -1073,11 +1086,25 @@ int mtd_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
- 	*retlen = 0;
- 	if (to < 0 || to >= mtd->size || len > mtd->size - to)
+ 	struct mtd_part *part = mtd_to_part(mtd);
+-	return part->parent->_read_user_prot_reg(part->parent, from, len,
+-						 retlen, buf);
++	return mtd_read_user_prot_reg(part->parent, from, len, retlen, buf);
+ }
+ 
+ static int part_get_user_prot_info(struct mtd_info *mtd, size_t len,
+ 				   size_t *retlen, struct otp_info *buf)
+ {
+ 	struct mtd_part *part = mtd_to_part(mtd);
+-	return part->parent->_get_user_prot_info(part->parent, len, retlen,
+-						 buf);
++	return mtd_get_user_prot_info(part->parent, len, retlen, buf);
+ }
+ 
+ static int part_read_fact_prot_reg(struct mtd_info *mtd, loff_t from,
+ 		size_t len, size_t *retlen, u_char *buf)
+ {
+ 	struct mtd_part *part = mtd_to_part(mtd);
+-	return part->parent->_read_fact_prot_reg(part->parent, from, len,
+-						 retlen, buf);
++	return mtd_read_fact_prot_reg(part->parent, from, len, retlen, buf);
+ }
+ 
+ static int part_get_fact_prot_info(struct mtd_info *mtd, size_t len,
+ 				   size_t *retlen, struct otp_info *buf)
+ {
+ 	struct mtd_part *part = mtd_to_part(mtd);
+-	return part->parent->_get_fact_prot_info(part->parent, len, retlen,
+-						 buf);
++	return mtd_get_fact_prot_info(part->parent, len, retlen, buf);
+ }
+ 
+ static int part_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		size_t *retlen, const u_char *buf)
+ {
+ 	struct mtd_part *part = mtd_to_part(mtd);
+-	return part->parent->_write(part->parent, to + part->offset, len,
+-				    retlen, buf);
++	return mtd_write(part->parent, to + part->offset, len, retlen, buf);
+ }
+ 
+ static int part_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		size_t *retlen, const u_char *buf)
+ {
+ 	struct mtd_part *part = mtd_to_part(mtd);
+-	return part->parent->_panic_write(part->parent, to + part->offset, len,
+-					  retlen, buf);
++	return mtd_panic_write(part->parent, to + part->offset, len, retlen,
++			       buf);
+ }
+ 
+ static int part_write_oob(struct mtd_info *mtd, loff_t to,
+@@ -193,30 +187,29 @@ static int part_write_oob(struct mtd_info *mtd, loff_t to,
  		return -EINVAL;
--	if (!mtd->_write || !(mtd->flags & MTD_WRITEABLE))
-+	if ((!mtd->_write && !mtd->_write_oob) ||
-+	    !(mtd->flags & MTD_WRITEABLE))
- 		return -EROFS;
- 	if (!len)
- 		return 0;
- 	ledtrig_mtd_activity();
-+
-+	if (!mtd->_write) {
-+		struct mtd_oob_ops ops = {
-+			.len = len,
-+			.datbuf = (u8 *)buf,
-+		};
-+		int ret;
-+
-+		ret = mtd->_write_oob(mtd, to, &ops);
-+		*retlen = ops.retlen;
-+		return ret;
-+	}
-+
- 	return mtd->_write(mtd, to, len, retlen, buf);
- }
- EXPORT_SYMBOL_GPL(mtd_write);
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 6135d007a068..889ceadbf607 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2027,33 +2027,6 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 	if (ops->datbuf && to + ops->len > mtd->size)
+ 		return -EINVAL;
+-	return part->parent->_write_oob(part->parent, to + part->offset, ops);
++	return mtd_write_oob(part->parent, to + part->offset, ops);
  }
  
- /**
-- * nand_read - [MTD Interface] MTD compatibility function for nand_do_read_ecc
-- * @mtd: MTD device structure
-- * @from: offset to read from
-- * @len: number of bytes to read
-- * @retlen: pointer to variable to store the number of read bytes
-- * @buf: the databuffer to put data
-- *
-- * Get hold of the chip and call nand_do_read.
-- */
--static int nand_read(struct mtd_info *mtd, loff_t from, size_t len,
--		     size_t *retlen, uint8_t *buf)
--{
--	struct mtd_oob_ops ops;
--	int ret;
--
--	nand_get_device(mtd, FL_READING);
--	memset(&ops, 0, sizeof(ops));
--	ops.len = len;
--	ops.datbuf = buf;
--	ops.mode = MTD_OPS_PLACE_OOB;
--	ret = nand_do_read_ops(mtd, from, &ops);
--	*retlen = ops.retlen;
--	nand_release_device(mtd);
--	return ret;
--}
--
--/**
-  * nand_read_oob_std - [REPLACEABLE] the most common OOB data read function
-  * @mtd: mtd info structure
-  * @chip: nand chip info structure
-@@ -2822,33 +2795,6 @@ static int panic_nand_write(struct mtd_info *mtd, loff_t to, size_t len,
+ static int part_write_user_prot_reg(struct mtd_info *mtd, loff_t from,
+ 		size_t len, size_t *retlen, u_char *buf)
+ {
+ 	struct mtd_part *part = mtd_to_part(mtd);
+-	return part->parent->_write_user_prot_reg(part->parent, from, len,
+-						  retlen, buf);
++	return mtd_write_user_prot_reg(part->parent, from, len, retlen, buf);
  }
  
- /**
-- * nand_write - [MTD Interface] NAND write with ECC
-- * @mtd: MTD device structure
-- * @to: offset to write to
-- * @len: number of bytes to write
-- * @retlen: pointer to variable to store the number of written bytes
-- * @buf: the data to write
-- *
-- * NAND write with ECC.
-- */
--static int nand_write(struct mtd_info *mtd, loff_t to, size_t len,
--			  size_t *retlen, const uint8_t *buf)
--{
--	struct mtd_oob_ops ops;
--	int ret;
--
--	nand_get_device(mtd, FL_WRITING);
--	memset(&ops, 0, sizeof(ops));
--	ops.len = len;
--	ops.datbuf = (uint8_t *)buf;
--	ops.mode = MTD_OPS_PLACE_OOB;
--	ret = nand_do_write_ops(mtd, to, &ops);
--	*retlen = ops.retlen;
--	nand_release_device(mtd);
--	return ret;
--}
--
--/**
-  * nand_do_write_oob - [MTD Interface] NAND write out-of-band
-  * @mtd: MTD device structure
-  * @to: offset to write to
-@@ -4917,8 +4863,6 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	mtd->_erase = nand_erase;
- 	mtd->_point = NULL;
- 	mtd->_unpoint = NULL;
--	mtd->_read = nand_read;
--	mtd->_write = nand_write;
- 	mtd->_panic_write = panic_nand_write;
- 	mtd->_read_oob = nand_read_oob;
- 	mtd->_write_oob = nand_write_oob;
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index 1a6d0e367b89..050ba8a87543 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -1448,38 +1448,6 @@ static int onenand_read_oob_nolock(struct mtd_info *mtd, loff_t from,
+ static int part_lock_user_prot_reg(struct mtd_info *mtd, loff_t from,
+ 		size_t len)
+ {
+ 	struct mtd_part *part = mtd_to_part(mtd);
+-	return part->parent->_lock_user_prot_reg(part->parent, from, len);
++	return mtd_lock_user_prot_reg(part->parent, from, len);
  }
  
- /**
-- * onenand_read - [MTD Interface] Read data from flash
-- * @param mtd		MTD device structure
-- * @param from		offset to read from
-- * @param len		number of bytes to read
-- * @param retlen	pointer to variable to store the number of read bytes
-- * @param buf		the databuffer to put data
-- *
-- * Read with ecc
--*/
--static int onenand_read(struct mtd_info *mtd, loff_t from, size_t len,
--	size_t *retlen, u_char *buf)
--{
--	struct onenand_chip *this = mtd->priv;
--	struct mtd_oob_ops ops = {
--		.len	= len,
--		.ooblen	= 0,
--		.datbuf	= buf,
--		.oobbuf	= NULL,
--	};
--	int ret;
--
--	onenand_get_device(mtd, FL_READING);
--	ret = ONENAND_IS_4KB_PAGE(this) ?
--		onenand_mlc_read_ops_nolock(mtd, from, &ops) :
--		onenand_read_ops_nolock(mtd, from, &ops);
--	onenand_release_device(mtd);
--
--	*retlen = ops.retlen;
--	return ret;
--}
--
--/**
-  * onenand_read_oob - [MTD Interface] Read main and/or out-of-band
-  * @param mtd:		MTD device structure
-  * @param from:		offset to read from
-@@ -2129,35 +2097,6 @@ static int onenand_write_oob_nolock(struct mtd_info *mtd, loff_t to,
+ static int part_writev(struct mtd_info *mtd, const struct kvec *vecs,
+ 		unsigned long count, loff_t to, size_t *retlen)
+ {
+ 	struct mtd_part *part = mtd_to_part(mtd);
+-	return part->parent->_writev(part->parent, vecs, count,
+-				     to + part->offset, retlen);
++	return mtd_writev(part->parent, vecs, count, to + part->offset,
++			  retlen);
  }
  
- /**
-- * onenand_write - [MTD Interface] write buffer to FLASH
-- * @param mtd		MTD device structure
-- * @param to		offset to write to
-- * @param len		number of bytes to write
-- * @param retlen	pointer to variable to store the number of written bytes
-- * @param buf		the data to write
-- *
-- * Write with ECC
-- */
--static int onenand_write(struct mtd_info *mtd, loff_t to, size_t len,
--	size_t *retlen, const u_char *buf)
--{
--	struct mtd_oob_ops ops = {
--		.len	= len,
--		.ooblen	= 0,
--		.datbuf	= (u_char *) buf,
--		.oobbuf	= NULL,
--	};
--	int ret;
+ static int part_erase(struct mtd_info *mtd, struct erase_info *instr)
+@@ -225,7 +218,7 @@ static int part_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	int ret;
+ 
+ 	instr->addr += part->offset;
+-	ret = part->parent->_erase(part->parent, instr);
++	ret = mtd_erase(part->parent, instr);
+ 	if (ret) {
+ 		if (instr->fail_addr != MTD_FAIL_ADDR_UNKNOWN)
+ 			instr->fail_addr -= part->offset;
+@@ -251,51 +244,51 @@ EXPORT_SYMBOL_GPL(mtd_erase_callback);
+ static int part_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ {
+ 	struct mtd_part *part = mtd_to_part(mtd);
+-	return part->parent->_lock(part->parent, ofs + part->offset, len);
++	return mtd_lock(part->parent, ofs + part->offset, len);
+ }
+ 
+ static int part_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ {
+ 	struct mtd_part *part = mtd_to_part(mtd);
+-	return part->parent->_unlock(part->parent, ofs + part->offset, len);
++	return mtd_unlock(part->parent, ofs + part->offset, len);
+ }
+ 
+ static int part_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ {
+ 	struct mtd_part *part = mtd_to_part(mtd);
+-	return part->parent->_is_locked(part->parent, ofs + part->offset, len);
++	return mtd_is_locked(part->parent, ofs + part->offset, len);
+ }
+ 
+ static void part_sync(struct mtd_info *mtd)
+ {
+ 	struct mtd_part *part = mtd_to_part(mtd);
+-	part->parent->_sync(part->parent);
++	mtd_sync(part->parent);
+ }
+ 
+ static int part_suspend(struct mtd_info *mtd)
+ {
+ 	struct mtd_part *part = mtd_to_part(mtd);
+-	return part->parent->_suspend(part->parent);
++	return mtd_suspend(part->parent);
+ }
+ 
+ static void part_resume(struct mtd_info *mtd)
+ {
+ 	struct mtd_part *part = mtd_to_part(mtd);
+-	part->parent->_resume(part->parent);
++	mtd_resume(part->parent);
+ }
+ 
+ static int part_block_isreserved(struct mtd_info *mtd, loff_t ofs)
+ {
+ 	struct mtd_part *part = mtd_to_part(mtd);
+ 	ofs += part->offset;
+-	return part->parent->_block_isreserved(part->parent, ofs);
++	return mtd_block_isreserved(part->parent, ofs);
+ }
+ 
+ static int part_block_isbad(struct mtd_info *mtd, loff_t ofs)
+ {
+ 	struct mtd_part *part = mtd_to_part(mtd);
+ 	ofs += part->offset;
+-	return part->parent->_block_isbad(part->parent, ofs);
++	return mtd_block_isbad(part->parent, ofs);
+ }
+ 
+ static int part_block_markbad(struct mtd_info *mtd, loff_t ofs)
+@@ -304,7 +297,7 @@ static int part_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 	int res;
+ 
+ 	ofs += part->offset;
+-	res = part->parent->_block_markbad(part->parent, ofs);
++	res = mtd_block_markbad(part->parent, ofs);
+ 	if (!res)
+ 		mtd->ecc_stats.badblocks++;
+ 	return res;
+@@ -313,13 +306,13 @@ static int part_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ static int part_get_device(struct mtd_info *mtd)
+ {
+ 	struct mtd_part *part = mtd_to_part(mtd);
+-	return part->parent->_get_device(part->parent);
++	return __get_mtd_device(part->parent);
+ }
+ 
+ static void part_put_device(struct mtd_info *mtd)
+ {
+ 	struct mtd_part *part = mtd_to_part(mtd);
+-	part->parent->_put_device(part->parent);
++	__put_mtd_device(part->parent);
+ }
+ 
+ static int part_ooblayout_ecc(struct mtd_info *mtd, int section,
+@@ -347,8 +340,7 @@ static int part_max_bad_blocks(struct mtd_info *mtd, loff_t ofs, size_t len)
+ {
+ 	struct mtd_part *part = mtd_to_part(mtd);
+ 
+-	return part->parent->_max_bad_blocks(part->parent,
+-					     ofs + part->offset, len);
++	return mtd_max_bad_blocks(part->parent, ofs + part->offset, len);
+ }
+ 
+ static inline void free_partition(struct mtd_part *p)
+@@ -437,59 +429,32 @@ static struct mtd_part *allocate_partition(struct mtd_info *parent,
+ 
+ 	slave->mtd._read = part_read;
+ 	slave->mtd._write = part_write;
 -
--	onenand_get_device(mtd, FL_WRITING);
--	ret = onenand_write_ops_nolock(mtd, to, &ops);
--	onenand_release_device(mtd);
+-	if (parent->_panic_write)
+-		slave->mtd._panic_write = part_panic_write;
 -
--	*retlen = ops.retlen;
--	return ret;
--}
+-	if (parent->_point && parent->_unpoint) {
+-		slave->mtd._point = part_point;
+-		slave->mtd._unpoint = part_unpoint;
+-	}
 -
--/**
-  * onenand_write_oob - [MTD Interface] NAND write data and/or out-of-band
-  * @param mtd:		MTD device structure
-  * @param to:		offset to write
-@@ -4038,8 +3977,6 @@ int onenand_scan(struct mtd_info *mtd, int maxchips)
- 	mtd->_erase = onenand_erase;
- 	mtd->_point = NULL;
- 	mtd->_unpoint = NULL;
--	mtd->_read = onenand_read;
--	mtd->_write = onenand_write;
- 	mtd->_read_oob = onenand_read_oob;
- 	mtd->_write_oob = onenand_write_oob;
- 	mtd->_panic_write = onenand_panic_write;
+-	if (parent->_read_oob)
+-		slave->mtd._read_oob = part_read_oob;
+-	if (parent->_write_oob)
+-		slave->mtd._write_oob = part_write_oob;
+-	if (parent->_read_user_prot_reg)
+-		slave->mtd._read_user_prot_reg = part_read_user_prot_reg;
+-	if (parent->_read_fact_prot_reg)
+-		slave->mtd._read_fact_prot_reg = part_read_fact_prot_reg;
+-	if (parent->_write_user_prot_reg)
+-		slave->mtd._write_user_prot_reg = part_write_user_prot_reg;
+-	if (parent->_lock_user_prot_reg)
+-		slave->mtd._lock_user_prot_reg = part_lock_user_prot_reg;
+-	if (parent->_get_user_prot_info)
+-		slave->mtd._get_user_prot_info = part_get_user_prot_info;
+-	if (parent->_get_fact_prot_info)
+-		slave->mtd._get_fact_prot_info = part_get_fact_prot_info;
+-	if (parent->_sync)
+-		slave->mtd._sync = part_sync;
+-	if (!partno && !parent->dev.class && parent->_suspend &&
+-	    parent->_resume) {
++	slave->mtd._panic_write = part_panic_write;
++	slave->mtd._point = part_point;
++	slave->mtd._unpoint = part_unpoint;
++	slave->mtd._read_oob = part_read_oob;
++	slave->mtd._write_oob = part_write_oob;
++	slave->mtd._read_user_prot_reg = part_read_user_prot_reg;
++	slave->mtd._read_fact_prot_reg = part_read_fact_prot_reg;
++	slave->mtd._write_user_prot_reg = part_write_user_prot_reg;
++	slave->mtd._lock_user_prot_reg = part_lock_user_prot_reg;
++	slave->mtd._get_user_prot_info = part_get_user_prot_info;
++	slave->mtd._get_fact_prot_info = part_get_fact_prot_info;
++	slave->mtd._sync = part_sync;
++	if (!partno && !parent->dev.class) {
+ 		slave->mtd._suspend = part_suspend;
+ 		slave->mtd._resume = part_resume;
+ 	}
+-	if (parent->_writev)
+-		slave->mtd._writev = part_writev;
+-	if (parent->_lock)
+-		slave->mtd._lock = part_lock;
+-	if (parent->_unlock)
+-		slave->mtd._unlock = part_unlock;
+-	if (parent->_is_locked)
+-		slave->mtd._is_locked = part_is_locked;
+-	if (parent->_block_isreserved)
+-		slave->mtd._block_isreserved = part_block_isreserved;
+-	if (parent->_block_isbad)
+-		slave->mtd._block_isbad = part_block_isbad;
+-	if (parent->_block_markbad)
+-		slave->mtd._block_markbad = part_block_markbad;
+-	if (parent->_max_bad_blocks)
+-		slave->mtd._max_bad_blocks = part_max_bad_blocks;
+-
+-	if (parent->_get_device)
+-		slave->mtd._get_device = part_get_device;
+-	if (parent->_put_device)
+-		slave->mtd._put_device = part_put_device;
++	slave->mtd._writev = part_writev;
++	slave->mtd._lock = part_lock;
++	slave->mtd._unlock = part_unlock;
++	slave->mtd._is_locked = part_is_locked;
++	slave->mtd._block_isreserved = part_block_isreserved;
++	slave->mtd._block_isbad = part_block_isbad;
++	slave->mtd._block_markbad = part_block_markbad;
++	slave->mtd._max_bad_blocks = part_max_bad_blocks;
++	slave->mtd._get_device = part_get_device;
++	slave->mtd._put_device = part_put_device;
+ 
+ 	slave->mtd._erase = part_erase;
+ 	slave->parent = parent;
 -- 
 2.11.0
