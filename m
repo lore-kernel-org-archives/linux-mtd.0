@@ -1,16 +1,16 @@
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ePlmR-0006pS-NU
- for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 08:55:45 +0000
+ id 1ePlmH-0006oz-NM
+ for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 08:55:35 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>,
  Brian Norris <computersforpeace@gmail.com>, kernel@pengutronix.de,
  Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 2/3] mtd: nand: mxc: Add own write_page
-Date: Fri, 15 Dec 2017 09:55:03 +0100
-Message-Id: <20171215085504.32296-3-s.hauer@pengutronix.de>
+Subject: [PATCH 1/3] mtd: nand: mxc: Fix failed/corrected values
+Date: Fri, 15 Dec 2017 09:55:02 +0100
+Message-Id: <20171215085504.32296-2-s.hauer@pengutronix.de>
 In-Reply-To: <20171215085504.32296-1-s.hauer@pengutronix.de>
 References: <20171215085504.32296-1-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,76 +22,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now that we have our own read_page function add a write_page function
-for consistency aswell. This can be a lot easier than the generic
-function since we do not have to iterate over subpages but can write
-the whole page at once.
+Currently nand_read_page_hwecc() from nand_base calls
+mxc_nand_correct_data_v2_v3() for each subpage, but in this function we
+return the corrected/failed results for the whole page instead
+of a single subpage. On a 2k page size Nand this leads to results which
+are 4 times too high.
+The whole ecc.calculate/ecc.correct mechanism used by
+nand_read_page_hwecc() is not suitable for devices which correct the
+data in hardware, so fix this by using a driver specific read_page
+function which does the right thing.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- drivers/mtd/nand/mxc_nand.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ drivers/mtd/nand/mxc_nand.c | 35 +++++++++++++++++++++++++----------
+ 1 file changed, 25 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 65d5cde4692b..a54804f14bb1 100644
+index f3be0b2a8869..65d5cde4692b 100644
 --- a/drivers/mtd/nand/mxc_nand.c
 +++ b/drivers/mtd/nand/mxc_nand.c
-@@ -142,6 +142,8 @@ struct mxc_nand_devtype_data {
+@@ -140,6 +140,8 @@ struct mxc_nand_host;
+ 
+ struct mxc_nand_devtype_data {
  	void (*preset)(struct mtd_info *);
- 	int (*read_page)(struct mtd_info *mtd, struct nand_chip *chip,
- 			uint8_t *buf, int oob_required, int page);
-+	int (*write_page)(struct mtd_info *mtd, struct nand_chip *chip,
-+			  const uint8_t *buf, int oob_required, int page);
++	int (*read_page)(struct mtd_info *mtd, struct nand_chip *chip,
++			uint8_t *buf, int oob_required, int page);
  	void (*send_cmd)(struct mxc_nand_host *, uint16_t, int);
  	void (*send_addr)(struct mxc_nand_host *, uint16_t, int);
  	void (*send_page)(struct mtd_info *, unsigned int);
-@@ -658,6 +660,17 @@ static int mxc_nand_read_page_hwecc_v2_v3(struct mtd_info *mtd,
- 	return max_bitflips;
- }
- 
-+static int mxc_nand_write_page_hwecc_v2_v3(struct mtd_info *mtd,
-+					   struct nand_chip *chip,
-+					   const uint8_t *buf, int oob_required,
-+					   int page)
-+{
-+	chip->write_buf(mtd, buf, mtd->writesize);
-+	chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
-+
+@@ -617,13 +619,23 @@ static int mxc_nand_correct_data_v1(struct mtd_info *mtd, u_char *dat,
+ static int mxc_nand_correct_data_v2_v3(struct mtd_info *mtd, u_char *dat,
+ 				 u_char *read_ecc, u_char *calc_ecc)
+ {
+-	struct nand_chip *nand_chip = mtd_to_nand(mtd);
+-	struct mxc_nand_host *host = nand_get_controller_data(nand_chip);
 +	return 0;
 +}
 +
++static int mxc_nand_read_page_hwecc_v2_v3(struct mtd_info *mtd,
++					  struct nand_chip *chip,
++					  uint8_t *buf, int oob_required,
++					  int page)
++{
++	struct mxc_nand_host *host = nand_get_controller_data(chip);
++	unsigned int max_bitflips = 0;
+ 	u32 ecc_stat, err;
+-	int no_subpages = 1;
+-	int ret = 0;
++	int no_subpages;
+ 	u8 ecc_bit_mask, err_limit;
+ 
++	chip->read_buf(mtd, buf, mtd->writesize);
++	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
++
+ 	ecc_bit_mask = (host->eccsize == 4) ? 0x7 : 0xf;
+ 	err_limit = (host->eccsize == 4) ? 0x4 : 0x8;
+ 
+@@ -634,17 +646,16 @@ static int mxc_nand_correct_data_v2_v3(struct mtd_info *mtd, u_char *dat,
+ 	do {
+ 		err = ecc_stat & ecc_bit_mask;
+ 		if (err > err_limit) {
+-			dev_dbg(host->dev, "UnCorrectable RS-ECC Error\n");
+-			return -EBADMSG;
++			mtd->ecc_stats.failed++;
+ 		} else {
+-			ret += err;
++			mtd->ecc_stats.corrected += err;
++			max_bitflips = max_t(unsigned int, max_bitflips, err);
+ 		}
++
+ 		ecc_stat >>= 4;
+ 	} while (--no_subpages);
+ 
+-	dev_dbg(host->dev, "%d Symbol Correctable RS-ECC Error\n", ret);
+-
+-	return ret;
++	return max_bitflips;
+ }
+ 
  static int mxc_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
- 				  u_char *ecc_code)
- {
-@@ -1456,6 +1469,7 @@ static const struct mxc_nand_devtype_data imx27_nand_devtype_data = {
+@@ -1444,6 +1455,7 @@ static const struct mxc_nand_devtype_data imx27_nand_devtype_data = {
+ /* v21: i.MX25, i.MX35 */
  static const struct mxc_nand_devtype_data imx25_nand_devtype_data = {
  	.preset = preset_v2,
- 	.read_page = mxc_nand_read_page_hwecc_v2_v3,
-+	.write_page = mxc_nand_write_page_hwecc_v2_v3,
++	.read_page = mxc_nand_read_page_hwecc_v2_v3,
  	.send_cmd = send_cmd_v1_v2,
  	.send_addr = send_addr_v1_v2,
  	.send_page = send_page_v2,
-@@ -1482,6 +1496,7 @@ static const struct mxc_nand_devtype_data imx25_nand_devtype_data = {
+@@ -1469,6 +1481,7 @@ static const struct mxc_nand_devtype_data imx25_nand_devtype_data = {
+ /* v3.2a: i.MX51 */
  static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
  	.preset = preset_v3,
- 	.read_page = mxc_nand_read_page_hwecc_v2_v3,
-+	.write_page = mxc_nand_write_page_hwecc_v2_v3,
++	.read_page = mxc_nand_read_page_hwecc_v2_v3,
  	.send_cmd = send_cmd_v3,
  	.send_addr = send_addr_v3,
  	.send_page = send_page_v3,
-@@ -1508,6 +1523,7 @@ static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
+@@ -1494,6 +1507,7 @@ static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
+ /* v3.2b: i.MX53 */
  static const struct mxc_nand_devtype_data imx53_nand_devtype_data = {
  	.preset = preset_v3,
- 	.read_page = mxc_nand_read_page_hwecc_v2_v3,
-+	.write_page = mxc_nand_write_page_hwecc_v2_v3,
++	.read_page = mxc_nand_read_page_hwecc_v2_v3,
  	.send_cmd = send_cmd_v3,
  	.send_addr = send_addr_v3,
  	.send_page = send_page_v3,
-@@ -1766,6 +1782,7 @@ static int mxcnd_probe(struct platform_device *pdev)
+@@ -1751,6 +1765,7 @@ static int mxcnd_probe(struct platform_device *pdev)
+ 
  	switch (this->ecc.mode) {
  	case NAND_ECC_HW:
- 		this->ecc.read_page = host->devtype_data->read_page;
-+		this->ecc.write_page = host->devtype_data->write_page;
++		this->ecc.read_page = host->devtype_data->read_page;
  		this->ecc.calculate = mxc_nand_calculate_ecc;
  		this->ecc.hwctl = mxc_nand_enable_hwecc;
  		this->ecc.correct = host->devtype_data->correct_data;
