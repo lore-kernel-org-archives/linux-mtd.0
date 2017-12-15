@@ -1,6 +1,6 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ePpHw-00045P-H3
+ id 1ePpHw-00045O-H5
  for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 12:40:30 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: David Woodhouse <dwmw2@infradead.org>,
@@ -12,12 +12,9 @@ Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
  Kyungmin Park <kyungmin.park@samsung.com>,
  Peter Pan <peterpansjtu@gmail.com>,
  Frieder Schrempf <frieder.schrempf@exceet.de>
-Subject: [PATCH v3 1/4] mtd: Do not allow MTD devices with inconsistent erase
- properties
-Date: Fri, 15 Dec 2017 13:39:51 +0100
-Message-Id: <20171215123954.30017-2-boris.brezillon@free-electrons.com>
-In-Reply-To: <20171215123954.30017-1-boris.brezillon@free-electrons.com>
-References: <20171215123954.30017-1-boris.brezillon@free-electrons.com>
+Subject: [PATCH v3 0/4] mtd: Preparation patches for the SPI NAND framework
+Date: Fri, 15 Dec 2017 13:39:50 +0100
+Message-Id: <20171215123954.30017-1-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,33 +24,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When mtd->erasesize is 0 or mtd->_erase is NULL, that means the device
-does not support the erase operation, which in turn means it should
-have the MTD_NO_ERASE flag set.
+Hello,
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
-Changes in v3:
-- new patch
----
- drivers/mtd/mtdcore.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Here is a set of patches to prepare the introduction of the generic
+NAND and SPI frameworks.
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index f80e911b8843..642c35dde686 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -503,6 +503,11 @@ int add_mtd_device(struct mtd_info *mtd)
- 		return -EEXIST;
- 
- 	BUG_ON(mtd->writesize == 0);
-+
-+	if (WARN_ON((!mtd->erasesize || !mtd->_erase) &&
-+		    !(mtd->flags & MTD_NO_ERASE)))
-+		return -EINVAL;
-+
- 	mutex_lock(&mtd_table_mutex);
- 
- 	i = idr_alloc(&mtd_idr, mtd, 0, 0, GFP_KERNEL);
+The last 2 patches have already been submitted here [1], and the first
+two are new, and should also help simplify other drivers/frameworks
+in providing generic code for already existing logic.
+
+If you want to see the overall picture of the SPI NAND framework you can
+have a look at this branch [2].
+
+Regards,
+
+Boris
+
+[1]https://patchwork.ozlabs.org/patch/780477/
+[2]https://github.com/bbrezillon/linux-0day/commits/nand/spi-nand-squashed
+
+Boris Brezillon (4):
+  mtd: Do not allow MTD devices with inconsistent erase properties
+  mtd: Add an helper to make erase request aligned on ->erasesize
+  mtd: Stop directly calling master ->_xxx() hooks from mtdpart code
+  mtd: Fallback to ->_read/write_oob() when ->_read/write() is missing
+
+ drivers/mtd/devices/docg3.c        |  65 -----------------
+ drivers/mtd/mtdcore.c              |  36 +++++++++-
+ drivers/mtd/mtdpart.c              | 141 ++++++++++++++-----------------------
+ drivers/mtd/nand/nand_base.c       |  56 ---------------
+ drivers/mtd/onenand/onenand_base.c |  63 -----------------
+ include/linux/mtd/mtd.h            |  28 ++++++++
+ 6 files changed, 115 insertions(+), 274 deletions(-)
+
 -- 
 2.11.0
