@@ -1,18 +1,27 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ePlmH-0004EA-4t
- for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 08:55:34 +0000
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>, kernel@pengutronix.de,
- Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 3/3] mtd: nand: mxc: Drop now unnecessary correct_data function
-Date: Fri, 15 Dec 2017 09:55:04 +0100
-Message-Id: <20171215085504.32296-4-s.hauer@pengutronix.de>
-In-Reply-To: <20171215085504.32296-1-s.hauer@pengutronix.de>
-References: <20171215085504.32296-1-s.hauer@pengutronix.de>
+Received: from fllnx210.ext.ti.com ([198.47.19.17])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ePn5s-0005ot-AR
+ for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 10:19:54 +0000
+Subject: Re: [PATCH v5 01/16] dt-bindings: mtd: gpmc-onenand: Update
+ properties description
+To: Ladislav Michl <ladis@linux-mips.org>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>, Peter
+ Ujfalusi <peter.ujfalusi@ti.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>, Rob
+ Herring <robh@kernel.org>, <devicetree@vger.kernel.org>
+References: <20171115162306.2o2w2yrf7wucroxd@lenoch>
+ <20171115162458.rtompijrsaobdemk@lenoch> <20171130112544.5509ca1b@bbrezillon>
+ <20171130130907.GA16809@lenoch>
+From: Roger Quadros <rogerq@ti.com>
+Message-ID: <23d7ad3c-e6cd-3ba6-269a-1788371d13c3@ti.com>
+Date: Fri, 15 Dec 2017 12:18:59 +0200
+MIME-Version: 1.0
+In-Reply-To: <20171130130907.GA16809@lenoch>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,54 +31,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-correct_data is no longer used for v2_v3 controllers, so remove
-it.
+Ladislav,
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- drivers/mtd/nand/mxc_nand.c | 9 ---------
- 1 file changed, 9 deletions(-)
+On 30/11/17 15:09, Ladislav Michl wrote:
+> On Thu, Nov 30, 2017 at 11:25:44AM +0100, Boris Brezillon wrote:
+>> +Rob and the DT ML
+>>
+>> On Wed, 15 Nov 2017 17:24:58 +0100
+>> Ladislav Michl <ladis@linux-mips.org> wrote:
+>>
+>>> Compatible property is required for OMAP2+ mtd driver. Also
+>>> add INT pin gpio description and delete unused dma-channel
+>>> property.
+>>>
+>>> Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+>>> Reviewed-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+>>> Acked-by: Roger Quadros <rogerq@ti.com>
+>>> ---
+>>>
+>>> Changes in v5:
+>>> - renamed R/B pin to INT pin
+>>>
+>>> Changes in v4:
+>>> - new patch
+>>>
+>>> Changes in v3: None
+>>> Changes in v2: None
+>>>
+>>>  Documentation/devicetree/bindings/mtd/gpmc-onenand.txt | 6 ++++--
+>>>  1 file changed, 4 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/mtd/gpmc-onenand.txt b/Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
+>>> index b6e8bfd024f4..e9f01a963a0a 100644
+>>> --- a/Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
+>>> +++ b/Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
+>>> @@ -9,13 +9,14 @@ Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+>>>  
+>>>  Required properties:
+>>>  
+>>> + - compatible:		"ti,omap2-onenand"
+>>
+>> Don't you break backward compat by adding this new requirement?
+> 
+> I was told it is okay in this case as OneNAND conversion to DT is unfinished.
+> There was compat fixup code in earlier versions of patchset and it was dropped
+> later. If others see it opposite way I can add it back.
+> 
 
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index a54804f14bb1..41838ee79bb5 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -618,12 +618,6 @@ static int mxc_nand_correct_data_v1(struct mtd_info *mtd, u_char *dat,
- 	return 0;
- }
- 
--static int mxc_nand_correct_data_v2_v3(struct mtd_info *mtd, u_char *dat,
--				 u_char *read_ecc, u_char *calc_ecc)
--{
--	return 0;
--}
--
- static int mxc_nand_read_page_hwecc_v2_v3(struct mtd_info *mtd,
- 					  struct nand_chip *chip,
- 					  uint8_t *buf, int oob_required,
-@@ -1480,7 +1474,6 @@ static const struct mxc_nand_devtype_data imx25_nand_devtype_data = {
- 	.get_ecc_status = get_ecc_status_v2,
- 	.ooblayout = &mxc_v2_ooblayout_ops,
- 	.select_chip = mxc_nand_select_chip_v2,
--	.correct_data = mxc_nand_correct_data_v2_v3,
- 	.setup_data_interface = mxc_nand_v2_setup_data_interface,
- 	.irqpending_quirk = 0,
- 	.needs_ip = 0,
-@@ -1507,7 +1500,6 @@ static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
- 	.get_ecc_status = get_ecc_status_v3,
- 	.ooblayout = &mxc_v2_ooblayout_ops,
- 	.select_chip = mxc_nand_select_chip_v1_v3,
--	.correct_data = mxc_nand_correct_data_v2_v3,
- 	.irqpending_quirk = 0,
- 	.needs_ip = 1,
- 	.regs_offset = 0,
-@@ -1534,7 +1526,6 @@ static const struct mxc_nand_devtype_data imx53_nand_devtype_data = {
- 	.get_ecc_status = get_ecc_status_v3,
- 	.ooblayout = &mxc_v2_ooblayout_ops,
- 	.select_chip = mxc_nand_select_chip_v1_v3,
--	.correct_data = mxc_nand_correct_data_v2_v3,
- 	.irqpending_quirk = 0,
- 	.needs_ip = 1,
- 	.regs_offset = 0,
+If it is possible not to break backward compatibility then we shouldn't.
+Only if things are getting real messy because of the poor way the earlier DT
+implementation was done we can consider it as an exception.
+
+I thought we rely on GPMC timings entirely from the DT now and so things don't
+work with older DT nodes?
+
+>>>   - reg:			The CS line the peripheral is connected to
+>>> - - gpmc,device-width	Width of the ONENAND device connected to the GPMC
+>>> + - gpmc,device-width:	Width of the ONENAND device connected to the GPMC
+>>>  			in bytes. Must be 1 or 2.
+>>>  
+>>>  Optional properties:
+>>>  
+>>> - - dma-channel:		DMA Channel index
+>>> + - int-gpios:		GPIO specifier for the INT pin.
+>>>  
+>>>  For inline partition table parsing (optional):
+>>>  
+>>> @@ -35,6 +36,7 @@ Example for an OMAP3430 board:
+>>>  		#size-cells = <1>;
+>>>  
+>>>  		onenand@0 {
+>>> +			compatible = "ti,omap2-onenand";
+>>>  			reg = <0 0 0>; /* CS0, offset 0 */
+>>>  			gpmc,device-width = <2>;
+>>>  
+
 -- 
-2.11.0
+cheers,
+-roger
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
