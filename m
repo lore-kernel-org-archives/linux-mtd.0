@@ -1,17 +1,17 @@
-Received: from mail-pg0-f67.google.com ([74.125.83.67])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ePu4q-0008RO-D2
- for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 17:47:23 +0000
-Received: by mail-pg0-f67.google.com with SMTP id f12so6255757pgo.5
- for <linux-mtd@lists.infradead.org>; Fri, 15 Dec 2017 09:46:54 -0800 (PST)
+Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
+ by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ePu4s-0007mM-Ek
+ for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 17:47:19 +0000
+Received: by mail-pg0-x243.google.com with SMTP id y6so6255290pgp.4
+ for <linux-mtd@lists.infradead.org>; Fri, 15 Dec 2017 09:46:56 -0800 (PST)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org
 Cc: "Theodore Y . Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
  linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
  linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 09/24] fscrypt: trim down fscrypt.h includes
-Date: Fri, 15 Dec 2017 09:42:10 -0800
-Message-Id: <20171215174225.31583-10-ebiggers3@gmail.com>
+Subject: [PATCH 13/24] ext4: switch to fscrypt_get_symlink()
+Date: Fri, 15 Dec 2017 09:42:14 -0800
+Message-Id: <20171215174225.31583-14-ebiggers3@gmail.com>
 In-Reply-To: <20171215174225.31583-1-ebiggers3@gmail.com>
 References: <20171215174225.31583-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,87 +25,80 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Eric Biggers <ebiggers@google.com>
 
-fscrypt.h included way too many other headers, given that it is included
-by filesystems both with and without encryption support.  Trim down the
-includes list by moving the needed includes into more appropriate
-places, and removing the unneeded ones.
-
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/crypto.c           | 1 +
- fs/crypto/fname.c            | 1 +
- fs/crypto/keyinfo.c          | 1 +
- include/linux/fscrypt.h      | 6 ------
- include/linux/fscrypt_supp.h | 3 +++
- 5 files changed, 6 insertions(+), 6 deletions(-)
+ fs/ext4/symlink.c | 43 ++++++-------------------------------------
+ 1 file changed, 6 insertions(+), 37 deletions(-)
 
-diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-index 732a786cce9d..ce654526c0fb 100644
---- a/fs/crypto/crypto.c
-+++ b/fs/crypto/crypto.c
-@@ -27,6 +27,7 @@
- #include <linux/dcache.h>
- #include <linux/namei.h>
- #include <crypto/aes.h>
-+#include <crypto/skcipher.h>
- #include "fscrypt_private.h"
+diff --git a/fs/ext4/symlink.c b/fs/ext4/symlink.c
+index a2006c9af1d9..dd05af983092 100644
+--- a/fs/ext4/symlink.c
++++ b/fs/ext4/symlink.c
+@@ -28,59 +28,28 @@ static const char *ext4_encrypted_get_link(struct dentry *dentry,
+ 					   struct delayed_call *done)
+ {
+ 	struct page *cpage = NULL;
+-	char *caddr, *paddr = NULL;
+-	struct fscrypt_str cstr, pstr;
+-	struct fscrypt_symlink_data *sd;
+-	int res;
+-	u32 max_size = inode->i_sb->s_blocksize;
++	const void *caddr;
++	unsigned int max_size;
++	const char *paddr;
  
- static unsigned int num_prealloc_crypto_pages = 32;
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index b8c5061553b1..52d4dbe1e8e7 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -13,6 +13,7 @@
+ 	if (!dentry)
+ 		return ERR_PTR(-ECHILD);
  
- #include <linux/scatterlist.h>
- #include <linux/ratelimit.h>
-+#include <crypto/skcipher.h>
- #include "fscrypt_private.h"
+-	res = fscrypt_get_encryption_info(inode);
+-	if (res)
+-		return ERR_PTR(res);
+-
+ 	if (ext4_inode_is_fast_symlink(inode)) {
+-		caddr = (char *) EXT4_I(inode)->i_data;
++		caddr = EXT4_I(inode)->i_data;
+ 		max_size = sizeof(EXT4_I(inode)->i_data);
+ 	} else {
+ 		cpage = read_mapping_page(inode->i_mapping, 0, NULL);
+ 		if (IS_ERR(cpage))
+ 			return ERR_CAST(cpage);
+ 		caddr = page_address(cpage);
++		max_size = inode->i_sb->s_blocksize;
+ 	}
  
- static inline bool fscrypt_is_dot_dotdot(const struct qstr *str)
-diff --git a/fs/crypto/keyinfo.c b/fs/crypto/keyinfo.c
-index 5e6e846f5a24..c115eac4b4cf 100644
---- a/fs/crypto/keyinfo.c
-+++ b/fs/crypto/keyinfo.c
-@@ -14,6 +14,7 @@
- #include <linux/ratelimit.h>
- #include <crypto/aes.h>
- #include <crypto/sha.h>
-+#include <crypto/skcipher.h>
- #include "fscrypt_private.h"
+-	/* Symlink is encrypted */
+-	sd = (struct fscrypt_symlink_data *)caddr;
+-	cstr.name = sd->encrypted_path;
+-	cstr.len  = le16_to_cpu(sd->len);
+-	if ((cstr.len + sizeof(struct fscrypt_symlink_data) - 1) > max_size) {
+-		/* Symlink data on the disk is corrupted */
+-		res = -EFSCORRUPTED;
+-		goto errout;
+-	}
+-
+-	res = fscrypt_fname_alloc_buffer(inode, cstr.len, &pstr);
+-	if (res)
+-		goto errout;
+-	paddr = pstr.name;
+-
+-	res = fscrypt_fname_disk_to_usr(inode, 0, 0, &cstr, &pstr);
+-	if (res)
+-		goto errout;
+-
+-	/* Null-terminate the name */
+-	paddr[pstr.len] = '\0';
++	paddr = fscrypt_get_symlink(inode, caddr, max_size, done);
+ 	if (cpage)
+ 		put_page(cpage);
+-	set_delayed_call(done, kfree_link, paddr);
+ 	return paddr;
+-errout:
+-	if (cpage)
+-		put_page(cpage);
+-	kfree(paddr);
+-	return ERR_PTR(res);
+ }
  
- static struct crypto_shash *essiv_hash_tfm;
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 3045fc49d3ca..071ebabfc287 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -14,13 +14,7 @@
- #ifndef _LINUX_FSCRYPT_H
- #define _LINUX_FSCRYPT_H
- 
--#include <linux/key.h>
- #include <linux/fs.h>
--#include <linux/mm.h>
--#include <linux/bio.h>
--#include <linux/dcache.h>
--#include <crypto/skcipher.h>
--#include <uapi/linux/fs.h>
- 
- #define FS_CRYPTO_BLOCK_SIZE		16
- 
-diff --git a/include/linux/fscrypt_supp.h b/include/linux/fscrypt_supp.h
-index ce61caf26f40..562a9bc04560 100644
---- a/include/linux/fscrypt_supp.h
-+++ b/include/linux/fscrypt_supp.h
-@@ -11,6 +11,9 @@
- #ifndef _LINUX_FSCRYPT_SUPP_H
- #define _LINUX_FSCRYPT_SUPP_H
- 
-+#include <linux/mm.h>
-+#include <linux/slab.h>
-+
- /*
-  * fscrypt superblock flags
-  */
+ const struct inode_operations ext4_encrypted_symlink_inode_operations = {
 -- 
 2.15.1
