@@ -1,18 +1,18 @@
-Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ePu4g-0008Np-N6
- for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 17:47:13 +0000
-Received: by mail-pf0-x243.google.com with SMTP id u25so6633597pfg.5
- for <linux-mtd@lists.infradead.org>; Fri, 15 Dec 2017 09:46:43 -0800 (PST)
+Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ePu4j-0004ko-4d
+ for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 17:47:10 +0000
+Received: by mail-pg0-x242.google.com with SMTP id o2so6250569pgc.8
+ for <linux-mtd@lists.infradead.org>; Fri, 15 Dec 2017 09:46:48 -0800 (PST)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org
 Cc: "Theodore Y . Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
  linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
  linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 02/24] fscrypt: move fscrypt_control_page() to supp/notsupp
- headers
-Date: Fri, 15 Dec 2017 09:42:03 -0800
-Message-Id: <20171215174225.31583-3-ebiggers3@gmail.com>
+Subject: [PATCH 07/24] fscrypt: move fscrypt_valid_enc_modes() to
+ fscrypt_private.h
+Date: Fri, 15 Dec 2017 09:42:08 -0800
+Message-Id: <20171215174225.31583-8-ebiggers3@gmail.com>
 In-Reply-To: <20171215174225.31583-1-ebiggers3@gmail.com>
 References: <20171215174225.31583-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,80 +26,65 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Eric Biggers <ebiggers@google.com>
 
-fscrypt_control_page() is already split into two versions depending on
-whether the filesystem is being built with encryption support or not.
-Move them into the appropriate headers.
+The encryption modes are validated by fs/crypto/, not by individual
+filesystems.  Therefore, move fscrypt_valid_enc_modes() from fscrypt.h
+to fscrypt_private.h.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- include/linux/fscrypt.h         | 18 ++----------------
- include/linux/fscrypt_notsupp.h |  5 +++++
- include/linux/fscrypt_supp.h    |  6 ++++++
- 3 files changed, 13 insertions(+), 16 deletions(-)
+ fs/crypto/fscrypt_private.h | 14 ++++++++++++++
+ include/linux/fscrypt.h     | 14 --------------
+ 2 files changed, 14 insertions(+), 14 deletions(-)
 
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index 823c43a00bf7..2b848e7c92f0 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -71,6 +71,20 @@ typedef enum {
+ #define FS_CTX_REQUIRES_FREE_ENCRYPT_FL		0x00000001
+ #define FS_CTX_HAS_BOUNCE_BUFFER_FL		0x00000002
+ 
++static inline bool fscrypt_valid_enc_modes(u32 contents_mode,
++					   u32 filenames_mode)
++{
++	if (contents_mode == FS_ENCRYPTION_MODE_AES_128_CBC &&
++	    filenames_mode == FS_ENCRYPTION_MODE_AES_128_CTS)
++		return true;
++
++	if (contents_mode == FS_ENCRYPTION_MODE_AES_256_XTS &&
++	    filenames_mode == FS_ENCRYPTION_MODE_AES_256_CTS)
++		return true;
++
++	return false;
++}
++
+ /* crypto.c */
+ extern struct kmem_cache *fscrypt_info_cachep;
+ extern int fscrypt_initialize(unsigned int cop_flags);
 diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index d1c891b5bd9c..c23b2f16129a 100644
+index 33b95a91f720..2e4dce0365cf 100644
 --- a/include/linux/fscrypt.h
 +++ b/include/linux/fscrypt.h
-@@ -123,24 +123,10 @@ static inline bool fscrypt_is_dot_dotdot(const struct qstr *str)
- }
+@@ -57,20 +57,6 @@ struct fscrypt_name {
+ /* Maximum value for the third parameter of fscrypt_operations.set_context(). */
+ #define FSCRYPT_SET_CONTEXT_MAX_SIZE	28
  
- #if __FS_HAS_ENCRYPTION
--
--static inline struct page *fscrypt_control_page(struct page *page)
+-static inline bool fscrypt_valid_enc_modes(u32 contents_mode,
+-					u32 filenames_mode)
 -{
--	return ((struct fscrypt_ctx *)page_private(page))->w.control_page;
+-	if (contents_mode == FS_ENCRYPTION_MODE_AES_128_CBC &&
+-	    filenames_mode == FS_ENCRYPTION_MODE_AES_128_CTS)
+-		return true;
+-
+-	if (contents_mode == FS_ENCRYPTION_MODE_AES_256_XTS &&
+-	    filenames_mode == FS_ENCRYPTION_MODE_AES_256_CTS)
+-		return true;
+-
+-	return false;
 -}
 -
- #include <linux/fscrypt_supp.h>
--
--#else /* !__FS_HAS_ENCRYPTION */
--
--static inline struct page *fscrypt_control_page(struct page *page)
--{
--	WARN_ON_ONCE(1);
--	return ERR_PTR(-EINVAL);
--}
--
-+#else
- #include <linux/fscrypt_notsupp.h>
--#endif /* __FS_HAS_ENCRYPTION */
-+#endif
- 
- /**
-  * fscrypt_require_key - require an inode's encryption key
-diff --git a/include/linux/fscrypt_notsupp.h b/include/linux/fscrypt_notsupp.h
-index 52e330285457..812dc701a5b3 100644
---- a/include/linux/fscrypt_notsupp.h
-+++ b/include/linux/fscrypt_notsupp.h
-@@ -48,6 +48,11 @@ static inline int fscrypt_decrypt_page(const struct inode *inode,
- 	return -EOPNOTSUPP;
- }
- 
-+static inline struct page *fscrypt_control_page(struct page *page)
-+{
-+	WARN_ON_ONCE(1);
-+	return ERR_PTR(-EINVAL);
-+}
- 
- static inline void fscrypt_restore_control_page(struct page *page)
+ static inline bool fscrypt_is_dot_dotdot(const struct qstr *str)
  {
-diff --git a/include/linux/fscrypt_supp.h b/include/linux/fscrypt_supp.h
-index 79bb8beae018..ad40780d4653 100644
---- a/include/linux/fscrypt_supp.h
-+++ b/include/linux/fscrypt_supp.h
-@@ -25,6 +25,12 @@ extern struct page *fscrypt_encrypt_page(const struct inode *, struct page *,
- 						u64, gfp_t);
- extern int fscrypt_decrypt_page(const struct inode *, struct page *, unsigned int,
- 				unsigned int, u64);
-+
-+static inline struct page *fscrypt_control_page(struct page *page)
-+{
-+	return ((struct fscrypt_ctx *)page_private(page))->w.control_page;
-+}
-+
- extern void fscrypt_restore_control_page(struct page *);
- 
- extern const struct dentry_operations fscrypt_d_ops;
+ 	if (str->len == 1 && str->name[0] == '.')
 -- 
 2.15.1
