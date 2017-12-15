@@ -1,17 +1,17 @@
-Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ePu4n-0008R3-NU
- for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 17:47:19 +0000
-Received: by mail-pf0-x243.google.com with SMTP id n6so6638307pfa.4
- for <linux-mtd@lists.infradead.org>; Fri, 15 Dec 2017 09:46:54 -0800 (PST)
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ePu4q-0004lZ-49
+ for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 17:47:17 +0000
+Received: by mail-pf0-x242.google.com with SMTP id m26so6623712pfj.11
+ for <linux-mtd@lists.infradead.org>; Fri, 15 Dec 2017 09:46:58 -0800 (PST)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org
 Cc: "Theodore Y . Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
  linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
  linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 12/24] ext4: switch to fscrypt ->symlink() helper functions
-Date: Fri, 15 Dec 2017 09:42:13 -0800
-Message-Id: <20171215174225.31583-13-ebiggers3@gmail.com>
+Subject: [PATCH 17/24] ubifs: switch to fscrypt ->symlink() helper functions
+Date: Fri, 15 Dec 2017 09:42:18 -0800
+Message-Id: <20171215174225.31583-18-ebiggers3@gmail.com>
 In-Reply-To: <20171215174225.31583-1-ebiggers3@gmail.com>
 References: <20171215174225.31583-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,118 +27,106 @@ From: Eric Biggers <ebiggers@google.com>
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/ext4/namei.c | 58 +++++++++++++++------------------------------------------
- 1 file changed, 15 insertions(+), 43 deletions(-)
+ fs/ubifs/dir.c | 55 ++++++++++++-------------------------------------------
+ 1 file changed, 12 insertions(+), 43 deletions(-)
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 798b3ac680db..e291bb90a233 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -3052,39 +3052,19 @@ static int ext4_symlink(struct inode *dir,
- 	struct inode *inode;
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index ef820f803176..518c10255881 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -1149,38 +1149,24 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
+ 	struct ubifs_info *c = dir->i_sb->s_fs_info;
  	int err, len = strlen(symname);
- 	int credits;
--	bool encryption_required;
- 	struct fscrypt_str disk_link;
+ 	int sz_change = CALC_DENT_SIZE(len);
+-	struct fscrypt_str disk_link = FSTR_INIT((char *)symname, len + 1);
 -	struct fscrypt_symlink_data *sd = NULL;
++	struct fscrypt_str disk_link;
+ 	struct ubifs_budget_req req = { .new_ino = 1, .new_dent = 1,
+ 					.new_ino_d = ALIGN(len, 8),
+ 					.dirtied_ino = 1 };
+ 	struct fscrypt_name nm;
  
- 	if (unlikely(ext4_forced_shutdown(EXT4_SB(dir->i_sb))))
- 		return -EIO;
- 
--	disk_link.len = len + 1;
--	disk_link.name = (char *) symname;
--
--	encryption_required = (ext4_encrypted_inode(dir) ||
--			       DUMMY_ENCRYPTION_ENABLED(EXT4_SB(dir->i_sb)));
--	if (encryption_required) {
+-	if (ubifs_crypt_is_encrypted(dir)) {
 -		err = fscrypt_get_encryption_info(dir);
 -		if (err)
--			return err;
--		if (!fscrypt_has_encryption_key(dir))
--			return -ENOKEY;
--		disk_link.len = (fscrypt_fname_encrypted_size(dir, len) +
--				 sizeof(struct fscrypt_symlink_data));
--		sd = kzalloc(disk_link.len, GFP_KERNEL);
--		if (!sd)
--			return -ENOMEM;
--	}
+-			goto out_budg;
 -
--	if (disk_link.len > dir->i_sb->s_blocksize) {
--		err = -ENAMETOOLONG;
--		goto err_free_sd;
+-		if (!fscrypt_has_encryption_key(dir)) {
+-			err = -EPERM;
+-			goto out_budg;
+-		}
++	dbg_gen("dent '%pd', target '%s' in dir ino %lu", dentry,
++		symname, dir->i_ino);
+ 
+-		disk_link.len = (fscrypt_fname_encrypted_size(dir, len) +
+-				sizeof(struct fscrypt_symlink_data));
 -	}
-+	err = fscrypt_prepare_symlink(dir, symname, len, dir->i_sb->s_blocksize,
++	err = fscrypt_prepare_symlink(dir, symname, len, UBIFS_MAX_INO_DATA,
 +				      &disk_link);
 +	if (err)
 +		return err;
  
- 	err = dquot_initialize(dir);
+ 	/*
+ 	 * Budget request settings: new inode, new direntry and changing parent
+ 	 * directory inode.
+ 	 */
+-
+-	dbg_gen("dent '%pd', target '%s' in dir ino %lu", dentry,
+-		symname, dir->i_ino);
+-
+-	if (disk_link.len > UBIFS_MAX_INO_DATA)
+-		return -ENAMETOOLONG;
+-
+ 	err = ubifs_budget_space(c, &req);
  	if (err)
--		goto err_free_sd;
-+		return err;
- 
- 	if ((disk_link.len > EXT4_N_BLOCKS * 4)) {
- 		/*
-@@ -3113,27 +3093,18 @@ static int ext4_symlink(struct inode *dir,
- 	if (IS_ERR(inode)) {
- 		if (handle)
- 			ext4_journal_stop(handle);
--		err = PTR_ERR(inode);
--		goto err_free_sd;
-+		return PTR_ERR(inode);
+ 		return err;
+@@ -1202,36 +1188,20 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
+ 		goto out_inode;
  	}
  
--	if (encryption_required) {
--		struct qstr istr;
--		struct fscrypt_str ostr =
--			FSTR_INIT(sd->encrypted_path, disk_link.len);
+-	if (ubifs_crypt_is_encrypted(dir)) {
+-		struct qstr istr = QSTR_INIT(symname, len);
+-		struct fscrypt_str ostr;
 -
--		istr.name = (const unsigned char *) symname;
--		istr.len = len;
+-		sd = kzalloc(disk_link.len, GFP_NOFS);
+-		if (!sd) {
+-			err = -ENOMEM;
+-			goto out_inode;
+-		}
+-
+-		ostr.name = sd->encrypted_path;
+-		ostr.len = disk_link.len;
+-
 -		err = fscrypt_fname_usr_to_disk(inode, &istr, &ostr);
 +	if (IS_ENCRYPTED(inode)) {
++		disk_link.name = ui->data; /* encrypt directly into ui->data */
 +		err = fscrypt_encrypt_symlink(inode, symname, len, &disk_link);
  		if (err)
- 			goto err_drop_inode;
+ 			goto out_inode;
+-
 -		sd->len = cpu_to_le16(ostr.len);
--		disk_link.name = (char *) sd;
- 		inode->i_op = &ext4_encrypted_symlink_inode_operations;
+-		disk_link.name = (char *)sd;
+ 	} else {
++		memcpy(ui->data, disk_link.name, disk_link.len);
+ 		inode->i_link = ui->data;
  	}
  
- 	if ((disk_link.len > EXT4_N_BLOCKS * 4)) {
--		if (!encryption_required)
-+		if (!IS_ENCRYPTED(inode))
- 			inode->i_op = &ext4_symlink_inode_operations;
- 		inode_nohighmem(inode);
- 		ext4_set_aops(inode);
-@@ -3175,7 +3146,7 @@ static int ext4_symlink(struct inode *dir,
- 	} else {
- 		/* clear the extent format for fast symlink */
- 		ext4_clear_inode_flag(inode, EXT4_INODE_EXTENTS);
--		if (!encryption_required) {
-+		if (!IS_ENCRYPTED(inode)) {
- 			inode->i_op = &ext4_fast_symlink_inode_operations;
- 			inode->i_link = (char *)&EXT4_I(inode)->i_data;
- 		}
-@@ -3190,16 +3161,17 @@ static int ext4_symlink(struct inode *dir,
- 
- 	if (handle)
- 		ext4_journal_stop(handle);
+-	memcpy(ui->data, disk_link.name, disk_link.len);
+-	((char *)ui->data)[disk_link.len - 1] = '\0';
+-
+ 	/*
+ 	 * The terminating zero byte is not written to the flash media and it
+ 	 * is put just to make later in-memory string processing simpler. Thus,
+-	 * data length is @len, not @len + %1.
++	 * data length is @disk_link.len - 1, not @disk_link.len.
+ 	 */
+ 	ui->data_len = disk_link.len - 1;
+ 	inode->i_size = ubifs_inode(inode)->ui_size = disk_link.len - 1;
+@@ -1265,7 +1235,6 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
+ 	fscrypt_free_filename(&nm);
+ out_budg:
+ 	ubifs_release_budget(c, &req);
 -	kfree(sd);
--	return err;
-+	goto out_free_encrypted_link;
-+
- err_drop_inode:
- 	if (handle)
- 		ext4_journal_stop(handle);
- 	clear_nlink(inode);
- 	unlock_new_inode(inode);
- 	iput(inode);
--err_free_sd:
--	kfree(sd);
-+out_free_encrypted_link:
-+	if (disk_link.name != (unsigned char *)symname)
-+		kfree(disk_link.name);
  	return err;
  }
  
