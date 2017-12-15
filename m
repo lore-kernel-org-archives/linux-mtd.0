@@ -1,20 +1,17 @@
-Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ePu4j-0004kp-4f
- for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 17:47:10 +0000
-Received: by mail-pg0-x242.google.com with SMTP id b11so6241735pgu.13
- for <linux-mtd@lists.infradead.org>; Fri, 15 Dec 2017 09:46:49 -0800 (PST)
+Received: from mail-pg0-x233.google.com ([2607:f8b0:400e:c05::233])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ePu4m-0008NO-8r
+ for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 17:47:18 +0000
+Received: by mail-pg0-x233.google.com with SMTP id y6so6254869pgp.4
+ for <linux-mtd@lists.infradead.org>; Fri, 15 Dec 2017 09:46:46 -0800 (PST)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org
 Cc: "Theodore Y . Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
  linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 06/24] fscrypt: move fscrypt_operations declaration to
- fscrypt_supp.h
-Date: Fri, 15 Dec 2017 09:42:07 -0800
-Message-Id: <20171215174225.31583-7-ebiggers3@gmail.com>
-In-Reply-To: <20171215174225.31583-1-ebiggers3@gmail.com>
-References: <20171215174225.31583-1-ebiggers3@gmail.com>
+ linux-mtd@lists.infradead.org, Eric Biggers <ebiggers3@gmail.com>
+Subject: [PATCH 00/24] fscrypt: symlink helpers and fscrypt.h cleanup
+Date: Fri, 15 Dec 2017 09:42:01 -0800
+Message-Id: <20171215174225.31583-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,75 +21,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Eric Biggers <ebiggers@google.com>
+This series introduces helper functions in fscrypt that filesystems can
+call to simplify handling of encrypted symlinks.  The helpers also fix a
+couple subtle bugs, such as incorrectly rejecting symlinks that are very
+close to the maximum length, and accidentally leaving the "." and ".."
+symlink targets unencrypted (they need to be special in directory
+entries, but not in symlink targets).
 
-Filesystems now only define their fscrypt_operations when they are
-compiled with encryption support, so move the fscrypt_operations
-declaration from fscrypt.h to fscrypt_supp.h.
+Patches 1-9 are mostly cleanup to trim down fscrypt.h, moving stuff into
+more appropriate places depending on whether it is needed only
+internally by fscrypt, or only by filesystems supporting encryption,
+etc.  I was going to send these out as a separate series, but there is a
+dependency because the symlink helpers depend on
+fscrypt_dummy_context_enabled() having been fixed to work correctly in
+the "notsupp" case.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- include/linux/fscrypt.h      | 18 ------------------
- include/linux/fscrypt_supp.h | 18 ++++++++++++++++++
- 2 files changed, 18 insertions(+), 18 deletions(-)
+Patch 10 introduces the helpers for ->symlink() and patch 11 introduces
+a helper for ->get_link().
 
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index b671a4eef47f..33b95a91f720 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -54,24 +54,6 @@ struct fscrypt_name {
- #define fname_name(p)		((p)->disk_name.name)
- #define fname_len(p)		((p)->disk_name.len)
- 
--/*
-- * fscrypt superblock flags
-- */
--#define FS_CFLG_OWN_PAGES (1U << 1)
--
--/*
-- * crypto opertions for filesystems
-- */
--struct fscrypt_operations {
--	unsigned int flags;
--	const char *key_prefix;
--	int (*get_context)(struct inode *, void *, size_t);
--	int (*set_context)(struct inode *, const void *, size_t, void *);
--	bool (*dummy_context)(struct inode *);
--	bool (*empty_dir)(struct inode *);
--	unsigned (*max_namelen)(struct inode *);
--};
--
- /* Maximum value for the third parameter of fscrypt_operations.set_context(). */
- #define FSCRYPT_SET_CONTEXT_MAX_SIZE	28
- 
-diff --git a/include/linux/fscrypt_supp.h b/include/linux/fscrypt_supp.h
-index e7dfa2974906..ce61caf26f40 100644
---- a/include/linux/fscrypt_supp.h
-+++ b/include/linux/fscrypt_supp.h
-@@ -11,6 +11,24 @@
- #ifndef _LINUX_FSCRYPT_SUPP_H
- #define _LINUX_FSCRYPT_SUPP_H
- 
-+/*
-+ * fscrypt superblock flags
-+ */
-+#define FS_CFLG_OWN_PAGES (1U << 1)
-+
-+/*
-+ * crypto operations for filesystems
-+ */
-+struct fscrypt_operations {
-+	unsigned int flags;
-+	const char *key_prefix;
-+	int (*get_context)(struct inode *, void *, size_t);
-+	int (*set_context)(struct inode *, const void *, size_t, void *);
-+	bool (*dummy_context)(struct inode *);
-+	bool (*empty_dir)(struct inode *);
-+	unsigned (*max_namelen)(struct inode *);
-+};
-+
- struct fscrypt_ctx {
- 	union {
- 		struct {
+Patches 12-18 switch ext4, f2fs, and ubifs over to the symlink helpers,
+and patches 19-24 clean things up in fscrypt as a consequence of all the
+filesystems having been switched over to the symlink helpers.  Note that
+as with the previous round of fscrypt helpers it may take an extra
+development cycle to get the filesystem-specific patches in through the
+filesystem-specific trees, so please consider patches 1-11 the ones that
+may be applied right away, and the rest as the future plans.
+
+Eric Biggers (24):
+  fscrypt: move fscrypt_has_encryption_key() to supp/notsupp headers
+  fscrypt: move fscrypt_control_page() to supp/notsupp headers
+  fscrypt: move fscrypt_info_cachep declaration to fscrypt_private.h
+  fscrypt: move fscrypt_ctx declaration to fscrypt_supp.h
+  fscrypt: split fscrypt_dummy_context_enabled() into supp/notsupp
+    versions
+  fscrypt: move fscrypt_operations declaration to fscrypt_supp.h
+  fscrypt: move fscrypt_valid_enc_modes() to fscrypt_private.h
+  fscrypt: move fscrypt_is_dot_dotdot() to fs/crypto/fname.c
+  fscrypt: trim down fscrypt.h includes
+  fscrypt: new helper functions for ->symlink()
+  fscrypt: new helper function - fscrypt_get_symlink()
+  ext4: switch to fscrypt ->symlink() helper functions
+  ext4: switch to fscrypt_get_symlink()
+  f2fs: switch to fscrypt ->symlink() helper functions
+  f2fs: switch to fscrypt_get_symlink()
+  ubifs: free the encrypted symlink target
+  ubifs: switch to fscrypt ->symlink() helper functions
+  ubifs: switch to fscrypt_get_symlink()
+  fscrypt: remove fscrypt_fname_usr_to_disk()
+  fscrypt: move fscrypt_symlink_data to fscrypt_private.h
+  fscrypt: calculate NUL-padding length in one place only
+  fscrypt: define fscrypt_fname_alloc_buffer() to be for presented names
+  fscrypt: fix up fscrypt_fname_encrypted_size() for internal use
+  fscrypt: document symlink length restriction
+
+ Documentation/filesystems/fscrypt.rst |  10 +-
+ fs/crypto/crypto.c                    |   1 +
+ fs/crypto/fname.c                     | 140 ++++++++++++---------------
+ fs/crypto/fscrypt_private.h           |  31 ++++++
+ fs/crypto/hooks.c                     | 154 ++++++++++++++++++++++++++++++
+ fs/crypto/keyinfo.c                   |   1 +
+ fs/ext4/namei.c                       |  58 +++---------
+ fs/ext4/symlink.c                     |  43 ++-------
+ fs/f2fs/namei.c                       | 132 +++++---------------------
+ fs/ubifs/dir.c                        |  63 +++---------
+ fs/ubifs/file.c                       |  36 +------
+ include/linux/fscrypt.h               | 174 +++++++++++++---------------------
+ include/linux/fscrypt_notsupp.h       |  56 +++++++----
+ include/linux/fscrypt_supp.h          |  66 ++++++++++++-
+ 14 files changed, 488 insertions(+), 477 deletions(-)
+
 -- 
 2.15.1
