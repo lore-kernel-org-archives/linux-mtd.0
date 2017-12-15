@@ -1,17 +1,17 @@
-Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
- by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ePu4s-0007mM-Ek
- for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 17:47:19 +0000
-Received: by mail-pg0-x243.google.com with SMTP id y6so6255290pgp.4
- for <linux-mtd@lists.infradead.org>; Fri, 15 Dec 2017 09:46:56 -0800 (PST)
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ePu4q-0004lH-4A
+ for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 17:47:17 +0000
+Received: by mail-pf0-x242.google.com with SMTP id c204so6619757pfc.13
+ for <linux-mtd@lists.infradead.org>; Fri, 15 Dec 2017 09:46:55 -0800 (PST)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org
 Cc: "Theodore Y . Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
  linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
  linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 13/24] ext4: switch to fscrypt_get_symlink()
-Date: Fri, 15 Dec 2017 09:42:14 -0800
-Message-Id: <20171215174225.31583-14-ebiggers3@gmail.com>
+Subject: [PATCH 15/24] f2fs: switch to fscrypt_get_symlink()
+Date: Fri, 15 Dec 2017 09:42:16 -0800
+Message-Id: <20171215174225.31583-16-ebiggers3@gmail.com>
 In-Reply-To: <20171215174225.31583-1-ebiggers3@gmail.com>
 References: <20171215174225.31583-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,25 +27,26 @@ From: Eric Biggers <ebiggers@google.com>
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/ext4/symlink.c | 43 ++++++-------------------------------------
- 1 file changed, 6 insertions(+), 37 deletions(-)
+ fs/f2fs/namei.c | 66 ++++++++-------------------------------------------------
+ 1 file changed, 9 insertions(+), 57 deletions(-)
 
-diff --git a/fs/ext4/symlink.c b/fs/ext4/symlink.c
-index a2006c9af1d9..dd05af983092 100644
---- a/fs/ext4/symlink.c
-+++ b/fs/ext4/symlink.c
-@@ -28,59 +28,28 @@ static const char *ext4_encrypted_get_link(struct dentry *dentry,
+diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
+index 5b114844806c..37816d2ebb93 100644
+--- a/fs/f2fs/namei.c
++++ b/fs/f2fs/namei.c
+@@ -1137,68 +1137,20 @@ static const char *f2fs_encrypted_get_link(struct dentry *dentry,
+ 					   struct inode *inode,
  					   struct delayed_call *done)
  {
- 	struct page *cpage = NULL;
+-	struct page *cpage = NULL;
 -	char *caddr, *paddr = NULL;
--	struct fscrypt_str cstr, pstr;
+-	struct fscrypt_str cstr = FSTR_INIT(NULL, 0);
+-	struct fscrypt_str pstr = FSTR_INIT(NULL, 0);
 -	struct fscrypt_symlink_data *sd;
--	int res;
 -	u32 max_size = inode->i_sb->s_blocksize;
-+	const void *caddr;
-+	unsigned int max_size;
-+	const char *paddr;
+-	int res;
++	struct page *page;
++	const char *target;
  
  	if (!dentry)
  		return ERR_PTR(-ECHILD);
@@ -54,51 +55,62 @@ index a2006c9af1d9..dd05af983092 100644
 -	if (res)
 -		return ERR_PTR(res);
 -
- 	if (ext4_inode_is_fast_symlink(inode)) {
--		caddr = (char *) EXT4_I(inode)->i_data;
-+		caddr = EXT4_I(inode)->i_data;
- 		max_size = sizeof(EXT4_I(inode)->i_data);
- 	} else {
- 		cpage = read_mapping_page(inode->i_mapping, 0, NULL);
- 		if (IS_ERR(cpage))
- 			return ERR_CAST(cpage);
- 		caddr = page_address(cpage);
-+		max_size = inode->i_sb->s_blocksize;
- 	}
- 
+-	cpage = read_mapping_page(inode->i_mapping, 0, NULL);
+-	if (IS_ERR(cpage))
+-		return ERR_CAST(cpage);
+-	caddr = page_address(cpage);
+-
 -	/* Symlink is encrypted */
 -	sd = (struct fscrypt_symlink_data *)caddr;
 -	cstr.name = sd->encrypted_path;
--	cstr.len  = le16_to_cpu(sd->len);
--	if ((cstr.len + sizeof(struct fscrypt_symlink_data) - 1) > max_size) {
--		/* Symlink data on the disk is corrupted */
--		res = -EFSCORRUPTED;
+-	cstr.len = le16_to_cpu(sd->len);
+-
+-	/* this is broken symlink case */
+-	if (unlikely(cstr.len == 0)) {
+-		res = -ENOENT;
 -		goto errout;
 -	}
 -
+-	if ((cstr.len + sizeof(struct fscrypt_symlink_data) - 1) > max_size) {
+-		/* Symlink data on the disk is corrupted */
+-		res = -EIO;
+-		goto errout;
+-	}
 -	res = fscrypt_fname_alloc_buffer(inode, cstr.len, &pstr);
 -	if (res)
 -		goto errout;
--	paddr = pstr.name;
 -
 -	res = fscrypt_fname_disk_to_usr(inode, 0, 0, &cstr, &pstr);
 -	if (res)
 -		goto errout;
 -
+-	/* this is broken symlink case */
+-	if (unlikely(pstr.name[0] == 0)) {
+-		res = -ENOENT;
+-		goto errout;
+-	}
+-
+-	paddr = pstr.name;
+-
 -	/* Null-terminate the name */
 -	paddr[pstr.len] = '\0';
-+	paddr = fscrypt_get_symlink(inode, caddr, max_size, done);
- 	if (cpage)
- 		put_page(cpage);
++	page = read_mapping_page(inode->i_mapping, 0, NULL);
++	if (IS_ERR(page))
++		return ERR_CAST(page);
+ 
+-	put_page(cpage);
 -	set_delayed_call(done, kfree_link, paddr);
- 	return paddr;
+-	return paddr;
 -errout:
--	if (cpage)
--		put_page(cpage);
--	kfree(paddr);
+-	fscrypt_fname_free_buffer(&pstr);
+-	put_page(cpage);
 -	return ERR_PTR(res);
++	target = fscrypt_get_symlink(inode, page_address(page),
++				     inode->i_sb->s_blocksize, done);
++	put_page(page);
++	return target;
  }
  
- const struct inode_operations ext4_encrypted_symlink_inode_operations = {
+ const struct inode_operations f2fs_encrypted_symlink_inode_operations = {
 -- 
 2.15.1
