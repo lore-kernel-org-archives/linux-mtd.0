@@ -1,16 +1,18 @@
-Received: from mail01.prevas.se ([62.95.78.3])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ePkVX-0004Lg-6j
- for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 07:34:13 +0000
-From: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
-To: <linux-mtd@lists.infradead.org>, <marek.vasut@gmail.com>,
- <cyrille.pitchen@wedev4u.fr>
-CC: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
-Subject: [PATCHv3 1/2] mtd: spi-nor: add support for is25lq040b
-Date: Fri, 15 Dec 2017 08:33:31 +0100
-Message-ID: <20171215073332.10965-1-sean.nyekjaer@prevas.dk>
-MIME-Version: 1.0
-Content-Type: text/plain
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+ by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ePlmR-0006pS-NU
+ for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 08:55:45 +0000
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>, kernel@pengutronix.de,
+ Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH 2/3] mtd: nand: mxc: Add own write_page
+Date: Fri, 15 Dec 2017 09:55:03 +0100
+Message-Id: <20171215085504.32296-3-s.hauer@pengutronix.de>
+In-Reply-To: <20171215085504.32296-1-s.hauer@pengutronix.de>
+References: <20171215085504.32296-1-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,31 +22,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
+Now that we have our own read_page function add a write_page function
+for consistency aswell. This can be a lot easier than the generic
+function since we do not have to iterate over subpages but can write
+the whole page at once.
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
-v3:
- - this spi-nor is 4Mbit or 512KB
- - readded SECT_4K as per Cyrille comments
- - spi-nor supports fast read dual and quad
+ drivers/mtd/nand/mxc_nand.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-v2:
- - removed SECT_4K as the chip are supporting 32K and bulk erase
-
- drivers/mtd/spi-nor/spi-nor.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 9178139a39d0..f7676aa50ce6 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1046,6 +1046,8 @@ static const struct flash_info spi_nor_ids[] = {
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index 65d5cde4692b..a54804f14bb1 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -142,6 +142,8 @@ struct mxc_nand_devtype_data {
+ 	void (*preset)(struct mtd_info *);
+ 	int (*read_page)(struct mtd_info *mtd, struct nand_chip *chip,
+ 			uint8_t *buf, int oob_required, int page);
++	int (*write_page)(struct mtd_info *mtd, struct nand_chip *chip,
++			  const uint8_t *buf, int oob_required, int page);
+ 	void (*send_cmd)(struct mxc_nand_host *, uint16_t, int);
+ 	void (*send_addr)(struct mxc_nand_host *, uint16_t, int);
+ 	void (*send_page)(struct mtd_info *, unsigned int);
+@@ -658,6 +660,17 @@ static int mxc_nand_read_page_hwecc_v2_v3(struct mtd_info *mtd,
+ 	return max_bitflips;
+ }
  
- 	/* ISSI */
- 	{ "is25cd512", INFO(0x7f9d20, 0, 32 * 1024,   2, SECT_4K) },
-+	{ "is25lq040b", INFO(0x9d4013, 0, 64 * 1024,  8,
-+			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "is25lp128", INFO(0x9d6018, 0, 64 * 1024, 256,
- 			SECT_4K | SPI_NOR_DUAL_READ) },
- 
++static int mxc_nand_write_page_hwecc_v2_v3(struct mtd_info *mtd,
++					   struct nand_chip *chip,
++					   const uint8_t *buf, int oob_required,
++					   int page)
++{
++	chip->write_buf(mtd, buf, mtd->writesize);
++	chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
++
++	return 0;
++}
++
+ static int mxc_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
+ 				  u_char *ecc_code)
+ {
+@@ -1456,6 +1469,7 @@ static const struct mxc_nand_devtype_data imx27_nand_devtype_data = {
+ static const struct mxc_nand_devtype_data imx25_nand_devtype_data = {
+ 	.preset = preset_v2,
+ 	.read_page = mxc_nand_read_page_hwecc_v2_v3,
++	.write_page = mxc_nand_write_page_hwecc_v2_v3,
+ 	.send_cmd = send_cmd_v1_v2,
+ 	.send_addr = send_addr_v1_v2,
+ 	.send_page = send_page_v2,
+@@ -1482,6 +1496,7 @@ static const struct mxc_nand_devtype_data imx25_nand_devtype_data = {
+ static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
+ 	.preset = preset_v3,
+ 	.read_page = mxc_nand_read_page_hwecc_v2_v3,
++	.write_page = mxc_nand_write_page_hwecc_v2_v3,
+ 	.send_cmd = send_cmd_v3,
+ 	.send_addr = send_addr_v3,
+ 	.send_page = send_page_v3,
+@@ -1508,6 +1523,7 @@ static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
+ static const struct mxc_nand_devtype_data imx53_nand_devtype_data = {
+ 	.preset = preset_v3,
+ 	.read_page = mxc_nand_read_page_hwecc_v2_v3,
++	.write_page = mxc_nand_write_page_hwecc_v2_v3,
+ 	.send_cmd = send_cmd_v3,
+ 	.send_addr = send_addr_v3,
+ 	.send_page = send_page_v3,
+@@ -1766,6 +1782,7 @@ static int mxcnd_probe(struct platform_device *pdev)
+ 	switch (this->ecc.mode) {
+ 	case NAND_ECC_HW:
+ 		this->ecc.read_page = host->devtype_data->read_page;
++		this->ecc.write_page = host->devtype_data->write_page;
+ 		this->ecc.calculate = mxc_nand_calculate_ecc;
+ 		this->ecc.hwctl = mxc_nand_enable_hwecc;
+ 		this->ecc.correct = host->devtype_data->correct_data;
 -- 
-2.15.1
+2.11.0
