@@ -1,17 +1,17 @@
-Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
+Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
  by merlin.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ePu4v-0007mY-9w
+ id 1ePu4v-0007mX-D9
  for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 17:47:22 +0000
-Received: by mail-pg0-x242.google.com with SMTP id g7so6264596pgs.0
- for <linux-mtd@lists.infradead.org>; Fri, 15 Dec 2017 09:47:02 -0800 (PST)
+Received: by mail-pg0-x243.google.com with SMTP id y6so6255437pgp.4
+ for <linux-mtd@lists.infradead.org>; Fri, 15 Dec 2017 09:47:01 -0800 (PST)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org
 Cc: "Theodore Y . Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
  linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
  linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 19/24] fscrypt: remove fscrypt_fname_usr_to_disk()
-Date: Fri, 15 Dec 2017 09:42:20 -0800
-Message-Id: <20171215174225.31583-20-ebiggers3@gmail.com>
+Subject: [PATCH 18/24] ubifs: switch to fscrypt_get_symlink()
+Date: Fri, 15 Dec 2017 09:42:19 -0800
+Message-Id: <20171215174225.31583-19-ebiggers3@gmail.com>
 In-Reply-To: <20171215174225.31583-1-ebiggers3@gmail.com>
 References: <20171215174225.31583-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,87 +25,66 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Eric Biggers <ebiggers@google.com>
 
-fscrypt_fname_usr_to_disk() sounded very generic but was actually only
-used to encrypt symlinks.  Remove it now that all filesystems have been
-switched over to fscrypt_encrypt_symlink().
-
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/fname.c               | 29 -----------------------------
- include/linux/fscrypt_notsupp.h |  7 -------
- include/linux/fscrypt_supp.h    |  2 --
- 3 files changed, 38 deletions(-)
+ fs/ubifs/file.c | 36 ++----------------------------------
+ 1 file changed, 2 insertions(+), 34 deletions(-)
 
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index 62f13d533439..cae7d1bcc8c5 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -311,35 +311,6 @@ int fscrypt_fname_disk_to_usr(struct inode *inode,
- }
- EXPORT_SYMBOL(fscrypt_fname_disk_to_usr);
- 
--/**
-- * fscrypt_fname_usr_to_disk() - converts a filename from user space to disk
-- * space
-- *
-- * The caller must have allocated sufficient memory for the @oname string.
-- *
-- * Return: 0 on success, -errno on failure
-- */
--int fscrypt_fname_usr_to_disk(struct inode *inode,
--			const struct qstr *iname,
--			struct fscrypt_str *oname)
--{
--	if (fscrypt_is_dot_dotdot(iname)) {
--		oname->name[0] = '.';
--		oname->name[iname->len - 1] = '.';
--		oname->len = iname->len;
--		return 0;
--	}
--	if (inode->i_crypt_info)
--		return fname_encrypt(inode, iname, oname);
--	/*
--	 * Without a proper key, a user is not allowed to modify the filenames
--	 * in a directory. Consequently, a user space name cannot be mapped to
--	 * a disk-space name
--	 */
--	return -ENOKEY;
--}
--EXPORT_SYMBOL(fscrypt_fname_usr_to_disk);
--
- /**
-  * fscrypt_setup_filename() - prepare to search a possibly encrypted directory
-  * @dir: the directory that will be searched
-diff --git a/include/linux/fscrypt_notsupp.h b/include/linux/fscrypt_notsupp.h
-index dd106640c6ea..0962f504aa91 100644
---- a/include/linux/fscrypt_notsupp.h
-+++ b/include/linux/fscrypt_notsupp.h
-@@ -159,13 +159,6 @@ static inline int fscrypt_fname_disk_to_usr(struct inode *inode,
- 	return -EOPNOTSUPP;
- }
- 
--static inline int fscrypt_fname_usr_to_disk(struct inode *inode,
--					    const struct qstr *iname,
--					    struct fscrypt_str *oname)
--{
--	return -EOPNOTSUPP;
--}
--
- static inline bool fscrypt_match_name(const struct fscrypt_name *fname,
- 				      const u8 *de_name, u32 de_name_len)
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index dfe85069586e..3cfc578c42ea 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1662,49 +1662,17 @@ static const char *ubifs_get_link(struct dentry *dentry,
+ 					    struct inode *inode,
+ 					    struct delayed_call *done)
  {
-diff --git a/include/linux/fscrypt_supp.h b/include/linux/fscrypt_supp.h
-index dc2babf3f7d3..e00191deb0d6 100644
---- a/include/linux/fscrypt_supp.h
-+++ b/include/linux/fscrypt_supp.h
-@@ -113,8 +113,6 @@ extern int fscrypt_fname_alloc_buffer(const struct inode *, u32,
- extern void fscrypt_fname_free_buffer(struct fscrypt_str *);
- extern int fscrypt_fname_disk_to_usr(struct inode *, u32, u32,
- 			const struct fscrypt_str *, struct fscrypt_str *);
--extern int fscrypt_fname_usr_to_disk(struct inode *, const struct qstr *,
--			struct fscrypt_str *);
+-	int err;
+-	struct fscrypt_symlink_data *sd;
+ 	struct ubifs_inode *ui = ubifs_inode(inode);
+-	struct fscrypt_str cstr;
+-	struct fscrypt_str pstr;
  
- #define FSCRYPT_FNAME_MAX_UNDIGESTED_SIZE	32
+-	if (!ubifs_crypt_is_encrypted(inode))
++	if (!IS_ENCRYPTED(inode))
+ 		return ui->data;
  
+ 	if (!dentry)
+ 		return ERR_PTR(-ECHILD);
+ 
+-	err = fscrypt_get_encryption_info(inode);
+-	if (err)
+-		return ERR_PTR(err);
+-
+-	sd = (struct fscrypt_symlink_data *)ui->data;
+-	cstr.name = sd->encrypted_path;
+-	cstr.len = le16_to_cpu(sd->len);
+-
+-	if (cstr.len == 0)
+-		return ERR_PTR(-ENOENT);
+-
+-	if ((cstr.len + sizeof(struct fscrypt_symlink_data) - 1) > ui->data_len)
+-		return ERR_PTR(-EIO);
+-
+-	err = fscrypt_fname_alloc_buffer(inode, cstr.len, &pstr);
+-	if (err)
+-		return ERR_PTR(err);
+-
+-	err = fscrypt_fname_disk_to_usr(inode, 0, 0, &cstr, &pstr);
+-	if (err) {
+-		fscrypt_fname_free_buffer(&pstr);
+-		return ERR_PTR(err);
+-	}
+-
+-	pstr.name[pstr.len] = '\0';
+-
+-	set_delayed_call(done, kfree_link, pstr.name);
+-	return pstr.name;
++	return fscrypt_get_symlink(inode, ui->data, ui->data_len, done);
+ }
+ 
+-
+ const struct address_space_operations ubifs_file_address_operations = {
+ 	.readpage       = ubifs_readpage,
+ 	.writepage      = ubifs_writepage,
 -- 
 2.15.1
