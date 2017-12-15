@@ -1,17 +1,20 @@
-Received: from mail-pg0-x233.google.com ([2607:f8b0:400e:c05::233])
+Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ePu4m-0008NO-8r
+ id 1ePu4l-0008O0-5O
  for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 17:47:18 +0000
-Received: by mail-pg0-x233.google.com with SMTP id y6so6254869pgp.4
- for <linux-mtd@lists.infradead.org>; Fri, 15 Dec 2017 09:46:46 -0800 (PST)
+Received: by mail-pf0-x241.google.com with SMTP id e3so6624635pfi.10
+ for <linux-mtd@lists.infradead.org>; Fri, 15 Dec 2017 09:46:45 -0800 (PST)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org
 Cc: "Theodore Y . Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
  linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, Eric Biggers <ebiggers3@gmail.com>
-Subject: [PATCH 00/24] fscrypt: symlink helpers and fscrypt.h cleanup
-Date: Fri, 15 Dec 2017 09:42:01 -0800
-Message-Id: <20171215174225.31583-1-ebiggers3@gmail.com>
+ linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
+Subject: [PATCH 03/24] fscrypt: move fscrypt_info_cachep declaration to
+ fscrypt_private.h
+Date: Fri, 15 Dec 2017 09:42:04 -0800
+Message-Id: <20171215174225.31583-4-ebiggers3@gmail.com>
+In-Reply-To: <20171215174225.31583-1-ebiggers3@gmail.com>
+References: <20171215174225.31583-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,74 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This series introduces helper functions in fscrypt that filesystems can
-call to simplify handling of encrypted symlinks.  The helpers also fix a
-couple subtle bugs, such as incorrectly rejecting symlinks that are very
-close to the maximum length, and accidentally leaving the "." and ".."
-symlink targets unencrypted (they need to be special in directory
-entries, but not in symlink targets).
+From: Eric Biggers <ebiggers@google.com>
 
-Patches 1-9 are mostly cleanup to trim down fscrypt.h, moving stuff into
-more appropriate places depending on whether it is needed only
-internally by fscrypt, or only by filesystems supporting encryption,
-etc.  I was going to send these out as a separate series, but there is a
-dependency because the symlink helpers depend on
-fscrypt_dummy_context_enabled() having been fixed to work correctly in
-the "notsupp" case.
+The fscrypt_info kmem_cache is internal to fscrypt; filesystems don't
+need to access it.  So move its declaration into fscrypt_private.h.
 
-Patch 10 introduces the helpers for ->symlink() and patch 11 introduces
-a helper for ->get_link().
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/crypto/fscrypt_private.h  | 1 +
+ include/linux/fscrypt_supp.h | 1 -
+ 2 files changed, 1 insertion(+), 1 deletion(-)
 
-Patches 12-18 switch ext4, f2fs, and ubifs over to the symlink helpers,
-and patches 19-24 clean things up in fscrypt as a consequence of all the
-filesystems having been switched over to the symlink helpers.  Note that
-as with the previous round of fscrypt helpers it may take an extra
-development cycle to get the filesystem-specific patches in through the
-filesystem-specific trees, so please consider patches 1-11 the ones that
-may be applied right away, and the rest as the future plans.
-
-Eric Biggers (24):
-  fscrypt: move fscrypt_has_encryption_key() to supp/notsupp headers
-  fscrypt: move fscrypt_control_page() to supp/notsupp headers
-  fscrypt: move fscrypt_info_cachep declaration to fscrypt_private.h
-  fscrypt: move fscrypt_ctx declaration to fscrypt_supp.h
-  fscrypt: split fscrypt_dummy_context_enabled() into supp/notsupp
-    versions
-  fscrypt: move fscrypt_operations declaration to fscrypt_supp.h
-  fscrypt: move fscrypt_valid_enc_modes() to fscrypt_private.h
-  fscrypt: move fscrypt_is_dot_dotdot() to fs/crypto/fname.c
-  fscrypt: trim down fscrypt.h includes
-  fscrypt: new helper functions for ->symlink()
-  fscrypt: new helper function - fscrypt_get_symlink()
-  ext4: switch to fscrypt ->symlink() helper functions
-  ext4: switch to fscrypt_get_symlink()
-  f2fs: switch to fscrypt ->symlink() helper functions
-  f2fs: switch to fscrypt_get_symlink()
-  ubifs: free the encrypted symlink target
-  ubifs: switch to fscrypt ->symlink() helper functions
-  ubifs: switch to fscrypt_get_symlink()
-  fscrypt: remove fscrypt_fname_usr_to_disk()
-  fscrypt: move fscrypt_symlink_data to fscrypt_private.h
-  fscrypt: calculate NUL-padding length in one place only
-  fscrypt: define fscrypt_fname_alloc_buffer() to be for presented names
-  fscrypt: fix up fscrypt_fname_encrypted_size() for internal use
-  fscrypt: document symlink length restriction
-
- Documentation/filesystems/fscrypt.rst |  10 +-
- fs/crypto/crypto.c                    |   1 +
- fs/crypto/fname.c                     | 140 ++++++++++++---------------
- fs/crypto/fscrypt_private.h           |  31 ++++++
- fs/crypto/hooks.c                     | 154 ++++++++++++++++++++++++++++++
- fs/crypto/keyinfo.c                   |   1 +
- fs/ext4/namei.c                       |  58 +++---------
- fs/ext4/symlink.c                     |  43 ++-------
- fs/f2fs/namei.c                       | 132 +++++---------------------
- fs/ubifs/dir.c                        |  63 +++---------
- fs/ubifs/file.c                       |  36 +------
- include/linux/fscrypt.h               | 174 +++++++++++++---------------------
- include/linux/fscrypt_notsupp.h       |  56 +++++++----
- include/linux/fscrypt_supp.h          |  66 ++++++++++++-
- 14 files changed, 488 insertions(+), 477 deletions(-)
-
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index c0b4f5597e1a..823c43a00bf7 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -72,6 +72,7 @@ typedef enum {
+ #define FS_CTX_HAS_BOUNCE_BUFFER_FL		0x00000002
+ 
+ /* crypto.c */
++extern struct kmem_cache *fscrypt_info_cachep;
+ extern int fscrypt_initialize(unsigned int cop_flags);
+ extern struct workqueue_struct *fscrypt_read_workqueue;
+ extern int fscrypt_do_page_crypto(const struct inode *inode,
+diff --git a/include/linux/fscrypt_supp.h b/include/linux/fscrypt_supp.h
+index ad40780d4653..33d641e27c18 100644
+--- a/include/linux/fscrypt_supp.h
++++ b/include/linux/fscrypt_supp.h
+@@ -17,7 +17,6 @@ static inline bool fscrypt_has_encryption_key(const struct inode *inode)
+ }
+ 
+ /* crypto.c */
+-extern struct kmem_cache *fscrypt_info_cachep;
+ extern struct fscrypt_ctx *fscrypt_get_ctx(const struct inode *, gfp_t);
+ extern void fscrypt_release_ctx(struct fscrypt_ctx *);
+ extern struct page *fscrypt_encrypt_page(const struct inode *, struct page *,
 -- 
 2.15.1
