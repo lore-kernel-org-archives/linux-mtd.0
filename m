@@ -1,17 +1,18 @@
-Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
+Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
  by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1ePu4e-0008On-No
+ id 1ePu4g-0008Np-N6
  for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 17:47:13 +0000
-Received: by mail-pg0-x244.google.com with SMTP id k15so6252014pgr.7
- for <linux-mtd@lists.infradead.org>; Fri, 15 Dec 2017 09:46:44 -0800 (PST)
+Received: by mail-pf0-x243.google.com with SMTP id u25so6633597pfg.5
+ for <linux-mtd@lists.infradead.org>; Fri, 15 Dec 2017 09:46:43 -0800 (PST)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org
 Cc: "Theodore Y . Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
  linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
  linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 04/24] fscrypt: move fscrypt_ctx declaration to fscrypt_supp.h
-Date: Fri, 15 Dec 2017 09:42:05 -0800
-Message-Id: <20171215174225.31583-5-ebiggers3@gmail.com>
+Subject: [PATCH 02/24] fscrypt: move fscrypt_control_page() to supp/notsupp
+ headers
+Date: Fri, 15 Dec 2017 09:42:03 -0800
+Message-Id: <20171215174225.31583-3-ebiggers3@gmail.com>
 In-Reply-To: <20171215174225.31583-1-ebiggers3@gmail.com>
 References: <20171215174225.31583-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,71 +26,80 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Eric Biggers <ebiggers@google.com>
 
-Filesystems only ever access 'struct fscrypt_ctx' through fscrypt
-functions.  But when a filesystem is built without encryption support,
-these functions are all stubbed out, so the declaration of fscrypt_ctx
-is unneeded.  Therefore, move it from fscrypt.h to fscrypt_supp.h.
+fscrypt_control_page() is already split into two versions depending on
+whether the filesystem is being built with encryption support or not.
+Move them into the appropriate headers.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- include/linux/fscrypt.h      | 16 +---------------
- include/linux/fscrypt_supp.h | 15 +++++++++++++++
- 2 files changed, 16 insertions(+), 15 deletions(-)
+ include/linux/fscrypt.h         | 18 ++----------------
+ include/linux/fscrypt_notsupp.h |  5 +++++
+ include/linux/fscrypt_supp.h    |  6 ++++++
+ 3 files changed, 13 insertions(+), 16 deletions(-)
 
 diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index c23b2f16129a..0f94d087a6d1 100644
+index d1c891b5bd9c..c23b2f16129a 100644
 --- a/include/linux/fscrypt.h
 +++ b/include/linux/fscrypt.h
-@@ -24,23 +24,9 @@
+@@ -123,24 +123,10 @@ static inline bool fscrypt_is_dot_dotdot(const struct qstr *str)
+ }
  
- #define FS_CRYPTO_BLOCK_SIZE		16
- 
-+struct fscrypt_ctx;
- struct fscrypt_info;
- 
--struct fscrypt_ctx {
--	union {
--		struct {
--			struct page *bounce_page;	/* Ciphertext page */
--			struct page *control_page;	/* Original page  */
--		} w;
--		struct {
--			struct bio *bio;
--			struct work_struct work;
--		} r;
--		struct list_head free_list;	/* Free list */
--	};
--	u8 flags;				/* Flags */
--};
+ #if __FS_HAS_ENCRYPTION
 -
+-static inline struct page *fscrypt_control_page(struct page *page)
+-{
+-	return ((struct fscrypt_ctx *)page_private(page))->w.control_page;
+-}
+-
+ #include <linux/fscrypt_supp.h>
+-
+-#else /* !__FS_HAS_ENCRYPTION */
+-
+-static inline struct page *fscrypt_control_page(struct page *page)
+-{
+-	WARN_ON_ONCE(1);
+-	return ERR_PTR(-EINVAL);
+-}
+-
++#else
+ #include <linux/fscrypt_notsupp.h>
+-#endif /* __FS_HAS_ENCRYPTION */
++#endif
+ 
  /**
-  * For encrypted symlinks, the ciphertext length is stored at the beginning
-  * of the string in little-endian format.
+  * fscrypt_require_key - require an inode's encryption key
+diff --git a/include/linux/fscrypt_notsupp.h b/include/linux/fscrypt_notsupp.h
+index 52e330285457..812dc701a5b3 100644
+--- a/include/linux/fscrypt_notsupp.h
++++ b/include/linux/fscrypt_notsupp.h
+@@ -48,6 +48,11 @@ static inline int fscrypt_decrypt_page(const struct inode *inode,
+ 	return -EOPNOTSUPP;
+ }
+ 
++static inline struct page *fscrypt_control_page(struct page *page)
++{
++	WARN_ON_ONCE(1);
++	return ERR_PTR(-EINVAL);
++}
+ 
+ static inline void fscrypt_restore_control_page(struct page *page)
+ {
 diff --git a/include/linux/fscrypt_supp.h b/include/linux/fscrypt_supp.h
-index 33d641e27c18..fd6ee089ced0 100644
+index 79bb8beae018..ad40780d4653 100644
 --- a/include/linux/fscrypt_supp.h
 +++ b/include/linux/fscrypt_supp.h
-@@ -11,6 +11,21 @@
- #ifndef _LINUX_FSCRYPT_SUPP_H
- #define _LINUX_FSCRYPT_SUPP_H
- 
-+struct fscrypt_ctx {
-+	union {
-+		struct {
-+			struct page *bounce_page;	/* Ciphertext page */
-+			struct page *control_page;	/* Original page  */
-+		} w;
-+		struct {
-+			struct bio *bio;
-+			struct work_struct work;
-+		} r;
-+		struct list_head free_list;	/* Free list */
-+	};
-+	u8 flags;				/* Flags */
-+};
+@@ -25,6 +25,12 @@ extern struct page *fscrypt_encrypt_page(const struct inode *, struct page *,
+ 						u64, gfp_t);
+ extern int fscrypt_decrypt_page(const struct inode *, struct page *, unsigned int,
+ 				unsigned int, u64);
 +
- static inline bool fscrypt_has_encryption_key(const struct inode *inode)
- {
- 	return (inode->i_crypt_info != NULL);
++static inline struct page *fscrypt_control_page(struct page *page)
++{
++	return ((struct fscrypt_ctx *)page_private(page))->w.control_page;
++}
++
+ extern void fscrypt_restore_control_page(struct page *);
+ 
+ extern const struct dentry_operations fscrypt_d_ops;
 -- 
 2.15.1
