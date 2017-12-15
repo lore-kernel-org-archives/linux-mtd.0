@@ -1,41 +1,20 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1ePtk7-0007i7-KK
- for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 17:26:00 +0000
-Date: Fri, 15 Dec 2017 18:25:12 +0100
-From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-To: Sean =?UTF-8?B?Tnlla2rDpnI=?= <sean.nyekjaer@prevas.dk>
-Cc: <ezequiel.garcia@free-electrons.com>, <linux-mtd@lists.infradead.org>,
- "Kasper Revsbech (KREV)" <krev@triax.com>, Boris Brezillon
- <Boris.Brezillon@free-electrons.com>
-Subject: Re: [BUG] pxa3xx: wait time out when scanning for bb
-Message-ID: <20171215182512.2449af9e@xps13>
-In-Reply-To: <20171213094105.73646658@xps13>
-References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
- <20171211105359.7eb1aeb3@xps13>
- <d0dee517-8061-5d40-aa82-6d4c5cda4fb1@prevas.dk>
- <a2502de6-b4c7-befb-6a08-de976be85d17@prevas.dk>
- <f70d94b8-5fc7-d091-9a5c-77597d2b7aa4@prevas.dk>
- <20171211150200.51c7f3b4@xps13> <20171211150929.722a361a@xps13>
- <a5fc7dea-a043-370c-b18a-eeb8f1f067f4@prevas.dk>
- <20171212095119.475de032@xps13>
- <727489cf-d1f6-8777-c6f4-981127657c9d@prevas.dk>
- <20171212111227.4946cc15@xps13>
- <e9e6bf70-918f-b750-5893-55744dc34882@prevas.dk>
- <20171212120806.7c31463f@xps13>
- <a0267c71-4333-7dd4-dcf4-14aced37f8f9@prevas.dk>
- <20171212123523.48185f21@xps13>
- <75bd6b87-12ed-4003-262a-b1bd03a62cbd@prevas.dk>
- <20171212134706.49f3c57e@xps13>
- <2f16ce90-6e00-c95f-7a81-5603d9acf574@prevas.dk>
- <20171212143512.3b62d3f5@xps13>
- <48EEEC1C-954B-42E5-92BE-A00AD97A5789@prevas.dk>
- <20171212192327.57b1fa80@xps13>
- <9f578b28-ef3b-8e84-0a8c-b70c494efff0@prevas.dk>
- <20171213094105.73646658@xps13>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1ePu4e-0008P0-Np
+ for linux-mtd@lists.infradead.org; Fri, 15 Dec 2017 17:47:10 +0000
+Received: by mail-pg0-x244.google.com with SMTP id y6so6255023pgp.4
+ for <linux-mtd@lists.infradead.org>; Fri, 15 Dec 2017 09:46:47 -0800 (PST)
+From: Eric Biggers <ebiggers3@gmail.com>
+To: linux-fscrypt@vger.kernel.org
+Cc: "Theodore Y . Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
+ linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
+Subject: [PATCH 05/24] fscrypt: split fscrypt_dummy_context_enabled() into
+ supp/notsupp versions
+Date: Fri, 15 Dec 2017 09:42:06 -0800
+Message-Id: <20171215174225.31583-6-ebiggers3@gmail.com>
+In-Reply-To: <20171215174225.31583-1-ebiggers3@gmail.com>
+References: <20171215174225.31583-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -45,18 +24,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Sean,
+From: Eric Biggers <ebiggers@google.com>
 
-I am very sorry for the delay but it took me some time to figure a way
-to reproduce your situation until I started doing the exact sequence I
-asked you to follow. It turns out there was a nasty error in the parser
-so you could not observe the last blocks of your chip because I messed
-up with high addresses.
+fscrypt_dummy_context_enabled() accesses ->s_cop, which now is only set
+when the filesystem is built with encryption support.  This didn't
+actually matter because no filesystems called it.  However, it will
+start being used soon, so fix it by moving it from fscrypt.h to
+fscrypt_supp.h and stubbing it out in fscrypt_notsupp.h.
 
-I updated the Github branch [1], can you rebase on top of it? I think
-this time we should get something :)
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ include/linux/fscrypt.h         | 8 --------
+ include/linux/fscrypt_notsupp.h | 5 +++++
+ include/linux/fscrypt_supp.h    | 6 ++++++
+ 3 files changed, 11 insertions(+), 8 deletions(-)
 
-[1] https://github.com/miquelraynal/linux/tree/marvell/nand-next/nfc
-
-Thanks for your time,
-Miqu=C3=A8l
+diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+index 0f94d087a6d1..b671a4eef47f 100644
+--- a/include/linux/fscrypt.h
++++ b/include/linux/fscrypt.h
+@@ -75,14 +75,6 @@ struct fscrypt_operations {
+ /* Maximum value for the third parameter of fscrypt_operations.set_context(). */
+ #define FSCRYPT_SET_CONTEXT_MAX_SIZE	28
+ 
+-static inline bool fscrypt_dummy_context_enabled(struct inode *inode)
+-{
+-	if (inode->i_sb->s_cop->dummy_context &&
+-				inode->i_sb->s_cop->dummy_context(inode))
+-		return true;
+-	return false;
+-}
+-
+ static inline bool fscrypt_valid_enc_modes(u32 contents_mode,
+ 					u32 filenames_mode)
+ {
+diff --git a/include/linux/fscrypt_notsupp.h b/include/linux/fscrypt_notsupp.h
+index 812dc701a5b3..81e02201b215 100644
+--- a/include/linux/fscrypt_notsupp.h
++++ b/include/linux/fscrypt_notsupp.h
+@@ -19,6 +19,11 @@ static inline bool fscrypt_has_encryption_key(const struct inode *inode)
+ 	return false;
+ }
+ 
++static inline bool fscrypt_dummy_context_enabled(struct inode *inode)
++{
++	return false;
++}
++
+ /* crypto.c */
+ static inline struct fscrypt_ctx *fscrypt_get_ctx(const struct inode *inode,
+ 						  gfp_t gfp_flags)
+diff --git a/include/linux/fscrypt_supp.h b/include/linux/fscrypt_supp.h
+index fd6ee089ced0..e7dfa2974906 100644
+--- a/include/linux/fscrypt_supp.h
++++ b/include/linux/fscrypt_supp.h
+@@ -31,6 +31,12 @@ static inline bool fscrypt_has_encryption_key(const struct inode *inode)
+ 	return (inode->i_crypt_info != NULL);
+ }
+ 
++static inline bool fscrypt_dummy_context_enabled(struct inode *inode)
++{
++	return inode->i_sb->s_cop->dummy_context &&
++		inode->i_sb->s_cop->dummy_context(inode);
++}
++
+ /* crypto.c */
+ extern struct fscrypt_ctx *fscrypt_get_ctx(const struct inode *, gfp_t);
+ extern void fscrypt_release_ctx(struct fscrypt_ctx *);
+-- 
+2.15.1
