@@ -1,23 +1,29 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eQfdC-0002gR-9N
- for linux-mtd@lists.infradead.org; Sun, 17 Dec 2017 20:33:57 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, stable@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: cfi: convert inline functions to macros
-Date: Sun, 17 Dec 2017 21:34:01 +0100
-Message-ID: <2276602.9klaxVRupl@blindfold>
-In-Reply-To: <20171011135419.3492681-1-arnd@arndb.de>
-References: <20171011135419.3492681-1-arnd@arndb.de>
+Received: from mail-pg0-x22b.google.com ([2607:f8b0:400e:c05::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eQg4E-0007F0-W7
+ for linux-mtd@lists.infradead.org; Sun, 17 Dec 2017 21:01:52 +0000
+Received: by mail-pg0-x22b.google.com with SMTP id m25so8359999pgv.12
+ for <linux-mtd@lists.infradead.org>; Sun, 17 Dec 2017 13:01:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20171217190056.GA1107@1wt.eu>
+References: <20171217120503.GA3323@1wt.eu>
+ <CAAEAJfBUyhvi68A6QEJRywq9hxMBYuJ4m+O6ogBtV1nkeBR_og@mail.gmail.com>
+ <20171217155305.16c5bb4f@bbrezillon> <20171217150043.GA1403@1wt.eu>
+ <CAAEAJfD47bGTSppEqcRszjAgBUjiCevmdYLKfsQTPYMcVu8VDA@mail.gmail.com>
+ <20171217162342.GA1833@1wt.eu> <20171217190746.2a61232c@bbrezillon>
+ <20171217190056.GA1107@1wt.eu>
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date: Sun, 17 Dec 2017 18:01:29 -0300
+Message-ID: <CAAEAJfArtxcWgcjHAb__3BQxWEBgWU8uWtHGYETc-m9eUs91nA@mail.gmail.com>
+Subject: Re: pxa3xx_nand times out in 4.14 with JFFS2
+To: Willy Tarreau <w@1wt.eu>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,46 +33,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Mittwoch, 11. Oktober 2017, 15:54:10 CET schrieb Arnd Bergmann:
-> The map_word_() functions, dating back to linux-2.6.8, try to perform
-> bitwise operations on a 'map_word' structure. This may have worked
-> with compilers that were current then (gcc-3.4 or earlier), but end
-> up being rather inefficient on any version I could try now (gcc-4.4 or
-> higher). Specifically we hit a problem analyzed in gcc PR81715 where we
-> fail to reuse the stack space for local variables.
-> 
-> This can be seen immediately in the stack consumption for
-> cfi_staa_erase_varsize() and other functions that (with CONFIG_KASAN)
-> can be up to 2200 bytes. Changing the inline functions into macros brings
-> this down to 1280 bytes.  Without KASAN, the same problem exists, but
-> the stack consumption is lower to start with, my patch shrinks it from
-> 920 to 496 bytes on with arm-linux-gnueabi-gcc-5.4, and saves around
-> 1KB in .text size for cfi_cmdset_0020.c, as it avoids copying map_word
-> structures for each call to one of these helpers.
-> 
-> With the latest gcc-8 snapshot, the problem is fixed in upstream gcc,
-> but nobody uses that yet, so we should still work around it in mainline
-> kernels and probably backport the workaround to stable kernels as well.
-> We had a couple of other functions that suffered from the same gcc bug,
-> and all of those had a simpler workaround involving dummy variables
-> in the inline function. Unfortunately that did not work here, the
-> macro hack was the best I could come up with.
-> 
-> It would also be helpful to have someone to a little performance testing
-> on the patch, to see how much it helps in terms of CPU utilitzation.
-> 
-> Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81715
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On 17 December 2017 at 16:00, Willy Tarreau <w@1wt.eu> wrote:
+> On Sun, Dec 17, 2017 at 07:07:46PM +0100, Boris Brezillon wrote:
+>> > > This would guarantee that devices with factory bad blocks,
+>> > > (and no BBT), would be OK with this patch.
+>> >
+>> > I see. I'm fine with trying provided I have reasonably good assurance
+>> > that I won't have to go through the kwboot pain again :-/
+>>
+>> There's a easy test you can do without scrubing the NAND:
+>> 1/ comment the nand-on-flash-bbt property in your DT (this will trigger
+>>    a full scan)
+>> 2/ from u-boot (before booting the kernel), erase a block that you know
+>>    contains nothing important
+>> 3/ during the kernel scan, make sure this block is not reported as bad
+>
+> OK so I tried and never faced any error. Thus I also attempted to mark
+> a bad block in u-boot, it appeared in the bad blocks table, then I had
+> to scrub the whole table to get rid of it. Each time when I booted I
+> saw the message "Scanning device for bad blocks" but no error ever
+> happened. So I hope it's OK.
+>
 
-Acked-by: Richard Weinberger <richard@nod.at>
-
-Marek, I know you are not super happy with this patch but IMHO this is the 
-solution with the least hassle.
-While functions offer better type checking I think this functions are trivial 
-enough to exist as macros too.
-Also forcing users to upgrade/fix their compilers is only possible in a 
-perfect world.
-
-Thanks,
-//richard
+Nice. Thanks a lot Willy. I think this acks Boris' patch.
+--=20
+Ezequiel Garc=C3=ADa, VanguardiaSur
+www.vanguardiasur.com.ar
