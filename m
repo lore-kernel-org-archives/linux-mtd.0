@@ -1,25 +1,42 @@
-Date: Sun, 17 Dec 2017 22:46:17 +0100
-From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+Received: from mail02.prevas.se ([62.95.78.10])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eQgnX-0002HV-Fe
+ for linux-mtd@lists.infradead.org; Sun, 17 Dec 2017 21:48:41 +0000
+From: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
+Subject: Re: [BUG] pxa3xx: wait time out when scanning for bb
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Willy Tarreau <w@1wt.eu>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Ezequiel Garcia
- <ezequiel@vanguardiasur.com.ar>, Robert Jarzmik <robert.jarzmik@free.fr>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: pxa3xx_nand times out in 4.14 with JFFS2
-Message-ID: <20171217224617.1f9b8b84@xps13>
-In-Reply-To: <20171217222611.59f9031b@bbrezillon>
-References: <20171217120503.GA3323@1wt.eu>
- <CAAEAJfBUyhvi68A6QEJRywq9hxMBYuJ4m+O6ogBtV1nkeBR_og@mail.gmail.com>
- <20171217155305.16c5bb4f@bbrezillon> <20171217150043.GA1403@1wt.eu>
- <CAAEAJfD47bGTSppEqcRszjAgBUjiCevmdYLKfsQTPYMcVu8VDA@mail.gmail.com>
- <20171217162342.GA1833@1wt.eu> <20171217190746.2a61232c@bbrezillon>
- <20171217190056.GA1107@1wt.eu>
- <CAAEAJfArtxcWgcjHAb__3BQxWEBgWU8uWtHGYETc-m9eUs91nA@mail.gmail.com>
- <20171217211650.GA6815@1wt.eu> <20171217222611.59f9031b@bbrezillon>
+Cc: Miquel RAYNAL <miquel.raynal@free-electrons.com>,
+ ezequiel.garcia@free-electrons.com, linux-mtd@lists.infradead.org,
+ "Kasper Revsbech (KREV)" <krev@triax.com>
+References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
+ <20171211150200.51c7f3b4@xps13> <20171211150929.722a361a@xps13>
+ <a5fc7dea-a043-370c-b18a-eeb8f1f067f4@prevas.dk>
+ <20171212095119.475de032@xps13>
+ <727489cf-d1f6-8777-c6f4-981127657c9d@prevas.dk>
+ <20171212111227.4946cc15@xps13>
+ <e9e6bf70-918f-b750-5893-55744dc34882@prevas.dk>
+ <20171212120806.7c31463f@xps13>
+ <a0267c71-4333-7dd4-dcf4-14aced37f8f9@prevas.dk>
+ <20171212123523.48185f21@xps13>
+ <75bd6b87-12ed-4003-262a-b1bd03a62cbd@prevas.dk>
+ <20171212134706.49f3c57e@xps13>
+ <2f16ce90-6e00-c95f-7a81-5603d9acf574@prevas.dk>
+ <20171212143512.3b62d3f5@xps13>
+ <48EEEC1C-954B-42E5-92BE-A00AD97A5789@prevas.dk>
+ <20171212192327.57b1fa80@xps13>
+ <9f578b28-ef3b-8e84-0a8c-b70c494efff0@prevas.dk>
+ <20171213094105.73646658@xps13> <20171215182512.2449af9e@xps13>
+ <45D7D798-BA86-41CD-AB56-156C1BD7FCC4@prevas.dk>
+ <20171215201955.2431195c@xps13>
+ <7892957c-273b-ea58-1d50-b35e70c69e02@prevas.dk>
+ <20171217141916.04e377ab@bbrezillon>
+Message-ID: <461b45a8-de1f-0b54-567f-001ea30ee927@prevas.dk>
+Date: Sun, 17 Dec 2017 22:47:26 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20171217141916.04e377ab@bbrezillon>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,78 +46,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Willy,
+Hi Boris and Miquel
+>>>   
+>>>> I also tried booting with ECC enabled and with that enabled the
+>>>> driver is unable to read the bbt and marked all blocks bad.
+>>> And if I understand correctly, if you remove nand-ecc-mode = "none" (or
+>>> set it to "hw"), the kernel fails to find the BBT, that is right?
+>> Yes.
+>>> As I was not expecting such a quick answer, I did push another patch
+>>> after sending my email that fixes an issue in mtdcore.c, please check
+>>> you have it (there are a few "fixup!" patches, and on top of them you
+>>> must find one which is a well-formatted patch about
+>>> mtd_check_oob_ops()).
+>> I have rebased on top of 9aee88a618f8 mtd: Fix mtd_check_oob_ops()
+>>> I learned that today: to get a prompt while all blocks are bad, you can
+>>> add:
+>>>
+>>>       chip->options |= NAND_SKIP_BBTSCAN;
+>>>
+>>> Before nand_scan_tail().
+>>>
+>>> If you can reach a prompt with the failing configuration and when you
+>>> will have the time, I will welcome a dump of the same area as before
+>>> so we will try to understand what is wrong now ! :)
+>> Nice one, a lot easier to read whats happens
+>>
+>> nanddump of BBT without ECC enabled:
+>> https://gist.github.com/anonymous/627e5be058ed93c106d61641f6aa5da0
+>>
+>> nanddump of BBT with ECC enabled:
+>> https://gist.github.com/anonymous/76b3240f156c6547cf76d59f2aae49fe
+>> bootsnippet with ECC and NAND_SKIP_BBTSCAN enabled.
+>> https://gist.github.com/anonymous/0d9be95cd9c36ff006f7aa03e7c2cc85
+>>
+>> Please let me know what traces you need to fix the ECC :-)
+> The dumps look good (at least, the BBT pattern is correct, we have the
+> number of ECC bytes we expect and they are where we expect them).
+>
+> My gut feeling is that something is wrong with ECC (or something related
+> to ECC) in u-boot.
+>
+> Can you try to let Linux create the BBT on its own and dump the last
+> block as you did previously?
+>
+> So, to sum-up
+>
+> 1/ put the following in your DT
+>
+> 	nand-ecc-mode = "hw";
+> 	nand-on-flash-bbt;
+>
+> 2/ scrub the NAND from u-boot and make sure you don't reboot after that,
+>     so that u-boot can't recreate its own BBT.
+>
+> 3/ Let Linux boot and dump the pages (in raw mode) where BBTs created by
+> Linux are supposed to be (should be the same addresses as before)
+Trace with nand scrub in uboot and ecc enabled:
+https://gist.github.com/anonymous/3ce389b9276fddbd46f59c89b99ee4ff
 
-On Sun, 17 Dec 2017 22:26:11 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+Same as above with "chip->options |= NAND_SKIP_BBTSCAN;" in the marvell 
+nand driver
+https://gist.github.com/anonymous/3aed159b5a5ee22f27403fe79ba97400
 
-> +Miquel
->=20
-> On Sun, 17 Dec 2017 22:16:50 +0100
-> Willy Tarreau <w@1wt.eu> wrote:
->=20
-> > On Sun, Dec 17, 2017 at 06:01:29PM -0300, Ezequiel Garcia wrote: =20
-> > > On 17 December 2017 at 16:00, Willy Tarreau <w@1wt.eu> wrote:   =20
-> > > > On Sun, Dec 17, 2017 at 07:07:46PM +0100, Boris Brezillon
-> > > > wrote:   =20
-> > > >> > > This would guarantee that devices with factory bad blocks,
-> > > >> > > (and no BBT), would be OK with this patch.   =20
-> > > >> >
-> > > >> > I see. I'm fine with trying provided I have reasonably good
-> > > >> > assurance that I won't have to go through the kwboot pain
-> > > >> > again :-/   =20
-> > > >>
-> > > >> There's a easy test you can do without scrubing the NAND:
-> > > >> 1/ comment the nand-on-flash-bbt property in your DT (this
-> > > >> will trigger a full scan)
-> > > >> 2/ from u-boot (before booting the kernel), erase a block that
-> > > >> you know contains nothing important
-> > > >> 3/ during the kernel scan, make sure this block is not
-> > > >> reported as bad   =20
-> > > >
-> > > > OK so I tried and never faced any error. Thus I also attempted
-> > > > to mark a bad block in u-boot, it appeared in the bad blocks
-> > > > table, then I had to scrub the whole table to get rid of it.
-> > > > Each time when I booted I saw the message "Scanning device for
-> > > > bad blocks" but no error ever happened. So I hope it's OK.
-> > > >   =20
-> > >=20
-> > > Nice. Thanks a lot Willy. I think this acks Boris' patch.   =20
-> >=20
-> > You're welcome, you and Boris fixed my problem very quickly
-> > allowing me to continue to prepare my new router :-)
-> >=20
-> > BTW, Boris please don't forget to mark your fix for -stable. =20
->=20
-> Actually, if things go well it will only be applied to stable
-> releases (I really hope we'll be able to switch to Miquel's driver in
-> 4.16). BTW, if you have some time, maybe you can test Miquel's [1]
-> branch and let us know if it still works properly.
+If I dump 0xFEC0000/0xFFC0000 or 0xFEE0000/0xFFE0000 (the bbt pages) 
+they contain
+only 0xFF's as the kernel does not write to the blocks.
 
-As Boris said, we would really welcome a test of this branch, because
-you almost have the same setup as Sean in the thread "pxa3xx: wait time
-out when scanning for bb" and I am running out of explanation for his
-problem unless it is related to U-Boot. So if you could try booting
-with and without the on-flash-bbt property and report whether it fails
-or not it would be of great help!
+To me it seem a little bit difficult to say why the new marvell nand driver
+(with ecc enabled) thinks all the freshly scrubbed blocks are bad.
 
-Thanks,
-Miqu=C3=A8l
-
->=20
-> Thanks,
->=20
-> Boris
->=20
-> [1]https://github.com/miquelraynal/linux/tree/marvell/nand-next/nfc
->=20
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
-
-
---=20
-Miquel Raynal, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+/Sean
