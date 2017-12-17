@@ -1,16 +1,10 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eQgzN-0007jG-Fr
- for linux-mtd@lists.infradead.org; Sun, 17 Dec 2017 22:00:55 +0000
-Date: Sun, 17 Dec 2017 23:00:32 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
-Cc: Miquel RAYNAL <miquel.raynal@free-electrons.com>,
- ezequiel.garcia@free-electrons.com, linux-mtd@lists.infradead.org, "Kasper
- Revsbech (KREV)" <krev@triax.com>
-Subject: Re: [BUG] pxa3xx: wait time out when scanning for bb
-Message-ID: <20171217230032.30853780@bbrezillon>
-In-Reply-To: <461b45a8-de1f-0b54-567f-001ea30ee927@prevas.dk>
+Received: from mail02.prevas.se ([62.95.78.10])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eQhET-0004Vf-CK
+ for linux-mtd@lists.infradead.org; Sun, 17 Dec 2017 22:16:31 +0000
+Subject: [SPAM] Re: [BUG] pxa3xx: wait time out when scanning for bb
+Date: Sun, 17 Dec 2017 23:15:42 +0100
+In-Reply-To: <20171217230032.30853780@bbrezillon>
 References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
  <a5fc7dea-a043-370c-b18a-eeb8f1f067f4@prevas.dk>
  <20171212095119.475de032@xps13>
@@ -33,9 +27,17 @@ References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
  <7892957c-273b-ea58-1d50-b35e70c69e02@prevas.dk>
  <20171217141916.04e377ab@bbrezillon>
  <461b45a8-de1f-0b54-567f-001ea30ee927@prevas.dk>
+ <20171217230032.30853780@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+CC: Miquel RAYNAL <miquel.raynal@free-electrons.com>,
+ ezequiel.garcia@free-electrons.com, linux-mtd@lists.infradead.org,
+ "Kasper Revsbech (KREV)" <krev@triax.com>
+From: =?ISO-8859-1?Q?Sean_Nyekj=E6r?= <sean.nyekjaer@prevas.dk>
+Message-ID: <D17E776C-669D-4C40-B673-CBE7CE5D08F6@prevas.dk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -45,81 +47,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 17 Dec 2017 22:47:26 +0100
-Sean Nyekjaer <sean.nyekjaer@prevas.dk> wrote:
 
-> Hi Boris and Miquel
-> >>>     
-> >>>> I also tried booting with ECC enabled and with that enabled the
-> >>>> driver is unable to read the bbt and marked all blocks bad.  
-> >>> And if I understand correctly, if you remove nand-ecc-mode = "none" (or
-> >>> set it to "hw"), the kernel fails to find the BBT, that is right?  
-> >> Yes.  
-> >>> As I was not expecting such a quick answer, I did push another patch
-> >>> after sending my email that fixes an issue in mtdcore.c, please check
-> >>> you have it (there are a few "fixup!" patches, and on top of them you
-> >>> must find one which is a well-formatted patch about
-> >>> mtd_check_oob_ops()).  
-> >> I have rebased on top of 9aee88a618f8 mtd: Fix mtd_check_oob_ops()  
-> >>> I learned that today: to get a prompt while all blocks are bad, you can
-> >>> add:
-> >>>
-> >>>       chip->options |= NAND_SKIP_BBTSCAN;
-> >>>
-> >>> Before nand_scan_tail().
-> >>>
-> >>> If you can reach a prompt with the failing configuration and when you
-> >>> will have the time, I will welcome a dump of the same area as before
-> >>> so we will try to understand what is wrong now ! :)  
-> >> Nice one, a lot easier to read whats happens
-> >>
-> >> nanddump of BBT without ECC enabled:
-> >> https://gist.github.com/anonymous/627e5be058ed93c106d61641f6aa5da0
-> >>
-> >> nanddump of BBT with ECC enabled:
-> >> https://gist.github.com/anonymous/76b3240f156c6547cf76d59f2aae49fe
-> >> bootsnippet with ECC and NAND_SKIP_BBTSCAN enabled.
-> >> https://gist.github.com/anonymous/0d9be95cd9c36ff006f7aa03e7c2cc85
-> >>
-> >> Please let me know what traces you need to fix the ECC :-)  
-> > The dumps look good (at least, the BBT pattern is correct, we have the
-> > number of ECC bytes we expect and they are where we expect them).
-> >
-> > My gut feeling is that something is wrong with ECC (or something related
-> > to ECC) in u-boot.
-> >
-> > Can you try to let Linux create the BBT on its own and dump the last
-> > block as you did previously?
-> >
-> > So, to sum-up
-> >
-> > 1/ put the following in your DT
-> >
-> > 	nand-ecc-mode = "hw";
-> > 	nand-on-flash-bbt;
-> >
-> > 2/ scrub the NAND from u-boot and make sure you don't reboot after that,
-> >     so that u-boot can't recreate its own BBT.
-> >
-> > 3/ Let Linux boot and dump the pages (in raw mode) where BBTs created by
-> > Linux are supposed to be (should be the same addresses as before)  
-> Trace with nand scrub in uboot and ecc enabled:
-> https://gist.github.com/anonymous/3ce389b9276fddbd46f59c89b99ee4ff
-> 
-> Same as above with "chip->options |= NAND_SKIP_BBTSCAN;" in the marvell 
-> nand driver
-> https://gist.github.com/anonymous/3aed159b5a5ee22f27403fe79ba97400
-> 
-> If I dump 0xFEC0000/0xFFC0000 or 0xFEE0000/0xFFE0000 (the bbt pages) 
-> they contain
-> only 0xFF's as the kernel does not write to the blocks.
-> 
-> To me it seem a little bit difficult to say why the new marvell nand driver
-> (with ecc enabled) thinks all the freshly scrubbed blocks are bad.
 
-Ok, now I really need the dump without the -n option. It seems that
-dumping in non-raw mode does not return the expected value.
+On 17 December 2017 23:00:32 CET, Boris Brezillon <boris=2Ebrezillon@free-=
+electrons=2Ecom> wrote:
+>On Sun, 17 Dec 2017 22:47:26 +0100
+>Sean Nyekjaer <sean=2Enyekjaer@prevas=2Edk> wrote:
+>
+>> Hi Boris and Miquel
+>> >>>    =20
+>> >>>> I also tried booting with ECC enabled and with that enabled the
+>> >>>> driver is unable to read the bbt and marked all blocks bad=2E =20
+>> >>> And if I understand correctly, if you remove nand-ecc-mode =3D
+>"none" (or
+>> >>> set it to "hw"), the kernel fails to find the BBT, that is right?
+>=20
+>> >> Yes=2E =20
+>> >>> As I was not expecting such a quick answer, I did push another
+>patch
+>> >>> after sending my email that fixes an issue in mtdcore=2Ec, please
+>check
+>> >>> you have it (there are a few "fixup!" patches, and on top of them
+>you
+>> >>> must find one which is a well-formatted patch about
+>> >>> mtd_check_oob_ops())=2E =20
+>> >> I have rebased on top of 9aee88a618f8 mtd: Fix mtd_check_oob_ops()
+>=20
+>> >>> I learned that today: to get a prompt while all blocks are bad,
+>you can
+>> >>> add:
+>> >>>
+>> >>>       chip->options |=3D NAND_SKIP_BBTSCAN;
+>> >>>
+>> >>> Before nand_scan_tail()=2E
+>> >>>
+>> >>> If you can reach a prompt with the failing configuration and when
+>you
+>> >>> will have the time, I will welcome a dump of the same area as
+>before
+>> >>> so we will try to understand what is wrong now ! :) =20
+>> >> Nice one, a lot easier to read whats happens
+>> >>
+>> >> nanddump of BBT without ECC enabled:
+>> >> https://gist=2Egithub=2Ecom/anonymous/627e5be058ed93c106d61641f6aa5d=
+a0
+>> >>
+>> >> nanddump of BBT with ECC enabled:
+>> >> https://gist=2Egithub=2Ecom/anonymous/76b3240f156c6547cf76d59f2aae49=
+fe
+>> >> bootsnippet with ECC and NAND_SKIP_BBTSCAN enabled=2E
+>> >> https://gist=2Egithub=2Ecom/anonymous/0d9be95cd9c36ff006f7aa03e7c2cc=
+85
+>> >>
+>> >> Please let me know what traces you need to fix the ECC :-) =20
+>> > The dumps look good (at least, the BBT pattern is correct, we have
+>the
+>> > number of ECC bytes we expect and they are where we expect them)=2E
+>> >
+>> > My gut feeling is that something is wrong with ECC (or something
+>related
+>> > to ECC) in u-boot=2E
+>> >
+>> > Can you try to let Linux create the BBT on its own and dump the
+>last
+>> > block as you did previously?
+>> >
+>> > So, to sum-up
+>> >
+>> > 1/ put the following in your DT
+>> >
+>> > 	nand-ecc-mode =3D "hw";
+>> > 	nand-on-flash-bbt;
+>> >
+>> > 2/ scrub the NAND from u-boot and make sure you don't reboot after
+>that,
+>> >     so that u-boot can't recreate its own BBT=2E
+>> >
+>> > 3/ Let Linux boot and dump the pages (in raw mode) where BBTs
+>created by
+>> > Linux are supposed to be (should be the same addresses as before) =20
+>> Trace with nand scrub in uboot and ecc enabled:
+>> https://gist=2Egithub=2Ecom/anonymous/3ce389b9276fddbd46f59c89b99ee4ff
+>>=20
+>> Same as above with "chip->options |=3D NAND_SKIP_BBTSCAN;" in the
+>marvell=20
+>> nand driver
+>> https://gist=2Egithub=2Ecom/anonymous/3aed159b5a5ee22f27403fe79ba97400
+>>=20
+>> If I dump 0xFEC0000/0xFFC0000 or 0xFEE0000/0xFFE0000 (the bbt pages)=20
+>> they contain
+>> only 0xFF's as the kernel does not write to the blocks=2E
+>>=20
+>> To me it seem a little bit difficult to say why the new marvell nand
+>driver
+>> (with ecc enabled) thinks all the freshly scrubbed blocks are bad=2E
+>
+>Ok, now I really need the dump without the -n option=2E It seems that
+>dumping in non-raw mode does not return the expected value=2E
+>
+How can I get the driver to write a bbt when it have marked all the blocks=
+ bad?
 
-Thanks,
+So I do a trace, without the -n option, with ecc enabled and NAND_SKIP_BBT=
+SCAN set?
+Is that what you need?
 
-Boris
+/Sean
