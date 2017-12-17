@@ -1,42 +1,15 @@
-Received: from mail02.prevas.se ([62.95.78.10])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eQXaJ-0001c6-Q9
- for linux-mtd@lists.infradead.org; Sun, 17 Dec 2017 11:58:26 +0000
-Subject: Re: [BUG] pxa3xx: wait time out when scanning for bb
-To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-Cc: ezequiel.garcia@free-electrons.com, linux-mtd@lists.infradead.org,
- "Kasper Revsbech (KREV)" <krev@triax.com>,
- Boris Brezillon <Boris.Brezillon@free-electrons.com>
-References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
- <a2502de6-b4c7-befb-6a08-de976be85d17@prevas.dk>
- <f70d94b8-5fc7-d091-9a5c-77597d2b7aa4@prevas.dk>
- <20171211150200.51c7f3b4@xps13> <20171211150929.722a361a@xps13>
- <a5fc7dea-a043-370c-b18a-eeb8f1f067f4@prevas.dk>
- <20171212095119.475de032@xps13>
- <727489cf-d1f6-8777-c6f4-981127657c9d@prevas.dk>
- <20171212111227.4946cc15@xps13>
- <e9e6bf70-918f-b750-5893-55744dc34882@prevas.dk>
- <20171212120806.7c31463f@xps13>
- <a0267c71-4333-7dd4-dcf4-14aced37f8f9@prevas.dk>
- <20171212123523.48185f21@xps13>
- <75bd6b87-12ed-4003-262a-b1bd03a62cbd@prevas.dk>
- <20171212134706.49f3c57e@xps13>
- <2f16ce90-6e00-c95f-7a81-5603d9acf574@prevas.dk>
- <20171212143512.3b62d3f5@xps13>
- <48EEEC1C-954B-42E5-92BE-A00AD97A5789@prevas.dk>
- <20171212192327.57b1fa80@xps13>
- <9f578b28-ef3b-8e84-0a8c-b70c494efff0@prevas.dk>
- <20171213094105.73646658@xps13> <20171215182512.2449af9e@xps13>
- <45D7D798-BA86-41CD-AB56-156C1BD7FCC4@prevas.dk>
- <20171215201955.2431195c@xps13>
-From: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
-Message-ID: <7892957c-273b-ea58-1d50-b35e70c69e02@prevas.dk>
-Date: Sun, 17 Dec 2017 12:56:01 +0100
+Date: Sun, 17 Dec 2017 13:05:03 +0100
+From: Willy Tarreau <w@1wt.eu>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: pxa3xx_nand times out in 4.14 with JFFS2
+Message-ID: <20171217120503.GA3323@1wt.eu>
 MIME-Version: 1.0
-In-Reply-To: <20171215201955.2431195c@xps13>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -46,58 +19,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Miquel
->>> I am very sorry for the delay but it took me some time to figure a
->>> way to reproduce your situation until I started doing the exact
->>> sequence I asked you to follow. It turns out there was a nasty error
->>> in the parser so you could not observe the last blocks of your chip
->>> because I messed up with high addresses.
->> Fantastic always nice to be able to reproduce the issue. Glad to be
->> able to help :-)
->>
->>> I updated the Github branch [1], can you rebase on top of it? I think
->>> this time we should get something :)
->> I just did a quick boot with the new commits, and the kernel is able
->> to find the bbt table :-)
-> Good ! :-)
->
-> So with nand-ecc-mode = "none" + on-flash-bbt, there is no more issue,
-> right?
-No more issue with reading the bbt :-)
->
->> I also tried booting with ECC enabled and with that enabled the
->> driver is unable to read the bbt and marked all blocks bad.
-> And if I understand correctly, if you remove nand-ecc-mode = "none" (or
-> set it to "hw"), the kernel fails to find the BBT, that is right?
-Yes.
->
-> As I was not expecting such a quick answer, I did push another patch
-> after sending my email that fixes an issue in mtdcore.c, please check
-> you have it (there are a few "fixup!" patches, and on top of them you
-> must find one which is a well-formatted patch about
-> mtd_check_oob_ops()).
-I have rebased on top of 9aee88a618f8 mtd: Fix mtd_check_oob_ops()
->
-> I learned that today: to get a prompt while all blocks are bad, you can
-> add:
->
->      chip->options |= NAND_SKIP_BBTSCAN;
->
-> Before nand_scan_tail().
->
-> If you can reach a prompt with the failing configuration and when you
-> will have the time, I will welcome a dump of the same area as before
-> so we will try to understand what is wrong now ! :)
-Nice one, a lot easier to read whats happens
+Hello,
 
-nanddump of BBT without ECC enabled:
-https://gist.github.com/anonymous/627e5be058ed93c106d61641f6aa5da0
+I recently bought a Linksys WRT1900ACS which hosts an Armada 385 and a
+NAND flash. While I could get OpenWRT to work flawlessly on it using
+kernel 4.4, mainline 4.14.6 fails with a lot of such messages :
 
-nanddump of BBT with ECC enabled:
-https://gist.github.com/anonymous/76b3240f156c6547cf76d59f2aae49fe
-bootsnippet with ECC and NAND_SKIP_BBTSCAN enabled.
-https://gist.github.com/anonymous/0d9be95cd9c36ff006f7aa03e7c2cc85
+    pxa3xx-nand f10d0000.flash: Wait time out!!!
 
-Please let me know what traces you need to fix the ECC :-)
+Looking a bit closer, I found that it was triggered by my boot scripts
+detecting the JFFS2 signature (0x1985) and trying to mount mtdblock5. But
+under openwrt's kernel this partition mounts pretty fine.
 
-/Sean
+I tried to read both /dev/mtd5 and /dev/mtdblock5 it using cat then dd
+and got no issue either, so it seems that JFFS2 triggers a specific
+operation causing the flash (or driver) to fail. By the way, here's the
+device identification :
+
+[    0.638155] pxa3xx-nand f10d0000.flash: This platform can't do DMA on this device
+[    0.644661] nand: device found, Manufacturer ID: 0x01, Chip ID: 0xf1
+[    0.649732] nand: AMD/Spansion S34ML01G2
+[    0.652369] nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+[    0.658662] pxa3xx-nand f10d0000.flash: ECC strength 16, ECC step size 2048
+
+I found a few threads on the net where people were changing the timeout
+in the driver, and OpenWRT has this larger timeout, so naturally I thought
+it was the way to fix it and I tried, but surprizingly nothing changed at
+all.
+
+I found a long troubleshooting session in the list's archives where
+CONFIG_PREEMPT had to be enabled to work around the problem here :
+
+   https://patchwork.ozlabs.org/patch/566837/
+
+So I tried to enable it as well but it didn't change anything for me.
+
+I enabled Robert's readl/writel debug traces and have added some messages
+at the entrance and exit of every single function in the driver to try to
+spot a bit more of it. I've placed the traces there :
+
+   http://1wt.eu/wrt1900acs/
+
+(Please note that the config above doesn't have PREEMPT enabled but it
+matches the kernel used to produce the dumps there). Also you'll notice
+in the config that I added the out-of-tree mwlwifi driver; I did it late
+in the evening after I spent my whole day trying to fix the NAND issue,
+so it's irrelevant. However if some prefer that I re-run traces without
+it I will.
+
+I purposely split the trace in two steps : one before trying to mount the
+JFFS2 fs, and the second one during and after the mount attempt. I also
+took another trace with JFFS2 debuging enabled in case that helps.
+
+I noticed that timeouts always occur after such a sequence :
+
+  > pxa3xx_nand_irq:845
+  pxa3xx-nand f10d0000.flash: pxa3xx_nand_irq():854 nand_readl(0x0014) = 0x2
+  < pxa3xx_nand_irq:932
+  < pxa3xx_nand_irq:933
+  > pxa3xx_nand_irq_thread:829
+  > handle_data_pio:728
+  > drain_fifo:693
+  < drain_fifo:723
+  > drain_fifo:693
+  < drain_fifo:723
+  < handle_data_pio:761
+  pxa3xx-nand f10d0000.flash: pxa3xx_nand_irq_thread():833 nand_writel(0x6, 0x0014)
+  < pxa3xx_nand_irq_thread:835
+
+So in short we enter pxa3xx_nand_irq, read register 0x0014 and find 2,
+then later we enter pxa3xx_nand_irq_thread(), handle_data_pio(), leave
+it, and issue a nand_writel() to register 0x0014 and leave
+pxa3xx_nand_irq_thread(). And at this point we wait till the timeout
+strikes (apparently the CHIP_DELAY_TIMEOUT since I'm observing 2 seconds
+and that's what it's set to).
+
+Interestingly, this morning I left the machine hung like this and came
+back 20 minutes later to find that mtdblock5 had finally been successfully
+mounted (1322 seconds later precisely). I don't know if something suddenly
+decided to work, or if an operation is performed 650 times and waits for
+this 2 second timeout for each operation. I've left it running again to
+see if it happens again.
+
+I have not tested 4.15-rc3 on it yet, though the only change to the
+driver is irrelevant to this issue. I also didn't go back to older
+kernels as I'm not sure when this machine was supposed to start to be
+supported (the DTS came in 4.12 but given that people started to complain
+about the timeout in openwrt's 4.4, it's not clear).
+
+At this point I'm out of ideas so if anyone wants me to test specific
+config options to report more info, or to test patches, they're welcome!
+There's no emergency for me to get this machine to work properly, it's
+expected to replace my current one, but only once it works, so in the
+mean time it's more of a development platform lying on my desk :-)
+
+Thanks,
+Willy
