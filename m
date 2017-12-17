@@ -1,15 +1,15 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eQYr6-00030E-Fv
- for linux-mtd@lists.infradead.org; Sun, 17 Dec 2017 13:19:51 +0000
-Date: Sun, 17 Dec 2017 14:19:16 +0100
+ id 1eQZJJ-0005Cw-W6
+ for linux-mtd@lists.infradead.org; Sun, 17 Dec 2017 13:49:00 +0000
+Date: Sun, 17 Dec 2017 14:48:34 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
 Cc: Miquel RAYNAL <miquel.raynal@free-electrons.com>,
  ezequiel.garcia@free-electrons.com, linux-mtd@lists.infradead.org, "Kasper
  Revsbech (KREV)" <krev@triax.com>
 Subject: Re: [BUG] pxa3xx: wait time out when scanning for bb
-Message-ID: <20171217141916.04e377ab@bbrezillon>
+Message-ID: <20171217144834.0201ba61@bbrezillon>
 In-Reply-To: <7892957c-273b-ea58-1d50-b35e70c69e02@prevas.dk>
 References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
  <20171211150200.51c7f3b4@xps13> <20171211150929.722a361a@xps13>
@@ -43,8 +43,6 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-
-Hi Sean,
 
 On Sun, 17 Dec 2017 12:56:01 +0100
 Sean Nyekjaer <sean.nyekjaer@prevas.dk> wrote:
@@ -98,36 +96,14 @@ Sean Nyekjaer <sean.nyekjaer@prevas.dk> wrote:
 > 
 > nanddump of BBT with ECC enabled:
 > https://gist.github.com/anonymous/76b3240f156c6547cf76d59f2aae49fe
+
+Another test that is worth doing: try to dump with ECC enabled:
+
+# nanddump -op -l 0x800 --bb=dumpbad -s 0xYYYYYYY /dev/mtd1
+
 > bootsnippet with ECC and NAND_SKIP_BBTSCAN enabled.
 > https://gist.github.com/anonymous/0d9be95cd9c36ff006f7aa03e7c2cc85
 > 
 > Please let me know what traces you need to fix the ECC :-)
-
-The dumps look good (at least, the BBT pattern is correct, we have the
-number of ECC bytes we expect and they are where we expect them).
-
-My gut feeling is that something is wrong with ECC (or something related
-to ECC) in u-boot.
-
-Can you try to let Linux create the BBT on its own and dump the last
-block as you did previously?
-
-So, to sum-up
-
-1/ put the following in your DT
-
-	nand-ecc-mode = "hw";
-	nand-on-flash-bbt;
-
-2/ scrub the NAND from u-boot and make sure you don't reboot after that,
-   so that u-boot can't recreate its own BBT.
-
-3/ Let Linux boot and dump the pages (in raw mode) where BBTs created by
-Linux are supposed to be (should be the same addresses as before)
-
-If we end up with different ECC bytes than what u-boot produces then
-there's a mismatch somewhere.
-
-Regards,
-
-Boris
+> 
+> /Sean
