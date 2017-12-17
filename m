@@ -1,23 +1,42 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eQUYM-0002TZ-KD
- for linux-mtd@lists.infradead.org; Sun, 17 Dec 2017 08:44:13 +0000
-Date: Sun, 17 Dec 2017 09:43:45 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Richard Weinberger
- <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: cfi: convert inline functions to macros
-Message-ID: <20171217094345.3d327c54@bbrezillon>
-In-Reply-To: <b109f253-ac22-82b0-6716-6a069eb3e4f2@gmail.com>
-References: <20171011135419.3492681-1-arnd@arndb.de>
- <b109f253-ac22-82b0-6716-6a069eb3e4f2@gmail.com>
+Received: from mail02.prevas.se ([62.95.78.10])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eQXaJ-0001c6-Q9
+ for linux-mtd@lists.infradead.org; Sun, 17 Dec 2017 11:58:26 +0000
+Subject: Re: [BUG] pxa3xx: wait time out when scanning for bb
+To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+Cc: ezequiel.garcia@free-electrons.com, linux-mtd@lists.infradead.org,
+ "Kasper Revsbech (KREV)" <krev@triax.com>,
+ Boris Brezillon <Boris.Brezillon@free-electrons.com>
+References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
+ <a2502de6-b4c7-befb-6a08-de976be85d17@prevas.dk>
+ <f70d94b8-5fc7-d091-9a5c-77597d2b7aa4@prevas.dk>
+ <20171211150200.51c7f3b4@xps13> <20171211150929.722a361a@xps13>
+ <a5fc7dea-a043-370c-b18a-eeb8f1f067f4@prevas.dk>
+ <20171212095119.475de032@xps13>
+ <727489cf-d1f6-8777-c6f4-981127657c9d@prevas.dk>
+ <20171212111227.4946cc15@xps13>
+ <e9e6bf70-918f-b750-5893-55744dc34882@prevas.dk>
+ <20171212120806.7c31463f@xps13>
+ <a0267c71-4333-7dd4-dcf4-14aced37f8f9@prevas.dk>
+ <20171212123523.48185f21@xps13>
+ <75bd6b87-12ed-4003-262a-b1bd03a62cbd@prevas.dk>
+ <20171212134706.49f3c57e@xps13>
+ <2f16ce90-6e00-c95f-7a81-5603d9acf574@prevas.dk>
+ <20171212143512.3b62d3f5@xps13>
+ <48EEEC1C-954B-42E5-92BE-A00AD97A5789@prevas.dk>
+ <20171212192327.57b1fa80@xps13>
+ <9f578b28-ef3b-8e84-0a8c-b70c494efff0@prevas.dk>
+ <20171213094105.73646658@xps13> <20171215182512.2449af9e@xps13>
+ <45D7D798-BA86-41CD-AB56-156C1BD7FCC4@prevas.dk>
+ <20171215201955.2431195c@xps13>
+From: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
+Message-ID: <7892957c-273b-ea58-1d50-b35e70c69e02@prevas.dk>
+Date: Sun, 17 Dec 2017 12:56:01 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20171215201955.2431195c@xps13>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,55 +46,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marek,
+Hi Miquel
+>>> I am very sorry for the delay but it took me some time to figure a
+>>> way to reproduce your situation until I started doing the exact
+>>> sequence I asked you to follow. It turns out there was a nasty error
+>>> in the parser so you could not observe the last blocks of your chip
+>>> because I messed up with high addresses.
+>> Fantastic always nice to be able to reproduce the issue. Glad to be
+>> able to help :-)
+>>
+>>> I updated the Github branch [1], can you rebase on top of it? I think
+>>> this time we should get something :)
+>> I just did a quick boot with the new commits, and the kernel is able
+>> to find the bbt table :-)
+> Good ! :-)
+>
+> So with nand-ecc-mode = "none" + on-flash-bbt, there is no more issue,
+> right?
+No more issue with reading the bbt :-)
+>
+>> I also tried booting with ECC enabled and with that enabled the
+>> driver is unable to read the bbt and marked all blocks bad.
+> And if I understand correctly, if you remove nand-ecc-mode = "none" (or
+> set it to "hw"), the kernel fails to find the BBT, that is right?
+Yes.
+>
+> As I was not expecting such a quick answer, I did push another patch
+> after sending my email that fixes an issue in mtdcore.c, please check
+> you have it (there are a few "fixup!" patches, and on top of them you
+> must find one which is a well-formatted patch about
+> mtd_check_oob_ops()).
+I have rebased on top of 9aee88a618f8 mtd: Fix mtd_check_oob_ops()
+>
+> I learned that today: to get a prompt while all blocks are bad, you can
+> add:
+>
+>      chip->options |= NAND_SKIP_BBTSCAN;
+>
+> Before nand_scan_tail().
+>
+> If you can reach a prompt with the failing configuration and when you
+> will have the time, I will welcome a dump of the same area as before
+> so we will try to understand what is wrong now ! :)
+Nice one, a lot easier to read whats happens
 
-On Wed, 11 Oct 2017 23:34:33 +0200
-Marek Vasut <marek.vasut@gmail.com> wrote:
+nanddump of BBT without ECC enabled:
+https://gist.github.com/anonymous/627e5be058ed93c106d61641f6aa5da0
 
-> On 10/11/2017 03:54 PM, Arnd Bergmann wrote:
-> > The map_word_() functions, dating back to linux-2.6.8, try to perform
-> > bitwise operations on a 'map_word' structure. This may have worked
-> > with compilers that were current then (gcc-3.4 or earlier), but end
-> > up being rather inefficient on any version I could try now (gcc-4.4 or
-> > higher). Specifically we hit a problem analyzed in gcc PR81715 where we
-> > fail to reuse the stack space for local variables.
-> > 
-> > This can be seen immediately in the stack consumption for
-> > cfi_staa_erase_varsize() and other functions that (with CONFIG_KASAN)
-> > can be up to 2200 bytes. Changing the inline functions into macros brings
-> > this down to 1280 bytes.  Without KASAN, the same problem exists, but
-> > the stack consumption is lower to start with, my patch shrinks it from
-> > 920 to 496 bytes on with arm-linux-gnueabi-gcc-5.4, and saves around
-> > 1KB in .text size for cfi_cmdset_0020.c, as it avoids copying map_word
-> > structures for each call to one of these helpers.
-> > 
-> > With the latest gcc-8 snapshot, the problem is fixed in upstream gcc,
-> > but nobody uses that yet, so we should still work around it in mainline
-> > kernels and probably backport the workaround to stable kernels as well.
-> > We had a couple of other functions that suffered from the same gcc bug,
-> > and all of those had a simpler workaround involving dummy variables
-> > in the inline function. Unfortunately that did not work here, the
-> > macro hack was the best I could come up with.
-> > 
-> > It would also be helpful to have someone to a little performance testing
-> > on the patch, to see how much it helps in terms of CPU utilitzation.
-> > 
-> > Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81715
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>  
-> 
-> Don't you lose type-checking with this conversion to macros ?
-> 
+nanddump of BBT with ECC enabled:
+https://gist.github.com/anonymous/76b3240f156c6547cf76d59f2aae49fe
+bootsnippet with ECC and NAND_SKIP_BBTSCAN enabled.
+https://gist.github.com/anonymous/0d9be95cd9c36ff006f7aa03e7c2cc85
 
-Yes, we loose strict type checking, but if you look at the code, you'll
-see that the macros do (valN).x[i], so, if valN is not a struct or
-a union containing a field named x, the compiler will complain. That
-should save us from devs passing random arguments to those macros.
+Please let me know what traces you need to fix the ECC :-)
 
-Anyway, this code is not seeing a lot of changes lately, so I wouldn't
-be so worried by the lack of strict type-checking implied by this
-transition to macros. 
-
-Regards,
-
-Boris
+/Sean
