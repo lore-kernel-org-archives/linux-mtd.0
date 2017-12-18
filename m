@@ -1,16 +1,12 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eQsw6-0003Zp-Bo
- for linux-mtd@lists.infradead.org; Mon, 18 Dec 2017 10:46:20 +0000
-Date: Mon, 18 Dec 2017 11:45:46 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Sean =?UTF-8?B?Tnlla2rDpnI=?= <sean.nyekjaer@prevas.dk>
-Cc: Miquel RAYNAL <miquel.raynal@free-electrons.com>,
+Received: from mail02.prevas.se ([62.95.78.10])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eQsyK-0004BN-LD
+ for linux-mtd@lists.infradead.org; Mon, 18 Dec 2017 10:48:38 +0000
+Subject: Re: [BUG] pxa3xx: wait time out when scanning for bb
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+CC: Miquel RAYNAL <miquel.raynal@free-electrons.com>,
  <ezequiel.garcia@free-electrons.com>, <linux-mtd@lists.infradead.org>,
  "Kasper Revsbech (KREV)" <krev@triax.com>
-Subject: Re: [BUG] pxa3xx: wait time out when scanning for bb
-Message-ID: <20171218114546.67d0b44f@bbrezillon>
-In-Reply-To: <d6dce58e-49e5-3a21-2e37-415ec7b0cb95@prevas.dk>
 References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
  <2f16ce90-6e00-c95f-7a81-5603d9acf574@prevas.dk>
  <20171212143512.3b62d3f5@xps13>
@@ -33,9 +29,15 @@ References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
  <58014e55-ad67-5fcb-a2fb-947c17083ddb@prevas.dk>
  <20171218111919.4309cea4@xps13>
  <d6dce58e-49e5-3a21-2e37-415ec7b0cb95@prevas.dk>
+ <20171218114546.67d0b44f@bbrezillon>
+From: =?UTF-8?Q?Sean_Nyekj=c3=a6r?= <sean.nyekjaer@prevas.dk>
+Message-ID: <7986bc6b-c723-d7c1-5b7a-5ca51702786f@prevas.dk>
+Date: Mon, 18 Dec 2017 11:48:16 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20171218114546.67d0b44f@bbrezillon>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -45,37 +47,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sean,
+Hi Boris
+>> Will this be ready for 4.16?
+> If no one is complaining about regressions with the new driver, then
+> yes, it will be queued to the nand/next branch targeting 4.16.
+>
+>> What would you recommend, running with these patches
+>> on top af 4.14 LTS or just stick with the pxa3xx driver?
+> Depends whether the old driver works fine on your board or not.
+> Backporting is likely to be painful because of the ->exec_op()
+> infrastructure which was introduced recently, but if it solves issues
+> you had with the old driver, then it's worth it.
+Your newly submitted patch fixes our issues :-)
+[PATCH] mtd: nand: pxa3xx: Fix READOOB implementation
 
-On Mon, 18 Dec 2017 11:26:29 +0100
-Sean Nyekj=C3=A6r <sean.nyekjaer@prevas.dk> wrote:
-
-> Hi Miquel
->=20
-> > Ok that should be fine!
-> >
-> > I have added another fix just now for the same problem on write side.
-> >
-> > I did not spot all of that because I only worked with NAND chips
-> > bigger than 2k, where read/writes are split.
-> >
-> > Thank you very much for your time. =20
-> You are welcome :-)
-> You could add me as a Tested-By ;-)
->=20
-> Will this be ready for 4.16?
-
-If no one is complaining about regressions with the new driver, then
-yes, it will be queued to the nand/next branch targeting 4.16.
-
-> What would you recommend, running with these patches
-> on top af 4.14 LTS or just stick with the pxa3xx driver?
-
-Depends whether the old driver works fine on your board or not.
-Backporting is likely to be painful because of the ->exec_op()
-infrastructure which was introduced recently, but if it solves issues
-you had with the old driver, then it's worth it.
-
-Regards,
-
-Boris
+Thanks
+/Sean
