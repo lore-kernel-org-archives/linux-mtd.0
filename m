@@ -1,25 +1,38 @@
-Date: Mon, 18 Dec 2017 08:06:17 +0100
-From: Willy Tarreau <w@1wt.eu>
-To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: pxa3xx_nand times out in 4.14 with JFFS2
-Message-ID: <20171218070617.GA16559@1wt.eu>
-References: <20171217150043.GA1403@1wt.eu>
- <CAAEAJfD47bGTSppEqcRszjAgBUjiCevmdYLKfsQTPYMcVu8VDA@mail.gmail.com>
- <20171217162342.GA1833@1wt.eu> <20171217190746.2a61232c@bbrezillon>
- <20171217190056.GA1107@1wt.eu>
- <CAAEAJfArtxcWgcjHAb__3BQxWEBgWU8uWtHGYETc-m9eUs91nA@mail.gmail.com>
- <20171217211650.GA6815@1wt.eu> <20171217222611.59f9031b@bbrezillon>
- <20171217224617.1f9b8b84@xps13> <20171218063715.GA20461@1wt.eu>
+Received: from smtp10.smtpout.orange.fr ([80.12.242.132]
+ helo=smtp.smtpout.orange.fr)
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eQpbQ-0001yx-4o
+ for linux-mtd@lists.infradead.org; Mon, 18 Dec 2017 07:12:46 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Miquel Raynal <miquel.raynal@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Jason Cooper <jason@lakedaemon.net>,
+ Andrew Lunn <andrew@lunn.ch>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Russell King <linux@armlinux.org.uk>, Daniel Mack <daniel@zonque.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>, Eric Miao <eric.y.miao@gmail.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Antoine Tenart <antoine.tenart@free-electrons.com>,
+ Nadav Haklai <nadavh@marvell.com>, Ofer Heifetz <oferh@marvell.com>,
+ Hanna Hawa <hannah@marvell.com>, Neta Zur Hershkovits <neta@marvell.com>
+Subject: Re: [PATCH 00/12] Marvell NAND controller rework with ->exec_op()
+References: <20171207201814.30411-1-miquel.raynal@free-electrons.com>
+ <20171214070930.0b885f6d@bbrezillon>
+Date: Mon, 18 Dec 2017 08:11:35 +0100
+In-Reply-To: <20171214070930.0b885f6d@bbrezillon> (Boris Brezillon's message
+ of "Thu, 14 Dec 2017 07:09:30 +0100")
+Message-ID: <877etkecig.fsf@belgarion.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20171218063715.GA20461@1wt.eu>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,67 +42,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Dec 18, 2017 at 07:37:15AM +0100, Willy Tarreau wrote:
-> > As Boris said, we would really welcome a test of this branch, because
-> > you almost have the same setup as Sean in the thread "pxa3xx: wait time
-> > out when scanning for bb" and I am running out of explanation for his
-> > problem unless it is related to U-Boot. So if you could try booting
-> > with and without the on-flash-bbt property and report whether it fails
-> > or not it would be of great help!
-> 
-> Yes, I noticed your work mentionned in some of the threads I've read
-> during my troubleshooting session and considered giving it a try. I'll
-> probably do this next week-end.
+Boris Brezillon <boris.brezillon@free-electrons.com> writes:
 
-Finally I figured the test was quick enough and could help you, so I
-built and booted it, I'm getting this at boot :
+>> Robert, it would be great if you could also do more testing on PXA and
+>> validate this driver. If needed, a branch ready to be tested is
+>> available at [3]. It is based on nand/next and has all the changes
+>> brought by the previously mentionned series as well as this one.
+>
+> Robert, do you think you'll have some time to test Miquel's branch on
+> your PXA boards? Miquel already tested on one of these boards (CM-X300),
+> but we'd like to have other testers. Also feel free to review the
+> driver if have the time.
+>
+> Thanks,
+>
+> Boris
 
-marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal
-nand_bbt: error while writing BBT block -110
-marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal
-marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal
-nand_bbt: error -110 while marking block 1023 bad
-marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal
-nand_bbt: error while writing BBT block -110
-marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal
-marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal
-nand_bbt: error -110 while marking block 1022 bad
-marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal
-nand_bbt: error while writing BBT block -110
-marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal
-marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal
-nand_bbt: error -110 while marking block 1021 bad
-marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal
-nand_bbt: error while writing BBT block -110
-marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal
-marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal
-nand_bbt: error -110 while marking block 1020 bad
-marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal
-nand_bbt: error while writing BBT block -110
-marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal
-marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal
-nand_bbt: error -110 while marking block 1019 bad
-marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal
-nand_bbt: error while writing BBT block -110
-marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal
-marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal
-nand_bbt: error -110 while marking block 1018 bad
-marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal
-nand_bbt: error while writing BBT block -110
-marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal
-marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal
-nand_bbt: error -110 while marking block 1017 bad
-marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal
-nand_bbt: error while writing BBT block -110
-marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal
-marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal
-nand_bbt: error -110 while marking block 1016 bad
-No space left to write bad block table
-nand_bbt: error while writing bad block table -28
-marvell-nfc f10d0000.nand-controller: nand_scan_tail failed: -28
-marvell-nfc: probe of f10d0000.nand-controller failed with error -28
+Hi Boris and Miquel,
 
-Then no MTD appears in /proc/mtd.
+I have applied the whole serie to linux-next yesterday.
 
-Hoping this helps,
-Willy
+A boot attempt on my zylonite with my old defconfig (with the new Marvell NAND
+config activated) yields to :
+ - this message
+[    3.136818] marvell-nfc pxa3xx-nand: could not identify the nand chip
+[    3.143874] marvell-nfc: probe of pxa3xx-nand failed with error -22
+ - then my board hangs
+
+Is there something to be done to improve the trace level so that you can guess
+what's happening ?
+
+Cheers.
+
+--
+Robert
