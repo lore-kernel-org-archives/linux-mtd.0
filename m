@@ -1,15 +1,15 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eQrE2-0002t6-IZ
- for linux-mtd@lists.infradead.org; Mon, 18 Dec 2017 08:56:45 +0000
-Date: Mon, 18 Dec 2017 09:56:09 +0100
-From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+ id 1eQrG1-0003YU-23
+ for linux-mtd@lists.infradead.org; Mon, 18 Dec 2017 08:58:47 +0000
+Date: Mon, 18 Dec 2017 09:57:57 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Sean =?UTF-8?B?Tnlla2rDpnI=?= <sean.nyekjaer@prevas.dk>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+Cc: Miquel RAYNAL <miquel.raynal@free-electrons.com>,
  <ezequiel.garcia@free-electrons.com>, <linux-mtd@lists.infradead.org>,
  "Kasper Revsbech (KREV)" <krev@triax.com>
 Subject: Re: [SPAM] Re: [BUG] pxa3xx: wait time out when scanning for bb
-Message-ID: <20171218095609.30408c57@xps13>
+Message-ID: <20171218095758.245cb170@bbrezillon>
 In-Reply-To: <4e25e578-f0a6-89a0-b6f8-98bda37d12de@prevas.dk>
 References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
  <e9e6bf70-918f-b750-5893-55744dc34882@prevas.dk>
@@ -44,8 +44,6 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-
-Hi Sean,
 
 On Mon, 18 Dec 2017 07:23:04 +0100
 Sean Nyekj=C3=A6r <sean.nyekjaer@prevas.dk> wrote:
@@ -89,8 +87,7 @@ Sean Nyekj=C3=A6r <sean.nyekjaer@prevas.dk> wrote:
 > >>>>>>> If you can reach a prompt with the failing configuration and
 > >>>>>>> when =20
 > >>> you =20
-> >>>>>>> will have the time, I will welcome a dump of the same area
-> >>>>>>> as =20
+> >>>>>>> will have the time, I will welcome a dump of the same area as =20
 > >>> before =20
 > >>>>>>> so we will try to understand what is wrong now ! :) =20
 > >>>>>> Nice one, a lot easier to read whats happens
@@ -107,16 +104,14 @@ Sean Nyekj=C3=A6r <sean.nyekjaer@prevas.dk> wrote:
 > >>>>> The dumps look good (at least, the BBT pattern is correct, we
 > >>>>> have =20
 > >>> the =20
-> >>>>> number of ECC bytes we expect and they are where we expect
-> >>>>> them).
+> >>>>> number of ECC bytes we expect and they are where we expect them).
 > >>>>>
 > >>>>> My gut feeling is that something is wrong with ECC (or
 > >>>>> something =20
 > >>> related =20
 > >>>>> to ECC) in u-boot.
 > >>>>>
-> >>>>> Can you try to let Linux create the BBT on its own and dump
-> >>>>> the =20
+> >>>>> Can you try to let Linux create the BBT on its own and dump the =20
 > >>> last =20
 > >>>>> block as you did previously?
 > >>>>>
@@ -153,13 +148,13 @@ Sean Nyekj=C3=A6r <sean.nyekjaer@prevas.dk> wrote:
 > >>> driver =20
 > >>>> (with ecc enabled) thinks all the freshly scrubbed blocks are
 > >>>> bad. =20
-> >>> Ok, now I really need the dump without the -n option. It seems
-> >>> that dumping in non-raw mode does not return the expected value.
+> >>> Ok, now I really need the dump without the -n option. It seems that
+> >>> dumping in non-raw mode does not return the expected value.
 > >>>    =20
 > >> How can I get the driver to write a bbt when it have marked all the
 > >> blocks bad? =20
-> > I think the easier way is to let U-Boot do it. So I guess you'll
-> > have to reboot the board after scrubbing.
+> > I think the easier way is to let U-Boot do it. So I guess you'll have
+> > to reboot the board after scrubbing.
 > > =20
 > >> So I do a trace, without the -n option, with ecc enabled and
 > >> NAND_SKIP_BBTSCAN set? Is that what you need? =20
@@ -167,12 +162,10 @@ Sean Nyekj=C3=A6r <sean.nyekjaer@prevas.dk> wrote:
 > > =20
 > https://gist.github.com/anonymous/08049fbb46bf6df2d24a07aab8783833
 
-This is really helpful. It shows the driver is the problem. I don't
-know yet why it reads the NAND status instead of the actual data at
-this moment. I am looking into it.
+Can you try to do the same, but this time without the -o option:
 
-I added one fixup in my github branch that could possibly help, could
-you give it a try while I am going deeper in my research?
+# nanddump -p -l 0x800 --bb=3Ddumpbad -s 0xFEC0000 /dev/mtd1
 
-Thank you,
-Miqu=C3=A8l
+Thanks,
+
+Boris
