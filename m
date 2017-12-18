@@ -1,28 +1,43 @@
-Received: from mail-oi0-x244.google.com ([2607:f8b0:4003:c06::244])
- by casper.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eQrXj-0001Tg-H9
- for linux-mtd@lists.infradead.org; Mon, 18 Dec 2017 09:17:05 +0000
-Received: by mail-oi0-x244.google.com with SMTP id u193so10146595oie.1
- for <linux-mtd@lists.infradead.org>; Mon, 18 Dec 2017 01:16:43 -0800 (PST)
+Received: from mail02.prevas.se ([62.95.78.10])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eQrh3-0003sM-GE
+ for linux-mtd@lists.infradead.org; Mon, 18 Dec 2017 09:26:47 +0000
+Subject: Re: [SPAM] Re: [BUG] pxa3xx: wait time out when scanning for bb
+To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+CC: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ <ezequiel.garcia@free-electrons.com>, <linux-mtd@lists.infradead.org>,
+ "Kasper Revsbech (KREV)" <krev@triax.com>
+References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
+ <e9e6bf70-918f-b750-5893-55744dc34882@prevas.dk>
+ <20171212120806.7c31463f@xps13>
+ <a0267c71-4333-7dd4-dcf4-14aced37f8f9@prevas.dk>
+ <20171212123523.48185f21@xps13>
+ <75bd6b87-12ed-4003-262a-b1bd03a62cbd@prevas.dk>
+ <20171212134706.49f3c57e@xps13>
+ <2f16ce90-6e00-c95f-7a81-5603d9acf574@prevas.dk>
+ <20171212143512.3b62d3f5@xps13>
+ <48EEEC1C-954B-42E5-92BE-A00AD97A5789@prevas.dk>
+ <20171212192327.57b1fa80@xps13>
+ <9f578b28-ef3b-8e84-0a8c-b70c494efff0@prevas.dk>
+ <20171213094105.73646658@xps13> <20171215182512.2449af9e@xps13>
+ <45D7D798-BA86-41CD-AB56-156C1BD7FCC4@prevas.dk>
+ <20171215201955.2431195c@xps13>
+ <7892957c-273b-ea58-1d50-b35e70c69e02@prevas.dk>
+ <20171217141916.04e377ab@bbrezillon>
+ <461b45a8-de1f-0b54-567f-001ea30ee927@prevas.dk>
+ <20171217230032.30853780@bbrezillon>
+ <D17E776C-669D-4C40-B673-CBE7CE5D08F6@prevas.dk>
+ <20171217231952.74637510@xps13>
+ <4e25e578-f0a6-89a0-b6f8-98bda37d12de@prevas.dk>
+ <20171218095609.30408c57@xps13>
+From: =?UTF-8?Q?Sean_Nyekj=c3=a6r?= <sean.nyekjaer@prevas.dk>
+Message-ID: <a60415ac-061a-8177-dff8-da16727a236a@prevas.dk>
+Date: Mon, 18 Dec 2017 10:26:19 +0100
 MIME-Version: 1.0
-Sender: arndbergmann@gmail.com
-In-Reply-To: <2276602.9klaxVRupl@blindfold>
-References: <20171011135419.3492681-1-arnd@arndb.de>
- <2276602.9klaxVRupl@blindfold>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 18 Dec 2017 10:16:41 +0100
-Message-ID: <CAK8P3a36m56q08L+ORRfMdSBMKCefWpwuCF1viA2SGZWKvscmw@mail.gmail.com>
-Subject: Re: [PATCH] mtd: cfi: convert inline functions to macros
-To: Richard Weinberger <richard@nod.at>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- "# 3.4.x" <stable@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20171218095609.30408c57@xps13>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,55 +47,132 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Dec 17, 2017 at 9:34 PM, Richard Weinberger <richard@nod.at> wrote:
-> Am Mittwoch, 11. Oktober 2017, 15:54:10 CET schrieb Arnd Bergmann:
->> The map_word_() functions, dating back to linux-2.6.8, try to perform
->> bitwise operations on a 'map_word' structure. This may have worked
->> with compilers that were current then (gcc-3.4 or earlier), but end
->> up being rather inefficient on any version I could try now (gcc-4.4 or
->> higher). Specifically we hit a problem analyzed in gcc PR81715 where we
->> fail to reuse the stack space for local variables.
->>
->> This can be seen immediately in the stack consumption for
->> cfi_staa_erase_varsize() and other functions that (with CONFIG_KASAN)
->> can be up to 2200 bytes. Changing the inline functions into macros brings
->> this down to 1280 bytes.  Without KASAN, the same problem exists, but
->> the stack consumption is lower to start with, my patch shrinks it from
->> 920 to 496 bytes on with arm-linux-gnueabi-gcc-5.4, and saves around
->> 1KB in .text size for cfi_cmdset_0020.c, as it avoids copying map_word
->> structures for each call to one of these helpers.
->>
->> With the latest gcc-8 snapshot, the problem is fixed in upstream gcc,
->> but nobody uses that yet, so we should still work around it in mainline
->> kernels and probably backport the workaround to stable kernels as well.
->> We had a couple of other functions that suffered from the same gcc bug,
->> and all of those had a simpler workaround involving dummy variables
->> in the inline function. Unfortunately that did not work here, the
->> macro hack was the best I could come up with.
->>
->> It would also be helpful to have someone to a little performance testing
->> on the patch, to see how much it helps in terms of CPU utilitzation.
->>
->> Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81715
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Hi Miquel
+>>>>>>>>>> I also tried booting with ECC enabled and with that enabled
+>>>>>>>>>> the driver is unable to read the bbt and marked all blocks
+>>>>>>>>>> bad.
+>>>>>>>>> And if I understand correctly, if you remove nand-ecc-mode =
+>>>>> "none" (or
+>>>>>>>>> set it to "hw"), the kernel fails to find the BBT, that is
+>>>>>>>>> right?
+>>>>>       
+>>>>>>>> Yes.
+>>>>>>>>> As I was not expecting such a quick answer, I did push
+>>>>>>>>> another
+>>>>> patch
+>>>>>>>>> after sending my email that fixes an issue in mtdcore.c,
+>>>>>>>>> please
+>>>>> check
+>>>>>>>>> you have it (there are a few "fixup!" patches, and on top of
+>>>>>>>>> them
+>>>>> you
+>>>>>>>>> must find one which is a well-formatted patch about
+>>>>>>>>> mtd_check_oob_ops()).
+>>>>>>>> I have rebased on top of 9aee88a618f8 mtd: Fix
+>>>>>>>> mtd_check_oob_ops()
+>>>>>       
+>>>>>>>>> I learned that today: to get a prompt while all blocks are
+>>>>>>>>> bad,
+>>>>> you can
+>>>>>>>>> add:
+>>>>>>>>>
+>>>>>>>>>         chip->options |= NAND_SKIP_BBTSCAN;
+>>>>>>>>>
+>>>>>>>>> Before nand_scan_tail().
+>>>>>>>>>
+>>>>>>>>> If you can reach a prompt with the failing configuration and
+>>>>>>>>> when
+>>>>> you
+>>>>>>>>> will have the time, I will welcome a dump of the same area
+>>>>>>>>> as
+>>>>> before
+>>>>>>>>> so we will try to understand what is wrong now ! :)
+>>>>>>>> Nice one, a lot easier to read whats happens
+>>>>>>>>
+>>>>>>>> nanddump of BBT without ECC enabled:
+>>>>>>>> https://gist.github.com/anonymous/627e5be058ed93c106d61641f6aa5da0
+>>>>>>>>
+>>>>>>>> nanddump of BBT with ECC enabled:
+>>>>>>>> https://gist.github.com/anonymous/76b3240f156c6547cf76d59f2aae49fe
+>>>>>>>> bootsnippet with ECC and NAND_SKIP_BBTSCAN enabled.
+>>>>>>>> https://gist.github.com/anonymous/0d9be95cd9c36ff006f7aa03e7c2cc85
+>>>>>>>>
+>>>>>>>> Please let me know what traces you need to fix the ECC :-)
+>>>>>>> The dumps look good (at least, the BBT pattern is correct, we
+>>>>>>> have
+>>>>> the
+>>>>>>> number of ECC bytes we expect and they are where we expect
+>>>>>>> them).
+>>>>>>>
+>>>>>>> My gut feeling is that something is wrong with ECC (or
+>>>>>>> something
+>>>>> related
+>>>>>>> to ECC) in u-boot.
+>>>>>>>
+>>>>>>> Can you try to let Linux create the BBT on its own and dump
+>>>>>>> the
+>>>>> last
+>>>>>>> block as you did previously?
+>>>>>>>
+>>>>>>> So, to sum-up
+>>>>>>>
+>>>>>>> 1/ put the following in your DT
+>>>>>>>
+>>>>>>> 	nand-ecc-mode = "hw";
+>>>>>>> 	nand-on-flash-bbt;
+>>>>>>>
+>>>>>>> 2/ scrub the NAND from u-boot and make sure you don't reboot
+>>>>>>> after
+>>>>> that,
+>>>>>>>       so that u-boot can't recreate its own BBT.
+>>>>>>>
+>>>>>>> 3/ Let Linux boot and dump the pages (in raw mode) where BBTs
+>>>>> created by
+>>>>>>> Linux are supposed to be (should be the same addresses as
+>>>>>>> before)
+>>>>>> Trace with nand scrub in uboot and ecc enabled:
+>>>>>> https://gist.github.com/anonymous/3ce389b9276fddbd46f59c89b99ee4ff
+>>>>>>
+>>>>>> Same as above with "chip->options |= NAND_SKIP_BBTSCAN;" in the
+>>>>> marvell
+>>>>>> nand driver
+>>>>>> https://gist.github.com/anonymous/3aed159b5a5ee22f27403fe79ba97400
+>>>>>>
+>>>>>> If I dump 0xFEC0000/0xFFC0000 or 0xFEE0000/0xFFE0000 (the bbt
+>>>>>> pages) they contain
+>>>>>> only 0xFF's as the kernel does not write to the blocks.
+>>>>>>
+>>>>>> To me it seem a little bit difficult to say why the new marvell
+>>>>>> nand
+>>>>> driver
+>>>>>> (with ecc enabled) thinks all the freshly scrubbed blocks are
+>>>>>> bad.
+>>>>> Ok, now I really need the dump without the -n option. It seems
+>>>>> that dumping in non-raw mode does not return the expected value.
+>>>>>      
+>>>> How can I get the driver to write a bbt when it have marked all the
+>>>> blocks bad?
+>>> I think the easier way is to let U-Boot do it. So I guess you'll
+>>> have to reboot the board after scrubbing.
+>>>   
+>>>> So I do a trace, without the -n option, with ecc enabled and
+>>>> NAND_SKIP_BBTSCAN set? Is that what you need?
+>>> It will be helpful, yes!
+>>>   
+>> https://gist.github.com/anonymous/08049fbb46bf6df2d24a07aab8783833
+> This is really helpful. It shows the driver is the problem. I don't
+> know yet why it reads the NAND status instead of the actual data at
+> this moment. I am looking into it.
 >
-> Acked-by: Richard Weinberger <richard@nod.at>
+> I added one fixup in my github branch that could possibly help, could
+> you give it a try while I am going deeper in my research?
+>
+Rebased on top of 8cec3f8653e0fe914d831f05cf91ab9face5c1a5
+The "print_req_error: I/O error, dev mtdblock1, sector 0" is gone
 
-Thanks!
+And what you did have apperently fixed the issue with ecc.
+The driver is reading the bbt uboot have written :-)
 
-> Marek, I know you are not super happy with this patch but IMHO this is the
-> solution with the least hassle.
-> While functions offer better type checking I think this functions are trivial
-> enough to exist as macros too.
-> Also forcing users to upgrade/fix their compilers is only possible in a
-> perfect world.
+https://gist.github.com/anonymous/4476819c081896e5e265b3282db52e46
 
-Right. To clarify, this is a potential security issue, as it might be used to
-construct a stack overflow to cause privilege escalation when combined
-with some other vulnerabilities. I'd definitely want this backported to
-stable kernels as a precaution, and I'm preparing a patch to warn
-about this kind of problem again in 'allmodconfig' kernels that
-currently disable the warning on arm64 and x86.
-
-       Arnd
+/Sean
