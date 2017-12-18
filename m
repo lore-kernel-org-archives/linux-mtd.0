@@ -1,43 +1,25 @@
-Received: from mail01.prevas.se ([62.95.78.3])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eQops-0005z2-1j
- for linux-mtd@lists.infradead.org; Mon, 18 Dec 2017 06:23:38 +0000
-Subject: Re: [SPAM] Re: [BUG] pxa3xx: wait time out when scanning for bb
+Date: Mon, 18 Dec 2017 07:37:15 +0100
+From: Willy Tarreau <w@1wt.eu>
 To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-CC: Boris Brezillon <boris.brezillon@free-electrons.com>,
- <ezequiel.garcia@free-electrons.com>, <linux-mtd@lists.infradead.org>,
- "Kasper Revsbech (KREV)" <krev@triax.com>
-References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
- <727489cf-d1f6-8777-c6f4-981127657c9d@prevas.dk>
- <20171212111227.4946cc15@xps13>
- <e9e6bf70-918f-b750-5893-55744dc34882@prevas.dk>
- <20171212120806.7c31463f@xps13>
- <a0267c71-4333-7dd4-dcf4-14aced37f8f9@prevas.dk>
- <20171212123523.48185f21@xps13>
- <75bd6b87-12ed-4003-262a-b1bd03a62cbd@prevas.dk>
- <20171212134706.49f3c57e@xps13>
- <2f16ce90-6e00-c95f-7a81-5603d9acf574@prevas.dk>
- <20171212143512.3b62d3f5@xps13>
- <48EEEC1C-954B-42E5-92BE-A00AD97A5789@prevas.dk>
- <20171212192327.57b1fa80@xps13>
- <9f578b28-ef3b-8e84-0a8c-b70c494efff0@prevas.dk>
- <20171213094105.73646658@xps13> <20171215182512.2449af9e@xps13>
- <45D7D798-BA86-41CD-AB56-156C1BD7FCC4@prevas.dk>
- <20171215201955.2431195c@xps13>
- <7892957c-273b-ea58-1d50-b35e70c69e02@prevas.dk>
- <20171217141916.04e377ab@bbrezillon>
- <461b45a8-de1f-0b54-567f-001ea30ee927@prevas.dk>
- <20171217230032.30853780@bbrezillon>
- <D17E776C-669D-4C40-B673-CBE7CE5D08F6@prevas.dk>
- <20171217231952.74637510@xps13>
-From: =?UTF-8?Q?Sean_Nyekj=c3=a6r?= <sean.nyekjaer@prevas.dk>
-Message-ID: <4e25e578-f0a6-89a0-b6f8-98bda37d12de@prevas.dk>
-Date: Mon, 18 Dec 2017 07:23:04 +0100
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Subject: Re: pxa3xx_nand times out in 4.14 with JFFS2
+Message-ID: <20171218063715.GA20461@1wt.eu>
+References: <20171217155305.16c5bb4f@bbrezillon> <20171217150043.GA1403@1wt.eu>
+ <CAAEAJfD47bGTSppEqcRszjAgBUjiCevmdYLKfsQTPYMcVu8VDA@mail.gmail.com>
+ <20171217162342.GA1833@1wt.eu> <20171217190746.2a61232c@bbrezillon>
+ <20171217190056.GA1107@1wt.eu>
+ <CAAEAJfArtxcWgcjHAb__3BQxWEBgWU8uWtHGYETc-m9eUs91nA@mail.gmail.com>
+ <20171217211650.GA6815@1wt.eu> <20171217222611.59f9031b@bbrezillon>
+ <20171217224617.1f9b8b84@xps13>
 MIME-Version: 1.0
-In-Reply-To: <20171217231952.74637510@xps13>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20171217224617.1f9b8b84@xps13>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -47,118 +29,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris and Miquel
+Hi guys,
 
+On Sun, Dec 17, 2017 at 10:46:17PM +0100, Miquel RAYNAL wrote:
+> > Actually, if things go well it will only be applied to stable
+> > releases (I really hope we'll be able to switch to Miquel's driver in
+> > 4.16). BTW, if you have some time, maybe you can test Miquel's [1]
+> > branch and let us know if it still works properly.
+> 
+> As Boris said, we would really welcome a test of this branch, because
+> you almost have the same setup as Sean in the thread "pxa3xx: wait time
+> out when scanning for bb" and I am running out of explanation for his
+> problem unless it is related to U-Boot. So if you could try booting
+> with and without the on-flash-bbt property and report whether it fails
+> or not it would be of great help!
 
->>>>>>>        
->>>>>>>> I also tried booting with ECC enabled and with that enabled
->>>>>>>> the driver is unable to read the bbt and marked all blocks
->>>>>>>> bad.
->>>>>>> And if I understand correctly, if you remove nand-ecc-mode =
->>> "none" (or
->>>>>>> set it to "hw"), the kernel fails to find the BBT, that is
->>>>>>> right?
->>>    
->>>>>> Yes.
->>>>>>> As I was not expecting such a quick answer, I did push
->>>>>>> another
->>> patch
->>>>>>> after sending my email that fixes an issue in mtdcore.c,
->>>>>>> please
->>> check
->>>>>>> you have it (there are a few "fixup!" patches, and on top of
->>>>>>> them
->>> you
->>>>>>> must find one which is a well-formatted patch about
->>>>>>> mtd_check_oob_ops()).
->>>>>> I have rebased on top of 9aee88a618f8 mtd: Fix
->>>>>> mtd_check_oob_ops()
->>>    
->>>>>>> I learned that today: to get a prompt while all blocks are
->>>>>>> bad,
->>> you can
->>>>>>> add:
->>>>>>>
->>>>>>>        chip->options |= NAND_SKIP_BBTSCAN;
->>>>>>>
->>>>>>> Before nand_scan_tail().
->>>>>>>
->>>>>>> If you can reach a prompt with the failing configuration and
->>>>>>> when
->>> you
->>>>>>> will have the time, I will welcome a dump of the same area as
->>> before
->>>>>>> so we will try to understand what is wrong now ! :)
->>>>>> Nice one, a lot easier to read whats happens
->>>>>>
->>>>>> nanddump of BBT without ECC enabled:
->>>>>> https://gist.github.com/anonymous/627e5be058ed93c106d61641f6aa5da0
->>>>>>
->>>>>> nanddump of BBT with ECC enabled:
->>>>>> https://gist.github.com/anonymous/76b3240f156c6547cf76d59f2aae49fe
->>>>>> bootsnippet with ECC and NAND_SKIP_BBTSCAN enabled.
->>>>>> https://gist.github.com/anonymous/0d9be95cd9c36ff006f7aa03e7c2cc85
->>>>>>
->>>>>> Please let me know what traces you need to fix the ECC :-)
->>>>> The dumps look good (at least, the BBT pattern is correct, we
->>>>> have
->>> the
->>>>> number of ECC bytes we expect and they are where we expect them).
->>>>>
->>>>> My gut feeling is that something is wrong with ECC (or
->>>>> something
->>> related
->>>>> to ECC) in u-boot.
->>>>>
->>>>> Can you try to let Linux create the BBT on its own and dump the
->>> last
->>>>> block as you did previously?
->>>>>
->>>>> So, to sum-up
->>>>>
->>>>> 1/ put the following in your DT
->>>>>
->>>>> 	nand-ecc-mode = "hw";
->>>>> 	nand-on-flash-bbt;
->>>>>
->>>>> 2/ scrub the NAND from u-boot and make sure you don't reboot
->>>>> after
->>> that,
->>>>>      so that u-boot can't recreate its own BBT.
->>>>>
->>>>> 3/ Let Linux boot and dump the pages (in raw mode) where BBTs
->>> created by
->>>>> Linux are supposed to be (should be the same addresses as
->>>>> before)
->>>> Trace with nand scrub in uboot and ecc enabled:
->>>> https://gist.github.com/anonymous/3ce389b9276fddbd46f59c89b99ee4ff
->>>>
->>>> Same as above with "chip->options |= NAND_SKIP_BBTSCAN;" in the
->>> marvell
->>>> nand driver
->>>> https://gist.github.com/anonymous/3aed159b5a5ee22f27403fe79ba97400
->>>>
->>>> If I dump 0xFEC0000/0xFFC0000 or 0xFEE0000/0xFFE0000 (the bbt
->>>> pages) they contain
->>>> only 0xFF's as the kernel does not write to the blocks.
->>>>
->>>> To me it seem a little bit difficult to say why the new marvell
->>>> nand
->>> driver
->>>> (with ecc enabled) thinks all the freshly scrubbed blocks are
->>>> bad.
->>> Ok, now I really need the dump without the -n option. It seems that
->>> dumping in non-raw mode does not return the expected value.
->>>   
->> How can I get the driver to write a bbt when it have marked all the
->> blocks bad?
-> I think the easier way is to let U-Boot do it. So I guess you'll have
-> to reboot the board after scrubbing.
->
->> So I do a trace, without the -n option, with ecc enabled and
->> NAND_SKIP_BBTSCAN set? Is that what you need?
-> It will be helpful, yes!
->
-https://gist.github.com/anonymous/08049fbb46bf6df2d24a07aab8783833
+Yes, I noticed your work mentionned in some of the threads I've read
+during my troubleshooting session and considered giving it a try. I'll
+probably do this next week-end.
 
-/Sean
+Thanks!
+Willy
