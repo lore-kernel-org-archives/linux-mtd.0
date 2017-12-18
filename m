@@ -1,29 +1,38 @@
-Date: Mon, 18 Dec 2017 09:25:35 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eQrE2-0002t6-IZ
+ for linux-mtd@lists.infradead.org; Mon, 18 Dec 2017 08:56:45 +0000
+Date: Mon, 18 Dec 2017 09:56:09 +0100
 From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Jason Cooper <jason@lakedaemon.net>,
- Andrew Lunn <andrew@lunn.ch>, Gregory Clement
- <gregory.clement@free-electrons.com>, Sebastian Hesselbarth
- <sebastian.hesselbarth@gmail.com>, Russell King <linux@armlinux.org.uk>,
- Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Eric Miao <eric.y.miao@gmail.com>, Catalin Marinas
- <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Ezequiel
- Garcia <ezequiel.garcia@free-electrons.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Thomas
- Petazzoni <thomas.petazzoni@free-electrons.com>, Antoine Tenart
- <antoine.tenart@free-electrons.com>, Nadav Haklai <nadavh@marvell.com>,
- Ofer Heifetz <oferh@marvell.com>, Hanna Hawa <hannah@marvell.com>, Neta Zur
- Hershkovits <neta@marvell.com>
-Subject: Re: [PATCH 00/12] Marvell NAND controller rework with ->exec_op()
-Message-ID: <20171218092535.2ca1fe13@xps13>
-In-Reply-To: <877etkecig.fsf@belgarion.home>
-References: <20171207201814.30411-1-miquel.raynal@free-electrons.com>
- <20171214070930.0b885f6d@bbrezillon>
- <877etkecig.fsf@belgarion.home>
+To: Sean =?UTF-8?B?Tnlla2rDpnI=?= <sean.nyekjaer@prevas.dk>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ <ezequiel.garcia@free-electrons.com>, <linux-mtd@lists.infradead.org>,
+ "Kasper Revsbech (KREV)" <krev@triax.com>
+Subject: Re: [SPAM] Re: [BUG] pxa3xx: wait time out when scanning for bb
+Message-ID: <20171218095609.30408c57@xps13>
+In-Reply-To: <4e25e578-f0a6-89a0-b6f8-98bda37d12de@prevas.dk>
+References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
+ <e9e6bf70-918f-b750-5893-55744dc34882@prevas.dk>
+ <20171212120806.7c31463f@xps13>
+ <a0267c71-4333-7dd4-dcf4-14aced37f8f9@prevas.dk>
+ <20171212123523.48185f21@xps13>
+ <75bd6b87-12ed-4003-262a-b1bd03a62cbd@prevas.dk>
+ <20171212134706.49f3c57e@xps13>
+ <2f16ce90-6e00-c95f-7a81-5603d9acf574@prevas.dk>
+ <20171212143512.3b62d3f5@xps13>
+ <48EEEC1C-954B-42E5-92BE-A00AD97A5789@prevas.dk>
+ <20171212192327.57b1fa80@xps13>
+ <9f578b28-ef3b-8e84-0a8c-b70c494efff0@prevas.dk>
+ <20171213094105.73646658@xps13> <20171215182512.2449af9e@xps13>
+ <45D7D798-BA86-41CD-AB56-156C1BD7FCC4@prevas.dk>
+ <20171215201955.2431195c@xps13>
+ <7892957c-273b-ea58-1d50-b35e70c69e02@prevas.dk>
+ <20171217141916.04e377ab@bbrezillon>
+ <461b45a8-de1f-0b54-567f-001ea30ee927@prevas.dk>
+ <20171217230032.30853780@bbrezillon>
+ <D17E776C-669D-4C40-B673-CBE7CE5D08F6@prevas.dk>
+ <20171217231952.74637510@xps13>
+ <4e25e578-f0a6-89a0-b6f8-98bda37d12de@prevas.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -36,51 +45,134 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Robert,
+Hi Sean,
 
-On Mon, 18 Dec 2017 08:11:35 +0100
-Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+On Mon, 18 Dec 2017 07:23:04 +0100
+Sean Nyekj=C3=A6r <sean.nyekjaer@prevas.dk> wrote:
 
-> Boris Brezillon <boris.brezillon@free-electrons.com> writes:
+> Hi Boris and Miquel
 >=20
-> >> Robert, it would be great if you could also do more testing on PXA
-> >> and validate this driver. If needed, a branch ready to be tested is
-> >> available at [3]. It is based on nand/next and has all the changes
-> >> brought by the previously mentionned series as well as this one. =20
-> >
-> > Robert, do you think you'll have some time to test Miquel's branch
-> > on your PXA boards? Miquel already tested on one of these boards
-> > (CM-X300), but we'd like to have other testers. Also feel free to
-> > review the driver if have the time.
-> >
-> > Thanks,
-> >
-> > Boris =20
 >=20
-> Hi Boris and Miquel,
->=20
-> I have applied the whole serie to linux-next yesterday.
->=20
-> A boot attempt on my zylonite with my old defconfig (with the new
-> Marvell NAND config activated) yields to :
->  - this message
-> [    3.136818] marvell-nfc pxa3xx-nand: could not identify the nand
-> chip [    3.143874] marvell-nfc: probe of pxa3xx-nand failed with
-> error -22
->  - then my board hangs
->=20
-> Is there something to be done to improve the trace level so that you
-> can guess what's happening ?
+> >>>>>>>         =20
+> >>>>>>>> I also tried booting with ECC enabled and with that enabled
+> >>>>>>>> the driver is unable to read the bbt and marked all blocks
+> >>>>>>>> bad. =20
+> >>>>>>> And if I understand correctly, if you remove nand-ecc-mode =3D =20
+> >>> "none" (or =20
+> >>>>>>> set it to "hw"), the kernel fails to find the BBT, that is
+> >>>>>>> right? =20
+> >>>     =20
+> >>>>>> Yes. =20
+> >>>>>>> As I was not expecting such a quick answer, I did push
+> >>>>>>> another =20
+> >>> patch =20
+> >>>>>>> after sending my email that fixes an issue in mtdcore.c,
+> >>>>>>> please =20
+> >>> check =20
+> >>>>>>> you have it (there are a few "fixup!" patches, and on top of
+> >>>>>>> them =20
+> >>> you =20
+> >>>>>>> must find one which is a well-formatted patch about
+> >>>>>>> mtd_check_oob_ops()). =20
+> >>>>>> I have rebased on top of 9aee88a618f8 mtd: Fix
+> >>>>>> mtd_check_oob_ops() =20
+> >>>     =20
+> >>>>>>> I learned that today: to get a prompt while all blocks are
+> >>>>>>> bad, =20
+> >>> you can =20
+> >>>>>>> add:
+> >>>>>>>
+> >>>>>>>        chip->options |=3D NAND_SKIP_BBTSCAN;
+> >>>>>>>
+> >>>>>>> Before nand_scan_tail().
+> >>>>>>>
+> >>>>>>> If you can reach a prompt with the failing configuration and
+> >>>>>>> when =20
+> >>> you =20
+> >>>>>>> will have the time, I will welcome a dump of the same area
+> >>>>>>> as =20
+> >>> before =20
+> >>>>>>> so we will try to understand what is wrong now ! :) =20
+> >>>>>> Nice one, a lot easier to read whats happens
+> >>>>>>
+> >>>>>> nanddump of BBT without ECC enabled:
+> >>>>>> https://gist.github.com/anonymous/627e5be058ed93c106d61641f6aa5da0
+> >>>>>>
+> >>>>>> nanddump of BBT with ECC enabled:
+> >>>>>> https://gist.github.com/anonymous/76b3240f156c6547cf76d59f2aae49fe
+> >>>>>> bootsnippet with ECC and NAND_SKIP_BBTSCAN enabled.
+> >>>>>> https://gist.github.com/anonymous/0d9be95cd9c36ff006f7aa03e7c2cc85
+> >>>>>>
+> >>>>>> Please let me know what traces you need to fix the ECC :-) =20
+> >>>>> The dumps look good (at least, the BBT pattern is correct, we
+> >>>>> have =20
+> >>> the =20
+> >>>>> number of ECC bytes we expect and they are where we expect
+> >>>>> them).
+> >>>>>
+> >>>>> My gut feeling is that something is wrong with ECC (or
+> >>>>> something =20
+> >>> related =20
+> >>>>> to ECC) in u-boot.
+> >>>>>
+> >>>>> Can you try to let Linux create the BBT on its own and dump
+> >>>>> the =20
+> >>> last =20
+> >>>>> block as you did previously?
+> >>>>>
+> >>>>> So, to sum-up
+> >>>>>
+> >>>>> 1/ put the following in your DT
+> >>>>>
+> >>>>> 	nand-ecc-mode =3D "hw";
+> >>>>> 	nand-on-flash-bbt;
+> >>>>>
+> >>>>> 2/ scrub the NAND from u-boot and make sure you don't reboot
+> >>>>> after =20
+> >>> that, =20
+> >>>>>      so that u-boot can't recreate its own BBT.
+> >>>>>
+> >>>>> 3/ Let Linux boot and dump the pages (in raw mode) where BBTs =20
+> >>> created by =20
+> >>>>> Linux are supposed to be (should be the same addresses as
+> >>>>> before) =20
+> >>>> Trace with nand scrub in uboot and ecc enabled:
+> >>>> https://gist.github.com/anonymous/3ce389b9276fddbd46f59c89b99ee4ff
+> >>>>
+> >>>> Same as above with "chip->options |=3D NAND_SKIP_BBTSCAN;" in the =20
+> >>> marvell =20
+> >>>> nand driver
+> >>>> https://gist.github.com/anonymous/3aed159b5a5ee22f27403fe79ba97400
+> >>>>
+> >>>> If I dump 0xFEC0000/0xFFC0000 or 0xFEE0000/0xFFE0000 (the bbt
+> >>>> pages) they contain
+> >>>> only 0xFF's as the kernel does not write to the blocks.
+> >>>>
+> >>>> To me it seem a little bit difficult to say why the new marvell
+> >>>> nand =20
+> >>> driver =20
+> >>>> (with ecc enabled) thinks all the freshly scrubbed blocks are
+> >>>> bad. =20
+> >>> Ok, now I really need the dump without the -n option. It seems
+> >>> that dumping in non-raw mode does not return the expected value.
+> >>>    =20
+> >> How can I get the driver to write a bbt when it have marked all the
+> >> blocks bad? =20
+> > I think the easier way is to let U-Boot do it. So I guess you'll
+> > have to reboot the board after scrubbing.
+> > =20
+> >> So I do a trace, without the -n option, with ecc enabled and
+> >> NAND_SKIP_BBTSCAN set? Is that what you need? =20
+> > It will be helpful, yes!
+> > =20
+> https://gist.github.com/anonymous/08049fbb46bf6df2d24a07aab8783833
 
-Thank you very much for testing this.
+This is really helpful. It shows the driver is the problem. I don't
+know yet why it reads the NAND status instead of the actual data at
+this moment. I am looking into it.
 
-Could you please try this branch [1] instead of linux-next + the
-patches?
-
-Also, can you please add #define DEBUG in marvell_nand.c + nand_base.c,
-it should help us figuring out what is wrong.
+I added one fixup in my github branch that could possibly help, could
+you give it a try while I am going deeper in my research?
 
 Thank you,
 Miqu=C3=A8l
-
-[1] https://github.com/miquelraynal/linux/tree/marvell/nand-next/nfc
