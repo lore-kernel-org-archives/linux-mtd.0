@@ -1,22 +1,17 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eQyGE-0000dB-Eo
- for linux-mtd@lists.infradead.org; Mon, 18 Dec 2017 16:27:29 +0000
-Date: Mon, 18 Dec 2017 17:27:05 +0100
+ id 1eQyfH-0005MR-N9
+ for linux-mtd@lists.infradead.org; Mon, 18 Dec 2017 16:53:21 +0000
+Date: Mon, 18 Dec 2017 17:52:58 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Andrea Adami <andrea.adami@gmail.com>
-Cc: Colin King <colin.king@canonical.com>, Richard Weinberger
- <richard@nod.at>, kernel-janitors@vger.kernel.org, LKML
- <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH][V2] mtd: sharpslpart: fix overflow on block_adr
- calculation
-Message-ID: <20171218172705.59e25d29@bbrezillon>
-In-Reply-To: <CAAQYJAuVYbbg5SyD8ZkANZ201atZATkgF07CfwPet+7SbXXuPQ@mail.gmail.com>
-References: <20171108161323.30662-1-colin.king@canonical.com>
- <CAAQYJAuVYbbg5SyD8ZkANZ201atZATkgF07CfwPet+7SbXXuPQ@mail.gmail.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>, kernel@pengutronix.de
+Subject: Re: [PATCH 1/3] mtd: nand: mxc: Fix failed/corrected values
+Message-ID: <20171218175258.48378f19@bbrezillon>
+In-Reply-To: <20171215085504.32296-2-s.hauer@pengutronix.de>
+References: <20171215085504.32296-1-s.hauer@pengutronix.de>
+ <20171215085504.32296-2-s.hauer@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -29,56 +24,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 10 Nov 2017 17:35:13 +0100
-Andrea Adami <andrea.adami@gmail.com> wrote:
+On Fri, 15 Dec 2017 09:55:02 +0100
+Sascha Hauer <s.hauer@pengutronix.de> wrote:
 
-> On Wed, Nov 8, 2017 at 5:13 PM, Colin King <colin.king@canonical.com> wrote:
-> > From: Colin Ian King <colin.king@canonical.com>
-> >
-> > Multiplying block_num and mtd->erasesize may potentially overflow
-> > as they are both unsigned ints and so the multiplication is evaluated
-> > in unsigned int arithmetic.  Cast block_adr to off_t to ensure
-> > multiplication is off_t sized to avoid any potential overflow.
-> >
-> > Detected by CoverityScan, CID#1461264 ("Unintentional integer overflow")
-> >
-> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> > ---
-> >  drivers/mtd/parsers/sharpslpart.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/mtd/parsers/sharpslpart.c b/drivers/mtd/parsers/sharpslpart.c
-> > index 5fe0079ea5ed..0ddb79ac390d 100644
-> > --- a/drivers/mtd/parsers/sharpslpart.c
-> > +++ b/drivers/mtd/parsers/sharpslpart.c
-> > @@ -192,7 +192,7 @@ static int sharpsl_nand_init_ftl(struct mtd_info *mtd, struct sharpsl_ftl *ftl)
-> >
-> >         /* create physical-logical table */
-> >         for (block_num = 0; block_num < phymax; block_num++) {
-> > -               block_adr = block_num * mtd->erasesize;
-> > +               block_adr = (loff_t)block_num * mtd->erasesize;
-> >
-> >                 if (mtd_block_isbad(mtd, block_adr))
-> >                         continue;
-> > @@ -244,7 +244,7 @@ static int sharpsl_nand_read_laddr(struct mtd_info *mtd,
-> >                 return -EINVAL;
-> >
-> >         block_num = ftl->log2phy[log_num];
-> > -       block_adr = block_num * mtd->erasesize;
-> > +       block_adr = (loff_t)block_num * mtd->erasesize;
-> >         block_ofs = mtd_mod_by_eb((u32)from, mtd);
-> >
-> >         err = mtd_read(mtd, block_adr + block_ofs, len, &retlen, buf);
-> > --
-> > 2.14.1
-> >  
+> Currently nand_read_page_hwecc() from nand_base calls
+> mxc_nand_correct_data_v2_v3() for each subpage, but in this function we
+> return the corrected/failed results for the whole page instead
+> of a single subpage. On a 2k page size Nand this leads to results which
+> are 4 times too high.
+> The whole ecc.calculate/ecc.correct mechanism used by
+> nand_read_page_hwecc() is not suitable for devices which correct the
+> data in hardware, so fix this by using a driver specific read_page
+> function which does the right thing.
 > 
-> Thanks for spotting this,
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> ---
+>  drivers/mtd/nand/mxc_nand.c | 35 +++++++++++++++++++++++++----------
+>  1 file changed, 25 insertions(+), 10 deletions(-)
 > 
-> Acked-by: Andrea Adami <andrea.adami@gmail.com>
+> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+> index f3be0b2a8869..65d5cde4692b 100644
+> --- a/drivers/mtd/nand/mxc_nand.c
+> +++ b/drivers/mtd/nand/mxc_nand.c
+> @@ -140,6 +140,8 @@ struct mxc_nand_host;
+>  
+>  struct mxc_nand_devtype_data {
+>  	void (*preset)(struct mtd_info *);
+> +	int (*read_page)(struct mtd_info *mtd, struct nand_chip *chip,
+> +			uint8_t *buf, int oob_required, int page);
+>  	void (*send_cmd)(struct mxc_nand_host *, uint16_t, int);
+>  	void (*send_addr)(struct mxc_nand_host *, uint16_t, int);
+>  	void (*send_page)(struct mtd_info *, unsigned int);
+> @@ -617,13 +619,23 @@ static int mxc_nand_correct_data_v1(struct mtd_info *mtd, u_char *dat,
+>  static int mxc_nand_correct_data_v2_v3(struct mtd_info *mtd, u_char *dat,
+>  				 u_char *read_ecc, u_char *calc_ecc)
+>  {
+> -	struct nand_chip *nand_chip = mtd_to_nand(mtd);
+> -	struct mxc_nand_host *host = nand_get_controller_data(nand_chip);
+> +	return 0;
+> +}
+> +
+> +static int mxc_nand_read_page_hwecc_v2_v3(struct mtd_info *mtd,
+> +					  struct nand_chip *chip,
+> +					  uint8_t *buf, int oob_required,
+> +					  int page)
+> +{
+> +	struct mxc_nand_host *host = nand_get_controller_data(chip);
+> +	unsigned int max_bitflips = 0;
+>  	u32 ecc_stat, err;
+> -	int no_subpages = 1;
+> -	int ret = 0;
+> +	int no_subpages;
+>  	u8 ecc_bit_mask, err_limit;
 
-Applied.
+Sorry but you'll have to rebase this work on nand/next.
+->read_page() hooks are now expected to send the READ0 command on
+their own.
 
-Thanks,
-
-Boris
+>  
+> +	chip->read_buf(mtd, buf, mtd->writesize);
+> +	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
+> +
+>  	ecc_bit_mask = (host->eccsize == 4) ? 0x7 : 0xf;
+>  	err_limit = (host->eccsize == 4) ? 0x4 : 0x8;
+>  
+> @@ -634,17 +646,16 @@ static int mxc_nand_correct_data_v2_v3(struct mtd_info *mtd, u_char *dat,
+>  	do {
+>  		err = ecc_stat & ecc_bit_mask;
+>  		if (err > err_limit) {
+> -			dev_dbg(host->dev, "UnCorrectable RS-ECC Error\n");
+> -			return -EBADMSG;
+> +			mtd->ecc_stats.failed++;
+>  		} else {
+> -			ret += err;
+> +			mtd->ecc_stats.corrected += err;
+> +			max_bitflips = max_t(unsigned int, max_bitflips, err);
+>  		}
+> +
+>  		ecc_stat >>= 4;
+>  	} while (--no_subpages);
+>  
+> -	dev_dbg(host->dev, "%d Symbol Correctable RS-ECC Error\n", ret);
+> -
+> -	return ret;
+> +	return max_bitflips;
+>  }
+>  
+>  static int mxc_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
+> @@ -1444,6 +1455,7 @@ static const struct mxc_nand_devtype_data imx27_nand_devtype_data = {
+>  /* v21: i.MX25, i.MX35 */
+>  static const struct mxc_nand_devtype_data imx25_nand_devtype_data = {
+>  	.preset = preset_v2,
+> +	.read_page = mxc_nand_read_page_hwecc_v2_v3,
+>  	.send_cmd = send_cmd_v1_v2,
+>  	.send_addr = send_addr_v1_v2,
+>  	.send_page = send_page_v2,
+> @@ -1469,6 +1481,7 @@ static const struct mxc_nand_devtype_data imx25_nand_devtype_data = {
+>  /* v3.2a: i.MX51 */
+>  static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
+>  	.preset = preset_v3,
+> +	.read_page = mxc_nand_read_page_hwecc_v2_v3,
+>  	.send_cmd = send_cmd_v3,
+>  	.send_addr = send_addr_v3,
+>  	.send_page = send_page_v3,
+> @@ -1494,6 +1507,7 @@ static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
+>  /* v3.2b: i.MX53 */
+>  static const struct mxc_nand_devtype_data imx53_nand_devtype_data = {
+>  	.preset = preset_v3,
+> +	.read_page = mxc_nand_read_page_hwecc_v2_v3,
+>  	.send_cmd = send_cmd_v3,
+>  	.send_addr = send_addr_v3,
+>  	.send_page = send_page_v3,
+> @@ -1751,6 +1765,7 @@ static int mxcnd_probe(struct platform_device *pdev)
+>  
+>  	switch (this->ecc.mode) {
+>  	case NAND_ECC_HW:
+> +		this->ecc.read_page = host->devtype_data->read_page;
+>  		this->ecc.calculate = mxc_nand_calculate_ecc;
+>  		this->ecc.hwctl = mxc_nand_enable_hwecc;
+>  		this->ecc.correct = host->devtype_data->correct_data;
