@@ -1,14 +1,14 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eQyl8-0007hG-Vc
- for linux-mtd@lists.infradead.org; Mon, 18 Dec 2017 16:59:25 +0000
-Date: Mon, 18 Dec 2017 17:59:00 +0100
+ id 1eQyp8-0002EY-3k
+ for linux-mtd@lists.infradead.org; Mon, 18 Dec 2017 17:03:32 +0000
+Date: Mon, 18 Dec 2017 18:03:08 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Sascha Hauer <s.hauer@pengutronix.de>
 Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
  Brian Norris <computersforpeace@gmail.com>, kernel@pengutronix.de
 Subject: Re: [PATCH 2/3] mtd: nand: mxc: Add own write_page
-Message-ID: <20171218175900.24332c1f@bbrezillon>
+Message-ID: <20171218180308.17eb3a28@bbrezillon>
 In-Reply-To: <20171215085504.32296-3-s.hauer@pengutronix.de>
 References: <20171215085504.32296-1-s.hauer@pengutronix.de>
  <20171215085504.32296-3-s.hauer@pengutronix.de>
@@ -59,20 +59,48 @@ Sascha Hauer <s.hauer@pengutronix.de> wrote:
 > +					   const uint8_t *buf, int oob_required,
 > +					   int page)
 > +{
-
-Same as for the ->read_page() hooks, this needs to be rebased on top of
-nand/next.
-
-Note that I've seen other drivers implementing the exact same sequence
-(one example is fsl_elbc_write_subpage() [1] but AFAIR there are
-others), so maybe it's worth creating a nand_write_page_raw_force_oob()
-helper.
-
 > +	chip->write_buf(mtd, buf, mtd->writesize);
 > +	chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
 > +
 > +	return 0;
 > +}
 > +
+>  static int mxc_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
+>  				  u_char *ecc_code)
+>  {
+> @@ -1456,6 +1469,7 @@ static const struct mxc_nand_devtype_data imx27_nand_devtype_data = {
+>  static const struct mxc_nand_devtype_data imx25_nand_devtype_data = {
+>  	.preset = preset_v2,
+>  	.read_page = mxc_nand_read_page_hwecc_v2_v3,
+> +	.write_page = mxc_nand_write_page_hwecc_v2_v3,
+>  	.send_cmd = send_cmd_v1_v2,
+>  	.send_addr = send_addr_v1_v2,
+>  	.send_page = send_page_v2,
+> @@ -1482,6 +1496,7 @@ static const struct mxc_nand_devtype_data imx25_nand_devtype_data = {
+>  static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
+>  	.preset = preset_v3,
+>  	.read_page = mxc_nand_read_page_hwecc_v2_v3,
+> +	.write_page = mxc_nand_write_page_hwecc_v2_v3,
+>  	.send_cmd = send_cmd_v3,
+>  	.send_addr = send_addr_v3,
+>  	.send_page = send_page_v3,
+> @@ -1508,6 +1523,7 @@ static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
+>  static const struct mxc_nand_devtype_data imx53_nand_devtype_data = {
+>  	.preset = preset_v3,
+>  	.read_page = mxc_nand_read_page_hwecc_v2_v3,
+> +	.write_page = mxc_nand_write_page_hwecc_v2_v3,
+>  	.send_cmd = send_cmd_v3,
+>  	.send_addr = send_addr_v3,
+>  	.send_page = send_page_v3,
+> @@ -1766,6 +1782,7 @@ static int mxcnd_probe(struct platform_device *pdev)
+>  	switch (this->ecc.mode) {
+>  	case NAND_ECC_HW:
+>  		this->ecc.read_page = host->devtype_data->read_page;
+> +		this->ecc.write_page = host->devtype_data->write_page;
+>  		this->ecc.calculate = mxc_nand_calculate_ecc;
 
-[1]http://elixir.free-electrons.com/linux/v4.15-rc3/source/drivers/mtd/nand/fsl_elbc_nand.c#L741
+I'm pretty sure you don't need this dummy calculate method now that you
+provide your own ->write/read_page() implementations.
+
+>  		this->ecc.hwctl = mxc_nand_enable_hwecc;
+>  		this->ecc.correct = host->devtype_data->correct_data;
