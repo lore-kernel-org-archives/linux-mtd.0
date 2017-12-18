@@ -1,19 +1,18 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
+Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eQvlc-0005SR-9Z
- for linux-mtd@lists.infradead.org; Mon, 18 Dec 2017 13:47:47 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, boris.brezillon@free-electrons.com,
- marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr
-Subject: [GIT PULL] MTD fixes for 4.15-rc4
-Date: Mon, 18 Dec 2017 14:48:02 +0100
-Message-ID: <6764587.y1iLJdv0sS@blindfold>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+ id 1eQxg8-0004JH-Bn
+ for linux-mtd@lists.infradead.org; Mon, 18 Dec 2017 15:50:15 +0000
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org,
+	Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [PATCH] MAINTAINERS: Move all MTD related branches to a single repo
+Date: Mon, 18 Dec 2017 16:49:34 +0100
+Message-Id: <20171218154934.6674-1-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,51 +22,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Linus,
+Historically branches targeting the next release (and pulled in
+linux-next) have been pushed on the l2-mtd repo and fixes branches on
+the linux-mtd one. Now that all MTD maintainers have RW permissions on
+linux-mtd tree, there's no good reason to have two different trees.
+Move all -next branches to linux-mtd.
 
-The following changes since commit 50c4c4e268a2d7a3e58ebb698ac74da0de40ae36:
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>
+---
+Hi MTD maintainers,
 
-  Linux 4.15-rc3 (2017-12-10 17:56:26 -0800)
+As discussed a few weeks ago, this patch is moving all MTD related
+branches to the linux-mtd repo in an attempt to make things easier
+for maintainers (it's not unusal to push the next or fixes branch to
+the wrong repo) and developers (it's hard to know where the patch was
+applied, especially when the maintainer does not specify it in his
+reply, which I do a lot :)).
 
-are available in the git repository at:
+Once I have gathered acks from all active maintainers, I'll apply this
+patch to the mtd/next branch and ask Stephen to pull next branches from
+their new locations.
 
-  git://git.infradead.org/linux-mtd.git tags/for-linus-20171218
+In the meantime, we should try to keep both l2-mtd and linux-mtd synced
+(that means pushing the xxx/next branches on both l2-mtd and mtd-next).
 
-for you to fetch changes up to d82c3682168431d29ba1741d0cd5ef45c68bf8e0:
+Regards,
 
-  mtd: Fix mtd_check_oob_ops() (2017-12-18 09:16:35 +0100)
+Boris
+---
+ MAINTAINERS | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-----------------------------------------------------------------
-This pull request contains the following regression fixes:
-
-* Fixed bitflip handling in brcmnand and gpmi nand drivers
-* Reverted a bad device tree binding for spi-nor
-* Fixed a copy&paste error in gpio-nand driver
-* Fixed a too strict length check in mtd core
-
-----------------------------------------------------------------
-Albert Hsieh (1):
-      mtd: nand: brcmnand: Zero bitflip is not an error
-
-Christophe Leroy (1):
-      mtd: nand: gpio: Fix ALE gpio configuration
-
-Cyrille Pitchen (1):
-      Revert "dt-bindings: mtd: add sst25wf040b and en25s64 to sip-nor list"
-
-Miquel Raynal (1):
-      mtd: Fix mtd_check_oob_ops()
-
-Richard Weinberger (1):
-      Merge branch 'spi-nor/fixes' of ssh://bombadil/srv/git/linux-mtd into 
-mtd/fixes-for-4.15-rc4
-
-Sascha Hauer (1):
-      mtd: nand: gpmi: Fix failure when a erased page has a bitflip at BBM
-
- Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt | 2 --
- drivers/mtd/mtdcore.c                                   | 2 +-
- drivers/mtd/nand/brcmnand/brcmnand.c                    | 2 +-
- drivers/mtd/nand/gpio.c                                 | 6 +++---
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c                  | 6 +++---
- 5 files changed, 8 insertions(+), 10 deletions(-)
+diff --git a/MAINTAINERS b/MAINTAINERS
+index aa71ab52fd76..10732ecfc937 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8956,7 +8956,7 @@ L:	linux-mtd@lists.infradead.org
+ W:	http://www.linux-mtd.infradead.org/
+ Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
+ T:	git git://git.infradead.org/linux-mtd.git master
+-T:	git git://git.infradead.org/l2-mtd.git master
++T:	git git://git.infradead.org/linux-mtd.git mtd/next
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/mtd/
+ F:	drivers/mtd/
+@@ -9344,7 +9344,7 @@ L:	linux-mtd@lists.infradead.org
+ W:	http://www.linux-mtd.infradead.org/
+ Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
+ T:	git git://git.infradead.org/linux-mtd.git nand/fixes
+-T:	git git://git.infradead.org/l2-mtd.git nand/next
++T:	git git://git.infradead.org/linux-mtd.git nand/next
+ S:	Maintained
+ F:	drivers/mtd/nand/
+ F:	include/linux/mtd/*nand*.h
+@@ -12761,7 +12761,7 @@ L:	linux-mtd@lists.infradead.org
+ W:	http://www.linux-mtd.infradead.org/
+ Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
+ T:	git git://git.infradead.org/linux-mtd.git spi-nor/fixes
+-T:	git git://git.infradead.org/l2-mtd.git spi-nor/next
++T:	git git://git.infradead.org/linux-mtd.git spi-nor/next
+ S:	Maintained
+ F:	drivers/mtd/spi-nor/
+ F:	include/linux/mtd/spi-nor.h
+-- 
+2.11.0
