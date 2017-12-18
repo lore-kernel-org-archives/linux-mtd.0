@@ -1,21 +1,32 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eQqZR-00014v-Es
- for linux-mtd@lists.infradead.org; Mon, 18 Dec 2017 08:14:47 +0000
-Date: Mon, 18 Dec 2017 09:14:13 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Miquel Raynal <miquel.raynal@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+Date: Mon, 18 Dec 2017 09:25:35 +0100
+From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, David Woodhouse
  <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: Fix mtd_check_oob_ops()
-Message-ID: <20171218091413.2150cc0f@bbrezillon>
-In-Reply-To: <20171218072628.17977-1-miquel.raynal@free-electrons.com>
-References: <20171218072628.17977-1-miquel.raynal@free-electrons.com>
+ Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Jason Cooper <jason@lakedaemon.net>,
+ Andrew Lunn <andrew@lunn.ch>, Gregory Clement
+ <gregory.clement@free-electrons.com>, Sebastian Hesselbarth
+ <sebastian.hesselbarth@gmail.com>, Russell King <linux@armlinux.org.uk>,
+ Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Eric Miao <eric.y.miao@gmail.com>, Catalin Marinas
+ <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Ezequiel
+ Garcia <ezequiel.garcia@free-electrons.com>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Thomas
+ Petazzoni <thomas.petazzoni@free-electrons.com>, Antoine Tenart
+ <antoine.tenart@free-electrons.com>, Nadav Haklai <nadavh@marvell.com>,
+ Ofer Heifetz <oferh@marvell.com>, Hanna Hawa <hannah@marvell.com>, Neta Zur
+ Hershkovits <neta@marvell.com>
+Subject: Re: [PATCH 00/12] Marvell NAND controller rework with ->exec_op()
+Message-ID: <20171218092535.2ca1fe13@xps13>
+In-Reply-To: <877etkecig.fsf@belgarion.home>
+References: <20171207201814.30411-1-miquel.raynal@free-electrons.com>
+ <20171214070930.0b885f6d@bbrezillon>
+ <877etkecig.fsf@belgarion.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,43 +36,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Miquel,
+Hello Robert,
 
-On Mon, 18 Dec 2017 08:26:28 +0100
-Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
+On Mon, 18 Dec 2017 08:11:35 +0100
+Robert Jarzmik <robert.jarzmik@free.fr> wrote:
 
-> The mtd_check_oob_ops() helper verifies if the operation defined by the
-> user is correct.
-> 
-> Fix the check that verifies if the entire requested area exists. This
-> check is too restrictive and will fail anytime the last data byte of the
-> very last page is included in an operation.
-> 
-> Fixes: 5cdd929da53d ("mtd: Add sanity checks in mtd_write/read_oob()")
-> Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+> Boris Brezillon <boris.brezillon@free-electrons.com> writes:
+>=20
+> >> Robert, it would be great if you could also do more testing on PXA
+> >> and validate this driver. If needed, a branch ready to be tested is
+> >> available at [3]. It is based on nand/next and has all the changes
+> >> brought by the previously mentionned series as well as this one. =20
+> >
+> > Robert, do you think you'll have some time to test Miquel's branch
+> > on your PXA boards? Miquel already tested on one of these boards
+> > (CM-X300), but we'd like to have other testers. Also feel free to
+> > review the driver if have the time.
+> >
+> > Thanks,
+> >
+> > Boris =20
+>=20
+> Hi Boris and Miquel,
+>=20
+> I have applied the whole serie to linux-next yesterday.
+>=20
+> A boot attempt on my zylonite with my old defconfig (with the new
+> Marvell NAND config activated) yields to :
+>  - this message
+> [    3.136818] marvell-nfc pxa3xx-nand: could not identify the nand
+> chip [    3.143874] marvell-nfc: probe of pxa3xx-nand failed with
+> error -22
+>  - then my board hangs
+>=20
+> Is there something to be done to improve the trace level so that you
+> can guess what's happening ?
 
-Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Thank you very much for testing this.
 
-and thanks for fixing my mess.
+Could you please try this branch [1] instead of linux-next + the
+patches?
 
-Richard, feel free to queue it for the next -rc.
+Also, can you please add #define DEBUG in marvell_nand.c + nand_base.c,
+it should help us figuring out what is wrong.
 
-Boris
+Thank you,
+Miqu=C3=A8l
 
-> ---
->  drivers/mtd/mtdcore.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index f80e911b8843..73b605577447 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -1114,7 +1114,7 @@ static int mtd_check_oob_ops(struct mtd_info *mtd, loff_t offs,
->  	if (!ops->oobbuf)
->  		ops->ooblen = 0;
->  
-> -	if (offs < 0 || offs + ops->len >= mtd->size)
-> +	if (offs < 0 || offs + ops->len > mtd->size)
->  		return -EINVAL;
->  
->  	if (ops->ooblen) {
+[1] https://github.com/miquelraynal/linux/tree/marvell/nand-next/nfc
