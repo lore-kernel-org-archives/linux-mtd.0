@@ -1,23 +1,24 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eR2dH-0008Jh-7k
- for linux-mtd@lists.infradead.org; Mon, 18 Dec 2017 21:07:39 +0000
-Date: Mon, 18 Dec 2017 22:07:19 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Move all MTD related branches to a single
- repo
-Message-ID: <20171218220719.15339f2d@bbrezillon>
-In-Reply-To: <20171219075952.7953c361@canb.auug.org.au>
-References: <20171218154934.6674-1-boris.brezillon@free-electrons.com>
- <20171219075952.7953c361@canb.auug.org.au>
+Date: Mon, 18 Dec 2017 22:52:17 +0100
+From: Willy Tarreau <w@1wt.eu>
+To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Subject: Re: pxa3xx_nand times out in 4.14 with JFFS2
+Message-ID: <20171218215217.GA17755@1wt.eu>
+References: <20171217162342.GA1833@1wt.eu> <20171217190746.2a61232c@bbrezillon>
+ <20171217190056.GA1107@1wt.eu>
+ <CAAEAJfArtxcWgcjHAb__3BQxWEBgWU8uWtHGYETc-m9eUs91nA@mail.gmail.com>
+ <20171217211650.GA6815@1wt.eu> <20171217222611.59f9031b@bbrezillon>
+ <20171217224617.1f9b8b84@xps13> <20171218063715.GA20461@1wt.eu>
+ <20171218070617.GA16559@1wt.eu> <20171218112208.0057634d@xps13>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20171218112208.0057634d@xps13>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,55 +28,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 19 Dec 2017 07:59:52 +1100
-Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+Hi Miquel,
 
-> Hi Boris,
-> 
-> On Mon, 18 Dec 2017 16:49:34 +0100 Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index aa71ab52fd76..10732ecfc937 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -8956,7 +8956,7 @@ L:	linux-mtd@lists.infradead.org
-> >  W:	http://www.linux-mtd.infradead.org/
-> >  Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
-> >  T:	git git://git.infradead.org/linux-mtd.git master
-> > -T:	git git://git.infradead.org/l2-mtd.git master
-> > +T:	git git://git.infradead.org/linux-mtd.git mtd/next  
-> 
-> Done.  This is the l2-mtd tree.
-> 
-> >  S:	Maintained
-> >  F:	Documentation/devicetree/bindings/mtd/
-> >  F:	drivers/mtd/
-> > @@ -9344,7 +9344,7 @@ L:	linux-mtd@lists.infradead.org
-> >  W:	http://www.linux-mtd.infradead.org/
-> >  Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
-> >  T:	git git://git.infradead.org/linux-mtd.git nand/fixes
-> > -T:	git git://git.infradead.org/l2-mtd.git nand/next
-> > +T:	git git://git.infradead.org/linux-mtd.git nand/next  
-> 
-> Done.  This is the nand tree.  I noticed that it has lost its four top commits.
+On Mon, Dec 18, 2017 at 11:22:08AM +0100, Miquel RAYNAL wrote:
+> I fixed two problems happening during read/write of 2kiB page NAND
+> chips, I am quite confident this would solve the issues you report
+> here. Could you please give it a try?
 
-It should be fixed now. Just forgot to update the nand/next branch on
-linux-mtd :-/.
+So I just tested right now, and good news, it now works pretty fine
+here, and my jffs2 properly mounted (without requiring Boris' fix
+for oob) :
 
-> 
-> >  S:	Maintained
-> >  F:	drivers/mtd/nand/
-> >  F:	include/linux/mtd/*nand*.h
-> > @@ -12761,7 +12761,7 @@ L:	linux-mtd@lists.infradead.org
-> >  W:	http://www.linux-mtd.infradead.org/
-> >  Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
-> >  T:	git git://git.infradead.org/linux-mtd.git spi-nor/fixes
-> > -T:	git git://git.infradead.org/l2-mtd.git spi-nor/next
-> > +T:	git git://git.infradead.org/linux-mtd.git spi-nor/next  
-> 
-> Done.  This is the spi-nor tree.
-> 
+# dmesg|grep -i nand
+[    0.770395] nand: device found, Manufacturer ID: 0x01, Chip ID: 0xf1
+[    0.775474] nand: AMD/Spansion S34ML01G2
+[    0.778103] nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+[    0.794080] 10 ofpart partitions found on MTD device pxa3xx_nand-0
+[    0.798975] Creating 10 MTD partitions on "pxa3xx_nand-0":
+[    3.245034] jffs2: version 2.2. (NAND) (SUMMARY)  \xffffffc2\xffffffa9 2001-2006 Red Hat, Inc.
 
-Thanks for updating your script so quickly.
+I was first surprized seeing this "pxa3xx_nand-0" still appearing until I
+realized that it's how it's called in the device tree :-)
 
-Boris
+Cheers,
+Willy
