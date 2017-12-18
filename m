@@ -1,19 +1,19 @@
-Received: from ozlabs.org ([2401:3900:2:1::2])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eR2WB-000430-Ue
- for linux-mtd@lists.infradead.org; Mon, 18 Dec 2017 21:00:14 +0000
-Date: Tue, 19 Dec 2017 07:59:52 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Move all MTD related branches to a single
- repo
-Message-ID: <20171219075952.7953c361@canb.auug.org.au>
-In-Reply-To: <20171218154934.6674-1-boris.brezillon@free-electrons.com>
-References: <20171218154934.6674-1-boris.brezillon@free-electrons.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eR2X4-0005aD-2R
+ for linux-mtd@lists.infradead.org; Mon, 18 Dec 2017 21:01:08 +0000
+Date: Mon, 18 Dec 2017 22:00:54 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>, kernel@pengutronix.de
+Subject: Re: [PATCH 2/3] mtd: nand: mxc: Add own write_page
+Message-ID: <20171218220043.427f59ed@bbrezillon>
+In-Reply-To: <20171218204935.cmacd6bsvhl7y277@pengutronix.de>
+References: <20171215085504.32296-1-s.hauer@pengutronix.de>
+ <20171215085504.32296-3-s.hauer@pengutronix.de>
+ <20171218180308.17eb3a28@bbrezillon>
+ <20171218204935.cmacd6bsvhl7y277@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,47 +26,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+On Mon, 18 Dec 2017 21:49:35 +0100
+Sascha Hauer <s.hauer@pengutronix.de> wrote:
 
-On Mon, 18 Dec 2017 16:49:34 +0100 Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index aa71ab52fd76..10732ecfc937 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -8956,7 +8956,7 @@ L:	linux-mtd@lists.infradead.org
->  W:	http://www.linux-mtd.infradead.org/
->  Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
->  T:	git git://git.infradead.org/linux-mtd.git master
-> -T:	git git://git.infradead.org/l2-mtd.git master
-> +T:	git git://git.infradead.org/linux-mtd.git mtd/next
+> On Mon, Dec 18, 2017 at 06:03:08PM +0100, Boris Brezillon wrote:
+> > On Fri, 15 Dec 2017 09:55:03 +0100
+> > Sascha Hauer <s.hauer@pengutronix.de> wrote:
+> >   
+> > > Now that we have our own read_page function add a write_page function
+> > > for consistency aswell. This can be a lot easier than the generic
+> > > function since we do not have to iterate over subpages but can write
+> > > the whole page at once.
+> > > 
+> > > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> > > ---
+> > >  drivers/mtd/nand/mxc_nand.c | 17 +++++++++++++++++
+> > >  1 file changed, 17 insertions(+)
+> > > 
+> > > diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+> > > index 65d5cde4692b..a54804f14bb1 100644
+> > > --- a/drivers/mtd/nand/mxc_nand.c
+> > > +++ b/drivers/mtd/nand/mxc_nand.c
+> > > @@ -142,6 +142,8 @@ struct mxc_nand_devtype_data {
+> > >  	void (*preset)(struct mtd_info *);
+> > >  	int (*read_page)(struct mtd_info *mtd, struct nand_chip *chip,
+> > >  			uint8_t *buf, int oob_required, int page);
+> > > +	int (*write_page)(struct mtd_info *mtd, struct nand_chip *chip,
+> > > +			  const uint8_t *buf, int oob_required, int page);
+> > >  	void (*send_cmd)(struct mxc_nand_host *, uint16_t, int);
+> > >  	void (*send_addr)(struct mxc_nand_host *, uint16_t, int);
+> > >  	void (*send_page)(struct mtd_info *, unsigned int);
+> > > @@ -658,6 +660,17 @@ static int mxc_nand_read_page_hwecc_v2_v3(struct mtd_info *mtd,
+> > >  	return max_bitflips;
+> > >  }
+> > >  
+> > > +static int mxc_nand_write_page_hwecc_v2_v3(struct mtd_info *mtd,
+> > > +					   struct nand_chip *chip,
+> > > +					   const uint8_t *buf, int oob_required,
+> > > +					   int page)
+> > > +{
+> > > +	chip->write_buf(mtd, buf, mtd->writesize);
+> > > +	chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > >  static int mxc_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
+> > >  				  u_char *ecc_code)
+> > >  {
+> > > @@ -1456,6 +1469,7 @@ static const struct mxc_nand_devtype_data imx27_nand_devtype_data = {
+> > >  static const struct mxc_nand_devtype_data imx25_nand_devtype_data = {
+> > >  	.preset = preset_v2,
+> > >  	.read_page = mxc_nand_read_page_hwecc_v2_v3,
+> > > +	.write_page = mxc_nand_write_page_hwecc_v2_v3,
+> > >  	.send_cmd = send_cmd_v1_v2,
+> > >  	.send_addr = send_addr_v1_v2,
+> > >  	.send_page = send_page_v2,
+> > > @@ -1482,6 +1496,7 @@ static const struct mxc_nand_devtype_data imx25_nand_devtype_data = {
+> > >  static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
+> > >  	.preset = preset_v3,
+> > >  	.read_page = mxc_nand_read_page_hwecc_v2_v3,
+> > > +	.write_page = mxc_nand_write_page_hwecc_v2_v3,
+> > >  	.send_cmd = send_cmd_v3,
+> > >  	.send_addr = send_addr_v3,
+> > >  	.send_page = send_page_v3,
+> > > @@ -1508,6 +1523,7 @@ static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
+> > >  static const struct mxc_nand_devtype_data imx53_nand_devtype_data = {
+> > >  	.preset = preset_v3,
+> > >  	.read_page = mxc_nand_read_page_hwecc_v2_v3,
+> > > +	.write_page = mxc_nand_write_page_hwecc_v2_v3,
+> > >  	.send_cmd = send_cmd_v3,
+> > >  	.send_addr = send_addr_v3,
+> > >  	.send_page = send_page_v3,
+> > > @@ -1766,6 +1782,7 @@ static int mxcnd_probe(struct platform_device *pdev)
+> > >  	switch (this->ecc.mode) {
+> > >  	case NAND_ECC_HW:
+> > >  		this->ecc.read_page = host->devtype_data->read_page;
+> > > +		this->ecc.write_page = host->devtype_data->write_page;
+> > >  		this->ecc.calculate = mxc_nand_calculate_ecc;  
+> > 
+> > I'm pretty sure you don't need this dummy calculate method now that you
+> > provide your own ->write/read_page() implementations.  
+> 
+> True for the v2/v3 type controllers, but not for v1 which I haven't
+> changed in this series.
 
-Done.  This is the l2-mtd tree.
+Indeed, forgot that v1 support was not updated.
 
->  S:	Maintained
->  F:	Documentation/devicetree/bindings/mtd/
->  F:	drivers/mtd/
-> @@ -9344,7 +9344,7 @@ L:	linux-mtd@lists.infradead.org
->  W:	http://www.linux-mtd.infradead.org/
->  Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
->  T:	git git://git.infradead.org/linux-mtd.git nand/fixes
-> -T:	git git://git.infradead.org/l2-mtd.git nand/next
-> +T:	git git://git.infradead.org/linux-mtd.git nand/next
+> 
+> Will update the series next year.
 
-Done.  This is the nand tree.  I noticed that it has lost its four top commits.
+Thanks.
 
->  S:	Maintained
->  F:	drivers/mtd/nand/
->  F:	include/linux/mtd/*nand*.h
-> @@ -12761,7 +12761,7 @@ L:	linux-mtd@lists.infradead.org
->  W:	http://www.linux-mtd.infradead.org/
->  Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
->  T:	git git://git.infradead.org/linux-mtd.git spi-nor/fixes
-> -T:	git git://git.infradead.org/l2-mtd.git spi-nor/next
-> +T:	git git://git.infradead.org/linux-mtd.git spi-nor/next
-
-Done.  This is the spi-nor tree.
-
--- 
-Cheers,
-Stephen Rothwell
+> 
+> Thanks
+>   Sascha
+> 
