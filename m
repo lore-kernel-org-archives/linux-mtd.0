@@ -1,24 +1,22 @@
-Received: from mail02.prevas.se ([62.95.78.10])
- by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
- id 1eQq7U-0006uP-R8
- for linux-mtd@lists.infradead.org; Mon, 18 Dec 2017 07:45:54 +0000
-Subject: Re: [PATCH] Fix OOB_READ bug where hardware FIFO is not drained
- completely. Fix potential bug for non-ECC operations.
-From: =?UTF-8?Q?Sean_Nyekj=c3=a6r?= <sean.nyekjaer@prevas.dk>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-CC: Greg Cook <greg@morpheus.ws>, <ezequiel.garcia@free-electrons.com>,
- <linux-mtd@lists.infradead.org>, <miquel.raynal@free-electrons.com>, "Kasper
- Revsbech (KREV)" <krev@triax.com>
-References: <20171212083826.5000-1-greg@morpheus.ws>
- <20171212142033.5b19efec@bbrezillon>
- <ab0ba0d5-09e9-4c9f-7798-b02fe9b54260@prevas.dk>
-Message-ID: <1e25d252-9c56-be29-f6c7-788624d4fc31@prevas.dk>
-Date: Mon, 18 Dec 2017 08:44:36 +0100
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
+ id 1eQqGx-00036b-Aj
+ for linux-mtd@lists.infradead.org; Mon, 18 Dec 2017 07:55:42 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Miquel Raynal <miquel.raynal@free-electrons.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: Fix mtd_check_oob_ops()
+Date: Mon, 18 Dec 2017 08:55:48 +0100
+Message-ID: <4707993.PQVFgyHhAj@blindfold>
+In-Reply-To: <20171218072628.17977-1-miquel.raynal@free-electrons.com>
+References: <20171218072628.17977-1-miquel.raynal@free-electrons.com>
 MIME-Version: 1.0
-In-Reply-To: <ab0ba0d5-09e9-4c9f-7798-b02fe9b54260@prevas.dk>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,37 +26,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris
->>
->> Can you try with the below patch and see if it fixes the timeout issue?
->>
->> --->8---
->> diff --git a/drivers/mtd/nand/pxa3xx_nand.c 
->> b/drivers/mtd/nand/pxa3xx_nand.c
->> index 021374fe59dc..d1979c7dbe7e 100644
->> --- a/drivers/mtd/nand/pxa3xx_nand.c
->> +++ b/drivers/mtd/nand/pxa3xx_nand.c
->> @@ -961,6 +961,7 @@ static void prepare_start_command(struct 
->> pxa3xx_nand_info *info, int command)
->>            switch (command) {
->>          case NAND_CMD_READ0:
->> +       case NAND_CMD_READOOB:
->>          case NAND_CMD_PAGEPROG:
->>                  info->use_ecc = 1;
->>                  break;
-> This fixes the timeout issue :-) Also without bbt...
->
-> root@output-module:~# nanddump -oa /dev/mtd1
-> ECC failed: 0
-> ECC corrected: 0
-> Number of bad blocks: 0
-> Number of bbt blocks: 8
-> Block size 131072, page size 2048, OOB size 64
-> Dumping data starting at 0x00000000 and ending at 0x0ff00000...
-> UBIXSUBI
->
+Am Montag, 18. Dezember 2017, 08:26:28 CET schrieb Miquel Raynal:
+> The mtd_check_oob_ops() helper verifies if the operation defined by the
+> user is correct.
+> 
+> Fix the check that verifies if the entire requested area exists. This
+> check is too restrictive and will fail anytime the last data byte of the
+> very last page is included in an operation.
+> 
+> Fixes: 5cdd929da53d ("mtd: Add sanity checks in mtd_write/read_oob()")
+> Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
 
-Is this considered a valid patch for our 4.14 LTS kernel, pxa3xx driver?
-Or is it only masking some other problems?
+Thanks for spotting and fixing this, Miquel.
 
-/Sean
+> ---
+>  drivers/mtd/mtdcore.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index f80e911b8843..73b605577447 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -1114,7 +1114,7 @@ static int mtd_check_oob_ops(struct mtd_info *mtd,
+> loff_t offs, if (!ops->oobbuf)
+>  		ops->ooblen = 0;
+> 
+> -	if (offs < 0 || offs + ops->len >= mtd->size)
+> +	if (offs < 0 || offs + ops->len > mtd->size)
+>  		return -EINVAL;
+> 
+>  	if (ops->ooblen) {
+
+Thanks,
+//richard
