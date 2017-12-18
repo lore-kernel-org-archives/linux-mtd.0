@@ -1,16 +1,12 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.87 #1 (Red Hat Linux))
- id 1eQrpj-0000KV-TV
- for linux-mtd@lists.infradead.org; Mon, 18 Dec 2017 09:35:41 +0000
-Date: Mon, 18 Dec 2017 10:35:18 +0100
-From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-To: Sean =?UTF-8?B?Tnlla2rDpnI=?= <sean.nyekjaer@prevas.dk>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+Received: from mail01.prevas.se ([62.95.78.3])
+ by bombadil.infradead.org with esmtps (Exim 4.87 #1 (Red Hat Linux))
+ id 1eQsPa-0004Ks-H8
+ for linux-mtd@lists.infradead.org; Mon, 18 Dec 2017 10:12:44 +0000
+Subject: Re: [SPAM] Re: [BUG] pxa3xx: wait time out when scanning for bb
+To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+CC: Boris Brezillon <boris.brezillon@free-electrons.com>,
  <ezequiel.garcia@free-electrons.com>, <linux-mtd@lists.infradead.org>,
  "Kasper Revsbech (KREV)" <krev@triax.com>
-Subject: Re: [SPAM] Re: [BUG] pxa3xx: wait time out when scanning for bb
-Message-ID: <20171218103518.4d2f2009@xps13>
-In-Reply-To: <a60415ac-061a-8177-dff8-da16727a236a@prevas.dk>
 References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
  <a0267c71-4333-7dd4-dcf4-14aced37f8f9@prevas.dk>
  <20171212123523.48185f21@xps13>
@@ -33,9 +29,15 @@ References: <7df7abb5-e666-c999-e449-75762b551ea5@prevas.dk>
  <4e25e578-f0a6-89a0-b6f8-98bda37d12de@prevas.dk>
  <20171218095609.30408c57@xps13>
  <a60415ac-061a-8177-dff8-da16727a236a@prevas.dk>
+ <20171218103518.4d2f2009@xps13>
+From: =?UTF-8?Q?Sean_Nyekj=c3=a6r?= <sean.nyekjaer@prevas.dk>
+Message-ID: <58014e55-ad67-5fcb-a2fb-947c17083ddb@prevas.dk>
+Date: Mon, 18 Dec 2017 11:12:19 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20171218103518.4d2f2009@xps13>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -45,30 +47,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Sean,
- =20
-> >> https://gist.github.com/anonymous/08049fbb46bf6df2d24a07aab8783833 =20
-> > This is really helpful. It shows the driver is the problem. I don't
-> > know yet why it reads the NAND status instead of the actual data at
-> > this moment. I am looking into it.
-> >
-> > I added one fixup in my github branch that could possibly help,
-> > could you give it a try while I am going deeper in my research?
-> > =20
-> Rebased on top of 8cec3f8653e0fe914d831f05cf91ab9face5c1a5
-> The "print_req_error: I/O error, dev mtdblock1, sector 0" is gone
->=20
-> And what you did have apperently fixed the issue with ecc.
-> The driver is reading the bbt uboot have written :-)
->=20
-> https://gist.github.com/anonymous/4476819c081896e5e265b3282db52e46
+Hi Miquel
+>>>> https://gist.github.com/anonymous/08049fbb46bf6df2d24a07aab8783833
+>>> This is really helpful. It shows the driver is the problem. I don't
+>>> know yet why it reads the NAND status instead of the actual data at
+>>> this moment. I am looking into it.
+>>>
+>>> I added one fixup in my github branch that could possibly help,
+>>> could you give it a try while I am going deeper in my research?
+>>>   
+>> Rebased on top of 8cec3f8653e0fe914d831f05cf91ab9face5c1a5
+>> The "print_req_error: I/O error, dev mtdblock1, sector 0" is gone
+>>
+>> And what you did have apperently fixed the issue with ecc.
+>> The driver is reading the bbt uboot have written :-)
+>>
+>> https://gist.github.com/anonymous/4476819c081896e5e265b3282db52e46
+> That is good news but can you please also do a dump without -n but with
+> -o, it failed in this configuration until now and if I am not doing any
+> mistake, you did not try this with the last fix?
+Last fix?
+I have rebase my kernel on top of marvell/nand-next/nfc-rework 8cec3f865
+>
+> I know the boot should have failed like the previous ones, but it is
+> just to be sure ;)
+>
+https://gist.github.com/anonymous/5ee7f82c59f3f58fdc4f8392ec1afbc7
 
-That is good news but can you please also do a dump without -n but with
--o, it failed in this configuration until now and if I am not doing any
-mistake, you did not try this with the last fix?
-
-I know the boot should have failed like the previous ones, but it is
-just to be sure ;)
-
-Thanks, we are getting closer.
-Miqu=C3=A8l
+/Sean
