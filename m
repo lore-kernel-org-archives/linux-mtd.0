@@ -1,24 +1,24 @@
-Date: Tue, 19 Dec 2017 06:34:59 +0100
-From: Willy Tarreau <w@1wt.eu>
-To: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: pxa3xx_nand times out in 4.14 with JFFS2
-Message-ID: <20171219053459.GA7756@1wt.eu>
-References: <20171217190056.GA1107@1wt.eu>
- <CAAEAJfArtxcWgcjHAb__3BQxWEBgWU8uWtHGYETc-m9eUs91nA@mail.gmail.com>
- <20171217211650.GA6815@1wt.eu> <20171217222611.59f9031b@bbrezillon>
- <20171217224617.1f9b8b84@xps13> <20171218063715.GA20461@1wt.eu>
- <20171218070617.GA16559@1wt.eu> <20171218112208.0057634d@xps13>
- <20171218215217.GA17755@1wt.eu> <20171219011315.2fa0f9d1@xps13>
+Received: from mo1501.tsb.2iij.net ([210.149.48.173] helo=mo.tsb.2iij.net)
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eRGK6-00081f-Le
+ for linux-mtd@lists.infradead.org; Tue, 19 Dec 2017 11:44:40 +0000
+Subject: Re: [PATCH -next v3 1/2] mtd: nand: toshiba: Retrieve ECC
+ requirements from extended ID
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
+ marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1512569098-30038-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
+ <1512569098-30038-2-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
+ <20171206160805.2435094b@bbrezillon>
+From: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+Message-ID: <3e11d966-0801-96f2-8417-194b36a0b775@toshiba.co.jp>
+Date: Tue, 19 Dec 2017 20:42:36 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20171219011315.2fa0f9d1@xps13>
+In-Reply-To: <20171206160805.2435094b@bbrezillon>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,16 +28,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Dec 19, 2017 at 01:13:15AM +0100, Miquel RAYNAL wrote:
-> Boris' fix wouldn't apply anyway as it was written for pxa3xx_nand.c
-> and here you are using marvell_nand.c and the code is really different.
+On 2017/12/07 0:08, Boris Brezillon wrote:
+> On Wed,  6 Dec 2017 23:04:57 +0900
+> KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:
+> 
+>> This patch enables support to read the ECC strength and size from the
+>> NAND flash using Toshiba Memory SLC NAND extended-ID. This patch is
+>> based on the information of the 6th ID byte of the Toshiba Memory SLC
+>> NAND.
+>>
+>> Signed-off-by: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+>> ---
+>>  drivers/mtd/nand/nand_toshiba.c | 28 ++++++++++++++++++++++++++++
+>>  1 file changed, 28 insertions(+)
+>>
+>> diff --git a/drivers/mtd/nand/nand_toshiba.c b/drivers/mtd/nand/nand_toshiba.c
+>> index 57df857..c2c141b 100644
+>> --- a/drivers/mtd/nand/nand_toshiba.c
+>> +++ b/drivers/mtd/nand/nand_toshiba.c
+>> @@ -35,6 +35,34 @@ static void toshiba_nand_decode_id(struct nand_chip *chip)
+>>  	    (chip->id.data[5] & 0x7) == 0x6 /* 24nm */ &&
+>>  	    !(chip->id.data[4] & 0x80) /* !BENAND */)
+>>  		mtd->oobsize = 32 * mtd->writesize >> 9;
+>> +
+>> +	/*
+>> +	 * Extract ECC requirements from 6th id byte.
+>> +	 * For Toshiba SLC, ecc requrements are as follows:
+>> +	 *  - 43nm: 1 bit ECC for each 512Byte is required.
+>> +	 *  - 32nm: 4 bit ECC for each 512Byte is required.
+>> +	 *  - 24nm: 8 bit ECC for each 512Byte is required.
+>> +	 */
+>> +	if (chip->id.len >= 6 && nand_is_slc(chip)) {
+>> +		chip->ecc_step_ds = 512;
+>> +		switch (chip->id.data[5] & 0x7) {
+>> +		case 0x4:
+>> +			chip->ecc_strength_ds = 1;
+>> +			break;
+>> +		case 0x5:
+>> +			chip->ecc_strength_ds = 4;
+>> +			break;
+>> +		case 0x6:
+>> +			chip->ecc_strength_ds = 8;
+>> +			break;
+>> +		default:
+>> +			WARN(1, "Could not get ECC info");
+>> +			chip->ecc_step_ds = 0;
+>> +			break;
+>> +		}
+>> +	} else if (chip->id.len < 6 && nand_is_slc(chip)) {
+>> +		WARN(1, "Could not get ECC info, 6th nand id byte does not exist.");
+> 
+> I'm pretty sure you have old NAND chips that do not have 6bytes ids
+> (see the table here [1]), and printing a huge backtrace in this case is
+> probably not what you want.
+> 
+> If you're okay with dropping this else block, I'll do the change when
+> applying, no need to send a new version.
 
-yep I noticed already during the first problem, I couldn't even find
-where the equivalent part of the code was located.
-
-> Thanks again for your help, reviews or tested-by's are welcome for this
-> driver ;)
-
-do not hesitate to add my tested-by on your current patchset if that helps.
-
-Willy
+Some controllers may have limitation in reading ids beyond 5 bytes, 
+considering such scenario we think it is better to keep this warning.
+However if you feel huge backtrace is an issue, how about we using pr_warn() instead?
