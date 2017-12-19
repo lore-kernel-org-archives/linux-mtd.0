@@ -1,25 +1,34 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eRGku-0005py-Ic
- for linux-mtd@lists.infradead.org; Tue, 19 Dec 2017 12:12:48 +0000
-Date: Tue, 19 Dec 2017 13:11:58 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
-Cc: richard@nod.at, linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, cyrille.pitchen@wedev4u.fr,
- computersforpeace@gmail.com, dwmw2@infradead.org
-Subject: Re: [PATCH -next v3 1/2] mtd: nand: toshiba: Retrieve ECC
- requirements from extended ID
-Message-ID: <20171219131158.26afa9a7@bbrezillon>
-In-Reply-To: <20171219125624.58e3e8f8@bbrezillon>
-References: <1512569098-30038-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
- <1512569098-30038-2-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
- <20171206160805.2435094b@bbrezillon>
- <3e11d966-0801-96f2-8417-194b36a0b775@toshiba.co.jp>
- <20171219125624.58e3e8f8@bbrezillon>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From: Miquel Raynal <miquel.raynal@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Russell King <linux@armlinux.org.uk>, Daniel Mack <daniel@zonque.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>, Eric Miao <eric.y.miao@gmail.com>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will.deacon@arm.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Antoine Tenart <antoine.tenart@free-electrons.com>,
+ Nadav Haklai <nadavh@marvell.com>,
+ Miquel Raynal <miquel.raynal@free-electrons.com>,
+ Ofer Heifetz <oferh@marvell.com>, Hanna Hawa <hannah@marvell.com>,
+ Neta Zur Hershkovits <neta@marvell.com>, Willy Tarreau <w@1wt.eu>,
+ =?UTF-8?q?Sean=20Nyekj=C3=A6r?= <sean.nyekjaer@prevas.dk>
+Subject: [PATCH v2 4/5] dt-bindings: mtd: remove pxa3xx NAND controller
+ documentation
+Date: Tue, 19 Dec 2017 14:29:41 +0100
+Message-Id: <20171219132942.27433-5-miquel.raynal@free-electrons.com>
+In-Reply-To: <20171219132942.27433-1-miquel.raynal@free-electrons.com>
+References: <20171219132942.27433-1-miquel.raynal@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,86 +38,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 19 Dec 2017 12:56:24 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+The deprecated pxa3xx_nand.c driver does not exist anymore, it has been
+replaced by marvell_nand.c which has its own up-to-date documentation.
 
-> On Tue, 19 Dec 2017 20:42:36 +0900
-> KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:
-> 
-> > On 2017/12/07 0:08, Boris Brezillon wrote:  
-> > > On Wed,  6 Dec 2017 23:04:57 +0900
-> > > KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:
-> > >     
-> > >> This patch enables support to read the ECC strength and size from the
-> > >> NAND flash using Toshiba Memory SLC NAND extended-ID. This patch is
-> > >> based on the information of the 6th ID byte of the Toshiba Memory SLC
-> > >> NAND.
-> > >>
-> > >> Signed-off-by: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
-> > >> ---
-> > >>  drivers/mtd/nand/nand_toshiba.c | 28 ++++++++++++++++++++++++++++
-> > >>  1 file changed, 28 insertions(+)
-> > >>
-> > >> diff --git a/drivers/mtd/nand/nand_toshiba.c b/drivers/mtd/nand/nand_toshiba.c
-> > >> index 57df857..c2c141b 100644
-> > >> --- a/drivers/mtd/nand/nand_toshiba.c
-> > >> +++ b/drivers/mtd/nand/nand_toshiba.c
-> > >> @@ -35,6 +35,34 @@ static void toshiba_nand_decode_id(struct nand_chip *chip)
-> > >>  	    (chip->id.data[5] & 0x7) == 0x6 /* 24nm */ &&
-> > >>  	    !(chip->id.data[4] & 0x80) /* !BENAND */)
-> > >>  		mtd->oobsize = 32 * mtd->writesize >> 9;
-> > >> +
-> > >> +	/*
-> > >> +	 * Extract ECC requirements from 6th id byte.
-> > >> +	 * For Toshiba SLC, ecc requrements are as follows:
-> > >> +	 *  - 43nm: 1 bit ECC for each 512Byte is required.
-> > >> +	 *  - 32nm: 4 bit ECC for each 512Byte is required.
-> > >> +	 *  - 24nm: 8 bit ECC for each 512Byte is required.
-> > >> +	 */
-> > >> +	if (chip->id.len >= 6 && nand_is_slc(chip)) {
-> > >> +		chip->ecc_step_ds = 512;
-> > >> +		switch (chip->id.data[5] & 0x7) {
-> > >> +		case 0x4:
-> > >> +			chip->ecc_strength_ds = 1;
-> > >> +			break;
-> > >> +		case 0x5:
-> > >> +			chip->ecc_strength_ds = 4;
-> > >> +			break;
-> > >> +		case 0x6:
-> > >> +			chip->ecc_strength_ds = 8;
-> > >> +			break;
-> > >> +		default:
-> > >> +			WARN(1, "Could not get ECC info");
-> > >> +			chip->ecc_step_ds = 0;
-> > >> +			break;
-> > >> +		}
-> > >> +	} else if (chip->id.len < 6 && nand_is_slc(chip)) {
-> > >> +		WARN(1, "Could not get ECC info, 6th nand id byte does not exist.");    
-> > > 
-> > > I'm pretty sure you have old NAND chips that do not have 6bytes ids
-> > > (see the table here [1]), and printing a huge backtrace in this case is
-> > > probably not what you want.
-> > > 
-> > > If you're okay with dropping this else block, I'll do the change when
-> > > applying, no need to send a new version.    
-> > 
-> > Some controllers may have limitation in reading ids beyond 5 bytes, 
-> > considering such scenario we think it is better to keep this warning.
-> > However if you feel huge backtrace is an issue, how about we using pr_warn() instead?
-> >   
-> 
-> Toshiba NANDs with an id smaller than 6 bytes exist, so no, we should
-> not complain at all. If the controller is broken and can't read the 8 id
-> bytes the core is asking for, then it should be detected at the core
-> level not in the NAND manufacturer driver.
+Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+---
+ .../devicetree/bindings/mtd/pxa3xx-nand.txt        | 50 ----------------------
+ 1 file changed, 50 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
 
-It seems I forgot the link to the NAND table, so here it is [1], and as
-you can see, some chips have only 2 id bytes (TC58DVG02A5 is one of
-them).
-
-[1]http://www.linux-mtd.infradead.org/nand-data/nanddata.html
-
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+diff --git a/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt b/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
+deleted file mode 100644
+index d4ee4da58463..000000000000
+--- a/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
++++ /dev/null
+@@ -1,50 +0,0 @@
+-PXA3xx NAND DT bindings
+-
+-Required properties:
+-
+- - compatible:		Should be set to one of the following:
+-			marvell,pxa3xx-nand
+-			marvell,armada370-nand
+-			marvell,armada-8k-nand
+- - reg: 		The register base for the controller
+- - interrupts:		The interrupt to map
+- - #address-cells:	Set to <1> if the node includes partitions
+- - marvell,system-controller: Set to retrieve the syscon node that handles
+-			NAND controller related registers (only required
+-			with marvell,armada-8k-nand compatible).
+-
+-Optional properties:
+-
+- - dmas:			dma data channel, see dma.txt binding doc
+- - marvell,nand-enable-arbiter:	Set to enable the bus arbiter
+- - marvell,nand-keep-config:	Set to keep the NAND controller config as set
+-				by the bootloader
+- - num-cs:			Number of chipselect lines to use
+- - nand-on-flash-bbt: 		boolean to enable on flash bbt option if
+-				not present false
+- - nand-ecc-strength:           number of bits to correct per ECC step
+- - nand-ecc-step-size:          number of data bytes covered by a single ECC step
+-
+-The following ECC strength and step size are currently supported:
+-
+- - nand-ecc-strength = <1>, nand-ecc-step-size = <512>
+- - nand-ecc-strength = <4>, nand-ecc-step-size = <512>
+- - nand-ecc-strength = <8>, nand-ecc-step-size = <512>
+-
+-Example:
+-
+-	nand0: nand@43100000 {
+-		compatible = "marvell,pxa3xx-nand";
+-		reg = <0x43100000 90>;
+-		interrupts = <45>;
+-		dmas = <&pdma 97 0>;
+-		dma-names = "data";
+-		#address-cells = <1>;
+-
+-		marvell,nand-enable-arbiter;
+-		marvell,nand-keep-config;
+-		num-cs = <1>;
+-
+-		/* partitions (optional) */
+-	};
+-
+-- 
+2.11.0
