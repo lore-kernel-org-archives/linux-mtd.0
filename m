@@ -1,21 +1,22 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eRGd5-0001zq-JE
- for linux-mtd@lists.infradead.org; Tue, 19 Dec 2017 12:04:17 +0000
-Date: Tue, 19 Dec 2017 13:03:53 +0100
+ id 1eRGku-0005py-Ic
+ for linux-mtd@lists.infradead.org; Tue, 19 Dec 2017 12:12:48 +0000
+Date: Tue, 19 Dec 2017 13:11:58 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
-Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
- marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next v3 2/2] mtd: nand: toshiba: Add support for
- Toshiba Memory BENAND (Built-in ECC NAND)
-Message-ID: <20171219130353.4d0a3bee@bbrezillon>
-In-Reply-To: <dc554f2d-f72f-70b5-d6fa-d1a94bd0e148@toshiba.co.jp>
+Cc: richard@nod.at, linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, cyrille.pitchen@wedev4u.fr,
+ computersforpeace@gmail.com, dwmw2@infradead.org
+Subject: Re: [PATCH -next v3 1/2] mtd: nand: toshiba: Retrieve ECC
+ requirements from extended ID
+Message-ID: <20171219131158.26afa9a7@bbrezillon>
+In-Reply-To: <20171219125624.58e3e8f8@bbrezillon>
 References: <1512569098-30038-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
- <1512569098-30038-3-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
- <20171206162404.3a1d83b9@bbrezillon>
- <dc554f2d-f72f-70b5-d6fa-d1a94bd0e148@toshiba.co.jp>
+ <1512569098-30038-2-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
+ <20171206160805.2435094b@bbrezillon>
+ <3e11d966-0801-96f2-8417-194b36a0b775@toshiba.co.jp>
+ <20171219125624.58e3e8f8@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,176 +29,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 19 Dec 2017 21:01:47 +0900
-KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:
+On Tue, 19 Dec 2017 12:56:24 +0100
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-> Thanks for reviewing the patches and taht is a good news for me about nand_exec_op().
-> I'll change this patch as you suggested.
-> I would like to make sure the following one.
+> On Tue, 19 Dec 2017 20:42:36 +0900
+> KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:
 > 
-> >> @@ -70,6 +155,10 @@ static int toshiba_nand_init(struct nand_chip *chip)
-> >>  	if (nand_is_slc(chip))
-> >>  		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
-> >>  
-> >> +	if (nand_is_slc(chip) && (chip->id.data[4] & 0x80) /* BENAND */ &&
-> >> +	    (chip->ecc.mode == NAND_ECC_ON_DIE))
-> >> +		toshiba_nand_benand_init(chip);
-> >> +  
+> > On 2017/12/07 0:08, Boris Brezillon wrote:  
+> > > On Wed,  6 Dec 2017 23:04:57 +0900
+> > > KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:
+> > >     
+> > >> This patch enables support to read the ECC strength and size from the
+> > >> NAND flash using Toshiba Memory SLC NAND extended-ID. This patch is
+> > >> based on the information of the 6th ID byte of the Toshiba Memory SLC
+> > >> NAND.
+> > >>
+> > >> Signed-off-by: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+> > >> ---
+> > >>  drivers/mtd/nand/nand_toshiba.c | 28 ++++++++++++++++++++++++++++
+> > >>  1 file changed, 28 insertions(+)
+> > >>
+> > >> diff --git a/drivers/mtd/nand/nand_toshiba.c b/drivers/mtd/nand/nand_toshiba.c
+> > >> index 57df857..c2c141b 100644
+> > >> --- a/drivers/mtd/nand/nand_toshiba.c
+> > >> +++ b/drivers/mtd/nand/nand_toshiba.c
+> > >> @@ -35,6 +35,34 @@ static void toshiba_nand_decode_id(struct nand_chip *chip)
+> > >>  	    (chip->id.data[5] & 0x7) == 0x6 /* 24nm */ &&
+> > >>  	    !(chip->id.data[4] & 0x80) /* !BENAND */)
+> > >>  		mtd->oobsize = 32 * mtd->writesize >> 9;
+> > >> +
+> > >> +	/*
+> > >> +	 * Extract ECC requirements from 6th id byte.
+> > >> +	 * For Toshiba SLC, ecc requrements are as follows:
+> > >> +	 *  - 43nm: 1 bit ECC for each 512Byte is required.
+> > >> +	 *  - 32nm: 4 bit ECC for each 512Byte is required.
+> > >> +	 *  - 24nm: 8 bit ECC for each 512Byte is required.
+> > >> +	 */
+> > >> +	if (chip->id.len >= 6 && nand_is_slc(chip)) {
+> > >> +		chip->ecc_step_ds = 512;
+> > >> +		switch (chip->id.data[5] & 0x7) {
+> > >> +		case 0x4:
+> > >> +			chip->ecc_strength_ds = 1;
+> > >> +			break;
+> > >> +		case 0x5:
+> > >> +			chip->ecc_strength_ds = 4;
+> > >> +			break;
+> > >> +		case 0x6:
+> > >> +			chip->ecc_strength_ds = 8;
+> > >> +			break;
+> > >> +		default:
+> > >> +			WARN(1, "Could not get ECC info");
+> > >> +			chip->ecc_step_ds = 0;
+> > >> +			break;
+> > >> +		}
+> > >> +	} else if (chip->id.len < 6 && nand_is_slc(chip)) {
+> > >> +		WARN(1, "Could not get ECC info, 6th nand id byte does not exist.");    
+> > > 
+> > > I'm pretty sure you have old NAND chips that do not have 6bytes ids
+> > > (see the table here [1]), and printing a huge backtrace in this case is
+> > > probably not what you want.
+> > > 
+> > > If you're okay with dropping this else block, I'll do the change when
+> > > applying, no need to send a new version.    
 > > 
-> > Please move this block to toshiba_nand_init().  
+> > Some controllers may have limitation in reading ids beyond 5 bytes, 
+> > considering such scenario we think it is better to keep this warning.
+> > However if you feel huge backtrace is an issue, how about we using pr_warn() instead?
+> >   
 > 
-> I think it's already in toshiba_nand_init().
+> Toshiba NANDs with an id smaller than 6 bytes exist, so no, we should
+> not complain at all. If the controller is broken and can't read the 8 id
+> bytes the core is asking for, then it should be detected at the core
+> level not in the NAND manufacturer driver.
 
-My bad, I thought it was in the decode_id() function.
+It seems I forgot the link to the NAND table, so here it is [1], and as
+you can see, some chips have only 2 id bytes (TC58DVG02A5 is one of
+them).
+
+[1]http://www.linux-mtd.infradead.org/nand-data/nanddata.html
 
 > 
-> -- YOSHI
-> 
-> 
-> On 2017/12/07 0:24, Boris Brezillon wrote:
-> > On Wed,  6 Dec 2017 23:04:58 +0900
-> > KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:
-> >   
-> >> This patch enables support for Toshiba Memory BENAND. This checks
-> >> internal ECC status in read operation when using BENAND and selecting
-> >> ECC mode as on-die.
-> >>
-> >> Signed-off-by: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
-> >> ---
-> >>  drivers/mtd/nand/nand_toshiba.c | 89 +++++++++++++++++++++++++++++++++++++++++
-> >>  1 file changed, 89 insertions(+)
-> >>
-> >> diff --git a/drivers/mtd/nand/nand_toshiba.c b/drivers/mtd/nand/nand_toshiba.c
-> >> index c2c141b..35c0ddf 100644
-> >> --- a/drivers/mtd/nand/nand_toshiba.c
-> >> +++ b/drivers/mtd/nand/nand_toshiba.c
-> >> @@ -17,6 +17,91 @@
-> >>  
-> >>  #include <linux/mtd/rawnand.h>
-> >>  
-> >> +/* ECC Status Read Command for BENAND */
-> >> +#define TOSHIBA_NAND_CMD_ECC_STATUS	0x7A
-> >> +
-> >> +/* Recommended to rewrite for BENAND */
-> >> +#define TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED	BIT(3)
-> >> +
-> >> +static int toshiba_nand_benand_status_chk(struct mtd_info *mtd,
-> >> +					  struct nand_chip *chip)
-> >> +{
-> >> +	unsigned int max_bitflips = 0;
-> >> +	u8 status;
-> >> +
-> >> +	/* Check Read Status */
-> >> +	chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
-> >> +	status = chip->read_byte(mtd);  
-> > 
-> > Please use the recently introduced nand_status_op() helper.
-> >   
-> >> +
-> >> +	/*
-> >> +	 * TOSHIBA_NAND_CMD_ECC_STATUS is vendor specific command.
-> >> +	 * Currently we have no way to send arbitrary sequences of
-> >> +	 * CMD+ADDR+DATA cycles and thus cannot support this custom
-> >> +	 * TOSHIBA_NAND_CMD_ECC_STATUS operation.  
-> > 
-> > That's about to change :-), if everything goes well, nand_exec_op()
-> > should be available in 4.16.
-> >   
-> >> +	 * For now, we set max_bitflips mtd->bitflip_threshold.
-> >> +	 */
-> >> +	if (status & NAND_STATUS_FAIL) {
-> >> +		/* uncorrectable */
-> >> +		mtd->ecc_stats.failed++;
-> >> +	} else if (status & TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED) {
-> >> +		/* correctable */
-> >> +		max_bitflips = mtd->bitflip_threshold;
-> >> +		mtd->ecc_stats.corrected += max_bitflips;
-> >> +	}
-> >> +
-> >> +	return max_bitflips;
-> >> +}
-> >> +
-> >> +static int
-> >> +toshiba_nand_read_page_benand(struct mtd_info *mtd,
-> >> +			      struct nand_chip *chip, uint8_t *buf,
-> >> +			      int oob_required, int page)
-> >> +{
-> >> +	nand_read_page_raw(mtd, chip, buf, oob_required, page);  
-> > 
-> > Please check the return code of nand_read_page_raw().
-> >   
-> >> +
-> >> +	return toshiba_nand_benand_status_chk(mtd, chip);
-> >> +}
-> >> +
-> >> +static int
-> >> +toshiba_nand_read_subpage_benand(struct mtd_info *mtd,
-> >> +				 struct nand_chip *chip, uint32_t data_offs,
-> >> +				 uint32_t readlen, uint8_t *bufpoi, int page)
-> >> +{
-> >> +	uint8_t *p;
-> >> +
-> >> +	if (data_offs != 0)
-> >> +		chip->cmdfunc(mtd, NAND_CMD_RNDOUT, data_offs, -1);
-> >> +
-> >> +	p = bufpoi + data_offs;
-> >> +	chip->read_buf(mtd, p, readlen);  
-> > 
-> > The core is no longer sending the initial READ0 command, so this should
-> > be turned into:
-> > 
-> > 	ret = nand_read_page_op(chip, data_offs, bufpoi + data_offs,
-> > 				readlen);
-> > 	if (ret)
-> > 		return ret;
-> > 		
-> >   
-> >> +
-> >> +	return toshiba_nand_benand_status_chk(mtd, chip);
-> >> +}
-> >> +
-> >> +static void toshiba_nand_benand_init(struct nand_chip *chip)
-> >> +{
-> >> +	struct mtd_info *mtd = nand_to_mtd(chip);
-> >> +
-> >> +	/*
-> >> +	 * On BENAND, the entire OOB region can be used by the MTD user.
-> >> +	 * The calculated ECC bytes are stored into other isolated
-> >> +	 * area which is not accessible to users.
-> >> +	 * This is why chip->ecc.bytes = 0.
-> >> +	 */
-> >> +	chip->ecc.bytes = 0;
-> >> +	chip->ecc.size = 512;
-> >> +	chip->ecc.strength = 8;
-> >> +	chip->ecc.read_page = toshiba_nand_read_page_benand;
-> >> +	chip->ecc.read_subpage = toshiba_nand_read_subpage_benand;
-> >> +	chip->ecc.write_page = nand_write_page_raw;
-> >> +	chip->ecc.read_page_raw = nand_read_page_raw;
-> >> +	chip->ecc.write_page_raw = nand_write_page_raw;
-> >> +
-> >> +	chip->options |= NAND_SUBPAGE_READ;
-> >> +
-> >> +	mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
-> >> +}
-> >> +
-> >>  static void toshiba_nand_decode_id(struct nand_chip *chip)
-> >>  {
-> >>  	struct mtd_info *mtd = nand_to_mtd(chip);
-> >> @@ -70,6 +155,10 @@ static int toshiba_nand_init(struct nand_chip *chip)
-> >>  	if (nand_is_slc(chip))
-> >>  		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
-> >>  
-> >> +	if (nand_is_slc(chip) && (chip->id.data[4] & 0x80) /* BENAND */ &&
-> >> +	    (chip->ecc.mode == NAND_ECC_ON_DIE))
-> >> +		toshiba_nand_benand_init(chip);
-> >> +  
-> > 
-> > Please move this block to toshiba_nand_init().
-> >   
-> >>  	return 0;
-> >>  }
-> >>    
-> > 
-> > 
-> >   
-> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
