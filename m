@@ -1,25 +1,19 @@
-Received: from ms.lwn.net ([45.79.88.28])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eRf8m-0001vx-Tp
- for linux-mtd@lists.infradead.org; Wed, 20 Dec 2017 14:14:38 +0000
-Date: Wed, 20 Dec 2017 07:14:22 -0700
-From: Jonathan Corbet <corbet@lwn.net>
-To: Adam Borowski <kilobyte@angband.pl>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>, Andreas Dilger
- <adilger.kernel@dilger.ca>, Eric Van Hensbergen <ericvh@gmail.com>, Ron
- Minnich <rminnich@sandia.gov>, Latchesar Ionkov <lucho@ionkov.net>,
- v9fs-developer@lists.sourceforge.net, Sage Weil <sage@redhat.com>, Ilya
- Dryomov <idryomov@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- linux-mtd@lists.infradead.org, reiserfs-devel@vger.kernel.org
-Subject: Re: [PATCH acks] fs/*/Kconfig: drop links to 404-compliant
- http://acl.bestbits.at
-Message-ID: <20171220071422.5177d2cf@lwn.net>
-In-Reply-To: <20171220135852.7662-1-kilobyte@angband.pl>
-References: <20171213053825.10903-1-kilobyte@angband.pl>
- <20171220135852.7662-1-kilobyte@angband.pl>
+Subject: Re: [PATCH 1/2] mtd: spi-nor: cadence-quadspi: Refactor indirect
+ read/write sequence.
+To: Vignesh R <vigneshr@ti.com>, Marek Vasut <marek.vasut@gmail.com>
+Cc: Dinh Nguyen <dinguyen@kernel.org>, matthew.gerlach@linux.intel.com,
+ linux-arm-kernel@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20171207063804.29436-1-vigneshr@ti.com>
+ <20171207063804.29436-2-vigneshr@ti.com>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <202bc35e-bb32-9ccd-7330-4b4812468834@wedev4u.fr>
+Date: Wed, 20 Dec 2017 16:00:20 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20171207063804.29436-2-vigneshr@ti.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,33 +24,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 20 Dec 2017 14:58:52 +0100
-Adam Borowski <kilobyte@angband.pl> wrote:
+Hi Vignesh,
 
-> This link is replicated in most filesystems' config stanzas.  Referring
-> to an archived version of that site is pointless as it mostly deals with
-> patches; user documentation is available elsewhere.
+Le 07/12/2017 à 07:38, Vignesh R a écrit :
+> Move configuring of indirect read/write start address to
+> cqspi_indirect_*_execute() function and rename cqspi_indirect_*_setup()
+> function. This will help to reuse cqspi_indirect_*_setup() function for
+> supporting direct access mode.
 > 
-> Signed-off-by: Adam Borowski <kilobyte@angband.pl>
-> Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-> Acked-by: Jan Kara <jack@suse.cz>
-> Acked-by: Dave Kleikamp <dave.kleikamp@oracle.com>
-> Acked-by: David Sterba <dsterba@suse.com>
-> Acked-by: "Yan, Zheng" <zyan@redhat.com>
-> Acked-by: Chao Yu <yuchao0@huawei.com>
-> Acked-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> Acked-by: Steve French <smfrench@gmail.com>
+> Signed-off-by: Vignesh R <vigneshr@ti.com>
+
+This patch looks good to me.
+
+Best regards,
+
+Cyrille
+
 > ---
-> No changes, acks added (Dave Kleikamp's came without CCs).
+>  drivers/mtd/spi-nor/cadence-quadspi.c | 27 ++++++++++++---------------
+>  1 file changed, 12 insertions(+), 15 deletions(-)
 > 
-> Acked: btrfs ceph cifs ext2 f2fs jfs xfs.
-> No ack: . 9p ext4 hfsplus jffs2 reiserfs -- but there's no point in caring
-> this much for a trivial doc update, molesting the maintainers further is a
-> waste of their time.
-
-So how would you like this to go upstream?  I can certainly take it
-through docs, but it seems like vfs might be the first choice...?
-
-Thanks,
-
-jon
+> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+> index 75a2bc447a99..becc7d714ab8 100644
+> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
+> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+> @@ -450,8 +450,7 @@ static int cqspi_command_write_addr(struct spi_nor *nor,
+>  	return cqspi_exec_flash_cmd(cqspi, reg);
+>  }
+>  
+> -static int cqspi_indirect_read_setup(struct spi_nor *nor,
+> -				     const unsigned int from_addr)
+> +static int cqspi_read_setup(struct spi_nor *nor)
+>  {
+>  	struct cqspi_flash_pdata *f_pdata = nor->priv;
+>  	struct cqspi_st *cqspi = f_pdata->cqspi;
+> @@ -459,7 +458,6 @@ static int cqspi_indirect_read_setup(struct spi_nor *nor,
+>  	unsigned int dummy_clk = 0;
+>  	unsigned int reg;
+>  
+> -	writel(from_addr, reg_base + CQSPI_REG_INDIRECTRDSTARTADDR);
+>  
+>  	reg = nor->read_opcode << CQSPI_REG_RD_INSTR_OPCODE_LSB;
+>  	reg |= cqspi_calc_rdreg(nor, nor->read_opcode);
+> @@ -493,8 +491,8 @@ static int cqspi_indirect_read_setup(struct spi_nor *nor,
+>  	return 0;
+>  }
+>  
+> -static int cqspi_indirect_read_execute(struct spi_nor *nor,
+> -				       u8 *rxbuf, const unsigned n_rx)
+> +static int cqspi_indirect_read_execute(struct spi_nor *nor, u8 *rxbuf,
+> +				       loff_t from_addr, const size_t n_rx)
+>  {
+>  	struct cqspi_flash_pdata *f_pdata = nor->priv;
+>  	struct cqspi_st *cqspi = f_pdata->cqspi;
+> @@ -504,6 +502,7 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor,
+>  	unsigned int bytes_to_read = 0;
+>  	int ret = 0;
+>  
+> +	writel(from_addr, reg_base + CQSPI_REG_INDIRECTRDSTARTADDR);
+>  	writel(remaining, reg_base + CQSPI_REG_INDIRECTRDBYTES);
+>  
+>  	/* Clear all interrupts. */
+> @@ -570,8 +569,7 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor,
+>  	return ret;
+>  }
+>  
+> -static int cqspi_indirect_write_setup(struct spi_nor *nor,
+> -				      const unsigned int to_addr)
+> +static int cqspi_write_setup(struct spi_nor *nor)
+>  {
+>  	unsigned int reg;
+>  	struct cqspi_flash_pdata *f_pdata = nor->priv;
+> @@ -584,8 +582,6 @@ static int cqspi_indirect_write_setup(struct spi_nor *nor,
+>  	reg = cqspi_calc_rdreg(nor, nor->program_opcode);
+>  	writel(reg, reg_base + CQSPI_REG_RD_INSTR);
+>  
+> -	writel(to_addr, reg_base + CQSPI_REG_INDIRECTWRSTARTADDR);
+> -
+>  	reg = readl(reg_base + CQSPI_REG_SIZE);
+>  	reg &= ~CQSPI_REG_SIZE_ADDRESS_MASK;
+>  	reg |= (nor->addr_width - 1);
+> @@ -593,8 +589,8 @@ static int cqspi_indirect_write_setup(struct spi_nor *nor,
+>  	return 0;
+>  }
+>  
+> -static int cqspi_indirect_write_execute(struct spi_nor *nor,
+> -					const u8 *txbuf, const unsigned n_tx)
+> +static int cqspi_indirect_write_execute(struct spi_nor *nor, loff_t to_addr,
+> +					const u8 *txbuf, const size_t n_tx)
+>  {
+>  	const unsigned int page_size = nor->page_size;
+>  	struct cqspi_flash_pdata *f_pdata = nor->priv;
+> @@ -604,6 +600,7 @@ static int cqspi_indirect_write_execute(struct spi_nor *nor,
+>  	unsigned int write_bytes;
+>  	int ret;
+>  
+> +	writel(to_addr, reg_base + CQSPI_REG_INDIRECTWRSTARTADDR);
+>  	writel(remaining, reg_base + CQSPI_REG_INDIRECTWRBYTES);
+>  
+>  	/* Clear all interrupts. */
+> @@ -900,11 +897,11 @@ static ssize_t cqspi_write(struct spi_nor *nor, loff_t to,
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = cqspi_indirect_write_setup(nor, to);
+> +	ret = cqspi_write_setup(nor);
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = cqspi_indirect_write_execute(nor, buf, len);
+> +	ret = cqspi_indirect_write_execute(nor, to, buf, len);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -920,11 +917,11 @@ static ssize_t cqspi_read(struct spi_nor *nor, loff_t from,
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = cqspi_indirect_read_setup(nor, from);
+> +	ret = cqspi_read_setup(nor);
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = cqspi_indirect_read_execute(nor, buf, len);
+> +	ret = cqspi_indirect_read_execute(nor, buf, from, len);
+>  	if (ret)
+>  		return ret;
+>  
+> 
