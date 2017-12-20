@@ -1,20 +1,23 @@
-Received: from smtp3-g21.free.fr ([212.27.42.3])
- by casper.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eRJoa-0002UO-To
- for linux-mtd@lists.infradead.org; Tue, 19 Dec 2017 15:28:22 +0000
-Subject: Re: [PATCH] mtd: spi-nor: Added ISSI is25lp080d support
-To: Romain Porte <romain.porte@nokia.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- alexander.sverdlin@nokia.com, pascal.fabreges@nokia.com
-References: <20171219134325.3315-1-romain.porte@nokia.com>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <5078fce7-b4fe-dc4f-b5f7-a2c0b579714b@wedev4u.fr>
-Date: Tue, 19 Dec 2017 16:27:59 +0100
+Received: from [45.249.212.35] (helo=huawei.com)
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eRX7j-0002PZ-H2
+ for linux-mtd@lists.infradead.org; Wed, 20 Dec 2017 05:41:01 +0000
+From: Wei Yongjun <weiyongjun1@huawei.com>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Andrea Adami <andrea.adami@gmail.com>, "Colin
+ Ian King" <colin.king@canonical.com>
+CC: Wei Yongjun <weiyongjun1@huawei.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] mtd: sharpslpart: make local function
+ sharpsl_nand_cleanup_ftl() static
+Date: Wed, 20 Dec 2017 05:45:36 +0000
+Message-ID: <1513748736-165067-1-git-send-email-weiyongjun1@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-In-Reply-To: <20171219134325.3315-1-romain.porte@nokia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +27,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Romain,
+Fixes the following sparse warnings:
 
-Le 19/12/2017 à 14:43, Romain Porte a écrit :
-> This patch adds support for a new ISSI 1MB SPI NOR chip that was tested in our
-> lab. Datasheet is available at: http://www.issi.com/WW/pdf/25LP-WP080D.pdf
-> 
-> Tested-by: Pascal Fabreges <pascal.fabreges@nokia.com>
-> Reviewed-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index bc266f70a15b..92cd62f02176 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -1021,6 +1021,7 @@ static const struct flash_info spi_nor_ids[] = {
->  
->  	/* ISSI */
->  	{ "is25cd512", INFO(0x7f9d20, 0, 32 * 1024,   2, SECT_4K) },
-> +	{ "is25lp080d", INFO(0x9d6014, 0, 64 * 1024,  16, SECT_4K) },
->
+drivers/mtd/parsers/sharpslpart.c:222:6: warning:
+ symbol 'sharpsl_nand_cleanup_ftl' was not declared. Should it be static?
 
-Based on the provided datasheet, both SPI_NOR_DUAL_READ (3Bh) and
-SPI_NOR_QUAD_READ (6Bh) are missing. Besides adding at least one them will
-enable the parsing of SFDP tables, which are also supported by this memory
-part.
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ drivers/mtd/parsers/sharpslpart.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Then please add both SPI_NOR_DUAL_READ and SPI_NOR_QUAD_READ with SECT_4K.
-
-Also, please rebase your patch on the spi-nor/next branch of l2-mtd (moving
-to linux-mtd ?) as another patch has already added an entry for is25lp128
-
-Best regards,
-
-Cyrille
-  
->  	/* Macronix */
->  	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
-> 
+diff --git a/drivers/mtd/parsers/sharpslpart.c b/drivers/mtd/parsers/sharpslpart.c
+index 0ddb79a..8893dc8 100644
+--- a/drivers/mtd/parsers/sharpslpart.c
++++ b/drivers/mtd/parsers/sharpslpart.c
+@@ -219,7 +219,7 @@ static int sharpsl_nand_init_ftl(struct mtd_info *mtd, struct sharpsl_ftl *ftl)
+ 	return ret;
+ }
+ 
+-void sharpsl_nand_cleanup_ftl(struct sharpsl_ftl *ftl)
++static void sharpsl_nand_cleanup_ftl(struct sharpsl_ftl *ftl)
+ {
+ 	kfree(ftl->log2phy);
+ }
