@@ -1,23 +1,25 @@
-Received: from [45.249.212.35] (helo=huawei.com)
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eRX7j-0002PZ-H2
- for linux-mtd@lists.infradead.org; Wed, 20 Dec 2017 05:41:01 +0000
-From: Wei Yongjun <weiyongjun1@huawei.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Andrea Adami <andrea.adami@gmail.com>, "Colin
- Ian King" <colin.king@canonical.com>
-CC: Wei Yongjun <weiyongjun1@huawei.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] mtd: sharpslpart: make local function
- sharpsl_nand_cleanup_ftl() static
-Date: Wed, 20 Dec 2017 05:45:36 +0000
-Message-ID: <1513748736-165067-1-git-send-email-weiyongjun1@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eRdJm-0005SP-NZ
+ for linux-mtd@lists.infradead.org; Wed, 20 Dec 2017 12:18:09 +0000
+Received: from localhost (localhost.localdomain [127.0.0.1])
+ by mail.sigma-star.at (Postfix) with ESMTP id 9BE8B24E0011
+ for <linux-mtd@lists.infradead.org>; Wed, 20 Dec 2017 13:17:23 +0100 (CET)
+Received: from localhost.localdomain (unknown [82.150.214.1])
+ by mail.sigma-star.at (Postfix) with ESMTPSA id 1AB6724E0010
+ for <linux-mtd@lists.infradead.org>; Wed, 20 Dec 2017 13:17:23 +0100 (CET)
+Subject: Re: [PATCH] mtd: docs: Add mention of patchwork to patch submission
+ section
+To: linux-mtd@lists.infradead.org
+References: <20171107030755.17822-1-roy.franz@cavium.com>
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Message-ID: <98ee8691-3486-31c0-a240-1b8d541dff3f@sigma-star.at>
+Date: Wed, 20 Dec 2017 13:17:34 +0100
 MIME-Version: 1.0
+In-Reply-To: <20171107030755.17822-1-roy.franz@cavium.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +29,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fixes the following sparse warnings:
+Sorry for the delay. Ironically, I only discovered quite recently that
+this patch was assigned to me on Patchwork.
 
-drivers/mtd/parsers/sharpslpart.c:222:6: warning:
- symbol 'sharpsl_nand_cleanup_ftl' was not declared. Should it be static?
+Applied to mtd-www.git
 
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
----
- drivers/mtd/parsers/sharpslpart.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
 
-diff --git a/drivers/mtd/parsers/sharpslpart.c b/drivers/mtd/parsers/sharpslpart.c
-index 0ddb79a..8893dc8 100644
---- a/drivers/mtd/parsers/sharpslpart.c
-+++ b/drivers/mtd/parsers/sharpslpart.c
-@@ -219,7 +219,7 @@ static int sharpsl_nand_init_ftl(struct mtd_info *mtd, struct sharpsl_ftl *ftl)
- 	return ret;
- }
- 
--void sharpsl_nand_cleanup_ftl(struct sharpsl_ftl *ftl)
-+static void sharpsl_nand_cleanup_ftl(struct sharpsl_ftl *ftl)
- {
- 	kfree(ftl->log2phy);
- }
+David
