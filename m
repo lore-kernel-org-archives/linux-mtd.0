@@ -1,23 +1,19 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eRgG8-0004wr-Uz
- for linux-mtd@lists.infradead.org; Wed, 20 Dec 2017 15:26:22 +0000
-Date: Wed, 20 Dec 2017 16:26:02 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH] MAINTAINERS: Move all MTD related branches to a single
- repo
-Message-ID: <20171220162602.071c73bf@bbrezillon>
-In-Reply-To: <20171218154934.6674-1-boris.brezillon@free-electrons.com>
-References: <20171218154934.6674-1-boris.brezillon@free-electrons.com>
+Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eRgJF-0007I8-8R
+ for linux-mtd@lists.infradead.org; Wed, 20 Dec 2017 15:29:31 +0000
+Subject: Re: [PATCHv3 1/2] mtd: spi-nor: add support for is25lq040b
+To: Sean Nyekjaer <sean.nyekjaer@prevas.dk>, linux-mtd@lists.infradead.org,
+ marek.vasut@gmail.com
+References: <20171215073332.10965-1-sean.nyekjaer@prevas.dk>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <87f9273d-3eb3-fcf6-b2f0-a2b674e6a283@wedev4u.fr>
+Date: Wed, 20 Dec 2017 16:29:15 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20171215073332.10965-1-sean.nyekjaer@prevas.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,83 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 18 Dec 2017 16:49:34 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+Le 15/12/2017 à 08:33, Sean Nyekjaer a écrit :
+> Signed-off-by: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
 
-> Historically branches targeting the next release (and pulled in
-> linux-next) have been pushed on the l2-mtd repo and fixes branches on
-> the linux-mtd one. Now that all MTD maintainers have RW permissions on
-> linux-mtd tree, there's no good reason to have two different trees.
-> Move all -next branches to linux-mtd.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-> Cc: Marek Vasut <marek.vasut@gmail.com>
-> Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Brian Norris <computersforpeace@gmail.com>
+Applied to the spi-nor/next branch of linux-mtd
+
+Thanks!
+
 > ---
-> Hi MTD maintainers,
+> v3:
+>  - this spi-nor is 4Mbit or 512KB
+>  - readded SECT_4K as per Cyrille comments
+>  - spi-nor supports fast read dual and quad
 > 
-> As discussed a few weeks ago, this patch is moving all MTD related
-> branches to the linux-mtd repo in an attempt to make things easier
-> for maintainers (it's not unusal to push the next or fixes branch to
-> the wrong repo) and developers (it's hard to know where the patch was
-> applied, especially when the maintainer does not specify it in his
-> reply, which I do a lot :)).
+> v2:
+>  - removed SECT_4K as the chip are supporting 32K and bulk erase
 > 
-> Once I have gathered acks from all active maintainers, I'll apply this
-> patch to the mtd/next branch and ask Stephen to pull next branches from
-> their new locations.
+>  drivers/mtd/spi-nor/spi-nor.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> In the meantime, we should try to keep both l2-mtd and linux-mtd synced
-> (that means pushing the xxx/next branches on both l2-mtd and mtd-next).
-
-Applied to mtd/next (on the linux-mtd repo). I also created symlinks
-for l2-mtd/master, l2-mtd/nand/next and l2-mtd/spi-nor/next as
-suggested by David. So please stop pushing things on l2-mtd.
-
-Thanks,
-
-Boris
-
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 9178139a39d0..f7676aa50ce6 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1046,6 +1046,8 @@ static const struct flash_info spi_nor_ids[] = {
+>  
+>  	/* ISSI */
+>  	{ "is25cd512", INFO(0x7f9d20, 0, 32 * 1024,   2, SECT_4K) },
+> +	{ "is25lq040b", INFO(0x9d4013, 0, 64 * 1024,  8,
+> +			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>  	{ "is25lp128", INFO(0x9d6018, 0, 64 * 1024, 256,
+>  			SECT_4K | SPI_NOR_DUAL_READ) },
+>  
 > 
-> Regards,
-> 
-> Boris
-> ---
->  MAINTAINERS | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index aa71ab52fd76..10732ecfc937 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -8956,7 +8956,7 @@ L:	linux-mtd@lists.infradead.org
->  W:	http://www.linux-mtd.infradead.org/
->  Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
->  T:	git git://git.infradead.org/linux-mtd.git master
-> -T:	git git://git.infradead.org/l2-mtd.git master
-> +T:	git git://git.infradead.org/linux-mtd.git mtd/next
->  S:	Maintained
->  F:	Documentation/devicetree/bindings/mtd/
->  F:	drivers/mtd/
-> @@ -9344,7 +9344,7 @@ L:	linux-mtd@lists.infradead.org
->  W:	http://www.linux-mtd.infradead.org/
->  Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
->  T:	git git://git.infradead.org/linux-mtd.git nand/fixes
-> -T:	git git://git.infradead.org/l2-mtd.git nand/next
-> +T:	git git://git.infradead.org/linux-mtd.git nand/next
->  S:	Maintained
->  F:	drivers/mtd/nand/
->  F:	include/linux/mtd/*nand*.h
-> @@ -12761,7 +12761,7 @@ L:	linux-mtd@lists.infradead.org
->  W:	http://www.linux-mtd.infradead.org/
->  Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
->  T:	git git://git.infradead.org/linux-mtd.git spi-nor/fixes
-> -T:	git git://git.infradead.org/l2-mtd.git spi-nor/next
-> +T:	git git://git.infradead.org/linux-mtd.git spi-nor/next
->  S:	Maintained
->  F:	drivers/mtd/spi-nor/
->  F:	include/linux/mtd/spi-nor.h
