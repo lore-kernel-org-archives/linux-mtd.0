@@ -1,20 +1,23 @@
-Subject: Re: [PATCH 2/2] mtd: spi-nor: cadence-quadspi: Add support for direct
- access mode
-To: Vignesh R <vigneshr@ti.com>, Marek Vasut <marek.vasut@gmail.com>
-Cc: Dinh Nguyen <dinguyen@kernel.org>, matthew.gerlach@linux.intel.com,
- linux-arm-kernel@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20171207063804.29436-1-vigneshr@ti.com>
- <20171207063804.29436-3-vigneshr@ti.com>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <82986b75-79a1-68da-efbd-aeb603b3d7be@wedev4u.fr>
-Date: Wed, 20 Dec 2017 16:13:43 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eRgG8-0004wr-Uz
+ for linux-mtd@lists.infradead.org; Wed, 20 Dec 2017 15:26:22 +0000
+Date: Wed, 20 Dec 2017 16:26:02 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH] MAINTAINERS: Move all MTD related branches to a single
+ repo
+Message-ID: <20171220162602.071c73bf@bbrezillon>
+In-Reply-To: <20171218154934.6674-1-boris.brezillon@free-electrons.com>
+References: <20171218154934.6674-1-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-In-Reply-To: <20171207063804.29436-3-vigneshr@ti.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,185 +27,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Vignesh,
+On Mon, 18 Dec 2017 16:49:34 +0100
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-Le 07/12/2017 à 07:38, Vignesh R a écrit :
-> Cadence QSPI controller provides direct access mode through which flash
-> can be accessed in a memory-mapped IO mode. This enables read/write to
-> flash using memcpy*() functions. This mode provides higher throughput
-> for both read/write operations when compared to current indirect mode of
-> operation.
+> Historically branches targeting the next release (and pulled in
+> linux-next) have been pushed on the l2-mtd repo and fixes branches on
+> the linux-mtd one. Now that all MTD maintainers have RW permissions on
+> linux-mtd tree, there's no good reason to have two different trees.
+> Move all -next branches to linux-mtd.
 > 
-> This patch therefore adds support to use QSPI in direct mode. If the
-> window reserved in SoC's memory map for MMIO access is less that of
-> flash size(like on most SoCFPGA variants), then the driver falls back
-> to indirect mode of operation.
-> 
-> On TI's 66AK2G SoC, with ARM running at 600MHz and QSPI at 96MHz
-> switching to direct mode improves read throughput from 3MB/s to 8MB/s.
-> 
-> Signed-off-by: Vignesh R <vigneshr@ti.com>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+> Cc: Marek Vasut <marek.vasut@gmail.com>
+> Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Brian Norris <computersforpeace@gmail.com>
 > ---
->  drivers/mtd/spi-nor/cadence-quadspi.c | 52 +++++++++++++++++++++++++++++++++--
->  1 file changed, 50 insertions(+), 2 deletions(-)
+> Hi MTD maintainers,
 > 
-> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
-> index becc7d714ab8..f8721ed68bc6 100644
-> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
-> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-> @@ -58,6 +58,7 @@ struct cqspi_flash_pdata {
->  	u8		data_width;
->  	u8		cs;
->  	bool		registered;
-> +	bool		use_direct_mode;
->  };
->  
->  struct cqspi_st {
-> @@ -68,6 +69,7 @@ struct cqspi_st {
->  
->  	void __iomem		*iobase;
->  	void __iomem		*ahb_base;
-> +	resource_size_t		ahb_size;
->  	struct completion	transfer_complete;
->  	struct mutex		bus_mutex;
->  
-> @@ -103,6 +105,7 @@ struct cqspi_st {
->  /* Register map */
->  #define CQSPI_REG_CONFIG			0x00
->  #define CQSPI_REG_CONFIG_ENABLE_MASK		BIT(0)
-> +#define CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL	BIT(7)
->  #define CQSPI_REG_CONFIG_DECODE_MASK		BIT(9)
->  #define CQSPI_REG_CONFIG_CHIPSELECT_LSB		10
->  #define CQSPI_REG_CONFIG_DMA_MASK		BIT(15)
-> @@ -569,6 +572,21 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor, u8 *rxbuf,
->  	return ret;
->  }
->  
-> +static int cqspi_direct_read_execute(struct spi_nor *nor, u8 *rxbuf,
-> +				     loff_t from_addr, const size_t len)
-> +{
-> +	struct cqspi_flash_pdata *f_pdata = nor->priv;
-> +	struct cqspi_st *cqspi = f_pdata->cqspi;
-> +	u32 reg;
-> +
-> +	reg = readl(cqspi->iobase + CQSPI_REG_CONFIG);
-> +	reg |= CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
-> +	writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
-
-I guess setting the ENB_DIR_ACC_CTRL bit could be set once for all when you
-set use_direct_mode to true, couldn't it?
-
-It may improve the read performance even more. However not expecting much
-difference for Page Program operations.
-
-Then you could call directly call mempcy_fromio() from cqspi_read().
-Not mandatory for me, since I also like the symmetry of the 2 functions:
-cqspi_direct_read_execute() / cqspi_indirect_read_execute().
-
-So it's up to you :)
-
-> +	memcpy_fromio(rxbuf, cqspi->ahb_base + from_addr, len);
-> +
-> +	return 0;
-> +}
-> +
->  static int cqspi_write_setup(struct spi_nor *nor)
->  {
->  	unsigned int reg;
-> @@ -671,6 +689,21 @@ static int cqspi_indirect_write_execute(struct spi_nor *nor, loff_t to_addr,
->  	return ret;
->  }
->  
-> +static int cqspi_direct_write_execute(struct spi_nor *nor, loff_t to_addr,
-> +				      const u8 *txbuf, const size_t len)
-> +{
-> +	struct cqspi_flash_pdata *f_pdata = nor->priv;
-> +	struct cqspi_st *cqspi = f_pdata->cqspi;
-> +	u32 reg;
-> +
-> +	reg = readl(cqspi->iobase + CQSPI_REG_CONFIG);
-> +	reg |= CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
-> +	writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
-
-Same comment here.
-
-> +	memcpy_toio(cqspi->ahb_base + to_addr, txbuf, len);
-> +
-> +	return 0;
-> +}
-> +
->  static void cqspi_chipselect(struct spi_nor *nor)
->  {
->  	struct cqspi_flash_pdata *f_pdata = nor->priv;
-> @@ -891,6 +924,7 @@ static int cqspi_set_protocol(struct spi_nor *nor, const int read)
->  static ssize_t cqspi_write(struct spi_nor *nor, loff_t to,
->  			   size_t len, const u_char *buf)
->  {
-> +	struct cqspi_flash_pdata *f_pdata = nor->priv;
->  	int ret;
->  
->  	ret = cqspi_set_protocol(nor, 0);
-> @@ -901,7 +935,10 @@ static ssize_t cqspi_write(struct spi_nor *nor, loff_t to,
->  	if (ret)
->  		return ret;
->  
-> -	ret = cqspi_indirect_write_execute(nor, to, buf, len);
-> +	if (f_pdata->use_direct_mode)
-> +		ret = cqspi_direct_write_execute(nor, to, buf, len);
-> +	else
-> +		ret = cqspi_indirect_write_execute(nor, to, buf, len);
->  	if (ret)
->  		return ret;
->  
-> @@ -911,6 +948,7 @@ static ssize_t cqspi_write(struct spi_nor *nor, loff_t to,
->  static ssize_t cqspi_read(struct spi_nor *nor, loff_t from,
->  			  size_t len, u_char *buf)
->  {
-> +	struct cqspi_flash_pdata *f_pdata = nor->priv;
->  	int ret;
->  
->  	ret = cqspi_set_protocol(nor, 1);
-> @@ -921,7 +959,10 @@ static ssize_t cqspi_read(struct spi_nor *nor, loff_t from,
->  	if (ret)
->  		return ret;
->  
-> -	ret = cqspi_indirect_read_execute(nor, buf, from, len);
-> +	if (f_pdata->use_direct_mode)
-> +		ret = cqspi_direct_read_execute(nor, buf, from, len);
-> +	else
-> +		ret = cqspi_indirect_read_execute(nor, buf, from, len);
->  	if (ret)
->  		return ret;
->  
-> @@ -1153,6 +1194,12 @@ static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
->  			goto err;
->  
->  		f_pdata->registered = true;
-> +
-> +		if (mtd->size <= cqspi->ahb_size) {
-> +			f_pdata->use_direct_mode = true;
-> +			dev_info(nor->dev, "using direct mode for %s\n",
-> +				 mtd->name);
-
-Please use dev_dbg() here insted of dev_info(). IMHO, this kind of output
-is not really needed by regular users.
-
-Otherwise, the series looks great!
-
-Best regards,
-
-Cyrille
-
-> +		}
->  	}
->  
->  	return 0;
-> @@ -1212,6 +1259,7 @@ static int cqspi_probe(struct platform_device *pdev)
->  		dev_err(dev, "Cannot remap AHB address.\n");
->  		return PTR_ERR(cqspi->ahb_base);
->  	}
-> +	cqspi->ahb_size = resource_size(res_ahb);
->  
->  	init_completion(&cqspi->transfer_complete);
->  
+> As discussed a few weeks ago, this patch is moving all MTD related
+> branches to the linux-mtd repo in an attempt to make things easier
+> for maintainers (it's not unusal to push the next or fixes branch to
+> the wrong repo) and developers (it's hard to know where the patch was
+> applied, especially when the maintainer does not specify it in his
+> reply, which I do a lot :)).
 > 
+> Once I have gathered acks from all active maintainers, I'll apply this
+> patch to the mtd/next branch and ask Stephen to pull next branches from
+> their new locations.
+> 
+> In the meantime, we should try to keep both l2-mtd and linux-mtd synced
+> (that means pushing the xxx/next branches on both l2-mtd and mtd-next).
+
+Applied to mtd/next (on the linux-mtd repo). I also created symlinks
+for l2-mtd/master, l2-mtd/nand/next and l2-mtd/spi-nor/next as
+suggested by David. So please stop pushing things on l2-mtd.
+
+Thanks,
+
+Boris
+
+> 
+> Regards,
+> 
+> Boris
+> ---
+>  MAINTAINERS | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index aa71ab52fd76..10732ecfc937 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -8956,7 +8956,7 @@ L:	linux-mtd@lists.infradead.org
+>  W:	http://www.linux-mtd.infradead.org/
+>  Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
+>  T:	git git://git.infradead.org/linux-mtd.git master
+> -T:	git git://git.infradead.org/l2-mtd.git master
+> +T:	git git://git.infradead.org/linux-mtd.git mtd/next
+>  S:	Maintained
+>  F:	Documentation/devicetree/bindings/mtd/
+>  F:	drivers/mtd/
+> @@ -9344,7 +9344,7 @@ L:	linux-mtd@lists.infradead.org
+>  W:	http://www.linux-mtd.infradead.org/
+>  Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
+>  T:	git git://git.infradead.org/linux-mtd.git nand/fixes
+> -T:	git git://git.infradead.org/l2-mtd.git nand/next
+> +T:	git git://git.infradead.org/linux-mtd.git nand/next
+>  S:	Maintained
+>  F:	drivers/mtd/nand/
+>  F:	include/linux/mtd/*nand*.h
+> @@ -12761,7 +12761,7 @@ L:	linux-mtd@lists.infradead.org
+>  W:	http://www.linux-mtd.infradead.org/
+>  Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
+>  T:	git git://git.infradead.org/linux-mtd.git spi-nor/fixes
+> -T:	git git://git.infradead.org/l2-mtd.git spi-nor/next
+> +T:	git git://git.infradead.org/linux-mtd.git spi-nor/next
+>  S:	Maintained
+>  F:	drivers/mtd/spi-nor/
+>  F:	include/linux/mtd/spi-nor.h
