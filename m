@@ -1,19 +1,30 @@
-Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
+Received: from mail-he1eur01on0048.outbound.protection.outlook.com
+ ([104.47.0.48] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eRzwy-0004gz-7s
- for linux-mtd@lists.infradead.org; Thu, 21 Dec 2017 12:27:49 +0000
-Received: by mail-lf0-x244.google.com with SMTP id g63so5660205lfl.11
- for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2017 04:27:38 -0800 (PST)
-From: Rafael Gago <rafael.gago@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: richard@nod.at, boris.brezillon@free-electrons.com,
- computersforpeace@gmail.com, dwmw2@infradead.org, marek.vasut@gmail.com,
- cyrille.pitchen@wedev4u.fr, Rafael Gago <rgc@hms.se>
-Subject: [PATCH v2] mtd: spi-nor: Add support for s25fl128l and s25fl256l
-Date: Thu, 21 Dec 2017 13:27:30 +0100
-Message-Id: <1513859250-510-1-git-send-email-rgc@hms.se>
-In-Reply-To: <1513859069-32567-1-git-send-email-rgc@hms.se>
-References: <1513859069-32567-1-git-send-email-rgc@hms.se>
+ id 1eS0AN-0003Jv-2O
+ for linux-mtd@lists.infradead.org; Thu, 21 Dec 2017 12:41:41 +0000
+From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+CC: Poonam Aggrwal <poonam.aggrwal@nxp.com>,
+ "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>, Rajat Srivastava
+ <rajat.srivastava@nxp.com>, Suresh Gupta <suresh.gupta@nxp.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>
+Subject: RE: [RFC 09/10] mtd: spi-nor: Disable hybrid mode for SPANSION
+ S25FS-S family
+Date: Thu, 21 Dec 2017 12:41:23 +0000
+Message-ID: <HE1PR04MB124101E3618C5EA65C7CD6FF970D0@HE1PR04MB1241.eurprd04.prod.outlook.com>
+References: <1512548141-3319-1-git-send-email-prabhakar.kushwaha@nxp.com>
+ <1512548141-3319-10-git-send-email-prabhakar.kushwaha@nxp.com>
+ <c764fd31-29c4-865c-656f-23c758af0640@wedev4u.fr>
+ <HE1PR04MB1241C99974A1B5A7BF7BBCFA97310@HE1PR04MB1241.eurprd04.prod.outlook.com>
+In-Reply-To: <HE1PR04MB1241C99974A1B5A7BF7BBCFA97310@HE1PR04MB1241.eurprd04.prod.outlook.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,38 +34,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-They are exactly the same than the s25fl064l but bigger.
-
-Signed-off-by: Rafael Gago Castano <rgc@hms.se>
----
-
-Changes from v2:
-  The commit message named two times the 128 M device.
-
- drivers/mtd/spi-nor/spi-nor.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index bc266f7..b2a065d 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1065,7 +1065,7 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "pm25lv010",   INFO(0,        0, 32 * 1024,    4, SECT_4K_PMC) },
- 	{ "pm25lq032",   INFO(0x7f9d46, 0, 64 * 1024,   64, SECT_4K) },
- 
--	/* Spansion -- single (large) sector size only, at least
-+	/* Spansion/Cypress -- single (large) sector size only, at least
- 	 * for the chips listed here (without boot sectors).
- 	 */
- 	{ "s25sl032p",  INFO(0x010215, 0x4d00,  64 * 1024,  64, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-@@ -1094,6 +1094,8 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "s25fl204k",  INFO(0x014013,      0,  64 * 1024,   8, SECT_4K | SPI_NOR_DUAL_READ) },
- 	{ "s25fl208k",  INFO(0x014014,      0,  64 * 1024,  16, SECT_4K | SPI_NOR_DUAL_READ) },
- 	{ "s25fl064l",  INFO(0x016017,      0,  64 * 1024, 128, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-+	{ "s25fl128l",  INFO(0x016018,      0,  64 * 1024, 256, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-+	{ "s25fl256l",  INFO(0x016019,      0,  64 * 1024, 512, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
- 
- 	/* SST -- large erase sizes are "overlays", "sectors" are 4K */
- 	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
--- 
-2.7.4
+SGkgQ3lyaWxsZSwNCg0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IGxp
+bnV4LW10ZCBbbWFpbHRvOmxpbnV4LW10ZC1ib3VuY2VzQGxpc3RzLmluZnJhZGVhZC5vcmddIE9u
+IEJlaGFsZiBPZg0KPiBQcmFiaGFrYXIgS3VzaHdhaGENCj4gU2VudDogU2F0dXJkYXksIERlY2Vt
+YmVyIDA5LCAyMDE3IDEwOjQ2IFBNDQo+IFRvOiBDeXJpbGxlIFBpdGNoZW4gPGN5cmlsbGUucGl0
+Y2hlbkB3ZWRldjR1LmZyPjsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gQ2M6IFBv
+b25hbSBBZ2dyd2FsIDxwb29uYW0uYWdncndhbEBueHAuY29tPjsgYm9yaXMuYnJlemlsbG9uQGZy
+ZWUtDQo+IGVsZWN0cm9ucy5jb207IGRlZGVraW5kMUBnbWFpbC5jb207IFJhamF0IFNyaXZhc3Rh
+dmENCj4gPHJhamF0LnNyaXZhc3RhdmFAbnhwLmNvbT47IFN1cmVzaCBHdXB0YSA8c3VyZXNoLmd1
+cHRhQG54cC5jb20+Ow0KPiBjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb20NCj4gU3ViamVjdDog
+UkU6IFtSRkMgMDkvMTBdIG10ZDogc3BpLW5vcjogRGlzYWJsZSBoeWJyaWQgbW9kZSBmb3IgU1BB
+TlNJT04gUzI1RlMtDQo+IFMgZmFtaWx5DQo+IA0KPiBIaSBDeXJpbGxlLA0KPiANCj4gPiAtLS0t
+LU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+IEZyb206IEN5cmlsbGUgUGl0Y2hlbiBbbWFpbHRv
+OmN5cmlsbGUucGl0Y2hlbkB3ZWRldjR1LmZyXQ0KPiA+IFNlbnQ6IFdlZG5lc2RheSwgRGVjZW1i
+ZXIgMDYsIDIwMTcgNDoyOCBQTQ0KPiA+IFRvOiBQcmFiaGFrYXIgS3VzaHdhaGEgPHByYWJoYWth
+ci5rdXNod2FoYUBueHAuY29tPjsgbGludXgtDQo+ID4gbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcN
+Cj4gPiBDYzogYm9yaXMuYnJlemlsbG9uQGZyZWUtZWxlY3Ryb25zLmNvbTsgY29tcHV0ZXJzZm9y
+cGVhY2VAZ21haWwuY29tOw0KPiBSYWphdA0KPiA+IFNyaXZhc3RhdmEgPHJhamF0LnNyaXZhc3Rh
+dmFAbnhwLmNvbT47IGRlZGVraW5kMUBnbWFpbC5jb20NCj4gPiBTdWJqZWN0OiBSZTogW1JGQyAw
+OS8xMF0gbXRkOiBzcGktbm9yOiBEaXNhYmxlIGh5YnJpZCBtb2RlIGZvciBTUEFOU0lPTiBTMjVG
+Uw0KPiAtDQo+ID4gUyBmYW1pbHkNCj4gPg0KPiA+IEhpIFByYWJoYWthciwNCj4gPg0KPiA+IExl
+IDA2LzEyLzIwMTcgw6AgMDk6MTUsIFByYWJoYWthciBLdXNod2FoYSBhIMOpY3JpdMKgOg0KPiA+
+ID4gVGhlIFMyNUZTLVMgZmFtaWx5IHBoeXNpY2FsIHNlY3RvcnMgbWF5IGJlIGNvbmZpZ3VyZWQg
+YXMgYSBoeWJyaWQNCj4gPiA+IGNvbWJpbmF0aW9uIG9mIGVpZ2h0IDQta0IgcGFyYW1ldGVyIHNl
+Y3RvcnMgYXQgdGhlIHRvcCBvciBib3R0b20NCj4gPiA+IG9mIHRoZSBhZGRyZXNzIHNwYWNlIHdp
+dGggYWxsIGJ1dCBvbmUgb2YgdGhlIHJlbWFpbmluZyBzZWN0b3JzDQo+ID4gPiBiZWluZyB1bmlm
+b3JtIHNpemUuDQo+ID4gPiBUaGUgZGVmYXVsdCBzdGF0dXMgb2YgdGhlIGZsYXNoIGlzIHRoZSBo
+eWJyaWQgYXJjaGl0ZWN0dXJlLg0KPiA+ID4gVGhlIHBhcmFtZXRlciBzZWN0b3JzIGFuZCB0aGUg
+dW5pZm9ybSBzZWN0b3JzIGhhdmUgZGlmZmVyZW50IGVyYXNlDQo+ID4gPiBjb21tYW5kcy4NCj4g
+PiA+DQo+ID4gPiBUaGlzIHBhdGNoIGRpc2FibGVzIHRoZSBoeWJyaWQgc2VjdG9yIGFyY2hpdGVj
+dHVyZSB3aGljaCBtYWtlcyB0aGUNCj4gPiA+IGZsYXNoIGhhdmUgdW5pZm9ybSBzZWN0b3Igc2l6
+ZSBhbmQgdW5pZm9ybSBlcmFzZSBjb21tYW5kLg0KPiA+ID4NCj4gPg0KPiA+IFRoaXMgaXNzdWUg
+c2hvdWxkIGJlIGFkZHJlc3NlZCBpbiBhIGdlbmVyaWMgd2F5LCBub3QgU3BhbnNpb24gc3BlY2lm
+aWMsDQo+ID4gYnkgYWRkaW5nIHN1cHBvcnQgb2YgdGhlIG9wdGlvbmFsIFNlY3RvciBNYXAgUGFy
+YW1ldGVyIFRhYmxlIChTRkRQKS4NCj4gPiBJbiBjYXNlIG9mIG5vbiB1bmlmb3JtIG1lbW9yaWVz
+LCBsaWtlIHRoaXMgU3BhbnNpb24gUzI1RlMtUyBmYW1pbHkgb3INCj4gPiBTU1QyNiwgdGhlIFNl
+Y3RvciBNYXAgUGFyYW1ldGVyIFRhYmxlIGJlY29tZXMgbWFuZGF0b3J5IGFzIGEgU0ZEUCB0YWJs
+ZS4NCj4gPg0KPiA+IEZyb20gdGhlIEpFU0QyMTZCIHNwZWNpZmljYXRpb24sIGFib3V0IHRoZSBK
+RURFQyBTZWN0b3IgTWFwIFBhcmFtZXRlcg0KPiBUYWJsZToNCj4gPiAiIiINCj4gPiBUaGlzIHRh
+YmxlIGlzIHJlcXVpcmVkIHdoZW4gYSBtZW1vcnkgZGV2aWNlOg0KPiA+ICogSGFzIHNlY3RvcnMg
+b2YgbW9yZSB0aGFuIG9uZSBzaXplDQo+ID4gKiBPciwgZG9lcyBub3QgYWxsb3cgYWxsIEVyYXNl
+IFR5cGUgY29tbWFuZHMgdG8gYmUgYXBwbGllZCB0byBhbGwgc2VjdG9ycy4NCj4gPiAiIiINCj4g
+Pg0KPiANCj4gQXMgSSB1bmRlcnN0YW5kIGZyb20gU2VjdG9yIE1hcCBQYXJhbWV0ZXIgVGFibGUs
+IEl0IHRlbGwgYWJvdXQgdGhlIGZsYXNoIGxheW91dA0KPiBhbmQgd2hpY2ggcmVnaW9uIHN1cHBv
+cnQgd2hpY2ggZXJhc2UgdHlwZS4NCj4gDQo+IEZsYXNoIGxheW91dCBjYW4gYmUgY29uZmlndXJl
+ZCB1c2luZyB2b2xhdGlsZSBvciBub24tdm9sYXRpbGUgcmVnaXN0ZXJzLiBGb3IgZS5nLg0KPiBT
+cGFuc2lvbiBTMjVGUyBoYXMgZm9sbG93aW5nIGNvbWJpbmF0aW9uDQo+IERldmljZSAgICBDUjNO
+VlszXSAgICBDUjFOVlsyXSAgICBDUjNOVlsxXSAgICAgSW5kZXggVmFsdWUgICAgICBEZXNjcmlw
+dGlvbg0KPiBGUzUxMlMgICAgICAgMCAgICAgICAgICAgICAgICAgIDAgICAgICAgICAgICAgICAg
+ICAgIDEgICAgICAgICAgICAgICAgMDFoICAgICAgICAgICAgICAgICAgICAgIDQta0Igc2VjdG9y
+cyBhdA0KPiBib3R0b20gd2l0aCByZW1haW5kZXIgMjU2LWtCIHNlY3RvcnMNCj4gICAgICAgICAg
+ICAgICAgICAgICAwICAgICAgICAgICAgICAgICAgMSAgICAgICAgICAgICAgICAgICAgMSAgICAg
+ICAgICAgICAgICAwM2ggICAgICAgICAgICAgICAgICAgICAgNC1rQiBzZWN0b3JzIGF0IHRvcA0K
+PiB3aXRoIHJlbWFpbmRlciAyNTYta0Igc2VjdG9ycw0KPiAgICAgICAgICAgICAgICAgICAgIDEg
+ICAgICAgICAgICAgICAgICAwICAgICAgICAgICAgICAgICAgICAxICAgICAgICAgICAgICAgIDA1
+aCAgICAgICAgICAgICAgICAgICAgICBVbmlmb3JtIDI1Ni1rQg0KPiBzZWN0b3JzDQo+IE9uY2Ug
+b25lIG9mIHRoZSBjb21iaW5hdGlvbiBwcm9ncmFtbWVkLiAgU2VjdG9yIE1hcCBQYXJhbWV0ZXIg
+VGFibGUgaGVscA0KPiB3aXRoIHR5cGUgb2YgZXJhc2Ugc3VwcG9ydGVkLg0KPiANCj4gTXkgcmVx
+dWlyZW1lbnQgaXMgZm9yIHNldHRpbmcgZmxhc2ggaW4gcGFydGljdWxhciBjb25maWd1cmF0aW9u
+IGkuZS4gIjA1IiAtLT4NCj4gVW5pZm9ybSAyNTYta2IuIFRoaXMgcmVxdWlyZW1lbnQgaXMgZ2V0
+dGluZyBtZXQgd2l0aCBleGlzdGluZyBwYXRjaC4NCj4gSSBkb27igJl0IHdhbnQgInVuaWZvcm0g
+MjU2LWtiIiBhcyBkZWZhdWx0ICBpbiBzcGktbm9yLmMgYXMgZGlmZmVyZW50IHVzZXIgbWF5IGhh
+dmUNCj4gZGlmZmVyZW50IHJlcXVpcmVtZW50cy4NCj4gSG93IHRvIGFjaGlldmUgdGhpcz8gRGV2
+aWNlIHRyZWUgPz8NCj4gDQoNCkZsYXNoZXMgaGFzIGRpZmZlcmVudCBsYXlvdXQgYmFzZWQgb24g
+Y29uZmlndXJhdGlvbi4gRm9yIGUuZy4gU3BhbnNpb24gUzI1RlMgc3VwcG9ydHMgMyBsYXlvdXQu
+IA0KU2FtZSBoYXMgYmVlbiBleHBsYWluZWQgaW4gcHJldmlvdXMgbWFpbC4NCg0KSSBoYXZlIHJl
+cXVpcmVtZW50IG9mIHNlbGVjdGluZyBhIHBhcnRpY3VsYXIgbGF5b3V0IG9mIGZsYXNoLiBJIGRv
+buKAmXQgd2FudCB0byBmaXgvaGFyZGNvZGUgZmxhc2ggbGF5b3V0IGluIHNwaS1ub3IuYy4gDQpU
+aGlzIG1lYW5zIGxheW91dCBpbmZvIHNob3VsZCBjb21lIGZyb20gZGVmY29uZmlnIG9yIGRldmlj
+ZSB0cmVlLiANCg0KRG8gd2UgaGF2ZSBhbnkgc3VjaCBkZXZpY2UgdHJlZSBiaW5kaW5nIGF2YWls
+YWJsZSBmb3IgZmxhc2guDQoNCi0tcGsNCg0KDQoNCg==
