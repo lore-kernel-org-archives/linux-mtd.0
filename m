@@ -1,33 +1,23 @@
-Date: Wed, 20 Dec 2017 22:41:21 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Miquel RAYNAL <miquel.raynal@free-electrons.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Jason Cooper <jason@lakedaemon.net>,
- Andrew Lunn <andrew@lunn.ch>, Gregory Clement
- <gregory.clement@free-electrons.com>, Sebastian Hesselbarth
- <sebastian.hesselbarth@gmail.com>, Russell King <linux@armlinux.org.uk>,
- Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Eric Miao <eric.y.miao@gmail.com>, Catalin Marinas
- <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Ezequiel
- Garcia <ezequiel.garcia@free-electrons.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Thomas
- Petazzoni <thomas.petazzoni@free-electrons.com>, Antoine Tenart
- <antoine.tenart@free-electrons.com>, Nadav Haklai <nadavh@marvell.com>,
- Ofer Heifetz <oferh@marvell.com>, Hanna Hawa <hannah@marvell.com>, Neta Zur
- Hershkovits <neta@marvell.com>
-Subject: Re: [PATCH 00/12] Marvell NAND controller rework with ->exec_op()
-Message-ID: <20171220224121.2cb6f690@bbrezillon>
-In-Reply-To: <87y3lxccr7.fsf@belgarion.home>
-References: <20171207201814.30411-1-miquel.raynal@free-electrons.com>
- <20171214070930.0b885f6d@bbrezillon>
- <877etkecig.fsf@belgarion.home> <20171218092535.2ca1fe13@xps13>
- <87y3lxccr7.fsf@belgarion.home>
+Received: from mail-eopbgr20053.outbound.protection.outlook.com ([40.107.2.53]
+ helo=EUR02-VE1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eRt10-0003nM-DQ
+ for linux-mtd@lists.infradead.org; Thu, 21 Dec 2017 05:03:33 +0000
+From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+CC: "dedekind1@gmail.com" <dedekind1@gmail.com>, "oss@buserror.net"
+ <oss@buserror.net>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, Jagdish Gediya <jagdish.gediya@nxp.com>
+Subject: RE: [PATCH][v2] driver: mtd: update struct map_info's swap as per map
+ requirement.
+Date: Thu, 21 Dec 2017 05:03:11 +0000
+Message-ID: <HE1PR04MB12411FD6374970400B42696F970D0@HE1PR04MB1241.eurprd04.prod.outlook.com>
+References: <1511954812-8533-1-git-send-email-prabhakar.kushwaha@nxp.com>
+In-Reply-To: <1511954812-8533-1-git-send-email-prabhakar.kushwaha@nxp.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,75 +27,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 20 Dec 2017 22:26:04 +0100
-Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+Hi Boris,
 
-> Miquel RAYNAL <miquel.raynal@free-electrons.com> writes:
-> 
-> > Hello Robert,
-> >
-> > On Mon, 18 Dec 2017 08:11:35 +0100
-> > Robert Jarzmik <robert.jarzmik@free.fr> wrote:
-> >  
-> >> Boris Brezillon <boris.brezillon@free-electrons.com> writes:
-> >>   
-> >> >> Robert, it would be great if you could also do more testing on PXA
-> >> >> and validate this driver. If needed, a branch ready to be tested is
-> >> >> available at [3]. It is based on nand/next and has all the changes
-> >> >> brought by the previously mentionned series as well as this one.    
-> >> >
-> >> > Robert, do you think you'll have some time to test Miquel's branch
-> >> > on your PXA boards? Miquel already tested on one of these boards
-> >> > (CM-X300), but we'd like to have other testers. Also feel free to
-> >> > review the driver if have the time.
-> >> >
-> >> > Thanks,
-> >> >
-> >> > Boris    
-> >> 
-> >> Hi Boris and Miquel,
-> >> 
-> >> I have applied the whole serie to linux-next yesterday.
-> >> 
-> >> A boot attempt on my zylonite with my old defconfig (with the new
-> >> Marvell NAND config activated) yields to :
-> >>  - this message
-> >> [    3.136818] marvell-nfc pxa3xx-nand: could not identify the nand
-> >> chip [    3.143874] marvell-nfc: probe of pxa3xx-nand failed with
-> >> error -22
-> >>  - then my board hangs
-> >> 
-> >> Is there something to be done to improve the trace level so that you
-> >> can guess what's happening ?  
-> >
-> > Thank you very much for testing this.
-> >
-> > Could you please try this branch [1] instead of linux-next + the
-> > patches?
-> >
-> > Also, can you please add #define DEBUG in marvell_nand.c + nand_base.c,
-> > it should help us figuring out what is wrong.  
-> 
-> Done, same result, the dmesg is in [1].
 
-Looks like there is a mismatch on the nand bus width detected by the
-core and the one declared by the driver. Can you try with the following
-diff applied?
+> -----Original Message-----
+> From: Prabhakar Kushwaha [mailto:prabhakar.kushwaha@nxp.com]
+> Sent: Wednesday, November 29, 2017 4:57 PM
+> To: linux-mtd@lists.infradead.org
+> Cc: dedekind1@gmail.com; oss@buserror.net; computersforpeace@gmail.com;
+> Jagdish Gediya <jagdish.gediya@nxp.com>; Prabhakar Kushwaha
+> <prabhakar.kushwaha@nxp.com>
+> Subject: [PATCH][v2] driver: mtd: update struct map_info's swap as per ma=
+p
+> requirement.
+>=20
+> From: Jagdish Gediya <jagdish.gediya@nxp.com>
+>=20
+> It is not necessary for all device's maps to be CFI_HOST_ENDIAN.
+> Maps device can be Big endian or little endian.
+>=20
+> Currently it is being taken care using CONFIG_MTD_CFI_LE_BYTE_SWAP or
+> CONFIG_MTD_CFI_BE_BYTE_SWAP i.e. compile time.
+>=20
+> Now update struct map_info's swap field based on device characteristics
+> defined in device tree.
+>=20
+> Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+> Signed-off-by: Jagdish Gediya <jagdish.gediya@nxp.com>
+> ---
+> Changes for v2: Incorporated review comments from Boris Brezillon
+> https://emea01.safelinks.protection.outlook.com/?url=3Dhttp%3A%2F%2Fpatch=
+w
+> ork.ozlabs.org%2Fpatch%2F758381%2F&data=3D02%7C01%7Cprabhakar.kushwah
+> a%40nxp.com%7C9050b00591c44afe1fcd08d5371c445a%7C686ea1d3bc2b4c6f
+> a92cd99c5c301635%7C0%7C0%7C636475516901200278&sdata=3Dl6iFa15%2FxgO
+> fnmzmRgwFUbrwhY26ROw7rO1REh342mc%3D&reserved=3D0
+>=20
+>  drivers/mtd/maps/physmap_of_core.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>=20
+> diff --git a/drivers/mtd/maps/physmap_of_core.c
+> b/drivers/mtd/maps/physmap_of_core.c
+> index b1bd4fa..27f44a0 100644
+> --- a/drivers/mtd/maps/physmap_of_core.c
+> +++ b/drivers/mtd/maps/physmap_of_core.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/mtd/map.h>
+>  #include <linux/mtd/partitions.h>
+>  #include <linux/mtd/concat.h>
+> +#include <linux/mtd/cfi_endian.h>
+>  #include <linux/of.h>
+>  #include <linux/of_address.h>
+>  #include <linux/of_platform.h>
+> @@ -233,6 +234,13 @@ static int of_flash_probe(struct platform_device *de=
+v)
+>  		info->list[i].map.bankwidth =3D be32_to_cpup(width);
+>  		info->list[i].map.device_node =3D dp;
+>=20
+> +		if (of_property_read_bool(dp->parent, "big-endian"))
+> +			info->list[i].map.swap =3D CFI_BIG_ENDIAN;
+> +		else if (of_property_read_bool(dp->parent, "little-endian"))
+> +			info->list[i].map.swap =3D CFI_LITTLE_ENDIAN;
+> +		else if (of_property_read_bool(dp->parent, "host-endian"))
+> +			info->list[i].map.swap =3D CFI_HOST_ENDIAN;
+> +
+>  		err =3D of_flash_probe_gemini(dev, dp, &info->list[i].map);
+>  		if (err)
+>  			goto err_out;
+> --
 
-Thanks,
+As per the patchwork status, its state is "Change Requested"
 
-Boris
+http://patchwork.ozlabs.org/patch/842542/
 
---->8---
-diff --git a/drivers/mtd/nand/marvell_nand.c b/drivers/mtd/nand/marvell_nand.c
-index c618ccb22a61..ddd6a07888e2 100644
---- a/drivers/mtd/nand/marvell_nand.c
-+++ b/drivers/mtd/nand/marvell_nand.c
-@@ -2481,6 +2481,7 @@ static int marvell_nand_chip_init(struct device *dev, struct marvell_nfc *nfc,
-         */
-        chip->ecc.mode = NAND_ECC_HW;
- 
-+       chip->options |= NAND_BUSWIDTH_AUTO;
-        ret = nand_scan_ident(mtd, marvell_nand->nsels, NULL);
-        if (ret) {
-                dev_err(dev, "could not identify the nand chip\n");
+I am not seeing any review comments on this patch.=20
+What kind of change is required.=20
+
+--pk
