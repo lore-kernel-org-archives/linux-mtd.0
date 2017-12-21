@@ -1,33 +1,23 @@
-Received: from mail-he1eur01on0059.outbound.protection.outlook.com
- ([104.47.0.59] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eRtHV-0003Kd-RC
- for linux-mtd@lists.infradead.org; Thu, 21 Dec 2017 05:20:35 +0000
-From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>, Scott Wood
- <oss@buserror.net>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>
-CC: "dedekind1@gmail.com" <dedekind1@gmail.com>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>
-Subject: RE: [PATCH] Documentation: binding: Update endianness usage
-Date: Thu, 21 Dec 2017 05:20:17 +0000
-Message-ID: <HE1PR04MB124148862807D5BD05E4E5AF970D0@HE1PR04MB1241.eurprd04.prod.outlook.com>
-References: <1511954855-8593-1-git-send-email-prabhakar.kushwaha@nxp.com>
- <1512105209.10062.1.camel@buserror.net>
- <HE1PR04MB12414AFA5F8081730B89378497390@HE1PR04MB1241.eurprd04.prod.outlook.com>
- <1512165311.10062.3.camel@buserror.net>
- <HE1PR04MB1241226CD3B7ABD6D5FA2D91973C0@HE1PR04MB1241.eurprd04.prod.outlook.com>
- <1512441957.10062.6.camel@buserror.net>
- <HE1PR04MB1241ADD02E472BA492AE1C8F973D0@HE1PR04MB1241.eurprd04.prod.outlook.com>
- <1512504459.10062.9.camel@buserror.net>
- <HE1PR04MB1241F1A70CDBA5A94D4D2CE597320@HE1PR04MB1241.eurprd04.prod.outlook.com>
- <HE1PR04MB124174461F845000614CDAA197320@HE1PR04MB1241.eurprd04.prod.outlook.com>
-In-Reply-To: <HE1PR04MB124174461F845000614CDAA197320@HE1PR04MB1241.eurprd04.prod.outlook.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eRvtl-0006Le-SB
+ for linux-mtd@lists.infradead.org; Thu, 21 Dec 2017 08:08:34 +0000
+Date: Thu, 21 Dec 2017 09:07:51 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "oss@buserror.net" <oss@buserror.net>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, Jagdish Gediya <jagdish.gediya@nxp.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
+Subject: Re: [PATCH][v2] driver: mtd: update struct map_info's swap as per
+ map requirement.
+Message-ID: <20171221090751.2e29ad0e@bbrezillon>
+In-Reply-To: <HE1PR04MB12411FD6374970400B42696F970D0@HE1PR04MB1241.eurprd04.prod.outlook.com>
+References: <1511954812-8533-1-git-send-email-prabhakar.kushwaha@nxp.com>
+ <HE1PR04MB12411FD6374970400B42696F970D0@HE1PR04MB1241.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,58 +27,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgU2NvdHQsDQoNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBkZXZp
-Y2V0cmVlLW93bmVyQHZnZXIua2VybmVsLm9yZyBbbWFpbHRvOmRldmljZXRyZWUtDQo+IG93bmVy
-QHZnZXIua2VybmVsLm9yZ10gT24gQmVoYWxmIE9mIFByYWJoYWthciBLdXNod2FoYQ0KPiBTZW50
-OiBXZWRuZXNkYXksIERlY2VtYmVyIDA2LCAyMDE3IDQ6MjkgUE0NCj4gVG86IFNjb3R0IFdvb2Qg
-PG9zc0BidXNlcnJvci5uZXQ+OyBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsNCj4gZGV2
-aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6IGRlZGVraW5kMUBnbWFpbC5jb207IGNvbXB1
-dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbQ0KPiBTdWJqZWN0OiBSRTogW1BBVENIXSBEb2N1bWVudGF0
-aW9uOiBiaW5kaW5nOiBVcGRhdGUgZW5kaWFubmVzcyB1c2FnZQ0KPiANCj4gDQo+IA0KPiA+IC0t
-LS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4gRnJvbTogUHJhYmhha2FyIEt1c2h3YWhhDQo+
-ID4gU2VudDogV2VkbmVzZGF5LCBEZWNlbWJlciAwNiwgMjAxNyA0OjA1IFBNDQo+ID4gVG86ICdT
-Y290dCBXb29kJyA8b3NzQGJ1c2Vycm9yLm5ldD47IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQu
-b3JnOw0KPiA+IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnDQo+ID4gQ2M6IGRlZGVraW5kMUBn
-bWFpbC5jb207IGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbQ0KPiA+IFN1YmplY3Q6IFJFOiBb
-UEFUQ0hdIERvY3VtZW50YXRpb246IGJpbmRpbmc6IFVwZGF0ZSBlbmRpYW5uZXNzIHVzYWdlDQo+
-ID4NCj4gPg0KPiA+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+IEZyb206IFNj
-b3R0IFdvb2QgW21haWx0bzpvc3NAYnVzZXJyb3IubmV0XQ0KPiA+ID4gU2VudDogV2VkbmVzZGF5
-LCBEZWNlbWJlciAwNiwgMjAxNyAxOjM4IEFNDQo+ID4gPiBUbzogUHJhYmhha2FyIEt1c2h3YWhh
-IDxwcmFiaGFrYXIua3VzaHdhaGFAbnhwLmNvbT47IGxpbnV4LQ0KPiA+ID4gbXRkQGxpc3RzLmlu
-ZnJhZGVhZC5vcmc7IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnDQo+ID4gPiBDYzogZGVkZWtp
-bmQxQGdtYWlsLmNvbTsgY29tcHV0ZXJzZm9ycGVhY2VAZ21haWwuY29tDQo+ID4gPiBTdWJqZWN0
-OiBSZTogW1BBVENIXSBEb2N1bWVudGF0aW9uOiBiaW5kaW5nOiBVcGRhdGUgZW5kaWFubmVzcyB1
-c2FnZQ0KPiA+ID4NCj4gPiA+IE9uIFR1ZSwgMjAxNy0xMi0wNSBhdCAwOTo0NSArMDAwMCwgUHJh
-Ymhha2FyIEt1c2h3YWhhIHdyb3RlOg0KPiA+ID4gPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0t
-LS0tDQo+ID4gPiA+ID4gRnJvbTogU2NvdHQgV29vZCBbbWFpbHRvOm9zc0BidXNlcnJvci5uZXRd
-DQo+ID4gPiA+ID4gU2VudDogVHVlc2RheSwgRGVjZW1iZXIgMDUsIDIwMTcgODoxNiBBTQ0KPiA+
-ID4gPiA+IFRvOiBQcmFiaGFrYXIgS3VzaHdhaGEgPHByYWJoYWthci5rdXNod2FoYUBueHAuY29t
-PjsgbGludXgtDQo+ID4gPiA+ID4gbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IGRldmljZXRyZWVA
-dmdlci5rZXJuZWwub3JnDQo+ID4gPiA+ID4gQ2M6IGRlZGVraW5kMUBnbWFpbC5jb207IGNvbXB1
-dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbQ0KPiA+ID4gPiA+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIERv
-Y3VtZW50YXRpb246IGJpbmRpbmc6IFVwZGF0ZSBlbmRpYW5uZXNzIHVzYWdlDQo+ID4gPiA+ID4N
-Cj4gPiA+ID4gPiBJIG5vdyBzZWUgeW91ciBwYXRjaCB0byBvZl9mbGFzaF9wcm9iZS4uLiB3aGVy
-ZSBpcyB0aGUgbm9uLUlGQy1zcGVjaWZpYw0KPiA+ID4gPiA+IGJpbmRpbmcgdGhhdCBzYXlzIHRo
-ZSAqcGFyZW50KiBvZiBhIENGSSBub2RlIHNob3VsZCBiZSBsb29rZWQgYXQgZm9yIHRoaXM/DQo+
-ID4gPiA+ID4gV2hlcmXCoGluIGdlbmVyYWwgYXJlIGVuZGlhbiBwcm9wZXJ0aWVzIGtlcHQgaW4g
-dGhlIHBhcmVudCBvZiB0aGUgbm9kZQ0KPiB3aXRoDQo+ID4gPiA+ID4gInJlZyI/wqDCoFRoZSBy
-aWdodCBhbnN3ZXIgaXMgdG8gYWRkIGVuZGlhbm5lc3MgdG8gbXRkLXBoeXNtYXAudHh0Lg0KPiA+
-ID4gPiA+DQo+ID4gPiA+DQo+ID4gPiA+IEZsYXNoZXMgYXJlIGFsd2F5cyBsaXR0bGVyIGVuZGlh
-bi4NCj4gPiA+DQo+ID4gPiBXZSB3b3VsZG4ndCBiZSBoYXZpbmcgdGhpcyBkaXNjdXNzaW9uIGlm
-IHRoYXQgd2VyZSB0cnVlLi4uICBUaGlzIGlzIGFib3V0IGhvdw0KPiA+ID4gaXQgcHJlc2VudHMg
-dG8gdGhlIENQVSwgbm90IGFib3V0IGhvdyB0aGUgYWN0dWFsIHBpbnMgb24gdGhlIGNoaXAgYXJl
-DQo+ID4gPiBudW1iZXJlZC4NCj4gPiA+DQo+ID4NCj4gPiBHb3QgeW91ciBwb2ludCA6KQ0KPiA+
-DQo+ID4gPiA+IEl0IGlzIGJlY2F1c2Ugb2YgSUZDIGNvbnRyb2xsZXIgYmVoYXZpb3IsIGVuZGlh
-bm5lc3MgaXMgcmVxdWlyZWQuDQo+ID4gPiA+IFNvIGFzIHBlciBteSB1bmRlcnN0YW5kaW5nLCB0
-aGlzIGluZm8gc2hvdWxkIGdvIGluIElGQyBiaW5kaW5nLg0KPiA+ID4NCj4gPiA+IElmIHRoZSBp
-bmZvIHNob3VsZCBnbyBpbiB0aGUgSUZDIGJpbmRpbmcgd2h5IGlzIHRoZSBjb2RlIGluIGEgbm9u
-LUlGQy1zcGVjaWZpYw0KPiA+ID4gcGxhY2U/DQo+ID4gPg0KPiA+DQo+ID4gTm93IEkgdW5kZXJz
-dGFuZCB5b3VyIHBvaW50Lg0KPiA+IFNvIEkgc2hvdWxkIGJlIG1vdmluZyBlbmRpYW5uZXNzIHBy
-b3BlcnR5IGRldGFpbCBpbiBtdGQtcGh5c21hcC50eHQuDQo+ID4NCj4gPiBJcyBteSB1bmRlcnN0
-YW5kaW5nIGNvcnJlY3Q/DQo+ID4NCj4gDQo+IEEgc2Vjb25kIHRob3VnaHQsDQo+IElGQyBiaW5k
-aW5nIHdhcyB1cGRhdGVkIGJlY2F1c2UgdGhlcmUgaXMgbm8gSUZDLU5PUiBkcml2ZXIuIEl0IHVz
-ZXMgZ2VuZXJpYyBGbGFzaA0KPiBmcmFtZXdvcmsuDQo+IA0KPiBJIGFtIGp1c3QgdHJ5aW5nIHRv
-IGdldCBtb3JlIHVuZGVyc3RhbmRpbmcuDQo+IA0KDQpEbyB5b3UgaGF2ZSBhbnkgY29tbWVudC9j
-b25jZXJuIG9uIHRoaXMgcGF0Y2guDQpNYXkgSSBnbyBhaGVhZCBhbmQgcmVxdWVzdCBmb3IgdGhl
-IG1lcmdlciBvZiB1cGRhdGVkIHBhdGNoIGkuZS4gaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9y
-Zy9wYXRjaC8xMDA4NDMzMS8NCg0KLS1wcmFiaGFrYXIgDQoNCg0KDQoNCg==
+Hi,
+
+On Thu, 21 Dec 2017 05:03:11 +0000
+Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com> wrote:
+
+> Hi Boris,
+> 
+
+You're lucky that I poll the MTD ML from time to time, because I'm not
+even Cc-ed on this email.
+
+> 
+> > -----Original Message-----
+> > From: Prabhakar Kushwaha [mailto:prabhakar.kushwaha@nxp.com]
+> > Sent: Wednesday, November 29, 2017 4:57 PM
+> > To: linux-mtd@lists.infradead.org
+> > Cc: dedekind1@gmail.com; oss@buserror.net; computersforpeace@gmail.com;
+> > Jagdish Gediya <jagdish.gediya@nxp.com>; Prabhakar Kushwaha
+> > <prabhakar.kushwaha@nxp.com>
+> > Subject: [PATCH][v2] driver: mtd: update struct map_info's swap as per map
+> > requirement.
+> > 
+> > From: Jagdish Gediya <jagdish.gediya@nxp.com>
+> > 
+> > It is not necessary for all device's maps to be CFI_HOST_ENDIAN.
+> > Maps device can be Big endian or little endian.
+> > 
+> > Currently it is being taken care using CONFIG_MTD_CFI_LE_BYTE_SWAP or
+> > CONFIG_MTD_CFI_BE_BYTE_SWAP i.e. compile time.
+> > 
+> > Now update struct map_info's swap field based on device characteristics
+> > defined in device tree.
+> > 
+> > Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+> > Signed-off-by: Jagdish Gediya <jagdish.gediya@nxp.com>
+> > ---
+> > Changes for v2: Incorporated review comments from Boris Brezillon
+> > https://emea01.safelinks.protection.outlook.com/?url=http%3A%2F%2Fpatchw
+> > ork.ozlabs.org%2Fpatch%2F758381%2F&data=02%7C01%7Cprabhakar.kushwah
+> > a%40nxp.com%7C9050b00591c44afe1fcd08d5371c445a%7C686ea1d3bc2b4c6f
+> > a92cd99c5c301635%7C0%7C0%7C636475516901200278&sdata=l6iFa15%2FxgO
+> > fnmzmRgwFUbrwhY26ROw7rO1REh342mc%3D&reserved=0
+> > 
+> >  drivers/mtd/maps/physmap_of_core.c | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> > 
+> > diff --git a/drivers/mtd/maps/physmap_of_core.c
+> > b/drivers/mtd/maps/physmap_of_core.c
+> > index b1bd4fa..27f44a0 100644
+> > --- a/drivers/mtd/maps/physmap_of_core.c
+> > +++ b/drivers/mtd/maps/physmap_of_core.c
+> > @@ -20,6 +20,7 @@
+> >  #include <linux/mtd/map.h>
+> >  #include <linux/mtd/partitions.h>
+> >  #include <linux/mtd/concat.h>
+> > +#include <linux/mtd/cfi_endian.h>
+> >  #include <linux/of.h>
+> >  #include <linux/of_address.h>
+> >  #include <linux/of_platform.h>
+> > @@ -233,6 +234,13 @@ static int of_flash_probe(struct platform_device *dev)
+> >  		info->list[i].map.bankwidth = be32_to_cpup(width);
+> >  		info->list[i].map.device_node = dp;
+> > 
+> > +		if (of_property_read_bool(dp->parent, "big-endian"))
+> > +			info->list[i].map.swap = CFI_BIG_ENDIAN;
+> > +		else if (of_property_read_bool(dp->parent, "little-endian"))
+> > +			info->list[i].map.swap = CFI_LITTLE_ENDIAN;
+> > +		else if (of_property_read_bool(dp->parent, "host-endian"))
+> > +			info->list[i].map.swap = CFI_HOST_ENDIAN;
+> > +
+> >  		err = of_flash_probe_gemini(dev, dp, &info->list[i].map);
+> >  		if (err)
+> >  			goto err_out;
+> > --  
+> 
+> As per the patchwork status, its state is "Change Requested"
+> 
+> http://patchwork.ozlabs.org/patch/842542/
+> 
+> I am not seeing any review comments on this patch. 
+> What kind of change is required.
+
+The binding is still being discussed with Scott, and I won't merge the
+code supposed to handle the new property until you've agreed on
+something.
+
+Regards,
+
+Boris
