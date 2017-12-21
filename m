@@ -1,17 +1,19 @@
 Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eRzuV-0003Lk-KU
- for linux-mtd@lists.infradead.org; Thu, 21 Dec 2017 12:25:17 +0000
-Received: by mail-lf0-x244.google.com with SMTP id e30so10814956lfb.9
- for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2017 04:25:04 -0800 (PST)
+ id 1eRzwy-0004gz-7s
+ for linux-mtd@lists.infradead.org; Thu, 21 Dec 2017 12:27:49 +0000
+Received: by mail-lf0-x244.google.com with SMTP id g63so5660205lfl.11
+ for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2017 04:27:38 -0800 (PST)
 From: Rafael Gago <rafael.gago@gmail.com>
 To: linux-mtd@lists.infradead.org
 Cc: richard@nod.at, boris.brezillon@free-electrons.com,
  computersforpeace@gmail.com, dwmw2@infradead.org, marek.vasut@gmail.com,
  cyrille.pitchen@wedev4u.fr, Rafael Gago <rgc@hms.se>
-Subject: [PATCH] mtd: spi-nor: Add support for s25fl128l and s25fl128l
-Date: Thu, 21 Dec 2017 13:24:29 +0100
-Message-Id: <1513859069-32567-1-git-send-email-rgc@hms.se>
+Subject: [PATCH v2] mtd: spi-nor: Add support for s25fl128l and s25fl256l
+Date: Thu, 21 Dec 2017 13:27:30 +0100
+Message-Id: <1513859250-510-1-git-send-email-rgc@hms.se>
+In-Reply-To: <1513859069-32567-1-git-send-email-rgc@hms.se>
+References: <1513859069-32567-1-git-send-email-rgc@hms.se>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,6 +27,10 @@ They are exactly the same than the s25fl064l but bigger.
 
 Signed-off-by: Rafael Gago Castano <rgc@hms.se>
 ---
+
+Changes from v2:
+  The commit message named two times the 128 M device.
+
  drivers/mtd/spi-nor/spi-nor.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
