@@ -1,19 +1,18 @@
-MIME-Version: 1.0
-Sender: arndbergmann@gmail.com
-In-Reply-To: <b55511ad-6d23-0356-f2d3-8e2b7c6d1ffb@ti.com>
-References: <b55511ad-6d23-0356-f2d3-8e2b7c6d1ffb@ti.com>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 21 Dec 2017 16:24:18 +0100
-Message-ID: <CAK8P3a1-rtV3HyiCbog20FR24oz__f4X=k=0=ND3Mk88CVd_8w@mail.gmail.com>
-Subject: Re: [GIT PULL] omap-gpmc changes for v4.16 merge (immutable for mtd)
-To: Roger Quadros <rogerq@ti.com>
-Cc: arm-soc <arm@kernel.org>, Tony Lindgren <tony@atomide.com>,
- Ladislav Michl <ladis@linux-mips.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- linux-omap <linux-omap@vger.kernel.org>,
- Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eSA7w-0004Mp-I4
+ for linux-mtd@lists.infradead.org; Thu, 21 Dec 2017 23:20:08 +0000
+From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+To: ezequiel.garcia@free-electrons.com, boris.brezillon@free-electrons.com,
+ richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
+ marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
+ miquel.raynal@free-electrons.com, linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org,
+ Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCHv4 0/1] Set FORCE_CSX bit when arbitration between NAND and NOR
+ is enabled
+Date: Fri, 22 Dec 2017 12:19:03 +1300
+Message-Id: <20171221231904.21140-1-chris.packham@alliedtelesis.co.nz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +22,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Dec 11, 2017 at 3:16 PM, Roger Quadros <rogerq@ti.com> wrote:
-> Hi Arnd/Olof,
->
-> The following changes since commit 4fbd8d194f06c8a3fd2af1ce560ddb31f7ec8323:
->
->   Linux 4.15-rc1 (2017-11-26 16:01:47 -0800)
->
-> are available in the git repository at:
->
->   https://github.com/rogerq/linux.git tags/gpmc-omap-for-v4.16-immutable
->
-> for you to fetch changes up to c18a7ac3398d0cef29749f9568666db8321aa4c9:
->
->   memory: omap-gpmc: Make 'bank-width' property optional (2017-12-01 15:37:49 +0200)
->
-> ----------------------------------------------------------------
-> OMAP-GPMC: driver updates for v4.16
-> * Error out only if both 'bank-width' and 'gpmc,device-width' DT properties are missing.
+Note: I've picked this up from Kalyan to try and get things into shape for
+submission upstream.
 
-Pulled into next/drivers, thanks!
+When the arbitration between NOR and NAND flash is enabled
+the <FORCE_CSX> field bit[21] in the Data Flash Control Register
+needs to be set to 1 according to guidleine GL-5830741
+mentioned in Marvell Errata document MV-S501377-00, Rev. D.
 
-        Arnd
+Set the FORCE_CSX bit in NDCR for ARMADA370 variants as the arbitration
+is always enabled by default. This change does not apply for pxa3xx
+variants because FORCE_CSX bit does not exist/reserved on the NFCv1.
+
+Ran the "flash_speed" tool on NAND flash on a board with
+Armada-xp based SoC which uses only one NAND chip and not using
+the arbiter. There is no regression or speed penalty
+introduced due to this change.
+
+Kalyan Kinthada (1):
+  mtd: nand: pxa3xx: Set FORCE_CSX bit to ARMADA370 variants
+
+ drivers/mtd/nand/pxa3xx_nand.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+-- 
+2.15.1
