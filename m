@@ -1,30 +1,35 @@
-Received: from mail-he1eur01on0048.outbound.protection.outlook.com
- ([104.47.0.48] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eS0AN-0003Jv-2O
- for linux-mtd@lists.infradead.org; Thu, 21 Dec 2017 12:41:41 +0000
-From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, "linux-mtd@lists.infradead.org"
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eS0Tg-000360-OU
+ for linux-mtd@lists.infradead.org; Thu, 21 Dec 2017 13:01:42 +0000
+Date: Thu, 21 Dec 2017 14:01:22 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Frieder Schrempf <frieder.schrempf@exceet.de>
+Cc: Peter Pan <peterpansjtu@gmail.com>, "Peter Pan =?UTF-8?B?5r2Y5qCL?=
+ (peterpandong)" <peterpandong@micron.com>, "linux-mtd@lists.infradead.org"
  <linux-mtd@lists.infradead.org>
-CC: Poonam Aggrwal <poonam.aggrwal@nxp.com>,
- "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>, Rajat Srivastava
- <rajat.srivastava@nxp.com>, Suresh Gupta <suresh.gupta@nxp.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>
-Subject: RE: [RFC 09/10] mtd: spi-nor: Disable hybrid mode for SPANSION
- S25FS-S family
-Date: Thu, 21 Dec 2017 12:41:23 +0000
-Message-ID: <HE1PR04MB124101E3618C5EA65C7CD6FF970D0@HE1PR04MB1241.eurprd04.prod.outlook.com>
-References: <1512548141-3319-1-git-send-email-prabhakar.kushwaha@nxp.com>
- <1512548141-3319-10-git-send-email-prabhakar.kushwaha@nxp.com>
- <c764fd31-29c4-865c-656f-23c758af0640@wedev4u.fr>
- <HE1PR04MB1241C99974A1B5A7BF7BBCFA97310@HE1PR04MB1241.eurprd04.prod.outlook.com>
-In-Reply-To: <HE1PR04MB1241C99974A1B5A7BF7BBCFA97310@HE1PR04MB1241.eurprd04.prod.outlook.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Subject: Re: [PATCH v6 00/15] A SPI NAND framework under generic NAND framework
+Message-ID: <20171221140122.001bd196@bbrezillon>
+In-Reply-To: <a06312e4-a7e6-8b7b-9eb5-8320302dcc55@exceet.de>
+References: <20170529225931.226da943@bbrezillon>
+ <90bcb366-c494-2dee-3bb7-d16b77e347c6@exceet.de>
+ <20171204150514.1f17671d@bbrezillon>
+ <A0FE66EC-7E17-43BE-9B66-896F112B92A0@micron.com>
+ <20171205135804.478902dc@bbrezillon>
+ <20171205140313.40f3f17d@bbrezillon>
+ <256b4ab6-c104-4580-87cd-527178bde460@exceet.de>
+ <20171213222710.32d12514@bbrezillon>
+ <CAAyFORJcT1abbo21iA4cetLKmF0zE4akFGFryxPpwPO+730LDQ@mail.gmail.com>
+ <20171214085036.436b4fcf@bbrezillon>
+ <CAAyFOR+=JwTRTm2MXVdMy7KRPsnV8LV4t71kHUh_s=+QOsVurA@mail.gmail.com>
+ <23d17416-e555-4b92-cc47-f644fbe676c6@exceet.de>
+ <20171214163848.41f6d277@bbrezillon>
+ <CAAyFORKeFq+=tF9AK+8hp6GYYiyp3DKcw8+LWrC3RWS2zLNU_w@mail.gmail.com>
+ <CAAyFORJEuEaHDXgk+m0ax5RoZ-3cRJs6uFXw7syR4vHE1veEwQ@mail.gmail.com>
+ <a06312e4-a7e6-8b7b-9eb5-8320302dcc55@exceet.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,73 +39,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQ3lyaWxsZSwNCg0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IGxp
-bnV4LW10ZCBbbWFpbHRvOmxpbnV4LW10ZC1ib3VuY2VzQGxpc3RzLmluZnJhZGVhZC5vcmddIE9u
-IEJlaGFsZiBPZg0KPiBQcmFiaGFrYXIgS3VzaHdhaGENCj4gU2VudDogU2F0dXJkYXksIERlY2Vt
-YmVyIDA5LCAyMDE3IDEwOjQ2IFBNDQo+IFRvOiBDeXJpbGxlIFBpdGNoZW4gPGN5cmlsbGUucGl0
-Y2hlbkB3ZWRldjR1LmZyPjsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gQ2M6IFBv
-b25hbSBBZ2dyd2FsIDxwb29uYW0uYWdncndhbEBueHAuY29tPjsgYm9yaXMuYnJlemlsbG9uQGZy
-ZWUtDQo+IGVsZWN0cm9ucy5jb207IGRlZGVraW5kMUBnbWFpbC5jb207IFJhamF0IFNyaXZhc3Rh
-dmENCj4gPHJhamF0LnNyaXZhc3RhdmFAbnhwLmNvbT47IFN1cmVzaCBHdXB0YSA8c3VyZXNoLmd1
-cHRhQG54cC5jb20+Ow0KPiBjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb20NCj4gU3ViamVjdDog
-UkU6IFtSRkMgMDkvMTBdIG10ZDogc3BpLW5vcjogRGlzYWJsZSBoeWJyaWQgbW9kZSBmb3IgU1BB
-TlNJT04gUzI1RlMtDQo+IFMgZmFtaWx5DQo+IA0KPiBIaSBDeXJpbGxlLA0KPiANCj4gPiAtLS0t
-LU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+IEZyb206IEN5cmlsbGUgUGl0Y2hlbiBbbWFpbHRv
-OmN5cmlsbGUucGl0Y2hlbkB3ZWRldjR1LmZyXQ0KPiA+IFNlbnQ6IFdlZG5lc2RheSwgRGVjZW1i
-ZXIgMDYsIDIwMTcgNDoyOCBQTQ0KPiA+IFRvOiBQcmFiaGFrYXIgS3VzaHdhaGEgPHByYWJoYWth
-ci5rdXNod2FoYUBueHAuY29tPjsgbGludXgtDQo+ID4gbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcN
-Cj4gPiBDYzogYm9yaXMuYnJlemlsbG9uQGZyZWUtZWxlY3Ryb25zLmNvbTsgY29tcHV0ZXJzZm9y
-cGVhY2VAZ21haWwuY29tOw0KPiBSYWphdA0KPiA+IFNyaXZhc3RhdmEgPHJhamF0LnNyaXZhc3Rh
-dmFAbnhwLmNvbT47IGRlZGVraW5kMUBnbWFpbC5jb20NCj4gPiBTdWJqZWN0OiBSZTogW1JGQyAw
-OS8xMF0gbXRkOiBzcGktbm9yOiBEaXNhYmxlIGh5YnJpZCBtb2RlIGZvciBTUEFOU0lPTiBTMjVG
-Uw0KPiAtDQo+ID4gUyBmYW1pbHkNCj4gPg0KPiA+IEhpIFByYWJoYWthciwNCj4gPg0KPiA+IExl
-IDA2LzEyLzIwMTcgw6AgMDk6MTUsIFByYWJoYWthciBLdXNod2FoYSBhIMOpY3JpdMKgOg0KPiA+
-ID4gVGhlIFMyNUZTLVMgZmFtaWx5IHBoeXNpY2FsIHNlY3RvcnMgbWF5IGJlIGNvbmZpZ3VyZWQg
-YXMgYSBoeWJyaWQNCj4gPiA+IGNvbWJpbmF0aW9uIG9mIGVpZ2h0IDQta0IgcGFyYW1ldGVyIHNl
-Y3RvcnMgYXQgdGhlIHRvcCBvciBib3R0b20NCj4gPiA+IG9mIHRoZSBhZGRyZXNzIHNwYWNlIHdp
-dGggYWxsIGJ1dCBvbmUgb2YgdGhlIHJlbWFpbmluZyBzZWN0b3JzDQo+ID4gPiBiZWluZyB1bmlm
-b3JtIHNpemUuDQo+ID4gPiBUaGUgZGVmYXVsdCBzdGF0dXMgb2YgdGhlIGZsYXNoIGlzIHRoZSBo
-eWJyaWQgYXJjaGl0ZWN0dXJlLg0KPiA+ID4gVGhlIHBhcmFtZXRlciBzZWN0b3JzIGFuZCB0aGUg
-dW5pZm9ybSBzZWN0b3JzIGhhdmUgZGlmZmVyZW50IGVyYXNlDQo+ID4gPiBjb21tYW5kcy4NCj4g
-PiA+DQo+ID4gPiBUaGlzIHBhdGNoIGRpc2FibGVzIHRoZSBoeWJyaWQgc2VjdG9yIGFyY2hpdGVj
-dHVyZSB3aGljaCBtYWtlcyB0aGUNCj4gPiA+IGZsYXNoIGhhdmUgdW5pZm9ybSBzZWN0b3Igc2l6
-ZSBhbmQgdW5pZm9ybSBlcmFzZSBjb21tYW5kLg0KPiA+ID4NCj4gPg0KPiA+IFRoaXMgaXNzdWUg
-c2hvdWxkIGJlIGFkZHJlc3NlZCBpbiBhIGdlbmVyaWMgd2F5LCBub3QgU3BhbnNpb24gc3BlY2lm
-aWMsDQo+ID4gYnkgYWRkaW5nIHN1cHBvcnQgb2YgdGhlIG9wdGlvbmFsIFNlY3RvciBNYXAgUGFy
-YW1ldGVyIFRhYmxlIChTRkRQKS4NCj4gPiBJbiBjYXNlIG9mIG5vbiB1bmlmb3JtIG1lbW9yaWVz
-LCBsaWtlIHRoaXMgU3BhbnNpb24gUzI1RlMtUyBmYW1pbHkgb3INCj4gPiBTU1QyNiwgdGhlIFNl
-Y3RvciBNYXAgUGFyYW1ldGVyIFRhYmxlIGJlY29tZXMgbWFuZGF0b3J5IGFzIGEgU0ZEUCB0YWJs
-ZS4NCj4gPg0KPiA+IEZyb20gdGhlIEpFU0QyMTZCIHNwZWNpZmljYXRpb24sIGFib3V0IHRoZSBK
-RURFQyBTZWN0b3IgTWFwIFBhcmFtZXRlcg0KPiBUYWJsZToNCj4gPiAiIiINCj4gPiBUaGlzIHRh
-YmxlIGlzIHJlcXVpcmVkIHdoZW4gYSBtZW1vcnkgZGV2aWNlOg0KPiA+ICogSGFzIHNlY3RvcnMg
-b2YgbW9yZSB0aGFuIG9uZSBzaXplDQo+ID4gKiBPciwgZG9lcyBub3QgYWxsb3cgYWxsIEVyYXNl
-IFR5cGUgY29tbWFuZHMgdG8gYmUgYXBwbGllZCB0byBhbGwgc2VjdG9ycy4NCj4gPiAiIiINCj4g
-Pg0KPiANCj4gQXMgSSB1bmRlcnN0YW5kIGZyb20gU2VjdG9yIE1hcCBQYXJhbWV0ZXIgVGFibGUs
-IEl0IHRlbGwgYWJvdXQgdGhlIGZsYXNoIGxheW91dA0KPiBhbmQgd2hpY2ggcmVnaW9uIHN1cHBv
-cnQgd2hpY2ggZXJhc2UgdHlwZS4NCj4gDQo+IEZsYXNoIGxheW91dCBjYW4gYmUgY29uZmlndXJl
-ZCB1c2luZyB2b2xhdGlsZSBvciBub24tdm9sYXRpbGUgcmVnaXN0ZXJzLiBGb3IgZS5nLg0KPiBT
-cGFuc2lvbiBTMjVGUyBoYXMgZm9sbG93aW5nIGNvbWJpbmF0aW9uDQo+IERldmljZSAgICBDUjNO
-VlszXSAgICBDUjFOVlsyXSAgICBDUjNOVlsxXSAgICAgSW5kZXggVmFsdWUgICAgICBEZXNjcmlw
-dGlvbg0KPiBGUzUxMlMgICAgICAgMCAgICAgICAgICAgICAgICAgIDAgICAgICAgICAgICAgICAg
-ICAgIDEgICAgICAgICAgICAgICAgMDFoICAgICAgICAgICAgICAgICAgICAgIDQta0Igc2VjdG9y
-cyBhdA0KPiBib3R0b20gd2l0aCByZW1haW5kZXIgMjU2LWtCIHNlY3RvcnMNCj4gICAgICAgICAg
-ICAgICAgICAgICAwICAgICAgICAgICAgICAgICAgMSAgICAgICAgICAgICAgICAgICAgMSAgICAg
-ICAgICAgICAgICAwM2ggICAgICAgICAgICAgICAgICAgICAgNC1rQiBzZWN0b3JzIGF0IHRvcA0K
-PiB3aXRoIHJlbWFpbmRlciAyNTYta0Igc2VjdG9ycw0KPiAgICAgICAgICAgICAgICAgICAgIDEg
-ICAgICAgICAgICAgICAgICAwICAgICAgICAgICAgICAgICAgICAxICAgICAgICAgICAgICAgIDA1
-aCAgICAgICAgICAgICAgICAgICAgICBVbmlmb3JtIDI1Ni1rQg0KPiBzZWN0b3JzDQo+IE9uY2Ug
-b25lIG9mIHRoZSBjb21iaW5hdGlvbiBwcm9ncmFtbWVkLiAgU2VjdG9yIE1hcCBQYXJhbWV0ZXIg
-VGFibGUgaGVscA0KPiB3aXRoIHR5cGUgb2YgZXJhc2Ugc3VwcG9ydGVkLg0KPiANCj4gTXkgcmVx
-dWlyZW1lbnQgaXMgZm9yIHNldHRpbmcgZmxhc2ggaW4gcGFydGljdWxhciBjb25maWd1cmF0aW9u
-IGkuZS4gIjA1IiAtLT4NCj4gVW5pZm9ybSAyNTYta2IuIFRoaXMgcmVxdWlyZW1lbnQgaXMgZ2V0
-dGluZyBtZXQgd2l0aCBleGlzdGluZyBwYXRjaC4NCj4gSSBkb27igJl0IHdhbnQgInVuaWZvcm0g
-MjU2LWtiIiBhcyBkZWZhdWx0ICBpbiBzcGktbm9yLmMgYXMgZGlmZmVyZW50IHVzZXIgbWF5IGhh
-dmUNCj4gZGlmZmVyZW50IHJlcXVpcmVtZW50cy4NCj4gSG93IHRvIGFjaGlldmUgdGhpcz8gRGV2
-aWNlIHRyZWUgPz8NCj4gDQoNCkZsYXNoZXMgaGFzIGRpZmZlcmVudCBsYXlvdXQgYmFzZWQgb24g
-Y29uZmlndXJhdGlvbi4gRm9yIGUuZy4gU3BhbnNpb24gUzI1RlMgc3VwcG9ydHMgMyBsYXlvdXQu
-IA0KU2FtZSBoYXMgYmVlbiBleHBsYWluZWQgaW4gcHJldmlvdXMgbWFpbC4NCg0KSSBoYXZlIHJl
-cXVpcmVtZW50IG9mIHNlbGVjdGluZyBhIHBhcnRpY3VsYXIgbGF5b3V0IG9mIGZsYXNoLiBJIGRv
-buKAmXQgd2FudCB0byBmaXgvaGFyZGNvZGUgZmxhc2ggbGF5b3V0IGluIHNwaS1ub3IuYy4gDQpU
-aGlzIG1lYW5zIGxheW91dCBpbmZvIHNob3VsZCBjb21lIGZyb20gZGVmY29uZmlnIG9yIGRldmlj
-ZSB0cmVlLiANCg0KRG8gd2UgaGF2ZSBhbnkgc3VjaCBkZXZpY2UgdHJlZSBiaW5kaW5nIGF2YWls
-YWJsZSBmb3IgZmxhc2guDQoNCi0tcGsNCg0KDQoNCg==
+Hi Frieder,
+
+On Thu, 21 Dec 2017 12:48:16 +0100
+Frieder Schrempf <frieder.schrempf@exceet.de> wrote:
+
+> Hello Boris,
+> 
+> >>>> So shouldn't there be an spinand_die_select_op in the SPI NAND core that
+> >>>> is executed when necessary and skipped if there's only one die.  
+> >>>
+> >>> Sure, I was arguing against a ->select_chip() at the generic NAND
+> >>> level. That's something you can add in the SPI NAND framework.  
+> 
+> I added an op to send the die selection command and call it, where I 
+> think it is needed: [1]
+> 
+> Accessing both dies on the Winbond SPI NAND works fine like this.
+
+Okay, I'll have a look.
+
+> 
+> While running tests I came across some problems:
+> 
+> * On accessing the BBT in RAM via nanddev_bbt_[set/get]_block_status, 
+> the calculation of position and offset seems to be wrong.
+> My fix is here: [2]
+
+Indeed.
+
+> 
+> * On calculating the row address for read/program/erase via 
+> nanddev_pos_to_row, it seems like the eraseblock_addr_shift is wrong.
+
+My version was incorrect, but yours is not good either :-), should
+be:
+
+	nand->rowconv.eraseblock_addr_shift =
+				fls(memorg->pages_per_eraseblock - 1);
+
+otherwise it doesn't work when the number of pages per block is not a
+power of 2, and that can happen :-/.
+
+> 
+> * Also, I'm not sure if the LUN should be taken into account when 
+> calculating the row address. At least when you select the LUN by issuing 
+> a separate command, the row address sent to the chip should only contain 
+> the page address.
+
+The LUN id is part of the row address on parallel ONFI NANDs. Are you
+sure what you're trying to access is actually a LUN?
+
+The ONFI spec says:
+"
+LUN (logical unit number)
+The minimum unit that can independently execute commands and report
+status. There are one or more LUNs per NAND Target.
+"
+
+I suspect what you're trying to expose is a chip with 2 targets
+(target is a synonym for die). If this is the case, then you should
+have:
+
+	luns_per_target = 1;
+	ntargets = 2;	/* ntargets <=> number of dies */
+
+> But I'm not sure if that's the case in general, or if some code is 
+> needed to differentiate.
+> 
+> See my changes of nanddev_pos_to_row here: [3]
+> 
+> * I run into a mutex deadlock, when spinand_write_page fails (e.g. 
+> because of a bad block) as the lock is not released in such cases. See 
+> my fix here: [4]
+
+This is a valid fix.
+
+> 
+> With these fixes applied and as far as I can tell everything seems to 
+> work fine. I'll do some tests with UBI next and look into the ECC topic.
+
+Okay cool.
+
+I'll squash your fixes in the original commits and push an updated
+version on my repo.
+
+Thanks,
+
+Boris
