@@ -1,21 +1,36 @@
-Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+Received: from mail-lf0-x22f.google.com ([2a00:1450:4010:c07::22f])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eSA7w-0004Mn-HV
- for linux-mtd@lists.infradead.org; Thu, 21 Dec 2017 23:20:13 +0000
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
-To: ezequiel.garcia@free-electrons.com, boris.brezillon@free-electrons.com,
- richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
- marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
- miquel.raynal@free-electrons.com, linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org,
- Kalyan Kinthada <kalyan.kinthada@alliedtelesis.co.nz>,
- Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCHv4 1/1] mtd: nand: pxa3xx: Set FORCE_CSX bit to ARMADA370
- variants
-Date: Fri, 22 Dec 2017 12:19:04 +1300
-Message-Id: <20171221231904.21140-2-chris.packham@alliedtelesis.co.nz>
-In-Reply-To: <20171221231904.21140-1-chris.packham@alliedtelesis.co.nz>
-References: <20171221231904.21140-1-chris.packham@alliedtelesis.co.nz>
+ id 1eSBXA-00030Z-3y
+ for linux-mtd@lists.infradead.org; Fri, 22 Dec 2017 00:49:58 +0000
+Received: by mail-lf0-x22f.google.com with SMTP id e30so12942629lfb.9
+ for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2017 16:49:44 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <a06312e4-a7e6-8b7b-9eb5-8320302dcc55@exceet.de>
+References: <20170529225931.226da943@bbrezillon>
+ <90bcb366-c494-2dee-3bb7-d16b77e347c6@exceet.de>
+ <20171204150514.1f17671d@bbrezillon>
+ <A0FE66EC-7E17-43BE-9B66-896F112B92A0@micron.com>
+ <20171205135804.478902dc@bbrezillon> <20171205140313.40f3f17d@bbrezillon>
+ <256b4ab6-c104-4580-87cd-527178bde460@exceet.de>
+ <20171213222710.32d12514@bbrezillon>
+ <CAAyFORJcT1abbo21iA4cetLKmF0zE4akFGFryxPpwPO+730LDQ@mail.gmail.com>
+ <20171214085036.436b4fcf@bbrezillon>
+ <CAAyFOR+=JwTRTm2MXVdMy7KRPsnV8LV4t71kHUh_s=+QOsVurA@mail.gmail.com>
+ <23d17416-e555-4b92-cc47-f644fbe676c6@exceet.de>
+ <20171214163848.41f6d277@bbrezillon>
+ <CAAyFORKeFq+=tF9AK+8hp6GYYiyp3DKcw8+LWrC3RWS2zLNU_w@mail.gmail.com>
+ <CAAyFORJEuEaHDXgk+m0ax5RoZ-3cRJs6uFXw7syR4vHE1veEwQ@mail.gmail.com>
+ <a06312e4-a7e6-8b7b-9eb5-8320302dcc55@exceet.de>
+From: Peter Pan <peterpansjtu@gmail.com>
+Date: Fri, 22 Dec 2017 08:49:42 +0800
+Message-ID: <CAAyFORL6mUFXFRvku6sm=Pj2=+Bf4wSV7EoBM_7+wRdPrF-ufw@mail.gmail.com>
+Subject: Re: [PATCH v6 00/15] A SPI NAND framework under generic NAND framework
+To: Frieder Schrempf <frieder.schrempf@exceet.de>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ =?UTF-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
+ <peterpandong@micron.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,82 +40,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Kalyan Kinthada <kalyan.kinthada@alliedtelesis.co.nz>
+Hi Frieder,
 
-The Armada-370 based SoCs support arbitration between the NAND Flash
-interface and NOR (i.e. devbus) on the same chip select. However there
-are two guidelines that must be followed to avoid data corruption in
-this scenario.
+On Thu, Dec 21, 2017 at 7:48 PM, Frieder Schrempf
+<frieder.schrempf@exceet.de> wrote:
+> Hello Boris,
+>
+>>>>> So shouldn't there be an spinand_die_select_op in the SPI NAND core
+>>>>> that
+>>>>> is executed when necessary and skipped if there's only one die.
+>>>>
+>>>>
+>>>> Sure, I was arguing against a ->select_chip() at the generic NAND
+>>>> level. That's something you can add in the SPI NAND framework.
+>
+>
+> I added an op to send the die selection command and call it, where I think
+> it is needed: [1]
 
-First GL-6843509 which states that only "Don't Care CS" NAND devices are
-supported. Secondly GL-5830741 which says that when the arbitration
-between NOR and NAND flash is enabled set the FORCE_CSX bit to 1. This
-prevents the chip select from being active when the data flash interface
-is relinquished to the other slave.
+I think we should add die_select_op in vendor's file and call a hook in core.c
+since the die select command implementation is different by vendors.
 
-The NDCR_ND_MODE conflicts with the new NDCR_FORCE_CSX but is unused so
-remove it along with NDCR_NAND_MODE.
+Thanks
+Peter Pan
 
-Signed-off-by: Kalyan Kinthada <kalyan.kinthada@alliedtelesis.co.nz>
-[cp: only apply when arbiter is enabled, reword commit message]
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
-Changes in v4:
-- only act when the nand arbiter is enabled
-- update commit message with information from Marvell
 
-Changes in v3:
-- "mtd: nand: pxa3xx: Set FORCE_CSX bit to ARMADA370 variants."
-  Modified commit message to mention that this change does not apply
-  for pxa3xx variants.
-  Fixed the missing space in comments.
-  Removed unused macros "NDCR_ND_MODE" and "NDCR_NAND_MODE".
-
-Changes in v2:
-- Deleted: "dt-bindings: mtd: pxa3xx: Add "marvell,nand-force-csx" compatible string"
-  Not necessary to create a new compatible string.
-- "mtd: nand: pxa3xx: Set FORCE_CSX bit to ARMADA370 variants."
-  Modified commit message.
-  This commit sets the FORCE_CSX bit for all ARMADA370 variants.
-
- drivers/mtd/nand/pxa3xx_nand.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 90b9a9ccbe60..1b2ae98311d2 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -73,8 +73,7 @@
- #define NDCR_DWIDTH_M		(0x1 << 26)
- #define NDCR_PAGE_SZ		(0x1 << 24)
- #define NDCR_NCSX		(0x1 << 23)
--#define NDCR_ND_MODE		(0x3 << 21)
--#define NDCR_NAND_MODE   	(0x0)
-+#define NDCR_FORCE_CSX		(0x1 << 21)
- #define NDCR_CLR_PG_CNT		(0x1 << 20)
- #define NFCV1_NDCR_ARB_CNTL	(0x1 << 19)
- #define NFCV2_NDCR_STOP_ON_UNCOR	(0x1 << 19)
-@@ -1477,6 +1476,10 @@ static int pxa3xx_nand_config_ident(struct pxa3xx_nand_info *info)
- 	info->chunk_size = PAGE_CHUNK_SIZE;
- 	info->reg_ndcr = 0x0; /* enable all interrupts */
- 	info->reg_ndcr |= (pdata->enable_arbiter) ? NDCR_ND_ARB_EN : 0;
-+	/* Set FORCE_CSX bit for all ARMADA370 Variants. Ref#: GL-5830741 */
-+	if (info->variant == PXA3XX_NAND_VARIANT_ARMADA370 &&
-+	    pdata->enable_arbiter)
-+		info->reg_ndcr |= NDCR_FORCE_CSX;
- 	info->reg_ndcr |= NDCR_RD_ID_CNT(READ_ID_BYTES);
- 	info->reg_ndcr |= NDCR_SPARE_EN;
- 
-@@ -1511,6 +1514,10 @@ static void pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
- 	info->reg_ndcr = ndcr &
- 		~(NDCR_INT_MASK | NDCR_ND_ARB_EN | NFCV1_NDCR_ARB_CNTL);
- 	info->reg_ndcr |= (pdata->enable_arbiter) ? NDCR_ND_ARB_EN : 0;
-+	/* Set FORCE_CSX bit for all ARMADA370 Variants. Ref#: GL-5830741 */
-+	if (info->variant == PXA3XX_NAND_VARIANT_ARMADA370 &&
-+	    pdata->enable_arbiter)
-+		info->reg_ndcr |= NDCR_FORCE_CSX;
- 	info->ndtr0cs0 = nand_readl(info, NDTR0CS0);
- 	info->ndtr1cs0 = nand_readl(info, NDTR1CS0);
- }
--- 
-2.15.1
+>
+> Accessing both dies on the Winbond SPI NAND works fine like this.
+>
+> While running tests I came across some problems:
+>
+> * On accessing the BBT in RAM via nanddev_bbt_[set/get]_block_status, the
+> calculation of position and offset seems to be wrong.
+> My fix is here: [2]
+>
+> * On calculating the row address for read/program/erase via
+> nanddev_pos_to_row, it seems like the eraseblock_addr_shift is wrong.
+>
+> * Also, I'm not sure if the LUN should be taken into account when
+> calculating the row address. At least when you select the LUN by issuing a
+> separate command, the row address sent to the chip should only contain the
+> page address.
+> But I'm not sure if that's the case in general, or if some code is needed to
+> differentiate.
+>
+> See my changes of nanddev_pos_to_row here: [3]
+>
+> * I run into a mutex deadlock, when spinand_write_page fails (e.g. because
+> of a bad block) as the lock is not released in such cases. See my fix here:
+> [4]
+>
+> With these fixes applied and as far as I can tell everything seems to work
+> fine. I'll do some tests with UBI next and look into the ECC topic.
+>
+> Regards,
+>
+> Frieder
+>
+> [1]:
+> https://github.com/fschrempf/linux-0day/compare/4f8472ea05f27d55ebb2e42eadc9ed59d7036f4c...fschrempf:2c5471c1f1e04fa91ff80c95276b4828b99c4f94
+>
+> [2]:
+> https://github.com/fschrempf/linux-0day/commit/937a16248570368fe05e15b1f70e753e202b6ae6
+>
+> [3]:
+> https://github.com/fschrempf/linux-0day/commit/8013696e0394960bfc36625d277f0d2425262939
+>
+> [4]:
+> https://github.com/fschrempf/linux-0day/commit/28ffc7211745dd124702358c24ddccff8e6f2d95
