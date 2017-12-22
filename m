@@ -1,35 +1,16 @@
-Date: Fri, 22 Dec 2017 22:24:41 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Miquel RAYNAL <miquel.raynal@free-electrons.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Jason Cooper <jason@lakedaemon.net>,
- Andrew Lunn <andrew@lunn.ch>, Gregory Clement
- <gregory.clement@free-electrons.com>, Sebastian Hesselbarth
- <sebastian.hesselbarth@gmail.com>, Russell King <linux@armlinux.org.uk>,
- Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Eric Miao <eric.y.miao@gmail.com>, Catalin Marinas
- <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Ezequiel
- Garcia <ezequiel.garcia@free-electrons.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Thomas
- Petazzoni <thomas.petazzoni@free-electrons.com>, Antoine Tenart
- <antoine.tenart@free-electrons.com>, Nadav Haklai <nadavh@marvell.com>,
- Ofer Heifetz <oferh@marvell.com>, Hanna Hawa <hannah@marvell.com>, Neta Zur
- Hershkovits <neta@marvell.com>
-Subject: Re: [PATCH 00/12] Marvell NAND controller rework with ->exec_op()
-Message-ID: <20171222222441.0fd77df9@bbrezillon>
-In-Reply-To: <87lghucykr.fsf@belgarion.home>
-References: <20171207201814.30411-1-miquel.raynal@free-electrons.com>
- <20171214070930.0b885f6d@bbrezillon>
- <877etkecig.fsf@belgarion.home> <20171218092535.2ca1fe13@xps13>
- <87y3lxccr7.fsf@belgarion.home>
- <20171220224121.2cb6f690@bbrezillon>
- <87lghucykr.fsf@belgarion.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mail.ispras.ru ([83.149.199.45])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eSV6T-0007BU-5d
+ for linux-mtd@lists.infradead.org; Fri, 22 Dec 2017 21:43:43 +0000
+From: Alexey Khoroshilov <khoroshilov@ispras.ru>
+To: Stefan Agner <stefan@agner.ch>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Alexey Khoroshilov <khoroshilov@ispras.ru>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
+Subject: [PATCH] mtd: nand: vf610: fix error handling in vf610_nfc_probe()
+Date: Sat, 23 Dec 2017 00:43:14 +0300
+Message-Id: <1513978994-5739-1-git-send-email-khoroshilov@ispras.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,56 +20,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Robert,
+vf610_nfc_probe() misses error handling of mtd_device_register().
 
-On Fri, 22 Dec 2017 21:11:32 +0100
-Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+Found by Linux Driver Verification project (linuxtesting.org).
 
-> Boris Brezillon <boris.brezillon@free-electrons.com> writes:
-> 
-> > Looks like there is a mismatch on the nand bus width detected by the
-> > core and the one declared by the driver. Can you try with the following
-> > diff applied?  
-> 
-> Sure.
-> 
-> Now I get a lot of these message which I didn't have before :
-> [   26.897372] ubi0 warning: ubi_io_read: error -74 (ECC error) while reading 126976 bytes from PEB 242:4096, read only 126976 bytes, retry
-> [   26.928559] ubi0 warning: ubi_io_read: error -74 (ECC error) while reading 126976 bytes from PEB 242:4096, read only 126976 bytes, retry
-> [   26.959623] ubi0 warning: ubi_io_read: error -74 (ECC error) while reading 126976 bytes from PEB 242:4096, read only 126976 bytes, retry
-> [   26.990714] ubi0 error: ubi_io_read: error -74 (ECC error) while reading 126976 bytes from PEB 242:4096, read 126976 bytes
-> [   27.002084] CPU: 0 PID: 1 Comm: swapper Not tainted 4.15.0-rc1-00041-ge371e97 #737
-> [   27.009674] Hardware name: PXA3xx Platform Development Kit (aka Zylonite)
-> [   27.016750] [<c0010440>] (unwind_backtrace) from [<c000df94>] (show_stack+0x10/0x14)
-> [   27.024729] [<c000df94>] (show_stack) from [<c02c5bd4>] (ubi_io_read+0x124/0x368)
-> [   27.032453] [<c02c5bd4>] (ubi_io_read) from [<c02cd550>] (ubi_attach+0xbd8/0x1868)
-> [   27.040148] [<c02cd550>] (ubi_attach) from [<c02be7c4>] (ubi_attach_mtd_dev+0x548/0xe58)
-> [   27.048473] [<c02be7c4>] (ubi_attach_mtd_dev) from [<c05526e4>] (ubi_init+0x134/0x1d4)
-> [   27.056623] [<c05526e4>] (ubi_init) from [<c00099f8>] (do_one_initcall+0x3c/0x17c)
-> [   27.064466] [<c00099f8>] (do_one_initcall) from [<c053fd80>] (kernel_init_freeable+0x104/0x1c0)
-> [   27.073398] [<c053fd80>] (kernel_init_freeable) from [<c0423ab8>] (kernel_init+0x8/0xf8)
-> [   27.081715] [<c0423ab8>] (kernel_init) from [<c000a780>] (ret_from_fork+0x14/0x34)
-> [   27.090115] ubi0 warning: ubi_io_read: error -74 (ECC error) while reading 64 bytes from PEB 243:2048, read only 64 bytes, retry
-> [   27.102363] ubi0 warning: ubi_io_read: error -74 (ECC error) while reading 64 bytes from PEB 243:2048, read only 64 bytes, retry
-> [   27.114586] ubi0 warning: ubi_io_read: error -74 (ECC error) while reading 64 bytes from PEB 243:2048, read only 64 bytes, retry
-> [   27.126813] ubi0 error: ubi_io_read: error -74 (ECC error) while reading 64 bytes from PEB 243:2048, read 64 bytes
-> [   27.137416] CPU: 0 PID: 1 Comm: swapper Not tainted 4.15.0-rc1-00041-ge371e97 #737
-> [   27.145143] Hardware name: PXA3xx Platform Development Kit (aka Zylonite)
-> [   27.152207] [<c0010440>] (unwind_backtrace) from [<c000df94>] (show_stack+0x10/0x14)
-> [   27.160037] [<c000df94>] (show_stack) from [<c02c5bd4>] (ubi_io_read+0x124/0x368)
-> [   27.167742] [<c02c5bd4>] (ubi_io_read) from [<c02c63dc>] (ubi_io_read_vid_hdr+0x60/0x3ac)
-> [   27.176156] [<c02c63dc>] (ubi_io_read_vid_hdr) from [<c02cce58>] (ubi_attach+0x4e0/0x1868)
-> [   27.184675] [<c02cce58>] (ubi_attach) from [<c02be7c4>] (ubi_attach_mtd_dev+0x548/0xe58)
-> [   27.193010] [<c02be7c4>] (ubi_attach_mtd_dev) from [<c05526e4>] (ubi_init+0x134/0x1d4)
-> [   27.201159] [<c05526e4>] (ubi_init) from [<c00099f8>] (do_one_initcall+0x3c/0x17c)
-> [   27.208839] [<c00099f8>] (do_one_initcall) from [<c053fd80>] (kernel_init_freeable+0x104/0x1c0)
-> [   27.217755] [<c053fd80>] (kernel_init_freeable) from [<c0423ab8>] (kernel_init+0x8/0xf8)
-> [   27.226074] [<c0423ab8>] (kernel_init) from [<c000a780>] (ret_from_fork+0x14/0x34)
+Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
+---
+ drivers/mtd/nand/vf610_nfc.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Looks like a mismatch in the ECC config. Can you check the ecc
-strength/step_size in both situation (old driver vs new driver)? Could
-you also dump the NDCR register in both cases?
-
-Thanks,
-
-Boris
+diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
+index 8037d4b48a05..a4c181af74b3 100644
+--- a/drivers/mtd/nand/vf610_nfc.c
++++ b/drivers/mtd/nand/vf610_nfc.c
+@@ -782,7 +782,10 @@ static int vf610_nfc_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, mtd);
+ 
+ 	/* Register device in MTD */
+-	return mtd_device_register(mtd, NULL, 0);
++	err = mtd_device_register(mtd, NULL, 0);
++	if (err)
++		goto error;
++	return 0;
+ 
+ error:
+ 	of_node_put(nand_get_flash_node(chip));
+-- 
+2.7.4
