@@ -1,26 +1,24 @@
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eSOTD-0002DQ-Fv
- for linux-mtd@lists.infradead.org; Fri, 22 Dec 2017 14:38:45 +0000
-Received: by mail-wm0-x242.google.com with SMTP id g130so24810366wme.0
- for <linux-mtd@lists.infradead.org>; Fri, 22 Dec 2017 06:38:33 -0800 (PST)
-From: Dongsu Park <dongsu@kinvolk.io>
-To: linux-kernel@vger.kernel.org
-Cc: containers@lists.linux-foundation.org, Alban Crequy <alban@kinvolk.io>,
- "Eric W . Biederman" <ebiederm@xmission.com>,
- Miklos Szeredi <mszeredi@redhat.com>,
- Seth Forshee <seth.forshee@canonical.com>,
- Sargun Dhillon <sargun@sargun.me>, Dongsu Park <dongsu@kinvolk.io>,
- dm-devel@redhat.com, linux-bcache@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.com>,
- Serge Hallyn <serge@hallyn.com>
-Subject: [PATCH 01/11] block_dev: Support checking inode permissions in
- lookup_bdev()
-Date: Fri, 22 Dec 2017 15:32:25 +0100
-Message-Id: <ef5e609602df6d7e2b4aa07b92600f04b6851902.1512041070.git.dongsu@kinvolk.io>
-In-Reply-To: <cover.1512741134.git.dongsu@kinvolk.io>
-References: <cover.1512741134.git.dongsu@kinvolk.io>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eSPda-0001S5-PV
+ for linux-mtd@lists.infradead.org; Fri, 22 Dec 2017 15:53:34 +0000
+Date: Fri, 22 Dec 2017 16:53:08 +0100
+From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: ezequiel.garcia@free-electrons.com, boris.brezillon@free-electrons.com,
+ richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
+ marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Kalyan
+ Kinthada <kalyan.kinthada@alliedtelesis.co.nz>
+Subject: Re: [PATCHv4 1/1] mtd: nand: pxa3xx: Set FORCE_CSX bit to ARMADA370
+ variants
+Message-ID: <20171222165308.10f2fe15@xps13>
+In-Reply-To: <20171221231904.21140-2-chris.packham@alliedtelesis.co.nz>
+References: <20171221231904.21140-1-chris.packham@alliedtelesis.co.nz>
+ <20171221231904.21140-2-chris.packham@alliedtelesis.co.nz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,151 +28,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Seth Forshee <seth.forshee@canonical.com>
+Hello Chris,
 
-When looking up a block device by path no permission check is
-done to verify that the user has access to the block device inode
-at the specified path. In some cases it may be necessary to
-check permissions towards the inode, such as allowing
-unprivileged users to mount block devices in user namespaces.
+On Fri, 22 Dec 2017 12:19:04 +1300
+Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:
 
-Add an argument to lookup_bdev() to optionally perform this
-permission check. A value of 0 skips the permission check and
-behaves the same as before. A non-zero value specifies the mask
-of access rights required towards the inode at the specified
-path. The check is always skipped if the user has CAP_SYS_ADMIN.
+> From: Kalyan Kinthada <kalyan.kinthada@alliedtelesis.co.nz>
+>=20
+> The Armada-370 based SoCs support arbitration between the NAND Flash
+> interface and NOR (i.e. devbus) on the same chip select. However there
+> are two guidelines that must be followed to avoid data corruption in
+> this scenario.
 
-All callers of lookup_bdev() currently pass a mask of 0, so this
-patch results in no functional change. Subsequent patches will
-add permission checks where appropriate.
+Sorry to bother you again with that but, do you actually face any
+issue/data corruption with this scenario?
 
-Patch v4 is available: https://patchwork.kernel.org/patch/8943601/
+This bit is not set by the bootloaders I use and I see no difference
+when I set it. But by experience on this controller: any change is
+dangerous and may break users, that is why we are so careful about it.
 
-Cc: dm-devel@redhat.com
-Cc: linux-bcache@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org
-Cc: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Jan Kara <jack@suse.com>
-Cc: Serge Hallyn <serge@hallyn.com>
-Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
-Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
----
- drivers/md/bcache/super.c |  2 +-
- drivers/md/dm-table.c     |  2 +-
- drivers/mtd/mtdsuper.c    |  2 +-
- fs/block_dev.c            | 13 ++++++++++---
- fs/quota/quota.c          |  2 +-
- include/linux/fs.h        |  2 +-
- 6 files changed, 15 insertions(+), 8 deletions(-)
+Thank you,
+Miqu=C3=A8l
 
-diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-index b4d28928..acc9d56c 100644
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -1967,7 +1967,7 @@ static ssize_t register_bcache(struct kobject *k, struct kobj_attribute *attr,
- 				  sb);
- 	if (IS_ERR(bdev)) {
- 		if (bdev == ERR_PTR(-EBUSY)) {
--			bdev = lookup_bdev(strim(path));
-+			bdev = lookup_bdev(strim(path), 0);
- 			mutex_lock(&bch_register_lock);
- 			if (!IS_ERR(bdev) && bch_is_open(bdev))
- 				err = "device already registered";
-diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
-index 88130b5d..bca5eaf4 100644
---- a/drivers/md/dm-table.c
-+++ b/drivers/md/dm-table.c
-@@ -410,7 +410,7 @@ dev_t dm_get_dev_t(const char *path)
- 	dev_t dev;
- 	struct block_device *bdev;
- 
--	bdev = lookup_bdev(path);
-+	bdev = lookup_bdev(path, 0);
- 	if (IS_ERR(bdev))
- 		dev = name_to_dev_t(path);
- 	else {
-diff --git a/drivers/mtd/mtdsuper.c b/drivers/mtd/mtdsuper.c
-index e43fea89..4a4d40c0 100644
---- a/drivers/mtd/mtdsuper.c
-+++ b/drivers/mtd/mtdsuper.c
-@@ -180,7 +180,7 @@ struct dentry *mount_mtd(struct file_system_type *fs_type, int flags,
- 	/* try the old way - the hack where we allowed users to mount
- 	 * /dev/mtdblock$(n) but didn't actually _use_ the blockdev
- 	 */
--	bdev = lookup_bdev(dev_name);
-+	bdev = lookup_bdev(dev_name, 0);
- 	if (IS_ERR(bdev)) {
- 		ret = PTR_ERR(bdev);
- 		pr_debug("MTDSB: lookup_bdev() returned %d\n", ret);
-diff --git a/fs/block_dev.c b/fs/block_dev.c
-index 4a181fcb..5ca06095 100644
---- a/fs/block_dev.c
-+++ b/fs/block_dev.c
-@@ -1662,7 +1662,7 @@ struct block_device *blkdev_get_by_path(const char *path, fmode_t mode,
- 	struct block_device *bdev;
- 	int err;
- 
--	bdev = lookup_bdev(path);
-+	bdev = lookup_bdev(path, 0);
- 	if (IS_ERR(bdev))
- 		return bdev;
- 
-@@ -2052,12 +2052,14 @@ EXPORT_SYMBOL(ioctl_by_bdev);
- /**
-  * lookup_bdev  - lookup a struct block_device by name
-  * @pathname:	special file representing the block device
-+ * @mask:	rights to check for (%MAY_READ, %MAY_WRITE, %MAY_EXEC)
-  *
-  * Get a reference to the blockdevice at @pathname in the current
-  * namespace if possible and return it.  Return ERR_PTR(error)
-- * otherwise.
-+ * otherwise.  If @mask is non-zero, check for access rights to the
-+ * inode at @pathname.
-  */
--struct block_device *lookup_bdev(const char *pathname)
-+struct block_device *lookup_bdev(const char *pathname, int mask)
- {
- 	struct block_device *bdev;
- 	struct inode *inode;
-@@ -2072,6 +2074,11 @@ struct block_device *lookup_bdev(const char *pathname)
- 		return ERR_PTR(error);
- 
- 	inode = d_backing_inode(path.dentry);
-+	if (mask != 0 && !capable(CAP_SYS_ADMIN)) {
-+		error = __inode_permission(inode, mask);
-+		if (error)
-+			goto fail;
-+	}
- 	error = -ENOTBLK;
- 	if (!S_ISBLK(inode->i_mode))
- 		goto fail;
-diff --git a/fs/quota/quota.c b/fs/quota/quota.c
-index 43612e2a..e5d47955 100644
---- a/fs/quota/quota.c
-+++ b/fs/quota/quota.c
-@@ -807,7 +807,7 @@ static struct super_block *quotactl_block(const char __user *special, int cmd)
- 
- 	if (IS_ERR(tmp))
- 		return ERR_CAST(tmp);
--	bdev = lookup_bdev(tmp->name);
-+	bdev = lookup_bdev(tmp->name, 0);
- 	putname(tmp);
- 	if (IS_ERR(bdev))
- 		return ERR_CAST(bdev);
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 2995a271..fce19c49 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -2551,7 +2551,7 @@ static inline void unregister_chrdev(unsigned int major, const char *name)
- #define BLKDEV_MAJOR_MAX	512
- extern const char *__bdevname(dev_t, char *buffer);
- extern const char *bdevname(struct block_device *bdev, char *buffer);
--extern struct block_device *lookup_bdev(const char *);
-+extern struct block_device *lookup_bdev(const char *, int mask);
- extern void blkdev_show(struct seq_file *,off_t);
- 
- #else
--- 
-2.13.6
+>=20
+> First GL-6843509 which states that only "Don't Care CS" NAND devices
+> are supported. Secondly GL-5830741 which says that when the
+> arbitration between NOR and NAND flash is enabled set the FORCE_CSX
+> bit to 1. This prevents the chip select from being active when the
+> data flash interface is relinquished to the other slave.
+>=20
+> The NDCR_ND_MODE conflicts with the new NDCR_FORCE_CSX but is unused
+> so remove it along with NDCR_NAND_MODE.
+>=20
+> Signed-off-by: Kalyan Kinthada <kalyan.kinthada@alliedtelesis.co.nz>
+> [cp: only apply when arbiter is enabled, reword commit message]
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> ---
+> Changes in v4:
+> - only act when the nand arbiter is enabled
+> - update commit message with information from Marvell
+>=20
+> Changes in v3:
+> - "mtd: nand: pxa3xx: Set FORCE_CSX bit to ARMADA370 variants."
+>   Modified commit message to mention that this change does not apply
+>   for pxa3xx variants.
+>   Fixed the missing space in comments.
+>   Removed unused macros "NDCR_ND_MODE" and "NDCR_NAND_MODE".
+>=20
+> Changes in v2:
+> - Deleted: "dt-bindings: mtd: pxa3xx: Add "marvell,nand-force-csx"
+> compatible string" Not necessary to create a new compatible string.
+> - "mtd: nand: pxa3xx: Set FORCE_CSX bit to ARMADA370 variants."
+>   Modified commit message.
+>   This commit sets the FORCE_CSX bit for all ARMADA370 variants.
+>=20
+>  drivers/mtd/nand/pxa3xx_nand.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/mtd/nand/pxa3xx_nand.c
+> b/drivers/mtd/nand/pxa3xx_nand.c index 90b9a9ccbe60..1b2ae98311d2
+> 100644 --- a/drivers/mtd/nand/pxa3xx_nand.c
+> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> @@ -73,8 +73,7 @@
+>  #define NDCR_DWIDTH_M		(0x1 << 26)
+>  #define NDCR_PAGE_SZ		(0x1 << 24)
+>  #define NDCR_NCSX		(0x1 << 23)
+> -#define NDCR_ND_MODE		(0x3 << 21)
+> -#define NDCR_NAND_MODE   	(0x0)
+> +#define NDCR_FORCE_CSX		(0x1 << 21)
+>  #define NDCR_CLR_PG_CNT		(0x1 << 20)
+>  #define NFCV1_NDCR_ARB_CNTL	(0x1 << 19)
+>  #define NFCV2_NDCR_STOP_ON_UNCOR	(0x1 << 19)
+> @@ -1477,6 +1476,10 @@ static int pxa3xx_nand_config_ident(struct
+> pxa3xx_nand_info *info) info->chunk_size =3D PAGE_CHUNK_SIZE;
+>  	info->reg_ndcr =3D 0x0; /* enable all interrupts */
+>  	info->reg_ndcr |=3D (pdata->enable_arbiter) ? NDCR_ND_ARB_EN :
+> 0;
+> +	/* Set FORCE_CSX bit for all ARMADA370 Variants. Ref#:
+> GL-5830741 */
+> +	if (info->variant =3D=3D PXA3XX_NAND_VARIANT_ARMADA370 &&
+> +	    pdata->enable_arbiter)
+> +		info->reg_ndcr |=3D NDCR_FORCE_CSX;
+>  	info->reg_ndcr |=3D NDCR_RD_ID_CNT(READ_ID_BYTES);
+>  	info->reg_ndcr |=3D NDCR_SPARE_EN;
+> =20
+> @@ -1511,6 +1514,10 @@ static void pxa3xx_nand_detect_config(struct
+> pxa3xx_nand_info *info) info->reg_ndcr =3D ndcr &
+>  		~(NDCR_INT_MASK | NDCR_ND_ARB_EN |
+> NFCV1_NDCR_ARB_CNTL); info->reg_ndcr |=3D (pdata->enable_arbiter) ?
+> NDCR_ND_ARB_EN : 0;
+> +	/* Set FORCE_CSX bit for all ARMADA370 Variants. Ref#:
+> GL-5830741 */
+> +	if (info->variant =3D=3D PXA3XX_NAND_VARIANT_ARMADA370 &&
+> +	    pdata->enable_arbiter)
+> +		info->reg_ndcr |=3D NDCR_FORCE_CSX;
+>  	info->ndtr0cs0 =3D nand_readl(info, NDTR0CS0);
+>  	info->ndtr1cs0 =3D nand_readl(info, NDTR1CS0);
+>  }
+
+
+
+--=20
+Miquel Raynal, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
