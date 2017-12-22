@@ -1,21 +1,37 @@
-Received: from smtp3-g21.free.fr ([212.27.42.3])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eSMpf-0000Ly-9P
- for linux-mtd@lists.infradead.org; Fri, 22 Dec 2017 12:53:49 +0000
-Subject: Re: [PATCH] mtd: spi-nor: use _lock_and_prep() in _read_sfdp()
-To: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, linux-mtd@lists.infradead.org
-Cc: computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
- prabhakar.kushwaha@nxp.com, suresh.gupta@nxp.com
-References: <1513931752-23387-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <af710291-c5d7-9c52-8313-0f2684f46f75@wedev4u.fr>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <d4967cda-804b-f675-d02a-e2071c634a61@wedev4u.fr>
-Date: Fri, 22 Dec 2017 13:53:35 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eSNkF-0000tU-6r
+ for linux-mtd@lists.infradead.org; Fri, 22 Dec 2017 13:52:20 +0000
+Date: Fri, 22 Dec 2017 14:51:47 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Peter Pan <peterpansjtu@gmail.com>
+Cc: Frieder Schrempf <frieder.schrempf@exceet.de>, "Peter Pan
+ =?UTF-8?B?5r2Y5qCL?= (peterpandong)" <peterpandong@micron.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH v6 00/15] A SPI NAND framework under generic NAND framework
+Message-ID: <20171222145147.3697fb02@bbrezillon>
+In-Reply-To: <CAAyFOR+m7GvXU66XKphu+cETP9SQTJ6GuZQEZQA600MX1R6cYw@mail.gmail.com>
+References: <20170529225931.226da943@bbrezillon>
+ <90bcb366-c494-2dee-3bb7-d16b77e347c6@exceet.de>
+ <20171204150514.1f17671d@bbrezillon>
+ <A0FE66EC-7E17-43BE-9B66-896F112B92A0@micron.com>
+ <20171205135804.478902dc@bbrezillon>
+ <20171205140313.40f3f17d@bbrezillon>
+ <256b4ab6-c104-4580-87cd-527178bde460@exceet.de>
+ <20171213222710.32d12514@bbrezillon>
+ <CAAyFORJcT1abbo21iA4cetLKmF0zE4akFGFryxPpwPO+730LDQ@mail.gmail.com>
+ <20171214085036.436b4fcf@bbrezillon>
+ <CAAyFOR+=JwTRTm2MXVdMy7KRPsnV8LV4t71kHUh_s=+QOsVurA@mail.gmail.com>
+ <23d17416-e555-4b92-cc47-f644fbe676c6@exceet.de>
+ <20171214163848.41f6d277@bbrezillon>
+ <CAAyFORKeFq+=tF9AK+8hp6GYYiyp3DKcw8+LWrC3RWS2zLNU_w@mail.gmail.com>
+ <CAAyFORJEuEaHDXgk+m0ax5RoZ-3cRJs6uFXw7syR4vHE1veEwQ@mail.gmail.com>
+ <a06312e4-a7e6-8b7b-9eb5-8320302dcc55@exceet.de>
+ <CAAyFORL6mUFXFRvku6sm=Pj2=+Bf4wSV7EoBM_7+wRdPrF-ufw@mail.gmail.com>
+ <CAAyFOR+m7GvXU66XKphu+cETP9SQTJ6GuZQEZQA600MX1R6cYw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <af710291-c5d7-9c52-8313-0f2684f46f75@wedev4u.fr>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,155 +41,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 22/12/2017 à 13:49, Cyrille Pitchen a écrit :
-> Hi Yogesh,
-> 
-> Le 22/12/2017 à 09:35, Yogesh Gaur a écrit :
->> spi_nor_read_sfdp() calls nor->read() to read the SFDP data.
->> But first needs to call nor->prepare() to prepare the READ command before
->> calling nor->read().
->>
-> 
-> Currently, I don't agree with this: spi_nor_read_sfdp() is called only from
-> spi_nor_scan(). Before the SFDP patch, spi_nor_scan() has already been
-> calling for years nor->read_reg() and nor->write_reg() without calling
-> spi_nor_lock_and_prep() first.
-> 
-> Indeed, still being in spi_nor_scan(), the SPI NOR memory should have not
-> been registered yet to the above MTD layer. So there should be no need to
-> lock nor->lock at this point.
-> 
-> Then, about calling nor->prepare(), IMHO, it's look a little bit odd that
+On Fri, 22 Dec 2017 14:37:06 +0800
+Peter Pan <peterpansjtu@gmail.com> wrote:
 
-s/it's look/it looks/
+> Hi Boris and Frieder
+> 
+> On Fri, Dec 22, 2017 at 8:49 AM, Peter Pan <peterpansjtu@gmail.com> wrote:
+> > Hi Frieder,
+> >
+> > On Thu, Dec 21, 2017 at 7:48 PM, Frieder Schrempf
+> > <frieder.schrempf@exceet.de> wrote:  
+> >> Hello Boris,
+> >>  
+> >>>>>> So shouldn't there be an spinand_die_select_op in the SPI NAND core
+> >>>>>> that
+> >>>>>> is executed when necessary and skipped if there's only one die.  
+> >>>>>
+> >>>>>
+> >>>>> Sure, I was arguing against a ->select_chip() at the generic NAND
+> >>>>> level. That's something you can add in the SPI NAND framework.  
+> >>
+> >>
+> >> I added an op to send the die selection command and call it, where I think
+> >> it is needed: [1]  
+> >
+> > I think we should add die_select_op in vendor's file and call a hook in core.c
+> > since the die select command implementation is different by vendors.
+> >
+> > Thanks
+> > Peter Pan
+> >
+> >  
+> >>
+> >> Accessing both dies on the Winbond SPI NAND works fine like this.
+> >>
+> >> While running tests I came across some problems:
+> >>
+> >> * On accessing the BBT in RAM via nanddev_bbt_[set/get]_block_status, the
+> >> calculation of position and offset seems to be wrong.
+> >> My fix is here: [2]
+> >>
+> >> * On calculating the row address for read/program/erase via
+> >> nanddev_pos_to_row, it seems like the eraseblock_addr_shift is wrong.
+> >>
+> >> * Also, I'm not sure if the LUN should be taken into account when
+> >> calculating the row address. At least when you select the LUN by issuing a
+> >> separate command, the row address sent to the chip should only contain the
+> >> page address.
+> >> But I'm not sure if that's the case in general, or if some code is needed to
+> >> differentiate.
+> >>
+> >> See my changes of nanddev_pos_to_row here: [3]
+> >>
+> >> * I run into a mutex deadlock, when spinand_write_page fails (e.g. because
+> >> of a bad block) as the lock is not released in such cases. See my fix here:
+> >> [4]
+> >>
+> >> With these fixes applied and as far as I can tell everything seems to work
+> >> fine. I'll do some tests with UBI next and look into the ECC topic.  
+> 
+> UBI attach failed since missing mtd->writebufsize assignment in nanddev_init()
+> After fixing it and with Frieder's fixing, UBIFS can be mounted successfully on
+> Zedboard with generic spi controller and Micron SPI NAND 2Gb device.
+> 
+> Also, the code now can pass mtd read and page test. 1 error found in oob test
+> since we don't have "past end of partition" check in part_write_oob() which I
+> mentioned in earlier mail. Since we don't support ECC right now, I didn't try
+> nandbiterror test.
+> 
 
-:p
+Peter, Frider, I just pushed a new version to my nand/spi-nand branch
+[1] fixing the authorship, adding/fixing/removing comments where needed.
 
-> neither nor->read_reg() nor nor->write_reg() require nor->prepare() to be
-> called first whereas nor->read() does need it.
-> 
-> You didn't describe what issue or bug you actually noticed so now I assume
-> it deals with the fsl-quadspi.c driver. So let's have a look at its
-> implementation of nor->prepare() / fsl_qspi_prep():
-> 
-> +static int fsl_qspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
-> +{
-> +	struct fsl_qspi *q = nor->priv;
-> +	int ret;
-> +
-> +	mutex_lock(&q->lock);
-> 
-> It was not needed before by fsl_qspi_read_reg() or fls_qspi_write_reg(),
-> why would it be needed now by fls_qspi_read()?
-> 
-> Then I guess, this is not the issue.
-> 
-> Anyway, if actually needed or safer, the mutex can be locked just after
-> mutex_init() and before for_each_available_child_of_node() in
-> fsl_qspi_probe().
-> 
-> +
-> +	ret = fsl_qspi_clk_prep_enable(q);
-> 
-> Already called from fls_qpsi_probe() before calling spi_nor_scan():
-> should not be the issue neither.
-> 
-> +	if (ret)
-> +		goto err_mutex;
-> +
-> +	fsl_qspi_set_base_addr(q, nor);
-> 
-> Also called from fsl_qspi_probe() right before calling spi_nor_scan():
-> 
-> 		/* set the chip address for READID */
-> 		fsl_qspi_set_base_addr(q, nor);
-> 
-> 		ret = spi_nor_scan(nor, NULL, &hwcaps);
-> 		if (ret)
-> 			goto mutex_failed;
-> 
-> 		ret = mtd_device_register(mtd, NULL, 0);
-> 		if (ret)
-> 			goto mutex_failed;
-> 
-> 		/* Set the correct NOR size now. */
-> 		if (q->nor_size == 0) {
-> 			q->nor_size = mtd->size;
-> 
-> 			/* Map the SPI NOR to accessiable address */
-> 			fsl_qspi_set_map_addr(q);
-> 		}
-> 
-> q->nor_size is only updated after spi_nor_scan() hence I don't see why
-> calling nor->prepare() hence fsl_qpsi_set_base_addr() one more time now
-> during spi_nor_scan() would actually change anything.
-> 
-> Please note that all I said was based on the assumption that you are trying
-> to fix an issue in the fsl-quadspi.c driver (based on your email address:
-> @nxp.com) as the nxp-spifi.c driver doesn't provide any implementation for
-> the optional nor->prepare().
-> 
-> Then could you please describe a little bit more details about the actual
-> issue? What does this patch fix? Which drivers are involved? 
-> 
-> Indeed, you would like to have a precise understanding of the issue and
-> also avoid modifying spi-nor.c rather than the single fsl-quadspi.c driver
-> or whatever driver is concerned since calling nor->preprare() from
-> spi_nor_scan() has never been done before and may have unwanted side effects
-> on other SPI flash controller drivers.
-> 
-> Actually, this is the reason why spi_nor_read_sfdp() directly calls
-> nor->read() instead of spi_nor_read().
-> 
-> Best regards,
-> 
-> Cyrille
-> 
-> +	return 0;
-> +
-> +err_mutex:
-> +	mutex_unlock(&q->lock);
-> +	return ret;
-> +}
-> 
->  
->> Patch adds call to spi_nor_lock_and_prep() to prepare the READ command
->> and add subsequent call to spi_nor_unlock_and_unprep() to release lock
->> and call nor->unprepare().
->>
->> Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
->> ---
->>  drivers/mtd/spi-nor/spi-nor.c | 6 ++++++
->>  1 file changed, 6 insertions(+)
->>
->> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->> index 2203d6ef..9fb85ae 100644
->> --- a/drivers/mtd/spi-nor/spi-nor.c
->> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> @@ -1807,6 +1807,10 @@ static int spi_nor_read_sfdp(struct spi_nor *nor, u32 addr,
->>  	nor->addr_width = 3;
->>  	nor->read_dummy = 8;
->>  
->> +	ret = spi_nor_lock_and_prep(nor, SPI_NOR_OPS_READ);
->> +	if (ret)
->> +		goto lock_err;
->> +
->>  	while (len) {
->>  		ret = nor->read(nor, addr, len, (u8 *)buf);
->>  		if (!ret || ret > len) {
->> @@ -1822,6 +1826,8 @@ static int spi_nor_read_sfdp(struct spi_nor *nor, u32 addr,
->>  	}
->>  	ret = 0;
->>  
->> +	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_READ);
->> +lock_err:
->>  read_err:
->>  	nor->read_opcode = read_opcode;
->>  	nor->addr_width = addr_width;
->>
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+Can you please have a look at those changes (everything I changed
+should appear as !fixup commits) and let me know if I did something
+wrong.
+
+We still need to make commit messages a bit more verbose.
+
+This afternoon I'll have a look at the ->select_die() feature.
+
+Regards,
+
+Boris
+
+[1]https://github.com/bbrezillon/linux-0day/commits/nand/spi-nand
