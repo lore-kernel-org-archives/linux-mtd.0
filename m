@@ -1,38 +1,38 @@
 Received: from smtp11.smtpout.orange.fr ([80.12.242.133]
  helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eSTfe-00074Z-DV
- for linux-mtd@lists.infradead.org; Fri, 22 Dec 2017 20:11:57 +0000
+ id 1eSUE8-0003e9-Np
+ for linux-mtd@lists.infradead.org; Fri, 22 Dec 2017 20:47:34 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Miquel RAYNAL <miquel.raynal@free-electrons.com>,
+To: Miquel Raynal <miquel.raynal@free-electrons.com>,
  David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Jason Cooper <jason@lakedaemon.net>,
- Andrew Lunn <andrew@lunn.ch>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Russell King <linux@armlinux.org.uk>, Daniel Mack <daniel@zonque.org>,
- Haojian Zhuang <haojian.zhuang@gmail.com>, Eric Miao <eric.y.miao@gmail.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>,  Richard Weinberger
+ <richard@nod.at>,  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,  Rob
+ Herring <robh+dt@kernel.org>,  Mark Rutland <mark.rutland@arm.com>,  Jason
+ Cooper <jason@lakedaemon.net>,  Andrew Lunn <andrew@lunn.ch>,  Gregory
+ Clement <gregory.clement@free-electrons.com>,  Sebastian Hesselbarth
+ <sebastian.hesselbarth@gmail.com>,  Russell King <linux@armlinux.org.uk>,
+ Daniel Mack <daniel@zonque.org>,  Haojian Zhuang
+ <haojian.zhuang@gmail.com>,  Eric Miao <eric.y.miao@gmail.com>,  Catalin
+ Marinas <catalin.marinas@arm.com>,  Will Deacon <will.deacon@arm.com>,
  Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Antoine Tenart <antoine.tenart@free-electrons.com>,
- Nadav Haklai <nadavh@marvell.com>, Ofer Heifetz <oferh@marvell.com>,
- Hanna Hawa <hannah@marvell.com>, Neta Zur Hershkovits <neta@marvell.com>
-Subject: Re: [PATCH 00/12] Marvell NAND controller rework with ->exec_op()
-References: <20171207201814.30411-1-miquel.raynal@free-electrons.com>
- <20171214070930.0b885f6d@bbrezillon> <877etkecig.fsf@belgarion.home>
- <20171218092535.2ca1fe13@xps13> <87y3lxccr7.fsf@belgarion.home>
- <20171220224121.2cb6f690@bbrezillon>
-Date: Fri, 22 Dec 2017 21:11:32 +0100
-In-Reply-To: <20171220224121.2cb6f690@bbrezillon> (Boris Brezillon's message
- of "Wed, 20 Dec 2017 22:41:21 +0100")
-Message-ID: <87lghucykr.fsf@belgarion.home>
+ linux-mtd@lists.infradead.org,  devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,  Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>,  Antoine Tenart
+ <antoine.tenart@free-electrons.com>,  Nadav Haklai <nadavh@marvell.com>,
+ Ofer Heifetz <oferh@marvell.com>,  Hanna Hawa <hannah@marvell.com>,  Neta
+ Zur Hershkovits <neta@marvell.com>,  Willy Tarreau <w@1wt.eu>,  Sean
+ =?utf-8?Q?Nyekj=C3=A6r?= <sean.nyekjaer@prevas.dk>
+Subject: Re: [PATCH v2 3/5] mtd: nand: replace pxa3xx_nand driver by its
+ rework called marvell_nand
+In-Reply-To: <20171219132942.27433-4-miquel.raynal@free-electrons.com> (Miquel
+ Raynal's message of "Tue, 19 Dec 2017 14:29:40 +0100")
+References: <20171219132942.27433-1-miquel.raynal@free-electrons.com>
+ <20171219132942.27433-4-miquel.raynal@free-electrons.com>
+Date: Fri, 22 Dec 2017 21:47:18 +0100
+Message-ID: <87608ycwx5.fsf@belgarion.home>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -44,48 +44,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Boris Brezillon <boris.brezillon@free-electrons.com> writes:
+Miquel Raynal <miquel.raynal@free-electrons.com> writes:
 
-> Looks like there is a mismatch on the nand bus width detected by the
-> core and the one declared by the driver. Can you try with the following
-> diff applied?
+> Actually remove pxa3xx_nand.c to let marvell_nand.c be compiled instead.
+> Also change the defconfig files using it as well as some board files
+> depending on CONFIG_MTD_NAND_PXA3xx.
+>
+> Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
 
-Sure.
+Actually that approach doesn't quite suit me.
+I'm not convinced at all a new rewrite of the driver will be stable right out of
+the box as the old one is.
 
-Now I get a lot of these message which I didn't have before :
-[   26.897372] ubi0 warning: ubi_io_read: error -74 (ECC error) while reading 126976 bytes from PEB 242:4096, read only 126976 bytes, retry
-[   26.928559] ubi0 warning: ubi_io_read: error -74 (ECC error) while reading 126976 bytes from PEB 242:4096, read only 126976 bytes, retry
-[   26.959623] ubi0 warning: ubi_io_read: error -74 (ECC error) while reading 126976 bytes from PEB 242:4096, read only 126976 bytes, retry
-[   26.990714] ubi0 error: ubi_io_read: error -74 (ECC error) while reading 126976 bytes from PEB 242:4096, read 126976 bytes
-[   27.002084] CPU: 0 PID: 1 Comm: swapper Not tainted 4.15.0-rc1-00041-ge371e97 #737
-[   27.009674] Hardware name: PXA3xx Platform Development Kit (aka Zylonite)
-[   27.016750] [<c0010440>] (unwind_backtrace) from [<c000df94>] (show_stack+0x10/0x14)
-[   27.024729] [<c000df94>] (show_stack) from [<c02c5bd4>] (ubi_io_read+0x124/0x368)
-[   27.032453] [<c02c5bd4>] (ubi_io_read) from [<c02cd550>] (ubi_attach+0xbd8/0x1868)
-[   27.040148] [<c02cd550>] (ubi_attach) from [<c02be7c4>] (ubi_attach_mtd_dev+0x548/0xe58)
-[   27.048473] [<c02be7c4>] (ubi_attach_mtd_dev) from [<c05526e4>] (ubi_init+0x134/0x1d4)
-[   27.056623] [<c05526e4>] (ubi_init) from [<c00099f8>] (do_one_initcall+0x3c/0x17c)
-[   27.064466] [<c00099f8>] (do_one_initcall) from [<c053fd80>] (kernel_init_freeable+0x104/0x1c0)
-[   27.073398] [<c053fd80>] (kernel_init_freeable) from [<c0423ab8>] (kernel_init+0x8/0xf8)
-[   27.081715] [<c0423ab8>] (kernel_init) from [<c000a780>] (ret_from_fork+0x14/0x34)
-[   27.090115] ubi0 warning: ubi_io_read: error -74 (ECC error) while reading 64 bytes from PEB 243:2048, read only 64 bytes, retry
-[   27.102363] ubi0 warning: ubi_io_read: error -74 (ECC error) while reading 64 bytes from PEB 243:2048, read only 64 bytes, retry
-[   27.114586] ubi0 warning: ubi_io_read: error -74 (ECC error) while reading 64 bytes from PEB 243:2048, read only 64 bytes, retry
-[   27.126813] ubi0 error: ubi_io_read: error -74 (ECC error) while reading 64 bytes from PEB 243:2048, read 64 bytes
-[   27.137416] CPU: 0 PID: 1 Comm: swapper Not tainted 4.15.0-rc1-00041-ge371e97 #737
-[   27.145143] Hardware name: PXA3xx Platform Development Kit (aka Zylonite)
-[   27.152207] [<c0010440>] (unwind_backtrace) from [<c000df94>] (show_stack+0x10/0x14)
-[   27.160037] [<c000df94>] (show_stack) from [<c02c5bd4>] (ubi_io_read+0x124/0x368)
-[   27.167742] [<c02c5bd4>] (ubi_io_read) from [<c02c63dc>] (ubi_io_read_vid_hdr+0x60/0x3ac)
-[   27.176156] [<c02c63dc>] (ubi_io_read_vid_hdr) from [<c02cce58>] (ubi_attach+0x4e0/0x1868)
-[   27.184675] [<c02cce58>] (ubi_attach) from [<c02be7c4>] (ubi_attach_mtd_dev+0x548/0xe58)
-[   27.193010] [<c02be7c4>] (ubi_attach_mtd_dev) from [<c05526e4>] (ubi_init+0x134/0x1d4)
-[   27.201159] [<c05526e4>] (ubi_init) from [<c00099f8>] (do_one_initcall+0x3c/0x17c)
-[   27.208839] [<c00099f8>] (do_one_initcall) from [<c053fd80>] (kernel_init_freeable+0x104/0x1c0)
-[   27.217755] [<c053fd80>] (kernel_init_freeable) from [<c0423ab8>] (kernel_init+0x8/0xf8)
-[   27.226074] [<c0423ab8>] (kernel_init) from [<c000a780>] (ret_from_fork+0x14/0x34)
+What I would propose instead is :
+ - keep both the new marvell nand driver and the old pxa3xx_nand driver
+ - switch pxa_defconfig to compile them both
+ - continue testing (with my help)
+
+Once I see the marvell_nand is working properly, we can remove pca3xx_nand in a
+second stage, keeping the pxa platform functional all along.
+
+Would you agree to that path ?
+
+As a side not, this patch should be split into 2 parts :
+ - one for arch/arm -> switch to the new driver
+ - one for drivers/mtd -> removal of the old driver
 
 Cheers.
 
--- 
+--
 Robert
