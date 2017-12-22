@@ -1,37 +1,18 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eSIhH-0006PE-Oz
- for linux-mtd@lists.infradead.org; Fri, 22 Dec 2017 08:28:57 +0000
-Date: Fri, 22 Dec 2017 09:28:35 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Peter Pan <peterpansjtu@gmail.com>
-Cc: Frieder Schrempf <frieder.schrempf@exceet.de>, "Peter Pan
- =?UTF-8?B?5r2Y5qCL?= (peterpandong)" <peterpandong@micron.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v6 00/15] A SPI NAND framework under generic NAND framework
-Message-ID: <20171222092835.5ba7dfb3@bbrezillon>
-In-Reply-To: <CAAyFOR+m7GvXU66XKphu+cETP9SQTJ6GuZQEZQA600MX1R6cYw@mail.gmail.com>
-References: <20170529225931.226da943@bbrezillon>
- <90bcb366-c494-2dee-3bb7-d16b77e347c6@exceet.de>
- <20171204150514.1f17671d@bbrezillon>
- <A0FE66EC-7E17-43BE-9B66-896F112B92A0@micron.com>
- <20171205135804.478902dc@bbrezillon>
- <20171205140313.40f3f17d@bbrezillon>
- <256b4ab6-c104-4580-87cd-527178bde460@exceet.de>
- <20171213222710.32d12514@bbrezillon>
- <CAAyFORJcT1abbo21iA4cetLKmF0zE4akFGFryxPpwPO+730LDQ@mail.gmail.com>
- <20171214085036.436b4fcf@bbrezillon>
- <CAAyFOR+=JwTRTm2MXVdMy7KRPsnV8LV4t71kHUh_s=+QOsVurA@mail.gmail.com>
- <23d17416-e555-4b92-cc47-f644fbe676c6@exceet.de>
- <20171214163848.41f6d277@bbrezillon>
- <CAAyFORKeFq+=tF9AK+8hp6GYYiyp3DKcw8+LWrC3RWS2zLNU_w@mail.gmail.com>
- <CAAyFORJEuEaHDXgk+m0ax5RoZ-3cRJs6uFXw7syR4vHE1veEwQ@mail.gmail.com>
- <a06312e4-a7e6-8b7b-9eb5-8320302dcc55@exceet.de>
- <CAAyFORL6mUFXFRvku6sm=Pj2=+Bf4wSV7EoBM_7+wRdPrF-ufw@mail.gmail.com>
- <CAAyFOR+m7GvXU66XKphu+cETP9SQTJ6GuZQEZQA600MX1R6cYw@mail.gmail.com>
+Received: from mail-dm3nam03on0058.outbound.protection.outlook.com
+ ([104.47.41.58] helo=NAM03-DM3-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eSIoY-00038N-RC
+ for linux-mtd@lists.infradead.org; Fri, 22 Dec 2017 08:36:30 +0000
+From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+To: <linux-mtd@lists.infradead.org>
+CC: <boris.brezillon@free-electrons.com>, <cyrille.pitchen@wedev4u.fr>,
+ <computersforpeace@gmail.com>, <prabhakar.kushwaha@nxp.com>,
+ <suresh.gupta@nxp.com>, Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH] mtd: spi-nor: use _lock_and_prep() in _read_sfdp()
+Date: Fri, 22 Dec 2017 14:05:52 +0530
+Message-ID: <1513931752-23387-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,109 +22,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 22 Dec 2017 14:37:06 +0800
-Peter Pan <peterpansjtu@gmail.com> wrote:
+spi_nor_read_sfdp() calls nor->read() to read the SFDP data.
+But first needs to call nor->prepare() to prepare the READ command before
+calling nor->read().
 
-> Hi Boris and Frieder
-> 
-> On Fri, Dec 22, 2017 at 8:49 AM, Peter Pan <peterpansjtu@gmail.com> wrote:
-> > Hi Frieder,
-> >
-> > On Thu, Dec 21, 2017 at 7:48 PM, Frieder Schrempf
-> > <frieder.schrempf@exceet.de> wrote:  
-> >> Hello Boris,
-> >>  
-> >>>>>> So shouldn't there be an spinand_die_select_op in the SPI NAND core
-> >>>>>> that
-> >>>>>> is executed when necessary and skipped if there's only one die.  
-> >>>>>
-> >>>>>
-> >>>>> Sure, I was arguing against a ->select_chip() at the generic NAND
-> >>>>> level. That's something you can add in the SPI NAND framework.  
-> >>
-> >>
-> >> I added an op to send the die selection command and call it, where I think
-> >> it is needed: [1]  
-> >
-> > I think we should add die_select_op in vendor's file and call a hook in core.c
-> > since the die select command implementation is different by vendors.
-> >
-> > Thanks
-> > Peter Pan
-> >
-> >  
-> >>
-> >> Accessing both dies on the Winbond SPI NAND works fine like this.
-> >>
-> >> While running tests I came across some problems:
-> >>
-> >> * On accessing the BBT in RAM via nanddev_bbt_[set/get]_block_status, the
-> >> calculation of position and offset seems to be wrong.
-> >> My fix is here: [2]
-> >>
-> >> * On calculating the row address for read/program/erase via
-> >> nanddev_pos_to_row, it seems like the eraseblock_addr_shift is wrong.
-> >>
-> >> * Also, I'm not sure if the LUN should be taken into account when
-> >> calculating the row address. At least when you select the LUN by issuing a
-> >> separate command, the row address sent to the chip should only contain the
-> >> page address.
-> >> But I'm not sure if that's the case in general, or if some code is needed to
-> >> differentiate.
-> >>
-> >> See my changes of nanddev_pos_to_row here: [3]
-> >>
-> >> * I run into a mutex deadlock, when spinand_write_page fails (e.g. because
-> >> of a bad block) as the lock is not released in such cases. See my fix here:
-> >> [4]
-> >>
-> >> With these fixes applied and as far as I can tell everything seems to work
-> >> fine. I'll do some tests with UBI next and look into the ECC topic.  
-> 
-> UBI attach failed since missing mtd->writebufsize assignment in nanddev_init()
-> After fixing it and with Frieder's fixing, UBIFS can be mounted successfully on
-> Zedboard with generic spi controller and Micron SPI NAND 2Gb device.
+Patch adds call to spi_nor_lock_and_prep() to prepare the READ command
+and add subsequent call to spi_nor_unlock_and_unprep() to release lock
+and call nor->unprepare().
 
-I'll squash your fix, thanks.
+Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-> 
-> Also, the code now can pass mtd read and page test. 1 error found in oob test
-> since we don't have "past end of partition" check in part_write_oob() which I
-> mentioned in earlier mail.
-
-Still not sure about that one, but I'll reply in the other thread.
-
-> Since we don't support ECC right now, I didn't try
-> nandbiterror test.
-> 
-> 
-> @@ -195,6 +195,7 @@ int nanddev_init(struct nand_device *nand, const
-> struct nand_ops *ops,
->         mtd->flags = MTD_CAP_NANDFLASH;
->         mtd->erasesize = memorg->pagesize * memorg->pages_per_eraseblock;
->         mtd->writesize = memorg->pagesize;
-> +       mtd->writebufsize = mtd->writesize;
->         mtd->oobsize = memorg->oobsize;
->         mtd->size = nanddev_size(nand);
->         mtd->owner = owner;
-> 
-> 
-> Thanks
-> Peter Pan
-> 
-> >>
-> >> Regards,
-> >>
-> >> Frieder
-> >>
-> >> [1]:
-> >> https://github.com/fschrempf/linux-0day/compare/4f8472ea05f27d55ebb2e42eadc9ed59d7036f4c...fschrempf:2c5471c1f1e04fa91ff80c95276b4828b99c4f94
-> >>
-> >> [2]:
-> >> https://github.com/fschrempf/linux-0day/commit/937a16248570368fe05e15b1f70e753e202b6ae6
-> >>
-> >> [3]:
-> >> https://github.com/fschrempf/linux-0day/commit/8013696e0394960bfc36625d277f0d2425262939
-> >>
-> >> [4]:
-> >> https://github.com/fschrempf/linux-0day/commit/28ffc7211745dd124702358c24ddccff8e6f2d95  
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 2203d6ef..9fb85ae 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1807,6 +1807,10 @@ static int spi_nor_read_sfdp(struct spi_nor *nor, u32 addr,
+ 	nor->addr_width = 3;
+ 	nor->read_dummy = 8;
+ 
++	ret = spi_nor_lock_and_prep(nor, SPI_NOR_OPS_READ);
++	if (ret)
++		goto lock_err;
++
+ 	while (len) {
+ 		ret = nor->read(nor, addr, len, (u8 *)buf);
+ 		if (!ret || ret > len) {
+@@ -1822,6 +1826,8 @@ static int spi_nor_read_sfdp(struct spi_nor *nor, u32 addr,
+ 	}
+ 	ret = 0;
+ 
++	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_READ);
++lock_err:
+ read_err:
+ 	nor->read_opcode = read_opcode;
+ 	nor->addr_width = addr_width;
+-- 
+1.9.1
