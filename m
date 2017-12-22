@@ -1,21 +1,20 @@
-Received: from lelnx194.ext.ti.com ([198.47.27.80])
- by merlin.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eSKLk-0004FI-AY
- for linux-mtd@lists.infradead.org; Fri, 22 Dec 2017 10:14:45 +0000
+Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eSMlv-0005wZ-Ki
+ for linux-mtd@lists.infradead.org; Fri, 22 Dec 2017 12:49:58 +0000
 Subject: Re: [PATCH] mtd: spi-nor: use _lock_and_prep() in _read_sfdp()
-To: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, <linux-mtd@lists.infradead.org>
-CC: <boris.brezillon@free-electrons.com>, <prabhakar.kushwaha@nxp.com>,
- <suresh.gupta@nxp.com>, <cyrille.pitchen@wedev4u.fr>,
- <computersforpeace@gmail.com>
+To: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, linux-mtd@lists.infradead.org
+Cc: boris.brezillon@free-electrons.com, prabhakar.kushwaha@nxp.com,
+ suresh.gupta@nxp.com, computersforpeace@gmail.com
 References: <1513931752-23387-1-git-send-email-yogeshnarayan.gaur@nxp.com>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <39a223af-234f-84ea-bb8b-b5684346ac82@ti.com>
-Date: Fri, 22 Dec 2017 15:44:45 +0530
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <af710291-c5d7-9c52-8313-0f2684f46f75@wedev4u.fr>
+Date: Fri, 22 Dec 2017 13:49:39 +0100
 MIME-Version: 1.0
 In-Reply-To: <1513931752-23387-1-git-send-email-yogeshnarayan.gaur@nxp.com>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,20 +24,116 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Yogesh,
 
-On Friday 22 December 2017 02:05 PM, Yogesh Gaur wrote:
+Le 22/12/2017 à 09:35, Yogesh Gaur a écrit :
 > spi_nor_read_sfdp() calls nor->read() to read the SFDP data.
 > But first needs to call nor->prepare() to prepare the READ command before
 > calling nor->read().
-> 
+>
+
+Currently, I don't agree with this: spi_nor_read_sfdp() is called only from
+spi_nor_scan(). Before the SFDP patch, spi_nor_scan() has already been
+calling for years nor->read_reg() and nor->write_reg() without calling
+spi_nor_lock_and_prep() first.
+
+Indeed, still being in spi_nor_scan(), the SPI NOR memory should have not
+been registered yet to the above MTD layer. So there should be no need to
+lock nor->lock at this point.
+
+Then, about calling nor->prepare(), IMHO, it's look a little bit odd that
+neither nor->read_reg() nor nor->write_reg() require nor->prepare() to be
+called first whereas nor->read() does need it.
+
+You didn't describe what issue or bug you actually noticed so now I assume
+it deals with the fsl-quadspi.c driver. So let's have a look at its
+implementation of nor->prepare() / fsl_qspi_prep():
+
++static int fsl_qspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
++{
++	struct fsl_qspi *q = nor->priv;
++	int ret;
++
++	mutex_lock(&q->lock);
+
+It was not needed before by fsl_qspi_read_reg() or fls_qspi_write_reg(),
+why would it be needed now by fls_qspi_read()?
+
+Then I guess, this is not the issue.
+
+Anyway, if actually needed or safer, the mutex can be locked just after
+mutex_init() and before for_each_available_child_of_node() in
+fsl_qspi_probe().
+
++
++	ret = fsl_qspi_clk_prep_enable(q);
+
+Already called from fls_qpsi_probe() before calling spi_nor_scan():
+should not be the issue neither.
+
++	if (ret)
++		goto err_mutex;
++
++	fsl_qspi_set_base_addr(q, nor);
+
+Also called from fsl_qspi_probe() right before calling spi_nor_scan():
+
+		/* set the chip address for READID */
+		fsl_qspi_set_base_addr(q, nor);
+
+		ret = spi_nor_scan(nor, NULL, &hwcaps);
+		if (ret)
+			goto mutex_failed;
+
+		ret = mtd_device_register(mtd, NULL, 0);
+		if (ret)
+			goto mutex_failed;
+
+		/* Set the correct NOR size now. */
+		if (q->nor_size == 0) {
+			q->nor_size = mtd->size;
+
+			/* Map the SPI NOR to accessiable address */
+			fsl_qspi_set_map_addr(q);
+		}
+
+q->nor_size is only updated after spi_nor_scan() hence I don't see why
+calling nor->prepare() hence fsl_qpsi_set_base_addr() one more time now
+during spi_nor_scan() would actually change anything.
+
+Please note that all I said was based on the assumption that you are trying
+to fix an issue in the fsl-quadspi.c driver (based on your email address:
+@nxp.com) as the nxp-spifi.c driver doesn't provide any implementation for
+the optional nor->prepare().
+
+Then could you please describe a little bit more details about the actual
+issue? What does this patch fix? Which drivers are involved? 
+
+Indeed, you would like to have a precise understanding of the issue and
+also avoid modifying spi-nor.c rather than the single fsl-quadspi.c driver
+or whatever driver is concerned since calling nor->preprare() from
+spi_nor_scan() has never been done before and may have unwanted side effects
+on other SPI flash controller drivers.
+
+Actually, this is the reason why spi_nor_read_sfdp() directly calls
+nor->read() instead of spi_nor_read().
+
+Best regards,
+
+Cyrille
+
++	return 0;
++
++err_mutex:
++	mutex_unlock(&q->lock);
++	return ret;
++}
+
+ 
 > Patch adds call to spi_nor_lock_and_prep() to prepare the READ command
 > and add subsequent call to spi_nor_unlock_and_unprep() to release lock
 > and call nor->unprepare().
 > 
-
-Can spi_nor_read() be used here instead then?
-
 > Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
 > ---
 >  drivers/mtd/spi-nor/spi-nor.c | 6 ++++++
@@ -69,7 +164,3 @@ Can spi_nor_read() be used here instead then?
 >  	nor->read_opcode = read_opcode;
 >  	nor->addr_width = addr_width;
 > 
-
--- 
-Regards
-Vignesh
