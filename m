@@ -1,40 +1,34 @@
-Date: Fri, 22 Dec 2017 23:00:56 +0100
-From: Willy Tarreau <w@1wt.eu>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
- Mark Rutland <mark.rutland@arm.com>, Andrew Lunn <andrew@lunn.ch>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Hanna Hawa <hannah@marvell.com>, Will Deacon <will.deacon@arm.com>,
- Nadav Haklai <nadavh@marvell.com>, linux-mtd@lists.infradead.org,
- Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
- Marek Vasut <marek.vasut@gmail.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- devicetree@vger.kernel.org, Jason Cooper <jason@lakedaemon.net>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Rob Herring <robh+dt@kernel.org>,
- Miquel Raynal <miquel.raynal@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Ofer Heifetz <oferh@marvell.com>, linux-arm-kernel@lists.infradead.org,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Eric Miao <eric.y.miao@gmail.com>,
- Sean =?iso-8859-1?Q?Nyekj=E6r?= <sean.nyekjaer@prevas.dk>,
- Antoine Tenart <antoine.tenart@free-electrons.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Neta Zur Hershkovits <neta@marvell.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Daniel Mack <daniel@zonque.org>
+Date: Fri, 22 Dec 2017 23:04:44 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Miquel Raynal <miquel.raynal@free-electrons.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Jason Cooper <jason@lakedaemon.net>,
+ Andrew Lunn <andrew@lunn.ch>, Gregory Clement
+ <gregory.clement@free-electrons.com>, Sebastian Hesselbarth
+ <sebastian.hesselbarth@gmail.com>, Russell King <linux@armlinux.org.uk>,
+ Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Eric Miao <eric.y.miao@gmail.com>, Catalin Marinas
+ <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Ezequiel
+ Garcia <ezequiel.garcia@free-electrons.com>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Thomas
+ Petazzoni <thomas.petazzoni@free-electrons.com>, Antoine Tenart
+ <antoine.tenart@free-electrons.com>, Nadav Haklai <nadavh@marvell.com>,
+ Ofer Heifetz <oferh@marvell.com>, Hanna Hawa <hannah@marvell.com>, Neta Zur
+ Hershkovits <neta@marvell.com>, Willy Tarreau <w@1wt.eu>, Sean
+ =?UTF-8?B?Tnlla2rDpnI=?= <sean.nyekjaer@prevas.dk>
 Subject: Re: [PATCH v2 3/5] mtd: nand: replace pxa3xx_nand driver by its
  rework called marvell_nand
-Message-ID: <20171222220056.GB14055@1wt.eu>
+Message-ID: <20171222230444.2c952ea0@bbrezillon>
+In-Reply-To: <87608ycwx5.fsf@belgarion.home>
 References: <20171219132942.27433-1-miquel.raynal@free-electrons.com>
  <20171219132942.27433-4-miquel.raynal@free-electrons.com>
  <87608ycwx5.fsf@belgarion.home>
- <20171222221032.30f83cb5@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20171222221032.30f83cb5@bbrezillon>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,37 +38,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 22, 2017 at 10:10:32PM +0100, Boris Brezillon wrote:
-> On Fri, 22 Dec 2017 21:47:18 +0100
-> Robert Jarzmik <robert.jarzmik@free.fr> wrote:
-> > What I would propose instead is :
-> >  - keep both the new marvell nand driver and the old pxa3xx_nand driver
-> >  - switch pxa_defconfig to compile them both
-> >  - continue testing (with my help)
-> > 
-> > Once I see the marvell_nand is working properly, we can remove pca3xx_nand in a
-> > second stage, keeping the pxa platform functional all along.
-> > 
-> > Would you agree to that path ?
+On Fri, 22 Dec 2017 21:47:18 +0100
+Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+
+> Miquel Raynal <miquel.raynal@free-electrons.com> writes:
 > 
-> Hm, I tried this approach already (with Marvell's crypto engine) and it
-> doesn't quite solve the problem, just delay it a bit until someone
-> decides to remove the old driver. In my experience, people only start
-> testing the new driver when they're forced to do it (IOW, when the old
-> driver is removed and defconfigs are patched to use the new one). So
-> let's find a way to fix the remaining issues you have instead of
-> delaying the inevitable.
+> > Actually remove pxa3xx_nand.c to let marvell_nand.c be compiled instead.
+> > Also change the defconfig files using it as well as some board files
+> > depending on CONFIG_MTD_NAND_PXA3xx.
+> >
+> > Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>  
+> 
+> Actually that approach doesn't quite suit me.
+> I'm not convinced at all a new rewrite of the driver will be stable right out of
+> the box as the old one is.
+> 
+> What I would propose instead is :
+>  - keep both the new marvell nand driver and the old pxa3xx_nand driver
+>  - switch pxa_defconfig to compile them both
 
-That also reminds me of the old vs new PATA/IDE drivers a long time ago.
-A number of us would stay on the old ones because we were satisfied,
-never really making the effort to migrate until it we were really forced.
+Didn't notice you were suggesting to compile both, which doesn't work
+because both drivers match the same devices, and only one of them
+can actually claim the device (likely the first one to register to the
+device model). So, to make it safe you need to have a
 
-For the NAND, I think that if the old driver had to coexist with the new
-one, at the very least the config option name must change so that it's
-not selected by default by make oldconfig, and it's clearly written that
-it is not maintained anymore, may be broken and that any one having a
-good reason to use it must absolutely contact the maintainer to get the
-other one fixed.
+	depends on !MTD_NAND_PXA3xx
 
-Just my two cents,
-Willy
+in your MTD_NAND_MARVELL entry, which means only one driver can be
+compiled.
+
+>  - continue testing (with my help)
+> 
+> Once I see the marvell_nand is working properly, we can remove pca3xx_nand in a
+> second stage, keeping the pxa platform functional all along.
+> 
+> Would you agree to that path ?
+> 
+> As a side not, this patch should be split into 2 parts :
+>  - one for arch/arm -> switch to the new driver
+>  - one for drivers/mtd -> removal of the old driver
+> 
+> Cheers.
+> 
+> --
+> Robert
