@@ -1,29 +1,24 @@
 Received: from h2.hallyn.com ([78.46.35.8])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eSa5x-00060w-Jl
- for linux-mtd@lists.infradead.org; Sat, 23 Dec 2017 03:03:32 +0000
-Date: Fri, 22 Dec 2017 21:03:11 -0600
+ id 1eSa7s-0007ag-2a
+ for linux-mtd@lists.infradead.org; Sat, 23 Dec 2017 03:05:31 +0000
+Date: Fri, 22 Dec 2017 21:05:16 -0600
 From: "Serge E. Hallyn" <serge@hallyn.com>
 To: Dongsu Park <dongsu@kinvolk.io>
-Cc: linux-kernel@vger.kernel.org, containers@lists.linux-foundation.org,
- Alban Crequy <alban@kinvolk.io>,
+Cc: linux-kernel@vger.kernel.org, Miklos Szeredi <mszeredi@redhat.com>,
+ containers@lists.linux-foundation.org,
+ Seth Forshee <seth.forshee@canonical.com>, Alban Crequy <alban@kinvolk.io>,
  "Eric W . Biederman" <ebiederm@xmission.com>,
- Miklos Szeredi <mszeredi@redhat.com>,
- Seth Forshee <seth.forshee@canonical.com>,
- Sargun Dhillon <sargun@sargun.me>, dm-devel@redhat.com,
- linux-bcache@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mtd@lists.infradead.org,
- Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.com>,
- Serge Hallyn <serge@hallyn.com>
-Subject: Re: [PATCH 01/11] block_dev: Support checking inode permissions in
- lookup_bdev()
-Message-ID: <20171223030311.GA6837@mail.hallyn.com>
+ Sargun Dhillon <sargun@sargun.me>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 02/11] mtd: Check permissions towards mtd block device
+ inode when mounting
+Message-ID: <20171223030516.GB6837@mail.hallyn.com>
 References: <cover.1512741134.git.dongsu@kinvolk.io>
- <ef5e609602df6d7e2b4aa07b92600f04b6851902.1512041070.git.dongsu@kinvolk.io>
+ <945d325a2239efcd55273abb2bac41cfc7264fea.1512041070.git.dongsu@kinvolk.io>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ef5e609602df6d7e2b4aa07b92600f04b6851902.1512041070.git.dongsu@kinvolk.io>
+In-Reply-To: <945d325a2239efcd55273abb2bac41cfc7264fea.1512041070.git.dongsu@kinvolk.io>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,155 +28,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 22, 2017 at 03:32:25PM +0100, Dongsu Park wrote:
+On Fri, Dec 22, 2017 at 03:32:26PM +0100, Dongsu Park wrote:
 > From: Seth Forshee <seth.forshee@canonical.com>
 > 
-> When looking up a block device by path no permission check is
-> done to verify that the user has access to the block device inode
-> at the specified path. In some cases it may be necessary to
-> check permissions towards the inode, such as allowing
-> unprivileged users to mount block devices in user namespaces.
+> Unprivileged users should not be able to mount mtd block devices
+> when they lack sufficient privileges towards the block device
+> inode.  Update mount_mtd() to validate that the user has the
+> required access to the inode at the specified path. The check
+> will be skipped for CAP_SYS_ADMIN, so privileged mounts will
+> continue working as before.
 > 
-> Add an argument to lookup_bdev() to optionally perform this
-> permission check. A value of 0 skips the permission check and
-> behaves the same as before. A non-zero value specifies the mask
-> of access rights required towards the inode at the specified
-> path. The check is always skipped if the user has CAP_SYS_ADMIN.
+> Patch v3 is available: https://patchwork.kernel.org/patch/7640011/
 > 
-> All callers of lookup_bdev() currently pass a mask of 0, so this
-> patch results in no functional change. Subsequent patches will
-> add permission checks where appropriate.
-> 
-> Patch v4 is available: https://patchwork.kernel.org/patch/8943601/
-> 
-> Cc: dm-devel@redhat.com
-> Cc: linux-bcache@vger.kernel.org
-> Cc: linux-fsdevel@vger.kernel.org
 > Cc: linux-mtd@lists.infradead.org
 > Cc: linux-kernel@vger.kernel.org
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> Cc: Jan Kara <jack@suse.com>
-> Cc: Serge Hallyn <serge@hallyn.com>
+> Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+> Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
 
 Acked-by: Serge Hallyn <serge@hallyn.com>
 
-> Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
-> Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
 > ---
->  drivers/md/bcache/super.c |  2 +-
->  drivers/md/dm-table.c     |  2 +-
->  drivers/mtd/mtdsuper.c    |  2 +-
->  fs/block_dev.c            | 13 ++++++++++---
->  fs/quota/quota.c          |  2 +-
->  include/linux/fs.h        |  2 +-
->  6 files changed, 15 insertions(+), 8 deletions(-)
+>  drivers/mtd/mtdsuper.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-> index b4d28928..acc9d56c 100644
-> --- a/drivers/md/bcache/super.c
-> +++ b/drivers/md/bcache/super.c
-> @@ -1967,7 +1967,7 @@ static ssize_t register_bcache(struct kobject *k, struct kobj_attribute *attr,
->  				  sb);
->  	if (IS_ERR(bdev)) {
->  		if (bdev == ERR_PTR(-EBUSY)) {
-> -			bdev = lookup_bdev(strim(path));
-> +			bdev = lookup_bdev(strim(path), 0);
->  			mutex_lock(&bch_register_lock);
->  			if (!IS_ERR(bdev) && bch_is_open(bdev))
->  				err = "device already registered";
-> diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
-> index 88130b5d..bca5eaf4 100644
-> --- a/drivers/md/dm-table.c
-> +++ b/drivers/md/dm-table.c
-> @@ -410,7 +410,7 @@ dev_t dm_get_dev_t(const char *path)
->  	dev_t dev;
->  	struct block_device *bdev;
->  
-> -	bdev = lookup_bdev(path);
-> +	bdev = lookup_bdev(path, 0);
->  	if (IS_ERR(bdev))
->  		dev = name_to_dev_t(path);
->  	else {
 > diff --git a/drivers/mtd/mtdsuper.c b/drivers/mtd/mtdsuper.c
-> index e43fea89..4a4d40c0 100644
+> index 4a4d40c0..3c8734f3 100644
 > --- a/drivers/mtd/mtdsuper.c
 > +++ b/drivers/mtd/mtdsuper.c
-> @@ -180,7 +180,7 @@ struct dentry *mount_mtd(struct file_system_type *fs_type, int flags,
+> @@ -129,6 +129,7 @@ struct dentry *mount_mtd(struct file_system_type *fs_type, int flags,
+>  #ifdef CONFIG_BLOCK
+>  	struct block_device *bdev;
+>  	int ret, major;
+> +	int perm;
+>  #endif
+>  	int mtdnr;
+>  
+> @@ -180,7 +181,10 @@ struct dentry *mount_mtd(struct file_system_type *fs_type, int flags,
 >  	/* try the old way - the hack where we allowed users to mount
 >  	 * /dev/mtdblock$(n) but didn't actually _use_ the blockdev
 >  	 */
-> -	bdev = lookup_bdev(dev_name);
-> +	bdev = lookup_bdev(dev_name, 0);
+> -	bdev = lookup_bdev(dev_name, 0);
+> +	perm = MAY_READ;
+> +	if (!(flags & MS_RDONLY))
+> +		perm |= MAY_WRITE;
+> +	bdev = lookup_bdev(dev_name, perm);
 >  	if (IS_ERR(bdev)) {
 >  		ret = PTR_ERR(bdev);
 >  		pr_debug("MTDSB: lookup_bdev() returned %d\n", ret);
-> diff --git a/fs/block_dev.c b/fs/block_dev.c
-> index 4a181fcb..5ca06095 100644
-> --- a/fs/block_dev.c
-> +++ b/fs/block_dev.c
-> @@ -1662,7 +1662,7 @@ struct block_device *blkdev_get_by_path(const char *path, fmode_t mode,
->  	struct block_device *bdev;
->  	int err;
->  
-> -	bdev = lookup_bdev(path);
-> +	bdev = lookup_bdev(path, 0);
->  	if (IS_ERR(bdev))
->  		return bdev;
->  
-> @@ -2052,12 +2052,14 @@ EXPORT_SYMBOL(ioctl_by_bdev);
->  /**
->   * lookup_bdev  - lookup a struct block_device by name
->   * @pathname:	special file representing the block device
-> + * @mask:	rights to check for (%MAY_READ, %MAY_WRITE, %MAY_EXEC)
->   *
->   * Get a reference to the blockdevice at @pathname in the current
->   * namespace if possible and return it.  Return ERR_PTR(error)
-> - * otherwise.
-> + * otherwise.  If @mask is non-zero, check for access rights to the
-> + * inode at @pathname.
->   */
-> -struct block_device *lookup_bdev(const char *pathname)
-> +struct block_device *lookup_bdev(const char *pathname, int mask)
->  {
->  	struct block_device *bdev;
->  	struct inode *inode;
-> @@ -2072,6 +2074,11 @@ struct block_device *lookup_bdev(const char *pathname)
->  		return ERR_PTR(error);
->  
->  	inode = d_backing_inode(path.dentry);
-> +	if (mask != 0 && !capable(CAP_SYS_ADMIN)) {
-> +		error = __inode_permission(inode, mask);
-> +		if (error)
-> +			goto fail;
-> +	}
->  	error = -ENOTBLK;
->  	if (!S_ISBLK(inode->i_mode))
->  		goto fail;
-> diff --git a/fs/quota/quota.c b/fs/quota/quota.c
-> index 43612e2a..e5d47955 100644
-> --- a/fs/quota/quota.c
-> +++ b/fs/quota/quota.c
-> @@ -807,7 +807,7 @@ static struct super_block *quotactl_block(const char __user *special, int cmd)
->  
->  	if (IS_ERR(tmp))
->  		return ERR_CAST(tmp);
-> -	bdev = lookup_bdev(tmp->name);
-> +	bdev = lookup_bdev(tmp->name, 0);
->  	putname(tmp);
->  	if (IS_ERR(bdev))
->  		return ERR_CAST(bdev);
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 2995a271..fce19c49 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -2551,7 +2551,7 @@ static inline void unregister_chrdev(unsigned int major, const char *name)
->  #define BLKDEV_MAJOR_MAX	512
->  extern const char *__bdevname(dev_t, char *buffer);
->  extern const char *bdevname(struct block_device *bdev, char *buffer);
-> -extern struct block_device *lookup_bdev(const char *);
-> +extern struct block_device *lookup_bdev(const char *, int mask);
->  extern void blkdev_show(struct seq_file *,off_t);
->  
->  #else
 > -- 
 > 2.13.6
+> 
+> _______________________________________________
+> Containers mailing list
+> Containers@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/containers
