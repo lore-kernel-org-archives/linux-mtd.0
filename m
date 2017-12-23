@@ -1,40 +1,29 @@
-Received: from szxga05-in.huawei.com ([45.249.212.191] helo=huawei.com)
+Received: from mail-yw0-x244.google.com ([2607:f8b0:4002:c05::244])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eShil-0004Of-8b
- for linux-mtd@lists.infradead.org; Sat, 23 Dec 2017 11:12:05 +0000
-From: Yisheng Xie <xieyisheng1@huawei.com>
-To: <linux-kernel@vger.kernel.org>, <gregkh@linuxfoundation.org>
-CC: <ysxie@foxmail.com>, <ulf.hansson@linaro.org>,
- <linux-mmc@vger.kernel.org>, <boris.brezillon@free-electrons.com>,
- <richard@nod.at>, <marek.vasut@gmail.com>, <cyrille.pitchen@wedev4u.fr>,
- <linux-mtd@lists.infradead.org>, <alsa-devel@alsa-project.org>,
- <wim@iguana.be>, <linux@roeck-us.net>, <linux-watchdog@vger.kernel.org>,
- <b.zolnierkie@samsung.com>, <linux-fbdev@vger.kernel.org>,
- <linus.walleij@linaro.org>, <linux-gpio@vger.kernel.org>,
- <ralf@linux-mips.org>, <linux-mips@linux-mips.org>, <lgirdwood@gmail.com>,
- <broonie@kernel.org>, <tglx@linutronix.de>, <jason@lakedaemon.net>,
- <marc.zyngier@arm.com>, <arnd@arndb.de>, <andriy.shevchenko@linux.intel.com>,
- <industrypack-devel@lists.sourceforge.net>, <wg@grandegger.com>,
- <mkl@pengutronix.de>, <linux-can@vger.kernel.org>, <mchehab@kernel.org>,
- <linux-media@vger.kernel.org>, <a.zummo@towertech.it>,
- <alexandre.belloni@free-electrons.com>, <linux-rtc@vger.kernel.org>,
- <daniel.vetter@intel.com>, <jani.nikula@linux.intel.com>,
- <seanpaul@chromium.org>, <airlied@linux.ie>,
- <dri-devel@lists.freedesktop.org>, <kvalo@codeaurora.org>,
- <linux-wireless@vger.kernel.org>, <linux-spi@vger.kernel.org>,
- <tj@kernel.org>, <linux-ide@vger.kernel.org>, <bhelgaas@google.com>,
- <linux-pci@vger.kernel.org>, <devel@driverdev.osuosl.org>,
- <dvhart@infradead.org>, <andy@infradead.org>,
- <platform-driver-x86@vger.kernel.org>, <jakub.kicinski@netronome.com>,
- <davem@davemloft.net>, <nios2-dev@lists.rocketboards.org>,
- <netdev@vger.kernel.org>, <vinod.koul@intel.com>, <dan.j.williams@intel.com>,
- <dmaengine@vger.kernel.org>, <jslaby@suse.com>, Yisheng Xie
- <xieyisheng1@huawei.com>
-Subject: [PATCH v3 27/27] devres: kill devm_ioremap_nocache
-Date: Sat, 23 Dec 2017 19:02:59 +0800
-Message-ID: <1514026979-33838-1-git-send-email-xieyisheng1@huawei.com>
+ id 1eSiUG-0005XI-Mm
+ for linux-mtd@lists.infradead.org; Sat, 23 Dec 2017 12:01:10 +0000
+Received: by mail-yw0-x244.google.com with SMTP id f1so4938304ywd.8
+ for <linux-mtd@lists.infradead.org>; Sat, 23 Dec 2017 04:00:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <17fbec10-68b1-2d2b-d417-2cdfee22b0fa@coly.li>
+References: <cover.1512741134.git.dongsu@kinvolk.io>
+ <ef5e609602df6d7e2b4aa07b92600f04b6851902.1512041070.git.dongsu@kinvolk.io>
+ <17fbec10-68b1-2d2b-d417-2cdfee22b0fa@coly.li>
+From: Dongsu Park <dongsu@kinvolk.io>
+Date: Sat, 23 Dec 2017 13:00:56 +0100
+Message-ID: <CANxcAMuqpWaMOSOjo812uqvTyfKogc7=uA+tgwhzetQU1Ynm4w@mail.gmail.com>
+Subject: Re: [PATCH 01/11] block_dev: Support checking inode permissions in
+ lookup_bdev()
+To: Coly Li <i@coly.li>
+Cc: linux-kernel@vger.kernel.org, containers@lists.linux-foundation.org,
+ Alban Crequy <alban@kinvolk.io>, "Eric W . Biederman" <ebiederm@xmission.com>,
+ Miklos Szeredi <mszeredi@redhat.com>, Seth Forshee <seth.forshee@canonical.com>,
+ Sargun Dhillon <sargun@sargun.me>, dm-devel@redhat.com,
+ linux-bcache@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.com>,
+ Serge Hallyn <serge@hallyn.com>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,96 +33,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now, nobody use devm_ioremap_nocache anymore, can it can just be
-removed. After this patch the size of devres.o will be reduced from
-20304 bytes to 18992 bytes.
+Hi,
 
-Suggested-by: Greg KH <gregkh@linuxfoundation.org>
-Signed-off-by: Yisheng Xie <xieyisheng1@huawei.com>
----
- Documentation/driver-model/devres.txt   |  1 -
- include/linux/io.h                      |  2 --
- lib/devres.c                            | 29 -----------------------------
- scripts/coccinelle/free/devm_free.cocci |  2 --
- 4 files changed, 34 deletions(-)
+On Fri, Dec 22, 2017 at 7:59 PM, Coly Li <i@coly.li> wrote:
+> On 22/12/2017 10:32 PM, Dongsu Park wrote:
+> Hi Dongsu,
+>
+> Could you please use a macro like NO_PERMISSION_CHECK to replace hard
+> coded 0 ? At least for me, I don't need to check what does 0 mean in the
+> new lookup_bdev().
 
-diff --git a/Documentation/driver-model/devres.txt b/Documentation/driver-model/devres.txt
-index c180045..c3fddb5 100644
---- a/Documentation/driver-model/devres.txt
-+++ b/Documentation/driver-model/devres.txt
-@@ -292,7 +292,6 @@ IOMAP
-   devm_ioport_map()
-   devm_ioport_unmap()
-   devm_ioremap()
--  devm_ioremap_nocache()
-   devm_ioremap_wc()
-   devm_ioremap_resource() : checks resource, requests memory region, ioremaps
-   devm_iounmap()
-diff --git a/include/linux/io.h b/include/linux/io.h
-index 32e30e8..a9c7270 100644
---- a/include/linux/io.h
-+++ b/include/linux/io.h
-@@ -75,8 +75,6 @@ static inline void devm_ioport_unmap(struct device *dev, void __iomem *addr)
- 
- void __iomem *devm_ioremap(struct device *dev, resource_size_t offset,
- 			   resource_size_t size);
--void __iomem *devm_ioremap_nocache(struct device *dev, resource_size_t offset,
--				   resource_size_t size);
- void __iomem *devm_ioremap_wc(struct device *dev, resource_size_t offset,
- 				   resource_size_t size);
- void devm_iounmap(struct device *dev, void __iomem *addr);
-diff --git a/lib/devres.c b/lib/devres.c
-index 5f2aedd..f818fcf 100644
---- a/lib/devres.c
-+++ b/lib/devres.c
-@@ -44,35 +44,6 @@ void __iomem *devm_ioremap(struct device *dev, resource_size_t offset,
- EXPORT_SYMBOL(devm_ioremap);
- 
- /**
-- * devm_ioremap_nocache - Managed ioremap_nocache()
-- * @dev: Generic device to remap IO address for
-- * @offset: Resource address to map
-- * @size: Size of map
-- *
-- * Managed ioremap_nocache().  Map is automatically unmapped on driver
-- * detach.
-- */
--void __iomem *devm_ioremap_nocache(struct device *dev, resource_size_t offset,
--				   resource_size_t size)
--{
--	void __iomem **ptr, *addr;
--
--	ptr = devres_alloc(devm_ioremap_release, sizeof(*ptr), GFP_KERNEL);
--	if (!ptr)
--		return NULL;
--
--	addr = ioremap_nocache(offset, size);
--	if (addr) {
--		*ptr = addr;
--		devres_add(dev, ptr);
--	} else
--		devres_free(ptr);
--
--	return addr;
--}
--EXPORT_SYMBOL(devm_ioremap_nocache);
--
--/**
-  * devm_ioremap_wc - Managed ioremap_wc()
-  * @dev: Generic device to remap IO address for
-  * @offset: Resource address to map
-diff --git a/scripts/coccinelle/free/devm_free.cocci b/scripts/coccinelle/free/devm_free.cocci
-index c990d2c..36b8752 100644
---- a/scripts/coccinelle/free/devm_free.cocci
-+++ b/scripts/coccinelle/free/devm_free.cocci
-@@ -51,8 +51,6 @@ expression x;
- |
-  x = devm_ioremap(...)
- |
-- x = devm_ioremap_nocache(...)
--|
-  x = devm_ioport_map(...)
- )
- 
--- 
-1.8.3.1
+I see. I'll do that.
+
+Thanks,
+Dongsu
+
+> Thanks.
+>
+> Coly Li
+>
+>> ---
+>>  drivers/md/bcache/super.c |  2 +-
+>>  drivers/md/dm-table.c     |  2 +-
+>>  drivers/mtd/mtdsuper.c    |  2 +-
+>>  fs/block_dev.c            | 13 ++++++++++---
+>>  fs/quota/quota.c          |  2 +-
+>>  include/linux/fs.h        |  2 +-
+>>  6 files changed, 15 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+>> index b4d28928..acc9d56c 100644
+>> --- a/drivers/md/bcache/super.c
+>> +++ b/drivers/md/bcache/super.c
+>> @@ -1967,7 +1967,7 @@ static ssize_t register_bcache(struct kobject *k, struct kobj_attribute *attr,
+>>                                 sb);
+>>       if (IS_ERR(bdev)) {
+>>               if (bdev == ERR_PTR(-EBUSY)) {
+>> -                     bdev = lookup_bdev(strim(path));
+>> +                     bdev = lookup_bdev(strim(path), 0);
+>>                       mutex_lock(&bch_register_lock);
+>>                       if (!IS_ERR(bdev) && bch_is_open(bdev))
+>>                               err = "device already registered";
+>> diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
+>> index 88130b5d..bca5eaf4 100644
+> [snip]
+>
+>
+> --
+> Coly Li
