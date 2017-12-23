@@ -1,24 +1,44 @@
-Date: Sat, 23 Dec 2017 15:57:09 +0100
-From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Ezequiel
- Garcia <ezequiel.garcia@free-electrons.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 00/12] Marvell NAND controller rework with ->exec_op()
-Message-ID: <20171223155709.2ba16e95@xps13>
-In-Reply-To: <87k1xdblxf.fsf@belgarion.home>
-References: <20171207201814.30411-1-miquel.raynal@free-electrons.com>
- <20171214070930.0b885f6d@bbrezillon>
- <877etkecig.fsf@belgarion.home> <20171218092535.2ca1fe13@xps13>
- <87y3lxccr7.fsf@belgarion.home>
- <20171220224121.2cb6f690@bbrezillon>
- <87lghucykr.fsf@belgarion.home>
- <20171222222441.0fd77df9@bbrezillon>
- <20171222233730.68d9cb9d@xps13> <87k1xdblxf.fsf@belgarion.home>
+Received: from mail-pl0-x242.google.com ([2607:f8b0:400e:c01::242])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eSmBQ-0007uw-7Z
+ for linux-mtd@lists.infradead.org; Sat, 23 Dec 2017 15:57:58 +0000
+Received: by mail-pl0-x242.google.com with SMTP id b96so14536898pli.2
+ for <linux-mtd@lists.infradead.org>; Sat, 23 Dec 2017 07:57:45 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v3 00/27] kill devm_ioremap_nocache
+To: Greg KH <gregkh@linuxfoundation.org>, Yisheng Xie <xieyisheng1@huawei.com>
+Cc: linux-kernel@vger.kernel.org, ysxie@foxmail.com, ulf.hansson@linaro.org,
+ linux-mmc@vger.kernel.org, boris.brezillon@free-electrons.com,
+ richard@nod.at, marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
+ linux-mtd@lists.infradead.org, alsa-devel@alsa-project.org, wim@iguana.be,
+ linux-watchdog@vger.kernel.org, b.zolnierkie@samsung.com,
+ linux-fbdev@vger.kernel.org, linus.walleij@linaro.org,
+ linux-gpio@vger.kernel.org, ralf@linux-mips.org, linux-mips@linux-mips.org,
+ lgirdwood@gmail.com, broonie@kernel.org, tglx@linutronix.de,
+ jason@lakedaemon.net, marc.zyngier@arm.com, arnd@arndb.de,
+ andriy.shevchenko@linux.intel.com, industrypack-devel@lists.sourceforge.net,
+ wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org,
+ mchehab@kernel.org, linux-media@vger.kernel.org, a.zummo@towertech.it,
+ alexandre.belloni@free-electrons.com, linux-rtc@vger.kernel.org,
+ daniel.vetter@intel.com, jani.nikula@linux.intel.com, seanpaul@chromium.org,
+ airlied@linux.ie, dri-devel@lists.freedesktop.org, kvalo@codeaurora.org,
+ linux-wireless@vger.kernel.org, linux-spi@vger.kernel.org, tj@kernel.org,
+ linux-ide@vger.kernel.org, bhelgaas@google.com, linux-pci@vger.kernel.org,
+ devel@driverdev.osuosl.org, dvhart@infradead.org, andy@infradead.org,
+ platform-driver-x86@vger.kernel.org, jakub.kicinski@netronome.com,
+ davem@davemloft.net, nios2-dev@lists.rocketboards.org,
+ netdev@vger.kernel.org, vinod.koul@intel.com, dan.j.williams@intel.com,
+ dmaengine@vger.kernel.org, jslaby@suse.com
+References: <1514026525-32538-1-git-send-email-xieyisheng1@huawei.com>
+ <20171223134831.GB10103@kroah.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Message-ID: <f7632cf5-2bcc-4d74-b912-3999937a1269@roeck-us.net>
+Date: Sat, 23 Dec 2017 07:57:40 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20171223134831.GB10103@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,92 +48,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Robert,
+On 12/23/2017 05:48 AM, Greg KH wrote:
+> On Sat, Dec 23, 2017 at 06:55:25PM +0800, Yisheng Xie wrote:
+>> Hi all,
+>>
+>> When I tried to use devm_ioremap function and review related code, I found
+>> devm_ioremap and devm_ioremap_nocache is almost the same with each other,
+>> except one use ioremap while the other use ioremap_nocache.
+> 
+> For all arches?  Really?  Look at MIPS, and x86, they have different
+> functions.
+> 
 
-On Sat, 23 Dec 2017 14:42:20 +0100
-Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+Both mips and x86 end up mapping the same function, but other arches don't.
+mn10300 is one where ioremap and ioremap_nocache are definitely different.
 
-> Miquel RAYNAL <miquel.raynal@free-electrons.com> writes:
->=20
-> I removed a lot of people from the recipients, as this is a debug
-> session.
+Guenter
 
-Sure!
-
->=20
-> >> > Now I get a lot of these message which I didn't have before :
-> >> > [   26.897372] ubi0 warning: ubi_io_read: error -74 (ECC error)
-> >> > while reading 126976 bytes from PEB 242:4096, read only 126976 =20
-> >> Looks like a mismatch in the ECC config. Can you check the ecc
-> >> strength/step_size in both situation (old driver vs new driver)? =20
-> >
-> > For that, you might want to add traces in marvell_nand_ecc_init()
-> > and marvell_nand_hw_ecc_ctrl_init().
-> > =20
-> >> Could you also dump the NDCR register in both cases? =20
-> >
-> > NDCR register (as well as NDCBx registers) will appear if you let
-> >
-> >     #define DEBUG
-> >
-> > at the beginning of the driver.
-> >
-> > Also, can you please give us the entire dmesg (I mean the boot, not
-> > the flow of UBIFS errors of course). =20
-> Here it comes in [3]. I suspect the BBT parser here, here is the
-> extract that _might_ be relevant:
-> [    3.372907] nand: ->exec_op() parser: pattern not found!
-
-Indeed this might be the problem, it means there is one scenario that
-should be handled by the parser that is missing. I am really
-interrogative about which one it is and to discover it, can you rebuild
-with
-
-        #define DEBUG
-
-in drivers/mtd/nand/nand_base.c too.
-
-This way the core will display the patterns it try to find a match for.
-
-Also to ease the understanding, you might add a dump_stack() right
-next to this error message.
-
-
-> [    3.378445] marvell-nfc pxa3xx-nand:=20
-> ... repeats many times ...
-> [    3.666571] Bad block table not found for chip 0
-> [    3.671368] Scanning device for bad blocks
-> [    3.675540] nand: nand_do_read_oob: from =3D 0x00000000, len =3D 64
-> [    3.681688] marvell-nfc pxa3xx-nand:=20
-> [    3.681688] NDCR:  0x9d079fff
-> [    3.681688] NDCB0: 0x000d3000
-> [    3.681688] NDCB1: 0x00000000
-> [    3.681688] NDCB2: 0x00000000
-> [    3.681688] NDCB3: 0x00000000
-> [    3.700570] Bad eraseblock 0 at 0x000000000000
->=20
-> My configuration is :
->  - make zylonite_defconfig
->  - apply patch in [1] for arch/arm/mach-pxa
->  - apply patch in [2] for drivers/mtd
->  - run the test (make zylonite_defconfig; make;
-> do_the_test_with_jenkins) That should give you all my setup
-> information, ie. platform_data, ECC and BBT settings (ie. the
-> "MBBbt0" pattern).
-
-This is probably a typo, because we expect the pattern to be "MVBbt0"?
-
->=20
-> Cheers.
->=20
-
-
-
-Thanks for the help,
-Miqu=C3=A8l
-
-
---=20
-Miquel Raynal, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+>> While ioremap's
+>> default function is ioremap_nocache, so devm_ioremap_nocache also have the
+>> same function with devm_ioremap, which can just be killed to reduce the size
+>> of devres.o(from 20304 bytes to 18992 bytes in my compile environment).
+>>
+>> I have posted two versions, which use macro instead of function for
+>> devm_ioremap_nocache[1] or devm_ioremap[2]. And Greg suggest me to kill
+>> devm_ioremap_nocache for no need to keep a macro around for the duplicate
+>> thing. So here comes v3 and please help to review.
+> 
+> I don't think this can be done, what am I missing?  These functions are
+> not identical, sorry for missing that before.
+> 
+> thanks,
+> 
+> greg k-h
+> 
