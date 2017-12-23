@@ -1,17 +1,40 @@
-Received: from mail.ispras.ru ([83.149.199.45])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eSpK7-0002DE-GF
- for linux-mtd@lists.infradead.org; Sat, 23 Dec 2017 19:19:09 +0000
-From: Alexey Khoroshilov <khoroshilov@ispras.ru>
-To: Stefan Agner <stefan@agner.ch>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Alexey Khoroshilov <khoroshilov@ispras.ru>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
-Subject: [PATCH v2] mtd: nand: vf610: fix error handling in vf610_nfc_probe()
-Date: Sat, 23 Dec 2017 22:18:26 +0300
-Message-Id: <1514056706-25136-1-git-send-email-khoroshilov@ispras.ru>
-In-Reply-To: <20171222225724.1e26bc38@bbrezillon>
+Received: from smtp08.smtpout.orange.fr ([80.12.242.130]
+ helo=smtp.smtpout.orange.fr)
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eSr7W-0007jx-Fp
+ for linux-mtd@lists.infradead.org; Sat, 23 Dec 2017 21:14:16 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Miquel Raynal <miquel.raynal@free-electrons.com>,  David Woodhouse
+ <dwmw2@infradead.org>,  Brian Norris <computersforpeace@gmail.com>,  Marek
+ Vasut <marek.vasut@gmail.com>,  Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,  Rob Herring
+ <robh+dt@kernel.org>,  Mark Rutland <mark.rutland@arm.com>,  Jason Cooper
+ <jason@lakedaemon.net>,  Andrew Lunn <andrew@lunn.ch>,  Gregory Clement
+ <gregory.clement@free-electrons.com>,  Sebastian Hesselbarth
+ <sebastian.hesselbarth@gmail.com>,  Russell King <linux@armlinux.org.uk>,
+ Daniel Mack <daniel@zonque.org>,  Haojian Zhuang
+ <haojian.zhuang@gmail.com>,  Eric Miao <eric.y.miao@gmail.com>,  Catalin
+ Marinas <catalin.marinas@arm.com>,  Will Deacon <will.deacon@arm.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ linux-mtd@lists.infradead.org,  devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,  Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>,  Antoine Tenart
+ <antoine.tenart@free-electrons.com>,  Nadav Haklai <nadavh@marvell.com>,
+ Ofer Heifetz <oferh@marvell.com>,  Hanna Hawa <hannah@marvell.com>,  Neta
+ Zur Hershkovits <neta@marvell.com>,  Willy Tarreau <w@1wt.eu>,  Sean
+ =?utf-8?Q?Nyekj=C3=A6r?= <sean.nyekjaer@prevas.dk>
+Subject: Re: [PATCH v2 3/5] mtd: nand: replace pxa3xx_nand driver by its
+ rework called marvell_nand
+References: <20171219132942.27433-1-miquel.raynal@free-electrons.com>
+ <20171219132942.27433-4-miquel.raynal@free-electrons.com>
+ <87608ycwx5.fsf@belgarion.home> <20171222230444.2c952ea0@bbrezillon>
+Date: Sat, 23 Dec 2017 22:13:48 +0100
+In-Reply-To: <20171222230444.2c952ea0@bbrezillon> (Boris Brezillon's message
+ of "Fri, 22 Dec 2017 23:04:44 +0100")
+Message-ID: <87bmipb10z.fsf@belgarion.home>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,103 +44,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-vf610_nfc_probe() misses error handling of mtd_device_register().
+Boris Brezillon <boris.brezillon@free-electrons.com> writes:
 
-Found by Linux Driver Verification project (linuxtesting.org).
+>> What I would propose instead is :
+>>  - keep both the new marvell nand driver and the old pxa3xx_nand driver
+>>  - switch pxa_defconfig to compile them both
+>
+> Didn't notice you were suggesting to compile both, which doesn't work
+> because both drivers match the same devices, and only one of them
+> can actually claim the device (likely the first one to register to the
+> device model). So, to make it safe you need to have a
+>
+> 	depends on !MTD_NAND_PXA3xx
+>
+> in your MTD_NAND_MARVELL entry, which means only one driver can be
+> compiled.
+Mmm... that is I didn't explain to you what pxa_defconfig is designed for.
+This defconfig is not for any board actually, it rather is a build coverage
+tool.
 
-Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
----
-v2: Add nand_cleanup() to undone nand_scan_tail() as Boris Brezillon noted.
+> So let's find a way to fix the remaining issues you have instead of delaying
+> the inevitable.
+It's up to you of course, as long as my boards don't break, and nothing breaking
+them is merged, I'm fine with it. It's just not the approach I usually choose,
+I'm rather a 2-step guy, ie. merge the new one, then merge the switch (which can
+be reverted easilly).
 
- drivers/mtd/nand/vf610_nfc.c | 25 +++++++++++++++----------
- 1 file changed, 15 insertions(+), 10 deletions(-)
+Cheers.
 
-diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
-index 8037d4b48a05..2dac25a8ccbf 100644
---- a/drivers/mtd/nand/vf610_nfc.c
-+++ b/drivers/mtd/nand/vf610_nfc.c
-@@ -682,7 +682,7 @@ static int vf610_nfc_probe(struct platform_device *pdev)
- 				dev_err(nfc->dev,
- 					"Only one NAND chip supported!\n");
- 				err = -EINVAL;
--				goto error;
-+				goto err_node;
- 			}
- 
- 			nand_set_flash_node(chip, child);
-@@ -712,7 +712,7 @@ static int vf610_nfc_probe(struct platform_device *pdev)
- 	err = devm_request_irq(nfc->dev, irq, vf610_nfc_irq, 0, DRV_NAME, mtd);
- 	if (err) {
- 		dev_err(nfc->dev, "Error requesting IRQ!\n");
--		goto error;
-+		goto err_node;
- 	}
- 
- 	vf610_nfc_preinit_controller(nfc);
-@@ -720,7 +720,7 @@ static int vf610_nfc_probe(struct platform_device *pdev)
- 	/* first scan to find the device and get the page size */
- 	err = nand_scan_ident(mtd, 1, NULL);
- 	if (err)
--		goto error;
-+		goto err_node;
- 
- 	vf610_nfc_init_controller(nfc);
- 
-@@ -732,20 +732,20 @@ static int vf610_nfc_probe(struct platform_device *pdev)
- 	if (mtd->writesize + mtd->oobsize > PAGE_2K + OOB_MAX - 8) {
- 		dev_err(nfc->dev, "Unsupported flash page size\n");
- 		err = -ENXIO;
--		goto error;
-+		goto err_node;
- 	}
- 
- 	if (chip->ecc.mode == NAND_ECC_HW) {
- 		if (mtd->writesize != PAGE_2K && mtd->oobsize < 64) {
- 			dev_err(nfc->dev, "Unsupported flash with hwecc\n");
- 			err = -ENXIO;
--			goto error;
-+			goto err_node;
- 		}
- 
- 		if (chip->ecc.size != mtd->writesize) {
- 			dev_err(nfc->dev, "Step size needs to be page size\n");
- 			err = -ENXIO;
--			goto error;
-+			goto err_node;
- 		}
- 
- 		/* Only 64 byte ECC layouts known */
-@@ -765,7 +765,7 @@ static int vf610_nfc_probe(struct platform_device *pdev)
- 		} else {
- 			dev_err(nfc->dev, "Unsupported ECC strength\n");
- 			err = -ENXIO;
--			goto error;
-+			goto err_node;
- 		}
- 
- 		chip->ecc.read_page = vf610_nfc_read_page;
-@@ -777,14 +777,19 @@ static int vf610_nfc_probe(struct platform_device *pdev)
- 	/* second phase scan */
- 	err = nand_scan_tail(mtd);
- 	if (err)
--		goto error;
-+		goto err_node;
- 
- 	platform_set_drvdata(pdev, mtd);
- 
- 	/* Register device in MTD */
--	return mtd_device_register(mtd, NULL, 0);
-+	err = mtd_device_register(mtd, NULL, 0);
-+	if (err)
-+		goto err_nand;
-+	return 0;
- 
--error:
-+err_nand:
-+	nand_cleanup(chip);
-+err_node:
- 	of_node_put(nand_get_flash_node(chip));
- err_clk:
- 	clk_disable_unprepare(nfc->clk);
 -- 
-2.7.4
+Robert
