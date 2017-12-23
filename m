@@ -1,24 +1,40 @@
-Received: from h2.hallyn.com ([78.46.35.8])
+Received: from szxga04-in.huawei.com ([45.249.212.190] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eSa7s-0007ag-2a
- for linux-mtd@lists.infradead.org; Sat, 23 Dec 2017 03:05:31 +0000
-Date: Fri, 22 Dec 2017 21:05:16 -0600
-From: "Serge E. Hallyn" <serge@hallyn.com>
-To: Dongsu Park <dongsu@kinvolk.io>
-Cc: linux-kernel@vger.kernel.org, Miklos Szeredi <mszeredi@redhat.com>,
- containers@lists.linux-foundation.org,
- Seth Forshee <seth.forshee@canonical.com>, Alban Crequy <alban@kinvolk.io>,
- "Eric W . Biederman" <ebiederm@xmission.com>,
- Sargun Dhillon <sargun@sargun.me>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 02/11] mtd: Check permissions towards mtd block device
- inode when mounting
-Message-ID: <20171223030516.GB6837@mail.hallyn.com>
-References: <cover.1512741134.git.dongsu@kinvolk.io>
- <945d325a2239efcd55273abb2bac41cfc7264fea.1512041070.git.dongsu@kinvolk.io>
+ id 1eShbr-0000vF-0p
+ for linux-mtd@lists.infradead.org; Sat, 23 Dec 2017 11:04:57 +0000
+From: Yisheng Xie <xieyisheng1@huawei.com>
+To: <linux-kernel@vger.kernel.org>, <gregkh@linuxfoundation.org>
+CC: <ysxie@foxmail.com>, <ulf.hansson@linaro.org>,
+ <linux-mmc@vger.kernel.org>, <boris.brezillon@free-electrons.com>,
+ <richard@nod.at>, <marek.vasut@gmail.com>, <cyrille.pitchen@wedev4u.fr>,
+ <linux-mtd@lists.infradead.org>, <alsa-devel@alsa-project.org>,
+ <wim@iguana.be>, <linux@roeck-us.net>, <linux-watchdog@vger.kernel.org>,
+ <b.zolnierkie@samsung.com>, <linux-fbdev@vger.kernel.org>,
+ <linus.walleij@linaro.org>, <linux-gpio@vger.kernel.org>,
+ <ralf@linux-mips.org>, <linux-mips@linux-mips.org>, <lgirdwood@gmail.com>,
+ <broonie@kernel.org>, <tglx@linutronix.de>, <jason@lakedaemon.net>,
+ <marc.zyngier@arm.com>, <arnd@arndb.de>, <andriy.shevchenko@linux.intel.com>,
+ <industrypack-devel@lists.sourceforge.net>, <wg@grandegger.com>,
+ <mkl@pengutronix.de>, <linux-can@vger.kernel.org>, <mchehab@kernel.org>,
+ <linux-media@vger.kernel.org>, <a.zummo@towertech.it>,
+ <alexandre.belloni@free-electrons.com>, <linux-rtc@vger.kernel.org>,
+ <daniel.vetter@intel.com>, <jani.nikula@linux.intel.com>,
+ <seanpaul@chromium.org>, <airlied@linux.ie>,
+ <dri-devel@lists.freedesktop.org>, <kvalo@codeaurora.org>,
+ <linux-wireless@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+ <tj@kernel.org>, <linux-ide@vger.kernel.org>, <bhelgaas@google.com>,
+ <linux-pci@vger.kernel.org>, <devel@driverdev.osuosl.org>,
+ <dvhart@infradead.org>, <andy@infradead.org>,
+ <platform-driver-x86@vger.kernel.org>, <jakub.kicinski@netronome.com>,
+ <davem@davemloft.net>, <nios2-dev@lists.rocketboards.org>,
+ <netdev@vger.kernel.org>, <vinod.koul@intel.com>, <dan.j.williams@intel.com>,
+ <dmaengine@vger.kernel.org>, <jslaby@suse.com>, Yisheng Xie
+ <xieyisheng1@huawei.com>
+Subject: [PATCH v3 00/27] kill devm_ioremap_nocache
+Date: Sat, 23 Dec 2017 18:55:25 +0800
+Message-ID: <1514026525-32538-1-git-send-email-xieyisheng1@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <945d325a2239efcd55273abb2bac41cfc7264fea.1512041070.git.dongsu@kinvolk.io>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,57 +44,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 22, 2017 at 03:32:26PM +0100, Dongsu Park wrote:
-> From: Seth Forshee <seth.forshee@canonical.com>
-> 
-> Unprivileged users should not be able to mount mtd block devices
-> when they lack sufficient privileges towards the block device
-> inode.  Update mount_mtd() to validate that the user has the
-> required access to the inode at the specified path. The check
-> will be skipped for CAP_SYS_ADMIN, so privileged mounts will
-> continue working as before.
-> 
-> Patch v3 is available: https://patchwork.kernel.org/patch/7640011/
-> 
-> Cc: linux-mtd@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
-> Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
+Hi all,
 
-Acked-by: Serge Hallyn <serge@hallyn.com>
+When I tried to use devm_ioremap function and review related code, I found
+devm_ioremap and devm_ioremap_nocache is almost the same with each other,
+except one use ioremap while the other use ioremap_nocache. While ioremap's
+default function is ioremap_nocache, so devm_ioremap_nocache also have the
+same function with devm_ioremap, which can just be killed to reduce the size
+of devres.o(from 20304 bytes to 18992 bytes in my compile environment).
 
-> ---
->  drivers/mtd/mtdsuper.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/mtdsuper.c b/drivers/mtd/mtdsuper.c
-> index 4a4d40c0..3c8734f3 100644
-> --- a/drivers/mtd/mtdsuper.c
-> +++ b/drivers/mtd/mtdsuper.c
-> @@ -129,6 +129,7 @@ struct dentry *mount_mtd(struct file_system_type *fs_type, int flags,
->  #ifdef CONFIG_BLOCK
->  	struct block_device *bdev;
->  	int ret, major;
-> +	int perm;
->  #endif
->  	int mtdnr;
->  
-> @@ -180,7 +181,10 @@ struct dentry *mount_mtd(struct file_system_type *fs_type, int flags,
->  	/* try the old way - the hack where we allowed users to mount
->  	 * /dev/mtdblock$(n) but didn't actually _use_ the blockdev
->  	 */
-> -	bdev = lookup_bdev(dev_name, 0);
-> +	perm = MAY_READ;
-> +	if (!(flags & MS_RDONLY))
-> +		perm |= MAY_WRITE;
-> +	bdev = lookup_bdev(dev_name, perm);
->  	if (IS_ERR(bdev)) {
->  		ret = PTR_ERR(bdev);
->  		pr_debug("MTDSB: lookup_bdev() returned %d\n", ret);
-> -- 
-> 2.13.6
-> 
-> _______________________________________________
-> Containers mailing list
-> Containers@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/containers
+I have posted two versions, which use macro instead of function for
+devm_ioremap_nocache[1] or devm_ioremap[2]. And Greg suggest me to kill
+devm_ioremap_nocache for no need to keep a macro around for the duplicate
+thing. So here comes v3 and please help to review.
+
+Thanks so much!
+Yisheng Xie
+
+[1] https://lkml.org/lkml/2017/11/20/135
+[2] https://lkml.org/lkml/2017/11/25/21
+
+Yisheng Xie (27):
+  ASOC: replace devm_ioremap_nocache with devm_ioremap
+  spi: replace devm_ioremap_nocache with devm_ioremap
+  staging: replace devm_ioremap_nocache with devm_ioremap
+  ipack: replace devm_ioremap_nocache with devm_ioremap
+  media: replace devm_ioremap_nocache with devm_ioremap
+  gpio: replace devm_ioremap_nocache with devm_ioremap
+  mmc: replace devm_ioremap_nocache with devm_ioremap
+  PCI: replace devm_ioremap_nocache with devm_ioremap
+  platform/x86: replace devm_ioremap_nocache with devm_ioremap
+  tty: replace devm_ioremap_nocache with devm_ioremap
+  video: replace devm_ioremap_nocache with devm_ioremap
+  rtc: replace devm_ioremap_nocache with devm_ioremap
+  char: replace devm_ioremap_nocache with devm_ioremap
+  mtd: nand: replace devm_ioremap_nocache with devm_ioremap
+  dmaengine: replace devm_ioremap_nocache with devm_ioremap
+  ata: replace devm_ioremap_nocache with devm_ioremap
+  irqchip: replace devm_ioremap_nocache with devm_ioremap
+  pinctrl: replace devm_ioremap_nocache with devm_ioremap
+  drm: replace devm_ioremap_nocache with devm_ioremap
+  regulator: replace devm_ioremap_nocache with devm_ioremap
+  watchdog: replace devm_ioremap_nocache with devm_ioremap
+  tools/testing/nvdimm: replace devm_ioremap_nocache with devm_ioremap
+  MIPS: pci: replace devm_ioremap_nocache with devm_ioremap
+  can: replace devm_ioremap_nocache with devm_ioremap
+  wireless: replace devm_ioremap_nocache with devm_ioremap
+  ethernet: replace devm_ioremap_nocache with devm_ioremap
+  devres: kill devm_ioremap_nocache
+
+ Documentation/driver-model/devres.txt           |  1 -
+ arch/mips/pci/pci-ar2315.c                      |  3 +--
+ drivers/ata/pata_arasan_cf.c                    |  3 +--
+ drivers/ata/pata_octeon_cf.c                    |  9 ++++----
+ drivers/ata/pata_rb532_cf.c                     |  2 +-
+ drivers/char/hw_random/bcm63xx-rng.c            |  3 +--
+ drivers/char/hw_random/octeon-rng.c             | 10 ++++-----
+ drivers/dma/altera-msgdma.c                     |  3 +--
+ drivers/dma/sprd-dma.c                          |  4 ++--
+ drivers/gpio/gpio-ath79.c                       |  3 +--
+ drivers/gpio/gpio-em.c                          |  6 ++---
+ drivers/gpio/gpio-htc-egpio.c                   |  4 ++--
+ drivers/gpio/gpio-xgene.c                       |  3 +--
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c |  2 +-
+ drivers/gpu/drm/msm/msm_drv.c                   |  2 +-
+ drivers/gpu/drm/sti/sti_dvo.c                   |  3 +--
+ drivers/gpu/drm/sti/sti_hda.c                   |  4 ++--
+ drivers/gpu/drm/sti/sti_hdmi.c                  |  2 +-
+ drivers/gpu/drm/sti/sti_tvout.c                 |  2 +-
+ drivers/gpu/drm/sti/sti_vtg.c                   |  2 +-
+ drivers/ipack/devices/ipoctal.c                 | 13 +++++------
+ drivers/irqchip/irq-renesas-intc-irqpin.c       |  4 ++--
+ drivers/media/platform/tegra-cec/tegra_cec.c    |  4 ++--
+ drivers/mmc/host/sdhci-acpi.c                   |  3 +--
+ drivers/mtd/nand/fsl_upm.c                      |  4 ++--
+ drivers/net/can/sja1000/sja1000_platform.c      |  4 ++--
+ drivers/net/ethernet/altera/altera_tse_main.c   |  3 +--
+ drivers/net/ethernet/ethoc.c                    |  8 +++----
+ drivers/net/ethernet/lantiq_etop.c              |  4 ++--
+ drivers/net/ethernet/ti/netcp_core.c            |  2 +-
+ drivers/net/wireless/ath/ath9k/ahb.c            |  2 +-
+ drivers/pci/dwc/pci-dra7xx.c                    |  2 +-
+ drivers/pinctrl/bcm/pinctrl-ns2-mux.c           |  2 +-
+ drivers/pinctrl/bcm/pinctrl-nsp-mux.c           |  4 ++--
+ drivers/pinctrl/freescale/pinctrl-imx1-core.c   |  2 +-
+ drivers/pinctrl/pinctrl-amd.c                   |  4 ++--
+ drivers/platform/x86/intel_pmc_core.c           |  5 ++---
+ drivers/regulator/ti-abb-regulator.c            |  6 ++---
+ drivers/rtc/rtc-sh.c                            |  4 ++--
+ drivers/spi/spi-jcore.c                         |  3 +--
+ drivers/staging/fsl-mc/bus/mc-io.c              |  8 +++----
+ drivers/tty/mips_ejtag_fdc.c                    |  4 ++--
+ drivers/tty/serial/8250/8250_omap.c             |  3 +--
+ drivers/tty/serial/lantiq.c                     |  3 +--
+ drivers/tty/serial/meson_uart.c                 |  3 +--
+ drivers/tty/serial/owl-uart.c                   |  2 +-
+ drivers/tty/serial/pic32_uart.c                 |  4 ++--
+ drivers/video/fbdev/mbx/mbxfb.c                 |  9 ++++----
+ drivers/video/fbdev/mmp/hw/mmp_ctrl.c           |  2 +-
+ drivers/video/fbdev/pxa168fb.c                  |  4 ++--
+ drivers/watchdog/bcm63xx_wdt.c                  |  4 ++--
+ drivers/watchdog/rc32434_wdt.c                  |  4 ++--
+ include/linux/io.h                              |  2 --
+ lib/devres.c                                    | 29 -------------------------
+ scripts/coccinelle/free/devm_free.cocci         |  2 --
+ sound/soc/au1x/ac97c.c                          |  4 ++--
+ sound/soc/au1x/i2sc.c                           |  4 ++--
+ sound/soc/intel/atom/sst/sst_acpi.c             | 20 ++++++++---------
+ sound/soc/intel/boards/mfld_machine.c           |  4 ++--
+ sound/soc/sh/fsi.c                              |  4 ++--
+ tools/testing/nvdimm/Kbuild                     |  2 +-
+ tools/testing/nvdimm/test/iomap.c               |  2 +-
+ 62 files changed, 109 insertions(+), 168 deletions(-)
+
+-- 
+1.8.3.1
