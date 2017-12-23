@@ -1,37 +1,29 @@
-Date: Fri, 22 Dec 2017 23:50:37 +0100
-From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Jason Cooper <jason@lakedaemon.net>,
- Andrew Lunn <andrew@lunn.ch>, Gregory Clement
- <gregory.clement@free-electrons.com>, Sebastian Hesselbarth
- <sebastian.hesselbarth@gmail.com>, Russell King <linux@armlinux.org.uk>,
- Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Eric Miao <eric.y.miao@gmail.com>, Catalin Marinas
- <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Ezequiel
- Garcia <ezequiel.garcia@free-electrons.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Thomas
- Petazzoni <thomas.petazzoni@free-electrons.com>, Antoine Tenart
- <antoine.tenart@free-electrons.com>, Nadav Haklai <nadavh@marvell.com>,
- Ofer Heifetz <oferh@marvell.com>, Hanna Hawa <hannah@marvell.com>, Neta Zur
- Hershkovits <neta@marvell.com>
-Subject: Re: [PATCH 00/12] Marvell NAND controller rework with ->exec_op()
-Message-ID: <20171222235037.7b9e2051@xps13>
-In-Reply-To: <20171222233730.68d9cb9d@xps13>
-References: <20171207201814.30411-1-miquel.raynal@free-electrons.com>
- <20171214070930.0b885f6d@bbrezillon>
- <877etkecig.fsf@belgarion.home> <20171218092535.2ca1fe13@xps13>
- <87y3lxccr7.fsf@belgarion.home>
- <20171220224121.2cb6f690@bbrezillon>
- <87lghucykr.fsf@belgarion.home>
- <20171222222441.0fd77df9@bbrezillon>
- <20171222233730.68d9cb9d@xps13>
+Received: from h2.hallyn.com ([78.46.35.8])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eSa5x-00060w-Jl
+ for linux-mtd@lists.infradead.org; Sat, 23 Dec 2017 03:03:32 +0000
+Date: Fri, 22 Dec 2017 21:03:11 -0600
+From: "Serge E. Hallyn" <serge@hallyn.com>
+To: Dongsu Park <dongsu@kinvolk.io>
+Cc: linux-kernel@vger.kernel.org, containers@lists.linux-foundation.org,
+ Alban Crequy <alban@kinvolk.io>,
+ "Eric W . Biederman" <ebiederm@xmission.com>,
+ Miklos Szeredi <mszeredi@redhat.com>,
+ Seth Forshee <seth.forshee@canonical.com>,
+ Sargun Dhillon <sargun@sargun.me>, dm-devel@redhat.com,
+ linux-bcache@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mtd@lists.infradead.org,
+ Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.com>,
+ Serge Hallyn <serge@hallyn.com>
+Subject: Re: [PATCH 01/11] block_dev: Support checking inode permissions in
+ lookup_bdev()
+Message-ID: <20171223030311.GA6837@mail.hallyn.com>
+References: <cover.1512741134.git.dongsu@kinvolk.io>
+ <ef5e609602df6d7e2b4aa07b92600f04b6851902.1512041070.git.dongsu@kinvolk.io>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ef5e609602df6d7e2b4aa07b92600f04b6851902.1512041070.git.dongsu@kinvolk.io>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,130 +33,155 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 22 Dec 2017 23:37:30 +0100
-Miquel RAYNAL <miquel.raynal@free-electrons.com> wrote:
+On Fri, Dec 22, 2017 at 03:32:25PM +0100, Dongsu Park wrote:
+> From: Seth Forshee <seth.forshee@canonical.com>
+> 
+> When looking up a block device by path no permission check is
+> done to verify that the user has access to the block device inode
+> at the specified path. In some cases it may be necessary to
+> check permissions towards the inode, such as allowing
+> unprivileged users to mount block devices in user namespaces.
+> 
+> Add an argument to lookup_bdev() to optionally perform this
+> permission check. A value of 0 skips the permission check and
+> behaves the same as before. A non-zero value specifies the mask
+> of access rights required towards the inode at the specified
+> path. The check is always skipped if the user has CAP_SYS_ADMIN.
+> 
+> All callers of lookup_bdev() currently pass a mask of 0, so this
+> patch results in no functional change. Subsequent patches will
+> add permission checks where appropriate.
+> 
+> Patch v4 is available: https://patchwork.kernel.org/patch/8943601/
+> 
+> Cc: dm-devel@redhat.com
+> Cc: linux-bcache@vger.kernel.org
+> Cc: linux-fsdevel@vger.kernel.org
+> Cc: linux-mtd@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> Cc: Jan Kara <jack@suse.com>
+> Cc: Serge Hallyn <serge@hallyn.com>
 
-> Hi Robert,
->=20
-> On Fri, 22 Dec 2017 22:24:41 +0100
-> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
->=20
-> > Hi Robert,
-> >=20
-> > On Fri, 22 Dec 2017 21:11:32 +0100
-> > Robert Jarzmik <robert.jarzmik@free.fr> wrote:
-> >=20
-> > > Boris Brezillon <boris.brezillon@free-electrons.com> writes:
-> > >  =20
-> > > > Looks like there is a mismatch on the nand bus width detected by
-> > > > the core and the one declared by the driver. Can you try with
-> > > > the following diff applied?   =20
-> > >=20
-> > > Sure.
-> > >=20
-> > > Now I get a lot of these message which I didn't have before :
-> > > [   26.897372] ubi0 warning: ubi_io_read: error -74 (ECC error)
-> > > while reading 126976 bytes from PEB 242:4096, read only 126976
-> > > bytes, retry [   26.928559] ubi0 warning: ubi_io_read: error -74
-> > > (ECC error) while reading 126976 bytes from PEB 242:4096, read
-> > > only 126976 bytes, retry [   26.959623] ubi0 warning:
-> > > ubi_io_read: error -74 (ECC error) while reading 126976 bytes
-> > > from PEB 242:4096, read only 126976 bytes, retry [   26.990714]
-> > > ubi0 error: ubi_io_read: error -74 (ECC error) while reading
-> > > 126976 bytes from PEB 242:4096, read 126976 bytes [   27.002084]
-> > > CPU: 0 PID: 1 Comm: swapper Not tainted 4.15.0-rc1-00041-ge371e97
-> > > #737 [   27.009674] Hardware name: PXA3xx Platform Development
-> > > Kit (aka Zylonite) [   27.016750] [<c0010440>] (unwind_backtrace)
-> > > from [<c000df94>] (show_stack+0x10/0x14) [   27.024729]
-> > > [<c000df94>] (show_stack) from [<c02c5bd4>]
-> > > (ubi_io_read+0x124/0x368) [   27.032453] [<c02c5bd4>]
-> > > (ubi_io_read) from [<c02cd550>] (ubi_attach+0xbd8/0x1868)
-> > > [   27.040148] [<c02cd550>] (ubi_attach) from [<c02be7c4>]
-> > > (ubi_attach_mtd_dev+0x548/0xe58) [   27.048473] [<c02be7c4>]
-> > > (ubi_attach_mtd_dev) from [<c05526e4>] (ubi_init+0x134/0x1d4)
-> > > [   27.056623] [<c05526e4>] (ubi_init) from [<c00099f8>]
-> > > (do_one_initcall+0x3c/0x17c) [   27.064466] [<c00099f8>]
-> > > (do_one_initcall) from [<c053fd80>]
-> > > (kernel_init_freeable+0x104/0x1c0) [   27.073398] [<c053fd80>]
-> > > (kernel_init_freeable) from [<c0423ab8>] (kernel_init+0x8/0xf8)
-> > > [   27.081715] [<c0423ab8>] (kernel_init) from [<c000a780>]
-> > > (ret_from_fork+0x14/0x34) [   27.090115] ubi0 warning:
-> > > ubi_io_read: error -74 (ECC error) while reading 64 bytes from
-> > > PEB 243:2048, read only 64 bytes, retry [   27.102363] ubi0
-> > > warning: ubi_io_read: error -74 (ECC error) while reading 64
-> > > bytes from PEB 243:2048, read only 64 bytes, retry [   27.114586]
-> > > ubi0 warning: ubi_io_read: error -74 (ECC error) while reading 64
-> > > bytes from PEB 243:2048, read only 64 bytes, retry [   27.126813]
-> > > ubi0 error: ubi_io_read: error -74 (ECC error) while reading 64
-> > > bytes from PEB 243:2048, read 64 bytes [   27.137416] CPU: 0 PID:
-> > > 1 Comm: swapper Not tainted 4.15.0-rc1-00041-ge371e97 #737
-> > > [   27.145143] Hardware name: PXA3xx Platform Development Kit
-> > > (aka Zylonite) [   27.152207] [<c0010440>] (unwind_backtrace)
-> > > from [<c000df94>] (show_stack+0x10/0x14) [   27.160037]
-> > > [<c000df94>] (show_stack) from [<c02c5bd4>]
-> > > (ubi_io_read+0x124/0x368) [   27.167742] [<c02c5bd4>]
-> > > (ubi_io_read) from [<c02c63dc>] (ubi_io_read_vid_hdr+0x60/0x3ac)
-> > > [   27.176156] [<c02c63dc>] (ubi_io_read_vid_hdr) from
-> > > [<c02cce58>] (ubi_attach+0x4e0/0x1868) [   27.184675]
-> > > [<c02cce58>] (ubi_attach) from [<c02be7c4>]
-> > > (ubi_attach_mtd_dev+0x548/0xe58) [   27.193010] [<c02be7c4>]
-> > > (ubi_attach_mtd_dev) from [<c05526e4>] (ubi_init+0x134/0x1d4)
-> > > [   27.201159] [<c05526e4>] (ubi_init) from [<c00099f8>]
-> > > (do_one_initcall+0x3c/0x17c) [   27.208839] [<c00099f8>]
-> > > (do_one_initcall) from [<c053fd80>]
-> > > (kernel_init_freeable+0x104/0x1c0) [   27.217755] [<c053fd80>]
-> > > (kernel_init_freeable) from [<c0423ab8>] (kernel_init+0x8/0xf8)
-> > > [   27.226074] [<c0423ab8>] (kernel_init) from [<c000a780>]
-> > > (ret_from_fork+0x14/0x34) =20
-> >=20
-> > Looks like a mismatch in the ECC config. Can you check the ecc
-> > strength/step_size in both situation (old driver vs new driver)?
->=20
-> For that, you might want to add traces in marvell_nand_ecc_init() and
-> marvell_nand_hw_ecc_ctrl_init().
->=20
-> > Could you also dump the NDCR register in both cases?
->=20
-> NDCR register (as well as NDCBx registers) will appear if you let
->=20
->     #define DEBUG
->=20
-> at the beginning of the driver.
->=20
-> Also, can you please give us the entire dmesg (I mean the boot, not
-> the flow of UBIFS errors of course).
->=20
-> If this, in conjunction with your check of the ECC configuration, does
-> not give satisfying results, I will write a test script using
-> nandwrite/nanddump/flash_erase.
+Acked-by: Serge Hallyn <serge@hallyn.com>
 
-Something else:
-Do you use platform data or device tree? Can you show where the board
-information are?
-
-I guess you tried to compile from the top of the branch, could you try
-right after the addition of marvell_nand.c, bypassing the pdata/DT
-changes.
-
-Thanks,
-Miqu=C3=A8l
-
->=20
-> Thank you,
-> Miqu=C3=A8l
->=20
->=20
-> >=20
-> > Thanks,
-> >=20
-> > Boris
->=20
->=20
->=20
-
-
-
---=20
-Miquel Raynal, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+> Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+> Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
+> ---
+>  drivers/md/bcache/super.c |  2 +-
+>  drivers/md/dm-table.c     |  2 +-
+>  drivers/mtd/mtdsuper.c    |  2 +-
+>  fs/block_dev.c            | 13 ++++++++++---
+>  fs/quota/quota.c          |  2 +-
+>  include/linux/fs.h        |  2 +-
+>  6 files changed, 15 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+> index b4d28928..acc9d56c 100644
+> --- a/drivers/md/bcache/super.c
+> +++ b/drivers/md/bcache/super.c
+> @@ -1967,7 +1967,7 @@ static ssize_t register_bcache(struct kobject *k, struct kobj_attribute *attr,
+>  				  sb);
+>  	if (IS_ERR(bdev)) {
+>  		if (bdev == ERR_PTR(-EBUSY)) {
+> -			bdev = lookup_bdev(strim(path));
+> +			bdev = lookup_bdev(strim(path), 0);
+>  			mutex_lock(&bch_register_lock);
+>  			if (!IS_ERR(bdev) && bch_is_open(bdev))
+>  				err = "device already registered";
+> diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
+> index 88130b5d..bca5eaf4 100644
+> --- a/drivers/md/dm-table.c
+> +++ b/drivers/md/dm-table.c
+> @@ -410,7 +410,7 @@ dev_t dm_get_dev_t(const char *path)
+>  	dev_t dev;
+>  	struct block_device *bdev;
+>  
+> -	bdev = lookup_bdev(path);
+> +	bdev = lookup_bdev(path, 0);
+>  	if (IS_ERR(bdev))
+>  		dev = name_to_dev_t(path);
+>  	else {
+> diff --git a/drivers/mtd/mtdsuper.c b/drivers/mtd/mtdsuper.c
+> index e43fea89..4a4d40c0 100644
+> --- a/drivers/mtd/mtdsuper.c
+> +++ b/drivers/mtd/mtdsuper.c
+> @@ -180,7 +180,7 @@ struct dentry *mount_mtd(struct file_system_type *fs_type, int flags,
+>  	/* try the old way - the hack where we allowed users to mount
+>  	 * /dev/mtdblock$(n) but didn't actually _use_ the blockdev
+>  	 */
+> -	bdev = lookup_bdev(dev_name);
+> +	bdev = lookup_bdev(dev_name, 0);
+>  	if (IS_ERR(bdev)) {
+>  		ret = PTR_ERR(bdev);
+>  		pr_debug("MTDSB: lookup_bdev() returned %d\n", ret);
+> diff --git a/fs/block_dev.c b/fs/block_dev.c
+> index 4a181fcb..5ca06095 100644
+> --- a/fs/block_dev.c
+> +++ b/fs/block_dev.c
+> @@ -1662,7 +1662,7 @@ struct block_device *blkdev_get_by_path(const char *path, fmode_t mode,
+>  	struct block_device *bdev;
+>  	int err;
+>  
+> -	bdev = lookup_bdev(path);
+> +	bdev = lookup_bdev(path, 0);
+>  	if (IS_ERR(bdev))
+>  		return bdev;
+>  
+> @@ -2052,12 +2052,14 @@ EXPORT_SYMBOL(ioctl_by_bdev);
+>  /**
+>   * lookup_bdev  - lookup a struct block_device by name
+>   * @pathname:	special file representing the block device
+> + * @mask:	rights to check for (%MAY_READ, %MAY_WRITE, %MAY_EXEC)
+>   *
+>   * Get a reference to the blockdevice at @pathname in the current
+>   * namespace if possible and return it.  Return ERR_PTR(error)
+> - * otherwise.
+> + * otherwise.  If @mask is non-zero, check for access rights to the
+> + * inode at @pathname.
+>   */
+> -struct block_device *lookup_bdev(const char *pathname)
+> +struct block_device *lookup_bdev(const char *pathname, int mask)
+>  {
+>  	struct block_device *bdev;
+>  	struct inode *inode;
+> @@ -2072,6 +2074,11 @@ struct block_device *lookup_bdev(const char *pathname)
+>  		return ERR_PTR(error);
+>  
+>  	inode = d_backing_inode(path.dentry);
+> +	if (mask != 0 && !capable(CAP_SYS_ADMIN)) {
+> +		error = __inode_permission(inode, mask);
+> +		if (error)
+> +			goto fail;
+> +	}
+>  	error = -ENOTBLK;
+>  	if (!S_ISBLK(inode->i_mode))
+>  		goto fail;
+> diff --git a/fs/quota/quota.c b/fs/quota/quota.c
+> index 43612e2a..e5d47955 100644
+> --- a/fs/quota/quota.c
+> +++ b/fs/quota/quota.c
+> @@ -807,7 +807,7 @@ static struct super_block *quotactl_block(const char __user *special, int cmd)
+>  
+>  	if (IS_ERR(tmp))
+>  		return ERR_CAST(tmp);
+> -	bdev = lookup_bdev(tmp->name);
+> +	bdev = lookup_bdev(tmp->name, 0);
+>  	putname(tmp);
+>  	if (IS_ERR(bdev))
+>  		return ERR_CAST(bdev);
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 2995a271..fce19c49 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -2551,7 +2551,7 @@ static inline void unregister_chrdev(unsigned int major, const char *name)
+>  #define BLKDEV_MAJOR_MAX	512
+>  extern const char *__bdevname(dev_t, char *buffer);
+>  extern const char *bdevname(struct block_device *bdev, char *buffer);
+> -extern struct block_device *lookup_bdev(const char *);
+> +extern struct block_device *lookup_bdev(const char *, int mask);
+>  extern void blkdev_show(struct seq_file *,off_t);
+>  
+>  #else
+> -- 
+> 2.13.6
