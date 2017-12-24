@@ -1,25 +1,22 @@
-Date: Sat, 23 Dec 2017 23:42:21 +0100
-From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Ezequiel
- Garcia <ezequiel.garcia@free-electrons.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 00/12] Marvell NAND controller rework with ->exec_op()
-Message-ID: <20171223234221.55df01d8@xps13>
-In-Reply-To: <87fu81bc45.fsf@belgarion.home>
-References: <20171207201814.30411-1-miquel.raynal@free-electrons.com>
- <20171214070930.0b885f6d@bbrezillon>
- <877etkecig.fsf@belgarion.home> <20171218092535.2ca1fe13@xps13>
- <87y3lxccr7.fsf@belgarion.home>
- <20171220224121.2cb6f690@bbrezillon>
- <87lghucykr.fsf@belgarion.home>
- <20171222222441.0fd77df9@bbrezillon>
- <20171222233730.68d9cb9d@xps13> <87k1xdblxf.fsf@belgarion.home>
- <20171223155709.2ba16e95@xps13> <87fu81bc45.fsf@belgarion.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from 1.mo69.mail-out.ovh.net ([178.33.251.173])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eSy1v-0002KS-7C
+ for linux-mtd@lists.infradead.org; Sun, 24 Dec 2017 04:36:57 +0000
+Received: from player699.ha.ovh.net (gw6.ovh.net [213.251.189.206])
+ by mo69.mail-out.ovh.net (Postfix) with ESMTP id 7241C4C799
+ for <linux-mtd@lists.infradead.org>; Sun, 24 Dec 2017 05:36:26 +0100 (CET)
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+To: computersforpeace@gmail.com, dwmw2@infradead.org, richard@nod.at,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, broonie@kernel.org, vigneshr@ti.com,
+ linux@armlinux.org.uk
+Cc: linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, robh@kernel.org,
+ devicetree@vger.kernel.org, nicolas.ferre@microchip.com,
+ radu.pirea@microchip.com, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Subject: [PATCH 0/3] mtd: spi-nor: fix DMA-unsafe buffer issue between MTD and
+ SPI
+Date: Sun, 24 Dec 2017 05:36:03 +0100
+Message-Id: <cover.1514087323.git.cyrille.pitchen@wedev4u.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,18 +26,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Robert,
+Hi all,
 
-> > Also to ease the understanding, you might add a dump_stack() right
-> > next to this error message. =20
-> Attached in [1].
+this series tries to solve a long time issue of compatibility between the
+MTD and SPI sub-systems about whether we should use DMA-safe memory.
 
-Ok, I think I have identified the issue, and I probably can reproduce
-it with the board I have. I think this is a regression due to a
-recent fix, when I changed the ->correct() hook to check for 0xFF bytes
-also in the ECC bytes.
+This issue is visible espcecially when using a UBI file-system on a SPI
+NOR memory accessed through a SPI controller behind the m25p80 driver.
 
-I will come back to you in a few days, until then, happy end of year :)
+The SPI sub-system has already implemented a work-around on its side,
+based on the spi_map_buf() function. However this function has its own
+limitation too. Especially, even if it builds a 'struct scatterlist' from
+a vmalloc'ed buffer, calling dma_map_sg() is still not safe on all
+architectures. Especially, on ARM cores using either VIPT or VIVT data
+caches, dma_map_sg() doesn't take the cache aliases issue into account.
+Then numerous crashes were reported for such architectures.
 
-Thank you,
-Miqu=C3=A8l
+If think it's high time to provide a reliable solution. So let's try to
+work together!
+
+The proposed solution here is based on an former series from Vignesh R and
+relies on a bounce buffer.
+
+For this series, I will need some pieces of advice on how to implement
+a reliable [spi_nor_]is_dma_safe() function. The proposed implementation
+in patch 1 is based on the tests performed by spi_map_buf() but I was
+wondring whether it would be more cautious to consider:
+DMA-safe <=> allocated by kmalloc'ed.
+
+Actually, it's better using the bounce buffer when not needed than not
+using it when we should.
+
+Also the bounce buffer solution in spi-nor is designed so it could be
+used as an helper so spi flash controller drivers other than m25p80.c
+could now easily add support to DMA transfers for (Fast) Read and/or
+Page Program operations.
+
+I've implemented and tested it on a sama5d2 xplained board + Macronix
+mx25l25673g SPI NOR memory reading from and writing into some UBI
+file-system. I've also tested with mtd_debug to write then read back
+a raw data into the SPI NOR memory, later checking the data integrity with
+sha1sum.
+
+For the atmel-quadspi.c driver, DMA memcpy() transfers are enabled only if
+the "dmacap,mempcy" boolean property is set in the device-tree.
+I found this name in some other device-trees already using it for a
+boolean property.
+
+Best regards,
+
+Cyrille
+
+Cyrille Pitchen (3):
+  mtd: spi-nor: add optional DMA-safe bounce buffer for data transfer
+  dt-bindings: mtd: atmel-quadspi: add an optional property
+    'dmacap,memcpy'
+  mtd: atmel-quadspi: add support of DMA memcpy()
+
+ .../devicetree/bindings/mtd/atmel-quadspi.txt      |   5 +
+ drivers/mtd/devices/m25p80.c                       |   4 +-
+ drivers/mtd/spi-nor/atmel-quadspi.c                | 132 +++++++++++++++++++-
+ drivers/mtd/spi-nor/spi-nor.c                      | 136 +++++++++++++++++++--
+ include/linux/mtd/spi-nor.h                        |   8 ++
+ 5 files changed, 273 insertions(+), 12 deletions(-)
+
+-- 
+2.11.0
