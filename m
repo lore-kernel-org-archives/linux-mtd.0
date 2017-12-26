@@ -1,35 +1,27 @@
-Received: from mail-sn1nam01on0129.outbound.protection.outlook.com
- ([104.47.32.129] helo=NAM01-SN1-obe.outbound.protection.outlook.com)
+Received: from mail-pf0-f193.google.com ([209.85.192.193])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eTv8A-0003G1-5l
- for linux-mtd@lists.infradead.org; Tue, 26 Dec 2017 19:43:20 +0000
-From: Trent Piepho <tpiepho@impinj.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux@armlinux.org.uk" <linux@armlinux.org.uk>, "broonie@kernel.org"
- <broonie@kernel.org>, "cyrille.pitchen@wedev4u.fr"
- <cyrille.pitchen@wedev4u.fr>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
- "vigneshr@ti.com" <vigneshr@ti.com>, "richard@nod.at" <richard@nod.at>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>
-CC: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
- "robh@kernel.org" <robh@kernel.org>, "radu.pirea@microchip.com"
- <radu.pirea@microchip.com>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 1/3] mtd: spi-nor: add optional DMA-safe bounce buffer for
- data transfer
-Date: Tue, 26 Dec 2017 19:43:05 +0000
-Message-ID: <1514317385.26695.39.camel@impinj.com>
+ id 1eTyZU-00083c-9R
+ for linux-mtd@lists.infradead.org; Tue, 26 Dec 2017 23:23:46 +0000
+Received: by mail-pf0-f193.google.com with SMTP id j28so19158252pfk.8
+ for <linux-mtd@lists.infradead.org>; Tue, 26 Dec 2017 15:23:33 -0800 (PST)
+Date: Tue, 26 Dec 2017 17:23:30 -0600
+From: Rob Herring <robh@kernel.org>
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: computersforpeace@gmail.com, dwmw2@infradead.org, richard@nod.at,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, broonie@kernel.org, vigneshr@ti.com,
+ linux@armlinux.org.uk, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+ nicolas.ferre@microchip.com, radu.pirea@microchip.com
+Subject: Re: [PATCH 2/3] dt-bindings: mtd: atmel-quadspi: add an optional
+ property 'dmacap,memcpy'
+Message-ID: <20171226232330.trljk2ofyvu4ly3n@rob-hp-laptop>
 References: <cover.1514087323.git.cyrille.pitchen@wedev4u.fr>
- <fc2440c6f52877f28286d89691049e5cba10e6a7.1514087323.git.cyrille.pitchen@wedev4u.fr>
-In-Reply-To: <fc2440c6f52877f28286d89691049e5cba10e6a7.1514087323.git.cyrille.pitchen@wedev4u.fr>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C0658D1EAA0A334FAD541A566FCDE634@namprd06.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ <143542c61ca674d53da4985bbabc142e8e6ebefc.1514087323.git.cyrille.pitchen@wedev4u.fr>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <143542c61ca674d53da4985bbabc142e8e6ebefc.1514087323.git.cyrille.pitchen@wedev4u.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,55 +31,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gU3VuLCAyMDE3LTEyLTI0IGF0IDA1OjM2ICswMTAwLCBDeXJpbGxlIFBpdGNoZW4gd3JvdGU6
-DQo+IA0KPiBUaGVuIHRoZSBwYXRjaCBhZGRzIHR3byBoYXJkd2FyZSBjYXBhYmlsaXRpZXMgZm9y
-IFNQSSBmbGFzaCBjb250cm9sbGVycywNCj4gU05PUl9IV0NBUFNfV1JfQk9VTkNFIGFuZCBTTk9S
-X0hXQ0FQU19SRF9CT1VOQ0UuDQoNCkFyZSB0aGVyZSBhbnkgZHJpdmVycyBmb3Igd2hpY2ggYSBi
-b3VuY2UgYnVmZmVyIGlzIE5PVCBuZWVkZWQgd2hlbiB0aGUNCnR4L3J4IGJ1ZmZlciBpcyBub3Qg
-aW4gRE1BIHNhZmUgbWVtb3J5PyAgTWF5YmUgaXQgd291bGQgbWFrZSBtb3JlIHNlbnNlDQp0byBp
-bnZlcnQgdGhlIHNlbnNlIG9mIHRoZXNlIGZsYWdzLCBzbyB0aGF0IHRoZXkgaW5kaWNhdGUgdGhl
-IGRyaXZlcg0KZG9lcyBub3QgbmVlZCBETUEgc2FmZSBidWZmZXJzLCBpZiB0aGF0IGlzIHRoZSB1
-bmNvbW1vbi9ub24tZXhpc3RlbnQNCmNhc2UsIHNvIHRoYXQgZmV3ZXIgZHJpdmVycyBuZWVkIHRv
-IGJlIG1vZGlmaWVkIHRvIHRvIGJlIGZpeGVkPw0KDQo+ICtzdGF0aWMgYm9vbCBzcGlfbm9yX2lz
-X2RtYV9zYWZlKGNvbnN0IHZvaWQgKmJ1ZikNCj4gK3sNCj4gKwlpZiAoaXNfdm1hbGxvY19hZGRy
-KGJ1ZikpDQo+ICsJCXJldHVybiBmYWxzZTsNCj4gKw0KPiArI2lmZGVmIENPTkZJR19ISUdITUVN
-DQo+ICsJaWYgKCh1bnNpZ25lZCBsb25nKWJ1ZiA+PSBQS01BUF9CQVNFICYmDQo+ICsJICAgICh1
-bnNpZ25lZCBsb25nKWJ1ZiA8IChQS01BUF9CQVNFICsgKExBU1RfUEtNQVAgKiBQQUdFX1NJWkUp
-KSkNCj4gKwkJcmV0dXJuIGZhbHNlOw0KPiArI2VuZGlmDQoNCkl0IGxvb2tzIGxpa2U6DQoNCih1
-bnNpZ25lZCBsb25nKWFkZHIgPj0gUEtNQVBfQUREUigwKSAmJg0KKHVuc2lnbmVkIGxvbmcpYWRk
-ciA8IFBLTUFQX0FERFIoTEFTVF9QS01BUCkNCg0KaXMgdGhlIGV4cHJlc3Npb24gdXNlZCBpbiB0
-aGUgaGlnaG1lbSBjb2RlLiAgQnV0IHJlYWxseSwgaXNuJ3QgdGhpcw0KYmVnZ2luZyBmb3IgaXNf
-aGlnaG1lbV9hZGRyKCkgaW4gaW5jbHVkZS9saW51eC9tbS5oIHRoYXQgY2FuIGFsd2F5cw0KcmV0
-dXJuIGZhbHNlIHdoZW4gaGlnaG1lbSBpcyBub3QgZW5hYmxlZD8NCg0KSW4gb3JkZXIgdG8gYmUg
-c2FmZSwgdGhpcyBtdXN0IGJlIGNhbGxlZCB3aGVuIG5vci0+bG9jayBpcyBoZWxkLCByaWdodD8N
-CiBPdGhlcndpc2UgaXQgY291bGQgcmFjZSBhZ2FpbnN0IHR3byBjYWxsZXJzIGFsbG9jYXRpbmcg
-dGhlIGJ1ZmZlciBhdA0KdGhlIHNhbWUgdGltZS4gIFRoYXQgc2hvdWxkIHByb2JhYmx5IGJlIG5v
-dGVkIGluIHRoZSBrZXJuZWxkb2MgY29tbWVudHMNCmZvciB0aGlzIGZ1bmN0aW9uLCB3aGljaCBz
-aG91bGQgYWxzbyBiZSB3cml0dGVuLg0KDQo+ICtzdGF0aWMgaW50IHNwaV9ub3JfZ2V0X2JvdW5j
-ZV9idWZmZXIoc3RydWN0IHNwaV9ub3IgKm5vciwNCj4gKwkJCQkgICAgIHVfY2hhciAqKmJ1ZmZl
-ciwNCj4gKwkJCQkgICAgIHNpemVfdCAqYnVmZmVyX3NpemUpDQo+ICt7DQoNCj4gKw0KPiArCSpi
-dWZmZXIgPSBub3ItPmJvdW5jZV9idWZmZXI7DQo+ICsJKmJ1ZmZlcl9zaXplID0gc2l6ZTsNCg0K
-U28gdGhlIGJ1ZmZlciBpcyByZXR1cm5lZCB2aWEgdGhlIHBhcmFtZXRlciwgYW5kIGFsc28gdmlh
-IGEgZmllbGQNCmluc2lkZSBub3IuICBTZWVtcyByZWR1bmRhbnQuICBDb25zaWRlciBhZGRyZXNz
-IGNvdWxkIGJlIHJldHVybmVkIHZpYQ0KdGhlIGZ1bmN0aW9uIHJldHVybiB2YWx1ZSBjb3VwbGVk
-IHdpdGggUFRSX0VSUigpIGZvciB0aGUgZXJyb3IgY2FzZXMuIA0KT3Igbm90IHJldHVybiBhZGRy
-ZXNzIGF0IGFsbCBzaW5jZSBpdCdzIGF2YWlsYWJsZSB2aWEgbm9yLQ0KPmJvdW5jZV9idWZmZXIu
-DQoNCj4gIHsNCj4gIAlzdHJ1Y3Qgc3BpX25vciAqbm9yID0gbXRkX3RvX3NwaV9ub3IobXRkKTsN
-Cj4gKwlib29sIHVzZV9ib3VuY2UgPSAobm9yLT5mbGFncyAmIFNOT1JfRl9VU0VfUkRfQk9VTkNF
-KSAmJg0KPiArCQkJICAhc3BpX25vcl9pc19kbWFfc2FmZShidWYpOw0KPiArCXVfY2hhciAqYnVm
-ZmVyID0gYnVmOw0KPiArCXNpemVfdCBidWZmZXJfc2l6ZSA9IDA7DQo+ICAJaW50IHJldDsNCj4g
-IA0KPiAgCWRldl9kYmcobm9yLT5kZXYsICJmcm9tIDB4JTA4eCwgbGVuICV6ZFxuIiwgKHUzMilm
-cm9tLCBsZW4pOw0KPiBAQCAtMTI2OCwxMyArMTMyNCwyMyBAQCBzdGF0aWMgaW50IHNwaV9ub3Jf
-cmVhZChzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgbG9mZl90IGZyb20sIHNpemVfdCBsZW4sDQo+ICAJ
-aWYgKHJldCkNCj4gIAkJcmV0dXJuIHJldDsNCj4gIA0KPiArCWlmICh1c2VfYm91bmNlKSB7DQo+
-ICsJCXJldCA9IHNwaV9ub3JfZ2V0X2JvdW5jZV9idWZmZXIobm9yLCAmYnVmZmVyLCAmYnVmZmVy
-X3NpemUpOw0KPiArCQlpZiAocmV0IDwgMCkNCj4gKwkJCWdvdG8gcmVhZF9lcnI7DQo+ICsJfQ0K
-DQpUaGlzIHBhdHRlcm4sIGNoZWNrIGlmIGJvdW5jZSBpcyBlbmFibGVkLCBjaGVjayBpZiBhZGRy
-ZXNzIGlzIGRtYS0NCnVuc2FmZSwgZ2V0IGJvdW5jZSBidWZmZXIsIHNlZW1zIHRvIGJlIHZlcnkg
-Y29tbW9uLiAgQ291bGQgaXQgYmUNCnJlZmFjdG9yZWQgaW50byBvbmUgaGVscGVyPw0KDQp1X2No
-YXIgKmJ1ZmZlciA9IHNwaV9ub3JfY2hlY2tfYm91bmNlKG5vciwgYnVmLCBsZW4sICZidWZmZXJf
-c2l6ZSk7DQppZiAoSVNfRVJSKGJ1ZmZlcikpIA0KICAgIHJldHVybiBQVFJfRVJSKGJ1ZmZlcik7
-DQovLyBidWZmZXIgPSBub3ItPmJvdW5jZV9idWZmZXIgb3IgYnVmLCB3aGljaGV2ZXIgaXMgY29y
-cmVjdA0KLy8gYnVmZmVyX3NpemUgPSBsZW4gb3IgYm91bmNlIGJ1ZmZlciBzaXplLCB3aGljaGV2
-ZXIgaXMgY29ycmVjdA0KDQpDb3VsZCBzcGlfbm9yX3JlYWRfc2ZkcF9kbWFfdW5zYWZlKCkgYWxz
-byB1c2UgdGhpcyBidWZmZXI/DQo=
+On Sun, Dec 24, 2017 at 05:36:05AM +0100, Cyrille Pitchen wrote:
+> The optional 'dmacap,memcpy' DT property tells the Atmel QSPI controller
+> driver to reserve some DMA channel then to use it to perform DMA
+> memcpy() during data transfers. This feature relies on the generic
+> bounce buffer helper from spi-nor.c.
+> 
+> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+> ---
+>  Documentation/devicetree/bindings/mtd/atmel-quadspi.txt | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt b/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
+> index b93c1e2f25dd..002d3f0a445b 100644
+> --- a/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
+> +++ b/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
+> @@ -12,6 +12,10 @@ Required properties:
+>  - #address-cells: Should be <1>.
+>  - #size-cells:    Should be <0>.
+>  
+> +Optional properties:
+> +- dmacap,memcpy:  Reserve a DMA channel to perform DMA memcpy() between the
+> +                  system memory and the QSPI mapped memory.
+
+How is this a h/w property? Why would I not want to always enable DMA if 
+possible?
+
+Furthermore, you are reusing a property, but giving it a different 
+meaning. The current definition is an indication whether a DMA 
+controller supports memcpy operations or not. It is not a flag for 
+clients to use memcpy channels.
+
+Why don't you use "dmas" property to point to the DMA controller.
+
+> +
+>  Example:
+>  
+>  spi@f0020000 {
+> @@ -24,6 +28,7 @@ spi@f0020000 {
+>  	#size-cells = <0>;
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pinctrl_spi0_default>;
+> +	dmacap,memcpy;
+>  
+>  	m25p80@0 {
+>  		...
+> -- 
+> 2.11.0
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe devicetree" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
