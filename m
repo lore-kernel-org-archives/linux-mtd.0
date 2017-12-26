@@ -1,27 +1,34 @@
-Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
+Received: from mail-co1nam03on0107.outbound.protection.outlook.com
+ ([104.47.40.107] helo=NAM03-CO1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eTplC-0006HD-Nh
- for linux-mtd@lists.infradead.org; Tue, 26 Dec 2017 13:59:16 +0000
-Subject: Re: [PATCH 1/3] mtd: spi-nor: add optional DMA-safe bounce buffer for
- data transfer
-To: Vignesh R <vigneshr@ti.com>, computersforpeace@gmail.com,
- dwmw2@infradead.org, richard@nod.at, boris.brezillon@free-electrons.com,
- marek.vasut@gmail.com, linux-mtd@lists.infradead.org, broonie@kernel.org,
- linux@armlinux.org.uk
-Cc: linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, robh@kernel.org,
- devicetree@vger.kernel.org, nicolas.ferre@microchip.com,
- radu.pirea@microchip.com
+ id 1eTuEZ-0006of-CV
+ for linux-mtd@lists.infradead.org; Tue, 26 Dec 2017 18:45:53 +0000
+From: Trent Piepho <tpiepho@impinj.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux@armlinux.org.uk" <linux@armlinux.org.uk>, "broonie@kernel.org"
+ <broonie@kernel.org>, "cyrille.pitchen@wedev4u.fr"
+ <cyrille.pitchen@wedev4u.fr>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
+ "vigneshr@ti.com" <vigneshr@ti.com>, "richard@nod.at" <richard@nod.at>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>
+CC: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
+ "robh@kernel.org" <robh@kernel.org>, "radu.pirea@microchip.com"
+ <radu.pirea@microchip.com>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>
+Subject: Re: [PATCH 0/3] mtd: spi-nor: fix DMA-unsafe buffer issue between MTD
+ and SPI
+Date: Tue, 26 Dec 2017 18:45:28 +0000
+Message-ID: <1514313927.26695.19.camel@impinj.com>
 References: <cover.1514087323.git.cyrille.pitchen@wedev4u.fr>
- <fc2440c6f52877f28286d89691049e5cba10e6a7.1514087323.git.cyrille.pitchen@wedev4u.fr>
- <1126731d-cbf7-8fbf-34ab-8ccf1cc8241f@ti.com>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <ae977280-28b4-d746-da4b-0f807dad609d@wedev4u.fr>
-Date: Tue, 26 Dec 2017 14:59:00 +0100
-MIME-Version: 1.0
-In-Reply-To: <1126731d-cbf7-8fbf-34ab-8ccf1cc8241f@ti.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <cover.1514087323.git.cyrille.pitchen@wedev4u.fr>
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <9F4DA121DFBF5C468E6931A7F02B59B9@namprd06.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,64 +38,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Vignesh
-
-Le 26/12/2017 à 14:42, Vignesh R a écrit :
-> Hi Cyrille,
-> 
-> Thanks for doing this series! One comment below.
-> 
-> On 24-Dec-17 10:06 AM, Cyrille Pitchen wrote:
-> [...]
->> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->> index 8bafd462f0ae..59f9fbd45234 100644
->> --- a/drivers/mtd/spi-nor/spi-nor.c
->> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> @@ -14,8 +14,10 @@
->>  #include <linux/errno.h>
->>  #include <linux/module.h>
->>  #include <linux/device.h>
->> +#include <linux/highmem.h>
->>  #include <linux/mutex.h>
->>  #include <linux/math64.h>
->> +#include <linux/mm.h>
->>  #include <linux/sizes.h>
->>  #include <linux/slab.h>
->>  
->> @@ -1232,6 +1234,56 @@ static const struct flash_info spi_nor_ids[] = {
->>  	{ },
->>  };
->>  
->> +static bool spi_nor_is_dma_safe(const void *buf)
->> +{
->> +	if (is_vmalloc_addr(buf))
->> +		return false;
->> +
->> +#ifdef CONFIG_HIGHMEM
->> +	if ((unsigned long)buf >= PKMAP_BASE &&
->> +	    (unsigned long)buf < (PKMAP_BASE + (LAST_PKMAP * PAGE_SIZE)))
->> +		return false;
->> +#endif
->> +
->> +	return true;
->> +}
->> +
-> 
-> Better way would be to use virt_addr_valid():
-> static bool spi_nor_is_dma_safe(const void *buf)
-> {
-> 	return virt_addr_valid(buf);
-> }
-> 
-> Regards
-> Vignesh
-> 
-
-Thanks for the advice :)
-
-https://patchwork.kernel.org/patch/9768341/
-Maybe I could check both virt_addr_valid() and object_is_on_stack() too ?
-
-Best regards,
-
-Cyrille
+T24gU3VuLCAyMDE3LTEyLTI0IGF0IDA1OjM2ICswMTAwLCBDeXJpbGxlIFBpdGNoZW4gd3JvdGU6
+DQo+IHRoaXMgc2VyaWVzIHRyaWVzIHRvIHNvbHZlIGEgbG9uZyB0aW1lIGlzc3VlIG9mIGNvbXBh
+dGliaWxpdHkgYmV0d2VlbiB0aGUNCj4gTVREIGFuZCBTUEkgc3ViLXN5c3RlbXMgYWJvdXQgd2hl
+dGhlciB3ZSBzaG91bGQgdXNlIERNQS1zYWZlIG1lbW9yeS4NCg0KQ2FuIHRoaXMgc2hvdWxkIHJl
+cGxhY2UgU29DIHNwZWNpZmljIGZpeGVzIGxpa2U6DQoNCmM2ODdjNDZlOWU0NQ0Kc3BpOiBzcGkt
+dGktcXNwaTogVXNlIGJvdW5jZSBidWZmZXIgaWYgcmVhZCBidWZmZXIgaXMgbm90IERNQSdibGUN
+Cg0KNzA5NDU3NmNjZGMzDQpzcGk6IGF0bWVsOiBmaXggY29ycnVwdGVkIGRhdGEgaXNzdWUgb24g
+U0FNOSBmYW1pbHkgU29Dcw0KDQpPciwgc2luY2UgdGhpcyBvbmx5IGZpeGVzIGluc3RhbmNlcyBv
+ZiBETUEtdW5zYWZlIGJ1ZmZlcnMgdXNlZCBpbg0KYWNjZXNzIHRvIFNQSSBOT1IgZmxhc2ggY2hp
+cHMsIGFuZCBzaW5jZSB0aGVyZSBhcmUgb3RoZXIgU1BJIG1hc3Rlcg0KaW50ZXJmYWNlIHVzZXJz
+LCB0aG9zZSBjaGlwIHNwZWNpZmljIGZpeGVzIGluIHNvbWUvYWxsIHNwaSBtYXN0ZXINCmRyaXZl
+cnMgYXJlIHN0aWxsIG5lZWRlZCB0byBmaXggdHJhbnNmZXJzIG5vdCBvcmlnaW5hdGVkIHZpYSBz
+cGktbm9yPyANCk9yIGFyZSBhbGwgdGhlIHByZXZpb3VzIGZpeGVzIG5lY2Vzc2FyeSBiZWNhdXNl
+IG9mIHNwaS1ub3IgZmxhc2ggKHZpYQ0KdWJpZnMgb3IgamZmczIpIGFuZCBvbmNlIHRoYXQncyBm
+aXhlZCB2aWEgdGhpcyBzZXJpZXMgdGhlcmUgYXJlIG5vIG1vcmUNCm9yaWdpbmF0b3JzIG9mIGRt
+YS11bnNhZmUgYnVmZmVycz8NCg0KPiBUaGUgU1BJIHN1Yi1zeXN0ZW0gaGFzIGFscmVhZHkgaW1w
+bGVtZW50ZWQgYSB3b3JrLWFyb3VuZCBvbiBpdHMgc2lkZSwNCj4gYmFzZWQgb24gdGhlIHNwaV9t
+YXBfYnVmKCkgZnVuY3Rpb24uIEhvd2V2ZXIgdGhpcyBmdW5jdGlvbiBoYXMgaXRzIG93bg0KPiBs
+aW1pdGF0aW9uIHRvby4gRXNwZWNpYWxseSwgZXZlbiBpZiBpdCBidWlsZHMgYSAnc3RydWN0IHNj
+YXR0ZXJsaXN0JyBmcm9tDQo+IGEgdm1hbGxvYydlZCBidWZmZXIsIGNhbGxpbmcgZG1hX21hcF9z
+ZygpIGlzIHN0aWxsIG5vdCBzYWZlIG9uIGFsbA0KPiBhcmNoaXRlY3R1cmVzLiBFc3BlY2lhbGx5
+LCBvbiBBUk0gY29yZXMgdXNpbmcgZWl0aGVyIFZJUFQgb3IgVklWVCBkYXRhDQo+IGNhY2hlcywg
+ZG1hX21hcF9zZygpIGRvZXNuJ3QgdGFrZSB0aGUgY2FjaGUgYWxpYXNlcyBpc3N1ZSBpbnRvIGFj
+Y291bnQuDQo+IFRoZW4gbnVtZXJvdXMgY3Jhc2hlcyB3ZXJlIHJlcG9ydGVkIGZvciBzdWNoIGFy
+Y2hpdGVjdHVyZXMuDQoNCkNvdWxkIHRoZSBhYm92ZSBpc3N1ZSBhbHNvIGJlIGZpeGVkIHZpYSBj
+YWxscyB0bw0KZmx1c2hfa2VybmVsX3ZtYXBfcmFuZ2UoKSBhbmQgaW52YWxpZGF0ZV9rZXJuZWxf
+dm1hcF9yYW5nZSgpIHRvIGtlZXANCnRoZSBkYXRhIGNhY2hlIHZhbGlkPyAgT3IgaXMgdGhlcmUg
+YSByZWFzb24gdGhhdCB3b24ndCB3b3JrPw==
