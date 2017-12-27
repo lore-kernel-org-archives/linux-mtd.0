@@ -1,27 +1,26 @@
-Received: from mail-pf0-f193.google.com ([209.85.192.193])
+Received: from mo1501.tsb.2iij.net ([210.149.48.173] helo=mo.tsb.2iij.net)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eTyZU-00083c-9R
- for linux-mtd@lists.infradead.org; Tue, 26 Dec 2017 23:23:46 +0000
-Received: by mail-pf0-f193.google.com with SMTP id j28so19158252pfk.8
- for <linux-mtd@lists.infradead.org>; Tue, 26 Dec 2017 15:23:33 -0800 (PST)
-Date: Tue, 26 Dec 2017 17:23:30 -0600
-From: Rob Herring <robh@kernel.org>
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: computersforpeace@gmail.com, dwmw2@infradead.org, richard@nod.at,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, broonie@kernel.org, vigneshr@ti.com,
- linux@armlinux.org.uk, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
- nicolas.ferre@microchip.com, radu.pirea@microchip.com
-Subject: Re: [PATCH 2/3] dt-bindings: mtd: atmel-quadspi: add an optional
- property 'dmacap,memcpy'
-Message-ID: <20171226232330.trljk2ofyvu4ly3n@rob-hp-laptop>
-References: <cover.1514087323.git.cyrille.pitchen@wedev4u.fr>
- <143542c61ca674d53da4985bbabc142e8e6ebefc.1514087323.git.cyrille.pitchen@wedev4u.fr>
+ id 1eU4t3-00046l-6r
+ for linux-mtd@lists.infradead.org; Wed, 27 Dec 2017 06:08:23 +0000
+Subject: Re: [PATCH -next v3 1/2] mtd: nand: toshiba: Retrieve ECC
+ requirements from extended ID
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
+ marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1512569098-30038-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
+ <1512569098-30038-2-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
+ <20171206160805.2435094b@bbrezillon>
+ <3e11d966-0801-96f2-8417-194b36a0b775@toshiba.co.jp>
+ <20171219125624.58e3e8f8@bbrezillon>
+From: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+Message-ID: <b9e62f60-770b-89c3-a2e2-c05767cfd16a@toshiba.co.jp>
+Date: Wed, 27 Dec 2017 15:06:13 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <143542c61ca674d53da4985bbabc142e8e6ebefc.1514087323.git.cyrille.pitchen@wedev4u.fr>
+In-Reply-To: <20171219125624.58e3e8f8@bbrezillon>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,55 +30,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Dec 24, 2017 at 05:36:05AM +0100, Cyrille Pitchen wrote:
-> The optional 'dmacap,memcpy' DT property tells the Atmel QSPI controller
-> driver to reserve some DMA channel then to use it to perform DMA
-> memcpy() during data transfers. This feature relies on the generic
-> bounce buffer helper from spi-nor.c.
+On 2017/12/19 20:56, Boris Brezillon wrote:
+> On Tue, 19 Dec 2017 20:42:36 +0900
+> KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:
 > 
-> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-> ---
->  Documentation/devicetree/bindings/mtd/atmel-quadspi.txt | 5 +++++
->  1 file changed, 5 insertions(+)
+>> On 2017/12/07 0:08, Boris Brezillon wrote:
+>>> On Wed,  6 Dec 2017 23:04:57 +0900
+>>> KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:
+>>>   
+>>>> This patch enables support to read the ECC strength and size from the
+>>>> NAND flash using Toshiba Memory SLC NAND extended-ID. This patch is
+>>>> based on the information of the 6th ID byte of the Toshiba Memory SLC
+>>>> NAND.
+>>>>
+>>>> Signed-off-by: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+>>>> ---
+>>>>  drivers/mtd/nand/nand_toshiba.c | 28 ++++++++++++++++++++++++++++
+>>>>  1 file changed, 28 insertions(+)
+>>>>
+>>>> diff --git a/drivers/mtd/nand/nand_toshiba.c b/drivers/mtd/nand/nand_toshiba.c
+>>>> index 57df857..c2c141b 100644
+>>>> --- a/drivers/mtd/nand/nand_toshiba.c
+>>>> +++ b/drivers/mtd/nand/nand_toshiba.c
+>>>> @@ -35,6 +35,34 @@ static void toshiba_nand_decode_id(struct nand_chip *chip)
+>>>>  	    (chip->id.data[5] & 0x7) == 0x6 /* 24nm */ &&
+>>>>  	    !(chip->id.data[4] & 0x80) /* !BENAND */)
+>>>>  		mtd->oobsize = 32 * mtd->writesize >> 9;
+>>>> +
+>>>> +	/*
+>>>> +	 * Extract ECC requirements from 6th id byte.
+>>>> +	 * For Toshiba SLC, ecc requrements are as follows:
+>>>> +	 *  - 43nm: 1 bit ECC for each 512Byte is required.
+>>>> +	 *  - 32nm: 4 bit ECC for each 512Byte is required.
+>>>> +	 *  - 24nm: 8 bit ECC for each 512Byte is required.
+>>>> +	 */
+>>>> +	if (chip->id.len >= 6 && nand_is_slc(chip)) {
+>>>> +		chip->ecc_step_ds = 512;
+>>>> +		switch (chip->id.data[5] & 0x7) {
+>>>> +		case 0x4:
+>>>> +			chip->ecc_strength_ds = 1;
+>>>> +			break;
+>>>> +		case 0x5:
+>>>> +			chip->ecc_strength_ds = 4;
+>>>> +			break;
+>>>> +		case 0x6:
+>>>> +			chip->ecc_strength_ds = 8;
+>>>> +			break;
+>>>> +		default:
+>>>> +			WARN(1, "Could not get ECC info");
+>>>> +			chip->ecc_step_ds = 0;
+>>>> +			break;
+>>>> +		}
+>>>> +	} else if (chip->id.len < 6 && nand_is_slc(chip)) {
+>>>> +		WARN(1, "Could not get ECC info, 6th nand id byte does not exist.");  
+>>>
+>>> I'm pretty sure you have old NAND chips that do not have 6bytes ids
+>>> (see the table here [1]), and printing a huge backtrace in this case is
+>>> probably not what you want.
+>>>
+>>> If you're okay with dropping this else block, I'll do the change when
+>>> applying, no need to send a new version.  
+>>
+>> Some controllers may have limitation in reading ids beyond 5 bytes, 
+>> considering such scenario we think it is better to keep this warning.
+>> However if you feel huge backtrace is an issue, how about we using pr_warn() instead?
+>>
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt b/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
-> index b93c1e2f25dd..002d3f0a445b 100644
-> --- a/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
-> +++ b/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
-> @@ -12,6 +12,10 @@ Required properties:
->  - #address-cells: Should be <1>.
->  - #size-cells:    Should be <0>.
->  
-> +Optional properties:
-> +- dmacap,memcpy:  Reserve a DMA channel to perform DMA memcpy() between the
-> +                  system memory and the QSPI mapped memory.
+> Toshiba NANDs with an id smaller than 6 bytes exist, so no, we should
+> not complain at all. If the controller is broken and can't read the 8 id
+> bytes the core is asking for, then it should be detected at the core
+> level not in the NAND manufacturer driver.
 
-How is this a h/w property? Why would I not want to always enable DMA if 
-possible?
+I understood your opinion. Please apply this patch with dropping the else block.
 
-Furthermore, you are reusing a property, but giving it a different 
-meaning. The current definition is an indication whether a DMA 
-controller supports memcpy operations or not. It is not a flag for 
-clients to use memcpy channels.
-
-Why don't you use "dmas" property to point to the DMA controller.
-
-> +
->  Example:
->  
->  spi@f0020000 {
-> @@ -24,6 +28,7 @@ spi@f0020000 {
->  	#size-cells = <0>;
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&pinctrl_spi0_default>;
-> +	dmacap,memcpy;
->  
->  	m25p80@0 {
->  		...
-> -- 
-> 2.11.0
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe devicetree" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- YOSHI
