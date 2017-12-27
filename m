@@ -1,19 +1,19 @@
 Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eUIJz-0001sn-UB
- for linux-mtd@lists.infradead.org; Wed, 27 Dec 2017 20:29:06 +0000
-Subject: Re: [PATCH v2] mtd: spi-nor: Added ISSI is25lp080d support
-To: Romain Porte <romain.porte@nokia.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- alexander.sverdlin@nokia.com, pascal.fabreges@nokia.com
-References: <20171219134325.3315-1-romain.porte@nokia.com>
- <20171227135809.2407-1-romain.porte@nokia.com>
- <c668b55b-f35e-cdfd-1f90-dc1289a73b40@nokia.com>
+ id 1eUISN-0005uR-Hl
+ for linux-mtd@lists.infradead.org; Wed, 27 Dec 2017 20:37:45 +0000
+Subject: Re: [PATCH v2] mtd: spi-nor: Add support for s25fl128l and s25fl256l
+To: Rafael Gago <rafael.gago@gmail.com>, linux-mtd@lists.infradead.org
+Cc: richard@nod.at, boris.brezillon@free-electrons.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org, marek.vasut@gmail.com,
+ Rafael Gago <rgc@hms.se>
+References: <1513859069-32567-1-git-send-email-rgc@hms.se>
+ <1513859250-510-1-git-send-email-rgc@hms.se>
 From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <7eb2e242-1adf-e813-f1cf-f32b672e7459@wedev4u.fr>
-Date: Wed, 27 Dec 2017 21:28:39 +0100
+Message-ID: <1a1b60ac-0d2c-4f56-eb69-e886e7c8794f@wedev4u.fr>
+Date: Wed, 27 Dec 2017 21:37:30 +0100
 MIME-Version: 1.0
-In-Reply-To: <c668b55b-f35e-cdfd-1f90-dc1289a73b40@nokia.com>
+In-Reply-To: <1513859250-510-1-git-send-email-rgc@hms.se>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -26,53 +26,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Romain,
+Le 21/12/2017 à 13:27, Rafael Gago a écrit :
+> They are exactly the same than the s25fl064l but bigger.
 
-Le 27/12/2017 à 15:46, Romain Porte a écrit :
-> On 27/12/2017 14:58, Romain Porte wrote:
->> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->> index 8bafd462f..18e826d36 100644
->> --- a/drivers/mtd/spi-nor/spi-nor.c
->> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> @@ -1050,6 +1050,8 @@ static const struct flash_info spi_nor_ids[] = {
->>               SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->>       { "is25lp128",  INFO(0x9d6018, 0, 64 * 1024, 256,
->>               SECT_4K | SPI_NOR_DUAL_READ) },
->> +    { "is25lp080d", INFO(0x9d6014, 0, 64 * 1024,  16,
->> +            SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->>   
-> Please note that the new SPI_NOR_DUAL_READ and SPI_NOR_QUAD_READ options have not been tested on our hardware for the moment. The Tested-by flag applies only for the previous configuration without these two new flags. We may be able to test these additional flags in the future, but they were added only from your (Cyrille's) review from previous patch.
-> 
-> Please let me know if you want to wait for our hardware test results before merging into spi-nor/next, or if you are confident enough to merge it as this.
-
-Based on the manufacturer's datasheet, I'd rather add the
-SPI_NOR_{DUAL,QUAD}_READ flags now than later, even if not tested yet.
-Otherwise, it would never be tested.
-Of course, if you can test on your side, it would be even better!
-
-However, who is the author of this patch? There is no Signed-off-by tag. So
-I shouldn't take this patch without this tag.
-
-Besides, the subject line should be something like:
-"mtd: spi-nor: Add ISSI is25lp080d support"
-
->From Documentation/process/submitting-patches.rst:
-"""
-Describe your changes in imperative mood, e.g. "make xyzzy do frotz"
-instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
-to do frotz", as if you are giving orders to the codebase to change
-its behaviour.
-"""
-
-Finally, just to let you know if you're not very familiar with posting to
-linux mailing lists: some may complain that you didn't configure your mail
-client to truncate lines at the 75th or 80th column ;)
-It's not a big deal but it's still better to follow the guide lines.
-
-Best regards,
-
-Cyrille
+s/same than/same as/
 
 > 
-> Romain.
+> Signed-off-by: Rafael Gago Castano <rgc@hms.se>
+
+Applied to the spi-nor/next branch of linux-mtd with the small fix above.
+
+Thanks!
+
+> ---
+> 
+> Changes from v2:
+>   The commit message named two times the 128 M device.
+> 
+>  drivers/mtd/spi-nor/spi-nor.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index bc266f7..b2a065d 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1065,7 +1065,7 @@ static const struct flash_info spi_nor_ids[] = {
+>  	{ "pm25lv010",   INFO(0,        0, 32 * 1024,    4, SECT_4K_PMC) },
+>  	{ "pm25lq032",   INFO(0x7f9d46, 0, 64 * 1024,   64, SECT_4K) },
+>  
+> -	/* Spansion -- single (large) sector size only, at least
+> +	/* Spansion/Cypress -- single (large) sector size only, at least
+>  	 * for the chips listed here (without boot sectors).
+>  	 */
+>  	{ "s25sl032p",  INFO(0x010215, 0x4d00,  64 * 1024,  64, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+> @@ -1094,6 +1094,8 @@ static const struct flash_info spi_nor_ids[] = {
+>  	{ "s25fl204k",  INFO(0x014013,      0,  64 * 1024,   8, SECT_4K | SPI_NOR_DUAL_READ) },
+>  	{ "s25fl208k",  INFO(0x014014,      0,  64 * 1024,  16, SECT_4K | SPI_NOR_DUAL_READ) },
+>  	{ "s25fl064l",  INFO(0x016017,      0,  64 * 1024, 128, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+> +	{ "s25fl128l",  INFO(0x016018,      0,  64 * 1024, 256, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+> +	{ "s25fl256l",  INFO(0x016019,      0,  64 * 1024, 512, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+>  
+>  	/* SST -- large erase sizes are "overlays", "sectors" are 4K */
+>  	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
 > 
