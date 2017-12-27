@@ -1,19 +1,25 @@
 Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eUISN-0005uR-Hl
- for linux-mtd@lists.infradead.org; Wed, 27 Dec 2017 20:37:45 +0000
-Subject: Re: [PATCH v2] mtd: spi-nor: Add support for s25fl128l and s25fl256l
-To: Rafael Gago <rafael.gago@gmail.com>, linux-mtd@lists.infradead.org
-Cc: richard@nod.at, boris.brezillon@free-electrons.com,
- computersforpeace@gmail.com, dwmw2@infradead.org, marek.vasut@gmail.com,
- Rafael Gago <rgc@hms.se>
-References: <1513859069-32567-1-git-send-email-rgc@hms.se>
- <1513859250-510-1-git-send-email-rgc@hms.se>
+ id 1eUJQw-0006dS-JN
+ for linux-mtd@lists.infradead.org; Wed, 27 Dec 2017 21:40:24 +0000
+Subject: Re: [PATCH 2/3] dt-bindings: mtd: atmel-quadspi: add an optional
+ property 'dmacap,memcpy'
+To: Rob Herring <robh@kernel.org>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>
+Cc: computersforpeace@gmail.com, dwmw2@infradead.org, richard@nod.at,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, broonie@kernel.org, vigneshr@ti.com,
+ linux@armlinux.org.uk, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+ nicolas.ferre@microchip.com, radu.pirea@microchip.com
+References: <cover.1514087323.git.cyrille.pitchen@wedev4u.fr>
+ <143542c61ca674d53da4985bbabc142e8e6ebefc.1514087323.git.cyrille.pitchen@wedev4u.fr>
+ <20171226232330.trljk2ofyvu4ly3n@rob-hp-laptop>
 From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <1a1b60ac-0d2c-4f56-eb69-e886e7c8794f@wedev4u.fr>
-Date: Wed, 27 Dec 2017 21:37:30 +0100
+Message-ID: <0149ba05-64b1-2739-e61f-78d5170775fb@wedev4u.fr>
+Date: Wed, 27 Dec 2017 22:40:00 +0100
 MIME-Version: 1.0
-In-Reply-To: <1513859250-510-1-git-send-email-rgc@hms.se>
+In-Reply-To: <20171226232330.trljk2ofyvu4ly3n@rob-hp-laptop>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -26,46 +32,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 21/12/2017 à 13:27, Rafael Gago a écrit :
-> They are exactly the same than the s25fl064l but bigger.
+Hi Rob,
 
-s/same than/same as/
++ Ludovic Desroches, maintainer of the DMA controller drivers for AT91 SoCs.
+
+Le 27/12/2017 à 00:23, Rob Herring a écrit :
+> On Sun, Dec 24, 2017 at 05:36:05AM +0100, Cyrille Pitchen wrote:
+>> The optional 'dmacap,memcpy' DT property tells the Atmel QSPI controller
+>> driver to reserve some DMA channel then to use it to perform DMA
+>> memcpy() during data transfers. This feature relies on the generic
+>> bounce buffer helper from spi-nor.c.
+>>
+>> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+>> ---
+>>  Documentation/devicetree/bindings/mtd/atmel-quadspi.txt | 5 +++++
+>>  1 file changed, 5 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt b/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
+>> index b93c1e2f25dd..002d3f0a445b 100644
+>> --- a/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
+>> +++ b/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
+>> @@ -12,6 +12,10 @@ Required properties:
+>>  - #address-cells: Should be <1>.
+>>  - #size-cells:    Should be <0>.
+>>  
+>> +Optional properties:
+>> +- dmacap,memcpy:  Reserve a DMA channel to perform DMA memcpy() between the
+>> +                  system memory and the QSPI mapped memory.
+> 
+> How is this a h/w property? Why would I not want to always enable DMA if 
+> possible?
+
+The number of DMA channels is limited for a given SoC. This number may be
+lower than the number of enabled controllers (spi, i2c, qspi, aes, sha,
+des, sdmmc, usart, ...).
+
+So we use a DT property to explicitly tell the matching drivers to request
+and reserved the DMA channels they need. This policy is not driver or even
+SoC specific but board specific. It's very common to reserved DMA channels
+for the most used or most performance dependent controllers, setting the
+relevant properties in the device-tree then restricting remaining
+controllers to their PIO mode.
 
 > 
-> Signed-off-by: Rafael Gago Castano <rgc@hms.se>
+> Furthermore, you are reusing a property, but giving it a different 
+> meaning. The current definition is an indication whether a DMA 
+> controller supports memcpy operations or not. It is not a flag for 
+> clients to use memcpy channels.
+>
 
-Applied to the spi-nor/next branch of linux-mtd with the small fix above.
+I don't mind changing the name. I thought it would be better to use some
+existing one than creating another. However I was not confident on whether
+"dmacap,memcpy" was actually a good candidate for what I do in the DMA
+patch for the atmel-quadspi.c driver.
 
-Thanks!
+Actually, I was relying on your feedbacks :)
 
-> ---
+> Why don't you use "dmas" property to point to the DMA controller.
+
+I didn't use the "dmas" property because I thought it would not have been
+consistent with how this property is used in all other nodes of the sama5*
+device-trees. The flags provided in the dma-cells are designed for "memory
+to peripheral" or "peripheral to memory" DMA transfers only.
+
+However, here I need to perform some "memory to memory" transfer: the SPI
+NOR flash memory is mapped into the AHB bus of SAMA5D2 SoCs. Besides,
+once in Serial Memory Mode, data can no longer be transfered through the
+TDR or RDR registers of the QSPI controller, only through its AHB mapped
+memory window.
+
+So I cannot configured the DMA channel for "peripheral to memory" or
+"memory to peripheral" like for other controllers embedded in the SoC but
+only for "memory to memory".
+
+Maybe we could extend the flags supported by the "dmas" property but I
+guess it may require some little rework in the at_xdmac_xlate() function
+of the at_xdmac.c driver.
+
+Or maybe no change at all is required at the at_xdmac.c driver side: we
+just don't care about the provided flags in the "dmas" property, especially
+the "peripheral id". They would be ignored anyway when the atmel-quadspi.c
+driver later calls dmaengine_prep_dma_memcpy(). So I could simply set the
+dma cells to 0 in the device-tree?
+
+Ludovic, what do you think about that ?
+
+
+Best regards,
+
+Cyrille
+
 > 
-> Changes from v2:
->   The commit message named two times the 128 M device.
-> 
->  drivers/mtd/spi-nor/spi-nor.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index bc266f7..b2a065d 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -1065,7 +1065,7 @@ static const struct flash_info spi_nor_ids[] = {
->  	{ "pm25lv010",   INFO(0,        0, 32 * 1024,    4, SECT_4K_PMC) },
->  	{ "pm25lq032",   INFO(0x7f9d46, 0, 64 * 1024,   64, SECT_4K) },
->  
-> -	/* Spansion -- single (large) sector size only, at least
-> +	/* Spansion/Cypress -- single (large) sector size only, at least
->  	 * for the chips listed here (without boot sectors).
->  	 */
->  	{ "s25sl032p",  INFO(0x010215, 0x4d00,  64 * 1024,  64, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> @@ -1094,6 +1094,8 @@ static const struct flash_info spi_nor_ids[] = {
->  	{ "s25fl204k",  INFO(0x014013,      0,  64 * 1024,   8, SECT_4K | SPI_NOR_DUAL_READ) },
->  	{ "s25fl208k",  INFO(0x014014,      0,  64 * 1024,  16, SECT_4K | SPI_NOR_DUAL_READ) },
->  	{ "s25fl064l",  INFO(0x016017,      0,  64 * 1024, 128, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-> +	{ "s25fl128l",  INFO(0x016018,      0,  64 * 1024, 256, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-> +	{ "s25fl256l",  INFO(0x016019,      0,  64 * 1024, 512, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
->  
->  	/* SST -- large erase sizes are "overlays", "sectors" are 4K */
->  	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
+>> +
+>>  Example:
+>>  
+>>  spi@f0020000 {
+>> @@ -24,6 +28,7 @@ spi@f0020000 {
+>>  	#size-cells = <0>;
+>>  	pinctrl-names = "default";
+>>  	pinctrl-0 = <&pinctrl_spi0_default>;
+>> +	dmacap,memcpy;
+>>  
+>>  	m25p80@0 {
+>>  		...
+>> -- 
+>> 2.11.0
+>>
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe devicetree" in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 > 
