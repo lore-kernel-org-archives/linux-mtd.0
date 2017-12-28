@@ -1,20 +1,20 @@
-Received: from mail-ve1eur01on0131.outbound.protection.outlook.com
- ([104.47.1.131] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eUV3d-0004Rt-QV
- for linux-mtd@lists.infradead.org; Thu, 28 Dec 2017 10:05:14 +0000
-From: Romain Porte <romain.porte@nokia.com>
-To: <cyrille.pitchen@wedev4u.fr>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <alexander.sverdlin@nokia.com>, <pascal.fabreges@nokia.com>, Romain Porte
- <romain.porte@nokia.com>
-Subject: [PATCH v3] mtd: spi-nor: Add ISSI is25lp080d support
-Date: Thu, 28 Dec 2017 11:03:24 +0100
-Message-ID: <20171228100324.2214-1-romain.porte@nokia.com>
-In-Reply-To: <20171219134325.3315-1-romain.porte@nokia.com>
-References: <20171219134325.3315-1-romain.porte@nokia.com>
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eUV4a-0005Vt-72
+ for linux-mtd@lists.infradead.org; Thu, 28 Dec 2017 10:06:34 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: xxhash ?
+Date: Thu, 28 Dec 2017 11:06:25 +0100
+Message-ID: <2450093.pHMqlGidjZ@blindfold>
+In-Reply-To: <1514454242.5843.4.camel@infinera.com>
+References: <1514441615.4759.12.camel@infinera.com>
+ <CAFLxGvyDWQCwUpGcn+9ZbSXKxfXpMBT5WpCjA5NZ1GR+ueSUVQ@mail.gmail.com>
+ <1514454242.5843.4.camel@infinera.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add support for a new ISSI 1MB SPI NOR chip that was tested in our lab.
-Datasheet is available at: http://www.issi.com/WW/pdf/25LP-WP080D.pdf
-
-Testing was done only without the SPI_NOR_{DUAL,QUAD}_READ flags that
-were added later, according to the datasheet.
-
-Tested-by: Pascal Fabreges <pascal.fabreges@nokia.com>
-Reviewed-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Signed-off-by: Romain Porte <romain.porte@nokia.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 8bafd462f..18e826d36 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1050,6 +1050,8 @@ static const struct flash_info spi_nor_ids[] = {
- 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "is25lp128",  INFO(0x9d6018, 0, 64 * 1024, 256,
- 			SECT_4K | SPI_NOR_DUAL_READ) },
-+	{ "is25lp080d", INFO(0x9d6014, 0, 64 * 1024,  16,
-+			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+Am Donnerstag, 28. Dezember 2017, 10:44:05 CET schrieb Joakim Tjernlund:
+> On Thu, 2017-12-28 at 10:38 +0100, Richard Weinberger wrote:
+> 
+> > CAUTION: This email originated from outside of the organization. Do not
+> > click links or open attachments unless you recognize the sender and know
+> > the content is safe.
  
- 	/* Macronix */
- 	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
--- 
-2.11.0
+> > 
+> > Joakim,
+> > 
+> > On Thu, Dec 28, 2017 at 7:13 AM, Joakim Tjernlund
+> > <Joakim.Tjernlund@infinera.com> wrote:
+> > 
+> > > Now that xxhash is in the tree one could look at replacing
+> > > crc32 in JFFS2/UBI. This would make checksumming much faster.
+> > 
+> > 
+> > Since this will require a change of the on-disk format we have to be
+> > very careful.
+> > Do you have a use-case where crc32 is the bottle neck?
+> 
+> 
+> Not directly, I remember the good old days when mounting took forever,
+> mostly
+ due to crc32. I then optimized crc32(the big tables you have today)
+> and some other JFFS2 optimizations. Since crc32 is used everywhere in JFFS2
+> I figure xxhash would help, especially on low end CPUs
+
+Unless this gives a decent speedup I don't think we should add new features to 
+JFFS2.
+For UBI/UBIFS it is a different story. Did you also tests with UBI?
+
+Thanks,
+//richard
