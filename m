@@ -1,19 +1,22 @@
-Received: from mail-wm0-x22f.google.com ([2a00:1450:400c:c09::22f])
+Received: from mail-bl2nam02on0060.outbound.protection.outlook.com
+ ([104.47.38.60] helo=NAM02-BL2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eUUeC-0002Wo-E5
- for linux-mtd@lists.infradead.org; Thu, 28 Dec 2017 09:38:46 +0000
-Received: by mail-wm0-x22f.google.com with SMTP id i11so42842380wmf.4
- for <linux-mtd@lists.infradead.org>; Thu, 28 Dec 2017 01:38:33 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1514441615.4759.12.camel@infinera.com>
-References: <1514441615.4759.12.camel@infinera.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Thu, 28 Dec 2017 10:38:31 +0100
-Message-ID: <CAFLxGvyDWQCwUpGcn+9ZbSXKxfXpMBT5WpCjA5NZ1GR+ueSUVQ@mail.gmail.com>
+ id 1eUUjc-0004IV-2o
+ for linux-mtd@lists.infradead.org; Thu, 28 Dec 2017 09:44:22 +0000
+From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+To: "richard.weinberger@gmail.com" <richard.weinberger@gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Subject: Re: xxhash ?
-To: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 28 Dec 2017 09:44:05 +0000
+Message-ID: <1514454242.5843.4.camel@infinera.com>
+References: <1514441615.4759.12.camel@infinera.com>
+ <CAFLxGvyDWQCwUpGcn+9ZbSXKxfXpMBT5WpCjA5NZ1GR+ueSUVQ@mail.gmail.com>
+In-Reply-To: <CAFLxGvyDWQCwUpGcn+9ZbSXKxfXpMBT5WpCjA5NZ1GR+ueSUVQ@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <BCEECA1CA958D14DB5B4EE19014565DE@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,17 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Joakim,
-
-On Thu, Dec 28, 2017 at 7:13 AM, Joakim Tjernlund
-<Joakim.Tjernlund@infinera.com> wrote:
-> Now that xxhash is in the tree one could look at replacing
-> crc32 in JFFS2/UBI. This would make checksumming much faster.
-
-Since this will require a change of the on-disk format we have to be
-very careful.
-Do you have a use-case where crc32 is the bottle neck?
-
--- 
-Thanks,
-//richard
+T24gVGh1LCAyMDE3LTEyLTI4IGF0IDEwOjM4ICswMTAwLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3Jv
+dGU6DQo+IENBVVRJT046IFRoaXMgZW1haWwgb3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgdGhl
+IG9yZ2FuaXphdGlvbi4gRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5s
+ZXNzIHlvdSByZWNvZ25pemUgdGhlIHNlbmRlciBhbmQga25vdyB0aGUgY29udGVudCBpcyBzYWZl
+Lg0KPiANCj4gDQo+IEpvYWtpbSwNCj4gDQo+IE9uIFRodSwgRGVjIDI4LCAyMDE3IGF0IDc6MTMg
+QU0sIEpvYWtpbSBUamVybmx1bmQNCj4gPEpvYWtpbS5UamVybmx1bmRAaW5maW5lcmEuY29tPiB3
+cm90ZToNCj4gPiBOb3cgdGhhdCB4eGhhc2ggaXMgaW4gdGhlIHRyZWUgb25lIGNvdWxkIGxvb2sg
+YXQgcmVwbGFjaW5nDQo+ID4gY3JjMzIgaW4gSkZGUzIvVUJJLiBUaGlzIHdvdWxkIG1ha2UgY2hl
+Y2tzdW1taW5nIG11Y2ggZmFzdGVyLg0KPiANCj4gU2luY2UgdGhpcyB3aWxsIHJlcXVpcmUgYSBj
+aGFuZ2Ugb2YgdGhlIG9uLWRpc2sgZm9ybWF0IHdlIGhhdmUgdG8gYmUNCj4gdmVyeSBjYXJlZnVs
+Lg0KPiBEbyB5b3UgaGF2ZSBhIHVzZS1jYXNlIHdoZXJlIGNyYzMyIGlzIHRoZSBib3R0bGUgbmVj
+az8NCg0KTm90IGRpcmVjdGx5LCBJIHJlbWVtYmVyIHRoZSBnb29kIG9sZCBkYXlzIHdoZW4gbW91
+bnRpbmcgdG9vayBmb3JldmVyLCBtb3N0bHkNCmR1ZSB0byBjcmMzMi4gSSB0aGVuIG9wdGltaXpl
+ZCBjcmMzMih0aGUgYmlnIHRhYmxlcyB5b3UgaGF2ZSB0b2RheSkgYW5kIHNvbWUNCm90aGVyIEpG
+RlMyIG9wdGltaXphdGlvbnMuIFNpbmNlIGNyYzMyIGlzIHVzZWQgZXZlcnl3aGVyZSBpbiBKRkZT
+MiBJIGZpZ3VyZQ0KeHhoYXNoIHdvdWxkIGhlbHAsIGVzcGVjaWFsbHkgb24gbG93IGVuZCBDUFVz
+DQoNCiBKb2NrZQ==
