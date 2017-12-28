@@ -1,28 +1,19 @@
-Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
+Received: from mail-sn1nam01on0602.outbound.protection.outlook.com
+ ([2a01:111:f400:fe40::602]
+ helo=NAM01-SN1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eUJQw-0006dS-JN
- for linux-mtd@lists.infradead.org; Wed, 27 Dec 2017 21:40:24 +0000
-Subject: Re: [PATCH 2/3] dt-bindings: mtd: atmel-quadspi: add an optional
- property 'dmacap,memcpy'
-To: Rob Herring <robh@kernel.org>,
- Ludovic Desroches <ludovic.desroches@microchip.com>
-Cc: computersforpeace@gmail.com, dwmw2@infradead.org, richard@nod.at,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, broonie@kernel.org, vigneshr@ti.com,
- linux@armlinux.org.uk, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
- nicolas.ferre@microchip.com, radu.pirea@microchip.com
-References: <cover.1514087323.git.cyrille.pitchen@wedev4u.fr>
- <143542c61ca674d53da4985bbabc142e8e6ebefc.1514087323.git.cyrille.pitchen@wedev4u.fr>
- <20171226232330.trljk2ofyvu4ly3n@rob-hp-laptop>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <0149ba05-64b1-2739-e61f-78d5170775fb@wedev4u.fr>
-Date: Wed, 27 Dec 2017 22:40:00 +0100
-MIME-Version: 1.0
-In-Reply-To: <20171226232330.trljk2ofyvu4ly3n@rob-hp-laptop>
-Content-Type: text/plain; charset=utf-8
+ id 1eURh0-0007AQ-AH
+ for linux-mtd@lists.infradead.org; Thu, 28 Dec 2017 06:29:28 +0000
+From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: xxhash ?
+Date: Thu, 28 Dec 2017 06:13:37 +0000
+Message-ID: <1514441615.4759.12.camel@infinera.com>
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <48EA294243B1AD4FA7F978E6DF30D6E0@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,114 +23,6 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Rob,
-
-+ Ludovic Desroches, maintainer of the DMA controller drivers for AT91 SoCs.
-
-Le 27/12/2017 à 00:23, Rob Herring a écrit :
-> On Sun, Dec 24, 2017 at 05:36:05AM +0100, Cyrille Pitchen wrote:
->> The optional 'dmacap,memcpy' DT property tells the Atmel QSPI controller
->> driver to reserve some DMA channel then to use it to perform DMA
->> memcpy() during data transfers. This feature relies on the generic
->> bounce buffer helper from spi-nor.c.
->>
->> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
->> ---
->>  Documentation/devicetree/bindings/mtd/atmel-quadspi.txt | 5 +++++
->>  1 file changed, 5 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt b/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
->> index b93c1e2f25dd..002d3f0a445b 100644
->> --- a/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
->> +++ b/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
->> @@ -12,6 +12,10 @@ Required properties:
->>  - #address-cells: Should be <1>.
->>  - #size-cells:    Should be <0>.
->>  
->> +Optional properties:
->> +- dmacap,memcpy:  Reserve a DMA channel to perform DMA memcpy() between the
->> +                  system memory and the QSPI mapped memory.
-> 
-> How is this a h/w property? Why would I not want to always enable DMA if 
-> possible?
-
-The number of DMA channels is limited for a given SoC. This number may be
-lower than the number of enabled controllers (spi, i2c, qspi, aes, sha,
-des, sdmmc, usart, ...).
-
-So we use a DT property to explicitly tell the matching drivers to request
-and reserved the DMA channels they need. This policy is not driver or even
-SoC specific but board specific. It's very common to reserved DMA channels
-for the most used or most performance dependent controllers, setting the
-relevant properties in the device-tree then restricting remaining
-controllers to their PIO mode.
-
-> 
-> Furthermore, you are reusing a property, but giving it a different 
-> meaning. The current definition is an indication whether a DMA 
-> controller supports memcpy operations or not. It is not a flag for 
-> clients to use memcpy channels.
->
-
-I don't mind changing the name. I thought it would be better to use some
-existing one than creating another. However I was not confident on whether
-"dmacap,memcpy" was actually a good candidate for what I do in the DMA
-patch for the atmel-quadspi.c driver.
-
-Actually, I was relying on your feedbacks :)
-
-> Why don't you use "dmas" property to point to the DMA controller.
-
-I didn't use the "dmas" property because I thought it would not have been
-consistent with how this property is used in all other nodes of the sama5*
-device-trees. The flags provided in the dma-cells are designed for "memory
-to peripheral" or "peripheral to memory" DMA transfers only.
-
-However, here I need to perform some "memory to memory" transfer: the SPI
-NOR flash memory is mapped into the AHB bus of SAMA5D2 SoCs. Besides,
-once in Serial Memory Mode, data can no longer be transfered through the
-TDR or RDR registers of the QSPI controller, only through its AHB mapped
-memory window.
-
-So I cannot configured the DMA channel for "peripheral to memory" or
-"memory to peripheral" like for other controllers embedded in the SoC but
-only for "memory to memory".
-
-Maybe we could extend the flags supported by the "dmas" property but I
-guess it may require some little rework in the at_xdmac_xlate() function
-of the at_xdmac.c driver.
-
-Or maybe no change at all is required at the at_xdmac.c driver side: we
-just don't care about the provided flags in the "dmas" property, especially
-the "peripheral id". They would be ignored anyway when the atmel-quadspi.c
-driver later calls dmaengine_prep_dma_memcpy(). So I could simply set the
-dma cells to 0 in the device-tree?
-
-Ludovic, what do you think about that ?
-
-
-Best regards,
-
-Cyrille
-
-> 
->> +
->>  Example:
->>  
->>  spi@f0020000 {
->> @@ -24,6 +28,7 @@ spi@f0020000 {
->>  	#size-cells = <0>;
->>  	pinctrl-names = "default";
->>  	pinctrl-0 = <&pinctrl_spi0_default>;
->> +	dmacap,memcpy;
->>  
->>  	m25p80@0 {
->>  		...
->> -- 
->> 2.11.0
->>
->> --
->> To unsubscribe from this list: send the line "unsubscribe devicetree" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+Tm93IHRoYXQgeHhoYXNoIGlzIGluIHRoZSB0cmVlIG9uZSBjb3VsZCBsb29rIGF0IHJlcGxhY2lu
+Zw0KY3JjMzIgaW4gSkZGUzIvVUJJLiBUaGlzIHdvdWxkIG1ha2UgY2hlY2tzdW1taW5nIG11Y2gg
+ZmFzdGVyLg0KDQpKdXN0IGFuIGlkZWENCg0KICBKb2NrZQ0K
