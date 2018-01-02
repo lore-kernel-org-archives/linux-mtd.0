@@ -1,30 +1,16 @@
-Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eWMFv-0007Cf-6N
- for linux-mtd@lists.infradead.org; Tue, 02 Jan 2018 13:05:24 +0000
-Received: by mail-lf0-x243.google.com with SMTP id h140so4799095lfg.1
- for <linux-mtd@lists.infradead.org>; Tue, 02 Jan 2018 05:05:12 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Rob Herring <robh+dt@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, Frank Rowand <frowand.list@gmail.com>,
- Linus Walleij <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>,
- Jonas Gorski <jonas.gorski@gmail.com>,
- Florian Fainelli <f.fainelli@gmail.com>, John Crispin <john@phrozen.org>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH V5 2/2] mtd: ofpart: add of_match_table with "fixed-partitions"
-Date: Tue,  2 Jan 2018 14:04:58 +0100
-Message-Id: <20180102130458.16226-2-zajec5@gmail.com>
-In-Reply-To: <20180102130458.16226-1-zajec5@gmail.com>
-References: <20180102130458.16226-1-zajec5@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+To: linux-iio@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+ Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+ Lars-Peter Clausen <lars@metafoo.de>, Hartmut Knaack <knaack.h@gmx.de>,
+ linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-rockchip@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+ linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: [PATCH 00/12] account for const type of of_device_id.data
+Date: Tue,  2 Jan 2018 14:27:56 +0100
+Message-Id: <1514899688-27844-1-git-send-email-Julia.Lawall@lip6.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,43 +20,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+Maintain const annotations when putting values into the data field of
+an of_device_id structure, and afterwards when extracting them from
+the data field of such a structure.
 
-This allows using this parser with any flash driver that takes care of
-setting of_node (using mtd_set_of_node helper) correctly. Up to now
-support for "fixed-partitions" DT compatibility string was working only
-with flash drivers that were specifying "ofpart" (manually or by letting
-mtd use the default set of parsers).
+This was done using the following semantic patch:
+(http://coccinelle.lip6.fr/)
 
-This matches existing bindings documentation.
+// <smpl>
+@r@
+identifier i,j;
+const struct j *m;
+struct i *y;
+type T;
+expression x,e;
+position p;
+@@
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-Reviewed-by: Brian Norris <computersforpeace@gmail.com>
-Tested-by: Brian Norris <computersforpeace@gmail.com>
+(
+y =@p (T)(of_device_get_match_data(...));
+|
+x = of_match_node(...);
+... when != x = e
+(
+m = e;
+|
+y =@p (T)(x->data);
+)
+)
+
+@s@
+identifier r.i,j;
+@@
+
+const struct i j = { ... };
+
+@t depends on s disable optional_qualifier@
+expression e;
+identifier r.i,x,j,n;
+struct j *m;
+struct i *e1;
+position any r.p;
+type T;
+@@
+
+(
++const
+struct i *x;
+<+...
+(
+x =@p 
+-   (T)(e)
++   e
+|
+x =@p e
+)
+...+>
+|
+m->@e1 n =@p 
+-   (T)(e)
++   e
+|
+m->@e1 n =@p e
+)
+
+@disable optional_qualifier@
+identifier t.j,t.n,r.i;
+@@
+
+struct j {
+  ...
++ const
+  struct i *n;
+  ...
+}
+
+@@
+identifier x,s.j;
+type T;
+@@
+
+struct of_device_id x[] = { ...,
+  { .data =
+-           (T)
+            &j, }, ...};
+
+// </smpl>
+
 ---
- drivers/mtd/ofpart.c | 7 +++++++
- 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-index 6bdf4e525677..92fcbac046d9 100644
---- a/drivers/mtd/ofpart.c
-+++ b/drivers/mtd/ofpart.c
-@@ -140,9 +140,16 @@ static int parse_ofpart_partitions(struct mtd_info *master,
- 	return ret;
- }
- 
-+static const struct of_device_id parse_ofpart_match_table[] = {
-+	{ .compatible = "fixed-partitions" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, parse_ofpart_match_table);
-+
- static struct mtd_part_parser ofpart_parser = {
- 	.parse_fn = parse_ofpart_partitions,
- 	.name = "ofpart",
-+	.of_match_table = parse_ofpart_match_table,
- };
- 
- static int parse_ofoldpart_partitions(struct mtd_info *master,
--- 
-2.11.0
+ drivers/i2c/busses/i2c-rk3x.c               |   16 ++++++++--------
+ drivers/iio/common/ssp_sensors/ssp.h        |    2 +-
+ drivers/iio/common/ssp_sensors/ssp_dev.c    |    2 +-
+ drivers/mtd/spi-nor/fsl-quadspi.c           |    8 ++++----
+ drivers/pci/dwc/pcie-qcom.c                 |    4 ++--
+ drivers/pinctrl/mvebu/pinctrl-armada-37xx.c |    4 ++--
+ drivers/pinctrl/pinctrl-at91-pio4.c         |    4 ++--
+ drivers/pinctrl/pinctrl-axp209.c            |    2 +-
+ drivers/power/avs/rockchip-io-domain.c      |   24 ++++++++++++------------
+ drivers/power/reset/at91-sama5d2_shdwc.c    |    4 ++--
+ drivers/power/supply/axp20x_ac_power.c      |    8 ++++----
+ drivers/spi/spi-fsl-dspi.c                  |    7 +++----
+ drivers/spi/spi-sirf.c                      |    4 ++--
+ 13 files changed, 44 insertions(+), 44 deletions(-)
