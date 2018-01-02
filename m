@@ -1,16 +1,22 @@
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eWNBq-00031g-O0
+ for linux-mtd@lists.infradead.org; Tue, 02 Jan 2018 14:05:36 +0000
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-To: linux-iio@vger.kernel.org
+To: Han Xu <han.xu@nxp.com>
 Cc: kernel-janitors@vger.kernel.org,
- Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
- Lars-Peter Clausen <lars@metafoo.de>, Hartmut Knaack <knaack.h@gmx.de>,
- linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
- linux-spi@vger.kernel.org, linux-rockchip@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
- linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: [PATCH 00/12] account for const type of of_device_id.data
-Date: Tue,  2 Jan 2018 14:27:56 +0100
-Message-Id: <1514899688-27844-1-git-send-email-Julia.Lawall@lip6.fr>
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH 09/12] mtd: fsl-quadspi: account for const type of
+ of_device_id.data
+Date: Tue,  2 Jan 2018 14:28:05 +0100
+Message-Id: <1514899688-27844-10-git-send-email-Julia.Lawall@lip6.fr>
+In-Reply-To: <1514899688-27844-1-git-send-email-Julia.Lawall@lip6.fr>
+References: <1514899688-27844-1-git-send-email-Julia.Lawall@lip6.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,106 +26,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Maintain const annotations when putting values into the data field of
-an of_device_id structure, and afterwards when extracting them from
-the data field of such a structure.
+This driver creates a number of const structures that it stores in the
+data field of an of_device_id array.
 
-This was done using the following semantic patch:
-(http://coccinelle.lip6.fr/)
+The data field of an of_device_id structure has type const void *, so
+there is no need for a const-discarding cast when putting const values
+into such a structure.
 
-// <smpl>
-@r@
-identifier i,j;
-const struct j *m;
-struct i *y;
-type T;
-expression x,e;
-position p;
-@@
+Done using Coccinelle.
 
-(
-y =@p (T)(of_device_get_match_data(...));
-|
-x = of_match_node(...);
-... when != x = e
-(
-m = e;
-|
-y =@p (T)(x->data);
-)
-)
-
-@s@
-identifier r.i,j;
-@@
-
-const struct i j = { ... };
-
-@t depends on s disable optional_qualifier@
-expression e;
-identifier r.i,x,j,n;
-struct j *m;
-struct i *e1;
-position any r.p;
-type T;
-@@
-
-(
-+const
-struct i *x;
-<+...
-(
-x =@p 
--   (T)(e)
-+   e
-|
-x =@p e
-)
-...+>
-|
-m->@e1 n =@p 
--   (T)(e)
-+   e
-|
-m->@e1 n =@p e
-)
-
-@disable optional_qualifier@
-identifier t.j,t.n,r.i;
-@@
-
-struct j {
-  ...
-+ const
-  struct i *n;
-  ...
-}
-
-@@
-identifier x,s.j;
-type T;
-@@
-
-struct of_device_id x[] = { ...,
-  { .data =
--           (T)
-            &j, }, ...};
-
-// </smpl>
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
 ---
+ drivers/mtd/spi-nor/fsl-quadspi.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
- drivers/i2c/busses/i2c-rk3x.c               |   16 ++++++++--------
- drivers/iio/common/ssp_sensors/ssp.h        |    2 +-
- drivers/iio/common/ssp_sensors/ssp_dev.c    |    2 +-
- drivers/mtd/spi-nor/fsl-quadspi.c           |    8 ++++----
- drivers/pci/dwc/pcie-qcom.c                 |    4 ++--
- drivers/pinctrl/mvebu/pinctrl-armada-37xx.c |    4 ++--
- drivers/pinctrl/pinctrl-at91-pio4.c         |    4 ++--
- drivers/pinctrl/pinctrl-axp209.c            |    2 +-
- drivers/power/avs/rockchip-io-domain.c      |   24 ++++++++++++------------
- drivers/power/reset/at91-sama5d2_shdwc.c    |    4 ++--
- drivers/power/supply/axp20x_ac_power.c      |    8 ++++----
- drivers/spi/spi-fsl-dspi.c                  |    7 +++----
- drivers/spi/spi-sirf.c                      |    4 ++--
- 13 files changed, 44 insertions(+), 44 deletions(-)
+diff -u -p a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -801,10 +801,10 @@ static int fsl_qspi_nor_setup_last(struc
+ }
+ 
+ static const struct of_device_id fsl_qspi_dt_ids[] = {
+-	{ .compatible = "fsl,vf610-qspi", .data = (void *)&vybrid_data, },
+-	{ .compatible = "fsl,imx6sx-qspi", .data = (void *)&imx6sx_data, },
+-	{ .compatible = "fsl,imx7d-qspi", .data = (void *)&imx7d_data, },
+-	{ .compatible = "fsl,imx6ul-qspi", .data = (void *)&imx6ul_data, },
++	{ .compatible = "fsl,vf610-qspi", .data = &vybrid_data, },
++	{ .compatible = "fsl,imx6sx-qspi", .data = &imx6sx_data, },
++	{ .compatible = "fsl,imx7d-qspi", .data = &imx7d_data, },
++	{ .compatible = "fsl,imx6ul-qspi", .data = &imx6ul_data, },
+ 	{ .compatible = "fsl,ls1021a-qspi", .data = (void *)&ls1021a_data, },
+ 	{ /* sentinel */ }
+ };
