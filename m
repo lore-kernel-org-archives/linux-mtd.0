@@ -1,18 +1,25 @@
-Received: from mail-dm3nam03on0041.outbound.protection.outlook.com
- ([104.47.41.41] helo=NAM03-DM3-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eWK0O-0001FY-8T
- for linux-mtd@lists.infradead.org; Tue, 02 Jan 2018 10:41:21 +0000
-From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-To: <linux-mtd@lists.infradead.org>
-CC: <boris.brezillon@free-electrons.com>, <cyrille.pitchen@wedev4u.fr>,
- <computersforpeace@gmail.com>, <prabhakar.kushwaha@nxp.com>,
- <suresh.gupta@nxp.com>, Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Subject: [PATCH] mtd: fsl-quadspi: fix init AHB read in fsl_qspi_nor_setup()
-Date: Tue, 2 Jan 2018 16:10:53 +0530
-Message-ID: <1514889653-23647-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+Date: Tue, 2 Jan 2018 12:03:26 +0100
+From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Ezequiel
+ Garcia <ezequiel.garcia@free-electrons.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 00/12] Marvell NAND controller rework with ->exec_op()
+Message-ID: <20180102120326.7a2cf1d1@xps13>
+In-Reply-To: <87fu81bc45.fsf@belgarion.home>
+References: <20171207201814.30411-1-miquel.raynal@free-electrons.com>
+ <20171214070930.0b885f6d@bbrezillon>
+ <877etkecig.fsf@belgarion.home> <20171218092535.2ca1fe13@xps13>
+ <87y3lxccr7.fsf@belgarion.home>
+ <20171220224121.2cb6f690@bbrezillon>
+ <87lghucykr.fsf@belgarion.home>
+ <20171222222441.0fd77df9@bbrezillon>
+ <20171222233730.68d9cb9d@xps13> <87k1xdblxf.fsf@belgarion.home>
+ <20171223155709.2ba16e95@xps13> <87fu81bc45.fsf@belgarion.home>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,48 +29,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Move AHB read initialize in fsl_qspi_nor_setup().
+Hello Robert,
 
-In file spi-nor.c, func spi_nor_scan() calls nor->read() thru
-spi_nor_read_sfdp() API.
+On Sat, 23 Dec 2017 18:14:18 +0100
+Robert Jarzmik <robert.jarzmik@free.fr> wrote:
 
-Presently, fsl_qspi_init_ahb_read() called from fsl_qspi_nor_setup_last().
-Func fsl_qspi_probe() calls spi_nor_scan() first and then calls
-fsl_qspi_nor_setup_last().
+> Miquel RAYNAL <miquel.raynal@free-electrons.com> writes:
+>=20
+> >> Here it comes in [3]. I suspect the BBT parser here, here is the
+> >> extract that _might_ be relevant:
+> >> [    3.372907] nand: ->exec_op() parser: pattern not found! =20
+> >
+> > Indeed this might be the problem, it means there is one scenario
+> > that should be handled by the parser that is missing. I am really
+> > interrogative about which one it is and to discover it, can you
+> > rebuild with
+> >
+> >         #define DEBUG
+> >
+> > in drivers/mtd/nand/nand_base.c too. =20
+> It was already there, check the patch I attached to my previous mail.
+>=20
+> > This way the core will display the patterns it try to find a match
+> > for. =20
+> The core displays already debug message, as these are displayed :
+> [    3.228598] nand: executing subop:
+> [    3.232187] nand:     ->CMD      [0x90]
+> [    3.236077] nand:     ->ADDR     [1 cyc: 40]
+> [    3.240517] nand:     ->DATA_IN  [5 B, force 8-bit]
+>=20
+> As to your statement "the core will display the patterns it try to
+> find a match for", how confident are you with it ? Because my reading
+> of the following code is quite different :
+> 			if (!nand_op_parser_match_pat(pattern, &ctx))
+> 				continue;
+>=20
+> 			nand_op_parser_trace(&ctx);
+>=20
+> > Also to ease the understanding, you might add a dump_stack() right
+> > next to this error message. =20
+> Attached in [1].
 
-When nor->read() being called from inside spi_nor_read_sfdp(), QSPI cntlr
-AHB mode initialization is not yet done results in data read error.
+I just pushed two fixups on top of the Github branch [1], can you rebase
+on top of them and give me the result?
 
-Initialize AHB read inside fsl_qspi_nor_setup().
+The first patch just adds the auto bus width bit in nand->options.
+The second removes the faulty ->change_column(), and does the same
+check with another method.
 
-Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
----
- drivers/mtd/spi-nor/fsl-quadspi.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+I think the ECC issue you faced was related to pages being written
+*and* empty. If this guess is right, the board should boot fine with
+these changes.
 
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index 943e9c4..c22e3eb 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -769,6 +769,9 @@ static int fsl_qspi_nor_setup(struct fsl_qspi *q)
- 	/* enable the interrupt */
- 	qspi_writel(q, QUADSPI_RSER_TFIE, q->iobase + QUADSPI_RSER);
- 
-+	/* Init for AHB read */
-+	fsl_qspi_init_ahb_read(q);
-+
- 	return 0;
- }
- 
-@@ -794,9 +797,6 @@ static int fsl_qspi_nor_setup_last(struct fsl_qspi *q)
- 	/* Init the LUT table again. */
- 	fsl_qspi_init_lut(q);
- 
--	/* Init for AHB read */
--	fsl_qspi_init_ahb_read(q);
--
- 	return 0;
- }
- 
--- 
-1.9.1
+Otherwise, please add the DEBUG define as before in both the core and
+the driver and do not hesitate to add another dump_stack() where it
+crashes (if applicable).
+
+Thanks for your help,
+Miqu=C3=A8l
+
+[1] https://github.com/miquelraynal/linux/commits/marvell/nand-next/nfc
