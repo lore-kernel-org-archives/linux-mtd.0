@@ -1,39 +1,38 @@
-Received: from mail-lf0-x236.google.com ([2a00:1450:4010:c07::236])
+Received: from fllnx210.ext.ti.com ([198.47.19.17])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eWCfy-0004o3-U5
- for linux-mtd@lists.infradead.org; Tue, 02 Jan 2018 02:51:41 +0000
-Received: by mail-lf0-x236.google.com with SMTP id u84so34509549lff.7
- for <linux-mtd@lists.infradead.org>; Mon, 01 Jan 2018 18:51:27 -0800 (PST)
+ id 1eWJNS-0005YX-Lr
+ for linux-mtd@lists.infradead.org; Tue, 02 Jan 2018 10:01:01 +0000
+Subject: Re: [PATCH 1/3] mtd: spi-nor: add optional DMA-safe bounce buffer for
+ data transfer
+To: Trent Piepho <tpiepho@impinj.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux@armlinux.org.uk"
+ <linux@armlinux.org.uk>, "broonie@kernel.org" <broonie@kernel.org>,
+ "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "boris.brezillon@free-electrons.com"
+ <boris.brezillon@free-electrons.com>, "richard@nod.at" <richard@nod.at>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>
+CC: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
+ "radu.pirea@microchip.com" <radu.pirea@microchip.com>, "robh@kernel.org"
+ <robh@kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+References: <cover.1514087323.git.cyrille.pitchen@wedev4u.fr>
+ <fc2440c6f52877f28286d89691049e5cba10e6a7.1514087323.git.cyrille.pitchen@wedev4u.fr>
+ <1514317385.26695.39.camel@impinj.com>
+ <1a7dc424-1ce0-6c64-fc52-bb88ec7db8fa@wedev4u.fr>
+ <1514487276.26695.94.camel@impinj.com>
+ <08be8b42-732a-bf28-40c4-f46bf9d71c80@ti.com>
+ <1514570627.26695.114.camel@impinj.com>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <b4794d21-817f-b67b-1569-05e1400bdbee@ti.com>
+Date: Tue, 2 Jan 2018 15:30:37 +0530
 MIME-Version: 1.0
-In-Reply-To: <20171222145147.3697fb02@bbrezillon>
-References: <20170529225931.226da943@bbrezillon>
- <90bcb366-c494-2dee-3bb7-d16b77e347c6@exceet.de>
- <20171204150514.1f17671d@bbrezillon>
- <A0FE66EC-7E17-43BE-9B66-896F112B92A0@micron.com>
- <20171205135804.478902dc@bbrezillon> <20171205140313.40f3f17d@bbrezillon>
- <256b4ab6-c104-4580-87cd-527178bde460@exceet.de>
- <20171213222710.32d12514@bbrezillon>
- <CAAyFORJcT1abbo21iA4cetLKmF0zE4akFGFryxPpwPO+730LDQ@mail.gmail.com>
- <20171214085036.436b4fcf@bbrezillon>
- <CAAyFOR+=JwTRTm2MXVdMy7KRPsnV8LV4t71kHUh_s=+QOsVurA@mail.gmail.com>
- <23d17416-e555-4b92-cc47-f644fbe676c6@exceet.de>
- <20171214163848.41f6d277@bbrezillon>
- <CAAyFORKeFq+=tF9AK+8hp6GYYiyp3DKcw8+LWrC3RWS2zLNU_w@mail.gmail.com>
- <CAAyFORJEuEaHDXgk+m0ax5RoZ-3cRJs6uFXw7syR4vHE1veEwQ@mail.gmail.com>
- <a06312e4-a7e6-8b7b-9eb5-8320302dcc55@exceet.de>
- <CAAyFORL6mUFXFRvku6sm=Pj2=+Bf4wSV7EoBM_7+wRdPrF-ufw@mail.gmail.com>
- <CAAyFOR+m7GvXU66XKphu+cETP9SQTJ6GuZQEZQA600MX1R6cYw@mail.gmail.com>
- <20171222145147.3697fb02@bbrezillon>
-From: Peter Pan <peterpansjtu@gmail.com>
-Date: Tue, 2 Jan 2018 10:51:25 +0800
-Message-ID: <CAAyFORK9v-V1WrJzTnKk0sAt7_f_st_PHc6nJ6dz0zTL-Jih5A@mail.gmail.com>
-Subject: Re: [PATCH v6 00/15] A SPI NAND framework under generic NAND framework
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Frieder Schrempf <frieder.schrempf@exceet.de>,
- =?UTF-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
- <peterpandong@micron.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1514570627.26695.114.camel@impinj.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -43,120 +42,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
 
 
-On Fri, Dec 22, 2017 at 9:51 PM, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-> On Fri, 22 Dec 2017 14:37:06 +0800
-> Peter Pan <peterpansjtu@gmail.com> wrote:
->
->> Hi Boris and Frieder
->>
->> On Fri, Dec 22, 2017 at 8:49 AM, Peter Pan <peterpansjtu@gmail.com> wrote:
->> > Hi Frieder,
->> >
->> > On Thu, Dec 21, 2017 at 7:48 PM, Frieder Schrempf
->> > <frieder.schrempf@exceet.de> wrote:
->> >> Hello Boris,
->> >>
->> >>>>>> So shouldn't there be an spinand_die_select_op in the SPI NAND core
->> >>>>>> that
->> >>>>>> is executed when necessary and skipped if there's only one die.
->> >>>>>
->> >>>>>
->> >>>>> Sure, I was arguing against a ->select_chip() at the generic NAND
->> >>>>> level. That's something you can add in the SPI NAND framework.
->> >>
->> >>
->> >> I added an op to send the die selection command and call it, where I think
->> >> it is needed: [1]
->> >
->> > I think we should add die_select_op in vendor's file and call a hook in core.c
->> > since the die select command implementation is different by vendors.
->> >
->> > Thanks
->> > Peter Pan
->> >
->> >
->> >>
->> >> Accessing both dies on the Winbond SPI NAND works fine like this.
->> >>
->> >> While running tests I came across some problems:
->> >>
->> >> * On accessing the BBT in RAM via nanddev_bbt_[set/get]_block_status, the
->> >> calculation of position and offset seems to be wrong.
->> >> My fix is here: [2]
->> >>
->> >> * On calculating the row address for read/program/erase via
->> >> nanddev_pos_to_row, it seems like the eraseblock_addr_shift is wrong.
->> >>
->> >> * Also, I'm not sure if the LUN should be taken into account when
->> >> calculating the row address. At least when you select the LUN by issuing a
->> >> separate command, the row address sent to the chip should only contain the
->> >> page address.
->> >> But I'm not sure if that's the case in general, or if some code is needed to
->> >> differentiate.
->> >>
->> >> See my changes of nanddev_pos_to_row here: [3]
->> >>
->> >> * I run into a mutex deadlock, when spinand_write_page fails (e.g. because
->> >> of a bad block) as the lock is not released in such cases. See my fix here:
->> >> [4]
->> >>
->> >> With these fixes applied and as far as I can tell everything seems to work
->> >> fine. I'll do some tests with UBI next and look into the ECC topic.
->>
->> UBI attach failed since missing mtd->writebufsize assignment in nanddev_init()
->> After fixing it and with Frieder's fixing, UBIFS can be mounted successfully on
->> Zedboard with generic spi controller and Micron SPI NAND 2Gb device.
->>
->> Also, the code now can pass mtd read and page test. 1 error found in oob test
->> since we don't have "past end of partition" check in part_write_oob() which I
->> mentioned in earlier mail. Since we don't support ECC right now, I didn't try
->> nandbiterror test.
->>
->
-> Peter, Frider, I just pushed a new version to my nand/spi-nand branch
-> [1] fixing the authorship, adding/fixing/removing comments where needed.
->
-> Can you please have a look at those changes (everything I changed
-> should appear as !fixup commits) and let me know if I did something
-> wrong.
+On Friday 29 December 2017 11:33 PM, Trent Piepho wrote:
+> On Fri, 2017-12-29 at 15:46 +0530, Vignesh R wrote:
+>> On Friday 29 December 2017 12:24 AM, Trent Piepho wrote:
+>> > 
+>> > > Vignesh has suggested to call virt_addr_valid() instead.
+>> > > I think Boris has also told me about this function.
+>> > > So it might be the right solution. What do you think about their proposal?
+>> > 
+>> > Not sure what exactly the differences are between these methods.  The
+>> > fact that each of the many existing DMA fixes uses slightly different
+>> > code to detect what is unsafe speaks to the difficulty of this problem!
+>> 
+>> My understanding based on Documentation/DMA-API-HOWTO.txt and
+>> Documentation/arm/memory.txt is that
+>> virt_addr_valid() will guarantee that address is in range of
+>> PAGE_OFFSET to high_memory-1 (Kernel direct-mapped RAM region) which is
+>> address range of buffers that are DMA'able.
+> 
+> There's code in gpmi-nand.c that does:
+> 
+>         /* first try to map the upper buffer directly */
+>         if (virt_addr_valid(this->upper_buf) &&
+>                 !object_is_on_stack(this->upper_buf)) {
+>                 sg_init_one(sgl, this->upper_buf, this->upper_len);
+> 
+> So whoever wrote that thought that stack objects needed an additional
+> test beyond virt_addr_valid.  But it does appear to be far more common
+> to depend on just virt_addr_valid, so perhaps the code in gpmi-nand is
+> in error.
+> 
 
-You forgot to initialize mtd->writebufsize and mtd->oobavail.
-For mtd->writebufsize I think we can do it in nanddev_init() like below:
+The test in gpmi-nand.c is right. Enabling CONFIG_DMA_API_DEBUG does
+warn about DMA'ing into stack objects (in lib/dma-debug.c). So other
+places needs to be fixed, I guess.
 
---- a/drivers/mtd/nand/core.c
-+++ b/drivers/mtd/nand/core.c
-@@ -196,7 +196,9 @@ int nanddev_init(struct nand_device *nand, const
-struct nand_ops *ops,
-        mtd->flags = MTD_CAP_NANDFLASH;
-        mtd->erasesize = memorg->pagesize * memorg->pages_per_eraseblock;
-        mtd->writesize = memorg->pagesize;
-+       mtd->writebufsize = mtd->writesize;
-        mtd->oobsize = memorg->oobsize;
-        mtd->size = nanddev_size(nand);
-        mtd->owner = owner;
+>> >  virt_addr_valid() is already used by spi-ti-qspi.  spi core uses for
+>> > the buffer map helper, but that code path is for buffers which are NOT
+>> > vmalloc or highmem, but are still not virt_addr_valid() for some other
+>> > reason.
+>> > 
+>> 
+>>        if (vmalloced_buf || kmap_buf) {
+>>                /* Handle vmalloc'd or kmap'd buffers */
+>>                ...
+> This stuff does get DMAed.  So I have to wonder, if spi.c thinks it can
+> use DMA with vmalloc or highmem, couldn't spi-not do the same instead
+> of the bounce buffer?
 
-For mtd->oobavail, I think we need to call some hooks in spinand_init(),
-and implement on-die ECC layout in vendor's file and HW ECC layout in
-controller's file.
+SPI core does try to DMA into underlying physical pages of vmalloc'd
+buffer. But this has two problems:
 
-What's your opinion?
+1. Does not work well with VIVT caches[1].
+2. On ARM LPAE systems, vmalloc'd buffers can be from highmem region
+that are not addressable using 32 bit addresses and is backed by LPAE.
+So, a 32 bit DMA cannot access these buffers.
 
-With the two thing fixed, we can pass UBIFS mount and mtd test.
+Both these issues lead to random crashes and errors with UBIFS and JFFS2
+flash file systems which this patch series tries to address using bounce
+buffer
 
-Thanks
-Peter Pan
+[1] https://patchwork.kernel.org/patch/9579553/
 
->
-> We still need to make commit messages a bit more verbose.
->
-> This afternoon I'll have a look at the ->select_die() feature.
->
-> Regards,
->
-> Boris
->
-> [1]https://github.com/bbrezillon/linux-0day/commits/nand/spi-nand
+
+-- 
+Regards
+Vignesh
