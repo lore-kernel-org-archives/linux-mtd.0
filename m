@@ -1,65 +1,37 @@
-Received: from mail-qk0-x242.google.com ([2607:f8b0:400d:c09::242])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eWlhA-0001O3-8N
- for linux-mtd@lists.infradead.org; Wed, 03 Jan 2018 16:15:14 +0000
-Received: by mail-qk0-x242.google.com with SMTP id o126so2119004qke.12
- for <linux-mtd@lists.infradead.org>; Wed, 03 Jan 2018 08:15:00 -0800 (PST)
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eWmBa-0003if-JB
+ for linux-mtd@lists.infradead.org; Wed, 03 Jan 2018 16:46:41 +0000
+Date: Wed, 3 Jan 2018 17:46:14 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Peter Pan <peterpansjtu@gmail.com>
+Cc: Frieder Schrempf <frieder.schrempf@exceet.de>, "Peter Pan
+ =?UTF-8?B?5r2Y5qCL?= (peterpandong)" <peterpandong@micron.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH v6 00/15] A SPI NAND framework under generic NAND framework
+Message-ID: <20180103174614.6d760b3d@bbrezillon>
+In-Reply-To: <CAAyFORK9v-V1WrJzTnKk0sAt7_f_st_PHc6nJ6dz0zTL-Jih5A@mail.gmail.com>
+References: <20170529225931.226da943@bbrezillon>
+ <A0FE66EC-7E17-43BE-9B66-896F112B92A0@micron.com>
+ <20171205135804.478902dc@bbrezillon>
+ <20171205140313.40f3f17d@bbrezillon>
+ <256b4ab6-c104-4580-87cd-527178bde460@exceet.de>
+ <20171213222710.32d12514@bbrezillon>
+ <CAAyFORJcT1abbo21iA4cetLKmF0zE4akFGFryxPpwPO+730LDQ@mail.gmail.com>
+ <20171214085036.436b4fcf@bbrezillon>
+ <CAAyFOR+=JwTRTm2MXVdMy7KRPsnV8LV4t71kHUh_s=+QOsVurA@mail.gmail.com>
+ <23d17416-e555-4b92-cc47-f644fbe676c6@exceet.de>
+ <20171214163848.41f6d277@bbrezillon>
+ <CAAyFORKeFq+=tF9AK+8hp6GYYiyp3DKcw8+LWrC3RWS2zLNU_w@mail.gmail.com>
+ <CAAyFORJEuEaHDXgk+m0ax5RoZ-3cRJs6uFXw7syR4vHE1veEwQ@mail.gmail.com>
+ <a06312e4-a7e6-8b7b-9eb5-8320302dcc55@exceet.de>
+ <CAAyFORL6mUFXFRvku6sm=Pj2=+Bf4wSV7EoBM_7+wRdPrF-ufw@mail.gmail.com>
+ <CAAyFOR+m7GvXU66XKphu+cETP9SQTJ6GuZQEZQA600MX1R6cYw@mail.gmail.com>
+ <20171222145147.3697fb02@bbrezillon>
+ <CAAyFORK9v-V1WrJzTnKk0sAt7_f_st_PHc6nJ6dz0zTL-Jih5A@mail.gmail.com>
 MIME-Version: 1.0
-Sender: arndbergmann@gmail.com
-In-Reply-To: <c28ac0bc-8bd2-3dce-3167-8c0f80ec601e@c-s.fr>
-References: <1514026525-32538-1-git-send-email-xieyisheng1@huawei.com>
- <20171223134831.GB10103@kroah.com>
- <f7632cf5-2bcc-4d74-b912-3999937a1269@roeck-us.net>
- <c28ac0bc-8bd2-3dce-3167-8c0f80ec601e@c-s.fr>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Wed, 3 Jan 2018 17:14:59 +0100
-Message-ID: <CAK8P3a3i0bKvG56ha9_hzO=z80sVxCQhaeFn6QW3AwbwZs3HPg@mail.gmail.com>
-Subject: Re: [PATCH v3 00/27] kill devm_ioremap_nocache
-To: christophe leroy <christophe.leroy@c-s.fr>
-Cc: Guenter Roeck <linux@roeck-us.net>, Greg KH <gregkh@linuxfoundation.org>,
- Yisheng Xie <xieyisheng1@huawei.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, ysxie@foxmail.com,
- Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc <linux-mmc@vger.kernel.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd <linux-mtd@lists.infradead.org>, alsa-devel@alsa-project.org,
- Wim Van Sebroeck <wim@iguana.be>, linux-watchdog@vger.kernel.org,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- linux-fbdev@vger.kernel.org,
- Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org,
- Ralf Baechle <ralf@linux-mips.org>,
- "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Jason Cooper <jason@lakedaemon.net>, Marc Zyngier <marc.zyngier@arm.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- industrypack-devel@lists.sourceforge.net, wg@grandegger.com,
- mkl@pengutronix.de, linux-can@vger.kernel.org,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- Alessandro Zummo <a.zummo@towertech.it>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- linux-rtc@vger.kernel.org, Daniel Vetter <daniel.vetter@intel.com>,
- Jani Nikula <jani.nikula@linux.intel.com>,
- Sean Paul <seanpaul@chromium.org>, David Airlie <airlied@linux.ie>,
- dri-devel <dri-devel@lists.freedesktop.org>, Kalle Valo <kvalo@codeaurora.org>,
- linux-wireless <linux-wireless@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>,
- Tejun Heo <tj@kernel.org>, IDE-ML <linux-ide@vger.kernel.org>,
- Bjorn Helgaas <bhelgaas@google.com>, linux-pci <linux-pci@vger.kernel.org>,
- devel@driverdev.osuosl.org, Darren Hart <dvhart@infradead.org>,
- Andy Shevchenko <andy@infradead.org>,
- Platform Driver <platform-driver-x86@vger.kernel.org>,
- Jakub Kicinski <jakub.kicinski@netronome.com>,
- David Miller <davem@davemloft.net>,
- "moderated list:NIOS2 ARCHITECTURE" <nios2-dev@lists.rocketboards.org>,
- Networking <netdev@vger.kernel.org>,
- Vinod Koul <vinod.koul@intel.com>, Dan Williams <dan.j.williams@intel.com>,
- dmaengine@vger.kernel.org, Jiri Slaby <jslaby@suse.com>,
- David Howells <dhowells@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -69,100 +41,133 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Dec 24, 2017 at 9:55 AM, christophe leroy
-<christophe.leroy@c-s.fr> wrote:
-> Le 23/12/2017 =C3=A0 16:57, Guenter Roeck a =C3=A9crit :
->>
->> On 12/23/2017 05:48 AM, Greg KH wrote:
->>>
->>> On Sat, Dec 23, 2017 at 06:55:25PM +0800, Yisheng Xie wrote:
->>>>
->>>> Hi all,
->>>>
->>>> When I tried to use devm_ioremap function and review related code, I
->>>> found
->>>> devm_ioremap and devm_ioremap_nocache is almost the same with each
->>>> other,
->>>> except one use ioremap while the other use ioremap_nocache.
->>>
->>>
->>> For all arches?  Really?  Look at MIPS, and x86, they have different
->>> functions.
->>>
->>
->> Both mips and x86 end up mapping the same function, but other arches
->> don't.
->> mn10300 is one where ioremap and ioremap_nocache are definitely differen=
-t.
->
->
-> alpha: identical
-> arc: identical
-> arm: identical
-> arm64: identical
-> cris: different        <=3D=3D
-> frv: identical
-> hexagone: identical
-> ia64: different        <=3D=3D
-> m32r: identical
-> m68k: identical
-> metag: identical
-> microblaze: identical
-> mips: identical
-> mn10300: different     <=3D=3D
-> nios: identical
-> openrisc: different    <=3D=3D
-> parisc: identical
-> riscv: identical
-> s390: identical
-> sh: identical
-> sparc: identical
-> tile: identical
-> um: rely on asm/generic
-> unicore32: identical
-> x86: identical
-> asm/generic (no mmu): identical
->
-> So 4 among all arches seems to have ioremap() and ioremap_nocache() being
-> different.
->
-> Could we have a define set by the 4 arches on which ioremap() and
-> ioremap_nocache() are different, something like
-> HAVE_DIFFERENT_IOREMAP_NOCACHE ?
+On Tue, 2 Jan 2018 10:51:25 +0800
+Peter Pan <peterpansjtu@gmail.com> wrote:
 
-I wonder if those are actually correct or not. What I found looking at
-those architectures:
+> Hi Boris,
+> 
+> 
+> On Fri, Dec 22, 2017 at 9:51 PM, Boris Brezillon
+> <boris.brezillon@free-electrons.com> wrote:
+> > On Fri, 22 Dec 2017 14:37:06 +0800
+> > Peter Pan <peterpansjtu@gmail.com> wrote:
+> >  
+> >> Hi Boris and Frieder
+> >>
+> >> On Fri, Dec 22, 2017 at 8:49 AM, Peter Pan <peterpansjtu@gmail.com> wrote:  
+> >> > Hi Frieder,
+> >> >
+> >> > On Thu, Dec 21, 2017 at 7:48 PM, Frieder Schrempf
+> >> > <frieder.schrempf@exceet.de> wrote:  
+> >> >> Hello Boris,
+> >> >>  
+> >> >>>>>> So shouldn't there be an spinand_die_select_op in the SPI NAND core
+> >> >>>>>> that
+> >> >>>>>> is executed when necessary and skipped if there's only one die.  
+> >> >>>>>
+> >> >>>>>
+> >> >>>>> Sure, I was arguing against a ->select_chip() at the generic NAND
+> >> >>>>> level. That's something you can add in the SPI NAND framework.  
+> >> >>
+> >> >>
+> >> >> I added an op to send the die selection command and call it, where I think
+> >> >> it is needed: [1]  
+> >> >
+> >> > I think we should add die_select_op in vendor's file and call a hook in core.c
+> >> > since the die select command implementation is different by vendors.
+> >> >
+> >> > Thanks
+> >> > Peter Pan
+> >> >
+> >> >  
+> >> >>
+> >> >> Accessing both dies on the Winbond SPI NAND works fine like this.
+> >> >>
+> >> >> While running tests I came across some problems:
+> >> >>
+> >> >> * On accessing the BBT in RAM via nanddev_bbt_[set/get]_block_status, the
+> >> >> calculation of position and offset seems to be wrong.
+> >> >> My fix is here: [2]
+> >> >>
+> >> >> * On calculating the row address for read/program/erase via
+> >> >> nanddev_pos_to_row, it seems like the eraseblock_addr_shift is wrong.
+> >> >>
+> >> >> * Also, I'm not sure if the LUN should be taken into account when
+> >> >> calculating the row address. At least when you select the LUN by issuing a
+> >> >> separate command, the row address sent to the chip should only contain the
+> >> >> page address.
+> >> >> But I'm not sure if that's the case in general, or if some code is needed to
+> >> >> differentiate.
+> >> >>
+> >> >> See my changes of nanddev_pos_to_row here: [3]
+> >> >>
+> >> >> * I run into a mutex deadlock, when spinand_write_page fails (e.g. because
+> >> >> of a bad block) as the lock is not released in such cases. See my fix here:
+> >> >> [4]
+> >> >>
+> >> >> With these fixes applied and as far as I can tell everything seems to work
+> >> >> fine. I'll do some tests with UBI next and look into the ECC topic.  
+> >>
+> >> UBI attach failed since missing mtd->writebufsize assignment in nanddev_init()
+> >> After fixing it and with Frieder's fixing, UBIFS can be mounted successfully on
+> >> Zedboard with generic spi controller and Micron SPI NAND 2Gb device.
+> >>
+> >> Also, the code now can pass mtd read and page test. 1 error found in oob test
+> >> since we don't have "past end of partition" check in part_write_oob() which I
+> >> mentioned in earlier mail. Since we don't support ECC right now, I didn't try
+> >> nandbiterror test.
+> >>  
+> >
+> > Peter, Frider, I just pushed a new version to my nand/spi-nand branch
+> > [1] fixing the authorship, adding/fixing/removing comments where needed.
+> >
+> > Can you please have a look at those changes (everything I changed
+> > should appear as !fixup commits) and let me know if I did something
+> > wrong.  
+> 
+> You forgot to initialize mtd->writebufsize and mtd->oobavail.
+> For mtd->writebufsize I think we can do it in nanddev_init() like below:
+> 
+> --- a/drivers/mtd/nand/core.c
+> +++ b/drivers/mtd/nand/core.c
+> @@ -196,7 +196,9 @@ int nanddev_init(struct nand_device *nand, const
+> struct nand_ops *ops,
+>         mtd->flags = MTD_CAP_NANDFLASH;
+>         mtd->erasesize = memorg->pagesize * memorg->pages_per_eraseblock;
+>         mtd->writesize = memorg->pagesize;
+> +       mtd->writebufsize = mtd->writesize;
+>         mtd->oobsize = memorg->oobsize;
+>         mtd->size = nanddev_size(nand);
+>         mtd->owner = owner;
 
-- openrisc only has one driver using ioremap (drivers/net/ethernet/ethoc.c)
-  and that calls ioremap_nocache(). Presumably the authors went with the
-  implementation for ioremap that made sense (using default attributes)
-  rather than the one that actually works (using uncached).
+I fixed it already, see [1]. Note that I haven't squashed fixup commits
+yet.
 
-- On ia64, ioremap() checks the attributes for the physical
-  address based on firmware tables and then picks either cached
-  or uncached mappings. ioremap_nocache() does the same but
-  returns NULL instead of a cached mapping for anything that is
-  not an MMIO address. Presumably it would just work to always
-  call ioremap().
+> 
+> For mtd->oobavail, I think we need to call some hooks in spinand_init(),
+> and implement on-die ECC layout in vendor's file and HW ECC layout in
+> controller's file.
+> 
+> What's your opinion?
 
-- mn10300 appears to be wrong, broken by David Howells in
-  commit 83c2dc15ce82 ("MN10300: Handle cacheable PCI regions
-  in pci_iomap()") for any driver calling ioremap() by to get uncached
-  memory, if I understand the comment for commit 34f1bdee1910
-   ("mn10300: switch to GENERIC_PCI_IOMAP") correctly: it
-  seems that PCI addresses include the 'uncached' bit by default
-  to get the right behavior, but dropping that bit breaks it.
+Hm, I'm not so sure. spinand_init() should be called just before
+registering the MTD device, so by that time everything should have been
+setup correctly by the upper layer. This being said, I'd like to keep a
+clear separation between the MTD and NAND layers, and this means
+preventing any NAND sub-layer from directly manipulating the MTD device
+and its fields.
 
-- cris seems similar to mn10300 in hardware, using an phys address
-  bit for uncached access. There are two callers in arch code that
-  appear to rely on the cachable output of ioremap()
-arch/cris/arch-v32/kernel/signal.c:
-__ioremap_prot(virt_to_phys(data), PAGE_SIZE, PAGE_SIGNAL_TRAMPOLINE);
-arch/cris/arch-v32/mm/intmem.c:         intmem_virtual =3D
-ioremap(MEM_INTMEM_START + RESERVED_SIZE,
-  It's unclear whether ioremap_nocache() actually has any users
-  on cris, or whether it was only added for compile-time testing,
-  and calling plain ioremap() would always work too (assuming we
-  pass the phys address with the uncached-bit set).
+Really, I don't know yet how I want to abstract ECC stuff, so let's
+keep it simple for now and expose the whole OOB area (I'll fix the core
+to do that if you're okay).
 
-       Arnd
+> 
+> With the two thing fixed, we can pass UBIFS mount and mtd test.
+
+Do you still have the problem you reported earlier (OOB test)?
+
+Thanks,
+
+Boris
+
+[1]https://github.com/bbrezillon/linux-0day/commit/32eeea1c35bfdc2ac0fcea599f6a926c94b835bb
