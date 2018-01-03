@@ -1,37 +1,38 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eWmBa-0003if-JB
- for linux-mtd@lists.infradead.org; Wed, 03 Jan 2018 16:46:41 +0000
-Date: Wed, 3 Jan 2018 17:46:14 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Peter Pan <peterpansjtu@gmail.com>
-Cc: Frieder Schrempf <frieder.schrempf@exceet.de>, "Peter Pan
- =?UTF-8?B?5r2Y5qCL?= (peterpandong)" <peterpandong@micron.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v6 00/15] A SPI NAND framework under generic NAND framework
-Message-ID: <20180103174614.6d760b3d@bbrezillon>
-In-Reply-To: <CAAyFORK9v-V1WrJzTnKk0sAt7_f_st_PHc6nJ6dz0zTL-Jih5A@mail.gmail.com>
-References: <20170529225931.226da943@bbrezillon>
- <A0FE66EC-7E17-43BE-9B66-896F112B92A0@micron.com>
- <20171205135804.478902dc@bbrezillon>
- <20171205140313.40f3f17d@bbrezillon>
- <256b4ab6-c104-4580-87cd-527178bde460@exceet.de>
- <20171213222710.32d12514@bbrezillon>
- <CAAyFORJcT1abbo21iA4cetLKmF0zE4akFGFryxPpwPO+730LDQ@mail.gmail.com>
- <20171214085036.436b4fcf@bbrezillon>
- <CAAyFOR+=JwTRTm2MXVdMy7KRPsnV8LV4t71kHUh_s=+QOsVurA@mail.gmail.com>
- <23d17416-e555-4b92-cc47-f644fbe676c6@exceet.de>
- <20171214163848.41f6d277@bbrezillon>
- <CAAyFORKeFq+=tF9AK+8hp6GYYiyp3DKcw8+LWrC3RWS2zLNU_w@mail.gmail.com>
- <CAAyFORJEuEaHDXgk+m0ax5RoZ-3cRJs6uFXw7syR4vHE1veEwQ@mail.gmail.com>
- <a06312e4-a7e6-8b7b-9eb5-8320302dcc55@exceet.de>
- <CAAyFORL6mUFXFRvku6sm=Pj2=+Bf4wSV7EoBM_7+wRdPrF-ufw@mail.gmail.com>
- <CAAyFOR+m7GvXU66XKphu+cETP9SQTJ6GuZQEZQA600MX1R6cYw@mail.gmail.com>
- <20171222145147.3697fb02@bbrezillon>
- <CAAyFORK9v-V1WrJzTnKk0sAt7_f_st_PHc6nJ6dz0zTL-Jih5A@mail.gmail.com>
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eWnnA-0005Lz-0p
+ for linux-mtd@lists.infradead.org; Wed, 03 Jan 2018 18:29:33 +0000
+Received: from mail-qt0-f170.google.com (mail-qt0-f170.google.com
+ [209.85.216.170])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 10D0F218CA
+ for <linux-mtd@lists.infradead.org>; Wed,  3 Jan 2018 18:29:20 +0000 (UTC)
+Received: by mail-qt0-f170.google.com with SMTP id k19so3199192qtj.6
+ for <linux-mtd@lists.infradead.org>; Wed, 03 Jan 2018 10:29:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20180103105543.17897-1-zajec5@gmail.com>
+References: <20180102130458.16226-1-zajec5@gmail.com>
+ <20180103105543.17897-1-zajec5@gmail.com>
+From: Rob Herring <robh+dt@kernel.org>
+Date: Wed, 3 Jan 2018 12:28:58 -0600
+Message-ID: <CAL_JsqLYjUsWGAYm978oPmMAue6YDRb=K00gReZTia6iaJ6xsA@mail.gmail.com>
+Subject: Re: [PATCH V6 1/2] mtd: partitions: add of_match_table parser matching
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Mark Rutland <mark.rutland@arm.com>, Frank Rowand <frowand.list@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, Geert Uytterhoeven <geert+renesas@glider.be>,
+ Jonas Gorski <jonas.gorski@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>,
+ John Crispin <john@phrozen.org>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,133 +42,181 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2 Jan 2018 10:51:25 +0800
-Peter Pan <peterpansjtu@gmail.com> wrote:
+On Wed, Jan 3, 2018 at 4:55 AM, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> =
+wrote:
+> From: Brian Norris <computersforpeace@gmail.com>
+>
+> Partition parsers can now provide an of_match_table to enable
+> flash<-->parser matching via device tree as documented in the
+> mtd/partition.txt.
+>
+> It works by looking for a matching parser for every string in the
+> "compatibility" property (starting with the most specific one).
+>
+> This support is currently limited to built-in parsers as it uses
+> request_module() and friends. This should be sufficient for most cases
+> though as compiling parsers as modules isn't a common choice.
+>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+> ---
+> This is based on Brian's patches:
+> [RFC PATCH 4/7] mtd: add of_match_mtd_parser() and of_mtd_match_mtd_parse=
+r() helpers
+> [RFC PATCH 6/7] RFC: mtd: partitions: enable of_match_table matching
+>
+> V1: Put helpers in mtdpart.c instead of drivers/of/of_mtd.c
+>     Merge helpers into a single of_mtd_match_mtd_parser
+> V3: Add a simple comment to note we will need the best match in the futur=
+e
+> V4: Rework new functions to pick parser with the best match
+>     Move new code in parse_mtd_partitions up so it has precedence over fl=
+ash
+>     driver defaults and MTD defaults
+> V5: Rework matching code to start checking with the most specific string =
+in the
+>     "compatibility" property.
+> V6: Initialize "ret" variable in mtd_part_get_parser_by_cp to NULL
+> ---
+>  drivers/mtd/mtdpart.c          | 64 ++++++++++++++++++++++++++++++++++++=
+++++++
+>  include/linux/mtd/partitions.h |  1 +
+>  2 files changed, 65 insertions(+)
+>
+> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+> index be088bccd593..b11958adcf45 100644
+> --- a/drivers/mtd/mtdpart.c
+> +++ b/drivers/mtd/mtdpart.c
+> @@ -30,6 +30,7 @@
+>  #include <linux/mtd/mtd.h>
+>  #include <linux/mtd/partitions.h>
+>  #include <linux/err.h>
+> +#include <linux/of.h>
+>
+>  #include "mtdcore.h"
+>
+> @@ -880,6 +881,48 @@ static int mtd_part_do_parse(struct mtd_part_parser =
+*parser,
+>  }
+>
+>  /**
+> + * mtd_part_get_parser_by_cp - find MTD parser by a compatible string
 
-> Hi Boris,
-> 
-> 
-> On Fri, Dec 22, 2017 at 9:51 PM, Boris Brezillon
-> <boris.brezillon@free-electrons.com> wrote:
-> > On Fri, 22 Dec 2017 14:37:06 +0800
-> > Peter Pan <peterpansjtu@gmail.com> wrote:
-> >  
-> >> Hi Boris and Frieder
-> >>
-> >> On Fri, Dec 22, 2017 at 8:49 AM, Peter Pan <peterpansjtu@gmail.com> wrote:  
-> >> > Hi Frieder,
-> >> >
-> >> > On Thu, Dec 21, 2017 at 7:48 PM, Frieder Schrempf
-> >> > <frieder.schrempf@exceet.de> wrote:  
-> >> >> Hello Boris,
-> >> >>  
-> >> >>>>>> So shouldn't there be an spinand_die_select_op in the SPI NAND core
-> >> >>>>>> that
-> >> >>>>>> is executed when necessary and skipped if there's only one die.  
-> >> >>>>>
-> >> >>>>>
-> >> >>>>> Sure, I was arguing against a ->select_chip() at the generic NAND
-> >> >>>>> level. That's something you can add in the SPI NAND framework.  
-> >> >>
-> >> >>
-> >> >> I added an op to send the die selection command and call it, where I think
-> >> >> it is needed: [1]  
-> >> >
-> >> > I think we should add die_select_op in vendor's file and call a hook in core.c
-> >> > since the die select command implementation is different by vendors.
-> >> >
-> >> > Thanks
-> >> > Peter Pan
-> >> >
-> >> >  
-> >> >>
-> >> >> Accessing both dies on the Winbond SPI NAND works fine like this.
-> >> >>
-> >> >> While running tests I came across some problems:
-> >> >>
-> >> >> * On accessing the BBT in RAM via nanddev_bbt_[set/get]_block_status, the
-> >> >> calculation of position and offset seems to be wrong.
-> >> >> My fix is here: [2]
-> >> >>
-> >> >> * On calculating the row address for read/program/erase via
-> >> >> nanddev_pos_to_row, it seems like the eraseblock_addr_shift is wrong.
-> >> >>
-> >> >> * Also, I'm not sure if the LUN should be taken into account when
-> >> >> calculating the row address. At least when you select the LUN by issuing a
-> >> >> separate command, the row address sent to the chip should only contain the
-> >> >> page address.
-> >> >> But I'm not sure if that's the case in general, or if some code is needed to
-> >> >> differentiate.
-> >> >>
-> >> >> See my changes of nanddev_pos_to_row here: [3]
-> >> >>
-> >> >> * I run into a mutex deadlock, when spinand_write_page fails (e.g. because
-> >> >> of a bad block) as the lock is not released in such cases. See my fix here:
-> >> >> [4]
-> >> >>
-> >> >> With these fixes applied and as far as I can tell everything seems to work
-> >> >> fine. I'll do some tests with UBI next and look into the ECC topic.  
-> >>
-> >> UBI attach failed since missing mtd->writebufsize assignment in nanddev_init()
-> >> After fixing it and with Frieder's fixing, UBIFS can be mounted successfully on
-> >> Zedboard with generic spi controller and Micron SPI NAND 2Gb device.
-> >>
-> >> Also, the code now can pass mtd read and page test. 1 error found in oob test
-> >> since we don't have "past end of partition" check in part_write_oob() which I
-> >> mentioned in earlier mail. Since we don't support ECC right now, I didn't try
-> >> nandbiterror test.
-> >>  
-> >
-> > Peter, Frider, I just pushed a new version to my nand/spi-nand branch
-> > [1] fixing the authorship, adding/fixing/removing comments where needed.
-> >
-> > Can you please have a look at those changes (everything I changed
-> > should appear as !fixup commits) and let me know if I did something
-> > wrong.  
-> 
-> You forgot to initialize mtd->writebufsize and mtd->oobavail.
-> For mtd->writebufsize I think we can do it in nanddev_init() like below:
-> 
-> --- a/drivers/mtd/nand/core.c
-> +++ b/drivers/mtd/nand/core.c
-> @@ -196,7 +196,9 @@ int nanddev_init(struct nand_device *nand, const
-> struct nand_ops *ops,
->         mtd->flags = MTD_CAP_NANDFLASH;
->         mtd->erasesize = memorg->pagesize * memorg->pages_per_eraseblock;
->         mtd->writesize = memorg->pagesize;
-> +       mtd->writebufsize = mtd->writesize;
->         mtd->oobsize = memorg->oobsize;
->         mtd->size = nanddev_size(nand);
->         mtd->owner = owner;
+What's "cp"? Perhaps mtd_part_get_compatible_parser.
 
-I fixed it already, see [1]. Note that I haven't squashed fixup commits
-yet.
+> + *
+> + * @cp: compatible string describing partitions in a device tree
 
-> 
-> For mtd->oobavail, I think we need to call some hooks in spinand_init(),
-> and implement on-die ECC layout in vendor's file and HW ECC layout in
-> controller's file.
-> 
-> What's your opinion?
+"compat" would be clearer IMO
 
-Hm, I'm not so sure. spinand_init() should be called just before
-registering the MTD device, so by that time everything should have been
-setup correctly by the upper layer. This being said, I'd like to keep a
-clear separation between the MTD and NAND layers, and this means
-preventing any NAND sub-layer from directly manipulating the MTD device
-and its fields.
+> + *
+> + * MTD parsers can specify supported partitions by providing a table of
+> + * compatibility strings. This function finds a parser that advertises s=
+upport
+> + * for a passed value of "compatible".
+> + */
+> +static struct mtd_part_parser *mtd_part_get_parser_by_cp(const char *cp)
+> +{
+> +       struct mtd_part_parser *p, *ret =3D NULL;
+> +
+> +       spin_lock(&part_parser_lock);
+> +
+> +       list_for_each_entry(p, &part_parsers, list) {
+> +               const struct of_device_id *matches;
+> +
+> +               matches =3D p->of_match_table;
+> +               if (!matches)
+> +                       continue;
+> +
+> +               for (; matches->name[0] || matches->type[0] || matches->c=
+ompatible[0];
+> +                    matches++) {
+> +                       if (!matches->compatible[0])
+> +                               continue;
 
-Really, I don't know yet how I want to abstract ECC stuff, so let's
-keep it simple for now and expose the whole OOB area (I'll fix the core
-to do that if you're okay).
+It would be simpler to just ignore name and type. Having either of
+those would be an error and the only consequence if there are entries
+without compatible is returning early.
 
-> 
-> With the two thing fixed, we can pass UBIFS mount and mtd test.
+> +                       if (!strcmp(matches->compatible, cp) &&
+> +                           try_module_get(p->owner)) {
+> +                               ret =3D p;
+> +                               break;
+> +                       }
+> +               }
+> +
+> +               if (ret)
+> +                       break;
+> +       }
+> +
+> +       spin_unlock(&part_parser_lock);
+> +
+> +       return ret;
+> +}
+> +
+> +/**
+>   * parse_mtd_partitions - parse MTD partitions
+>   * @master: the master partition (describes whole MTD device)
+>   * @types: names of partition parsers to try or %NULL
+> @@ -905,8 +948,29 @@ int parse_mtd_partitions(struct mtd_info *master, co=
+nst char *const *types,
+>                          struct mtd_part_parser_data *data)
+>  {
+>         struct mtd_part_parser *parser;
+> +       struct device_node *np;
+> +       struct property *prop;
+> +       const char *cp;
+>         int ret, err =3D 0;
+>
+> +       np =3D of_get_child_by_name(mtd_get_of_node(master), "partitions"=
+);
+> +       if (np) {
 
-Do you still have the problem you reported earlier (OOB test)?
+You can drop this. of_property_for_each_string and of_node_put will
+work if np is NULL.
 
-Thanks,
+> +               of_property_for_each_string(np, "compatible", prop, cp) {
+> +                       parser =3D mtd_part_get_parser_by_cp(cp);
+> +                       if (!parser)
+> +                               continue;
+> +                       ret =3D mtd_part_do_parse(parser, master, pparts,=
+ data);
+> +                       if (ret > 0) {
+> +                               of_node_put(np);
+> +                               return 0;
+> +                       }
+> +                       mtd_part_parser_put(parser);
+> +                       if (ret < 0 && !err)
+> +                               err =3D ret;
+> +               }
+> +               of_node_put(np);
+> +       }
+> +
+>         if (!types)
+>                 types =3D default_mtd_part_types;
+>
+> diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partition=
+s.h
+> index c4beb70dacbd..11cb0c50cd84 100644
+> --- a/include/linux/mtd/partitions.h
+> +++ b/include/linux/mtd/partitions.h
+> @@ -77,6 +77,7 @@ struct mtd_part_parser {
+>         struct list_head list;
+>         struct module *owner;
+>         const char *name;
+> +       const struct of_device_id *of_match_table;
 
-Boris
+I generally like using of_device_id over just an array of strings, but
+I'm wondering if there's really cases where you have multiple
+compatible strings for a single parser? Perhaps a single string here
+would be sufficient. And if you did have multiple matches, how would
+you distinguish them later on in the parsing functions? Normally we'd
+use the matched data ptr, but that's not provided here.
 
-[1]https://github.com/bbrezillon/linux-0day/commit/32eeea1c35bfdc2ac0fcea599f6a926c94b835bb
+>         int (*parse_fn)(struct mtd_info *, const struct mtd_partition **,
+>                         struct mtd_part_parser_data *);
+>         void (*cleanup)(const struct mtd_partition *pparts, int nr_parts)=
+;
+> --
+> 2.11.0
+>
