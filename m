@@ -1,18 +1,53 @@
-Received: from mail-yb0-x244.google.com ([2607:f8b0:4002:c09::244])
+Received: from [45.249.212.35] (helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eWYlB-00047V-Pw
- for linux-mtd@lists.infradead.org; Wed, 03 Jan 2018 02:26:31 +0000
-Received: by mail-yb0-x244.google.com with SMTP id q3so114363ybg.9
- for <linux-mtd@lists.infradead.org>; Tue, 02 Jan 2018 18:26:18 -0800 (PST)
-From: Bradley Bolen <bradleybolen@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: cyrille.pitchen@wedev4u.fr, marek.vasut@gmail.com,
- boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, richard@nod.at, dedekind1@gmail.com,
- Bradley Bolen <bradleybolen@gmail.com>
-Subject: [PATCH] UBI: block: Must use a mutex when using idr_alloc/idr_remove
-Date: Tue,  2 Jan 2018 21:26:09 -0500
-Message-Id: <1514946369-3674-1-git-send-email-bradleybolen@gmail.com>
+ id 1eWcl7-0005xk-DV
+ for linux-mtd@lists.infradead.org; Wed, 03 Jan 2018 06:42:53 +0000
+Subject: Re: [PATCH v3 00/27] kill devm_ioremap_nocache
+To: christophe leroy <christophe.leroy@c-s.fr>, Guenter Roeck
+ <linux@roeck-us.net>, Greg KH <gregkh@linuxfoundation.org>,
+ <starvik@axis.com>, <jesper.nilsson@axis.com>, <tony.luck@intel.com>,
+ <fenghua.yu@intel.com>, <jonas@southpole.se>, <shorne@gmail.com>,
+ <dhowells@redhat.com>
+References: <1514026525-32538-1-git-send-email-xieyisheng1@huawei.com>
+ <20171223134831.GB10103@kroah.com>
+ <f7632cf5-2bcc-4d74-b912-3999937a1269@roeck-us.net>
+ <c28ac0bc-8bd2-3dce-3167-8c0f80ec601e@c-s.fr>
+ <6c0ade63-f4d3-d44d-c622-b091eb2ba902@huawei.com>
+CC: <linux-kernel@vger.kernel.org>, <ysxie@foxmail.com>,
+ <ulf.hansson@linaro.org>, <linux-mmc@vger.kernel.org>,
+ <boris.brezillon@free-electrons.com>, <richard@nod.at>,
+ <marek.vasut@gmail.com>, <cyrille.pitchen@wedev4u.fr>,
+ <linux-mtd@lists.infradead.org>, <alsa-devel@alsa-project.org>,
+ <wim@iguana.be>, <linux-watchdog@vger.kernel.org>,
+ <b.zolnierkie@samsung.com>, <linux-fbdev@vger.kernel.org>,
+ <linus.walleij@linaro.org>, <linux-gpio@vger.kernel.org>,
+ <ralf@linux-mips.org>, <linux-mips@linux-mips.org>, <lgirdwood@gmail.com>,
+ <broonie@kernel.org>, <tglx@linutronix.de>, <jason@lakedaemon.net>,
+ <marc.zyngier@arm.com>, <arnd@arndb.de>, <andriy.shevchenko@linux.intel.com>,
+ <industrypack-devel@lists.sourceforge.net>, <wg@grandegger.com>,
+ <mkl@pengutronix.de>, <linux-can@vger.kernel.org>, <mchehab@kernel.org>,
+ <linux-media@vger.kernel.org>, <a.zummo@towertech.it>,
+ <alexandre.belloni@free-electrons.com>, <linux-rtc@vger.kernel.org>,
+ <daniel.vetter@intel.com>, <jani.nikula@linux.intel.com>,
+ <seanpaul@chromium.org>, <airlied@linux.ie>,
+ <dri-devel@lists.freedesktop.org>, <kvalo@codeaurora.org>,
+ <linux-wireless@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+ <tj@kernel.org>, <linux-ide@vger.kernel.org>, <bhelgaas@google.com>,
+ <linux-pci@vger.kernel.org>, <devel@driverdev.osuosl.org>,
+ <dvhart@infradead.org>, <andy@infradead.org>,
+ <platform-driver-x86@vger.kernel.org>, <jakub.kicinski@netronome.com>,
+ <davem@davemloft.net>, <nios2-dev@lists.rocketboards.org>,
+ <netdev@vger.kernel.org>, <vinod.koul@intel.com>, <dan.j.williams@intel.com>,
+ <dmaengine@vger.kernel.org>, <jslaby@suse.com>, <linux-cris-kernel@axis.com>,
+ <linux-ia64@vger.kernel.org>, <openrisc@lists.librecores.org>,
+ <linux-am33-list@redhat.com>
+From: Yisheng Xie <xieyisheng1@huawei.com>
+Message-ID: <e9f6805c-2dd7-f9c6-d615-5e25cff241a3@huawei.com>
+Date: Wed, 3 Jan 2018 14:42:14 +0800
+MIME-Version: 1.0
+In-Reply-To: <6c0ade63-f4d3-d44d-c622-b091eb2ba902@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,66 +57,119 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This fixes a race condition where running ubiblock on multiple volumes
-simultaneously produces the following splat.
++ cris/ia64/mn10300/openrisc maintainers
 
-kernel BUG at kernel-source/fs/sysfs/group.c:113!
-Internal error: Oops - BUG: 0 [#1] PREEMPT SMP ARM
-[<c01e4160>] (internal_create_group) from [<c01e43fc>]
-(sysfs_create_group+0x20/0x24)
-[<c01e43fc>] (sysfs_create_group) from [<c00e4800>]
-(blk_trace_init_sysfs+0x18/0x20)
-[<c00e4800>] (blk_trace_init_sysfs) from [<c02bc734>]
-(blk_register_queue+0x6c/0x154)
-[<c02bc734>] (blk_register_queue) from [<c02cd610>]
-(device_add_disk+0x2c8/0x450)
-[<c02cd610>] (device_add_disk) from [<c0430fac>]
-(ubiblock_create+0x254/0x2e4)
-[<c0430fac>] (ubiblock_create) from [<c0421a3c>]
-(vol_cdev_ioctl+0x3e0/0x564)
-[<c0421a3c>] (vol_cdev_ioctl) from [<c018a55c>] (vfs_ioctl+0x30/0x44)
-[<c018a55c>] (vfs_ioctl) from [<c018ad2c>] (do_vfs_ioctl+0x694/0x798)
-[<c018ad2c>] (do_vfs_ioctl) from [<c018ae74>] (SyS_ioctl+0x44/0x6c)
-[<c018ae74>] (SyS_ioctl) from [<c0010720>] (ret_fast_syscall+0x0/0x34)
+On 2017/12/25 9:09, Yisheng Xie wrote:
+> hi Christophe and Greg,
+> 
+> On 2017/12/24 16:55, christophe leroy wrote:
+>>
+>>
+>> Le 23/12/2017 à 16:57, Guenter Roeck a écrit :
+>>> On 12/23/2017 05:48 AM, Greg KH wrote:
+>>>> On Sat, Dec 23, 2017 at 06:55:25PM +0800, Yisheng Xie wrote:
+>>>>> Hi all,
+>>>>>
+>>>>> When I tried to use devm_ioremap function and review related code, I found
+>>>>> devm_ioremap and devm_ioremap_nocache is almost the same with each other,
+>>>>> except one use ioremap while the other use ioremap_nocache.
+>>>>
+>>>> For all arches?  Really?  Look at MIPS, and x86, they have different
+>>>> functions.
+>>>>
+>>>
+>>> Both mips and x86 end up mapping the same function, but other arches don't.
+>>> mn10300 is one where ioremap and ioremap_nocache are definitely different.
+>>
+>> alpha: identical
+>> arc: identical
+>> arm: identical
+>> arm64: identical
+>> cris: different        <==
+>> frv: identical
+>> hexagone: identical
+>> ia64: different        <==
+>> m32r: identical
+>> m68k: identical
+>> metag: identical
+>> microblaze: identical
+>> mips: identical
+>> mn10300: different     <==
+>> nios: identical
+>> openrisc: different    <==
+>> parisc: identical
+>> riscv: identical
+>> s390: identical
+>> sh: identical
+>> sparc: identical
+>> tile: identical
+>> um: rely on asm/generic
+>> unicore32: identical
+>> x86: identical
+>> asm/generic (no mmu): identical
+> 
+> Wow, that's correct, sorry for I have just checked the main archs, I means
+> x86,arm, arm64, mips.
+> 
+> However, I stall have no idea about why these 4 archs want different ioremap
+> function with others. Drivers seems cannot aware this? If driver call ioremap
+> want he really want for there 4 archs, cache or nocache?
 
-Signed-off-by: Bradley Bolen <bradleybolen@gmail.com>
----
- drivers/mtd/ubi/block.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Could you please help about this? it is out of my knowledge.
 
-diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index b210fdb..1c12370 100644
---- a/drivers/mtd/ubi/block.c
-+++ b/drivers/mtd/ubi/block.c
-@@ -390,7 +390,9 @@ int ubiblock_create(struct ubi_volume_info *vi)
- 
- 	gd->fops = &ubiblock_ops;
- 	gd->major = ubiblock_major;
-+	mutex_lock(&devices_mutex);
- 	gd->first_minor = idr_alloc(&ubiblock_minor_idr, dev, 0, 0, GFP_KERNEL);
-+	mutex_unlock(&devices_mutex);
- 	if (gd->first_minor < 0) {
- 		dev_err(disk_to_dev(gd),
- 			"block: dynamic minor allocation failed");
-@@ -452,7 +454,9 @@ int ubiblock_create(struct ubi_volume_info *vi)
- out_free_tags:
- 	blk_mq_free_tag_set(&dev->tag_set);
- out_remove_minor:
-+	mutex_lock(&devices_mutex);
- 	idr_remove(&ubiblock_minor_idr, gd->first_minor);
-+	mutex_unlock(&devices_mutex);
- out_put_disk:
- 	put_disk(dev->gd);
- out_free_dev:
-@@ -471,7 +475,9 @@ static void ubiblock_cleanup(struct ubiblock *dev)
- 	blk_cleanup_queue(dev->rq);
- 	blk_mq_free_tag_set(&dev->tag_set);
- 	dev_info(disk_to_dev(dev->gd), "released");
-+	mutex_lock(&devices_mutex);
- 	idr_remove(&ubiblock_minor_idr, dev->gd->first_minor);
-+	mutex_unlock(&devices_mutex);
- 	put_disk(dev->gd);
- }
- 
--- 
-1.9.3
+Thanks
+Yisheng
+
+> 
+>>
+>> So 4 among all arches seems to have ioremap() and ioremap_nocache() being different.
+>>
+>> Could we have a define set by the 4 arches on which ioremap() and ioremap_nocache() are different, something like HAVE_DIFFERENT_IOREMAP_NOCACHE ?
+> 
+> Then, what the HAVE_DIFFERENT_IOREMAP_NOCACHE is uesed for ?
+> 
+> Thanks
+> Yisheng
+>>
+>> Christophe
+>>
+>>>
+>>> Guenter
+>>>
+>>>>> While ioremap's
+>>>>> default function is ioremap_nocache, so devm_ioremap_nocache also have the
+>>>>> same function with devm_ioremap, which can just be killed to reduce the size
+>>>>> of devres.o(from 20304 bytes to 18992 bytes in my compile environment).
+>>>>>
+>>>>> I have posted two versions, which use macro instead of function for
+>>>>> devm_ioremap_nocache[1] or devm_ioremap[2]. And Greg suggest me to kill
+>>>>> devm_ioremap_nocache for no need to keep a macro around for the duplicate
+>>>>> thing. So here comes v3 and please help to review.
+>>>>
+>>>> I don't think this can be done, what am I missing?  These functions are
+>>>> not identical, sorry for missing that before.
+> 
+> Never mind, I should checked all the arches, sorry about that.
+> 
+>>>>
+>>>> thanks,
+>>>>
+>>>> greg k-h
+>>>>
+>>>
+>>> -- 
+>>> To unsubscribe from this list: send the line "unsubscribe linux-watchdog" in
+>>> the body of a message to majordomo@vger.kernel.org
+>>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>>
+>> ---
+>> L'absence de virus dans ce courrier électronique a été vérifiée par le logiciel antivirus Avast.
+>> https://www.avast.com/antivirus
+>>
+>>
+>> .
+>>
+> 
+> 
+> .
+> 
