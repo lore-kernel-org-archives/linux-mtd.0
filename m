@@ -1,30 +1,65 @@
-Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
+Received: from mail-qk0-x242.google.com ([2607:f8b0:400d:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eWha5-0003pE-A8
- for linux-mtd@lists.infradead.org; Wed, 03 Jan 2018 11:51:41 +0000
-Date: Wed, 3 Jan 2018 11:51:16 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: Rob Herring <robh@kernel.org>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- computersforpeace@gmail.com, dwmw2@infradead.org, richard@nod.at,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, vigneshr@ti.com,
- linux@armlinux.org.uk, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
- nicolas.ferre@microchip.com, radu.pirea@microchip.com
-Subject: Re: [PATCH 2/3] dt-bindings: mtd: atmel-quadspi: add an optional
- property 'dmacap,memcpy'
-Message-ID: <20180103115116.GG5603@sirena.org.uk>
-References: <cover.1514087323.git.cyrille.pitchen@wedev4u.fr>
- <143542c61ca674d53da4985bbabc142e8e6ebefc.1514087323.git.cyrille.pitchen@wedev4u.fr>
- <20171226232330.trljk2ofyvu4ly3n@rob-hp-laptop>
- <0149ba05-64b1-2739-e61f-78d5170775fb@wedev4u.fr>
+ id 1eWlhA-0001O3-8N
+ for linux-mtd@lists.infradead.org; Wed, 03 Jan 2018 16:15:14 +0000
+Received: by mail-qk0-x242.google.com with SMTP id o126so2119004qke.12
+ for <linux-mtd@lists.infradead.org>; Wed, 03 Jan 2018 08:15:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="xs+9IvWevLaxKUtW"
-Content-Disposition: inline
-In-Reply-To: <0149ba05-64b1-2739-e61f-78d5170775fb@wedev4u.fr>
+Sender: arndbergmann@gmail.com
+In-Reply-To: <c28ac0bc-8bd2-3dce-3167-8c0f80ec601e@c-s.fr>
+References: <1514026525-32538-1-git-send-email-xieyisheng1@huawei.com>
+ <20171223134831.GB10103@kroah.com>
+ <f7632cf5-2bcc-4d74-b912-3999937a1269@roeck-us.net>
+ <c28ac0bc-8bd2-3dce-3167-8c0f80ec601e@c-s.fr>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Wed, 3 Jan 2018 17:14:59 +0100
+Message-ID: <CAK8P3a3i0bKvG56ha9_hzO=z80sVxCQhaeFn6QW3AwbwZs3HPg@mail.gmail.com>
+Subject: Re: [PATCH v3 00/27] kill devm_ioremap_nocache
+To: christophe leroy <christophe.leroy@c-s.fr>
+Cc: Guenter Roeck <linux@roeck-us.net>, Greg KH <gregkh@linuxfoundation.org>,
+ Yisheng Xie <xieyisheng1@huawei.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, ysxie@foxmail.com,
+ Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc <linux-mmc@vger.kernel.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd <linux-mtd@lists.infradead.org>, alsa-devel@alsa-project.org,
+ Wim Van Sebroeck <wim@iguana.be>, linux-watchdog@vger.kernel.org,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ linux-fbdev@vger.kernel.org,
+ Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org,
+ Ralf Baechle <ralf@linux-mips.org>,
+ "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Jason Cooper <jason@lakedaemon.net>, Marc Zyngier <marc.zyngier@arm.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ industrypack-devel@lists.sourceforge.net, wg@grandegger.com,
+ mkl@pengutronix.de, linux-can@vger.kernel.org,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Linux Media Mailing List <linux-media@vger.kernel.org>,
+ Alessandro Zummo <a.zummo@towertech.it>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ linux-rtc@vger.kernel.org, Daniel Vetter <daniel.vetter@intel.com>,
+ Jani Nikula <jani.nikula@linux.intel.com>,
+ Sean Paul <seanpaul@chromium.org>, David Airlie <airlied@linux.ie>,
+ dri-devel <dri-devel@lists.freedesktop.org>, Kalle Valo <kvalo@codeaurora.org>,
+ linux-wireless <linux-wireless@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ Tejun Heo <tj@kernel.org>, IDE-ML <linux-ide@vger.kernel.org>,
+ Bjorn Helgaas <bhelgaas@google.com>, linux-pci <linux-pci@vger.kernel.org>,
+ devel@driverdev.osuosl.org, Darren Hart <dvhart@infradead.org>,
+ Andy Shevchenko <andy@infradead.org>,
+ Platform Driver <platform-driver-x86@vger.kernel.org>,
+ Jakub Kicinski <jakub.kicinski@netronome.com>,
+ David Miller <davem@davemloft.net>,
+ "moderated list:NIOS2 ARCHITECTURE" <nios2-dev@lists.rocketboards.org>,
+ Networking <netdev@vger.kernel.org>,
+ Vinod Koul <vinod.koul@intel.com>, Dan Williams <dan.j.williams@intel.com>,
+ dmaengine@vger.kernel.org, Jiri Slaby <jslaby@suse.com>,
+ David Howells <dhowells@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,52 +69,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Sun, Dec 24, 2017 at 9:55 AM, christophe leroy
+<christophe.leroy@c-s.fr> wrote:
+> Le 23/12/2017 =C3=A0 16:57, Guenter Roeck a =C3=A9crit :
+>>
+>> On 12/23/2017 05:48 AM, Greg KH wrote:
+>>>
+>>> On Sat, Dec 23, 2017 at 06:55:25PM +0800, Yisheng Xie wrote:
+>>>>
+>>>> Hi all,
+>>>>
+>>>> When I tried to use devm_ioremap function and review related code, I
+>>>> found
+>>>> devm_ioremap and devm_ioremap_nocache is almost the same with each
+>>>> other,
+>>>> except one use ioremap while the other use ioremap_nocache.
+>>>
+>>>
+>>> For all arches?  Really?  Look at MIPS, and x86, they have different
+>>> functions.
+>>>
+>>
+>> Both mips and x86 end up mapping the same function, but other arches
+>> don't.
+>> mn10300 is one where ioremap and ioremap_nocache are definitely differen=
+t.
+>
+>
+> alpha: identical
+> arc: identical
+> arm: identical
+> arm64: identical
+> cris: different        <=3D=3D
+> frv: identical
+> hexagone: identical
+> ia64: different        <=3D=3D
+> m32r: identical
+> m68k: identical
+> metag: identical
+> microblaze: identical
+> mips: identical
+> mn10300: different     <=3D=3D
+> nios: identical
+> openrisc: different    <=3D=3D
+> parisc: identical
+> riscv: identical
+> s390: identical
+> sh: identical
+> sparc: identical
+> tile: identical
+> um: rely on asm/generic
+> unicore32: identical
+> x86: identical
+> asm/generic (no mmu): identical
+>
+> So 4 among all arches seems to have ioremap() and ioremap_nocache() being
+> different.
+>
+> Could we have a define set by the 4 arches on which ioremap() and
+> ioremap_nocache() are different, something like
+> HAVE_DIFFERENT_IOREMAP_NOCACHE ?
 
---xs+9IvWevLaxKUtW
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I wonder if those are actually correct or not. What I found looking at
+those architectures:
 
-On Wed, Dec 27, 2017 at 10:40:00PM +0100, Cyrille Pitchen wrote:
-> Le 27/12/2017 =E0 00:23, Rob Herring a =E9crit :
-> > On Sun, Dec 24, 2017 at 05:36:05AM +0100, Cyrille Pitchen wrote:
+- openrisc only has one driver using ioremap (drivers/net/ethernet/ethoc.c)
+  and that calls ioremap_nocache(). Presumably the authors went with the
+  implementation for ioremap that made sense (using default attributes)
+  rather than the one that actually works (using uncached).
 
-> >> +Optional properties:
-> >> +- dmacap,memcpy:  Reserve a DMA channel to perform DMA memcpy() betwe=
-en the
-> >> +                  system memory and the QSPI mapped memory.
+- On ia64, ioremap() checks the attributes for the physical
+  address based on firmware tables and then picks either cached
+  or uncached mappings. ioremap_nocache() does the same but
+  returns NULL instead of a cached mapping for anything that is
+  not an MMIO address. Presumably it would just work to always
+  call ioremap().
 
-> > How is this a h/w property? Why would I not want to always enable DMA i=
-f=20
-> > possible?
+- mn10300 appears to be wrong, broken by David Howells in
+  commit 83c2dc15ce82 ("MN10300: Handle cacheable PCI regions
+  in pci_iomap()") for any driver calling ioremap() by to get uncached
+  memory, if I understand the comment for commit 34f1bdee1910
+   ("mn10300: switch to GENERIC_PCI_IOMAP") correctly: it
+  seems that PCI addresses include the 'uncached' bit by default
+  to get the right behavior, but dropping that bit breaks it.
 
-> The number of DMA channels is limited for a given SoC. This number may be
-> lower than the number of enabled controllers (spi, i2c, qspi, aes, sha,
-> des, sdmmc, usart, ...).
+- cris seems similar to mn10300 in hardware, using an phys address
+  bit for uncached access. There are two callers in arch code that
+  appear to rely on the cachable output of ioremap()
+arch/cris/arch-v32/kernel/signal.c:
+__ioremap_prot(virt_to_phys(data), PAGE_SIZE, PAGE_SIGNAL_TRAMPOLINE);
+arch/cris/arch-v32/mm/intmem.c:         intmem_virtual =3D
+ioremap(MEM_INTMEM_START + RESERVED_SIZE,
+  It's unclear whether ioremap_nocache() actually has any users
+  on cris, or whether it was only added for compile-time testing,
+  and calling plain ioremap() would always work too (assuming we
+  pass the phys address with the uncached-bit set).
 
-> So we use a DT property to explicitly tell the matching drivers to request
-> and reserved the DMA channels they need. This policy is not driver or even
-> SoC specific but board specific. It's very common to reserved DMA channels
-> for the most used or most performance dependent controllers, setting the
-> relevant properties in the device-tree then restricting remaining
-> controllers to their PIO mode.
-
-Why can't we just time share the DMA channels at runtime, why do we need
-this static allocation? =20
-
---xs+9IvWevLaxKUtW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlpMw7MACgkQJNaLcl1U
-h9AWGQf9F0RsEiNtRpRHLeDZldvGY8OSYaP3t3RRrpTrlrKfx3BxDGqCeuTj5gfB
-7wCpMzuTn8ckXz3nSuP3i2rdWUDSIZxX7zMHUElNLDEQBtUofXi4Ub35NznNShTN
-0EAuW9xc86ek/iPZUnGHjQe6BcCzZajeLMpPOdxg6YPqGKHYNwtPH7RvZ9sTYI+Y
-w8vj6lx5Y9o1UB0Lw/TIevyjWIOdndfy3IN0g2a2H8isDuATg0edR+CUtDKG0LBM
-3EHxrxilgFks/Y3TmnirTcDMcFT+IzelUmIxtYG01DLALQQoHpMrHEfOI22/x7Hr
-15vQ8RoA0kndI977/52eKt4b1QvQeg==
-=1Kgv
------END PGP SIGNATURE-----
-
---xs+9IvWevLaxKUtW--
+       Arnd
