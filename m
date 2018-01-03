@@ -1,31 +1,21 @@
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+Received: from mail-bl2nam02on0611.outbound.protection.outlook.com
+ ([2a01:111:f400:fe46::611]
+ helo=NAM02-BL2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eWgiy-0000Gm-Dk
- for linux-mtd@lists.infradead.org; Wed, 03 Jan 2018 10:56:46 +0000
-Received: by mail-lf0-x242.google.com with SMTP id a12so1248004lfe.13
- for <linux-mtd@lists.infradead.org>; Wed, 03 Jan 2018 02:56:33 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Rob Herring <robh+dt@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, Frank Rowand <frowand.list@gmail.com>,
- Linus Walleij <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>,
- Jonas Gorski <jonas.gorski@gmail.com>,
- Florian Fainelli <f.fainelli@gmail.com>, John Crispin <john@phrozen.org>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH V6 2/2] mtd: ofpart: add of_match_table with "fixed-partitions"
-Date: Wed,  3 Jan 2018 11:55:43 +0100
-Message-Id: <20180103105543.17897-2-zajec5@gmail.com>
-In-Reply-To: <20180103105543.17897-1-zajec5@gmail.com>
-References: <20180102130458.16226-1-zajec5@gmail.com>
- <20180103105543.17897-1-zajec5@gmail.com>
+ id 1eWgjC-0000I3-Gn
+ for linux-mtd@lists.infradead.org; Wed, 03 Jan 2018 10:57:04 +0000
+From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+To: <linux-mtd@lists.infradead.org>
+CC: <boris.brezillon@free-electrons.com>, <cyrille.pitchen@wedev4u.fr>,
+ <computersforpeace@gmail.com>, <han.xu@nxp.com>, <festevam@gmail.com>,
+ <prabhakar.kushwaha@nxp.com>, <suresh.gupta@nxp.com>, Yogesh Gaur
+ <yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH] mtd: fsl-quadspi: update hwcaps read capabilities as
+ READ_1_4_4
+Date: Wed, 3 Jan 2018 16:26:27 +0530
+Message-ID: <1514976987-14082-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,43 +25,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+Update Read capabilities as SNOR_HWCAPS_READ_1_4_4 i.e. Quad I/O cmd
+protocol. Spansion flash, s25fl512s, supports Quad read with read
+capabilities as 1-4-4.
 
-This allows using this parser with any flash driver that takes care of
-setting of_node (using mtd_set_of_node helper) correctly. Up to now
-support for "fixed-partitions" DT compatibility string was working only
-with flash drivers that were specifying "ofpart" (manually or by letting
-mtd use the default set of parsers).
+Patch added support for SNOR_HWCAPS_READ_1_4_4 protocol.
 
-This matches existing bindings documentation.
-
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-Reviewed-by: Brian Norris <computersforpeace@gmail.com>
-Tested-by: Brian Norris <computersforpeace@gmail.com>
+Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
 ---
- drivers/mtd/ofpart.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/mtd/spi-nor/fsl-quadspi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-index 6bdf4e525677..92fcbac046d9 100644
---- a/drivers/mtd/ofpart.c
-+++ b/drivers/mtd/ofpart.c
-@@ -140,9 +140,16 @@ static int parse_ofpart_partitions(struct mtd_info *master,
- 	return ret;
- }
- 
-+static const struct of_device_id parse_ofpart_match_table[] = {
-+	{ .compatible = "fixed-partitions" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, parse_ofpart_match_table);
-+
- static struct mtd_part_parser ofpart_parser = {
- 	.parse_fn = parse_ofpart_partitions,
- 	.name = "ofpart",
-+	.of_match_table = parse_ofpart_match_table,
- };
- 
- static int parse_ofoldpart_partitions(struct mtd_info *master,
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index c22e3eb..178e621 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -959,6 +959,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ {
+ 	const struct spi_nor_hwcaps hwcaps = {
+ 		.mask = SNOR_HWCAPS_READ_1_1_4 |
++			SNOR_HWCAPS_READ_1_4_4 |
+ 			SNOR_HWCAPS_PP,
+ 	};
+ 	struct device_node *np = pdev->dev.of_node;
 -- 
-2.11.0
+1.9.1
