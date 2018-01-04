@@ -1,26 +1,25 @@
-Received: from mail-eopbgr20049.outbound.protection.outlook.com ([40.107.2.49]
- helo=EUR02-VE1-obe.outbound.protection.outlook.com)
+Received: from mout.web.de ([212.227.17.12])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eX1YU-0000Z8-Bh
- for linux-mtd@lists.infradead.org; Thu, 04 Jan 2018 09:11:20 +0000
-From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-CC: "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>, Han Xu
- <han.xu@nxp.com>, "festevam@gmail.com" <festevam@gmail.com>, "Prabhakar
- Kushwaha" <prabhakar.kushwaha@nxp.com>, Suresh Gupta <suresh.gupta@nxp.com>
-Subject: RE: [PATCH] mtd: fsl-quadspi: update hwcaps read capabilities as
- READ_1_4_4
-Date: Thu, 4 Jan 2018 09:11:01 +0000
-Message-ID: <DB6PR0402MB283897C99F5580D87A4088CB991F0@DB6PR0402MB2838.eurprd04.prod.outlook.com>
-References: <1514976987-14082-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <894be40c-07d2-4676-4da8-03124169039b@wedev4u.fr>
-In-Reply-To: <894be40c-07d2-4676-4da8-03124169039b@wedev4u.fr>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1eX38j-0005xt-Qa
+ for linux-mtd@lists.infradead.org; Thu, 04 Jan 2018 10:52:51 +0000
+Subject: [PATCH 2/2] mtd/maps/sun_uflash: Improve a size determination in
+ uflash_devinit()
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+To: linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Rob Herring <robh@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
+References: <30c07f5a-578c-0e53-b80f-675fb24e6223@users.sourceforge.net>
+Message-ID: <1c70e16b-f34c-d655-fdd4-67730f17a680@users.sourceforge.net>
+Date: Thu, 4 Jan 2018 11:52:27 +0100
 MIME-Version: 1.0
+In-Reply-To: <30c07f5a-578c-0e53-b80f-675fb24e6223@users.sourceforge.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,41 +29,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8gQ3lyaWxsZSwNCg0KTXkgbWlzdGFrZSwgSSB3YXMgcGxhbm5pbmcgdG8gc2VuZCB0aGlz
-IHBhdGNoIGFsb25nIHdpdGggdGhlIHBhdGNoDQpodHRwczovL3BhdGNod29yay5vemxhYnMub3Jn
-L3BhdGNoLzg1NDk2Ny8gaW4gd2hpY2ggaGF2ZSBkb25lIGNoYW5nZXMgaW4gZnNsLXF1YWRzcGku
-YyBkcml2ZXIgdG8gaGF2ZSBydW4tdGltZSBMVVQgY3JlYXRpb24gc3VwcG9ydC4NCg0KQXBvbG9n
-aWVzIGZvciB0aGF0Lg0KDQpXb3VsZCBzZW5kIG5ldyBwYXRjaCBzZXJpZXMsIG1hcmtpbmcgdGhl
-c2UgYXMgdjEsIHYyLg0KDQotLQ0KUmVnYXJkcw0KWW9nZXNoIEdhdXIuDQoNCj4gLS0tLS1Pcmln
-aW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQ3lyaWxsZSBQaXRjaGVuIFttYWlsdG86Y3lyaWxs
-ZS5waXRjaGVuQHdlZGV2NHUuZnJdDQo+IFNlbnQ6IFRodXJzZGF5LCBKYW51YXJ5IDA0LCAyMDE4
-IDE6MzcgQU0NCj4gVG86IFlvZ2VzaCBOYXJheWFuIEdhdXIgPHlvZ2VzaG5hcmF5YW4uZ2F1ckBu
-eHAuY29tPjsgbGludXgtDQo+IG10ZEBsaXN0cy5pbmZyYWRlYWQub3JnDQo+IENjOiBib3Jpcy5i
-cmV6aWxsb25AZnJlZS1lbGVjdHJvbnMuY29tOyBjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb207
-IEhhbg0KPiBYdSA8aGFuLnh1QG54cC5jb20+OyBmZXN0ZXZhbUBnbWFpbC5jb207IFByYWJoYWth
-ciBLdXNod2FoYQ0KPiA8cHJhYmhha2FyLmt1c2h3YWhhQG54cC5jb20+OyBTdXJlc2ggR3VwdGEg
-PHN1cmVzaC5ndXB0YUBueHAuY29tPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIXSBtdGQ6IGZzbC1x
-dWFkc3BpOiB1cGRhdGUgaHdjYXBzIHJlYWQgY2FwYWJpbGl0aWVzIGFzDQo+IFJFQURfMV80XzQN
-Cj4gDQo+IExlIDAzLzAxLzIwMTggw6AgMTE6NTYsIFlvZ2VzaCBHYXVyIGEgw6ljcml0IDoNCj4g
-PiBVcGRhdGUgUmVhZCBjYXBhYmlsaXRpZXMgYXMgU05PUl9IV0NBUFNfUkVBRF8xXzRfNCBpLmUu
-IFF1YWQgSS9PIGNtZA0KPiA+IHByb3RvY29sLiBTcGFuc2lvbiBmbGFzaCwgczI1Zmw1MTJzLCBz
-dXBwb3J0cyBRdWFkIHJlYWQgd2l0aCByZWFkDQo+ID4gY2FwYWJpbGl0aWVzIGFzIDEtNC00Lg0K
-PiA+DQo+ID4gUGF0Y2ggYWRkZWQgc3VwcG9ydCBmb3IgU05PUl9IV0NBUFNfUkVBRF8xXzRfNCBw
-cm90b2NvbC4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFlvZ2VzaCBHYXVyIDx5b2dlc2huYXJh
-eWFuLmdhdXJAbnhwLmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9tdGQvc3BpLW5vci9mc2wt
-cXVhZHNwaS5jIHwgMSArDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKQ0KPiA+
-DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3IvZnNsLXF1YWRzcGkuYw0KPiA+
-IGIvZHJpdmVycy9tdGQvc3BpLW5vci9mc2wtcXVhZHNwaS5jDQo+ID4gaW5kZXggYzIyZTNlYi4u
-MTc4ZTYyMSAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL2ZzbC1xdWFkc3Bp
-LmMNCj4gPiArKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL2ZzbC1xdWFkc3BpLmMNCj4gPiBAQCAt
-OTU5LDYgKzk1OSw3IEBAIHN0YXRpYyBpbnQgZnNsX3FzcGlfcHJvYmUoc3RydWN0IHBsYXRmb3Jt
-X2RldmljZQ0KPiA+ICpwZGV2KSAgew0KPiA+ICAJY29uc3Qgc3RydWN0IHNwaV9ub3JfaHdjYXBz
-IGh3Y2FwcyA9IHsNCj4gPiAgCQkubWFzayA9IFNOT1JfSFdDQVBTX1JFQURfMV8xXzQgfA0KPiA+
-ICsJCQlTTk9SX0hXQ0FQU19SRUFEXzFfNF80IHwNCj4gPiAgCQkJU05PUl9IV0NBUFNfUFAsDQo+
-ID4gIAl9Ow0KPiA+ICAJc3RydWN0IGRldmljZV9ub2RlICpucCA9IHBkZXYtPmRldi5vZl9ub2Rl
-Ow0KPiA+DQo+IA0KPiBOQUNLOiBhZGRpbmcgdGhlIFNOT1JfSFdDQVBTX1JFQURfMV80XzQgaGFy
-ZHdhcmUgY2FwYWJpbGl0eSB0ZWxscw0KPiBzcGlfbm9yX3NjYW4oKSB0aGF0IHRoZSBTUEkgKGZs
-YXNoKSBjb250cm9sbGVyLCBub3QgdGhlIFNQSSBmbGFzaCBtZW1vcnksIHN1cHBvcnRzDQo+IHRo
-ZSBTUEkgMS00LTQgZm9yIEZhc3QgUmVhZCBvcGVyYXRpb25zLg0KPiANCj4gWW91IGNhbm5vdCBh
-ZGQgdGhpcyBmbGFnIHdpdGhvdXQgYWRkaW5nIHJlYWwgc3VwcG9ydCBvZiBGYXN0IFJlYWQgMS00
-LTQgdG8gdGhlDQo+IGZzbC1xdWFkc3BpLmMgZHJpdmVyLg0K
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Thu, 4 Jan 2018 11:38:28 +0100
+
+Replace the specification of a data structure by a pointer dereference
+as the parameter for the operator "sizeof" to make the corresponding size
+determination a bit safer according to the Linux coding style convention.
+
+This issue was detected by using the Coccinelle software.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ drivers/mtd/maps/sun_uflash.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/maps/sun_uflash.c b/drivers/mtd/maps/sun_uflash.c
+index 80a253cc72e2..16a4f16a2680 100644
+--- a/drivers/mtd/maps/sun_uflash.c
++++ b/drivers/mtd/maps/sun_uflash.c
+@@ -61,7 +61,7 @@ int uflash_devinit(struct platform_device *op, struct device_node *dp)
+ 		return -ENODEV;
+ 	}
+ 
+-	up = kzalloc(sizeof(struct uflash_dev), GFP_KERNEL);
++	up = kzalloc(sizeof(*up), GFP_KERNEL);
+ 	if (!up)
+ 		return -ENOMEM;
+ 
+-- 
+2.15.1
