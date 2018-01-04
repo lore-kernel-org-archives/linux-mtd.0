@@ -1,63 +1,21 @@
-Received: from mx1.redhat.com ([209.132.183.28])
- by merlin.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eX6ta-0000P0-W7
- for linux-mtd@lists.infradead.org; Thu, 04 Jan 2018 14:53:28 +0000
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <CAK8P3a3i0bKvG56ha9_hzO=z80sVxCQhaeFn6QW3AwbwZs3HPg@mail.gmail.com>
-References: <CAK8P3a3i0bKvG56ha9_hzO=z80sVxCQhaeFn6QW3AwbwZs3HPg@mail.gmail.com>
- <1514026525-32538-1-git-send-email-xieyisheng1@huawei.com>
- <20171223134831.GB10103@kroah.com>
- <f7632cf5-2bcc-4d74-b912-3999937a1269@roeck-us.net>
- <c28ac0bc-8bd2-3dce-3167-8c0f80ec601e@c-s.fr>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: dhowells@redhat.com, christophe.leroy@c-s.fr,
- Guenter Roeck <linux@roeck-us.net>, Greg KH <gregkh@linuxfoundation.org>,
- Yisheng Xie <xieyisheng1@huawei.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- ysxie@foxmail.com, Ulf Hansson <ulf.hansson@linaro.org>,
- linux-mmc <linux-mmc@vger.kernel.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- alsa-devel@alsa-project.org, Wim Van Sebroeck <wim@iguana.be>,
- linux-watchdog@vger.kernel.org,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- linux-fbdev@vger.kernel.org,
- Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org,
- Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>,
- Marc Zyngier <marc.zyngier@arm.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- industrypack-devel@lists.sourceforge.net, wg@grandegger.com,
- mkl@pengutronix.de, linux-can@vger.kernel.org,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- Alessandro Zummo <a.zummo@towertech.it>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- linux-rtc@vger.kernel.org, Daniel Vetter <daniel.vetter@intel.com>,
- Jani Nikula <jani.nikula@linux.intel.com>,
- Sean Paul <seanpaul@chromium.org>, David Airlie <airlied@linux.ie>,
- dri-devel <dri-devel@lists.freedesktop.org>,
- Kalle Valo <kvalo@codeaurora.org>,
- linux-wireless <linux-wireless@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
- IDE-ML <linux-ide@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- linux-pci <linux-pci@vger.kernel.org>, devel@driverdev.osuosl.org,
- Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>,
- Platform Driver <platform-driver-x86@vger.kernel.org>,
- Jakub Kicinski <jakub.kicinski@netronome.com>,
- David Miller <davem@davemloft.net>, nios2-dev@lists.rocketboards.org,
- Networking <netdev@vger.kernel.org>, Vinod Koul <vinod.koul@intel.com>,
- Dan Williams <dan.j.williams@intel.com>, dmaengine@vger.kernel.org,
- Jiri Slaby <jslaby@suse.com>
-Subject: Re: [PATCH v3 00/27] kill devm_ioremap_nocache
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eX9cI-0007OX-JR
+ for linux-mtd@lists.infradead.org; Thu, 04 Jan 2018 17:47:48 +0000
+Date: Thu, 4 Jan 2018 18:47:22 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, Richard Weinberger <richard@nod.at>,
+ Marek Vasut <marex@denx.de>, Brian Norris <computersforpeace@gmail.com>
+Subject: Re: mtd layer: support of hybrid flash(W25M161AW) having both NOR
+ and NAND flash
+Message-ID: <20180104184722.551ca6aa@bbrezillon>
+In-Reply-To: <HE1PR04MB1241937FF43AAA64AE7EE776971F0@HE1PR04MB1241.eurprd04.prod.outlook.com>
+References: <HE1PR04MB1241937FF43AAA64AE7EE776971F0@HE1PR04MB1241.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <20288.1515077574.1@warthog.procyon.org.uk>
-Date: Thu, 04 Jan 2018 14:52:54 +0000
-Message-ID: <20289.1515077574@warthog.procyon.org.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -67,35 +25,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Arnd Bergmann <arnd@arndb.de> wrote:
++MTD maintainers.
 
-> - mn10300 appears to be wrong, broken by David Howells in
->   commit 83c2dc15ce82 ("MN10300: Handle cacheable PCI regions
->   in pci_iomap()") for any driver calling ioremap() by to get uncached
->   memory,
+On Thu, 4 Jan 2018 14:08:42 +0000
+Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com> wrote:
 
-It's not clear what the right thing to do was, given that there's an ioremap()
-and an ioremap_uncached().
+> Hi All,
+> 
+> Winbond has come up with special flash i.e.  W25M161AW. It consist of Serial NOR(Die #0) and Serial NAND(Die #1) flash. 
+> Means both NOR, NAND flashes are placed in W25M161AW controlled by single chip-select. 
+> 
+> "Software Die Select (C2h)" command is being used to switch die or flash.
 
-But the asb2305's pci_iomap() will use ioremap() (the cacheable window) if
-IORESOURCE_CACHEABLE is set, but IORESOURCE_IO is not and ioremap_uncached()
-otherwise.
+Why are they so mean to us?! :-)
+ 
+>  
+> It looks to be quite unique chip and wondering if any kind framework or work in progress available to handle it. 
+> I know that SPI-NAND framework discussions is still in progress.
 
-The other supported units don't have PCI buses.
-
-> if I understand the comment for commit 34f1bdee1910 ("mn10300: switch to
-> GENERIC_PCI_IOMAP") correctly: it seems that PCI addresses include the
-> 'uncached' bit by default to get the right behavior, but dropping that bit
-> breaks it.
-
-Not exactly.  The CPU has a window in the range 0xa0000000-0xbfffffff which is
-an uncached view of its hardware buses.  It has another window in the range
-0x80000000-0x9fffffff which is a cached view of that region.  These windows
-cannot be changed and addresses above 0x80000000 are statically mapped and are
-only accessible by the kernel (this is hardwired in the MMU).
-
-So the arch has two subwindows to the PCI bus, one cached and one uncached.
-These subwindows are further subdivided into ioport and iomem spaces, an SRAM
-and some control registers for the CPU-PCI bridge.
-
-David
+Well, nothing impossible to handle, we just need to declare 2 MTD
+devices (one NAND and one NOR). This being said, it looks like we'll
+need this spi-flash abstraction we have been talking about with Marek
+and Cyrille to properly support these use cases: flash devices will be
+exposed through different sub-layers (spi-nor or spi-nand), but we need
+a common way to detect those spi-flash chips. I looked at a few SPI
+NAND and SPI NOR chips, and from what I've seen so far they were quite
+different (the opcodes and CMD+ADDR+DATA sequences were quite
+different) so I thought we were safe to start with a completely
+unconnected SPI NAND framework and merge some bits in a spi-flash layer
+afterwards, but this chip proves me wrong :-/.
