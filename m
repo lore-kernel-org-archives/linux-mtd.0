@@ -1,23 +1,18 @@
-Received: from mout.web.de ([217.72.192.78])
+Received: from mail-ve1eur01on0063.outbound.protection.outlook.com
+ ([104.47.1.63] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eX67w-0005vF-09
- for linux-mtd@lists.infradead.org; Thu, 04 Jan 2018 14:04:18 +0000
-To: linux-mtd@lists.infradead.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH] mtd/maps/vmu-flash: Delete an error message for a failed
- memory allocation in maple_vmu_read_block()
-Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
-Message-ID: <efc677c8-35c6-dd97-2091-8daa91576602@users.sourceforge.net>
-Date: Thu, 4 Jan 2018 15:03:55 +0100
+ id 1eX6CW-0000hc-7b
+ for linux-mtd@lists.infradead.org; Thu, 04 Jan 2018 14:08:57 +0000
+From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: mtd layer: support of hybrid flash(W25M161AW) having both NOR and
+ NAND flash
+Date: Thu, 4 Jan 2018 14:08:42 +0000
+Message-ID: <HE1PR04MB1241937FF43AAA64AE7EE776971F0@HE1PR04MB1241.eurprd04.prod.outlook.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,31 +22,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Thu, 4 Jan 2018 14:54:08 +0100
+Hi All,
 
-Omit an extra message for a memory allocation failure in this function.
+Winbond has come up with special flash i.e.  W25M161AW. It consist of Seria=
+l NOR(Die #0) and Serial NAND(Die #1) flash.=20
+Means both NOR, NAND flashes are placed in W25M161AW controlled by single c=
+hip-select.=20
 
-This issue was detected by using the Coccinelle software.
+"Software Die Select (C2h)" command is being used to switch die or flash.=20
+=20
+It looks to be quite unique chip and wondering if any kind framework or wor=
+k in progress available to handle it.=20
+I know that SPI-NAND framework discussions is still in progress.  =20
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- drivers/mtd/maps/vmu-flash.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/drivers/mtd/maps/vmu-flash.c b/drivers/mtd/maps/vmu-flash.c
-index 6b223cfe92b7..a76a5ff402e1 100644
---- a/drivers/mtd/maps/vmu-flash.c
-+++ b/drivers/mtd/maps/vmu-flash.c
-@@ -130,9 +130,6 @@ static int maple_vmu_read_block(unsigned int num, unsigned char *buf,
- 	if (!pcache->buffer) {
- 		pcache->buffer = kmalloc(card->blocklen, GFP_KERNEL);
- 		if (!pcache->buffer) {
--			dev_err(&mdev->dev, "VMU at (%d, %d) - read fails due"
--				" to lack of memory\n", mdev->port,
--				mdev->unit);
- 			error = -ENOMEM;
- 			goto outB;
- 		}
--- 
-2.15.1
+Regards,
+Prabhakar
