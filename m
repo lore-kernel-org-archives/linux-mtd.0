@@ -1,7 +1,10 @@
-Received: from mout.web.de ([212.227.17.12])
+Received: from mout.web.de ([212.227.17.11])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eXBCW-0002rw-9J
- for linux-mtd@lists.infradead.org; Thu, 04 Jan 2018 19:29:42 +0000
+ id 1eXBDO-0003oZ-Up
+ for linux-mtd@lists.infradead.org; Thu, 04 Jan 2018 19:30:38 +0000
+Subject: [PATCH 1/2] mtdconcat: Delete an error message for a failed memory
+ allocation in mtd_concat_create()
+From: SF Markus Elfring <elfring@users.sourceforge.net>
 To: linux-mtd@lists.infradead.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -9,14 +12,14 @@ To: linux-mtd@lists.infradead.org,
  David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
  Richard Weinberger <richard@nod.at>
 Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 0/2] mtdconcat: Adjustments for two function implementations
-Message-ID: <07947bdd-2b30-e4b5-82f7-d98b62df858e@users.sourceforge.net>
-Date: Thu, 4 Jan 2018 20:28:52 +0100
+References: <07947bdd-2b30-e4b5-82f7-d98b62df858e@users.sourceforge.net>
+Message-ID: <53f3fdb5-c216-c4b1-cb9f-c5945ec56749@users.sourceforge.net>
+Date: Thu, 4 Jan 2018 20:29:49 +0100
 MIME-Version: 1.0
+In-Reply-To: <07947bdd-2b30-e4b5-82f7-d98b62df858e@users.sourceforge.net>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,17 +30,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Thu, 4 Jan 2018 20:24:56 +0100
+Date: Thu, 4 Jan 2018 19:55:10 +0100
 
-Two update suggestions were taken into account
-from static source code analysis.
+Omit an extra message for a memory allocation failure in this function.
 
-Markus Elfring (2):
-  Delete an error message for a failed memory allocation in mtd_concat_create()
-  Improve a size determination in concat_erase()
+This issue was detected by using the Coccinelle software.
 
- drivers/mtd/mtdconcat.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ drivers/mtd/mtdconcat.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
+index 60bf53df5454..f1a60c55a126 100644
+--- a/drivers/mtd/mtdconcat.c
++++ b/drivers/mtd/mtdconcat.c
+@@ -668,12 +668,9 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
+ 	/* allocate the device structure */
+ 	size = SIZEOF_STRUCT_MTD_CONCAT(num_devs);
+ 	concat = kzalloc(size, GFP_KERNEL);
+-	if (!concat) {
+-		printk
+-		    ("memory allocation error while creating concatenated device \"%s\"\n",
+-		     name);
++	if (!concat)
+ 		return NULL;
+-	}
++
+ 	concat->subdev = (struct mtd_info **) (concat + 1);
+ 
+ 	/*
 -- 
 2.15.1
