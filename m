@@ -1,9 +1,7 @@
 Received: from mout.web.de ([217.72.192.78])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eXBJb-0002Rl-9y
- for linux-mtd@lists.infradead.org; Thu, 04 Jan 2018 19:36:46 +0000
-Subject: [PATCH 2/2] mtdconcat: Improve a size determination in concat_erase()
-From: SF Markus Elfring <elfring@users.sourceforge.net>
+ id 1eXC3x-0004z9-9v
+ for linux-mtd@lists.infradead.org; Thu, 04 Jan 2018 20:24:31 +0000
 To: linux-mtd@lists.infradead.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -11,14 +9,15 @@ To: linux-mtd@lists.infradead.org,
  David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
  Richard Weinberger <richard@nod.at>
 Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
-References: <07947bdd-2b30-e4b5-82f7-d98b62df858e@users.sourceforge.net>
-Message-ID: <8a90314d-dead-5723-b8dd-b97a38eab9f2@users.sourceforge.net>
-Date: Thu, 4 Jan 2018 20:30:49 +0100
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH] mtdoops: Delete an error message for a failed memory
+ allocation in two functions
+Message-ID: <c3d061ff-1f96-cee5-17ea-036eb80a3da4@users.sourceforge.net>
+Date: Thu, 4 Jan 2018 21:24:12 +0100
 MIME-Version: 1.0
-In-Reply-To: <07947bdd-2b30-e4b5-82f7-d98b62df858e@users.sourceforge.net>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,32 +28,45 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Thu, 4 Jan 2018 20:00:27 +0100
+Date: Thu, 4 Jan 2018 21:10:56 +0100
 
-Replace the specification of a data structure by a pointer dereference
-as the parameter for the operator "sizeof" to make the corresponding size
-determination a bit safer according to the Linux coding style convention.
+Omit an extra message for a memory allocation failure in these functions.
 
 This issue was detected by using the Coccinelle software.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- drivers/mtd/mtdconcat.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/mtd/mtdoops.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-index f1a60c55a126..67d39e562c0f 100644
---- a/drivers/mtd/mtdconcat.c
-+++ b/drivers/mtd/mtdconcat.c
-@@ -428,8 +428,7 @@ static int concat_erase(struct mtd_info *mtd, struct erase_info *instr)
- 	}
+diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
+index 97bb8f6304d4..ea8619ec970b 100644
+--- a/drivers/mtd/mtdoops.c
++++ b/drivers/mtd/mtdoops.c
+@@ -352,10 +352,8 @@ static void mtdoops_notify_add(struct mtd_info *mtd)
+ 	/* oops_page_used is a bit field */
+ 	cxt->oops_page_used = vmalloc(DIV_ROUND_UP(mtdoops_pages,
+ 			BITS_PER_LONG) * sizeof(unsigned long));
+-	if (!cxt->oops_page_used) {
+-		printk(KERN_ERR "mtdoops: could not allocate page array\n");
++	if (!cxt->oops_page_used)
+ 		return;
+-	}
  
- 	/* make a local copy of instr to avoid modifying the caller's struct */
--	erase = kmalloc(sizeof (struct erase_info), GFP_KERNEL);
--
-+	erase = kmalloc(sizeof(*erase), GFP_KERNEL);
- 	if (!erase)
+ 	cxt->dump.max_reason = KMSG_DUMP_OOPS;
+ 	cxt->dump.dump = mtdoops_do_dump;
+@@ -420,10 +418,9 @@ static int __init mtdoops_init(void)
+ 		cxt->mtd_index = mtd_index;
+ 
+ 	cxt->oops_buf = vmalloc(record_size);
+-	if (!cxt->oops_buf) {
+-		printk(KERN_ERR "mtdoops: failed to allocate buffer workspace\n");
++	if (!cxt->oops_buf)
  		return -ENOMEM;
+-	}
++
+ 	memset(cxt->oops_buf, 0xff, record_size);
  
+ 	INIT_WORK(&cxt->work_erase, mtdoops_workfunc_erase);
 -- 
 2.15.1
