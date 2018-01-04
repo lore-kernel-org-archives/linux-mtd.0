@@ -1,23 +1,26 @@
-Received: from mout.web.de ([212.227.17.12])
+Received: from mail-he1eur01on0049.outbound.protection.outlook.com
+ ([104.47.0.49] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eWq1a-0007zl-Rl
- for linux-mtd@lists.infradead.org; Wed, 03 Jan 2018 20:52:43 +0000
-To: linux-mtd@lists.infradead.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>
-Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH] mtd/inftlmount: Delete error messages for a failed memory
- allocation in two functions
-Message-ID: <dd43ad50-ecc0-15b2-619d-da3a5b46dc91@users.sourceforge.net>
-Date: Wed, 3 Jan 2018 21:52:07 +0100
+ id 1eWuQ5-0000eR-UF
+ for linux-mtd@lists.infradead.org; Thu, 04 Jan 2018 01:34:12 +0000
+From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+CC: "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "cyrille.pitchen@wedev4u.fr"
+ <cyrille.pitchen@wedev4u.fr>, Poonam Aggrwal <poonam.aggrwal@nxp.com>,
+ "Suresh Gupta" <suresh.gupta@nxp.com>, Ashish Kumar <ashish.kumar@nxp.com>,
+ "Yogesh Narayan Gaur" <yogeshnarayan.gaur@nxp.com>, Rajat Srivastava
+ <rajat.srivastava@nxp.com>, Fabio Estevam <fabio.estevam@nxp.com>
+Subject: RE: [RFC 0/3] mtd: spi-nor: Add support of Sector Map Parameter Table
+Date: Thu, 4 Jan 2018 01:33:51 +0000
+Message-ID: <HE1PR04MB12417BAC1260587074962FFD971F0@HE1PR04MB1241.eurprd04.prod.outlook.com>
+References: <1514548432-13302-1-git-send-email-prabhakar.kushwaha@nxp.com>
+In-Reply-To: <1514548432-13302-1-git-send-email-prabhakar.kushwaha@nxp.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,56 +30,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 3 Jan 2018 21:45:19 +0100
+Hi Cyrille,
 
-Omit extra messages for a memory allocation failure in these functions.
 
-This issue was detected by using the Coccinelle software.
+> -----Original Message-----
+> From: Prabhakar Kushwaha [mailto:prabhakar.kushwaha@nxp.com]
+> Sent: Friday, December 29, 2017 5:24 PM
+> To: linux-mtd@lists.infradead.org
+> Cc: computersforpeace@gmail.com; boris.brezillon@free-electrons.com;
+> marek.vasut@gmail.com; cyrille.pitchen@wedev4u.fr; Poonam Aggrwal
+> <poonam.aggrwal@nxp.com>; Suresh Gupta <suresh.gupta@nxp.com>; Ashish
+> Kumar <ashish.kumar@nxp.com>; Yogesh Narayan Gaur
+> <yogeshnarayan.gaur@nxp.com>; Rajat Srivastava <rajat.srivastava@nxp.com>=
+;
+> Fabio Estevam <fabio.estevam@nxp.com>; Prabhakar Kushwaha
+> <prabhakar.kushwaha@nxp.com>
+> Subject: [RFC 0/3] mtd: spi-nor: Add support of Sector Map Parameter Tabl=
+e
+>=20
+> JESD216B defines Sector Map Parameter Table. It identifies the
+> location and size of sectors within the main data array of the
+> flash memory device and identifies which Erase Types are supported
+> by each sector. This table is used when a memory device has sectors
+> of more than one size Or, does not allow all Erase Type commands to
+> be applied to all sectors.
+>=20
+> This patch-set add support of Sector Map Parameter Table parsing.
+> It also update framework to support read/write anyreg commands
+> required by S25FS512S flash.
+>=20
+> Tested with "S25FS512S" flash and by over-riding fsl_qspi_read_anyreg()
+> return with desired configuration id i.e. 0x05. Flash was
+> pre-programmed for Uniform 256-kB sectors via non-volatile registers.
+>=20
+> Prabhakar Kushwaha (3):
+>   mtd: spi-nor: Add support of read/write any reg commands
+>   mtd: spi-nor: Implement anyreg functions for fsl-quadspi
+>   mtd: spi-nor: Add support of Sector Map Parameter Table
+>=20
+>  drivers/mtd/spi-nor/fsl-quadspi.c |  18 +++
+>  drivers/mtd/spi-nor/spi-nor.c     | 266
+> +++++++++++++++++++++++++++++++++++++-
+>  include/linux/mtd/spi-nor.h       |  21 +++
+>  3 files changed, 302 insertions(+), 3 deletions(-)
+>=20
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- drivers/mtd/inftlmount.c | 15 ++-------------
- 1 file changed, 2 insertions(+), 13 deletions(-)
+Can you please review this patch-set.=20
+I want to incorporate review comments for the v1 patch.
 
-diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
-index 8d6bb189ea8e..e5dd55021602 100644
---- a/drivers/mtd/inftlmount.c
-+++ b/drivers/mtd/inftlmount.c
-@@ -273,19 +273,12 @@ static int find_boot_record(struct INFTLrecord *inftl)
- 
- 		/* Memory alloc */
- 		inftl->PUtable = kmalloc(inftl->nb_blocks * sizeof(u16), GFP_KERNEL);
--		if (!inftl->PUtable) {
--			printk(KERN_WARNING "INFTL: allocation of PUtable "
--				"failed (%zd bytes)\n",
--				inftl->nb_blocks * sizeof(u16));
-+		if (!inftl->PUtable)
- 			return -ENOMEM;
--		}
- 
- 		inftl->VUtable = kmalloc(inftl->nb_blocks * sizeof(u16), GFP_KERNEL);
- 		if (!inftl->VUtable) {
- 			kfree(inftl->PUtable);
--			printk(KERN_WARNING "INFTL: allocation of VUtable "
--				"failed (%zd bytes)\n",
--				inftl->nb_blocks * sizeof(u16));
- 			return -ENOMEM;
- 		}
- 
-@@ -562,12 +555,8 @@ int INFTL_mount(struct INFTLrecord *s)
- 
- 	/* Temporary buffer to store ANAC numbers. */
- 	ANACtable = kcalloc(s->nb_blocks, sizeof(u8), GFP_KERNEL);
--	if (!ANACtable) {
--		printk(KERN_WARNING "INFTL: allocation of ANACtable "
--				"failed (%zd bytes)\n",
--				s->nb_blocks * sizeof(u8));
-+	if (!ANACtable)
- 		return -ENOMEM;
--	}
- 
- 	/*
- 	 * First pass is to explore each physical unit, and construct the
--- 
-2.15.1
+Thanks
+-pk
