@@ -1,18 +1,22 @@
-Received: from mail-yb0-x22b.google.com ([2607:f8b0:4002:c09::22b])
+Received: from mout.web.de ([212.227.17.12])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eX9zk-0001VG-HP
- for linux-mtd@lists.infradead.org; Thu, 04 Jan 2018 18:12:02 +0000
-Received: by mail-yb0-x22b.google.com with SMTP id b39so939117ybj.13
- for <linux-mtd@lists.infradead.org>; Thu, 04 Jan 2018 10:11:50 -0800 (PST)
+ id 1eXBCW-0002rw-9J
+ for linux-mtd@lists.infradead.org; Thu, 04 Jan 2018 19:29:42 +0000
+To: linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH 0/2] mtdconcat: Adjustments for two function implementations
+Message-ID: <07947bdd-2b30-e4b5-82f7-d98b62df858e@users.sourceforge.net>
+Date: Thu, 4 Jan 2018 20:28:52 +0100
 MIME-Version: 1.0
-In-Reply-To: <CAF4+tmpp_kYqFVgdz+HhVPR61m10k7ZyjNKBq6fRZw0eDVfYhA@mail.gmail.com>
-References: <CAF4+tmpp_kYqFVgdz+HhVPR61m10k7ZyjNKBq6fRZw0eDVfYhA@mail.gmail.com>
-From: Bogdan Harjoc <harjoc@gmail.com>
-Date: Thu, 4 Jan 2018 20:11:48 +0200
-Message-ID: <CAF4+tmo8C=YWb6p7KMjOG871ydZnxWR+ND7SqfOduBgXsd9HtQ@mail.gmail.com>
-Subject: Re: Read errors after an UBIFS update
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,11 +26,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Would it help to try to test with the cherry picked 5-10 commits from
-> linux 3.18.80 to 4.14 that touch fs/ubifs ?
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Thu, 4 Jan 2018 20:24:56 +0100
 
-I meant commits that touch fs/ubifs/tnc.c which was related to the
-xattr fixes. I just realized there are hundreds of commits in fs/ubifs
-since 2015. Sorry about that,
+Two update suggestions were taken into account
+from static source code analysis.
 
-Bogdan
+Markus Elfring (2):
+  Delete an error message for a failed memory allocation in mtd_concat_create()
+  Improve a size determination in concat_erase()
+
+ drivers/mtd/mtdconcat.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
+
+-- 
+2.15.1
