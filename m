@@ -1,29 +1,34 @@
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+Received: from 3.mo4.mail-out.ovh.net ([46.105.57.129])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eWuvA-0007K0-MJ
- for linux-mtd@lists.infradead.org; Thu, 04 Jan 2018 02:06:19 +0000
-Received: by mail-lf0-x242.google.com with SMTP id u84so247909lff.7
- for <linux-mtd@lists.infradead.org>; Wed, 03 Jan 2018 18:06:06 -0800 (PST)
+ id 1eWz5Y-0003Tp-HQ
+ for linux-mtd@lists.infradead.org; Thu, 04 Jan 2018 06:33:18 +0000
+Received: from player772.ha.ovh.net (b6.ovh.net [213.186.33.56])
+ by mo4.mail-out.ovh.net (Postfix) with ESMTP id DC41D12559A
+ for <linux-mtd@lists.infradead.org>; Thu,  4 Jan 2018 07:32:56 +0100 (CET)
 MIME-Version: 1.0
-In-Reply-To: <20171222093750.0c49abec@bbrezillon>
-References: <20171215123954.30017-1-boris.brezillon@free-electrons.com>
- <20171215123954.30017-4-boris.brezillon@free-electrons.com>
- <CAAyFORLBhxpn5cFHztrY5OHt9FCfbDkQzUCsLf2Wyp2aGzPGnA@mail.gmail.com>
- <20171222093750.0c49abec@bbrezillon>
-From: Peter Pan <peterpansjtu@gmail.com>
-Date: Thu, 4 Jan 2018 10:06:03 +0800
-Message-ID: <CAAyFORJTUcynGNVAgH35Xzjik5Zp-b_Uik2nH5s0JUNRZjGJPQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] mtd: Stop directly calling master ->_xxx() hooks
- from mtdpart code
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Frieder Schrempf <frieder.schrempf@exceet.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date: Thu, 04 Jan 2018 07:32:36 +0100
+From: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
+To: Rob Herring <robh+dt@kernel.org>
+Cc: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Boris
+ Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, Mark Rutland <mark.rutland@arm.com>,
+ Frank Rowand <frowand.list@gmail.com>, Linus Walleij
+ <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org, "open list:OPEN
+ FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, Jonas Gorski
+ <jonas.gorski@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>, John
+ Crispin <john@phrozen.org>
+Subject: Re: [PATCH V6 1/2] mtd: partitions: add of_match_table parser matching
+In-Reply-To: <CAL_JsqLYjUsWGAYm978oPmMAue6YDRb=K00gReZTia6iaJ6xsA@mail.gmail.com>
+References: <20180102130458.16226-1-zajec5@gmail.com>
+ <20180103105543.17897-1-zajec5@gmail.com>
+ <CAL_JsqLYjUsWGAYm978oPmMAue6YDRb=K00gReZTia6iaJ6xsA@mail.gmail.com>
+Message-ID: <9a799300a0730a0103fe744878fb1a9f@milecki.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,396 +38,208 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Boris,
+On 2018-01-03 19:28, Rob Herring wrote:
+> On Wed, Jan 3, 2018 at 4:55 AM, Rafał Miłecki <zajec5@gmail.com> wrote:
+>> From: Brian Norris <computersforpeace@gmail.com>
+>> 
+>> Partition parsers can now provide an of_match_table to enable
+>> flash<-->parser matching via device tree as documented in the
+>> mtd/partition.txt.
+>> 
+>> It works by looking for a matching parser for every string in the
+>> "compatibility" property (starting with the most specific one).
+>> 
+>> This support is currently limited to built-in parsers as it uses
+>> request_module() and friends. This should be sufficient for most cases
+>> though as compiling parsers as modules isn't a common choice.
+>> 
+>> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+>> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+>> ---
+>> This is based on Brian's patches:
+>> [RFC PATCH 4/7] mtd: add of_match_mtd_parser() and 
+>> of_mtd_match_mtd_parser() helpers
+>> [RFC PATCH 6/7] RFC: mtd: partitions: enable of_match_table matching
+>> 
+>> V1: Put helpers in mtdpart.c instead of drivers/of/of_mtd.c
+>>     Merge helpers into a single of_mtd_match_mtd_parser
+>> V3: Add a simple comment to note we will need the best match in the 
+>> future
+>> V4: Rework new functions to pick parser with the best match
+>>     Move new code in parse_mtd_partitions up so it has precedence over 
+>> flash
+>>     driver defaults and MTD defaults
+>> V5: Rework matching code to start checking with the most specific 
+>> string in the
+>>     "compatibility" property.
+>> V6: Initialize "ret" variable in mtd_part_get_parser_by_cp to NULL
+>> ---
+>>  drivers/mtd/mtdpart.c          | 64 
+>> ++++++++++++++++++++++++++++++++++++++++++
+>>  include/linux/mtd/partitions.h |  1 +
+>>  2 files changed, 65 insertions(+)
+>> 
+>> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+>> index be088bccd593..b11958adcf45 100644
+>> --- a/drivers/mtd/mtdpart.c
+>> +++ b/drivers/mtd/mtdpart.c
+>> @@ -30,6 +30,7 @@
+>>  #include <linux/mtd/mtd.h>
+>>  #include <linux/mtd/partitions.h>
+>>  #include <linux/err.h>
+>> +#include <linux/of.h>
+>> 
+>>  #include "mtdcore.h"
+>> 
+>> @@ -880,6 +881,48 @@ static int mtd_part_do_parse(struct 
+>> mtd_part_parser *parser,
+>>  }
+>> 
+>>  /**
+>> + * mtd_part_get_parser_by_cp - find MTD parser by a compatible string
+> 
+> What's "cp"? Perhaps mtd_part_get_compatible_parser.
 
-On Fri, Dec 22, 2017 at 4:37 PM, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-> On Fri, 22 Dec 2017 13:40:26 +0800
-> Peter Pan <peterpansjtu@gmail.com> wrote:
->
->> Hi Boris,
->>
->> On Fri, Dec 15, 2017 at 8:39 PM, Boris Brezillon
->> <boris.brezillon@free-electrons.com> wrote:
->> > The MTD layer provides several wrappers around mtd->_xxx() hooks. Call
->> > these wrappers instead of directly dereferencing the associated ->_xxx()
->> > pointer.
->> >
->> > This change has been motivated by another rework letting the core
->> > handle the case where ->_read/write_oob() are implemented but not
->> > ->_read/write(). In this case, we want mtd_read/write() to fall back to
->> > ->_read/write_oob() when ->_read/write() are NULL. The problem is,
->> > mtdpart is directly calling the ->_xxx() instead of using the wrappers,
->> > thus leading to a NULL pointer exception.
->> >
->> > Even though we only need to do the change for part_read/write(), going
->> > through those wrappers for all kind of part -> master operation
->> > propagation is a good thing, because other wrappers might become
->> > smarter over time, and the duplicated check overhead (parameters will
->> > be checked at the partition and master level instead of only at the
->> > partition level) should be negligible.
->> >
->> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
->> > ---
->> > Changes in v3:
->> > - unconditionally assign part wrappers as suggested by Brian
->> >
->> > Changes in v2:
->> > - new patch needed to fix a NULL pointer dereference BUG
->> > ---
->> >  drivers/mtd/mtdpart.c | 141 +++++++++++++++++++-------------------------------
->> >  1 file changed, 53 insertions(+), 88 deletions(-)
->> >
->> > diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
->> > index be088bccd593..e83c9d870b11 100644
->> > --- a/drivers/mtd/mtdpart.c
->> > +++ b/drivers/mtd/mtdpart.c
->> > @@ -74,8 +74,7 @@ static int part_read(struct mtd_info *mtd, loff_t from, size_t len,
->> >         int res;
->> >
->>
->> This is not about your modification. But shouldn't we add check to prevent
->> part_read/write/write_oob from accessing  past the end of partition?
->> There is a check in part_read_oob() only.
->
-> You should not call part_xxx() directly, and mtd_read/write{_oob}()
-> should already check that. If that's not the case, we should fix them.
->
-> Can you give a bit more details about what is wrong?
-
-Sorry for late reply. My failure is due to failed to assign mtd->oobavail.
-We don't have problem in OOB ops checking.
-But since we already check it in mtd_read/write_oob(), shouln't we
-remove the check in part_read/write_oob() ?
-
-Thanks
-Peter Pan
+That's what some base of functions use internally, like
+__of_device_is_compatible (cp)
+of_modalias_node (cplen)
+but using "compatible" for the function name sounds better.
 
 
->
-> Thanks,
->
-> Boris
->
->>
->> Thanks
->> Peter Pan
->>
->> >         stats = part->parent->ecc_stats;
->> > -       res = part->parent->_read(part->parent, from + part->offset, len,
->> > -                                 retlen, buf);
->> > +       res = mtd_read(part->parent, from + part->offset, len, retlen, buf);
->> >         if (unlikely(mtd_is_eccerr(res)))
->> >                 mtd->ecc_stats.failed +=
->> >                         part->parent->ecc_stats.failed - stats.failed;
->> > @@ -90,15 +89,15 @@ static int part_point(struct mtd_info *mtd, loff_t from, size_t len,
->> >  {
->> >         struct mtd_part *part = mtd_to_part(mtd);
->> >
->> > -       return part->parent->_point(part->parent, from + part->offset, len,
->> > -                                   retlen, virt, phys);
->> > +       return mtd_point(part->parent, from + part->offset, len, retlen, virt,
->> > +                        phys);
->> >  }
->> >
->> >  static int part_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
->> >  {
->> >         struct mtd_part *part = mtd_to_part(mtd);
->> >
->> > -       return part->parent->_unpoint(part->parent, from + part->offset, len);
->> > +       return mtd_unpoint(part->parent, from + part->offset, len);
->> >  }
->> >
->> >  static int part_read_oob(struct mtd_info *mtd, loff_t from,
->> > @@ -126,7 +125,7 @@ static int part_read_oob(struct mtd_info *mtd, loff_t from,
->> >                         return -EINVAL;
->> >         }
->> >
->> > -       res = part->parent->_read_oob(part->parent, from + part->offset, ops);
->> > +       res = mtd_read_oob(part->parent, from + part->offset, ops);
->> >         if (unlikely(res)) {
->> >                 if (mtd_is_bitflip(res))
->> >                         mtd->ecc_stats.corrected++;
->> > @@ -140,48 +139,43 @@ static int part_read_user_prot_reg(struct mtd_info *mtd, loff_t from,
->> >                 size_t len, size_t *retlen, u_char *buf)
->> >  {
->> >         struct mtd_part *part = mtd_to_part(mtd);
->> > -       return part->parent->_read_user_prot_reg(part->parent, from, len,
->> > -                                                retlen, buf);
->> > +       return mtd_read_user_prot_reg(part->parent, from, len, retlen, buf);
->> >  }
->> >
->> >  static int part_get_user_prot_info(struct mtd_info *mtd, size_t len,
->> >                                    size_t *retlen, struct otp_info *buf)
->> >  {
->> >         struct mtd_part *part = mtd_to_part(mtd);
->> > -       return part->parent->_get_user_prot_info(part->parent, len, retlen,
->> > -                                                buf);
->> > +       return mtd_get_user_prot_info(part->parent, len, retlen, buf);
->> >  }
->> >
->> >  static int part_read_fact_prot_reg(struct mtd_info *mtd, loff_t from,
->> >                 size_t len, size_t *retlen, u_char *buf)
->> >  {
->> >         struct mtd_part *part = mtd_to_part(mtd);
->> > -       return part->parent->_read_fact_prot_reg(part->parent, from, len,
->> > -                                                retlen, buf);
->> > +       return mtd_read_fact_prot_reg(part->parent, from, len, retlen, buf);
->> >  }
->> >
->> >  static int part_get_fact_prot_info(struct mtd_info *mtd, size_t len,
->> >                                    size_t *retlen, struct otp_info *buf)
->> >  {
->> >         struct mtd_part *part = mtd_to_part(mtd);
->> > -       return part->parent->_get_fact_prot_info(part->parent, len, retlen,
->> > -                                                buf);
->> > +       return mtd_get_fact_prot_info(part->parent, len, retlen, buf);
->> >  }
->> >
->> >  static int part_write(struct mtd_info *mtd, loff_t to, size_t len,
->> >                 size_t *retlen, const u_char *buf)
->> >  {
->> >         struct mtd_part *part = mtd_to_part(mtd);
->> > -       return part->parent->_write(part->parent, to + part->offset, len,
->> > -                                   retlen, buf);
->> > +       return mtd_write(part->parent, to + part->offset, len, retlen, buf);
->> >  }
->> >
->> >  static int part_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
->> >                 size_t *retlen, const u_char *buf)
->> >  {
->> >         struct mtd_part *part = mtd_to_part(mtd);
->> > -       return part->parent->_panic_write(part->parent, to + part->offset, len,
->> > -                                         retlen, buf);
->> > +       return mtd_panic_write(part->parent, to + part->offset, len, retlen,
->> > +                              buf);
->> >  }
->> >
->> >  static int part_write_oob(struct mtd_info *mtd, loff_t to,
->> > @@ -193,30 +187,29 @@ static int part_write_oob(struct mtd_info *mtd, loff_t to,
->> >                 return -EINVAL;
->> >         if (ops->datbuf && to + ops->len > mtd->size)
->> >                 return -EINVAL;
->> > -       return part->parent->_write_oob(part->parent, to + part->offset, ops);
->> > +       return mtd_write_oob(part->parent, to + part->offset, ops);
->> >  }
->> >
->> >  static int part_write_user_prot_reg(struct mtd_info *mtd, loff_t from,
->> >                 size_t len, size_t *retlen, u_char *buf)
->> >  {
->> >         struct mtd_part *part = mtd_to_part(mtd);
->> > -       return part->parent->_write_user_prot_reg(part->parent, from, len,
->> > -                                                 retlen, buf);
->> > +       return mtd_write_user_prot_reg(part->parent, from, len, retlen, buf);
->> >  }
->> >
->> >  static int part_lock_user_prot_reg(struct mtd_info *mtd, loff_t from,
->> >                 size_t len)
->> >  {
->> >         struct mtd_part *part = mtd_to_part(mtd);
->> > -       return part->parent->_lock_user_prot_reg(part->parent, from, len);
->> > +       return mtd_lock_user_prot_reg(part->parent, from, len);
->> >  }
->> >
->> >  static int part_writev(struct mtd_info *mtd, const struct kvec *vecs,
->> >                 unsigned long count, loff_t to, size_t *retlen)
->> >  {
->> >         struct mtd_part *part = mtd_to_part(mtd);
->> > -       return part->parent->_writev(part->parent, vecs, count,
->> > -                                    to + part->offset, retlen);
->> > +       return mtd_writev(part->parent, vecs, count, to + part->offset,
->> > +                         retlen);
->> >  }
->> >
->> >  static int part_erase(struct mtd_info *mtd, struct erase_info *instr)
->> > @@ -225,7 +218,7 @@ static int part_erase(struct mtd_info *mtd, struct erase_info *instr)
->> >         int ret;
->> >
->> >         instr->addr += part->offset;
->> > -       ret = part->parent->_erase(part->parent, instr);
->> > +       ret = mtd_erase(part->parent, instr);
->> >         if (ret) {
->> >                 if (instr->fail_addr != MTD_FAIL_ADDR_UNKNOWN)
->> >                         instr->fail_addr -= part->offset;
->> > @@ -251,51 +244,51 @@ EXPORT_SYMBOL_GPL(mtd_erase_callback);
->> >  static int part_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
->> >  {
->> >         struct mtd_part *part = mtd_to_part(mtd);
->> > -       return part->parent->_lock(part->parent, ofs + part->offset, len);
->> > +       return mtd_lock(part->parent, ofs + part->offset, len);
->> >  }
->> >
->> >  static int part_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
->> >  {
->> >         struct mtd_part *part = mtd_to_part(mtd);
->> > -       return part->parent->_unlock(part->parent, ofs + part->offset, len);
->> > +       return mtd_unlock(part->parent, ofs + part->offset, len);
->> >  }
->> >
->> >  static int part_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
->> >  {
->> >         struct mtd_part *part = mtd_to_part(mtd);
->> > -       return part->parent->_is_locked(part->parent, ofs + part->offset, len);
->> > +       return mtd_is_locked(part->parent, ofs + part->offset, len);
->> >  }
->> >
->> >  static void part_sync(struct mtd_info *mtd)
->> >  {
->> >         struct mtd_part *part = mtd_to_part(mtd);
->> > -       part->parent->_sync(part->parent);
->> > +       mtd_sync(part->parent);
->> >  }
->> >
->> >  static int part_suspend(struct mtd_info *mtd)
->> >  {
->> >         struct mtd_part *part = mtd_to_part(mtd);
->> > -       return part->parent->_suspend(part->parent);
->> > +       return mtd_suspend(part->parent);
->> >  }
->> >
->> >  static void part_resume(struct mtd_info *mtd)
->> >  {
->> >         struct mtd_part *part = mtd_to_part(mtd);
->> > -       part->parent->_resume(part->parent);
->> > +       mtd_resume(part->parent);
->> >  }
->> >
->> >  static int part_block_isreserved(struct mtd_info *mtd, loff_t ofs)
->> >  {
->> >         struct mtd_part *part = mtd_to_part(mtd);
->> >         ofs += part->offset;
->> > -       return part->parent->_block_isreserved(part->parent, ofs);
->> > +       return mtd_block_isreserved(part->parent, ofs);
->> >  }
->> >
->> >  static int part_block_isbad(struct mtd_info *mtd, loff_t ofs)
->> >  {
->> >         struct mtd_part *part = mtd_to_part(mtd);
->> >         ofs += part->offset;
->> > -       return part->parent->_block_isbad(part->parent, ofs);
->> > +       return mtd_block_isbad(part->parent, ofs);
->> >  }
->> >
->> >  static int part_block_markbad(struct mtd_info *mtd, loff_t ofs)
->> > @@ -304,7 +297,7 @@ static int part_block_markbad(struct mtd_info *mtd, loff_t ofs)
->> >         int res;
->> >
->> >         ofs += part->offset;
->> > -       res = part->parent->_block_markbad(part->parent, ofs);
->> > +       res = mtd_block_markbad(part->parent, ofs);
->> >         if (!res)
->> >                 mtd->ecc_stats.badblocks++;
->> >         return res;
->> > @@ -313,13 +306,13 @@ static int part_block_markbad(struct mtd_info *mtd, loff_t ofs)
->> >  static int part_get_device(struct mtd_info *mtd)
->> >  {
->> >         struct mtd_part *part = mtd_to_part(mtd);
->> > -       return part->parent->_get_device(part->parent);
->> > +       return __get_mtd_device(part->parent);
->> >  }
->> >
->> >  static void part_put_device(struct mtd_info *mtd)
->> >  {
->> >         struct mtd_part *part = mtd_to_part(mtd);
->> > -       part->parent->_put_device(part->parent);
->> > +       __put_mtd_device(part->parent);
->> >  }
->> >
->> >  static int part_ooblayout_ecc(struct mtd_info *mtd, int section,
->> > @@ -347,8 +340,7 @@ static int part_max_bad_blocks(struct mtd_info *mtd, loff_t ofs, size_t len)
->> >  {
->> >         struct mtd_part *part = mtd_to_part(mtd);
->> >
->> > -       return part->parent->_max_bad_blocks(part->parent,
->> > -                                            ofs + part->offset, len);
->> > +       return mtd_max_bad_blocks(part->parent, ofs + part->offset, len);
->> >  }
->> >
->> >  static inline void free_partition(struct mtd_part *p)
->> > @@ -437,59 +429,32 @@ static struct mtd_part *allocate_partition(struct mtd_info *parent,
->> >
->> >         slave->mtd._read = part_read;
->> >         slave->mtd._write = part_write;
->> > -
->> > -       if (parent->_panic_write)
->> > -               slave->mtd._panic_write = part_panic_write;
->> > -
->> > -       if (parent->_point && parent->_unpoint) {
->> > -               slave->mtd._point = part_point;
->> > -               slave->mtd._unpoint = part_unpoint;
->> > -       }
->> > -
->> > -       if (parent->_read_oob)
->> > -               slave->mtd._read_oob = part_read_oob;
->> > -       if (parent->_write_oob)
->> > -               slave->mtd._write_oob = part_write_oob;
->> > -       if (parent->_read_user_prot_reg)
->> > -               slave->mtd._read_user_prot_reg = part_read_user_prot_reg;
->> > -       if (parent->_read_fact_prot_reg)
->> > -               slave->mtd._read_fact_prot_reg = part_read_fact_prot_reg;
->> > -       if (parent->_write_user_prot_reg)
->> > -               slave->mtd._write_user_prot_reg = part_write_user_prot_reg;
->> > -       if (parent->_lock_user_prot_reg)
->> > -               slave->mtd._lock_user_prot_reg = part_lock_user_prot_reg;
->> > -       if (parent->_get_user_prot_info)
->> > -               slave->mtd._get_user_prot_info = part_get_user_prot_info;
->> > -       if (parent->_get_fact_prot_info)
->> > -               slave->mtd._get_fact_prot_info = part_get_fact_prot_info;
->> > -       if (parent->_sync)
->> > -               slave->mtd._sync = part_sync;
->> > -       if (!partno && !parent->dev.class && parent->_suspend &&
->> > -           parent->_resume) {
->> > +       slave->mtd._panic_write = part_panic_write;
->> > +       slave->mtd._point = part_point;
->> > +       slave->mtd._unpoint = part_unpoint;
->> > +       slave->mtd._read_oob = part_read_oob;
->> > +       slave->mtd._write_oob = part_write_oob;
->> > +       slave->mtd._read_user_prot_reg = part_read_user_prot_reg;
->> > +       slave->mtd._read_fact_prot_reg = part_read_fact_prot_reg;
->> > +       slave->mtd._write_user_prot_reg = part_write_user_prot_reg;
->> > +       slave->mtd._lock_user_prot_reg = part_lock_user_prot_reg;
->> > +       slave->mtd._get_user_prot_info = part_get_user_prot_info;
->> > +       slave->mtd._get_fact_prot_info = part_get_fact_prot_info;
->> > +       slave->mtd._sync = part_sync;
->> > +       if (!partno && !parent->dev.class) {
->> >                 slave->mtd._suspend = part_suspend;
->> >                 slave->mtd._resume = part_resume;
->> >         }
->> > -       if (parent->_writev)
->> > -               slave->mtd._writev = part_writev;
->> > -       if (parent->_lock)
->> > -               slave->mtd._lock = part_lock;
->> > -       if (parent->_unlock)
->> > -               slave->mtd._unlock = part_unlock;
->> > -       if (parent->_is_locked)
->> > -               slave->mtd._is_locked = part_is_locked;
->> > -       if (parent->_block_isreserved)
->> > -               slave->mtd._block_isreserved = part_block_isreserved;
->> > -       if (parent->_block_isbad)
->> > -               slave->mtd._block_isbad = part_block_isbad;
->> > -       if (parent->_block_markbad)
->> > -               slave->mtd._block_markbad = part_block_markbad;
->> > -       if (parent->_max_bad_blocks)
->> > -               slave->mtd._max_bad_blocks = part_max_bad_blocks;
->> > -
->> > -       if (parent->_get_device)
->> > -               slave->mtd._get_device = part_get_device;
->> > -       if (parent->_put_device)
->> > -               slave->mtd._put_device = part_put_device;
->> > +       slave->mtd._writev = part_writev;
->> > +       slave->mtd._lock = part_lock;
->> > +       slave->mtd._unlock = part_unlock;
->> > +       slave->mtd._is_locked = part_is_locked;
->> > +       slave->mtd._block_isreserved = part_block_isreserved;
->> > +       slave->mtd._block_isbad = part_block_isbad;
->> > +       slave->mtd._block_markbad = part_block_markbad;
->> > +       slave->mtd._max_bad_blocks = part_max_bad_blocks;
->> > +       slave->mtd._get_device = part_get_device;
->> > +       slave->mtd._put_device = part_put_device;
->> >
->> >         slave->mtd._erase = part_erase;
->> >         slave->parent = parent;
->> > --
->> > 2.11.0
->> >
->
+>> + *
+>> + * @cp: compatible string describing partitions in a device tree
+> 
+> "compat" would be clearer IMO
+> 
+>> + *
+>> + * MTD parsers can specify supported partitions by providing a table 
+>> of
+>> + * compatibility strings. This function finds a parser that 
+>> advertises support
+>> + * for a passed value of "compatible".
+>> + */
+>> +static struct mtd_part_parser *mtd_part_get_parser_by_cp(const char 
+>> *cp)
+>> +{
+>> +       struct mtd_part_parser *p, *ret = NULL;
+>> +
+>> +       spin_lock(&part_parser_lock);
+>> +
+>> +       list_for_each_entry(p, &part_parsers, list) {
+>> +               const struct of_device_id *matches;
+>> +
+>> +               matches = p->of_match_table;
+>> +               if (!matches)
+>> +                       continue;
+>> +
+>> +               for (; matches->name[0] || matches->type[0] || 
+>> matches->compatible[0];
+>> +                    matches++) {
+>> +                       if (!matches->compatible[0])
+>> +                               continue;
+> 
+> It would be simpler to just ignore name and type. Having either of
+> those would be an error and the only consequence if there are entries
+> without compatible is returning early.
+
+OK, thanks. I guess I misused pattern I saw in the __of_match_node.
+
+
+>> +                       if (!strcmp(matches->compatible, cp) &&
+>> +                           try_module_get(p->owner)) {
+>> +                               ret = p;
+>> +                               break;
+>> +                       }
+>> +               }
+>> +
+>> +               if (ret)
+>> +                       break;
+>> +       }
+>> +
+>> +       spin_unlock(&part_parser_lock);
+>> +
+>> +       return ret;
+>> +}
+>> +
+>> +/**
+>>   * parse_mtd_partitions - parse MTD partitions
+>>   * @master: the master partition (describes whole MTD device)
+>>   * @types: names of partition parsers to try or %NULL
+>> @@ -905,8 +948,29 @@ int parse_mtd_partitions(struct mtd_info *master, 
+>> const char *const *types,
+>>                          struct mtd_part_parser_data *data)
+>>  {
+>>         struct mtd_part_parser *parser;
+>> +       struct device_node *np;
+>> +       struct property *prop;
+>> +       const char *cp;
+>>         int ret, err = 0;
+>> 
+>> +       np = of_get_child_by_name(mtd_get_of_node(master), 
+>> "partitions");
+>> +       if (np) {
+> 
+> You can drop this. of_property_for_each_string and of_node_put will
+> work if np is NULL.
+> 
+>> +               of_property_for_each_string(np, "compatible", prop, 
+>> cp) {
+>> +                       parser = mtd_part_get_parser_by_cp(cp);
+>> +                       if (!parser)
+>> +                               continue;
+>> +                       ret = mtd_part_do_parse(parser, master, 
+>> pparts, data);
+>> +                       if (ret > 0) {
+>> +                               of_node_put(np);
+>> +                               return 0;
+>> +                       }
+>> +                       mtd_part_parser_put(parser);
+>> +                       if (ret < 0 && !err)
+>> +                               err = ret;
+>> +               }
+>> +               of_node_put(np);
+>> +       }
+>> +
+>>         if (!types)
+>>                 types = default_mtd_part_types;
+>> 
+>> diff --git a/include/linux/mtd/partitions.h 
+>> b/include/linux/mtd/partitions.h
+>> index c4beb70dacbd..11cb0c50cd84 100644
+>> --- a/include/linux/mtd/partitions.h
+>> +++ b/include/linux/mtd/partitions.h
+>> @@ -77,6 +77,7 @@ struct mtd_part_parser {
+>>         struct list_head list;
+>>         struct module *owner;
+>>         const char *name;
+>> +       const struct of_device_id *of_match_table;
+> 
+> I generally like using of_device_id over just an array of strings, but
+> I'm wondering if there's really cases where you have multiple
+> compatible strings for a single parser? Perhaps a single string here
+> would be sufficient. And if you did have multiple matches, how would
+> you distinguish them later on in the parsing functions? Normally we'd
+> use the matched data ptr, but that's not provided here.
+
+I think we may need some flash parsers to support multiple strings in
+the future. For example image tag parser (bcm63xxpart.c) handles
+Broadcom's tag that has few versions (see struct bcm_tag and its
+version field).
+
+Later we may want to add support for matching partitions parsers (like
+trx) which also can have multple versions support. For example TRX v1
+and TRX v2 differ by a single field in the header and it makes sense to
+use the same parser for them.
+
+While this may be not a perfect solution with data ptr, we can always do
+of_device_is_compatible(&mtd->dev, "foo")
+
+
+>>         int (*parse_fn)(struct mtd_info *, const struct mtd_partition 
+>> **,
+>>                         struct mtd_part_parser_data *);
+>>         void (*cleanup)(const struct mtd_partition *pparts, int 
+>> nr_parts);
+>> --
+>> 2.11.0
+>> 
