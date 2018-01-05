@@ -1,19 +1,19 @@
 Received: from mail-it0-x243.google.com ([2607:f8b0:4001:c0b::243])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eXXBQ-0001MP-Br
- for linux-mtd@lists.infradead.org; Fri, 05 Jan 2018 18:57:48 +0000
-Received: by mail-it0-x243.google.com with SMTP id f143so2728405itb.0
- for <linux-mtd@lists.infradead.org>; Fri, 05 Jan 2018 10:57:29 -0800 (PST)
+ id 1eXXBQ-0001Ln-Bx
+ for linux-mtd@lists.infradead.org; Fri, 05 Jan 2018 18:57:49 +0000
+Received: by mail-it0-x243.google.com with SMTP id z6so2620607iti.4
+ for <linux-mtd@lists.infradead.org>; Fri, 05 Jan 2018 10:57:25 -0800 (PST)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org,
 	"Theodore Y . Ts'o" <tytso@mit.edu>
 Cc: linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
  linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
  Eric Biggers <ebiggers@google.com>
-Subject: [PATCH v2 06/11] fscrypt: move fscrypt_operations declaration to
- fscrypt_supp.h
-Date: Fri,  5 Jan 2018 10:44:57 -0800
-Message-Id: <20180105184502.48473-7-ebiggers3@gmail.com>
+Subject: [PATCH v2 02/11] fscrypt: move fscrypt_control_page() to supp/notsupp
+ headers
+Date: Fri,  5 Jan 2018 10:44:53 -0800
+Message-Id: <20180105184502.48473-3-ebiggers3@gmail.com>
 In-Reply-To: <20180105184502.48473-1-ebiggers3@gmail.com>
 References: <20180105184502.48473-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,73 +27,80 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Eric Biggers <ebiggers@google.com>
 
-Filesystems now only define their fscrypt_operations when they are
-compiled with encryption support, so move the fscrypt_operations
-declaration from fscrypt.h to fscrypt_supp.h.
+fscrypt_control_page() is already split into two versions depending on
+whether the filesystem is being built with encryption support or not.
+Move them into the appropriate headers.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- include/linux/fscrypt.h      | 18 ------------------
- include/linux/fscrypt_supp.h | 18 ++++++++++++++++++
- 2 files changed, 18 insertions(+), 18 deletions(-)
+ include/linux/fscrypt.h         | 18 ++----------------
+ include/linux/fscrypt_notsupp.h |  5 +++++
+ include/linux/fscrypt_supp.h    |  6 ++++++
+ 3 files changed, 13 insertions(+), 16 deletions(-)
 
 diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index b671a4eef47f..33b95a91f720 100644
+index d1c891b5bd9c..c23b2f16129a 100644
 --- a/include/linux/fscrypt.h
 +++ b/include/linux/fscrypt.h
-@@ -54,24 +54,6 @@ struct fscrypt_name {
- #define fname_name(p)		((p)->disk_name.name)
- #define fname_len(p)		((p)->disk_name.len)
+@@ -123,24 +123,10 @@ static inline bool fscrypt_is_dot_dotdot(const struct qstr *str)
+ }
  
--/*
-- * fscrypt superblock flags
-- */
--#define FS_CFLG_OWN_PAGES (1U << 1)
+ #if __FS_HAS_ENCRYPTION
 -
--/*
-- * crypto opertions for filesystems
-- */
--struct fscrypt_operations {
--	unsigned int flags;
--	const char *key_prefix;
--	int (*get_context)(struct inode *, void *, size_t);
--	int (*set_context)(struct inode *, const void *, size_t, void *);
--	bool (*dummy_context)(struct inode *);
--	bool (*empty_dir)(struct inode *);
--	unsigned (*max_namelen)(struct inode *);
--};
+-static inline struct page *fscrypt_control_page(struct page *page)
+-{
+-	return ((struct fscrypt_ctx *)page_private(page))->w.control_page;
+-}
 -
- /* Maximum value for the third parameter of fscrypt_operations.set_context(). */
- #define FSCRYPT_SET_CONTEXT_MAX_SIZE	28
+ #include <linux/fscrypt_supp.h>
+-
+-#else /* !__FS_HAS_ENCRYPTION */
+-
+-static inline struct page *fscrypt_control_page(struct page *page)
+-{
+-	WARN_ON_ONCE(1);
+-	return ERR_PTR(-EINVAL);
+-}
+-
++#else
+ #include <linux/fscrypt_notsupp.h>
+-#endif /* __FS_HAS_ENCRYPTION */
++#endif
  
+ /**
+  * fscrypt_require_key - require an inode's encryption key
+diff --git a/include/linux/fscrypt_notsupp.h b/include/linux/fscrypt_notsupp.h
+index 52e330285457..812dc701a5b3 100644
+--- a/include/linux/fscrypt_notsupp.h
++++ b/include/linux/fscrypt_notsupp.h
+@@ -48,6 +48,11 @@ static inline int fscrypt_decrypt_page(const struct inode *inode,
+ 	return -EOPNOTSUPP;
+ }
+ 
++static inline struct page *fscrypt_control_page(struct page *page)
++{
++	WARN_ON_ONCE(1);
++	return ERR_PTR(-EINVAL);
++}
+ 
+ static inline void fscrypt_restore_control_page(struct page *page)
+ {
 diff --git a/include/linux/fscrypt_supp.h b/include/linux/fscrypt_supp.h
-index e7dfa2974906..ce61caf26f40 100644
+index 79bb8beae018..ad40780d4653 100644
 --- a/include/linux/fscrypt_supp.h
 +++ b/include/linux/fscrypt_supp.h
-@@ -11,6 +11,24 @@
- #ifndef _LINUX_FSCRYPT_SUPP_H
- #define _LINUX_FSCRYPT_SUPP_H
+@@ -25,6 +25,12 @@ extern struct page *fscrypt_encrypt_page(const struct inode *, struct page *,
+ 						u64, gfp_t);
+ extern int fscrypt_decrypt_page(const struct inode *, struct page *, unsigned int,
+ 				unsigned int, u64);
++
++static inline struct page *fscrypt_control_page(struct page *page)
++{
++	return ((struct fscrypt_ctx *)page_private(page))->w.control_page;
++}
++
+ extern void fscrypt_restore_control_page(struct page *);
  
-+/*
-+ * fscrypt superblock flags
-+ */
-+#define FS_CFLG_OWN_PAGES (1U << 1)
-+
-+/*
-+ * crypto operations for filesystems
-+ */
-+struct fscrypt_operations {
-+	unsigned int flags;
-+	const char *key_prefix;
-+	int (*get_context)(struct inode *, void *, size_t);
-+	int (*set_context)(struct inode *, const void *, size_t, void *);
-+	bool (*dummy_context)(struct inode *);
-+	bool (*empty_dir)(struct inode *);
-+	unsigned (*max_namelen)(struct inode *);
-+};
-+
- struct fscrypt_ctx {
- 	union {
- 		struct {
+ extern const struct dentry_operations fscrypt_d_ops;
 -- 
 2.16.0.rc0.223.g4a4ac83678-goog
