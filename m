@@ -1,20 +1,18 @@
-Received: from mail-it0-x241.google.com ([2607:f8b0:4001:c0b::241])
+Received: from mail-it0-x244.google.com ([2607:f8b0:4001:c0b::244])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eXXBS-0001Nq-97
- for linux-mtd@lists.infradead.org; Fri, 05 Jan 2018 18:58:03 +0000
-Received: by mail-it0-x241.google.com with SMTP id p139so2628588itb.1
- for <linux-mtd@lists.infradead.org>; Fri, 05 Jan 2018 10:57:34 -0800 (PST)
+ id 1eXXh3-0003bK-2z
+ for linux-mtd@lists.infradead.org; Fri, 05 Jan 2018 19:30:18 +0000
+Received: by mail-it0-x244.google.com with SMTP id 68so2804237ite.4
+ for <linux-mtd@lists.infradead.org>; Fri, 05 Jan 2018 11:30:06 -0800 (PST)
 From: Eric Biggers <ebiggers3@gmail.com>
-To: linux-fscrypt@vger.kernel.org,
-	"Theodore Y . Ts'o" <tytso@mit.edu>
-Cc: linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+To: linux-mtd@lists.infradead.org,
+	Richard Weinberger <richard@nod.at>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-fscrypt@vger.kernel.org,
  Eric Biggers <ebiggers@google.com>
-Subject: [PATCH v2 11/11] fscrypt: new helper function - fscrypt_get_symlink()
-Date: Fri,  5 Jan 2018 10:45:02 -0800
-Message-Id: <20180105184502.48473-12-ebiggers3@gmail.com>
-In-Reply-To: <20180105184502.48473-1-ebiggers3@gmail.com>
-References: <20180105184502.48473-1-ebiggers3@gmail.com>
+Subject: [PATCH v2] ubifs: free the encrypted symlink target
+Date: Fri,  5 Jan 2018 11:30:03 -0800
+Message-Id: <20180105193003.118283-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,129 +24,60 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Eric Biggers <ebiggers@google.com>
 
-Filesystems also have duplicate code to support ->get_link() on
-encrypted symlinks.  Factor it out into a new function
-fscrypt_get_symlink().  It takes in the contents of the encrypted
-symlink on-disk and provides the target (decrypted or encoded) that
-should be returned from ->get_link().
+ubifs_symlink() forgot to free the kmalloc()'ed buffer holding the
+encrypted symlink target, creating a memory leak.  Fix it.
 
+(UBIFS could actually encrypt directly into ui->data, removing the
+temporary buffer, but that is left for the patch that switches to use
+the symlink helper functions.)
+
+Fixes: ca7f85be8d6c ("ubifs: Add support for encrypted symlinks")
+Cc: <stable@vger.kernel.org> # v4.10+
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/hooks.c               | 73 +++++++++++++++++++++++++++++++++++++++++
- include/linux/fscrypt_notsupp.h |  8 +++++
- include/linux/fscrypt_supp.h    |  3 ++
- 3 files changed, 84 insertions(+)
 
-diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
-index 4b83e4af2e41..8900e348ba6e 100644
---- a/fs/crypto/hooks.c
-+++ b/fs/crypto/hooks.c
-@@ -200,3 +200,76 @@ int __fscrypt_encrypt_symlink(struct inode *inode, const char *target,
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(__fscrypt_encrypt_symlink);
-+
-+/**
-+ * fscrypt_get_symlink - get the target of an encrypted symlink
-+ * @inode: the symlink inode
-+ * @caddr: the on-disk contents of the symlink
-+ * @max_size: size of @caddr buffer
-+ * @done: if successful, will be set up to free the returned target
-+ *
-+ * If the symlink's encryption key is available, we decrypt its target.
-+ * Otherwise, we encode its target for presentation.
-+ *
-+ * This may sleep, so the filesystem must have dropped out of RCU mode already.
-+ *
-+ * Return: the presentable symlink target or an ERR_PTR()
-+ */
-+const char *fscrypt_get_symlink(struct inode *inode, const void *caddr,
-+				unsigned int max_size,
-+				struct delayed_call *done)
-+{
-+	const struct fscrypt_symlink_data *sd;
-+	struct fscrypt_str cstr, pstr;
-+	int err;
-+
-+	/* This is for encrypted symlinks only */
-+	if (WARN_ON(!IS_ENCRYPTED(inode)))
-+		return ERR_PTR(-EINVAL);
-+
-+	/*
-+	 * Try to set up the symlink's encryption key, but we can continue
-+	 * regardless of whether the key is available or not.
-+	 */
-+	err = fscrypt_get_encryption_info(inode);
-+	if (err)
-+		return ERR_PTR(err);
-+
-+	/*
-+	 * For historical reasons, encrypted symlink targets are prefixed with
-+	 * the ciphertext length, even though this is redundant with i_size.
-+	 */
-+
-+	if (max_size < sizeof(*sd))
-+		return ERR_PTR(-EUCLEAN);
-+	sd = caddr;
-+	cstr.name = (unsigned char *)sd->encrypted_path;
-+	cstr.len = le16_to_cpu(sd->len);
-+
-+	if (cstr.len == 0)
-+		return ERR_PTR(-EUCLEAN);
-+
-+	if (cstr.len + sizeof(*sd) - 1 > max_size)
-+		return ERR_PTR(-EUCLEAN);
-+
-+	err = fscrypt_fname_alloc_buffer(inode, cstr.len, &pstr);
-+	if (err)
-+		return ERR_PTR(err);
-+
-+	err = fscrypt_fname_disk_to_usr(inode, 0, 0, &cstr, &pstr);
-+	if (err)
-+		goto err_kfree;
-+
-+	err = -EUCLEAN;
-+	if (pstr.name[0] == '\0')
-+		goto err_kfree;
-+
-+	pstr.name[pstr.len] = '\0';
-+	set_delayed_call(done, kfree_link, pstr.name);
-+	return pstr.name;
-+
-+err_kfree:
-+	kfree(pstr.name);
-+	return ERR_PTR(err);
-+}
-+EXPORT_SYMBOL_GPL(fscrypt_get_symlink);
-diff --git a/include/linux/fscrypt_notsupp.h b/include/linux/fscrypt_notsupp.h
-index 02ec0aa894d8..dd106640c6ea 100644
---- a/include/linux/fscrypt_notsupp.h
-+++ b/include/linux/fscrypt_notsupp.h
-@@ -239,4 +239,12 @@ static inline int __fscrypt_encrypt_symlink(struct inode *inode,
- 	return -EOPNOTSUPP;
+No changes since v1, just resent as standalone patch.
+	
+ fs/ubifs/dir.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 417fe0b29f23..ef820f803176 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -1216,10 +1216,8 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
+ 		ostr.len = disk_link.len;
+ 
+ 		err = fscrypt_fname_usr_to_disk(inode, &istr, &ostr);
+-		if (err) {
+-			kfree(sd);
++		if (err)
+ 			goto out_inode;
+-		}
+ 
+ 		sd->len = cpu_to_le16(ostr.len);
+ 		disk_link.name = (char *)sd;
+@@ -1251,11 +1249,10 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
+ 		goto out_cancel;
+ 	mutex_unlock(&dir_ui->ui_mutex);
+ 
+-	ubifs_release_budget(c, &req);
+ 	insert_inode_hash(inode);
+ 	d_instantiate(dentry, inode);
+-	fscrypt_free_filename(&nm);
+-	return 0;
++	err = 0;
++	goto out_fname;
+ 
+ out_cancel:
+ 	dir->i_size -= sz_change;
+@@ -1268,6 +1265,7 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
+ 	fscrypt_free_filename(&nm);
+ out_budg:
+ 	ubifs_release_budget(c, &req);
++	kfree(sd);
+ 	return err;
  }
  
-+static inline const char *fscrypt_get_symlink(struct inode *inode,
-+					      const void *caddr,
-+					      unsigned int max_size,
-+					      struct delayed_call *done)
-+{
-+	return ERR_PTR(-EOPNOTSUPP);
-+}
-+
- #endif	/* _LINUX_FSCRYPT_NOTSUPP_H */
-diff --git a/include/linux/fscrypt_supp.h b/include/linux/fscrypt_supp.h
-index 7e0b67ccd816..dc2babf3f7d3 100644
---- a/include/linux/fscrypt_supp.h
-+++ b/include/linux/fscrypt_supp.h
-@@ -211,5 +211,8 @@ extern int __fscrypt_prepare_symlink(struct inode *dir, unsigned int len,
- extern int __fscrypt_encrypt_symlink(struct inode *inode, const char *target,
- 				     unsigned int len,
- 				     struct fscrypt_str *disk_link);
-+extern const char *fscrypt_get_symlink(struct inode *inode, const void *caddr,
-+				       unsigned int max_size,
-+				       struct delayed_call *done);
- 
- #endif	/* _LINUX_FSCRYPT_SUPP_H */
 -- 
 2.16.0.rc0.223.g4a4ac83678-goog
