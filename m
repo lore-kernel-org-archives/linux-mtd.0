@@ -1,25 +1,21 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eXU98-0001bY-Ot
- for linux-mtd@lists.infradead.org; Fri, 05 Jan 2018 15:43:04 +0000
-Date: Fri, 5 Jan 2018 16:42:39 +0100
-From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Han Xu
- <han.xu@nxp.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 1/2] mtd: nand: Check ONFI timings have been acked by
- the chip
-Message-ID: <20180105164239.79d7980c@xps13>
-In-Reply-To: <20180105161321.44218e4e@bbrezillon>
-References: <20171222172853.27710-1-miquel.raynal@free-electrons.com>
- <20171222172853.27710-2-miquel.raynal@free-electrons.com>
- <20180105161321.44218e4e@bbrezillon>
+Received: from mail-io0-x230.google.com ([2607:f8b0:4001:c06::230])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eXWsQ-00086s-Ns
+ for linux-mtd@lists.infradead.org; Fri, 05 Jan 2018 18:38:00 +0000
+Received: by mail-io0-x230.google.com with SMTP id n14so6676298iob.4
+ for <linux-mtd@lists.infradead.org>; Fri, 05 Jan 2018 10:37:48 -0800 (PST)
+Date: Fri, 5 Jan 2018 10:37:44 -0800
+From: Eric Biggers <ebiggers3@gmail.com>
+To: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>
+Cc: linux-fscrypt@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH v2 0/5] ubifs: switch to new fscrypt helper functions
+Message-ID: <20180105183744.GA44929@gmail.com>
+References: <20171129204317.91205-1-ebiggers3@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20171129204317.91205-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,27 +25,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Wed, Nov 29, 2017 at 12:43:12PM -0800, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> This series switches ubifs to use the fscrypt helper functions for
+> open/link/rename/lookup/setattr introduced in v4.15.
+> 
+> These patches were originally sent in "[PATCH 00/25] fscrypt: add some
+> higher-level helper functions".  I've rebased them onto v4.15-rc1.
+> 
+> Eric Biggers (5):
+>   ubifs: switch to fscrypt_file_open()
+>   ubifs: switch to fscrypt_prepare_link()
+>   ubifs: switch to fscrypt_prepare_rename()
+>   ubifs: switch to fscrypt_prepare_lookup()
+>   ubifs: switch to fscrypt_prepare_setattr()
+> 
+>  fs/ubifs/dir.c  | 43 +++++++++++++------------------------------
+>  fs/ubifs/file.c | 41 ++++-------------------------------------
+>  2 files changed, 17 insertions(+), 67 deletions(-)
+> 
+> -- 
+> 2.15.0.531.g2ccb3012c9-goog
+> 
 
-> Hm, I'm not sure this is safe. The spec says that new ONFI timing mode
-> is applied as soon the CS line is released after a
-> SET_FEATURES(ONFI_FEATURE_ADDR_TIMING_MODE), and since we have no
-> guarantee that the CS will be kept low by the controller after
-> ->onfi_set_features() returns we must assume the new mode has been =20
-> applied and call ->setup_data_interface() to instruct the controller
-> to apply new timings.
->=20
-> If you want to check if the mode has really been applied, you should
-> release the CS (->select_chip(-1)), re-acquire it
-> (->select_chip(X)), and call
-> ->onfi_get_features(ONFI_FEATURE_ADDR_TIMING_MODE). If it appears
-> that the mode has not been applied, you should restore timing mode 0
-> and issue a RESET.
+Richard, can you take these for UBIFS for v4.16?
 
-Boris, thanks for the comment, I will fix that.
-
-Han, could I have your input on this series? Aside Boris' comment of
-course.
-
-Thank you very much,
-Miqu=C3=A8l
+Eric
