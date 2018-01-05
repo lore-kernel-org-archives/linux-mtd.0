@@ -1,18 +1,16 @@
-Received: from mail-it0-x244.google.com ([2607:f8b0:4001:c0b::244])
+Received: from mail-qk0-x241.google.com ([2607:f8b0:400d:c09::241])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eXXh3-0003bK-2z
- for linux-mtd@lists.infradead.org; Fri, 05 Jan 2018 19:30:18 +0000
-Received: by mail-it0-x244.google.com with SMTP id 68so2804237ite.4
- for <linux-mtd@lists.infradead.org>; Fri, 05 Jan 2018 11:30:06 -0800 (PST)
-From: Eric Biggers <ebiggers3@gmail.com>
-To: linux-mtd@lists.infradead.org,
-	Richard Weinberger <richard@nod.at>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-fscrypt@vger.kernel.org,
- Eric Biggers <ebiggers@google.com>
-Subject: [PATCH v2] ubifs: free the encrypted symlink target
-Date: Fri,  5 Jan 2018 11:30:03 -0800
-Message-Id: <20180105193003.118283-1-ebiggers3@gmail.com>
+ id 1eXXx5-0002Yz-Gq
+ for linux-mtd@lists.infradead.org; Fri, 05 Jan 2018 19:46:53 +0000
+Received: by mail-qk0-x241.google.com with SMTP id a8so7284580qkb.8
+ for <linux-mtd@lists.infradead.org>; Fri, 05 Jan 2018 11:46:40 -0800 (PST)
+From: Fabio Estevam <festevam@gmail.com>
+To: han.xu@nxp.com
+Cc: cyrille.pitchen@wedev4u.fr, david.wolfe@nxp.com, frank.li@nxp.com,
+ linux-mtd@lists.infradead.org, Fabio Estevam <fabio.estevam@nxp.com>
+Subject: [PATCH] mtd: fsl-quadspi: Distinguish the mtd device names
+Date: Fri,  5 Jan 2018 17:46:00 -0200
+Message-Id: <1515181560-1410-1-git-send-email-festevam@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,62 +20,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Eric Biggers <ebiggers@google.com>
+From: Fabio Estevam <fabio.estevam@nxp.com>
 
-ubifs_symlink() forgot to free the kmalloc()'ed buffer holding the
-encrypted symlink target, creating a memory leak.  Fix it.
+Currently on a imx6sx-sdb board, which has two SPI NOR chips connected
+to QSPI2 the following output from /proc/mtd is seen:
 
-(UBIFS could actually encrypt directly into ui->data, removing the
-temporary buffer, but that is left for the patch that switches to use
-the symlink helper functions.)
+# cat /proc/mtd 
+dev:    size   erasesize  name
+mtd0: 01000000 00010000 "21e4000.qspi"
+mtd1: 01000000 00010000 "21e4000.qspi"
 
-Fixes: ca7f85be8d6c ("ubifs: Add support for encrypted symlinks")
-Cc: <stable@vger.kernel.org> # v4.10+
-Signed-off-by: Eric Biggers <ebiggers@google.com>
+Attempts to partition them on the kernel command line result in both
+chips with identical (and identically named) partitions, which is
+an inconvenient behavior.
+
+Assign a different mtd->name for each mtd device to avoid this problem.
+
+After this change the output from /proc/mtd becomes:
+
+# cat /proc/mtd 
+dev:    size   erasesize  name
+mtd0: 01000000 00010000 "fsl-quadspi.0"
+mtd1: 01000000 00010000 "fsl-quadspi.1"
+
+Reported-by: David Wolfe <david.wolfe@nxp.com>
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 ---
+ drivers/mtd/spi-nor/fsl-quadspi.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-No changes since v1, just resent as standalone patch.
-	
- fs/ubifs/dir.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
-
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 417fe0b29f23..ef820f803176 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -1216,10 +1216,8 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
- 		ostr.len = disk_link.len;
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index f17d224..7712c63 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -967,7 +967,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 	struct spi_nor *nor;
+ 	struct mtd_info *mtd;
+-	int ret, i = 0;
++	int ret, i = 0, mtd_index = 0;
  
- 		err = fscrypt_fname_usr_to_disk(inode, &istr, &ostr);
--		if (err) {
--			kfree(sd);
-+		if (err)
- 			goto out_inode;
--		}
+ 	q = devm_kzalloc(dev, sizeof(*q), GFP_KERNEL);
+ 	if (!q)
+@@ -1047,6 +1047,13 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 		nor = &q->nor[i];
+ 		mtd = &nor->mtd;
  
- 		sd->len = cpu_to_le16(ostr.len);
- 		disk_link.name = (char *)sd;
-@@ -1251,11 +1249,10 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
- 		goto out_cancel;
- 	mutex_unlock(&dir_ui->ui_mutex);
++		mtd->name = devm_kasprintf(dev, GFP_KERNEL, "fsl-quadspi.%d",
++					   mtd_index);
++		if (!mtd->name) {
++			ret = -ENOMEM;
++			goto mutex_failed;
++		}
++
+ 		nor->dev = dev;
+ 		spi_nor_set_flash_node(nor, np);
+ 		nor->priv = q;
+@@ -1098,6 +1105,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 			nor->page_size = q->devtype_data->txfifo;
  
--	ubifs_release_budget(c, &req);
- 	insert_inode_hash(inode);
- 	d_instantiate(dentry, inode);
--	fscrypt_free_filename(&nm);
--	return 0;
-+	err = 0;
-+	goto out_fname;
+ 		i++;
++		mtd_index++;
+ 	}
  
- out_cancel:
- 	dir->i_size -= sz_change;
-@@ -1268,6 +1265,7 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
- 	fscrypt_free_filename(&nm);
- out_budg:
- 	ubifs_release_budget(c, &req);
-+	kfree(sd);
- 	return err;
- }
- 
+ 	/* finish the rest init. */
 -- 
-2.16.0.rc0.223.g4a4ac83678-goog
+2.7.4
