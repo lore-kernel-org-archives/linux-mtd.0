@@ -1,19 +1,19 @@
-Received: from mail-it0-x241.google.com ([2607:f8b0:4001:c0b::241])
+Received: from mail-it0-x242.google.com ([2607:f8b0:4001:c0b::242])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eXXBS-0001Lx-92
- for linux-mtd@lists.infradead.org; Fri, 05 Jan 2018 18:57:59 +0000
-Received: by mail-it0-x241.google.com with SMTP id z6so2620720iti.4
- for <linux-mtd@lists.infradead.org>; Fri, 05 Jan 2018 10:57:27 -0800 (PST)
+ id 1eXXBT-0001ME-6z
+ for linux-mtd@lists.infradead.org; Fri, 05 Jan 2018 18:58:01 +0000
+Received: by mail-it0-x242.google.com with SMTP id 68so2705412ite.4
+ for <linux-mtd@lists.infradead.org>; Fri, 05 Jan 2018 10:57:28 -0800 (PST)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org,
 	"Theodore Y . Ts'o" <tytso@mit.edu>
 Cc: linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
  linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
  Eric Biggers <ebiggers@google.com>
-Subject: [PATCH v2 04/11] fscrypt: move fscrypt_ctx declaration to
- fscrypt_supp.h
-Date: Fri,  5 Jan 2018 10:44:55 -0800
-Message-Id: <20180105184502.48473-5-ebiggers3@gmail.com>
+Subject: [PATCH v2 05/11] fscrypt: split fscrypt_dummy_context_enabled() into
+ supp/notsupp versions
+Date: Fri,  5 Jan 2018 10:44:56 -0800
+Message-Id: <20180105184502.48473-6-ebiggers3@gmail.com>
 In-Reply-To: <20180105184502.48473-1-ebiggers3@gmail.com>
 References: <20180105184502.48473-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,71 +27,70 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Eric Biggers <ebiggers@google.com>
 
-Filesystems only ever access 'struct fscrypt_ctx' through fscrypt
-functions.  But when a filesystem is built without encryption support,
-these functions are all stubbed out, so the declaration of fscrypt_ctx
-is unneeded.  Therefore, move it from fscrypt.h to fscrypt_supp.h.
+fscrypt_dummy_context_enabled() accesses ->s_cop, which now is only set
+when the filesystem is built with encryption support.  This didn't
+actually matter because no filesystems called it.  However, it will
+start being used soon, so fix it by moving it from fscrypt.h to
+fscrypt_supp.h and stubbing it out in fscrypt_notsupp.h.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- include/linux/fscrypt.h      | 16 +---------------
- include/linux/fscrypt_supp.h | 15 +++++++++++++++
- 2 files changed, 16 insertions(+), 15 deletions(-)
+ include/linux/fscrypt.h         | 8 --------
+ include/linux/fscrypt_notsupp.h | 5 +++++
+ include/linux/fscrypt_supp.h    | 6 ++++++
+ 3 files changed, 11 insertions(+), 8 deletions(-)
 
 diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index c23b2f16129a..0f94d087a6d1 100644
+index 0f94d087a6d1..b671a4eef47f 100644
 --- a/include/linux/fscrypt.h
 +++ b/include/linux/fscrypt.h
-@@ -24,23 +24,9 @@
+@@ -75,14 +75,6 @@ struct fscrypt_operations {
+ /* Maximum value for the third parameter of fscrypt_operations.set_context(). */
+ #define FSCRYPT_SET_CONTEXT_MAX_SIZE	28
  
- #define FS_CRYPTO_BLOCK_SIZE		16
- 
-+struct fscrypt_ctx;
- struct fscrypt_info;
- 
--struct fscrypt_ctx {
--	union {
--		struct {
--			struct page *bounce_page;	/* Ciphertext page */
--			struct page *control_page;	/* Original page  */
--		} w;
--		struct {
--			struct bio *bio;
--			struct work_struct work;
--		} r;
--		struct list_head free_list;	/* Free list */
--	};
--	u8 flags;				/* Flags */
--};
+-static inline bool fscrypt_dummy_context_enabled(struct inode *inode)
+-{
+-	if (inode->i_sb->s_cop->dummy_context &&
+-				inode->i_sb->s_cop->dummy_context(inode))
+-		return true;
+-	return false;
+-}
 -
- /**
-  * For encrypted symlinks, the ciphertext length is stored at the beginning
-  * of the string in little-endian format.
+ static inline bool fscrypt_valid_enc_modes(u32 contents_mode,
+ 					u32 filenames_mode)
+ {
+diff --git a/include/linux/fscrypt_notsupp.h b/include/linux/fscrypt_notsupp.h
+index 812dc701a5b3..81e02201b215 100644
+--- a/include/linux/fscrypt_notsupp.h
++++ b/include/linux/fscrypt_notsupp.h
+@@ -19,6 +19,11 @@ static inline bool fscrypt_has_encryption_key(const struct inode *inode)
+ 	return false;
+ }
+ 
++static inline bool fscrypt_dummy_context_enabled(struct inode *inode)
++{
++	return false;
++}
++
+ /* crypto.c */
+ static inline struct fscrypt_ctx *fscrypt_get_ctx(const struct inode *inode,
+ 						  gfp_t gfp_flags)
 diff --git a/include/linux/fscrypt_supp.h b/include/linux/fscrypt_supp.h
-index 33d641e27c18..fd6ee089ced0 100644
+index fd6ee089ced0..e7dfa2974906 100644
 --- a/include/linux/fscrypt_supp.h
 +++ b/include/linux/fscrypt_supp.h
-@@ -11,6 +11,21 @@
- #ifndef _LINUX_FSCRYPT_SUPP_H
- #define _LINUX_FSCRYPT_SUPP_H
- 
-+struct fscrypt_ctx {
-+	union {
-+		struct {
-+			struct page *bounce_page;	/* Ciphertext page */
-+			struct page *control_page;	/* Original page  */
-+		} w;
-+		struct {
-+			struct bio *bio;
-+			struct work_struct work;
-+		} r;
-+		struct list_head free_list;	/* Free list */
-+	};
-+	u8 flags;				/* Flags */
-+};
-+
- static inline bool fscrypt_has_encryption_key(const struct inode *inode)
- {
+@@ -31,6 +31,12 @@ static inline bool fscrypt_has_encryption_key(const struct inode *inode)
  	return (inode->i_crypt_info != NULL);
+ }
+ 
++static inline bool fscrypt_dummy_context_enabled(struct inode *inode)
++{
++	return inode->i_sb->s_cop->dummy_context &&
++		inode->i_sb->s_cop->dummy_context(inode);
++}
++
+ /* crypto.c */
+ extern struct fscrypt_ctx *fscrypt_get_ctx(const struct inode *, gfp_t);
+ extern void fscrypt_release_ctx(struct fscrypt_ctx *);
 -- 
 2.16.0.rc0.223.g4a4ac83678-goog
