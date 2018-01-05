@@ -1,9 +1,9 @@
 Received: from mout.web.de ([212.227.17.11])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eXYc7-0004xM-AF
- for linux-mtd@lists.infradead.org; Fri, 05 Jan 2018 20:29:17 +0000
-Subject: [PATCH 1/3] mtd/nand/ams-delta: Delete an error message for a failed
- memory allocation in ams_delta_init()
+ id 1eXYdC-0006QN-32
+ for linux-mtd@lists.infradead.org; Fri, 05 Jan 2018 20:30:24 +0000
+Subject: [PATCH 2/3] mtd/nand/ams-delta: Improve a size determination in
+ ams_delta_init()
 From: SF Markus Elfring <elfring@users.sourceforge.net>
 To: linux-mtd@lists.infradead.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -13,8 +13,8 @@ To: linux-mtd@lists.infradead.org,
  Richard Weinberger <richard@nod.at>
 Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
 References: <8f678424-3ce1-3a4c-1b0d-f3ac9a226f00@users.sourceforge.net>
-Message-ID: <0ab36d19-fb5b-ab7f-5821-7c0574f9589f@users.sourceforge.net>
-Date: Fri, 5 Jan 2018 21:28:58 +0100
+Message-ID: <4df8f355-b072-f0a6-1314-354a6bafe772@users.sourceforge.net>
+Date: Fri, 5 Jan 2018 21:30:00 +0100
 MIME-Version: 1.0
 In-Reply-To: <8f678424-3ce1-3a4c-1b0d-f3ac9a226f00@users.sourceforge.net>
 Content-Type: text/plain; charset=utf-8
@@ -30,28 +30,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Fri, 5 Jan 2018 21:01:18 +0100
+Date: Fri, 5 Jan 2018 21:03:20 +0100
 
-Omit an extra message for a memory allocation failure in this function.
+Replace the specification of a data structure by a pointer dereference
+as the parameter for the operator "sizeof" to make the corresponding size
+determination a bit safer according to the Linux coding style convention.
 
 This issue was detected by using the Coccinelle software.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- drivers/mtd/nand/ams-delta.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/mtd/nand/ams-delta.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/ams-delta.c b/drivers/mtd/nand/ams-delta.c
-index d60ada45c549..effaecff0f2e 100644
+index effaecff0f2e..4f5fc104c510 100644
 --- a/drivers/mtd/nand/ams-delta.c
 +++ b/drivers/mtd/nand/ams-delta.c
-@@ -185,7 +185,6 @@ static int ams_delta_init(struct platform_device *pdev)
+@@ -183,7 +183,7 @@ static int ams_delta_init(struct platform_device *pdev)
+ 		return -ENXIO;
+ 
  	/* Allocate memory for MTD device structure and private data */
- 	this = kzalloc(sizeof(struct nand_chip), GFP_KERNEL);
+-	this = kzalloc(sizeof(struct nand_chip), GFP_KERNEL);
++	this = kzalloc(sizeof(*this), GFP_KERNEL);
  	if (!this) {
--		printk (KERN_WARNING "Unable to allocate E3 NAND MTD device structure.\n");
  		err = -ENOMEM;
  		goto out;
- 	}
 -- 
 2.15.1
