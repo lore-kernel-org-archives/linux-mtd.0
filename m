@@ -1,19 +1,19 @@
-Received: from mail-it0-x244.google.com ([2607:f8b0:4001:c0b::244])
+Received: from mail-it0-x243.google.com ([2607:f8b0:4001:c0b::243])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eXXBP-0001Lr-Cb
- for linux-mtd@lists.infradead.org; Fri, 05 Jan 2018 18:57:43 +0000
-Received: by mail-it0-x244.google.com with SMTP id x28so2633310ita.0
- for <linux-mtd@lists.infradead.org>; Fri, 05 Jan 2018 10:57:26 -0800 (PST)
+ id 1eXXBQ-0001MP-Br
+ for linux-mtd@lists.infradead.org; Fri, 05 Jan 2018 18:57:48 +0000
+Received: by mail-it0-x243.google.com with SMTP id f143so2728405itb.0
+ for <linux-mtd@lists.infradead.org>; Fri, 05 Jan 2018 10:57:29 -0800 (PST)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org,
 	"Theodore Y . Ts'o" <tytso@mit.edu>
 Cc: linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
  linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
  Eric Biggers <ebiggers@google.com>
-Subject: [PATCH v2 03/11] fscrypt: move fscrypt_info_cachep declaration to
- fscrypt_private.h
-Date: Fri,  5 Jan 2018 10:44:54 -0800
-Message-Id: <20180105184502.48473-4-ebiggers3@gmail.com>
+Subject: [PATCH v2 06/11] fscrypt: move fscrypt_operations declaration to
+ fscrypt_supp.h
+Date: Fri,  5 Jan 2018 10:44:57 -0800
+Message-Id: <20180105184502.48473-7-ebiggers3@gmail.com>
 In-Reply-To: <20180105184502.48473-1-ebiggers3@gmail.com>
 References: <20180105184502.48473-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,38 +27,73 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Eric Biggers <ebiggers@google.com>
 
-The fscrypt_info kmem_cache is internal to fscrypt; filesystems don't
-need to access it.  So move its declaration into fscrypt_private.h.
+Filesystems now only define their fscrypt_operations when they are
+compiled with encryption support, so move the fscrypt_operations
+declaration from fscrypt.h to fscrypt_supp.h.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/fscrypt_private.h  | 1 +
- include/linux/fscrypt_supp.h | 1 -
- 2 files changed, 1 insertion(+), 1 deletion(-)
+ include/linux/fscrypt.h      | 18 ------------------
+ include/linux/fscrypt_supp.h | 18 ++++++++++++++++++
+ 2 files changed, 18 insertions(+), 18 deletions(-)
 
-diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-index c0b4f5597e1a..823c43a00bf7 100644
---- a/fs/crypto/fscrypt_private.h
-+++ b/fs/crypto/fscrypt_private.h
-@@ -72,6 +72,7 @@ typedef enum {
- #define FS_CTX_HAS_BOUNCE_BUFFER_FL		0x00000002
+diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+index b671a4eef47f..33b95a91f720 100644
+--- a/include/linux/fscrypt.h
++++ b/include/linux/fscrypt.h
+@@ -54,24 +54,6 @@ struct fscrypt_name {
+ #define fname_name(p)		((p)->disk_name.name)
+ #define fname_len(p)		((p)->disk_name.len)
  
- /* crypto.c */
-+extern struct kmem_cache *fscrypt_info_cachep;
- extern int fscrypt_initialize(unsigned int cop_flags);
- extern struct workqueue_struct *fscrypt_read_workqueue;
- extern int fscrypt_do_page_crypto(const struct inode *inode,
+-/*
+- * fscrypt superblock flags
+- */
+-#define FS_CFLG_OWN_PAGES (1U << 1)
+-
+-/*
+- * crypto opertions for filesystems
+- */
+-struct fscrypt_operations {
+-	unsigned int flags;
+-	const char *key_prefix;
+-	int (*get_context)(struct inode *, void *, size_t);
+-	int (*set_context)(struct inode *, const void *, size_t, void *);
+-	bool (*dummy_context)(struct inode *);
+-	bool (*empty_dir)(struct inode *);
+-	unsigned (*max_namelen)(struct inode *);
+-};
+-
+ /* Maximum value for the third parameter of fscrypt_operations.set_context(). */
+ #define FSCRYPT_SET_CONTEXT_MAX_SIZE	28
+ 
 diff --git a/include/linux/fscrypt_supp.h b/include/linux/fscrypt_supp.h
-index ad40780d4653..33d641e27c18 100644
+index e7dfa2974906..ce61caf26f40 100644
 --- a/include/linux/fscrypt_supp.h
 +++ b/include/linux/fscrypt_supp.h
-@@ -17,7 +17,6 @@ static inline bool fscrypt_has_encryption_key(const struct inode *inode)
- }
+@@ -11,6 +11,24 @@
+ #ifndef _LINUX_FSCRYPT_SUPP_H
+ #define _LINUX_FSCRYPT_SUPP_H
  
- /* crypto.c */
--extern struct kmem_cache *fscrypt_info_cachep;
- extern struct fscrypt_ctx *fscrypt_get_ctx(const struct inode *, gfp_t);
- extern void fscrypt_release_ctx(struct fscrypt_ctx *);
- extern struct page *fscrypt_encrypt_page(const struct inode *, struct page *,
++/*
++ * fscrypt superblock flags
++ */
++#define FS_CFLG_OWN_PAGES (1U << 1)
++
++/*
++ * crypto operations for filesystems
++ */
++struct fscrypt_operations {
++	unsigned int flags;
++	const char *key_prefix;
++	int (*get_context)(struct inode *, void *, size_t);
++	int (*set_context)(struct inode *, const void *, size_t, void *);
++	bool (*dummy_context)(struct inode *);
++	bool (*empty_dir)(struct inode *);
++	unsigned (*max_namelen)(struct inode *);
++};
++
+ struct fscrypt_ctx {
+ 	union {
+ 		struct {
 -- 
 2.16.0.rc0.223.g4a4ac83678-goog
