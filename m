@@ -1,19 +1,19 @@
 Received: from mail-it0-x241.google.com ([2607:f8b0:4001:c0b::241])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eXXBS-0001N3-94
- for linux-mtd@lists.infradead.org; Fri, 05 Jan 2018 18:57:52 +0000
-Received: by mail-it0-x241.google.com with SMTP id m11so5345248iti.1
- for <linux-mtd@lists.infradead.org>; Fri, 05 Jan 2018 10:57:31 -0800 (PST)
+ id 1eXXBS-0001Lx-92
+ for linux-mtd@lists.infradead.org; Fri, 05 Jan 2018 18:57:59 +0000
+Received: by mail-it0-x241.google.com with SMTP id z6so2620720iti.4
+ for <linux-mtd@lists.infradead.org>; Fri, 05 Jan 2018 10:57:27 -0800 (PST)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org,
 	"Theodore Y . Ts'o" <tytso@mit.edu>
 Cc: linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
  linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
  Eric Biggers <ebiggers@google.com>
-Subject: [PATCH v2 08/11] fscrypt: move fscrypt_is_dot_dotdot() to
- fs/crypto/fname.c
-Date: Fri,  5 Jan 2018 10:44:59 -0800
-Message-Id: <20180105184502.48473-9-ebiggers3@gmail.com>
+Subject: [PATCH v2 04/11] fscrypt: move fscrypt_ctx declaration to
+ fscrypt_supp.h
+Date: Fri,  5 Jan 2018 10:44:55 -0800
+Message-Id: <20180105184502.48473-5-ebiggers3@gmail.com>
 In-Reply-To: <20180105184502.48473-1-ebiggers3@gmail.com>
 References: <20180105184502.48473-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,59 +27,71 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Eric Biggers <ebiggers@google.com>
 
-Only fs/crypto/fname.c cares about treating the "." and ".." filenames
-specially with regards to encryption, so move fscrypt_is_dot_dotdot()
-from fscrypt.h to there.
+Filesystems only ever access 'struct fscrypt_ctx' through fscrypt
+functions.  But when a filesystem is built without encryption support,
+these functions are all stubbed out, so the declaration of fscrypt_ctx
+is unneeded.  Therefore, move it from fscrypt.h to fscrypt_supp.h.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/fname.c       | 11 +++++++++++
- include/linux/fscrypt.h | 11 -----------
- 2 files changed, 11 insertions(+), 11 deletions(-)
+ include/linux/fscrypt.h      | 16 +---------------
+ include/linux/fscrypt_supp.h | 15 +++++++++++++++
+ 2 files changed, 16 insertions(+), 15 deletions(-)
 
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index 305541bcd108..b8c5061553b1 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -15,6 +15,17 @@
- #include <linux/ratelimit.h>
- #include "fscrypt_private.h"
- 
-+static inline bool fscrypt_is_dot_dotdot(const struct qstr *str)
-+{
-+	if (str->len == 1 && str->name[0] == '.')
-+		return true;
-+
-+	if (str->len == 2 && str->name[0] == '.' && str->name[1] == '.')
-+		return true;
-+
-+	return false;
-+}
-+
- /**
-  * fname_encrypt() - encrypt a filename
-  *
 diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 2e4dce0365cf..3045fc49d3ca 100644
+index c23b2f16129a..0f94d087a6d1 100644
 --- a/include/linux/fscrypt.h
 +++ b/include/linux/fscrypt.h
-@@ -57,17 +57,6 @@ struct fscrypt_name {
- /* Maximum value for the third parameter of fscrypt_operations.set_context(). */
- #define FSCRYPT_SET_CONTEXT_MAX_SIZE	28
+@@ -24,23 +24,9 @@
  
--static inline bool fscrypt_is_dot_dotdot(const struct qstr *str)
--{
--	if (str->len == 1 && str->name[0] == '.')
--		return true;
+ #define FS_CRYPTO_BLOCK_SIZE		16
+ 
++struct fscrypt_ctx;
+ struct fscrypt_info;
+ 
+-struct fscrypt_ctx {
+-	union {
+-		struct {
+-			struct page *bounce_page;	/* Ciphertext page */
+-			struct page *control_page;	/* Original page  */
+-		} w;
+-		struct {
+-			struct bio *bio;
+-			struct work_struct work;
+-		} r;
+-		struct list_head free_list;	/* Free list */
+-	};
+-	u8 flags;				/* Flags */
+-};
 -
--	if (str->len == 2 && str->name[0] == '.' && str->name[1] == '.')
--		return true;
--
--	return false;
--}
--
- #if __FS_HAS_ENCRYPTION
- #include <linux/fscrypt_supp.h>
- #else
+ /**
+  * For encrypted symlinks, the ciphertext length is stored at the beginning
+  * of the string in little-endian format.
+diff --git a/include/linux/fscrypt_supp.h b/include/linux/fscrypt_supp.h
+index 33d641e27c18..fd6ee089ced0 100644
+--- a/include/linux/fscrypt_supp.h
++++ b/include/linux/fscrypt_supp.h
+@@ -11,6 +11,21 @@
+ #ifndef _LINUX_FSCRYPT_SUPP_H
+ #define _LINUX_FSCRYPT_SUPP_H
+ 
++struct fscrypt_ctx {
++	union {
++		struct {
++			struct page *bounce_page;	/* Ciphertext page */
++			struct page *control_page;	/* Original page  */
++		} w;
++		struct {
++			struct bio *bio;
++			struct work_struct work;
++		} r;
++		struct list_head free_list;	/* Free list */
++	};
++	u8 flags;				/* Flags */
++};
++
+ static inline bool fscrypt_has_encryption_key(const struct inode *inode)
+ {
+ 	return (inode->i_crypt_info != NULL);
 -- 
 2.16.0.rc0.223.g4a4ac83678-goog
