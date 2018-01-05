@@ -1,23 +1,22 @@
-Received: from mail.kernel.org ([198.145.29.99])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eXYmr-000359-CJ
- for linux-mtd@lists.infradead.org; Fri, 05 Jan 2018 20:40:22 +0000
-Date: Fri, 5 Jan 2018 12:40:09 -0800
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-To: Eric Biggers <ebiggers3@gmail.com>
-Cc: linux-fscrypt@vger.kernel.org, "Theodore Y . Ts'o" <tytso@mit.edu>,
- linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- Eric Biggers <ebiggers@google.com>
-Subject: Re: [PATCH v2 05/11] fscrypt: split fscrypt_dummy_context_enabled()
- into supp/notsupp versions
-Message-ID: <20180105204009.GA72343@jaegeuk-macbookpro.roam.corp.google.com>
-References: <20180105184502.48473-1-ebiggers3@gmail.com>
- <20180105184502.48473-6-ebiggers3@gmail.com>
+To: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ David Woodhouse <dwmw2@infradead.org>, Josh Wu <rainyfeeling@outlook.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Richard Weinberger <richard@nod.at>, Wenyou Yang <wenyou.yang@atmel.com>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH] mtd/nand/atmel: Delete an error message for a failed memory
+ allocation in two functions
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
+Message-ID: <81cadb76-8c67-9289-1375-2d4a55a4adfa@users.sourceforge.net>
+Date: Fri, 5 Jan 2018 21:55:28 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180105184502.48473-6-ebiggers3@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,79 +26,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/05, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> fscrypt_dummy_context_enabled() accesses ->s_cop, which now is only set
-> when the filesystem is built with encryption support.  This didn't
-> actually matter because no filesystems called it.  However, it will
-> start being used soon, so fix it by moving it from fscrypt.h to
-> fscrypt_supp.h and stubbing it out in fscrypt_notsupp.h.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Fri, 5 Jan 2018 21:45:04 +0100
 
-Ted, do we have a chance to get rid of this dummy_context? If there exists
-backward compatibility issue, please never mind tho.
+Omit an extra message for a memory allocation failure in these functions.
 
-Thanks,
+This issue was detected by using the Coccinelle software.
 
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->  include/linux/fscrypt.h         | 8 --------
->  include/linux/fscrypt_notsupp.h | 5 +++++
->  include/linux/fscrypt_supp.h    | 6 ++++++
->  3 files changed, 11 insertions(+), 8 deletions(-)
-> 
-> diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-> index 0f94d087a6d1..b671a4eef47f 100644
-> --- a/include/linux/fscrypt.h
-> +++ b/include/linux/fscrypt.h
-> @@ -75,14 +75,6 @@ struct fscrypt_operations {
->  /* Maximum value for the third parameter of fscrypt_operations.set_context(). */
->  #define FSCRYPT_SET_CONTEXT_MAX_SIZE	28
->  
-> -static inline bool fscrypt_dummy_context_enabled(struct inode *inode)
-> -{
-> -	if (inode->i_sb->s_cop->dummy_context &&
-> -				inode->i_sb->s_cop->dummy_context(inode))
-> -		return true;
-> -	return false;
-> -}
-> -
->  static inline bool fscrypt_valid_enc_modes(u32 contents_mode,
->  					u32 filenames_mode)
->  {
-> diff --git a/include/linux/fscrypt_notsupp.h b/include/linux/fscrypt_notsupp.h
-> index 812dc701a5b3..81e02201b215 100644
-> --- a/include/linux/fscrypt_notsupp.h
-> +++ b/include/linux/fscrypt_notsupp.h
-> @@ -19,6 +19,11 @@ static inline bool fscrypt_has_encryption_key(const struct inode *inode)
->  	return false;
->  }
->  
-> +static inline bool fscrypt_dummy_context_enabled(struct inode *inode)
-> +{
-> +	return false;
-> +}
-> +
->  /* crypto.c */
->  static inline struct fscrypt_ctx *fscrypt_get_ctx(const struct inode *inode,
->  						  gfp_t gfp_flags)
-> diff --git a/include/linux/fscrypt_supp.h b/include/linux/fscrypt_supp.h
-> index fd6ee089ced0..e7dfa2974906 100644
-> --- a/include/linux/fscrypt_supp.h
-> +++ b/include/linux/fscrypt_supp.h
-> @@ -31,6 +31,12 @@ static inline bool fscrypt_has_encryption_key(const struct inode *inode)
->  	return (inode->i_crypt_info != NULL);
->  }
->  
-> +static inline bool fscrypt_dummy_context_enabled(struct inode *inode)
-> +{
-> +	return inode->i_sb->s_cop->dummy_context &&
-> +		inode->i_sb->s_cop->dummy_context(inode);
-> +}
-> +
->  /* crypto.c */
->  extern struct fscrypt_ctx *fscrypt_get_ctx(const struct inode *, gfp_t);
->  extern void fscrypt_release_ctx(struct fscrypt_ctx *);
-> -- 
-> 2.16.0.rc0.223.g4a4ac83678-goog
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ drivers/mtd/nand/atmel/nand-controller.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/atmel/nand-controller.c
+index 90a71a56bc23..a41b999229c9 100644
+--- a/drivers/mtd/nand/atmel/nand-controller.c
++++ b/drivers/mtd/nand/atmel/nand-controller.c
+@@ -1612,10 +1612,8 @@ static int atmel_nand_register(struct atmel_nand *nand)
+ 		mtd->name = devm_kasprintf(nc->dev, GFP_KERNEL,
+ 					   "%s:nand.%d", dev_name(nc->dev),
+ 					   nand->cs[0].id);
+-		if (!mtd->name) {
+-			dev_err(nc->dev, "Failed to allocate mtd->name\n");
++		if (!mtd->name)
+ 			return -ENOMEM;
+-		}
+ 	}
+ 
+ 	ret = nand_scan_tail(mtd);
+@@ -1654,10 +1652,8 @@ static struct atmel_nand *atmel_nand_create(struct atmel_nand_controller *nc,
+ 	nand = devm_kzalloc(nc->dev,
+ 			    sizeof(*nand) + (numcs * sizeof(*nand->cs)),
+ 			    GFP_KERNEL);
+-	if (!nand) {
+-		dev_err(nc->dev, "Failed to allocate NAND object\n");
++	if (!nand)
+ 		return ERR_PTR(-ENOMEM);
+-	}
+ 
+ 	nand->numcs = numcs;
+ 
+-- 
+2.15.1
