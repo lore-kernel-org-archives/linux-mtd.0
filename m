@@ -1,8 +1,9 @@
-Received: from mout.web.de ([212.227.15.3])
+Received: from mout.web.de ([212.227.15.14])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eXq6m-0008UW-C1
- for linux-mtd@lists.infradead.org; Sat, 06 Jan 2018 15:10:06 +0000
-Subject: [PATCH 3/5] mtd/rfd_ftl: Improve a size determination in two functions
+ id 1eXq7h-0001mq-JJ
+ for linux-mtd@lists.infradead.org; Sat, 06 Jan 2018 15:11:03 +0000
+Subject: [PATCH 4/5] mtd/rfd_ftl: Return directly after a failed kmalloc() in
+ erase_block()
 From: SF Markus Elfring <elfring@users.sourceforge.net>
 To: linux-mtd@lists.infradead.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -12,8 +13,8 @@ To: linux-mtd@lists.infradead.org,
  Richard Weinberger <richard@nod.at>
 Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
 References: <a595376a-c343-33ea-8607-370b88e19c61@users.sourceforge.net>
-Message-ID: <dc2790d6-6c96-65e4-5407-a2440f5a97e8@users.sourceforge.net>
-Date: Sat, 6 Jan 2018 16:09:44 +0100
+Message-ID: <7b381eef-c54f-d2c9-7281-a90d519c22f1@users.sourceforge.net>
+Date: Sat, 6 Jan 2018 16:10:40 +0100
 MIME-Version: 1.0
 In-Reply-To: <a595376a-c343-33ea-8607-370b88e19c61@users.sourceforge.net>
 Content-Type: text/plain; charset=utf-8
@@ -29,43 +30,45 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sat, 6 Jan 2018 15:03:29 +0100
+Date: Sat, 6 Jan 2018 15:18:28 +0100
 
-Replace the specification of data structures by pointer dereferences
-as the parameter for the operator "sizeof" to make the corresponding size
-determination a bit safer according to the Linux coding style convention.
+* Return directly after a call of the function "kmalloc" failed
+  at the beginning.
 
-This issue was detected by using the Coccinelle software.
+* Delete an initialisation for the variable "rc" and the jump label "err"
+  which became unnecessary with this refactoring.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- drivers/mtd/rfd_ftl.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/mtd/rfd_ftl.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/rfd_ftl.c b/drivers/mtd/rfd_ftl.c
-index 19e14f909dc6..dcf1b88e1193 100644
+index dcf1b88e1193..e3155ec4be64 100644
 --- a/drivers/mtd/rfd_ftl.c
 +++ b/drivers/mtd/rfd_ftl.c
-@@ -323,10 +323,9 @@ static void erase_callback(struct erase_info *erase)
+@@ -323,11 +323,11 @@ static void erase_callback(struct erase_info *erase)
  
  static int erase_block(struct partition *part, int block)
  {
--	struct erase_info *erase;
- 	int rc = -ENOMEM;
-+	struct erase_info *erase = kmalloc(sizeof(*erase), GFP_KERNEL);
+-	int rc = -ENOMEM;
++	int rc;
+ 	struct erase_info *erase = kmalloc(sizeof(*erase), GFP_KERNEL);
  
--	erase = kmalloc(sizeof(struct erase_info), GFP_KERNEL);
  	if (!erase)
- 		goto err;
+-		goto err;
++		return -ENOMEM;
  
-@@ -759,7 +758,7 @@ static void rfd_ftl_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- 	if (mtd->type != MTD_NORFLASH || mtd->size > UINT_MAX)
- 		return;
- 
--	part = kzalloc(sizeof(struct partition), GFP_KERNEL);
-+	part = kzalloc(sizeof(*part), GFP_KERNEL);
- 	if (!part)
- 		return;
+ 	erase->mtd = part->mbd.mtd;
+ 	erase->callback = erase_callback;
+@@ -346,8 +346,6 @@ static int erase_block(struct partition *part, int block)
+ 				(unsigned long long)erase->len, part->mbd.mtd->name);
+ 		kfree(erase);
+ 	}
+-
+-err:
+ 	return rc;
+ }
  
 -- 
 2.15.1
