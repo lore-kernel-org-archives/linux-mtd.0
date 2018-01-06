@@ -1,19 +1,19 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eXvGJ-0001B0-Sj
- for linux-mtd@lists.infradead.org; Sat, 06 Jan 2018 20:40:18 +0000
-Date: Sat, 6 Jan 2018 21:40:00 +0100
+ id 1eXvGo-0002QY-8u
+ for linux-mtd@lists.infradead.org; Sat, 06 Jan 2018 20:40:48 +0000
+Date: Sat, 6 Jan 2018 21:40:34 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, architt@codeaurora.org,
- computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
- cyrille.pitchen@wedev4u.fr
-Subject: Re: [PATCH 2/2] mtd: brcmnand: Add a NULL check for devm_kasprintf()
-Message-ID: <20180106214000.4d75c709@bbrezillon>
-In-Reply-To: <20180106103557.6612a12c@bbrezillon>
-References: <1515182576-2704-1-git-send-email-festevam@gmail.com>
- <1515182576-2704-2-git-send-email-festevam@gmail.com>
- <20180106103557.6612a12c@bbrezillon>
+To: Miquel Raynal <miquel.raynal@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: nand: Fix unfinished comment in
+ nand_init_data_interface()
+Message-ID: <20180106214034.109858db@bbrezillon>
+In-Reply-To: <20171222171241.27416-1-miquel.raynal@free-electrons.com>
+References: <20171222171241.27416-1-miquel.raynal@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,28 +26,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 6 Jan 2018 10:35:57 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+On Fri, 22 Dec 2017 18:12:41 +0100
+Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
 
-> Hi Fabio,
-> 
-> The prefix should be "mtd: nand: brcmnand: ".
-> 
-> No need to resend, I'll fix it when applying.
-> 
-> Thanks,
-> 
-> Boris
-> 
-> On Fri,  5 Jan 2018 18:02:56 -0200
-> Fabio Estevam <festevam@gmail.com> wrote:
-> 
-> > From: Fabio Estevam <fabio.estevam@nxp.com>
-> > 
-> > devm_kasprintf() may fail, so we should better add a NULL check
-> > and propagate an error on failure.
-> > 
-> > Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+> Give an unfinished comment a meaning.
 
 Applied.
 
@@ -55,25 +37,25 @@ Thanks,
 
 Boris
 
-> > ---
-> >  drivers/mtd/nand/brcmnand/brcmnand.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-> > index 3310e14..8942aa6 100644
-> > --- a/drivers/mtd/nand/brcmnand/brcmnand.c
-> > +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-> > @@ -2237,6 +2237,8 @@ static int brcmnand_init_cs(struct brcmnand_host *host, struct device_node *dn)
-> >  	nand_set_controller_data(chip, host);
-> >  	mtd->name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "brcmnand.%d",
-> >  				   host->cs);
-> > +	if (!mtd->name)
-> > +		return -ENOMEM;
-> >  	mtd->owner = THIS_MODULE;
-> >  	mtd->dev.parent = &pdev->dev;
-> >    
 > 
+> Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+> ---
+>  drivers/mtd/nand/nand_base.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 > 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index ab8ad9e8a8d8..96c97588e1ba 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -1284,7 +1284,10 @@ static int nand_init_data_interface(struct nand_chip *chip)
+>  		if (ret)
+>  			continue;
+>  
+> -		/* Pass -1 to only */
+> +		/*
+> +		 * Pass NAND_DATA_IFACE_CHECK_ONLY to only check if the
+> +		 * controller supports the requested timings.
+> +		 */
+>  		ret = chip->setup_data_interface(mtd,
+>  						 NAND_DATA_IFACE_CHECK_ONLY,
+>  						 &chip->data_interface);
