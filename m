@@ -1,9 +1,8 @@
 Received: from mout.web.de ([212.227.15.14])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eXnsI-0001U8-TK
- for linux-mtd@lists.infradead.org; Sat, 06 Jan 2018 12:47:00 +0000
-Subject: [PATCH 2/3] mtd/nftlmount: Delete eight unwanted spaces behind
- function names
+ id 1eXntE-0001lt-Ja
+ for linux-mtd@lists.infradead.org; Sat, 06 Jan 2018 12:47:58 +0000
+Subject: [PATCH 3/3] mtd/nftlmount: Add some spaces for better code readability
 From: SF Markus Elfring <elfring@users.sourceforge.net>
 To: linux-mtd@lists.infradead.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -13,13 +12,13 @@ To: linux-mtd@lists.infradead.org,
  Richard Weinberger <richard@nod.at>
 Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
 References: <57d4cbcf-c99c-f3d5-e2bf-f67873f321ea@users.sourceforge.net>
-Message-ID: <0095db26-a0ff-a400-3509-6085d701ecab@users.sourceforge.net>
-Date: Sat, 6 Jan 2018 13:46:39 +0100
+Message-ID: <a0ebf648-a73a-e3ff-5ca9-e84598d4196c@users.sourceforge.net>
+Date: Sat, 6 Jan 2018 13:47:37 +0100
 MIME-Version: 1.0
 In-Reply-To: <57d4cbcf-c99c-f3d5-e2bf-f67873f321ea@users.sourceforge.net>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,76 +29,48 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sat, 6 Jan 2018 12:55:23 +0100
+Date: Sat, 6 Jan 2018 12:58:37 +0100
 
-The script "checkpatch.pl" pointed information out like the following.
-
-WARNING: space prohibited between function name and open parenthesis '('
-
-Thus fix the affected source code places.
+Use space characters at some source code places according to
+the Linux coding style convention.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- drivers/mtd/nftlmount.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+ drivers/mtd/nftlmount.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/nftlmount.c b/drivers/mtd/nftlmount.c
-index 6b9634a70229..d1eaa87c88ba 100644
+index d1eaa87c88ba..457f3572c582 100644
 --- a/drivers/mtd/nftlmount.c
 +++ b/drivers/mtd/nftlmount.c
-@@ -314,7 +314,7 @@ int NFTL_formatblock(struct NFTLrecord *nftl, int block)
- 			  8, &retlen, (char *)&uci) < 0)
- 		goto default_uci1;
+@@ -253,7 +253,7 @@ The new DiskOnChip driver already scanned the bad block table.  Just query it.
  
--	erase_mark = le16_to_cpu ((uci.EraseMark | uci.EraseMark1));
-+	erase_mark = le16_to_cpu(uci.EraseMark | uci.EraseMark1);
- 	if (erase_mark != ERASE_MARK) {
- 	default_uci1:
- 		uci.EraseMark = cpu_to_le16(ERASE_MARK);
-@@ -501,11 +501,12 @@ static int check_and_mark_free_block(struct NFTLrecord *nftl, int block)
- 			  &retlen, (char *)&h1) < 0)
- 		return -1;
+ 	} /* foreach (block) */
  
--	erase_mark = le16_to_cpu ((h1.EraseMark | h1.EraseMark1));
-+	erase_mark = le16_to_cpu(h1.EraseMark | h1.EraseMark1);
- 	if (erase_mark != ERASE_MARK) {
- 		/* if no erase mark, the block must be totally free. This is
- 		   possible in two cases : empty filesystem or interrupted erase (very unlikely) */
--		if (check_free_sectors (nftl, block * nftl->EraseSize, nftl->EraseSize, 1) != 0)
-+		if (check_free_sectors(nftl, block * nftl->EraseSize,
-+				       nftl->EraseSize, 1) != 0)
+-	return boot_record_count?0:-1;
++	return boot_record_count ? 0 : -1;
+ }
+ 
+ static int memcmpb(void *a, int c, int n)
+@@ -282,8 +282,8 @@ static int check_free_sectors(struct NFTLrecord *nftl, unsigned int address, int
  			return -1;
  
- 		/* free block : write erase mark */
-@@ -521,8 +522,9 @@ static int check_and_mark_free_block(struct NFTLrecord *nftl, int block)
- 		/* if erase mark present, need to skip it when doing check */
- 		for (i = 0; i < nftl->EraseSize; i += SECTORSIZE) {
- 			/* check free sector */
--			if (check_free_sectors (nftl, block * nftl->EraseSize + i,
--						SECTORSIZE, 0) != 0)
-+			if (check_free_sectors(nftl,
-+					       block * nftl->EraseSize + i,
-+					       SECTORSIZE, 0) != 0)
+ 		if (check_oob) {
+-			if(nftl_read_oob(mtd, address, mtd->oobsize,
+-					 &retlen, &buf[SECTORSIZE]) < 0)
++			if (nftl_read_oob(mtd, address, mtd->oobsize,
++					  &retlen, &buf[SECTORSIZE]) < 0)
  				return -1;
+ 			if (memcmpb(buf + SECTORSIZE, 0xff, mtd->oobsize) != 0)
+ 				return -1;
+@@ -389,7 +389,7 @@ static void check_sectors_in_chain(struct NFTLrecord *nftl, unsigned int first_b
+ 			else
+ 				status = bci.Status | bci.Status1;
  
- 			if (nftl_read_oob(mtd, block * nftl->EraseSize + i,
-@@ -608,10 +610,13 @@ int NFTL_mount(struct NFTLrecord *s)
- 					break;
- 				}
- 
--				logical_block = le16_to_cpu ((h0.VirtUnitNum | h0.SpareVirtUnitNum));
--				rep_block = le16_to_cpu ((h0.ReplUnitNum | h0.SpareReplUnitNum));
--				nb_erases = le32_to_cpu (h1.WearInfo);
--				erase_mark = le16_to_cpu ((h1.EraseMark | h1.EraseMark1));
-+				logical_block = le16_to_cpu(h0.VirtUnitNum |
-+							    h0.SpareVirtUnitNum);
-+				rep_block = le16_to_cpu(h0.ReplUnitNum |
-+							h0.SpareReplUnitNum);
-+				nb_erases = le32_to_cpu(h1.WearInfo);
-+				erase_mark = le16_to_cpu(h1.EraseMark |
-+							 h1.EraseMark1);
- 
- 				is_first_block = !(logical_block >> 15);
- 				logical_block = logical_block & 0x7fff;
+-			switch(status) {
++			switch (status) {
+ 			case SECTOR_FREE:
+ 				/* verify that the sector is really free. If not, mark
+ 				   as ignore */
 -- 
 2.15.1
