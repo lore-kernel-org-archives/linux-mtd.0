@@ -1,18 +1,16 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eXktm-0001Cy-Rp
- for linux-mtd@lists.infradead.org; Sat, 06 Jan 2018 09:36:20 +0000
-Date: Sat, 6 Jan 2018 10:35:57 +0100
+ id 1eXlK2-0004DP-Eh
+ for linux-mtd@lists.infradead.org; Sat, 06 Jan 2018 10:03:28 +0000
+Date: Sat, 6 Jan 2018 11:03:04 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, architt@codeaurora.org,
- computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
- cyrille.pitchen@wedev4u.fr
-Subject: Re: [PATCH 2/2] mtd: brcmnand: Add a NULL check for devm_kasprintf()
-Message-ID: <20180106103557.6612a12c@bbrezillon>
-In-Reply-To: <1515182576-2704-2-git-send-email-festevam@gmail.com>
-References: <1515182576-2704-1-git-send-email-festevam@gmail.com>
- <1515182576-2704-2-git-send-email-festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, han.xu@nxp.com,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2] mtd: nand: gpmi: Release DMA channels on failure
+Message-ID: <20180106110304.6bf8df65@bbrezillon>
+In-Reply-To: <1514485078-19762-1-git-send-email-festevam@gmail.com>
+References: <1514485078-19762-1-git-send-email-festevam@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,39 +23,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Fabio,
-
-The prefix should be "mtd: nand: brcmnand: ".
-
-No need to resend, I'll fix it when applying.
-
-Thanks,
-
-Boris
-
-On Fri,  5 Jan 2018 18:02:56 -0200
+On Thu, 28 Dec 2017 16:17:58 -0200
 Fabio Estevam <festevam@gmail.com> wrote:
 
 > From: Fabio Estevam <fabio.estevam@nxp.com>
 > 
-> devm_kasprintf() may fail, so we should better add a NULL check
-> and propagate an error on failure.
+> release_dma_channels() should be called in the case of error in
+> gpmi_init() or bch_set_geometry(), because acquire_dma_channels() has
+> been called previously.
+
+I'm really not sure this is a good idea. According to [1], the error
+code returned by PM hooks is not taken into account, and the device
+will be considered as functional by the system even if
+->suspend() returns an error. This means, next time we enter suspend,
+gpmi_pm_suspend() will be called which will lead to an unbalanced
+release_dma_channels()/acquire_dma_channels().
+
+> 
+> Handle the error cases correctly.
 > 
 > Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 > ---
->  drivers/mtd/nand/brcmnand/brcmnand.c | 2 ++
->  1 file changed, 2 insertions(+)
+> Changes since v1:
+> - Remove extra blank line
 > 
-> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-> index 3310e14..8942aa6 100644
-> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
-> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-> @@ -2237,6 +2237,8 @@ static int brcmnand_init_cs(struct brcmnand_host *host, struct device_node *dn)
->  	nand_set_controller_data(chip, host);
->  	mtd->name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "brcmnand.%d",
->  				   host->cs);
-> +	if (!mtd->name)
-> +		return -ENOMEM;
->  	mtd->owner = THIS_MODULE;
->  	mtd->dev.parent = &pdev->dev;
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index 2ef8979..db0d924 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -2137,20 +2137,24 @@ static int gpmi_pm_resume(struct device *dev)
+>  	ret = gpmi_init(this);
+>  	if (ret) {
+>  		dev_err(this->dev, "Error setting GPMI : %d\n", ret);
+> -		return ret;
+> +		goto release_dma_channels;
+>  	}
 >  
+>  	/* re-init the BCH registers */
+>  	ret = bch_set_geometry(this);
+>  	if (ret) {
+>  		dev_err(this->dev, "Error setting BCH : %d\n", ret);
+> -		return ret;
+> +		goto release_dma_channels;
+>  	}
+>  
+>  	/* re-init others */
+>  	gpmi_extra_init(this);
+>  
+>  	return 0;
+> +
+> +release_dma_channels:
+> +	release_dma_channels(this);
+> +	return ret;
+>  }
+>  #endif /* CONFIG_PM_SLEEP */
+>  
+
+[1]https://elixir.free-electrons.com/linux/v4.15-rc6/source/include/linux/pm.h#L262
