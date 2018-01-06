@@ -1,17 +1,18 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eXkqe-000762-QE
- for linux-mtd@lists.infradead.org; Sat, 06 Jan 2018 09:33:06 +0000
-Date: Sat, 6 Jan 2018 10:32:43 +0100
+ id 1eXktm-0001Cy-Rp
+ for linux-mtd@lists.infradead.org; Sat, 06 Jan 2018 09:36:20 +0000
+Date: Sat, 6 Jan 2018 10:35:57 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Kamal Dasu <kdasu.kdev@gmail.com>
-Cc: linux-mtd@lists.infradead.org, bcm-kernel-feedback-list@broadcom.com,
- richard@nod.at, marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
- computersforpeace@gmail.com, dwmw2@infradead.org
-Subject: Re: [PATCH] mtd: brcmnand: Disable prefetch by default
-Message-ID: <20180106103243.0ebf1561@bbrezillon>
-In-Reply-To: <1514924097-1630-1-git-send-email-kdasu.kdev@gmail.com>
-References: <1514924097-1630-1-git-send-email-kdasu.kdev@gmail.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, architt@codeaurora.org,
+ computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
+ cyrille.pitchen@wedev4u.fr
+Subject: Re: [PATCH 2/2] mtd: brcmnand: Add a NULL check for devm_kasprintf()
+Message-ID: <20180106103557.6612a12c@bbrezillon>
+In-Reply-To: <1515182576-2704-2-git-send-email-festevam@gmail.com>
+References: <1515182576-2704-1-git-send-email-festevam@gmail.com>
+ <1515182576-2704-2-git-send-email-festevam@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,51 +25,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Kamal,
+Hi Fabio,
 
 The prefix should be "mtd: nand: brcmnand: ".
 
-On Tue,  2 Jan 2018 15:14:57 -0500
-Kamal Dasu <kdasu.kdev@gmail.com> wrote:
+No need to resend, I'll fix it when applying.
 
-> Brcm nand controller prefetch feature needs to be disabled
-> by default. Enabling effects performance on random reads as
+Thanks,
 
-		       ^ affects ?
+Boris
 
-> well as dma reads.
+On Fri,  5 Jan 2018 18:02:56 -0200
+Fabio Estevam <festevam@gmail.com> wrote:
+
+> From: Fabio Estevam <fabio.estevam@nxp.com>
 > 
-> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
-
-Maybe Fixes and CC-stable tags would be relevant here, unless you don't
-consider this patch as a fix and don't want to backport it to stable
-kernels.
-
+> devm_kasprintf() may fail, so we should better add a NULL check
+> and propagate an error on failure.
+> 
+> Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 > ---
->  drivers/mtd/nand/brcmnand/brcmnand.c | 13 +++----------
->  1 file changed, 3 insertions(+), 10 deletions(-)
+>  drivers/mtd/nand/brcmnand/brcmnand.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 > diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-> index dd56a67..2a978d9 100644
+> index 3310e14..8942aa6 100644
 > --- a/drivers/mtd/nand/brcmnand/brcmnand.c
 > +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-> @@ -2193,16 +2193,9 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
->  	if (ctrl->nand_version >= 0x0702)
->  		tmp |= ACC_CONTROL_RD_ERASED;
->  	tmp &= ~ACC_CONTROL_FAST_PGM_RDIN;
-> -	if (ctrl->features & BRCMNAND_HAS_PREFETCH) {
-> -		/*
-> -		 * FIXME: Flash DMA + prefetch may see spurious erased-page ECC
-> -		 * errors
-> -		 */
-> -		if (has_flash_dma(ctrl))
-> -			tmp &= ~ACC_CONTROL_PREFETCH;
-> -		else
-> -			tmp |= ACC_CONTROL_PREFETCH;
-> -	}
-> +	if (ctrl->features & BRCMNAND_HAS_PREFETCH)
-> +		tmp &= ~ACC_CONTROL_PREFETCH;
-> +
->  	nand_writereg(ctrl, offs, tmp);
+> @@ -2237,6 +2237,8 @@ static int brcmnand_init_cs(struct brcmnand_host *host, struct device_node *dn)
+>  	nand_set_controller_data(chip, host);
+>  	mtd->name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "brcmnand.%d",
+>  				   host->cs);
+> +	if (!mtd->name)
+> +		return -ENOMEM;
+>  	mtd->owner = THIS_MODULE;
+>  	mtd->dev.parent = &pdev->dev;
 >  
->  	return 0;
