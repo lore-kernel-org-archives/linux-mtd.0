@@ -1,28 +1,22 @@
-Received: from imap.thunk.org ([2600:3c02::f03c:91ff:fe96:be03])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eXeYd-0008Or-9r
- for linux-mtd@lists.infradead.org; Sat, 06 Jan 2018 02:50:05 +0000
-Date: Fri, 5 Jan 2018 21:49:44 -0500
-From: Theodore Ts'o <tytso@mit.edu>
-To: Jaegeuk Kim <jaegeuk@kernel.org>
-Cc: Eric Biggers <ebiggers3@gmail.com>, linux-fscrypt@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- Eric Biggers <ebiggers@google.com>
-Subject: Re: [PATCH v2 05/11] fscrypt: split fscrypt_dummy_context_enabled()
- into supp/notsupp versions
-Message-ID: <20180106024944.GA2404@thunk.org>
-References: <20180105184502.48473-1-ebiggers3@gmail.com>
- <20180105184502.48473-6-ebiggers3@gmail.com>
- <20180105204009.GA72343@jaegeuk-macbookpro.roam.corp.google.com>
- <20180105211839.GB44929@gmail.com>
- <20180105213608.GB72343@jaegeuk-macbookpro.roam.corp.google.com>
- <20180105220149.GD44929@gmail.com>
- <20180106003950.GC72343@jaegeuk-macbookpro.roam.corp.google.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eXkXG-0007W1-9N
+ for linux-mtd@lists.infradead.org; Sat, 06 Jan 2018 09:13:05 +0000
+Date: Sat, 6 Jan 2018 10:12:33 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Cc: Stefan Agner <stefan@agner.ch>, ldv-project@linuxtesting.org, Richard
+ Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: nand: vf610: fix error handling in
+ vf610_nfc_probe()
+Message-ID: <20180106101233.771c574e@bbrezillon>
+In-Reply-To: <1514056706-25136-1-git-send-email-khoroshilov@ispras.ru>
+References: <20171222225724.1e26bc38@bbrezillon>
+ <1514056706-25136-1-git-send-email-khoroshilov@ispras.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180106003950.GC72343@jaegeuk-macbookpro.roam.corp.google.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,31 +26,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 05, 2018 at 04:39:50PM -0800, Jaegeuk Kim wrote:
+On Sat, 23 Dec 2017 22:18:26 +0300
+Alexey Khoroshilov <khoroshilov@ispras.ru> wrote:
+
+> vf610_nfc_probe() misses error handling of mtd_device_register().
 > 
-> Agreed that dummy'd be easy to go for now tho, doesn't it give any security
-> concern at all, even only for ext4 testing purpose? Is there a chance to hack
-> the mount option in runtime? BTW, it may be doable to build an encrypt root
-> inode having encrypted dentry of lost_found, given dummy_context in mke2fs.
-> I'm just curious whether or not it'd be worth to do.
+> Found by Linux Driver Verification project (linuxtesting.org).
+> 
+> Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
+> ---
+> v2: Add nand_cleanup() to undone nand_scan_tail() as Boris Brezillon noted.
+> 
+>  drivers/mtd/nand/vf610_nfc.c | 25 +++++++++++++++----------
+>  1 file changed, 15 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
+> index 8037d4b48a05..2dac25a8ccbf 100644
+> --- a/drivers/mtd/nand/vf610_nfc.c
+> +++ b/drivers/mtd/nand/vf610_nfc.c
+> @@ -682,7 +682,7 @@ static int vf610_nfc_probe(struct platform_device *pdev)
+>  				dev_err(nfc->dev,
+>  					"Only one NAND chip supported!\n");
+>  				err = -EINVAL;
+> -				goto error;
+> +				goto err_node;
+>  			}
+>  
+>  			nand_set_flash_node(chip, child);
+> @@ -712,7 +712,7 @@ static int vf610_nfc_probe(struct platform_device *pdev)
+>  	err = devm_request_irq(nfc->dev, irq, vf610_nfc_irq, 0, DRV_NAME, mtd);
+>  	if (err) {
+>  		dev_err(nfc->dev, "Error requesting IRQ!\n");
+> -		goto error;
+> +		goto err_node;
+>  	}
+>  
+>  	vf610_nfc_preinit_controller(nfc);
+> @@ -720,7 +720,7 @@ static int vf610_nfc_probe(struct platform_device *pdev)
+>  	/* first scan to find the device and get the page size */
+>  	err = nand_scan_ident(mtd, 1, NULL);
+>  	if (err)
+> -		goto error;
+> +		goto err_node;
+>  
+>  	vf610_nfc_init_controller(nfc);
+>  
+> @@ -732,20 +732,20 @@ static int vf610_nfc_probe(struct platform_device *pdev)
+>  	if (mtd->writesize + mtd->oobsize > PAGE_2K + OOB_MAX - 8) {
+>  		dev_err(nfc->dev, "Unsupported flash page size\n");
+>  		err = -ENXIO;
+> -		goto error;
+> +		goto err_node;
+>  	}
+>  
+>  	if (chip->ecc.mode == NAND_ECC_HW) {
+>  		if (mtd->writesize != PAGE_2K && mtd->oobsize < 64) {
+>  			dev_err(nfc->dev, "Unsupported flash with hwecc\n");
+>  			err = -ENXIO;
+> -			goto error;
+> +			goto err_node;
+>  		}
+>  
+>  		if (chip->ecc.size != mtd->writesize) {
+>  			dev_err(nfc->dev, "Step size needs to be page size\n");
+>  			err = -ENXIO;
+> -			goto error;
+> +			goto err_node;
+>  		}
+>  
+>  		/* Only 64 byte ECC layouts known */
+> @@ -765,7 +765,7 @@ static int vf610_nfc_probe(struct platform_device *pdev)
+>  		} else {
+>  			dev_err(nfc->dev, "Unsupported ECC strength\n");
+>  			err = -ENXIO;
+> -			goto error;
+> +			goto err_node;
+>  		}
+>  
+>  		chip->ecc.read_page = vf610_nfc_read_page;
+> @@ -777,14 +777,19 @@ static int vf610_nfc_probe(struct platform_device *pdev)
+>  	/* second phase scan */
+>  	err = nand_scan_tail(mtd);
+>  	if (err)
+> -		goto error;
+> +		goto err_node;
+>  
+>  	platform_set_drvdata(pdev, mtd);
+>  
+>  	/* Register device in MTD */
+> -	return mtd_device_register(mtd, NULL, 0);
+> +	err = mtd_device_register(mtd, NULL, 0);
+> +	if (err)
+> +		goto err_nand;
+> +	return 0;
+>  
+> -error:
+> +err_nand:
+> +	nand_cleanup(chip);
+> +err_node:
+>  	of_node_put(nand_get_flash_node(chip));
 
-It requires root to manipulate the mount option; and if you don't
-trust root, you've got other problems.
+Can you use clearer err labels, like err_put_node and err_cleanup_nand?
 
-The problem is that e2fsck needs to be able to repair a file system
-without having access to any of the file system keys.  And so if there
-is an orphaned inode (e.g., an inode which is not attached to any
-directory), we need to put it somewhere, and that's /lost+found.
-
-I've considered making lost+found a magic directory which isn't
-directly linked into the root directory, and have a magic namei
-lookup.  There are downsides though; that would mean that the
-/lost+found filename has to be magic --- what to do if the user tries
-to create a lost+found directory, or rename the magic lost+found
-directory.
-
-Ultimately, i decided it wasn't worth the semantic and
-implementational complexity, especially since none of the primary use
-cases (Android, Chromeos, etc.) needed an encrypted root directory.
-
-      			  	       	  	    - Ted
+>  err_clk:
+>  	clk_disable_unprepare(nfc->clk);
