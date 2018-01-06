@@ -1,8 +1,8 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eXkXG-0007W1-9N
- for linux-mtd@lists.infradead.org; Sat, 06 Jan 2018 09:13:05 +0000
-Date: Sat, 6 Jan 2018 10:12:33 +0100
+ id 1eXkjr-00055n-2O
+ for linux-mtd@lists.infradead.org; Sat, 06 Jan 2018 09:26:05 +0000
+Date: Sat, 6 Jan 2018 10:25:41 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Alexey Khoroshilov <khoroshilov@ispras.ru>
 Cc: Stefan Agner <stefan@agner.ch>, ldv-project@linuxtesting.org, Richard
@@ -10,7 +10,7 @@ Cc: Stefan Agner <stefan@agner.ch>, ldv-project@linuxtesting.org, Richard
  linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v2] mtd: nand: vf610: fix error handling in
  vf610_nfc_probe()
-Message-ID: <20180106101233.771c574e@bbrezillon>
+Message-ID: <20180106102541.75ff546d@bbrezillon>
 In-Reply-To: <1514056706-25136-1-git-send-email-khoroshilov@ispras.ru>
 References: <20171222225724.1e26bc38@bbrezillon>
  <1514056706-25136-1-git-send-email-khoroshilov@ispras.ru>
@@ -126,7 +126,8 @@ Alexey Khoroshilov <khoroshilov@ispras.ru> wrote:
 > +err_node:
 >  	of_node_put(nand_get_flash_node(chip));
 
-Can you use clearer err labels, like err_put_node and err_cleanup_nand?
+I also realize calling of_node_put() here is wrong because nothing in
+this code retains a reference to the DT node.
 
 >  err_clk:
 >  	clk_disable_unprepare(nfc->clk);
