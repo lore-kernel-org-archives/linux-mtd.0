@@ -1,9 +1,7 @@
-Received: from mout.web.de ([212.227.15.14])
+Received: from mout.web.de ([212.227.15.4])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eXntE-0001lt-Ja
- for linux-mtd@lists.infradead.org; Sat, 06 Jan 2018 12:47:58 +0000
-Subject: [PATCH 3/3] mtd/nftlmount: Add some spaces for better code readability
-From: SF Markus Elfring <elfring@users.sourceforge.net>
+ id 1eXq3o-0007YX-T5
+ for linux-mtd@lists.infradead.org; Sat, 06 Jan 2018 15:07:02 +0000
 To: linux-mtd@lists.infradead.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -11,11 +9,11 @@ To: linux-mtd@lists.infradead.org,
  David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
  Richard Weinberger <richard@nod.at>
 Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
-References: <57d4cbcf-c99c-f3d5-e2bf-f67873f321ea@users.sourceforge.net>
-Message-ID: <a0ebf648-a73a-e3ff-5ca9-e84598d4196c@users.sourceforge.net>
-Date: Sat, 6 Jan 2018 13:47:37 +0100
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH 0/5] mtd/rfd_ftl: Adjustments for some function implementations
+Message-ID: <a595376a-c343-33ea-8607-370b88e19c61@users.sourceforge.net>
+Date: Sat, 6 Jan 2018 16:06:37 +0100
 MIME-Version: 1.0
-In-Reply-To: <57d4cbcf-c99c-f3d5-e2bf-f67873f321ea@users.sourceforge.net>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
@@ -29,48 +27,20 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sat, 6 Jan 2018 12:58:37 +0100
+Date: Sat, 6 Jan 2018 16:00:01 +0100
 
-Use space characters at some source code places according to
-the Linux coding style convention.
+A few update suggestions were taken into account
+from static source code analysis.
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- drivers/mtd/nftlmount.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Markus Elfring (5):
+  Delete an error message for a failed memory allocation in scan_header()
+  Less function calls in scan_header() after error detection
+  Improve a size determination in two functions
+  Return directly after a failed kmalloc() in erase_block()
+  Add some spaces for better code readability
 
-diff --git a/drivers/mtd/nftlmount.c b/drivers/mtd/nftlmount.c
-index d1eaa87c88ba..457f3572c582 100644
---- a/drivers/mtd/nftlmount.c
-+++ b/drivers/mtd/nftlmount.c
-@@ -253,7 +253,7 @@ The new DiskOnChip driver already scanned the bad block table.  Just query it.
- 
- 	} /* foreach (block) */
- 
--	return boot_record_count?0:-1;
-+	return boot_record_count ? 0 : -1;
- }
- 
- static int memcmpb(void *a, int c, int n)
-@@ -282,8 +282,8 @@ static int check_free_sectors(struct NFTLrecord *nftl, unsigned int address, int
- 			return -1;
- 
- 		if (check_oob) {
--			if(nftl_read_oob(mtd, address, mtd->oobsize,
--					 &retlen, &buf[SECTORSIZE]) < 0)
-+			if (nftl_read_oob(mtd, address, mtd->oobsize,
-+					  &retlen, &buf[SECTORSIZE]) < 0)
- 				return -1;
- 			if (memcmpb(buf + SECTORSIZE, 0xff, mtd->oobsize) != 0)
- 				return -1;
-@@ -389,7 +389,7 @@ static void check_sectors_in_chain(struct NFTLrecord *nftl, unsigned int first_b
- 			else
- 				status = bci.Status | bci.Status1;
- 
--			switch(status) {
-+			switch (status) {
- 			case SECTOR_FREE:
- 				/* verify that the sector is really free. If not, mark
- 				   as ignore */
+ drivers/mtd/rfd_ftl.c | 45 +++++++++++++++++++--------------------------
+ 1 file changed, 19 insertions(+), 26 deletions(-)
+
 -- 
 2.15.1
