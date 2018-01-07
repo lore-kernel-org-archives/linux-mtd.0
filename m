@@ -1,17 +1,18 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eXvPV-0005KP-Ib
- for linux-mtd@lists.infradead.org; Sat, 06 Jan 2018 20:49:47 +0000
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
-Cc: Peter Pan <peterpansjtu@gmail.com>
-Subject: [PATCH] mtd: Remove unneeded checks in part_{read,write}_oob()
-Date: Sat,  6 Jan 2018 21:49:17 +0100
-Message-Id: <20180106204917.1266-1-boris.brezillon@free-electrons.com>
+Received: from lilium.sigma-star.at ([109.75.188.150])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eY7N1-00004s-EH
+ for linux-mtd@lists.infradead.org; Sun, 07 Jan 2018 09:36:01 +0000
+From: Richard Weinberger <richard@nod.at>
+To: torvalds <torvalds@linux-foundation.org>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
+ marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr
+Subject: [GIT PULL] final MTD fixes for v4.15
+Date: Sun, 07 Jan 2018 10:36:18 +0100
+Message-ID: <5737666.9mBnCfRmi7@blindfold>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,55 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-mtd_{read,write}_oob() are already checking parameters consistency,
-remove the checks done in part_{read,write}_oob().
+Linus,
 
-Suggested-by: Peter Pan <peterpansjtu@gmail.com>
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
- drivers/mtd/mtdpart.c | 23 -----------------------
- 1 file changed, 23 deletions(-)
+The following changes since commit 30a7acd573899fd8b8ac39236eff6468b195ac7d:
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 4d1140c23ead..88f94d672e40 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -117,25 +117,6 @@ static int part_read_oob(struct mtd_info *mtd, loff_t from,
- 	struct mtd_part *part = mtd_to_part(mtd);
- 	int res;
- 
--	if (from >= mtd->size)
--		return -EINVAL;
--	if (ops->datbuf && from + ops->len > mtd->size)
--		return -EINVAL;
--
--	/*
--	 * If OOB is also requested, make sure that we do not read past the end
--	 * of this partition.
--	 */
--	if (ops->oobbuf) {
--		size_t len, pages;
--
--		len = mtd_oobavail(mtd, ops);
--		pages = mtd_div_by_ws(mtd->size, mtd);
--		pages -= mtd_div_by_ws(from, mtd);
--		if (ops->ooboffs + ops->ooblen > pages * len)
--			return -EINVAL;
--	}
--
- 	res = mtd_read_oob(part->parent, from + part->offset, ops);
- 	if (unlikely(res)) {
- 		if (mtd_is_bitflip(res))
-@@ -194,10 +175,6 @@ static int part_write_oob(struct mtd_info *mtd, loff_t to,
- {
- 	struct mtd_part *part = mtd_to_part(mtd);
- 
--	if (to >= mtd->size)
--		return -EINVAL;
--	if (ops->datbuf && to + ops->len > mtd->size)
--		return -EINVAL;
- 	return mtd_write_oob(part->parent, to + part->offset, ops);
- }
- 
--- 
-2.11.0
+  Linux 4.15-rc6 (2017-12-31 14:47:43 -0800)
+
+are available in the git repository at:
+
+  git://git.infradead.org/linux-mtd.git tags/for-linus-20180107
+
+for you to fetch changes up to fee4380f368e84ed216b62ccd2fbc4126f2bf40b:
+
+  mtd: nand: pxa3xx: Fix READOOB implementation (2018-01-06 23:06:58 +0100)
+
+----------------------------------------------------------------
+This pull request contains a single fix for the pxa3xx NAND driver.
+
+----------------------------------------------------------------
+Boris Brezillon (1):
+      mtd: nand: pxa3xx: Fix READOOB implementation
+
+ drivers/mtd/nand/pxa3xx_nand.c | 1 +
+ 1 file changed, 1 insertion(+)
