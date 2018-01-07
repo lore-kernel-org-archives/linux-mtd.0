@@ -1,17 +1,19 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eY7pO-0001TE-HS
- for linux-mtd@lists.infradead.org; Sun, 07 Jan 2018 10:05:20 +0000
-Date: Sun, 7 Jan 2018 11:04:59 +0100
+ id 1eY80s-0006s2-TZ
+ for linux-mtd@lists.infradead.org; Sun, 07 Jan 2018 10:17:12 +0000
+Date: Sun, 7 Jan 2018 11:16:47 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, architt@codeaurora.org,
- computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
- cyrille.pitchen@wedev4u.fr
-Subject: Re: [PATCH 1/2] mtd: qcom_nandc: Add a NULL check for devm_kasprintf()
-Message-ID: <20180107110459.01beed46@bbrezillon>
-In-Reply-To: <1515182576-2704-1-git-send-email-festevam@gmail.com>
-References: <1515182576-2704-1-git-send-email-festevam@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
+Cc: Peter Pan <peterpansjtu@gmail.com>
+Subject: Re: [PATCH] mtd: Remove unneeded checks in part_{read,write}_oob()
+Message-ID: <20180107111647.191e2a7b@bbrezillon>
+In-Reply-To: <20180106204917.1266-1-boris.brezillon@free-electrons.com>
+References: <20180106204917.1266-1-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,36 +26,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri,  5 Jan 2018 18:02:55 -0200
-Fabio Estevam <festevam@gmail.com> wrote:
+On Sat,  6 Jan 2018 21:49:17 +0100
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-> From: Fabio Estevam <fabio.estevam@nxp.com>
-> 
-> devm_kasprintf() may fail, so we should better add a NULL check
-> and propagate an error on failure.
+> mtd_{read,write}_oob() are already checking parameters consistency,
+> remove the checks done in part_{read,write}_oob().
 
-Applied (also fixed the subject prefix).
+Please ignore this patch. I realized I had already submitted a patch
+removing redundant checks in various drivers/sub-layers [1], so I'll
+just prepare a v2 of this patch integrating the mtdpart changes.
 
-Thanks,
+Regards,
 
 Boris
 
+[1]http://patchwork.ozlabs.org/patch/781354/
+
 > 
-> Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+> Suggested-by: Peter Pan <peterpansjtu@gmail.com>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 > ---
->  drivers/mtd/nand/qcom_nandc.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  drivers/mtd/mtdpart.c | 23 -----------------------
+>  1 file changed, 23 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-> index 245d0f3..3fe2ff8 100644
-> --- a/drivers/mtd/nand/qcom_nandc.c
-> +++ b/drivers/mtd/nand/qcom_nandc.c
-> @@ -2639,6 +2639,8 @@ static int qcom_nand_host_init(struct qcom_nand_controller *nandc,
+> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+> index 4d1140c23ead..88f94d672e40 100644
+> --- a/drivers/mtd/mtdpart.c
+> +++ b/drivers/mtd/mtdpart.c
+> @@ -117,25 +117,6 @@ static int part_read_oob(struct mtd_info *mtd, loff_t from,
+>  	struct mtd_part *part = mtd_to_part(mtd);
+>  	int res;
 >  
->  	nand_set_flash_node(chip, dn);
->  	mtd->name = devm_kasprintf(dev, GFP_KERNEL, "qcom_nand.%d", host->cs);
-> +	if (!mtd->name)
-> +		return -ENOMEM;
->  	mtd->owner = THIS_MODULE;
->  	mtd->dev.parent = dev;
+> -	if (from >= mtd->size)
+> -		return -EINVAL;
+> -	if (ops->datbuf && from + ops->len > mtd->size)
+> -		return -EINVAL;
+> -
+> -	/*
+> -	 * If OOB is also requested, make sure that we do not read past the end
+> -	 * of this partition.
+> -	 */
+> -	if (ops->oobbuf) {
+> -		size_t len, pages;
+> -
+> -		len = mtd_oobavail(mtd, ops);
+> -		pages = mtd_div_by_ws(mtd->size, mtd);
+> -		pages -= mtd_div_by_ws(from, mtd);
+> -		if (ops->ooboffs + ops->ooblen > pages * len)
+> -			return -EINVAL;
+> -	}
+> -
+>  	res = mtd_read_oob(part->parent, from + part->offset, ops);
+>  	if (unlikely(res)) {
+>  		if (mtd_is_bitflip(res))
+> @@ -194,10 +175,6 @@ static int part_write_oob(struct mtd_info *mtd, loff_t to,
+>  {
+>  	struct mtd_part *part = mtd_to_part(mtd);
+>  
+> -	if (to >= mtd->size)
+> -		return -EINVAL;
+> -	if (ops->datbuf && to + ops->len > mtd->size)
+> -		return -EINVAL;
+>  	return mtd_write_oob(part->parent, to + part->offset, ops);
+>  }
 >  
