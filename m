@@ -1,12 +1,11 @@
-Date: Sun, 7 Jan 2018 22:43:20 +0100
+Date: Sun, 7 Jan 2018 22:46:43 +0100
 From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-To: Rob Herring <robh@kernel.org>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Mark Rutland <mark.rutland@arm.com>, Jason
- Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>, Gregory
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>, Gregory
  Clement <gregory.clement@free-electrons.com>, Sebastian Hesselbarth
  <sebastian.hesselbarth@gmail.com>, Russell King <linux@armlinux.org.uk>,
  Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
@@ -20,13 +19,13 @@ Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
  Ofer Heifetz <oferh@marvell.com>, Hanna Hawa <hannah@marvell.com>, Neta Zur
  Hershkovits <neta@marvell.com>, Willy Tarreau <w@1wt.eu>, Sean
  =?UTF-8?B?Tnlla2rDpnI=?= <sean.nyekjaer@prevas.dk>
-Subject: Re: [PATCH v2 1/5] dt-bindings: mtd: add Marvell NAND controller
- documentation
-Message-ID: <20180107224320.597c3a51@xps13>
-In-Reply-To: <20171220210511.ty2e7mkiktvn4een@rob-hp-laptop>
+Subject: Re: [PATCH v2 2/5] mtd: nand: add reworked Marvell NAND controller
+ driver
+Message-ID: <20180107224643.760eac74@xps13>
+In-Reply-To: <20171221111428.0aa3e65e@bbrezillon>
 References: <20171219132942.27433-1-miquel.raynal@free-electrons.com>
- <20171219132942.27433-2-miquel.raynal@free-electrons.com>
- <20171220210511.ty2e7mkiktvn4een@rob-hp-laptop>
+ <20171219132942.27433-3-miquel.raynal@free-electrons.com>
+ <20171221111428.0aa3e65e@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -39,122 +38,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Rob,
+Hi Boris,
 
-On Wed, 20 Dec 2017 15:05:11 -0600
-Rob Herring <robh@kernel.org> wrote:
+On Thu, 21 Dec 2017 11:14:28 +0100
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-> On Tue, Dec 19, 2017 at 02:29:38PM +0100, Miquel Raynal wrote:
-> > Document the legacy and the new bindings for Marvell NAND
-> > controller.
+> Hi Miquel,
+>=20
+> On Tue, 19 Dec 2017 14:29:39 +0100
+> Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
+>=20
+> > Add marvell_nand driver which aims at replacing the existing
+> > pxa3xx_nand driver.
 > >=20
-> > The pxa3xx_nand.c driver does only support legacy bindings, which
-> > are incomplete and inaccurate. A rework of this controller (called
-> > marvell_nand.c) does support both.
+> > The new driver intends to be easier to understand and follows the
+> > brand new NAND framework rules by implementing hooks for every
+> > pattern the controller might support and referencing them inside a
+> > parser object that will be given to the core at each ->exec_op()
+> > call.
+> >=20
+> > Raw accessors are implemented, useful to test/debug
+> > memory/filesystem corruptions. Userspace binaries contained in the
+> > mtd-utils package may now be used and their output trusted.
+> >=20
+> > Timings may not be kept from the bootloader anymore, the timings
+> > used for instance in U-Boot were not optimal and it supposed to
+> > have NAND support (and initialized) in the bootloader. =20
+>=20
+> Hm, AFAIR the old driver was able to dynamically adjust the timings
+> when the NAND was ONFI compliant.
+>=20
+> >=20
+> > Thanks to the improved timings, implementation of ONFI mode 5
+> > support (with EDO managed by adding a delay on data sampling),
+> > merging the commands together and optimizing writes in the command
+> > registers, the new driver may achieve faster throughputs in both
+> > directions. Measurements show an improvement of about +23% read
+> > throughput and +24% write throughput. These measurements have been
+> > done with an Armada-385-DB-AP (4kiB NAND pages forced in 4-bit
+> > strength BCH ECC correction) using the userspace tool 'flash_speed'
+> > from the MTD test suite.
+> >=20
+> > Besides these important topics, the new driver addresses several
+> > unsolved known issues in the old driver which:
+> > - did not work with ECC soft neither with ECC none ;
+> > - relied on naked read/write (which is unchanged) while the NFCv1
+> >   embedded in the pxa3xx platforms do not implement it, so several
+> >   NAND commands did not actually ever work without any notice (like
+> >   reading the ONFI PARAM_PAGE or SET/GET_FEATURES) ;
+> > - wrote the OOB data correctly, but was not able to read it
+> > correctly past the first OOB data chunk ;
+> > - did not displayed ECC bytes ; =20
+>=20
+> 	    ^display
+>=20
+> and I'm not even sure display is the right term here. How about
+> 'retrieve'.
+>=20
+> > - used device tree bindings that did not allow more than one NAND
+> > chip, and did not allow to choose the correct chip select if not
+> >   incrementing from 0. Plus, the Ready/Busy line used had to be 0.
+> >=20
+> > Old device tree bindings are still supported but deprecated. A more
+> > hierarchical view has to be used to keep the controller and the NAND
+> > chip structures clearly separated both inside the device tree and
+> > also in the driver code.
 > >=20
 > > Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+> > Tested-by: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
+> > Tested-by: Willy Tarreau <w@1wt.eu>
 > > ---
-> >  .../devicetree/bindings/mtd/marvell-nand.txt       | 123
-> > +++++++++++++++++++++ 1 file changed, 123 insertions(+)
-> >  create mode 100644
-> > Documentation/devicetree/bindings/mtd/marvell-nand.txt
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/mtd/marvell-nand.txt
-> > b/Documentation/devicetree/bindings/mtd/marvell-nand.txt new file
-> > mode 100644 index 000000000000..aa6a1ed045b2
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/mtd/marvell-nand.txt
-> > @@ -0,0 +1,123 @@
-> > +Marvell NAND Flash Controller (NFC)
-> > +
-> > +Required properties:
-> > +- compatible: can be one of the following:
-> > +    * "marvell,armada-8k-nand-controller"
-> > +    * "marvell,armada370-nand-controller"
-> > +    * "marvell,pxa3xx-nand-controller"
-> > +    * "marvell,armada-8k-nand" (deprecated)
-> > +    * "marvell,armada370-nand" (deprecated)
-> > +    * "marvell,pxa3xx-nand" (deprecated)
-> > +  Compatibles marked deprecated support only the old bindings
-> > described
-> > +  at the bottom.
-> > +- reg: NAND flash controller memory area.
-> > +- #address-cells: shall be set to 1. Encode the NAND CS.
-> > +- #size-cells: shall be set to 0.
-> > +- interrupts: shall define the NAND controller interrupt.
-> > +- clocks: shall reference the NAND controller clock.
-> > +- marvell,system-controller: Set to retrieve the syscon node that
-> > handles
-> > +  NAND controller related registers (only required with the
-> > +  "marvell,armada-8k-nand[-controller]" compatibles).
-> > +
-> > +Optional properties:
-> > +- label: see partition.txt. New platforms shall omit this property.
-> > +- dmas: shall reference DMA channel associated to the NAND
-> > controller.
-> > +  This property is only used with
-> > "marvell,pxa3xx-nand[-controller]"
-> > +  compatible strings.
-> > +- dma-names: shall be "rxtx".
-> > +  This property is only used with
-> > "marvell,pxa3xx-nand[-controller]"
-> > +  compatible strings.
-> > +
-> > +Optional children nodes:
-> > +Children nodes represent the available NAND chips.
-> > +
-> > +Required properties:
-> > +- reg: shall contain the native Chip Select ids (0-3)
-> > +- marvell,rb: shall contain the native Ready/Busy ids (0-1) =20
->=20
-> We already have at least 2 other <vendor>,rb properties. Let's not
-> add a 3rd and make a common one instead.
 
-I switched to "nand-rb", added this property in nand.txt (in another
-commit) and updated all the DT accordingly.
 
->=20
-> > +
-> > +Optional properties:
-> > +- marvell,nand-keep-config: orders the driver not to take the
-> > timings
-> > +  from the core and leaving them completely untouched. Bootloader
-> > +  timings will then be used.
-> > +- label: MTD name.
-> > +- nand-on-flash-bbt: see nand.txt.
-> > +- nand-ecc-mode: see nand.txt. Will use hardware ECC if not
-> > specified. +- nand-ecc-algo: see nand.txt. This property may be
-> > added when using
-> > +  hardware ECC for clarification but will be ignored by the driver
-> > +  because ECC mode is chosen depending on the page size and the
-> > strength
-> > +  required by the NAND chip. This value may be overwritten with
-> > +  nand-ecc-strength property. =20
->=20
-> If not used, then drop it.
-
-Well, nand-ecc-algo will be useful when not using the ECC
-engine, so it cannot be removed. I tried to explain better the
-situation.
-
->=20
-> > +- nand-ecc-strength: see nand.txt.
-> > +- nand-ecc-step-size: see nand.txt. This has no effect and will be
-> > +  ignored by the driver when using hardware ECC because Marvell's
-> > NAND
-> > +  flash controller does use fixed strength (1-bit for Hamming,
-> > 16-bit
-> > +  for BCH), so the step size will shrink or grow in order to fit
-> > the
-> > +  required strength. Step sizes are not completely random for all
-> > and
-> > +  follow certain patterns described in AN-379, "Marvell SoC NFC
-> > ECC". =20
->=20
-> Same here.
-
-The comment about being ignored was not accurate, I simply removed
-that part.
+I made all the changes you requested, let me the time to do further
+tests and I will send a v3.
 
 Thanks,
 Miqu=C3=A8l
