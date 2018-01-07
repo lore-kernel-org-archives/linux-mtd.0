@@ -1,23 +1,27 @@
-Received: from smtp3-g21.free.fr ([212.27.42.3])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eYFXX-0004Oq-2B
- for linux-mtd@lists.infradead.org; Sun, 07 Jan 2018 18:19:24 +0000
-Subject: Re: [PATCH 1/2] mtd: fsl-quadspi: update hwcaps read capabilities as
- READ_1_4_4
-To: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, linux-mtd@lists.infradead.org
-Cc: boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
- han.xu@nxp.com, festevam@gmail.com, prabhakar.kushwaha@nxp.com,
- suresh.gupta@nxp.com
-References: <1515064334-509-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1515064334-509-2-git-send-email-yogeshnarayan.gaur@nxp.com>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <62931ed6-4c64-9750-c9e0-177c9bf30e28@wedev4u.fr>
-Date: Sun, 7 Jan 2018 19:19:08 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eYHDy-0003fA-Ow
+ for linux-mtd@lists.infradead.org; Sun, 07 Jan 2018 20:07:21 +0000
+Date: Sun, 7 Jan 2018 21:07:03 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: Vignesh R <vigneshr@ti.com>, computersforpeace@gmail.com,
+ dwmw2@infradead.org, richard@nod.at, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, broonie@kernel.org, linux@armlinux.org.uk,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, robh@kernel.org,
+ devicetree@vger.kernel.org, nicolas.ferre@microchip.com,
+ radu.pirea@microchip.com
+Subject: Re: [PATCH 1/3] mtd: spi-nor: add optional DMA-safe bounce buffer
+ for data transfer
+Message-ID: <20180107210703.31fdf0a0@bbrezillon>
+In-Reply-To: <ae977280-28b4-d746-da4b-0f807dad609d@wedev4u.fr>
+References: <cover.1514087323.git.cyrille.pitchen@wedev4u.fr>
+ <fc2440c6f52877f28286d89691049e5cba10e6a7.1514087323.git.cyrille.pitchen@wedev4u.fr>
+ <1126731d-cbf7-8fbf-34ab-8ccf1cc8241f@ti.com>
+ <ae977280-28b4-d746-da4b-0f807dad609d@wedev4u.fr>
 MIME-Version: 1.0
-In-Reply-To: <1515064334-509-2-git-send-email-yogeshnarayan.gaur@nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,48 +31,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Yogesh,
+On Tue, 26 Dec 2017 14:59:00 +0100
+Cyrille Pitchen <cyrille.pitchen@wedev4u.fr> wrote:
 
-Le 04/01/2018 à 12:12, Yogesh Gaur a écrit :
-> Update Read capabilities as SNOR_HWCAPS_READ_1_4_4 i.e. Quad I/O cmd
-> protocol. Spansion flash, s25fl512s, supports Quad read with read
-> capabilities as 1-4-4.
-> 
-> Patch added support for SNOR_HWCAPS_READ_1_4_4 protocol.
-> 
-> Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-> ---
->  drivers/mtd/spi-nor/fsl-quadspi.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-> index c22e3eb..178e621 100644
-> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> @@ -959,6 +959,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
->  {
->  	const struct spi_nor_hwcaps hwcaps = {
->  		.mask = SNOR_HWCAPS_READ_1_1_4 |
-> +			SNOR_HWCAPS_READ_1_4_4 |
+> Hi Vignesh
+>=20
+> Le 26/12/2017 =C3=A0 14:42, Vignesh R a =C3=A9crit=C2=A0:
+> > Hi Cyrille,
+> >=20
+> > Thanks for doing this series! One comment below.
+> >=20
+> > On 24-Dec-17 10:06 AM, Cyrille Pitchen wrote:
+> > [...] =20
+> >> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-n=
+or.c
+> >> index 8bafd462f0ae..59f9fbd45234 100644
+> >> --- a/drivers/mtd/spi-nor/spi-nor.c
+> >> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> >> @@ -14,8 +14,10 @@
+> >>  #include <linux/errno.h>
+> >>  #include <linux/module.h>
+> >>  #include <linux/device.h>
+> >> +#include <linux/highmem.h>
+> >>  #include <linux/mutex.h>
+> >>  #include <linux/math64.h>
+> >> +#include <linux/mm.h>
+> >>  #include <linux/sizes.h>
+> >>  #include <linux/slab.h>
+> >> =20
+> >> @@ -1232,6 +1234,56 @@ static const struct flash_info spi_nor_ids[] =
+=3D {
+> >>  	{ },
+> >>  };
+> >> =20
+> >> +static bool spi_nor_is_dma_safe(const void *buf)
+> >> +{
+> >> +	if (is_vmalloc_addr(buf))
+> >> +		return false;
+> >> +
+> >> +#ifdef CONFIG_HIGHMEM
+> >> +	if ((unsigned long)buf >=3D PKMAP_BASE &&
+> >> +	    (unsigned long)buf < (PKMAP_BASE + (LAST_PKMAP * PAGE_SIZE)))
+> >> +		return false;
+> >> +#endif
+> >> +
+> >> +	return true;
+> >> +}
+> >> + =20
+> >=20
+> > Better way would be to use virt_addr_valid():
+> > static bool spi_nor_is_dma_safe(const void *buf)
+> > {
+> > 	return virt_addr_valid(buf);
+> > }
+> >=20
+> > Regards
+> > Vignesh
+> >  =20
+>=20
+> Thanks for the advice :)
+>=20
+> https://patchwork.kernel.org/patch/9768341/
+> Maybe I could check both virt_addr_valid() and object_is_on_stack() too ?
 
-Sorry but I still don't agree on this patch: it should be squashed into
-the patch adding a proper support to Fast Read 1-4-4 commands.
+Yep, see the explanation given here [1].
 
-I understand this patch belongs to a series but even individual patches of
-a series should not introduce bug. Like this, the spi_nor_scan() could
-select the SPI 1-4-4 protocol for Fast Read operation.
-However fsl_qspi_get_seqid() still only cares about the SPINOR_OP_READ_1_1_4
-op code but not about the SPINOR_OP_READ_1_4_4. So it's not correct.
-
-When looking for a bug, we need to be able to bissect. However testing right
-after this patch would fail with SPI flash memories supporting Fast Read
-1-4-4.
-
-Best regards,
-
-Cyrille
-
->  			SNOR_HWCAPS_PP,
->  	};
->  	struct device_node *np = pdev->dev.of_node;
-> 
+[1]http://elixir.free-electrons.com/linux/v4.15-rc6/source/Documentation/DM=
+A-API-HOWTO.txt#L132
