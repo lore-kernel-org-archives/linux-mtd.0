@@ -1,17 +1,20 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eY82q-0007jP-QI
- for linux-mtd@lists.infradead.org; Sun, 07 Jan 2018 10:19:15 +0000
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
-Cc: Peter Pan <peterpansjtu@gmail.com>
-Subject: [PATCH v2] mtd: Remove duplicate checks on mtd_oob_ops parameter
-Date: Sun,  7 Jan 2018 11:18:43 +0100
-Message-Id: <20180107101843.11315-1-boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH v2 1/2] mtd: spi-nor: cadence-quadspi: Refactor indirect
+ read/write sequence.
+To: Vignesh R <vigneshr@ti.com>, Marek Vasut <marek.vasut@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ matthew.gerlach@linux.intel.com, Dinh Nguyen <dinguyen@kernel.org>
+References: <20171229091103.14436-1-vigneshr@ti.com>
+ <20171229091103.14436-2-vigneshr@ti.com>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <7388af06-8638-1d4f-7d28-464d23df43b2@wedev4u.fr>
+Date: Sun, 7 Jan 2018 19:02:57 +0100
+MIME-Version: 1.0
+In-Reply-To: <20171229091103.14436-2-vigneshr@ti.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,171 +24,134 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some of the check done in custom ->_read/write_oob() implementation are
-already done by the core (in mtd_check_oob_ops()).
+Le 29/12/2017 à 10:11, Vignesh R a écrit :
+> Move configuring of indirect read/write start address to
+> cqspi_indirect_*_execute() function and rename cqspi_indirect_*_setup()
+> function. This will help to reuse cqspi_indirect_*_setup() function for
+> supporting direct access mode.
+> 
+> Signed-off-by: Vignesh R <vigneshr@ti.com>
 
-Suggested-by: Peter Pan <peterpansjtu@gmail.com>
-[Remove redundant checks done in mtdpart.c]
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
-Changes in v2:
-- Merge "mtd: Remove unneeded checks in part_{read,write}_oob()" into
-  this commit
----
- drivers/mtd/devices/docg3.c        |  5 -----
- drivers/mtd/mtdpart.c              | 23 -----------------------
- drivers/mtd/nand/nand_base.c       | 31 -------------------------------
- drivers/mtd/onenand/onenand_base.c | 18 ------------------
- 4 files changed, 77 deletions(-)
+Applied to the spi-nor/next branch of linux-mtd after removing the one
+too many empty line in cqspi_read_setup() (see below).
 
-diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-index 5fb5e93d1547..a85af236b44d 100644
---- a/drivers/mtd/devices/docg3.c
-+++ b/drivers/mtd/devices/docg3.c
-@@ -904,9 +904,6 @@ static int doc_read_oob(struct mtd_info *mtd, loff_t from,
- 	if (ooblen % DOC_LAYOUT_OOB_SIZE)
- 		return -EINVAL;
+Thanks!
+
+> ---
+> 
+> v2: No changes.
+> 
+>  drivers/mtd/spi-nor/cadence-quadspi.c | 27 ++++++++++++---------------
+>  1 file changed, 12 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+> index 75a2bc447a99..becc7d714ab8 100644
+> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
+> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+> @@ -450,8 +450,7 @@ static int cqspi_command_write_addr(struct spi_nor *nor,
+>  	return cqspi_exec_flash_cmd(cqspi, reg);
+>  }
+>  
+> -static int cqspi_indirect_read_setup(struct spi_nor *nor,
+> -				     const unsigned int from_addr)
+> +static int cqspi_read_setup(struct spi_nor *nor)
+>  {
+>  	struct cqspi_flash_pdata *f_pdata = nor->priv;
+>  	struct cqspi_st *cqspi = f_pdata->cqspi;
+> @@ -459,7 +458,6 @@ static int cqspi_indirect_read_setup(struct spi_nor *nor,
+>  	unsigned int dummy_clk = 0;
+>  	unsigned int reg;
+>  
+> -	writel(from_addr, reg_base + CQSPI_REG_INDIRECTRDSTARTADDR);
+> 
+
+removed the above empty line ;)
  
--	if (from + len > mtd->size)
--		return -EINVAL;
--
- 	ops->oobretlen = 0;
- 	ops->retlen = 0;
- 	ret = 0;
-@@ -1441,8 +1438,6 @@ static int doc_write_oob(struct mtd_info *mtd, loff_t ofs,
- 	if (len && ooblen &&
- 	    (len / DOC_LAYOUT_PAGE_SIZE) != (ooblen / oobdelta))
- 		return -EINVAL;
--	if (ofs + len > mtd->size)
--		return -EINVAL;
- 
- 	ops->oobretlen = 0;
- 	ops->retlen = 0;
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index e83c9d870b11..979bf568a622 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -106,25 +106,6 @@ static int part_read_oob(struct mtd_info *mtd, loff_t from,
- 	struct mtd_part *part = mtd_to_part(mtd);
- 	int res;
- 
--	if (from >= mtd->size)
--		return -EINVAL;
--	if (ops->datbuf && from + ops->len > mtd->size)
--		return -EINVAL;
--
--	/*
--	 * If OOB is also requested, make sure that we do not read past the end
--	 * of this partition.
--	 */
--	if (ops->oobbuf) {
--		size_t len, pages;
--
--		len = mtd_oobavail(mtd, ops);
--		pages = mtd_div_by_ws(mtd->size, mtd);
--		pages -= mtd_div_by_ws(from, mtd);
--		if (ops->ooboffs + ops->ooblen > pages * len)
--			return -EINVAL;
--	}
--
- 	res = mtd_read_oob(part->parent, from + part->offset, ops);
- 	if (unlikely(res)) {
- 		if (mtd_is_bitflip(res))
-@@ -183,10 +164,6 @@ static int part_write_oob(struct mtd_info *mtd, loff_t to,
- {
- 	struct mtd_part *part = mtd_to_part(mtd);
- 
--	if (to >= mtd->size)
--		return -EINVAL;
--	if (ops->datbuf && to + ops->len > mtd->size)
--		return -EINVAL;
- 	return mtd_write_oob(part->parent, to + part->offset, ops);
- }
- 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 889ceadbf607..61eeac233683 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2187,21 +2187,6 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
- 
- 	len = mtd_oobavail(mtd, ops);
- 
--	if (unlikely(ops->ooboffs >= len)) {
--		pr_debug("%s: attempt to start read outside oob\n",
--				__func__);
--		return -EINVAL;
--	}
--
--	/* Do not allow reads past end of device */
--	if (unlikely(from >= mtd->size ||
--		     ops->ooboffs + readlen > ((mtd->size >> chip->page_shift) -
--					(from >> chip->page_shift)) * len)) {
--		pr_debug("%s: attempt to read beyond end of device\n",
--				__func__);
--		return -EINVAL;
--	}
--
- 	chipnr = (int)(from >> chip->chip_shift);
- 	chip->select_chip(mtd, chipnr);
- 
-@@ -2820,22 +2805,6 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
- 		return -EINVAL;
- 	}
- 
--	if (unlikely(ops->ooboffs >= len)) {
--		pr_debug("%s: attempt to start write outside oob\n",
--				__func__);
--		return -EINVAL;
--	}
--
--	/* Do not allow write past end of device */
--	if (unlikely(to >= mtd->size ||
--		     ops->ooboffs + ops->ooblen >
--			((mtd->size >> chip->page_shift) -
--			 (to >> chip->page_shift)) * len)) {
--		pr_debug("%s: attempt to write beyond end of device\n",
--				__func__);
--		return -EINVAL;
--	}
--
- 	chipnr = (int)(to >> chip->chip_shift);
- 
- 	/*
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index 050ba8a87543..979f4031f23c 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -1383,15 +1383,6 @@ static int onenand_read_oob_nolock(struct mtd_info *mtd, loff_t from,
- 		return -EINVAL;
- 	}
- 
--	/* Do not allow reads past end of device */
--	if (unlikely(from >= mtd->size ||
--		     column + len > ((mtd->size >> this->page_shift) -
--				     (from >> this->page_shift)) * oobsize)) {
--		printk(KERN_ERR "%s: Attempted to read beyond end of device\n",
--			__func__);
--		return -EINVAL;
--	}
--
- 	stats = mtd->ecc_stats;
- 
- 	readcmd = ONENAND_IS_4KB_PAGE(this) ? ONENAND_CMD_READ : ONENAND_CMD_READOOB;
-@@ -2024,15 +2015,6 @@ static int onenand_write_oob_nolock(struct mtd_info *mtd, loff_t to,
- 		return -EINVAL;
- 	}
- 
--	/* Do not allow reads past end of device */
--	if (unlikely(to >= mtd->size ||
--		     column + len > ((mtd->size >> this->page_shift) -
--				     (to >> this->page_shift)) * oobsize)) {
--		printk(KERN_ERR "%s: Attempted to write past end of device\n",
--		       __func__);
--		return -EINVAL;
--	}
--
- 	oobbuf = this->oob_buf;
- 
- 	oobcmd = ONENAND_IS_4KB_PAGE(this) ? ONENAND_CMD_PROG : ONENAND_CMD_PROGOOB;
--- 
-2.11.0
+>  	reg = nor->read_opcode << CQSPI_REG_RD_INSTR_OPCODE_LSB;
+>  	reg |= cqspi_calc_rdreg(nor, nor->read_opcode);
+> @@ -493,8 +491,8 @@ static int cqspi_indirect_read_setup(struct spi_nor *nor,
+>  	return 0;
+>  }
+>  
+> -static int cqspi_indirect_read_execute(struct spi_nor *nor,
+> -				       u8 *rxbuf, const unsigned n_rx)
+> +static int cqspi_indirect_read_execute(struct spi_nor *nor, u8 *rxbuf,
+> +				       loff_t from_addr, const size_t n_rx)
+>  {
+>  	struct cqspi_flash_pdata *f_pdata = nor->priv;
+>  	struct cqspi_st *cqspi = f_pdata->cqspi;
+> @@ -504,6 +502,7 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor,
+>  	unsigned int bytes_to_read = 0;
+>  	int ret = 0;
+>  
+> +	writel(from_addr, reg_base + CQSPI_REG_INDIRECTRDSTARTADDR);
+>  	writel(remaining, reg_base + CQSPI_REG_INDIRECTRDBYTES);
+>  
+>  	/* Clear all interrupts. */
+> @@ -570,8 +569,7 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor,
+>  	return ret;
+>  }
+>  
+> -static int cqspi_indirect_write_setup(struct spi_nor *nor,
+> -				      const unsigned int to_addr)
+> +static int cqspi_write_setup(struct spi_nor *nor)
+>  {
+>  	unsigned int reg;
+>  	struct cqspi_flash_pdata *f_pdata = nor->priv;
+> @@ -584,8 +582,6 @@ static int cqspi_indirect_write_setup(struct spi_nor *nor,
+>  	reg = cqspi_calc_rdreg(nor, nor->program_opcode);
+>  	writel(reg, reg_base + CQSPI_REG_RD_INSTR);
+>  
+> -	writel(to_addr, reg_base + CQSPI_REG_INDIRECTWRSTARTADDR);
+> -
+>  	reg = readl(reg_base + CQSPI_REG_SIZE);
+>  	reg &= ~CQSPI_REG_SIZE_ADDRESS_MASK;
+>  	reg |= (nor->addr_width - 1);
+> @@ -593,8 +589,8 @@ static int cqspi_indirect_write_setup(struct spi_nor *nor,
+>  	return 0;
+>  }
+>  
+> -static int cqspi_indirect_write_execute(struct spi_nor *nor,
+> -					const u8 *txbuf, const unsigned n_tx)
+> +static int cqspi_indirect_write_execute(struct spi_nor *nor, loff_t to_addr,
+> +					const u8 *txbuf, const size_t n_tx)
+>  {
+>  	const unsigned int page_size = nor->page_size;
+>  	struct cqspi_flash_pdata *f_pdata = nor->priv;
+> @@ -604,6 +600,7 @@ static int cqspi_indirect_write_execute(struct spi_nor *nor,
+>  	unsigned int write_bytes;
+>  	int ret;
+>  
+> +	writel(to_addr, reg_base + CQSPI_REG_INDIRECTWRSTARTADDR);
+>  	writel(remaining, reg_base + CQSPI_REG_INDIRECTWRBYTES);
+>  
+>  	/* Clear all interrupts. */
+> @@ -900,11 +897,11 @@ static ssize_t cqspi_write(struct spi_nor *nor, loff_t to,
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = cqspi_indirect_write_setup(nor, to);
+> +	ret = cqspi_write_setup(nor);
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = cqspi_indirect_write_execute(nor, buf, len);
+> +	ret = cqspi_indirect_write_execute(nor, to, buf, len);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -920,11 +917,11 @@ static ssize_t cqspi_read(struct spi_nor *nor, loff_t from,
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = cqspi_indirect_read_setup(nor, from);
+> +	ret = cqspi_read_setup(nor);
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = cqspi_indirect_read_execute(nor, buf, len);
+> +	ret = cqspi_indirect_read_execute(nor, buf, from, len);
+>  	if (ret)
+>  		return ret;
+>  
+> 
