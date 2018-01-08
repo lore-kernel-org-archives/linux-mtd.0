@@ -1,28 +1,32 @@
-Received: from mail-vk0-x229.google.com ([2607:f8b0:400c:c05::229])
+Received: from mail-oi0-x241.google.com ([2607:f8b0:4003:c06::241])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eYXj2-00044x-2A
- for linux-mtd@lists.infradead.org; Mon, 08 Jan 2018 13:44:36 +0000
-Received: by mail-vk0-x229.google.com with SMTP id j192so7309778vkc.1
- for <linux-mtd@lists.infradead.org>; Mon, 08 Jan 2018 05:44:17 -0800 (PST)
+ id 1eYXzq-0004Id-OW
+ for linux-mtd@lists.infradead.org; Mon, 08 Jan 2018 14:01:57 +0000
+Received: by mail-oi0-x241.google.com with SMTP id w125so7386297oie.7
+ for <linux-mtd@lists.infradead.org>; Mon, 08 Jan 2018 06:01:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20180108133118.02086991@bbrezillon>
-References: <20180108101447.1d9ab212@bbrezillon>
- <dbefefbb-7e0e-2a25-00b5-d9bcffa91a4b@exceet.de>
- <20180108133118.02086991@bbrezillon>
-From: Jonas Gorski <jonas.gorski@gmail.com>
-Date: Mon, 8 Jan 2018 14:43:56 +0100
-Message-ID: <CAOiHx=kw=L-H1yCwnzhfJhg3vUeXiTz_39n4_Wq3qbKMdDCitA@mail.gmail.com>
-Subject: Re: mtd layer: support of hybrid flash(W25M161AW) having both NOR and
- NAND flash
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Frieder Schrempf <frieder.schrempf@exceet.de>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>, Marek Vasut <marex@denx.de>,
- Richard Weinberger <richard@nod.at>, Brian Norris <computersforpeace@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Suresh Gupta <suresh.gupta@nxp.com>,
- Poonam Aggrwal <poonam.aggrwal@nxp.com>
+Sender: arndbergmann@gmail.com
+In-Reply-To: <20180108134415.GA11707@kroah.com>
+References: <5a535545.93b5df0a.a7ca3.53c1@mx.google.com>
+ <CAK8P3a1U9Q2RzXiE2qdD-zU0u+=fm66V6Aw8RR8YSXd5Gbiq3A@mail.gmail.com>
+ <20180108134415.GA11707@kroah.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Mon, 8 Jan 2018 15:01:38 +0100
+Message-ID: <CAK8P3a2YFJmdiw=0BgG1JkoQYLiD=em6N97AgB_4=Z2DDkY5dg@mail.gmail.com>
+Subject: Re: stable-rc/linux-4.4.y build: 178 builds: 4 failed, 174 passed, 8
+ errors (v4.4.110-18-g5da3d9af3a4b)
+To: gregkh <gregkh@linuxfoundation.org>
+Cc: "kernelci.org bot" <bot@kernelci.org>,
+ Kernel Build Reports Mailman List <kernel-build-reports@lists.linaro.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ =?UTF-8?Q?Sean_Nyekj=C3=A6r?= <sean.nyekjaer@prevas.dk>,
+ Willy Tarreau <w@1wt.eu>, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Robert Jarzmik <robert.jarzmik@free.fr>, Richard Weinberger <richard@nod.at>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ "# 4.4.x" <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,90 +36,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 8 January 2018 at 13:31, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-> Hi Frieder,
->
-> On Mon, 8 Jan 2018 12:02:19 +0100
-> Frieder Schrempf <frieder.schrempf@exceet.de> wrote:
->
->> >> > >> with the "windbond,w25q16fw" driver modeled as a simple
->> >> > >> "spi-multiplexer" that registers its own virtual spi-bus. Then when
->> >> > >> spi-nor or spi-nand tries to communicate with their appropriate die,
->> >> > >> it sends the Software Die Select command if needed and then passes on
->> >> > >> the message to its parent bus.
->> >> > >>
->> >> > >> That way there should be no changes needed for spi-nor / spi-nand
->> >> > >> themselves. (The devil is probably in the details ;-)
->> >> > >
->> >> > > Yep, I thought about this approach, and it's indeed quite elegant, but
->> >> > > we're missing the lock I was mentioning in my previous reply. We need
->> >> > > to prevent die selection not only for the time we're sending a single
->> >> > > SPI message, but for the whole operation (which can be formed of
->> >> > > several SPI messages). Or maybe I'm wrong, and operations can actually
->> >> > > be interleaved, but I wouldn't bet on that ;-).
+On Mon, Jan 8, 2018 at 2:44 PM, gregkh <gregkh@linuxfoundation.org> wrote:
+> On Mon, Jan 08, 2018 at 02:16:25PM +0100, Arnd Bergmann wrote:
+>> On Mon, Jan 8, 2018 at 12:25 PM, kernelci.org bot <bot@kernelci.org> wro=
+te:
+>> >
+>> > stable-rc/linux-4.4.y build: 178 builds: 4 failed, 174 passed, 8 error=
+s (v4.4.110-18-g5da3d9af3a4b)
+>> > Full Build Summary: https://kernelci.org/build/stable-rc/branch/linux-=
+4.4.y/kernel/v4.4.110-18-g5da3d9af3a4b/
+>> > Tree: stable-rc
+>> > Branch: linux-4.4.y
+>> > Git Describe: v4.4.110-18-g5da3d9af3a4b
+>> > Git Commit: 5da3d9af3a4b90d3c5ab19f9ad1dbb7d237edcf9
+>> > Git URL: http://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-s=
+table-rc.git
+>> > Built: 4 unique architectures
+>> >
+>> > Build Failures Detected:
+>> >
+>> > arm: gcc version 5.3.1 20160412 (Linaro GCC 5.3-2016.05)
+>> > cm_x300_defconfig FAIL
+>> > mvebu_v7_defconfig FAIL
+>> > pxa3xx_defconfig FAIL
+>> > raumfeld_defconfig FAIL
+>> >
+>> > mvebu_v7_defconfig (arm) =E2=80=94 FAIL, 2 errors, 0 warnings, 0 secti=
+on mismatches
+>> >
+>> > Errors:
+>> > drivers/mtd/nand/pxa3xx_nand.c:918:2: error: duplicate case value
+>> > drivers/mtd/nand/pxa3xx_nand.c:915:2: error: previously used here
 >>
->> With operations, that consist of several SPI messages, do you mean
->> something like NAND page program?
->
-> Yep.
->
+>> Hi Greg,
 >>
->> Because I'm quite sure something like this should be possible (and all
->> of these commands consist only of one spi message, don't they?):
->> 1. Select second (NAND) die
->> 2. Send data to the NAND page buffer (PROGRAM)
->> 3. Select first (NOR) die
->> 4. Program data to a NOR block
->> 5. Select second (NAND) die
->> 6. Send command to transfer page buffer to flash (PROGRAM EXECUTE)
+>> Commit fee4380f368e ("mtd: nand: pxa3xx: Fix READOOB implementation") wa=
+s
+>> apparently backported in error, it looks like it should just be
+>> dropped here in 4.4.y.
+>>
+>> The commit lists 'Fixes: 43bcfd2bb24a ("mtd: nand: pxa3xx: Add driver-sp=
+ecific
+>> ECC BCH support")', that commit was merged into v4.14, so backporting th=
+e
+>> fix further is probably not appropriate for 4.9 or earlier kernels eithe=
+r.
 >
-> Yes, and that's the problem, if you don't have a lock, the sequence you
-> describe above could be re-ordered like this:
+> $ git describe --contains 43bcfd2bb24a
+> v3.14-rc1~65^2~127
 >
-> 1. Select second (NAND) die
-> 2. Select first (NOR) die
-> 3. Send data to the NAND page buffer (PROGRAM)
-> 4. Program data to a NOR block
-> ...
+> That is why I backported these patches this far.
+>
+> I'll drop the patch now, but the Fixes line is the problem here :)
 
-At least with what I was thinking of (with the spi-multiplexer) this
-should be impossible, as the (virtual) spi bus message pump should
-ensure that any messages from spi-nand and spi-nor are properly
-serialized so they could only end up as in Frieder's example, unless
-I'm overlooking something.
+I think my mistake in the report was misreading v3.14 as v4.14. That means =
+we
+still need the fix, just as Boris explained, it just needs to be done
+differently
+for older kernels.
 
-So my virtual's spi implementation would look like this:
-
-struct W25M161AW {
-        struct spi_device *spi; /* we at the parent bus */
-};
-
-int W25M161AW_transfer_one_message(master, message)
-{
-        W25M161AW *w = spi_master_get_devdata(master);
-        spi_device *spi = message->spi;
-
-        W25M161AW_send_die_select(w->spi, spi->chip_select);
-
-        /* pass on the message to the parent bus */
-        spi_sync(w->spi, msg);
-        spi_finalize_current_message(master);
-
-        return 0;
-}
-
-(this is a very simplified version, of course we can't pass on the
-message directly to the parent bus but need to clone it)
-
-This way AFAICT there should be a guarantee that there can be no other
-message to the flash scheduled between the die select and the message
-to the die.
-
-Of course if we need to ensure that there is no die change between the
-PROGRAM and the PROGRAM EXECUTE we need the extra bus lock. Without a
-public datasheet I can't tell though.
-
-
-Regards
-Jonas
+        Arnd
