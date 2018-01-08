@@ -1,26 +1,32 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
+Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eYevS-0006Ct-Pg
- for linux-mtd@lists.infradead.org; Mon, 08 Jan 2018 21:25:48 +0000
-Date: Mon, 8 Jan 2018 22:25:24 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>, Kyungmin Park
- <kyungmin.park@samsung.com>, Peter Pan <peterpansjtu@gmail.com>, Frieder
- Schrempf <frieder.schrempf@exceet.de>, Ladislav Michl
- <ladis@linux-mips.org>, Miquel RAYNAL <miquel.raynal@free-electrons.com>
-Subject: Re: [PATCH v4 1/3] mtd: mtdpart: Make ECC stat handling consistent
-Message-ID: <20180108222524.6bf00481@bbrezillon>
-In-Reply-To: <20180108211542.11891-2-boris.brezillon@free-electrons.com>
+ id 1eYfHX-0007Ge-8A
+ for linux-mtd@lists.infradead.org; Mon, 08 Jan 2018 21:48:37 +0000
+Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
+ (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
+ id S23992404AbeAHVsUxJgRB (ORCPT
+ <rfc822;linux-mtd@lists.infradead.org>);
+ Mon, 8 Jan 2018 22:48:20 +0100
+Date: Mon, 8 Jan 2018 22:48:19 +0100
+Sender: Ladislav Michl <ladis@linux-mips.org>
+From: Ladislav Michl <ladis@linux-mips.org>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, Robert Jarzmik <robert.jarzmik@free.fr>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Peter Pan <peterpansjtu@gmail.com>,
+ Frieder Schrempf <frieder.schrempf@exceet.de>,
+ Miquel RAYNAL <miquel.raynal@free-electrons.com>
+Subject: Re: [PATCH v4 0/4] mtd: Preparation patches for the SPI NAND framework
+Message-ID: <20180108214819.GA16174@lenoch>
 References: <20180108211542.11891-1-boris.brezillon@free-electrons.com>
- <20180108211542.11891-2-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180108211542.11891-1-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,66 +36,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon,  8 Jan 2018 22:15:40 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-
-> part_read() and part_read_oob() where counting ECC failures and
-> bitflips differently. Adjust part_read_oob() to mimic what is done in
-> part_read(). This is in needed to use ->_read_oob() as a fallback when
-> when ->_read() is not implemented.
+On Mon, Jan 08, 2018 at 10:15:39PM +0100, Boris Brezillon wrote:
+> Hello,
 > 
-> Note that bitflips and ECC failure accounting on MTD partitions is
-> broken by design, because nothing prevents concurrent accesses to the
-> underlying master MTD device between the moment we save the stats in a
-> local variable and the moment master->_read[_oob]() returns. It's not
-> something that can easily be fixed, so leave it like that for now.
+> Here is a set of patches preparing the introduction of the generic
+> NAND and SPI frameworks.
+
+Tested on IGEPv2 Rev. B (TI OMAP3530) with Muxed OneNAND(DDP) 512MB 1.8V
+16-bit (0x58) after fixing PATCH v4 1/3.
+
+Tested-by: Ladislav Michl <ladis@linux-mips.org>
+
+> If you want to see the overall picture of the SPI NAND framework you can
+> have a look at this branch [2].
 > 
-> Suggested-by: Brian Norris <computersforpeace@gmail.com>
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> ---
-> Changes in v4:
-> - new patch
-> ---
->  drivers/mtd/mtdpart.c | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
+> Regards,
 > 
-> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-> index be088bccd593..283e8526713b 100644
-> --- a/drivers/mtd/mtdpart.c
-> +++ b/drivers/mtd/mtdpart.c
-> @@ -105,6 +105,7 @@ static int part_read_oob(struct mtd_info *mtd, loff_t from,
->  		struct mtd_oob_ops *ops)
->  {
->  	struct mtd_part *part = mtd_to_part(mtd);
-> +	struct mtd_ecc_stats stats;
->  	int res;
->  
->  	if (from >= mtd->size)
-> @@ -127,12 +128,12 @@ static int part_read_oob(struct mtd_info *mtd, loff_t from,
->  	}
->  
-
-Missing
-
-	stats = part->parent->ecc_stats;
-
-here.
-
-I'll send a new version. Sorry for the inconvenience.
-
->  	res = part->parent->_read_oob(part->parent, from + part->offset, ops);
-> -	if (unlikely(res)) {
-> -		if (mtd_is_bitflip(res))
-> -			mtd->ecc_stats.corrected++;
-> -		if (mtd_is_eccerr(res))
-> -			mtd->ecc_stats.failed++;
-> -	}
-> +	if (unlikely(mtd_is_eccerr(res)))
-> +		mtd->ecc_stats.failed +=
-> +			part->parent->ecc_stats.failed - stats.failed;
-> +	else
-> +		mtd->ecc_stats.corrected +=
-> +			part->parent->ecc_stats.corrected - stats.corrected;
->  	return res;
->  }
->  
+> Boris
+> 
+> Change in v4:
+> - add "mtd: mtdpart: Make ECC stat handling consistent" and
+> - integrate "mtd: Remove duplicate checks on mtd_oob_ops parameter"
+>   into this series
+> - drop "mtd: Stop directly calling master ->_xxx() hooks from mtdpart
+>   code"
+> 
+> Boris Brezillon (3):
+>   mtd: mtdpart: Make ECC stat handling consistent
+>   mtd: Fallback to ->_read/write_oob() when ->_read/write() is missing
+>   mtd: Remove duplicate checks on mtd_oob_ops parameter
+> 
+>  drivers/mtd/devices/docg3.c        | 70 ------------------------------
+>  drivers/mtd/mtdcore.c              | 31 +++++++++++++-
+>  drivers/mtd/mtdpart.c              | 42 +++++-------------
+>  drivers/mtd/nand/nand_base.c       | 87 --------------------------------------
+>  drivers/mtd/onenand/onenand_base.c | 81 -----------------------------------
+>  5 files changed, 40 insertions(+), 271 deletions(-)
+> 
+> -- 
+> 2.11.0
