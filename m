@@ -1,32 +1,23 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12])
+Received: from mail-eopbgr60051.outbound.protection.outlook.com ([40.107.6.51]
+ helo=EUR01-DB5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eYaNP-0003Cr-NJ
- for linux-mtd@lists.infradead.org; Mon, 08 Jan 2018 16:34:21 +0000
-Date: Mon, 8 Jan 2018 17:34:10 +0100
-From: gregkh <gregkh@linuxfoundation.org>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, "kernelci.org bot" <bot@kernelci.org>,
- Kernel Build Reports Mailman List <kernel-build-reports@lists.linaro.org>,
- Sean =?iso-8859-1?Q?Nyekj=E6r?= <sean.nyekjaer@prevas.dk>,
- Willy Tarreau <w@1wt.eu>, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Richard Weinberger <richard@nod.at>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- "# 4.4.x" <stable@vger.kernel.org>
-Subject: Re: stable-rc/linux-4.4.y build: 178 builds: 4 failed, 174 passed, 8
- errors (v4.4.110-18-g5da3d9af3a4b)
-Message-ID: <20180108163410.GF26214@kroah.com>
-References: <5a535545.93b5df0a.a7ca3.53c1@mx.google.com>
- <CAK8P3a1U9Q2RzXiE2qdD-zU0u+=fm66V6Aw8RR8YSXd5Gbiq3A@mail.gmail.com>
- <20180108134415.GA11707@kroah.com>
- <CAK8P3a2YFJmdiw=0BgG1JkoQYLiD=em6N97AgB_4=Z2DDkY5dg@mail.gmail.com>
- <20180108163029.369f8041@bbrezillon>
+ id 1eYazN-0008K0-TY
+ for linux-mtd@lists.infradead.org; Mon, 08 Jan 2018 17:13:36 +0000
+From: Han Xu <han.xu@nxp.com>
+To: Fabio Estevam <festevam@gmail.com>
+CC: "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>, David Wolfe
+ <david.wolfe@nxp.com>, Frank Li <frank.li@nxp.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Fabio
+ Estevam" <fabio.estevam@nxp.com>
+Subject: Re: [PATCH] mtd: fsl-quadspi: Distinguish the mtd device names
+Date: Mon, 8 Jan 2018 17:13:17 +0000
+Message-ID: <VI1PR0401MB22213B0560C91999E6E22E7197130@VI1PR0401MB2221.eurprd04.prod.outlook.com>
+References: <1515181560-1410-1-git-send-email-festevam@gmail.com>
+In-Reply-To: <1515181560-1410-1-git-send-email-festevam@gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20180108163029.369f8041@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,65 +27,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jan 08, 2018 at 04:30:29PM +0100, Boris Brezillon wrote:
-> On Mon, 8 Jan 2018 15:01:38 +0100
-> Arnd Bergmann <arnd@arndb.de> wrote:
-> 
-> > On Mon, Jan 8, 2018 at 2:44 PM, gregkh <gregkh@linuxfoundation.org> wrote:
-> > > On Mon, Jan 08, 2018 at 02:16:25PM +0100, Arnd Bergmann wrote:  
-> > >> On Mon, Jan 8, 2018 at 12:25 PM, kernelci.org bot <bot@kernelci.org> wrote:  
-> > >> >
-> > >> > stable-rc/linux-4.4.y build: 178 builds: 4 failed, 174 passed, 8 errors (v4.4.110-18-g5da3d9af3a4b)
-> > >> > Full Build Summary: https://kernelci.org/build/stable-rc/branch/linux-4.4.y/kernel/v4.4.110-18-g5da3d9af3a4b/
-> > >> > Tree: stable-rc
-> > >> > Branch: linux-4.4.y
-> > >> > Git Describe: v4.4.110-18-g5da3d9af3a4b
-> > >> > Git Commit: 5da3d9af3a4b90d3c5ab19f9ad1dbb7d237edcf9
-> > >> > Git URL: http://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> > >> > Built: 4 unique architectures
-> > >> >
-> > >> > Build Failures Detected:
-> > >> >
-> > >> > arm: gcc version 5.3.1 20160412 (Linaro GCC 5.3-2016.05)
-> > >> > cm_x300_defconfig FAIL
-> > >> > mvebu_v7_defconfig FAIL
-> > >> > pxa3xx_defconfig FAIL
-> > >> > raumfeld_defconfig FAIL
-> > >> >
-> > >> > mvebu_v7_defconfig (arm) — FAIL, 2 errors, 0 warnings, 0 section mismatches
-> > >> >
-> > >> > Errors:
-> > >> > drivers/mtd/nand/pxa3xx_nand.c:918:2: error: duplicate case value
-> > >> > drivers/mtd/nand/pxa3xx_nand.c:915:2: error: previously used here  
-> > >>
-> > >> Hi Greg,
-> > >>
-> > >> Commit fee4380f368e ("mtd: nand: pxa3xx: Fix READOOB implementation") was
-> > >> apparently backported in error, it looks like it should just be
-> > >> dropped here in 4.4.y.
-> > >>
-> > >> The commit lists 'Fixes: 43bcfd2bb24a ("mtd: nand: pxa3xx: Add driver-specific
-> > >> ECC BCH support")', that commit was merged into v4.14, so backporting the
-> > >> fix further is probably not appropriate for 4.9 or earlier kernels either.  
-> > >
-> > > $ git describe --contains 43bcfd2bb24a
-> > > v3.14-rc1~65^2~127
-> > >
-> > > That is why I backported these patches this far.
-> > >
-> > > I'll drop the patch now, but the Fixes line is the problem here :)  
-> > 
-> > I think my mistake in the report was misreading v3.14 as v4.14. That means we
-> > still need the fix, just as Boris explained, it just needs to be done
-> > differently
-> > for older kernels.
-> 
-> Hm, actually I was wrong with my Fixes tag, it seems the bug has been
-> introduced by 'c2cdace755b5 ("mtd: nand: pxa3xx_nand: add support for
-> partial chunks")', so the fix is not needed for pre-4.6 kernels.
 
-oops, also dropped it from 4.9, so I put it back there.
+________________________________________
+From: Fabio Estevam <festevam@gmail.com>
+Sent: Friday, January 5, 2018 1:46 PM
+To: Han Xu
+Cc: cyrille.pitchen@wedev4u.fr; David Wolfe; Frank Li; linux-mtd@lists.infr=
+adead.org; Fabio Estevam
+Subject: [PATCH] mtd: fsl-quadspi: Distinguish the mtd device names
 
-thanks,
+From: Fabio Estevam <fabio.estevam@nxp.com>
 
-greg k-h
+Currently on a imx6sx-sdb board, which has two SPI NOR chips connected
+to QSPI2 the following output from /proc/mtd is seen:
+
+# cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 01000000 00010000 "21e4000.qspi"
+mtd1: 01000000 00010000 "21e4000.qspi"
+
+Attempts to partition them on the kernel command line result in both
+chips with identical (and identically named) partitions, which is
+an inconvenient behavior.
+
+Assign a different mtd->name for each mtd device to avoid this problem.
+
+After this change the output from /proc/mtd becomes:
+
+# cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 01000000 00010000 "fsl-quadspi.0"
+mtd1: 01000000 00010000 "fsl-quadspi.1"
+
+Reported-by: David Wolfe <david.wolfe@nxp.com>
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+---
+ drivers/mtd/spi-nor/fsl-quadspi.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-qu=
+adspi.c
+index f17d224..7712c63 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -967,7 +967,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+        struct resource *res;
+        struct spi_nor *nor;
+        struct mtd_info *mtd;
+-       int ret, i =3D 0;
++       int ret, i =3D 0, mtd_index =3D 0;
+
+        q =3D devm_kzalloc(dev, sizeof(*q), GFP_KERNEL);
+        if (!q)
+@@ -1047,6 +1047,13 @@ static int fsl_qspi_probe(struct platform_device *pd=
+ev)
+                nor =3D &q->nor[i];
+                mtd =3D &nor->mtd;
+
++               mtd->name =3D devm_kasprintf(dev, GFP_KERNEL, "fsl-quadspi.=
+%d",
++                                          mtd_index);
++               if (!mtd->name) {
++                       ret =3D -ENOMEM;
++                       goto mutex_failed;
++               }
++
+                nor->dev =3D dev;
+                spi_nor_set_flash_node(nor, np);
+                nor->priv =3D q;
+@@ -1098,6 +1105,7 @@ static int fsl_qspi_probe(struct platform_device *pde=
+v)
+                        nor->page_size =3D q->devtype_data->txfifo;
+
+                i++;
++               mtd_index++;
+        }
+
+        /* finish the rest init. */
+--
+2.7.4
+
+Acked-by: Han Xu <han.xu@nxp.com>
