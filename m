@@ -1,28 +1,31 @@
-Received: from mga14.intel.com ([192.55.52.115])
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eYOeG-0005aC-Ml
- for linux-mtd@lists.infradead.org; Mon, 08 Jan 2018 04:02:58 +0000
-Date: Mon, 8 Jan 2018 06:02:41 +0200
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, Marek Vasut <marek.vasut@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- Anthony Wong <anthony.wong@canonical.com>, Bin Meng <bmeng.cn@gmail.com>
-Subject: Re: [PATCH 2/3] spi-nor: intel-spi: Explicitly mark the driver as
- dangerous in Kconfig
-Message-ID: <20180108040241.GI27654@lahna.fi.intel.com>
-References: <20180104090744.67654-1-mika.westerberg@linux.intel.com>
- <20180104090744.67654-2-mika.westerberg@linux.intel.com>
- <22d53b77-7c57-e86b-e8f5-465513382647@wedev4u.fr>
- <20180107220631.73f303b6@bbrezillon>
+ id 1eYOib-000801-Fr
+ for linux-mtd@lists.infradead.org; Mon, 08 Jan 2018 04:07:27 +0000
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Miquel RAYNAL
+ <miquel.raynal@free-electrons.com>
+CC: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, "Cyrille
+ Pitchen" <cyrille.pitchen@wedev4u.fr>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Kalyan Kinthada
+ <Kalyan.Kinthada@alliedtelesis.co.nz>
+Subject: Re: [PATCHv4 1/1] mtd: nand: pxa3xx: Set FORCE_CSX bit to ARMADA370
+ variants
+Date: Mon, 8 Jan 2018 04:06:59 +0000
+Message-ID: <62666eec18c24419bcb9379f33776ba1@svr-chch-ex1.atlnz.lc>
+References: <20171221231904.21140-1-chris.packham@alliedtelesis.co.nz>
+ <20171221231904.21140-2-chris.packham@alliedtelesis.co.nz>
+ <20171222165308.10f2fe15@xps13>
+ <CAAEAJfDzZJKVX+3f69o0UF6DgcQEW-UEmp-VG9bPkFd2dybYkQ@mail.gmail.com>
+ <c0b5230388814eb39b32575612152fbe@svr-chch-ex1.atlnz.lc>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20180107220631.73f303b6@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,45 +35,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Jan 07, 2018 at 10:06:31PM +0100, Boris Brezillon wrote:
-> On Sun, 7 Jan 2018 21:32:46 +0100
-> Cyrille Pitchen <cyrille.pitchen@wedev4u.fr> wrote:
-> 
-> > Hi Mika,
-> > 
-> > Le 04/01/2018 à 10:07, Mika Westerberg a écrit :
-> > > The driver is not meant for normal users at all but instead such users
-> > > who really know what they are doing and are able to build their own
-> > > kernel to enable it. Mark both driver Kconfig entries as dangerous to
-> > > make sure the driver is not accidentally enabled without understanding
-> > > possible issues in doing so.
-> > > 
-> > > Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-> > > ---
-> > >  drivers/mtd/spi-nor/Kconfig | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-> > > index 89da88e59121..f480b227a6b8 100644
-> > > --- a/drivers/mtd/spi-nor/Kconfig
-> > > +++ b/drivers/mtd/spi-nor/Kconfig
-> > > @@ -90,7 +90,7 @@ config SPI_INTEL_SPI
-> > >  	tristate
-> > >  
-> > >  config SPI_INTEL_SPI_PCI
-> > > -	tristate "Intel PCH/PCU SPI flash PCI driver"
-> > > +	tristate "Intel PCH/PCU SPI flash PCI driver (DANGEROUS)"  
-> > 
-> > I guess it might be even better and safer to add "default n" too, don't
-> > you agree? Adding only the "DANGEROUS" word would not prevent build
-> > scripts to select this driver when creating a kernel config from scratch.
-> 
-> How about adding
-> 
-> 	depends on EXPERT
-> 
-> ?
-
-It used to be like that but then it was pointed out by Arnd Bergman that
-EXPERT is not about hiding drivers and got removed by b8cc0012917d
-("spi-nor: intel-spi: Remove EXPERT dependency").
+On 08/01/18 11:35, Chris Packham wrote:=0A=
+> Hi Miquel, Ezequiel,=0A=
+> =0A=
+> On 23/12/17 05:56, Ezequiel Garcia wrote:=0A=
+>> On 22 December 2017 at 12:53, Miquel RAYNAL=0A=
+>> <miquel.raynal@free-electrons.com> wrote:=0A=
+>>> Hello Chris,=0A=
+>>>=0A=
+>>> On Fri, 22 Dec 2017 12:19:04 +1300=0A=
+>>> Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:=0A=
+>>>=0A=
+>>>> From: Kalyan Kinthada <kalyan.kinthada@alliedtelesis.co.nz>=0A=
+>>>>=0A=
+>>>> The Armada-370 based SoCs support arbitration between the NAND Flash=
+=0A=
+>>>> interface and NOR (i.e. devbus) on the same chip select. However there=
+=0A=
+>>>> are two guidelines that must be followed to avoid data corruption in=
+=0A=
+>>>> this scenario.=0A=
+>>>=0A=
+>>> Sorry to bother you again with that but, do you actually face any=0A=
+>>> issue/data corruption with this scenario?=0A=
+>>>=0A=
+>>=0A=
+>> Indeed. We need a description of a real world problem this patch is fixi=
+ng.=0A=
+>>=0A=
+> =0A=
+> I totally agree. The Marvell FAE used words like "data corruption" hence=
+=0A=
+> my re-newed interest in this. I had hoped these patches would pique the=
+=0A=
+> interest of someone from Marvell's engineering team with some more info=
+=0A=
+> on how the data corruption exhibits.=0A=
+> =0A=
+> I've been running some of the mtd-utils tests on my hardware and haven't=
+=0A=
+> detected any failures yet.=0A=
+> =0A=
+> I think the key would be to be doing interleaved accesses between nand=0A=
+> and the parallel device. I've just kicked off something I think should=0A=
+> do this on my hardware but I'm unsure as to how long I should wait for=0A=
+> an issue to present itself.=0A=
+> =0A=
+> I'll leave it running for as long as I can today. If I find a failure=0A=
+> I'll report back otherwise we can leave this patch for the mailing list=
+=0A=
+> archives waiting for an issue to be seen.=0A=
+> =0A=
+=0A=
+I've been running my test for several hours an no obvious problem has =0A=
+presented itself so I'm happy to leave it there until such time as a =0A=
+problem is observed or Marvell provide a reproduction.=0A=
+=0A=
