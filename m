@@ -1,32 +1,30 @@
-Received: from mail-he1eur02on0607.outbound.protection.outlook.com
- ([2a01:111:f400:fe05::607]
- helo=EUR02-HE1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eYT18-0000uu-Eg
- for linux-mtd@lists.infradead.org; Mon, 08 Jan 2018 08:42:53 +0000
-From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-To: Jonas Gorski <jonas.gorski@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>
-CC: Marek Vasut <marex@denx.de>, Richard Weinberger <richard@nod.at>, "Brian
- Norris" <computersforpeace@gmail.com>, "linux-mtd@lists.infradead.org"
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eYTWP-0002iA-KG
+ for linux-mtd@lists.infradead.org; Mon, 08 Jan 2018 09:15:12 +0000
+Date: Mon, 8 Jan 2018 10:14:47 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+Cc: Jonas Gorski <jonas.gorski@gmail.com>, Marek Vasut <marex@denx.de>,
+ Richard Weinberger <richard@nod.at>, "Brian Norris"
+ <computersforpeace@gmail.com>, "linux-mtd@lists.infradead.org"
  <linux-mtd@lists.infradead.org>, Cyrille Pitchen
  <cyrille.pitchen@wedev4u.fr>, Suresh Gupta <suresh.gupta@nxp.com>, "Poonam
  Aggrwal" <poonam.aggrwal@nxp.com>
-Subject: RE: mtd layer: support of hybrid flash(W25M161AW) having both NOR and
- NAND flash
-Date: Mon, 8 Jan 2018 08:42:32 +0000
-Message-ID: <HE1PR04MB1241F9507EDB679098CDA13197130@HE1PR04MB1241.eurprd04.prod.outlook.com>
+Subject: Re: mtd layer: support of hybrid flash(W25M161AW) having both NOR
+ and NAND flash
+Message-ID: <20180108101447.1d9ab212@bbrezillon>
+In-Reply-To: <HE1PR04MB1241F9507EDB679098CDA13197130@HE1PR04MB1241.eurprd04.prod.outlook.com>
 References: <HE1PR04MB1241937FF43AAA64AE7EE776971F0@HE1PR04MB1241.eurprd04.prod.outlook.com>
  <20180104184722.551ca6aa@bbrezillon>
  <HE1PR04MB12410ABF9189334C4CDE512A971C0@HE1PR04MB1241.eurprd04.prod.outlook.com>
  <CAOiHx==at9hRbzEyyo3FpOHrQJS7jy-wSF9Fg=EkS4r11qZVNw@mail.gmail.com>
  <20180105144444.338c2cdc@bbrezillon>
  <CAOiHx=mpNQhWEXeGOqBU=oD8MOV=L9CBbJxGosnRL72LFwWYhg@mail.gmail.com>
-In-Reply-To: <CAOiHx=mpNQhWEXeGOqBU=oD8MOV=L9CBbJxGosnRL72LFwWYhg@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <HE1PR04MB1241F9507EDB679098CDA13197130@HE1PR04MB1241.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,186 +34,381 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-VGhhbmtzIEpvbmFzLCBCb3JpcywNCg0KTGV0IG1lIHRyeSB0byBwdXQgbXkgdW5kZXJzdGFuZGlu
-ZyBhbmQgc29tZSBwcm9wb3NhbCBiYXNlZCBvbiBkaXNjdXNzaW9ucy4NCg0KPiAtLS0tLU9yaWdp
-bmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBKb25hcyBHb3Jza2kgW21haWx0bzpqb25hcy5nb3Jz
-a2lAZ21haWwuY29tXQ0KPiBTZW50OiBGcmlkYXksIEphbnVhcnkgMDUsIDIwMTggNzoyOCBQTQ0K
-PiBUbzogQm9yaXMgQnJlemlsbG9uIDxib3Jpcy5icmV6aWxsb25AZnJlZS1lbGVjdHJvbnMuY29t
-Pg0KPiBDYzogUHJhYmhha2FyIEt1c2h3YWhhIDxwcmFiaGFrYXIua3VzaHdhaGFAbnhwLmNvbT47
-IE1hcmVrIFZhc3V0DQo+IDxtYXJleEBkZW54LmRlPjsgUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNo
-YXJkQG5vZC5hdD47IEJyaWFuIE5vcnJpcw0KPiA8Y29tcHV0ZXJzZm9ycGVhY2VAZ21haWwuY29t
-PjsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IEN5cmlsbGUNCj4gUGl0Y2hlbiA8Y3ly
-aWxsZS5waXRjaGVuQHdlZGV2NHUuZnI+DQo+IFN1YmplY3Q6IFJlOiBtdGQgbGF5ZXI6IHN1cHBv
-cnQgb2YgaHlicmlkIGZsYXNoKFcyNU0xNjFBVykgaGF2aW5nIGJvdGggTk9SDQo+IGFuZCBOQU5E
-IGZsYXNoDQo+IA0KPiBPbiA1IEphbnVhcnkgMjAxOCBhdCAxNDo0NCwgQm9yaXMgQnJlemlsbG9u
-DQo+IDxib3Jpcy5icmV6aWxsb25AZnJlZS1lbGVjdHJvbnMuY29tPiB3cm90ZToNCj4gPiBPbiBG
-cmksIDUgSmFuIDIwMTggMTQ6Mzg6NDggKzAxMDANCj4gPiBKb25hcyBHb3Jza2kgPGpvbmFzLmdv
-cnNraUBnbWFpbC5jb20+IHdyb3RlOg0KPiA+DQo+ID4+IE9uIDUgSmFudWFyeSAyMDE4IGF0IDEx
-OjIxLCBQcmFiaGFrYXIgS3VzaHdhaGENCj4gPj4gPHByYWJoYWthci5rdXNod2FoYUBueHAuY29t
-PiB3cm90ZToNCj4gPj4gPiBUaGFua3MgQm9yaXMgZm9yIHRoZSBlbmNvdXJhZ2VtZW50Lg0KPiA+
-PiA+DQo+ID4+ID4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4+ID4+IEZyb206IEJv
-cmlzIEJyZXppbGxvbiBbbWFpbHRvOmJvcmlzLmJyZXppbGxvbkBmcmVlLWVsZWN0cm9ucy5jb21d
-DQo+ID4+ID4+IFNlbnQ6IFRodXJzZGF5LCBKYW51YXJ5IDA0LCAyMDE4IDExOjE3IFBNDQo+ID4+
-ID4+IFRvOiBQcmFiaGFrYXIgS3VzaHdhaGEgPHByYWJoYWthci5rdXNod2FoYUBueHAuY29tPg0K
-PiA+PiA+PiBDYzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IEN5cmlsbGUgUGl0Y2hl
-bg0KPiA8Y3lyaWxsZS5waXRjaGVuQHdlZGV2NHUuZnI+Ow0KPiA+PiA+PiBSaWNoYXJkIFdlaW5i
-ZXJnZXIgPHJpY2hhcmRAbm9kLmF0PjsgTWFyZWsgVmFzdXQgPG1hcmV4QGRlbnguZGU+Ow0KPiBC
-cmlhbg0KPiA+PiA+PiBOb3JyaXMgPGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbT4NCj4gPj4g
-Pj4gU3ViamVjdDogUmU6IG10ZCBsYXllcjogc3VwcG9ydCBvZiBoeWJyaWQgZmxhc2goVzI1TTE2
-MUFXKSBoYXZpbmcgYm90aA0KPiBOT1INCj4gPj4gPj4gYW5kIE5BTkQgZmxhc2gNCj4gPj4gPj4N
-Cj4gPj4gPj4gK01URCBtYWludGFpbmVycy4NCj4gPj4gPj4NCj4gPj4gPj4gT24gVGh1LCA0IEph
-biAyMDE4IDE0OjA4OjQyICswMDAwDQo+ID4+ID4+IFByYWJoYWthciBLdXNod2FoYSA8cHJhYmhh
-a2FyLmt1c2h3YWhhQG54cC5jb20+IHdyb3RlOg0KPiA+PiA+Pg0KPiA+PiA+PiA+IEhpIEFsbCwN
-Cj4gPj4gPj4gPg0KPiA+PiA+PiA+IFdpbmJvbmQgaGFzIGNvbWUgdXAgd2l0aCBzcGVjaWFsIGZs
-YXNoIGkuZS4gIFcyNU0xNjFBVy4gSXQgY29uc2lzdCBvZg0KPiBTZXJpYWwNCj4gPj4gPj4gTk9S
-KERpZSAjMCkgYW5kIFNlcmlhbCBOQU5EKERpZSAjMSkgZmxhc2guDQo+ID4+ID4+ID4gTWVhbnMg
-Ym90aCBOT1IsIE5BTkQgZmxhc2hlcyBhcmUgcGxhY2VkIGluIFcyNU0xNjFBVyBjb250cm9sbGVk
-DQo+IGJ5DQo+ID4+ID4+IHNpbmdsZSBjaGlwLXNlbGVjdC4NCj4gPj4gPj4gPg0KPiA+PiA+PiA+
-ICJTb2Z0d2FyZSBEaWUgU2VsZWN0IChDMmgpIiBjb21tYW5kIGlzIGJlaW5nIHVzZWQgdG8gc3dp
-dGNoIGRpZSBvciBmbGFzaC4NCj4gPj4gPj4NCj4gPj4gPj4gV2h5IGFyZSB0aGV5IHNvIG1lYW4g
-dG8gdXM/ISA6LSkNCj4gPj4gPj4NCj4gPj4gPj4gPg0KPiA+PiA+PiA+IEl0IGxvb2tzIHRvIGJl
-IHF1aXRlIHVuaXF1ZSBjaGlwIGFuZCB3b25kZXJpbmcgaWYgYW55IGtpbmQgZnJhbWV3b3JrIG9y
-DQo+IHdvcmsgaW4NCj4gPj4gPj4gcHJvZ3Jlc3MgYXZhaWxhYmxlIHRvIGhhbmRsZSBpdC4NCj4g
-Pj4gPj4gPiBJIGtub3cgdGhhdCBTUEktTkFORCBmcmFtZXdvcmsgZGlzY3Vzc2lvbnMgaXMgc3Rp
-bGwgaW4gcHJvZ3Jlc3MuDQo+ID4+ID4+DQo+ID4+ID4+IFdlbGwsIG5vdGhpbmcgaW1wb3NzaWJs
-ZSB0byBoYW5kbGUsIHdlIGp1c3QgbmVlZCB0byBkZWNsYXJlIDIgTVREDQo+ID4+ID4+IGRldmlj
-ZXMgKG9uZSBOQU5EIGFuZCBvbmUgTk9SKS4gVGhpcyBiZWluZyBzYWlkLCBpdCBsb29rcyBsaWtl
-IHdlJ2xsDQo+ID4+ID4+IG5lZWQgdGhpcyBzcGktZmxhc2ggYWJzdHJhY3Rpb24gd2UgaGF2ZSBi
-ZWVuIHRhbGtpbmcgYWJvdXQgd2l0aCBNYXJlaw0KPiA+PiA+PiBhbmQgQ3lyaWxsZSB0byBwcm9w
-ZXJseSBzdXBwb3J0IHRoZXNlIHVzZSBjYXNlczogZmxhc2ggZGV2aWNlcyB3aWxsIGJlDQo+ID4+
-ID4+IGV4cG9zZWQgdGhyb3VnaCBkaWZmZXJlbnQgc3ViLWxheWVycyAoc3BpLW5vciBvciBzcGkt
-bmFuZCksIGJ1dCB3ZSBuZWVkDQo+ID4+ID4+IGEgY29tbW9uIHdheSB0byBkZXRlY3QgdGhvc2Ug
-c3BpLWZsYXNoIGNoaXBzLiBJIGxvb2tlZCBhdCBhIGZldyBTUEkNCj4gPj4gPj4gTkFORCBhbmQg
-U1BJIE5PUiBjaGlwcywgYW5kIGZyb20gd2hhdCBJJ3ZlIHNlZW4gc28gZmFyIHRoZXkgd2VyZSBx
-dWl0ZQ0KPiA+PiA+PiBkaWZmZXJlbnQgKHRoZSBvcGNvZGVzIGFuZCBDTUQrQUREUitEQVRBIHNl
-cXVlbmNlcyB3ZXJlIHF1aXRlDQo+ID4+ID4+IGRpZmZlcmVudCkgc28gSSB0aG91Z2h0IHdlIHdl
-cmUgc2FmZSB0byBzdGFydCB3aXRoIGEgY29tcGxldGVseQ0KPiA+PiA+PiB1bmNvbm5lY3RlZCBT
-UEkgTkFORCBmcmFtZXdvcmsgYW5kIG1lcmdlIHNvbWUgYml0cyBpbiBhIHNwaS1mbGFzaCBsYXll
-cg0KPiA+PiA+PiBhZnRlcndhcmRzLCBidXQgdGhpcyBjaGlwIHByb3ZlcyBtZSB3cm9uZyA6LS8u
-DQo+ID4+ID4NCj4gPj4gPiBJIGFtIHRoaW5raW5nIG9mIGZvbGxvd2luZyBjaGFuZ2VzIHdpdGgg
-ZnNsX3FzcGkuYyBhcyBjb250cm9sbGVyDQo+ID4+ID4NCj4gPj4gPiAmcXNwaSB7DQo+ID4+ID4g
-ICAgICAgICBudW0tY3MgPSA8Mj47DQo+ID4+ID4gICAgICAgICBidXMtbnVtID0gPDA+Ow0KPiA+
-PiA+ICAgICAgICAgc3RhdHVzID0gIm9rYXkiOw0KPiA+PiA+ICAgICAgICAgY29tcGF0aWJsZSA9
-ICIgZnNsLGxzMTAyMWEtcXNwaSAiLCAiZnNsLGxzMTAyMWEtcXNwaS1uYW5kIjsgPC0tIHVwZGF0
-ZWQNCj4gY29tcGF0aWJpbGl0eSBmb3IgZHJpdmVycw0KPiA+PiA+ICAgICAgICAgcWZsYXNoMDog
-dzI1cTE2ZncgQDAgew0KPiA+PiA+ICAgICAgICAgICAgICAgICAjYWRkcmVzcy1jZWxscyA9IDwx
-PjsNCj4gPj4gPiAgICAgICAgICAgICAgICAgI3NpemUtY2VsbHMgPSA8MT47DQo+ID4+ID4gICAg
-ICAgICAgICAgICAgIHNwaS1tYXgtZnJlcXVlbmN5ID0gPDIwMDAwMDAwPjsNCj4gPj4gPiAgICAg
-ICAgICAgICAgICAgcmVnID0gPDA+Ow0KPiA+PiA+ICAgICAgICAgICAgICAgICB0eXBlID0gInNl
-cmlhbC1ub3IiICAgPC0tIFByb3Bvc2VkIE5ldyBiaW5kaW5nDQo+ID4+ID4gICAgICAgICAgICAg
-ICAgIGlzLWh5YnJpZCA8LS0gUHJvcG9zZWQgTmV3IGJpbmRpbmcNCj4gPj4gPiAgICAgICAgICAg
-ICAgICAgZGllLW51bSA8LS0gUHJvcG9zZWQgTmV3IGJpbmRpbmcNCj4gPj4gPiAgICAgICAgIH07
-DQo+ID4+ID4NCj4gPj4gPiAgICAgICAgIHFmbGFzaDE6IHcyNW4wMWd3QDEgew0KPiA+PiA+ICAg
-ICAgICAgICAgICAgICAjYWRkcmVzcy1jZWxscyA9IDwxPjsNCj4gPj4gPiAgICAgICAgICAgICAg
-ICAgI3NpemUtY2VsbHMgPSA8MT47DQo+ID4+ID4gICAgICAgICAgICAgICAgIHNwaS1tYXgtZnJl
-cXVlbmN5ID0gPDIwMDAwMDAwPjsNCj4gPj4gPiAgICAgICAgICAgICAgICAgcmVnID0gPDE+Ow0K
-PiA+PiA+ICAgICAgICAgICAgICAgICB0eXBlID0gInNlcmlhbC1uYW5kIiA8LS0gUHJvcG9zZWQg
-TmV3IGJpbmRpbmcNCj4gPj4gPiAgICAgICAgICAgICAgICAgaXMtaHlicmlkIDwtLSBQcm9wb3Nl
-ZCBOZXcgYmluZGluZw0KPiA+PiA+ICAgICAgICAgICAgICAgICBkaWUtbnVtIDwtLSBQcm9wb3Nl
-ZCBOZXcgYmluZGluZw0KPiA+PiA+ICAgICAgICAgfQ0KPiA+PiA+IH07DQo+ID4+DQo+ID4+IGFz
-c3VtaW5nIHRoZSBOT1IgYW5kIE5BTkQgcGFydHMgYmVoYXZlIGxpa2UgIm5vcm1hbCIgU1BJLU5P
-UiAvDQo+ID4+IFNQSS1OQU5EIGNoaXBzIHdoZW4gc2VsZWN0ZWQsIGEgbW9yZSBhcHByb3ByaWF0
-ZSBiaW5kaW5nIG1pZ2h0IGJlDQo+ID4+DQo+ID4+ICZxc3BpIHsNCj4gPj4gICAgIC4uLg0KPiA+
-PiAgICAgICAgIHFmbGFzaDA6IGR1YWwtZmxhc2hAMCB7DQo+ID4+ICAgICAgICAgICAgICAgICBj
-b21wYXRpYmxlID0gIndpbmJvbmQsdzI1cTE2ZnciOw0KPiA+PiAgICAgICAgICAgICAgICAgcmVn
-ID0gPDA+Ow0KPiA+PiAgICAgICAgICAgICAgICAgc3BpLW1heC1mcmVxdWVuY3kgPSA8MjAwMDAw
-MDA+Ow0KPiA+PiAgICAgICAgICAgICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8MT47DQo+ID4+ICAg
-ICAgICAgICAgICAgICAjc2l6ZS1jZWxscyA9IDwwPjsNCj4gPj4NCj4gPj4gICAgICAgICAgICAg
-ICAgIG5vckAwIHsNCj4gPj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb21wYXRp
-YmxlID0gImplZGVjLHNwaS1ub3IiOw0KPiA+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHJlZyA9IDwwPjsNCj4gPj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAjYWRk
-cmVzcy1jZWxscyA9IDwxPjsNCj4gPj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAj
-c2l6ZS1jZWxscyA9IDwxPjsNCj4gPj4NCj4gPj4gICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICBwYXJ0aXRpb25zIHsNCj4gPj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgLi4uDQo+ID4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fTsNCj4gPj4gICAgICAgICAgICAgICAgIH07DQo+ID4+DQo+ID4+ICAgICAgICAgICAgICAgICBu
-YW5kQDEgew0KPiA+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbXBhdGlibGUg
-PSAiamVkZWMsc3BpLW5hbmQiOyAvKiBvcg0KPiA+PiB3aGF0ZXZlciB0aGUgY29ycmVjdCBuYW5k
-LWNvbXBhdGlibGUgd291bGQgYmUgKi8NCj4gPj4gICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICByZWcgPSA8MT47DQo+ID4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgI2Fk
-ZHJlc3MtY2VsbHMgPSA8MT47DQo+ID4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-I3NpemUtY2VsbHMgPSA8MT47DQo+ID4+DQo+ID4+ICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgcGFydGl0aW9ucyB7DQo+ID4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIC4uLg0KPiA+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IH07DQo+ID4+ICAgICAgICAgICAgICAgICB9Ow0KPiA+Pg0KPiA+PiAgICAgfTsNCj4gPj4gfTsN
-Cj4gPj4NCj4gPj4gd2l0aCB0aGUgIndpbmRib25kLHcyNXExNmZ3IiBkcml2ZXIgbW9kZWxlZCBh
-cyBhIHNpbXBsZQ0KPiA+PiAic3BpLW11bHRpcGxleGVyIiB0aGF0IHJlZ2lzdGVycyBpdHMgb3du
-IHZpcnR1YWwgc3BpLWJ1cy4gVGhlbiB3aGVuDQo+ID4+IHNwaS1ub3Igb3Igc3BpLW5hbmQgdHJp
-ZXMgdG8gY29tbXVuaWNhdGUgd2l0aCB0aGVpciBhcHByb3ByaWF0ZSBkaWUsDQo+ID4+IGl0IHNl
-bmRzIHRoZSBTb2Z0d2FyZSBEaWUgU2VsZWN0IGNvbW1hbmQgaWYgbmVlZGVkIGFuZCB0aGVuIHBh
-c3NlcyBvbg0KPiA+PiB0aGUgbWVzc2FnZSB0byBpdHMgcGFyZW50IGJ1cy4NCj4gPj4NCj4gPj4g
-VGhhdCB3YXkgdGhlcmUgc2hvdWxkIGJlIG5vIGNoYW5nZXMgbmVlZGVkIGZvciBzcGktbm9yIC8g
-c3BpLW5hbmQNCj4gPj4gdGhlbXNlbHZlcy4gKFRoZSBkZXZpbCBpcyBwcm9iYWJseSBpbiB0aGUg
-ZGV0YWlscyA7LSkNCj4gPg0KPiA+IFllcCwgSSB0aG91Z2h0IGFib3V0IHRoaXMgYXBwcm9hY2gs
-IGFuZCBpdCdzIGluZGVlZCBxdWl0ZSBlbGVnYW50LCBidXQNCj4gPiB3ZSdyZSBtaXNzaW5nIHRo
-ZSBsb2NrIEkgd2FzIG1lbnRpb25pbmcgaW4gbXkgcHJldmlvdXMgcmVwbHkuIFdlIG5lZWQNCj4g
-PiB0byBwcmV2ZW50IGRpZSBzZWxlY3Rpb24gbm90IG9ubHkgZm9yIHRoZSB0aW1lIHdlJ3JlIHNl
-bmRpbmcgYSBzaW5nbGUNCj4gPiBTUEkgbWVzc2FnZSwgYnV0IGZvciB0aGUgd2hvbGUgb3BlcmF0
-aW9uICh3aGljaCBjYW4gYmUgZm9ybWVkIG9mDQo+ID4gc2V2ZXJhbCBTUEkgbWVzc2FnZXMpLiBP
-ciBtYXliZSBJJ20gd3JvbmcsIGFuZCBvcGVyYXRpb25zIGNhbiBhY3R1YWxseQ0KPiA+IGJlIGlu
-dGVybGVhdmVkLCBidXQgSSB3b3VsZG4ndCBiZXQgb24gdGhhdCA7LSkuDQo+IA0KPiBBaCwgSSBt
-aXNzZWQgdGhhdC4gSSB0aG91Z2h0IGFib3V0IGl0LCBhbmQgdGhlbiB0cmllZCB0byBoYW5kIHdh
-dmUgaXQNCj4gYXdheSB3aXRoIHRoZSAiaWYgdGhleSBiZWhhdmUgbGlrZSBub3JtYWwgY2hpcHMi
-IDstKQ0KPiANCj4gVGhlIG1kaW8tYnVzIHN1cHBvcnRzIG5lc3RlZCBsb2NraW5nLCBzbyB5b3Ug
-Y2FuIGRvIHNvbWV0aGluZyBsaWtlIHRoaXM6DQo+IA0KPiBtdXRleF9sb2NrX25lc3RlZChidXMt
-Pm1kaW9fbG9jaywgTURJT19CVVNfTkVTVEVEKTsNCj4gYnVzLT53cml0ZSgpOw0KPiBidXMtPnJl
-YWQoKTsNCj4gbXV0ZXhfdW5sb2NrKGJ1cy0+bWRpb19sb2NrKTsNCj4gDQo+IHdpdGhvdXQgd29y
-cnlpbmcgc29tZW9uZSBlbHNlIHVzaW5nIHRoZSBidXMgaW4gYmV0d2Vlbi4gWzFdIGZvciBhbiBl
-eGFtcGxlDQo+IHVzZXIuDQo+IA0KPiBTbyBnb2luZyBhIHNpbWlsYXIgYXBwcm9hY2ggd2l0aCBm
-bGFnZ2luZyB0aGUgYXBwcm9wcmlhdGUgY2hpcHMgaW4NCj4gc3BpLW5vci9zcGktbmFuZCBhcyBu
-ZWVkaW5nIG5lc3RlZCBsb2NraW5nIGFuZCB0aGVuIGRvaW5nIGl0IGZvciB0aGUNCj4gYXBwcm9w
-cmlhdGUgY29tbWFuZHMgc2hvdWxkIHNvbHZlIHRoYXQgaXNzdWUuDQo+IA0KPiANCg0KRGV2aWNl
-IHRyZWUgdXBkYXRlOi0NCg0KJnFzcGkgew0KICAgIC4uLg0KICAgICAgICBxZmxhc2gwOiBkdWFs
-LWZsYXNoQDAgew0KICAgICAgICAgICAgICAgIGNvbXBhdGlibGUgPSAid2luYm9uZCx3MjVxMTZm
-dyIsICJoeWJyaWQiOyA8LS0gbmV3IGNvbXBhdGliaWxpdHkgdmFsdWUNCiAgICAgICAgICAgICAg
-ICByZWcgPSA8MD47DQogICAgICAgICAgICAgICAgc3BpLW1heC1mcmVxdWVuY3kgPSA8MjAwMDAw
-MDA+Ow0KICAgICAgICAgICAgICAgICNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KICAgICAgICAgICAg
-ICAgICNzaXplLWNlbGxzID0gPDA+Ow0KDQogICAgICAgICAgICAgICAgbm9yQDAgew0KICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICBjb21wYXRpYmxlID0gImplZGVjLHNwaS1ub3IiOw0K
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZWcgPSA8MD47DQogICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAjc2l6ZS1jZWxscyA9IDwxPjsNCg0KICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICBwYXJ0aXRpb25zIHsNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIC4uLg0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9
-Ow0KICAgICAgICAgICAgICAgIH07DQoNCiAgICAgICAgICAgICAgICBuYW5kQDEgew0KICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICBjb21wYXRpYmxlID0gImplZGVjLHNwaS1uYW5kIjsg
-Lyogb3INCndoYXRldmVyIHRoZSBjb3JyZWN0IG5hbmQtY29tcGF0aWJsZSB3b3VsZCBiZSAqLw0K
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZWcgPSA8MT47DQogICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAjc2l6ZS1jZWxscyA9IDwxPjsNCg0KICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICBwYXJ0aXRpb25zIHsNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIC4uLg0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9
-Ow0KICAgICAgICAgICAgICAgIH07DQoNCiAgICB9Ow0KfTsNCg0KDQpUaGVyZSB3aWxsIGJlIG9u
-bHkgb25lIGZpbGUgaS5lLiBmc2xfcXNwaS5jIGhhbmRpbmcgTk9SIGFuZCBOQU5ELiBRU1BJIGNv
-bnRyb2xsZXIgd2lsbCBoYXZlIFNQSSBOT1IgYW5kIGEgU1BJIE5BTkQgY29udHJvbGxlciBlbWJl
-ZGRlZC4NClF1ZXN0aW9uOiBXaGF0IHNob3VsZCBiZSB0aGUgbG9jYXRpb24gb2YgdGhpcyBmaWxl
-PyAgZHJpdmVyL210ZC9zcGktbm9yIGRlZmluaXRlbHkgaXMgbm90IHJpZ2h0IHBsYWNlPz8NCg0K
-DQpDaGFuZ2UgaW4gRGF0YSBzdHJ1Y3R1cmVzDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tDQoNCnN0cnVjdCBtdGRfaW5mbyB7DQoJLS0tLQ0KCXN0cnVjdCBtdXRleCAqaHlicmlk
-X2Zsb2NrOw0KIAktLS0NCn0NCg0Kc3RydWN0IGZzbF9xc3BpIHsNCgktLS0NCglzdHJ1Y3Qgc3Bp
-X25vciBub3JbRlNMX1FTUElfTUFYX0NISVBdOw0KCXN0cnVjdCBzcGluYW5kX2RldmljZSBzcGlu
-YW5kW0ZTTF9RU1BJX01BWF9DSElQXTsNCgktLS0NCn0NCg0KRnVuY3Rpb24gaW1wbGVtZW50YXRp
-b24NCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCg0KZnNsX3FzcGkuYw0KCSBw
-cm9iZSgpIHsNCgkJLS0NCgkJLS0NCiAgCQkgZm9yX2VhY2hfYXZhaWxhYmxlX2NoaWxkX29mX25v
-ZGUoZGV2LT5vZl9ub2RlLCBucCkgew0KCQkJaWYgY29tcGF0aWJsZSAiaHlicmlkIiB7DQoJCQkJ
-aHlicmlkX2Zsb2NrID0gbWFsbG9jKHNpemVvZihzdHJ1Y3QgbXV0ZXgpKTsNCiAgICAgICAJCQkJ
-LSBpZiBjb21wYXRpYmxlICJqZWRlYyxzcGktbm9yIiANCgkJCQkJc3BpX25vcl9zY2FuKCkNCiAg
-ICAgICAJCQkJLSBpZiBjb21wYXRpYmxlICJqZWRlYyxzcGktbmFuZCINCgkJCQkJc3BpbmFuZF9p
-bml0KCkNCgkJCQkNCgkJCQltdGRfZGV2aWNlX2NvbmZpZ19oeWJyaWRfbG9jayhzcGlfbm9yLT5t
-dGQsIGh5YnJpZF9mbG9jayk7DQoJCQkJbXRkX2RldmljZV9jb25maWdfaHlicmlkX2xvY2soc3Bp
-bmFuZC0+bXRkLCBoeWJyaWRfZmxvY2spOw0KCQkJCQkJCQkNCgkJCX0gZWxzZSB7DQogICAgICAg
-CQkJCS0gaWYgY29tcGF0aWJsZSAiamVkZWMsc3BpLW5vciINCgkJCQkJc3BpX25vcl9zY2FuKCkN
-CiAgICAgICAJCQkJLSBpZiBjb21wYXRpYmxlICJqZWRlYyxzcGktbmFuZCINCgkJCQkJc3BpbmFu
-ZF9pbml0KCkNCgkJCX0NCgkJfQ0KICAJCS0tDQoJCS0tCQ0KCX0NCg0KDQpXaGVuZXZlciByZWFk
-L3dyaXRlL2VyYXNlIGNvbWUgZnJvbSBNVEQgbGF5ZXIgLCBUYWtlIE1URCBsYXllciBsb2NrIGlu
-IGZ1bmN0aW9uIGRlZmluaXRpb24gaS5lLiBtdGQtPl9yZWFkX29vYiwgbXRkLT5fd3JpdGVfb29i
-LiBtdGQtPl9lcmFzZS4uLiANCkZvciBlZy4gDQpzcGlfbm9yX3JlYWQgKHN0cnVjdCBtdGRfaW5m
-byAqbXRkIC4uLikgew0KCQ0KCWlmIChoeWJyaWRfZmxvY2spDQoJCW11dGV4X2xvY2soJm10ZC0+
-IGh5YnJpZF9mbG9jayk7DQoJc3BpX25vcl9sb2NrX2FuZF9wcmVwKCk7DQoJLS0NCgktLQ0KCXNw
-aV9ub3JfdW5sb2NrX2FuZF91bnByZXAoKTsNCglpZiAoaHlicmlkX2Zsb2NrKQ0KCQltdXRleF91
-bmxvY2soJm10ZC0+IGh5YnJpZF9mbG9jayk7DQp9DQoNCnN0YXRpYyBpbnQgc3BpbmFuZF9tdGRf
-cmVhZChzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgLi4uKQ0Kew0KCWlmIChoeWJyaWRfZmxvY2spDQoJ
-CW11dGV4X2xvY2soJm10ZC0+IGh5YnJpZF9mbG9jayk7DQoNCgltdXRleF9sb2NrKCZzcGluYW5k
-LT5sb2NrKTsNCg0KCS0tLQ0KCS0tLQ0KDQoJbXV0ZXhfdW5sb2NrKCZzcGluYW5kLT5sb2NrKTsN
-CglpZiAoaHlicmlkX2Zsb2NrKQ0KCQltdXRleF91bmxvY2soJm10ZC0+IGh5YnJpZF9mbG9jayk7
-DQp9DQoNClBsZWFzZSBsZXQgbWUga25vdyB5b3VyIHZpZXcgb24gdGhpcy4gDQoNCi0tcGsNCg==
+On Mon, 8 Jan 2018 08:42:32 +0000
+Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com> wrote:
+
+> Thanks Jonas, Boris,
+> 
+> Let me try to put my understanding and some proposal based on discussions.
+> 
+> > -----Original Message-----
+> > From: Jonas Gorski [mailto:jonas.gorski@gmail.com]
+> > Sent: Friday, January 05, 2018 7:28 PM
+> > To: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > Cc: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>; Marek Vasut
+> > <marex@denx.de>; Richard Weinberger <richard@nod.at>; Brian Norris
+> > <computersforpeace@gmail.com>; linux-mtd@lists.infradead.org; Cyrille
+> > Pitchen <cyrille.pitchen@wedev4u.fr>
+> > Subject: Re: mtd layer: support of hybrid flash(W25M161AW) having both NOR
+> > and NAND flash
+> > 
+> > On 5 January 2018 at 14:44, Boris Brezillon
+> > <boris.brezillon@free-electrons.com> wrote:  
+> > > On Fri, 5 Jan 2018 14:38:48 +0100
+> > > Jonas Gorski <jonas.gorski@gmail.com> wrote:
+> > >  
+> > >> On 5 January 2018 at 11:21, Prabhakar Kushwaha
+> > >> <prabhakar.kushwaha@nxp.com> wrote:  
+> > >> > Thanks Boris for the encouragement.
+> > >> >  
+> > >> >> -----Original Message-----
+> > >> >> From: Boris Brezillon [mailto:boris.brezillon@free-electrons.com]
+> > >> >> Sent: Thursday, January 04, 2018 11:17 PM
+> > >> >> To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+> > >> >> Cc: linux-mtd@lists.infradead.org; Cyrille Pitchen  
+> > <cyrille.pitchen@wedev4u.fr>;  
+> > >> >> Richard Weinberger <richard@nod.at>; Marek Vasut <marex@denx.de>;  
+> > Brian  
+> > >> >> Norris <computersforpeace@gmail.com>
+> > >> >> Subject: Re: mtd layer: support of hybrid flash(W25M161AW) having both  
+> > NOR  
+> > >> >> and NAND flash
+> > >> >>
+> > >> >> +MTD maintainers.
+> > >> >>
+> > >> >> On Thu, 4 Jan 2018 14:08:42 +0000
+> > >> >> Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com> wrote:
+> > >> >>  
+> > >> >> > Hi All,
+> > >> >> >
+> > >> >> > Winbond has come up with special flash i.e.  W25M161AW. It consist of  
+> > Serial  
+> > >> >> NOR(Die #0) and Serial NAND(Die #1) flash.  
+> > >> >> > Means both NOR, NAND flashes are placed in W25M161AW controlled  
+> > by  
+> > >> >> single chip-select.  
+> > >> >> >
+> > >> >> > "Software Die Select (C2h)" command is being used to switch die or flash.  
+> > >> >>
+> > >> >> Why are they so mean to us?! :-)
+> > >> >>  
+> > >> >> >
+> > >> >> > It looks to be quite unique chip and wondering if any kind framework or  
+> > work in  
+> > >> >> progress available to handle it.  
+> > >> >> > I know that SPI-NAND framework discussions is still in progress.  
+> > >> >>
+> > >> >> Well, nothing impossible to handle, we just need to declare 2 MTD
+> > >> >> devices (one NAND and one NOR). This being said, it looks like we'll
+> > >> >> need this spi-flash abstraction we have been talking about with Marek
+> > >> >> and Cyrille to properly support these use cases: flash devices will be
+> > >> >> exposed through different sub-layers (spi-nor or spi-nand), but we need
+> > >> >> a common way to detect those spi-flash chips. I looked at a few SPI
+> > >> >> NAND and SPI NOR chips, and from what I've seen so far they were quite
+> > >> >> different (the opcodes and CMD+ADDR+DATA sequences were quite
+> > >> >> different) so I thought we were safe to start with a completely
+> > >> >> unconnected SPI NAND framework and merge some bits in a spi-flash layer
+> > >> >> afterwards, but this chip proves me wrong :-/.  
+> > >> >
+> > >> > I am thinking of following changes with fsl_qspi.c as controller
+> > >> >
+> > >> > &qspi {
+> > >> >         num-cs = <2>;
+> > >> >         bus-num = <0>;
+> > >> >         status = "okay";
+> > >> >         compatible = " fsl,ls1021a-qspi ", "fsl,ls1021a-qspi-nand"; <-- updated  
+> > compatibility for drivers  
+> > >> >         qflash0: w25q16fw @0 {
+> > >> >                 #address-cells = <1>;
+> > >> >                 #size-cells = <1>;
+> > >> >                 spi-max-frequency = <20000000>;
+> > >> >                 reg = <0>;
+> > >> >                 type = "serial-nor"   <-- Proposed New binding
+> > >> >                 is-hybrid <-- Proposed New binding
+> > >> >                 die-num <-- Proposed New binding
+> > >> >         };
+> > >> >
+> > >> >         qflash1: w25n01gw@1 {
+> > >> >                 #address-cells = <1>;
+> > >> >                 #size-cells = <1>;
+> > >> >                 spi-max-frequency = <20000000>;
+> > >> >                 reg = <1>;
+> > >> >                 type = "serial-nand" <-- Proposed New binding
+> > >> >                 is-hybrid <-- Proposed New binding
+> > >> >                 die-num <-- Proposed New binding
+> > >> >         }
+> > >> > };  
+> > >>
+> > >> assuming the NOR and NAND parts behave like "normal" SPI-NOR /
+> > >> SPI-NAND chips when selected, a more appropriate binding might be
+> > >>
+> > >> &qspi {
+> > >>     ...
+> > >>         qflash0: dual-flash@0 {
+> > >>                 compatible = "winbond,w25q16fw";
+> > >>                 reg = <0>;
+> > >>                 spi-max-frequency = <20000000>;
+> > >>                 #address-cells = <1>;
+> > >>                 #size-cells = <0>;
+> > >>
+> > >>                 nor@0 {
+> > >>                                 compatible = "jedec,spi-nor";
+> > >>                                 reg = <0>;
+> > >>                                 #address-cells = <1>;
+> > >>                                 #size-cells = <1>;
+> > >>
+> > >>                                 partitions {
+> > >>                                                 ...
+> > >>                                 };
+> > >>                 };
+> > >>
+> > >>                 nand@1 {
+> > >>                                 compatible = "jedec,spi-nand"; /* or
+> > >> whatever the correct nand-compatible would be */
+> > >>                                 reg = <1>;
+> > >>                                 #address-cells = <1>;
+> > >>                                 #size-cells = <1>;
+> > >>
+> > >>                                 partitions {
+> > >>                                                 ...
+> > >>                                 };
+> > >>                 };
+> > >>
+> > >>     };
+> > >> };
+> > >>
+> > >> with the "windbond,w25q16fw" driver modeled as a simple
+> > >> "spi-multiplexer" that registers its own virtual spi-bus. Then when
+> > >> spi-nor or spi-nand tries to communicate with their appropriate die,
+> > >> it sends the Software Die Select command if needed and then passes on
+> > >> the message to its parent bus.
+> > >>
+> > >> That way there should be no changes needed for spi-nor / spi-nand
+> > >> themselves. (The devil is probably in the details ;-)  
+> > >
+> > > Yep, I thought about this approach, and it's indeed quite elegant, but
+> > > we're missing the lock I was mentioning in my previous reply. We need
+> > > to prevent die selection not only for the time we're sending a single
+> > > SPI message, but for the whole operation (which can be formed of
+> > > several SPI messages). Or maybe I'm wrong, and operations can actually
+> > > be interleaved, but I wouldn't bet on that ;-).  
+> > 
+> > Ah, I missed that. I thought about it, and then tried to hand wave it
+> > away with the "if they behave like normal chips" ;-)
+> > 
+> > The mdio-bus supports nested locking, so you can do something like this:
+> > 
+> > mutex_lock_nested(bus->mdio_lock, MDIO_BUS_NESTED);
+> > bus->write();
+> > bus->read();
+> > mutex_unlock(bus->mdio_lock);
+> > 
+> > without worrying someone else using the bus in between. [1] for an example
+> > user.
+> > 
+> > So going a similar approach with flagging the appropriate chips in
+> > spi-nor/spi-nand as needing nested locking and then doing it for the
+> > appropriate commands should solve that issue.
+> > 
+> >   
+> 
+> Device tree update:-
+> 
+> &qspi {
+>     ...
+>         qflash0: dual-flash@0 {
+>                 compatible = "winbond,w25q16fw", "hybrid"; <-- new compatibility value
+
+"hybrid" is not needed, you know that the flash is hybrid with the
+"winbond,w25q16fw" string.
+
+>                 reg = <0>;
+>                 spi-max-frequency = <20000000>;
+>                 #address-cells = <1>;
+>                 #size-cells = <0>;
+> 
+>                 nor@0 {
+>                                 compatible = "jedec,spi-nor";
+>                                 reg = <0>;
+>                                 #address-cells = <1>;
+>                                 #size-cells = <1>;
+> 
+>                                 partitions {
+>                                                 ...
+>                                 };
+>                 };
+> 
+>                 nand@1 {
+>                                 compatible = "jedec,spi-nand"; /* or
+> whatever the correct nand-compatible would be */
+>                                 reg = <1>;
+>                                 #address-cells = <1>;
+>                                 #size-cells = <1>;
+> 
+>                                 partitions {
+>                                                 ...
+>                                 };
+>                 };
+
+Not sure exposing the dies in the DT is such a good idea. You should
+have a specific handling for "winbond,w25q16fw" which registers one
+NAND and one NOR.
+
+> 
+>     };
+> };
+
+
+
+> 
+> 
+> There will be only one file i.e. fsl_qspi.c handing NOR and NAND. QSPI controller will have SPI NOR and a SPI NAND controller embedded.
+> Question: What should be the location of this file?  driver/mtd/spi-nor definitely is not right place??
+
+It stay in driver/mtd/spi-nor until we create a spi-flash layer
+(driver/mtd/spi-flash).
+
+> 
+> 
+> Change in Data structures
+> ----------------------------------
+> 
+> struct mtd_info {
+> 	----
+> 	struct mutex *hybrid_flock;
+>  	---
+> }
+
+Nope, the hybrid_flock should not be in mtd_info. We should create an
+hybrid_spi_flash struct containing this lock and an array of SPI flash.
+
+struct hybrid_spi_flash;
+
+enum spi_flash_type {
+	SPI_NOR,
+	SPI_NAND,
+};
+
+struct spi_flash {
+	enum spi_flash_type type;
+	struct hybrid_spi_flash *master;
+};
+
+struct hybrid_spi_flash {
+	struct mutex lock;
+	struct spi_flash **subdevs;
+};
+
+struct spinand_device {
+	struct spi_flash spiflash;
+	...
+};
+
+struct spi_nor {
+	struct spi_flash spiflash;
+	...
+};
+
+static inline void spi_flash_master_lock(struct spi_flash *flash)
+{
+	if (flash->master)
+		mutex_lock(&flash->master->lock);
+}
+
+static inline void spi_flash_master_unlock(struct spi_flash *flash)
+{
+	if (flash->master)
+		mutex_unlock(&flash->master->lock);
+}
+
+> 
+> struct fsl_qspi {
+> 	---
+> 	struct spi_nor nor[FSL_QSPI_MAX_CHIP];
+> 	struct spinand_device spinand[FSL_QSPI_MAX_CHIP];
+
+	struct spi_flash *flashes[FSL_QSPI_MAX_CHIP];
+
+> 	---
+> }
+> 
+> Function implementation
+> ----------------------------------
+> 
+> fsl_qspi.c
+> 	 probe() {
+> 		--
+> 		--
+>   		 for_each_available_child_of_node(dev->of_node, np) {
+> 			if compatible "hybrid" {
+> 				hybrid_flock = malloc(sizeof(struct mutex));
+>        				- if compatible "jedec,spi-nor" 
+> 					spi_nor_scan()
+>        				- if compatible "jedec,spi-nand"
+> 					spinand_init()
+> 				
+> 				mtd_device_config_hybrid_lock(spi_nor->mtd, hybrid_flock);
+> 				mtd_device_config_hybrid_lock(spinand->mtd, hybrid_flock);
+> 								
+> 			} else {
+>        				- if compatible "jedec,spi-nor"
+> 					spi_nor_scan()
+>        				- if compatible "jedec,spi-nand"
+> 					spinand_init()
+> 			}
+
+No, the parsing and hybrid flash creation should be done in some common
+code, otherwise we'll have to duplicate it in each an every controller
+driver that needs to support this kind of chip.
+
+> 		}
+>   		--
+> 		--	
+> 	}
+> 
+> 
+> Whenever read/write/erase come from MTD layer , Take MTD layer lock in function definition i.e. mtd->_read_oob, mtd->_write_oob. mtd->_erase... 
+> For eg. 
+> spi_nor_read (struct mtd_info *mtd ...) {
+> 	
+> 	if (hybrid_flock)
+> 		mutex_lock(&mtd-> hybrid_flock);
+
+
+	spi_flash_master_lock(&spinor->spiflash);
+
+> 	spi_nor_lock_and_prep();
+> 	--
+> 	--
+> 	spi_nor_unlock_and_unprep();
+> 	if (hybrid_flock)
+> 		mutex_unlock(&mtd-> hybrid_flock);
+
+	spi_flash_master_unlock(&spinor->spiflash);
+
+> }
+> 
+> static int spinand_mtd_read(struct mtd_info *mtd, ...)
+> {
+> 	if (hybrid_flock)
+> 		mutex_lock(&mtd-> hybrid_flock);
+
+	spi_flash_master_lock(&spinand->spiflash);
+
+> 
+> 	mutex_lock(&spinand->lock);
+> 
+> 	---
+> 	---
+> 
+> 	mutex_unlock(&spinand->lock);
+> 	if (hybrid_flock)
+> 		mutex_unlock(&mtd-> hybrid_flock);
+
+	spi_flash_master_unlock(&spinand->spiflash);
+
+> }
+> 
+> Please let me know your view on this. 
+> 
+> --pk
