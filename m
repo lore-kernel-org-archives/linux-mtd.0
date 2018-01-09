@@ -1,26 +1,18 @@
-Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eYtoL-0004Cx-0z
- for linux-mtd@lists.infradead.org; Tue, 09 Jan 2018 13:19:26 +0000
-Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
- (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23992917AbeAINTMbhtgT (ORCPT
- <rfc822;linux-mtd@lists.infradead.org>);
- Tue, 9 Jan 2018 14:19:12 +0100
-Date: Tue, 9 Jan 2018 14:19:11 +0100
-Sender: Ladislav Michl <ladis@linux-mips.org>
-From: Ladislav Michl <ladis@linux-mips.org>
-To: linux-mtd@lists.infradead.org
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Subject: [PATCH v2] mtd: nand: samsung: Disable subpage writes on E-die NAND
-Message-ID: <20180109131911.GA3907@lenoch>
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
+To: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>, Wenyou Yang
+ <wenyou.yang@microchip.com>, Boris BREZILLON
+ <boris.brezillon@free-electrons.com>
+CC: <linux-media@vger.kernel.org>, Alexandre Belloni
+ <alexandre.belloni@free-electrons.com>, <linux-mtd@lists.infradead.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, Josh Wu
+ <rainyfeeling@outlook.com>, Nicolas Ferre <nicolas.ferre@microchip.com>
+Subject: [PATCH 1/2] MAINTAINERS: linux-media: update Microchip ISI and ISC
+ entries
+Date: Tue, 9 Jan 2018 14:46:39 +0100
+Message-ID: <eb6b3cbe8e48faee7e88eca0649e42cbde91ffa6.1515503733.git.nicolas.ferre@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,52 +22,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Samsung E-die SLC NAND manufactured using 21nm process (K9F1G08U0E)
-does not support partial page programming, so disable subpage writes
-for it. Manufacturing process is stored in lowest two bits of 5th ID
-byte.
+These two image capture interface drivers are now handled
+by Wenyou Yang.
+I benefit from this change to update the two entries by correcting the
+binding documentation link for ISC and moving the ISI to the new
+MICROCHIP / ATMEL location.
 
-Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 ---
- Changes:
- - v2: 
-   * Reword commit log
-   * Check also for device type
-   * Reimplement if statements using switch
+Hi,
 
- drivers/mtd/nand/nand_samsung.c | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
+Patch against next-20180109.
+Note that I didn't find it useful to have several patches for these changes.
+Tell me if you feel differently.
 
-diff --git a/drivers/mtd/nand/nand_samsung.c b/drivers/mtd/nand/nand_samsung.c
-index f6b0a63a068c..6971c35b78e9 100644
---- a/drivers/mtd/nand/nand_samsung.c
-+++ b/drivers/mtd/nand/nand_samsung.c
-@@ -92,10 +92,22 @@ static void samsung_nand_decode_id(struct nand_chip *chip)
- 	} else {
- 		nand_decode_ext_id(chip);
+I would like to have the Ack from Ludovic and Wenyou obviously. I don't know if
+Songjun can answer as he's not with Microchip anymore.
+
+Best regards,
+  Nicolas
+
+ MAINTAINERS | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index a7d10a2bb980..65c4b59b582f 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2353,13 +2353,6 @@ L:	linux-i2c@vger.kernel.org
+ S:	Supported
+ F:	drivers/i2c/busses/i2c-at91.c
  
--		/* Datasheet values for SLC Samsung K9F4G08U0D-S[I|C]B0(T00) */
--		if (nand_is_slc(chip) && chip->id.data[1] == 0xDC) {
--			chip->ecc_step_ds = 512;
--			chip->ecc_strength_ds = 1;
-+		if (nand_is_slc(chip)) {
-+			switch (chip->id.data[1]) {
-+			/* K9F4G08U0D-S[I|C]B0(T00) */
-+			case 0xDC:
-+				chip->ecc_step_ds = 512;
-+				chip->ecc_strength_ds = 1;
-+				break;
-+			/* K9F1G08U0E 21nm chips do not support subpage write */
-+			case 0xF1:
-+				if (chip->id.len > 4 &&
-+				    (chip->id.data[4] & GENMASK(1,0)) == 0x1)
-+					chip->options |= NAND_NO_SUBPAGE_WRITE;
-+				break;
-+			default:
-+				break;
-+			}
- 		}
- 	}
- }
+-ATMEL ISI DRIVER
+-M:	Ludovic Desroches <ludovic.desroches@microchip.com>
+-L:	linux-media@vger.kernel.org
+-S:	Supported
+-F:	drivers/media/platform/atmel/atmel-isi.c
+-F:	include/media/atmel-isi.h
+-
+ ATMEL LCDFB DRIVER
+ M:	Nicolas Ferre <nicolas.ferre@microchip.com>
+ L:	linux-fbdev@vger.kernel.org
+@@ -9102,12 +9095,20 @@ S:	Maintained
+ F:	drivers/crypto/atmel-ecc.*
+ 
+ MICROCHIP / ATMEL ISC DRIVER
+-M:	Songjun Wu <songjun.wu@microchip.com>
++M:	Wenyou Yang <wenyou.yang@microchip.com>
+ L:	linux-media@vger.kernel.org
+ S:	Supported
+ F:	drivers/media/platform/atmel/atmel-isc.c
+ F:	drivers/media/platform/atmel/atmel-isc-regs.h
+-F:	devicetree/bindings/media/atmel-isc.txt
++F:	Documentation/devicetree/bindings/media/atmel-isc.txt
++
++MICROCHIP / ATMEL ISI DRIVER
++M:	Wenyou Yang <wenyou.yang@microchip.com>
++L:	linux-media@vger.kernel.org
++S:	Supported
++F:	drivers/media/platform/atmel/atmel-isi.c
++F:	include/media/atmel-isi.h
++F:	Documentation/devicetree/bindings/media/atmel-isi.txt
+ 
+ MICROCHIP KSZ SERIES ETHERNET SWITCH DRIVER
+ M:	Woojung Huh <Woojung.Huh@microchip.com>
 -- 
-2.15.1
+2.9.0
