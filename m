@@ -1,28 +1,32 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eYoCm-0005RD-RL
- for linux-mtd@lists.infradead.org; Tue, 09 Jan 2018 07:20:27 +0000
-Date: Tue, 9 Jan 2018 08:19:53 +0100
-From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, Robert Jarzmik <robert.jarzmik@free.fr>,
- Kyungmin Park <kyungmin.park@samsung.com>, Peter Pan
- <peterpansjtu@gmail.com>, Frieder Schrempf <frieder.schrempf@exceet.de>,
- Ladislav Michl <ladis@linux-mips.org>
-Subject: Re: [PATCH v4 3/3] mtd: Remove duplicate checks on mtd_oob_ops
- parameter
-Message-ID: <20180109081953.01b204ea@xps13>
-In-Reply-To: <20180108233010.5d7e7c3f@bbrezillon>
-References: <20180108211542.11891-1-boris.brezillon@free-electrons.com>
- <20180108211542.11891-4-boris.brezillon@free-electrons.com>
- <20180108230455.10c0cb83@xps13>
- <20180108233010.5d7e7c3f@bbrezillon>
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]
+ helo=smtp.smtpout.orange.fr)
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eYono-0005fi-3e
+ for linux-mtd@lists.infradead.org; Tue, 09 Jan 2018 07:58:34 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Miquel RAYNAL <miquel.raynal@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 00/12] Marvell NAND controller rework with ->exec_op()
+References: <20171207201814.30411-1-miquel.raynal@free-electrons.com>
+ <20171214070930.0b885f6d@bbrezillon> <877etkecig.fsf@belgarion.home>
+ <20171218092535.2ca1fe13@xps13> <87y3lxccr7.fsf@belgarion.home>
+ <20171220224121.2cb6f690@bbrezillon> <87lghucykr.fsf@belgarion.home>
+ <20171222222441.0fd77df9@bbrezillon> <20171222233730.68d9cb9d@xps13>
+ <87k1xdblxf.fsf@belgarion.home> <20171223155709.2ba16e95@xps13>
+ <87fu81bc45.fsf@belgarion.home> <20180102120326.7a2cf1d1@xps13>
+ <87d12scbiy.fsf@belgarion.home> <20180103084037.422b239a@xps13>
+ <878tded89m.fsf@belgarion.home> <20180103211028.619cd16d@bbrezillon>
+ <20180103215206.5d85b41b@bbrezillon>
+Date: Tue, 09 Jan 2018 08:57:59 +0100
+In-Reply-To: <20180103215206.5d85b41b@bbrezillon> (Boris Brezillon's message
+ of "Wed, 3 Jan 2018 21:52:06 +0100")
+Message-ID: <87zi5nbh14.fsf@belgarion.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,69 +36,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Boris,
+Boris Brezillon <boris.brezillon@free-electrons.com> writes:
 
-On Mon, 8 Jan 2018 23:30:10 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+Ok I recovered my NAND.
 
-> On Mon, 8 Jan 2018 23:04:55 +0100
-> Miquel RAYNAL <miquel.raynal@free-electrons.com> wrote:
->=20
-> > Hello Boris,
-> >=20
-> > On Mon,  8 Jan 2018 22:15:42 +0100
-> > Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-> >  =20
-> > > Some of the check done in custom ->_read/write_oob()
-> > > implementation are already done by the core (in
-> > > mtd_check_oob_ops()).   =20
-> >=20
-> > Not sure this is relevant here as your series introduces changes for
-> > the SPI NAND framework, but there are other places where these
-> > checks are, IMHO, also redundant and could be removed. The "past
-> > end" string when grepped in the MTD folder core returns a few more
-> > hits.
-> >=20
-> > In the NAND core:
-> >   - nand_do_read_oob()
-> >   - nand_read_oob()
-> >   - nand_do_write_oob()
-> >   - nand_write_oob() =20
->=20
-> That's true for nand_read/write_oob(). The one in nand_do_write_oob()
-> is still needed because mtd_check_oob_ops() allows OOB writes
-> crossing a page boundary. Finally, I don't see any boundary checks in
-> nand_do_read_oob().
+For the next try, I'd like you to provide another "temporary patch" to disable
+BBT actual writing, just to be sure. Once the driver is working properly, I'll
+make another try without the temporary patch.
 
-I forgot that crossing page boundaries was not a use case of
-mtd_check_oob_ops(), thanks for pointing it. However in
-nand_do_read/write_oob(), the comment and the code really state the
-checked boundary is the end of the device. So are you sure these two
-checks are needed?
+Tell me when a branch I can pull is ready.
 
-[1]http://elixir.free-electrons.com/linux/latest/source/drivers/mtd/nand/na=
-nd_base.c#L2226
-[2]http://elixir.free-electrons.com/linux/latest/source/drivers/mtd/nand/na=
-nd_base.c#L2886
+Cheers.
 
->=20
-> > Maybe also in onenand_base.c, but I am less confident for this one:
-> >   - onenand_bbt_read_oob() =20
->=20
-> Unfortunately no, this function is directly called from onenand_bbt.c,
-> which means the MTD layer layer is completely bypassed. I also found
-> boundary checks in onenand_mlc_read_ops_nolock(), but again, this
-> function is called from do_otp_read() which is not going through
-> mtd_check_oob_ops().
->=20
-> >=20
-> > What do you think? =20
->=20
-> I'll remove the extra checks in nand_read/write_oob(). For the other
-> ones, one solution would be to expose mtd_check_oob_ops(), but I'll
-> keep that for later.
-
-Ok.
-
-Thanks,
-Miqu=C3=A8l
+-- 
+Robert
