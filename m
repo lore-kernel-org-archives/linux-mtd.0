@@ -1,18 +1,30 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
- by merlin.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eYqt7-0007oF-6B
- for linux-mtd@lists.infradead.org; Tue, 09 Jan 2018 10:12:10 +0000
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, kernel@pengutronix.de,
- Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 4/8] mtd: nand: mxc: Fix failed/corrected values for v2/v3
- controllers
-Date: Tue,  9 Jan 2018 11:11:44 +0100
-Message-Id: <20180109101148.13728-5-s.hauer@pengutronix.de>
-In-Reply-To: <20180109101148.13728-1-s.hauer@pengutronix.de>
-References: <20180109101148.13728-1-s.hauer@pengutronix.de>
+Date: Tue, 9 Jan 2018 12:06:09 +0100
+From: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Ezequiel
+ Garcia <ezequiel.garcia@free-electrons.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 00/12] Marvell NAND controller rework with ->exec_op()
+Message-ID: <20180109120609.153b6bde@xps13>
+In-Reply-To: <87zi5nbh14.fsf@belgarion.home>
+References: <20171207201814.30411-1-miquel.raynal@free-electrons.com>
+ <20171214070930.0b885f6d@bbrezillon>
+ <877etkecig.fsf@belgarion.home> <20171218092535.2ca1fe13@xps13>
+ <87y3lxccr7.fsf@belgarion.home>
+ <20171220224121.2cb6f690@bbrezillon>
+ <87lghucykr.fsf@belgarion.home>
+ <20171222222441.0fd77df9@bbrezillon>
+ <20171222233730.68d9cb9d@xps13> <87k1xdblxf.fsf@belgarion.home>
+ <20171223155709.2ba16e95@xps13> <87fu81bc45.fsf@belgarion.home>
+ <20180102120326.7a2cf1d1@xps13> <87d12scbiy.fsf@belgarion.home>
+ <20180103084037.422b239a@xps13> <878tded89m.fsf@belgarion.home>
+ <20180103211028.619cd16d@bbrezillon>
+ <20180103215206.5d85b41b@bbrezillon>
+ <87zi5nbh14.fsf@belgarion.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,168 +34,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently nand_read_page_hwecc() from nand_base calls
-mxc_nand_correct_data_v2_v3() for each subpage, but in this function we
-return the corrected/failed results for the whole page instead
-of a single subpage. On a 2k page size Nand this leads to results which
-are 4 times too high.
-The whole ecc.calculate/ecc.correct mechanism used by
-nand_read_page_hwecc() is not suitable for devices which correct the
-data in hardware, so fix this by using a driver specific read_page
-function which does the right thing. Also add read_page_raw and read_oob
-For proper raw and oob read support.
+Hello Robert,
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- drivers/mtd/nand/mxc_nand.c | 84 ++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 76 insertions(+), 8 deletions(-)
+On Tue, 09 Jan 2018 08:57:59 +0100
+Robert Jarzmik <robert.jarzmik@free.fr> wrote:
 
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index ab9cd45237d3..d698f7c6666c 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -140,6 +140,8 @@ struct mxc_nand_host;
- 
- struct mxc_nand_devtype_data {
- 	void (*preset)(struct mtd_info *);
-+	int (*read_page)(struct mtd_info *mtd, struct nand_chip *chip,
-+			void *buf, void *oob, bool ecc, int page);
- 	void (*send_cmd)(struct mxc_nand_host *, uint16_t, int);
- 	void (*send_addr)(struct mxc_nand_host *, uint16_t, int);
- 	void (*send_page)(struct mtd_info *, unsigned int);
-@@ -757,13 +759,35 @@ static int mxc_nand_correct_data_v1(struct mtd_info *mtd, u_char *dat,
- static int mxc_nand_correct_data_v2_v3(struct mtd_info *mtd, u_char *dat,
- 				 u_char *read_ecc, u_char *calc_ecc)
- {
-+	return 0;
-+}
-+
-+static int mxc_nand_read_page_v2_v3(struct mtd_info *mtd, struct nand_chip *chip,
-+				    void *buf, void *oob, bool ecc, int page)
-+{
- 	struct nand_chip *nand_chip = mtd_to_nand(mtd);
--	struct mxc_nand_host *host = nand_get_controller_data(nand_chip);
-+	struct mxc_nand_host *host = nand_get_controller_data(chip);
-+	unsigned int max_bitflips = 0;
- 	u32 ecc_stat, err;
--	int no_subpages = 1;
--	int ret = 0;
-+	int no_subpages;
- 	u8 ecc_bit_mask, err_limit;
- 
-+	host->devtype_data->enable_hwecc(nand_chip, ecc);
-+
-+	host->devtype_data->send_cmd(host, NAND_CMD_READ0, false);
-+	mxc_do_addr_cycle(mtd, 0, page);
-+
-+	if (mtd->writesize > 512)
-+		host->devtype_data->send_cmd(host,
-+				NAND_CMD_READSTART, true);
-+
-+	host->devtype_data->send_page(mtd, NFC_OUTPUT);
-+
-+	if (buf)
-+		memcpy32_fromio(buf, host->main_area0, mtd->writesize);
-+	if (oob)
-+		copy_spare(mtd, true, oob);
-+
- 	ecc_bit_mask = (host->eccsize == 4) ? 0x7 : 0xf;
- 	err_limit = (host->eccsize == 4) ? 0x4 : 0x8;
- 
-@@ -774,17 +798,53 @@ static int mxc_nand_correct_data_v2_v3(struct mtd_info *mtd, u_char *dat,
- 	do {
- 		err = ecc_stat & ecc_bit_mask;
- 		if (err > err_limit) {
--			dev_dbg(host->dev, "UnCorrectable RS-ECC Error\n");
--			return -EBADMSG;
-+			mtd->ecc_stats.failed++;
- 		} else {
--			ret += err;
-+			mtd->ecc_stats.corrected += err;
-+			max_bitflips = max_t(unsigned int, max_bitflips, err);
- 		}
-+
- 		ecc_stat >>= 4;
- 	} while (--no_subpages);
- 
--	dev_dbg(host->dev, "%d Symbol Correctable RS-ECC Error\n", ret);
-+	return max_bitflips;
-+}
- 
--	return ret;
-+static int mxc_nand_read_page(struct mtd_info *mtd, struct nand_chip *chip,
-+			      uint8_t *buf, int oob_required, int page)
-+{
-+	struct mxc_nand_host *host = nand_get_controller_data(chip);
-+	void *oob_buf;
-+
-+	if (oob_required)
-+		oob_buf = chip->oob_poi;
-+	else
-+		oob_buf = NULL;
-+
-+	return host->devtype_data->read_page(mtd, chip, buf, oob_buf, 1, page);
-+}
-+
-+static int mxc_nand_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
-+				  uint8_t *buf, int oob_required, int page)
-+{
-+	struct mxc_nand_host *host = nand_get_controller_data(chip);
-+	void *oob_buf;
-+
-+	if (oob_required)
-+		oob_buf = chip->oob_poi;
-+	else
-+		oob_buf = NULL;
-+
-+	return host->devtype_data->read_page(mtd, chip, buf, oob_buf, 0, page);
-+}
-+
-+static int mxc_nand_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
-+			     int page)
-+{
-+	struct mxc_nand_host *host = nand_get_controller_data(chip);
-+
-+	return host->devtype_data->read_page(mtd, chip, NULL, chip->oob_poi, 0,
-+					     page);
- }
- 
- static int mxc_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
-@@ -1483,6 +1543,7 @@ static const struct mxc_nand_devtype_data imx27_nand_devtype_data = {
- /* v21: i.MX25, i.MX35 */
- static const struct mxc_nand_devtype_data imx25_nand_devtype_data = {
- 	.preset = preset_v2,
-+	.read_page = mxc_nand_read_page_v2_v3,
- 	.send_cmd = send_cmd_v1_v2,
- 	.send_addr = send_addr_v1_v2,
- 	.send_page = send_page_v2,
-@@ -1509,6 +1570,7 @@ static const struct mxc_nand_devtype_data imx25_nand_devtype_data = {
- /* v3.2a: i.MX51 */
- static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
- 	.preset = preset_v3,
-+	.read_page = mxc_nand_read_page_v2_v3,
- 	.send_cmd = send_cmd_v3,
- 	.send_addr = send_addr_v3,
- 	.send_page = send_page_v3,
-@@ -1535,6 +1597,7 @@ static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
- /* v3.2b: i.MX53 */
- static const struct mxc_nand_devtype_data imx53_nand_devtype_data = {
- 	.preset = preset_v3,
-+	.read_page = mxc_nand_read_page_v2_v3,
- 	.send_cmd = send_cmd_v3,
- 	.send_addr = send_addr_v3,
- 	.send_page = send_page_v3,
-@@ -1793,6 +1856,11 @@ static int mxcnd_probe(struct platform_device *pdev)
- 
- 	switch (this->ecc.mode) {
- 	case NAND_ECC_HW:
-+		if (host->devtype_data->read_page) {
-+			this->ecc.read_page = mxc_nand_read_page;
-+			this->ecc.read_page_raw = mxc_nand_read_page_raw;
-+			this->ecc.read_oob = mxc_nand_read_oob;
-+		}
- 		this->ecc.calculate = mxc_nand_calculate_ecc;
- 		this->ecc.hwctl = mxc_nand_enable_hwecc;
- 		this->ecc.correct = host->devtype_data->correct_data;
--- 
-2.11.0
+> Boris Brezillon <boris.brezillon@free-electrons.com> writes:
+>=20
+> Ok I recovered my NAND.
+>=20
+> For the next try, I'd like you to provide another "temporary patch"
+> to disable BBT actual writing, just to be sure. Once the driver is
+> working properly, I'll make another try without the temporary patch.
+
+The best way to do it is to avoid using the BBT at all, and while I was
+looking for the right line to comment in the Zylonite's board file I
+found out that the boolean flash_bbt is not actually set and then I
+remembered an old mail from you, then you should:
+
+----->8-----
+diff --git a/arch/arm/mach-pxa/zylonite.c b/arch/arm/mach-pxa/zylonite.c
+index 0534949d63f6..d247ef01dc62 100644
+--- a/arch/arm/mach-pxa/zylonite.c
++++ b/arch/arm/mach-pxa/zylonite.c
+@@ -378,6 +378,8 @@ static struct mtd_partition
+zylonite_nand_partitions[] =3D { static struct pxa3xx_nand_platform_data
+zylonite_nand_info =3D { .parts		=3D zylonite_nand_partitions,
+ 	.nr_parts	=3D ARRAY_SIZE(zylonite_nand_partitions),
+-	.flash_bbt	=3D 1,
+	.keep_config	=3D 1,
+ };
+=20
+ static void __init zylonite_init_nand(void)
+-----8<-----
+
+Then, do not forget to resize the partition that stores the BBT to
+remove the last 4 erase blocks from it to avoid UBI/UBIFS smashing it.
+
+Then you should be fine.
+
+You can test this branch (updated with last version I sent earlier):
+https://github.com/miquelraynal/linux/tree/marvell/nand-next/nfc
+
+
+Thanks,
+Miqu=C3=A8l
