@@ -1,19 +1,35 @@
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
-To: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- Ludovic Desroches <ludovic.desroches@microchip.com>, Wenyou Yang
- <wenyou.yang@microchip.com>, Boris BREZILLON
- <boris.brezillon@free-electrons.com>
-CC: <linux-media@vger.kernel.org>, Alexandre Belloni
- <alexandre.belloni@free-electrons.com>, <linux-mtd@lists.infradead.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Josh Wu
- <rainyfeeling@outlook.com>, Nicolas Ferre <nicolas.ferre@microchip.com>
-Subject: [PATCH 2/2] MAINTAINERS: mtd/nand: update Microchip nand entry
-Date: Tue, 9 Jan 2018 14:46:40 +0100
-Message-ID: <d8a6b8a3fe05c57972de1c374fcdeb933717396b.1515503733.git.nicolas.ferre@microchip.com>
-In-Reply-To: <eb6b3cbe8e48faee7e88eca0649e42cbde91ffa6.1515503733.git.nicolas.ferre@microchip.com>
-References: <eb6b3cbe8e48faee7e88eca0649e42cbde91ffa6.1515503733.git.nicolas.ferre@microchip.com>
+Received: from 1.mo68.mail-out.ovh.net ([46.105.41.146])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eYuGI-00027a-5V
+ for linux-mtd@lists.infradead.org; Tue, 09 Jan 2018 13:48:49 +0000
+Received: from player750.ha.ovh.net (b6.ovh.net [213.186.33.56])
+ by mo68.mail-out.ovh.net (Postfix) with ESMTP id B88CAAF59E
+ for <linux-mtd@lists.infradead.org>; Tue,  9 Jan 2018 14:47:59 +0100 (CET)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Tue, 09 Jan 2018 14:47:41 +0100
+From: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Rob Herring <robh+dt@kernel.org>, =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?=
+ <zajec5@gmail.com>, Brian Norris <computersforpeace@gmail.com>, David
+ Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Mark Rutland <mark.rutland@arm.com>, Frank
+ Rowand <frowand.list@gmail.com>, Linus Walleij <linus.walleij@linaro.org>,
+ linux-mtd@lists.infradead.org, "open list:OPEN FIRMWARE AND FLATTENED DEVICE
+ TREE BINDINGS" <devicetree@vger.kernel.org>, Geert Uytterhoeven
+ <geert+renesas@glider.be>, Jonas Gorski <jonas.gorski@gmail.com>, Florian
+ Fainelli <f.fainelli@gmail.com>, John Crispin <john@phrozen.org>
+Subject: Re: [PATCH V6 1/2] mtd: partitions: add of_match_table parser matching
+In-Reply-To: <20180109104245.0f8cf097@bbrezillon>
+References: <20180102130458.16226-1-zajec5@gmail.com>
+ <20180103105543.17897-1-zajec5@gmail.com>
+ <CAL_JsqLYjUsWGAYm978oPmMAue6YDRb=K00gReZTia6iaJ6xsA@mail.gmail.com>
+ <9a799300a0730a0103fe744878fb1a9f@milecki.pl>
+ <20180109104245.0f8cf097@bbrezillon>
+Message-ID: <2043e7d0214dffd5b0515cfdea2ed1d6@milecki.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,62 +39,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Update Wenyou Yang email address.
-Take advantage of this update to move this entry to the MICROCHIP / ATMEL
-location and add the DT binding documentation link.
+On 2018-01-09 10:42, Boris Brezillon wrote:
+> Rafal, I had a look at your v7 and it looks sane, so I'll queue it for
+> 4.16 unless Rob has other concerns.
+> 
+> Thanks for your patience.
 
-Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
----
-Hi,
-
-Patch against next-20180109.
-This patch is somehow dependent on the previous one in the series
-("MAINTAINERS: linux-media: update Microchip ISI and ISC entries") but can be
-rebased easily.
-
-I don't know if it's better to have them added at the end of the development
-cycle or just after rc1: let me know if you plan to take them or if I need to
-rebase them for next cycle.
-
-Best regards,
-  Nicolas
-
-
- MAINTAINERS | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 65c4b59b582f..b48e217d41fb 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2373,13 +2373,6 @@ F:	Documentation/devicetree/bindings/input/atmel,maxtouch.txt
- F:	drivers/input/touchscreen/atmel_mxt_ts.c
- F:	include/linux/platform_data/atmel_mxt_ts.h
- 
--ATMEL NAND DRIVER
--M:	Wenyou Yang <wenyou.yang@atmel.com>
--M:	Josh Wu <rainyfeeling@outlook.com>
--L:	linux-mtd@lists.infradead.org
--S:	Supported
--F:	drivers/mtd/nand/atmel/*
--
- ATMEL SAMA5D2 ADC DRIVER
- M:	Ludovic Desroches <ludovic.desroches@microchip.com>
- L:	linux-iio@vger.kernel.org
-@@ -9110,6 +9103,14 @@ F:	drivers/media/platform/atmel/atmel-isi.c
- F:	include/media/atmel-isi.h
- F:	Documentation/devicetree/bindings/media/atmel-isi.txt
- 
-+MICROCHIP / ATMEL NAND DRIVER
-+M:	Wenyou Yang <wenyou.yang@microchip.com>
-+M:	Josh Wu <rainyfeeling@outlook.com>
-+L:	linux-mtd@lists.infradead.org
-+S:	Supported
-+F:	drivers/mtd/nand/atmel/*
-+F:	Documentation/devicetree/bindings/mtd/atmel-nand.txt
-+
- MICROCHIP KSZ SERIES ETHERNET SWITCH DRIVER
- M:	Woojung Huh <Woojung.Huh@microchip.com>
- M:	Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
--- 
-2.9.0
+Sounds great, thanks!
