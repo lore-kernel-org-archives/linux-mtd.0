@@ -1,21 +1,23 @@
-Date: Tue, 9 Jan 2018 15:01:02 +0100
-From: Ludovic Desroches <ludovic.desroches@microchip.com>
-To: Nicolas Ferre <nicolas.ferre@microchip.com>
-CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- Ludovic Desroches <ludovic.desroches@microchip.com>, Wenyou Yang
- <wenyou.yang@microchip.com>, Boris BREZILLON
- <boris.brezillon@free-electrons.com>, <linux-media@vger.kernel.org>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- <linux-mtd@lists.infradead.org>, Mauro Carvalho Chehab <mchehab@kernel.org>,
- Josh Wu <rainyfeeling@outlook.com>
-Subject: Re: [PATCH 1/2] MAINTAINERS: linux-media: update Microchip ISI and
- ISC entries
-Message-ID: <20180109140102.GH2425@rfolt0960.corp.atmel.com>
-References: <eb6b3cbe8e48faee7e88eca0649e42cbde91ffa6.1515503733.git.nicolas.ferre@microchip.com>
+Received: from smtp.exceet.ch ([77.245.33.226])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eYwjA-0007YZ-7L
+ for linux-mtd@lists.infradead.org; Tue, 09 Jan 2018 16:26:18 +0000
+To: <yogeshnarayan.gaur@nxp.com>
+References: <1515493602-19626-2-git-send-email-yogeshnarayan.gaur@nxp.com>
+Subject: Re: [PATCH v1 1/2] mtd: fsl-quadspi: add support to create dynamic
+ LUT entry
+CC: <linux-mtd@lists.infradead.org>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, <cyrille.pitchen@wedev4u.fr>,
+ <computersforpeace@gmail.com>, <han.xu@nxp.com>, <festevam@gmail.com>,
+ Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>, <suresh.gupta@nxp.com>
+From: Frieder Schrempf <frieder.schrempf@exceet.de>
+Message-ID: <80885d95-a6d4-b3a6-4249-f87379e6dc45@exceet.de>
+Date: Tue, 9 Jan 2018 17:25:57 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <eb6b3cbe8e48faee7e88eca0649e42cbde91ffa6.1515503733.git.nicolas.ferre@microchip.com>
+In-Reply-To: <1515493602-19626-2-git-send-email-yogeshnarayan.gaur@nxp.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,73 +27,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 09, 2018 at 02:46:39PM +0100, Nicolas Ferre wrote:
-> These two image capture interface drivers are now handled
-> by Wenyou Yang.
-> I benefit from this change to update the two entries by correcting the
-> binding documentation link for ISC and moving the ISI to the new
-> MICROCHIP / ATMEL location.
-> 
-> Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Acked-by: Ludovic Desroches <ludovic.desroches@microchip.com>
+Hello Yogesh,
 
-> ---
-> Hi,
+> Add support to create dynamic LUT entry.
 > 
-> Patch against next-20180109.
-> Note that I didn't find it useful to have several patches for these changes.
-> Tell me if you feel differently.
+> Current approach of creating LUT entries for various cmds like read, write,
+> erase, readid, readsr, we, wd etc is that when QSPI controller gets
+> initialized at that time static LUT entries for these cmds get created.
 > 
-> I would like to have the Ack from Ludovic and Wenyou obviously. I don't know if
-> Songjun can answer as he's not with Microchip anymore.
+> Patch add support to create the LUT at run time based on the operation
+> being performed.
 > 
-> Best regards,
->   Nicolas
-> 
->  MAINTAINERS | 19 ++++++++++---------
->  1 file changed, 10 insertions(+), 9 deletions(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index a7d10a2bb980..65c4b59b582f 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2353,13 +2353,6 @@ L:	linux-i2c@vger.kernel.org
->  S:	Supported
->  F:	drivers/i2c/busses/i2c-at91.c
->  
-> -ATMEL ISI DRIVER
-> -M:	Ludovic Desroches <ludovic.desroches@microchip.com>
-> -L:	linux-media@vger.kernel.org
-> -S:	Supported
-> -F:	drivers/media/platform/atmel/atmel-isi.c
-> -F:	include/media/atmel-isi.h
-> -
->  ATMEL LCDFB DRIVER
->  M:	Nicolas Ferre <nicolas.ferre@microchip.com>
->  L:	linux-fbdev@vger.kernel.org
-> @@ -9102,12 +9095,20 @@ S:	Maintained
->  F:	drivers/crypto/atmel-ecc.*
->  
->  MICROCHIP / ATMEL ISC DRIVER
-> -M:	Songjun Wu <songjun.wu@microchip.com>
-> +M:	Wenyou Yang <wenyou.yang@microchip.com>
->  L:	linux-media@vger.kernel.org
->  S:	Supported
->  F:	drivers/media/platform/atmel/atmel-isc.c
->  F:	drivers/media/platform/atmel/atmel-isc-regs.h
-> -F:	devicetree/bindings/media/atmel-isc.txt
-> +F:	Documentation/devicetree/bindings/media/atmel-isc.txt
-> +
-> +MICROCHIP / ATMEL ISI DRIVER
-> +M:	Wenyou Yang <wenyou.yang@microchip.com>
-> +L:	linux-media@vger.kernel.org
-> +S:	Supported
-> +F:	drivers/media/platform/atmel/atmel-isi.c
-> +F:	include/media/atmel-isi.h
-> +F:	Documentation/devicetree/bindings/media/atmel-isi.txt
->  
->  MICROCHIP KSZ SERIES ETHERNET SWITCH DRIVER
->  M:	Woojung Huh <Woojung.Huh@microchip.com>
-> -- 
-> 2.9.0
-> 
+> Added API fsl_qspi_prepare_lut(), this API would going to be called from
+> fsl_qspi_read_reg, fsl_qspi_write_reg, fsl_qspi_write, fsl_qspi_read and
+> fsl_qspi_erase APIs.
+> This API would fetch required info like opcode, protocol info, dummy info
+> for creating LUT from instance of 'struct spi_nor' and then prepare LUT
+> entry for the required command.
+
+I'm just about to get started working on a similar topic, so I have some 
+general (maybe stupid) questions concerning the dynamic LUT implementation:
+
+Why do you actually need to be able to switch between different kind of 
+commands for READ/WRITE/ERASE at time of execution?
+
+Wouldn't it be better to init the LUT statically, after the chip was 
+detected and at that time decide which READ/WRITE/ERASE command is best 
+for the connected chip?
+
+Have you tested what kind of impact the dynamic loading of a command 
+sequence to the LUT registers before each operation has on the performance?
+
+In the context of the upcoming SPI NAND framework, I am working on NAND 
+support for the FSL QSPI controller.
+I have a working driver at [1] derived from the NOR driver.
+As discussed with Boris ([2]) the plan is to add NAND support to the NOR 
+driver until a common spi-flash layer is available to hold code, that is 
+used by both types of SPI flash, NOR and NAND.
+
+To achieve this, some kind of dynamic LUT allocation is needed, too.
+But at first glance it seems me, that it would be better to actually use 
+the LUT entries as much as possible and create the entries at time of 
+init depending on flash type (NOR/NAND) and flash capabilities 
+(QUAD/DUAL/QIO READ/WRITE...).
+
+In the exotic case of needing to switch between different command sets 
+(for hybrid NOR/NAND devices, see [3]) one could reinit the LUT for the 
+current target upon selecting it.
+
+Or maybe it is even better to create a mechanism that fills the LUT with 
+entries when they are first needed and be able to reuse them until the 
+space in the LUT runs out and entries need to be overriden.
+
+What do you think?
+
+As I'm quite new to this, maybe someone can point to other 
+implementations with similar approaches for reference, if there are any.
+
+Thanks and regards,
+
+Frieder
+
+[1]: 
+https://github.com/fschrempf/linux-0day/blob/spi-nand-exceet/drivers/mtd/nand/spi/controllers/fsl-quadspi-controller.c
+[2]: http://lists.infradead.org/pipermail/linux-mtd/2018-January/078592.html
+[3]: http://lists.infradead.org/pipermail/linux-mtd/2018-January/078488.html
