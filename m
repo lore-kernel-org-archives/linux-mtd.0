@@ -1,15 +1,15 @@
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by merlin.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eYqt7-0007oG-7g
- for linux-mtd@lists.infradead.org; Tue, 09 Jan 2018 10:12:16 +0000
+ id 1eYqt7-0007oR-6b
+ for linux-mtd@lists.infradead.org; Tue, 09 Jan 2018 10:12:12 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>, kernel@pengutronix.de,
  Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 2/8] mtd: nand: mxc: Add function to control hardware ECC
-Date: Tue,  9 Jan 2018 11:11:42 +0100
-Message-Id: <20180109101148.13728-3-s.hauer@pengutronix.de>
+Subject: [PATCH 7/8] mtd: nand: mxc: Drop now unnecessary functions
+Date: Tue,  9 Jan 2018 11:11:47 +0100
+Message-Id: <20180109101148.13728-8-s.hauer@pengutronix.de>
 In-Reply-To: <20180109101148.13728-1-s.hauer@pengutronix.de>
 References: <20180109101148.13728-1-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,108 +21,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-For proper raw read/write support need to be able to control the
-hardware ECC engine. Add a function to enable/disable it.
+Since we have our own read_page/write_page functions correct_data and
+calculate are no longer needed. Remove them.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- drivers/mtd/nand/mxc_nand.c | 42 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ drivers/mtd/nand/mxc_nand.c | 36 ------------------------------------
+ 1 file changed, 36 deletions(-)
 
 diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 6741af990dc4..019c58579dbc 100644
+index 6fbf98851a96..1d2c55e5ca89 100644
 --- a/drivers/mtd/nand/mxc_nand.c
 +++ b/drivers/mtd/nand/mxc_nand.c
-@@ -154,6 +154,7 @@ struct mxc_nand_devtype_data {
- 			u_char *read_ecc, u_char *calc_ecc);
+@@ -152,8 +152,6 @@ struct mxc_nand_devtype_data {
+ 	u32 (*get_ecc_status)(struct mxc_nand_host *);
+ 	const struct mtd_ooblayout_ops *ooblayout;
+ 	void (*select_chip)(struct mtd_info *mtd, int chip);
+-	int (*correct_data)(struct mtd_info *mtd, u_char *dat,
+-			u_char *read_ecc, u_char *calc_ecc);
  	int (*setup_data_interface)(struct mtd_info *mtd, int csline,
  				    const struct nand_data_interface *conf);
-+	void (*enable_hwecc)(struct nand_chip *chip, bool enable);
- 
- 	/*
- 	 * On i.MX21 the CONFIG2:INT bit cannot be read if interrupts are masked
-@@ -678,6 +679,42 @@ static uint16_t get_dev_status_v1_v2(struct mxc_nand_host *host)
- 	return ret;
+ 	void (*enable_hwecc)(struct nand_chip *chip, bool enable);
+@@ -727,20 +725,6 @@ static int mxc_nand_dev_ready(struct mtd_info *mtd)
+ 	return 1;
  }
  
-+static void mxc_nand_enable_hwecc_v1_v2(struct nand_chip *chip, bool enable)
-+{
-+	struct mxc_nand_host *host = nand_get_controller_data(chip);
-+	uint16_t config1;
-+
-+	if (chip->ecc.mode != NAND_ECC_HW)
-+		return;
-+
-+	config1 = readw(NFC_V1_V2_CONFIG1);
-+
-+	if (enable)
-+		config1 |= NFC_V1_V2_CONFIG1_ECC_EN;
-+	else
-+		config1 &= ~NFC_V1_V2_CONFIG1_ECC_EN;
-+
-+	writew(config1, NFC_V1_V2_CONFIG1);
-+}
-+
-+static void mxc_nand_enable_hwecc_v3(struct nand_chip *chip, bool enable)
-+{
-+	struct mxc_nand_host *host = nand_get_controller_data(chip);
-+	uint32_t config2;
-+
-+	if (chip->ecc.mode != NAND_ECC_HW)
-+		return;
-+
-+	config2 = readl(NFC_V3_CONFIG2);
-+
-+	if (enable)
-+		config2 |= NFC_V3_CONFIG2_ECC_EN;
-+	else
-+		config2 &= ~NFC_V3_CONFIG2_ECC_EN;
-+
-+	writel(config2, NFC_V3_CONFIG2);
-+}
-+
- /* This functions is used by upper layer to checks if device is ready */
- static int mxc_nand_dev_ready(struct mtd_info *mtd)
+-static void mxc_nand_enable_hwecc(struct mtd_info *mtd, int mode)
+-{
+-	/*
+-	 * If HW ECC is enabled, we turn it on during init. There is
+-	 * no need to enable again here.
+-	 */
+-}
+-
+-static int mxc_nand_correct_data_v1(struct mtd_info *mtd, u_char *dat,
+-				 u_char *read_ecc, u_char *calc_ecc)
+-{
+-	return 0;
+-}
+-
+ static int mxc_nand_read_page_v1(struct mtd_info *mtd, struct nand_chip *chip,
+ 				 void *buf, void *oob, bool ecc, int page)
  {
-@@ -1408,6 +1445,7 @@ static const struct mxc_nand_devtype_data imx21_nand_devtype_data = {
+@@ -802,12 +786,6 @@ static int mxc_nand_read_page_v1(struct mtd_info *mtd, struct nand_chip *chip,
+ 	return max_bitflips;
+ }
+ 
+-static int mxc_nand_correct_data_v2_v3(struct mtd_info *mtd, u_char *dat,
+-				 u_char *read_ecc, u_char *calc_ecc)
+-{
+-	return 0;
+-}
+-
+ static int mxc_nand_read_page_v2_v3(struct mtd_info *mtd, struct nand_chip *chip,
+ 				    void *buf, void *oob, bool ecc, int page)
+ {
+@@ -946,12 +924,6 @@ static int mxc_nand_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
+ 	return __mxc_nand_write_page(mtd, chip, host->data_buf, 1, page);
+ }
+ 
+-static int mxc_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
+-				  u_char *ecc_code)
+-{
+-	return 0;
+-}
+-
+ static u_char mxc_nand_read_byte(struct mtd_info *mtd)
+ {
+ 	struct nand_chip *nand_chip = mtd_to_nand(mtd);
+@@ -1604,7 +1576,6 @@ static const struct mxc_nand_devtype_data imx21_nand_devtype_data = {
+ 	.get_ecc_status = get_ecc_status_v1,
  	.ooblayout = &mxc_v1_ooblayout_ops,
  	.select_chip = mxc_nand_select_chip_v1_v3,
- 	.correct_data = mxc_nand_correct_data_v1,
-+	.enable_hwecc = mxc_nand_enable_hwecc_v1_v2,
+-	.correct_data = mxc_nand_correct_data_v1,
+ 	.enable_hwecc = mxc_nand_enable_hwecc_v1_v2,
  	.irqpending_quirk = 1,
  	.needs_ip = 0,
- 	.regs_offset = 0xe00,
-@@ -1431,6 +1469,7 @@ static const struct mxc_nand_devtype_data imx27_nand_devtype_data = {
+@@ -1629,7 +1600,6 @@ static const struct mxc_nand_devtype_data imx27_nand_devtype_data = {
+ 	.get_ecc_status = get_ecc_status_v1,
  	.ooblayout = &mxc_v1_ooblayout_ops,
  	.select_chip = mxc_nand_select_chip_v1_v3,
- 	.correct_data = mxc_nand_correct_data_v1,
-+	.enable_hwecc = mxc_nand_enable_hwecc_v1_v2,
+-	.correct_data = mxc_nand_correct_data_v1,
+ 	.enable_hwecc = mxc_nand_enable_hwecc_v1_v2,
  	.irqpending_quirk = 0,
  	.needs_ip = 0,
- 	.regs_offset = 0xe00,
-@@ -1456,6 +1495,7 @@ static const struct mxc_nand_devtype_data imx25_nand_devtype_data = {
+@@ -1655,7 +1625,6 @@ static const struct mxc_nand_devtype_data imx25_nand_devtype_data = {
+ 	.get_ecc_status = get_ecc_status_v2,
+ 	.ooblayout = &mxc_v2_ooblayout_ops,
  	.select_chip = mxc_nand_select_chip_v2,
- 	.correct_data = mxc_nand_correct_data_v2_v3,
+-	.correct_data = mxc_nand_correct_data_v2_v3,
  	.setup_data_interface = mxc_nand_v2_setup_data_interface,
-+	.enable_hwecc = mxc_nand_enable_hwecc_v1_v2,
+ 	.enable_hwecc = mxc_nand_enable_hwecc_v1_v2,
  	.irqpending_quirk = 0,
- 	.needs_ip = 0,
- 	.regs_offset = 0x1e00,
-@@ -1480,6 +1520,7 @@ static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
+@@ -1682,7 +1651,6 @@ static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
+ 	.get_ecc_status = get_ecc_status_v3,
  	.ooblayout = &mxc_v2_ooblayout_ops,
  	.select_chip = mxc_nand_select_chip_v1_v3,
- 	.correct_data = mxc_nand_correct_data_v2_v3,
-+	.enable_hwecc = mxc_nand_enable_hwecc_v3,
+-	.correct_data = mxc_nand_correct_data_v2_v3,
+ 	.enable_hwecc = mxc_nand_enable_hwecc_v3,
  	.irqpending_quirk = 0,
  	.needs_ip = 1,
- 	.regs_offset = 0,
-@@ -1505,6 +1546,7 @@ static const struct mxc_nand_devtype_data imx53_nand_devtype_data = {
+@@ -1709,7 +1677,6 @@ static const struct mxc_nand_devtype_data imx53_nand_devtype_data = {
+ 	.get_ecc_status = get_ecc_status_v3,
  	.ooblayout = &mxc_v2_ooblayout_ops,
  	.select_chip = mxc_nand_select_chip_v1_v3,
- 	.correct_data = mxc_nand_correct_data_v2_v3,
-+	.enable_hwecc = mxc_nand_enable_hwecc_v3,
+-	.correct_data = mxc_nand_correct_data_v2_v3,
+ 	.enable_hwecc = mxc_nand_enable_hwecc_v3,
  	.irqpending_quirk = 0,
  	.needs_ip = 1,
- 	.regs_offset = 0,
+@@ -1963,9 +1930,6 @@ static int mxcnd_probe(struct platform_device *pdev)
+ 		this->ecc.write_page = mxc_nand_write_page;
+ 		this->ecc.write_page_raw = mxc_nand_write_page_raw;
+ 		this->ecc.write_oob = mxc_nand_write_oob;
+-		this->ecc.calculate = mxc_nand_calculate_ecc;
+-		this->ecc.hwctl = mxc_nand_enable_hwecc;
+-		this->ecc.correct = host->devtype_data->correct_data;
+ 		break;
+ 
+ 	case NAND_ECC_SOFT:
 -- 
 2.11.0
