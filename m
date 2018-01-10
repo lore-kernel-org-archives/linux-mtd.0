@@ -1,28 +1,27 @@
-Received: from emh02.mail.saunalahti.fi ([62.142.5.108])
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]
+ helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eZKHr-0003ZP-VE
- for linux-mtd@lists.infradead.org; Wed, 10 Jan 2018 17:35:42 +0000
-Date: Wed, 10 Jan 2018 19:35:19 +0200
-From: Aaro Koskinen <aaro.koskinen@iki.fi>
-To: Ladislav Michl <ladis@linux-mips.org>
-Cc: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- Peter Ujfalusi <peter.ujfalusi@ti.com>,
- Kyungmin Park <kyungmin.park@samsung.com>
-Subject: Re: [PATCH v5 00/16] OMAP2+ OneNAND driver update
-Message-ID: <20180110173519.xyug4egltni4f3qi@darkstar.musicnaut.iki.fi>
-References: <20171115162306.2o2w2yrf7wucroxd@lenoch>
- <20171130111840.41c92d34@bbrezillon>
- <20171130160936.GO28152@atomide.com>
- <434bd733-0ba2-6e75-9de5-017eef905fd2@ti.com>
- <20180109130812.GA338@lenoch>
- <20180109210114.s66rpdg2jjdps5bc@darkstar.musicnaut.iki.fi>
- <20180110092058.GA25351@lenoch>
+ id 1eZMyT-0000JQ-5I
+ for linux-mtd@lists.infradead.org; Wed, 10 Jan 2018 20:27:50 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
+ Kyungmin Park <kyungmin.park@samsung.com>, Peter Pan <peterpansjtu@gmail.com>,
+ Frieder Schrempf <frieder.schrempf@exceet.de>,
+ Ladislav Michl <ladis@linux-mips.org>,
+ Miquel RAYNAL <miquel.raynal@free-electrons.com>
+Subject: Re: [PATCH v4 1/3] mtd: mtdpart: Make ECC stat handling consistent
+References: <20180108211542.11891-1-boris.brezillon@free-electrons.com>
+ <20180108211542.11891-2-boris.brezillon@free-electrons.com>
+Date: Wed, 10 Jan 2018 21:27:34 +0100
+In-Reply-To: <20180108211542.11891-2-boris.brezillon@free-electrons.com>
+ (Boris Brezillon's message of "Mon, 8 Jan 2018 22:15:40 +0100")
+Message-ID: <87r2qxbgsp.fsf@belgarion.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180110092058.GA25351@lenoch>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,36 +31,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Boris Brezillon <boris.brezillon@free-electrons.com> writes:
 
-On Wed, Jan 10, 2018 at 10:20:58AM +0100, Ladislav Michl wrote:
-> On Tue, Jan 09, 2018 at 11:01:14PM +0200, Aaro Koskinen wrote:
-> > On Tue, Jan 09, 2018 at 02:08:12PM +0100, Ladislav Michl wrote:
-> > > Merge window is really close now and patches seems still to be untested on
-> > > n8x0. So unless someone is going to test it soon, I'll pick used N800 on
-> > > ebay :-/
-> > 
-> > Today I tried to test them on Nokia N810, and I get:
-> > 
-> > [    0.174804] omap-gpmc 6800a000.gpmc: GPMC revision 2.0
-> > [    0.174865] gpmc_mem_init: disabling cs 0 mapped at 0x0-0x1000000
-> > [    0.177459] omap-gpmc 6800a000.gpmc: /ocp/gpmc@6800a000/onenand@0,0 has no 'bank-width' property
-> > [    0.177612] omap-gpmc 6800a000.gpmc: failed to probe DT child 'onenand': -22
-> > 
-> > With plain v4.15-rc7+ it probes fine.
-> 
-> Thank you for testing. As stated in cover letter, you need also
-> https://patchwork.kernel.org/patch/10043259/
-> which can be also found in Roger's branch
-> https://github.com/rogerq/linux/commits/for-v4.16/gpmc-omap-immutable
-> (see previous replies in this thread and also discussion about OneNAND
-> DT node)
+> part_read() and part_read_oob() where counting ECC failures and
+Typo: s/where/were.
 
-I applied it, and now get:
+> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+> index be088bccd593..283e8526713b 100644
+> --- a/drivers/mtd/mtdpart.c
+> +++ b/drivers/mtd/mtdpart.c
+> @@ -105,6 +105,7 @@ static int part_read_oob(struct mtd_info *mtd, loff_t from,
+>  		struct mtd_oob_ops *ops)
+>  {
+>  	struct mtd_part *part = mtd_to_part(mtd);
+> +	struct mtd_ecc_stats stats;
+>  	int res;
+>  
+>  	if (from >= mtd->size)
+> @@ -127,12 +128,12 @@ static int part_read_oob(struct mtd_info *mtd, loff_t from,
+>  	}
+>  
+>  	res = part->parent->_read_oob(part->parent, from + part->offset, ops);
+> -	if (unlikely(res)) {
+> -		if (mtd_is_bitflip(res))
+> -			mtd->ecc_stats.corrected++;
+> -		if (mtd_is_eccerr(res))
+> -			mtd->ecc_stats.failed++;
+> -	}
+> +	if (unlikely(mtd_is_eccerr(res)))
+> +		mtd->ecc_stats.failed +=
+> +			part->parent->ecc_stats.failed - stats.failed;
+stats is used uninitialized, but I suppose you've already caught that.
 
-[    0.174987] omap-gpmc 6800a000.gpmc: GPMC revision 2.0
-[    0.175048] gpmc_mem_init: disabling cs 0 mapped at 0x0-0x1000000
-[    0.177703] omap-gpmc 6800a000.gpmc: Incompatible OneNAND node: missing compatible
-[    0.177764] omap-gpmc 6800a000.gpmc: failed to probe DT child 'onenand': -22
+Cheers.
 
-A.
+-- 
+Robert
