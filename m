@@ -1,8 +1,8 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eZP4z-0007NY-6w
- for linux-mtd@lists.infradead.org; Wed, 10 Jan 2018 22:42:43 +0000
-Date: Wed, 10 Jan 2018 23:42:27 +0100
+ id 1eZPGK-0004fl-6x
+ for linux-mtd@lists.infradead.org; Wed, 10 Jan 2018 22:54:26 +0000
+Date: Wed, 10 Jan 2018 23:54:01 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Han Xu <han.xu@nxp.com>
 Cc: Frank Li <frank.li@nxp.com>, "linux-mtd@lists.infradead.org"
@@ -10,7 +10,7 @@ Cc: Frank Li <frank.li@nxp.com>, "linux-mtd@lists.infradead.org"
  <cyrille.pitchen@wedev4u.fr>, Fabio Estevam <fabio.estevam@nxp.com>, David
  Wolfe <david.wolfe@nxp.com>, Fabio Estevam <festevam@gmail.com>
 Subject: Re: [PATCH] mtd: fsl-quadspi: Distinguish the mtd device names
-Message-ID: <20180110234227.203674c7@bbrezillon>
+Message-ID: <20180110235401.724d6665@bbrezillon>
 In-Reply-To: <20180110231719.72767797@bbrezillon>
 References: <1515181560-1410-1-git-send-email-festevam@gmail.com>
  <VI1PR0401MB22213B0560C91999E6E22E7197130@VI1PR0401MB2221.eurprd04.prod.outlook.com>
@@ -66,10 +66,6 @@ Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 > What happens if you end up having 2 qspi IPs in the same SoC? IMHO,
 > it's more future proof to have something like
 > "<reg-addr>.qspi:<chipidx>" or "<reg-addr>.qspi:<chipidx>".
-
-Hm, ':' is not a good separator because it's already used by mtdparts,
-so I suggest using '-' ("<reg-addr>.qspi-<chipid>").
-
 > 
 > > 
 > > Reported-by: David Wolfe <david.wolfe@nxp.com>
@@ -107,12 +103,6 @@ so I suggest using '-' ("<reg-addr>.qspi-<chipid>").
 > 		mtd->name = devm_kasprintf(dev, GFP_KERNEL, "%s:%d"
 > 					   dev_name(&pdev->dev),
 > 					   mtd_index);
-
-I realize your index depends on the order the nodes have been defined
-in the DT, which is fragile. You should find a better solution to
-uniquely identify each device connected to the fsl-qspi controller
-(<busid>.<devid>?) and then have a property describing that (reg?).
-
 > 
 > > +               if (!mtd->name) {
 > > +                       ret = -ENOMEM;
@@ -121,6 +111,21 @@ uniquely identify each device connected to the fsl-qspi controller
 > > +
 > >                 nor->dev = dev;
 > >                 spi_nor_set_flash_node(nor, np);
+
+
+One, last thing: there's a generic mechanism using the value of the
+'label' property for mtd->name, which is particularly useful if one
+wants to assign user-friendly names to his flashes. This is done in
+spi_nor_set_flash_node() (more precisely in mtd_set_of_node() which is
+called by spi_nor_set_flash_node()), but it only works if mtd->name is
+NULL. So I recommend move the mtd->name assignment here, and making it
+conditional:
+
+		if (!mtd->name) {
+			mtd->name = devm_kasprintf(...);
+			...
+		}
+
 > >                 nor->priv = q;
 > > @@ -1098,6 +1105,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
 > >                         nor->page_size = q->devtype_data->txfifo;
