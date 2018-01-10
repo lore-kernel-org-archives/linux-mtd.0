@@ -1,18 +1,28 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
+Received: from emh02.mail.saunalahti.fi ([62.142.5.108])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eZHWg-0003bW-CP
- for linux-mtd@lists.infradead.org; Wed, 10 Jan 2018 14:38:47 +0000
-From: Richard Weinberger <richard@nod.at>
-To: rockdotlee@gmail.com
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com, adrian.hunter@intel.com
-Subject: Re: [PATCH] ubifs: Change log level in ubifs_xattr_get
-Date: Wed, 10 Jan 2018 15:39:21 +0100
-Message-ID: <3873582.N8pb6r5EOO@blindfold>
-In-Reply-To: <1515578741-6612-1-git-send-email-rockdotlee@gmail.com>
-References: <1515578741-6612-1-git-send-email-rockdotlee@gmail.com>
+ id 1eZKHr-0003ZP-VE
+ for linux-mtd@lists.infradead.org; Wed, 10 Jan 2018 17:35:42 +0000
+Date: Wed, 10 Jan 2018 19:35:19 +0200
+From: Aaro Koskinen <aaro.koskinen@iki.fi>
+To: Ladislav Michl <ladis@linux-mips.org>
+Cc: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+ Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>
+Subject: Re: [PATCH v5 00/16] OMAP2+ OneNAND driver update
+Message-ID: <20180110173519.xyug4egltni4f3qi@darkstar.musicnaut.iki.fi>
+References: <20171115162306.2o2w2yrf7wucroxd@lenoch>
+ <20171130111840.41c92d34@bbrezillon>
+ <20171130160936.GO28152@atomide.com>
+ <434bd733-0ba2-6e75-9de5-017eef905fd2@ti.com>
+ <20180109130812.GA338@lenoch>
+ <20180109210114.s66rpdg2jjdps5bc@darkstar.musicnaut.iki.fi>
+ <20180110092058.GA25351@lenoch>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180110092058.GA25351@lenoch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,36 +32,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Rock Lee,
+Hi,
 
-Am Mittwoch, 10. Januar 2018, 11:05:41 CET schrieb rockdotlee@gmail.com:
-> From: Rock Lee <rockdotlee@gmail.com>
+On Wed, Jan 10, 2018 at 10:20:58AM +0100, Ladislav Michl wrote:
+> On Tue, Jan 09, 2018 at 11:01:14PM +0200, Aaro Koskinen wrote:
+> > On Tue, Jan 09, 2018 at 02:08:12PM +0100, Ladislav Michl wrote:
+> > > Merge window is really close now and patches seems still to be untested on
+> > > n8x0. So unless someone is going to test it soon, I'll pick used N800 on
+> > > ebay :-/
+> > 
+> > Today I tried to test them on Nokia N810, and I get:
+> > 
+> > [    0.174804] omap-gpmc 6800a000.gpmc: GPMC revision 2.0
+> > [    0.174865] gpmc_mem_init: disabling cs 0 mapped at 0x0-0x1000000
+> > [    0.177459] omap-gpmc 6800a000.gpmc: /ocp/gpmc@6800a000/onenand@0,0 has no 'bank-width' property
+> > [    0.177612] omap-gpmc 6800a000.gpmc: failed to probe DT child 'onenand': -22
+> > 
+> > With plain v4.15-rc7+ it probes fine.
 > 
-> Just print warning message when xattr value size is bigger than the
-> buffer size. There is a situation that other modules, like overlayfs,
-> try to get xattr value with a small buffer, if they get -ERANGE, they
-> will try again with the proper buffer size. No need to report a error
-> message, warning message is enough.
-> 
-> Signed-off-by: Rock Lee <rockdotlee@gmail.com>
-> ---
->  fs/ubifs/xattr.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-> index 5ddc89d..bc20530 100644
-> --- a/fs/ubifs/xattr.c
-> +++ b/fs/ubifs/xattr.c
-> @@ -381,7 +381,7 @@ ssize_t ubifs_xattr_get(struct inode *host, const char
-> *name, void *buf, if (buf) {
->  		/* If @buf is %NULL we are supposed to return the length */
->  		if (ui->data_len > size) {
-> -			ubifs_err(c, "buffer size %zd, xattr len %d",
-> +			ubifs_warn(c, "buffer size %zd, xattr len %d",
->  				  size, ui->data_len);
+> Thank you for testing. As stated in cover letter, you need also
+> https://patchwork.kernel.org/patch/10043259/
+> which can be also found in Roger's branch
+> https://github.com/rogerq/linux/commits/for-v4.16/gpmc-omap-immutable
+> (see previous replies in this thread and also discussion about OneNAND
+> DT node)
 
-Hmm, if this can be triggered that easy I suggest getting completely rid of 
-this message.
+I applied it, and now get:
 
-Thanks,
-//richard
+[    0.174987] omap-gpmc 6800a000.gpmc: GPMC revision 2.0
+[    0.175048] gpmc_mem_init: disabling cs 0 mapped at 0x0-0x1000000
+[    0.177703] omap-gpmc 6800a000.gpmc: Incompatible OneNAND node: missing compatible
+[    0.177764] omap-gpmc 6800a000.gpmc: failed to probe DT child 'onenand': -22
+
+A.
