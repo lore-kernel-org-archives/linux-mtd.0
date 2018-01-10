@@ -1,33 +1,16 @@
-Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eZCZP-0000be-5G
- for linux-mtd@lists.infradead.org; Wed, 10 Jan 2018 09:21:17 +0000
-Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
- (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23990502AbeAJJU7P7L0r (ORCPT
- <rfc822;linux-mtd@lists.infradead.org>);
- Wed, 10 Jan 2018 10:20:59 +0100
-Date: Wed, 10 Jan 2018 10:20:58 +0100
-Sender: Ladislav Michl <ladis@linux-mips.org>
-From: Ladislav Michl <ladis@linux-mips.org>
-To: Aaro Koskinen <aaro.koskinen@iki.fi>
-Cc: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- Peter Ujfalusi <peter.ujfalusi@ti.com>,
- Kyungmin Park <kyungmin.park@samsung.com>
-Subject: Re: [PATCH v5 00/16] OMAP2+ OneNAND driver update
-Message-ID: <20180110092058.GA25351@lenoch>
-References: <20171115162306.2o2w2yrf7wucroxd@lenoch>
- <20171130111840.41c92d34@bbrezillon>
- <20171130160936.GO28152@atomide.com>
- <434bd733-0ba2-6e75-9de5-017eef905fd2@ti.com>
- <20180109130812.GA338@lenoch>
- <20180109210114.s66rpdg2jjdps5bc@darkstar.musicnaut.iki.fi>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180109210114.s66rpdg2jjdps5bc@darkstar.musicnaut.iki.fi>
+Received: from mail-pl0-x241.google.com ([2607:f8b0:400e:c01::241])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eZDGh-00083A-3O
+ for linux-mtd@lists.infradead.org; Wed, 10 Jan 2018 10:06:03 +0000
+Received: by mail-pl0-x241.google.com with SMTP id b12so6993534plm.3
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jan 2018 02:05:48 -0800 (PST)
+From: rockdotlee@gmail.com
+To: linux-mtd@lists.infradead.org
+Cc: richard@nod.at, dedekind1@gmail.com, adrian.hunter@intel.com,
+ Rock Lee <rockdotlee@gmail.com>
+Subject: [PATCH] ubifs: Change log level in ubifs_xattr_get
+Date: Wed, 10 Jan 2018 05:05:41 -0500
+Message-Id: <1515578741-6612-1-git-send-email-rockdotlee@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,31 +20,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Aaro,
+From: Rock Lee <rockdotlee@gmail.com>
 
-On Tue, Jan 09, 2018 at 11:01:14PM +0200, Aaro Koskinen wrote:
-> Hi,
-> 
-> On Tue, Jan 09, 2018 at 02:08:12PM +0100, Ladislav Michl wrote:
-> > Merge window is really close now and patches seems still to be untested on
-> > n8x0. So unless someone is going to test it soon, I'll pick used N800 on
-> > ebay :-/
-> 
-> Today I tried to test them on Nokia N810, and I get:
-> 
-> [    0.174804] omap-gpmc 6800a000.gpmc: GPMC revision 2.0
-> [    0.174865] gpmc_mem_init: disabling cs 0 mapped at 0x0-0x1000000
-> [    0.177459] omap-gpmc 6800a000.gpmc: /ocp/gpmc@6800a000/onenand@0,0 has no 'bank-width' property
-> [    0.177612] omap-gpmc 6800a000.gpmc: failed to probe DT child 'onenand': -22
-> 
-> With plain v4.15-rc7+ it probes fine.
+Just print warning message when xattr value size is bigger than the
+buffer size. There is a situation that other modules, like overlayfs,
+try to get xattr value with a small buffer, if they get -ERANGE, they
+will try again with the proper buffer size. No need to report a error
+message, warning message is enough.
 
-Thank you for testing. As stated in cover letter, you need also
-https://patchwork.kernel.org/patch/10043259/
-which can be also found in Roger's branch
-https://github.com/rogerq/linux/commits/for-v4.16/gpmc-omap-immutable
-(see previous replies in this thread and also discussion about OneNAND
-DT node)
+Signed-off-by: Rock Lee <rockdotlee@gmail.com>
+---
+ fs/ubifs/xattr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thank you,
-	ladis
+diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+index 5ddc89d..bc20530 100644
+--- a/fs/ubifs/xattr.c
++++ b/fs/ubifs/xattr.c
+@@ -381,7 +381,7 @@ ssize_t ubifs_xattr_get(struct inode *host, const char *name, void *buf,
+ 	if (buf) {
+ 		/* If @buf is %NULL we are supposed to return the length */
+ 		if (ui->data_len > size) {
+-			ubifs_err(c, "buffer size %zd, xattr len %d",
++			ubifs_warn(c, "buffer size %zd, xattr len %d",
+ 				  size, ui->data_len);
+ 			err = -ERANGE;
+ 			goto out_iput;
+-- 
+1.9.1
