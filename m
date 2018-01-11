@@ -1,28 +1,25 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eZYnu-0001yN-Mc
- for linux-mtd@lists.infradead.org; Thu, 11 Jan 2018 09:05:49 +0000
-Date: Thu, 11 Jan 2018 10:04:38 +0100
+ id 1eZYp9-0003VC-2c
+ for linux-mtd@lists.infradead.org; Thu, 11 Jan 2018 09:07:04 +0000
+Date: Thu, 11 Jan 2018 10:06:36 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- devicetree@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>, Geert
- Uytterhoeven <geert+renesas@glider.be>, Linus Walleij
- <linus.walleij@linaro.org>, John Crispin <john@phrozen.org>,
- linux-mtd@lists.infradead.org, Jonas Gorski <jonas.gorski@gmail.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, Frank Rowand
- <frowand.list@gmail.com>
-Subject: Re: [PATCH V7 1/2] mtd: partitions: add of_match_table parser matching
-Message-ID: <20180111100438.281db30a@bbrezillon>
-In-Reply-To: <20180104070534.16248-1-zajec5@gmail.com>
-References: <20180103105543.17897-1-zajec5@gmail.com>
- <20180104070534.16248-1-zajec5@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
+Cc: Peter Pan <peterpansjtu@gmail.com>, Kyungmin Park
+ <kyungmin.park@samsung.com>, Ladislav Michl <ladis@linux-mips.org>, Robert
+ Jarzmik <robert.jarzmik@free.fr>, Frieder Schrempf
+ <frieder.schrempf@exceet.de>
+Subject: Re: [PATCH v5 1/3] mtd: mtdpart: Make ECC stat handling consistent
+Message-ID: <20180111100636.3abe1459@bbrezillon>
+In-Reply-To: <20180109085035.12438-1-boris.brezillon@free-electrons.com>
+References: <20180109085035.12438-1-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,158 +29,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu,  4 Jan 2018 08:05:33 +0100
-Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
+On Tue,  9 Jan 2018 09:50:33 +0100
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-> From: Brian Norris <computersforpeace@gmail.com>
->=20
-> Partition parsers can now provide an of_match_table to enable
-> flash<-->parser matching via device tree as documented in the
-> mtd/partition.txt.
->=20
-> It works by looking for a matching parser for every string in the
-> "compatibility" property (starting with the most specific one).
->=20
-> This support is currently limited to built-in parsers as it uses
-> request_module() and friends. This should be sufficient for most cases
-> though as compiling parsers as modules isn't a common choice.
->=20
+> part_read() and part_read_oob() where counting ECC failures and
+> bitflips differently. Adjust part_read_oob() to mimic what is done in
+> part_read(). This is in needed to use ->_read_oob() as a fallback when
+> when ->_read() is not implemented.
+> 
+> Note that bitflips and ECC failure accounting on MTD partitions is
+> broken by design, because nothing prevents concurrent accesses to the
+> underlying master MTD device between the moment we save the stats in a
+> local variable and the moment master->_read[_oob]() returns. It's not
+> something that can easily be fixed, so leave it like that for now.
 
-Applied both patches.
+Applied the series (also fixed the typo reported by Robert).
 
-Thanks,
-
-Boris
-
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+> 
+> Suggested-by: Brian Norris <computersforpeace@gmail.com>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Tested-by: Ladislav Michl <ladis@linux-mips.org>
 > ---
-> This is based on Brian's patches:
-> [RFC PATCH 4/7] mtd: add of_match_mtd_parser() and of_mtd_match_mtd_parse=
-r() helpers
-> [RFC PATCH 6/7] RFC: mtd: partitions: enable of_match_table matching
->=20
-> V1: Put helpers in mtdpart.c instead of drivers/of/of_mtd.c
->     Merge helpers into a single of_mtd_match_mtd_parser
-> V3: Add a simple comment to note we will need the best match in the future
-> V4: Rework new functions to pick parser with the best match
->     Move new code in parse_mtd_partitions up so it has precedence over fl=
-ash
->     driver defaults and MTD defaults
-> V5: Rework matching code to start checking with the most specific string =
-in the
->     "compatibility" property.
-> V6: Initialize "ret" variable in mtd_part_get_parser_by_cp to NULL
-> V7: Rename function "mtd_part_get_parser_by_cp" to use "_compatible_"
->     Rename "cp" variable to "compat"
->     Drop unneeded if (np) check from the parse_mtd_partitions
+> Changes in v5:
+> - save master's ECC stats before calling ->_read_oob()
+> 
+> Changes in v4:
+> - new patch
 > ---
->  drivers/mtd/mtdpart.c          | 59 ++++++++++++++++++++++++++++++++++++=
-++++++
->  include/linux/mtd/partitions.h |  1 +
->  2 files changed, 60 insertions(+)
->=20
+>  drivers/mtd/mtdpart.c | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
+> 
 > diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-> index be088bccd593..76e12fb81563 100644
+> index be088bccd593..79bf1f61c7a0 100644
 > --- a/drivers/mtd/mtdpart.c
 > +++ b/drivers/mtd/mtdpart.c
-> @@ -30,6 +30,7 @@
->  #include <linux/mtd/mtd.h>
->  #include <linux/mtd/partitions.h>
->  #include <linux/err.h>
-> +#include <linux/of.h>
-> =20
->  #include "mtdcore.h"
-> =20
-> @@ -880,6 +881,45 @@ static int mtd_part_do_parse(struct mtd_part_parser =
-*parser,
->  }
-> =20
->  /**
-> + * mtd_part_get_compatible_parser - find MTD parser by a compatible stri=
-ng
-> + *
-> + * @compat: compatible string describing partitions in a device tree
-> + *
-> + * MTD parsers can specify supported partitions by providing a table of
-> + * compatibility strings. This function finds a parser that advertises s=
-upport
-> + * for a passed value of "compatible".
-> + */
-> +static struct mtd_part_parser *mtd_part_get_compatible_parser(const char=
- *compat)
-> +{
-> +	struct mtd_part_parser *p, *ret =3D NULL;
-> +
-> +	spin_lock(&part_parser_lock);
-> +
-> +	list_for_each_entry(p, &part_parsers, list) {
-> +		const struct of_device_id *matches;
-> +
-> +		matches =3D p->of_match_table;
-> +		if (!matches)
-> +			continue;
-> +
-> +		for (; matches->compatible[0]; matches++) {
-> +			if (!strcmp(matches->compatible, compat) &&
-> +			    try_module_get(p->owner)) {
-> +				ret =3D p;
-> +				break;
-> +			}
-> +		}
-> +
-> +		if (ret)
-> +			break;
-> +	}
-> +
-> +	spin_unlock(&part_parser_lock);
-> +
-> +	return ret;
-> +}
-> +
-> +/**
->   * parse_mtd_partitions - parse MTD partitions
->   * @master: the master partition (describes whole MTD device)
->   * @types: names of partition parsers to try or %NULL
-> @@ -905,8 +945,27 @@ int parse_mtd_partitions(struct mtd_info *master, co=
-nst char *const *types,
->  			 struct mtd_part_parser_data *data)
+> @@ -105,6 +105,7 @@ static int part_read_oob(struct mtd_info *mtd, loff_t from,
+>  		struct mtd_oob_ops *ops)
 >  {
->  	struct mtd_part_parser *parser;
-> +	struct device_node *np;
-> +	struct property *prop;
-> +	const char *compat;
->  	int ret, err =3D 0;
-> =20
-> +	np =3D of_get_child_by_name(mtd_get_of_node(master), "partitions");
-> +	of_property_for_each_string(np, "compatible", prop, compat) {
-> +		parser =3D mtd_part_get_compatible_parser(compat);
-> +		if (!parser)
-> +			continue;
-> +		ret =3D mtd_part_do_parse(parser, master, pparts, data);
-> +		if (ret > 0) {
-> +			of_node_put(np);
-> +			return 0;
-> +		}
-> +		mtd_part_parser_put(parser);
-> +		if (ret < 0 && !err)
-> +			err =3D ret;
-> +	}
-> +	of_node_put(np);
-> +
->  	if (!types)
->  		types =3D default_mtd_part_types;
-> =20
-> diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partition=
-s.h
-> index c4beb70dacbd..11cb0c50cd84 100644
-> --- a/include/linux/mtd/partitions.h
-> +++ b/include/linux/mtd/partitions.h
-> @@ -77,6 +77,7 @@ struct mtd_part_parser {
->  	struct list_head list;
->  	struct module *owner;
->  	const char *name;
-> +	const struct of_device_id *of_match_table;
->  	int (*parse_fn)(struct mtd_info *, const struct mtd_partition **,
->  			struct mtd_part_parser_data *);
->  	void (*cleanup)(const struct mtd_partition *pparts, int nr_parts);
+>  	struct mtd_part *part = mtd_to_part(mtd);
+> +	struct mtd_ecc_stats stats;
+>  	int res;
+>  
+>  	if (from >= mtd->size)
+> @@ -126,13 +127,14 @@ static int part_read_oob(struct mtd_info *mtd, loff_t from,
+>  			return -EINVAL;
+>  	}
+>  
+> +	stats = part->parent->ecc_stats;
+>  	res = part->parent->_read_oob(part->parent, from + part->offset, ops);
+> -	if (unlikely(res)) {
+> -		if (mtd_is_bitflip(res))
+> -			mtd->ecc_stats.corrected++;
+> -		if (mtd_is_eccerr(res))
+> -			mtd->ecc_stats.failed++;
+> -	}
+> +	if (unlikely(mtd_is_eccerr(res)))
+> +		mtd->ecc_stats.failed +=
+> +			part->parent->ecc_stats.failed - stats.failed;
+> +	else
+> +		mtd->ecc_stats.corrected +=
+> +			part->parent->ecc_stats.corrected - stats.corrected;
+>  	return res;
+>  }
+>  
