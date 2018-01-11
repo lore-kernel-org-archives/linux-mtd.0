@@ -1,23 +1,17 @@
-Received: from mail-oi0-x243.google.com ([2607:f8b0:4003:c06::243])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eZfGm-0003XE-OL
- for linux-mtd@lists.infradead.org; Thu, 11 Jan 2018 15:59:58 +0000
-Received: by mail-oi0-x243.google.com with SMTP id u83so1923302oie.7
- for <linux-mtd@lists.infradead.org>; Thu, 11 Jan 2018 07:59:46 -0800 (PST)
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
+To: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>, Wenyou Yang
+ <wenyou.yang@microchip.com>, Boris BREZILLON
+ <boris.brezillon@free-electrons.com>
+CC: <linux-media@vger.kernel.org>, Alexandre Belloni
+ <alexandre.belloni@free-electrons.com>, <linux-mtd@lists.infradead.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, Josh Wu
+ <rainyfeeling@outlook.com>, Nicolas Ferre <nicolas.ferre@microchip.com>
+Subject: [PATCH v2] MAINTAINERS: mtd/nand: update Microchip nand entry
+Date: Thu, 11 Jan 2018 17:26:59 +0100
+Message-ID: <20180111162659.740-1-nicolas.ferre@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <20180111164823.34b0b8fd@bbrezillon>
-References: <1515685478-31457-1-git-send-email-fabio.estevam@nxp.com>
- <20180111164823.34b0b8fd@bbrezillon>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Thu, 11 Jan 2018 13:59:44 -0200
-Message-ID: <CAOMZO5AChZVrGMSdGFW5ZyKOOx23f_WJjchmdE=hUj0PmAMZgw@mail.gmail.com>
-Subject: Re: [PATCH v4] mtd: fsl-quadspi: Distinguish the mtd device names
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, David Wolfe <david.wolfe@nxp.com>,
- Han Xu <han.xu@nxp.com>,
- linux-mtd@lists.infradead.org, Frank Li <frank.li@nxp.com>,
- cyrille.pitchen@wedev4u.fr
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,48 +21,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Update Wenyou Yang email address.
+Take advantage of this update to move this entry to the MICROCHIP / ATMEL
+location and add the DT binding documentation link.
 
-On Thu, Jan 11, 2018 at 1:48 PM, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-
-> Still missing the DT doc update. You can do it in a separate patch, but
-> please make it part of the same series.
-
-The dt-binding update part is not very clear to me.
-
-Currently on the imx6sx-sdb.dts we have:
-
-&qspi2 {
-    pinctrl-names = "default";
-    pinctrl-0 = <&pinctrl_qspi2>;
-    status = "okay";
-
-    flash0: n25q256a@0 {
-        #address-cells = <1>;
-        #size-cells = <1>;
-        compatible = "micron,n25q256a", "jedec,spi-nor";
-        spi-max-frequency = <29000000>;
-        reg = <0>;
-    };
-
-    flash1: n25q256a@1 {
-        #address-cells = <1>;
-        #size-cells = <1>;
-        compatible = "micron,n25q256a", "jedec,spi-nor";
-        spi-max-frequency = <29000000>;
-        reg = <1>;
-    };
-};
+Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Acked-by: Wenyou Yang <wenyou.yang@microchip.com>
+---
+v2: - patch agains 09ec417b0ea8 ("mtd: nand: samsung: Disable subpage
+      writes on E-die NAND") of 
+      http://git.infradead.org/linux-mtd.git/shortlog/refs/heads/nand/next
+    - Ack by Wenyou added
 
 
-The reg requirement is already present as part of
-Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt.
+Hi,
 
-Are you proposing that I add a comment to
-Documentation/devicetree/bindings/mtd/fsl-quadspi.txt saying that the
-Flash sub-nodes must contain a reg property?
+v1 patch was part of a series because it was conflicting with the previous one
+named:
+"[PATCH 1/2] MAINTAINERS: linux-media: update Microchip ISI and ISC entries"
+Boris asked me to rebase it so that they are independent.
+So, if this first one goes upstream through another tree, conflicts will have
+to be resolved at one point.
 
-Please clarify.
+Best regards,
+  Nicolas
 
-Thanks
+
+ MAINTAINERS | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index aa71ab52fd76..37ee5ae4bae2 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2382,13 +2382,6 @@ F:	Documentation/devicetree/bindings/input/atmel,maxtouch.txt
+ F:	drivers/input/touchscreen/atmel_mxt_ts.c
+ F:	include/linux/platform_data/atmel_mxt_ts.h
+ 
+-ATMEL NAND DRIVER
+-M:	Wenyou Yang <wenyou.yang@atmel.com>
+-M:	Josh Wu <rainyfeeling@outlook.com>
+-L:	linux-mtd@lists.infradead.org
+-S:	Supported
+-F:	drivers/mtd/nand/atmel/*
+-
+ ATMEL SAMA5D2 ADC DRIVER
+ M:	Ludovic Desroches <ludovic.desroches@microchip.com>
+ L:	linux-iio@vger.kernel.org
+@@ -9045,6 +9038,14 @@ F:	drivers/media/platform/atmel/atmel-isc.c
+ F:	drivers/media/platform/atmel/atmel-isc-regs.h
+ F:	devicetree/bindings/media/atmel-isc.txt
+ 
++MICROCHIP / ATMEL NAND DRIVER
++M:	Wenyou Yang <wenyou.yang@microchip.com>
++M:	Josh Wu <rainyfeeling@outlook.com>
++L:	linux-mtd@lists.infradead.org
++S:	Supported
++F:	drivers/mtd/nand/atmel/*
++F:	Documentation/devicetree/bindings/mtd/atmel-nand.txt
++
+ MICROCHIP KSZ SERIES ETHERNET SWITCH DRIVER
+ M:	Woojung Huh <Woojung.Huh@microchip.com>
+ M:	Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
+-- 
+2.9.0
