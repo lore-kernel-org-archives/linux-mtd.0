@@ -1,29 +1,28 @@
-Received: from fllnx209.ext.ti.com ([198.47.19.16])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eZXvC-0007Qo-1Z
- for linux-mtd@lists.infradead.org; Thu, 11 Jan 2018 08:09:12 +0000
-Subject: Re: [PATCH v5 00/16] OMAP2+ OneNAND driver update
-To: Aaro Koskinen <aaro.koskinen@iki.fi>, Ladislav Michl <ladis@linux-mips.org>
-CC: Tony Lindgren <tony@atomide.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>,
- <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
- Peter Ujfalusi <peter.ujfalusi@ti.com>,
- Kyungmin Park <kyungmin.park@samsung.com>
-References: <20171115162306.2o2w2yrf7wucroxd@lenoch>
- <20171130111840.41c92d34@bbrezillon> <20171130160936.GO28152@atomide.com>
- <434bd733-0ba2-6e75-9de5-017eef905fd2@ti.com> <20180109130812.GA338@lenoch>
- <20180109210114.s66rpdg2jjdps5bc@darkstar.musicnaut.iki.fi>
- <20180110092058.GA25351@lenoch>
- <20180110173519.xyug4egltni4f3qi@darkstar.musicnaut.iki.fi>
- <20180110212748.lbwwnktftqv3awzi@darkstar.musicnaut.iki.fi>
-From: Roger Quadros <rogerq@ti.com>
-Message-ID: <5709e23c-a2f1-c890-cf8b-8f52f31d8b73@ti.com>
-Date: Thu, 11 Jan 2018 10:08:19 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eZYnu-0001yN-Mc
+ for linux-mtd@lists.infradead.org; Thu, 11 Jan 2018 09:05:49 +0000
+Date: Thu, 11 Jan 2018 10:04:38 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ devicetree@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>, Geert
+ Uytterhoeven <geert+renesas@glider.be>, Linus Walleij
+ <linus.walleij@linaro.org>, John Crispin <john@phrozen.org>,
+ linux-mtd@lists.infradead.org, Jonas Gorski <jonas.gorski@gmail.com>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, Frank Rowand
+ <frowand.list@gmail.com>
+Subject: Re: [PATCH V7 1/2] mtd: partitions: add of_match_table parser matching
+Message-ID: <20180111100438.281db30a@bbrezillon>
+In-Reply-To: <20180104070534.16248-1-zajec5@gmail.com>
+References: <20180103105543.17897-1-zajec5@gmail.com>
+ <20180104070534.16248-1-zajec5@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20180110212748.lbwwnktftqv3awzi@darkstar.musicnaut.iki.fi>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,55 +32,158 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu,  4 Jan 2018 08:05:33 +0100
+Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
 
+> From: Brian Norris <computersforpeace@gmail.com>
+>=20
+> Partition parsers can now provide an of_match_table to enable
+> flash<-->parser matching via device tree as documented in the
+> mtd/partition.txt.
+>=20
+> It works by looking for a matching parser for every string in the
+> "compatibility" property (starting with the most specific one).
+>=20
+> This support is currently limited to built-in parsers as it uses
+> request_module() and friends. This should be sufficient for most cases
+> though as compiling parsers as modules isn't a common choice.
+>=20
 
-On 10/01/18 23:27, Aaro Koskinen wrote:
-> Hi,
-> 
-> On Wed, Jan 10, 2018 at 07:35:19PM +0200, Aaro Koskinen wrote:
->> On Wed, Jan 10, 2018 at 10:20:58AM +0100, Ladislav Michl wrote:
->>> On Tue, Jan 09, 2018 at 11:01:14PM +0200, Aaro Koskinen wrote:
->>>> On Tue, Jan 09, 2018 at 02:08:12PM +0100, Ladislav Michl wrote:
->>>>> Merge window is really close now and patches seems still to be untested on
->>>>> n8x0. So unless someone is going to test it soon, I'll pick used N800 on
->>>>> ebay :-/
->>>>
->>>> Today I tried to test them on Nokia N810, and I get:
->>>>
->>>> [    0.174804] omap-gpmc 6800a000.gpmc: GPMC revision 2.0
->>>> [    0.174865] gpmc_mem_init: disabling cs 0 mapped at 0x0-0x1000000
->>>> [    0.177459] omap-gpmc 6800a000.gpmc: /ocp/gpmc@6800a000/onenand@0,0 has no 'bank-width' property
->>>> [    0.177612] omap-gpmc 6800a000.gpmc: failed to probe DT child 'onenand': -22
->>>>
->>>> With plain v4.15-rc7+ it probes fine.
->>>
->>> Thank you for testing. As stated in cover letter, you need also
->>> https://patchwork.kernel.org/patch/10043259/
->>> which can be also found in Roger's branch
->>> https://github.com/rogerq/linux/commits/for-v4.16/gpmc-omap-immutable
->>> (see previous replies in this thread and also discussion about OneNAND
->>> DT node)
->>
->> I applied it, and now get:
->>
->> [    0.174987] omap-gpmc 6800a000.gpmc: GPMC revision 2.0
->> [    0.175048] gpmc_mem_init: disabling cs 0 mapped at 0x0-0x1000000
->> [    0.177703] omap-gpmc 6800a000.gpmc: Incompatible OneNAND node: missing compatible
->> [    0.177764] omap-gpmc 6800a000.gpmc: failed to probe DT child 'onenand': -22
-> 
-> Crap, I think something is wrong in my kexec. It seems to pass the DTB from an
-> old kernel, although the new kernel has a new appended DTB... Need to
-> investigate, sorry for noise.
-> 
-> A.
-> 
+Applied both patches.
 
-Aaro,
+Thanks,
 
-You will still need to add "ti,omap2-onenand" compatible property to the n800/810 onenand node for it to work.
+Boris
 
--- 
-cheers,
--roger
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+> ---
+> This is based on Brian's patches:
+> [RFC PATCH 4/7] mtd: add of_match_mtd_parser() and of_mtd_match_mtd_parse=
+r() helpers
+> [RFC PATCH 6/7] RFC: mtd: partitions: enable of_match_table matching
+>=20
+> V1: Put helpers in mtdpart.c instead of drivers/of/of_mtd.c
+>     Merge helpers into a single of_mtd_match_mtd_parser
+> V3: Add a simple comment to note we will need the best match in the future
+> V4: Rework new functions to pick parser with the best match
+>     Move new code in parse_mtd_partitions up so it has precedence over fl=
+ash
+>     driver defaults and MTD defaults
+> V5: Rework matching code to start checking with the most specific string =
+in the
+>     "compatibility" property.
+> V6: Initialize "ret" variable in mtd_part_get_parser_by_cp to NULL
+> V7: Rename function "mtd_part_get_parser_by_cp" to use "_compatible_"
+>     Rename "cp" variable to "compat"
+>     Drop unneeded if (np) check from the parse_mtd_partitions
+> ---
+>  drivers/mtd/mtdpart.c          | 59 ++++++++++++++++++++++++++++++++++++=
+++++++
+>  include/linux/mtd/partitions.h |  1 +
+>  2 files changed, 60 insertions(+)
+>=20
+> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+> index be088bccd593..76e12fb81563 100644
+> --- a/drivers/mtd/mtdpart.c
+> +++ b/drivers/mtd/mtdpart.c
+> @@ -30,6 +30,7 @@
+>  #include <linux/mtd/mtd.h>
+>  #include <linux/mtd/partitions.h>
+>  #include <linux/err.h>
+> +#include <linux/of.h>
+> =20
+>  #include "mtdcore.h"
+> =20
+> @@ -880,6 +881,45 @@ static int mtd_part_do_parse(struct mtd_part_parser =
+*parser,
+>  }
+> =20
+>  /**
+> + * mtd_part_get_compatible_parser - find MTD parser by a compatible stri=
+ng
+> + *
+> + * @compat: compatible string describing partitions in a device tree
+> + *
+> + * MTD parsers can specify supported partitions by providing a table of
+> + * compatibility strings. This function finds a parser that advertises s=
+upport
+> + * for a passed value of "compatible".
+> + */
+> +static struct mtd_part_parser *mtd_part_get_compatible_parser(const char=
+ *compat)
+> +{
+> +	struct mtd_part_parser *p, *ret =3D NULL;
+> +
+> +	spin_lock(&part_parser_lock);
+> +
+> +	list_for_each_entry(p, &part_parsers, list) {
+> +		const struct of_device_id *matches;
+> +
+> +		matches =3D p->of_match_table;
+> +		if (!matches)
+> +			continue;
+> +
+> +		for (; matches->compatible[0]; matches++) {
+> +			if (!strcmp(matches->compatible, compat) &&
+> +			    try_module_get(p->owner)) {
+> +				ret =3D p;
+> +				break;
+> +			}
+> +		}
+> +
+> +		if (ret)
+> +			break;
+> +	}
+> +
+> +	spin_unlock(&part_parser_lock);
+> +
+> +	return ret;
+> +}
+> +
+> +/**
+>   * parse_mtd_partitions - parse MTD partitions
+>   * @master: the master partition (describes whole MTD device)
+>   * @types: names of partition parsers to try or %NULL
+> @@ -905,8 +945,27 @@ int parse_mtd_partitions(struct mtd_info *master, co=
+nst char *const *types,
+>  			 struct mtd_part_parser_data *data)
+>  {
+>  	struct mtd_part_parser *parser;
+> +	struct device_node *np;
+> +	struct property *prop;
+> +	const char *compat;
+>  	int ret, err =3D 0;
+> =20
+> +	np =3D of_get_child_by_name(mtd_get_of_node(master), "partitions");
+> +	of_property_for_each_string(np, "compatible", prop, compat) {
+> +		parser =3D mtd_part_get_compatible_parser(compat);
+> +		if (!parser)
+> +			continue;
+> +		ret =3D mtd_part_do_parse(parser, master, pparts, data);
+> +		if (ret > 0) {
+> +			of_node_put(np);
+> +			return 0;
+> +		}
+> +		mtd_part_parser_put(parser);
+> +		if (ret < 0 && !err)
+> +			err =3D ret;
+> +	}
+> +	of_node_put(np);
+> +
+>  	if (!types)
+>  		types =3D default_mtd_part_types;
+> =20
+> diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partition=
+s.h
+> index c4beb70dacbd..11cb0c50cd84 100644
+> --- a/include/linux/mtd/partitions.h
+> +++ b/include/linux/mtd/partitions.h
+> @@ -77,6 +77,7 @@ struct mtd_part_parser {
+>  	struct list_head list;
+>  	struct module *owner;
+>  	const char *name;
+> +	const struct of_device_id *of_match_table;
+>  	int (*parse_fn)(struct mtd_info *, const struct mtd_partition **,
+>  			struct mtd_part_parser_data *);
+>  	void (*cleanup)(const struct mtd_partition *pparts, int nr_parts);
