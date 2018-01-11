@@ -1,35 +1,19 @@
-Date: Thu, 11 Jan 2018 23:28:33 +0100
-From: Willy Tarreau <w@1wt.eu>
-To: Miquel Raynal <miquel.raynal@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Russell King <linux@armlinux.org.uk>, Daniel Mack <daniel@zonque.org>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>, Eric Miao <eric.y.miao@gmail.com>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will.deacon@arm.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- devicetree@vger.kernel.org, Sean Nyekjaer <sean.nyekjaer@prevas.dk>,
- Antoine Tenart <antoine.tenart@free-electrons.com>,
- Nadav Haklai <nadavh@marvell.com>, linux-mtd@lists.infradead.org,
- Neta Zur Hershkovits <neta@marvell.com>,
- Hanna Hawa <hannah@marvell.com>, Ofer Heifetz <oferh@marvell.com>,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 0/7] Marvell NAND controller rework with ->exec_op()
-Message-ID: <20180111222833.GA15584@1wt.eu>
-References: <20180109103637.23798-1-miquel.raynal@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180109103637.23798-1-miquel.raynal@free-electrons.com>
+Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eZmcl-0004TX-Ft
+ for linux-mtd@lists.infradead.org; Thu, 11 Jan 2018 23:51:09 +0000
+From: Stefan Agner <stefan@agner.ch>
+To: miquel.raynal@free-electrons.com, boris.brezillon@free-electrons.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org, marek.vasut@gmail.com,
+ cyrille.pitchen@wedev4u.fr
+Cc: richard@nod.at, linux-mtd@lists.infradead.org,
+ Stefan Agner <stefan@agner.ch>
+Subject: [RFC PATCH 2/2] mtd: nand: always request data transfer for parameter
+ page
+Date: Fri, 12 Jan 2018 00:50:37 +0100
+Message-Id: <20180111235037.10912-2-stefan@agner.ch>
+In-Reply-To: <20180111235037.10912-1-stefan@agner.ch>
+References: <20180111235037.10912-1-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,22 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Miquel,
+To make sure the controller actually transfers data add a
+DATA_IN op even if len is 0.
 
-On Tue, Jan 09, 2018 at 11:36:30AM +0100, Miquel Raynal wrote:
-> These changes have been tested on:
->    - PXA3xx platform with a CM-X300 board (2kiB page NAND, 1b/512B
->      strength, Hamming ECC engine) [32 bits]
->    - Armada 385 DB AP (4kiB page NAND, 4b/512B, BCH ECC engine) [32 bits]
->    - Armada 398 DB (4kiB page NAND, 8b/512B, BCH ECC engine using a layout
->      with a last chunk different than the others) [32 bits]
->    - Armada 7040 DB and Armada 8040 DB (4kiB page NAND, 4b/512B, BCH ECC
->      engine) [64 bits]
->    - Triax dvb-tc board (2kiB page NAND, 4b/512B, BCH ECC engine) [32 bits]
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+---
+ drivers/mtd/nand/nand_base.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-If you're interested, I have a mirabox with an armada 370 which uses the
-same driver. I've not powered it up for a while but if that can be useful
-I can try to find some time for this.
-
-Just let me know
-Willy
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 96c97588e1ba..26bbf54e125b 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1510,10 +1510,6 @@ static int nand_read_param_page_op(struct nand_chip *chip, u8 page, void *buf,
+ 		};
+ 		struct nand_operation op = NAND_OPERATION(instrs);
+ 
+-		/* Drop the DATA_IN instruction if len is set to 0. */
+-		if (!len)
+-			op.ninstrs--;
+-
+ 		return nand_exec_op(chip, &op);
+ 	}
+ 
+-- 
+2.15.1
