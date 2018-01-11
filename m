@@ -1,16 +1,29 @@
-Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
+Received: from fllnx209.ext.ti.com ([198.47.19.16])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eZSIM-00029j-Av
- for linux-mtd@lists.infradead.org; Thu, 11 Jan 2018 02:08:44 +0000
-Received: by mail-pg0-x241.google.com with SMTP id f14so1603836pga.10
- for <linux-mtd@lists.infradead.org>; Wed, 10 Jan 2018 18:08:31 -0800 (PST)
-From: rockdotlee@gmail.com
-To: linux-mtd@lists.infradead.org
-Cc: richard@nod.at, dedekind1@gmail.com, adrian.hunter@intel.com,
- Rock Lee <rli@sierrawireless.com>
-Subject: [PATCH] ubifs: remove error message in ubifs_xattr_get
-Date: Wed, 10 Jan 2018 21:08:24 -0500
-Message-Id: <1515636504-7660-1-git-send-email-rockdotlee@gmail.com>
+ id 1eZXvC-0007Qo-1Z
+ for linux-mtd@lists.infradead.org; Thu, 11 Jan 2018 08:09:12 +0000
+Subject: Re: [PATCH v5 00/16] OMAP2+ OneNAND driver update
+To: Aaro Koskinen <aaro.koskinen@iki.fi>, Ladislav Michl <ladis@linux-mips.org>
+CC: Tony Lindgren <tony@atomide.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>,
+ <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
+ Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>
+References: <20171115162306.2o2w2yrf7wucroxd@lenoch>
+ <20171130111840.41c92d34@bbrezillon> <20171130160936.GO28152@atomide.com>
+ <434bd733-0ba2-6e75-9de5-017eef905fd2@ti.com> <20180109130812.GA338@lenoch>
+ <20180109210114.s66rpdg2jjdps5bc@darkstar.musicnaut.iki.fi>
+ <20180110092058.GA25351@lenoch>
+ <20180110173519.xyug4egltni4f3qi@darkstar.musicnaut.iki.fi>
+ <20180110212748.lbwwnktftqv3awzi@darkstar.musicnaut.iki.fi>
+From: Roger Quadros <rogerq@ti.com>
+Message-ID: <5709e23c-a2f1-c890-cf8b-8f52f31d8b73@ti.com>
+Date: Thu, 11 Jan 2018 10:08:19 +0200
+MIME-Version: 1.0
+In-Reply-To: <20180110212748.lbwwnktftqv3awzi@darkstar.musicnaut.iki.fi>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,29 +33,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rock Lee <rli@sierrawireless.com>
 
-There is a situation that other modules, like overlayfs, try to get
-xattr value with a small buffer, if they get -ERANGE, they will try
-again with the proper buffer size. No need to report an error.
 
-Signed-off-by: Rock Lee <rli@sierrawireless.com>
----
- fs/ubifs/xattr.c | 2 --
- 1 file changed, 2 deletions(-)
+On 10/01/18 23:27, Aaro Koskinen wrote:
+> Hi,
+> 
+> On Wed, Jan 10, 2018 at 07:35:19PM +0200, Aaro Koskinen wrote:
+>> On Wed, Jan 10, 2018 at 10:20:58AM +0100, Ladislav Michl wrote:
+>>> On Tue, Jan 09, 2018 at 11:01:14PM +0200, Aaro Koskinen wrote:
+>>>> On Tue, Jan 09, 2018 at 02:08:12PM +0100, Ladislav Michl wrote:
+>>>>> Merge window is really close now and patches seems still to be untested on
+>>>>> n8x0. So unless someone is going to test it soon, I'll pick used N800 on
+>>>>> ebay :-/
+>>>>
+>>>> Today I tried to test them on Nokia N810, and I get:
+>>>>
+>>>> [    0.174804] omap-gpmc 6800a000.gpmc: GPMC revision 2.0
+>>>> [    0.174865] gpmc_mem_init: disabling cs 0 mapped at 0x0-0x1000000
+>>>> [    0.177459] omap-gpmc 6800a000.gpmc: /ocp/gpmc@6800a000/onenand@0,0 has no 'bank-width' property
+>>>> [    0.177612] omap-gpmc 6800a000.gpmc: failed to probe DT child 'onenand': -22
+>>>>
+>>>> With plain v4.15-rc7+ it probes fine.
+>>>
+>>> Thank you for testing. As stated in cover letter, you need also
+>>> https://patchwork.kernel.org/patch/10043259/
+>>> which can be also found in Roger's branch
+>>> https://github.com/rogerq/linux/commits/for-v4.16/gpmc-omap-immutable
+>>> (see previous replies in this thread and also discussion about OneNAND
+>>> DT node)
+>>
+>> I applied it, and now get:
+>>
+>> [    0.174987] omap-gpmc 6800a000.gpmc: GPMC revision 2.0
+>> [    0.175048] gpmc_mem_init: disabling cs 0 mapped at 0x0-0x1000000
+>> [    0.177703] omap-gpmc 6800a000.gpmc: Incompatible OneNAND node: missing compatible
+>> [    0.177764] omap-gpmc 6800a000.gpmc: failed to probe DT child 'onenand': -22
+> 
+> Crap, I think something is wrong in my kexec. It seems to pass the DTB from an
+> old kernel, although the new kernel has a new appended DTB... Need to
+> investigate, sorry for noise.
+> 
+> A.
+> 
 
-diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-index c13eae8..1615270 100644
---- a/fs/ubifs/xattr.c
-+++ b/fs/ubifs/xattr.c
-@@ -380,8 +380,6 @@ ssize_t ubifs_xattr_get(struct inode *host, const char *name, void *buf,
- 	if (buf) {
- 		/* If @buf is %NULL we are supposed to return the length */
- 		if (ui->data_len > size) {
--			ubifs_err(c, "buffer size %zd, xattr len %d",
--				  size, ui->data_len);
- 			err = -ERANGE;
- 			goto out_iput;
- 		}
+Aaro,
+
+You will still need to add "ti,omap2-onenand" compatible property to the n800/810 onenand node for it to work.
+
 -- 
-1.9.1
+cheers,
+-roger
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
