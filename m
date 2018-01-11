@@ -1,23 +1,21 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eZPGK-0004fl-6x
- for linux-mtd@lists.infradead.org; Wed, 10 Jan 2018 22:54:26 +0000
-Date: Wed, 10 Jan 2018 23:54:01 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Han Xu <han.xu@nxp.com>
-Cc: Frank Li <frank.li@nxp.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "cyrille.pitchen@wedev4u.fr"
- <cyrille.pitchen@wedev4u.fr>, Fabio Estevam <fabio.estevam@nxp.com>, David
- Wolfe <david.wolfe@nxp.com>, Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH] mtd: fsl-quadspi: Distinguish the mtd device names
-Message-ID: <20180110235401.724d6665@bbrezillon>
-In-Reply-To: <20180110231719.72767797@bbrezillon>
-References: <1515181560-1410-1-git-send-email-festevam@gmail.com>
- <VI1PR0401MB22213B0560C91999E6E22E7197130@VI1PR0401MB2221.eurprd04.prod.outlook.com>
- <20180110231719.72767797@bbrezillon>
+Received: from mail-yb0-x244.google.com ([2607:f8b0:4002:c09::244])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eZRxj-0006ih-Eh
+ for linux-mtd@lists.infradead.org; Thu, 11 Jan 2018 01:47:25 +0000
+Received: by mail-yb0-x244.google.com with SMTP id h189so420767ybc.11
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Jan 2018 17:47:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <3873582.N8pb6r5EOO@blindfold>
+References: <1515578741-6612-1-git-send-email-rockdotlee@gmail.com>
+ <3873582.N8pb6r5EOO@blindfold>
+From: Rock Lee <rockdotlee@gmail.com>
+Date: Thu, 11 Jan 2018 09:47:11 +0800
+Message-ID: <CAL-1w2vN46pakvAA+mOj+YNiSnh1PWgwwrWSA305X3+SHNwnUQ@mail.gmail.com>
+Subject: Re: [PATCH] ubifs: Change log level in ubifs_xattr_get
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
+ adrian.hunter@intel.com
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,124 +25,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 10 Jan 2018 23:17:19 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+>> Just print warning message when xattr value size is bigger than the
+>> buffer size. There is a situation that other modules, like overlayfs,
+>> try to get xattr value with a small buffer, if they get -ERANGE, they
+>> will try again with the proper buffer size. No need to report a error
+>> message, warning message is enough.
+>>
+>> Signed-off-by: Rock Lee <rockdotlee@gmail.com>
+>> ---
+>>  fs/ubifs/xattr.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+>> index 5ddc89d..bc20530 100644
+>> --- a/fs/ubifs/xattr.c
+>> +++ b/fs/ubifs/xattr.c
+>> @@ -381,7 +381,7 @@ ssize_t ubifs_xattr_get(struct inode *host, const char
+>> *name, void *buf, if (buf) {
+>>               /* If @buf is %NULL we are supposed to return the length */
+>>               if (ui->data_len > size) {
+>> -                     ubifs_err(c, "buffer size %zd, xattr len %d",
+>> +                     ubifs_warn(c, "buffer size %zd, xattr len %d",
+>>                                 size, ui->data_len);
+>
+> Hmm, if this can be triggered that easy I suggest getting completely rid of
+> this message.
+>
 
-> On Mon, 8 Jan 2018 17:13:17 +0000
-> Han Xu <han.xu@nxp.com> wrote:
-> 
-> > ________________________________________
-> > From: Fabio Estevam <festevam@gmail.com>
-> > Sent: Friday, January 5, 2018 1:46 PM
-> > To: Han Xu
-> > Cc: cyrille.pitchen@wedev4u.fr; David Wolfe; Frank Li; linux-mtd@lists.infradead.org; Fabio Estevam
-> > Subject: [PATCH] mtd: fsl-quadspi: Distinguish the mtd device names
-> > 
-> > From: Fabio Estevam <fabio.estevam@nxp.com>
-> > 
-> > Currently on a imx6sx-sdb board, which has two SPI NOR chips connected
-> > to QSPI2 the following output from /proc/mtd is seen:
-> > 
-> > # cat /proc/mtd
-> > dev:    size   erasesize  name
-> > mtd0: 01000000 00010000 "21e4000.qspi"
-> > mtd1: 01000000 00010000 "21e4000.qspi"
-> > 
-> > Attempts to partition them on the kernel command line result in both
-> > chips with identical (and identically named) partitions, which is
-> > an inconvenient behavior.
-> > 
-> > Assign a different mtd->name for each mtd device to avoid this problem.
-> > 
-> > After this change the output from /proc/mtd becomes:
-> > 
-> > # cat /proc/mtd
-> > dev:    size   erasesize  name
-> > mtd0: 01000000 00010000 "fsl-quadspi.0"
-> > mtd1: 01000000 00010000 "fsl-quadspi.1"  
-> 
-> What happens if you end up having 2 qspi IPs in the same SoC? IMHO,
-> it's more future proof to have something like
-> "<reg-addr>.qspi:<chipidx>" or "<reg-addr>.qspi:<chipidx>".
-> 
-> > 
-> > Reported-by: David Wolfe <david.wolfe@nxp.com>
-> > Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
-> > ---
-> >  drivers/mtd/spi-nor/fsl-quadspi.c | 10 +++++++++-
-> >  1 file changed, 9 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-> > index f17d224..7712c63 100644
-> > --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> > +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> > @@ -967,7 +967,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
-> >         struct resource *res;
-> >         struct spi_nor *nor;
-> >         struct mtd_info *mtd;
-> > -       int ret, i = 0;
-> > +       int ret, i = 0, mtd_index = 0;  
-> 
-> It's not the MTD index if you have other MTD devices. How about
-> spiflash_idx?
-> 
-> > 
-> >         q = devm_kzalloc(dev, sizeof(*q), GFP_KERNEL);
-> >         if (!q)
-> > @@ -1047,6 +1047,13 @@ static int fsl_qspi_probe(struct platform_device *pdev)
-> >                 nor = &q->nor[i];
-> >                 mtd = &nor->mtd;
-> > 
-> > +               mtd->name = devm_kasprintf(dev, GFP_KERNEL, "fsl-quadspi.%d",
-> > +                                          mtd_index);  
-> 
-> With the alternative naming scheme suggested above, it gives:
-> 
-> 		mtd->name = devm_kasprintf(dev, GFP_KERNEL, "%s:%d"
-> 					   dev_name(&pdev->dev),
-> 					   mtd_index);
-> 
-> > +               if (!mtd->name) {
-> > +                       ret = -ENOMEM;
-> > +                       goto mutex_failed;
-> > +               }
-> > +
-> >                 nor->dev = dev;
-> >                 spi_nor_set_flash_node(nor, np);
+OK, forget about this one, I am going to send you another patch to get
+rid of this message
 
 
-One, last thing: there's a generic mechanism using the value of the
-'label' property for mtd->name, which is particularly useful if one
-wants to assign user-friendly names to his flashes. This is done in
-spi_nor_set_flash_node() (more precisely in mtd_set_of_node() which is
-called by spi_nor_set_flash_node()), but it only works if mtd->name is
-NULL. So I recommend move the mtd->name assignment here, and making it
-conditional:
-
-		if (!mtd->name) {
-			mtd->name = devm_kasprintf(...);
-			...
-		}
-
-> >                 nor->priv = q;
-> > @@ -1098,6 +1105,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
-> >                         nor->page_size = q->devtype_data->txfifo;
-> > 
-> >                 i++;
-> > +               mtd_index++;
-> >         }
-> > 
-> >         /* finish the rest init. */
-> > --
-> > 2.7.4
-> > 
-> > Acked-by: Han Xu <han.xu@nxp.com>
-> > 
-> > ______________________________________________________
-> > Linux MTD discussion mailing list
-> > http://lists.infradead.org/mailman/listinfo/linux-mtd/  
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+-- 
+Cheers,
+Rock
