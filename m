@@ -1,10 +1,16 @@
-Received: from emh07.mail.saunalahti.fi ([62.142.5.117])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eZiXt-0007w9-Et
- for linux-mtd@lists.infradead.org; Thu, 11 Jan 2018 19:29:52 +0000
-Date: Thu, 11 Jan 2018 21:29:31 +0200
-From: Aaro Koskinen <aaro.koskinen@iki.fi>
-To: Ladislav Michl <ladis@linux-mips.org>
+Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eZigy-0005Sb-PJ
+ for linux-mtd@lists.infradead.org; Thu, 11 Jan 2018 19:39:15 +0000
+Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
+ (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
+ id S23992002AbeAKTi5K-ZVW (ORCPT
+ <rfc822;linux-mtd@lists.infradead.org>);
+ Thu, 11 Jan 2018 20:38:57 +0100
+Date: Thu, 11 Jan 2018 20:38:56 +0100
+Sender: Ladislav Michl <ladis@linux-mips.org>
+From: Ladislav Michl <ladis@linux-mips.org>
+To: Aaro Koskinen <aaro.koskinen@iki.fi>
 Cc: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
@@ -12,7 +18,7 @@ Cc: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>,
  Kyungmin Park <kyungmin.park@samsung.com>,
  Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
 Subject: Re: [PATCH v5 00/16] OMAP2+ OneNAND driver update
-Message-ID: <20180111192931.vwnpvj2wtgrvkhbe@darkstar.musicnaut.iki.fi>
+Message-ID: <20180111193856.GA32512@lenoch>
 References: <20171115162306.2o2w2yrf7wucroxd@lenoch>
  <20171130111840.41c92d34@bbrezillon>
  <20171130160936.GO28152@atomide.com>
@@ -22,10 +28,11 @@ References: <20171115162306.2o2w2yrf7wucroxd@lenoch>
  <20180110092058.GA25351@lenoch>
  <20180110173519.xyug4egltni4f3qi@darkstar.musicnaut.iki.fi>
  <20180110211325.GA1938@lenoch>
+ <20180111192931.vwnpvj2wtgrvkhbe@darkstar.musicnaut.iki.fi>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20180110211325.GA1938@lenoch>
+In-Reply-To: <20180111192931.vwnpvj2wtgrvkhbe@darkstar.musicnaut.iki.fi>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,64 +42,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On Wed, Jan 10, 2018 at 10:13:25PM +0100, Ladislav Michl wrote:
-> On Wed, Jan 10, 2018 at 07:35:19PM +0200, Aaro Koskinen wrote:
-> > On Wed, Jan 10, 2018 at 10:20:58AM +0100, Ladislav Michl wrote:
-> > > On Tue, Jan 09, 2018 at 11:01:14PM +0200, Aaro Koskinen wrote:
-> > > > On Tue, Jan 09, 2018 at 02:08:12PM +0100, Ladislav Michl wrote:
-> > > > > Merge window is really close now and patches seems still to be untested on
-> > > > > n8x0. So unless someone is going to test it soon, I'll pick used N800 on
-> > > > > ebay :-/
+On Thu, Jan 11, 2018 at 09:29:31PM +0200, Aaro Koskinen wrote:
+> Hi,
+> 
+> On Wed, Jan 10, 2018 at 10:13:25PM +0100, Ladislav Michl wrote:
+> > On Wed, Jan 10, 2018 at 07:35:19PM +0200, Aaro Koskinen wrote:
+> > > On Wed, Jan 10, 2018 at 10:20:58AM +0100, Ladislav Michl wrote:
+> > > > On Tue, Jan 09, 2018 at 11:01:14PM +0200, Aaro Koskinen wrote:
+> > > > > On Tue, Jan 09, 2018 at 02:08:12PM +0100, Ladislav Michl wrote:
+> > > > > > Merge window is really close now and patches seems still to be untested on
+> > > > > > n8x0. So unless someone is going to test it soon, I'll pick used N800 on
+> > > > > > ebay :-/
+> > > > > 
+> > > > > Today I tried to test them on Nokia N810, and I get:
+> > > > > 
+> > > > > [    0.174804] omap-gpmc 6800a000.gpmc: GPMC revision 2.0
+> > > > > [    0.174865] gpmc_mem_init: disabling cs 0 mapped at 0x0-0x1000000
+> > > > > [    0.177459] omap-gpmc 6800a000.gpmc: /ocp/gpmc@6800a000/onenand@0,0 has no 'bank-width' property
+> > > > > [    0.177612] omap-gpmc 6800a000.gpmc: failed to probe DT child 'onenand': -22
+> > > > > 
+> > > > > With plain v4.15-rc7+ it probes fine.
 > > > > 
-> > > > Today I tried to test them on Nokia N810, and I get:
-> > > > 
-> > > > [    0.174804] omap-gpmc 6800a000.gpmc: GPMC revision 2.0
-> > > > [    0.174865] gpmc_mem_init: disabling cs 0 mapped at 0x0-0x1000000
-> > > > [    0.177459] omap-gpmc 6800a000.gpmc: /ocp/gpmc@6800a000/onenand@0,0 has no 'bank-width' property
-> > > > [    0.177612] omap-gpmc 6800a000.gpmc: failed to probe DT child 'onenand': -22
-> > > > 
-> > > > With plain v4.15-rc7+ it probes fine.
+> > > > Thank you for testing. As stated in cover letter, you need also
+> > > > https://patchwork.kernel.org/patch/10043259/
+> > > > which can be also found in Roger's branch
+> > > > https://github.com/rogerq/linux/commits/for-v4.16/gpmc-omap-immutable
+> > > > (see previous replies in this thread and also discussion about OneNAND
+> > > > DT node)
 > > > 
-> > > Thank you for testing. As stated in cover letter, you need also
-> > > https://patchwork.kernel.org/patch/10043259/
-> > > which can be also found in Roger's branch
-> > > https://github.com/rogerq/linux/commits/for-v4.16/gpmc-omap-immutable
-> > > (see previous replies in this thread and also discussion about OneNAND
-> > > DT node)
+> > > I applied it, and now get:
+> > > 
+> > > [    0.174987] omap-gpmc 6800a000.gpmc: GPMC revision 2.0
+> > > [    0.175048] gpmc_mem_init: disabling cs 0 mapped at 0x0-0x1000000
+> > > [    0.177703] omap-gpmc 6800a000.gpmc: Incompatible OneNAND node: missing compatible
+> > > [    0.177764] omap-gpmc 6800a000.gpmc: failed to probe DT child 'onenand': -22
 > > 
-> > I applied it, and now get:
+> > As expected without reading discussion about OneNAND DT node :)
 > > 
-> > [    0.174987] omap-gpmc 6800a000.gpmc: GPMC revision 2.0
-> > [    0.175048] gpmc_mem_init: disabling cs 0 mapped at 0x0-0x1000000
-> > [    0.177703] omap-gpmc 6800a000.gpmc: Incompatible OneNAND node: missing compatible
-> > [    0.177764] omap-gpmc 6800a000.gpmc: failed to probe DT child 'onenand': -22
+> > In short, this version expects "ti,omap2-onenand" compatible.
 > 
-> As expected without reading discussion about OneNAND DT node :)
+> Right. I didn't realize by bootloader was passing the DTB from an old
+> kernel.
 > 
-> In short, this version expects "ti,omap2-onenand" compatible.
+> So after fixing my boot I got the patches working N800 and N810: I was
+> able to read and write on old JFFS2 file systems without any issues. So
+> you can add for the series:
+> 
+> Tested-by: Aaro Koskinen <aaro.koskinen@iki.fi>
 
-Right. I didn't realize by bootloader was passing the DTB from an old
-kernel.
+Thank you!
 
-So after fixing my boot I got the patches working N800 and N810: I was
-able to read and write on old JFFS2 file systems without any issues. So
-you can add for the series:
+> > In earlier version of this patchset there was fixup present, so driver
+> > worked even without compatible. Later on (17 Oct 2017 11:46:51 +0300)
+> > Roger objected (https://www.spinics.net/lists/linux-omap/msg139576.html):
+> > "I don't want to fixup broken DTs like this as they will go silently without
+> > being fixed. Let's instead just error out after the dev_warn(). This will
+> > force us to fix all DT nodes."
+> > So fixup was removed. I know N900 support is under heavy development
+> > in mainline, but if n8x0 is considered finished and stable, we should
+> > reintroduce fixup. Thoughts?
+> 
+> N8x0 support is also "under development", and we are fine with updating
+> and always using latest in-tree DTs.
 
-Tested-by: Aaro Koskinen <aaro.koskinen@iki.fi>
+That makes things simpler :) I'll post v6 based on -next with patches 13 and
+14 squashed.
 
-> In earlier version of this patchset there was fixup present, so driver
-> worked even without compatible. Later on (17 Oct 2017 11:46:51 +0300)
-> Roger objected (https://www.spinics.net/lists/linux-omap/msg139576.html):
-> "I don't want to fixup broken DTs like this as they will go silently without
-> being fixed. Let's instead just error out after the dev_warn(). This will
-> force us to fix all DT nodes."
-> So fixup was removed. I know N900 support is under heavy development
-> in mainline, but if n8x0 is considered finished and stable, we should
-> reintroduce fixup. Thoughts?
-
-N8x0 support is also "under development", and we are fine with updating
-and always using latest in-tree DTs.
-
-A.
+Thanks to everyone involved for cooperation,
+	ladis
