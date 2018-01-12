@@ -1,21 +1,25 @@
-Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eZyv1-0003Ex-BU
- for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 12:58:52 +0000
+Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eZz7A-0003Da-QW
+ for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 13:11:23 +0000
+Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
+ (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
+ id S23994659AbeALNLGdKHTd (ORCPT
+ <rfc822;linux-mtd@lists.infradead.org>);
+ Fri, 12 Jan 2018 14:11:06 +0100
+Date: Fri, 12 Jan 2018 14:11:05 +0100
+Sender: Ladislav Michl <ladis@linux-mips.org>
+From: Ladislav Michl <ladis@linux-mips.org>
+To: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Roger Quadros <rogerq@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>
+Subject: [PATCH v6 00/14] OMAP2+ OneNAND driver update
+Message-ID: <20180112131105.GA13810@lenoch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Date: Fri, 12 Jan 2018 13:58:11 +0100
-From: Stefan Agner <stefan@agner.ch>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: miquel.raynal@free-electrons.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
- richard@nod.at, linux-mtd@lists.infradead.org
-Subject: Re: [RFC PATCH 1/2] mtd: nand: vf610_nfc: make use of ->exec_op()
-In-Reply-To: <20180112115925.3d7dbde5@bbrezillon>
-References: <20180111235037.10912-1-stefan@agner.ch>
- <20180112115925.3d7dbde5@bbrezillon>
-Message-ID: <fd812a82bf4a5604ff153d1d5b4e85ba@agner.ch>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,142 +29,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2018-01-12 11:59, Boris Brezillon wrote:
-> Hi Stefan,
-> 
-> On Fri, 12 Jan 2018 00:50:36 +0100
-> Stefan Agner <stefan@agner.ch> wrote:
-> 
->> This reworks the driver to make use of ->exec_op() callback. The
->> command sequencer of the VF610 NFC aligns well with the new ops
->> interface.
-> 
-> That's great news!
-> 
->>
->> Currently we handle reset and read id pattern separately. The
->> read id pattern uses registers for the returned data, using a
->> dedicated function helps to special case the data in op.
->>
->> The parameter page handling is rather ad-hoc currently: The
->> stack calls exec_op twice, once to read the paramter page and
->> a second time to tranfer data. The code/controller can not
->> handle this steps separately, hence just transfer data already
->> in the first call and just memcpy from the buffer in the second
->> call. This needs a small change in the nand_base.c file.
-> 
-> Hm, I think it's using change_column after the read_param_page command,
-> so it's not exactly a 'data xfer' only step. Can't your controller send
-> only a command or address cycle without any associated data xfers on
-> the bus?
+this patch serie updates OMAP2+ OneNAND driver to the present times, making
+it fully DT configurable, using libgpio and dmaengine apis.
 
-Hm, I was looking at ONFI, where it does not do the column change:
-http://git.infradead.org/linux-mtd.git/blob/8878b126df769831cb2fa4088c3806538e8305f5:/drivers/mtd/nand/nand_base.c#l5110
+Please note that unlike previous driver version, which basically ignored
+DT specified timings, this one relies on it, so it is important to get
+it right in your DT (dumping it from previous kernel version).
 
-I am pretty sure that the controller can handle command and address
-separately, but not sure about the successive data transfer...
+In case synchronous timings is requested, it is okay to specify timings
+for the slowest chip ever used for you board as it is evetually optimized
+after chip probe.
 
-> 
-> Anyway, if you really have to do the READ_PARAM_PAGE in a single step,
-> you'll have to patch the core to pass a valid buffer and len != 0 when
-> calling nand_read_param_page_op().
+Original driver used DMA only if user specified INT gpio in platform
+data, now DMA is used unconditionally and PIO mode is used as fallback.
 
-I see.
+In case anyone wants to give it a try, few DT related changes are needed:
+- onenand node needs 'ti,omap2-onenand' compatible (for mailine boards this is
+  done in patch 2)
+- to use INT pin, int-gpios needs to be specified.
 
-> 
->>
->> The current state seems to pass MTD tests on a Colibri VF61.
->>
->> Signed-off-by: Stefan Agner <stefan@agner.ch>
->> ---
->> Hi Boris, Hi Miquel,
->>
->> Thanks for your work on the new NAND interface. The VF610 NFC
->> definitly matches better the ->exec_op() interface.
-> 
-> And thanks for transitioning to this new interface.
-> 
->>
->> This is still in early stage but seems to boot a Linux as rootfs
->> successfully. Before working on further simplification I wanted
->> to get some feedback on the general idea.
-> 
-> Sure.
-> 
->>
->> If needed, the data sheet of the controller can be optained
->> publicly (Vybrid Reference Manual, Chapter 10.3).
-> 
-> I'll have a look, thanks for the pointer.
-> 
->>
->> Some questions from my side:
->> - Parameter page: Why is exec_op called twice currently? This
->>   seems to be problematic for this controller. Are there plans
->>   to integrate the two calls in a single op sequence?
-> 
-> I don't know, but nothing is set in stone.
-> 
->> - Row/Column addresses: The controller seems to separate those
->>   two, hence the driver "guesses" which address bytes need to
->>   go where.. Maybe it would be better to separate that on ops
->>   level?
-> 
-> Miquel had a similar need for the new marvell NAND driver, so maybe we
-> can store this information at the nand_chip level:
-> 
-> 	unsigned int row_cycles;
-> 	unsigned int column_cycles;
-> 
-> I still want to keep the address data in an array of bytes, but thanks
-> to the [row,column]_cycles information you'll be able to easily convert
-> this array of bytes into row and column addresses.
+Most notable changes from v3:
+- added dmaengine patches by Peter Ujfalusi
+- added dt bindings documentation
+- added cleanup patches
+- DMA enabled by default
 
-That sounds good enough for my case.
+Most notable changes from v4:
+- collected tags
+- used INT pin name properly
+- hopefully all comments taken into account
 
-> 
->> - Separation is often needed by command. One can make an educated
->>   guess what kind of command is going to be passed by filtering
->>   the appropriate ops. Maybe it would be good if the ops parser
->>   can filter by command?
-> 
-> I'll have to check the datasheet you pointed out. We're not closed to
-> the idea of filtering things by particular opcodes, but most of the time
-> the controller is not hardcoded this way, and what they refer as READID
-> or READSTATUS is not about sending a NAND_READ_ID or a NAND_READ_STATUS
-> opcode, but following the sequence imposed by these operations (READID
-> is CMD+ADDR+DATA_IN, READSTATUS is CMD+DATA_IN). Which means, if you
-> have another operation which uses the same sequence but a different
-> opcode, the controller is able to handle it.
-> 
+Most notable changes from v5:
+- as this serie is expected to be merged via single tree patches 13 and 14
+  were squashed together not to break bisecting.
+- patch 16 was dropped.
 
-The chapter 10.3.4.7 Flash Command Code Description is probably most
-interesting in that regard. With the old interface, I used predefined
-command codes, with the new interface I can dynamically generate the
-command code from the operations provided by the stack.
+This patchset depends on an immutable commit:
 
-However, some seem to be handled specially: There is single bit for
-"Read ID". And the bytes returned by the controller are stored in
-register instead of the regular data area. These are the reasons I do
-use special handling right now...
+The following changes since commit 4fbd8d194f06c8a3fd2af1ce560ddb31f7ec8323:
 
---
-Stefan
+  Linux 4.15-rc1 (2017-11-26 16:01:47 -0800)
 
->>
->> --
->> Stefan
->>
->> miquel.raynal@free-electrons.com
->>
->>  drivers/mtd/nand/vf610_nfc.c | 543 +++++++++++++++++++++++++++----------------
->>  1 file changed, 349 insertions(+), 194 deletions(-)
-> 
-> I'll have a look at the code once I have a better understanding of how
-> the controller actually work.
-> 
-> Once again, thanks a lot for working on this topic.
-> 
-> Regards,
-> 
-> Boris
+are available in the git repository at:
+
+  https://github.com/rogerq/linux.git for-v4.16/gpmc-omap-immutable
+
+for you to fetch changes up to c18a7ac3398d0cef29749f9568666db8321aa4c9:
+
+  memory: omap-gpmc: Make 'bank-width' property optional (2017-12-01 15:37:49 +0200)
+
+
+Ladislav Michl (12):
+  dt-bindings: mtd: gpmc-onenand: Update properties description
+  ARM: dts: OMAP2+: Add compatible property to onenand node
+  ARM: dts: omap3-igep: Update onenand node timings
+  mtd: onenand: omap2: Remove regulator support
+  mtd: onenand: omap2: Remove skip initial unlocking support
+  mtd: onenand: omap2: Remove partitioning support from platform data
+  mtd: onenand: omap2: Account waiting time as waiting on IO
+  mtd: onenand: omap2: Unify OMAP2 and OMAP3 DMA implementation
+  mtd: onenand: omap2: Do not make delay for GPIO OMAP3 specific
+  mtd: onenand: omap2: Decouple DMA enabling from INT pin availability
+  mtd: onenand: omap2: Configure driver from DT
+  ARM: OMAP2+: Remove gpmc-onenand
+
+Peter Ujfalusi (2):
+  mtd: onenand: omap2: Simplify the DMA setup for various paths
+  mtd: onenand: omap2: Convert to use dmaengine for memcpy
+
+ .../devicetree/bindings/mtd/gpmc-onenand.txt       |   6 +-
+ arch/arm/boot/dts/omap2420-n8x0-common.dtsi        |   1 +
+ arch/arm/boot/dts/omap3-igep.dtsi                  |  30 +-
+ arch/arm/boot/dts/omap3-n900.dts                   |   1 +
+ arch/arm/boot/dts/omap3-n950-n9.dtsi               |   1 +
+ arch/arm/boot/dts/omap3430-sdp.dts                 |   1 +
+ arch/arm/mach-omap2/Makefile                       |   3 -
+ arch/arm/mach-omap2/gpmc-onenand.c                 | 409 ---------------
+ drivers/memory/omap-gpmc.c                         | 158 ++++--
+ drivers/mtd/onenand/Kconfig                        |   4 +-
+ drivers/mtd/onenand/omap2.c                        | 576 ++++++++-------------
+ include/linux/omap-gpmc.h                          |  28 +
+ include/linux/platform_data/mtd-onenand-omap2.h    |  34 --
+ 13 files changed, 386 insertions(+), 866 deletions(-)
+ delete mode 100644 arch/arm/mach-omap2/gpmc-onenand.c
+ delete mode 100644 include/linux/platform_data/mtd-onenand-omap2.h
+
+-- 
+2.15.1
