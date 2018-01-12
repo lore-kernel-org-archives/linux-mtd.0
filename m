@@ -1,9 +1,9 @@
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ea0Vz-0006fL-Cj
- for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 14:41:05 +0000
-Received: by mail-lf0-x242.google.com with SMTP id a12so6155597lfe.13
- for <linux-mtd@lists.infradead.org>; Fri, 12 Jan 2018 06:40:55 -0800 (PST)
+ id 1ea0W1-0006bL-5G
+ for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 14:41:06 +0000
+Received: by mail-lf0-x244.google.com with SMTP id f3so6184306lfe.4
+ for <linux-mtd@lists.infradead.org>; Fri, 12 Jan 2018 06:40:53 -0800 (PST)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>,
@@ -12,9 +12,10 @@ To: Brian Norris <computersforpeace@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
 Cc: linux-mtd@lists.infradead.org, Jonas Gorski <jonas.gorski@gmail.com>,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH 2/2] mtd: get rid of the mtd_add_device_partitions function
-Date: Fri, 12 Jan 2018 15:40:34 +0100
-Message-Id: <20180112144034.6655-3-zajec5@gmail.com>
+Subject: [PATCH 1/2] mtd: move code adding master MTD out of
+ mtd_add_device_partitions
+Date: Fri, 12 Jan 2018 15:40:33 +0100
+Message-Id: <20180112144034.6655-2-zajec5@gmail.com>
 In-Reply-To: <20180112144034.6655-1-zajec5@gmail.com>
 References: <20180112144034.6655-1-zajec5@gmail.com>
 MIME-Version: 1.0
@@ -31,73 +32,72 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Rafał Miłecki <rafal@milecki.pl>
 
-This simplifies code a bit by:
-1) Avoiding an extra (tiny) function
-2) Checking for amount of parsed (found) partitions just once
-3) Avoiding clearing/filling struct mtd_partitions manually
+This change is a small cleanup of mtd_device_parse_register. When using
+MTD_PARTITIONED_MASTER it makes sure a master MTD is registered before
+dealing with partitions. There are 2 advantages of this:
+1) Not mixing code handling master MTD with code handling partitions
+2) Possibility of reusing mtd_parse_part in the future to avoid some
+   code duplication.
 
-With this commit a proper functions are called directly from the
-mtd_device_parse_register. It doesn't need to use minor tricks like
-memsetting struct to 0 to trigger an expected mtd_add_device_partitions
-behavior.
+This commit doesn't change any behavior except from a slightly different
+failure code path. The new code may need to call del_mtd_device when
+something goes wrong.
 
 Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 ---
- drivers/mtd/mtdcore.c | 29 +++++++----------------------
- 1 file changed, 7 insertions(+), 22 deletions(-)
+ drivers/mtd/mtdcore.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index f6460862e2ad..0a414750bc8b 100644
+index f80e911b8843..f6460862e2ad 100644
 --- a/drivers/mtd/mtdcore.c
 +++ b/drivers/mtd/mtdcore.c
-@@ -636,21 +636,6 @@ int del_mtd_device(struct mtd_info *mtd)
+@@ -641,20 +641,12 @@ static int mtd_add_device_partitions(struct mtd_info *mtd,
+ {
+ 	const struct mtd_partition *real_parts = parts->parts;
+ 	int nbparts = parts->nr_parts;
+-	int ret;
+ 
+-	if (nbparts == 0 || IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER)) {
+-		ret = add_mtd_device(mtd);
+-		if (ret)
+-			return ret;
+-	}
++	if (nbparts == 0 && !IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER))
++		return add_mtd_device(mtd);
+ 
+-	if (nbparts > 0) {
+-		ret = add_mtd_partitions(mtd, real_parts, nbparts);
+-		if (ret && IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER))
+-			del_mtd_device(mtd);
+-		return ret;
+-	}
++	if (nbparts > 0)
++		return add_mtd_partitions(mtd, real_parts, nbparts);
+ 
+ 	return 0;
+ }
+@@ -714,6 +706,12 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+ 
+ 	mtd_set_dev_defaults(mtd);
+ 
++	if (IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER)) {
++		ret = add_mtd_device(mtd);
++		if (ret)
++			return ret;
++	}
++
+ 	memset(&parsed, 0, sizeof(parsed));
+ 
+ 	ret = parse_mtd_partitions(mtd, types, &parsed, parser_data);
+@@ -753,6 +751,8 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+ out:
+ 	/* Cleanup any parsed partitions */
+ 	mtd_part_parser_cleanup(&parsed);
++	if (ret && IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER))
++		del_mtd_device(mtd);
  	return ret;
  }
- 
--static int mtd_add_device_partitions(struct mtd_info *mtd,
--				     struct mtd_partitions *parts)
--{
--	const struct mtd_partition *real_parts = parts->parts;
--	int nbparts = parts->nr_parts;
--
--	if (nbparts == 0 && !IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER))
--		return add_mtd_device(mtd);
--
--	if (nbparts > 0)
--		return add_mtd_partitions(mtd, real_parts, nbparts);
--
--	return 0;
--}
--
- /*
-  * Set a few defaults based on the parent devices, if not provided by the
-  * driver
-@@ -717,19 +702,19 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
- 	ret = parse_mtd_partitions(mtd, types, &parsed, parser_data);
- 	if ((ret < 0 || parsed.nr_parts == 0) && parts && nr_parts) {
- 		/* Fall back to driver-provided partitions */
--		parsed = (struct mtd_partitions){
--			.parts		= parts,
--			.nr_parts	= nr_parts,
--		};
-+		ret = add_mtd_partitions(mtd, parts, nr_parts);
- 	} else if (ret < 0) {
- 		/* Didn't come up with parsed OR fallback partitions */
- 		pr_info("mtd: failed to find partitions; one or more parsers reports errors (%d)\n",
- 			ret);
- 		/* Don't abort on errors; we can still use unpartitioned MTD */
--		memset(&parsed, 0, sizeof(parsed));
-+		if (!IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER))
-+			ret = add_mtd_device(mtd);
-+		else
-+			ret = 0;
-+	} else {
-+		ret = add_mtd_partitions(mtd, parsed.parts, parsed.nr_parts);
- 	}
--
--	ret = mtd_add_device_partitions(mtd, &parsed);
- 	if (ret)
- 		goto out;
- 
+ EXPORT_SYMBOL_GPL(mtd_device_parse_register);
 -- 
 2.11.0
