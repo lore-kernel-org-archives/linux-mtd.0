@@ -1,25 +1,34 @@
-Received: from smtp03.smtpout.orange.fr ([80.12.242.125]
- helo=smtp.smtpout.orange.fr)
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ea2R3-0001IH-PG
- for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 16:44:08 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Miquel RAYNAL <miquel.raynal@free-electrons.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- linux-mtd@lists.infradead.org
+Date: Fri, 12 Jan 2018 19:21:42 +0100
+From: Miquel Raynal <miquel.raynal@free-electrons.com>
+To: Willy Tarreau <w@1wt.eu>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Rob Herring <robh+dt@kernel.org>, Mark
+ Rutland <mark.rutland@arm.com>, Jason Cooper <jason@lakedaemon.net>, Andrew
+ Lunn <andrew@lunn.ch>, Gregory Clement
+ <gregory.clement@free-electrons.com>, Sebastian Hesselbarth
+ <sebastian.hesselbarth@gmail.com>, Russell King <linux@armlinux.org.uk>,
+ Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>, Eric Miao <eric.y.miao@gmail.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
+ <will.deacon@arm.com>, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>, Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>, devicetree@vger.kernel.org, Sean
+ Nyekjaer <sean.nyekjaer@prevas.dk>, Antoine Tenart
+ <antoine.tenart@free-electrons.com>, Nadav Haklai <nadavh@marvell.com>,
+ linux-mtd@lists.infradead.org, Neta Zur Hershkovits <neta@marvell.com>,
+ Hanna Hawa <hannah@marvell.com>, Ofer Heifetz <oferh@marvell.com>,
+ linux-arm-kernel@lists.infradead.org
 Subject: Re: [PATCH v3 0/7] Marvell NAND controller rework with ->exec_op()
+Message-ID: <20180112192142.6541edf4@xps13>
+In-Reply-To: <20180111222833.GA15584@1wt.eu>
 References: <20180109103637.23798-1-miquel.raynal@free-electrons.com>
- <20180111122751.4bd74366@bbrezillon> <87efmwb8bj.fsf@belgarion.home>
- <20180111232417.4aa86075@xps13> <87a7xjbis2.fsf@belgarion.home>
- <20180112094501.27706bfc@bbrezillon> <876087beui.fsf@belgarion.home>
- <20180112112108.2e20dc14@bbrezillon>
-Date: Fri, 12 Jan 2018 17:43:52 +0100
-In-Reply-To: <20180112112108.2e20dc14@bbrezillon> (Boris Brezillon's message
- of "Fri, 12 Jan 2018 11:21:08 +0100")
-Message-ID: <871sivauyf.fsf@belgarion.home>
+ <20180111222833.GA15584@1wt.eu>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,20 +38,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Boris Brezillon <boris.brezillon@free-electrons.com> writes:
+Hello Willy,
 
-> I think I'm still missing something. If I look at the branch you just
-> pushed, I see that ->flash_bbt was not set to 1 before this commit [1],
-> which means the pxa3xx driver was no setting the NAND_BBT_USE_FLASH
-> flag, which in turn means you were not using the on-flash-bbt.
-> When you test the old (pxa3xx) driver, are you sure you're testing
-> things with a mainline kernel? If you have extra commits on top of
-> mainline, can you push them somewhere?
+On Thu, 11 Jan 2018 23:28:33 +0100
+Willy Tarreau <w@1wt.eu> wrote:
 
-Here is the branch I'm using with my pxa3xx driver :
-git fetch https://github.com/rjarzmik/linux pxa3xx-test
+> Hi Miquel,
+>=20
+> On Tue, Jan 09, 2018 at 11:36:30AM +0100, Miquel Raynal wrote:
+> > These changes have been tested on:
+> >    - PXA3xx platform with a CM-X300 board (2kiB page NAND, 1b/512B
+> >      strength, Hamming ECC engine) [32 bits]
+> >    - Armada 385 DB AP (4kiB page NAND, 4b/512B, BCH ECC engine) [32
+> > bits]
+> >    - Armada 398 DB (4kiB page NAND, 8b/512B, BCH ECC engine using a
+> > layout with a last chunk different than the others) [32 bits]
+> >    - Armada 7040 DB and Armada 8040 DB (4kiB page NAND, 4b/512B,
+> > BCH ECC engine) [64 bits]
+> >    - Triax dvb-tc board (2kiB page NAND, 4b/512B, BCH ECC engine)
+> > [32 bits] =20
+>=20
+> If you're interested, I have a mirabox with an armada 370 which uses
+> the same driver. I've not powered it up for a while but if that can
+> be useful I can try to find some time for this.
 
-Cheers.
+Thank you very much for the proposal!
 
--- 
-Robert
+For the moment I don't think there is a need as this type of platform
+has already been tested, but I keep it in mind.
+
+Thanks again!
+Miqu=C3=A8l
