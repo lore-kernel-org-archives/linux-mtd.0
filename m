@@ -1,13 +1,13 @@
 Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eZz9h-0003Da-Nm
- for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 13:13:59 +0000
+ id 1eZzA2-0003Da-FF
+ for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 13:14:20 +0000
 Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
  (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23994661AbeALNN5WMN1d (ORCPT
+ id S23994659AbeALNOSC3e4d (ORCPT
  <rfc822;linux-mtd@lists.infradead.org>);
- Fri, 12 Jan 2018 14:13:57 +0100
-Date: Fri, 12 Jan 2018 14:13:56 +0100
+ Fri, 12 Jan 2018 14:14:18 +0100
+Date: Fri, 12 Jan 2018 14:14:17 +0100
 Sender: Ladislav Michl <ladis@linux-mips.org>
 From: Ladislav Michl <ladis@linux-mips.org>
 To: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org
@@ -15,9 +15,9 @@ Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Roger Quadros <rogerq@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
  Kyungmin Park <kyungmin.park@samsung.com>,
  Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>
-Subject: [PATCH v6 05/14] mtd: onenand: omap2: Remove skip initial unlocking
- support
-Message-ID: <20180112131356.GF13810@lenoch>
+Subject: [PATCH v6 06/14] mtd: onenand: omap2: Remove partitioning support
+ from platform data
+Message-ID: <20180112131417.GG13810@lenoch>
 References: <20180112131105.GA13810@lenoch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -32,8 +32,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-No platform data user sets skip_initial_unlocking, so remove test
-for this field.
+No platform data user setups partitioning information, so remove.
 
 Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
 Reviewed-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
@@ -50,22 +49,22 @@ Changes in v3: None
 Changes in v2:
 - new patch
 
- drivers/mtd/onenand/omap2.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/mtd/onenand/omap2.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-index a03e1fe4aa48..93bd94337b35 100644
+index 93bd94337b35..883993bbe40b 100644
 --- a/drivers/mtd/onenand/omap2.c
 +++ b/drivers/mtd/onenand/omap2.c
-@@ -700,9 +700,6 @@ static int omap2_onenand_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	if (pdata->skip_initial_unlocking)
--		this->options |= ONENAND_SKIP_INITIAL_UNLOCKING;
--
+@@ -703,8 +703,7 @@ static int omap2_onenand_probe(struct platform_device *pdev)
  	if ((r = onenand_scan(&c->mtd, 1)) < 0)
  		goto err_release_dma;
+ 
+-	r = mtd_device_register(&c->mtd, pdata ? pdata->parts : NULL,
+-				pdata ? pdata->nr_parts : 0);
++	r = mtd_device_register(&c->mtd, NULL, 0);
+ 	if (r)
+ 		goto err_release_onenand;
  
 -- 
 2.15.1
