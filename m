@@ -1,48 +1,18 @@
-Received: from szxga05-in.huawei.com ([45.249.212.191] helo=huawei.com)
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eZvOR-0000Xf-ML
- for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 09:12:57 +0000
-Subject: Re: [PATCH v3 00/27] kill devm_ioremap_nocache
-To: Christophe LEROY <christophe.leroy@c-s.fr>, Greg KH
- <gregkh@linuxfoundation.org>
-References: <1514026525-32538-1-git-send-email-xieyisheng1@huawei.com>
- <20171223134831.GB10103@kroah.com>
- <b8ff7f17-7f2c-f220-9833-7ae5bd7343d5@c-s.fr>
- <8dd19411-5b06-0aa4-fd0e-e5b112c25dcb@huawei.com>
- <1eb206ed-95e9-5839-485d-0e549ff3f505@c-s.fr>
-CC: <linux-kernel@vger.kernel.org>, <ysxie@foxmail.com>,
- <ulf.hansson@linaro.org>, <linux-mmc@vger.kernel.org>,
- <boris.brezillon@free-electrons.com>, <richard@nod.at>,
- <marek.vasut@gmail.com>, <cyrille.pitchen@wedev4u.fr>,
- <linux-mtd@lists.infradead.org>, <alsa-devel@alsa-project.org>,
- <wim@iguana.be>, <linux@roeck-us.net>, <linux-watchdog@vger.kernel.org>,
- <b.zolnierkie@samsung.com>, <linux-fbdev@vger.kernel.org>,
- <linus.walleij@linaro.org>, <linux-gpio@vger.kernel.org>,
- <ralf@linux-mips.org>, <linux-mips@linux-mips.org>, <lgirdwood@gmail.com>,
- <broonie@kernel.org>, <tglx@linutronix.de>, <jason@lakedaemon.net>,
- <marc.zyngier@arm.com>, <arnd@arndb.de>, <andriy.shevchenko@linux.intel.com>,
- <industrypack-devel@lists.sourceforge.net>, <wg@grandegger.com>,
- <mkl@pengutronix.de>, <linux-can@vger.kernel.org>, <mchehab@kernel.org>,
- <linux-media@vger.kernel.org>, <a.zummo@towertech.it>,
- <alexandre.belloni@free-electrons.com>, <linux-rtc@vger.kernel.org>,
- <daniel.vetter@intel.com>, <jani.nikula@linux.intel.com>,
- <seanpaul@chromium.org>, <airlied@linux.ie>,
- <dri-devel@lists.freedesktop.org>, <kvalo@codeaurora.org>,
- <linux-wireless@vger.kernel.org>, <linux-spi@vger.kernel.org>,
- <tj@kernel.org>, <linux-ide@vger.kernel.org>, <bhelgaas@google.com>,
- <linux-pci@vger.kernel.org>, <devel@driverdev.osuosl.org>,
- <dvhart@infradead.org>, <andy@infradead.org>,
- <platform-driver-x86@vger.kernel.org>, <jakub.kicinski@netronome.com>,
- <davem@davemloft.net>, <nios2-dev@lists.rocketboards.org>,
- <netdev@vger.kernel.org>, <vinod.koul@intel.com>, <dan.j.williams@intel.com>,
- <dmaengine@vger.kernel.org>, <jslaby@suse.com>
-From: Yisheng Xie <xieyisheng1@huawei.com>
-Message-ID: <ff498c83-d1ee-7553-e20c-a07369f8dad6@huawei.com>
-Date: Fri, 12 Jan 2018 17:12:12 +0800
-MIME-Version: 1.0
-In-Reply-To: <1eb206ed-95e9-5839-485d-0e549ff3f505@c-s.fr>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eZvPX-00010B-Ld
+ for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 09:14:05 +0000
+From: Miquel Raynal <miquel.raynal@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@free-electrons.com>, stable@vger.kernel.org
+Subject: [PATCH v3] mtd: nand: Fix nand_do_read_oob() return value
+Date: Fri, 12 Jan 2018 10:13:36 +0100
+Message-Id: <20180112091336.10709-1-miquel.raynal@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -52,112 +22,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Christophe ，
+Starting from commit 041e4575f034 ("mtd: nand: handle ECC errors in
+OOB"), nand_do_read_oob() (from the NAND core) did return 0 or a
+negative error, and the MTD layer expected it.
 
-On 2018/1/4 16:05, Christophe LEROY wrote:
-> 
-> 
-> Le 25/12/2017 à 02:34, Yisheng Xie a écrit :
->>
->>
->> On 2017/12/24 17:05, christophe leroy wrote:
->>>
->>>
->>> Le 23/12/2017 à 14:48, Greg KH a écrit :
->>>> On Sat, Dec 23, 2017 at 06:55:25PM +0800, Yisheng Xie wrote:
->>>>> Hi all,
->>>>>
->>>>> When I tried to use devm_ioremap function and review related code, I found
->>>>> devm_ioremap and devm_ioremap_nocache is almost the same with each other,
->>>>> except one use ioremap while the other use ioremap_nocache.
->>>>
->>>> For all arches?  Really?  Look at MIPS, and x86, they have different
->>>> functions.
->>>>
->>>>> While ioremap's
->>>>> default function is ioremap_nocache, so devm_ioremap_nocache also have the
->>>>> same function with devm_ioremap, which can just be killed to reduce the size
->>>>> of devres.o(from 20304 bytes to 18992 bytes in my compile environment).
->>>>>
->>>>> I have posted two versions, which use macro instead of function for
->>>>> devm_ioremap_nocache[1] or devm_ioremap[2]. And Greg suggest me to kill
->>>>> devm_ioremap_nocache for no need to keep a macro around for the duplicate
->>>>> thing. So here comes v3 and please help to review.
->>>>
->>>> I don't think this can be done, what am I missing?  These functions are
->>>> not identical, sorry for missing that before.
->>>
->>> devm_ioremap() and devm_ioremap_nocache() are quite similar, both use devm_ioremap_release() for the release, why not just defining:
->>>
->>> static void __iomem *__devm_ioremap(struct device *dev, resource_size_t offset,
->>>                 resource_size_t size, bool nocache)
->>> {
->>> [...]
->>>      if (nocache)
->>>          addr = ioremap_nocache(offset, size);
->>>      else
->>>          addr = ioremap(offset, size);
->>> [...]
->>> }
->>>
->>> then in include/linux/io.h
->>>
->>> static inline void __iomem *devm_ioremap(struct device *dev, resource_size_t offset,
->>>                 resource_size_t size)
->>> {return __devm_ioremap(dev, offset, size, false);}
->>>
->>> static inline void __iomem *devm_ioremap_nocache(struct device *dev, resource_size_t offset,
->>>                     resource_size_t size);
->>> {return __devm_ioremap(dev, offset, size, true);}
->>
->> Yeah, this seems good to me, right now we have devm_ioremap, devm_ioremap_wc, devm_ioremap_nocache
->> May be we can use an enum like:
->> typedef enum {
->>     DEVM_IOREMAP = 0,
->>     DEVM_IOREMAP_NOCACHE,
->>     DEVM_IOREMAP_WC,
->> } devm_ioremap_type;
->>
->> static inline void __iomem *devm_ioremap(struct device *dev, resource_size_t offset,
->>                  resource_size_t size)
->>   {return __devm_ioremap(dev, offset, size, DEVM_IOREMAP);}
->>
->>   static inline void __iomem *devm_ioremap_nocache(struct device *dev, resource_size_t offset,
->>                      resource_size_t size);
->>   {return __devm_ioremap(dev, offset, size, DEVM_IOREMAP_NOCACHE);}
->>
->>   static inline void __iomem *devm_ioremap_wc(struct device *dev, resource_size_t offset,
->>                      resource_size_t size);
->>   {return __devm_ioremap(dev, offset, size, DEVM_IOREMAP_WC);}
->>
->>   static void __iomem *__devm_ioremap(struct device *dev, resource_size_t offset,
->>                  resource_size_t size, devm_ioremap_type type)
->>   {
->>       void __iomem **ptr, *addr = NULL;
->>   [...]
->>       switch (type){
->>       case DEVM_IOREMAP:
->>           addr = ioremap(offset, size);
->>           break;
->>       case DEVM_IOREMAP_NOCACHE:
->>           addr = ioremap_nocache(offset, size);
->>           break;
->>       case DEVM_IOREMAP_WC:
->>           addr = ioremap_wc(offset, size);
->>           break;
->>       }
->>   [...]
->>   }
-> 
-> 
-> That looks good to me, will you submit a v4 ?
+However, the trend for the NAND layer is now to return an error or a
+positive number of bitflips. Deciding which status to return to the user
+belongs to the MTD layer.
 
-Sorry for late response. And I will submit the v4 as your suggestion.
+Commit e47f68587b82 ("mtd: check for max_bitflips in mtd_read_oob()")
+brought this logic to the mtd_read_oob() function while the return value
+coming from nand_do_read_oob() (called by the ->_read_oob() hook) was
+left unchanged.
 
-Thanks
-Yisheng
+Fixes: e47f68587b82 ("mtd: check for max_bitflips in mtd_read_oob()")
+Cc: stable@vger.kernel.org
+Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+---
 
-> 
-> Christophe
-> 
->>
+
+Changes since v2:
+  - Correctly return the maximum number of bitflips, not the number of
+    bitflips of the last chunk only.
+
+Changes since v1:
+  - s/->ecc.read_oob() hook/->_read_oob() hook/ in the commit message
+  - Fixed the compilation issue
+  
+
+drivers/mtd/nand/nand_base.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 469220065b8b..e4e39890a975 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3794,6 +3794,7 @@ EXPORT_SYMBOL(nand_write_oob_syndrome);
+ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
+ 			    struct mtd_oob_ops *ops)
+ {
++	unsigned int max_bitflips = 0;
+ 	int page, realpage, chipnr;
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+ 	struct mtd_ecc_stats stats;
+@@ -3855,6 +3856,8 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
+ 		if (!readlen)
+ 			break;
+ 
++		max_bitflips = max_t(unsigned int, max_bitflips, ret);
++
+ 		/* Increment page address */
+ 		realpage++;
+ 
+@@ -3876,7 +3879,7 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
+ 	if (mtd->ecc_stats.failed - stats.failed)
+ 		return -EBADMSG;
+ 
+-	return  mtd->ecc_stats.corrected - stats.corrected ? -EUCLEAN : 0;
++	return max_bitflips;
+ }
+ 
+ /**
+-- 
+2.11.0
