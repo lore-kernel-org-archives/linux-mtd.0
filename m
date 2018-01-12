@@ -1,20 +1,16 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1ea1OJ-0002II-7L
- for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 15:37:13 +0000
-Date: Fri, 12 Jan 2018 16:36:49 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de, Richard Weinberger
- <richard@nod.at>
-Subject: Re: [PATCH 6/8] mtd: nand: mxc: Add own write_page
-Message-ID: <20180112163649.3103cb82@bbrezillon>
-In-Reply-To: <20180109101148.13728-7-s.hauer@pengutronix.de>
-References: <20180109101148.13728-1-s.hauer@pengutronix.de>
- <20180109101148.13728-7-s.hauer@pengutronix.de>
+Received: from mail-yb0-x22a.google.com ([2607:f8b0:4002:c09::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1ea1Zk-0007TM-3c
+ for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 15:49:01 +0000
+Received: by mail-yb0-x22a.google.com with SMTP id k189so2844168ybc.12
+ for <linux-mtd@lists.infradead.org>; Fri, 12 Jan 2018 07:48:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From: Bogdan Harjoc <harjoc@gmail.com>
+Date: Fri, 12 Jan 2018 17:48:46 +0200
+Message-ID: <CAF4+tmq0km-HXGkmWtHMA_rtzYYtok6W_suTVwgJnz5qPK6ZGw@mail.gmail.com>
+Subject: Handle eraseblocks containing the bad-block table in UBI
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,105 +20,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue,  9 Jan 2018 11:11:46 +0100
-Sascha Hauer <s.hauer@pengutronix.de> wrote:
+With some Macronix NANDs that present the bad-blocks table at a fixed
+eraseblock, UBI tries to use the PEB as data and this results in the
+"Bad node, ff ff ff ..." symptoms.
 
-> Now that we have our own read_page function add a write_page function
-> for consistency aswell. This can be a lot easier than the generic
-> function since we do not have to iterate over subpages but can write
-> the whole page at once. Also add write_page_raw and write_oob for
-> proper raw and oob write support.
-> 
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
->  drivers/mtd/nand/mxc_nand.c | 56 +++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 56 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-> index 83bb01ab7079..6fbf98851a96 100644
-> --- a/drivers/mtd/nand/mxc_nand.c
-> +++ b/drivers/mtd/nand/mxc_nand.c
-> @@ -893,6 +893,59 @@ static int mxc_nand_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
->  					     page);
->  }
->  
-> +static int __mxc_nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+Should UBI receive this special status of the bbt PEBs via the
+mtd_isbad() result values (in the Macronix case, mtd_block_isbad()
+returns false for the PEB containing the bbt), or are 'bbt PEBs' not
+supported in UBI ?
 
-I'm not a big fan of those '__' prefixes. How about keeping
-mxc_nand_write_page() for this one, renaming the other
-mxc_nand_write_page() into mxc_nand_write_page_ecc() and keeping the
-other ones unchanged.
-
-> +				 const uint8_t *buf, int oob_required, int page)
-
-Why don't you pass a 'bool enable_ecc' argument here so that you can
-directly do
-
-	host->devtype_data->enable_hwecc(nand_chip, enable_ecc);
-
-from here instead of duplicating it in all wrappers?
-
-> +{
-> +	struct mxc_nand_host *host = nand_get_controller_data(chip);
-> +
-> +	host->devtype_data->send_cmd(host, NAND_CMD_SEQIN, false);
-> +	mxc_do_addr_cycle(mtd, 0, page);
-> +
-> +	memcpy32_toio(host->main_area0, buf, mtd->writesize);
-> +	copy_spare(mtd, false, chip->oob_poi);
-> +
-> +	host->devtype_data->send_page(mtd, NFC_INPUT);
-> +	host->devtype_data->send_cmd(host, NAND_CMD_PAGEPROG, true);
-> +	mxc_do_addr_cycle(mtd, 0, page);
-> +
-> +	return 0;
-> +}
-> +
-> +static int mxc_nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
-> +			       const uint8_t *buf, int oob_required, int page)
-> +{
-> +	struct nand_chip *nand_chip = mtd_to_nand(mtd);
-> +	struct mxc_nand_host *host = nand_get_controller_data(chip);
-> +
-> +	host->devtype_data->enable_hwecc(nand_chip, true);
-> +
-> +	return __mxc_nand_write_page(mtd, chip, buf, oob_required, page);
-> +}
-> +
-> +static int mxc_nand_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
-> +				   const uint8_t *buf, int oob_required, int page)
-> +{
-> +	struct nand_chip *nand_chip = mtd_to_nand(mtd);
-> +	struct mxc_nand_host *host = nand_get_controller_data(chip);
-> +
-> +	host->devtype_data->enable_hwecc(nand_chip, false);
-> +
-> +	return __mxc_nand_write_page(mtd, chip, buf, oob_required, page);
-> +}
-> +
-> +static int mxc_nand_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
-> +			      int page)
-> +{
-> +	struct nand_chip *nand_chip = mtd_to_nand(mtd);
-> +	struct mxc_nand_host *host = nand_get_controller_data(chip);
-> +
-> +	memset(host->data_buf, 0xff, mtd->writesize);
-> +
-> +	host->devtype_data->enable_hwecc(nand_chip, false);
-> +
-> +	return __mxc_nand_write_page(mtd, chip, host->data_buf, 1, page);
-> +}
-> +
->  static int mxc_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
->  				  u_char *ecc_code)
->  {
-> @@ -1907,6 +1960,9 @@ static int mxcnd_probe(struct platform_device *pdev)
->  		this->ecc.read_page = mxc_nand_read_page;
->  		this->ecc.read_page_raw = mxc_nand_read_page_raw;
->  		this->ecc.read_oob = mxc_nand_read_oob;
-> +		this->ecc.write_page = mxc_nand_write_page;
-> +		this->ecc.write_page_raw = mxc_nand_write_page_raw;
-> +		this->ecc.write_oob = mxc_nand_write_oob;
->  		this->ecc.calculate = mxc_nand_calculate_ecc;
->  		this->ecc.hwctl = mxc_nand_enable_hwecc;
->  		this->ecc.correct = host->devtype_data->correct_data;
+Thanks,
+Bogdan Harjoc
