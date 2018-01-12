@@ -1,27 +1,24 @@
-Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]
+ helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eZvjK-00066S-GD
+ id 1eZvjK-00066L-0I
  for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 09:34:32 +0000
-Received: by mail-lf0-x244.google.com with SMTP id f3so5242580lfe.4
- for <linux-mtd@lists.infradead.org>; Fri, 12 Jan 2018 01:34:19 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Rob Herring <robh+dt@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH 2/2] mtd: bcm47xxpart: add of_match_table with a new DT binding
-Date: Fri, 12 Jan 2018 10:33:54 +0100
-Message-Id: <20180112093354.17593-2-zajec5@gmail.com>
-In-Reply-To: <20180112093354.17593-1-zajec5@gmail.com>
-References: <20180112093354.17593-1-zajec5@gmail.com>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Miquel RAYNAL <miquel.raynal@free-electrons.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3 0/7] Marvell NAND controller rework with ->exec_op()
+References: <20180109103637.23798-1-miquel.raynal@free-electrons.com>
+ <20180111122751.4bd74366@bbrezillon> <87efmwb8bj.fsf@belgarion.home>
+ <20180111232417.4aa86075@xps13> <87a7xjbis2.fsf@belgarion.home>
+ <20180112094501.27706bfc@bbrezillon>
+Date: Fri, 12 Jan 2018 10:34:13 +0100
+In-Reply-To: <20180112094501.27706bfc@bbrezillon> (Boris Brezillon's message
+ of "Fri, 12 Jan 2018 09:45:01 +0100")
+Message-ID: <876087beui.fsf@belgarion.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,39 +28,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+Boris Brezillon <boris.brezillon@free-electrons.com> writes:
 
-This allows using bcm47xxpart parser to support DT describing partitions
-on a flash using "brcm,bcm947xx-cfe-partitions" compatible property. It
-means this parser doesn't have to be explicitly selected by a flash
-driver anymore. It can be used e.g. together with a generic m25p80 /
-spi-nor if device is just properly described.
+> On Fri, 12 Jan 2018 09:09:17 +0100
+> Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+>
+>> Miquel RAYNAL <miquel.raynal@free-electrons.com> writes:
+>> 
+>> I begun all your test procedure (on my zylonite board).
+>> The timing registers are the same in both pxa3xx_nand and marvell_nand, ie :
+>> [    3.085539] Timing registers from Bootloader:
+>> [    3.089971] -  NDTR0: 0x00161c1c
+>> [    3.095979] -  NDTR1: 0x0f3c00a2
+>> 
+>> I can attach the dmesg of the first run (dump of OOB). Yet I think you're
+>> missing the point as to where the bug lies.
+>
+> We definitely don't know where the bug lies, otherwise we wouldn't do
+> the remote debug session we're doing here.
+Fair enough.
+> The driver is not searching for a BBT because it's explicitly disabled
+> in your pdata (if it was enabled we would see something like "Bad block
+> table not found ..." or "Bad block table found ..." in the logs).
+You're right, and that's because I was told to remove the "flash_bbt=1" from my
+platform data by Miquel in order to not destroy it again.
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
- drivers/mtd/bcm47xxpart.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+> And that's anyway not the bug we're trying to fix here. In your setup (2k
+> pages with Hamming ECC), the bad block markers, i.e. the markers present in
+> each block and used to mark a block good or bad (0xffff => good, != 0xffff =>
+> bad), should be preserved.
+I think we're still not aligned here. There are _no_ bad block markers in the
+OOB on my flash, because there is a BBT at the end.
 
-diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
-index fe2581d9d882..4bc2ad842eee 100644
---- a/drivers/mtd/bcm47xxpart.c
-+++ b/drivers/mtd/bcm47xxpart.c
-@@ -290,9 +290,16 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 	return curr_part;
- };
- 
-+static const struct of_device_id bcm47xxpart_of_match_table[] = {
-+	{ .compatible = "brcm,bcm947xx-cfe-partitions" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, bcm47xxpart_of_match_table);
-+
- static struct mtd_part_parser bcm47xxpart_mtd_parser = {
- 	.parse_fn = bcm47xxpart_parse,
- 	.name = "bcm47xxpart",
-+	.of_match_table = bcm47xxpart_of_match_table,
- };
- module_mtd_part_parser(bcm47xxpart_mtd_parser);
- 
--- 
-2.11.0
+> So, the symptoms we're seeing here, where almost all blocks are reported as
+> bad when scanning BBMs, is not expected, and that's what we're trying to
+> debug/fix.
+Well, I still think this is not something to fix ... I still think that OOB data
+is not relevant as to the state of bad blocks in my flash ...
+
+> Timing mis-configuration was just a lead we had to follow. It seems
+> that it's not the problem here, but we had to test it. Now, the missing
+> BBT scan is clearly caused by an explicit config telling the driver to
+> ignore the BBT.
+We agree on that.
+
+> You can try to enable it if you want to test BBT
+> handling (pdata->flash_bbt = 1), but even if that works, we'd like to
+> understand why the regular BBM scanning does not work.
+As you wish. I can make other tests, as long as my BBT is not broken again. If I
+re-enable "flash_bbt=1", I'd like another "hack" to prevent BBT breakage, as
+disabling it was adviced by Miquel to protect my NAND.
+
+> Honestly, it's hard to be sure what you're testing, because we don't
+> know whether you're testing the branch Miquel provided or manually
+> apply some changes locally. Can you push your local changes somewhere
+> (if any)?
+git fetch https://github.com/rjarzmik/linux marvell-nand-bug
+make zylonite_defconfig
+
+>> mtdparts=pxa3xx_nand-0:128k@0(TIMH)ro,128k@128k(OBMI)ro,768k@256k(barebox),256k@1024k(barebox-env),12M@1280k(kernel),38016k@13568k(root)
+>> [    3.414298] marvell-nfc pxa3xx-nand: 
+>> [    3.414298] NDCR:  0x9d079fff
+>> [    3.414298] NDCB0: 0x000d3000
+>> [    3.414298] NDCB1: 0x00800000
+>> [    3.414298] NDCB2: 0x00000000
+>> [    3.414298] NDCB3: 0x00000000
+>> [    3.433140] OOB from page 128:
+>> [    3.436237] 00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+>> [    3.447080] 01: 00 00 00 00 00 00 00 00 48 5b 01 d2 56 00 a2 ec 23 82 51 02 ef af 9d ae 3e 02 34 82 6c d8 75 0e 
+>
+> All bytes set to 0. Looks like someone explicitly wrote 0 in the OOB
+> area :-/. Do you know which component wrote this block (barebox or
+> Linux)?
+In this specific case, you're in "TIMH" partition, which a specific partition
+for the IPL (ROM part of the PXA3xx reads and loads it), and follows other rules
+AFAIK.
+
+The really anoying and relevant part are the bad blocks at 13568 KBytes offset
+(ie. root partition), which contains the ext2/ubifs.
+
+Cheers.
+
+--
+Robert
