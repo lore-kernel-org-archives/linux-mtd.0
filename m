@@ -1,23 +1,23 @@
-Received: from muru.com ([72.249.23.125])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1ea0Ce-00063U-Ao
- for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 14:21:05 +0000
-Date: Fri, 12 Jan 2018 06:20:50 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Ladislav Michl <ladis@linux-mips.org>, Roger Quadros <rogerq@ti.com>,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- Peter Ujfalusi <peter.ujfalusi@ti.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>
-Subject: Re: [PATCH v6 00/14] OMAP2+ OneNAND driver update
-Message-ID: <20180112142050.GC4821@atomide.com>
-References: <20180112131105.GA13810@lenoch>
- <20180112150315.54214fab@bbrezillon>
+Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1ea0Vz-0006YQ-Cj
+ for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 14:41:05 +0000
+Received: by mail-lf0-x242.google.com with SMTP id h137so6174271lfe.8
+ for <linux-mtd@lists.infradead.org>; Fri, 12 Jan 2018 06:40:51 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org, Jonas Gorski <jonas.gorski@gmail.com>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH 0/2] mtd: simplify mtd_device_parse_register code
+Date: Fri, 12 Jan 2018 15:40:32 +0100
+Message-Id: <20180112144034.6655-1-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180112150315.54214fab@bbrezillon>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,35 +27,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Boris Brezillon <boris.brezillon@free-electrons.com> [180112 14:03]:
-> On Fri, 12 Jan 2018 14:11:05 +0100
-> Ladislav Michl <ladis@linux-mips.org> wrote:
-> 
-> > this patch serie updates OMAP2+ OneNAND driver to the present times, making
-> > it fully DT configurable, using libgpio and dmaengine apis.
-> > 
-> > Please note that unlike previous driver version, which basically ignored
-> > DT specified timings, this one relies on it, so it is important to get
-> > it right in your DT (dumping it from previous kernel version).
-> > 
-> > In case synchronous timings is requested, it is okay to specify timings
-> > for the slowest chip ever used for you board as it is evetually optimized
-> > after chip probe.
-> > 
-> > Original driver used DMA only if user specified INT gpio in platform
-> > data, now DMA is used unconditionally and PIO mode is used as fallback.
-> > 
-> > In case anyone wants to give it a try, few DT related changes are needed:
-> > - onenand node needs 'ti,omap2-onenand' compatible (for mailine boards this is
-> >   done in patch 2)
-> > - to use INT pin, int-gpios needs to be specified.
-> 
-> Roger, Tony, are you happy with this version? If this is the case, I'll
-> queue all patches to my nand/next branch (after merging Roger's
-> immutable branch in).
+From: Rafał Miłecki <rafal@milecki.pl>
 
-Yes thanks Aaro for testing, sounds good to me.
+Even though I have some experience with MTD subsystem every time I was
+starting working on it I had to do some quick research on the code flow.
+I think there is some place for cleanup and optimization that would
+simplify overall code and allow new developers to start working on it
+more easily.
 
-Regards,
+In these patches I meant to slightly simplify mtd_device_parse_register
+function. I think we could reduce amount of add/register/del functions
+and this is the first step for that.
 
-Tony
+Ideally I think mtdcore.c shouldn't handle parsing but just use a single
+function from mtdpart.c.
+
+Patch 1/2 modifies code to make sure parsing code is not mixed with MTD
+master code. This should allow moving parsing parts to the mtdpart.c in
+the future.
+
+Patch 2/2 simplifies code and makes sure parsing is handled at 1 place
+only.
+
+Even though this cleanup isn't complete I think it already has some
+value and could be accepted (if there won't be objections) on its own.
+It's also quite small which should allow reviewing it easily.
+
+Rafał Miłecki (2):
+  mtd: move code adding master MTD out of mtd_add_device_partitions
+  mtd: get rid of the mtd_add_device_partitions function
+
+ drivers/mtd/mtdcore.c | 45 +++++++++++++++------------------------------
+ 1 file changed, 15 insertions(+), 30 deletions(-)
+
+-- 
+2.11.0
