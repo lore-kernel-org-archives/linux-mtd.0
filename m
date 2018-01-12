@@ -1,24 +1,23 @@
-Received: from fllnx209.ext.ti.com ([198.47.19.16])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ea0s1-00057O-Gz
- for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 15:03:51 +0000
-Subject: Re: [PATCH v6 00/14] OMAP2+ OneNAND driver update
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Ladislav Michl
- <ladis@linux-mips.org>, Tony Lindgren <tony@atomide.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>, Peter
- Ujfalusi <peter.ujfalusi@ti.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>
-References: <20180112131105.GA13810@lenoch>
- <20180112150315.54214fab@bbrezillon>
-From: Roger Quadros <rogerq@ti.com>
-Message-ID: <09dc40a1-f305-4bcc-e134-8c594f454d0c@ti.com>
-Date: Fri, 12 Jan 2018 17:03:16 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1ea0zp-0000rD-Cz
+ for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 15:11:55 +0000
+Date: Fri, 12 Jan 2018 16:11:31 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, Jonas Gorski <jonas.gorski@gmail.com>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH 2/2] mtd: get rid of the mtd_add_device_partitions function
+Message-ID: <20180112161131.3cae7841@bbrezillon>
+In-Reply-To: <20180112144034.6655-3-zajec5@gmail.com>
+References: <20180112144034.6655-1-zajec5@gmail.com>
+ <20180112144034.6655-3-zajec5@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20180112150315.54214fab@bbrezillon>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,107 +27,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/01/18 16:03, Boris Brezillon wrote:
-> On Fri, 12 Jan 2018 14:11:05 +0100
-> Ladislav Michl <ladis@linux-mips.org> wrote:
-> 
->> this patch serie updates OMAP2+ OneNAND driver to the present times, making
->> it fully DT configurable, using libgpio and dmaengine apis.
->>
->> Please note that unlike previous driver version, which basically ignored
->> DT specified timings, this one relies on it, so it is important to get
->> it right in your DT (dumping it from previous kernel version).
->>
->> In case synchronous timings is requested, it is okay to specify timings
->> for the slowest chip ever used for you board as it is evetually optimized
->> after chip probe.
->>
->> Original driver used DMA only if user specified INT gpio in platform
->> data, now DMA is used unconditionally and PIO mode is used as fallback.
->>
->> In case anyone wants to give it a try, few DT related changes are needed:
->> - onenand node needs 'ti,omap2-onenand' compatible (for mailine boards this is
->>   done in patch 2)
->> - to use INT pin, int-gpios needs to be specified.
-> 
-> Roger, Tony, are you happy with this version? If this is the case, I'll
-> queue all patches to my nand/next branch (after merging Roger's
-> immutable branch in).
+On Fri, 12 Jan 2018 15:40:34 +0100
+Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
 
-Yes Boris. Series looks good to me. Thanks Ladislav. Great work :)
+> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+>=20
+> This simplifies code a bit by:
+> 1) Avoiding an extra (tiny) function
+> 2) Checking for amount of parsed (found) partitions just once
+> 3) Avoiding clearing/filling struct mtd_partitions manually
+>=20
+> With this commit a proper functions are called directly from the
+> mtd_device_parse_register. It doesn't need to use minor tricks like
+> memsetting struct to 0 to trigger an expected mtd_add_device_partitions
+> behavior.
+>=20
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+> ---
+>  drivers/mtd/mtdcore.c | 29 +++++++----------------------
+>  1 file changed, 7 insertions(+), 22 deletions(-)
+>=20
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index f6460862e2ad..0a414750bc8b 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -636,21 +636,6 @@ int del_mtd_device(struct mtd_info *mtd)
+>  	return ret;
+>  }
+> =20
+> -static int mtd_add_device_partitions(struct mtd_info *mtd,
+> -				     struct mtd_partitions *parts)
+> -{
+> -	const struct mtd_partition *real_parts =3D parts->parts;
+> -	int nbparts =3D parts->nr_parts;
+> -
+> -	if (nbparts =3D=3D 0 && !IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER))
+> -		return add_mtd_device(mtd);
+> -
+> -	if (nbparts > 0)
+> -		return add_mtd_partitions(mtd, real_parts, nbparts);
+> -
+> -	return 0;
+> -}
+> -
+>  /*
+>   * Set a few defaults based on the parent devices, if not provided by the
+>   * driver
+> @@ -717,19 +702,19 @@ int mtd_device_parse_register(struct mtd_info *mtd,=
+ const char * const *types,
+>  	ret =3D parse_mtd_partitions(mtd, types, &parsed, parser_data);
+>  	if ((ret < 0 || parsed.nr_parts =3D=3D 0) && parts && nr_parts) {
+>  		/* Fall back to driver-provided partitions */
+> -		parsed =3D (struct mtd_partitions){
+> -			.parts		=3D parts,
+> -			.nr_parts	=3D nr_parts,
+> -		};
+> +		ret =3D add_mtd_partitions(mtd, parts, nr_parts);
+>  	} else if (ret < 0) {
+>  		/* Didn't come up with parsed OR fallback partitions */
+>  		pr_info("mtd: failed to find partitions; one or more parsers reports e=
+rrors (%d)\n",
+>  			ret);
+>  		/* Don't abort on errors; we can still use unpartitioned MTD */
+> -		memset(&parsed, 0, sizeof(parsed));
+> +		if (!IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER))
+> +			ret =3D add_mtd_device(mtd);
+> +		else
+> +			ret =3D 0;
+> +	} else {
+> +		ret =3D add_mtd_partitions(mtd, parsed.parts, parsed.nr_parts);
+>  	}
 
-> 
->>
->> Most notable changes from v3:
->> - added dmaengine patches by Peter Ujfalusi
->> - added dt bindings documentation
->> - added cleanup patches
->> - DMA enabled by default
->>
->> Most notable changes from v4:
->> - collected tags
->> - used INT pin name properly
->> - hopefully all comments taken into account
->>
->> Most notable changes from v5:
->> - as this serie is expected to be merged via single tree patches 13 and 14
->>   were squashed together not to break bisecting.
->> - patch 16 was dropped.
->>
->> This patchset depends on an immutable commit:
->>
->> The following changes since commit 4fbd8d194f06c8a3fd2af1ce560ddb31f7ec8323:
->>
->>   Linux 4.15-rc1 (2017-11-26 16:01:47 -0800)
->>
->> are available in the git repository at:
->>
->>   https://github.com/rogerq/linux.git for-v4.16/gpmc-omap-immutable
->>
->> for you to fetch changes up to c18a7ac3398d0cef29749f9568666db8321aa4c9:
->>
->>   memory: omap-gpmc: Make 'bank-width' property optional (2017-12-01 15:37:49 +0200)
->>
->>
->> Ladislav Michl (12):
->>   dt-bindings: mtd: gpmc-onenand: Update properties description
->>   ARM: dts: OMAP2+: Add compatible property to onenand node
->>   ARM: dts: omap3-igep: Update onenand node timings
->>   mtd: onenand: omap2: Remove regulator support
->>   mtd: onenand: omap2: Remove skip initial unlocking support
->>   mtd: onenand: omap2: Remove partitioning support from platform data
->>   mtd: onenand: omap2: Account waiting time as waiting on IO
->>   mtd: onenand: omap2: Unify OMAP2 and OMAP3 DMA implementation
->>   mtd: onenand: omap2: Do not make delay for GPIO OMAP3 specific
->>   mtd: onenand: omap2: Decouple DMA enabling from INT pin availability
->>   mtd: onenand: omap2: Configure driver from DT
->>   ARM: OMAP2+: Remove gpmc-onenand
->>
->> Peter Ujfalusi (2):
->>   mtd: onenand: omap2: Simplify the DMA setup for various paths
->>   mtd: onenand: omap2: Convert to use dmaengine for memcpy
->>
->>  .../devicetree/bindings/mtd/gpmc-onenand.txt       |   6 +-
->>  arch/arm/boot/dts/omap2420-n8x0-common.dtsi        |   1 +
->>  arch/arm/boot/dts/omap3-igep.dtsi                  |  30 +-
->>  arch/arm/boot/dts/omap3-n900.dts                   |   1 +
->>  arch/arm/boot/dts/omap3-n950-n9.dtsi               |   1 +
->>  arch/arm/boot/dts/omap3430-sdp.dts                 |   1 +
->>  arch/arm/mach-omap2/Makefile                       |   3 -
->>  arch/arm/mach-omap2/gpmc-onenand.c                 | 409 ---------------
->>  drivers/memory/omap-gpmc.c                         | 158 ++++--
->>  drivers/mtd/onenand/Kconfig                        |   4 +-
->>  drivers/mtd/onenand/omap2.c                        | 576 ++++++++-------------
->>  include/linux/omap-gpmc.h                          |  28 +
->>  include/linux/platform_data/mtd-onenand-omap2.h    |  34 --
->>  13 files changed, 386 insertions(+), 866 deletions(-)
->>  delete mode 100644 arch/arm/mach-omap2/gpmc-onenand.c
->>  delete mode 100644 include/linux/platform_data/mtd-onenand-omap2.h
->>
-> 
+How about:
 
--- 
-cheers,
--roger
+	ret =3D parse_mtd_partitions(mtd, types, &parsed, parser_data);
+	if (!ret && parsed.nr_parts) {
+		parts =3D parsed.parts;
+		nr_parts =3D parsed.nr_parts;
+	}
 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+	if (nr_parts)
+		ret =3D add_mtd_partitions(mtd, parts, nr_parts);
+	else if (!device_is_registered(&mtd->dev))
+		ret =3D add_mtd_device(mtd);
+	else
+		ret =3D 0;
+
+	...
+> -
+> -	ret =3D mtd_add_device_partitions(mtd, &parsed);
+>  	if (ret)
+>  		goto out;
+> =20
