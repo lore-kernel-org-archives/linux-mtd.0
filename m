@@ -1,21 +1,22 @@
-Received: from imap.thunk.org ([2600:3c02::f03c:91ff:fe96:be03])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eZsyQ-0007VW-I9
- for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 06:37:56 +0000
-Date: Thu, 11 Jan 2018 23:33:38 -0500
-From: Theodore Ts'o <tytso@mit.edu>
-To: Eric Biggers <ebiggers3@gmail.com>
-Cc: linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- Eric Biggers <ebiggers@google.com>
-Subject: Re: [PATCH v2 00/11] fscrypt: symlink helpers and fscrypt.h cleanup
-Message-ID: <20180112043338.GA8249@thunk.org>
-References: <20180105184502.48473-1-ebiggers3@gmail.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eZu8k-00025N-65
+ for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 07:52:39 +0000
+Date: Fri, 12 Jan 2018 08:52:25 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Miquel Raynal <miquel.raynal@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
+ stable@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: nand: Fix nand_do_read_oob() return value
+Message-ID: <20180112085225.52482fba@bbrezillon>
+In-Reply-To: <20180111214202.24531-1-miquel.raynal@free-electrons.com>
+References: <20180111214202.24531-1-miquel.raynal@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180105184502.48473-1-ebiggers3@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,16 +26,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I've taken the v2 version of this series, plus the ext4-specific
-patches to use the new symlink helpers (from the v1 patch series).
-After testing and validating them, I included the patches to convert
-f2fs and ubifs to use the symlink helpers, so I could also grab the
-cleanup patches from the V1 series.
+On Thu, 11 Jan 2018 22:42:02 +0100
+Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
 
-Jaeguk, Richard, please let me know if you are OK with my taking the
-f2fs and ubifs changes in the fscrypt tree.  It seems like it would
-keep things simpler if we did that.
+> Starting from commit 041e4575f034 ("mtd: nand: handle ECC errors in
+> OOB"), nand_do_read_oob() (from the NAND core) did return 0 or a
+> negative error, and the MTD layer expected it.
+> 
+> However, the trend for the NAND layer is now to return an error or a
+> positive number of bitflips. Deciding which status to return to the user
+> belongs to the MTD layer.
+> 
+> Commit e47f68587b82 ("mtd: check for max_bitflips in mtd_read_oob()")
+> brought this logic to the mtd_read_oob() function while the return value
+> coming from nand_do_read_oob() (called by the ->_read_oob() hook) was
+> left unchanged.
+> 
+> Fixes: e47f68587b82 ("mtd: check for max_bitflips in mtd_read_oob()")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+> ---
+> 
+> Changes since v1:
+>   - s/->ecc.read_oob() hook/->_read_oob() hook/ in the commit message
+>   - Fixed the compilation issue
+> 
+>  drivers/mtd/nand/nand_base.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 469220065b8b..440d9f5d5b17 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -3876,7 +3876,7 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
+>  	if (mtd->ecc_stats.failed - stats.failed)
+>  		return -EBADMSG;
+>  
+> -	return  mtd->ecc_stats.corrected - stats.corrected ? -EUCLEAN : 0;
+> +	return ret;
 
-Cheers,
+This is wrong, you're only returning the max number of bitflips of the
+last OOB read.
 
-						- Ted
+>  }
+>  
+>  /**
