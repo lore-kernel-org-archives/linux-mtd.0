@@ -1,18 +1,19 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eZzvl-00055U-K8
- for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 14:03:41 +0000
-Date: Fri, 12 Jan 2018 15:03:15 +0100
+ id 1eZzxg-0006nW-3X
+ for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 14:05:41 +0000
+Date: Fri, 12 Jan 2018 15:05:13 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Ladislav Michl <ladis@linux-mips.org>, Roger Quadros <rogerq@ti.com>,
- Tony Lindgren <tony@atomide.com>
-Cc: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org, Peter
- Ujfalusi <peter.ujfalusi@ti.com>, Kyungmin Park
- <kyungmin.park@samsung.com>, Aaro Koskinen <aaro.koskinen@iki.fi>
-Subject: Re: [PATCH v6 00/14] OMAP2+ OneNAND driver update
-Message-ID: <20180112150315.54214fab@bbrezillon>
-In-Reply-To: <20180112131105.GA13810@lenoch>
-References: <20180112131105.GA13810@lenoch>
+To: Miquel Raynal <miquel.raynal@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
+ stable@vger.kernel.org
+Subject: Re: [PATCH v3] mtd: nand: Fix nand_do_read_oob() return value
+Message-ID: <20180112150513.588294c0@bbrezillon>
+In-Reply-To: <20180112091336.10709-1-miquel.raynal@free-electrons.com>
+References: <20180112091336.10709-1-miquel.raynal@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,96 +26,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 12 Jan 2018 14:11:05 +0100
-Ladislav Michl <ladis@linux-mips.org> wrote:
+On Fri, 12 Jan 2018 10:13:36 +0100
+Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
 
-> this patch serie updates OMAP2+ OneNAND driver to the present times, making
-> it fully DT configurable, using libgpio and dmaengine apis.
+> Starting from commit 041e4575f034 ("mtd: nand: handle ECC errors in
+> OOB"), nand_do_read_oob() (from the NAND core) did return 0 or a
+> negative error, and the MTD layer expected it.
 > 
-> Please note that unlike previous driver version, which basically ignored
-> DT specified timings, this one relies on it, so it is important to get
-> it right in your DT (dumping it from previous kernel version).
+> However, the trend for the NAND layer is now to return an error or a
+> positive number of bitflips. Deciding which status to return to the user
+> belongs to the MTD layer.
 > 
-> In case synchronous timings is requested, it is okay to specify timings
-> for the slowest chip ever used for you board as it is evetually optimized
-> after chip probe.
+> Commit e47f68587b82 ("mtd: check for max_bitflips in mtd_read_oob()")
+> brought this logic to the mtd_read_oob() function while the return value
+> coming from nand_do_read_oob() (called by the ->_read_oob() hook) was
+> left unchanged.
 > 
-> Original driver used DMA only if user specified INT gpio in platform
-> data, now DMA is used unconditionally and PIO mode is used as fallback.
-> 
-> In case anyone wants to give it a try, few DT related changes are needed:
-> - onenand node needs 'ti,omap2-onenand' compatible (for mailine boards this is
->   done in patch 2)
-> - to use INT pin, int-gpios needs to be specified.
+> Fixes: e47f68587b82 ("mtd: check for max_bitflips in mtd_read_oob()")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
 
-Roger, Tony, are you happy with this version? If this is the case, I'll
-queue all patches to my nand/next branch (after merging Roger's
-immutable branch in).
+Applied after fixing the bug I mentioned earlier.
 
-> 
-> Most notable changes from v3:
-> - added dmaengine patches by Peter Ujfalusi
-> - added dt bindings documentation
-> - added cleanup patches
-> - DMA enabled by default
-> 
-> Most notable changes from v4:
-> - collected tags
-> - used INT pin name properly
-> - hopefully all comments taken into account
-> 
-> Most notable changes from v5:
-> - as this serie is expected to be merged via single tree patches 13 and 14
->   were squashed together not to break bisecting.
-> - patch 16 was dropped.
-> 
-> This patchset depends on an immutable commit:
-> 
-> The following changes since commit 4fbd8d194f06c8a3fd2af1ce560ddb31f7ec8323:
-> 
->   Linux 4.15-rc1 (2017-11-26 16:01:47 -0800)
-> 
-> are available in the git repository at:
-> 
->   https://github.com/rogerq/linux.git for-v4.16/gpmc-omap-immutable
-> 
-> for you to fetch changes up to c18a7ac3398d0cef29749f9568666db8321aa4c9:
-> 
->   memory: omap-gpmc: Make 'bank-width' property optional (2017-12-01 15:37:49 +0200)
+Thanks,
+
+Boris
+
+> ---
 > 
 > 
-> Ladislav Michl (12):
->   dt-bindings: mtd: gpmc-onenand: Update properties description
->   ARM: dts: OMAP2+: Add compatible property to onenand node
->   ARM: dts: omap3-igep: Update onenand node timings
->   mtd: onenand: omap2: Remove regulator support
->   mtd: onenand: omap2: Remove skip initial unlocking support
->   mtd: onenand: omap2: Remove partitioning support from platform data
->   mtd: onenand: omap2: Account waiting time as waiting on IO
->   mtd: onenand: omap2: Unify OMAP2 and OMAP3 DMA implementation
->   mtd: onenand: omap2: Do not make delay for GPIO OMAP3 specific
->   mtd: onenand: omap2: Decouple DMA enabling from INT pin availability
->   mtd: onenand: omap2: Configure driver from DT
->   ARM: OMAP2+: Remove gpmc-onenand
+> Changes since v2:
+>   - Correctly return the maximum number of bitflips, not the number of
+>     bitflips of the last chunk only.
 > 
-> Peter Ujfalusi (2):
->   mtd: onenand: omap2: Simplify the DMA setup for various paths
->   mtd: onenand: omap2: Convert to use dmaengine for memcpy
+> Changes since v1:
+>   - s/->ecc.read_oob() hook/->_read_oob() hook/ in the commit message
+>   - Fixed the compilation issue
+>   
 > 
->  .../devicetree/bindings/mtd/gpmc-onenand.txt       |   6 +-
->  arch/arm/boot/dts/omap2420-n8x0-common.dtsi        |   1 +
->  arch/arm/boot/dts/omap3-igep.dtsi                  |  30 +-
->  arch/arm/boot/dts/omap3-n900.dts                   |   1 +
->  arch/arm/boot/dts/omap3-n950-n9.dtsi               |   1 +
->  arch/arm/boot/dts/omap3430-sdp.dts                 |   1 +
->  arch/arm/mach-omap2/Makefile                       |   3 -
->  arch/arm/mach-omap2/gpmc-onenand.c                 | 409 ---------------
->  drivers/memory/omap-gpmc.c                         | 158 ++++--
->  drivers/mtd/onenand/Kconfig                        |   4 +-
->  drivers/mtd/onenand/omap2.c                        | 576 ++++++++-------------
->  include/linux/omap-gpmc.h                          |  28 +
->  include/linux/platform_data/mtd-onenand-omap2.h    |  34 --
->  13 files changed, 386 insertions(+), 866 deletions(-)
->  delete mode 100644 arch/arm/mach-omap2/gpmc-onenand.c
->  delete mode 100644 include/linux/platform_data/mtd-onenand-omap2.h
+> drivers/mtd/nand/nand_base.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 > 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 469220065b8b..e4e39890a975 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -3794,6 +3794,7 @@ EXPORT_SYMBOL(nand_write_oob_syndrome);
+>  static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
+>  			    struct mtd_oob_ops *ops)
+>  {
+> +	unsigned int max_bitflips = 0;
+>  	int page, realpage, chipnr;
+>  	struct nand_chip *chip = mtd_to_nand(mtd);
+>  	struct mtd_ecc_stats stats;
+> @@ -3855,6 +3856,8 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
+>  		if (!readlen)
+>  			break;
+>  
+> +		max_bitflips = max_t(unsigned int, max_bitflips, ret);
+> +
+>  		/* Increment page address */
+>  		realpage++;
+>  
+> @@ -3876,7 +3879,7 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
+>  	if (mtd->ecc_stats.failed - stats.failed)
+>  		return -EBADMSG;
+>  
+> -	return  mtd->ecc_stats.corrected - stats.corrected ? -EUCLEAN : 0;
+> +	return max_bitflips;
+>  }
+>  
+>  /**
