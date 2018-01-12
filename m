@@ -1,19 +1,23 @@
-Date: Fri, 12 Jan 2018 15:08:46 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- Ludovic Desroches <ludovic.desroches@microchip.com>, Wenyou Yang
- <wenyou.yang@microchip.com>, <linux-media@vger.kernel.org>, Alexandre
- Belloni <alexandre.belloni@free-electrons.com>,
- <linux-mtd@lists.infradead.org>, Mauro Carvalho Chehab
- <mchehab@kernel.org>, Josh Wu <rainyfeeling@outlook.com>
-Subject: Re: [PATCH v2] MAINTAINERS: mtd/nand: update Microchip nand entry
-Message-ID: <20180112150846.3b74ad67@bbrezillon>
-In-Reply-To: <20180111162659.740-1-nicolas.ferre@microchip.com>
-References: <20180111162659.740-1-nicolas.ferre@microchip.com>
+Received: from muru.com ([72.249.23.125])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1ea0Ce-00063U-Ao
+ for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 14:21:05 +0000
+Date: Fri, 12 Jan 2018 06:20:50 -0800
+From: Tony Lindgren <tony@atomide.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Ladislav Michl <ladis@linux-mips.org>, Roger Quadros <rogerq@ti.com>,
+ linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+ Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Aaro Koskinen <aaro.koskinen@iki.fi>
+Subject: Re: [PATCH v6 00/14] OMAP2+ OneNAND driver update
+Message-ID: <20180112142050.GC4821@atomide.com>
+References: <20180112131105.GA13810@lenoch>
+ <20180112150315.54214fab@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180112150315.54214fab@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,75 +27,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 11 Jan 2018 17:26:59 +0100
-Nicolas Ferre <nicolas.ferre@microchip.com> wrote:
+* Boris Brezillon <boris.brezillon@free-electrons.com> [180112 14:03]:
+> On Fri, 12 Jan 2018 14:11:05 +0100
+> Ladislav Michl <ladis@linux-mips.org> wrote:
+> 
+> > this patch serie updates OMAP2+ OneNAND driver to the present times, making
+> > it fully DT configurable, using libgpio and dmaengine apis.
+> > 
+> > Please note that unlike previous driver version, which basically ignored
+> > DT specified timings, this one relies on it, so it is important to get
+> > it right in your DT (dumping it from previous kernel version).
+> > 
+> > In case synchronous timings is requested, it is okay to specify timings
+> > for the slowest chip ever used for you board as it is evetually optimized
+> > after chip probe.
+> > 
+> > Original driver used DMA only if user specified INT gpio in platform
+> > data, now DMA is used unconditionally and PIO mode is used as fallback.
+> > 
+> > In case anyone wants to give it a try, few DT related changes are needed:
+> > - onenand node needs 'ti,omap2-onenand' compatible (for mailine boards this is
+> >   done in patch 2)
+> > - to use INT pin, int-gpios needs to be specified.
+> 
+> Roger, Tony, are you happy with this version? If this is the case, I'll
+> queue all patches to my nand/next branch (after merging Roger's
+> immutable branch in).
 
-> Update Wenyou Yang email address.
-> Take advantage of this update to move this entry to the MICROCHIP / ATMEL
-> location and add the DT binding documentation link.
-> 
-> Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-> Acked-by: Wenyou Yang <wenyou.yang@microchip.com>
+Yes thanks Aaro for testing, sounds good to me.
 
-Applied.
+Regards,
 
-Thanks,
-
-Boris
-
-> ---
-> v2: - patch agains 09ec417b0ea8 ("mtd: nand: samsung: Disable subpage
->       writes on E-die NAND") of 
->       http://git.infradead.org/linux-mtd.git/shortlog/refs/heads/nand/next
->     - Ack by Wenyou added
-> 
-> 
-> Hi,
-> 
-> v1 patch was part of a series because it was conflicting with the previous one
-> named:
-> "[PATCH 1/2] MAINTAINERS: linux-media: update Microchip ISI and ISC entries"
-> Boris asked me to rebase it so that they are independent.
-> So, if this first one goes upstream through another tree, conflicts will have
-> to be resolved at one point.
-> 
-> Best regards,
->   Nicolas
-> 
-> 
->  MAINTAINERS | 15 ++++++++-------
->  1 file changed, 8 insertions(+), 7 deletions(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index aa71ab52fd76..37ee5ae4bae2 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2382,13 +2382,6 @@ F:	Documentation/devicetree/bindings/input/atmel,maxtouch.txt
->  F:	drivers/input/touchscreen/atmel_mxt_ts.c
->  F:	include/linux/platform_data/atmel_mxt_ts.h
->  
-> -ATMEL NAND DRIVER
-> -M:	Wenyou Yang <wenyou.yang@atmel.com>
-> -M:	Josh Wu <rainyfeeling@outlook.com>
-> -L:	linux-mtd@lists.infradead.org
-> -S:	Supported
-> -F:	drivers/mtd/nand/atmel/*
-> -
->  ATMEL SAMA5D2 ADC DRIVER
->  M:	Ludovic Desroches <ludovic.desroches@microchip.com>
->  L:	linux-iio@vger.kernel.org
-> @@ -9045,6 +9038,14 @@ F:	drivers/media/platform/atmel/atmel-isc.c
->  F:	drivers/media/platform/atmel/atmel-isc-regs.h
->  F:	devicetree/bindings/media/atmel-isc.txt
->  
-> +MICROCHIP / ATMEL NAND DRIVER
-> +M:	Wenyou Yang <wenyou.yang@microchip.com>
-> +M:	Josh Wu <rainyfeeling@outlook.com>
-> +L:	linux-mtd@lists.infradead.org
-> +S:	Supported
-> +F:	drivers/mtd/nand/atmel/*
-> +F:	Documentation/devicetree/bindings/mtd/atmel-nand.txt
-> +
->  MICROCHIP KSZ SERIES ETHERNET SWITCH DRIVER
->  M:	Woojung Huh <Woojung.Huh@microchip.com>
->  M:	Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
+Tony
