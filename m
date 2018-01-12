@@ -1,22 +1,25 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eZvfM-0004ek-TF
- for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 09:30:26 +0000
-Date: Fri, 12 Jan 2018 10:30:03 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Miquel Raynal <miquel.raynal@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
- stable@vger.kernel.org
-Subject: Re: [PATCH v3] mtd: nand: Fix nand_do_read_oob() return value
-Message-ID: <20180112103003.722cd541@bbrezillon>
-In-Reply-To: <20180112091336.10709-1-miquel.raynal@free-electrons.com>
-References: <20180112091336.10709-1-miquel.raynal@free-electrons.com>
+Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eZvjJ-00066K-3l
+ for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 09:34:30 +0000
+Received: by mail-lf0-x243.google.com with SMTP id j143so5255950lfg.0
+ for <linux-mtd@lists.infradead.org>; Fri, 12 Jan 2018 01:34:17 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Rob Herring <robh+dt@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH 1/2] dt-bindings: mtd: document Broadcom's BCM47xx partitions
+Date: Fri, 12 Jan 2018 10:33:53 +0100
+Message-Id: <20180112093354.17593-1-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,73 +29,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 12 Jan 2018 10:13:36 +0100
-Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
+From: Rafał Miłecki <rafal@milecki.pl>
 
-> Starting from commit 041e4575f034 ("mtd: nand: handle ECC errors in
-> OOB"), nand_do_read_oob() (from the NAND core) did return 0 or a
-> negative error, and the MTD layer expected it.
-> 
-> However, the trend for the NAND layer is now to return an error or a
-> positive number of bitflips. Deciding which status to return to the user
-> belongs to the MTD layer.
-> 
-> Commit e47f68587b82 ("mtd: check for max_bitflips in mtd_read_oob()")
-> brought this logic to the mtd_read_oob() function while the return value
-> coming from nand_do_read_oob() (called by the ->_read_oob() hook) was
-> left unchanged.
-> 
-> Fixes: e47f68587b82 ("mtd: check for max_bitflips in mtd_read_oob()")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
-> ---
-> 
-> 
-> Changes since v2:
->   - Correctly return the maximum number of bitflips, not the number of
->     bitflips of the last chunk only.
-> 
-> Changes since v1:
->   - s/->ecc.read_oob() hook/->_read_oob() hook/ in the commit message
->   - Fixed the compilation issue
->   
-> 
-> drivers/mtd/nand/nand_base.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 469220065b8b..e4e39890a975 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -3794,6 +3794,7 @@ EXPORT_SYMBOL(nand_write_oob_syndrome);
->  static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
->  			    struct mtd_oob_ops *ops)
->  {
-> +	unsigned int max_bitflips = 0;
->  	int page, realpage, chipnr;
->  	struct nand_chip *chip = mtd_to_nand(mtd);
->  	struct mtd_ecc_stats stats;
-> @@ -3855,6 +3856,8 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
->  		if (!readlen)
->  			break;
->  
-> +		max_bitflips = max_t(unsigned int, max_bitflips, ret);
+Broadcom based home router devices use partitions which have to be
+discovered in a specific non-standard way. As there is no partition
+table this commit adds and describes a new custom binding.
 
-Should be moved just before the if (!readlen) test, otherwise you don't
-take the last the ->read_oob() into account.
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+---
+ .../devicetree/bindings/mtd/partition.txt          | 46 +++++++++++++++++++++-
+ 1 file changed, 44 insertions(+), 2 deletions(-)
 
-No need to send a new version, I'll fix it when applying.
-
-> +
->  		/* Increment page address */
->  		realpage++;
->  
-> @@ -3876,7 +3879,7 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
->  	if (mtd->ecc_stats.failed - stats.failed)
->  		return -EBADMSG;
->  
-> -	return  mtd->ecc_stats.corrected - stats.corrected ? -EUCLEAN : 0;
-> +	return max_bitflips;
->  }
->  
->  /**
+diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
+index 36f3b769a626..b201d497b618 100644
+--- a/Documentation/devicetree/bindings/mtd/partition.txt
++++ b/Documentation/devicetree/bindings/mtd/partition.txt
+@@ -14,8 +14,6 @@ method is used for a given flash device. To describe the method there should be
+ a subnode of the flash device that is named 'partitions'. It must have a
+ 'compatible' property, which is used to identify the method to use.
+ 
+-We currently only document a binding for fixed layouts.
+-
+ 
+ Fixed Partitions
+ ================
+@@ -109,3 +107,47 @@ flash@2 {
+ 		};
+ 	};
+ };
++
++
++Broadcom BCM47xx Partitions
++===========================
++
++Broadcom is one of hardware manufacturers providing SoCs (BCM47xx) used in
++home routers. Their BCM947xx boards using CFE bootloader have several partitions
++without any on-flash partition table. On some devices their sizes and/or
++meanings can also vary so fixed partitioning can't be used.
++
++Discovering partitions on these devices is possible thanks to having a special
++header and/or magic signature at the beginning of each of them. They are also
++block aligned which is important for determinig a size.
++
++Most of partitions use ASCII text based magic for determining a type. More
++complex partitions (like TRX with its HDR0 magic) may include extra header
++containing some details, including a length.
++
++A list of supported partitions includes:
++1) Bootloader with Broadcom's CFE (Common Firmware Environment)
++2) NVRAM with configuration/calibration data
++3) Device manufacturer's data with some default values (e.g. SSIDs)
++4) TRX firmware container which can hold up to 4 subpartitions
++5) Backup TRX firmware used after failed upgrade
++
++As mentioned earlier, role of some partitions may depend on extra configuration.
++For example both: main firmware and backup firmware use the same TRX format with
++the same header. To distinguish currently used firmware a CFE's environment
++variable "bootpartition" is used.
++
++
++Devices using Broadcom partitions described above should should have flash node
++with a subnode named "partitions" using following properties:
++
++Required properties:
++- compatible : (required) must be "brcm,bcm947xx-cfe-partitions"
++
++Example:
++
++flash@0 {
++	partitions {
++		compatible = "brcm,bcm947xx-cfe-partitions";
++	};
++};
+-- 
+2.11.0
