@@ -1,28 +1,22 @@
-Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
- by merlin.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eZzBp-00045D-ED
- for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 13:16:10 +0000
-Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
- (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23994659AbeALNQJOBiKd (ORCPT
- <rfc822;linux-mtd@lists.infradead.org>);
- Fri, 12 Jan 2018 14:16:09 +0100
-Date: Fri, 12 Jan 2018 14:16:08 +0100
-Sender: Ladislav Michl <ladis@linux-mips.org>
-From: Ladislav Michl <ladis@linux-mips.org>
-To: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Roger Quadros <rogerq@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>
-Subject: [PATCH v6 10/14] mtd: onenand: omap2: Convert to use dmaengine for
- memcpy
-Message-ID: <20180112131608.GK13810@lenoch>
-References: <20180112131105.GA13810@lenoch>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eZzEk-0001Wl-Gs
+ for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 13:19:12 +0000
+Date: Fri, 12 Jan 2018 14:18:50 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Stefan Agner <stefan@agner.ch>
+Cc: miquel.raynal@free-electrons.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org, marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
+ richard@nod.at, linux-mtd@lists.infradead.org
+Subject: Re: [RFC PATCH 1/2] mtd: nand: vf610_nfc: make use of ->exec_op()
+Message-ID: <20180112141850.46f7f45f@bbrezillon>
+In-Reply-To: <fd812a82bf4a5604ff153d1d5b4e85ba@agner.ch>
+References: <20180111235037.10912-1-stefan@agner.ch>
+ <20180112115925.3d7dbde5@bbrezillon>
+ <fd812a82bf4a5604ff153d1d5b4e85ba@agner.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180112131105.GA13810@lenoch>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,190 +26,147 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+On Fri, 12 Jan 2018 13:58:11 +0100
+Stefan Agner <stefan@agner.ch> wrote:
 
-Do not use the legacy and deprecated omap-dma interface for setting up the
-memcpy.
+> On 2018-01-12 11:59, Boris Brezillon wrote:
+> > Hi Stefan,
+> > 
+> > On Fri, 12 Jan 2018 00:50:36 +0100
+> > Stefan Agner <stefan@agner.ch> wrote:
+> >   
+> >> This reworks the driver to make use of ->exec_op() callback. The
+> >> command sequencer of the VF610 NFC aligns well with the new ops
+> >> interface.  
+> > 
+> > That's great news!
+> >   
+> >>
+> >> Currently we handle reset and read id pattern separately. The
+> >> read id pattern uses registers for the returned data, using a
+> >> dedicated function helps to special case the data in op.
+> >>
+> >> The parameter page handling is rather ad-hoc currently: The
+> >> stack calls exec_op twice, once to read the paramter page and
+> >> a second time to tranfer data. The code/controller can not
+> >> handle this steps separately, hence just transfer data already
+> >> in the first call and just memcpy from the buffer in the second
+> >> call. This needs a small change in the nand_base.c file.  
+> > 
+> > Hm, I think it's using change_column after the read_param_page command,
+> > so it's not exactly a 'data xfer' only step. Can't your controller send
+> > only a command or address cycle without any associated data xfers on
+> > the bus?  
+> 
+> Hm, I was looking at ONFI, where it does not do the column change:
+> http://git.infradead.org/linux-mtd.git/blob/8878b126df769831cb2fa4088c3806538e8305f5:/drivers/mtd/nand/nand_base.c#l5110
+> 
+> I am pretty sure that the controller can handle command and address
+> separately, but not sure about the successive data transfer...
+> 
+> > 
+> > Anyway, if you really have to do the READ_PARAM_PAGE in a single step,
+> > you'll have to patch the core to pass a valid buffer and len != 0 when
+> > calling nand_read_param_page_op().  
+> 
+> I see.
+> 
+> >   
+> >>
+> >> The current state seems to pass MTD tests on a Colibri VF61.
+> >>
+> >> Signed-off-by: Stefan Agner <stefan@agner.ch>
+> >> ---
+> >> Hi Boris, Hi Miquel,
+> >>
+> >> Thanks for your work on the new NAND interface. The VF610 NFC
+> >> definitly matches better the ->exec_op() interface.  
+> > 
+> > And thanks for transitioning to this new interface.
+> >   
+> >>
+> >> This is still in early stage but seems to boot a Linux as rootfs
+> >> successfully. Before working on further simplification I wanted
+> >> to get some feedback on the general idea.  
+> > 
+> > Sure.
+> >   
+> >>
+> >> If needed, the data sheet of the controller can be optained
+> >> publicly (Vybrid Reference Manual, Chapter 10.3).  
+> > 
+> > I'll have a look, thanks for the pointer.
+> >   
+> >>
+> >> Some questions from my side:
+> >> - Parameter page: Why is exec_op called twice currently? This
+> >>   seems to be problematic for this controller. Are there plans
+> >>   to integrate the two calls in a single op sequence?  
+> > 
+> > I don't know, but nothing is set in stone.
+> >   
+> >> - Row/Column addresses: The controller seems to separate those
+> >>   two, hence the driver "guesses" which address bytes need to
+> >>   go where.. Maybe it would be better to separate that on ops
+> >>   level?  
+> > 
+> > Miquel had a similar need for the new marvell NAND driver, so maybe we
+> > can store this information at the nand_chip level:
+> > 
+> > 	unsigned int row_cycles;
+> > 	unsigned int column_cycles;
+> > 
+> > I still want to keep the address data in an array of bytes, but thanks
+> > to the [row,column]_cycles information you'll be able to easily convert
+> > this array of bytes into row and column addresses.  
+> 
+> That sounds good enough for my case.
+> 
+> >   
+> >> - Separation is often needed by command. One can make an educated
+> >>   guess what kind of command is going to be passed by filtering
+> >>   the appropriate ops. Maybe it would be good if the ops parser
+> >>   can filter by command?  
+> > 
+> > I'll have to check the datasheet you pointed out. We're not closed to
+> > the idea of filtering things by particular opcodes, but most of the time
+> > the controller is not hardcoded this way, and what they refer as READID
+> > or READSTATUS is not about sending a NAND_READ_ID or a NAND_READ_STATUS
+> > opcode, but following the sequence imposed by these operations (READID
+> > is CMD+ADDR+DATA_IN, READSTATUS is CMD+DATA_IN). Which means, if you
+> > have another operation which uses the same sequence but a different
+> > opcode, the controller is able to handle it.
+> >   
+> 
+> The chapter 10.3.4.7 Flash Command Code Description is probably most
+> interesting in that regard. With the old interface, I used predefined
+> command codes, with the new interface I can dynamically generate the
+> command code from the operations provided by the stack.
+> 
+> However, some seem to be handled specially: There is single bit for
+> "Read ID". And the bytes returned by the controller are stored in
+> register instead of the regular data area. These are the reasons I do
+> use special handling right now...
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
-Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
-Acked-by: Roger Quadros <rogerq@ti.com>
-Tested-by: Tony Lindgren <tony@atomide.com>
-Tested-by: Aaro Koskinen <aaro.koskinen@iki.fi>
----
+Just don't use those special handling if you can avoid it. I mean, a
+READID is just a regular READ with only 1 address cycle and X bytes of
+DATA:
+	NFC_SECSZ = X (information passed by the core)
+	NFC_CMD2.CODE = SEND_CMD1 | SEND_COL_ADDR1 | READ_DATA
+	...
 
-Changes in v6: None
-Changes in v5: None
-Changes in v4:
-- new patch
+This way you should have the READID data in the same region you have
+regular data.
 
-Changes in v3: None
-Changes in v2: None
+Same goes for the READ_STATUS operation:
+	NFC_SECSZ = 1 (or 0 if no DATA_OUT is requested)
+	NFC_CMD2.CODE = SEND_CMD1 [| READ_DATA]
 
- drivers/mtd/onenand/omap2.c | 80 +++++++++++++++++++++------------------------
- 1 file changed, 38 insertions(+), 42 deletions(-)
+And AFAICT, you can do naked READ/WRITE operations as well:
 
-diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-index 36314124488d..c9ff67100ef4 100644
---- a/drivers/mtd/onenand/omap2.c
-+++ b/drivers/mtd/onenand/omap2.c
-@@ -32,6 +32,7 @@
- #include <linux/interrupt.h>
- #include <linux/delay.h>
- #include <linux/dma-mapping.h>
-+#include <linux/dmaengine.h>
- #include <linux/io.h>
- #include <linux/slab.h>
- #include <linux/gpio.h>
-@@ -39,8 +40,6 @@
- #include <asm/mach/flash.h>
- #include <linux/platform_data/mtd-onenand-omap2.h>
- 
--#include <linux/omap-dma.h>
--
- #define DRIVER_NAME "omap2-onenand"
- 
- #define ONENAND_BUFRAM_SIZE	(1024 * 5)
-@@ -55,17 +54,15 @@ struct omap2_onenand {
- 	struct onenand_chip onenand;
- 	struct completion irq_done;
- 	struct completion dma_done;
--	int dma_channel;
-+	struct dma_chan *dma_chan;
- 	int freq;
- 	int (*setup)(void __iomem *base, int *freq_ptr);
- 	u8 flags;
- };
- 
--static void omap2_onenand_dma_cb(int lch, u16 ch_status, void *data)
-+static void omap2_onenand_dma_complete_func(void *completion)
- {
--	struct omap2_onenand *c = data;
--
--	complete(&c->dma_done);
-+	complete(completion);
- }
- 
- static irqreturn_t omap2_onenand_interrupt(int irq, void *dev_id)
-@@ -292,23 +289,31 @@ static inline int omap2_onenand_dma_transfer(struct omap2_onenand *c,
- 					     dma_addr_t src, dma_addr_t dst,
- 					     size_t count)
- {
--	int data_type = __ffs((src | dst | count));
-+	struct dma_async_tx_descriptor *tx;
-+	dma_cookie_t cookie;
- 
--	if (data_type > OMAP_DMA_DATA_TYPE_S32)
--		data_type = OMAP_DMA_DATA_TYPE_S32;
--
--	omap_set_dma_transfer_params(c->dma_channel, data_type,
--				     count / BIT(data_type), 1, 0, 0, 0);
--	omap_set_dma_src_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
--				src, 0, 0);
--	omap_set_dma_dest_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
--				 dst, 0, 0);
-+	tx = dmaengine_prep_dma_memcpy(c->dma_chan, dst, src, count, 0);
-+	if (!tx) {
-+		dev_err(&c->pdev->dev, "Failed to prepare DMA memcpy\n");
-+		return -EIO;
-+	}
- 
- 	reinit_completion(&c->dma_done);
--	omap_start_dma(c->dma_channel);
-+
-+	tx->callback = omap2_onenand_dma_complete_func;
-+	tx->callback_param = &c->dma_done;
-+
-+	cookie = tx->tx_submit(tx);
-+	if (dma_submit_error(cookie)) {
-+		dev_err(&c->pdev->dev, "Failed to do DMA tx_submit\n");
-+		return -EIO;
-+	}
-+
-+	dma_async_issue_pending(c->dma_chan);
-+
- 	if (!wait_for_completion_io_timeout(&c->dma_done,
- 					    msecs_to_jiffies(20))) {
--		omap_stop_dma(c->dma_channel);
-+		dmaengine_terminate_sync(c->dma_chan);
- 		return -ETIMEDOUT;
- 	}
- 
-@@ -468,8 +473,7 @@ static int omap2_onenand_probe(struct platform_device *pdev)
- 	c->flags = pdata->flags;
- 	c->gpmc_cs = pdata->cs;
- 	c->gpio_irq = pdata->gpio_irq;
--	c->dma_channel = pdata->dma_channel;
--	if (c->dma_channel < 0) {
-+	if (pdata->dma_channel < 0) {
- 		/* if -1, don't use DMA */
- 		c->gpio_irq = 0;
- 	}
-@@ -521,25 +525,17 @@ static int omap2_onenand_probe(struct platform_device *pdev)
- 		goto err_release_gpio;
- 	}
- 
--	if (c->dma_channel >= 0) {
--		r = omap_request_dma(0, pdev->dev.driver->name,
--				     omap2_onenand_dma_cb, (void *) c,
--				     &c->dma_channel);
--		if (r == 0) {
--			omap_set_dma_write_mode(c->dma_channel,
--						OMAP_DMA_WRITE_NON_POSTED);
--			omap_set_dma_src_data_pack(c->dma_channel, 1);
--			omap_set_dma_src_burst_mode(c->dma_channel,
--						    OMAP_DMA_DATA_BURST_8);
--			omap_set_dma_dest_data_pack(c->dma_channel, 1);
--			omap_set_dma_dest_burst_mode(c->dma_channel,
--						     OMAP_DMA_DATA_BURST_8);
--		} else {
-+	if (pdata->dma_channel >= 0) {
-+		dma_cap_mask_t mask;
-+
-+		dma_cap_zero(mask);
-+		dma_cap_set(DMA_MEMCPY, mask);
-+
-+		c->dma_chan = dma_request_channel(mask, NULL, NULL);
-+		if (!c->dma_chan)
- 			dev_info(&pdev->dev,
- 				 "failed to allocate DMA for OneNAND, "
- 				 "using PIO instead\n");
--			c->dma_channel = -1;
--		}
- 	}
- 
- 	dev_info(&pdev->dev, "initializing on CS%d, phys base 0x%08lx, virtual "
-@@ -553,7 +549,7 @@ static int omap2_onenand_probe(struct platform_device *pdev)
- 	mtd_set_of_node(&c->mtd, pdata->of_node);
- 
- 	this = &c->onenand;
--	if (c->dma_channel >= 0) {
-+	if (c->dma_chan) {
- 		this->wait = omap2_onenand_wait;
- 		this->read_bufferram = omap2_onenand_read_bufferram;
- 		this->write_bufferram = omap2_onenand_write_bufferram;
-@@ -573,8 +569,8 @@ static int omap2_onenand_probe(struct platform_device *pdev)
- err_release_onenand:
- 	onenand_release(&c->mtd);
- err_release_dma:
--	if (c->dma_channel != -1)
--		omap_free_dma(c->dma_channel);
-+	if (c->dma_chan)
-+		dma_release_channel(c->dma_chan);
- 	if (c->gpio_irq)
- 		free_irq(gpio_to_irq(c->gpio_irq), c);
- err_release_gpio:
-@@ -595,8 +591,8 @@ static int omap2_onenand_remove(struct platform_device *pdev)
- 	struct omap2_onenand *c = dev_get_drvdata(&pdev->dev);
- 
- 	onenand_release(&c->mtd);
--	if (c->dma_channel != -1)
--		omap_free_dma(c->dma_channel);
-+	if (c->dma_chan)
-+		dma_release_channel(c->dma_chan);
- 	omap2_onenand_shutdown(pdev);
- 	if (c->gpio_irq) {
- 		free_irq(gpio_to_irq(c->gpio_irq), c);
--- 
-2.15.1
+	NFC_SECSZ = X (the size of the read/write op)
+	NFC_CMD2.CODE = READ_DATA or WRITE_DATA
+
+
+With this approach, the final implementation should be much simpler
+than what we have today.
