@@ -1,21 +1,25 @@
-Subject: Re: [PATCH 1/2] MAINTAINERS: linux-media: update Microchip ISI and
- ISC entries
-To: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <linux-media@vger.kernel.org>, Mauro Carvalho Chehab <mchehab@kernel.org>
-CC: Ludovic Desroches <ludovic.desroches@microchip.com>, Wenyou Yang
- <wenyou.yang@microchip.com>, Boris BREZILLON
- <boris.brezillon@free-electrons.com>, Alexandre Belloni
- <alexandre.belloni@free-electrons.com>, <linux-mtd@lists.infradead.org>, Josh
- Wu <rainyfeeling@outlook.com>
-References: <eb6b3cbe8e48faee7e88eca0649e42cbde91ffa6.1515503733.git.nicolas.ferre@microchip.com>
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
-Message-ID: <701274f4-8006-132b-37ee-22cb374c6f62@microchip.com>
-Date: Fri, 12 Jan 2018 17:35:32 +0100
+Received: from smtp03.smtpout.orange.fr ([80.12.242.125]
+ helo=smtp.smtpout.orange.fr)
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1ea2R3-0001IH-PG
+ for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 16:44:08 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Miquel RAYNAL <miquel.raynal@free-electrons.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3 0/7] Marvell NAND controller rework with ->exec_op()
+References: <20180109103637.23798-1-miquel.raynal@free-electrons.com>
+ <20180111122751.4bd74366@bbrezillon> <87efmwb8bj.fsf@belgarion.home>
+ <20180111232417.4aa86075@xps13> <87a7xjbis2.fsf@belgarion.home>
+ <20180112094501.27706bfc@bbrezillon> <876087beui.fsf@belgarion.home>
+ <20180112112108.2e20dc14@bbrezillon>
+Date: Fri, 12 Jan 2018 17:43:52 +0100
+In-Reply-To: <20180112112108.2e20dc14@bbrezillon> (Boris Brezillon's message
+ of "Fri, 12 Jan 2018 11:21:08 +0100")
+Message-ID: <871sivauyf.fsf@belgarion.home>
 MIME-Version: 1.0
-In-Reply-To: <eb6b3cbe8e48faee7e88eca0649e42cbde91ffa6.1515503733.git.nicolas.ferre@microchip.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,82 +29,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/01/2018 at 14:46, Nicolas Ferre wrote:
-> These two image capture interface drivers are now handled
-> by Wenyou Yang.
-> I benefit from this change to update the two entries by correcting the
-> binding documentation link for ISC and moving the ISI to the new
-> MICROCHIP / ATMEL location.
-> 
-> Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-> ---
-> Hi,
-> 
-> Patch against next-20180109.
-> Note that I didn't find it useful to have several patches for these changes.
-> Tell me if you feel differently.
-> 
-> I would like to have the Ack from Ludovic and Wenyou obviously. I don't know if
-> Songjun can answer as he's not with Microchip anymore.
+Boris Brezillon <boris.brezillon@free-electrons.com> writes:
 
-Update on this patch:
+> I think I'm still missing something. If I look at the branch you just
+> pushed, I see that ->flash_bbt was not set to 1 before this commit [1],
+> which means the pxa3xx driver was no setting the NAND_BBT_USE_FLASH
+> flag, which in turn means you were not using the on-flash-bbt.
+> When you test the old (pxa3xx) driver, are you sure you're testing
+> things with a mainline kernel? If you have extra commits on top of
+> mainline, can you push them somewhere?
 
-Boris took the second patch of the series through NAND/MTD tree so this
-one can go alone upstream through the linux-media tree.
-I also have the 2 required Ack.
+Here is the branch I'm using with my pxa3xx driver :
+git fetch https://github.com/rjarzmik/linux pxa3xx-test
 
-So, do you want me to re-send this one independently or should we wait
-for 4.16-rc1?
-
-Best regards,
-  Nicolas
-
->  MAINTAINERS | 19 ++++++++++---------
->  1 file changed, 10 insertions(+), 9 deletions(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index a7d10a2bb980..65c4b59b582f 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2353,13 +2353,6 @@ L:	linux-i2c@vger.kernel.org
->  S:	Supported
->  F:	drivers/i2c/busses/i2c-at91.c
->  
-> -ATMEL ISI DRIVER
-> -M:	Ludovic Desroches <ludovic.desroches@microchip.com>
-> -L:	linux-media@vger.kernel.org
-> -S:	Supported
-> -F:	drivers/media/platform/atmel/atmel-isi.c
-> -F:	include/media/atmel-isi.h
-> -
->  ATMEL LCDFB DRIVER
->  M:	Nicolas Ferre <nicolas.ferre@microchip.com>
->  L:	linux-fbdev@vger.kernel.org
-> @@ -9102,12 +9095,20 @@ S:	Maintained
->  F:	drivers/crypto/atmel-ecc.*
->  
->  MICROCHIP / ATMEL ISC DRIVER
-> -M:	Songjun Wu <songjun.wu@microchip.com>
-> +M:	Wenyou Yang <wenyou.yang@microchip.com>
->  L:	linux-media@vger.kernel.org
->  S:	Supported
->  F:	drivers/media/platform/atmel/atmel-isc.c
->  F:	drivers/media/platform/atmel/atmel-isc-regs.h
-> -F:	devicetree/bindings/media/atmel-isc.txt
-> +F:	Documentation/devicetree/bindings/media/atmel-isc.txt
-> +
-> +MICROCHIP / ATMEL ISI DRIVER
-> +M:	Wenyou Yang <wenyou.yang@microchip.com>
-> +L:	linux-media@vger.kernel.org
-> +S:	Supported
-> +F:	drivers/media/platform/atmel/atmel-isi.c
-> +F:	include/media/atmel-isi.h
-> +F:	Documentation/devicetree/bindings/media/atmel-isi.txt
->  
->  MICROCHIP KSZ SERIES ETHERNET SWITCH DRIVER
->  M:	Woojung Huh <Woojung.Huh@microchip.com>
-> 
-
+Cheers.
 
 -- 
-Nicolas Ferre
+Robert
