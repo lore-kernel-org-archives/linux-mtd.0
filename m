@@ -1,23 +1,20 @@
-Received: from fllnx209.ext.ti.com ([198.47.19.16])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eZzpp-0003CO-EO
- for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 13:57:31 +0000
-Subject: Re: [PATCH v6 12/14] mtd: onenand: omap2: Decouple DMA enabling from
- INT pin availability
-From: Roger Quadros <rogerq@ti.com>
-To: Ladislav Michl <ladis@linux-mips.org>, <linux-mtd@lists.infradead.org>,
- <linux-omap@vger.kernel.org>
-CC: Boris Brezillon <boris.brezillon@free-electrons.com>, Peter Ujfalusi
- <peter.ujfalusi@ti.com>, Kyungmin Park <kyungmin.park@samsung.com>, Aaro
- Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>
-References: <20180112131105.GA13810@lenoch> <20180112131657.GM13810@lenoch>
- <7d2a452b-3f0e-0ffb-5636-a26d1a903e88@ti.com>
-Message-ID: <bed28644-2df3-26e4-2261-6aa96b7f2aa3@ti.com>
-Date: Fri, 12 Jan 2018 15:56:55 +0200
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eZzvl-00055U-K8
+ for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 14:03:41 +0000
+Date: Fri, 12 Jan 2018 15:03:15 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Ladislav Michl <ladis@linux-mips.org>, Roger Quadros <rogerq@ti.com>,
+ Tony Lindgren <tony@atomide.com>
+Cc: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org, Peter
+ Ujfalusi <peter.ujfalusi@ti.com>, Kyungmin Park
+ <kyungmin.park@samsung.com>, Aaro Koskinen <aaro.koskinen@iki.fi>
+Subject: Re: [PATCH v6 00/14] OMAP2+ OneNAND driver update
+Message-ID: <20180112150315.54214fab@bbrezillon>
+In-Reply-To: <20180112131105.GA13810@lenoch>
+References: <20180112131105.GA13810@lenoch>
 MIME-Version: 1.0
-In-Reply-To: <7d2a452b-3f0e-0ffb-5636-a26d1a903e88@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-GB
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,29 +25,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, 12 Jan 2018 14:11:05 +0100
+Ladislav Michl <ladis@linux-mips.org> wrote:
 
-
-On 12/01/18 15:46, Roger Quadros wrote:
-> On 12/01/18 15:16, Ladislav Michl wrote:
->> INT pin (gpio_irq) is not really needed for DMA but only for notification
->> when a command that needs wait has completed. DMA memcpy can be still used
->> even without gpio_irq available, so enable it unconditionally.
->>
->> Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
->> Reviewed-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
->> Tested-by: Tony Lindgren <tony@atomide.com>
->> Tested-by: Aaro Koskinen <aaro.koskinen@iki.fi>
+> this patch serie updates OMAP2+ OneNAND driver to the present times, making
+> it fully DT configurable, using libgpio and dmaengine apis.
 > 
-> Acked-by: Tony Lindgren <tony@atomide.com>
+> Please note that unlike previous driver version, which basically ignored
+> DT specified timings, this one relies on it, so it is important to get
+> it right in your DT (dumping it from previous kernel version).
 > 
+> In case synchronous timings is requested, it is okay to specify timings
+> for the slowest chip ever used for you board as it is evetually optimized
+> after chip probe.
+> 
+> Original driver used DMA only if user specified INT gpio in platform
+> data, now DMA is used unconditionally and PIO mode is used as fallback.
+> 
+> In case anyone wants to give it a try, few DT related changes are needed:
+> - onenand node needs 'ti,omap2-onenand' compatible (for mailine boards this is
+>   done in patch 2)
+> - to use INT pin, int-gpios needs to be specified.
 
-oops. sorry.
+Roger, Tony, are you happy with this version? If this is the case, I'll
+queue all patches to my nand/next branch (after merging Roger's
+immutable branch in).
 
-Acked-by: Roger Quadros <rogerq@ti.com>
-
-
--- 
-cheers,
--roger
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+> 
+> Most notable changes from v3:
+> - added dmaengine patches by Peter Ujfalusi
+> - added dt bindings documentation
+> - added cleanup patches
+> - DMA enabled by default
+> 
+> Most notable changes from v4:
+> - collected tags
+> - used INT pin name properly
+> - hopefully all comments taken into account
+> 
+> Most notable changes from v5:
+> - as this serie is expected to be merged via single tree patches 13 and 14
+>   were squashed together not to break bisecting.
+> - patch 16 was dropped.
+> 
+> This patchset depends on an immutable commit:
+> 
+> The following changes since commit 4fbd8d194f06c8a3fd2af1ce560ddb31f7ec8323:
+> 
+>   Linux 4.15-rc1 (2017-11-26 16:01:47 -0800)
+> 
+> are available in the git repository at:
+> 
+>   https://github.com/rogerq/linux.git for-v4.16/gpmc-omap-immutable
+> 
+> for you to fetch changes up to c18a7ac3398d0cef29749f9568666db8321aa4c9:
+> 
+>   memory: omap-gpmc: Make 'bank-width' property optional (2017-12-01 15:37:49 +0200)
+> 
+> 
+> Ladislav Michl (12):
+>   dt-bindings: mtd: gpmc-onenand: Update properties description
+>   ARM: dts: OMAP2+: Add compatible property to onenand node
+>   ARM: dts: omap3-igep: Update onenand node timings
+>   mtd: onenand: omap2: Remove regulator support
+>   mtd: onenand: omap2: Remove skip initial unlocking support
+>   mtd: onenand: omap2: Remove partitioning support from platform data
+>   mtd: onenand: omap2: Account waiting time as waiting on IO
+>   mtd: onenand: omap2: Unify OMAP2 and OMAP3 DMA implementation
+>   mtd: onenand: omap2: Do not make delay for GPIO OMAP3 specific
+>   mtd: onenand: omap2: Decouple DMA enabling from INT pin availability
+>   mtd: onenand: omap2: Configure driver from DT
+>   ARM: OMAP2+: Remove gpmc-onenand
+> 
+> Peter Ujfalusi (2):
+>   mtd: onenand: omap2: Simplify the DMA setup for various paths
+>   mtd: onenand: omap2: Convert to use dmaengine for memcpy
+> 
+>  .../devicetree/bindings/mtd/gpmc-onenand.txt       |   6 +-
+>  arch/arm/boot/dts/omap2420-n8x0-common.dtsi        |   1 +
+>  arch/arm/boot/dts/omap3-igep.dtsi                  |  30 +-
+>  arch/arm/boot/dts/omap3-n900.dts                   |   1 +
+>  arch/arm/boot/dts/omap3-n950-n9.dtsi               |   1 +
+>  arch/arm/boot/dts/omap3430-sdp.dts                 |   1 +
+>  arch/arm/mach-omap2/Makefile                       |   3 -
+>  arch/arm/mach-omap2/gpmc-onenand.c                 | 409 ---------------
+>  drivers/memory/omap-gpmc.c                         | 158 ++++--
+>  drivers/mtd/onenand/Kconfig                        |   4 +-
+>  drivers/mtd/onenand/omap2.c                        | 576 ++++++++-------------
+>  include/linux/omap-gpmc.h                          |  28 +
+>  include/linux/platform_data/mtd-onenand-omap2.h    |  34 --
+>  13 files changed, 386 insertions(+), 866 deletions(-)
+>  delete mode 100644 arch/arm/mach-omap2/gpmc-onenand.c
+>  delete mode 100644 include/linux/platform_data/mtd-onenand-omap2.h
+> 
