@@ -1,20 +1,21 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eZx3g-0002WI-Ip
- for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 10:59:38 +0000
-Date: Fri, 12 Jan 2018 11:59:25 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Stefan Agner <stefan@agner.ch>
+Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eZyv1-0003Ex-BU
+ for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 12:58:52 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Date: Fri, 12 Jan 2018 13:58:11 +0100
+From: Stefan Agner <stefan@agner.ch>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: miquel.raynal@free-electrons.com, computersforpeace@gmail.com,
  dwmw2@infradead.org, marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
  richard@nod.at, linux-mtd@lists.infradead.org
 Subject: Re: [RFC PATCH 1/2] mtd: nand: vf610_nfc: make use of ->exec_op()
-Message-ID: <20180112115925.3d7dbde5@bbrezillon>
-In-Reply-To: <20180111235037.10912-1-stefan@agner.ch>
+In-Reply-To: <20180112115925.3d7dbde5@bbrezillon>
 References: <20180111235037.10912-1-stefan@agner.ch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+ <20180112115925.3d7dbde5@bbrezillon>
+Message-ID: <fd812a82bf4a5604ff153d1d5b4e85ba@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,114 +25,142 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Stefan,
+On 2018-01-12 11:59, Boris Brezillon wrote:
+> Hi Stefan,
+> 
+> On Fri, 12 Jan 2018 00:50:36 +0100
+> Stefan Agner <stefan@agner.ch> wrote:
+> 
+>> This reworks the driver to make use of ->exec_op() callback. The
+>> command sequencer of the VF610 NFC aligns well with the new ops
+>> interface.
+> 
+> That's great news!
+> 
+>>
+>> Currently we handle reset and read id pattern separately. The
+>> read id pattern uses registers for the returned data, using a
+>> dedicated function helps to special case the data in op.
+>>
+>> The parameter page handling is rather ad-hoc currently: The
+>> stack calls exec_op twice, once to read the paramter page and
+>> a second time to tranfer data. The code/controller can not
+>> handle this steps separately, hence just transfer data already
+>> in the first call and just memcpy from the buffer in the second
+>> call. This needs a small change in the nand_base.c file.
+> 
+> Hm, I think it's using change_column after the read_param_page command,
+> so it's not exactly a 'data xfer' only step. Can't your controller send
+> only a command or address cycle without any associated data xfers on
+> the bus?
 
-On Fri, 12 Jan 2018 00:50:36 +0100
-Stefan Agner <stefan@agner.ch> wrote:
+Hm, I was looking at ONFI, where it does not do the column change:
+http://git.infradead.org/linux-mtd.git/blob/8878b126df769831cb2fa4088c3806538e8305f5:/drivers/mtd/nand/nand_base.c#l5110
 
-> This reworks the driver to make use of ->exec_op() callback. The
-> command sequencer of the VF610 NFC aligns well with the new ops
-> interface.
-
-That's great news!
+I am pretty sure that the controller can handle command and address
+separately, but not sure about the successive data transfer...
 
 > 
-> Currently we handle reset and read id pattern separately. The
-> read id pattern uses registers for the returned data, using a
-> dedicated function helps to special case the data in op.
-> 
-> The parameter page handling is rather ad-hoc currently: The
-> stack calls exec_op twice, once to read the paramter page and
-> a second time to tranfer data. The code/controller can not
-> handle this steps separately, hence just transfer data already
-> in the first call and just memcpy from the buffer in the second
-> call. This needs a small change in the nand_base.c file.
+> Anyway, if you really have to do the READ_PARAM_PAGE in a single step,
+> you'll have to patch the core to pass a valid buffer and len != 0 when
+> calling nand_read_param_page_op().
 
-Hm, I think it's using change_column after the read_param_page command,
-so it's not exactly a 'data xfer' only step. Can't your controller send
-only a command or address cycle without any associated data xfers on
-the bus?
-
-Anyway, if you really have to do the READ_PARAM_PAGE in a single step,
-you'll have to patch the core to pass a valid buffer and len != 0 when
-calling nand_read_param_page_op().
+I see.
 
 > 
-> The current state seems to pass MTD tests on a Colibri VF61.
+>>
+>> The current state seems to pass MTD tests on a Colibri VF61.
+>>
+>> Signed-off-by: Stefan Agner <stefan@agner.ch>
+>> ---
+>> Hi Boris, Hi Miquel,
+>>
+>> Thanks for your work on the new NAND interface. The VF610 NFC
+>> definitly matches better the ->exec_op() interface.
 > 
-> Signed-off-by: Stefan Agner <stefan@agner.ch>
-> ---
-> Hi Boris, Hi Miquel,
+> And thanks for transitioning to this new interface.
 > 
-> Thanks for your work on the new NAND interface. The VF610 NFC
-> definitly matches better the ->exec_op() interface.
-
-And thanks for transitioning to this new interface.
-
+>>
+>> This is still in early stage but seems to boot a Linux as rootfs
+>> successfully. Before working on further simplification I wanted
+>> to get some feedback on the general idea.
 > 
-> This is still in early stage but seems to boot a Linux as rootfs
-> successfully. Before working on further simplification I wanted
-> to get some feedback on the general idea.
-
-Sure.
-
+> Sure.
 > 
-> If needed, the data sheet of the controller can be optained
-> publicly (Vybrid Reference Manual, Chapter 10.3).
-
-I'll have a look, thanks for the pointer.
-
+>>
+>> If needed, the data sheet of the controller can be optained
+>> publicly (Vybrid Reference Manual, Chapter 10.3).
 > 
-> Some questions from my side:
-> - Parameter page: Why is exec_op called twice currently? This
->   seems to be problematic for this controller. Are there plans
->   to integrate the two calls in a single op sequence?
+> I'll have a look, thanks for the pointer.
+> 
+>>
+>> Some questions from my side:
+>> - Parameter page: Why is exec_op called twice currently? This
+>>   seems to be problematic for this controller. Are there plans
+>>   to integrate the two calls in a single op sequence?
+> 
+> I don't know, but nothing is set in stone.
+> 
+>> - Row/Column addresses: The controller seems to separate those
+>>   two, hence the driver "guesses" which address bytes need to
+>>   go where.. Maybe it would be better to separate that on ops
+>>   level?
+> 
+> Miquel had a similar need for the new marvell NAND driver, so maybe we
+> can store this information at the nand_chip level:
+> 
+> 	unsigned int row_cycles;
+> 	unsigned int column_cycles;
+> 
+> I still want to keep the address data in an array of bytes, but thanks
+> to the [row,column]_cycles information you'll be able to easily convert
+> this array of bytes into row and column addresses.
 
-I don't know, but nothing is set in stone.
-
-> - Row/Column addresses: The controller seems to separate those
->   two, hence the driver "guesses" which address bytes need to
->   go where.. Maybe it would be better to separate that on ops
->   level?
-
-Miquel had a similar need for the new marvell NAND driver, so maybe we
-can store this information at the nand_chip level:
-
-	unsigned int row_cycles;
-	unsigned int column_cycles;
-
-I still want to keep the address data in an array of bytes, but thanks
-to the [row,column]_cycles information you'll be able to easily convert
-this array of bytes into row and column addresses.
-
-> - Separation is often needed by command. One can make an educated
->   guess what kind of command is going to be passed by filtering
->   the appropriate ops. Maybe it would be good if the ops parser
->   can filter by command?
-
-I'll have to check the datasheet you pointed out. We're not closed to
-the idea of filtering things by particular opcodes, but most of the time
-the controller is not hardcoded this way, and what they refer as READID
-or READSTATUS is not about sending a NAND_READ_ID or a NAND_READ_STATUS
-opcode, but following the sequence imposed by these operations (READID
-is CMD+ADDR+DATA_IN, READSTATUS is CMD+DATA_IN). Which means, if you
-have another operation which uses the same sequence but a different
-opcode, the controller is able to handle it.
+That sounds good enough for my case.
 
 > 
-> --
-> Stefan
+>> - Separation is often needed by command. One can make an educated
+>>   guess what kind of command is going to be passed by filtering
+>>   the appropriate ops. Maybe it would be good if the ops parser
+>>   can filter by command?
 > 
-> miquel.raynal@free-electrons.com
+> I'll have to check the datasheet you pointed out. We're not closed to
+> the idea of filtering things by particular opcodes, but most of the time
+> the controller is not hardcoded this way, and what they refer as READID
+> or READSTATUS is not about sending a NAND_READ_ID or a NAND_READ_STATUS
+> opcode, but following the sequence imposed by these operations (READID
+> is CMD+ADDR+DATA_IN, READSTATUS is CMD+DATA_IN). Which means, if you
+> have another operation which uses the same sequence but a different
+> opcode, the controller is able to handle it.
 > 
->  drivers/mtd/nand/vf610_nfc.c | 543 +++++++++++++++++++++++++++----------------
->  1 file changed, 349 insertions(+), 194 deletions(-)
 
-I'll have a look at the code once I have a better understanding of how
-the controller actually work.
+The chapter 10.3.4.7 Flash Command Code Description is probably most
+interesting in that regard. With the old interface, I used predefined
+command codes, with the new interface I can dynamically generate the
+command code from the operations provided by the stack.
 
-Once again, thanks a lot for working on this topic.
+However, some seem to be handled specially: There is single bit for
+"Read ID". And the bytes returned by the controller are stored in
+register instead of the regular data area. These are the reasons I do
+use special handling right now...
 
-Regards,
+--
+Stefan
 
-Boris
+>>
+>> --
+>> Stefan
+>>
+>> miquel.raynal@free-electrons.com
+>>
+>>  drivers/mtd/nand/vf610_nfc.c | 543 +++++++++++++++++++++++++++----------------
+>>  1 file changed, 349 insertions(+), 194 deletions(-)
+> 
+> I'll have a look at the code once I have a better understanding of how
+> the controller actually work.
+> 
+> Once again, thanks a lot for working on this topic.
+> 
+> Regards,
+> 
+> Boris
