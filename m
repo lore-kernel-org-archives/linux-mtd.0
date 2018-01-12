@@ -1,31 +1,21 @@
-Date: Fri, 12 Jan 2018 16:55:21 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Miquel Raynal <miquel.raynal@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>, Gregory
- Clement <gregory.clement@free-electrons.com>, Sebastian Hesselbarth
- <sebastian.hesselbarth@gmail.com>, Russell King <linux@armlinux.org.uk>,
- Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>, Eric Miao <eric.y.miao@gmail.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
- <will.deacon@arm.com>, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Thomas
- Petazzoni <thomas.petazzoni@free-electrons.com>, Antoine Tenart
- <antoine.tenart@free-electrons.com>, Nadav Haklai <nadavh@marvell.com>,
- Ofer Heifetz <oferh@marvell.com>, Hanna Hawa <hannah@marvell.com>, Neta Zur
- Hershkovits <neta@marvell.com>, Willy Tarreau <w@1wt.eu>, Sean Nyekjaer
- <sean.nyekjaer@prevas.dk>
-Subject: Re: [PATCH v3 0/7] Marvell NAND controller rework with ->exec_op()
-Message-ID: <20180112165521.28d17a20@bbrezillon>
-In-Reply-To: <20180109103637.23798-1-miquel.raynal@free-electrons.com>
-References: <20180109103637.23798-1-miquel.raynal@free-electrons.com>
+Subject: Re: [PATCH 1/2] MAINTAINERS: linux-media: update Microchip ISI and
+ ISC entries
+To: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <linux-media@vger.kernel.org>, Mauro Carvalho Chehab <mchehab@kernel.org>
+CC: Ludovic Desroches <ludovic.desroches@microchip.com>, Wenyou Yang
+ <wenyou.yang@microchip.com>, Boris BREZILLON
+ <boris.brezillon@free-electrons.com>, Alexandre Belloni
+ <alexandre.belloni@free-electrons.com>, <linux-mtd@lists.infradead.org>, Josh
+ Wu <rainyfeeling@outlook.com>
+References: <eb6b3cbe8e48faee7e88eca0649e42cbde91ffa6.1515503733.git.nicolas.ferre@microchip.com>
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
+Message-ID: <701274f4-8006-132b-37ee-22cb374c6f62@microchip.com>
+Date: Fri, 12 Jan 2018 17:35:32 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <eb6b3cbe8e48faee7e88eca0649e42cbde91ffa6.1515503733.git.nicolas.ferre@microchip.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,142 +25,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue,  9 Jan 2018 11:36:30 +0100
-Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
-
+On 09/01/2018 at 14:46, Nicolas Ferre wrote:
+> These two image capture interface drivers are now handled
+> by Wenyou Yang.
+> I benefit from this change to update the two entries by correcting the
+> binding documentation link for ISC and moving the ISI to the new
+> MICROCHIP / ATMEL location.
+> 
+> Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+> ---
 > Hi,
->=20
-> After the addition of the NAND framework ->exec_op() interface (see [1]
-> for the series preparing it and [2] for the last version of the
-> core-side implementation of ->exec_op() itself), this series replaces
-> the current Marvell NAND controller driver pxa3xx_nand.c with a rework
-> called marvell_nand.c.
->=20
-> Aside the fact that it drops the big state machine, improves the overall
-> speed and implements raw accesses, it is the first driver-side
-> implementation of the ->exec_op() interface and may be used as reference
-> for latter reworks of the same type.
->=20
-> One may find more detail about why a completely new driver is needed in
-> the commit log of:
->=20
->     "mtd: nand: add reworked Marvell NAND controller driver"
->=20
-> Device tree NAND node definition for all platforms referring to the
-> Marvell driver using the new bindings have already been accepted by the
-> MVEBU DT maintainers and will be merged after the driver. They are more
-> hierarchical and fit the real organization of the hardware, by having
-> NAND partitions that are part of NAND chip nodes, themselves part of the
-> NAND controller node.
->=20
-> These changes have been tested on:
->    - PXA3xx platform with a CM-X300 board (2kiB page NAND, 1b/512B
->      strength, Hamming ECC engine) [32 bits]
->    - Armada 385 DB AP (4kiB page NAND, 4b/512B, BCH ECC engine) [32 bits]
->    - Armada 398 DB (4kiB page NAND, 8b/512B, BCH ECC engine using a layout
->      with a last chunk different than the others) [32 bits]
->    - Armada 7040 DB and Armada 8040 DB (4kiB page NAND, 4b/512B, BCH ECC
->      engine) [64 bits]
->    - Triax dvb-tc board (2kiB page NAND, 4b/512B, BCH ECC engine) [32 bit=
-s]
->=20
-> This version is known not to be stable yet with a Zylonite based setup but
-> otherwise looks good for Marvell EBU platforms.
->=20
-> For people who would like to test it easily, a branch ready to be tested
-> is available at [3]. It is based on nand/next and has all the changes
-> brought by the previously mentionned series as well as this one.
->=20
-> Thank you,
-> Miqu=C3=A8l
->=20
->=20
-> [1] https://www.spinics.net/lists/arm-kernel/msg619633.html
-> [2] http://lists.infradead.org/pipermail/linux-mtd/2017-December/077965.h=
-tml
-> [3] https://github.com/miquelraynal/linux/tree/marvell/nand-next/nfc
->=20
->=20
-> Changes since v2:
->   - Added a patch to create the nand-rb property in the Documentation
->   - Rewording in the Documentation according to Rob's comments
->   - Moved from marvell,rb to nand-rb property in the code
->   - Disociated using this driver with Marvell EBU platforms than using
->     it with PXA ones
->   - Fixed the handling of 16-bit buses
->   - Fixed SPDX comment style
->   - Reorganized registers offsets/bit fields definitions as requested
->   - Moved to Kernel doc
->   - Changed the logic in ->select_chip() to use a prepared value of NDCR
->     only instead of recalculating it
->   - Fixed the presence of the SPARE_EN bit, reworked a bit the
->     hmg_do_read/write() helpers
->   - Fixed the OOB layouts that were unusable (all spare data first, then
->     all ECC bytes)
->   - Additional check on mtd->writesize when using NFCv1 (all sizes not
->     supported)
->   - Various typos/rewording
->=20
-> Changes since v1:
->   - Rewording
->   - Fixed BCH ->read/write_page() hooks for 2kiB pages NAND chips
->   - Removed license text, used SPDX tag instead
->   - Removed read_page_data()
->   - Enhanced the DT bindings document with the label property and the
->     deprecated bindings.
->   - Simplified the read_chunk() helper (OOB always read).
->   - Simplified the ->bch_read_page() hook by removing the addition raw
->     read to get ECC bytes.
->   - Fixed the ->correct() function that did not check for bitflips in
->     ECC bytes in erased pages.
->=20
->=20
-> Miquel Raynal (7):
->   dt-bindings: mtd: document new nand-rb property
->   dt-bindings: mtd: add Marvell NAND controller documentation
->   mtd: nand: add reworked Marvell NAND controller driver
->   mtd: nand: use reworked NAND controller driver with Marvell EBU SoCs
+> 
+> Patch against next-20180109.
+> Note that I didn't find it useful to have several patches for these changes.
+> Tell me if you feel differently.
+> 
+> I would like to have the Ack from Ludovic and Wenyou obviously. I don't know if
+> Songjun can answer as he's not with Microchip anymore.
 
-Applied patches 1 to 4.
+Update on this patch:
 
-Can you please send a patch to add a new entry in MAINTAINERS for this
-driver?
+Boris took the second patch of the series through NAND/MTD tree so this
+one can go alone upstream through the linux-media tree.
+I also have the 2 required Ack.
 
-Thanks,
+So, do you want me to re-send this one independently or should we wait
+for 4.16-rc1?
 
-Boris
+Best regards,
+  Nicolas
 
->   mtd: nand: use Marvell reworked NAND controller driver with all
->     platforms
->   dt-bindings: mtd: remove pxa3xx NAND controller documentation
->   mtd: nand: remove useless fields from pxa3xx NAND platform data
->=20
->  .../devicetree/bindings/mtd/marvell-nand.txt       |  123 +
->  Documentation/devicetree/bindings/mtd/nand.txt     |    1 +
->  .../devicetree/bindings/mtd/pxa3xx-nand.txt        |   50 -
->  arch/arm/configs/cm_x300_defconfig                 |    2 +-
->  arch/arm/configs/mvebu_v7_defconfig                |    2 +-
->  arch/arm/configs/pxa3xx_defconfig                  |    3 +-
->  arch/arm/configs/pxa_defconfig                     |    2 +-
->  arch/arm/configs/raumfeld_defconfig                |    2 +-
->  arch/arm/mach-mmp/ttc_dkb.c                        |    4 +-
->  arch/arm/mach-pxa/cm-x300.c                        |    8 +-
->  arch/arm/mach-pxa/colibri-pxa3xx.c                 |    8 +-
->  arch/arm/mach-pxa/colibri.h                        |    2 +-
->  arch/arm/mach-pxa/littleton.c                      |   10 +-
->  arch/arm/mach-pxa/mxm8x10.c                        |   10 +-
->  arch/arm/mach-pxa/raumfeld.c                       |    6 +-
->  arch/arm/mach-pxa/zylonite.c                       |   10 +-
->  arch/arm64/configs/defconfig                       |    2 +-
->  drivers/mtd/nand/Kconfig                           |   18 +-
->  drivers/mtd/nand/Makefile                          |    2 +-
->  drivers/mtd/nand/marvell_nand.c                    | 2896 ++++++++++++++=
-++++++
->  drivers/mtd/nand/pxa3xx_nand.c                     | 2104 --------------
->  include/linux/platform_data/mtd-nand-pxa3xx.h      |   43 +-
->  22 files changed, 3072 insertions(+), 2236 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mtd/marvell-nand.txt
->  delete mode 100644 Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
->  create mode 100644 drivers/mtd/nand/marvell_nand.c
->  delete mode 100644 drivers/mtd/nand/pxa3xx_nand.c
->=20
+>  MAINTAINERS | 19 ++++++++++---------
+>  1 file changed, 10 insertions(+), 9 deletions(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index a7d10a2bb980..65c4b59b582f 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2353,13 +2353,6 @@ L:	linux-i2c@vger.kernel.org
+>  S:	Supported
+>  F:	drivers/i2c/busses/i2c-at91.c
+>  
+> -ATMEL ISI DRIVER
+> -M:	Ludovic Desroches <ludovic.desroches@microchip.com>
+> -L:	linux-media@vger.kernel.org
+> -S:	Supported
+> -F:	drivers/media/platform/atmel/atmel-isi.c
+> -F:	include/media/atmel-isi.h
+> -
+>  ATMEL LCDFB DRIVER
+>  M:	Nicolas Ferre <nicolas.ferre@microchip.com>
+>  L:	linux-fbdev@vger.kernel.org
+> @@ -9102,12 +9095,20 @@ S:	Maintained
+>  F:	drivers/crypto/atmel-ecc.*
+>  
+>  MICROCHIP / ATMEL ISC DRIVER
+> -M:	Songjun Wu <songjun.wu@microchip.com>
+> +M:	Wenyou Yang <wenyou.yang@microchip.com>
+>  L:	linux-media@vger.kernel.org
+>  S:	Supported
+>  F:	drivers/media/platform/atmel/atmel-isc.c
+>  F:	drivers/media/platform/atmel/atmel-isc-regs.h
+> -F:	devicetree/bindings/media/atmel-isc.txt
+> +F:	Documentation/devicetree/bindings/media/atmel-isc.txt
+> +
+> +MICROCHIP / ATMEL ISI DRIVER
+> +M:	Wenyou Yang <wenyou.yang@microchip.com>
+> +L:	linux-media@vger.kernel.org
+> +S:	Supported
+> +F:	drivers/media/platform/atmel/atmel-isi.c
+> +F:	include/media/atmel-isi.h
+> +F:	Documentation/devicetree/bindings/media/atmel-isi.txt
+>  
+>  MICROCHIP KSZ SERIES ETHERNET SWITCH DRIVER
+>  M:	Woojung Huh <Woojung.Huh@microchip.com>
+> 
+
+
+-- 
+Nicolas Ferre
