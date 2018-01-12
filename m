@@ -1,22 +1,19 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eZwnL-00063s-CM
- for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 10:42:45 +0000
-Date: Fri, 12 Jan 2018 11:42:31 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Stefan Agner <stefan@agner.ch>
-Cc: miquel.raynal@free-electrons.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
- richard@nod.at, linux-mtd@lists.infradead.org
-Subject: Re: [RFC PATCH 2/2] mtd: nand: always request data transfer for
- parameter page
-Message-ID: <20180112114231.51960fd3@bbrezillon>
-In-Reply-To: <20180111235037.10912-2-stefan@agner.ch>
-References: <20180111235037.10912-1-stefan@agner.ch>
- <20180111235037.10912-2-stefan@agner.ch>
+Received: from lilium.sigma-star.at ([109.75.188.150])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eZwpp-0006vO-Tb
+ for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 10:45:20 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Yufen Yu <yuyufen@huawei.com>
+Cc: dedekind1@gmail.com, adrian.hunter@intel.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Subject: Re: [RFC PATCH] ubifs: Add zstd support
+Date: Fri, 12 Jan 2018 11:45:49 +0100
+Message-ID: <7790203.HFZG64yrZx@blindfold>
+In-Reply-To: <20180112092421.22095-1-yuyufen@huawei.com>
+References: <20180112092421.22095-1-yuyufen@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,34 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 12 Jan 2018 00:50:37 +0100
-Stefan Agner <stefan@agner.ch> wrote:
+Yufen Yu,
 
-> To make sure the controller actually transfers data add a
-> DATA_IN op even if len is 0.
-
-Nope, this is wrong. You should patch the caller of
-nand_read_param_page_op() to always pass a valid buffer and
-len != 0 instead.
-
+Am Freitag, 12. Januar 2018, 10:24:21 CET schrieb Yufen Yu:
+> Add zstd compression and decompression support to ubifs. zstd at its
+> fastest level compresses almost as well as zlib, while offering much
+> faster compression and decompression, approaching lzo speeds.
 > 
-> Signed-off-by: Stefan Agner <stefan@agner.ch>
-> ---
->  drivers/mtd/nand/nand_base.c | 4 ----
->  1 file changed, 4 deletions(-)
+> This patch is based on the patch:
+> 	https://patchwork.kernel.org/patch/9892631/
 > 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 96c97588e1ba..26bbf54e125b 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -1510,10 +1510,6 @@ static int nand_read_param_page_op(struct nand_chip *chip, u8 page, void *buf,
->  		};
->  		struct nand_operation op = NAND_OPERATION(instrs);
->  
-> -		/* Drop the DATA_IN instruction if len is set to 0. */
-> -		if (!len)
-> -			op.ninstrs--;
-> -
->  		return nand_exec_op(chip, &op);
->  	}
->  
+> zstd source repository: https://github.com/facebook/zstd
+
+Do you have numbers on how much we gain for UBIFS on a typical embedded 
+device?
+
+Thanks,
+//richard
