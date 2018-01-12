@@ -1,34 +1,19 @@
-Date: Fri, 12 Jan 2018 19:21:42 +0100
-From: Miquel Raynal <miquel.raynal@free-electrons.com>
-To: Willy Tarreau <w@1wt.eu>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Rob Herring <robh+dt@kernel.org>, Mark
- Rutland <mark.rutland@arm.com>, Jason Cooper <jason@lakedaemon.net>, Andrew
- Lunn <andrew@lunn.ch>, Gregory Clement
- <gregory.clement@free-electrons.com>, Sebastian Hesselbarth
- <sebastian.hesselbarth@gmail.com>, Russell King <linux@armlinux.org.uk>,
- Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>, Eric Miao <eric.y.miao@gmail.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
- <will.deacon@arm.com>, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>, Thomas Petazzoni
- <thomas.petazzoni@free-electrons.com>, devicetree@vger.kernel.org, Sean
- Nyekjaer <sean.nyekjaer@prevas.dk>, Antoine Tenart
- <antoine.tenart@free-electrons.com>, Nadav Haklai <nadavh@marvell.com>,
- linux-mtd@lists.infradead.org, Neta Zur Hershkovits <neta@marvell.com>,
- Hanna Hawa <hannah@marvell.com>, Ofer Heifetz <oferh@marvell.com>,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 0/7] Marvell NAND controller rework with ->exec_op()
-Message-ID: <20180112192142.6541edf4@xps13>
-In-Reply-To: <20180111222833.GA15584@1wt.eu>
-References: <20180109103637.23798-1-miquel.raynal@free-electrons.com>
- <20180111222833.GA15584@1wt.eu>
+Received: from faraday.heklatech.com ([89.221.255.157])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1ea4P9-0002Ua-Jg
+ for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 18:50:17 +0000
+From: "Gudjon I. Gudjonsson" <gudjon@gudjon.org>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Reply-To: gudjon@gudjon.org
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: ECC configuration of NAND from Linux  (MEMSETOOBSEL)
+Date: Fri, 12 Jan 2018 19:50:00 +0100
+Message-ID: <2581607.A7Zl2yeV5U@fessender>
+In-Reply-To: <20180112154639.63a8d133@bbrezillon>
+References: <2132429.fBNFCxDbQz@fessender> <20180112154639.63a8d133@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,34 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Willy,
+Hi Boris
 
-On Thu, 11 Jan 2018 23:28:33 +0100
-Willy Tarreau <w@1wt.eu> wrote:
+Thanks for the answer.
+> > I read your FAQ and found the reference to ioctl (MEMSETOOBSEL) [1]
+> > but it seems to be removed from the kernel.
+> > /*
+> >  * Note, the following ioctl existed in the past and was removed:
+> >  * #define MEMSETOOBSEL           _IOW('M', 9, struct nand_oobinfo)
+> >  * Try to avoid adding a new ioctl with the same ioctl number.
+> >  */
+> > I assume this is an error in the documentation but I wonder if you
+> > know any solution to my problem?
+> 
+> It's not something you can change dynamically. When you change the ECC
+> config, it makes existing content unreadable. In order to change this
+> setting you'll have to erase the whole flash and then change the ECC
+> config in your DT or board file (note that not all drivers support
+> adjusting the ECC strength/step-size).
+I will have to accept that but can you please tell me how to change the
+ECC strength if my driver supports it? My plan is to use swupdate and
+update the system using an SD-card that is already installed but I could
+not find any reference to changing the ECC strength.
+I am using the Atmel SAMA5d36 CPU and Micron mt29F2G08abaeawp 
+NAND flash. 
 
-> Hi Miquel,
->=20
-> On Tue, Jan 09, 2018 at 11:36:30AM +0100, Miquel Raynal wrote:
-> > These changes have been tested on:
-> >    - PXA3xx platform with a CM-X300 board (2kiB page NAND, 1b/512B
-> >      strength, Hamming ECC engine) [32 bits]
-> >    - Armada 385 DB AP (4kiB page NAND, 4b/512B, BCH ECC engine) [32
-> > bits]
-> >    - Armada 398 DB (4kiB page NAND, 8b/512B, BCH ECC engine using a
-> > layout with a last chunk different than the others) [32 bits]
-> >    - Armada 7040 DB and Armada 8040 DB (4kiB page NAND, 4b/512B,
-> > BCH ECC engine) [64 bits]
-> >    - Triax dvb-tc board (2kiB page NAND, 4b/512B, BCH ECC engine)
-> > [32 bits] =20
->=20
-> If you're interested, I have a mirabox with an armada 370 which uses
-> the same driver. I've not powered it up for a while but if that can
-> be useful I can try to find some time for this.
-
-Thank you very much for the proposal!
-
-For the moment I don't think there is a need as this type of platform
-has already been tested, but I keep it in mind.
-
-Thanks again!
-Miqu=C3=A8l
+Regards
+Gudjon
