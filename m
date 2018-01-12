@@ -1,23 +1,48 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eZvDm-000360-U8
- for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 09:01:58 +0000
-Date: Fri, 12 Jan 2018 10:01:32 +0100
-From: Miquel Raynal <miquel.raynal@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v3 0/7] Marvell NAND controller rework with ->exec_op()
-Message-ID: <20180112100132.2b8cd003@xps13>
-In-Reply-To: <20180112094501.27706bfc@bbrezillon>
-References: <20180109103637.23798-1-miquel.raynal@free-electrons.com>
- <20180111122751.4bd74366@bbrezillon>
- <87efmwb8bj.fsf@belgarion.home> <20180111232417.4aa86075@xps13>
- <87a7xjbis2.fsf@belgarion.home>
- <20180112094501.27706bfc@bbrezillon>
+Received: from szxga05-in.huawei.com ([45.249.212.191] helo=huawei.com)
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eZvOR-0000Xf-ML
+ for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 09:12:57 +0000
+Subject: Re: [PATCH v3 00/27] kill devm_ioremap_nocache
+To: Christophe LEROY <christophe.leroy@c-s.fr>, Greg KH
+ <gregkh@linuxfoundation.org>
+References: <1514026525-32538-1-git-send-email-xieyisheng1@huawei.com>
+ <20171223134831.GB10103@kroah.com>
+ <b8ff7f17-7f2c-f220-9833-7ae5bd7343d5@c-s.fr>
+ <8dd19411-5b06-0aa4-fd0e-e5b112c25dcb@huawei.com>
+ <1eb206ed-95e9-5839-485d-0e549ff3f505@c-s.fr>
+CC: <linux-kernel@vger.kernel.org>, <ysxie@foxmail.com>,
+ <ulf.hansson@linaro.org>, <linux-mmc@vger.kernel.org>,
+ <boris.brezillon@free-electrons.com>, <richard@nod.at>,
+ <marek.vasut@gmail.com>, <cyrille.pitchen@wedev4u.fr>,
+ <linux-mtd@lists.infradead.org>, <alsa-devel@alsa-project.org>,
+ <wim@iguana.be>, <linux@roeck-us.net>, <linux-watchdog@vger.kernel.org>,
+ <b.zolnierkie@samsung.com>, <linux-fbdev@vger.kernel.org>,
+ <linus.walleij@linaro.org>, <linux-gpio@vger.kernel.org>,
+ <ralf@linux-mips.org>, <linux-mips@linux-mips.org>, <lgirdwood@gmail.com>,
+ <broonie@kernel.org>, <tglx@linutronix.de>, <jason@lakedaemon.net>,
+ <marc.zyngier@arm.com>, <arnd@arndb.de>, <andriy.shevchenko@linux.intel.com>,
+ <industrypack-devel@lists.sourceforge.net>, <wg@grandegger.com>,
+ <mkl@pengutronix.de>, <linux-can@vger.kernel.org>, <mchehab@kernel.org>,
+ <linux-media@vger.kernel.org>, <a.zummo@towertech.it>,
+ <alexandre.belloni@free-electrons.com>, <linux-rtc@vger.kernel.org>,
+ <daniel.vetter@intel.com>, <jani.nikula@linux.intel.com>,
+ <seanpaul@chromium.org>, <airlied@linux.ie>,
+ <dri-devel@lists.freedesktop.org>, <kvalo@codeaurora.org>,
+ <linux-wireless@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+ <tj@kernel.org>, <linux-ide@vger.kernel.org>, <bhelgaas@google.com>,
+ <linux-pci@vger.kernel.org>, <devel@driverdev.osuosl.org>,
+ <dvhart@infradead.org>, <andy@infradead.org>,
+ <platform-driver-x86@vger.kernel.org>, <jakub.kicinski@netronome.com>,
+ <davem@davemloft.net>, <nios2-dev@lists.rocketboards.org>,
+ <netdev@vger.kernel.org>, <vinod.koul@intel.com>, <dan.j.williams@intel.com>,
+ <dmaengine@vger.kernel.org>, <jslaby@suse.com>
+From: Yisheng Xie <xieyisheng1@huawei.com>
+Message-ID: <ff498c83-d1ee-7553-e20c-a07369f8dad6@huawei.com>
+Date: Fri, 12 Jan 2018 17:12:12 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1eb206ed-95e9-5839-485d-0e549ff3f505@c-s.fr>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,79 +52,112 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Robert,
+Hi Christophe ，
 
-On Fri, 12 Jan 2018 09:45:01 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+On 2018/1/4 16:05, Christophe LEROY wrote:
+> 
+> 
+> Le 25/12/2017 à 02:34, Yisheng Xie a écrit :
+>>
+>>
+>> On 2017/12/24 17:05, christophe leroy wrote:
+>>>
+>>>
+>>> Le 23/12/2017 à 14:48, Greg KH a écrit :
+>>>> On Sat, Dec 23, 2017 at 06:55:25PM +0800, Yisheng Xie wrote:
+>>>>> Hi all,
+>>>>>
+>>>>> When I tried to use devm_ioremap function and review related code, I found
+>>>>> devm_ioremap and devm_ioremap_nocache is almost the same with each other,
+>>>>> except one use ioremap while the other use ioremap_nocache.
+>>>>
+>>>> For all arches?  Really?  Look at MIPS, and x86, they have different
+>>>> functions.
+>>>>
+>>>>> While ioremap's
+>>>>> default function is ioremap_nocache, so devm_ioremap_nocache also have the
+>>>>> same function with devm_ioremap, which can just be killed to reduce the size
+>>>>> of devres.o(from 20304 bytes to 18992 bytes in my compile environment).
+>>>>>
+>>>>> I have posted two versions, which use macro instead of function for
+>>>>> devm_ioremap_nocache[1] or devm_ioremap[2]. And Greg suggest me to kill
+>>>>> devm_ioremap_nocache for no need to keep a macro around for the duplicate
+>>>>> thing. So here comes v3 and please help to review.
+>>>>
+>>>> I don't think this can be done, what am I missing?  These functions are
+>>>> not identical, sorry for missing that before.
+>>>
+>>> devm_ioremap() and devm_ioremap_nocache() are quite similar, both use devm_ioremap_release() for the release, why not just defining:
+>>>
+>>> static void __iomem *__devm_ioremap(struct device *dev, resource_size_t offset,
+>>>                 resource_size_t size, bool nocache)
+>>> {
+>>> [...]
+>>>      if (nocache)
+>>>          addr = ioremap_nocache(offset, size);
+>>>      else
+>>>          addr = ioremap(offset, size);
+>>> [...]
+>>> }
+>>>
+>>> then in include/linux/io.h
+>>>
+>>> static inline void __iomem *devm_ioremap(struct device *dev, resource_size_t offset,
+>>>                 resource_size_t size)
+>>> {return __devm_ioremap(dev, offset, size, false);}
+>>>
+>>> static inline void __iomem *devm_ioremap_nocache(struct device *dev, resource_size_t offset,
+>>>                     resource_size_t size);
+>>> {return __devm_ioremap(dev, offset, size, true);}
+>>
+>> Yeah, this seems good to me, right now we have devm_ioremap, devm_ioremap_wc, devm_ioremap_nocache
+>> May be we can use an enum like:
+>> typedef enum {
+>>     DEVM_IOREMAP = 0,
+>>     DEVM_IOREMAP_NOCACHE,
+>>     DEVM_IOREMAP_WC,
+>> } devm_ioremap_type;
+>>
+>> static inline void __iomem *devm_ioremap(struct device *dev, resource_size_t offset,
+>>                  resource_size_t size)
+>>   {return __devm_ioremap(dev, offset, size, DEVM_IOREMAP);}
+>>
+>>   static inline void __iomem *devm_ioremap_nocache(struct device *dev, resource_size_t offset,
+>>                      resource_size_t size);
+>>   {return __devm_ioremap(dev, offset, size, DEVM_IOREMAP_NOCACHE);}
+>>
+>>   static inline void __iomem *devm_ioremap_wc(struct device *dev, resource_size_t offset,
+>>                      resource_size_t size);
+>>   {return __devm_ioremap(dev, offset, size, DEVM_IOREMAP_WC);}
+>>
+>>   static void __iomem *__devm_ioremap(struct device *dev, resource_size_t offset,
+>>                  resource_size_t size, devm_ioremap_type type)
+>>   {
+>>       void __iomem **ptr, *addr = NULL;
+>>   [...]
+>>       switch (type){
+>>       case DEVM_IOREMAP:
+>>           addr = ioremap(offset, size);
+>>           break;
+>>       case DEVM_IOREMAP_NOCACHE:
+>>           addr = ioremap_nocache(offset, size);
+>>           break;
+>>       case DEVM_IOREMAP_WC:
+>>           addr = ioremap_wc(offset, size);
+>>           break;
+>>       }
+>>   [...]
+>>   }
+> 
+> 
+> That looks good to me, will you submit a v4 ?
 
-> On Fri, 12 Jan 2018 09:09:17 +0100
-> Robert Jarzmik <robert.jarzmik@free.fr> wrote:
->=20
-> > Miquel RAYNAL <miquel.raynal@free-electrons.com> writes:
-> >=20
-> > I begun all your test procedure (on my zylonite board).
-> > The timing registers are the same in both pxa3xx_nand and
-> > marvell_nand, ie : [    3.085539] Timing registers from Bootloader:
-> > [    3.089971] -  NDTR0: 0x00161c1c
-> > [    3.095979] -  NDTR1: 0x0f3c00a2
-> >=20
-> > I can attach the dmesg of the first run (dump of OOB). Yet I think
-> > you're missing the point as to where the bug lies. =20
->=20
-> We definitely don't know where the bug lies, otherwise we wouldn't do
-> the remote debug session we're doing here.
->=20
-> >=20
-> > In the zylonite setup, the BBT is _not_ in the OOB of each block.
-> > Instead, it lies at the end of the NAND, in the last blocks (see
-> > struct nand_bbt_descr). Reading each block and declaring it as bad
-> > as is done in marvell_nand (at least that is my understanding of
-> > your traces), but it is not what should be done if a match is found
-> > for the bbt_pattern. Instead, the BBT should be loaded from the
-> > last 8 blocks of the NAND, ie. page 130944 and page 131008 in my
-> > setup. =20
->=20
-> The driver is not searching for a BBT because it's explicitly disabled
-> in your pdata (if it was enabled we would see something like "Bad
-> block table not found ..." or "Bad block table found ..." in the
-> logs). And that's anyway not the bug we're trying to fix here. In
-> your setup (2k pages with Hamming ECC), the bad block markers, i.e.
-> the markers present in each block and used to mark a block good or
-> bad (0xffff =3D> good, !=3D 0xffff =3D> bad), should be preserved. So, the
-> symptoms we're seeing here, where almost all blocks are reported as
-> bad when scanning BBMs, is not expected, and that's what we're trying
-> to debug/fix.
+Sorry for late response. And I will submit the v4 as your suggestion.
 
-Also, the first blocks are (presumably) taken by the Bootloader, having
-data there in the OOB is not impossible. Could you please show the same
-dumps within the partition where you UBI/EXT setup relies?
+Thanks
+Yisheng
 
->=20
-> >=20
-> > Therefore, I would rather think that marvell-nand is not using the
-> > BBT at the end of the nand rather than misconfiguring the timing
-> > registers. =20
->=20
-> Timing mis-configuration was just a lead we had to follow. It seems
-> that it's not the problem here, but we had to test it. Now, the
-> missing BBT scan is clearly caused by an explicit config telling the
-> driver to ignore the BBT. You can try to enable it if you want to
-> test BBT handling (pdata->flash_bbt =3D 1), but even if that works,
-> we'd like to understand why the regular BBM scanning does not work.
->=20
-> Honestly, it's hard to be sure what you're testing, because we don't
-> know whether you're testing the branch Miquel provided or manually
-> apply some changes locally. Can you push your local changes somewhere
-> (if any)?
-
-Yes, please, can you push a branch with your patches?
-
-
-As far as I remember, you removed the flash_bbt from the pdata to avoid
-smashing the BBT again. Can you test this works with the old driver ?
-
-If the old driver fails without flash_bbt, then you should go back to
-the original setup and test again the last modifications.
-
-Thanks,
-Miqu=C3=A8l
+> 
+> Christophe
+> 
+>>
