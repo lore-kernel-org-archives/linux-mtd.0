@@ -1,19 +1,19 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eZzxg-0006nW-3X
- for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 14:05:41 +0000
-Date: Fri, 12 Jan 2018 15:05:13 +0100
+ id 1ea00i-0007LC-H5
+ for linux-mtd@lists.infradead.org; Fri, 12 Jan 2018 14:08:47 +0000
+Date: Fri, 12 Jan 2018 15:08:22 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Miquel Raynal <miquel.raynal@free-electrons.com>
 Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
  <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
  Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
- stable@vger.kernel.org
-Subject: Re: [PATCH v3] mtd: nand: Fix nand_do_read_oob() return value
-Message-ID: <20180112150513.588294c0@bbrezillon>
-In-Reply-To: <20180112091336.10709-1-miquel.raynal@free-electrons.com>
-References: <20180112091336.10709-1-miquel.raynal@free-electrons.com>
+ <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org, David
+ Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Subject: Re: [PATCH] mtd: mtd_oobtest: Handle bitflips during reads
+Message-ID: <20180112150822.291162c8@bbrezillon>
+In-Reply-To: <20180111203920.8136-1-miquel.raynal@free-electrons.com>
+References: <20180111203920.8136-1-miquel.raynal@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,74 +26,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 12 Jan 2018 10:13:36 +0100
++David
+
+On Thu, 11 Jan 2018 21:39:20 +0100
 Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
 
-> Starting from commit 041e4575f034 ("mtd: nand: handle ECC errors in
-> OOB"), nand_do_read_oob() (from the NAND core) did return 0 or a
-> negative error, and the MTD layer expected it.
+> Reads from NAND devices usually trigger bitflips, this is an expected
+> behavior. While bitflips are under a given threshold, the MTD core
+> returns 0. However, when the number of corrected bitflips is above this
+> same threshold, -EUCLEAN is returned to inform the upper layer that this
+> block is slightly dying and soon the ECC engine will be overtaken so
+> actions should be taken to move the data out of it.
 > 
-> However, the trend for the NAND layer is now to return an error or a
-> positive number of bitflips. Deciding which status to return to the user
-> belongs to the MTD layer.
+> This particular condition should not be treated like an error and the
+> test should continue.
 > 
-> Commit e47f68587b82 ("mtd: check for max_bitflips in mtd_read_oob()")
-> brought this logic to the mtd_read_oob() function while the return value
-> coming from nand_do_read_oob() (called by the ->_read_oob() hook) was
-> left unchanged.
-> 
-> Fixes: e47f68587b82 ("mtd: check for max_bitflips in mtd_read_oob()")
-> Cc: stable@vger.kernel.org
 > Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
 
-Applied after fixing the bug I mentioned earlier.
+Applied.
 
-Thanks,
-
-Boris
+BTW, any volunteer to port this test in mtd-utils, or is there anything
+in this test preventing us implementing it in userspace?
 
 > ---
+>  drivers/mtd/tests/oobtest.c | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
 > 
-> 
-> Changes since v2:
->   - Correctly return the maximum number of bitflips, not the number of
->     bitflips of the last chunk only.
-> 
-> Changes since v1:
->   - s/->ecc.read_oob() hook/->_read_oob() hook/ in the commit message
->   - Fixed the compilation issue
->   
-> 
-> drivers/mtd/nand/nand_base.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 469220065b8b..e4e39890a975 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -3794,6 +3794,7 @@ EXPORT_SYMBOL(nand_write_oob_syndrome);
->  static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
->  			    struct mtd_oob_ops *ops)
->  {
-> +	unsigned int max_bitflips = 0;
->  	int page, realpage, chipnr;
->  	struct nand_chip *chip = mtd_to_nand(mtd);
->  	struct mtd_ecc_stats stats;
-> @@ -3855,6 +3856,8 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
->  		if (!readlen)
->  			break;
->  
-> +		max_bitflips = max_t(unsigned int, max_bitflips, ret);
+> diff --git a/drivers/mtd/tests/oobtest.c b/drivers/mtd/tests/oobtest.c
+> index 1cb3f7758fb6..766b2c385682 100644
+> --- a/drivers/mtd/tests/oobtest.c
+> +++ b/drivers/mtd/tests/oobtest.c
+> @@ -193,6 +193,9 @@ static int verify_eraseblock(int ebnum)
+>  		ops.datbuf    = NULL;
+>  		ops.oobbuf    = readbuf;
+>  		err = mtd_read_oob(mtd, addr, &ops);
+> +		if (mtd_is_bitflip(err))
+> +			err = 0;
 > +
->  		/* Increment page address */
->  		realpage++;
+>  		if (err || ops.oobretlen != use_len) {
+>  			pr_err("error: readoob failed at %#llx\n",
+>  			       (long long)addr);
+> @@ -227,6 +230,9 @@ static int verify_eraseblock(int ebnum)
+>  			ops.datbuf    = NULL;
+>  			ops.oobbuf    = readbuf;
+>  			err = mtd_read_oob(mtd, addr, &ops);
+> +			if (mtd_is_bitflip(err))
+> +				err = 0;
+> +
+>  			if (err || ops.oobretlen != mtd->oobavail) {
+>  				pr_err("error: readoob failed at %#llx\n",
+>  						(long long)addr);
+> @@ -286,6 +292,9 @@ static int verify_eraseblock_in_one_go(int ebnum)
 >  
-> @@ -3876,7 +3879,7 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
->  	if (mtd->ecc_stats.failed - stats.failed)
->  		return -EBADMSG;
->  
-> -	return  mtd->ecc_stats.corrected - stats.corrected ? -EUCLEAN : 0;
-> +	return max_bitflips;
->  }
->  
->  /**
+>  	/* read entire block's OOB at one go */
+>  	err = mtd_read_oob(mtd, addr, &ops);
+> +	if (mtd_is_bitflip(err))
+> +		err = 0;
+> +
+>  	if (err || ops.oobretlen != len) {
+>  		pr_err("error: readoob failed at %#llx\n",
+>  		       (long long)addr);
+> @@ -527,6 +536,9 @@ static int __init mtd_oobtest_init(void)
+>  	pr_info("attempting to start read past end of OOB\n");
+>  	pr_info("an error is expected...\n");
+>  	err = mtd_read_oob(mtd, addr0, &ops);
+> +	if (mtd_is_bitflip(err))
+> +		err = 0;
+> +
+>  	if (err) {
+>  		pr_info("error occurred as expected\n");
+>  		err = 0;
+> @@ -571,6 +583,9 @@ static int __init mtd_oobtest_init(void)
+>  		pr_info("attempting to read past end of device\n");
+>  		pr_info("an error is expected...\n");
+>  		err = mtd_read_oob(mtd, mtd->size - mtd->writesize, &ops);
+> +		if (mtd_is_bitflip(err))
+> +			err = 0;
+> +
+>  		if (err) {
+>  			pr_info("error occurred as expected\n");
+>  			err = 0;
+> @@ -615,6 +630,9 @@ static int __init mtd_oobtest_init(void)
+>  		pr_info("attempting to read past end of device\n");
+>  		pr_info("an error is expected...\n");
+>  		err = mtd_read_oob(mtd, mtd->size - mtd->writesize, &ops);
+> +		if (mtd_is_bitflip(err))
+> +			err = 0;
+> +
+>  		if (err) {
+>  			pr_info("error occurred as expected\n");
+>  			err = 0;
+> @@ -684,6 +702,9 @@ static int __init mtd_oobtest_init(void)
+>  		ops.datbuf    = NULL;
+>  		ops.oobbuf    = readbuf;
+>  		err = mtd_read_oob(mtd, addr, &ops);
+> +		if (mtd_is_bitflip(err))
+> +			err = 0;
+> +
+>  		if (err)
+>  			goto out;
+>  		if (memcmpshow(addr, readbuf, writebuf,
