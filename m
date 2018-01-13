@@ -1,21 +1,23 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eaPeR-0001ji-57
- for linux-mtd@lists.infradead.org; Sat, 13 Jan 2018 17:31:29 +0000
-Date: Sat, 13 Jan 2018 18:31:05 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Ladislav Michl <ladis@linux-mips.org>
-Cc: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org, Roger Quadros
- <rogerq@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Kyungmin Park
- <kyungmin.park@samsung.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Tony
- Lindgren <tony@atomide.com>
-Subject: Re: [PATCH v6 00/14] OMAP2+ OneNAND driver update
-Message-ID: <20180113183105.4c6cb7b4@bbrezillon>
-In-Reply-To: <20180112131105.GA13810@lenoch>
-References: <20180112131105.GA13810@lenoch>
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eaPhw-0002yG-Sg
+ for linux-mtd@lists.infradead.org; Sat, 13 Jan 2018 17:35:07 +0000
+Received: by mail-wm0-x244.google.com with SMTP id f140so17269901wmd.2
+ for <linux-mtd@lists.infradead.org>; Sat, 13 Jan 2018 09:34:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Sender: steve.derosier@gmail.com
+In-Reply-To: <20180113092443.6222f2bf@bbrezillon>
+References: <2132429.fBNFCxDbQz@fessender> <20180112154639.63a8d133@bbrezillon>
+ <2581607.A7Zl2yeV5U@fessender>
+ <CALLGbRJ9SipkxtNiCigrPHQim5C38uq9EVsYK3WS_HN3aW-pqg@mail.gmail.com>
+ <20180113092443.6222f2bf@bbrezillon>
+From: Steve deRosier <derosier@gmail.com>
+Date: Sat, 13 Jan 2018 09:34:52 -0800
+Message-ID: <CALLGbRLXXO_ZyDahNyohh+Fs1adbYEcMoxA3+7FRWfUJpua5tg@mail.gmail.com>
+Subject: Re: ECC configuration of NAND from Linux (MEMSETOOBSEL)
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: gudjon@gudjon.org, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,98 +27,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 12 Jan 2018 14:11:05 +0100
-Ladislav Michl <ladis@linux-mips.org> wrote:
+Hi Boris,
 
-> this patch serie updates OMAP2+ OneNAND driver to the present times, making
-> it fully DT configurable, using libgpio and dmaengine apis.
-> 
-> Please note that unlike previous driver version, which basically ignored
-> DT specified timings, this one relies on it, so it is important to get
-> it right in your DT (dumping it from previous kernel version).
-> 
-> In case synchronous timings is requested, it is okay to specify timings
-> for the slowest chip ever used for you board as it is evetually optimized
-> after chip probe.
-> 
-> Original driver used DMA only if user specified INT gpio in platform
-> data, now DMA is used unconditionally and PIO mode is used as fallback.
-> 
-> In case anyone wants to give it a try, few DT related changes are needed:
-> - onenand node needs 'ti,omap2-onenand' compatible (for mailine boards this is
->   done in patch 2)
-> - to use INT pin, int-gpios needs to be specified.
-> 
-> Most notable changes from v3:
-> - added dmaengine patches by Peter Ujfalusi
-> - added dt bindings documentation
-> - added cleanup patches
-> - DMA enabled by default
-> 
-> Most notable changes from v4:
-> - collected tags
-> - used INT pin name properly
-> - hopefully all comments taken into account
-> 
-> Most notable changes from v5:
-> - as this serie is expected to be merged via single tree patches 13 and 14
->   were squashed together not to break bisecting.
-> - patch 16 was dropped.
-> 
-> This patchset depends on an immutable commit:
-> 
-> The following changes since commit 4fbd8d194f06c8a3fd2af1ce560ddb31f7ec8323:
-> 
->   Linux 4.15-rc1 (2017-11-26 16:01:47 -0800)
-> 
-> are available in the git repository at:
-> 
->   https://github.com/rogerq/linux.git for-v4.16/gpmc-omap-immutable
-> 
-> for you to fetch changes up to c18a7ac3398d0cef29749f9568666db8321aa4c9:
-> 
->   memory: omap-gpmc: Make 'bank-width' property optional (2017-12-01 15:37:49 +0200)
-> 
-> 
-> Ladislav Michl (12):
->   dt-bindings: mtd: gpmc-onenand: Update properties description
->   ARM: dts: OMAP2+: Add compatible property to onenand node
->   ARM: dts: omap3-igep: Update onenand node timings
->   mtd: onenand: omap2: Remove regulator support
->   mtd: onenand: omap2: Remove skip initial unlocking support
->   mtd: onenand: omap2: Remove partitioning support from platform data
->   mtd: onenand: omap2: Account waiting time as waiting on IO
->   mtd: onenand: omap2: Unify OMAP2 and OMAP3 DMA implementation
->   mtd: onenand: omap2: Do not make delay for GPIO OMAP3 specific
->   mtd: onenand: omap2: Decouple DMA enabling from INT pin availability
->   mtd: onenand: omap2: Configure driver from DT
->   ARM: OMAP2+: Remove gpmc-onenand
-> 
-> Peter Ujfalusi (2):
->   mtd: onenand: omap2: Simplify the DMA setup for various paths
->   mtd: onenand: omap2: Convert to use dmaengine for memcpy
+On Sat, Jan 13, 2018 at 12:24 AM, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> On Fri, 12 Jan 2018 18:41:58 -0800
+> Steve deRosier <derosier@gmail.com> wrote:
+>
+>> Hi Gudjon,
+>>
+>> On Fri, Jan 12, 2018 at 10:50 AM, Gudjon I. Gudjonsson
+>> <gudjon@gudjon.org> wrote:
+>> > > setting you'll have to erase the whole flash and then change the ECC
+>> > > config in your DT or board file (note that not all drivers support
+>> > > adjusting the ECC strength/step-size).
+>> > I will have to accept that but can you please tell me how to change the
+>> > ECC strength if my driver supports it? My plan is to use swupdate and
+>> > update the system using an SD-card that is already installed but I could
+>> > not find any reference to changing the ECC strength.
+>> > I am using the Atmel SAMA5d36 CPU and Micron mt29F2G08abaeawp
+>> > NAND flash.
+>> >
+>>
+>> I might be wrong, but I don't think there's any mechanism to change
+>> the ECC strength on the fly with that processor and flash combination.
+>> In order to do it, you have to adjust it in your device-tree. I went
+>> through this in an upgrade scenario on a similar system a few years
+>> ago and came to the conclusion that it wasn't viable. As a matter of
+>> background, we had two spots on flash for the kernel (kernel-a,
+>> kernel-b), and two for a rootfs that was a UBIFS (rootfs-a, rootfs-b).
+>> Our upgrade procedure was to run on -a, and flash -b.  Next time, run
+>> on -b and flash on -a, etc... To do it, here's what would have had to
+>> be done:
+>>
+>> 1. Change the ECC strength in the DT, which then gets appended to the
+>> the kernel image. Which means when the new kernel boots the new ECC
+>> takes effect and not before. Note that the kernel that is running is
+>> using the whatever ECC it was set for.
+>> 2. Change our update script to _not_ write the ECC bits when it
+>> flashes... this is critical.
+>> 3. Now, (assuming running on -a partitions), erase kernel-b, rootfs-b.
+>> Then flash the new kernel and new rootfs to the -b partitions
+>> _with_out_ ECC bits!
+>> 4. Reboot to -b partitions. Note that you're now running a kernel
+>> supporting the new ECC layout, but without any ECC actually being
+>> performed.
+>> 5. Now, erase and reflash -a with the same new kernel and rootfs
+>> _with_ ECC bits.
+>> 6. Boot to -a. Now you're running with the new ECC layout and with ECC
+>> actually being done.
+>>
+>> I'm going from memory, so I might have missed a step or done something
+>> out of order, but you get the point. Now, why all of the above?  The
+>> problem is the number of ECC bits that gets flashed is dependent on
+>> the kernel running flashing it. So, having a kernel running 4 bits
+>> trying to flash 8, doesn't work.  The solution is by forcing all the
+>> written ECC bits to 0xffs by turing off the ECC bits when flashing
+>> with nandwrite. The kernel will read and ignore ECC, no matter the set
+>> strength, if there's no ECC bits set.
+>
+> That's not true. If you have all ECC bytes set to 0xff it will simply
+> not boot (or at least it should not), because the ECC engine will report
+> errors everywhere.
+>
 
-Applied the whole series.
+Well, I'm glad you say it shouldn't work that way, because I happen to
+agree that it shouldn't. However, I can unequivocally confirm that on
+at least one Atmel processor with one specific NAND with kernel
+version 3.8, it does indeed work this way in practice. It's very clear
+from the behavior that ECC-configured, but with the OOB area being
+0xffs is being interpreted as "I have no ECC data, so don't bother
+trying to do ECC". Now, obviously if there are bit-flips, what is read
+is invalid and can cause random operations. Which, unfortunately, is
+how I know what the behavior is.
 
-Thanks,
+I do not know if newer kernels behave this way on the platform in
+question. I solved the configuration and process issues long ago and
+so I never had to debug the problem on the newer 4.4 and 4.9 kernels
+the product uses.
 
-Boris
+>> So, essentially, you have to
+>> write the new stuff with the enhanced bits with no bits actually
+>> written, in order to boot into it and then write it correctly a second
+>> time.
+>
+> And this trick only works if your NAND supports subpage writes.
 
-> 
->  .../devicetree/bindings/mtd/gpmc-onenand.txt       |   6 +-
->  arch/arm/boot/dts/omap2420-n8x0-common.dtsi        |   1 +
->  arch/arm/boot/dts/omap3-igep.dtsi                  |  30 +-
->  arch/arm/boot/dts/omap3-n900.dts                   |   1 +
->  arch/arm/boot/dts/omap3-n950-n9.dtsi               |   1 +
->  arch/arm/boot/dts/omap3430-sdp.dts                 |   1 +
->  arch/arm/mach-omap2/Makefile                       |   3 -
->  arch/arm/mach-omap2/gpmc-onenand.c                 | 409 ---------------
->  drivers/memory/omap-gpmc.c                         | 158 ++++--
->  drivers/mtd/onenand/Kconfig                        |   4 +-
->  drivers/mtd/onenand/omap2.c                        | 576 ++++++++-------------
->  include/linux/omap-gpmc.h                          |  28 +
->  include/linux/platform_data/mtd-onenand-omap2.h    |  34 --
->  13 files changed, 386 insertions(+), 866 deletions(-)
->  delete mode 100644 arch/arm/mach-omap2/gpmc-onenand.c
->  delete mode 100644 include/linux/platform_data/mtd-onenand-omap2.h
-> 
+The layout of the SLC NAND doesn't allow for subpage writes. It has a
+2k-byte + 64 byte OOB page, with a BS of 64 pages. Standard operation
+is as expected: must erase in blocks, may program individual pages. It
+is possible to choose to write the 2k byte page with or without ECC
+and leave the erased 0xFFs in the OOB. This can be confirmed by
+working directly with the NAND using u-boot's nand commands. The NAND
+itself is non-ECC, and the PMECC controller on the processor only
+handles the algorithms. So what to write, including the OOB is all
+constructed in-software, written to the program page cache and then
+the command to write is issued. So, even without subpage writes, it's
+quite easy to write the data without writing the OOB.
+
+And, remember - we're not writing the same page twice.  First write,
+with the erased OOB, of the rootfs in this case is to mtd7, and the
+second write, the one with the correct new ECC data to the OOB, is to
+mtd6. Perhaps thats the misunderstanding here.
+
+I'm not trying to be argumentative, I'm just saying what does indeed
+happen on this specific platform I worked with. I shared the details
+of my experience as the OP has a similar platform, but what I
+experienced may or may not be applicable to his case. I wanted to
+explain _why_ it is such a pain. And that changing the ECC strength
+can not be undertaken lightly.
+
+- Steve
+
+Steve deRosier
+Cal-Sierra Consulting LLC
+https://www.cal-sierra.com/
