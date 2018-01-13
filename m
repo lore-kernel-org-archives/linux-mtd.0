@@ -1,17 +1,23 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eaH7d-0002MG-QP
- for linux-mtd@lists.infradead.org; Sat, 13 Jan 2018 08:25:04 +0000
-Date: Sat, 13 Jan 2018 09:24:43 +0100
+ id 1eaHKW-0001ap-Br
+ for linux-mtd@lists.infradead.org; Sat, 13 Jan 2018 08:38:22 +0000
+Date: Sat, 13 Jan 2018 09:38:07 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Steve deRosier <derosier@gmail.com>
-Cc: gudjon@gudjon.org, linux-mtd@lists.infradead.org
-Subject: Re: ECC configuration of NAND from Linux (MEMSETOOBSEL)
-Message-ID: <20180113092443.6222f2bf@bbrezillon>
-In-Reply-To: <CALLGbRJ9SipkxtNiCigrPHQim5C38uq9EVsYK3WS_HN3aW-pqg@mail.gmail.com>
-References: <2132429.fBNFCxDbQz@fessender> <20180112154639.63a8d133@bbrezillon>
- <2581607.A7Zl2yeV5U@fessender>
- <CALLGbRJ9SipkxtNiCigrPHQim5C38uq9EVsYK3WS_HN3aW-pqg@mail.gmail.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Miquel RAYNAL <miquel.raynal@free-electrons.com>, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3 0/7] Marvell NAND controller rework with ->exec_op()
+Message-ID: <20180113093807.3984c184@bbrezillon>
+In-Reply-To: <87wp0majtg.fsf@belgarion.home>
+References: <20180109103637.23798-1-miquel.raynal@free-electrons.com>
+ <20180111122751.4bd74366@bbrezillon>
+ <87efmwb8bj.fsf@belgarion.home> <20180111232417.4aa86075@xps13>
+ <87a7xjbis2.fsf@belgarion.home>
+ <20180112094501.27706bfc@bbrezillon>
+ <876087beui.fsf@belgarion.home>
+ <20180112105228.176ab80f@bbrezillon>
+ <87wp0majtg.fsf@belgarion.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,102 +30,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 12 Jan 2018 18:41:58 -0800
-Steve deRosier <derosier@gmail.com> wrote:
+Hello Robert,
 
-> Hi Gudjon,
+On Fri, 12 Jan 2018 21:44:27 +0100
+Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+
+> Boris Brezillon <boris.brezillon@free-electrons.com> writes:
 > 
-> On Fri, Jan 12, 2018 at 10:50 AM, Gudjon I. Gudjonsson
-> <gudjon@gudjon.org> wrote:
-> > > setting you'll have to erase the whole flash and then change the ECC
-> > > config in your DT or board file (note that not all drivers support
-> > > adjusting the ECC strength/step-size).  
-> > I will have to accept that but can you please tell me how to change the
-> > ECC strength if my driver supports it? My plan is to use swupdate and
-> > update the system using an SD-card that is already installed but I could
-> > not find any reference to changing the ECC strength.
-> > I am using the Atmel SAMA5d36 CPU and Micron mt29F2G08abaeawp
-> > NAND flash.
+> > On Fri, 12 Jan 2018 10:34:13 +0100
+> > Robert Jarzmik <robert.jarzmik@free.fr> wrote:
 > >  
-> 
-> I might be wrong, but I don't think there's any mechanism to change
-> the ECC strength on the fly with that processor and flash combination.
-> In order to do it, you have to adjust it in your device-tree. I went
-> through this in an upgrade scenario on a similar system a few years
-> ago and came to the conclusion that it wasn't viable. As a matter of
-> background, we had two spots on flash for the kernel (kernel-a,
-> kernel-b), and two for a rootfs that was a UBIFS (rootfs-a, rootfs-b).
-> Our upgrade procedure was to run on -a, and flash -b.  Next time, run
-> on -b and flash on -a, etc... To do it, here's what would have had to
-> be done:
-> 
-> 1. Change the ECC strength in the DT, which then gets appended to the
-> the kernel image. Which means when the new kernel boots the new ECC
-> takes effect and not before. Note that the kernel that is running is
-> using the whatever ECC it was set for.
-> 2. Change our update script to _not_ write the ECC bits when it
-> flashes... this is critical.
-> 3. Now, (assuming running on -a partitions), erase kernel-b, rootfs-b.
-> Then flash the new kernel and new rootfs to the -b partitions
-> _with_out_ ECC bits!
-> 4. Reboot to -b partitions. Note that you're now running a kernel
-> supporting the new ECC layout, but without any ECC actually being
-> performed.
-> 5. Now, erase and reflash -a with the same new kernel and rootfs
-> _with_ ECC bits.
-> 6. Boot to -a. Now you're running with the new ECC layout and with ECC
-> actually being done.
-> 
-> I'm going from memory, so I might have missed a step or done something
-> out of order, but you get the point. Now, why all of the above?  The
-> problem is the number of ECC bits that gets flashed is dependent on
-> the kernel running flashing it. So, having a kernel running 4 bits
-> trying to flash 8, doesn't work.  The solution is by forcing all the
-> written ECC bits to 0xffs by turing off the ECC bits when flashing
-> with nandwrite. The kernel will read and ignore ECC, no matter the set
-> strength, if there's no ECC bits set.
+> >> Boris Brezillon <boris.brezillon@free-electrons.com> writes:  
+> > Because we though scanning of BBMs was working with the old pxa driver
+> > (which should be the case for your setup, BTW), and we thought the new
+> > driver was introducing a regression here.  
+> That's what happens :
+>  - flash_bbt=1 with old driver => everything works fine
+>  - flash_bbt=1 with marvell_nand => BBT is damaged (or so I believe from
+>    Miquel's analysis)
 
-That's not true. If you have all ECC bytes set to 0xff it will simply
-not boot (or at least it should not), because the ECC engine will report
-errors everywhere.
-
-> So, essentially, you have to
-> write the new stuff with the enhanced bits with no bits actually
-> written, in order to boot into it and then write it correctly a second
-> time.
-
-And this trick only works if your NAND supports subpage writes.
+It shouldn't be damaged anymore. The bug has been fixed just before we
+asked you to scrub the BBT area.
 
 > 
-> Additionally, you got to remember to include the boot-loaders, so
-> bootstrap+uboot also need to be changed, upgraded, etc.  And, if
-> you've got a mix of versions out there, managing them and freely
-> allowing upgrades and downgrades becomes a headache too.  It's easier
-> if you don't have to boot into the kernel+rootfs and choose an upgrade
-> process that leverages u-boot, but our system didn't work that way. I
-> also came up with a number of other options, but they're not worth
-> detailing here and they were also a pain and risky to implement.
-> 
-> Basically, it's a major pain and since we were already using the
-> recommended minimum for our MT29Fxxxxxx flash, we left it alone. And
-> honestly, we haven't had any significant problems with the flash that
-> could be attributed to ECC strength.
+> > BTW, did you ever try with the old driver and ->flash_bbt = false? If
+> > you did not, can you test?  
+> Sure, just did, same behavior as with marvell_nand :
+>  - bad erase blocks (almost) everywhere
+>  - ubifs error
 
-That is true. Once you have chosen a specific strength, it's not easy
-to change it: you have to erase everything and write it again with a
-different config.
+That's a relief!
 
 > 
-> All that said - this was a few years ago, and on a 3.8 kernel, running
-> bootstrap and u-boot and running the rootfs directly out of flash on
-> UBIFS. And we were running our own software update program that wasn't
-> very sophisticated. So, your situation may be different and or there
-> might be more options available now on newer kernels.
+> >> I think we're still not aligned here. There are _no_ bad block markers in the
+> >> OOB on my flash, because there is a BBT at the end.  
+> >
+> > That's not how it works. The BBT is a way to get information about bad
+> > blocks within a single read access, but, if you can preserve BBMs and
+> > keep them updated (which is the case here), you should do it, just in
+> > case you lose the BBT.  
+> You're probably right today. But this assertion is probably wrong for system
+> created in early 2000s ... :)
+
+I can't say, but I recommend patching the component that screw up BBMs
+in your setup anyway. It's probably not the kernel since Miquel tested
+the transition from the old to the new driver without activating the
+on-flash-bbt on his pxa boards, and all BBMs were preserved.
+
+So, it's either barebox or another component you use to program things.
+
 > 
-> Hopefully that story helps a bit.
+> >> > So, the symptoms we're seeing here, where almost all blocks are reported as
+> >> > bad when scanning BBMs, is not expected, and that's what we're trying to
+> >> > debug/fix.    
+> >> Well, I still think this is not something to fix ... I still think that OOB data
+> >> is not relevant as to the state of bad blocks in my flash ...  
+> >
+> > Hm, I disagree. What if, for any reason, the BBT is lost? Don't you
+> > want the full scan to work?  
+> If the BBT is lost, you have the mirror BBT, it's its purpose.
+
+If both are lost, you're screwed.
+
 > 
-> - Steve
+> > Okay, so I have another solution for that: drop the NAND_BBT_CREATE and
+> > NAND_BBT_WRITE here [1] and here [2]. That should let you read the
+> > existing BBT without updating it or creating a new one if it's not
+> > detected.  
+> Okay, let's try the marvell-nand-bug branch with this included.
+> It works :
+> [   18.302123] ubi0: attached mtd5 (name "root", size 37 MiB)
+> [   18.307691] ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+> [   18.315003] ubi0: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+> [   18.322155] ubi0: VID header offset: 2048 (aligned 2048), data offset: 4096
+> [   18.329167] ubi0: good PEBs: 297, bad PEBs: 0, corrupted PEBs: 0
+> [   18.335789] ubi0: user volume: 1, internal volumes: 1, max. volumes count: 128
+> [   18.343409] ubi0: max/mean erase counter: 6/4, WL threshold: 4096, image sequence number: 30621
+> [   18.352460] ubi0: available PEBs: 0, total reserved PEBs: 297, PEBs reserved for bad PEB handling: 40
+> [   18.361937] ubi0: background thread "ubi_bgt0d" started, PID 411
 > 
-> Steve deRosier
-> Cal-Sierra Consulting LLC
-> https://www.cal-sierra.com/
+> That means the BBT reading is the issue don't you think ?
+
+The BBT detection issue has already been fixed with Miquel's previous
+version. So there shouldn't be any issue with that anymore, and your
+results tend to confirm that.
+
+> 
+> Now if I keep NAND_BBT_CREATE but remove NAND_BBT_WRITE same thing, it works as
+> well. That leaves only the re-enabling of the BBT write, which I'll do as soon
+> as you tell me my NAND won't be damaged.
+
+It won't, you can safely re-enable NAND_BBT_WRITE. The one that was
+causing trouble previously was NAND_BBT_CREATE, because the BBT was not
+found, and the NAND framework was creating a new one after scanning
+BBMs, which led to the situation you reported: BBT reporting all blocks
+as bad.
+
+Thanks for helping us with this bug, I think we're close to a fully
+working situation now.
+
+Regards,
+
+Boris
