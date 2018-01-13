@@ -1,18 +1,27 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eaJSG-00035D-9Z
- for linux-mtd@lists.infradead.org; Sat, 13 Jan 2018 10:54:30 +0000
+ id 1eaJd9-0001mR-0h
+ for linux-mtd@lists.infradead.org; Sat, 13 Jan 2018 11:05:45 +0000
+Date: Sat, 13 Jan 2018 12:05:29 +0100
 From: Miquel Raynal <miquel.raynal@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@free-electrons.com>
-Subject: [PATCH] MAINTAINERS: Add entry for Marvell NAND controller driver
-Date: Sat, 13 Jan 2018 11:54:10 +0100
-Message-Id: <20180113105410.2555-1-miquel.raynal@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3 0/7] Marvell NAND controller rework with ->exec_op()
+Message-ID: <20180113120529.2f00ea20@xps13>
+In-Reply-To: <20180113093807.3984c184@bbrezillon>
+References: <20180109103637.23798-1-miquel.raynal@free-electrons.com>
+ <20180111122751.4bd74366@bbrezillon>
+ <87efmwb8bj.fsf@belgarion.home> <20180111232417.4aa86075@xps13>
+ <87a7xjbis2.fsf@belgarion.home>
+ <20180112094501.27706bfc@bbrezillon>
+ <876087beui.fsf@belgarion.home>
+ <20180112105228.176ab80f@bbrezillon>
+ <87wp0majtg.fsf@belgarion.home>
+ <20180113093807.3984c184@bbrezillon>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,31 +31,124 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add entry for Marvell NAND controller driver and its bindings which will
-soon replace the old driver pxa3xx_nand.c.
+Hello,
 
-Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
----
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+On Sat, 13 Jan 2018 09:38:07 +0100
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index aa71ab52fd76..ca8bb8077e70 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8409,6 +8409,13 @@ L:	linux-wireless@vger.kernel.org
- S:	Odd Fixes
- F:	drivers/net/wireless/marvell/mwl8k.c
- 
-+MARVELL NAND CONTROLLER DRIVER
-+M:	Miquel Raynal <miquel.raynal@free-electrons.com>
-+L:	linux-mtd@lists.infradead.org
-+S:	Maintained
-+F:	drivers/mtd/nand/marvell_nand.c
-+F:	Documentation/devicetree/bindings/mtd/marvell-nand.txt
-+
- MARVELL SOC MMC/SD/SDIO CONTROLLER DRIVER
- M:	Nicolas Pitre <nico@fluxnic.net>
- S:	Odd Fixes
--- 
-2.11.0
+> Hello Robert,
+>=20
+> On Fri, 12 Jan 2018 21:44:27 +0100
+> Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+>=20
+> > Boris Brezillon <boris.brezillon@free-electrons.com> writes:
+> >  =20
+> > > On Fri, 12 Jan 2018 10:34:13 +0100
+> > > Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+> > >   =20
+> > >> Boris Brezillon <boris.brezillon@free-electrons.com> writes:   =20
+> > > Because we though scanning of BBMs was working with the old pxa
+> > > driver (which should be the case for your setup, BTW), and we
+> > > thought the new driver was introducing a regression here.   =20
+> > That's what happens :
+> >  - flash_bbt=3D1 with old driver =3D> everything works fine
+> >  - flash_bbt=3D1 with marvell_nand =3D> BBT is damaged (or so I believe
+> > from Miquel's analysis) =20
+>=20
+> It shouldn't be damaged anymore. The bug has been fixed just before we
+> asked you to scrub the BBT area.
+>=20
+> >  =20
+> > > BTW, did you ever try with the old driver and ->flash_bbt =3D
+> > > false? If you did not, can you test?   =20
+> > Sure, just did, same behavior as with marvell_nand :
+> >  - bad erase blocks (almost) everywhere
+> >  - ubifs error =20
+>=20
+> That's a relief!
+
+Indeed, it is!
+
+>=20
+> >  =20
+> > >> I think we're still not aligned here. There are _no_ bad block
+> > >> markers in the OOB on my flash, because there is a BBT at the
+> > >> end.   =20
+> > >
+> > > That's not how it works. The BBT is a way to get information
+> > > about bad blocks within a single read access, but, if you can
+> > > preserve BBMs and keep them updated (which is the case here), you
+> > > should do it, just in case you lose the BBT.   =20
+> > You're probably right today. But this assertion is probably wrong
+> > for system created in early 2000s ... :) =20
+>=20
+> I can't say, but I recommend patching the component that screw up BBMs
+> in your setup anyway. It's probably not the kernel since Miquel tested
+> the transition from the old to the new driver without activating the
+> on-flash-bbt on his pxa boards, and all BBMs were preserved.
+>=20
+> So, it's either barebox or another component you use to program
+> things.
+>=20
+> >  =20
+> > >> > So, the symptoms we're seeing here, where almost all blocks
+> > >> > are reported as bad when scanning BBMs, is not expected, and
+> > >> > that's what we're trying to debug/fix.     =20
+> > >> Well, I still think this is not something to fix ... I still
+> > >> think that OOB data is not relevant as to the state of bad
+> > >> blocks in my flash ...   =20
+> > >
+> > > Hm, I disagree. What if, for any reason, the BBT is lost? Don't
+> > > you want the full scan to work?   =20
+> > If the BBT is lost, you have the mirror BBT, it's its purpose. =20
+>=20
+> If both are lost, you're screwed.
+
+And when you encounter a driver problem, it is very likely that both
+will be smashed, as it happened this week. Now I better understand why
+you feared loosing the BBT again: it forces you to recreate it by hand.
+
+>=20
+> >  =20
+> > > Okay, so I have another solution for that: drop the
+> > > NAND_BBT_CREATE and NAND_BBT_WRITE here [1] and here [2]. That
+> > > should let you read the existing BBT without updating it or
+> > > creating a new one if it's not detected.   =20
+> > Okay, let's try the marvell-nand-bug branch with this included.
+> > It works :
+> > [   18.302123] ubi0: attached mtd5 (name "root", size 37 MiB)
+> > [   18.307691] ubi0: PEB size: 131072 bytes (128 KiB), LEB size:
+> > 126976 bytes [   18.315003] ubi0: min./max. I/O unit sizes:
+> > 2048/2048, sub-page size 2048 [   18.322155] ubi0: VID header
+> > offset: 2048 (aligned 2048), data offset: 4096 [   18.329167] ubi0:
+> > good PEBs: 297, bad PEBs: 0, corrupted PEBs: 0 [   18.335789] ubi0:
+> > user volume: 1, internal volumes: 1, max. volumes count: 128
+> > [   18.343409] ubi0: max/mean erase counter: 6/4, WL threshold:
+> > 4096, image sequence number: 30621 [   18.352460] ubi0: available
+> > PEBs: 0, total reserved PEBs: 297, PEBs reserved for bad PEB
+> > handling: 40 [   18.361937] ubi0: background thread "ubi_bgt0d"
+> > started, PID 411
+> >=20
+> > That means the BBT reading is the issue don't you think ? =20
+>=20
+> The BBT detection issue has already been fixed with Miquel's previous
+> version. So there shouldn't be any issue with that anymore, and your
+> results tend to confirm that.
+>=20
+> >=20
+> > Now if I keep NAND_BBT_CREATE but remove NAND_BBT_WRITE same thing,
+> > it works as well. That leaves only the re-enabling of the BBT
+> > write, which I'll do as soon as you tell me my NAND won't be
+> > damaged. =20
+>=20
+> It won't, you can safely re-enable NAND_BBT_WRITE. The one that was
+> causing trouble previously was NAND_BBT_CREATE, because the BBT was
+> not found, and the NAND framework was creating a new one after
+> scanning BBMs, which led to the situation you reported: BBT reporting
+> all blocks as bad.
+>=20
+> Thanks for helping us with this bug, I think we're close to a fully
+> working situation now.
+
+That is great, thank you both.
+Miqu=C3=A8l
