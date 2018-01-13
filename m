@@ -1,21 +1,18 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eaOdA-00014C-Lv
- for linux-mtd@lists.infradead.org; Sat, 13 Jan 2018 16:26:08 +0000
-Date: Sat, 13 Jan 2018 17:25:51 +0100
-From: Miquel Raynal <miquel.raynal@free-electrons.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, Boris Brezillon
- <boris.brezillon@free-electrons.com>, kernel@pengutronix.de, Richard
- Weinberger <richard@nod.at>
-Subject: Re: [PATCH 6/8] mtd: nand: mxc: Add own write_page
-Message-ID: <20180113172551.5dab8a7c@xps13>
-In-Reply-To: <20180109101148.13728-7-s.hauer@pengutronix.de>
-References: <20180109101148.13728-1-s.hauer@pengutronix.de>
- <20180109101148.13728-7-s.hauer@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]
+ helo=smtp.smtpout.orange.fr)
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eaP74-0007Jz-Po
+ for linux-mtd@lists.infradead.org; Sat, 13 Jan 2018 16:57:00 +0000
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: kyungmin.park@samsung.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
+ marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ kernel-janitors@vger.kernel.org,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] mtd: onenand: samsung: remove incorrect __iomem annotation
+Date: Sat, 13 Jan 2018 17:56:16 +0100
+Message-Id: <20180113165616.19992-1-christophe.jaillet@wanadoo.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,115 +22,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sascha,
+'page_buf' and 'oob_buf' are allocated with 'devm_kzalloc()' and should not
+have __iommem decoration.
 
-On Tue,  9 Jan 2018 11:11:46 +0100
-Sascha Hauer <s.hauer@pengutronix.de> wrote:
+Remove these decorations and some useless casting.
 
-> Now that we have our own read_page function add a write_page function
-> for consistency aswell. This can be a lot easier than the generic
-> function since we do not have to iterate over subpages but can write
-> the whole page at once. Also add write_page_raw and write_oob for
-> proper raw and oob write support.
->=20
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
->  drivers/mtd/nand/mxc_nand.c | 56
-> +++++++++++++++++++++++++++++++++++++++++++++ 1 file changed, 56
-> insertions(+)
->=20
-> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-> index 83bb01ab7079..6fbf98851a96 100644
-> --- a/drivers/mtd/nand/mxc_nand.c
-> +++ b/drivers/mtd/nand/mxc_nand.c
-> @@ -893,6 +893,59 @@ static int mxc_nand_read_oob(struct mtd_info
-> *mtd, struct nand_chip *chip, page);
->  }
-> =20
-> +static int __mxc_nand_write_page(struct mtd_info *mtd, struct
-> nand_chip *chip,
-> +				 const uint8_t *buf, int
-> oob_required, int page) +{
-> +	struct mxc_nand_host *host =3D nand_get_controller_data(chip);
-> +
-> +	host->devtype_data->send_cmd(host, NAND_CMD_SEQIN, false);
-> +	mxc_do_addr_cycle(mtd, 0, page);
-> +
-> +	memcpy32_toio(host->main_area0, buf, mtd->writesize);
-> +	copy_spare(mtd, false, chip->oob_poi);
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/mtd/onenand/samsung.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-If I remember correctly, there was a "spare only" mechanism to avoid
-doing full page read/write when unnecessary. What about using it here
-when (buf =3D=3D NULL && oob_required)?
-
-> +
-> +	host->devtype_data->send_page(mtd, NFC_INPUT);
-> +	host->devtype_data->send_cmd(host, NAND_CMD_PAGEPROG, true);
-> +	mxc_do_addr_cycle(mtd, 0, page);
-> +
-> +	return 0;
-> +}
-> +
-> +static int mxc_nand_write_page(struct mtd_info *mtd, struct
-> nand_chip *chip,
-> +			       const uint8_t *buf, int oob_required,
-> int page) +{
-> +	struct nand_chip *nand_chip =3D mtd_to_nand(mtd);
-> +	struct mxc_nand_host *host =3D nand_get_controller_data(chip);
-> +
-> +	host->devtype_data->enable_hwecc(nand_chip, true);
-> +
-> +	return __mxc_nand_write_page(mtd, chip, buf, oob_required,
-> page); +}
-> +
-> +static int mxc_nand_write_page_raw(struct mtd_info *mtd, struct
-> nand_chip *chip,
-> +				   const uint8_t *buf, int
-> oob_required, int page) +{
-> +	struct nand_chip *nand_chip =3D mtd_to_nand(mtd);
-> +	struct mxc_nand_host *host =3D nand_get_controller_data(chip);
-> +
-> +	host->devtype_data->enable_hwecc(nand_chip, false);
-> +
-> +	return __mxc_nand_write_page(mtd, chip, buf, oob_required,
-> page); +}
-> +
-> +static int mxc_nand_write_oob(struct mtd_info *mtd, struct nand_chip
-> *chip,
-> +			      int page)
-> +{
-> +	struct nand_chip *nand_chip =3D mtd_to_nand(mtd);
-> +	struct mxc_nand_host *host =3D nand_get_controller_data(chip);
-> +
-> +	memset(host->data_buf, 0xff, mtd->writesize);
-
-If the above solution works, this won't be needed anymore.
-
-> +
-> +	host->devtype_data->enable_hwecc(nand_chip, false);
-> +
-> +	return __mxc_nand_write_page(mtd, chip, host->data_buf, 1,
-> page);
-
-And this could be:
-    return __mxc_nand_write_page(mtd, chip, NULL, 1, page);
-
-> +}
-> +
->  static int mxc_nand_calculate_ecc(struct mtd_info *mtd, const u_char
-> *dat, u_char *ecc_code)
->  {
-> @@ -1907,6 +1960,9 @@ static int mxcnd_probe(struct platform_device
-> *pdev) this->ecc.read_page =3D mxc_nand_read_page;
->  		this->ecc.read_page_raw =3D mxc_nand_read_page_raw;
->  		this->ecc.read_oob =3D mxc_nand_read_oob;
-> +		this->ecc.write_page =3D mxc_nand_write_page;
-> +		this->ecc.write_page_raw =3D mxc_nand_write_page_raw;
-> +		this->ecc.write_oob =3D mxc_nand_write_oob;
->  		this->ecc.calculate =3D mxc_nand_calculate_ecc;
->  		this->ecc.hwctl =3D mxc_nand_enable_hwecc;
->  		this->ecc.correct =3D host->devtype_data->correct_data;
-
-
-Thanks,
-Miqu=C3=A8l
+diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
+index dfdfb478ba35..2e9d076e445a 100644
+--- a/drivers/mtd/onenand/samsung.c
++++ b/drivers/mtd/onenand/samsung.c
+@@ -129,8 +129,8 @@ struct s3c_onenand {
+ 	void __iomem	*base;
+ 	void __iomem	*ahb_addr;
+ 	int		bootram_command;
+-	void __iomem	*page_buf;
+-	void __iomem	*oob_buf;
++	void		*page_buf;
++	void		*oob_buf;
+ 	unsigned int	(*mem_addr)(int fba, int fpa, int fsa);
+ 	unsigned int	(*cmd_map)(unsigned int type, unsigned int val);
+ 	void __iomem	*dma_addr;
+@@ -408,8 +408,8 @@ static int s3c_onenand_command(struct mtd_info *mtd, int cmd, loff_t addr,
+ 	/*
+ 	 * Emulate Two BufferRAMs and access with 4 bytes pointer
+ 	 */
+-	m = (unsigned int *) onenand->page_buf;
+-	s = (unsigned int *) onenand->oob_buf;
++	m = onenand->page_buf;
++	s = onenand->oob_buf;
+ 
+ 	if (index) {
+ 		m += (this->writesize >> 2);
+@@ -481,11 +481,11 @@ static unsigned char *s3c_get_bufferram(struct mtd_info *mtd, int area)
+ 	unsigned char *p;
+ 
+ 	if (area == ONENAND_DATARAM) {
+-		p = (unsigned char *) onenand->page_buf;
++		p = onenand->page_buf;
+ 		if (index == 1)
+ 			p += this->writesize;
+ 	} else {
+-		p = (unsigned char *) onenand->oob_buf;
++		p = onenand->oob_buf;
+ 		if (index == 1)
+ 			p += mtd->oobsize;
+ 	}
+-- 
+2.14.1
