@@ -1,22 +1,26 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from mail-ot0-x233.google.com ([2607:f8b0:4003:c0f::233])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eaPhw-0002yG-Sg
- for linux-mtd@lists.infradead.org; Sat, 13 Jan 2018 17:35:07 +0000
-Received: by mail-wm0-x244.google.com with SMTP id f140so17269901wmd.2
- for <linux-mtd@lists.infradead.org>; Sat, 13 Jan 2018 09:34:54 -0800 (PST)
+ id 1eaRfr-0003XC-Gy
+ for linux-mtd@lists.infradead.org; Sat, 13 Jan 2018 19:41:05 +0000
+Received: by mail-ot0-x233.google.com with SMTP id s3so7724528otc.9
+ for <linux-mtd@lists.infradead.org>; Sat, 13 Jan 2018 11:40:52 -0800 (PST)
 MIME-Version: 1.0
-Sender: steve.derosier@gmail.com
-In-Reply-To: <20180113092443.6222f2bf@bbrezillon>
-References: <2132429.fBNFCxDbQz@fessender> <20180112154639.63a8d133@bbrezillon>
- <2581607.A7Zl2yeV5U@fessender>
- <CALLGbRJ9SipkxtNiCigrPHQim5C38uq9EVsYK3WS_HN3aW-pqg@mail.gmail.com>
- <20180113092443.6222f2bf@bbrezillon>
-From: Steve deRosier <derosier@gmail.com>
-Date: Sat, 13 Jan 2018 09:34:52 -0800
-Message-ID: <CALLGbRLXXO_ZyDahNyohh+Fs1adbYEcMoxA3+7FRWfUJpua5tg@mail.gmail.com>
-Subject: Re: ECC configuration of NAND from Linux (MEMSETOOBSEL)
+In-Reply-To: <20180111211543.561ea46d@bbrezillon>
+References: <1515685478-31457-1-git-send-email-fabio.estevam@nxp.com>
+ <20180111164823.34b0b8fd@bbrezillon>
+ <CAOMZO5AChZVrGMSdGFW5ZyKOOx23f_WJjchmdE=hUj0PmAMZgw@mail.gmail.com>
+ <20180111174012.67e2681a@bbrezillon>
+ <CAOMZO5Aerkb2r0y2aC8sZJcEgpJzoNgR5_MU=2t_uq7jTzNo9g@mail.gmail.com>
+ <20180111211543.561ea46d@bbrezillon>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Sat, 13 Jan 2018 17:40:51 -0200
+Message-ID: <CAOMZO5DCOz4zp57g-VWBOOOdL1J3-nrNYr6-mdbY+nefp0boFw@mail.gmail.com>
+Subject: Re: [PATCH v4] mtd: fsl-quadspi: Distinguish the mtd device names
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: gudjon@gudjon.org, linux-mtd@lists.infradead.org
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, David Wolfe <david.wolfe@nxp.com>,
+ Han Xu <han.xu@nxp.com>,
+ linux-mtd@lists.infradead.org, Frank Li <frank.li@nxp.com>,
+ cyrille.pitchen@wedev4u.fr
 Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,116 +33,44 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Boris,
 
-On Sat, Jan 13, 2018 at 12:24 AM, Boris Brezillon
+On Thu, Jan 11, 2018 at 6:15 PM, Boris Brezillon
 <boris.brezillon@free-electrons.com> wrote:
-> On Fri, 12 Jan 2018 18:41:58 -0800
-> Steve deRosier <derosier@gmail.com> wrote:
->
->> Hi Gudjon,
->>
->> On Fri, Jan 12, 2018 at 10:50 AM, Gudjon I. Gudjonsson
->> <gudjon@gudjon.org> wrote:
->> > > setting you'll have to erase the whole flash and then change the ECC
->> > > config in your DT or board file (note that not all drivers support
->> > > adjusting the ECC strength/step-size).
->> > I will have to accept that but can you please tell me how to change the
->> > ECC strength if my driver supports it? My plan is to use swupdate and
->> > update the system using an SD-card that is already installed but I could
->> > not find any reference to changing the ECC strength.
->> > I am using the Atmel SAMA5d36 CPU and Micron mt29F2G08abaeawp
->> > NAND flash.
->> >
->>
->> I might be wrong, but I don't think there's any mechanism to change
->> the ECC strength on the fly with that processor and flash combination.
->> In order to do it, you have to adjust it in your device-tree. I went
->> through this in an upgrade scenario on a similar system a few years
->> ago and came to the conclusion that it wasn't viable. As a matter of
->> background, we had two spots on flash for the kernel (kernel-a,
->> kernel-b), and two for a rootfs that was a UBIFS (rootfs-a, rootfs-b).
->> Our upgrade procedure was to run on -a, and flash -b.  Next time, run
->> on -b and flash on -a, etc... To do it, here's what would have had to
->> be done:
->>
->> 1. Change the ECC strength in the DT, which then gets appended to the
->> the kernel image. Which means when the new kernel boots the new ECC
->> takes effect and not before. Note that the kernel that is running is
->> using the whatever ECC it was set for.
->> 2. Change our update script to _not_ write the ECC bits when it
->> flashes... this is critical.
->> 3. Now, (assuming running on -a partitions), erase kernel-b, rootfs-b.
->> Then flash the new kernel and new rootfs to the -b partitions
->> _with_out_ ECC bits!
->> 4. Reboot to -b partitions. Note that you're now running a kernel
->> supporting the new ECC layout, but without any ECC actually being
->> performed.
->> 5. Now, erase and reflash -a with the same new kernel and rootfs
->> _with_ ECC bits.
->> 6. Boot to -a. Now you're running with the new ECC layout and with ECC
->> actually being done.
->>
->> I'm going from memory, so I might have missed a step or done something
->> out of order, but you get the point. Now, why all of the above?  The
->> problem is the number of ECC bits that gets flashed is dependent on
->> the kernel running flashing it. So, having a kernel running 4 bits
->> trying to flash 8, doesn't work.  The solution is by forcing all the
->> written ECC bits to 0xffs by turing off the ECC bits when flashing
->> with nandwrite. The kernel will read and ignore ECC, no matter the set
->> strength, if there's no ECC bits set.
->
-> That's not true. If you have all ECC bytes set to 0xff it will simply
-> not boot (or at least it should not), because the ECC engine will report
-> errors everywhere.
->
 
-Well, I'm glad you say it shouldn't work that way, because I happen to
-agree that it shouldn't. However, I can unequivocally confirm that on
-at least one Atmel processor with one specific NAND with kernel
-version 3.8, it does indeed work this way in practice. It's very clear
-from the behavior that ECC-configured, but with the OOB area being
-0xffs is being interpreted as "I have no ECC data, so don't bother
-trying to do ECC". Now, obviously if there are bit-flips, what is read
-is invalid and can cause random operations. Which, unfortunately, is
-how I know what the behavior is.
+> Nothing that I really like, sorry. One solution would be to use
+> dev_name(&pdev->dev) when only one flash device is declared and use
+> dev_name(&pdev->dev)-reg_val otherwise. Or you could leave the logic
 
-I do not know if newer kernels behave this way on the platform in
-question. I solved the configuration and process issues long ago and
-so I never had to debug the problem on the newer 4.4 and 4.9 kernels
-the product uses.
+Ok, so I can do as you suggested above:
 
->> So, essentially, you have to
->> write the new stuff with the enhanced bits with no bits actually
->> written, in order to boot into it and then write it correctly a second
->> time.
->
-> And this trick only works if your NAND supports subpage writes.
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -1051,6 +1051,24 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+                spi_nor_set_flash_node(nor, np);
+                nor->priv = q;
 
-The layout of the SLC NAND doesn't allow for subpage writes. It has a
-2k-byte + 64 byte OOB page, with a BS of 64 pages. Standard operation
-is as expected: must erase in blocks, may program individual pages. It
-is possible to choose to write the 2k byte page with or without ECC
-and leave the erased 0xFFs in the OOB. This can be confirmed by
-working directly with the NAND using u-boot's nand commands. The NAND
-itself is non-ECC, and the PMECC controller on the processor only
-handles the algorithms. So what to write, including the OOB is all
-constructed in-software, written to the program page cache and then
-the command to write is issued. So, even without subpage writes, it's
-quite easy to write the data without writing the OOB.
++               if (q->nor_num > 1) {
++                       int spiflash_idx;
++
++                       ret = of_property_read_u32(np, "reg", &spiflash_idx);
++                       if (!ret) {
++                               mtd->name = devm_kasprintf(dev, GFP_KERNEL,
++                                                          "%s-%d",
++                                                          dev_name(dev),
++                                                          spiflash_idx);
++                               if (!mtd->name) {
++                                       ret = -ENOMEM;
++                                       goto mutex_failed;
++                               }
++                       } else {
++                               dev_warn(dev, "reg property is missing\n");
++                       }
++               }
++
+                /* fill the hooks */
+                nor->read_reg = fsl_qspi_read_reg;
+                nor->write_reg = fsl_qspi_write_reg;
 
-And, remember - we're not writing the same page twice.  First write,
-with the erased OOB, of the rootfs in this case is to mtd7, and the
-second write, the one with the correct new ECC data to the OOB, is to
-mtd6. Perhaps thats the misunderstanding here.
+And then I can do a separate patch adding the qspi flash examples into
+Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
 
-I'm not trying to be argumentative, I'm just saying what does indeed
-happen on this specific platform I worked with. I shared the details
-of my experience as the OP has a similar platform, but what I
-experienced may or may not be applicable to his case. I wanted to
-explain _why_ it is such a pain. And that changing the ECC strength
-can not be undertaken lightly.
-
-- Steve
-
-Steve deRosier
-Cal-Sierra Consulting LLC
-https://www.cal-sierra.com/
+Does this look good?
