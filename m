@@ -1,26 +1,18 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eaHLI-0002Dt-3l
- for linux-mtd@lists.infradead.org; Sat, 13 Jan 2018 08:39:10 +0000
-Date: Sat, 13 Jan 2018 09:38:55 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Miquel RAYNAL <miquel.raynal@free-electrons.com>, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v3 0/7] Marvell NAND controller rework with ->exec_op()
-Message-ID: <20180113093855.49231a43@bbrezillon>
-In-Reply-To: <871sivauyf.fsf@belgarion.home>
-References: <20180109103637.23798-1-miquel.raynal@free-electrons.com>
- <20180111122751.4bd74366@bbrezillon>
- <87efmwb8bj.fsf@belgarion.home> <20180111232417.4aa86075@xps13>
- <87a7xjbis2.fsf@belgarion.home>
- <20180112094501.27706bfc@bbrezillon>
- <876087beui.fsf@belgarion.home>
- <20180112112108.2e20dc14@bbrezillon>
- <871sivauyf.fsf@belgarion.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+ id 1eaJSG-00035D-9Z
+ for linux-mtd@lists.infradead.org; Sat, 13 Jan 2018 10:54:30 +0000
+From: Miquel Raynal <miquel.raynal@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@free-electrons.com>
+Subject: [PATCH] MAINTAINERS: Add entry for Marvell NAND controller driver
+Date: Sat, 13 Jan 2018 11:54:10 +0100
+Message-Id: <20180113105410.2555-1-miquel.raynal@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,20 +22,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 12 Jan 2018 17:43:52 +0100
-Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+Add entry for Marvell NAND controller driver and its bindings which will
+soon replace the old driver pxa3xx_nand.c.
 
-> Boris Brezillon <boris.brezillon@free-electrons.com> writes:
-> 
-> > I think I'm still missing something. If I look at the branch you just
-> > pushed, I see that ->flash_bbt was not set to 1 before this commit [1],
-> > which means the pxa3xx driver was no setting the NAND_BBT_USE_FLASH
-> > flag, which in turn means you were not using the on-flash-bbt.
-> > When you test the old (pxa3xx) driver, are you sure you're testing
-> > things with a mainline kernel? If you have extra commits on top of
-> > mainline, can you push them somewhere?  
-> 
-> Here is the branch I'm using with my pxa3xx driver :
-> git fetch https://github.com/rjarzmik/linux pxa3xx-test
+Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+---
+ MAINTAINERS | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-May I ask why this is not in mainline?
+diff --git a/MAINTAINERS b/MAINTAINERS
+index aa71ab52fd76..ca8bb8077e70 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8409,6 +8409,13 @@ L:	linux-wireless@vger.kernel.org
+ S:	Odd Fixes
+ F:	drivers/net/wireless/marvell/mwl8k.c
+ 
++MARVELL NAND CONTROLLER DRIVER
++M:	Miquel Raynal <miquel.raynal@free-electrons.com>
++L:	linux-mtd@lists.infradead.org
++S:	Maintained
++F:	drivers/mtd/nand/marvell_nand.c
++F:	Documentation/devicetree/bindings/mtd/marvell-nand.txt
++
+ MARVELL SOC MMC/SD/SDIO CONTROLLER DRIVER
+ M:	Nicolas Pitre <nico@fluxnic.net>
+ S:	Odd Fixes
+-- 
+2.11.0
