@@ -1,26 +1,21 @@
-Received: from smtp12.smtpout.orange.fr ([80.12.242.134]
- helo=smtp.smtpout.orange.fr)
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eafdf-0008UJ-C5
- for linux-mtd@lists.infradead.org; Sun, 14 Jan 2018 10:35:45 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eaip2-0007Mp-CK
+ for linux-mtd@lists.infradead.org; Sun, 14 Jan 2018 13:59:42 +0000
+Date: Sun, 14 Jan 2018 14:59:17 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Miquel Raynal <miquel.raynal@free-electrons.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v3 0/7] Marvell NAND controller rework with ->exec_op()
-References: <20180109103637.23798-1-miquel.raynal@free-electrons.com>
- <20180111122751.4bd74366@bbrezillon> <87efmwb8bj.fsf@belgarion.home>
- <20180111232417.4aa86075@xps13> <87a7xjbis2.fsf@belgarion.home>
- <20180112094501.27706bfc@bbrezillon> <876087beui.fsf@belgarion.home>
- <20180112105228.176ab80f@bbrezillon> <87wp0majtg.fsf@belgarion.home>
- <20180113093807.3984c184@bbrezillon> <20180113120529.2f00ea20@xps13>
-Date: Sun, 14 Jan 2018 11:35:30 +0100
-In-Reply-To: <20180113120529.2f00ea20@xps13> (Miquel Raynal's message of "Sat,
- 13 Jan 2018 12:05:29 +0100")
-Message-ID: <87o9lwaft9.fsf@belgarion.home>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] MAINTAINERS: Add entry for Marvell NAND controller driver
+Message-ID: <20180114145917.3d0304a5@bbrezillon>
+In-Reply-To: <20180113105410.2555-1-miquel.raynal@free-electrons.com>
+References: <20180113105410.2555-1-miquel.raynal@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,17 +25,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Miquel Raynal <miquel.raynal@free-electrons.com> writes:
+On Sat, 13 Jan 2018 11:54:10 +0100
+Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
 
->> It shouldn't be damaged anymore. The bug has been fixed just before we
->> asked you to scrub the BBT area.
-I confirm. The last marvell branch I have (2be03e113a5b ("HACK: Dump OOB data
-while reading")) does work correctly on my zylonite.
+> Add entry for Marvell NAND controller driver and its bindings which will
+> soon replace the old driver pxa3xx_nand.c.
+> 
 
-I still have to make a test of a file write, and a devicetree based setup, but I
-don't think anything wrong will happen now.
+Applied.
 
-Cheers.
+Thanks,
 
--- 
-Robert
+Boris
+
+> Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+> ---
+>  MAINTAINERS | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index aa71ab52fd76..ca8bb8077e70 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -8409,6 +8409,13 @@ L:	linux-wireless@vger.kernel.org
+>  S:	Odd Fixes
+>  F:	drivers/net/wireless/marvell/mwl8k.c
+>  
+> +MARVELL NAND CONTROLLER DRIVER
+> +M:	Miquel Raynal <miquel.raynal@free-electrons.com>
+> +L:	linux-mtd@lists.infradead.org
+> +S:	Maintained
+> +F:	drivers/mtd/nand/marvell_nand.c
+> +F:	Documentation/devicetree/bindings/mtd/marvell-nand.txt
+> +
+>  MARVELL SOC MMC/SD/SDIO CONTROLLER DRIVER
+>  M:	Nicolas Pitre <nico@fluxnic.net>
+>  S:	Odd Fixes
