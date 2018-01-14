@@ -1,22 +1,23 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eajvv-0001mn-0Y
- for linux-mtd@lists.infradead.org; Sun, 14 Jan 2018 15:10:53 +0000
-Date: Sun, 14 Jan 2018 16:10:28 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Steve deRosier <derosier@gmail.com>
-Cc: gudjon@gudjon.org, linux-mtd@lists.infradead.org
-Subject: Re: ECC configuration of NAND from Linux (MEMSETOOBSEL)
-Message-ID: <20180114161028.61f357d7@bbrezillon>
-In-Reply-To: <CALLGbRLXXO_ZyDahNyohh+Fs1adbYEcMoxA3+7FRWfUJpua5tg@mail.gmail.com>
-References: <2132429.fBNFCxDbQz@fessender> <20180112154639.63a8d133@bbrezillon>
- <2581607.A7Zl2yeV5U@fessender>
- <CALLGbRJ9SipkxtNiCigrPHQim5C38uq9EVsYK3WS_HN3aW-pqg@mail.gmail.com>
- <20180113092443.6222f2bf@bbrezillon>
- <CALLGbRLXXO_ZyDahNyohh+Fs1adbYEcMoxA3+7FRWfUJpua5tg@mail.gmail.com>
+Subject: Re: [PATCH] mtd: mtk-nor: modify functions' name more generally
+To: Guochun Mao <guochun.mao@mediatek.com>, Marek Vasut <marek.vasut@gmail.com>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>,
+ Mark Rutland <mark.rutland@arm.com>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1513561655-10570-1-git-send-email-guochun.mao@mediatek.com>
+ <1513561655-10570-2-git-send-email-guochun.mao@mediatek.com>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <5348c8dd-dc78-bdeb-f9d0-5ce20616d69b@wedev4u.fr>
+Date: Sun, 14 Jan 2018 16:23:49 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1513561655-10570-2-git-send-email-guochun.mao@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,135 +27,560 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Steve,
-
-On Sat, 13 Jan 2018 09:34:52 -0800
-Steve deRosier <derosier@gmail.com> wrote:
-
-> Hi Boris,
+Le 18/12/2017 à 02:47, Guochun Mao a écrit :
+> Since more and more Mediatek's SoC can use this driver to
+> control spi-nor flash, functions' name with "mt8173_" is
+> no longer properly. Replacing "mt8173_" with "mtk_" will
+> be more accurate to describe these functions' usable scope.
 > 
-> On Sat, Jan 13, 2018 at 12:24 AM, Boris Brezillon
-> <boris.brezillon@free-electrons.com> wrote:
-> > On Fri, 12 Jan 2018 18:41:58 -0800
-> > Steve deRosier <derosier@gmail.com> wrote:
-> >  
-> >> Hi Gudjon,
-> >>
-> >> On Fri, Jan 12, 2018 at 10:50 AM, Gudjon I. Gudjonsson
-> >> <gudjon@gudjon.org> wrote:  
-> >> > > setting you'll have to erase the whole flash and then change the ECC
-> >> > > config in your DT or board file (note that not all drivers support
-> >> > > adjusting the ECC strength/step-size).  
-> >> > I will have to accept that but can you please tell me how to change the
-> >> > ECC strength if my driver supports it? My plan is to use swupdate and
-> >> > update the system using an SD-card that is already installed but I could
-> >> > not find any reference to changing the ECC strength.
-> >> > I am using the Atmel SAMA5d36 CPU and Micron mt29F2G08abaeawp
-> >> > NAND flash.
-> >> >  
-> >>
-> >> I might be wrong, but I don't think there's any mechanism to change
-> >> the ECC strength on the fly with that processor and flash combination.
-> >> In order to do it, you have to adjust it in your device-tree. I went
-> >> through this in an upgrade scenario on a similar system a few years
-> >> ago and came to the conclusion that it wasn't viable. As a matter of
-> >> background, we had two spots on flash for the kernel (kernel-a,
-> >> kernel-b), and two for a rootfs that was a UBIFS (rootfs-a, rootfs-b).
-> >> Our upgrade procedure was to run on -a, and flash -b.  Next time, run
-> >> on -b and flash on -a, etc... To do it, here's what would have had to
-> >> be done:
-> >>
-> >> 1. Change the ECC strength in the DT, which then gets appended to the
-> >> the kernel image. Which means when the new kernel boots the new ECC
-> >> takes effect and not before. Note that the kernel that is running is
-> >> using the whatever ECC it was set for.
-> >> 2. Change our update script to _not_ write the ECC bits when it
-> >> flashes... this is critical.
-> >> 3. Now, (assuming running on -a partitions), erase kernel-b, rootfs-b.
-> >> Then flash the new kernel and new rootfs to the -b partitions
-> >> _with_out_ ECC bits!
-> >> 4. Reboot to -b partitions. Note that you're now running a kernel
-> >> supporting the new ECC layout, but without any ECC actually being
-> >> performed.
-> >> 5. Now, erase and reflash -a with the same new kernel and rootfs
-> >> _with_ ECC bits.
-> >> 6. Boot to -a. Now you're running with the new ECC layout and with ECC
-> >> actually being done.
-> >>
-> >> I'm going from memory, so I might have missed a step or done something
-> >> out of order, but you get the point. Now, why all of the above?  The
-> >> problem is the number of ECC bits that gets flashed is dependent on
-> >> the kernel running flashing it. So, having a kernel running 4 bits
-> >> trying to flash 8, doesn't work.  The solution is by forcing all the
-> >> written ECC bits to 0xffs by turing off the ECC bits when flashing
-> >> with nandwrite. The kernel will read and ignore ECC, no matter the set
-> >> strength, if there's no ECC bits set.  
-> >
-> > That's not true. If you have all ECC bytes set to 0xff it will simply
-> > not boot (or at least it should not), because the ECC engine will report
-> > errors everywhere.
-> >  
+> Signed-off-by: Guochun Mao <guochun.mao@mediatek.com>
+
+Applied to the spi-nor/next branch of linux-mtd
+
+Thanks!
+
+> ---
+>  drivers/mtd/spi-nor/mtk-quadspi.c |  240 ++++++++++++++++++-------------------
+>  1 file changed, 120 insertions(+), 120 deletions(-)
 > 
-> Well, I'm glad you say it shouldn't work that way, because I happen to
-> agree that it shouldn't. However, I can unequivocally confirm that on
-> at least one Atmel processor with one specific NAND with kernel
-> version 3.8, it does indeed work this way in practice. It's very clear
-> from the behavior that ECC-configured, but with the OOB area being
-> 0xffs is being interpreted as "I have no ECC data, so don't bother
-> trying to do ECC". Now, obviously if there are bit-flips, what is read
-> is invalid and can cause random operations. Which, unfortunately, is
-> how I know what the behavior is.
-
-You're right, it seems that this test [1], which is meant detect erased
-pages, has the side effect of completely disabling ECC correction when
-ECC bytes are all set to 0xff, which is obviously wrong!
-
+> diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-quadspi.c
+> index abe455c..5442993 100644
+> --- a/drivers/mtd/spi-nor/mtk-quadspi.c
+> +++ b/drivers/mtd/spi-nor/mtk-quadspi.c
+> @@ -110,7 +110,7 @@
+>  #define MTK_NOR_PRG_REG(n)		(MTK_NOR_PRGDATA0_REG + 4 * (n))
+>  #define MTK_NOR_SHREG(n)		(MTK_NOR_SHREG0_REG + 4 * (n))
+>  
+> -struct mt8173_nor {
+> +struct mtk_nor {
+>  	struct spi_nor nor;
+>  	struct device *dev;
+>  	void __iomem *base;	/* nor flash base address */
+> @@ -118,48 +118,48 @@ struct mt8173_nor {
+>  	struct clk *nor_clk;
+>  };
+>  
+> -static void mt8173_nor_set_read_mode(struct mt8173_nor *mt8173_nor)
+> +static void mtk_nor_set_read_mode(struct mtk_nor *mtk_nor)
+>  {
+> -	struct spi_nor *nor = &mt8173_nor->nor;
+> +	struct spi_nor *nor = &mtk_nor->nor;
+>  
+>  	switch (nor->read_proto) {
+>  	case SNOR_PROTO_1_1_1:
+> -		writeb(nor->read_opcode, mt8173_nor->base +
+> +		writeb(nor->read_opcode, mtk_nor->base +
+>  		       MTK_NOR_PRGDATA3_REG);
+> -		writeb(MTK_NOR_FAST_READ, mt8173_nor->base +
+> +		writeb(MTK_NOR_FAST_READ, mtk_nor->base +
+>  		       MTK_NOR_CFG1_REG);
+>  		break;
+>  	case SNOR_PROTO_1_1_2:
+> -		writeb(nor->read_opcode, mt8173_nor->base +
+> +		writeb(nor->read_opcode, mtk_nor->base +
+>  		       MTK_NOR_PRGDATA3_REG);
+> -		writeb(MTK_NOR_DUAL_READ_EN, mt8173_nor->base +
+> +		writeb(MTK_NOR_DUAL_READ_EN, mtk_nor->base +
+>  		       MTK_NOR_DUAL_REG);
+>  		break;
+>  	case SNOR_PROTO_1_1_4:
+> -		writeb(nor->read_opcode, mt8173_nor->base +
+> +		writeb(nor->read_opcode, mtk_nor->base +
+>  		       MTK_NOR_PRGDATA4_REG);
+> -		writeb(MTK_NOR_QUAD_READ_EN, mt8173_nor->base +
+> +		writeb(MTK_NOR_QUAD_READ_EN, mtk_nor->base +
+>  		       MTK_NOR_DUAL_REG);
+>  		break;
+>  	default:
+> -		writeb(MTK_NOR_DUAL_DISABLE, mt8173_nor->base +
+> +		writeb(MTK_NOR_DUAL_DISABLE, mtk_nor->base +
+>  		       MTK_NOR_DUAL_REG);
+>  		break;
+>  	}
+>  }
+>  
+> -static int mt8173_nor_execute_cmd(struct mt8173_nor *mt8173_nor, u8 cmdval)
+> +static int mtk_nor_execute_cmd(struct mtk_nor *mtk_nor, u8 cmdval)
+>  {
+>  	int reg;
+>  	u8 val = cmdval & 0x1f;
+>  
+> -	writeb(cmdval, mt8173_nor->base + MTK_NOR_CMD_REG);
+> -	return readl_poll_timeout(mt8173_nor->base + MTK_NOR_CMD_REG, reg,
+> +	writeb(cmdval, mtk_nor->base + MTK_NOR_CMD_REG);
+> +	return readl_poll_timeout(mtk_nor->base + MTK_NOR_CMD_REG, reg,
+>  				  !(reg & val), 100, 10000);
+>  }
+>  
+> -static int mt8173_nor_do_tx_rx(struct mt8173_nor *mt8173_nor, u8 op,
+> -			       u8 *tx, int txlen, u8 *rx, int rxlen)
+> +static int mtk_nor_do_tx_rx(struct mtk_nor *mtk_nor, u8 op,
+> +			    u8 *tx, int txlen, u8 *rx, int rxlen)
+>  {
+>  	int len = 1 + txlen + rxlen;
+>  	int i, ret, idx;
+> @@ -167,26 +167,26 @@ static int mt8173_nor_do_tx_rx(struct mt8173_nor *mt8173_nor, u8 op,
+>  	if (len > MTK_NOR_MAX_SHIFT)
+>  		return -EINVAL;
+>  
+> -	writeb(len * 8, mt8173_nor->base + MTK_NOR_CNT_REG);
+> +	writeb(len * 8, mtk_nor->base + MTK_NOR_CNT_REG);
+>  
+>  	/* start at PRGDATA5, go down to PRGDATA0 */
+>  	idx = MTK_NOR_MAX_RX_TX_SHIFT - 1;
+>  
+>  	/* opcode */
+> -	writeb(op, mt8173_nor->base + MTK_NOR_PRG_REG(idx));
+> +	writeb(op, mtk_nor->base + MTK_NOR_PRG_REG(idx));
+>  	idx--;
+>  
+>  	/* program TX data */
+>  	for (i = 0; i < txlen; i++, idx--)
+> -		writeb(tx[i], mt8173_nor->base + MTK_NOR_PRG_REG(idx));
+> +		writeb(tx[i], mtk_nor->base + MTK_NOR_PRG_REG(idx));
+>  
+>  	/* clear out rest of TX registers */
+>  	while (idx >= 0) {
+> -		writeb(0, mt8173_nor->base + MTK_NOR_PRG_REG(idx));
+> +		writeb(0, mtk_nor->base + MTK_NOR_PRG_REG(idx));
+>  		idx--;
+>  	}
+>  
+> -	ret = mt8173_nor_execute_cmd(mt8173_nor, MTK_NOR_PRG_CMD);
+> +	ret = mtk_nor_execute_cmd(mtk_nor, MTK_NOR_PRG_CMD);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -195,20 +195,20 @@ static int mt8173_nor_do_tx_rx(struct mt8173_nor *mt8173_nor, u8 op,
+>  
+>  	/* read out RX data */
+>  	for (i = 0; i < rxlen; i++, idx--)
+> -		rx[i] = readb(mt8173_nor->base + MTK_NOR_SHREG(idx));
+> +		rx[i] = readb(mtk_nor->base + MTK_NOR_SHREG(idx));
+>  
+>  	return 0;
+>  }
+>  
+>  /* Do a WRSR (Write Status Register) command */
+> -static int mt8173_nor_wr_sr(struct mt8173_nor *mt8173_nor, u8 sr)
+> +static int mtk_nor_wr_sr(struct mtk_nor *mtk_nor, u8 sr)
+>  {
+> -	writeb(sr, mt8173_nor->base + MTK_NOR_PRGDATA5_REG);
+> -	writeb(8, mt8173_nor->base + MTK_NOR_CNT_REG);
+> -	return mt8173_nor_execute_cmd(mt8173_nor, MTK_NOR_WRSR_CMD);
+> +	writeb(sr, mtk_nor->base + MTK_NOR_PRGDATA5_REG);
+> +	writeb(8, mtk_nor->base + MTK_NOR_CNT_REG);
+> +	return mtk_nor_execute_cmd(mtk_nor, MTK_NOR_WRSR_CMD);
+>  }
+>  
+> -static int mt8173_nor_write_buffer_enable(struct mt8173_nor *mt8173_nor)
+> +static int mtk_nor_write_buffer_enable(struct mtk_nor *mtk_nor)
+>  {
+>  	u8 reg;
+>  
+> @@ -216,27 +216,27 @@ static int mt8173_nor_write_buffer_enable(struct mt8173_nor *mt8173_nor)
+>  	 * 0: pre-fetch buffer use for read
+>  	 * 1: pre-fetch buffer use for page program
+>  	 */
+> -	writel(MTK_NOR_WR_BUF_ENABLE, mt8173_nor->base + MTK_NOR_CFG2_REG);
+> -	return readb_poll_timeout(mt8173_nor->base + MTK_NOR_CFG2_REG, reg,
+> +	writel(MTK_NOR_WR_BUF_ENABLE, mtk_nor->base + MTK_NOR_CFG2_REG);
+> +	return readb_poll_timeout(mtk_nor->base + MTK_NOR_CFG2_REG, reg,
+>  				  0x01 == (reg & 0x01), 100, 10000);
+>  }
+>  
+> -static int mt8173_nor_write_buffer_disable(struct mt8173_nor *mt8173_nor)
+> +static int mtk_nor_write_buffer_disable(struct mtk_nor *mtk_nor)
+>  {
+>  	u8 reg;
+>  
+> -	writel(MTK_NOR_WR_BUF_DISABLE, mt8173_nor->base + MTK_NOR_CFG2_REG);
+> -	return readb_poll_timeout(mt8173_nor->base + MTK_NOR_CFG2_REG, reg,
+> +	writel(MTK_NOR_WR_BUF_DISABLE, mtk_nor->base + MTK_NOR_CFG2_REG);
+> +	return readb_poll_timeout(mtk_nor->base + MTK_NOR_CFG2_REG, reg,
+>  				  MTK_NOR_WR_BUF_DISABLE == (reg & 0x1), 100,
+>  				  10000);
+>  }
+>  
+> -static void mt8173_nor_set_addr_width(struct mt8173_nor *mt8173_nor)
+> +static void mtk_nor_set_addr_width(struct mtk_nor *mtk_nor)
+>  {
+>  	u8 val;
+> -	struct spi_nor *nor = &mt8173_nor->nor;
+> +	struct spi_nor *nor = &mtk_nor->nor;
+>  
+> -	val = readb(mt8173_nor->base + MTK_NOR_DUAL_REG);
+> +	val = readb(mtk_nor->base + MTK_NOR_DUAL_REG);
+>  
+>  	switch (nor->addr_width) {
+>  	case 3:
+> @@ -246,115 +246,115 @@ static void mt8173_nor_set_addr_width(struct mt8173_nor *mt8173_nor)
+>  		val |= MTK_NOR_4B_ADDR_EN;
+>  		break;
+>  	default:
+> -		dev_warn(mt8173_nor->dev, "Unexpected address width %u.\n",
+> +		dev_warn(mtk_nor->dev, "Unexpected address width %u.\n",
+>  			 nor->addr_width);
+>  		break;
+>  	}
+>  
+> -	writeb(val, mt8173_nor->base + MTK_NOR_DUAL_REG);
+> +	writeb(val, mtk_nor->base + MTK_NOR_DUAL_REG);
+>  }
+>  
+> -static void mt8173_nor_set_addr(struct mt8173_nor *mt8173_nor, u32 addr)
+> +static void mtk_nor_set_addr(struct mtk_nor *mtk_nor, u32 addr)
+>  {
+>  	int i;
+>  
+> -	mt8173_nor_set_addr_width(mt8173_nor);
+> +	mtk_nor_set_addr_width(mtk_nor);
+>  
+>  	for (i = 0; i < 3; i++) {
+> -		writeb(addr & 0xff, mt8173_nor->base + MTK_NOR_RADR0_REG + i * 4);
+> +		writeb(addr & 0xff, mtk_nor->base + MTK_NOR_RADR0_REG + i * 4);
+>  		addr >>= 8;
+>  	}
+>  	/* Last register is non-contiguous */
+> -	writeb(addr & 0xff, mt8173_nor->base + MTK_NOR_RADR3_REG);
+> +	writeb(addr & 0xff, mtk_nor->base + MTK_NOR_RADR3_REG);
+>  }
+>  
+> -static ssize_t mt8173_nor_read(struct spi_nor *nor, loff_t from, size_t length,
+> -			       u_char *buffer)
+> +static ssize_t mtk_nor_read(struct spi_nor *nor, loff_t from, size_t length,
+> +			    u_char *buffer)
+>  {
+>  	int i, ret;
+>  	int addr = (int)from;
+>  	u8 *buf = (u8 *)buffer;
+> -	struct mt8173_nor *mt8173_nor = nor->priv;
+> +	struct mtk_nor *mtk_nor = nor->priv;
+>  
+>  	/* set mode for fast read mode ,dual mode or quad mode */
+> -	mt8173_nor_set_read_mode(mt8173_nor);
+> -	mt8173_nor_set_addr(mt8173_nor, addr);
+> +	mtk_nor_set_read_mode(mtk_nor);
+> +	mtk_nor_set_addr(mtk_nor, addr);
+>  
+>  	for (i = 0; i < length; i++) {
+> -		ret = mt8173_nor_execute_cmd(mt8173_nor, MTK_NOR_PIO_READ_CMD);
+> +		ret = mtk_nor_execute_cmd(mtk_nor, MTK_NOR_PIO_READ_CMD);
+>  		if (ret < 0)
+>  			return ret;
+> -		buf[i] = readb(mt8173_nor->base + MTK_NOR_RDATA_REG);
+> +		buf[i] = readb(mtk_nor->base + MTK_NOR_RDATA_REG);
+>  	}
+>  	return length;
+>  }
+>  
+> -static int mt8173_nor_write_single_byte(struct mt8173_nor *mt8173_nor,
+> -					int addr, int length, u8 *data)
+> +static int mtk_nor_write_single_byte(struct mtk_nor *mtk_nor,
+> +				     int addr, int length, u8 *data)
+>  {
+>  	int i, ret;
+>  
+> -	mt8173_nor_set_addr(mt8173_nor, addr);
+> +	mtk_nor_set_addr(mtk_nor, addr);
+>  
+>  	for (i = 0; i < length; i++) {
+> -		writeb(*data++, mt8173_nor->base + MTK_NOR_WDATA_REG);
+> -		ret = mt8173_nor_execute_cmd(mt8173_nor, MTK_NOR_PIO_WR_CMD);
+> +		writeb(*data++, mtk_nor->base + MTK_NOR_WDATA_REG);
+> +		ret = mtk_nor_execute_cmd(mtk_nor, MTK_NOR_PIO_WR_CMD);
+>  		if (ret < 0)
+>  			return ret;
+>  	}
+>  	return 0;
+>  }
+>  
+> -static int mt8173_nor_write_buffer(struct mt8173_nor *mt8173_nor, int addr,
+> -				   const u8 *buf)
+> +static int mtk_nor_write_buffer(struct mtk_nor *mtk_nor, int addr,
+> +				const u8 *buf)
+>  {
+>  	int i, bufidx, data;
+>  
+> -	mt8173_nor_set_addr(mt8173_nor, addr);
+> +	mtk_nor_set_addr(mtk_nor, addr);
+>  
+>  	bufidx = 0;
+>  	for (i = 0; i < SFLASH_WRBUF_SIZE; i += 4) {
+>  		data = buf[bufidx + 3]<<24 | buf[bufidx + 2]<<16 |
+>  		       buf[bufidx + 1]<<8 | buf[bufidx];
+>  		bufidx += 4;
+> -		writel(data, mt8173_nor->base + MTK_NOR_PP_DATA_REG);
+> +		writel(data, mtk_nor->base + MTK_NOR_PP_DATA_REG);
+>  	}
+> -	return mt8173_nor_execute_cmd(mt8173_nor, MTK_NOR_WR_CMD);
+> +	return mtk_nor_execute_cmd(mtk_nor, MTK_NOR_WR_CMD);
+>  }
+>  
+> -static ssize_t mt8173_nor_write(struct spi_nor *nor, loff_t to, size_t len,
+> -				const u_char *buf)
+> +static ssize_t mtk_nor_write(struct spi_nor *nor, loff_t to, size_t len,
+> +			     const u_char *buf)
+>  {
+>  	int ret;
+> -	struct mt8173_nor *mt8173_nor = nor->priv;
+> +	struct mtk_nor *mtk_nor = nor->priv;
+>  	size_t i;
+>  
+> -	ret = mt8173_nor_write_buffer_enable(mt8173_nor);
+> +	ret = mtk_nor_write_buffer_enable(mtk_nor);
+>  	if (ret < 0) {
+> -		dev_warn(mt8173_nor->dev, "write buffer enable failed!\n");
+> +		dev_warn(mtk_nor->dev, "write buffer enable failed!\n");
+>  		return ret;
+>  	}
+>  
+>  	for (i = 0; i + SFLASH_WRBUF_SIZE <= len; i += SFLASH_WRBUF_SIZE) {
+> -		ret = mt8173_nor_write_buffer(mt8173_nor, to, buf);
+> +		ret = mtk_nor_write_buffer(mtk_nor, to, buf);
+>  		if (ret < 0) {
+> -			dev_err(mt8173_nor->dev, "write buffer failed!\n");
+> +			dev_err(mtk_nor->dev, "write buffer failed!\n");
+>  			return ret;
+>  		}
+>  		to += SFLASH_WRBUF_SIZE;
+>  		buf += SFLASH_WRBUF_SIZE;
+>  	}
+> -	ret = mt8173_nor_write_buffer_disable(mt8173_nor);
+> +	ret = mtk_nor_write_buffer_disable(mtk_nor);
+>  	if (ret < 0) {
+> -		dev_warn(mt8173_nor->dev, "write buffer disable failed!\n");
+> +		dev_warn(mtk_nor->dev, "write buffer disable failed!\n");
+>  		return ret;
+>  	}
+>  
+>  	if (i < len) {
+> -		ret = mt8173_nor_write_single_byte(mt8173_nor, to,
+> -						   (int)(len - i), (u8 *)buf);
+> +		ret = mtk_nor_write_single_byte(mtk_nor, to,
+> +						(int)(len - i), (u8 *)buf);
+>  		if (ret < 0) {
+> -			dev_err(mt8173_nor->dev, "write single byte failed!\n");
+> +			dev_err(mtk_nor->dev, "write single byte failed!\n");
+>  			return ret;
+>  		}
+>  	}
+> @@ -362,72 +362,72 @@ static ssize_t mt8173_nor_write(struct spi_nor *nor, loff_t to, size_t len,
+>  	return len;
+>  }
+>  
+> -static int mt8173_nor_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
+> +static int mtk_nor_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
+>  {
+>  	int ret;
+> -	struct mt8173_nor *mt8173_nor = nor->priv;
+> +	struct mtk_nor *mtk_nor = nor->priv;
+>  
+>  	switch (opcode) {
+>  	case SPINOR_OP_RDSR:
+> -		ret = mt8173_nor_execute_cmd(mt8173_nor, MTK_NOR_RDSR_CMD);
+> +		ret = mtk_nor_execute_cmd(mtk_nor, MTK_NOR_RDSR_CMD);
+>  		if (ret < 0)
+>  			return ret;
+>  		if (len == 1)
+> -			*buf = readb(mt8173_nor->base + MTK_NOR_RDSR_REG);
+> +			*buf = readb(mtk_nor->base + MTK_NOR_RDSR_REG);
+>  		else
+> -			dev_err(mt8173_nor->dev, "len should be 1 for read status!\n");
+> +			dev_err(mtk_nor->dev, "len should be 1 for read status!\n");
+>  		break;
+>  	default:
+> -		ret = mt8173_nor_do_tx_rx(mt8173_nor, opcode, NULL, 0, buf, len);
+> +		ret = mtk_nor_do_tx_rx(mtk_nor, opcode, NULL, 0, buf, len);
+>  		break;
+>  	}
+>  	return ret;
+>  }
+>  
+> -static int mt8173_nor_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
+> -				int len)
+> +static int mtk_nor_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
+> +			     int len)
+>  {
+>  	int ret;
+> -	struct mt8173_nor *mt8173_nor = nor->priv;
+> +	struct mtk_nor *mtk_nor = nor->priv;
+>  
+>  	switch (opcode) {
+>  	case SPINOR_OP_WRSR:
+>  		/* We only handle 1 byte */
+> -		ret = mt8173_nor_wr_sr(mt8173_nor, *buf);
+> +		ret = mtk_nor_wr_sr(mtk_nor, *buf);
+>  		break;
+>  	default:
+> -		ret = mt8173_nor_do_tx_rx(mt8173_nor, opcode, buf, len, NULL, 0);
+> +		ret = mtk_nor_do_tx_rx(mtk_nor, opcode, buf, len, NULL, 0);
+>  		if (ret)
+> -			dev_warn(mt8173_nor->dev, "write reg failure!\n");
+> +			dev_warn(mtk_nor->dev, "write reg failure!\n");
+>  		break;
+>  	}
+>  	return ret;
+>  }
+>  
+> -static void mt8173_nor_disable_clk(struct mt8173_nor *mt8173_nor)
+> +static void mtk_nor_disable_clk(struct mtk_nor *mtk_nor)
+>  {
+> -	clk_disable_unprepare(mt8173_nor->spi_clk);
+> -	clk_disable_unprepare(mt8173_nor->nor_clk);
+> +	clk_disable_unprepare(mtk_nor->spi_clk);
+> +	clk_disable_unprepare(mtk_nor->nor_clk);
+>  }
+>  
+> -static int mt8173_nor_enable_clk(struct mt8173_nor *mt8173_nor)
+> +static int mtk_nor_enable_clk(struct mtk_nor *mtk_nor)
+>  {
+>  	int ret;
+>  
+> -	ret = clk_prepare_enable(mt8173_nor->spi_clk);
+> +	ret = clk_prepare_enable(mtk_nor->spi_clk);
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = clk_prepare_enable(mt8173_nor->nor_clk);
+> +	ret = clk_prepare_enable(mtk_nor->nor_clk);
+>  	if (ret) {
+> -		clk_disable_unprepare(mt8173_nor->spi_clk);
+> +		clk_disable_unprepare(mtk_nor->spi_clk);
+>  		return ret;
+>  	}
+>  
+>  	return 0;
+>  }
+>  
+> -static int mtk_nor_init(struct mt8173_nor *mt8173_nor,
+> +static int mtk_nor_init(struct mtk_nor *mtk_nor,
+>  			struct device_node *flash_node)
+>  {
+>  	const struct spi_nor_hwcaps hwcaps = {
+> @@ -439,18 +439,18 @@ static int mtk_nor_init(struct mt8173_nor *mt8173_nor,
+>  	struct spi_nor *nor;
+>  
+>  	/* initialize controller to accept commands */
+> -	writel(MTK_NOR_ENABLE_SF_CMD, mt8173_nor->base + MTK_NOR_WRPROT_REG);
+> +	writel(MTK_NOR_ENABLE_SF_CMD, mtk_nor->base + MTK_NOR_WRPROT_REG);
+>  
+> -	nor = &mt8173_nor->nor;
+> -	nor->dev = mt8173_nor->dev;
+> -	nor->priv = mt8173_nor;
+> +	nor = &mtk_nor->nor;
+> +	nor->dev = mtk_nor->dev;
+> +	nor->priv = mtk_nor;
+>  	spi_nor_set_flash_node(nor, flash_node);
+>  
+>  	/* fill the hooks to spi nor */
+> -	nor->read = mt8173_nor_read;
+> -	nor->read_reg = mt8173_nor_read_reg;
+> -	nor->write = mt8173_nor_write;
+> -	nor->write_reg = mt8173_nor_write_reg;
+> +	nor->read = mtk_nor_read;
+> +	nor->read_reg = mtk_nor_read_reg;
+> +	nor->write = mtk_nor_write;
+> +	nor->write_reg = mtk_nor_write_reg;
+>  	nor->mtd.name = "mtk_nor";
+>  	/* initialized with NULL */
+>  	ret = spi_nor_scan(nor, NULL, &hwcaps);
+> @@ -465,34 +465,34 @@ static int mtk_nor_drv_probe(struct platform_device *pdev)
+>  	struct device_node *flash_np;
+>  	struct resource *res;
+>  	int ret;
+> -	struct mt8173_nor *mt8173_nor;
+> +	struct mtk_nor *mtk_nor;
+>  
+>  	if (!pdev->dev.of_node) {
+>  		dev_err(&pdev->dev, "No DT found\n");
+>  		return -EINVAL;
+>  	}
+>  
+> -	mt8173_nor = devm_kzalloc(&pdev->dev, sizeof(*mt8173_nor), GFP_KERNEL);
+> -	if (!mt8173_nor)
+> +	mtk_nor = devm_kzalloc(&pdev->dev, sizeof(*mtk_nor), GFP_KERNEL);
+> +	if (!mtk_nor)
+>  		return -ENOMEM;
+> -	platform_set_drvdata(pdev, mt8173_nor);
+> +	platform_set_drvdata(pdev, mtk_nor);
+>  
+>  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	mt8173_nor->base = devm_ioremap_resource(&pdev->dev, res);
+> -	if (IS_ERR(mt8173_nor->base))
+> -		return PTR_ERR(mt8173_nor->base);
+> +	mtk_nor->base = devm_ioremap_resource(&pdev->dev, res);
+> +	if (IS_ERR(mtk_nor->base))
+> +		return PTR_ERR(mtk_nor->base);
+>  
+> -	mt8173_nor->spi_clk = devm_clk_get(&pdev->dev, "spi");
+> -	if (IS_ERR(mt8173_nor->spi_clk))
+> -		return PTR_ERR(mt8173_nor->spi_clk);
+> +	mtk_nor->spi_clk = devm_clk_get(&pdev->dev, "spi");
+> +	if (IS_ERR(mtk_nor->spi_clk))
+> +		return PTR_ERR(mtk_nor->spi_clk);
+>  
+> -	mt8173_nor->nor_clk = devm_clk_get(&pdev->dev, "sf");
+> -	if (IS_ERR(mt8173_nor->nor_clk))
+> -		return PTR_ERR(mt8173_nor->nor_clk);
+> +	mtk_nor->nor_clk = devm_clk_get(&pdev->dev, "sf");
+> +	if (IS_ERR(mtk_nor->nor_clk))
+> +		return PTR_ERR(mtk_nor->nor_clk);
+>  
+> -	mt8173_nor->dev = &pdev->dev;
+> +	mtk_nor->dev = &pdev->dev;
+>  
+> -	ret = mt8173_nor_enable_clk(mt8173_nor);
+> +	ret = mtk_nor_enable_clk(mtk_nor);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -503,20 +503,20 @@ static int mtk_nor_drv_probe(struct platform_device *pdev)
+>  		ret = -ENODEV;
+>  		goto nor_free;
+>  	}
+> -	ret = mtk_nor_init(mt8173_nor, flash_np);
+> +	ret = mtk_nor_init(mtk_nor, flash_np);
+>  
+>  nor_free:
+>  	if (ret)
+> -		mt8173_nor_disable_clk(mt8173_nor);
+> +		mtk_nor_disable_clk(mtk_nor);
+>  
+>  	return ret;
+>  }
+>  
+>  static int mtk_nor_drv_remove(struct platform_device *pdev)
+>  {
+> -	struct mt8173_nor *mt8173_nor = platform_get_drvdata(pdev);
+> +	struct mtk_nor *mtk_nor = platform_get_drvdata(pdev);
+>  
+> -	mt8173_nor_disable_clk(mt8173_nor);
+> +	mtk_nor_disable_clk(mtk_nor);
+>  
+>  	return 0;
+>  }
+> @@ -524,18 +524,18 @@ static int mtk_nor_drv_remove(struct platform_device *pdev)
+>  #ifdef CONFIG_PM_SLEEP
+>  static int mtk_nor_suspend(struct device *dev)
+>  {
+> -	struct mt8173_nor *mt8173_nor = dev_get_drvdata(dev);
+> +	struct mtk_nor *mtk_nor = dev_get_drvdata(dev);
+>  
+> -	mt8173_nor_disable_clk(mt8173_nor);
+> +	mtk_nor_disable_clk(mtk_nor);
+>  
+>  	return 0;
+>  }
+>  
+>  static int mtk_nor_resume(struct device *dev)
+>  {
+> -	struct mt8173_nor *mt8173_nor = dev_get_drvdata(dev);
+> +	struct mtk_nor *mtk_nor = dev_get_drvdata(dev);
+>  
+> -	return mt8173_nor_enable_clk(mt8173_nor);
+> +	return mtk_nor_enable_clk(mtk_nor);
+>  }
+>  
+>  static const struct dev_pm_ops mtk_nor_dev_pm_ops = {
 > 
-> I do not know if newer kernels behave this way on the platform in
-> question. I solved the configuration and process issues long ago and
-> so I never had to debug the problem on the newer 4.4 and 4.9 kernels
-> the product uses.
-
-I confirm that this trick does not work in mainline :-).
-
-> 
-> >> So, essentially, you have to
-> >> write the new stuff with the enhanced bits with no bits actually
-> >> written, in order to boot into it and then write it correctly a second
-> >> time.  
-> >
-> > And this trick only works if your NAND supports subpage writes.  
-> 
-> The layout of the SLC NAND doesn't allow for subpage writes. It has a
-> 2k-byte + 64 byte OOB page, with a BS of 64 pages. Standard operation
-> is as expected: must erase in blocks, may program individual pages. It
-> is possible to choose to write the 2k byte page with or without ECC
-> and leave the erased 0xFFs in the OOB. This can be confirmed by
-> working directly with the NAND using u-boot's nand commands. The NAND
-> itself is non-ECC, and the PMECC controller on the processor only
-> handles the algorithms. So what to write, including the OOB is all
-> constructed in-software, written to the program page cache and then
-> the command to write is issued. So, even without subpage writes, it's
-> quite easy to write the data without writing the OOB.
-> 
-> And, remember - we're not writing the same page twice.  First write,
-> with the erased OOB, of the rootfs in this case is to mtd7, and the
-> second write, the one with the correct new ECC data to the OOB, is to
-> mtd6. Perhaps thats the misunderstanding here.
-
-Indeed, I thought you were overwriting already programmed pages.
-
-> 
-> I'm not trying to be argumentative, I'm just saying what does indeed
-> happen on this specific platform I worked with. I shared the details
-> of my experience as the OP has a similar platform, but what I
-> experienced may or may not be applicable to his case. I wanted to
-> explain _why_ it is such a pain. And that changing the ECC strength
-> can not be undertaken lightly.
-
-It's clearly a pain to change the ECC config after the products have
-been shipped.
-
-Regards,
-
-Boris
