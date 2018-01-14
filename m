@@ -1,18 +1,19 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eaiuA-0001Qo-A2
- for linux-mtd@lists.infradead.org; Sun, 14 Jan 2018 14:04:59 +0000
-Date: Sun, 14 Jan 2018 15:04:35 +0100
+ id 1eajRl-0001Ue-SQ
+ for linux-mtd@lists.infradead.org; Sun, 14 Jan 2018 14:39:44 +0000
+Date: Sun, 14 Jan 2018 15:39:15 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: kyungmin.park@samsung.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] mtd: onenand: samsung: remove incorrect __iomem annotation
-Message-ID: <20180114150435.2b575f7e@bbrezillon>
-In-Reply-To: <20180113165616.19992-1-christophe.jaillet@wanadoo.fr>
-References: <20180113165616.19992-1-christophe.jaillet@wanadoo.fr>
+To: Bradley Bolen <bradleybolen@gmail.com>
+Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com, richard@nod.at,
+ marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
+ computersforpeace@gmail.com, dwmw2@infradead.org, Ezequiel Garcia
+ <ezequiel@vanguardiasur.com.ar>
+Subject: Re: [PATCH] UBI: block: Must use a mutex when using
+ idr_alloc/idr_remove
+Message-ID: <20180114153915.4c6141a4@bbrezillon>
+In-Reply-To: <1514946369-3674-1-git-send-email-bradleybolen@gmail.com>
+References: <1514946369-3674-1-git-send-email-bradleybolen@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,61 +26,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 13 Jan 2018 17:56:16 +0100
-Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
++Ezequiel
 
-> 'page_buf' and 'oob_buf' are allocated with 'devm_kzalloc()' and should not
-> have __iommem decoration.
+Hi Bradley,
 
-	^ __iomem
+On Tue,  2 Jan 2018 21:26:09 -0500
+Bradley Bolen <bradleybolen@gmail.com> wrote:
 
-No need to send a new version, I'll fix it when applying.
-
+> This fixes a race condition where running ubiblock on multiple volumes
+> simultaneously produces the following splat.
 > 
-> Remove these decorations and some useless casting.
+> kernel BUG at kernel-source/fs/sysfs/group.c:113!
+> Internal error: Oops - BUG: 0 [#1] PREEMPT SMP ARM
+> [<c01e4160>] (internal_create_group) from [<c01e43fc>]
+> (sysfs_create_group+0x20/0x24)
+> [<c01e43fc>] (sysfs_create_group) from [<c00e4800>]
+> (blk_trace_init_sysfs+0x18/0x20)
+> [<c00e4800>] (blk_trace_init_sysfs) from [<c02bc734>]
+> (blk_register_queue+0x6c/0x154)
+> [<c02bc734>] (blk_register_queue) from [<c02cd610>]
+> (device_add_disk+0x2c8/0x450)
+> [<c02cd610>] (device_add_disk) from [<c0430fac>]
+> (ubiblock_create+0x254/0x2e4)
+> [<c0430fac>] (ubiblock_create) from [<c0421a3c>]
+> (vol_cdev_ioctl+0x3e0/0x564)
+> [<c0421a3c>] (vol_cdev_ioctl) from [<c018a55c>] (vfs_ioctl+0x30/0x44)
+> [<c018a55c>] (vfs_ioctl) from [<c018ad2c>] (do_vfs_ioctl+0x694/0x798)
+> [<c018ad2c>] (do_vfs_ioctl) from [<c018ae74>] (SyS_ioctl+0x44/0x6c)
+> [<c018ae74>] (SyS_ioctl) from [<c0010720>] (ret_fast_syscall+0x0/0x34)
 > 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+
+Missing Fixes and Cc-stable tags.
+
+> Signed-off-by: Bradley Bolen <bradleybolen@gmail.com>
+
+
+Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
+BTW, just had a quick look at the code, and I think the locking can be
+simplified a bit by keeping the devices_lock for the whole
+ubiblock_create() operation instead of acquiring/releasing it several
+times in the function (see [1]). It makes sense to do fine grained
+locking when operations protected by the lock are time sensitive, but I
+don't think this is the case here.
+
+Regards,
+
+Boris
+
+[1]http://code.bulix.org/ox2562-258097
+
 > ---
->  drivers/mtd/onenand/samsung.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+>  drivers/mtd/ubi/block.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
-> index dfdfb478ba35..2e9d076e445a 100644
-> --- a/drivers/mtd/onenand/samsung.c
-> +++ b/drivers/mtd/onenand/samsung.c
-> @@ -129,8 +129,8 @@ struct s3c_onenand {
->  	void __iomem	*base;
->  	void __iomem	*ahb_addr;
->  	int		bootram_command;
-> -	void __iomem	*page_buf;
-> -	void __iomem	*oob_buf;
-> +	void		*page_buf;
-> +	void		*oob_buf;
->  	unsigned int	(*mem_addr)(int fba, int fpa, int fsa);
->  	unsigned int	(*cmd_map)(unsigned int type, unsigned int val);
->  	void __iomem	*dma_addr;
-> @@ -408,8 +408,8 @@ static int s3c_onenand_command(struct mtd_info *mtd, int cmd, loff_t addr,
->  	/*
->  	 * Emulate Two BufferRAMs and access with 4 bytes pointer
->  	 */
-> -	m = (unsigned int *) onenand->page_buf;
-> -	s = (unsigned int *) onenand->oob_buf;
-> +	m = onenand->page_buf;
-> +	s = onenand->oob_buf;
+> diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+> index b210fdb..1c12370 100644
+> --- a/drivers/mtd/ubi/block.c
+> +++ b/drivers/mtd/ubi/block.c
+> @@ -390,7 +390,9 @@ int ubiblock_create(struct ubi_volume_info *vi)
 >  
->  	if (index) {
->  		m += (this->writesize >> 2);
-> @@ -481,11 +481,11 @@ static unsigned char *s3c_get_bufferram(struct mtd_info *mtd, int area)
->  	unsigned char *p;
+>  	gd->fops = &ubiblock_ops;
+>  	gd->major = ubiblock_major;
+> +	mutex_lock(&devices_mutex);
+>  	gd->first_minor = idr_alloc(&ubiblock_minor_idr, dev, 0, 0, GFP_KERNEL);
+> +	mutex_unlock(&devices_mutex);
+>  	if (gd->first_minor < 0) {
+>  		dev_err(disk_to_dev(gd),
+>  			"block: dynamic minor allocation failed");
+> @@ -452,7 +454,9 @@ int ubiblock_create(struct ubi_volume_info *vi)
+>  out_free_tags:
+>  	blk_mq_free_tag_set(&dev->tag_set);
+>  out_remove_minor:
+> +	mutex_lock(&devices_mutex);
+>  	idr_remove(&ubiblock_minor_idr, gd->first_minor);
+> +	mutex_unlock(&devices_mutex);
+>  out_put_disk:
+>  	put_disk(dev->gd);
+>  out_free_dev:
+> @@ -471,7 +475,9 @@ static void ubiblock_cleanup(struct ubiblock *dev)
+>  	blk_cleanup_queue(dev->rq);
+>  	blk_mq_free_tag_set(&dev->tag_set);
+>  	dev_info(disk_to_dev(dev->gd), "released");
+> +	mutex_lock(&devices_mutex);
+>  	idr_remove(&ubiblock_minor_idr, dev->gd->first_minor);
+> +	mutex_unlock(&devices_mutex);
+>  	put_disk(dev->gd);
+>  }
 >  
->  	if (area == ONENAND_DATARAM) {
-> -		p = (unsigned char *) onenand->page_buf;
-> +		p = onenand->page_buf;
->  		if (index == 1)
->  			p += this->writesize;
->  	} else {
-> -		p = (unsigned char *) onenand->oob_buf;
-> +		p = onenand->oob_buf;
->  		if (index == 1)
->  			p += mtd->oobsize;
->  	}
