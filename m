@@ -1,21 +1,20 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eb1fD-0007WN-ET
- for linux-mtd@lists.infradead.org; Mon, 15 Jan 2018 10:06:49 +0000
-Date: Mon, 15 Jan 2018 11:06:26 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Stefan Agner <stefan@agner.ch>
-Cc: miquel.raynal@free-electrons.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
- richard@nod.at, bpringle@sympatico.ca, marcel.ziswiler@toradex.com,
- linux-mtd@lists.infradead.org
-Subject: Re: [RFC PATCH v2] mtd: nand: vf610_nfc: make use of ->exec_op()
-Message-ID: <20180115110626.512ade88@bbrezillon>
-In-Reply-To: <20180114220012.30039-1-stefan@agner.ch>
-References: <20180114220012.30039-1-stefan@agner.ch>
+Received: from mail-sn1nam01on0087.outbound.protection.outlook.com
+ ([104.47.32.87] helo=NAM01-SN1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eb1nQ-00045e-Ir
+ for linux-mtd@lists.infradead.org; Mon, 15 Jan 2018 10:15:19 +0000
+From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+To: <linux-mtd@lists.infradead.org>
+CC: <boris.brezillon@free-electrons.com>, <cyrille.pitchen@wedev4u.fr>,
+ <computersforpeace@gmail.com>, <han.xu@nxp.com>, <festevam@gmail.com>,
+ <prabhakar.kushwaha@nxp.com>, <suresh.gupta@nxp.com>, Yogesh Gaur
+ <yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH v2 0/2] mtd: fsl-quadspi: add support to create dynamic LUT
+ entry
+Date: Mon, 15 Jan 2018 15:44:46 +0530
+Message-ID: <1516011288-6936-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,80 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Stefan,
+fsl-quadspi.c driver creates different LUT entries for various cmds like
+read, write, erase, readid etc. These entries are created statically when
+driver gets intiliazed.
 
-On Sun, 14 Jan 2018 23:00:12 +0100
-Stefan Agner <stefan@agner.ch> wrote:
+To support various cmds e.g. different read cmds like SPINOR_OP_READ,
+SPINOR_OP_READ_4B, SPINOR_OP_READ_FAST_4B, SPINOR_OP_READ_FAST,
+SPINOR_OP_READ_1_1_2, SPINOR_OP_READ_1_2_2 etc driver needs to
+have different LUT entries for different cmds.
 
-> This reworks the driver to make use of ->exec_op() callback. The
-> command sequencer of the VF610 NFC aligns well with the new ops
-> interface.
-> 
-> The ops are translated to a NFC command code while filling the
-> necessary registers. Instead of using the special status and
-> read id command codes (which require the status/id form special
-> registers) the driver now uses the main data buffer for all
-> commands. This simplifies the driver as no special casing is
-> needed.
-> 
-> For control data (status byte, id bytes and parameter page) the
-> driver needs to reverse byte order for little endian CPUs since
-> the controller seems to store the bytes in big endian order in
-> the data buffer.
-> 
-> The current state seems to pass MTD tests on a Colibri VF61.
-> 
-> Signed-off-by: Stefan Agner <stefan@agner.ch>
-> ---
-> Hi,
-> 
-> In this second version I was able to remove all special command
-> handling. As Boris suggested, the special READID/STATUS handling
-> is really not needed and all return values can be read from the
-> regular data buffer. This simplified code even more and allowed
-> to get rid of the hack in the MTD core. The driver is now able
-> to handle all commands in a single function. Therefor I also got
-> rid of the command parser, since everything is handled in a single
-> function anyway.
+FSL QUADSPI controller has 4 chip select and one can use different flashes
+on all different chip select.
+We analyzed that the flashes have different parameters for the same command
+and this is true for NAND devices.
+Also reg_protocol information, required for read register, read any
+register commands, read SFDP register, not available at the time of nor scan.
+As FSL QUADSPI controller has limitation in number of LUT entries, max 16,
+require to have dynamic LUT creation support.
 
-Hm, I'm not sure getting rid of the generic command parser is a good
-move. AFAICT, your controller has constraints of the command order and
-you'll have to add tests that are already handled by the generic parser
-(example, CMD+ADDR+CMD+WAITRB+DATA_OUT is not supported).
+Thus to have support for different flash devices, this patch-set adds
+support to create LUT entry in run-time based on the exact cmnd requested.
+Information like cmnd opcode, protocol info, dummy bit info etc required
+for creating LUT entries parsed from instance of passed 'struct spi_nor'.
 
-Another reason is the internal buffer SIZE limitation (2k IIUC), which
-means, if the core requests more than 2k in one go, you'll have to
-split the request in several operations. The generic operation parser
-can do that for you.
+Also update read capabilities as 1-4-4.
 
-> 
-> The only thing which is somewhat unfortunate is the byte ordering
-> which needs to be reversed for commands which read flash data (id,
-> status and parameter page). All those request 8-bit handling, so
-> I used this as an indicator to fix byte order.
+Tested with "S25FS512S" flash and have checked read, write, erase
+functionality using mtd_debug utility.
+For read have checked hwcaps as SNOR_HWCAPS_READ_FAST,
+SNOR_HWCAPS_READ_1_2_2 and SNOR_HWCAPS_READ_1_4_4
+i.e. read cmds SPINOR_OP_READ_FAST_4B [0x0c],
+SPINOR_OP_READ_1_2_2_4B [0xbc] and SPINOR_OP_READ_1_4_4_4B [0xec]
 
-Actually, I think the faulty part is the write/read page handling which
-is doing things in the wrong endianness, but that's not something you
-can change. I have one solution for this problem: don't use the generic
-helpers for the read/write page hooks, and always swap bytes in the
-->exec_op() path.
+Yogesh Gaur (2):
+  mtd: fsl-quadspi: add support to create dynamic LUT entry
+  mtd: fsl-quadspi: update hwcaps read capabilities as READ_1_4_4
 
-Note that "8-bit vs non-8-bit" approach is not such a good idea,
-because the core might want to read OTP area of the NAND (programmed by
-the vendor) using non-8-bit mode.
+ drivers/mtd/spi-nor/fsl-quadspi.c | 291 ++++++++++++++++++++------------------
+ 1 file changed, 150 insertions(+), 141 deletions(-)
 
-> 
-> I did meassured a slight performance drop (before vs. now):
-> - write speed is 4036 KiB/s vs 3495 KiB/s
-> - read speed is 13741 KiB/s vs 13490 KiB/s
-
-I still need to take a closer look at the code, but it might be a good
-idea to bypass the ->exec_op() logic in your
-ecc->[read,write]_page[_raw] handlers and optimize this path.
-
-I'll try to have a look at the diff, but it's a bit hard to review
-because of the unrelated interleaved removed/added lines.
-
-Thanks,
-
-Boris
+-- 
+1.9.1
