@@ -1,29 +1,29 @@
-Received: from mail-db5eur03on0618.outbound.protection.outlook.com
- ([2a01:111:f400:fe0a::618]
- helo=EUR03-DB5-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eb90f-0000lb-4c
- for linux-mtd@lists.infradead.org; Mon, 15 Jan 2018 17:57:27 +0000
-From: Han Xu <han.xu@nxp.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-CC: Miquel RAYNAL <miquel.raynal@free-electrons.com>, Richard Weinberger
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eb9hD-0005FP-R8
+ for linux-mtd@lists.infradead.org; Mon, 15 Jan 2018 18:41:26 +0000
+Date: Mon, 15 Jan 2018 19:41:08 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Han Xu <han.xu@nxp.com>
+Cc: Miquel RAYNAL <miquel.raynal@free-electrons.com>, Richard Weinberger
  <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, "Cyrille
- Pitchen" <cyrille.pitchen@wedev4u.fr>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 1/2] mtd: nand: Check ONFI timings have been acked by the
- chip
-Date: Mon, 15 Jan 2018 17:57:08 +0000
-Message-ID: <VI1PR0401MB2221E2E684A28F8016C4D19197EB0@VI1PR0401MB2221.eurprd04.prod.outlook.com>
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ "Cyrille Pitchen" <cyrille.pitchen@wedev4u.fr>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH 1/2] mtd: nand: Check ONFI timings have been acked by
+ the chip
+Message-ID: <20180115194108.318d57b8@bbrezillon>
+In-Reply-To: <VI1PR0401MB2221E2E684A28F8016C4D19197EB0@VI1PR0401MB2221.eurprd04.prod.outlook.com>
 References: <20171222172853.27710-1-miquel.raynal@free-electrons.com>
  <20171222172853.27710-2-miquel.raynal@free-electrons.com>
- <20180105161321.44218e4e@bbrezillon>	<20180105164239.79d7980c@xps13>
- <20180108140429.79f67a83@bbrezillon>,<20180115141900.39661c4e@bbrezillon>
-In-Reply-To: <20180115141900.39661c4e@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ <20180105161321.44218e4e@bbrezillon>
+ <20180105164239.79d7980c@xps13>
+ <20180108140429.79f67a83@bbrezillon>
+ <20180115141900.39661c4e@bbrezillon>
+ <VI1PR0401MB2221E2E684A28F8016C4D19197EB0@VI1PR0401MB2221.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,57 +33,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, 15 Jan 2018 17:57:08 +0000
+Han Xu <han.xu@nxp.com> wrote:
 
-________________________________________
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-Sent: Monday, January 15, 2018 7:19 AM
-To: Han Xu
-Cc: Miquel RAYNAL; Richard Weinberger; David Woodhouse; Brian Norris; Marek=
- Vasut; Cyrille Pitchen; linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 1/2] mtd: nand: Check ONFI timings have been acked by t=
-he chip
-
-Hi Han,
-
-On Mon, 8 Jan 2018 14:04:29 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-
-> On Fri, 5 Jan 2018 16:42:39 +0100
-> Miquel RAYNAL <miquel.raynal@free-electrons.com> wrote:
->
-> > Hello,
-> >
-> > > Hm, I'm not sure this is safe. The spec says that new ONFI timing mod=
-e
-> > > is applied as soon the CS line is released after a
-> > > SET_FEATURES(ONFI_FEATURE_ADDR_TIMING_MODE), and since we have no
-> > > guarantee that the CS will be kept low by the controller after
-> > > ->onfi_set_features() returns we must assume the new mode has been
-> > > applied and call ->setup_data_interface() to instruct the controller
-> > > to apply new timings.
+> ________________________________________
+> From: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Sent: Monday, January 15, 2018 7:19 AM
+> To: Han Xu
+> Cc: Miquel RAYNAL; Richard Weinberger; David Woodhouse; Brian Norris; Marek Vasut; Cyrille Pitchen; linux-mtd@lists.infradead.org
+> Subject: Re: [PATCH 1/2] mtd: nand: Check ONFI timings have been acked by the chip
+> 
+> Hi Han,
+> 
+> On Mon, 8 Jan 2018 14:04:29 +0100
+> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+> 
+> > On Fri, 5 Jan 2018 16:42:39 +0100
+> > Miquel RAYNAL <miquel.raynal@free-electrons.com> wrote:
+> >  
+> > > Hello,
+> > >  
+> > > > Hm, I'm not sure this is safe. The spec says that new ONFI timing mode
+> > > > is applied as soon the CS line is released after a
+> > > > SET_FEATURES(ONFI_FEATURE_ADDR_TIMING_MODE), and since we have no
+> > > > guarantee that the CS will be kept low by the controller after  
+> > > > ->onfi_set_features() returns we must assume the new mode has been  
+> > > > applied and call ->setup_data_interface() to instruct the controller
+> > > > to apply new timings.
+> > > >
+> > > > If you want to check if the mode has really been applied, you should
+> > > > release the CS (->select_chip(-1)), re-acquire it
+> > > > (->select_chip(X)), and call  
+> > > > ->onfi_get_features(ONFI_FEATURE_ADDR_TIMING_MODE). If it appears  
+> > > > that the mode has not been applied, you should restore timing mode 0
+> > > > and issue a RESET.  
 > > >
-> > > If you want to check if the mode has really been applied, you should
-> > > release the CS (->select_chip(-1)), re-acquire it
-> > > (->select_chip(X)), and call
-> > > ->onfi_get_features(ONFI_FEATURE_ADDR_TIMING_MODE). If it appears
-> > > that the mode has not been applied, you should restore timing mode 0
-> > > and issue a RESET.
+> > > Boris, thanks for the comment, I will fix that.
+> > >
+> > > Han, could I have your input on this series? Aside Boris' comment of
+> > > course.  
 > >
-> > Boris, thanks for the comment, I will fix that.
-> >
-> > Han, could I have your input on this series? Aside Boris' comment of
-> > course.
->
-> Han, we really need your feedback on this series since you were the one
-> complaining that ONFI mode should be checked back after applying a new
-> mode. Miquel is reworking the framework to mimic what the GPMI driver,
-> but we need to be sure that you'll accept to transition to the generic
-> ->setup_data_interface() solution.
+> > Han, we really need your feedback on this series since you were the one
+> > complaining that ONFI mode should be checked back after applying a new
+> > mode. Miquel is reworking the framework to mimic what the GPMI driver,
+> > but we need to be sure that you'll accept to transition to the generic  
+> > ->setup_data_interface() solution.  
+> 
+> Thanks Miquel, I do accept to transit to setup_data_interface solution and actually
+> I am also working on the similar patches. I reviewed the patch set and don't have
+> more comments, this one improved more than mine.
 
-Thanks Miquel, I do accept to transit to setup_data_interface solution and =
-actually
-I am also working on the similar patches. I reviewed the patch set and don'=
-t have
-more comments, this one improved more than mine.
-
-Gentle ping.
+Glad to hear you're not opposed to the idea.
