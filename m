@@ -1,27 +1,29 @@
-Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
+Received: from mail-db5eur03on0618.outbound.protection.outlook.com
+ ([2a01:111:f400:fe0a::618]
+ helo=EUR03-DB5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eb5rR-0006LJ-Sg
- for linux-mtd@lists.infradead.org; Mon, 15 Jan 2018 14:35:48 +0000
-Received: by mail-lf0-x241.google.com with SMTP id o89so9506469lfg.10
- for <linux-mtd@lists.infradead.org>; Mon, 15 Jan 2018 06:35:30 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: linux-mtd@lists.infradead.org, Jonas Gorski <jonas.gorski@gmail.com>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH V3 1/2] mtd: move code adding master MTD out of
- mtd_add_device_partitions
-Date: Mon, 15 Jan 2018 15:35:18 +0100
-Message-Id: <20180115143519.9845-2-zajec5@gmail.com>
-In-Reply-To: <20180115143519.9845-1-zajec5@gmail.com>
-References: <20180115132223.9974-1-zajec5@gmail.com>
- <20180115143519.9845-1-zajec5@gmail.com>
+ id 1eb90f-0000lb-4c
+ for linux-mtd@lists.infradead.org; Mon, 15 Jan 2018 17:57:27 +0000
+From: Han Xu <han.xu@nxp.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+CC: Miquel RAYNAL <miquel.raynal@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, "Cyrille
+ Pitchen" <cyrille.pitchen@wedev4u.fr>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH 1/2] mtd: nand: Check ONFI timings have been acked by the
+ chip
+Date: Mon, 15 Jan 2018 17:57:08 +0000
+Message-ID: <VI1PR0401MB2221E2E684A28F8016C4D19197EB0@VI1PR0401MB2221.eurprd04.prod.outlook.com>
+References: <20171222172853.27710-1-miquel.raynal@free-electrons.com>
+ <20171222172853.27710-2-miquel.raynal@free-electrons.com>
+ <20180105161321.44218e4e@bbrezillon>	<20180105164239.79d7980c@xps13>
+ <20180108140429.79f67a83@bbrezillon>,<20180115141900.39661c4e@bbrezillon>
+In-Reply-To: <20180115141900.39661c4e@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,79 +33,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rafał Miłecki <rafal@milecki.pl>
 
-This change is a small cleanup of mtd_device_parse_register. When using
-MTD_PARTITIONED_MASTER it makes sure a master MTD is registered before
-dealing with partitions. There are 2 advantages of this:
-1) Not mixing code handling master MTD with code handling partitions
-2) Possibility of reusing mtd_parse_part in the future to avoid some
-   code duplication.
+________________________________________
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+Sent: Monday, January 15, 2018 7:19 AM
+To: Han Xu
+Cc: Miquel RAYNAL; Richard Weinberger; David Woodhouse; Brian Norris; Marek=
+ Vasut; Cyrille Pitchen; linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 1/2] mtd: nand: Check ONFI timings have been acked by t=
+he chip
 
-This commit doesn't change any behavior except from a slightly different
-failure code path. The new code may need to call del_mtd_device when
-something goes wrong.
+Hi Han,
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
-V2: Use device_is_registered (thanks Boris)
-    Add an empty line before "return ret;"
-V3: Use device_is_registered also in a out code path
----
- drivers/mtd/mtdcore.c | 25 +++++++++++++------------
- 1 file changed, 13 insertions(+), 12 deletions(-)
+On Mon, 8 Jan 2018 14:04:29 +0100
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index f80e911b8843..3304199cca07 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -641,20 +641,12 @@ static int mtd_add_device_partitions(struct mtd_info *mtd,
- {
- 	const struct mtd_partition *real_parts = parts->parts;
- 	int nbparts = parts->nr_parts;
--	int ret;
- 
--	if (nbparts == 0 || IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER)) {
--		ret = add_mtd_device(mtd);
--		if (ret)
--			return ret;
--	}
-+	if (!nbparts && !device_is_registered(&mtd->dev))
-+		return add_mtd_device(mtd);
- 
--	if (nbparts > 0) {
--		ret = add_mtd_partitions(mtd, real_parts, nbparts);
--		if (ret && IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER))
--			del_mtd_device(mtd);
--		return ret;
--	}
-+	if (nbparts > 0)
-+		return add_mtd_partitions(mtd, real_parts, nbparts);
- 
- 	return 0;
- }
-@@ -714,6 +706,12 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
- 
- 	mtd_set_dev_defaults(mtd);
- 
-+	if (IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER)) {
-+		ret = add_mtd_device(mtd);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	memset(&parsed, 0, sizeof(parsed));
- 
- 	ret = parse_mtd_partitions(mtd, types, &parsed, parser_data);
-@@ -753,6 +751,9 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
- out:
- 	/* Cleanup any parsed partitions */
- 	mtd_part_parser_cleanup(&parsed);
-+	if (ret && device_is_registered(&mtd->dev))
-+		del_mtd_device(mtd);
-+
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(mtd_device_parse_register);
--- 
-2.11.0
+> On Fri, 5 Jan 2018 16:42:39 +0100
+> Miquel RAYNAL <miquel.raynal@free-electrons.com> wrote:
+>
+> > Hello,
+> >
+> > > Hm, I'm not sure this is safe. The spec says that new ONFI timing mod=
+e
+> > > is applied as soon the CS line is released after a
+> > > SET_FEATURES(ONFI_FEATURE_ADDR_TIMING_MODE), and since we have no
+> > > guarantee that the CS will be kept low by the controller after
+> > > ->onfi_set_features() returns we must assume the new mode has been
+> > > applied and call ->setup_data_interface() to instruct the controller
+> > > to apply new timings.
+> > >
+> > > If you want to check if the mode has really been applied, you should
+> > > release the CS (->select_chip(-1)), re-acquire it
+> > > (->select_chip(X)), and call
+> > > ->onfi_get_features(ONFI_FEATURE_ADDR_TIMING_MODE). If it appears
+> > > that the mode has not been applied, you should restore timing mode 0
+> > > and issue a RESET.
+> >
+> > Boris, thanks for the comment, I will fix that.
+> >
+> > Han, could I have your input on this series? Aside Boris' comment of
+> > course.
+>
+> Han, we really need your feedback on this series since you were the one
+> complaining that ONFI mode should be checked back after applying a new
+> mode. Miquel is reworking the framework to mimic what the GPMI driver,
+> but we need to be sure that you'll accept to transition to the generic
+> ->setup_data_interface() solution.
+
+Thanks Miquel, I do accept to transit to setup_data_interface solution and =
+actually
+I am also working on the similar patches. I reviewed the patch set and don'=
+t have
+more comments, this one improved more than mine.
+
+Gentle ping.
