@@ -1,26 +1,25 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eb4fQ-0007do-Uj
- for linux-mtd@lists.infradead.org; Mon, 15 Jan 2018 13:19:14 +0000
-Date: Mon, 15 Jan 2018 14:19:00 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Han Xu <han.xu@nxp.com>
-Cc: Miquel RAYNAL <miquel.raynal@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 1/2] mtd: nand: Check ONFI timings have been acked by
- the chip
-Message-ID: <20180115141900.39661c4e@bbrezillon>
-In-Reply-To: <20180108140429.79f67a83@bbrezillon>
-References: <20171222172853.27710-1-miquel.raynal@free-electrons.com>
- <20171222172853.27710-2-miquel.raynal@free-electrons.com>
- <20180105161321.44218e4e@bbrezillon>
- <20180105164239.79d7980c@xps13>
- <20180108140429.79f67a83@bbrezillon>
+Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eb4j2-0002z0-G7
+ for linux-mtd@lists.infradead.org; Mon, 15 Jan 2018 13:22:58 +0000
+Received: by mail-lf0-x244.google.com with SMTP id h140so13357064lfg.1
+ for <linux-mtd@lists.infradead.org>; Mon, 15 Jan 2018 05:22:44 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org, Jonas Gorski <jonas.gorski@gmail.com>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH V2 0/2] mtd: simplify mtd_device_parse_register code
+Date: Mon, 15 Jan 2018 14:22:21 +0100
+Message-Id: <20180115132223.9974-1-zajec5@gmail.com>
+In-Reply-To: <20180112144034.6655-1-zajec5@gmail.com>
+References: <20180112144034.6655-1-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,40 +29,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Han,
+From: Rafał Miłecki <rafal@milecki.pl>
 
-On Mon, 8 Jan 2018 14:04:29 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+Even though I have some experience with MTD subsystem every time I was
+starting working on it I had to do some quick research on the code flow.
+I think there is some place for cleanup and optimization that would
+simplify overall code and allow new developers to start working on it
+more easily.
 
-> On Fri, 5 Jan 2018 16:42:39 +0100
-> Miquel RAYNAL <miquel.raynal@free-electrons.com> wrote:
-> 
-> > Hello,
-> >   
-> > > Hm, I'm not sure this is safe. The spec says that new ONFI timing mode
-> > > is applied as soon the CS line is released after a
-> > > SET_FEATURES(ONFI_FEATURE_ADDR_TIMING_MODE), and since we have no
-> > > guarantee that the CS will be kept low by the controller after    
-> > > ->onfi_set_features() returns we must assume the new mode has been      
-> > > applied and call ->setup_data_interface() to instruct the controller
-> > > to apply new timings.
-> > > 
-> > > If you want to check if the mode has really been applied, you should
-> > > release the CS (->select_chip(-1)), re-acquire it
-> > > (->select_chip(X)), and call    
-> > > ->onfi_get_features(ONFI_FEATURE_ADDR_TIMING_MODE). If it appears    
-> > > that the mode has not been applied, you should restore timing mode 0
-> > > and issue a RESET.    
-> > 
-> > Boris, thanks for the comment, I will fix that.
-> > 
-> > Han, could I have your input on this series? Aside Boris' comment of
-> > course.  
-> 
-> Han, we really need your feedback on this series since you were the one
-> complaining that ONFI mode should be checked back after applying a new
-> mode. Miquel is reworking the framework to mimic what the GPMI driver,
-> but we need to be sure that you'll accept to transition to the generic
-> ->setup_data_interface() solution.
+In these patches I meant to slightly simplify mtd_device_parse_register
+function. I think we could reduce amount of add/register/del functions
+and this is the first step for that.
 
-Gentle ping.
+Ideally I think mtdcore.c shouldn't handle parsing but just use a single
+function from mtdpart.c.
+
+Patch 1/2 modifies code to make sure parsing code is not mixed with MTD
+master code. This should allow moving parsing parts to the mtdpart.c in
+the future.
+
+Patch 2/2 simplifies code and makes sure parsing is handled at 1 place
+only.
+
+Even though this cleanup isn't complete I think it already has some
+value and could be accepted (if there won't be objections) on its own.
+It's also quite small which should allow reviewing it easily.
+
+Rafał Miłecki (2):
+  mtd: move code adding master MTD out of mtd_add_device_partitions
+  mtd: get rid of the mtd_add_device_partitions function
+
+ drivers/mtd/mtdcore.c | 56 +++++++++++++++++----------------------------------
+ 1 file changed, 19 insertions(+), 37 deletions(-)
+
+-- 
+2.11.0
