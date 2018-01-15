@@ -1,26 +1,26 @@
-Received: from mail-ot0-x233.google.com ([2607:f8b0:4003:c0f::233])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eb4Ji-00039v-Jq
- for linux-mtd@lists.infradead.org; Mon, 15 Jan 2018 12:56:48 +0000
-Received: by mail-ot0-x233.google.com with SMTP id a24so10545197otd.4
- for <linux-mtd@lists.infradead.org>; Mon, 15 Jan 2018 04:56:35 -0800 (PST)
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eb4fQ-0007do-Uj
+ for linux-mtd@lists.infradead.org; Mon, 15 Jan 2018 13:19:14 +0000
+Date: Mon, 15 Jan 2018 14:19:00 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Han Xu <han.xu@nxp.com>
+Cc: Miquel RAYNAL <miquel.raynal@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 1/2] mtd: nand: Check ONFI timings have been acked by
+ the chip
+Message-ID: <20180115141900.39661c4e@bbrezillon>
+In-Reply-To: <20180108140429.79f67a83@bbrezillon>
+References: <20171222172853.27710-1-miquel.raynal@free-electrons.com>
+ <20171222172853.27710-2-miquel.raynal@free-electrons.com>
+ <20180105161321.44218e4e@bbrezillon>
+ <20180105164239.79d7980c@xps13>
+ <20180108140429.79f67a83@bbrezillon>
 MIME-Version: 1.0
-In-Reply-To: <20180112161131.3cae7841@bbrezillon>
-References: <20180112144034.6655-1-zajec5@gmail.com>
- <20180112144034.6655-3-zajec5@gmail.com>
- <20180112161131.3cae7841@bbrezillon>
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Date: Mon, 15 Jan 2018 13:56:34 +0100
-Message-ID: <CACna6rxzvNyMrPb=OV1ius7wvZkQQM4N7ynFUkbiXvDJkQapjQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mtd: get rid of the mtd_add_device_partitions function
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
- Jonas Gorski <jonas.gorski@gmail.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,45 +30,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12 January 2018 at 16:11, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
->> @@ -717,19 +702,19 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
->>       ret = parse_mtd_partitions(mtd, types, &parsed, parser_data);
->>       if ((ret < 0 || parsed.nr_parts == 0) && parts && nr_parts) {
->>               /* Fall back to driver-provided partitions */
->> -             parsed = (struct mtd_partitions){
->> -                     .parts          = parts,
->> -                     .nr_parts       = nr_parts,
->> -             };
->> +             ret = add_mtd_partitions(mtd, parts, nr_parts);
->>       } else if (ret < 0) {
->>               /* Didn't come up with parsed OR fallback partitions */
->>               pr_info("mtd: failed to find partitions; one or more parsers reports errors (%d)\n",
->>                       ret);
->>               /* Don't abort on errors; we can still use unpartitioned MTD */
->> -             memset(&parsed, 0, sizeof(parsed));
->> +             if (!IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER))
->> +                     ret = add_mtd_device(mtd);
->> +             else
->> +                     ret = 0;
->> +     } else {
->> +             ret = add_mtd_partitions(mtd, parsed.parts, parsed.nr_parts);
->>       }
->
-> How about:
->
->         ret = parse_mtd_partitions(mtd, types, &parsed, parser_data);
->         if (!ret && parsed.nr_parts) {
->                 parts = parsed.parts;
->                 nr_parts = parsed.nr_parts;
->         }
->
->         if (nr_parts)
->                 ret = add_mtd_partitions(mtd, parts, nr_parts);
->         else if (!device_is_registered(&mtd->dev))
->                 ret = add_mtd_device(mtd);
->         else
->                 ret = 0;
+Hi Han,
 
-I spent a moment writing possible cases on a paper and your solution
-should keep the same logic. Looks good!
+On Mon, 8 Jan 2018 14:04:29 +0100
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+
+> On Fri, 5 Jan 2018 16:42:39 +0100
+> Miquel RAYNAL <miquel.raynal@free-electrons.com> wrote:
+> 
+> > Hello,
+> >   
+> > > Hm, I'm not sure this is safe. The spec says that new ONFI timing mode
+> > > is applied as soon the CS line is released after a
+> > > SET_FEATURES(ONFI_FEATURE_ADDR_TIMING_MODE), and since we have no
+> > > guarantee that the CS will be kept low by the controller after    
+> > > ->onfi_set_features() returns we must assume the new mode has been      
+> > > applied and call ->setup_data_interface() to instruct the controller
+> > > to apply new timings.
+> > > 
+> > > If you want to check if the mode has really been applied, you should
+> > > release the CS (->select_chip(-1)), re-acquire it
+> > > (->select_chip(X)), and call    
+> > > ->onfi_get_features(ONFI_FEATURE_ADDR_TIMING_MODE). If it appears    
+> > > that the mode has not been applied, you should restore timing mode 0
+> > > and issue a RESET.    
+> > 
+> > Boris, thanks for the comment, I will fix that.
+> > 
+> > Han, could I have your input on this series? Aside Boris' comment of
+> > course.  
+> 
+> Han, we really need your feedback on this series since you were the one
+> complaining that ONFI mode should be checked back after applying a new
+> mode. Miquel is reworking the framework to mimic what the GPMI driver,
+> but we need to be sure that you'll accept to transition to the generic
+> ->setup_data_interface() solution.
+
+Gentle ping.
