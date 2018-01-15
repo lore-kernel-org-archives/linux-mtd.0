@@ -1,17 +1,26 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eb2Um-0000Ru-Qi
- for linux-mtd@lists.infradead.org; Mon, 15 Jan 2018 11:00:09 +0000
-Date: Mon, 15 Jan 2018 11:59:50 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Marek Vasut <marex@denx.de>, David Woodhouse
- <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>
-Subject: [GIT PULL] mtd: nand: Changes for 4.16
-Message-ID: <20180115115950.05b03d2b@bbrezillon>
+Received: from smtp.exceet.ch ([77.245.33.226])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eb2Zy-0003Wz-B8
+ for linux-mtd@lists.infradead.org; Mon, 15 Jan 2018 11:05:32 +0000
+Subject: Re: [PATCH v1 1/2] mtd: fsl-quadspi: add support to create dynamic
+ LUT entry
+To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Boris
+ Brezillon" <boris.brezillon@free-electrons.com>, "cyrille.pitchen@wedev4u.fr"
+ <cyrille.pitchen@wedev4u.fr>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, Han Xu <han.xu@nxp.com>, "festevam@gmail.com"
+ <festevam@gmail.com>, Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>, Suresh
+ Gupta <suresh.gupta@nxp.com>, Poonam Aggrwal <poonam.aggrwal@nxp.com>
+References: <1515493602-19626-2-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <80885d95-a6d4-b3a6-4249-f87379e6dc45@exceet.de>
+ <DB6PR0402MB2838BA43DBDBD8AF3AEDA04D99170@DB6PR0402MB2838.eurprd04.prod.outlook.com>
+From: Frieder Schrempf <frieder.schrempf@exceet.de>
+Message-ID: <466636da-a65c-0f19-2ca7-7126eaa90cb9@exceet.de>
+Date: Mon, 15 Jan 2018 12:05:09 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <DB6PR0402MB2838BA43DBDBD8AF3AEDA04D99170@DB6PR0402MB2838.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -22,201 +31,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hello Yogesh,
 
-Here is the NAND PR for 4.16. As can be seen in the diffstat, the NAND
-subsystem has been quite active. That's mainly caused by the
-introduction of the ->exec_op() hook and the rework of the Marvell
-driver.
+On 12.01.2018 05:44, Yogesh Narayan Gaur wrote:
+> Hello Frieder,
+> 
+>> -----Original Message-----
+>> From: Frieder Schrempf [mailto:frieder.schrempf@exceet.de]
+>> Sent: Tuesday, January 09, 2018 9:56 PM
+>> To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+>> Cc: linux-mtd@lists.infradead.org; Boris Brezillon <boris.brezillon@free-
+>> electrons.com>; cyrille.pitchen@wedev4u.fr; computersforpeace@gmail.com;
+>> Han Xu <han.xu@nxp.com>; festevam@gmail.com; Prabhakar Kushwaha
+>> <prabhakar.kushwaha@nxp.com>; Suresh Gupta <suresh.gupta@nxp.com>
+>> Subject: Re: [PATCH v1 1/2] mtd: fsl-quadspi: add support to create dynamic LUT
+>> entry
+>>
+>> Hello Yogesh,
+>>
+>>> Add support to create dynamic LUT entry.
+>>>
+>>> Current approach of creating LUT entries for various cmds like read,
+>>> write, erase, readid, readsr, we, wd etc is that when QSPI controller
+>>> gets initialized at that time static LUT entries for these cmds get created.
+>>>
+>>> Patch add support to create the LUT at run time based on the operation
+>>> being performed.
+>>>
+>>> Added API fsl_qspi_prepare_lut(), this API would going to be called
+>>> from fsl_qspi_read_reg, fsl_qspi_write_reg, fsl_qspi_write,
+>>> fsl_qspi_read and fsl_qspi_erase APIs.
+>>> This API would fetch required info like opcode, protocol info, dummy
+>>> info for creating LUT from instance of 'struct spi_nor' and then
+>>> prepare LUT entry for the required command.
+>>
+>> I'm just about to get started working on a similar topic, so I have some general
+>> (maybe stupid) questions concerning the dynamic LUT implementation:
+>>
+>> Why do you actually need to be able to switch between different kind of
+>> commands for READ/WRITE/ERASE at time of execution?
+> Actually we want to handle different NOR flash devices on different chip select.
+> QSPI controller has 4 chip select and one can use different flashes on all different chip select (that might not be the use case for today). We analyzed that the flash have different parameters for the same command and this is true for NAND devices.
+> Also reg_protocol information, required for read register, read any register commands, read SFDP register, not available at the time of nor scan.
+> This change was done after understanding the requirement for NAND and Hybrid flash also.
+> NXP is going to support hybrid flash which has NOR and NAND at one chip select. So, to handle these type of flashes dynamic LUT is the best approach, condition NAND framework also provide required information (datalines, dummy bytes, addrlen)as provided by NOR framework as of now.
+> To handle all chip select and hybrid complexities, this dynamic LUT need to be required as we can have maximum 16 static LUT entries.
 
-Regards,
+Thank you for the explanation. I think you're right, it's too difficult 
+to set up a static LUT for all the different kinds of flash commands 
+within the limit of 16 LUT entries.
 
-Boris
+>>
+>> Wouldn't it be better to init the LUT statically, after the chip was detected and at
+>> that time decide which READ/WRITE/ERASE command is best for the connected
+>> chip?
+> As explained above if we have different flashes on different chip select (even for 2 flash we can maximum provide 8 LUT entries for different flashes).
+> It is tough to handle such scenario and lead to code complexity.
 
-The following changes since commit 4fbd8d194f06c8a3fd2af1ce560ddb31f7ec8323:
+I see.
 
-  Linux 4.15-rc1 (2017-11-26 16:01:47 -0800)
+>>
+>> Have you tested what kind of impact the dynamic loading of a command
+>> sequence to the LUT registers before each operation has on the performance?
+> We are programming 4 LUT register for every command sent from MTD layer. Theoretically it is max 16bytes per command.
+> It looks to be trivial overhead. We are doing analysis of performance impact of dynamic LUT creation.
 
-are available in the git repository at:
+Ok. I guess you're right. I made a single quick test with my FSL NAND 
+driver, running mtd_speedtest with 20 MHz QSPI clock and I can see only 
+minor differences between a static LUT and a dynamic LUT implementation.
 
-  git://git.infradead.org/linux-mtd.git tags/nand/for-4.16
+>>
+>> In the context of the upcoming SPI NAND framework, I am working on NAND
+>> support for the FSL QSPI controller.
+> Hope you will take care of having support of NAND on chip select 1 and 2.
 
-for you to fetch changes up to 6837befde3a6b42a36c894a4f86bafdc6db82534:
+My current driver doesn't handle multiple chips, but I hope at some 
+point I can merge my driver with the existing NOR driver and also 
+support multiple chips.
 
-  mtd: onenand: samsung: remove incorrect __iomem annotation (2018-01-14 15:04:56 +0100)
+> 
+>> I have a working driver at [1] derived from the NOR driver.
+>> As discussed with Boris ([2]) the plan is to add NAND support to the NOR driver
+>> until a common spi-flash layer is available to hold code, that is used by both
+>> types of SPI flash, NOR and NAND.
+>>
+>> To achieve this, some kind of dynamic LUT allocation is needed, too.
+>> But at first glance it seems me, that it would be better to actually use the LUT
+>> entries as much as possible and create the entries at time of init depending on
+>> flash type (NOR/NAND) and flash capabilities (QUAD/DUAL/QIO
+>> READ/WRITE...).
+>>
+>> In the exotic case of needing to switch between different command sets (for
+>> hybrid NOR/NAND devices, see [3]) one could reinit the LUT for the current
+>> target upon selecting it.
+>>
+>> Or maybe it is even better to create a mechanism that fills the LUT with entries
+>> when they are first needed and be able to reuse them until the space in the LUT
+>> runs out and entries need to be overriden.
+>>
+>> What do you think?
+> Right, we also though of this approach but we think this would going to increase the code complexity so the simple and best possible approach we use is to create run-time LUT for every command when function ptr (read_reg, write_reg, read, write and erase) gets invoked.
 
-----------------------------------------------------------------
-Core changes:
-* Fix NAND_CMD_NONE handling in nand_command[_lp]() hooks
-* Introduce the ->exec_op() infrastructure
-* Rework NAND buffers handling
-* Fix ECC requirements for K9F4G08U0D
-* Fix nand_do_read_oob() to return the number of bitflips
-* Mark K9F1G08U0E as not supporting subpage writes
+Ok.
 
-Driver changes:
-* MTK: Rework the driver to support new IP versions
-* OMAP OneNAND: Full rework to use new APIs (libgpio, dmaengine) and fix
-  DT support
-* Marvell: Add a new driver to replace the pxa3xx one
+Thanks,
 
-----------------------------------------------------------------
-Boris Brezillon (6):
-      mtd: nand: hynix: Don't wait after applying new read-retry params
-      mtd: nand: provide several helpers to do common NAND operations
-      mtd: nand: force drivers to explicitly send READ/PROG commands
-      mtd: nand: denali: Avoid using ecc->code_buf as a temporary buffer
-      mtd: nand: Only allocate ecc->{calc, code}_buf when actually needed
-      Merge tag 'gpmc-omap-for-v4.16-immutable' of https://github.com/rogerq/linux into nand/next
-
-Christophe JAILLET (5):
-      mtd: onenand: samsung: use devm_ function to simplify code and fix some leaks
-      mtd: onenand: samsung: return an error if 'mtd_device_parse_register()' fails
-      mtd: onenand: samsung: Propagate the error returned by 'onenand_scan()'
-      mtd: onenand: samsung: Remove a useless include
-      mtd: onenand: samsung: remove incorrect __iomem annotation
-
-Fabio Estevam (2):
-      mtd: nand: brcmnand: Add a NULL check for devm_kasprintf()
-      mtd: nand: qcom: Add a NULL check for devm_kasprintf()
-
-Gustavo A. R. Silva (1):
-      mtd: nand: gpmi: replace _manual_ swap with swap macro
-
-Jagdish Gediya (1):
-      mtd: nand: ifc: update bufnum mask for ver >= 2.0.0
-
-Jesse Chan (1):
-      mtd: nand: denali_pci: add missing MODULE_DESCRIPTION/AUTHOR/LICENSE
-
-Kamal Dasu (1):
-      mtd: nand: brcmnand: Disable prefetch by default
-
-Ladislav Michl (15):
-      memory: omap-gpmc: Make 'bank-width' property optional
-      mtd: onenand: Remove obsolete url from Kconfig help
-      mtd: nand: samsung: Disable subpage writes on E-die NAND
-      dt-bindings: mtd: gpmc-onenand: Update properties description
-      ARM: dts: OMAP2+: Add compatible property to onenand node
-      ARM: dts: omap3-igep: Update onenand node timings
-      mtd: onenand: omap2: Remove regulator support
-      mtd: onenand: omap2: Remove skip initial unlocking support
-      mtd: onenand: omap2: Remove partitioning support from platform data
-      mtd: onenand: omap2: Account waiting time as waiting on IO
-      mtd: onenand: omap2: Unify OMAP2 and OMAP3 DMA implementation
-      mtd: onenand: omap2: Do not make delay for GPIO OMAP3 specific
-      mtd: onenand: omap2: Decouple DMA enabling from INT pin availability
-      mtd: onenand: omap2: Configure driver from DT
-      ARM: OMAP2+: Remove gpmc-onenand
-
-Masahiro Yamada (6):
-      mtd: nand: remove unnecessary extern from driver headers
-      mtd: nand: denali: rename misleading dma_buf to tmp_buf
-      mtd: nand: cafe: remove use of NAND_OWN_BUFFERS
-      mtd: nand: remove unused NAND_OWN_BUFFERS flag
-      mtd: nand: squash struct nand_buffers into struct nand_chip
-      mtd: nand: cafe: clean up DMA address setup
-
-Miquel Raynal (13):
-      mtd: nand: fix interpretation of NAND_CMD_NONE in nand_command[_lp]()
-      mtd: nand: use usual return values for the ->erase() hook
-      mtd: nand: provide valid ->data_interface during NAND detection
-      mtd: nand: samsung: add ECC requirements for K9F4G08U0D
-      mtd: nand: add ->exec_op() implementation
-      mtd: nand: Fix unfinished comment in nand_init_data_interface()
-      mtd: mtd_oobtest: Handle bitflips during reads
-      mtd: nand: Fix nand_do_read_oob() return value
-      dt-bindings: mtd: document new nand-rb property
-      dt-bindings: mtd: add Marvell NAND controller documentation
-      mtd: nand: add reworked Marvell NAND controller driver
-      mtd: nand: use reworked NAND controller driver with Marvell EBU SoCs
-      MAINTAINERS: Add entry for Marvell NAND controller driver
-
-Nicolas Ferre (1):
-      MAINTAINERS: mtd/nand: update Microchip nand entry
-
-Peter Ujfalusi (2):
-      mtd: onenand: omap2: Simplify the DMA setup for various paths
-      mtd: onenand: omap2: Convert to use dmaengine for memcpy
-
-RogerCC Lin (3):
-      mtd: nand: mtk: update DT bindings
-      mtd: nand: mtk: Support different MTK NAND flash controller IP
-      mtd: nand: mtk: Support MT7622 NAND flash controller.
-
-Sascha Hauer (2):
-      mtd: nand: gpmi-nand: Remove wrong Kconfig help text
-      mtd: tests: nandbiterrs: Fix read_page return value
-
-Xiaolei Li (1):
-      mtd: nand: mtk: use nand_reset() to reset NAND devices in resume function
-
- Documentation/devicetree/bindings/mtd/gpmc-onenand.txt |    6 +-
- Documentation/devicetree/bindings/mtd/marvell-nand.txt |  123 ++
- Documentation/devicetree/bindings/mtd/mtk-nand.txt     |   11 +-
- Documentation/devicetree/bindings/mtd/nand.txt         |    1 +
- MAINTAINERS                                            |   22 +-
- arch/arm/boot/dts/omap2420-n8x0-common.dtsi            |    1 +
- arch/arm/boot/dts/omap3-igep.dtsi                      |   30 +-
- arch/arm/boot/dts/omap3-n900.dts                       |    1 +
- arch/arm/boot/dts/omap3-n950-n9.dtsi                   |    1 +
- arch/arm/boot/dts/omap3430-sdp.dts                     |    1 +
- arch/arm/configs/mvebu_v7_defconfig                    |    2 +-
- arch/arm/mach-omap2/Makefile                           |    3 -
- arch/arm/mach-omap2/gpmc-onenand.c                     |  409 ------
- arch/arm64/configs/defconfig                           |    2 +-
- drivers/memory/omap-gpmc.c                             |  163 ++-
- drivers/mtd/nand/Kconfig                               |   17 +-
- drivers/mtd/nand/Makefile                              |    1 +
- drivers/mtd/nand/atmel/nand-controller.c               |    9 +-
- drivers/mtd/nand/bf5xx_nand.c                          |    6 +-
- drivers/mtd/nand/brcmnand/brcmnand.c                   |   38 +-
- drivers/mtd/nand/cafe_nand.c                           |   52 +-
- drivers/mtd/nand/denali.c                              |   84 +-
- drivers/mtd/nand/denali.h                              |    4 +-
- drivers/mtd/nand/denali_pci.c                          |    4 +
- drivers/mtd/nand/diskonchip.c                          |    4 +-
- drivers/mtd/nand/docg4.c                               |   21 +-
- drivers/mtd/nand/fsl_elbc_nand.c                       |   10 +-
- drivers/mtd/nand/fsl_ifc_nand.c                        |   13 +-
- drivers/mtd/nand/fsmc_nand.c                           |    9 +-
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c                 |   97 +-
- drivers/mtd/nand/gpmi-nand/gpmi-nand.h                 |   46 +-
- drivers/mtd/nand/hisi504_nand.c                        |    9 +-
- drivers/mtd/nand/jz4740_nand.c                         |   16 +-
- drivers/mtd/nand/lpc32xx_mlc.c                         |    7 +-
- drivers/mtd/nand/lpc32xx_slc.c                         |   33 +-
- drivers/mtd/nand/marvell_nand.c                        | 2898 +++++++++++++++++++++++++++++++++++++++++
- drivers/mtd/nand/mtk_ecc.c                             |  126 +-
- drivers/mtd/nand/mtk_ecc.h                             |    3 +-
- drivers/mtd/nand/mtk_nand.c                            |   76 +-
- drivers/mtd/nand/nand_base.c                           | 2229 ++++++++++++++++++++++++++-----
- drivers/mtd/nand/nand_bbt.c                            |    2 +-
- drivers/mtd/nand/nand_hynix.c                          |  129 +-
- drivers/mtd/nand/nand_micron.c                         |   83 +-
- drivers/mtd/nand/nand_samsung.c                        |   19 +
- drivers/mtd/nand/nand_timings.c                        |   21 +-
- drivers/mtd/nand/omap2.c                               |   28 +-
- drivers/mtd/nand/pxa3xx_nand.c                         |   14 +-
- drivers/mtd/nand/qcom_nandc.c                          |   30 +-
- drivers/mtd/nand/r852.c                                |   11 +-
- drivers/mtd/nand/sh_flctl.c                            |    6 +-
- drivers/mtd/nand/sm_common.h                           |    2 +-
- drivers/mtd/nand/sunxi_nand.c                          |  103 +-
- drivers/mtd/nand/tango_nand.c                          |   27 +-
- drivers/mtd/nand/tmio_nand.c                           |    5 +-
- drivers/mtd/nand/vf610_nfc.c                           |    6 +-
- drivers/mtd/onenand/Kconfig                            |    7 +-
- drivers/mtd/onenand/omap2.c                            |  576 +++-----
- drivers/mtd/onenand/samsung.c                          |  185 +--
- drivers/mtd/tests/nandbiterrs.c                        |    2 +-
- drivers/mtd/tests/oobtest.c                            |   21 +
- drivers/staging/mt29f_spinand/mt29f_spinand.c          |    5 +-
- include/linux/mtd/rawnand.h                            |  443 ++++++-
- include/linux/omap-gpmc.h                              |   28 +
- include/linux/platform_data/mtd-onenand-omap2.h        |   34 -
- 64 files changed, 6457 insertions(+), 1918 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/marvell-nand.txt
- delete mode 100644 arch/arm/mach-omap2/gpmc-onenand.c
- create mode 100644 drivers/mtd/nand/marvell_nand.c
- delete mode 100644 include/linux/platform_data/mtd-onenand-omap2.h
+Frieder
