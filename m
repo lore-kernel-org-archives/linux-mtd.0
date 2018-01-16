@@ -1,26 +1,21 @@
-Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
+Received: from szxga04-in.huawei.com ([45.249.212.190] helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ebDW4-00034W-2I
- for linux-mtd@lists.infradead.org; Mon, 15 Jan 2018 22:46:09 +0000
-Received: by mail-lf0-x243.google.com with SMTP id f3so15118586lfe.4
- for <linux-mtd@lists.infradead.org>; Mon, 15 Jan 2018 14:46:01 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: linux-mtd@lists.infradead.org, Jonas Gorski <jonas.gorski@gmail.com>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH V4 2/2] mtd: get rid of the mtd_add_device_partitions()
-Date: Mon, 15 Jan 2018 23:45:47 +0100
-Message-Id: <20180115224547.9265-3-zajec5@gmail.com>
-In-Reply-To: <20180115224547.9265-1-zajec5@gmail.com>
-References: <20180115143519.9845-1-zajec5@gmail.com>
- <20180115224547.9265-1-zajec5@gmail.com>
+ id 1ebKZx-0005qw-Hu
+ for linux-mtd@lists.infradead.org; Tue, 16 Jan 2018 06:18:40 +0000
+Subject: Re: [RFC PATCH] ubifs: Add zstd support
+To: Richard Weinberger <richard@nod.at>
+CC: <dedekind1@gmail.com>, <adrian.hunter@intel.com>,
+ <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+References: <20180112092421.22095-1-yuyufen@huawei.com>
+ <7790203.HFZG64yrZx@blindfold>
+From: yuyufen <yuyufen@huawei.com>
+Message-ID: <7c454b10-6bec-8123-e750-7e6e4772b76e@huawei.com>
+Date: Tue, 16 Jan 2018 14:16:44 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <7790203.HFZG64yrZx@blindfold>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,98 +25,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+On 2018/1/12 18:45, Richard Weinberger wrote:
+> Yufen Yu,
+>
+> Am Freitag, 12. Januar 2018, 10:24:21 CET schrieb Yufen Yu:
+>> Add zstd compression and decompression support to ubifs. zstd at its
+>> fastest level compresses almost as well as zlib, while offering much
+>> faster compression and decompression, approaching lzo speeds.
+>>
+>> This patch is based on the patch:
+>> 	https://patchwork.kernel.org/patch/9892631/
+>>
+>> zstd source repository: https://github.com/facebook/zstd
+> Do you have numbers on how much we gain for UBIFS on a typical embedded
+> device?
+>
+> Thanks,
+> //richard
+>
+> .
+>
 
-This simplifies code a bit by:
-1) Avoiding an extra (tiny) function
-2) Checking for amount of parsed (found) partitions just once
-3) Avoiding clearing/filling struct mtd_partitions manually
+This is a RFC patch. I will post the test results after the full 
+function completing.
 
-With this commit proper functions are called directly from the
-mtd_device_parse_register(). It doesn't need to use minor tricks like
-memsetting struct to 0 to trigger an expected
-mtd_add_device_partitions() behavior.
+Thanks a lot.
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
-V2: Simplify conditions in the mtd_device_parse_register (thanks Boris)
-V4: Zero-initialize parsed variable. Some parsers return 0 without
-    setting nr_parts.
-    Update commit message: drop "a" from "a functions" & use ()
----
- drivers/mtd/mtdcore.c | 43 ++++++++++++-------------------------------
- 1 file changed, 12 insertions(+), 31 deletions(-)
-
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 3304199cca07..4eebbc1cc967 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -636,21 +636,6 @@ int del_mtd_device(struct mtd_info *mtd)
- 	return ret;
- }
- 
--static int mtd_add_device_partitions(struct mtd_info *mtd,
--				     struct mtd_partitions *parts)
--{
--	const struct mtd_partition *real_parts = parts->parts;
--	int nbparts = parts->nr_parts;
--
--	if (!nbparts && !device_is_registered(&mtd->dev))
--		return add_mtd_device(mtd);
--
--	if (nbparts > 0)
--		return add_mtd_partitions(mtd, real_parts, nbparts);
--
--	return 0;
--}
--
- /*
-  * Set a few defaults based on the parent devices, if not provided by the
-  * driver
-@@ -701,7 +686,7 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
- 			      const struct mtd_partition *parts,
- 			      int nr_parts)
- {
--	struct mtd_partitions parsed;
-+	struct mtd_partitions parsed = { };
- 	int ret;
- 
- 	mtd_set_dev_defaults(mtd);
-@@ -712,24 +697,20 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
- 			return ret;
- 	}
- 
--	memset(&parsed, 0, sizeof(parsed));
--
-+	/* Prefer parsed partitions over driver-provided fallback */
- 	ret = parse_mtd_partitions(mtd, types, &parsed, parser_data);
--	if ((ret < 0 || parsed.nr_parts == 0) && parts && nr_parts) {
--		/* Fall back to driver-provided partitions */
--		parsed = (struct mtd_partitions){
--			.parts		= parts,
--			.nr_parts	= nr_parts,
--		};
--	} else if (ret < 0) {
--		/* Didn't come up with parsed OR fallback partitions */
--		pr_info("mtd: failed to find partitions; one or more parsers reports errors (%d)\n",
--			ret);
--		/* Don't abort on errors; we can still use unpartitioned MTD */
--		memset(&parsed, 0, sizeof(parsed));
-+	if (!ret && parsed.nr_parts) {
-+		parts = parsed.parts;
-+		nr_parts = parsed.nr_parts;
- 	}
- 
--	ret = mtd_add_device_partitions(mtd, &parsed);
-+	if (nr_parts)
-+		ret = add_mtd_partitions(mtd, parts, nr_parts);
-+	else if (!device_is_registered(&mtd->dev))
-+		ret = add_mtd_device(mtd);
-+	else
-+		ret = 0;
-+
- 	if (ret)
- 		goto out;
- 
--- 
-2.11.0
+Yufen Yu
