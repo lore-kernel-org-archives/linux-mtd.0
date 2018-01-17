@@ -1,14 +1,25 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
+Received: from mail-io0-x22e.google.com ([2607:f8b0:4001:c06::22e])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ebvzJ-0003Uw-Cq
- for linux-mtd@lists.infradead.org; Wed, 17 Jan 2018 22:15:18 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- stable@vger.kernel.org
-Subject: [PATCH] ubi: fastmap: Don't flush fastmap work on detach
-Date: Wed, 17 Jan 2018 23:15:57 +0100
-Message-Id: <20180117221557.16768-1-richard@nod.at>
+ id 1ebxOL-0007Yw-9u
+ for linux-mtd@lists.infradead.org; Wed, 17 Jan 2018 23:45:15 +0000
+Received: by mail-io0-x22e.google.com with SMTP id f6so22827889ioh.8
+ for <linux-mtd@lists.infradead.org>; Wed, 17 Jan 2018 15:45:02 -0800 (PST)
+Date: Wed, 17 Jan 2018 15:44:58 -0800
+From: Eric Biggers <ebiggers3@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-fscrypt@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
+ linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Theodore Ts'o <tytso@mit.edu>
+Subject: Re: [PATCH v2 0/5] ubifs: switch to new fscrypt helper functions
+Message-ID: <20180117234458.iw37mht6jtp5gdwn@gmail.com>
+References: <20171129204317.91205-1-ebiggers3@gmail.com>
+ <CAFLxGvzGeMkm_1HhcFDe4twTGsVHaXvjoM6GezxtCNW+NZw84Q@mail.gmail.com>
+ <20180117212354.xrsog7pekzoomq7p@gmail.com>
+ <6120539.HEfP5UEqVm@blindfold>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6120539.HEfP5UEqVm@blindfold>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,28 +29,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-At this point UBI volumes have already been free()'ed and fastmap can no
-longer access these data structures.
+On Wed, Jan 17, 2018 at 10:36:12PM +0100, Richard Weinberger wrote:
+> Am Mittwoch, 17. Januar 2018, 22:23:54 CET schrieb Eric Biggers:
+> > On Wed, Jan 17, 2018 at 10:12:27PM +0100, Richard Weinberger wrote:
+> > > On Fri, Jan 5, 2018 at 11:11 PM, Richard Weinberger <richard@nod.at> 
+> wrote:
+> > > > Eric,
+> > > > 
+> > > > Am Freitag, 5. Januar 2018, 19:37:44 CET schrieb Eric Biggers:
+> > > >> On Wed, Nov 29, 2017 at 12:43:12PM -0800, Eric Biggers wrote:
+> > > >> > From: Eric Biggers <ebiggers@google.com>
+> > > >> > 
+> > > >> > This series switches ubifs to use the fscrypt helper functions for
+> > > >> > open/link/rename/lookup/setattr introduced in v4.15.
+> > > >> > 
+> > > >> > These patches were originally sent in "[PATCH 00/25] fscrypt: add
+> > > >> > some
+> > > >> > higher-level helper functions".  I've rebased them onto v4.15-rc1.
+> > > >> > 
+> > > >> > Eric Biggers (5):
+> > > >> >   ubifs: switch to fscrypt_file_open()
+> > > >> >   ubifs: switch to fscrypt_prepare_link()
+> > > >> >   ubifs: switch to fscrypt_prepare_rename()
+> > > >> >   ubifs: switch to fscrypt_prepare_lookup()
+> > > >> >   ubifs: switch to fscrypt_prepare_setattr()
+> > > >> >  
+> > > >> >  fs/ubifs/dir.c  | 43 +++++++++++++------------------------------
+> > > >> >  fs/ubifs/file.c | 41 ++++-------------------------------------
+> > > >> >  2 files changed, 17 insertions(+), 67 deletions(-)
+> > > >> 
+> > > >> Richard, can you take these for UBIFS for v4.16?
+> > > > 
+> > > > Yes. Thanks a lot for cleaning this up.
+> > > 
+> > > FYI, this series has merge conflicts with other fscrypt related
+> > > changes that went via Ted into fs/ubifs.
+> > 
+> > How so?  These apply cleanly to both Linus' tree and to fscrypt/master
+> > currently.
+> 
+> Just checked, the problem is this commit:
+> 
+> commit 9a2cebc6e2368072490a574eafe0f0747d330bbd
+> Author: Eric Biggers <ebiggers@google.com>
+> Date:   Fri Jan 5 11:30:03 2018 -0800
+> 
+>     ubifs: free the encrypted symlink target
+> 
+> It exists also in my tree. I'll drop it and force push.
+> Sorry for messing up, next time I try hard to be more responsive.
+> 
+> Thanks,
+> //richard
+> 
 
-Reported-by: Martin Townsend <mtownsend1973@gmail.com>
-Fixes: 74cdaf24004a ("UBI: Fastmap: Fix memory leaks while closing the WL sub-system")
-Cc: stable@vger.kernel.org
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- drivers/mtd/ubi/fastmap-wl.c | 1 -
- 1 file changed, 1 deletion(-)
+Ah yes, sorry for the confusion.  The original plan was to just take the initial
+patches in the "fscrypt: symlink helpers and fscrypt.h cleanup" series, but we
+decided to take the fs-specific patches through the fscrypt tree too, since the
+only merge conflict was a "trivial" one in f2fs_symlink(), and it otherwise
+would have taken a long time to get all those patches as well as the follow-on
+fscrypt patches applied.
 
-diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
-index 4f0bd6b4422a..69dd21679a30 100644
---- a/drivers/mtd/ubi/fastmap-wl.c
-+++ b/drivers/mtd/ubi/fastmap-wl.c
-@@ -362,7 +362,6 @@ static void ubi_fastmap_close(struct ubi_device *ubi)
- {
- 	int i;
- 
--	flush_work(&ubi->fm_work);
- 	return_unused_pool_pebs(ubi, &ubi->fm_pool);
- 	return_unused_pool_pebs(ubi, &ubi->fm_wl_pool);
- 
--- 
-2.13.6
+Eric
