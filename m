@@ -1,22 +1,17 @@
-Received: from szxga04-in.huawei.com ([45.249.212.190] helo=huawei.com)
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eblkl-000685-On
- for linux-mtd@lists.infradead.org; Wed, 17 Jan 2018 11:19:37 +0000
-From: Wei Yongjun <weiyongjun1@huawei.com>
-To: Kyungmin Park <kyungmin.park@samsung.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, "Boris
- Brezillon" <boris.brezillon@free-electrons.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>
-CC: Wei Yongjun <weiyongjun1@huawei.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
-Subject: [PATCH -next] mtd: onenand: omap2: Remove redundant dev_err call in
- omap2_onenand_probe()
-Date: Wed, 17 Jan 2018 11:25:33 +0000
-Message-ID: <1516188333-144550-1-git-send-email-weiyongjun1@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-MIME-Version: 1.0
+ id 1eblxi-0005tA-KL
+ for linux-mtd@lists.infradead.org; Wed, 17 Jan 2018 11:33:00 +0000
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, kernel@pengutronix.de,
+ Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH 3/8] mtd: nand: mxc: Add buffer argument to copy_spare
+Date: Wed, 17 Jan 2018 12:32:08 +0100
+Message-Id: <20180117113213.15455-4-s.hauer@pengutronix.de>
+In-Reply-To: <20180117113213.15455-1-s.hauer@pengutronix.de>
+References: <20180117113213.15455-1-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,28 +21,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There is a error message within devm_ioremap_resource
-already, so remove the dev_err call to avoid redundant
-error message.
+With following patches we will have to copy the spare data to/from
+other buffers, so add the buffer as argument to copy_spare().
 
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- drivers/mtd/onenand/omap2.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/mtd/nand/mxc_nand.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-index a4a2159..87c34f6 100644
---- a/drivers/mtd/onenand/omap2.c
-+++ b/drivers/mtd/onenand/omap2.c
-@@ -532,10 +532,8 @@ static int omap2_onenand_probe(struct platform_device *pdev)
- 	c->phys_base = res->start;
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index 019c58579dbc..ab9cd45237d3 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -262,14 +262,14 @@ static void memcpy16_toio(void __iomem *trg, const void *src, int size)
+  * holds a page in natural order, i.e. writesize bytes data + oobsize bytes
+  * spare) and the NFC buffer.
+  */
+-static void copy_spare(struct mtd_info *mtd, bool bfrom)
++static void copy_spare(struct mtd_info *mtd, bool bfrom, void *buf)
+ {
+ 	struct nand_chip *this = mtd_to_nand(mtd);
+ 	struct mxc_nand_host *host = nand_get_controller_data(this);
+ 	u16 i, oob_chunk_size;
+ 	u16 num_chunks = mtd->writesize / 512;
  
- 	c->onenand.base = devm_ioremap_resource(dev, res);
--	if (IS_ERR(c->onenand.base)) {
--		dev_err(dev, "Cannot reserve memory region %pR\n", res);
-+	if (IS_ERR(c->onenand.base))
- 		return PTR_ERR(c->onenand.base);
--	}
+-	u8 *d = host->data_buf + mtd->writesize;
++	u8 *d = buf;
+ 	u8 __iomem *s = host->spare0;
+ 	u16 sparebuf_size = host->devtype_data->spare_len;
  
- 	c->int_gpiod = devm_gpiod_get_optional(dev, "int", GPIOD_IN);
- 	if (IS_ERR(c->int_gpiod)) {
+@@ -1295,7 +1295,7 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 
+ 		memcpy32_fromio(host->data_buf, host->main_area0,
+ 				mtd->writesize);
+-		copy_spare(mtd, true);
++		copy_spare(mtd, true, host->data_buf + mtd->writesize);
+ 		break;
+ 
+ 	case NAND_CMD_SEQIN:
+@@ -1314,7 +1314,7 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 
+ 	case NAND_CMD_PAGEPROG:
+ 		memcpy32_toio(host->main_area0, host->data_buf, mtd->writesize);
+-		copy_spare(mtd, false);
++		copy_spare(mtd, false, host->data_buf + mtd->writesize);
+ 		host->devtype_data->send_page(mtd, NFC_INPUT);
+ 		host->devtype_data->send_cmd(host, command, true);
+ 		WARN_ONCE(column != -1 || page_addr != -1,
+-- 
+2.11.0
