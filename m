@@ -1,24 +1,18 @@
-Received: from mail-eopbgr30051.outbound.protection.outlook.com ([40.107.3.51]
- helo=EUR03-AM5-obe.outbound.protection.outlook.com)
+Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ecDvT-0007Wh-4Z
- for linux-mtd@lists.infradead.org; Thu, 18 Jan 2018 17:24:37 +0000
-From: Han Xu <han.xu@nxp.com>
-To: Fabio Estevam <fabio.estevam@nxp.com>,
- "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "David
- Wolfe" <david.wolfe@nxp.com>
-Subject: Re: [PATCH v6 2/2] dt-bindings: fsl-quadspi: Add the example of two
- SPI NOR
-Date: Thu, 18 Jan 2018 17:24:17 +0000
-Message-ID: <DB5PR0401MB221453634FBAA077E8CE759A97E80@DB5PR0401MB2214.eurprd04.prod.outlook.com>
-References: <1516285721-32294-1-git-send-email-fabio.estevam@nxp.com>,
- <1516285721-32294-2-git-send-email-fabio.estevam@nxp.com>
-In-Reply-To: <1516285721-32294-2-git-send-email-fabio.estevam@nxp.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ id 1ecFtR-00016t-Ba
+ for linux-mtd@lists.infradead.org; Thu, 18 Jan 2018 19:30:35 +0000
+Date: Thu, 18 Jan 2018 20:30:15 +0100
+From: Pavel Machek <pavel@ucw.cz>
+To: kernel list <linux-kernel@vger.kernel.org>, richard@nod.at,
+ dedekind1@gmail.com, adrian.hunter@intel.com,
+ linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Subject: ubifs: noatime support?
+Message-ID: <20180118193015.GA24748@amd>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="Qxx1br4bt0+wmkIi"
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,60 +23,46 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-________________________________________
-From: Fabio Estevam <fabio.estevam@nxp.com>
-Sent: Thursday, January 18, 2018 8:28 AM
-To: boris.brezillon@free-electrons.com
-Cc: linux-mtd@lists.infradead.org; Han Xu; David Wolfe; Fabio Estevam
-Subject: [PATCH v6 2/2] dt-bindings: fsl-quadspi: Add the example of two SP=
-I NOR
+--Qxx1br4bt0+wmkIi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Improve the bindings example by adding an example of how to represent
-two SPI NOR devices.
+Hi!
 
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
----
-Changes since v5:
-- None
+Ubifs seems to have atime support these days:
 
- .../devicetree/bindings/mtd/fsl-quadspi.txt        | 24 ++++++++++++++++++=
-++++
- 1 file changed, 24 insertions(+)
+          sb->s_flags |=3D SB_ACTIVE;
+#ifndef CONFIG_UBIFS_ATIME_SUPPORT
+          sb->s_flags |=3D SB_NOATIME;
+#else
+          ubifs_msg(c, "full atime support is enabled.");
+#endif
 
-diff --git a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt b/Docume=
-ntation/devicetree/bindings/mtd/fsl-quadspi.txt
-index 63d4d626..483e9cf 100644
---- a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-+++ b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-@@ -39,3 +39,27 @@ qspi0: quadspi@40044000 {
-                ....
-        };
- };
-+
-+Example showing the usage of two SPI NOR devices:
-+
-+&qspi2 {
-+       pinctrl-names =3D "default";
-+       pinctrl-0 =3D <&pinctrl_qspi2>;
-+       status =3D "okay";
-+
-+       flash0: n25q256a@0 {
-+               #address-cells =3D <1>;
-+               #size-cells =3D <1>;
-+               compatible =3D "micron,n25q256a", "jedec,spi-nor";
-+               spi-max-frequency =3D <29000000>;
-+               reg =3D <0>;
-+       };
-+
-+       flash1: n25q256a@1 {
-+               #address-cells =3D <1>;
-+               #size-cells =3D <1>;
-+               compatible =3D "micron,n25q256a", "jedec,spi-nor";
-+               spi-max-frequency =3D <29000000>;
-+               reg =3D <1>;
-+       };
-+};
---
-2.7.4
+Which can be configured at compile-time, but no option to disable it
+at runtime. What is going on there?
 
-Acked-by: Han Xu <han.xu@nxp.com>
+UBIFS: parse noatime
+UBIFS error (ubi1:0 pid 94): ubifs_parse_options.constprop.5:
+unrecognized mount option "noatime" e
+mount: mounting ubi1:log_volume on /mnt/log failed: Invalid argument
+
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--Qxx1br4bt0+wmkIi
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlpg9ccACgkQMOfwapXb+vKYwwCaA62JVdeZyAP2Jp9RYVFNMMdK
+8BQAnjHYqzIbJswJWxAn73EpBINgNUfE
+=OXzL
+-----END PGP SIGNATURE-----
+
+--Qxx1br4bt0+wmkIi--
