@@ -1,21 +1,19 @@
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ecCNj-0002Sv-8m
- for linux-mtd@lists.infradead.org; Thu, 18 Jan 2018 15:45:37 +0000
+ id 1ecCQn-0003Bh-8f
+ for linux-mtd@lists.infradead.org; Thu, 18 Jan 2018 15:48:46 +0000
 From: Richard Weinberger <richard@nod.at>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Wei Yongjun <weiyongjun1@huawei.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH -next] mtd: ubi: wl: Fix error return code in ubi_wl_init()
-Date: Thu, 18 Jan 2018 16:46:17 +0100
-Message-ID: <1565095.G3YoHPv5dZ@blindfold>
-In-Reply-To: <20180118163445.5e465f90@bbrezillon>
-References: <1516284305-82544-1-git-send-email-weiyongjun1@huawei.com>
- <20180118151132.255e0173@bbrezillon> <20180118163445.5e465f90@bbrezillon>
+Cc: Bradley Bolen <bradleybolen@gmail.com>, linux-mtd@lists.infradead.org,
+ dedekind1@gmail.com, dwmw2@infradead.org, computersforpeace@gmail.com,
+ marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
+ ezequiel@vanguardiasur.com.ar, stable@vger.kernel.org
+Subject: Re: [PATCH] UBI: block: Fix locking for idr_alloc/idr_remove
+Date: Thu, 18 Jan 2018 16:49:30 +0100
+Message-ID: <1860384.duseTMRpLy@blindfold>
+In-Reply-To: <20180118161310.4c1a779a@bbrezillon>
+References: <1516283720-11277-1-git-send-email-bbolen@lexmark.com>
+ <20180118161310.4c1a779a@bbrezillon>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
@@ -28,41 +26,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Boris, Wei Yongjun,
+Boris, Bradley,
+Am Donnerstag, 18. Januar 2018, 16:13:10 CET schrieb Boris Brezillon:
+> On Thu, 18 Jan 2018 08:55:20 -0500
+> 
+> Bradley Bolen <bradleybolen@gmail.com> wrote:
+> > From: Bradley Bolen <bradleybolen@gmail.com>
+> > 
+> > This fixes a race with idr_alloc where gd->first_minor can be set to the
+> > same value for two simultaneous calls to ubiblock_create.  Each instance
+> > calls device_add_disk with the same first_minor.  device_add_disk calls
+> > bdi_register_owner which generates several warnings.
+> > 
+> > WARNING: CPU: 1 PID: 179 at kernel-source/fs/sysfs/dir.c:31
+> > sysfs_warn_dup+0x68/0x88
+> > sysfs: cannot create duplicate filename '/devices/virtual/bdi/252:2'
+> > 
+> > WARNING: CPU: 1 PID: 179 at kernel-source/lib/kobject.c:240
+> > kobject_add_internal+0x1ec/0x2f8
+> > kobject_add_internal failed for 252:2 with -EEXIST, don't try to
+> > register things with the same name in the same directory
+> > 
+> > WARNING: CPU: 1 PID: 179 at kernel-source/fs/sysfs/dir.c:31
+> > sysfs_warn_dup+0x68/0x88
+> > sysfs: cannot create duplicate filename '/dev/block/252:2'
+> > 
+> > However, device_add_disk does not error out when bdi_register_owner
+> > returns an error.  Control continues until reaching blk_register_queue.
+> > It then BUGs.
+> > 
+> > kernel BUG at kernel-source/fs/sysfs/group.c:113!
+> > [<c01e26cc>] (internal_create_group) from [<c01e2950>]
+> > (sysfs_create_group+0x20/0x24)
+> > [<c01e2950>] (sysfs_create_group) from [<c00e3d38>]
+> > (blk_trace_init_sysfs+0x18/0x20)
+> > [<c00e3d38>] (blk_trace_init_sysfs) from [<c02bdfbc>]
+> > (blk_register_queue+0xd8/0x154)
+> > [<c02bdfbc>] (blk_register_queue) from [<c02cec84>]
+> > (device_add_disk+0x194/0x44c)
+> > [<c02cec84>] (device_add_disk) from [<c0436ec8>]
+> > (ubiblock_create+0x284/0x2e0)
+> > [<c0436ec8>] (ubiblock_create) from [<c0427bb8>]
+> > (vol_cdev_ioctl+0x450/0x554)
+> > [<c0427bb8>] (vol_cdev_ioctl) from [<c0189110>] (vfs_ioctl+0x30/0x44)
+> > [<c0189110>] (vfs_ioctl) from [<c01892e0>] (do_vfs_ioctl+0xa0/0x790)
+> > [<c01892e0>] (do_vfs_ioctl) from [<c0189a14>] (SyS_ioctl+0x44/0x68)
+> > [<c0189a14>] (SyS_ioctl) from [<c0010640>] (ret_fast_syscall+0x0/0x34)
+> > 
+> > Locking idr_alloc/idr_remove removes the race and keeps gd->first_minor
+> > unique.
+> > 
+> > Fixes: 2bf50d42f3a4 ("UBI: block: Dynamically allocate minor numbers")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Bradley Bolen <bradleybolen@gmail.com>
+> 
+> Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Am Donnerstag, 18. Januar 2018, 16:34:45 CET schrieb Boris Brezillon:
-> On Thu, 18 Jan 2018 15:11:32 +0100
-> 
-> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-> > On Thu, 18 Jan 2018 15:08:01 +0100
-> > 
-> > Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-> > > On Thu, 18 Jan 2018 14:05:05 +0000
-> > > 
-> > > Wei Yongjun <weiyongjun1@huawei.com> wrote:
-> > > > Fix to return error code -ENOMEM from the kmem_cache_alloc() error
-> > > > handling case instead of 0, as done elsewhere in this function.
-> > > 
-> > > I guess you've used a static analysis code to detect this problem, can
-> > > you name it in the commit message, and paste the error/warning message
-> > > it reported next time you submit this kind of patch.
-> > > 
-> > > > Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-> > > 
-> > > NAck. I you read the code you'll see that err is initialized to -ENOMEM
-> > > here [1], so these changes are actually not needed.
-> > 
-> > Sorry, just realized I was wrong. It seems that err can be overridden by
-> > [2]. So this patch is indeed fixing a real problem.
-> > 
-> > Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> 
-> Oh, and you can add:
-> 
-> Fixes: f78e5623f45b ("ubi: fastmap: Erase outdated anchor PEBs during
-> attach")
-
-Good catch!
+Thanks!
 
 Thanks,
 //richard
