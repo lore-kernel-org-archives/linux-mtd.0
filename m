@@ -1,23 +1,19 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1ec4R0-0001rQ-1x
- for linux-mtd@lists.infradead.org; Thu, 18 Jan 2018 07:16:28 +0000
-Date: Thu, 18 Jan 2018 08:16:10 +0100
-From: Miquel Raynal <miquel.raynal@free-electrons.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, Boris Brezillon
- <boris.brezillon@free-electrons.com>, kernel@pengutronix.de, Richard
- Weinberger <richard@nod.at>
-Subject: Re: [PATCH 6/8] mtd: nand: mxc: Add own write_page
-Message-ID: <20180118081610.32937f54@xps13>
-In-Reply-To: <20180117104009.geal4fs6eykqai3a@pengutronix.de>
-References: <20180109101148.13728-1-s.hauer@pengutronix.de>
- <20180109101148.13728-7-s.hauer@pengutronix.de>
- <20180113172551.5dab8a7c@xps13>
- <20180117104009.geal4fs6eykqai3a@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1ecAfr-0002f9-Lv
+ for linux-mtd@lists.infradead.org; Thu, 18 Jan 2018 13:56:15 +0000
+Received: by mail-pf0-x242.google.com with SMTP id y26so7057593pfi.10
+ for <linux-mtd@lists.infradead.org>; Thu, 18 Jan 2018 05:55:59 -0800 (PST)
+From: Bradley Bolen <bradleybolen@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: dedekind1@gmail.com, richard@nod.at, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
+ marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
+ ezequiel@vanguardiasur.com.ar, Bradley Bolen <bradleybolen@gmail.com>,
+ stable@vger.kernel.org
+Subject: [PATCH] UBI: block: Fix locking for idr_alloc/idr_remove
+Date: Thu, 18 Jan 2018 08:55:20 -0500
+Message-Id: <1516283720-11277-1-git-send-email-bbolen@lexmark.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,79 +23,185 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sascha,
+From: Bradley Bolen <bradleybolen@gmail.com>
 
-On Wed, 17 Jan 2018 11:40:09 +0100
-Sascha Hauer <s.hauer@pengutronix.de> wrote:
+This fixes a race with idr_alloc where gd->first_minor can be set to the
+same value for two simultaneous calls to ubiblock_create.  Each instance
+calls device_add_disk with the same first_minor.  device_add_disk calls
+bdi_register_owner which generates several warnings.
 
-> Hi Miquel,
->=20
-> On Sat, Jan 13, 2018 at 05:25:51PM +0100, Miquel Raynal wrote:
-> > Hi Sascha,
-> >=20
-> > On Tue,  9 Jan 2018 11:11:46 +0100
-> > Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> >  =20
-> > > Now that we have our own read_page function add a write_page
-> > > function for consistency aswell. This can be a lot easier than
-> > > the generic function since we do not have to iterate over
-> > > subpages but can write the whole page at once. Also add
-> > > write_page_raw and write_oob for proper raw and oob write support.
-> > >=20
-> > > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> > > ---
-> > >  drivers/mtd/nand/mxc_nand.c | 56
-> > > +++++++++++++++++++++++++++++++++++++++++++++ 1 file changed, 56
-> > > insertions(+)
-> > >=20
-> > > diff --git a/drivers/mtd/nand/mxc_nand.c
-> > > b/drivers/mtd/nand/mxc_nand.c index 83bb01ab7079..6fbf98851a96
-> > > 100644 --- a/drivers/mtd/nand/mxc_nand.c
-> > > +++ b/drivers/mtd/nand/mxc_nand.c
-> > > @@ -893,6 +893,59 @@ static int mxc_nand_read_oob(struct mtd_info
-> > > *mtd, struct nand_chip *chip, page);
-> > >  }
-> > > =20
-> > > +static int __mxc_nand_write_page(struct mtd_info *mtd, struct
-> > > nand_chip *chip,
-> > > +				 const uint8_t *buf, int
-> > > oob_required, int page) +{
-> > > +	struct mxc_nand_host *host =3D
-> > > nand_get_controller_data(chip); +
-> > > +	host->devtype_data->send_cmd(host, NAND_CMD_SEQIN,
-> > > false);
-> > > +	mxc_do_addr_cycle(mtd, 0, page);
-> > > +
-> > > +	memcpy32_toio(host->main_area0, buf, mtd->writesize);
-> > > +	copy_spare(mtd, false, chip->oob_poi); =20
-> >=20
-> > If I remember correctly, there was a "spare only" mechanism to avoid
-> > doing full page read/write when unnecessary. What about using it
-> > here when (buf =3D=3D NULL && oob_required)? =20
->=20
-> You are probably referring to the SP_EN bit in the NAND_FLASH_CONFIG1
-> register right? This is described as:
->=20
-> > NAND Flash spare enable. This bit determines whether host
-> > reads/writes are to NAND Flash spare data only or NAND Flash main
-> > and spare data. This feature is supported only with memories with
-> > 1/2K page size. Note: There is no ECC in this mode of operation.
-> > 0 NAND Flash main and spare data is enabled
-> > 1 NAND Flash spare only data is enabled =20
->=20
-> At least the i.MX25 has the limitation of 1/2k page size for this
-> feature. It's not in the i.MX27 manual. I don't know if the i.MX27
-> documentation is inaccurate or if this limitation is there already.
+WARNING: CPU: 1 PID: 179 at kernel-source/fs/sysfs/dir.c:31
+sysfs_warn_dup+0x68/0x88
+sysfs: cannot create duplicate filename '/devices/virtual/bdi/252:2'
 
-Ok, I ignored this limitation on i.MX25. Better write generic code
-then.
+WARNING: CPU: 1 PID: 179 at kernel-source/lib/kobject.c:240
+kobject_add_internal+0x1ec/0x2f8
+kobject_add_internal failed for 252:2 with -EEXIST, don't try to
+register things with the same name in the same directory
 
->=20
-> Anyway, I don't think it's worth optimizing for this case given that
-> we still need to support a full page write for 2k pages (which should
-> be much more widespread nowadays than the 512b page size NANDs).
+WARNING: CPU: 1 PID: 179 at kernel-source/fs/sysfs/dir.c:31
+sysfs_warn_dup+0x68/0x88
+sysfs: cannot create duplicate filename '/dev/block/252:2'
 
-Sure!
+However, device_add_disk does not error out when bdi_register_owner
+returns an error.  Control continues until reaching blk_register_queue.
+It then BUGs.
 
-Thanks,
-Miqu=C3=A8l
+kernel BUG at kernel-source/fs/sysfs/group.c:113!
+[<c01e26cc>] (internal_create_group) from [<c01e2950>]
+(sysfs_create_group+0x20/0x24)
+[<c01e2950>] (sysfs_create_group) from [<c00e3d38>]
+(blk_trace_init_sysfs+0x18/0x20)
+[<c00e3d38>] (blk_trace_init_sysfs) from [<c02bdfbc>]
+(blk_register_queue+0xd8/0x154)
+[<c02bdfbc>] (blk_register_queue) from [<c02cec84>]
+(device_add_disk+0x194/0x44c)
+[<c02cec84>] (device_add_disk) from [<c0436ec8>]
+(ubiblock_create+0x284/0x2e0)
+[<c0436ec8>] (ubiblock_create) from [<c0427bb8>]
+(vol_cdev_ioctl+0x450/0x554)
+[<c0427bb8>] (vol_cdev_ioctl) from [<c0189110>] (vfs_ioctl+0x30/0x44)
+[<c0189110>] (vfs_ioctl) from [<c01892e0>] (do_vfs_ioctl+0xa0/0x790)
+[<c01892e0>] (do_vfs_ioctl) from [<c0189a14>] (SyS_ioctl+0x44/0x68)
+[<c0189a14>] (SyS_ioctl) from [<c0010640>] (ret_fast_syscall+0x0/0x34)
+
+Locking idr_alloc/idr_remove removes the race and keeps gd->first_minor
+unique.
+
+Fixes: 2bf50d42f3a4 ("UBI: block: Dynamically allocate minor numbers")
+Cc: stable@vger.kernel.org
+Signed-off-by: Bradley Bolen <bradleybolen@gmail.com>
+---
+ drivers/mtd/ubi/block.c | 42 ++++++++++++++++++++++++++----------------
+ 1 file changed, 26 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+index b210fdb..b1fc28f 100644
+--- a/drivers/mtd/ubi/block.c
++++ b/drivers/mtd/ubi/block.c
+@@ -99,6 +99,8 @@ struct ubiblock {
+ 
+ /* Linked list of all ubiblock instances */
+ static LIST_HEAD(ubiblock_devices);
++static DEFINE_IDR(ubiblock_minor_idr);
++/* Protects ubiblock_devices and ubiblock_minor_idr */
+ static DEFINE_MUTEX(devices_mutex);
+ static int ubiblock_major;
+ 
+@@ -351,8 +353,6 @@ static int ubiblock_init_request(struct blk_mq_tag_set *set,
+ 	.init_request	= ubiblock_init_request,
+ };
+ 
+-static DEFINE_IDR(ubiblock_minor_idr);
+-
+ int ubiblock_create(struct ubi_volume_info *vi)
+ {
+ 	struct ubiblock *dev;
+@@ -365,14 +365,15 @@ int ubiblock_create(struct ubi_volume_info *vi)
+ 	/* Check that the volume isn't already handled */
+ 	mutex_lock(&devices_mutex);
+ 	if (find_dev_nolock(vi->ubi_num, vi->vol_id)) {
+-		mutex_unlock(&devices_mutex);
+-		return -EEXIST;
++		ret = -EEXIST;
++		goto out_unlock;
+ 	}
+-	mutex_unlock(&devices_mutex);
+ 
+ 	dev = kzalloc(sizeof(struct ubiblock), GFP_KERNEL);
+-	if (!dev)
+-		return -ENOMEM;
++	if (!dev) {
++		ret = -ENOMEM;
++		goto out_unlock;
++	}
+ 
+ 	mutex_init(&dev->dev_mutex);
+ 
+@@ -437,14 +438,13 @@ int ubiblock_create(struct ubi_volume_info *vi)
+ 		goto out_free_queue;
+ 	}
+ 
+-	mutex_lock(&devices_mutex);
+ 	list_add_tail(&dev->list, &ubiblock_devices);
+-	mutex_unlock(&devices_mutex);
+ 
+ 	/* Must be the last step: anyone can call file ops from now on */
+ 	add_disk(dev->gd);
+ 	dev_info(disk_to_dev(dev->gd), "created from ubi%d:%d(%s)",
+ 		 dev->ubi_num, dev->vol_id, vi->name);
++	mutex_unlock(&devices_mutex);
+ 	return 0;
+ 
+ out_free_queue:
+@@ -457,6 +457,8 @@ int ubiblock_create(struct ubi_volume_info *vi)
+ 	put_disk(dev->gd);
+ out_free_dev:
+ 	kfree(dev);
++out_unlock:
++	mutex_unlock(&devices_mutex);
+ 
+ 	return ret;
+ }
+@@ -478,30 +480,36 @@ static void ubiblock_cleanup(struct ubiblock *dev)
+ int ubiblock_remove(struct ubi_volume_info *vi)
+ {
+ 	struct ubiblock *dev;
++	int ret;
+ 
+ 	mutex_lock(&devices_mutex);
+ 	dev = find_dev_nolock(vi->ubi_num, vi->vol_id);
+ 	if (!dev) {
+-		mutex_unlock(&devices_mutex);
+-		return -ENODEV;
++		ret = -ENODEV;
++		goto out_unlock;
+ 	}
+ 
+ 	/* Found a device, let's lock it so we can check if it's busy */
+ 	mutex_lock(&dev->dev_mutex);
+ 	if (dev->refcnt > 0) {
+-		mutex_unlock(&dev->dev_mutex);
+-		mutex_unlock(&devices_mutex);
+-		return -EBUSY;
++		ret = -EBUSY;
++		goto out_unlock_dev;
+ 	}
+ 
+ 	/* Remove from device list */
+ 	list_del(&dev->list);
+-	mutex_unlock(&devices_mutex);
+-
+ 	ubiblock_cleanup(dev);
+ 	mutex_unlock(&dev->dev_mutex);
++	mutex_unlock(&devices_mutex);
++
+ 	kfree(dev);
+ 	return 0;
++
++out_unlock_dev:
++	mutex_unlock(&dev->dev_mutex);
++out_unlock:
++	mutex_unlock(&devices_mutex);
++	return ret;
+ }
+ 
+ static int ubiblock_resize(struct ubi_volume_info *vi)
+@@ -630,6 +638,7 @@ static void ubiblock_remove_all(void)
+ 	struct ubiblock *next;
+ 	struct ubiblock *dev;
+ 
++	mutex_lock(&devices_mutex);
+ 	list_for_each_entry_safe(dev, next, &ubiblock_devices, list) {
+ 		/* The module is being forcefully removed */
+ 		WARN_ON(dev->desc);
+@@ -638,6 +647,7 @@ static void ubiblock_remove_all(void)
+ 		ubiblock_cleanup(dev);
+ 		kfree(dev);
+ 	}
++	mutex_unlock(&devices_mutex);
+ }
+ 
+ int __init ubiblock_init(void)
+-- 
+1.9.3
