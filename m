@@ -1,20 +1,15 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1ecAuu-00033O-Rn
- for linux-mtd@lists.infradead.org; Thu, 18 Jan 2018 14:11:48 +0000
-Date: Thu, 18 Jan 2018 15:11:32 +0100
+ id 1ecB5y-0001kE-C1
+ for linux-mtd@lists.infradead.org; Thu, 18 Jan 2018 14:23:12 +0000
+Date: Thu, 18 Jan 2018 15:22:53 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Wei Yongjun <weiyongjun1@huawei.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
-Subject: Re: [PATCH -next] mtd: ubi: wl: Fix error return code in ubi_wl_init()
-Message-ID: <20180118151132.255e0173@bbrezillon>
-In-Reply-To: <20180118150801.714ecc34@bbrezillon>
-References: <1516284305-82544-1-git-send-email-weiyongjun1@huawei.com>
- <20180118150801.714ecc34@bbrezillon>
+To: Fabio Estevam <fabio.estevam@nxp.com>
+Cc: han.xu@nxp.com, linux-mtd@lists.infradead.org, david.wolfe@nxp.com
+Subject: Re: [PATCH v5 1/2] mtd: fsl-quadspi: Distinguish the mtd device names
+Message-ID: <20180118152253.266c6b30@bbrezillon>
+In-Reply-To: <1516211448-27594-1-git-send-email-fabio.estevam@nxp.com>
+References: <1516211448-27594-1-git-send-email-fabio.estevam@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,65 +22,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 18 Jan 2018 15:08:01 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+On Wed, 17 Jan 2018 15:50:47 -0200
+Fabio Estevam <fabio.estevam@nxp.com> wrote:
 
-> On Thu, 18 Jan 2018 14:05:05 +0000
-> Wei Yongjun <weiyongjun1@huawei.com> wrote:
+> Currently on a imx6sx-sdb board, which has two SPI NOR chips connected
+> to QSPI2 the following output from /proc/mtd is seen:
 > 
-> > Fix to return error code -ENOMEM from the kmem_cache_alloc() error
-> > handling case instead of 0, as done elsewhere in this function.  
+> # cat /proc/mtd 
+> dev:    size   erasesize  name
+> mtd0: 01000000 00010000 "21e4000.qspi"
+> mtd1: 01000000 00010000 "21e4000.qspi"
 > 
-> I guess you've used a static analysis code to detect this problem, can
-> you name it in the commit message, and paste the error/warning message
-> it reported next time you submit this kind of patch.
+> Attempts to partition them on the kernel command line result in both
+> chips with identical (and identically named) partitions, which is
+> an inconvenient behavior.
 > 
-> > 
-> > Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>  
+> Assign a different mtd->name for each mtd device to avoid this problem.
 > 
-> NAck. I you read the code you'll see that err is initialized to -ENOMEM
-> here [1], so these changes are actually not needed.
+> After this change the output from /proc/mtd becomes:
+> 
+> # cat /proc/mtd 
+> dev:    size   erasesize  name
+> mtd0: 01000000 00010000 "21e4000.qspi-0"
+> mtd1: 01000000 00010000 "21e4000.qspi-1"
+> 
+> In order to keep mtdparts compatibility keep the mtd->name
+> unchanged when a single SPI NOR is present.
+> 
+> Reported-by: David Wolfe <david.wolfe@nxp.com>
+> Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+> ---
+> Changes since v4:
+> - Only use the new name scheme when more than one SPI NOR is present (Boris)
 
-Sorry, just realized I was wrong. It seems that err can be overridden by
-[2]. So this patch is indeed fixing a real problem.
+Not a perfect solution, but at least we don't break existing setups.
+
+> 
+>  drivers/mtd/spi-nor/fsl-quadspi.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+> index 2901c7b..1038842 100644
+> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+> @@ -1051,6 +1051,24 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+>  		spi_nor_set_flash_node(nor, np);
+>  		nor->priv = q;
+>  
+> +		if (q->nor_num > 1) {
+
+You need to preserve the label value, if any:
+
+		if (q->nor_num > 1 && !mtd->name) {
+
+With that fixed
 
 Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-> 
-> > ---
-> >  drivers/mtd/ubi/wl.c | 8 ++++++--
-> >  1 file changed, 6 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-> > index 77ab49f..2052a64 100644
-> > --- a/drivers/mtd/ubi/wl.c
-> > +++ b/drivers/mtd/ubi/wl.c
-> > @@ -1617,8 +1617,10 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
-> >  		cond_resched();
-> >  
-> >  		e = kmem_cache_alloc(ubi_wl_entry_slab, GFP_KERNEL);
-> > -		if (!e)
-> > +		if (!e) {
-> > +			err = -ENOMEM;
-> >  			goto out_free;
-> > +		}
-> >  
-> >  		e->pnum = aeb->pnum;
-> >  		e->ec = aeb->ec;
-> > @@ -1637,8 +1639,10 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
-> >  			cond_resched();
-> >  
-> >  			e = kmem_cache_alloc(ubi_wl_entry_slab, GFP_KERNEL);
-> > -			if (!e)
-> > +			if (!e) {
-> > +				err = -ENOMEM;
-> >  				goto out_free;
-> > +			}
-> >  
-> >  			e->pnum = aeb->pnum;
-> >  			e->ec = aeb->ec;
-> >   
-> 
-> [1]https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/drivers/mtd/ubi/wl.c?h=next-20180118#n1596
-
-[2]https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/drivers/mtd/ubi/wl.c?h=next-20180118#n1609
+> +			int spiflash_idx;
+> +
+> +			ret = of_property_read_u32(np, "reg", &spiflash_idx);
+> +			if (!ret) {
+> +				mtd->name = devm_kasprintf(dev, GFP_KERNEL,
+> +							   "%s-%d",
+> +							   dev_name(dev),
+> +							   spiflash_idx);
+> +				if (!mtd->name) {
+> +					ret = -ENOMEM;
+> +					goto mutex_failed;
+> +				}
+> +			} else {
+> +				dev_warn(dev, "reg property is missing\n");
+> +			}
+> +		}
+> +
+>  		/* fill the hooks */
+>  		nor->read_reg = fsl_qspi_read_reg;
+>  		nor->write_reg = fsl_qspi_write_reg;
