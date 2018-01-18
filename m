@@ -1,25 +1,23 @@
-Received: from mail-io0-x22e.google.com ([2607:f8b0:4001:c06::22e])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ebxOL-0007Yw-9u
- for linux-mtd@lists.infradead.org; Wed, 17 Jan 2018 23:45:15 +0000
-Received: by mail-io0-x22e.google.com with SMTP id f6so22827889ioh.8
- for <linux-mtd@lists.infradead.org>; Wed, 17 Jan 2018 15:45:02 -0800 (PST)
-Date: Wed, 17 Jan 2018 15:44:58 -0800
-From: Eric Biggers <ebiggers3@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-fscrypt@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
- linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [PATCH v2 0/5] ubifs: switch to new fscrypt helper functions
-Message-ID: <20180117234458.iw37mht6jtp5gdwn@gmail.com>
-References: <20171129204317.91205-1-ebiggers3@gmail.com>
- <CAFLxGvzGeMkm_1HhcFDe4twTGsVHaXvjoM6GezxtCNW+NZw84Q@mail.gmail.com>
- <20180117212354.xrsog7pekzoomq7p@gmail.com>
- <6120539.HEfP5UEqVm@blindfold>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1ec4R0-0001rQ-1x
+ for linux-mtd@lists.infradead.org; Thu, 18 Jan 2018 07:16:28 +0000
+Date: Thu, 18 Jan 2018 08:16:10 +0100
+From: Miquel Raynal <miquel.raynal@free-electrons.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: linux-mtd@lists.infradead.org, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, kernel@pengutronix.de, Richard
+ Weinberger <richard@nod.at>
+Subject: Re: [PATCH 6/8] mtd: nand: mxc: Add own write_page
+Message-ID: <20180118081610.32937f54@xps13>
+In-Reply-To: <20180117104009.geal4fs6eykqai3a@pengutronix.de>
+References: <20180109101148.13728-1-s.hauer@pengutronix.de>
+ <20180109101148.13728-7-s.hauer@pengutronix.de>
+ <20180113172551.5dab8a7c@xps13>
+ <20180117104009.geal4fs6eykqai3a@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6120539.HEfP5UEqVm@blindfold>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,65 +27,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 17, 2018 at 10:36:12PM +0100, Richard Weinberger wrote:
-> Am Mittwoch, 17. Januar 2018, 22:23:54 CET schrieb Eric Biggers:
-> > On Wed, Jan 17, 2018 at 10:12:27PM +0100, Richard Weinberger wrote:
-> > > On Fri, Jan 5, 2018 at 11:11 PM, Richard Weinberger <richard@nod.at> 
-> wrote:
-> > > > Eric,
-> > > > 
-> > > > Am Freitag, 5. Januar 2018, 19:37:44 CET schrieb Eric Biggers:
-> > > >> On Wed, Nov 29, 2017 at 12:43:12PM -0800, Eric Biggers wrote:
-> > > >> > From: Eric Biggers <ebiggers@google.com>
-> > > >> > 
-> > > >> > This series switches ubifs to use the fscrypt helper functions for
-> > > >> > open/link/rename/lookup/setattr introduced in v4.15.
-> > > >> > 
-> > > >> > These patches were originally sent in "[PATCH 00/25] fscrypt: add
-> > > >> > some
-> > > >> > higher-level helper functions".  I've rebased them onto v4.15-rc1.
-> > > >> > 
-> > > >> > Eric Biggers (5):
-> > > >> >   ubifs: switch to fscrypt_file_open()
-> > > >> >   ubifs: switch to fscrypt_prepare_link()
-> > > >> >   ubifs: switch to fscrypt_prepare_rename()
-> > > >> >   ubifs: switch to fscrypt_prepare_lookup()
-> > > >> >   ubifs: switch to fscrypt_prepare_setattr()
-> > > >> >  
-> > > >> >  fs/ubifs/dir.c  | 43 +++++++++++++------------------------------
-> > > >> >  fs/ubifs/file.c | 41 ++++-------------------------------------
-> > > >> >  2 files changed, 17 insertions(+), 67 deletions(-)
-> > > >> 
-> > > >> Richard, can you take these for UBIFS for v4.16?
-> > > > 
-> > > > Yes. Thanks a lot for cleaning this up.
-> > > 
-> > > FYI, this series has merge conflicts with other fscrypt related
-> > > changes that went via Ted into fs/ubifs.
-> > 
-> > How so?  These apply cleanly to both Linus' tree and to fscrypt/master
-> > currently.
-> 
-> Just checked, the problem is this commit:
-> 
-> commit 9a2cebc6e2368072490a574eafe0f0747d330bbd
-> Author: Eric Biggers <ebiggers@google.com>
-> Date:   Fri Jan 5 11:30:03 2018 -0800
-> 
->     ubifs: free the encrypted symlink target
-> 
-> It exists also in my tree. I'll drop it and force push.
-> Sorry for messing up, next time I try hard to be more responsive.
-> 
-> Thanks,
-> //richard
-> 
+Hi Sascha,
 
-Ah yes, sorry for the confusion.  The original plan was to just take the initial
-patches in the "fscrypt: symlink helpers and fscrypt.h cleanup" series, but we
-decided to take the fs-specific patches through the fscrypt tree too, since the
-only merge conflict was a "trivial" one in f2fs_symlink(), and it otherwise
-would have taken a long time to get all those patches as well as the follow-on
-fscrypt patches applied.
+On Wed, 17 Jan 2018 11:40:09 +0100
+Sascha Hauer <s.hauer@pengutronix.de> wrote:
 
-Eric
+> Hi Miquel,
+>=20
+> On Sat, Jan 13, 2018 at 05:25:51PM +0100, Miquel Raynal wrote:
+> > Hi Sascha,
+> >=20
+> > On Tue,  9 Jan 2018 11:11:46 +0100
+> > Sascha Hauer <s.hauer@pengutronix.de> wrote:
+> >  =20
+> > > Now that we have our own read_page function add a write_page
+> > > function for consistency aswell. This can be a lot easier than
+> > > the generic function since we do not have to iterate over
+> > > subpages but can write the whole page at once. Also add
+> > > write_page_raw and write_oob for proper raw and oob write support.
+> > >=20
+> > > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> > > ---
+> > >  drivers/mtd/nand/mxc_nand.c | 56
+> > > +++++++++++++++++++++++++++++++++++++++++++++ 1 file changed, 56
+> > > insertions(+)
+> > >=20
+> > > diff --git a/drivers/mtd/nand/mxc_nand.c
+> > > b/drivers/mtd/nand/mxc_nand.c index 83bb01ab7079..6fbf98851a96
+> > > 100644 --- a/drivers/mtd/nand/mxc_nand.c
+> > > +++ b/drivers/mtd/nand/mxc_nand.c
+> > > @@ -893,6 +893,59 @@ static int mxc_nand_read_oob(struct mtd_info
+> > > *mtd, struct nand_chip *chip, page);
+> > >  }
+> > > =20
+> > > +static int __mxc_nand_write_page(struct mtd_info *mtd, struct
+> > > nand_chip *chip,
+> > > +				 const uint8_t *buf, int
+> > > oob_required, int page) +{
+> > > +	struct mxc_nand_host *host =3D
+> > > nand_get_controller_data(chip); +
+> > > +	host->devtype_data->send_cmd(host, NAND_CMD_SEQIN,
+> > > false);
+> > > +	mxc_do_addr_cycle(mtd, 0, page);
+> > > +
+> > > +	memcpy32_toio(host->main_area0, buf, mtd->writesize);
+> > > +	copy_spare(mtd, false, chip->oob_poi); =20
+> >=20
+> > If I remember correctly, there was a "spare only" mechanism to avoid
+> > doing full page read/write when unnecessary. What about using it
+> > here when (buf =3D=3D NULL && oob_required)? =20
+>=20
+> You are probably referring to the SP_EN bit in the NAND_FLASH_CONFIG1
+> register right? This is described as:
+>=20
+> > NAND Flash spare enable. This bit determines whether host
+> > reads/writes are to NAND Flash spare data only or NAND Flash main
+> > and spare data. This feature is supported only with memories with
+> > 1/2K page size. Note: There is no ECC in this mode of operation.
+> > 0 NAND Flash main and spare data is enabled
+> > 1 NAND Flash spare only data is enabled =20
+>=20
+> At least the i.MX25 has the limitation of 1/2k page size for this
+> feature. It's not in the i.MX27 manual. I don't know if the i.MX27
+> documentation is inaccurate or if this limitation is there already.
+
+Ok, I ignored this limitation on i.MX25. Better write generic code
+then.
+
+>=20
+> Anyway, I don't think it's worth optimizing for this case given that
+> we still need to support a full page write for 2k pages (which should
+> be much more widespread nowadays than the 512b page size NANDs).
+
+Sure!
+
+Thanks,
+Miqu=C3=A8l
