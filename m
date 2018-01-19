@@ -1,6 +1,6 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1ecXCw-00013o-AJ
+ id 1ecXCw-00013l-AH
  for linux-mtd@lists.infradead.org; Fri, 19 Jan 2018 13:59:52 +0000
 From: Miquel Raynal <miquel.raynal@free-electrons.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -10,12 +10,12 @@ To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
 Cc: linux-mtd@lists.infradead.org, Han Xu <han.xu@nxp.com>,
  Miquel Raynal <miquel.raynal@free-electrons.com>
-Subject: [PATCH v3 0/2] Migrate the GPMI driver to use NAND core timings
-Date: Fri, 19 Jan 2018 14:58:53 +0100
-Message-Id: <20180119135855.10673-1-miquel.raynal@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH v3 1/2] mtd: nand: Check ONFI timings have been acked by the
+ chip
+Date: Fri, 19 Jan 2018 14:58:54 +0100
+Message-Id: <20180119135855.10673-2-miquel.raynal@free-electrons.com>
+In-Reply-To: <20180119135855.10673-1-miquel.raynal@free-electrons.com>
+References: <20180119135855.10673-1-miquel.raynal@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,62 +25,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Choosing ONFI timings when ->onfi_set/get_features() calls are supported
+by the NAND chip is a matter of reading the chip's ONFI parameter page
+and telling the chip the chosen mode (between all of the supported ones)
+with ->onfi_set_feature().
 
-The GPMI NAND controller driver has its own timings logic while the core
-also has its own that should be preferred to avoid code duplication.
-This series migrates the driver to use the ->setup_data_interface()
-hook, preferred way to handle timings negotiation between controllers
-and NAND chips.
+Add a check on whether the chip "acked" the timing mode or not.
 
-This driver has stronger requirements in terms of respect of the ONFI
-specification than the core has, and last time I post changes to this
-section this was raised to me. Hence, the first patch effectively
-applies the same requirements to the core. Doing this can slow down
-several chips that do not follow entirely the specifications, but
-another series is coming to add the possibility for NAND vendors to
-flag certain features as "unsupported". See
+This can be a problem for NAND chips that do not follow entirely the
+ONFI specification. These chips actually support other modes than
+"mode 0", but do not update the parameter page once a timing mode has
+been selected. This issue will be addressed in another patch that will
+add the feature to overwrite NAND chips features within the parameter
+page, from the NAND chip driver.
 
-    "mtd: nand: Check ONFI timings have been acked by the chip"
+Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+---
+ drivers/mtd/nand/nand_base.c | 41 ++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 34 insertions(+), 7 deletions(-)
 
-commit log for more details.
-
-Thank you,
-Miquèl
-
-
-Changes since v2:
-=================
-  - Fix ->select_chip(): chipnr == 0 is valid.
-  - Fix ->select_chip(): hw.must_apply_timings must be reset after a
-    ->setup_data_interface().
-
-Changes since v1:
-=================
-  - Removed inline on non-static gpmi_enable/disable_clk() functions.
-  - Rewording some lines of the patch.
-  - Use tREA_max value provided by the core instead of a locally defined
-    value.
-  - Check ->conf in gpmi_setup_data_interface() instead of
-    ->onfi_timing_mode_default (use tRC).
-  - Removed useless copy of hw.timing_mode.
-  - Moved gpmi_nfc_apply_timings() to ->select_chip().
-  - Canceled the useless move of one structure.
-
-One comment is not addressed here: using one register for TIMING0/1 and
-CTRL1 that is only written in ->apply_timings(). This will be done in a
-later patch that will update the way timings are derived.
-
-
-Miquel Raynal (2):
-  mtd: nand: Check ONFI timings have been acked by the chip
-  mtd: nand: gpmi: Support ->setup_data_interface()
-
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c  | 277 ++++++++++-----------------------
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |  42 +++--
- drivers/mtd/nand/gpmi-nand/gpmi-nand.h |  82 +++++-----
- drivers/mtd/nand/nand_base.c           |  42 ++++-
- 4 files changed, 185 insertions(+), 258 deletions(-)
-
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 96c97588e1ba..e209a65a17e0 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1231,15 +1231,47 @@ static int nand_setup_data_interface(struct nand_chip *chip, int chipnr)
+ 			chip->onfi_timing_mode_default,
+ 		};
+ 
++		chip->select_chip(mtd, chipnr);
+ 		ret = chip->onfi_set_features(mtd, chip,
+ 				ONFI_FEATURE_ADDR_TIMING_MODE,
+ 				tmode_param);
++		chip->select_chip(mtd, -1);
+ 		if (ret)
+-			goto err;
++			return ret;
+ 	}
+ 
+ 	ret = chip->setup_data_interface(mtd, chipnr, &chip->data_interface);
+-err:
++	if (ret)
++		return ret;
++
++	if (chip->onfi_version &&
++	    (le16_to_cpu(chip->onfi_params.opt_cmd) &
++	     ONFI_OPT_CMD_SET_GET_FEATURES)) {
++		u8 tmode_param[ONFI_SUBFEATURE_PARAM_LEN] = {};
++
++		chip->select_chip(mtd, chipnr);
++		ret = chip->onfi_get_features(mtd, chip,
++					      ONFI_FEATURE_ADDR_TIMING_MODE,
++					      tmode_param);
++		chip->select_chip(mtd, -1);
++		if (ret)
++			goto err_reset_chip;
++
++		if (tmode_param[0] != chip->onfi_timing_mode_default) {
++			pr_warn("timings mode %d not acknowledged by the NAND chip\n",
++				chip->onfi_timing_mode_default);
++			goto err_reset_chip;
++		}
++	}
++
++	return 0;
++
++err_reset_chip:
++	onfi_fill_data_interface(chip, NAND_SDR_IFACE, 0);
++	chip->select_chip(mtd, chipnr);
++	nand_reset_op(chip);
++	chip->select_chip(mtd, -1);
++
+ 	return ret;
+ }
+ 
+@@ -2738,10 +2770,8 @@ int nand_reset(struct nand_chip *chip, int chipnr)
+ 	if (ret)
+ 		return ret;
+ 
+-	chip->select_chip(mtd, chipnr);
+ 	chip->data_interface = saved_data_intf;
+ 	ret = nand_setup_data_interface(chip, chipnr);
+-	chip->select_chip(mtd, -1);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -6571,10 +6601,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 
+ 	/* Enter fastest possible mode on all dies. */
+ 	for (i = 0; i < chip->numchips; i++) {
+-		chip->select_chip(mtd, i);
+ 		ret = nand_setup_data_interface(chip, i);
+-		chip->select_chip(mtd, -1);
+-
+ 		if (ret)
+ 			goto err_nand_manuf_cleanup;
+ 	}
 -- 
 2.11.0
