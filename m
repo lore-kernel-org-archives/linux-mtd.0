@@ -1,22 +1,17 @@
-Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193])
+Received: from mail.linuxfoundation.org ([140.211.169.12])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ecHeq-0007qZ-Oo
- for linux-mtd@lists.infradead.org; Thu, 18 Jan 2018 21:23:38 +0000
-Date: Thu, 18 Jan 2018 22:23:23 +0100
-From: Pavel Machek <pavel@ucw.cz>
-To: Richard Weinberger <richard@nod.at>
-Cc: kernel list <linux-kernel@vger.kernel.org>, dedekind1@gmail.com,
- adrian.hunter@intel.com, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org
-Subject: Re: ubifs: noatime support?
-Message-ID: <20180118212323.GA17412@amd>
-References: <20180118193015.GA24748@amd>
- <1996634.ggXeMYieCh@blindfold>
+ id 1ecKZs-00044R-Hy
+ for linux-mtd@lists.infradead.org; Fri, 19 Jan 2018 00:30:42 +0000
+Date: Thu, 18 Jan 2018 16:30:18 -0800
+From: akpm@linux-foundation.org
+To: boris.brezillon@free-electrons.com, linux-mtd@lists.infradead.org,
+ akpm@linux-foundation.org, miquel.raynal@free-electrons.com,
+ richard@nod.at, sean.nyekjaer@prevas.dk, w@1wt.eu
+Subject: [patch 1/1] include/linux/mtd/rawnand.h: fix build with gcc-4.4.4
+Message-ID: <5a613c1a.p+Q5+DVAaEi8ctNz%akpm@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="9amGYk9869ThD9tj"
-Content-Disposition: inline
-In-Reply-To: <1996634.ggXeMYieCh@blindfold>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,57 +21,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: include/linux/mtd/rawnand.h: fix build with gcc-4.4.4
 
---9amGYk9869ThD9tj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+gcc-4.4.4 has issues with anon union initializers.  Work aound this.
 
-On Thu 2018-01-18 21:44:33, Richard Weinberger wrote:
-> Pavel,
->=20
-> Am Donnerstag, 18. Januar 2018, 20:30:15 CET schrieb Pavel Machek:
-> > Hi!
-> >=20
-> > Ubifs seems to have atime support these days:
-> >=20
-> >           sb->s_flags |=3D SB_ACTIVE;
-> > #ifndef CONFIG_UBIFS_ATIME_SUPPORT
-> >           sb->s_flags |=3D SB_NOATIME;
-> > #else
-> >           ubifs_msg(c, "full atime support is enabled.");
-> > #endif
-> >=20
-> > Which can be configured at compile-time, but no option to disable it
-> > at runtime. What is going on there?
-> >=20
-> > UBIFS: parse noatime
-> > UBIFS error (ubi1:0 pid 94): ubifs_parse_options.constprop.5:
-> > unrecognized mount option "noatime" e
-> > mount: mounting ubi1:log_volume on /mnt/log failed: Invalid argument
->=20
-> Filesystems don't parse the "noatime" string, it is job of the mount tool=
- to=20
-> translate it to the MS_NOATIME mount flag.
+drivers/mtd/nand/marvell_nand.c:1936: warning: missing braces around initializer
+drivers/mtd/nand/marvell_nand.c:1936: warning: (near initialization for '(anonymous)[1].<anonymous>')
+drivers/mtd/nand/marvell_nand.c:1936: error: unknown field 'data' specified in initializer
+drivers/mtd/nand/marvell_nand.c:1936: error: unknown field 'addr' specified in initializer
+drivers/mtd/nand/marvell_nand.c:1936: warning: missing braces around initializer
+drivers/mtd/nand/marvell_nand.c:1936: warning: (near initialization for '(anonymous)[1].<anonymous>')
+drivers/mtd/nand/marvell_nand.c:1936: error: unknown field 'data' specified in initializer
+drivers/mtd/nand/marvell_nand.c:1936: error: unknown field 'addr' specified in i
 
-Ahha. I was using busybox version of mount. I guess I should check its
-config. Thanks!
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
+Fixes: 02f26ecf8c77275 ("mtd: nand: add reworked Marvell NAND controller driver")
+Cc: Miquel Raynal <miquel.raynal@free-electrons.com>
+Cc: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
+Cc: Willy Tarreau <w@1wt.eu>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
 
---9amGYk9869ThD9tj
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+ include/linux/mtd/rawnand.h |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlphEEsACgkQMOfwapXb+vKsRwCgq9PPhfP8UWnShfZIojPLNrTL
-pLUAoLOUMscU2cNDmmnYpFrpE7ai8Kpu
-=5DSq
------END PGP SIGNATURE-----
-
---9amGYk9869ThD9tj--
+diff -puN include/linux/mtd/rawnand.h~include-linux-mtd-rawnandh-fix-build-with-gcc-444 include/linux/mtd/rawnand.h
+--- a/include/linux/mtd/rawnand.h~include-linux-mtd-rawnandh-fix-build-with-gcc-444
++++ a/include/linux/mtd/rawnand.h
+@@ -975,21 +975,21 @@ struct nand_op_parser_pattern_elem {
+ 	{							\
+ 		.type = NAND_OP_ADDR_INSTR,			\
+ 		.optional = _opt,				\
+-		.addr.maxcycles = _maxcycles,			\
++		{ .addr = { .maxcycles = _maxcycles }, },	\
+ 	}
+ 
+ #define NAND_OP_PARSER_PAT_DATA_IN_ELEM(_opt, _maxlen)		\
+ 	{							\
+ 		.type = NAND_OP_DATA_IN_INSTR,			\
+ 		.optional = _opt,				\
+-		.data.maxlen = _maxlen,				\
++		{ .data = { .maxlen = _maxlen, }, },		\
+ 	}
+ 
+ #define NAND_OP_PARSER_PAT_DATA_OUT_ELEM(_opt, _maxlen)		\
+ 	{							\
+ 		.type = NAND_OP_DATA_OUT_INSTR,			\
+ 		.optional = _opt,				\
+-		.data.maxlen = _maxlen,				\
++		{ .data = { .maxlen = _maxlen, }, },		\
+ 	}
+ 
+ #define NAND_OP_PARSER_PAT_WAITRDY_ELEM(_opt)			\
+_
