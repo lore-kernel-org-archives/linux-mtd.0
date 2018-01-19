@@ -1,17 +1,24 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ecKZs-00044R-Hy
- for linux-mtd@lists.infradead.org; Fri, 19 Jan 2018 00:30:42 +0000
-Date: Thu, 18 Jan 2018 16:30:18 -0800
-From: akpm@linux-foundation.org
-To: boris.brezillon@free-electrons.com, linux-mtd@lists.infradead.org,
- akpm@linux-foundation.org, miquel.raynal@free-electrons.com,
- richard@nod.at, sean.nyekjaer@prevas.dk, w@1wt.eu
-Subject: [patch 1/1] include/linux/mtd/rawnand.h: fix build with gcc-4.4.4
-Message-ID: <5a613c1a.p+Q5+DVAaEi8ctNz%akpm@linux-foundation.org>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1ecRHT-00036X-N5
+ for linux-mtd@lists.infradead.org; Fri, 19 Jan 2018 07:40:09 +0000
+Date: Fri, 19 Jan 2018 08:39:52 +0100
+From: Miquel Raynal <miquel.raynal@free-electrons.com>
+To: walter harms <wharms@bfs.de>
+Cc: kernel-janitors@vger.kernel.org, Colin King <colin.king@canonical.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH][next] mtd: nand: fix spelling mistake: "suceed"->
+ "succeed"
+Message-ID: <20180119083952.23c4baeb@xps13>
+In-Reply-To: <5A5DDCA0.1000908@bfs.de>
+References: <20180116102808.23232-1-colin.king@canonical.com>
+ <5A5DDCA0.1000908@bfs.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,58 +28,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: include/linux/mtd/rawnand.h: fix build with gcc-4.4.4
+Hello,
 
-gcc-4.4.4 has issues with anon union initializers.  Work aound this.
+Can you please change the prefix, it should be:
 
-drivers/mtd/nand/marvell_nand.c:1936: warning: missing braces around initializer
-drivers/mtd/nand/marvell_nand.c:1936: warning: (near initialization for '(anonymous)[1].<anonymous>')
-drivers/mtd/nand/marvell_nand.c:1936: error: unknown field 'data' specified in initializer
-drivers/mtd/nand/marvell_nand.c:1936: error: unknown field 'addr' specified in initializer
-drivers/mtd/nand/marvell_nand.c:1936: warning: missing braces around initializer
-drivers/mtd/nand/marvell_nand.c:1936: warning: (near initialization for '(anonymous)[1].<anonymous>')
-drivers/mtd/nand/marvell_nand.c:1936: error: unknown field 'data' specified in initializer
-drivers/mtd/nand/marvell_nand.c:1936: error: unknown field 'addr' specified in i
+mtd: nand: marvell:
 
-Fixes: 02f26ecf8c77275 ("mtd: nand: add reworked Marvell NAND controller driver")
-Cc: Miquel Raynal <miquel.raynal@free-electrons.com>
-Cc: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
-Cc: Willy Tarreau <w@1wt.eu>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
----
+On Tue, 16 Jan
+2018 12:06:08 +0100 walter harms <wharms@bfs.de> wrote:
 
- include/linux/mtd/rawnand.h |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> Am 16.01.2018 11:28, schrieb Colin King:
+> > From: Colin Ian King <colin.king@canonical.com>
+> >=20
+> > Trivial fix to spelling mistakes in dev_err error message text.
+> >=20
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> > ---
+> >  drivers/mtd/nand/marvell_nand.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >=20
+> > diff --git a/drivers/mtd/nand/marvell_nand.c
+> > b/drivers/mtd/nand/marvell_nand.c index b8fec6093b75..4bd53b360277
+> > 100644 --- a/drivers/mtd/nand/marvell_nand.c
+> > +++ b/drivers/mtd/nand/marvell_nand.c
+> > @@ -517,7 +517,7 @@ static int marvell_nfc_prepare_cmd(struct
+> > nand_chip *chip) /* Poll ND_RUN and clear NDSR before issuing any
+> > command */ ret =3D marvell_nfc_wait_ndrun(chip);
+> >  	if (ret) {
+> > -		dev_err(nfc->dev, "Last operation did not
+> > suceed\n");
+> > +		dev_err(nfc->dev, "Last operation did not
+> > succeed\n"); return ret;
+> >  	}
+> >   =20
+>=20
+> not succeed =3D=3D Failed ??
 
-diff -puN include/linux/mtd/rawnand.h~include-linux-mtd-rawnandh-fix-build-with-gcc-444 include/linux/mtd/rawnand.h
---- a/include/linux/mtd/rawnand.h~include-linux-mtd-rawnandh-fix-build-with-gcc-444
-+++ a/include/linux/mtd/rawnand.h
-@@ -975,21 +975,21 @@ struct nand_op_parser_pattern_elem {
- 	{							\
- 		.type = NAND_OP_ADDR_INSTR,			\
- 		.optional = _opt,				\
--		.addr.maxcycles = _maxcycles,			\
-+		{ .addr = { .maxcycles = _maxcycles }, },	\
- 	}
- 
- #define NAND_OP_PARSER_PAT_DATA_IN_ELEM(_opt, _maxlen)		\
- 	{							\
- 		.type = NAND_OP_DATA_IN_INSTR,			\
- 		.optional = _opt,				\
--		.data.maxlen = _maxlen,				\
-+		{ .data = { .maxlen = _maxlen, }, },		\
- 	}
- 
- #define NAND_OP_PARSER_PAT_DATA_OUT_ELEM(_opt, _maxlen)		\
- 	{							\
- 		.type = NAND_OP_DATA_OUT_INSTR,			\
- 		.optional = _opt,				\
--		.data.maxlen = _maxlen,				\
-+		{ .data = { .maxlen = _maxlen, }, },		\
- 	}
- 
- #define NAND_OP_PARSER_PAT_WAITRDY_ELEM(_opt)			\
-_
+I personally do not have a preference, as long as there is a clear
+error message in this case.
+
+> someone who is debugging may also interessted to know what operation
+> failed.
+
+It is not as easy to do, but starting from enabling dynamic debug in
+both the driver and the NAND core should give you enough traces to
+locate the issue.
+
+Thanks,
+Miqu=C3=A8l
