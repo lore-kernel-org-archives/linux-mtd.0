@@ -1,20 +1,21 @@
-Received: from mail-cys01nam02on0046.outbound.protection.outlook.com
- ([104.47.37.46] helo=NAM02-CY1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ecSOB-0003FA-74
- for linux-mtd@lists.infradead.org; Fri, 19 Jan 2018 08:51:10 +0000
-From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-To: <linux-mtd@lists.infradead.org>
-CC: <boris.brezillon@free-electrons.com>, <cyrille.pitchen@wedev4u.fr>,
- <computersforpeace@gmail.com>, <han.xu@nxp.com>, <festevam@gmail.com>,
- <prabhakar.kushwaha@nxp.com>, <suresh.gupta@nxp.com>, Yogesh Gaur
- <yogeshnarayan.gaur@nxp.com>
-Subject: [PATCH v4 0/2] mtd: fsl-quadspi: add support to create dynamic LUT
- entry
-Date: Fri, 19 Jan 2018 14:20:42 +0530
-Message-ID: <1516351844-9497-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1ecSx8-0002ck-W2
+ for linux-mtd@lists.infradead.org; Fri, 19 Jan 2018 09:27:34 +0000
+From: Miquel Raynal <miquel.raynal@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org, Han Xu <han.xu@nxp.com>,
+ Miquel Raynal <miquel.raynal@free-electrons.com>
+Subject: [PATCH v2 0/2] Migrate the GPMI driver to use NAND core timings
+Date: Fri, 19 Jan 2018 10:25:45 +0100
+Message-Id: <20180119092547.26873-1-miquel.raynal@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,58 +25,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-fsl-quadspi.c driver creates different LUT entries for various cmds like
-read, write, erase, readid etc. These entries are created statically when
-driver gets intiliazed.
+Hello,
 
-To support various cmds e.g. different read cmds like SPINOR_OP_READ,
-SPINOR_OP_READ_4B, SPINOR_OP_READ_FAST_4B, SPINOR_OP_READ_FAST,
-SPINOR_OP_READ_1_1_2, SPINOR_OP_READ_1_2_2 etc driver needs to
-have different LUT entries for different cmds.
+The GPMI NAND controller driver has its own timings logic while the core
+also has its own that should be preferred to avoid code duplication.
+This series migrates the driver to use the ->setup_data_interface()
+hook, preferred way to handle timings negotiation between controllers
+and NAND chips.
 
-FSL QUADSPI controller has 4 chip select and one can use different flashes
-on all different chip select.
-We analyzed that the flashes have different parameters for the same command
-and this is true for NAND devices.
-Also reg_protocol information, needed for read register, read any register
-commands, read SFDP register, not available at time of spi_nor_scan.
-As FSL QUADSPI controller has limitation in number of LUT entries, max 16,
-thus require to have dynamic LUT creation support.
+This driver has stronger requirements in terms of respect of the ONFI
+specification than the core has, and last time I post changes to this
+section this was raised to me. Hence, the first patch effectively
+applies the same requirements to the core. Doing this can slow down
+several chips that do not follow entirely the specifications, but
+another series is coming to add the possibility for NAND vendors to
+flag certain features as "unsupported". See
 
-Thus to have support for different flash devices, this patch-set adds
-support to create LUT entry in run-time based on the exact cmnd requested.
-Information like cmnd opcode, protocol info, dummy bit info etc required
-for creating LUT entries parsed from instance of passed 'struct spi_nor'.
+    "mtd: nand: Check ONFI timings have been acked by the chip"
 
-Also fix initialize sequence of AHB read, move
-fsl_qspi_init_ahb_read() in  fsl_qspi_nor_setup() function.
+commit log for more details.
 
-Tested with "S25FS512S" flash and have checked read, write, erase
-functionality using mtd_debug utility.
-For read have checked hwcaps as SNOR_HWCAPS_READ_FAST,
-SNOR_HWCAPS_READ_1_2_2 and SNOR_HWCAPS_READ_1_4_4
-i.e. read cmds SPINOR_OP_READ_FAST_4B [0x0c],
-SPINOR_OP_READ_1_2_2_4B [0xbc] and SPINOR_OP_READ_1_4_4_4B [0xec]
+Thank you,
+Miquèl
 
-Yogesh Gaur (2):
-  mtd: fsl-quadspi: add support to create dynamic LUT entry
-  mtd: fsl-quadspi: fix init AHB read in  fsl_qspi_nor_setup()
 
-Changes for v4:
-- Drop patch
-'mtd: fsl-quadspi: update hwcaps read capabilities as READ_1_4_4', it
-would be taken care in next-series.
-- Added patch for 'fix initialize sequence of AHB read'.
+Changes since v1:
+=================
+  - Removed inline on non-static gpmi_enable/disable_clk() functions.
+  - Rewording some lines of the patch.
+  - Use tREA_max value provided by the core instead of a locally defined
+    value.
+  - Check ->conf in gpmi_setup_data_interface() instead of
+    ->onfi_timing_mode_default (use tRC).
+  - Removed useless copy of hw.timing_mode.
+  - Moved gpmi_nfc_apply_timings() to ->select_chip().
+  - Canceled the useless move of one structure.
 
-Changes for v3:
-- Add STOP instruction for prepared LUT and remove memset of 4 LUT reg.
-- Update information in cover letter.
+One comment is not addressed here: using one register for TIMING0/1 and
+CTRL1 that is only written in ->apply_timings(). This will be done in a
+later patch that will update the way timings are derived.
 
-Changes for v2:
-- Swap patch sequences in the series to solve git bissect issue.
 
- drivers/mtd/spi-nor/fsl-quadspi.c | 299 ++++++++++++++++++++------------------
- 1 file changed, 155 insertions(+), 144 deletions(-)
+Miquel Raynal (2):
+  mtd: nand: Check ONFI timings have been acked by the chip
+  mtd: nand: gpmi: Support ->setup_data_interface()
+
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c  | 275 +++++++++------------------------
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |  43 ++++--
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h |  82 +++++-----
+ drivers/mtd/nand/nand_base.c           |  41 ++++-
+ 4 files changed, 183 insertions(+), 258 deletions(-)
 
 -- 
-1.9.1
+2.11.0
