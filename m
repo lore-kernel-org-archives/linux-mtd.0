@@ -1,22 +1,21 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1ecTly-0004ZB-O9
- for linux-mtd@lists.infradead.org; Fri, 19 Jan 2018 10:19:48 +0000
-Date: Fri, 19 Jan 2018 11:19:24 +0100
+ id 1ecXCw-00013o-AJ
+ for linux-mtd@lists.infradead.org; Fri, 19 Jan 2018 13:59:52 +0000
 From: Miquel Raynal <miquel.raynal@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: linux-mtd@lists.infradead.org, Han Xu <han.xu@nxp.com>
-Subject: Re: [PATCH v2 2/2] mtd: nand: gpmi: Support ->setup_data_interface()
-Message-ID: <20180119111924.24b43b27@xps13>
-In-Reply-To: <20180119092547.26873-3-miquel.raynal@free-electrons.com>
-References: <20180119092547.26873-1-miquel.raynal@free-electrons.com>
- <20180119092547.26873-3-miquel.raynal@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org, Han Xu <han.xu@nxp.com>,
+ Miquel Raynal <miquel.raynal@free-electrons.com>
+Subject: [PATCH v3 0/2] Migrate the GPMI driver to use NAND core timings
+Date: Fri, 19 Jan 2018 14:58:53 +0100
+Message-Id: <20180119135855.10673-1-miquel.raynal@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,59 +27,60 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hello,
 
-On Fri, 19 Jan 2018 10:25:47 +0100
-Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
+The GPMI NAND controller driver has its own timings logic while the core
+also has its own that should be preferred to avoid code duplication.
+This series migrates the driver to use the ->setup_data_interface()
+hook, preferred way to handle timings negotiation between controllers
+and NAND chips.
 
-> Until now the GPMI driver had its own timings logic while the core
-> already handles that and request the NAND controller drivers to support
-> the ->setup_data_interface() hook. Implement that hook by reusing the
-> already existing function. No real glue is necessary between core timing
-> delays and GPMI registers because the driver already translates the
-> ONFI timing modes into register values.
->=20
-> Make use of the core's tREA, tRLOH and tRHOH values that allow computing
-> more precise timings for mode [0-3] and get significantly better values
-> (+20% with an i.MX6 Sabre Auto board). Otherwise use the existing logic.
->=20
-> Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
-> ---
->  drivers/mtd/nand/gpmi-nand/gpmi-lib.c  | 275 +++++++++------------------=
-------
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |  43 ++++--
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.h |  82 +++++-----
->  3 files changed, 149 insertions(+), 251 deletions(-)
->=20
+This driver has stronger requirements in terms of respect of the ONFI
+specification than the core has, and last time I post changes to this
+section this was raised to me. Hence, the first patch effectively
+applies the same requirements to the core. Doing this can slow down
+several chips that do not follow entirely the specifications, but
+another series is coming to add the possibility for NAND vendors to
+flag certain features as "unsupported". See
 
-[...]
+    "mtd: nand: Check ONFI timings have been acked by the chip"
 
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gp=
-mi-nand/gpmi-nand.c
-> index b51db8c85405..a3db75c27348 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -938,11 +938,32 @@ static void gpmi_select_chip(struct mtd_info *mtd, =
-int chipnr)
->  {
+commit log for more details.
 
-[...]
+Thank you,
+Miquèl
 
-> +	/*
-> +	 * This driver currently supports only one NAND chip. Plus, dies share
-> +	 * the same configuration. So once timings have been applied on the
-> +	 * controller side, they will not change anymore. When the time will
-> +	 * come, the check on must_apply_timings will have to be dropped.
-> +	 */
-> +	if (chipnr > 0 && this->hw.must_apply_timings) {
 
-I realized after sending that performances were actually bad, it is
-because this line is wrong twice: the chipnr may be 0, and
-hw.must_apply_timings must be reset after a ->setup_data_interface().
+Changes since v2:
+=================
+  - Fix ->select_chip(): chipnr == 0 is valid.
+  - Fix ->select_chip(): hw.must_apply_timings must be reset after a
+    ->setup_data_interface().
 
-> +		this->hw.must_apply_timings =3D false;
-> +		gpmi_nfc_apply_timings(this);
-> +	}
+Changes since v1:
+=================
+  - Removed inline on non-static gpmi_enable/disable_clk() functions.
+  - Rewording some lines of the patch.
+  - Use tREA_max value provided by the core instead of a locally defined
+    value.
+  - Check ->conf in gpmi_setup_data_interface() instead of
+    ->onfi_timing_mode_default (use tRC).
+  - Removed useless copy of hw.timing_mode.
+  - Moved gpmi_nfc_apply_timings() to ->select_chip().
+  - Canceled the useless move of one structure.
 
-I will send a v3, sorry for the noise.
+One comment is not addressed here: using one register for TIMING0/1 and
+CTRL1 that is only written in ->apply_timings(). This will be done in a
+later patch that will update the way timings are derived.
 
-Regards,
-Miqu=C3=A8l
+
+Miquel Raynal (2):
+  mtd: nand: Check ONFI timings have been acked by the chip
+  mtd: nand: gpmi: Support ->setup_data_interface()
+
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c  | 277 ++++++++++-----------------------
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |  42 +++--
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h |  82 +++++-----
+ drivers/mtd/nand/nand_base.c           |  42 ++++-
+ 4 files changed, 185 insertions(+), 258 deletions(-)
+
+-- 
+2.11.0
