@@ -1,19 +1,18 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1ecta0-0000fg-Bs
- for linux-mtd@lists.infradead.org; Sat, 20 Jan 2018 13:53:10 +0000
-Date: Sat, 20 Jan 2018 14:52:56 +0100
+ id 1ectdv-00043N-OG
+ for linux-mtd@lists.infradead.org; Sat, 20 Jan 2018 13:57:13 +0000
+Date: Sat, 20 Jan 2018 14:56:59 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Miquel Raynal <miquel.raynal@free-electrons.com>
 Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
  <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
  Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org, Andrew Morton
- <akpm@linux-foundation.org>
-Subject: Re: [PATCH] mtd: nand: Fix build issues due to an anonymous union
-Message-ID: <20180120145256.7f588751@bbrezillon>
-In-Reply-To: <20180119181127.10473-1-miquel.raynal@free-electrons.com>
-References: <20180119181127.10473-1-miquel.raynal@free-electrons.com>
+ <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: nand: marvell: Fix missing memory allocation modifier
+Message-ID: <20180120145659.7761e4ef@bbrezillon>
+In-Reply-To: <20180119173901.30430-1-miquel.raynal@free-electrons.com>
+References: <20180119173901.30430-1-miquel.raynal@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,22 +25,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 19 Jan 2018 19:11:27 +0100
+On Fri, 19 Jan 2018 18:39:01 +0100
 Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
 
-> GCC-4.4.4 raises errors when assigning a parameter in an anonymous
-> union, leading to this kind of failure:
+> The function marvell_nfc_init_dma() allocates a DMA buffer without the
+> GFP_KERNEL modifier, that triggers this warning:
+> "marvell_nfc_init_dma() error: no modifiers for allocation."
 > 
-> drivers/mtd/nand/marvell_nand.c:1936:
->     warning: missing braces around initializer
->     warning: (near initialization for '(anonymous)[1].<anonymous>')
->     error: unknown field 'data' specified in initializer
->     error: unknown field 'addr' specified in initializer
-> 
-> Work around the situation by naming these unions.
-> 
-> Reported-by: Andrew Morton <akpm@linux-foundation.org>
-> Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+> Fix this by using (GFP_KERNEL | GFP_DMA) instead of only GFP_DMA as the
+> probe happens in non-interrupt context.
 
 Applied.
 
@@ -49,87 +41,23 @@ Thanks,
 
 Boris
 
-> ---
->  drivers/mtd/nand/nand_base.c | 13 +++++++------
->  include/linux/mtd/rawnand.h  | 14 ++++++++++----
->  2 files changed, 17 insertions(+), 10 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index e4e39890a975..a3260e6207b8 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -2332,23 +2332,24 @@ nand_op_parser_must_split_instr(const struct nand_op_parser_pattern_elem *pat,
->  {
->  	switch (pat->type) {
->  	case NAND_OP_ADDR_INSTR:
-> -		if (!pat->addr.maxcycles)
-> +		if (!pat->ctx.addr.maxcycles)
->  			break;
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+> ---
+>  drivers/mtd/nand/marvell_nand.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/marvell_nand.c b/drivers/mtd/nand/marvell_nand.c
+> index 48d78ca0d71c..5f49c4e0e9e1 100644
+> --- a/drivers/mtd/nand/marvell_nand.c
+> +++ b/drivers/mtd/nand/marvell_nand.c
+> @@ -2670,7 +2670,7 @@ static int marvell_nfc_init_dma(struct marvell_nfc *nfc)
+>  	 * for DMA transfers and then copy the desired amount of data to
+>  	 * the provided buffer.
+>  	 */
+> -	nfc->dma_buf = kmalloc(MAX_CHUNK_SIZE, GFP_DMA);
+> +	nfc->dma_buf = kmalloc(MAX_CHUNK_SIZE, GFP_KERNEL | GFP_DMA);
+>  	if (!nfc->dma_buf)
+>  		return -ENOMEM;
 >  
->  		if (instr->ctx.addr.naddrs - *start_offset >
-> -		    pat->addr.maxcycles) {
-> -			*start_offset += pat->addr.maxcycles;
-> +		    pat->ctx.addr.maxcycles) {
-> +			*start_offset += pat->ctx.addr.maxcycles;
->  			return true;
->  		}
->  		break;
->  
->  	case NAND_OP_DATA_IN_INSTR:
->  	case NAND_OP_DATA_OUT_INSTR:
-> -		if (!pat->data.maxlen)
-> +		if (!pat->ctx.data.maxlen)
->  			break;
->  
-> -		if (instr->ctx.data.len - *start_offset > pat->data.maxlen) {
-> -			*start_offset += pat->data.maxlen;
-> +		if (instr->ctx.data.len - *start_offset >
-> +		    pat->ctx.data.maxlen) {
-> +			*start_offset += pat->ctx.data.maxlen;
->  			return true;
->  		}
->  		break;
-> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> index 469dc724f5df..f89fd2331f4a 100644
-> --- a/include/linux/mtd/rawnand.h
-> +++ b/include/linux/mtd/rawnand.h
-> @@ -962,7 +962,7 @@ struct nand_op_parser_pattern_elem {
->  	union {
->  		struct nand_op_parser_addr_constraints addr;
->  		struct nand_op_parser_data_constraints data;
-> -	};
-> +	} ctx;
->  };
->  
->  #define NAND_OP_PARSER_PAT_CMD_ELEM(_opt)			\
-> @@ -975,21 +975,27 @@ struct nand_op_parser_pattern_elem {
->  	{							\
->  		.type = NAND_OP_ADDR_INSTR,			\
->  		.optional = _opt,				\
-> -		.addr.maxcycles = _maxcycles,			\
-> +		.ctx.addr = {					\
-> +			.maxcycles = _maxcycles,		\
-> +		},						\
->  	}
->  
->  #define NAND_OP_PARSER_PAT_DATA_IN_ELEM(_opt, _maxlen)		\
->  	{							\
->  		.type = NAND_OP_DATA_IN_INSTR,			\
->  		.optional = _opt,				\
-> -		.data.maxlen = _maxlen,				\
-> +		.ctx.data = {					\
-> +			.maxlen = _maxlen,			\
-> +		},						\
->  	}
->  
->  #define NAND_OP_PARSER_PAT_DATA_OUT_ELEM(_opt, _maxlen)		\
->  	{							\
->  		.type = NAND_OP_DATA_OUT_INSTR,			\
->  		.optional = _opt,				\
-> -		.data.maxlen = _maxlen,				\
-> +		.ctx.data = {					\
-> +			.maxlen = _maxlen,			\
-> +		},						\
->  	}
->  
->  #define NAND_OP_PARSER_PAT_WAITRDY_ELEM(_opt)			\
