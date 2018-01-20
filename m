@@ -1,20 +1,19 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1ectZN-0000L2-Jc
- for linux-mtd@lists.infradead.org; Sat, 20 Jan 2018 13:52:31 +0000
-Date: Sat, 20 Jan 2018 14:52:17 +0100
+ id 1ecta0-0000fg-Bs
+ for linux-mtd@lists.infradead.org; Sat, 20 Jan 2018 13:53:10 +0000
+Date: Sat, 20 Jan 2018 14:52:56 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Colin King <colin.king@canonical.com>
-Cc: Miquel Raynal <miquel.raynal@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
- kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][V2] mtd: nand: marvell: remove redundant variable
- 'oob_len'
-Message-ID: <20180120145217.368504bb@bbrezillon>
-In-Reply-To: <20180119075954.15009-1-colin.king@canonical.com>
-References: <20180119075954.15009-1-colin.king@canonical.com>
+To: Miquel Raynal <miquel.raynal@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org, Andrew Morton
+ <akpm@linux-foundation.org>
+Subject: Re: [PATCH] mtd: nand: Fix build issues due to an anonymous union
+Message-ID: <20180120145256.7f588751@bbrezillon>
+In-Reply-To: <20180119181127.10473-1-miquel.raynal@free-electrons.com>
+References: <20180119181127.10473-1-miquel.raynal@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,21 +26,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 19 Jan 2018 07:59:54 +0000
-Colin King <colin.king@canonical.com> wrote:
+On Fri, 19 Jan 2018 19:11:27 +0100
+Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
 
-> From: Colin Ian King <colin.king@canonical.com>
+> GCC-4.4.4 raises errors when assigning a parameter in an anonymous
+> union, leading to this kind of failure:
 > 
-> Variable oob_len is assigned and never read, hence it is redundant and
-> can be removed.
+> drivers/mtd/nand/marvell_nand.c:1936:
+>     warning: missing braces around initializer
+>     warning: (near initialization for '(anonymous)[1].<anonymous>')
+>     error: unknown field 'data' specified in initializer
+>     error: unknown field 'addr' specified in initializer
 > 
-> Cleans up clang warnings:
+> Work around the situation by naming these unions.
 > 
-> drivers/mtd/nand/marvell_nand.c:1356:6: warning: Value stored to 'oob_len'
-> during its initialization is never read
-> drivers/mtd/nand/marvell_nand.c:1369:4: warning: Value stored to 'oob_len'
-> is never read
-> 
+> Reported-by: Andrew Morton <akpm@linux-foundation.org>
+> Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
 
 Applied.
 
@@ -49,28 +49,87 @@ Thanks,
 
 Boris
 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > ---
->  drivers/mtd/nand/marvell_nand.c | 2 --
->  1 file changed, 2 deletions(-)
+>  drivers/mtd/nand/nand_base.c | 13 +++++++------
+>  include/linux/mtd/rawnand.h  | 14 ++++++++++----
+>  2 files changed, 17 insertions(+), 10 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/marvell_nand.c b/drivers/mtd/nand/marvell_nand.c
-> index 4bd53b360277..f15ab37edf4e 100644
-> --- a/drivers/mtd/nand/marvell_nand.c
-> +++ b/drivers/mtd/nand/marvell_nand.c
-> @@ -1353,7 +1353,6 @@ static int marvell_nfc_hw_ecc_bch_write_page_raw(struct mtd_info *mtd,
->  	int data_len = lt->data_bytes;
->  	int spare_len = lt->spare_bytes;
->  	int ecc_len = lt->ecc_bytes;
-> -	int oob_len = spare_len + ecc_len;
->  	int spare_offset = 0;
->  	int ecc_offset = (lt->full_chunk_cnt * lt->spare_bytes) +
->  		lt->last_spare_bytes;
-> @@ -1366,7 +1365,6 @@ static int marvell_nfc_hw_ecc_bch_write_page_raw(struct mtd_info *mtd,
->  			data_len = lt->last_data_bytes;
->  			spare_len = lt->last_spare_bytes;
->  			ecc_len = lt->last_ecc_bytes;
-> -			oob_len = spare_len + ecc_len;
->  		}
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index e4e39890a975..a3260e6207b8 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -2332,23 +2332,24 @@ nand_op_parser_must_split_instr(const struct nand_op_parser_pattern_elem *pat,
+>  {
+>  	switch (pat->type) {
+>  	case NAND_OP_ADDR_INSTR:
+> -		if (!pat->addr.maxcycles)
+> +		if (!pat->ctx.addr.maxcycles)
+>  			break;
 >  
->  		/* Point to the column of the next chunk */
+>  		if (instr->ctx.addr.naddrs - *start_offset >
+> -		    pat->addr.maxcycles) {
+> -			*start_offset += pat->addr.maxcycles;
+> +		    pat->ctx.addr.maxcycles) {
+> +			*start_offset += pat->ctx.addr.maxcycles;
+>  			return true;
+>  		}
+>  		break;
+>  
+>  	case NAND_OP_DATA_IN_INSTR:
+>  	case NAND_OP_DATA_OUT_INSTR:
+> -		if (!pat->data.maxlen)
+> +		if (!pat->ctx.data.maxlen)
+>  			break;
+>  
+> -		if (instr->ctx.data.len - *start_offset > pat->data.maxlen) {
+> -			*start_offset += pat->data.maxlen;
+> +		if (instr->ctx.data.len - *start_offset >
+> +		    pat->ctx.data.maxlen) {
+> +			*start_offset += pat->ctx.data.maxlen;
+>  			return true;
+>  		}
+>  		break;
+> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> index 469dc724f5df..f89fd2331f4a 100644
+> --- a/include/linux/mtd/rawnand.h
+> +++ b/include/linux/mtd/rawnand.h
+> @@ -962,7 +962,7 @@ struct nand_op_parser_pattern_elem {
+>  	union {
+>  		struct nand_op_parser_addr_constraints addr;
+>  		struct nand_op_parser_data_constraints data;
+> -	};
+> +	} ctx;
+>  };
+>  
+>  #define NAND_OP_PARSER_PAT_CMD_ELEM(_opt)			\
+> @@ -975,21 +975,27 @@ struct nand_op_parser_pattern_elem {
+>  	{							\
+>  		.type = NAND_OP_ADDR_INSTR,			\
+>  		.optional = _opt,				\
+> -		.addr.maxcycles = _maxcycles,			\
+> +		.ctx.addr = {					\
+> +			.maxcycles = _maxcycles,		\
+> +		},						\
+>  	}
+>  
+>  #define NAND_OP_PARSER_PAT_DATA_IN_ELEM(_opt, _maxlen)		\
+>  	{							\
+>  		.type = NAND_OP_DATA_IN_INSTR,			\
+>  		.optional = _opt,				\
+> -		.data.maxlen = _maxlen,				\
+> +		.ctx.data = {					\
+> +			.maxlen = _maxlen,			\
+> +		},						\
+>  	}
+>  
+>  #define NAND_OP_PARSER_PAT_DATA_OUT_ELEM(_opt, _maxlen)		\
+>  	{							\
+>  		.type = NAND_OP_DATA_OUT_INSTR,			\
+>  		.optional = _opt,				\
+> -		.data.maxlen = _maxlen,				\
+> +		.ctx.data = {					\
+> +			.maxlen = _maxlen,			\
+> +		},						\
+>  	}
+>  
+>  #define NAND_OP_PARSER_PAT_WAITRDY_ELEM(_opt)			\
