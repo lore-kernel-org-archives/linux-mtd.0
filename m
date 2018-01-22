@@ -1,28 +1,20 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1edXsQ-0001Mh-6P
- for linux-mtd@lists.infradead.org; Mon, 22 Jan 2018 08:54:52 +0000
-Date: Mon, 22 Jan 2018 09:54:38 +0100
+ id 1edYYp-0006yc-W0
+ for linux-mtd@lists.infradead.org; Mon, 22 Jan 2018 09:38:41 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Miquel RAYNAL <miquel.raynal@free-electrons.com>, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v3 0/7] Marvell NAND controller rework with ->exec_op()
-Message-ID: <20180122095438.750d84ef@bbrezillon>
-In-Reply-To: <87shb8aghi.fsf@belgarion.home>
-References: <20180109103637.23798-1-miquel.raynal@free-electrons.com>
- <20180111122751.4bd74366@bbrezillon>
- <87efmwb8bj.fsf@belgarion.home> <20180111232417.4aa86075@xps13>
- <87a7xjbis2.fsf@belgarion.home>
- <20180112094501.27706bfc@bbrezillon>
- <876087beui.fsf@belgarion.home>
- <20180112112108.2e20dc14@bbrezillon>
- <871sivauyf.fsf@belgarion.home>
- <20180113093855.49231a43@bbrezillon>
- <87shb8aghi.fsf@belgarion.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
+Cc: Peter Pan <peterpansjtu@gmail.com>,
+ Frieder Schrempf <frieder.schrempf@exceet.de>,
+ Miquel Raynal <miquel.raynal@free-electrons.com>
+Subject: [PATCH] mtd: Make sure the device supports erase operations in
+ mtd_erase()
+Date: Mon, 22 Jan 2018 10:38:01 +0100
+Message-Id: <20180122093801.19618-1-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,50 +24,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 14 Jan 2018 11:20:57 +0100
-Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+Some devices do not implement ->_erase() or have an invalid ->erasesize
+value. In this case, mtd_erase() should return -ENOTSUPP.
 
-> Boris Brezillon <boris.brezillon@free-electrons.com> writes:
-> 
-> > On Fri, 12 Jan 2018 17:43:52 +0100
-> > Robert Jarzmik <robert.jarzmik@free.fr> wrote:
-> >  
-> >> Boris Brezillon <boris.brezillon@free-electrons.com> writes:
-> >>   
-> >> > I think I'm still missing something. If I look at the branch you just
-> >> > pushed, I see that ->flash_bbt was not set to 1 before this commit [1],
-> >> > which means the pxa3xx driver was no setting the NAND_BBT_USE_FLASH
-> >> > flag, which in turn means you were not using the on-flash-bbt.
-> >> > When you test the old (pxa3xx) driver, are you sure you're testing
-> >> > things with a mainline kernel? If you have extra commits on top of
-> >> > mainline, can you push them somewhere?    
-> >> 
-> >> Here is the branch I'm using with my pxa3xx driver :
-> >> git fetch https://github.com/rjarzmik/linux pxa3xx-test  
-> >
-> > May I ask why this is not in mainline?  
-> Sure.
-> 
-> The pxa3xx comes into 3 flavors of SoCs :
->  - pxa300
->  - pxa310
->  - pxa320
-> 
-> In these 3, only pxa310 has an internal PoP NAND, and requires the keep_config =
-> 1 setting (where timings are set by the internal ROM code).
-> 
-> Yet zylonite_init_nand() is shared across all 3 platforms. In order to not break
-> other existing pxa3xx devices, I don't want to change this setting. Instead, my
-> plan is slowly convert pxaXXX to devicetree, and have this parameter set in
-> devicetree in a per board basis.
-> 
-> As to the .flash_bbt = 1 parameter, it's even worse. That's the decision made in
-> the initial flash formatting that counts. With the zylonite310 I have, the BBT
-> is at the end of the NAND. There might be other parts where it's only in the OOB
-> area. So it's difficult to change it without taking a risk of breaking others.
+Note that the test is not done on the MTD_NO_ERASE flag because this
+flag means 'erasing a block before writing to it is unnecessary',
+not 'the erase operation is not supported'. Actually, some drivers are
+setting the MTD_NO_ERASE flag but still implementing the ->_erase()
+hook and setting a valid ->erasesize value.
 
-Ok. It's clearer now. I wish we had this discussion earlier :-/.
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/mtdcore.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Anyway, thanks for the clarification.
-
-Boris
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index d7ab091b36b2..f24144cbc99c 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -971,10 +971,14 @@ EXPORT_SYMBOL_GPL(__put_mtd_device);
+  */
+ int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
+ {
++	if (!mtd->erasesize || !mtd->_erase)
++		return -ENOTSUPP;
++
+ 	if (instr->addr >= mtd->size || instr->len > mtd->size - instr->addr)
+ 		return -EINVAL;
+ 	if (!(mtd->flags & MTD_WRITEABLE))
+ 		return -EROFS;
++
+ 	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+ 	if (!instr->len) {
+ 		instr->state = MTD_ERASE_DONE;
+-- 
+2.11.0
