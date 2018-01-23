@@ -1,23 +1,23 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1edktb-00064s-18
- for linux-mtd@lists.infradead.org; Mon, 22 Jan 2018 22:48:56 +0000
-Date: Mon, 22 Jan 2018 23:48:42 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, linux-mtd@lists.infradead.org
+ id 1edtVs-0006W9-8c
+ for linux-mtd@lists.infradead.org; Tue, 23 Jan 2018 08:01:03 +0000
+Date: Tue, 23 Jan 2018 09:00:46 +0100
+From: Miquel Raynal <miquel.raynal@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, Han Xu <han.xu@nxp.com>, Miquel
- Raynal <miquel.raynal@free-electrons.com>
-Subject: Re: [PATCH] mtd: nand: gpmi: Add missing nand_read_page_op() in
- gpmi_ecc_read_subpage()
-Message-ID: <20180122234842.42949308@bbrezillon>
-In-Reply-To: <20180122215148.4502-1-boris.brezillon@free-electrons.com>
-References: <20180122215148.4502-1-boris.brezillon@free-electrons.com>
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, Peter Pan <peterpansjtu@gmail.com>, Frieder
+ Schrempf <frieder.schrempf@exceet.de>
+Subject: Re: [PATCH] mtd: Make sure the device supports erase operations in
+ mtd_erase()
+Message-ID: <20180123090046.503b1129@xps13>
+In-Reply-To: <20180122093801.19618-1-boris.brezillon@free-electrons.com>
+References: <20180122093801.19618-1-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,40 +27,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 22 Jan 2018 22:51:48 +0100
+Hello Boris,
+
+On Mon, 22 Jan 2018 10:38:01 +0100
 Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-> When a subpage read request accesses the ECC block containing the BBM,
-> a full page read is required. Commit 25f815f66a14 ("mtd: nand: force
-> drivers to explicitly send READ/PROG commands") changed the default
-> behavior by forcing drivers to manually issue the READ0 command.
-> Unfortunately, the full page read case in gpmi_ecc_read_subpage() has
-> been omitted and the nand_read_page_op() call has been moved too far
-> in the function leading to a situation where gpmi_ecc_read_page() is
-> called without a READ0 command.
-> 
-> Fix that by adding a call to nand_read_page_op() just before calling
-> gpmi_ecc_read_page() in the "access ECC block containing the BBM" case.
-> 
-> Fixes: 25f815f66a14 ("mtd: nand: force drivers to explicitly send READ/PROG commands")
+> Some devices do not implement ->_erase() or have an invalid ->erasesize
+> value. In this case, mtd_erase() should return -ENOTSUPP.
+>=20
+> Note that the test is not done on the MTD_NO_ERASE flag because this
+> flag means 'erasing a block before writing to it is unnecessary',
+> not 'the erase operation is not supported'. Actually, some drivers are
+> setting the MTD_NO_ERASE flag but still implementing the ->_erase()
+> hook and setting a valid ->erasesize value.
+>=20
 > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 > ---
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> index b51db8c85405..3198f5f79a82 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -1215,6 +1215,7 @@ static int gpmi_ecc_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
->  			dev_dbg(this->dev,
->  				"page:%d, first:%d, last:%d, marker at:%d\n",
->  				page, first, last, marker_pos);
-> +			nand_read_page_op(chip, page, 0, NULL, 0);
->  			return gpmi_ecc_read_page(mtd, chip, buf, 0, page);
+>  drivers/mtd/mtdcore.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>=20
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index d7ab091b36b2..f24144cbc99c 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -971,10 +971,14 @@ EXPORT_SYMBOL_GPL(__put_mtd_device);
+>   */
+>  int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  {
+> +	if (!mtd->erasesize || !mtd->_erase)
+> +		return -ENOTSUPP;
+> +
+>  	if (instr->addr >=3D mtd->size || instr->len > mtd->size - instr->addr)
+>  		return -EINVAL;
+>  	if (!(mtd->flags & MTD_WRITEABLE))
+>  		return -EROFS;
 
-Please ignore this patch: nand_read_page_op() is already called from
-gpmi_ecc_read_page().
+This remark is not inherent to this patch in particular but as we are
+adding a new error path, I thought it might be interesting to also
+patch:
+- INFTL_formatblock() from inftlmount.c [1] (mtd_erase called twice)
+- NFTL_formatblock() from nftlmount.c [2]
 
->  		}
->  	}
+They both call mtd_erase() without checking the return code and then
+error out only if instr->state =3D=3D MTD_ERASE_FAILED, which has not been
+set before quitting mtd_erase() in the conditions above. I guess the
+right thing to do is to add another condition in both functions on the
+return code of mtd_erase(). What do you think?
+
+Otherwise:
+Reviewed-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+
+Have a good day,
+Miqu=C3=A8l
+
+[1]
+http://elixir.free-electrons.com/linux/latest/source/drivers/mtd/inftlmount=
+.c#L396
+[2]
+http://elixir.free-electrons.com/linux/latest/source/drivers/mtd/nftlmount.=
+c#L334
