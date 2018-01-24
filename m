@@ -1,24 +1,31 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
+Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1edvl0-00048V-9V
- for linux-mtd@lists.infradead.org; Tue, 23 Jan 2018 10:24:48 +0000
-Date: Tue, 23 Jan 2018 11:24:24 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Miquel Raynal <miquel.raynal@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, Peter Pan <peterpansjtu@gmail.com>, Frieder
- Schrempf <frieder.schrempf@exceet.de>
-Subject: Re: [PATCH] mtd: Make sure the device supports erase operations in
- mtd_erase()
-Message-ID: <20180123112424.36e5e426@bbrezillon>
-In-Reply-To: <20180123090046.503b1129@xps13>
-References: <20180122093801.19618-1-boris.brezillon@free-electrons.com>
- <20180123090046.503b1129@xps13>
+ id 1eeHwg-0006HS-Vm
+ for linux-mtd@lists.infradead.org; Wed, 24 Jan 2018 10:06:20 +0000
+Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
+ (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
+ id S23990395AbeAXKGFcxXmV (ORCPT
+ <rfc822;linux-mtd@lists.infradead.org>);
+ Wed, 24 Jan 2018 11:06:05 +0100
+Date: Wed, 24 Jan 2018 11:06:04 +0100
+Sender: Ladislav Michl <ladis@linux-mips.org>
+From: Ladislav Michl <ladis@linux-mips.org>
+To: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+ Tom Lendacky <thomas.lendacky@amd.com>,
+ Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
+ Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+ Philippe Ombredanne <pombredanne@nexb.com>,
+ Kate Stewart <kstewart@linuxfoundation.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Bjorn Helgaas <bhelgaas@google.com>, Wei Yongjun <weiyongjun1@huawei.com>
+Subject: [PATCH v2 0/3] Add managed ioremap function for shared resources
+Message-ID: <20180124100604.GA19593@lenoch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,74 +35,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 23 Jan 2018 09:00:46 +0100
-Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
+Many drivers can simplified by using devm_ioremap_resource()
+instead of open coding its functionality. However, as pointed
+by Wei Yongjun, that function cannot be used when memory region
+is already taken. See previous discussion here:
+https://www.spinics.net/lists/linux-pci/msg68495.html
 
-> Hello Boris,
->=20
-> On Mon, 22 Jan 2018 10:38:01 +0100
-> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
->=20
-> > Some devices do not implement ->_erase() or have an invalid ->erasesize
-> > value. In this case, mtd_erase() should return -ENOTSUPP.
-> >=20
-> > Note that the test is not done on the MTD_NO_ERASE flag because this
-> > flag means 'erasing a block before writing to it is unnecessary',
-> > not 'the erase operation is not supported'. Actually, some drivers are
-> > setting the MTD_NO_ERASE flag but still implementing the ->_erase()
-> > hook and setting a valid ->erasesize value.
-> >=20
-> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > ---
-> >  drivers/mtd/mtdcore.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >=20
-> > diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> > index d7ab091b36b2..f24144cbc99c 100644
-> > --- a/drivers/mtd/mtdcore.c
-> > +++ b/drivers/mtd/mtdcore.c
-> > @@ -971,10 +971,14 @@ EXPORT_SYMBOL_GPL(__put_mtd_device);
-> >   */
-> >  int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
-> >  {
-> > +	if (!mtd->erasesize || !mtd->_erase)
-> > +		return -ENOTSUPP;
-> > +
-> >  	if (instr->addr >=3D mtd->size || instr->len > mtd->size - instr->add=
-r)
-> >  		return -EINVAL;
-> >  	if (!(mtd->flags & MTD_WRITEABLE))
-> >  		return -EROFS; =20
->=20
-> This remark is not inherent to this patch in particular but as we are
-> adding a new error path, I thought it might be interesting to also
-> patch:
-> - INFTL_formatblock() from inftlmount.c [1] (mtd_erase called twice)
-> - NFTL_formatblock() from nftlmount.c [2]
->=20
-> They both call mtd_erase() without checking the return code and then
-> error out only if instr->state =3D=3D MTD_ERASE_FAILED, which has not been
-> set before quitting mtd_erase() in the conditions above. I guess the
-> right thing to do is to add another condition in both functions on the
-> return code of mtd_erase(). What do you think?
+To ease job of driver developers, new function for that
+purpose is implemented and its usage shown on davinci
+mtd driver.
 
-This sounds reasonable.
+Changes from previous version:
+- moved function prototype in headers other way around (PATCH 1/3),
+  the rest of patches was dropped.
 
->=20
-> Otherwise:
-> Reviewed-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+Ladislav Michl (3):
+  devres: Move devm_ioremap_resource() out of device.h
+  devres: Add devm_ioremap_shared_resource()
+  mtd: nand: davinci: Use devm_ioremap_shared_resource()
 
-Thanks.
+ drivers/mtd/nand/davinci_nand.c | 24 +++++++-----------------
+ include/linux/device.h          |  2 --
+ include/linux/io.h              |  7 +++++++
+ lib/devres.c                    | 22 ++++++++++++++--------
+ 4 files changed, 28 insertions(+), 27 deletions(-)
 
-Boris
-
->=20
-> Have a good day,
-> Miqu=C3=A8l
->=20
-> [1]
-> http://elixir.free-electrons.com/linux/latest/source/drivers/mtd/inftlmou=
-nt.c#L396
-> [2]
-> http://elixir.free-electrons.com/linux/latest/source/drivers/mtd/nftlmoun=
-t.c#L334
+-- 
+2.15.1
