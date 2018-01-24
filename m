@@ -1,18 +1,18 @@
-Date: Wed, 24 Jan 2018 23:59:36 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eeUPU-0003P7-Tp
+ for linux-mtd@lists.infradead.org; Wed, 24 Jan 2018 23:24:54 +0000
 From: Miquel Raynal <miquel.raynal@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, Maxime Ripard
- <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>
-Cc: linux-mtd@lists.infradead.org, <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] mtd: nand: sunxi: Fix ECC strength choice
-Message-ID: <20180124235936.4b49b094@xps13>
-In-Reply-To: <20180124224931.14392-1-miquel.raynal@free-electrons.com>
-References: <20180124224931.14392-1-miquel.raynal@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@free-electrons.com>
+Subject: [PATCH] mtd: nftl/inftl: check mtd_erase() return value
+Date: Thu, 25 Jan 2018 00:24:34 +0100
+Message-Id: <20180124232434.32023-1-miquel.raynal@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +22,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Since the creation of mtd_erase(), the function can return a negative
+error code without updating the instr->state flag. This happens for
+instance when ->_erase() is not implemented or ->erasesize has an invalid
+value. The calling function should error out in this case.
 
-On Wed, 24 Jan 2018 23:49:31 +0100
-Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
+Functions in nftlmount/inftlmount call mtd_erase() without checking the
+return code. The instr->state flag is checked but might not have been
+updated depending on the error path.
 
-> When the requested ECC strength does not exactly match the strengths
-> supported by the ECC engine, the driver is selecting the closest
-> strength meeting the 'selected_strength > requested_strength'
-> constraint. Fix the fact that, in this particular case, ecc->strength
-> value was not updated to match the 'selected_strength'.
->=20
-> For instance, one can encounter this issue when no ECC requirement is
-> filled in the device tree while the NAND chip minimum requirement is not
-> a strength/step_size combo natively supported by the ECC engine.
->=20
+Add checks on the returned value of mtd_erase().
 
-I forgot to add the Fixes/CC tags, but it seems that this problem
-has always been out there...
+Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+---
+ drivers/mtd/inftlmount.c | 7 +++++--
+ drivers/mtd/nftlmount.c  | 3 ++-
+ 2 files changed, 7 insertions(+), 3 deletions(-)
 
-Fixes: 1fef62c1423b ("mtd: nand: add sunxi NAND flash controller
-support")
-CC: stable@vger.kernel.org
-
-> Suggested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
-
-I will wait a review before sending a v2.
-
-Thanks,
-Miqu=C3=A8l
+diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
+index 8d6bb189ea8e..cab4a0b9f881 100644
+--- a/drivers/mtd/inftlmount.c
++++ b/drivers/mtd/inftlmount.c
+@@ -219,7 +219,9 @@ static int find_boot_record(struct INFTLrecord *inftl)
+ 				 */
+ 				instr->addr = ip->Reserved0 * inftl->EraseSize;
+ 				instr->len = inftl->EraseSize;
+-				mtd_erase(mtd, instr);
++				ret = mtd_erase(mtd, instr);
++				if (ret < 0)
++					return ret;
+ 			}
+ 			if ((ip->lastUnit - ip->firstUnit + 1) < ip->virtualUnits) {
+ 				printk(KERN_WARNING "INFTL: Media Header "
+@@ -393,7 +395,8 @@ int INFTL_formatblock(struct INFTLrecord *inftl, int block)
+ 	   mark only the failed block in the bbt. */
+ 	for (physblock = 0; physblock < inftl->EraseSize;
+ 	     physblock += instr->len, instr->addr += instr->len) {
+-		mtd_erase(inftl->mbd.mtd, instr);
++		if (mtd_erase(inftl->mbd.mtd, instr < 0))
++			goto fail;
+ 
+ 		if (instr->state == MTD_ERASE_FAILED) {
+ 			printk(KERN_WARNING "INFTL: error while formatting block %d\n",
+diff --git a/drivers/mtd/nftlmount.c b/drivers/mtd/nftlmount.c
+index 184c8fbfe465..8dbc40ab7d73 100644
+--- a/drivers/mtd/nftlmount.c
++++ b/drivers/mtd/nftlmount.c
+@@ -331,7 +331,8 @@ int NFTL_formatblock(struct NFTLrecord *nftl, int block)
+ 	instr->mtd = nftl->mbd.mtd;
+ 	instr->addr = block * nftl->EraseSize;
+ 	instr->len = nftl->EraseSize;
+-	mtd_erase(mtd, instr);
++	if (mtd_erase(mtd, instr) < 0)
++		goto fail;
+ 
+ 	if (instr->state == MTD_ERASE_FAILED) {
+ 		printk("Error while formatting block %d\n", block);
+-- 
+2.11.0
