@@ -1,21 +1,30 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eeKWP-0003Xq-Nb
- for linux-mtd@lists.infradead.org; Wed, 24 Jan 2018 12:51:24 +0000
-Date: Wed, 24 Jan 2018 13:51:06 +0100
-From: Miquel Raynal <miquel.raynal@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, Han Xu <han.xu@nxp.com>
-Subject: Re: [PATCH] mtd: nand: gpmi: Fix subpage reads
-Message-ID: <20180124135106.2a145a11@xps13>
-In-Reply-To: <20180123101317.15925-1-boris.brezillon@free-electrons.com>
-References: <20180123101317.15925-1-boris.brezillon@free-electrons.com>
+Received: from mail-qt0-x241.google.com ([2607:f8b0:400d:c0d::241])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eeNo7-0005Oh-5C
+ for linux-mtd@lists.infradead.org; Wed, 24 Jan 2018 16:21:52 +0000
+Received: by mail-qt0-x241.google.com with SMTP id a27so11745697qtd.1
+ for <linux-mtd@lists.infradead.org>; Wed, 24 Jan 2018 08:21:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20180124100754.GC19593@lenoch>
+References: <20180124100604.GA19593@lenoch> <20180124100754.GC19593@lenoch>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Wed, 24 Jan 2018 18:21:38 +0200
+Message-ID: <CAHp75VeGpj28G60L86d4FDOL1YMAoM5kcdvSC5O6iH4Xi8zfHg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] devres: Add devm_ioremap_shared_resource()
+To: Ladislav Michl <ladis@linux-mips.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Tom Lendacky <thomas.lendacky@amd.com>, Borislav Petkov <bp@suse.de>,
+ Ingo Molnar <mingo@kernel.org>,
+ Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+ Philippe Ombredanne <pombredanne@nexb.com>,
+ Kate Stewart <kstewart@linuxfoundation.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Bjorn Helgaas <bhelgaas@google.com>, Wei Yongjun <weiyongjun1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +34,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Boris,
+On Wed, Jan 24, 2018 at 12:07 PM, Ladislav Michl <ladis@linux-mips.org> wrote:
+> Implement managed ioremap function for shared resources.
 
-On Tue, 23 Jan 2018 11:13:17 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+> +#define devm_ioremap_resource(dev, res) \
+> +       __devm_ioremap_resource(dev, res, false)
+> +#define devm_ioremap_shared_resource(dev, res) \
+> +       __devm_ioremap_resource(dev, res, true)
+> +void __iomem *__devm_ioremap_resource(struct device *dev, struct resource *res,
+> +                                     bool shared);
 
-> Commit 25f815f66a14 ("mtd: nand: force drivers to explicitly send
-> READ/PROG commands") added a call to nand_read_page_op() in
-> gpmi_ecc_read_page(), which means this function now sends a READ0
-> command and place the data pointer at the beginning of the page. This
-> logic is breaking gpmi_ecc_read_subpage() which was calling
-> gpmi_ecc_read_page() and expected it to only retrieve the data without
-> sending the READ0 command.
->=20
-> Create a gpmi_ecc_read_page_data() helper which only does the data
-> retrieval and ECC correction steps and implement gpmi_ecc_read_page()
-> as a wrapper that calls nand_read_page_op()+gpmi_ecc_read_page_data().
->=20
-> This way, gpmi_ecc_read_subpage() can call gpmi_ecc_read_page_data()
-> which restores the logic we had before commit 25f815f66a14 ("mtd: nand:
-> force drivers to explicitly send READ/PROG commands").
->=20
-> Fixes: 25f815f66a14 ("mtd: nand: force drivers to explicitly send READ/PR=
-OG commands")
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> ---
+I would rather do the following:
 
-Reviewed-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+_resource() ->  _resource_exclusive()
 
-Thanks for fixing it,
-Miqu=C3=A8l
+#define _resource()  _resource_exclusive()
+
+Add _resource_shared()
+
+And use long names below in this file whenever refer to exclusive or
+shared variant.
+
+>  void devm_iounmap(struct device *dev, void __iomem *addr);
+>  int check_signature(const volatile void __iomem *io_addr,
+>                         const unsigned char *signature, int length);
+> +
+>  void devm_ioremap_release(struct device *dev, void *res);
+
+This part doesn't belong to the change.
+
+> + * When possible, use devm_ioremap_resource() or
+> + * devm_ioremap_shared_resource() instead.
+> - * Checks that a resource is a valid memory region, requests the memory
+> - * region and ioremaps it. All operations are managed and will be undone
+> - * on driver detach.
+> + * Checks that a resource is a valid memory region, eventually requests the
+> + * memory region and ioremaps it. All operations are managed and will be
+> + * undone on driver detach.
+
+Wording is changed and no clue in commit message why.
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
