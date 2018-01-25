@@ -1,26 +1,20 @@
-Received: from mail-ve1eur01on060d.outbound.protection.outlook.com
- ([2a01:111:f400:fe1f::60d]
- helo=EUR01-VE1-obe.outbound.protection.outlook.com)
+Received: from mail-eopbgr00071.outbound.protection.outlook.com ([40.107.0.71]
+ helo=EUR02-AM5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eeXt9-00024M-5E
- for linux-mtd@lists.infradead.org; Thu, 25 Jan 2018 03:07:45 +0000
-From: Han Xu <han.xu@nxp.com>
-To: Miquel Raynal <miquel.raynal@free-electrons.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>
-CC: Richard Weinberger <richard@nod.at>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, David Woodhouse <dwmw2@infradead.org>,
- "Brian Norris" <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Subject: Re: [PATCH] mtd: nand: gpmi: Fix subpage reads
-Date: Thu, 25 Jan 2018 03:07:26 +0000
-Message-ID: <VI1PR0401MB2221C5231ACDAB30A15E680497E10@VI1PR0401MB2221.eurprd04.prod.outlook.com>
-References: <20180123101317.15925-1-boris.brezillon@free-electrons.com>,
- <20180124135106.2a145a11@xps13>
-In-Reply-To: <20180124135106.2a145a11@xps13>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ id 1eebaA-0003Jw-Qn
+ for linux-mtd@lists.infradead.org; Thu, 25 Jan 2018 07:04:25 +0000
+From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+To: linux-mtd@lists.infradead.org
+Cc: boris.brezillon@free-electrons.com, cyrille.pitchen@wedev4u.fr,
+ computersforpeace@gmail.com, han.xu@nxp.com, festevam@gmail.com,
+ prabhakar.kushwaha@nxp.com, suresh.gupta@nxp.com,
+ Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH v4 0/2] mtd: fsl-quadspi: add support to create dynamic LUT
+ entry
+Date: Thu, 25 Jan 2018 12:32:49 +0530
+Message-Id: <1516863771-30974-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,43 +24,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+fsl-quadspi.c driver creates different LUT entries for various cmds like
+read, write, erase, readid etc. These entries are created statically when
+driver gets intiliazed.
 
-________________________________________
-From: Miquel Raynal <miquel.raynal@free-electrons.com>
-Sent: Wednesday, January 24, 2018 6:51 AM
-To: Boris Brezillon
-Cc: Richard Weinberger; linux-mtd@lists.infradead.org; David Woodhouse; Bri=
-an Norris; Marek Vasut; Cyrille Pitchen; Han Xu
-Subject: Re: [PATCH] mtd: nand: gpmi: Fix subpage reads
+To support various cmds e.g. different read cmds like SPINOR_OP_READ,
+SPINOR_OP_READ_4B, SPINOR_OP_READ_FAST_4B, SPINOR_OP_READ_FAST,
+SPINOR_OP_READ_1_1_2, SPINOR_OP_READ_1_2_2 etc driver needs to
+have different LUT entries for different cmds.
 
-Hello Boris,
+FSL QUADSPI controller has 4 chip select and one can use different flashes
+on all different chip select.
+We analyzed that the flashes have different parameters for the same command
+and this is true for NAND devices.
+Also reg_protocol information, needed for read register, read any register
+commands, read SFDP register, not available at time of spi_nor_scan.
+As FSL QUADSPI controller has limitation in number of LUT entries, max 16,
+thus require to have dynamic LUT creation support.
 
-On Tue, 23 Jan 2018 11:13:17 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+Thus to have support for different flash devices, this patch-set adds
+support to create LUT entry in run-time based on the exact cmnd requested.
+Information like cmnd opcode, protocol info, dummy bit info etc required
+for creating LUT entries parsed from instance of passed 'struct spi_nor'.
 
-> Commit 25f815f66a14 ("mtd: nand: force drivers to explicitly send
-> READ/PROG commands") added a call to nand_read_page_op() in
-> gpmi_ecc_read_page(), which means this function now sends a READ0
-> command and place the data pointer at the beginning of the page. This
-> logic is breaking gpmi_ecc_read_subpage() which was calling
-> gpmi_ecc_read_page() and expected it to only retrieve the data without
-> sending the READ0 command.
->
-> Create a gpmi_ecc_read_page_data() helper which only does the data
-> retrieval and ECC correction steps and implement gpmi_ecc_read_page()
-> as a wrapper that calls nand_read_page_op()+gpmi_ecc_read_page_data().
->
-> This way, gpmi_ecc_read_subpage() can call gpmi_ecc_read_page_data()
-> which restores the logic we had before commit 25f815f66a14 ("mtd: nand:
-> force drivers to explicitly send READ/PROG commands").
->
-> Fixes: 25f815f66a14 ("mtd: nand: force drivers to explicitly send READ/PR=
-OG commands")
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> ---
+Also fix initialize sequence of AHB read, move
+fsl_qspi_init_ahb_read() in  fsl_qspi_nor_setup() function.
 
-Reviewed-by: Miquel Raynal <miquel.raynal@free-electrons.com>
-Acked-by: Han Xu <han.xu@nxp.com>
+Tested with "S25FS512S" flash and have checked read, write, erase
+functionality using mtd_debug utility.
+For read have checked hwcaps as SNOR_HWCAPS_READ_FAST,
+SNOR_HWCAPS_READ_1_2_2 and SNOR_HWCAPS_READ_1_4_4
+i.e. read cmds SPINOR_OP_READ_FAST_4B [0x0c],
+SPINOR_OP_READ_1_2_2_4B [0xbc] and SPINOR_OP_READ_1_4_4_4B [0xec]
 
-Thanks for fixing it,
-Miqu=E8l
+Yogesh Gaur (2):
+  mtd: fsl-quadspi: add support to create dynamic LUT entry
+  mtd: fsl-quadspi: fix init AHB read in  fsl_qspi_nor_setup()
+
+Changes for v4:
+- Drop patch
+'mtd: fsl-quadspi: update hwcaps read capabilities as READ_1_4_4', it
+would be taken care in next-series.
+- Added patch for 'fix initialize sequence of AHB read'.
+
+Changes for v3:
+- Add STOP instruction for prepared LUT and remove memset of 4 LUT reg.
+- Update information in cover letter.
+
+Changes for v2:
+- Swap patch sequences in the series to solve git bissect issue.
+
+ drivers/mtd/spi-nor/fsl-quadspi.c | 299 ++++++++++++++++++++------------------
+ 1 file changed, 155 insertions(+), 144 deletions(-)
+
+-- 
+1.9.1
