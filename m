@@ -1,18 +1,14 @@
-Received: from mail-db5eur03on0626.outbound.protection.outlook.com
- ([2a01:111:f400:fe0a::626]
- helo=EUR03-DB5-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eebgs-0001Ed-63
- for linux-mtd@lists.infradead.org; Thu, 25 Jan 2018 07:11:20 +0000
 From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-To: linux-mtd@lists.infradead.org
-Cc: boris.brezillon@free-electrons.com, cyrille.pitchen@wedev4u.fr,
- computersforpeace@gmail.com, han.xu@nxp.com, festevam@gmail.com,
- prabhakar.kushwaha@nxp.com, suresh.gupta@nxp.com,
+To: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, robh@kernel.org,
+ mark.rutland@arm.com, shawnguo@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, boris.brezillon@free-electrons.com,
+ cyrille.pitchen@wedev4u.fr, computersforpeace@gmail.com, han.xu@nxp.com,
+ festevam@gmail.com, prabhakar.kushwaha@nxp.com, suresh.gupta@nxp.com,
  Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Subject: [PATCH] mtd: fsl-quadspi: add support for ls2080a/ls1080a
-Date: Thu, 25 Jan 2018 12:39:57 +0530
-Message-Id: <1516864197-31484-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH 0/2] mtd: fsl-quadspi: Update hwcap based on mode provided in
+ dtsi file
+Date: Thu, 25 Jan 2018 12:51:55 +0530
+Message-Id: <1516864917-31969-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,54 +20,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-LS2080a/LS1088a supports Freescale Quad SPI controller.
-Add fsl-quadspi driver support for ls2080a and ls1088a chip.
+This patch-set added support to update hwcap of FSL QUADSPI controller
+by reading values from the device tree files.
 
-Signed-off-by: Suresh Gupta <suresh.gupta@nxp.com>
-Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
----
+Updated the fsl-quadspi binding by adding spi-tx-bus-width,
+spi-rx-bus-width binding needed to define mode of operation.
+
 Depends on
  https://patchwork.ozlabs.org/project/linux-mtd/list/?series=25286
- 
 
- drivers/mtd/spi-nor/fsl-quadspi.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Yogesh Gaur (2):
+  Documentation: binding: Update fsl-quadspi binding
+  mtd: fsl-quadspi: Update hwcap based on mode provided in dtsi file
 
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index c5863cf..11389d8 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -214,6 +214,7 @@ enum fsl_qspi_devtype {
- 	FSL_QUADSPI_IMX7D,
- 	FSL_QUADSPI_IMX6UL,
- 	FSL_QUADSPI_LS1021A,
-+	FSL_QUADSPI_LS2080A,
- };
- 
- struct fsl_qspi_devtype_data {
-@@ -267,6 +268,15 @@ struct fsl_qspi_devtype_data {
- 	.driver_data = 0,
- };
- 
-+static struct fsl_qspi_devtype_data ls2080a_data = {
-+	.devtype = FSL_QUADSPI_LS2080A,
-+	.rxfifo = 128,
-+	.txfifo = 64,
-+	.ahb_buf_size = 1024,
-+	.driver_data = QUADSPI_QUIRK_TKT253890,
-+};
-+
-+
- #define FSL_QSPI_MAX_CHIP	4
- struct fsl_qspi {
- 	struct spi_nor nor[FSL_QSPI_MAX_CHIP];
-@@ -806,6 +816,7 @@ static int fsl_qspi_nor_setup_last(struct fsl_qspi *q)
- 	{ .compatible = "fsl,imx7d-qspi", .data = (void *)&imx7d_data, },
- 	{ .compatible = "fsl,imx6ul-qspi", .data = (void *)&imx6ul_data, },
- 	{ .compatible = "fsl,ls1021a-qspi", .data = (void *)&ls1021a_data, },
-+	{ .compatible = "fsl,ls2080a-qspi", .data = (void *)&ls2080a_data, },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, fsl_qspi_dt_ids);
+ .../devicetree/bindings/mtd/fsl-quadspi.txt        |  4 ++
+ drivers/mtd/spi-nor/fsl-quadspi.c                  | 46 ++++++++++++++++++++--
+ 2 files changed, 47 insertions(+), 3 deletions(-)
+
 -- 
 1.9.1
