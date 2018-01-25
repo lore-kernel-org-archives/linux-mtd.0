@@ -1,22 +1,20 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eeePM-0002kF-6g
- for linux-mtd@lists.infradead.org; Thu, 25 Jan 2018 10:05:29 +0000
-Date: Thu, 25 Jan 2018 11:05:01 +0100
+Date: Thu, 25 Jan 2018 11:05:54 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, Han Xu <han.xu@nxp.com>, Miquel
- Raynal <miquel.raynal@free-electrons.com>
-Subject: Re: [PATCH] mtd: nand: gpmi: Fix subpage reads
-Message-ID: <20180125110501.084c81dd@bbrezillon>
-In-Reply-To: <20180123101317.15925-1-boris.brezillon@free-electrons.com>
-References: <20180123101317.15925-1-boris.brezillon@free-electrons.com>
+To: Miquel Raynal <miquel.raynal@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Maxime Ripard
+ <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>,
+ linux-mtd@lists.infradead.org, <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] mtd: nand: sunxi: Fix ECC strength choice
+Message-ID: <20180125110554.699b56e3@bbrezillon>
+In-Reply-To: <20180124235936.4b49b094@xps13>
+References: <20180124224931.14392-1-miquel.raynal@free-electrons.com>
+ <20180124235936.4b49b094@xps13>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,84 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 23 Jan 2018 11:13:17 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+On Wed, 24 Jan 2018 23:59:36 +0100
+Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
 
-> Commit 25f815f66a14 ("mtd: nand: force drivers to explicitly send
-> READ/PROG commands") added a call to nand_read_page_op() in
-> gpmi_ecc_read_page(), which means this function now sends a READ0
-> command and place the data pointer at the beginning of the page. This
-> logic is breaking gpmi_ecc_read_subpage() which was calling
-> gpmi_ecc_read_page() and expected it to only retrieve the data without
-> sending the READ0 command.
-> 
-> Create a gpmi_ecc_read_page_data() helper which only does the data
-> retrieval and ECC correction steps and implement gpmi_ecc_read_page()
-> as a wrapper that calls nand_read_page_op()+gpmi_ecc_read_page_data().
-> 
-> This way, gpmi_ecc_read_subpage() can call gpmi_ecc_read_page_data()
-> which restores the logic we had before commit 25f815f66a14 ("mtd: nand:
-> force drivers to explicitly send READ/PROG commands").
-> 
+> Hello,
+>=20
+> On Wed, 24 Jan 2018 23:49:31 +0100
+> Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
+>=20
+> > When the requested ECC strength does not exactly match the strengths
+> > supported by the ECC engine, the driver is selecting the closest
+> > strength meeting the 'selected_strength > requested_strength'
+> > constraint. Fix the fact that, in this particular case, ecc->strength
+> > value was not updated to match the 'selected_strength'.
+> >=20
+> > For instance, one can encounter this issue when no ECC requirement is
+> > filled in the device tree while the NAND chip minimum requirement is not
+> > a strength/step_size combo natively supported by the ECC engine.
+> >  =20
+>=20
+> I forgot to add the Fixes/CC tags, but it seems that this problem
+> has always been out there...
+>=20
+> Fixes: 1fef62c1423b ("mtd: nand: add sunxi NAND flash controller
+> support")
+> CC: stable@vger.kernel.org
 
-Applied.
+No need to send a new version. I added the Fixes+stable tags when
+applying.
 
-> Fixes: 25f815f66a14 ("mtd: nand: force drivers to explicitly send READ/PROG commands")
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> ---
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 18 +++++++++++++-----
->  1 file changed, 13 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> index 3198f5f79a82..93f212457d4d 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -1029,11 +1029,13 @@ static void block_mark_swapping(struct gpmi_nand_data *this,
->  	p[1] = (p[1] & mask) | (from_oob >> (8 - bit));
->  }
->  
-> -static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
-> -				uint8_t *buf, int oob_required, int page)
-> +static int gpmi_ecc_read_page_data(struct nand_chip *chip,
-> +				   uint8_t *buf, int oob_required,
-> +				   int page)
->  {
->  	struct gpmi_nand_data *this = nand_get_controller_data(chip);
->  	struct bch_geometry *nfc_geo = &this->bch_geometry;
-> +	struct mtd_info *mtd = nand_to_mtd(chip);
->  	void          *payload_virt;
->  	dma_addr_t    payload_phys;
->  	void          *auxiliary_virt;
-> @@ -1043,8 +1045,6 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->  	unsigned int  max_bitflips = 0;
->  	int           ret;
->  
-> -	nand_read_page_op(chip, page, 0, NULL, 0);
-> -
->  	dev_dbg(this->dev, "page number is : %d\n", page);
->  	ret = read_page_prepare(this, buf, nfc_geo->payload_size,
->  					this->payload_virt, this->payload_phys,
-> @@ -1178,6 +1178,14 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->  	return max_bitflips;
->  }
->  
-> +static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
-> +			      uint8_t *buf, int oob_required, int page)
-> +{
-> +	nand_read_page_op(chip, page, 0, NULL, 0);
-> +
-> +	return gpmi_ecc_read_page_data(chip, buf, oob_required, page);
-> +}
-> +
->  /* Fake a virtual small page for the subpage read */
->  static int gpmi_ecc_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
->  			uint32_t offs, uint32_t len, uint8_t *buf, int page)
-> @@ -1257,7 +1265,7 @@ static int gpmi_ecc_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
->  
->  	/* Read the subpage now */
->  	this->swap_block_mark = false;
-> -	max_bitflips = gpmi_ecc_read_page(mtd, chip, buf, 0, page);
-> +	max_bitflips = gpmi_ecc_read_page_data(chip, buf, 0, page);
->  
->  	/* Restore */
->  	writel(r1_old, bch_regs + HW_BCH_FLASH0LAYOUT0);
+Thanks,
+
+Boris
+
+>=20
+> > Suggested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com> =20
+>=20
+> I will wait a review before sending a v2.
+>=20
+> Thanks,
+> Miqu=C3=A8l
