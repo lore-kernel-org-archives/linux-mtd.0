@@ -1,18 +1,24 @@
-From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-To: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, robh@kernel.org,
- mark.rutland@arm.com, shawnguo@kernel.org
-Cc: linux-arm-kernel@lists.infradead.org, boris.brezillon@free-electrons.com,
- cyrille.pitchen@wedev4u.fr, computersforpeace@gmail.com, han.xu@nxp.com,
- festevam@gmail.com, prabhakar.kushwaha@nxp.com, suresh.gupta@nxp.com,
- Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Subject: [PATCH 2/2] mtd: fsl-quadspi: Update hwcap based on mode provided in
- dtsi file
-Date: Thu, 25 Jan 2018 12:51:57 +0530
-Message-Id: <1516864917-31969-3-git-send-email-yogeshnarayan.gaur@nxp.com>
-In-Reply-To: <1516864917-31969-1-git-send-email-yogeshnarayan.gaur@nxp.com>
-References: <1516864917-31969-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eecfS-00010J-RR
+ for linux-mtd@lists.infradead.org; Thu, 25 Jan 2018 08:13:56 +0000
+Date: Thu, 25 Jan 2018 09:13:26 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Han Xu <han.xu@nxp.com>
+Cc: Miquel Raynal <miquel.raynal@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, David Woodhouse <dwmw2@infradead.org>,
+ "Brian Norris" <computersforpeace@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Subject: Re: [PATCH] mtd: nand: gpmi: Fix subpage reads
+Message-ID: <20180125091326.414185e1@bbrezillon>
+In-Reply-To: <VI1PR0401MB2221C5231ACDAB30A15E680497E10@VI1PR0401MB2221.eurprd04.prod.outlook.com>
+References: <20180123101317.15925-1-boris.brezillon@free-electrons.com>
+ <20180124135106.2a145a11@xps13>
+ <VI1PR0401MB2221C5231ACDAB30A15E680497E10@VI1PR0401MB2221.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,92 +28,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-FSL QuadSPI controller supports Single, dual, quad modes of operation.
-Mode information is available via "spi-tx-bus-width" and
-"spi-rx-bus-width" nodes of device tree.
+Hi Han,
 
-Update read hwcap capability by reading "spi-rx-bus-width".
-Update write hwcap capability by reading "spi-tx-bus-width".
+On Thu, 25 Jan 2018 03:07:26 +0000
+Han Xu <han.xu@nxp.com> wrote:
 
-If value not provided in device tree file, then fallback to default
-mode i.e. SNOR_HWCAPS_READ_1_1_4 and SNOR_HWCAPS_PP.
+> Acked-by: Han Xu <han.xu@nxp.com>
 
-Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
----
- drivers/mtd/spi-nor/fsl-quadspi.c | 46 ++++++++++++++++++++++++++++++++++++---
- 1 file changed, 43 insertions(+), 3 deletions(-)
+Could you please fix you mailer (or use another one). Your emails are
+systematically rejected by the ML, which means I don't have your Acks
+in patchwork and have to add them back manually.
 
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index 11389d8..ff98e5a 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -979,8 +979,8 @@ static void fsl_qspi_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
- 
- static int fsl_qspi_probe(struct platform_device *pdev)
- {
--	const struct spi_nor_hwcaps hwcaps = {
--		.mask = SNOR_HWCAPS_READ_1_1_4 |
-+	struct spi_nor_hwcaps hwcaps = {
-+		.mask = SNOR_HWCAPS_READ_FAST |
- 			SNOR_HWCAPS_PP,
- 	};
- 	struct device_node *np = pdev->dev.of_node;
-@@ -989,7 +989,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	struct spi_nor *nor;
- 	struct mtd_info *mtd;
--	int ret, i = 0;
-+	int ret, i = 0, value;
- 
- 	q = devm_kzalloc(dev, sizeof(*q), GFP_KERNEL);
- 	if (!q)
-@@ -1037,6 +1037,46 @@ static int fsl_qspi_probe(struct platform_device *pdev)
- 		goto clk_failed;
- 	}
- 
-+	if (!of_property_read_u32(np, "spi-rx-bus-width", &value)) {
-+		switch (value) {
-+		case 1:
-+			hwcaps.mask |= SNOR_HWCAPS_READ |
-+				       SNOR_HWCAPS_READ_FAST;
-+			break;
-+		case 2:
-+			hwcaps.mask |= SNOR_HWCAPS_READ_1_1_2 |
-+				       SNOR_HWCAPS_READ_1_2_2;
-+			break;
-+		case 4:
-+			hwcaps.mask |= SNOR_HWCAPS_READ_1_1_4 |
-+				       SNOR_HWCAPS_READ_1_4_4;
-+			break;
-+		default:
-+			dev_err(dev,
-+				"spi-rx-bus-width %d not supported\n",
-+				value);
-+			break;
-+		}
-+	} else
-+		hwcaps.mask |= SNOR_HWCAPS_READ_1_1_4;
-+
-+	if (!of_property_read_u32(np, "spi-tx-bus-width", &value)) {
-+		switch (value) {
-+		case 1:
-+			hwcaps.mask |= SNOR_HWCAPS_PP;
-+			break;
-+		case 4:
-+			hwcaps.mask |= SNOR_HWCAPS_PP_1_1_4 |
-+				       SNOR_HWCAPS_PP_1_4_4;
-+			break;
-+		default:
-+			dev_err(dev,
-+				"spi-tx-bus-width %d not supported\n",
-+				value);
-+			break;
-+		}
-+	}
-+
- 	/* find the irq */
- 	ret = platform_get_irq(pdev, 0);
- 	if (ret < 0) {
--- 
-1.9.1
+Thanks,
+
+Boris
