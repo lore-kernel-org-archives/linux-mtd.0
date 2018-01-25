@@ -1,23 +1,20 @@
-Received: from mail-ot0-x235.google.com ([2607:f8b0:4003:c0f::235])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eeexd-0006v8-03
- for linux-mtd@lists.infradead.org; Thu, 25 Jan 2018 10:40:50 +0000
-Received: by mail-ot0-x235.google.com with SMTP id r4so6298390oti.12
- for <linux-mtd@lists.infradead.org>; Thu, 25 Jan 2018 02:40:38 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20180125113317.5e74d178@bbrezillon>
-References: <1516285721-32294-1-git-send-email-fabio.estevam@nxp.com>
- <CAOMZO5Bo4Tbo+uQADrfo2O=LmHn4oFTqN7pWwqMrrtrhkemmEg@mail.gmail.com>
- <20180125113317.5e74d178@bbrezillon>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Thu, 25 Jan 2018 08:40:37 -0200
-Message-ID: <CAOMZO5D=5ostRrhunxvCxYENjJ=1ADAJ2puGDf0JgT2mWJFc5Q@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] mtd: fsl-quadspi: Distinguish the mtd device names
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- cyrille.pitchen@wedev4u.fr
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by casper.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eeeqX-0008Nd-AI
+ for linux-mtd@lists.infradead.org; Thu, 25 Jan 2018 10:33:30 +0000
+Date: Thu, 25 Jan 2018 11:33:17 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Fabio Estevam <festevam@gmail.com>
 Cc: Fabio Estevam <fabio.estevam@nxp.com>, Han Xu <han.xu@nxp.com>,
  linux-mtd@lists.infradead.org, David Wolfe <david.wolfe@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v6 1/2] mtd: fsl-quadspi: Distinguish the mtd device names
+Message-ID: <20180125113317.5e74d178@bbrezillon>
+In-Reply-To: <CAOMZO5Bo4Tbo+uQADrfo2O=LmHn4oFTqN7pWwqMrrtrhkemmEg@mail.gmail.com>
+References: <1516285721-32294-1-git-send-email-fabio.estevam@nxp.com>
+ <CAOMZO5Bo4Tbo+uQADrfo2O=LmHn4oFTqN7pWwqMrrtrhkemmEg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,16 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+On Thu, 25 Jan 2018 08:20:59 -0200
+Fabio Estevam <festevam@gmail.com> wrote:
 
-On Thu, Jan 25, 2018 at 8:33 AM, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
+> Hi Boris,
+> 
+> On Thu, Jan 18, 2018 at 12:28 PM, Fabio Estevam <fabio.estevam@nxp.com> wrote:
+> > Currently on a imx6sx-sdb board, which has two SPI NOR chips connected
+> > to QSPI2 the following output from /proc/mtd is seen:
+> >
+> > # cat /proc/mtd
+> > dev:    size   erasesize  name
+> > mtd0: 01000000 00010000 "21e4000.qspi"
+> > mtd1: 01000000 00010000 "21e4000.qspi"
+> >
+> > Attempts to partition them on the kernel command line result in both
+> > chips with identical (and identically named) partitions, which is
+> > an inconvenient behavior.
+> >
+> > Assign a different mtd->name for each mtd device to avoid this problem.
+> >
+> > After this change the output from /proc/mtd becomes:
+> >
+> > # cat /proc/mtd
+> > dev:    size   erasesize  name
+> > mtd0: 01000000 00010000 "21e4000.qspi-0"
+> > mtd1: 01000000 00010000 "21e4000.qspi-1"
+> >
+> > In order to keep mtdparts compatibility keep the mtd->name
+> > unchanged when a single SPI NOR is present.
+> >
+> > Reported-by: David Wolfe <david.wolfe@nxp.com>
+> > Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+> > Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > ---
+> > Changes since v5:
+> > - Preserve the label value, if any. (Boris)  
+> 
+> Do you plan to apply this one for 4.17?
 
-> I'm not applying spi-nor patches, and Cyrille already sent me his PR
-> for 4.16. So yes, I'd say it will be queued for 4.17. Is this a problem?
-
-No problem. Thanks for the clarification.
-
-Cyrille, I missed to add you on Cc on v6. Should I resend it with you on Cc?
-
-Thanks
+I'm not applying spi-nor patches, and Cyrille already sent me his PR
+for 4.16. So yes, I'd say it will be queued for 4.17. Is this a problem?
