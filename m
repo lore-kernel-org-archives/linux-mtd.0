@@ -1,15 +1,21 @@
-From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-To: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, robh@kernel.org,
- mark.rutland@arm.com, shawnguo@kernel.org
-Cc: linux-arm-kernel@lists.infradead.org, boris.brezillon@free-electrons.com,
- cyrille.pitchen@wedev4u.fr, computersforpeace@gmail.com, han.xu@nxp.com,
- festevam@gmail.com, prabhakar.kushwaha@nxp.com, suresh.gupta@nxp.com,
- Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Subject: [PATCH] arm64: dts: ls1088a: Add qspi device node for ls1088a-rdb
-Date: Thu, 25 Jan 2018 13:56:57 +0530
-Message-Id: <1516868817-2327-1-git-send-email-yogeshnarayan.gaur@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+Received: from lilium.sigma-star.at ([109.75.188.150])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eedEC-0001Ny-SP
+ for linux-mtd@lists.infradead.org; Thu, 25 Jan 2018 08:49:50 +0000
+Content-Type: text/plain;
+	charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 11.2 \(3445.5.20\))
+Subject: Re: [RFC] UBIFS authentication
+From: David Gstir <david@sigma-star.at>
+In-Reply-To: <E6D3BD02-AF3A-4B75-92FD-A8A07B4C9C51@sigma-star.at>
+Date: Thu, 25 Jan 2018 09:49:32 +0100
+Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ kernel@pengutronix.de
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <AF303146-8E37-48B2-B9DF-8C3193138EFA@sigma-star.at>
+References: <E6D3BD02-AF3A-4B75-92FD-A8A07B4C9C51@sigma-star.at>
+To: linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,89 +25,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add nodes and properties for QSPI controller.
-Add support for spansion flash, s25fs512s, as slave device for
-QSPI controller.
+Hi!
 
-Added entry of "fsl,ls1088a-qspi" in fsl-quadspi.txt binding file.
+> On 17.01.2018, at 16:19, David Gstir <david@sigma-star.at> wrote:
+>=20
+> Hi everybody!
+>=20
+> Richard and I have been working on extending UBIFS' security features =
+and came
+> up with the following concept to add full file contents and metadata =
+authentication.
+>=20
+> For block devices like eMMCs dm-crypt and dm-verity/dm-integrity can =
+be used to
+> get full data confidentiality and authenticity, but for raw flash or =
+more
+> specifically UBIFS, existing options are not ideal:
+>=20
+> One option is to use eCryptfs with some out-of-tree patches that add =
+AEAD cipher
+> (AES-GCM) support, but does not look like there was much progress =
+recently [1].
+>=20
+> Another option is to use IMA/EVM as described by Marc Kleine-Budde in =
+his
+> ELCE 2016 talk [2], but this just protects the file payload and some =
+attributes
+> and not the full filesystem data structures.
+>=20
+> A short overview of existing options is also given here [3].
+>=20
+> Due to the design of UBIFS it is actually a bit easier than on other =
+filesystems
+> to authenticate its data structures and ensure consistency of on-flash =
+data.
+>=20
+> I've attached the whitepaper below and also published it here [4].
+>=20
+> Comments are welcome. :)
 
-Signed-off-by: Suresh Gupta <suresh.gupta@nxp.com>
-Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
----
-Depends on
- https://patchwork.ozlabs.org/project/linux-mtd/list/?series=25292
+*ping*
 
- .../devicetree/bindings/mtd/fsl-quadspi.txt         |  1 +
- arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts   | 21 +++++++++++++++++++++
- arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi      | 12 ++++++++++++
- 3 files changed, 34 insertions(+)
+Did anybody get a chance to look at this yet, or is everybody still busy =
+with Meltdown and Spectre? ;D
 
-diff --git a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-index 13a903e..927d65c 100644
---- a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-+++ b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-@@ -7,6 +7,7 @@ Required properties:
- 		 or
- 		 "fsl,ls2080a-qspi" followed by "fsl,ls1021a-qspi",
- 		 "fsl,ls1043a-qspi" followed by "fsl,ls1021a-qspi"
-+		 "fsl,ls2080a-qspi" followed by "fsl,ls1088a-qspi",
-   - reg : the first contains the register location and length,
-           the second contains the memory mapping address and length
-   - reg-names: Should contain the reg names "QuadSPI" and "QuadSPI-memory"
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts
-index 0f6fcda..3febb59 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts
-@@ -94,6 +94,27 @@
- 	};
- };
- 
-+&qspi {
-+	status = "okay";
-+	fsl,qspi-has-second-chip;
-+	spi-rx-bus-width = <4>;
-+	spi-tx-bus-width = <4>;
-+	qflash0: s25fs512s@0 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		spi-max-frequency = <20000000>;
-+		reg = <0>;
-+	};
-+
-+	qflash1: s25fs512s@1 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		spi-max-frequency = <20000000>;
-+		reg = <1>;
-+	};
-+
-+};
-+
- &ifc {
- 	ranges = <0 0 0x5 0x30000000 0x00010000
- 		  2 0 0x5 0x20000000 0x00010000>;
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-index bd80e9a..b45a522 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-@@ -394,6 +394,18 @@
- 			status = "disabled";
- 		};
- 
-+		qspi: quadspi@20c0000 {
-+			compatible = "fsl,ls2080a-qspi", "fsl,ls1088a-qspi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0x0 0x20c0000 0x0 0x10000>,
-+				<0x0 0x20000000 0x0 0x10000000>;
-+			reg-names = "QuadSPI", "QuadSPI-memory";
-+			interrupts = <0 25 0x4>; /* Level high type */
-+			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
-+			clock-names = "qspi_en", "qspi";
-+		};
-+
- 		sata: sata@3200000 {
- 			compatible = "fsl,ls1088a-ahci";
- 			reg = <0x0 0x3200000 0x0 0x10000>,
--- 
-1.9.1
+Thanks,
+David=
