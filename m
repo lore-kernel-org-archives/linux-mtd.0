@@ -1,24 +1,15 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eecfS-00010J-RR
- for linux-mtd@lists.infradead.org; Thu, 25 Jan 2018 08:13:56 +0000
-Date: Thu, 25 Jan 2018 09:13:26 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Han Xu <han.xu@nxp.com>
-Cc: Miquel Raynal <miquel.raynal@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, David Woodhouse <dwmw2@infradead.org>,
- "Brian Norris" <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Subject: Re: [PATCH] mtd: nand: gpmi: Fix subpage reads
-Message-ID: <20180125091326.414185e1@bbrezillon>
-In-Reply-To: <VI1PR0401MB2221C5231ACDAB30A15E680497E10@VI1PR0401MB2221.eurprd04.prod.outlook.com>
-References: <20180123101317.15925-1-boris.brezillon@free-electrons.com>
- <20180124135106.2a145a11@xps13>
- <VI1PR0401MB2221C5231ACDAB30A15E680497E10@VI1PR0401MB2221.eurprd04.prod.outlook.com>
+From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+To: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, robh@kernel.org,
+ mark.rutland@arm.com, shawnguo@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, boris.brezillon@free-electrons.com,
+ cyrille.pitchen@wedev4u.fr, computersforpeace@gmail.com, han.xu@nxp.com,
+ festevam@gmail.com, prabhakar.kushwaha@nxp.com, suresh.gupta@nxp.com,
+ Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH] arm64: dts: ls1088a: Add qspi device node for ls1088a-rdb
+Date: Thu, 25 Jan 2018 13:56:57 +0530
+Message-Id: <1516868817-2327-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,17 +19,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Han,
+Add nodes and properties for QSPI controller.
+Add support for spansion flash, s25fs512s, as slave device for
+QSPI controller.
 
-On Thu, 25 Jan 2018 03:07:26 +0000
-Han Xu <han.xu@nxp.com> wrote:
+Added entry of "fsl,ls1088a-qspi" in fsl-quadspi.txt binding file.
 
-> Acked-by: Han Xu <han.xu@nxp.com>
+Signed-off-by: Suresh Gupta <suresh.gupta@nxp.com>
+Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+---
+Depends on
+ https://patchwork.ozlabs.org/project/linux-mtd/list/?series=25292
 
-Could you please fix you mailer (or use another one). Your emails are
-systematically rejected by the ML, which means I don't have your Acks
-in patchwork and have to add them back manually.
+ .../devicetree/bindings/mtd/fsl-quadspi.txt         |  1 +
+ arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts   | 21 +++++++++++++++++++++
+ arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi      | 12 ++++++++++++
+ 3 files changed, 34 insertions(+)
 
-Thanks,
-
-Boris
+diff --git a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
+index 13a903e..927d65c 100644
+--- a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
++++ b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
+@@ -7,6 +7,7 @@ Required properties:
+ 		 or
+ 		 "fsl,ls2080a-qspi" followed by "fsl,ls1021a-qspi",
+ 		 "fsl,ls1043a-qspi" followed by "fsl,ls1021a-qspi"
++		 "fsl,ls2080a-qspi" followed by "fsl,ls1088a-qspi",
+   - reg : the first contains the register location and length,
+           the second contains the memory mapping address and length
+   - reg-names: Should contain the reg names "QuadSPI" and "QuadSPI-memory"
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts
+index 0f6fcda..3febb59 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts
+@@ -94,6 +94,27 @@
+ 	};
+ };
+ 
++&qspi {
++	status = "okay";
++	fsl,qspi-has-second-chip;
++	spi-rx-bus-width = <4>;
++	spi-tx-bus-width = <4>;
++	qflash0: s25fs512s@0 {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		spi-max-frequency = <20000000>;
++		reg = <0>;
++	};
++
++	qflash1: s25fs512s@1 {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		spi-max-frequency = <20000000>;
++		reg = <1>;
++	};
++
++};
++
+ &ifc {
+ 	ranges = <0 0 0x5 0x30000000 0x00010000
+ 		  2 0 0x5 0x20000000 0x00010000>;
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+index bd80e9a..b45a522 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+@@ -394,6 +394,18 @@
+ 			status = "disabled";
+ 		};
+ 
++		qspi: quadspi@20c0000 {
++			compatible = "fsl,ls2080a-qspi", "fsl,ls1088a-qspi";
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0x0 0x20c0000 0x0 0x10000>,
++				<0x0 0x20000000 0x0 0x10000000>;
++			reg-names = "QuadSPI", "QuadSPI-memory";
++			interrupts = <0 25 0x4>; /* Level high type */
++			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
++			clock-names = "qspi_en", "qspi";
++		};
++
+ 		sata: sata@3200000 {
+ 			compatible = "fsl,ls1088a-ahci";
+ 			reg = <0x0 0x3200000 0x0 0x10000>,
+-- 
+1.9.1
