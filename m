@@ -1,18 +1,26 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eeUPU-0003P7-Tp
- for linux-mtd@lists.infradead.org; Wed, 24 Jan 2018 23:24:54 +0000
-From: Miquel Raynal <miquel.raynal@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@free-electrons.com>
-Subject: [PATCH] mtd: nftl/inftl: check mtd_erase() return value
-Date: Thu, 25 Jan 2018 00:24:34 +0100
-Message-Id: <20180124232434.32023-1-miquel.raynal@free-electrons.com>
+Received: from mail-ve1eur01on060d.outbound.protection.outlook.com
+ ([2a01:111:f400:fe1f::60d]
+ helo=EUR01-VE1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eeXt9-00024M-5E
+ for linux-mtd@lists.infradead.org; Thu, 25 Jan 2018 03:07:45 +0000
+From: Han Xu <han.xu@nxp.com>
+To: Miquel Raynal <miquel.raynal@free-electrons.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>
+CC: Richard Weinberger <richard@nod.at>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, David Woodhouse <dwmw2@infradead.org>,
+ "Brian Norris" <computersforpeace@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Subject: Re: [PATCH] mtd: nand: gpmi: Fix subpage reads
+Date: Thu, 25 Jan 2018 03:07:26 +0000
+Message-ID: <VI1PR0401MB2221C5231ACDAB30A15E680497E10@VI1PR0401MB2221.eurprd04.prod.outlook.com>
+References: <20180123101317.15925-1-boris.brezillon@free-electrons.com>,
+ <20180124135106.2a145a11@xps13>
+In-Reply-To: <20180124135106.2a145a11@xps13>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,61 +30,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since the creation of mtd_erase(), the function can return a negative
-error code without updating the instr->state flag. This happens for
-instance when ->_erase() is not implemented or ->erasesize has an invalid
-value. The calling function should error out in this case.
 
-Functions in nftlmount/inftlmount call mtd_erase() without checking the
-return code. The instr->state flag is checked but might not have been
-updated depending on the error path.
+________________________________________
+From: Miquel Raynal <miquel.raynal@free-electrons.com>
+Sent: Wednesday, January 24, 2018 6:51 AM
+To: Boris Brezillon
+Cc: Richard Weinberger; linux-mtd@lists.infradead.org; David Woodhouse; Bri=
+an Norris; Marek Vasut; Cyrille Pitchen; Han Xu
+Subject: Re: [PATCH] mtd: nand: gpmi: Fix subpage reads
 
-Add checks on the returned value of mtd_erase().
+Hello Boris,
 
-Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
----
- drivers/mtd/inftlmount.c | 7 +++++--
- drivers/mtd/nftlmount.c  | 3 ++-
- 2 files changed, 7 insertions(+), 3 deletions(-)
+On Tue, 23 Jan 2018 11:13:17 +0100
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
-index 8d6bb189ea8e..cab4a0b9f881 100644
---- a/drivers/mtd/inftlmount.c
-+++ b/drivers/mtd/inftlmount.c
-@@ -219,7 +219,9 @@ static int find_boot_record(struct INFTLrecord *inftl)
- 				 */
- 				instr->addr = ip->Reserved0 * inftl->EraseSize;
- 				instr->len = inftl->EraseSize;
--				mtd_erase(mtd, instr);
-+				ret = mtd_erase(mtd, instr);
-+				if (ret < 0)
-+					return ret;
- 			}
- 			if ((ip->lastUnit - ip->firstUnit + 1) < ip->virtualUnits) {
- 				printk(KERN_WARNING "INFTL: Media Header "
-@@ -393,7 +395,8 @@ int INFTL_formatblock(struct INFTLrecord *inftl, int block)
- 	   mark only the failed block in the bbt. */
- 	for (physblock = 0; physblock < inftl->EraseSize;
- 	     physblock += instr->len, instr->addr += instr->len) {
--		mtd_erase(inftl->mbd.mtd, instr);
-+		if (mtd_erase(inftl->mbd.mtd, instr < 0))
-+			goto fail;
- 
- 		if (instr->state == MTD_ERASE_FAILED) {
- 			printk(KERN_WARNING "INFTL: error while formatting block %d\n",
-diff --git a/drivers/mtd/nftlmount.c b/drivers/mtd/nftlmount.c
-index 184c8fbfe465..8dbc40ab7d73 100644
---- a/drivers/mtd/nftlmount.c
-+++ b/drivers/mtd/nftlmount.c
-@@ -331,7 +331,8 @@ int NFTL_formatblock(struct NFTLrecord *nftl, int block)
- 	instr->mtd = nftl->mbd.mtd;
- 	instr->addr = block * nftl->EraseSize;
- 	instr->len = nftl->EraseSize;
--	mtd_erase(mtd, instr);
-+	if (mtd_erase(mtd, instr) < 0)
-+		goto fail;
- 
- 	if (instr->state == MTD_ERASE_FAILED) {
- 		printk("Error while formatting block %d\n", block);
--- 
-2.11.0
+> Commit 25f815f66a14 ("mtd: nand: force drivers to explicitly send
+> READ/PROG commands") added a call to nand_read_page_op() in
+> gpmi_ecc_read_page(), which means this function now sends a READ0
+> command and place the data pointer at the beginning of the page. This
+> logic is breaking gpmi_ecc_read_subpage() which was calling
+> gpmi_ecc_read_page() and expected it to only retrieve the data without
+> sending the READ0 command.
+>
+> Create a gpmi_ecc_read_page_data() helper which only does the data
+> retrieval and ECC correction steps and implement gpmi_ecc_read_page()
+> as a wrapper that calls nand_read_page_op()+gpmi_ecc_read_page_data().
+>
+> This way, gpmi_ecc_read_subpage() can call gpmi_ecc_read_page_data()
+> which restores the logic we had before commit 25f815f66a14 ("mtd: nand:
+> force drivers to explicitly send READ/PROG commands").
+>
+> Fixes: 25f815f66a14 ("mtd: nand: force drivers to explicitly send READ/PR=
+OG commands")
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+
+Reviewed-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+Acked-by: Han Xu <han.xu@nxp.com>
+
+Thanks for fixing it,
+Miqu=E8l
