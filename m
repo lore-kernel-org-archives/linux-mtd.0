@@ -1,32 +1,19 @@
 Received: from mail-qt0-x241.google.com ([2607:f8b0:400d:c0d::241])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ef970-0002jy-IE
- for linux-mtd@lists.infradead.org; Fri, 26 Jan 2018 18:52:32 +0000
-Received: by mail-qt0-x241.google.com with SMTP id a27so3783004qtd.1
- for <linux-mtd@lists.infradead.org>; Fri, 26 Jan 2018 10:52:19 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20180124171501.GA1043@lenoch>
-References: <20180124100604.GA19593@lenoch> <20180124100754.GC19593@lenoch>
- <CAHp75VeGpj28G60L86d4FDOL1YMAoM5kcdvSC5O6iH4Xi8zfHg@mail.gmail.com>
- <20180124171501.GA1043@lenoch>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Fri, 26 Jan 2018 20:52:18 +0200
-Message-ID: <CAHp75Vdi=EJoBPe8sS8U3h+QaKR2tqyv2KaF=ixsPoE1qpXOHQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] devres: Add devm_ioremap_shared_resource()
-To: Ladislav Michl <ladis@linux-mips.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>,
- Tom Lendacky <thomas.lendacky@amd.com>, Borislav Petkov <bp@suse.de>,
- Ingo Molnar <mingo@kernel.org>,
- Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
- Philippe Ombredanne <pombredanne@nexb.com>,
- Kate Stewart <kstewart@linuxfoundation.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Bjorn Helgaas <bhelgaas@google.com>, Wei Yongjun <weiyongjun1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+ id 1efBTP-0007e6-UI
+ for linux-mtd@lists.infradead.org; Fri, 26 Jan 2018 21:23:49 +0000
+Received: by mail-qt0-x241.google.com with SMTP id d8so4788679qtm.0
+ for <linux-mtd@lists.infradead.org>; Fri, 26 Jan 2018 13:23:36 -0800 (PST)
+From: Fabio Estevam <festevam@gmail.com>
+To: cyrille.pitchen@wedev4u.fr
+Cc: boris.brezillon@free-electrons.com, linux-mtd@lists.infradead.org,
+ han.xu@nxp.com, david.wolfe@nxp.com, Fabio Estevam <fabio.estevam@nxp.com>
+Subject: [PATCH RESEND v6 2/2] dt-bindings: fsl-quadspi: Add the example of
+ two SPI NOR
+Date: Fri, 26 Jan 2018 19:23:25 -0200
+Message-Id: <1517001805-7646-2-git-send-email-festevam@gmail.com>
+In-Reply-To: <1517001805-7646-1-git-send-email-festevam@gmail.com>
+References: <1517001805-7646-1-git-send-email-festevam@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,40 +23,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 24, 2018 at 7:15 PM, Ladislav Michl <ladis@linux-mips.org> wrote:
-> On Wed, Jan 24, 2018 at 06:21:38PM +0200, Andy Shevchenko wrote:
+From: Fabio Estevam <fabio.estevam@nxp.com>
 
->> > +#define devm_ioremap_resource(dev, res) \
->> > +       __devm_ioremap_resource(dev, res, false)
->> > +#define devm_ioremap_shared_resource(dev, res) \
->> > +       __devm_ioremap_resource(dev, res, true)
->> > +void __iomem *__devm_ioremap_resource(struct device *dev, struct resource *res,
->> > +                                     bool shared);
->>
->> I would rather do the following:
->>
->> _resource() ->  _resource_exclusive()
->>
->> #define _resource()  _resource_exclusive()
->>
->> Add _resource_shared()
->>
->> And use long names below in this file whenever refer to exclusive or
->> shared variant.
->
-> Two separate functions were also considered, but I was unable to find small
-> common implementation.
+Improve the bindings example by adding an example of how to represent
+two SPI NOR devices.
 
-Common part is still like you have done.
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+Acked-by: Han Xu <han.xu@nxp.com>
+---
+Resending it as I missed to send it to Cyrille
 
-I'm talking about _naming_ scheme here.
+Changes since v5:
+- None
 
-> If code size does not matter or you can provide a hint
-> to make this solution small and nice, I'll go for it.
+ .../devicetree/bindings/mtd/fsl-quadspi.txt        | 24 ++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-It would be the same as in your initial proposal, since I'm not
-talking about duplicating anything.
-
+diff --git a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
+index 63d4d626..483e9cf 100644
+--- a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
++++ b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
+@@ -39,3 +39,27 @@ qspi0: quadspi@40044000 {
+ 		....
+ 	};
+ };
++
++Example showing the usage of two SPI NOR devices:
++
++&qspi2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_qspi2>;
++	status = "okay";
++
++	flash0: n25q256a@0 {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		compatible = "micron,n25q256a", "jedec,spi-nor";
++		spi-max-frequency = <29000000>;
++		reg = <0>;
++	};
++
++	flash1: n25q256a@1 {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		compatible = "micron,n25q256a", "jedec,spi-nor";
++		spi-max-frequency = <29000000>;
++		reg = <1>;
++	};
++};
 -- 
-With Best Regards,
-Andy Shevchenko
+2.7.4
