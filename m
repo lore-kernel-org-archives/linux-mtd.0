@@ -1,20 +1,19 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by casper.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eeeqX-0008Nd-AI
- for linux-mtd@lists.infradead.org; Thu, 25 Jan 2018 10:33:30 +0000
-Date: Thu, 25 Jan 2018 11:33:17 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, Han Xu <han.xu@nxp.com>,
- linux-mtd@lists.infradead.org, David Wolfe <david.wolfe@nxp.com>
-Subject: Re: [PATCH v6 1/2] mtd: fsl-quadspi: Distinguish the mtd device names
-Message-ID: <20180125113317.5e74d178@bbrezillon>
-In-Reply-To: <CAOMZO5Bo4Tbo+uQADrfo2O=LmHn4oFTqN7pWwqMrrtrhkemmEg@mail.gmail.com>
-References: <1516285721-32294-1-git-send-email-fabio.estevam@nxp.com>
- <CAOMZO5Bo4Tbo+uQADrfo2O=LmHn4oFTqN7pWwqMrrtrhkemmEg@mail.gmail.com>
+Received: from mail-ot0-x233.google.com ([2607:f8b0:4003:c0f::233])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eeyLk-0001Ll-AH
+ for linux-mtd@lists.infradead.org; Fri, 26 Jan 2018 07:23:03 +0000
+Received: by mail-ot0-x233.google.com with SMTP id a24so9371092otd.4
+ for <linux-mtd@lists.infradead.org>; Thu, 25 Jan 2018 23:22:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Reply-To: klaus.peterschuster@outlook.de
+From: Peter Schuster <femi.ageuh@gmail.com>
+Date: Fri, 26 Jan 2018 08:22:47 +0100
+Message-ID: <CACKcKZ-YTVoO8xO=VcRR-F_91T=fQ=MZa2wBTk_EaRT7GRz52Q@mail.gmail.com>
+Subject: =?UTF-8?Q?Darlehen_Geld_f=C3=BCr_Einzelpersonen_und_Fachleute_in_w?=
+ =?UTF-8?Q?eniger_als_72_Stunden?=
+To: undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 25 Jan 2018 08:20:59 -0200
-Fabio Estevam <festevam@gmail.com> wrote:
+Hallo,
 
-> Hi Boris,
-> 
-> On Thu, Jan 18, 2018 at 12:28 PM, Fabio Estevam <fabio.estevam@nxp.com> wrote:
-> > Currently on a imx6sx-sdb board, which has two SPI NOR chips connected
-> > to QSPI2 the following output from /proc/mtd is seen:
-> >
-> > # cat /proc/mtd
-> > dev:    size   erasesize  name
-> > mtd0: 01000000 00010000 "21e4000.qspi"
-> > mtd1: 01000000 00010000 "21e4000.qspi"
-> >
-> > Attempts to partition them on the kernel command line result in both
-> > chips with identical (and identically named) partitions, which is
-> > an inconvenient behavior.
-> >
-> > Assign a different mtd->name for each mtd device to avoid this problem.
-> >
-> > After this change the output from /proc/mtd becomes:
-> >
-> > # cat /proc/mtd
-> > dev:    size   erasesize  name
-> > mtd0: 01000000 00010000 "21e4000.qspi-0"
-> > mtd1: 01000000 00010000 "21e4000.qspi-1"
-> >
-> > In order to keep mtdparts compatibility keep the mtd->name
-> > unchanged when a single SPI NOR is present.
-> >
-> > Reported-by: David Wolfe <david.wolfe@nxp.com>
-> > Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
-> > Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > ---
-> > Changes since v5:
-> > - Preserve the label value, if any. (Boris)  
-> 
-> Do you plan to apply this one for 4.17?
+Sind Sie in einer schwierigen Situation, f=C3=BCr die Sie sich f=C3=BCr ein
+Darlehen suchen? Ben=C3=B6tigen Sie eine Finanzierung, um eine Schuld zu
+begleichen oder eine Aktivit=C3=A4t zu finanzieren? Haben Sie einen
+Verbraucherkredit, eine Hypothek, einen pers=C3=B6nlichen Kredit, eine
+Hypothek, Investition Darlehen, Schuldenkonsolidierung Darlehen oder
+andere braucht?
 
-I'm not applying spi-nor patches, and Cyrille already sent me his PR
-for 4.16. So yes, I'd say it will be queued for 4.17. Is this a problem?
+Ich bin ein einzelner Investor. I zur Verf=C3=BCgung stellen die Kredit
+kurz-, mittel- und langfristige. Ihr Finanzierungsbedingungen sind
+sehr einfach und meine Zinssatz betr=C3=A4gt 3% pro Jahr.
+
+F=C3=BCr alle Anfragen, bleibe ich zur Verf=C3=BCgung, um Ihre Fragen zu be=
+antworten.
+
+Danke, dass Sie mir per E-Mail an Sie von  :   klaus.peterschuster@outlook.=
+de
+
+Mit freundlichen Gr=C3=BC=C3=9Fen.
+
+Peter Schuster
+
+Financial Bank
+https://firstfinancialsa.com/de
