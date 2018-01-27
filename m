@@ -1,24 +1,27 @@
-Received: from mail-io0-x241.google.com ([2607:f8b0:4001:c06::241])
+Received: from smtp10.smtpout.orange.fr ([80.12.242.132]
+ helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1efL8d-0006cn-OT
- for linux-mtd@lists.infradead.org; Sat, 27 Jan 2018 07:43:02 +0000
-Received: by mail-io0-x241.google.com with SMTP id f34so2712810ioi.13
- for <linux-mtd@lists.infradead.org>; Fri, 26 Jan 2018 23:42:48 -0800 (PST)
+ id 1efNoB-0003tp-EA
+ for linux-mtd@lists.infradead.org; Sat, 27 Jan 2018 10:34:05 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Miquel Raynal <miquel.raynal@free-electrons.com>
+Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3 0/7] Marvell NAND controller rework with ->exec_op()
+References: <20180109103637.23798-1-miquel.raynal@free-electrons.com>
+ <20180111122751.4bd74366@bbrezillon> <87efmwb8bj.fsf@belgarion.home>
+ <20180111232417.4aa86075@xps13> <87a7xjbis2.fsf@belgarion.home>
+ <20180112094501.27706bfc@bbrezillon> <876087beui.fsf@belgarion.home>
+ <20180112105228.176ab80f@bbrezillon> <87wp0majtg.fsf@belgarion.home>
+ <20180113093807.3984c184@bbrezillon> <20180113120529.2f00ea20@xps13>
+ <87o9lwaft9.fsf@belgarion.home> <20180122095149.590612d9@bbrezillon>
+Date: Sat, 27 Jan 2018 11:33:47 +0100
+In-Reply-To: <20180122095149.590612d9@bbrezillon> (Boris Brezillon's message
+ of "Mon, 22 Jan 2018 09:51:49 +0100")
+Message-ID: <87y3kj8ub8.fsf@belgarion.home>
 MIME-Version: 1.0
-In-Reply-To: <20171030093426.30827ef5@bbrezillon>
-References: <20171028074351.13118-1-prasannatsmkumar@gmail.com>
- <20171030093426.30827ef5@bbrezillon>
-From: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
-Date: Sat, 27 Jan 2018 13:12:47 +0530
-Message-ID: <CANc+2y4=1GdfzzMeyO6=vrQDBQKca5NtrHbXtUH9f4yp5wJ-xg@mail.gmail.com>
-Subject: Re: [RFC] NAND: Optimize NAND_ECC_HW_OOB_FIRST read
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marek.vasut@gmail.com>,
- cyrille.pitchen@wedev4u.fr, linux-mtd@lists.infradead.org,
- open list <linux-kernel@vger.kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,85 +31,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Boris Brezillon <boris.brezillon@free-electrons.com> writes:
 
-On 30 October 2017 at 14:04, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-> Hi PrasannaKumar,
+> Hi Robert,
 >
-> On Sat, 28 Oct 2017 13:13:51 +0530
-> PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com> wrote:
+> On Sun, 14 Jan 2018 11:35:30 +0100
+> Robert Jarzmik <robert.jarzmik@free.fr> wrote:
 >
->> From: Lars-Peter Clausen <lars@metafoo.de>
->>
->> Avoid sending unnecessary READ commands to the chip.
->>
->> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
->> Signed-off-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
->> ---
->> This patch is taken from git://projects.qi-hardware.com/qi-kernel.git
->> branch jz-3.16. From [1] and [2] it can be seen that the patch author
->> thinks this can be sent upstream but it never happened so far. This
->> patch is used in OpenWRT as seen from [3].
+>> Miquel Raynal <miquel.raynal@free-electrons.com> writes:
+>> 
+>> >> It shouldn't be damaged anymore. The bug has been fixed just before we
+>> >> asked you to scrub the BBT area.  
+>> I confirm. The last marvell branch I have (2be03e113a5b ("HACK: Dump OOB data
+>> while reading")) does work correctly on my zylonite.
+>> 
+>> I still have to make a test of a file write, and a devicetree based setup, but I
+>> don't think anything wrong will happen now.
 >
-> Sounds reasonable, but it's likely to conflict with something I'd like
-> to queue for 4.16 [1]. I'll rebase this patch on nand/next once the
-> ->exec_op() series is merged. Don't hesitate to ping me if I forget.
->
-> Regards,
->
-> Boris
->
-> [1]http://patchwork.ozlabs.org/project/linux-mtd/list/?series=8923
->
->>
->> I have only compile tested the patch.
->>
->> 1. https://www.mail-archive.com/discussion@lists.en.qi-hardware.com/msg04635.html
->> 2. https://www.mail-archive.com/discussion@lists.en.qi-hardware.com/msg04639.html
->> 3. https://git.lede-project.org/?p=source.git;a=blob;f=target/linux/xburst/patches-3.18/002-NAND-Optimize-NAND_ECC_HW_OOB_FIRST-read.patch;h=046da51912de3cd4444779df5de13d2c1999719a;hb=c03d4317a6bc891cb4a5e89cbdd77f37c23aff86
->>
->>  drivers/mtd/nand/nand_base.c | 16 ++++++++++++----
->>  1 file changed, 12 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
->> index 12edaae..4bf3bdb 100644
->> --- a/drivers/mtd/nand/nand_base.c
->> +++ b/drivers/mtd/nand/nand_base.c
->> @@ -1680,9 +1680,15 @@ static int nand_read_page_hwecc_oob_first(struct mtd_info *mtd,
->>       unsigned int max_bitflips = 0;
->>
->>       /* Read the OOB area first */
->> -     chip->cmdfunc(mtd, NAND_CMD_READOOB, 0, page);
->> -     chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
->> -     chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
->> +     if (mtd->writesize > 512) {
->> +             chip->cmdfunc(mtd, NAND_CMD_READ0, mtd->writesize, page);
->> +             chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
->> +             chip->cmdfunc(mtd, NAND_CMD_RNDOUT, 0, -1);
->> +     } else {
->> +             chip->cmdfunc(mtd, NAND_CMD_READOOB, 0, page);
->> +             chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
->> +             chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
->> +     }
->>
->>       ret = mtd_ooblayout_get_eccbytes(mtd, ecc_code, chip->oob_poi, 0,
->>                                        chip->ecc.total);
->> @@ -1902,8 +1908,10 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
->>                                                __func__, buf);
->>
->>  read_retry:
->> -                     if (nand_standard_page_accessors(&chip->ecc))
->> +                     if (nand_standard_page_accessors(&chip->ecc) &&
->> +                         chip->ecc.mode != NAND_ECC_HW_OOB_FIRST) {
->>                               chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
->> +                     }
->>
->>                       /*
->>                        * Now read the page into the buffer.  Absent an error,
->
+> Did you make any progress with that? Note that, no matter the outcome
+> of your tests, I don't plan to queue the remaining patches for this
+> release, so don't be afraid of putting your Tested-by/Acked-by on
+> patches 5-6 if it works on your platforms ;-).
 
-Can you please revisit this?
+Hi Boris and Miquel,
 
-Thanks,
-PrasannaKumar
+I have done the write tests with my ubifs existing filesystem, it works.
+Feel free to add to patches 5 and 6 my :
+
+Tested-by: Robert Jarzmik <robert.jarzmik@free.fr>
+
+Cheers.
+
+-- 
+Robert
