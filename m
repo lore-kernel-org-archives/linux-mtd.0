@@ -1,16 +1,24 @@
-Received: from mail.ispras.ru ([83.149.199.45])
- by casper.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1efCYc-0005n4-Oh
- for linux-mtd@lists.infradead.org; Fri, 26 Jan 2018 22:33:16 +0000
-From: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Received: from mail-io0-x241.google.com ([2607:f8b0:4001:c06::241])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1efL8d-0006cn-OT
+ for linux-mtd@lists.infradead.org; Sat, 27 Jan 2018 07:43:02 +0000
+Received: by mail-io0-x241.google.com with SMTP id f34so2712810ioi.13
+ for <linux-mtd@lists.infradead.org>; Fri, 26 Jan 2018 23:42:48 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20171030093426.30827ef5@bbrezillon>
+References: <20171028074351.13118-1-prasannatsmkumar@gmail.com>
+ <20171030093426.30827ef5@bbrezillon>
+From: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+Date: Sat, 27 Jan 2018 13:12:47 +0530
+Message-ID: <CANc+2y4=1GdfzzMeyO6=vrQDBQKca5NtrHbXtUH9f4yp5wJ-xg@mail.gmail.com>
+Subject: Re: [RFC] NAND: Optimize NAND_ECC_HW_OOB_FIRST read
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Alexey Khoroshilov <khoroshilov@ispras.ru>, Stefan Agner <stefan@agner.ch>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
-Subject: [PATCH v3] mtd: nand: vf610: fix error handling in vf610_nfc_probe()
-Date: Sat, 27 Jan 2018 01:32:41 +0300
-Message-Id: <1517005961-7938-1-git-send-email-khoroshilov@ispras.ru>
-In-Reply-To: <20180106102541.75ff546d@bbrezillon>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marek.vasut@gmail.com>,
+ cyrille.pitchen@wedev4u.fr, linux-mtd@lists.infradead.org,
+ open list <linux-kernel@vger.kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,116 +28,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-vf610_nfc_probe() misses error handling of mtd_device_register()
-and contains unneeded of_node_put() on error path.
+Hi Boris,
 
-Found by Linux Driver Verification project (linuxtesting.org).
+On 30 October 2017 at 14:04, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> Hi PrasannaKumar,
+>
+> On Sat, 28 Oct 2017 13:13:51 +0530
+> PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com> wrote:
+>
+>> From: Lars-Peter Clausen <lars@metafoo.de>
+>>
+>> Avoid sending unnecessary READ commands to the chip.
+>>
+>> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+>> Signed-off-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+>> ---
+>> This patch is taken from git://projects.qi-hardware.com/qi-kernel.git
+>> branch jz-3.16. From [1] and [2] it can be seen that the patch author
+>> thinks this can be sent upstream but it never happened so far. This
+>> patch is used in OpenWRT as seen from [3].
+>
+> Sounds reasonable, but it's likely to conflict with something I'd like
+> to queue for 4.16 [1]. I'll rebase this patch on nand/next once the
+> ->exec_op() series is merged. Don't hesitate to ping me if I forget.
+>
+> Regards,
+>
+> Boris
+>
+> [1]http://patchwork.ozlabs.org/project/linux-mtd/list/?series=8923
+>
+>>
+>> I have only compile tested the patch.
+>>
+>> 1. https://www.mail-archive.com/discussion@lists.en.qi-hardware.com/msg04635.html
+>> 2. https://www.mail-archive.com/discussion@lists.en.qi-hardware.com/msg04639.html
+>> 3. https://git.lede-project.org/?p=source.git;a=blob;f=target/linux/xburst/patches-3.18/002-NAND-Optimize-NAND_ECC_HW_OOB_FIRST-read.patch;h=046da51912de3cd4444779df5de13d2c1999719a;hb=c03d4317a6bc891cb4a5e89cbdd77f37c23aff86
+>>
+>>  drivers/mtd/nand/nand_base.c | 16 ++++++++++++----
+>>  1 file changed, 12 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+>> index 12edaae..4bf3bdb 100644
+>> --- a/drivers/mtd/nand/nand_base.c
+>> +++ b/drivers/mtd/nand/nand_base.c
+>> @@ -1680,9 +1680,15 @@ static int nand_read_page_hwecc_oob_first(struct mtd_info *mtd,
+>>       unsigned int max_bitflips = 0;
+>>
+>>       /* Read the OOB area first */
+>> -     chip->cmdfunc(mtd, NAND_CMD_READOOB, 0, page);
+>> -     chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
+>> -     chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
+>> +     if (mtd->writesize > 512) {
+>> +             chip->cmdfunc(mtd, NAND_CMD_READ0, mtd->writesize, page);
+>> +             chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
+>> +             chip->cmdfunc(mtd, NAND_CMD_RNDOUT, 0, -1);
+>> +     } else {
+>> +             chip->cmdfunc(mtd, NAND_CMD_READOOB, 0, page);
+>> +             chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
+>> +             chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
+>> +     }
+>>
+>>       ret = mtd_ooblayout_get_eccbytes(mtd, ecc_code, chip->oob_poi, 0,
+>>                                        chip->ecc.total);
+>> @@ -1902,8 +1908,10 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+>>                                                __func__, buf);
+>>
+>>  read_retry:
+>> -                     if (nand_standard_page_accessors(&chip->ecc))
+>> +                     if (nand_standard_page_accessors(&chip->ecc) &&
+>> +                         chip->ecc.mode != NAND_ECC_HW_OOB_FIRST) {
+>>                               chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
+>> +                     }
+>>
+>>                       /*
+>>                        * Now read the page into the buffer.  Absent an error,
+>
 
-Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
----
-v2: Add nand_cleanup() to undone nand_scan_tail() as Boris Brezillon noted.
-v3: Rename error labels, remove of_node_put() per Boris Brezillon request.
+Can you please revisit this?
 
- drivers/mtd/nand/vf610_nfc.c | 29 ++++++++++++++++-------------
- 1 file changed, 16 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
-index 8037d4b48a05..7cdc6eed305d 100644
---- a/drivers/mtd/nand/vf610_nfc.c
-+++ b/drivers/mtd/nand/vf610_nfc.c
-@@ -682,7 +682,7 @@ static int vf610_nfc_probe(struct platform_device *pdev)
- 				dev_err(nfc->dev,
- 					"Only one NAND chip supported!\n");
- 				err = -EINVAL;
--				goto error;
-+				goto err_disable_clk;
- 			}
- 
- 			nand_set_flash_node(chip, child);
-@@ -692,7 +692,7 @@ static int vf610_nfc_probe(struct platform_device *pdev)
- 	if (!nand_get_flash_node(chip)) {
- 		dev_err(nfc->dev, "NAND chip sub-node missing!\n");
- 		err = -ENODEV;
--		goto err_clk;
-+		goto err_disable_clk;
- 	}
- 
- 	chip->dev_ready = vf610_nfc_dev_ready;
-@@ -712,7 +712,7 @@ static int vf610_nfc_probe(struct platform_device *pdev)
- 	err = devm_request_irq(nfc->dev, irq, vf610_nfc_irq, 0, DRV_NAME, mtd);
- 	if (err) {
- 		dev_err(nfc->dev, "Error requesting IRQ!\n");
--		goto error;
-+		goto err_disable_clk;
- 	}
- 
- 	vf610_nfc_preinit_controller(nfc);
-@@ -720,7 +720,7 @@ static int vf610_nfc_probe(struct platform_device *pdev)
- 	/* first scan to find the device and get the page size */
- 	err = nand_scan_ident(mtd, 1, NULL);
- 	if (err)
--		goto error;
-+		goto err_disable_clk;
- 
- 	vf610_nfc_init_controller(nfc);
- 
-@@ -732,20 +732,20 @@ static int vf610_nfc_probe(struct platform_device *pdev)
- 	if (mtd->writesize + mtd->oobsize > PAGE_2K + OOB_MAX - 8) {
- 		dev_err(nfc->dev, "Unsupported flash page size\n");
- 		err = -ENXIO;
--		goto error;
-+		goto err_disable_clk;
- 	}
- 
- 	if (chip->ecc.mode == NAND_ECC_HW) {
- 		if (mtd->writesize != PAGE_2K && mtd->oobsize < 64) {
- 			dev_err(nfc->dev, "Unsupported flash with hwecc\n");
- 			err = -ENXIO;
--			goto error;
-+			goto err_disable_clk;
- 		}
- 
- 		if (chip->ecc.size != mtd->writesize) {
- 			dev_err(nfc->dev, "Step size needs to be page size\n");
- 			err = -ENXIO;
--			goto error;
-+			goto err_disable_clk;
- 		}
- 
- 		/* Only 64 byte ECC layouts known */
-@@ -765,7 +765,7 @@ static int vf610_nfc_probe(struct platform_device *pdev)
- 		} else {
- 			dev_err(nfc->dev, "Unsupported ECC strength\n");
- 			err = -ENXIO;
--			goto error;
-+			goto err_disable_clk;
- 		}
- 
- 		chip->ecc.read_page = vf610_nfc_read_page;
-@@ -777,16 +777,19 @@ static int vf610_nfc_probe(struct platform_device *pdev)
- 	/* second phase scan */
- 	err = nand_scan_tail(mtd);
- 	if (err)
--		goto error;
-+		goto err_disable_clk;
- 
- 	platform_set_drvdata(pdev, mtd);
- 
- 	/* Register device in MTD */
--	return mtd_device_register(mtd, NULL, 0);
-+	err = mtd_device_register(mtd, NULL, 0);
-+	if (err)
-+		goto err_cleanup_nand;
-+	return 0;
- 
--error:
--	of_node_put(nand_get_flash_node(chip));
--err_clk:
-+err_cleanup_nand:
-+	nand_cleanup(chip);
-+err_disable_clk:
- 	clk_disable_unprepare(nfc->clk);
- 	return err;
- }
--- 
-2.7.4
+Thanks,
+PrasannaKumar
