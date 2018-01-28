@@ -1,27 +1,20 @@
-Received: from smtp10.smtpout.orange.fr ([80.12.242.132]
- helo=smtp.smtpout.orange.fr)
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1efNoB-0003tp-EA
- for linux-mtd@lists.infradead.org; Sat, 27 Jan 2018 10:34:05 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Miquel Raynal <miquel.raynal@free-electrons.com>
-Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v3 0/7] Marvell NAND controller rework with ->exec_op()
-References: <20180109103637.23798-1-miquel.raynal@free-electrons.com>
- <20180111122751.4bd74366@bbrezillon> <87efmwb8bj.fsf@belgarion.home>
- <20180111232417.4aa86075@xps13> <87a7xjbis2.fsf@belgarion.home>
- <20180112094501.27706bfc@bbrezillon> <876087beui.fsf@belgarion.home>
- <20180112105228.176ab80f@bbrezillon> <87wp0majtg.fsf@belgarion.home>
- <20180113093807.3984c184@bbrezillon> <20180113120529.2f00ea20@xps13>
- <87o9lwaft9.fsf@belgarion.home> <20180122095149.590612d9@bbrezillon>
-Date: Sat, 27 Jan 2018 11:33:47 +0100
-In-Reply-To: <20180122095149.590612d9@bbrezillon> (Boris Brezillon's message
- of "Mon, 22 Jan 2018 09:51:49 +0100")
-Message-ID: <87y3kj8ub8.fsf@belgarion.home>
+ id 1efayA-0006Nx-FI
+ for linux-mtd@lists.infradead.org; Sun, 28 Jan 2018 00:37:16 +0000
+Received: by mail-wm0-x243.google.com with SMTP id f71so7689034wmf.0
+ for <linux-mtd@lists.infradead.org>; Sat, 27 Jan 2018 16:37:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <58232c8a9192b7fc279389099d2cd1ff7b5abcd3.1516868053.git.andrea.adami@gmail.com>
+References: <cover.1516868053.git.andrea.adami@gmail.com>
+ <58232c8a9192b7fc279389099d2cd1ff7b5abcd3.1516868053.git.andrea.adami@gmail.com>
+From: Andrea Adami <andrea.adami@gmail.com>
+Date: Sun, 28 Jan 2018 01:37:00 +0100
+Message-ID: <CAAQYJAsSuvFZcb_aQ4F43PeaOQS2E5Jdq_F9ae=DexNvkmY3fw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mtd-utils: common.c: convert to integer arithmetic
+To: linux-mtd@lists.infradead.org
+Cc: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,36 +24,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Boris Brezillon <boris.brezillon@free-electrons.com> writes:
-
-> Hi Robert,
+On Thu, Jan 25, 2018 at 9:52 AM, Andrea Adami <andrea.adami@gmail.com> wrote:
+> We use floating point just to print out KiB, MiB, GiB.
+> Avoid that to be klibc friendly.
 >
-> On Sun, 14 Jan 2018 11:35:30 +0100
-> Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+> Fixes compilation for aarch64 against klibc:
 >
->> Miquel Raynal <miquel.raynal@free-electrons.com> writes:
->> 
->> >> It shouldn't be damaged anymore. The bug has been fixed just before we
->> >> asked you to scrub the BBT area.  
->> I confirm. The last marvell branch I have (2be03e113a5b ("HACK: Dump OOB data
->> while reading")) does work correctly on my zylonite.
->> 
->> I still have to make a test of a file write, and a devicetree based setup, but I
->> don't think anything wrong will happen now.
+> error: '-mgeneral-regs-only' is incompatible with floating-point argument
+> |    printf("%s%.1f GiB", p, (double)bytes / (1024 * 1024 * 1024));
+> etc.
 >
-> Did you make any progress with that? Note that, no matter the outcome
-> of your tests, I don't plan to queue the remaining patches for this
-> release, so don't be afraid of putting your Tested-by/Acked-by on
-> patches 5-6 if it works on your platforms ;-).
+> Note:
+> * In the KiB case, we could apparently multiply by 100 before dividing
+>   without risking overflow. This code simply avoids multiplications.
+>
+> Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
+> ---
+>  lib/common.c | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
+>
+> diff --git a/lib/common.c b/lib/common.c
+> index 69b03b3..5e28853 100644
+> --- a/lib/common.c
+> +++ b/lib/common.c
+> @@ -107,6 +107,9 @@ long long util_get_bytes(const char *str)
+>  void util_print_bytes(long long bytes, int bracket)
+>  {
+>         const char *p;
+> +       int GiB = 1024 * 1024 * 1024;
+> +       int MiB = 1024 * 1024;
+> +       int KiB = 1024;
+>
+>         if (bracket)
+>                 p = " (";
+> @@ -115,12 +118,12 @@ void util_print_bytes(long long bytes, int bracket)
+>
+>         printf("%lld bytes", bytes);
+>
+> -       if (bytes > 1024 * 1024 * 1024)
+> -               printf("%s%.1f GiB", p, (double)bytes / (1024 * 1024 * 1024));
+> -       else if (bytes > 1024 * 1024)
+> -               printf("%s%.1f MiB", p, (double)bytes / (1024 * 1024));
+> -       else if (bytes > 1024 && bytes != 0)
+> -               printf("%s%.1f KiB", p, (double)bytes / 1024);
+> +       if (bytes > GiB)
+> +               printf("%s%d.%d GiB", p, bytes / GiB, bytes % GiB / (GiB / 10));
+> +       else if (bytes > MiB)
+> +               printf("%s%d.%d MiB", p, bytes / MiB, bytes % MiB / (MiB / 10));
+> +       else if (bytes > KiB && bytes != 0)
+> +               printf("%s%d.%d KiB", p, bytes / KiB, bytes % KiB / (KiB / 10));
+>         else
+>                 return;
+>
+> --
+> 2.7.4
+>
 
-Hi Boris and Miquel,
+Missing cast to integer, the right specifier here would be %lld and not %d.
+Building 1.5.2-klibc I had no warnings but now I see them with 2.0.1.
+I'll send a v2.
 
-I have done the write tests with my ubifs existing filesystem, it works.
-Feel free to add to patches 5 and 6 my :
-
-Tested-by: Robert Jarzmik <robert.jarzmik@free.fr>
-
-Cheers.
-
--- 
-Robert
+Regards
+Andrea
