@@ -1,21 +1,30 @@
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eg6XU-000348-Qx
- for linux-mtd@lists.infradead.org; Mon, 29 Jan 2018 10:19:54 +0000
-Received: by mail-wm0-x242.google.com with SMTP id b21so32552465wme.4
- for <linux-mtd@lists.infradead.org>; Mon, 29 Jan 2018 02:19:35 -0800 (PST)
-From: Romain Izard <romain.izard.pro@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Romain Izard <romain.izard.pro@gmail.com>
-Subject: [PATCH v1] mtd: ubi: block: Fix error for write access
-Date: Mon, 29 Jan 2018 11:18:20 +0100
-Message-Id: <20180129101820.1692-1-romain.izard.pro@gmail.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eg6o0-0003AJ-St
+ for linux-mtd@lists.infradead.org; Mon, 29 Jan 2018 10:37:00 +0000
+Date: Mon, 29 Jan 2018 11:36:29 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Miquel Raynal <miquel.raynal@free-electrons.com>, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3 0/7] Marvell NAND controller rework with ->exec_op()
+Message-ID: <20180129113629.681657df@bbrezillon>
+In-Reply-To: <87y3kj8ub8.fsf@belgarion.home>
+References: <20180109103637.23798-1-miquel.raynal@free-electrons.com>
+ <20180111122751.4bd74366@bbrezillon>
+ <87efmwb8bj.fsf@belgarion.home> <20180111232417.4aa86075@xps13>
+ <87a7xjbis2.fsf@belgarion.home>
+ <20180112094501.27706bfc@bbrezillon>
+ <876087beui.fsf@belgarion.home>
+ <20180112105228.176ab80f@bbrezillon>
+ <87wp0majtg.fsf@belgarion.home>
+ <20180113093807.3984c184@bbrezillon>
+ <20180113120529.2f00ea20@xps13> <87o9lwaft9.fsf@belgarion.home>
+ <20180122095149.590612d9@bbrezillon>
+ <87y3kj8ub8.fsf@belgarion.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,36 +34,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When opening a device with write access, ubiblock_open returns an error
-code. Currently, this error code is -EPERM, but this is not the right
-value.
+On Sat, 27 Jan 2018 11:33:47 +0100
+Robert Jarzmik <robert.jarzmik@free.fr> wrote:
 
-The open function for other block devices returns -EROFS when opening
-read-only devices with FMODE_WRITE set. When used with dm-verity, the
-veritysetup userspace tool is expecting EROFS, and refuses to use the
-ubiblock device.
+> Boris Brezillon <boris.brezillon@free-electrons.com> writes:
+> 
+> > Hi Robert,
+> >
+> > On Sun, 14 Jan 2018 11:35:30 +0100
+> > Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+> >  
+> >> Miquel Raynal <miquel.raynal@free-electrons.com> writes:
+> >>   
+> >> >> It shouldn't be damaged anymore. The bug has been fixed just before we
+> >> >> asked you to scrub the BBT area.    
+> >> I confirm. The last marvell branch I have (2be03e113a5b ("HACK: Dump OOB data
+> >> while reading")) does work correctly on my zylonite.
+> >> 
+> >> I still have to make a test of a file write, and a devicetree based setup, but I
+> >> don't think anything wrong will happen now.  
+> >
+> > Did you make any progress with that? Note that, no matter the outcome
+> > of your tests, I don't plan to queue the remaining patches for this
+> > release, so don't be afraid of putting your Tested-by/Acked-by on
+> > patches 5-6 if it works on your platforms ;-).  
+> 
+> Hi Boris and Miquel,
+> 
+> I have done the write tests with my ubifs existing filesystem, it works.
+> Feel free to add to patches 5 and 6 my :
+> 
+> Tested-by: Robert Jarzmik <robert.jarzmik@free.fr>
 
-Use -EROFS for ubiblock as well. As a result, veritysetup accepts the
-ubiblock device as valid.
+Thanks a lot.
 
-Fixes: 9d54c8a33eec (UBI: R/O block driver on top of UBI volumes)
-Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
----
- drivers/mtd/ubi/block.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Would you mind reviewing/testing patch 7?
 
-diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index b210fdb31c98..4533423cf2aa 100644
---- a/drivers/mtd/ubi/block.c
-+++ b/drivers/mtd/ubi/block.c
-@@ -242,7 +242,7 @@ static int ubiblock_open(struct block_device *bdev, fmode_t mode)
- 	 * in any case.
- 	 */
- 	if (mode & FMODE_WRITE) {
--		ret = -EPERM;
-+		ret = -EROFS;
- 		goto out_unlock;
- 	}
- 
--- 
-2.14.1
+Thanks,
+
+Boris
