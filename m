@@ -1,30 +1,18 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eg6o0-0003AJ-St
- for linux-mtd@lists.infradead.org; Mon, 29 Jan 2018 10:37:00 +0000
-Date: Mon, 29 Jan 2018 11:36:29 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Miquel Raynal <miquel.raynal@free-electrons.com>, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v3 0/7] Marvell NAND controller rework with ->exec_op()
-Message-ID: <20180129113629.681657df@bbrezillon>
-In-Reply-To: <87y3kj8ub8.fsf@belgarion.home>
-References: <20180109103637.23798-1-miquel.raynal@free-electrons.com>
- <20180111122751.4bd74366@bbrezillon>
- <87efmwb8bj.fsf@belgarion.home> <20180111232417.4aa86075@xps13>
- <87a7xjbis2.fsf@belgarion.home>
- <20180112094501.27706bfc@bbrezillon>
- <876087beui.fsf@belgarion.home>
- <20180112105228.176ab80f@bbrezillon>
- <87wp0majtg.fsf@belgarion.home>
- <20180113093807.3984c184@bbrezillon>
- <20180113120529.2f00ea20@xps13> <87o9lwaft9.fsf@belgarion.home>
- <20180122095149.590612d9@bbrezillon>
- <87y3kj8ub8.fsf@belgarion.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1egAgD-0007iv-2U
+ for linux-mtd@lists.infradead.org; Mon, 29 Jan 2018 14:45:07 +0000
+From: Stefan Agner <stefan@agner.ch>
+To: han.xu@nxp.com,
+	boris.brezillon@free-electrons.com
+Cc: marek.vasut@gmail.com, richard@nod.at, dwmw2@infradead.org,
+ cyrille.pitchen@wedev4u.fr, max.oss.09@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Stefan Agner <stefan@agner.ch>
+Subject: [PATCH] mtd: nand: gpmi: fall back to legacy mode if no ECC
+ information present
+Date: Mon, 29 Jan 2018 15:44:40 +0100
+Message-Id: <20180129144440.13648-1-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,42 +22,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 27 Jan 2018 11:33:47 +0100
-Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+In case fsl,use-minimum-ecc is set, the driver tries to determine
+ECC layout by using the ECC information provided by the MTD stack.
+However, in case the NAND chip does not provide any information,
+the driver currently fails with:
+  nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xf1
+  nand: Macronix NAND 128MiB 3,3V 8-bit
+  nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+  gpmi-nand 1806000.gpmi-nand: Error setting BCH geometry : 1
+  gpmi-nand: probe of 1806000.gpmi-nand failed with error 1
 
-> Boris Brezillon <boris.brezillon@free-electrons.com> writes:
-> 
-> > Hi Robert,
-> >
-> > On Sun, 14 Jan 2018 11:35:30 +0100
-> > Robert Jarzmik <robert.jarzmik@free.fr> wrote:
-> >  
-> >> Miquel Raynal <miquel.raynal@free-electrons.com> writes:
-> >>   
-> >> >> It shouldn't be damaged anymore. The bug has been fixed just before we
-> >> >> asked you to scrub the BBT area.    
-> >> I confirm. The last marvell branch I have (2be03e113a5b ("HACK: Dump OOB data
-> >> while reading")) does work correctly on my zylonite.
-> >> 
-> >> I still have to make a test of a file write, and a devicetree based setup, but I
-> >> don't think anything wrong will happen now.  
-> >
-> > Did you make any progress with that? Note that, no matter the outcome
-> > of your tests, I don't plan to queue the remaining patches for this
-> > release, so don't be afraid of putting your Tested-by/Acked-by on
-> > patches 5-6 if it works on your platforms ;-).  
-> 
-> Hi Boris and Miquel,
-> 
-> I have done the write tests with my ubifs existing filesystem, it works.
-> Feel free to add to patches 5 and 6 my :
-> 
-> Tested-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Fall back to implementation specific default mode if no ECC
+information are provided by the NAND chip and fsl,use-minimum-ecc
+is specified.
 
-Thanks a lot.
+This is more in line with what the device tree binding documentation
+promises:
+  "However, note that if this strength is not
+  discoverable or this property is not enabled,
+  the software may chooses an implementation-defined
+  ECC scheme."
 
-Would you mind reviewing/testing patch 7?
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-Thanks,
-
-Boris
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 50f8d4a1b983..7b8e8c629081 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -206,7 +206,7 @@ static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
+ 	unsigned int block_mark_bit_offset;
+ 
+ 	if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
+-		return -EINVAL;
++		return -ENOTSUPP;
+ 
+ 	switch (chip->ecc_step_ds) {
+ 	case SZ_512:
+@@ -423,11 +423,15 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
+ 
+ int common_nfc_set_geometry(struct gpmi_nand_data *this)
+ {
+-	if ((of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc"))
+-				|| legacy_set_geometry(this))
+-		return set_geometry_by_ecc_info(this);
++	int ret = -ENOTSUPP;
+ 
+-	return 0;
++	if (of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc"))
++		ret = set_geometry_by_ecc_info(this);
++
++	if (ret == -ENOTSUPP)
++		return legacy_set_geometry(this);
++
++	return ret;
+ }
+ 
+ struct dma_chan *get_dma_chan(struct gpmi_nand_data *this)
+-- 
+2.16.1
