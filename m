@@ -1,18 +1,17 @@
-Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1egAgD-0007iv-2U
- for linux-mtd@lists.infradead.org; Mon, 29 Jan 2018 14:45:07 +0000
-From: Stefan Agner <stefan@agner.ch>
-To: han.xu@nxp.com,
-	boris.brezillon@free-electrons.com
-Cc: marek.vasut@gmail.com, richard@nod.at, dwmw2@infradead.org,
- cyrille.pitchen@wedev4u.fr, max.oss.09@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Stefan Agner <stefan@agner.ch>
-Subject: [PATCH] mtd: nand: gpmi: fall back to legacy mode if no ECC
- information present
-Date: Mon, 29 Jan 2018 15:44:40 +0100
-Message-Id: <20180129144440.13648-1-stefan@agner.ch>
+ id 1egHaJ-00010a-Mq
+ for linux-mtd@lists.infradead.org; Mon, 29 Jan 2018 22:07:29 +0000
+Received: by mail-wm0-x244.google.com with SMTP id r71so17340515wmd.1
+ for <linux-mtd@lists.infradead.org>; Mon, 29 Jan 2018 14:07:16 -0800 (PST)
+From: Andrea Adami <andrea.adami@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Subject: [PATCH v2 1/2] mtd-utils: common.c: convert to integer arithmetic
+Date: Mon, 29 Jan 2018 23:07:11 +0100
+Message-Id: <1517263632-11126-2-git-send-email-andrea.adami@gmail.com>
+In-Reply-To: <1517263632-11126-1-git-send-email-andrea.adami@gmail.com>
+References: <1517263632-11126-1-git-send-email-andrea.adami@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,64 +21,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In case fsl,use-minimum-ecc is set, the driver tries to determine
-ECC layout by using the ECC information provided by the MTD stack.
-However, in case the NAND chip does not provide any information,
-the driver currently fails with:
-  nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xf1
-  nand: Macronix NAND 128MiB 3,3V 8-bit
-  nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-  gpmi-nand 1806000.gpmi-nand: Error setting BCH geometry : 1
-  gpmi-nand: probe of 1806000.gpmi-nand failed with error 1
+We use floating point just to print out KiB, MiB, GiB.
+Avoid that to be klibc friendly.
 
-Fall back to implementation specific default mode if no ECC
-information are provided by the NAND chip and fsl,use-minimum-ecc
-is specified.
+Fixes compilation for aarch64 against klibc:
 
-This is more in line with what the device tree binding documentation
-promises:
-  "However, note that if this strength is not
-  discoverable or this property is not enabled,
-  the software may chooses an implementation-defined
-  ECC scheme."
+error: '-mgeneral-regs-only' is incompatible with floating-point argument
+|    printf("%s%.1f GiB", p, (double)bytes / (1024 * 1024 * 1024));
+etc.
 
-Signed-off-by: Stefan Agner <stefan@agner.ch>
+Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
 ---
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+v2 fixes -Wformat warnings for printf() using %d instead of %lld
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 50f8d4a1b983..7b8e8c629081 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -206,7 +206,7 @@ static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
- 	unsigned int block_mark_bit_offset;
- 
- 	if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
--		return -EINVAL;
-+		return -ENOTSUPP;
- 
- 	switch (chip->ecc_step_ds) {
- 	case SZ_512:
-@@ -423,11 +423,15 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
- 
- int common_nfc_set_geometry(struct gpmi_nand_data *this)
+ lib/common.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
+
+diff --git a/lib/common.c b/lib/common.c
+index 69b03b3..8041878 100644
+--- a/lib/common.c
++++ b/lib/common.c
+@@ -107,6 +107,9 @@ long long util_get_bytes(const char *str)
+ void util_print_bytes(long long bytes, int bracket)
  {
--	if ((of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc"))
--				|| legacy_set_geometry(this))
--		return set_geometry_by_ecc_info(this);
-+	int ret = -ENOTSUPP;
+ 	const char *p;
++	int GiB = 1024 * 1024 * 1024;
++	int MiB = 1024 * 1024;
++	int KiB = 1024;
  
--	return 0;
-+	if (of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc"))
-+		ret = set_geometry_by_ecc_info(this);
-+
-+	if (ret == -ENOTSUPP)
-+		return legacy_set_geometry(this);
-+
-+	return ret;
- }
+ 	if (bracket)
+ 		p = " (";
+@@ -115,12 +118,15 @@ void util_print_bytes(long long bytes, int bracket)
  
- struct dma_chan *get_dma_chan(struct gpmi_nand_data *this)
+ 	printf("%lld bytes", bytes);
+ 
+-	if (bytes > 1024 * 1024 * 1024)
+-		printf("%s%.1f GiB", p, (double)bytes / (1024 * 1024 * 1024));
+-	else if (bytes > 1024 * 1024)
+-		printf("%s%.1f MiB", p, (double)bytes / (1024 * 1024));
+-	else if (bytes > 1024 && bytes != 0)
+-		printf("%s%.1f KiB", p, (double)bytes / 1024);
++	if (bytes > GiB)
++		printf("%s%lld.%lld GiB", p,
++		       bytes / GiB, bytes % GiB / (GiB / 10));
++	else if (bytes > MiB)
++		printf("%s%lld.%lld MiB", p,
++		        bytes / MiB, bytes % MiB / (MiB / 10));
++	else if (bytes > KiB && bytes != 0)
++		printf("%s%lld.%lld KiB", p,
++		        bytes / KiB, bytes % KiB / (KiB / 10));
+ 	else
+ 		return;
+ 
 -- 
-2.16.1
+2.7.4
