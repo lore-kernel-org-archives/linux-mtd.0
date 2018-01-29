@@ -1,20 +1,20 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1efayA-0006Nx-FI
- for linux-mtd@lists.infradead.org; Sun, 28 Jan 2018 00:37:16 +0000
-Received: by mail-wm0-x243.google.com with SMTP id f71so7689034wmf.0
- for <linux-mtd@lists.infradead.org>; Sat, 27 Jan 2018 16:37:03 -0800 (PST)
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eg5qI-0007vH-NO
+ for linux-mtd@lists.infradead.org; Mon, 29 Jan 2018 09:35:13 +0000
+Date: Mon, 29 Jan 2018 10:34:47 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Brian Norris <computersforpeace@gmail.com>, Richard Weinberger
+ <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Marek Vasut
+ <marex@denx.de>, David Woodhouse <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] mtd: Changes for 4.16
+Message-ID: <20180129103447.2e786609@bbrezillon>
 MIME-Version: 1.0
-In-Reply-To: <58232c8a9192b7fc279389099d2cd1ff7b5abcd3.1516868053.git.andrea.adami@gmail.com>
-References: <cover.1516868053.git.andrea.adami@gmail.com>
- <58232c8a9192b7fc279389099d2cd1ff7b5abcd3.1516868053.git.andrea.adami@gmail.com>
-From: Andrea Adami <andrea.adami@gmail.com>
-Date: Sun, 28 Jan 2018 01:37:00 +0100
-Message-ID: <CAAQYJAsSuvFZcb_aQ4F43PeaOQS2E5Jdq_F9ae=DexNvkmY3fw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mtd-utils: common.c: convert to integer arithmetic
-To: linux-mtd@lists.infradead.org
-Cc: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,65 +24,306 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jan 25, 2018 at 9:52 AM, Andrea Adami <andrea.adami@gmail.com> wrote:
-> We use floating point just to print out KiB, MiB, GiB.
-> Avoid that to be klibc friendly.
->
-> Fixes compilation for aarch64 against klibc:
->
-> error: '-mgeneral-regs-only' is incompatible with floating-point argument
-> |    printf("%s%.1f GiB", p, (double)bytes / (1024 * 1024 * 1024));
-> etc.
->
-> Note:
-> * In the KiB case, we could apparently multiply by 100 before dividing
->   without risking overflow. This code simply avoids multiplications.
->
-> Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
-> ---
->  lib/common.c | 15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
->
-> diff --git a/lib/common.c b/lib/common.c
-> index 69b03b3..5e28853 100644
-> --- a/lib/common.c
-> +++ b/lib/common.c
-> @@ -107,6 +107,9 @@ long long util_get_bytes(const char *str)
->  void util_print_bytes(long long bytes, int bracket)
->  {
->         const char *p;
-> +       int GiB = 1024 * 1024 * 1024;
-> +       int MiB = 1024 * 1024;
-> +       int KiB = 1024;
->
->         if (bracket)
->                 p = " (";
-> @@ -115,12 +118,12 @@ void util_print_bytes(long long bytes, int bracket)
->
->         printf("%lld bytes", bytes);
->
-> -       if (bytes > 1024 * 1024 * 1024)
-> -               printf("%s%.1f GiB", p, (double)bytes / (1024 * 1024 * 1024));
-> -       else if (bytes > 1024 * 1024)
-> -               printf("%s%.1f MiB", p, (double)bytes / (1024 * 1024));
-> -       else if (bytes > 1024 && bytes != 0)
-> -               printf("%s%.1f KiB", p, (double)bytes / 1024);
-> +       if (bytes > GiB)
-> +               printf("%s%d.%d GiB", p, bytes / GiB, bytes % GiB / (GiB / 10));
-> +       else if (bytes > MiB)
-> +               printf("%s%d.%d MiB", p, bytes / MiB, bytes % MiB / (MiB / 10));
-> +       else if (bytes > KiB && bytes != 0)
-> +               printf("%s%d.%d KiB", p, bytes / KiB, bytes % KiB / (KiB / 10));
->         else
->                 return;
->
-> --
-> 2.7.4
->
+Hi Linus,
 
-Missing cast to integer, the right specifier here would be %lld and not %d.
-Building 1.5.2-klibc I had no warnings but now I see them with 2.0.1.
-I'll send a v2.
+Here is the MTD PR for 4.16.
 
-Regards
-Andrea
+Regards,
+
+Boris
+
+The following changes since commit 4fbd8d194f06c8a3fd2af1ce560ddb31f7ec8323:
+
+  Linux 4.15-rc1 (2017-11-26 16:01:47 -0800)
+
+are available in the git repository at:
+
+  git://git.infradead.org/linux-mtd.git tags/mtd/for-4.16
+
+for you to fetch changes up to 571cb17b23eccc22f18c4fc0a0fc34cf0abca7ef:
+
+  Merge tag 'nand/for-4.16' of git://git.infradead.org/linux-mtd into mtd/next (2018-01-29 09:58:36 +0100)
+
+----------------------------------------------------------------
+MTD changes:
+  Core changes:
+  * Rework core functions to avoid duplicating generic checks in
+    NAND/OneNAND sub-layers
+  * Update the MAINTAINERS entry to reflect the fact that MTD
+    maintainers now use a single git tree
+
+  Driver changes:
+  * CFI: use macros instead of inline functions to limit stack
+    usage and make KASAN happy
+
+NAND changes:
+  Core changes:
+  * Fix NAND_CMD_NONE handling in nand_command[_lp]() hooks
+  * Introduce the ->exec_op() infrastructure
+  * Rework NAND buffers handling
+  * Fix ECC requirements for K9F4G08U0D
+  * Fix nand_do_read_oob() to return the number of bitflips
+  * Mark K9F1G08U0E as not supporting subpage writes
+
+  Driver changes:
+  * MTK: Rework the driver to support new IP versions
+  * OMAP OneNAND: Full rework to use new APIs (libgpio, dmaengine) and fix
+    DT support
+  * Marvell: Add a new driver to replace the pxa3xx one
+
+SPI NOR changes:
+  Core changes:
+  * Add support to new ISSI and Cypress/Spansion memory parts.
+  * Fix support of Micron memories by checking error bits in the FSR.
+  * Fix update of block-protection bits by reading back the SR.
+  * Restore the internal state of the SPI flash memory when removing the
+    device.
+
+  Driver changes:
+  * Maintenance for Freescale, Intel and Metiatek drivers.
+  * Add support of the direct access mode for the Cadence QSPI controller.
+
+----------------------------------------------------------------
+Aaron Sierra (1):
+      mtd: spi-nor: Check that BP bits are set properly
+
+Angelo Dureghello (1):
+      mtd: spi-nor: add support for ISSI is25lp128
+
+Antonio Borneo (1):
+      mtd: mchp23k256: propagate return value of spi_sync()
+
+Arnd Bergmann (2):
+      mtd: cfi: convert inline functions to macros
+      mtd: onenand: omap2: print resource using %pR format string
+
+Bean Huo (beanhuo) (1):
+      mtd: spi-nor: check FSR error bits for Micron memories
+
+Boris Brezillon (15):
+      mtd: nand: hynix: Don't wait after applying new read-retry params
+      mtd: nand: provide several helpers to do common NAND operations
+      mtd: nand: force drivers to explicitly send READ/PROG commands
+      mtd: nand: denali: Avoid using ecc->code_buf as a temporary buffer
+      mtd: nand: Only allocate ecc->{calc, code}_buf when actually needed
+      MAINTAINERS: Move all MTD related branches to a single repo
+      mtd: Do not allow MTD devices with inconsistent erase properties
+      mtd: Add an helper to make erase request aligned on ->erasesize
+      Merge tag 'gpmc-omap-for-v4.16-immutable' of https://github.com/rogerq/linux into nand/next
+      mtd: mtdpart: Make ECC stat handling consistent
+      mtd: Fallback to ->_read/write_oob() when ->_read/write() is missing
+      mtd: Remove duplicate checks on mtd_oob_ops parameter
+      mtd: nand: gpmi: Fix subpage reads
+      Merge tag 'spi-nor/for-4.16' of git://git.infradead.org/linux-mtd into mtd/next
+      Merge tag 'nand/for-4.16' of git://git.infradead.org/linux-mtd into mtd/next
+
+Christophe JAILLET (5):
+      mtd: onenand: samsung: use devm_ function to simplify code and fix some leaks
+      mtd: onenand: samsung: return an error if 'mtd_device_parse_register()' fails
+      mtd: onenand: samsung: Propagate the error returned by 'onenand_scan()'
+      mtd: onenand: samsung: Remove a useless include
+      mtd: onenand: samsung: remove incorrect __iomem annotation
+
+Colin Ian King (4):
+      mtd: mtdswap: make array 'name' static const, shrinks object size
+      mtd: sharpslpart: fix overflow on block_adr calculation
+      mtd: nand: marvell: fix spelling mistake: "suceed"-> "succeed"
+      mtd: nand: marvell: remove redundant variable 'oob_len'
+
+Fabio Estevam (3):
+      dt-bindings: mtd: fsl-quadspi: Pass the qspi clock names
+      mtd: nand: brcmnand: Add a NULL check for devm_kasprintf()
+      mtd: nand: qcom: Add a NULL check for devm_kasprintf()
+
+Guochun Mao (1):
+      mtd: mtk-nor: modify functions' name more generally
+
+Gustavo A. R. Silva (1):
+      mtd: nand: gpmi: replace _manual_ swap with swap macro
+
+Hou Zhiqiang (2):
+      mtd: spi-nor: add an API to restore the status of SPI flash chip
+      mtd: m25p80: restore the status of SPI flash when exiting
+
+Jagdish Gediya (1):
+      mtd: nand: ifc: update bufnum mask for ver >= 2.0.0
+
+Jesse Chan (1):
+      mtd: nand: denali_pci: add missing MODULE_DESCRIPTION/AUTHOR/LICENSE
+
+Julia Lawall (1):
+      mtd: fsl-quadspi: account for const type of of_device_id.data
+
+Kamal Dasu (1):
+      mtd: nand: brcmnand: Disable prefetch by default
+
+Ladislav Michl (15):
+      memory: omap-gpmc: Make 'bank-width' property optional
+      mtd: onenand: Remove obsolete url from Kconfig help
+      mtd: nand: samsung: Disable subpage writes on E-die NAND
+      dt-bindings: mtd: gpmc-onenand: Update properties description
+      ARM: dts: OMAP2+: Add compatible property to onenand node
+      ARM: dts: omap3-igep: Update onenand node timings
+      mtd: onenand: omap2: Remove regulator support
+      mtd: onenand: omap2: Remove skip initial unlocking support
+      mtd: onenand: omap2: Remove partitioning support from platform data
+      mtd: onenand: omap2: Account waiting time as waiting on IO
+      mtd: onenand: omap2: Unify OMAP2 and OMAP3 DMA implementation
+      mtd: onenand: omap2: Do not make delay for GPIO OMAP3 specific
+      mtd: onenand: omap2: Decouple DMA enabling from INT pin availability
+      mtd: onenand: omap2: Configure driver from DT
+      ARM: OMAP2+: Remove gpmc-onenand
+
+Masahiro Yamada (6):
+      mtd: nand: remove unnecessary extern from driver headers
+      mtd: nand: denali: rename misleading dma_buf to tmp_buf
+      mtd: nand: cafe: remove use of NAND_OWN_BUFFERS
+      mtd: nand: remove unused NAND_OWN_BUFFERS flag
+      mtd: nand: squash struct nand_buffers into struct nand_chip
+      mtd: nand: cafe: clean up DMA address setup
+
+Mika Westerberg (1):
+      spi-nor: intel-spi: Remove unused preopcodes field
+
+Miquel Raynal (16):
+      mtd: nand: fix interpretation of NAND_CMD_NONE in nand_command[_lp]()
+      mtd: nand: use usual return values for the ->erase() hook
+      mtd: nand: provide valid ->data_interface during NAND detection
+      mtd: nand: samsung: add ECC requirements for K9F4G08U0D
+      mtd: nand: add ->exec_op() implementation
+      mtd: nand: Fix unfinished comment in nand_init_data_interface()
+      mtd: mtd_oobtest: Handle bitflips during reads
+      mtd: nand: Fix nand_do_read_oob() return value
+      dt-bindings: mtd: document new nand-rb property
+      dt-bindings: mtd: add Marvell NAND controller documentation
+      mtd: nand: add reworked Marvell NAND controller driver
+      mtd: nand: use reworked NAND controller driver with Marvell EBU SoCs
+      MAINTAINERS: Add entry for Marvell NAND controller driver
+      mtd: nand: marvell: Fix missing memory allocation modifier
+      mtd: nand: Fix build issues due to an anonymous union
+      mtd: nand: sunxi: Fix ECC strength choice
+
+Nicolas Ferre (1):
+      MAINTAINERS: mtd/nand: update Microchip nand entry
+
+Peter Ujfalusi (2):
+      mtd: onenand: omap2: Simplify the DMA setup for various paths
+      mtd: onenand: omap2: Convert to use dmaengine for memcpy
+
+Rafael Gago (1):
+      mtd: spi-nor: Add support for s25fl128l and s25fl256l
+
+RogerCC Lin (3):
+      mtd: nand: mtk: update DT bindings
+      mtd: nand: mtk: Support different MTK NAND flash controller IP
+      mtd: nand: mtk: Support MT7622 NAND flash controller.
+
+Romain Porte (1):
+      mtd: spi-nor: Add ISSI is25lp080d support
+
+Sascha Hauer (2):
+      mtd: nand: gpmi-nand: Remove wrong Kconfig help text
+      mtd: tests: nandbiterrs: Fix read_page return value
+
+Sean Nyekjaer (2):
+      mtd: spi-nor: add support for is25lq040b
+      mtd: spi-nor: indent issi section
+
+Vignesh R (2):
+      mtd: spi-nor: cadence-quadspi: Refactor indirect read/write sequence.
+      mtd: spi-nor: cadence-quadspi: Add support for direct access mode
+
+Wei Yongjun (2):
+      mtd: sharpslpart: make local function sharpsl_nand_cleanup_ftl() static
+      mtd: onenand: omap2: Remove redundant dev_err call in omap2_onenand_probe()
+
+Xiaolei Li (1):
+      mtd: nand: mtk: use nand_reset() to reset NAND devices in resume function
+
+ Documentation/devicetree/bindings/mtd/fsl-quadspi.txt  |    2 +-
+ Documentation/devicetree/bindings/mtd/gpmc-onenand.txt |    6 +-
+ Documentation/devicetree/bindings/mtd/marvell-nand.txt |  123 ++
+ Documentation/devicetree/bindings/mtd/mtk-nand.txt     |   11 +-
+ Documentation/devicetree/bindings/mtd/nand.txt         |    1 +
+ Documentation/mtd/spi-nor.txt                          |    3 +
+ MAINTAINERS                                            |   28 +-
+ arch/arm/boot/dts/omap2420-n8x0-common.dtsi            |    1 +
+ arch/arm/boot/dts/omap3-igep.dtsi                      |   30 +-
+ arch/arm/boot/dts/omap3-n900.dts                       |    1 +
+ arch/arm/boot/dts/omap3-n950-n9.dtsi                   |    1 +
+ arch/arm/boot/dts/omap3430-sdp.dts                     |    1 +
+ arch/arm/configs/mvebu_v7_defconfig                    |    2 +-
+ arch/arm/mach-omap2/Makefile                           |    3 -
+ arch/arm/mach-omap2/gpmc-onenand.c                     |  409 ------
+ arch/arm64/configs/defconfig                           |    2 +-
+ drivers/memory/omap-gpmc.c                             |  163 ++-
+ drivers/mtd/devices/docg3.c                            |   70 -
+ drivers/mtd/devices/m25p80.c                           |    9 +
+ drivers/mtd/devices/mchp23k256.c                       |   18 +-
+ drivers/mtd/mtdcore.c                                  |   36 +-
+ drivers/mtd/mtdpart.c                                  |   43 +-
+ drivers/mtd/mtdswap.c                                  |    5 +-
+ drivers/mtd/nand/Kconfig                               |   17 +-
+ drivers/mtd/nand/Makefile                              |    1 +
+ drivers/mtd/nand/atmel/nand-controller.c               |    9 +-
+ drivers/mtd/nand/bf5xx_nand.c                          |    6 +-
+ drivers/mtd/nand/brcmnand/brcmnand.c                   |   38 +-
+ drivers/mtd/nand/cafe_nand.c                           |   52 +-
+ drivers/mtd/nand/denali.c                              |   84 +-
+ drivers/mtd/nand/denali.h                              |    4 +-
+ drivers/mtd/nand/denali_pci.c                          |    4 +
+ drivers/mtd/nand/diskonchip.c                          |    4 +-
+ drivers/mtd/nand/docg4.c                               |   21 +-
+ drivers/mtd/nand/fsl_elbc_nand.c                       |   10 +-
+ drivers/mtd/nand/fsl_ifc_nand.c                        |   13 +-
+ drivers/mtd/nand/fsmc_nand.c                           |    9 +-
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c                 |  111 +-
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h                 |   46 +-
+ drivers/mtd/nand/hisi504_nand.c                        |    9 +-
+ drivers/mtd/nand/jz4740_nand.c                         |   16 +-
+ drivers/mtd/nand/lpc32xx_mlc.c                         |    7 +-
+ drivers/mtd/nand/lpc32xx_slc.c                         |   33 +-
+ drivers/mtd/nand/marvell_nand.c                        | 2896 +++++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/nand/mtk_ecc.c                             |  126 +-
+ drivers/mtd/nand/mtk_ecc.h                             |    3 +-
+ drivers/mtd/nand/mtk_nand.c                            |   76 +-
+ drivers/mtd/nand/nand_base.c                           | 2603 ++++++++++++++++++++++++++++--------
+ drivers/mtd/nand/nand_bbt.c                            |    2 +-
+ drivers/mtd/nand/nand_hynix.c                          |  129 +-
+ drivers/mtd/nand/nand_micron.c                         |   83 +-
+ drivers/mtd/nand/nand_samsung.c                        |   19 +
+ drivers/mtd/nand/nand_timings.c                        |   21 +-
+ drivers/mtd/nand/omap2.c                               |   28 +-
+ drivers/mtd/nand/pxa3xx_nand.c                         |   14 +-
+ drivers/mtd/nand/qcom_nandc.c                          |   30 +-
+ drivers/mtd/nand/r852.c                                |   11 +-
+ drivers/mtd/nand/sh_flctl.c                            |    6 +-
+ drivers/mtd/nand/sm_common.h                           |    2 +-
+ drivers/mtd/nand/sunxi_nand.c                          |  111 +-
+ drivers/mtd/nand/tango_nand.c                          |   27 +-
+ drivers/mtd/nand/tmio_nand.c                           |    5 +-
+ drivers/mtd/nand/vf610_nfc.c                           |    6 +-
+ drivers/mtd/onenand/Kconfig                            |    7 +-
+ drivers/mtd/onenand/omap2.c                            |  577 +++-----
+ drivers/mtd/onenand/onenand_base.c                     |   81 --
+ drivers/mtd/onenand/samsung.c                          |  185 +--
+ drivers/mtd/parsers/sharpslpart.c                      |    6 +-
+ drivers/mtd/spi-nor/cadence-quadspi.c                  |   55 +-
+ drivers/mtd/spi-nor/fsl-quadspi.c                      |    8 +-
+ drivers/mtd/spi-nor/intel-spi.c                        |    6 -
+ drivers/mtd/spi-nor/mtk-quadspi.c                      |  240 ++--
+ drivers/mtd/spi-nor/spi-nor.c                          |   75 +-
+ drivers/mtd/tests/nandbiterrs.c                        |    2 +-
+ drivers/mtd/tests/oobtest.c                            |   21 +
+ drivers/staging/mt29f_spinand/mt29f_spinand.c          |    5 +-
+ include/linux/mtd/map.h                                |  130 +-
+ include/linux/mtd/mtd.h                                |   28 +
+ include/linux/mtd/rawnand.h                            |  443 ++++++-
+ include/linux/mtd/spi-nor.h                            |   12 +-
+ include/linux/omap-gpmc.h                              |   28 +
+ include/linux/platform_data/mtd-onenand-omap2.h        |   34 -
+ 82 files changed, 7013 insertions(+), 2590 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/marvell-nand.txt
+ delete mode 100644 arch/arm/mach-omap2/gpmc-onenand.c
+ create mode 100644 drivers/mtd/nand/marvell_nand.c
+ delete mode 100644 include/linux/platform_data/mtd-onenand-omap2.h
