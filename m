@@ -1,27 +1,24 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1egQuj-0004EN-39
- for linux-mtd@lists.infradead.org; Tue, 30 Jan 2018 08:05:12 +0000
-Date: Tue, 30 Jan 2018 09:04:46 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
-Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
- marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next v3 1/2] mtd: nand: toshiba: Retrieve ECC
- requirements from extended ID
-Message-ID: <20180130090446.1ace92b3@bbrezillon>
-In-Reply-To: <0cf2e0f7-e61b-2cae-f216-e616aecf3e76@toshiba.co.jp>
-References: <1512569098-30038-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
- <1512569098-30038-2-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
- <20171206160805.2435094b@bbrezillon>
- <3e11d966-0801-96f2-8417-194b36a0b775@toshiba.co.jp>
- <20171219125624.58e3e8f8@bbrezillon>
- <b9e62f60-770b-89c3-a2e2-c05767cfd16a@toshiba.co.jp>
- <0cf2e0f7-e61b-2cae-f216-e616aecf3e76@toshiba.co.jp>
+Received: from mga09.intel.com ([134.134.136.24])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1egTUk-0007TN-B8
+ for linux-mtd@lists.infradead.org; Tue, 30 Jan 2018 10:50:33 +0000
+Date: Tue, 30 Jan 2018 12:50:13 +0200
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: linux-mtd@lists.infradead.org
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Anthony Wong <anthony.wong@canonical.com>, Bin Meng <bmeng.cn@gmail.com>
+Subject: Re: [PATCH 1/3] spi-nor: intel-spi: Prefer WREN over other write
+ enables
+Message-ID: <20180130105013.GH27654@lahna.fi.intel.com>
+References: <20180104090744.67654-1-mika.westerberg@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180104090744.67654-1-mika.westerberg@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,88 +28,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 30 Jan 2018 08:44:30 +0900
-KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:
-
-> On 2017/12/27 15:06, KOBAYASHI Yoshitake wrote:
-> > On 2017/12/19 20:56, Boris Brezillon wrote:  
-> >> On Tue, 19 Dec 2017 20:42:36 +0900
-> >> KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:
-> >>  
-> >>> On 2017/12/07 0:08, Boris Brezillon wrote:  
-> >>>> On Wed,  6 Dec 2017 23:04:57 +0900
-> >>>> KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:
-> >>>>     
-> >>>>> This patch enables support to read the ECC strength and size from the
-> >>>>> NAND flash using Toshiba Memory SLC NAND extended-ID. This patch is
-> >>>>> based on the information of the 6th ID byte of the Toshiba Memory SLC
-> >>>>> NAND.
-> >>>>>
-> >>>>> Signed-off-by: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
-> >>>>> ---
-> >>>>>  drivers/mtd/nand/nand_toshiba.c | 28 ++++++++++++++++++++++++++++
-> >>>>>  1 file changed, 28 insertions(+)
-> >>>>>
-> >>>>> diff --git a/drivers/mtd/nand/nand_toshiba.c b/drivers/mtd/nand/nand_toshiba.c
-> >>>>> index 57df857..c2c141b 100644
-> >>>>> --- a/drivers/mtd/nand/nand_toshiba.c
-> >>>>> +++ b/drivers/mtd/nand/nand_toshiba.c
-> >>>>> @@ -35,6 +35,34 @@ static void toshiba_nand_decode_id(struct nand_chip *chip)
-> >>>>>  	    (chip->id.data[5] & 0x7) == 0x6 /* 24nm */ &&
-> >>>>>  	    !(chip->id.data[4] & 0x80) /* !BENAND */)
-> >>>>>  		mtd->oobsize = 32 * mtd->writesize >> 9;
-> >>>>> +
-> >>>>> +	/*
-> >>>>> +	 * Extract ECC requirements from 6th id byte.
-> >>>>> +	 * For Toshiba SLC, ecc requrements are as follows:
-> >>>>> +	 *  - 43nm: 1 bit ECC for each 512Byte is required.
-> >>>>> +	 *  - 32nm: 4 bit ECC for each 512Byte is required.
-> >>>>> +	 *  - 24nm: 8 bit ECC for each 512Byte is required.
-> >>>>> +	 */
-> >>>>> +	if (chip->id.len >= 6 && nand_is_slc(chip)) {
-> >>>>> +		chip->ecc_step_ds = 512;
-> >>>>> +		switch (chip->id.data[5] & 0x7) {
-> >>>>> +		case 0x4:
-> >>>>> +			chip->ecc_strength_ds = 1;
-> >>>>> +			break;
-> >>>>> +		case 0x5:
-> >>>>> +			chip->ecc_strength_ds = 4;
-> >>>>> +			break;
-> >>>>> +		case 0x6:
-> >>>>> +			chip->ecc_strength_ds = 8;
-> >>>>> +			break;
-> >>>>> +		default:
-> >>>>> +			WARN(1, "Could not get ECC info");
-> >>>>> +			chip->ecc_step_ds = 0;
-> >>>>> +			break;
-> >>>>> +		}
-> >>>>> +	} else if (chip->id.len < 6 && nand_is_slc(chip)) {
-> >>>>> +		WARN(1, "Could not get ECC info, 6th nand id byte does not exist.");    
-> >>>>
-> >>>> I'm pretty sure you have old NAND chips that do not have 6bytes ids
-> >>>> (see the table here [1]), and printing a huge backtrace in this case is
-> >>>> probably not what you want.
-> >>>>
-> >>>> If you're okay with dropping this else block, I'll do the change when
-> >>>> applying, no need to send a new version.    
-> >>>
-> >>> Some controllers may have limitation in reading ids beyond 5 bytes, 
-> >>> considering such scenario we think it is better to keep this warning.
-> >>> However if you feel huge backtrace is an issue, how about we using pr_warn() instead?
-> >>>  
-> >>
-> >> Toshiba NANDs with an id smaller than 6 bytes exist, so no, we should
-> >> not complain at all. If the controller is broken and can't read the 8 id
-> >> bytes the core is asking for, then it should be detected at the core
-> >> level not in the NAND manufacturer driver.  
-> > 
-> > I understood your opinion. Please apply this patch with dropping the else block.  
+On Thu, Jan 04, 2018 at 12:07:42PM +0300, Mika Westerberg wrote:
+> On many older systems using SW sequencer the PREOP_OPTYPE register
+> contains two preopcodes as following:
 > 
-> Should I repost patch with else block dropped? Please let me know if that is necessary.
+>   PREOP_OPTYPE=0xf2785006
+> 
+> The last two bytes are the opcodes decoded to:
+> 
+>   0x50 - Write enable for volatile status register
+>   0x06 - Write enable
+> 
+> The former is used to modify volatile bits in the status register. For
+> non-volatile bits the latter is needed. Preopcodes are used in SW
+> sequencer to send one command "atomically" without anything else
+> interfering the transfer. The sequence that gets executed is:
+> 
+>   - Send preopcode (write enable) from PREOP_OPTYPE register
+>   - Send the actual SPI command
+>   - Poll busy bit in the status register (0x05, RDSR)
+> 
+> Commit 8c473dd61bb5 ("spi-nor: intel-spi: Don't assume OPMENU0/1 to be
+> programmed by BIOS") enabled atomic sequence handling but because both
+> preopcodes are programmed, the following happens:
+> 
+>   if (preop >> 8)
+>   	val |= SSFSTS_CTL_SPOP;
+> 
+> Since on these systems preop >> 8 == 0x50 we end up picking volatile
+> write enable instead. Because of this the actual write command is pretty
+> much NOP unless there is a WREN latched in the chip already.
+> 
+> Fix this by preferring WREN over other write enable preopcodes.
+> 
+> Fixes: 8c473dd61bb5 ("spi-nor: intel-spi: Don't assume OPMENU0/1 to be programmed by BIOS")
+> Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> Cc: stable@vger.kernel.org
 
-I forgot to apply it :-/. Please, send a new version so I can track
-it in patchwork.
+Hi,
 
-Thanks,
-
-Boris
+Any change getting these merged for v4.16?
