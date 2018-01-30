@@ -1,9 +1,9 @@
 Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1egcFo-0001NU-3p
- for linux-mtd@lists.infradead.org; Tue, 30 Jan 2018 20:11:43 +0000
-Received: by mail-lf0-x241.google.com with SMTP id x196so17228233lfd.12
- for <linux-mtd@lists.infradead.org>; Tue, 30 Jan 2018 12:11:36 -0800 (PST)
+ id 1egcFo-0001Mz-3i
+ for linux-mtd@lists.infradead.org; Tue, 30 Jan 2018 20:11:47 +0000
+Received: by mail-lf0-x241.google.com with SMTP id o89so17215128lfg.10
+ for <linux-mtd@lists.infradead.org>; Tue, 30 Jan 2018 12:11:29 -0800 (PST)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>,
@@ -18,9 +18,10 @@ Cc: Mark Rutland <mark.rutland@arm.com>, Frank Rowand <frowand.list@gmail.com>,
  Florian Fainelli <f.fainelli@gmail.com>, John Crispin <john@phrozen.org>,
  Peter Rosin <peda@axentia.se>,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH V9 4/4] mtd: ofpart: add of_match_table with "fixed-partitions"
-Date: Tue, 30 Jan 2018 21:10:59 +0100
-Message-Id: <20180130201059.4424-5-zajec5@gmail.com>
+Subject: [PATCH V9 1/4] mtd: partitions: add special treating for the "ofpart"
+ parser type
+Date: Tue, 30 Jan 2018 21:10:56 +0100
+Message-Id: <20180130201059.4424-2-zajec5@gmail.com>
 In-Reply-To: <20180130201059.4424-1-zajec5@gmail.com>
 References: <20180130201059.4424-1-zajec5@gmail.com>
 MIME-Version: 1.0
@@ -37,41 +38,104 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Rafał Miłecki <rafal@milecki.pl>
 
-This allows using this parser with any flash driver that takes care of
-setting of_node (using mtd_set_of_node helper) correctly. Up to now
-support for "fixed-partitions" DT compatibility string was working only
-with flash drivers that were specifying "ofpart" (manually or by letting
-mtd use the default set of parsers).
+In order to properly support compatibility strings as described in the
+bindings/mtd/partition.txt "ofpart" type should be treated as an
+indication for looking into OF. MTD should check "compatible" property
+and search for a matching parser rather than blindly trying a one for
+the "fixed-partitions".
 
-This matches existing bindings documentation.
+This also means that existing parser should get renamed into a more
+meaningful one.
 
 Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-Reviewed-by: Brian Norris <computersforpeace@gmail.com>
-Tested-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/ofpart.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+V9: First appearance of this commit
+---
+ drivers/mtd/mtdpart.c | 61 +++++++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 52 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-index 9f497315e65d..615f8c173162 100644
---- a/drivers/mtd/ofpart.c
-+++ b/drivers/mtd/ofpart.c
-@@ -140,9 +140,16 @@ static int parse_fixed_partitions(struct mtd_info *master,
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 76cd21d1171b..d40ec525ceff 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -860,6 +860,38 @@ static int mtd_part_do_parse(struct mtd_part_parser *parser,
  	return ret;
  }
  
-+static const struct of_device_id parse_ofpart_match_table[] = {
-+	{ .compatible = "fixed-partitions" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, parse_ofpart_match_table);
++static int mtd_part_of_parse(struct mtd_info *master,
++			     struct mtd_partitions *pparts)
++{
++	struct mtd_part_parser *parser;
++	const char *fixed = "ofpart";
++	int ret, err = 0;
 +
- static struct mtd_part_parser ofpart_parser = {
- 	.parse_fn = parse_fixed_partitions,
- 	.name = "fixed-partitions",
-+	.of_match_table = parse_ofpart_match_table,
- };
++	/*
++	 * TODO: Check "compatible" DT property and look for a matching parser.
++	 */
++
++	/*
++	 * For backward compatibility we have to try the "ofpart"
++	 * parser. It supports old DT format with partitions specified as a
++	 * direct subnodes of a flash device DT node without any compatibility
++	 * specified we could match.
++	 */
++	parser = mtd_part_parser_get(fixed);
++	if (!parser && !request_module("%s", fixed))
++		parser = mtd_part_parser_get(fixed);
++	if (parser) {
++		ret = mtd_part_do_parse(parser, master, pparts, NULL);
++		if (ret > 0)
++			return ret;
++		mtd_part_parser_put(parser);
++		if (ret < 0 && !err)
++			err = ret;
++	}
++
++	return err;
++}
++
+ /**
+  * parse_mtd_partitions - parse MTD partitions
+  * @master: the master partition (describes whole MTD device)
+@@ -892,19 +924,30 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
+ 		types = default_mtd_part_types;
  
- static int parse_ofoldpart_partitions(struct mtd_info *master,
+ 	for ( ; *types; types++) {
+-		pr_debug("%s: parsing partitions %s\n", master->name, *types);
+-		parser = mtd_part_parser_get(*types);
+-		if (!parser && !request_module("%s", *types))
++		/*
++		 * ofpart is a special type that means OF partitioning info
++		 * should be used. It requires a bit different logic so it is
++		 * handled in a separated function.
++		 */
++		if (!strcmp(*types, "ofpart")) {
++			ret = mtd_part_of_parse(master, pparts);
++		} else {
++			pr_debug("%s: parsing partitions %s\n", master->name,
++				 *types);
+ 			parser = mtd_part_parser_get(*types);
+-		pr_debug("%s: got parser %s\n", master->name,
+-			 parser ? parser->name : NULL);
+-		if (!parser)
+-			continue;
+-		ret = mtd_part_do_parse(parser, master, pparts, data);
++			if (!parser && !request_module("%s", *types))
++				parser = mtd_part_parser_get(*types);
++			pr_debug("%s: got parser %s\n", master->name,
++				parser ? parser->name : NULL);
++			if (!parser)
++				continue;
++			ret = mtd_part_do_parse(parser, master, pparts, data);
++			if (ret <= 0)
++				mtd_part_parser_put(parser);
++		}
+ 		/* Found partitions! */
+ 		if (ret > 0)
+ 			return 0;
+-		mtd_part_parser_put(parser);
+ 		/*
+ 		 * Stash the first error we see; only report it if no parser
+ 		 * succeeds
 -- 
 2.11.0
