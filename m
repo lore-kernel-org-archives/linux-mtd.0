@@ -1,21 +1,17 @@
-Received: from mail-he1eur01on0612.outbound.protection.outlook.com
- ([2a01:111:f400:fe1e::612]
- helo=EUR01-HE1-obe.outbound.protection.outlook.com)
+Received: from mail-eopbgr30059.outbound.protection.outlook.com ([40.107.3.59]
+ helo=EUR03-AM5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1egZ7Y-00079w-G7
- for linux-mtd@lists.infradead.org; Tue, 30 Jan 2018 16:50:58 +0000
+ id 1egZaq-0001ST-Cx
+ for linux-mtd@lists.infradead.org; Tue, 30 Jan 2018 17:21:14 +0000
 From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
 To: linux-mtd@lists.infradead.org
 Cc: boris.brezillon@free-electrons.com, cyrille.pitchen@wedev4u.fr,
  computersforpeace@gmail.com, han.xu@nxp.com, festevam@gmail.com,
  prabhakar.kushwaha@nxp.com, suresh.gupta@nxp.com,
  Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Subject: [PATCH v5 2/2] mtd: fsl-quadspi: fix init AHB read in
- fsl_qspi_nor_setup()
-Date: Tue, 30 Jan 2018 22:19:30 +0530
-Message-Id: <1517330970-15197-3-git-send-email-yogeshnarayan.gaur@nxp.com>
-In-Reply-To: <1517330970-15197-1-git-send-email-yogeshnarayan.gaur@nxp.com>
-References: <1517330970-15197-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH v2] mtd: fsl-quadspi: add support for ls2080a/ls1080a
+Date: Tue, 30 Jan 2018 22:49:58 +0530
+Message-Id: <1517332798-16644-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,57 +23,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Move AHB read initialize in fsl_qspi_nor_setup().
+LS2080a/LS1088a supports Freescale Quad SPI controller.
+Add fsl-quadspi driver support for ls2080a and ls1088a chip.
 
-In file spi-nor.c, func spi_nor_scan() calls nor->read() thru
-spi_nor_read_sfdp() API.
-
-Presently, fsl_qspi_init_ahb_read() called from fsl_qspi_nor_setup_last().
-Func fsl_qspi_probe() calls spi_nor_scan() first and then calls
-fsl_qspi_nor_setup_last().
-
-When nor->read() being called from inside spi_nor_read_sfdp(), QSPI cntlr
-AHB mode initialization is not yet done results in data read error.
-
-Initialize AHB read inside fsl_qspi_nor_setup().
-
+Signed-off-by: Suresh Gupta <suresh.gupta@nxp.com>
 Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
 ---
-Changes for v5:
-- None
-Changes for v4:
-- None
-Changes for v3:
-- None
-Changes for v2:
-- None
+Depends on
+ https://patchwork.ozlabs.org/project/linux-mtd/list/?series=26084
 
- drivers/mtd/spi-nor/fsl-quadspi.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Changes for v2:
+- Remove void * cast of_device_id structure for ls2080a_data.
+- Generate patch from spi-nor/next branch.
+
+ drivers/mtd/spi-nor/fsl-quadspi.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index 84c341b..2b3b3eb 100644
+index 035dacd..b9c5918 100644
 --- a/drivers/mtd/spi-nor/fsl-quadspi.c
 +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -787,6 +787,9 @@ static int fsl_qspi_nor_setup(struct fsl_qspi *q)
- 	/* enable the interrupt */
- 	qspi_writel(q, QUADSPI_RSER_TFIE, q->iobase + QUADSPI_RSER);
+@@ -214,6 +214,7 @@ enum fsl_qspi_devtype {
+ 	FSL_QUADSPI_IMX7D,
+ 	FSL_QUADSPI_IMX6UL,
+ 	FSL_QUADSPI_LS1021A,
++	FSL_QUADSPI_LS2080A,
+ };
  
-+	/* Init for AHB read */
-+	fsl_qspi_init_ahb_read(q);
+ struct fsl_qspi_devtype_data {
+@@ -267,6 +268,15 @@ struct fsl_qspi_devtype_data {
+ 	.driver_data = 0,
+ };
+ 
++static const struct fsl_qspi_devtype_data ls2080a_data = {
++	.devtype = FSL_QUADSPI_LS2080A,
++	.rxfifo = 128,
++	.txfifo = 64,
++	.ahb_buf_size = 1024,
++	.driver_data = QUADSPI_QUIRK_TKT253890,
++};
 +
- 	return 0;
- }
- 
-@@ -809,9 +812,6 @@ static int fsl_qspi_nor_setup_last(struct fsl_qspi *q)
- 	if (ret)
- 		return ret;
- 
--	/* Init for AHB read */
--	fsl_qspi_init_ahb_read(q);
--
- 	return 0;
- }
- 
++
+ #define FSL_QSPI_MAX_CHIP	4
+ struct fsl_qspi {
+ 	struct spi_nor nor[FSL_QSPI_MAX_CHIP];
+@@ -821,6 +831,7 @@ static int fsl_qspi_nor_setup_last(struct fsl_qspi *q)
+ 	{ .compatible = "fsl,imx7d-qspi", .data = &imx7d_data, },
+ 	{ .compatible = "fsl,imx6ul-qspi", .data = &imx6ul_data, },
+ 	{ .compatible = "fsl,ls1021a-qspi", .data = (void *)&ls1021a_data, },
++	{ .compatible = "fsl,ls2080a-qspi", .data = &ls2080a_data, },
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, fsl_qspi_dt_ids);
 -- 
 1.9.1
