@@ -1,15 +1,25 @@
-From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-To: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, robh@kernel.org,
- mark.rutland@arm.com, shawnguo@kernel.org
-Cc: linux-arm-kernel@lists.infradead.org, boris.brezillon@free-electrons.com,
- cyrille.pitchen@wedev4u.fr, computersforpeace@gmail.com, han.xu@nxp.com,
- festevam@gmail.com, prabhakar.kushwaha@nxp.com, suresh.gupta@nxp.com,
- Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Subject: [PATCH v3] arm64: dts: ls1088a: Add qspi device node for ls1088a-rdb
-Date: Wed, 31 Jan 2018 10:14:48 +0530
-Message-Id: <1517373888-4716-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1egzm6-00055V-KX
+ for linux-mtd@lists.infradead.org; Wed, 31 Jan 2018 21:18:37 +0000
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Date: Wed, 31 Jan 2018 22:18:17 +0100
+From: stefan@agner.ch
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: han.xu@nxp.com, max.oss.09@gmail.com, richard@nod.at,
+ linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, cyrille.pitchen@wedev4u.fr,
+ dwmw2@infradead.org
+Subject: Re: [PATCH] mtd: nand: gpmi: fall back to legacy mode if no ECC
+ information present
+In-Reply-To: <20180131105705.17bbe858@bbrezillon>
+References: <20180129144440.13648-1-stefan@agner.ch>
+ <20180130142348.35f1bce3@bbrezillon>
+ <d7a812de1b96be3460230efde4914ec1@agner.ch>
+ <20180131105705.17bbe858@bbrezillon>
+Message-ID: <33bcf28ff1c613886c950465160e5a97@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,99 +29,116 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add nodes and properties for QSPI controller.
-Add support for spansion flash, s25fs512s, as slave device for
-QSPI controller.
+I accidentally removed ML/cc before, re-adding.
 
-Added entry of "fsl,ls1088a-qspi" in fsl-quadspi.txt binding file.
+On 31.01.2018 10:57, Boris Brezillon wrote:
+> On Wed, 31 Jan 2018 10:19:05 +0100
+> stefan@agner.ch wrote:
+> 
+>> On 30.01.2018 14:23, Boris Brezillon wrote:
+>> > Hi Stefan,
+>> >
+>> > On Mon, 29 Jan 2018 15:44:40 +0100
+>> > Stefan Agner <stefan@agner.ch> wrote:
+>> >
+>> >> In case fsl,use-minimum-ecc is set, the driver tries to determine
+>> >> ECC layout by using the ECC information provided by the MTD stack.
+>> >> However, in case the NAND chip does not provide any information,
+>> >> the driver currently fails with:
+>> >>   nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xf1
+>> >>   nand: Macronix NAND 128MiB 3,3V 8-bit
+>> >>   nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+>> >>   gpmi-nand 1806000.gpmi-nand: Error setting BCH geometry : 1
+>> >>   gpmi-nand: probe of 1806000.gpmi-nand failed with error 1
+>> >>
+>> >> Fall back to implementation specific default mode if no ECC
+>> >> information are provided by the NAND chip and fsl,use-minimum-ecc
+>> >> is specified.
+>> >
+>> > Hm, this sounds a bit fragile: if we ever fix the Macronix driver
+>> > (which should be done BTW) to set the appropriate ECC requirements, it
+>> > will break all platforms that were relying on this 'fall back to legacy
+>> > logic'.
+>>
+>> I see. It is just that downstream behaves that way, hence we sell
+>> modules which use minimal ECC on ONFI enabled chips and legacy (maximum
+>> ECC which fits into OOB) on modules with non-ONFI chips.
+> 
+> And I guess you use the same DT for both variants of the board :-/
+> 
 
-Signed-off-by: Suresh Gupta <suresh.gupta@nxp.com>
-Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
----
-Depends on
- https://patchwork.ozlabs.org/project/linux-mtd/list/?series=26084
+Actually we only have two SKUs, and they differ also otherwise so I have
+two DTs anyway.
 
-Changes for v3:
-- Add compatible string for slave nodes.
-Changes for v2:
-- Move property spi-rx-bus-width and spi-tx-bus-width from controller
-  to connected slave device node.
+>>
+>> Currently we operate the above Macronix chip with 8-bit ECC since quite
+>> a while.
+> 
+> Honestly, I don't see a good solution here except adding an extra DT or
+> live-patching it from the bootloader, because, even if this hack works
+> for you know, it might not in the future.
 
- .../devicetree/bindings/mtd/fsl-quadspi.txt        |  1 +
- arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts  | 25 ++++++++++++++++++++++
- arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi     | 12 +++++++++++
- 3 files changed, 38 insertions(+)
+Extra DT is fine for Linux.
 
-diff --git a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-index 811da0e..956c23c 100644
---- a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-+++ b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-@@ -7,6 +7,7 @@ Required properties:
- 		 or
- 		 "fsl,ls2080a-qspi" followed by "fsl,ls1021a-qspi",
- 		 "fsl,ls1043a-qspi" followed by "fsl,ls1021a-qspi"
-+		 "fsl,ls2080a-qspi" followed by "fsl,ls1088a-qspi",
-   - reg : the first contains the register location and length,
-           the second contains the memory mapping address and length
-   - reg-names: Should contain the reg names "QuadSPI" and "QuadSPI-memory"
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts
-index 0f6fcda..99a514a 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts
-@@ -94,6 +94,31 @@
- 	};
- };
- 
-+&qspi {
-+	status = "okay";
-+	fsl,qspi-has-second-chip;
-+	qflash0: s25fs512s@0 {
-+		compatible = "spansion,m25p80";
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		spi-max-frequency = <20000000>;
-+		reg = <0>;
-+		spi-rx-bus-width = <4>;
-+		spi-tx-bus-width = <4>;
-+	};
-+
-+	qflash1: s25fs512s@1 {
-+		compatible = "spansion,m25p80";
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		spi-max-frequency = <20000000>;
-+		reg = <1>;
-+		spi-rx-bus-width = <4>;
-+		spi-tx-bus-width = <4>;
-+	};
-+
-+};
-+
- &ifc {
- 	ranges = <0 0 0x5 0x30000000 0x00010000
- 		  2 0 0x5 0x20000000 0x00010000>;
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-index bd80e9a..b45a522 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-@@ -394,6 +394,18 @@
- 			status = "disabled";
- 		};
- 
-+		qspi: quadspi@20c0000 {
-+			compatible = "fsl,ls2080a-qspi", "fsl,ls1088a-qspi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0x0 0x20c0000 0x0 0x10000>,
-+				<0x0 0x20000000 0x0 0x10000000>;
-+			reg-names = "QuadSPI", "QuadSPI-memory";
-+			interrupts = <0 25 0x4>; /* Level high type */
-+			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
-+			clock-names = "qspi_en", "qspi";
-+		};
-+
- 		sata: sata@3200000 {
- 			compatible = "fsl,ls1088a-ahci";
- 			reg = <0x0 0x3200000 0x0 0x10000>,
--- 
-1.9.1
+The problem is more with U-Boot, where I tried to add minimal ECC
+support via Kconfig symbol and align with Linux behavior. For U-Boot I
+would really prefer to have a single binary for all SKUs...
+
+I already sent a first patchset
+https://patchwork.ozlabs.org/patch/867180/
+
+I guess it should be somehow possible to do a board specific selection
+of ECC. But this is a discussion for another thread.
+
+> 
+> In the future, if you plan to have boards with different variants of
+> NANDs, I recommend that you always maximize ECC, this way you won't
+> have this kind of issues.
+
+Makes sense. Unfortunately, for those products we already ship, changing
+would be rather painful.
+
+> 
+>>
+>> > So, if what you really want is legacy_set_geometry(), don't specify
+>> > "fsl,use-minimum-ecc" in your DT and you should be good. Otherwise, fix
+>> > the Macronix driver to initialize ->ecc_{strength,step_size}_ds
+>> > appropriately.
+>>
+>> The datasheet says:
+>> • High Reliability
+>> - Endurance: 100K cycles (with 1-bit ECC per 528-byte)
+>>
+>> So we would set ecc_strenght to 1?
+> 
+> If the datasheet says so, then yes, you should have
+> ->ecc_strength_ds = 1 and ->ecc_step_size_ds = 512.
+> 
+>> But then there is almost no room for
+>> wear leveling. I remember that I dumped the fixed bits once on such a
+>> chip, and there were several blocks from factory which needed one bit
+>> fixed...
+> 
+> Well, that's a different issue. You might want to maximize the ECC
+> strength for your specific board. In this case, you should not specify
+> "fsl,use-minimum-ecc" in your DT, or, if the driver supports it (but I
+> doubt it does), you should add "nand-ecc-maximize". Alternatively, if
+> you want to keep some of the OOB space, you can ask for a specific ECC
+> config with the "nand-ecc-strength" and "nand-ecc-step-size" properties.
+
+Different issue, but in the end all I care about: Does wear leveling
+work properly.
+
+The NAND chip documentation also mentions that typical access is per
+page (2K), I guess if one uses a single ECC across the complete page
+then 4-bits are available, which should allow a somewhat decent wear
+leveling.
+
+I guess we can go with nand-ecc-strength/nand-ecc-step-size for that
+chip for now.
+
+However, in Linux we should at least fix the device tree bindings
+documentation for "fsl,use-minimum-ecc" then.
+
+--
+Stefan
