@@ -1,32 +1,15 @@
-Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1egcFq-0001N3-Jn
- for linux-mtd@lists.infradead.org; Tue, 30 Jan 2018 20:11:48 +0000
-Received: by mail-lf0-x243.google.com with SMTP id o89so17215308lfg.10
- for <linux-mtd@lists.infradead.org>; Tue, 30 Jan 2018 12:11:31 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Rob Herring <robh+dt@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, Frank Rowand <frowand.list@gmail.com>,
- Linus Walleij <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>,
- Jonas Gorski <jonas.gorski@gmail.com>,
- Florian Fainelli <f.fainelli@gmail.com>, John Crispin <john@phrozen.org>,
- Peter Rosin <peda@axentia.se>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH V9 2/4] mtd: rename "ofpart" parser to "fixed-partitions" as
- it fits it better
-Date: Tue, 30 Jan 2018 21:10:57 +0100
-Message-Id: <20180130201059.4424-3-zajec5@gmail.com>
-In-Reply-To: <20180130201059.4424-1-zajec5@gmail.com>
-References: <20180130201059.4424-1-zajec5@gmail.com>
+From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+To: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, robh@kernel.org,
+ mark.rutland@arm.com, shawnguo@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, boris.brezillon@free-electrons.com,
+ cyrille.pitchen@wedev4u.fr, computersforpeace@gmail.com, han.xu@nxp.com,
+ festevam@gmail.com, prabhakar.kushwaha@nxp.com, suresh.gupta@nxp.com,
+ Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH v3] arm64: dts: ls1088a: Add qspi device node for ls1088a-rdb
+Date: Wed, 31 Jan 2018 10:14:48 +0530
+Message-Id: <1517373888-4716-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,76 +19,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+Add nodes and properties for QSPI controller.
+Add support for spansion flash, s25fs512s, as slave device for
+QSPI controller.
 
-Type "ofpart" means that OF should be used to get partitioning info and
-this driver supports "fixed-partitions" binding only. Renaming it should
-lead to less confusion especially when parsers for new compatibility
-strings start to appear.
+Added entry of "fsl,ls1088a-qspi" in fsl-quadspi.txt binding file.
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Signed-off-by: Suresh Gupta <suresh.gupta@nxp.com>
+Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
 ---
-V9: First appearance of this commit
----
- drivers/mtd/mtdpart.c |  4 ++--
- drivers/mtd/ofpart.c  | 11 ++++++-----
- 2 files changed, 8 insertions(+), 7 deletions(-)
+Depends on
+ https://patchwork.ozlabs.org/project/linux-mtd/list/?series=26084
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index d40ec525ceff..a29bbcf79691 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -864,7 +864,7 @@ static int mtd_part_of_parse(struct mtd_info *master,
- 			     struct mtd_partitions *pparts)
- {
- 	struct mtd_part_parser *parser;
--	const char *fixed = "ofpart";
-+	const char *fixed = "fixed-partitions";
- 	int ret, err = 0;
- 
- 	/*
-@@ -872,7 +872,7 @@ static int mtd_part_of_parse(struct mtd_info *master,
- 	 */
- 
- 	/*
--	 * For backward compatibility we have to try the "ofpart"
-+	 * For backward compatibility we have to try the "fixed-partitions"
- 	 * parser. It supports old DT format with partitions specified as a
- 	 * direct subnodes of a flash device DT node without any compatibility
- 	 * specified we could match.
-diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-index 6bdf4e525677..9f497315e65d 100644
---- a/drivers/mtd/ofpart.c
-+++ b/drivers/mtd/ofpart.c
-@@ -25,9 +25,9 @@ static bool node_has_compatible(struct device_node *pp)
- 	return of_get_property(pp, "compatible", NULL);
- }
- 
--static int parse_ofpart_partitions(struct mtd_info *master,
--				   const struct mtd_partition **pparts,
--				   struct mtd_part_parser_data *data)
-+static int parse_fixed_partitions(struct mtd_info *master,
-+				  const struct mtd_partition **pparts,
-+				  struct mtd_part_parser_data *data)
- {
- 	struct mtd_partition *parts;
- 	struct device_node *mtd_node;
-@@ -141,8 +141,8 @@ static int parse_ofpart_partitions(struct mtd_info *master,
- }
- 
- static struct mtd_part_parser ofpart_parser = {
--	.parse_fn = parse_ofpart_partitions,
--	.name = "ofpart",
-+	.parse_fn = parse_fixed_partitions,
-+	.name = "fixed-partitions",
+Changes for v3:
+- Add compatible string for slave nodes.
+Changes for v2:
+- Move property spi-rx-bus-width and spi-tx-bus-width from controller
+  to connected slave device node.
+
+ .../devicetree/bindings/mtd/fsl-quadspi.txt        |  1 +
+ arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts  | 25 ++++++++++++++++++++++
+ arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi     | 12 +++++++++++
+ 3 files changed, 38 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
+index 811da0e..956c23c 100644
+--- a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
++++ b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
+@@ -7,6 +7,7 @@ Required properties:
+ 		 or
+ 		 "fsl,ls2080a-qspi" followed by "fsl,ls1021a-qspi",
+ 		 "fsl,ls1043a-qspi" followed by "fsl,ls1021a-qspi"
++		 "fsl,ls2080a-qspi" followed by "fsl,ls1088a-qspi",
+   - reg : the first contains the register location and length,
+           the second contains the memory mapping address and length
+   - reg-names: Should contain the reg names "QuadSPI" and "QuadSPI-memory"
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts
+index 0f6fcda..99a514a 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts
+@@ -94,6 +94,31 @@
+ 	};
  };
  
- static int parse_ofoldpart_partitions(struct mtd_info *master,
-@@ -229,4 +229,5 @@ MODULE_AUTHOR("Vitaly Wool, David Gibson");
-  * with the same name. Since we provide the ofoldpart parser, we should have
-  * the corresponding alias.
-  */
-+MODULE_ALIAS("fixed-partitions");
- MODULE_ALIAS("ofoldpart");
++&qspi {
++	status = "okay";
++	fsl,qspi-has-second-chip;
++	qflash0: s25fs512s@0 {
++		compatible = "spansion,m25p80";
++		#address-cells = <1>;
++		#size-cells = <1>;
++		spi-max-frequency = <20000000>;
++		reg = <0>;
++		spi-rx-bus-width = <4>;
++		spi-tx-bus-width = <4>;
++	};
++
++	qflash1: s25fs512s@1 {
++		compatible = "spansion,m25p80";
++		#address-cells = <1>;
++		#size-cells = <1>;
++		spi-max-frequency = <20000000>;
++		reg = <1>;
++		spi-rx-bus-width = <4>;
++		spi-tx-bus-width = <4>;
++	};
++
++};
++
+ &ifc {
+ 	ranges = <0 0 0x5 0x30000000 0x00010000
+ 		  2 0 0x5 0x20000000 0x00010000>;
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+index bd80e9a..b45a522 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+@@ -394,6 +394,18 @@
+ 			status = "disabled";
+ 		};
+ 
++		qspi: quadspi@20c0000 {
++			compatible = "fsl,ls2080a-qspi", "fsl,ls1088a-qspi";
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0x0 0x20c0000 0x0 0x10000>,
++				<0x0 0x20000000 0x0 0x10000000>;
++			reg-names = "QuadSPI", "QuadSPI-memory";
++			interrupts = <0 25 0x4>; /* Level high type */
++			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
++			clock-names = "qspi_en", "qspi";
++		};
++
+ 		sata: sata@3200000 {
+ 			compatible = "fsl,ls1088a-ahci";
+ 			reg = <0x0 0x3200000 0x0 0x10000>,
 -- 
-2.11.0
+1.9.1
