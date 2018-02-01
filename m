@@ -1,25 +1,17 @@
-Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+Received: from mail-eopbgr30092.outbound.protection.outlook.com ([40.107.3.92]
+ helo=EUR03-AM5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1egzm6-00055V-KX
- for linux-mtd@lists.infradead.org; Wed, 31 Jan 2018 21:18:37 +0000
+ id 1eh8c5-0003Up-6E
+ for linux-mtd@lists.infradead.org; Thu, 01 Feb 2018 06:44:52 +0000
+To: linux-mtd@lists.infradead.org
+From: Timo Ketola <timo@exertus.fi>
+Subject: UBI assert failed in ubi_wl_init
+Message-ID: <50443554-3f18-ce1b-70e7-a8092b39f5f5@exertus.fi>
+Date: Thu, 1 Feb 2018 08:44:26 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Date: Wed, 31 Jan 2018 22:18:17 +0100
-From: stefan@agner.ch
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: han.xu@nxp.com, max.oss.09@gmail.com, richard@nod.at,
- linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, cyrille.pitchen@wedev4u.fr,
- dwmw2@infradead.org
-Subject: Re: [PATCH] mtd: nand: gpmi: fall back to legacy mode if no ECC
- information present
-In-Reply-To: <20180131105705.17bbe858@bbrezillon>
-References: <20180129144440.13648-1-stefan@agner.ch>
- <20180130142348.35f1bce3@bbrezillon>
- <d7a812de1b96be3460230efde4914ec1@agner.ch>
- <20180131105705.17bbe858@bbrezillon>
-Message-ID: <33bcf28ff1c613886c950465160e5a97@agner.ch>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,116 +21,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I accidentally removed ML/cc before, re-adding.
+Hi,
 
-On 31.01.2018 10:57, Boris Brezillon wrote:
-> On Wed, 31 Jan 2018 10:19:05 +0100
-> stefan@agner.ch wrote:
-> 
->> On 30.01.2018 14:23, Boris Brezillon wrote:
->> > Hi Stefan,
->> >
->> > On Mon, 29 Jan 2018 15:44:40 +0100
->> > Stefan Agner <stefan@agner.ch> wrote:
->> >
->> >> In case fsl,use-minimum-ecc is set, the driver tries to determine
->> >> ECC layout by using the ECC information provided by the MTD stack.
->> >> However, in case the NAND chip does not provide any information,
->> >> the driver currently fails with:
->> >>   nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xf1
->> >>   nand: Macronix NAND 128MiB 3,3V 8-bit
->> >>   nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
->> >>   gpmi-nand 1806000.gpmi-nand: Error setting BCH geometry : 1
->> >>   gpmi-nand: probe of 1806000.gpmi-nand failed with error 1
->> >>
->> >> Fall back to implementation specific default mode if no ECC
->> >> information are provided by the NAND chip and fsl,use-minimum-ecc
->> >> is specified.
->> >
->> > Hm, this sounds a bit fragile: if we ever fix the Macronix driver
->> > (which should be done BTW) to set the appropriate ECC requirements, it
->> > will break all platforms that were relying on this 'fall back to legacy
->> > logic'.
->>
->> I see. It is just that downstream behaves that way, hence we sell
->> modules which use minimal ECC on ONFI enabled chips and legacy (maximum
->> ECC which fits into OOB) on modules with non-ONFI chips.
-> 
-> And I guess you use the same DT for both variants of the board :-/
-> 
+Could someone please give some ideas...
 
-Actually we only have two SKUs, and they differ also otherwise so I have
-two DTs anyway.
+I'm trying to deploy UBI fastmap. Basically it seems to work but there
+are some messages I'm not comfortable with.
 
->>
->> Currently we operate the above Macronix chip with 8-bit ECC since quite
->> a while.
-> 
-> Honestly, I don't see a good solution here except adding an extra DT or
-> live-patching it from the bootloader, because, even if this hack works
-> for you know, it might not in the future.
+I made UBI image with ubinize with fixed size empty volume (autoresize
+seems not to work with fastmap at all). I flashed it with U-Boot 'nand
+write.trimffs'. On first boot the fastmap complains about not to be able
+to write fastmap:
 
-Extra DT is fine for Linux.
 
-The problem is more with U-Boot, where I tried to add minimal ECC
-support via Kconfig symbol and align with Linux behavior. For U-Boot I
-would really prefer to have a single binary for all SKUs...
+> ubi1: default fastmap pool size: 256
+> ubi1: default fastmap WL pool size: 128
+> ubi1: attaching mtd1
+> ubi1: scanning is finished
+> ubi1: attached mtd1 (name "user", size 1984 MiB)
+> ubi1: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+> ubi1: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+> ubi1: VID header offset: 2048 (aligned 2048), data offset: 4096
+> ubi1: good PEBs: 15864, bad PEBs: 8, corrupted PEBs: 0
+> ubi1: user volume: 1, internal volumes: 1, max. volumes count: 128
+> ubi1: max/mean erase counter: 0/0, WL threshold: 4096, image sequence number: 18
+> 6152832
+> ubi1: available PEBs: 2331, total reserved PEBs: 13533, PEBs reserved for bad PE
+> B handling: 312
+> ubi1: background thread "ubi_bgt1d" started, PID 98
+...
+> ubi1 error: ubi_update_fastmap: could not get any free erase block
+> ubi1 warning: ubi_update_fastmap: Unable to write new fastmap, err=-28
+> UBIFS (ubi1:0): background thread "ubifs_bgt1_0" started, PID 105
+> UBIFS (ubi1:0): UBIFS: mounted UBI device 1, volume 0, name "user"
+> UBIFS (ubi1:0): LEB size: 126976 bytes (124 KiB), min./max. I/O unit sizes: 2048
+>  bytes/2048 bytes
+> UBIFS (ubi1:0): FS size: 1675702272 bytes (1598 MiB, 13197 LEBs), journal size 9
+> 023488 bytes (8 MiB, 72 LEBs)
+> UBIFS (ubi1:0): reserved for root: 0 bytes (0 KiB)
+> UBIFS (ubi1:0): media format: w4/r0 (latest is w5/r0), UUID C8D0E8D3-8394-445A-9
+> 089-95BD864D5949, big LPT model
 
-I already sent a first patchset
-https://patchwork.ozlabs.org/patch/867180/
 
-I guess it should be somehow possible to do a board specific selection
-of ECC. But this is a discussion for another thread.
+However, the image still mounts and works and on next boots also the
+fastmap seems to be functional. Scanning is fast. But now UBI complains
+about failing assert:
 
-> 
-> In the future, if you plan to have boards with different variants of
-> NANDs, I recommend that you always maximize ECC, this way you won't
-> have this kind of issues.
 
-Makes sense. Unfortunately, for those products we already ship, changing
-would be rather painful.
+> ubi1: default fastmap pool size: 256
+> ubi1: default fastmap WL pool size: 128
+> ubi1: attaching mtd1
+> ubi1: attached by fastmap
+> ubi1: fastmap pool size: 256
+> ubi1: fastmap WL pool size: 128
+> UBI assert failed in ubi_wl_init at 1666 (pid 1)
+> CPU: 0 PID: 1 Comm: swapper/0 Not tainted 4.12.1 #3
+> Hardware name: Freescale i.MX6 SoloX (Device Tree)
+> Backtrace: 
+> [<c010a1b8>] (dump_backtrace) from [<c010a454>] (show_stack+0x18/0x1c)
+>  r7:eee39b00 r6:c0912ac8 r5:60000013 r4:00000000
+> [<c010a43c>] (show_stack) from [<c029edd0>] (dump_stack+0x80/0xa0)
+> [<c029ed50>] (dump_stack) from [<c03d2394>] (ubi_wl_init+0x430/0x540)
+>  r7:eee39b00 r6:eee39b04 r5:00003df7 r4:eee38040
+> [<c03d1f64>] (ubi_wl_init) from [<c03d4c94>] (ubi_attach+0x28c/0x364)
+>  r10:00000800 r9:eee37040 r8:00000040 r7:eee39c00 r6:eee39b00 r5:eee38040
+>  r4:00000000
+> [<c03d4a08>] (ubi_attach) from [<c03c9668>] (ubi_attach_mtd_dev+0x788/0xbc0)
+>  r9:eee38080 r8:00000840 r7:ef349bc0 r6:00000001 r5:eee38040 r4:00000800
+> [<c03c8ee0>] (ubi_attach_mtd_dev) from [<c0823d60>] (ubi_init+0x148/0x1e8)
+>  r10:00000000 r9:c0933600 r8:00000000 r7:c0989024 r6:ef349bc0 r5:c0989074
+>  r4:00000001
+> [<c0823c18>] (ubi_init) from [<c0101780>] (do_one_initcall+0xb0/0x154)
+>  r8:00000000 r7:c083edd0 r6:c0835838 r5:c0823c18 r4:00000007
+> [<c01016d0>] (do_one_initcall) from [<c0800e30>] (kernel_init_freeable+0x130/0x1
+> f8)
+>  r8:c0933600 r7:c083edd0 r6:c0835838 r5:0000008d r4:00000007
+> [<c0800d00>] (kernel_init_freeable) from [<c056ab6c>] (kernel_init+0x10/0x114)
+>  r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:c056ab5c r4:00000000
+> [<c056ab5c>] (kernel_init) from [<c01070c8>] (ret_from_fork+0x14/0x2c)
+>  r5:c056ab5c r4:00000000
+> ubi1: attached mtd1 (name "user", size 1984 MiB)
+> ubi1: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+> ubi1: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+> ubi1: VID header offset: 2048 (aligned 2048), data offset: 4096
+> ubi1: good PEBs: 15864, bad PEBs: 8, corrupted PEBs: 0
+> ubi1: user volume: 1, internal volumes: 1, max. volumes count: 128
+> ubi1: max/mean erase counter: 2/0, WL threshold: 4096, image sequence number: 18
+> 6152832
+> ubi1: available PEBs: 2331, total reserved PEBs: 13533, PEBs reserved for bad PE
+> B handling: 312
+> ubi1: background thread "ubi_bgt1d" started, PID 98
+...
+> UBIFS (ubi1:0): background thread "ubifs_bgt1_0" started, PID 105
+> UBIFS (ubi1:0): UBIFS: mounted UBI device 1, volume 0, name "user"
+> UBIFS (ubi1:0): LEB size: 126976 bytes (124 KiB), min./max. I/O unit sizes: 2048
+>  bytes/2048 bytes
+> UBIFS (ubi1:0): FS size: 1675702272 bytes (1598 MiB, 13197 LEBs), journal size 9
+> 023488 bytes (8 MiB, 72 LEBs)
+> UBIFS (ubi1:0): reserved for root: 0 bytes (0 KiB)
+> UBIFS (ubi1:0): media format: w4/r0 (latest is w5/r0), UUID C8D0E8D3-8394-445A-9
+> 089-95BD864D5949, big LPT model
 
-> 
->>
->> > So, if what you really want is legacy_set_geometry(), don't specify
->> > "fsl,use-minimum-ecc" in your DT and you should be good. Otherwise, fix
->> > the Macronix driver to initialize ->ecc_{strength,step_size}_ds
->> > appropriately.
->>
->> The datasheet says:
->> • High Reliability
->> - Endurance: 100K cycles (with 1-bit ECC per 528-byte)
->>
->> So we would set ecc_strenght to 1?
-> 
-> If the datasheet says so, then yes, you should have
-> ->ecc_strength_ds = 1 and ->ecc_step_size_ds = 512.
-> 
->> But then there is almost no room for
->> wear leveling. I remember that I dumped the fixed bits once on such a
->> chip, and there were several blocks from factory which needed one bit
->> fixed...
-> 
-> Well, that's a different issue. You might want to maximize the ECC
-> strength for your specific board. In this case, you should not specify
-> "fsl,use-minimum-ecc" in your DT, or, if the driver supports it (but I
-> doubt it does), you should add "nand-ecc-maximize". Alternatively, if
-> you want to keep some of the OOB space, you can ask for a specific ECC
-> config with the "nand-ecc-strength" and "nand-ecc-step-size" properties.
 
-Different issue, but in the end all I care about: Does wear leveling
-work properly.
+The line 1666 reads:
 
-The NAND chip documentation also mentions that typical access is per
-page (2K), I guess if one uses a single ECC across the complete page
-then 4-bits are available, which should allow a somewhat decent wear
-leveling.
+> 	ubi_assert(ubi->good_peb_count == found_pebs);
 
-I guess we can go with nand-ecc-strength/nand-ecc-step-size for that
-chip for now.
 
-However, in Linux we should at least fix the device tree bindings
-documentation for "fsl,use-minimum-ecc" then.
+Why the assert fails? Where should I look at to fix this? Is this
+something to worry about?
+
+I'm on mainline 4.12.1. ubinize version: 1.5.2
 
 --
-Stefan
+
+Timo
