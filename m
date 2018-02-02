@@ -1,26 +1,16 @@
-From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-To: Rob Herring <robh@kernel.org>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "open
- list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>, Shawn Guo
- <shawnguo@kernel.org>, "moderated list:ARM/FREESCALE IMX / MXC ARM
- ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, Boris BREZILLON
- <boris.brezillon@free-electrons.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Brian Norris <computersforpeace@gmail.com>,
- "Han Xu" <han.xu@nxp.com>, Fabio Estevam <festevam@gmail.com>, Prabhakar
- Kushwaha <prabhakar.kushwaha@nxp.com>, Suresh Gupta <suresh.gupta@nxp.com>
-Subject: RE: [PATCH 2/2] dt-bindings: fsl-quadspi: spi-rx/tx-bus-width usage
- example
-Date: Fri, 2 Feb 2018 05:24:00 +0000
-Message-ID: <DB6PR0402MB28383FBE4912EC7E73908B7199F90@DB6PR0402MB2838.eurprd04.prod.outlook.com>
-References: <1517333637-17331-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1517333637-17331-3-git-send-email-yogeshnarayan.gaur@nxp.com>
- <CAL_JsqLBUDNEWkcrNcrOmuYcR=Gbf2ALD=z4s9AP4poOcBxNRQ@mail.gmail.com>
-In-Reply-To: <CAL_JsqLBUDNEWkcrNcrOmuYcR=Gbf2ALD=z4s9AP4poOcBxNRQ@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+To: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, robh@kernel.org,
+ mark.rutland@arm.com, shawnguo@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, boris.brezillon@free-electrons.com,
+ cyrille.pitchen@wedev4u.fr, computersforpeace@gmail.com, han.xu@nxp.com,
+ festevam@gmail.com, prabhakar.kushwaha@nxp.com, suresh.gupta@nxp.com,
+ Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH v2 0/2] mtd: fsl-quadspi: Update slave device hwcap based on
+ mode provided in dtsi file
+Date: Fri,  2 Feb 2018 11:01:22 +0530
+Message-Id: <1517549484-6024-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,39 +20,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogZGV2aWNldHJlZS1vd25l
-ckB2Z2VyLmtlcm5lbC5vcmcgW21haWx0bzpkZXZpY2V0cmVlLQ0KPiBvd25lckB2Z2VyLmtlcm5l
-bC5vcmddIE9uIEJlaGFsZiBPZiBSb2IgSGVycmluZw0KPiBTZW50OiBXZWRuZXNkYXksIEphbnVh
-cnkgMzEsIDIwMTggMTI6MjQgQU0NCj4gVG86IFlvZ2VzaCBOYXJheWFuIEdhdXIgPHlvZ2VzaG5h
-cmF5YW4uZ2F1ckBueHAuY29tPg0KPiBDYzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7
-IG9wZW4gbGlzdDpPUEVOIEZJUk1XQVJFIEFORCBGTEFUVEVORUQNCj4gREVWSUNFIFRSRUUgQklO
-RElOR1MgPGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnPjsgTWFyayBSdXRsYW5kDQo+IDxtYXJr
-LnJ1dGxhbmRAYXJtLmNvbT47IFNoYXduIEd1byA8c2hhd25ndW9Aa2VybmVsLm9yZz47IG1vZGVy
-YXRlZA0KPiBsaXN0OkFSTS9GUkVFU0NBTEUgSU1YIC8gTVhDIEFSTSBBUkNISVRFQ1RVUkUgPGxp
-bnV4LWFybS0NCj4ga2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmc+OyBCb3JpcyBCUkVaSUxMT04g
-PGJvcmlzLmJyZXppbGxvbkBmcmVlLQ0KPiBlbGVjdHJvbnMuY29tPjsgQ3lyaWxsZSBQaXRjaGVu
-IDxjeXJpbGxlLnBpdGNoZW5Ad2VkZXY0dS5mcj47IEJyaWFuIE5vcnJpcw0KPiA8Y29tcHV0ZXJz
-Zm9ycGVhY2VAZ21haWwuY29tPjsgSGFuIFh1IDxoYW4ueHVAbnhwLmNvbT47IEZhYmlvIEVzdGV2
-YW0NCj4gPGZlc3RldmFtQGdtYWlsLmNvbT47IFByYWJoYWthciBLdXNod2FoYQ0KPiA8cHJhYmhh
-a2FyLmt1c2h3YWhhQG54cC5jb20+OyBTdXJlc2ggR3VwdGEgPHN1cmVzaC5ndXB0YUBueHAuY29t
-Pg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIDIvMl0gZHQtYmluZGluZ3M6IGZzbC1xdWFkc3BpOiBz
-cGktcngvdHgtYnVzLXdpZHRoIHVzYWdlDQo+IGV4YW1wbGUNCj4gDQo+IE9uIFR1ZSwgSmFuIDMw
-LCAyMDE4IGF0IDExOjMzIEFNLCBZb2dlc2ggR2F1cg0KPiA8eW9nZXNobmFyYXlhbi5nYXVyQG54
-cC5jb20+IHdyb3RlOg0KPiA+IEFkZGVkIHVzYWdlIGV4YW1wbGUgYnkgYWRkaW5nIHN1cHBvcnQg
-Zm9yIHNwaS1yeC1idXMtd2lkdGggYW5kDQo+ID4gc3BpLXR4LWJ1cy13aWR0aCBiaW5kaW5nLg0K
-PiANCj4gV2h5IG5vdCBqdXN0IGFkZCB0byBleGlzdGluZyBleGFtcGxlPyBJcyB0aGVyZSBzb21l
-dGhpbmcgdW5jbGVhciBhYm91dCBhZGRpbmcNCj4gdGhlc2UgcHJvcGVydGllcyB0byB3YXJyYW50
-IGFuIGV4YW1wbGU/IFdlIGRvbid0IG5lZWQgZXZlcnkgcG9zc2libGUgb3B0aW9uDQo+IGVudW1l
-cmF0ZWQuDQo+IA0KT2ssIHdvdWxkIGRyb3AgdGhpcyBwYXRjaCBhbmQgc2VuZCBhbm90aGVyIHBh
-dGNoIGhhdmluZyB1c2FnZSBvZiBwcm9wZXJ0aWVzIHNwaS1yeC1idXMtd2lkdGggYW5kIHNwaS10
-eC1idXMtd2lkdGggaW4gZXhpc3RpbmcgZXhhbXBsZSB1bmRlciBiaW5kaW5nIGZpbGUgJ3NwaS1i
-dXMudHh0Jy4NCg0KVGhhbmtzDQoNCj4gUm9iDQo+IC0tDQo+IFRvIHVuc3Vic2NyaWJlIGZyb20g
-dGhpcyBsaXN0OiBzZW5kIHRoZSBsaW5lICJ1bnN1YnNjcmliZSBkZXZpY2V0cmVlIiBpbiB0aGUg
-Ym9keQ0KPiBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIua2VybmVsLm9yZyBNb3JlIG1h
-am9yZG9tbyBpbmZvIGF0DQo+IGh0dHBzOi8vZW1lYTAxLnNhZmVsaW5rcy5wcm90ZWN0aW9uLm91
-dGxvb2suY29tLz91cmw9aHR0cCUzQSUyRiUyRnZnZXIua2UNCj4gcm5lbC5vcmclMkZtYWpvcmRv
-bW8tDQo+IGluZm8uaHRtbCZkYXRhPTAyJTdDMDElN0N5b2dlc2huYXJheWFuLmdhdXIlNDBueHAu
-Y29tJTdDNzJhN2U5OWJkZA0KPiA2ZDRkM2I2NDVkMDhkNTY4MTJkMGIyJTdDNjg2ZWExZDNiYzJi
-NGM2ZmE5MmNkOTljNWMzMDE2MzUlN0MwJTdDDQo+IDAlN0M2MzY1MjkzNTIzODQ1MTk4Nzkmc2Rh
-dGE9bnV4OXhiZ3pTano3YkZBRlhPRkV6dCUyQnpFblVQVmg1ZjZBDQo+IG1rWEsxUHd5ayUzRCZy
-ZXNlcnZlZD0wDQo=
+This patch-set added support to update hwcap of slave device connected to
+FSL QUADSPI controller by reading values from the device tree files.
+
+Mode information is available via "spi-tx-bus-width" and
+"spi-rx-bus-width" nodes of device tree for the connected slave device.
+
+Update read and write hwcap capability for slave device by reading
+"spi-rx-bus-width" and "spi-tx-bus-width" respectively.
+
+Added usage example for spi-rx/tx-bus-width properties in spi-bus.txt
+
+Depends on
+ https://patchwork.ozlabs.org/project/linux-mtd/list/?series=26084
+
+Yogesh Gaur (2):
+  mtd: fsl-quadspi: Update slave device hwcap based on mode provided in
+    dtsi file
+  dt-bindings: spi: updated usage example for spi-rx/tx-bus-width
+    properties
+
+Changes for v2:
+- Drop patch 'dt-bindings: fsl-quadspi: spi-rx/tx-bus-width usage example'
+- Added usage example for spi-rx/tx-bus-width properties in spi-bus.txt
+
+ Documentation/devicetree/bindings/spi/spi-bus.txt |  2 +
+ drivers/mtd/spi-nor/fsl-quadspi.c                 | 56 +++++++++++++++++++++--
+ 2 files changed, 53 insertions(+), 5 deletions(-)
+
+-- 
+1.9.1
